@@ -20282,7 +20282,7 @@ function populateFightHistory(name) {
  const resultColor = f.result === 'W' ? '#00e668' : '#ff3d00';
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
- <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;">${f.opponent}</td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span></td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="font-weight:800;color:${resultColor};">${f.result}</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
@@ -20795,8 +20795,14 @@ function openFighter(name, division, record, rank, initials, country) {
   document.addEventListener('click', function(e) {
     const el = e.target.closest('.proj-name');
     if (el) openFighterByName(el.textContent.trim());
-  
-});
+
+    const fhEl = e.target.closest('.fh-opponent');
+    if (fhEl) {
+      // Strip suffixes like " 2", " 1" used to disambiguate rematches
+      const raw = fhEl.textContent.trim().replace(/\s+\d+$/, '');
+      openFighterByName(raw);
+    }
+  });
 
   // ════════════════════════════════════════════════════════
   // AUTO-UPDATE: Multi-Event Data & Dynamic Rendering
