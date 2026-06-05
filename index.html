@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OCTAGON — UFC Analytics Database</title>
+  <title>GillyLab — UFC Analytics</title>
+  <link rel="icon" type="image/png" href="./gl-logo.png">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -1464,7 +1465,7 @@
 
   <footer>
     <div class="footer-logo"></div>
-    <div class="footer-text">Data updated weekly · For informational and entertainment purposes only</div>
+    <div class="footer-text">Data updated daily · For informational and entertainment purposes only</div>
     <div class="footer-links">
       <button class="footer-link-btn" onclick="openModal('contact')">Contact</button>
       <button class="footer-link-btn" onclick="openModal('tos')">Terms of Service</button>
@@ -21009,9 +21010,15 @@ function openFighter(name, division, record, rank, initials, country) {
       function fightRow(f) {
         const cls = f.isMain ? 'fight-row main-event' : 'fight-row';
         const { weight, rounds } = parseLabel(f.label);
+        function ava(photo, ini) {
+          if (!photo) return '<div class="fighter-avatar">' + ini + '</div>';
+          return '<div class="fighter-avatar has-photo" style="border:2px solid var(--accent);padding:0;overflow:hidden;">' +
+            '<img src="' + photo + '" alt="' + ini + '" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;" onerror="this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';">' +
+          '</div>';
+        }
         return '<div class="' + cls + '">' +
           '<div class="fighter-cell" onclick="openFighter(\'' + f.f1 + '\',\'' + f.div1 + '\',\'' + f.rec1 + '\',\'' + f.r1 + '\',\'' + f.ini1 + '\')" style="cursor:pointer;">' +
-            '<div class="fighter-avatar">' + f.ini1 + '</div>' +
+            ava(f.photo1, f.ini1) +
             '<div style="min-width:0;flex:1;">' +
               '<div class="fighter-rank">' + f.r1 + '</div>' +
               '<div class="fighter-name">' + f.f1 + '</div>' +
@@ -21029,7 +21036,7 @@ function openFighter(name, division, record, rank, initials, country) {
               '<div class="fighter-name">' + f.f2 + '</div>' +
               '<div class="fighter-record">' + f.rec2 + '</div>' +
             '</div>' +
-            '<div class="fighter-avatar">' + f.ini2 + '</div>' +
+            ava(f.photo2, f.ini2) +
           '</div>' +
         '</div>';
       }
@@ -21429,6 +21436,8 @@ function openFighter(name, division, record, rank, initials, country) {
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
+        photo1: red.fighterSlug  ? './data/photos/' + red.fighterSlug  + '.png' : '',
+        photo2: blue.fighterSlug ? './data/photos/' + blue.fighterSlug + '.png' : '',
         label, isMain, isMainCard,
       };
     });
