@@ -21103,7 +21103,7 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      const target = dates.find(d => d >= today) || dates[dates.length - 1];
+      const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
       const fights = byDate[target] || [];
       if (!fights.length) throw new Error('no fights');
 
@@ -21293,7 +21293,7 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      const target = dates.find(d => d >= today) || dates[dates.length - 1];
+      const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
       const fights = byDate[target] || [];
       if (!fights.length) throw new Error('no fights');
       container.innerHTML = renderOddsHTML(fights);
