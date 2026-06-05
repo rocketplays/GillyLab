@@ -1309,69 +1309,52 @@
     .page { padding-bottom: 52px; }
 
       /* ── Freedom 250 Special Card ── */
-      100%{opacity:0.9} }
-      .freedom-eyebrow {
-        font-size:0.65rem; letter-spacing:0.15em; color:#ffd700;
-        text-transform:uppercase; font-weight:700; margin-bottom:0.3rem;
-        text-shadow: 0 0 10px rgba(255,215,0,0.5);
+      .freedom-card {
+        position:relative; overflow:hidden;
+        background: linear-gradient(160deg, rgba(178,34,52,0.18) 0%, rgba(10,10,11,0) 40%, rgba(10,10,11,0) 60%, rgba(60,59,110,0.18) 100%) !important;
+        border-top: 3px solid transparent !important;
+        border-image: linear-gradient(90deg, #b22234 0%, #ffffff 50%, #3c3b6e 100%) 1 !important;
       }
-      .freedom-title {
-        font-size:clamp(1.8rem, 4vw, 2.8rem) !important;
-        background: linear-gradient(135deg, #ffffff 0%, #ffd700 50%, #ffffff 100%);
+      .freedom-card::before {
+        content:'★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★';
+        position:absolute; top:0.5rem; left:0; right:0;
+        font-size:0.55rem; letter-spacing:0.4em; color:rgba(255,255,255,0.06);
+        text-align:center; pointer-events:none; white-space:nowrap; overflow:hidden;
+      }
+      .freedom-card .event-name {
+        background: linear-gradient(90deg, #e8192c 0%, #ffffff 45%, #ffffff 55%, #4a7fcb 100%);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-weight:900 !important; letter-spacing:-0.02em;
-        text-shadow: none; filter: drop-shadow(0 0 20px rgba(255,215,0,0.4));
-        animation: shimmer 3s linear infinite;
-        background-size: 200% 100%;
+        background-clip: text; filter: drop-shadow(0 0 12px rgba(178,34,52,0.4));
+        animation: freedom-shimmer 4s linear infinite; background-size:200% 100%;
       }
-      @keyframes shimmer {
-        0%{background-position:200% center}
-        100%{background-position:-200% center}
+      @keyframes freedom-shimmer {
+        0%{background-position:150% center} 100%{background-position:-150% center}
       }
-      .freedom-subtitle {
-        font-size:1rem; color:rgba(255,255,255,0.75); letter-spacing:0.05em;
-        margin-bottom:0.3rem; font-style:italic;
+      .freedom-card .event-details { color:rgba(255,255,255,0.7) !important; }
+      .freedom-card .event-header {
+        border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+        padding-bottom:1rem;
       }
-      .freedom-details { color:rgba(255,255,255,0.7) !important; font-size:0.82rem !important; }
-      .freedom-header { border-bottom: 2px solid rgba(255,215,0,0.3) !important; padding-bottom:1rem; }
-      .freedom-countdown {
-        background: linear-gradient(135deg, rgba(178,34,52,0.3), rgba(60,59,110,0.3)) !important;
-        border: 1px solid rgba(255,215,0,0.4) !important;
+      .freedom-card .event-countdown {
+        background: linear-gradient(135deg, rgba(178,34,52,0.25), rgba(60,59,110,0.25)) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
         border-radius:8px;
       }
-      .freedom-countdown .countdown-time { color:#ffd700 !important; text-shadow: 0 0 15px rgba(255,215,0,0.6); }
-      .freedom-divider {
-        display:flex; align-items:center; gap:0.75rem;
-        margin:1rem 0 0.75rem; color:rgba(255,215,0,0.8);
-      }
-      .freedom-divider-star { font-size:1rem; animation: spin 8s linear infinite; }
-      @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-      .freedom-divider-text {
-        font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase;
-        color:rgba(255,215,0,0.7); font-weight:700; white-space:nowrap;
-        flex:1; text-align:center;
-        border-top:1px solid rgba(255,215,0,0.2);
-      }
-      .freedom-fight-row {
-        background: rgba(255,255,255,0.04) !important;
-        border:1px solid rgba(255,215,0,0.15) !important;
-        border-radius:6px; margin-bottom:0.4rem;
+      .freedom-card .countdown-time { color:#ffffff !important; text-shadow: 0 0 12px rgba(178,34,52,0.8); }
+      .freedom-card .section-title { color:#ffffff !important; letter-spacing:0.15em; }
+      .freedom-card .section-line { background: linear-gradient(90deg, #b22234, rgba(255,255,255,0.3), #3c3b6e) !important; height:2px !important; }
+      .freedom-card .fight-row {
+        border:1px solid rgba(255,255,255,0.08) !important;
+        border-radius:6px; margin-bottom:0.3rem;
         transition: border-color 0.2s, background 0.2s;
       }
-      .freedom-fight-row:hover { border-color:rgba(255,215,0,0.5) !important; background:rgba(255,255,255,0.08) !important; }
-      .freedom-avatar {
-        color:#fff !important; font-weight:800 !important;
-        border:2px solid rgba(255,215,0,0.4) !important;
-        box-shadow: 0 0 12px rgba(255,215,0,0.2);
-      }
-      .freedom-vs {
+      .freedom-card .fight-row:hover { border-color:rgba(255,255,255,0.25) !important; background:rgba(255,255,255,0.04) !important; }
+      .freedom-card .fight-vs {
         background: linear-gradient(135deg, #b22234, #3c3b6e) !important;
-        color:#ffd700 !important; font-weight:900 !important;
-        border:1px solid rgba(255,215,0,0.4) !important;
-        box-shadow: 0 0 8px rgba(255,215,0,0.3);
+        color:#fff !important; font-weight:900 !important;
+        border:1px solid rgba(255,255,255,0.2) !important;
       }
-      .fighter-rank-tag { font-size:0.6rem; color:rgba(255,215,0,0.7); margin-top:1px; }
+      .freedom-card .fighter-avatar { border-color:rgba(255,255,255,0.3) !important; }
 </style>
 </head>
 <body>
@@ -21598,7 +21581,9 @@ function openFighter(name, division, record, rank, initials, country) {
         : fightSection('Main Card', (evt.fights || []).filter(f => f.isMain)) +
           fightSection('Prelims', (evt.fights || []).filter(f => !f.isMain));
 
-      return '<div class="carousel-card" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
+      const isFreedom = (evt.name || '').toLowerCase().includes('freedom') || (evt.slug || '').toLowerCase().includes('freedom');
+      const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : '');
+      return '<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
         '<div style="max-width:1300px;margin:0 auto;">' +
           '<div class="event-header">' +
             '<div class="event-info">' +
