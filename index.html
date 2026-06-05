@@ -20798,7 +20798,7 @@ function openFighter(name, division, record, rank, initials, country) {
       const avatarEl = cell.querySelector('.fighter-avatar');
       if (!nameEl || !avatarEl) return;
       const name     = nameEl.textContent.trim();
-      const localUrl = './data/photos/' + nameToSlug(name) + '.png';
+      const localUrl = './photos/' + nameToSlug(name) + '.png';
       const mapUrl   = PHOTO_MAP[name];
       const img = document.createElement('img');
       img.alt = name;
@@ -20811,7 +20811,7 @@ function openFighter(name, division, record, rank, initials, country) {
         avatarEl.style.padding = '0';
       };
       img.onerror = () => {
-        if (mapUrl && img.src.indexOf('data/photos') !== -1) {
+        if (mapUrl && img.src.indexOf('./photos') !== -1) {
           img.src = mapUrl; // fall back to PHOTO_MAP
         }
       };
@@ -21478,8 +21478,8 @@ function openFighter(name, division, record, rank, initials, country) {
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
-        photo1: red.fighterSlug  ? './data/photos/' + red.fighterSlug  + '.png' : '',
-        photo2: blue.fighterSlug ? './data/photos/' + blue.fighterSlug + '.png' : '',
+        photo1: red.fighterSlug  ? './photos/' + red.fighterSlug  + '.png' : '',
+        photo2: blue.fighterSlug ? './photos/' + blue.fighterSlug + '.png' : '',
         label, isMain, isMainCard,
       };
     });
