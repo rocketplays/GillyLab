@@ -20524,43 +20524,25 @@ function openFighter(name, division, record, rank, initials, country) {
  };
 
   async function fetchFighterPhoto(name) {
- // Hardcoded Wikimedia thumbnail URLs — works locally & live
- // PHOTO_MAP is global
  const imgEl = document.getElementById('f-avatar-img');
  const wrap = document.getElementById('f-avatar-wrap');
- // Check hardcoded map first
- if (PHOTO_MAP[
-    { date: "Apr 25, 2026", opponent: "Youssef Zalal", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal (FW)" },
-    { date: "Aug 23, 2025", opponent: "Brian Ortega", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang (FW catchweight)" },
-    { date: "Dec 7, 2024", opponent: "Movsar Evloev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 310: Pantoja vs. Asakura (FW)" },
-    { date: "Apr 13, 2024", opponent: "Calvin Kattar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 300: Pereira vs. Hill (FW debut)" },
-    { date: "Aug 19, 2023", opponent: "Sean O'Malley", result: "L", method: "KO (Punches)", round: 2, time: "0:51", event: "UFC 292: Sterling vs. O'Malley (BW Title)" },
-    { date: "May 6, 2023", opponent: "Henry Cejudo", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 288: Sterling vs. Cejudo (BW Title)" },
-    { date: "Oct 22, 2022", opponent: "T.J. Dillashaw", result: "W", method: "TKO (Punches)", round: 2, time: "3:44", event: "UFC Fight Night: Sterling vs. Dillashaw (BW Title)" },
-    { date: "Apr 9, 2022", opponent: "Petr Yan", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 273: Volkanovski vs. Korean Zombie (BW Title)" },
-    { date: "Mar 6, 2021", opponent: "Petr Yan", result: "W", method: "DQ (Illegal Knee)", round: 4, time: "4:29", event: "UFC 259: Blachowicz vs. Adesanya (BW Title)" },
-    { date: "Oct 17, 2020", opponent: "Cory Sandhagen", result: "W", method: "Sub (RNC)", round: 5, time: "1:28", event: "UFC Fight Night: Ortega vs. Korean Zombie (interim BW Title)" },
-    { date: "Jun 6, 2020", opponent: "Pedro Munhoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 250: Nunes vs. Spencer" },
-    { date: "Oct 5, 2019", opponent: "Brett Johns", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Reyes vs. Weidman" },
-    { date: "Apr 27, 2019", opponent: "Jimmie Rivera", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Jacare vs. Hermansson" },
-    { date: "Nov 3, 2018", opponent: "Cody Stamann", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 230: Cormier vs. Lewis" },
-    { date: "Jun 9, 2018", opponent: "Bryan Caraway", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 225: Whittaker vs. Romero 2" },
-    { date: "Feb 3, 2018", opponent: "Renan Barao", result: "W", method: "Sub (RNC)", round: 2, time: "3:47", event: "UFC 221: Romero vs. Rockhold" },
-    { date: "Aug 27, 2016", opponent: "Takeya Mizugaki", result: "W", method: "Sub (RNC)", round: 2, time: "1:36", event: "UFC Fight Night: Arlovski vs. Barnett" },
-    { date: "Apr 23, 2016", opponent: "Johnny Eduardo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 197: Jones vs. Saint Preux" },
-    { date: "Dec 19, 2015", opponent: "Rani Yahya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Henderson vs. Brunson" },
-    { date: "May 23, 2015", opponent: "Michinori Tanaka", result: "W", method: "Sub (RNC)", round: 2, time: "3:22", event: "UFC Fight Night: Miocic vs. Hunt" },
-    { date: "Jan 3, 2015", opponent: "Cody Gibson", result: "W", method: "Sub (RNC)", round: 1, time: "2:02", event: "UFC 182: Jones vs. Cormier" },
-    { date: "Aug 30, 2014", opponent: "Augusto Mendes", result: "W", method: "Sub (RNC)", round: 1, time: "0:52", event: "UFC 177: Dillashaw vs. Barao 2" },
-    { date: "Jun 28, 2014", opponent: "Hugo Viana", result: "W", method: "Sub (RNC)", round: 2, time: "1:17", event: "UFC 175: Weidman vs. Machida (debut)" },
-    { date: "Mar 28, 2014", opponent: "Chase Jackson", result: "W", method: "Sub (Triangle)", round: 1, time: "3:44", event: "Bellator 115" },
-    { date: "Jan 24, 2014", opponent: "Mark Dickman", result: "W", method: "Sub (RNC)", round: 1, time: "0:45", event: "Bellator 109" },
-    { date: "Nov 1, 2013", opponent: "Marcos Galvao", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 104" },
-    { date: "Aug 30, 2013", opponent: "Eduardo Dantas", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Bellator 98 (BW Title)" },
-    { date: "May 3, 2013", opponent: "Alexis Vila", result: "W", method: "Sub (RNC)", round: 2, time: "3:12", event: "Bellator 91" },
-    { date: "Feb 22, 2014", opponent: "Marlon Moraes", result: "L", method: "KO (Punches)", round: 1, time: "2:09", event: "CFFC 36" },
-    { date: "Sep 28, 2013", opponent: "Raphael Assuncao", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 49" }
-  ]) {
+ // Try local /photos/ first (same source as fight card)
+ const localUrl = './photos/' + nameToSlug(name) + '.png';
+ imgEl.onload = () => {
+   imgEl.style.display = 'block';
+   document.getElementById('f-avatar-initials').style.display = 'none';
+   wrap.classList.add('has-photo');
+ };
+ imgEl.onerror = () => {
+   imgEl.style.display = 'none';
+   wrap.classList.remove('has-photo');
+   fetchFighterPhotoFallback(name, imgEl, wrap);
+ };
+ imgEl.src = localUrl;
+ }
+ async function fetchFighterPhotoFallback(name, imgEl, wrap) {
+ // PHOTO_MAP is global
+ if (PHOTO_MAP[name]) {
  imgEl.src = PHOTO_MAP[name];
  imgEl.onload = () => {
  imgEl.style.display = 'block';
