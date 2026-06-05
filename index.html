@@ -20783,23 +20783,36 @@ function openFighter(name, division, record, rank, initials, country) {
  });
 
 
+  function nameToSlug(name) {
+    return name.toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  }
+
   function loadHomePagePhotos() {
     document.querySelectorAll('.fight-row .fighter-cell').forEach(cell => {
-      const nameEl = cell.querySelector('.fighter-name');
+      const nameEl   = cell.querySelector('.fighter-name');
       const avatarEl = cell.querySelector('.fighter-avatar');
       if (!nameEl || !avatarEl) return;
-      const name = nameEl.textContent.trim();
-      const url = PHOTO_MAP[name];
-      if (!url) return;
+      const name     = nameEl.textContent.trim();
+      const localUrl = './data/photos/' + nameToSlug(name) + '.png';
+      const mapUrl   = PHOTO_MAP[name];
       const img = document.createElement('img');
       img.alt = name;
-      img.src = url;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;';
       img.onload = () => {
         avatarEl.innerHTML = '';
         avatarEl.appendChild(img);
+        avatarEl.classList.add('has-photo');
         avatarEl.style.border = '2px solid var(--accent)';
         avatarEl.style.padding = '0';
       };
+      img.onerror = () => {
+        if (mapUrl && img.src.indexOf('data/photos') !== -1) {
+          img.src = mapUrl; // fall back to PHOTO_MAP
+        }
+      };
+      img.src = localUrl;
     });
   }
 

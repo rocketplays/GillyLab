@@ -33,11 +33,33 @@ jobs:
             -o data/event.json
           echo "Events fetched — $(wc -c < data/event.json) bytes"
 
+      - name: Download fighter photos
+        run: |
+          mkdir -p data/photos
+          jq -r '.data[].bouts[].fighters[] | select(.fighterSlug != null and .imageUrl != null) | "\(.fighterSlug)\t\(.imageUrl)"' data/event.json 2>/dev/null | \
+          sort -u | \
+          while IFS=$'\t' read -r slug imageUrl; do
+            [ "$imageUrl" = "null" ] && continue
+            target="data/photos/${slug}.png"
+            [ -f "$target" ] && echo "Cached: $slug" && continue
+            http_code=$(curl -sf --max-time 15 \
+              -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+              -H "Referer: https://www.ufc.com/" \
+              -o "$target" -w "%{http_code}" "$imageUrl" 2>/dev/null)
+            if [ "$http_code" = "200" ]; then
+              echo "Downloaded: $slug"
+            else
+              rm -f "$target"
+              echo "Failed ($http_code): $slug"
+            fi
+          done
+          echo "Photos cached: $(ls data/photos/ | wc -l)"
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/event.json
+          git add data/odds.json data/event.json data/photos/
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
