@@ -21123,7 +21123,7 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      // Build UFC name set first so we can find the best matching date
+      // Build UFC name set first
       const ufcNames = new Set();
       if (evt.fights && evt.fights.length) {
         evt.fights.forEach(f => {
@@ -21131,33 +21131,35 @@ function openFighter(name, division, record, rank, initials, country) {
           if (f.f2) ufcNames.add(f.f2.split(' ').pop().toLowerCase());
         });
       }
-      // Find the date with the most UFC fighter matches (prefer that over raw fight count)
-      let target;
+      let fights;
       if (ufcNames.size > 0) {
-        let bestDate = null, bestCount = 0;
-        dates.filter(d => d >= today).forEach(d => {
-          const count = (byDate[d] || []).filter(f => {
-            const n1 = f.home_team.split(' ').pop().toLowerCase();
-            const n2 = f.away_team.split(' ').pop().toLowerCase();
-            return ufcNames.has(n1) || ufcNames.has(n2);
-          }).length;
-          if (count > bestCount) { bestCount = count; bestDate = d; }
-        });
-        target = bestDate || dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-      } else {
-        target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-      }
-      let fights = byDate[target] || [];
-      if (!fights.length) throw new Error('no fights');
-      // Filter to just the UFC fighters
-      if (ufcNames.size > 0) {
-        const filtered = fights.filter(f => {
+        // Find the earliest upcoming date that has any UFC match, then collect all
+        // UFC-matching fights within a 3-day window (Odds API often lists prelims 1 day early)
+        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
           const n1 = f.home_team.split(' ').pop().toLowerCase();
           const n2 = f.away_team.split(' ').pop().toLowerCase();
           return ufcNames.has(n1) || ufcNames.has(n2);
-        });
-        if (filtered.length >= 1) fights = filtered;
+        }));
+        if (firstUfcDate) {
+          const windowEnd = new Date(firstUfcDate);
+          windowEnd.setDate(windowEnd.getDate() + 2);
+          const windowEndStr = windowEnd.toISOString().split('T')[0];
+          fights = [];
+          dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
+            (byDate[d] || []).forEach(f => {
+              const n1 = f.home_team.split(' ').pop().toLowerCase();
+              const n2 = f.away_team.split(' ').pop().toLowerCase();
+              if (ufcNames.has(n1) || ufcNames.has(n2)) fights.push(f);
+            });
+          });
+        } else {
+          fights = byDate[dates.find(d => d >= today) || dates[dates.length - 1]] || [];
+        }
+      } else {
+        const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
+        fights = byDate[target] || [];
       }
+      if (!fights.length) throw new Error('no fights');
 
       const cards = fights.map(fight => {
         const pcts = noVigPcts(fight);
@@ -21351,7 +21353,7 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      // Build UFC name set first so we can find the best matching date
+      // Build UFC name set first
       const ufcNames = new Set();
       if (evt.fights && evt.fights.length) {
         evt.fights.forEach(f => {
@@ -21359,33 +21361,35 @@ function openFighter(name, division, record, rank, initials, country) {
           if (f.f2) ufcNames.add(f.f2.split(' ').pop().toLowerCase());
         });
       }
-      // Find the date with the most UFC fighter matches
-      let target;
+      let fights;
       if (ufcNames.size > 0) {
-        let bestDate = null, bestCount = 0;
-        dates.filter(d => d >= today).forEach(d => {
-          const count = (byDate[d] || []).filter(f => {
-            const n1 = f.home_team.split(' ').pop().toLowerCase();
-            const n2 = f.away_team.split(' ').pop().toLowerCase();
-            return ufcNames.has(n1) || ufcNames.has(n2);
-          }).length;
-          if (count > bestCount) { bestCount = count; bestDate = d; }
-        });
-        target = bestDate || dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-      } else {
-        target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-      }
-      let fights = byDate[target] || [];
-      if (!fights.length) throw new Error('no fights');
-      // Filter to just the UFC fighters
-      if (ufcNames.size > 0) {
-        const filtered = fights.filter(f => {
+        // Find earliest upcoming date with any UFC match, then collect all
+        // UFC-matching fights within a 3-day window (Odds API often lists prelims 1 day early)
+        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
           const n1 = f.home_team.split(' ').pop().toLowerCase();
           const n2 = f.away_team.split(' ').pop().toLowerCase();
           return ufcNames.has(n1) || ufcNames.has(n2);
-        });
-        if (filtered.length >= 1) fights = filtered;
+        }));
+        if (firstUfcDate) {
+          const windowEnd = new Date(firstUfcDate);
+          windowEnd.setDate(windowEnd.getDate() + 2);
+          const windowEndStr = windowEnd.toISOString().split('T')[0];
+          fights = [];
+          dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
+            (byDate[d] || []).forEach(f => {
+              const n1 = f.home_team.split(' ').pop().toLowerCase();
+              const n2 = f.away_team.split(' ').pop().toLowerCase();
+              if (ufcNames.has(n1) || ufcNames.has(n2)) fights.push(f);
+            });
+          });
+        } else {
+          fights = byDate[dates.find(d => d >= today) || dates[dates.length - 1]] || [];
+        }
+      } else {
+        const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
+        fights = byDate[target] || [];
       }
+      if (!fights.length) throw new Error('no fights');
       container.innerHTML = renderOddsHTML(fights);
     } catch(e) {
       container.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--muted);">
