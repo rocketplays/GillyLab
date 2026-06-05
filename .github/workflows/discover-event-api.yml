@@ -11,6 +11,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch UFC events
         run: |
+          mkdir -p data
           curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?status=upcoming" -o data/event-sample.json
           curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/rankings" -o data/rankings-sample.json
           cat data/event-sample.json
