@@ -20734,7 +20734,6 @@ function openFighter(name, division, record, rank, initials, country) {
  }
  function resetTimer() {
  clearInterval(autoTimer);
- autoTimer = setInterval(() => goTo(current + 1), 6000);
  }
  window.carouselNext = () => goTo(current + 1);
  window.carouselPrev = () => goTo(current - 1);
@@ -21012,15 +21011,19 @@ function openFighter(name, division, record, rank, initials, country) {
       function fightRow(f) {
         const cls = f.isMain ? 'fight-row main-event' : 'fight-row';
         const { weight, rounds } = parseLabel(f.label);
-        function ava(photo, ini) {
+        function ava(photo, ini, name) {
           if (!photo) return '<div class="fighter-avatar">' + ini + '</div>';
+          const fallback = name ? './photos/' + nameToSlug(name) + '.png' : '';
+          const onerr = (fallback && fallback !== photo)
+            ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';}'
+            : 'this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';';
           return '<div class="fighter-avatar has-photo" style="border:2px solid var(--accent);padding:0;overflow:hidden;">' +
-            '<img src="' + photo + '" alt="' + ini + '" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;" onerror="this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';">' +
+            '<img src="' + photo + '" alt="' + ini + '" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;" onerror="' + onerr + '">' +
           '</div>';
         }
         return '<div class="' + cls + '">' +
           '<div class="fighter-cell" onclick="openFighter(\'' + f.f1 + '\',\'' + f.div1 + '\',\'' + f.rec1 + '\',\'' + f.r1 + '\',\'' + f.ini1 + '\')" style="cursor:pointer;">' +
-            ava(f.photo1, f.ini1) +
+            ava(f.photo1, f.ini1, f.f1) +
             '<div style="min-width:0;flex:1;">' +
               '<div class="fighter-rank">' + f.r1 + '</div>' +
               '<div class="fighter-name">' + f.f1 + '</div>' +
@@ -21038,7 +21041,7 @@ function openFighter(name, division, record, rank, initials, country) {
               '<div class="fighter-name">' + f.f2 + '</div>' +
               '<div class="fighter-record">' + f.rec2 + '</div>' +
             '</div>' +
-            ava(f.photo2, f.ini2) +
+            ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
         '</div>';
       }
@@ -21500,8 +21503,9 @@ function openFighter(name, division, record, rank, initials, country) {
       const blue = (bout.fighters || []).find(f => f.corner === 'blue') || bout.fighters[1] || {};
       const wc = translateWeightClass(bout.weightClass || '');
       const isTitle = bout.titleBout;
-      const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : ' · 3 Rounds');
       const isMain = bout.boutOrder === mainBoutOrder;
+      const fiveRounds = isTitle || isMain || bout.numberOfRounds >= 5;
+      const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : fiveRounds ? ' · 5 Rounds' : ' · 3 Rounds');
       const isMainCard = (bout.cardSection || '').toLowerCase().includes('main');
       const r1 = red.rankText  ? '#' + red.rankText  : '';
       const r2 = blue.rankText ? '#' + blue.rankText : '';
@@ -21589,11 +21593,13 @@ function openFighter(name, division, record, rank, initials, country) {
     );
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const upcoming = rawEvents.filter(e => {
+    const allUpcoming = rawEvents.filter(e => {
       const d = new Date(e.startsAt);
       const expiry = new Date(d); expiry.setDate(expiry.getDate() + 1);
       return expiry >= today;
     });
+    // Skip the soonest event — it's already shown in the fight card above
+    const upcoming = allUpcoming.slice(1);
     if (!upcoming.length) return;
 
     const eventsForCarousel = [];
