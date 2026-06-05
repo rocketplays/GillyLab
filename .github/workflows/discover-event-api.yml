@@ -12,9 +12,10 @@ jobs:
       - name: Fetch UFC events
         run: |
           mkdir -p data
-          curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?status=upcoming" -o data/event-sample.json
-          curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/rankings" -o data/rankings-sample.json
-          cat data/event-sample.json
+          echo "=== No filter ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?limit=3" | tee data/event-sample.json
+          echo "=== With bouts ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?limit=3&includeBouts=true" | tee data/event-bouts-sample.json
+          echo "=== Scheduled ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?status=scheduled&limit=3"
+          echo "=== Rankings ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/rankings" | tee data/rankings-sample.json
       - name: Commit samples
         run: |
           git config user.name "github-actions[bot]"
