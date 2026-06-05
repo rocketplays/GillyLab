@@ -12,11 +12,9 @@ jobs:
       - name: Fetch UFC events
         run: |
           mkdir -p data
-          echo "=== No filter ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?limit=3" | tee data/event-sample.json
-          echo "=== With bouts ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?limit=3&includeBouts=true" | tee data/event-bouts-sample.json
-          echo "=== Scheduled ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?status=scheduled&limit=3"
+          echo "=== Future events ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events?from=2026-06-01&includeBouts=true&limit=3" | tee data/event-sample.json
+          echo "=== Belgrade event ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/events/ufc_fight_night_belgrade_26702?includeBouts=true"
           echo "=== Rankings ===" && curl -sf -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" "https://api.citoapi.com/api/v1/ufc/rankings" | tee data/rankings-sample.json
-      - name: Commit samples
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
