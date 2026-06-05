@@ -1,0 +1,43 @@
+name: Update UFC Odds
+
+on:
+  schedule:
+    - cron: '0 12 * * *'   # 8:00 AM ET (EDT / UTC-4)
+    - cron: '0 0 * * *'    # 8:00 PM ET (EDT / UTC-4)
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  update-odds:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch odds from The Odds API
+        run: |
+          mkdir -p data
+          curl -sf \
+            "https://api.the-odds-api.com/v4/sports/mma_mixed_martial_arts/odds/?apiKey=${{ secrets.ODDS_API_KEY }}&regions=us&markets=h2h,totals&oddsFormat=american" \
+            -o data/odds.json
+          echo "Odds fetched — $(wc -c < data/odds.json) bytes"
+
+      - name: Fetch upcoming UFC events from Cito API
+        run: |
+          TODAY=$(date -u '+%Y-%m-%d')
+          curl -sf \
+            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/events?from=${TODAY}&includeBouts=true&limit=20" \
+            -o data/event.json
+          echo "Events fetched — $(wc -c < data/event.json) bytes"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/odds.json data/event.json
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
