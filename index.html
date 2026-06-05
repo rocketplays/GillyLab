@@ -1355,6 +1355,20 @@
         border:1px solid rgba(255,255,255,0.2) !important;
       }
       .freedom-card .fighter-avatar { border-color:rgba(255,255,255,0.3) !important; }
+      .freedom-flag-wrap {
+        display:inline-block; vertical-align:middle;
+        margin-right:0.5rem; flex-shrink:0;
+        animation: flag-wave 2.2s ease-in-out infinite;
+        transform-origin: left center;
+        filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+      }
+      @keyframes flag-wave {
+        0%,100% { transform: perspective(120px) rotateY(0deg)   skewY(0deg);   }
+        20%     { transform: perspective(120px) rotateY(-14deg) skewY(1.5deg); }
+        50%     { transform: perspective(120px) rotateY(6deg)   skewY(-0.8deg);}
+        80%     { transform: perspective(120px) rotateY(-10deg) skewY(1deg);   }
+      }
+      .freedom-card .event-name { display:flex; align-items:center; flex-wrap:wrap; gap:0.25rem; }
 </style>
 </head>
 <body>
@@ -21583,11 +21597,25 @@ function openFighter(name, division, record, rank, initials, country) {
 
       const isFreedom = (evt.name || '').toLowerCase().includes('freedom') || (evt.slug || '').toLowerCase().includes('freedom');
       const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : '');
+      const flagSVG = isFreedom ? '<span class="freedom-flag-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 26" width="44" height="26" style="display:block;border-radius:2px;">' +
+        '<rect width="44" height="2" y="0" fill="#B22234"/><rect width="44" height="2" y="2" fill="#fff"/>' +
+        '<rect width="44" height="2" y="4" fill="#B22234"/><rect width="44" height="2" y="6" fill="#fff"/>' +
+        '<rect width="44" height="2" y="8" fill="#B22234"/><rect width="44" height="2" y="10" fill="#fff"/>' +
+        '<rect width="44" height="2" y="12" fill="#B22234"/><rect width="44" height="2" y="14" fill="#fff"/>' +
+        '<rect width="44" height="2" y="16" fill="#B22234"/><rect width="44" height="2" y="18" fill="#fff"/>' +
+        '<rect width="44" height="2" y="20" fill="#B22234"/><rect width="44" height="2" y="22" fill="#fff"/>' +
+        '<rect width="44" height="2" y="24" fill="#B22234"/>' +
+        '<rect width="18" height="14" fill="#3C3B6E"/>' +
+        '<text x="1.5" y="4.5" fill="white" font-size="3.8" font-family="serif" letter-spacing="1.8">★★★★★</text>' +
+        '<text x="3"   y="7.8" fill="white" font-size="3.8" font-family="serif" letter-spacing="1.8">★★★★</text>' +
+        '<text x="1.5" y="11"  fill="white" font-size="3.8" font-family="serif" letter-spacing="1.8">★★★★★</text>' +
+        '<text x="3"   y="13.8" fill="white" font-size="3.8" font-family="serif" letter-spacing="1.8">★★★★</text>' +
+        '</svg></span>' : '';
       return '<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
         '<div style="max-width:1300px;margin:0 auto;">' +
           '<div class="event-header">' +
             '<div class="event-info">' +
-              '<div class="event-name">' + evt.name + '</div>' +
+              '<div class="event-name">' + flagSVG + evt.name + '</div>' +
               '<div class="event-details">' + (evt.details || '') + '</div>' +
             '</div>' +
             '<div class="event-countdown">' +
