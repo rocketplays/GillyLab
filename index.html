@@ -21162,6 +21162,25 @@ function openFighter(name, division, record, rank, initials, country) {
         fights = byDate[target] || [];
       }
       if (!fights.length) throw new Error('no fights');
+      // Sort fights to match evt.fights bout order
+      if (evt.fights && evt.fights.length) {
+        const orderMap = {};
+        evt.fights.forEach((f, i) => {
+          if (f.f1) orderMap[f.f1.split(' ').pop().toLowerCase()] = i;
+          if (f.f2) orderMap[f.f2.split(' ').pop().toLowerCase()] = i;
+        });
+        fights = fights.slice().sort((a, b) => {
+          const ia = Math.min(
+            orderMap[a.home_team.split(' ').pop().toLowerCase()] ?? 999,
+            orderMap[a.away_team.split(' ').pop().toLowerCase()] ?? 999
+          );
+          const ib = Math.min(
+            orderMap[b.home_team.split(' ').pop().toLowerCase()] ?? 999,
+            orderMap[b.away_team.split(' ').pop().toLowerCase()] ?? 999
+          );
+          return ia - ib;
+        });
+      }
 
       const cards = fights.map(fight => {
         const pcts = noVigPcts(fight);
@@ -21392,6 +21411,25 @@ function openFighter(name, division, record, rank, initials, country) {
         fights = byDate[target] || [];
       }
       if (!fights.length) throw new Error('no fights');
+      // Sort fights to match evt.fights bout order
+      if (evt.fights && evt.fights.length) {
+        const orderMap = {};
+        evt.fights.forEach((f, i) => {
+          if (f.f1) orderMap[f.f1.split(' ').pop().toLowerCase()] = i;
+          if (f.f2) orderMap[f.f2.split(' ').pop().toLowerCase()] = i;
+        });
+        fights = fights.slice().sort((a, b) => {
+          const ia = Math.min(
+            orderMap[a.home_team.split(' ').pop().toLowerCase()] ?? 999,
+            orderMap[a.away_team.split(' ').pop().toLowerCase()] ?? 999
+          );
+          const ib = Math.min(
+            orderMap[b.home_team.split(' ').pop().toLowerCase()] ?? 999,
+            orderMap[b.away_team.split(' ').pop().toLowerCase()] ?? 999
+          );
+          return ia - ib;
+        });
+      }
       container.innerHTML = renderOddsHTML(fights);
     } catch(e) {
       container.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--muted);">
@@ -21456,7 +21494,6 @@ function openFighter(name, division, record, rank, initials, country) {
       : '';
     const venue = [rawEvt.venue, rawEvt.city].filter(Boolean).join(' · ');
     const bouts = (rawEvt.bouts || []).slice().sort((a, b) => a.boutOrder - b.boutOrder);
-    const maxSection = bouts.length ? Math.max(...bouts.map(b => b.cardSectionOrder || 0)) : 0;
     const mainBoutOrder = bouts.length ? Math.min(...bouts.map(b => b.boutOrder)) : 1;
     const fights = bouts.map(bout => {
       const red  = (bout.fighters || []).find(f => f.corner === 'red')  || bout.fighters[0] || {};
@@ -21465,7 +21502,7 @@ function openFighter(name, division, record, rank, initials, country) {
       const isTitle = bout.titleBout;
       const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : ' · 3 Rounds');
       const isMain = bout.boutOrder === mainBoutOrder;
-      const isMainCard = (bout.cardSectionOrder || 0) === maxSection;
+      const isMainCard = (bout.cardSection || '').toLowerCase().includes('main');
       const r1 = red.rankText  ? '#' + red.rankText  : '';
       const r2 = blue.rankText ? '#' + blue.rankText : '';
       return {
