@@ -1,0 +1,49 @@
+name: Discover Event API Format
+
+on:
+  workflow_dispatch:   # manual trigger only — run once to inspect response shape
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch upcoming UFC events
+        run: |
+          curl -sf \
+            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/events?status=upcoming" \
+            -o data/event-sample.json || \
+          curl -sf \
+            -H "Authorization: Bearer ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/events?status=upcoming" \
+            -o data/event-sample.json
+          echo "Response saved — $(wc -c < data/event-sample.json) bytes"
+          echo "Preview:" && head -c 2000 data/event-sample.json
+
+      - name: Also fetch rankings
+        run: |
+          curl -sf \
+            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/rankings" \
+            -o data/rankings-sample.json || \
+          curl -sf \
+            -H "Authorization: Bearer ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/rankings" \
+            -o data/rankings-sample.json
+          echo "Rankings saved — $(wc -c < data/rankings-sample.json) bytes"
+          echo "Preview:" && head -c 2000 data/rankings-sample.json
+
+      - name: Commit samples so we can inspect them
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/event-sample.json data/rankings-sample.json
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore: save API discovery samples"
+          git push
