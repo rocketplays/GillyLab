@@ -913,6 +913,34 @@
       color: var(--accent);
     }
 
+    .proj-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .proj-fighter.right .proj-name-row { justify-content: flex-end; }
+
+    .proj-avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .proj-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 50%;
+      display: block;
+    }
+
     .proj-pct {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -20790,6 +20818,33 @@ function openFighter(name, division, record, rank, initials, country) {
     });
   }
 
+  // Same local-photo-first / PHOTO_MAP-fallback approach as
+  // loadHomePagePhotos(), but for the small circular avatars rendered next
+  // to each fighter's name on the Win Projections page (.proj-avatar). The
+  // name is carried on a data-fighter attribute rather than read from a
+  // sibling .fighter-name element, since the projections markup doesn't
+  // share the .fight-row/.fighter-cell structure.
+  function loadProjectionPhotos() {
+    document.querySelectorAll('#dynamic-projections .proj-avatar').forEach(cell => {
+      const name = cell.getAttribute('data-fighter');
+      if (!name || cell.querySelector('img')) return;
+      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const mapUrl   = PHOTO_MAP[name];
+      const img = document.createElement('img');
+      img.alt = name;
+      img.onload = () => {
+        cell.innerHTML = '';
+        cell.appendChild(img);
+      };
+      img.onerror = () => {
+        if (mapUrl && img.src.indexOf('./photos') !== -1) {
+          img.src = mapUrl; // fall back to PHOTO_MAP
+        }
+      };
+      img.src = localUrl;
+    });
+  }
+
   function openFighterByName(name) {
     const f = FIGHTERS.find(f => f.name === name);
     if (f) openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
@@ -21359,11 +21414,13 @@ function openFighter(name, division, record, rank, initials, country) {
           ef.f1.toLowerCase().includes(n2) || ef.f2.toLowerCase().includes(n2)
         );
         const label = evtFight ? evtFight.label : '';
+        const n1Esc = String(fight.home_team).replace(/"/g, '&quot;');
+        const n2Esc = String(fight.away_team).replace(/"/g, '&quot;');
         return `<div class="projection-card">
           <div class="projection-fighters">
-            <div class="proj-fighter"><div class="proj-name">${fight.home_team}</div><div class="proj-pct">${pcts.pct1}%</div></div>
+            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${fight.home_team}</div></div><div class="proj-pct">${pcts.pct1}%</div></div>
             <div class="proj-vs-label">VS</div>
-            <div class="proj-fighter" style="text-align:right;"><div class="proj-name" style="text-align:right;">${fight.away_team}</div><div class="proj-pct right-fighter" style="text-align:right;">${pcts.pct2}%</div></div>
+            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${fight.away_team}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${pcts.pct2}%</div></div>
           </div>
           <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${pcts.pct1}%"></div><div class="proj-bar-right"></div></div>
           <div class="proj-weight">${label}</div>
@@ -21377,22 +21434,28 @@ function openFighter(name, division, record, rank, initials, country) {
         `<div style="margin-top:0.5rem;padding:0.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:0.75rem;color:var(--muted);letter-spacing:0.05em;">
           ↻ No-vig win probability · Consensus across all books · Auto-updated twice daily
         </div>`;
+      loadProjectionPhotos();
 
     } catch(e) {
       // Fallback: use manual projections if available
       if (evt.projections) {
-        const html = evt.projections.map(p => `
+        const html = evt.projections.map(p => {
+          const f1Esc = String(p.f1).replace(/"/g, '&quot;');
+          const f2Esc = String(p.f2).replace(/"/g, '&quot;');
+          return `
           <div class="projection-card">
             <div class="projection-fighters">
-              <div class="proj-fighter"><div class="proj-name">${p.f1}</div><div class="proj-pct">${p.pct1}%</div></div>
+              <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${f1Esc}"></div><div class="proj-name">${p.f1}</div></div><div class="proj-pct">${p.pct1}%</div></div>
               <div class="proj-vs-label">VS</div>
-              <div class="proj-fighter" style="text-align:right;"><div class="proj-name" style="text-align:right;">${p.f2}</div><div class="proj-pct right-fighter" style="text-align:right;">${p.pct2}%</div></div>
+              <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${p.f2}</div><div class="proj-avatar" data-fighter="${f2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${p.pct2}%</div></div>
             </div>
             <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${p.pct1}%"></div><div class="proj-bar-right"></div></div>
             <div class="proj-weight">${p.label}</div>
-          </div>`).join('');
+          </div>`;
+        }).join('');
         container.className = 'projections-grid';
         container.innerHTML = html;
+        loadProjectionPhotos();
       } else {
         container.className = '';
         container.innerHTML = `
