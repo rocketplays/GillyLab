@@ -24,6 +24,9 @@ jobs:
             -o data/odds.json
           echo "Odds fetched — $(wc -c < data/odds.json) bytes"
 
+      - name: Update odds line-movement history
+        run: node scripts/update-odds-history.js
+
       - name: Fetch upcoming UFC events from Cito API
         run: |
           TODAY=$(date -u '+%Y-%m-%d')
@@ -62,7 +65,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/event.json data/photos/
+          git add data/odds.json data/odds-history.json data/event.json data/photos/
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push

@@ -21467,7 +21467,85 @@ function openFighter(name, division, record, rank, initials, country) {
     return `<table class="odds-table"><thead><tr><th>Rounds O/U</th><th>Over</th><th>Under</th></tr></thead><tbody>${body}</tbody></table>`;
   }
 
-  function renderOddsHTML(fights) {
+  // Compact inline sparkline tracing each fighter's consensus moneyline
+  // across the tracked days. Two polylines (green = home/f1, orange =
+  // away/f2) on a shared min/max-scaled axis, with open/close date labels.
+  function buildLineMovementSVG(days) {
+    const W = 480, H = 130, padL = 10, padR = 10, padT = 14, padB = 22;
+    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const n = days.length;
+    const xFor = i => (n > 1 ? padL + (i / (n - 1)) * innerW : padL + innerW / 2);
+    const vals = [];
+    days.forEach(d => {
+      if (typeof d.price1 === 'number') vals.push(d.price1);
+      if (typeof d.price2 === 'number') vals.push(d.price2);
+    });
+    if (!vals.length) return '';
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const span = (max - min) || 1;
+    const yFor = v => padT + innerH - ((v - min) / span) * innerH;
+    function lineFor(key, color) {
+      const pts = [];
+      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key])]); });
+      if (pts.length < 2) return '';
+      const path = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+      const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${color}" />`).join('');
+      return `<path d="${path}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />${dots}`;
+    }
+    const firstDate = days[0] ? days[0].date : '';
+    const lastDate  = days[n - 1] ? days[n - 1].date : '';
+    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" preserveAspectRatio="xMidYMid meet">
+      <line x1="${padL}" y1="${(padT + innerH).toFixed(1)}" x2="${(padL + innerW).toFixed(1)}" y2="${(padT + innerH).toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
+      ${lineFor('price1', '#00e668')}
+      ${lineFor('price2', '#ff9500')}
+      <text x="${padL}" y="${H - 6}" font-size="9" fill="rgba(255,255,255,0.4)" font-family="monospace">${firstDate}</text>
+      <text x="${(padL + innerW).toFixed(1)}" y="${H - 6}" font-size="9" fill="rgba(255,255,255,0.4)" font-family="monospace" text-anchor="end">${lastDate}</text>
+    </svg>`;
+  }
+
+  // "Opened at X, now at Y" + sparkline trend for the matchup's consensus
+  // moneyline, sourced from data/odds-history.json (built by
+  // scripts/update-odds-history.js, run as part of the twice-daily odds
+  // refresh). historyEntry.f1/.f2 may be in a different home/away order
+  // than `fight` — detect and realign before plotting.
+  function buildLineMovementHTML(fight, historyEntry) {
+    const f1 = fight.home_team, f2 = fight.away_team;
+    const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
+    if (!historyEntry || !Array.isArray(historyEntry.days) || historyEntry.days.length < 2) {
+      return `<p style="color:var(--muted);padding:1rem 0;">Line movement will populate here as odds are tracked across multiple days — check back as fight week approaches.</p>`;
+    }
+    const sameOrder = lastNameOf(historyEntry.f1 || '').toLowerCase() === last1.toLowerCase();
+    const days = historyEntry.days.map(d => sameOrder
+      ? { date: d.date, price1: d.price1, price2: d.price2 }
+      : { date: d.date, price1: d.price2, price2: d.price1 });
+    const firstA = days.find(d => typeof d.price1 === 'number');
+    const firstB = days.find(d => typeof d.price2 === 'number');
+    const lastA  = days.slice().reverse().find(d => typeof d.price1 === 'number');
+    const lastB  = days.slice().reverse().find(d => typeof d.price2 === 'number');
+    const summaryRow = (label, key, open, close) => `<div>
+        <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">${label}</div>
+        <div style="font-size:0.92rem;display:flex;align-items:center;gap:0.4rem;">
+          <span>Opened ${open ? fmtOdds(open[key]) : 'N/A'}</span>
+          <span style="color:var(--muted);">→</span>
+          <span>Now ${close ? fmtOdds(close[key]) : 'N/A'}</span>
+        </div>
+      </div>`;
+    return `
+      <div style="display:flex;flex-wrap:wrap;gap:1.75rem;margin-bottom:1.1rem;">
+        ${summaryRow(last1, 'price1', firstA, lastA)}
+        ${summaryRow(last2, 'price2', firstB, lastB)}
+      </div>
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:1rem;">
+        ${buildLineMovementSVG(days)}
+        <div style="display:flex;gap:1.25rem;margin-top:0.6rem;font-size:0.72rem;color:var(--muted);">
+          <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#00e668;margin-right:0.4rem;vertical-align:middle;"></span>${last1}</span>
+          <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff9500;margin-right:0.4rem;vertical-align:middle;"></span>${last2}</span>
+        </div>
+      </div>
+      <div style="margin-top:0.65rem;font-size:0.72rem;color:var(--muted);">${days.length} day${days.length === 1 ? '' : 's'} tracked · consensus moneyline average across sportsbooks</div>`;
+  }
+
+  function renderOddsHTML(fights, findHistoryEntry) {
     if (!fights || !fights.length) return '';
     const btns = fights.map((f, i) => {
       const s1 = lastNameOf(f.home_team), s2 = lastNameOf(f.away_team);
@@ -21476,6 +21554,8 @@ function openFighter(name, division, record, rank, initials, country) {
     const panels = fights.map((f, i) => {
       const mlId  = `api-f${i}-ml`;
       const totId = `api-f${i}-tot`;
+      const lmId  = `api-f${i}-lm`;
+      const historyEntry = typeof findHistoryEntry === 'function' ? findHistoryEntry(f) : null;
       return `<div id="api-fight-${i}" class="fight-odds-panel"${i > 0 ? ' style="display:none;"' : ''}>
         <div class="odds-fight-header" style="margin-bottom:1rem;">
           <div class="odds-fight-label">${f.home_team} vs. ${f.away_team}</div>
@@ -21484,9 +21564,11 @@ function openFighter(name, division, record, rank, initials, country) {
         <div class="odds-prop-tabs">
           <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
+          <button class="odds-prop-btn" onclick="showProp(this,'${lmId}')">Line Movement</button>
         </div>
         <div id="${mlId}" class="odds-prop-panel">${buildMoneylineTable(f)}</div>
         <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
+        <div id="${lmId}" class="odds-prop-panel" style="display:none;">${buildLineMovementHTML(f, historyEntry)}</div>
       </div>`;
     }).join('');
     return `<div class="odds-grid">
@@ -21511,6 +21593,26 @@ function openFighter(name, division, record, rank, initials, country) {
       if (!resp.ok) throw new Error('fetch failed');
       const data = await resp.json();
       if (!Array.isArray(data) || !data.length) throw new Error('empty');
+      // Line-movement history is optional — odds.json must resolve for the
+      // page to render at all, but a missing/unfetchable history file should
+      // just mean "no movement data yet" rather than a page-level failure.
+      let oddsHistory = [];
+      try {
+        const histResp = await fetch('./data/odds-history.json');
+        if (histResp.ok) {
+          const histData = await histResp.json();
+          if (Array.isArray(histData)) oddsHistory = histData;
+        }
+      } catch (e) { /* line-movement history unavailable — proceed without it */ }
+      function findHistoryEntry(fight) {
+        const n1 = lastNameOf(fight.home_team || '').toLowerCase();
+        const n2 = lastNameOf(fight.away_team || '').toLowerCase();
+        return oddsHistory.find(e => {
+          const h1 = lastNameOf(e.f1 || '').toLowerCase();
+          const h2 = lastNameOf(e.f2 || '').toLowerCase();
+          return (h1 === n1 && h2 === n2) || (h1 === n2 && h2 === n1);
+        }) || null;
+      }
       // Group fights by date, find nearest upcoming
       const today = new Date().toISOString().split('T')[0];
       const byDate = {};
@@ -21571,7 +21673,7 @@ function openFighter(name, division, record, rank, initials, country) {
           return ia - ib;
         });
       }
-      container.innerHTML = renderOddsHTML(fights);
+      container.innerHTML = renderOddsHTML(fights, findHistoryEntry);
     } catch(e) {
       container.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--muted);">
         <div style="font-size:3rem;opacity:0.3;margin-bottom:1rem;">📋</div>
