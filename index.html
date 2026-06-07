@@ -1620,7 +1620,7 @@
 ══════════════════════════════════════ -->
 <div class="page" id="page-fighter">
   <div style="padding-top: 0.5rem;">
-    <div class="back-btn" onclick="navigate('home')">← Back to Card</div>
+    <div class="back-btn" id="fighter-back-btn" onclick="navigate(fighterReturnPage)">← Back to Card</div>
   </div>
 
   <div class="fighter-hero">
@@ -2593,7 +2593,26 @@
  document.getElementById('rank-' + divId).style.display = 'block';
  event.target.classList.add('active');
  }
+ // Remembers which page the user was on right before opening a fighter
+ // profile, so the "Back" button returns them there instead of always
+ // going home. Keyed by page id (e.g. 'home', 'projections', 'odds',
+ // 'rankings'); label text mirrors each page's nav-tab name.
+ let fighterReturnPage = 'home';
+ const FIGHTER_BACK_LABELS = {
+ home: '← Back to Card',
+ projections: '← Back to Projections',
+ odds: '← Back to Odds',
+ rankings: '← Back to Rankings',
+ };
  function navigate(page) {
+ if (page === 'fighter') {
+ const activePage = document.querySelector('.page.active');
+ if (activePage && activePage.id !== 'page-fighter') {
+ fighterReturnPage = activePage.id.replace(/^page-/, '');
+ }
+ const backBtn = document.getElementById('fighter-back-btn');
+ if (backBtn) backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
+ }
  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  if (page === 'fighter') {
