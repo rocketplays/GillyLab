@@ -20982,7 +20982,7 @@ function openFighter(name, division, record, rank, initials, country) {
         if (!label) return { weight: '', rounds: '3 RDS' };
         const rounds = label.includes('5 Round') ? '5 RDS' : '3 RDS';
         const weight = label.split('\u00b7')[0].trim()
-          .replace(' Title Fight', '').replace(' 5 Rounds', '').replace(' 3 Rounds', '');
+          .replace(' 5 Rounds', '').replace(' 3 Rounds', '');
         return { weight, rounds };
       }
 
@@ -21587,7 +21587,7 @@ function openFighter(name, division, record, rank, initials, country) {
 
     function fightRow(f) {
       const cls = f.isMain ? 'fight-row main-event' : 'fight-row';
-      const wc  = f.label ? f.label.split(' · ')[0].replace(' Title Fight', '') : '';
+      const wc  = f.label ? f.label.split(' · ')[0] : '';
       const rds = (f.label || '').includes('5 Round') ? '5 RDS' : '3 RDS';
       return '<div class="' + cls + '">' +
         '<div class="fighter-cell" onclick="openFighter(\'' + f.f1 + '\',\'' + f.div1 + '\',\'' + f.rec1 + '\',\'' + f.r1 + '\',\'' + f.ini1 + '\')" style="cursor:pointer;">' +
