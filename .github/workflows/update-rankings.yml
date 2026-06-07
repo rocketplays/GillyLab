@@ -1,0 +1,34 @@
+name: Update UFC Rankings
+
+on:
+  schedule:
+    - cron: '0 13 * * *'   # 9:00 AM ET (EDT / UTC-4) — rankings snapshots refresh ~daily
+  workflow_dispatch:        # allow manual trigger from GitHub UI
+
+jobs:
+  update-rankings:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Fetch UFC rankings from Cito API
+        run: |
+          mkdir -p data
+          curl -sf \
+            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/rankings" \
+            -o data/rankings.json
+          echo "Rankings fetched — $(wc -c < data/rankings.json) bytes"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/rankings.json
+          git diff --staged --quiet && echo "No changes" && exit 0
+          git commit -m "chore: update UFC rankings $(date -u '+%Y-%m-%d %H:%M UTC')"
+          git push
