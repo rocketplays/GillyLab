@@ -2496,7 +2496,6 @@
  { name: "Luis Felipe Dias", division: "MW", rank: "NR", record: "17-6-0", initials: "LFD", country: "Brazil" },
  { name: "Ding Meng", division: "WW", rank: "NR", record: "35-9-0", initials: "DMG", country: "China" },
  { name: "José Henrique Souza", division: "WW", rank: "NR", record: "9-3-0", initials: "JHS", country: "Brazil" },
-,
  { name: "Dricus Du Plessis", division: "MW", rank: "#2", record: "23-3-0", initials: "DDP", country: "South Africa" },
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "11-8-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "6-4-0", initials: "TG", country: "USA" },
@@ -20309,9 +20308,14 @@ function openFighter(name, division, record, rank, initials, country) {
  img.src = '';
  wrap.classList.remove('has-photo');
  document.getElementById('f-avatar-initials').style.display = '';
- const parts = record.split('-');
- document.getElementById('f-record').innerHTML =
- `<span class="w">${parts[0]}</span>-<span class="l">${parts[1]}</span>-<span class="d">${parts[2]}</span>`;
+ // Some fighters (typically newcomers/short-notice replacements) come back
+ // from the API with a null record (e.g. "null-null-null" or ""). Guard
+ // against rendering literal "undefined" — only split into W-L-D spans when
+ // the record actually looks like one; otherwise show a neutral placeholder.
+ const recMatch = /^(\d+)-(\d+)-(\d+)/.exec(record || '');
+ document.getElementById('f-record').innerHTML = recMatch
+ ? `<span class="w">${recMatch[1]}</span>-<span class="l">${recMatch[2]}</span>-<span class="d">${recMatch[3]}</span>`
+ : `<span class="d">Record unavailable</span>`;
  document.getElementById('f-meta').textContent = country || '';
  populateFighterStats(name);
  populateFightHistory(name);
@@ -21771,7 +21775,53 @@ function openFighter(name, division, record, rank, initials, country) {
   function parseRecord(recordText) {
     if (!recordText) return '';
     // "22-6-0 (W-L-D)" → "22-6-0"
-    return recordText.split(' ')[0];
+    const rec = recordText.split(' ')[0];
+    // The API occasionally returns a record shell with null fields rendered
+    // as the literal string "null-null-null" — treat that the same as missing.
+    return /^\d+-\d+-\d+/.test(rec) ? rec : '';
+  }
+
+  // Accent-insensitive name fold, e.g. "Benoît" -> "benoit". The Cito API and
+  // our hand-maintained FIGHTERS rankings list don't always agree on accents
+  // for the same fighter (API: "Benoît Saint Denis", FIGHTERS: "Benoit Saint
+  // Denis"), so exact-string lookups between the two need this normalization.
+  function foldName(name) {
+    return (name || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
+  // Manual record overrides, sourced directly (Tapology/ESPN/Wikipedia, as of
+  // Jun 2026) — used for two situations the FIGHTERS-array fallback can't
+  // cover on its own:
+  //   (a) Unranked fighters who have no FIGHTERS entry at all:
+  //       - Christian Rodriguez: 12-4-0 (fights Hyder Amil on Jun 20, 2026)
+  //       - Gilbert Urbina: 7-4-0
+  //   (b) Fighters whose FIGHTERS entries are stale/duplicated and would
+  //       otherwise resolve to an out-of-date record:
+  //       - Benoît/Benoit Saint Denis appears TWICE in FIGHTERS (13-3-1 and
+  //         15-3-0, both stale) — his current record is 17 wins / 3 losses /
+  //         1 no-contest (written here as 17-3-1 to match this site's W-L-D
+  //         convention). Update if it changes after his Jul 11, 2026 bout
+  //         vs. Paddy Pimblett.
+  // Update/remove entries here once the underlying FIGHTERS data is refreshed.
+  const RECORD_OVERRIDES = {
+    "christian rodriguez": "12-4-0",
+    "gilbert urbina": "7-4-0",
+    "benoit saint denis": "17-3-1",
+  };
+
+  // Several fighters come back from the live API with a null record (common
+  // for newcomers / short-notice additions whose profile hasn't been fully
+  // populated upstream yet). When that happens, fall back to (1) a manual
+  // entry in RECORD_OVERRIDES, or (2) the record on file in the FIGHTERS
+  // rankings list — matched accent-insensitively by name in both cases.
+  function recordFallback(fighterName) {
+    const folded = foldName(fighterName);
+    if (RECORD_OVERRIDES[folded]) return RECORD_OVERRIDES[folded];
+    // Guard `f &&` defensively: unlike filter/map, Array#find visits array
+    // holes too, so a stray comma anywhere in the hand-edited FIGHTERS literal
+    // would otherwise throw here instead of just falling through to ''.
+    const hit = FIGHTERS.find(f => f && foldName(f.name) === foldName(fighterName));
+    return hit ? hit.record : '';
   }
 
   // UFC events are scheduled in US time (the API returns UTC timestamps that
@@ -21817,8 +21867,8 @@ function openFighter(name, division, record, rank, initials, country) {
         f2:   blue.fighterName || '',
         div1: red.profile  ? (red.profile.division  || wc) : wc,
         div2: blue.profile ? (blue.profile.division || wc) : wc,
-        rec1: parseRecord(red.profile  ? red.profile.recordText  : ''),
-        rec2: parseRecord(blue.profile ? blue.profile.recordText : ''),
+        rec1: parseRecord(red.profile  ? red.profile.recordText  : '') || recordFallback(red.fighterName),
+        rec2: parseRecord(blue.profile ? blue.profile.recordText : '') || recordFallback(blue.fighterName),
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
