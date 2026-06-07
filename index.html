@@ -1424,6 +1424,11 @@
           linear-gradient(var(--surface2), var(--surface2)) padding-box,
           linear-gradient(135deg, #B22234 0%, #ffffff 50%, #3C3B6E 100%) border-box !important;
       }
+      .freedom-card .fighter-cell:hover .fighter-name {
+        background: linear-gradient(90deg, #e8192c 0%, #ffffff 45%, #4a7fcb 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
       .freedom-flag-wrap {
         display:inline-block; vertical-align:middle;
         margin-right:0.5rem; flex-shrink:0;
@@ -1487,6 +1492,9 @@
         background:
           linear-gradient(var(--surface2), var(--surface2)) padding-box,
           linear-gradient(135deg, #d4af37 0%, #fff8dc 50%, #d4af37 100%) border-box !important;
+      }
+      .numbered-card .fighter-cell:hover .fighter-name {
+        color: #d4af37 !important;
       }
       /* Lighter gold accent for the featured/top event-header (no full
          panel background — keeps the hero section clean while the fight
