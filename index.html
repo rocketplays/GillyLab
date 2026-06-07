@@ -21061,6 +21061,24 @@ function openFighter(name, division, record, rank, initials, country) {
     setTimeout(loadHomePagePhotos, 100);
   }
 
+  // Build the actual scheduled fighter-vs-fighter pairings (by last name) from
+  // the event card. The Odds API sometimes lists hypothetical/unannounced
+  // matchups for a fighter (e.g. multiple possible Pereira opponents) ahead of
+  // an official pairing — matching on a single name lets those leak through.
+  // Requiring BOTH names to match a real scheduled bout filters them out.
+  function buildBoutPairings(evtFights) {
+    const pairings = [];
+    (evtFights || []).forEach(f => {
+      if (f.f1 && f.f2) {
+        pairings.push([f.f1.split(' ').pop().toLowerCase(), f.f2.split(' ').pop().toLowerCase()]);
+      }
+    });
+    return pairings;
+  }
+  function isScheduledBout(pairings, n1, n2) {
+    return pairings.some(([a, b]) => (a === n1 && b === n2) || (a === n2 && b === n1));
+  }
+
   async function renderProjectionsPage(evt) {
     const container = document.getElementById('dynamic-projections');
     if (!container) return;
@@ -21106,22 +21124,18 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      // Build UFC name set first
-      const ufcNames = new Set();
-      if (evt.fights && evt.fights.length) {
-        evt.fights.forEach(f => {
-          if (f.f1) ufcNames.add(f.f1.split(' ').pop().toLowerCase());
-          if (f.f2) ufcNames.add(f.f2.split(' ').pop().toLowerCase());
-        });
-      }
+      // Build the set of actually-scheduled bout pairings (both fighters must
+      // match — a single shared name can be a hypothetical/unannounced odds entry)
+      const boutPairings = buildBoutPairings(evt.fights);
       let fights;
-      if (ufcNames.size > 0) {
-        // Find the earliest upcoming date that has any UFC match, then collect all
-        // UFC-matching fights within a 3-day window (Odds API often lists prelims 1 day early)
+      if (boutPairings.length > 0) {
+        // Find the earliest upcoming date that has any scheduled-bout match, then
+        // collect all matching fights within a 3-day window (Odds API often lists
+        // prelims 1 day early)
         const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
           const n1 = f.home_team.split(' ').pop().toLowerCase();
           const n2 = f.away_team.split(' ').pop().toLowerCase();
-          return ufcNames.has(n1) || ufcNames.has(n2);
+          return isScheduledBout(boutPairings, n1, n2);
         }));
         if (firstUfcDate) {
           const windowEnd = new Date(firstUfcDate);
@@ -21132,7 +21146,7 @@ function openFighter(name, division, record, rank, initials, country) {
             (byDate[d] || []).forEach(f => {
               const n1 = f.home_team.split(' ').pop().toLowerCase();
               const n2 = f.away_team.split(' ').pop().toLowerCase();
-              if (ufcNames.has(n1) || ufcNames.has(n2)) fights.push(f);
+              if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
             });
           });
         } else {
@@ -21355,22 +21369,17 @@ function openFighter(name, division, record, rank, initials, country) {
         byDate[d].push(f);
       });
       const dates  = Object.keys(byDate).sort();
-      // Build UFC name set first
-      const ufcNames = new Set();
-      if (evt.fights && evt.fights.length) {
-        evt.fights.forEach(f => {
-          if (f.f1) ufcNames.add(f.f1.split(' ').pop().toLowerCase());
-          if (f.f2) ufcNames.add(f.f2.split(' ').pop().toLowerCase());
-        });
-      }
+      // Build the set of actually-scheduled bout pairings (both fighters must
+      // match — a single shared name can be a hypothetical/unannounced odds entry)
+      const boutPairings = buildBoutPairings(evt.fights);
       let fights;
-      if (ufcNames.size > 0) {
-        // Find earliest upcoming date with any UFC match, then collect all
-        // UFC-matching fights within a 3-day window (Odds API often lists prelims 1 day early)
+      if (boutPairings.length > 0) {
+        // Find earliest upcoming date with any scheduled-bout match, then collect all
+        // matching fights within a 3-day window (Odds API often lists prelims 1 day early)
         const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
           const n1 = f.home_team.split(' ').pop().toLowerCase();
           const n2 = f.away_team.split(' ').pop().toLowerCase();
-          return ufcNames.has(n1) || ufcNames.has(n2);
+          return isScheduledBout(boutPairings, n1, n2);
         }));
         if (firstUfcDate) {
           const windowEnd = new Date(firstUfcDate);
@@ -21381,7 +21390,7 @@ function openFighter(name, division, record, rank, initials, country) {
             (byDate[d] || []).forEach(f => {
               const n1 = f.home_team.split(' ').pop().toLowerCase();
               const n2 = f.away_team.split(' ').pop().toLowerCase();
-              if (ufcNames.has(n1) || ufcNames.has(n2)) fights.push(f);
+              if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
             });
           });
         } else {
