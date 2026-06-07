@@ -20740,6 +20740,13 @@ function openFighter(name, division, record, rank, initials, country) {
       // e.g. "Michael Aswell Jr." -> michael-aswell.png, not -aswell-jr.png
       .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, '')
       .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      // Drop apostrophes (straight ' and curly ’) entirely rather than
+      // turning them into dashes — the Cito API's fighterSlug does the
+      // same, e.g. "Sean O'Malley" -> sean-omalley (not sean-o-malley) and
+      // "Lone’er Kavanagh" -> loneer-kavanagh (not lone-er-kavanagh).
+      // Without this, locally-saved photos named to match fighterSlug
+      // would never be found by the fighter-profile lookup.
+      .replace(/['’]/g, '')
       .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   }
 
