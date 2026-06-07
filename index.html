@@ -21507,18 +21507,21 @@ function openFighter(name, division, record, rank, initials, country) {
     };
   }
 
-  function buildEvtFromAPI(apiData) {
+  function pickFeaturedRawEvent(apiData) {
     const events = (apiData.data || []).slice().sort((a, b) =>
       new Date(a.startsAt) - new Date(b.startsAt)
     );
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const raw = events.find(e => new Date(e.startsAt) >= today) || events[events.length - 1];
-    return parseApiEvent(raw);
+    return events.find(e => new Date(e.startsAt) >= today) || events[events.length - 1];
+  }
+
+  function buildEvtFromAPI(apiData) {
+    return parseApiEvent(pickFeaturedRawEvent(apiData));
   }
 
 
-  function renderCarousel(apiData) {
+  function renderCarousel(apiData, featuredRaw) {
     const track = document.getElementById('carousel-track');
     if (!track) return;
 
@@ -21565,15 +21568,24 @@ function openFighter(name, division, record, rank, initials, country) {
     const rawEvents = (apiData.data || []).slice().sort((a, b) =>
       new Date(a.startsAt) - new Date(b.startsAt)
     );
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const allUpcoming = rawEvents.filter(e => {
-      const d = new Date(e.startsAt);
-      const expiry = new Date(d); expiry.setDate(expiry.getDate() + 1);
-      return expiry >= today;
-    });
-    // Skip the soonest event — it's already shown in the fight card above
-    const upcoming = allUpcoming.slice(1);
+
+    // Exclude the featured event (shown in the fight card above) and anything
+    // at or before it — the carousel should only show events coming after it.
+    // This keeps the carousel in sync as the featured card advances over time.
+    let upcoming;
+    if (featuredRaw) {
+      const featuredTime = new Date(featuredRaw.startsAt).getTime();
+      upcoming = rawEvents.filter(e => new Date(e.startsAt).getTime() > featuredTime);
+    } else {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const allUpcoming = rawEvents.filter(e => {
+        const d = new Date(e.startsAt);
+        const expiry = new Date(d); expiry.setDate(expiry.getDate() + 1);
+        return expiry >= today;
+      });
+      upcoming = allUpcoming.slice(1);
+    }
     if (!upcoming.length) return;
 
     const eventsForCarousel = [];
@@ -21633,18 +21645,20 @@ function openFighter(name, division, record, rank, initials, country) {
   async function initDynamicPages() {
     let evt = null;
     let apiData = null;
+    let featuredRaw = null;
     try {
       const resp = await fetch('./data/event.json');
       if (resp.ok) {
         apiData = await resp.json();
         if (apiData.data && apiData.data.length) {
-          evt = buildEvtFromAPI(apiData);
+          featuredRaw = pickFeaturedRawEvent(apiData);
+          evt = parseApiEvent(featuredRaw);
         }
       }
     } catch (e) { /* swallow — fall back to hardcoded */ }
 
     if (!evt) evt = getActiveEvent();
-    if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData);
+    if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
 
     renderHomeFightCard(evt);
     renderProjectionsPage(evt);
