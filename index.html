@@ -1192,6 +1192,15 @@
 
       /* ── Fight rows ── */
       .fight-card-section { padding: 0 0.75rem 1.5rem; }
+      /* The Freedom/Numbered special-card star row (.freedom-card::before /
+         .numbered-card::before) is absolutely positioned at top:0.5rem of
+         the card, and on desktop it sits inside fight-card-section's 2rem
+         top padding — clear of the "Main Card" title below it. The rule
+         above zeroes that top padding out for mobile, which lets the title
+         collide with the stars. Restore enough top padding on just the
+         first section inside these special cards so the title clears them. */
+      .freedom-card > .fight-card-section:first-child,
+      .numbered-card > .fight-card-section:first-child { padding-top: 1.85rem; }
       .fight-row         { grid-template-columns: 1fr 72px 1fr; }
       .fighter-cell      { padding: 0.7rem 0.5rem; gap: 0.35rem; }
       .fighter-avatar    { width: 36px; height: 36px; min-width: 36px; font-size: 0.65rem; flex-shrink: 0; }
