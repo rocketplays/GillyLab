@@ -1716,6 +1716,7 @@
       <div class="fighter-tab active" onclick="switchFighterTab(this, 'ftab-history')">Fight History</div>
       <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-tape')">Tape Study</div>
       <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-odds')">Odds History</div>
+      <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-accolades')">Accolades</div>
     </div>
 
     <div id="ftab-history" class="ftab-panel">
@@ -1776,6 +1777,16 @@
       <div id="fo-empty" class="empty-state">
         <div class="empty-state-icon">💰</div>
         <div class="empty-state-text">Odds history data will populate here</div>
+      </div>
+    </div>
+
+    <div id="ftab-accolades" class="ftab-panel" style="display:none;">
+      <div id="fa-list-wrap" style="display:none;">
+        <div id="fa-list"></div>
+      </div>
+      <div id="fa-empty" class="empty-state">
+        <div class="empty-state-icon">🏆</div>
+        <div class="empty-state-text">Accolades will populate here</div>
       </div>
     </div>
   </div>
@@ -20241,6 +20252,52 @@ function populateFightHistory(name) {
   });
 }
 
+// Notable career achievements per fighter — titles, awards, records, etc.
+// Keyed by fighter name; each entry is { icon, title, detail }. Sparse by
+// design (mirrors TAPE_STUDY / ODDS_HISTORY) — fighters without an entry
+// fall back to the "Accolades will populate here" empty state, ready to
+// be filled in over time.
+const ACCOLADES = {};
+
+function populateAccolades(name) {
+  const list  = document.getElementById('fa-list');
+  const wrap  = document.getElementById('fa-list-wrap');
+  const empty = document.getElementById('fa-empty');
+  if (!list) return;
+  list.innerHTML = '';
+  const items = ACCOLADES[name];
+  if (!items || items.length === 0) {
+    if (wrap) wrap.style.display = 'none';
+    if (empty) empty.style.display = '';
+    return;
+  }
+  if (wrap) wrap.style.display = '';
+  if (empty) empty.style.display = 'none';
+  items.forEach(function(a, i) {
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:flex-start;gap:0.75rem;padding:0.75rem;' +
+      (i % 2 === 1 ? 'background:rgba(255,255,255,0.02);' : '') +
+      'border-bottom:1px solid rgba(255,255,255,0.06);';
+    const iconEl = document.createElement('span');
+    iconEl.style.cssText = 'font-size:1.15rem;line-height:1.3;flex-shrink:0;';
+    iconEl.textContent = a.icon || '🏆';
+    const textWrap = document.createElement('div');
+    const titleEl = document.createElement('div');
+    titleEl.style.cssText = 'font-weight:700;color:#fff;font-size:0.86rem;letter-spacing:0.01em;';
+    titleEl.textContent = a.title || '';
+    textWrap.appendChild(titleEl);
+    if (a.detail) {
+      const detailEl = document.createElement('div');
+      detailEl.style.cssText = 'font-size:0.75rem;color:rgba(255,255,255,0.45);margin-top:0.2rem;';
+      detailEl.textContent = a.detail;
+      textWrap.appendChild(detailEl);
+    }
+    row.appendChild(iconEl);
+    row.appendChild(textWrap);
+    list.appendChild(row);
+  });
+}
+
 function openFighter(name, division, record, rank, initials, country) {
  document.getElementById('f-name').textContent = name;
  document.getElementById('f-division').textContent = division + ' · ' + rank;
@@ -20260,6 +20317,7 @@ function openFighter(name, division, record, rank, initials, country) {
  populateFightHistory(name);
  populateOddsHistory(name);
  populateTapeStudy(name);
+ populateAccolades(name);
  navigate('fighter');
  window.scrollTo({ top: 0, behavior: 'smooth' });
  // Fetch photo from Wikimedia API
