@@ -21422,7 +21422,10 @@ function openFighter(name, division, record, rank, initials, country) {
   }
 
   // ── CITO API → EVENT OBJECT ─────────────────────────────────────────────────
-  const PT_WEIGHT_CLASS = {
+  // The API mixes English with Portuguese and Spanish weight-class names
+  // depending on the event's source/locale. Translate the ones we've seen.
+  const WEIGHT_CLASS_TRANSLATIONS = {
+    // Portuguese
     'Peso Meio-Médio':        'Welterweight',
     'Peso Meio-médio':        'Welterweight',
     'Peso meio-médio':        'Welterweight',
@@ -21445,13 +21448,48 @@ function openFighter(name, division, record, rank, initials, country) {
     'Peso-galo feminino':     "Women's Bantamweight",
     'Peso-pena feminino':     "Women's Featherweight",
     'Peso-leve feminino':     "Women's Lightweight",
+    // Spanish
+    'Ligero':                 'Lightweight',
+    'Wélter':                 'Welterweight',
+    'Welter':                 'Welterweight',
+    'Mediano':                'Middleweight',
+    'Semipesado':             'Light Heavyweight',
+    'Pesado':                 'Heavyweight',
+    'Pluma':                  'Featherweight',
+    'Gallo':                  'Bantamweight',
+    'Mosca':                  'Flyweight',
+    'Paja':                   'Strawweight',
+    'Peso Pesado':            'Heavyweight',
+    'Peso Ligero':            'Lightweight',
+    'Peso Wélter':            'Welterweight',
+    'Peso Mediano':           'Middleweight',
+    'Peso Semipesado':        'Light Heavyweight',
+    'Peso Pluma':             'Featherweight',
+    'Peso Gallo':             'Bantamweight',
+    'Peso Mosca':             'Flyweight',
+    'Peso Paja':              'Strawweight',
+    'Peso Paja Femenino':     "Women's Strawweight",
+    'Peso Mosca Femenino':    "Women's Flyweight",
+    'Peso Gallo Femenino':    "Women's Bantamweight",
+    'Peso Pluma Femenino':    "Women's Featherweight",
+    'Peso Ligero Femenino':   "Women's Lightweight",
   };
+
+  // Matches any string that already contains a recognizable English division
+  // name (including compound forms like "Interim Heavyweight" or "Women's
+  // Strawweight"). Used to detect when a translation didn't take — e.g.
+  // ambiguous phrases like "Peso de la mujer" — so we can fall back to the
+  // fighters' own profile division (which is consistently English).
+  const ENGLISH_WEIGHT_CLASS_RE = /\b(?:Strawweight|Flyweight|Bantamweight|Featherweight|Lightweight|Welterweight|Middleweight|Light\s*Heavyweight|Heavyweight|Catch\s*Weight|Open\s*Weight)\b/i;
 
   function translateWeightClass(raw) {
     if (!raw) return '';
-    // strip trailing " Luta" or " Fight"
-    const cleaned = raw.replace(/\s+luta$/i, '').replace(/\s+fight$/i, '').trim();
-    return PT_WEIGHT_CLASS[cleaned] || cleaned;
+    // strip trailing qualifiers like " Bout", " Title Bout", " Fight", " Luta", " Lucha"
+    const cleaned = raw
+      .replace(/\s+(?:title\s+)?(?:bout|fight|luta|lucha)$/i, '')
+      .replace(/\s+(?:title\s+)?(?:bout|fight|luta|lucha)$/i, '')
+      .trim();
+    return WEIGHT_CLASS_TRANSLATIONS[cleaned] || cleaned;
   }
 
   function fighterInitials(name) {
@@ -21492,7 +21530,12 @@ function openFighter(name, division, record, rank, initials, country) {
     const fights = bouts.map(bout => {
       const red  = (bout.fighters || []).find(f => f.corner === 'red')  || bout.fighters[0] || {};
       const blue = (bout.fighters || []).find(f => f.corner === 'blue') || bout.fighters[1] || {};
-      const wc = translateWeightClass(bout.weightClass || '');
+      const translatedWc = translateWeightClass(bout.weightClass || '');
+      // If the bout-level weight class didn't translate to a recognized English
+      // division (e.g. ambiguous phrases like "Peso de la mujer"), fall back to
+      // the fighters' own profile division — that field is consistently English.
+      const fighterDivision = (red.profile && red.profile.division) || (blue.profile && blue.profile.division) || '';
+      const wc = ENGLISH_WEIGHT_CLASS_RE.test(translatedWc) ? translatedWc : (fighterDivision || translatedWc);
       const isTitle = bout.titleBout;
       const isMain = bout.boutOrder === mainBoutOrder;
       const fiveRounds = isTitle || isMain || bout.numberOfRounds >= 5;
