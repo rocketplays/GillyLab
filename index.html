@@ -554,6 +554,80 @@
       font-weight: 600;
     }
 
+    /* ── FIGHT ROW EXPAND/COLLAPSE (per-fight fighter snapshot) ── */
+    .fight-info-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.6rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.4rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+      margin-top: 0.15rem;
+    }
+    .fight-info-toggle:hover,
+    .fight-info-toggle.open {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .fight-details-panel {
+      max-width: 1300px;
+      margin: -0.75rem auto 0.75rem;
+      padding: 1rem 1.25rem 0.75rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+    }
+    .fd-cols {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    .fd-divider {
+      width: 1px;
+      background: var(--border);
+    }
+    .fd-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .fd-stat {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.32rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      gap: 0.75rem;
+    }
+    .fd-stat:last-child { border-bottom: none; }
+    .fd-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .fd-value {
+      font-weight: 700;
+      color: #fff;
+      font-size: 0.84rem;
+      text-align: right;
+    }
+
     /* ── FIGHTER PAGE ── */
     #page-fighter {
       display: none;
@@ -1125,6 +1199,11 @@
       .fight-vs          { font-size: 0.8rem; }
       .fight-weight      { font-size: 0.5rem; letter-spacing: 0.02em; white-space: normal; line-height: 1.2; }
       .fight-rounds      { font-size: 0.5rem; }
+      .fight-info-toggle { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
+      .fight-details-panel { padding: 0.85rem 0.85rem 0.6rem; }
+      .fd-cols           { grid-template-columns: 1fr; gap: 0.85rem; }
+      .fd-divider        { display: none; }
+      .fd-name           { white-space: normal; }
 
       /* ── Fighter profile page ── */
       .fighter-hero      { padding: 2rem 1rem 1.5rem; }
@@ -20861,6 +20940,7 @@ function openFighter(name, division, record, rank, initials, country) {
             '<div class="fight-vs">VS</div>' +
             '<div class="fight-weight">' + weight + '</div>' +
             '<div class="fight-rounds">' + rounds + '</div>' +
+            '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + f.f2 + '\',\'' + f.div2 + '\',\'' + f.rec2 + '\',\'' + f.r2 + '\',\'' + f.ini2 + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -20870,7 +20950,7 @@ function openFighter(name, division, record, rank, initials, country) {
             '</div>' +
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
-        '</div>';
+        '</div>' + fightDetailsPanelHTML(f);
       }
 
       function section(title, fights) {
@@ -20940,6 +21020,126 @@ function openFighter(name, division, record, rank, initials, country) {
   }
   function isScheduledBout(pairings, n1, n2) {
     return pairings.some(([a, b]) => (a === n1 && b === n2) || (a === n2 && b === n1));
+  }
+
+  // ── FIGHT ROW EXPAND/COLLAPSE: per-fight fighter snapshot ──────────────────
+  // Each fight row gets an "Info" toggle that reveals a panel with both
+  // fighters' name, age, height, reach, current moneyline, and last-5 form —
+  // built from the same FIGHTER_STATS / FIGHT_HISTORY / odds.json sources
+  // already powering the fighter profile and odds pages (no new data needed).
+  function escHtmlAttr(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  const FIGHT_RESULT_COLORS = { W: '#00e668', L: '#ff3d00', D: '#ffb340', NC: 'rgba(255,255,255,0.45)', DQ: '#ff3d00' };
+
+  function fighterSnapshot(name) {
+    const s = FIGHTER_STATS[name];
+    return {
+      age:    (s && s.dob) ? String(calcAge(s.dob)) : '—',
+      height: (s && s.ht)    || '—',
+      reach:  (s && s.reach) || '—',
+    };
+  }
+
+  function lastFiveFormHTML(name) {
+    const fights = (FIGHT_HISTORY[name] || []).filter(f => f.result && f.result !== '–').slice(0, 5);
+    if (!fights.length) return '<span style="color:var(--muted);font-size:0.78rem;">No data</span>';
+    return fights.map(f => {
+      const color = FIGHT_RESULT_COLORS[f.result] || 'rgba(255,255,255,0.45)';
+      return '<span style="display:inline-flex;align-items:center;justify-content:center;' +
+        'width:20px;height:20px;border-radius:4px;font-weight:800;font-size:0.65rem;' +
+        "font-family:'Barlow Condensed',sans-serif;background:" + color + '26;border:1px solid ' + color + ';color:' + color + ';">' +
+        f.result + '</span>';
+    }).join(' ');
+  }
+
+  // Moneyline lookup: matches a parsed fight's fighters against the live odds
+  // feed by last name (mirrors handleOddsPage's matching logic) and averages
+  // the h2h price across listed sportsbooks for one representative line.
+  let oddsDataPromise = null;
+  function loadOddsDataOnce() {
+    if (!oddsDataPromise) {
+      oddsDataPromise = fetch('./data/odds.json')
+        .then(r => r.ok ? r.json() : [])
+        .then(d => Array.isArray(d) ? d : [])
+        .catch(() => []);
+    }
+    return oddsDataPromise;
+  }
+
+  function findFightOdds(f1Name, f2Name, oddsData) {
+    const n1 = lastNameOf(f1Name).toLowerCase();
+    const n2 = lastNameOf(f2Name).toLowerCase();
+    const match = (oddsData || []).find(o => {
+      const h = lastNameOf(o.home_team || '').toLowerCase();
+      const a = lastNameOf(o.away_team || '').toLowerCase();
+      return (h === n1 && a === n2) || (h === n2 && a === n1);
+    });
+    if (!match) return null;
+    const homePrices = [], awayPrices = [];
+    (match.bookmakers || []).forEach(bk => {
+      const market = (bk.markets || []).find(m => m.key === 'h2h');
+      if (!market) return;
+      const ho = (market.outcomes || []).find(o => o.name === match.home_team);
+      const ao = (market.outcomes || []).find(o => o.name === match.away_team);
+      if (ho && typeof ho.price === 'number') homePrices.push(ho.price);
+      if (ao && typeof ao.price === 'number') awayPrices.push(ao.price);
+    });
+    function avg(arr) { return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null; }
+    const homeAvg = avg(homePrices), awayAvg = avg(awayPrices);
+    const homeIsF1 = lastNameOf(match.home_team || '').toLowerCase() === n1;
+    return homeIsF1 ? { o1: homeAvg, o2: awayAvg } : { o1: awayAvg, o2: homeAvg };
+  }
+
+  function fillPendingMoneylines() {
+    const pending = document.querySelectorAll('.fight-ml-pending');
+    if (!pending.length) return;
+    loadOddsDataOnce().then(oddsData => {
+      pending.forEach(el => {
+        const f1 = el.getAttribute('data-f1'), f2 = el.getAttribute('data-f2');
+        const side = el.getAttribute('data-side');
+        const odds = findFightOdds(f1, f2, oddsData);
+        const price = odds ? (side === '2' ? odds.o2 : odds.o1) : null;
+        el.innerHTML = (price === null || price === undefined)
+          ? '<span style="color:var(--muted);font-size:0.78rem;">N/A</span>'
+          : fmtOdds(price);
+        el.classList.remove('fight-ml-pending');
+      });
+    });
+  }
+
+  function fightDetailsPanelHTML(f) {
+    const s1 = fighterSnapshot(f.f1), s2 = fighterSnapshot(f.f2);
+    function col(name, snap, side) {
+      return '<div class="fd-col">' +
+        '<div class="fd-name">' + name + '</div>' +
+        '<div class="fd-stat"><span class="fd-label">Age</span><span class="fd-value">' + snap.age + '</span></div>' +
+        '<div class="fd-stat"><span class="fd-label">Height</span><span class="fd-value">' + snap.height + '</span></div>' +
+        '<div class="fd-stat"><span class="fd-label">Reach</span><span class="fd-value">' + snap.reach + '</span></div>' +
+        '<div class="fd-stat"><span class="fd-label">Moneyline</span><span class="fd-value fight-ml-pending" data-f1="' + escHtmlAttr(f.f1) + '" data-f2="' + escHtmlAttr(f.f2) + '" data-side="' + side + '">' +
+          '<span style="color:var(--muted);font-size:0.78rem;">…</span></span></div>' +
+        '<div class="fd-stat"><span class="fd-label">Last 5</span><span class="fd-value">' + lastFiveFormHTML(name) + '</span></div>' +
+      '</div>';
+    }
+    return '<div class="fight-details-panel" style="display:none;">' +
+      '<div class="fd-cols">' +
+        col(f.f1, s1, '1') +
+        '<div class="fd-divider"></div>' +
+        col(f.f2, s2, '2') +
+      '</div>' +
+    '</div>';
+  }
+
+  function toggleFightDetails(btn) {
+    const row = btn.closest('.fight-row');
+    const panel = row && row.nextElementSibling;
+    if (!panel || !panel.classList.contains('fight-details-panel')) return;
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : '';
+    btn.classList.toggle('open', !isOpen);
+    btn.textContent = isOpen ? 'Fighter Info ⌄' : 'Fighter Info ⌃';
+    if (!isOpen) fillPendingMoneylines();
   }
 
   async function renderProjectionsPage(evt) {
@@ -21474,6 +21674,7 @@ function openFighter(name, division, record, rank, initials, country) {
           '<div class="fight-vs">VS</div>' +
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
+          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + f.f2 + '\',\'' + f.div2 + '\',\'' + f.rec2 + '\',\'' + f.r2 + '\',\'' + f.ini2 + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -21483,7 +21684,7 @@ function openFighter(name, division, record, rank, initials, country) {
           '</div>' +
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
-      '</div>';
+      '</div>' + fightDetailsPanelHTML(f);
     }
 
     function fightSection(title, fights) {
