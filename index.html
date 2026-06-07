@@ -20928,7 +20928,7 @@ function openFighter(name, division, record, rank, initials, country) {
           '</div>';
         }
         return '<div class="' + cls + '">' +
-          '<div class="fighter-cell" onclick="openFighter(\'' + f.f1 + '\',\'' + f.div1 + '\',\'' + f.rec1 + '\',\'' + f.r1 + '\',\'' + f.ini1 + '\')" style="cursor:pointer;">' +
+          '<div class="fighter-cell" onclick="openFighter(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')" style="cursor:pointer;">' +
             ava(f.photo1, f.ini1, f.f1) +
             '<div style="min-width:0;flex:1;">' +
               '<div class="fighter-rank">' + f.r1 + '</div>' +
@@ -20942,7 +20942,7 @@ function openFighter(name, division, record, rank, initials, country) {
             '<div class="fight-rounds">' + rounds + '</div>' +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
           '</div>' +
-          '<div class="fighter-cell right" onclick="openFighter(\'' + f.f2 + '\',\'' + f.div2 + '\',\'' + f.rec2 + '\',\'' + f.r2 + '\',\'' + f.ini2 + '\')" style="cursor:pointer;">' +
+          '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
               '<div class="fighter-rank">' + f.r2 + '</div>' +
               '<div class="fighter-name">' + f.f2 + '</div>' +
@@ -21662,7 +21662,7 @@ function openFighter(name, division, record, rank, initials, country) {
       const wc  = f.label ? f.label.split(' · ')[0] : '';
       const rds = (f.label || '').includes('5 Round') ? '5 RDS' : '3 RDS';
       return '<div class="' + cls + '">' +
-        '<div class="fighter-cell" onclick="openFighter(\'' + f.f1 + '\',\'' + f.div1 + '\',\'' + f.rec1 + '\',\'' + f.r1 + '\',\'' + f.ini1 + '\')" style="cursor:pointer;">' +
+        '<div class="fighter-cell" onclick="openFighter(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')" style="cursor:pointer;">' +
           '<div class="fighter-avatar">' + f.ini1 + '</div>' +
           '<div style="min-width:0;flex:1;">' +
             '<div class="fighter-rank">' + f.r1 + '</div>' +
@@ -21676,7 +21676,7 @@ function openFighter(name, division, record, rank, initials, country) {
           '<div class="fight-rounds">' + rds + '</div>' +
           '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
         '</div>' +
-        '<div class="fighter-cell right" onclick="openFighter(\'' + f.f2 + '\',\'' + f.div2 + '\',\'' + f.rec2 + '\',\'' + f.r2 + '\',\'' + f.ini2 + '\')" style="cursor:pointer;">' +
+        '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
             '<div class="fighter-rank">' + f.r2 + '</div>' +
             '<div class="fighter-name">' + f.f2 + '</div>' +
