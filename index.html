@@ -21066,11 +21066,25 @@ function openFighter(name, division, record, rank, initials, country) {
   // matchups for a fighter (e.g. multiple possible Pereira opponents) ahead of
   // an official pairing — matching on a single name lets those leak through.
   // Requiring BOTH names to match a real scheduled bout filters them out.
+  // Extracts a fighter's surname for matching/display, skipping generational
+  // suffixes like "Jr.", "Sr.", "II", "III" (e.g. "Steve Garcia Jr." -> "Garcia").
+  // A naive last-token split would otherwise return "Jr." and fail to match
+  // the same fighter listed elsewhere without the suffix.
+  const NAME_SUFFIXES = new Set(['jr', 'jr.', 'sr', 'sr.', 'ii', 'iii', 'iv', 'v']);
+  function lastNameOf(name) {
+    if (!name) return '';
+    const parts = name.trim().split(/\s+/);
+    while (parts.length > 1 && NAME_SUFFIXES.has(parts[parts.length - 1].toLowerCase().replace(/\.$/, ''))) {
+      parts.pop();
+    }
+    return parts[parts.length - 1] || '';
+  }
+
   function buildBoutPairings(evtFights) {
     const pairings = [];
     (evtFights || []).forEach(f => {
       if (f.f1 && f.f2) {
-        pairings.push([f.f1.split(' ').pop().toLowerCase(), f.f2.split(' ').pop().toLowerCase()]);
+        pairings.push([lastNameOf(f.f1).toLowerCase(), lastNameOf(f.f2).toLowerCase()]);
       }
     });
     return pairings;
@@ -21133,8 +21147,8 @@ function openFighter(name, division, record, rank, initials, country) {
         // collect all matching fights within a 3-day window (Odds API often lists
         // prelims 1 day early)
         const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
-          const n1 = f.home_team.split(' ').pop().toLowerCase();
-          const n2 = f.away_team.split(' ').pop().toLowerCase();
+          const n1 = lastNameOf(f.home_team).toLowerCase();
+          const n2 = lastNameOf(f.away_team).toLowerCase();
           return isScheduledBout(boutPairings, n1, n2);
         }));
         if (firstUfcDate) {
@@ -21144,8 +21158,8 @@ function openFighter(name, division, record, rank, initials, country) {
           fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
-              const n1 = f.home_team.split(' ').pop().toLowerCase();
-              const n2 = f.away_team.split(' ').pop().toLowerCase();
+              const n1 = lastNameOf(f.home_team).toLowerCase();
+              const n2 = lastNameOf(f.away_team).toLowerCase();
               if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
             });
           });
@@ -21161,17 +21175,17 @@ function openFighter(name, division, record, rank, initials, country) {
       if (evt.fights && evt.fights.length) {
         const orderMap = {};
         evt.fights.forEach((f, i) => {
-          if (f.f1) orderMap[f.f1.split(' ').pop().toLowerCase()] = i;
-          if (f.f2) orderMap[f.f2.split(' ').pop().toLowerCase()] = i;
+          if (f.f1) orderMap[lastNameOf(f.f1).toLowerCase()] = i;
+          if (f.f2) orderMap[lastNameOf(f.f2).toLowerCase()] = i;
         });
         fights = fights.slice().sort((a, b) => {
           const ia = Math.min(
-            orderMap[a.home_team.split(' ').pop().toLowerCase()] ?? 999,
-            orderMap[a.away_team.split(' ').pop().toLowerCase()] ?? 999
+            orderMap[lastNameOf(a.home_team).toLowerCase()] ?? 999,
+            orderMap[lastNameOf(a.away_team).toLowerCase()] ?? 999
           );
           const ib = Math.min(
-            orderMap[b.home_team.split(' ').pop().toLowerCase()] ?? 999,
-            orderMap[b.away_team.split(' ').pop().toLowerCase()] ?? 999
+            orderMap[lastNameOf(b.home_team).toLowerCase()] ?? 999,
+            orderMap[lastNameOf(b.away_team).toLowerCase()] ?? 999
           );
           return ia - ib;
         });
@@ -21181,8 +21195,8 @@ function openFighter(name, division, record, rank, initials, country) {
         const pcts = noVigPcts(fight);
         if (!pcts) return null;
         // Try to match weight class label from evt.fights
-        const n1 = fight.home_team.split(' ').pop().toLowerCase();
-        const n2 = fight.away_team.split(' ').pop().toLowerCase();
+        const n1 = lastNameOf(fight.home_team).toLowerCase();
+        const n2 = lastNameOf(fight.away_team).toLowerCase();
         const evtFight = (evt.fights || []).find(ef =>
           ef.f1.toLowerCase().includes(n1) || ef.f2.toLowerCase().includes(n1) ||
           ef.f1.toLowerCase().includes(n2) || ef.f2.toLowerCase().includes(n2)
@@ -21280,7 +21294,7 @@ function openFighter(name, division, record, rank, initials, country) {
       </tr>`;
     });
     if (!rows) return '<p style="color:var(--muted);padding:1rem 0;">No moneyline data available yet.</p>';
-    const last1 = f1.split(' ').pop(), last2 = f2.split(' ').pop();
+    const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
     return `<table class="odds-table"><thead><tr><th>Sportsbook</th><th>${last1}</th><th>${last2}</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
@@ -21319,7 +21333,7 @@ function openFighter(name, division, record, rank, initials, country) {
   function renderOddsHTML(fights) {
     if (!fights || !fights.length) return '';
     const btns = fights.map((f, i) => {
-      const s1 = f.home_team.split(' ').pop(), s2 = f.away_team.split(' ').pop();
+      const s1 = lastNameOf(f.home_team), s2 = lastNameOf(f.away_team);
       return `<button class="rank-div-btn${i === 0 ? ' active' : ''}" onclick="showFight('api-fight-${i}',this)">${s1} vs. ${s2}</button>`;
     }).join('');
     const panels = fights.map((f, i) => {
@@ -21377,8 +21391,8 @@ function openFighter(name, division, record, rank, initials, country) {
         // Find earliest upcoming date with any scheduled-bout match, then collect all
         // matching fights within a 3-day window (Odds API often lists prelims 1 day early)
         const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
-          const n1 = f.home_team.split(' ').pop().toLowerCase();
-          const n2 = f.away_team.split(' ').pop().toLowerCase();
+          const n1 = lastNameOf(f.home_team).toLowerCase();
+          const n2 = lastNameOf(f.away_team).toLowerCase();
           return isScheduledBout(boutPairings, n1, n2);
         }));
         if (firstUfcDate) {
@@ -21388,8 +21402,8 @@ function openFighter(name, division, record, rank, initials, country) {
           fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
-              const n1 = f.home_team.split(' ').pop().toLowerCase();
-              const n2 = f.away_team.split(' ').pop().toLowerCase();
+              const n1 = lastNameOf(f.home_team).toLowerCase();
+              const n2 = lastNameOf(f.away_team).toLowerCase();
               if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
             });
           });
@@ -21405,17 +21419,17 @@ function openFighter(name, division, record, rank, initials, country) {
       if (evt.fights && evt.fights.length) {
         const orderMap = {};
         evt.fights.forEach((f, i) => {
-          if (f.f1) orderMap[f.f1.split(' ').pop().toLowerCase()] = i;
-          if (f.f2) orderMap[f.f2.split(' ').pop().toLowerCase()] = i;
+          if (f.f1) orderMap[lastNameOf(f.f1).toLowerCase()] = i;
+          if (f.f2) orderMap[lastNameOf(f.f2).toLowerCase()] = i;
         });
         fights = fights.slice().sort((a, b) => {
           const ia = Math.min(
-            orderMap[a.home_team.split(' ').pop().toLowerCase()] ?? 999,
-            orderMap[a.away_team.split(' ').pop().toLowerCase()] ?? 999
+            orderMap[lastNameOf(a.home_team).toLowerCase()] ?? 999,
+            orderMap[lastNameOf(a.away_team).toLowerCase()] ?? 999
           );
           const ib = Math.min(
-            orderMap[b.home_team.split(' ').pop().toLowerCase()] ?? 999,
-            orderMap[b.away_team.split(' ').pop().toLowerCase()] ?? 999
+            orderMap[lastNameOf(b.home_team).toLowerCase()] ?? 999,
+            orderMap[lastNameOf(b.away_team).toLowerCase()] ?? 999
           );
           return ia - ib;
         });
