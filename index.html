@@ -1356,6 +1356,56 @@
         80%     { transform: perspective(120px) rotateY(-10deg) skewY(1deg);   }
       }
       .freedom-card .event-name { display:flex; align-items:center; flex-wrap:wrap; gap:0.25rem; }
+
+      /* ── Numbered PPV Card (UFC 329, UFC 330, etc.) ── */
+      .numbered-card {
+        position:relative; overflow:hidden;
+        background: linear-gradient(160deg, rgba(212,175,55,0.16) 0%, rgba(10,10,11,0) 45%, rgba(10,10,11,0) 60%, rgba(212,175,55,0.10) 100%) !important;
+        border-top: 3px solid transparent !important;
+        border-image: linear-gradient(90deg, #d4af37 0%, #fff3c4 50%, #d4af37 100%) 1 !important;
+      }
+      .numbered-card::before {
+        content:'★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★  ★';
+        position:absolute; top:0.5rem; left:0; right:0;
+        font-size:0.55rem; letter-spacing:0.4em; color:rgba(212,175,55,0.08);
+        text-align:center; pointer-events:none; white-space:nowrap; overflow:hidden;
+      }
+      .numbered-card .event-name {
+        background: linear-gradient(90deg, #d4af37 0%, #fff8dc 45%, #d4af37 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text; filter: drop-shadow(0 0 14px rgba(212,175,55,0.45));
+        letter-spacing:0.03em;
+      }
+      .numbered-card .event-details { color:rgba(255,255,255,0.7) !important; }
+      .numbered-card .event-header {
+        border-bottom: 1px solid rgba(212,175,55,0.25) !important;
+        padding-bottom:1rem;
+      }
+      .numbered-card .event-countdown {
+        background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(120,95,20,0.22)) !important;
+        border: 1px solid rgba(212,175,55,0.35) !important;
+        border-radius:8px;
+      }
+      .numbered-card .countdown-time { color:#fff8dc !important; text-shadow: 0 0 12px rgba(212,175,55,0.85); }
+      .numbered-card .section-title { color:#fff3c4 !important; letter-spacing:0.15em; }
+      .numbered-card .section-line { background: linear-gradient(90deg, #d4af37, rgba(255,243,196,0.5), #d4af37) !important; height:2px !important; }
+      .numbered-card .fight-row {
+        border:1px solid rgba(212,175,55,0.18) !important;
+        border-radius:6px; margin-bottom:0.3rem;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .numbered-card .fight-row:hover { border-color:rgba(212,175,55,0.4) !important; background:rgba(212,175,55,0.06) !important; }
+      .numbered-card .fight-vs {
+        background: linear-gradient(135deg, #d4af37, #8a6d1a) !important;
+        color:#fff !important; font-weight:900 !important;
+        border:1px solid rgba(255,243,196,0.4) !important;
+      }
+      .numbered-card .fighter-avatar {
+        border: 2px solid transparent !important;
+        background:
+          linear-gradient(var(--surface2), var(--surface2)) padding-box,
+          linear-gradient(135deg, #d4af37 0%, #fff8dc 50%, #d4af37 100%) border-box !important;
+      }
 </style>
 </head>
 <body>
@@ -21686,7 +21736,12 @@ function openFighter(name, division, record, rank, initials, country) {
           fightSection('Prelims', (evt.fights || []).filter(f => !f.isMain));
 
       const isFreedom = (evt.name || '').toLowerCase().includes('freedom') || (evt.slug || '').toLowerCase().includes('freedom');
-      const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : '');
+      // Numbered PPV events ("UFC 329", "UFC 330", ...) get a special gold
+      // treatment to make them stand out from Fight Night / themed cards.
+      // Matches "UFC" + number only (e.g. "UFC 329"), so themed numbered
+      // events like "UFC Freedom 250" fall through to their own special style.
+      const isNumbered = !isFreedom && /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
+      const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : ''));
       const flagSVG = isFreedom ? '<span class="freedom-flag-wrap"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 26" width="44" height="26" style="display:block;border-radius:2px;">' +
         '<rect width="44" height="2" y="0" fill="#B22234"/><rect width="44" height="2" y="2" fill="#fff"/>' +
         '<rect width="44" height="2" y="4" fill="#B22234"/><rect width="44" height="2" y="6" fill="#fff"/>' +
