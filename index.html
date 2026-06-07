@@ -1406,6 +1406,18 @@
           linear-gradient(var(--surface2), var(--surface2)) padding-box,
           linear-gradient(135deg, #d4af37 0%, #fff8dc 50%, #d4af37 100%) border-box !important;
       }
+      /* Lighter gold accent for the featured/top event-header (no full
+         panel background — keeps the hero section clean while the fight
+         card below gets the full gold treatment). */
+      .event-header.numbered-card {
+        position:static; overflow:visible;
+        background: transparent !important;
+        border-top: none !important;
+        border-image: none !important;
+        border-bottom: 1px solid rgba(212,175,55,0.3) !important;
+        padding-bottom: 1rem;
+      }
+      .event-header.numbered-card::before { content: none; }
 </style>
 </head>
 <body>
@@ -21019,6 +21031,13 @@ function openFighter(name, division, record, rank, initials, country) {
     const container = document.getElementById('dynamic-fight-card');
     if (!container) return;
 
+    // Numbered PPV events ("UFC 329", "UFC 330", ...) keep the same gold
+    // special styling up top in the featured card when they become the
+    // headline event, mirroring the .numbered-card treatment in the carousel.
+    const isNumbered = /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
+    const headerEl = document.querySelector('#page-home > .event-header');
+    if (headerEl) headerEl.classList.toggle('numbered-card', isNumbered);
+
     const nameEl    = document.getElementById('home-event-name');
     const detailsEl = document.getElementById('home-event-details');
     if (nameEl) {
@@ -21095,7 +21114,7 @@ function openFighter(name, division, record, rank, initials, country) {
               section('Prelims',      evt.fights.filter(function(f) { return !f.isMain; }));
       }
 
-      container.innerHTML = '<div style="max-width:1300px;margin:0 auto;">' + out + '</div>';
+      container.innerHTML = '<div class="' + (isNumbered ? 'numbered-card' : '') + '" style="max-width:1300px;margin:0 auto;position:relative;' + (isNumbered ? 'border-radius:10px;' : '') + '">' + out + '</div>';
 
     } else if (evt.carouselIdx >= 0) {
       const cards = document.querySelectorAll('#carousel-track .carousel-card');
