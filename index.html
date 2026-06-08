@@ -1145,7 +1145,19 @@
       background: linear-gradient(90deg, rgba(0,230,104,0.05) 0%, var(--card) 100%);
     }
 
+    /* Interim champions get the same champion treatment (gold accent
+       instead of green) so they read as notable but visually distinct
+       from — and secondary to — the unified champion above them. */
+    .rank-interim-row {
+      border-color: rgba(255,179,64,0.35);
+      background: linear-gradient(90deg, rgba(255,179,64,0.06) 0%, var(--card) 100%);
+    }
+
+    .rank-interim-row .rank-num { color: #ffb340; }
+    .rank-interim-row .rank-div-tag { color: #ffb340; border-color: rgba(255,179,64,0.35); }
+
     .rank-row:hover, .rank-champ-row:hover { border-color: var(--accent); }
+    .rank-interim-row:hover { border-color: #ffb340; }
 
     .rank-num {
       font-family: 'Barlow Condensed', sans-serif;
@@ -22254,9 +22266,30 @@ function openFighter(name, division, record, rank, initials, country) {
     return String(s == null ? '' : s).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
   }
 
+  // The Cito rankings API marks interim champions with isChampion: true
+  // AND championStatus: 'interim' (set both at the entry's top level and
+  // nested under .fighter) — e.g. Justin Gaethje currently shows as the
+  // Lightweight interim champ alongside Ilia Topuria as the unified
+  // champ. Without this check both render identically as "C" / Champion,
+  // which misleadingly presents two simultaneous "current champions".
+  function isInterimChamp(e) {
+    return !!(e && e.isChampion &&
+      (e.championStatus === 'interim' || (e.fighter && e.fighter.championStatus === 'interim')));
+  }
+
+  // Sort key used to order each panel's rows: true (unified) champion
+  // first, interim champion second, then everyone else by their numeric
+  // rank (unranked entries sink to the bottom).
+  function rankSortKey(e) {
+    if (e.isChampion) return isInterimChamp(e) ? -1 : -2;
+    return e.rank != null ? e.rank : 999;
+  }
+
   function rankingPanelHTML(divisionName, entries, isP4P) {
     const info = RANKING_DIVISIONS[divisionName];
-    const champ = entries.find(e => e.isChampion);
+    // Prefer the true/unified champion for the panel-title badge; fall
+    // back to an interim champion only if that's all the division has.
+    const champ = entries.find(e => e.isChampion && !isInterimChamp(e)) || entries.find(e => e.isChampion);
     const titleLabel = isP4P
       ? (divisionName.indexOf("Women's") === 0 ? "Women's Pound-for-Pound" : "Men's Pound-for-Pound")
       : (info ? info.tag : divisionName);
@@ -22264,11 +22297,7 @@ function openFighter(name, division, record, rank, initials, country) {
       ? ' <span class="rank-champ-badge">C: ' + champ.fighterName + '</span>'
       : '';
 
-    const rows = entries.slice().sort((a, b) => {
-      const ra = a.isChampion ? -1 : (a.rank != null ? a.rank : 999);
-      const rb = b.isChampion ? -1 : (b.rank != null ? b.rank : 999);
-      return ra - rb;
-    }).map(e => {
+    const rows = entries.slice().sort((a, b) => rankSortKey(a) - rankSortKey(b)).map(e => {
       const fDiv = e.fighter && e.fighter.division;
       const fInfo = RANKING_DIVISIONS[fDiv];
       const abbr = isP4P ? (fInfo ? fInfo.abbr : '') : (info ? info.abbr : '');
@@ -22277,14 +22306,20 @@ function openFighter(name, division, record, rank, initials, country) {
       const record = rankingRecordShort(recordText);
       const country = translateRankingCountry(e.country || (e.fighter && e.fighter.country));
       const initials = rankingInitials(e.fighterName);
-      const numLabel = e.isChampion ? 'C' : ('#' + (e.rank != null ? e.rank : '?'));
-      const rowClass = e.isChampion ? 'rank-champ-row' : 'rank-row';
+      const interim = isInterimChamp(e);
+      const trueChamp = e.isChampion && !interim;
+      const numLabel = trueChamp ? 'C' : (interim ? 'IC' : ('#' + (e.rank != null ? e.rank : '?')));
+      const rowClass = e.isChampion ? ('rank-champ-row' + (interim ? ' rank-interim-row' : '')) : 'rank-row';
 
       let tag = '';
       if (isP4P) {
-        tag = e.isChampion ? ((abbr ? abbr + ' ' : '') + 'Champion') : (fInfo ? fInfo.tag : (fDiv || ''));
-      } else if (e.isChampion) {
+        tag = e.isChampion
+          ? ((abbr ? abbr + ' ' : '') + (interim ? 'Interim Champion' : 'Champion'))
+          : (fInfo ? fInfo.tag : (fDiv || ''));
+      } else if (trueChamp) {
         tag = 'Champion';
+      } else if (interim) {
+        tag = 'Interim Champion';
       }
       const tagSpan = tag ? '<span class="rank-div-tag">' + tag + '</span>' : '';
       const rankArg = isP4P ? tag : numLabel;
