@@ -1461,6 +1461,16 @@
          on its .freedom-card/.numbered-card wrapper, so this is a no-op
          conflict-wise for that structure — it simply applies cleanly. */
       .freedom-card, .numbered-card { padding-top: 1.85rem !important; }
+      /* The rule above gets silently zeroed out for carousel cards specifically:
+         #carousel-track .carousel-card (a few lines up) sets a shorthand
+         `padding: 0 0.75rem !important`, whose padding-top:0 sub-property
+         carries higher specificity (1 id + 1 class) than .freedom-card/
+         .numbered-card (1 class alone) and wins the cascade — leaving the
+         star row with zero vertical clearance to push against in the
+         carousel. Re-assert the clearance here with matching id+class+class
+         specificity so it actually takes effect where it's needed most. */
+      #carousel-track .carousel-card.freedom-card,
+      #carousel-track .carousel-card.numbered-card { padding-top: 1.85rem !important; }
       .fight-row         { grid-template-columns: 1fr 72px 1fr; }
       .fighter-cell      { padding: 0.7rem 0.5rem; gap: 0.35rem; }
       .fighter-avatar    { width: 36px; height: 36px; min-width: 36px; font-size: 0.65rem; flex-shrink: 0; }
@@ -1691,6 +1701,16 @@
       .freedom-card .event-header {
         border-bottom: 1px solid rgba(255,255,255,0.12) !important;
         padding-bottom:1rem;
+        /* Base .event-header bottom-aligns its two children
+           (align-items: flex-end). With the star row restored above, that
+           bottom alignment makes whichever child is taller (event-name+
+           details vs. countdown — varies by event-name length/wrapping)
+           sit with its top edge closer to the card's top edge, intruding
+           into the star row while the shorter child clears it — the exact
+           "stars now overlap the countdown box instead of the name" flip
+           the user reported. Top-align both instead so they share the same
+           top offset and the uniform padding-top clearance covers both. */
+        align-items: flex-start;
       }
       .freedom-card .event-countdown {
         background: linear-gradient(135deg, rgba(178,34,52,0.25), rgba(60,59,110,0.25)) !important;
@@ -1760,6 +1780,11 @@
       .numbered-card .event-header {
         border-bottom: 1px solid rgba(212,175,55,0.25) !important;
         padding-bottom:1rem;
+        /* See .freedom-card .event-header above: top-align the event-name
+           and countdown blocks so the restored padding-top clearance pushes
+           both of them clear of the star row uniformly, regardless of
+           which one happens to render taller for a given event. */
+        align-items: flex-start;
       }
       .numbered-card .event-countdown {
         background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(120,95,20,0.22)) !important;
