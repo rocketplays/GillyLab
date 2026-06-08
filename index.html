@@ -1221,14 +1221,33 @@
       /* ── Fight rows ── */
       .fight-card-section { padding: 0 0.75rem 1.5rem; }
       /* The Freedom/Numbered special-card star row (.freedom-card::before /
-         .numbered-card::before) is absolutely positioned at top:0.5rem of
-         the card, and on desktop it sits inside fight-card-section's 2rem
-         top padding — clear of the "Main Card" title below it. The rule
-         above zeroes that top padding out for mobile, which lets the title
-         collide with the stars. Restore enough top padding on just the
-         first section inside these special cards so the title clears them. */
-      .freedom-card > .fight-card-section:first-child,
-      .numbered-card > .fight-card-section:first-child { padding-top: 1.85rem; }
+         .numbered-card::before) is an absolutely-positioned overlay pinned
+         to top:0.5rem of whichever element carries the special class — and
+         that's NOT always the same element:
+           - On the home page's featured fight card, .freedom-card/
+             .numbered-card IS the position:relative wrapper whose first
+             child is the "Main Card" .fight-card-section directly. There,
+             desktop clearance comes from .fight-card-section's 2rem top
+             padding, which the rule above zeroes out for mobile.
+           - In the upcoming-events carousel, .freedom-card/.numbered-card
+             sit on the OUTER .carousel-card div, which wraps an
+             .event-header (event name + countdown) ABOVE the fight-card
+             sections — so on mobile the star row instead collides with
+             the event name there, not the "Main Card" title.
+         Rather than chase clearance separately for each inner structure
+         (and re-break it if either is restyled), pad the special-card
+         element itself — its child content shifts down as a unit and
+         clears the ~1.27rem star row (0.5rem offset + ~0.77rem text
+         height at 0.55rem font-size) either way. */
+      /* !important: the carousel rendering path (renderCarousel) sets
+         `style="padding:0 2rem;..."` inline on this same element — an
+         inline shorthand `padding` declaration's padding-top sub-property
+         beats any external class selector on specificity alone, so this
+         override needs !important to actually take effect there. The
+         featured-card path (renderHomeFightCard) sets no inline padding
+         on its .freedom-card/.numbered-card wrapper, so this is a no-op
+         conflict-wise for that structure — it simply applies cleanly. */
+      .freedom-card, .numbered-card { padding-top: 1.85rem !important; }
       .fight-row         { grid-template-columns: 1fr 72px 1fr; }
       .fighter-cell      { padding: 0.7rem 0.5rem; gap: 0.35rem; }
       .fighter-avatar    { width: 36px; height: 36px; min-width: 36px; font-size: 0.65rem; flex-shrink: 0; }
