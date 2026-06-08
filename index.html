@@ -1268,6 +1268,16 @@
 
       /* ── Fight rows ── */
       .fight-card-section { padding: 0 0.75rem 1.5rem; }
+      /* The carousel cards carry their own inline padding (0 2rem, set in
+         renderCarousel()) which — unlike .fight-card-section above — isn't
+         reduced for narrow viewports. That leaves noticeably less usable
+         width than the featured event card at this breakpoint, so longer
+         weight-class labels (e.g. "Featherweight · 3 Rounds") wrap and the
+         last letter spills onto its own line. Override the inline padding
+         to match .fight-card-section's narrower mobile padding so both
+         cards offer the same content width. (!important needed — inline
+         styles otherwise outrank this rule.) */
+      #carousel-track .carousel-card { padding: 0 0.75rem !important; }
       /* .section-header lays the "MAIN CARD"/"PRELIMS" label out next to its
          divider line with a flat 1rem gap — sized for the wide desktop
          section (2rem side padding, ~1300px max-width), where the label is
