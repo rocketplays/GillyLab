@@ -1140,24 +1140,21 @@
       min-width: 0;
     }
 
+    /* Champion rows (both true/unified and interim) use a gold accent —
+       previously true champions were green and interim champions gold;
+       now both render in the same gold so "champion" reads as a single
+       consistent visual tier, distinguished by their "C"/"IC" labels and
+       "Champion"/"Interim Champion" tags rather than by color. */
     .rank-champ-row {
-      border-color: rgba(0,230,104,0.3);
-      background: linear-gradient(90deg, rgba(0,230,104,0.05) 0%, var(--card) 100%);
-    }
-
-    /* Interim champions get the same champion treatment (gold accent
-       instead of green) so they read as notable but visually distinct
-       from — and secondary to — the unified champion above them. */
-    .rank-interim-row {
       border-color: rgba(255,179,64,0.35);
       background: linear-gradient(90deg, rgba(255,179,64,0.06) 0%, var(--card) 100%);
     }
 
-    .rank-interim-row .rank-num { color: #ffb340; }
-    .rank-interim-row .rank-div-tag { color: #ffb340; border-color: rgba(255,179,64,0.35); }
+    .rank-champ-row .rank-num { color: #ffb340; }
+    .rank-champ-row .rank-div-tag { color: #ffb340; border-color: rgba(255,179,64,0.35); }
 
     .rank-row:hover, .rank-champ-row:hover { border-color: var(--accent); }
-    .rank-interim-row:hover { border-color: #ffb340; }
+    .rank-champ-row:hover { border-color: #ffb340; }
 
     .rank-num {
       font-family: 'Barlow Condensed', sans-serif;
