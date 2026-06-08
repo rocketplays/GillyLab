@@ -1220,6 +1220,17 @@
 
       /* ── Fight rows ── */
       .fight-card-section { padding: 0 0.75rem 1.5rem; }
+      /* .section-header lays the "MAIN CARD"/"PRELIMS" label out next to its
+         divider line with a flat 1rem gap — sized for the wide desktop
+         section (2rem side padding, ~1300px max-width), where the label is
+         a small fraction of the row's width. On mobile the section shrinks
+         to 0.75rem side padding and the label (same 0.75rem font / 0.3em
+         letter-spacing — it doesn't shrink at this breakpoint) takes up
+         proportionally much more of the row, so that same fixed 1rem gap
+         reads as an oversized, oddly-floating space between the text and
+         the line. Tighten it to better match the label's now-larger share
+         of a narrower row. */
+      .section-header { gap: 0.6rem; }
       /* The Freedom/Numbered special-card star row (.freedom-card::before /
          .numbered-card::before) is an absolutely-positioned overlay pinned
          to top:0.5rem of whichever element carries the special class — and
