@@ -593,6 +593,22 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* Record Breakdown sits next to the fighter's record and is easy to miss
+       against the muted .fight-info-toggle styling — give it its own
+       always-on accent treatment (slightly larger + tinted) so it reads as
+       an inviting feature rather than a faint detail toggle. */
+    #f-record-toggle {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: rgba(0, 230, 104, 0.1);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.3rem 0.6rem;
+    }
+    #f-record-toggle:hover,
+    #f-record-toggle.open {
+      background: rgba(0, 230, 104, 0.2);
+    }
     .fight-details-panel {
       max-width: 1300px;
       margin: -0.75rem auto 0.75rem;
@@ -1376,6 +1392,7 @@
       .fighter-big-name  { font-size: 2rem; }
       .fighter-big-meta  { font-size: 0.75rem; }
       .record-num        { font-size: 1.5rem; }
+      #f-record-toggle   { font-size: 0.6rem; padding: 0.26rem 0.5rem; }
       .record-breakdown-panel {
         grid-template-columns: 1fr;
         max-width: 100%;
