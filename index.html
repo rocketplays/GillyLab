@@ -1184,6 +1184,21 @@
 
     .fighter-tab:hover { color: var(--text); }
 
+    /* Fighter-profile tab panels (Fight History / Tape Study / Odds History /
+       Accolades) swap via display:none<->block, which can't be transitioned —
+       so the new panel just popped in instantly, reading as an abrupt jump
+       rather than a tab change. CSS animations DO replay whenever an element
+       re-enters the render tree (display:none -> block), so giving each panel
+       a fade+rise-in keyframe animation makes every switch feel like a
+       deliberate transition without any extra JS bookkeeping. */
+    .ftab-panel {
+      animation: ftabPanelIn 0.3s ease;
+    }
+    @keyframes ftabPanelIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
     /* ── RANKINGS PAGE ── */
     .rank-div-btn {
       background: var(--card);
@@ -2841,6 +2856,7 @@
  btn.classList.add('active');
  }
  function switchFighterTab(el, panelId) {
+ if (el.classList.contains('active')) return; // already showing — don't replay the panel's entrance animation
  document.querySelectorAll('.fighter-tab').forEach(t => t.classList.remove('active'));
  document.querySelectorAll('.ftab-panel').forEach(p => p.style.display = 'none');
  el.classList.add('active');
