@@ -1659,7 +1659,7 @@
   <div class="hero">
     <div class="hero-label">Weekly Card Preview</div>
     <div class="hero-title">Fight <span class="accent">Database</span></div>
-    <div class="hero-subtitle">Click any fighter for full stats, history & analytics · Click "Fighter Info" on a fight to expand the tale of the tape · Use the search bar above to look up any specific fighters</div>
+    <div class="hero-subtitle">Click any fighter for full stats, history & analytics · Click "Fight Info" on a fight to expand the tale of the tape · Use the search bar above to look up any specific fighters</div>
   </div>
 
   <div class="event-header">
@@ -21155,7 +21155,7 @@ function openFighter(name, division, record, rank, initials, country) {
             '<div class="fight-vs">VS</div>' +
             '<div class="fight-weight">' + weight + '</div>' +
             '<div class="fight-rounds">' + rounds + '</div>' +
-            '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
+            '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -21353,7 +21353,7 @@ function openFighter(name, division, record, rank, initials, country) {
     const isOpen = panel.style.display !== 'none';
     panel.style.display = isOpen ? 'none' : '';
     btn.classList.toggle('open', !isOpen);
-    btn.textContent = isOpen ? 'Fighter Info ⌄' : 'Fighter Info ⌃';
+    btn.textContent = isOpen ? 'Fight Info ⌄' : 'Fight Info ⌃';
     if (!isOpen) fillPendingMoneylines();
   }
 
@@ -22045,7 +22045,7 @@ function openFighter(name, division, record, rank, initials, country) {
           '<div class="fight-vs">VS</div>' +
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
-          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fighter Info ⌄</button>' +
+          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
