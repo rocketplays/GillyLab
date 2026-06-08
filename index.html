@@ -20548,6 +20548,7 @@ function populateFightHistory(name) {
     const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
 
     let koTko = 0, sub = 0, dec = 0, draws = 0, noContests = 0;
+    let lKoTko = 0, lSub = 0, lDec = 0;
     const orgCounts = {};
     fights.forEach(f => {
       const method = String(f.method || '');
@@ -20555,6 +20556,10 @@ function populateFightHistory(name) {
         if (/^(KO|TKO|KO\/TKO)\b/i.test(method)) koTko++;
         else if (/^Sub\b/i.test(method)) sub++;
         else if (/^Decision\b/i.test(method)) dec++;
+      } else if (f.result === 'L') {
+        if (/^(KO|TKO|KO\/TKO)\b/i.test(method)) lKoTko++;
+        else if (/^Sub\b/i.test(method)) lSub++;
+        else if (/^Decision\b/i.test(method)) lDec++;
       } else if (f.result === 'D') {
         draws++;
       } else if (f.result === 'NC') {
@@ -20575,6 +20580,12 @@ function populateFightHistory(name) {
         rbStatRow('KO/TKO', koTko) +
         rbStatRow('Submission', sub) +
         rbStatRow('Decision', dec) +
+      '</div>' +
+      '<div class="rb-section">' +
+        '<div class="rb-section-title">Losses By Method</div>' +
+        rbStatRow('KO/TKO', lKoTko) +
+        rbStatRow('Submission', lSub) +
+        rbStatRow('Decision', lDec) +
       '</div>' +
       '<div class="rb-section">' +
         '<div class="rb-section-title">Other Results</div>' +
