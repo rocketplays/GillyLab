@@ -20850,12 +20850,27 @@ function openFighter(name, division, record, rank, initials, country) {
  });
 
 
+  // Latin-Extended letters that Unicode NFD normalization does NOT
+  // decompose into "base letter + combining accent" (so the generic
+  // accent-stripping step below leaves them untouched/drops them
+  // entirely). These need explicit transliteration first, e.g. Polish
+  // "Jan Błachowicz" -> "Jan Blachowicz" so it slugs to
+  // "jan-blachowicz" and matches the locally-saved jan-blachowicz.png
+  // (NFD would otherwise turn "ł" into an unmatched character that gets
+  // collapsed to a stray "-", producing "jan-b-achowicz").
+  const SLUG_LETTER_MAP = {
+    'ł': 'l', 'Ł': 'L', 'đ': 'd', 'Đ': 'D', 'ø': 'o', 'Ø': 'O',
+    'æ': 'ae', 'Æ': 'AE', 'œ': 'oe', 'Œ': 'OE', 'ß': 'ss',
+    'ı': 'i', 'İ': 'I'
+  };
+
   function nameToSlug(name) {
     return name.toLowerCase()
       // Drop trailing generational suffixes (Jr., Sr., II/III/IV/V) — the
       // Cito API's fighterSlug (used to name photo files) omits these too,
       // e.g. "Michael Aswell Jr." -> michael-aswell.png, not -aswell-jr.png
       .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, '')
+      .replace(/[łŁđĐøØæÆœŒßıİ]/g, ch => SLUG_LETTER_MAP[ch] || ch)
       .normalize('NFD').replace(/[̀-ͯ]/g, '')
       // Drop apostrophes (straight ' and curly ’) entirely rather than
       // turning them into dashes — the Cito API's fighterSlug does the
