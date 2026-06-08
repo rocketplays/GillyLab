@@ -826,6 +826,17 @@
       margin-top: 0.25rem;
     }
 
+    /* Column count lives ONLY here — the markup at #page-fighter used to
+       repeat `style="grid-template-columns: repeat(4, 1fr);"` inline on
+       the grid div, and an inline style always wins over the @media
+       overrides below (768px -> 2 cols, 400px -> 2 cols) regardless of
+       specificity tricks, since it's effectively !important. That locked
+       the grid at 4 columns on every phone size, so labels like "Strikes
+       Landed / Min" got squeezed into ~85px-wide cards and forced the
+       whole row (and therefore .fighter-content/.page) wider than the
+       viewport — the stats spilling off the right edge the user saw.
+       Removed the inline duplicate; let this rule + the mobile overrides
+       own the column count so they can actually take effect. */
     .fighter-stats-grid {
       max-width: 1300px;
       margin: 0 auto;
@@ -1939,7 +1950,7 @@
     </div>
   </div>
 
-  <div class="fighter-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+  <div class="fighter-stats-grid">
     <div class="stat-card">
       <div class="stat-card-label">Height</div>
       <div class="stat-card-value">—</div>
