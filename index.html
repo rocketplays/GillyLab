@@ -22077,6 +22077,56 @@ function openFighter(name, division, record, rank, initials, country) {
     }).format(d); // en-CA formats as YYYY-MM-DD
   }
 
+  // ── Division-rank lookup (for showing "#3" / "C" badges next to fighter
+  // names on the home featured card & carousel) ───────────────────────────
+  // The event API's own per-fighter `rankText` field is consistently empty,
+  // so we cross-reference fighter names against data/rankings.json (the same
+  // file the Rankings page uses) — excluding Pound-for-Pound lists, since
+  // the badge should reflect divisional rank only.
+  let RANKINGS_LOOKUP = {};
+  let rankingsLookupPromise = null;
+
+  function normalizeFighterNameForMatch(name) {
+    return String(name == null ? '' : name).trim().toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '');
+  }
+
+  function rankBadgeLabelForEntry(e) {
+    if (e.isChampion) {
+      const interim = e.championStatus === 'interim' ||
+        (e.fighter && e.fighter.championStatus === 'interim');
+      return interim ? 'IC' : 'C';
+    }
+    return e.rank != null ? '#' + e.rank : '';
+  }
+
+  function loadRankingsLookup() {
+    if (rankingsLookupPromise) return rankingsLookupPromise;
+    rankingsLookupPromise = fetch('./data/rankings.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(payload => {
+        const lookup = {};
+        if (payload && Array.isArray(payload.data)) {
+          payload.data.forEach(e => {
+            const division = e.division || '';
+            if (division.indexOf('Pound-for-Pound') !== -1) return;
+            const key = normalizeFighterNameForMatch(e.fighterName);
+            const label = rankBadgeLabelForEntry(e);
+            if (key && label) lookup[key] = label;
+          });
+        }
+        RANKINGS_LOOKUP = lookup;
+        return lookup;
+      })
+      .catch(() => { RANKINGS_LOOKUP = {}; return RANKINGS_LOOKUP; });
+    return rankingsLookupPromise;
+  }
+
+  function fighterDivisionRankBadge(name) {
+    const key = normalizeFighterNameForMatch(name);
+    return key ? (RANKINGS_LOOKUP[key] || '') : '';
+  }
+
   function parseApiEvent(rawEvt) {
     if (!rawEvt) return null;
     const dateStr = rawEvt.startsAt ? easternDateStr(rawEvt.startsAt) : '';
@@ -22100,8 +22150,8 @@ function openFighter(name, division, record, rank, initials, country) {
       const fiveRounds = isTitle || isMain || bout.numberOfRounds >= 5;
       const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : fiveRounds ? ' · 5 Rounds' : ' · 3 Rounds');
       const isMainCard = (bout.cardSection || '').toLowerCase().includes('main');
-      const r1 = red.rankText  ? '#' + red.rankText  : '';
-      const r2 = blue.rankText ? '#' + blue.rankText : '';
+      const r1 = red.rankText  ? '#' + red.rankText  : fighterDivisionRankBadge(red.fighterName);
+      const r2 = blue.rankText ? '#' + blue.rankText : fighterDivisionRankBadge(blue.fighterName);
       return {
         f1:   red.fighterName  || '',
         f2:   blue.fighterName || '',
@@ -22430,11 +22480,13 @@ function openFighter(name, division, record, rank, initials, country) {
     let evt = null;
     let apiData = null;
     let featuredRaw = null;
+    const rankingsLookupReady = loadRankingsLookup();
     try {
       const resp = await fetch('./data/event.json');
       if (resp.ok) {
         apiData = await resp.json();
         if (apiData.data && apiData.data.length) {
+          await rankingsLookupReady;
           featuredRaw = pickFeaturedRawEvent(apiData);
           evt = parseApiEvent(featuredRaw);
           if (featuredRaw && featuredRaw.startsAt) {
