@@ -646,6 +646,28 @@
       text-align: right;
     }
 
+    /* ── Record Breakdown dropdown (fighter profile) ── */
+    .record-breakdown-panel {
+      margin-top: 0.85rem;
+      padding: 1rem 1.25rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 1.25rem 1.5rem;
+      max-width: 700px;
+    }
+    .rb-section-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.74rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+
     /* ── FIGHTER PAGE ── */
     #page-fighter {
       display: none;
@@ -1785,7 +1807,9 @@
             <span class="w">27</span>-<span class="l">1</span>-<span class="d">0</span>
           </div>
           <div class="record-label">W · L · D</div>
+          <button type="button" class="fight-info-toggle" id="f-record-toggle" onclick="toggleRecordBreakdown(this)">Record Breakdown ⌄</button>
         </div>
+        <div class="record-breakdown-panel" id="f-record-breakdown" style="display:none;"></div>
       </div>
     </div>
   </div>
@@ -20392,6 +20416,91 @@ function populateFightHistory(name) {
  tbody.appendChild(tr);
  });
  }
+
+  // ── RECORD BREAKDOWN dropdown (fighter profile) ─────────────────────────
+  // FIGHT_HISTORY has no dedicated "organization"/"promotion" field — the
+  // promotion has to be inferred from the free-text `event` string (e.g.
+  // "Cage Warriors 123", "Bellator 296: McKee vs. Pitbull (Bellator FW Title)",
+  // "DWCS Season 5 Week 2"). This best-effort parser strips trailing
+  // parentheticals and leading years, folds UFC's in-house pipelines (Dana
+  // White's Contender Series, The Ultimate Fighter) into "UFC", then takes
+  // the leading run of words before the event number / "vs." / colon / dash
+  // as the promotion's brand name — which matches the "<ORG> <number>[: ...]"
+  // convention the vast majority of event titles follow.
+  const PROMOTION_ALIASES = {
+    'dwcs': 'UFC', 'tuf': 'UFC', 'the ultimate fighter': 'UFC',
+    "dana white's contender series": 'UFC',
+    'one championship': 'ONE Championship', 'one fc': 'ONE Championship',
+    'one fighting championship': 'ONE Championship',
+  };
+  function inferPromotion(eventName) {
+    let e = String(eventName == null ? '' : eventName).trim();
+    e = e.replace(/\s*\([^)]*\)\s*$/, '').trim(); // drop trailing "(debut)" / "(... Title)" notes
+    if (!e) return 'Unknown';
+    if (/^UFC\b/i.test(e) || /^(DWCS|TUF|The Ultimate Fighter)\b/i.test(e)) return 'UFC';
+    e = e.replace(/^\d{4}\s+/, ''); // drop a leading year, e.g. "2025 PFL First Round"
+    const m = e.match(/^([A-Za-z0-9][A-Za-z0-9.&'%\-]*(?:\s+[A-Za-z][A-Za-z0-9.&'%\-]*)*?)(?=\s*:|\s+(?:\d|vs\.?|-)|$)/i);
+    const name = (m && m[1] && m[1].trim()) || e;
+    return PROMOTION_ALIASES[name.toLowerCase()] || name;
+  }
+
+  function rbStatRow(label, value) {
+    return '<div class="fd-stat"><span class="fd-label">' + escHtmlAttr(label) + '</span><span class="fd-value">' + value + '</span></div>';
+  }
+
+  function populateRecordBreakdown(name) {
+    const panel = document.getElementById('f-record-breakdown');
+    if (!panel) return;
+    const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
+
+    let koTko = 0, sub = 0, dec = 0, draws = 0, noContests = 0;
+    const orgCounts = {};
+    fights.forEach(f => {
+      const method = String(f.method || '');
+      if (f.result === 'W') {
+        if (/^(KO|TKO|KO\/TKO)\b/i.test(method)) koTko++;
+        else if (/^Sub\b/i.test(method)) sub++;
+        else if (/^Decision\b/i.test(method)) dec++;
+      } else if (f.result === 'D') {
+        draws++;
+      } else if (f.result === 'NC') {
+        noContests++;
+      }
+      const org = inferPromotion(f.event);
+      orgCounts[org] = (orgCounts[org] || 0) + 1;
+    });
+
+    const orgRows = Object.keys(orgCounts)
+      .sort((a, b) => (orgCounts[b] - orgCounts[a]) || a.localeCompare(b))
+      .map(org => rbStatRow(org, orgCounts[org]))
+      .join('');
+
+    panel.innerHTML =
+      '<div class="rb-section">' +
+        '<div class="rb-section-title">Wins By Method</div>' +
+        rbStatRow('KO/TKO', koTko) +
+        rbStatRow('Submission', sub) +
+        rbStatRow('Decision', dec) +
+      '</div>' +
+      '<div class="rb-section">' +
+        '<div class="rb-section-title">Other Results</div>' +
+        rbStatRow('Draws', draws) +
+        rbStatRow('No Contests', noContests) +
+      '</div>' +
+      '<div class="rb-section">' +
+        '<div class="rb-section-title">Fights By Organization</div>' +
+        (orgRows || rbStatRow('No data', 0)) +
+      '</div>';
+  }
+
+  function toggleRecordBreakdown(btn) {
+    const panel = document.getElementById('f-record-breakdown');
+    if (!panel) return;
+    const isOpen = panel.style.display !== 'none';
+    panel.style.display = isOpen ? 'none' : '';
+    btn.classList.toggle('open', !isOpen);
+    btn.textContent = isOpen ? 'Record Breakdown ⌄' : 'Record Breakdown ⌃';
+  }
  function populateOddsHistory(name) {
   var tbody = document.getElementById("fo-tbody");
   var wrap = document.getElementById("fo-table-wrap");
@@ -20492,6 +20601,7 @@ function openFighter(name, division, record, rank, initials, country) {
  document.getElementById('f-meta').textContent = country || '';
  populateFighterStats(name);
  populateFightHistory(name);
+ populateRecordBreakdown(name);
  populateOddsHistory(name);
  populateTapeStudy(name);
  populateAccolades(name);
