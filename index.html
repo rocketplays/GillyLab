@@ -22598,6 +22598,27 @@ function openFighter(name, division, record, rank, initials, country) {
     return e.rank != null ? e.rank : 999;
   }
 
+  // The Cito rankings API sometimes bakes a fighter's nickname into the
+  // display name it returns (e.g. "Michael Venom Page") while every other
+  // data source on the site — FIGHTERS, FIGHT_HISTORY, FIGHTER_STATS,
+  // ODDS_HISTORY, TAPE_STUDY, ACCOLADES, PHOTO_MAP, and the local
+  // /photos/<slug>.png files — is keyed off the fighter's plain name
+  // ("Michael Page"). The same API entry also supplies a canonical
+  // fighterSlug ("michael-page") that matches nameToSlug() of the plain
+  // name FIGHTERS already has on file, so use that to resolve back to the
+  // name the rest of the site recognizes before wiring up clicks/avatars —
+  // otherwise openFighter() gets called with a name no other dataset has
+  // an entry for, and the profile renders with no photo, no fight history,
+  // no stats, etc. Falls back to the API's own name when there's no
+  // FIGHTERS match (e.g. an unranked newcomer we haven't added yet).
+  function resolveCanonicalFighterName(apiName, apiSlug) {
+    if (apiSlug) {
+      const match = FIGHTERS.find(f => nameToSlug(f.name) === apiSlug);
+      if (match) return match.name;
+    }
+    return apiName;
+  }
+
   function rankingPanelHTML(divisionName, entries, isP4P) {
     const info = RANKING_DIVISIONS[divisionName];
     // Prefer the true/unified champion for the panel-title badge; fall
@@ -22636,10 +22657,11 @@ function openFighter(name, division, record, rank, initials, country) {
       }
       const tagSpan = tag ? '<span class="rank-div-tag">' + tag + '</span>' : '';
       const rankArg = isP4P ? tag : numLabel;
-      const onclick = "openFighter('" + escJsAttr(e.fighterName) + "','" + abbr + "','" +
+      const canonicalName = resolveCanonicalFighterName(e.fighterName, e.fighterSlug);
+      const onclick = "openFighter('" + escJsAttr(canonicalName) + "','" + abbr + "','" +
         escJsAttr(recordArg) + "','" + escJsAttr(rankArg) + "','" + escJsAttr(initials) + "','" + escJsAttr(country) + "')";
 
-      const nameAttr = String(e.fighterName == null ? '' : e.fighterName).replace(/"/g, '&quot;');
+      const nameAttr = String(canonicalName == null ? '' : canonicalName).replace(/"/g, '&quot;');
 
       return '<div class="' + rowClass + '">' +
         '<span class="rank-num">' + numLabel + '</span>' +
