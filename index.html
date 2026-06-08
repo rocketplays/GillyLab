@@ -1587,6 +1587,28 @@
         padding-bottom: 1rem;
       }
       .event-header.freedom-card::before { content: none; }
+
+      /* On mobile, .fight-card-section's top padding collapses to 0 (see the
+         .fight-card-section override in the 768px media query above), so the
+         "MAIN CARD" title now sits hard against .event-header's bottom
+         border with no breathing room — reading as an unwanted second line
+         stacked directly above the title's own divider line
+         (.section-line, which sits fine beside the title). Simplest fix:
+         drop that border on mobile, where there's no longer room for it to
+         read as a deliberate divider rather than visual clutter.
+         Selectors/specificity are matched 1:1 against every rule that sets
+         .event-header's border-bottom (base rule + the four special-card
+         !important overrides below) and placed after all of them in source
+         order, so this wins the cascade for every card variant. */
+      @media (max-width: 768px) {
+        .event-header,
+        .freedom-card .event-header,
+        .numbered-card .event-header,
+        .event-header.freedom-card,
+        .event-header.numbered-card {
+          border-bottom: none !important;
+        }
+      }
 </style>
 </head>
 <body>
