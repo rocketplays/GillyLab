@@ -23,6 +23,19 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* `overflow-x: hidden` was only ever set on <body>, not <html>. On
+       mobile, <html> is the element that actually scrolls the page — if
+       any descendant overflows horizontally (see #fh-table-wrap below),
+       <body>'s own overflow:hidden clips nothing useful and <html> still
+       stretches to the overflowing content's width. The browser then has
+       to fit that wider-than-device-width layout viewport on screen,
+       which is exactly what reads as the page being "zoomed in" (you
+       have to scroll/pinch to see the edges, and zooming back out leaves
+       the properly-sized header/hero looking too narrow for the inflated
+       canvas). Hiding overflow on <html> too keeps the layout viewport
+       pinned to device-width regardless of what overflows inside it. */
+    html { overflow-x: hidden; }
+
     body {
       background: var(--bg);
       color: var(--text);
@@ -1193,6 +1206,25 @@
        deliberate transition without any extra JS bookkeeping. */
     .ftab-panel {
       animation: ftabPanelIn 0.3s ease;
+    }
+
+    /* Fight History has 7 free-text columns (Date/Opponent/Result/Method/
+       Round/Time/Event) rendered into a `width:100%; ` table with the
+       default `table-layout:auto`. Auto layout treats a percentage width
+       as a *minimum* — if the columns' combined min-content width (7x
+       cell padding alone is ~10.5rem, before any actual text) exceeds
+       the container, the table grows past 100% rather than shrinking its
+       columns. With no scroll boundary of its own, that overflow then
+       pushes .ftab-panel/.fighter-content/.page wider than the viewport
+       — the root cause of the fighter page feeling "zoomed in" on phones
+       (see the <html> overflow comment above for how that manifests).
+       Tape Study / Odds History only have 2 columns and rarely overflow,
+       but they share the same un-constrained `width:100%` table pattern,
+       so giving all three wrappers their own horizontal scrollbar
+       contains any overflow locally instead of inflating the page. */
+    #fh-table-wrap, #ft-table-wrap, #fo-table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     @keyframes ftabPanelIn {
       from { opacity: 0; transform: translateY(10px); }
