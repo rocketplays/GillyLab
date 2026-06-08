@@ -1962,14 +1962,14 @@
 
   <div class="fighter-stats-grid">
     <div class="stat-card">
-      <div class="stat-card-label">Height</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Feet / Inches</div>
-    </div>
-    <div class="stat-card">
       <div class="stat-card-label">Age</div>
       <div class="stat-card-value">—</div>
       <div class="stat-card-sub">Years old</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Height</div>
+      <div class="stat-card-value">—</div>
+      <div class="stat-card-sub">Feet / Inches</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Reach</div>
@@ -1987,24 +1987,14 @@
       <div class="stat-card-sub">Significant Strikes</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Strikes Absorbed / Min</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Significant Strikes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Takedown Accuracy</div>
-      <div class="stat-card-value">62%</div>
-      <div class="stat-card-sub">Per attempt</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Submission Avg</div>
-      <div class="stat-card-value">1.4</div>
-      <div class="stat-card-sub">Per 15 minutes</div>
-    </div>
-    <div class="stat-card">
       <div class="stat-card-label">Striking Accuracy</div>
       <div class="stat-card-value">—</div>
       <div class="stat-card-sub">Of significant strikes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Strikes Absorbed / Min</div>
+      <div class="stat-card-value">—</div>
+      <div class="stat-card-sub">Significant Strikes</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Striking Defense</div>
@@ -2017,9 +2007,24 @@
       <div class="stat-card-sub">Per 15 minutes</div>
     </div>
     <div class="stat-card">
+      <div class="stat-card-label">Takedowns Landed</div>
+      <div class="stat-card-value">3.4</div>
+      <div class="stat-card-sub">Per 15 minutes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Takedown Accuracy</div>
+      <div class="stat-card-value">62%</div>
+      <div class="stat-card-sub">Per attempt</div>
+    </div>
+    <div class="stat-card">
       <div class="stat-card-label">Takedown Defense</div>
       <div class="stat-card-value">89%</div>
       <div class="stat-card-sub">Opponents stopped</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Submission Avg</div>
+      <div class="stat-card-value">1.4</div>
+      <div class="stat-card-sub">Per 15 minutes</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Finish Rate</div>
@@ -2030,11 +2035,6 @@
       <div class="stat-card-label">Win Streak</div>
       <div class="stat-card-value">14</div>
       <div class="stat-card-sub">Current streak</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Takedowns Landed</div>
-      <div class="stat-card-value">3.4</div>
-      <div class="stat-card-sub">Per 15 minutes</div>
     </div>
   </div>
 
@@ -3808,21 +3808,26 @@
  document.querySelectorAll('.stat-card .stat-card-value').forEach(el => el.textContent = '—');
  return;
  }
- setStatCard(0, s.ht, "Height");
- setStatCard(1, calcAge(s.dob), "Years old");
+ // Card order in the markup is: Age, Height, Reach, Stance, Strikes
+ // Landed/Min, Striking Accuracy, Strikes Absorbed/Min, Striking
+ // Defense, Knockdowns Landed, Takedowns Landed, Takedown Accuracy,
+ // Takedown Defense, Submission Avg, Finish Rate, Win Streak — keep
+ // these indices in lockstep with that DOM order (see #page-fighter).
+ setStatCard(0, calcAge(s.dob), "Years old");
+ setStatCard(1, s.ht, "Height");
  setStatCard(2, s.reach, "Reach (inches)");
  setStatCard(3, s.stance, "Fighting stance");
  setStatCard(4, s.slpm, "Sig. strikes / min");
- setStatCard(5, s.sapm, "Sig. strikes / min");
- setStatCard(6, s.tdAcc, "Takedown accuracy");
- setStatCard(7, s.subAvg, "Per 15 minutes");
- setStatCard(8, s.strAcc, "Of significant strikes");
- setStatCard(9, s.strDef, "Strike defense");
- setStatCard(10, s.kd, "Per 15 minutes");
+ setStatCard(5, s.strAcc, "Of significant strikes");
+ setStatCard(6, s.sapm, "Sig. strikes / min");
+ setStatCard(7, s.strDef, "Strike defense");
+ setStatCard(8, s.kd, "Per 15 minutes");
+ setStatCard(9, s.tdLanded, "Per 15 minutes");
+ setStatCard(10, s.tdAcc, "Takedown accuracy");
  setStatCard(11, s.tdDef, "Takedown defense");
- setStatCard(12, s.finRate, "Of all wins");
- setStatCard(13, s.streak, "Current streak");
- setStatCard(14, s.tdLanded, "Per 15 minutes");
+ setStatCard(12, s.subAvg, "Per 15 minutes");
+ setStatCard(13, s.finRate, "Of all wins");
+ setStatCard(14, s.streak, "Current streak");
  }
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
  const TAPE_STUDY = {
