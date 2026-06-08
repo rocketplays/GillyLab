@@ -1191,11 +1191,35 @@
       max-width: 100%;
     }
 
+    /* Small circular fighter photo shown next to each ranked fighter's
+       name, styled to match .proj-avatar on the Win Projections page
+       (same size/shape/fallback look — see loadRankingPhotos()). */
+    .rank-avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .rank-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 50%;
+      display: block;
+    }
+
     @media (max-width: 480px) {
       .rank-num { min-width: 28px; font-size: 0.9rem; }
       .rank-name { font-size: 0.95rem; }
       .rank-record { font-size: 0.75rem; min-width: 42px; }
       .rank-div-tag { font-size: 0.6rem; letter-spacing: 0.06em; padding: 0.12rem 0.35rem; }
+      .rank-avatar { width: 26px; height: 26px; min-width: 26px; }
     }
 
     /* ─────────────────────────────────────────
@@ -20897,6 +20921,33 @@ function openFighter(name, division, record, rank, initials, country) {
     });
   }
 
+  // Same local-photo-first / PHOTO_MAP-fallback approach as
+  // loadHomePagePhotos() / loadProjectionPhotos(), but for the small
+  // circular avatars rendered next to each fighter's name on the
+  // Rankings page (.rank-avatar). The name is carried on a data-fighter
+  // attribute, since the rankings markup doesn't share the
+  // .fight-row/.fighter-cell structure either.
+  function loadRankingPhotos() {
+    document.querySelectorAll('#rankingPanels .rank-avatar').forEach(cell => {
+      const name = cell.getAttribute('data-fighter');
+      if (!name || cell.querySelector('img')) return;
+      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const mapUrl   = PHOTO_MAP[name];
+      const img = document.createElement('img');
+      img.alt = name;
+      img.onload = () => {
+        cell.innerHTML = '';
+        cell.appendChild(img);
+      };
+      img.onerror = () => {
+        if (mapUrl && img.src.indexOf('./photos') !== -1) {
+          img.src = mapUrl; // fall back to PHOTO_MAP
+        }
+      };
+      img.src = localUrl;
+    });
+  }
+
   function openFighterByName(name) {
     const f = FIGHTERS.find(f => f.name === name);
     if (f) openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
@@ -22225,8 +22276,11 @@ function openFighter(name, division, record, rank, initials, country) {
       const onclick = "openFighter('" + escJsAttr(e.fighterName) + "','" + abbr + "','" +
         escJsAttr(recordArg) + "','" + escJsAttr(rankArg) + "','" + escJsAttr(initials) + "','" + escJsAttr(country) + "')";
 
+      const nameAttr = String(e.fighterName == null ? '' : e.fighterName).replace(/"/g, '&quot;');
+
       return '<div class="' + rowClass + '">' +
         '<span class="rank-num">' + numLabel + '</span>' +
+        '<div class="rank-avatar" data-fighter="' + nameAttr + '"></div>' +
         '<span class="rank-name" onclick="' + onclick + '">' + e.fighterName + '</span>' +
         '<span class="rank-record">' + record + '</span>' +
         tagSpan +
@@ -22266,6 +22320,7 @@ function openFighter(name, division, record, rank, initials, country) {
     }).join('');
     if (!panels) return;
     container.innerHTML = panels;
+    loadRankingPhotos();
 
     // Reset tab highlighting to the first available panel
     document.querySelectorAll('#rankingDivTabs .rank-div-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
