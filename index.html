@@ -3528,6 +3528,7 @@
  "Lerryan Douglas": { ht:"5'9\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:11.67,tdAcc:"87%", subAvg:0.0, strDef:"66%", kd:0.8, tdDef:"0%", finRate:"77%", streak:0, tdLanded:0.00 },
  "Losene Keita": { ht:"5'7\"", dob:"1997-12-30", reach:'72"', stance:"Orthodox", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"75%", streak:0, tdLanded:0.00 },
  "Daniel Santos": { ht:"5'7\"", dob:"1995-03-12", reach:'67"', stance:"Orthodox", slpm:4.76, tdAcc:"40%", subAvg:0.0, strDef:"51%", kd:0.3, tdDef:"73%", finRate:"64%", streak:0, tdLanded:3.01 },
+ "Aaron Pico": { ht:'5\'8"', dob:"1996-09-23", reach:'70.5"', stance:"Orthodox", slpm:6.16, strAcc:"53%", sapm:3.11, strDef:"45%", kd:0.0, tdLanded:6.54, tdAcc:"50%", tdDef:"0%", subAvg:0.0, finRate:"78%", streak:1, gym:"Jackson Wink MMA Academy" },
  // ── Lightweight (more) ──
  // ── Welterweight (more) ──
  "Myktybek Orolbai": { ht:"5'10\"", dob:"1998-02-10", reach:'74"', stance:"Orthodox", slpm:3.24, tdAcc:"45%", subAvg:0.6, strDef:"50%", kd:0.1, tdDef:"40%", finRate:"60%", streak:0, tdLanded:5.48 },
@@ -3863,6 +3864,27 @@
  }
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
  const TAPE_STUDY = {
+ "Aaron Pico": [
+  { opponent: "Patricio Pitbull",  url: "https://www.paramountplus.com/shows/video/ALVE01KN7MH4SBE2Z8PJDWEGN0EXZ3/", event: "UFC 327 · Apr 2026",                   section: "UFC" },
+  { opponent: "Lerone Murphy",     url: "https://www.youtube.com/watch?v=UgxHo1BJrdE",                              event: "UFC 319 · Aug 2025",                   section: null },
+  { opponent: "Henry Corrales",    url: "https://www.youtube.com/watch?v=Eg6nxA84_6c",                              event: "PFL vs. Bellator: Champions · Feb 2024", section: "PFL" },
+  { opponent: "Pedro Carvalho",    url: "https://www.youtube.com/watch?v=srvTeSy8FTo",                              event: "Bellator 299 · Oct 2023",              section: "Bellator" },
+  { opponent: "James Gonzalez",    url: "https://www.youtube.com/watch?v=Sya2scOKKEk",                              event: "Bellator 295 · Apr 2023",              section: null },
+  { opponent: "Aiden Lee",         url: null,                                                                        event: "Bellator 260 · Nov 2022",              section: null },
+  { opponent: "Jeremy Kennedy",    url: "https://www.youtube.com/watch?v=KA8Ovb5EbAY",                              event: "Bellator 286 · Oct 2022",              section: null },
+  { opponent: "Adli Edwards",      url: "https://www.youtube.com/watch?v=w1N_mQtQoHw",                              event: "Bellator 277 · Apr 2022",              section: null },
+  { opponent: "Justin Gonzales",   url: null,                                                                        event: "Bellator 271 · Nov 2021",              section: null },
+  { opponent: "John De Jesus",     url: "https://www.youtube.com/watch?v=JXXVJVyyAZg",                              event: "Bellator 252 · Nov 2020",              section: null },
+  { opponent: "Solo Hatley Jr",    url: null,                                                                        event: "Bellator 242 · Jul 2020",              section: null },
+  { opponent: "Daniel Carey",      url: "https://www.youtube.com/watch?v=PEq9ZvchfcY",                              event: "Bellator 238 · Jan 2020",              section: null },
+  { opponent: "Ádám Borics",       url: "https://www.youtube.com/watch?v=u2B50K5wpAM",                              event: "Bellator 222 · Jun 2019",              section: null },
+  { opponent: "Henry Corrales",    url: "https://www.facebook.com/BellatorMMA/videos/full-fight-aaron-pico-vs-henry-corrales-i/1569510064239611/", event: "Bellator 214 · Jan 2019", section: null },
+  { opponent: "Lenadro Higo",      url: "https://www.youtube.com/watch?v=IeAUggXzq9E",                              event: "Bellator 206 · Sep 2018",              section: null },
+  { opponent: "Lee Morrison",      url: "https://www.youtube.com/watch?v=b84aijqLWZg",                              event: "Bellator 190 · May 2018",              section: null },
+  { opponent: "Shane Kruchten",    url: "https://www.youtube.com/watch?v=c_CUehA2XrA",                              event: "Bellator 192 · Jan 2018",              section: null },
+  { opponent: "Justin Linn",       url: "https://www.youtube.com/watch?v=SqCuo0aGRlM",                              event: "Bellator 183 · Sep 2017",              section: null },
+  { opponent: "Zach Freeman",      url: "https://www.youtube.com/watch?v=3FzoSJhj74Q",                              event: "Bellator NYC · Jun 2017",              section: null },
+ ],
  "Khamzat Chimaev": [
  { opponent: "Dricus Du Plessis", url: "https://www.youtube.com/watch?v=Bbno9NZZWI0", event: "UFC 319 · Aug 2025", section: "UFC" },
  { opponent: "Robert Whittaker", url: "https://www.youtube.com/watch?v=-m1UVjKfE20", event: "UFC 308 · Oct 2024", section: null },
@@ -5903,8 +5925,23 @@
     { opponent: "Justine Kish", odds: -600 }
   ],
   "Aaron Pico": [
-    { opponent: "Patricio Pitbull", odds: -175 },
-    { opponent: "Lerone Murphy", odds: 340 }
+    { opponent: "Patricio Pitbull", odds: -270 },
+    { opponent: "Lerone Murphy", odds: -170 },
+    { opponent: "Henry Corrales", odds: -485 },
+    { opponent: "Pedro Carvalho", odds: -1100 },
+    { opponent: "James Gonzalez", odds: -750 },
+    { opponent: "Aiden Lee", odds: -700 },
+    { opponent: "Jeremy Kennedy", odds: -700 },
+    { opponent: "Adli Edwards", odds: -1200 },
+    { opponent: "Justin Gonzales", odds: -400 },
+    { opponent: "John De Jesus", odds: -1175 },
+    { opponent: "Solo Hatley Jr", odds: -760 },
+    { opponent: "Daniel Carey", odds: -800 },
+    { opponent: "Henry Corrales (2019)", odds: -585 },
+    { opponent: "Lenadro Higo", odds: -365 },
+    { opponent: "Lee Morrison", odds: -530 },
+    { opponent: "Shane Kruchten", odds: -900 },
+    { opponent: "Justin Linn", odds: -760 }
   ],
   "Patricio Pitbull": [
     { opponent: "Aaron Pico", odds: 175 },
@@ -13308,28 +13345,25 @@ const FIGHT_HISTORY = {
     { date: "Dec 7, 2019", opponent: "Macy Chiasson", result: "L", method: "TKO (Punches)", round: 2, time: "4:04", event: "LFA 78" }
   ],
   "Aaron Pico": [
-    { date: "Apr 11, 2026", opponent: "Patricio Pitbull", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 327: Procházka vs. Ulberg" },
-    { date: "Aug 16, 2025", opponent: "Lerone Murphy", result: "L", method: "KO (Spinning Elbow)", round: 1, time: "3:21", event: "UFC 319: du Plessis vs. Chimaev (UFC debut)" },
-    { date: "Feb 24, 2024", opponent: "Henry Corrales", result: "W", method: "TKO (Punches)", round: 1, time: "2:50", event: "PFL vs. Bellator: Champions" },
-    { date: "Oct 7, 2023", opponent: "Pedro Carvalho", result: "W", method: "TKO (Punches)", round: 2, time: "1:30", event: "Bellator Champions Series: Dublin" },
-    { date: "Apr 22, 2023", opponent: "James Gonzalez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 294" },
-    { date: "Nov 18, 2022", opponent: "Aiden Lee", result: "W", method: "KO (Punch)", round: 1, time: "0:26", event: "Bellator 289" },
-    { date: "Jul 22, 2022", opponent: "Solo Hatley Jr.", result: "W", method: "KO (Punches)", round: 1, time: "3:49", event: "Bellator 283" },
-    { date: "Apr 2, 2022", opponent: "Daniel Carey", result: "W", method: "KO (Punches)", round: 2, time: "2:04", event: "Bellator 276" },
-    { date: "Oct 16, 2021", opponent: "Jordan Rodrigues", result: "L", method: "NC", round: 1, time: "4:27", event: "Bellator 269 (NC - injury)" },
-    { date: "Apr 9, 2021", opponent: "Justin Gonzalez", result: "W", method: "KO (Punch)", round: 1, time: "0:16", event: "Bellator 255" },
-    { date: "Jan 30, 2021", opponent: "Aidan Lee", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 253" },
-    { date: "Jan 29, 2021", opponent: "Diego Lopes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 253" },
-    { date: "Jan 17, 2020", opponent: "Henry Corrales", result: "L", method: "TKO (Punches)", round: 3, time: "4:08", event: "Bellator 238" },
-    { date: "Oct 25, 2019", opponent: "Adii Edwards", result: "W", method: "TKO (Punches)", round: 1, time: "1:18", event: "Bellator 232" },
-    { date: "Apr 12, 2019", opponent: "Adam Borics", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 220" },
-    { date: "Jan 26, 2019", opponent: "Michael Chico", result: "W", method: "KO (Punches)", round: 1, time: "1:25", event: "Bellator 215" },
-    { date: "Sep 29, 2018", opponent: "Leandro Silva", result: "W", method: "KO (Punches)", round: 1, time: "1:10", event: "Bellator 206" },
-    { date: "Jun 23, 2018", opponent: "Zach Freeman", result: "W", method: "KO (Punches)", round: 1, time: "1:44", event: "Bellator 201" },
-    { date: "Feb 16, 2018", opponent: "Lucas Mineiro", result: "W", method: "TKO (Punches)", round: 2, time: "1:31", event: "Bellator 195" },
-    { date: "Jan 20, 2018", opponent: "Shane Krutchen", result: "W", method: "KO (Punch)", round: 1, time: "0:13", event: "Bellator 192" },
-    { date: "Sep 23, 2017", opponent: "Justin Linn", result: "W", method: "KO (Punches)", round: 1, time: "0:40", event: "Bellator 183" },
-    { date: "Jun 24, 2017", opponent: "Zach Freeman", result: "L", method: "Sub (RNC)", round: 1, time: "0:24", event: "Bellator NYC (debut)" }
+    { date: "Apr 11, 2026", opponent: "Patricio Pitbull", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 327: Procházka vs. Ulberg", org: "UFC" },
+    { date: "Aug 16, 2025", opponent: "Lerone Murphy", result: "L", method: "KO (Spinning Elbow)", round: 1, time: "3:21", event: "UFC 319: du Plessis vs. Chimaev", org: "UFC" },
+    { date: "Feb 24, 2024", opponent: "Henry Corrales", result: "W", method: "TKO (Punches)", round: 1, time: "4:53", event: "PFL vs. Bellator: Champions", org: "PFL" },
+    { date: "Oct 7, 2023", opponent: "Pedro Carvalho", result: "W", method: "TKO (Punches)", round: 1, time: "3:05", event: "Bellator 299", org: "Bellator" },
+    { date: "Apr 22, 2023", opponent: "James Gonzalez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 295", org: "Bellator" },
+    { date: "Nov 18, 2022", opponent: "Aiden Lee", result: "W", method: "Anaconda Choke", round: 1, time: "1:33", event: "Bellator 260", org: "Bellator" },
+    { date: "Oct 1, 2022", opponent: "Jeremy Kennedy", result: "L", method: "Shoulder injury", round: 1, time: "5:00", event: "Bellator 286", org: "Bellator" },
+    { date: "Apr 15, 2022", opponent: "Adli Edwards", result: "W", method: "KO (Punch)", round: 1, time: "0:55", event: "Bellator 277", org: "Bellator" },
+    { date: "Nov 12, 2021", opponent: "Justin Gonzales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 271", org: "Bellator" },
+    { date: "Nov 12, 2020", opponent: "John De Jesus", result: "W", method: "KO (Punches)", round: 2, time: "4:12", event: "Bellator 252", org: "Bellator" },
+    { date: "Jul 24, 2020", opponent: "Solo Hatley Jr", result: "W", method: "Rear Naked Choke", round: 1, time: "2:10", event: "Bellator 242", org: "Bellator" },
+    { date: "Jan 25, 2020", opponent: "Daniel Carey", result: "W", method: "KO (Punches)", round: 2, time: "0:15", event: "Bellator 238", org: "Bellator" },
+    { date: "Jun 14, 2019", opponent: "Ádám Borics", result: "L", method: "KO (Flying Knee to Ground & Pound)", round: 2, time: "3:55", event: "Bellator 222", org: "Bellator" },
+    { date: "Jan 26, 2019", opponent: "Henry Corrales", result: "L", method: "KO (Punches)", round: 1, time: "1:07", event: "Bellator 214", org: "Bellator" },
+    { date: "Sep 29, 2018", opponent: "Lenadro Higo", result: "W", method: "KO (Punches)", round: 1, time: "3:19", event: "Bellator 206", org: "Bellator" },
+    { date: "May 12, 2018", opponent: "Lee Morrison", result: "W", method: "KO (Punches)", round: 1, time: "1:10", event: "Bellator 190", org: "Bellator" },
+    { date: "Jan 20, 2018", opponent: "Shane Kruchten", result: "W", method: "TKO (Body Shot)", round: 1, time: "0:37", event: "Bellator 192", org: "Bellator" },
+    { date: "Sep 23, 2017", opponent: "Justin Linn", result: "W", method: "KO (Punches)", round: 1, time: "3:45", event: "Bellator 183", org: "Bellator" },
+    { date: "Jun 24, 2017", opponent: "Zach Freeman", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "0:24", event: "Bellator NYC", org: "Bellator" }
   ],
   "Patricio Pitbull": [
     { date: "Apr 11, 2026", opponent: "Aaron Pico", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 327: Procházka vs. Ulberg" },
@@ -20745,7 +20779,22 @@ function populateFightHistory(name) {
 // design (mirrors TAPE_STUDY / ODDS_HISTORY) — fighters without an entry
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
-const ACCOLADES = {};
+const ACCOLADES = {
+  "Aaron Pico": [
+    { icon: "🥋", title: "Blue Belt in BJJ", detail: "Roberto Alencar, earned 2021" },
+    { icon: "🤼", title: "2014 Grand Prix of Spain — Senior Freestyle 65 kg Silver", detail: "Madrid, Spain" },
+    { icon: "🤼", title: "2014 Soslan Andiyev — Senior Freestyle 70 kg Bronze", detail: "Alania, Russia" },
+    { icon: "🤼", title: "2014 Henri Deglane Challenge — Senior Freestyle 65 kg Champion", detail: "Nice, France" },
+    { icon: "🤼", title: "2015 Cerro Pelado International — Senior Freestyle 65 kg Champion", detail: "Havana, Cuba" },
+    { icon: "🤼", title: "2016 Alexander Medved International — Senior Freestyle 65 kg Bronze", detail: null },
+    { icon: "🤼", title: "2016 US Olympic Team Trials — Senior Freestyle 65 kg, 2nd Place", detail: null },
+    { icon: "🥊", title: "2009 National Junior Golden Gloves Champion", detail: "Mesquite, NV" },
+    { icon: "🥊", title: "2009 Desert Showdown Champion", detail: "Indio, CA" },
+    { icon: "🥊", title: "2008 National PAL Champion", detail: "Oxnard, CA" },
+    { icon: "🥊", title: "2008 California State PAL Champion", detail: "Oxnard, CA" },
+    { icon: "🥊", title: "2008 Desert Showdown Champion", detail: "Indio, CA" }
+  ]
+};
 
 function populateAccolades(name) {
   const list  = document.getElementById('fa-list');
