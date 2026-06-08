@@ -1411,7 +1411,12 @@
       .fighter-rank      { font-size: 0.58rem; }
       .fight-center      { width: 72px; min-width: 72px; padding: 0.5rem 0.2rem; }
       .fight-vs          { font-size: 0.8rem; }
-      .fight-weight      { font-size: 0.5rem; letter-spacing: 0.02em; white-space: normal; line-height: 1.2; }
+      /* At 0.5rem + 0.02em letter-spacing, "FEATHERWEIGHT" needs ~67px but
+         .fight-center's mobile content area is only ~65.6px (72px width minus
+         0.2rem side padding) — overflowing by ~1.5px is just enough to wrap
+         the last letter onto its own line. Drop the letter-spacing and trim
+         the font-size slightly so the longest one-word labels clear it. */
+      .fight-weight      { font-size: 0.47rem; letter-spacing: 0; white-space: normal; line-height: 1.2; }
       .fight-rounds      { font-size: 0.5rem; }
       .fight-info-toggle { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
       .fd-collapse-inner { padding: 0.85rem 0.85rem 0.6rem; }
