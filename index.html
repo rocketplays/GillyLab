@@ -20688,20 +20688,23 @@ function populateFightHistory(name) {
     const orgCounts = {};
     fights.forEach(f => {
       const method = String(f.method || '');
+      const isKoTko = /^(KO|TKO|KO\/TKO)\b/i.test(method) || /\binjury\b/i.test(method);
+      const isSub  = /^(Sub(mission)?|Rear[\s-]Naked|Anaconda|Triangle|Guillotine|Arm[\s-]?[Bb]ar|Kimura|Heel\s*Hook|D'?arce|Ezekiel|Kneebar|Omoplata)\b/i.test(method);
+      const isDec  = /^Decision\b/i.test(method);
       if (f.result === 'W') {
-        if (/^(KO|TKO|KO\/TKO)\b/i.test(method)) koTko++;
-        else if (/^Sub\b/i.test(method)) sub++;
-        else if (/^Decision\b/i.test(method)) dec++;
+        if (isKoTko) koTko++;
+        else if (isSub) sub++;
+        else if (isDec) dec++;
       } else if (f.result === 'L') {
-        if (/^(KO|TKO|KO\/TKO)\b/i.test(method)) lKoTko++;
-        else if (/^Sub\b/i.test(method)) lSub++;
-        else if (/^Decision\b/i.test(method)) lDec++;
+        if (isKoTko) lKoTko++;
+        else if (isSub) lSub++;
+        else if (isDec) lDec++;
       } else if (f.result === 'D') {
         draws++;
       } else if (f.result === 'NC') {
         noContests++;
       }
-      const org = inferPromotion(f.event);
+      const org = f.org || inferPromotion(f.event);
       orgCounts[org] = (orgCounts[org] || 0) + 1;
     });
 
