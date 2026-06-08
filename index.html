@@ -1504,11 +1504,21 @@
       .fighter-stats-grid {
         padding: 1rem;
         grid-template-columns: repeat(2, 1fr);
-        gap: 0.65rem;
+        gap: 0.5rem;
       }
-      .stat-card         { padding: 0.9rem; }
-      .stat-card-value   { font-size: 1.5rem; }
-      .stat-card-label   { font-size: 0.6rem; }
+      /* Desktop sizes each card for a 4-up row of fairly long labels
+         ("Strikes Landed / Min"), so .stat-card carries generous
+         1.25rem padding, a 2rem value, and 0.5rem of label->value
+         margin. At 2-up on phones the cards are much narrower but kept
+         that same spacing — which reads as a wall of mostly-empty boxes
+         (label, a couple lines of breathing room, one short number/dash,
+         repeat x14). Tighten padding and the label/value/sub rhythm so
+         each card hugs its actual content; with 14 cards stacked in 7
+         rows this compounds into noticeably less scrolling overall. */
+      .stat-card         { padding: 0.65rem 0.7rem; }
+      .stat-card-label   { font-size: 0.58rem; margin-bottom: 0.3rem; }
+      .stat-card-value   { font-size: 1.3rem; line-height: 1.15; }
+      .stat-card-sub     { font-size: 0.62rem; margin-top: 0.1rem; }
       .back-btn          { padding: 0 1rem; }
 
       /* Fighter tabs */
