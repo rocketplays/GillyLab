@@ -609,9 +609,29 @@
     #f-record-toggle.open {
       background: rgba(0, 230, 104, 0.2);
     }
+    /* Collapsible shell: a 1-row/1fr grid whose row track animates between
+       0fr (closed) and 1fr (open). This grows/shrinks to whatever height the
+       inner content needs — no guessed max-height — for a smooth "scroll
+       open" feel instead of an instant display:none/'' pop. The visual
+       chrome (background/border/padding) lives on .fd-collapse-inner so the
+       panel can clip to a true zero height when closed. */
     .fight-details-panel {
       max-width: 1300px;
-      margin: -0.75rem auto 0.75rem;
+      margin: -0.75rem auto 0;
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      overflow: hidden;
+      transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease;
+    }
+    .fight-details-panel.open {
+      margin-bottom: 0.75rem;
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .fight-details-panel > .fd-collapse-inner {
+      min-height: 0;
+      overflow: hidden;
       padding: 1rem 1.25rem 0.75rem;
       background: var(--card);
       border: 1px solid var(--border);
@@ -662,9 +682,27 @@
       text-align: right;
     }
 
-    /* ── Record Breakdown dropdown (fighter profile) ── */
+    /* ── Record Breakdown dropdown (fighter profile) ──
+       Same 0fr/1fr grid-row collapse shell as .fight-details-panel — grows
+       and shrinks to fit the panel's actual height for a smooth open/close
+       instead of popping via display:none/''. Visual chrome + the section
+       column-grid live on the inner .rb-grid so the shell can clip to zero. */
     .record-breakdown-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      overflow: hidden;
+      max-width: 700px;
+      transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-top 0.3s ease;
+    }
+    .record-breakdown-panel.open {
       margin-top: 0.85rem;
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+    .record-breakdown-panel > .rb-grid {
+      min-height: 0;
+      overflow: hidden;
       padding: 1rem 1.25rem;
       background: var(--card);
       border: 1px solid var(--border);
@@ -672,7 +710,6 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
       gap: 1.25rem 1.5rem;
-      max-width: 700px;
     }
     .rb-section-title {
       font-family: 'Barlow Condensed', sans-serif;
@@ -1377,7 +1414,7 @@
       .fight-weight      { font-size: 0.5rem; letter-spacing: 0.02em; white-space: normal; line-height: 1.2; }
       .fight-rounds      { font-size: 0.5rem; }
       .fight-info-toggle { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
-      .fight-details-panel { padding: 0.85rem 0.85rem 0.6rem; }
+      .fd-collapse-inner { padding: 0.85rem 0.85rem 0.6rem; }
       .fd-cols           { grid-template-columns: 1fr; gap: 0.85rem; }
       .fd-divider        { display: none; }
       .fd-name           { white-space: normal; }
@@ -1393,10 +1430,10 @@
       .fighter-big-meta  { font-size: 0.75rem; }
       .record-num        { font-size: 1.5rem; }
       #f-record-toggle   { font-size: 0.6rem; padding: 0.26rem 0.5rem; }
-      .record-breakdown-panel {
+      .record-breakdown-panel { max-width: 100%; }
+      .record-breakdown-panel.open { margin-top: 0.65rem; }
+      .record-breakdown-panel > .rb-grid {
         grid-template-columns: 1fr;
-        max-width: 100%;
-        margin-top: 0.65rem;
         padding: 0.85rem 1rem;
         gap: 0.85rem;
       }
@@ -1845,7 +1882,7 @@
           <div class="record-label">W · L · D</div>
           <button type="button" class="fight-info-toggle" id="f-record-toggle" onclick="toggleRecordBreakdown(this)">Record Breakdown ⌄</button>
         </div>
-        <div class="record-breakdown-panel" id="f-record-breakdown" style="display:none;"></div>
+        <div class="record-breakdown-panel" id="f-record-breakdown"><div class="rb-grid" id="f-record-breakdown-grid"></div></div>
       </div>
     </div>
   </div>
@@ -20485,7 +20522,7 @@ function populateFightHistory(name) {
   }
 
   function populateRecordBreakdown(name) {
-    const panel = document.getElementById('f-record-breakdown');
+    const panel = document.getElementById('f-record-breakdown-grid');
     if (!panel) return;
     const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
 
@@ -20532,8 +20569,8 @@ function populateFightHistory(name) {
   function toggleRecordBreakdown(btn) {
     const panel = document.getElementById('f-record-breakdown');
     if (!panel) return;
-    const isOpen = panel.style.display !== 'none';
-    panel.style.display = isOpen ? 'none' : '';
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
     btn.classList.toggle('open', !isOpen);
     btn.textContent = isOpen ? 'Record Breakdown ⌄' : 'Record Breakdown ⌃';
   }
@@ -21609,12 +21646,12 @@ function openFighter(name, division, record, rank, initials, country) {
         '<div class="fd-stat"><span class="fd-label">Last 5</span><span class="fd-value">' + lastFiveFormHTML(name) + '</span></div>' +
       '</div>';
     }
-    return '<div class="fight-details-panel" style="display:none;">' +
-      '<div class="fd-cols">' +
+    return '<div class="fight-details-panel">' +
+      '<div class="fd-collapse-inner"><div class="fd-cols">' +
         col(f.f1, s1, '1') +
         '<div class="fd-divider"></div>' +
         col(f.f2, s2, '2') +
-      '</div>' +
+      '</div></div>' +
     '</div>';
   }
 
@@ -21622,8 +21659,8 @@ function openFighter(name, division, record, rank, initials, country) {
     const row = btn.closest('.fight-row');
     const panel = row && row.nextElementSibling;
     if (!panel || !panel.classList.contains('fight-details-panel')) return;
-    const isOpen = panel.style.display !== 'none';
-    panel.style.display = isOpen ? 'none' : '';
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
     btn.classList.toggle('open', !isOpen);
     btn.textContent = isOpen ? 'Fight Info ⌄' : 'Fight Info ⌃';
     if (!isOpen) fillPendingMoneylines();
