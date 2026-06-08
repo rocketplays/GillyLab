@@ -218,6 +218,21 @@
 
     .page.active { display: block; }
 
+    /* Brief exit fade applied to the outgoing page by navigate() right
+       before it swaps .active to the new page — turns what would
+       otherwise be an instant display:none hard-cut into a quick
+       crossfade (fade+lift out, then the incoming page plays its normal
+       fadeIn entrance below). Kept short (0.15s) so it still feels snappy
+       rather than sluggish. `animation: none` stops the entrance keyframe
+       from fighting the exit transition on rapid back-and-forth nav. */
+    .page.page-leaving {
+      animation: none;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      pointer-events: none;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -2736,21 +2751,30 @@
  odds: '← Back to Odds',
  rankings: '← Back to Rankings',
  };
+ // Tracks the in-flight page-swap timer so that rapid back-to-back
+ // navigation (e.g. mashing nav tabs) cancels any pending swap rather
+ // than letting a stale one land after a newer navigation has started.
+ let pageTransitionTimer = null;
+
  function navigate(page) {
- if (page === 'fighter') {
+ const targetId = (page === 'fighter') ? 'page-fighter' : ('page-' + page);
+ const targetPage = document.getElementById(targetId);
+ if (!targetPage) return;
  const activePage = document.querySelector('.page.active');
+
+ if (page === 'fighter') {
  if (activePage && activePage.id !== 'page-fighter') {
  fighterReturnPage = activePage.id.replace(/^page-/, '');
  }
  const backBtn = document.getElementById('fighter-back-btn');
  if (backBtn) backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
  }
- document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+
+ const applySwitch = () => {
+ document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.classList.remove('page-leaving'); });
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
- if (page === 'fighter') {
- document.getElementById('page-fighter').classList.add('active');
- } else {
- document.getElementById('page-' + page).classList.add('active');
+ targetPage.classList.add('active');
+ if (page !== 'fighter') {
  const tab = document.getElementById('tab-' + page);
  if (tab) {
  tab.classList.add('active');
@@ -2758,6 +2782,23 @@
  const labelEl = document.getElementById('nav-dropdown-label');
  if (labelEl) labelEl.textContent = tab.textContent.trim();
  }
+ }
+ };
+
+ if (pageTransitionTimer) { clearTimeout(pageTransitionTimer); pageTransitionTimer = null; }
+
+ // Quick fade-+-lift the outgoing page out, THEN swap .active classes —
+ // turns the old instant display:none hard-cut into a brief crossfade.
+ // The incoming page swaps in with display:block and immediately plays
+ // its existing .page { animation: fadeIn } entrance (the keyframe
+ // restarts automatically whenever an element flips from display:none
+ // to displayed), so together they read as one quick "fade out, fade
+ // in" transition rather than two unrelated effects.
+ if (activePage && activePage !== targetPage) {
+ activePage.classList.add('page-leaving');
+ pageTransitionTimer = setTimeout(() => { pageTransitionTimer = null; applySwitch(); }, 140);
+ } else {
+ applySwitch();
  }
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
