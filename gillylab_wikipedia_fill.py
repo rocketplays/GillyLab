@@ -416,6 +416,12 @@ def parse_ranks(wikitext):
         # Skip bare section headers (e.g. "Wrestling", "BJJ")
         if clean.lower() in SECTION_HEADERS:
             continue
+        # Skip stray infobox parameters (e.g. "| years_active = 2010–present")
+        if clean.startswith('|') or re.search(r'^\w[\w_]* =', clean):
+            continue
+        # Skip year-range entries — these are career periods, not ranks (e.g. "2013–2017 (Kickboxing)")
+        if re.match(r'^\d{4}\s*[–—-]\s*(?:\d{4}|present)', clean, re.I):
+            continue
         if re.search(r"bjj|jiu.?jitsu|judo|10th planet", clean, re.I):
             icon = "🥋"
         elif re.search(r"muay thai|kickbox|boxing|karate|taekwondo|prajied", clean, re.I):
@@ -522,14 +528,26 @@ def parse_competitive_accolades(wikitext):
         if re.search(r'\{\{\s*bronze\s*medal', raw, re.I): return '🥉'
         return POS_TO_ICON.get(low)
 
+    # Matches wikitext cell attribute prefix: bgcolor="..." | align=left | content
+    # The attributes portion ends at the last | before actual content begins.
+    _CELL_ATTR_PAT = re.compile(
+        r'^(?:\s*(?:bgcolor|align|valign|style|colspan|rowspan|width|height|class|id)\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s|]+)\s*\|)+',
+        re.I
+    )
+
     def parse_table_cells(row_text):
         """Extract (raw, stripped) cell pairs from a wikitext table row.
-        Handles both || (data) and !! (header) inline separators."""
+        Handles both || (data) and !! (header) inline separators.
+        Strips HTML attribute prefixes like bgcolor='#CCFFCC' | align=left | from cells."""
         cells = []
         for segment in re.split(r'\n\s*[!|](?![!=])', row_text):
             for part in re.split(r'\|\||\!\!', segment):
                 raw = part.strip()
-                c   = strip_wt(raw).strip()
+                # Strip HTML attribute prefix (e.g. bgcolor="#CCFFCC" | align=left |)
+                attr_m = _CELL_ATTR_PAT.match(raw)
+                if attr_m:
+                    raw = raw[attr_m.end():].strip()
+                c = strip_wt(raw).strip()
                 if raw:
                     cells.append((raw, c))
         return cells
@@ -567,6 +585,7 @@ def parse_competitive_accolades(wikitext):
 
             rows = re.split(r'\n\s*\|-', table_text)
             pos_col = year_col = comp_col = event_col = -1
+            is_fight_record = False  # fight records (W/L/D) are not competition tables
 
             for row in rows:
                 is_header = bool(re.search(r'^\s*!', row, re.M))
@@ -575,6 +594,16 @@ def parse_competitive_accolades(wikitext):
                     continue
 
                 if is_header:
+                    header_text = ' '.join(c for _, c in cells).lower()
+                    # Skip tables that look like fight records (Res./Record/Method/Opponent)
+                    fight_record_signals = sum([
+                        bool(re.search(r'\bres\.?\b|\bresult\b', header_text)),
+                        bool(re.search(r'\brecord\b', header_text)),
+                        bool(re.search(r'\bmethod\b|\bvia\b', header_text)),
+                        bool(re.search(r'\bopponent\b', header_text)),
+                    ])
+                    if fight_record_signals >= 2:
+                        is_fight_record = True
                     for j, (_, c) in enumerate(cells):
                         cl = c.lower()
                         if any(w in cl for w in ('position','place','result','medal')):
@@ -585,6 +614,9 @@ def parse_competitive_accolades(wikitext):
                             comp_col = j
                         if any(w in cl for w in ('weight','class','category','division')):
                             event_col = j
+                    continue
+
+                if is_fight_record:
                     continue
 
                 # Determine medal icon — use raw text so medal templates aren't stripped

@@ -443,9 +443,9 @@ def main():
     new_stats_block2 = "\n".join(lines2)
     html = html[:stats_start_m2.start()] + new_stats_block2 + html[stats_start_m2.start() + len(stats_block2):]
 
-    # ── Inject Wikipedia rank accolades ──
-    # Only adds entries for fighters who have NO existing ACCOLADES entry.
-    # Fighters with manually-curated accolades are left untouched.
+    # ── Inject/update Wikipedia rank accolades ──
+    # Adds new entries for fighters with no existing ACCOLADES entry.
+    # Replaces existing entries for fighters who now have Wikipedia-sourced data.
     accolades_start_m3 = re.search(r'const ACCOLADES = \{', html)
     accolade_changes = {}
     if accolades_start_m3:
@@ -467,9 +467,6 @@ def main():
             ranks = data.get("accolades") or []
             if not ranks:
                 continue
-            # Skip if fighter already has an entry in ACCOLADES
-            if re.search(r'"' + re.escape(name) + r'"\s*:', acc_block):
-                continue
             # Build JS array entry
             js_lines = [f'  "{name}": [']
             for i, r in enumerate(ranks):
@@ -479,24 +476,37 @@ def main():
                 title = r["title"].replace('"', '\\"')
                 js_lines.append(f'    {{ icon: "{icon}", title: "{title}", detail: {detail_js} }}{comma}')
             js_lines.append("  ],")
-            inserts.append("\n".join(js_lines))
-            accolade_changes[name] = [r["title"] for r in ranks]
+            new_entry = "\n".join(js_lines)
 
+            # Replace existing entry if present, otherwise queue for insertion
+            existing_pat = re.compile(
+                r'[ \t]*"' + re.escape(name) + r'"\s*:\s*\[.*?\n[ \t]*\],?',
+                re.DOTALL
+            )
+            if existing_pat.search(acc_block):
+                acc_block = existing_pat.sub(new_entry, acc_block, count=1)
+                accolade_changes[name] = [r["title"] for r in ranks]
+            else:
+                inserts.append(new_entry)
+                accolade_changes[name] = [r["title"] for r in ranks]
+
+        # Splice updated acc_block back and append any new inserts
         if inserts:
-            injection = "\n" + "\n".join(inserts) + "\n"
-            html = html[:acc_end] + injection + html[acc_end:]
-            # Fix any missing commas: ]\n  "Name" → ],\n  "Name"
-            new_acc_m = re.search(r'const ACCOLADES = \{', html)
-            if new_acc_m:
-                na_start = new_acc_m.start()
-                d2, p2 = 1, new_acc_m.end()
-                while p2 < len(html) and d2 > 0:
-                    if html[p2] == '{': d2 += 1
-                    elif html[p2] == '}': d2 -= 1
-                    p2 += 1
-                acc_blk = html[na_start:p2]
-                fixed_blk = re.sub(r'\]\s*\n(\s*")', r'],\n\1', acc_blk)
-                html = html[:na_start] + fixed_blk + html[p2:]
+            acc_block = acc_block + "\n" + "\n".join(inserts) + "\n"
+        html = html[:acc_start] + acc_block + html[acc_end:]
+
+        # Fix any missing commas: ]\n  "Name" → ],\n  "Name"
+        new_acc_m = re.search(r'const ACCOLADES = \{', html)
+        if new_acc_m:
+            na_start = new_acc_m.start()
+            d2, p2 = 1, new_acc_m.end()
+            while p2 < len(html) and d2 > 0:
+                if html[p2] == '{': d2 += 1
+                elif html[p2] == '}': d2 -= 1
+                p2 += 1
+            acc_blk = html[na_start:p2]
+            fixed_blk = re.sub(r'\]\s*\n(\s*")', r'],\n\1', acc_blk)
+            html = html[:na_start] + fixed_blk + html[p2:]
 
     # ── Summary ──
     print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
