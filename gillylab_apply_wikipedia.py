@@ -1,0 +1,374 @@
+#!/usr/bin/env python3
+"""
+gillylab_apply_wikipedia.py
+
+Merges fighter_data_wikipedia.txt into index.html:
+  - Updates blank bio fields in FIGHTER_STATS (ht, dob, reach, stance, gym)
+  - Replaces FIGHT_HISTORY arrays where Wikipedia has more fights than current
+  - NEVER touches stats fields (slpm, strAcc, sapm, etc.)
+  - NEVER touches ODDS_HISTORY, TAPE_STUDY, ACCOLADES
+
+Usage:
+  python3 gillylab_apply_wikipedia.py [--dry-run]
+"""
+
+import re
+import sys
+import os
+
+SCRIPT_DIR    = os.path.dirname(os.path.abspath(__file__))
+WIKIPEDIA_TXT = os.path.join(SCRIPT_DIR, "fighter_data_wikipedia.txt")
+INDEX_HTML    = os.path.join(SCRIPT_DIR, "index.html")
+
+DRY_RUN = "--dry-run" in sys.argv
+
+
+# ── Parse fighter_data_wikipedia.txt ─────────────────────────────────────────
+
+def parse_wikipedia_txt(path):
+    """Returns {name: {"bio": {...}, "fights": [...]}}"""
+    fighters = {}
+    with open(path, encoding="utf-8") as f:
+        content = f.read()
+
+    blocks = re.split(r"^FIGHTER: ", content, flags=re.MULTILINE)
+    for block in blocks:
+        if not block.strip():
+            continue
+        lines = block.split("\n")
+        name = lines[0].strip()
+        if not name:
+            continue
+
+        bio     = {}
+        fights  = []
+        section = None
+        current_fight = {}
+
+        for line in lines[1:]:
+            stripped = line.strip()
+            if stripped == "ACCOLADES:":
+                section = "accolades"
+            elif stripped == "BIO:":
+                section = "bio"
+            elif stripped == "STATS:":
+                section = "stats"
+            elif stripped == "FIGHTS:":
+                section = "fights"
+            elif section == "bio":
+                if ": " in stripped:
+                    k, v = stripped.split(": ", 1)
+                    bio[k.strip()] = v.strip()
+                elif stripped.endswith(":"):
+                    bio[stripped[:-1].strip()] = ""
+            elif section == "fights":
+                if stripped == "---":
+                    if current_fight.get("date") and current_fight.get("opponent"):
+                        fights.append(current_fight)
+                    current_fight = {}
+                elif stripped.startswith("date:"):
+                    current_fight["date"] = stripped[5:].strip()
+                elif stripped.startswith("result:") and "|" in stripped:
+                    for part in stripped.split("|"):
+                        part = part.strip()
+                        if ":" in part:
+                            k, v = part.split(":", 1)
+                            current_fight[k.strip()] = v.strip()
+                elif stripped.startswith("event:"):
+                    rest = stripped[6:].strip()
+                    if "|" in rest:
+                        for part in rest.split("|"):
+                            part = part.strip()
+                            if ":" in part:
+                                k, v = part.split(":", 1)
+                                current_fight[k.strip()] = v.strip()
+                    else:
+                        current_fight["event"] = rest
+
+        fighters[name] = {"bio": bio, "fights": fights}
+    return fighters
+
+
+# ── JS formatting helpers ─────────────────────────────────────────────────────
+
+def js_ht(h):
+    """Double-quoted height string with inner double-quote escaped."""
+    return '"' + h.replace('"', '\\"') + '"'
+
+def js_reach(r):
+    """Single-quoted reach string."""
+    return "'" + r + "'"
+
+def fight_to_js(f, indent="    "):
+    """Convert a fight dict to a JS object literal string."""
+    parts = []
+    if f.get("date"):
+        parts.append(f'date: "{f["date"]}"')
+    if f.get("opponent"):
+        parts.append(f'opponent: "{f["opponent"].replace(chr(34), chr(92)+chr(34))}"')
+    if f.get("result"):
+        parts.append(f'result: "{f["result"]}"')
+    if f.get("method"):
+        parts.append(f'method: "{f["method"].replace(chr(34), chr(92)+chr(34))}"')
+    if f.get("round"):
+        try:
+            parts.append(f'round: {int(f["round"])}')
+        except (ValueError, TypeError):
+            parts.append(f'round: "{f["round"]}"')
+    if f.get("time"):
+        parts.append(f'time: "{f["time"]}"')
+    if f.get("event"):
+        parts.append(f'event: "{f["event"].replace(chr(34), chr(92)+chr(34))}"')
+    if f.get("org"):
+        parts.append(f'org: "{f["org"]}"')
+    return indent + "{ " + ", ".join(parts) + " }"
+
+
+# ── FIGHTER_STATS bio field update ───────────────────────────────────────────
+
+BLANK_BIO = {"--", "", "0\"", "0'", "0"}
+
+def _match_any_quote(field):
+    """Return regex that matches field:"value" or field:'value'."""
+    return rf'''{re.escape(field)}:(?:"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')'''
+
+def _current_val(m_str):
+    """Extract unquoted value from 'field:"val"' match string."""
+    val = re.sub(r'^[^:]+:', '', m_str).strip()
+    if val.startswith('"'):
+        val = val[1:-1].replace('\\"', '"')
+    elif val.startswith("'"):
+        val = val[1:-1].replace("\\'", "'")
+    return val
+
+def update_stats_line(line, bio):
+    """Update blank bio fields in a single FIGHTER_STATS line. Returns (new_line, [changes])."""
+    changes = []
+
+    h      = bio.get("height", "").strip()
+    dob    = bio.get("dob", "").strip()
+    reach  = bio.get("reach", "").strip()
+    stance = bio.get("stance", "").strip()
+    gym    = bio.get("gym", "").strip()
+
+    # ── height ──
+    if h:
+        pat = _match_any_quote("ht")
+        m = re.search(pat, line)
+        if m and _current_val(m.group()) in BLANK_BIO:
+            line = re.sub(pat, f"ht:{js_ht(h)}", line, count=1)
+            changes.append(f"ht → {h}")
+
+    # ── dob ──
+    if dob:
+        pat = _match_any_quote("dob")
+        m = re.search(pat, line)
+        if m and _current_val(m.group()) in BLANK_BIO:
+            line = re.sub(pat, f'dob:"{dob}"', line, count=1)
+            changes.append(f"dob → {dob}")
+
+    # ── reach ──
+    if reach:
+        pat = _match_any_quote("reach")
+        m = re.search(pat, line)
+        if m and _current_val(m.group()) in BLANK_BIO:
+            line = re.sub(pat, f"reach:{js_reach(reach)}", line, count=1)
+            changes.append(f"reach → {reach}")
+
+    # ── stance ──
+    if stance:
+        pat = _match_any_quote("stance")
+        m = re.search(pat, line)
+        if m and _current_val(m.group()) in BLANK_BIO:
+            line = re.sub(pat, f'stance:"{stance}"', line, count=1)
+            changes.append(f"stance → {stance}")
+
+    # ── gym: update existing blank, or add if key absent ──
+    if gym:
+        pat = _match_any_quote("gym")
+        m = re.search(pat, line)
+        if m:
+            if _current_val(m.group()) in {"", "--"}:
+                line = re.sub(pat, f'gym:"{gym}"', line, count=1)
+                changes.append(f"gym → {gym}")
+        else:
+            # Insert gym before the closing }
+            line = line.rstrip()
+            # strip trailing comma if present
+            trailing_comma = line.endswith(",")
+            if trailing_comma:
+                line = line[:-1].rstrip()
+            if line.endswith("}"):
+                line = line[:-1].rstrip() + f', gym:"{gym}" }}'
+            if trailing_comma:
+                line += ","
+            changes.append(f"gym added: {gym}")
+
+    return line, changes
+
+
+# ── FIGHT_HISTORY array operations ────────────────────────────────────────────
+
+def build_fight_array(name, fights):
+    """Build the full JS array string for a fighter's FIGHT_HISTORY entry."""
+    lines = [f'  "{name}": [']
+    for i, f in enumerate(fights):
+        comma = "," if i < len(fights) - 1 else ""
+        lines.append(fight_to_js(f) + comma)
+    lines.append("  ],")
+    return "\n".join(lines)
+
+def find_fighter_array(block, name):
+    """
+    Within `block` (the raw FIGHT_HISTORY JS block), find the start/end of
+    "name": [ ... ], and return (current_fight_count, block_start, block_end).
+    block_start/block_end are character offsets within `block`.
+    Returns (-1, -1, -1) if not found.
+    """
+    start_pat = re.compile(
+        r'(?:^|\n)\s*"' + re.escape(name) + r'":\s*\[',
+        re.MULTILINE
+    )
+    m = start_pat.search(block)
+    if not m:
+        return -1, -1, -1
+
+    # The array starts at the '[' character
+    array_open = block.index("[", m.start())
+    pos   = array_open + 1
+    depth = 1
+    while pos < len(block) and depth > 0:
+        ch = block[pos]
+        if ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+        pos += 1
+    # pos is just past the closing ']'
+    # include the trailing comma if present
+    end_pos = pos
+    if end_pos < len(block) and block[end_pos] == ",":
+        end_pos += 1
+
+    # entry starts at the newline before the name (or beginning of block)
+    entry_start = m.start()
+    if block[entry_start] == "\n":
+        entry_start += 1  # skip the leading newline; we'll keep it
+
+    array_text   = block[entry_start:end_pos]
+    fight_count  = len(re.findall(r'\bdate:', array_text))
+    return fight_count, entry_start, end_pos
+
+
+# ── Main ──────────────────────────────────────────────────────────────────────
+
+def main():
+    print(f"Loading {WIKIPEDIA_TXT} ...")
+    wiki = parse_wikipedia_txt(WIKIPEDIA_TXT)
+    print(f"  {len(wiki)} fighters parsed from Wikipedia data")
+
+    print(f"Loading {INDEX_HTML} ...")
+    with open(INDEX_HTML, encoding="utf-8") as f:
+        html = f.read()
+    print(f"  {len(html):,} chars")
+
+    # ── Locate block boundaries ──
+    # Block order in index.html: FIGHTER_STATS → TAPE_STUDY → ODDS_HISTORY → FIGHT_HISTORY → ACCOLADES
+    stats_start_m    = re.search(r'const FIGHTER_STATS = \{', html)
+    tape_start_m     = re.search(r'const TAPE_STUDY = \{', html)
+    fh_start_m       = re.search(r'const FIGHT_HISTORY = \{', html)
+    accolades_start_m = re.search(r'const ACCOLADES = \{', html)
+
+    if not stats_start_m or not fh_start_m:
+        print("ERROR: Could not locate FIGHTER_STATS or FIGHT_HISTORY in index.html")
+        sys.exit(1)
+
+    stats_block_start = stats_start_m.start()
+    # FIGHTER_STATS ends at TAPE_STUDY
+    stats_block_end   = tape_start_m.start() if tape_start_m else fh_start_m.start()
+    fh_block_start    = fh_start_m.start()
+    # FIGHT_HISTORY ends at ACCOLADES
+    fh_block_end      = accolades_start_m.start() if accolades_start_m else len(html)
+
+    # ── Update FIGHTER_STATS bio fields ──
+    stats_block = html[stats_block_start:stats_block_end]
+    lines = stats_block.split("\n")
+    bio_changes = {}
+
+    for name, data in wiki.items():
+        bio = data["bio"]
+        if not any(bio.get(k) for k in ("height", "dob", "reach", "stance", "gym")):
+            continue
+
+        name_pat = re.compile(r'^\s*"' + re.escape(name) + r'":\s*\{')
+        for i, line in enumerate(lines):
+            if name_pat.match(line):
+                new_line, changes = update_stats_line(line, bio)
+                if changes:
+                    lines[i] = new_line
+                    bio_changes[name] = changes
+                break
+
+    new_stats_block = "\n".join(lines)
+    # Splice updated stats block back in (preserve everything before and after)
+    html = html[:stats_block_start] + new_stats_block + html[stats_block_end:]
+
+    # ── Update FIGHT_HISTORY arrays ──
+    # Recompute fh offsets after stats splice (size may have changed slightly)
+    fh_block_start = html.index("const FIGHT_HISTORY = {")
+    accolades_idx  = html.find("const ACCOLADES = {")
+    fh_block_end   = accolades_idx if accolades_idx != -1 else len(html)
+
+    # Work on the FIGHT_HISTORY block in isolation to avoid false matches
+    fh_block_original = html[fh_block_start:fh_block_end]
+    fh_block          = fh_block_original
+    fh_changes        = {}
+    offset_delta      = 0  # track cumulative size change as we make replacements
+
+    # Sort by position in block so we can make replacements safely
+    replacements = []  # list of (name, old_start, old_end, new_text)
+
+    for name, data in wiki.items():
+        wiki_fights = data["fights"]
+        if not wiki_fights:
+            continue
+
+        count, rel_start, rel_end = find_fighter_array(fh_block_original, name)
+        if rel_start == -1:
+            continue  # not in FIGHT_HISTORY
+        if len(wiki_fights) <= count:
+            continue  # Wikipedia doesn't have more
+
+        new_array = build_fight_array(name, wiki_fights)
+        replacements.append((name, rel_start, rel_end, count, new_array))
+
+    # Apply replacements from end to start so offsets stay valid
+    replacements.sort(key=lambda x: x[1], reverse=True)
+    for name, rel_start, rel_end, old_count, new_array in replacements:
+        fh_block = fh_block[:rel_start] + new_array + "\n" + fh_block[rel_end:]
+        fh_changes[name] = (old_count, len(wiki[name]["fights"]))
+
+    html = html[:fh_block_start] + fh_block + html[fh_block_start + len(fh_block_original):]
+
+    # ── Summary ──
+    print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
+    for name, changes in sorted(bio_changes.items()):
+        print(f"  {name}: {', '.join(changes)}")
+
+    print(f"\n── Fight history replacements ({len(fh_changes)} fighters) ──")
+    for name, (old, new) in sorted(fh_changes.items()):
+        arrow = f"{old} → {new}"
+        print(f"  {name}: {arrow} fights")
+
+    print(f"\nTotal: {len(bio_changes)} bio updates, {len(fh_changes)} fight history replacements")
+
+    if DRY_RUN:
+        print("\n[DRY RUN — index.html not modified]")
+    else:
+        with open(INDEX_HTML, "w", encoding="utf-8") as f:
+            f.write(html)
+        print(f"\nWrote {INDEX_HTML}")
+
+
+if __name__ == "__main__":
+    main()
