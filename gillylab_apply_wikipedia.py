@@ -450,15 +450,16 @@ def main():
     accolade_changes = {}
     if accolades_start_m3:
         acc_start = accolades_start_m3.end()
-        # Find the closing }; of the ACCOLADES block
-        depth, pos = 1, acc_start
-        while pos < len(html) and depth > 0:
-            if html[pos] == '{':
-                depth += 1
-            elif html[pos] == '}':
-                depth -= 1
-            pos += 1
-        acc_end = pos - 1  # points at the closing }
+        # Find the closing }; of the ACCOLADES block.
+        # Use a regex to find \n}; at column 0 rather than a brace-depth counter,
+        # which can be fooled by { / } characters inside JS string values.
+        close_m = re.search(r'\n\s*\};\s*\n', html[acc_start:])
+        if not close_m:
+            print("ERROR: Could not find closing }; of ACCOLADES block")
+            close_m_pos = len(html)
+        else:
+            close_m_pos = acc_start + close_m.start() + 1  # +1 to skip the leading \n
+        acc_end = close_m_pos  # points at the closing }
 
         acc_block = html[acc_start:acc_end]
 
@@ -499,14 +500,12 @@ def main():
         new_acc_m = re.search(r'const ACCOLADES = \{', html)
         if new_acc_m:
             na_start = new_acc_m.start()
-            d2, p2 = 1, new_acc_m.end()
-            while p2 < len(html) and d2 > 0:
-                if html[p2] == '{': d2 += 1
-                elif html[p2] == '}': d2 -= 1
-                p2 += 1
-            acc_blk = html[na_start:p2]
-            fixed_blk = re.sub(r'\]\s*\n(\s*")', r'],\n\1', acc_blk)
-            html = html[:na_start] + fixed_blk + html[p2:]
+            na_close = re.search(r'\n\s*\};\s*\n', html[new_acc_m.end():])
+            if na_close:
+                p2 = new_acc_m.end() + na_close.end()
+                acc_blk = html[na_start:p2]
+                fixed_blk = re.sub(r'\]\s*\n(\s*")', r'],\n\1', acc_blk)
+                html = html[:na_start] + fixed_blk + html[p2:]
 
     # ── Summary ──
     print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
