@@ -28,6 +28,8 @@ Usage:
 """
 
 import re, sys, time, argparse, unicodedata
+
+_DEBUG_CELLS = False  # set True via --debug flag to dump raw cells on blank dates
 from pathlib import Path
 
 try:
@@ -185,6 +187,12 @@ def parse_date(text):
         return f"{MONTH_ABBR[mo]} {d}, {y}"
     # {{dts|YYYY|M|D}} — numeric month
     m = re.search(r"\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})", t)
+    if m:
+        y,mo,d = int(m.group(1)),int(m.group(2)),int(m.group(3))
+        if 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{MONTH_ABBR[mo]} {d}, {y}"
+    # {{dts|YYYY.MM.DD}} — dot-separated
+    m = re.search(r"(\d{4})\.(\d{2})\.(\d{2})", t)
     if m:
         y,mo,d = int(m.group(1)),int(m.group(2)),int(m.group(3))
         if 1 <= mo <= 12 and 1 <= d <= 31:
@@ -493,7 +501,13 @@ def _parse_table(table):
                         "", event, flags=re.I).strip()
         org   = infer_org(event)
 
-        date_str = parse_date(gc("date"))
+        date_raw = gc("date")
+        date_str = parse_date(date_raw)
+        if not date_str and _DEBUG_CELLS:
+            print(f"  [cells] {len(cells)} cells, col={col}")
+            for ci, cv in enumerate(cells):
+                print(f"    [{ci}] {repr(cv[:80])}")
+            print(f"    date raw: {repr(date_raw[:80])}")
         rnd  = strip_wt(gc("round")).strip()
         tim  = strip_wt(gc("time")).strip()
 
@@ -620,6 +634,10 @@ def parse_mma_record_start(wikitext):
 
         date_raw = cells[5] if len(cells) > 5 else ""
         date_str = parse_date(date_raw)
+        if not date_str and _DEBUG_CELLS:
+            print(f"  [mma_record_start cells] {len(cells)} cells, opponent={opponent!r}")
+            for ci, cv in enumerate(cells):
+                print(f"    [{ci}] {repr(cv[:100])}")
 
         rnd = strip_wt(cells[6] if len(cells) > 6 else "").strip()
         tim = strip_wt(cells[7] if len(cells) > 7 else "").strip()
@@ -811,6 +829,10 @@ def main():
         if not wt:
             print("Could not fetch wikitext.")
             return
+
+        if args.debug:
+            global _DEBUG_CELLS
+            _DEBUG_CELLS = True
 
         if args.debug:
             # ── raw birth_date field ──
