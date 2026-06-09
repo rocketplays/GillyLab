@@ -63,7 +63,7 @@ def parse_wikipedia_txt(path):
                     bio[stripped[:-1].strip()] = ""
             elif section == "fights":
                 if stripped == "---":
-                    if current_fight.get("date") and current_fight.get("opponent"):
+                    if current_fight.get("opponent"):
                         fights.append(current_fight)
                     current_fight = {}
                 elif stripped.startswith("date:"):
@@ -77,7 +77,10 @@ def parse_wikipedia_txt(path):
                 elif stripped.startswith("event:"):
                     rest = stripped[6:].strip()
                     if "|" in rest:
-                        for part in rest.split("|"):
+                        parts = rest.split("|")
+                        # first segment is the event name (no "key:" prefix)
+                        current_fight["event"] = parts[0].strip()
+                        for part in parts[1:]:
                             part = part.strip()
                             if ":" in part:
                                 k, v = part.split(":", 1)
