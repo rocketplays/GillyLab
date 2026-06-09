@@ -562,56 +562,104 @@ def _parse_table(table):
     return fights
 
 
+def _extract_mma_section(wikitext):
+    """
+    Try to narrow wikitext to just the MMA/Professional record section.
+    Returns the section text if found, otherwise the full wikitext.
+    Avoids picking up wrestling/grappling/NCAA record tables on the same page.
+    """
+    # Match headings like "== Mixed martial arts record ==", "== Professional record ==",
+    # "== MMA record ==". Excludes "== NCAA record ==", "== Freestyle record ==", etc.
+    MMA_SECTION_RE = re.compile(
+        r"^(={2,4})\s*(?:(?:professional|pro|mma|mixed\s+martial\s+arts)\s+)?record\s*\1\s*$",
+        re.MULTILINE | re.I
+    )
+    m = MMA_SECTION_RE.search(wikitext)
+    if not m:
+        return wikitext
+    level = len(m.group(1))
+    # End at next heading of same or higher level
+    end_re = re.compile(r"^={2," + str(level) + r"}[^=]", re.MULTILINE)
+    end_m  = end_re.search(wikitext, m.end())
+    section = wikitext[m.start() : end_m.start() if end_m else len(wikitext)]
+
+    # Within the section, strip any amateur subsection (and everything after it)
+    amateur_m = re.search(r"^={2,4}\s*amateur", section, re.MULTILINE | re.I)
+    if amateur_m:
+        section = section[:amateur_m.start()]
+
+    return section
+
+
 def parse_fight_record(wikitext):
     """
     Parse the professional MMA record wikitable.
-    Scans ALL wikitables in the page and picks the one that has
-    fight-record-style headers (Res. + Opponent). This is robust
-    against pages that put the table in subsections.
+    Narrows to the MMA record section when possible to avoid picking up
+    wrestling/grappling tables on pages with multiple record sections.
     Returns list of fight dicts (most-recent first).
     """
-    # Find all {|...|} wikitables in the full wikitext
+    section = _extract_mma_section(wikitext)
+
+    # Find all {|...|} wikitables in the section
     # Walk brace depth so nested tables don't truncate early
     tables = []
     i = 0
-    while i < len(wikitext):
-        if wikitext[i:i+2] == "{|":
+    while i < len(section):
+        if section[i:i+2] == "{|":
             depth, start = 1, i
             j = i + 2
-            while j < len(wikitext) and depth > 0:
-                if wikitext[j:j+2] == "{|":
+            while j < len(section) and depth > 0:
+                if section[j:j+2] == "{|":
                     depth += 1; j += 2
-                elif wikitext[j:j+2] == "|}":
+                elif section[j:j+2] == "|}":
                     depth -= 1; j += 2
                 else:
                     j += 1
-            tables.append(wikitext[start:j])
+            tables.append(section[start:j])
             i = j
         else:
             i += 1
 
-    # Collect best wikitable result
-    best_table = []
+    # Collect best wikitable result — score by MMA-method rows, not total rows.
+    # This avoids picking wrestling/grappling tables on pages with multiple record tables.
+    MMA_METHOD_RE = re.compile(
+        r"^(TKO|KO|Knockout|Submission|Decision\s*[\(\|]|NC|No Contest|DQ|Disqualification|Draw|Could Not Continue|Doctor)\b",
+        re.I
+    )
+    best_table      = []
+    best_mma_score  = -1
     for table in tables:
         first_2k = table[:2000].lower()
         if not (re.search(r"!\s*(?:[^!|\n]*\|)?\s*(?:res\.?|result)", first_2k) and
                 re.search(r"!\s*(?:[^!|\n]*\|)?\s*opponent", first_2k)):
             continue
         candidate = _parse_table(table)
-        if len(candidate) > len(best_table):
-            best_table = candidate
+        if not candidate:
+            continue
+        # Count rows with a recognisable MMA method signature
+        mma_score = sum(1 for f in candidate if MMA_METHOD_RE.match(f.get("method", "")))
+        if _DEBUG_CELLS:
+            print(f"  [table] rows={len(candidate)} mma_score={mma_score} first_opponent={candidate[0].get('opponent','?')!r:.40}")
+        if mma_score > best_mma_score or (mma_score == best_mma_score and len(candidate) > len(best_table)):
+            best_table     = candidate
+            best_mma_score = mma_score
 
     # Also try template-based parsers — always, not just as fallbacks
     # Some pages (Jon Jones) have a small grappling wikitable AND a large
     # {{MMA record start}} or {{MMA record win/loss}} block for the real MMA record
-    tmpl_start = parse_mma_record_start(wikitext)
-    tmpl_named = parse_mma_record_templates(wikitext)
+    tmpl_start = parse_mma_record_start(section)
+    tmpl_named = parse_mma_record_templates(section)
 
     if _DEBUG_CELLS:
         print(f"  [parse_fight_record] best_table={len(best_table)}, tmpl_start={len(tmpl_start)}, tmpl_named={len(tmpl_named)}")
 
-    # Return whichever parser found the most fights
-    return max([best_table, tmpl_start, tmpl_named], key=len)
+    # Prefer explicit MMA templates ({{MMA record start}}, {{MMA record win/loss}}) over
+    # generic wikitables — wikitables can be wrestling/grappling records on the same page.
+    # Only fall back to best_table if neither template parser found anything.
+    tmpl_best = max(tmpl_start, tmpl_named, key=len)
+    if tmpl_best:
+        return tmpl_best
+    return best_table
 
 
 def parse_mma_record_start(wikitext):
@@ -646,7 +694,8 @@ def parse_mma_record_start(wikitext):
         if not row.strip():
             continue
 
-        # Detect {{MMA record section|...}} dividers — skip amateur sections
+        # Detect {{MMA record section|...}} dividers — hard skip for amateur sections
+        # (explicit Wikipedia template, reliable)
         sec_m = re.search(r"\{\{MMA record section\s*\|([^}]*)\}\}", row, re.I)
         if sec_m:
             in_amateur_section = "amateur" in sec_m.group(1).lower()
@@ -711,9 +760,10 @@ def parse_mma_record_start(wikitext):
 
         event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim)[^)]*\)\s*$","",event_s,flags=re.I).strip()
 
-        # Skip amateur bouts (notes column contains "amateur")
-        notes = cells[9] if len(cells) > 9 else ""
-        if re.search(r"\bamateur\b", notes, re.I):
+        # Skip amateur bouts — check all trailing cells (index 8+) since notes column
+        # position varies by table (some tables have Location col, shifting notes from 8→9)
+        notes_text = " ".join(cells[8:]) if len(cells) > 8 else ""
+        if re.search(r"\bamateur\b", notes_text, re.I):
             continue
 
         date_raw = cells[5] if len(cells) > 5 else ""
