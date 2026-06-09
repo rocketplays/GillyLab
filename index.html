@@ -26304,54 +26304,72 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  // If already viewing a fighter, push that fighter onto the back-stack
  // so the back button can return to them. Clear the stack when coming
  // from a non-fighter page (fresh entry into fighter view).
+ const activePage = document.querySelector('.page.active');
+ const stayingOnFighter = activePage && activePage.id === 'page-fighter';
+
  if (!_skipPush) {
-   const activePage = document.querySelector('.page.active');
-   if (activePage && activePage.id === 'page-fighter' && currentFighter) {
+   if (stayingOnFighter && currentFighter) {
      fighterStack.push(Object.assign({}, currentFighter));
    } else {
      fighterStack = [];
    }
  }
  currentFighter = { name, division, record, rank, initials, country };
- document.getElementById('f-name').textContent = name;
- document.getElementById('f-division').textContent = division + ' · ' + rank;
- document.getElementById('f-avatar-initials').textContent = initials;
- const img = document.getElementById('f-avatar-img');
- const wrap = document.getElementById('f-avatar-wrap');
- // Reset to initials while loading
- img.style.display = 'none';
- img.src = '';
- wrap.classList.remove('has-photo');
- document.getElementById('f-avatar-initials').style.display = '';
- // Some fighters (typically newcomers/short-notice replacements) come back
- // from the API with a null record (e.g. "null-null-null" or ""). Guard
- // against rendering literal "undefined" — only split into W-L-D spans when
- // the record actually looks like one; otherwise show a neutral placeholder.
- const recMatch = /^(\d+)-(\d+)-(\d+)/.exec(record || '');
- document.getElementById('f-record').innerHTML = recMatch
- ? `<span class="w">${recMatch[1]}</span>-<span class="l">${recMatch[2]}</span>-<span class="d">${recMatch[3]}</span>`
- : `<span class="d">Record unavailable</span>`;
- document.getElementById('f-meta').textContent = country || '';
- populateFighterStats(name);
- populateFightHistory(name);
- populateRecordBreakdown(name);
- populateOddsHistory(name);
- populateTapeStudy(name);
- populateAccolades(name);
- navigate('fighter');
- // Override back button label: if we came from another fighter profile,
- // show that fighter's name; otherwise show the page-level back label.
- const backBtn = document.getElementById('fighter-back-btn');
- if (backBtn) {
-   if (fighterStack.length > 0) {
-     backBtn.textContent = '← Back to ' + fighterStack[fighterStack.length - 1].name;
-   } else {
-     backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
+
+ // Populates all fighter profile content for the given fighter.
+ function _doPopulate() {
+   document.getElementById('f-name').textContent = name;
+   document.getElementById('f-division').textContent = division + ' · ' + rank;
+   document.getElementById('f-avatar-initials').textContent = initials;
+   const img = document.getElementById('f-avatar-img');
+   const wrap = document.getElementById('f-avatar-wrap');
+   img.style.display = 'none';
+   img.src = '';
+   wrap.classList.remove('has-photo');
+   document.getElementById('f-avatar-initials').style.display = '';
+   // Some fighters (typically newcomers/short-notice replacements) come back
+   // from the API with a null record (e.g. "null-null-null" or ""). Guard
+   // against rendering literal "undefined" — only split into W-L-D spans when
+   // the record actually looks like one; otherwise show a neutral placeholder.
+   const recMatch = /^(\d+)-(\d+)-(\d+)/.exec(record || '');
+   document.getElementById('f-record').innerHTML = recMatch
+   ? `<span class="w">${recMatch[1]}</span>-<span class="l">${recMatch[2]}</span>-<span class="d">${recMatch[3]}</span>`
+   : `<span class="d">Record unavailable</span>`;
+   document.getElementById('f-meta').textContent = country || '';
+   populateFighterStats(name);
+   populateFightHistory(name);
+   populateRecordBreakdown(name);
+   populateOddsHistory(name);
+   populateTapeStudy(name);
+   populateAccolades(name);
+   // Update back button label
+   const backBtn = document.getElementById('fighter-back-btn');
+   if (backBtn) {
+     if (fighterStack.length > 0) {
+       backBtn.textContent = '← Back to ' + fighterStack[fighterStack.length - 1].name;
+     } else {
+       backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
+     }
    }
+   window.scrollTo({ top: 0, behavior: 'smooth' });
+   fetchFighterPhoto(name);
  }
- window.scrollTo({ top: 0, behavior: 'smooth' });
- // Fetch photo from Wikimedia API
- fetchFighterPhoto(name);
+
+ if (stayingOnFighter) {
+   // Fighter → fighter: fade the page out, swap content, fade back in.
+   const pg = document.getElementById('page-fighter');
+   pg.style.cssText = 'opacity:0;transform:translateY(-8px);transition:opacity 0.15s ease,transform 0.15s ease;pointer-events:none;';
+   setTimeout(() => {
+     _doPopulate();
+     // Force reflow so the browser registers the style reset before animating.
+     pg.offsetHeight; // eslint-disable-line no-unused-expressions
+     pg.style.cssText = 'animation:fadeIn 0.3s ease;';
+     setTimeout(() => { pg.style.cssText = ''; }, 300);
+   }, 150);
+ } else {
+   _doPopulate();
+   navigate('fighter');
+ }
  }
  const PHOTO_MAP = {
  // ── P4P / Champions ──
