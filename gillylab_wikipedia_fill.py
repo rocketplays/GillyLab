@@ -384,10 +384,21 @@ def _pick_current_team(raw):
 
 def parse_ranks(wikitext):
     """
-    Extract martial arts rank/belt entries from the infobox 'rank' field.
+    Extract martial arts rank/belt entries from the infobox 'rank' and 'wrestling' fields.
     Returns a list of {"icon": str, "title": str, "detail": None} dicts.
     """
     raw = get_infobox_field(wikitext, "rank")
+
+    # Also pull the 'wrestling' infobox field (e.g. "NCAA Division I Wrestling")
+    wrestling_raw = get_infobox_field(wikitext, "wrestling")
+    if wrestling_raw:
+        wrestling_entry = strip_wt(str(wrestling_raw)).strip()
+        # Only keep it if it's substantive (not a bare "wrestling" label) and not a year range
+        if (wrestling_entry
+                and wrestling_entry.lower() != "wrestling"
+                and not re.match(r'^\d{4}\s*[–—-]', wrestling_entry)):
+            raw = (raw + "\n" + wrestling_entry) if raw else wrestling_entry
+
     if not raw:
         return []
 

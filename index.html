@@ -3853,9 +3853,15 @@
  setStatCard(10, s.tdAcc, "Takedown accuracy");
  setStatCard(11, s.tdDef, "Takedown defense");
  setStatCard(12, s.subAvg, "Per 15 minutes");
- setStatCard(13, s.finRate, "Of all wins");
- // Compute win streak live from FIGHT_HISTORY (most-recent first)
+ // Compute finish rate live from FIGHT_HISTORY
  const fhFights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
+ {
+   const wins = fhFights.filter(f => f.result === 'W');
+   const finishes = wins.filter(f => /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(f.method || ''));
+   const liveFinRate = wins.length ? Math.round(finishes.length / wins.length * 100) + '%' : null;
+   setStatCard(13, liveFinRate ?? s.finRate, "Of all wins");
+ }
+ // Compute win streak live from FIGHT_HISTORY (most-recent first)
  let streak = 0;
  for (const f of fhFights) {
    if (f.result === 'W') streak++;
@@ -10164,6 +10170,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Clayton Carpenter": [
     { date: "May 9, 2026", opponent: "Clayton Carpenter", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328" },
     { date: "Jan 18, 2026", opponent: "Cody Durden", result: "W", method: "TKO (Punches)", round: 2, time: "3:05", event: "UFC Fight Night: Volkov vs. Lewis" },
@@ -10206,6 +10213,7 @@ const FIGHT_HISTORY = {
     { date: "Dec 5, 2014", opponent: "Matt Williams", result: "W", method: "Submission (Armbar)", round: 1, time: "2:29", event: "Dynasty Combat Sports 12" },
     { date: "Aug 24, 2014", opponent: "Jeremiah Denson", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:29", event: "Omaha Fight Club 100" }
   ],
+
 
 
 
@@ -10592,6 +10600,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 24, 2013", opponent: "Artiom Cula", result: "W", method: "TKO (Punches)", round: 2, time: "1:49", event: "European Combat Sambo Federation: Battle of Bessarabia" },
     { date: "Jun 14, 2012", opponent: "Vitaliy Maystrenko", result: "W", method: "TKO (Punches)", round: 1, time: "4:49", event: "Combat Sambo Federation of Ukraine: MMA Kyiv Cup 1" }
   ],
+
 
 
 
@@ -11405,6 +11414,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Iwo Baraniewski": [
     { date: "Jun 6, 2026", opponent: "Junior Tafa", result: "W", method: "TKO (Leg kick and punches)", round: 1, time: "1:25", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Mar 21, 2026", opponent: "Austen Lane", result: "W", method: "TKO (Punches)", round: 1, time: "0:28", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -11573,6 +11583,7 @@ const FIGHT_HISTORY = {
     { date: "Aug 24, 2012", opponent: "Vladimír Eis", result: "W", method: "KO (Knee)", round: 1, time: "1:02", event: "Gladiator CF 15" },
     { date: "Apr 7, 2012", opponent: "Stanislav Futera", result: "W", method: "KO (Punch)", round: 1, time: "0:53", event: "Gladiator CF 10" }
   ],
+
 
 
 
@@ -12342,6 +12353,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Alexa Grasso": [
     { date: "Mar 28, 2026", opponent: "Maycee Barber", result: "W", method: "KO (Punch)", round: 1, time: "2:42", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "May 10, 2025", opponent: "Natália Silva", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315", org: "UFC" },
@@ -12572,6 +12584,7 @@ const FIGHT_HISTORY = {
     { date: "Aug 26, 2017", opponent: "Wendson Santos", result: "W", method: "TKO (Punches)", round: 1, time: "1:04", event: "Gold Fight 9" },
     { date: "Sep 18, 2016", opponent: "Marlon Paula de Souza", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "Premium Fight Championship 6" }
   ],
+
 
 
 
@@ -12994,6 +13007,7 @@ const FIGHT_HISTORY = {
     { opponent: "Viscardi Andrade", result: "W", method: "TKO (Punches)", event: "2" },
     { opponent: "Jackson Pontes", result: "W", method: "Submission (Rear-naked choke)", event: "1" }
   ],
+
 
 
 
@@ -13691,6 +13705,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Aleksandar Rakić": [
     { date: "Oct 25, 2025", opponent: "Azamat Murzakanov", result: "L", method: "TKO (Punches)", round: 1, time: "3:11", event: "UFC 321", org: "UFC" },
     { date: "Oct 26, 2024", opponent: "Magomed Ankalaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 308", org: "UFC" },
@@ -14305,6 +14320,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Jean Silva": [
     { date: "Jan 24, 2026", opponent: "Arnold Allen", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 324", org: "UFC" },
     { date: "Sep 13, 2025", opponent: "Diego Lopes", result: "L", method: "TKO (Spinning back elbow and punches)", round: 2, time: "4:48", event: "UFC Fight Night: Lopes vs. Silva", org: "UFC" },
@@ -14483,6 +14499,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Virna Jandiroba": [
     { date: "Apr 4, 2026", opponent: "Tabatha Ricci", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
     { date: "Oct 25, 2025", opponent: "Mackenzie Dern", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 321", org: "UFC" },
@@ -14599,6 +14616,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Mayra Bueno Silva": [
     { date: "Apr 25, 2026", opponent: "Michelle Montague", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
     { date: "Nov 8, 2025", opponent: "Jacqueline Cavalcanti", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bonfim vs. Brown", org: "UFC" },
@@ -14667,6 +14685,7 @@ const FIGHT_HISTORY = {
     { date: "Apr 18, 2015", opponent: "Raúl Armas", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:50", event: "World Best Gladiators 8" },
     { date: "May 24, 2014", opponent: "Ever Alvarado", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "World Best Gladiators 2" }
   ],
+
 
 
 
@@ -15145,6 +15164,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Kyle Daukaus": [
     { date: "Nov 15, 2025", opponent: "Gerald Meerschaert", result: "W", method: "Submission (Brabo choke)", round: 1, time: "0:50", event: "UFC 322", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Michel Pereira", result: "W", method: "KO (Punches and elbows)", round: 1, time: "0:43", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
@@ -15502,6 +15522,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Muslim Salikhov": [
     { date: "Nov 8, 2025", opponent: "Uroš Medić", result: "L", method: "TKO (Punches)", round: 1, time: "1:03", event: "UFC Fight Night: Bonfim vs. Brown", org: "UFC" },
     { date: "Jul 26, 2025", opponent: "Carlos Leal Miranda", result: "W", method: "KO (Punch)", round: 1, time: "0:42", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
@@ -15707,6 +15728,7 @@ const FIGHT_HISTORY = {
     { opponent: "Graziele Ricotta", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brazilian FC 4" },
     { date: "Dec 7, 2013", opponent: "Danielle Cunha", result: "W", method: "Submission (Armbar)", round: 1, time: "2:30", event: "Fight Masters Combat 1" }
   ],
+
 
 
 
@@ -16669,6 +16691,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Marcus McGhee": [
     { date: "Jun 6, 2026", opponent: "John Yannis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Jul 26, 2025", opponent: "Petr Yan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
@@ -16900,6 +16923,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Amanda Nunes": [
     { date: "Jun 10, 2023", opponent: "Irene Aldana", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 289", org: "UFC" },
     { date: "Jul 30, 2022", opponent: "Julianna Peña", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 277", org: "UFC" },
@@ -17113,6 +17137,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Vicente Luque": [
     { date: "Apr 11, 2026", opponent: "Kelvin Gastelum", result: "W", method: "Submission (Anaconda choke)", round: 1, time: "4:08", event: "UFC 327", org: "UFC" },
     { date: "Oct 11, 2025", opponent: "Joel Álvarez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
@@ -17273,6 +17298,7 @@ const FIGHT_HISTORY = {
     { opponent: "Cameron Diffley", result: "W", method: "Decision (Unanimous)", time: "5:00" },
     { opponent: "Frank Camacho", result: "W", method: "Decision (Unanimous)", time: "5:00" }
   ],
+
 
 
 
@@ -17550,6 +17576,7 @@ const FIGHT_HISTORY = {
     { opponent: "Márcio Santos", result: "W", method: "TKO (Punches)", time: "5:00", event: "N/A (airdate)" },
     { opponent: "Thiago Silva", result: "W", method: "TKO (Punches)", event: "(airdate)" }
   ],
+
 
 
 
@@ -18020,6 +18047,7 @@ const FIGHT_HISTORY = {
     { date: "Dec 14, 2013", opponent: "Zoumana Cisse", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "100% Fight: Contenders 21" },
     { date: "Nov 30, 2013", opponent: "Rachid Benzina", result: "W", method: "Submission (Armbar)", round: 1, time: "1:44", event: "100% Fight: Contenders 20" }
   ],
+
 
 
 
@@ -18531,6 +18559,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Alex Morono": [
     { date: "Feb 7, 2026", opponent: "Daniil Donchenko", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
     { date: "Mar 8, 2025", opponent: "Carlos Leal", result: "L", method: "TKO (Punches)", round: 1, time: "4:16", event: "UFC 313", org: "UFC" },
@@ -18658,6 +18687,7 @@ const FIGHT_HISTORY = {
     { date: "May 1, 2010", opponent: "Ian Rammel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "International Combat Events 46" },
     { date: "Jun 27, 2009", opponent: "Brandon Pinkston", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Revolution Fight League: Maximum Impact" }
   ],
+
 
 
 
@@ -19696,6 +19726,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Brendson Ribeiro": [
     { date: "Sep 6, 2025", opponent: "Oumar Sy", result: "L", method: "TKO (Punches)", round: 1, time: "4:42", event: "UFC Fight Night: Holloway vs. Poirier 3 (Paris)" },
     { date: "Aug 16, 2025", opponent: "Azamat Murzakanov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 319: du Plessis vs. Chimaev" },
@@ -19779,6 +19810,7 @@ const FIGHT_HISTORY = {
     { date: "Nov 15, 2009", opponent: "Wellington Morgenstern", result: "W", method: "KO (Punches)", round: 1, time: "N/A", event: "B33 Fight 8" },
     { date: "Nov 8, 2009", opponent: "Douglas Jandozo", result: "W", method: "KO (Punches)", round: 1, time: "3:03", event: "G1 Open Fight 7" }
   ],
+
 
 
 
@@ -19952,6 +19984,7 @@ const FIGHT_HISTORY = {
     { date: "Jul 23, 2016", opponent: "Josue López", result: "W", method: "KO (Punch)", round: 1, time: "2:50", event: "Ultimate Combat Challenge 30" },
     { date: "Feb 20, 2016", opponent: "Erick Espita Garcia", result: "W", method: "TKO (Punches)", round: 2, time: "2:11", event: "Xtreme Kombat 31" }
   ],
+
 
 
 
@@ -20300,6 +20333,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "CJ Vergara": [
     { date: "Mar 29, 2025", opponent: "Édgar Cháirez", result: "L", method: "Submission (Face crank)", round: 1, time: "2:30", event: "UFC on ESPN: Moreno vs. Erceg", org: "UFC" },
     { date: "Oct 12, 2024", opponent: "Ramazan Temirov", result: "L", method: "TKO (Punches)", round: 1, time: "2:50", event: "UFC Fight Night: Royval vs. Taira", org: "UFC" },
@@ -20360,6 +20394,7 @@ const FIGHT_HISTORY = {
     { date: "Apr 17, 2010", opponent: "Sjobbe Clymans", result: "W", method: "TKO (Punches)", round: 1, time: "0:38", event: "Outsider Cup: Cage Fight Night 7" },
     { date: "Feb 26, 2010", opponent: "Nicola di Loreto", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:30", event: "Outsider Cup: Cage Fight Night 6" }
   ],
+
 
 
 
@@ -20736,6 +20771,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Alan Baudot": [
     { date: "Jun 25, 2022", opponent: "Josh Parisian", result: "L", method: "TKO (Punches)", round: 2, time: "3:04", event: "UFC on ESPN: Tsarukyan vs. Gamrot", org: "UFC" },
     { date: "Feb 19, 2022", opponent: "Parker Porter", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Hill", org: "UFC" },
@@ -20945,6 +20981,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Chris Padilla": [
     { date: "Dec 14, 2024", opponent: "Sean Woodson", result: "L", method: "TKO (Punches)", round: 1, time: "4:58", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
     { date: "Mar 23, 2024", opponent: "Luis Pajuelo", result: "W", method: "Submission (Brabo choke)", round: 1, time: "2:45", event: "UFC on ESPN: Ribas vs. Namajunas", org: "UFC" },
@@ -21044,6 +21081,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 6, 2021", opponent: "Adriana Fusini", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Club Rush 8" },
     { date: "Aug 1, 2020", opponent: "Nina Back", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 37", org: "BRAVE CF" }
   ],
+
 
 
 
@@ -21167,6 +21205,7 @@ const FIGHT_HISTORY = {
     { date: "Jan 26, 2013", opponent: "Bruce Johnson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:32", event: "Driller Promotions: Downtown Showdown 12" },
     { date: "Sep 22, 2012", opponent: "Brandon Abrego", result: "W", method: "KO (Punch)", round: 1, time: "0:36", event: "Driller Promotions: Caged Chaos at Canterbury Park 1" }
   ],
+
 
 
 
@@ -21416,6 +21455,7 @@ const FIGHT_HISTORY = {
     { opponent: "Mehdi Baghdad", result: "W", method: "Decision (Majority)", time: "5:00" },
     { opponent: "Jason Soares", result: "W", method: "Decision (Unanimous)", time: "5:00" }
   ],
+
 
 
 
@@ -21734,6 +21774,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Josiah Harrell": [
     { date: "Jun 7, 2025", opponent: "Joshua Van", result: "L", method: "Sub (RNC)", round: 2, time: "2:58", event: "UFC 316: Oliveira vs. Makhachev 2" },
     { date: "Jan 18, 2025", opponent: "Daniel Lacerda", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311: Makhachev vs. Moicano" },
@@ -21962,6 +22003,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Magomed Ankalaev": [
     { date: "Oct 4, 2025", opponent: "Alex Pereira", result: "L", method: "KO (Punches)", round: 1, time: "1:09", event: "UFC 320: Pereira vs. Ankalaev 2 (LHW Title)" },
     { date: "Mar 8, 2025", opponent: "Alex Pereira", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 313: Pereira vs. Ankalaev (LHW Title)" },
@@ -22098,6 +22140,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Yair Rodríguez": [
     { date: "Apr 12, 2025", opponent: "Patrício Pitbull", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 314", org: "UFC" },
     { date: "Feb 24, 2024", opponent: "Brian Ortega", result: "L", method: "Submission (Arm-triangle choke)", round: 3, time: "0:58", event: "UFC Fight Night: Moreno vs. Royval 2", org: "UFC" },
@@ -22179,6 +22222,7 @@ const FIGHT_HISTORY = {
     { date: "Oct 9, 2004", opponent: "João Paulo Almeida", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Arena BH" },
     { date: "Sep 25, 2004", opponent: "Adriano Abu", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Juiz de Fora Fight 1" }
   ],
+
 
 
 
@@ -22469,6 +22513,7 @@ const FIGHT_HISTORY = {
     { date: "Apr 26, 2019", opponent: "Daniela Espinosa", result: "W", method: "KO (Punches)", round: 1, time: "0:13", event: "Combate 36: Reinas" },
     { date: "Nov 10, 2018", opponent: "Benni Fuentes", result: "W", method: "TKO (Elbows)", round: 1, time: "2:22", event: "Fearless Fight Night 4" }
   ],
+
 
 
 
@@ -23072,6 +23117,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Muin Gafurov": [
     { date: "Feb 7, 2026", opponent: "Jakub Wikłacz", result: "L", method: "Sub (Guillotine)", round: 3, time: "4:59", event: "UFC Fight Night: Bautista vs. Oliveira" },
     { date: "Jan 18, 2025", opponent: "Rinya Nakamura", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311: Makhachev vs. Moicano" },
@@ -23160,6 +23206,7 @@ const FIGHT_HISTORY = {
     { date: "Feb 8, 2014", opponent: "Mateusz Gola", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Tymex Fight Night" },
     { date: "Jan 11, 2014", opponent: "Rajmund Flejmer", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Vale Tudo Cup 1" }
   ],
+
 
 
 
@@ -23486,6 +23533,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 22, 2013", opponent: "Emilbek Beknazarov", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:26", event: "Oplot Challenge 80" },
     { date: "May 29, 2013", opponent: "Yavuz Selim Kazanci", result: "W", method: "Submission (Heel hook)", round: 1, time: "2:33", event: "Azerbaijan MMA Federation: Azerbaijan vs. Turkey" }
   ],
+
 
 
 
@@ -23910,6 +23958,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Magomed Zaynukov": [
     { date: "Oct 7, 2025", opponent: "Lucas Caldas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 85", org: "UFC" },
     { date: "Feb 22, 2025", opponent: "Shakhmar Sadygov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 58" },
@@ -24087,6 +24136,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Tyson Nam": [
     { date: "Dec 26, 2025", opponent: "Abdul Hussein", result: "L", method: "KO (Punch)", round: 1, time: "4:22", event: "Ice Cage Fighting 6" },
     { date: "Jul 12, 2024", opponent: "Erik Vo", result: "W", method: "TKO (Punches to the body)", round: 1, time: "2:56", event: "Destiny MMA: Bad Blood 2" },
@@ -24195,6 +24245,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Xiong Jingnan": [
     { date: "May 30, 2026", opponent: "Angela Hill", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
     { date: "Mar 14, 2025", opponent: "Meng Bo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ONE Friday Fights 100", org: "ONE Championship" },
@@ -24249,6 +24300,7 @@ const FIGHT_HISTORY = {
     { opponent: "Roman Markovich", result: "W", method: "Decision (Unanimous)", event: "3" },
     { opponent: "Isa Musaev", result: "W", method: "Decision (Unanimous)", event: "3" }
   ],
+
 
 
 
@@ -24540,6 +24592,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 25, 2014", opponent: "Nurbay Mirzaliev", result: "W", method: "TKO (Submission to punches)", round: 2, time: "3:14", event: "White Night FC: Elets Battle" },
     { date: "Sep 7, 2014", opponent: "Yerlan Semebekov", result: "W", method: "TKO (Punches)", round: 1, time: "3:54", event: "Altay Republik MMA League: Altay vs. Siberia" }
   ],
+
 
 
 
@@ -24866,6 +24919,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Namsrai Batbayar": [
     { date: "May 16, 2026", opponent: "Shuai Yin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa" },
     { date: "Feb 8, 2025", opponent: "Shuai Yin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312: du Plessis vs. Strickland 2" },
@@ -24920,6 +24974,7 @@ const FIGHT_HISTORY = {
     { date: "Jan 21, 2016", opponent: "Zhang Caibao", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:55", event: "2016 Xinjiang Oriental Summit" },
     { date: "Dec 30, 2014", opponent: "Han Qingtao", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "0:15", event: "CKF 12/30" }
   ],
+
 
 
 
@@ -25056,6 +25111,7 @@ const FIGHT_HISTORY = {
 
 
 
+
   "Murtazali Magomedov": [
     { date: "Jun 27, 2026", opponent: "Melsik Baghdasaryan", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (Baku, debut)" },
     { date: "Sep 24, 2025", opponent: "Brahyam Zurcher", result: "W", method: "KO (Punches)", round: 1, time: "1:37", event: "DWCS Season 9 Week 7 (contract)" },
@@ -25177,6 +25233,7 @@ const FIGHT_HISTORY = {
     { date: "Jun 5, 2013", opponent: "Aigun Akhmedov", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Warrior's Honor: Igor Vovchanchyn Cup 3" },
     { opponent: "Aleksandr Svirid", result: "W", method: "TKO (Punches)", event: "2" }
   ],
+
 
 
 
@@ -25727,6 +25784,7 @@ const FIGHT_HISTORY = {
     { date: "Aug 23, 2017", opponent: "Giovanni Guerrero", result: "W", method: "DQ (Knee to head of grounded fighter)", round: 1, time: "2:54", event: "Jasaji Fighting League 17" },
     { date: "Mar 19, 2017", opponent: "Eddy Perez", result: "W", method: "TKO (Punches)", round: 1, time: "2:12", event: "Warriors League 2" }
   ],
+
 
 
 
@@ -26447,6 +26505,7 @@ const ACCOLADES = {
   ],
   "Aaron Pico": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu under Roberto Alencar", detail: null },
+    { icon: "🤼", title: "Freestyle wrestling Greco-Roman wrestling", detail: null },
     { icon: "🥇", title: "Grand Prix — 2014 Nice — 65 kg", detail: null },
     { icon: "🥇", title: "Grand Prix — 2015 Havana — 65 kg", detail: null },
     { icon: "🥈", title: "Grand Prix — 2014 Madrid — 65 kg", detail: null },
@@ -26488,6 +26547,7 @@ const ACCOLADES = {
   ],
   "Tim Elliott": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "NCAA Division II Wrestling", detail: null },
     { icon: "🥇", title: "NJCAA Championships — 2007 Rochester — 125 lb", detail: null }
   ],
   "Charles Johnson": [
@@ -26553,7 +26613,8 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Aljamain Sterling": [
-    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Matt Serra", detail: null }
+    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Matt Serra", detail: null },
+    { icon: "🤼", title: "NCAA Division III Wrestling All-American", detail: null }
   ],
   "Dominick Cruz": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu under Lloyd Irvin", detail: null }
@@ -26605,7 +26666,8 @@ const ACCOLADES = {
     { icon: "🥋", title: "1st degree BJJ black belt", detail: null }
   ],
   "Josh Emmett": [
-    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "NAIA Wrestling", detail: null }
   ],
   "Patrício Pitbull": [
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null }
@@ -26622,7 +26684,8 @@ const ACCOLADES = {
   ],
   "Pat Sabatini": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Daniel Gracie", detail: null },
-    { icon: "🏆", title: "Black belt in Tang Soo Do", detail: null }
+    { icon: "🏆", title: "Black belt in Tang Soo Do", detail: null },
+    { icon: "🤼", title: "NCAA Division I Wrestling", detail: null }
   ],
   "Nathaniel Wood": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Ashley Grimshaw", detail: null }
@@ -26680,6 +26743,7 @@ const ACCOLADES = {
   ],
   "Tony Ferguson": [
     { icon: "🥋", title: "Black belt in 10th Planet Jiu-Jitsu under Eddie Bravo", detail: null },
+    { icon: "🤼", title: "NCWA Wrestling", detail: null },
     { icon: "🥇", title: "NCWA Championships — 2006 Grand Rapids — 165 lb", detail: null },
     { icon: "🥇", title: "Ring of Thrones — 1", detail: null }
   ],
@@ -26687,7 +26751,8 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under Marcos \"Loro\" Galvão", detail: null }
   ],
   "Jim Miller": [
-    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Jamie Cruz", detail: null }
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Jamie Cruz", detail: null },
+    { icon: "🤼", title: "NCAA Division I Wrestling", detail: null }
   ],
   "Grant Dawson": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under James Krause", detail: null }
@@ -26699,7 +26764,8 @@ const ACCOLADES = {
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Terrance McKinney": [
-    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu under Pablo Alfonso", detail: null }
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu under Pablo Alfonso", detail: null },
+    { icon: "🤼", title: "NCAA Division II Wrestling", detail: null }
   ],
   "Islam Makhachev": [
     { icon: "🤼", title: "International Master of Sport in combat sambo", detail: null },
@@ -26725,6 +26791,7 @@ const ACCOLADES = {
   ],
   "Kamaru Usman": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Jorge Santiago", detail: null },
+    { icon: "🤼", title: "NCAA Division II Wrestling", detail: null },
     { icon: "🥇", title: "NCAA Division II Championships — 2010 Omaha — 174 lb", detail: null },
     { icon: "🥈", title: "NCAA Division II Championships — 2009 Houston — 174 lb", detail: null },
     { icon: "🥉", title: "NCAA Division II Championships — 2008 Cedar Rapids — 174 lb", detail: null },
@@ -26825,7 +26892,8 @@ const ACCOLADES = {
   "Robert Whittaker": [
     { icon: "🏆", title: "Black belt in Hapkido", detail: null },
     { icon: "🥊", title: "Black belt in Gōjū-ryū Karate", detail: null },
-    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Alex Prates", detail: null }
+    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Alex Prates", detail: null },
+    { icon: "🤼", title: "Australian national team for freestyle wrestling", detail: null }
   ],
   "Jared Cannonier": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null }
@@ -26913,6 +26981,7 @@ const ACCOLADES = {
   ],
   "Curtis Blaydes": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu under Cody Donovan", detail: null },
+    { icon: "🤼", title: "NJCAA Wrestling", detail: null },
     { icon: "🥇", title: "NJCAA Championships — 2012 Rochester — 285 lb", detail: null }
   ],
   "Serghei Spivac": [
@@ -26926,6 +26995,7 @@ const ACCOLADES = {
   ],
   "Stipe Miocic": [
     { icon: "🥋", title: "Purple belt in Brazilian jiu-jitsu", detail: null },
+    { icon: "🤼", title: "NCAA Division I Wrestling", detail: null },
     { icon: "🥇", title: "Cleveland Golden Gloves — 2009 Euclid — Super Heavyweight", detail: null }
   ],
   "Jailton Almeida": [
@@ -26936,6 +27006,7 @@ const ACCOLADES = {
   ],
   "Tatiana Suarez": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "USA Wrestling World Team", detail: null },
     { icon: "🥈", title: "World Junior Championships — 2007 Beijing — 59 kg", detail: null },
     { icon: "🥉", title: "World Junior Championships — 2008 Istanbul — 59 kg", detail: null },
     { icon: "🥈", title: "World Cup — 2010 Nanjing — 55 kg", detail: null },
@@ -27164,7 +27235,8 @@ const ACCOLADES = {
     { icon: "🏆", title: "Southpaw", detail: null }
   ],
   "Michael Johnson": [
-    { icon: "🥋", title: "purple belt in Brazilian jiu-jitsu under Gilbert Burns", detail: null }
+    { icon: "🥋", title: "purple belt in Brazilian jiu-jitsu under Gilbert Burns", detail: null },
+    { icon: "🤼", title: "NJCAA Wrestling", detail: null }
   ],
   "Joaquim Silva": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
@@ -27401,16 +27473,19 @@ const ACCOLADES = {
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu under Herbert Burns", detail: null }
   ],
   "Kelvin Gastelum": [
-    { icon: "🥋", title: "Black belt in 10th Planet Jiu-Jitsu under Brian Beaumont", detail: null }
+    { icon: "🥋", title: "Black belt in 10th Planet Jiu-Jitsu under Brian Beaumont", detail: null },
+    { icon: "🤼", title: "NJCAA Wrestling", detail: null }
   ],
   "Punahele Soriano": [
-    { icon: "🥋", title: "Brown belt in Judo", detail: null }
+    { icon: "🥋", title: "Brown belt in Judo", detail: null },
+    { icon: "🤼", title: "NCAA Division III Wrestling", detail: null }
   ],
   "Chris Curtis": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Deron Winn": [
     { icon: "🤼", title: "NAIA Wrestling", detail: null },
+    { icon: "🤼", title: "Freestyle wrestling NAIA Wrestling", detail: null },
     { icon: "🥉", title: "Pan American Championships — 2014 Mexico City — 97 kg", detail: null },
     { icon: "🥉", title: "NAIA Championships — 2011 Cedar Rapids — 197 lb", detail: null },
     { icon: "🥇", title: "NJCAA Championships — 2008 Rochester — 184 lb", detail: null },
@@ -27487,6 +27562,7 @@ const ACCOLADES = {
   ],
   "Alexandr Romanov": [
     { icon: "🥋", title: "Black belt in BJJ, under Mike Stewart.", detail: null },
+    { icon: "🤼", title: "Olympic Freestyle Wrestling", detail: null },
     { icon: "🥉", title: "World University Championships — 2016 Çorum — 125 kg", detail: null }
   ],
   "Austen Lane": [
@@ -27517,6 +27593,7 @@ const ACCOLADES = {
   ],
   "Carla Esparza": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "NAIA wrestling", detail: null },
     { icon: "🥈", title: "Pan American Jiu-Jitsu Championships — 2013 California — 58 kg (Blue)", detail: null }
   ],
   "Michelle Waterson": [
@@ -27590,7 +27667,8 @@ const ACCOLADES = {
   ],
   "Dan Ige": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Jeff Doner", detail: null },
-    { icon: "🥋", title: "Brown belt in Judo", detail: null }
+    { icon: "🥋", title: "Brown belt in Judo", detail: null },
+    { icon: "🤼", title: "NCAA Division III Wrestling", detail: null }
   ],
   "Calvin Kattar": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null }
@@ -27612,6 +27690,7 @@ const ACCOLADES = {
   ],
   "Bo Nickal": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "NCAA Division I Wrestling", detail: null },
     { icon: "🥇", title: "U23 World Championships — 2019 Budapest — 92 kg", detail: null },
     { icon: "🥇", title: "US National Championships — 2019 Las Vegas — 92 kg", detail: null },
     { icon: "🥇", title: "NCAA Division I Championships — 2017 St. Louis — 184 lb", detail: null },
@@ -27652,6 +27731,7 @@ const ACCOLADES = {
   ],
   "Phil Hawes": [
     { icon: "🥋", title: "Brown belt in Brazilian jiu-jitsu", detail: null },
+    { icon: "🏆", title: "NJCAA National Champion, Division I", detail: null },
     { icon: "🥇", title: "NJCAA National Championships — 2009 Rochester — 197 lb", detail: null }
   ],
   "Armen Petrosyan": [
@@ -27912,6 +27992,7 @@ const ACCOLADES = {
     { icon: "🥇", title: "IMMAF African Open Championships — 2019 Johannesburg — -120.2 kg", detail: null }
   ],
   "Jon Jones": [
+    { icon: "🤼", title: "NJCAA Wrestling", detail: null },
     { icon: "🥇", title: "NJCAA Championships — 2006 Rochester — 197 lb", detail: null }
   ],
   "Francis Ngannou": [
@@ -27961,6 +28042,7 @@ const ACCOLADES = {
     { icon: "🥇", title: "28 November 2020", detail: null }
   ],
   "Rinya Nakamura": [
+    { icon: "🤼", title: "Freestyle wrestling", detail: null },
     { icon: "🥉", title: "World Cup — 2018 Iowa — 61 kg", detail: null },
     { icon: "🥇", title: "World U23 Championships — 2017 Bydgoszcz — 61 kg", detail: null },
     { icon: "🥈", title: "Japanese National Championships — 2019 Tokyo — 65 kg", detail: null },
@@ -28108,6 +28190,19 @@ function fighterGoBack() {
  }
 }
 
+// Compute W-L-D record from FIGHT_HISTORY. Returns "W-L-D" string or null if no fights.
+function computeRecord(name) {
+  const fights = FIGHT_HISTORY[name] || [];
+  let w = 0, l = 0, d = 0;
+  for (const f of fights) {
+    if      (f.result === 'W') w++;
+    else if (f.result === 'L') l++;
+    else if (f.result === 'D') d++;
+    // NC / other results not counted
+  }
+  return fights.length ? `${w}-${l}-${d}` : null;
+}
+
 function openFighter(name, division, record, rank, initials, country, _skipPush) {
  // If already viewing a fighter, push that fighter onto the back-stack
  // so the back button can return to them. Clear the stack when coming
@@ -28139,7 +28234,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    // from the API with a null record (e.g. "null-null-null" or ""). Guard
    // against rendering literal "undefined" — only split into W-L-D spans when
    // the record actually looks like one; otherwise show a neutral placeholder.
-   const recMatch = /^(\d+)-(\d+)-(\d+)/.exec(record || '');
+   const liveRecord = computeRecord(name) || record || '';
+   const recMatch = /^(\d+)-(\d+)-(\d+)/.exec(liveRecord);
    document.getElementById('f-record').innerHTML = recMatch
    ? `<span class="w">${recMatch[1]}</span>-<span class="l">${recMatch[2]}</span>-<span class="d">${recMatch[3]}</span>`
    : `<span class="d">Record unavailable</span>`;
@@ -28441,7 +28537,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <div class="search-result-name">${f.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
         <div class="search-result-meta">${f.division} · ${f.rank} · ${f.country || ''}</div>
       </div>
-      <div class="search-result-meta">${f.record}</div>
+      <div class="search-result-meta">${computeRecord(f.name) || f.record}</div>
     </div>`;
   }).join('');
   // Use event delegation - no inline onclick needed
@@ -30287,3 +30383,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 </script>
 </body>
 </html>
+  "Justin Gaethje": [
+    { icon: "🤼", title: "NCAA Division I Wrestling", detail: null }
+  ],
+  "Devin Clark": [
+    { icon: "🤼", title: "NJCAA Wrestling", detail: null }
+  ],
+  "Cody Garbrandt": [
+    { icon: "🤼", title: "NCAA Division II Wrestling", detail: null }
+  ],
+
