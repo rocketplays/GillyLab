@@ -499,6 +499,10 @@ def _parse_table(table):
         if re.match(r"^(?:SV\s+|TB\s+|OT\s+)?\d+[\-–]\d+$", method.strip()):
             continue
 
+        # Skip amateur bouts (notes column contains "amateur")
+        if re.search(r"\bamateur\b", gc("notes"), re.I):
+            continue
+
         event = strip_wt(gc("event")).strip()
         event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim|superfight)[^)]*\)\s*$",
                         "", event, flags=re.I).strip()
@@ -637,6 +641,11 @@ def parse_mma_record_start(wikitext):
 
         event = strip_wt(cells[4] if len(cells) > 4 else "").strip()
         event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim)[^)]*\)\s*$","",event,flags=re.I).strip()
+
+        # Skip amateur bouts (notes column contains "amateur")
+        notes = cells[9] if len(cells) > 9 else ""
+        if re.search(r"\bamateur\b", notes, re.I):
+            continue
 
         date_raw = cells[5] if len(cells) > 5 else ""
         date_str = parse_date(date_raw)
