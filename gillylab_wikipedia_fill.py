@@ -59,6 +59,7 @@ WIKIPEDIA_SKIP: set[str] = {
     "Henry Cejudo",      # Wikipedia mixes Olympic/freestyle wrestling with MMA record
     "Michael Chandler",  # Wikipedia mixes NCAA wrestling record with MMA record
     "Colby Covington",   # Wikipedia mixes NCAA wrestling record with MMA record
+    "Arman Tsarukyan",   # Wikipedia mixes freestyle wrestling record with MMA record
 }
 
 MONTH_ABBR = {
