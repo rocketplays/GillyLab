@@ -459,7 +459,8 @@ def parse_competitive_accolades(wikitext):
     # ── 2. Sport-section wikitables ─────────────────────────────────────────
     # Only scan sections whose heading names a combat/grappling sport.
     SPORT_HDG = re.compile(
-        r'wrestling|jiu.?jitsu|bjj|sambo|judo|boxing|kickbox|muay thai|grappling',
+        r'wrestling|jiu.?jitsu|bjj|sambo|judo|boxing|kickbox|muay thai|grappling'
+        r'|amateur|collegiate|combat sport',
         re.I
     )
     # Map normalised position text → medal icon
