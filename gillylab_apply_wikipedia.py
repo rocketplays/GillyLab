@@ -66,9 +66,10 @@ def parse_wikipedia_txt(path):
         if not name:
             continue
 
-        bio     = {}
-        fights  = []
-        section = None
+        bio       = {}
+        fights    = []
+        accolades = []
+        section   = None
         current_fight = {}
 
         for line in lines[1:]:
@@ -81,6 +82,16 @@ def parse_wikipedia_txt(path):
                 section = "stats"
             elif stripped == "FIGHTS:":
                 section = "fights"
+            elif section == "accolades":
+                # Format: icon | title | detail  (detail may be blank)
+                if "|" in stripped and not stripped.startswith("("):
+                    parts = [p.strip() for p in stripped.split("|", 2)]
+                    if len(parts) >= 2 and parts[0] and parts[1]:
+                        accolades.append({
+                            "icon":   parts[0],
+                            "title":  parts[1],
+                            "detail": parts[2] if len(parts) > 2 and parts[2] else None,
+                        })
             elif section == "bio":
                 if ": " in stripped:
                     k, v = stripped.split(": ", 1)
@@ -114,7 +125,7 @@ def parse_wikipedia_txt(path):
                     else:
                         current_fight["event"] = rest
 
-        fighters[name] = {"bio": bio, "fights": fights}
+        fighters[name] = {"bio": bio, "fights": fights, "accolades": accolades}
     return fighters
 
 
@@ -432,6 +443,49 @@ def main():
     new_stats_block2 = "\n".join(lines2)
     html = html[:stats_start_m2.start()] + new_stats_block2 + html[stats_start_m2.start() + len(stats_block2):]
 
+    # ── Inject Wikipedia rank accolades ──
+    # Only adds entries for fighters who have NO existing ACCOLADES entry.
+    # Fighters with manually-curated accolades are left untouched.
+    accolades_start_m3 = re.search(r'const ACCOLADES = \{', html)
+    accolade_changes = {}
+    if accolades_start_m3:
+        acc_start = accolades_start_m3.end()
+        # Find the closing }; of the ACCOLADES block
+        depth, pos = 1, acc_start
+        while pos < len(html) and depth > 0:
+            if html[pos] == '{':
+                depth += 1
+            elif html[pos] == '}':
+                depth -= 1
+            pos += 1
+        acc_end = pos - 1  # points at the closing }
+
+        acc_block = html[acc_start:acc_end]
+
+        inserts = []
+        for name, data in wiki.items():
+            ranks = data.get("accolades") or []
+            if not ranks:
+                continue
+            # Skip if fighter already has an entry in ACCOLADES
+            if re.search(r'"' + re.escape(name) + r'"\s*:', acc_block):
+                continue
+            # Build JS array entry
+            js_lines = [f'  "{name}": [']
+            for i, r in enumerate(ranks):
+                comma = "," if i < len(ranks) - 1 else ""
+                detail_js = f'"{r["detail"]}"' if r.get("detail") else "null"
+                icon = r["icon"].replace('"', '\\"')
+                title = r["title"].replace('"', '\\"')
+                js_lines.append(f'    {{ icon: "{icon}", title: "{title}", detail: {detail_js} }}{comma}')
+            js_lines.append("  ],")
+            inserts.append("\n".join(js_lines))
+            accolade_changes[name] = [r["title"] for r in ranks]
+
+        if inserts:
+            injection = "\n" + "\n".join(inserts)
+            html = html[:acc_end] + injection + html[acc_end:]
+
     # ── Summary ──
     print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
     for name, changes in sorted(bio_changes.items()):
@@ -446,7 +500,11 @@ def main():
     for name, changes in sorted(override_changes.items()):
         print(f"  {name}: {', '.join(changes)}")
 
-    print(f"\nTotal: {len(bio_changes)} bio updates, {len(fh_changes)} fight history replacements, {len(override_changes)} manual overrides")
+    print(f"\n── Rank accolades injected ({len(accolade_changes)} fighters) ──")
+    for name, titles in sorted(accolade_changes.items()):
+        print(f"  {name}: {', '.join(titles)}")
+
+    print(f"\nTotal: {len(bio_changes)} bio updates, {len(fh_changes)} fight history replacements, {len(override_changes)} manual overrides, {len(accolade_changes)} accolade injections")
 
     if DRY_RUN:
         print("\n[DRY RUN — index.html not modified]")

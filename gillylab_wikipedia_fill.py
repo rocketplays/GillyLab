@@ -366,16 +366,55 @@ def _pick_current_team(raw):
         parts2 = [strip_wt(p) for p in re.split(r"<br\s*/?>|\n\s*\*|\n", str(raw or ""))]
         cleaned = [p for p in parts2 if p]
 
-    result = cleaned[-1][:100] if cleaned else ""
+    # Prefer the entry marked "(year–present)" if one exists; otherwise
+    # take the first entry — Wikipedia lists current gym at the top.
+    present_entries = [p for p in cleaned if re.search(r"\bpresent\b", p, re.I)]
+    result = (present_entries[0] if present_entries else cleaned[0])[:100] if cleaned else ""
     # If we still have unresolved template markup, return blank rather than junk
     if re.search(r"\{\{|\}\}", result):
         return ""
     return result
 
 
+def parse_ranks(wikitext):
+    """
+    Extract martial arts rank/belt entries from the infobox 'rank' field.
+    Returns a list of {"icon": str, "title": str, "detail": None} dicts.
+    """
+    raw = get_infobox_field(wikitext, "rank")
+    if not raw:
+        return []
+
+    t = str(raw)
+    # Handle {{ubl|A|B|...}}
+    ubl_m = re.search(r"\{\{ubl\b\s*\|?(.*?)(?:\}\}|$)", t, re.DOTALL | re.I)
+    if ubl_m:
+        inner = ubl_m.group(1)
+        entries = [e.strip() for e in re.split(r"\n?\s*\|", inner) if e.strip()]
+    else:
+        t = re.sub(r"<br\s*/?>", "\n", t)
+        entries = [e.strip() for e in t.split("\n") if e.strip()]
+
+    results = []
+    for entry in entries:
+        clean = strip_wt(entry).strip()
+        if not clean or re.search(r"\{\{|\}\}", clean):
+            continue
+        if re.search(r"bjj|jiu.?jitsu|judo", clean, re.I):
+            icon = "🥋"
+        elif re.search(r"muay thai|kickbox|boxing|karate|taekwondo|prajied", clean, re.I):
+            icon = "🥊"
+        elif re.search(r"wrestl|sambo|grappl", clean, re.I):
+            icon = "🤼"
+        else:
+            icon = "🏆"
+        results.append({"icon": icon, "title": clean, "detail": None})
+    return results
+
+
 def parse_infobox(wikitext):
     """Extract bio fields from the infobox. Returns dict."""
-    bio = {"height":"","dob":"","reach":"","stance":"","gym":""}
+    bio = {"height":"","dob":"","reach":"","stance":"","gym":"","ranks":[]}
 
     # Isolate the infobox block (between {{ and matching }})
     m = re.search(r"\{\{\s*[Ii]nfobox\s+(?:martial artist|MMA|fighter|boxer|wrestler)[^}]",
@@ -426,6 +465,8 @@ def parse_infobox(wikitext):
         trainer_raw = get_infobox_field(box, "trainer","coach")
         if trainer_raw:
             bio["gym"] = strip_wt(trainer_raw)[:100]
+
+    bio["ranks"] = parse_ranks(box)
 
     return bio
 
@@ -915,7 +956,13 @@ Run script again with --start N to resume after an interruption.
 def fmt_fighter(name, bio, fights):
     lines = [f"FIGHTER: {name}"]
     lines.append("  ACCOLADES:")
-    lines.append("    (add one per line as: icon | title | detail)")
+    ranks = bio.get("ranks") or []
+    if ranks:
+        for r in ranks:
+            detail_str = r["detail"] or ""
+            lines.append(f"    {r['icon']} | {r['title']} | {detail_str}")
+    else:
+        lines.append("    (add one per line as: icon | title | detail)")
     lines.append("  BIO:")
     lines.append(f"    height: {bio.get('height','')}")
     lines.append(f"    dob: {bio.get('dob','')}")
