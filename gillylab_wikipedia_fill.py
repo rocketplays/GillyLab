@@ -619,10 +619,6 @@ def parse_mma_record_start(wikitext):
         if not row.strip():
             continue
 
-        # {{end}} marks the close of the pro record section — stop here
-        if re.search(r"\{\{end\}\}", row, re.I):
-            break
-
         # Detect {{MMA record section|...}} dividers — skip amateur sections
         sec_m = re.search(r"\{\{MMA record section\s*\|([^}]*)\}\}", row, re.I)
         if sec_m:
