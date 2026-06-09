@@ -573,6 +573,34 @@ def parse_competitive_accolades(wikitext):
                 parts = [p for p in [year, comp, event] if p]
                 add(icon, ' — '.join(parts) if parts else sec.group(2))
 
+    # ── 3. {{gold1}}/{{silver2}}/{{bronze3}} in section-header rows ─────────
+    # Used in {{s-start}} match record tables (NCAA, freestyle, etc.)
+    # Pattern: lines starting with ! that contain a gold/silver/bronze template
+    # e.g.  ! style=... |[[2019 NCAA Championships]] {{gold1}} at 197 lbs
+    INLINE_MEDAL = re.compile(
+        r'^\s*!\s*(?:[^|\n]*\|)?\s*(.*?)({{(?:gold|silver|bronze)\d*}})(.*?)$',
+        re.IGNORECASE | re.MULTILINE
+    )
+    INLINE_ICON = {
+        'gold':   '🥇',
+        'silver': '🥈',
+        'bronze': '🥉',
+    }
+    for m in INLINE_MEDAL.finditer(wikitext):
+        before = strip_wt(m.group(1)).strip()
+        tpl    = m.group(2).lower()
+        after  = strip_wt(m.group(3)).strip()
+        # Determine medal type from template name
+        icon = next((v for k, v in INLINE_ICON.items() if k in tpl), None)
+        if not icon:
+            continue
+        # Build title: combine before + after, clean up "at X lbs/kg" suffix
+        title = (before + (' ' + after if after else '')).strip()
+        title = re.sub(r'\s*at\s+[\d½\s]+(?:lbs?|kg)\s*$', '', title, flags=re.I).strip()
+        title = re.sub(r'\s+', ' ', title)
+        if title:
+            add(icon, title)
+
     return results
 
 
