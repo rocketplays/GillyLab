@@ -336,8 +336,9 @@ def main():
         count, rel_start, rel_end = find_fighter_array(fh_block_original, name)
         if rel_start == -1:
             continue  # not in FIGHT_HISTORY
-        if len(wiki_fights) <= count:
-            continue  # Wikipedia doesn't have more
+        # Always replace if Wikipedia has any fight data
+        if len(wiki_fights) == 0:
+            continue
 
         new_array = build_fight_array(name, wiki_fights)
         replacements.append((name, rel_start, rel_end, count, new_array))
