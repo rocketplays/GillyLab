@@ -58,6 +58,7 @@ WIKIPEDIA_SKIP: set[str] = {
     "Mackenzie Dern",    # Wikipedia mixes BJJ competition record with MMA record
     "Henry Cejudo",      # Wikipedia mixes Olympic/freestyle wrestling with MMA record
     "Michael Chandler",  # Wikipedia mixes NCAA wrestling record with MMA record
+    "Colby Covington",   # Wikipedia mixes NCAA wrestling record with MMA record
 }
 
 MONTH_ABBR = {
