@@ -38,6 +38,17 @@ if "--names" in sys.argv:
         FORCE_NAMES = {n.strip() for n in sys.argv[idx + 1].split(",") if n.strip()}
 
 
+# ── Manual overrides ──────────────────────────────────────────────────────────
+# Fields listed here are force-written to FIGHTER_STATS after the Wikipedia
+# apply pass, overriding whatever Wikipedia put there.
+# Format: { "Fighter Name": { "field": "value", ... }, ... }
+# Supported fields: gym, ht, dob, reach, stance
+MANUAL_OVERRIDES: dict[str, dict[str, str]] = {
+    "Maurício Ruffy": {"gym": "Fighting Nerds"},
+    "Mauricio Ruffy":  {"gym": "Fighting Nerds"},
+}
+
+
 # ── Parse fighter_data_wikipedia.txt ─────────────────────────────────────────
 
 def parse_wikipedia_txt(path):
@@ -384,6 +395,43 @@ def main():
 
     html = html[:fh_block_start] + fh_block + html[fh_block_start + len(fh_block_original):]
 
+    # ── Manual overrides ──
+    # Re-locate the stats block (may have shifted after fight history splice)
+    stats_start_m2   = re.search(r'const FIGHTER_STATS = \{', html)
+    tape_start_m2    = re.search(r'const TAPE_STUDY = \{', html)
+    stats_block2     = html[stats_start_m2.start():tape_start_m2.start()]
+    lines2           = stats_block2.split("\n")
+    override_changes = {}
+
+    for name, fields in MANUAL_OVERRIDES.items():
+        name_pat = re.compile(r'^\s*"' + re.escape(name) + r'":\s*\{')
+        for i, line in enumerate(lines2):
+            if name_pat.match(line):
+                new_line = line
+                applied  = []
+                for field, value in fields.items():
+                    # Replace existing field value
+                    pat = _match_any_quote(field)
+                    if re.search(pat, new_line):
+                        new_line = re.sub(pat, f'{field}:"{value}"', new_line, count=1)
+                    else:
+                        # Insert before closing }
+                        stripped = new_line.rstrip()
+                        trailing = stripped.endswith(",")
+                        if trailing:
+                            stripped = stripped[:-1].rstrip()
+                        if stripped.endswith("}"):
+                            stripped = stripped[:-1].rstrip() + f', {field}:"{value}" }}'
+                        new_line = stripped + ("," if trailing else "")
+                    applied.append(f"{field} → {value}")
+                if applied:
+                    lines2[i] = new_line
+                    override_changes[name] = applied
+                break
+
+    new_stats_block2 = "\n".join(lines2)
+    html = html[:stats_start_m2.start()] + new_stats_block2 + html[stats_start_m2.start() + len(stats_block2):]
+
     # ── Summary ──
     print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
     for name, changes in sorted(bio_changes.items()):
@@ -394,7 +442,11 @@ def main():
         arrow = f"{old} → {new}"
         print(f"  {name}: {arrow} fights")
 
-    print(f"\nTotal: {len(bio_changes)} bio updates, {len(fh_changes)} fight history replacements")
+    print(f"\n── Manual overrides ({len(override_changes)} fighters) ──")
+    for name, changes in sorted(override_changes.items()):
+        print(f"  {name}: {', '.join(changes)}")
+
+    print(f"\nTotal: {len(bio_changes)} bio updates, {len(fh_changes)} fight history replacements, {len(override_changes)} manual overrides")
 
     if DRY_RUN:
         print("\n[DRY RUN — index.html not modified]")
