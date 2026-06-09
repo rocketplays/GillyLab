@@ -400,7 +400,7 @@ def parse_ranks(wikitext):
         clean = strip_wt(entry).strip()
         if not clean or re.search(r"\{\{|\}\}", clean):
             continue
-        if re.search(r"bjj|jiu.?jitsu|judo", clean, re.I):
+        if re.search(r"bjj|jiu.?jitsu|judo|10th planet", clean, re.I):
             icon = "🥋"
         elif re.search(r"muay thai|kickbox|boxing|karate|taekwondo|prajied", clean, re.I):
             icon = "🥊"
