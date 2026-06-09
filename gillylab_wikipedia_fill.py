@@ -495,6 +495,9 @@ def _parse_table(table):
         method = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
         if re.search(r"years=|\}\}", method):
             continue
+        # Reject wrestling/amateur score rows (e.g. "6–8", "SV 6–8", "TB 3–2")
+        if re.match(r"^(?:SV\s+|TB\s+|OT\s+)?\d+[\-–]\d+$", method.strip()):
+            continue
 
         event = strip_wt(gc("event")).strip()
         event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim|superfight)[^)]*\)\s*$",
@@ -627,6 +630,9 @@ def parse_mma_record_start(wikitext):
         method = re.sub(r"\s+"," ", strip_wt(cells[3] if len(cells) > 3 else "")).strip()
         method = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
         if re.search(r"years=|\}\}", method):
+            continue
+        # Reject wrestling/amateur score rows (e.g. "6–8", "SV 6–8", "TB 3–2")
+        if re.match(r"^(?:SV\s+|TB\s+|OT\s+)?\d+[\-–]\d+$", method.strip()):
             continue
 
         event = strip_wt(cells[4] if len(cells) > 4 else "").strip()
