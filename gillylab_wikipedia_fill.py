@@ -430,9 +430,13 @@ def _parse_table(table):
         if not row.strip():
             continue
 
-        # Split cells on || and strip leading | plus any HTML/wiki attribute block
+        # Split cells on || (same-line) or \n| (one-per-line) format
+        raw_parts = re.split(r"\|\|", row)
+        if len(raw_parts) < 3:
+            # Fall back to one-cell-per-line split: newline + | not followed by | or }
+            raw_parts = re.split(r"\n\s*\|(?!\||\})", row)
         cells = []
-        for part in re.split(r"\|\|", row):
+        for part in raw_parts:
             part = re.sub(r"^\s*\|", "", part)
             part = re.sub(r'^(?:(?:[a-zA-Z-]+=(?:"[^"]*"|\'[^\']*\'|\S+))\s*)+\|', "", part).strip()
             cells.append(part)
