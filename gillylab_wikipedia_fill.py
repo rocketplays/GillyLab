@@ -462,10 +462,14 @@ def _parse_table(table):
         cells = []
         for part in raw_parts:
             part = re.sub(r"^\s*\|", "", part)
-            part = re.sub(r'^(?:(?:[a-zA-Z-]+=(?:"[^"]*"|\'[^\']*\'|\S+))\s*)+\|', "", part).strip()
+            part = re.sub(r'^(?:(?:[a-zA-Z-]+=(?:"[^"]*"|\'[^\']*\'|[^\s|]+))\s*)+\|', "", part).strip()
             cells.append(part)
 
         if len(cells) < 3:
+            continue
+
+        # Skip stats/summary rows — cells that look like template params (e.g. nc=0, ko-wins=5, title=...)
+        if any(re.match(r'^[\w][\w-]*\s*=', c.strip()) for c in cells[:6]):
             continue
 
         def gc(key):
@@ -495,17 +499,34 @@ def _parse_table(table):
 
         method = re.sub(r"\s+"," ", strip_wt(gc("method"))).strip()
         method = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
-        if re.search(r"years=|\}\}", method):
+        if re.search(r"years\s*=|\}\}", method):
             continue
         # Reject wrestling/amateur score rows (e.g. "6–8", "SV 6–8", "TB 3–2")
         if re.match(r"^(?:SV\s+|TB\s+|OT\s+)?\d+[\-–]\d+$", method.strip()):
             continue
 
+        # Detect column shift: if "opponent" looks like a method (e.g. "Submission (choke)")
+        # the row had a missing/empty cell that shifted everything left one column.
+        # Reassign: opponent→method, method→event; opponent becomes unknown.
+        METHOD_PAT = re.compile(r"^(TKO|KO|Submission|Decision|NC|No Contest|DQ|Draw)\b", re.I)
+        if METHOD_PAT.match(opponent):
+            event_raw  = strip_wt(gc("event")).strip()
+            method     = re.sub(r"\s+"," ", opponent).strip()
+            method     = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
+            event_raw2 = re.sub(r"\s+"," ", strip_wt(gc("method"))).strip()
+            opponent   = ""   # actual opponent unknown for this row
+            # Use what was "method" as event (it's the event name)
+            event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim|superfight)[^)]*\)\s*$",
+                            "", event_raw2, flags=re.I).strip()
+        else:
+            event = None  # set below
+
         # Skip amateur bouts (notes column contains "amateur")
         if re.search(r"\bamateur\b", gc("notes"), re.I):
             continue
 
-        event = strip_wt(gc("event")).strip()
+        if event is None:
+            event = strip_wt(gc("event")).strip()
         event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim|superfight)[^)]*\)\s*$",
                         "", event, flags=re.I).strip()
         org   = infer_org(event)
@@ -519,12 +540,18 @@ def _parse_table(table):
             print(f"    date raw: {repr(date_raw[:80])}")
         rnd  = strip_wt(gc("round")).strip()
         tim  = strip_wt(gc("time")).strip()
+        # If attribute prefix wasn't stripped (e.g. "align*center|3"), take last segment
+        if "|" in rnd: rnd = rnd.split("|")[-1].strip()
+        if "|" in tim: tim = tim.split("|")[-1].strip()
 
         # Guard against column misdetection: if round looks like a time (m:ss)
         # and time looks like a location, the table had an extra column (e.g. location)
         # that shifted the indices. Swap them back.
         if re.match(r"^\d+:\d{2}$", rnd) and not re.match(r"^\d+:\d{2}$", tim):
             rnd, tim = tim, rnd
+        # If round doesn't look like a number, it's a misread location/text — clear it
+        if rnd and not re.match(r"^\d{1,2}$", rnd):
+            rnd = ""
 
         fights.append({
             "date":date_str, "result":result, "opponent":opponent,
@@ -639,10 +666,14 @@ def parse_mma_record_start(wikitext):
                 continue
             cell = line[1:].strip()
             # Strip wiki cell attributes: align=center|VALUE or style="..."|VALUE
-            cell = re.sub(r'^(?:[a-zA-Z-]+=(?:"[^"]*"|\S+)\s*)+\|', "", cell).strip()
+            cell = re.sub(r'^(?:[a-zA-Z-]+=(?:"[^"]*"|[^\s|]+)\s*)+\|', "", cell).strip()
             cells.append(cell)
 
         if len(cells) < 3:
+            continue
+
+        # Skip stats/summary rows — cells that look like template params (e.g. nc=0, ko-wins=5, title=...)
+        if any(re.match(r'^[\w][\w-]*\s*=', c.strip()) for c in cells[:6]):
             continue
 
         # Result (index 0): {{yes2}}Win, {{no2}}Loss, {{draw2}}, {{nc2}}, etc.
@@ -661,14 +692,24 @@ def parse_mma_record_start(wikitext):
 
         method = re.sub(r"\s+"," ", strip_wt(cells[3] if len(cells) > 3 else "")).strip()
         method = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
-        if re.search(r"years=|\}\}", method):
+        if re.search(r"years\s*=|\}\}", method):
             continue
         # Reject wrestling/amateur score rows (e.g. "6–8", "SV 6–8", "TB 3–2")
         if re.match(r"^(?:SV\s+|TB\s+|OT\s+)?\d+[\-–]\d+$", method.strip()):
             continue
 
-        event = strip_wt(cells[4] if len(cells) > 4 else "").strip()
-        event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim)[^)]*\)\s*$","",event,flags=re.I).strip()
+        # Detect column shift: if "opponent" looks like a method, a missing cell shifted
+        # everything left. Reassign: opponent→method, cells[3]→event; opponent = unknown.
+        METHOD_PAT = re.compile(r"^(TKO|KO|Submission|Decision|NC|No Contest|DQ|Draw)\b", re.I)
+        if METHOD_PAT.match(opponent):
+            method   = re.sub(r"\s+"," ", opponent).strip()
+            method   = re.sub(r"\(([a-z])", lambda m: "("+m.group(1).upper(), method)
+            event_s  = strip_wt(cells[3] if len(cells) > 3 else "").strip()
+            opponent = ""
+        else:
+            event_s  = strip_wt(cells[4] if len(cells) > 4 else "").strip()
+
+        event = re.sub(r"\s*\([^)]*(?:title|debut|belt|champ|interim)[^)]*\)\s*$","",event_s,flags=re.I).strip()
 
         # Skip amateur bouts (notes column contains "amateur")
         notes = cells[9] if len(cells) > 9 else ""
@@ -684,10 +725,16 @@ def parse_mma_record_start(wikitext):
 
         rnd = strip_wt(cells[6] if len(cells) > 6 else "").strip()
         tim = strip_wt(cells[7] if len(cells) > 7 else "").strip()
+        # If attribute prefix wasn't stripped (e.g. "align*center|3"), take last segment
+        if "|" in rnd: rnd = rnd.split("|")[-1].strip()
+        if "|" in tim: tim = tim.split("|")[-1].strip()
 
         # If round looks like a time (m:ss) and time doesn't, columns shifted — swap
         if re.match(r"^\d+:\d{2}$", rnd) and not re.match(r"^\d+:\d{2}$", tim):
             rnd, tim = tim, rnd
+        # If round doesn't look like a number, it's a misread location/text — clear it
+        if rnd and not re.match(r"^\d{1,2}$", rnd):
+            rnd = ""
 
         fights.append({
             "date":     date_str,
