@@ -1960,7 +1960,7 @@
 ══════════════════════════════════════ -->
 <div class="page" id="page-fighter">
   <div style="padding-top: 0.5rem;">
-    <div class="back-btn" id="fighter-back-btn" onclick="navigate(fighterReturnPage)">← Back to Card</div>
+    <div class="back-btn" id="fighter-back-btn" onclick="fighterGoBack()">← Back to Card</div>
   </div>
 
   <div class="fighter-hero">
@@ -2626,7 +2626,7 @@
  { name: "Jean Matsumoto", division: "BW", rank: "NR", record: "10-3-0", initials: "JMT2", country: "Brazil" },
  { name: "Davey Grant", division: "BW", rank: "NR", record: "18-8-0", initials: "DGR", country: "UK" },
  { name: "Felipe Lima", division: "BW", rank: "NR", record: "14-2-0", initials: "FLI", country: "Brazil" },
- { name: "Pedro Munhoz", division: "BW", rank: "NR", record: "21-9-0", initials: "PMU", country: "Brazil" },
+ { name: "Pedro Munhoz", division: "BW", rank: "NR", record: "20-10-0", initials: "PMU", country: "Brazil" },
  { name: "Kai Asakura", division: "BW", rank: "NR", record: "22-6-0", initials: "KAS", country: "Japan" },
  { name: "Brady Hiestand", division: "BW", rank: "NR", record: "10-3-0", initials: "BHI", country: "USA" },
  { name: "Muin Gafurov", division: "BW", rank: "NR", record: "18-5-0", initials: "MGF", country: "Tajikistan" },
@@ -2689,7 +2689,7 @@
  { name: "Yadier del Valle", division: "WW", rank: "NR", record: "10-3-0", initials: "YDV", country: "Puerto Rico" },
  { name: "Kevin Jousset", division: "WW", rank: "NR", record: "10-5-0", initials: "KJO", country: "France" },
  { name: "Elizeu Zaleski dos Santos", division: "WW", rank: "NR", record: "26-10-1", initials: "EZS", country: "Brazil" },
- { name: "Niko Price", division: "WW", rank: "NR", record: "16-9-2", initials: "NPR", country: "USA" },
+ { name: "Niko Price", division: "WW", rank: "NR", record: "16-11-0", initials: "NPR", country: "USA" },
  { name: "Gauge Young", division: "WW", rank: "NR", record: "9-4-0", initials: "GYO", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "20-10-1", initials: "PCR", country: "UK" },
@@ -2962,6 +2962,10 @@
  // going home. Keyed by page id (e.g. 'home', 'projections', 'odds',
  // 'rankings'); label text mirrors each page's nav-tab name.
  let fighterReturnPage = 'home';
+ // Stack of previously viewed fighter profiles, so the back button can
+ // return to the previous fighter when navigating fighter → fighter.
+ let fighterStack = [];
+ let currentFighter = null;
  const FIGHTER_BACK_LABELS = {
  home: '← Back to Card',
  projections: '← Back to Projections',
@@ -26287,7 +26291,28 @@ function populateAccolades(name) {
   });
 }
 
-function openFighter(name, division, record, rank, initials, country) {
+function fighterGoBack() {
+ if (fighterStack.length > 0) {
+   const prev = fighterStack.pop();
+   openFighter(prev.name, prev.division, prev.record, prev.rank, prev.initials, prev.country, true);
+ } else {
+   navigate(fighterReturnPage);
+ }
+}
+
+function openFighter(name, division, record, rank, initials, country, _skipPush) {
+ // If already viewing a fighter, push that fighter onto the back-stack
+ // so the back button can return to them. Clear the stack when coming
+ // from a non-fighter page (fresh entry into fighter view).
+ if (!_skipPush) {
+   const activePage = document.querySelector('.page.active');
+   if (activePage && activePage.id === 'page-fighter' && currentFighter) {
+     fighterStack.push(Object.assign({}, currentFighter));
+   } else {
+     fighterStack = [];
+   }
+ }
+ currentFighter = { name, division, record, rank, initials, country };
  document.getElementById('f-name').textContent = name;
  document.getElementById('f-division').textContent = division + ' · ' + rank;
  document.getElementById('f-avatar-initials').textContent = initials;
@@ -26314,6 +26339,16 @@ function openFighter(name, division, record, rank, initials, country) {
  populateTapeStudy(name);
  populateAccolades(name);
  navigate('fighter');
+ // Override back button label: if we came from another fighter profile,
+ // show that fighter's name; otherwise show the page-level back label.
+ const backBtn = document.getElementById('fighter-back-btn');
+ if (backBtn) {
+   if (fighterStack.length > 0) {
+     backBtn.textContent = '← Back to ' + fighterStack[fighterStack.length - 1].name;
+   } else {
+     backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
+   }
+ }
  window.scrollTo({ top: 0, behavior: 'smooth' });
  // Fetch photo from Wikimedia API
  fetchFighterPhoto(name);
