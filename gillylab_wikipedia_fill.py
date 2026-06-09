@@ -577,8 +577,8 @@ def parse_competitive_accolades(wikitext):
     # Used in {{s-start}} match record tables (NCAA, freestyle, etc.)
     # Pattern: lines starting with ! that contain a gold/silver/bronze template
     # e.g.  ! style=... |[[2019 NCAA Championships]] {{gold1}} at 197 lbs
-    INLINE_MEDAL = re.compile(
-        r'^\s*!\s*(?:[^|\n]*\|)?\s*(.*?)({{(?:gold|silver|bronze)\d*}})(.*?)$',
+    INLINE_MEDAL_PAT = re.compile(
+        r'^\s*!.*?({{(?:gold|silver|bronze)\d*}})',
         re.IGNORECASE | re.MULTILINE
     )
     INLINE_ICON = {
@@ -586,18 +586,28 @@ def parse_competitive_accolades(wikitext):
         'silver': '🥈',
         'bronze': '🥉',
     }
-    for m in INLINE_MEDAL.finditer(wikitext):
-        before = strip_wt(m.group(1)).strip()
-        tpl    = m.group(2).lower()
-        after  = strip_wt(m.group(3)).strip()
-        # Determine medal type from template name
+    for m in INLINE_MEDAL_PAT.finditer(wikitext):
+        tpl  = m.group(1).lower()
         icon = next((v for k, v in INLINE_ICON.items() if k in tpl), None)
         if not icon:
             continue
-        # Build title: combine before + after, clean up "at X lbs/kg" suffix
-        title = (before + (' ' + after if after else '')).strip()
-        title = re.sub(r'\s*at\s+[\d½\s]+(?:lbs?|kg)\s*$', '', title, flags=re.I).strip()
-        title = re.sub(r'\s+', ' ', title)
+        # Take the full line and clean it up
+        line = m.group(0)
+        # Unwrap {{small|content}} → content (before general template strip)
+        line = re.sub(r'\{\{small\|([^}]*)\}\}', r'\1', line, re.I)
+        # Replace &nbsp; with space
+        line = line.replace('&nbsp;', ' ')
+        # Remove the medal template itself
+        line = re.sub(r'\{\{(?:gold|silver|bronze)\d*\}\}', '', line, flags=re.I)
+        # Remove style=/colspan= attributes and leading ! | separators
+        line = re.sub(r'style\s*=\s*["\'][^"\']*["\']', '', line)
+        line = re.sub(r'colspan\s*=\s*\d+', '', line)
+        line = re.sub(r'^\s*!\s*', '', line)
+        # Strip remaining wikitext markup
+        title = strip_wt(line)
+        # Remove "at X lbs/kg" weight suffix
+        title = re.sub(r'\s*at\s+[\d½½\s]+(?:lbs?|kg)\s*', '', title, flags=re.I)
+        title = re.sub(r'\s+', ' ', title).strip()
         if title:
             add(icon, title)
 
