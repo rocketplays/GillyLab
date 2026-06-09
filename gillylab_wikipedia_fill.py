@@ -395,20 +395,183 @@ def parse_ranks(wikitext):
         t = re.sub(r"<br\s*/?>", "\n", t)
         entries = [e.strip() for e in t.split("\n") if e.strip()]
 
+    # Section header words that appear as standalone entries — skip them
+    SECTION_HEADERS = {
+        "wrestling", "bjj", "mma", "boxing", "muay thai", "judo",
+        "kickboxing", "grappling", "jiu-jitsu", "jiu jitsu", "karate",
+        "taekwondo", "sambo", "brazilian jiu-jitsu",
+    }
+
     results = []
     for entry in entries:
         clean = strip_wt(entry).strip()
         if not clean or re.search(r"\{\{|\}\}", clean):
             continue
+        # Skip bare section headers (e.g. "Wrestling", "BJJ")
+        if clean.lower() in SECTION_HEADERS:
+            continue
         if re.search(r"bjj|jiu.?jitsu|judo|10th planet", clean, re.I):
             icon = "🥋"
         elif re.search(r"muay thai|kickbox|boxing|karate|taekwondo|prajied", clean, re.I):
             icon = "🥊"
-        elif re.search(r"wrestl|sambo|grappl", clean, re.I):
+        elif re.search(r"wrestl|sambo|grappl|ncaa|all.american", clean, re.I):
             icon = "🤼"
         else:
             icon = "🏆"
         results.append({"icon": icon, "title": clean, "detail": None})
+    return results
+
+
+def parse_competitive_accolades(wikitext):
+    """
+    Parse competitive medal results from two Wikipedia formats:
+    1. {{MedalGold/Silver/Bronze|competition|event}} summary templates
+    2. Wikitables in sport sections (wrestling, BJJ, sambo, etc.)
+       where the position cell is Gold/Silver/Bronze/1st/2nd/3rd.
+    Returns list of {"icon": 🥇/🥈/🥉, "title": str, "detail": None}.
+    """
+    results = []
+    seen   = set()
+
+    def add(icon, title):
+        title = title.strip()
+        key   = (icon, title)
+        if title and key not in seen:
+            seen.add(key)
+            results.append({"icon": icon, "title": title, "detail": None})
+
+    # ── 1. Medal summary templates ──────────────────────────────────────────
+    # {{MedalGold|competition|event}}, {{Medal|G|competition|event}}
+    MEDAL_TPLS = [
+        (re.compile(r'\{\{Medal(?:Gold|First)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}',   re.I), '🥇'),
+        (re.compile(r'\{\{Medal(?:Silver|Second)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}', re.I), '🥈'),
+        (re.compile(r'\{\{Medal(?:Bronze|Third)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}',  re.I), '🥉'),
+        (re.compile(r'\{\{Medal\s*\|\s*[Gg]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥇'),
+        (re.compile(r'\{\{Medal\s*\|\s*[Ss]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥈'),
+        (re.compile(r'\{\{Medal\s*\|\s*[Bb]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥉'),
+    ]
+    for pat, icon in MEDAL_TPLS:
+        for m in pat.finditer(wikitext):
+            comp  = strip_wt(m.group(1) or '').strip()
+            event = strip_wt(m.group(2) or '').strip() if m.lastindex and m.lastindex >= 2 and m.group(2) else ''
+            add(icon, comp + (f' — {event}' if event else ''))
+
+    # ── 2. Sport-section wikitables ─────────────────────────────────────────
+    # Only scan sections whose heading names a combat/grappling sport.
+    SPORT_HDG = re.compile(
+        r'wrestling|jiu.?jitsu|bjj|sambo|judo|boxing|kickbox|muay thai|grappling',
+        re.I
+    )
+    # Map normalised position text → medal icon
+    POS_TO_ICON = {
+        '1st': '🥇', 'gold': '🥇', '1': '🥇', 'champion': '🥇', 'winner': '🥇',
+        '2nd': '🥈', 'silver': '🥈', '2': '🥈', 'runner-up': '🥈',
+        '3rd': '🥉', 'bronze': '🥉', '3': '🥉',
+    }
+    # Inline medal templates that can appear inside a table cell
+    CELL_TPL_ICON = {
+        'goldmedal': '🥇', 'gold medal': '🥇',
+        'silvermedal': '🥈', 'silver medal': '🥈',
+        'bronzemedal': '🥉', 'bronze medal': '🥉',
+    }
+
+    def cell_icon(raw):
+        """Return medal icon if raw cell text encodes a medal, else None."""
+        low = raw.lower().strip("' ")
+        # Check for medal templates BEFORE strip_wt removes them
+        for tpl, ico in CELL_TPL_ICON.items():
+            if tpl in low:
+                return ico
+        # Also check wikitext template names directly (e.g. {{GoldMedal}})
+        if re.search(r'\{\{\s*gold\s*medal', raw, re.I):  return '🥇'
+        if re.search(r'\{\{\s*silver\s*medal', raw, re.I): return '🥈'
+        if re.search(r'\{\{\s*bronze\s*medal', raw, re.I): return '🥉'
+        return POS_TO_ICON.get(low)
+
+    def parse_table_cells(row_text):
+        """Extract (raw, stripped) cell pairs from a wikitext table row.
+        Handles both || (data) and !! (header) inline separators."""
+        cells = []
+        for segment in re.split(r'\n\s*[!|](?![!=])', row_text):
+            for part in re.split(r'\|\||\!\!', segment):
+                raw = part.strip()
+                c   = strip_wt(raw).strip()
+                if raw:
+                    cells.append((raw, c))
+        return cells
+
+    # Locate all section headings
+    sec_pat  = re.compile(r'^(={2,})\s*([^=\n]+?)\s*\1', re.MULTILINE)
+    sections = list(sec_pat.finditer(wikitext))
+
+    for si, sec in enumerate(sections):
+        if not SPORT_HDG.search(sec.group(2)):
+            continue
+        sec_level = len(sec.group(1))   # number of = signs
+        sec_start = sec.end()
+        # sec_end = start of next section at same or higher level (fewer =)
+        sec_end = len(wikitext)
+        for sj in range(si + 1, len(sections)):
+            if len(sections[sj].group(1)) <= sec_level:
+                sec_end = sections[sj].start()
+                break
+        content = wikitext[sec_start:sec_end]
+
+        # Walk through wikitables in this section
+        tbl_pos = 0
+        while True:
+            tbl_idx = content.find('{|', tbl_pos)
+            if tbl_idx == -1:
+                break
+            depth, p = 1, tbl_idx + 2
+            while p < len(content) and depth > 0:
+                if content[p:p+2] == '{|':   depth += 1; p += 2
+                elif content[p:p+2] == '|}': depth -= 1; p += 2
+                else: p += 1
+            table_text = content[tbl_idx:p]
+            tbl_pos    = p
+
+            rows = re.split(r'\n\s*\|-', table_text)
+            pos_col = year_col = comp_col = event_col = -1
+
+            for row in rows:
+                is_header = bool(re.search(r'^\s*!', row, re.M))
+                cells = parse_table_cells(row)  # list of (raw, stripped) tuples
+                if not cells:
+                    continue
+
+                if is_header:
+                    for j, (_, c) in enumerate(cells):
+                        cl = c.lower()
+                        if any(w in cl for w in ('position','place','result','medal')):
+                            pos_col  = j
+                        if any(w in cl for w in ('year','season','date')):
+                            year_col = j
+                        if any(w in cl for w in ('competition','tournament','championship','event','meet')):
+                            comp_col = j
+                        if any(w in cl for w in ('weight','class','category','division')):
+                            event_col = j
+                    continue
+
+                # Determine medal icon — use raw text so medal templates aren't stripped
+                icon = None
+                if pos_col != -1 and len(cells) > pos_col:
+                    icon = cell_icon(cells[pos_col][0])  # raw
+                if icon is None:
+                    for raw, _ in cells:
+                        icon = cell_icon(raw)
+                        if icon:
+                            break
+                if not icon:
+                    continue
+
+                year  = cells[year_col][1]  if year_col  != -1 and len(cells) > year_col  else ''
+                comp  = cells[comp_col][1]  if comp_col  != -1 and len(cells) > comp_col  else ''
+                event = cells[event_col][1] if event_col != -1 and len(cells) > event_col else ''
+
+                parts = [p for p in [year, comp, event] if p]
+                add(icon, ' — '.join(parts) if parts else sec.group(2))
+
     return results
 
 
@@ -1006,7 +1169,9 @@ def lookup(name):
     wt = wiki_wikitext(title)
     if not wt:
         return {}, [], title
-    return parse_infobox(wt), parse_fight_record(wt), title
+    bio = parse_infobox(wt)
+    bio["ranks"] = bio.get("ranks", []) + parse_competitive_accolades(wt)
+    return bio, parse_fight_record(wt), title
 
 def main():
     ap = argparse.ArgumentParser(description="GillyLab Wikipedia autofill")
@@ -1107,6 +1272,7 @@ def main():
                 print(f"  {fld}: {repr(raw[:120]) if raw else '(empty)'}")
 
         bio    = parse_infobox(wt)
+        bio["ranks"] = bio.get("ranks", []) + parse_competitive_accolades(wt)
         fights = parse_fight_record(wt)
         print(f"Bio            : {bio}")
         print(f"Fights found   : {len(fights)}")
