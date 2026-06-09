@@ -483,7 +483,7 @@ def main():
             accolade_changes[name] = [r["title"] for r in ranks]
 
         if inserts:
-            injection = "\n" + "\n".join(inserts)
+            injection = "\n" + "\n".join(inserts) + "\n"
             html = html[:acc_end] + injection + html[acc_end:]
 
     # ── Summary ──
