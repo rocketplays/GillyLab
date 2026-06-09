@@ -583,8 +583,8 @@ def _extract_mma_section(wikitext):
     end_m  = end_re.search(wikitext, m.end())
     section = wikitext[m.start() : end_m.start() if end_m else len(wikitext)]
 
-    # Within the section, strip any amateur subsection (and everything after it)
-    amateur_m = re.search(r"^={2,4}\s*amateur", section, re.MULTILINE | re.I)
+    # Within the section, strip any amateur or exhibition subsection (and everything after it)
+    amateur_m = re.search(r"^={2,4}\s*(?:amateur|exhibition)", section, re.MULTILINE | re.I)
     if amateur_m:
         section = section[:amateur_m.start()]
 
@@ -675,8 +675,13 @@ def parse_mma_record_start(wikitext):
     start_m = re.search(r"\{\{MMA record start[^}]*\}\}", wikitext, re.I)
     if not start_m:
         return fights
-    end_m = re.search(r"\{\{MMA record end[^}]*\}\}", wikitext[start_m.end():], re.I)
-    block_end = start_m.end() + end_m.start() if end_m else len(wikitext)
+    # Accept either {{MMA record end}} or plain {{end}} as the block terminator.
+    # Many Wikipedia pages close the table with {{end}} rather than {{MMA record end}},
+    # and without this, block_end falls back to len(wikitext), swallowing any
+    # subsequent amateur/grappling table that also lives in the MMA section.
+    end_pat = re.compile(r"\{\{(?:MMA record end|end)[^}]*\}\}", re.I)
+    end_m = end_pat.search(wikitext, start_m.end())
+    block_end = end_m.start() if end_m else len(wikitext)
     block = wikitext[start_m.end():block_end]
 
     if _DEBUG_CELLS:
