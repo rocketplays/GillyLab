@@ -9,7 +9,14 @@ Merges fighter_data_wikipedia.txt into index.html:
   - NEVER touches ODDS_HISTORY, TAPE_STUDY, ACCOLADES
 
 Usage:
-  python3 gillylab_apply_wikipedia.py [--dry-run]
+  python3 gillylab_apply_wikipedia.py [--dry-run] [--force]
+
+  --force   Bypass the fight-count threshold and overwrite FIGHT_HISTORY for
+            all fighters in fighter_data_wikipedia.txt, even if Wikipedia has
+            fewer fights than the current data. Use after a parser fix to
+            correct previously-inflated fight histories.
+            Tip: pipe through a name filter to limit scope:
+              python3 gillylab_apply_wikipedia.py --force --names "Michael Oliveira,Bruno Silva"
 """
 
 import re
@@ -21,6 +28,14 @@ WIKIPEDIA_TXT = os.path.join(SCRIPT_DIR, "fighter_data_wikipedia.txt")
 INDEX_HTML    = os.path.join(SCRIPT_DIR, "index.html")
 
 DRY_RUN = "--dry-run" in sys.argv
+FORCE   = "--force"   in sys.argv
+
+# Optional comma-separated name filter: --names "Fighter A,Fighter B"
+FORCE_NAMES: set[str] = set()
+if "--names" in sys.argv:
+    idx = sys.argv.index("--names")
+    if idx + 1 < len(sys.argv):
+        FORCE_NAMES = {n.strip() for n in sys.argv[idx + 1].split(",") if n.strip()}
 
 
 # ── Parse fighter_data_wikipedia.txt ─────────────────────────────────────────
@@ -351,9 +366,11 @@ def main():
         count, rel_start, rel_end = find_fighter_array(fh_block_original, name)
         if rel_start == -1:
             continue  # not in FIGHT_HISTORY
-        # Only replace if Wikipedia has strictly more fights than current data.
-        # This protects manually-added fights and prevents unnecessary overwrites.
-        if len(wiki_fights) <= count:
+
+        # Threshold check — skip if Wikipedia doesn't have more fights.
+        # Bypass with --force (optionally scoped to --names "A,B,C").
+        force_this = FORCE and (not FORCE_NAMES or name in FORCE_NAMES)
+        if not force_this and len(wiki_fights) <= count:
             continue
 
         new_array = build_fight_array(name, wiki_fights)
