@@ -485,6 +485,18 @@ def main():
         if inserts:
             injection = "\n" + "\n".join(inserts) + "\n"
             html = html[:acc_end] + injection + html[acc_end:]
+            # Fix any missing commas: ]\n  "Name" → ],\n  "Name"
+            new_acc_m = re.search(r'const ACCOLADES = \{', html)
+            if new_acc_m:
+                na_start = new_acc_m.start()
+                d2, p2 = 1, new_acc_m.end()
+                while p2 < len(html) and d2 > 0:
+                    if html[p2] == '{': d2 += 1
+                    elif html[p2] == '}': d2 -= 1
+                    p2 += 1
+                acc_blk = html[na_start:p2]
+                fixed_blk = re.sub(r'\]\s*\n(\s*")', r'],\n\1', acc_blk)
+                html = html[:na_start] + fixed_blk + html[p2:]
 
     # ── Summary ──
     print(f"\n── Bio field updates ({len(bio_changes)} fighters) ──")
