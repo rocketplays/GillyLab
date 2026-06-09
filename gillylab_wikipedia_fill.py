@@ -167,6 +167,7 @@ def strip_wt(text):
     t = re.sub(r"<ref[^>]*>.*?</ref>","",t,flags=re.DOTALL)
     t = re.sub(r"<[^>]+>","",t)
     t = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]+)\]\]",r"\1",t)   # [[X|Y]]→Y
+    t = re.sub(r"\[+|\]+", "", t)   # remove any leftover bare [ or ] chars
     # Remove nested templates iteratively (handles up to 3 levels)
     # Use DOTALL so multi-line templates like {{ubl|...\n...}} are fully stripped
     for _ in range(3):

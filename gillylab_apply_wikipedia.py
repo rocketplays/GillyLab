@@ -242,7 +242,19 @@ def find_fighter_array(block, name):
     depth = 1
     while pos < len(block) and depth > 0:
         ch = block[pos]
-        if ch == "[":
+        # Skip string literals so brackets inside strings don't affect depth
+        if ch in ('"', "'"):
+            quote = ch
+            pos += 1
+            while pos < len(block):
+                c = block[pos]
+                if c == '\\':
+                    pos += 2   # skip escaped char
+                    continue
+                if c == quote:
+                    break
+                pos += 1
+        elif ch == "[":
             depth += 1
         elif ch == "]":
             depth -= 1
