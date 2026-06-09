@@ -53,7 +53,16 @@ MONTH_ABBR = {
 MONTH_NAME = {
     "january":1,"february":2,"march":3,"april":4,"may":5,"june":6,
     "july":7,"august":8,"september":9,"october":10,"november":11,"december":12,
+    # abbreviated (3-char)
+    "jan":1,"feb":2,"mar":3,"apr":4,"jun":6,
+    "jul":7,"aug":8,"sep":9,"oct":10,"nov":11,"dec":12,
+    # "may" is same for both full and abbreviated
 }
+# Regex alternation covering full and abbreviated month names
+_MONTH_RE = (
+    r"january|february|march|april|may|june|july|august|september|october|november|december|"
+    r"jan|feb|mar|apr|jun|jul|aug|sep|oct|nov|dec"
+)
 
 # Wikipedia result templates → letter
 RESULT_TOKENS = {
@@ -167,36 +176,41 @@ def strip_wt(text):
 def parse_date(text):
     """Return 'Mon D, YYYY' from wikitext date fields."""
     t = str(text or "")
-    # {{dts|format=dmy|2025|November|15}} — named month
-    m = re.search(
-        r"\|\s*(\d{4})\s*\|\s*(january|february|march|april|may|june|july|"
-        r"august|september|october|november|december)\s*\|\s*(\d{1,2})",
-        t, re.I)
+    # {{sort|YYYYMMDD|...}} — extract from 8-digit sort key as fallback
+    sort_m = re.search(r"\{\{sort\|(\d{8})\|", t)
+    # {{dts|format=dmy|2025|November|15}} — named month (full or abbreviated)
+    m = re.search(rf"\|\s*(\d{{4}})\s*\|\s*({_MONTH_RE})\s*\|\s*(\d{{1,2}})", t, re.I)
     if m:
         y,mo,d = int(m.group(1)),MONTH_NAME[m.group(2).lower()],int(m.group(3))
         return f"{MONTH_ABBR[mo]} {d}, {y}"
     # {{dts|YYYY|M|D}} — numeric month
-    m = re.search(r"\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})",t)
+    m = re.search(r"\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})", t)
     if m:
         y,mo,d = int(m.group(1)),int(m.group(2)),int(m.group(3))
         if 1 <= mo <= 12 and 1 <= d <= 31:
             return f"{MONTH_ABBR[mo]} {d}, {y}"
     # ISO
-    m = re.search(r"(\d{4})-(\d{2})-(\d{2})",t)
+    m = re.search(r"(\d{4})-(\d{2})-(\d{2})", t)
     if m:
         y,mo,d = int(m.group(1)),int(m.group(2)),int(m.group(3))
         if 1 <= mo <= 12 and 1 <= d <= 31:
             return f"{MONTH_ABBR[mo]} {d}, {y}"
-    # "22 April 2023"
-    m = re.search(r"(\d{1,2})\s+(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{4})",t,re.I)
+    # "22 April 2023" or "22 Apr 2023"
+    m = re.search(rf"(\d{{1,2}})\s+({_MONTH_RE})\s+(\d{{4}})", t, re.I)
     if m:
         d,mo,y = int(m.group(1)),MONTH_NAME[m.group(2).lower()],int(m.group(3))
         return f"{MONTH_ABBR[mo]} {d}, {y}"
-    # "April 22, 2023"
-    m = re.search(r"(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2}),?\s+(\d{4})",t,re.I)
+    # "April 22, 2023" or "Apr 22, 2023"
+    m = re.search(rf"({_MONTH_RE})\s+(\d{{1,2}}),?\s+(\d{{4}})", t, re.I)
     if m:
         mo,d,y = MONTH_NAME[m.group(1).lower()],int(m.group(2)),int(m.group(3))
         return f"{MONTH_ABBR[mo]} {d}, {y}"
+    # {{sort|YYYYMMDD|}} with empty/unparseable display — fall back to sort key
+    if sort_m:
+        s = sort_m.group(1)
+        y,mo,d = int(s[:4]),int(s[4:6]),int(s[6:8])
+        if 1 <= mo <= 12 and 1 <= d <= 31:
+            return f"{MONTH_ABBR[mo]} {d}, {y}"
     return ""
 
 def parse_dob(text):
