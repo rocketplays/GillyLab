@@ -53,6 +53,12 @@ DELAY    = 0.5   # seconds between requests
 # in the same section/template as their MMA record, causing the parser to return
 # inflated fight counts that can't be reliably separated automatically.
 # These fighters' FIGHT_HISTORY and record: fields should be managed manually.
+# Fighters whose display name differs from their Wikipedia page title.
+# Maps FIGHTERS array name → exact Wikipedia article title.
+WIKIPEDIA_MANUAL: dict[str, str] = {
+    "Marcus Buchecha": "Marcus Buchecha",
+}
+
 WIKIPEDIA_SKIP: set[str] = {
     "Gable Steveson",    # Wikipedia mixes NCAA wrestling record with MMA record
     "Mackenzie Dern",    # Wikipedia mixes BJJ competition record with MMA record
@@ -441,20 +447,47 @@ def parse_competitive_accolades(wikitext):
             results.append({"icon": icon, "title": title, "detail": None})
 
     # ── 1. Medal summary templates ──────────────────────────────────────────
-    # {{MedalGold|competition|event}}, {{Medal|G|competition|event}}
+    # Handles {{MedalGold|loc|weight}}, {{Medal|Gold|loc|weight}}, {{Medal|G|loc|weight}}
+    # _WLARG captures a field that may contain [[...|...]] wikilinks (pipe inside link is ok)
+    _WLARG = r'(?:\[\[[^\]]*\]\]|[^|}\n])+'
+
     MEDAL_TPLS = [
-        (re.compile(r'\{\{Medal(?:Gold|First)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}',   re.I), '🥇'),
-        (re.compile(r'\{\{Medal(?:Silver|Second)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}', re.I), '🥈'),
-        (re.compile(r'\{\{Medal(?:Bronze|Third)\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}',  re.I), '🥉'),
-        (re.compile(r'\{\{Medal\s*\|\s*[Gg]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥇'),
-        (re.compile(r'\{\{Medal\s*\|\s*[Ss]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥈'),
-        (re.compile(r'\{\{Medal\s*\|\s*[Bb]\s*\|([^|}\n]+)(?:\|([^|}\n]*))?\}\}'),     '🥉'),
+        # {{MedalGold|...}} / {{MedalFirst|...}}
+        (re.compile(r'\{\{Medal(?:Gold|First)\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}',   re.I), '🥇'),
+        (re.compile(r'\{\{Medal(?:Silver|Second)\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}', re.I), '🥈'),
+        (re.compile(r'\{\{Medal(?:Bronze|Third)\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}',  re.I), '🥉'),
+        # {{Medal|G|...}} single-letter code
+        (re.compile(r'\{\{Medal\s*\|\s*[Gg]\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}'),     '🥇'),
+        (re.compile(r'\{\{Medal\s*\|\s*[Ss]\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}'),     '🥈'),
+        (re.compile(r'\{\{Medal\s*\|\s*[Bb]\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}'),     '🥉'),
+        # {{Medal|Gold|...}} full-word code
+        (re.compile(r'\{\{Medal\s*\|\s*Gold\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}',   re.I), '🥇'),
+        (re.compile(r'\{\{Medal\s*\|\s*Silver\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}', re.I), '🥈'),
+        (re.compile(r'\{\{Medal\s*\|\s*Bronze\s*\|(' + _WLARG + r')(?:\|([^|}\n]*))?\}\}', re.I), '🥉'),
     ]
-    for pat, icon in MEDAL_TPLS:
-        for m in pat.finditer(wikitext):
-            comp  = strip_wt(m.group(1) or '').strip()
-            event = strip_wt(m.group(2) or '').strip() if m.lastindex and m.lastindex >= 2 and m.group(2) else ''
-            add(icon, comp + (f' — {event}' if event else ''))
+
+    # Track {{MedalCompetition}} context so entries from different competitions
+    # with the same year/location don't get deduplicated against each other.
+    COMP_PAT = re.compile(
+        r'\{\{Medal(?:Competition)?\s*\|\s*(?:Competition\s*\|)?\s*(' + _WLARG + r')\}\}',
+        re.I
+    )
+    current_comp = ''
+    for line in wikitext.split('\n'):
+        # Update competition context
+        comp_m = COMP_PAT.search(line)
+        if comp_m:
+            current_comp = strip_wt(comp_m.group(1)).strip()
+            continue
+        # Match a medal entry on this line
+        for pat, icon in MEDAL_TPLS:
+            m = pat.search(line)
+            if m:
+                year_loc = strip_wt(m.group(1) or '').strip()
+                weight   = strip_wt(m.group(2) or '').strip() if m.lastindex and m.lastindex >= 2 and m.group(2) else ''
+                parts    = [p for p in [current_comp, year_loc, weight] if p]
+                add(icon, ' — '.join(parts))
+                break
 
     # ── 2. Sport-section wikitables ─────────────────────────────────────────
     # Only scan sections whose heading names a combat/grappling sport.
@@ -594,19 +627,25 @@ def parse_competitive_accolades(wikitext):
         # Take the full line and clean it up
         line = m.group(0)
         # Unwrap {{small|content}} → content (before general template strip)
-        line = re.sub(r'\{\{small\|([^}]*)\}\}', r'\1', line, re.I)
+        line = re.sub(r'\{\{small\|([^}]*)\}\}', r'\1', line, flags=re.I)
         # Replace &nbsp; with space
         line = line.replace('&nbsp;', ' ')
-        # Remove the medal template itself
-        line = re.sub(r'\{\{(?:gold|silver|bronze)\d*\}\}', '', line, flags=re.I)
-        # Remove style=/colspan= attributes and leading ! | separators
-        line = re.sub(r'style\s*=\s*["\'][^"\']*["\']', '', line)
+        # Remove medal templates: handle with or without params/spaces (e.g. {{gold1 }}, {{silver2|...}})
+        line = re.sub(r'\{\{(?:gold|silver|bronze)\d*[^}]*\}\}', '', line, flags=re.I)
+        # Remove style= attributes (quoted or unquoted) and colspan=
+        line = re.sub(r'style\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s|{}\[\]<>]+)', '', line)
         line = re.sub(r'colspan\s*=\s*\d+', '', line)
+        # Remove leading ! and || cell separators
         line = re.sub(r'^\s*!\s*', '', line)
+        line = re.sub(r'\|\|', ' ', line)
         # Strip remaining wikitext markup
         title = strip_wt(line)
+        # Remove any remaining template fragments (e.g. {{gold1 without closing)
+        title = re.sub(r'\{\{[^}]*(?:\}\})?', '', title)
+        # Remove pipe separators and trailing junk
+        title = re.sub(r'\s*\|\s*', ' ', title)
         # Remove "at X lbs/kg" weight suffix
-        title = re.sub(r'\s*at\s+[\d½½\s]+(?:lbs?|kg)\s*', '', title, flags=re.I)
+        title = re.sub(r'\s*at\s+[\d½\s]+(?:lbs?|kg)\s*', '', title, flags=re.I)
         title = re.sub(r'\s+', ' ', title).strip()
         if title:
             add(icon, title)
@@ -1201,7 +1240,7 @@ def extract_fighters(html_path):
 
 # ── main ──────────────────────────────────────────────────────────────────────
 def lookup(name):
-    title = wiki_search(name)
+    title = WIKIPEDIA_MANUAL.get(name) or wiki_search(name)
     if not title:
         return {}, [], None
     time.sleep(DELAY)
@@ -1234,7 +1273,7 @@ def main():
             print("   Remove from WIKIPEDIA_SKIP in gillylab_wikipedia_fill.py to force a lookup.")
             return
         print(f"\n{'='*60}\nLooking up: {name}\n{'='*60}")
-        title = wiki_search(name)
+        title = WIKIPEDIA_MANUAL.get(name) or wiki_search(name)
         print(f"Wikipedia page : {title or 'NOT FOUND'}")
         if not title:
             return
