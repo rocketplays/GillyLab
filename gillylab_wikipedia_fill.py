@@ -437,6 +437,7 @@ def _parse_table(table):
             elif re.search(r"\bdate\b",           hc): col.setdefault("date",     i)
             elif re.search(r"\bround|rd\b",       hc): col.setdefault("round",    i)
             elif re.search(r"\btime\b",           hc): col.setdefault("time",     i)
+            elif re.search(r"\bnotes?\b",         hc): col.setdefault("notes",    i)
         if col:
             break
 
@@ -578,6 +579,9 @@ def parse_fight_record(wikitext):
     tmpl_start = parse_mma_record_start(wikitext)
     tmpl_named = parse_mma_record_templates(wikitext)
 
+    if _DEBUG_CELLS:
+        print(f"  [parse_fight_record] best_table={len(best_table)}, tmpl_start={len(tmpl_start)}, tmpl_named={len(tmpl_named)}")
+
     # Return whichever parser found the most fights
     return max([best_table, tmpl_start, tmpl_named], key=len)
 
@@ -599,9 +603,36 @@ def parse_mma_record_start(wikitext):
     block_end = start_m.end() + end_m.start() if end_m else len(wikitext)
     block = wikitext[start_m.end():block_end]
 
+    if _DEBUG_CELLS:
+        # Show any MMA record section markers
+        for sm in re.finditer(r"\{\{MMA record[^}]*\}\}", block, re.I):
+            print(f"  [tmpl marker] {repr(sm.group()[:120])}")
+        # Show rows 28-40 to find the pro→amateur transition
+        rows_preview = re.split(r"\n\s*\|-", block)
+        print(f"  [tmpl block] {len(rows_preview)} rows total")
+        for ri, rp in enumerate(rows_preview[28:42], start=28):
+            print(f"  [row {ri}] {repr(rp[:200])}")
+
+    in_amateur_section = False
     for row in re.split(r"\n\s*\|-", block):
         if not row.strip():
             continue
+
+        # {{end}} marks the close of the pro record section — stop here
+        if re.search(r"\{\{end\}\}", row, re.I):
+            break
+
+        # Detect {{MMA record section|...}} dividers — skip amateur sections
+        sec_m = re.search(r"\{\{MMA record section\s*\|([^}]*)\}\}", row, re.I)
+        if sec_m:
+            in_amateur_section = "amateur" in sec_m.group(1).lower()
+            continue
+        if in_amateur_section:
+            continue
+
+        # Detect wikitext section heading for amateur record — stop here
+        if re.search(r"==+\s*amateur", row, re.I):
+            break
 
         # Each cell is on its own line starting with |
         cells = []
