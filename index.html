@@ -3859,7 +3859,14 @@
  setStatCard(11, s.tdDef, "Takedown defense");
  setStatCard(12, s.subAvg, "Per 15 minutes");
  setStatCard(13, s.finRate, "Of all wins");
- setStatCard(14, s.streak, "Current streak");
+ // Compute win streak live from FIGHT_HISTORY (most-recent first)
+ const fhFights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
+ let streak = 0;
+ for (const f of fhFights) {
+   if (f.result === 'W') streak++;
+   else break;
+ }
+ setStatCard(14, streak || null, "Current win streak");
  setStatCard(15, s.gym || null, "Training camp");
  }
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
