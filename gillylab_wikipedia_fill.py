@@ -48,6 +48,17 @@ WIKI_API = "https://en.wikipedia.org/w/api.php"
 UA       = {"User-Agent": "GillyLab/1.0 (https://gillylab.com; fighter-data bot)"}
 DELAY    = 0.5   # seconds between requests
 
+# ── Wikipedia fill skip list ──────────────────────────────────────────────────
+# Fighters whose Wikipedia pages embed non-MMA records (wrestling, BJJ, boxing)
+# in the same section/template as their MMA record, causing the parser to return
+# inflated fight counts that can't be reliably separated automatically.
+# These fighters' FIGHT_HISTORY and record: fields should be managed manually.
+WIKIPEDIA_SKIP: set[str] = {
+    "Gable Steveson",    # Wikipedia mixes NCAA wrestling record with MMA record
+    "Mackenzie Dern",    # Wikipedia mixes BJJ competition record with MMA record
+    "Henry Cejudo",      # Wikipedia mixes Olympic/freestyle wrestling with MMA record
+}
+
 MONTH_ABBR = {
     1:"Jan",2:"Feb",3:"Mar",4:"Apr",5:"May",6:"Jun",
     7:"Jul",8:"Aug",9:"Sep",10:"Oct",11:"Nov",12:"Dec",
@@ -964,6 +975,10 @@ def main():
     # ── single-fighter test mode ──
     if args.test:
         name = args.test
+        if name in WIKIPEDIA_SKIP:
+            print(f"⚠️  {name} is in WIKIPEDIA_SKIP — Wikipedia page mixes non-MMA records.")
+            print("   Remove from WIKIPEDIA_SKIP in gillylab_wikipedia_fill.py to force a lookup.")
+            return
         print(f"\n{'='*60}\nLooking up: {name}\n{'='*60}")
         title = wiki_search(name)
         print(f"Wikipedia page : {title or 'NOT FOUND'}")
@@ -1073,6 +1088,14 @@ def main():
          LOG_FILE.open(write_mode, encoding="utf-8") as log_f:
 
         for i, name in enumerate(fighters, args.start+1):
+            if name in WIKIPEDIA_SKIP:
+                print(f"[{i:>4}/{args.start+total}] {name} ... SKIPPED (in WIKIPEDIA_SKIP)")
+                block = fmt_fighter(name, {}, [])
+                out_f.write(block + "\n")
+                out_f.flush()
+                log_f.write(f"{name:<35} SKIPPED (WIKIPEDIA_SKIP)\n")
+                log_f.flush()
+                continue
             print(f"[{i:>4}/{args.start+total}] {name} ...", end=" ", flush=True)
             try:
                 bio, fights, title = lookup(name)
