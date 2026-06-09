@@ -918,13 +918,13 @@ def fmt_fighter(name, bio, fights):
     lines.append(f"    dob: {bio.get('dob','')}")
     lines.append(f"    reach: {bio.get('reach','')}")
     lines.append(f"    stance: {bio.get('stance','')}")
+    lines.append(f"    gym: {bio.get('gym','')}")
     lines.append("  STATS:")
     for stat in ["strikes landed/min","striking accuracy","strikes absorbed/min",
                  "striking defense","knockdowns landed","takedowns landed",
                  "takedown accuracy","takedown defense","submission average",
                  "finish rate","win streak"]:
         lines.append(f"    {stat}:")
-    lines.append(f"    gym: {bio.get('gym','')}")
     lines.append("  FIGHTS:")
     if fights:
         for f in fights:
