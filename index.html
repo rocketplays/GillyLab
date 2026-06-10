@@ -2922,9 +2922,7 @@
 ,
   { name: "Santiago Luna", division: "BW", rank: "NR", record: "10-3-0", initials: "SL", country: "Mexico" }
 ,
-  { name: "John Yannis", division: "BW", rank: "NR", record: "8-4-0", initials: "JY", country: "USA" }
-,
-,
+  { name: "John Yannis", division: "BW", rank: "NR", record: "8-4-0", initials: "JY", country: "USA" },
   { name: "Chelsea Chandler", division: "WBW", rank: "NR", record: "7-4-0", initials: "CC2", country: "USA" }
 ,
   { name: "Yuneisy Duben", division: "WFLW", rank: "NR", record: "7-4-0", initials: "YD", country: "Cuba" }
@@ -30182,7 +30180,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // FIGHTERS match (e.g. an unranked newcomer we haven't added yet).
   function resolveCanonicalFighterName(apiName, apiSlug) {
     if (apiSlug) {
-      const match = FIGHTERS.find(f => nameToSlug(f.name) === apiSlug);
+      const match = FIGHTERS.find(f => f && nameToSlug(f.name) === apiSlug);
       if (match) return match.name;
     }
     return apiName;
