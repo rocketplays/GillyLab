@@ -30249,30 +30249,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const container = document.getElementById('rankingPanels');
     if (!container) return;
     let payload = null;
+    let fetchErr = null;
     try {
       const resp = await fetch('./data/rankings.json');
       if (resp.ok) payload = await resp.json();
-    } catch (e) { /* keep whatever is already in the DOM */ }
-    if (!payload || !Array.isArray(payload.data) || !payload.data.length) return;
+      else fetchErr = 'HTTP ' + resp.status;
+    } catch (e) { fetchErr = String(e); }
+    if (!payload || !Array.isArray(payload.data) || !payload.data.length) {
+      container.innerHTML = '<div style="color:var(--muted);padding:2rem;font-size:0.85rem;">' +
+        'Rankings unavailable' + (fetchErr ? ': ' + fetchErr : '') + '</div>';
+      return;
+    }
 
     const byDivision = {};
     payload.data.forEach(e => {
       (byDivision[e.division] = byDivision[e.division] || []).push(e);
     });
 
-    const panels = RANKING_PANEL_ORDER.map((panelId, idx) => {
-      let divisionName, isP4P = false;
-      if (panelId === 'p4p-m') { divisionName = "Men's Pound-for-Pound Top Rank"; isP4P = true; }
-      else if (panelId === 'p4p-w') { divisionName = "Women's Pound-for-Pound Top Rank"; isP4P = true; }
-      else { divisionName = Object.keys(RANKING_DIVISIONS).find(d => RANKING_DIVISIONS[d].panel === panelId); }
-      const entries = byDivision[divisionName] || [];
-      if (!entries.length) return '';
-      const display = idx === 0 ? '' : ' style="display:none;"';
-      return '<div id="rank-' + panelId + '" class="rank-panel"' + display + '>' +
-        rankingPanelHTML(divisionName, entries, isP4P) +
-      '</div>';
-    }).join('');
-    if (!panels) return;
+    let panels;
+    try {
+      panels = RANKING_PANEL_ORDER.map((panelId, idx) => {
+        let divisionName, isP4P = false;
+        if (panelId === 'p4p-m') { divisionName = "Men's Pound-for-Pound Top Rank"; isP4P = true; }
+        else if (panelId === 'p4p-w') { divisionName = "Women's Pound-for-Pound Top Rank"; isP4P = true; }
+        else { divisionName = Object.keys(RANKING_DIVISIONS).find(d => RANKING_DIVISIONS[d].panel === panelId); }
+        const entries = byDivision[divisionName] || [];
+        if (!entries.length) return '';
+        const display = idx === 0 ? '' : ' style="display:none;"';
+        return '<div id="rank-' + panelId + '" class="rank-panel"' + display + '>' +
+          rankingPanelHTML(divisionName, entries, isP4P) +
+        '</div>';
+      }).join('');
+    } catch(e) {
+      console.error('[GillyLab] renderRankingsPage build error:', e);
+      container.innerHTML = '<div style="color:orange;padding:2rem;font-size:0.85rem;">Rankings render error: ' + e.message + '</div>';
+      return;
+    }
+    if (!panels) {
+      container.innerHTML = '<div style="color:var(--muted);padding:2rem;font-size:0.85rem;">No ranking data matched.</div>';
+      return;
+    }
     container.innerHTML = panels;
     loadRankingPhotos();
 
@@ -30322,7 +30338,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     } catch(e) {
       console.error('[GillyLab] render error before rankings:', e);
     }
-    renderRankingsPage();
+    renderRankingsPage().catch(e => console.error('[GillyLab] renderRankingsPage rejected:', e));
   }
 
 
