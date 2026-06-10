@@ -2239,7 +2239,7 @@
  { name: "Joseph Morales", division: "FLW", rank: "#15", record: "15-2-0", initials: "JMO", country: "USA" },
  { name: "Zhalgas Zhumagulov", division: "FLW", rank: "NR", record: "19-9-0", initials: "ZZ", country: "Kazakhstan" },
  { name: "Clayton Carpenter", division: "FLW", rank: "NR", record: "8-3-0", initials: "CC", country: "USA" },
- { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "6-1-0", initials: "JO", country: "USA" },
+ { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "8-2-0", initials: "JO", country: "Peru" },
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "18-12-0", initials: "MSC", country: "USA" },
  { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-10-1", initials: "CDU", country: "USA" },
  { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "13-3-0", initials: "DLA", country: "Brazil" },
@@ -2298,6 +2298,7 @@
  { name: "Nathaniel Wood", division: "FW", rank: "NR", record: "23-6-0", initials: "NWO", country: "UK" },
  { name: "Kurtis Campbell", division: "FW", rank: "NR", record: "10-1-0", initials: "KC", country: "Australia" },
  { name: "Losene Keita", division: "FW", rank: "NR", record: "16-2-0", initials: "LK", country: "Guinea" },
+ { name: "Giga Chikadze", division: "FW", rank: "NR", record: "15-6-0", initials: "GCH", country: "Georgia" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Justin Gaethje", division: "LW", rank: "#IC", record: "27-5-0", initials: "JG", country: "USA" },
@@ -3517,6 +3518,7 @@
  // ── Featherweight (more) ──
  "Lerryan Douglas": { ht:"5'9\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:11.67,tdAcc:"87%", subAvg:0.0, strDef:"66%", kd:0.8, tdDef:"0%", finRate:"77%", streak:0, tdLanded:0.00 },
  "Losene Keita": { ht:"5'7\"", dob:"1997-12-30", reach:'72"', stance:"Orthodox", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"75%", streak:0, tdLanded:0.00, gym:"Lamiro Fight Club" },
+ "Giga Chikadze": { ht:'6\'0"', dob:"1988-08-25", reach:'74"', stance:"Orthodox", slpm:3.75, strAcc:"43%", sapm:3.47, strDef:"60%", kd:0.54, tdLanded:0.18, tdAcc:"33%", tdDef:"66%", subAvg:0.18, finRate:"67%", streak:0, gym:"Kings MMA" },
  "Daniel Santos": { ht:"5'7\"", dob:"1995-03-12", reach:'67"', stance:"Orthodox", slpm:4.76, tdAcc:"40%", subAvg:0.0, strDef:"51%", kd:0.3, tdDef:"73%", finRate:"64%", streak:0, tdLanded:3.01, gym:"Chute Boxe Diego Lima" },
  "Aaron Pico": { ht:'5\'8"', dob:"1996-09-23", reach:'70.5"', stance:"Orthodox", slpm:6.16, strAcc:"53%", sapm:3.11, strDef:"45%", kd:0.0, tdLanded:6.54, tdAcc:"50%", tdDef:"0%", subAvg:0.0, finRate:"78%", streak:1, gym:"Jackson Wink MMA Academy" },
  // ── Lightweight (more) ──
@@ -10443,11 +10445,10 @@ const FIGHT_HISTORY = {
 
 
   "Jose Ochoa": [
-    { date: "May 9, 2026", opponent: "Clayton Carpenter", result: "W", method: "TKO (Punches)", round: 1, time: "2:51", event: "UFC 328" },
-    { date: "Jan 18, 2026", opponent: "Movsar Evloev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Volkov vs. Lewis" },
-    { date: "Aug 17, 2025", opponent: "Giga Chikadze", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 319: du Plessis vs. Chimaev" },
-    { date: "Jun 22, 2024", opponent: "William Gomis", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 303" },
-    { date: "Jun 18, 2022", opponent: "Asu Almabayev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Emmett (debut)" }
+    { date: "May 9, 2026", opponent: "Clayton Carpenter", result: "W", method: "TKO (Punches)", round: 2, time: "2:14", event: "UFC 328", org: "UFC" },
+    { date: "Jul 26, 2025", opponent: "Asu Almabayev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
+    { date: "Jun 14, 2025", opponent: "Cody Durden", result: "W", method: "KO (Punches)", round: 2, time: "0:11", event: "UFC on ESPN: Usman vs. Buckley", org: "UFC" },
+    { date: "Nov 23, 2024", opponent: "Lone'er Kavanagh", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Figueiredo", org: "UFC" },
   ],
   "Marco Tulio": [
     { date: "May 9, 2026", opponent: "Marco Tulio", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328" },
@@ -24834,7 +24835,30 @@ const FIGHT_HISTORY = {
     { date: "Oct 5, 2019", opponent: "Gracjan Golebiowski", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strength and Honour 15" }
   ],
 
-
+  "Giga Chikadze": [
+    { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 279: Kape vs. Horiguchi 2", org: "UFC" },
+    { date: "Dec 13, 2025", opponent: "Kevin Vallejos", result: "L", method: "KO (Spinning backfist and elbows)", round: 2, time: "1:29", event: "UFC on ESPN: Royval vs. Kape", org: "UFC" },
+    { date: "Apr 26, 2025", opponent: "David Onama", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Machado Garry vs. Prates", org: "UFC" },
+    { date: "Jul 27, 2024", opponent: "Arnold Allen", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 304", org: "UFC" },
+    { date: "Aug 26, 2023", opponent: "Alex Caceres", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. The Korean Zombie", org: "UFC" },
+    { date: "Jan 15, 2022", opponent: "Calvin Kattar", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC on ESPN: Kattar vs. Chikadze", org: "UFC" },
+    { date: "Aug 28, 2021", opponent: "Edson Barboza", result: "W", method: "TKO (Punches)", round: 3, time: "1:44", event: "UFC on ESPN: Barboza vs. Chikadze", org: "UFC" },
+    { date: "May 1, 2021", opponent: "Cub Swanson", result: "W", method: "TKO (Body kick and punches)", round: 1, time: "1:03", event: "UFC on ESPN: Reyes vs. Procházka", org: "UFC" },
+    { date: "Nov 7, 2020", opponent: "Jamey Simmons", result: "W", method: "TKO (Head kick and punches)", round: 1, time: "3:51", event: "UFC on ESPN: Santos vs. Teixeira", org: "UFC" },
+    { date: "Oct 11, 2020", opponent: "Omar Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moraes vs. Sandhagen", org: "UFC" },
+    { date: "May 16, 2020", opponent: "Irwin Rivera", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Overeem vs. Harris", org: "UFC" },
+    { date: "Mar 7, 2020", opponent: "Jamall Emmers", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 248", org: "UFC" },
+    { date: "Sep 28, 2019", opponent: "Brandon Davis", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Cannonier", org: "UFC" },
+    { date: "2019", opponent: "Damien Manzanares", result: "W", method: "TKO (Submission to punches)", round: 1, time: "0:45", event: "Gladiator Challenge: MMA World Championships", org: "GC" },
+    { date: "2018", opponent: "C.J. Baines", result: "W", method: "Submission (Armbar)", round: 1, time: "0:12", event: "Gladiator Challenge: Summer Showdown", org: "GC" },
+    { date: "Jun 19, 2018", opponent: "Austin Springer", result: "L", method: "Submission (RNC)", round: 3, time: "4:10", event: "Dana White's Contender Series 10", org: "DWCS" },
+    { date: "2017", opponent: "Kevin Ceron", result: "W", method: "TKO (Punch)", round: 1, time: "2:37", event: "Gladiator Challenge: MMA Fighting Championship", org: "GC" },
+    { date: "2017", opponent: "Kevin Gratts", result: "W", method: "KO (Punch)", round: 1, time: "1:17", event: "Gladiator Challenge: Season's Beatings", org: "GC" },
+    { date: "2016", opponent: "Julian Hernandez", result: "W", method: "TKO (Punch)", round: 1, time: "0:49", event: "Gladiator Challenge: Summer Feud", org: "GC" },
+    { date: "2016", opponent: "Anthony Ross", result: "W", method: "TKO (Punch)", round: 1, time: "0:10", event: "Gladiator Challenge: Absolute Beat Down", org: "GC" },
+    { date: "2016", opponent: "Joe Bear", result: "W", method: "TKO (Retirement)", round: 1, time: "1:50", event: "Gladiator Challenge: Season's Beatings", org: "GC" },
+    { date: "Dec 18, 2015", opponent: "Gil Guardado", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WSOF 26", org: "WSOF" },
+  ],
 
 
 
@@ -26715,6 +26739,14 @@ const ACCOLADES = {
   ],
   "Nathaniel Wood": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Ashley Grimshaw", detail: null },
+  ],
+  "Giga Chikadze": [
+    { icon: "🥋", title: "3rd dan black belt in Gōjū-ryū Karate", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night — 3× (vs. Simmons, Swanson, Barboza)", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night — 1× (vs. Kattar)", detail: null },
+    { icon: "🏅", title: "2022 Forrest Griffin Community Award", detail: null },
+    { icon: "🏅", title: "MMA Junkie Breakout Fighter of the Year — 2021", detail: null },
+    { icon: "🏅", title: "MMA Junkie Under the Radar Fighter of the Year — 2020", detail: null },
   ],
   "Ilia Topuria": [
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Jorge and Agustín Climent", detail: null },
