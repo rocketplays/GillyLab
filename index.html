@@ -30314,11 +30314,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     } catch (e) { /* swallow — fall back to hardcoded */ }
 
     if (!evt) evt = getActiveEvent();
-    if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
-
-    renderHomeFightCard(evt);
-    renderProjectionsPage(evt);
-    handleOddsPage(evt);
+    try {
+      if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
+      renderHomeFightCard(evt);
+      renderProjectionsPage(evt);
+      handleOddsPage(evt);
+    } catch(e) {
+      console.error('[GillyLab] render error before rankings:', e);
+    }
     renderRankingsPage();
   }
 
