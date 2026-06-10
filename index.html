@@ -26398,22 +26398,25 @@ function populateFightHistory(name) {
     if (!panel) return;
     const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
 
-    let koTko = 0, sub = 0, dec = 0, draws = 0, noContests = 0;
-    let lKoTko = 0, lSub = 0, lDec = 0;
+    let koTko = 0, sub = 0, dec = 0, dq = 0, draws = 0, noContests = 0;
+    let lKoTko = 0, lSub = 0, lDec = 0, lDq = 0;
     const orgCounts = {};
     fights.forEach(f => {
       const method = String(f.method || '');
       const isKoTko = /^(KO|TKO|KO\/TKO)\b/i.test(method) || /\binjury\b/i.test(method);
       const isSub  = /^(Sub(mission)?|Technical\s+Sub(mission)?|Rear[\s-]Naked|Anaconda|Triangle|Guillotine|Arm[\s-]?[Bb]ar|Kimura|Heel\s*Hook|D'?arce|Ezekiel|Kneebar|Omoplata)\b/i.test(method);
       const isDec  = /^Decision\b/i.test(method);
+      const isDq   = /^DQ\b|^Disqualif/i.test(method);
       if (f.result === 'W') {
         if (isKoTko) koTko++;
         else if (isSub) sub++;
         else if (isDec) dec++;
+        else if (isDq) dq++;
       } else if (f.result === 'L') {
         if (isKoTko) lKoTko++;
         else if (isSub) lSub++;
         else if (isDec) lDec++;
+        else if (isDq) lDq++;
       } else if (f.result === 'D') {
         draws++;
       } else if (f.result === 'NC') {
@@ -26434,12 +26437,14 @@ function populateFightHistory(name) {
         rbStatRow('KO/TKO', koTko) +
         rbStatRow('Submission', sub) +
         rbStatRow('Decision', dec) +
+        (dq ? rbStatRow('Disqualification', dq) : '') +
       '</div>' +
       '<div class="rb-section">' +
         '<div class="rb-section-title">Losses By Method</div>' +
         rbStatRow('KO/TKO', lKoTko) +
         rbStatRow('Submission', lSub) +
         rbStatRow('Decision', lDec) +
+        (lDq ? rbStatRow('Disqualification', lDq) : '') +
       '</div>' +
       '<div class="rb-section">' +
         '<div class="rb-section-title">Other Results</div>' +
