@@ -37,6 +37,11 @@ UFC bonuses with counts + opponents, other-promotion titles, amateur/combat-spor
 **Do not trust Wikipedia's "current win streak" figure** — recompute it from the fight
 history (the lookup script already prints the derived streak and record).
 
+**If the fighter has no Wikipedia page (or the record table comes back incomplete):**
+fall back to WebFetch of their ESPN fighter page (`espn.com/mma/fighter/_/id/...` — find
+it via WebSearch) and/or Sherdog profile, plus WebSearch for recent results. Tapology is
+robots-blocked — don't scrape it. Do not skip verification just because Wikipedia is thin.
+
 ## Step 3 — write the four entries
 
 **FIGHTER_STATS** (field order used by completed entries):
@@ -73,6 +78,23 @@ Also fix the FIGHTERS roster row if rank/record/country is stale —
   the roster row, streak matches stats.
 - Commit just index.html, message format:
   `Name: full stats (strAcc/sapm, fix X), overhaul odds (N entries, fix Y), accolades`
+
+## Accuracy beats usage — non-negotiable
+
+Existing profile data in index.html has repeatedly turned out to be not just stale but
+**fabricated** (invented opponents, fights that never happened, mirrored careers under a
+second spelling). Therefore:
+
+- Every fight kept in FIGHT_HISTORY must be corroborated by at least one external source
+  (Wikipedia record table, ESPN, Sherdog, BFO row, or a news result). The lookup script's
+  derived record is a tripwire: if it disagrees with the roster row or `data/rankings.json`,
+  the history is missing fights or contains fake ones — investigate, don't reconcile blindly.
+- When local data conflicts with external sources, or a fight can't be corroborated after
+  the standard fetches, **do more searching** (WebSearch the bout, fetch ESPN/Sherdog) until
+  resolved — even though it costs extra calls. Never keep an unverified row because deleting
+  it feels drastic, and never average a conflict.
+- If something genuinely cannot be verified either way, leave it, but say so explicitly in
+  the commit message (e.g. "could not verify 2019 regional fights") so it's findable later.
 
 ## Cautions learned the hard way
 
