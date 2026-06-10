@@ -26446,11 +26446,11 @@ function populateFightHistory(name) {
         rbStatRow('Decision', lDec) +
         (lDq ? rbStatRow('Disqualification', lDq) : '') +
       '</div>' +
-      '<div class="rb-section">' +
+      (draws || noContests ? '<div class="rb-section">' +
         '<div class="rb-section-title">Other Results</div>' +
-        rbStatRow('Draws', draws) +
-        rbStatRow('No Contests', noContests) +
-      '</div>' +
+        (draws ? rbStatRow('Draws', draws) : '') +
+        (noContests ? rbStatRow('No Contests', noContests) : '') +
+      '</div>' : '') +
       '<div class="rb-section">' +
         '<div class="rb-section-title">Fights By Organization</div>' +
         (orgRows || rbStatRow('No data', 0)) +
