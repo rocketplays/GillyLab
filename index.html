@@ -1994,7 +1994,6 @@
     <div class="stat-card">
       <div class="stat-card-label">Height</div>
       <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Feet / Inches</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Reach</div>
@@ -2004,7 +2003,6 @@
     <div class="stat-card">
       <div class="stat-card-label">Stance</div>
       <div class="stat-card-value" style="font-size:1.3rem;">—</div>
-      <div class="stat-card-sub">Fighting stance</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Strikes Landed / Min</div>
@@ -2014,7 +2012,6 @@
     <div class="stat-card">
       <div class="stat-card-label">Striking Accuracy</div>
       <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Of significant strikes</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Strikes Absorbed / Min</div>
@@ -2024,7 +2021,6 @@
     <div class="stat-card">
       <div class="stat-card-label">Striking Defense</div>
       <div class="stat-card-value">66%</div>
-      <div class="stat-card-sub">Strikes absorbed</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Knockdowns Landed</div>
@@ -2039,12 +2035,10 @@
     <div class="stat-card">
       <div class="stat-card-label">Takedown Accuracy</div>
       <div class="stat-card-value">62%</div>
-      <div class="stat-card-sub">Per attempt</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Takedown Defense</div>
       <div class="stat-card-value">89%</div>
-      <div class="stat-card-sub">Opponents stopped</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Submission Avg</div>
@@ -2054,12 +2048,10 @@
     <div class="stat-card">
       <div class="stat-card-label">Finish Rate</div>
       <div class="stat-card-value">73%</div>
-      <div class="stat-card-sub">Of all wins</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Win Streak</div>
       <div class="stat-card-value">14</div>
-      <div class="stat-card-sub">Current streak</div>
     </div>
     <div class="stat-card">
       <div class="stat-card-label">Gym</div>
@@ -3824,7 +3816,7 @@
     if (!cards[index]) return;
     const display = index >= 4 && (value === 0 || value === '0' || value === '0%' || value === null) ? '—' : value;
     cards[index].querySelector('.stat-card-value').textContent = display;
-    if (sub !== undefined) cards[index].querySelector('.stat-card-sub').textContent = sub;
+    if (sub !== undefined) { const subEl = cards[index].querySelector('.stat-card-sub'); if (subEl) subEl.textContent = sub; }
   }
  function populateFighterStats(name) {
  const s = FIGHTER_STATS[name];
@@ -3839,17 +3831,17 @@
  // Takedown Defense, Submission Avg, Finish Rate, Win Streak, Gym —
  // keep these indices in lockstep with that DOM order (see #page-fighter).
  setStatCard(0, calcAge(s.dob), "Years old");
- setStatCard(1, s.ht, "Height");
+ setStatCard(1, s.ht);
  setStatCard(2, s.reach, "Reach (inches)");
- setStatCard(3, s.stance, "Fighting stance");
+ setStatCard(3, s.stance);
  setStatCard(4, s.slpm, "Sig. strikes / min");
- setStatCard(5, s.strAcc, "Of significant strikes");
+ setStatCard(5, s.strAcc);
  setStatCard(6, s.sapm, "Sig. strikes / min");
- setStatCard(7, s.strDef, "Strike defense");
+ setStatCard(7, s.strDef);
  setStatCard(8, s.kd, "Per 15 minutes");
  setStatCard(9, s.tdLanded, "Per 15 minutes");
- setStatCard(10, s.tdAcc, "Takedown accuracy");
- setStatCard(11, s.tdDef, "Takedown defense");
+ setStatCard(10, s.tdAcc);
+ setStatCard(11, s.tdDef);
  setStatCard(12, s.subAvg, "Per 15 minutes");
  // Compute finish rate live from FIGHT_HISTORY
  const fhFights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
@@ -3857,7 +3849,7 @@
    const wins = fhFights.filter(f => f.result === 'W');
    const finishes = wins.filter(f => /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(f.method || ''));
    const liveFinRate = wins.length ? Math.round(finishes.length / wins.length * 100) + '%' : null;
-   setStatCard(13, liveFinRate ?? s.finRate, "Of all wins");
+   setStatCard(13, liveFinRate ?? s.finRate);
  }
  // Compute win streak live from FIGHT_HISTORY (most-recent first)
  let streak = 0;
@@ -3865,7 +3857,7 @@
    if (f.result === 'W') streak++;
    else break;
  }
- setStatCard(14, streak || null, "Current win streak");
+ setStatCard(14, streak || null);
  setStatCard(15, s.gym || null, "Training camp");
  }
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
