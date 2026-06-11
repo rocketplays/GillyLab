@@ -2632,7 +2632,7 @@
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
  { name: "Lone'er Kavanagh", division: "FLW", rank: "NR", record: "12-2-0", initials: "LKV", country: "UK" },
- { name: "Allan Nascimento", division: "FLW", rank: "NR", record: "19-4-0", initials: "ANS", country: "Brazil" },
+ { name: "Allan Nascimento", division: "FLW", rank: "NR", record: "22-6-0", initials: "ANS", country: "Brazil" },
  { name: "Rafael Estevam", division: "FLW", rank: "NR", record: "10-3-0", initials: "RES", country: "Brazil" },
  { name: "Andre Lima", division: "FLW", rank: "NR", record: "11-0-0", initials: "AND", country: "Brazil" },
  { name: "Rei Tsuruya", division: "FLW", rank: "NR", record: "8-3-0", initials: "RTS", country: "Japan" },
@@ -3286,7 +3286,7 @@
  "Nate Landwehr": { ht:"5'9\"", dob:"1988-06-06", reach:'72"', stance:"Orthodox", slpm:5.63, tdAcc:"41%", subAvg:0.8, strDef:"52%", kd:0.3, tdDef:"71%", finRate:"50%", streak:0, tdLanded:0.76, gym:"MMA Masters (2021–present)" },
  // ── Flyweight (more) ──
  "Kyoji Horiguchi": { ht:"5'4\"", dob:"1990-10-12", reach:'69"', stance:"Orthodox", slpm:3.77, strAcc:"47%", sapm:2.13, tdAcc:"41%", subAvg:0.11, strDef:"64%", kd:0.64, tdDef:"61%", finRate:"58%", streak:9, tdLanded:1.61, gym:"American Top Team" },
- "Allan Nascimento": { ht:"5'8\"", dob:"1991-09-11", reach:'69"', stance:"Orthodox", slpm:3.06, tdAcc:"23%", subAvg:1.1, strDef:"52%", kd:0.2, tdDef:"37%", finRate:"57%", streak:0, tdLanded:1.26 },
+ "Allan Nascimento": { ht:"5'8\"", dob:"1991-09-11", reach:'69"', stance:"Orthodox", slpm:3.06, strAcc:"56%", sapm:2.53, strDef:"52%", kd:0.00, tdLanded:1.26, tdAcc:"23%", tdDef:"38%", subAvg:1.05, finRate:"77%", streak:4, gym:"Chute Boxe" },
  "Rei Tsuruya": { ht:"5'6\"", dob:"2002-06-22", reach:'68"', stance:"Orthodox", slpm:5.44, tdAcc:"0%", subAvg:1.8, strDef:"53%", kd:0.0, tdDef:"50%", finRate:"80%", streak:4, tdLanded:5.06 },
  // ── Heavyweight (more) ──
  "Karl Williams": { ht:"6'3\"", dob:"1990-01-06", reach:'79"', stance:"Orthodox", slpm:2.68, tdAcc:"48%", subAvg:0.2, strDef:"55%", kd:0.2, tdDef:"100%",finRate:"70%", streak:2, tdLanded:4.20 },
@@ -7975,12 +7975,12 @@
     { opponent: "Julie Kedzie", odds: -400 }
   ],
   "Allan Nascimento": [
-    { opponent: "Cody Durden", odds: -175 },
-    { opponent: "Joshua Van", odds: -200 },
-    { opponent: "Tatsuro Taira", odds: 350 },
-    { opponent: "Nate Maness", odds: -300 },
-    { opponent: "Ode Osbourne", odds: -350 },
-    { opponent: "Francisco Figueiredo", odds: 265 }
+    { opponent: "Cody Durden", odds: -325 },
+    { opponent: "Jafel Filho", odds: -124 },
+    { opponent: "Carlos Hernandez", odds: -300 },
+    { opponent: "Jake Hadley", odds: 175 },
+    { opponent: "Tagir Ulanbekov", odds: 298 },
+    { opponent: "Yuki Motoya", odds: 180 },
   ],
   "Herbert Burns": [
     { opponent: "Devonte Smith", odds: 250 },
@@ -20210,16 +20210,34 @@ const FIGHT_HISTORY = {
 
 
   "Allan Nascimento": [
-    { date: "Oct 5, 2024", opponent: "Cody Durden", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araujo 2" },
-    { date: "Jun 1, 2024", opponent: "Joshua Van", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 302: Makhachev vs. Poirier" },
-    { date: "Jan 13, 2024", opponent: "Tatsuro Taira", result: "L", method: "KO (Punches)", round: 2, time: "2:00", event: "UFC Fight Night: Ankalaev vs. Walker 2" },
-    { date: "Sep 30, 2023", opponent: "Nate Maness", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araujo" },
-    { date: "May 21, 2022", opponent: "Ode Osbourne", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:07", event: "UFC Fight Night: Blaydes vs. Daukaus" },
-    { date: "Oct 16, 2021", opponent: "Francisco Figueiredo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ladd vs. Dumont" },
-    { date: "Jul 31, 2021", opponent: "Jerome Rivera", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN 28 (debut)" },
-    { date: "Apr 24, 2021", opponent: "Ysaac Espinoza", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:18", event: "DWCS Season 5 Week 3 (contract)" },
-    { date: "Oct 31, 2020", opponent: "Vitor Machado", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:37", event: "Jungle Fight 90" },
-    { date: "Jun 20, 2020", opponent: "Diego Silveira", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:07", event: "Jungle Fight 87" }
+    { date: "Nov 1, 2025", opponent: "Cody Durden", result: "W", method: "Submission (Anaconda Choke)", round: 2, time: "3:13", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
+    { date: "May 31, 2025", opponent: "Jafel Filho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Barber", org: "UFC" },
+    { date: "Jan 14, 2023", opponent: "Carlos Hernandez", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:16", event: "UFC Fight Night: Strickland vs. Imavov", org: "UFC" },
+    { date: "May 14, 2022", opponent: "Jake Hadley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blachowicz vs. Rakic", org: "UFC" },
+    { date: "Oct 30, 2021", opponent: "Tagir Ulanbekov", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 267: Blachowicz vs. Teixeira", org: "UFC" },
+    { date: "Jul 23, 2021", opponent: "Elivaldo Lima Martins", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:32", event: "PA 6: Punho de Aco" },
+    { date: "Aug 11, 2018", opponent: "Raulian Paiva", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series: Brazil 3", org: "DWCS" },
+    { date: "Jul 15, 2017", opponent: "Haruki Armoa Onishi", result: "W", method: "Submission (Armbar)", round: 1, time: "1:37", event: "Batalha MMA 8: Punk vs. Vava" },
+    { date: "Dec 29, 2016", opponent: "Yuki Motoya", result: "L", method: "Decision (Split)", round: 2, time: "5:00", event: "Rizin FF 3", org: "Rizin" },
+    { date: "Oct 29, 2016", opponent: "Roberto Barbosa de Souza", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Gold Fight 8: Puro Osso vs. Souza" },
+    { date: "Aug 6, 2016", opponent: "Patrique Tavares", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AFC: Aspera Fighting Championship 42" },
+    { date: "Mar 15, 2015", opponent: "Bruno Azevedo", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "XFC International 9" },
+    { date: "Nov 1, 2014", opponent: "Ruslan Abiltarov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC International 7" },
+    { date: "Jun 7, 2014", opponent: "Andre Lourenco", result: "W", method: "Submission (Brabo Choke)", round: 1, time: "3:03", event: "XFC International 5" },
+    { date: "Mar 29, 2014", opponent: "Matias Vasquez", result: "W", method: "Submission (Armbar)", round: 3, time: "4:20", event: "XFC International 3" },
+    { date: "Nov 29, 2013", opponent: "Alex Silva", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:11", event: "Standout Fighting Tournament 2" },
+    { date: "Oct 5, 2013", opponent: "Ricardo Ramos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Elite FC 5: Night of Champions" },
+    { date: "Sep 20, 2013", opponent: "Andre Azevedo", result: "W", method: "Submission (Heel Hook)", round: 1, time: "1:25", event: "Standout Fighting Tournament" },
+    { date: "Jul 27, 2013", opponent: "Julio Rodrigues", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:50", event: "X-Fight MMA 6" },
+    { date: "Jul 4, 2013", opponent: "Carlos Andre", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "4:23", event: "Bison FC 1: Almeida vs. Reborn" },
+    { date: "Apr 12, 2013", opponent: "Will Campuzano", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Legacy Fighting Championship 19" },
+    { date: "Aug 11, 2012", opponent: "Leandro Charles", result: "W", method: "Submission (Heel Hook)", round: 1, time: "1:43", event: "Predador FC 21" },
+    { date: "Jul 13, 2012", opponent: "Terry Acker", result: "W", method: "Submission (Kneebar)", round: 3, time: "3:19", event: "Legacy Fighting Championship 12" },
+    { date: "Apr 21, 2012", opponent: "Elias Macaco", result: "W", method: "Submission (Punches)", round: 1, time: "3:27", event: "Fight Night Enjoy Drinking 3" },
+    { date: "Apr 4, 2012", opponent: "Luiz Ricardo", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:29", event: "Union Combat 1" },
+    { date: "Mar 10, 2012", opponent: "Emerson Piscina", result: "W", method: "TKO (Corner Stoppage)", round: 2, time: "3:32", event: "Predador FC 20" },
+    { date: "Mar 3, 2012", opponent: "Elvis Guimaraes", result: "W", method: "Submission (Arm Triangle)", round: 1, time: "3:36", event: "Morganti Contact Championship 2" },
+    { date: "Nov 29, 2011", opponent: "Thiago Silva", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "2:21", event: "Thai Fight 3" },
   ],
   "Herbert Burns": [
     { date: "Aug 18, 2024", opponent: "Jack Jenkins", result: "L", method: "TKO (Retirement)", round: 3, time: "0:48", event: "UFC 305", org: "UFC" },
@@ -26138,6 +26156,10 @@ const ACCOLADES = {
   ],
   "Cody Durden": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Allan Nascimento": [
+    { icon: "⭐", title: "Performance of the Night — vs. Carlos Hernandez", detail: null },
+    { icon: "⭐", title: "Performance of the Night — vs. Cody Durden", detail: null },
   ],
   "Ode Osbourne": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
