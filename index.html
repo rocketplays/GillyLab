@@ -2379,7 +2379,7 @@
  { name: "Alex Pereira", division: "LHW", rank: "#C", record: "13-3-0", initials: "ALEX", country: "Brazil" },
  { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "20-2-2", initials: "MA", country: "Russia" },
  { name: "Jiří Procházka", division: "LHW", rank: "#3", record: "32-6-1", initials: "JP2", country: "Czech Republic" },
- { name: "Carlos Ulberg", division: "LHW", rank: "#3", record: "14-2-0", initials: "CUL", country: "New Zealand" },
+ { name: "Carlos Ulberg", division: "LHW", rank: "C", record: "14-1-0", initials: "CUL", country: "New Zealand" },
  { name: "Khalil Rountree Jr.", division: "LHW", rank: "#4", record: "21-8-0", initials: "KRJ", country: "USA" },
  { name: "Jan Błachowicz", division: "LHW", rank: "#4", record: "29-11-2", initials: "JBL", country: "Poland" },
  { name: "Jamahal Hill", division: "LHW", rank: "#7", record: "12-3-1", initials: "JHI", country: "USA" },
@@ -3041,7 +3041,7 @@
  // ── Light Heavyweight ──
  "Jan Błachowicz": { ht:"6'2\"", dob:"1983-02-24", reach:'78"', stance:"Orthodox", slpm:3.55, tdAcc:"48%", subAvg:0.4, strDef:"52%", kd:0.6, tdDef:"69%", finRate:"59%", streak:0, tdLanded:0.98, gym:"Ankos MMA (2014–2017)" },
  "Azamat Murzakanov": { ht:"5'10\"", dob:"1989-04-12", reach:'71"', stance:"Southpaw", slpm:4.7, tdAcc:"15%", subAvg:0.0, strDef:"60%", kd:1.0, tdDef:"87%", finRate:"87%", streak:16, tdLanded:0.55, gym:"K-Dojo Warrior Tribe" },
- "Carlos Ulberg": { ht:"6'4\"", dob:"1990-11-07", reach:'77"', stance:"Orthodox", slpm:5.52, tdAcc:"60%", subAvg:0.2, strDef:"60%", kd:1.2, tdDef:"85%", finRate:"86%", streak:5, tdLanded:0.55, gym:"City Kickboxing" },
+ "Carlos Ulberg": { ht:"6'4\"", dob:"1990-11-17", reach:'77"', stance:"Orthodox", slpm:6.57, strAcc:"56%", sapm:4.03, strDef:"51%", kd:1.40, tdLanded:0.53, tdAcc:"60%", tdDef:"86%", subAvg:0.18, finRate:"71%", streak:10, gym:"City Kickboxing" },
  "Nikita Krylov": { ht:"6'3\"", dob:"1992-03-07", reach:'77"', stance:"Orthodox", slpm:4.36, tdAcc:"37%", subAvg:1.2, strDef:"47%", kd:0.5, tdDef:"53%", finRate:"71%", streak:0, tdLanded:2.05, gym:"Fight Club number one (formerly)" },
  // ── Heavyweight ──
  "Curtis Blaydes": { ht:"6'4\"", dob:"1991-02-18", reach:'80"', stance:"Orthodox", slpm:3.56, tdAcc:"48%", subAvg:0.1, strDef:"58%", kd:0.3, tdDef:"75%", finRate:"53%", streak:0, tdLanded:5.38, gym:"Elevation Fight Team (2016–present)" },
@@ -5181,11 +5181,18 @@
     { opponent: "Brittney Elkin", odds: -585 }
   ],
   "Carlos Ulberg": [
-    { opponent: "Jiří Procházka", odds: -102 },
+    { opponent: "Jiří Procházka", odds: -110 },
+    { opponent: "Dominick Reyes", odds: -230 },
+    { opponent: "Jan Błachowicz", odds: -225 },
+    { opponent: "Volkan Oezdemir", odds: -265 },
     { opponent: "Alonzo Menifield", odds: -250 },
-    { opponent: "Ihor Potieria", odds: -300 },
-    { opponent: "Da-un Jung", odds: -275 },
-    { opponent: "Tafon Nchukwi", odds: -500 }
+    { opponent: "Da Woon Jung", odds: -285 },
+    { opponent: "Ihor Potieria", odds: -435 },
+    { opponent: "Nicolae Negumereanu", odds: -125 },
+    { opponent: "Tafon Nchukwi", odds: 135 },
+    { opponent: "Fabio Cherant", odds: -200 },
+    { opponent: "Kennedy Nzechukwu", odds: -222 },
+    { opponent: "Bruno Oliveira", odds: -222 },
   ],
   "Nassourdine Imavov": [
     { opponent: "Israel Adesanya", odds: 265 },
@@ -27525,7 +27532,17 @@ const ACCOLADES = {
     { icon: "🥉", title: "WCSF World Championships — 2012 Moscow — −82 kg", detail: null },
   ],
   "Carlos Ulberg": [
-    { icon: "🥇", title: "22 Aug 2015", detail: null },
+    { icon: "🏆", title: "UFC Light Heavyweight Champion — since Apr 11, 2026", detail: null },
+    { icon: "⭐", title: "Performance of the Night × 4 — vs. Ihor Potieria, Alonzo Menifield, Dominick Reyes, Jiří Procházka", detail: null },
+    { icon: "⭐", title: "Fight of the Night × 1 — vs. Kennedy Nzechukwu", detail: null },
+    { icon: "🏅", title: "2nd-longest win streak in UFC LHW history (10, behind Jon Jones)", detail: null },
+    { icon: "🏅", title: "Most significant strikes-per-minute in UFC LHW history (6.58)", detail: null },
+    { icon: "🏅", title: "3rd-highest striking differential in UFC LHW history (+2.53)", detail: null },
+    { icon: "🏅", title: "2nd-lowest bottom-position time in UFC LHW history (0:13)", detail: null },
+    { icon: "🏅", title: "3rd-fastest finish in UFC LHW history (0:12 vs. Alonzo Menifield)", detail: null },
+    { icon: "🏅", title: "4th-latest submission finish in UFC LHW history (R3 4:49 vs. Da Woon Jung)", detail: null },
+    { icon: "🥊", title: "King in the Ring — 2019 92 kg Tournament Champion", detail: null },
+    { icon: "🥊", title: "King in the Ring — 2017 100 kg Tournament Champion", detail: null },
   ],
   "Shamil Gaziev": [
     { icon: "🥉", title: "IMMAF Senior World Championships — 2019 Manama — -120.2 kg", detail: null },
