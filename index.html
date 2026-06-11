@@ -2566,6 +2566,7 @@
  { name: "Dooho Choi", division: "FW", rank: "NR", record: "16-6-0", initials: "DHC", country: "South Korea" },
  { name: "Daniel Santos", division: "FW", rank: "NR", record: "19-7-0", initials: "DSA", country: "Brazil" },
  { name: "Chepe Mariscal", division: "FW", rank: "NR", record: "14-6-0", initials: "CHM", country: "USA" },
+ { name: "Christian Rodriguez", division: "FW", rank: "NR", record: "12-4-0", initials: "CRD", country: "USA" },
  { name: "Zubaira Tukhugov", division: "FW", rank: "NR", record: "23-8-1", initials: "ZTU", country: "Russia" },
  { name: "Billy Quarantillo", division: "FW", rank: "NR", record: "19-8-0", initials: "BQU", country: "USA" },
  { name: "Lucas Almeida", division: "FW", rank: "NR", record: "22-5-0", initials: "LAL", country: "Brazil" },
@@ -3618,6 +3619,7 @@
  "Lucas Alexander": { ht:"5'11\"", dob:"1995-07-28", reach:'73"', stance:"Orthodox", slpm:4.69, tdAcc:"40%", subAvg:0.5, strDef:"56%", kd:0.3, tdDef:"69%", finRate:"56%", streak:0, tdLanded:1.79 },
  "Tommy McMillen": { ht:"6'0\"", dob:"1997-12-15", reach:'74"', stance:"Orthodox", slpm:7.53, tdAcc:"0%", subAvg:0.0, strDef:"55%", kd:0.6, tdDef:"83%", finRate:"89%", streak:0, tdLanded:0.00 },
  "Chepe Mariscal": { ht:"5'7\"", dob:"1992-10-27", reach:'69"', stance:"Orthodox", slpm:4.14, tdAcc:"40%", subAvg:0.4, strDef:"55%", kd:0.3, tdDef:"68%", finRate:"56%", streak:0, tdLanded:1.32 },
+ "Christian Rodriguez": { ht:"5'7\"", dob:"1997-12-17", reach:'71.5"', stance:"Orthodox", slpm:3.85, strAcc:"50%", sapm:2.85, strDef:"57%", kd:0.00, tdLanded:1.75, tdAcc:"41%", tdDef:"67%", subAvg:1.05, finRate:"58%", streak:0, gym:"Roufusport" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:'70"', stance:"Orthodox", slpm:8.27, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.6, tdDef:"100%",finRate:"82%", streak:0, tdLanded:0.00, gym:"Atos Jiu-Jitsu" },
  "Jose Mauro Delano": { ht:"5'8\"", dob:"1996-09-11", reach:'70"', stance:"Orthodox", slpm:9.73, tdAcc:"0%", subAvg:0.0, strDef:"72%", kd:0.8, tdDef:"60%", finRate:"88%", streak:0, tdLanded:0.00 },
  // Lightweight
@@ -7872,6 +7874,17 @@
     { opponent: "Ricardo Ramos", odds: -175 },
     { opponent: "Steven Peterson", odds: -250 },
     { opponent: "Charles Rosa", odds: -200 }
+  ],
+  "Christian Rodriguez": [
+    { opponent: "Andre Fili", odds: -258 },
+    { opponent: "Melquizael Costa", odds: -210 },
+    { opponent: "Austin Bashi", odds: 215 },
+    { opponent: "Julian Erosa", odds: -253 },
+    { opponent: "Isaac Dulgarian", odds: 165 },
+    { opponent: "Cameron Saaiman", odds: -135 },
+    { opponent: "Joshua Weems", odds: -428 },
+    { opponent: "Jonathan Pearce", odds: 315 },
+    { opponent: "Reyes Cortez Jr.", odds: -193 },
   ],
   "Esteban Ribovics": [
     { opponent: "Daniel Zellhuber", odds: 300 },
@@ -19916,6 +19929,24 @@ const FIGHT_HISTORY = {
     { date: "Jun 22, 2019", opponent: "Carlos Bringas", result: "W", method: "KO (Punches)", round: 1, time: "1:05", event: "Combate Americas" },
     { date: "Mar 23, 2019", opponent: "Raul Elizondo", result: "W", method: "TKO (Punches)", round: 2, time: "4:35", event: "LFA 62" }
   ],
+  "Christian Rodriguez": [
+    { date: "Aug 9, 2025", opponent: "Andre Fili", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Dolidze vs. Hernandez", org: "UFC" },
+    { date: "Mar 29, 2025", opponent: "Melquizael Costa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Austin Bashi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "Jul 13, 2024", opponent: "Julian Erosa", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "4:49", event: "UFC on ESPN: Namajunas vs. Cortez", org: "UFC" },
+    { date: "Mar 16, 2024", opponent: "Isaac Dulgarian", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Tuivasa vs. Tybura", org: "UFC" },
+    { date: "Oct 14, 2023", opponent: "Cameron Saaiman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yusuff vs. Barboza", org: "UFC" },
+    { date: "Apr 8, 2023", opponent: "Raul Rosas Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 287", org: "UFC" },
+    { date: "Oct 29, 2022", opponent: "Joshua Weems", result: "W", method: "Submission (Anaconda Choke)", round: 1, time: "4:07", event: "UFC Fight Night: Kattar vs. Allen", org: "UFC" },
+    { date: "Feb 19, 2022", opponent: "Jonathan Pearce", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Hill", org: "UFC" },
+    { date: "Jan 15, 2022", opponent: "Ryan McIntosh", result: "W", method: "Submission (Position)", round: 1, time: "1:03", event: "NAFC Super Brawl" },
+    { date: "Oct 12, 2021", opponent: "Reyes Cortez Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 2021: Week 7", org: "DWCS" },
+    { date: "Mar 11, 2021", opponent: "Charalampos Grigoriou", result: "W", method: "TKO (Elbow and Punches)", round: 3, time: "2:41", event: "CFFC 92", org: "CFFC" },
+    { date: "Oct 16, 2020", opponent: "John Pham", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:47", event: "LFA 93", org: "LFA" },
+    { date: "Feb 21, 2020", opponent: "Jason Huntley", result: "W", method: "TKO (Knee and Punches)", round: 1, time: "4:50", event: "LFA 82", org: "LFA" },
+    { date: "Dec 21, 2019", opponent: "Zachary Buros-Nash", result: "W", method: "TKO (Punches)", round: 1, time: "2:42", event: "Driller Promotions Mecca 16" },
+    { date: "May 11, 2019", opponent: "Jose Leon", result: "W", method: "Submission (Armbar)", round: 1, time: "4:39", event: "Bellator 221", org: "Bellator" },
+  ],
   "Esteban Ribovics": [
     { date: "Apr 11, 2026", opponent: "Mateusz Gamrot", result: "L", method: "Submission (Arm triangle choke)", round: 2, time: "4:19", event: "UFC 327", org: "UFC" },
     { date: "Aug 2, 2025", opponent: "Elves Brener", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Taira vs. Park", org: "UFC" },
@@ -27695,6 +27726,10 @@ const ACCOLADES = {
   "Christian Leroy Duncan": [
     { icon: "🥈", title: "IMMAF European Open Championships — 2019 Rome — -83.9 kg", detail: null },
     { icon: "🥉", title: "IMMAF Senior World Championships — 2017 Manama — -83.9 kg", detail: null },
+  ],
+  "Christian Rodriguez": [
+    { icon: "🥋", title: "BJJ purple belt", detail: null },
+    { icon: "🥊", title: "Duke Roufus black belt in striking", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🥉", title: "Oct 23, 2015", detail: null },
