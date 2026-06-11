@@ -25772,7 +25772,7 @@ function populateFightHistory(name) {
  const empty = document.getElementById('fh-empty');
  if (!tbody) return;
  tbody.innerHTML = '';
- const fights = FIGHT_HISTORY[name];
+ const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date);
  if (!fights || fights.length === 0) {
  wrap.style.display = 'none';
  empty.style.display = '';
@@ -25830,7 +25830,7 @@ function populateFightHistory(name) {
   function populateRecordBreakdown(name) {
     const panel = document.getElementById('f-record-breakdown-grid');
     if (!panel) return;
-    const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.result && f.result !== '–' && f.method !== 'Upcoming');
+    const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
 
     let koTko = 0, sub = 0, dec = 0, dq = 0, draws = 0, noContests = 0;
     let lKoTko = 0, lSub = 0, lDec = 0, lDq = 0;
@@ -27750,7 +27750,7 @@ function fighterGoBack() {
 
 // Compute W-L-D record from FIGHT_HISTORY. Returns "W-L-D" string or null if no fights.
 function computeRecord(name) {
-  const fights = FIGHT_HISTORY[name] || [];
+  const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date);
   let w = 0, l = 0, d = 0;
   for (const f of fights) {
     if      (f.result === 'W') w++;
@@ -28717,7 +28717,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   function lastFiveFormHTML(name) {
-    const fights = (FIGHT_HISTORY[name] || []).filter(f => f.result && f.result !== '–').slice(0, 5);
+    const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date && f.result && f.result !== '–').slice(0, 5);
     if (!fights.length) return '<span style="color:var(--muted);font-size:0.78rem;">No data</span>';
     return fights.map(f => {
       const color = FIGHT_RESULT_COLORS[f.result] || 'rgba(255,255,255,0.45)';
