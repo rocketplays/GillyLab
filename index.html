@@ -2585,6 +2585,7 @@
  { name: "Mandel Nallo", division: "FW", rank: "NR", record: "15-3-0", initials: "MNL", country: "Canada" },
  { name: "Marwan Rahiki", division: "FW", rank: "NR", record: "8-0-0", initials: "MRH", country: "Morocco" },
  { name: "Alberto Montes", division: "FW", rank: "NR", record: "12-2-0", initials: "AMO", country: "Mexico" },
+ { name: "Michael Aswell Jr.", division: "FW", rank: "NR", record: "11-4-0", initials: "MAJ", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" },
  { name: "Cole Howarth", division: "BW", rank: "NR", record: "10-3-0", initials: "COH", country: "Australia" },
@@ -3616,6 +3617,7 @@
  // Featherweight
  "Alberto Montes": { ht:"5'7\"", dob:"1994-05-31", reach:'69"', stance:"Orthodox", slpm:4.98, tdAcc:"0%", subAvg:9.8, strDef:"57%", kd:0.4, tdDef:"66%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Marwan Rahiki": { ht:"5'8\"", dob:"2002-05-10", reach:'72"', stance:"Orthodox", slpm:7.73, tdAcc:"0%", subAvg:0.9, strDef:"56%", kd:0.5, tdDef:"100%",finRate:"88%", streak:0, tdLanded:0.00 },
+ "Michael Aswell Jr.": { ht:'5\'8"', dob:"2000-09-27", reach:'69"', stance:"Orthodox", slpm:7.79, strAcc:"43%", sapm:7.43, strDef:"52%", kd:0.64, tdLanded:0.32, tdAcc:"100%", tdDef:"57%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz. Fight Club" },
  "Francis Marshall": { ht:"5'9\"", dob:"1999-03-03", reach:'72"', stance:"Orthodox", slpm:3.46, tdAcc:"44%", subAvg:0.4, strDef:"54%", kd:0.2, tdDef:"66%", finRate:"56%", streak:0, tdLanded:2.75 },
  "Harry Hardwick": { ht:"5'8\"", dob:"1994-09-29", reach:'71"', stance:"Switch", slpm:2.39, tdAcc:"0%", subAvg:0.0, strDef:"40%", kd:0.2, tdDef:"0%", finRate:"62%", streak:0, tdLanded:0.00 },
  "Hyder Amil": { ht:"5'9\"", dob:"1990-05-28", reach:'70"', stance:"Orthodox", slpm:5.81, strAcc:"53%", sapm:3.95, strDef:"51%", kd:0.28, tdLanded:0.56, tdAcc:"18%", tdDef:"66%", subAvg:0.84, finRate:"64%", streak:0, gym:"El Nino Training Center" },
@@ -9822,6 +9824,20 @@
   ],
   "Marwan Rahiki": [
     { opponent: "Harry Hardwick", odds: -400 }
+  ],
+  "Michael Aswell Jr.": [
+    { opponent: "Luke Riley", odds: 178 },
+    { opponent: "Lucas Almeida", odds: -280 },
+    { opponent: "Bolaji Oki", odds: 435 },
+    { opponent: "Dorian Ramos", odds: -225 },
+    { opponent: "Bogdan Grad", odds: -132 },
+    { opponent: "Nate Richardson", odds: 150 },
+    { opponent: "Josh Altum", odds: -188 },
+    { opponent: "Yadier Delvalle", odds: -133 },
+    { opponent: "Cameron Graves", odds: -158 },
+    { opponent: "Frank Meno", odds: -775 },
+    { opponent: "Cristian Lopez", odds: -600 },
+    { opponent: "Zachariah Thorne", odds: -338 },
   ],
   "Mizuki Inoue": [
     { opponent: "Priscila Cachoeira", odds: 250 },
@@ -25459,6 +25475,23 @@ const FIGHT_HISTORY = {
 
 
 
+  "Michael Aswell Jr.": [
+    { date: "Mar 21, 2026", opponent: "Luke Riley", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Lucas Almeida", result: "W", method: "TKO (Punches)", round: 1, time: "1:42", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "May 31, 2025", opponent: "Bolaji Oki", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Blanchfield vs. Barber", org: "UFC" },
+    { date: "Dec 15, 2024", opponent: "Dorian Ramos", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 99", org: "Fury FC" },
+    { date: "Aug 27, 2024", opponent: "Bogdan Grad", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 7, Week 3", org: "DWCS" },
+    { date: "Apr 21, 2024", opponent: "Nate Richardson", result: "W", method: "KO (Punches)", round: 1, time: "1:08", event: "Fury FC 89", org: "Fury FC" },
+    { date: "Jan 21, 2024", opponent: "Josh Altum", result: "W", method: "TKO (Doctor Stoppage)", round: 4, time: "5:00", event: "Fury FC 85", org: "Fury FC" },
+    { date: "Jun 25, 2023", opponent: "Yadier Del Valle", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 80", org: "Fury FC" },
+    { date: "Mar 26, 2023", opponent: "Austin Lutchen", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC - Challenger Series 3", org: "Fury FC" },
+    { date: "Dec 18, 2022", opponent: "Cameron Graves", result: "W", method: "TKO (Punches)", round: 2, time: "0:16", event: "Fury FC 72", org: "Fury FC" },
+    { date: "Jun 5, 2022", opponent: "Frank Meno", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 64", org: "Fury FC" },
+    { date: "Feb 11, 2022", opponent: "Kyle Broadwater", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 57", org: "Fury FC" },
+    { date: "Dec 19, 2021", opponent: "Cristian Lopez", result: "W", method: "TKO (Punches)", round: 1, time: "1:37", event: "Fury FC 55", org: "Fury FC" },
+    { date: "Sep 5, 2021", opponent: "Zachariah Thorne", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "5:00", event: "Fury FC 50", org: "Fury FC" },
+    { date: "May 16, 2021", opponent: "Jordan Plutin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 46", org: "Fury FC" },
+  ],
   "Marwan Rahiki": [
     { date: "Mar 14, 2026", opponent: "Harry Hardwick", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos (debut)" },
     { date: "Oct 12, 2025", opponent: "Harry Hardwick", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 9 Week 5 (contract)" },
@@ -27841,6 +27874,10 @@ const ACCOLADES = {
   "Gaston Bolanos": [
     { icon: "🏆", title: "Muay Thai World Champion", detail: null },
     { icon: "🏅", title: "Muay Thai South American Champion — 50+ professional Muay Thai fights", detail: null },
+  ],
+  "Michael Aswell Jr.": [
+    { icon: "🏆", title: "Fury FC Featherweight Champion", detail: null },
+    { icon: "🏅", title: "Two-time Fury FC Featherweight Amateur Champion", detail: null },
   ],
   "Marcus Buchecha": [
     { icon: "🥋", title: "4th deg. BJJ black belt", detail: null },
