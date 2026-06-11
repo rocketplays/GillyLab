@@ -2394,7 +2394,7 @@
  { name: "Ovince Saint Preux", division: "LHW", rank: "NR", record: "31-18-0", initials: "OSP", country: "USA" },
  { name: "Ion Cutelaba", division: "LHW", rank: "NR", record: "20-11-1", initials: "ICU", country: "Moldova" },
  { name: "Oumar Sy", division: "LHW", rank: "NR", record: "12-2-0", initials: "OSY", country: "France" },
- { name: "Navajo Stirling", division: "LHW", rank: "NR", record: "7-4-0", initials: "NST", country: "USA" },
+ { name: "Navajo Stirling", division: "LHW", rank: "NR", record: "9-0-0", initials: "NST", country: "New Zealand" },
  // ─── HEAVYWEIGHT ───
  { name: "Ciryl Gane", division: "HW", rank: "#1", record: "13-2-0", initials: "CGN", country: "France" },
  { name: "Alexander Volkov", division: "HW", rank: "#2", record: "40-11-0", initials: "AVL", country: "Russia" },
@@ -3472,7 +3472,7 @@
  // ── Middleweight (more) ──
  "Mohammed Usman": { ht:"6'2\"", dob:"1989-04-01", reach:'79"', stance:"Orthodox", slpm:3.85, tdAcc:"38%", subAvg:0.3, strDef:"51%", kd:0.3, tdDef:"72%", finRate:"58%", streak:0, tdLanded:0.56 },
  // ── Light Heavyweight (more) ──
- "Navajo Stirling": { ht:"6'4\"", dob:"1997-11-07", reach:'79"', stance:"Orthodox", slpm:6.13, tdAcc:"28%", subAvg:0.0, strDef:"58%", kd:0.4, tdDef:"75%", finRate:"78%", streak:0, tdLanded:1.15 },
+ "Navajo Stirling": { ht:"6'4\"", dob:"1997-11-07", reach:'79"', stance:"Orthodox", slpm:6.25, strAcc:"52%", sapm:2.67, strDef:"58%", kd:0.73, tdLanded:0.98, tdAcc:"29%", tdDef:"82%", subAvg:0.0, finRate:"56%", streak:9, gym:"City Kickboxing" },
  "Rodolfo Bellato": { ht:"6'3\"", dob:"1996-02-05", reach:'75"', stance:"Orthodox", slpm:5.13, tdAcc:"35%", subAvg:0.2, strDef:"46%", kd:0.4, tdDef:"94%", finRate:"67%", streak:0, tdLanded:1.44 },
  "Uran Satybaldiev": { ht:"6'4\"", dob:"1994-08-10", reach:'79"', stance:"Orthodox", slpm:2.14, tdAcc:"0%", subAvg:0.3, strDef:"44%", kd:0.2, tdDef:"50%", finRate:"67%", streak:0, tdLanded:0.00 },
  // ── Heavyweight (more) ──
@@ -8871,10 +8871,12 @@
     { opponent: "Elisha Ellison", odds: -350 }
   ],
   "Navajo Stirling": [
-    { opponent: "Ion Cutelaba", odds: 175 },
-    { opponent: "Bruno Lopes", odds: -300 },
-    { opponent: "Da Woon Jung", odds: 250 },
-    { opponent: "Rodolfo Bellato", odds: 200 }
+    { opponent: "Ion Cutelaba", odds: -295 },
+    { opponent: "Bruno Lopes", odds: -440 },
+    { opponent: "Rodolfo Bellato", odds: -295 },
+    { opponent: "Ivan Erslan", odds: -330 },
+    { opponent: "Tuco Tokkos", odds: -800 },
+    { opponent: "Phillip Latu", odds: -350 },
   ],
   "Valter Walker": [
     { opponent: "Rodrigo Nascimento", odds: -250 },
@@ -22685,18 +22687,16 @@ const FIGHT_HISTORY = {
 
 
   "Navajo Stirling": [
-    { date: "Jun 20, 2026", opponent: "Ion Cutelaba", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Kape vs. Horiguchi 2" },
-    { date: "May 31, 2025", opponent: "Bruno Lopes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Barber" },
-    { date: "Sep 28, 2024", opponent: "Da Woon Jung", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis" },
-    { date: "May 18, 2024", opponent: "Rodolfo Bellato", result: "L", method: "KO (Punches)", round: 1, time: "2:04", event: "UFC Fight Night: Barboza vs. Murphy (debut)" },
-    { date: "Jan 27, 2024", opponent: "Odan Tonga", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 8 Week 1 (contract)" },
-    { date: "Sep 23, 2023", opponent: "Kgabo Tshimanga", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "African Fighting Championship 6" },
-    { date: "Jun 10, 2023", opponent: "Mick Stanton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Real Fighting Championship" },
-    { date: "Mar 4, 2023", opponent: "Henrique Costa", result: "W", method: "KO (Punches)", round: 1, time: "0:52", event: "Real Fighting Championship" },
-    { date: "Dec 10, 2022", opponent: "Sione Moli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Real FC 5" },
-    { date: "Aug 13, 2022", opponent: "Rhys Rees", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Real FC 3" },
-    { date: "Apr 2, 2022", opponent: "Junior Tafa", result: "L", method: "KO (Punches)", round: 1, time: "0:35", event: "Eternal MMA 56" },
-    { date: "Jul 10, 2021", opponent: "James Nakashima", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ONE Championship" }
+    { date: "Jun 20, 2026", opponent: "Ion Cutelaba", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night (Jun 20, 2026)" },
+    { date: "Mar 28, 2026", opponent: "Bruno Lopes", result: "W", method: "TKO (Punches)", round: 2, time: "4:05", event: "UFC Fight Night (Seattle)", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Rodolfo Bellato", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "May 10, 2025", opponent: "Ivan Erslan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315", org: "UFC" },
+    { date: "Dec 14, 2024", opponent: "Tuco Tokkos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
+    { date: "Sep 10, 2024", opponent: "Phillip Latu", result: "W", method: "KO (Punches)", round: 2, time: "2:21", event: "DWCS Season 8, Episode 5" },
+    { date: "Jun 14, 2024", opponent: "Sam Kei", result: "W", method: "TKO (Punches)", round: 3, time: "1:48", event: "Hex Fight Series 31" },
+    { date: "May 4, 2024", opponent: "Stuart Dare", result: "W", method: "KO (Punches)", round: 1, time: "3:46", event: "Hex Fight Series 30" },
+    { date: "Oct 28, 2023", opponent: "Kelvin Fitial", result: "W", method: "TKO (Punches)", round: 1, time: "2:41", event: "Shuriken Fight Series 16" },
+    { date: "Sep 23, 2022", opponent: "James Craughwell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shuriken Fight Series 12" },
   ],
   "Valter Walker": [
     { date: "Oct 25, 2025", opponent: "Louie Sutherland", result: "W", method: "Submission (Heel hook)", round: 1, time: "1:24", event: "UFC 321", org: "UFC" },
@@ -26374,6 +26374,14 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Daniel Gracie", detail: null },
     { icon: "🏆", title: "Black belt in Tang Soo Do", detail: null },
     { icon: "🤼", title: "NCAA Division I Wrestling", detail: null },
+  ],
+  "Navajo Stirling": [
+    { icon: "🏆", title: "Shuriken Fight Series LHW Championship — 2022, 2023 (2 title fights)", detail: null },
+    { icon: "🏆", title: "Hex Fight Series LHW Championship — 2024 (1 reign)", detail: null },
+    { icon: "🏆", title: "WKBF World Kickboxing Championship", detail: null },
+    { icon: "🏆", title: "King in the Ring 8-Man Tournament — 2× winner", detail: null },
+    { icon: "🥊", title: "Regional Amateur Muay Thai Champion", detail: null },
+    { icon: "🥋", title: "BJJ Blue Belt", detail: null },
   ],
   "Nathaniel Wood": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Ashley Grimshaw", detail: null },
