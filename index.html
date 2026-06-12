@@ -2621,7 +2621,7 @@
  { name: "Elijah Smith", division: "BW", rank: "NR", record: "9-3-0", initials: "ELS", country: "USA" },
  { name: "Cody Garbrandt", division: "BW", rank: "NR", record: "15-7-0", initials: "COG", country: "USA" },
  { name: "Daniel Marcos", division: "BW", rank: "NR", record: "18-1-0", initials: "DMR", country: "Peru" },
- { name: "Jean Matsumoto", division: "BW", rank: "NR", record: "10-3-0", initials: "JMT2", country: "Brazil" },
+ { name: "Jean Matsumoto", division: "BW", rank: "NR", record: "17-2-0", initials: "JMT2", country: "Brazil" },
  { name: "Davey Grant", division: "BW", rank: "NR", record: "18-8-0", initials: "DGR", country: "UK" },
  { name: "Felipe Lima", division: "BW", rank: "NR", record: "14-2-0", initials: "FLI", country: "Brazil" },
  { name: "Pedro Munhoz", division: "BW", rank: "NR", record: "20-10-0", initials: "PMU", country: "Brazil" },
@@ -3616,7 +3616,7 @@
  "Ronaldo Rodriguez": { ht:"5'6\"", dob:"1999-05-07", reach:'65"', stance:"Orthodox", slpm:2.71, tdAcc:"43%", subAvg:0.5, strDef:"44%", kd:0.1, tdDef:"62%", finRate:"65%", streak:0, tdLanded:1.75, gym:"ADAM Coatzacoalcos" },
  "Luis Gurule": { ht:"5'5\"", dob:"1993-11-16", reach:'64"', stance:"Orthodox", slpm:4.93, tdAcc:"9%", subAvg:0.0, strDef:"61%", kd:0.3, tdDef:"56%", finRate:"78%", streak:0, tdLanded:0.41 },
  // Bantamweight
- "Jean Matsumoto": { ht:"5'6\"", dob:"1999-09-09", reach:'68"', stance:"Orthodox", slpm:5.37, tdAcc:"48%", subAvg:0.5, strDef:"47%", kd:0.3, tdDef:"62%", finRate:"65%", streak:0, tdLanded:3.00 },
+ "Jean Matsumoto": { ht:"5'6\"", dob:"1999-09-09", reach:'68.5"', stance:"Orthodox", slpm:5.37, strAcc:"40%", sapm:5.41, strDef:"48%", kd:0.00, tdAcc:"49%", tdDef:"56%", subAvg:0.53, finRate:"53%", streak:0, tdLanded:3.00, gym:"Inside MMA" },
  "Luan Lacerda": { ht:"5'7\"", dob:"1993-01-07", reach:'71"', stance:"Orthodox", slpm:4.02, tdAcc:"41%", subAvg:0.9, strDef:"46%", kd:0.2, tdDef:"66%", finRate:"62%", streak:0, tdLanded:2.29 },
  "Juan Diaz": { ht:"5'8\"", dob:"1998-06-03", reach:'69"', stance:"Orthodox", slpm:5.82, tdAcc:"33%", subAvg:0.0, strDef:"60%", kd:0.4, tdDef:"0%", finRate:"69%", streak:0, tdLanded:3.01 },
  "Elijah Smith": { ht:"5'9\"", dob:"2002-09-05", reach:'71"', stance:"Orthodox", slpm:4.45, tdAcc:"53%", subAvg:0.9, strDef:"47%", kd:0.3, tdDef:"57%", finRate:"80%", streak:0, tdLanded:3.51 },
@@ -8272,10 +8272,14 @@
     { opponent: "Niklas Stolze", odds: -300 }
   ],
   "Jean Matsumoto": [
-    { opponent: "Rob Font", odds: 350 },
-    { opponent: "Raoni Barcelos", odds: 300 },
-    { opponent: "Takashi Sato", odds: -200 },
-    { opponent: "Miles Johns", odds: 165 }
+    { opponent: "Farid Basharat", odds: 243 },
+    { opponent: "Miles Johns", odds: -250 },
+    { opponent: "Rob Font", odds: -184 },
+    { opponent: "Brad Katona", odds: -218 },
+    { opponent: "Dan Argueta", odds: -190 },
+    { opponent: "Kasey Tanner", odds: -110 },
+    { opponent: "Marlon Basilio", odds: -375 },
+    { opponent: "Inaildo Santos", odds: -285 }
   ],
   "John Castaneda": [
     { opponent: "Montel Jackson", odds: 250 },
@@ -20999,17 +21003,25 @@ const FIGHT_HISTORY = {
 
 
   "Jean Matsumoto": [
-    { date: "Feb 22, 2025", opponent: "Rob Font", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Cejudo vs. Song" },
-    { date: "Sep 14, 2024", opponent: "Raoni Barcelos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "Mar 9, 2024", opponent: "Takashi Sato", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 299: O'Malley vs. Vera 2" },
-    { date: "Nov 18, 2023", opponent: "Miles Johns", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tybura vs. Spivac" },
-    { date: "Mar 25, 2023", opponent: "Miles Johns", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Dvalishvili (debut)" },
-    { date: "Dec 31, 2022", opponent: "Kai Asakura", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "RIZIN 40" },
-    { date: "Oct 1, 2022", opponent: "Naoki Matsushita", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RIZIN 38" },
-    { date: "Mar 6, 2022", opponent: "Soo Chul Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RIZIN 34" },
-    { date: "Dec 31, 2021", opponent: "Hiromasa Ougikubo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RIZIN 33" },
-    { date: "Sep 25, 2021", opponent: "Yusaku Kinoshita", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RIZIN 31" },
-    { date: "Jun 13, 2021", opponent: "Jailton Almeida", result: "L", method: "Submission (Guillotine choke)", round: 1, time: "0:23", event: "BRAVE CF 40" }
+    { date: "Feb 7, 2026", opponent: "Farid Basharat", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
+    { date: "Aug 9, 2025", opponent: "Miles Johns", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Dolidze vs. Hernandez", org: "UFC" },
+    { date: "Feb 22, 2025", opponent: "Rob Font", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Cejudo vs. Song", org: "UFC" },
+    { date: "Oct 19, 2024", opponent: "Brad Katona", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hernandez vs. Pereira", org: "UFC" },
+    { date: "Apr 6, 2024", opponent: "Dan Argueta", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "4:59", event: "UFC Fight Night: Allen vs. Curtis 2", org: "UFC" },
+    { date: "Sep 12, 2023", opponent: "Kasey Tanner", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 2023 Week 6" },
+    { date: "Mar 10, 2023", opponent: "Marlon Basilio", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "3:00", event: "LFA 154" },
+    { date: "Nov 4, 2022", opponent: "Inaildo Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 146" },
+    { date: "Aug 13, 2022", opponent: "Carlos Marques", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Fight Pro Championship 2" },
+    { date: "Mar 5, 2022", opponent: "Luan Matheus", result: "W", method: "Technical Submission (Guillotine Choke)", round: 2, time: "4:53", event: "Fight Pro Championship 1" },
+    { date: "Aug 5, 2021", opponent: "Wanderley Levandovski", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "SFT 28" },
+    { date: "Nov 30, 2019", opponent: "Andre Amaral Azevedo", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "SFT 18" },
+    { date: "Jul 27, 2019", opponent: "Adriano Florencio Barbosa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SFT 14" },
+    { date: "Apr 13, 2019", opponent: "Guilherme Miranda", result: "W", method: "Submission (Anaconda Choke)", round: 2, time: "4:07", event: "Batalha MMA 16" },
+    { date: "Feb 2, 2019", opponent: "Marcelo Willian", result: "W", method: "Technical Submission (Brabo Choke)", round: 1, time: "2:47", event: "Batalha MMA 15" },
+    { date: "Jan 19, 2019", opponent: "Fabio Perpetua", result: "W", method: "TKO (Punches)", round: 3, time: "4:09", event: "SFT 9" },
+    { date: "Nov 10, 2018", opponent: "Caio Santos", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "4:35", event: "Pro Fight MMA Brasil 41" },
+    { date: "Oct 21, 2018", opponent: "Rodrigo Ayala", result: "W", method: "TKO (Punches)", round: 3, time: "3:05", event: "The Dog Tower FC 1" },
+    { date: "Jan 24, 2018", opponent: "Peterson Paulo Santana Silva", result: "W", method: "TKO (Punches)", round: 1, time: "1:16", event: "Batalha MMA 11" }
   ],
   "John Castaneda": [
     { date: "Apr 18, 2026", opponent: "Mark Vologdin", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
@@ -28370,6 +28382,16 @@ const ACCOLADES = {
   "Theodor Berggren": [
     { icon: "🏅", title: "Cage Warriors contract — signed 2024 (Europe's premier MMA promotion)", detail: null },
     { icon: "🏅", title: "UFC contract — signed 2026", detail: null },
+  ],
+  "Jean Matsumoto": [
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null },
+    { icon: "🥋", title: "Muay Thai black belt", detail: null },
+    { icon: "🏆", title: "SFT (Super Fight Torneio) MMA Champion (1 reign)", detail: null },
+    { icon: "🏆", title: "FightPro MMA Champion (1 reign)", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series Season 7 contract winner — 2023 (UD over Kasey Tanner)", detail: null },
+    { icon: "🥇", title: "Brazilian Muay Thai champion", detail: null },
+    { icon: "🥇", title: "São Paulo State Muay Thai champion", detail: null },
+    { icon: "🥇", title: "South American Jiu-Jitsu champion", detail: null },
   ],
 };
 
