@@ -661,6 +661,25 @@
       width: 1px;
       background: var(--border);
     }
+    /* W/L tile tooltip */
+    .form-tile { cursor: default; position: relative; }
+    .form-tile-tooltip {
+      position: fixed;
+      z-index: 9999;
+      background: #1a1a2e;
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      padding: 0.45rem 0.65rem;
+      pointer-events: none;
+      white-space: nowrap;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem;
+      color: #e8e8f0;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.55);
+      line-height: 1.5;
+      display: none;
+    }
+    .form-tile-tooltip.visible { display: block; }
     .fd-name {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
@@ -29548,7 +29567,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!fights.length) return '<span style="color:var(--muted);font-size:0.78rem;">No data</span>';
     return fights.map(f => {
       const color = FIGHT_RESULT_COLORS[f.result] || 'rgba(255,255,255,0.45)';
-      return '<span style="display:inline-flex;align-items:center;justify-content:center;' +
+      const opp = escHtmlAttr(f.opponent || '');
+      const meth = escHtmlAttr(f.method || '');
+      const rnd = escHtmlAttr(f.round != null ? String(f.round) : '');
+      const time = escHtmlAttr(f.time || '');
+      return '<span class="form-tile" data-opp="' + opp + '" data-method="' + meth + '" data-round="' + rnd + '" data-time="' + time + '" style="display:inline-flex;align-items:center;justify-content:center;' +
         'width:20px;height:20px;border-radius:4px;font-weight:800;font-size:0.65rem;' +
         "font-family:'Barlow Condensed',sans-serif;background:" + color + '26;border:1px solid ' + color + ';color:' + color + ';">' +
         f.result + '</span>';
@@ -29642,6 +29665,73 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     btn.textContent = isOpen ? 'Fight Info ⌄' : 'Fight Info ⌃';
     if (!isOpen) fillPendingMoneylines();
   }
+
+  // W/L tile hover/tap tooltip
+  (function() {
+    let tip = null;
+    function ensureTip() {
+      if (!tip) {
+        tip = document.createElement('div');
+        tip.className = 'form-tile-tooltip';
+        document.body.appendChild(tip);
+      }
+      return tip;
+    }
+    function showTip(tile, x, y) {
+      const opp = tile.dataset.opp || '';
+      const method = tile.dataset.method || '';
+      const round = tile.dataset.round || '';
+      const time = tile.dataset.time || '';
+      if (!opp && !method) return;
+      let html = '<strong>' + escHtmlAttr(opp) + '</strong>';
+      if (method) html += '<br>' + escHtmlAttr(method);
+      if (round || time) html += '<br>Rd ' + escHtmlAttr(round) + ' · ' + escHtmlAttr(time);
+      const t = ensureTip();
+      t.innerHTML = html;
+      t.classList.add('visible');
+      positionTip(t, x, y);
+    }
+    function positionTip(t, x, y) {
+      t.style.left = '0px'; t.style.top = '0px';
+      const w = t.offsetWidth, h = t.offsetHeight;
+      const vw = window.innerWidth, vh = window.innerHeight;
+      let left = x + 10, top = y - h - 8;
+      if (left + w > vw - 8) left = x - w - 10;
+      if (top < 8) top = y + 18;
+      t.style.left = left + 'px';
+      t.style.top = top + 'px';
+    }
+    function hideTip() {
+      if (tip) tip.classList.remove('visible');
+    }
+    let activeTile = null;
+    document.addEventListener('mouseover', function(e) {
+      const tile = e.target.closest('.form-tile');
+      if (tile) showTip(tile, e.clientX, e.clientY);
+      else hideTip();
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (tip && tip.classList.contains('visible')) positionTip(tip, e.clientX, e.clientY);
+    });
+    document.addEventListener('mouseout', function(e) {
+      if (!e.relatedTarget || !e.relatedTarget.closest('.form-tile')) hideTip();
+    });
+    document.addEventListener('click', function(e) {
+      const tile = e.target.closest('.form-tile');
+      if (tile) {
+        if (activeTile === tile && tip && tip.classList.contains('visible')) {
+          hideTip(); activeTile = null;
+        } else {
+          const r = tile.getBoundingClientRect();
+          showTip(tile, r.left + r.width / 2, r.top);
+          activeTile = tile;
+          e.stopPropagation();
+        }
+      } else {
+        hideTip(); activeTile = null;
+      }
+    }, true);
+  })();
 
   async function renderProjectionsPage(evt) {
     const container = document.getElementById('dynamic-projections');
