@@ -30250,8 +30250,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // an entry for, and the profile renders with no photo, no fight history,
   // no stats, etc. Falls back to the API's own name when there's no
   // FIGHTERS match (e.g. an unranked newcomer we haven't added yet).
+  // Maps API slugs that don't match nameToSlug(f.name) to the canonical
+  // DB name — needed when the UFC API uses a different spacing/hyphenation
+  // than the name stored in FIGHTERS (e.g. "Abdul Rakhman Yakhyaev" vs
+  // "Abdulrakhman Yakhyaev").
+  const SLUG_ALIASES = {
+    'abdul-rakhman-yakhyaev': 'Abdulrakhman Yakhyaev',
+  };
+
   function resolveCanonicalFighterName(apiName, apiSlug) {
     if (apiSlug) {
+      if (SLUG_ALIASES[apiSlug]) return SLUG_ALIASES[apiSlug];
       const match = FIGHTERS.find(f => f && nameToSlug(f.name) === apiSlug);
       if (match) return match.name;
     }
