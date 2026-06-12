@@ -3024,7 +3024,7 @@
  "Max Holloway": { ht:"5'11\"", dob:"1991-12-04", reach:'69"', stance:"Orthodox", slpm:6.91, tdAcc:"53%", subAvg:0.3, strDef:"58%", kd:0.3, tdDef:"81%", finRate:"50%", streak:1, tdLanded:0.23, gym:"Legacy Muay Thai" },
  "Justin Gaethje": { ht:"5'11\"", dob:"1988-11-14", reach:'70"', stance:"Orthodox", slpm:6.48, strAcc:"59%", sapm:7.05, strDef:"51%", kd:0.74, tdLanded:0.33, tdAcc:"40%", tdDef:"74%", subAvg:0.0, finRate:"74%", streak:0, gym:"Genesis Training Center" },
  "Dustin Poirier": { ht:"5'9\"", dob:"1989-01-19", reach:'72"', stance:"Southpaw", slpm:5.24, tdAcc:"35%", subAvg:1.2, strDef:"52%", kd:0.2, tdDef:"64%", finRate:"63%", streak:0, tdLanded:1.15, gym:"American Top Team (2012–2025)" },
- "Conor McGregor": { ht:"5'9\"", dob:"1988-07-14", reach:'74"', stance:"Southpaw", slpm:5.32, tdAcc:"55%", subAvg:0.1, strDef:"57%", kd:1.2, tdDef:"71%", finRate:"75%", streak:0, tdLanded:0.68, gym:"SBG Ireland" },
+ "Conor McGregor": { ht:"5'9\"", dob:"1988-07-14", reach:'74"', stance:"Southpaw", slpm:5.32, strAcc:"50%", sapm:4.66, strDef:"54%", kd:1.73, tdAcc:"56%", tdDef:"67%", subAvg:0.13, finRate:"91%", streak:0, tdLanded:0.67, gym:"SBG Ireland" },
  "Paddy Pimblett": { ht:"5'10\"", dob:"1995-01-03", reach:'73"', stance:"Orthodox", slpm:5.49, tdAcc:"21%", subAvg:1.2, strDef:"42%", kd:0.1, tdDef:"44%", finRate:"65%", streak:4, tdLanded:0.69, gym:"Next Generation MMA Liverpool" },
  "Charles Oliveira": { ht:"5'10\"", dob:"1989-10-17", reach:'74"', stance:"Orthodox", slpm:3.35, tdAcc:"40%", subAvg:2.6, strDef:"49%", kd:0.3, tdDef:"54%", finRate:"92%", streak:0, tdLanded:2.22, gym:"(2008–2018)" },
  "Arman Tsarukyan": { ht:"5'10\"", dob:"1996-10-11", reach:'72"', stance:"Orthodox", slpm:3.85, tdAcc:"37%", subAvg:0.1, strDef:"54%", kd:0.2, tdDef:"75%", finRate:"52%", streak:4, tdLanded:3.26, gym:"American Top Team (2019–present)" },
@@ -6797,14 +6797,23 @@
     { opponent: "Benson Henderson", odds: 250 }
   ],
   "Conor McGregor": [
-    { opponent: "Dustin Poirier", odds: -155 },
-    { opponent: "Donald Cerrone", odds: -400 },
-    { opponent: "Khabib Nurmagomedov", odds: 175 },
-    { opponent: "Eddie Alvarez", odds: -215 },
-    { opponent: "Nate Diaz", odds: -210 },
-    { opponent: "Jose Aldo", odds: -500 },
-    { opponent: "Chad Mendes", odds: -265 },
-    { opponent: "Dennis Siver", odds: -500 }
+    { opponent: "Dustin Poirier", odds: 108 },
+    { opponent: "Dustin Poirier", odds: -312 },
+    { opponent: "Donald Cerrone", odds: -312 },
+    { opponent: "Khabib Nurmagomedov", odds: 166 },
+    { opponent: "Eddie Alvarez", odds: -161 },
+    { opponent: "Nate Diaz", odds: -139 },
+    { opponent: "Nate Diaz", odds: -450 },
+    { opponent: "Jose Aldo", odds: -107 },
+    { opponent: "Chad Mendes", odds: -183 },
+    { opponent: "Dennis Siver", odds: -988 },
+    { opponent: "Dustin Poirier", odds: -258 },
+    { opponent: "Diego Brandão", odds: -645 },
+    { opponent: "Max Holloway", odds: -268 },
+    { opponent: "Marcus Brimage", odds: -155 },
+    { opponent: "Ivan Buchinger", odds: -140 },
+    { opponent: "Dave Hill", odds: -245 },
+    { opponent: "Steve O'Keeffe", odds: -205 }
   ],
   "Stipe Miocic": [
     { opponent: "Daniel Cormier", odds: -155 },
@@ -17002,7 +17011,7 @@ const FIGHT_HISTORY = {
 
   "Conor McGregor": [
     { date: "Jul 10, 2021", opponent: "Dustin Poirier", result: "L", method: "TKO (Doctor stoppage)", round: 1, time: "5:00", event: "UFC 264", org: "UFC" },
-    { date: "Jan 24, 2021", opponent: "Dustin Poirier", result: "L", method: "TKO (Punches)", round: 2, time: "2:32", event: "UFC 257", org: "UFC" },
+    { date: "Jan 23, 2021", opponent: "Dustin Poirier", result: "L", method: "TKO (Punches)", round: 2, time: "2:32", event: "UFC 257", org: "UFC" },
     { date: "Jan 18, 2020", opponent: "Donald Cerrone", result: "W", method: "TKO (Head kick and punches)", round: 1, time: "0:40", event: "UFC 246", org: "UFC" },
     { date: "Oct 6, 2018", opponent: "Khabib Nurmagomedov", result: "L", method: "Submission (Neck crank)", round: 4, time: "3:03", event: "UFC 229", org: "UFC" },
     { date: "Nov 12, 2016", opponent: "Eddie Alvarez", result: "W", method: "TKO (Punches)", round: 2, time: "3:04", event: "UFC 205", org: "UFC" },
@@ -26681,7 +26690,17 @@ const ACCOLADES = {
     { icon: "🥊", title: "Black prajied in Muay Thai", detail: null },
   ],
   "Conor McGregor": [
-    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under John Kavanagh", detail: null },
+    { icon: "🏆", title: "UFC Featherweight Champion — 2015–2016 (1 reign; KO of Jose Aldo in 13 seconds at UFC 194)", detail: null },
+    { icon: "🏆", title: "UFC Lightweight Champion — 2016–2018 (1 reign; TKO of Eddie Alvarez at UFC 205; stripped while inactive)", detail: null },
+    { icon: "🏅", title: "First fighter to hold two UFC championship belts simultaneously", detail: null },
+    { icon: "🏅", title: "Third fighter to win UFC titles in two different weight classes", detail: null },
+    { icon: "🏆", title: "Interim UFC Featherweight Champion — 2015 (TKO of Chad Mendes at UFC 189; unified vs Aldo)", detail: null },
+    { icon: "🏆", title: "Cage Warriors Featherweight Champion (1 reign)", detail: null },
+    { icon: "🏆", title: "Cage Warriors Lightweight Champion (1 reign, held simultaneously with FW title)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under John Kavanagh (SBG Ireland)", detail: null },
+    { icon: "🥊", title: "Amateur boxing champion", detail: null },
+    { icon: "🏅", title: "14 first-round finishes in UFC career", detail: null },
+    { icon: "🏅", title: "Boxing match vs. Floyd Mayweather Jr. — Aug 26, 2017 (lost TKO R10; grossed ~$600M)", detail: null },
   ],
   "Sodiq Yusuff": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu under Lloyd Irvin", detail: null },
