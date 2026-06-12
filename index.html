@@ -2520,6 +2520,7 @@
  { name: "Sam Patterson", division: "WW", rank: "NR", record: "10-3-0", initials: "SPA", country: "UK" },
  { name: "Jacobe Smith", division: "WW", rank: "NR", record: "11-1-0", initials: "JSM", country: "USA" },
  { name: "Saygid Izagakhmaev", division: "WW", rank: "NR", record: "10-2-0", initials: "SIZ", country: "Russia" },
+ { name: "Theodor Berggren", division: "WW", rank: "NR", record: "8-3-0", initials: "TBG", country: "Sweden" },
  // ─── MIDDLEWEIGHT (extended) ───
  { name: "Claudio Ribeiro", division: "MW", rank: "NR", record: "12-2-0", initials: "CRI", country: "Brazil" },
  { name: "Joe Pyfer", division: "MW", rank: "#6", record: "16-3-0", initials: "JPY2", country: "USA" },
@@ -3598,7 +3599,8 @@
  "Zarah Fairn dos Santos": { ht:"5'8\"", dob:"1983-12-10", reach:'72"', stance:"Orthodox", slpm:4.55, tdAcc:"0%", subAvg:0.0, strDef:"45%", kd:0.2, tdDef:"50%", finRate:"33%", streak:0, tdLanded:0.00 },
  // ── FINAL 100 ──
  // Flyweight
- "Bekzat Almakhan": { ht:"5'7\"", dob:"1997-10-08", reach:'68"', stance:"Orthodox", slpm:1.61, tdAcc:"0%", subAvg:0.0, strDef:"36%", kd:0.1, tdDef:"41%", finRate:"67%", streak:0, tdLanded:0.00, gym:"DDV Team 777" },
+ "Bekzat Almakhan": { ht:"5'7\"", dob:"1997-10-08", reach:'68"', stance:"Orthodox", slpm:1.61, strAcc:"34%", sapm:3.73, strDef:"37%", kd:0.97, tdAcc:"0%", tdDef:"42%", subAvg:0.0, finRate:"92%", streak:0, tdLanded:0.00, gym:"777 Fight Club" },
+  "Theodor Berggren": { ht:"6'0\"", dob:"2000-04-09", finRate:"100%", streak:2, gym:"Renyi" },
  "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, tdAcc:"36%", subAvg:0.4, strDef:"44%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.28 },
  "Alden Coria": { ht:"5'8\"", dob:"1998-04-24", reach:'67"', stance:"Orthodox", slpm:3.89, tdAcc:"100%",subAvg:0.0, strDef:"78%", kd:0.2, tdDef:"75%", finRate:"73%", streak:0, tdLanded:2.78 },
  "Alibi Idiris": { ht:"5'6\"", dob:"1994-10-22", reach:'68"', stance:"Orthodox", slpm:3.47, tdAcc:"0%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"60%", finRate:"82%", streak:0, tdLanded:0.00 },
@@ -9635,9 +9637,21 @@
     { opponent: "Shuai Yin", odds: -300 }
   ],
   "Bekzat Almakhan": [
-    { opponent: "Aleksandre Topuria", odds: 225 },
-    { opponent: "Marcus McGhee", odds: -350 },
-    { opponent: "Seokhyeon Ko", odds: -175 }
+    { opponent: "Aleksandre Topuria", odds: 125 },
+    { opponent: "Brad Katona", odds: -152 },
+    { opponent: "Umar Nurmagomedov", odds: 800 },
+    { opponent: "Jenilton Matos", odds: -600 }
+  ],
+  "Theodor Berggren": [
+    { opponent: "Abdulatip Samedov", odds: -188 },
+    { opponent: "Daniele Battaglia", odds: -250 },
+    { opponent: "Leonardo Damiani", odds: -175 },
+    { opponent: "Justin Burlinson", odds: 122 },
+    { opponent: "Moein Ahmadi", odds: -400 },
+    { opponent: "Kristjan Toniste", odds: -120 },
+    { opponent: "Markus Maki-Ventela", odds: -275 },
+    { opponent: "Christian Stigenberg", odds: -225 },
+    { opponent: "Ebrima Faal", odds: -350 }
   ],
   "Namsrai Batbayar": [
     { opponent: "Shuai Yin", odds: -250 }
@@ -24717,11 +24731,24 @@ const FIGHT_HISTORY = {
     { date: "Jul 1, 2022", opponent: "Geovane Vargas", result: "W", method: "TKO (Head kick)", round: 3, time: "3:07", event: "Octagon 32" },
     { date: "Mar 24, 2022", opponent: "Sabuhi Guliyev", result: "W", method: "TKO (Punches)", round: 1, time: "4:35", event: "Octagon 29" },
     { date: "Oct 30, 2021", opponent: "Fuad Musaev", result: "W", method: "TKO (Submission to punches)", round: 1, time: "4:23", event: "MMA Series 43" },
-    { date: "Jun 16, 2021", opponent: "Bekzhan Utemisov", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "1:17", event: "Octagon 20" },
-    { date: "Oct 25, 2020", opponent: "Sultan Zholdoshbek", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "0:44", event: "Bushido Qazaqstan FC 3" },
-    { opponent: "Aydin Kodekov", result: "W", method: "TKO (Doctor stoppage)", event: "1" },
-    { opponent: "Talgat Khalmuratov", result: "W", method: "TKO (Punches)", event: "3" },
-    { date: "Jul 28, 2018", opponent: "Ser-od Bilguun", result: "W", method: "TKO (Corner stoppage)", round: 2, time: "3:11", event: "Alash Pride FC: Alash Pride 8" }
+    { date: "Jun 16, 2021", opponent: "Bekzhan Utemisov", result: "W", method: "Submission (Kimura)", round: 3, time: "1:17", event: "Octagon 20" },
+    { date: "Oct 25, 2020", opponent: "Sultan Zholdoshbek", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "0:44", event: "Bushido Qazaqstan Grand Prix" },
+    { date: "Oct 25, 2020", opponent: "Aydin Kodekov", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "3:33", event: "Bushido Qazaqstan Grand Prix" },
+    { date: "Oct 25, 2020", opponent: "Talgat Khalmuratov", result: "W", method: "TKO (Punches)", round: 3, time: "3:03", event: "Bushido Qazaqstan Grand Prix" },
+    { date: "Jul 28, 2018", opponent: "Ser-od Bilguun", result: "W", method: "TKO (Corner stoppage)", round: 2, time: "3:11", event: "Alash Pride FC" }
+  ],
+  "Theodor Berggren": [
+    { date: "Feb 7, 2026", opponent: "Abdulatip Samedov", result: "W", method: "TKO (Punches)", round: 3, time: "2:20", event: "Fight Club Rush 27" },
+    { date: "Oct 4, 2025", opponent: "Daniele Battaglia", result: "W", method: "TKO (Punches)", round: 2, time: "4:44", event: "Cage Warriors 195" },
+    { date: "Mar 29, 2025", opponent: "Leonardo Damiani", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Club Rush 23" },
+    { date: "Nov 23, 2024", opponent: "Justin Burlinson", result: "L", method: "Submission (Arm-triangle choke)", round: 3, time: "2:44", event: "Cage Warriors 181" },
+    { date: "Sep 7, 2024", opponent: "Moein Ahmadi", result: "W", method: "TKO (Punches)", round: 1, time: "1:36", event: "Fight Club Rush 21" },
+    { date: "Jun 1, 2024", opponent: "Kristjan Toniste", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:35", event: "Fight Club Rush 20" },
+    { date: "Feb 24, 2024", opponent: "Giorgi Kankava", result: "W", method: "KO (Punch)", round: 1, time: "0:00", event: "Battle of Botnia 9" },
+    { date: "Dec 9, 2023", opponent: "Markus Maki-Ventela", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:00", event: "Battle of Botnia 8" },
+    { date: "May 7, 2022", opponent: "Christian Stigenberg", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Club Rush 12" },
+    { date: "Feb 26, 2022", opponent: "Ebrima Faal", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:00", event: "Fight Club Rush 11" },
+    { date: "Nov 20, 2021", opponent: "Tobias Wallberg", result: "W", method: "KO (Punches)", round: 1, time: "1:36", event: "Fight Club Rush 10" }
   ],
 
 
@@ -28334,6 +28361,15 @@ const ACCOLADES = {
     { icon: "🥈", title: "LFA Interim Featherweight Title Challenger — 2024 (lost to Lerryan Douglas, LFA 190)", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series Season 9 contract winner — 2025 (TKO of Justice Torres)", detail: null },
     { icon: "🥇", title: "Amateur MMA National Champion — 30–0 amateur record", detail: null },
+  ],
+  "Bekzat Almakhan": [
+    { icon: "🥋", title: "Black belt in Karate — trained from age ~9 through graduation (~8 years)", detail: null },
+    { icon: "🥇", title: "Zhekpe Zhek World Champion (Kazakh national combat sport) — multiple titles", detail: null },
+    { icon: "🥇", title: "Asian Champion in Zhekpe Zhek", detail: null },
+  ],
+  "Theodor Berggren": [
+    { icon: "🏅", title: "Cage Warriors contract — signed 2024 (Europe's premier MMA promotion)", detail: null },
+    { icon: "🏅", title: "UFC contract — signed 2026", detail: null },
   ],
 };
 
