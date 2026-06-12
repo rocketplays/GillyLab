@@ -30017,8 +30017,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const r1 = red.rankText  ? '#' + red.rankText  : fighterDivisionRankBadge(red.fighterName);
       const r2 = blue.rankText ? '#' + blue.rankText : fighterDivisionRankBadge(blue.fighterName);
       return {
-        f1:   red.fighterName  || '',
-        f2:   blue.fighterName || '',
+        f1:   resolveCanonicalFighterName(red.fighterName  || '', red.fighterSlug  || ''),
+        f2:   resolveCanonicalFighterName(blue.fighterName || '', blue.fighterSlug || ''),
         div1: red.profile  ? (red.profile.division  || wc) : wc,
         div2: blue.profile ? (blue.profile.division || wc) : wc,
         rec1: parseRecord(red.profile  ? red.profile.recordText  : '') || recordFallback(red.fighterName),
