@@ -30257,6 +30257,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const SLUG_ALIASES = {
     'abdul-rakhman-yakhyaev': 'Abdulrakhman Yakhyaev',
   };
+  const NAME_ALIASES = {
+    'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
+  };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
     if (apiSlug) {
@@ -30264,6 +30267,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const match = FIGHTERS.find(f => f && nameToSlug(f.name) === apiSlug);
       if (match) return match.name;
     }
+    const lowerName = (apiName || '').toLowerCase();
+    if (NAME_ALIASES[lowerName]) return NAME_ALIASES[lowerName];
     return apiName;
   }
 
