@@ -29731,6 +29731,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         hideTip(); activeTile = null;
       }
     }, true);
+    document.addEventListener('scroll', function() { hideTip(); activeTile = null; }, true);
   })();
 
   async function renderProjectionsPage(evt) {
