@@ -2697,6 +2697,7 @@
  { name: "Eric McConico", division: "MW", rank: "NR", record: "10-4-0", initials: "EMC2", country: "USA" },
  { name: "Mantas Kondratavicus", division: "MW", rank: "NR", record: "9-1-0", initials: "MKN2", country: "Lithuania" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-4-0", initials: "ATR2", country: "Brazil" },
+ { name: "Ryan Gandra", division: "MW", rank: "NR", record: "9-1-0", initials: "RGA", country: "Brazil" },
  // ─── WELTERWEIGHT (remaining) ───
  { name: "Alex Morono", division: "WW", rank: "NR", record: "24-13-0", initials: "AMR", country: "USA" },
  { name: "Rinat Fakhretdinov", division: "WW", rank: "NR", record: "24-2-0", initials: "RFA", country: "Russia" },
@@ -3360,6 +3361,7 @@
  "Chidi Njokuani": { ht:"6'3\"", dob:"1988-12-31", reach:'80"', stance:"Orthodox", slpm:4.72, tdAcc:"0%", subAvg:0.2, strDef:"57%", kd:0.6, tdDef:"73%", finRate:"68%", streak:0, tdLanded:0.00, gym:"Sergio Penha BJJ" },
  "Josh Fremd": { ht:"6'4\"", dob:"1994-01-15", reach:'76"', stance:"Orthodox", slpm:2.52, tdAcc:"25%", subAvg:1.1, strDef:"47%", kd:0.1, tdDef:"30%", finRate:"55%", streak:0, tdLanded:0.66 },
  "Albert Duraev": { ht:"5'11\"", dob:"1989-01-05", reach:'75"', stance:"Orthodox", slpm:2.99, tdAcc:"29%", subAvg:0.4, strDef:"59%", kd:0.2, tdDef:"70%", finRate:"69%", streak:0, tdLanded:1.97 },
+ "Ryan Gandra": { ht:'6\'1"', dob:"1995-05-08", reach:'74.5"', stance:"Orthodox", slpm:13.02, strAcc:"51%", sapm:1.70, strDef:"81%", kd:8.49, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"78%", streak:8, gym:"Flavio Baiano Team" },
  // ── Welterweight (final) ──
  "Jake Matthews": { ht:"5'11\"", dob:"1994-08-19", reach:'73"', stance:"Orthodox", slpm:3.91, tdAcc:"34%", subAvg:0.3, strDef:"54%", kd:0.1, tdDef:"72%", finRate:"45%", streak:1, tdLanded:1.60, gym:"Resilience Training Centre" },
  "Jared Gooden": { ht:"6'0\"", dob:"1993-12-05", reach:'77"', stance:"Orthodox", slpm:4.40, tdAcc:"27%", subAvg:0.3, strDef:"45%", kd:0.3, tdDef:"62%", finRate:"57%", streak:0, tdLanded:0.91, gym:"X3 Sports (2018–present)" },
@@ -10174,7 +10176,12 @@
     { opponent: "Lerryan Douglas", odds: -188 },
     { opponent: "Chase Gibson", odds: 130 },
     { opponent: "Joe Neal", odds: 120 },
-  ]
+  ],
+  "Ryan Gandra": [
+    { opponent: "Jose Medina", odds: -649 },
+    { opponent: "Trent Miller", odds: -550 },
+    { opponent: "Vladimir Calvo", odds: 175 },
+  ],
 };
 
 const FIGHT_HISTORY = {
@@ -26349,6 +26356,18 @@ const FIGHT_HISTORY = {
     { date: "Aug 1, 2015", opponent: "Oscar Fabian Garzon", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "3:52", event: "LFC 7", org: "LFC" },
     { date: "Oct 25, 2014", opponent: "Julian Lozano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFC 6", org: "LFC" },
   ],
+  "Ryan Gandra": [
+    { date: "Feb 28, 2026", opponent: "Jose Medina", result: "W", method: "TKO (Punches)", round: 1, time: "0:41", event: "UFC Fight Night 268", org: "UFC" },
+    { date: "Aug 26, 2025", opponent: "Trent Miller", result: "W", method: "TKO (Punches)", round: 1, time: "2:51", event: "DWCS Season 9, Week 3", org: "DWCS" },
+    { date: "Nov 22, 2024", opponent: "Vladimir Calvo Marrero", result: "W", method: "KO (Punch)", round: 1, time: "2:28", event: "LFA 197", org: "LFA" },
+    { date: "Nov 3, 2023", opponent: "Alessandro Gambulino", result: "W", method: "TKO (Punches)", round: 2, time: "2:38", event: "LFA 171", org: "LFA" },
+    { date: "Sep 30, 2023", opponent: "Leonardo Bezerra", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:30", event: "Bison Kombat 3", org: "Bison Kombat" },
+    { date: "Apr 15, 2023", opponent: "Luiz Fabiano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FMMAMG Federacao Fight 15", org: "FMMAMG" },
+    { date: "Feb 4, 2023", opponent: "Miguel Porto", result: "W", method: "TKO", round: 1, time: "4:19", event: "Spartacus MMA Fight Event 28", org: "Spartacus MMA" },
+    { date: "Nov 27, 2022", opponent: "Douglas Rakchal", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "FMMAMG Federacao Fight 14", org: "FMMAMG" },
+    { date: "Apr 30, 2022", opponent: "Leonardo Genuino", result: "L", method: "TKO (Punch)", round: 1, time: "4:41", event: "Savage MMA 2", org: "Savage MMA" },
+    { date: "Feb 19, 2022", opponent: "Marcus Atila", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "GFN Gladiators Fight Night 4", org: "GFN" },
+  ],
 
 
 
@@ -28569,6 +28588,13 @@ const ACCOLADES = {
     { icon: "🥇", title: "Brazilian Muay Thai champion", detail: null },
     { icon: "🥇", title: "São Paulo State Muay Thai champion", detail: null },
     { icon: "🥇", title: "South American Jiu-Jitsu champion", detail: null },
+  ],
+  "Ryan Gandra": [
+    { icon: "🏆", title: "Gladiators Fight Night 4 Champion — vs. Marcus Atila (GFN 4, Feb 2022)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥋", title: "Brown belt in Judo", detail: null },
+    { icon: "🥋", title: "Blue belt in Kickboxing", detail: null },
+    { icon: "🥇", title: "Brazilian Judo Champion — School Games (amateur)", detail: null },
   ],
 };
 
