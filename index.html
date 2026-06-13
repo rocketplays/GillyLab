@@ -2399,7 +2399,7 @@
  { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "20-2-1", initials: "MA", country: "Russia" },
  { name: "Jiří Procházka", division: "LHW", rank: "#3", record: "32-6-1", initials: "JP2", country: "Czech Republic" },
  { name: "Carlos Ulberg", division: "LHW", rank: "C", record: "14-1-0", initials: "CUL", country: "New Zealand" },
- { name: "Khalil Rountree Jr.", division: "LHW", rank: "#4", record: "21-8-0", initials: "KRJ", country: "USA" },
+ { name: "Khalil Rountree Jr.", division: "LHW", rank: "#5", record: "14-7-0", initials: "KRJ", country: "USA" },
  { name: "Jan Błachowicz", division: "LHW", rank: "#4", record: "29-11-2", initials: "JBL", country: "Poland" },
  { name: "Jamahal Hill", division: "LHW", rank: "#7", record: "12-3-1", initials: "JHI", country: "USA" },
  { name: "Volkan Oezdemir", division: "LHW", rank: "#8", record: "21-8-0", initials: "VOE", country: "Switzerland" },
@@ -3187,7 +3187,7 @@
  // ── Middleweight (more) ──
  // ── Light Heavyweight (more) ──
  "Dominick Reyes": { ht:"6'4\"", dob:"1989-12-26", reach:'77"', stance:"Southpaw", slpm:5.39, tdAcc:"28%", subAvg:0.1, strDef:"49%", kd:0.5, tdDef:"70%", finRate:"67%", streak:0, tdLanded:0.97, gym:"Joe Stevensons Cobra Kai" },
- "Khalil Rountree Jr.": { ht:"6'1\"", dob:"1990-02-26", reach:'76"', stance:"Southpaw", slpm:3.88, tdAcc:"0%", subAvg:0.1, strDef:"49%", kd:0.4, tdDef:"58%", finRate:"60%", streak:0, tdLanded:0.0, gym:"Tiger Muay Thai (2019–present)" },
+ "Khalil Rountree Jr.": { ht:'6\'1"', dob:"1990-02-06", reach:'76.5"', stance:"Southpaw", slpm:3.88, strAcc:"41%", sapm:4.33, strDef:"50%", kd:1.20, tdLanded:0.00, tdAcc:"0%", tdDef:"59%", subAvg:0.09, finRate:"64%", streak:0, gym:"Syndicate MMA" },
  "Aleksandar Rakić": { ht:"6'4\"", dob:"1992-02-06", reach:'78"', stance:"Orthodox", slpm:4.13, tdAcc:"21%", subAvg:0.1, strDef:"51%", kd:0.5, tdDef:"85%", finRate:"71%", streak:0, tdLanded:0.64, gym:"American Top Team" },
  "Bogdan Guskov": { ht:"6'3\"", dob:"1992-09-12", reach:'76"', stance:"Orthodox", slpm:4.57, tdAcc:"0%", subAvg:0.7, strDef:"44%", kd:0.5, tdDef:"57%", finRate:"72%", streak:3, tdLanded:0.00, gym:"American Top Team" },
  "Dustin Jacoby": { ht:"6'3\"", dob:"1988-04-04", reach:'76"', stance:"Orthodox", slpm:5.37, tdAcc:"25%", subAvg:0.0, strDef:"57%", kd:0.5, tdDef:"62%", finRate:"55%", streak:0, tdLanded:0.33, gym:"Factory X Muay Thai (2015–present)" },
@@ -5337,10 +5337,6 @@
     { opponent: "Dustin Poirier", odds: -115 },
     { opponent: "Al Iaquinta", odds: -115 },
     { opponent: "Jim Miller", odds: -260 }
-  ],
-  "Khalil Rountree Jr.": [
-    { opponent: "Anthony Smith", odds: -500 },
-    { opponent: "Johnny Walker", odds: -400 }
   ],
   "Michael Morales": [
     { opponent: "Sean Brady", odds: -150 },
@@ -8717,18 +8713,19 @@
     { opponent: "Kamil Wincenciak", odds: -165 }
   ],
   "Khalil Rountree Jr.": [
-    { opponent: "Jiří Procházka", odds: 275 },
-    { opponent: "Jamahal Hill", odds: -350 },
-    { opponent: "Alex Pereira", odds: 500 },
-    { opponent: "Anthony Smith", odds: -350 },
-    { opponent: "Chris Daukaus", odds: -500 },
-    { opponent: "Dustin Jacoby", odds: -150 },
-    { opponent: "Karl Roberson", odds: -500 },
-    { opponent: "Modestas Bukauskas", odds: -350 },
-    { opponent: "Tyson Pedro", odds: -250 },
-    { opponent: "Jimmy Crute", odds: -175 },
-    { opponent: "Ion Cutelaba", odds: -175 },
-    { opponent: "Magomed Ankalaev", odds: 275 }
+    { opponent: "Jamahal Hill", odds: 110 },
+    { opponent: "Anthony Smith", odds: -190 },
+    { opponent: "Chris Daukaus", odds: -235 },
+    { opponent: "Marcin Prachnio", odds: -357 },
+    { opponent: "Ion Cuțelaba", odds: -115 },
+    { opponent: "Eryk Anders", odds: 162 },
+    { opponent: "Johnny Walker", odds: -155 },
+    { opponent: "Gökhan Saki", odds: 152 },
+    { opponent: "Michal Oleksiejczuk", odds: -350 },
+    { opponent: "Paul Craig", odds: -145 },
+    { opponent: "Daniel Jolly", odds: -175 },
+    { opponent: "Tyson Pedro", odds: -105 },
+    { opponent: "Andrew Sanchez", odds: 140 },
   ],
   "Jéssica Andrade": [
     { opponent: "Loopy Godinez", odds: -350 },
@@ -12458,28 +12455,20 @@ const FIGHT_HISTORY = {
     { date: "Oct 29, 2022", opponent: "Dustin Jacoby", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Allen", org: "UFC" },
     { date: "Mar 12, 2022", opponent: "Karl Roberson", result: "W", method: "TKO (Body kick and punches)", round: 2, time: "0:25", event: "UFC Fight Night: Santos vs. Ankalaev", org: "UFC" },
     { date: "Sep 4, 2021", opponent: "Modestas Bukauskas", result: "W", method: "TKO (Leg kick)", round: 2, time: "2:30", event: "UFC Fight Night: Brunson vs. Till", org: "UFC" },
-    { date: "Jan 24, 2021", opponent: "Marcin Prachnio", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 257", org: "UFC" },
+    { date: "Jan 23, 2021", opponent: "Marcin Prachnio", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 257: Poirier vs. McGregor 2", org: "UFC" },
     { date: "Sep 28, 2019", opponent: "Ion Cuțelaba", result: "L", method: "TKO (Elbows)", round: 1, time: "2:35", event: "UFC Fight Night: Hermansson vs. Cannonier", org: "UFC" },
     { date: "Apr 13, 2019", opponent: "Eryk Anders", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 236", org: "UFC" },
     { date: "Nov 17, 2018", opponent: "Johnny Walker", result: "L", method: "KO (Elbow)", round: 1, time: "1:57", event: "UFC Fight Night: Magny vs. Ponzinibbio", org: "UFC" },
     { date: "Jul 7, 2018", opponent: "Gökhan Saki", result: "W", method: "TKO (Punches)", round: 1, time: "1:36", event: "UFC 226", org: "UFC" },
-    { date: "Dec 30, 2017", opponent: "Michał Oleksiejczuk", result: "NC", method: "NC (Overturned)", round: 3, time: "5:00", event: "UFC 219", org: "UFC" },
+    { date: "Dec 30, 2017", opponent: "Michal Oleksiejczuk", result: "NC", method: "No Contest (Overturned by NSAC)", round: 3, time: "5:00", event: "UFC 219: Cyborg vs. Holm", org: "UFC" },
     { date: "Jul 16, 2017", opponent: "Paul Craig", result: "W", method: "KO (Punches)", round: 1, time: "4:56", event: "UFC Fight Night: Nelson vs. Ponzinibbio", org: "UFC" },
     { date: "Feb 4, 2017", opponent: "Daniel Jolly", result: "W", method: "KO (Knee)", round: 1, time: "0:52", event: "UFC Fight Night: Bermudez vs. The Korean Zombie", org: "UFC" },
-    { date: "Nov 27, 2016", opponent: "Tyson Pedro", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:07", event: "UFC Fight Night: Whittaker vs. Brunson", org: "UFC" },
+    { date: "Nov 26, 2016", opponent: "Tyson Pedro", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:07", event: "UFC Fight Night: Whittaker vs. Brunson", org: "UFC" },
     { date: "Jul 8, 2016", opponent: "Andrew Sanchez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter: Team Joanna vs. Team Cláudia Finale" },
     { date: "Dec 11, 2015", opponent: "Justin Polendey", result: "W", method: "KO (Punch)", round: 1, time: "1:42", event: "RFA 33" },
     { date: "Apr 10, 2015", opponent: "Cameron Olson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RFA 25" },
-    { date: "Dec 5, 2014", opponent: "Blake Troop", result: "W", method: "KO (Punch)", round: 1, time: "0:39", event: "RFA 21" },
+    { date: "Dec 5, 2014", opponent: "Blake Troop", result: "W", method: "KO (Punches)", round: 1, time: "0:39", event: "RFA 21" },
     { date: "Jun 6, 2014", opponent: "Livingston Lukow", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RFA 15" },
-    { date: "Jul 6, 2016", opponent: "Josh Stansbury", result: "W", method: "TKO (Punches)", round: 1, time: "4:15", event: "The Ultimate Fighter: Team Joanna vs. Team Cláudia" },
-    { opponent: "Cory Hendricks", result: "L", method: "Submission (Rear-naked choke)", time: "2:34", event: "(airdate)" },
-    { opponent: "Muhammed Dereese", result: "W", method: "TKO (Punches and soccer kicks to the body)", time: "0:38", event: "(airdate)" },
-    { date: "May 26, 2013", opponent: "Lee Cordova", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:49", event: "Tuff-N-Uff: Festibrawl 6" },
-    { date: "Oct 11, 2012", opponent: "Prentice Williams", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "Tuff-N-Uff: Knock Out Cancer 2" },
-    { date: "Jan 27, 2012", opponent: "Giovani Zavala", result: "W", method: "TKO (Knee and punches)", round: 1, time: "0:30", event: "Tuff-N-Uff: Beauties and Beasts" },
-    { date: "Jun 4, 2011", opponent: "Niels Berlemann", result: "W", method: "KO (Punch)", round: 1, time: "0:16", event: "KOTC: Future Legends 2" },
-    { date: "Mar 12, 2011", opponent: "Travis Jelmyer", result: "W", method: "TKO (Punches)", round: 1, time: "0:21", event: "Tuff-N-Uff: Future Stars of MMA 15" }
   ],
 
 
@@ -27376,6 +27365,10 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Kamil Umiński and Radosław Turek", detail: null },
     { icon: "🥇", title: "World Championships — 2008 Busan — −91 kg (B class)", detail: null },
     { icon: "🥉", title: "World Championships — 2007 Bangkok — −91 kg (B class)", detail: null },
+  ],
+  "Khalil Rountree Jr.": [
+    { icon: "🥇", title: "Tuff-N-Uff Amateur Light Heavyweight Champion", detail: null },
+    { icon: "🥇", title: "Tuff-N-Uff Amateur Middleweight Champion", detail: null },
   ],
   "Jamahal Hill": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
