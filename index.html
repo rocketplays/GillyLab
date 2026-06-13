@@ -2396,7 +2396,7 @@
  { name: "Michal Oleksiejczuk", division: "MW", rank: "NR", record: "22-9-0", initials: "MO", country: "Poland" },
  // ─── LIGHT HEAVYWEIGHT ───
  { name: "Alex Pereira", division: "LHW", rank: "#C", record: "13-3-0", initials: "ALEX", country: "Brazil" },
- { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "20-2-2", initials: "MA", country: "Russia" },
+ { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "20-2-1", initials: "MA", country: "Russia" },
  { name: "Jiří Procházka", division: "LHW", rank: "#3", record: "32-6-1", initials: "JP2", country: "Czech Republic" },
  { name: "Carlos Ulberg", division: "LHW", rank: "C", record: "14-1-0", initials: "CUL", country: "New Zealand" },
  { name: "Khalil Rountree Jr.", division: "LHW", rank: "#4", record: "21-8-0", initials: "KRJ", country: "USA" },
@@ -3349,7 +3349,7 @@
  // ── Lightweight (more) ──
  // ── Flyweight (more) ──
  // ── Light Heavyweight (more) ──
- "Magomed Ankalaev": { ht:"6'3\"", dob:"1992-06-02", reach:'75"', stance:"Orthodox", slpm:3.65, tdAcc:"22%", subAvg:0.0, strDef:"56%", kd:0.2, tdDef:"87%", finRate:"62%", streak:3, tdLanded:0.79, gym:"Xtreme Couture Mixed Martial Arts" },
+ "Magomed Ankalaev": { ht:'6\'3"', dob:"1992-06-02", reach:'75"', stance:"Orthodox", slpm:3.65, strAcc:"53%", sapm:2.59, strDef:"56%", kd:0.56, tdLanded:0.79, tdAcc:"22%", tdDef:"88%", subAvg:0.00, finRate:"50%", streak:0, gym:"Gorets Fight Club" },
  "Oumar Sy": { ht:"6'4\"", dob:"1995-11-21", reach:'83"', stance:"Orthodox", slpm:3.41, tdAcc:"35%", subAvg:0.4, strDef:"66%", kd:0.3, tdDef:"75%", finRate:"67%", streak:3, tdLanded:2.45 },
  "Junior Tafa": { ht:"6'3\"", dob:"1996-09-21", reach:'75"', stance:"Orthodox", slpm:3.41, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.5, tdDef:"70%", finRate:"67%", streak:0, tdLanded:0.00, gym:"Soma Fight Club" },
  "Tanner Boser": { ht:"6'2\"", dob:"1991-08-02", reach:'75"', stance:"Orthodox", slpm:4.70, tdAcc:"0%", subAvg:0.0, strDef:"58%", kd:0.5, tdDef:"67%", finRate:"57%", streak:0, tdLanded:0.00, gym:"Frank Lee's Muay Thai" },
@@ -5147,11 +5147,6 @@
     { opponent: "Bruno Silva", odds: -190 },
     { opponent: "Andreas Michailidis", odds: -256 },
   ],
-  "Magomed Ankalaev": [
-    { opponent: "Thiago Santos", odds: -265 },
-    { opponent: "Johnny Walker", odds: -200 }
-  ],
-
   "Kamaru Usman": [
     { opponent: "Joaquin Buckley", odds: -140 },
     { opponent: "Khamzat Chimaev", odds: 310 },
@@ -8764,14 +8759,22 @@
     { opponent: "Belal Muhammad", odds: 225 }
   ],
   "Magomed Ankalaev": [
-    { opponent: "Alex Pereira", odds: 400 },
-    { opponent: "Alex Pereira", odds: -170 },
-    { opponent: "Aleksandar Rakić", odds: -450 },
-    { opponent: "Johnny Walker", odds: -400 },
-    { opponent: "Nikita Krylov", odds: -350 },
-    { opponent: "Jan Blachowicz", odds: -175 },
-    { opponent: "Ion Cutelaba", odds: -300 },
-    { opponent: "Dalcha Lungiambula", odds: -700 }
+    { opponent: "Alex Pereira", odds: -180 },
+    { opponent: "Alex Pereira", odds: 110 },
+    { opponent: "Aleksandar Rakić", odds: -340 },
+    { opponent: "Johnny Walker", odds: -520 },
+    { opponent: "Johnny Walker", odds: -360 },
+    { opponent: "Jan Błachowicz", odds: -315 },
+    { opponent: "Anthony Smith", odds: -475 },
+    { opponent: "Thiago Santos", odds: -625 },
+    { opponent: "Volkan Oezdemir", odds: -320 },
+    { opponent: "Nikita Krylov", odds: -300 },
+    { opponent: "Ion Cuțelaba", odds: -380 },
+    { opponent: "Ion Cuțelaba", odds: -205 },
+    { opponent: "Dalcha Lungiambula", odds: -315 },
+    { opponent: "Klidson Abreu", odds: -210 },
+    { opponent: "Marcin Prachnio", odds: -485 },
+    { opponent: "Paul Craig", odds: -800 },
   ],
   "Mason Jones": [
     { opponent: "Axel Sola", odds: -350 },
@@ -11947,7 +11950,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 8, 2025", opponent: "Alex Pereira", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 313", org: "UFC" },
     { date: "Oct 26, 2024", opponent: "Aleksandar Rakić", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 308", org: "UFC" },
     { date: "Jan 13, 2024", opponent: "Johnny Walker", result: "W", method: "KO (Punches)", round: 2, time: "2:42", event: "UFC Fight Night: Ankalaev vs. Walker 2", org: "UFC" },
-    { date: "Oct 21, 2023", opponent: "Johnny Walker", result: "D", method: "NC (Illegal knee)", round: 1, time: "3:13", event: "UFC 294", org: "UFC" },
+    { date: "Oct 21, 2023", opponent: "Johnny Walker", result: "NC", method: "No Contest (Illegal Knee)", round: 1, time: "3:13", event: "UFC 294", org: "UFC" },
     { date: "Dec 10, 2022", opponent: "Jan Błachowicz", result: "D", method: "Draw (Split)", round: 5, time: "5:00", event: "UFC 282", org: "UFC" },
     { date: "Jul 30, 2022", opponent: "Anthony Smith", result: "W", method: "TKO (Punches)", round: 2, time: "3:09", event: "UFC 277", org: "UFC" },
     { date: "Mar 12, 2022", opponent: "Thiago Santos", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Santos vs. Ankalaev", org: "UFC" },
@@ -11959,11 +11962,11 @@ const FIGHT_HISTORY = {
     { date: "Feb 23, 2019", opponent: "Klidson Abreu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Błachowicz vs. Santos", org: "UFC" },
     { date: "Sep 15, 2018", opponent: "Marcin Prachnio", result: "W", method: "TKO (Head kick and punches)", round: 1, time: "3:09", event: "UFC Fight Night: Hunt vs. Oleinik", org: "UFC" },
     { date: "Mar 17, 2018", opponent: "Paul Craig", result: "L", method: "Submission (Triangle choke)", round: 3, time: "4:59", event: "UFC Fight Night: Werdum vs. Volkov", org: "UFC" },
-    { date: "Oct 4, 2017", opponent: "Celso Ricardo da Silva", result: "W", method: "KO (Punches)", round: 1, time: "1:11", event: "WFCA 43" },
-    { date: "Jun 21, 2017", opponent: "Wagner Prado", result: "W", method: "KO (Punches)", round: 1, time: "3:33", event: "WFCA 38" },
+    { date: "Oct 4, 2017", opponent: "Celso Ricardo da Silva", result: "W", method: "KO (Punches)", round: 1, time: "1:09", event: "WFCA 43" },
+    { date: "May 21, 2017", opponent: "Wagner Prado", result: "W", method: "KO (Punches)", round: 1, time: "3:33", event: "WFCA 38" },
     { date: "Oct 4, 2016", opponent: "Maxim Grishin", result: "W", method: "TKO (Punches)", round: 4, time: "1:13", event: "WFCA 30" },
     { date: "Jun 11, 2016", opponent: "Artur Astakhov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 23" },
-    { date: "Apr 9, 2016", opponent: "Lloyd Marshbanks", result: "W", method: "TKO (Submission to punches)", round: 1, time: "0:15", event: "WFCA 18" },
+    { date: "Apr 9, 2016", opponent: "Lloyd Marshbanks", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "0:15", event: "WFCA 17" },
     { date: "Oct 18, 2014", opponent: "Dovletdzhan Yagshimuradov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oplot Challenge 103" },
     { date: "Jun 14, 2014", opponent: "Denić Strahinja", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Tesla FC 4" },
     { date: "Jan 18, 2014", opponent: "Vasily Babich", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "Oplot Challenge 96" }
@@ -27348,8 +27351,10 @@ const ACCOLADES = {
     { icon: "🏅", title: "First simultaneous GLORY Kickboxing Middleweight and Light Heavyweight Champion", detail: null },
   ],
   "Magomed Ankalaev": [
-    { icon: "🏆", title: "International Master of Sport in Amateur MMA", detail: null },
-    { icon: "🤼", title: "Master of Sport in Combat Sambo", detail: null },
+    { icon: "🏆", title: "Former UFC Light Heavyweight Champion", detail: null },
+    { icon: "🥇", title: "WFCA Light Heavyweight Champion", detail: null },
+    { icon: "🏅", title: "International Master of Sport in Amateur MMA", detail: null },
+    { icon: "🏅", title: "Master of Sport in Combat Sambo", detail: null },
     { icon: "🥇", title: "WMMAA World Championships — 2016 Macau — −93 kg", detail: null },
     { icon: "🥇", title: "Russian Championships — 2016 Orenburg — −93 kg", detail: null },
     { icon: "🥇", title: "Combat Sambo — 2016 Dagestan — Light Heavyweight", detail: null },
