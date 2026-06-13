@@ -2774,7 +2774,7 @@
  { name: "Jeisla Chaves", division: "WFLW", rank: "NR", record: "8-0-0", initials: "JCV", country: "Brazil" },
  { name: "Antonina Shevchenko", division: "WFLW", rank: "NR", record: "10-5-0", initials: "ANS2", country: "Kyrgyzstan" },
  { name: "Luana Carolina", division: "WFLW", rank: "NR", record: "11-5-0", initials: "LCA", country: "Brazil" },
- { name: "Veronica Macedo", division: "WFLW", rank: "NR", record: "11-4-0", initials: "VMC", country: "Venezuela" },
+ { name: "Veronica Macedo", division: "WFLW", rank: "NR", record: "10-5-1", initials: "VMC", country: "Venezuela" },
  { name: "Sabina Mazo", division: "WFLW", rank: "NR", record: "11-6-0", initials: "SMA", country: "Colombia" },
  // ─── WOMEN'S BANTAMWEIGHT (remaining) ───
  { name: "Aspen Ladd", division: "WBW", rank: "NR", record: "12-5-0", initials: "ALD", country: "USA" },
@@ -3713,7 +3713,7 @@
  "Austin Lund": { ht:"6'3\"", dob:"1991-01-01", reach:'78"', stance:"Orthodox", slpm:3.50, tdAcc:"30%", subAvg:0.3, strDef:"45%", kd:0.3, tdDef:"50%", finRate:"65%", streak:0, tdLanded:1.50 },
  "Alan Baudot": { ht:"6'2\"", dob:"1993-01-01", reach:'76"', stance:"Orthodox", slpm:3.20, tdAcc:"32%", subAvg:0.4, strDef:"48%", kd:0.2, tdDef:"58%", finRate:"60%", streak:0, tdLanded:1.30, gym:"MMA Factory" },
  "Ayaka Miura": { ht:"5'4\"", dob:"1996-01-01", reach:'63"', stance:"Orthodox", slpm:2.80, tdAcc:"55%", subAvg:1.2, strDef:"52%", kd:0.0, tdDef:"70%", finRate:"75%", streak:0, tdLanded:2.50 },
- "Veronica Macedo": { ht:"5'6\"", dob:"1996-01-01", reach:'67"', stance:"Orthodox", slpm:3.00, tdAcc:"30%", subAvg:0.5, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"60%", streak:0, tdLanded:1.00 },
+ "Veronica Macedo": { ht:'5\'3"', dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
  "Eduard Folayang": { ht:"5'9\"", dob:"1984-10-10", reach:'70"', stance:"Southpaw", slpm:3.30, tdAcc:"38%", subAvg:0.5, strDef:"52%", kd:0.2, tdDef:"65%", finRate:"68%", streak:0, tdLanded:1.40, gym:"Lions Nation MMA (2023–present)" },
  "Robert Valentin": { ht:"5'8\"", dob:"1994-01-01", reach:'70"', stance:"Orthodox", slpm:3.00, tdAcc:"30%", subAvg:0.4, strDef:"50%", kd:0.2, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.00 },
  "Zachary Reese": { ht:"6'4\"", dob:"1994-03-24", reach:'77"', stance:"Orthodox", slpm:4.48, strAcc:"54%", sapm:3.92, strDef:"44%", kd:0.25, tdLanded:2.80, tdAcc:"61%", tdDef:"52%", subAvg:1.27, finRate:"80%", streak:0, gym:"WAR Training Center" },
@@ -9973,7 +9973,16 @@
     { opponent: "Mitch Raposo", odds: -250 }
   ],
   "Veronica Macedo": [
-    
+    { opponent: "Brogan Walker", odds: -649 },
+    { opponent: "Eduarda Moura", odds: 118 },
+    { opponent: "JJ Aldrich", odds: -117 },
+    { opponent: "Jamey-Lyn Horth", odds: 170 },
+    { opponent: "Juliana Miller", odds: 350 },
+    { opponent: "Bea Malecki", odds: -115 },
+    { opponent: "Polyana Viana", odds: -130 },
+    { opponent: "Gillian Robertson", odds: 170 },
+    { opponent: "Andrea Lee", odds: 292 },
+    { opponent: "Ashlee Evans-Smith", odds: 230 },
   ],
 
   "Charles Radtke": [
@@ -25471,9 +25480,22 @@ const FIGHT_HISTORY = {
     { date: "Aug 19, 2023", opponent: "Fernando Bernardes", result: "W", method: "KO (Punches)", round: 2, time: "2:44", event: "Shooto Brazil 109" }
   ],
   "Veronica Macedo": [
-    { date: "Oct 4, 2025", opponent: "Brogan Walker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 320: Pereira vs. Ankalaev 2" },
-    { date: "Nov 16, 2024", opponent: "Eduarda Moura", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309: Jones vs. Miocic" },
-    { date: "May 11, 2024", opponent: "JJ Aldrich", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Nascimento" }
+    { date: "Oct 4, 2025", opponent: "Brogan Walker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 320: Ankalaev vs. Pereira 2", org: "UFC" },
+    { date: "Nov 16, 2024", opponent: "Eduarda Moura", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309: Jones vs. Miocic", org: "UFC" },
+    { date: "May 11, 2024", opponent: "JJ Aldrich", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Nascimento", org: "UFC" },
+    { date: "Dec 2, 2023", opponent: "Jamey-Lyn Horth", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Dariush vs. Tsarukyan", org: "UFC" },
+    { date: "Mar 18, 2023", opponent: "Juliana Miller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 286: Edwards vs. Usman 3", org: "UFC" },
+    { date: "Mar 14, 2020", opponent: "Bea Malecki", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lee vs. Oliveira", org: "UFC" },
+    { date: "Aug 10, 2019", opponent: "Polyana Viana", result: "W", method: "Submission (Armbar)", round: 1, time: "1:09", event: "UFC Fight Night: Shevchenko vs. Carmouche 2", org: "UFC" },
+    { date: "Feb 23, 2019", opponent: "Gillian Robertson", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:27", event: "UFC Fight Night: Blachowicz vs. Santos", org: "UFC" },
+    { date: "May 19, 2018", opponent: "Andrea Lee", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Maia vs. Usman", org: "UFC" },
+    { date: "Sep 3, 2016", opponent: "Ashlee Evans-Smith", result: "L", method: "TKO (Elbows)", round: 3, time: "2:46", event: "UFC Fight Night 93: Arlovski vs. Barnett", org: "UFC" },
+    { date: "Aug 14, 2016", opponent: "Iren Racz", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "Innferno Fighting Championship 2" },
+    { date: "Jul 8, 2016", opponent: "Karine Gevorgyan", result: "W", method: "Submission (Heel hook)", round: 3, time: "1:23", event: "Mix Fight Events" },
+    { date: "May 28, 2016", opponent: "Valerie Domergue", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hit Fighting Championship 2" },
+    { date: "Apr 1, 2016", opponent: "Lilla Vincze", result: "W", method: "TKO (Punches)", round: 1, time: "2:15", event: "Ladies Fight Night 2" },
+    { date: "Mar 26, 2016", opponent: "Camilla Hinze", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "Trophy MMA 8" },
+    { date: "Mar 12, 2016", opponent: "Anne Merkt", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "We Love MMA 20" },
   ],
 
   "Charles Radtke": [
@@ -28758,6 +28780,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brown belt in Judo", detail: null },
     { icon: "🥋", title: "Blue belt in Kickboxing", detail: null },
     { icon: "🥇", title: "Brazilian Judo Champion — School Games (amateur)", detail: null },
+  ],
+  "Veronica Macedo": [
+    { icon: "🏅", title: "Five-time USA National Champion in Taekwondo", detail: null },
+    { icon: "🥋", title: "Black belt in Taekwondo", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥋", title: "Brown belt in Karate", detail: null },
   ],
 };
 
