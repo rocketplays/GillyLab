@@ -2537,7 +2537,7 @@
  { name: "Daniil Donchenko", division: "WW", rank: "NR", record: "14-2-0", initials: "DDN", country: "Ukraine" },
  { name: "Carlos Leal", division: "WW", rank: "NR", record: "10-3-0", initials: "CLE", country: "Brazil" },
  { name: "Sam Patterson", division: "WW", rank: "NR", record: "10-3-0", initials: "SPA", country: "UK" },
- { name: "Jacobe Smith", division: "WW", rank: "NR", record: "11-1-0", initials: "JSM", country: "USA" },
+ { name: "Jacobe Smith", division: "WW", rank: "NR", record: "12-0-0", initials: "JSM", country: "USA" },
  { name: "Saygid Izagakhmaev", division: "WW", rank: "NR", record: "10-2-0", initials: "SIZ", country: "Russia" },
  { name: "Theodor Berggren", division: "WW", rank: "NR", record: "8-3-0", initials: "TBG", country: "Sweden" },
  // ─── MIDDLEWEIGHT (extended) ───
@@ -3701,7 +3701,7 @@
  // Women's Bantamweight
  "Jessica-Rose Clark": { ht:"5'5\"", dob:"1987-11-28", reach:'64"', stance:"Orthodox", slpm:3.73, tdAcc:"42%", subAvg:0.3, strDef:"58%", kd:0.1, tdDef:"62%", finRate:"50%", streak:0, tdLanded:1.66, gym:"Team Ferreira BJJ (2023–present)" },
  "Daria Zhelezniakova": { ht:"5'9\"", dob:"1996-01-23", reach:'68"', stance:"Orthodox", slpm:4.75, tdAcc:"100%",subAvg:0.0, strDef:"68%", kd:0.3, tdDef:"50%", finRate:"80%", streak:0, tdLanded:0.44 },
- "Jacobe Smith": { ht:"5'10\"", dob:"1996-01-17", reach:'72"', stance:"Southpaw", slpm:6.21, tdAcc:"90%", subAvg:0.8, strDef:"47%", kd:0.5, tdDef:"100%",finRate:"91%", streak:0, tdLanded:7.42 },
+ "Jacobe Smith": { ht:"5'10\"", dob:"1996-01-17", reach:'72"', stance:"Southpaw", slpm:6.89, strAcc:"68%", sapm:2.78, strDef:"48%", kd:0.71, tdLanded:7.78, tdAcc:"92%", tdDef:"100%", subAvg:0.71, finRate:"83%", streak:12, gym:"Fortis MMA" },
  "Levi Rodrigues": { ht:"5'5\"", dob:"1998-01-01", reach:'66"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.20 },
  "Louis Lee Scott": { ht:"5'7\"", dob:"1993-06-01", reach:'68"', stance:"Orthodox", slpm:3.30, tdAcc:"30%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.00 },
  "Yadier del Valle": { ht:"5'6\"", dob:"1995-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.5, strDef:"52%", kd:0.2, tdDef:"65%", finRate:"60%", streak:0, tdLanded:1.50 },
@@ -10030,7 +10030,14 @@
     { opponent: "Carlos Leal", odds: 250 }
   ],
   "Jacobe Smith": [
-    
+    { opponent: "Josiah Harrell", odds: -308 },
+    { opponent: "Niko Price", odds: -2200 },
+    { opponent: "Preston Parsons", odds: -625 },
+    { opponent: "Christien Savoie", odds: -770 },
+    { opponent: "Brian Grinnell", odds: -1408 },
+    { opponent: "Austin Jones", odds: -188 },
+    { opponent: "Leivon Lewis", odds: -625 },
+    { opponent: "Tommie Britton", odds: -813 }
   ],
   "Ocie Ike": [
     
@@ -25733,14 +25740,18 @@ const FIGHT_HISTORY = {
     { date: "Nov 11, 2023", opponent: "Diego Jimenez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:44", event: "FFC 14" }
   ],
   "Jacobe Smith": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
-    { date: "Oct 5, 2025", opponent: "Shane Hughes", result: "W", method: "KO (Punches)", round: 1, time: "0:34", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Jun 14, 2025", opponent: "Demarco Walker", result: "W", method: "TKO (Punches)", round: 2, time: "2:44", event: "LFA 181" },
-    { date: "Mar 1, 2025", opponent: "Tyler Brassington", result: "W", method: "KO (Punches)", round: 1, time: "0:55", event: "LFA 177" },
-    { date: "Nov 16, 2024", opponent: "Reggie Bhambra", result: "W", method: "KO (Punches)", round: 1, time: "0:29", event: "LFA 173" },
-    { date: "Aug 17, 2024", opponent: "David Mundell", result: "W", method: "TKO (Punches)", round: 2, time: "1:44", event: "LFA 170" },
-    { date: "May 11, 2024", opponent: "Yoseph Shayesteh", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 167" },
-    { date: "Jan 20, 2024", opponent: "Chase Gibson", result: "W", method: "KO (Punches)", round: 1, time: "0:48", event: "LFA 164" }
+    { date: "Feb 21, 2026", opponent: "Josiah Harrell", result: "W", method: "KO (Punches)", round: 1, time: "3:01", event: "UFC Fight Night: Strickland vs. Hernandez", org: "UFC" },
+    { date: "Jun 28, 2025", opponent: "Niko Price", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:03", event: "UFC 317", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Preston Parsons", result: "W", method: "KO (Punches)", round: 1, time: "1:13", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "Oct 01, 2024", opponent: "Christien Savoie", result: "W", method: "TKO (Elbows)", round: 2, time: "2:55", event: "DWCS 2024 Week 8 (contract)", org: "DWCS" },
+    { date: "Feb 23, 2024", opponent: "Jared McLoughlin", result: "W", method: "KO (Punches)", round: 1, time: "0:21", event: "Fury FC 86", org: "Fury FC" },
+    { date: "Sep 17, 2023", opponent: "Brian Grinnell", result: "W", method: "KO (Punch)", round: 1, time: "1:01", event: "Fury FC 83", org: "Fury FC" },
+    { date: "Jul 16, 2023", opponent: "Austin Jones", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 81", org: "Fury FC" },
+    { date: "Feb 05, 2023", opponent: "Leivon Lewis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 74", org: "Fury FC" },
+    { date: "Dec 18, 2022", opponent: "Tommie Britton", result: "W", method: "TKO (Punches)", round: 1, time: "3:06", event: "Fury FC 72", org: "Fury FC" },
+    { date: "Jun 24, 2022", opponent: "Zac Kelley", result: "W", method: "TKO (Punches)", round: 1, time: "0:42", event: "Xtreme Fight Night 381", org: "XFL" },
+    { date: "Feb 04, 2022", opponent: "Will Florentino", result: "W", method: "TKO (Punches)", round: 1, time: "0:23", event: "Xtreme Fight Night 378", org: "XFL" },
+    { date: "Oct 08, 2021", opponent: "Roderick Stewart", result: "W", method: "TKO (Punches)", round: 1, time: "1:34", event: "Xtreme Fight Night 374", org: "XFL" }
   ],
   "Ocie Ike": [
     { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
@@ -27111,6 +27122,9 @@ const ACCOLADES = {
     { icon: "🏅", title: "Most UFC fights in a single calendar year — 5 (2020, tied UFC record)", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Travis Lutter", detail: null },
     { icon: "🥊", title: "2nd degree black belt in Kung Fu", detail: null },
+  ],
+  "Jacobe Smith": [
+    { icon: "🤼", title: "2× NJCAA National Wrestling Champion (Northeastern Oklahoma A&M); Big XII Conference champion; NCAA All-American (Oklahoma State University, 2018)", detail: null },
   ],
   "Joel Alvarez": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
