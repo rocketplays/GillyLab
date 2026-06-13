@@ -2516,6 +2516,7 @@
  { name: "Tom Nolan", division: "LW", rank: "NR", record: "12-2-0", initials: "TNO", country: "Australia" },
  { name: "Ismael Bonfim", division: "LW", rank: "NR", record: "20-1-0", initials: "IBF", country: "Brazil" },
  { name: "Chase Hooper", division: "LW", rank: "NR", record: "16-5-1", initials: "CHO", country: "USA" },
+ { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-3-0", initials: "MRA", country: "USA" },
  { name: "Jai Herbert", division: "LW", rank: "NR", record: "14-6-1", initials: "JHE", country: "UK" },
  { name: "Manoel Sousa", division: "LW", rank: "NR", record: "15-1-0", initials: "MNS", country: "Brazil" },
  { name: "Axel Sola", division: "LW", rank: "NR", record: "9-2-0", initials: "ASO", country: "France" },
@@ -3372,6 +3373,7 @@
  "Joshua Van": { ht:"5'5\"", dob:"2001-10-10", reach:'65"', stance:"Orthodox", slpm:8.43, strAcc:"57%", sapm:5.82, strDef:"58%", kd:0.72, tdLanded:0.82, tdAcc:"62%", tdDef:"76%", subAvg:0.21, finRate:"65%", streak:7, gym:"4oz. Fight Club" },
  // ── Featherweight (final) ──
  "Chase Hooper": { ht:"6'1\"", dob:"1999-09-13", reach:'75.5"', stance:"Southpaw", slpm:4.50, strAcc:"49%", sapm:3.02, strDef:"40%", kd:0.12, tdLanded:2.43, tdAcc:"32%", tdDef:"55%", subAvg:2.08, finRate:"75%", streak:0, gym:"Combat Sport & Fitness" },
+ "Mitch Ramirez": { ht:'5\'11"', dob:"1992-11-03", reach:'71"', stance:"Orthodox", slpm:3.51, strAcc:"44%", sapm:3.98, strDef:"37%", kd:0.00, tdLanded:0.59, tdAcc:"33%", tdDef:"25%", subAvg:0.00, finRate:"88%", streak:0, gym:"Syndicate MMA" },
  "Alex Caceres": { ht:"5'10\"", dob:"1988-06-20", reach:'73"', stance:"Southpaw", slpm:4.21, tdAcc:"68%", subAvg:0.7, strDef:"62%", kd:0.2, tdDef:"64%", finRate:"43%", streak:0, tdLanded:0.54, gym:"MMA Lab (2013–2019)" },
  "Jamall Emmers": { ht:"5'10\"", dob:"1989-07-24", reach:'74"', stance:"Orthodox", slpm:5.10, tdAcc:"30%", subAvg:0.3, strDef:"57%", kd:0.2, tdDef:"64%", finRate:"45%", streak:0, tdLanded:0.88, gym:"Pinnacle MMA" },
  "Jonathan Pearce": { ht:"6'0\"", dob:"1992-05-01", reach:'71"', stance:"Switch", slpm:5.12, tdAcc:"50%", subAvg:0.8, strDef:"54%", kd:0.3, tdDef:"55%", finRate:"57%", streak:2, tdLanded:5.02, gym:"Fight Ready MMA & Fitness (2019–present)" },
@@ -7801,6 +7803,13 @@
     { opponent: "Daniel Teymur", odds: -159 },
     { opponent: "Luis Gomez", odds: -105 },
     { opponent: "Canaan Kawaihae", odds: -127 }
+  ],
+  "Mitch Ramirez": [
+    { opponent: "Mike Davis", odds: 585 },
+    { opponent: "Thiago Moises", odds: 273 },
+    { opponent: "Aireon Tavarres", odds: -125 },
+    { opponent: "Carlos Prates", odds: 215 },
+    { opponent: "Jeremie Holloway", odds: -400 }
   ],
   "Ariane Lipski": [
     { opponent: "Jamey-Lyn Horth", odds: -600 },
@@ -19565,6 +19574,19 @@ const FIGHT_HISTORY = {
     { date: "Oct 7, 2017", opponent: "Edson Penado", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:45", event: "Rumble on the Ridge 40" }
   ],
 
+  "Mitch Ramirez": [
+    { date: "Jul 12, 2025", opponent: "Mike Davis", result: "L", method: "TKO (Flying knee and punches)", round: 2, time: "4:08", event: "UFC on ESPN: Lewis vs. Teixeira", org: "UFC" },
+    { date: "Mar 16, 2024", opponent: "Thiago Moises", result: "L", method: "TKO (Leg kicks)", round: 3, time: "0:15", event: "UFC Fight Night: Tuivasa vs. Tybura", org: "UFC" },
+    { date: "Dec 15, 2023", opponent: "Aireon Tavarres", result: "W", method: "TKO (Punches)", round: 1, time: "2:19", event: "LFA 173: Fernando vs. Bekoev", org: "LFA" },
+    { date: "Aug 29, 2023", opponent: "Carlos Prates", result: "L", method: "TKO (Punch)", round: 2, time: "1:14", event: "Dana White's Contender Series: Season 7, Week 4", org: "UFC" },
+    { date: "May 3, 2023", opponent: "Jeremie Holloway", result: "W", method: "TKO (Leg kick)", round: 2, time: "0:59", event: "XMMA 6: Bash at the Beach" },
+    { date: "Aug 12, 2022", opponent: "Majdeddine Ayadi", result: "W", method: "KO (Punches)", round: 1, time: "0:40", event: "Tuff-N-Uff 129" },
+    { date: "Oct 29, 2021", opponent: "Kani Correa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fierce FC 17: Siler vs. Zane" },
+    { date: "Jul 17, 2021", opponent: "Chris Sherley Rios", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:59", event: "Fierce FC: Fierce Challenger Series 1" },
+    { date: "Feb 27, 2021", opponent: "Trever Bradshaw", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:37", event: "Fierce FC 14: Will Power" },
+    { date: "Sep 6, 2019", opponent: "Michael Garcia", result: "W", method: "KO (Head kick)", round: 1, time: "0:40", event: "LFA 75: Neal vs. Cruz", org: "LFA" },
+    { date: "Mar 22, 2019", opponent: "Ryder Newman", result: "W", method: "KO (Punch)", round: 1, time: "2:01", event: "SteelFist Fight Night: March Madness" }
+  ],
 
   "Ariane Lipski": [
     { date: "Mar 28, 2026", opponent: "Sumiko Inaba", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Pittsburgh: Eblen vs. Battle", org: "PFL" },
@@ -27694,6 +27716,7 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu (promoted Mar 11, 2021)", detail: null },
     { icon: "🥇", title: "Pan American Jiu-Jitsu Championships — 2016 Irvine — Blue Belt Juvenile", detail: null },
   ],
+  "Mitch Ramirez": [],
   "Jai Herbert": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under Tom Caughey", detail: null },
   ],
