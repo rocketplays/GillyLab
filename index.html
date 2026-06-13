@@ -2799,7 +2799,7 @@
  { name: "Alex Caceres", division: "FW", rank: "NR", record: "23-15-0", initials: "ACR", country: "USA" },
  { name: "Jamall Emmers", division: "FW", rank: "NR", record: "22-8-0", initials: "JEM", country: "USA" },
  { name: "Jonathan Pearce", division: "FW", rank: "NR", record: "14-7-0", initials: "JPR", country: "UK" },
- { name: "Luke Riley", division: "FW", rank: "NR", record: "14-0-0", initials: "LRI", country: "UK" },
+ { name: "Luke Riley", division: "FW", rank: "NR", record: "13-0-0", initials: "LRI", country: "UK" },
  { name: "Maheshate", division: "FW", rank: "NR", record: "10-5-0", initials: "MHT", country: "China" },
  { name: "Daniel Zellhuber", division: "LW", rank: "NR", record: "15-4-0", initials: "DZL", country: "Mexico" },
  { name: "Khaos Williams", division: "WW", rank: "NR", record: "16-5-0", initials: "KWL", country: "USA" },
@@ -3417,7 +3417,7 @@
  "Miranda Maverick": { ht:"5'3\"", dob:"1997-07-01", reach:'65"', stance:"Southpaw", slpm:3.22, tdAcc:"40%", subAvg:0.3, strDef:"61%", kd:0.1, tdDef:"66%", finRate:"44%", streak:0, tdLanded:2.16, gym:"Team Elevation (2021–present)" },
  "Liana Jojua": { ht:"5'4\"", dob:"1995-03-22", reach:'62"', stance:"Orthodox", slpm:2.42, tdAcc:"66%", subAvg:1.2, strDef:"54%", kd:0.0, tdDef:"55%", finRate:"50%", streak:0, tdLanded:1.71, gym:"Syndicate MMA (2021–present)" },
  // ── Featherweight (more) ──
- "Luke Riley": { ht:"5'9\"", dob:"1999-06-30", reach:'69"', stance:"Orthodox", slpm:2.55, tdAcc:"0%", subAvg:0.0, strDef:"46%", kd:0.1, tdDef:"42%", finRate:"67%", streak:5, tdLanded:0.00 },
+ "Luke Riley": { ht:"5'9\"", dob:"1999-06-30", reach:'69"', stance:"Orthodox", slpm:5.56, strAcc:"57%", sapm:3.32, strDef:"65%", kd:0.73, tdLanded:0.00, tdAcc:"0%", tdDef:"38%", subAvg:0.0, finRate:"69%", streak:13, gym:"Next Generation MMA" },
  // ── Lightweight (more) ──
  "Chris Duncan": { ht:"5'10\"", dob:"1993-05-10", reach:'71"', stance:"Orthodox", slpm:5.02, tdAcc:"42%", subAvg:0.4, strDef:"51%", kd:0.3, tdDef:"50%", finRate:"60%", streak:2, tdLanded:3.27, gym:"American Top Team" },
  // ── Middleweight (more) ──
@@ -8626,9 +8626,19 @@
     { opponent: "Michał Oleksiejczuk", odds: -130 }
   ],
   "Luke Riley": [
-    { opponent: "Michael Aswell Jr.", odds: -350 },
-    { opponent: "Bogdan Grad", odds: -500 },
-    { opponent: "Kevin Vallejos", odds: -400 }
+    { opponent: "Michael Aswell Jr.", odds: -188 },
+    { opponent: "Bogdan Grad", odds: -250 },
+    { opponent: "Tariel Abbasov", odds: -1100 },
+    { opponent: "Alexandre Junior", odds: -2000 },
+    { opponent: "John de Jesus", odds: -220 },
+    { opponent: "Alexander Loof", odds: -335 },
+    { opponent: "Matheus Malta", odds: -549 },
+    { opponent: "Kallum Parker", odds: -550 },
+    { opponent: "Karol Kutyla", odds: -900 },
+    { opponent: "Cheriff Larossi", odds: -549 },
+    { opponent: "Jack Eglin", odds: -110 },
+    { opponent: "Yuki Angdembe", odds: -145 },
+    { opponent: "Kamil Wincenciak", odds: -165 }
   ],
   "Khalil Rountree Jr.": [
     { opponent: "Jiří Procházka", odds: 275 },
@@ -21829,17 +21839,16 @@ const FIGHT_HISTORY = {
   "Luke Riley": [
     { date: "Mar 21, 2026", opponent: "Michael Aswell Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy (London)" },
     { date: "Nov 22, 2025", opponent: "Bogdan Grad", result: "W", method: "KO (Punches)", round: 2, time: "0:30", event: "UFC Fight Night: Tsarukyan vs. Hooker" },
-    { date: "Mar 15, 2025", opponent: "Tariel Abbasov", result: "W", method: "TKO (Knees+Punches)", round: 2, time: "3:09", event: "Cage Warriors 185" },
+    { date: "Mar 15, 2025", opponent: "Tariel Abbasov", result: "W", method: "TKO (Knee and Punches)", round: 2, time: "3:09", event: "Cage Warriors 185" },
     { date: "Sep 21, 2024", opponent: "Alexandre Junior", result: "W", method: "KO (Punches)", round: 1, time: "2:05", event: "Cage Warriors 178" },
-    { date: "Aug 20, 2024", opponent: "Kevin Vallejos", result: "W", method: "KO (Punches)", round: 1, time: "1:32", event: "DWCS Season 8 Week 3 (contract)" },
     { date: "Mar 16, 2024", opponent: "John de Jesus", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 168" },
-    { date: "Sep 29, 2023", opponent: "Alexander Loof", result: "W", method: "KO (Punches)", round: 3, time: "0:58", event: "Cage Warriors 160" },
+    { date: "Sep 29, 2023", opponent: "Alexander Loof", result: "W", method: "TKO (Punches)", round: 3, time: "0:58", event: "Cage Warriors 160" },
     { date: "Jul 21, 2023", opponent: "Matheus Malta", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 157" },
     { date: "Apr 15, 2023", opponent: "Kallum Parker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 152" },
-    { date: "Nov 12, 2022", opponent: "Karol Kutyla", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "Cage Warriors 146" },
+    { date: "Nov 12, 2022", opponent: "Karol Kutyla", result: "W", method: "TKO (Punches)", round: 1, time: "2:01", event: "Cage Warriors 146" },
     { date: "Aug 13, 2022", opponent: "Cheriff Larossi", result: "W", method: "TKO (Punches)", round: 2, time: "4:18", event: "Cage Warriors 142" },
-    { date: "Apr 2, 2022", opponent: "Jack Eglin", result: "W", method: "KO (Punches)", round: 2, time: "4:44", event: "Cage Warriors 136" },
-    { date: "Dec 10, 2021", opponent: "Yuki Angdembe", result: "W", method: "TKO (Punches)", round: 1, time: "3:19", event: "Cage Warriors 131" },
+    { date: "Apr 2, 2022", opponent: "Jack Eglin", result: "W", method: "TKO (Punches)", round: 2, time: "4:44", event: "Cage Warriors 136" },
+    { date: "Dec 10, 2021", opponent: "Yuki Angdembe", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "3:19", event: "Cage Warriors 131" },
     { date: "Oct 1, 2021", opponent: "Kamil Wincenciak", result: "W", method: "TKO (Punches)", round: 1, time: "3:39", event: "Cage Warriors 128 (debut)" }
   ],
   "Jéssica Andrade": [
@@ -26761,6 +26770,13 @@ const ACCOLADES = {
   ],
   "Lerone Murphy": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Luke Riley": [
+    { icon: "🏆", title: "2023 Cage Warriors Fighter of the Year", detail: null },
+    { icon: "⭐", title: "2023 Cage Warriors Fight of the Year — vs. Alexander Loof (CW 160, Sep 2023)", detail: null },
+    { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "Amateur Muay Thai — won every available junior title up to age 15 (UK)", detail: null },
+    { icon: "🥊", title: "Amateur Boxing — multiple-time area champion; reached national finals", detail: null },
   ],
   "Yair Rodríguez": [
     { icon: "🥊", title: "Black belt in Taekwondo", detail: null },
