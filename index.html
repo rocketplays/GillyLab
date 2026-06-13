@@ -2378,7 +2378,7 @@
  { name: "Caio Borralho", division: "MW", rank: "#5", record: "18-2-0", initials: "CB", country: "Brazil" },
  { name: "Reinier de Ridder", division: "MW", rank: "#8", record: "21-4-0", initials: "RDR", country: "Netherlands" },
  { name: "Robert Whittaker", division: "MW", rank: "#10", record: "26-9-0", initials: "RW", country: "Australia" },
- { name: "Jared Cannonier", division: "MW", rank: "#11", record: "20-9-0", initials: "JCA2", country: "USA" },
+ { name: "Jared Cannonier", division: "MW", rank: "#11", record: "18-9-0", initials: "JCA2", country: "USA" },
  { name: "Roman Dolidze", division: "MW", rank: "#11", record: "15-5-0", initials: "RD", country: "Georgia" },
  { name: "Paulo Costa", division: "MW", rank: "#12", record: "17-5-0", initials: "PC", country: "Brazil" },
  { name: "Gregory Rodrigues", division: "MW", rank: "#12", record: "19-6-0", initials: "GRO", country: "Brazil" },
@@ -3066,7 +3066,7 @@
  "Stephen Thompson": { ht:"6'0\"", dob:"1983-02-11", reach:'75"', stance:"Orthodox", slpm:4.05, tdAcc:"35%", subAvg:0.0, strDef:"54%", kd:0.3, tdDef:"63%", finRate:"47%", streak:0, tdLanded:0.23, gym:"Serra-Longo Fight Team" },
  // ── Middleweight ──
  "Paulo Costa": { ht:"6'1\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:6.15, tdAcc:"56%", subAvg:0.0, strDef:"49%", kd:0.5, tdDef:"63%", finRate:"81%", streak:0, tdLanded:0.43, gym:"Fight Ready (2017–present)" },
- "Jared Cannonier": { ht:"5'11\"", dob:"1984-03-16", reach:'77"', stance:"Switch", slpm:4.42, tdAcc:"27%", subAvg:0.1, strDef:"56%", kd:0.6, tdDef:"67%", finRate:"56%", streak:0, tdLanded:0.54, gym:"MMA Lab (2017–present)" },
+ "Jared Cannonier": { ht:"5'11\"", dob:"1984-03-16", reach:'77.5"', stance:"Orthodox", slpm:4.42, strAcc:"50%", sapm:4.35, strDef:"56%", kd:0.38, tdLanded:0.54, tdAcc:"40%", tdDef:"65%", subAvg:0.00, finRate:"65%", streak:0, gym:"MMA Lab (2017–present)" },
  "Nassourdine Imavov": { ht:"6'3\"", dob:"1996-03-01", reach:'75"', stance:"Orthodox", slpm:4.28, tdAcc:"32%", subAvg:1.0, strDef:"58%", kd:0.3, tdDef:"81%", finRate:"47%", streak:0, tdLanded:0.74, gym:"Venum Training Camp" },
  "Brendan Allen": { ht:"6'2\"", dob:"1995-12-28", reach:'75"', stance:"Orthodox", slpm:3.59, tdAcc:"42%", subAvg:0.7, strDef:"47%", kd:0.1, tdDef:"56%", finRate:"66%", streak:2, tdLanded:1.56, gym:"VFS Academy (2025-present)" },
  "Anthony Hernandez": { ht:"6'0\"", dob:"1993-10-18", reach:'75"', stance:"Orthodox", slpm:4.59, tdAcc:"48%", subAvg:1.8, strDef:"49%", kd:0.0, tdDef:"68%", finRate:"73%", streak:5, tdLanded:6.46, gym:"Marinoble's Martial Arts" },
@@ -4665,19 +4665,26 @@
     { opponent: "Rob Wilkinson", odds: -900 }
   ],
   "Jared Cannonier": [
-    { opponent: "Caio Borralho", odds: 115 },
-    { opponent: "Nassourdine Imavov", odds: 182 },
-    { opponent: "Sean Strickland", odds: 230 },
-    { opponent: "Israel Adesanya", odds: 150 },
-    { opponent: "Kelvin Gastelum", odds: -200 },
-    { opponent: "Robert Whittaker", odds: 220 },
-    { opponent: "Anderson Silva", odds: -360 },
-    { opponent: "David Branch", odds: -310 },
-    { opponent: "Dominick Reyes", odds: -190 },
-    { opponent: "Nick Roehrick", odds: -700 },
-    { opponent: "Glover Teixeira", odds: 280 },
-    { opponent: "Jan Blachowicz", odds: 215 },
-    { opponent: "Shawn Jordan", odds: -400 }
+    { opponent: "Michael Page", odds: 176 },
+    { opponent: "Gregory Rodrigues", odds: 193 },
+    { opponent: "Caio Borralho", odds: 235 },
+    { opponent: "Nassourdine Imavov", odds: 105 },
+    { opponent: "Marvin Vettori", odds: 110 },
+    { opponent: "Sean Strickland", odds: -118 },
+    { opponent: "Israel Adesanya", odds: 408 },
+    { opponent: "Derek Brunson", odds: -165 },
+    { opponent: "Kelvin Gastelum", odds: -153 },
+    { opponent: "Robert Whittaker", odds: -123 },
+    { opponent: "Jack Hermansson", odds: 228 },
+    { opponent: "Anderson Silva", odds: -130 },
+    { opponent: "David Branch", odds: 258 },
+    { opponent: "Dominick Reyes", odds: 180 },
+    { opponent: "Jan Blachowicz", odds: -187 },
+    { opponent: "Nick Roehrick", odds: -340 },
+    { opponent: "Glover Teixeira", odds: 190 },
+    { opponent: "Ion Cutelaba", odds: 195 },
+    { opponent: "Cyril Asker", odds: -130 },
+    { opponent: "Shawn Jordan", odds: 168 }
   ],
   "Jack Della Maddalena": [
     { opponent: "Carlos Prates", odds: -275 },
@@ -13596,9 +13603,7 @@ const FIGHT_HISTORY = {
     { date: "Feb 13, 2013", opponent: "Joshua Ofiu", result: "W", method: "TKO (Punches)", round: 1, time: "2:56", event: "Alaska FC 97" },
     { date: "Oct 28, 2011", opponent: "Matt Herringshaw", result: "W", method: "TKO (Submission to punches)", round: 1, time: "0:29", event: "Alaska FC: Tribute to Veterans" },
     { date: "Oct 12, 2011", opponent: "Jason Coomes", result: "W", method: "Submission (Armbar)", round: 1, time: "0:46", event: "Alaska FC 85" },
-    { date: "Jun 19, 2011", opponent: "Alton Prince", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "Midnight Sun Mayhem 1: Final Word" },
-    { date: "Jun 4, 2011", opponent: "Josh Aynes", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "Alaska FC 83" },
-    { date: "Mar 12, 2011", opponent: "Isaac Taylor", result: "W", method: "TKO (Punches)", round: 2, time: "1:21", event: "Alaska FC 81" }
+    { date: "Jun 19, 2011", opponent: "Alton Prince", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "Midnight Sun Mayhem 1: Final Word" }
   ],
 
   "Ian Machado Garry": [
@@ -27146,7 +27151,13 @@ const ACCOLADES = {
     { icon: "🤼", title: "Australian national freestyle wrestling team", detail: null },
   ],
   "Jared Cannonier": [
+    { icon: "⭐", title: "UFC Performance of the Night — 4× (vs. Cyril Asker, Apr 2016; vs. David Branch, Nov 2018; vs. Jack Hermansson, Sep 2019; vs. Derek Brunson, Feb 2022)", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night — 4× (vs. Ion Cuțelaba, Dec 2016; vs. Marvin Vettori, Jun 2023; vs. Caio Borralho, Aug 2024; vs. Gregory Rodrigues, Feb 2025)", detail: null },
+    { icon: "🏆", title: "UFC Middleweight Championship challenger — UFC 276 vs. Israel Adesanya (Jul 2022)", detail: null },
+    { icon: "🏆", title: "AFC Heavyweight Championship — 1 reign (former)", detail: null },
+    { icon: "🏅", title: "KO victories in 3 UFC weight classes (Heavyweight, Light Heavyweight, Middleweight)", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "US Army veteran", detail: null },
   ],
   "Paulo Costa": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
