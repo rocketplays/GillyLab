@@ -2550,7 +2550,7 @@
  // ─── LIGHT HEAVYWEIGHT (extended) ───
  { name: "Devin Clark", division: "LHW", rank: "NR", record: "14-10-0", initials: "DCL2", country: "USA" },
  { name: "Lyoto Machida", division: "LHW", rank: "NR", record: "28-12-0", initials: "LMA", country: "Brazil" },
- { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-9-0", initials: "BRI", country: "Brazil" },
+ { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-10-0", initials: "BRI", country: "Brazil" },
  { name: "Tuco Tokkos", division: "LHW", rank: "NR", record: "11-6-0", initials: "TTK", country: "France" },
  { name: "Ivan Erslan", division: "LHW", rank: "NR", record: "14-6-0", initials: "IER", country: "Turkey" },
  { name: "Rodolfo Bellato", division: "LHW", rank: "NR", record: "12-3-1", initials: "RBE", country: "Brazil" },
@@ -3543,7 +3543,7 @@
  "Myktybek Orolbai": { ht:"5'10\"", dob:"1998-02-10", reach:'74"', stance:"Orthodox", slpm:3.24, tdAcc:"45%", subAvg:0.6, strDef:"50%", kd:0.1, tdDef:"40%", finRate:"60%", streak:0, tdLanded:5.48, gym:"Team Alpha Male" },
  // ── Middleweight (more) ──
  // ── Light Heavyweight (more) ──
- "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-09-08", reach:'81"', stance:"Orthodox", slpm:3.04, tdAcc:"38%", subAvg:0.5, strDef:"53%", kd:0.2, tdDef:"62%", finRate:"59%", streak:0, tdLanded:2.08 },
+ "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-08-09", reach:'81"', stance:"Orthodox", slpm:3.06, strAcc:"43%", sapm:4.00, strDef:"53%", kd:0.60, tdLanded:0.90, tdAcc:"43%", tdDef:"18%", subAvg:0.60, finRate:"94%", streak:0, gym:"Brazilian TKO" },
  "Bruno Lopes": { ht:"6'2\"", dob:"1993-04-24", reach:'74"', stance:"Orthodox", slpm:2.81, tdAcc:"33%", subAvg:0.0, strDef:"57%", kd:0.2, tdDef:"100%",finRate:"57%", streak:0, tdLanded:2.51 },
  "Julius Walker": { ht:"6'4\"", dob:"1999-07-16", reach:'78"', stance:"Orthodox", slpm:3.73, sapm:4.03, strAcc:"54%", tdAcc:"38%", subAvg:0.0, strDef:"43%", kd:0.41, tdDef:"100%", finRate:"86%", streak:0, tdLanded:4.09, gym:"Team Fusion" },
  "Zhang Mingyang": { ht:"6'2\"", dob:"1998-08-16", reach:'75"', stance:"Orthodox", slpm:7.44, tdAcc:"28%", subAvg:0.3, strDef:"42%", kd:0.7, tdDef:"67%", finRate:"79%", streak:0, tdLanded:0.97, gym:"Xtreme Couture Mixed Martial Arts" },
@@ -7918,13 +7918,15 @@
     { opponent: "Ryan Spann", odds: 215 }
   ],
   "Brendson Ribeiro": [
-    { opponent: "Azamat Murzakanov", odds: 350 },
-    { opponent: "Oumar Sy", odds: 215 },
-    { opponent: "Alonzo Menifield", odds: -175 },
-    { opponent: "Bogdan Guskov", odds: -350 },
-    { opponent: "Kennedy Nzechukwu", odds: 175 },
-    { opponent: "Ryan Spann", odds: -175 },
-    { opponent: "Philipe Lins", odds: -350 }
+    { opponent: "Abdulrakhman Yakhyaev", odds: 290 },
+    { opponent: "Oumar Sy", odds: 440 },
+    { opponent: "Azamat Murzakanov", odds: 500 },
+    { opponent: "Diyar Nurgozhay", odds: 325 },
+    { opponent: "Caio Machado", odds: 145 },
+    { opponent: "Magomed Gadzhiyasulov", odds: 275 },
+    { opponent: "Mingyang Zhang", odds: -110 },
+    { opponent: "Bruno Lopes", odds: 475 },
+    { opponent: "David Barkhudaryan", odds: 400 },
   ],
   "Diego Ferreira": [
     { opponent: "Drakkar Klose", odds: 200 },
@@ -19880,20 +19882,34 @@ const FIGHT_HISTORY = {
 
 
   "Brendson Ribeiro": [
-    { date: "Sep 6, 2025", opponent: "Oumar Sy", result: "L", method: "TKO (Punches)", round: 1, time: "4:42", event: "UFC Fight Night: Holloway vs. Poirier 3 (Paris)" },
-    { date: "Aug 16, 2025", opponent: "Azamat Murzakanov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 319: du Plessis vs. Chimaev" },
-    { date: "May 31, 2025", opponent: "Devin Clark", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:44", event: "UFC Fight Night: Blanchfield vs. Barber" },
-    { date: "Mar 22, 2025", opponent: "Alonzo Menifield", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Conor vs. Holloway" },
-    { date: "Feb 1, 2025", opponent: "Bogdan Guskov", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:05", event: "UFC 325: Lopes vs. Volkanovski 2" },
-    { date: "Sep 28, 2024", opponent: "Alonzo Menifield", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araujo 2" },
-    { date: "Sep 14, 2024", opponent: "Ryan Spann", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "Jun 15, 2024", opponent: "Jimmy Crute", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Burns vs. Brady" },
-    { date: "Mar 30, 2024", opponent: "Kennedy Nzechukwu", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Fiorot" },
-    { date: "Dec 9, 2023", opponent: "Julija Stoliarenko", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:00", event: "UFC Fight Night: Sandhagen vs. Song" },
-    { date: "Sep 2, 2023", opponent: "Cody Brundage", result: "W", method: "KO (Punches)", round: 1, time: "1:38", event: "UFC Fight Night: Strickland vs. Magomedov" },
-    { date: "Dec 10, 2022", opponent: "Philipe Lins", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:01", event: "UFC 282: Blachowicz vs. Ankalaev (debut)" },
-    { date: "Sep 17, 2022", opponent: "Daniel Vreeland", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:04", event: "DWCS Season 6 Week 4 (contract)" },
-    { date: "Jun 4, 2022", opponent: "Hani Yahia", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:39", event: "Eagle FC 48" }
+    { date: "Apr 4, 2026", opponent: "Abdulrakhman Yakhyaev", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:52", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Sep 6, 2025", opponent: "Oumar Sy", result: "L", method: "TKO (Elbows and Punches)", round: 1, time: "4:42", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
+    { date: "Jun 7, 2025", opponent: "Azamat Murzakanov", result: "L", method: "TKO (Submission to Punches)", round: 1, time: "3:25", event: "UFC 316: Dvalishvili vs. O'Malley 2", org: "UFC" },
+    { date: "Mar 15, 2025", opponent: "Diyar Nurgozhay", result: "W", method: "Submission (Kimura)", round: 2, time: "1:28", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
+    { date: "Nov 2, 2024", opponent: "Caio Machado", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Albazi", org: "UFC" },
+    { date: "Jun 22, 2024", opponent: "Magomed Gadzhiyasulov", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC on ABC: Whittaker vs. Aliskerov", org: "UFC" },
+    { date: "Feb 17, 2024", opponent: "Mingyang Zhang", result: "L", method: "KO (Punches)", round: 1, time: "1:41", event: "UFC 298: Volkanovski vs. Topuria", org: "UFC" },
+    { date: "Sep 5, 2023", opponent: "Bruno Lopes", result: "W", method: "KO (Punches)", round: 1, time: "3:47", event: "DWCS Season 7: Week 5", org: "DWCS" },
+    { date: "Dec 16, 2022", opponent: "Joao Paulo Fagundes", result: "W", method: "TKO (Punches)", round: 1, time: "4:35", event: "Shooto Brazil 114" },
+    { date: "Sep 3, 2022", opponent: "Gilmar Dutra Lima", result: "W", method: "TKO (Punches)", round: 1, time: "0:52", event: "Nacao Cyborg 13" },
+    { date: "Feb 23, 2022", opponent: "David Barkhudaryan", result: "L", method: "TKO (Punches)", round: 1, time: "1:07", event: "Fight Nights 109" },
+    { date: "Jan 23, 2022", opponent: "Marcio Breno Rodrigues Braga", result: "L", method: "KO (Punch)", round: 1, time: "3:00", event: "Big Shot Fight 2" },
+    { date: "Aug 1, 2021", opponent: "Leon Soares", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "4:58", event: "Future MMA: Road to Future 3" },
+    { date: "May 27, 2021", opponent: "Flavio Rodrigo Magon", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "2:24", event: "Nacao Cyborg 8" },
+    { date: "Aug 16, 2018", opponent: "Ledson Heider Batista", result: "W", method: "TKO (Punches)", round: 1, time: "1:33", event: "Sombra Fight Champions 8" },
+    { date: "Mar 10, 2018", opponent: "Denis Vygovsky", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "M-1 Challenge 89" },
+    { date: "Jan 25, 2018", opponent: "Matheus Correa", result: "NC", method: "NC (Illegal Kick to Downed Opponent)", round: 1, time: "3:27", event: "Revelation Fighting Championship 5" },
+    { date: "Dec 16, 2017", opponent: "Danilo Maikuara", result: "W", method: "TKO (Punches)", round: 1, time: "0:49", event: "Combate Para" },
+    { date: "May 13, 2017", opponent: "Oscar Bruno Araujo Alves", result: "W", method: "Technical Submission (Guillotine Choke)", round: 1, time: "2:18", event: "Sombra Fight Champions 4" },
+    { date: "Jul 9, 2016", opponent: "Marcio Alexandre Jr.", result: "L", method: "Submission (Brabo Choke)", round: 2, time: "1:28", event: "AFC 41" },
+    { date: "May 13, 2016", opponent: "Yuri Fraga", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:08", event: "Revelation Fighting Championship 4" },
+    { date: "Mar 12, 2016", opponent: "Junior Furtoso", result: "W", method: "TKO (Punches)", round: 1, time: "4:26", event: "Hombres de Honor 69" },
+    { date: "Jan 29, 2016", opponent: "Pedro Henrique Queiroz", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "0:25", event: "Revelation Fighting Championship 3" },
+    { date: "Dec 12, 2015", opponent: "Fausto de Souza", result: "W", method: "KO (Punch)", round: 2, time: "3:12", event: "Fusion Fight" },
+    { date: "Nov 13, 2015", opponent: "Antonio Arroyo", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:59", event: "Revelation Fighting Championship 2" },
+    { date: "Jul 23, 2015", opponent: "Diego Maia", result: "W", method: "KO (Head Kick)", round: 1, time: "0:37", event: "Hard Fight" },
+    { date: "Jul 15, 2015", opponent: "Kelvin Silva", result: "W", method: "Submission (Armbar)", round: 3, time: "3:56", event: "Salvaterra Marajo Fight 2" },
+    { date: "Jul 10, 2015", opponent: "Erison Fernandez", result: "W", method: "TKO (Punches)", round: 1, time: "2:50", event: "Fusao de Artes Marciais 4" },
   ],
   "Diego Ferreira": [
     { date: "Sep 13, 2025", opponent: "Alexander Hernandez", result: "L", method: "TKO (Punches)", round: 2, time: "3:46", event: "UFC Fight Night: Lopes vs. Silva", org: "UFC" },
@@ -26729,6 +26745,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Brendson Ribeiro": [
+    { icon: "🏆", title: "Shooto Brasil Light Heavyweight Championship (reign active at time of DWCS signing)", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series Season 7 contract winner — Sep 5, 2023 (KO of Bruno Lopes, R1 3:47)", detail: null },
+    { icon: "🥇", title: "2× Paraense Wrestling Champion", detail: null },
+  ],
   "Thomas Petersen": [
     { icon: "🏆", title: "LFA Heavyweight Championship — 1 reign (won Jul 30, 2021 vs. Vernon Lewis, LFA 113)", detail: null },
     { icon: "🎻", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
