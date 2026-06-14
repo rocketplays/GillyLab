@@ -2579,7 +2579,7 @@
  { name: "Louie Sutherland", division: "HW", rank: "NR", record: "10-4-0", initials: "LSU", country: "UK" },
  { name: "Allen Frye", division: "HW", rank: "NR", record: "10-3-0", initials: "AFR", country: "USA" },
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
- { name: "Thomas Petersen", division: "HW", rank: "NR", record: "10-4-0", initials: "TPE", country: "Denmark" },
+ { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
  { name: "Sean Sharaf", division: "HW", rank: "NR", record: "4-2-0", initials: "SSH", country: "USA" },
  { name: "Denzel Freeman", division: "HW", rank: "NR", record: "8-2-0", initials: "DFR", country: "USA" },
  // ─── FEATHERWEIGHT (extended) ───
@@ -3609,7 +3609,7 @@
  "Gauge Young": { ht:"5'9\"", dob:"2000-07-14", reach:'70"', stance:"Orthodox", slpm:5.71, tdAcc:"30%", subAvg:0.0, strDef:"48%", kd:0.3, tdDef:"71%", finRate:"62%", streak:0, tdLanded:1.00 },
  "Sam Patterson": { ht:"6'3\"", dob:"1996-04-30", reach:'78"', stance:"Orthodox", slpm:3.89, tdAcc:"100%",subAvg:2.8, strDef:"49%", kd:0.2, tdDef:"33%", finRate:"67%", streak:0, tdLanded:1.39 },
  "Saygid Izagakhmaev": { ht:"6'0\"", dob:"1994-09-03", reach:'74"', stance:"Orthodox", slpm:1.33, tdAcc:"40%", subAvg:0.0, strDef:"58%", kd:0.1, tdDef:"100%",finRate:"73%", streak:0, tdLanded:4.00 },
- "Thomas Petersen": { ht:"6'1\"", dob:"1995-03-30", reach:'74"', stance:"Southpaw", slpm:3.38, tdAcc:"50%", subAvg:0.5, strDef:"55%", kd:0.2, tdDef:"87%", finRate:"70%", streak:0, tdLanded:3.71 },
+ "Thomas Petersen": { ht:"6'1\"", dob:"1995-03-30", reach:'74"', stance:"Southpaw", slpm:3.38, strAcc:"59%", sapm:2.95, strDef:"56%", kd:0.00, tdLanded:3.71, tdAcc:"50%", tdDef:"88%", subAvg:0.46, finRate:"73%", streak:1, gym:"The Striking Institute" },
  "Iwo Baraniewski": { ht:"6'0\"", dob:"1998-11-20", reach:'73"', stance:"Orthodox", slpm:14.31,tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:1.0, tdDef:"100%",finRate:"100%",streak:0, tdLanded:0.00, gym:"Aligatores Fight Club" },
  "Nurullo Aliev": { ht:"5'10\"", dob:"2000-12-08", reach:'72"', stance:"Orthodox", slpm:2.72, tdAcc:"43%", subAvg:0.5, strDef:"58%", kd:0.1, tdDef:"80%", finRate:"73%", streak:0, tdLanded:2.12 },
  "Murtazali Magomedov": { ht:"5'9\"", dob:"1999-08-26", reach:'70.5"', stance:"Orthodox", slpm:5.57, strAcc:"41%", sapm:1.86, strDef:"84%", kd:9.28, tdLanded:0.00, tdAcc:"0%", tdDef:"0%", subAvg:0.00, finRate:"100%", streak:10 },
@@ -9892,10 +9892,19 @@
     { opponent: "Matthew Semelsberger", odds: -300 }
   ],
   "Thomas Petersen": [
-    { opponent: "Vitor Petrino", odds: 300 },
-    { opponent: "Da Woon Jung", odds: -350 },
-    { opponent: "Marcin Prachnio", odds: -250 },
-    { opponent: "Bogdan Guskov", odds: 225 }
+    { opponent: "Guilherme Pat", odds: -115 },
+    { opponent: "Vitor Petrino", odds: 248 },
+    { opponent: "Don'Tale Mayes", odds: -308 },
+    { opponent: "Shamil Gaziev", odds: 265 },
+    { opponent: "Mohammed Usman", odds: -105 },
+    { opponent: "Jamal Pogues", odds: -175 },
+    { opponent: "Chandler Cole", odds: -435 },
+    { opponent: "Richard Foster", odds: -1850 },
+    { opponent: "Kory Moegenburg", odds: -1353 },
+    { opponent: "Waldo Cortes-Acosta", odds: -262 },
+    { opponent: "Vernon Lewis", odds: -245 },
+    { opponent: "Odell Pantin", odds: -1200 },
+    { opponent: "Richard Luis", odds: -882 }
   ],
   "Nursulton Ruziboev": [
     { opponent: "Andrey Pulyaev", odds: 0 },
@@ -25143,15 +25152,21 @@ const FIGHT_HISTORY = {
 
 
   "Thomas Petersen": [
-    { date: "Oct 11, 2025", opponent: "Vitor Petrino", result: "L", method: "TKO (Punches)", round: 1, time: "1:13", event: "UFC Fight Night: Oliveira vs. Gamrot" },
-    { date: "May 3, 2025", opponent: "Da Woon Jung", result: "W", method: "KO (Punches)", round: 1, time: "0:35", event: "UFC Fight Night: Sandhagen vs. Figueiredo" },
-    { date: "Dec 7, 2024", opponent: "Marcin Prachnio", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 310: Pantoja vs. Asakura" },
-    { date: "Jun 1, 2024", opponent: "Michał Oleksiejczuk", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 302: Makhachev vs. Poirier" },
-    { date: "Feb 3, 2024", opponent: "Michal Oleksiejczuk", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Imavov" },
-    { date: "Oct 7, 2023", opponent: "Bogdan Guskov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dawson vs. Green" },
-    { date: "Aug 20, 2022", opponent: "Tim Wilde", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 143" },
-    { date: "May 14, 2022", opponent: "Ben Harker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 139" },
-    { date: "Jan 8, 2022", opponent: "Dean Hickey", result: "W", method: "TKO (Punches)", round: 1, time: "2:54", event: "Cage Warriors 135 (debut)" }
+    { date: "Apr 4, 2026", opponent: "Guilherme Pat", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC Vegas 115", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Vitor Petrino", result: "L", method: "KO (Punches)", round: 3, time: "0:26", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "May 3, 2025", opponent: "Don'Tale Mayes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Sandhagen vs. Figueiredo", org: "UFC" },
+    { date: "Feb 1, 2025", opponent: "Shamil Gaziev", result: "L", method: "TKO (Punch)", round: 1, time: "3:12", event: "UFC Fight Night: Adesanya vs. Imavov", org: "UFC" },
+    { date: "Jul 20, 2024", opponent: "Mohammed Usman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Lemos vs. Jandiroba", org: "UFC" },
+    { date: "Feb 3, 2024", opponent: "Jamal Pogues", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Imavov", org: "UFC" },
+    { date: "Aug 29, 2023", opponent: "Chandler Cole", result: "W", method: "Submission (Keylock)", round: 2, time: "1:08", event: "DWCS Season 7, Week 4", org: "DWCS" },
+    { date: "Jan 13, 2023", opponent: "Richard Foster", result: "W", method: "KO (Punches)", round: 1, time: "3:48", event: "LFA 150", org: "LFA" },
+    { date: "Sep 16, 2022", opponent: "Kory Moegenburg", result: "W", method: "TKO (Punches)", round: 2, time: "3:14", event: "LFA 142", org: "LFA" },
+    { date: "Apr 15, 2022", opponent: "Waldo Cortes-Acosta", result: "L", method: "TKO (Punches)", round: 3, time: "4:53", event: "LFA 129", org: "LFA" },
+    { date: "Jul 30, 2021", opponent: "Vernon Lewis", result: "W", method: "TKO (Punches)", round: 1, time: "1:02", event: "LFA 113", org: "LFA" },
+    { date: "Apr 16, 2021", opponent: "Odell Pantin", result: "W", method: "TKO (Punches)", round: 1, time: "3:33", event: "LFA 104", org: "LFA" },
+    { date: "Jan 15, 2021", opponent: "Richard Luis", result: "W", method: "KO (Punch)", round: 1, time: "0:19", event: "LFA 97", org: "LFA" },
+    { date: "Feb 21, 2020", opponent: "Brian Peterson", result: "W", method: "TKO (Punches)", round: 1, time: "1:52", event: "LFA 82", org: "LFA" },
+    { date: "Dec 21, 2019", opponent: "B.J. Lacy", result: "W", method: "TKO (Punches)", round: 1, time: "2:12", event: "Mecca 16", org: "" }
   ],
   "Nursulton Ruziboev": [
     { date: "May 17, 2025", opponent: "Dustin Stoltzfus", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Morales", org: "UFC" },
@@ -26699,6 +26714,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Thomas Petersen": [
+    { icon: "🏆", title: "LFA Heavyweight Championship — 1 reign (won Jul 30, 2021 vs. Vernon Lewis, LFA 113)", detail: null },
+    { icon: "🎻", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "Two-time Minnesota state wrestling champion", detail: null },
+    { icon: "🤼", title: "NJCAA national wrestling champion", detail: null },
+  ],
   "Valter Walker": [
     { icon: "🏆", title: "Titan FC Heavyweight Championship — 1 reign (won Jun 2, 2023 vs. Alex Nicholson, Titan FC 82)", detail: null },
     { icon: "🏆", title: "MMA Series Heavyweight Championship — 1 reign (won May 3, 2023 vs. Cássio Barbosa de Oliveira, MMA Series 67)", detail: null },
