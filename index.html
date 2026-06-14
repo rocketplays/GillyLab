@@ -31005,6 +31005,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     if (!upcoming.length) return;
 
+    // Guard: skip API events whose UFC number already has results in FIGHT_HISTORY.
+    // Catches wrong-year API dates (e.g. "UFC 317" stamped 2026 when it happened in 2025).
+    // Numbered UFC events only — Fight Night events fall through to the date filter above.
+    const _ufcNumRe = /\bUFC\s+(\d+)\b/i;
+    const _completedNums = new Set();
+    if (typeof FIGHT_HISTORY !== 'undefined') {
+      for (const fights of Object.values(FIGHT_HISTORY)) {
+        for (const f of fights) {
+          const m = _ufcNumRe.exec(f.event || '');
+          if (m) _completedNums.add(parseInt(m[1], 10));
+        }
+      }
+    }
+    upcoming = upcoming.filter(raw => {
+      const title = raw.title || raw.shortTitle || '';
+      const m = _ufcNumRe.exec(title);
+      return !(m && _completedNums.has(parseInt(m[1], 10)));
+    });
+    if (!upcoming.length) return;
+
     const eventsForCarousel = [];
     const cards = upcoming.map(raw => {
       const evt = parseApiEvent(raw);
