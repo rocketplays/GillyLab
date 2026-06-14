@@ -1468,6 +1468,15 @@
 
     .rank-name:hover { color: var(--accent); }
 
+    .rank-name-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .rank-name-wrap .rank-name { flex: 0 0 auto; }
+
     .rank-record {
       font-size: 0.82rem;
       color: var(--muted);
@@ -31436,8 +31445,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return '<div class="' + rowClass + '">' +
         '<span class="rank-num">' + numLabel + '</span>' +
         '<div class="rank-avatar" data-fighter="' + nameAttr + '"></div>' +
-        '<span class="rank-name" onclick="' + onclick + '">' + e.fighterName + '</span>' +
-        movBadge +
+        '<span class="rank-name-wrap"><span class="rank-name" onclick="' + onclick + '">' + e.fighterName + '</span>' + movBadge + '</span>' +
         '<span class="rank-record">' + record + '</span>' +
         tagSpan +
       '</div>';
