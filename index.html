@@ -2564,6 +2564,7 @@
  { name: "Billy Elekana", division: "LHW", rank: "NR", record: "10-2-0", initials: "BEK", country: "New Zealand" },
  { name: "Julius Walker", division: "LHW", rank: "NR", record: "7-2-0", initials: "JUW", country: "USA" },
  { name: "Kevin Christian", division: "LHW", rank: "NR", record: "9-3-0", initials: "KCH2", country: "USA" },
+ { name: "Magomed Tuchalov", division: "LHW", rank: "NR", record: "6-0-0", initials: "MTU", country: "Russia" },
  // ─── HEAVYWEIGHT (extended) ───
  { name: "Tai Tuivasa", division: "HW", rank: "NR", record: "15-11-0", initials: "TTU", country: "Australia" },
  { name: "Marcos Rogerio de Lima", division: "HW", rank: "NR", record: "25-11-1", initials: "MRL", country: "Brazil" },
@@ -3727,6 +3728,7 @@
  "Jesus Aguilar": { ht:"5'8\"", dob:"1996-01-01", reach:'70"', stance:"Orthodox", slpm:3.80, tdAcc:"38%", subAvg:0.4, strDef:"50%", kd:0.2, tdDef:"63%", finRate:"60%", streak:0, tdLanded:1.20 },
  "Erik Shelton": { ht:"5'6\"", dob:"1991-02-02", reach:'68"', stance:"Orthodox", slpm:2.57, tdAcc:"42%", subAvg:0.4, strDef:"63%", kd:0.1, tdDef:"70%", finRate:"58%", streak:0, tdLanded:1.36 },
  "Abdulrakhman Yakhyaev": { ht:"6'2\"", dob:"2001-01-03", reach:'78"', stance:"Orthodox", slpm:7.40, strAcc:"67%", sapm:2.30, strDef:"52%", kd:7.66, tdLanded:11.49, tdAcc:"75%", tdDef:"65%", subAvg:7.66, finRate:"89%", streak:9, gym:"Nuremberg MMA" },
+ "Magomed Tuchalov": { ht:'6\'5"', dob:"1999-12-30", finRate:"100%", streak:6, gym:"Dagestan Fighter" },
  "Adrián Luna Martinetti":{ ht:"5'7\"", dob:"1996-01-01", reach:'69"', stance:"Orthodox", slpm:3.80, tdAcc:"38%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"62%", finRate:"60%", streak:0, tdLanded:1.30 },
  "Imanol Rodriguez": { ht:"5'8\"", dob:"2000-01-01", reach:'70"', stance:"Orthodox", slpm:4.20, tdAcc:"35%", subAvg:0.4, strDef:"55%", kd:0.3, tdDef:"65%", finRate:"71%", streak:0, tdLanded:1.40 },
  // ── True final 9 ──
@@ -9773,6 +9775,11 @@
   "Abdulrakhman Yakhyaev": [
     { opponent: "Julius Walker", odds: 0 },
     { opponent: "Brendson Ribeiro", odds: -410 }
+  ],
+  "Magomed Tuchalov": [
+    { opponent: "Caio Machado", odds: -230 },
+    { opponent: "Siyaku Dumisa Nomvemve", odds: -2500 },
+    { opponent: "Tursunbek Sodikov", odds: -3333 },
   ],
 
   "Baisangur Susurkaev": [
@@ -24786,6 +24793,14 @@ const FIGHT_HISTORY = {
 
 
 
+  "Magomed Tuchalov": [
+    { date: "Mar 28, 2026", opponent: "Caio Machado", result: "W", method: "KO (Punch)", round: 1, time: "1:59", event: "UAE Warriors 69" },
+    { date: "Jan 31, 2026", opponent: "Siyaku Dumisa Nomvemve", result: "W", method: "TKO (Elbows)", round: 2, time: "0:43", event: "UAE Warriors 67" },
+    { date: "Sep 10, 2025", opponent: "Khabib Gaziev", result: "W", method: "KO (Flying Knee)", round: 2, time: "3:46", event: "UAE Warriors 63" },
+    { date: "Jun 13, 2025", opponent: "Tursunbek Sodikov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:36", event: "UAE Warriors 60" },
+    { date: "Aug 4, 2024", opponent: "Shamil Abdulmuslimov", result: "W", method: "TKO (Punches)", round: 1, time: "3:21", event: "Fight Nights - RDD Series 1" },
+    { date: "Aug 27, 2023", opponent: "Zhakhongir Khakimzhonov", result: "W", method: "TKO (Punches)", round: 1, time: "3:04", event: "Hardcore MMA: VK Exclusive Card" },
+  ],
   "Abdulrakhman Yakhyaev": [
     { date: "Jun 27, 2026", opponent: "Julius Walker", result: "–", method: "Upcoming", round: 0, time: "", event: "UFC Fight Night: Baku" },
     { date: "Apr 4, 2026", opponent: "Brendson Ribeiro", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:52", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
@@ -27358,6 +27373,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "KhanFight Light Heavyweight Champion (2023)", detail: null },
     { icon: "🥇", title: "Master of Sports in Combat Sambo", detail: null },
     { icon: "🥇", title: "Master of Sports in MMA", detail: null }
+  ],
+  "Magomed Tuchalov": [
+    { icon: "🏆", title: "UAE Warriors Light Heavyweight Championship — 2025–26 (won at UAE Warriors 60; 2 defenses)", detail: null },
+    { icon: "🥋", title: "Graduate of Kstovo Olympic Reserve School of Sambo", detail: null },
+    { icon: "🥇", title: "IMMAF Junior World Championship — Gold — 2019", detail: null },
+    { icon: "🥇", title: "Russian Junior MMA Championships — 2019", detail: null },
+    { icon: "🥇", title: "Commonwealth Cup — Amateur", detail: null },
   ],
   "Abus Magomedov": [
     { icon: "🥋", title: "Black belt in Luta Livre", detail: null },
