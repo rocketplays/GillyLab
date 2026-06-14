@@ -2712,6 +2712,7 @@
  { name: "Elizeu Zaleski dos Santos", division: "WW", rank: "NR", record: "26-10-1", initials: "EZS", country: "Brazil" },
  { name: "Niko Price", division: "WW", rank: "NR", record: "16-11-0", initials: "NPR", country: "USA" },
  { name: "Gauge Young", division: "WW", rank: "NR", record: "9-4-0", initials: "GYO", country: "USA" },
+ { name: "Islam Dulatov", division: "WW", rank: "NR", record: "12-1-0", initials: "IDU", country: "Russia" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "20-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -3257,6 +3258,7 @@
  "Daniel Rodriguez": { ht:"6'1\"", dob:"1986-12-31", reach:'74"', stance:"Southpaw", slpm:7.20, tdAcc:"50%", subAvg:0.2, strDef:"57%", kd:0.3, tdDef:"82%", finRate:"55%", streak:0, tdLanded:0.51, gym:"Syndicate MMA (2021–present)" },
  "Uroš Medić": { ht:"6'1\"", dob:"1993-04-25", reach:'71"', stance:"Southpaw", slpm:5.53, tdAcc:"50%", subAvg:0.0, strDef:"56%", kd:0.5, tdDef:"55%", finRate:"67%", streak:5, tdLanded:0.35, gym:"Kings MMA" },
  "Alex Morono": { ht:"5'11\"", dob:"1990-08-16", reach:'72"', stance:"Orthodox", slpm:4.9, tdAcc:"29%", subAvg:0.5, strDef:"55%", kd:0.3, tdDef:"58%", finRate:"50%", streak:0, tdLanded:0.32, gym:"Fortis MMA (2018–present)" },
+ "Islam Dulatov": { ht:"6'3\"", dob:"1998-08-02", reach:'75"', stance:"Orthodox", slpm:8.78, strAcc:"55%", sapm:4.24, strDef:"50%", kd:4.39, tdLanded:2.20, tdAcc:"100%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:12, gym:"Triple One Gym Düsseldorf" },
  "Themba Gorimbo": { ht:"6'1\"", dob:"1991-01-23", reach:'77"', stance:"Orthodox", slpm:2.72, tdAcc:"65%", subAvg:0.8, strDef:"51%", kd:0.1, tdDef:"72%", finRate:"64%", streak:0, tdLanded:5.07, gym:"MMA Masters" },
  "Elizeu Zaleski dos Santos": { ht:"5'11\"", dob:"1986-12-11", reach:'73"', stance:"Orthodox", slpm:4.16, tdAcc:"20%", subAvg:0.3, strDef:"55%", kd:0.4, tdDef:"71%", finRate:"60%", streak:0, tdLanded:0.79, gym:"CM System" },
  "Punahele Soriano": { ht:"5'11\"", dob:"1992-11-22", reach:'72"', stance:"Southpaw", slpm:4.66, tdAcc:"48%", subAvg:0.1, strDef:"47%", kd:0.3, tdDef:"40%", finRate:"58%", streak:0, tdLanded:1.83, gym:"Xtreme Couture" },
@@ -9961,6 +9963,11 @@
     { opponent: "Abubakar Nurmagomedov", odds: -250 },
     { opponent: "Elizeu Zaleski dos Santos", odds: -300 },
     { opponent: "Li Jingliang", odds: -400 }
+  ],
+  "Islam Dulatov": [
+    { opponent: "Adam Fugitt", odds: -510 },
+    { opponent: "Vanilton Antunes", odds: -833 },
+    { opponent: "Ioannis Palaiologos", odds: -500 },
   ],
   "Carlos Leal": [
     { opponent: "Jonathan Micallef", odds: 175 },
@@ -25406,6 +25413,22 @@ const FIGHT_HISTORY = {
     { opponent: "Aleksandr Svirid", result: "W", method: "TKO (Punches)", event: "2" }
   ],
 
+  "Islam Dulatov": [
+    { date: "Jul 19, 2025", opponent: "Adam Fugitt", result: "W", method: "KO (Punches)", round: 1, time: "4:06", event: "UFC 318", org: "UFC" },
+    { date: "Oct 8, 2024", opponent: "Vanilton Antunes", result: "W", method: "KO (Elbow)", round: 1, time: "2:44", event: "DWCS Season 8 Week 9", org: "DWCS" },
+    { date: "Feb 10, 2024", opponent: "Ioannis Palaiologos", result: "W", method: "TKO (Knee to the body)", round: 1, time: "4:59", event: "Oktagon 53" },
+    { date: "Oct 7, 2023", opponent: "Will Chope", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "Sparta CF 3" },
+    { date: "Aug 6, 2022", opponent: "Patrick Spirk", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "0:48", event: "Sparta CF 2" },
+    { date: "Apr 2, 2022", opponent: "Kleverson Cruz da Silva", result: "W", method: "TKO (Punches)", round: 1, time: "2:48", event: "Brave CF 61" },
+    { date: "Jun 19, 2021", opponent: "Michael Rirsch", result: "W", method: "Submission (Brabo choke)", round: 1, time: "0:46", event: "National FC 8" },
+    { date: "Jun 19, 2021", opponent: "Giorgi Kankava", result: "W", method: "KO (Punches)", round: 2, time: "N/A", event: "GMC Fight Night 8" },
+    { date: "May 22, 2021", opponent: "Ibrahim Celik", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "German MMA Championship 25" },
+    { date: "Mar 20, 2021", opponent: "Laith Najjar", result: "W", method: "TKO (Punches)", round: 1, time: "0:44", event: "GMC Fight Night 6" },
+    { date: "Feb 29, 2020", opponent: "Vladan Maksic", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:53", event: "Elite MMA Championship 4" },
+    { date: "Oct 26, 2019", opponent: "Kolja Predojevic", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:34", event: "National FC 1" },
+    { date: "Sep 7, 2019", opponent: "Gjoni Palokaj", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "German MMA Championship 21" },
+  ],
+
 
 
 
@@ -28159,6 +28182,13 @@ const ACCOLADES = {
   ],
   "Rinat Fakhretdinov": [
     { icon: "🤼", title: "Master of Sport in Combat Sambo", detail: null },
+  ],
+  "Islam Dulatov": [
+    { icon: "🏆", title: "NFC Lightweight Championship — former champion (National Fighting Championship)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night — vs. Adam Fugitt (UFC 318, Jul 19, 2025)", detail: null },
+    { icon: "🥊", title: "Amateur German MMA Champion; #1-ranked amateur in Europe in 2 weight divisions", detail: null },
+    { icon: "🥇", title: "3× Amateur National Boxing Champion", detail: null },
+    { icon: "🥋", title: "BJJ Blue Belt", detail: null },
   ],
   "Chidi Njokuani": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
