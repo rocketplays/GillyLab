@@ -3193,7 +3193,7 @@
  "Khalil Rountree Jr.": { ht:'6\'1"', dob:"1990-02-06", reach:'76.5"', stance:"Southpaw", slpm:3.88, strAcc:"41%", sapm:4.33, strDef:"50%", kd:1.20, tdLanded:0.00, tdAcc:"0%", tdDef:"59%", subAvg:0.09, finRate:"64%", streak:0, gym:"Syndicate MMA" },
  "Aleksandar Rakić": { ht:"6'4\"", dob:"1992-02-06", reach:'78"', stance:"Orthodox", slpm:4.13, tdAcc:"21%", subAvg:0.1, strDef:"51%", kd:0.5, tdDef:"85%", finRate:"71%", streak:0, tdLanded:0.64, gym:"American Top Team" },
  "Bogdan Guskov": { ht:"6'3\"", dob:"1992-09-12", reach:'76"', stance:"Orthodox", slpm:4.57, tdAcc:"0%", subAvg:0.7, strDef:"44%", kd:0.5, tdDef:"57%", finRate:"72%", streak:3, tdLanded:0.00, gym:"American Top Team" },
- "Dustin Jacoby": { ht:"6'3\"", dob:"1988-04-04", reach:'76"', stance:"Orthodox", slpm:5.37, tdAcc:"25%", subAvg:0.0, strDef:"57%", kd:0.5, tdDef:"62%", finRate:"55%", streak:0, tdLanded:0.33, gym:"Factory X Muay Thai (2015–present)" },
+ "Dustin Jacoby": { ht:"6'3\"", dob:"1988-04-04", reach:'76"', stance:"Orthodox", slpm:5.40, strAcc:"48%", sapm:3.92, strDef:"58%", kd:0.63, tdLanded:0.32, tdAcc:"25%", tdDef:"62%", subAvg:0.0, finRate:"73%", streak:3, gym:"Factory X Muay Thai (2015–present)" },
  // ── Welterweight (additional) ──
  "Kevin Holland": { ht:"6'3\"", dob:"1992-11-05", reach:'81"', stance:"Orthodox", slpm:4.24, strAcc:"50%", sapm:3.21, strDef:"50%", kd:0.32, tdLanded:0.79, tdAcc:"37%", tdDef:"58%", subAvg:0.60, finRate:"79%", streak:1, gym:"Squabble MMA" },
  "Rinat Fakhretdinov": { ht:"6'0\"", dob:"1991-09-28", reach:'74"', stance:"Orthodox", slpm:5.03, tdAcc:"34%", subAvg:0.3, strDef:"54%", kd:0.3, tdDef:"91%", finRate:"58%", streak:0, tdLanded:3.91, gym:"Gold Star Fit" },
@@ -7345,17 +7345,26 @@
     { opponent: "Misha Cirkunov", odds: -300 }
   ],
   "Dustin Jacoby": [
-    { opponent: "Julius Walker", odds: -170 },
-    { opponent: "Bruno Lopes", odds: -800 },
-    { opponent: "Vitor Petrino", odds: -350 },
-    { opponent: "Dominick Reyes", odds: 350 },
-    { opponent: "Alonzo Menifield", odds: 175 },
-    { opponent: "Kennedy Nzechukwu", odds: -400 },
-    { opponent: "Azamat Murzakanov", odds: 225 },
-    { opponent: "Khalil Rountree Jr.", odds: 200 },
-    { opponent: "Da Woon Jung", odds: -250 },
-    { opponent: "Michal Oleksiejczuk", odds: -200 },
-    { opponent: "Ion Cutelaba", odds: -130 }
+    { opponent: "Julius Walker", odds: -165 },
+    { opponent: "Bruno Lopes", odds: -190 },
+    { opponent: "Vitor Petrino", odds: 260 },
+    { opponent: "Dominick Reyes", odds: -235 },
+    { opponent: "Alonzo Menifield", odds: -280 },
+    { opponent: "Kennedy Nzechukwu", odds: 137 },
+    { opponent: "Azamat Murzakanov", odds: -155 },
+    { opponent: "Khalil Rountree Jr.", odds: -180 },
+    { opponent: "Jung Da-un", odds: 110 },
+    { opponent: "Michał Oleksiejczuk", odds: -210 },
+    { opponent: "John Allan", odds: -385 },
+    { opponent: "Darren Stewart", odds: -190 },
+    { opponent: "Ion Cuțelaba", odds: 110 },
+    { opponent: "Maxim Grishin", odds: -165 },
+    { opponent: "Justin Ledet", odds: -345 },
+    { opponent: "Ty Flores", odds: -270 },
+    { opponent: "Muhammed Lawal", odds: 440 },
+    { opponent: "David Branch", odds: 230 },
+    { opponent: "Chris Camozzi", odds: 135 },
+    { opponent: "Clifford Starks", odds: -120 }
   ],
   "Jimmy Crute": [
     { opponent: "Volkan Oezdemir", odds: 265 },
@@ -26822,6 +26831,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Dustin Jacoby": [
+    { icon: "🏆", title: "CFFC Middleweight Championship — 1 reign (won vs. Tim Williams, Cage Fury FC 16, Aug 24, 2012, R1 TKO doctor stoppage)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night × 3 — vs. Jung Da-un (Jul 16, 2022, KO R1), Kennedy Nzechukwu (Aug 5, 2023, TKO R1), Vitor Petrino (Dec 14, 2024, KO R3)", detail: null },
+    { icon: "🏅", title: "Tied 3rd most KOs in UFC Light Heavyweight division history (7, tied with Khalil Rountree Jr.) — as of Feb 2026", detail: null },
+    { icon: "🥊", title: "GLORY Kickboxing Middleweight Contender — ranked #2 in world (Combat Press, Nov 2018); 4× kickboxing tournament champion (Road to GLORY USA 2013; GLORY 23 Qualification 2015; GLORY 27 Contender 2016; no BJJ rank on record)", detail: null },
+  ],
   "Uran Satybaldiev": [
     { icon: "🏆", title: "LFA Light Heavyweight Championship — 1 reign (won Mar 8, 2024 vs. Bruno Assis, LFA 178, R4 TKO; defended Mar 6, 2025 vs. Leon Soares, LFA 203, R3 Kimura)", detail: null },
     { icon: "🏆", title: "Open FC (Open Fighting Championship) Light Heavyweight Championship — 1 reign (won Jul 3, 2022 vs. Vladimir Seliverstov, OFC 20, Split Decision)", detail: null },
