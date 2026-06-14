@@ -2713,6 +2713,7 @@
  { name: "Niko Price", division: "WW", rank: "NR", record: "16-11-0", initials: "NPR", country: "USA" },
  { name: "Gauge Young", division: "WW", rank: "NR", record: "9-4-0", initials: "GYO", country: "USA" },
  { name: "Islam Dulatov", division: "WW", rank: "NR", record: "12-1-0", initials: "IDU", country: "Russia" },
+ { name: "Wellington Turman", division: "WW", rank: "NR", record: "18-8-0", initials: "WTU", country: "Brazil" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "20-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -3259,6 +3260,7 @@
  "Uroš Medić": { ht:"6'1\"", dob:"1993-04-25", reach:'71"', stance:"Southpaw", slpm:5.53, tdAcc:"50%", subAvg:0.0, strDef:"56%", kd:0.5, tdDef:"55%", finRate:"67%", streak:5, tdLanded:0.35, gym:"Kings MMA" },
  "Alex Morono": { ht:"5'11\"", dob:"1990-08-16", reach:'72"', stance:"Orthodox", slpm:4.9, tdAcc:"29%", subAvg:0.5, strDef:"55%", kd:0.3, tdDef:"58%", finRate:"50%", streak:0, tdLanded:0.32, gym:"Fortis MMA (2018–present)" },
  "Islam Dulatov": { ht:"6'3\"", dob:"1998-08-02", reach:'75"', stance:"Orthodox", slpm:8.78, strAcc:"55%", sapm:4.24, strDef:"50%", kd:4.39, tdLanded:2.20, tdAcc:"100%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:12, gym:"Triple One Gym Düsseldorf" },
+ "Wellington Turman": { ht:'6\'0"', dob:"1996-07-22", reach:'72"', stance:"Orthodox", slpm:3.23, strAcc:"51%", sapm:4.17, strDef:"45%", kd:0.00, tdLanded:1.55, tdAcc:"21%", tdDef:"43%", subAvg:0.78, finRate:"67%", streak:0, gym:"Teixeira MMA & Fitness" },
  "Themba Gorimbo": { ht:"6'1\"", dob:"1991-01-23", reach:'77"', stance:"Orthodox", slpm:2.72, tdAcc:"65%", subAvg:0.8, strDef:"51%", kd:0.1, tdDef:"72%", finRate:"64%", streak:0, tdLanded:5.07, gym:"MMA Masters" },
  "Elizeu Zaleski dos Santos": { ht:"5'11\"", dob:"1986-12-11", reach:'73"', stance:"Orthodox", slpm:4.16, tdAcc:"20%", subAvg:0.3, strDef:"55%", kd:0.4, tdDef:"71%", finRate:"60%", streak:0, tdLanded:0.79, gym:"CM System" },
  "Punahele Soriano": { ht:"5'11\"", dob:"1992-11-22", reach:'72"', stance:"Southpaw", slpm:4.66, tdAcc:"48%", subAvg:0.1, strDef:"47%", kd:0.3, tdDef:"40%", finRate:"58%", streak:0, tdLanded:1.83, gym:"Xtreme Couture" },
@@ -9968,6 +9970,9 @@
     { opponent: "Adam Fugitt", odds: -510 },
     { opponent: "Vanilton Antunes", odds: -833 },
     { opponent: "Ioannis Palaiologos", odds: -500 },
+  ],
+  "Wellington Turman": [
+    { opponent: "Misha Cirkunov", odds: 128 },
   ],
   "Carlos Leal": [
     { opponent: "Jonathan Micallef", odds: 175 },
@@ -25429,6 +25434,35 @@ const FIGHT_HISTORY = {
     { date: "Sep 7, 2019", opponent: "Gjoni Palokaj", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "German MMA Championship 21" },
   ],
 
+  "Wellington Turman": [
+    { date: "Dec 2, 2023", opponent: "Jared Gooden", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:11", event: "UFC on ESPN: Dariush vs. Tsarukyan", org: "UFC" },
+    { date: "Jun 24, 2023", opponent: "Randy Brown", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC: Emmett vs. Topuria", org: "UFC" },
+    { date: "Nov 12, 2022", opponent: "Andre Petroski", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 281", org: "UFC" },
+    { date: "Feb 26, 2022", opponent: "Misha Cirkunov", result: "W", method: "Submission (Armbar)", round: 2, time: "1:29", event: "UFC Fight Night: Makhachev vs. Green", org: "UFC" },
+    { date: "Aug 28, 2021", opponent: "Sam Alvey", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Barboza vs. Chikadze", org: "UFC" },
+    { date: "Jun 19, 2021", opponent: "Bruno Silva", result: "L", method: "KO (Punches)", round: 1, time: "4:45", event: "UFC on ESPN: Korean Zombie vs. Ige", org: "UFC" },
+    { date: "Aug 8, 2020", opponent: "Andrew Sanchez", result: "L", method: "KO (Punch)", round: 1, time: "4:14", event: "UFC Fight Night: Lewis vs. Oleinik", org: "UFC" },
+    { date: "Nov 16, 2019", opponent: "Markus Perez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blachowicz vs. Jacare", org: "UFC" },
+    { date: "Jul 13, 2019", opponent: "Karl Roberson", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: de Randamie vs. Ladd", org: "UFC" },
+    { date: "Apr 19, 2019", opponent: "Marcio Alexandre Jr.", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:10", event: "Future FC 4" },
+    { date: "Dec 2, 2018", opponent: "Rafael Atilio", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imortal FC 10" },
+    { date: "Nov 11, 2017", opponent: "Rodrigo Jesus", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imortal FC 7" },
+    { date: "Aug 12, 2017", opponent: "Sergio de Fatima", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:27", event: "Brave CF 8" },
+    { date: "Dec 10, 2016", opponent: "Carlston Harris", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imortal FC 6" },
+    { date: "Jul 23, 2016", opponent: "Dyego Roberto", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imortal FC 5" },
+    { date: "May 21, 2016", opponent: "Caio Rodrigues", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:09", event: "Imortal FC 4" },
+    { date: "Jan 30, 2016", opponent: "Cleiton Butiski", result: "W", method: "TKO (Punches)", round: 1, time: "0:26", event: "University of Champions 7" },
+    { date: "Nov 28, 2015", opponent: "Gian Siqueira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC International 12" },
+    { date: "Jul 4, 2015", opponent: "Josimar Lara", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:37", event: "Gladiator Combat Fight 14" },
+    { date: "Mar 28, 2015", opponent: "Ewerton Ferreira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Max Fight 14" },
+    { date: "Mar 7, 2015", opponent: "Diego Siqueira", result: "W", method: "TKO (Knee and punches)", round: 1, time: "1:56", event: "Curitiba Fight Pro 3" },
+    { date: "Dec 13, 2014", opponent: "Leandro Vasconcelos", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "4:30", event: "Power Fight Extreme 12" },
+    { date: "Oct 11, 2014", opponent: "Edivaldo Siqueira", result: "W", method: "KO (Punches)", round: 2, time: "3:00", event: "Arena Force 4" },
+    { date: "Sep 28, 2014", opponent: "Thiago Nata", result: "W", method: "TKO (Punches)", round: 2, time: "4:55", event: "The Hill Fighters 4" },
+    { date: "Sep 13, 2014", opponent: "Wellington Machado", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:05", event: "Striker's House Cup 41" },
+    { date: "Aug 9, 2014", opponent: "Diego Pedroso", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:15", event: "Curitiba Fight Pro 2" },
+  ],
+
 
 
 
@@ -28189,6 +28223,12 @@ const ACCOLADES = {
     { icon: "🥊", title: "Amateur German MMA Champion; #1-ranked amateur in Europe in 2 weight divisions", detail: null },
     { icon: "🥇", title: "3× Amateur National Boxing Champion", detail: null },
     { icon: "🥋", title: "BJJ Blue Belt", detail: null },
+  ],
+  "Wellington Turman": [
+    { icon: "🏆", title: "Imortal FC Middleweight Championship — former champion", detail: null },
+    { icon: "🏆", title: "CFP (Curitiba Fight Pro) Middleweight Championship — former champion", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night — vs. Misha Cirkunov (UFC Fight Night: Makhachev vs. Green, Feb 26, 2022)", detail: null },
+    { icon: "🥋", title: "BJJ Black Belt", detail: null },
   ],
   "Chidi Njokuani": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
