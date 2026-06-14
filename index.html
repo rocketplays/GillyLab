@@ -2426,7 +2426,7 @@
  { name: "Ante Delija", division: "HW", rank: "#10", record: "26-8-0", initials: "ADL", country: "Croatia" },
  { name: "Tallison Teixeira", division: "HW", rank: "#11", record: "9-2-0", initials: "TTX", country: "Brazil" },
  { name: "Shamil Gaziev", division: "HW", rank: "#12", record: "14-3-0", initials: "SGZ", country: "Russia" },
- { name: "Valter Walker", division: "HW", rank: "#14", record: "15-1-0", initials: "VWA", country: "Brazil" },
+ { name: "Valter Walker", division: "HW", rank: "#13", record: "15-1-0", initials: "VWA", country: "Brazil" },
  { name: "Vitor Petrino", division: "HW", rank: "#15", record: "15-1-0", initials: "VP", country: "Brazil" },
  { name: "Jon Jones", division: "HW", rank: "NR", record: "28-1-0", initials: "JJ", country: "USA" },
  { name: "Francis Ngannou", division: "HW", rank: "NR", record: "21-5-0", initials: "FN", country: "Cameroon" },
@@ -3200,7 +3200,7 @@
  // ── Heavyweight (additional) ──
  "Shamil Gaziev": { ht:"6'4\"", dob:"1990-02-10", reach:'78"', stance:"Orthodox", slpm:2.62, tdAcc:"30%", subAvg:0.3, strDef:"45%", kd:0.5, tdDef:"83%", finRate:"79%", streak:3, tdLanded:0.93, gym:"KHK MMA Team" },
  "Ante Delija": { ht:"6'3\"", dob:"1990-08-07", reach:'78"', stance:"Orthodox", slpm:4.81, tdAcc:"0%", subAvg:0.0, strDef:"38%", kd:0.8, tdDef:"0%", finRate:"79%", streak:3, tdLanded:0.00, gym:"Gladiator Croatia, Cro Cop Team" },
- "Valter Walker": { ht:"6'6\"", dob:"1997-12-14", reach:'78"', stance:"Orthodox", slpm:2.00, tdAcc:"69%", subAvg:2.5, strDef:"42%", kd:0.1, tdDef:"0%", finRate:"80%", streak:5, tdLanded:5.74, gym:"GOR MMA" },
+ "Valter Walker": { ht:"6'6\"", dob:"1997-12-14", reach:'78.5"', stance:"Orthodox", slpm:2.00, strAcc:"52%", sapm:2.85, strDef:"43%", kd:0.00, tdLanded:5.74, tdAcc:"69%", tdDef:"0%", subAvg:2.55, finRate:"73%", streak:4, gym:"GOR MMA" },
  "Andrei Arlovski": { ht:"6'3\"", dob:"1979-02-04", reach:'77"', stance:"Orthodox", slpm:3.82, tdAcc:"35%", subAvg:0.2, strDef:"57%", kd:0.2, tdDef:"76%", finRate:"53%", streak:0, tdLanded:0.37, gym:"American Top Team (2017–present)" },
  "Marcin Tybura": { ht:"6'3\"", dob:"1985-11-09", reach:'78"', stance:"Orthodox", slpm:3.59, tdAcc:"33%", subAvg:0.1, strDef:"55%", kd:0.4, tdDef:"75%", finRate:"59%", streak:0, tdLanded:1.38, gym:"Ankos MMA (2020–present)" },
  "Alexandr Romanov": { ht:"6'2\"", dob:"1990-12-11", reach:'75"', stance:"Southpaw", slpm:3.78, tdAcc:"55%", subAvg:0.9, strDef:"54%", kd:0.1, tdDef:"28%", finRate:"72%", streak:0, tdLanded:4.49, gym:"Rising Tide Academy" },
@@ -9178,12 +9178,11 @@
     { opponent: "Phillip Latu", odds: -350 },
   ],
   "Valter Walker": [
-    { opponent: "Rodrigo Nascimento", odds: -250 },
-    { opponent: "Josh Parisian", odds: 225 },
-    { opponent: "Junior Tafa", odds: 400 },
-    { opponent: "Chris Barnett", odds: -200 },
-    { opponent: "Waldo Cortes-Acosta", odds: 400 },
-    { opponent: "Jake Collier", odds: -250 }
+    { opponent: "Louie Sutherland", odds: -390 },
+    { opponent: "Kennedy Nzechukwu", odds: 188 },
+    { opponent: "Don'Tale Mayes", odds: -335 },
+    { opponent: "Junior Tafa", odds: -126 },
+    { opponent: "Łukasz Brzeski", odds: -243 }
   ],
   "King Green": [
     { opponent: "Mauricio Ruffy", odds: 350 },
@@ -26700,6 +26699,15 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Valter Walker": [
+    { icon: "🏆", title: "Titan FC Heavyweight Championship — 1 reign (won Jun 2, 2023 vs. Alex Nicholson, Titan FC 82)", detail: null },
+    { icon: "🏆", title: "MMA Series Heavyweight Championship — 1 reign (won May 3, 2023 vs. Cássio Barbosa de Oliveira, MMA Series 67)", detail: null },
+    { icon: "🏆", title: "Arena Global MMA Heavyweight Championship — 1 reign (won Feb 19, 2022 vs. Wagner Maia, Arena Global 16)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night — 2× (vs. Kennedy Nzechukwu Jul 2025; vs. Louie Sutherland Oct 2025)", detail: null },
+    { icon: "🏅", title: "Most consecutive heel hook finishes in UFC history (4)", detail: null },
+    { icon: "🏅", title: "Tied Rousimar Palhares — most heel hook finishes in UFC (4)", detail: null },
+    { icon: "🏅", title: "Tied Charles Oliveira & Brendan Allen — 3rd longest submission streak in UFC history (4)", detail: null },
+  ],
   "Fatima Kline": [
     { icon: "🏆", title: "CFFC Women's Flyweight Championship — 1 reign (won Nov 3, 2023 vs. Sara Cova, CFFC 127)", detail: null },
     { icon: "🏆", title: "CFFC Women's Strawweight Championship — 1 reign (won Feb 9, 2024 vs. Andressa Romero, CFFC 129; simultaneous two-division champion)", detail: null },
