@@ -1347,6 +1347,104 @@
     .rank-move-up   { color: #22c55e; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); }
     .rank-move-down { color: #ef4444; background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.25); }
 
+    /* ── Recent Changes panel ── */
+    .ranking-changes {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    .ranking-changes-hdr {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 1rem;
+      cursor: pointer;
+      user-select: none;
+    }
+    .ranking-changes-hdr:hover { background: rgba(255,255,255,0.03); }
+    .ranking-changes-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+    .ranking-changes-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      flex: 1;
+    }
+    .ranking-changes-chevron {
+      font-size: 0.9rem;
+      color: var(--muted);
+      transition: transform 0.2s;
+    }
+    .ranking-changes.open .ranking-changes-chevron { transform: rotate(180deg); }
+    .ranking-changes-body {
+      display: none;
+      padding: 0.25rem 1rem 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .ranking-changes.open .ranking-changes-body { display: block; }
+    .rch-groups {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      padding-top: 0.75rem;
+    }
+    .rch-div-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,230,104,0.3);
+      padding: 0.1rem 0.4rem;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 0.4rem;
+    }
+    .rch-row {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.18rem 0;
+      font-size: 0.8rem;
+    }
+    .rch-arrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 0.08rem 0.28rem;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .rch-name {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: color 0.15s;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+    }
+    .rch-name:hover { color: var(--accent); }
+    .rch-ranks {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+
     .rank-num {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -2210,6 +2308,7 @@
  </div>
  <div class="divider"></div>
  <div style="max-width:1300px;margin:0 auto;padding:2rem;">
+ <div id="rankingChanges"></div>
  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;" id="rankingDivTabs">
  <button class="rank-div-btn active" onclick="showDiv('p4p-m')">Men's P4P</button>
  <button class="rank-div-btn" onclick="showDiv('p4p-w')">Women's P4P</button>
@@ -31205,6 +31304,83 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return apiName;
   }
 
+  // Derive rank movement from movementHistory (the top-level `movement` field
+  // compares a snapshot against itself and always reads zero — use history instead).
+  function getMovFromHistory(e) {
+    if (e.isChampion) return null;
+    const hist = e.movementHistory;
+    if (!hist || hist.length < 2) return null;
+    const curr = hist[0].rank, prev = hist[1].rank;
+    if (curr == null || prev == null || curr === prev) return null;
+    const delta = prev - curr; // positive = climbed (lower number is better)
+    return { direction: delta > 0 ? 'up' : 'down', amount: Math.abs(delta), prevRank: prev, currRank: curr };
+  }
+
+  function renderRankingChangesSummary(payload) {
+    const container = document.getElementById('rankingChanges');
+    if (!container) return;
+
+    function fmtSnapDate(s) {
+      if (!s) return '';
+      const d = new Date(s + 'T00:00:00Z');
+      return new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', day: 'numeric' }).format(d);
+    }
+
+    const latestDate  = payload.meta && payload.meta.latestSnapshotDate;
+    const prevDate    = payload.meta && payload.meta.comparedSnapshotDate;
+    const dateLabel   = (prevDate && latestDate) ? fmtSnapDate(prevDate) + ' → ' + fmtSnapDate(latestDate)
+                        : (latestDate ? fmtSnapDate(latestDate) : '');
+
+    // Collect all movers
+    const movers = [];
+    for (const e of payload.data) {
+      const m = getMovFromHistory(e);
+      if (!m) continue;
+      movers.push({ fighterName: e.fighterName, fighterSlug: e.fighterSlug,
+                    division: e.division, ...m });
+    }
+
+    if (!movers.length) { container.innerHTML = ''; return; }
+
+    // Group by division in panel order, skipping P4P
+    const divOrder = RANKING_PANEL_ORDER
+      .filter(p => p !== 'p4p-m' && p !== 'p4p-w')
+      .map(p => { const entry = Object.entries(RANKING_DIVISIONS).find(([,v]) => v.panel === p); return entry ? { name: entry[0], ...entry[1] } : null; })
+      .filter(Boolean);
+
+    const byDiv = {};
+    for (const m of movers) (byDiv[m.division] = byDiv[m.division] || []).push(m);
+
+    let groupsHtml = '';
+    for (const div of divOrder) {
+      const dm = (byDiv[div.name] || []).slice().sort((a, b) => a.currRank - b.currRank);
+      if (!dm.length) continue;
+      const rowsHtml = dm.map(m => {
+        const isUp = m.direction === 'up';
+        const sym  = isUp ? '▲' : '▼';
+        const cls  = isUp ? 'rank-move-up' : 'rank-move-down';
+        const canonName = resolveCanonicalFighterName(m.fighterName, m.fighterSlug);
+        const onclick = "openFighter('" + escJsAttr(canonName) + "','" + escJsAttr(div.abbr) + "','','','','')";
+        return '<div class="rch-row">' +
+          '<span class="rch-arrow ' + cls + '">' + sym + m.amount + '</span>' +
+          '<span class="rch-name" onclick="' + onclick + '">' + m.fighterName + '</span>' +
+          '<span class="rch-ranks">#' + m.prevRank + '→#' + m.currRank + '</span>' +
+        '</div>';
+      }).join('');
+      groupsHtml += '<div class="rch-group"><div class="rch-div-label">' + div.tag + '</div><div class="rch-rows">' + rowsHtml + '</div></div>';
+    }
+
+    container.innerHTML =
+      '<div class="ranking-changes open">' +
+        '<div class="ranking-changes-hdr" onclick="this.parentNode.classList.toggle(\'open\')">' +
+          '<span class="ranking-changes-title">' + movers.length + ' Changes</span>' +
+          '<span class="ranking-changes-date">' + dateLabel + '</span>' +
+          '<span class="ranking-changes-chevron">▾</span>' +
+        '</div>' +
+        '<div class="ranking-changes-body"><div class="rch-groups">' + groupsHtml + '</div></div>' +
+      '</div>';
+  }
+
   function rankingPanelHTML(divisionName, entries, isP4P) {
     const info = RANKING_DIVISIONS[divisionName];
     // Prefer the true/unified champion for the panel-title badge; fall
@@ -31249,13 +31425,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       const nameAttr = String(canonicalName == null ? '' : canonicalName).replace(/"/g, '&quot;');
 
-      const mov = e.movement;
+      const mov = getMovFromHistory(e);
       let movBadge = '';
-      if (mov && !e.isChampion) {
-        if (mov.direction === 'up' && mov.amount > 0)
-          movBadge = '<span class="rank-move rank-move-up">▲' + mov.amount + '</span>';
-        else if (mov.direction === 'down' && mov.amount > 0)
-          movBadge = '<span class="rank-move rank-move-down">▼' + mov.amount + '</span>';
+      if (mov) {
+        const sym = mov.direction === 'up' ? '▲' : '▼';
+        const cls = mov.direction === 'up' ? 'rank-move-up' : 'rank-move-down';
+        movBadge = '<span class="rank-move ' + cls + '">' + sym + mov.amount + '</span>';
       }
 
       return '<div class="' + rowClass + '">' +
@@ -31317,6 +31492,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return;
     }
     container.innerHTML = panels;
+    renderRankingChangesSummary(payload);
     loadRankingPhotos();
 
     // Reset tab highlighting to the first available panel
