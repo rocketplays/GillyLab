@@ -2989,6 +2989,7 @@
  { name: "Javier Reyes", division: "FW", rank: "NR", record: "23-5-0", initials: "JRE", country: "Colombia" },
  { name: "Shane Collins", division: "FW", rank: "NR", record: "7-0-0", initials: "SCO", country: "USA" },
  { name: "Otari Tanzilovi", division: "FW", rank: "NR", record: "10-1-0", initials: "OTZ", country: "Georgia" },
+ { name: "Dennis Buzukja", division: "FW", rank: "NR", record: "12-6-0", initials: "DBZ", country: "USA" },
  // Women's Strawweight
  { name: "Xiong Jingnan", division: "WSW", rank: "NR", record: "20-3-0", initials: "XJN", country: "China" },
  { name: "Sofia Montenegro", division: "WFLW", rank: "NR", record: "6-2-0", initials: "SMN", country: "Nicaragua" },
@@ -3920,6 +3921,7 @@
   "Levan Chokheli": { ht:'6\'1"', dob:"1996-10-02", finRate:"79%", streak:1, gym:"Phoenix Sportakademie Kassel" },
   "Shane Collins": { ht:'5\'10"', dob:"2000-03-08", finRate:"71%", streak:7, gym:"Cobra Team" },
   "Otari Tanzilovi": { ht:'5\'9"', dob:"1998-04-09", slpm:4.53, strAcc:"72%", sapm:3.33, strDef:"56%", kd:0.00, tdLanded:4.00, tdAcc:"25%", subAvg:0.00, finRate:"70%", streak:1 },
+  "Dennis Buzukja": { ht:'5\'9"', dob:"1997-10-01", reach:'70.5"', slpm:4.21, strAcc:"43%", sapm:4.82, strDef:"49%", kd:0.42, tdLanded:0.63, tdAcc:"27%", tdDef:"75%", subAvg:0.21, finRate:"50%", streak:0, gym:"Serra-Longo Fight Team" },
   "Oban Elliott": { ht:"6'0\"", dob:"1997-12-19", reach:'72"', stance:"Orthodox", slpm:3.62, tdAcc:"48%", subAvg:0.3, strDef:"54%", kd:0.1, tdDef:"47%", finRate:"67%", streak:0, tdLanded:1.2 },
 
   "Kyle Daukaus": { ht:"6'2\"", dob:"1993-02-27", reach:'76"', stance:"Southpaw", slpm:3.32, strAcc:"53%", sapm:2.90, tdAcc:"26%", subAvg:2.08, strDef:"43%", kd:0.38, tdDef:"83%", finRate:"82%", streak:6, tdLanded:2.08, gym:"Martinez BJJ" },
@@ -10571,6 +10573,16 @@
   ],
   "Otari Tanzilovi": [
     { opponent: "Guillermo Torres", odds: -275 },
+  ],
+  "Dennis Buzukja": [
+    { opponent: "Marcio Barbosa", odds: 345 },
+    { opponent: "Francis Marshall", odds: 160 },
+    { opponent: "Connor Matthews", odds: -231 },
+    { opponent: "Jamall Emmers", odds: 203 },
+    { opponent: "Soslan Abanokov", odds: -800 },
+    { opponent: "Kaleio Romero", odds: -242 },
+    { opponent: "Josh Rohler", odds: -649 },
+    { opponent: "Melsik Baghdasaryan", odds: -135 },
   ],
 };
 
@@ -27012,6 +27024,26 @@ const FIGHT_HISTORY = {
     { date: "Nov 3, 2018", opponent: "Mehrad Mahmoudi", result: "W", method: "TKO (Punches)", round: 1, time: "1:33", event: "GFC 4", org: "GFC" },
     { date: "Oct 2, 2018", opponent: "Giorgi Liparteliani", result: "W", method: "TKO (Punches)", round: 1, time: "1:51", event: "GFC 3", org: "GFC" },
   ],
+  "Dennis Buzukja": [
+    { date: "Apr 19, 2026", opponent: "Marcio Barbosa", result: "L", method: "KO (Punch)", round: 1, time: "1:20", event: "UFC Fight Night: Winnipeg", org: "UFC" },
+    { date: "Aug 24, 2024", opponent: "Francis Marshall", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Cannonier vs. Borralho", org: "UFC" },
+    { date: "Mar 30, 2024", opponent: "Connor Matthews", result: "W", method: "TKO (Punches)", round: 3, time: "0:22", event: "UFC on ESPN: Blanchfield vs. Fiorot", org: "UFC" },
+    { date: "Nov 11, 2023", opponent: "Jamall Emmers", result: "L", method: "KO (Punches)", round: 1, time: "0:49", event: "UFC 295: Procházka vs. Pereira", org: "UFC" },
+    { date: "Aug 5, 2023", opponent: "Sean Woodson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Nashville", org: "UFC" },
+    { date: "Jun 16, 2023", opponent: "Soslan Abanokov", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:29", event: "CFFC 120", org: "CFFC" },
+    { date: "Feb 25, 2023", opponent: "Mark Gregory Valerio", result: "W", method: "TKO (Punches)", round: 1, time: "3:57", event: "UAE Warriors 36", org: "UAE Warriors" },
+    { date: "Nov 19, 2022", opponent: "Boimah Karmo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Maverick MMA 21", org: "Maverick MMA" },
+    { date: "Jul 26, 2022", opponent: "Kaleio Romero", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series Season 6: Week 1", org: "UFC" },
+    { date: "Feb 18, 2022", opponent: "Josh Rohler", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 75", org: "ROC" },
+    { date: "Oct 22, 2021", opponent: "Michael Lawrence", result: "W", method: "TKO (Punches)", round: 1, time: "1:06", event: "Ring of Combat 74", org: "ROC" },
+    { date: "Mar 27, 2021", opponent: "Shaquan Moore", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Triton Fights 18", org: "Triton Fights" },
+    { date: "Sep 1, 2020", opponent: "Melsik Baghdasaryan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series Season 4: Week 5", org: "UFC" },
+    { date: "Feb 21, 2020", opponent: "Tim Dooling", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 71", org: "ROC" },
+    { date: "Nov 23, 2019", opponent: "William Calhoun III", result: "W", method: "KO (Spinning Backfist)", round: 1, time: "2:38", event: "Ring of Combat 70", org: "ROC" },
+    { date: "Feb 22, 2019", opponent: "Shaquan Moore", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 67", org: "ROC" },
+    { date: "Nov 16, 2018", opponent: "Nick Rodrigues", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 66", org: "ROC" },
+    { date: "Oct 13, 2018", opponent: "Ryan Castro", result: "W", method: "TKO (Punches)", round: 1, time: "2:53", event: "Bellator 208: Fedor vs. Sonnen", org: "Bellator" },
+  ],
   "Shane Collins": [
     { date: "May 2, 2026", opponent: "Talon Hammons", result: "W", method: "KO (Punch)", round: 1, time: "1:43", event: "Urijah Faber's A1 Combat 35", org: "A1 Combat" },
     { date: "Jan 9, 2026", opponent: "Tyler Miller", result: "W", method: "KO (Punch)", round: 1, time: "1:11", event: "559 Fights 120", org: "559 Fights" },
@@ -29480,6 +29512,10 @@ const ACCOLADES = {
   "Otari Tanzilovi": [
     { icon: "🥊", title: "72% striking accuracy (UFC.com) — 2nd highest among FW debutants in 2026", detail: null },
     { icon: "🥊", title: "70% KO/TKO finish rate (7 of 10 wins) — highlights include flying switch kick and spinning back kick KOs", detail: null },
+  ],
+  "Dennis Buzukja": [
+    { icon: "🥋", title: "Karate brown belt (source: UFC.com Q&A)", detail: null },
+    { icon: "🏆", title: "Ring of Combat Featherweight Champion — def. Tim Dooling (unanimous decision, Ring of Combat 71, Feb 21, 2020); bout called 'greatest in ROC history' by promoter Lou Neglia", detail: null },
   ],
 };
 
