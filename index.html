@@ -2663,6 +2663,7 @@
  { name: "Saygid Izagakhmaev", division: "WW", rank: "NR", record: "10-2-0", initials: "SIZ", country: "Russia" },
  { name: "Theodor Berggren", division: "WW", rank: "NR", record: "8-3-0", initials: "TBG", country: "Sweden" },
  { name: "Leon Shahbazyan", division: "WW", rank: "NR", record: "12-4-0", initials: "LSH", country: "USA" },
+ { name: "Levan Chokheli", division: "WW", rank: "NR", record: "14-3-0", initials: "LCH", country: "Georgia" },
  // ─── MIDDLEWEIGHT (extended) ───
  { name: "Claudio Ribeiro", division: "MW", rank: "NR", record: "12-2-0", initials: "CRI", country: "Brazil" },
  { name: "Joe Pyfer", division: "MW", rank: "#6", record: "16-3-0", initials: "JPY2", country: "USA" },
@@ -3914,6 +3915,7 @@
   "CJ Vergara": { ht:"5'6\"", dob:"1991-06-18", reach:'68"', stance:"Orthodox", slpm:5.02, tdAcc:"39%", subAvg:1.2, strDef:"49%", kd:0.2, tdDef:"30%", finRate:"73%", streak:0, tdLanded:3.86, gym:"Pete Spratt Muay Thai" },
   "Phil Rowe": { ht:"6'3\"", dob:"1990-07-18", reach:'80"', stance:"Orthodox", slpm:3.51, tdAcc:"49%", subAvg:0.2, strDef:"54%", kd:0.2, tdDef:"33%", finRate:"55%", streak:0, tdLanded:0.52, gym:"Fusion Xcel Performance" },
   "Leon Shahbazyan": { ht:'6\'4"', dob:"1995-11-18", reach:'77"', stance:"Orthodox", slpm:6.33, strAcc:"52%", sapm:8.18, strDef:"32%", kd:1.46, tdLanded:1.46, tdAcc:"50%", subAvg:0.00, finRate:"100%", streak:4, gym:"Glendale Fighting Club" },
+  "Levan Chokheli": { ht:'6\'1"', dob:"1996-10-02", finRate:"79%", streak:1, gym:"Phoenix Sportakademie Kassel" },
   "Oban Elliott": { ht:"6'0\"", dob:"1997-12-19", reach:'72"', stance:"Orthodox", slpm:3.62, tdAcc:"48%", subAvg:0.3, strDef:"54%", kd:0.1, tdDef:"47%", finRate:"67%", streak:0, tdLanded:1.2 },
 
   "Kyle Daukaus": { ht:"6'2\"", dob:"1993-02-27", reach:'76"', stance:"Southpaw", slpm:3.32, strAcc:"53%", sapm:2.90, tdAcc:"26%", subAvg:2.08, strDef:"43%", kd:0.38, tdDef:"83%", finRate:"82%", streak:6, tdLanded:2.08, gym:"Martinez BJJ" },
@@ -10546,6 +10548,15 @@
   "Leon Shahbazyan": [
     { opponent: "Glaucio Eliziario", odds: -255 },
     { opponent: "Philip Rowe", odds: -249 },
+  ],
+  "Levan Chokheli": [
+    { opponent: "Lorenz Larkin", odds: -100 },
+    { opponent: "Sabah Homasi", odds: -242 },
+    { opponent: "Michael Lombardo", odds: -214 },
+    { opponent: "Roman Faraldo", odds: 152 },
+    { opponent: "Goiti Yamauchi", odds: 175 },
+    { opponent: "Vinicius de Jesus", odds: 113 },
+    { opponent: "Kyle Crutchmer", odds: 123 },
   ],
 };
 
@@ -26921,6 +26932,26 @@ const FIGHT_HISTORY = {
     { date: "Apr 30, 2022", opponent: "Leonardo Genuino", result: "L", method: "TKO (Punch)", round: 1, time: "4:41", event: "Savage MMA 2", org: "Savage MMA" },
     { date: "Feb 19, 2022", opponent: "Marcus Atila", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "GFN Gladiators Fight Night 4", org: "GFN" },
   ],
+  "Levan Chokheli": [
+    { date: "May 24, 2025", opponent: "Alexandre Goncalves", result: "W", method: "TKO (Punches)", round: 2, time: "2:59", event: "PFC 4 - Phoenix Fighting Championship", org: "PFC" },
+    { date: "Sep 7, 2024", opponent: "Lorenz Larkin", result: "L", method: "KO (Punches)", round: 1, time: "1:53", event: "Bellator CS San Diego: Nurmagomedov vs. Shabliy", org: "Bellator" },
+    { date: "Sep 23, 2023", opponent: "Sabah Homasi", result: "W", method: "KO (Front Kick)", round: 1, time: "1:51", event: "Bellator 299: Eblen vs. Edwards", org: "Bellator" },
+    { date: "Apr 21, 2023", opponent: "Michael Lombardo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 294: Carmouche vs. Bennett 2", org: "Bellator" },
+    { date: "Nov 18, 2022", opponent: "Roman Faraldo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 288: Nemkov vs. Anderson 2", org: "Bellator" },
+    { date: "Apr 23, 2022", opponent: "Goiti Yamauchi", result: "L", method: "Submission (Armbar)", round: 1, time: "3:49", event: "Bellator 279: Cyborg vs. Blencowe 2", org: "Bellator" },
+    { date: "Dec 3, 2021", opponent: "Vinicius de Jesus", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 272: Pettis vs. Horiguchi", org: "Bellator" },
+    { date: "Jun 11, 2021", opponent: "Kyle Crutchmer", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 260: Lima vs. Amosov", org: "Bellator" },
+    { date: "Feb 29, 2020", opponent: "Konrad Dyrschka", result: "NC", method: "No Contest", round: 1, time: "N/A", event: "EMC 4", org: "EMC" },
+    { date: "Jan 18, 2020", opponent: "Issa Isakov", result: "W", method: "KO (Knees and Punches)", round: 1, time: "0:57", event: "We Love MMA 52", org: "WLMMA" },
+    { date: "Aug 15, 2019", opponent: "Ali Moradi", result: "W", method: "TKO (Punches and Elbows)", round: 1, time: "0:43", event: "Mglebi 8: Battle for Batumi", org: "Mglebi" },
+    { date: "Mar 10, 2019", opponent: "Shahram Haghi", result: "W", method: "TKO", round: 1, time: "4:00", event: "WJF Series 2", org: "WJF" },
+    { date: "Jan 19, 2019", opponent: "Milad Omrani", result: "W", method: "TKO", round: 1, time: "3:00", event: "WJF Series 1", org: "WJF" },
+    { date: "Dec 15, 2018", opponent: "Mehdi Bagheri", result: "W", method: "TKO (Punches)", round: 1, time: "0:17", event: "Mglebi 5: Battle for the Title", org: "Mglebi" },
+    { date: "Aug 1, 2018", opponent: "Farhad Meshed", result: "W", method: "TKO (Punches)", round: 1, time: "0:31", event: "GMMAF Fight Night", org: "GMMAF" },
+    { date: "Jul 20, 2018", opponent: "Orkhan Valiyev", result: "W", method: "TKO (Punches)", round: 1, time: "0:22", event: "Georgia MMA", org: "Georgia MMA" },
+    { date: "Jul 25, 2017", opponent: "Xuta Qobalia", result: "W", method: "TKO (Punches)", round: 1, time: "0:57", event: "GMMAF Fight Night", org: "GMMAF" },
+    { date: "Apr 3, 2016", opponent: "Kamran Suleymanli", result: "W", method: "TKO (Punches)", round: 1, time: "0:54", event: "GMMAF Gardabani Fight Night", org: "GMMAF" },
+  ],
   "Leon Shahbazyan": [
     { date: "Mar 13, 2026", opponent: "Robert Hale", result: "W", method: "Submission (Armbar)", round: 1, time: "3:34", event: "Tuff-N-Uff 152", org: "Tuff-N-Uff" },
     { date: "Sep 26, 2025", opponent: "Glaucio Eliziario", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "0:43", event: "Tuff-N-Uff 148", org: "Tuff-N-Uff" },
@@ -29379,6 +29410,10 @@ const ACCOLADES = {
   "Leon Shahbazyan": [
     { icon: "🤼", title: "Older brother of UFC middleweight Edmen \"The Golden Boy\" Shahbazyan", detail: null },
     { icon: "🥋", title: "92% submission finish rate (11 of 12 wins by sub) — BJJ belt rank not publicly confirmed", detail: null },
+  ],
+  "Levan Chokheli": [
+    { icon: "🏆", title: "Phoenix Fighting Championship (PFC) Welterweight Title — def. Alexandre Goncalves, TKO R2, May 24, 2025", detail: null },
+    { icon: "🥊", title: "79% KO/TKO finish rate (11 of 14 wins) — 7 Bellator appearances (2021–2024)", detail: null },
   ],
 };
 
