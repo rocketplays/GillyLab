@@ -3051,6 +3051,7 @@
   { name: "Santiago Luna", division: "BW", rank: "NR", record: "10-3-0", initials: "SL", country: "Mexico" }
 ,
   { name: "John Yannis", division: "BW", rank: "NR", record: "8-4-0", initials: "JY", country: "USA" },
+  { name: "Josias Musasa", division: "BW", rank: "NR", record: "8-2-0", initials: "JMU", country: "DR Congo" },
   { name: "Chelsea Chandler", division: "WBW", rank: "NR", record: "7-4-0", initials: "CC2", country: "USA" }
 ,
   { name: "Yuneisy Duben", division: "WFLW", rank: "NR", record: "7-4-0", initials: "YD", country: "Cuba" }
@@ -3776,6 +3777,7 @@
  "Malcolm Wellmaker": { ht:"5'10\"", dob:"1994-06-04", reach:'71"', stance:"Switch", slpm:5.80, tdAcc:"0%", subAvg:0.0, strDef:"52%", kd:0.4, tdDef:"75%", finRate:"78%", streak:0, tdLanded:0.00 },
  "Gaston Bolanos": { ht:"5'7\"", dob:"1992-09-14", reach:'69"', stance:"Orthodox", slpm:3.28, strAcc:"49%", sapm:2.40, strDef:"51%", kd:0.00, tdLanded:0.66, tdAcc:"100%", tdDef:"43%", subAvg:0.00, finRate:"75%", streak:0, gym:"Combat Sports Academy" },
  "Mark Vologdin": { ht:"5'3\"", dob:"2000-04-18", reach:'65"', stance:"Orthodox", slpm:7.80, strAcc:"52%", sapm:11.00, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"57%", subAvg:0.0, finRate:"83%", streak:0, gym:"Allstars Training Center" },
+ "Josias Musasa": { ht:"5'8\"", dob:"", reach:'74"', stance:"Orthodox", slpm:3.19, strAcc:"45%", sapm:4.39, strDef:"36%", kd:0.0, tdLanded:0.90, tdAcc:"50%", tdDef:"81%", subAvg:0.45, finRate:"88%", streak:0, gym:"Elite Training Center" },
  // Featherweight
  "Alberto Montes": { ht:"5'7\"", dob:"1994-05-31", reach:'69"', stance:"Orthodox", slpm:4.98, tdAcc:"0%", subAvg:9.8, strDef:"57%", kd:0.4, tdDef:"66%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Marwan Rahiki": { ht:"5'8\"", dob:"2002-05-10", reach:'72"', stance:"Orthodox", slpm:7.73, tdAcc:"0%", subAvg:0.9, strDef:"56%", kd:0.5, tdDef:"100%",finRate:"88%", streak:0, tdLanded:0.00 },
@@ -10278,6 +10280,11 @@
   "Mark Vologdin": [
     { opponent: "Adrian Martinetti", odds: -172 },
     { opponent: "John Castaneda", odds: 145 }
+  ],
+  "Josias Musasa": [
+    { opponent: "Otari Tanzilovi", odds: 138 },
+    { opponent: "Carlos Vera", odds: -830 },
+    { opponent: "Colby Thicknesse", odds: -176 }
   ],
   "Cole Howarth": [
     { opponent: "Movsar Evloev", odds: 500 }
@@ -26079,6 +26086,12 @@ const FIGHT_HISTORY = {
     { date: "Apr 13, 2024", opponent: "Ramzan Dadaev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 162" },
     { date: "Dec 9, 2023", opponent: "Artur Shubin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 157" }
   ],
+  "Josias Musasa": [
+    { date: "Aug 1, 2026", opponent: "Mark Vologdin", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Aug 1, 2026", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Colby Thicknesse", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Mar 15, 2025", opponent: "Carlos Vera", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:16", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
+    { date: "Sep 10, 2024", opponent: "Otari Tanzilovi", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series Season 8: Week 5" }
+  ],
   "Cole Howarth": [
     { date: "May 16, 2026", opponent: "Movsar Evloev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa (debut)" },
     { date: "Nov 16, 2025", opponent: "Alex Chambers", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "3:24", event: "DWCS Season 9 Week 9 (contract)" },
@@ -27496,6 +27509,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "AFN Bantamweight Champion (Sweden)", detail: "two successful first-round title defenses" },
     { icon: "⭐", title: "DWCS $25,000 Performance Bonus", detail: "vs. Adrian Martinetti (DWCS Season 9, Week 9, Oct 2025) — earned UFC contract despite losing" },
     { icon: "🥋", title: "European & World Kyokushin Karate Champion", detail: "6× Russian champion; Master of Sports of Russia in Kyokushin Karate and All-Combat discipline" },
+  ],
+  "Josias Musasa": [
+    { icon: "🏅", title: "Two-time Amateur MMA Champion of Congo (2020 & 2021)", detail: "Bantamweight; never lost a round as an amateur, all wins by knockout" },
+    { icon: "🏅", title: "Amateur Boxing — Katanga Regional Champion", detail: null },
   ],
   "Tofiq Musayev": [
     { icon: "🏆", title: "2019 Rizin Lightweight Grand Prix Champion", detail: "def. Damien Brown (TKO R1), Johnny Case (TKO R1), Patricky Pitbull (UD) — broke hand in the final" },
