@@ -2990,6 +2990,7 @@
  { name: "Shane Collins", division: "FW", rank: "NR", record: "7-0-0", initials: "SCO", country: "USA" },
  { name: "Otari Tanzilovi", division: "FW", rank: "NR", record: "10-1-0", initials: "OTZ", country: "Georgia" },
  { name: "Dennis Buzukja", division: "FW", rank: "NR", record: "12-6-0", initials: "DBZ", country: "USA" },
+ { name: "Bogdan Grad", division: "FW", rank: "NR", record: "15-4-0", initials: "BGD", country: "Austria" },
  // Women's Strawweight
  { name: "Xiong Jingnan", division: "WSW", rank: "NR", record: "20-3-0", initials: "XJN", country: "China" },
  { name: "Sofia Montenegro", division: "WFLW", rank: "NR", record: "6-2-0", initials: "SMN", country: "Nicaragua" },
@@ -3922,6 +3923,7 @@
   "Shane Collins": { ht:'5\'10"', dob:"2000-03-08", finRate:"71%", streak:7, gym:"Cobra Team" },
   "Otari Tanzilovi": { ht:'5\'9"', dob:"1998-04-09", slpm:4.53, strAcc:"72%", sapm:3.33, strDef:"56%", kd:0.00, tdLanded:4.00, tdAcc:"25%", subAvg:0.00, finRate:"70%", streak:1 },
   "Dennis Buzukja": { ht:'5\'9"', dob:"1997-10-01", reach:'70.5"', slpm:4.21, strAcc:"43%", sapm:4.82, strDef:"49%", kd:0.42, tdLanded:0.63, tdAcc:"27%", tdDef:"75%", subAvg:0.21, finRate:"50%", streak:0, gym:"Serra-Longo Fight Team" },
+  "Bogdan Grad": { ht:'5\'8"', dob:"1995-09-18", reach:'70"', slpm:4.06, strAcc:"52%", sapm:5.06, strDef:"49%", kd:0.00, tdLanded:4.22, tdAcc:"41%", tdDef:"75%", subAvg:0.00, finRate:"80%", streak:0, gym:"ETTL Bros. MMA" },
   "Oban Elliott": { ht:"6'0\"", dob:"1997-12-19", reach:'72"', stance:"Orthodox", slpm:3.62, tdAcc:"48%", subAvg:0.3, strDef:"54%", kd:0.1, tdDef:"47%", finRate:"67%", streak:0, tdLanded:1.2 },
 
   "Kyle Daukaus": { ht:"6'2\"", dob:"1993-02-27", reach:'76"', stance:"Southpaw", slpm:3.32, strAcc:"53%", sapm:2.90, tdAcc:"26%", subAvg:2.08, strDef:"43%", kd:0.38, tdDef:"83%", finRate:"82%", streak:6, tdLanded:2.08, gym:"Martinez BJJ" },
@@ -10583,6 +10585,12 @@
     { opponent: "Kaleio Romero", odds: -242 },
     { opponent: "Josh Rohler", odds: -649 },
     { opponent: "Melsik Baghdasaryan", odds: -135 },
+  ],
+  "Bogdan Grad": [
+    { opponent: "Luke Riley", odds: 225 },
+    { opponent: "Muhammadjon Naimov", odds: 185 },
+    { opponent: "Lucas Alexander", odds: 100 },
+    { opponent: "Tom Nolan", odds: 122 },
   ],
 };
 
@@ -27025,6 +27033,7 @@ const FIGHT_HISTORY = {
     { date: "Oct 2, 2018", opponent: "Giorgi Liparteliani", result: "W", method: "TKO (Punches)", round: 1, time: "1:51", event: "GFC 3", org: "GFC" },
   ],
   "Dennis Buzukja": [
+    { date: "Aug 1, 2026", opponent: "Bogdan Grad", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 283: Medic vs. Rodriguez", org: "UFC" },
     { date: "Apr 19, 2026", opponent: "Marcio Barbosa", result: "L", method: "KO (Punch)", round: 1, time: "1:20", event: "UFC Fight Night: Winnipeg", org: "UFC" },
     { date: "Aug 24, 2024", opponent: "Francis Marshall", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Cannonier vs. Borralho", org: "UFC" },
     { date: "Mar 30, 2024", opponent: "Connor Matthews", result: "W", method: "TKO (Punches)", round: 3, time: "0:22", event: "UFC on ESPN: Blanchfield vs. Fiorot", org: "UFC" },
@@ -27043,6 +27052,28 @@ const FIGHT_HISTORY = {
     { date: "Feb 22, 2019", opponent: "Shaquan Moore", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 67", org: "ROC" },
     { date: "Nov 16, 2018", opponent: "Nick Rodrigues", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 66", org: "ROC" },
     { date: "Oct 13, 2018", opponent: "Ryan Castro", result: "W", method: "TKO (Punches)", round: 1, time: "2:53", event: "Bellator 208: Fedor vs. Sonnen", org: "Bellator" },
+  ],
+  "Bogdan Grad": [
+    { date: "Aug 1, 2026", opponent: "Dennis Buzukja", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 283: Medic vs. Rodriguez", org: "UFC" },
+    { date: "Nov 22, 2025", opponent: "Luke Riley", result: "L", method: "KO (Punches)", round: 2, time: "0:30", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
+    { date: "Jun 21, 2025", opponent: "Muhammadjon Naimov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC 8: Hill vs. Rountree", org: "UFC" },
+    { date: "Feb 1, 2025", opponent: "Lucas Alexander", result: "W", method: "TKO (Elbows and Punches)", round: 2, time: "4:22", event: "UFC Fight Night 250: Adesanya vs. Imavov", org: "UFC" },
+    { date: "Aug 27, 2024", opponent: "Michael Aswell", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series 2024: Week 3", org: "UFC" },
+    { date: "Mar 15, 2024", opponent: "Caiona Batista", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:03", event: "Cage Fight Series 15", org: "CFS" },
+    { date: "Nov 10, 2023", opponent: "Breno Marinho", result: "W", method: "KO (Flying Knee)", round: 2, time: "0:38", event: "Cage Fight Series 14", org: "CFS" },
+    { date: "Aug 8, 2023", opponent: "Tom Nolan", result: "L", method: "KO (Punches)", round: 1, time: "1:23", event: "Dana White's Contender Series 2023: Week 1", org: "UFC" },
+    { date: "Mar 10, 2023", opponent: "Renzo Mendez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Fight Series 13", org: "CFS" },
+    { date: "Oct 29, 2022", opponent: "Tudor Dermenji", result: "W", method: "TKO (Spinning Wheel Kick and Punches)", round: 2, time: "3:20", event: "Cage Fight Series 12", org: "CFS" },
+    { date: "Sep 9, 2022", opponent: "Christian Mach", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "4:07", event: "Cage Fight Series 11", org: "CFS" },
+    { date: "Jun 11, 2022", opponent: "Gokhan Aksu", result: "W", method: "TKO", round: 1, time: "4:57", event: "Innferno Fighting Championship 5", org: "Innferno FC" },
+    { date: "Apr 9, 2022", opponent: "David Tecer", result: "W", method: "TKO (Punches)", round: 1, time: "4:26", event: "Cage Fight Series 10", org: "CFS" },
+    { date: "Sep 25, 2021", opponent: "Andrei Caraus", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Blood Fight League: 8 Man MMA Tournament", org: "BFL" },
+    { date: "Sep 25, 2021", opponent: "Darius Betean", result: "W", method: "TKO (Punches)", round: 1, time: "2:10", event: "Blood Fight League: 8 Man MMA Tournament", org: "BFL" },
+    { date: "Nov 30, 2019", opponent: "Predrag Jovanovic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Night of Warriors 5.0", org: "NOW" },
+    { date: "Oct 5, 2019", opponent: "Ion Voda", result: "W", method: "Submission (Armbar)", round: 1, time: "2:32", event: "Innferno Fighting Championship 4", org: "Innferno FC" },
+    { date: "Jun 29, 2019", opponent: "Bence Niedermayer", result: "W", method: "KO (Punch)", round: 1, time: "3:43", event: "Mix Fight Night 8", org: "MFN" },
+    { date: "May 25, 2019", opponent: "Mirko Jovanovic", result: "W", method: "TKO (Leg Kicks)", round: 1, time: "1:35", event: "Fight Night Round 1 Traiskirchen", org: "FNR" },
+    { date: "Feb 2, 2019", opponent: "Nemanja Cvisic", result: "W", method: "TKO (Punches)", round: 1, time: "3:00", event: "Cage Fight Series 9", org: "CFS" },
   ],
   "Shane Collins": [
     { date: "May 2, 2026", opponent: "Talon Hammons", result: "W", method: "KO (Punch)", round: 1, time: "1:43", event: "Urijah Faber's A1 Combat 35", org: "A1 Combat" },
@@ -29516,6 +29547,13 @@ const ACCOLADES = {
   "Dennis Buzukja": [
     { icon: "🥋", title: "Karate brown belt (source: UFC.com Q&A)", detail: null },
     { icon: "🏆", title: "Ring of Combat Featherweight Champion — def. Tim Dooling (unanimous decision, Ring of Combat 71, Feb 21, 2020); bout called 'greatest in ROC history' by promoter Lou Neglia", detail: null },
+  ],
+  "Bogdan Grad": [
+    { icon: "🥋", title: "BJJ brown belt (source: UFC.com Q&A)", detail: null },
+    { icon: "🥋", title: "Kickboxing black belt (source: UFC.com Q&A)", detail: null },
+    { icon: "🥋", title: "IMMAF MMA black belt graduation (source: UFC.com Q&A)", detail: null },
+    { icon: "🏅", title: "Austrian national MMA champion 2015 and 2016 — competed for Austria in multiple IMMAF World and European championships", detail: null },
+    { icon: "🏅", title: "IMMAF European Open bronze medalist 2018 — amateur record 18-6, finished only once in 24 amateur fights", detail: null },
   ],
 };
 
