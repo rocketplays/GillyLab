@@ -36,6 +36,9 @@ jobs:
             -o data/event.json
           echo "Events fetched — $(wc -c < data/event.json) bytes"
 
+      - name: Re-apply manual card-section overrides
+        run: node scripts/apply-card-section-overrides.js
+
       - name: Download fighter photos
         run: |
           mkdir -p data/photos

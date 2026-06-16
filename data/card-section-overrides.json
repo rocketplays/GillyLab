@@ -1,0 +1,13 @@
+{
+  "_comment": "Manual corrections to bout.cardSection for events where the Cito API gets it wrong. The update-odds workflow re-fetches data/event.json from scratch every run and would otherwise silently wipe these fixes — apply-card-section-overrides.js re-applies every entry here on top of the fresh fetch before it's committed. Add an entry whenever a card placement is wrong; remove it once the upstream API fixes itself (or once the event has passed).",
+  "overrides": [
+    {
+      "eventSlug": "ufc-fight-night-june-20-2026",
+      "eventStartsAt": "2026-06-21T00:00:00.000Z",
+      "fighterNames": ["Shane Collins", "Leon Shahbazyan", "Karol Rosa", "Gaston Bolanos", "Allan Nascimento", "Bia Mesquita"],
+      "cardSection": "Preliminary Card",
+      "reason": "Cito API labeled the entire card 'Main Card' (no prelims split). These 6 bouts are actually prelims per the official card.",
+      "addedOn": "2026-06-16"
+    }
+  ]
+}
