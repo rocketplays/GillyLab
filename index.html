@@ -2982,6 +2982,7 @@
  { name: "Gable Steveson", division: "HW", rank: "NR", record: "3-0-0", initials: "GST", country: "USA" },
  { name: "Elisha Ellison", division: "HW", rank: "NR", record: "5-2-0", initials: "EEL", country: "USA" },
  { name: "Max Gimenis", division: "HW", rank: "NR", record: "6-2-0", initials: "MGM", country: "Brazil" },
+ { name: "Jovan Leka", division: "HW", rank: "NR", record: "13-2-0", initials: "JL", country: "Serbia" },
  { name: "Felipe Franco", division: "LHW", rank: "NR", record: "10-2-0", initials: "FFR", country: "Brazil" },
  { name: "Tyrell Fortune", division: "HW", rank: "NR", record: "18-3-0", initials: "TFO", country: "USA" },
  { name: "Gökhan Saricam", division: "HW", rank: "NR", record: "12-2-0", initials: "GSR", country: "Turkey" },
@@ -3894,6 +3895,7 @@
  "Gable Steveson": { ht:"6'1\"", dob:"2000-05-31", reach:'0"', stance:"Orthodox", slpm:0.00, strAcc:"0%", sapm:0.00, strDef:"0%", kd:0.0, tdLanded:0.00, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"100%", streak:3, gym:"Jackson Wink MMA Academy" },
  "Elisha Ellison": { ht:"5'11\"", dob:"1997-03-05", reach:'74"', stance:"Orthodox", slpm:1.57, strAcc:"33%", sapm:15.13, strDef:"52%", kd:0.2, tdLanded:0.00, tdAcc:"0%", tdDef:"65%", subAvg:0.00, finRate:"100%", streak:0, gym:"Combat Sports & Fitness" },
  "Max Gimenis": { ht:"6'0\"", dob:"1993-01-01", reach:'74"', stance:"Orthodox", slpm:3.20, tdAcc:"30%", subAvg:0.3, strDef:"50%", kd:0.2, tdDef:"60%", finRate:"67%", streak:0, tdLanded:1.00 },
+ "Jovan Leka": { ht:'6\'4"', dob:"2002-03-15", reach:'75"', stance:"Orthodox", slpm:1.60, sapm:0.60, strAcc:"75%", strDef:"44%", tdLanded:1.00, tdAcc:"100%", tdDef:"56%", subAvg:1.00, kd:0.00, finRate:"85%", streak:6, gym:"Family Fight Team" },
  "Felipe Franco": { ht:"6'1\"", dob:"2001-01-22", reach:'76"', stance:"Orthodox", slpm:2.23, tdAcc:"40%", subAvg:0.0, strDef:"35%", kd:0.2, tdDef:"100%",finRate:"78%", streak:0, tdLanded:6.08 },
  "Tyrell Fortune": { ht:'6\'2"', dob:"1990-07-04", reach:'77"', stance:"Orthodox", slpm:2.00, strAcc:"51%", sapm:3.13, strDef:"57%", kd:0.00, tdLanded:3.00, tdAcc:"60%", tdDef:"100%", subAvg:0.00, finRate:"67%", streak:4, gym:"Arizona Combat Sports" },
  "Gökhan Saricam": { ht:"6'3\"", dob:"1991-02-26", reach:'0"', stance:"Orthodox", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"75%", streak:0, tdLanded:0.00 },
@@ -10558,6 +10560,9 @@
   "Mario Pinto": [
   ],
   "Max Gimenis": [
+  ],
+  "Jovan Leka": [
+    { opponent: "Azamat Nuftillaev", odds: 117 },
   ],
   "Rafael Estevam": [
   ],
@@ -26944,6 +26949,24 @@ const FIGHT_HISTORY = {
   "Max Gimenis": [
     { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
   ],
+  "Jovan Leka": [
+    { date: "Aug 1, 2026", opponent: "Max Gimenis", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 283: Medic vs. Rodriguez", org: "UFC" },
+    { date: "Apr 11, 2026", opponent: "Danilo Suzart", result: "W", method: "TKO (Punches)", round: 2, time: "1:19", event: "ARMMADA 17", org: "ARMMADA" },
+    { date: "Feb 14, 2026", opponent: "Charlie Milner", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:36", event: "Brave CF 104", org: "Brave CF" },
+    { date: "Oct 14, 2025", opponent: "Azamat Nuftillaev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS 2025: Week 10", org: "DWCS" },
+    { date: "Jul 4, 2025", opponent: "Genadi Jorjoliani", result: "W", method: "TKO (Punches)", round: 2, time: "4:30", event: "ARMMADA 13", org: "ARMMADA" },
+    { date: "Apr 12, 2025", opponent: "Tiago Afonso", result: "W", method: "TKO (Punches)", round: 1, time: "1:48", event: "ARMMADA 12", org: "ARMMADA" },
+    { date: "Mar 1, 2025", opponent: "Dirlei Broenstrup", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ARMMADA 11", org: "ARMMADA" },
+    { date: "May 18, 2024", opponent: "Anton Vinnikov", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ARMMADA 8", org: "ARMMADA" },
+    { date: "Feb 17, 2024", opponent: "Amiran Severnii", result: "W", method: "TKO (Punches)", round: 1, time: "2:13", event: "ARMMADA 7", org: "ARMMADA" },
+    { date: "Jul 8, 2023", opponent: "Vlado Neferanovic", result: "W", method: "TKO (Punches)", round: 1, time: "4:45", event: "ARMMADA 5", org: "ARMMADA" },
+    { date: "Apr 1, 2023", opponent: "Ion Grigore", result: "W", method: "TKO (Punches)", round: 2, time: "3:47", event: "ARMMADA 4", org: "ARMMADA" },
+    { date: "Dec 16, 2022", opponent: "Stefan Panaitescu", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "4:05", event: "HFL 6 & ARMMADA 3", org: "ARMMADA" },
+    { date: "Oct 15, 2022", opponent: "Vladimir Cvetkovic", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "3:03", event: "ARMMADA 2", org: "ARMMADA" },
+    { date: "Jul 8, 2022", opponent: "Zoran Dod", result: "W", method: "TKO (Doctor Stoppage)", round: 1, time: "1:53", event: "SBC 41: Serbian Battle Championship 41", org: "SBC" },
+    { date: "Mar 19, 2022", opponent: "Stevan Jaric", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SBC 38: Serbian Battle Championship 38", org: "SBC" },
+    { date: "Feb 19, 2022", opponent: "Kristian Sinicic", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:09", event: "AFN - Arena Fight Night", org: "AFN" },
+  ],
   "Rafael Estevam": [
     { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
   ],
@@ -27396,6 +27419,9 @@ const ACCOLADES = {
     { icon: "🥇", title: "Junior World Champion — 2017 Freestyle Wrestling", detail: null },
     { icon: "🥇", title: "Cadet World Champion — 2015, 2016 Freestyle Wrestling", detail: null },
     { icon: "🤼", title: "NCAA Division I Wrestling — 5× All-American, 4× Big Ten champion (Minnesota)", detail: null },
+  ],
+  "Jovan Leka": [
+    { icon: "📺", title: "Dana White's Contender Series Season 9, Week 10 contract winner — defeated Azamat Nuftillaev by unanimous decision (Oct 14, 2025)", detail: null },
   ],
   "Ciryl Gane": [
     { icon: "🏆", title: "Interim UFC Heavyweight Championship — 2021 (1 reign)", detail: null },
