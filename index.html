@@ -801,7 +801,19 @@
       color: var(--muted);
       overflow: hidden;
       flex-shrink: 0;
+      position: relative;
       transition: border-color 0.3s;
+    }
+
+    .fighter-big-avatar img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 50%;
+      display: none;
     }
 
     .fighter-big-avatar.has-photo { border-color: var(--accent); }
@@ -2105,7 +2117,7 @@
   <div class="fighter-hero">
     <div class="fighter-hero-inner">
       <div class="fighter-big-avatar" id="f-avatar-wrap">
-        <img id="f-avatar-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%;" />
+        <img id="f-avatar-img" src="" alt="" />
         <span id="f-avatar-initials">IM</span>
       </div>
       <div>
