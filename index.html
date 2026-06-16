@@ -1550,8 +1550,20 @@
 
       /* ── Header ── */
       .header-search-row { padding: 0.5rem 1rem; }
-      .header-nav-row    { padding: 0 1rem; }
+      /* Targets the actual <nav> element (this rule used to read
+         .header-nav-row, a class that was never present in the markup,
+         so it silently never applied — nav kept its full 2rem desktop
+         side padding on phones, leaving the dropdown button less room
+         to clear the absolutely-centered logo). */
+      nav                { padding: 0 1rem; }
       .nav-logo          { font-size: 1rem; letter-spacing: 0.15em; }
+      /* The dropdown button's width tracks its label ("Projections",
+         "Rankings", etc.) and isn't aware of the logo centered via
+         left:50% in the same row — on narrow phones a long label can
+         push the button's right edge into the logo. Shrink the button
+         so its widest label still clears the centered logo. */
+      .nav-dropdown-btn  { padding: 0 0.85rem; height: 32px; font-size: 0.72rem; letter-spacing: 0.1em; gap: 0.4rem; }
+      .nav-dropdown-arrow { width: 8px; height: 5px; }
 
       /* ── Hero (home) ── */
       .hero              { padding: 2rem 1rem 1rem; }
@@ -1724,7 +1736,11 @@
 
     @media (max-width: 400px) {
       /* Ultra-narrow phones */
-      .nav-tabs li       { font-size: 0.6rem; padding: 0 0.5rem; }
+      /* .nav-tabs li targeted a class that's no longer in the markup
+         (the nav was refactored from a row of tabs into the dropdown
+         below) — replace with the dropdown button so it actually keeps
+         shrinking on the smallest phones, clearing the centered logo. */
+      .nav-dropdown-btn  { padding: 0 0.6rem; font-size: 0.62rem; letter-spacing: 0.05em; gap: 0.3rem; }
       .hero-title        { font-size: 1.8rem; }
       .fighter-big-name  { font-size: 1.65rem; }
       .fighter-stats-grid { grid-template-columns: repeat(2, 1fr); }
