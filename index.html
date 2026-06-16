@@ -3013,6 +3013,7 @@
  { name: "Cesar Almeida", division: "MW", rank: "NR", record: "7-2-0", initials: "CA", country: "Brazil" },
  { name: "Cezary Oleksiejczuk", division: "MW", rank: "NR", record: "22-9-0", initials: "CO", country: "Poland" },
  { name: "Nursulton Ruziboev", division: "MW", rank: "NR", record: "36-9-2", initials: "NR", country: "Uzbekistan" },
+ { name: "Vlasto Cepo", division: "MW", rank: "NR", record: "14-3-0", initials: "VCE", country: "Serbia" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -3940,6 +3941,8 @@
 
 
   "Nursulton Ruziboev": { ht:"6'5\"", dob:"1993-11-19", reach:'76"', stance:"Orthodox", slpm:2.59, sapm:2.89, strAcc:"47%", tdAcc:"67%", subAvg:0.0, strDef:"49%", kd:1.12, tdDef:"33%", finRate:"97%", streak:2, tdLanded:0.75, gym:"Renzo Gracie Philly" },
+
+  "Vlasto Cepo": { ht:'6\'1"', dob:"1995-01-25", reach:'74"', finRate:"100%", streak:2, gym:"American Top Team Zagreb" },
 
   "Andreas Gustafsson": { ht:"6'1\"", dob:"1991-02-20", reach:'73.5"', stance:"--", slpm:5.82, sapm:3.63, strAcc:"72%", tdAcc:"59%", subAvg:0.0, strDef:"46%", kd:0.62, tdDef:"100%", finRate:"83%", streak:0, tdLanded:6.19, gym:"Västerås Fight Club" },
   "Andrey Pulyaev": { ht:'6\'4"', dob:"1997-09-10", reach:"--", stance:"--", slpm:3.84, sapm:3.14, strAcc:"56%", tdAcc:"17%", subAvg:0.00, strDef:"55%", kd:0.29, tdDef:"64%", finRate:"80%", streak:0, tdLanded:0.29, gym:"Storm Shlemenko Fight Team" },
@@ -10140,6 +10143,17 @@
     { opponent: "Abdoul Abdouraguimov", odds: 220 },
     { opponent: "Luciano Contini", odds: -333 },
     { opponent: "Luis Felipe Dias", odds: -1493 }
+  ],
+  "Vlasto Cepo": [
+    { opponent: "Daniel Schwindt", odds: -288 },
+    { opponent: "Erhan Kartal", odds: -250 },
+    { opponent: "Piotr Wawrzyniak", odds: -163 },
+    { opponent: "Ion Taburceanu", odds: -263 },
+    { opponent: "Giovanni Melillo", odds: -213 },
+    { opponent: "Antonio Zovak", odds: -1100 },
+    { opponent: "Ivan Jakovljevic", odds: -500 },
+    { opponent: "Alexandre Silva", odds: -350 },
+    { opponent: "Milos Kostic", odds: -1444 },
   ],
   "Murtazali Magomedov": [
     { opponent: "Brahyam Zurcher", odds: 106 },
@@ -25579,6 +25593,27 @@ const FIGHT_HISTORY = {
     { date: "Aug 16, 2014", opponent: "Shamil Rafikov", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:53", event: "Alash Pride: Selection 4" }
   ],
 
+  "Vlasto Cepo": [
+    { date: "Aug 1, 2026", opponent: "Gilbert Urbina", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 283: Medic vs. Rodriguez", org: "UFC" },
+    { date: "Oct 4, 2025", opponent: "Daniel Schwindt", result: "W", method: "KO (Punch)", round: 1, time: "3:38", event: "Oktagon 77: Engizek vs. Humburger", org: "OKTAGON" },
+    { date: "Apr 26, 2025", opponent: "Erhan Kartal", result: "W", method: "KO (Punch)", round: 1, time: "4:01", event: "Oktagon 70: Kristofic vs. Humburger", org: "OKTAGON" },
+    { date: "Dec 29, 2023", opponent: "Piotr Wawrzyniak", result: "L", method: "TKO (Punches)", round: 3, time: "3:19", event: "Oktagon 51: Tipsport Gamechanger Final", org: "OKTAGON" },
+    { date: "Apr 29, 2023", opponent: "Ion Taburceanu", result: "W", method: "TKO (Punches)", round: 2, time: "1:54", event: "Oktagon 42: Keita vs. Tichota", org: "OKTAGON" },
+    { date: "Dec 3, 2022", opponent: "Giovanni Melillo", result: "W", method: "TKO (Punches)", round: 1, time: "2:30", event: "Oktagon 37: Kozma vs. Brito", org: "OKTAGON" },
+    { date: "Nov 17, 2022", opponent: "Antonio Zovak", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:45", event: "Centurion FC: Ad Maiora", org: "CFC" },
+    { date: "Aug 24, 2022", opponent: "Ivan Jakovljevic", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:17", event: "Centurion Fight Championship: Rudit Leo", org: "CFC" },
+    { date: "Jun 18, 2022", opponent: "Joel dos Santos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dracula Fight Night 7", org: "DFN" },
+    { date: "Feb 26, 2022", opponent: "Alexandre Silva", result: "W", method: "KO (Punch)", round: 1, time: "2:40", event: "Oktagon 31: Kristofic vs. Kincl", org: "OKTAGON" },
+    { date: "Sep 11, 2021", opponent: "Milos Kostic", result: "W", method: "TKO (Punches)", round: 1, time: "0:50", event: "Oktagon 27", org: "OKTAGON" },
+    { date: "Jul 17, 2021", opponent: "Slobodan Djordjevic", result: "W", method: "TKO (Punches)", round: 1, time: "0:45", event: "FNC Armagedon 2: Quarterfinals II", org: "FNC" },
+    { date: "Apr 10, 2021", opponent: "Leon Krajacic", result: "W", method: "TKO (Punches)", round: 1, time: "3:11", event: "FNC Armagedon 1: Final", org: "FNC" },
+    { date: "Oct 17, 2020", opponent: "Mateusz Strzelczyk", result: "L", method: "Submission (Armbar)", round: 2, time: "4:20", event: "Oktagon 17: Kozma vs. Kertesz", org: "OKTAGON" },
+    { date: "Dec 21, 2019", opponent: "Filip Le", result: "W", method: "TKO (Punches)", round: 1, time: "1:55", event: "PCF 21: New Era", org: "PCF" },
+    { date: "Oct 5, 2019", opponent: "Danijel Arandjelovic", result: "W", method: "TKO (Punches)", round: 1, time: "1:52", event: "Dracula Fight Night 1", org: "DFN" },
+    { date: "Jun 21, 2019", opponent: "Vladimir Peric", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:19", event: "CFN Combat Fight Night 2", org: "CFN" },
+    { date: "Jun 14, 2019", opponent: "Sinisa Koncic", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:50", event: "Night of Gladiators 6", org: "NOG" },
+  ],
+
 
 
 
@@ -29148,6 +29183,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "OFC Middleweight Championship — 1 reign (Open Fighting Championship)", detail: null },
     { icon: "🏆", title: "AFCA Middleweight Tournament Winner (Asian Fighting Championship Akhmat)", detail: null },
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+
+  "Vlasto Cepo": [
+    { icon: "🏅", title: "Oktagon MMA Interim Middleweight Championship challenger — Oktagon 51: Tipsport Gamechanger Final (Dec 29, 2023); lost to Piotr Wawrzyniak by TKO in Round 3", detail: null },
   ],
 
   "Andrey Pulyaev": [
