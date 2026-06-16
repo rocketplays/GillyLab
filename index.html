@@ -3014,6 +3014,7 @@
  { name: "Cezary Oleksiejczuk", division: "MW", rank: "NR", record: "22-9-0", initials: "CO", country: "Poland" },
  { name: "Nursulton Ruziboev", division: "MW", rank: "NR", record: "36-9-2", initials: "NR", country: "Uzbekistan" },
  { name: "Vlasto Cepo", division: "MW", rank: "NR", record: "14-3-0", initials: "VCE", country: "Serbia" },
+ { name: "Gilbert Urbina", division: "MW", rank: "NR", record: "7-4-0", initials: "GU", country: "USA" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -3943,6 +3944,8 @@
   "Nursulton Ruziboev": { ht:"6'5\"", dob:"1993-11-19", reach:'76"', stance:"Orthodox", slpm:2.59, sapm:2.89, strAcc:"47%", tdAcc:"67%", subAvg:0.0, strDef:"49%", kd:1.12, tdDef:"33%", finRate:"97%", streak:2, tdLanded:0.75, gym:"Renzo Gracie Philly" },
 
   "Vlasto Cepo": { ht:'6\'1"', dob:"1995-01-25", reach:'74"', finRate:"100%", streak:2, gym:"American Top Team Zagreb" },
+
+  "Gilbert Urbina": { ht:'6\'3"', dob:"1996-04-05", reach:'75"', slpm:5.57, sapm:4.62, strAcc:"57%", strDef:"45%", tdLanded:2.86, tdAcc:"44%", subAvg:0.71, kd:1.43, finRate:"57%", streak:0, gym:"BMF Ranch" },
 
   "Andreas Gustafsson": { ht:"6'1\"", dob:"1991-02-20", reach:'73.5"', stance:"--", slpm:5.82, sapm:3.63, strAcc:"72%", tdAcc:"59%", subAvg:0.0, strDef:"46%", kd:0.62, tdDef:"100%", finRate:"83%", streak:0, tdLanded:6.19, gym:"Västerås Fight Club" },
   "Andrey Pulyaev": { ht:'6\'4"', dob:"1997-09-10", reach:"--", stance:"--", slpm:3.84, sapm:3.14, strAcc:"56%", tdAcc:"17%", subAvg:0.00, strDef:"55%", kd:0.29, tdDef:"64%", finRate:"80%", streak:0, tdLanded:0.29, gym:"Storm Shlemenko Fight Team" },
@@ -10154,6 +10157,14 @@
     { opponent: "Ivan Jakovljevic", odds: -500 },
     { opponent: "Alexandre Silva", odds: -350 },
     { opponent: "Milos Kostic", odds: -1444 },
+  ],
+  "Gilbert Urbina": [
+    { opponent: "Uros Medic", odds: 255 },
+    { opponent: "Charles Radtke", odds: -206 },
+    { opponent: "Orion Cosce", odds: -118 },
+    { opponent: "Bryan Battle", odds: 169 },
+    { opponent: "Angelo Trevino", odds: -5 },
+    { opponent: "Sean Brady", odds: 290 },
   ],
   "Murtazali Magomedov": [
     { opponent: "Brahyam Zurcher", odds: 106 },
@@ -25614,6 +25625,21 @@ const FIGHT_HISTORY = {
     { date: "Jun 14, 2019", opponent: "Sinisa Koncic", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:50", event: "Night of Gladiators 6", org: "NOG" },
   ],
 
+  "Gilbert Urbina": [
+    { date: "Aug 1, 2026", opponent: "Vlasto Cepo", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 283: Medic vs. Rodriguez", org: "UFC" },
+    { date: "Aug 9, 2025", opponent: "Uros Medic", result: "L", method: "KO (Punch)", round: 1, time: "1:03", event: "UFC on ESPN: Dolidze vs. Hernandez", org: "UFC" },
+    { date: "Feb 3, 2024", opponent: "Charles Radtke", result: "L", method: "TKO (Punches)", round: 1, time: "4:47", event: "UFC Fight Night: Dolidze vs. Imavov", org: "UFC" },
+    { date: "May 20, 2023", opponent: "Orion Cosce", result: "W", method: "TKO (Front Kick and Knees)", round: 2, time: "2:55", event: "UFC Fight Night: Dern vs. Hill", org: "UFC" },
+    { date: "Aug 28, 2021", opponent: "Bryan Battle", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:15", event: "UFC on ESPN: Barboza vs. Chikadze", org: "UFC" },
+    { date: "Nov 1, 2019", opponent: "Angelo Trevino", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Americas: Dia de los Muertos", org: "Combate" },
+    { date: "Sep 14, 2018", opponent: "Sean Brady", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 49: Brady vs. Urbina", org: "LFA" },
+    { date: "Mar 24, 2017", opponent: "Noel Ligon", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:01", event: "LFA 7: Sanchez vs. Mai", org: "LFA" },
+    { date: "Jun 6, 2015", opponent: "Anthony Tatum", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:32", event: "Hero FC: Best of the Best 5", org: "HeroFC" },
+    { date: "Jan 17, 2015", opponent: "Roldan Abundis", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "Hero FC: Best of the Best 4", org: "HeroFC" },
+    { date: "Nov 7, 2014", opponent: "Jared Perez", result: "W", method: "TKO (Punches)", round: 1, time: "2:44", event: "STFC 32: Elizondo vs. Martinez", org: "STFC" },
+    { date: "May 16, 2014", opponent: "Salvador Gonzalez", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "STFC 29: MayDay", org: "STFC" },
+  ],
+
 
 
 
@@ -29187,6 +29213,10 @@ const ACCOLADES = {
 
   "Vlasto Cepo": [
     { icon: "🏅", title: "Oktagon MMA Interim Middleweight Championship challenger — Oktagon 51: Tipsport Gamechanger Final (Dec 29, 2023); lost to Piotr Wawrzyniak by TKO in Round 3", detail: null },
+  ],
+
+  "Gilbert Urbina": [
+    { icon: "📺", title: "The Ultimate Fighter Season 29 finalist — lost TUF 29 middleweight final to Bryan Battle by submission (rear-naked choke) in Round 2 (Aug 28, 2021)", detail: null },
   ],
 
   "Andrey Pulyaev": [
