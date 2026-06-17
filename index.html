@@ -32377,15 +32377,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   function tapeHistoryTableHTML(fighterName) {
-    const fights = (typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY[fighterName] : null) || [];
-    if (!fights.length) {
+    const allFights = (typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY[fighterName] : null) || [];
+    if (!allFights.length) {
       return '<div class="tape-watch-placeholder" style="display:block;padding:0.5rem 0;">No fight history on file yet.</div>';
+    }
+    // Only show fights we actually have tape links for on the Tape Study
+    // index — fights without footage are hidden here (the profile's Fight
+    // History tab still shows every fight, linked or not).
+    const fights = allFights.filter(f => !!findTapeStudyUrl(fighterName, f.opponent));
+    if (!fights.length) {
+      return '<div class="tape-watch-placeholder" style="display:block;padding:0.5rem 0;">No footage available yet.</div>';
     }
     const rows = fights.map(f => {
       const url = findTapeStudyUrl(fighterName, f.opponent);
-      const watchCell = url
-        ? '<a class="tape-watch-link" href="' + escHtmlAttr(url) + '" target="_blank" rel="noopener noreferrer">▶ Watch</a>'
-        : '<span class="tape-watch-placeholder">No footage available</span>';
+      const watchCell = '<a class="tape-watch-link" href="' + escHtmlAttr(url) + '" target="_blank" rel="noopener noreferrer">▶ Watch</a>';
       const resultColor = f.result === 'W' ? '#00e668' : (f.result === 'L' ? '#ff3d00' : 'var(--muted)');
       const metaBits = [f.method, f.event].filter(Boolean).join(' · ');
       return '<div class="tape-history-row">' +
