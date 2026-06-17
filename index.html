@@ -2061,24 +2061,35 @@
       .tape-fighter-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
       .tape-fighter-history { display: none; padding: 0 0.5rem 0.85rem 3.3rem; }
       .tape-fighter.open .tape-fighter-history { display: block; }
-      .tape-history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-      .tape-history-table th {
-        text-align: left; padding: 0.4rem 0.6rem; font-size: 0.68rem; text-transform: uppercase;
-        letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border);
+      /* Flex rows instead of a <table> — a fixed multi-column table is what
+         was pushing the Watch link off-screen on narrow phones (the row
+         just kept growing wider instead of wrapping). Flex lets the date/
+         opponent/method/event block wrap onto its own lines while Watch
+         stays pinned, visible, and never shrinks. */
+      .tape-history-row {
+        display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+        padding: 0.55rem 0.1rem; border-bottom: 1px solid rgba(255,255,255,0.06);
       }
-      .tape-history-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
+      .tape-history-row:last-child { border-bottom: none; }
+      .tape-history-main { min-width: 0; flex: 1 1 auto; }
+      .tape-history-date { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+      .tape-history-opponent { font-weight: 600; color: var(--text); font-size: 0.85rem; margin-top: 0.05rem; }
+      .tape-history-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; overflow-wrap: anywhere; }
+      .tape-history-watch { flex-shrink: 0; }
       .tape-watch-link {
         display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem;
         background: rgba(255,0,0,0.15); border: 1px solid rgba(255,60,60,0.35); border-radius: 0.4rem;
         color: #ff4444; font-size: 0.74rem; font-weight: 600; text-decoration: none; white-space: nowrap;
       }
       .tape-watch-link:hover { background: rgba(255,0,0,0.28); }
-      .tape-watch-placeholder { font-size: 0.74rem; color: rgba(255,255,255,0.25); font-style: italic; white-space: nowrap; }
+      .tape-watch-placeholder { font-size: 0.72rem; color: rgba(255,255,255,0.25); font-style: italic; white-space: nowrap; }
       .tape-empty { padding: 3rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
       @media (max-width: 600px) {
         .tape-fighter-history { padding-left: 0.5rem; }
-        .tape-history-table { font-size: 0.74rem; }
-        .tape-history-table th, .tape-history-table td { padding: 0.4rem 0.4rem; }
+        .tape-history-row { gap: 0.5rem; }
+        .tape-history-opponent { font-size: 0.8rem; }
+        .tape-history-meta { font-size: 0.68rem; }
+        .tape-watch-link { padding: 0.22rem 0.55rem; font-size: 0.7rem; }
       }
 </style>
 </head>
@@ -32181,18 +32192,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         ? '<a class="tape-watch-link" href="' + escHtmlAttr(url) + '" target="_blank" rel="noopener noreferrer">▶ Watch</a>'
         : '<span class="tape-watch-placeholder">—</span>';
       const resultColor = f.result === 'W' ? '#00e668' : (f.result === 'L' ? '#ff3d00' : 'var(--muted)');
-      return '<tr>' +
-        '<td style="white-space:nowrap;color:var(--muted);">' + (f.date || '') + '</td>' +
-        '<td>' + (f.opponent || '') + '</td>' +
-        '<td style="text-align:center;font-weight:800;color:' + resultColor + ';">' + (f.result || '') + '</td>' +
-        '<td>' + (f.method || '') + '</td>' +
-        '<td style="text-align:center;color:var(--muted);">' + (f.event || '') + '</td>' +
-        '<td style="text-align:right;">' + watchCell + '</td>' +
-      '</tr>';
+      const metaBits = [f.method, f.event].filter(Boolean).join(' · ');
+      return '<div class="tape-history-row">' +
+        '<div class="tape-history-main">' +
+          '<span class="tape-history-date">' + (f.date || '') + '</span>' +
+          '<div class="tape-history-opponent">' +
+            '<span style="font-weight:800;color:' + resultColor + ';margin-right:0.4rem;">' + (f.result || '') + '</span>' +
+            (f.opponent || '') +
+          '</div>' +
+          '<div class="tape-history-meta">' + metaBits + '</div>' +
+        '</div>' +
+        '<div class="tape-history-watch">' + watchCell + '</div>' +
+      '</div>';
     }).join('');
-    return '<table class="tape-history-table"><thead><tr>' +
-      '<th>Date</th><th>Opponent</th><th style="text-align:center;">Result</th><th>Method</th><th>Event</th><th style="text-align:right;">Watch</th>' +
-      '</tr></thead><tbody>' + rows + '</tbody></table>';
+    return '<div class="tape-history-list">' + rows + '</div>';
   }
 
   function toggleTapeEvent(id) {
