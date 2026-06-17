@@ -32385,7 +32385,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const url = findTapeStudyUrl(fighterName, f.opponent);
       const watchCell = url
         ? '<a class="tape-watch-link" href="' + escHtmlAttr(url) + '" target="_blank" rel="noopener noreferrer">▶ Watch</a>'
-        : '<span class="tape-watch-placeholder">—</span>';
+        : '<span class="tape-watch-placeholder">No footage available</span>';
       const resultColor = f.result === 'W' ? '#00e668' : (f.result === 'L' ? '#ff3d00' : 'var(--muted)');
       const metaBits = [f.method, f.event].filter(Boolean).join(' · ');
       return '<div class="tape-history-row">' +
