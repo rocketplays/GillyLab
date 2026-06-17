@@ -2295,7 +2295,7 @@
   <div class="fighter-content">
     <div class="fighter-tabs">
       <div class="fighter-tab active" onclick="switchFighterTab(this, 'ftab-history')">Fight History</div>
-      <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-tape')">Tape Study</div>
+      <div class="fighter-tab" id="ftab-tape-btn" onclick="switchFighterTab(this, 'ftab-tape')">Tape Study</div>
       <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-odds')">Odds History</div>
       <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-accolades')">Accolades</div>
     </div>
@@ -4598,14 +4598,30 @@
  const tbody = document.getElementById('ft-tbody');
  const wrap = document.getElementById('ft-table-wrap');
  const empty = document.getElementById('ft-empty');
+ const tabBtn = document.getElementById('ftab-tape-btn');
  if (!tbody) return;
  tbody.innerHTML = '';
  const fights = TAPE_STUDY[name];
  if (!fights || fights.length === 0) {
  wrap.style.display = 'none';
  empty.style.display = '';
+ if (tabBtn) {
+ tabBtn.style.display = 'none';
+ // If Tape Study was the active tab for the previous fighter, fall
+ // back to Fight History so we never land on a hidden tab.
+ if (tabBtn.classList.contains('active')) {
+ tabBtn.classList.remove('active');
+ const panel = document.getElementById('ftab-tape');
+ if (panel) panel.style.display = 'none';
+ const historyBtn = document.querySelector('.fighter-tab[onclick*="ftab-history"]');
+ const historyPanel = document.getElementById('ftab-history');
+ if (historyBtn) historyBtn.classList.add('active');
+ if (historyPanel) historyPanel.style.display = 'block';
+ }
+ }
  return;
  }
+ if (tabBtn) tabBtn.style.display = '';
  wrap.style.display = '';
  empty.style.display = 'none';
  let rowIndex = 0;
