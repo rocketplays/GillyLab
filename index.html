@@ -2027,6 +2027,59 @@
           border-bottom: none !important;
         }
       }
+
+      /* ── TAPE STUDY PAGE — 3-level nested accordion ──────────────────────
+         Level 1: event (toggles list of fighters)
+         Level 2: fighter (toggles their fight history)
+         Level 3: fight-history rows with a Watch link/placeholder per fight. */
+      .tape-accordion { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+      .tape-event { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.85rem; background: var(--card); overflow: hidden; }
+      .tape-event-header {
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: 1rem 1.25rem; cursor: pointer; user-select: none;
+      }
+      .tape-event-header:hover { background: rgba(255,255,255,0.03); }
+      .tape-event-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.05rem; letter-spacing: 0.02em; color: var(--text); }
+      .tape-event-date { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+      .tape-chevron { width: 10px; height: 10px; flex-shrink: 0; transition: transform 0.18s ease; color: var(--muted); }
+      .tape-event.open > .tape-event-header .tape-chevron { transform: rotate(180deg); }
+      .tape-event-fighters { display: none; border-top: 1px solid var(--border); padding: 0.4rem 0.75rem; }
+      .tape-event.open > .tape-event-fighters { display: block; }
+      .tape-fighter { border-bottom: 1px solid rgba(255,255,255,0.06); }
+      .tape-fighter:last-child { border-bottom: none; }
+      .tape-fighter-header {
+        display: flex; align-items: center; gap: 0.75rem;
+        padding: 0.7rem 0.5rem; cursor: pointer; user-select: none;
+      }
+      .tape-fighter-header:hover { background: rgba(255,255,255,0.03); }
+      .tape-fighter-avatar {
+        width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+        background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center;
+        font-size: 0.7rem; font-weight: 700; color: var(--muted);
+      }
+      .tape-fighter-name { font-weight: 600; color: var(--text); font-size: 0.92rem; }
+      .tape-fighter-meta { font-size: 0.72rem; color: var(--muted); margin-top: 0.1rem; }
+      .tape-fighter-history { display: none; padding: 0 0.5rem 0.85rem 3.3rem; }
+      .tape-fighter.open .tape-fighter-history { display: block; }
+      .tape-history-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+      .tape-history-table th {
+        text-align: left; padding: 0.4rem 0.6rem; font-size: 0.68rem; text-transform: uppercase;
+        letter-spacing: 0.06em; color: var(--muted); border-bottom: 1px solid var(--border);
+      }
+      .tape-history-table td { padding: 0.5rem 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.06); color: var(--text); }
+      .tape-watch-link {
+        display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.7rem;
+        background: rgba(255,0,0,0.15); border: 1px solid rgba(255,60,60,0.35); border-radius: 0.4rem;
+        color: #ff4444; font-size: 0.74rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+      }
+      .tape-watch-link:hover { background: rgba(255,0,0,0.28); }
+      .tape-watch-placeholder { font-size: 0.74rem; color: rgba(255,255,255,0.25); font-style: italic; white-space: nowrap; }
+      .tape-empty { padding: 3rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
+      @media (max-width: 600px) {
+        .tape-fighter-history { padding-left: 0.5rem; }
+        .tape-history-table { font-size: 0.74rem; }
+        .tape-history-table th, .tape-history-table td { padding: 0.4rem 0.4rem; }
+      }
 </style>
 </head>
 <body>
@@ -2063,6 +2116,7 @@
         <li role="menuitem" id="tab-projections"            onclick="navigate('projections'); closeNavDropdown()">Projections</li>
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
+        <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
       </ul>
     </div>
 
@@ -2363,6 +2417,19 @@
  </div>
  <div id="rankingPanels"></div>
  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: TAPE STUDY
+══════════════════════════════════════ -->
+<div class="page" id="page-tape-study">
+  <div class="page-header">
+    <div class="page-header-label">Scouting</div>
+    <div class="page-header-title">Tape Study</div>
+    <div class="page-header-sub">Every upcoming card · Every fighter · Their full fight history</div>
+  </div>
+  <div class="divider"></div>
+  <div id="tape-study-accordion" class="tape-accordion"></div>
 </div>
 
 <footer>
@@ -32048,6 +32115,164 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
   }
 
+  // ── TAPE STUDY PAGE ───────────────────────────────────────────────────
+  // 3-level accordion: every upcoming card (homepage featured event +
+  // everything in the upcoming carousel — i.e. the full Cito API event
+  // list) -> every fighter on that card -> that fighter's complete fight
+  // history (FIGHT_HISTORY, the same authoritative data backing the
+  // fighter-profile "Fight History" tab). Watch links are backfilled from
+  // TAPE_STUDY (matched by opponent name) wherever footage has already been
+  // catalogued; otherwise the row shows a placeholder until that data is
+  // gathered.
+  function getUpcomingRawEventsForTapeStudy(apiData) {
+    const rawEvents = (apiData.data || []).slice().sort((a, b) =>
+      new Date(a.startsAt) - new Date(b.startsAt)
+    );
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    let upcoming = rawEvents.filter(e => {
+      const d = new Date(e.startsAt);
+      const expiry = new Date(d); expiry.setDate(expiry.getDate() + 1);
+      return expiry >= today;
+    });
+
+    // Same completed-UFC-number guard used by the carousel — drops events
+    // whose UFC number already has results in FIGHT_HISTORY (catches
+    // wrong-year API dates, e.g. "UFC 317" stamped 2026 when it already
+    // happened in 2025).
+    const _ufcNumRe = /\bUFC\s+(\d+)\b/i;
+    const _completedNums = new Set();
+    if (typeof FIGHT_HISTORY !== 'undefined') {
+      for (const fights of Object.values(FIGHT_HISTORY)) {
+        for (const f of fights) {
+          if (!f.result || f.result === '–' || (f.method || '').toLowerCase() === 'upcoming') continue;
+          const m = _ufcNumRe.exec(f.event || '');
+          if (m) _completedNums.add(parseInt(m[1], 10));
+        }
+      }
+    }
+    return upcoming.filter(raw => {
+      const title = raw.title || raw.shortTitle || '';
+      const m = _ufcNumRe.exec(title);
+      return !(m && _completedNums.has(parseInt(m[1], 10)));
+    });
+  }
+
+  // Best-effort lookup of a watchable link for a given fighter+opponent pair
+  // from the smaller, hand-curated TAPE_STUDY dataset. Returns null if that
+  // fight hasn't been catalogued yet (the row then renders a placeholder).
+  function findTapeStudyUrl(fighterName, opponentName) {
+    if (typeof TAPE_STUDY === 'undefined') return null;
+    const entries = TAPE_STUDY[fighterName];
+    if (!entries || !entries.length) return null;
+    const target = normalizeFighterNameForMatch(opponentName);
+    const hit = entries.find(e => normalizeFighterNameForMatch(e.opponent) === target);
+    return (hit && hit.url) ? hit.url : null;
+  }
+
+  function tapeHistoryTableHTML(fighterName) {
+    const fights = (typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY[fighterName] : null) || [];
+    if (!fights.length) {
+      return '<div class="tape-watch-placeholder" style="display:block;padding:0.5rem 0;">No fight history on file yet.</div>';
+    }
+    const rows = fights.map(f => {
+      const url = findTapeStudyUrl(fighterName, f.opponent);
+      const watchCell = url
+        ? '<a class="tape-watch-link" href="' + escHtmlAttr(url) + '" target="_blank" rel="noopener noreferrer">▶ Watch</a>'
+        : '<span class="tape-watch-placeholder">—</span>';
+      const resultColor = f.result === 'W' ? '#00e668' : (f.result === 'L' ? '#ff3d00' : 'var(--muted)');
+      return '<tr>' +
+        '<td style="white-space:nowrap;color:var(--muted);">' + (f.date || '') + '</td>' +
+        '<td>' + (f.opponent || '') + '</td>' +
+        '<td style="text-align:center;font-weight:800;color:' + resultColor + ';">' + (f.result || '') + '</td>' +
+        '<td>' + (f.method || '') + '</td>' +
+        '<td style="text-align:center;color:var(--muted);">' + (f.event || '') + '</td>' +
+        '<td style="text-align:right;">' + watchCell + '</td>' +
+      '</tr>';
+    }).join('');
+    return '<table class="tape-history-table"><thead><tr>' +
+      '<th>Date</th><th>Opponent</th><th style="text-align:center;">Result</th><th>Method</th><th>Event</th><th style="text-align:right;">Watch</th>' +
+      '</tr></thead><tbody>' + rows + '</tbody></table>';
+  }
+
+  function toggleTapeEvent(id) {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('open');
+  }
+
+  function toggleTapeFighter(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const wasOpen = el.classList.contains('open');
+    el.classList.toggle('open');
+    if (!wasOpen) {
+      const body = el.querySelector('.tape-fighter-history');
+      if (body && !body.dataset.loaded) {
+        const name = el.dataset.fighter;
+        body.innerHTML = tapeHistoryTableHTML(name);
+        body.dataset.loaded = '1';
+      }
+    }
+  }
+
+  function renderTapeStudyPage(apiData) {
+    const root = document.getElementById('tape-study-accordion');
+    if (!root || !apiData) return;
+
+    const upcoming = getUpcomingRawEventsForTapeStudy(apiData);
+    if (!upcoming.length) {
+      root.innerHTML = '<div class="tape-empty">No upcoming cards found.</div>';
+      return;
+    }
+
+    const html = upcoming.map((raw, evtIdx) => {
+      const evt = parseApiEvent(raw);
+      if (!evt) return '';
+      const eventId = 'tape-evt-' + evtIdx;
+
+      // One row per fighter on the card (both corners of every bout, in
+      // fight order) rather than per-bout — clicking a fighter drills into
+      // their own fight history, independent of who they're booked against.
+      const fighters = [];
+      (evt.fights || []).forEach(f => {
+        fighters.push({ name: f.f1, div: f.div1, rec: f.rec1, ini: f.ini1 });
+        fighters.push({ name: f.f2, div: f.div2, rec: f.rec2, ini: f.ini2 });
+      });
+
+      const fightersHTML = fighters.map((fr, fIdx) => {
+        const fighterId = eventId + '-f' + fIdx;
+        return '<div class="tape-fighter" id="' + fighterId + '" data-fighter="' + escHtmlAttr(fr.name) + '">' +
+          '<div class="tape-fighter-header" onclick="toggleTapeFighter(\'' + fighterId + '\')">' +
+            '<div class="tape-fighter-avatar">' + (fr.ini || '') + '</div>' +
+            '<div style="flex:1;min-width:0;">' +
+              '<div class="tape-fighter-name">' + fr.name + '</div>' +
+              '<div class="tape-fighter-meta">' + (fr.div || '') + (fr.rec ? ' · ' + fr.rec : '') + '</div>' +
+            '</div>' +
+            '<svg class="tape-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+              '<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '</svg>' +
+          '</div>' +
+          '<div class="tape-fighter-history"></div>' +
+        '</div>';
+      }).join('');
+
+      return '<div class="tape-event" id="' + eventId + '">' +
+        '<div class="tape-event-header" onclick="toggleTapeEvent(\'' + eventId + '\')">' +
+          '<div>' +
+            '<div class="tape-event-name">' + (evt.name || '') + '</div>' +
+            '<div class="tape-event-date">' + (evt.details || '') + '</div>' +
+          '</div>' +
+          '<svg class="tape-chevron" width="12" height="7" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+            '<path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '</svg>' +
+        '</div>' +
+        '<div class="tape-event-fighters">' + fightersHTML + '</div>' +
+      '</div>';
+    }).join('');
+
+    root.innerHTML = html || '<div class="tape-empty">No upcoming cards found.</div>';
+  }
+
   async function initDynamicPages() {
     let evt = null;
     let apiData = null;
@@ -32075,6 +32300,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       renderHomeFightCard(evt);
       renderProjectionsPage(evt);
       handleOddsPage(evt);
+      if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
       console.error('[GillyLab] render error before rankings:', e);
     }
