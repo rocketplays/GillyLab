@@ -32198,7 +32198,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<span class="tape-history-date">' + (f.date || '') + '</span>' +
           '<div class="tape-history-opponent">' +
             '<span style="font-weight:800;color:' + resultColor + ';margin-right:0.4rem;">' + (f.result || '') + '</span>' +
-            (f.opponent || '') +
+            '<span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onclick="event.stopPropagation();openFighterByName(\'' + escJsAttr(f.opponent || '') + '\')" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'\'">' + (f.opponent || '') + '</span>' +
           '</div>' +
           '<div class="tape-history-meta">' + metaBits + '</div>' +
         '</div>' +
@@ -32269,7 +32269,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="tape-fighter-header" onclick="toggleTapeFighter(\'' + fighterId + '\')">' +
             tapeAvatarHTML(fr.photo, fr.ini, fr.name) +
             '<div style="flex:1;min-width:0;">' +
-              '<div class="tape-fighter-name">' + fr.name + '</div>' +
+              '<div class="tape-fighter-name"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onclick="event.stopPropagation();openFighterByName(\'' + escJsAttr(fr.name) + '\')" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'\'">' + fr.name + '</span></div>' +
               '<div class="tape-fighter-meta">' + (fr.div || '') + (fr.rec ? ' · ' + fr.rec : '') + '</div>' +
             '</div>' +
             '<svg class="tape-chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">' +
