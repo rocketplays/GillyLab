@@ -3321,7 +3321,7 @@
  "Nikita Krylov": { ht:"6'3\"", dob:"1992-03-07", reach:'77.5"', stance:"Orthodox", slpm:4.36, strAcc:"54%", sapm:2.59, strDef:"48%", kd:0.62, tdLanded:2.05, tdAcc:"37%", tdDef:"53%", subAvg:1.23, finRate:"94%", streak:1, gym:"Fight Club No1" },
  // ── Heavyweight ──
  "Curtis Blaydes": { ht:"6'4\"", dob:"1991-02-18", reach:'80"', stance:"Orthodox", slpm:3.56, tdAcc:"48%", subAvg:0.1, strDef:"58%", kd:0.3, tdDef:"75%", finRate:"53%", streak:0, tdLanded:5.38, gym:"Elevation Fight Team (2016–present)" },
- "Sergei Pavlovich": { ht:"6'3\"", dob:"1992-05-13", reach:'84"', stance:"Southpaw", slpm:4.51, tdAcc:"25%", subAvg:0.0, strDef:"56%", kd:1.0, tdDef:"75%", finRate:"95%", streak:3, tdLanded:0.48, gym:"Eagles MMA Moscow" },
+ "Sergei Pavlovich": { ht:"6'3\"", dob:"1992-05-13", reach:'84"', stance:"Orthodox", slpm:4.49, strAcc:"45%", sapm:3.58, strDef:"56%", kd:1.89, tdLanded:0.47, tdAcc:"25%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:3, gym:"Eagles MMA Moscow" },
  "Stipe Miocic": { ht:"6'4\"", dob:"1982-08-19", reach:'80"', stance:"Orthodox", slpm:4.67, tdAcc:"34%", subAvg:0.2, strDef:"52%", kd:0.3, tdDef:"74%", finRate:"60%", streak:0, tdLanded:1.74, gym:"Strong Style Fight Team" },
  "Derrick Lewis": { ht:"6'3\"", dob:"1985-02-07", reach:'79"', stance:"Orthodox", slpm:2.46, strAcc:"50%", sapm:2.57, strDef:"40%", kd:0.60, tdLanded:0.55, tdAcc:"26%", tdDef:"52%", subAvg:0.0, finRate:"86%", streak:0, gym:"4oz Fight Club" },
  "Tai Tuivasa": { ht:"6'2\"", dob:"1993-08-03", reach:'76"', stance:"Orthodox", slpm:3.66, tdAcc:"0%", subAvg:0.0, strDef:"43%", kd:0.8, tdDef:"50%", finRate:"80%", streak:0, tdLanded:0.0, gym:"TK MMA & Fitness (2021–present)" },
@@ -5118,17 +5118,16 @@
   ],
   "Sergei Pavlovich": [
     { opponent: "Tallison Teixeira", odds: -625 },
-    { opponent: "Waldo Cortes-Acosta", odds: -126 },
-    { opponent: "Jairzinho Rozenstruik", odds: -158 },
-    { opponent: "Alexander Volkov", odds: -300 },
-    { opponent: "Tom Aspinall", odds: 125 },
-    { opponent: "Curtis Blaydes", odds: -250 },
-    { opponent: "Tai Tuivasa", odds: -210 },
-    { opponent: "Derrick Lewis", odds: 240 },
-    { opponent: "Shamil Abdurakhimov", odds: -500 },
-    { opponent: "Maurice Greene", odds: -600 },
-    { opponent: "Marcelo Golm", odds: -700 },
-    { opponent: "Alistair Overeem", odds: -162 }
+    { opponent: "Waldo Cortes-Acosta", odds: -264 },
+    { opponent: "Jairzinho Rozenstruik", odds: -285 },
+    { opponent: "Alexander Volkov", odds: -238 },
+    { opponent: "Tom Aspinall", odds: 110 },
+    { opponent: "Curtis Blaydes", odds: 115 },
+    { opponent: "Tai Tuivasa", odds: -195 },
+    { opponent: "Derrick Lewis", odds: 102 },
+    { opponent: "Shamil Abdurakhimov", odds: -360 },
+    { opponent: "Maurice Greene", odds: -238 },
+    { opponent: "Marcelo Golm", odds: -289 }
   ],
   "Alonzo Menifield": [
     { opponent: "Zhang Mingyang", odds: 200 },
@@ -27796,6 +27795,19 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Sergei Pavlovich": [
+    { icon: "🏆", title: "Former Fight Nights Global Heavyweight Champion — won Jun 2, 2017 (Decision, Mikhail Mokhnatkin); 1 successful defense Nov 19, 2017 (TKO, Kirill Sidelnikov)", detail: null },
+    { icon: "🏆", title: "Fight Nights Global Heavyweight Grand Prix winner (2017)", detail: null },
+    { icon: "🏆", title: "Self-reported \"Universal Fighting\" World and European Champion (per UFC.com Q&A; promotion/details unverified elsewhere)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night × 4 — vs. Marcelo Golm (Apr 2019), Shamil Abdurakhimov (Mar 2022), Tai Tuivasa (Dec 2022), Curtis Blaydes (Apr 2023)", detail: null },
+    { icon: "🏅", title: "Longest first-round knockout win streak in UFC history (6)", detail: null },
+    { icon: "🏅", title: "Tied with Don Frye for 2nd-longest knockout win streak in UFC history (6), behind Chuck Liddell", detail: null },
+    { icon: "🏅", title: "MMA Junkie Knockout of the Month, December 2022 (vs. Tai Tuivasa)", detail: null },
+    { icon: "🏅", title: "Fight Matrix 2022 First-Team MMA All-Star", detail: null },
+    { icon: "🥇", title: "Russian National Champion in Combat Kung Fu, +90kg division (one-time)", detail: null },
+    { icon: "🤼", title: "Background in Greco-Roman wrestling (from age 5) and Combat Sambo", detail: null },
+    { icon: "🥋", title: "Trains Brazilian Jiu-Jitsu (per UFC.com Q&A); no specific belt rank publicly reported", detail: null },
+  ],
   "Dustin Jacoby": [
     { icon: "🏆", title: "CFFC Middleweight Championship — 1 reign (won vs. Tim Williams, Cage Fury FC 16, Aug 24, 2012, R1 TKO doctor stoppage)", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night × 3 — vs. Jung Da-un (Jul 16, 2022, KO R1), Kennedy Nzechukwu (Aug 5, 2023, TKO R1), Vitor Petrino (Dec 14, 2024, KO R3)", detail: null },
