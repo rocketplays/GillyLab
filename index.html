@@ -31378,13 +31378,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           ef.f1.toLowerCase().includes(n2) || ef.f2.toLowerCase().includes(n2)
         );
         const label = evtFight ? evtFight.label : '';
-        const n1Esc = String(fight.home_team).replace(/"/g, '&quot;');
-        const n2Esc = String(fight.away_team).replace(/"/g, '&quot;');
+        const homeName = resolveCanonicalFighterName(fight.home_team, null);
+        const awayName = resolveCanonicalFighterName(fight.away_team, null);
+        const n1Esc = String(homeName).replace(/"/g, '&quot;');
+        const n2Esc = String(awayName).replace(/"/g, '&quot;');
         return `<div class="projection-card">
           <div class="projection-fighters">
-            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${fight.home_team}</div></div><div class="proj-pct">${pcts.pct1}%</div></div>
+            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${homeName}</div></div><div class="proj-pct">${pcts.pct1}%</div></div>
             <div class="proj-vs-label">VS</div>
-            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${fight.away_team}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${pcts.pct2}%</div></div>
+            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${awayName}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${pcts.pct2}%</div></div>
           </div>
           <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${pcts.pct1}%"></div><div class="proj-bar-right"></div></div>
           <div class="proj-weight">${label}</div>
@@ -32213,6 +32215,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
+    'beatriz mesquita': 'Bia Mesquita',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
