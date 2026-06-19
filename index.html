@@ -3299,7 +3299,7 @@
  "Umar Nurmagomedov": { ht:'5\'8"', dob:"1996-01-03", reach:'69"', stance:"Orthodox", slpm:3.86, strAcc:"56%", sapm:1.86, strDef:"61%", kd:0.12, tdLanded:4.03, tdAcc:"47%", tdDef:"79%", subAvg:0.24, finRate:"45%", streak:2, gym:"American Kickboxing Academy" },
  "Alexa Grasso": { ht:"5'5\"", dob:"1993-08-09", reach:'65"', stance:"Orthodox", slpm:3.88, tdAcc:"36%", subAvg:0.9, strDef:"60%", kd:0.1, tdDef:"75%", finRate:"53%", streak:0, tdLanded:1.20, gym:"Lobo Gym MMA" },
  "Rose Namajunas": { ht:"5'5\"", dob:"1992-06-29", reach:'65"', stance:"Switch", slpm:3.5, tdAcc:"48%", subAvg:0.5, strDef:"63%", kd:0.1, tdDef:"67%", finRate:"60%", streak:0, tdLanded:0.5, gym:"Roufusport" },
- "Jiří Procházka": { ht:"6'3\"", dob:"1992-10-14", reach:'80"', stance:"Orthodox", slpm:6.61, tdAcc:"60%", subAvg:0.2, strDef:"52%", kd:0.8, tdDef:"68%", finRate:"84%", streak:0, tdLanded:0.51 },
+ "Jiří Procházka": { ht:"6'3\"", dob:"1992-10-14", reach:'80"', stance:"Orthodox", slpm:5.61, strAcc:"56%", sapm:5.67, strDef:"45%", kd:0.81, tdLanded:0.49, tdAcc:"60%", tdDef:"68%", subAvg:0.16, finRate:"97%", streak:0, gym:"Jetsaam Gym" },
  // ── Welterweight ──
  "Colby Covington": { ht:"5'11\"", dob:"1988-02-22", reach:'72"', stance:"Orthodox", slpm:3.81, tdAcc:"42%", subAvg:0.2, strDef:"54%", kd:0.1, tdDef:"68%", finRate:"47%", streak:0, tdLanded:3.64 },
  "Jorge Masvidal": { ht:"5'11\"", dob:"1984-11-12", reach:'74"', stance:"Orthodox", slpm:4.05, tdAcc:"59%", subAvg:0.3, strDef:"64%", kd:0.6, tdDef:"72%", finRate:"60%", streak:0, tdLanded:1.38, gym:"American Top Team (2007–2023)" },
@@ -6481,12 +6481,22 @@
     { opponent: "Jonathan Pearce", odds: -500 }
   ],
   "Jiří Procházka": [
-    { opponent: "Carlos Ulberg", odds: -118 },
+    { opponent: "Carlos Ulberg", odds: 105 },
     { opponent: "Khalil Rountree Jr.", odds: -180 },
     { opponent: "Jamahal Hill", odds: 135 },
-    { opponent: "Alex Pereira", odds: 105 },
+    { opponent: "Alex Pereira", odds: 130 },
     { opponent: "Aleksandar Rakic", odds: 110 },
-    { opponent: "Glover Teixeira", odds: -195 }
+    { opponent: "Alex Pereira", odds: 105 },
+    { opponent: "Glover Teixeira", odds: -195 },
+    { opponent: "Dominick Reyes", odds: 100 },
+    { opponent: "Volkan Oezdemir", odds: 170 },
+    { opponent: "C.B. Dollaway", odds: -960 },
+    { opponent: "Brandon Halsey", odds: -415 },
+    { opponent: "Karl Albrektsson", odds: -165 },
+    { opponent: "Mark Tanios", odds: -335 },
+    { opponent: "Kazuyuki Fujita", odds: -1050 },
+    { opponent: "Vadim Nemkov", odds: 105 },
+    { opponent: "Satoshi Ishii", odds: 110 }
   ],
   "Jan Błachowicz": [
     { opponent: "Bogdan Guskov", odds: -165 },
@@ -15061,7 +15071,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 25, 2016", opponent: "Mark Tanios", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Rizin World Grand Prix 2016: 1st Round", org: "RIZIN" },
     { date: "Apr 17, 2016", opponent: "Kazuyuki Fujita", result: "W", method: "KO (Punch)", round: 1, time: "3:18", event: "Rizin 1", org: "RIZIN" },
     { date: "Dec 31, 2015", opponent: "Muhammed Lawal", result: "L", method: "KO (Punch)", round: 1, time: "5:09", event: "Rizin World Grand Prix 2015: Part 2 - Iza", org: "RIZIN" },
-    { opponent: "Vadim Nemkov", result: "W", method: "TKO (Retirement)", event: "1" },
+    { date: "Dec 31, 2015", opponent: "Vadim Nemkov", result: "W", method: "TKO (Retirement)", round: 1, time: "10:00", event: "Rizin World Grand Prix 2015: Part 2 - Iza", org: "RIZIN" },
     { date: "Dec 29, 2015", opponent: "Satoshi Ishii", result: "W", method: "KO (Head kick and knees)", round: 1, time: "1:36", event: "Rizin World Grand Prix 2015: Part 1 - Saraba", org: "RIZIN" },
     { date: "Nov 21, 2015", opponent: "Evgeni Kondratov", result: "W", method: "KO (Punch)", round: 1, time: "4:23", event: "ProFC 59" },
     { date: "May 22, 2015", opponent: "Michał Fijałka", result: "W", method: "TKO (Corner stoppage)", round: 1, time: "5:00", event: "Gladiator CF 31" },
@@ -28997,8 +29007,14 @@ const ACCOLADES = {
     { icon: "🥇", title: "WMMAA World Championships — 2013 Baku — −93 kg", detail: null },
   ],
   "Jiří Procházka": [
-    { icon: "🏆", title: "Black belt in Kyokushin", detail: null },
-    { icon: "🥇", title: "2011 Prague — −86 kg", detail: null },
+    { icon: "🏆", title: "Former UFC Light Heavyweight Champion — first Czech fighter to win a UFC championship (won via 5th-round submission of Glover Teixeira, UFC 275)", detail: null },
+    { icon: "🏆", title: "RIZIN Fighting Federation Light Heavyweight Championship (Inaugural; former) — 1 successful title defense", detail: null },
+    { icon: "🏆", title: "Gladiator Championship Fighting (GCF) Light Heavyweight Championship (Inaugural; former) — 1 successful title defense", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (3×) — vs. Dominick Reyes, Glover Teixeira, Khalil Rountree Jr.", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (5×) — vs. Volkan Oezdemir, Dominick Reyes, Aleksandar Rakić, Jamahal Hill, Khalil Rountree Jr.", detail: null },
+    { icon: "🏅", title: "2015 RIZIN World Grand Prix (−100 kg) — Runner-up", detail: null },
+    { icon: "🥇", title: "Czech National Muay Thai Championships — 2011 Prague — −86.18 kg", detail: null },
+    { icon: "🥊", title: "Black belt in Kyokushin karate", detail: null },
   ],
   "Jan Błachowicz": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Kamil Umiński and Radosław Turek", detail: null },
