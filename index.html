@@ -32150,9 +32150,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!upcoming.length) return;
 
     const eventsForCarousel = [];
-    const cards = upcoming.map(raw => {
+    const cards = [];
+    for (const raw of upcoming) {
       const evt = parseApiEvent(raw);
-      if (!evt) return '';
+      if (!evt) continue;
+
+      // Skip events with no announced fights yet — e.g. a newly-listed
+      // numbered event (UFC 330) the API has created before any bouts have
+      // been added. Nothing useful to render, and it shouldn't take up a
+      // carousel slot ahead of events that actually have a card.
+      if (!(evt.fights || []).length) continue;
+
+      // Skip "Road to the UFC" cards — a contender-tournament show, not a
+      // UFC main roster event. It doesn't belong in the upcoming-events
+      // carousel alongside numbered/Fight Night events.
+      if ((evt.name || '').toLowerCase().includes('road to the ufc')) continue;
+
       eventsForCarousel.push({ id: evt.slug, date: evt.date });
 
       const mainCard = (evt.fights || []).filter(f => f.isMainCard || f.isMain);
@@ -32171,7 +32184,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const isNumbered = !isFreedom && /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
       const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : ''));
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
-      return '<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
+      cards.push('<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
         '<div style="max-width:1300px;margin:0 auto;">' +
           '<div class="event-header">' +
             '<div class="event-info">' +
@@ -32185,8 +32198,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '</div>' +
           sectionsHTML +
         '</div>' +
-      '</div>';
-    });
+      '</div>');
+    }
 
     track.innerHTML = cards.join('');
     if (window.reinitCarousel) window.reinitCarousel(eventsForCarousel);
