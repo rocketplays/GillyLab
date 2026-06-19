@@ -1181,7 +1181,35 @@
       gap: 1rem;
     }
 
-    .sim-fighter-col { flex: 1; }
+    .sim-fighter-col { flex: 1; position: relative; }
+
+    .sim-autocomplete-list {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: 0.3rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      max-height: 220px;
+      overflow-y: auto;
+      z-index: 50;
+      display: none;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+
+    .sim-autocomplete-item {
+      padding: 0.6rem 0.8rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .sim-autocomplete-item:hover,
+    .sim-autocomplete-item.active {
+      background: rgba(0,230,104,0.1);
+      color: var(--accent);
+    }
 
     .sim-label {
       display: block;
@@ -2607,15 +2635,16 @@
       <div class="sim-fighters-row">
         <div class="sim-fighter-col">
           <label class="sim-label" for="simFighterA">Fighter A</label>
-          <input class="sim-fighter-input" id="simFighterA" list="simFighterDatalist" placeholder="Search fighter…" autocomplete="off" />
+          <input class="sim-fighter-input" id="simFighterA" placeholder="Search fighter…" autocomplete="off" />
+          <div class="sim-autocomplete-list" id="simFighterAList"></div>
         </div>
         <div class="sim-vs">VS</div>
         <div class="sim-fighter-col">
           <label class="sim-label" for="simFighterB">Fighter B</label>
-          <input class="sim-fighter-input" id="simFighterB" list="simFighterDatalist" placeholder="Search fighter…" autocomplete="off" />
+          <input class="sim-fighter-input" id="simFighterB" placeholder="Search fighter…" autocomplete="off" />
+          <div class="sim-autocomplete-list" id="simFighterBList"></div>
         </div>
       </div>
-      <datalist id="simFighterDatalist"></datalist>
 
       <div class="sim-controls">
         <div class="sim-count-group">
@@ -33360,12 +33389,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // ── FIGHT SIMULATOR ──────────────────────────────────────────────────────
-  function populateSimFighterList() {
-    const dl = document.getElementById('simFighterDatalist');
-    if (!dl || !Array.isArray(FIGHTERS)) return;
-    dl.innerHTML = FIGHTERS.filter(f => f && f.name).map(f => `<option value="${f.name}"></option>`).join('');
-  }
-
   function simFindFighter(query) {
     if (!query) return null;
     const q = query.trim().toLowerCase();
@@ -33375,6 +33398,100 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (exact) return exact.name;
     const partial = roster.find(f => f.name.toLowerCase().includes(q));
     return partial ? partial.name : null;
+  }
+
+  // Custom autocomplete dropdown for the fighter-picker inputs. A plain
+  // <input list="..."> datalist was tried first, but it's unreliable here:
+  // Safari ignores the `list` attribute outright, and Chrome/Edge won't
+  // reopen the suggestion popup on a second click into an already-focused,
+  // already-filled input — both made it feel like fighters couldn't be
+  // changed without a page refresh. This component is fully scripted so
+  // selecting a new fighter always works, on any browser, any number of times.
+  function simBuildAutocomplete(inputId, listId) {
+    const input = document.getElementById(inputId);
+    const list = document.getElementById(listId);
+    if (!input || !list) return;
+
+    let activeIndex = -1;
+
+    function getRoster() {
+      return FIGHTERS.filter(f => f && f.name).map(f => f.name);
+    }
+
+    function hideList() {
+      list.style.display = 'none';
+      list.innerHTML = '';
+      activeIndex = -1;
+    }
+
+    function renderMatches() {
+      const q = input.value.trim().toLowerCase();
+      if (!q) { hideList(); return; }
+      const starts = [];
+      const contains = [];
+      for (const name of getRoster()) {
+        const ln = name.toLowerCase();
+        if (ln.startsWith(q)) starts.push(name);
+        else if (ln.includes(q)) contains.push(name);
+      }
+      const matches = starts.concat(contains).slice(0, 8);
+      if (matches.length === 0) { hideList(); return; }
+      activeIndex = -1;
+      list.innerHTML = matches
+        .map(n => `<div class="sim-autocomplete-item" data-name="${n.replace(/"/g, '&quot;')}">${n}</div>`)
+        .join('');
+      list.style.display = 'block';
+    }
+
+    function selectName(name) {
+      input.value = name;
+      input.dataset.selected = name;
+      hideList();
+    }
+
+    input.addEventListener('input', () => {
+      input.dataset.selected = '';
+      renderMatches();
+    });
+    input.addEventListener('focus', renderMatches);
+    input.addEventListener('blur', () => {
+      // slight delay so a click on a dropdown item registers before it's hidden
+      setTimeout(hideList, 150);
+    });
+    input.addEventListener('keydown', (e) => {
+      const items = list.querySelectorAll('.sim-autocomplete-item');
+      if (!items.length) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        activeIndex = Math.min(activeIndex + 1, items.length - 1);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        activeIndex = Math.max(activeIndex - 1, 0);
+      } else if (e.key === 'Enter') {
+        if (activeIndex >= 0) {
+          e.preventDefault();
+          selectName(items[activeIndex].dataset.name);
+        }
+        return;
+      } else if (e.key === 'Escape') {
+        hideList();
+        return;
+      } else {
+        return;
+      }
+      items.forEach((it, i) => it.classList.toggle('active', i === activeIndex));
+    });
+    list.addEventListener('mousedown', (e) => {
+      const item = e.target.closest('.sim-autocomplete-item');
+      if (!item) return;
+      e.preventDefault();
+      selectName(item.dataset.name);
+    });
+  }
+
+  function initSimFighterPickers() {
+    simBuildAutocomplete('simFighterA', 'simFighterAList');
+    simBuildAutocomplete('simFighterB', 'simFighterBList');
   }
 
   function simPct(v, def) {
@@ -33533,10 +33650,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
     if (errBox) errBox.style.display = 'none';
 
-    const rawA = document.getElementById('simFighterA').value;
-    const rawB = document.getElementById('simFighterB').value;
-    const nameA = simFindFighter(rawA);
-    const nameB = simFindFighter(rawB);
+    const inputA = document.getElementById('simFighterA');
+    const inputB = document.getElementById('simFighterB');
+    const nameA = (inputA.dataset.selected && simFindFighter(inputA.dataset.selected)) || simFindFighter(inputA.value);
+    const nameB = (inputB.dataset.selected && simFindFighter(inputB.dataset.selected)) || simFindFighter(inputB.value);
     let n = parseInt(document.getElementById('simCount').value, 10);
 
     if (!nameA || !nameB) {
@@ -33580,7 +33697,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
       renderHomeFightCard(evt);
       renderProjectionsPage(evt);
-      populateSimFighterList();
+      initSimFighterPickers();
       handleOddsPage(evt);
       if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
