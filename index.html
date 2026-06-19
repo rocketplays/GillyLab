@@ -1279,6 +1279,17 @@
       display: none;
     }
 
+    .sim-warning {
+      color: #e8a33d;
+      background: rgba(232,163,61,0.1);
+      border: 1px solid rgba(232,163,61,0.35);
+      border-radius: 4px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
     .sim-results { margin-top: 1.5rem; display: none; }
 
     .sim-results-header {
@@ -2655,6 +2666,7 @@
       </div>
 
       <div class="sim-error" id="simError"></div>
+      <div class="sim-warning" id="simWarning"></div>
       <div class="sim-results" id="simResults"></div>
     </div>
   </div>
@@ -33400,6 +33412,51 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return partial ? partial.name : null;
   }
 
+  function simGetFighterRoster(name) {
+    return FIGHTERS.find(f => f && f.name === name) || null;
+  }
+
+  // Ordered ladders (lightest → heaviest) used to measure how many weight
+  // classes apart two fighters are. Men's and women's divisions are kept
+  // separate — there's no cross-gender matchup in MMA, so that's always
+  // treated as an impossible simulation.
+  const SIM_DIVISION_LADDERS = {
+    men: ['FLW', 'BW', 'FW', 'LW', 'WW', 'MW', 'LHW', 'HW'],
+    women: ['WSW', 'WFLW', 'WBW', 'WFW']
+  };
+  // "WFLY" is a pre-existing alternate code for Women's Flyweight used on a
+  // handful of older roster entries — treat it the same as "WFLW".
+  const SIM_DIVISION_ALIASES = { WFLY: 'WFLW' };
+  const SIM_DIVISION_LABELS = {
+    FLW: 'Flyweight', BW: 'Bantamweight', FW: 'Featherweight', LW: 'Lightweight',
+    WW: 'Welterweight', MW: 'Middleweight', LHW: 'Light Heavyweight', HW: 'Heavyweight',
+    WSW: "Women's Strawweight", WFLW: "Women's Flyweight", WFLY: "Women's Flyweight",
+    WBW: "Women's Bantamweight", WFW: "Women's Featherweight"
+  };
+
+  function simDivisionLabel(div) {
+    return SIM_DIVISION_LABELS[div] || div || 'Unknown';
+  }
+
+  function simDivisionInfo(div) {
+    const d = SIM_DIVISION_ALIASES[div] || div;
+    let idx = SIM_DIVISION_LADDERS.men.indexOf(d);
+    if (idx !== -1) return { gender: 'men', index: idx };
+    idx = SIM_DIVISION_LADDERS.women.indexOf(d);
+    if (idx !== -1) return { gender: 'women', index: idx };
+    return null;
+  }
+
+  // Returns the number of weight classes apart two divisions are, or
+  // Infinity if they can't be compared (unknown division, or one men's
+  // and one women's).
+  function simDivisionDistance(divA, divB) {
+    const a = simDivisionInfo(divA);
+    const b = simDivisionInfo(divB);
+    if (!a || !b || a.gender !== b.gender) return Infinity;
+    return Math.abs(a.index - b.index);
+  }
+
   // Custom autocomplete dropdown for the fighter-picker inputs. A plain
   // <input list="..."> datalist was tried first, but it's unreliable here:
   // Safari ignores the `list` attribute outright, and Chrome/Edge won't
@@ -33643,12 +33700,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function runFightSimulator() {
     const errBox = document.getElementById('simError');
+    const warnBox = document.getElementById('simWarning');
     const resultsBox = document.getElementById('simResults');
     const showError = (msg) => {
       if (errBox) { errBox.textContent = msg; errBox.style.display = 'block'; }
+      if (warnBox) { warnBox.textContent = ''; warnBox.style.display = 'none'; }
       if (resultsBox) resultsBox.style.display = 'none';
     };
-    if (errBox) errBox.style.display = 'none';
+    if (errBox) { errBox.textContent = ''; errBox.style.display = 'none'; }
+    if (warnBox) { warnBox.textContent = ''; warnBox.style.display = 'none'; }
 
     const inputA = document.getElementById('simFighterA');
     const inputB = document.getElementById('simFighterB');
@@ -33664,10 +33724,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       showError('Choose two different fighters.');
       return;
     }
+
+    const rosterA = simGetFighterRoster(nameA);
+    const rosterB = simGetFighterRoster(nameB);
+    const divA = rosterA ? rosterA.division : null;
+    const divB = rosterB ? rosterB.division : null;
+    const distance = simDivisionDistance(divA, divB);
+
+    if (distance >= 2) {
+      showError(`Simulation cannot be done: ${nameA} (${simDivisionLabel(divA)}) and ${nameB} (${simDivisionLabel(divB)}) are too far apart in weight class.`);
+      return;
+    }
+
     if (!Number.isFinite(n) || n < 1) n = 1000;
     n = Math.min(50000, Math.max(1, n));
 
     const result = simRunTrials(nameA, nameB, n);
+
+    if (distance === 1 && warnBox) {
+      warnBox.textContent = `${nameA} (${simDivisionLabel(divA)}) and ${nameB} (${simDivisionLabel(divB)}) are one weight class apart — results may be skewed by the size/weight difference.`;
+      warnBox.style.display = 'block';
+    }
+
     renderSimResults(nameA, nameB, result);
   }
 
