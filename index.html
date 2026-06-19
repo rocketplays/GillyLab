@@ -1184,17 +1184,13 @@
     .sim-fighter-col { flex: 1; position: relative; }
 
     .sim-autocomplete-list {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      margin-top: 0.3rem;
+      position: fixed;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 4px;
       max-height: 220px;
       overflow-y: auto;
-      z-index: 50;
+      z-index: 600;
       display: none;
       box-shadow: 0 8px 20px rgba(0,0,0,0.4);
     }
@@ -33483,6 +33479,48 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       activeIndex = -1;
     }
 
+    // The dropdown uses position:fixed and is repositioned against the input's
+    // live bounding rect (rather than relying on normal document flow). This
+    // matters most on mobile: when the on-screen keyboard opens it eats the
+    // bottom portion of the screen, so a dropdown anchored below the input via
+    // simple absolute/top:100% positioning can end up rendered underneath the
+    // keyboard (still "in the document" but not visible). Recomputing against
+    // the visualViewport lets us flip the list above the input when there
+    // isn't enough room below.
+    function positionList() {
+      const rect = input.getBoundingClientRect();
+      const vv = window.visualViewport;
+      const viewportHeight = vv ? vv.height : window.innerHeight;
+      const margin = 6;
+      const spaceBelow = viewportHeight - rect.bottom - margin;
+      const spaceAbove = rect.top - margin;
+      const showBelow = spaceBelow >= 120 || spaceBelow >= spaceAbove;
+
+      list.style.left = rect.left + 'px';
+      list.style.width = rect.width + 'px';
+      list.style.margin = '0';
+
+      if (showBelow) {
+        list.style.top = (rect.bottom + margin) + 'px';
+        list.style.bottom = 'auto';
+        list.style.maxHeight = Math.max(80, Math.min(220, spaceBelow)) + 'px';
+      } else {
+        list.style.top = 'auto';
+        list.style.bottom = (viewportHeight - rect.top + margin) + 'px';
+        list.style.maxHeight = Math.max(80, Math.min(220, spaceAbove)) + 'px';
+      }
+    }
+
+    function reposition() {
+      if (list.style.display === 'block') positionList();
+    }
+    window.addEventListener('resize', reposition);
+    window.addEventListener('scroll', reposition, true);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', reposition);
+      window.visualViewport.addEventListener('scroll', reposition);
+    }
+
     function renderMatches() {
       const q = input.value.trim().toLowerCase();
       if (!q) { hideList(); return; }
@@ -33500,6 +33538,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         .map(n => `<div class="sim-autocomplete-item" data-name="${n.replace(/"/g, '&quot;')}">${n}</div>`)
         .join('');
       list.style.display = 'block';
+      positionList();
     }
 
     function selectName(name) {
