@@ -32161,10 +32161,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // carousel slot ahead of events that actually have a card.
       if (!(evt.fights || []).length) continue;
 
-      // Skip "Road to the UFC" cards — a contender-tournament show, not a
-      // UFC main roster event. It doesn't belong in the upcoming-events
-      // carousel alongside numbered/Fight Night events.
-      if ((evt.name || '').toLowerCase().includes('road to the ufc')) continue;
+      // Skip "Road to UFC" cards — a contender-tournament show, not a UFC
+      // main roster event. It doesn't belong in the upcoming-events
+      // carousel alongside numbered/Fight Night events. API titles vary
+      // ("Road to UFC", "Road to the UFC"), so match loosely.
+      if (/road\s+to\s+(the\s+)?ufc/i.test(evt.name || '')) continue;
 
       eventsForCarousel.push({ id: evt.slug, date: evt.date });
 
