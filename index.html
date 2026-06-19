@@ -32683,6 +32683,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const html = upcoming.map((raw, evtIdx) => {
       const evt = parseApiEvent(raw);
       if (!evt) return '';
+
+      // Same per-event guards as the homepage carousel (renderCarousel):
+      // hide events with no announced fights yet, and always hide
+      // "Road to UFC" / "Road to the UFC" contender-tournament cards.
+      if (!(evt.fights || []).length) return '';
+      if (/road\s+to\s+(the\s+)?ufc/i.test(evt.name || '')) return '';
+
       const eventId = 'tape-evt-' + evtIdx;
 
       // One row per fighter on the card (both corners of every bout, in
