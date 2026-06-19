@@ -2894,6 +2894,7 @@
  { name: "Alden Coria", division: "FLW", rank: "NR", record: "9-1-0", initials: "ACO", country: "USA" },
  { name: "Imanol Rodriguez", division: "FLW", rank: "NR", record: "11-1-0", initials: "IRO", country: "Mexico" },
  { name: "Nyamjargal Tumendemberel", division: "FLW", rank: "NR", record: "10-1-0", initials: "NYT", country: "Mongolia" },
+ { name: "Terrance Saeteurn", division: "FLW", rank: "NR", record: "8-2-0", initials: "TSA", country: "USA" },
  { name: "Lucas Rocha", division: "FLW", rank: "NR", record: "8-3-0", initials: "LRO2", country: "Brazil" },
  { name: "Alibi Idiris", division: "FLW", rank: "NR", record: "11-1-0", initials: "AID", country: "Kazakhstan" },
  { name: "Edgar Chairez", division: "FLW", rank: "NR", record: "14-6-1", initials: "ECH", country: "Mexico" },
@@ -3858,6 +3859,7 @@
  "Murtazali Magomedov": { ht:"5'9\"", dob:"1999-08-26", reach:'70.5"', stance:"Orthodox", slpm:5.57, strAcc:"41%", sapm:1.86, strDef:"84%", kd:9.28, tdLanded:0.00, tdAcc:"0%", tdDef:"0%", subAvg:0.00, finRate:"100%", streak:10 },
  "Lone'er Kavanagh": { ht:"5'6\"", dob:"1999-06-09", reach:'67"', stance:"Orthodox", slpm:4.13, strAcc:"49%", sapm:3.49, strDef:"57%", kd:0.22, tdLanded:1.12, tdAcc:"45%", tdDef:"94%", subAvg:0.22, finRate:"50%", streak:1, gym:"GB Top Team" },
  "Nyamjargal Tumendemberel": { ht:"5'7\"", dob:"1998-03-22", reach:'71"', stance:"Orthodox", slpm:2.72, strAcc:"42%", sapm:2.47, strDef:"53%", kd:0.61, tdLanded:3.37, tdAcc:"50%", tdDef:"57%", subAvg:2.15, finRate:"80%", streak:2, gym:"Shandas MMA" },
+ "Terrance Saeteurn": { ht:"5'6\"", dob:"1995-05-30", slpm:3.82, strAcc:"41%", sapm:3.82, strDef:"52%", kd:0.00, tdLanded:0.00, tdAcc:"0%", subAvg:0.00, finRate:"63%", streak:0, gym:"Train4Life" },
  "Ramazan Temirov": { ht:"5'4\"", dob:"1997-01-31", reach:'63"', stance:"Orthodox", slpm:4.37, strAcc:"40%", sapm:3.93, strDef:"59%", kd:2.52, tdLanded:0.84, tdAcc:"50%", tdDef:"100%", subAvg:0.00, finRate:"63%", streak:11, gym:"Legion Gym" },
  "Mitch Raposo": { ht:"5'5\"", dob:"1998-10-16", reach:'64.5"', stance:"Switch", slpm:1.73, strAcc:"37%", sapm:2.65, strDef:"61%", kd:0.00, tdLanded:2.54, tdAcc:"38%", tdDef:"62%", subAvg:0.00, finRate:"70%", streak:1, gym:"New England Cartel" },
  "Andre Lima": { ht:"5'7\"", dob:"1999-02-04", reach:'67.5"', stance:"Orthodox", slpm:4.06, strAcc:"60%", sapm:2.49, strDef:"58%", kd:0.00, tdLanded:1.36, tdAcc:"75%", tdDef:"75%", subAvg:1.14, finRate:"55%", streak:11, gym:"Mascote Team" },
@@ -10470,6 +10472,15 @@
   "Nyamjargal Tumendemberel": [
     { opponent: "Cody Durden", odds: -164 },
     { opponent: "Carlos Hernandez", odds: 125 }
+  ],
+  "Terrance Saeteurn": [
+    { opponent: "Nyamjargal Tumendemberel", odds: -114 },
+    { opponent: "Carlos Puente Jr.", odds: -1000 },
+    { opponent: "Stav Shwartz", odds: -275 },
+    { opponent: "Miguel Ceja", odds: -138 },
+    { opponent: "David Lopez", odds: -125 },
+    { opponent: "Lake Gee", odds: -139 },
+    { opponent: "Keaneo Moyer", odds: -355 }
   ],
   "Bekzat Almakhan": [
     { opponent: "Aleksandre Topuria", odds: 125 },
@@ -25783,6 +25794,18 @@ const FIGHT_HISTORY = {
     { date: "Jun 6, 2021", opponent: "Temuulen Algirmaa", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "N/A", event: "112 Fight Academy: Grand Opening" },
     { date: "Oct 27, 2020", opponent: "Urtnasan Damdinragchaa", result: "W", method: "Submission (Armbar)", round: 3, time: "3:03", event: "Mongol FC: Fight Night 02" }
   ],
+  "Terrance Saeteurn": [
+    { date: "Aug 22, 2025", opponent: "Nyamjargal Tumendemberel", result: "L", method: "Technical Submission (Anaconda Choke)", round: 1, time: "2:53", event: "Road to UFC: Season 4, Shanghai Semifinals", org: "UFC" },
+    { date: "May 2, 2025", opponent: "Isiah Torres", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Urijah Faber's A1 Combat 27" },
+    { date: "Sep 6, 2024", opponent: "Carlos Puente Jr.", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:33", event: "Urijah Faber's A1 Combat 24" },
+    { date: "May 17, 2024", opponent: "Stav Shwartz", result: "W", method: "KO (Punches)", round: 1, time: "3:20", event: "Urijah Faber's A1 Combat 20" },
+    { date: "Jan 19, 2024", opponent: "Miguel Ceja", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Urijah Faber A1 Combat 17" },
+    { date: "Sep 8, 2023", opponent: "David Lopez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 159" },
+    { date: "Apr 28, 2023", opponent: "Lake Gee", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Urijah Faber's A1 Combat 10" },
+    { date: "Jan 13, 2023", opponent: "Keaneo Moyer", result: "W", method: "TKO (Punches)", round: 2, time: "3:49", event: "Urijah Faber's A1 Combat 7" },
+    { date: "Sep 3, 2022", opponent: "Marcelino Silva", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:33", event: "Urijah Faber's A1 Combat 5" },
+    { date: "May 29, 2022", opponent: "Isaiah Wright", result: "W", method: "KO (Punch)", round: 1, time: "0:42", event: "Urijah Faber's A1 Combat 3" }
+  ],
   "Bekzat Almakhan": [
     { date: "Nov 22, 2025", opponent: "Aleksandre Topuria", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker", org: "UFC" },
     { date: "May 10, 2025", opponent: "Brad Katona", result: "W", method: "KO (Punches)", round: 1, time: "1:04", event: "UFC 315", org: "UFC" },
@@ -27951,6 +27974,13 @@ const ACCOLADES = {
     { icon: "🥈", title: "Mongolian Sambo Championship — 2nd & 3rd place (amateur)", detail: null },
     { icon: "🥋", title: "Judo black belt", detail: null },
     { icon: "🤼", title: "Bayanbulag & Bayankhongor Mongolian Wrestling Champion", detail: null },
+  ],
+  "Terrance Saeteurn": [
+    { icon: "🏆", title: "A1 Combat Flyweight Championship — won Sep 6, 2024 vs. Carlos Puente Jr. (Submission, RNC, R2, A1 Combat 24); defended May 2, 2025 vs. Isiah Torres (Unanimous Decision, A1 Combat 27)", detail: null },
+    { icon: "🏅", title: "First fighter of Mien descent to compete in the UFC (debut Aug 22, 2025, Road to UFC Season 4, Shanghai)", detail: null },
+    { icon: "🥇", title: "Amateur titles: California State Champion, 559 Fights Champion, Bay Area Combat Champion, SF Combat Champion, Panda Cup Champion (per UFC Q&A; reported 6-1 amateur record)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu (per UFC Q&A, recently promoted)", detail: null },
+    { icon: "🤼", title: "Started wrestling at age 9; began MMA, boxing, kickboxing & BJJ training in 2018 (per UFC Q&A)", detail: null },
   ],
   "Allan Nascimento": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
