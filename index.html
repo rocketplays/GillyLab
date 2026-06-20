@@ -1053,6 +1053,7 @@
 
     .proj-fighter {
       flex: 1;
+      min-width: 0;
     }
 
     .proj-name {
@@ -1063,6 +1064,10 @@
       text-transform: uppercase;
       cursor: pointer;
       transition: color 0.15s;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .proj-name:hover {
@@ -1073,6 +1078,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      min-width: 0;
     }
 
     .proj-fighter.right .proj-name-row { justify-content: flex-end; }
@@ -1986,6 +1992,14 @@
       .fighter-cell      { padding: 0.6rem 0.4rem; gap: 0.3rem; }
       .fighter-avatar    { width: 30px; height: 30px; min-width: 30px; font-size: 0.6rem; flex-shrink: 0; }
       .fighter-name      { font-size: 0.75rem; }
+
+      /* ── Win Projections cards ── */
+      .projection-card     { padding: 0.75rem; }
+      .projection-fighters { gap: 0.5rem; }
+      .proj-name-row       { gap: 0.35rem; }
+      .proj-name           { font-size: 0.85rem; }
+      .proj-pct            { font-size: 1.3rem; }
+      .proj-avatar         { width: 26px; height: 26px; min-width: 26px; }
     }
 
     .fight-odds-panel { animation: fadeIn 0.2s ease; }
