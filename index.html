@@ -34165,22 +34165,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // below: a streak resets to 0 on ANY non-win, with no way to tell "lost a
   // tight decision" from "just got starched in the first round" apart, and
   // gives no extra credit for what a current streak was actually built on.
-  // Looks only at the last two completed fights (most recent weighted full,
-  // the one before it at half weight, so a single result doesn't dominate
-  // but a real short-term trend still shows) and layers a bonus for a recent
-  // win (bigger if it was a finish, bigger still if the opponent is
-  // currently ranked) or a penalty for a recent loss (notably bigger if it
-  // was by finish — a fresh brutal stoppage loss is a real, distinct red
-  // flag a reset-to-zero streak can't capture). This is what separates an
-  // undefeated-minus-one prospect coming off a signature win from a
-  // long-tenured veteran coming off a brutal KO loss, instead of letting
-  // career-long averages treat them as roughly equivalent.
+  // Looks at the last FIVE completed fights (widened from 2 — a 2-fight
+  // window could miss a real pattern sitting just one fight further back,
+  // e.g. Krylov bouncing back with one win over an unranked opponent right
+  // after getting knocked out twice in a row by Reyes and Guskov; with only
+  // the last 2 fights visible, that second KO loss falls outside the window
+  // entirely and the pattern disappears). Weights decay fast (most recent
+  // fight still dominates) but a real short-to-medium-term trend across the
+  // last year or two now actually shows up. Layers a bonus for a recent win
+  // (bigger if it was a finish, bigger still if the opponent is currently
+  // ranked) or a penalty for a recent loss (notably bigger if it was by
+  // finish — a fresh brutal stoppage loss is a real, distinct red flag a
+  // reset-to-zero streak can't capture). On top of that, 2+ finish losses
+  // within this 5-fight window get an extra penalty beyond what each one
+  // already contributes individually — that's a categorically different,
+  // more current signal (a real decline, a chin or gas tank going) than the
+  // same two finish losses spread thinly across a long career.
   function simTrajectory(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    const recent = hist.filter(f => f.result && f.result !== '–' && f.method !== 'Upcoming' && f.date).slice(0, 2);
-    let score = 0;
+    const recent = hist.filter(f => f.result && f.result !== '–' && f.method !== 'Upcoming' && f.date).slice(0, 5);
+    const weights = [1.0, 0.5, 0.3, 0.18, 0.1];
+    let score = 0, recentFinishLosses = 0;
     recent.forEach((f, i) => {
-      const weight = i === 0 ? 1 : 0.5;
+      const weight = weights[i] != null ? weights[i] : 0.1;
       const method = String(f.method || '').toUpperCase();
       const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
       const oppRanked = simRankTier(f.opponent) != null;
@@ -34191,11 +34198,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         score += v * weight;
       } else if (f.result === 'L') {
         let v = -0.25;
-        if (isFinish) v -= 0.35;
+        if (isFinish) { v -= 0.35; recentFinishLosses++; }
         score += v * weight;
       }
     });
-    return simSoftCap(score, 1.2);
+    if (recentFinishLosses >= 2) score -= 0.3 * (recentFinishLosses - 1);
+    return simSoftCap(score, 1.5);
   }
 
   // Past 36, fighters reliably start losing a step physically — but the
@@ -34322,15 +34330,58 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return simFinishStats(name, false);
   }
 
+  // Recency-weighted loss tally, mirroring how simRelevantFinRate already
+  // weights the WIN side — a finish loss from the last year or two counts
+  // close to double one from 6+ years back (floored, not decayed to zero),
+  // rather than a flat career-long average. Without this, two finish losses
+  // from early in a decade-long career read identically to two finish
+  // losses suffered in the last 14 months, which is backwards for
+  // forecasting CURRENT fragility (e.g. Krylov was finished twice — by
+  // Dominick Reyes and Bogdan Guskov — within roughly 14 months of each
+  // other, both well inside this window). Uses the same UFC-only-vs-full-
+  // career sample decision as simFinishStatsRelevant, so the recency-
+  // weighted rate and the raw counts used for sample-size gating always
+  // come from the same pool of fights.
+  function simLossFinishProfile(name) {
+    const ufc = simFinishStats(name, true);
+    const useUfcOnly = ufc.wins >= 4 || ufc.losses >= 3;
+    const raw = useUfcOnly ? ufc : simFinishStats(name, false);
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    const now = Date.now();
+    let totalWeight = 0, finishWeight = 0, decisionWeight = 0;
+    hist.forEach(f => {
+      if (f.result !== 'L' || f.method === 'Upcoming' || !f.date) return;
+      if (useUfcOnly && f.org !== 'UFC') return;
+      const d = new Date(f.date);
+      const yearsAgo = isNaN(d) ? 3 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+      const weight = 0.5 + 0.5 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
+      const method = String(f.method || '').trim();
+      const isFinish = /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(method);
+      const isDecision = /Decision/i.test(method);
+      totalWeight += weight;
+      if (isFinish) finishWeight += weight;
+      else if (isDecision) decisionWeight += weight;
+    });
+    return {
+      losses: raw.losses,
+      lossFinishes: raw.lossFinishes,
+      weightedLossFinishRate: totalWeight > 0 ? finishWeight / totalWeight : 0,
+      weightedLossDecisionRate: totalWeight > 0 ? decisionWeight / totalWeight : 0,
+      weightedFinishLossCount: finishWeight
+    };
+  }
+
   // "Granite chin" signal: among a fighter's losses, what share went the
   // distance rather than ending early. A fighter who's lost fights but has
   // rarely or never been finished is notoriously durable — a real, distinct
   // trait from raw strDef/output numbers. Requires at least 3 losses so one
-  // decision loss doesn't read as an iron chin.
+  // decision loss doesn't read as an iron chin. Rate is recency-weighted
+  // (see simLossFinishProfile) so a durable stretch right now counts more
+  // than one from years ago.
   function simDurabilityBoost(name) {
-    const { losses, lossDecisions } = simFinishStatsRelevant(name);
-    if (losses < 3) return 0;
-    const pct = lossDecisions / losses;
+    const stats = simLossFinishProfile(name);
+    if (stats.losses < 3) return 0;
+    const pct = stats.weightedLossDecisionRate;
     if (pct <= 0.75) return 0;
     return simSoftCap((pct - 0.75) * 4, 1) * 0.4;
   }
@@ -34341,20 +34392,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // a fighter stopped in all 3 of a thin 3-loss sample scored as MORE
   // vulnerable than one stopped 9 times in 11 losses (100% vs ~82%), even
   // though 9 finish losses is a far more substantial, proven pattern than
-  // 3. Now driven primarily by the raw COUNT of finish losses (3-4 is a
-  // modest flag, 6+ a real pattern, 9+ serious — soft-capped so it doesn't
-  // grow unbounded past that), then scaled by what share of all losses were
-  // finishes, so a long-career fighter with plenty of losses but a modest
-  // finish rate isn't punished just for having fought a lot. Same 3-loss
-  // minimum sample as the durability bonus above, plus a floor on the rate
-  // itself (finishes have to be at least half the losses to register at
-  // all — below that it's not really a "pattern").
+  // 3. Now driven primarily by the recency-weighted COUNT of finish losses
+  // (see simLossFinishProfile — 3-4 is a modest flag, 6+ a real pattern, 9+
+  // serious, soft-capped so it doesn't grow unbounded past that, and a
+  // finish loss from years ago counts for less than a fresh one), then
+  // scaled by what share of all losses were finishes (also recency-
+  // weighted), so a long-career fighter with plenty of old losses but a
+  // modest CURRENT finish rate isn't punished just for having fought a lot.
+  // Same 3-loss minimum sample as the durability bonus above, plus a floor
+  // on the rate itself (finishes have to be at least half the weighted
+  // losses to register at all — below that it's not really a "pattern").
   function simFinishVulnerability(name) {
-    const { losses, lossFinishes } = simFinishStatsRelevant(name);
-    if (losses < 3 || lossFinishes < 3) return 0;
-    const pct = lossFinishes / losses;
+    const stats = simLossFinishProfile(name);
+    if (stats.losses < 3 || stats.lossFinishes < 3) return 0;
+    const pct = stats.weightedLossFinishRate;
     if (pct <= 0.5) return 0;
-    const countPenalty = simSoftCap(Math.max(0, lossFinishes - 2) * 0.13, 0.7);
+    const countPenalty = simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.13, 0.7);
     const rateScale = simSoftCap((pct - 0.5) * 2, 1);
     return -countPenalty * rateScale;
   }
