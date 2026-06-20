@@ -34027,7 +34027,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       age: simAgeFactor(s.dob),
       layoff: simLayoffFactor(name),
       bigFight: simBigFightExperience(name),
-      controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak)
+      controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
+      undefeatedBoost: simUndefeatedBoost(name)
     };
   }
 
@@ -34102,6 +34103,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (f.round === 5) count++;
     });
     return Math.min(1, count * 0.18);
+  }
+
+  // Small top-up specifically for a zero in the loss column, distinct from
+  // the win-streak ("form") term above — a fighter with one early-career
+  // loss who's won their last 12 already gets full streak credit there,
+  // but "has never lost, period" is its own signal worth a little extra.
+  // Below ~9 wins the bonus stays modest (could still just mean "hasn't
+  // faced real competition yet"); past 9 wins a clean record starts
+  // looking like a real accomplishment, so it grows a bit faster from
+  // there. Both legs are soft-capped so a 20-0 prospect doesn't run away
+  // with it.
+  function simUndefeatedBoost(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let wins = 0, losses = 0;
+    hist.forEach(f => {
+      if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      if (f.result === 'W') wins++;
+      else if (f.result === 'L') losses++;
+    });
+    if (losses > 0 || wins === 0) return 0;
+    const belowNine = simSoftCap(Math.min(wins, 9), 9) * 0.06;
+    const pastNine = simSoftCap(Math.max(0, wins - 9), 8) * 0.14;
+    return belowNine + pastNine;
   }
 
   // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
@@ -34192,7 +34216,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
     const form = simSoftCap(p.streak, 10) * 0.3;
-    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost;
+    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
