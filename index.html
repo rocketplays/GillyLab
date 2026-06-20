@@ -32365,10 +32365,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!cards) throw new Error('no cards');
 
       container.className = 'projections-grid';
-      container.innerHTML = cards +
-        `<div style="margin-top:0.5rem;padding:0.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:0.75rem;color:var(--muted);letter-spacing:0.05em;">
-          ↻ No-vig win probability · Consensus across all books · Auto-updated twice daily
-        </div>`;
+      container.innerHTML = cards;
       loadProjectionPhotos();
 
     } catch(e) {
@@ -32598,9 +32595,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return `<div class="odds-grid">
       <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;" id="fightSelectorBtns">${btns}</div>
       ${panels}
-      <div style="margin-top:1.5rem;padding:0.75rem 1rem;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:0.75rem;color:var(--muted);letter-spacing:0.05em;">
-        ↻ Moneyline &amp; Rounds O/U auto-updated twice daily &nbsp;·&nbsp; Method, props &amp; distance updated manually
-      </div>
     </div>`;
   }
 
