@@ -34803,37 +34803,49 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // Builds a weighted sample pool of {method, round} drawn from a fighter's
-  // own historical wins, so method/round outcomes reflect how THEY actually win.
-  // Draws from the FULL win history (every org), not just UFC wins -- UFC-only
-  // sampling produced artificial 100% splits for fighters with only one or two
-  // UFC wins on record (e.g. a single UFC win by TKO meant every simulated win
-  // came back "KO/TKO"). UFC wins are still weighted more heavily than
-  // regional/other-org wins since they're the most representative data point,
-  // but they no longer wipe out the rest of the career sample.
+  // own historical fights, so method/round outcomes reflect how THEY actually
+  // win. Draws from the FULL win history (every org), not just UFC wins --
+  // UFC-only sampling produced artificial 100% splits for fighters with only
+  // one or two UFC wins on record (e.g. a single UFC win by TKO meant every
+  // simulated win came back "KO/TKO"). UFC wins are still weighted more
+  // heavily than regional/other-org wins since they're the most
+  // representative data point, but they no longer wipe out the rest of the
+  // career sample. Decision LOSSES are also folded in (lightly, uncredited
+  // toward a win) because going the distance -- win or lose -- is itself a
+  // signal that a fighter's fights tend to land there.
   const SIM_UFC_WIN_WEIGHT = 2;
 
   function simMethodPool(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    const isWin = f => f.result === 'W' && f.method;
-    const wins = hist.filter(isWin);
     const pool = [];
-    wins.forEach(f => {
+    hist.forEach(f => {
+      if (!f.method) return;
       const m = f.method.toUpperCase();
       let cat = 'Decision';
       if (m.includes('KO') || m.includes('TKO')) cat = 'KO/TKO';
       else if (m.includes('SUB')) cat = 'Submission';
       const entry = { method: cat, round: simNum(f.round, 3) };
-      const weight = f.org === 'UFC' ? SIM_UFC_WIN_WEIGHT : 1;
-      for (let i = 0; i < weight; i++) pool.push(entry);
+      if (f.result === 'W') {
+        const weight = f.org === 'UFC' ? SIM_UFC_WIN_WEIGHT : 1;
+        for (let i = 0; i < weight; i++) pool.push(entry);
+      } else if (f.result === 'L' && cat === 'Decision') {
+        pool.push(entry);
+      }
     });
     if (pool.length === 0) {
-      // Fallback distribution for fighters with no recorded wins yet.
+      // Fallback distribution for fighters with no recorded wins or
+      // decision losses yet.
       return [
         { method: 'KO/TKO', round: 1 }, { method: 'KO/TKO', round: 2 },
         { method: 'Submission', round: 2 },
         { method: 'Decision', round: 3 }, { method: 'Decision', round: 3 }
       ];
     }
+    // Seed one entry per category as a floor so no method ever locks in at
+    // a hard 100%/0% in the display -- real fights always carry some
+    // chance of an unexpected finish or decision, even for fighters whose
+    // career has been one-note so far.
+    ['KO/TKO', 'Submission', 'Decision'].forEach(cat => pool.push({ method: cat, round: 3 }));
     return pool;
   }
 
