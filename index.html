@@ -34171,7 +34171,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       } else {
         const method = String(f.method || '').toUpperCase();
         const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
-        testedLossCredit += contrib * (isFinish ? 0.1 : 0.5);
+        const isCloseDecision = method.includes('SPLIT') || method.includes('MAJORITY');
+        testedLossCredit += contrib * (isFinish ? 0.1 : (isCloseDecision ? 0.7 : 0.5));
       }
     });
     let net = winsWeighted + testedLossCredit;
