@@ -32112,7 +32112,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (ho && typeof ho.price === 'number') homePrices.push(ho.price);
       if (ao && typeof ao.price === 'number') awayPrices.push(ao.price);
     });
-    function avg(arr) { return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null; }
+    // American odds can't be averaged directly: odds jump straight from
+    // -100 to +100 with nothing in between, so a naive arithmetic mean of
+    // e.g. -108 and +100 produces -4 -- not a legal American odds value.
+    // Convert each price to implied probability, average the
+    // probabilities, then convert back to a price; that always lands on a
+    // legal value (<= -100 or >= +100). Mirrored in
+    // scripts/odds-history-lib.js's consensus()/avg() for the history file.
+    function americanToProb(odds) { return odds < 0 ? Math.abs(odds) / (Math.abs(odds) + 100) : 100 / (odds + 100); }
+    function probToAmerican(prob) {
+      if (!(prob > 0) || !(prob < 1)) return null;
+      return prob >= 0.5 ? Math.round(-100 * prob / (1 - prob)) : Math.round(100 * (1 - prob) / prob);
+    }
+    function avg(arr) {
+      if (!arr.length) return null;
+      const avgProb = arr.reduce((a, b) => a + americanToProb(b), 0) / arr.length;
+      return probToAmerican(avgProb);
+    }
     const homeAvg = avg(homePrices), awayAvg = avg(awayPrices);
     const homeIsF1 = lastNameOf(match.home_team || '').toLowerCase() === n1;
     return homeIsF1 ? { o1: homeAvg, o2: awayAvg } : { o1: awayAvg, o2: homeAvg };

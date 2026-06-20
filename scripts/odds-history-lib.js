@@ -24,8 +24,25 @@ function pairKey(n1, n2) {
   return [lastNameOf(n1).toLowerCase(), lastNameOf(n2).toLowerCase()].sort().join('|');
 }
 
+// American odds can't be averaged directly: odds jump straight from -100 to
+// +100 with nothing in between, so a naive arithmetic mean of e.g. -108 and
+// +100 produces -4 -- not a legal American odds value, and a number a real
+// sportsbook would never quote. Convert each price to implied probability,
+// average the probabilities, then convert back to a price; that always
+// lands on a legal value (<= -100 or >= +100).
+function americanToProb(odds) {
+  return odds < 0 ? Math.abs(odds) / (Math.abs(odds) + 100) : 100 / (odds + 100);
+}
+
+function probToAmerican(prob) {
+  if (!(prob > 0) || !(prob < 1)) return null;
+  return prob >= 0.5 ? Math.round(-100 * prob / (1 - prob)) : Math.round(100 * (1 - prob) / prob);
+}
+
 function avg(arr) {
-  return arr.length ? Math.round(arr.reduce((a, b) => a + b, 0) / arr.length) : null;
+  if (!arr.length) return null;
+  const avgProb = arr.reduce((a, b) => a + americanToProb(b), 0) / arr.length;
+  return probToAmerican(avgProb);
 }
 
 // Consensus (cross-bookmaker average) h2h price for each side of a fight,
