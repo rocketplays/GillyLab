@@ -34089,7 +34089,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const sapm = simCredibilityDampen(simNum(s.sapm, 3.5), 3.5, credibility);
     const tdLanded = simCredibilityDampen(simNum(s.tdLanded, 1.0), 1.0, credibility);
     const tdAcc = simCredibilityDampen(simPct(s.tdAcc, 0.4), 0.4, credibility);
-    const streak = simNum(s.streak, 0);
+    // A win streak built mostly pre-UFC, against obscure regional
+    // competition, isn't the same signal as a real UFC streak — same
+    // root issue as the rate stats above, so it gets the same dampening
+    // treatment, toward a neutral baseline of 0 rather than a per-stat
+    // average (a streak of 0 is a normal, common starting point).
+    const streak = simCredibilityDampen(simNum(s.streak, 0), 0, credibility);
     const kd = simCredibilityDampen(simNum(s.kd, 0.3), 0.3, credibility);
     const finRate = simCredibilityDampen(simRelevantFinRate(name, simPct(s.finRate, 0.45)), 0.45, credibility);
     return {
@@ -34182,24 +34187,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // How much to trust a fighter's raw per-fight rate stats at face value,
-  // distinct from the win/loss-based schedule quality above. Facing even
-  // one ranked opponent is itself a costly, meaningful signal — at that
-  // point the stats have been earned partly against real competition, so
-  // they're trusted fully regardless of career length. But a fighter who
-  // has NEVER faced a ranked opponent is a pure small-sample case: the
-  // fewer total UFC fights backing those rate stats, the more a couple of
-  // lopsided performances against unproven competition can swing numbers
-  // like strikes landed, knockdowns, or finish rate to extreme, unrepeated
-  // levels (this is exactly how a fighter 3 fights into a UFC run, with a
-  // long pre-UFC résumé against obscure regional competition, ends up with
-  // a top-of-the-roster takedown rate or a 100% takedown-defense figure —
-  // it's a true reflection of those specific fights, just not yet a
-  // reliable read on the fighter in general). 14 UFC fights is treated as
-  // enough of a sample for full trust in this no-ranked-opponents case.
+  // distinct from the win/loss-based schedule quality above. Facing a
+  // ranked opponent is a costly, meaningful signal — at that point the
+  // stats have been earned partly against real competition — but a
+  // single such fight shouldn't instantly launder an entire raw-stat
+  // profile when the UFC sample backing it is still tiny (e.g. 2 total
+  // UFC fights, one a decision win over a fighter just barely inside the
+  // rankings, with the rest of the career's gaudy numbers — knockdowns,
+  // finish rate — built against obscure regional competition). So each
+  // ranked opponent faced counts as worth several UFC-equivalent fights
+  // toward the trust threshold, rather than an automatic full pass. A
+  // fighter with a real UFC tenure (many fights) or multiple ranked wins
+  // still reaches full trust quickly; it's only the extreme small-sample
+  // case — few fights, one borderline ranked win — that now stays
+  // partially dampened. 14 "fight-equivalents" is treated as enough of a
+  // sample for full trust.
   function simRateCredibility(name) {
     const { ufc, rankedFaced } = simScheduleQuality(name);
-    if (rankedFaced > 0) return 1;
-    return Math.min(1, ufc / 14);
+    return Math.min(1, (ufc + rankedFaced * 5) / 14);
   }
 
   // Schedule quality used to be tacked onto the power score as a flat side
