@@ -32480,7 +32480,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function buildMethodTable(fight) {
     const entry = findManualProps(fight);
-    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No method-of-victory odds entered yet — these aren\'t part of the live odds feed and are updated manually.</p>';
+    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No method-of-victory odds entered yet.</p>';
     if (!entry || !entry.method || !Object.keys(entry.method).length) return placeholder;
     const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
     const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
@@ -32506,7 +32506,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function buildRoundPropsTable(fight) {
     const entry = findManualProps(fight);
-    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No round-props odds entered yet — these aren\'t part of the live odds feed and are updated manually.</p>';
+    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No round-props odds entered yet.</p>';
     if (!entry || !entry.roundProps || !Object.keys(entry.roundProps).length) return placeholder;
     const rounds = entry.rounds === 5 ? 5 : 3;
     const roundKeys = [];
