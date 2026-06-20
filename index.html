@@ -34050,7 +34050,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const weight = 0.5 + 0.5 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
       const isFinish = /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(String(f.method || '').trim());
       totalWeight += weight;
-      if (isFinish) weightedFinishes += weight;
+      if (isFinish) {
+        // A finish counts as less evidence of finishing power when the
+        // opponent was already an established finish-vulnerable target --
+        // simFinishVulnerability returns a negative number scaled by how
+        // often/badly that opponent gets stopped, so this discounts (never
+        // zeroes out, floored at 0.4x) the credit toward THIS fighter's
+        // finish rate while the win still counts fully toward the sample
+        // size (totalWeight) either way.
+        const oppDiscount = Math.max(0.4, 1 + simFinishVulnerability(f.opponent));
+        weightedFinishes += weight * oppDiscount;
+      }
     });
     return totalWeight > 0 ? weightedFinishes / totalWeight : staticFinRate;
   }
@@ -34074,7 +34084,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       subAvg: simNum(s.subAvg, 0.3),
       finRate: simRelevantFinRate(name, simPct(s.finRate, 0.45)),
       streak,
-      sos: simStrengthOfSchedule(name),
+      scheduleMultiplier: simScheduleMultiplier(name),
+      activityCredit: simActivityCredit(name),
       trajectory: simTrajectory(name),
       age: simAgeFactor(s.dob),
       layoff: simLayoffFactor(name),
@@ -34086,39 +34097,68 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
   }
 
-  // How tested a fighter's resume actually is. Two things this used to get
-  // wrong: (1) it counted "ranked opponent" as a flat yes/no, so beating the
-  // #1 contender counted the same as a fight against whoever's clinging to
-  // the bottom of a ranking; (2) it hard-capped at 3, which saturated at
-  // just 6 ranked opponents — a decade-long murderers'-row resume (10-15+
-  // ranked opponents) scored identically to a fighter who'd barely cleared
-  // that floor, once both hit the ceiling. Now each ranked opponent is
-  // weighted by how highly they're ranked (a near-title-shot opponent counts
-  // for close to 3x a fighter clinging to #15) and by recency (a test from
-  // the last year or two counts close to double one from 6+ years back,
-  // though a deep historical resume still keeps a floor of value rather than
-  // decaying to zero). Soft-capped rather than hard-capped, so a truly elite
-  // resume keeps earning credit past the old ceiling instead of flatlining.
-  // Plus a smaller credit for sheer UFC-level fight count (capped, so a
-  // 50-fight veteran's volume alone doesn't swamp everything else). Uses
-  // each opponent's CURRENT roster rank as a proxy for "were they real
+  // How tested a fighter's resume actually is, split by result. Each
+  // completed fight against a CURRENTLY ranked opponent is weighted by how
+  // highly they're ranked (a near-title-shot opponent counts for close to 3x
+  // a fighter clinging to #15) and by recency (a test from the last year or
+  // two counts close to double one from 6+ years back, though a deep
+  // historical resume still keeps a floor of value rather than decaying to
+  // zero). Wins and losses against that ranked competition are tallied
+  // separately rather than lumped together — beating ranked opponents and
+  // losing to them are not the same signal, and treating them as
+  // interchangeable was hiding which of the two actually happened. Uses each
+  // opponent's CURRENT roster rank as a proxy for "were they real
   // competition" — we don't have point-in-time historical rankings.
-  function simStrengthOfSchedule(name) {
+  function simScheduleQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    let weighted = 0, ufc = 0;
+    let winsWeighted = 0, lossesWeighted = 0, ufc = 0;
     const now = Date.now();
     hist.forEach(f => {
       if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
       if (f.org === 'UFC') ufc++;
+      if (f.result !== 'W' && f.result !== 'L') return;
       const tier = simRankTier(f.opponent);
       if (tier == null) return;
       const quality = Math.max(0.3, 1 - tier / 15);
       const d = new Date(f.date);
       const yearsAgo = isNaN(d) ? 5 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
       const recency = 0.4 + 0.6 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
-      weighted += quality * recency;
+      const contrib = quality * recency;
+      if (f.result === 'W') winsWeighted += contrib;
+      else lossesWeighted += contrib;
     });
-    return simSoftCap(weighted * 0.5, 5) + (Math.min(ufc, 20) * 0.04);
+    // Losing to ranked competition still means a fighter was actually
+    // tested — a real, distinct thing from never being tested at all — so
+    // it only partially offsets the credit earned from beating ranked
+    // competition, at less than full weight.
+    const net = winsWeighted - 0.4 * lossesWeighted;
+    return { net, ufc };
+  }
+
+  // Schedule quality used to be tacked onto the power score as a flat side
+  // bonus at the end, which meant a gaudy striking/grappling/finishing
+  // profile built mostly against soft, unranked competition scored exactly
+  // as trustworthy as the same numbers earned against a murderers' row —
+  // the bonus just stacked on top rather than actually questioning the
+  // stats themselves. This instead returns a multiplier applied directly to
+  // the production-stat terms in simPowerScore (striking, grappling,
+  // finishing): a thin/soft schedule discounts those numbers, a real
+  // murderers'-row resume inflates them, since the per-fight box-score data
+  // here has no per-opponent breakdown to recompute the underlying stats
+  // from directly. tanh keeps the swing bounded to roughly +/-15% either
+  // way, so schedule quality stays a real but secondary adjustment rather
+  // than overriding what a fighter's stats actually say.
+  function simScheduleMultiplier(name) {
+    const { net } = simScheduleQuality(name);
+    return 1 + 0.15 * Math.tanh(net / 2.5);
+  }
+
+  // Separate, smaller credit for sheer UFC-level fight count/experience —
+  // distinct from schedule QUALITY above, capped so a 50-fight veteran's
+  // volume alone doesn't swamp everything else.
+  function simActivityCredit(name) {
+    const { ufc } = simScheduleQuality(name);
+    return Math.min(ufc, 20) * 0.04;
   }
 
   // Recent-fight trajectory, distinct from the plain win-streak counter
@@ -34319,6 +34359,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return -countPenalty * rateScale;
   }
 
+  // "Boom or bust" signal: a fighter who finishes opponents often AND gets
+  // finished often themselves is inherently less predictable than their raw
+  // power-score gap suggests — a violent-but-fragile finisher can blow out
+  // a methodical, low-variance opponent just as easily as get blown out by
+  // them, in a way a stats-only model isn't well-equipped to call. Uses the
+  // LOWER of the two rates (offense, defense) deliberately: both have to be
+  // genuinely elevated for "boom or bust" to apply, since a fighter who's
+  // only dangerous in one direction isn't actually unpredictable, just good
+  // or bad. Same 4-win/3-loss sample minimum used elsewhere for finish-rate
+  // signals, so a thin sample doesn't get flagged as volatile on noise.
+  function simVolatility(name) {
+    const { wins, winFinishes, losses, lossFinishes } = simFinishStatsRelevant(name);
+    if (wins < 4 || losses < 3) return 0;
+    const finishOffense = winFinishes / wins;
+    const finishDefense = lossFinishes / losses;
+    return Math.min(finishOffense, finishDefense);
+  }
+
   // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
   // attempts that land — they say nothing about how long a fighter then
   // controls top position, passes guard, or grinds out a round once the
@@ -34416,7 +34474,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
     const form = simSoftCap(p.streak, 10) * 0.3;
-    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
+    // Schedule quality is folded in here as a multiplier on the three
+    // production-stat terms (striking, grappling, finishing) rather than
+    // added on afterward as a flat bonus — see simScheduleMultiplier. Pure
+    // fight-count experience (activityCredit) and the other situational
+    // factors stay additive, since those aren't claims about whether the
+    // underlying numbers are trustworthy.
+    const production = (strikingNet + grappling + finishing) * p.scheduleMultiplier;
+    return production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
@@ -34501,7 +34566,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // anywhere close to. 3.2 keeps real blowout-tier gaps decisive while
     // giving more room in the 60-85% band that most "favorite, but not a
     // lock" fights actually live in.
-    const k = 3.2;
+    // Widened further when either fighter is a "boom or bust" type (see
+    // simVolatility) — a high-variance fighter's predicted edge shouldn't be
+    // trusted at the same confidence as a low-variance one, since their
+    // actual outcomes swing harder than a stats-only gap implies. Only the
+    // more volatile of the two fighters matters here: either side being
+    // unpredictable is enough to soften the whole matchup's confidence.
+    const volatility = Math.max(simVolatility(nameA), simVolatility(nameB));
+    const k = 3.2 * (1 + 0.5 * volatility);
     const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
     const diff = statDiff + simHeadToHeadBoost(nameA, nameB);
     const raw = 1 / (1 + Math.exp(-diff / k));
