@@ -31404,6 +31404,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  document.addEventListener('keydown', (e) => {
  if (e.key === 'Escape') closeSearch();
  });
+ // Click on the dimmed backdrop (not the input/results/close-button inside
+ // it) or any scroll attempt while the overlay is open should dismiss it,
+ // same as hitting the ✕ button.
+ (function() {
+   const overlay = document.getElementById('searchOverlay');
+   overlay.addEventListener('click', function(e) {
+     if (e.target === overlay) closeSearch();
+   });
+   overlay.addEventListener('wheel', function() {
+     if (overlay.classList.contains('active')) closeSearch();
+   }, { passive: true });
+   overlay.addEventListener('touchmove', function() {
+     if (overlay.classList.contains('active')) closeSearch();
+   }, { passive: true });
+ })();
  // Countdown timer — driven by the live featured event (window.FEATURED_EVENT_STARTS_AT),
  // set once the API data loads. Falls back to a placeholder date until then.
  function updateCountdown() {
