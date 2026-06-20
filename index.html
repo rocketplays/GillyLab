@@ -1588,7 +1588,7 @@
       padding: 0.45rem 0.9rem;
       border-radius: 4px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: color 0.15s, border-color 0.15s, background-color 0.15s;
     }
 
     .rank-div-btn:hover { color: var(--text); border-color: var(--text); }
@@ -2083,7 +2083,7 @@
       padding: 0.4rem 0.85rem;
       border-radius: 4px;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: color 0.15s, border-color 0.15s, background-color 0.15s;
     }
 
     .odds-prop-btn:hover { color: var(--text); border-color: var(--text); }
@@ -2480,8 +2480,8 @@
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:0.7rem;letter-spacing:0.35em;text-transform:uppercase;color:var(--accent);">Upcoming Events</div>
       <div style="flex:1;height:1px;background:var(--border);"></div>
       <div style="display:flex;gap:0.5rem;align-items:center;">
-        <button onclick="carouselPrev()" style="background:var(--card);border:1px solid var(--accent);color:var(--accent);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;" onmouseover="this.style.background='rgba(0,230,104,0.12)'" onmouseout="this.style.background='var(--card)'">‹</button>
-        <button onclick="carouselNext()" style="background:var(--card);border:1px solid var(--accent);color:var(--accent);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:all 0.15s;" onmouseover="this.style.background='rgba(0,230,104,0.12)'" onmouseout="this.style.background='var(--card)'">›</button>
+        <button onclick="carouselPrev()" style="background:var(--card);border:1px solid var(--accent);color:var(--accent);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:background-color 0.15s;" onmouseover="this.style.background='rgba(0,230,104,0.12)'" onmouseout="this.style.background='var(--card)'">‹</button>
+        <button onclick="carouselNext()" style="background:var(--card);border:1px solid var(--accent);color:var(--accent);width:30px;height:30px;border-radius:4px;cursor:pointer;font-size:0.9rem;display:flex;align-items:center;justify-content:center;transition:background-color 0.15s;" onmouseover="this.style.background='rgba(0,230,104,0.12)'" onmouseout="this.style.background='var(--card)'">›</button>
       </div>
     </div>
 
@@ -2805,7 +2805,7 @@
 </footer>
 
 <!-- MODAL OVERLAY -->
-<div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9000;backdrop-filter:blur(4px);"></div>
+<div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9000;"></div>
 
 <!-- MODAL BOX -->
 <div id="modal-box" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9001;background:var(--card);border:1px solid var(--border);border-radius:10px;width:min(520px,92vw);max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
@@ -3562,6 +3562,16 @@
  // return to the previous fighter when navigating fighter → fighter.
  let fighterStack = [];
  let currentFighter = null;
+ // Tracks the in-flight fighter→fighter fade-transition timers (mirrors
+ // pageTransitionTimer below) so that quickly tapping through several
+ // fighter profiles in a row cancels any still-pending previous transition
+ // instead of letting it run concurrently. Without this, rapid taps stack
+ // up overlapping populate-page calls and animation-reset timeouts, which
+ // temporarily doubles/triples the live DOM node and listener count on the
+ // fighter page until everything settles — felt as cumulative slowdown
+ // during an active browsing session.
+ let fighterTransitionTimer1 = null;
+ let fighterTransitionTimer2 = null;
  const FIGHTER_BACK_LABELS = {
  home: '← Back to Card',
  projections: '← Back to Simulator',
@@ -31040,14 +31050,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
  if (stayingOnFighter) {
    // Fighter → fighter: fade the page out, swap content, fade back in.
+   // Cancel any previous transition still in flight (e.g. the user tapped
+   // a second fighter before the first fade finished) so they never run
+   // concurrently and stack up DOM work.
+   if (fighterTransitionTimer1) { clearTimeout(fighterTransitionTimer1); fighterTransitionTimer1 = null; }
+   if (fighterTransitionTimer2) { clearTimeout(fighterTransitionTimer2); fighterTransitionTimer2 = null; }
    const pg = document.getElementById('page-fighter');
    pg.style.cssText = 'opacity:0;transform:translateY(-8px);transition:opacity 0.15s ease,transform 0.15s ease;pointer-events:none;';
-   setTimeout(() => {
+   fighterTransitionTimer1 = setTimeout(() => {
+     fighterTransitionTimer1 = null;
      _doPopulate();
      // Force reflow so the browser registers the style reset before animating.
      pg.offsetHeight; // eslint-disable-line no-unused-expressions
      pg.style.cssText = 'animation:fadeIn 0.3s ease;';
-     setTimeout(() => { pg.style.cssText = ''; }, 300);
+     fighterTransitionTimer2 = setTimeout(() => { fighterTransitionTimer2 = null; pg.style.cssText = ''; }, 300);
    }, 150);
  } else {
    _doPopulate();
