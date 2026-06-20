@@ -34047,7 +34047,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       layoff: simLayoffFactor(name),
       bigFight: simBigFightExperience(name),
       controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
-      undefeatedBoost: simUndefeatedBoost(name)
+      undefeatedBoost: simUndefeatedBoost(name),
+      finisherBoost: simFinisherBoost(name),
+      durabilityBoost: simDurabilityBoost(name),
+      finishVulnerability: simFinishVulnerability(name)
     };
   }
 
@@ -34147,6 +34150,67 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return belowNine + pastNine;
   }
 
+  // Shared tally for the three finish-rate factors below: how many wins
+  // were finishes (KO/TKO/Submission, as opposed to decision) and, among
+  // losses, how many were finishes vs. decisions. One pass over the history
+  // feeds simFinisherBoost, simDurabilityBoost, and simFinishVulnerability.
+  function simFinishStats(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let wins = 0, winFinishes = 0, losses = 0, lossFinishes = 0, lossDecisions = 0;
+    hist.forEach(f => {
+      if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      const method = String(f.method || '').trim();
+      const isFinish = /^(KO|TKO|Submission)/i.test(method);
+      const isDecision = /Decision/i.test(method);
+      if (f.result === 'W') {
+        wins++;
+        if (isFinish) winFinishes++;
+      } else if (f.result === 'L') {
+        losses++;
+        if (isFinish) lossFinishes++;
+        else if (isDecision) lossDecisions++;
+      }
+    });
+    return { wins, winFinishes, losses, lossFinishes, lossDecisions };
+  }
+
+  // Finishing power beyond what finRate alone captures: a fighter who ends
+  // more than 3 in 4 of their wins by KO/TKO/submission (rather than going
+  // to decision) is a real finishing threat, and the bonus grows a little
+  // further past that 75% line. Requires at least 4 wins so a couple of
+  // early finishes on a thin resume don't trigger it.
+  function simFinisherBoost(name) {
+    const { wins, winFinishes } = simFinishStats(name);
+    if (wins < 4) return 0;
+    const pct = winFinishes / wins;
+    if (pct <= 0.75) return 0;
+    return simSoftCap((pct - 0.75) * 4, 1) * 0.5;
+  }
+
+  // "Granite chin" signal: among a fighter's losses, what share went the
+  // distance rather than ending early. A fighter who's lost fights but has
+  // rarely or never been finished is notoriously durable — a real, distinct
+  // trait from raw strDef/output numbers. Requires at least 3 losses so one
+  // decision loss doesn't read as an iron chin.
+  function simDurabilityBoost(name) {
+    const { losses, lossDecisions } = simFinishStats(name);
+    if (losses < 3) return 0;
+    const pct = lossDecisions / losses;
+    if (pct <= 0.75) return 0;
+    return simSoftCap((pct - 0.75) * 4, 1) * 0.4;
+  }
+
+  // Inverse signal: a fighter who's finished often when they lose (chin or
+  // gas-tank questions either way) takes a real hit. Same 3-loss minimum
+  // sample size as the durability bonus above.
+  function simFinishVulnerability(name) {
+    const { losses, lossFinishes } = simFinishStats(name);
+    if (losses < 3) return 0;
+    const pct = lossFinishes / losses;
+    if (pct <= 0.75) return 0;
+    return -simSoftCap((pct - 0.75) * 4, 1) * 0.4;
+  }
+
   // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
   // attempts that land — they say nothing about how long a fighter then
   // controls top position, passes guard, or grinds out a round once the
@@ -34235,7 +34299,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
     const form = simSoftCap(p.streak, 10) * 0.3;
-    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost;
+    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.finisherBoost + p.durabilityBoost + p.finishVulnerability;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
