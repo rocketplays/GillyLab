@@ -1351,7 +1351,11 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      cursor: pointer;
+      transition: color 0.15s;
     }
+
+    .sim-results-name:hover { color: var(--accent); }
 
     .sim-results-pct {
       font-family: 'Barlow Condensed', sans-serif;
@@ -33920,6 +33924,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }).join('');
   }
 
+  // Builds the onclick attribute that sends a sim-results fighter name into
+  // their full profile, mirroring how the search results / carousel rows
+  // open fighters elsewhere — pulled from the same FIGHTERS roster entry
+  // already used for the weight-class gating check earlier in
+  // runFightSimulator(), so it stays correct for any fighter in the database.
+  function simFighterOpenAttr(name) {
+    const f = simGetFighterRoster(name);
+    if (!f) return '';
+    return 'onclick="openFighter(\'' + escJsAttr(f.name) + '\',\'' + escJsAttr(f.division) + '\',\'' +
+      escJsAttr(f.record) + '\',\'' + escJsAttr(f.rank) + '\',\'' + escJsAttr(f.initials) + '\',\'' +
+      escJsAttr(f.country || '') + '\')"';
+  }
+
   function renderSimResults(nameA, nameB, result) {
     const box = document.getElementById('simResults');
     if (!box) return;
@@ -33934,7 +33951,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     box.innerHTML = `
       <div class="sim-results-header">
         <div>
-          <div class="sim-results-name">${nameA}</div>
+          <div class="sim-results-name" ${simFighterOpenAttr(nameA)}>${nameA}</div>
           <div class="sim-results-count">${result.winsA.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
         </div>
         <div class="${aPctCls}">${pctA}%</div>
@@ -33945,7 +33962,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <div class="sim-results-header" style="margin-top:0.5rem;">
         <div>
-          <div class="sim-results-name">${nameB}</div>
+          <div class="sim-results-name" ${simFighterOpenAttr(nameB)}>${nameB}</div>
           <div class="sim-results-count">${result.winsB.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
         </div>
         <div class="${bPctCls}">${pctB}%</div>
