@@ -1369,6 +1369,32 @@
 
     .sim-results-name:hover { color: var(--accent); }
 
+    .sim-results-fighter {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .sim-results-avatar {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .sim-results-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      border-radius: 50%;
+      display: block;
+    }
+
     .sim-results-pct {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
@@ -33974,12 +34000,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const bPctCls = aLeads ? 'sim-results-pct right' : 'sim-results-pct';
     const barLeftColor = aLeads ? 'var(--accent)' : 'var(--muted)';
     const barRightColor = aLeads ? 'var(--muted)' : 'var(--accent)';
+    const nameAAttr = escHtmlAttr(nameA);
+    const nameBAttr = escHtmlAttr(nameB);
     box.style.display = 'block';
     box.innerHTML = `
       <div class="sim-results-header">
-        <div>
-          <div class="sim-results-name" ${simFighterOpenAttr(nameA)}>${nameA}</div>
-          <div class="sim-results-count">${result.winsA.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
+        <div class="sim-results-fighter">
+          <div class="sim-results-avatar" data-fighter="${nameAAttr}"></div>
+          <div>
+            <div class="sim-results-name" ${simFighterOpenAttr(nameA)}>${nameA}</div>
+            <div class="sim-results-count">${result.winsA.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
+          </div>
         </div>
         <div class="${aPctCls}">${pctA}%</div>
       </div>
@@ -33988,9 +34019,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <div class="proj-bar-right" style="background:${barRightColor};"></div>
       </div>
       <div class="sim-results-header" style="margin-top:0.5rem;">
-        <div>
-          <div class="sim-results-name" ${simFighterOpenAttr(nameB)}>${nameB}</div>
-          <div class="sim-results-count">${result.winsB.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
+        <div class="sim-results-fighter">
+          <div class="sim-results-avatar" data-fighter="${nameBAttr}"></div>
+          <div>
+            <div class="sim-results-name" ${simFighterOpenAttr(nameB)}>${nameB}</div>
+            <div class="sim-results-count">${result.winsB.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
+          </div>
         </div>
         <div class="${bPctCls}">${pctB}%</div>
       </div>
@@ -34019,6 +34053,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <div class="sim-power-note">Composite rating from striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>
     `;
+    loadSimResultPhotos();
+  }
+
+  // Same local-photo-first / PHOTO_MAP-fallback approach as
+  // loadProjectionPhotos() / loadRankingPhotos(), but for the small
+  // circular avatars rendered next to each fighter's name in the fight
+  // simulator's results (.sim-results-avatar).
+  function loadSimResultPhotos() {
+    document.querySelectorAll('#simResults .sim-results-avatar').forEach(cell => {
+      const name = cell.getAttribute('data-fighter');
+      if (!name || cell.querySelector('img')) return;
+      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const mapUrl   = PHOTO_MAP[name];
+      const img = document.createElement('img');
+      img.alt = name;
+      img.onload = () => {
+        cell.innerHTML = '';
+        cell.appendChild(img);
+      };
+      img.onerror = () => {
+        if (mapUrl && img.src.indexOf('./photos') !== -1) {
+          img.src = mapUrl; // fall back to PHOTO_MAP
+        }
+      };
+      img.src = localUrl;
+    });
   }
 
   function runFightSimulator() {
