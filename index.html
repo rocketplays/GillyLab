@@ -32709,14 +32709,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div>
         <div class="odds-prop-tabs">
           <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
-          <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${methodId}')">Method</button>
+          <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${roundId}')">Round Props</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${lmId}')">Line Movement</button>
         </div>
         <div id="${mlId}" class="odds-prop-panel">${buildMoneylineTable(f)}</div>
-        <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
         <div id="${methodId}" class="odds-prop-panel" style="display:none;">${buildMethodTable(f)}</div>
+        <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
         <div id="${roundId}" class="odds-prop-panel" style="display:none;">${buildRoundPropsTable(f)}</div>
         <div id="${lmId}" class="odds-prop-panel" style="display:none;">${buildLineMovementHTML(f, historyEntry)}</div>
       </div>`;
