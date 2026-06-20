@@ -2362,7 +2362,7 @@
       </button>
       <ul class="nav-dropdown-menu" id="nav-dropdown-menu" role="menu">
         <li role="menuitem" id="tab-home"        class="active" onclick="navigate('home');        closeNavDropdown()">Home</li>
-        <li role="menuitem" id="tab-projections"            onclick="navigate('projections'); closeNavDropdown()">Projections</li>
+        <li role="menuitem" id="tab-projections"            onclick="navigate('projections'); closeNavDropdown()">Simulator</li>
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
@@ -2623,16 +2623,24 @@
   <div class="divider"></div>
 
   <div id="odds-dynamic-content"></div>
+
+  <div class="divider"></div>
+  <div class="page-header" style="padding-top:2rem;">
+    <div class="page-header-title">Win <span class="accent">Projections</span></div>
+    <div class="page-header-sub">No-vig implied probability · Consensus across all major books</div>
+  </div>
+
+  <div id="dynamic-projections"></div>
 </div>
 
 <!-- ══════════════════════════════════════
-     PAGE: PROJECTIONS
+     PAGE: SIMULATOR
 ══════════════════════════════════════ -->
 <div class="page" id="page-projections">
   <div class="page-header">
-    <div class="page-header-label">Market Consensus</div>
-    <div class="page-header-title">Win <span class="accent">Projections</span></div>
-    <div class="page-header-sub">No-vig implied probability · Consensus across all major books</div>
+    <div class="page-header-label">Matchup Modeling</div>
+    <div class="page-header-title">Fight <span class="accent">Simulator</span></div>
+    <div class="page-header-sub">Run any matchup through a stat-driven Monte Carlo simulation</div>
   </div>
   <div class="divider"></div>
 
@@ -2668,8 +2676,6 @@
       <div class="sim-results" id="simResults"></div>
     </div>
   </div>
-
-  <div id="dynamic-projections"></div>
 </div>
 
 
@@ -3480,7 +3486,7 @@
  let currentFighter = null;
  const FIGHTER_BACK_LABELS = {
  home: '← Back to Card',
- projections: '← Back to Projections',
+ projections: '← Back to Simulator',
  odds: '← Back to Odds',
  rankings: '← Back to Rankings',
  'tape-study': '← Back to Tape Study',
