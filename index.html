@@ -34003,8 +34003,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       tdDef: simPct(s.tdDef, 0.65),
       subAvg: simNum(s.subAvg, 0.3),
       finRate: simPct(s.finRate, 0.45),
-      streak: simNum(s.streak, 0)
+      streak: simNum(s.streak, 0),
+      sos: simStrengthOfSchedule(name)
     };
+  }
+
+  // How tested a fighter's resume actually is: how many past opponents are
+  // currently ranked, plus a smaller credit for sheer UFC-level fight count
+  // (capped, so a 50-fight veteran's volume alone doesn't swamp everything
+  // else). Uses each opponent's CURRENT roster rank as a proxy for "were
+  // they real competition" — we don't have point-in-time historical
+  // rankings, but this still clearly separates a deep, tested veteran
+  // schedule from a short prospect run, which raw per-fight stats can't see.
+  function simStrengthOfSchedule(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let ranked = 0, ufc = 0;
+    hist.forEach(f => {
+      if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
+      if (f.org === 'UFC') ufc++;
+      if (simRankTier(f.opponent) != null) ranked++;
+    });
+    const raw = (ranked * 0.5) + (Math.min(ufc, 20) * 0.05);
+    return Math.min(3, raw);
   }
 
   // Composite "power score": striking output net of damage absorbed,
@@ -34025,7 +34045,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const grappling = (p.tdLanded * p.tdAcc * 1.2) + (p.subAvg * 2.2);
     const finishing = (p.finRate * 4) + (simSoftCap(p.kd, 2.2) * 2.5);
     const form = Math.max(-3, Math.min(3, p.streak)) * 0.25;
-    return strikingNet + grappling + finishing + form;
+    return strikingNet + grappling + finishing + form + p.sos;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
