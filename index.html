@@ -34764,7 +34764,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // own historical wins, so method/round outcomes reflect how THEY actually win.
   function simMethodPool(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    const wins = hist.filter(f => f.result === 'W' && f.method);
+    const isWin = f => f.result === 'W' && f.method;
+    const ufcWins = hist.filter(f => isWin(f) && f.org === 'UFC');
+    const wins = ufcWins.length > 0 ? ufcWins : hist.filter(isWin);
     const pool = wins.map(f => {
       const m = f.method.toUpperCase();
       let cat = 'Decision';
