@@ -1679,16 +1679,6 @@
       flex-wrap: wrap;
     }
 
-    .rank-champ-badge {
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      color: var(--accent);
-      border: 1px solid var(--accent);
-      padding: 0.2rem 0.6rem;
-      border-radius: 3px;
-    }
-
     .rank-table { display: flex; flex-direction: column; gap: 0.4rem; }
 
     .rank-row, .rank-champ-row {
@@ -33464,15 +33454,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function rankingPanelHTML(divisionName, entries, isP4P) {
     const info = RANKING_DIVISIONS[divisionName];
-    // Prefer the true/unified champion for the panel-title badge; fall
-    // back to an interim champion only if that's all the division has.
-    const champ = entries.find(e => e.isChampion && !isInterimChamp(e)) || entries.find(e => e.isChampion);
     const titleLabel = isP4P
       ? (divisionName.indexOf("Women's") === 0 ? "Women's Pound-for-Pound" : "Men's Pound-for-Pound")
       : (info ? info.tag : divisionName);
-    const champBadge = (!isP4P && champ)
-      ? ' <span class="rank-champ-badge">C: ' + champ.fighterName + '</span>'
-      : '';
 
     const rows = entries.slice().sort((a, b) => rankSortKey(a) - rankSortKey(b)).map(e => {
       const fDiv = e.fighter && e.fighter.division;
@@ -33523,7 +33507,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '</div>';
     }).join('');
 
-    return '<div class="rank-panel-title">' + titleLabel + champBadge + '</div>' +
+    return '<div class="rank-panel-title">' + titleLabel + '</div>' +
       '<div class="rank-table">' + rows + '</div>';
   }
 
