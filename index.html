@@ -32426,6 +32426,110 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
   }
 
+  // ───────────────────────────────────────────────────────────
+  // MANUAL PROP ODDS (Method of Victory / Round Props)
+  // ───────────────────────────────────────────────────────────
+  // The live odds feed (data/odds.json, from the Odds API) only carries
+  // moneyline + rounds totals -- method-of-victory and round-by-round
+  // props aren't part of that feed, so they have to be entered and kept
+  // up to date here by hand. Leave a fight out of this object (or leave
+  // its method/roundProps empty) and those two panels just show a
+  // "not entered yet" placeholder instead of breaking the page.
+  //
+  // Keyed by an order-independent "lastname|lastname" pair (alphabetically
+  // sorted, same scheme as pairKey() in scripts/odds-history-lib.js) so an
+  // entry still matches the fight even if the API's home/away order flips.
+  // `f1` in each entry always refers to whichever fighter's last name
+  // sorts first alphabetically (i.e. matches the first name in the key) --
+  // manualSideFor() below maps that back onto whichever fighter is
+  // actually home/away for a given fight object.
+  //
+  // `rounds`: 3 for a normal fight, 5 for a title fight / 5-round main
+  // event -- controls how many round columns Round Props renders.
+  //
+  // Example (book keys match BOOK_KEY_MAP below; ko/sub/dec and r1/r2/r3
+  // are the odds for THAT fighter to win by that method / in that round):
+  //   'rosa|santos': {
+  //     rounds: 3,
+  //     method: {
+  //       draftkings: { f1: { ko: 600, sub: 900, dec: 400 }, f2: { ko: -110, sub: 450, dec: 250 } },
+  //     },
+  //     roundProps: {
+  //       draftkings: { f1: { r1: 1200, r2: 700, r3: 350 }, f2: { r1: 800, r2: 600, r3: 400 } },
+  //     },
+  //   },
+  const MANUAL_PROP_ODDS = {};
+
+  function pairKey(n1, n2) {
+    return [lastNameOf(n1).toLowerCase(), lastNameOf(n2).toLowerCase()].sort().join('|');
+  }
+
+  function findManualProps(fight) {
+    return MANUAL_PROP_ODDS[pairKey(fight.home_team, fight.away_team)] || null;
+  }
+
+  // Returns 'f1' or 'f2' -- whichever key the manual entry uses for the
+  // fight's home_team (or away_team, if who === 'away').
+  function manualSideFor(fight, who) {
+    const homeLast = lastNameOf(fight.home_team).toLowerCase();
+    const awayLast = lastNameOf(fight.away_team).toLowerCase();
+    const homeIsF1 = homeLast === [homeLast, awayLast].sort()[0];
+    if (who === 'away') return homeIsF1 ? 'f2' : 'f1';
+    return homeIsF1 ? 'f1' : 'f2';
+  }
+
+  function buildMethodTable(fight) {
+    const entry = findManualProps(fight);
+    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No method-of-victory odds entered yet — these aren\'t part of the live odds feed and are updated manually.</p>';
+    if (!entry || !entry.method || !Object.keys(entry.method).length) return placeholder;
+    const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
+    const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
+    function fighterBlock(name, sideKey) {
+      let rows = '';
+      Object.keys(entry.method).forEach(bookKey => {
+        const info = BOOK_KEY_MAP[bookKey];
+        const vals = entry.method[bookKey] && entry.method[bookKey][sideKey];
+        if (!info || !vals) return;
+        rows += `<tr class="row-${info.cls}">
+          <td><span class="book-name book-${info.cls}">${info.label}</span></td>
+          <td>${fmtOdds(vals.ko)}</td>
+          <td>${fmtOdds(vals.sub)}</td>
+          <td>${fmtOdds(vals.dec)}</td>
+        </tr>`;
+      });
+      return rows ? `<tr class="prop-subheader"><td colspan="4"><strong>${name}</strong></td></tr>${rows}` : '';
+    }
+    const body = fighterBlock(last1, f1Side) + fighterBlock(last2, f2Side);
+    if (!body) return placeholder;
+    return `<table class="odds-table"><thead><tr><th>Sportsbook</th><th>KO/TKO</th><th>Submission</th><th>Decision</th></tr></thead><tbody>${body}</tbody></table>`;
+  }
+
+  function buildRoundPropsTable(fight) {
+    const entry = findManualProps(fight);
+    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No round-props odds entered yet — these aren\'t part of the live odds feed and are updated manually.</p>';
+    if (!entry || !entry.roundProps || !Object.keys(entry.roundProps).length) return placeholder;
+    const rounds = entry.rounds === 5 ? 5 : 3;
+    const roundKeys = [];
+    for (let r = 1; r <= rounds; r++) roundKeys.push('r' + r);
+    const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
+    const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
+    function fighterBlock(name, sideKey) {
+      let rows = '';
+      Object.keys(entry.roundProps).forEach(bookKey => {
+        const info = BOOK_KEY_MAP[bookKey];
+        const vals = entry.roundProps[bookKey] && entry.roundProps[bookKey][sideKey];
+        if (!info || !vals) return;
+        const cells = roundKeys.map(rk => `<td>${fmtOdds(vals[rk])}</td>`).join('');
+        rows += `<tr class="row-${info.cls}"><td><span class="book-name book-${info.cls}">${info.label}</span></td>${cells}</tr>`;
+      });
+      return rows ? `<tr class="prop-subheader"><td colspan="${rounds + 1}"><strong>${name}</strong></td></tr>${rows}` : '';
+    }
+    const body = fighterBlock(last1, f1Side) + fighterBlock(last2, f2Side);
+    if (!body) return placeholder;
+    const headCells = roundKeys.map((rk, i) => `<th>Round ${i + 1}</th>`).join('');
+    return `<table class="odds-table"><thead><tr><th>Sportsbook</th>${headCells}</tr></thead><tbody>${body}</tbody></table>`;
+  }
+
   // ── BOOK KEY MAP ──
   const BOOK_KEY_MAP = {
     draftkings:     { cls: 'dk',   label: 'DraftKings' },
@@ -32592,9 +32696,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return `<button class="rank-div-btn${i === 0 ? ' active' : ''}" onclick="showFight('api-fight-${i}',this)">${s1} vs. ${s2}</button>`;
     }).join('');
     const panels = fights.map((f, i) => {
-      const mlId  = `api-f${i}-ml`;
-      const totId = `api-f${i}-tot`;
-      const lmId  = `api-f${i}-lm`;
+      const mlId     = `api-f${i}-ml`;
+      const totId    = `api-f${i}-tot`;
+      const methodId = `api-f${i}-method`;
+      const roundId  = `api-f${i}-rounds`;
+      const lmId     = `api-f${i}-lm`;
       const historyEntry = typeof findHistoryEntry === 'function' ? findHistoryEntry(f) : null;
       return `<div id="api-fight-${i}" class="fight-odds-panel"${i > 0 ? ' style="display:none;"' : ''}>
         <div class="odds-fight-header" style="margin-bottom:1rem;">
@@ -32604,10 +32710,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <div class="odds-prop-tabs">
           <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
+          <button class="odds-prop-btn" onclick="showProp(this,'${methodId}')">Method</button>
+          <button class="odds-prop-btn" onclick="showProp(this,'${roundId}')">Round Props</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${lmId}')">Line Movement</button>
         </div>
         <div id="${mlId}" class="odds-prop-panel">${buildMoneylineTable(f)}</div>
         <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
+        <div id="${methodId}" class="odds-prop-panel" style="display:none;">${buildMethodTable(f)}</div>
+        <div id="${roundId}" class="odds-prop-panel" style="display:none;">${buildRoundPropsTable(f)}</div>
         <div id="${lmId}" class="odds-prop-panel" style="display:none;">${buildLineMovementHTML(f, historyEntry)}</div>
       </div>`;
     }).join('');
