@@ -34910,7 +34910,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // loadProjectionPhotos() / loadRankingPhotos(), but for the small
   // circular avatars rendered next to each fighter's name in the fight
   // simulator's results (.sim-results-avatar).
+  //
+  // Each call to runFightSimulator() rebuilds #simResults from scratch, which
+  // detaches the previous run's avatar cells -- but if a previous run's image
+  // request (local thumb or PHOTO_MAP fallback) was still in flight, the img's
+  // onload/onerror closures (and the detached cell they reference) stay alive
+  // in memory until that network call resolves on its own. simPendingPhotoImgs
+  // tracks any not-yet-resolved images so the next call can explicitly cancel
+  // them (clearing handlers + src aborts the in-flight request) instead of
+  // waiting on the browser to get around to it.
+  let simPendingPhotoImgs = [];
+
   function loadSimResultPhotos() {
+    simPendingPhotoImgs.forEach(img => {
+      img.onload = null;
+      img.onerror = null;
+      img.src = '';
+    });
+    simPendingPhotoImgs = [];
+
     document.querySelectorAll('#simResults .sim-results-avatar').forEach(cell => {
       const name = cell.getAttribute('data-fighter');
       if (!name || cell.querySelector('img')) return;
@@ -34919,14 +34937,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const img = document.createElement('img');
       img.alt = name;
       img.onload = () => {
+        const idx = simPendingPhotoImgs.indexOf(img);
+        if (idx !== -1) simPendingPhotoImgs.splice(idx, 1);
         cell.innerHTML = '';
         cell.appendChild(img);
       };
       img.onerror = () => {
         if (mapUrl && img.src.indexOf('./photos') !== -1) {
           img.src = mapUrl; // fall back to PHOTO_MAP
+        } else {
+          const idx = simPendingPhotoImgs.indexOf(img);
+          if (idx !== -1) simPendingPhotoImgs.splice(idx, 1);
+          img.onload = null;
+          img.onerror = null;
         }
       };
+      simPendingPhotoImgs.push(img);
       img.src = localUrl;
     });
   }
