@@ -2652,13 +2652,13 @@
       <div class="sim-fighters-row">
         <div class="sim-fighter-col">
           <label class="sim-label" for="simFighterA">Fighter A</label>
-          <input class="sim-fighter-input" id="simFighterA" placeholder="Search fighter…" autocomplete="off" />
+          <input class="sim-fighter-input" id="simFighterA" placeholder="Search fighter…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
           <div class="sim-autocomplete-list" id="simFighterAList"></div>
         </div>
         <div class="sim-vs">VS</div>
         <div class="sim-fighter-col">
           <label class="sim-label" for="simFighterB">Fighter B</label>
-          <input class="sim-fighter-input" id="simFighterB" placeholder="Search fighter…" autocomplete="off" />
+          <input class="sim-fighter-input" id="simFighterB" placeholder="Search fighter…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
           <div class="sim-autocomplete-list" id="simFighterBList"></div>
         </div>
       </div>
@@ -33539,12 +33539,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
       const matches = starts.concat(contains).slice(0, 8);
       if (matches.length === 0) { hideList(); return; }
+      // Only recompute the fixed position when the list is transitioning from
+      // hidden to visible (i.e. once per "open" session), not on every single
+      // keystroke. On real mobile keyboards the on-screen keyboard can still be
+      // animating in/out for a couple hundred ms after focus, which spans
+      // several rapid keystrokes if the user types quickly; recalculating
+      // top/bottom/maxHeight against the viewport on every keystroke while
+      // that animation is mid-flight can read a transient/stale viewport size
+      // and park the list off-screen or with a collapsed height, making it
+      // look like the list "disappeared" even though matches still exist.
+      const wasHidden = list.style.display !== 'block';
       activeIndex = -1;
       list.innerHTML = matches
         .map(n => `<div class="sim-autocomplete-item" data-name="${n.replace(/"/g, '&quot;')}">${n}</div>`)
         .join('');
       list.style.display = 'block';
-      positionList();
+      if (wasHidden) positionList();
     }
 
     function selectName(name) {
