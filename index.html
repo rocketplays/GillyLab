@@ -42,7 +42,20 @@
       font-family: 'Barlow', sans-serif;
       font-weight: 400;
       min-height: 100vh;
-      overflow-x: hidden;
+      /* No overflow-x:hidden here (removed) -- per the comment on <html>'s
+         rule above, this was already known to "clip nothing useful" since
+         <html> is the element that actually scrolls. Worse, setting
+         overflow-x on body (independently of html) makes body itself
+         establish its own scroll container per spec (its overflow-y
+         boxifies to auto), even though body never actually scrolls --
+         <html> does. That mismatch is exactly what breaks
+         .site-header's position:sticky: sticky sticks against the
+         nearest scrolling ancestor, which resolved to body's
+         never-actually-scrolling box instead of <html>'s real scrollport,
+         so the header just scrolled away with the page instead of
+         sticking. Removing this redundant rule fixes that while <html>'s
+         overflow-x:hidden still does the actual horizontal-overflow
+         clipping job.  */
     }
 
     /* ── NOISE OVERLAY ── */
@@ -58,8 +71,22 @@
 
     /* ── HEADER: TWO ROWS ── */
     .site-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
+      /* position:sticky, not fixed. Mobile browsers (iOS Safari and some
+         Android Chrome builds) animate the address bar hiding/showing as
+         you scroll, and a position:fixed element is positioned against
+         the layout viewport rather than the visual one during that
+         animation — for a frame or two the header can lag behind, leaving
+         a thin gap at the very top of the screen through which content
+         you've already scrolled past is briefly visible underneath it.
+         Sticky elements are laid out in normal flow and tracked against
+         the scrolling ancestor's content box, which mobile browsers keep
+         glued to the visual viewport correctly through that animation, so
+         the gap doesn't appear. Visually identical to fixed once scrolled
+         past the header's own height. (.page's old `padding-top: 98px`
+         compensation for the fixed header's height has been removed since
+         sticky already occupies that space in normal flow.) */
+      position: sticky;
+      top: 0;
       z-index: 100;
       /* Solid background instead of a blurred-translucent one — at 0.96
          opacity the blur was barely visible anyway, and backdrop-filter
@@ -229,7 +256,10 @@
     /* ── PAGES ── */
     .page {
       display: none;
-      padding-top: 98px;
+      /* No padding-top here: .site-header is position:sticky and sits
+         directly before every .page in the DOM, so it already occupies
+         its own height in normal flow — adding padding here on top of
+         that would double-count the header's height as blank space. */
       min-height: 100vh;
       animation: fadeIn 0.3s ease;
     }
