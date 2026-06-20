@@ -985,27 +985,9 @@
       margin-bottom: 1.5rem;
     }
 
-    .odds-fight-header {
-      background: var(--surface2);
-      padding: 0.85rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .odds-fight-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .odds-fight-weight {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
+    .odds-divider {
+      border-top: 1px solid var(--border);
+      margin-bottom: 1.25rem;
     }
 
     table.odds-table {
@@ -2067,8 +2049,6 @@
       .odds-grid         { padding: 1rem; }
       .odds-fight-selector { padding: 0 1rem 1rem; }
       .fight-select-btn  { font-size: 0.65rem; padding: 0.35rem 0.65rem; }
-      .odds-fight-header { padding: 0.7rem 1rem; flex-direction: column; align-items: flex-start; gap: 0.2rem; }
-      .odds-fight-label  { font-size: 0.85rem; }
       .odds-prop-tabs    { gap: 0.3rem; margin-bottom: 0.75rem; }
       .odds-prop-btn     { font-size: 0.62rem; padding: 0.35rem 0.6rem; }
       .odds-table th     { padding: 0.5rem 0.75rem; font-size: 0.6rem; }
@@ -32696,10 +32676,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const lmId     = `api-f${i}-lm`;
       const historyEntry = typeof findHistoryEntry === 'function' ? findHistoryEntry(f) : null;
       return `<div id="api-fight-${i}" class="fight-odds-panel"${i > 0 ? ' style="display:none;"' : ''}>
-        <div class="odds-fight-header" style="margin-bottom:1rem;">
-          <div class="odds-fight-label">${f.home_team} vs. ${f.away_team}</div>
-          <div class="odds-fight-weight">MMA</div>
-        </div>
+        <div class="odds-divider"></div>
         <div class="odds-prop-tabs">
           <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${methodId}')">Method</button>
