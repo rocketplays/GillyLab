@@ -1387,6 +1387,52 @@
       font-weight: 700;
     }
 
+    .sim-power-row {
+      display: flex;
+      align-items: center;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .sim-power-col {
+      flex: 1;
+      text-align: center;
+    }
+
+    .sim-power-divider {
+      width: 1px;
+      height: 28px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .sim-power-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .sim-power-value {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      color: var(--muted);
+      line-height: 1;
+    }
+
+    .sim-power-value.lead { color: var(--accent); }
+
+    .sim-power-note {
+      font-size: 0.68rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.5rem;
+      line-height: 1.4;
+    }
+
     @media (max-width: 640px) {
       .sim-fighters-row { flex-direction: column; align-items: stretch; }
       .sim-vs { text-align: center; padding-bottom: 0; }
@@ -33707,6 +33753,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function simRunTrials(nameA, nameB, n) {
     const probA = simWinProbability(nameA, nameB);
+    const powerA = simPowerScore(getSimProfile(nameA));
+    const powerB = simPowerScore(getSimProfile(nameB));
     const poolA = simMethodPool(nameA);
     const poolB = simMethodPool(nameB);
     let winsA = 0, winsB = 0;
@@ -33724,7 +33772,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         methodsB[pick.method]++;
       }
     }
-    return { probA, winsA, winsB, methodsA, methodsB, n };
+    return { probA, powerA, powerB, winsA, winsB, methodsA, methodsB, n };
   }
 
   function simMethodRowsHtml(methods, wins) {
@@ -33776,6 +33824,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           ${simMethodRowsHtml(result.methodsB, result.winsB)}
         </div>
       </div>
+
+      <div class="sim-power-row">
+        <div class="sim-power-col">
+          <div class="sim-power-label">Power Score</div>
+          <div class="sim-power-value${result.powerA >= result.powerB ? ' lead' : ''}">${result.powerA.toFixed(2)}</div>
+        </div>
+        <div class="sim-power-divider"></div>
+        <div class="sim-power-col">
+          <div class="sim-power-label">Power Score</div>
+          <div class="sim-power-value${result.powerB > result.powerA ? ' lead' : ''}">${result.powerB.toFixed(2)}</div>
+        </div>
+      </div>
+      <div class="sim-power-note">Composite rating from striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>
     `;
   }
 
