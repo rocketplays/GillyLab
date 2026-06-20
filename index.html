@@ -31801,6 +31801,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '</svg></span>';
   }
 
+  // Untitled/unthemed events come back from the API as plain "UFC Fight
+  // Night" (optionally with a trailing number, e.g. "UFC Fight Night 256").
+  // Highlight just the "Fight Night" words in the brand accent green so they
+  // read as a distinct event tier, the way the gold/red-white-blue treatments
+  // do for numbered PPVs and Freedom cards.
+  function highlightFightNight(name) {
+    return (name || '').replace(/Fight Night/i, function(m) {
+      return '<span style="color:var(--accent);">' + m + '</span>';
+    });
+  }
+
   function renderHomeFightCard(evt) {
     const container = document.getElementById('dynamic-fight-card');
     if (!container) return;
@@ -31823,6 +31834,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (nameEl) {
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
       if (flagSVG || evt.name.startsWith('\u{1F1FA}')) nameEl.innerHTML = flagSVG + evt.name;
+      else if (!isNumbered) nameEl.innerHTML = highlightFightNight(evt.name);
       else nameEl.textContent = evt.name;
     }
     if (detailsEl) detailsEl.textContent = evt.details;
@@ -33032,11 +33044,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const isNumbered = !isFreedom && /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
       const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : ''));
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
+      const nameHTML = (isFreedom || isNumbered) ? evt.name : highlightFightNight(evt.name);
       cards.push('<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
         '<div style="max-width:1300px;margin:0 auto;">' +
           '<div class="event-header">' +
             '<div class="event-info">' +
-              '<div class="event-name">' + flagSVG + evt.name + '</div>' +
+              '<div class="event-name">' + flagSVG + nameHTML + '</div>' +
               '<div class="event-details">' + (evt.details || '') + '</div>' +
             '</div>' +
             '<div class="event-countdown">' +
