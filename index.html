@@ -33992,22 +33992,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function getSimProfile(name) {
     const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
+    const slpm = simNum(s.slpm, 3.5);
+    const sapm = simNum(s.sapm, 3.5);
+    const tdLanded = simNum(s.tdLanded, 1.0);
+    const tdAcc = simPct(s.tdAcc, 0.4);
+    const streak = simNum(s.streak, 0);
     return {
-      slpm: simNum(s.slpm, 3.5),
+      slpm,
       strAcc: simPct(s.strAcc, 0.45),
-      sapm: simNum(s.sapm, 3.5),
+      sapm,
       strDef: simPct(s.strDef, 0.55),
       kd: simNum(s.kd, 0.3),
-      tdLanded: simNum(s.tdLanded, 1.0),
-      tdAcc: simPct(s.tdAcc, 0.4),
+      tdLanded,
+      tdAcc,
       tdDef: simPct(s.tdDef, 0.65),
       subAvg: simNum(s.subAvg, 0.3),
       finRate: simPct(s.finRate, 0.45),
-      streak: simNum(s.streak, 0),
+      streak,
       sos: simStrengthOfSchedule(name),
       age: simAgeFactor(s.dob),
       layoff: simLayoffFactor(name),
-      bigFight: simBigFightExperience(name)
+      bigFight: simBigFightExperience(name),
+      controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak)
     };
   }
 
@@ -34084,6 +34090,33 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return Math.min(1, count * 0.18);
   }
 
+  // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
+  // attempts that land — they say nothing about how long a fighter then
+  // controls top position, passes guard, or grinds out a round once the
+  // takedown is in. A fighter who scores one takedown and rides out four
+  // minutes of a five-minute round looks identical in the raw stat to one
+  // who got up immediately. That's a real blind spot for control-heavy
+  // grapplers, who can look unremarkable on paper while being functionally
+  // dominant. There's no actual control-time stat in this dataset to pull
+  // from, so this is a proxy: a fighter who clearly operates as a
+  // high-volume, high-accuracy takedown threat (3+ landed/15min at 40%+
+  // accuracy) while their own striking numbers are quiet (under 3.5
+  // landed/absorbed per minute — i.e. fights aren't being won in exchanges)
+  // is very likely winning rounds through control time the raw stats don't
+  // show. That inference is only trusted when there's outside confirmation
+  // it's working for them — a current ranking or a 3+ win streak — so it
+  // doesn't reward a grappler who's merely active but actually losing.
+  function simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak) {
+    const lowStriking = slpm < 3.5 && sapm < 3.5;
+    const grappleVolume = tdAcc >= 0.40 && tdLanded >= 3;
+    if (!lowStriking || !grappleVolume) return 0;
+    const proven = simRankTier(name) != null || streak >= 3;
+    if (!proven) return 0;
+    // Scales a little with how far past the landed-TD threshold they are,
+    // capped so it stays a supporting signal rather than a dominant one.
+    return 1.0 + simSoftCap(tdLanded - 3, 3) * 0.3;
+  }
+
   // Reach and stance are tracked per fighter but previously never touched
   // the score. A real reach edge is a modest but genuine advantage at
   // range; orthodox fighters see far fewer southpaw/switch opponents than
@@ -34131,10 +34164,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function simPowerScore(p) {
     const strikingNet = (p.slpm * p.strAcc) - (p.sapm * (1 - p.strDef));
+    // Takedown defense was tracked per fighter but never actually touched
+    // the score — strikingNet above already nets a fighter's own defense
+    // against damage absorbed, but grappling below was pure offense with no
+    // defensive counterpart at all. Center on 0.65, the same default used
+    // elsewhere when tdDef is missing, so an elite defender (90-100%) earns
+    // a real bonus and a poor one (30-40%) takes a real hit.
+    const tdDefBonus = (p.tdDef - 0.65) * 1.5;
     const grappling = (p.tdLanded * p.tdAcc * 1.2) + (p.subAvg * 2.2);
     const finishing = (p.finRate * 4) + (simSoftCap(p.kd, 2.2) * 2.5);
     const form = Math.max(-3, Math.min(3, p.streak)) * 0.25;
-    return strikingNet + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight;
+    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
