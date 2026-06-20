@@ -33878,7 +33878,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const order = ['KO/TKO', 'Submission', 'Decision'];
     return order.map(cat => {
       const c = methods[cat] || 0;
-      const pct = wins > 0 ? Math.round((c / wins) * 100) : 0;
+      let pct = wins > 0 ? Math.round((c / wins) * 100) : 0;
+      // A method that never landed in this batch of trials (or rounded down
+      // to 0%) isn't truly impossible -- every finish type carries at least
+      // some real-world chance, so floor the displayed percentage at 1%
+      // whenever there were any wins to attribute it to.
+      if (pct === 0 && wins > 0) pct = 1;
       return `<div class="sim-method-row">
         <div class="sim-method-label">${cat}</div>
         <div class="sim-method-bar-wrap"><div class="sim-method-bar" style="width:${pct}%"></div></div>
