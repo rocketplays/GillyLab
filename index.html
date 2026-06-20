@@ -3549,6 +3549,9 @@
  document.querySelectorAll('.rank-div-btn').forEach(b => b.classList.remove('active'));
  document.getElementById('rank-' + divId).style.display = 'block';
  event.target.classList.add('active');
+ // Load this division's avatar photos now that it's visible (the
+ // function is a no-op for fighters whose photo already loaded).
+ if (typeof loadRankingPhotos === 'function') loadRankingPhotos();
  }
  // Remembers which page the user was on right before opening a fighter
  // profile, so the "Back" button returns them there instead of always
@@ -31553,24 +31556,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Rankings page (.rank-avatar). The name is carried on a data-fighter
   // attribute, since the rankings markup doesn't share the
   // .fight-row/.fighter-cell structure either.
+  // Only loads photos for the currently-visible division panel — the
+  // Rankings page builds all 12 division panels up front but hides all but
+  // one via display:none, so without this scoping every fighter photo
+  // across every division (150+ images) would start downloading the
+  // instant the page opens. showDiv() calls this again after switching
+  // panels so the newly-shown division's photos load on first view (the
+  // `cell.querySelector('img')` guard below makes repeat calls cheap/safe
+  // since already-loaded avatars are skipped).
   function loadRankingPhotos() {
-    document.querySelectorAll('#rankingPanels .rank-avatar').forEach(cell => {
-      const name = cell.getAttribute('data-fighter');
-      if (!name || cell.querySelector('img')) return;
-      const localUrl = './photos/' + nameToSlug(name) + '.png';
-      const mapUrl   = PHOTO_MAP[name];
-      const img = document.createElement('img');
-      img.alt = name;
-      img.onload = () => {
-        cell.innerHTML = '';
-        cell.appendChild(img);
-      };
-      img.onerror = () => {
-        if (mapUrl && img.src.indexOf('./photos') !== -1) {
-          img.src = mapUrl; // fall back to PHOTO_MAP
-        }
-      };
-      img.src = localUrl;
+    document.querySelectorAll('#rankingPanels .rank-panel').forEach(panel => {
+      if (panel.style.display === 'none') return;
+      panel.querySelectorAll('.rank-avatar').forEach(cell => {
+        const name = cell.getAttribute('data-fighter');
+        if (!name || cell.querySelector('img')) return;
+        const localUrl = './photos/' + nameToSlug(name) + '.png';
+        const mapUrl   = PHOTO_MAP[name];
+        const img = document.createElement('img');
+        img.alt = name;
+        img.onload = () => {
+          cell.innerHTML = '';
+          cell.appendChild(img);
+        };
+        img.onerror = () => {
+          if (mapUrl && img.src.indexOf('./photos') !== -1) {
+            img.src = mapUrl; // fall back to PHOTO_MAP
+          }
+        };
+        img.src = localUrl;
+      });
     });
   }
 
