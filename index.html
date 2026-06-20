@@ -2991,7 +2991,7 @@
  { name: "Yaroslav Amosov", division: "WW", rank: "NR", record: "30-1-0", initials: "YA", country: "Ukraine" },
  { name: "Jeremiah Wells", division: "WW", rank: "NR", record: "14-4-1", initials: "JWE", country: "USA" },
  // ─── MIDDLEWEIGHT ───
- { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "Russia" },
+ { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Dricus du Plessis", division: "MW", rank: "#2", record: "23-3-0", initials: "DDP", country: "South Africa" },
  { name: "Sean Strickland", division: "MW", rank: "#C", record: "31-7-0", initials: "SS", country: "USA" },
  { name: "Israel Adesanya", division: "MW", rank: "#9", record: "24-8-0", initials: "IA", country: "Nigeria" },
@@ -3680,7 +3680,7 @@
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
  "Islam Makhachev": { ht:"5'10\"", dob:"1991-10-27", reach:'70"', stance:"Southpaw", slpm:2.45, strAcc:"58%", sapm:1.45, strDef:"62%", kd:0.30, tdLanded:3.10, tdAcc:"56%", tdDef:"91%", subAvg:0.98, finRate:"64%", streak:16, gym:"American Kickboxing Academy / Eagles MMA" },
- "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.04, tdAcc:"55%", subAvg:1.8, strDef:"43%", kd:0.0, tdDef:"85%", finRate:"93%", streak:0, tdLanded:5.29, gym:"Fight Club Akhmat" },
+ "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"54%", sapm:2.98, strDef:"52%", kd:0.30, tdLanded:5.32, tdAcc:"58%", tdDef:"88%", subAvg:1.37, finRate:"80%", streak:0, gym:"TKMMA Fit, Akhmat MMA" },
  "Alex Pereira": { ht:"6'4\"", dob:"1987-07-07", reach:'79"', stance:"Orthodox", slpm:5.16, strAcc:"62%", sapm:3.50, strDef:"54%", kd:0.79, tdLanded:0.11, tdAcc:"50%", tdDef:"79%", subAvg:0.23, finRate:"85%", streak:0, gym:"Teixeira MMA & Fitness (2020–present)" },
  "Ilia Topuria": { ht:"5'7\"", dob:"1997-01-21", reach:'69"', stance:"Orthodox", slpm:4.81, strAcc:"48%", sapm:3.83, strDef:"64%", kd:1.25, tdLanded:1.96, tdAcc:"61%", tdDef:"94%", subAvg:1.07, finRate:"82%", streak:17, gym:"Topuria Team (2025–present)" },
  "Alexander Volkanovski": { ht:"5'6\"", dob:"1988-09-29", reach:'71.5"', stance:"Orthodox", slpm:5.99, strAcc:"57%", sapm:3.31, strDef:"59%", kd:0.30, tdLanded:1.63, tdAcc:"34%", tdDef:"69%", subAvg:0.20, finRate:"57%", streak:2, gym:"Freestyle Fighting Gym / City Kickboxing" },
@@ -5520,16 +5520,16 @@
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
   "Khamzat Chimaev": [
-    { opponent: "Sean Strickland", odds: -500 },
-    { opponent: "Dricus du Plessis", odds: -180 },
-    { opponent: "Robert Whittaker", odds: -225 },
-    { opponent: "Kamaru Usman", odds: -170 },
-    { opponent: "Kevin Holland", odds: -549 },
-    { opponent: "Gilbert Burns", odds: -500 },
-    { opponent: "Li Jingliang", odds: -420 },
-    { opponent: "Gerald Meerschaert", odds: -485 },
-    { opponent: "Rhys McKee", odds: -1050 },
-    { opponent: "John Phillips", odds: -900 }
+    { opponent: "Sean Strickland", odds: -455 },
+    { opponent: "Dricus du Plessis", odds: -228 },
+    { opponent: "Robert Whittaker", odds: -238 },
+    { opponent: "Kamaru Usman", odds: -295 },
+    { opponent: "Kevin Holland", odds: -565 },
+    { opponent: "Gilbert Burns", odds: -563 },
+    { opponent: "Li Jingliang", odds: -510 },
+    { opponent: "Gerald Meerschaert", odds: -555 },
+    { opponent: "Rhys McKee", odds: -1150 },
+    { opponent: "John Phillips", odds: -550 }
   ],
   "Sean Strickland": [
     { opponent: "Khamzat Chimaev", odds: 340 },
@@ -29335,16 +29335,21 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Khamzat Chimaev": [
+    { icon: "🏆", title: "UFC Middleweight Champion (1×)", detail: null },
+    { icon: "⭐", title: "Fight of the Night (1×)", detail: "vs. Gilbert Burns" },
+    { icon: "⭐", title: "Performance of the Night (6×)", detail: "vs. John Phillips, Rhys McKee, Gerald Meerschaert, Li Jingliang, Robert Whittaker, Dricus du Plessis" },
+    { icon: "🏅", title: "First Chechen-born fighter to win a UFC championship", detail: null },
+    { icon: "🏅", title: "Tied (Demetrious Johnson) for 4th-most takedowns landed in a UFC title fight", detail: "12 vs. Dricus du Plessis" },
+    { icon: "🏅", title: "Record for fastest consecutive wins in modern UFC history", detail: "10 days" },
+    { icon: "🏅", title: "Record for quickest 3-fight win streak in modern UFC history", detail: "66 days" },
+    { icon: "🏅", title: "Most total strikes landed in a UFC fight", detail: "529 vs. Dricus du Plessis" },
+    { icon: "🏅", title: "Most total ground strikes landed in a UFC fight", detail: "517 vs. Dricus du Plessis" },
+    { icon: "🏅", title: "Most total head strikes landed in a UFC fight", detail: "411 vs. Dricus du Plessis" },
+    { icon: "🏅", title: "Holds wins over three former UFC champions", detail: "Kamaru Usman, Robert Whittaker, Dricus du Plessis" },
+    { icon: "🏅", title: "UFC.com Newcomer of the Year (2020)", detail: null },
+    { icon: "🥇", title: "BRAVE CF Knockout of the Night (1×)", detail: "vs. Ikram Aliskerov" },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Alan Nascimento", detail: null },
-    { icon: "🥇", title: "Swedish Nationals — 2018 Örnsköldsvik — 92 kg", detail: null },
-    { icon: "🥇", title: "2018 SM Nationals", detail: null },
-    { icon: "🥇", title: "Swedish Nationals — 2016 Norrköping — 86 kg", detail: null },
-    { icon: "🥇", title: "2016 SM Nationals", detail: null },
-    { icon: "🥇", title: "2016 Solacup", detail: null },
-    { icon: "🥇", title: "Swedish Nationals — 2015 Sundsvall — 86 kg", detail: null },
-    { icon: "🥇", title: "2015 Hammarslaget", detail: null },
-    { icon: "🥇", title: "2015 SM Nationals", detail: null },
-    { icon: "🥇", title: "2015 Lilla Mälarcupen", detail: null },
+    { icon: "🤼", title: "Three-time Swedish Freestyle Wrestling National Champion", detail: "2016 (86kg), 2017, 2018 (92kg)" },
   ],
   "Dricus du Plessis": [
     { icon: "🥊", title: "2nd degree black belt in kickboxing", detail: null },
