@@ -34296,14 +34296,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // Inverse signal: a fighter who's finished often when they lose (chin or
-  // gas-tank questions either way) takes a real hit. Same 3-loss minimum
-  // sample size as the durability bonus above.
+  // gas-tank questions either way) takes a real hit. Used to be pure rate
+  // (finishes / losses past a 75% threshold), which had a real blind spot:
+  // a fighter stopped in all 3 of a thin 3-loss sample scored as MORE
+  // vulnerable than one stopped 9 times in 11 losses (100% vs ~82%), even
+  // though 9 finish losses is a far more substantial, proven pattern than
+  // 3. Now driven primarily by the raw COUNT of finish losses (3-4 is a
+  // modest flag, 6+ a real pattern, 9+ serious — soft-capped so it doesn't
+  // grow unbounded past that), then scaled by what share of all losses were
+  // finishes, so a long-career fighter with plenty of losses but a modest
+  // finish rate isn't punished just for having fought a lot. Same 3-loss
+  // minimum sample as the durability bonus above, plus a floor on the rate
+  // itself (finishes have to be at least half the losses to register at
+  // all — below that it's not really a "pattern").
   function simFinishVulnerability(name) {
     const { losses, lossFinishes } = simFinishStatsRelevant(name);
-    if (losses < 3) return 0;
+    if (losses < 3 || lossFinishes < 3) return 0;
     const pct = lossFinishes / losses;
-    if (pct <= 0.75) return 0;
-    return -simSoftCap((pct - 0.75) * 4, 1) * 0.4;
+    if (pct <= 0.5) return 0;
+    const countPenalty = simSoftCap(Math.max(0, lossFinishes - 2) * 0.13, 0.7);
+    const rateScale = simSoftCap((pct - 0.5) * 2, 1);
+    return -countPenalty * rateScale;
   }
 
   // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
