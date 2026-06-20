@@ -34027,6 +34027,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return typeof v === 'number' && !isNaN(v) ? v : def;
   }
 
+  // The hand-maintained finRate stat is a career-wide total, which has the
+  // same front-loading problem as the boosts above: a fighter's lifetime
+  // finish rate can be propped up by regional finishes from years before
+  // they reached UFC-level competition. Prefer a finish rate computed
+  // directly from UFC-only fights when there's enough of a sample (4+ UFC
+  // wins) to trust over the static career-wide figure.
+  function simRelevantFinRate(name, staticFinRate) {
+    const ufc = simFinishStats(name, true);
+    if (ufc.wins >= 4) return ufc.winFinishes / ufc.wins;
+    return staticFinRate;
+  }
+
   function getSimProfile(name) {
     const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
     const slpm = simNum(s.slpm, 3.5);
@@ -34044,7 +34056,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       tdAcc,
       tdDef: simPct(s.tdDef, 0.65),
       subAvg: simNum(s.subAvg, 0.3),
-      finRate: simPct(s.finRate, 0.45),
+      finRate: simRelevantFinRate(name, simPct(s.finRate, 0.45)),
       streak,
       sos: simStrengthOfSchedule(name),
       age: simAgeFactor(s.dob),
@@ -34052,7 +34064,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       bigFight: simBigFightExperience(name),
       controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
       undefeatedBoost: simUndefeatedBoost(name),
-      finisherBoost: simFinisherBoost(name),
       durabilityBoost: simDurabilityBoost(name),
       finishVulnerability: simFinishVulnerability(name)
     };
@@ -34154,15 +34165,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return belowNine + pastNine;
   }
 
-  // Shared tally for the three finish-rate factors below: how many wins
-  // were finishes (KO/TKO/Submission, as opposed to decision) and, among
-  // losses, how many were finishes vs. decisions. One pass over the history
-  // feeds simFinisherBoost, simDurabilityBoost, and simFinishVulnerability.
-  function simFinishStats(name) {
+  // Shared tally for the finish-rate factors below: how many wins were
+  // finishes (KO/TKO/Submission, as opposed to decision) and, among losses,
+  // how many were finishes vs. decisions. `ufcOnly` restricts the pass to
+  // UFC-organization fights only — see simFinishStatsRelevant below for why.
+  function simFinishStats(name, ufcOnly) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
     let wins = 0, winFinishes = 0, losses = 0, lossFinishes = 0, lossDecisions = 0;
     hist.forEach(f => {
       if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      if (ufcOnly && f.org !== 'UFC') return;
       const method = String(f.method || '').trim();
       const isFinish = /^(KO|TKO|Submission)/i.test(method);
       const isDecision = /Decision/i.test(method);
@@ -34178,17 +34190,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return { wins, winFinishes, losses, lossFinishes, lossDecisions };
   }
 
-  // Finishing power beyond what finRate alone captures: a fighter who ends
-  // more than 3 in 4 of their wins by KO/TKO/submission (rather than going
-  // to decision) is a real finishing threat, and the bonus grows a little
-  // further past that 75% line. Requires at least 4 wins so a couple of
-  // early finishes on a thin resume don't trigger it.
-  function simFinisherBoost(name) {
-    const { wins, winFinishes } = simFinishStats(name);
-    if (wins < 4) return 0;
-    const pct = winFinishes / wins;
-    if (pct <= 0.75) return 0;
-    return simSoftCap((pct - 0.75) * 4, 1) * 0.5;
+  // Many fighters' early careers were built on regional shows against
+  // significantly weaker competition than the UFC roster — a prospect who
+  // finished everyone in a regional promotion, then settled into a more
+  // competitive decision-heavy run once they reached the UFC, shouldn't get
+  // full credit for those front-loaded regional finishes when measuring
+  // CURRENT finishing/durability threat. Prefers a UFC-only tally when
+  // there's enough of a UFC sample to trust (4+ wins or 3+ losses, matching
+  // the minimums the boosts below already require), falling back to the
+  // full career history otherwise so a fighter with only a couple of UFC
+  // fights isn't left with no signal at all.
+  function simFinishStatsRelevant(name) {
+    const ufc = simFinishStats(name, true);
+    if (ufc.wins >= 4 || ufc.losses >= 3) return ufc;
+    return simFinishStats(name, false);
   }
 
   // "Granite chin" signal: among a fighter's losses, what share went the
@@ -34197,7 +34212,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // trait from raw strDef/output numbers. Requires at least 3 losses so one
   // decision loss doesn't read as an iron chin.
   function simDurabilityBoost(name) {
-    const { losses, lossDecisions } = simFinishStats(name);
+    const { losses, lossDecisions } = simFinishStatsRelevant(name);
     if (losses < 3) return 0;
     const pct = lossDecisions / losses;
     if (pct <= 0.75) return 0;
@@ -34208,7 +34223,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // gas-tank questions either way) takes a real hit. Same 3-loss minimum
   // sample size as the durability bonus above.
   function simFinishVulnerability(name) {
-    const { losses, lossFinishes } = simFinishStats(name);
+    const { losses, lossFinishes } = simFinishStatsRelevant(name);
     if (losses < 3) return 0;
     const pct = lossFinishes / losses;
     if (pct <= 0.75) return 0;
@@ -34296,14 +34311,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // elsewhere when tdDef is missing, so an elite defender (90-100%) earns
     // a real bonus and a poor one (30-40%) takes a real hit.
     const tdDefBonus = (p.tdDef - 0.65) * 1.5;
-    const grappling = (p.tdLanded * p.tdAcc * 1.2) + (p.subAvg * 2.2);
-    const finishing = (p.finRate * 4) + (simSoftCap(p.kd, 2.2) * 2.5);
+    // Grappling/finishing weights dialed back from 1.2/2.2/4/2.5: these
+    // terms, stacked together, were repeatedly driving lopsided model
+    // outputs (89-93% favorites) in fights the actual betting market saw as
+    // much closer or even favoring the other fighter (Whittaker/Krylov,
+    // Royval/Kavanagh, Saint Denis/Pimblett, Krylov/Ankalaev) — a heavy
+    // grappler/finisher's subAvg, takedown volume, and finish rate were
+    // compounding across multiple terms (grappling, finishing, and
+    // formerly finisherBoost) for what's ultimately one underlying trait.
+    // finisherBoost has been removed outright as redundant with finRate.
+    const grappling = (p.tdLanded * p.tdAcc * 1.0) + (p.subAvg * 1.6);
+    const finishing = (p.finRate * 3) + (simSoftCap(p.kd, 2.2) * 2.0);
     // Recent-form bonus. Used to hard-cap at +/-3 fights, so a 3-fight streak
     // and a 16-fight streak (Makhachev) scored identically — no credit at
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
     const form = simSoftCap(p.streak, 10) * 0.3;
-    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.finisherBoost + p.durabilityBoost + p.finishVulnerability;
+    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
@@ -34334,12 +34358,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   // If these two have actually fought before, that's real fight-specific
   // information — stylistic answers, game-planning, who-figured-out-who —
-  // that raw aggregate stats can't see. Only trusted within a 5-year window
-  // (skills, bodies, and gyms change too much past that to mean much), and
-  // weighted by how the fight ended (a finish says a lot more than a split
-  // decision) and how recent it was (a fresh result is more predictive than
-  // one about to age out of the window). Checks both fighters' histories
-  // since a meeting should be recorded on at least one side.
+  // that raw aggregate stats can't see. Trusted within an 8-year window,
+  // tapering gradually to zero rather than hard-cutting at a fixed age (a
+  // meeting at 5 years and 4 months is still meaningful — it shouldn't read
+  // as zero just because an earlier, tighter cutoff happened to fall a few
+  // months short of it; e.g. Ankalaev's decision win over Krylov, Feb 2021,
+  // was being discarded entirely by an old 5-year cliff despite still being
+  // clearly relevant). Weighted by how the fight ended (a finish says a lot
+  // more than a split decision) and how recent it was (a fresh result is
+  // more predictive than one nearing the end of the window). Checks both
+  // fighters' histories since a meeting should be recorded on at least one
+  // side.
   function simHeadToHeadBoost(nameA, nameB) {
     const findMeeting = (name, opp) => {
       const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
@@ -34353,8 +34382,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const d = new Date(meeting.date);
     if (isNaN(d)) return 0;
     const yearsAgo = (Date.now() - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-    if (yearsAgo > 5 || yearsAgo < 0) return 0;
-    const recency = 1 - (yearsAgo / 5); // 1.0 right after the fight, 0 right at the 5-year cutoff
+    const DECAY_YEARS = 8;
+    if (yearsAgo > DECAY_YEARS || yearsAgo < 0) return 0;
+    const recency = 1 - (yearsAgo / DECAY_YEARS); // 1.0 right after the fight, tapering to 0 at the window edge
     const method = String(meeting.method || '').toUpperCase();
     const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
     const magnitude = (isFinish ? 1.2 : 0.7) * recency;
@@ -34372,7 +34402,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // specific fighters isn't a stat artifact the closeness factor should be
     // discounting, it's ground truth, and rematches are often exactly the
     // close-peer pairings that factor would otherwise dampen.
-    const k = 2.3;
+    // Widened from 2.3 — the tighter curve was turning moderate raw score
+    // gaps (5-8 points, mostly from stacked grappling/finishing terms) into
+    // overconfident 90%+ probabilities the betting market never priced
+    // anywhere close to. 3.2 keeps real blowout-tier gaps decisive while
+    // giving more room in the 60-85% band that most "favorite, but not a
+    // lock" fights actually live in.
+    const k = 3.2;
     const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
     const diff = statDiff + simHeadToHeadBoost(nameA, nameB);
     const raw = 1 / (1 + Math.exp(-diff / k));
