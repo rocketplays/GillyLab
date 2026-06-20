@@ -32214,13 +32214,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const awayName = resolveCanonicalFighterName(fight.away_team, null);
         const n1Esc = String(homeName).replace(/"/g, '&quot;');
         const n2Esc = String(awayName).replace(/"/g, '&quot;');
+        const p1Leads = pcts.pct1 >= pcts.pct2;
+        const p1PctCls = p1Leads ? 'proj-pct' : 'proj-pct right-fighter';
+        const p2PctCls = p1Leads ? 'proj-pct right-fighter' : 'proj-pct';
+        const barLeftColor = p1Leads ? 'var(--accent)' : 'var(--muted)';
+        const barRightColor = p1Leads ? 'var(--muted)' : 'var(--accent)';
         return `<div class="projection-card">
           <div class="projection-fighters">
-            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${homeName}</div></div><div class="proj-pct">${pcts.pct1}%</div></div>
+            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${homeName}</div></div><div class="${p1PctCls}">${pcts.pct1}%</div></div>
             <div class="proj-vs-label">VS</div>
-            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${awayName}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${pcts.pct2}%</div></div>
+            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${awayName}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="${p2PctCls}" style="text-align:right;">${pcts.pct2}%</div></div>
           </div>
-          <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${pcts.pct1}%"></div><div class="proj-bar-right"></div></div>
+          <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${pcts.pct1}%;background:${barLeftColor};"></div><div class="proj-bar-right" style="background:${barRightColor};"></div></div>
           <div class="proj-weight">${label}</div>
         </div>`;
       }).filter(Boolean).join('');
@@ -32240,14 +32245,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const html = evt.projections.map(p => {
           const f1Esc = String(p.f1).replace(/"/g, '&quot;');
           const f2Esc = String(p.f2).replace(/"/g, '&quot;');
+          const p1Leads = p.pct1 >= p.pct2;
+          const p1PctCls = p1Leads ? 'proj-pct' : 'proj-pct right-fighter';
+          const p2PctCls = p1Leads ? 'proj-pct right-fighter' : 'proj-pct';
+          const barLeftColor = p1Leads ? 'var(--accent)' : 'var(--muted)';
+          const barRightColor = p1Leads ? 'var(--muted)' : 'var(--accent)';
           return `
           <div class="projection-card">
             <div class="projection-fighters">
-              <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${f1Esc}"></div><div class="proj-name">${p.f1}</div></div><div class="proj-pct">${p.pct1}%</div></div>
+              <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${f1Esc}"></div><div class="proj-name">${p.f1}</div></div><div class="${p1PctCls}">${p.pct1}%</div></div>
               <div class="proj-vs-label">VS</div>
-              <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${p.f2}</div><div class="proj-avatar" data-fighter="${f2Esc}"></div></div><div class="proj-pct right-fighter" style="text-align:right;">${p.pct2}%</div></div>
+              <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${p.f2}</div><div class="proj-avatar" data-fighter="${f2Esc}"></div></div><div class="${p2PctCls}" style="text-align:right;">${p.pct2}%</div></div>
             </div>
-            <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${p.pct1}%"></div><div class="proj-bar-right"></div></div>
+            <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${p.pct1}%;background:${barLeftColor};"></div><div class="proj-bar-right" style="background:${barRightColor};"></div></div>
             <div class="proj-weight">${p.label}</div>
           </div>`;
         }).join('');
@@ -33793,6 +33803,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!box) return;
     const pctA = Math.round((result.winsA / result.n) * 100);
     const pctB = 100 - pctA;
+    const aLeads = pctA >= pctB;
+    const aPctCls = aLeads ? 'sim-results-pct' : 'sim-results-pct right';
+    const bPctCls = aLeads ? 'sim-results-pct right' : 'sim-results-pct';
+    const barLeftColor = aLeads ? 'var(--accent)' : 'var(--muted)';
+    const barRightColor = aLeads ? 'var(--muted)' : 'var(--accent)';
     box.style.display = 'block';
     box.innerHTML = `
       <div class="sim-results-header">
@@ -33800,18 +33815,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           <div class="sim-results-name">${nameA}</div>
           <div class="sim-results-count">${result.winsA.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
         </div>
-        <div class="sim-results-pct">${pctA}%</div>
+        <div class="${aPctCls}">${pctA}%</div>
       </div>
       <div class="proj-bar-wrap">
-        <div class="proj-bar-left" style="width:${pctA}%"></div>
-        <div class="proj-bar-right"></div>
+        <div class="proj-bar-left" style="width:${pctA}%;background:${barLeftColor};"></div>
+        <div class="proj-bar-right" style="background:${barRightColor};"></div>
       </div>
       <div class="sim-results-header" style="margin-top:0.5rem;">
         <div>
           <div class="sim-results-name">${nameB}</div>
           <div class="sim-results-count">${result.winsB.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
         </div>
-        <div class="sim-results-pct right">${pctB}%</div>
+        <div class="${bPctCls}">${pctB}%</div>
       </div>
 
       <div class="sim-methods-row">
