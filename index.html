@@ -34030,13 +34030,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // The hand-maintained finRate stat is a career-wide total, which has the
   // same front-loading problem as the boosts above: a fighter's lifetime
   // finish rate can be propped up by regional finishes from years before
-  // they reached UFC-level competition. Prefer a finish rate computed
-  // directly from UFC-only fights when there's enough of a sample (4+ UFC
-  // wins) to trust over the static career-wide figure.
+  // they reached UFC-level competition, AND by finishes from a decade ago
+  // that say little about how they finish fights now. Prefers a finish rate
+  // computed from UFC-only wins, weighting each one by recency (a finish in
+  // the last year or two counts close to double a finish from 6+ years
+  // back) rather than averaging the whole UFC tenure flat. Falls back to
+  // the static career-wide figure when the UFC sample is too thin (<4 wins)
+  // to trust.
   function simRelevantFinRate(name, staticFinRate) {
     const ufc = simFinishStats(name, true);
-    if (ufc.wins >= 4) return ufc.winFinishes / ufc.wins;
-    return staticFinRate;
+    if (ufc.wins < 4) return staticFinRate;
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    const now = Date.now();
+    let weightedFinishes = 0, totalWeight = 0;
+    hist.forEach(f => {
+      if (f.result !== 'W' || f.org !== 'UFC' || !f.date) return;
+      const d = new Date(f.date);
+      const yearsAgo = isNaN(d) ? 3 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+      const weight = 0.5 + 0.5 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
+      const isFinish = /^(KO|TKO|Submission)/i.test(String(f.method || '').trim());
+      totalWeight += weight;
+      if (isFinish) weightedFinishes += weight;
+    });
+    return totalWeight > 0 ? weightedFinishes / totalWeight : staticFinRate;
   }
 
   function getSimProfile(name) {
@@ -34059,6 +34075,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       finRate: simRelevantFinRate(name, simPct(s.finRate, 0.45)),
       streak,
       sos: simStrengthOfSchedule(name),
+      trajectory: simTrajectory(name),
       age: simAgeFactor(s.dob),
       layoff: simLayoffFactor(name),
       bigFight: simBigFightExperience(name),
@@ -34069,23 +34086,76 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
   }
 
-  // How tested a fighter's resume actually is: how many past opponents are
-  // currently ranked, plus a smaller credit for sheer UFC-level fight count
-  // (capped, so a 50-fight veteran's volume alone doesn't swamp everything
-  // else). Uses each opponent's CURRENT roster rank as a proxy for "were
-  // they real competition" — we don't have point-in-time historical
-  // rankings, but this still clearly separates a deep, tested veteran
-  // schedule from a short prospect run, which raw per-fight stats can't see.
+  // How tested a fighter's resume actually is. Two things this used to get
+  // wrong: (1) it counted "ranked opponent" as a flat yes/no, so beating the
+  // #1 contender counted the same as a fight against whoever's clinging to
+  // the bottom of a ranking; (2) it hard-capped at 3, which saturated at
+  // just 6 ranked opponents — a decade-long murderers'-row resume (10-15+
+  // ranked opponents) scored identically to a fighter who'd barely cleared
+  // that floor, once both hit the ceiling. Now each ranked opponent is
+  // weighted by how highly they're ranked (a near-title-shot opponent counts
+  // for close to 3x a fighter clinging to #15) and by recency (a test from
+  // the last year or two counts close to double one from 6+ years back,
+  // though a deep historical resume still keeps a floor of value rather than
+  // decaying to zero). Soft-capped rather than hard-capped, so a truly elite
+  // resume keeps earning credit past the old ceiling instead of flatlining.
+  // Plus a smaller credit for sheer UFC-level fight count (capped, so a
+  // 50-fight veteran's volume alone doesn't swamp everything else). Uses
+  // each opponent's CURRENT roster rank as a proxy for "were they real
+  // competition" — we don't have point-in-time historical rankings.
   function simStrengthOfSchedule(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    let ranked = 0, ufc = 0;
+    let weighted = 0, ufc = 0;
+    const now = Date.now();
     hist.forEach(f => {
       if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
       if (f.org === 'UFC') ufc++;
-      if (simRankTier(f.opponent) != null) ranked++;
+      const tier = simRankTier(f.opponent);
+      if (tier == null) return;
+      const quality = Math.max(0.3, 1 - tier / 15);
+      const d = new Date(f.date);
+      const yearsAgo = isNaN(d) ? 5 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+      const recency = 0.4 + 0.6 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
+      weighted += quality * recency;
     });
-    const raw = (ranked * 0.5) + (Math.min(ufc, 20) * 0.05);
-    return Math.min(3, raw);
+    return simSoftCap(weighted * 0.5, 5) + (Math.min(ufc, 20) * 0.04);
+  }
+
+  // Recent-fight trajectory, distinct from the plain win-streak counter
+  // below: a streak resets to 0 on ANY non-win, with no way to tell "lost a
+  // tight decision" from "just got starched in the first round" apart, and
+  // gives no extra credit for what a current streak was actually built on.
+  // Looks only at the last two completed fights (most recent weighted full,
+  // the one before it at half weight, so a single result doesn't dominate
+  // but a real short-term trend still shows) and layers a bonus for a recent
+  // win (bigger if it was a finish, bigger still if the opponent is
+  // currently ranked) or a penalty for a recent loss (notably bigger if it
+  // was by finish — a fresh brutal stoppage loss is a real, distinct red
+  // flag a reset-to-zero streak can't capture). This is what separates an
+  // undefeated-minus-one prospect coming off a signature win from a
+  // long-tenured veteran coming off a brutal KO loss, instead of letting
+  // career-long averages treat them as roughly equivalent.
+  function simTrajectory(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    const recent = hist.filter(f => f.result && f.result !== '–' && f.method !== 'Upcoming' && f.date).slice(0, 2);
+    let score = 0;
+    recent.forEach((f, i) => {
+      const weight = i === 0 ? 1 : 0.5;
+      const method = String(f.method || '').toUpperCase();
+      const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
+      const oppRanked = simRankTier(f.opponent) != null;
+      if (f.result === 'W') {
+        let v = 0.25;
+        if (isFinish) v += 0.2;
+        if (oppRanked) v += 0.25;
+        score += v * weight;
+      } else if (f.result === 'L') {
+        let v = -0.25;
+        if (isFinish) v -= 0.35;
+        score += v * weight;
+      }
+    });
+    return simSoftCap(score, 1.2);
   }
 
   // Past 36, fighters reliably start losing a step physically — but the
@@ -34327,18 +34397,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
     const form = simSoftCap(p.streak, 10) * 0.3;
-    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
+    return strikingNet + tdDefBonus + grappling + finishing + form + p.sos + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
   // champ are the top tier, "#N" parses to N, and "NR"/unknown returns
-  // null (no signal either way — never treated as "worse").
+  // null (no signal either way — never treated as "worse"). The roster data
+  // stores champ/interim-champ as either "C"/"IC" or "#C"/"#IC" depending on
+  // division — only matching the bare form meant a fighter's best possible
+  // win (over an actual champion recorded as "#C") was silently scoring as
+  // "no rank signal at all," the same as an opponent with no rank whatsoever.
   function simRankTier(name) {
     const entry = simGetFighterRoster(name);
-    const r = entry && entry.rank ? String(entry.rank).trim().toUpperCase() : '';
+    const r = (entry && entry.rank ? String(entry.rank).trim().toUpperCase() : '').replace(/^#/, '');
     if (r === 'C' || r === 'CHAMPION') return 0;
     if (r === 'IC') return 0.5;
-    const m = r.match(/^#?(\d+)$/);
+    const m = r.match(/^(\d+)$/);
     return m ? parseInt(m[1], 10) : null;
   }
 
