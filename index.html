@@ -3346,7 +3346,7 @@
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
  { name: "Eduard Folayang", division: "LHW", rank: "NR", record: "26-12-0", initials: "EFO", country: "Philippines" },
- { name: "Azamat Murzakanov", division: "LHW", rank: "NR", record: "16-1-0", initials: "AMZ2", country: "Russia" },
+ { name: "Azamat Murzakanov", division: "LHW", rank: "#8", record: "16-1-0", initials: "AMZ2", country: "Russia" },
  // ─── FEATHERWEIGHT (remaining) ───
  { name: "Manel Kape", division: "FLW", rank: "#2", record: "22-7-0", initials: "MKP", country: "Angola" },
  { name: "Austin Lund", division: "FW", rank: "NR", record: "10-3-0", initials: "ALU", country: "USA" },
@@ -3727,7 +3727,7 @@
  "Caio Borralho": { ht:"6'1\"", dob:"1993-01-16", reach:'75"', stance:"Southpaw", slpm:3.44, tdAcc:"48%", subAvg:0.4, strDef:"60%", kd:0.1, tdDef:"76%", finRate:"56%", streak:4, tdLanded:1.28, gym:"Fighting Nerds" },
  // ── Light Heavyweight ──
  "Jan Błachowicz": { ht:"6'2\"", dob:"1983-02-24", reach:'78"', stance:"Orthodox", slpm:3.55, strAcc:"50%", sapm:3.14, strDef:"52%", kd:0.36, tdLanded:0.98, tdAcc:"49%", tdDef:"69%", subAvg:0.36, finRate:"62%", streak:0, gym:"Berkut WCA Fight Team (2017–present)" },
- "Azamat Murzakanov": { ht:"5'10\"", dob:"1989-04-12", reach:'71"', stance:"Southpaw", slpm:4.7, tdAcc:"15%", subAvg:0.0, strDef:"60%", kd:1.0, tdDef:"87%", finRate:"87%", streak:16, tdLanded:0.55, gym:"K-Dojo Warrior Tribe" },
+ "Azamat Murzakanov": { ht:"5'11\"", dob:"1989-04-12", reach:'71"', stance:"Southpaw", slpm:4.4, strAcc:"56%", sapm:3.2, strDef:"56%", kd:1.58, tdLanded:0.68, tdAcc:"20%", tdDef:"89%", subAvg:0.23, finRate:"81%", streak:0, gym:"K-Dojo Warrior Tribe" },
  "Carlos Ulberg": { ht:"6'4\"", dob:"1990-11-17", reach:'77"', stance:"Orthodox", slpm:6.57, strAcc:"56%", sapm:4.03, strDef:"51%", kd:1.40, tdLanded:0.53, tdAcc:"60%", tdDef:"86%", subAvg:0.18, finRate:"71%", streak:10, gym:"City Kickboxing" },
  "Nikita Krylov": { ht:"6'3\"", dob:"1992-03-07", reach:'77.5"', stance:"Orthodox", slpm:4.36, strAcc:"54%", sapm:2.59, strDef:"48%", kd:0.62, tdLanded:2.05, tdAcc:"37%", tdDef:"53%", subAvg:1.23, finRate:"94%", streak:1, gym:"Fight Club No1" },
  // ── Heavyweight ──
@@ -7170,13 +7170,14 @@
   ],
 
   "Azamat Murzakanov": [
-    { opponent: "Aleksandar Rakic", odds: -225 },
-    { opponent: "Nikita Krylov", odds: -275 },
-    { opponent: "Dominick Reyes", odds: -380 },
-    { opponent: "Oumar Sy", odds: -400 },
-    { opponent: "Tyson Pedro", odds: -600 },
-    { opponent: "Ihor Potieria", odds: -450 },
-    { opponent: "Devin Clark", odds: -280 }
+    { opponent: "Paulo Costa", odds: -265 },
+    { opponent: "Aleksandar Rakić", odds: -102 },
+    { opponent: "Brendson Ribeiro", odds: -710 },
+    { opponent: "Alonzo Menifield", odds: -280 },
+    { opponent: "Dustin Jacoby", odds: 130 },
+    { opponent: "Devin Clark", odds: -154 },
+    { opponent: "Tafon Nchukwi", odds: -204 },
+    { opponent: "Matheus Scheffel", odds: -570 }
   ],
 
   "Marcin Tybura": [
@@ -16272,8 +16273,8 @@ const FIGHT_HISTORY = {
     { date: "Aug 13, 2022", opponent: "Devin Clark", result: "W", method: "TKO (Punches)", round: 3, time: "1:18", event: "UFC on ESPN: Vera vs. Cruz", org: "UFC" },
     { date: "Mar 12, 2022", opponent: "Tafon Nchukwi", result: "W", method: "KO (Flying knee)", round: 3, time: "0:44", event: "UFC Fight Night: Santos vs. Ankalaev", org: "UFC" },
     { date: "Aug 31, 2021", opponent: "Matheus Scheffel", result: "W", method: "TKO (Punches)", round: 1, time: "3:00", event: "Dana White's Contender Series 37", org: "UFC" },
-    { date: "Nov 15, 2019", opponent: "Mohammad Fakhreddine", result: "W", method: "KO (Punches)", round: 1, time: "3:37", event: "Brave CF 29", org: "BRAVE CF" },
-    { opponent: "Guto Inocente", result: "W", method: "Decision (Unanimous)", event: "3" },
+    { date: "Nov 15, 2019", opponent: "Mohammad Fakhreddine", result: "W", method: "KO (Punches)", round: 1, time: "3:37", event: "Brave CF 29 (final)", org: "BRAVE CF" },
+    { date: "Nov 15, 2019", opponent: "Guto Inocente", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 29 (semifinal)", org: "BRAVE CF" },
     { date: "Apr 15, 2017", opponent: "Georgy Sakaev", result: "W", method: "TKO (Punches)", round: 1, time: "1:37", event: "ACB 57", org: "ACB" },
     { date: "Oct 2, 2016", opponent: "André Muniz", result: "W", method: "KO (Punch)", round: 1, time: "0:50", event: "United Caucasian FC 1" },
     { date: "Jul 23, 2016", opponent: "Bogdan Bulakh", result: "W", method: "Submission (Neck crank)", round: 1, time: "0:35", event: "Fight Club Gladiator 4" },
@@ -23538,7 +23539,6 @@ const FIGHT_HISTORY = {
   ],
   "Charlie Radtke": [
     { date: "Feb 7, 2026", opponent: "Ibo Aslan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira" },
-    { date: "Sep 7, 2024", opponent: "Azamat Murzakanov", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:25", event: "UFC Fight Night: Burns vs. Brady" },
     { date: "Jun 22, 2024", opponent: "Tafon Nchukwi", result: "W", method: "KO (Punches)", round: 2, time: "0:20", event: "UFC on ABC 5 (debut)" },
     { date: "Apr 6, 2024", opponent: "Cody Haddon", result: "W", method: "KO (Punches)", round: 1, time: "1:32", event: "DWCS Season 8 Week 1 (contract)" },
     { date: "Nov 11, 2023", opponent: "Eric Shelton", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:11", event: "LFA 178" },
@@ -30212,7 +30212,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "Black belt in Wushu", detail: null },
   ],
   "Azamat Murzakanov": [
-    { icon: "🏆", title: "Master of Sport in Army Hand-to-Hand Combat", detail: null },
+    { icon: "🏆", title: "Brave CF Grand Prix Absolute Champion", detail: null },
+    { icon: "⭐", title: "Performance of the Night", detail: "vs. Tafon Nchukwi (UFC debut)" },
+    { icon: "⭐", title: "Performance of the Night", detail: "vs. Alonzo Menifield" },
+    { icon: "🥇", title: "8-time World Champion in hand-to-hand combat (amateur)", detail: null },
+    { icon: "🥇", title: "European and Asian Championship gold medalist (hand-to-hand combat)", detail: null },
+    { icon: "🏅", title: "Multiple-time Russian national champion (hand-to-hand combat)", detail: null },
+    { icon: "🥋", title: "Master of Sport in Army Hand-to-Hand Combat", detail: null },
   ],
   "TJ Brown": [
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Roli Delgado", detail: null },
