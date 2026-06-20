@@ -34065,24 +34065,44 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return totalWeight > 0 ? weightedFinishes / totalWeight : staticFinRate;
   }
 
+  // Every per-fight box-score rate stat (striking output/accuracy,
+  // knockdowns, takedown volume/accuracy/defense, finish rate, ...) is only
+  // as trustworthy as the competition it was earned against. A handful of
+  // lopsided performances against opposition that's never proven good
+  // enough to rank can swing any of these to extreme, unrepeated levels —
+  // it's a true reflection of those specific fights, just not yet a
+  // reliable read on the fighter in general. simRateCredibility gives a 0-1
+  // trust score per fighter (full trust the moment they've faced even one
+  // ranked opponent; otherwise scaled by UFC sample size). This pulls each
+  // raw stat back toward its roster-typical baseline by the shortfall —
+  // full credibility leaves a stat untouched, low credibility pulls it most
+  // of the way to baseline, rather than feeding an unproven outlier value
+  // through at full strength.
+  function simCredibilityDampen(value, baseline, credibility) {
+    return baseline + (value - baseline) * credibility;
+  }
+
   function getSimProfile(name) {
     const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
-    const slpm = simNum(s.slpm, 3.5);
-    const sapm = simNum(s.sapm, 3.5);
-    const tdLanded = simNum(s.tdLanded, 1.0);
-    const tdAcc = simPct(s.tdAcc, 0.4);
+    const credibility = simRateCredibility(name);
+    const slpm = simCredibilityDampen(simNum(s.slpm, 3.5), 3.5, credibility);
+    const sapm = simCredibilityDampen(simNum(s.sapm, 3.5), 3.5, credibility);
+    const tdLanded = simCredibilityDampen(simNum(s.tdLanded, 1.0), 1.0, credibility);
+    const tdAcc = simCredibilityDampen(simPct(s.tdAcc, 0.4), 0.4, credibility);
     const streak = simNum(s.streak, 0);
+    const kd = simCredibilityDampen(simNum(s.kd, 0.3), 0.3, credibility);
+    const finRate = simCredibilityDampen(simRelevantFinRate(name, simPct(s.finRate, 0.45)), 0.45, credibility);
     return {
       slpm,
-      strAcc: simPct(s.strAcc, 0.45),
+      strAcc: simCredibilityDampen(simPct(s.strAcc, 0.45), 0.45, credibility),
       sapm,
-      strDef: simPct(s.strDef, 0.55),
-      kd: simNum(s.kd, 0.3),
+      strDef: simCredibilityDampen(simPct(s.strDef, 0.55), 0.55, credibility),
+      kd,
       tdLanded,
       tdAcc,
-      tdDef: simPct(s.tdDef, 0.65),
-      subAvg: simNum(s.subAvg, 0.3),
-      finRate: simRelevantFinRate(name, simPct(s.finRate, 0.45)),
+      tdDef: simCredibilityDampen(simPct(s.tdDef, 0.65), 0.65, credibility),
+      subAvg: simCredibilityDampen(simNum(s.subAvg, 0.3), 0.3, credibility),
+      finRate,
       streak,
       scheduleMultiplier: simScheduleMultiplier(name),
       activityCredit: simActivityCredit(name),
@@ -34109,9 +34129,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // interchangeable was hiding which of the two actually happened. Uses each
   // opponent's CURRENT roster rank as a proxy for "were they real
   // competition" — we don't have point-in-time historical rankings.
+  //
+  // Losses to ranked opponents are credited by HOW they happened rather than
+  // flatly subtracted: a competitive decision loss to elite competition
+  // means a fighter was genuinely tested and held up reasonably well — real,
+  // positive signal, just less than a win would be — while a finish loss is
+  // closer to "no information either way" (simFinishVulnerability already
+  // separately penalizes a pattern of getting finished, so this doesn't need
+  // to double-penalize that here). Critically, a loss credited this way can
+  // never drag a fighter's schedule quality BELOW what a fighter who has
+  // never faced anyone ranked at all gets — going the distance with the
+  // champ twice should never score worse than having an entirely empty
+  // resume.
+  //
+  // That empty-resume case is handled explicitly: previously, zero ranked
+  // opponents and an evenly-split ranked record both produced the same
+  // neutral net of 0, which let a long UFC tenure built entirely against
+  // unranked competition pass through with no schedule discount at all. Once
+  // a fighter has had a real opportunity to be tested (6+ UFC fights) and it
+  // still never happened, that's treated as a real negative rather than
+  // neutral. Gated on fight count so it doesn't punish fast-rising prospects
+  // who simply haven't been matched up yet.
   function simScheduleQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    let winsWeighted = 0, lossesWeighted = 0, ufc = 0;
+    let winsWeighted = 0, testedLossCredit = 0, ufc = 0, rankedFaced = 0;
     const now = Date.now();
     hist.forEach(f => {
       if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
@@ -34119,20 +34160,45 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (f.result !== 'W' && f.result !== 'L') return;
       const tier = simRankTier(f.opponent);
       if (tier == null) return;
+      rankedFaced++;
       const quality = Math.max(0.3, 1 - tier / 15);
       const d = new Date(f.date);
       const yearsAgo = isNaN(d) ? 5 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
       const recency = 0.4 + 0.6 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
       const contrib = quality * recency;
-      if (f.result === 'W') winsWeighted += contrib;
-      else lossesWeighted += contrib;
+      if (f.result === 'W') {
+        winsWeighted += contrib;
+      } else {
+        const method = String(f.method || '').toUpperCase();
+        const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
+        testedLossCredit += contrib * (isFinish ? 0.1 : 0.5);
+      }
     });
-    // Losing to ranked competition still means a fighter was actually
-    // tested — a real, distinct thing from never being tested at all — so
-    // it only partially offsets the credit earned from beating ranked
-    // competition, at less than full weight.
-    const net = winsWeighted - 0.4 * lossesWeighted;
-    return { net, ufc };
+    let net = winsWeighted + testedLossCredit;
+    const untested = ufc >= 6 && rankedFaced === 0;
+    if (untested) net -= 1.5;
+    return { net, ufc, untested, rankedFaced };
+  }
+
+  // How much to trust a fighter's raw per-fight rate stats at face value,
+  // distinct from the win/loss-based schedule quality above. Facing even
+  // one ranked opponent is itself a costly, meaningful signal — at that
+  // point the stats have been earned partly against real competition, so
+  // they're trusted fully regardless of career length. But a fighter who
+  // has NEVER faced a ranked opponent is a pure small-sample case: the
+  // fewer total UFC fights backing those rate stats, the more a couple of
+  // lopsided performances against unproven competition can swing numbers
+  // like strikes landed, knockdowns, or finish rate to extreme, unrepeated
+  // levels (this is exactly how a fighter 3 fights into a UFC run, with a
+  // long pre-UFC résumé against obscure regional competition, ends up with
+  // a top-of-the-roster takedown rate or a 100% takedown-defense figure —
+  // it's a true reflection of those specific fights, just not yet a
+  // reliable read on the fighter in general). 14 UFC fights is treated as
+  // enough of a sample for full trust in this no-ranked-opponents case.
+  function simRateCredibility(name) {
+    const { ufc, rankedFaced } = simScheduleQuality(name);
+    if (rankedFaced > 0) return 1;
+    return Math.min(1, ufc / 14);
   }
 
   // Schedule quality used to be tacked onto the power score as a flat side
@@ -34146,11 +34212,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // murderers'-row resume inflates them, since the per-fight box-score data
   // here has no per-opponent breakdown to recompute the underlying stats
   // from directly. tanh keeps the swing bounded to roughly +/-15% either
-  // way, so schedule quality stays a real but secondary adjustment rather
-  // than overriding what a fighter's stats actually say.
+  // way for ordinary cases, so schedule quality stays a real but secondary
+  // adjustment rather than overriding what a fighter's stats actually say.
+  //
+  // The "untested" case — 6+ UFC fights, literally zero of them against a
+  // ranked opponent — gets a wider +/-35% swing instead. A gaudy
+  // striking/finishing profile built entirely against opposition that's
+  // never been good enough to rank is exactly the scenario where the
+  // underlying rate stats themselves are least trustworthy (small, one-
+  // sided samples inflate per-fight rates like knockdowns/finish rate in a
+  // way a deep, mixed-quality career doesn't), so it warrants more than the
+  // ordinary secondary nudge.
   function simScheduleMultiplier(name) {
-    const { net } = simScheduleQuality(name);
-    return 1 + 0.15 * Math.tanh(net / 2.5);
+    const { net, untested } = simScheduleQuality(name);
+    const cap = untested ? 0.35 : 0.15;
+    return 1 + cap * Math.tanh(net / 2.5);
   }
 
   // Separate, smaller credit for sheer UFC-level fight count/experience —
