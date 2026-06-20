@@ -3589,7 +3589,12 @@
  }
  function showDiv(divId) {
  document.querySelectorAll('.rank-panel').forEach(p => p.style.display = 'none');
- document.querySelectorAll('.rank-div-btn').forEach(b => b.classList.remove('active'));
+ // Scoped to #rankingDivTabs -- .rank-div-btn is also reused by the Odds
+ // page's fight-selector buttons, which live elsewhere in the DOM (and
+ // are pre-rendered hidden at app load). An unscoped selector here would
+ // strip their 'active' class too, leaving the Odds page's first fight
+ // unhighlighted the next time the user visits it.
+ document.querySelectorAll('#rankingDivTabs .rank-div-btn').forEach(b => b.classList.remove('active'));
  document.getElementById('rank-' + divId).style.display = 'block';
  event.target.classList.add('active');
  // Load this division's avatar photos now that it's visible (the
