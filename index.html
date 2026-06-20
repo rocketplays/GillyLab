@@ -34157,7 +34157,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // who simply haven't been matched up yet.
   function simScheduleQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    let winsWeighted = 0, testedLossCredit = 0, ufc = 0, rankedFaced = 0;
+    let winsWeighted = 0, testedLossCredit = 0, ufc = 0, rankedFaced = 0, rankedQuality = 0;
     const now = Date.now();
     hist.forEach(f => {
       if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
@@ -34167,6 +34167,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (tier == null) return;
       rankedFaced++;
       const quality = Math.max(0.3, 1 - tier / 15);
+      rankedQuality += quality;
       const d = new Date(f.date);
       const yearsAgo = isNaN(d) ? 5 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
       const recency = 0.4 + 0.6 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
@@ -34183,28 +34184,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let net = winsWeighted + testedLossCredit;
     const untested = ufc >= 6 && rankedFaced === 0;
     if (untested) net -= 1.5;
-    return { net, ufc, untested, rankedFaced };
+    return { net, ufc, untested, rankedFaced, rankedQuality };
   }
 
   // How much to trust a fighter's raw per-fight rate stats at face value,
   // distinct from the win/loss-based schedule quality above. Facing a
   // ranked opponent is a costly, meaningful signal — at that point the
-  // stats have been earned partly against real competition — but a
-  // single such fight shouldn't instantly launder an entire raw-stat
-  // profile when the UFC sample backing it is still tiny (e.g. 2 total
-  // UFC fights, one a decision win over a fighter just barely inside the
-  // rankings, with the rest of the career's gaudy numbers — knockdowns,
-  // finish rate — built against obscure regional competition). So each
-  // ranked opponent faced counts as worth several UFC-equivalent fights
-  // toward the trust threshold, rather than an automatic full pass. A
-  // fighter with a real UFC tenure (many fights) or multiple ranked wins
-  // still reaches full trust quickly; it's only the extreme small-sample
-  // case — few fights, one borderline ranked win — that now stays
-  // partially dampened. 14 "fight-equivalents" is treated as enough of a
-  // sample for full trust.
+  // stats have been earned partly against real competition — but not
+  // every ranked opponent is the same kind of evidence, and a single
+  // fight shouldn't instantly launder an entire raw-stat profile when
+  // the UFC sample backing it is still tiny (e.g. 2 total UFC fights,
+  // one a decision win over a fighter just barely inside the rankings
+  // [#14 of 15], with the rest of the career's gaudy numbers —
+  // knockdowns, finish rate — built against obscure regional
+  // competition). So the credibility boost is weighted by how good the
+  // ranked opponent(s) actually were (the same tier-based quality used
+  // for schedule quality above), not just a flat per-fight count — a
+  // win over a top contender buys a lot more trust than a win over a
+  // fighter who barely cracked the rankings. A fighter with a real UFC
+  // tenure (many fights) or multiple quality ranked wins still reaches
+  // full trust quickly; it's only the extreme small-sample, low-quality
+  // case that now stays partially dampened. 14 "fight-equivalents" is
+  // treated as enough of a sample for full trust.
   function simRateCredibility(name) {
-    const { ufc, rankedFaced } = simScheduleQuality(name);
-    return Math.min(1, (ufc + rankedFaced * 5) / 14);
+    const { ufc, rankedQuality } = simScheduleQuality(name);
+    return Math.min(1, (ufc + rankedQuality * 5) / 14);
   }
 
   // Schedule quality used to be tacked onto the power score as a flat side
