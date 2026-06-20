@@ -32802,13 +32802,54 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return key ? (RANKINGS_LOOKUP[key] || '') : '';
   }
 
+  // The event-data API frequently returns city+country pre-concatenated with no
+  // separator at all (e.g. rawEvt.city === "Las Vegas United States" or
+  // "Baku Azerbaijan" -- confirmed in data/event.json, where the "city" and
+  // "country" fields are literally identical strings). Rather than hardcode
+  // fixes for specific events, this inserts a comma in front of a recognized
+  // country name wherever it appears at the end of a location string, so any
+  // current or future event from the feed gets corrected automatically.
+  const KNOWN_COUNTRY_NAMES = [
+    'United States', 'United Kingdom', 'United Arab Emirates', 'Saudi Arabia',
+    'South Africa', 'South Korea', 'North Korea', 'New Zealand', 'Czech Republic',
+    'Dominican Republic', 'Papua New Guinea', 'Sri Lanka', 'Costa Rica',
+    'Puerto Rico', 'Hong Kong', 'Trinidad and Tobago', 'Ivory Coast',
+    'Bosnia and Herzegovina', 'Republic of Ireland',
+    'Azerbaijan', 'France', 'China', 'Brazil', 'Canada', 'Russia', 'Australia',
+    'Ireland', 'Germany', 'Japan', 'Mexico', 'Sweden', 'Poland', 'Serbia',
+    'Singapore', 'Philippines', 'Thailand', 'Indonesia', 'Malaysia', 'Vietnam',
+    'Argentina', 'Chile', 'Colombia', 'Peru', 'Venezuela', 'Ecuador', 'Cuba',
+    'Jamaica', 'Panama', 'Guatemala', 'Honduras', 'Nicaragua', 'Spain',
+    'Portugal', 'Italy', 'Netherlands', 'Belgium', 'Switzerland', 'Austria',
+    'Norway', 'Denmark', 'Finland', 'Iceland', 'Greece', 'Turkey', 'Ukraine',
+    'Romania', 'Bulgaria', 'Hungary', 'Croatia', 'Slovakia', 'Slovenia',
+    'Lithuania', 'Latvia', 'Estonia', 'Georgia', 'Armenia', 'Kazakhstan',
+    'Uzbekistan', 'Mongolia', 'India', 'Pakistan', 'Bangladesh', 'Nepal',
+    'Egypt', 'Nigeria', 'Kenya', 'Morocco', 'Ghana', 'Cameroon', 'Angola',
+    'Tunisia', 'Algeria', 'Israel', 'Lebanon', 'Jordan', 'Iraq', 'Iran',
+    'Kuwait', 'Qatar', 'Bahrain', 'Oman', 'Yemen', 'Cyprus', 'Malta',
+    'Luxembourg', 'Monaco',
+  ].sort((a, b) => b.length - a.length);
+  function normalizeApiLocationStr(str) {
+    if (!str) return str;
+    for (const country of KNOWN_COUNTRY_NAMES) {
+      if (str === country) return str;
+      const suffix = ' ' + country;
+      if (str.endsWith(suffix)) {
+        const place = str.slice(0, -suffix.length).trim();
+        return place ? place + ', ' + country : country;
+      }
+    }
+    return str;
+  }
+
   function parseApiEvent(rawEvt) {
     if (!rawEvt) return null;
     const dateStr = rawEvt.startsAt ? easternDateStr(rawEvt.startsAt) : '';
     const dateFormatted = dateStr
       ? new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       : '';
-    const venue = [rawEvt.venue, rawEvt.city].filter(Boolean).join(' · ');
+    const venue = [rawEvt.venue, normalizeApiLocationStr(rawEvt.city)].filter(Boolean).join(' · ');
     const bouts = (rawEvt.bouts || []).slice().sort((a, b) => a.boutOrder - b.boutOrder);
     const mainBoutOrder = bouts.length ? Math.min(...bouts.map(b => b.boutOrder)) : 1;
     const fights = bouts.map(bout => {
