@@ -34072,12 +34072,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // enough to rank can swing any of these to extreme, unrepeated levels —
   // it's a true reflection of those specific fights, just not yet a
   // reliable read on the fighter in general. simRateCredibility gives a 0-1
-  // trust score per fighter (full trust the moment they've faced even one
-  // ranked opponent; otherwise scaled by UFC sample size). This pulls each
-  // raw stat back toward its roster-typical baseline by the shortfall —
-  // full credibility leaves a stat untouched, low credibility pulls it most
-  // of the way to baseline, rather than feeding an unproven outlier value
-  // through at full strength.
+  // trust score per fighter, built from both UFC sample size and the
+  // quality of any ranked opponents actually faced (see simRateCredibility
+  // for the current formula — a single low-quality ranked win no longer
+  // grants instant full trust on its own). This pulls each raw stat back
+  // toward its roster-typical baseline by the shortfall — full credibility
+  // leaves a stat untouched, low credibility pulls it most of the way to
+  // baseline, rather than feeding an unproven outlier value through at full
+  // strength.
   function simCredibilityDampen(value, baseline, credibility) {
     return baseline + (value - baseline) * credibility;
   }
@@ -34269,18 +34271,33 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // same two finish losses spread thinly across a long career.
   function simTrajectory(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    const recent = hist.filter(f => f.result && f.result !== '–' && f.method !== 'Upcoming' && f.date).slice(0, 5);
+    const completed = f => f.result && f.result !== '–' && f.method !== 'Upcoming' && f.date;
+    // "Recent form" should mean recent UFC-level form. Without this,
+    // a fighter a couple fights into their UFC run has most or all of this
+    // 5-fight window filled with regional bouts against weaker competition
+    // — the same front-loading problem already corrected for finish rate
+    // and finish vulnerability elsewhere, just left unaddressed here. Falls
+    // back to full history only when there are literally zero UFC fights
+    // to draw from (a fighter making their UFC debut still needs SOME
+    // recent-form signal rather than none at all).
+    const ufcHist = hist.filter(f => completed(f) && f.org === 'UFC');
+    const pool = ufcHist.length > 0 ? ufcHist : hist.filter(completed);
+    const recent = pool.slice(0, 5);
     const weights = [1.0, 0.5, 0.3, 0.18, 0.1];
     let score = 0, recentFinishLosses = 0;
     recent.forEach((f, i) => {
       const weight = weights[i] != null ? weights[i] : 0.1;
       const method = String(f.method || '').toUpperCase();
       const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
-      const oppRanked = simRankTier(f.opponent) != null;
+      const tier = simRankTier(f.opponent);
+      // Same tier-based quality scale used for schedule quality and
+      // credibility — a win over a fighter just barely inside the rankings
+      // shouldn't get the same flat bonus as a win over a top contender.
+      const oppQuality = tier != null ? Math.max(0.3, 1 - tier / 15) : 0;
       if (f.result === 'W') {
         let v = 0.25;
         if (isFinish) v += 0.2;
-        if (oppRanked) v += 0.25;
+        if (tier != null) v += 0.25 * oppQuality;
         score += v * weight;
       } else if (f.result === 'L') {
         let v = -0.25;
@@ -34341,6 +34358,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let count = 0;
     hist.forEach(f => {
       if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      // Restricted to UFC bouts — a 5-round fight in a regional promotion
+      // (rare, but it happens) isn't the same big-stage/championship-rounds
+      // experience this signal is meant to capture.
+      if (f.org !== 'UFC') return;
       if (f.round === 5) count++;
     });
     return Math.min(1, count * 0.18);
