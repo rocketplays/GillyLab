@@ -34048,7 +34048,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const d = new Date(f.date);
       const yearsAgo = isNaN(d) ? 3 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
       const weight = 0.5 + 0.5 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
-      const isFinish = /^(KO|TKO|Submission)/i.test(String(f.method || '').trim());
+      const isFinish = /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(String(f.method || '').trim());
       totalWeight += weight;
       if (isFinish) weightedFinishes += weight;
     });
@@ -34246,7 +34246,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
       if (ufcOnly && f.org !== 'UFC') return;
       const method = String(f.method || '').trim();
-      const isFinish = /^(KO|TKO|Submission)/i.test(method);
+      // "Technical Submission (...)" doesn't start with "Submission" so the
+      // old pattern missed it entirely — not a finish, not a decision,
+      // silently excluded from both buckets. 149+ fights across the roster
+      // use this exact method string (a ref-stoppage submission, distinct
+      // from "Technical Decision," which IS a decision and was already
+      // matched fine by the isDecision check below).
+      const isFinish = /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(method);
       const isDecision = /Decision/i.test(method);
       if (f.result === 'W') {
         wins++;
