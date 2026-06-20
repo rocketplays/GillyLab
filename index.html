@@ -31606,7 +31606,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const avatarEl = cell.querySelector('.fighter-avatar');
       if (!nameEl || !avatarEl) return;
       const name     = nameEl.textContent.trim();
-      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const localUrl = './photos/thumb/' + nameToSlug(name) + '.png';
       const mapUrl   = PHOTO_MAP[name];
       const img = document.createElement('img');
       img.alt = name;
@@ -31637,7 +31637,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     document.querySelectorAll('#dynamic-projections .proj-avatar').forEach(cell => {
       const name = cell.getAttribute('data-fighter');
       if (!name || cell.querySelector('img')) return;
-      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const localUrl = './photos/thumb/' + nameToSlug(name) + '.png';
       const mapUrl   = PHOTO_MAP[name];
       const img = document.createElement('img');
       img.alt = name;
@@ -31674,7 +31674,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       panel.querySelectorAll('.rank-avatar').forEach(cell => {
         const name = cell.getAttribute('data-fighter');
         if (!name || cell.querySelector('img')) return;
-        const localUrl = './photos/' + nameToSlug(name) + '.png';
+        const localUrl = './photos/thumb/' + nameToSlug(name) + '.png';
         const mapUrl   = PHOTO_MAP[name];
         const img = document.createElement('img');
         img.alt = name;
@@ -31941,7 +31941,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const { weight, rounds } = parseLabel(f.label);
         function ava(photo, ini, name) {
           if (!photo) return '<div class="fighter-avatar">' + ini + '</div>';
-          const fallback = name ? './photos/' + nameToSlug(name) + '.png' : '';
+          const fallback = name ? './photos/thumb/' + nameToSlug(name) + '.png' : '';
           const onerr = (fallback && fallback !== photo)
             ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';}'
             : 'this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';';
@@ -32972,8 +32972,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
-        photo1: red.fighterSlug  ? './photos/' + red.fighterSlug  + '.png' : '',
-        photo2: blue.fighterSlug ? './photos/' + blue.fighterSlug + '.png' : '',
+        photo1: red.fighterSlug  ? './photos/thumb/' + red.fighterSlug  + '.png' : '',
+        photo2: blue.fighterSlug ? './photos/thumb/' + blue.fighterSlug + '.png' : '',
         label, isMain, isMainCard,
       };
     });
@@ -33561,7 +33561,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function tapeAvatarHTML(photo, ini, name) {
     if (!photo) return '<div class="tape-fighter-avatar">' + (ini || '') + '</div>';
-    const fallback = name ? './photos/' + nameToSlug(name) + '.png' : '';
+    const fallback = name ? './photos/thumb/' + nameToSlug(name) + '.png' : '';
     const onerr = (fallback && fallback !== photo)
       ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{this.parentNode.innerHTML=\'' + (ini || '') + '\';this.parentNode.style=\'\';}'
       : 'this.parentNode.innerHTML=\'' + (ini || '') + '\';this.parentNode.style=\'\';';
@@ -34061,7 +34061,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     document.querySelectorAll('#simResults .sim-results-avatar').forEach(cell => {
       const name = cell.getAttribute('data-fighter');
       if (!name || cell.querySelector('img')) return;
-      const localUrl = './photos/' + nameToSlug(name) + '.png';
+      const localUrl = './photos/thumb/' + nameToSlug(name) + '.png';
       const mapUrl   = PHOTO_MAP[name];
       const img = document.createElement('img');
       img.alt = name;
