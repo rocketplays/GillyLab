@@ -34689,11 +34689,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // 3+ finish losses is a real pattern worth flagging on its own, even for
   // a long-career fighter where it's a small share of a much larger total
   // loss count; diluting it by share would let volume quietly launder away
-  // a proven finish-loss pattern.
+  // a proven finish-loss pattern. Slope and cap doubled (0.13->0.26,
+  // 0.7->1.4) from the original rate-gated version — being finished
+  // repeatedly is a real, proven trait and deserves a real hit to the power
+  // score, not a token one.
   function simFinishVulnerability(name) {
     const stats = simLossFinishProfile(name);
     if (stats.losses < 3 || stats.lossFinishes < 3) return 0;
-    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.13, 0.7);
+    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.26, 1.4);
   }
 
   // 5-round-specific modifier — only added when the simulator is run in
