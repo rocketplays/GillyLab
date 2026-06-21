@@ -1293,6 +1293,36 @@
 
     .sim-count-group { width: 160px; }
 
+    .sim-rounds-group { width: 180px; }
+
+    .sim-rounds-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .sim-rounds-btn {
+      flex: 1;
+      background: var(--surface2);
+      border: none;
+      color: var(--muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      padding: 0.65rem 0.4rem;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .sim-rounds-btn + .sim-rounds-btn { border-left: 1px solid var(--border); }
+
+    .sim-rounds-btn.active {
+      background: var(--accent);
+      color: #04140a;
+    }
+
     .sim-run-btn {
       background: var(--accent);
       border: 1px solid var(--accent);
@@ -1497,6 +1527,7 @@
       .sim-vs { text-align: center; padding-bottom: 0; }
       .sim-controls { flex-direction: column; align-items: stretch; }
       .sim-count-group { width: 100%; }
+      .sim-rounds-group { width: 100%; }
       .sim-methods-row { flex-direction: column; gap: 1rem; }
     }
 
@@ -2777,6 +2808,13 @@
       </div>
 
       <div class="sim-controls">
+        <div class="sim-rounds-group">
+          <label class="sim-label">Rounds</label>
+          <div class="sim-rounds-toggle" id="simRoundsToggle" role="radiogroup" aria-label="Number of rounds">
+            <button type="button" class="sim-rounds-btn active" id="simRounds3" role="radio" aria-checked="true" onclick="simSetRounds(3)">3 Rounds</button>
+            <button type="button" class="sim-rounds-btn" id="simRounds5" role="radio" aria-checked="false" onclick="simSetRounds(5)">5 Rounds</button>
+          </div>
+        </div>
         <div class="sim-count-group">
           <label class="sim-label" for="simCount">Simulations</label>
           <input class="sim-count-input" id="simCount" type="number" min="100" max="50000" step="1" value="1000" />
@@ -34227,7 +34265,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return baseline + (value - baseline) * credibility;
   }
 
-  function getSimProfile(name) {
+  function getSimProfile(name, rounds) {
     const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
     const credibility = simRateCredibility(name);
     const slpm = simCredibilityDampen(simNum(s.slpm, 3.5), 3.5, credibility);
@@ -34263,7 +34301,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
       undefeatedBoost: simUndefeatedBoost(name),
       durabilityBoost: simDurabilityBoost(name),
-      finishVulnerability: simFinishVulnerability(name)
+      finishVulnerability: simFinishVulnerability(name),
+      fiveRoundFactor: rounds === 5 ? simFiveRoundFactor(name) : 0
     };
   }
 
@@ -34662,6 +34701,52 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return -countPenalty * rateScale;
   }
 
+  // 5-round-specific modifier — only added when the simulator is run in
+  // 5-round mode (see runFightSimulator / simSetRounds). Deliberately kept
+  // small and separate from the always-on power-score terms above rather
+  // than folded into them, so picking "3 Rounds" still scores fights
+  // exactly as it always has.
+  //
+  // Three pieces:
+  //   1. Deep-rounds experience. FIGHT_HISTORY only records the round a
+  //      fight actually ended in, not how many rounds it was SCHEDULED
+  //      for — but round 4 or 5 can only happen in a fight that was
+  //      scheduled for 5, so it doubles as a reliable proxy without
+  //      needing a separate field. A win out there earns more credit than
+  //      a loss, but a loss still counts for a little — surviving into
+  //      deep water at all is real evidence a fighter doesn't fall apart
+  //      once a fight runs long, separate from whether they won it.
+  //   2. Durability bonus. Reuses the existing "granite chin" signal
+  //      (simDurabilityBoost) at a fraction of its normal weight — that
+  //      signal already lives in the base score year-round, this just
+  //      adds a little extra credit specifically for the 25-minute case.
+  //   3. Finishability penalty. A raw count of finish losses (3+) is a
+  //      real cardio/durability red flag once a fight can go the full
+  //      distance — scales gently with how many, soft-capped so a long,
+  //      finish-heavy career doesn't swing this wildly.
+  function simFiveRoundFactor(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let deepRounds = 0;
+    let finishLosses = 0;
+    hist.forEach(f => {
+      if (!f.result || f.method === 'Upcoming' || !f.round) return;
+      const method = String(f.method || '').toUpperCase();
+      const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
+      if (f.round >= 4) {
+        if (f.result === 'W') deepRounds += 0.18;
+        else if (f.result === 'L') deepRounds += 0.06;
+      }
+      if (f.result === 'L' && isFinish) finishLosses++;
+    });
+    const experienceFactor = simSoftCap(deepRounds, 0.6);
+    const durabilityFactor = simDurabilityBoost(name) * 0.35;
+    let finishPenalty = 0;
+    if (finishLosses >= 3) {
+      finishPenalty = -simSoftCap(0.06 + (finishLosses - 3) * 0.03, 0.35);
+    }
+    return experienceFactor + durabilityFactor + finishPenalty;
+  }
+
   // "Boom or bust" signal: a fighter who finishes opponents often AND gets
   // finished often themselves is inherently less predictable than their raw
   // power-score gap suggests — a violent-but-fragile finisher can blow out
@@ -34784,7 +34869,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // factors stay additive, since those aren't claims about whether the
     // underlying numbers are trustworthy.
     const production = (strikingNet + grappling + finishing) * p.scheduleMultiplier;
-    return production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability;
+    return production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability + (p.fiveRoundFactor || 0);
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
@@ -34852,9 +34937,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return aWon ? magnitude : -magnitude;
   }
 
-  function simWinProbability(nameA, nameB) {
-    const sa = simPowerScore(getSimProfile(nameA));
-    const sb = simPowerScore(getSimProfile(nameB));
+  function simWinProbability(nameA, nameB, rounds) {
+    const sa = simPowerScore(getSimProfile(nameA, rounds));
+    const sb = simPowerScore(getSimProfile(nameB, rounds));
     // Logistic curve on the power-score differential — gives clear separation
     // for lopsided matchups while keeping closely-matched fights near 50/50.
     // The stat/style differential is softened when the rankings say these two
@@ -34930,10 +35015,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return pool;
   }
 
-  function simRunTrials(nameA, nameB, n) {
-    const probA = simWinProbability(nameA, nameB);
-    const powerA = simPowerScore(getSimProfile(nameA));
-    const powerB = simPowerScore(getSimProfile(nameB));
+  function simRunTrials(nameA, nameB, n, rounds) {
+    const probA = simWinProbability(nameA, nameB, rounds);
+    const powerA = simPowerScore(getSimProfile(nameA, rounds));
+    const powerB = simPowerScore(getSimProfile(nameB, rounds));
     const poolA = simMethodPool(nameA);
     const poolB = simMethodPool(nameB);
     let winsA = 0, winsB = 0;
@@ -35102,6 +35187,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
   }
 
+  // Selected round count for the simulator — defaults to 3 (the standard
+  // non-title fight length) and is flipped by the toggle buttons in the
+  // sim controls. Read by runFightSimulator() and passed through to the
+  // scoring pipeline so 5-round mode picks up simFiveRoundFactor() while
+  // 3-round mode is completely unaffected.
+  let simSelectedRounds = 3;
+
+  function simSetRounds(rounds) {
+    simSelectedRounds = rounds;
+    const btn3 = document.getElementById('simRounds3');
+    const btn5 = document.getElementById('simRounds5');
+    if (btn3) { btn3.classList.toggle('active', rounds === 3); btn3.setAttribute('aria-checked', rounds === 3 ? 'true' : 'false'); }
+    if (btn5) { btn5.classList.toggle('active', rounds === 5); btn5.setAttribute('aria-checked', rounds === 5 ? 'true' : 'false'); }
+  }
+
   function runFightSimulator() {
     const errBox = document.getElementById('simError');
     const warnBox = document.getElementById('simWarning');
@@ -35147,7 +35247,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!Number.isFinite(n)) n = 1000;
     n = Math.min(50000, Math.max(100, n));
 
-    const result = simRunTrials(nameA, nameB, n);
+    const result = simRunTrials(nameA, nameB, n, simSelectedRounds);
 
     if (distance === 1 && warnBox) {
       warnBox.textContent = `${nameA} (${simDivisionLabel(divA)}) and ${nameB} (${simDivisionLabel(divB)}) are one weight class apart — results may be skewed by the size/weight difference.`;
