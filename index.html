@@ -34762,10 +34762,57 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const wCount = lossProfile.weightedFinishLossCount;
       finishPenalty = -simSoftCap(0.06 + (wCount - 3) * 0.03, 0.35);
     }
+    const decisionFactor = simDecisionGrinderBoost(name);
     // 2x multiplier applied after the soft caps above (not folded into
     // their inputs), so it scales the whole signal's range uniformly
     // rather than changing the shape of the diminishing-returns curve.
-    return (experienceFactor + durabilityFactor + finishPenalty) * 2;
+    return (experienceFactor + durabilityFactor + finishPenalty + decisionFactor) * 2;
+  }
+
+  // Standalone "grinder" signal, separate from deep-rounds experience above.
+  // That term only fires once a fighter has actually BEEN in round 4/5 — it
+  // says nothing about a fighter stepping into their first 5-round fight who
+  // has nonetheless built a career on out-pacing people over a full fight and
+  // winning the decision. Two conditions, both required:
+  //   1. Decisions have to make up a real share of their career (35%+ of all
+  //      decided fights, with a minimum raw sample) — one decision win in an
+  //      otherwise finish-heavy career isn't a "grinder," it's a data point.
+  //   2. They have to be clearly WINNING those decisions (65%+ of their
+  //      decisions, recency-weighted), not just going the distance. A
+  //      fighter who's 5-5 by decision has shown they can hang 15-25 minutes,
+  //      but that's not an edge — it's a coin flip, exactly the case the user
+  //      flagged as not a real signal.
+  // Even past that bar, a meaningful raw count of decision LOSSES still drags
+  // the bonus down (lossDrag below) — a fighter who barely cleared 65% on a
+  // thin sample shouldn't score the same as one who's dominantly won
+  // decisions with few losses to show otherwise.
+  function simDecisionGrinderBoost(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let winsRaw = 0, lossesRaw = 0, decWinsRaw = 0, decLossesRaw = 0;
+    let decWinsW = 0, decLossesW = 0;
+    hist.forEach(f => {
+      if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      const w = simRecencyWeight(f.date);
+      const isDecision = /Decision/i.test(String(f.method || '').trim());
+      if (f.result === 'W') {
+        winsRaw++;
+        if (isDecision) { decWinsRaw++; decWinsW += w; }
+      } else if (f.result === 'L') {
+        lossesRaw++;
+        if (isDecision) { decLossesRaw++; decLossesW += w; }
+      }
+    });
+    const totalRaw = winsRaw + lossesRaw;
+    const decTotalRaw = decWinsRaw + decLossesRaw;
+    const decTotalW = decWinsW + decLossesW;
+    if (totalRaw < 5 || decTotalRaw < 3 || decTotalW <= 0) return 0;
+    if (decTotalRaw / totalRaw < 0.35) return 0;
+    const winRate = decWinsW / decTotalW;
+    if (winRate < 0.65) return 0;
+    const rateBonus = (winRate - 0.65) * 0.6;
+    const volumeBonus = simSoftCap(decWinsW, 6) * 0.02;
+    const lossDrag = simSoftCap(decLossesRaw, 5) * 0.05;
+    return simSoftCap(Math.max(0, rateBonus + volumeBonus - lossDrag), 0.3);
   }
 
   // "Boom or bust" signal: a fighter who finishes opponents often AND gets
