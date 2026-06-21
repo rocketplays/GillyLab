@@ -34689,14 +34689,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // 3+ finish losses is a real pattern worth flagging on its own, even for
   // a long-career fighter where it's a small share of a much larger total
   // loss count; diluting it by share would let volume quietly launder away
-  // a proven finish-loss pattern. Slope and cap doubled (0.13->0.26,
-  // 0.7->1.4) from the original rate-gated version — being finished
-  // repeatedly is a real, proven trait and deserves a real hit to the power
-  // score, not a token one.
+  // a proven finish-loss pattern.
+  //
+  // Returns a PERCENTAGE (negative fraction), not a flat point value — see
+  // where this is consumed in simPowerScore. A flat point subtraction reads
+  // as negligible against a "glass cannon" fighter whose heavy-output
+  // stats have built a big score (Krylov: -0.6 against a 7.4 total was
+  // background noise), while crushing a fighter who had little score to
+  // begin with (Derrick Lewis: the old flat penalty alone was 46% of his
+  // entire score). Scaling by a percentage of the fighter's own subtotal
+  // fixes both ends at once: a fighter whose exciting offense built a big
+  // score actually loses a real chunk of it for also having a proven
+  // finish-loss pattern, while a fighter with little score isn't driven
+  // disproportionately negative by the same flat number.
   function simFinishVulnerability(name) {
     const stats = simLossFinishProfile(name);
     if (stats.losses < 3 || stats.lossFinishes < 3) return 0;
-    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.26, 1.4);
+    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.07, 0.30);
   }
 
   // 5-round-specific modifier — only added when the simulator is run in
@@ -34957,7 +34966,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // factors stay additive, since those aren't claims about whether the
     // underlying numbers are trustworthy.
     const production = (strikingNet + grappling + finishing) * p.scheduleMultiplier;
-    return production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost + p.finishVulnerability + (p.fiveRoundFactor || 0);
+    // Subtotal before the finish-vulnerability penalty, which now applies
+    // as a PERCENTAGE of this subtotal (see simFinishVulnerability) rather
+    // than a flat point subtraction summed in alongside everything else.
+    // Math.abs() on the subtotal so the penalty always reduces the score,
+    // even for a fighter whose subtotal is already negative — multiplying
+    // a negative subtotal by a negative fraction would otherwise flip the
+    // sign and accidentally reward them for being finish-prone.
+    const subtotal = production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost;
+    const afterFinishPenalty = subtotal + Math.abs(subtotal) * p.finishVulnerability;
+    return afterFinishPenalty + (p.fiveRoundFactor || 0);
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
