@@ -34762,7 +34762,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const wCount = lossProfile.weightedFinishLossCount;
       finishPenalty = -simSoftCap(0.06 + (wCount - 3) * 0.03, 0.35);
     }
-    return experienceFactor + durabilityFactor + finishPenalty;
+    // 2x multiplier applied after the soft caps above (not folded into
+    // their inputs), so it scales the whole signal's range uniformly
+    // rather than changing the shape of the diminishing-returns curve.
+    return (experienceFactor + durabilityFactor + finishPenalty) * 2;
   }
 
   // "Boom or bust" signal: a fighter who finishes opponents often AND gets
