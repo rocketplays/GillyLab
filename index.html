@@ -34681,24 +34681,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // a fighter stopped in all 3 of a thin 3-loss sample scored as MORE
   // vulnerable than one stopped 9 times in 11 losses (100% vs ~82%), even
   // though 9 finish losses is a far more substantial, proven pattern than
-  // 3. Now driven primarily by the recency-weighted COUNT of finish losses
-  // (see simLossFinishProfile — 3-4 is a modest flag, 6+ a real pattern, 9+
+  // 3. Driven purely by the recency-weighted COUNT of finish losses (see
+  // simLossFinishProfile — 3-4 is a modest flag, 6+ a real pattern, 9+
   // serious, soft-capped so it doesn't grow unbounded past that, and a
-  // finish loss from years ago counts for less than a fresh one), then
-  // scaled by what share of all losses were finishes (also recency-
-  // weighted), so a long-career fighter with plenty of old losses but a
-  // modest CURRENT finish rate isn't punished just for having fought a lot.
-  // Same 3-loss minimum sample as the durability bonus above, plus a floor
-  // on the rate itself (finishes have to be at least half the weighted
-  // losses to register at all — below that it's not really a "pattern").
+  // finish loss from years ago counts for less than a fresh one). Same
+  // 3-loss minimum sample as the durability bonus above. No rate floor —
+  // 3+ finish losses is a real pattern worth flagging on its own, even for
+  // a long-career fighter where it's a small share of a much larger total
+  // loss count; diluting it by share would let volume quietly launder away
+  // a proven finish-loss pattern.
   function simFinishVulnerability(name) {
     const stats = simLossFinishProfile(name);
     if (stats.losses < 3 || stats.lossFinishes < 3) return 0;
-    const pct = stats.weightedLossFinishRate;
-    if (pct <= 0.5) return 0;
-    const countPenalty = simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.13, 0.7);
-    const rateScale = simSoftCap((pct - 0.5) * 2, 1);
-    return -countPenalty * rateScale;
+    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.13, 0.7);
   }
 
   // 5-round-specific modifier — only added when the simulator is run in
@@ -34755,12 +34750,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // floor-of-0.5, 6-year decay used everywhere else in this file. Sample
     // gate (3+ losses, 3+ of them finishes) matches simFinishVulnerability
     // above, so the two penalties never disagree about whether a fighter
-    // has a real enough sample to judge.
+    // has a real enough sample to judge. Scaled up (roughly 2x base/slope/
+    // cap) relative to the always-on version above — cardio and durability
+    // questions get sharper, not lighter, once a fight can run the full 25
+    // minutes, and this stacks with the always-on penalty (which already
+    // applies in every fight, 3 or 5 round) rather than replacing it, so a
+    // genuinely finish-prone fighter takes a real double hit in 5-round
+    // mode specifically.
     const lossProfile = simLossFinishProfile(name);
     let finishPenalty = 0;
     if (lossProfile.losses >= 3 && lossProfile.lossFinishes >= 3) {
       const wCount = lossProfile.weightedFinishLossCount;
-      finishPenalty = -simSoftCap(0.06 + (wCount - 3) * 0.03, 0.35);
+      finishPenalty = -simSoftCap(0.12 + (wCount - 3) * 0.06, 0.5);
     }
     const decisionFactor = simDecisionGrinderBoost(name);
     // 2x multiplier applied after the soft caps above (not folded into
