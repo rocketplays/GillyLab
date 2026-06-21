@@ -34786,12 +34786,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // the bonus down (lossDrag below) — a fighter who barely cleared 65% on a
   // thin sample shouldn't score the same as one who's dominantly won
   // decisions with few losses to show otherwise.
+  //
+  // Scoped to fights at round <= 3 only (i.e. excludes any fight we know for
+  // certain was scheduled for 5 — round 4/5 can only happen in a 5-round
+  // fight, same proxy used by the experience term above). Two reasons to cut
+  // it off there rather than scanning the whole career:
+  //   1. Once a fighter is fighting 5-round fights regularly, it's almost
+  //      always against tougher, more championship-caliber competition. A
+  //      decision LOSS at that level isn't evidence they've lost their
+  //      grinding edge — it's just a harder fight — so it shouldn't be able
+  //      to drag this term down at all.
+  //   2. Round 4/5 decision WINS are already credited by the experience
+  //      factor above; counting them here too would double-pay the same
+  //      evidence. The edge a fighter built up grinding out 3-round
+  //      decisions should carry forward into their 5-round profile on its
+  //      own terms, independent of how their actual 5-round fights go.
   function simDecisionGrinderBoost(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
     let winsRaw = 0, lossesRaw = 0, decWinsRaw = 0, decLossesRaw = 0;
     let decWinsW = 0, decLossesW = 0;
     hist.forEach(f => {
       if (!f.result || f.result === '–' || f.method === 'Upcoming') return;
+      if (f.round && f.round >= 4) return;
       const w = simRecencyWeight(f.date);
       const isDecision = /Decision/i.test(String(f.method || '').trim());
       if (f.result === 'W') {
