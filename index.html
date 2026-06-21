@@ -34724,25 +34724,43 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      real cardio/durability red flag once a fight can go the full
   //      distance — scales gently with how many, soft-capped so a long,
   //      finish-heavy career doesn't swing this wildly.
+  // Recency weight for a single dated fight, mirroring simLossFinishProfile's
+  // decay exactly (floor of 0.5 at 6+ years, never zero — a 5-round fight
+  // from 8 years ago is weaker evidence of CURRENT cardio/conditioning than
+  // one from last year, but it's not nothing; a fighter doesn't un-learn how
+  // to swim 25 minutes). Unknown/unparseable dates get a neutral 0.75
+  // (between the 0.5 floor and the 1.0 ceiling) rather than full or zero
+  // weight, so a handful of missing dates can't quietly dominate or vanish.
+  function simRecencyWeight(dateStr) {
+    const d = new Date(dateStr);
+    if (isNaN(d)) return 0.75;
+    const yearsAgo = Math.max(0, (Date.now() - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+    return 0.5 + 0.5 * Math.max(0, 1 - Math.min(yearsAgo, 6) / 6);
+  }
+
   function simFiveRoundFactor(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
     let deepRounds = 0;
-    let finishLosses = 0;
     hist.forEach(f => {
-      if (!f.result || f.method === 'Upcoming' || !f.round) return;
-      const method = String(f.method || '').toUpperCase();
-      const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
-      if (f.round >= 4) {
-        if (f.result === 'W') deepRounds += 0.18;
-        else if (f.result === 'L') deepRounds += 0.06;
-      }
-      if (f.result === 'L' && isFinish) finishLosses++;
+      if (!f.result || f.method === 'Upcoming' || !f.round || f.round < 4) return;
+      const w = simRecencyWeight(f.date);
+      if (f.result === 'W') deepRounds += 0.18 * w;
+      else if (f.result === 'L') deepRounds += 0.06 * w;
     });
     const experienceFactor = simSoftCap(deepRounds, 0.6);
     const durabilityFactor = simDurabilityBoost(name) * 0.35;
+    // Finishability penalty reuses simLossFinishProfile's already
+    // recency-weighted finish-loss count instead of a flat tally, so a
+    // finish loss from years ago counts for less than a fresh one — same
+    // floor-of-0.5, 6-year decay used everywhere else in this file. Sample
+    // gate (3+ losses, 3+ of them finishes) matches simFinishVulnerability
+    // above, so the two penalties never disagree about whether a fighter
+    // has a real enough sample to judge.
+    const lossProfile = simLossFinishProfile(name);
     let finishPenalty = 0;
-    if (finishLosses >= 3) {
-      finishPenalty = -simSoftCap(0.06 + (finishLosses - 3) * 0.03, 0.35);
+    if (lossProfile.losses >= 3 && lossProfile.lossFinishes >= 3) {
+      const wCount = lossProfile.weightedFinishLossCount;
+      finishPenalty = -simSoftCap(0.06 + (wCount - 3) * 0.03, 0.35);
     }
     return experienceFactor + durabilityFactor + finishPenalty;
   }
