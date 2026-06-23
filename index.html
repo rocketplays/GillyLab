@@ -32250,17 +32250,70 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return parts[parts.length - 1] || '';
   }
 
+  // Fuzzy fighter-name matching for cross-referencing the live odds feed
+  // (The Odds API) against our own event data — the two sources don't
+  // always agree on spelling or suffixes for the same fighter, e.g.
+  // event.json's "Asu Almabayev" vs odds.json's "Asu Almabaev" (missing a
+  // letter), or event.json's "Javier Reyes" vs odds.json's "Javier Reyes
+  // Rugeles" (extra surname the odds feed includes but we don't). An exact
+  // lastNameOf() equality check misses both of those real matches, so this
+  // is used as a fallback: it compares every word in one name against every
+  // word in the other, allowing a small edit-distance for typos, and counts
+  // a match if any pair of (non-trivially-short) words line up.
+  function levenshteinDist(a, b) {
+    const m = a.length, n = b.length;
+    if (!m) return n;
+    if (!n) return m;
+    let prev = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) {
+      const cur = [i];
+      for (let j = 1; j <= n; j++) {
+        cur[j] = a[i - 1] === b[j - 1]
+          ? prev[j - 1]
+          : 1 + Math.min(prev[j - 1], prev[j], cur[j - 1]);
+      }
+      prev = cur;
+    }
+    return prev[n];
+  }
+  function nameTokens(name) {
+    return String(name || '')
+      .toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .replace(/[^a-z\s]/g, '').trim().split(/\s+/).filter(Boolean);
+  }
+  function namesLikelyMatch(nameA, nameB) {
+    const ta = nameTokens(nameA), tb = nameTokens(nameB);
+    if (!ta.length || !tb.length) return false;
+    for (const wa of ta) {
+      if (wa.length < 3) continue;
+      for (const wb of tb) {
+        if (wb.length < 3) continue;
+        if (wa === wb) return true;
+        const allowedDist = Math.max(wa.length, wb.length) >= 7 ? 2 : 1;
+        if (levenshteinDist(wa, wb) <= allowedDist) return true;
+      }
+    }
+    return false;
+  }
+
   function buildBoutPairings(evtFights) {
     const pairings = [];
     (evtFights || []).forEach(f => {
       if (f.f1 && f.f2) {
-        pairings.push([lastNameOf(f.f1).toLowerCase(), lastNameOf(f.f2).toLowerCase()]);
+        pairings.push([f.f1, f.f2]);
       }
     });
     return pairings;
   }
-  function isScheduledBout(pairings, n1, n2) {
-    return pairings.some(([a, b]) => (a === n1 && b === n2) || (a === n2 && b === n1));
+  function isScheduledBout(pairings, full1, full2) {
+    const n1 = lastNameOf(full1).toLowerCase(), n2 = lastNameOf(full2).toLowerCase();
+    return pairings.some(([pf1, pf2]) => {
+      const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
+      if ((a === n1 && b === n2) || (a === n2 && b === n1)) return true;
+      // Fuzzy fallback — see namesLikelyMatch() above.
+      return (namesLikelyMatch(pf1, full1) && namesLikelyMatch(pf2, full2)) ||
+             (namesLikelyMatch(pf1, full2) && namesLikelyMatch(pf2, full1));
+    });
   }
 
   // ── FIGHT ROW EXPAND/COLLAPSE: per-fight fighter snapshot ──────────────────
@@ -32316,11 +32369,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function findFightOdds(f1Name, f2Name, oddsData) {
     const n1 = lastNameOf(f1Name).toLowerCase();
     const n2 = lastNameOf(f2Name).toLowerCase();
-    const match = (oddsData || []).find(o => {
+    let match = (oddsData || []).find(o => {
       const h = lastNameOf(o.home_team || '').toLowerCase();
       const a = lastNameOf(o.away_team || '').toLowerCase();
       return (h === n1 && a === n2) || (h === n2 && a === n1);
     });
+    if (!match) {
+      // Fuzzy fallback — see namesLikelyMatch() above lastNameOf(). Catches
+      // cases like odds.json's "Asu Almabaev" vs our "Asu Almabayev", or
+      // odds.json's "Javier Reyes Rugeles" vs our "Javier Reyes".
+      match = (oddsData || []).find(o =>
+        (namesLikelyMatch(o.home_team || '', f1Name) && namesLikelyMatch(o.away_team || '', f2Name)) ||
+        (namesLikelyMatch(o.home_team || '', f2Name) && namesLikelyMatch(o.away_team || '', f1Name))
+      );
+    }
     if (!match) return null;
     const homePrices = [], awayPrices = [];
     (match.bookmakers || []).forEach(bk => {
@@ -32349,7 +32411,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return probToAmerican(avgProb);
     }
     const homeAvg = avg(homePrices), awayAvg = avg(awayPrices);
-    const homeIsF1 = lastNameOf(match.home_team || '').toLowerCase() === n1;
+    const homeIsF1 = lastNameOf(match.home_team || '').toLowerCase() === n1 ||
+      (lastNameOf(match.home_team || '').toLowerCase() !== n2 && namesLikelyMatch(match.home_team || '', f1Name));
     return homeIsF1 ? { o1: homeAvg, o2: awayAvg } : { o1: awayAvg, o2: homeAvg };
   }
 
@@ -32524,11 +32587,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         // Find the earliest upcoming date that has any scheduled-bout match, then
         // collect all matching fights within a 3-day window (Odds API often lists
         // prelims 1 day early)
-        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
-          const n1 = lastNameOf(f.home_team).toLowerCase();
-          const n2 = lastNameOf(f.away_team).toLowerCase();
-          return isScheduledBout(boutPairings, n1, n2);
-        }));
+        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f =>
+          isScheduledBout(boutPairings, f.home_team, f.away_team)
+        ));
         if (firstUfcDate) {
           const windowEnd = new Date(firstUfcDate);
           windowEnd.setDate(windowEnd.getDate() + 2);
@@ -32536,9 +32597,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
-              const n1 = lastNameOf(f.home_team).toLowerCase();
-              const n2 = lastNameOf(f.away_team).toLowerCase();
-              if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
+              if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
             });
           });
         } else {
@@ -32549,36 +32608,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fights = byDate[target] || [];
       }
       if (!fights.length) throw new Error('no fights');
+      // Match each odds-feed fight back to its evt.fights bout — fuzzy (see
+      // namesLikelyMatch) since the odds feed doesn't always spell/format a
+      // fighter's name exactly the way our event data does.
+      function findEvtFight(fight) {
+        return (evt.fights || []).find(ef =>
+          namesLikelyMatch(ef.f1, fight.home_team) || namesLikelyMatch(ef.f2, fight.home_team) ||
+          namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
+        );
+      }
       // Sort fights to match evt.fights bout order
       if (evt.fights && evt.fights.length) {
-        const orderMap = {};
-        evt.fights.forEach((f, i) => {
-          if (f.f1) orderMap[lastNameOf(f.f1).toLowerCase()] = i;
-          if (f.f2) orderMap[lastNameOf(f.f2).toLowerCase()] = i;
-        });
         fights = fights.slice().sort((a, b) => {
-          const ia = Math.min(
-            orderMap[lastNameOf(a.home_team).toLowerCase()] ?? 999,
-            orderMap[lastNameOf(a.away_team).toLowerCase()] ?? 999
-          );
-          const ib = Math.min(
-            orderMap[lastNameOf(b.home_team).toLowerCase()] ?? 999,
-            orderMap[lastNameOf(b.away_team).toLowerCase()] ?? 999
-          );
-          return ia - ib;
+          const ia = evt.fights.indexOf(findEvtFight(a));
+          const ib = evt.fights.indexOf(findEvtFight(b));
+          return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
         });
       }
 
       const cards = fights.map(fight => {
         const pcts = noVigPcts(fight);
         if (!pcts) return null;
-        // Try to match weight class label from evt.fights
-        const n1 = lastNameOf(fight.home_team).toLowerCase();
-        const n2 = lastNameOf(fight.away_team).toLowerCase();
-        const evtFight = (evt.fights || []).find(ef =>
-          ef.f1.toLowerCase().includes(n1) || ef.f2.toLowerCase().includes(n1) ||
-          ef.f1.toLowerCase().includes(n2) || ef.f2.toLowerCase().includes(n2)
-        );
+        const evtFight = findEvtFight(fight);
         const label = evtFight ? evtFight.label : '';
         const homeName = resolveCanonicalFighterName(fight.home_team, null);
         const awayName = resolveCanonicalFighterName(fight.away_team, null);
@@ -32970,11 +33021,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       function findHistoryEntry(fight) {
         const n1 = lastNameOf(fight.home_team || '').toLowerCase();
         const n2 = lastNameOf(fight.away_team || '').toLowerCase();
-        return oddsHistory.find(e => {
+        const exact = oddsHistory.find(e => {
           const h1 = lastNameOf(e.f1 || '').toLowerCase();
           const h2 = lastNameOf(e.f2 || '').toLowerCase();
           return (h1 === n1 && h2 === n2) || (h1 === n2 && h2 === n1);
-        }) || null;
+        });
+        if (exact) return exact;
+        // Fuzzy fallback — see namesLikelyMatch() above lastNameOf().
+        return oddsHistory.find(e =>
+          (namesLikelyMatch(e.f1, fight.home_team) && namesLikelyMatch(e.f2, fight.away_team)) ||
+          (namesLikelyMatch(e.f1, fight.away_team) && namesLikelyMatch(e.f2, fight.home_team))
+        ) || null;
       }
       // Group fights by date, find nearest upcoming
       const today = new Date().toISOString().split('T')[0];
@@ -32992,11 +33049,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (boutPairings.length > 0) {
         // Find earliest upcoming date with any scheduled-bout match, then collect all
         // matching fights within a 3-day window (Odds API often lists prelims 1 day early)
-        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f => {
-          const n1 = lastNameOf(f.home_team).toLowerCase();
-          const n2 = lastNameOf(f.away_team).toLowerCase();
-          return isScheduledBout(boutPairings, n1, n2);
-        }));
+        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f =>
+          isScheduledBout(boutPairings, f.home_team, f.away_team)
+        ));
         if (firstUfcDate) {
           const windowEnd = new Date(firstUfcDate);
           windowEnd.setDate(windowEnd.getDate() + 2);
@@ -33004,9 +33059,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
-              const n1 = lastNameOf(f.home_team).toLowerCase();
-              const n2 = lastNameOf(f.away_team).toLowerCase();
-              if (isScheduledBout(boutPairings, n1, n2)) fights.push(f);
+              if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
             });
           });
         } else {
@@ -33017,24 +33070,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fights = byDate[target] || [];
       }
       if (!fights.length) throw new Error('no fights');
-      // Sort fights to match evt.fights bout order
+      // Sort fights to match evt.fights bout order — fuzzy (see
+      // namesLikelyMatch) since the odds feed doesn't always spell/format a
+      // fighter's name exactly the way our event data does.
+      function evtFightIndexOf(fight) {
+        const idx = (evt.fights || []).findIndex(ef =>
+          namesLikelyMatch(ef.f1, fight.home_team) || namesLikelyMatch(ef.f2, fight.home_team) ||
+          namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
+        );
+        return idx === -1 ? 999 : idx;
+      }
       if (evt.fights && evt.fights.length) {
-        const orderMap = {};
-        evt.fights.forEach((f, i) => {
-          if (f.f1) orderMap[lastNameOf(f.f1).toLowerCase()] = i;
-          if (f.f2) orderMap[lastNameOf(f.f2).toLowerCase()] = i;
-        });
-        fights = fights.slice().sort((a, b) => {
-          const ia = Math.min(
-            orderMap[lastNameOf(a.home_team).toLowerCase()] ?? 999,
-            orderMap[lastNameOf(a.away_team).toLowerCase()] ?? 999
-          );
-          const ib = Math.min(
-            orderMap[lastNameOf(b.home_team).toLowerCase()] ?? 999,
-            orderMap[lastNameOf(b.away_team).toLowerCase()] ?? 999
-          );
-          return ia - ib;
-        });
+        fights = fights.slice().sort((a, b) => evtFightIndexOf(a) - evtFightIndexOf(b));
       }
       container.innerHTML = renderOddsHTML(fights, findHistoryEntry);
     } catch(e) {
