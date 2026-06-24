@@ -34486,8 +34486,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // leaves a stat untouched, low credibility pulls it most of the way to
   // baseline, rather than feeding an unproven outlier value through at full
   // strength.
+  // Floored at 0.5 rather than running all the way to 0: low credibility
+  // used to be able to replace a stat almost entirely with a generic
+  // roster-average baseline, which silently treats "small/unproven sample"
+  // as "assume this fighter is mediocre" — that's not the same claim. A
+  // fighter who's actually dominant just hasn't had the chance to prove it
+  // against ranked competition yet; their real numbers should still count
+  // for something. The uncertainty in a thin sample is handled separately,
+  // by widening the win-probability curve in simWinProbability (see
+  // credibility's use there) rather than by crushing the point estimate
+  // itself toward average.
   function simCredibilityDampen(value, baseline, credibility) {
-    return baseline + (value - baseline) * credibility;
+    const effectiveCredibility = 0.5 + 0.5 * credibility;
+    return baseline + (value - baseline) * effectiveCredibility;
   }
 
   function getSimProfile(name, rounds) {
@@ -34566,11 +34577,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // who simply haven't been matched up yet.
   function simScheduleQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    let winsWeighted = 0, testedLossCredit = 0, ufc = 0, rankedFaced = 0, rankedQuality = 0;
+    let winsWeighted = 0, testedLossCredit = 0, ufc = 0, ufcWins = 0, ufcLossWeighted = 0, rankedFaced = 0, rankedQuality = 0;
     const now = Date.now();
     hist.forEach(f => {
       if (!f.opponent || !f.result || f.method === 'Upcoming' || f.result === '–') return;
-      if (f.org === 'UFC') ufc++;
+      if (f.org === 'UFC') {
+        ufc++;
+        // Tracked separately from the plain `ufc` count below for
+        // simRateCredibility (see there for why): a long career padded
+        // mostly with losses shouldn't buy the same "trust this fighter's
+        // raw stats" credit as the same length career built on wins. Losses
+        // still count for SOMETHING — going the distance still means real,
+        // representative stats were generated that fight — just discounted,
+        // and discounted harder for a quick finish loss (short fight,
+        // thinner data, often a fighter being run over) than a competitive
+        // decision loss.
+        if (f.result === 'W') {
+          ufcWins++;
+        } else if (f.result === 'L') {
+          const method = String(f.method || '').toUpperCase();
+          const isFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
+          const isCloseDecision = method.includes('SPLIT') || method.includes('MAJORITY');
+          ufcLossWeighted += isFinish ? 0.25 : (isCloseDecision ? 0.85 : 0.6);
+        }
+      }
       if (f.result !== 'W' && f.result !== 'L') return;
       const tier = simRankTier(f.opponent);
       if (tier == null) return;
@@ -34593,7 +34623,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let net = winsWeighted + testedLossCredit;
     const untested = ufc >= 6 && rankedFaced === 0;
     if (untested) net -= 1.5;
-    return { net, ufc, untested, rankedFaced, rankedQuality };
+    const effectiveUfc = ufcWins + ufcLossWeighted;
+    return { net, ufc, effectiveUfc, untested, rankedFaced, rankedQuality };
   }
 
   // How much to trust a fighter's raw per-fight rate stats at face value,
@@ -34616,8 +34647,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // case that now stays partially dampened. 14 "fight-equivalents" is
   // treated as enough of a sample for full trust.
   function simRateCredibility(name) {
-    const { ufc, rankedQuality } = simScheduleQuality(name);
-    return Math.min(1, (ufc + rankedQuality * 5) / 14);
+    // Uses effectiveUfc (win-weighted UFC fight count, see simScheduleQuality)
+    // rather than the raw fight count: a career padded mostly with losses
+    // shouldn't earn the same "trust these raw stats" credit as the same
+    // length career built on wins. A losing fighter can still rack up UFC
+    // tenure indefinitely without ever proving their per-fight rate stats
+    // are representative of real success.
+    const { effectiveUfc, rankedQuality } = simScheduleQuality(name);
+    return Math.min(1, (effectiveUfc + rankedQuality * 5) / 14);
   }
 
   // Schedule quality used to be tacked onto the power score as a flat side
@@ -35313,8 +35350,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // actual outcomes swing harder than a stats-only gap implies. Only the
     // more volatile of the two fighters matters here: either side being
     // unpredictable is enough to soften the whole matchup's confidence.
+    //
+    // Also widened when either fighter's rate stats are low-credibility
+    // (thin UFC sample, no proven ranked competition — see
+    // simRateCredibility). That used to be handled entirely by crushing the
+    // low-credibility fighter's own stat inputs toward a generic baseline in
+    // simCredibilityDampen, which had the side effect of treating "small,
+    // unproven sample" as "assume mediocre" — a fighter actually running
+    // through opponents got their real production discounted away just for
+    // not yet having the UFC tenure to "prove" it. Now that dampening is
+    // softer (floored at 50% pull, not 100%), and the rest of the
+    // uncertainty instead widens this curve: a thin-sample fighter's
+    // apparent edge (or deficit) is treated as less certain, pulling the
+    // probability back toward 50/50, rather than silently overwritten with
+    // an average-fighter's numbers before the curve even sees it.
     const volatility = Math.max(simVolatility(nameA), simVolatility(nameB));
-    const k = 3.2 * (1 + 0.5 * volatility);
+    const lowCredibility = Math.max(1 - simRateCredibility(nameA), 1 - simRateCredibility(nameB));
+    const uncertainty = Math.max(volatility, lowCredibility * 0.7);
+    const k = 3.2 * (1 + 0.5 * uncertainty);
     const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
     const diff = statDiff + simHeadToHeadBoost(nameA, nameB);
     const raw = 1 / (1 + Math.exp(-diff / k));
