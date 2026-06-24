@@ -3346,6 +3346,7 @@
  { name: "Kai Kamaka III", division: "FW", rank: "NR", record: "18-7-1", initials: "KK3", country: "USA" },
  { name: "Tommy McMillen", division: "FW", rank: "NR", record: "10-0-0", initials: "TMC", country: "USA" },
  { name: "Austin Bashi", division: "FW", rank: "NR", record: "14-1-0", initials: "ABS", country: "USA" },
+ { name: "Jose Miguel Delgado", division: "FW", rank: "NR", record: "11-2-0", initials: "JDG", country: "USA" },
  { name: "Murtazali Magomedov", division: "FW", rank: "NR", record: "10-0-0", initials: "MMG", country: "Kyrgyzstan" },
  { name: "Mandel Nallo", division: "FW", rank: "NR", record: "15-3-0", initials: "MNL", country: "Canada" },
  { name: "Marwan Rahiki", division: "FW", rank: "NR", record: "8-0-0", initials: "MRH", country: "Morocco" },
@@ -3800,6 +3801,7 @@
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"9%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
+ "Jose Miguel Delgado": { ht:"5'11\"", dob:"1998-04-21", reach:'73"', stance:"Switch", slpm:7.48, strAcc:"55%", sapm:4.95, strDef:"50%", kd:1.51, tdLanded:1.51, tdAcc:"0%", tdDef:"50%", subAvg:0.00, finRate:"91%", streak:1, gym:"The MMA Lab" },
  "Islam Makhachev": { ht:"5'10\"", dob:"1991-10-27", reach:'70"', stance:"Southpaw", slpm:2.45, strAcc:"58%", sapm:1.45, strDef:"62%", kd:0.30, tdLanded:3.10, tdAcc:"56%", tdDef:"91%", subAvg:0.98, finRate:"64%", streak:16, gym:"American Kickboxing Academy / Eagles MMA" },
  "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"54%", sapm:2.98, strDef:"52%", kd:0.30, tdLanded:5.32, tdAcc:"58%", tdDef:"88%", subAvg:1.37, finRate:"80%", streak:0, gym:"TKMMA Fit, Akhmat MMA" },
  "Alex Pereira": { ht:"6'4\"", dob:"1987-07-07", reach:'79"', stance:"Orthodox", slpm:5.01, strAcc:"61%", sapm:3.72, strDef:"53%", kd:0.75, tdLanded:0.11, tdAcc:"50%", tdDef:"80%", subAvg:0.22, finRate:"85%", streak:0, gym:"Teixeira MMA & Fitness (2020–present)" },
@@ -6152,6 +6154,14 @@
     { opponent: "Dorian Ramos", odds: -1100 },
     { opponent: "Zac Riley", odds: -5000 },
     { opponent: "James Dunn", odds: -800 }
+  ],
+  "Jose Miguel Delgado": [
+    { opponent: "Andre Fili", odds: -450 },
+    { opponent: "Nathaniel Wood", odds: -155 },
+    { opponent: "Hyder Amil", odds: -130 },
+    { opponent: "Connor Matthews", odds: -565 },
+    { opponent: "Ernie Juarez", odds: -330 },
+    { opponent: "Joao Lucas Faria", odds: -350 }
   ],
   "Khamzat Chimaev": [
     { opponent: "Sean Strickland", odds: -455 },
@@ -12678,6 +12688,21 @@ const FIGHT_HISTORY = {
     { date: "May 28, 2021", opponent: "Emanuel Pugh", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 44", org: "XFC" },
     { date: "Mar 27, 2021", opponent: "Mason Iacobellis", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:56", event: "XFC: Young Guns 1", org: "XFC" },
     { date: "Nov 11, 2020", opponent: "Enzo Perez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 43", org: "XFC" }
+  ],
+  "Jose Miguel Delgado": [
+    { date: "Mar 14, 2026", opponent: "Andre Fili", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Oct 25, 2025", opponent: "Nathaniel Wood", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 321", org: "UFC" },
+    { date: "Jun 28, 2025", opponent: "Hyder Amil", result: "W", method: "KO (Knee and elbows)", round: 1, time: "0:26", event: "UFC 317", org: "UFC" },
+    { date: "Feb 15, 2025", opponent: "Connor Matthews", result: "W", method: "KO (Punches)", round: 1, time: "2:58", event: "UFC Fight Night: Cannonier vs. Rodrigues", org: "UFC" },
+    { date: "Aug 13, 2024", opponent: "Ernie Juarez", result: "W", method: "KO (Knee and punches)", round: 2, time: "1:25", event: "DWCS Season 8: Week 1", org: "DWCS" },
+    { date: "Jul 12, 2024", opponent: "Joao Lucas Faria", result: "W", method: "KO (Punches)", round: 1, time: "1:20", event: "LFA 188", org: "LFA" },
+    { date: "Apr 27, 2024", opponent: "Alberto Romo", result: "W", method: "TKO (Punches and elbows)", round: 3, time: "0:16", event: "UFL 4: Grand Prix Finals", org: "UFL" },
+    { date: "Feb 2, 2024", opponent: "Desmond Manabat", result: "W", method: "Submission (Brabo choke)", round: 1, time: "1:38", event: "Tuff-N-Uff 135", org: "Tuff-N-Uff" },
+    { date: "Nov 18, 2023", opponent: "Sean Gee", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:24", event: "Cage Warriors NorthWest 5", org: "NWFP" },
+    { date: "Feb 18, 2023", opponent: "Chris Mecate", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFL 1: Jackson vs. Gooden", org: "UFL" },
+    { date: "Nov 4, 2022", opponent: "Jorge Juarez", result: "W", method: "KO (Punches)", round: 1, time: "0:23", event: "Freedom Fight Night 3", org: "FFN" },
+    { date: "Jul 15, 2022", opponent: "Demetri Miller", result: "W", method: "Submission", round: 1, time: "0:00", event: "Freedom Fight Night 2", org: "FFN" },
+    { date: "Mar 26, 2022", opponent: "J.J. Nelson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:40", event: "RUF MMA 46", org: "RUF" }
   ],
   "Sean Brady": [
     { date: "May 9, 2026", opponent: "Joaquin Buckley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
@@ -29415,6 +29440,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — IBJJF No-Gi World Champion as a brown belt (Dec 2024), promoted to black belt shortly after (per ufc.com Q&A)", detail: null },
     { icon: "🥊", title: "Two-time Muay Thai national champion (per ufc.com Q&A)", detail: null },
     { icon: "🤼", title: "Two-time All-State wrestler (per ufc.com Q&A)", detail: null }
+  ],
+  "Jose Miguel Delgado": [
+    { icon: "⭐", title: "Dana White's Contender Series Season 8 contract winner — def. Ernie Juarez by KO (knee and punches), R2 1:25, Aug 13, 2024", detail: null },
+    { icon: "🏅", title: "11–2 as a pro (as of Jun 2026) — 10 finishes (6 KO/TKO, 4 submissions), 7 first-round finishes including three sub-minute KOs (0:23, 0:26, 0:40)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt (per ufc.com Q&A)", detail: null },
+    { icon: "🥊", title: "Reported 4–1 amateur record; began training at age 10 in Yuma, AZ under former WEC title contender Chance Farrar (per ufc.com Q&A)", detail: null }
   ],
   "Alberto Montes": [
     { icon: "⭐", title: "Dana White's Contender Series Season 8 contract winner — def. Carlos Calderon by submission (anaconda choke), R2 2:38, Oct 1, 2024", detail: null },
