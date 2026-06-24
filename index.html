@@ -3598,6 +3598,7 @@
  { name: "Tyrell Fortune", division: "HW", rank: "NR", record: "18-3-0", initials: "TFO", country: "USA" },
  { name: "Gökhan Saricam", division: "HW", rank: "NR", record: "12-2-0", initials: "GSR", country: "Turkey" },
  { name: "José Luiz", division: "HW", rank: "NR", record: "6-1-0", initials: "JLZ", country: "Brazil" },
+ { name: "Allen Frye Jr.", division: "HW", rank: "NR", record: "6-1-0", initials: "AFY", country: "USA" },
  // Lightweight
  { name: "Thomas Gantt", division: "LW", rank: "NR", record: "13-0-0", initials: "TGN", country: "USA" },
  { name: "Samuel Sanches", division: "LW", rank: "NR", record: "11-1-0", initials: "SSN", country: "Brazil" },
@@ -4408,6 +4409,7 @@
  "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, tdAcc:"36%", subAvg:0.4, strDef:"44%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.28 },
  "Alden Coria": { ht:"5'8\"", dob:"1998-04-24", reach:'67"', stance:"Orthodox", slpm:4.69, strAcc:"45%", sapm:2.40, strDef:"70%", kd:0.00, tdLanded:1.75, tdAcc:"33%", tdDef:"71%", subAvg:0.00, finRate:"75%", streak:5, gym:"4oz Fight Club, Aztlan Boxing" },
  "Stewart Nicoll": { ht:"5'5\"", dob:"1994-11-03", reach:'65.5"', slpm:3.63, strAcc:"39%", sapm:5.84, strDef:"50%", kd:0.00, tdLanded:1.63, tdAcc:"4%", tdDef:"29%", subAvg:0.00, finRate:"88%", streak:0, gym:"Team Compton Training Centre" },
+ "Allen Frye Jr.": { ht:"6'5\"", dob:"1998-04-15", reach:'80.5"', stance:"Orthodox", slpm:2.20, strAcc:"38%", sapm:4.27, strDef:"36%", kd:0.00, tdLanded:0.00, subAvg:0.00, finRate:"100%", streak:0, gym:"Brunsons MMA and Fitness" },
  "Alibi Idiris": { ht:"5'6\"", dob:"1994-10-22", reach:'68"', stance:"Orthodox", slpm:3.47, tdAcc:"0%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"60%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Alessandro Costa": { ht:"5'4\"", dob:"1996-01-28", reach:'67"', stance:"Orthodox", slpm:3.64, tdAcc:"16%", subAvg:0.3, strDef:"57%", kd:0.2, tdDef:"64%", finRate:"50%", streak:0, tdLanded:0.46 },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.66, tdAcc:"46%", subAvg:1.3, strDef:"55%", kd:0.0, tdDef:"37%", finRate:"N/A", streak:0, tdLanded:1.99 },
@@ -12588,6 +12590,9 @@
     { opponent: "Alessandro Costa", odds: 325 },
     { opponent: "Lucas Rocha", odds: -115 },
     { opponent: "Jesus Aguilar", odds: -170 }
+  ],
+  "Allen Frye Jr.": [
+    { opponent: "Guilherme Pat", odds: 150 }
   ],
   "Bruno Gustavo da Silva": [
   ],
@@ -28938,6 +28943,15 @@ const FIGHT_HISTORY = {
     { date: "Jun 14, 2019", opponent: "Ryan Robertson", result: "W", method: "Submission (Reverse triangle armbar)", round: 3, time: "1:06", event: "XFC: Gladstone Fight Night 1", org: "XFC" },
     { date: "Jun 16, 2018", opponent: "Darren Habben", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:29", event: "ACB 88", org: "ACB" }
   ],
+  "Allen Frye Jr.": [
+    { date: "Dec 13, 2025", opponent: "Guilherme Pat", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
+    { date: "Sep 6, 2025", opponent: "Justin Frazier", result: "W", method: "KO/TKO", round: 1, time: "2:54", event: "Real Deal Championships: RDC 21", org: "RDC" },
+    { date: "Jun 14, 2025", opponent: "Ryan Shough", result: "W", method: "KO/TKO", round: 1, time: "0:30", event: "Ultimate Battle Grounds 25", org: "UBG" },
+    { date: "Jan 18, 2025", opponent: "Cody Beck", result: "W", method: "KO/TKO", round: 1, time: "2:15", event: "Real Deal Championships: RDC 17", org: "RDC" },
+    { date: "Jul 13, 2024", opponent: "Mark Gordon", result: "W", method: "KO/TKO", round: 2, time: "3:21", event: "Made Men Promotions: NEO 3", org: "Made Men" },
+    { date: "Feb 11, 2023", opponent: "David Ciuclea", result: "W", method: "KO/TKO", round: 3, time: "0:22", event: "Ultimate Battle Grounds 13", org: "UBG" },
+    { date: "Sep 17, 2022", opponent: "Brian Jackson", result: "W", method: "KO/TKO", round: 1, time: "0:12", event: "Ultimate Battle Grounds 12", org: "UBG" }
+  ],
   "Bruno Gustavo da Silva": [
     { date: "Jun 6, 2026", opponent: "Édgar Cháirez", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:13", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Charles Johnson", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -29512,6 +29526,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — IBJJF No-Gi World Champion as a brown belt (Dec 2024), promoted to black belt shortly after (per ufc.com Q&A)", detail: null },
     { icon: "🥊", title: "Two-time Muay Thai national champion (per ufc.com Q&A)", detail: null },
     { icon: "🤼", title: "Two-time All-State wrestler (per ufc.com Q&A)", detail: null }
+  ],
+  "Allen Frye Jr.": [
+    { icon: "🏆", title: "Ultimate Battlegrounds Heavyweight Champion — KO'd Ryan Shough in the first round (0:30) to win the title, Jun 2025 (per ufc.com Q&A)", detail: null },
+    { icon: "🏅", title: "6–1 as a pro (as of Jun 2026) — opened his career 6–0 with all six wins by KO/TKO (five in the first round) before dropping his UFC debut by decision", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu blue belt (per ufc.com Q&A)", detail: null },
+    { icon: "🏀", title: "Former college basketball center (North Carolina Wesleyan University) who turned to MMA in 2020–21", detail: null }
   ],
   "Stewart Nicoll": [
     { icon: "🏆", title: "Former XFC (Xtreme Fighting Championships) Flyweight Champion — won and defended the title; won the belt via five-round unanimous decision over Jamie Renouf (Mar 2021)", detail: null },
