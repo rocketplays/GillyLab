@@ -34821,8 +34821,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (tier != null) v += 0.25 * oppQuality;
         score += v * weight;
       } else if (f.result === 'L') {
-        let v = -0.25;
-        if (isFinish) { v -= 0.35; recentFinishLosses++; }
+        // Scale loss penalty by opponent caliber — losing to the champ
+        // barely moves trajectory; losing to an unranked fighter is the
+        // full hit. oppQuality already computed above (0 for unranked,
+        // 1.0 for champ). disgrace floor of 0.15 so even an elite-level
+        // loss leaves a small mark (you still got beaten). Finish penalty
+        // scales the same way — getting finished by Pereira is a very
+        // different signal than getting starched by a nobody.
+        const disgrace = tier != null ? Math.max(0.15, 1 - oppQuality) : 1.0;
+        let v = -0.25 * disgrace;
+        if (isFinish) { v -= 0.35 * disgrace; recentFinishLosses++; }
         score += v * weight;
       }
     });
@@ -35390,14 +35398,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return closeness * closeness; // 1 at gap 0, 0.56 at gap 1, 0.25 at gap 2, 0 by gap 4+
   }
 
-  // Has this fighter ever beaten ANY currently-ranked opponent, at any
-  // tier? A binary "have they shown up against the rankings at all" check —
-  // deliberately coarser than simScheduleQuality's tier/recency-weighted
-  // rankedQuality, which is about HOW WELL a proven fighter has done
-  // against the level, not whether they've cleared the bar even once.
-  function simHasBeatenRanked(name) {
+  // Quality score [0, 1] for the best ranked win in a fighter's history.
+  // 0 = no wins over any currently-ranked opponent; 1.0 = has beaten the
+  // champion. Linear: #15 ≈ 0.1, #10 ≈ 0.33, #5 ≈ 0.67, #1 ≈ 0.93.
+  // Floor of 0.1 so even a win at the very back of the rankings registers
+  // as a small amount of proof — it's still a ranked opponent.
+  function simBestWinQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-    return hist.some(f => f.result === 'W' && simRankTier(f.opponent) != null);
+    let best = 0;
+    hist.forEach(f => {
+      if (f.result !== 'W') return;
+      const tier = simRankTier(f.opponent);
+      if (tier == null) return;
+      const q = Math.max(0.1, 1 - tier / 15);
+      if (q > best) best = q;
+    });
+    return best;
   }
 
   // simRateCredibility/simScheduleMultiplier discount a thin or padded
@@ -35410,24 +35426,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // reigning champion). That's not "uncertain", it's a real gap in
   // demonstrated level the stats alone can't speak to.
   //
-  // This applies a real, asymmetric penalty — once a fighter has beaten
-  // literally any ranked opponent, it's fully off (simHasBeatenRanked is a
-  // one-time gate, not a sliding trust score): they've shown they can
-  // perform against real competition at SOME level, and how good that
-  // level was relative to this specific opponent is already handled by
-  // schedule quality elsewhere. Until then, it scales with how elite the
-  // CURRENT opponent is — stepping up from zero ranked wins to fight the
-  // back of the rankings (tier 13-15) earns only a token penalty, since
-  // that's a normal first test; stepping up to fight the champion earns
-  // close to the full penalty. Two fighters who are both unranked/unproven
-  // are unaffected either way (oppTier null) — neither has had the
-  // opportunity yet, so there's no demonstrated-level gap to penalize.
+  // This applies an asymmetric penalty that scales by the quality of the
+  // fighter's best ranked win (simBestWinQuality). Zero ranked wins = full
+  // penalty. Beating the back of the rankings (#15, quality ≈ 0.1) barely
+  // dents it — you've shown up once, but at the lowest tier. Beating a top-5
+  // contender (quality ≈ 0.67) cuts it to a third. Beating the champion
+  // (quality 1.0) zeroes it out entirely. Scales by how elite the CURRENT
+  // opponent is (eliteness) — stepping up to fight the back of the rankings
+  // for the first time earns only a small raw penalty, stepping up to fight
+  // the champion earns close to the full hit. Two unranked fighters are
+  // unaffected either way (oppTier null).
   function simUnprovenPenalty(name, oppName) {
-    if (simHasBeatenRanked(name)) return 0;
+    const bestWinQ = simBestWinQuality(name);
     const oppTier = simRankTier(oppName);
     if (oppTier == null) return 0;
     const eliteness = Math.max(0, 1 - oppTier / 15);
-    return simSoftCap(eliteness * 5.0, 4.5);
+    const rawPenalty = simSoftCap(eliteness * 5.0, 4.5);
+    return rawPenalty * Math.max(0, 1 - bestWinQ);
   }
 
   // If these two have actually fought before, that's real fight-specific
