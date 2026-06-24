@@ -3825,7 +3825,7 @@
  // ── Middleweight (extended) ──
  "Reinier de Ridder": { ht:"6'4\"", dob:"1990-09-07", reach:'78"', stance:"Southpaw", slpm:2.47, strAcc:"49%", sapm:2.36, strDef:"47%", kd:0.37, tdLanded:2.56, tdAcc:"10%", tdDef:"40%", subAvg:0.55, finRate:"86%", streak:0, gym:"Kill Cliff FC" },
  "Joe Pyfer": { ht:"6'2\"", dob:"1996-09-17", reach:'75"', stance:"Orthodox", slpm:3.52, strAcc:"44%", sapm:3.22, strDef:"53%", kd:1.09, tdLanded:1.45, tdAcc:"31%", tdDef:"63%", subAvg:0.91, finRate:"88%", streak:4, gym:"Team Marquez MMA" },
- "Michael Morales": { ht:"6'0\"", dob:"1999-06-24", reach:'79"', stance:"Orthodox", slpm:5.68, tdAcc:"41%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"89%", finRate:"84%", streak:9, tdLanded:1.04, gym:"Entram Gym" },
+ "Michael Morales": { ht:"6'0\"", dob:"1999-06-24", reach:'79"', stance:"Orthodox", slpm:5.68, strAcc:"49%", sapm:3.26, strDef:"54%", kd:1.46, tdLanded:1.04, tdAcc:"0%", tdDef:"90%", subAvg:0.0, finRate:"79%", streak:19, gym:"Entram Gym" },
  "Roman Dolidze": { ht:"6'2\"", dob:"1988-07-15", reach:'76"', stance:"Orthodox", slpm:3.19, strAcc:"42%", sapm:3.71, strDef:"48%", kd:0.33, tdLanded:1.16, tdAcc:"28%", tdDef:"32%", subAvg:0.74, finRate:"73%", streak:0, gym:"Xtreme Couture MMA" },
  "Brunno Ferreira": { ht:"5'10\"", dob:"1992-11-04", reach:'72"', stance:"Orthodox", slpm:3.77, sapm:3.91, strAcc:"51%", tdAcc:"24%", subAvg:0.75, strDef:"52%", kd:1.00, tdDef:"61%", finRate:"93%", streak:0, tdLanded:1.25, gym:"Brazilian TKO" },
  // ── Welterweight (extended) ──
@@ -6822,12 +6822,14 @@
     { opponent: "Jim Miller", odds: -260 }
   ],
   "Michael Morales": [
-    { opponent: "Sean Brady", odds: -150 },
-    { opponent: "Gilbert Burns", odds: -225 },
-    { opponent: "Neil Magny", odds: -400 },
-    { opponent: "Jake Matthews", odds: -400 },
-    { opponent: "Max Griffin", odds: -400 },
-    { opponent: "Adam Fugitt", odds: -600 }
+    { opponent: "Sean Brady", odds: 119 },
+    { opponent: "Gilbert Burns", odds: -518 },
+    { opponent: "Neil Magny", odds: -925 },
+    { opponent: "Jake Matthews", odds: -338 },
+    { opponent: "Max Griffin", odds: -260 },
+    { opponent: "Adam Fugitt", odds: -600 },
+    { opponent: "Trevin Giles", odds: -107 },
+    { opponent: "Nikolay Veretennikov", odds: 164 }
   ],
   "Carlos Prates": [
     { opponent: "Jack Della Maddalena", odds: -112 },
@@ -28823,6 +28825,17 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Michael Morales": [
+    { icon: "🏆", title: "Former Oro Fighting Championship (OFC) Welterweight Champion", detail: null },
+    { icon: "🏆", title: "Former Extreme MMA Welterweight Champion", detail: null },
+    { icon: "🏆", title: "Ecuador MMA Champion", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night × 3 — vs. Neil Magny (Aug 2024), Gilbert Burns (May 2025), Sean Brady (Nov 2025)", detail: null },
+    { icon: "🏅", title: "Sportsnaut 2025 UFC Fighter of the Year", detail: null },
+    { icon: "🏅", title: "MMA Fighting 2025 First Team MMA All-Star", detail: null },
+    { icon: "🥊", title: "National Muay Thai Champion (Ecuador)", detail: null },
+    { icon: "🤼", title: "National Freestyle Wrestling Champion (Ecuador)", detail: null },
+    { icon: "🥋", title: "No BJJ or grappling belt rank publicly reported — trains BJJ but holds no documented rank; checked Wikipedia, ufc.com bio, and ufc.com Q&A (the belt-rank question isn't listed for this fighter). His mother, not Morales himself, holds a 3rd-dan judo black belt.", detail: null }
+  ],
   "Roman Dolidze": [
     { icon: "🏆", title: "Former WWFC (World Warriors Fight Championship) Light Heavyweight Champion — won vacant title Jun 16, 2018 (KO, Eder de Souza); 1 successful defense Dec 18, 2018 (KO, Michał Pasternak)", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night × 3 — vs. Kyle Daukaus (Jun 2022), Phil Hawes (Oct 2022), Jack Hermansson (Dec 2022)", detail: null },
