@@ -35471,7 +35471,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   function simPowerScore(p) {
-    const strikingNet = (p.slpm * p.strAcc) - (p.sapm * (1 - p.strDef));
+    // Striking output and damage absorbed are each soft-capped (diminishing
+    // returns on raw volume) rather than entering linearly. The old linear form
+    // over-weighted sheer volume: calibrating against the stored closing lines,
+    // low-volume fighters — technical strikers like Edwards, high craft but
+    // modest output — came out systematically underrated (~4 pts), while
+    // high-volume fighters were slightly over-rated. Capping both sides at ~2.2
+    // closes most of that gap and improves overall market agreement, without
+    // flattening real striking edges: the marginal value of the 7th significant
+    // strike per minute over the 6th is simply less than the 2nd over the 1st.
+    const strikingNet = simSoftCap(p.slpm * p.strAcc, 2.2) - simSoftCap(p.sapm * (1 - p.strDef), 2.2);
     // Takedown defense was tracked per fighter but never actually touched
     // the score — strikingNet above already nets a fighter's own defense
     // against damage absorbed, but grappling below was pure offense with no
