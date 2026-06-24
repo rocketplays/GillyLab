@@ -34850,6 +34850,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
     });
     if (recentFinishLosses >= 2) score -= 0.3 * (recentFinishLosses - 1);
+    // The disgrace floor (0.15) already softens individual elite losses —
+    // losing to the champ barely dents your score by design. But when the
+    // LAST two fights are both losses, the floor effect compounds: a fighter
+    // who lost to #1 and #2 back-to-back emerges with near-zero or even
+    // positive trajectory despite being on a skid. Two consecutive losses
+    // are a real form signal regardless of opponent quality, so add a flat
+    // penalty here that the per-fight disgrace math can't absorb away.
+    const lastTwoLosses = pool.slice(0, 2).filter(f => f.result === 'L').length;
+    if (lastTwoLosses >= 2) score -= 0.3;
     return simSoftCap(score, 1.5);
   }
 
@@ -35445,12 +35454,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // fighter's best ranked win (simBestWinQuality). Zero ranked wins = full
   // penalty. Beating the back of the rankings (#15, quality ≈ 0.1) barely
   // dents it — you've shown up once, but at the lowest tier. Beating a top-5
-  // contender (quality ≈ 0.67) cuts it to a third. Beating the champion
-  // (quality 1.0) zeroes it out entirely. Scales by how elite the CURRENT
-  // opponent is (eliteness) — stepping up to fight the back of the rankings
-  // for the first time earns only a small raw penalty, stepping up to fight
-  // the champion earns close to the full hit. Two unranked fighters are
-  // unaffected either way (oppTier null).
+  // contender zeroes it out almost entirely. Beating the champion eliminates
+  // it. Scales by how elite the CURRENT opponent is (eliteness) — stepping up
+  // to fight the back of the rankings for the first time earns only a small
+  // raw penalty, stepping up to fight the champion earns close to the full
+  // hit. Two unranked fighters are unaffected either way (oppTier null).
+  //
+  // Squared decay (1 - bestWinQ)² instead of linear: the original linear
+  // formula left 40% of the max penalty (≈2.35 pts) on a fighter who had
+  // beaten a #6 — treating "beat a ranked opponent once" as still 40% unproven.
+  // That's too aggressive; one quality win against ranked competition is strong
+  // evidence, and the residual uncertainty should collapse non-linearly. With
+  // the squared form: bestWinQ=0 still gets full penalty, but bestWinQ=0.6
+  // (beat #6) drops to 16% → ≈0.94 pts, and bestWinQ=0.93 (beat #1) is
+  // essentially 0. A fighter in the "grey area" — partially proven — now
+  // receives a proportionally smaller penalty rather than nearly half the max.
   function simUnprovenPenalty(name, oppName) {
     const bestWinQ = simBestWinQuality(name);
     const oppTier = simRankTier(oppName);
@@ -35463,7 +35481,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // ~5.7-pt penalty, making them a meaningful underdog regardless of how
     // inflated their counting stats look on a soft schedule.
     const rawPenalty = simSoftCap(eliteness * 8.0, 7.0);
-    return rawPenalty * Math.max(0, 1 - bestWinQ);
+    const unprovenFraction = Math.max(0, 1 - bestWinQ);
+    return rawPenalty * (unprovenFraction * unprovenFraction);
   }
 
   // If these two have actually fought before, that's real fight-specific
