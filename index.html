@@ -35638,37 +35638,122 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // (beat #6) drops to 16% → ≈0.94 pts, and bestWinQ=0.93 (beat #1) is
   // essentially 0. A fighter in the "grey area" — partially proven — now
   // receives a proportionally smaller penalty rather than nearly half the max.
+  // A fighter's recent UFC bouts (wins/losses only), most recent first.
+  function simRecentUfc(name, n) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    return hist
+      .filter(f => f.date && (f.result === 'W' || f.result === 'L') && String(f.org || '').toUpperCase() === 'UFC')
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, n || 5);
+  }
+
+  // Count of a fighter's UFC bouts (wins + losses) on record.
+  function simUfcFightCount(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    return hist.filter(f => f.date && (f.result === 'W' || f.result === 'L') && String(f.org || '').toUpperCase() === 'UFC').length;
+  }
+
+  function simFighterAge(name) {
+    const dob = ((typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {}).dob;
+    if (!dob) return null;
+    const t = new Date(dob).getTime();
+    if (isNaN(t)) return null;
+    return (Date.now() - t) / (1000 * 60 * 60 * 24 * 365.25);
+  }
+
+  // How much of a CURRENT threat a proven-but-unranked veteran still is, [0,1].
+  // Scales the unranked-opponent unproven penalty (below) so a prospect gets
+  // the full "you haven't been tested at this level" treatment against a still-
+  // credible vet — inconsistent but beating ranked names and not old (Kevin
+  // Holland, 33, recent wins over the likes of Luque/Nelson → ~0.9) — while a
+  // genuinely declining vet on a bad run (old, lost most of their last five —
+  // late-career Niko Price → ~0.2) does NOT inflate the prospect's number. This
+  // is the failsafe: beating a washed vet shouldn't read as proof, so the
+  // penalty for facing one shrinks toward zero. Built from recent UFC form, the
+  // quality of the best recent win, and age.
+  function simVetThreat(name) {
+    const recent = simRecentUfc(name, 5);
+    if (!recent.length) return 0.6; // no UFC sample — neutral-ish, neither proven nor washed
+    const winRate = recent.filter(f => f.result === 'W').length / recent.length;
+    let skid = 0;
+    for (const f of recent) { if (f.result === 'L') skid++; else break; }
+    let recentWinQ = 0;
+    recent.forEach(f => {
+      if (f.result !== 'W') return;
+      let t = simRankTier(f.opponent);
+      if (t == null) t = simEstimateHistoricalTier(f.opponent, f.date);
+      if (t != null) recentWinQ = Math.max(recentWinQ, Math.max(0.1, 1 - t / 15));
+    });
+    const age = simFighterAge(name);
+    let ageFactor = 1;
+    if (age != null && age > 36) ageFactor = Math.max(0.5, 1 - (age - 36) * 0.08);
+    const base = 0.4 + 0.5 * winRate - 0.13 * Math.min(skid, 3) + 0.35 * recentWinQ;
+    return Math.max(0, Math.min(1, base)) * ageFactor;
+  }
+
+  // How "proven" a fighter is for the unranked-opponent branch of the unproven
+  // penalty, [0,1] — whichever of two independent bars is higher:
+  //   1) Resume: quality of the best genuine contender they've beaten. A
+  //      currently-ranked win counts in full; a win over an opponent who was
+  //      themselves a real contender (estimated tier ≤ 7, i.e. they'd beaten a
+  //      ranked fighter of their own) counts; a win over a never-ranked
+  //      journeyman barely registers (0.05). Deliberately STRICTER than
+  //      simBestWinQuality so a prospect padding a record against gatekeepers
+  //      (e.g. a faded Niko Price) reads as essentially unproven.
+  //   2) Tenure: simply having had a long UFC career. An established fighter
+  //      (~18+ UFC bouts) is fully proven regardless of (1) — the resume
+  //      estimator only sees CURRENT rankings, so it routinely misses that a
+  //      long-since-faded opponent was elite at the time and would otherwise
+  //      mislabel vets like Masvidal as "unproven." A prospect with a handful
+  //      of UFC bouts earns ~no tenure credit, so the resume term governs them.
+  function simProvenLevel(name) {
+    const wins = ((typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || []).filter(f => f.result === 'W');
+    let resume = 0;
+    wins.forEach(f => {
+      const live = simRankTier(f.opponent);
+      if (live != null) { resume = Math.max(resume, Math.max(0.1, 1 - live / 15)); return; }
+      const est = simEstimateHistoricalTier(f.opponent, f.date);
+      if (est == null) return;
+      const q = est <= 7 ? Math.max(0.1, 1 - est / 15) : 0.05;
+      resume = Math.max(resume, q);
+    });
+    const tenure = Math.max(0, Math.min(1, (simUfcFightCount(name) - 4) / 14));
+    return Math.max(resume, tenure);
+  }
+
   function simUnprovenPenalty(name, oppName) {
-    const bestWinQ = simBestWinQuality(name);
-    let oppTier = simRankTier(oppName);
-    // A currently-unranked opponent isn't necessarily an unknown. A faded
-    // ex-contender or an inconsistent-but-proven veteran — lots of UFC wins,
-    // some over ranked names (e.g. Kevin Holland) — is still a real
-    // demonstrated level a prospect has never been tested against. Keying this
-    // penalty purely on the live top-15 silently skipped that whole class: a
-    // padded-stat prospect (gaudy regional counting stats, zero ranked wins)
-    // projected as an 85%+ favorite over a tough proven vet just because the
-    // vet had dropped out of the rankings. So when the opponent has no live
-    // rank, fall back to their estimated historical tier (simEstimateHistorical-
-    // Tier), floored at 8 — an unranked vet is proven but shouldn't be treated
-    // as elite as a currently-ranked top-7 contender (it's not a present
-    // top-of-division test). Opponents with no UFC wins at all still estimate
-    // to null → no penalty, so two genuine unknowns are left alone.
-    if (oppTier == null) {
-      const est = simEstimateHistoricalTier(oppName, null);
-      if (est == null) return 0;
-      oppTier = Math.max(est, 8);
+    const oppTier = simRankTier(oppName);
+    if (oppTier != null) {
+      // Opponent is currently ranked — original behavior, untouched.
+      // Scale 8.0 / cap 7.0: a truly unproven fighter (bestWinQ≈0) vs the
+      // champion faces a ~5.7-pt penalty, a meaningful underdog regardless of
+      // how inflated their counting stats look on a soft schedule.
+      const eliteness = Math.max(0, 1 - oppTier / 15);
+      const rawPenalty = simSoftCap(eliteness * 8.0, 7.0);
+      const unprovenFraction = Math.max(0, 1 - simBestWinQuality(name));
+      return rawPenalty * (unprovenFraction * unprovenFraction);
     }
-    const eliteness = Math.max(0, 1 - oppTier / 15);
-    // Scale raised 5.0→8.0, cap 4.5→7.0: the old cap (max ≈3.62 vs a champ)
-    // could not overcome a prospect's raw statDiff if it also happened to be
-    // ~3.6+ points — they'd still show as a coin flip. Higher ceiling means
-    // a truly unproven fighter (bestWinQ=0) vs the champion now faces a
-    // ~5.7-pt penalty, making them a meaningful underdog regardless of how
-    // inflated their counting stats look on a soft schedule.
+    // Opponent is currently UNRANKED — but not necessarily an unknown. A faded
+    // ex-contender or an inconsistent-but-proven vet (lots of UFC wins, some
+    // over ranked names, e.g. Kevin Holland) is still a real demonstrated level
+    // a padded-stat prospect has never been tested against. Keying the penalty
+    // purely on the live top-15 silently skipped that whole class, letting an
+    // undefeated regional prospect project as an 85%+ favorite over a tough
+    // vet. So fall back to the opponent's estimated historical tier, but scale
+    // the whole thing two ways the ranked branch doesn't need:
+    //   • simVetThreat(opponent) — a genuinely declining vet is a weaker test,
+    //     so the penalty (and thus the prospect's discount) shrinks. Failsafe.
+    //   • simProvenLevel(name) instead of simBestWinQuality — stricter about
+    //     what counts as a proven win, but tenure-gated so an established
+    //     fighter facing an unranked opponent is never mislabeled "unproven."
+    // Opponents with no UFC wins to estimate from → no penalty, so two genuine
+    // unknowns are left alone.
+    const est = simEstimateHistoricalTier(oppName, null);
+    if (est == null) return 0;
+    const eliteness = Math.max(0, 1 - est / 15);
     const rawPenalty = simSoftCap(eliteness * 8.0, 7.0);
-    const unprovenFraction = Math.max(0, 1 - bestWinQ);
-    return rawPenalty * (unprovenFraction * unprovenFraction);
+    const unprovenFraction = Math.max(0, 1 - simProvenLevel(name));
+    return rawPenalty * (unprovenFraction * unprovenFraction) * simVetThreat(oppName);
   }
 
   // If these two have actually fought before, that's real fight-specific
