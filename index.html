@@ -35441,7 +35441,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const oppTier = simRankTier(oppName);
     if (oppTier == null) return 0;
     const eliteness = Math.max(0, 1 - oppTier / 15);
-    const rawPenalty = simSoftCap(eliteness * 5.0, 4.5);
+    // Scale raised 5.0→8.0, cap 4.5→7.0: the old cap (max ≈3.62 vs a champ)
+    // could not overcome a prospect's raw statDiff if it also happened to be
+    // ~3.6+ points — they'd still show as a coin flip. Higher ceiling means
+    // a truly unproven fighter (bestWinQ=0) vs the champion now faces a
+    // ~5.7-pt penalty, making them a meaningful underdog regardless of how
+    // inflated their counting stats look on a soft schedule.
+    const rawPenalty = simSoftCap(eliteness * 8.0, 7.0);
     return rawPenalty * Math.max(0, 1 - bestWinQ);
   }
 
