@@ -35375,6 +35375,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return closeness * closeness; // 1 at gap 0, 0.25 at gap 1, 0 by gap 2+
   }
 
+  // Has this fighter ever beaten ANY currently-ranked opponent, at any
+  // tier? A binary "have they shown up against the rankings at all" check —
+  // deliberately coarser than simScheduleQuality's tier/recency-weighted
+  // rankedQuality, which is about HOW WELL a proven fighter has done
+  // against the level, not whether they've cleared the bar even once.
+  function simHasBeatenRanked(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    return hist.some(f => f.result === 'W' && simRankTier(f.opponent) != null);
+  }
+
+  // simRateCredibility/simScheduleMultiplier discount a thin or padded
+  // resume's raw STATS, and simRankClosenessFactor softens a stat gap when
+  // both fighters are already close peers — but none of them stop a gaudy
+  // counting-stat profile built entirely against unranked opposition from
+  // outright favoring its owner over a CURRENTLY elite opponent the moment
+  // the gap is wide instead of close (e.g. an undefeated 9-0 prospect who
+  // has never faced anyone ranked projecting as a 90% favorite over a
+  // reigning champion). That's not "uncertain", it's a real gap in
+  // demonstrated level the stats alone can't speak to.
+  //
+  // This applies a real, asymmetric penalty — once a fighter has beaten
+  // literally any ranked opponent, it's fully off (simHasBeatenRanked is a
+  // one-time gate, not a sliding trust score): they've shown they can
+  // perform against real competition at SOME level, and how good that
+  // level was relative to this specific opponent is already handled by
+  // schedule quality elsewhere. Until then, it scales with how elite the
+  // CURRENT opponent is — stepping up from zero ranked wins to fight the
+  // back of the rankings (tier 13-15) earns only a token penalty, since
+  // that's a normal first test; stepping up to fight the champion earns
+  // close to the full penalty. Two fighters who are both unranked/unproven
+  // are unaffected either way (oppTier null) — neither has had the
+  // opportunity yet, so there's no demonstrated-level gap to penalize.
+  function simUnprovenPenalty(name, oppName) {
+    if (simHasBeatenRanked(name)) return 0;
+    const oppTier = simRankTier(oppName);
+    if (oppTier == null) return 0;
+    const eliteness = Math.max(0, 1 - oppTier / 15);
+    return simSoftCap(eliteness * 5.0, 4.5);
+  }
+
   // If these two have actually fought before, that's real fight-specific
   // information — stylistic answers, game-planning, who-figured-out-who —
   // that raw aggregate stats can't see. Trusted within an 8-year window,
@@ -35452,7 +35492,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const uncertainty = Math.max(volatility, lowCredibility * 0.7);
     const k = 3.2 * (1 + 0.5 * uncertainty);
     const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
-    const diff = statDiff + simHeadToHeadBoost(nameA, nameB);
+    // Unproven-against-the-level penalty (see simUnprovenPenalty) — applied
+    // unsoftened, same as head-to-head, since a real demonstrated-level gap
+    // isn't a stat artifact rankClosenessFactor should be discounting (and
+    // it never fires for a close-rank pairing anyway, where both sides have
+    // typically cleared this bar already).
+    const diff = statDiff + simHeadToHeadBoost(nameA, nameB)
+      - simUnprovenPenalty(nameA, nameB) + simUnprovenPenalty(nameB, nameA);
     const raw = 1 / (1 + Math.exp(-diff / k));
     return Math.min(0.96, Math.max(0.04, raw)); // no fight is a guaranteed lock
   }
