@@ -35640,8 +35640,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // receives a proportionally smaller penalty rather than nearly half the max.
   function simUnprovenPenalty(name, oppName) {
     const bestWinQ = simBestWinQuality(name);
-    const oppTier = simRankTier(oppName);
-    if (oppTier == null) return 0;
+    let oppTier = simRankTier(oppName);
+    // A currently-unranked opponent isn't necessarily an unknown. A faded
+    // ex-contender or an inconsistent-but-proven veteran — lots of UFC wins,
+    // some over ranked names (e.g. Kevin Holland) — is still a real
+    // demonstrated level a prospect has never been tested against. Keying this
+    // penalty purely on the live top-15 silently skipped that whole class: a
+    // padded-stat prospect (gaudy regional counting stats, zero ranked wins)
+    // projected as an 85%+ favorite over a tough proven vet just because the
+    // vet had dropped out of the rankings. So when the opponent has no live
+    // rank, fall back to their estimated historical tier (simEstimateHistorical-
+    // Tier), floored at 8 — an unranked vet is proven but shouldn't be treated
+    // as elite as a currently-ranked top-7 contender (it's not a present
+    // top-of-division test). Opponents with no UFC wins at all still estimate
+    // to null → no penalty, so two genuine unknowns are left alone.
+    if (oppTier == null) {
+      const est = simEstimateHistoricalTier(oppName, null);
+      if (est == null) return 0;
+      oppTier = Math.max(est, 8);
+    }
     const eliteness = Math.max(0, 1 - oppTier / 15);
     // Scale raised 5.0→8.0, cap 4.5→7.0: the old cap (max ≈3.62 vs a champ)
     // could not overcome a prospect's raw statDiff if it also happened to be
