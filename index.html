@@ -35325,7 +35325,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // and a 16-fight streak (Makhachev) scored identically — no credit at
     // all for sustained dominance past that point. Soft-capped instead so a
     // long streak keeps earning more, just with diminishing returns.
-    const form = simSoftCap(p.streak, 10) * 0.3;
+    // Scalar reduced 0.3 → 0.2: a 10-fight streak was adding ~2.3 pts on its
+    // own — more than half the typical power-score gap in a close elite
+    // matchup — causing the model to over-weight recent momentum relative to
+    // the underlying production stats (striking, finishing, grappling) that
+    // should be doing most of the work. 0.2 still meaningfully rewards
+    // sustained dominance (max ≈ 1.5 pts) without letting streak alone flip a
+    // competitive fight into a near-certain outcome.
+    const form = simSoftCap(p.streak, 10) * 0.2;
     // Schedule quality is folded in here as a multiplier on the three
     // production-stat terms (striking, grappling, finishing) rather than
     // added on afterward as a flat bonus — see simScheduleMultiplier. Pure
@@ -35365,14 +35372,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // peers (adjacent or near-adjacent spots), that's a quality-of-competition
   // signal raw per-fight counting stats don't capture — so it pulls a
   // stat-driven score gap back toward even. Falls off fast: only fighters
-  // within ~2 ranking spots are affected, and pairs with no usable rank on
+  // within ~4 ranking spots are affected, and pairs with no usable rank on
   // either side (unranked, unsynced) are left completely alone.
+  // Divisor widened 2 → 4: the old formula treated champ vs #1 contender
+  // (gap=1) as barely near-peers (20% compression) and gave zero compression
+  // to any pairing 2+ ranks apart. That's too narrow — a #1 contender has
+  // clearly earned their spot and shouldn't have a large stat gap amplified
+  // at full strength just because they're one rung below the title. 4 gives
+  // ~45% compression at gap=1 (champ/#1), ~20% at gap=2 (#1/#3), tapering
+  // cleanly to zero by gap=4+. Fighters far down the rankings are still
+  // treated entirely on raw stats with no compression.
   function simRankClosenessFactor(nameA, nameB) {
     const ra = simRankTier(nameA), rb = simRankTier(nameB);
     if (ra == null || rb == null) return 0;
     const gap = Math.abs(ra - rb);
-    const closeness = Math.max(0, 1 - gap / 2);
-    return closeness * closeness; // 1 at gap 0, 0.25 at gap 1, 0 by gap 2+
+    const closeness = Math.max(0, 1 - gap / 4);
+    return closeness * closeness; // 1 at gap 0, 0.56 at gap 1, 0.25 at gap 2, 0 by gap 4+
   }
 
   // Has this fighter ever beaten ANY currently-ranked opponent, at any
