@@ -3043,7 +3043,7 @@
  { name: "Reinier de Ridder", division: "MW", rank: "#8", record: "21-4-0", initials: "RDR", country: "Netherlands" },
  { name: "Robert Whittaker", division: "MW", rank: "#10", record: "26-9-0", initials: "RW", country: "Australia" },
  { name: "Jared Cannonier", division: "MW", rank: "#11", record: "18-9-0", initials: "JCA2", country: "USA" },
- { name: "Roman Dolidze", division: "MW", rank: "#11", record: "15-5-0", initials: "RD", country: "Georgia" },
+ { name: "Roman Dolidze", division: "MW", rank: "#14", record: "15-5-0", initials: "RD", country: "Georgia" },
  { name: "Paulo Costa", division: "LHW", rank: "#7", record: "16-4-0", initials: "PC", country: "Brazil" },
  { name: "Gregory Rodrigues", division: "MW", rank: "#12", record: "19-6-0", initials: "GRO", country: "Brazil" },
  { name: "Brunno Ferreira", division: "MW", rank: "NR", record: "15-3-0", initials: "BFE", country: "Brazil" },
@@ -3826,7 +3826,7 @@
  "Reinier de Ridder": { ht:"6'4\"", dob:"1990-09-07", reach:'78"', stance:"Southpaw", slpm:2.47, strAcc:"49%", sapm:2.36, strDef:"47%", kd:0.37, tdLanded:2.56, tdAcc:"10%", tdDef:"40%", subAvg:0.55, finRate:"86%", streak:0, gym:"Kill Cliff FC" },
  "Joe Pyfer": { ht:"6'2\"", dob:"1996-09-17", reach:'75"', stance:"Orthodox", slpm:3.52, strAcc:"44%", sapm:3.22, strDef:"53%", kd:1.09, tdLanded:1.45, tdAcc:"31%", tdDef:"63%", subAvg:0.91, finRate:"88%", streak:4, gym:"Team Marquez MMA" },
  "Michael Morales": { ht:"6'0\"", dob:"1999-06-24", reach:'79"', stance:"Orthodox", slpm:5.68, tdAcc:"41%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"89%", finRate:"84%", streak:9, tdLanded:1.04, gym:"Entram Gym" },
- "Roman Dolidze": { ht:"6'2\"", dob:"1988-07-15", reach:'76"', stance:"Orthodox", slpm:3.41, tdAcc:"37%", subAvg:0.4, strDef:"48%", kd:0.3, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.99, gym:"Xtreme Couture MMA" },
+ "Roman Dolidze": { ht:"6'2\"", dob:"1988-07-15", reach:'76"', stance:"Orthodox", slpm:3.19, strAcc:"42%", sapm:3.71, strDef:"48%", kd:0.33, tdLanded:1.16, tdAcc:"28%", tdDef:"32%", subAvg:0.74, finRate:"73%", streak:0, gym:"Xtreme Couture MMA" },
  "Brunno Ferreira": { ht:"5'10\"", dob:"1992-11-04", reach:'72"', stance:"Orthodox", slpm:3.77, sapm:3.91, strAcc:"51%", tdAcc:"24%", subAvg:0.75, strDef:"52%", kd:1.00, tdDef:"61%", finRate:"93%", streak:0, tdLanded:1.25, gym:"Brazilian TKO" },
  // ── Welterweight (extended) ──
  "Jack Della Maddalena": { ht:"5'11\"", dob:"1996-09-10", reach:'73"', stance:"Switch", slpm:5.57, tdAcc:"10%", subAvg:0.1, strDef:"63%", kd:0.8, tdDef:"64%", finRate:"72%", streak:3, tdLanded:0.13, gym:"Scrappy MMA" },
@@ -7504,13 +7504,19 @@
   ],
 
   "Roman Dolidze": [
-    { opponent: "Joe Pyfer", odds: -140 },
-    { opponent: "Caio Borralho", odds: 215 },
-    { opponent: "Jack Hermansson", odds: -200 },
-    { opponent: "Phil Hawes", odds: -300 },
-    { opponent: "Trevin Giles", odds: -350 },
-    { opponent: "Khadis Ibragimov", odds: -600 },
-    { opponent: "Mike Rodriguez", odds: -500 }
+    { opponent: "Christian Leroy Duncan", odds: 315 },
+    { opponent: "Marvin Vettori 2", odds: 126 },
+    { opponent: "Kevin Holland", odds: 122 },
+    { opponent: "Anthony Smith", odds: -147 },
+    { opponent: "Nassourdine Imavov", odds: 143 },
+    { opponent: "Marvin Vettori", odds: 188 },
+    { opponent: "Jack Hermansson", odds: 178 },
+    { opponent: "Phil Hawes", odds: 147 },
+    { opponent: "Kyle Daukaus", odds: 220 },
+    { opponent: "Laureano Staropoli", odds: -167 },
+    { opponent: "Trevin Giles", odds: -111 },
+    { opponent: "John Allan", odds: -193 },
+    { opponent: "Khadis Ibragimov", odds: -161 }
   ],
   "Taila Santos": [
     { opponent: "Maryna Moroz", odds: -400 },
@@ -28809,6 +28815,15 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Roman Dolidze": [
+    { icon: "🏆", title: "Former WWFC (World Warriors Fight Championship) Light Heavyweight Champion — won vacant title Jun 16, 2018 (KO, Eder de Souza); 1 successful defense Dec 18, 2018 (KO, Michał Pasternak)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night × 3 — vs. Kyle Daukaus (Jun 2022), Phil Hawes (Oct 2022), Jack Hermansson (Dec 2022)", detail: null },
+    { icon: "🏅", title: "ADCC Asia & Oceania Championship winner, 99kg division (2016)", detail: null },
+    { icon: "🏅", title: "FILA Grappling World Championship winner", detail: null },
+    { icon: "🏅", title: "World and European Grappling Championship winner (UWW rules)", detail: null },
+    { icon: "🏅", title: "MMA Fighting 2022 Second-Team MMA All-Star", detail: null },
+    { icon: "🤼", title: "Background in freestyle wrestling and combat sambo; no Brazilian Jiu-Jitsu belt rank publicly reported (checked ufc.com Q&A — the belt-rank question isn't listed for this fighter)", detail: null }
+  ],
   "Sergei Pavlovich": [
     { icon: "🏆", title: "Former Fight Nights Global Heavyweight Champion — won Jun 2, 2017 (Decision, Mikhail Mokhnatkin); 1 successful defense Nov 19, 2017 (TKO, Kirill Sidelnikov)", detail: null },
     { icon: "🏆", title: "Fight Nights Global Heavyweight Grand Prix winner (2017)", detail: null },
