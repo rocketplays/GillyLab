@@ -35511,8 +35511,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // win (over an actual champion recorded as "#C") was silently scoring as
   // "no rank signal at all," the same as an opponent with no rank whatsoever.
   function simRankTier(name) {
-    const entry = simGetFighterRoster(name);
-    const r = (entry && entry.rank ? String(entry.rank).trim().toUpperCase() : '').replace(/^#/, '');
+    // Read from the loaded rankings JSON (RANKINGS_LOOKUP) so the simulator
+    // stays in sync whenever rankings.json is updated, rather than relying on
+    // the stale rank field embedded in each FIGHTERS roster entry.
+    const badge = fighterDivisionRankBadge(name);
+    if (!badge) return null;
+    const r = badge.replace(/^#/, '').toUpperCase();
     if (r === 'C' || r === 'CHAMPION') return 0;
     if (r === 'IC') return 0.5;
     const m = r.match(/^(\d+)$/);
