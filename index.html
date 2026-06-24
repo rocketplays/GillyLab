@@ -35638,8 +35638,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function simRunTrials(nameA, nameB, n, rounds) {
     const probA = simWinProbability(nameA, nameB, rounds);
-    const powerA = simPowerScore(getSimProfile(nameA, rounds));
-    const powerB = simPowerScore(getSimProfile(nameB, rounds));
+    // Displayed power score is opponent-adjusted: subtract each fighter's
+    // unproven penalty so the number reflects their actual competitive
+    // standing in THIS matchup, not just their raw career-stat total.
+    const powerA = simPowerScore(getSimProfile(nameA, rounds)) - simUnprovenPenalty(nameA, nameB);
+    const powerB = simPowerScore(getSimProfile(nameB, rounds)) - simUnprovenPenalty(nameB, nameA);
     const poolA = simMethodPool(nameA);
     const poolB = simMethodPool(nameB);
 
