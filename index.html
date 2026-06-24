@@ -35620,12 +35620,53 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return pool;
   }
 
+  // Fraction of a fighter's recorded losses that ended by finish
+  // (KO/TKO/Submission). Used in 5-round method adjustment: a fighter
+  // who often gets stopped is a better "target" for a finisher pressing
+  // through rounds 4 and 5.
+  function simLossFinishFraction(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    let losses = 0, finishLosses = 0;
+    hist.forEach(f => {
+      if (f.result !== 'L' || !f.method) return;
+      losses++;
+      const m = f.method.toUpperCase();
+      if (m.includes('KO') || m.includes('TKO') || m.includes('SUB')) finishLosses++;
+    });
+    return losses > 0 ? finishLosses / losses : 0.5; // default 0.5 when no loss history
+  }
+
   function simRunTrials(nameA, nameB, n, rounds) {
     const probA = simWinProbability(nameA, nameB, rounds);
     const powerA = simPowerScore(getSimProfile(nameA, rounds));
     const powerB = simPowerScore(getSimProfile(nameB, rounds));
     const poolA = simMethodPool(nameA);
     const poolB = simMethodPool(nameB);
+
+    // In 5-round fights there are two extra rounds where a finish can land.
+    // A "would-be decision" (fighter wins, but the pool sample said Decision)
+    // has some chance of flipping to a finish — scaled by the WINNER's
+    // finishing ability and the LOSER's tendency to get stopped. The factor
+    // (0.25) is deliberately conservative: late rounds have lower per-round
+    // finish rates than early rounds, and the shift should be "relatively
+    // slight" rather than dramatic. Matchup-specific: a big finisher
+    // against a finish-vulnerable opponent in 5 rounds gets meaningfully
+    // more finish probability than two decision-heavy fighters do.
+    const finFracA = poolA.filter(p => p.method !== 'Decision').length / poolA.length;
+    const finFracB = poolB.filter(p => p.method !== 'Decision').length / poolB.length;
+    const lossFinFracA = simLossFinishFraction(nameA);
+    const lossFinFracB = simLossFinishFraction(nameB);
+    const extraRoundFactor = rounds === 5 ? 0.25 : 0;
+    // extraFinChanceA: probability a sampled Decision win for A becomes a
+    // finish instead, due to the extra 2 rounds. Scales by how often A
+    // finishes (finFracA) and a modest upward nudge from how finish-prone
+    // B is as a victim (lossFinFracB).
+    const extraFinChanceA = finFracA * (0.85 + lossFinFracB * 0.3) * extraRoundFactor;
+    const extraFinChanceB = finFracB * (0.85 + lossFinFracA * 0.3) * extraRoundFactor;
+    // Finish-only sub-pools for when a decision converts.
+    const finishPoolA = poolA.filter(p => p.method !== 'Decision');
+    const finishPoolB = poolB.filter(p => p.method !== 'Decision');
+
     let winsA = 0, winsB = 0;
     const methodsA = { 'KO/TKO': 0, 'Submission': 0, 'Decision': 0 };
     const methodsB = { 'KO/TKO': 0, 'Submission': 0, 'Decision': 0 };
@@ -35633,11 +35674,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     for (let i = 0; i < n; i++) {
       if (Math.random() < probA) {
         winsA++;
-        const pick = poolA[Math.floor(Math.random() * poolA.length)];
+        let pick = poolA[Math.floor(Math.random() * poolA.length)];
+        if (pick.method === 'Decision' && extraFinChanceA > 0
+            && finishPoolA.length > 0 && Math.random() < extraFinChanceA) {
+          pick = finishPoolA[Math.floor(Math.random() * finishPoolA.length)];
+        }
         methodsA[pick.method]++;
       } else {
         winsB++;
-        const pick = poolB[Math.floor(Math.random() * poolB.length)];
+        let pick = poolB[Math.floor(Math.random() * poolB.length)];
+        if (pick.method === 'Decision' && extraFinChanceB > 0
+            && finishPoolB.length > 0 && Math.random() < extraFinChanceB) {
+          pick = finishPoolB[Math.floor(Math.random() * finishPoolB.length)];
+        }
         methodsB[pick.method]++;
       }
     }
