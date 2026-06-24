@@ -39,6 +39,9 @@ jobs:
       - name: Re-apply manual card-section overrides
         run: node scripts/apply-card-section-overrides.js
 
+      - name: Re-apply manual fighter opponent overrides
+        run: node scripts/apply-fighter-overrides.js
+
       - name: Download fighter photos
         run: |
           mkdir -p data/photos

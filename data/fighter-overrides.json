@@ -1,0 +1,20 @@
+{
+  "_comment": "Manual opponent-swap corrections for bouts where the Cito API has a stale/wrong fighter in a corner (e.g. an injury replacement the API hasn't picked up yet). The update-odds workflow re-fetches data/event.json from scratch every run and would otherwise silently wipe these fixes — apply-fighter-overrides.js re-applies every entry here on top of the fresh fetch before it's committed. Remove an entry once the upstream API fixes itself (or once the event has passed).",
+  "overrides": [
+    {
+      "eventSlug": "ufc-fight-night-june-27-2026",
+      "eventStartsAt": "2026-06-27T16:00:00.000Z",
+      "matchFighterName": "Andreas Gustafsson",
+      "replacement": {
+        "fighterSlug": "theodor-berggren",
+        "fighterName": "Theodor Berggren",
+        "country": "Sweden",
+        "flag": "🇸🇪",
+        "nickname": "Simba",
+        "recordText": "8-3-0 (W-L-D)"
+      },
+      "reason": "Andreas Gustafsson withdrew from his bout with Daniil Donchenko due to a cardiac issue (atrial fibrillation) discovered in training camp; Theodor Berggren stepped in as a short-notice replacement (UFC debut). Confirmed via UFC.com fight preview, Tapology, and LowKickMMA reporting (May 2026). Cito API still lists Gustafsson as of this writing.",
+      "addedOn": "2026-06-23"
+    }
+  ]
+}
