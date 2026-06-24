@@ -1268,7 +1268,12 @@
       border-radius: 4px;
       padding: 0.65rem 0.8rem;
       font-family: 'Barlow', sans-serif;
-      font-size: 0.95rem;
+      /* Must stay >=16px: mobile Safari/Chrome auto-zoom the viewport on focus
+         for any input with a computed font-size below 16px, and that forced
+         zoom-in triggers a full-page reflow that reads as "lag" until the
+         user manually zooms back out. 1rem (16px) keeps the visual size the
+         same on desktop while sidestepping the auto-zoom on mobile. */
+      font-size: 1rem;
       color: var(--text);
       outline: none;
     }
