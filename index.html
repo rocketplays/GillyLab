@@ -35257,7 +35257,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!proven) return 0;
     // Scales a little with how far past the landed-TD threshold they are,
     // capped so it stays a supporting signal rather than a dominant one.
-    return 1.0 + simSoftCap(tdLanded - 3, 3) * 0.3;
+    return 0.4 + simSoftCap(tdLanded - 3, 3) * 0.2;
   }
 
   // Reach and stance are tracked per fighter but previously never touched
@@ -35277,7 +35277,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return s.stance ? String(s.stance).trim() : null;
   }
 
-  function simStyleMatchupDelta(nameA, nameB) {
+  function simStyleMatchupDelta(nameA, nameB, profileA, profileB) {
     let delta = 0;
     const ra = simReachInches(nameA), rb = simReachInches(nameB);
     if (ra != null && rb != null) {
@@ -35289,33 +35289,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (isSouthpawish(sta) && !isSouthpawish(stb)) delta += 0.15;
       else if (isSouthpawish(stb) && !isSouthpawish(sta)) delta -= 0.15;
     }
-    // Grappling matchup: a fighter's own takedown/submission OFFENSE measured
-    // against the opponent's takedown DEFENSE specifically — never against
-    // whether the opponent themselves attempts takedowns. A pure striker
-    // who never grapples (tdLanded near 0) isn't "more exposed" to a
-    // wrestler just because their own offense is low; what actually
-    // determines their vulnerability is how good THEIR OWN takedown
-    // defense is. Centered on the same 0.65 baseline tdDef uses elsewhere in
-    // simPowerScore, so a real grappling threat against a below-average
-    // defender earns a bonus, while the same threat against an elite
-    // defender (90%+) is mostly neutralized — and can even tip slightly the
-    // other way, since a fighter who can't be taken down is itself a small
-    // advantage. Computed symmetrically (A's threat vs B's defense, net of
-    // B's threat vs A's defense) on raw stats, same as reach/stance above.
-    // Scale/cap raised (was 0.6/0.5) — an obviously lopsided style mismatch
-    // (a genuine high-volume, high-accuracy grappler against a real
-    // below-average defender) is now worth close to a full point, putting
-    // it on par with other meaningful power-score terms (form, trajectory,
-    // big-fight experience) rather than barely registering. Mild/borderline
-    // cases still stay small on their own — the threatA*tdAcc product means
-    // volume alone or accuracy alone was never enough, both have to be
-    // genuinely good for this to swing much.
-    const sa = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameA]) || {};
-    const sb = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameB]) || {};
-    const threatA = simNum(sa.tdLanded, 1.0) * simPct(sa.tdAcc, 0.4) + simNum(sa.subAvg, 0.3) * 0.5;
-    const threatB = simNum(sb.tdLanded, 1.0) * simPct(sb.tdAcc, 0.4) + simNum(sb.subAvg, 0.3) * 0.5;
-    const defA = simPct(sa.tdDef, 0.65), defB = simPct(sb.tdDef, 0.65);
-    const grappleEdge = (threatA * (0.65 - defB)) - (threatB * (0.65 - defA));
+    // Grappling matchup: use credibility-dampened stats from profile when
+    // available (profileA/B passed from simWinProbability, which already
+    // computed them via getSimProfile — same dampening that applies to the
+    // power score). Falls back to raw FIGHTER_STATS for any direct call that
+    // doesn't supply profiles. This fixes the previous inconsistency where
+    // a prospect's padded regional grappling stats could earn a big style-
+    // matchup edge here that didn't match the discounting already applied to
+    // their power score terms.
+    const rawA = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameA]) || {};
+    const rawB = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameB]) || {};
+    const tdLandedA = profileA ? profileA.tdLanded : simNum(rawA.tdLanded, 1.0);
+    const tdAccA    = profileA ? profileA.tdAcc    : simPct(rawA.tdAcc, 0.4);
+    const subAvgA   = profileA ? profileA.subAvg   : simNum(rawA.subAvg, 0.3);
+    const tdDefA    = profileA ? profileA.tdDef    : simPct(rawA.tdDef, 0.65);
+    const tdLandedB = profileB ? profileB.tdLanded : simNum(rawB.tdLanded, 1.0);
+    const tdAccB    = profileB ? profileB.tdAcc    : simPct(rawB.tdAcc, 0.4);
+    const subAvgB   = profileB ? profileB.subAvg   : simNum(rawB.subAvg, 0.3);
+    const tdDefB    = profileB ? profileB.tdDef    : simPct(rawB.tdDef, 0.65);
+    const threatA = tdLandedA * tdAccA + subAvgA * 0.5;
+    const threatB = tdLandedB * tdAccB + subAvgB * 0.5;
+    const grappleEdge = (threatA * (0.65 - tdDefB)) - (threatB * (0.65 - tdDefA));
     delta += simSoftCap(grappleEdge * 1.6, 1.2);
     return delta;
   }
@@ -35422,17 +35416,49 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return closeness * closeness; // 1 at gap 0, 0.56 at gap 1, 0.25 at gap 2, 0 by gap 4+
   }
 
+  // For opponents no longer in current rankings (retired, faded, etc.),
+  // estimate the approximate tier they held at the time of a fight based on
+  // their own UFC record up to that date. This gives appropriate credit for
+  // wins over former champions/contenders that the current roster no longer
+  // reflects. UFC win count plus whether any of those wins came over then-
+  // ranked fighters (proxy for actual contender status, since per-fight
+  // historical rankings aren't stored). Returns null if no estimate is
+  // possible (opponent unknown or had no UFC wins before the fight).
+  function simEstimateHistoricalTier(oppName, beforeDate) {
+    const oppHist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[oppName]) || [];
+    if (!oppHist.length) return null;
+    const cutoff = beforeDate ? new Date(beforeDate).getTime() : Date.now();
+    let ufcWins = 0, hadRankedWin = false;
+    oppHist.forEach(f => {
+      if (!f.date || f.result !== 'W') return;
+      if (String(f.org || '').toUpperCase() !== 'UFC') return;
+      const d = new Date(f.date).getTime();
+      if (isNaN(d) || d >= cutoff) return;
+      ufcWins++;
+      if (simRankTier(f.opponent) !== null) hadRankedWin = true;
+    });
+    if (ufcWins >= 5 && hadRankedWin) return 7;  // established contender
+    if (ufcWins >= 5)                 return 10; // solid mid-ranker
+    if (ufcWins >= 3)                 return 12; // borderline ranked
+    if (ufcWins >= 1)                 return 14; // barely ranked
+    return null;
+  }
+
   // Quality score [0, 1] for the best ranked win in a fighter's history.
-  // 0 = no wins over any currently-ranked opponent; 1.0 = has beaten the
-  // champion. Linear: #15 ≈ 0.1, #10 ≈ 0.33, #5 ≈ 0.67, #1 ≈ 0.93.
-  // Floor of 0.1 so even a win at the very back of the rankings registers
-  // as a small amount of proof — it's still a ranked opponent.
+  // 0 = no wins over any currently-ranked or estimably-ranked opponent;
+  // 1.0 = has beaten the champion. Linear: #15 ≈ 0.1, #10 ≈ 0.33,
+  // #5 ≈ 0.67, #1 ≈ 0.93. Floor of 0.1 so even a win at the very back
+  // of the rankings registers as a small amount of proof — it's still a
+  // ranked opponent. For opponents who are now unranked, falls back to
+  // simEstimateHistoricalTier to reconstruct their approximate tier at
+  // fight time rather than silently giving zero credit.
   function simBestWinQuality(name) {
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
     let best = 0;
     hist.forEach(f => {
       if (f.result !== 'W') return;
-      const tier = simRankTier(f.opponent);
+      let tier = simRankTier(f.opponent);
+      if (tier == null) tier = simEstimateHistoricalTier(f.opponent, f.date);
       if (tier == null) return;
       const q = Math.max(0.1, 1 - tier / 15);
       if (q > best) best = q;
@@ -35521,8 +35547,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   function simWinProbability(nameA, nameB, rounds) {
-    const sa = simPowerScore(getSimProfile(nameA, rounds));
-    const sb = simPowerScore(getSimProfile(nameB, rounds));
+    const profA = getSimProfile(nameA, rounds);
+    const profB = getSimProfile(nameB, rounds);
+    const sa = simPowerScore(profA);
+    const sb = simPowerScore(profB);
     // Logistic curve on the power-score differential — gives clear separation
     // for lopsided matchups while keeping closely-matched fights near 50/50.
     // The stat/style differential is softened when the rankings say these two
@@ -35561,7 +35589,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const lowCredibility = Math.max(1 - simRateCredibility(nameA), 1 - simRateCredibility(nameB));
     const uncertainty = Math.max(volatility, lowCredibility * 0.7);
     const k = 3.2 * (1 + 0.5 * uncertainty);
-    const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
+    const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB, profA, profB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
     // Unproven-against-the-level penalty (see simUnprovenPenalty) — applied
     // unsoftened, same as head-to-head, since a real demonstrated-level gap
     // isn't a stat artifact rankClosenessFactor should be discounting (and
