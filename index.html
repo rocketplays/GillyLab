@@ -33632,6 +33632,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
     'beatriz mesquita': 'Bia Mesquita',
+    // The Odds API (no fighter slug, so these only resolve via name lookup)
+    // spells these two differently than our DB / event.json profile names.
+    'abusupyian magomedov': 'Abus Magomedov',
+    'nursultan ruziboev': 'Nursulton Ruziboev',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
