@@ -6571,7 +6571,6 @@
     { opponent: "Belal Muhammad", odds: -195 },
     { opponent: "Colby Covington", odds: -205 },
     { opponent: "Kamaru Usman", odds: -198 },
-    { opponent: "Khamzat Chimaev", odds: 0 },
     { opponent: "Rafael dos Anjos", odds: -145 },
     { opponent: "Gunnar Nelson", odds: -220 },
     { opponent: "Donald Cerrone", odds: -260 },
@@ -10288,7 +10287,6 @@
     { opponent: "Casey O'Neill", odds: 350 }
   ],
   "Julius Walker": [
-    { opponent: "Abdul-Rakhman Yakhyaev", odds: 0 },
     { opponent: "Dustin Jacoby", odds: 150 },
     { opponent: "Raffael Cerqueira", odds: -649 },
     { opponent: "Alonzo Menifield", odds: 200 }
@@ -10800,7 +10798,6 @@
     { opponent: "Dennis Buzukja", odds: 109 },
   ],
   "Kaan Ofli": [
-    { opponent: "Javier Reyes", odds: 0 },
     { opponent: "Zha Yi", odds: 220 },
     { opponent: "Ricardo Ramos", odds: 205 },
     { opponent: "Muhammad Naimov", odds: 320 },
@@ -11504,7 +11501,6 @@
     { opponent: "Maycee Barber", odds: 450 }
   ],
   "Abdulrakhman Yakhyaev": [
-    { opponent: "Julius Walker", odds: 0 },
     { opponent: "Brendson Ribeiro", odds: -410 }
   ],
   "Magomed Tuchalov": [
@@ -11658,7 +11654,6 @@
     { opponent: "Richard Luis", odds: -882 }
   ],
   "Nursulton Ruziboev": [
-    { opponent: "Andrey Pulyaev", odds: 0 },
     { opponent: "Dustin Stoltzfus", odds: -240 },
     { opponent: "Eric McConico", odds: -275 },
     { opponent: "Joaquin Buckley", odds: 120 },
@@ -11691,7 +11686,6 @@
     { opponent: "Brahyam Zurcher", odds: 106 },
   ],
   "Andrey Pulyaev": [
-    { opponent: "Nursulton Ruziboev", odds: 0 },
     { opponent: "Ateba Gautier", odds: 750 },
     { opponent: "Nick Klein", odds: -125 },
     { opponent: "Christian Leroy Duncan", odds: 390 },
@@ -34766,7 +34760,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       layoff: simLayoffFactor(name),
       bigFight: simBigFightExperience(name),
       controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
-      undefeatedBoost: simUndefeatedBoost(name),
+      // Schedule-dampened: an unbeaten record is only as meaningful as the
+      // competition it was built against. Unlike the rate stats, this bonus was
+      // applied at full strength regardless of opposition, so a prospect padding
+      // a perfect record on the regional scene (e.g. Michael Morales) earned the
+      // same undefeated premium as one who ran the gauntlet of ranked contenders
+      // (Topuria, Rakhmonov). Multiplying by credibility ties it to schedule
+      // quality — an elite undefeated fighter (credibility ≈ 1) keeps essentially
+      // the full bonus, a thin/regional record sheds most of it — and also curbs
+      // its overlap with the win-streak/form term, which already rewards the same
+      // unbeaten run and is itself credibility-dampened.
+      undefeatedBoost: simUndefeatedBoost(name) * credibility,
       durabilityBoost: simDurabilityBoost(name),
       finishVulnerability: simFinishVulnerability(name),
       fiveRoundFactor: rounds === 5 ? simFiveRoundFactor(name) : 0
@@ -35754,13 +35758,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function simUnprovenPenalty(name, oppName) {
     const oppTier = simRankTier(oppName);
     if (oppTier != null) {
-      // Opponent is currently ranked — original behavior, untouched.
-      // Scale 8.0 / cap 7.0: a truly unproven fighter (bestWinQ≈0) vs the
-      // champion faces a ~5.7-pt penalty, a meaningful underdog regardless of
-      // how inflated their counting stats look on a soft schedule.
+      // Opponent is currently ranked. Scale 8.0 / cap 7.0: a truly unproven
+      // fighter vs the champion faces a ~5.7-pt penalty, a meaningful underdog
+      // regardless of how inflated their counting stats look on a soft
+      // schedule. Uses simProvenLevel (same tenure-gated measure as the
+      // unranked branch below) rather than simBestWinQuality so a long-tenured
+      // fighter — a former champion like Edwards whose best wins are now lower-
+      // ranked — is never mislabeled "unproven" against a higher-ranked
+      // opponent; only a genuinely thin résumé (a true prospect) is penalized.
       const eliteness = Math.max(0, 1 - oppTier / 15);
       const rawPenalty = simSoftCap(eliteness * 8.0, 7.0);
-      const unprovenFraction = Math.max(0, 1 - simBestWinQuality(name));
+      const unprovenFraction = Math.max(0, 1 - simProvenLevel(name));
       return rawPenalty * (unprovenFraction * unprovenFraction);
     }
     // Opponent is currently UNRANKED — but not necessarily an unknown. A faded
