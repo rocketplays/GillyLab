@@ -3092,7 +3092,7 @@
  { name: "Michael Morales", division: "WW", rank: "#3", record: "19-0-0", initials: "MM", country: "Ecuador" },
  { name: "Belal Muhammad", division: "WW", rank: "#4", record: "24-6-0", initials: "BEL", country: "USA" },
  { name: "Carlos Prates", division: "WW", rank: "#2", record: "24-7-0", initials: "CPR", country: "Brazil" },
- { name: "Sean Brady", division: "WW", rank: "#7", record: "19-2-0", initials: "SBR", country: "USA" },
+ { name: "Sean Brady", division: "WW", rank: "#6", record: "19-2-0", initials: "SBR", country: "USA" },
  { name: "Kamaru Usman", division: "WW", rank: "#9", record: "21-4-0", initials: "KU", country: "Nigeria" },
  { name: "Leon Edwards", division: "WW", rank: "#8", record: "22-6-0", initials: "LE", country: "UK" },
  { name: "Joaquin Buckley", division: "WW", rank: "#10", record: "21-8-0", initials: "JBU", country: "USA" },
@@ -3833,7 +3833,7 @@
  "Leon Edwards": { ht:"6'2\"", dob:"1991-08-25", reach:'74"', stance:"Southpaw", slpm:2.6, tdAcc:"37%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"63%", finRate:"48%", streak:0, tdLanded:1.25, gym:"Team Renegade" },
  "Belal Muhammad": { ht:"5'11\"", dob:"1988-07-09", reach:'72"', stance:"Orthodox", slpm:4.43, tdAcc:"36%", subAvg:0.1, strDef:"62%", kd:0.1, tdDef:"90%", finRate:"38%", streak:0, tdLanded:2.1, gym:"Valle Flow Striking" },
  "Shavkat Rakhmonov": { ht:"6'1\"", dob:"1994-10-23", reach:'77"', stance:"Orthodox", slpm:3.25, tdAcc:"25%", subAvg:1.2, strDef:"51%", kd:0.4, tdDef:"85%", finRate:"100%",streak:9, tdLanded:1.4, gym:"Kill Cliff FC (2021–present)" },
- "Sean Brady": { ht:"5'10\"", dob:"1992-11-23", reach:'72"', stance:"Orthodox", slpm:3.96, tdAcc:"53%", subAvg:0.9, strDef:"59%", kd:0.0, tdDef:"86%", finRate:"N/A", streak:0, tdLanded:3.53, gym:"Renzo Gracie Philly" },
+ "Sean Brady": { ht:"5'10\"", dob:"1992-11-23", reach:'72"', stance:"Orthodox", slpm:4.08, strAcc:"53%", sapm:2.77, strDef:"60%", kd:0.10, tdLanded:3.58, tdAcc:"53%", tdDef:"87%", subAvg:0.82, finRate:"47%", streak:1, gym:"Marquez MMA" },
  "Umar Nurmagomedov": { ht:'5\'8"', dob:"1996-01-03", reach:'69"', stance:"Orthodox", slpm:3.86, strAcc:"56%", sapm:1.86, strDef:"61%", kd:0.12, tdLanded:4.03, tdAcc:"47%", tdDef:"79%", subAvg:0.24, finRate:"45%", streak:2, gym:"American Kickboxing Academy" },
  "Alexa Grasso": { ht:"5'5\"", dob:"1993-08-09", reach:'65"', stance:"Orthodox", slpm:3.88, tdAcc:"36%", subAvg:0.9, strDef:"60%", kd:0.1, tdDef:"75%", finRate:"53%", streak:0, tdLanded:1.20, gym:"Lobo Gym MMA" },
  "Rose Namajunas": { ht:"5'5\"", dob:"1992-06-29", reach:'65"', stance:"Switch", slpm:3.5, tdAcc:"48%", subAvg:0.5, strDef:"63%", kd:0.1, tdDef:"67%", finRate:"60%", streak:0, tdLanded:0.5, gym:"Roufusport" },
@@ -6283,7 +6283,20 @@
     { opponent: "Derrick Weaver", odds: -675 },
     { opponent: "Muhammed DeReese", odds: -173 }
   ],
-  "Sean Brady": [],
+  "Sean Brady": [
+    { opponent: "Joaquin Buckley", odds: 134 },
+    { opponent: "Michael Morales", odds: -143 },
+    { opponent: "Leon Edwards", odds: -131 },
+    { opponent: "Gilbert Burns", odds: -198 },
+    { opponent: "Kelvin Gastelum", odds: -117 },
+    { opponent: "Belal Muhammad", odds: -138 },
+    { opponent: "Michael Chiesa", odds: -187 },
+    { opponent: "Jake Matthews", odds: -213 },
+    { opponent: "Christian Aguilera", odds: -435 },
+    { opponent: "Ismail Naurdiev", odds: 108 },
+    { opponent: "Court McGee", odds: -180 },
+    { opponent: "Gilbert Urbina", odds: -355 }
+  ],
   "Joaquin Buckley": [
     { opponent: "Kamaru Usman", odds: -198 },
     { opponent: "Colby Covington", odds: -220 },
@@ -30313,7 +30326,10 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Sean Brady": [
-    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Daniel Gracie", detail: null },
+    { icon: "🏅", title: "#6-ranked UFC welterweight (as of Jun 2026) — 19–2 with a fourth-round submission of former champion Leon Edwards (Mar 2025) plus wins over Gilbert Burns, Kelvin Gastelum and Joaquin Buckley", detail: null },
+    { icon: "🏆", title: "Former Cage Fury Fighting Championships (CFFC) Welterweight Champion (per ufc.com Q&A)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt under Daniel Gracie (Renzo Gracie Philadelphia)", detail: null },
+    { icon: "🥊", title: "Grappling-based welterweight out of Philadelphia — 6 submission wins; favorite technique the guillotine choke", detail: null }
   ],
   "Kamaru Usman": [
     { icon: "🏆", title: "UFC Welterweight Champion (one-time) — five successful title defenses (2019–2022)", detail: null },
