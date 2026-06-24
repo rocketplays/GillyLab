@@ -35192,16 +35192,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // defender (90%+) is mostly neutralized — and can even tip slightly the
     // other way, since a fighter who can't be taken down is itself a small
     // advantage. Computed symmetrically (A's threat vs B's defense, net of
-    // B's threat vs A's defense) on raw stats, same as reach/stance above,
-    // and softly capped so it stays a secondary stylistic nudge rather than
-    // overriding the core power-score gap.
+    // B's threat vs A's defense) on raw stats, same as reach/stance above.
+    // Scale/cap raised (was 0.6/0.5) — an obviously lopsided style mismatch
+    // (a genuine high-volume, high-accuracy grappler against a real
+    // below-average defender) is now worth close to a full point, putting
+    // it on par with other meaningful power-score terms (form, trajectory,
+    // big-fight experience) rather than barely registering. Mild/borderline
+    // cases still stay small on their own — the threatA*tdAcc product means
+    // volume alone or accuracy alone was never enough, both have to be
+    // genuinely good for this to swing much.
     const sa = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameA]) || {};
     const sb = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameB]) || {};
     const threatA = simNum(sa.tdLanded, 1.0) * simPct(sa.tdAcc, 0.4) + simNum(sa.subAvg, 0.3) * 0.5;
     const threatB = simNum(sb.tdLanded, 1.0) * simPct(sb.tdAcc, 0.4) + simNum(sb.subAvg, 0.3) * 0.5;
     const defA = simPct(sa.tdDef, 0.65), defB = simPct(sb.tdDef, 0.65);
     const grappleEdge = (threatA * (0.65 - defB)) - (threatB * (0.65 - defA));
-    delta += simSoftCap(grappleEdge * 0.6, 0.5);
+    delta += simSoftCap(grappleEdge * 1.6, 1.2);
     return delta;
   }
 
