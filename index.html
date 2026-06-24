@@ -3593,6 +3593,7 @@
  { name: "Max Gimenis", division: "HW", rank: "NR", record: "6-2-0", initials: "MGM", country: "Brazil" },
  { name: "Jovan Leka", division: "HW", rank: "NR", record: "13-2-0", initials: "JL", country: "Serbia" },
  { name: "Felipe Franco", division: "LHW", rank: "NR", record: "10-2-0", initials: "FFR", country: "Brazil" },
+ { name: "Levi Rodrigues Jr.", division: "LHW", rank: "NR", record: "5-0-0", initials: "LRJ", country: "Brazil" },
  { name: "Tyrell Fortune", division: "HW", rank: "NR", record: "18-3-0", initials: "TFO", country: "USA" },
  { name: "Gökhan Saricam", division: "HW", rank: "NR", record: "12-2-0", initials: "GSR", country: "Turkey" },
  { name: "José Luiz", division: "HW", rank: "NR", record: "6-1-0", initials: "JLZ", country: "Brazil" },
@@ -3802,6 +3803,7 @@
  const FIGHTER_STATS = {
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"9%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
  "Jose Miguel Delgado": { ht:"5'11\"", dob:"1998-04-21", reach:'73"', stance:"Switch", slpm:7.48, strAcc:"55%", sapm:4.95, strDef:"50%", kd:1.51, tdLanded:1.51, tdAcc:"0%", tdDef:"50%", subAvg:0.00, finRate:"91%", streak:1, gym:"The MMA Lab" },
+ "Levi Rodrigues Jr.": { ht:"6'0\"", dob:"1996-10-15", reach:'76.5"', stance:"Orthodox", slpm:4.50, strAcc:"79%", sapm:2.10, strDef:"22%", kd:4.50, tdLanded:0.00, tdDef:"100%", subAvg:0.00, finRate:"100%", streak:5, gym:"Rasteira Fight Team" },
  "Islam Makhachev": { ht:"5'10\"", dob:"1991-10-27", reach:'70"', stance:"Southpaw", slpm:2.45, strAcc:"58%", sapm:1.45, strDef:"62%", kd:0.30, tdLanded:3.10, tdAcc:"56%", tdDef:"91%", subAvg:0.98, finRate:"64%", streak:16, gym:"American Kickboxing Academy / Eagles MMA" },
  "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"54%", sapm:2.98, strDef:"52%", kd:0.30, tdLanded:5.32, tdAcc:"58%", tdDef:"88%", subAvg:1.37, finRate:"80%", streak:0, gym:"TKMMA Fit, Akhmat MMA" },
  "Alex Pereira": { ht:"6'4\"", dob:"1987-07-07", reach:'79"', stance:"Orthodox", slpm:5.01, strAcc:"61%", sapm:3.72, strDef:"53%", kd:0.75, tdLanded:0.11, tdAcc:"50%", tdDef:"80%", subAvg:0.22, finRate:"85%", streak:0, gym:"Teixeira MMA & Fitness (2020–present)" },
@@ -6154,6 +6156,9 @@
     { opponent: "Dorian Ramos", odds: -1100 },
     { opponent: "Zac Riley", odds: -5000 },
     { opponent: "James Dunn", odds: -800 }
+  ],
+  "Levi Rodrigues Jr.": [
+    { opponent: "Freddy Vidal", odds: -140 }
   ],
   "Jose Miguel Delgado": [
     { opponent: "Andre Fili", odds: -450 },
@@ -12688,6 +12693,14 @@ const FIGHT_HISTORY = {
     { date: "May 28, 2021", opponent: "Emanuel Pugh", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 44", org: "XFC" },
     { date: "Mar 27, 2021", opponent: "Mason Iacobellis", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:56", event: "XFC: Young Guns 1", org: "XFC" },
     { date: "Nov 11, 2020", opponent: "Enzo Perez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 43", org: "XFC" }
+  ],
+  "Levi Rodrigues Jr.": [
+    { date: "Oct 14, 2025", opponent: "Freddy Vidal", result: "NC", method: "No Contest (Overturned)", round: 1, time: "3:20", event: "DWCS Season 9: Week 10", org: "DWCS" },
+    { date: "Sep 5, 2025", opponent: "Alan Ribeiro", result: "W", method: "KO (Punches)", round: 1, time: "2:47", event: "LFA 216", org: "LFA" },
+    { date: "Apr 26, 2025", opponent: "Jhonny Pereira", result: "W", method: "TKO (Shoulder injury)", round: 3, time: "0:21", event: "MMA University 1", org: "MMAU" },
+    { date: "May 27, 2023", opponent: "Jose Carlos Lima", result: "W", method: "TKO (Punches)", round: 2, time: "1:28", event: "LFA 159", org: "LFA" },
+    { date: "Nov 4, 2022", opponent: "Leonardo Genuino", result: "W", method: "TKO (Punches)", round: 1, time: "2:32", event: "LFA 146", org: "LFA" },
+    { date: "Jul 16, 2022", opponent: "Cristiano Vicente", result: "W", method: "KO (Punch)", round: 1, time: "4:28", event: "DC Pro: Rio Open 2", org: "DC Pro" }
   ],
   "Jose Miguel Delgado": [
     { date: "Mar 14, 2026", opponent: "Andre Fili", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -29440,6 +29453,11 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — IBJJF No-Gi World Champion as a brown belt (Dec 2024), promoted to black belt shortly after (per ufc.com Q&A)", detail: null },
     { icon: "🥊", title: "Two-time Muay Thai national champion (per ufc.com Q&A)", detail: null },
     { icon: "🤼", title: "Two-time All-State wrestler (per ufc.com Q&A)", detail: null }
+  ],
+  "Levi Rodrigues Jr.": [
+    { icon: "⭐", title: "Dana White's Contender Series Season 9 contract winner (Week 10, Oct 14, 2025) — stopped Freddy Vidal in the first round to earn a UFC deal; the result was later overturned to a No Contest following a positive PED test (9-month suspension)", detail: null },
+    { icon: "🏅", title: "Undefeated through 6 pro bouts — 5–0 with 1 No Contest (as of Jun 2026); all five wins by KO/TKO, four in the opening round (100% finish rate)", detail: null },
+    { icon: "🥊", title: "KO-heavy light heavyweight nicknamed \"Baby Monster\" — striking-based prospect out of São Paulo, Brazil", detail: null }
   ],
   "Jose Miguel Delgado": [
     { icon: "⭐", title: "Dana White's Contender Series Season 8 contract winner — def. Ernie Juarez by KO (knee and punches), R2 1:25, Aug 13, 2024", detail: null },
