@@ -35143,6 +35143,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (isSouthpawish(sta) && !isSouthpawish(stb)) delta += 0.15;
       else if (isSouthpawish(stb) && !isSouthpawish(sta)) delta -= 0.15;
     }
+    // Grappling matchup: a fighter's own takedown/submission OFFENSE measured
+    // against the opponent's takedown DEFENSE specifically — never against
+    // whether the opponent themselves attempts takedowns. A pure striker
+    // who never grapples (tdLanded near 0) isn't "more exposed" to a
+    // wrestler just because their own offense is low; what actually
+    // determines their vulnerability is how good THEIR OWN takedown
+    // defense is. Centered on the same 0.65 baseline tdDef uses elsewhere in
+    // simPowerScore, so a real grappling threat against a below-average
+    // defender earns a bonus, while the same threat against an elite
+    // defender (90%+) is mostly neutralized — and can even tip slightly the
+    // other way, since a fighter who can't be taken down is itself a small
+    // advantage. Computed symmetrically (A's threat vs B's defense, net of
+    // B's threat vs A's defense) on raw stats, same as reach/stance above,
+    // and softly capped so it stays a secondary stylistic nudge rather than
+    // overriding the core power-score gap.
+    const sa = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameA]) || {};
+    const sb = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[nameB]) || {};
+    const threatA = simNum(sa.tdLanded, 1.0) * simPct(sa.tdAcc, 0.4) + simNum(sa.subAvg, 0.3) * 0.5;
+    const threatB = simNum(sb.tdLanded, 1.0) * simPct(sb.tdAcc, 0.4) + simNum(sb.subAvg, 0.3) * 0.5;
+    const defA = simPct(sa.tdDef, 0.65), defB = simPct(sb.tdDef, 0.65);
+    const grappleEdge = (threatA * (0.65 - defB)) - (threatB * (0.65 - defA));
+    delta += simSoftCap(grappleEdge * 0.6, 0.5);
     return delta;
   }
 
