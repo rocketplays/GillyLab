@@ -1858,6 +1858,9 @@
       min-width: 0;
       cursor: pointer;
       transition: color 0.15s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .rank-name:hover { color: var(--accent); }
@@ -1869,7 +1872,16 @@
       align-items: center;
       gap: 0.5rem;
     }
-    .rank-name-wrap .rank-name { flex: 0 0 auto; }
+    /* Was "flex: 0 0 auto" (shrink-proof, sized to content) so the
+       hover/click target hugs the text instead of the row's full
+       remaining width. But flex-shrink:0 with no truncation meant a
+       long fighter name simply refused to shrink on narrow phones,
+       overflowing past .rank-name-wrap and visually overlapping the
+       .rank-record/.rank-div-tag that come after it in the row.
+       flex-grow stays 0 (keeps the tight hover target); flex-shrink
+       is now 1 with min-width:0 so it can shrink, and the
+       overflow/ellipsis above truncates instead of overlapping. */
+    .rank-name-wrap .rank-name { flex: 0 1 auto; min-width: 0; }
 
     .rank-record {
       font-size: 0.82rem;
