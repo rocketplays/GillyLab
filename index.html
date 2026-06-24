@@ -3406,6 +3406,7 @@
  { name: "Andre Lima", division: "FLW", rank: "NR", record: "11-0-0", initials: "AND", country: "Brazil" },
  { name: "Rei Tsuruya", division: "FLW", rank: "NR", record: "8-3-0", initials: "RTS", country: "Japan" },
  { name: "Alden Coria", division: "FLW", rank: "NR", record: "12-3-0", initials: "ACO", country: "USA" },
+ { name: "Stewart Nicoll", division: "FLW", rank: "NR", record: "8-3-0", initials: "SNI", country: "Australia" },
  { name: "Imanol Rodriguez", division: "FLW", rank: "NR", record: "11-1-0", initials: "IRO", country: "Mexico" },
  { name: "Nyamjargal Tumendemberel", division: "FLW", rank: "NR", record: "10-1-0", initials: "NYT", country: "Mongolia" },
  { name: "Terrance Saeteurn", division: "FLW", rank: "NR", record: "8-2-0", initials: "TSA", country: "USA" },
@@ -4406,6 +4407,7 @@
   "Theodor Berggren": { ht:"6'0\"", dob:"2000-04-09", finRate:"100%", streak:2, gym:"Renyi" },
  "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, tdAcc:"36%", subAvg:0.4, strDef:"44%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.28 },
  "Alden Coria": { ht:"5'8\"", dob:"1998-04-24", reach:'67"', stance:"Orthodox", slpm:4.69, strAcc:"45%", sapm:2.40, strDef:"70%", kd:0.00, tdLanded:1.75, tdAcc:"33%", tdDef:"71%", subAvg:0.00, finRate:"75%", streak:5, gym:"4oz Fight Club, Aztlan Boxing" },
+ "Stewart Nicoll": { ht:"5'5\"", dob:"1994-11-03", reach:'65.5"', slpm:3.63, strAcc:"39%", sapm:5.84, strDef:"50%", kd:0.00, tdLanded:1.63, tdAcc:"4%", tdDef:"29%", subAvg:0.00, finRate:"88%", streak:0, gym:"Team Compton Training Centre" },
  "Alibi Idiris": { ht:"5'6\"", dob:"1994-10-22", reach:'68"', stance:"Orthodox", slpm:3.47, tdAcc:"0%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"60%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Alessandro Costa": { ht:"5'4\"", dob:"1996-01-28", reach:'67"', stance:"Orthodox", slpm:3.64, tdAcc:"16%", subAvg:0.3, strDef:"57%", kd:0.2, tdDef:"64%", finRate:"50%", streak:0, tdLanded:0.46 },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.66, tdAcc:"46%", subAvg:1.3, strDef:"55%", kd:0.0, tdDef:"37%", finRate:"N/A", streak:0, tdLanded:1.99 },
@@ -12581,6 +12583,11 @@
     { opponent: "Michael Cyr", odds: -480 },
     { opponent: "Donnie Ballou", odds: -575 },
     { opponent: "Rashaad Robinson", odds: -425 }
+  ],
+  "Stewart Nicoll": [
+    { opponent: "Alessandro Costa", odds: 325 },
+    { opponent: "Lucas Rocha", odds: -115 },
+    { opponent: "Jesus Aguilar", odds: -170 }
   ],
   "Bruno Gustavo da Silva": [
   ],
@@ -28918,6 +28925,19 @@ const FIGHT_HISTORY = {
     { date: "Nov 9, 2019", opponent: "Eric Hendricks", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 39", org: "Fury FC" },
     { date: "Aug 23, 2019", opponent: "Brandon Pate", result: "W", method: "Submission (Shoulder choke)", round: 1, time: "1:07", event: "Fury FC 35", org: "Fury FC" }
   ],
+  "Stewart Nicoll": [
+    { date: "Apr 4, 2026", opponent: "Alessandro Costa", result: "L", method: "TKO (Punch to the body)", round: 2, time: "4:56", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Lucas Rocha", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Aug 17, 2024", opponent: "Jesus Aguilar", result: "L", method: "Technical Submission (Guillotine choke)", round: 1, time: "2:39", event: "UFC 305", org: "UFC" },
+    { date: "Mar 9, 2024", opponent: "Issei Kitano", result: "W", method: "TKO (Punches)", round: 1, time: "4:45", event: "Beatdown Promotions 6", org: "Beatdown" },
+    { date: "Sep 16, 2023", opponent: "Dansheel Moodley", result: "W", method: "TKO (Punches)", round: 1, time: "4:24", event: "Beatdown Promotions 5", org: "Beatdown" },
+    { date: "Mar 4, 2023", opponent: "Scotty Eclavea", result: "W", method: "TKO (Punches and elbows)", round: 2, time: "4:44", event: "Beatdown Promotions 3", org: "Beatdown" },
+    { date: "Oct 15, 2022", opponent: "Peter Benavente", result: "W", method: "TKO (Punches)", round: 1, time: "3:59", event: "Beatdown Promotions 2", org: "Beatdown" },
+    { date: "Mar 13, 2021", opponent: "Jamie Renouf", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "XFC 47", org: "XFC" },
+    { date: "Nov 9, 2019", opponent: "Mitchell Birkett", result: "W", method: "Submission (Inverted triangle choke)", round: 1, time: "1:18", event: "XFC 43", org: "XFC" },
+    { date: "Jun 14, 2019", opponent: "Ryan Robertson", result: "W", method: "Submission (Reverse triangle armbar)", round: 3, time: "1:06", event: "XFC: Gladstone Fight Night 1", org: "XFC" },
+    { date: "Jun 16, 2018", opponent: "Darren Habben", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:29", event: "ACB 88", org: "ACB" }
+  ],
   "Bruno Gustavo da Silva": [
     { date: "Jun 6, 2026", opponent: "Édgar Cháirez", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:13", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Charles Johnson", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -29492,6 +29512,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — IBJJF No-Gi World Champion as a brown belt (Dec 2024), promoted to black belt shortly after (per ufc.com Q&A)", detail: null },
     { icon: "🥊", title: "Two-time Muay Thai national champion (per ufc.com Q&A)", detail: null },
     { icon: "🤼", title: "Two-time All-State wrestler (per ufc.com Q&A)", detail: null }
+  ],
+  "Stewart Nicoll": [
+    { icon: "🏆", title: "Former XFC (Xtreme Fighting Championships) Flyweight Champion — won and defended the title; won the belt via five-round unanimous decision over Jamie Renouf (Mar 2021)", detail: null },
+    { icon: "🏅", title: "8–3 as a pro (as of Jun 2026) — 7 finishes (4 KO/TKO, 3 submissions, incl. inverted-triangle and reverse-triangle finishes); 5 first-round finishes", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt (awarded by Professor Fabricio in 2017); head coach at Broz Martial Arts", detail: null },
+    { icon: "🥊", title: "Solomon Islands-born Australian flyweight nicknamed \"Kakamora\"; runs a martial arts gym with his wife", detail: null }
   ],
   "Alden Coria": [
     { icon: "🏆", title: "Former Fury FC Flyweight Champion — also a Fury FC amateur Flyweight Champion (per ufc.com Q&A)", detail: null },
