@@ -35691,15 +35691,43 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return Math.max(0, Math.min(1, base)) * ageFactor;
   }
 
+  // Discount applied when crediting a fighter's win over a now-unranked former
+  // contender, based on how declined that opponent already was ON THE DATE of
+  // the fight. Symmetric counterpart to simVetThreat (which protects against
+  // facing a washed vet): beating a former contender in their prime is a real
+  // proof-of-level win and counts in full (1.0), but beating one who was
+  // already OLD and on a LOSING SKID at the time — e.g. a 41-year-old Masvidal
+  // mid-slide, or a 38-year-old Jeremy Stephens on a five-fight skid — proves
+  // much less, so the credit is scaled down. Deliberately narrow: only triggers
+  // when BOTH conditions hold (age > 35 AND a 2+ fight UFC losing streak as of
+  // that date), so a healthy or still-winning contender is never discounted at
+  // any age, and prime-era wins keep full value.
+  function simBeatenVetDiscount(oppName, date) {
+    const cutoff = date ? new Date(date).getTime() : Date.now();
+    let ageAt = null;
+    const dob = ((typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[oppName]) || {}).dob;
+    if (dob) { const t = new Date(dob).getTime(); if (!isNaN(t)) ageAt = (cutoff - t) / (1000 * 60 * 60 * 24 * 365.25); }
+    const priorUfc = ((typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[oppName]) || [])
+      .filter(f => f.date && (f.result === 'W' || f.result === 'L') && String(f.org || '').toUpperCase() === 'UFC')
+      .filter(f => { const d = new Date(f.date).getTime(); return !isNaN(d) && d < cutoff; })
+      .sort((a, b) => new Date(b.date) - new Date(a.date));
+    let skid = 0;
+    for (const f of priorUfc) { if (f.result === 'L') skid++; else break; }
+    if (ageAt == null || ageAt <= 35 || skid < 2) return 1;
+    return Math.max(0.2, 1 - 0.18 * Math.min(skid, 4) - 0.06 * (ageAt - 35));
+  }
+
   // How "proven" a fighter is for the unranked-opponent branch of the unproven
   // penalty, [0,1] — whichever of two independent bars is higher:
   //   1) Resume: quality of the best genuine contender they've beaten. A
   //      currently-ranked win counts in full; a win over an opponent who was
   //      themselves a real contender (estimated tier ≤ 7, i.e. they'd beaten a
-  //      ranked fighter of their own) counts; a win over a never-ranked
-  //      journeyman barely registers (0.05). Deliberately STRICTER than
-  //      simBestWinQuality so a prospect padding a record against gatekeepers
-  //      (e.g. a faded Niko Price) reads as essentially unproven.
+  //      ranked fighter of their own) counts — but is scaled by how declined
+  //      that opponent already was at fight time (simBeatenVetDiscount), so
+  //      beating a faded ex-contender on a losing skid earns little; a win over
+  //      a never-ranked journeyman barely registers (0.05). Deliberately
+  //      STRICTER than simBestWinQuality so a prospect padding a record against
+  //      gatekeepers (e.g. a faded Niko Price) reads as essentially unproven.
   //   2) Tenure: simply having had a long UFC career. An established fighter
   //      (~18+ UFC bouts) is fully proven regardless of (1) — the resume
   //      estimator only sees CURRENT rankings, so it routinely misses that a
@@ -35714,7 +35742,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (live != null) { resume = Math.max(resume, Math.max(0.1, 1 - live / 15)); return; }
       const est = simEstimateHistoricalTier(f.opponent, f.date);
       if (est == null) return;
-      const q = est <= 7 ? Math.max(0.1, 1 - est / 15) : 0.05;
+      const q = est <= 7
+        ? Math.max(0.1, 1 - est / 15) * simBeatenVetDiscount(f.opponent, f.date)
+        : 0.05;
       resume = Math.max(resume, q);
     });
     const tenure = Math.max(0, Math.min(1, (simUfcFightCount(name) - 4) / 14));
