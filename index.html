@@ -3345,6 +3345,7 @@
  { name: "Lerryan Douglas", division: "FW", rank: "NR", record: "13-5-0", initials: "LDO", country: "Brazil" },
  { name: "Kai Kamaka III", division: "FW", rank: "NR", record: "18-7-1", initials: "KK3", country: "USA" },
  { name: "Tommy McMillen", division: "FW", rank: "NR", record: "10-0-0", initials: "TMC", country: "USA" },
+ { name: "Austin Bashi", division: "FW", rank: "NR", record: "14-1-0", initials: "ABS", country: "USA" },
  { name: "Murtazali Magomedov", division: "FW", rank: "NR", record: "10-0-0", initials: "MMG", country: "Kyrgyzstan" },
  { name: "Mandel Nallo", division: "FW", rank: "NR", record: "15-3-0", initials: "MNL", country: "Canada" },
  { name: "Marwan Rahiki", division: "FW", rank: "NR", record: "8-0-0", initials: "MRH", country: "Morocco" },
@@ -3798,6 +3799,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+ "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"9%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
  "Islam Makhachev": { ht:"5'10\"", dob:"1991-10-27", reach:'70"', stance:"Southpaw", slpm:2.45, strAcc:"58%", sapm:1.45, strDef:"62%", kd:0.30, tdLanded:3.10, tdAcc:"56%", tdDef:"91%", subAvg:0.98, finRate:"64%", streak:16, gym:"American Kickboxing Academy / Eagles MMA" },
  "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"54%", sapm:2.98, strDef:"52%", kd:0.30, tdLanded:5.32, tdAcc:"58%", tdDef:"88%", subAvg:1.37, finRate:"80%", streak:0, gym:"TKMMA Fit, Akhmat MMA" },
  "Alex Pereira": { ht:"6'4\"", dob:"1987-07-07", reach:'79"', stance:"Orthodox", slpm:5.01, strAcc:"61%", sapm:3.72, strDef:"53%", kd:0.75, tdLanded:0.11, tdAcc:"50%", tdDef:"80%", subAvg:0.22, finRate:"85%", streak:0, gym:"Teixeira MMA & Fitness (2020–present)" },
@@ -6144,6 +6146,13 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Austin Bashi": [
+    { opponent: "John Yannis", odds: -975 },
+    { opponent: "Christian Rodriguez", odds: -270 },
+    { opponent: "Dorian Ramos", odds: -1100 },
+    { opponent: "Zac Riley", odds: -5000 },
+    { opponent: "James Dunn", odds: -800 }
+  ],
   "Khamzat Chimaev": [
     { opponent: "Sean Strickland", odds: -455 },
     { opponent: "Dricus du Plessis", odds: -228 },
@@ -12653,6 +12662,23 @@
 };
 
 const FIGHT_HISTORY = {
+  "Austin Bashi": [
+    { date: "Aug 2, 2025", opponent: "John Yannis", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:39", event: "UFC Fight Night: Taira vs. Park", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Christian Rodriguez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "Sep 3, 2024", opponent: "Dorian Ramos", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:15", event: "DWCS Season 8: Week 4", org: "DWCS" },
+    { date: "Jun 1, 2024", opponent: "Zac Riley", result: "W", method: "TKO (Punches)", round: 1, time: "3:48", event: "Lights Out Championship 16", org: "Lights Out" },
+    { date: "Sep 30, 2023", opponent: "Askar Askar", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:48", event: "Lights Out Championship 13", org: "Lights Out" },
+    { date: "Jun 24, 2023", opponent: "Erik Vo", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:27", event: "Lights Out Championship 12", org: "Lights Out" },
+    { date: "Apr 29, 2023", opponent: "Felipe Vargas", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:06", event: "Lights Out Championship 11", org: "Lights Out" },
+    { date: "Nov 12, 2022", opponent: "Joseph Penafiel", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Lights Out Championship 9", org: "Lights Out" },
+    { date: "Jun 25, 2022", opponent: "Chris San Jose", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lights Out Championship 8", org: "Lights Out" },
+    { date: "Apr 9, 2022", opponent: "Erion Zekthi", result: "W", method: "TKO (Elbows and punches)", round: 2, time: "3:28", event: "Shamrock FC: Shamrock 337", org: "Shamrock FC" },
+    { date: "Dec 10, 2021", opponent: "Darnell White Jr.", result: "W", method: "TKO (Punches)", round: 1, time: "2:07", event: "XFC: Young Guns 4", org: "XFC" },
+    { date: "Aug 6, 2021", opponent: "James Dunn", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 45", org: "XFC" },
+    { date: "May 28, 2021", opponent: "Emanuel Pugh", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 44", org: "XFC" },
+    { date: "Mar 27, 2021", opponent: "Mason Iacobellis", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:56", event: "XFC: Young Guns 1", org: "XFC" },
+    { date: "Nov 11, 2020", opponent: "Enzo Perez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 43", org: "XFC" }
+  ],
   "Sean Brady": [
     { date: "May 9, 2026", opponent: "Joaquin Buckley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
     { date: "Nov 15, 2025", opponent: "Michael Morales", result: "L", method: "TKO (Punches)", round: 1, time: "3:27", event: "UFC 322", org: "UFC" },
@@ -29381,6 +29407,15 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Austin Bashi": [
+    { icon: "🏆", title: "Former Lights Out Championship Bantamweight Champion — won the title via unanimous decision over Joseph Penafiel (5 rounds, Nov 12, 2022) and defended it with rear-naked-choke submissions over Erik Vo (Jun 2023) and Askar Askar (Sep 2023)", detail: null },
+    { icon: "🏆", title: "Former Shamrock FC Bantamweight Champion — def. Erion Zekthi by TKO (elbows and punches), R2 3:28, Apr 9, 2022", detail: null },
+    { icon: "⭐", title: "Dana White's Contender Series Season 8 contract winner — def. Dorian Ramos by submission (rear-naked choke), R2 3:15, Sep 3, 2024", detail: null },
+    { icon: "🏅", title: "14–1 as a pro (as of Jun 2026) — 9 finishes (6 submissions, 3 KO/TKO); opened his career 14–0 before dropping his UFC debut", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — IBJJF No-Gi World Champion as a brown belt (Dec 2024), promoted to black belt shortly after (per ufc.com Q&A)", detail: null },
+    { icon: "🥊", title: "Two-time Muay Thai national champion (per ufc.com Q&A)", detail: null },
+    { icon: "🤼", title: "Two-time All-State wrestler (per ufc.com Q&A)", detail: null }
+  ],
   "Alberto Montes": [
     { icon: "⭐", title: "Dana White's Contender Series Season 8 contract winner — def. Carlos Calderon by submission (anaconda choke), R2 2:38, Oct 1, 2024", detail: null },
     { icon: "🏅", title: "12–1 as a pro (as of Jun 2026) — 8 finishes (7 submissions, 1 KO); finishes in his last 5 wins (4 anaconda chokes, 1 D'Arce choke) on a 4-fight win streak", detail: null },
