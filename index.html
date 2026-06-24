@@ -34506,12 +34506,84 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return baseline + (value - baseline) * effectiveCredibility;
   }
 
+  // kd, tdLanded, and subAvg are the only three rate stats with no natural
+  // ceiling: strAcc/strDef/tdAcc/tdDef/finRate are percentages (bounded
+  // 0-100% by construction), but these three are raw event counts divided
+  // by total fight time. That division is fine across a normal-length
+  // sample, but when a fighter's total logged UFC cage time is tiny — a
+  // couple of fights that both ended in the first minute — one real
+  // takedown or knockdown extrapolates into an absurd "per 15 min" rate
+  // (e.g. a single takedown landed inside a 30-second fight reads as ~18
+  // takedowns/15min). That's an artifact of the denominator, not a real
+  // pattern, and it was blowing up simPowerScore for fighters like
+  // Abdulrakhman Yakhyaev (9-0, two UFC fights, both sub-minute finishes)
+  // to the point of out-scoring a reigning champion.
+  // Ceilings set well above any real UFC fighter's genuine sustained rate,
+  // so this only ever clips an obvious small-sample artifact.
+  const SIM_RATE_CEILING = { kd: 3.0, tdLanded: 6.0, subAvg: 3.0 };
+
+  // Full trust (1) once a fighter has ~30 minutes of total logged UFC cage
+  // time — roughly two full fights worth — since by then a high rate
+  // reflects a real repeated pattern rather than one or two events landing
+  // in an unusually short denominator.
+  const SIM_RATE_RELIABILITY_FULL_SECONDS = 30 * 60;
+
+  function simParseFightSeconds(timeStr) {
+    if (!timeStr) return null;
+    const m = String(timeStr).match(/^(\d+):(\d{2})$/);
+    if (!m) return null;
+    return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+  }
+
+  // Total seconds of UFC cage time actually logged for a fighter — the real
+  // denominator behind kd/tdLanded/subAvg. A finish's total time is
+  // (round-1)*5min plus the clock shown at the stoppage; a decision goes
+  // the full scheduled distance. Non-UFC fights aren't counted since these
+  // rate stats are UFC-only (the ufc.com box-score convention they're
+  // pulled from).
+  function simUfcCageSeconds(name) {
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    const ROUND_LEN = 5 * 60;
+    let total = 0;
+    hist.forEach(f => {
+      if (f.org !== 'UFC' || !f.result || f.result === '–' || f.method === 'Upcoming') return;
+      const isDecision = String(f.method || '').toUpperCase().includes('DECISION');
+      if (isDecision) {
+        total += simNum(f.round, 3) * ROUND_LEN;
+      } else {
+        const completedRounds = Math.max(0, simNum(f.round, 1) - 1);
+        const clock = simParseFightSeconds(f.time);
+        total += completedRounds * ROUND_LEN + (clock != null ? clock : ROUND_LEN);
+      }
+    });
+    return total;
+  }
+
+  function simRateTimeReliability(name) {
+    return Math.min(1, simUfcCageSeconds(name) / SIM_RATE_RELIABILITY_FULL_SECONDS);
+  }
+
+  // Clamps a small-sample-inflated rate to a realistic ceiling, then lets
+  // that clamp relax back out as a fighter accumulates real cage time: at
+  // 0 reliability the value is fully clamped to the ceiling; at full
+  // reliability the raw value passes through untouched — a fighter who has
+  // genuinely proven a high rate over enough real fight time keeps it,
+  // however high it is.
+  function simCapSmallSampleRate(rawValue, ceiling, reliability) {
+    const capped = Math.min(rawValue, ceiling);
+    return capped + (rawValue - capped) * reliability;
+  }
+
   function getSimProfile(name, rounds) {
     const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
     const credibility = simRateCredibility(name);
+    const timeReliability = simRateTimeReliability(name);
+    const kdSane = simCapSmallSampleRate(simNum(s.kd, 0.3), SIM_RATE_CEILING.kd, timeReliability);
+    const tdLandedSane = simCapSmallSampleRate(simNum(s.tdLanded, 1.0), SIM_RATE_CEILING.tdLanded, timeReliability);
+    const subAvgSane = simCapSmallSampleRate(simNum(s.subAvg, 0.3), SIM_RATE_CEILING.subAvg, timeReliability);
     const slpm = simCredibilityDampen(simNum(s.slpm, 3.5), 3.5, credibility);
     const sapm = simCredibilityDampen(simNum(s.sapm, 3.5), 3.5, credibility);
-    const tdLanded = simCredibilityDampen(simNum(s.tdLanded, 1.0), 1.0, credibility);
+    const tdLanded = simCredibilityDampen(tdLandedSane, 1.0, credibility);
     const tdAcc = simCredibilityDampen(simPct(s.tdAcc, 0.4), 0.4, credibility);
     // A win streak built mostly pre-UFC, against obscure regional
     // competition, isn't the same signal as a real UFC streak — same
@@ -34519,7 +34591,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // treatment, toward a neutral baseline of 0 rather than a per-stat
     // average (a streak of 0 is a normal, common starting point).
     const streak = simCredibilityDampen(simNum(s.streak, 0), 0, credibility);
-    const kd = simCredibilityDampen(simNum(s.kd, 0.3), 0.3, credibility);
+    const kd = simCredibilityDampen(kdSane, 0.3, credibility);
     const finRate = simCredibilityDampen(simRelevantFinRate(name, simPct(s.finRate, 0.45)), 0.45, credibility);
     return {
       slpm,
@@ -34530,7 +34602,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       tdLanded,
       tdAcc,
       tdDef: simCredibilityDampen(simPct(s.tdDef, 0.65), 0.65, credibility),
-      subAvg: simCredibilityDampen(simNum(s.subAvg, 0.3), 0.3, credibility),
+      subAvg: simCredibilityDampen(subAvgSane, 0.3, credibility),
       finRate,
       streak,
       scheduleMultiplier: simScheduleMultiplier(name),
