@@ -3194,7 +3194,7 @@
  { name: "Alexa Grasso", division: "WFLW", rank: "#3", record: "17-5-1", initials: "AGR", country: "Mexico" },
  { name: "Maycee Barber", division: "WFLW", rank: "#5", record: "15-3-0", initials: "MAB", country: "USA" },
  { name: "Jasmine Jasudavicius", division: "WFLW", rank: "#7", record: "15-4-0", initials: "JJA", country: "Canada" },
- { name: "Rose Namajunas", division: "WFLW", rank: "#7", record: "21-8-0", initials: "RN", country: "USA" },
+ { name: "Rose Namajunas", division: "WFLW", rank: "#7", record: "14-8-0", initials: "RN", country: "USA" },
  { name: "Tracy Cortez", division: "WFLW", rank: "#8", record: "12-3-0", initials: "TCO", country: "USA" },
  { name: "Karine Silva", division: "WFLW", rank: "#9", record: "19-7-0", initials: "KSI", country: "Brazil" },
  { name: "Miranda Maverick", division: "WFLW", rank: "#10", record: "16-6-0", initials: "MMV", country: "USA" },
@@ -3834,7 +3834,7 @@
  "Sean Brady": { ht:"5'10\"", dob:"1992-11-23", reach:'72"', stance:"Orthodox", slpm:4.08, strAcc:"53%", sapm:2.77, strDef:"60%", kd:0.10, tdLanded:3.58, tdAcc:"53%", tdDef:"87%", subAvg:0.82, finRate:"47%", streak:1, gym:"Marquez MMA" },
  "Umar Nurmagomedov": { ht:'5\'8"', dob:"1996-01-03", reach:'69"', stance:"Orthodox", slpm:3.86, strAcc:"56%", sapm:1.86, strDef:"61%", kd:0.12, tdLanded:4.03, tdAcc:"47%", tdDef:"79%", subAvg:0.24, finRate:"45%", streak:2, gym:"American Kickboxing Academy" },
  "Alexa Grasso": { ht:"5'5\"", dob:"1993-08-09", reach:'66"', stance:"Orthodox", slpm:4.11, strAcc:"41%", sapm:3.71, strDef:"59%", kd:0.13, tdLanded:0.40, tdAcc:"35%", tdDef:"55%", subAvg:0.67, finRate:"41%", streak:1, gym:"Lobo Gym MMA" },
- "Rose Namajunas": { ht:"5'5\"", dob:"1992-06-29", reach:'65"', stance:"Switch", slpm:3.5, tdAcc:"48%", subAvg:0.5, strDef:"63%", kd:0.1, tdDef:"67%", finRate:"60%", streak:0, tdLanded:0.5, gym:"Roufusport" },
+ "Rose Namajunas": { ht:"5'5\"", dob:"1992-06-29", reach:'65"', stance:"Orthodox", slpm:3.50, strAcc:"41%", sapm:3.38, strDef:"64%", kd:0.30, tdLanded:1.47, tdAcc:"48%", tdDef:"62%", subAvg:0.35, finRate:"50%", streak:0, gym:"Roufusport" },
  "Jiří Procházka": { ht:"6'3\"", dob:"1992-10-14", reach:'80"', stance:"Orthodox", slpm:5.61, strAcc:"56%", sapm:5.67, strDef:"45%", kd:0.81, tdLanded:0.49, tdAcc:"60%", tdDef:"68%", subAvg:0.16, finRate:"97%", streak:0, gym:"Jetsaam Gym" },
  // ── Welterweight ──
  "Colby Covington": { ht:"5'11\"", dob:"1988-02-22", reach:'72"', stance:"Orthodox", slpm:3.81, tdAcc:"42%", subAvg:0.2, strDef:"54%", kd:0.1, tdDef:"68%", finRate:"47%", streak:0, tdLanded:3.64 },
@@ -8029,9 +8029,25 @@
     { opponent: "Kenia Rosas", odds: -1700 }
   ],
   "Rose Namajunas": [
-    { opponent: "Tracy Cortez", odds: -250 },
-    { opponent: "Jessica Andrade", odds: -145 },
-    { opponent: "Joanna Jedrzejczyk", odds: 350 }
+    { opponent: "Natália Silva", odds: 245 },
+    { opponent: "Miranda Maverick", odds: -250 },
+    { opponent: "Erin Blanchfield", odds: 125 },
+    { opponent: "Tracy Cortez", odds: -275 },
+    { opponent: "Amanda Ribas", odds: -215 },
+    { opponent: "Manon Fiorot", odds: 160 },
+    { opponent: "Carla Esparza", odds: -220 },
+    { opponent: "Zhang Weili", odds: -105 },
+    { opponent: "Zhang Weili", odds: 170 },
+    { opponent: "Jéssica Andrade", odds: 185 },
+    { opponent: "Jéssica Andrade", odds: 125 },
+    { opponent: "Joanna Jędrzejczyk", odds: -110 },
+    { opponent: "Joanna Jędrzejczyk", odds: 500 },
+    { opponent: "Michelle Waterson", odds: 110 },
+    { opponent: "Karolina Kowalkiewicz", odds: -190 },
+    { opponent: "Tecia Torres", odds: -155 },
+    { opponent: "Paige VanZant", odds: 120 },
+    { opponent: "Angela Hill", odds: -265 },
+    { opponent: "Carla Esparza", odds: -115 }
   ],
   "Raquel Pennington": [
     { opponent: "Julianna Pena", odds: 135 },
@@ -17109,14 +17125,7 @@ const FIGHT_HISTORY = {
     { date: "Dec 12, 2014", opponent: "Carla Esparza", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "1:26", event: "The Ultimate Fighter: A Champion Will Be Crowned Finale" },
     { date: "Jul 13, 2013", opponent: "Tecia Torres", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 6", org: "Invicta FC" },
     { date: "Apr 5, 2013", opponent: "Kathina Catron", result: "W", method: "Submission (Flying armbar)", round: 1, time: "0:12", event: "Invicta FC 5", org: "Invicta FC" },
-    { date: "Jan 5, 2013", opponent: "Emily Kagan", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:44", event: "Invicta FC 4", org: "Invicta FC" },
-    { date: "Aug 14, 2014", opponent: "Randa Markos", result: "W", method: "Submission (Kimura)", round: 1, time: "2:45", event: "The Ultimate Fighter: A Champion Will Be Crowned" },
-    { opponent: "Joanne Calderwood", result: "W", method: "Submission (Kimura)", time: "2:06", event: "( airdate)" },
-    { opponent: "Alex Chambers", result: "W", method: "Submission (Rear-naked choke)", time: "4:38", event: "( airdate)" },
-    { date: "Jun 30, 2012", opponent: "Jen Aniano", result: "W", method: "TKO (Head kick and punches)", round: 1, time: "0:33", event: "KOTC: Trump Card" },
-    { date: "Mar 17, 2012", opponent: "Moriel Charneski", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "KOTC: March Mania" },
-    { date: "Dec 10, 2011", opponent: "Heather Bassett", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "KOTC: Winter Warriors" },
-    { date: "Aug 7, 2010", opponent: "Melissa Pacheco", result: "W", method: "TKO (Punches)", round: 1, time: "2:51", event: "North American Fight Championship: Relentless" }
+    { date: "Jan 5, 2013", opponent: "Emily Kagan", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:44", event: "Invicta FC 4", org: "Invicta FC" }
   ],
   "Raquel Pennington": [
     { date: "Oct 5, 2024", opponent: "Julianna Peña", result: "L", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 307", org: "UFC" },
@@ -31421,6 +31430,10 @@ const ACCOLADES = {
     { icon: "🤼", title: "National medalist wrestler with two amateur MMA titles (per ufc.com Q&A)", detail: null }
   ],
   "Rose Namajunas": [
+    { icon: "🏆", title: "Two-time UFC Women's Strawweight Champion — first woman in UFC history to regain a UFC title", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (×3) — Paige VanZant, Joanna Jędrzejczyk, Zhang Weili", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (×3) — Karolina Kowalkiewicz, Jéssica Andrade (×2)", detail: null },
+    { icon: "🏅", title: "Holds wins over three former UFC strawweight champions (Jędrzejczyk, Andrade, Zhang)", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under Tony Basile", detail: null },
     { icon: "🥊", title: "Black belt in Taekwondo", detail: null },
     { icon: "🥊", title: "Black belt in Karate", detail: null },
