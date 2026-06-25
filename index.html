@@ -3510,6 +3510,7 @@
  { name: "Nicolle Caliari", division: "WSW", rank: "NR", record: "9-4-0", initials: "NCI", country: "Brazil" },
  { name: "Ariane Silva", division: "WSW", rank: "NR", record: "18-11-0", initials: "ARS", country: "Brazil" },
  { name: "Daria Zhelezniakova", division: "WBW", rank: "NR", record: "10-3-0", initials: "DZH", country: "Russia" },
+ { name: "Nina Milosevic", division: "WBW", rank: "NR", record: "8-1-0", initials: "NM", country: "Australia" },
  { name: "Alice Ardelean", division: "WSW", rank: "NR", record: "9-3-0", initials: "AAR2", country: "Romania" },
  // ─── WOMEN'S FLYWEIGHT (remaining) ───
  { name: "Mariya Agapova", division: "WFLW", rank: "NR", record: "12-5-0", initials: "MAG2", country: "Kazakhstan" },
@@ -4487,6 +4488,7 @@
  // Women's Bantamweight
  "Jessica-Rose Clark": { ht:"5'5\"", dob:"1987-11-28", reach:'64"', stance:"Orthodox", slpm:3.73, tdAcc:"42%", subAvg:0.3, strDef:"58%", kd:0.1, tdDef:"62%", finRate:"50%", streak:0, tdLanded:1.66, gym:"Team Ferreira BJJ (2023–present)" },
  "Daria Zhelezniakova": { ht:"5'9\"", dob:"1996-01-23", reach:'68"', stance:"Orthodox", slpm:4.13, strAcc:"40%", sapm:3.38, strDef:"64%", kd:0.00, tdLanded:0.31, tdAcc:"100%", tdDef:"50%", subAvg:0.00, finRate:"50%", streak:0, gym:"MMA Factory" },
+ "Nina Milosevic": { ht:"5'5\"", dob:"1996-08-08", reach:'65"', stance:"—", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Family Fight Team" },
  "Jacobe Smith": { ht:"5'10\"", dob:"1996-01-17", reach:'72"', stance:"Southpaw", slpm:6.89, strAcc:"68%", sapm:2.78, strDef:"48%", kd:0.71, tdLanded:7.78, tdAcc:"92%", tdDef:"100%", subAvg:0.71, finRate:"83%", streak:12, gym:"Fortis MMA" },
  "Levi Rodrigues": { ht:"5'5\"", dob:"1998-01-01", reach:'66"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.20 },
  "Louis Lee Scott": { ht:"5'7\"", dob:"1993-06-01", reach:'68"', stance:"Orthodox", slpm:3.30, tdAcc:"30%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.00 },
@@ -11366,6 +11368,10 @@
   "Daria Zhelezniakova": [
     { opponent: "Melissa Croden", odds: 120 },
     { opponent: "Melissa Mullins", odds: 208 }
+  ],
+  "Nina Milosevic": [
+    { opponent: "Dina Osman", odds: -438 },
+    { opponent: "Cecilie Bolander", odds: -350 }
   ],
   "Carlos Candelario": [
     { opponent: "John Castaneda", odds: 250 },
@@ -24731,6 +24737,18 @@ const FIGHT_HISTORY = {
     { date: "Dec 1, 2019", opponent: "Darina Mazdyuk", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "GIT Sech Pro: Time of New Heroes 3" },
     { date: "Jul 6, 2019", opponent: "Oksana Pavlovskaya", result: "W", method: "TKO (Punches)", round: 2, time: "0:12", event: "GIT Sech Pro: Time of New Heroes 2" }
   ],
+
+  "Nina Milosevic": [
+    { date: "Feb 14, 2026", opponent: "Dina Osman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 104", org: "Brave CF" },
+    { date: "Jul 5, 2025", opponent: "Desi Rahayu", result: "W", method: "TKO (Punches)", round: 1, time: "0:58", event: "Steve Jez Premier Fight Night" },
+    { date: "Jun 14, 2025", opponent: "Sandra Succar", result: "W", method: "TKO (Punches)", round: 1, time: "3:03", event: "WAR MMA 6: Alicante 2" },
+    { date: "May 10, 2025", opponent: "Nadine Mandiau", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Tahiti Fighting Championship 4" },
+    { date: "Apr 11, 2025", opponent: "Maricel dela Torre", result: "W", method: "TKO (Punches)", round: 1, time: "1:14", event: "Steve Jez Premier Fight Night" },
+    { date: "Mar 8, 2025", opponent: "Gina Gee", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:52", event: "Shuriken Fight Series 20" },
+    { date: "Jul 27, 2024", opponent: "Anastasiya Koroleva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shuriken Fight Series 18" },
+    { date: "May 4, 2024", opponent: "Tehanahana Bernardino", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:10", event: "Tahiti Fighting Championship: Challenger Series" },
+    { date: "Nov 4, 2023", opponent: "Cecilie Bolander", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Superior Challenge 26: Legends" }
+  ],
   "Carlos Candelario": [
     { date: "Mar 29, 2025", opponent: "John Castaneda", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg" },
     { date: "Nov 9, 2024", opponent: "Vinicius Oliveira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Gamrot vs. Fiziev" },
@@ -30056,6 +30074,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Nina Milosevic": [
+    { icon: "🏆", title: "Tahiti Fighting Championship titleholder", detail: "def. Nadine Mandiau (TFC 4)" },
+    { icon: "🥇", title: "Multiple-time IMMAF Amateur World Champion", detail: null },
+    { icon: "🏅", title: "8-fight pro win streak (5 finishes)", detail: null },
+  ],
   "Daria Zhelezniakova": [
     { icon: "🏆", title: "Open Fighting Championship (OFC) Champion", detail: null },
     { icon: "🥇", title: "UWW Pankration World Champion (amateur)", detail: null },
