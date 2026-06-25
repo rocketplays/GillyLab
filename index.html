@@ -3471,7 +3471,7 @@
  { name: "Austin Lund", division: "FW", rank: "NR", record: "10-3-0", initials: "ALU", country: "USA" },
  { name: "Nate Landwehr", division: "FW", rank: "NR", record: "19-7-0", initials: "NLA", country: "USA" },
  { name: "Eric Shelton", division: "FW", rank: "NR", record: "21-9-0", initials: "ESH2", country: "USA" },
- { name: "Joanderson Brito", division: "FW", rank: "NR", record: "17-4-1", initials: "JBT", country: "Brazil" },
+ { name: "Joanderson Brito", division: "FW", rank: "NR", record: "19-5-1", initials: "JBT", country: "Brazil" },
  { name: "TJ Brown", division: "FW", rank: "NR", record: "21-12-0", initials: "TJB", country: "USA" },
  { name: "Damon Jackson", division: "FW", rank: "NR", record: "23-9-1", initials: "DJK", country: "USA" },
  { name: "Lucas Alexander", division: "FW", rank: "NR", record: "12-2-0", initials: "LAX", country: "Australia" },
@@ -4089,7 +4089,7 @@
  // ── Women's Strawweight (more) ──
  "Molly McCann": { ht:"5'4\"", dob:"1990-05-04", reach:'62"', stance:"Orthodox", slpm:5.28, tdAcc:"36%", subAvg:0.3, strDef:"62%", kd:0.5, tdDef:"38%", finRate:"50%", streak:0, tdLanded:1.78, gym:"Next Generation MMA (2013–present)" },
  // ── Featherweight (more) ──
- "Joanderson Brito": { ht:"5'8\"", dob:"1995-02-11", reach:'72"', stance:"Orthodox", slpm:2.43, tdAcc:"67%", subAvg:0.5, strDef:"44%", kd:0.1, tdDef:"47%", finRate:"61%", streak:0, tdLanded:3.38 },
+ "Joanderson Brito": { ht:"5'8\"", dob:"1995-02-11", reach:'72"', stance:"Orthodox", slpm:2.43, strAcc:"51%", sapm:2.32, strDef:"44%", kd:0.16, tdLanded:3.38, tdAcc:"68%", tdDef:"48%", subAvg:1.13, finRate:"84%", streak:2, gym:"Chute Boxe - João Emílio" },
  "Dan Ige": { ht:"5'7\"", dob:"1991-08-06", reach:'71"', stance:"Orthodox", slpm:3.64, tdAcc:"25%", subAvg:0.2, strDef:"56%", kd:0.2, tdDef:"56%", finRate:"53%", streak:0, tdLanded:0.89, gym:"American Kickboxing Academy" },
  "Calvin Kattar": { ht:"5'11\"", dob:"1988-03-26", reach:'72"', stance:"Orthodox", slpm:4.41, tdAcc:"29%", subAvg:0.1, strDef:"54%", kd:0.3, tdDef:"77%", finRate:"43%", streak:0, tdLanded:0.34, gym:"Team Sityodtong" },
  "TJ Brown": { ht:"5'9\"", dob:"1990-05-22", reach:'72"', stance:"Switch", slpm:3.37, tdAcc:"57%", subAvg:1.3, strDef:"49%", kd:0.1, tdDef:"36%", finRate:"41%", streak:0, tdLanded:3.41, gym:"Glory MMA (2021–present)" },
@@ -6577,13 +6577,18 @@
     { opponent: "Irene Aldana", odds: -200 }
   ],
   "Joanderson Brito": [
-    { opponent: "Isaac Thomson", odds: -400 },
-    { opponent: "Pat Sabatini", odds: -250 },
-    { opponent: "William Gomis", odds: -165 },
-    { opponent: "Jack Shore", odds: -200 },
-    { opponent: "Jonathan Pearce", odds: 150 },
-    { opponent: "Westin Wilson", odds: -500 },
-    { opponent: "Lucas Alexander", odds: -600 }
+    { opponent: "Jordan Leavitt", odds: -175 },
+    { opponent: "Isaac Thomson", odds: -235 },
+    { opponent: "Pat Sabatini", odds: -215 },
+    { opponent: "William Gomis", odds: -325 },
+    { opponent: "Jack Shore", odds: -210 },
+    { opponent: "Jonathan Pearce", odds: 110 },
+    { opponent: "Westin Wilson", odds: -1400 },
+    { opponent: "Lucas Alexander", odds: -410 },
+    { opponent: "Andre Fili", odds: 210 },
+    { opponent: "Bill Algeo", odds: -155 },
+    { opponent: "Diego Lopes", odds: -105 },
+    { opponent: "Chepe Mariscal", odds: -170 }
   ],
   "Jordan Leavitt": [
     { opponent: "Yadier del Valle", odds: -400 },
@@ -14522,21 +14527,31 @@ const FIGHT_HISTORY = {
 
 
   "Joanderson Brito": [
-    { date: "Dec 13, 2025", opponent: "Isaac Thomson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape" },
-    { date: "Apr 5, 2025", opponent: "Pat Sabatini", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Murphy" },
-    { date: "Sep 28, 2024", opponent: "William Gomis", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis" },
-    { date: "May 4, 2024", opponent: "Jack Shore", result: "W", method: "KO/TKO (Doctor Stop)", round: 2, time: "3:35", event: "UFC 301" },
-    { date: "Nov 18, 2023", opponent: "Jonathan Pearce", result: "W", method: "Submission (Ninja choke)", round: 2, time: "3:54", event: "UFC Fight Night: Allen vs. Craig" },
-    { date: "Jul 1, 2023", opponent: "Westin Wilson", result: "W", method: "KO (Punches)", round: 1, time: "2:54", event: "UFC Fight Night: Strickland vs. Magomedov" },
-    { date: "Oct 15, 2022", opponent: "Lucas Alexander", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:02", event: "UFC Fight Night: Grasso vs. Araujo" },
-    { date: "Apr 30, 2022", opponent: "Andre Fili", result: "W", method: "KO (Punches)", round: 1, time: "0:41", event: "UFC Fight Night: Font vs. Vera" },
-    { date: "Jan 15, 2022", opponent: "Bill Algeo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Chikadze (debut)" },
-    { date: "Sep 25, 2021", opponent: "Alex Pereira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SFT 34" },
-    { date: "Jun 12, 2021", opponent: "Deivison Figueiredo", result: "W", method: "TKO (Punches)", round: 2, time: "2:58", event: "SFT 30" },
-    { date: "Feb 27, 2021", opponent: "Eliandro Silva", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:43", event: "SFT 27" },
-    { date: "Nov 7, 2020", opponent: "Osmar Ferreira", result: "W", method: "KO (Punches)", round: 1, time: "0:33", event: "SFT 24" },
-    { date: "Jun 20, 2020", opponent: "Arilton Lima", result: "W", method: "TKO (Punches)", round: 2, time: "0:38", event: "SFT 20" },
-    { date: "Mar 7, 2020", opponent: "Welington Paulino", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:44", event: "SFT 18 (debut)" }
+    { date: "Jun 6, 2026", opponent: "Jordan Leavitt", result: "W", method: "Submission (Ninja choke)", round: 1, time: "4:19", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
+    { date: "Dec 13, 2025", opponent: "Isaac Thomson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
+    { date: "Apr 5, 2025", opponent: "Pat Sabatini", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Murphy", org: "UFC" },
+    { date: "Sep 28, 2024", opponent: "William Gomis", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis", org: "UFC" },
+    { date: "May 4, 2024", opponent: "Jack Shore", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "3:35", event: "UFC 301", org: "UFC" },
+    { date: "Nov 18, 2023", opponent: "Jonathan Pearce", result: "W", method: "Submission (Ninja choke)", round: 2, time: "3:54", event: "UFC Fight Night: Allen vs. Craig", org: "UFC" },
+    { date: "Jul 1, 2023", opponent: "Westin Wilson", result: "W", method: "KO (Punches)", round: 1, time: "2:54", event: "UFC Fight Night: Strickland vs. Magomedov", org: "UFC" },
+    { date: "Oct 15, 2022", opponent: "Lucas Alexander", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:02", event: "UFC Fight Night: Grasso vs. Araújo", org: "UFC" },
+    { date: "Apr 30, 2022", opponent: "Andre Fili", result: "W", method: "KO (Punches)", round: 1, time: "0:41", event: "UFC Fight Night: Font vs. Vera", org: "UFC" },
+    { date: "Jan 15, 2022", opponent: "Bill Algeo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Chikadze (debut)", org: "UFC" },
+    { date: "Aug 31, 2021", opponent: "Diego Lopes", result: "W", method: "Technical Decision (Unanimous)", round: 3, time: "0:12", event: "Dana White's Contender Series 5", org: "UFC" },
+    { date: "May 3, 2019", opponent: "Chepe Mariscal", result: "W", method: "KO (Punches)", round: 1, time: "0:44", event: "LFA 65" },
+    { date: "Feb 22, 2019", opponent: "Estabili Amato", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "0:41", event: "Future FC 2" },
+    { date: "Nov 7, 2018", opponent: "Jose Zarauz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fusion FC 35 (FW Title)" },
+    { date: "Sep 7, 2018", opponent: "Wellington Prado", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:00", event: "Thunder Fight 15" },
+    { date: "Jul 18, 2018", opponent: "Johnny Iwasaki", result: "W", method: "TKO (Punches)", round: 3, time: "4:25", event: "Fusion FC 33 (FW Title)" },
+    { date: "Jun 9, 2018", opponent: "Duilio dos Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:01", event: "Strike do Vale Fight 2" },
+    { date: "Dec 22, 2017", opponent: "Cicero Coutinho", result: "W", method: "KO (Punches)", round: 1, time: "1:25", event: "Thunder Fight 13" },
+    { date: "May 26, 2017", opponent: "Leandro Compri", result: "W", method: "KO (Punches)", round: 1, time: "0:33", event: "Araca Fight Combat 2017" },
+    { date: "Mar 10, 2017", opponent: "Wanderley Junior", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:42", event: "Ultimate Reborn Fight 5" },
+    { date: "Jun 4, 2016", opponent: "Jefson Castor", result: "D", method: "Draw", round: 3, time: "5:00", event: "Arena Kombat FC 2" },
+    { date: "Mar 12, 2016", opponent: "Rogerio Furtado", result: "W", method: "KO (Punches)", round: 1, time: "0:22", event: "Hombres de Honor 69" },
+    { date: "Dec 18, 2015", opponent: "Henrique Gomes", result: "L", method: "TKO (Punches)", round: 1, time: "N/A", event: "Clube Fight Vitória" },
+    { date: "Jun 14, 2015", opponent: "Marcio de Oliveira", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:26", event: "Guerreiros da Fé Combat" },
+    { date: "Nov 8, 2013", opponent: "Rafael Moreira", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:40", event: "Big Way Fight 3" }
   ],
   "Jordan Leavitt": [
     { date: "Jun 6, 2026", opponent: "Joanderson Brito", result: "L", method: "Submission (Ninja choke)", round: 1, time: "4:19", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
@@ -29972,6 +29987,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Joanderson Brito": [
+    { icon: "🥊", title: "Dana White's Contender Series winner (2021) — earned UFC contract", detail: null },
+    { icon: "🏆", title: "Fusion Fighting Championship Featherweight Champion", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Mario Pinto": [
     { icon: "🥊", title: "Dana White's Contender Series winner (2024) — earned UFC contract", detail: null },
     { icon: "🏆", title: "Levels Fight League Heavyweight Champion", detail: null },
