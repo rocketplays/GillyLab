@@ -3209,7 +3209,7 @@
  { name: "Viviane Araújo", division: "WFLW", rank: "NR", record: "14-7-0", initials: "VAR", country: "Brazil" },
  // ─── WOMEN'S BANTAMWEIGHT ───
  { name: "Kayla Harrison", division: "WBW", rank: "#C", record: "19-1-0", initials: "KHA", country: "USA" },
- { name: "Julianna Peña", division: "WBW", rank: "#1", record: "17-6-0", initials: "JPE", country: "USA" },
+ { name: "Julianna Peña", division: "WBW", rank: "#1", record: "13-6-0", initials: "JPE", country: "USA" },
  { name: "Raquel Pennington", division: "WBW", rank: "#2", record: "16-9-0", initials: "RPE", country: "USA" },
  { name: "Norma Dumont", division: "WBW", rank: "#3", record: "13-3-0", initials: "NDU", country: "Brazil" },
  { name: "Ketlen Vieira", division: "WBW", rank: "#4", record: "16-5-0", initials: "KVI", country: "Brazil" },
@@ -3933,7 +3933,7 @@
  "Virna Jandiroba": { ht:"5'3\"", dob:"1988-05-30", reach:'64"', stance:"Orthodox", slpm:2.33, strAcc:"41%", sapm:2.90, strDef:"56%", kd:0.10, tdLanded:2.85, tdAcc:"39%", tdDef:"74%", subAvg:1.52, finRate:"65%", streak:1, gym:"Academia Fight House" },
  "Amanda Lemos": { ht:"5'4\"", dob:"1987-05-22", reach:'65"', stance:"Southpaw", slpm:2.75, strAcc:"55%", sapm:3.01, strDef:"45%", kd:0.56, tdLanded:1.02, tdAcc:"65%", tdDef:"63%", subAvg:0.74, finRate:"73%", streak:0, gym:"Marajó Brothers Team" },
  // ── Women's Bantamweight (extended) ──
- "Julianna Peña": { ht:"5'6\"", dob:"1989-08-19", reach:'69"', stance:"Orthodox", slpm:3.10, tdAcc:"54%", subAvg:0.8, strDef:"57%", kd:0.1, tdDef:"24%", finRate:"54%", streak:0, tdLanded:1.70, gym:"Gregory Boxing & Muay Thai" },
+ "Julianna Peña": { ht:"5'6\"", dob:"1989-08-19", reach:'69"', stance:"Orthodox", slpm:3.10, strAcc:"44%", sapm:2.56, strDef:"57%", kd:0.00, tdLanded:1.70, tdAcc:"55%", tdDef:"24%", subAvg:0.76, finRate:"69%", streak:0, gym:"Valle Flow Striking" },
  "Raquel Pennington": { ht:"5'6\"", dob:"1988-09-29", reach:'66"', stance:"Orthodox", slpm:3.19, tdAcc:"37%", subAvg:0.1, strDef:"58%", kd:0.1, tdDef:"77%", finRate:"25%", streak:0, tdLanded:1.28, gym:"Altitude MMA" },
  "Ketlen Vieira": { ht:"5'8\"", dob:"1991-08-26", reach:'68"', stance:"Orthodox", slpm:2.76, tdAcc:"45%", subAvg:0.5, strDef:"50%", kd:0.1, tdDef:"68%", finRate:"47%", streak:0, tdLanded:2.23, gym:"Nova União Manaus" },
  "Irene Aldana": { ht:"5'9\"", dob:"1988-03-26", reach:'68"', stance:"Orthodox", slpm:5.19, tdAcc:"50%", subAvg:0.3, strDef:"56%", kd:0.4, tdDef:"77%", finRate:"53%", streak:0, tdLanded:0.15, gym:"Lobo Gym MMA" },
@@ -7824,11 +7824,6 @@
     { opponent: "Tatsuro Taira", odds: 170 },
     { opponent: "Tim Elliott", odds: -200 }
   ],
-  "Julianna Pena": [
-    { opponent: "Amanda Nunes", odds: 700 },
-    { opponent: "Sara McMann", odds: 100 },
-    { opponent: "Germaine de Randamie", odds: 162 }
-  ],
   "Manon Fiorot": [
     { opponent: "Jasmine Jasudavicius", odds: -230 },
     { opponent: "Valentina Shevchenko", odds: -135 },
@@ -8777,13 +8772,18 @@
     { opponent: "Justin Moore", odds: -1408 }
   ],
   "Julianna Peña": [
-    { opponent: "Raquel Pennington", odds: -150 },
-    { opponent: "Amanda Nunes", odds: 350 },
-    { opponent: "Sara McMann", odds: -280 },
-    { opponent: "Germaine de Randamie", odds: -180 },
-    { opponent: "Nicco Montano", odds: -600 },
-    { opponent: "Valentina Shevchenko", odds: 230 },
-    { opponent: "Cat Zingano", odds: -160 }
+    { opponent: "Kayla Harrison", odds: 435 },
+    { opponent: "Raquel Pennington", odds: 135 },
+    { opponent: "Amanda Nunes", odds: 215 },
+    { opponent: "Amanda Nunes", odds: 600 },
+    { opponent: "Sara McMann", odds: -105 },
+    { opponent: "Germaine de Randamie", odds: 150 },
+    { opponent: "Nicco Montano", odds: -225 },
+    { opponent: "Valentina Shevchenko", odds: 160 },
+    { opponent: "Cat Zingano", odds: 155 },
+    { opponent: "Jessica Eye", odds: -255 },
+    { opponent: "Milana Dudieva", odds: -400 },
+    { opponent: "Jessica Rakoczy", odds: -310 }
   ],
   "Yana Santos": [
     { opponent: "Pannie Kianzad", odds: -300 },
@@ -15659,24 +15659,6 @@ const FIGHT_HISTORY = {
 
 
 
-  "Julianna Pena": [
-    { date: "Jun 7, 2025", opponent: "Kayla Harrison", result: "L", method: "Sub (Kimura)", round: 2, time: "4:55", event: "UFC 316: Dvalishvili vs. O'Malley 2 (WBW Title)" },
-    { date: "Oct 6, 2024", opponent: "Raquel Pennington", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 307: Pereira vs. Rountree (WBW Title)" },
-    { date: "Jul 30, 2022", opponent: "Amanda Nunes", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 277: Peña vs. Nunes 2 (WBW Title)" },
-    { date: "Dec 11, 2021", opponent: "Amanda Nunes", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:55", event: "UFC 269: Poirier vs. Oliveira 2 (WBW Title)" },
-    { date: "Jan 23, 2021", opponent: "Sara McMann", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 257: Poirier vs. McGregor 2" },
-    { date: "Oct 3, 2020", opponent: "Germaine de Randamie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holm vs. Aldana" },
-    { date: "Jul 13, 2019", opponent: "Nicco Montano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: de Randamie vs. Ladd" },
-    { date: "Sep 9, 2017", opponent: "Valentina Shevchenko", result: "L", method: "TKO (Punches)", round: 5, time: "0:45", event: "UFC Fight Night: Rockhold vs. Branch" },
-    { date: "Mar 4, 2017", opponent: "Valentina Shevchenko", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Belfort vs. Gastelum" },
-    { date: "Feb 19, 2017", opponent: "Cat Zingano", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:10", event: "UFC Fight Night: Lewis vs. Browne" },
-    { date: "Jun 4, 2016", opponent: "Milana Dudieva", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:08", event: "TUF 18 Finale" },
-    { date: "Dec 12, 2015", opponent: "Jessica Eye", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Namajunas vs. VanZant" },
-    { date: "Jul 12, 2014", opponent: "Shayna Baszler", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:17", event: "TUF 18 Finale (debut)" },
-    { date: "May 4, 2013", opponent: "Brooke Alvarez", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:06", event: "Renzo Gracie Invitational" },
-    { date: "Nov 17, 2012", opponent: "Liz McCarthy", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:32", event: "Regional MMA" },
-    { date: "Sep 29, 2012", opponent: "Kelsey Darnell", result: "W", method: "TKO (Punches)", round: 1, time: "0:40", event: "Regional MMA (debut)" }
-  ],
   "Manon Fiorot": [
     { date: "Oct 18, 2025", opponent: "Jasmine Jasudavicius", result: "W", method: "TKO (Punches)", round: 1, time: "1:14", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
     { date: "May 10, 2025", opponent: "Valentina Shevchenko", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 315", org: "UFC" },
@@ -18446,29 +18428,25 @@ const FIGHT_HISTORY = {
     { date: "Sep 6, 2020", opponent: "Kyle McClurkin", result: "W", method: "TKO (Punches)", round: 2, time: "0:12", event: "Cage Warriors 116", org: "Cage Warriors" }
   ],
   "Julianna Peña": [
-    { date: "Jun 7, 2025", opponent: "Kayla Harrison", result: "L", method: "Submission (Kimura)", round: 2, time: "4:55", event: "UFC 316", org: "UFC" },
-    { date: "Oct 5, 2024", opponent: "Raquel Pennington", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 307", org: "UFC" },
-    { date: "Jul 30, 2022", opponent: "Amanda Nunes", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 277", org: "UFC" },
-    { date: "Dec 11, 2021", opponent: "Amanda Nunes", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:26", event: "UFC 269", org: "UFC" },
-    { date: "Jan 24, 2021", opponent: "Sara McMann", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:39", event: "UFC 257", org: "UFC" },
-    { date: "Oct 4, 2020", opponent: "Germaine de Randamie", result: "L", method: "Technical submission (Guillotine choke)", round: 3, time: "3:25", event: "UFC on ESPN: Holm vs. Aldana", org: "UFC" },
-    { date: "Jul 13, 2019", opponent: "Nicco Montaño", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: de Randamie vs. Ladd", org: "UFC" },
+    { date: "Jun 7, 2025", opponent: "Kayla Harrison", result: "L", method: "Submission (Kimura)", round: 2, time: "4:55", event: "UFC 316: Dvalishvili vs. O'Malley 2 (WBW Title)", org: "UFC" },
+    { date: "Oct 5, 2024", opponent: "Raquel Pennington", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 307: Pereira vs. Rountree Jr. (WBW Title)", org: "UFC" },
+    { date: "Jul 30, 2022", opponent: "Amanda Nunes", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 277: Peña vs. Nunes 2 (WBW Title)", org: "UFC" },
+    { date: "Dec 11, 2021", opponent: "Amanda Nunes", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:26", event: "UFC 269: Oliveira vs. Poirier (WBW Title)", org: "UFC" },
+    { date: "Jan 23, 2021", opponent: "Sara McMann", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:39", event: "UFC 257: Poirier vs. McGregor 2", org: "UFC" },
+    { date: "Oct 3, 2020", opponent: "Germaine de Randamie", result: "L", method: "Technical Submission (Guillotine)", round: 3, time: "3:25", event: "UFC Fight Night: Holm vs. Aldana", org: "UFC" },
+    { date: "Jul 13, 2019", opponent: "Nicco Montano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: de Randamie vs. Ladd", org: "UFC" },
     { date: "Jan 28, 2017", opponent: "Valentina Shevchenko", result: "L", method: "Submission (Armbar)", round: 2, time: "4:29", event: "UFC on Fox: Shevchenko vs. Peña", org: "UFC" },
-    { date: "Jul 9, 2016", opponent: "Cat Zingano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 200", org: "UFC" },
-    { date: "Oct 3, 2015", opponent: "Jessica Eye", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 192", org: "UFC" },
-    { date: "Apr 4, 2015", opponent: "Milana Dudieva", result: "W", method: "TKO (Punches and elbows)", round: 1, time: "3:59", event: "UFC Fight Night: Mendes vs. Lamas", org: "UFC" },
-    { date: "Nov 30, 2013", opponent: "Jessica Rakoczy", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "The Ultimate Fighter: Team Rousey vs. Team Tate Finale" },
+    { date: "Jul 9, 2016", opponent: "Cat Zingano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 200: Tate vs. Nunes", org: "UFC" },
+    { date: "Oct 3, 2015", opponent: "Jessica Eye", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 192: Cormier vs. Gustafsson", org: "UFC" },
+    { date: "Apr 4, 2015", opponent: "Milana Dudieva", result: "W", method: "TKO (Punches)", round: 1, time: "3:59", event: "UFC Fight Night: Mendes vs. Lamas", org: "UFC" },
+    { date: "Nov 30, 2013", opponent: "Jessica Rakoczy", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "The Ultimate Fighter 18 Finale (tournament final)", org: "UFC" },
+    { date: "Nov 13, 2013", opponent: "Sarah Moras", result: "W", method: "Submission (Guillotine)", round: 2, time: "3:31", event: "The Ultimate Fighter 18 (semifinal)", org: "UFC" },
     { date: "Feb 8, 2013", opponent: "DeAnna Bennett", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Showdown Fights 10" },
-    { date: "Apr 19, 2012", opponent: "Sarah Moras", result: "L", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "ExciteFight: Conquest of the Cage 11" },
-    { date: "Dec 15, 2011", opponent: "Rachael Swatez", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "0:17", event: "ExciteFight: Conquest of the Cage 10" },
+    { date: "Apr 19, 2012", opponent: "Sarah Moras", result: "L", method: "TKO (Doctor Stoppage)", round: 2, time: "5:00", event: "Conquest of the Cage 11" },
+    { date: "Dec 15, 2011", opponent: "Rachael Swatez", result: "W", method: "Submission (Guillotine)", round: 2, time: "0:17", event: "Conquest of the Cage 10" },
     { date: "Dec 5, 2009", opponent: "Stephanie Webber", result: "W", method: "Submission (Armbar)", round: 2, time: "2:54", event: "CageSport 8" },
-    { date: "Aug 15, 2009", opponent: "Robyn Dunne", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "International FC: Caged Combat" },
-    { date: "May 9, 2009", opponent: "Raylene Harvey", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:58", event: "ExciteFight: Spokane Fight Night 5" },
-    { date: "Nov 13, 2013", opponent: "Sarah Moras", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "3:31", event: "The Ultimate Fighter: Team Rousey vs. Team Tate" },
-    { opponent: "Shayna Baszler", result: "W", method: "Submission (Rear-naked choke)", time: "3:07", event: "(air date)" },
-    { opponent: "Gina Mazany", result: "W", method: "Decision (Unanimous)", time: "5:00", event: "(air date)" },
-    { date: "Feb 28, 2009", opponent: "Cynthia Hernandez", result: "W", method: "TKO (Submission to punch)", round: 1, time: "N/A", event: "Northwest Fighting: Moses Lake Cage Fights 1" },
-    { date: "Feb 6, 2009", opponent: "Kate Dell", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "ExciteFight: Spokane Fight Night 3" }
+    { date: "Aug 15, 2009", opponent: "Robyn Dunne", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "IFC: Caged Combat" },
+    { date: "May 9, 2009", opponent: "Raylene Harvey", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:58", event: "exciteFIGHT" }
   ],
 
 
@@ -31575,7 +31553,10 @@ const ACCOLADES = {
     { icon: "⭐", title: "UFC Performance of the Night — 1× (vs. Peña)", detail: null },
   ],
   "Julianna Peña": [
-    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
+    { icon: "🏆", title: "Two-time UFC Women's Bantamweight Champion", detail: null },
+    { icon: "🏆", title: "The Ultimate Fighter 18 winner (bantamweight, 2013)", detail: null },
+    { icon: "🏅", title: "Submitted Amanda Nunes at UFC 269 (2021) — first finish loss of Nunes's career", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Raquel Pennington": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under Tyler Larsen", detail: null },
