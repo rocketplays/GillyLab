@@ -2981,7 +2981,7 @@
  const FIGHTERS = [
  // ─── FLYWEIGHT ───
  { name: "Joshua Van", division: "FLW", rank: "#C", record: "17-2-0", initials: "JV", country: "Myanmar" },
- { name: "Alexandre Pantoja", division: "FLW", rank: "#1", record: "32-7-0", initials: "APT", country: "Brazil" },
+ { name: "Alexandre Pantoja", division: "FLW", rank: "#1", record: "30-6-0", initials: "APT", country: "Brazil" },
  { name: "Tatsuro Taira", division: "FLW", rank: "#3", record: "18-3-0", initials: "TT", country: "Japan" },
  { name: "Brandon Royval", division: "FLW", rank: "#4", record: "18-8-0", initials: "BR", country: "USA" },
  { name: "Kyoji Horiguchi", division: "FLW", rank: "#5", record: "36-5-0", initials: "KH", country: "Japan" },
@@ -3875,7 +3875,7 @@
  "Henry Cejudo": { ht:"5'4\"", dob:"1987-02-09", reach:'64"', stance:"Orthodox", slpm:3.83, tdAcc:"29%", subAvg:0.1, strDef:"57%", kd:0.2, tdDef:"72%", finRate:"56%", streak:0, tdLanded:1.78 },
  "José Aldo": { ht:"5'7\"", dob:"1986-09-09", reach:'70"', stance:"Orthodox", slpm:3.65, tdAcc:"34%", subAvg:0.1, strDef:"57%", kd:0.3, tdDef:"76%", finRate:"56%", streak:0, tdLanded:0.71, gym:"Ruas Vale Tudo" },
  // ── Flyweight ──
- "Alexandre Pantoja": { ht:"5'5\"", dob:"1990-04-16", reach:'67"', stance:"Orthodox", slpm:4.38, tdAcc:"47%", subAvg:1.0, strDef:"49%", kd:0.2, tdDef:"69%", finRate:"57%", streak:0, tdLanded:2.79, gym:"American Top Team (2018–present)" },
+ "Alexandre Pantoja": { ht:"5'5\"", dob:"1990-04-16", reach:'67"', stance:"Orthodox", slpm:4.38, strAcc:"50%", sapm:3.88, strDef:"50%", kd:0.28, tdLanded:2.79, tdAcc:"4%", tdDef:"69%", subAvg:0.98, finRate:"67%", streak:0, gym:"American Top Team" },
  "Brandon Moreno": { ht:"5'7\"", dob:"1993-12-07", reach:'70"', stance:"Orthodox", slpm:3.84, tdAcc:"39%", subAvg:0.4, strDef:"59%", kd:0.1, tdDef:"65%", finRate:"52%", streak:0, tdLanded:1.36, gym:"Fortis MMA (2022–present)" },
  "Tatsuro Taira": { ht:"5'7\"", dob:"2000-01-27", reach:'70"', stance:"Orthodox", slpm:2.94, tdAcc:"46%", subAvg:1.6, strDef:"47%", kd:0.0, tdDef:"45%", finRate:"N/A", streak:0, tdLanded:3.12, gym:"The Blackbelt Japan" },
  "Amir Albazi": { ht:"5'5\"", dob:"1993-10-27", reach:'68"', stance:"Orthodox", slpm:2.47, tdAcc:"25%", subAvg:0.4, strDef:"59%", kd:0.1, tdDef:"62%", finRate:"59%", streak:0, tdLanded:1.18, gym:"Great Britain Top Team (2026–present)" },
@@ -7038,18 +7038,26 @@
     { opponent: "Sidemar Honorio", odds: -2000 },
   ],
   "Alexandre Pantoja": [
-    { opponent: "Joshua Van", odds: 425 },
-    { opponent: "Kai Kara-France", odds: -500 },
-    { opponent: "Kai Asakura", odds: -600 },
-    { opponent: "Steve Erceg", odds: -550 },
-    { opponent: "Brandon Royval", odds: -350 },
-    { opponent: "Brandon Moreno", odds: -230 },
-    { opponent: "Askar Askarov", odds: -200 },
-    { opponent: "Matt Schnell", odds: -500 },
-    { opponent: "Youssef Zalal", odds: -400 },
-    { opponent: "Wilson Reis", odds: -300 },
-    { opponent: "Dustin Ortiz", odds: -150 },
-    { opponent: "Jussier Formiga", odds: 200 }
+    { opponent: "Joshua Van", odds: -210 },
+    { opponent: "Kai Kara-France", odds: -260 },
+    { opponent: "Kai Asakura", odds: -220 },
+    { opponent: "Steve Erceg", odds: -190 },
+    { opponent: "Brandon Royval", odds: -210 },
+    { opponent: "Brandon Moreno", odds: 165 },
+    { opponent: "Alex Perez", odds: -180 },
+    { opponent: "Brandon Royval", odds: -170 },
+    { opponent: "Manel Kape", odds: -115 },
+    { opponent: "Askar Askarov", odds: -190 },
+    { opponent: "Matt Schnell", odds: -270 },
+    { opponent: "Deiveson Figueiredo", odds: -130 },
+    { opponent: "Wilson Reis", odds: -165 },
+    { opponent: "Ulka Sasaki", odds: -325 },
+    { opponent: "Brandon Moreno", odds: -110 },
+    { opponent: "Dustin Ortiz", odds: 110 },
+    { opponent: "Neil Seery", odds: -340 },
+    { opponent: "Eric Shelton", odds: 100 },
+    { opponent: "Damacio Page", odds: -155 },
+    { opponent: "Matt Manzanares", odds: -120 }
   ],
   "Tom Aspinall": [
     { opponent: "Ciryl Gane", odds: -400 },
@@ -15985,10 +15993,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 28, 2009", opponent: "Gabriel Wolff", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "Shooto Brazil 11", org: "Shooto" },
     { date: "Sep 25, 2008", opponent: "William Vianna", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Watch Out Combat Show 2" },
     { date: "Aug 2, 2008", opponent: "Peterson Malfort", result: "W", method: "TKO (Punches)", round: 2, time: "N/A", event: "Rocinha Fight" },
-    { date: "Jul 21, 2007", opponent: "Antônio Carlos", result: "W", method: "Submission (Armbar)", round: 1, time: "N/A", event: "Vila Fight" },
-    { date: "Nov 23, 2016", opponent: "Hiromasa Ougikubo", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "The Ultimate Fighter: Tournament of Champions" },
-    { opponent: "Kai Kara-France", result: "W", method: "Decision (Unanimous)", time: "5:00" },
-    { opponent: "Brandon Moreno", result: "W", method: "Submission (Rear-naked choke)", time: "3:44" }
+    { date: "Jul 21, 2007", opponent: "Antônio Carlos", result: "W", method: "Submission (Armbar)", round: 1, time: "N/A", event: "Vila Fight" }
   ],
   "Charles Oliveira": [
     { date: "Mar 7, 2026", opponent: "Max Holloway", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 326", org: "UFC" },
@@ -30015,7 +30020,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "Highest significant strikes landed per minute in UFC history (8.43)", detail: null },
   ],
   "Alexandre Pantoja": [
-    { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
+    { icon: "🏆", title: "Former UFC Flyweight Champion (won UFC 290, 2023; 4 title defenses)", detail: null },
+    { icon: "🏅", title: "Most wins (14), finishes (8) & submissions (6) in UFC Flyweight division history", detail: null },
+    { icon: "⭐", title: "Performance of the Night (4 times) vs. Matt Schnell, Brandon Royval, Alex Perez, Kai Asakura", detail: null },
+    { icon: "⭐", title: "Fight of the Night (2 times) vs. Deiveson Figueiredo, Brandon Moreno", detail: null },
+    { icon: "🏆", title: "RFA Flyweight Champion", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Tatsuro Taira": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
