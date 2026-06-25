@@ -19,11 +19,22 @@ python3 scripts/fighter-lookup.py "<Fighter Name>"
 This prints, compactly:
 - **[LOCAL]** the fighter's current roster row, stats, odds, fight history (with derived
   record + win streak), and accolades from index.html
-- **[UFCCOM]** career stats parsed from ufc.com (UFCStats.com is bot-blocked — don't try it)
+- **[UFCCOM]** career stats parsed from ufc.com, each field parsed independently
+  (UFCStats.com is bot-blocked — don't try it). A field captured as `0`/`0.00` is a
+  **genuine zero**; a field listed under `MISSING on ufc.com (blank, NOT a 0)` was left
+  blank on the page and must be chased on another source — never copy a blank as 0.
+- **[ESPN]** bio fields (stance, height, reach, DOB, gym) pulled from ESPN's core API.
+  This is the second source for bio fields — especially **stance**, which the ufc.com
+  parse does not provide. If ESPN picks the wrong athlete, rerun with `--espn-id <number>`.
 - **[BFO]** the full BestFightOdds table. Each matchup is two lines: the fighter's line
   (open | closing-range-low ... closing-range-high), then the opponent's line with the
   event date. Trust this raw table; do NOT WebFetch BFO pages (the summarizer flips
   fighter/opponent rows).
+
+The script ends with a **`>> STILL MISSING`** line listing any bio/stat field not found on
+either ufc.com or ESPN. Treat that list as a to-do: resolve every field on it (Step 2)
+before writing the entry — do not ship a profile with a field still on that list unless
+you've confirmed it's genuinely unavailable or a real 0 (see "No blank fields" below).
 
 If BFO returns multiple candidate IDs, rerun with `--bfo-id <Name-NNNN>`.
 
@@ -46,8 +57,23 @@ robots-blocked — don't scrape it. Do not skip verification just because Wikipe
 
 **FIGHTER_STATS** (field order used by completed entries):
 `ht, dob, reach, stance, slpm, strAcc, sapm, strDef, kd, tdLanded, tdAcc, tdDef, subAvg, finRate, streak, gym`
-- All stat values come from [UFCCOM]. `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
+- Stat values come from [UFCCOM]; bio fields (ht, dob, reach, stance, gym) also from [ESPN].
+  `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
 - `streak` = consecutive wins since last loss/draw; NCs are skipped, not breakers.
+
+**No blank fields.** Every one of the 16 keys above must be present in the entry. Do NOT
+omit a field just because the first source lacked it. A field may be left out ONLY when:
+  1. it is confirmed unavailable after checking **several** sources (ufc.com, ESPN, Sherdog,
+     Tapology, Wikipedia) — and you say so in the commit message; or
+  2. it is genuinely 0 — but a genuine 0 is still written (`kd:0.00`, `tdAcc:"0%"`), never omitted.
+- Distinguish blank from 0: the script reports a real 0 as a value and a blank as `MISSING`.
+  Never copy a blank as 0, and never drop a key because the value is 0.
+- `stance` is never on ufc.com's parse — take it from [ESPN] (or Sherdog/Tapology/Wikipedia).
+- When a fighter has landed 0 takedowns, `tdAcc` is `"0%"`. When ufc.com leaves takedown
+  defense blank because no opponent has attempted a takedown (a fighter who's never been
+  taken down), use the verified value from another source; if none exists, treat 100% (never
+  taken down) as the value only when corroborated, otherwise note it unverified.
+- Resolve everything on the script's `>> STILL MISSING` line before committing.
 
 **ODDS_HISTORY** — rebuild from [BFO], newest first, one entry per fight that actually
 happened (match against FIGHT_HISTORY):

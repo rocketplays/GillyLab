@@ -4,17 +4,24 @@
 Usage:
   python3 scripts/fighter-lookup.py "Merab Dvalishvili"
   python3 scripts/fighter-lookup.py "Merab Dvalishvili" --bfo-id Merab-Dvalishvili-7676
+  python3 scripts/fighter-lookup.py "Merab Dvalishvili" --espn-id 3091146
   python3 scripts/fighter-lookup.py "Merab Dvalishvili" --local-only
 
-Prints three sections:
+Prints these sections:
   [LOCAL]   current data in index.html (stats / odds / fight history / accolades)
-  [UFCCOM]  career stats parsed from ufc.com/athlete/<slug>
+  [UFCCOM]  career stats parsed from ufc.com/athlete/<slug> (each field parsed
+            independently; a field that is blank on the page is reported as
+            MISSING, distinct from a field genuinely listed as 0/0.00)
+  [ESPN]    bio fields (stance, height, reach, DOB, gym) from ESPN's core API --
+            a second source so stance and other bio fields are not left blank
   [BFO]     full odds history parsed from bestfightodds.com (fighter's rows only)
 
-Run from the repo root. Network fetches use curl with a browser UA.
-(UFCStats.com is bot-blocked; ufc.com + BFO are the working sources.)
+A final ">> STILL MISSING" line lists any bio/stat field not found on EITHER
+ufc.com or ESPN, so it can be chased on Sherdog/Tapology/Wikipedia before being
+left blank. Run from the repo root. Network fetches use curl with a browser UA.
+(UFCStats.com is bot-blocked; ufc.com + ESPN + BFO are the working sources.)
 """
-import argparse, re, subprocess, sys, unicodedata
+import argparse, json, re, subprocess, sys, unicodedata
 from datetime import datetime
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
@@ -85,26 +92,81 @@ def local_report(name):
     return "\n".join(out)
 
 # ---------- ufc.com ----------
+# Each field parsed on its own so one blank field never drops the others.
+# A capture of "0"/"0.00" means a genuine zero; NO match means the page left it
+# blank -> that field is reported as MISSING (chase it on another source).
+# values must START with a digit (\d[\d.]*) so a stray "." in the page's tooltip
+# definitions can't be mistaken for a real value (e.g. a blank Knockdown Avg).
+UFC_FIELDS = {
+    "slpm":     r"(\d[\d.]*) Sig\. Str\. Landed Per Min",
+    "sapm":     r"(\d[\d.]*) Sig\. Str\. Absorbed Per Min",
+    "tdLanded": r"(\d[\d.]*) Takedown avg Per 15 Min",
+    "subAvg":   r"(\d[\d.]*) Submission avg Per 15 Min",
+    "strDef":   r"(\d+) % Sig\. Str\. Defense",
+    "tdDef":    r"(\d+) % Takedown Defense",
+    "kd":       r"(\d[\d.]*) Knockdown Avg",
+    "avgTime":  r"(\d[\d:]*) Average fight time",
+    "strAcc":   r"Striking accuracy (\d+)%",
+    "tdAcc":    r"Takedown Accuracy (\d+)%",
+}
+# fields the GillyLab FIGHTER_STATS object actually stores (avgTime is info-only)
+UFC_STAT_FIELDS = ["slpm", "sapm", "tdLanded", "subAvg", "strDef", "tdDef", "kd", "strAcc", "tdAcc"]
+
 def ufccom_report(name):
     txt = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", curl(f"https://www.ufc.com/athlete/{slugify(name)}")))
     if len(txt) < 2000:
-        return "fetch failed or athlete page missing (try a different slug)"
-    out = []
-    m = re.search(r"([\d.]+) Sig\. Str\. Landed Per Min ([\d.]+) Sig\. Str\. Absorbed Per Min ([\d.]+) Takedown avg Per 15 Min ([\d.]+) Submission avg Per 15 Min", txt)
-    if m: out.append(f"slpm={m.group(1)} sapm={m.group(2)} tdLanded={m.group(3)} subAvg={m.group(4)}")
-    m = re.search(r"(\d+) % Sig\. Str\. Defense (\d+) % Takedown Defense ([\d.]+) Knockdown Avg ([\d:]+) Average fight time", txt)
-    if m: out.append(f"strDef={m.group(1)}% tdDef={m.group(2)}% kd={m.group(3)} avgTime={m.group(4)}")
-    m = re.search(r"Striking accuracy (\d+)%", txt)
-    if m: out.append(f"strAcc={m.group(1)}%")
-    m = re.search(r"Takedown Accuracy (\d+)%", txt)
-    if m: out.append(f"tdAcc={m.group(1)}%")
-    wins = dict()
+        return "fetch failed or athlete page missing (try a different slug)", {}
+    found = {}
+    for f, pat in UFC_FIELDS.items():
+        m = re.search(pat, txt)
+        if m:
+            found[f] = m.group(1)
+    m = re.search(r"Trains at ([^|]{3,60}?) (Fighting style|Age|Status)", txt)
+    if m: found["gym"] = m.group(1).strip()
+    wins = {}
     for n_, kind in set(re.findall(r"(\d+) Wins by (Knockout|Decision|Submission)", txt)):
         wins[kind] = n_
+    out = []
+    statbits = [f"{k}={found[k]}" for k in ["slpm", "sapm", "tdLanded", "subAvg",
+                "strDef", "tdDef", "kd", "avgTime", "strAcc", "tdAcc"] if k in found]
+    if statbits: out.append(" ".join(statbits))
+    if "gym" in found: out.append(f"gym: {found['gym']}")
     if wins: out.append(f"wins: {wins}  (finRate = (KO+Sub)/total wins)")
-    m = re.search(r"Trains at ([^|]{3,60}?) (Fighting style|Age|Status)", txt)
-    if m: out.append(f"gym: {m.group(1).strip()}")
-    return "\n".join(out) or "page fetched but stats not found"
+    missing = [k for k in UFC_STAT_FIELDS if k not in found]
+    if missing:
+        out.append(f"MISSING on ufc.com (blank, NOT a 0): {missing}  <- chase on ESPN/Sherdog/Tapology")
+    return ("\n".join(out) or "page fetched but stats not found"), found
+
+# ---------- espn (secondary source for bio fields incl. stance) ----------
+def espn_find_id(name, espn_id=None):
+    if espn_id: return espn_id
+    r = curl("https://site.web.api.espn.com/apis/search/v2?query=%s&limit=10" % name.replace(" ", "%20"))
+    pairs = re.findall(r"/mma/fighter/_/id/(\d+)/([a-z0-9-]+)", r)
+    if not pairs: return None
+    want = slugify(name)
+    for i, s in pairs:           # prefer the result whose slug matches the name
+        if s == want: return i
+    return pairs[0][0]
+
+def espn_report(name, espn_id=None):
+    sid = espn_find_id(name, espn_id)
+    if not sid:
+        return "no ESPN match (try --espn-id <number>)", {}
+    raw = curl("https://sports.core.api.espn.com/v2/sports/mma/athletes/%s" % sid)
+    try:
+        d = json.loads(raw)
+    except Exception:
+        return f"id={sid} but ESPN JSON fetch failed", {}
+    found = {}
+    if (d.get("stance") or {}).get("text"): found["stance"] = d["stance"]["text"]
+    if d.get("displayReach"):  found["reach"] = d["displayReach"]
+    if d.get("displayHeight"): found["ht"] = d["displayHeight"]
+    if d.get("dateOfBirth"):   found["dob"] = d["dateOfBirth"][:10]
+    if (d.get("association") or {}).get("name"): found["gym"] = d["association"]["name"]
+    if d.get("citizenship"):   found["country"] = d["citizenship"]
+    out = [f"id={sid}  https://www.espn.com/mma/fighter/_/id/{sid}"]
+    out.append(" ".join(f"{k}={v}" for k, v in found.items()) or "no bio fields parsed")
+    return "\n".join(out), found
 
 # ---------- bestfightodds ----------
 def bfo_find_id(name):
@@ -129,16 +191,35 @@ def bfo_report(name, bfo_id=None):
         out.append(txt[:150])
     return "\n".join(out)
 
+# bio + stat fields a complete FIGHTER_STATS entry should carry
+BIO_FIELDS  = ["ht", "dob", "reach", "stance", "gym"]
+STAT_FIELDS = ["slpm", "sapm", "tdLanded", "subAvg", "strDef", "tdDef", "kd", "strAcc", "tdAcc"]
+
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("name")
     ap.add_argument("--bfo-id")
+    ap.add_argument("--espn-id")
     ap.add_argument("--local-only", action="store_true")
     a = ap.parse_args()
     print(f"========== [LOCAL] {a.name}")
     print(local_report(a.name))
     if not a.local_only:
         print(f"\n========== [UFCCOM] ufc.com/athlete/{slugify(a.name)}")
-        print(ufccom_report(a.name))
+        ufc_txt, ufc_found = ufccom_report(a.name)
+        print(ufc_txt)
+        print(f"\n========== [ESPN] (bio/stance secondary source)")
+        espn_txt, espn_found = espn_report(a.name, a.espn_id)
+        print(espn_txt)
+        have = set(ufc_found) | set(espn_found)
+        still = [f for f in (BIO_FIELDS + STAT_FIELDS) if f not in have]
+        print()
+        if still:
+            print(f">> STILL MISSING after ufc.com + espn: {still}")
+            print("   Do NOT leave these blank. Verify on Sherdog / Tapology / Wikipedia.")
+            print("   Only leave a field out if it is confirmed unavailable on several")
+            print("   sources, or is genuinely 0 (a real 0/0.00 is reported, not 'missing').")
+        else:
+            print(">> all bio + stat fields located across ufc.com + espn")
         print(f"\n========== [BFO]")
         print(bfo_report(a.name, a.bfo_id))
