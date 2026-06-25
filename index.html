@@ -3319,7 +3319,6 @@
  { name: "Guilherme Pat", division: "HW", rank: "NR", record: "7-0-0", initials: "GPU", country: "Brazil" },
  { name: "Mario Pinto", division: "HW", rank: "NR", record: "11-0-0", initials: "MPT", country: "Portugal" },
  { name: "Louie Sutherland", division: "HW", rank: "NR", record: "10-4-0", initials: "LSU", country: "UK" },
- { name: "Allen Frye", division: "HW", rank: "NR", record: "10-3-0", initials: "AFR", country: "USA" },
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
  { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
  { name: "Sean Sharaf", division: "HW", rank: "NR", record: "4-2-0", initials: "SSH", country: "USA" },
@@ -3805,7 +3804,7 @@
  const FIGHTER_STATS = {
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"9%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
  "Jose Miguel Delgado": { ht:"5'11\"", dob:"1998-04-21", reach:'73"', stance:"Switch", slpm:7.48, strAcc:"55%", sapm:4.95, strDef:"50%", kd:1.51, tdLanded:1.51, tdAcc:"0%", tdDef:"50%", subAvg:0.00, finRate:"91%", streak:1, gym:"The MMA Lab" },
- "Levi Rodrigues Jr.": { ht:"6'0\"", dob:"1996-10-15", reach:'76.5"', stance:"Orthodox", slpm:4.50, strAcc:"79%", sapm:2.10, strDef:"22%", kd:4.50, tdLanded:0.00, tdDef:"100%", subAvg:0.00, finRate:"100%", streak:5, gym:"Rasteira Fight Team" },
+ "Levi Rodrigues Jr.": { ht:"6'0\"", dob:"1996-10-15", reach:'76.5"', stance:"Orthodox", slpm:4.50, strAcc:"79%", sapm:2.10, strDef:"22%", kd:4.50, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:5, gym:"Rasteira Fight Team" },
  "Islam Makhachev": { ht:"5'10\"", dob:"1991-10-27", reach:'70"', stance:"Southpaw", slpm:2.45, strAcc:"58%", sapm:1.45, strDef:"62%", kd:0.30, tdLanded:3.10, tdAcc:"56%", tdDef:"91%", subAvg:0.98, finRate:"64%", streak:16, gym:"American Kickboxing Academy / Eagles MMA" },
  "Khamzat Chimaev": { ht:"6'2\"", dob:"1994-05-01", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"54%", sapm:2.98, strDef:"52%", kd:0.30, tdLanded:5.32, tdAcc:"58%", tdDef:"88%", subAvg:1.37, finRate:"80%", streak:0, gym:"TKMMA Fit, Akhmat MMA" },
  "Alex Pereira": { ht:"6'4\"", dob:"1987-07-07", reach:'79"', stance:"Orthodox", slpm:5.01, strAcc:"61%", sapm:3.72, strDef:"53%", kd:0.75, tdLanded:0.11, tdAcc:"50%", tdDef:"80%", subAvg:0.22, finRate:"85%", streak:0, gym:"Teixeira MMA & Fitness (2020–present)" },
@@ -3995,7 +3994,7 @@
  "Ateba Gautier": { ht:"6'4\"", dob:"2002-04-10", reach:'81"', stance:"Switch", slpm:4.44, tdAcc:"100%", subAvg:0.0, strDef:"52%", kd:0.0, tdDef:"92%", finRate:"N/A", streak:0, tdLanded:0.49, gym:"Manchester Top Team" },
  "Ozzy Diaz": { ht:"6'4\"", dob:"1990-11-22", reach:'79"', stance:"Orthodox", slpm:6.44, tdAcc:"0%", subAvg:0.0, strDef:"59%", kd:0.0, tdDef:"50%", finRate:"N/A", streak:0, tdLanded:0.0 }, "Kelvin Gastelum": { ht:"5'9\"", dob:"1991-10-24", reach:'71"', stance:"Southpaw", slpm:3.67, tdAcc:"34%", subAvg:0.1, strDef:"57%", kd:0.3, tdDef:"60%", finRate:"52%", streak:0, tdLanded:1.01 },
  // ── Welterweight (UFC 328) ──
- "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.65, strAcc:"53%", sapm:1.38, strDef:"55%", kd:0.00, tdLanded:11.11, tdAcc:"8%", subAvg:3.17, finRate:"73%", streak:3, gym:"American Top Team" },
+ "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.65, strAcc:"53%", sapm:1.38, strDef:"55%", kd:0.00, tdLanded:11.11, tdAcc:"8%", tdDef:"61%", subAvg:3.17, finRate:"73%", streak:3, gym:"American Top Team" },
  // ── Featherweight (UFC 328) ──
  "William Gomis": { ht:"6'0\"", dob:"1997-06-13", reach:'73"', stance:"Southpaw", slpm:3.48, tdAcc:"38%", subAvg:0.3, strDef:"61%", kd:0.0, tdDef:"72%", finRate:"N/A", streak:0, tdLanded:0.86 },
  // ── Bantamweight (additional) ──
@@ -4407,9 +4406,9 @@
   "Theodor Berggren": { ht:"6'0\"", dob:"2000-04-09", finRate:"100%", streak:2, gym:"Renyi" },
  "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, tdAcc:"36%", subAvg:0.4, strDef:"44%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.28 },
  "Alden Coria": { ht:"5'8\"", dob:"1998-04-24", reach:'67"', stance:"Orthodox", slpm:4.69, strAcc:"45%", sapm:2.40, strDef:"70%", kd:0.00, tdLanded:1.75, tdAcc:"33%", tdDef:"71%", subAvg:0.00, finRate:"75%", streak:5, gym:"4oz Fight Club, Aztlan Boxing" },
- "Stewart Nicoll": { ht:"5'5\"", dob:"1994-11-03", reach:'65.5"', slpm:3.63, strAcc:"39%", sapm:5.84, strDef:"50%", kd:0.00, tdLanded:1.63, tdAcc:"4%", tdDef:"29%", subAvg:0.00, finRate:"88%", streak:0, gym:"Team Compton Training Centre" },
- "Allen Frye Jr.": { ht:"6'5\"", dob:"1998-04-15", reach:'80.5"', stance:"Orthodox", slpm:2.20, strAcc:"38%", sapm:4.27, strDef:"36%", kd:0.00, tdLanded:0.00, subAvg:0.00, finRate:"100%", streak:0, gym:"Brunsons MMA and Fitness" },
- "Alvin Hines": { ht:"6'2\"", dob:"1991-10-20", reach:'74"', slpm:5.47, strAcc:"32%", sapm:7.47, strDef:"38%", kd:0.00, tdLanded:1.00, tdAcc:"10%", subAvg:0.00, finRate:"86%", streak:0, gym:"La Bodega Fight Team" },
+ "Stewart Nicoll": { ht:"5'5\"", dob:"1994-11-03", reach:'65.5"', stance:"Orthodox", slpm:3.63, strAcc:"39%", sapm:5.84, strDef:"50%", kd:0.00, tdLanded:1.63, tdAcc:"4%", tdDef:"29%", subAvg:0.00, finRate:"88%", streak:0, gym:"Team Compton Training Centre" },
+ "Allen Frye Jr.": { ht:"6'5\"", dob:"1998-04-15", reach:'80.5"', stance:"Orthodox", slpm:2.20, strAcc:"38%", sapm:4.27, strDef:"36%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:0, gym:"Brunsons MMA and Fitness" },
+ "Alvin Hines": { ht:"6'2\"", dob:"1991-10-20", reach:'74"', stance:"Orthodox", slpm:5.47, strAcc:"32%", sapm:7.47, strDef:"38%", kd:0.00, tdLanded:1.00, tdAcc:"10%", tdDef:"100%", subAvg:0.00, finRate:"86%", streak:0, gym:"La Bodega Fight Team" },
  "Alibi Idiris": { ht:"5'6\"", dob:"1994-10-22", reach:'68"', stance:"Orthodox", slpm:3.47, tdAcc:"0%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"60%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Alessandro Costa": { ht:"5'4\"", dob:"1996-01-28", reach:'67"', stance:"Orthodox", slpm:3.64, tdAcc:"16%", subAvg:0.3, strDef:"57%", kd:0.2, tdDef:"64%", finRate:"50%", streak:0, tdLanded:0.46 },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.66, tdAcc:"46%", subAvg:1.3, strDef:"55%", kd:0.0, tdDef:"37%", finRate:"N/A", streak:0, tdLanded:1.99 },
@@ -4495,7 +4494,6 @@
  "Yadier del Valle": { ht:"5'6\"", dob:"1995-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.5, strDef:"52%", kd:0.2, tdDef:"65%", finRate:"60%", streak:0, tdLanded:1.50 },
  "Pam Sorensen": { ht:"5'5\"", dob:"1993-01-01", reach:'65"', stance:"Orthodox", slpm:3.00, tdAcc:"30%", subAvg:0.3, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.00 },
  "Ocie Ike": { ht:"5'6\"", dob:"1995-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"62%", finRate:"60%", streak:0, tdLanded:1.20 },
- "Allen Frye": { ht:"6'0\"", dob:"1990-01-01", reach:'74"', stance:"Orthodox", slpm:3.20, tdAcc:"28%", subAvg:0.3, strDef:"48%", kd:0.2, tdDef:"55%", finRate:"58%", streak:0, tdLanded:1.10 },
  "Austin Lund": { ht:"6'3\"", dob:"1991-01-01", reach:'78"', stance:"Orthodox", slpm:3.50, tdAcc:"30%", subAvg:0.3, strDef:"45%", kd:0.3, tdDef:"50%", finRate:"65%", streak:0, tdLanded:1.50 },
  "Alan Baudot": { ht:"6'2\"", dob:"1993-01-01", reach:'76"', stance:"Orthodox", slpm:3.20, tdAcc:"32%", subAvg:0.4, strDef:"48%", kd:0.2, tdDef:"58%", finRate:"60%", streak:0, tdLanded:1.30, gym:"MMA Factory" },
  "Ayaka Miura": { ht:"5'4\"", dob:"1996-01-01", reach:'63"', stance:"Orthodox", slpm:2.80, tdAcc:"55%", subAvg:1.2, strDef:"52%", kd:0.0, tdDef:"70%", finRate:"75%", streak:0, tdLanded:2.50 },
@@ -4575,7 +4573,7 @@
   "Dennis Buzukja": { ht:'5\'9"', dob:"1997-10-01", reach:'70.5"', slpm:4.21, strAcc:"43%", sapm:4.82, strDef:"49%", kd:0.42, tdLanded:0.63, tdAcc:"27%", tdDef:"75%", subAvg:0.21, finRate:"50%", streak:0, gym:"Serra-Longo Fight Team" },
   "Bogdan Grad": { ht:'5\'8"', dob:"1995-09-18", reach:'70"', slpm:4.06, strAcc:"52%", sapm:5.06, strDef:"49%", kd:0.00, tdLanded:4.22, tdAcc:"41%", tdDef:"75%", subAvg:0.00, finRate:"80%", streak:0, gym:"ETTL Bros. MMA" },
   "Oban Elliott": { ht:"6'0\"", dob:"1997-12-19", reach:'72"', stance:"Orthodox", slpm:3.62, strAcc:"48%", sapm:2.24, strDef:"61%", kd:0.19, tdLanded:1.52, tdAcc:"15%", tdDef:"52%", subAvg:0.00, finRate:"50%", streak:0, gym:"Shore Mixed Martial Arts" },
-  "Michael Oliveira": { ht:"6'1\"", dob:"1998-01-21", reach:'78.5"', slpm:8.40, strAcc:"51%", sapm:3.36, strDef:"66%", kd:5.04, tdLanded:0.00, tdDef:"100%", subAvg:0.00, finRate:"89%", streak:9, gym:"KO Squad MMA" },
+  "Michael Oliveira": { ht:"6'1\"", dob:"1998-01-21", reach:'78.5"', stance:"Orthodox", slpm:8.40, strAcc:"51%", sapm:3.36, strDef:"66%", kd:5.04, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"89%", streak:9, gym:"KO Squad MMA" },
 
   "Kyle Daukaus": { ht:"6'2\"", dob:"1993-02-27", reach:'76"', stance:"Southpaw", slpm:3.16, strAcc:"53%", sapm:2.94, tdAcc:"26%", subAvg:1.97, strDef:"42%", kd:0.36, tdDef:"79%", finRate:"82%", streak:6, tdLanded:1.97, gym:"Martinez BJJ" },
   "Damian Pinas": { ht:"6'1\"", dob:"2002-03-12", reach:'79.5"', stance:"Orthodox", slpm:7.50, strAcc:"56%", sapm:3.75, tdAcc:"0%", subAvg:0.0, strDef:"57%", kd:10.55, tdDef:"100%", finRate:"89%", streak:5, tdLanded:0.00, gym:"Nova União" },
@@ -10419,11 +10417,6 @@
     { opponent: "Josh Parisian", odds: -300 },
     { opponent: "Parker Porter", odds: -450 },
     { opponent: "Chris Daukaus", odds: 800 }
-  ],
-  "Allen Frye": [
-    { opponent: "Zachary Reese", odds: -700 },
-    { opponent: "Jordan Wright", odds: 250 },
-    { opponent: "Alonzo Menifield", odds: -150 }
   ],
   "Armen Petrosyan": [
     { opponent: "Cesar Almeida", odds: 350 },
@@ -22796,21 +22789,6 @@ const FIGHT_HISTORY = {
 
 
 
-  "Allen Frye": [
-    { date: "Nov 15, 2025", opponent: "Zachary Reese", result: "W", method: "KO (Punches)", round: 1, time: "0:27", event: "UFC 322: Della Maddalena vs. Makhachev" },
-    { date: "Jun 28, 2025", opponent: "Da'Mon Blackshear", result: "W", method: "TKO (Punches)", round: 1, time: "2:11", event: "UFC 317: Topuria vs. Oliveira" },
-    { date: "Jan 18, 2025", opponent: "Jordan Wright", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311: Makhachev vs. Moicano" },
-    { date: "Aug 3, 2024", opponent: "Alonzo Menifield", result: "W", method: "Submission (Triangle choke)", round: 2, time: "2:47", event: "UFC Fight Night: Sandhagen vs. Nurmagomedov (debut)" },
-    { date: "Apr 13, 2024", opponent: "Chad Hanekom", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:45", event: "DWCS Season 8 Week 2 (contract)" },
-    { date: "Nov 4, 2023", opponent: "Jared Gooden", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 178" },
-    { date: "Jun 24, 2023", opponent: "Cornelius White", result: "W", method: "KO (Punches)", round: 2, time: "2:05", event: "LFA 167" },
-    { date: "Apr 1, 2023", opponent: "Wes Wolfe", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "3:45", event: "LFA 163" },
-    { date: "Jan 7, 2023", opponent: "David Lemieux", result: "W", method: "KO (Punches)", round: 2, time: "1:28", event: "LFA 156" },
-    { date: "Sep 24, 2022", opponent: "Dustin Lampley", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:55", event: "LFA 146" },
-    { date: "Jun 11, 2022", opponent: "Klidson Farias", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 140" },
-    { date: "Jan 15, 2022", opponent: "Ryan Quinn", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 130 (debut)" },
-    { date: "Sep 25, 2021", opponent: "Dustin Lampley", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:55", event: "Shocker MMA 7" }
-  ],
   "Armen Petrosyan": [
     { date: "Apr 24, 2026", opponent: "Mikhail Kolobegov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BetCity Fight Nights 136" },
     { date: "Dec 12, 2025", opponent: "Vladislav Kovalev", result: "L", method: "Submission (Neck crank)", round: 2, time: "3:11", event: "RCC 24" },
