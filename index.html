@@ -3252,7 +3252,7 @@
  { name: "Ignacio Bahamondes", division: "LW", rank: "NR", record: "17-7-0", initials: "IBA", country: "Chile" },
  { name: "Thiago Moises", division: "LW", rank: "NR", record: "19-10-0", initials: "TMO", country: "Brazil" },
  { name: "Mike Davis", division: "LW", rank: "NR", record: "11-5-0", initials: "MDA", country: "USA" },
- { name: "Tom Nolan", division: "LW", rank: "NR", record: "12-2-0", initials: "TNO", country: "Australia" },
+ { name: "Tom Nolan", division: "LW", rank: "#13", record: "11-1-0", initials: "TNO", country: "Australia" },
  { name: "Ismael Bonfim", division: "LW", rank: "NR", record: "20-6-0", initials: "IBF", country: "Brazil" },
  { name: "Chase Hooper", division: "LW", rank: "NR", record: "16-5-1", initials: "CHO", country: "USA" },
  { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-3-0", initials: "MRA", country: "USA" },
@@ -4454,7 +4454,7 @@
  "Chris Padilla": { ht:"5'9\"", dob:"1995-09-14", reach:'74"', stance:"Orthodox", slpm:4.78, tdAcc:"30%", subAvg:0.3, strDef:"55%", kd:0.3, tdDef:"72%", finRate:"59%", streak:0, tdLanded:1.18, gym:"Pro Athletes" },
  "Joaquim Silva": { ht:"5'8\"", dob:"1989-02-05", reach:'69"', stance:"Southpaw", slpm:3.43, tdAcc:"32%", subAvg:0.5, strDef:"53%", kd:0.2, tdDef:"64%", finRate:"57%", streak:0, tdLanded:0.96, gym:"Evolução Thai" },
  "MarQuel Mederos": { ht:"5'10\"", dob:"1996-11-30", reach:'69"', stance:"Orthodox", slpm:4.84, tdAcc:"0%", subAvg:0.0, strDef:"58%", kd:0.4, tdDef:"83%", finRate:"73%", streak:0, tdLanded:0.00 },
- "Tom Nolan": { ht:"6'3\"", dob:"2000-03-08", reach:'73"', stance:"Southpaw", slpm:5.87, tdAcc:"22%", subAvg:0.3, strDef:"48%", kd:0.4, tdDef:"71%", finRate:"73%", streak:0, tdLanded:0.74 },
+ "Tom Nolan": { ht:"6'3\"", dob:"2000-03-08", reach:'73"', stance:"Southpaw", slpm:4.84, strAcc:"46%", sapm:3.74, strDef:"49%", kd:0.54, tdLanded:1.08, tdAcc:"22%", tdDef:"58%", subAvg:1.35, finRate:"55%", streak:5, gym:"Team Compton Training Centre" },
  "Mike Davis": { ht:"6'0\"", dob:"1992-10-07", reach:'72"', stance:"Orthodox", slpm:4.73, tdAcc:"42%", subAvg:0.3, strDef:"47%", kd:0.3, tdDef:"72%", finRate:"67%", streak:0, tdLanded:1.08, gym:"Fusion X-Cel" },
  // Welterweight
  "Josiah Harrell": { ht:"5'7\"", dob:"1998-11-13", reach:'68"', stance:"Southpaw", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"73%", streak:0, tdLanded:0.00 },
@@ -9154,9 +9154,13 @@
     { opponent: "Journey Newson", odds: -400 }
   ],
   "Tom Nolan": [
-    { opponent: "Charlie Campbell", odds: -450 },
-    { opponent: "Viacheslav Borshchev", odds: -300 },
-    { opponent: "Mateusz Rebecki", odds: -275 }
+    { opponent: "Farés Ziam", odds: 270 },
+    { opponent: "Charlie Campbell", odds: -165 },
+    { opponent: "Viacheslav Borshchev", odds: 110 },
+    { opponent: "Alex Reyes", odds: -1100 },
+    { opponent: "Victor Martinez", odds: -540 },
+    { opponent: "Nikolas Motta", odds: -400 },
+    { opponent: "Bogdan Grad", odds: -180 }
   ],
   "Billy Elekana": [
     { opponent: "Junior Tafa", odds: -350 },
@@ -19571,18 +19575,18 @@ const FIGHT_HISTORY = {
 
 
   "Tom Nolan": [
-    { date: "Jun 6, 2026", opponent: "Fares Ziam", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 278: Muhammad vs. Bonfim" },
-    { date: "Sep 27, 2025", opponent: "Charlie Campbell", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:08", event: "UFC Fight Night: Ulberg vs. Reyes" },
-    { date: "Feb 8, 2025", opponent: "Viacheslav Borshchev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312: du Plessis vs. Strickland 2" },
-    { date: "Aug 17, 2024", opponent: "Mateusz Rebecki", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305: du Plessis vs. Adesanya 2 (debut)" },
-    { date: "Jan 13, 2024", opponent: "Patrick Sabatini", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "0:00", event: "UFC Fight Night: Ankalaev vs. Walker 2" },
-    { date: "Sep 2, 2023", opponent: "Chad Henderson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 73" },
-    { date: "Apr 29, 2023", opponent: "Josh De Leon", result: "W", method: "TKO (Punches)", round: 2, time: "1:14", event: "Eternal MMA 69" },
-    { date: "Dec 10, 2022", opponent: "Cody Hardwick", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 64" },
-    { date: "Aug 27, 2022", opponent: "Joe Mouawad", result: "W", method: "KO (Punches)", round: 1, time: "0:38", event: "Eternal MMA 60" },
-    { date: "May 28, 2022", opponent: "Royce Tan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 57" },
-    { date: "Feb 12, 2022", opponent: "Alistair Sherrod", result: "W", method: "TKO (Punches)", round: 2, time: "2:44", event: "Eternal MMA 53" },
-    { date: "Oct 30, 2021", opponent: "Blake Elliott", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 49 (debut)" }
+    { date: "Jun 6, 2026", opponent: "Farés Ziam", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Charlie Campbell", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:08", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Viacheslav Borshchev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
+    { date: "Aug 17, 2024", opponent: "Alex Reyes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305", org: "UFC" },
+    { date: "May 18, 2024", opponent: "Victor Martinez", result: "W", method: "TKO (Punches)", round: 1, time: "3:50", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
+    { date: "Jan 13, 2024", opponent: "Nikolas Motta", result: "L", method: "TKO (Punches)", round: 1, time: "1:03", event: "UFC Fight Night: Ankalaev vs. Walker 2", org: "UFC" },
+    { date: "Aug 8, 2023", opponent: "Bogdan Grad", result: "W", method: "KO (Punch)", round: 1, time: "1:23", event: "Dana White's Contender Series 56", org: "UFC" },
+    { date: "Mar 18, 2023", opponent: "Aidan Aguilera", result: "W", method: "TKO (Punches)", round: 1, time: "2:22", event: "Eternal MMA 74" },
+    { date: "Dec 2, 2022", opponent: "Adam Cook", result: "W", method: "TKO (Punches)", round: 2, time: "N/A", event: "Eternal MMA 72" },
+    { date: "Jul 16, 2022", opponent: "Niam Stephen", result: "W", method: "TKO (Punches)", round: 1, time: "3:54", event: "Eternal MMA 67" },
+    { date: "Nov 20, 2021", opponent: "Trevor Sinclair", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 63" },
+    { date: "Dec 12, 2020", opponent: "Sam Flint", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 46: State of Origin" }
   ],
   "Billy Elekana": [
     { date: "Feb 1, 2026", opponent: "Junior Tafa", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:18", event: "UFC 325", org: "UFC" },
@@ -31193,6 +31197,11 @@ const ACCOLADES = {
     { icon: "⭐", title: "Three-time UFC Performance of the Night (vs. Anshul Jubli, Nasrat Haqparast, Jamie Mullarkey)", detail: null },
     { icon: "🏅", title: "2025 UFC Knockout of the Year — head-kick KO of Nasrat Haqparast", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
+  ],
+  "Tom Nolan": [
+    { icon: "⭐", title: "UFC Performance of the Night (submission win over Charlie Campbell)", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series winner — first-round KO of Bogdan Grad (2023)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Drew Dober": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
