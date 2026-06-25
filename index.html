@@ -34905,6 +34905,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return key ? (META_RANKINGS_LOOKUP[key] || '') : '';
   }
 
+  // Combined rank badge for the home featured card & carousel, mirroring the
+  // profile-page format exactly: "#8 | #7 Meta AI". Official divisional rank
+  // (or "NR") comes from rankings.json; the Meta AI half is appended only when
+  // rankings-meta.json has a match. Tries both the API name and the canonical
+  // roster name so matches stay aligned with the Rankings page.
+  function eventCardRankBadge(apiName, canonName) {
+    let off = '', meta = '';
+    [apiName, canonName].forEach(n => {
+      if (!n) return;
+      if (!off)  off  = fighterDivisionRankBadge(n);
+      if (!meta) meta = fighterMetaRankBadge(n);
+    });
+    let label = off || 'NR';
+    if (meta) label += ' | ' + meta + ' Meta AI';
+    return label;
+  }
+
   // The event-data API frequently returns city+country pre-concatenated with no
   // separator at all (e.g. rawEvt.city === "Las Vegas United States" or
   // "Baku Azerbaijan" -- confirmed in data/event.json, where the "city" and
@@ -34969,15 +34986,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const fiveRounds = isTitle || isMain || bout.numberOfRounds >= 5;
       const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : fiveRounds ? ' · 5 Rounds' : ' · 3 Rounds');
       const isMainCard = (bout.cardSection || '').toLowerCase().includes('main');
-      const r1 = red.rankText  ? '#' + red.rankText  : fighterDivisionRankBadge(red.fighterName);
-      const r2 = blue.rankText ? '#' + blue.rankText : fighterDivisionRankBadge(blue.fighterName);
+      const redName  = resolveCanonicalFighterName(red.fighterName  || '', red.fighterSlug  || '');
+      const blueName = resolveCanonicalFighterName(blue.fighterName || '', blue.fighterSlug || '');
+      // Rank badges sourced from the same Rankings-page data as the profiles,
+      // formatted identically: "#8 | #7 Meta AI". (The API's own rankText is
+      // consistently empty, so we ignore it in favor of the ranking JSON.)
+      const r1 = eventCardRankBadge(red.fighterName, redName);
+      const r2 = eventCardRankBadge(blue.fighterName, blueName);
       return {
-        f1:   resolveCanonicalFighterName(red.fighterName  || '', red.fighterSlug  || ''),
-        f2:   resolveCanonicalFighterName(blue.fighterName || '', blue.fighterSlug || ''),
+        f1:   redName,
+        f2:   blueName,
         div1: red.profile  ? (red.profile.division  || wc) : wc,
         div2: blue.profile ? (blue.profile.division || wc) : wc,
-        rec1: computeRecord(resolveCanonicalFighterName(red.fighterName  || '', red.fighterSlug  || '')) || parseRecord(red.profile  ? red.profile.recordText  : '') || recordFallback(red.fighterName),
-        rec2: computeRecord(resolveCanonicalFighterName(blue.fighterName || '', blue.fighterSlug || '')) || parseRecord(blue.profile ? blue.profile.recordText : '') || recordFallback(blue.fighterName),
+        rec1: computeRecord(redName)  || parseRecord(red.profile  ? red.profile.recordText  : '') || recordFallback(red.fighterName),
+        rec2: computeRecord(blueName) || parseRecord(blue.profile ? blue.profile.recordText : '') || recordFallback(blue.fighterName),
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
