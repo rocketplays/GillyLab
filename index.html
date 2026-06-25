@@ -32676,7 +32676,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  // Populates all fighter profile content for the given fighter.
  function _doPopulate() {
    document.getElementById('f-name').textContent = name;
-   document.getElementById('f-division').textContent = division + ' · ' + rank;
+   // Rank line is driven by the same data as the Rankings page so the two never
+   // drift: official UFC media-panel rank (rankings.json) shown as the primary
+   // "#", then the Meta AI statistical rank (rankings-meta.json) as "(#N) Meta AI".
+   const _setRankLine = () => {
+     const offBadge  = (typeof fighterDivisionRankBadge === 'function') ? fighterDivisionRankBadge(name) : '';
+     const metaBadge = (typeof fighterMetaRankBadge === 'function') ? fighterMetaRankBadge(name) : '';
+     let line = division + ' · ' + (offBadge || 'NR');
+     if (metaBadge) line += ' | (' + metaBadge + ') Meta AI';
+     const el = document.getElementById('f-division');
+     if (el) el.textContent = line;
+   };
+   _setRankLine();
+   if (typeof loadRankingsLookup === 'function') {
+     loadRankingsLookup().then(() => {
+       if (currentFighter && currentFighter.name === name) _setRankLine();
+     }).catch(() => {});
+   }
    document.getElementById('f-avatar-initials').textContent = initials;
    const img = document.getElementById('f-avatar-img');
    const wrap = document.getElementById('f-avatar-wrap');
@@ -34615,6 +34631,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // file the Rankings page uses) — excluding Pound-for-Pound lists, since
   // the badge should reflect divisional rank only.
   let RANKINGS_LOOKUP = {};
+  let META_RANKINGS_LOOKUP = {};
   let rankingsLookupPromise = null;
 
   function normalizeFighterNameForMatch(name) {
@@ -34631,31 +34648,49 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return e.rank != null ? '#' + e.rank : '';
   }
 
+  function buildRankLookupFromPayload(payload) {
+    const lookup = {};
+    if (payload && Array.isArray(payload.data)) {
+      payload.data.forEach(e => {
+        const division = e.division || '';
+        if (division.indexOf('Pound-for-Pound') !== -1) return;
+        const key = normalizeFighterNameForMatch(e.fighterName);
+        const label = rankBadgeLabelForEntry(e);
+        if (key && label) lookup[key] = label;
+      });
+    }
+    return lookup;
+  }
+
+  // Loads both ranking sources used by the Rankings page so profile pages stay
+  // in sync: rankings.json = official UFC media-panel rankings (the primary
+  // "#" badge), rankings-meta.json = the Meta AI statistical-model rankings
+  // (shown as "(#N) Meta AI").
   function loadRankingsLookup() {
     if (rankingsLookupPromise) return rankingsLookupPromise;
-    rankingsLookupPromise = fetch('./data/rankings.json')
-      .then(r => r.ok ? r.json() : null)
-      .then(payload => {
-        const lookup = {};
-        if (payload && Array.isArray(payload.data)) {
-          payload.data.forEach(e => {
-            const division = e.division || '';
-            if (division.indexOf('Pound-for-Pound') !== -1) return;
-            const key = normalizeFighterNameForMatch(e.fighterName);
-            const label = rankBadgeLabelForEntry(e);
-            if (key && label) lookup[key] = label;
-          });
-        }
-        RANKINGS_LOOKUP = lookup;
-        return lookup;
-      })
-      .catch(() => { RANKINGS_LOOKUP = {}; return RANKINGS_LOOKUP; });
+    const grab = (file) => fetch(file).then(r => r.ok ? r.json() : null).catch(() => null);
+    rankingsLookupPromise = Promise.all([
+      grab('./data/rankings.json'),
+      grab('./data/rankings-meta.json')
+    ]).then(([official, meta]) => {
+      RANKINGS_LOOKUP = buildRankLookupFromPayload(official);
+      META_RANKINGS_LOOKUP = buildRankLookupFromPayload(meta);
+      return RANKINGS_LOOKUP;
+    }).catch(() => {
+      RANKINGS_LOOKUP = {}; META_RANKINGS_LOOKUP = {};
+      return RANKINGS_LOOKUP;
+    });
     return rankingsLookupPromise;
   }
 
   function fighterDivisionRankBadge(name) {
     const key = normalizeFighterNameForMatch(name);
     return key ? (RANKINGS_LOOKUP[key] || '') : '';
+  }
+
+  function fighterMetaRankBadge(name) {
+    const key = normalizeFighterNameForMatch(name);
+    return key ? (META_RANKINGS_LOOKUP[key] || '') : '';
   }
 
   // The event-data API frequently returns city+country pre-concatenated with no
