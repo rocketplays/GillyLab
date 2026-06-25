@@ -3038,7 +3038,7 @@
  { name: "Diego Lopes", division: "FW", rank: "#2", record: "27-8-0", initials: "DLO", country: "Brazil" },
  { name: "Lerone Murphy", division: "FW", rank: "#3", record: "17-1-1", initials: "LM", country: "UK" },
  { name: "Yair Rodríguez", division: "FW", rank: "#5", record: "20-5-0", initials: "YR", country: "Mexico" },
- { name: "Jean Silva", division: "FW", rank: "#5", record: "17-3-0", initials: "JSI", country: "Brazil" },
+ { name: "Jean Silva", division: "FW", rank: "#6", record: "17-3-0", initials: "JSI", country: "Brazil" },
  { name: "Arnold Allen", division: "FW", rank: "#6", record: "21-4-0", initials: "AAL", country: "UK" },
  { name: "Youssef Zalal", division: "FW", rank: "#7", record: "18-6-1", initials: "YZ", country: "Morocco" },
  { name: "Steve Garcia", division: "FW", rank: "#8", record: "19-5-0", initials: "SG", country: "USA" },
@@ -3899,7 +3899,7 @@
 
  // ── Featherweight (extended) ──
  "Diego Lopes": { ht:"5'11\"", dob:"1994-12-30", reach:'72"', stance:"Orthodox", slpm:3.79, strAcc:"47%", sapm:4.65, tdAcc:"47%", subAvg:1.30, strDef:"47%", kd:0.71, tdDef:"69%", finRate:"86%", streak:0, tdLanded:0.82, gym:"Brazilian Warriors / Lobo Gym" },
- "Jean Silva": { ht:"5'7\"", dob:"1996-12-27", reach:'69"', stance:"Orthodox", slpm:4.82, tdAcc:"60%", subAvg:0.6, strDef:"53%", kd:0.5, tdDef:"78%", finRate:"71%", streak:1, tdLanded:1.20, gym:"Fighting Nerds" },
+ "Jean Silva": { ht:"5'7\"", dob:"1996-12-13", reach:'69"', stance:"Orthodox", slpm:4.82, strAcc:"52%", sapm:4.50, strDef:"54%", kd:1.00, tdLanded:1.20, tdAcc:"10%", tdDef:"79%", subAvg:0.60, finRate:"88%", streak:1, gym:"Fighting Nerds" },
  "Josh Emmett": { ht:"5'6\"", dob:"1985-03-04", reach:'70"', stance:"Orthodox", slpm:3.67, tdAcc:"36%", subAvg:0.1, strDef:"59%", kd:0.6, tdDef:"43%", finRate:"63%", streak:0, tdLanded:1.07, gym:"Team Alpha Male (2006–present)" },
  "Youssef Zalal": { ht:"5'10\"", dob:"1996-09-04", reach:'72"', stance:"Switch", slpm:3.03, tdAcc:"31%", subAvg:1.4, strDef:"66%", kd:0.1, tdDef:"59%", finRate:"47%", streak:8, tdLanded:2.17, gym:"Factory X" },
  "Steve Garcia": { ht:"6'0\"", dob:"1992-05-22", reach:'75"', stance:"Southpaw", slpm:5.46, strAcc:"49%", sapm:2.22, tdAcc:"40%", subAvg:0.39, strDef:"60%", kd:2.12, tdDef:"89%", finRate:"79%", streak:7, tdLanded:0.77, gym:"Jackson-Wink MMA Academy" },
@@ -7811,13 +7811,14 @@
     { opponent: "Ian McCall", odds: 175 }
   ],
   "Jean Silva": [
-    { opponent: "Diego Lopes", odds: -260 },
-    { opponent: "Sodiq Yusuff", odds: -185 },
-    { opponent: "Bill Algeo", odds: -450 },
-    { opponent: "Jose Ochoa", odds: -700 },
-    { opponent: "Chepe Mariscal", odds: -600 },
-    { opponent: "Luis Saldaña", odds: -500 },
-    { opponent: "Jonathan Pearce", odds: -500 }
+    { opponent: "Arnold Allen", odds: -210 },
+    { opponent: "Diego Lopes", odds: -230 },
+    { opponent: "Bryce Mitchell", odds: -200 },
+    { opponent: "Melsik Baghdasaryan", odds: -500 },
+    { opponent: "Drew Dober", odds: -115 },
+    { opponent: "Charles Jourdain", odds: 115 },
+    { opponent: "Westin Wilson", odds: -1000 },
+    { opponent: "Kevin Vallejos", odds: 165 }
   ],
   "Jiří Procházka": [
     { opponent: "Carlos Ulberg", odds: 105 },
@@ -8051,16 +8052,6 @@
     { opponent: "JJ Aldrich", odds: -350 },
     { opponent: "Roxanne Modafferi", odds: -600 },
     { opponent: "Gillian Robertson", odds: -500 }
-  ],
-
-  "Jean Silva": [
-    { opponent: "Diego Lopes", odds: 310 },
-    { opponent: "Sodiq Yusuff", odds: -185 },
-    { opponent: "Bill Algeo", odds: -450 },
-    { opponent: "Jose Ochoa", odds: -700 },
-    { opponent: "Chepe Mariscal", odds: -600 },
-    { opponent: "Luis Saldaña", odds: -500 },
-    { opponent: "Jonathan Pearce", odds: -500 }
   ],
 
   "Gregory Rodrigues": [
@@ -30391,6 +30382,14 @@ const ACCOLADES = {
     { icon: "🏅", title: "Performance of the Night — KO of Rafael Fiziev at UFC 325 (Jan 2026)", detail: null },
     { icon: "🏆", title: "Centurion FC Lightweight Champion", detail: null },
     { icon: "🏆", title: "MFC (Brazilian) Lightweight Champion", detail: null },
+  ],
+  "Jean Silva": [
+    { icon: "⭐", title: "Fight of the Night (2 times) vs. Drew Dober, Diego Lopes", detail: null },
+    { icon: "⭐", title: "Performance of the Night (2 times) vs. Melsik Baghdasaryan, Bryce Mitchell", detail: null },
+    { icon: "🏅", title: "2025 Submission of the Year (ESPN, theScore, LowKick, Cageside Press) — ninja choke vs. Bryce Mitchell", detail: null },
+    { icon: "🏅", title: "2025 MMA Fighting All-Violence (First) Team", detail: null },
+    { icon: "🏆", title: "Dana White's Contender Series contract winner (2023)", detail: null },
+    { icon: "🥊", title: "Background in Muay Thai, jiu-jitsu and capoeira (Fighting Nerds, São Paulo)", detail: null },
   ],
   "Jim Miller": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Jamie Cruz", detail: null },
