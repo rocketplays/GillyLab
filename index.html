@@ -3620,7 +3620,7 @@
  // Women's Flyweight
  { name: "Gabriella Fernandes", division: "WFLW", rank: "#15", record: "11-4-0", initials: "GFN", country: "Brazil" },
  // Women's Bantamweight
- { name: "Michelle Montague", division: "WBW", rank: "NR", record: "8-4-0", initials: "MMQ", country: "USA" },
+ { name: "Michelle Montague", division: "WBW", rank: "#14", record: "8-0-0", initials: "MMQ", country: "New Zealand" },
  { name: "Bia Mesquita", division: "WBW", rank: "NR", record: "7-0-0", initials: "BMS", country: "Brazil" },
  { name: "Melissa Mullins", division: "WBW", rank: "NR", record: "7-2-0", initials: "MMU", country: "UK" },
  { name: "Lee Yi-sak", division: "MW", rank: "NR", record: "9-3-0", initials: "LYS", country: "South Korea" },
@@ -4542,7 +4542,7 @@
  "Sofia Montenegro": { ht:"5'5\"", dob:"2000-01-01", reach:'65"', stance:"Orthodox", slpm:4.20, tdAcc:"38%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"65%", finRate:"67%", streak:0, tdLanded:1.50 },
  "Alexia Thainara": { ht:"5'4\"", dob:"1995-11-20", reach:'67"', stance:"Orthodox", slpm:4.62, strAcc:"43%", sapm:2.46, strDef:"60%", kd:0.00, tdLanded:4.54, tdAcc:"58%", tdDef:"100%", subAvg:1.82, finRate:"57%", streak:12, gym:"Academia Ribas Family / Team LJ Combat" },
  "Gabriella Fernandes": { ht:"5'6\"", dob:"1993-08-13", reach:'66"', stance:"Southpaw", slpm:3.56, strAcc:"48%", sapm:5.19, strDef:"52%", kd:0.22, tdLanded:0.44, tdAcc:"18%", tdDef:"69%", subAvg:0.22, finRate:"55%", streak:0, gym:"MMA Masters - Miami, FL" },
- "Michelle Montague": { ht:"5'6\"", dob:"1992-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"52%", kd:0.1, tdDef:"62%", finRate:"63%", streak:0, tdLanded:1.20 },
+ "Michelle Montague": { ht:"5'9\"", dob:"1993-11-25", reach:'68.5"', stance:"Southpaw", slpm:2.77, strAcc:"49%", sapm:2.47, strDef:"42%", kd:0.00, tdLanded:3.50, tdAcc:"54%", tdDef:"100%", subAvg:0.00, finRate:"75%", streak:8, gym:"American Top Team" },
  "Bia Mesquita": { ht:"5'2\"", dob:"1991-04-07", reach:'68"', stance:"Orthodox", slpm:5.78, strAcc:"60%", sapm:0.64, strDef:"55%", kd:0.0, tdLanded:4.81, tdAcc:"75%", tdDef:"70%", subAvg:3.21, finRate:"86%", streak:7, gym:"American Top Team (2023–present)" },
  "Melissa Mullins": { ht:"5'7\"", dob:"1991-07-23", reach:'68"', stance:"Orthodox", slpm:3.71, strAcc:"50%", sapm:4.39, strDef:"53%", kd:0.00, tdLanded:2.03, tdAcc:"43%", tdDef:"86%", subAvg:0.00, finRate:"57%", streak:0, gym:"Renegade MMA" },
  "Lee Yi-sak": { ht:"5'8\"", dob:"1999-01-01", reach:'70"', stance:"Orthodox", slpm:4.20, tdAcc:"38%", subAvg:0.4, strDef:"54%", kd:0.3, tdDef:"67%", finRate:"63%", streak:0, tdLanded:1.40 },
@@ -13002,6 +13002,13 @@
     { opponent: "Bec Rawlings", odds: 125 }
   ],
   "Michelle Montague": [
+    { opponent: "Mayra Bueno Silva", odds: -440 },
+    { opponent: "Luana Carolina", odds: -215 },
+    { opponent: "Marilia Morais", odds: -2000 },
+    { opponent: "Karolina Sobek", odds: -210 },
+    { opponent: "Abigail Montes", odds: -130 },
+    { opponent: "Shaquita Woods", odds: -500 },
+    { opponent: "Olivia Parker", odds: -550 }
   ],
   "Josh Fremd": [
     { opponent: "Gerald Meerschaert", odds: 400 },
@@ -29078,17 +29085,14 @@ const FIGHT_HISTORY = {
     { date: "Oct 10, 2010", opponent: "Emi Murata", result: "W", method: "Submission (Armbar)", round: 2, time: "2:58", event: "Jewels: 10th Ring" }
   ],
   "Michelle Montague": [
-    { date: "Dec 6, 2025", opponent: "Karol Rosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 323: Dvalishvili vs. Yan 2" },
-    { date: "Aug 9, 2025", opponent: "Wu Yanan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Hernandez" },
-    { date: "Mar 15, 2025", opponent: "Lina Lansberg", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vettori vs. Dolidze 2" },
-    { date: "Oct 19, 2024", opponent: "Ketlen Vieira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 308: Topuria vs. Holloway" },
-    { date: "May 4, 2024", opponent: "Karol Rosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 301: Pantoja vs. Erceg" },
-    { date: "Oct 28, 2023", opponent: "Macy Chiasson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 294: Makhachev vs. Volkanovski 2" },
-    { date: "May 13, 2023", opponent: "Karol Rosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rozenstruik vs. Almeida" },
-    { date: "Dec 17, 2022", opponent: "Yana Kunitskaya", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night 215" },
-    { date: "Aug 20, 2022", opponent: "Yana Kunitskaya", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 278: Usman vs. Edwards 2" },
-    { date: "Mar 12, 2022", opponent: "Sara McMann", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Volkov vs. Aspinall" },
-    { date: "Jan 20, 2021", opponent: "Lina Lansberg", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Church vs. Magny (debut)" }
+    { date: "Apr 25, 2026", opponent: "Mayra Bueno Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Luana Carolina", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes (debut)", org: "UFC" },
+    { date: "Aug 16, 2024", opponent: "Marilia Morais", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:44", event: "2024 PFL Playoffs", org: "PFL" },
+    { date: "Jun 22, 2024", opponent: "Karolina Sobek", result: "W", method: "Submission", round: 1, time: "2:41", event: "Bellator Champions Series: Dublin", org: "Bellator" },
+    { date: "Aug 23, 2023", opponent: "Abigail Montes", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:38", event: "2023 PFL Playoffs", org: "PFL" },
+    { date: "Feb 3, 2023", opponent: "Shaquita Woods", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:45", event: "2023 PFL Challenger Series, Week 2", org: "PFL" },
+    { date: "Oct 14, 2022", opponent: "Danielle Wynn", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:50", event: "iKON FC 5" },
+    { date: "Mar 4, 2022", opponent: "Olivia Parker", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:57", event: "PFL Challenger Series, Week 3", org: "PFL" }
   ],
 
 
@@ -29880,6 +29884,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Michelle Montague": [
+    { icon: "🥇", title: "IMMAF Amateur MMA World Champion (Lightweight, 2019)", detail: null },
+    { icon: "🥇", title: "IBJJF Blue Belt Open World Champion (2022)", detail: null },
+    { icon: "🤼", title: "New Zealand national freestyle wrestler (UWW Worlds team; Oceania champion)", detail: null },
+    { icon: "🏅", title: "First female UFC fighter from New Zealand", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Jacqueline Cavalcanti": [
     { icon: "🏆", title: "LFA Bantamweight Champion (2023)", detail: null },
     { icon: "🏆", title: "Strikers Cage Championship Bantamweight Champion (2022)", detail: null },
