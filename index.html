@@ -514,7 +514,7 @@
       transition: border-color 0.15s, color 0.15s;
     }
     .gl-prev-select:hover,
-    .gl-prev-select:focus {
+    .gl-prev-select:focus-visible {
       border-color: var(--accent);
       color: var(--accent);
       outline: none;
@@ -531,6 +531,38 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-top: 0.05rem;
+    }
+
+    /* Past-event result: name + W/L tile, and the center method/round/time */
+    .gl-name-wrap { display: flex; align-items: center; gap: 0.3rem; overflow: visible; min-width: 0; }
+    .gl-name-wrap.right { justify-content: flex-end; }
+    .gl-name-wrap .gl-name-txt { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gl-res-tag {
+      display: inline-block; flex-shrink: 0;
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 800;
+      font-size: 0.62rem; letter-spacing: 0.06em;
+      padding: 0.05rem 0.32rem; border-radius: 4px; line-height: 1.4;
+    }
+    .gl-result-method {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+      font-size: 0.64rem; letter-spacing: 0.04em; text-transform: uppercase;
+      color: var(--accent); text-align: center; line-height: 1.2;
+    }
+    .gl-result-time {
+      font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+      font-size: 0.72rem; letter-spacing: 0.05em; color: var(--accent);
+      text-align: center; line-height: 1.2; white-space: nowrap;
+    }
+    @media (max-width: 768px) {
+      .event-info { min-width: 0; }
+      .gl-prev-wrap { width: 100%; }
+      .gl-prev-select { width: 100%; max-width: 100%; }
+      .gl-name-wrap { display: block; }
+      .gl-name-wrap.right { text-align: right; }
+      .gl-name-wrap .gl-name-txt { display: inline; overflow: visible; white-space: normal; }
+      .gl-name-wrap .gl-res-tag { margin-left: 0.3rem; }
+      .gl-result-method { font-size: 0.5rem; }
+      .gl-result-time { font-size: 0.56rem; }
     }
 
     /* ── FIGHT CARD ── */
@@ -34232,10 +34264,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!f || !f.completed) return '';
     const won = side === 1 ? f.won1 : f.won2;
     const otherWon = side === 1 ? f.won2 : f.won1;
-    const base = 'font-weight:800;font-size:0.66rem;letter-spacing:0.04em;margin-left:0.35rem;padding:0.05rem 0.3rem;border-radius:4px;vertical-align:middle;';
-    if (won)      return '<span class="gl-res-tag" style="' + base + 'color:#04140a;background:#00e668;">WIN</span>';
-    if (otherWon) return '<span class="gl-res-tag" style="' + base + 'color:#ff6a4d;border:1px solid rgba(255,61,0,0.5);">LOSS</span>';
-    return '<span class="gl-res-tag" style="' + base + 'color:var(--muted);border:1px solid var(--border);">DRAW</span>';
+    if (won)      return '<span class="gl-res-tag" style="color:#04140a;background:#00e668;">WIN</span>';
+    if (otherWon) return '<span class="gl-res-tag" style="color:#ff6a4d;border:1px solid rgba(255,61,0,0.5);">LOSS</span>';
+    return '<span class="gl-res-tag" style="color:var(--muted);border:1px solid var(--border);">DRAW</span>';
+  }
+
+  // Compact method label for the narrow center column of a past-event card.
+  function glAbbrMethod(m) {
+    const u = String(m || '').toUpperCase();
+    if (u.includes('UNANIM')) return 'U-DEC';
+    if (u.includes('SPLIT')) return 'S-DEC';
+    if (u.includes('MAJOR')) return 'M-DEC';
+    if (u.includes('DEC')) return 'DEC';
+    if (u.includes('SUBMISSION') || u.startsWith('SUB') || u.includes('TAP')) return 'SUB';
+    if (u.includes('KO/TKO')) return 'KO/TKO';
+    if (u.includes('TKO')) return 'TKO';
+    if (u.includes('KO')) return 'KO';
+    if (u.includes('DISQUAL') || u === 'DQ') return 'DQ';
+    if (u.includes('NO CONTEST') || u === 'NC') return 'NC';
+    return String(m || '').trim();
   }
 
   function renderHomeFightCard(evt) {
@@ -34292,7 +34339,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             ava(f.photo1, f.ini1, f.f1) +
             '<div style="min-width:0;flex:1;">' +
               '<div class="fighter-rank">' + f.r1 + '</div>' +
-              '<div class="fighter-name">' + f.f1 + glResultTag(f, 1) + '</div>' +
+              (f.completed
+                ? '<div class="fighter-name gl-name-wrap"><span class="gl-name-txt">' + f.f1 + '</span>' + glResultTag(f, 1) + '</div>'
+                : '<div class="fighter-name">' + f.f1 + '</div>') +
               '<div class="fighter-record">' + f.rec1 + '</div>' +
             '</div>' +
           '</div>' +
@@ -34302,14 +34351,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               : '<div class="fight-vs">VS</div>') +
             '<div class="fight-weight">' + weight + '</div>' +
             (f.completed
-              ? '<div class="fight-rounds" style="color:var(--muted);max-width:170px;white-space:normal;line-height:1.25;">' + escHtmlAttr(f.methodText || '') + (f.resRound ? ' · R' + f.resRound : '') + (f.resTime ? ' ' + escHtmlAttr(f.resTime) : '') + '</div>'
+              ? '<div class="gl-result-method">' + escHtmlAttr(glAbbrMethod(f.methodText)) + '</div>' +
+                ((f.resRound || f.resTime) ? '<div class="gl-result-time">' + (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' · ' : '') + (f.resTime ? escHtmlAttr(f.resTime) : '') + '</div>' : '')
               : '<div class="fight-rounds">' + rounds + '</div>') +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
               '<div class="fighter-rank">' + f.r2 + '</div>' +
-              '<div class="fighter-name">' + f.f2 + glResultTag(f, 2) + '</div>' +
+              (f.completed
+                ? '<div class="fighter-name gl-name-wrap right"><span class="gl-name-txt">' + f.f2 + '</span>' + glResultTag(f, 2) + '</div>'
+                : '<div class="fighter-name">' + f.f2 + '</div>') +
               '<div class="fighter-record">' + f.rec2 + '</div>' +
             '</div>' +
             ava(f.photo2, f.ini2, f.f2) +
@@ -38185,6 +38237,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       });
 
       sel.addEventListener('change', () => {
+        sel.blur(); // don't leave the control stuck in its green focus state after picking
         const lbl = header.querySelector('.countdown-label');
         if (sel.value === '__featured__') {
           window.__GL_VIEWING_PAST = false;
