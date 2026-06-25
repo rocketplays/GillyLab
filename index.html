@@ -3368,7 +3368,7 @@
  { name: "Adrián Luna Martinetti", division: "BW", rank: "NR", record: "16-1-0", initials: "ALM2", country: "Mexico" },
  { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-0", initials: "JDI", country: "Mexico" },
  // ─── FLYWEIGHT (extended) ───
- { name: "Sumudaerji", division: "FLW", rank: "NR", record: "16-4-0", initials: "SUM", country: "China" },
+ { name: "Sumudaerji", division: "FLW", rank: "NR", record: "19-7-0", initials: "SUM", country: "China" },
  { name: "Carlos Candelario", division: "FLW", rank: "NR", record: "12-4-0", initials: "CCA", country: "USA" },
  { name: "Namsrai Batbayar", division: "FLW", rank: "NR", record: "10-1-0", initials: "NBA", country: "Mongolia" },
  // ─── WOMEN'S STRAWWEIGHT (extended) ───
@@ -4269,7 +4269,7 @@
  "Viviane Araújo": { ht:"5'4\"", dob:"1986-11-21", reach:'68"', stance:"Orthodox", slpm:3.84, tdAcc:"40%", subAvg:0.3, strDef:"55%", kd:0.1, tdDef:"65%", finRate:"54%", streak:0, tdLanded:1.50, gym:"Companhia Athetica" },
  "Andrea Lee": { ht:"5'6\"", dob:"1989-02-11", reach:'69"', stance:"Orthodox", slpm:4.62, tdAcc:"47%", subAvg:0.4, strDef:"61%", kd:0.1, tdDef:"72%", finRate:"54%", streak:0, tdLanded:1.65, gym:"Elite Combat Academy (2018–present)" },
  // ── Flyweight (more) ──
- "Sumudaerji": { ht:"5'8\"", dob:"1996-01-20", reach:'72"', stance:"Southpaw", slpm:4.48, tdAcc:"11%", subAvg:0.6, strDef:"60%", kd:0.3, tdDef:"71%", finRate:"61%", streak:0, tdLanded:0.16 },
+ "Sumudaerji": { ht:"5'8\"", dob:"1996-01-20", reach:'72"', stance:"Southpaw", slpm:4.40, strAcc:"50%", sapm:2.29, strDef:"63%", kd:0.38, tdLanded:0.76, tdAcc:"38%", tdDef:"73%", subAvg:0.51, finRate:"74%", streak:3, gym:"Team Alpha Male" },
  "Matt Schnell": { ht:"5'8\"", dob:"1990-01-15", reach:'70"', stance:"Orthodox", slpm:4.07, tdAcc:"45%", subAvg:0.8, strDef:"55%", kd:0.2, tdDef:"68%", finRate:"64%", streak:0, tdLanded:0.60, gym:"American Kickboxing Academy (2017–2024)" },
  "Tyson Nam": { ht:"5'7\"", dob:"1983-10-06", reach:'68"', stance:"Orthodox", slpm:3.87, tdAcc:"0%", subAvg:0.0, strDef:"65%", kd:0.3, tdDef:"50%", finRate:"57%", streak:0, tdLanded:0.00, gym:"Gracie Technics (2021–present)" },
  "Charles Johnson": { ht:"5'9\"", dob:"1991-01-10", reach:'70"', stance:"Switch", slpm:4.77, strAcc:"50%", sapm:4.02, strDef:"56%", kd:0.34, tdLanded:0.51, tdAcc:"17%", tdDef:"69%", subAvg:0.34, finRate:"58%", streak:1, gym:"Fusion X-Cel" },
@@ -9283,10 +9283,12 @@
     { opponent: "Maximilien Vallot", odds: -400 },
   ],
   "Sumudaerji": [
-    { opponent: "Charles Johnson", odds: -200 },
-    { opponent: "Victor Henry", odds: 185 },
-    { opponent: "Aoriqileng", odds: 160 },
-    { opponent: "Kevin Croom", odds: -500 }
+    { opponent: "Alex Perez", odds: 116 },
+    { opponent: "Jesus Aguilar", odds: -180 },
+    { opponent: "Kevin Borjas", odds: -171 },
+    { opponent: "Mitch Raposo", odds: -145 },
+    { opponent: "Charles Johnson", odds: 230 },
+    { opponent: "Louis Smolka", odds: 150 }
   ],
   "Edgar Chairez": [
     { opponent: "Bruno Gustavo da Silva", odds: -110 },
@@ -19521,18 +19523,33 @@ const FIGHT_HISTORY = {
 
 
   "Sumudaerji": [
-    { date: "May 30, 2026", opponent: "Alex Perez", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
-    { date: "Oct 19, 2024", opponent: "Charles Johnson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araujo 2" },
-    { date: "Mar 1, 2025", opponent: "Chris Gutierrez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kape vs. Almabayev" },
-    { date: "Apr 27, 2024", opponent: "Victor Henry", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. Allen" },
-    { date: "Nov 19, 2022", opponent: "Aoriqileng", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blaydes vs. Lewis 2" },
-    { date: "Aug 7, 2021", opponent: "Kevin Croom", result: "W", method: "KO (Punches)", round: 1, time: "0:42", event: "UFC 265: Poirier vs. McGregor 3" },
-    { date: "Nov 20, 2021", opponent: "Charles Johnson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Font vs. Aldo" },
-    { date: "May 22, 2021", opponent: "Mark De La Rosa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. Gastelum" },
-    { date: "Sep 18, 2021", opponent: "Alessandro Costa", result: "W", method: "TKO (Punches)", round: 1, time: "2:42", event: "UFC Fight Night: Aspinall vs. Tybura (debut)" },
-    { date: "Mar 20, 2021", opponent: "Adrian Yanez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BRAVE CF 48" },
-    { date: "Oct 17, 2020", opponent: "Jose Rodriguez", result: "W", method: "KO (Punches)", round: 2, time: "1:15", event: "BRAVE CF 44" },
-    { date: "Aug 1, 2020", opponent: "Wang Hao", result: "W", method: "KO (Punches)", round: 1, time: "0:42", event: "Kunlun Fight" }
+    { date: "May 30, 2026", opponent: "Alex Perez", result: "NC", method: "No Contest (Accidental groin kick)", round: 2, time: "1:45", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
+    { date: "Mar 7, 2026", opponent: "Jesus Aguilar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 326", org: "UFC" },
+    { date: "Aug 23, 2025", opponent: "Kevin Borjas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
+    { date: "Apr 12, 2025", opponent: "Mitch Raposo", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 314", org: "UFC" },
+    { date: "Oct 19, 2024", opponent: "Charles Johnson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hernandez vs. Pereira", org: "UFC" },
+    { date: "Dec 9, 2023", opponent: "Tim Elliott", result: "L", method: "Technical Submission (Arm-triangle choke)", round: 1, time: "4:02", event: "UFC Fight Night: Song vs. Gutierrez", org: "UFC" },
+    { date: "Jul 16, 2022", opponent: "Matt Schnell", result: "L", method: "Technical Submission (Triangle choke)", round: 2, time: "4:24", event: "UFC on ABC: Ortega vs. Rodríguez", org: "UFC" },
+    { date: "Jan 20, 2021", opponent: "Zarrukh Adashev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Chiesa vs. Magny", org: "UFC" },
+    { date: "Nov 28, 2020", opponent: "Malcolm Gordon", result: "W", method: "KO (Punches)", round: 1, time: "0:44", event: "UFC on ESPN: Smith vs. Clark", org: "UFC" },
+    { date: "Aug 31, 2019", opponent: "Andre Soukhamthath", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Andrade vs. Zhang", org: "UFC" },
+    { date: "Nov 24, 2018", opponent: "Louis Smolka", result: "L", method: "Submission (Armbar)", round: 2, time: "2:07", event: "UFC Fight Night: Blaydes vs. Ngannou 2", org: "UFC" },
+    { date: "Oct 26, 2018", opponent: "Haobin Ma", result: "L", method: "Technical Submission (Rear-naked choke)", round: 2, time: "3:57", event: "WLF: W.A.R.S. 28" },
+    { date: "Aug 2, 2018", opponent: "Yusei Saiton", result: "W", method: "TKO (Punches)", round: 1, time: "0:53", event: "ABA Fighting Championship: Hongyuan" },
+    { date: "Jun 27, 2018", opponent: "Temirulan Bamadaliev", result: "W", method: "TKO (Punches)", round: 1, time: "2:14", event: "WLF: W.A.R.S. 25" },
+    { date: "Apr 14, 2018", opponent: "Zelimkhan Makaev", result: "W", method: "KO (Spinning back kick)", round: 1, time: "4:01", event: "WLF: W.A.R.S. 23" },
+    { date: "Mar 17, 2018", opponent: "Bidzina Gavashelishvili", result: "W", method: "KO (Flying knee)", round: 1, time: "2:36", event: "WLF: W.A.R.S. 22" },
+    { date: "Jan 13, 2018", opponent: "Abdula Aliev", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:16", event: "WLF: W.A.R.S. 21" },
+    { date: "Nov 25, 2017", opponent: "Kirill Kirill", result: "W", method: "KO (Punch to the body)", round: 1, time: "3:19", event: "IPFC: YunFeng Showdown 7" },
+    { date: "Oct 28, 2017", opponent: "Ryota Kobayashi", result: "W", method: "TKO (Punches)", round: 1, time: "1:19", event: "WLF: W.A.R.S. 18" },
+    { date: "Sep 16, 2017", opponent: "Jomar Manlangit", result: "W", method: "KO (Punch to the body)", round: 2, time: "1:20", event: "WLF: W.A.R.S. 17" },
+    { date: "Apr 7, 2017", opponent: "Pengshuai Liu", result: "W", method: "KO (Punches)", round: 1, time: "4:28", event: "CWM MMA: Chin Woo Men" },
+    { date: "Jan 13, 2017", opponent: "Junye Gao", result: "W", method: "KO (Punches)", round: 1, time: "3:38", event: "WLF: World Championship" },
+    { date: "Sep 28, 2016", opponent: "Teimur Ragimov", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "1:15", event: "WLF: E.P.I.C. 8" },
+    { date: "Jun 29, 2016", opponent: "Isaias Celiva", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "WLF: E.P.I.C. 5" },
+    { date: "Apr 23, 2016", opponent: "Leonid Malozemov", result: "W", method: "TKO (Head kick)", round: 2, time: "0:06", event: "WLF: E.P.I.C. 3" },
+    { date: "Mar 13, 2016", opponent: "Yusuke Uehara", result: "L", method: "Submission (Straight armbar)", round: 1, time: "2:41", event: "WLF: E.P.I.C. 2" },
+    { date: "Jan 13, 2016", opponent: "Seung Heon Lim", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "2:44", event: "WLF: E.P.I.C. 1" }
   ],
   "Edgar Chairez": [
     { date: "Jun 6, 2026", opponent: "Bruno Gustavo da Silva", result: "W", method: "Submission (Neck crank)", round: 1, time: "4:13", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
@@ -30000,6 +30017,14 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Sumudaerji": [
+    { icon: "🏆", title: "Wu Lin Feng (WLF) MMA Champion", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (1x)", detail: "vs. Malcolm Gordon" },
+    { icon: "⭐", title: "UFC Fight of the Night (1x)", detail: "vs. Matt Schnell" },
+    { icon: "🏅", title: "First UFC fighter of Tibetan ethnicity", detail: null },
+    { icon: "🥇", title: "2010 Sichuan Junior Sanda Championship — 2nd place", detail: null },
+    { icon: "🥊", title: "San Da (Chinese kickboxing) background", detail: null },
+  ],
   "Joanderson Brito": [
     { icon: "🥊", title: "Dana White's Contender Series winner (2021) — earned UFC contract", detail: null },
     { icon: "🏆", title: "Fusion Fighting Championship Featherweight Champion", detail: null },
