@@ -38090,11 +38090,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       catch (_) { return d; }
     };
 
-    let pool = (apiData.data || []).filter(e => e.status === 'completed' && (e.bouts || []).length && hasResults(e));
+    // "Past" = starts before the upcoming featured card. Pivoting on the
+    // featured event (rather than only the wall clock) excludes the future-dated
+    // cards the synthetic upcoming-feed pre-marks "completed" (e.g. UFC 322 in
+    // Nov, UFC 317 on Jun 28) even if the viewer's clock is off. Falls back to
+    // the wall clock when there's no featured event. Also drop "Road to UFC".
+    const nowMs = (featuredRaw && featuredRaw.startsAt) ? new Date(featuredRaw.startsAt).getTime() : Date.now();
+    const isPast = e => { const t = startMs(e); return t > 0 && t < nowMs; };
+    const isRoadToUFC = e => /road to (the )?ufc/i.test(evtName(e));
+
+    let pool = (apiData.data || []).filter(e => e.status === 'completed' && (e.bouts || []).length);
 
     const build = list => {
-      list.sort((a, b) => startMs(b) - startMs(a));
-      list = list.slice(0, 10);
+      list = list
+        .filter(e => (e.bouts || []).length && isPast(e) && !isRoadToUFC(e) && hasResults(e))
+        .sort((a, b) => startMs(b) - startMs(a))
+        .slice(0, 10);
       if (!list.length || document.getElementById('gl-prev-wrap')) return;
 
       const wrap = document.createElement('div');
