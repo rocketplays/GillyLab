@@ -479,6 +479,60 @@
       letter-spacing: 0.08em;
     }
 
+    /* ── PAST-EVENT DROPDOWN (homepage) ── */
+    .gl-prev-wrap {
+      margin-top: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .gl-prev-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+    .gl-prev-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-color: var(--surface2);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'><path d='M1 1l4 4 4-4' fill='none' stroke='%2300e668' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.7rem center;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      padding: 0.4rem 2rem 0.4rem 0.7rem;
+      cursor: pointer;
+      max-width: 360px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .gl-prev-select:hover,
+    .gl-prev-select:focus {
+      border-color: var(--accent);
+      color: var(--accent);
+      outline: none;
+    }
+    .gl-prev-select option {
+      background: var(--surface);
+      color: var(--text);
+    }
+    .gl-prev-updated {
+      flex-basis: 100%;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 0.05rem;
+    }
+
     /* ── FIGHT CARD ── */
     .fight-card-section {
       max-width: 1300px;
@@ -38111,13 +38165,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       const wrap = document.createElement('div');
       wrap.id = 'gl-prev-wrap';
-      wrap.style.cssText = 'margin-top:0.65rem;display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;';
+      wrap.className = 'gl-prev-wrap';
       const label = document.createElement('span');
-      label.textContent = 'View past event:';
-      label.style.cssText = 'font-size:0.72rem;text-transform:uppercase;letter-spacing:0.05em;color:var(--muted);';
+      label.textContent = 'View past event';
+      label.className = 'gl-prev-label';
       const sel = document.createElement('select');
       sel.id = 'gl-prev-select';
-      sel.style.cssText = 'background:rgba(255,255,255,0.05);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:0.4rem 0.6rem;font-size:0.82rem;cursor:pointer;max-width:340px;';
+      sel.className = 'gl-prev-select';
 
       const opt0 = document.createElement('option');
       opt0.value = '__featured__';
@@ -38154,7 +38208,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       wrap.appendChild(sel);
       if (recentStamp) {
         const upd = document.createElement('span');
-        upd.style.cssText = 'flex-basis:100%;font-size:0.68rem;color:var(--muted);margin-top:0.1rem;';
+        upd.className = 'gl-prev-updated';
         let txt;
         try { txt = new Date(recentStamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
         catch (_) { txt = recentStamp; }
