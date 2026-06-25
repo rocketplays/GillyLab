@@ -23,9 +23,17 @@ This prints, compactly:
   (UFCStats.com is bot-blocked — don't try it). A field captured as `0`/`0.00` is a
   **genuine zero**; a field listed under `MISSING on ufc.com (blank, NOT a 0)` was left
   blank on the page and must be chased on another source — never copy a blank as 0.
-- **[ESPN]** bio fields (stance, height, reach, DOB, gym) pulled from ESPN's core API.
-  This is the second source for bio fields — especially **stance**, which the ufc.com
-  parse does not provide. If ESPN picks the wrong athlete, rerun with `--espn-id <number>`.
+  **Do NOT trust ufc.com's `tdAcc`** — it systematically under-counts takedowns *landed*
+  and prints bogus low percentages (often 0–2%). Take tdAcc from [ESPN] instead (below).
+- **[ESPN]** bio fields (stance, height, reach, DOB, gym) pulled from ESPN's core API,
+  **plus the VERIFIED takedown accuracy** summed from ESPN's per-fight stats table
+  (takedowns landed / attempted across every fight). The line
+  `tdAcc (VERIFIED per-fight L/A) = NN%   <- USE THIS` is the authoritative tdAcc —
+  use it for FIGHTER_STATS, not ufc.com's value. When ufc.com and ESPN disagree by ≥5
+  points the script prints a `!! tdAcc MISMATCH ... USE ESPN` line; always follow it.
+  This is also the second source for bio fields — especially **stance**, which the
+  ufc.com parse does not provide. If ESPN picks the wrong athlete, rerun with
+  `--espn-id <number>` (also fixes a wrong/empty verified tdAcc).
 - **[BFO]** the full BestFightOdds table. Each matchup is two lines: the fighter's line
   (open | closing-range-low ... closing-range-high), then the opponent's line with the
   event date. Trust this raw table; do NOT WebFetch BFO pages (the summarizer flips
@@ -58,7 +66,8 @@ robots-blocked — don't scrape it. Do not skip verification just because Wikipe
 **FIGHTER_STATS** (field order used by completed entries):
 `ht, dob, reach, stance, slpm, strAcc, sapm, strDef, kd, tdLanded, tdAcc, tdDef, subAvg, finRate, streak, gym`
 - Stat values come from [UFCCOM]; bio fields (ht, dob, reach, stance, gym) also from [ESPN].
-  `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
+  **`tdAcc` comes from [ESPN]'s VERIFIED per-fight line, NOT ufc.com** (ufc.com's tdAcc is
+  the known under-count bug). `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
 - `streak` = consecutive wins since last loss/draw; NCs are skipped, not breakers.
 
 **No blank fields.** Every one of the 16 keys above must be present in the entry. Do NOT
@@ -69,7 +78,8 @@ omit a field just because the first source lacked it. A field may be left out ON
 - Distinguish blank from 0: the script reports a real 0 as a value and a blank as `MISSING`.
   Never copy a blank as 0, and never drop a key because the value is 0.
 - `stance` is never on ufc.com's parse — take it from [ESPN] (or Sherdog/Tapology/Wikipedia).
-- When a fighter has landed 0 takedowns, `tdAcc` is `"0%"`. When ufc.com leaves takedown
+- When a fighter has landed 0 takedowns, `tdAcc` is `"0%"` — but confirm it's a real 0 via
+  the ESPN per-fight line `(VERIFIED per-fight 0/N)`, not ufc.com's bugged 0. When ufc.com leaves takedown
   defense blank because no opponent has attempted a takedown (a fighter who's never been
   taken down), use the verified value from another source; if none exists, treat 100% (never
   taken down) as the value only when corroborated, otherwise note it unverified.

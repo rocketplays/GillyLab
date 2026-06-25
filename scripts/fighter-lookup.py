@@ -13,7 +13,13 @@ Prints these sections:
             independently; a field that is blank on the page is reported as
             MISSING, distinct from a field genuinely listed as 0/0.00)
   [ESPN]    bio fields (stance, height, reach, DOB, gym) from ESPN's core API --
-            a second source so stance and other bio fields are not left blank
+            a second source so stance and other bio fields are not left blank;
+            ALSO the VERIFIED takedown accuracy, summed from ESPN's per-fight
+            stats table (takedowns landed / attempted across every fight). This
+            is the authoritative tdAcc -- ufc.com's athlete page systematically
+            under-reports takedowns LANDED and prints bogus low % (often 0-2%).
+            If ufc.com and ESPN disagree, a "!! tdAcc MISMATCH" line tells you
+            to use the ESPN value.
   [BFO]     full odds history parsed from bestfightodds.com (fighter's rows only)
 
 A final ">> STILL MISSING" line lists any bio/stat field not found on EITHER
@@ -21,8 +27,9 @@ ufc.com or ESPN, so it can be chased on Sherdog/Tapology/Wikipedia before being
 left blank. Run from the repo root. Network fetches use curl with a browser UA.
 (UFCStats.com is bot-blocked; ufc.com + ESPN + BFO are the working sources.)
 """
-import argparse, json, re, subprocess, sys, unicodedata
+import argparse, json, re, subprocess, sys, unicodedata, urllib.request
 from datetime import datetime
+from html import unescape as html_unescape
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
 TODAY = datetime.now()
@@ -148,6 +155,44 @@ def espn_find_id(name, espn_id=None):
         if s == want: return i
     return pairs[0][0]
 
+def espn_tdacc(sid):
+    """AUTHORITATIVE takedown accuracy, summed from ESPN's per-fight stats table
+    (takedowns landed / attempted across every fight). Use this for the
+    FIGHTER_STATS tdAcc field. ufc.com's athlete page under-reports takedowns
+    LANDED and produces bogus low percentages (often 0-2%); this per-fight sum
+    is the correct figure. Returns (pct, TDL, TDA) or None if no table exists.
+    A genuine (0, 0, n>0) means the fighter truly landed 0 of n attempts; a
+    (0, 0, 0) means no recorded takedown attempts (None of the data is the bug).
+    """
+    # ESPN's stats page returns empty to curl but serves fine to urllib.
+    try:
+        req = urllib.request.Request(
+            "https://www.espn.com/mma/fighter/stats/_/id/%s" % sid,
+            headers={"User-Agent": "Mozilla/5.0"})
+        t = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
+    except Exception:
+        return None
+    if not t:
+        return None
+    txt = re.sub(r"\|+", "|", html_unescape(re.sub(r"<[^>]+>", "|", t)))
+    i = txt.find("TK ACC")          # the Clinch table header
+    if i == -1:
+        return None
+    toks = [x.strip() for x in txt[i + 6:].split("|") if x.strip() != ""]
+    datere = re.compile(r"^[A-Z][a-z]{2} \d{1,2}, \d{4}$")
+    TDL = TDA = 0
+    for k, tk in enumerate(toks):
+        if datere.match(tk):        # one fight row begins at each date cell
+            row = toks[k:k + 16]
+            if len(row) >= 16 and row[15].endswith("%"):
+                try:
+                    TDL += int(row[12]); TDA += int(row[13])
+                except ValueError:
+                    pass
+    if TDA == 0:
+        return (0, TDL, TDA)
+    return (round(100 * TDL / TDA), TDL, TDA)
+
 def espn_report(name, espn_id=None):
     sid = espn_find_id(name, espn_id)
     if not sid:
@@ -166,6 +211,14 @@ def espn_report(name, espn_id=None):
     if d.get("citizenship"):   found["country"] = d["citizenship"]
     out = [f"id={sid}  https://www.espn.com/mma/fighter/_/id/{sid}"]
     out.append(" ".join(f"{k}={v}" for k, v in found.items()) or "no bio fields parsed")
+    td = espn_tdacc(sid)
+    if td is not None:
+        acc, tdl, tda = td
+        found["tdAcc"] = str(acc)
+        note = "" if tda else "  (no recorded TD attempts -> 0% is genuine)"
+        out.append(f"tdAcc (VERIFIED per-fight {tdl}/{tda}) = {acc}%   <- USE THIS for FIGHTER_STATS tdAcc{note}")
+    else:
+        out.append("tdAcc: no ESPN per-fight table (fall back to ufc.com, but sanity-check the value)")
     return "\n".join(out), found
 
 # ---------- bestfightodds ----------
@@ -208,9 +261,14 @@ if __name__ == "__main__":
         print(f"\n========== [UFCCOM] ufc.com/athlete/{slugify(a.name)}")
         ufc_txt, ufc_found = ufccom_report(a.name)
         print(ufc_txt)
-        print(f"\n========== [ESPN] (bio/stance secondary source)")
+        print(f"\n========== [ESPN] (bio/stance secondary source + VERIFIED tdAcc)")
         espn_txt, espn_found = espn_report(a.name, a.espn_id)
         print(espn_txt)
+        u, e = ufc_found.get("tdAcc"), espn_found.get("tdAcc")
+        if u is not None and e is not None and abs(int(u) - int(e)) >= 5:
+            print(f"\n!! tdAcc MISMATCH: ufc.com={u}% vs ESPN per-fight={e}%  ->  USE ESPN ({e}%).")
+            print("   ufc.com under-counts takedowns landed; the ESPN per-fight sum is correct.")
+        # ESPN's per-fight tdAcc is authoritative; let it win in the missing-field set
         have = set(ufc_found) | set(espn_found)
         still = [f for f in (BIO_FIELDS + STAT_FIELDS) if f not in have]
         print()
