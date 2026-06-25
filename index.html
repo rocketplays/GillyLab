@@ -33201,7 +33201,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  // normalized the same way.
  function searchNorm(s) {
  return String(s == null ? '' : s).toLowerCase()
- .normalize('NFD').replace(/[̀-ͯ]/g, '');
+ .normalize('NFD').replace(/[̀-ͯ]/g, '')
+ // A handful of Latin letters are their own Unicode code points and do NOT
+ // decompose into base+accent under NFD (e.g. Polish ł in Błachowicz), so
+ // the diacritic strip above misses them — map them explicitly.
+ .replace(/ł/g, 'l').replace(/ø/g, 'o').replace(/đ/g, 'd')
+ .replace(/ß/g, 'ss').replace(/æ/g, 'ae').replace(/œ/g, 'oe').replace(/þ/g, 'th');
  }
  function filterSearch(query) {
  const results = document.getElementById('searchResults');
