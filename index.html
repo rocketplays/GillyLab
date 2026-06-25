@@ -32728,7 +32728,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
      const offBadge  = (typeof fighterDivisionRankBadge === 'function') ? fighterDivisionRankBadge(name) : '';
      const metaBadge = (typeof fighterMetaRankBadge === 'function') ? fighterMetaRankBadge(name) : '';
      let line = division + ' · ' + (offBadge || 'NR');
-     if (metaBadge) line += ' | (' + metaBadge + ') Meta AI';
+     if (metaBadge) line += ' | ' + metaBadge + ' Meta AI';
      const el = document.getElementById('f-division');
      if (el) el.textContent = line;
    };
