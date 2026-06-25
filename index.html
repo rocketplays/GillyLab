@@ -3099,7 +3099,7 @@
  { name: "Gabriel Bonfim", division: "WW", rank: "#5", record: "20-1-0", initials: "GBO", country: "Brazil" },
  { name: "Gilbert Burns", division: "WW", rank: "#11", record: "23-9-0", initials: "GBU", country: "Brazil" },
  { name: "Uroš Medić", division: "WW", rank: "#14", record: "13-3-0", initials: "UM", country: "Serbia" },
- { name: "Michael Page", division: "WW", rank: "#14", record: "21-10-0", initials: "MP", country: "UK" },
+ { name: "Michael Page", division: "WW", rank: "#13", record: "25-3-0", initials: "MP", country: "UK" },
  { name: "Daniel Rodriguez", division: "WW", rank: "#15", record: "20-5-0", initials: "DR", country: "USA" },
  { name: "Jorge Masvidal", division: "WW", rank: "NR", record: "35-17-0", initials: "JOR", country: "USA" },
  { name: "Geoff Neal", division: "WW", rank: "NR", record: "16-8-0", initials: "GN", country: "USA" },
@@ -3843,7 +3843,7 @@
  "Jorge Masvidal": { ht:"5'11\"", dob:"1984-11-12", reach:'74"', stance:"Orthodox", slpm:4.05, tdAcc:"59%", subAvg:0.3, strDef:"64%", kd:0.6, tdDef:"72%", finRate:"60%", streak:0, tdLanded:1.38, gym:"American Top Team (2007–2023)" },
  "Gilbert Burns": { ht:"5'10\"", dob:"1986-07-20", reach:'71"', stance:"Orthodox", slpm:3.15, tdAcc:"37%", subAvg:0.5, strDef:"52%", kd:0.2, tdDef:"53%", finRate:"59%", streak:0, tdLanded:2.12, gym:"Kill Cliff FC (2017–present)" },
  "Joaquin Buckley": { ht:"5'10\"", dob:"1994-04-27", reach:'76"', stance:"Southpaw", slpm:3.62, strAcc:"36%", sapm:3.10, strDef:"59%", kd:0.68, tdLanded:1.43, tdAcc:"45%", tdDef:"70%", subAvg:0.08, finRate:"71%", streak:0, gym:"STL Boxing" },
- "Michael Page": { ht:"6'3\"", dob:"1987-04-07", reach:'79"', stance:"Switch", slpm:2.39, tdAcc:"16%", subAvg:0.0, strDef:"57%", kd:0.8, tdDef:"66%", finRate:"67%", streak:2, tdLanded:0.23, gym:"London Shootfighters" },
+ "Michael Page": { ht:"6'3\"", dob:"1987-04-07", reach:'79"', stance:"Switch", slpm:2.28, strAcc:"58%", sapm:1.51, strDef:"62%", kd:0.19, tdLanded:0.19, tdAcc:"0%", tdDef:"70%", subAvg:0.00, finRate:"64%", streak:3, gym:"London Shootfighters" },
  "Stephen Thompson": { ht:"6'0\"", dob:"1983-02-11", reach:'75"', stance:"Orthodox", slpm:4.05, tdAcc:"35%", subAvg:0.0, strDef:"54%", kd:0.3, tdDef:"63%", finRate:"47%", streak:0, tdLanded:0.23, gym:"Serra-Longo Fight Team" },
  // ── Middleweight ──
  "Paulo Costa": { ht:"6'1\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:6.15, strAcc:"59%", sapm:5.96, strDef:"49%", kd:0.59, tdLanded:0.30, tdAcc:"43%", tdDef:"78%", subAvg:0.0, finRate:"81%", streak:2, gym:"Team Borracha" },
@@ -7854,11 +7854,29 @@
     { opponent: "Marion Reneau", odds: -400 }
   ],
   "Michael Page": [
-    { opponent: "Sam Patterson", odds: -192 },
-    { opponent: "Andre Fialho", odds: -175 },
-    { opponent: "Ian Machado Garry", odds: 175 },
-    { opponent: "Jared Cannonier", odds: 230 },
-    { opponent: "Kevin Holland", odds: 160 }
+    { opponent: "Sam Patterson", odds: -205 },
+    { opponent: "Jared Cannonier", odds: -213 },
+    { opponent: "Sharabutdin Magomedov", odds: 165 },
+    { opponent: "Ian Machado Garry", odds: 160 },
+    { opponent: "Kevin Holland", odds: 110 },
+    { opponent: "Goiti Yamauchi", odds: -110 },
+    { opponent: "Logan Storley", odds: 173 },
+    { opponent: "Douglas Lima", odds: -110 },
+    { opponent: "Derek Anderson", odds: -330 },
+    { opponent: "Ross Houston", odds: -525 },
+    { opponent: "Shinsho Anzai", odds: -1075 },
+    { opponent: "Giovanni Melillo", odds: -1800 },
+    { opponent: "Richard Kiely", odds: -1150 },
+    { opponent: "Douglas Lima", odds: 233 },
+    { opponent: "Paul Daley", odds: -260 },
+    { opponent: "David Rickels", odds: -350 },
+    { opponent: "Fernando Gonzalez", odds: -470 },
+    { opponent: "Evangelista Santos", odds: -950 },
+    { opponent: "Jeremie Holloway", odds: -1150 },
+    { opponent: "Charlie Ontiveros", odds: -2000 },
+    { opponent: "Rudy Bears", odds: -1800 },
+    { opponent: "Nah-Shon Burrell", odds: -490 },
+    { opponent: "Ricky Rainey", odds: -510 }
   ],
 
   "Dricus du Plessis": [
@@ -16906,8 +16924,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 21, 2013", opponent: "Ryan Sanders", result: "W", method: "KO (Punch)", round: 1, time: "0:10", event: "Bellator 93", org: "Bellator" },
     { date: "Nov 2, 2012", opponent: "Haitham El-Sayed", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "2:15", event: "Super Fight League 7" },
     { date: "Apr 7, 2012", opponent: "Miguel Bernard", result: "W", method: "Submission (Armbar)", round: 1, time: "1:43", event: "Ultimate Challenge MMA 27" },
-    { date: "Feb 4, 2012", opponent: "Ben Dishman", result: "W", method: "TKO (Tornado kick)", round: 1, time: "1:05", event: "Ultimate Challenge MMA 26" },
-    { date: "Aug 20, 2022", opponent: "Mike Perry", result: "L", method: "Decision (Majority)", round: 6, time: "2:00", event: "BKFC 27" }
+    { date: "Feb 4, 2012", opponent: "Ben Dishman", result: "W", method: "TKO (Tornado kick)", round: 1, time: "1:05", event: "Ultimate Challenge MMA 26" }
   ],
 
 
@@ -30436,16 +30453,11 @@ const ACCOLADES = {
     { icon: "🥋", title: "Orange belt in Judo", detail: null },
   ],
   "Michael Page": [
-    { icon: "🏆", title: "Black belt in Kung Fu", detail: null },
-    { icon: "🥈", title: "W.A.K.O. Irish Open — 2011 Dublin — Semi-Contact −84 kg", detail: null },
-    { icon: "🥈", title: "W.A.K.O. World Championships — 2009 Lignano Sabbiadoro — Semi-Contact −84 kg", detail: null },
-    { icon: "🥈", title: "W.A.K.O. Irish Open — 2009 Dublin — Semi-Contact −84 kg", detail: null },
-    { icon: "🥇", title: "W.A.K.O. Austrian Classics Worldcup — 2009 Walchsee — Light-Contact −84 kg", detail: null },
-    { icon: "🥇", title: "W.A.K.O. Austrian Classics Worldcup — 2009 Walchsee — Semi-Contact −84 kg", detail: null },
-    { icon: "🥉", title: "WKA World Championships — 2009 Huelva — Light-Contact −90 kg", detail: null },
-    { icon: "🥇", title: "WKA World Championships — 2009 Huelva — Semi-Contact Open", detail: null },
-    { icon: "🥈", title: "W.A.K.O. Irish Open — 2008 Dublin — Semi-Contact −84 kg", detail: null },
-    { icon: "🥇", title: "W.A.K.O. Austrian Classics Worldcup — 2008 Kufstein — Semi-Contact −84 kg", detail: null },
+    { icon: "🏅", title: "25–3 as a pro (as of Jun 2026) — 13 wins by knockout, all 13 in the first round; famed for a flashy point-fighting style and highlight-reel finishes", detail: null },
+    { icon: "⭐", title: "2016 Knockout of the Year (World MMA Awards) — jumping switch-kick KO of Evangelista \"Cyborg\" Santos; also owns a 9-second knockout", detail: null },
+    { icon: "🏆", title: "Bellator Welterweight Grand Prix semifinalist; tied for the most knockouts in Bellator history (11) (per ufc.com Q&A)", detail: null },
+    { icon: "🥋", title: "Fifth-degree black belt in freestyle kickboxing — a 10-time world kickboxing champion (point-fighting/WAKO & WKA) (per ufc.com Q&A)", detail: null },
+    { icon: "🥊", title: "Also 2–0 with two KOs in professional boxing; trains at London Shootfighters", detail: null }
   ],
   "Daniel Rodriguez": [
     { icon: "🏆", title: "SMASH Global Welterweight Championship", detail: "Dec 2019 — def. Quinton McCottrell" },
