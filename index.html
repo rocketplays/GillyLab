@@ -3666,6 +3666,7 @@
  { name: "Jhonata Diniz", division: "HW", rank: "NR", record: "9-2-0", initials: "JD", country: "Brazil" },
  { name: "Marcus Buchecha", division: "HW", rank: "NR", record: "8-2-0", initials: "MB", country: "Brazil" },
  { name: "Talita Alencar", division: "WSW", rank: "NR", record: "8-1-1", initials: "TA", country: "Brazil" },
+ { name: "Melissa Croden", division: "WBW", rank: "NR", record: "8-3-0", initials: "MC", country: "Canada" },
  { name: "Stephanie Luciano", division: "WSW", rank: "NR", record: "4-5-1", initials: "SL", country: "Brazil" },
  { name: "Jaqueline Amorim", division: "WSW", rank: "NR", record: "11-2-0", initials: "JA", country: "Brazil" },
  { name: "Carli Judice", division: "WFLY", rank: "NR", record: "7-1-0", initials: "CJ", country: "USA" },
@@ -4610,6 +4611,7 @@
   "Shem Rock": { ht:"--", dob:"", reach:"--", stance:"--", slpm:0, tdAcc:"13%", subAvg:0, strDef:"0%", kd:0, tdDef:"0%", finRate:"0%", streak:0, tdLanded:0 },
   "Stephanie Luciano": { ht:"--", dob:"", reach:"--", stance:"--", slpm:0, tdAcc:"71%", subAvg:0, strDef:"0%", kd:0, tdDef:"0%", finRate:"0%", streak:0, tdLanded:0 },
   "Talita Alencar": { ht:"5'1\"", dob:"1990-10-17", reach:'58.5"', stance:"Orthodox", slpm:3.09, strAcc:"36%", sapm:3.67, strDef:"51%", kd:0.00, tdLanded:3.01, tdAcc:"30%", tdDef:"67%", subAvg:0.50, finRate:"50%", streak:3, gym:"Team Reis & M80 Wrestling" },
+  "Melissa Croden": { ht:"5'9\"", dob:"1991-04-12", reach:'68.5"', stance:"Orthodox", slpm:4.27, strAcc:"47%", sapm:2.13, strDef:"59%", kd:0.34, tdLanded:2.02, tdAcc:"50%", tdDef:"67%", subAvg:0.34, finRate:"88%", streak:1, gym:"Alavanca" },
   "Tereza Bleda": { ht:"--", dob:"", reach:"--", stance:"--", slpm:0, tdAcc:"23%", subAvg:0, strDef:"0%", kd:0, tdDef:"0%", finRate:"0%", streak:0, tdLanded:0 },
   "Trevin Giles": { ht:"--", dob:"1992-08-06", reach:'74"', stance:"--", slpm:3.17, tdAcc:"41%", subAvg:0.3, strDef:"52%", kd:0.1, tdDef:"61%", finRate:"60%", streak:0, tdLanded:1.29, gym:"War Training Center" },
   "Farman Hasanov": { ht:"6'0\"", dob:"1995-08-01", reach:'74.5"', stance:"Orthodox", slpm:0.0, strAcc:null, sapm:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"80%", streak:5, tdLanded:0.0, gym:"Renzo Gracie Academy" },
@@ -12589,6 +12591,15 @@
     { opponent: "Stephanie Luciano", odds: -183 },
     { opponent: "Kelsey Arnesen", odds: -172 },
     { opponent: "Staci Vega", odds: -1200 }
+  ],
+  "Melissa Croden": [
+    { opponent: "Daria Zhelezniakova", odds: -144 },
+    { opponent: "Luana Santos", odds: 110 },
+    { opponent: "Tainara Lisboa", odds: -133 },
+    { opponent: "Ashley Deen", odds: -549 },
+    { opponent: "Katharina Lehner", odds: -250 },
+    { opponent: "Jacqueline Cavalcanti", odds: -105 },
+    { opponent: "Evelyn Martins", odds: -198 }
   ],
   "Stephanie Luciano": [
     { opponent: "Montserrat Ruiz", odds: 175 },
@@ -27734,6 +27745,20 @@ const FIGHT_HISTORY = {
     { date: "Jul 2, 2021", opponent: "Staci Vega", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:14", event: "Titan FC 70", org: "Titan FC" }
   ],
 
+  "Melissa Croden": [
+    { date: "Apr 18, 2026", opponent: "Daria Zhelezniakova", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
+    { date: "Dec 13, 2025", opponent: "Luana Santos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Tainara Lisboa", result: "W", method: "TKO (Punches)", round: 3, time: "4:32", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Oct 25, 2024", opponent: "Ashley Deen", result: "W", method: "TKO (Punches)", round: 2, time: "0:22", event: "LFA 195: Wetzell vs. Usmonov", org: "LFA" },
+    { date: "Oct 6, 2023", opponent: "Katharina Lehner", result: "W", method: "TKO (Punches)", round: 3, time: "3:20", event: "LFA 169: Ward vs. Walker", org: "LFA" },
+    { date: "Apr 21, 2023", opponent: "Jacqueline Cavalcanti", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "LFA 157: Croden vs. Cavalcanti", org: "LFA" },
+    { date: "Aug 27, 2022", opponent: "Cornelia Holm", result: "W", method: "TKO (Punches)", round: 3, time: "3:22", event: "PAWFC: Pallas Athena Women's FC 2" },
+    { date: "Jan 15, 2022", opponent: "Jackie MacLean", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:59", event: "PAWFC: Pallas Athena Women's FC 1" },
+    { date: "Feb 12, 2021", opponent: "Evelyn Martins", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Titan FC 67", org: "Titan FC" },
+    { date: "Jan 25, 2020", opponent: "Elizabeth Schroder", result: "W", method: "TKO (Punches)", round: 2, time: "2:30", event: "Z Promotions: Fight Night 12" },
+    { date: "Sep 28, 2019", opponent: "Jo Maisonnueve", result: "W", method: "TKO (Punches)", round: 3, time: "1:37", event: "Z Promotions: Fight Night 11" }
+  ],
+
 
 
 
@@ -30031,6 +30056,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Melissa Croden": [
+    { icon: "🏆", title: "PAWFC (Pallas Athena Women's FC) Bantamweight Champion", detail: null },
+    { icon: "🥊", title: "Taekwondo, kickboxing & Muay Thai background (trained at Tiger Muay Thai)", detail: null },
+  ],
   "Jaqueline Amorim": [
     { icon: "🥋", title: "2nd-degree black belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥇", title: "IBJJF World Champion (multiple) & IBJJF No-Gi Pan Champion", detail: null },
