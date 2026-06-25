@@ -36,6 +36,20 @@ jobs:
             -o data/event.json
           echo "Events fetched — $(wc -c < data/event.json) bytes"
 
+      - name: Fetch last 10 completed UFC events (results) from Cito API
+        run: |
+          # Powers the homepage "View past event" dropdown. Non-fatal: if the
+          # endpoint errors (e.g. plan limit), keep the previous file and let
+          # the dropdown fall back to whatever completed events are in the feed.
+          if curl -sf \
+            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
+            "https://api.citoapi.com/api/v1/ufc/events/recent?limit=10&includeBouts=true" \
+            -o data/event-recent.json; then
+            echo "Recent events fetched — $(wc -c < data/event-recent.json) bytes"
+          else
+            echo "Recent-events fetch failed (non-fatal); keeping existing data/event-recent.json"
+          fi
+
       - name: Re-apply manual card-section overrides
         run: node scripts/apply-card-section-overrides.js
 
@@ -48,7 +62,9 @@ jobs:
       - name: Download fighter photos
         run: |
           mkdir -p data/photos
-          jq -r '.data[].bouts[].fighters[] | select(.fighterSlug != null) | "\(.fighterSlug)\t\(.fighterName)"' data/event.json 2>/dev/null | \
+          for src in data/event.json data/event-recent.json; do
+            [ -f "$src" ] && jq -r '.data[].bouts[].fighters[] | select(.fighterSlug != null) | "\(.fighterSlug)\t\(.fighterName)"' "$src" 2>/dev/null
+          done | \
           sort -u | \
           while IFS=$'\t' read -r slug name; do
             target="data/photos/${slug}.png"
@@ -74,7 +90,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/odds-history.json data/event.json data/photos/
+          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
