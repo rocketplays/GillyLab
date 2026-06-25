@@ -3200,7 +3200,7 @@
  { name: "Miranda Maverick", division: "WFLW", rank: "#10", record: "15-6-0", initials: "MMV", country: "USA" },
  { name: "Wang Cong", division: "WFLW", rank: "#12", record: "9-1-0", initials: "WCO", country: "China" },
  { name: "Casey O'Neill", division: "WFLW", rank: "#12", record: "11-2-0", initials: "CON", country: "Australia" },
- { name: "Eduarda Moura", division: "WFLW", rank: "#13", record: "11-1-0", initials: "EMO", country: "Brazil" },
+ { name: "Eduarda Moura", division: "WFLW", rank: "#13", record: "12-2-0", initials: "EMO", country: "Brazil" },
  { name: "JJ Aldrich", division: "WFLW", rank: "#14", record: "15-7-0", initials: "JJA2", country: "USA" },
  { name: "Jennifer Maia", division: "WFLW", rank: "NR", record: "21-12-1", initials: "JMA", country: "Brazil" },
  { name: "Taila Santos", division: "WFLW", rank: "NR", record: "23-4-0", initials: "TSA", country: "Brazil" },
@@ -4183,7 +4183,7 @@
  "Mizuki": { ht:"5'3\"", dob:"1994-08-19", reach:'65"', stance:"Orthodox", slpm:4.45, strAcc:"53%", sapm:4.65, strDef:"50%", kd:0.25, tdLanded:0.75, tdAcc:"33%", tdDef:"81%", subAvg:0.00, finRate:"56%", streak:2, gym:"Serra-Longo Fight Team (2018–present)" },
  // ── Women's Flyweight (final) ──
  "Melissa Gatto": { ht:"5'5\"", dob:"1996-05-02", reach:'69"', stance:"Orthodox", slpm:3.78, tdAcc:"28%", subAvg:0.5, strDef:"54%", kd:0.1, tdDef:"63%", finRate:"44%", streak:0, tdLanded:1.47, gym:"Chute Boxe" },
- "Eduarda Moura": { ht:"5'6\"", dob:"1994-02-28", reach:'67"', stance:"Orthodox", slpm:2.57, tdAcc:"44%", subAvg:0.4, strDef:"58%", kd:0.0, tdDef:"75%", finRate:"50%", streak:2, tdLanded:3.58 },
+ "Eduarda Moura": { ht:"5'6\"", dob:"1994-02-28", reach:'67"', stance:"Orthodox", slpm:2.57, strAcc:"38%", sapm:2.50, strDef:"59%", kd:0.00, tdLanded:3.58, tdAcc:"35%", tdDef:"80%", subAvg:0.42, finRate:"75%", streak:0, gym:"Galpão da Luta" },
  "Diana Belbita": { ht:"5'7\"", dob:"1996-06-26", reach:'68"', stance:"Orthodox", slpm:6.45, tdAcc:"33%", subAvg:0.2, strDef:"51%", kd:0.3, tdDef:"55%", finRate:"40%", streak:0, tdLanded:0.68, gym:"House of Champions MMA" },
  "Katlyn Cerminara": { ht:"5'9\"", dob:"1988-12-28", reach:'68"', stance:"Orthodox", slpm:4.58, tdAcc:"35%", subAvg:0.2, strDef:"55%", kd:0.1, tdDef:"67%", finRate:"42%", streak:0, tdLanded:1.28, gym:"Renzo Gracie Combat Team" },
  // ── Women's Bantamweight (final) ──
@@ -11119,10 +11119,12 @@
     { opponent: "Merab Dvalishvili", odds: 350 }
   ],
   "Eduarda Moura": [
-    { opponent: "Josefine Knutsson", odds: -250 },
-    { opponent: "Maryna Moroz", odds: -300 },
-    { opponent: "Priscila Cachoeira", odds: -400 },
-    { opponent: "Tainara Lisboa", odds: -600 }
+    { opponent: "Wang Cong", odds: 260 },
+    { opponent: "Lauren Murphy", odds: -635 },
+    { opponent: "Veronica Hardy", odds: -130 },
+    { opponent: "Denise Gomes", odds: -210 },
+    { opponent: "Montserrat Ruiz", odds: -695 },
+    { opponent: "Janaina Silva", odds: -210 }
   ],
   "Brady Hiestand": [
     { opponent: "Bernardo Sopaj", odds: 250 },
@@ -24210,16 +24212,20 @@ const FIGHT_HISTORY = {
 
 
   "Eduarda Moura": [
-    { date: "Apr 26, 2025", opponent: "Josefine Knutsson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Albazi 2" },
-    { date: "Nov 16, 2024", opponent: "Maryna Moroz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309: Jones vs. Miocic" },
-    { date: "Jun 29, 2024", opponent: "Priscila Cachoeira", result: "W", method: "KO (Punches)", round: 1, time: "2:32", event: "UFC 303: Pereira vs. Procházka 2" },
-    { date: "Mar 2, 2024", opponent: "Tainara Lisboa", result: "W", method: "TKO (Punches)", round: 2, time: "3:04", event: "UFC Fight Night: Blanchfield vs. Fiorot (debut)" },
-    { date: "Oct 21, 2023", opponent: "Luana Souza", result: "W", method: "KO (Punches)", round: 2, time: "2:17", event: "DWCS Season 7 Week 5 (contract)" },
-    { date: "Sep 2, 2023", opponent: "Isabela Raposo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 113" },
-    { date: "May 28, 2023", opponent: "Kaylha Raminha", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 111" },
-    { date: "Mar 18, 2023", opponent: "Natalia Leal", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 108" },
-    { date: "Oct 1, 2022", opponent: "Dhayanne Nascimento", result: "W", method: "KO (Punches)", round: 2, time: "1:13", event: "Shooto Brazil 105" },
-    { date: "Jun 18, 2022", opponent: "Ana Luiza Cunha", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 101" }
+    { date: "Feb 7, 2026", opponent: "Wang Cong", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
+    { date: "Jul 12, 2025", opponent: "Lauren Murphy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Lewis vs. Teixeira", org: "UFC" },
+    { date: "Nov 16, 2024", opponent: "Veronica Hardy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309", org: "UFC" },
+    { date: "Jun 8, 2024", opponent: "Denise Gomes", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Cannonier vs. Imavov", org: "UFC" },
+    { date: "Nov 4, 2023", opponent: "Montserrat Ruiz", result: "W", method: "TKO (Punches)", round: 2, time: "2:14", event: "UFC Fight Night: Almeida vs. Lewis", org: "UFC" },
+    { date: "Aug 15, 2023", opponent: "Janaina Silva", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:00", event: "Dana White's Contender Series 53", org: "UFC" },
+    { date: "Mar 25, 2023", opponent: "Claudiene Ferreira Alves", result: "W", method: "TKO (Punches)", round: 2, time: "3:20", event: "Demo Fight 16" },
+    { date: "Nov 24, 2022", opponent: "Maria Eduarda Santana", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:30", event: "Thunder Fight 39" },
+    { date: "Nov 5, 2022", opponent: "Paisiella De Souza Moraes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:47", event: "WS Fighting 6" },
+    { date: "Sep 24, 2022", opponent: "Aline Sattelmayer", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Demo Fight 14" },
+    { date: "Jun 19, 2022", opponent: "Sharolayne Almeida", result: "W", method: "KO (Punches)", round: 1, time: "1:20", event: "Valhalla Extreme Challenger" },
+    { date: "May 7, 2022", opponent: "Renata Aline Santos Silva", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:05", event: "Matilha Champions Fight 1" },
+    { date: "Apr 30, 2022", opponent: "Suiane Teixeira dos Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:21", event: "Demo Fight 12" },
+    { date: "Mar 27, 2022", opponent: "Ana Vitoria Cardoso Santana", result: "W", method: "TKO (Punches)", round: 1, time: "0:35", event: "Jardim Fight 4" }
   ],
   "Brady Hiestand": [
     { date: "Oct 25, 2025", opponent: "Bernardo Sopaj", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 321: Aspinall vs. Gane" },
@@ -29858,6 +29864,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Eduarda Moura": [
+    { icon: "🏆", title: "Demo Fight two-division champion (Strawweight & Flyweight)", detail: null },
+    { icon: "🏆", title: "WS Fighting Flyweight Champion", detail: null },
+    { icon: "🥊", title: "Dana White's Contender Series winner (2023) — earned UFC contract", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Alexia Thainara": [
     { icon: "🏆", title: "Standout Fighting Tournament (SFT) Champion", detail: null },
     { icon: "🏆", title: "XForce MMA Champion", detail: null },
