@@ -3936,7 +3936,7 @@
  "Julianna Peña": { ht:"5'6\"", dob:"1989-08-19", reach:'69"', stance:"Orthodox", slpm:3.10, strAcc:"44%", sapm:2.56, strDef:"57%", kd:0.00, tdLanded:1.70, tdAcc:"55%", tdDef:"24%", subAvg:0.76, finRate:"69%", streak:0, gym:"Valle Flow Striking" },
  "Raquel Pennington": { ht:"5'7\"", dob:"1988-09-05", reach:'67.5"', stance:"Orthodox", slpm:4.10, strAcc:"49%", sapm:3.32, strDef:"61%", kd:0.05, tdLanded:0.83, tdAcc:"28%", tdDef:"63%", subAvg:0.62, finRate:"31%", streak:0, gym:"Altitude MMA" },
  "Ketlen Vieira": { ht:"5'8\"", dob:"1991-08-26", reach:'68"', stance:"Orthodox", slpm:2.76, tdAcc:"45%", subAvg:0.5, strDef:"50%", kd:0.1, tdDef:"68%", finRate:"47%", streak:0, tdLanded:2.23, gym:"Nova União Manaus" },
- "Irene Aldana": { ht:"5'9\"", dob:"1988-03-26", reach:'68"', stance:"Orthodox", slpm:5.19, tdAcc:"50%", subAvg:0.3, strDef:"56%", kd:0.4, tdDef:"77%", finRate:"53%", streak:0, tdLanded:0.15, gym:"Lobo Gym MMA" },
+ "Irene Aldana": { ht:"5'9\"", dob:"1988-03-26", reach:'68.5"', stance:"Orthodox", slpm:5.19, strAcc:"40%", sapm:6.64, strDef:"56%", kd:0.22, tdLanded:0.15, tdAcc:"50%", tdDef:"78%", subAvg:0.22, finRate:"73%", streak:0, gym:"Lobo Gym MMA" },
  "Holly Holm": { ht:"5'8\"", dob:"1981-10-17", reach:'69"', stance:"Orthodox", slpm:3.13, tdAcc:"46%", subAvg:0.0, strDef:"57%", kd:0.4, tdDef:"73%", finRate:"47%", streak:0, tdLanded:1.0, gym:"AKKA Karate USA (2000–2007)" },
  "Miesha Tate": { ht:"5'6\"", dob:"1986-08-18", reach:'66"', stance:"Orthodox", slpm:2.62, tdAcc:"44%", subAvg:0.6, strDef:"51%", kd:0.0, tdDef:"75%", finRate:"53%", streak:0, tdLanded:1.97, gym:"Xtreme Couture" },
  // ── Women's Flyweight (extended) ──
@@ -8360,14 +8360,25 @@
   ],
 
   "Irene Aldana": [
-    { opponent: "Kayla Harrison", odds: 275 },
-    { opponent: "Karol Rosa", odds: -350 },
-    { opponent: "Raquel Pennington", odds: 175 },
-    { opponent: "Ketlen Vieira", odds: -200 },
-    { opponent: "Yana Santos", odds: -250 },
-    { opponent: "Holly Holm", odds: 175 },
-    { opponent: "Vanessa Melo", odds: -600 },
-    { opponent: "Bethe Correia", odds: -300 }
+    { opponent: "Norma Dumont", odds: 100 },
+    { opponent: "Karol Rosa", odds: -180 },
+    { opponent: "Amanda Nunes", odds: 290 },
+    { opponent: "Macy Chiasson", odds: -185 },
+    { opponent: "Yana Kunitskaya", odds: 100 },
+    { opponent: "Holly Holm", odds: 105 },
+    { opponent: "Ketlen Vieira", odds: 200 },
+    { opponent: "Vanessa Melo", odds: -575 },
+    { opponent: "Raquel Pennington", odds: -140 },
+    { opponent: "Bethe Correia", odds: -385 },
+    { opponent: "Lucie Pudilová", odds: -110 },
+    { opponent: "Talita Bernardo", odds: -140 },
+    { opponent: "Katlyn Chookagian", odds: 115 },
+    { opponent: "Leslie Smith", odds: -295 },
+    { opponent: "Faith Van Duin", odds: -540 },
+    { opponent: "Jessamyn Duke", odds: -270 },
+    { opponent: "Tonya Evinger", odds: -115 },
+    { opponent: "Colleen Schneider", odds: -325 },
+    { opponent: "Peggy Morgan", odds: -145 }
   ],
 
   "Mayra Bueno Silva": [
@@ -17728,7 +17739,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 9, 2014", opponent: "Peggy Morgan", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:50", event: "Invicta FC 8: Waterson vs. Tamada", org: "Invicta FC" },
     { date: "Dec 21, 2013", opponent: "Larissa Pacheco", result: "L", method: "TKO (Punches)", round: 3, time: "1:50", event: "Jungle Fight 63" },
     { date: "Oct 12, 2013", opponent: "Mayra Arce", result: "W", method: "KO (Spinning wheel kick and punches)", round: 1, time: "0:43", event: "Xtreme Kombat 21" },
-    { opponent: "Flor Saenz", result: "W", method: "TKO (Knee to the body)", event: "1" },
+    { date: "Oct 12, 2013", opponent: "Flor Saenz", result: "W", method: "KO (Knee to the body)", round: 1, time: "0:20", event: "Xtreme Kombat 21" },
     { date: "Oct 17, 2012", opponent: "Sandra del Rincon", result: "W", method: "KO (Knees and punches)", round: 1, time: "0:15", event: "GEX: Old Jack's Fight Night" }
   ],
 
@@ -29852,6 +29863,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Irene Aldana": [
+    { icon: "🏅", title: "UFC Women's Bantamweight title challenger (UFC 289, 2023)", detail: null },
+    { icon: "🏆", title: "Mexican national MMA champion (2013)", detail: null },
+    { icon: "🥋", title: "Two-time national jiu-jitsu gold medalist (Mexico, 2012 & 2013)", detail: null },
+  ],
   "Ailín Pérez": [
     { icon: "🏆", title: "Samurai Fight House Women's Bantamweight Champion", detail: null },
     { icon: "🏅", title: "Two-time South American MMA Bantamweight Champion", detail: null },
