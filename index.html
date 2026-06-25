@@ -3106,7 +3106,7 @@
  { name: "Neil Magny", division: "WW", rank: "NR", record: "34-15-0", initials: "NM", country: "USA" },
  { name: "Kevin Holland", division: "WW", rank: "NR", record: "29-15-0", initials: "KHO", country: "USA" },
  { name: "Joel Alvarez", division: "WW", rank: "NR", record: "24-5-0", initials: "JAV", country: "Spain" },
- { name: "Yaroslav Amosov", division: "WW", rank: "NR", record: "30-1-0", initials: "YA", country: "Ukraine" },
+ { name: "Yaroslav Amosov", division: "WW", rank: "#11", record: "30-1-0", initials: "YA", country: "Ukraine" },
  { name: "Jeremiah Wells", division: "WW", rank: "NR", record: "14-4-1", initials: "JWE", country: "USA" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
@@ -3995,7 +3995,7 @@
  "Ateba Gautier": { ht:"6'4\"", dob:"2002-04-10", reach:'81"', stance:"Switch", slpm:4.44, tdAcc:"100%", subAvg:0.0, strDef:"52%", kd:0.0, tdDef:"92%", finRate:"N/A", streak:0, tdLanded:0.49, gym:"Manchester Top Team" },
  "Ozzy Diaz": { ht:"6'4\"", dob:"1990-11-22", reach:'79"', stance:"Orthodox", slpm:6.44, tdAcc:"0%", subAvg:0.0, strDef:"59%", kd:0.0, tdDef:"50%", finRate:"N/A", streak:0, tdLanded:0.0 }, "Kelvin Gastelum": { ht:"5'9\"", dob:"1991-10-24", reach:'71"', stance:"Southpaw", slpm:3.67, tdAcc:"34%", subAvg:0.1, strDef:"57%", kd:0.3, tdDef:"60%", finRate:"52%", streak:0, tdLanded:1.01 },
  // ── Welterweight (UFC 328) ──
- "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.78, tdAcc:"50%", subAvg:4.6, strDef:"54%", kd:0.0, tdDef:"0%", finRate:"N/A", streak:0, tdLanded:4.64, gym:"American Top Team" },
+ "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.65, strAcc:"53%", sapm:1.38, strDef:"55%", kd:0.00, tdLanded:11.11, tdAcc:"8%", subAvg:3.17, finRate:"73%", streak:3, gym:"American Top Team" },
  // ── Featherweight (UFC 328) ──
  "William Gomis": { ht:"6'0\"", dob:"1997-06-13", reach:'73"', stance:"Southpaw", slpm:3.48, tdAcc:"38%", subAvg:0.3, strDef:"61%", kd:0.0, tdDef:"72%", finRate:"N/A", streak:0, tdLanded:0.86 },
  // ── Bantamweight (additional) ──
@@ -6361,7 +6361,18 @@
     { opponent: "Joel Alvarez", odds: -192 }
   ],
   "Yaroslav Amosov": [
-    { opponent: "Bobby Green", odds: 375 }
+    { opponent: "Joel Álvarez", odds: -190 },
+    { opponent: "Neil Magny", odds: -550 },
+    { opponent: "Curtis Millender", odds: -1408 },
+    { opponent: "Jason Jackson", odds: -515 },
+    { opponent: "Logan Storley", odds: -158 },
+    { opponent: "Douglas Lima", odds: -108 },
+    { opponent: "Logan Storley", odds: -210 },
+    { opponent: "Mark Lemminger", odds: -805 },
+    { opponent: "Ed Ruth", odds: -153 },
+    { opponent: "David Rickels", odds: -315 },
+    { opponent: "Erick Silva", odds: -350 },
+    { opponent: "Gerald Harris", odds: -280 }
   ],
   "Grant Dawson": [
     { opponent: "Roosevelt Roberts", odds: -500 }
@@ -13569,6 +13580,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 18, 2014", opponent: "Aydin Aikhan", result: "W", method: "TKO (Punches)", round: 1, time: "1:40", event: "European Combat Sambo Federation: Ukraine vs. Turkey" },
     { date: "Jul 26, 2014", opponent: "Aleksey Nimirovich", result: "W", method: "TKO (Punches)", round: 1, time: "2:40", event: "Combat Sambo Federation of Ukraine: Voshod Open Cup" },
     { opponent: "Andrei Shalavai", result: "W", method: "TKO (Punches)", event: "1" },
+    { date: "Apr 5, 2014", opponent: "Andrei Shalavai", result: "W", method: "TKO (Punches)", round: 1, time: "3:10", event: "Combat Sambo Federation of Ukraine" },
     { date: "Dec 8, 2013", opponent: "Valeri Shpak", result: "W", method: "Submission (Armbar)", round: 1, time: "2:50", event: "Grand European FC: Warriors Empire" },
     { date: "Aug 17, 2013", opponent: "Vadim Sandulskiy", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:03", event: "League S-70: Plotforma Cup 2013" },
     { date: "Apr 2, 2013", opponent: "Vitaliy Matornika", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:47", event: "Combat Sambo Federation of Ukraine: MMA Kiev Cup 2" },
@@ -32018,11 +32030,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "National Brazilian Boxing Champion as an amateur (per ufc.com Q&A)", detail: null }
   ],
   "Yaroslav Amosov": [
-    { icon: "🥇", title: "WCSF World Championships — 2017 Dushanbe — −82 kg", detail: null },
-    { icon: "🥇", title: "WCSF World Championships — 2015 Moscow — −90 kg", detail: null },
-    { icon: "🥇", title: "WCSF World Championships — 2014 Moscow — −82 kg", detail: null },
-    { icon: "🥇", title: "WCSF World Championships — 2013 Moscow — −82 kg", detail: null },
-    { icon: "🥉", title: "WCSF World Championships — 2012 Moscow — −82 kg", detail: null },
+    { icon: "🏆", title: "Former Bellator Welterweight Champion — first Ukrainian-born Bellator champion; won the title over Douglas Lima (Bellator 260, 2021) and defended it against Logan Storley (2023)", detail: null },
+    { icon: "🏅", title: "30–1 as a pro (as of Jun 2026) — undefeated through his first 27 fights; 22 finishes (13 submissions, 9 KO/TKO)", detail: null },
+    { icon: "⭐", title: "UFC 328 Performance of the Night — arm-triangle submission of Joel Álvarez (May 2026); also submitted Neil Magny in his UFC debut", detail: null },
+    { icon: "🤼", title: "Four-time World Combat Sambo Champion and multiple-time European champion; \"Honored Master of Sports of Ukraine\" (former Tech-Krep FC Welterweight Champion)", detail: null },
+    { icon: "🎖️", title: "Left active competition to defend Ukraine during the 2022 Russian invasion, and famously recovered his Bellator title belt from his war-torn hometown of Irpin", detail: null }
   ],
   "Carlos Ulberg": [
     { icon: "🏆", title: "UFC Light Heavyweight Champion — since Apr 11, 2026", detail: null },
