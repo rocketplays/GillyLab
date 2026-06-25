@@ -35544,7 +35544,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       ? new Date(dateStr + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
       : '';
     const venue = [rawEvt.venue, normalizeApiLocationStr(rawEvt.city)].filter(Boolean).join(' · ');
-    const bouts = (rawEvt.bouts || []).slice().sort((a, b) => a.boutOrder - b.boutOrder);
+    // Some API events (esp. past cards in event-recent.json) list each matchup
+    // twice under different bout IDs — dedupe by fighter pairing, keeping the
+    // first (lowest boutOrder) so fights don't render multiple times.
+    const _seenPairs = new Set();
+    const bouts = (rawEvt.bouts || []).slice()
+      .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
+      .filter(b => {
+        const key = (b.fighters || [])
+          .map(f => (f.fighterName || f.fighterSlug || '').toLowerCase().replace(/[^a-z0-9]+/g, ''))
+          .sort().join('|');
+        if (!key) return true;
+        if (_seenPairs.has(key)) return false;
+        _seenPairs.add(key);
+        return true;
+      });
     const mainBoutOrder = bouts.length ? Math.min(...bouts.map(b => b.boutOrder)) : 1;
     const fights = bouts.map(bout => {
       const red  = (bout.fighters || []).find(f => f.corner === 'red')  || bout.fighters[0] || {};
