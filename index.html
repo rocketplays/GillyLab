@@ -2986,7 +2986,7 @@
  { name: "Brandon Royval", division: "FLW", rank: "#4", record: "18-8-0", initials: "BR", country: "USA" },
  { name: "Kyoji Horiguchi", division: "FLW", rank: "#5", record: "36-5-0", initials: "KH", country: "Japan" },
  { name: "Brandon Moreno", division: "FLW", rank: "#6", record: "23-11-2", initials: "BMO", country: "Mexico" },
- { name: "Amir Albazi", division: "FLW", rank: "#7", record: "18-4-0", initials: "AA", country: "Iraq" },
+ { name: "Amir Albazi", division: "FLW", rank: "#7", record: "17-3-0", initials: "AA", country: "Iraq" },
  { name: "Asu Almabayev", division: "FLW", rank: "#8", record: "23-3-0", initials: "ASU", country: "Kazakhstan" },
  { name: "Tim Elliott", division: "FLW", rank: "#9", record: "25-14-1", initials: "TE", country: "USA" },
  { name: "Alex Perez", division: "FLW", rank: "#10", record: "26-10-0", initials: "APR", country: "USA" },
@@ -3878,7 +3878,7 @@
  "Alexandre Pantoja": { ht:"5'5\"", dob:"1990-04-16", reach:'67"', stance:"Orthodox", slpm:4.38, strAcc:"50%", sapm:3.88, strDef:"50%", kd:0.28, tdLanded:2.79, tdAcc:"4%", tdDef:"69%", subAvg:0.98, finRate:"67%", streak:0, gym:"American Top Team" },
  "Brandon Moreno": { ht:"5'7\"", dob:"1993-12-07", reach:'70"', stance:"Orthodox", slpm:3.84, tdAcc:"39%", subAvg:0.4, strDef:"59%", kd:0.1, tdDef:"65%", finRate:"52%", streak:0, tdLanded:1.36, gym:"Fortis MMA (2022–present)" },
  "Tatsuro Taira": { ht:"5'7\"", dob:"2000-01-27", reach:'70"', stance:"Orthodox", slpm:2.87, strAcc:"54%", sapm:3.10, strDef:"44%", kd:0.38, tdLanded:3.57, tdAcc:"2%", tdDef:"46%", subAvg:1.28, finRate:"78%", streak:0, gym:"The Blackbelt Japan" },
- "Amir Albazi": { ht:"5'5\"", dob:"1993-10-27", reach:'68"', stance:"Orthodox", slpm:2.47, tdAcc:"25%", subAvg:0.4, strDef:"59%", kd:0.1, tdDef:"62%", finRate:"59%", streak:0, tdLanded:1.18, gym:"Great Britain Top Team (2026–present)" },
+ "Amir Albazi": { ht:"5'5\"", dob:"1993-10-27", reach:'68"', stance:"Orthodox", slpm:2.47, strAcc:"34%", sapm:3.88, strDef:"59%", kd:0.30, tdLanded:1.18, tdAcc:"9%", tdDef:"63%", subAvg:0.44, finRate:"82%", streak:0, gym:"Atreus MMA" },
  // ── Women's Flyweight ──
  "Kayla Harrison": { ht:"5'8\"", dob:"1990-07-02", reach:'66"', stance:"Southpaw", slpm:4.29, strAcc:"62%", sapm:1.10, strDef:"66%", kd:0.0, tdLanded:2.84, tdAcc:"38%", tdDef:"100%", subAvg:0.95, finRate:"74%", streak:4, gym:"American Top Team (2018–present)" },
  "Erin Blanchfield": { ht:"5'4\"", dob:"1999-05-04", reach:'66"', stance:"Orthodox", slpm:5.24, strAcc:"44%", sapm:4.25, strDef:"59%", kd:0.00, tdLanded:1.96, tdAcc:"34%", tdDef:"78%", subAvg:0.86, finRate:"50%", streak:2, gym:"Silver Fox BJJ" },
@@ -7807,12 +7807,13 @@
     { opponent: "Matt Schnell", odds: -475 },
   ],
   "Amir Albazi": [
-    { opponent: "Tatsuro Taira", odds: 170 },
-    { opponent: "Rogerio Bontorin", odds: -300 },
-    { opponent: "Kai Kara-France", odds: -275 },
-    { opponent: "Francisco Figueiredo", odds: -500 },
-    { opponent: "Felipe dos Santos", odds: -600 },
-    { opponent: "Zhalgas Zhumagulov", odds: -350 }
+    { opponent: "Kyoji Horiguchi", odds: 280 },
+    { opponent: "Brandon Moreno", odds: 145 },
+    { opponent: "Kai Kara-France", odds: -125 },
+    { opponent: "Alessandro Costa", odds: -475 },
+    { opponent: "Francisco Figueiredo", odds: -505 },
+    { opponent: "Zhalgas Zhumagulov", odds: -115 },
+    { opponent: "Malcolm Gordon", odds: -140 }
   ],
   "Brian Ortega": [
     { opponent: "Aljamain Sterling", odds: 385 },
@@ -15598,9 +15599,7 @@ const FIGHT_HISTORY = {
     { date: "Oct 10, 2010", opponent: "Ally McCrae", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "0:00", event: "Scottish Fight Challenge 3" },
     { date: "Sep 4, 2010", opponent: "Bagandov Murada", result: "W", method: "TKO (Punches)", round: 1, time: "3:00", event: "World Ultimate Full Contact 16" },
     { date: "Aug 22, 2009", opponent: "Andre Batista", result: "W", method: "TKO (Punches)", round: 1, time: "3:35", event: "World Ultimate Full Contact 15" },
-    { opponent: "Pavlo Kulish", result: "W", method: "Submission (Rear-naked choke)", event: "1" },
-    { date: "Dec 17, 2025", opponent: "Rashid Vagabov", result: "W", method: "Decision (Unanimous)", event: "ACBJJ 20" },
-    { date: "Dec 6, 2024", opponent: "Jafel Filho", result: "L", method: "Decision (Unanimous)", event: "ADXC 8" }
+    { date: "Aug 22, 2009", opponent: "Pavlo Kulish", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:59", event: "World Ultimate Full Contact 15" }
   ],
 
 
@@ -30055,7 +30054,10 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu under Raúl Arvizu", detail: null },
   ],
   "Amir Albazi": [
-    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🏆", title: "UCMMA Bantamweight Champion (former)", detail: null },
+    { icon: "🏆", title: "FightStar Championship Bantamweight Champion (former)", detail: null },
+    { icon: "🏅", title: "Opened his career on a 10-fight win streak", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu (6× Swedish jiu-jitsu champion)", detail: null },
   ],
   "Tim Elliott": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
