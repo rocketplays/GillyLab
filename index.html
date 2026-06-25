@@ -3316,7 +3316,7 @@
  { name: "Iwo Baraniewski", division: "HW", rank: "NR", record: "13-7-1", initials: "IWB", country: "Poland" },
  { name: "Tom Aspinall", division: "HW", rank: "NR", record: "15-3-0", initials: "TAS2", country: "UK" },
  { name: "Guilherme Pat", division: "HW", rank: "NR", record: "7-0-0", initials: "GPU", country: "Brazil" },
- { name: "Mario Pinto", division: "HW", rank: "NR", record: "11-0-0", initials: "MPT", country: "Portugal" },
+ { name: "Mario Pinto", division: "HW", rank: "NR", record: "12-0-0", initials: "MPT", country: "Portugal" },
  { name: "Louie Sutherland", division: "HW", rank: "NR", record: "10-4-0", initials: "LSU", country: "UK" },
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
  { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
@@ -4471,7 +4471,7 @@
  // Heavyweight
  "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:3.75, tdAcc:"33%", subAvg:0.0, strDef:"22%", kd:0.3, tdDef:"0%", finRate:"60%", streak:0, tdLanded:4.69 },
  "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.2, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.00 },
- "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:3.39, tdAcc:"60%", subAvg:0.3, strDef:"53%", kd:0.3, tdDef:"100%",finRate:"82%", streak:0, tdLanded:2.72 },
+ "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:2.85, strAcc:"70%", sapm:1.93, strDef:"58%", kd:0.95, tdLanded:2.38, tdAcc:"26%", tdDef:"100%", subAvg:0.95, finRate:"67%", streak:12, gym:"FightZone London" },
  "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:19.93,tdAcc:"0%", subAvg:0.0, strDef:"57%", kd:1.5, tdDef:"100%",finRate:"100%",streak:0, tdLanded:0.00 },
  "Sean Sharaf": { ht:"6'3\"", dob:"1993-07-11", reach:'77"', stance:"Orthodox", slpm:7.41, tdAcc:"11%", subAvg:0.0, strDef:"42%", kd:0.5, tdDef:"0%", finRate:"50%", streak:0, tdLanded:0.93 },
  "Lukasz Brzeski": { ht:"6'3\"", dob:"1992-05-17", reach:'78"', stance:"Orthodox", slpm:4.90, tdAcc:"36%", subAvg:0.3, strDef:"47%", kd:0.4, tdDef:"67%", finRate:"56%", streak:0, tdLanded:1.61 },
@@ -13130,6 +13130,10 @@
   "Marcio Barbosa": [
   ],
   "Mario Pinto": [
+    { opponent: "Felipe Franco", odds: -900 },
+    { opponent: "Jhonata Diniz", odds: 105 },
+    { opponent: "Austen Lane", odds: -500 },
+    { opponent: "Lucas Camacho", odds: -700 }
   ],
   "Max Gimenis": [
   ],
@@ -29477,7 +29481,18 @@ const FIGHT_HISTORY = {
 
 
   "Mario Pinto": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
+    { date: "Mar 21, 2026", opponent: "Felipe Franco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Jhonata Diniz", result: "W", method: "TKO (Punches)", round: 2, time: "4:10", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Mar 1, 2025", opponent: "Austen Lane", result: "W", method: "KO (Punches)", round: 2, time: "0:39", event: "UFC Fight Night: Kape vs. Almabayev (debut)", org: "UFC" },
+    { date: "Oct 8, 2024", opponent: "Lucas Camacho", result: "W", method: "TKO (Punches)", round: 1, time: "1:43", event: "Dana White's Contender Series 8", org: "UFC" },
+    { date: "Feb 18, 2024", opponent: "Kasim Aras", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Levels Fight League 11 (HW Title)" },
+    { date: "Oct 29, 2023", opponent: "Benjamin Sehic", result: "W", method: "TKO (Punches)", round: 3, time: "1:18", event: "Levels Fight League 10 (HW Title)" },
+    { date: "Mar 11, 2023", opponent: "Moreno Kacapor", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Levels Fight League: Heavyweight Grand Prix (final)" },
+    { date: "Mar 11, 2023", opponent: "Aladin Ben Halima", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Levels Fight League: Heavyweight Grand Prix (semifinal)" },
+    { date: "Mar 11, 2023", opponent: "Filip Bradaric", result: "W", method: "TKO (Punches)", round: 1, time: "1:28", event: "Levels Fight League: Heavyweight Grand Prix (quarterfinal)" },
+    { date: "Jul 15, 2022", opponent: "Maxwell Djantou Nana", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "N/A", event: "FightStar Championship 22" },
+    { date: "Mar 19, 2022", opponent: "Berat Berisha", result: "W", method: "TKO (Punches)", round: 1, time: "1:07", event: "FightStar Championship 21" },
+    { date: "Oct 2, 2021", opponent: "Joffie Houlton", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "Contenders 31" }
   ],
   "Max Gimenis": [
     { date: "Nov 8, 2025", opponent: "Josh Hokit", result: "L", method: "TKO (Punches)", round: 1, time: "0:56", event: "UFC Fight Night 264: Bonfim vs. Brown", org: "UFC" },
@@ -29898,6 +29913,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Mario Pinto": [
+    { icon: "🥊", title: "Dana White's Contender Series winner (2024) — earned UFC contract", detail: null },
+    { icon: "🏆", title: "Levels Fight League Heavyweight Champion", detail: null },
+    { icon: "🏆", title: "Levels Fight League Heavyweight Grand Prix winner (2023) — 3 wins in one night", detail: null },
+  ],
   "Vitor Petrino": [
     { icon: "🥊", title: "Dana White's Contender Series winner (2022) — earned UFC contract", detail: null },
   ],
