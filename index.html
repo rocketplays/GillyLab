@@ -3511,6 +3511,7 @@
  { name: "Ariane Silva", division: "WSW", rank: "NR", record: "18-11-0", initials: "ARS", country: "Brazil" },
  { name: "Daria Zhelezniakova", division: "WBW", rank: "NR", record: "10-3-0", initials: "DZH", country: "Russia" },
  { name: "Nina Milosevic", division: "WBW", rank: "NR", record: "8-1-0", initials: "NM", country: "Australia" },
+ { name: "Hailey Cowan", division: "WBW", rank: "NR", record: "7-5-0", initials: "HC", country: "USA" },
  { name: "Alice Ardelean", division: "WSW", rank: "NR", record: "9-3-0", initials: "AAR2", country: "Romania" },
  // ─── WOMEN'S FLYWEIGHT (remaining) ───
  { name: "Mariya Agapova", division: "WFLW", rank: "NR", record: "12-5-0", initials: "MAG2", country: "Kazakhstan" },
@@ -4489,6 +4490,7 @@
  "Jessica-Rose Clark": { ht:"5'5\"", dob:"1987-11-28", reach:'64"', stance:"Orthodox", slpm:3.73, tdAcc:"42%", subAvg:0.3, strDef:"58%", kd:0.1, tdDef:"62%", finRate:"50%", streak:0, tdLanded:1.66, gym:"Team Ferreira BJJ (2023–present)" },
  "Daria Zhelezniakova": { ht:"5'9\"", dob:"1996-01-23", reach:'68"', stance:"Orthodox", slpm:4.13, strAcc:"40%", sapm:3.38, strDef:"64%", kd:0.00, tdLanded:0.31, tdAcc:"100%", tdDef:"50%", subAvg:0.00, finRate:"50%", streak:0, gym:"MMA Factory" },
  "Nina Milosevic": { ht:"5'5\"", dob:"1996-08-08", reach:'65"', stance:"—", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"63%", streak:8, gym:"Family Fight Team" },
+ "Hailey Cowan": { ht:"5'8\"", dob:"1992-02-12", reach:'67"', stance:"Southpaw", slpm:2.66, strAcc:"44%", sapm:2.92, strDef:"41%", kd:0.00, tdLanded:1.95, tdAcc:"43%", tdDef:"80%", subAvg:0.00, finRate:"57%", streak:0, gym:"Xtreme Couture" },
  "Jacobe Smith": { ht:"5'10\"", dob:"1996-01-17", reach:'72"', stance:"Southpaw", slpm:6.89, strAcc:"68%", sapm:2.78, strDef:"48%", kd:0.71, tdLanded:7.78, tdAcc:"92%", tdDef:"100%", subAvg:0.71, finRate:"83%", streak:12, gym:"Fortis MMA" },
  "Levi Rodrigues": { ht:"5'5\"", dob:"1998-01-01", reach:'66"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.20 },
  "Louis Lee Scott": { ht:"5'7\"", dob:"1993-06-01", reach:'68"', stance:"Orthodox", slpm:3.30, tdAcc:"30%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.00 },
@@ -11372,6 +11374,14 @@
   "Nina Milosevic": [
     { opponent: "Dina Osman", odds: -438 },
     { opponent: "Cecilie Bolander", odds: -350 }
+  ],
+  "Hailey Cowan": [
+    { opponent: "Alice Pereira", odds: 125 },
+    { opponent: "Nora Cornolle", odds: 197 },
+    { opponent: "Jamey-Lyn Horth", odds: 138 },
+    { opponent: "Claudia Leite", odds: 105 },
+    { opponent: "Monica Franco", odds: -330 },
+    { opponent: "Kelly Clayton", odds: -460 }
   ],
   "Carlos Candelario": [
     { opponent: "John Castaneda", odds: 250 },
@@ -24749,6 +24759,21 @@ const FIGHT_HISTORY = {
     { date: "May 4, 2024", opponent: "Tehanahana Bernardino", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:10", event: "Tahiti Fighting Championship: Challenger Series" },
     { date: "Nov 4, 2023", opponent: "Cecilie Bolander", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Superior Challenge 26: Legends" }
   ],
+
+  "Hailey Cowan": [
+    { date: "Apr 4, 2026", opponent: "Alice Pereira", result: "L", method: "KO (Knee)", round: 2, time: "4:24", event: "UFC Vegas 115", org: "UFC" },
+    { date: "Apr 12, 2025", opponent: "Nora Cornolle", result: "L", method: "Submission", round: 2, time: "1:52", event: "UFC 314", org: "UFC" },
+    { date: "Apr 29, 2023", opponent: "Jamey-Lyn Horth", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Simón", org: "UFC" },
+    { date: "Aug 16, 2022", opponent: "Claudia Leite", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series 2022: Week 4", org: "UFC" },
+    { date: "Jan 12, 2022", opponent: "Monica Franco", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:17", event: "Invicta FC 45: Zappitella vs. Delboni 2" },
+    { date: "Sep 11, 2020", opponent: "Kelly Clayton", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "0:46", event: "LFA 91: Njokuani vs. Torres" },
+    { date: "Mar 6, 2020", opponent: "Brittney Cloudy", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 83: Jackson vs. Chaulet" },
+    { date: "Aug 2, 2019", opponent: "Jessica Middleton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 73: Lingo vs. Hatley Jr." },
+    { date: "Mar 29, 2019", opponent: "Sarah Click", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:29", event: "LFA 63: Krantz vs. Patterson" },
+    { date: "Nov 30, 2018", opponent: "Jessica Sotack", result: "W", method: "TKO (Punches)", round: 2, time: "4:35", event: "LFA 55: Johns vs. Yanez" },
+    { date: "Oct 19, 2018", opponent: "Sha Whittington", result: "W", method: "TKO (Punches)", round: 1, time: "1:09", event: "LFA 52: Rodriguez vs. Gutierrez" },
+    { date: "May 25, 2018", opponent: "Victoria Leonardo", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:27", event: "LFA 40: Aguilar vs. Le" }
+  ],
   "Carlos Candelario": [
     { date: "Mar 29, 2025", opponent: "John Castaneda", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg" },
     { date: "Nov 9, 2024", opponent: "Vinicius Oliveira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Gamrot vs. Fiziev" },
@@ -30074,6 +30099,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Hailey Cowan": [
+    { icon: "🥊", title: "Dana White's Contender Series winner (2022) — earned UFC contract", detail: "first female fighter from Central Texas to earn a UFC deal" },
+    { icon: "🥇", title: "2x NCATA All-American & individual national champion (Baylor acrobatics & tumbling)", detail: null },
+    { icon: "🏅", title: "3x Cheerleading World Championship qualifier", detail: null },
+  ],
   "Nina Milosevic": [
     { icon: "🏆", title: "Tahiti Fighting Championship titleholder", detail: "def. Nadine Mandiau (TFC 4)" },
     { icon: "🥇", title: "Multiple-time IMMAF Amateur World Champion", detail: null },
