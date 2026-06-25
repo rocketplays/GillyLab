@@ -36,14 +36,19 @@ jobs:
             -o data/event.json
           echo "Events fetched — $(wc -c < data/event.json) bytes"
 
-      - name: Fetch last 10 completed UFC events (results) from Cito API
+      - name: Fetch recent past UFC events (results) from Cito API
         run: |
-          # Powers the homepage "View past event" dropdown. Non-fatal: if the
-          # endpoint errors (e.g. plan limit), keep the previous file and let
-          # the dropdown fall back to whatever completed events are in the feed.
+          # Powers the homepage "View past event" dropdown. We query with an
+          # upper date bound (to=TODAY) so the API returns only events that have
+          # already happened — NOT the future-dated cards the feed pre-marks
+          # "completed" (e.g. UFC 322 in Nov). /events sorts newest-first, so
+          # limit=15 yields the 15 most-recent past cards; the page filters out
+          # Road to UFC and shows the top 10. Non-fatal: on error keep the
+          # previous file and let the dropdown fall back gracefully.
+          TODAY=$(date -u '+%Y-%m-%d')
           if curl -sf \
             -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
-            "https://api.citoapi.com/api/v1/ufc/events/recent?limit=10&includeBouts=true" \
+            "https://api.citoapi.com/api/v1/ufc/events?to=${TODAY}&includeBouts=true&limit=15" \
             -o data/event-recent.json; then
             echo "Recent events fetched — $(wc -c < data/event-recent.json) bytes"
           else
