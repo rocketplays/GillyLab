@@ -33196,6 +33196,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  function closeSearch() {
  document.getElementById('searchOverlay').classList.remove('active');
  }
+ // Lowercases and strips diacritics so a search for "Silva"/"Jessica" still
+ // matches "Sílva"/"Jéssica" (and vice-versa) — both query and target are
+ // normalized the same way.
+ function searchNorm(s) {
+ return String(s == null ? '' : s).toLowerCase()
+ .normalize('NFD').replace(/[̀-ͯ]/g, '');
+ }
  function filterSearch(query) {
  const results = document.getElementById('searchResults');
  let filtered;
@@ -33203,11 +33210,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  // Show champions first when no query
  filtered = FIGHTERS.filter(f => f.rank === '#C').slice(0, 12);
  } else {
- const q = query.toLowerCase();
+ const q = searchNorm(query);
  filtered = FIGHTERS.filter(f =>
- f.name.toLowerCase().includes(q) ||
- f.division.toLowerCase().includes(q) ||
- (f.country && f.country.toLowerCase().includes(q))
+ searchNorm(f.name).includes(q) ||
+ searchNorm(f.division).includes(q) ||
+ (f.country && searchNorm(f.country).includes(q))
  );
  // Deduplicate by name (some fighters appear in multiple divisions)
  const seen = new Set();
@@ -35736,12 +35743,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // ── FIGHT SIMULATOR ──────────────────────────────────────────────────────
   function simFindFighter(query) {
     if (!query) return null;
-    const q = query.trim().toLowerCase();
+    const q = searchNorm(query.trim());
     if (!q) return null;
     const roster = FIGHTERS.filter(f => f && f.name);
-    const exact = roster.find(f => f.name.toLowerCase() === q);
+    const exact = roster.find(f => searchNorm(f.name) === q);
     if (exact) return exact.name;
-    const partial = roster.find(f => f.name.toLowerCase().includes(q));
+    const partial = roster.find(f => searchNorm(f.name).includes(q));
     return partial ? partial.name : null;
   }
 
@@ -35857,12 +35864,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
 
     function renderMatches() {
-      const q = input.value.trim().toLowerCase();
+      const q = searchNorm(input.value.trim());
       if (!q) { hideList(); return; }
       const starts = [];
       const contains = [];
       for (const name of getRoster()) {
-        const ln = name.toLowerCase();
+        const ln = searchNorm(name);
         if (ln.startsWith(q)) starts.push(name);
         else if (ln.includes(q)) contains.push(name);
       }
