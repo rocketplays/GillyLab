@@ -38100,6 +38100,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const isRoadToUFC = e => /road to (the )?ufc/i.test(evtName(e));
 
     let pool = (apiData.data || []).filter(e => e.status === 'completed' && (e.bouts || []).length);
+    let recentStamp = null; // when data/event-recent.json was last refreshed
 
     const build = list => {
       list = list
@@ -38151,6 +38152,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       wrap.appendChild(label);
       wrap.appendChild(sel);
+      if (recentStamp) {
+        const upd = document.createElement('span');
+        upd.style.cssText = 'flex-basis:100%;font-size:0.68rem;color:var(--muted);margin-top:0.1rem;';
+        let txt;
+        try { txt = new Date(recentStamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
+        catch (_) { txt = recentStamp; }
+        upd.textContent = 'Results data updated ' + txt;
+        wrap.appendChild(upd);
+      }
       info.appendChild(wrap);
     };
 
@@ -38161,12 +38171,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // completed events are in the feed if the file is missing. build() sorts
     // most-recent-first and caps at 10.
     fetch('./data/event-recent.json')
-      .then(r => (r.ok ? r.json() : null))
+      .then(r => {
+        if (!r.ok) return null;
+        recentStamp = r.headers.get('last-modified') || recentStamp; // deploy time, fallback
+        return r.json();
+      })
       .then(extra => {
         if (extra && extra.data && extra.data.length) {
           const withBouts = extra.data.filter(e => (e.bouts || []).length);
           if (withBouts.length) pool = withBouts;
         }
+        if (extra && extra.fetchedAt) recentStamp = extra.fetchedAt; // exact fetch time, preferred
       })
       .catch(() => {})
       .finally(() => build(pool));
