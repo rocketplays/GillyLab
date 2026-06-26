@@ -4248,7 +4248,7 @@
  // ── Flyweight (more) ──
  // ── Light Heavyweight (more) ──
  "Magomed Ankalaev": { ht:'6\'3"', dob:"1992-06-02", reach:'75"', stance:"Orthodox", slpm:3.65, strAcc:"53%", sapm:2.59, strDef:"56%", kd:0.56, tdLanded:0.79, tdAcc:"22%", tdDef:"88%", subAvg:0.00, finRate:"50%", streak:0, gym:"Gorets Fight Club" },
- "Oumar Sy": { ht:"6'4\"", dob:"1995-11-21", reach:'83"', stance:"Orthodox", slpm:3.41, tdAcc:"35%", subAvg:0.4, strDef:"66%", kd:0.3, tdDef:"75%", finRate:"67%", streak:3, tdLanded:2.45 },
+ "Oumar Sy": { ht:"6'4\"", dob:"1995-11-21", reach:'83"', stance:"Orthodox", slpm:3.41, strAcc:"48%", sapm:1.87, strDef:"67%", kd:0.00, tdLanded:2.45, tdAcc:"35%", tdDef:"67%", subAvg:0.35, finRate:"75%", streak:0, gym:"Bulgarian Top Team" },
  "Junior Tafa": { ht:"6'3\"", dob:"1996-09-21", reach:'75"', stance:"Orthodox", slpm:3.41, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.5, tdDef:"70%", finRate:"67%", streak:0, tdLanded:0.00, gym:"Soma Fight Club" },
  "Tanner Boser": { ht:"6'2\"", dob:"1991-08-02", reach:'75"', stance:"Orthodox", slpm:4.70, tdAcc:"0%", subAvg:0.0, strDef:"58%", kd:0.5, tdDef:"67%", finRate:"57%", streak:0, tdLanded:0.00, gym:"Frank Lee's Muay Thai" },
  // ── Heavyweight (more) ──
@@ -9664,11 +9664,15 @@
     
   ],
   "Oumar Sy": [
-    { opponent: "Ion Cutelaba", odds: 200 },
-    { opponent: "Alonzo Menifield", odds: 215 },
-    { opponent: "Da Woon Jung", odds: -200 },
-    { opponent: "Tuco Tokkos", odds: -450 },
-    { opponent: "Brendson Ribeiro", odds: -300 }
+    { opponent: "Ion Cutelaba", odds: -335 },
+    { opponent: "Brendson Ribeiro", odds: -605 },
+    { opponent: "Alonzo Menifield", odds: -725 },
+    { opponent: "Da Woon Jung", odds: -585 },
+    { opponent: "Tuco Tokkos", odds: -550 },
+    { opponent: "Henrique da Silva", odds: -325 },
+    { opponent: "Bartlomiej Gladkowicz", odds: -360 },
+    { opponent: "Paulin Begai", odds: -1000 },
+    { opponent: "Adam Tomasik", odds: -120 }
   ],
   "Brando Pericic": [
     { opponent: "Shamil Gaziev", odds: -114 },
@@ -20344,7 +20348,7 @@ const FIGHT_HISTORY = {
     { date: "Feb 3, 2022", opponent: "Paulin Begai", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ares FC 3" },
     { date: "Oct 23, 2021", opponent: "Adam Tomasik", result: "W", method: "TKO (Punches)", round: 1, time: "1:22", event: "KSW 64: Przybysz vs. Santos" },
     { date: "Dec 30, 2020", opponent: "Daniel Skvor", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:35", event: "Oktagon 20" },
-    { date: "Sep 26, 2020", opponent: "Mehdi Matajev", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:00", event: "GMC Fight Night" },
+    { date: "Sep 26, 2020", opponent: "Mehdi Matajev", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "—", event: "GMC Fight Night" },
     { date: "Oct 19, 2019", opponent: "Sophien Hadj Doula", result: "W", method: "KO (Punches)", round: 1, time: "2:12", event: "100% Fight 41" },
     { date: "Jun 8, 2019", opponent: "Amar Nabil", result: "W", method: "KO (Punches)", round: 1, time: "4:25", event: "Eagles FC 1" }
   ],
@@ -30450,6 +30454,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Oumar Sy": [
+    { icon: "🏅", title: "Entered the UFC undefeated at 9-0 — eight first-round finishes", detail: null },
+    { icon: "🤼", title: "KSW light heavyweight standout (3-0 in KSW before signing with the UFC)", detail: null },
+  ],
   "Harry Hardwick": [
     { icon: "🏆", title: "Cage Warriors Featherweight World Champion (2 title defenses)", detail: null },
     { icon: "🏆", title: "Made4TheCage (M4TC) Featherweight Champion", detail: null },
