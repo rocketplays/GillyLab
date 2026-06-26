@@ -3734,6 +3734,7 @@
  { name: "Otari Tanzilovi", division: "FW", rank: "NR", record: "10-2-0", initials: "OTZ", country: "Georgia" },
  { name: "Dennis Buzukja", division: "FW", rank: "NR", record: "12-6-0", initials: "DBZ", country: "USA" },
  { name: "Bogdan Grad", division: "FW", rank: "NR", record: "15-4-0", initials: "BGD", country: "Austria" },
+ { name: "Cub Swanson", division: "FW", rank: "NR", record: "31-14-0", initials: "CSW", country: "USA" },
  // Women's Strawweight
  { name: "Xiong Jingnan", division: "WSW", rank: "NR", record: "20-3-0", initials: "XJN", country: "China" },
  { name: "Sofia Montenegro", division: "WFLW", rank: "NR", record: "6-2-0", initials: "SMN", country: "Nicaragua" },
@@ -3949,6 +3950,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+ "Cub Swanson": { ht:"5'8\"", dob:"1983-11-02", reach:'70"', stance:"Orthodox", slpm:4.84, strAcc:"52%", sapm:3.99, strDef:"59%", kd:0.46, tdLanded:1.00, tdAcc:"52%", tdDef:"64%", subAvg:0.39, finRate:"61%", streak:2, gym:"Bloodline Combat" },
  "Danny Silva": { ht:"5'11\"", dob:"1997-01-30", reach:'70"', stance:"Switch", slpm:6.35, strAcc:"55%", sapm:7.10, strDef:"61%", kd:0.69, tdLanded:2.06, tdAcc:"36%", tdDef:"75%", subAvg:0.23, finRate:"55%", streak:1, gym:"Bloodline Combat" },
  "Montse Rendon": { ht:"5'8\"", dob:"1989-03-16", reach:'68"', stance:"Orthodox", slpm:2.95, strAcc:"28%", sapm:3.65, strDef:"57%", kd:0.00, tdLanded:1.91, tdAcc:"38%", tdDef:"86%", subAvg:0.32, finRate:"0%", streak:0, gym:"ECR Fight Center" },
  "Bolaji Oki": { ht:"5'10\"", dob:"1995-11-15", reach:'73"', stance:"Orthodox", slpm:6.42, strAcc:"45%", sapm:5.12, strDef:"61%", kd:0.51, tdLanded:1.02, tdAcc:"57%", tdDef:"75%", subAvg:0.00, finRate:"60%", streak:0, gym:"Valon Team" },
@@ -6319,6 +6321,40 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Cub Swanson": [
+    { opponent: "Nate Landwehr", odds: -130 },
+    { opponent: "Billy Quarantillo", odds: 152 },
+    { opponent: "Andre Fili", odds: 188 },
+    { opponent: "Hakeem Dawodu", odds: 212 },
+    { opponent: "Jonathan Martinez", odds: 178 },
+    { opponent: "Darren Elkins", odds: -175 },
+    { opponent: "Giga Chikadze", odds: 162 },
+    { opponent: "Daniel Pineda", odds: 135 },
+    { opponent: "Kron Gracie", odds: 156 },
+    { opponent: "Shane Burgos", odds: 150 },
+    { opponent: "Renato Moicano", odds: 255 },
+    { opponent: "Frankie Edgar", odds: 250 },
+    { opponent: "Brian Ortega", odds: -105 },
+    { opponent: "Artem Lobov", odds: -625 },
+    { opponent: "Doo Ho Choi", odds: 188 },
+    { opponent: "Tatsuya Kawajiri", odds: -335 },
+    { opponent: "Hacran Dias", odds: -115 },
+    { opponent: "Max Holloway", odds: -158 },
+    { opponent: "Frankie Edgar", odds: 155 },
+    { opponent: "Jeremy Stephens", odds: -222 },
+    { opponent: "Dennis Siver", odds: -182 },
+    { opponent: "Dustin Poirier", odds: -103 },
+    { opponent: "Charles Oliveira", odds: 210 },
+    { opponent: "Ross Pearson", odds: 180 },
+    { opponent: "George Roop", odds: 110 },
+    { opponent: "Ricardo Lamas", odds: 165 },
+    { opponent: "Mackens Semerzier", odds: -210 },
+    { opponent: "Chad Mendes", odds: 305 },
+    { opponent: "John Franchi", odds: -300 },
+    { opponent: "Jose Aldo", odds: 300 },
+    { opponent: "Hiroyuki Takaya", odds: -215 },
+    { opponent: "Jens Pulver", odds: 120 }
+  ],
   "Lance Gibson Jr.": [
     { opponent: "Chase Hooper", odds: 265 },
     { opponent: "Bobby Green", odds: 152 },
@@ -13977,6 +14013,53 @@
 };
 
 const FIGHT_HISTORY = {
+  "Cub Swanson": [
+    { date: "Apr 11, 2026", opponent: "Nate Landwehr", result: "W", method: "TKO (Punches)", round: 1, time: "4:06", event: "UFC 327: Procházka vs. Ulberg", org: "UFC" },
+    { date: "Dec 14, 2024", opponent: "Billy Quarantillo", result: "W", method: "KO (Punch)", round: 3, time: "1:36", event: "UFC Fight Night: Covington vs. Buckley", org: "UFC" },
+    { date: "Jun 29, 2024", opponent: "Andre Fili", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 303: Pereira vs. Procházka 2", org: "UFC" },
+    { date: "Aug 12, 2023", opponent: "Hakeem Dawodu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Luque vs. dos Anjos", org: "UFC" },
+    { date: "Oct 15, 2022", opponent: "Jonathan Martinez", result: "L", method: "TKO (Leg Kick)", round: 2, time: "4:19", event: "UFC Fight Night: Grasso vs. Araújo", org: "UFC" },
+    { date: "Dec 18, 2021", opponent: "Darren Elkins", result: "W", method: "TKO (Spinning Wheel Kick and Punches)", round: 1, time: "2:12", event: "UFC Fight Night: Lewis vs. Daukaus", org: "UFC" },
+    { date: "May 1, 2021", opponent: "Giga Chikadze", result: "L", method: "TKO (Body Kick and Punches)", round: 1, time: "1:03", event: "UFC Fight Night: Reyes vs. Procházka", org: "UFC" },
+    { date: "Dec 12, 2020", opponent: "Daniel Pineda", result: "W", method: "KO (Punches)", round: 2, time: "1:52", event: "UFC 256: Figueiredo vs. Moreno", org: "UFC" },
+    { date: "Oct 12, 2019", opponent: "Kron Gracie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Joanna vs. Waterson", org: "UFC" },
+    { date: "May 4, 2019", opponent: "Shane Burgos", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Iaquinta vs. Cowboy", org: "UFC" },
+    { date: "Aug 4, 2018", opponent: "Renato Moicano", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:15", event: "UFC 227: Dillashaw vs. Garbrandt 2", org: "UFC" },
+    { date: "Apr 21, 2018", opponent: "Frankie Edgar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Lee", org: "UFC" },
+    { date: "Dec 9, 2017", opponent: "Brian Ortega", result: "L", method: "Submission (Guillotine Choke)", round: 2, time: "3:22", event: "UFC Fight Night: Swanson vs. Ortega", org: "UFC" },
+    { date: "Apr 22, 2017", opponent: "Artem Lobov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Swanson vs. Lobov", org: "UFC" },
+    { date: "Dec 10, 2016", opponent: "Doo Ho Choi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 206: Holloway vs. Pettis", org: "UFC" },
+    { date: "Aug 6, 2016", opponent: "Tatsuya Kawajiri", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rodríguez vs. Caceres", org: "UFC" },
+    { date: "Apr 16, 2016", opponent: "Hacran Dias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on Fox: Teixeira vs. Evans", org: "UFC" },
+    { date: "Apr 18, 2015", opponent: "Max Holloway", result: "L", method: "Submission (Guillotine Choke)", round: 3, time: "3:58", event: "UFC on Fox: Machida vs. Rockhold", org: "UFC" },
+    { date: "Nov 22, 2014", opponent: "Frankie Edgar", result: "L", method: "Submission (Neck Crank)", round: 5, time: "4:56", event: "UFC Fight Night: Edgar vs. Swanson", org: "UFC" },
+    { date: "Jun 28, 2014", opponent: "Jeremy Stephens", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Swanson vs. Stephens", org: "UFC" },
+    { date: "Jul 6, 2013", opponent: "Dennis Siver", result: "W", method: "KO (Punches)", round: 3, time: "2:24", event: "UFC 162: Silva vs. Weidman", org: "UFC" },
+    { date: "Feb 16, 2013", opponent: "Dustin Poirier", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on Fuel TV: Barão vs. McDonald", org: "UFC" },
+    { date: "Sep 22, 2012", opponent: "Charles Oliveira", result: "W", method: "KO (Punch)", round: 1, time: "2:40", event: "UFC 152: Jones vs. Belfort", org: "UFC" },
+    { date: "Jun 22, 2012", opponent: "Ross Pearson", result: "W", method: "TKO (Punches)", round: 2, time: "4:14", event: "UFC on FX: Guida vs. Maynard", org: "UFC" },
+    { date: "Jan 28, 2012", opponent: "George Roop", result: "W", method: "TKO (Punches)", round: 2, time: "2:22", event: "UFC on Fox: Evans vs. Davis", org: "UFC" },
+    { date: "Nov 12, 2011", opponent: "Ricardo Lamas", result: "L", method: "Submission (Arm-Triangle Choke)", round: 2, time: "2:16", event: "UFC on Fox: Velasquez vs. dos Santos", org: "UFC" },
+    { date: "Nov 11, 2010", opponent: "Mackens Semerzier", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "WEC 52: Faber vs. Mizugaki", org: "WEC" },
+    { date: "Aug 18, 2010", opponent: "Chad Mendes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WEC 50: Cruz vs. Benavidez 2", org: "WEC" },
+    { date: "Nov 18, 2009", opponent: "John Franchi", result: "W", method: "Submission (Guillotine Choke)", round: 3, time: "4:50", event: "WEC 44: Brown vs. Aldo", org: "WEC" },
+    { date: "Jun 7, 2009", opponent: "José Aldo", result: "L", method: "TKO (Flying Knee and Punches)", round: 1, time: "0:08", event: "WEC 41: Brown vs. Faber 2", org: "WEC" },
+    { date: "Dec 3, 2008", opponent: "Hiroyuki Takaya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WEC 37: Torres vs. Tapia", org: "WEC" },
+    { date: "Feb 23, 2008", opponent: "Donny Walker", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:24", event: "IFBL: Fight Night 11", org: "IFBL" },
+    { date: "Dec 12, 2007", opponent: "Jens Pulver", result: "L", method: "Submission (Anaconda Choke)", round: 1, time: "0:35", event: "WEC 31: Faber vs. Curran", org: "WEC" },
+    { date: "Jun 3, 2007", opponent: "Micah Miller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WEC 28: Faber vs. Farrar", org: "WEC" },
+    { date: "Mar 24, 2007", opponent: "Tommy Lee", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:17", event: "WEC 26: Condit vs. Alessio", org: "WEC" },
+    { date: "Nov 17, 2006", opponent: "Chuck Kim", result: "W", method: "KO (Punch)", round: 1, time: "4:51", event: "Beatdown in Bakersfield 1", org: "BIB" },
+    { date: "Oct 13, 2006", opponent: "Charlie Valencia", result: "W", method: "TKO (Punches)", round: 1, time: "4:52", event: "KOTC: BOOYAA", org: "KOTC" },
+    { date: "Aug 4, 2006", opponent: "Richard Montano", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "KOTC: Rapid Fire", org: "KOTC" },
+    { date: "Mar 11, 2006", opponent: "Shannon Gugerty", result: "W", method: "TKO (Punches)", round: 2, time: "3:40", event: "Total Combat 13", org: "Total Combat" },
+    { date: "Dec 2, 2005", opponent: "Fernando Arreola", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "3:21", event: "KOTC: Final Conflict", org: "KOTC" },
+    { date: "Sep 23, 2005", opponent: "Mike Corey", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "2:52", event: "KOTC: Flash Point", org: "KOTC" },
+    { date: "Aug 5, 2005", opponent: "Armando Sanchez", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "1:59", event: "KOTC: Prime Time", org: "KOTC" },
+    { date: "Jan 29, 2005", opponent: "Martin Bautista", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:04", event: "Total Combat 7", org: "Total Combat" },
+    { date: "Oct 24, 2004", opponent: "Joe Morales", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "2:28", event: "Total Combat 6", org: "Total Combat" },
+    { date: "Jul 25, 2004", opponent: "Shannon Gugerty", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:30", event: "Total Combat 4", org: "Total Combat" }
+  ],
   "Lance Gibson Jr.": [
     { date: "Mar 28, 2026", opponent: "Chase Hooper", result: "W", method: "TKO (Punches)", round: 1, time: "2:56", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "Dec 13, 2025", opponent: "Bobby Green", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
@@ -31297,6 +31380,18 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Cub Swanson": [
+    { icon: "🏆", title: "UFC Hall of Fame — Fight Wing (Class of 2022), Swanson vs. Doo Ho Choi at UFC 206", detail: null },
+    { icon: "🏅", title: "Most post-fight bonuses in UFC/WEC Featherweight division history (15)", detail: null },
+    { icon: "🏅", title: "Most Fight of the Night bonuses in UFC/WEC history (12); tied 4th-most in UFC history (8)", detail: null },
+    { icon: "🏅", title: "3rd most wins in UFC Featherweight division history (16)", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (8×): Siver, Stephens, D. Choi, Lobov, Ortega, Gracie, Fili, Quarantillo", detail: null },
+    { icon: "⭐", title: "UFC Knockout of the Night (2×): Pearson, Oliveira", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (1×): Elkins", detail: null },
+    { icon: "⭐", title: "WEC Fight of the Night (4×): Miller, Takaya, Franchi, Semerzier", detail: null },
+    { icon: "🏅", title: "2016 Fight of the Year vs. Doo Ho Choi (UFC 206)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Rigan Machado", detail: null },
+  ],
   "Lance Gibson Jr.": [
     { icon: "🏆", title: "Pacific Northwest MMA Champion", detail: null },
     { icon: "🥊", title: "Son of UFC/K-1 veteran Lance Gibson Sr.", detail: null },
