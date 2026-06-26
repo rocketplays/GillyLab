@@ -4157,7 +4157,7 @@
  "Punahele Soriano": { ht:"5'11\"", dob:"1992-11-22", reach:'72"', stance:"Southpaw", slpm:4.66, tdAcc:"48%", subAvg:0.1, strDef:"47%", kd:0.3, tdDef:"40%", finRate:"58%", streak:0, tdLanded:1.83, gym:"Xtreme Couture" },
  // ── Lightweight (more) ──
  "Drew Dober": { ht:"5'8\"", dob:"1988-10-19", reach:'70"', stance:"Southpaw", slpm:5.49, tdAcc:"42%", subAvg:0.4, strDef:"52%", kd:0.4, tdDef:"63%", finRate:"55%", streak:0, tdLanded:0.62, gym:"Elevation Fight Team (2014–present)" },
- "Farès Ziam": { ht:"6'1\"", dob:"1997-03-21", reach:'75"', stance:"Orthodox", slpm:2.87, tdAcc:"40%", subAvg:0.5, strDef:"65%", kd:0.1, tdDef:"71%", finRate:"47%", streak:4, tdLanded:1.73, gym:"Sanford MMA (2021–present)" },
+ "Farès Ziam": { ht:"6'1\"", dob:"1997-03-21", reach:'75"', stance:"Orthodox", slpm:2.68, strAcc:"52%", sapm:1.58, strDef:"64%", kd:0.21, tdLanded:1.86, tdAcc:"43%", tdDef:"71%", subAvg:0.52, finRate:"61%", streak:0, gym:"Ghost Arena" },
  "Terrance McKinney": { ht:"5'10\"", dob:"1994-09-15", reach:'73"', stance:"Switch", slpm:6.53, strAcc:"56%", sapm:3.45, strDef:"43%", kd:1.24, tdLanded:3.31, tdAcc:"40%", tdDef:"73%", subAvg:2.07, finRate:"100%", streak:1, gym:"Warrior Camp MMA" },
  "Tofiq Musayev": { ht:"5'10\"", dob:"1989-12-15", reach:'72"', stance:"Orthodox", slpm:1.84, strAcc:"46%", sapm:1.74, strDef:"51%", kd:0.0, tdLanded:2.30, tdAcc:"60%", tdDef:"50%", subAvg:0.0, finRate:"87%", streak:1, gym:"Mammadaliyev Team" },
  "Manuel Torres": { ht:"5'10\"", dob:"1995-03-25", reach:'73.5"', stance:"Orthodox", slpm:7.29, strAcc:"60%", sapm:4.08, strDef:"54%", kd:4.31, tdLanded:1.72, tdAcc:"67%", tdDef:"91%", subAvg:0.86, finRate:"94%", streak:2, gym:"Aldama's Muay Thai Gym" },
@@ -11066,14 +11066,17 @@
     { opponent: "Dustin Stoltzfus", odds: -260 }
   ],
   "Farès Ziam": [
-    { opponent: "Grant Dawson", odds: 300 },
-    { opponent: "Jared Gordon", odds: 250 },
-    { opponent: "Ignacio Bahamondes", odds: -175 },
-    { opponent: "Claudio Puelles", odds: -165 },
-    { opponent: "Elizeu Zaleski dos Santos", odds: 300 },
-    { opponent: "Brok Weaver", odds: -500 },
-    { opponent: "Natan Levy", odds: -200 },
-    { opponent: "Nasrat Haqparast", odds: 175 }
+    { opponent: "Tom Nolan", odds: -345 },
+    { opponent: "Nazim Sadykhov", odds: -200 },
+    { opponent: "Mike Davis", odds: 120 },
+    { opponent: "Matt Frevola", odds: -125 },
+    { opponent: "Claudio Puelles", odds: -215 },
+    { opponent: "Jai Herbert", odds: -170 },
+    { opponent: "Michal Figlak", odds: 170 },
+    { opponent: "Terrance McKinney", odds: -130 },
+    { opponent: "Luigi Vendramini", odds: -110 },
+    { opponent: "Jamie Mullarkey", odds: 110 },
+    { opponent: "Don Madge", odds: 155 }
   ],
   "Bethe Correia": [
     { opponent: "Aspen Ladd", odds: 500 },
@@ -30262,6 +30265,14 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Farès Ziam": [
+    { icon: "🏆", title: "HIT Fighting Championship Lightweight Champion", detail: null },
+    { icon: "🏆", title: "Lyon Fighting Championship (LFC) Lightweight Champion", detail: null },
+    { icon: "🥊", title: "ISKA K-1 European Light-Middleweight (−72.5 kg) Champion — 2015 (kickboxing)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night × 1 — vs. Matt Frevola (UFC Paris, 2024)", detail: null },
+    { icon: "🏅", title: "MMA Junkie Knockout of the Month — September 2024 (vs. Matt Frevola)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Hailey Cowan": [
     { icon: "🥊", title: "Dana White's Contender Series winner (2022) — earned UFC contract", detail: "first female fighter from Central Texas to earn a UFC deal" },
     { icon: "🥇", title: "2x NCATA All-American & individual national champion (Baylor acrobatics & tumbling)", detail: null },
