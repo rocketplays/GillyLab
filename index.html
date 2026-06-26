@@ -3434,7 +3434,7 @@
  { name: "Tom Aspinall", division: "HW", rank: "NR", record: "15-3-0", initials: "TAS2", country: "UK" },
  { name: "Guilherme Pat", division: "HW", rank: "NR", record: "7-0-0", initials: "GPU", country: "Brazil" },
  { name: "Mario Pinto", division: "HW", rank: "NR", record: "12-0-0", initials: "MPT", country: "Portugal" },
- { name: "Louie Sutherland", division: "HW", rank: "NR", record: "10-4-0", initials: "LSU", country: "UK" },
+ { name: "Louie Sutherland", division: "HW", rank: "NR", record: "11-5-0", initials: "LSU", country: "England" },
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
  { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
  { name: "Sean Sharaf", division: "HW", rank: "NR", record: "4-2-0", initials: "SSH", country: "USA" },
@@ -4609,7 +4609,7 @@
  "Luke Fernandez": { ht:"6'1\"", dob:"1995-06-29", reach:'76"', stance:"Orthodox", slpm:8.14, strAcc:"59%", sapm:10.17, strDef:"36%", kd:5.08, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"83%", streak:0, gym:"Dante Rivera BJJ" },
 
  // Heavyweight
- "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:3.75, tdAcc:"33%", subAvg:0.0, strDef:"22%", kd:0.3, tdDef:"0%", finRate:"60%", streak:0, tdLanded:4.69 },
+ "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:1.81, strAcc:"69%", sapm:2.03, strDef:"30%", kd:0.00, tdLanded:4.95, tdAcc:"43%", tdDef:null, subAvg:0.00, finRate:"73%", streak:1, gym:"Fightzone & Durrant's Gym" },
  "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.2, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.00 },
  "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:2.85, strAcc:"70%", sapm:1.93, strDef:"58%", kd:0.95, tdLanded:2.38, tdAcc:"26%", tdDef:"100%", subAvg:0.95, finRate:"67%", streak:12, gym:"FightZone London" },
  "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:10.05, strAcc:"52%", sapm:6.64, strDef:"50%", kd:1.25, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"86%", streak:0, gym:"Minnesota Top Team" },
@@ -12678,11 +12678,12 @@
     { opponent: "Javid Basharat", odds: -225 }
   ],
   "Louie Sutherland": [
-    { opponent: "Tai Tuivasa", odds: -150 },
-    { opponent: "Shamil Gaziev", odds: -175 },
-    { opponent: "Justin Tafa", odds: -225 },
-    { opponent: "Marcos Rogerio de Lima", odds: -350 },
-    { opponent: "Jared Vanderaa", odds: -450 }
+    { opponent: "Tai Tuivasa", odds: 195 },
+    { opponent: "Brando Peričić", odds: 195 },
+    { opponent: "Valter Walker", odds: 295 },
+    { opponent: "Slim Trabelsi", odds: 380 },
+    { opponent: "Alton Meeks", odds: 110 },
+    { opponent: "Abraham Bably", odds: 130 }
   ],
   "Wang Cong": [
     { opponent: "Eduarda Moura", odds: -330 },
@@ -27648,17 +27649,22 @@ const FIGHT_HISTORY = {
 
 
   "Louie Sutherland": [
-    { date: "Apr 11, 2026", opponent: "Tai Tuivasa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 327: Procházka vs. Ulberg" },
-    { date: "Dec 6, 2025", opponent: "Shamil Gaziev", result: "W", method: "KO (Punches)", round: 1, time: "0:49", event: "UFC 323: Dvalishvili vs. Yan 2" },
-    { date: "Aug 16, 2025", opponent: "Justin Tafa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 319: du Plessis vs. Chimaev" },
-    { date: "May 3, 2025", opponent: "Marcos Rogerio de Lima", result: "W", method: "TKO (Punches)", round: 2, time: "3:52", event: "UFC Fight Night: Sandhagen vs. Figueiredo" },
-    { date: "Feb 1, 2025", opponent: "Jared Vanderaa", result: "W", method: "KO (Punches)", round: 2, time: "0:47", event: "UFC Fight Night: Adesanya vs. Imavov (debut)" },
-    { date: "Oct 12, 2024", opponent: "Artur Kulaszewski", result: "W", method: "TKO (Punches)", round: 2, time: "2:15", event: "DWCS Season 8 Week 6 (contract)" },
-    { date: "Jul 27, 2024", opponent: "Ivan Iltchev", result: "W", method: "KO (Punches)", round: 1, time: "0:22", event: "Cage Warriors 175" },
-    { date: "Apr 6, 2024", opponent: "Chris Reigh", result: "W", method: "KO (Punches)", round: 1, time: "0:18", event: "Cage Warriors 170" },
-    { date: "Dec 9, 2023", opponent: "Aleksander Petrov", result: "W", method: "TKO (Punches)", round: 2, time: "4:35", event: "Cage Warriors 162" },
-    { date: "Aug 19, 2023", opponent: "James Goldie", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 160" },
-    { date: "Apr 1, 2023", opponent: "Daniel Barez", result: "W", method: "TKO (Punches)", round: 1, time: "2:35", event: "Cage Warriors 153" }
+    { date: "May 2, 2026", opponent: "Tai Tuivasa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Mar 21, 2026", opponent: "Brando Peričić", result: "L", method: "TKO (Punches)", round: 1, time: "1:48", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Oct 25, 2025", opponent: "Valter Walker", result: "L", method: "Submission (Heel Hook)", round: 1, time: "1:24", event: "UFC 321: Aspinall vs. Gane", org: "UFC" },
+    { date: "Jun 15, 2025", opponent: "Luke Newland", result: "W", method: "TKO (Punches)", round: 1, time: "2:50", event: "Levels Fight League 18 (title)", org: "LFL" },
+    { date: "Apr 13, 2025", opponent: "Matusalem dos Santos Domingos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Levels Fight League 17", org: "LFL" },
+    { date: "Feb 16, 2025", opponent: "Luis Carlos de Brito", result: "W", method: "TKO (Punches)", round: 1, time: "3:25", event: "Levels Fight League 16", org: "LFL" },
+    { date: "Dec 8, 2024", opponent: "Renato Rangel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Levels Fight League 15", org: "LFL" },
+    { date: "May 17, 2024", opponent: "Slim Trabelsi", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator Champions Series Paris", org: "Bellator" },
+    { date: "Nov 18, 2023", opponent: "Luis Carlos de Brito", result: "W", method: "TKO (Punches)", round: 1, time: "4:11", event: "FightStar Championship 27 (title)", org: "FightStar" },
+    { date: "Jul 9, 2023", opponent: "Moreno Kacapor", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Levels Fight League 9", org: "LFL" },
+    { date: "Feb 10, 2023", opponent: "Alton Meeks", result: "W", method: "TKO (Punches)", round: 2, time: "1:25", event: "2023 PFL Challenger Series: Week 3", org: "PFL" },
+    { date: "Aug 20, 2022", opponent: "Abraham Bably", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "2022 PFL Playoffs", org: "PFL" },
+    { date: "Apr 23, 2022", opponent: "Dion Groombridge", result: "W", method: "KO", round: 1, time: "N/A", event: "Sparta Fight Knights: SFK 1" },
+    { date: "Feb 5, 2022", opponent: "Jan Lysak", result: "W", method: "KO", round: 1, time: "0:25", event: "Ambition Fight Series: London" },
+    { date: "Dec 18, 2021", opponent: "Atanas Krastanov", result: "W", method: "KO", round: 1, time: "2:05", event: "FightStar Championship 20" },
+    { date: "Aug 7, 2021", opponent: "Pavel Dalidko", result: "W", method: "TKO (Punches)", round: 1, time: "1:05", event: "AFC 18: Almighty Fighting Championship 18" }
   ],
   "Wang Cong": [
     { date: "Feb 7, 2026", opponent: "Eduarda Moura", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
@@ -30728,6 +30734,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Louie Sutherland": [
+    { icon: "🏆", title: "Levels Fight League Heavyweight Champion", detail: null },
+    { icon: "🏆", title: "FightStar Championship Heavyweight Champion", detail: null },
+    { icon: "🏉", title: "Played rugby for Scotland at youth level", detail: null },
+  ],
   "Antonio Trocoli": [
     { icon: "🏆", title: "JF Fights Light Heavyweight Champion", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
