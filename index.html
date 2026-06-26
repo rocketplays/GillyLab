@@ -3779,6 +3779,7 @@
  { name: "Muhammad Naimov", division: "LW", rank: "NR", record: "13-4-0", initials: "MN", country: "Tajikistan" },
  { name: "Matheus Camilo", division: "LW", rank: "NR", record: "10-3-0", initials: "MCAM", country: "Brazil" },
  { name: "Abdul-Kareem Al-Selwady", division: "LW", rank: "NR", record: "16-4-0", initials: "AKS", country: "Palestine" },
+ { name: "Kyle Nelson", division: "LW", rank: "NR", record: "17-7-1", initials: "KNE", country: "Canada" },
  { name: "Patchy Mix", division: "BW", rank: "NR", record: "20-4-0", initials: "PM", country: "USA" },
  { name: "JooSang Yoo", division: "BW", rank: "NR", record: "12-4-0", initials: "JY", country: "South Korea" },
  { name: "Juan Martinetti", division: "BW", rank: "NR", record: "8-0-0", initials: "JMa", country: "Argentina" },
@@ -4273,6 +4274,7 @@
  "Esteban Ribovics": { ht:"5'10\"", dob:"1996-04-27", reach:'69"', stance:"Orthodox", slpm:7.27, strAcc:"43%", sapm:5.83, strDef:"55%", kd:0.52, tdLanded:0.35, tdAcc:"67%", tdDef:"66%", subAvg:0.17, finRate:"80%", streak:0, gym:"Kill Cliff FC" },
  // ── Lightweight (more) ──
  "Abdul-Kareem Al-Selwady": { ht:"5'8\"", dob:"1995-04-10", reach:'69"', stance:"Orthodox", slpm:4.61, strAcc:"41%", sapm:3.43, strDef:"61%", kd:0.00, tdLanded:1.47, tdAcc:"24%", tdDef:"55%", subAvg:0.00, finRate:"63%", streak:1, gym:"Fortis MMA" },
+ "Kyle Nelson": { ht:"5'11\"", dob:"1991-04-20", reach:'71"', stance:"Switch", slpm:3.60, strAcc:"46%", sapm:4.58, strDef:"54%", kd:0.13, tdLanded:1.18, tdAcc:"23%", tdDef:"67%", subAvg:0.52, finRate:"59%", streak:0, gym:"House of Champions" },
  // ── Flyweight (more) ──
  // ── Light Heavyweight (more) ──
  "Magomed Ankalaev": { ht:'6\'3"', dob:"1992-06-02", reach:'75"', stance:"Orthodox", slpm:3.65, strAcc:"53%", sapm:2.59, strDef:"56%", kd:0.56, tdLanded:0.79, tdAcc:"22%", tdDef:"88%", subAvg:0.00, finRate:"50%", streak:0, gym:"Gorets Fight Club" },
@@ -6299,6 +6301,20 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Kyle Nelson": [
+    { opponent: "Terrance McKinney", odds: 142 },
+    { opponent: "Matt Frevola", odds: -119 },
+    { opponent: "Steve Garcia", odds: 176 },
+    { opponent: "Bill Algeo", odds: 203 },
+    { opponent: "Fernando Padilla", odds: 210 },
+    { opponent: "Blake Bilder", odds: 200 },
+    { opponent: "Dooho Choi", odds: 160 },
+    { opponent: "Jai Herbert", odds: 229 },
+    { opponent: "Billy Quarantillo", odds: 240 },
+    { opponent: "Polo Reyes", odds: -113 },
+    { opponent: "Matt Sayles", odds: 166 },
+    { opponent: "Diego Ferreira", odds: 413 }
+  ],
   "Mansur Abdul-Malik": [
     { opponent: "Yousri Belgaroui", odds: -156 },
     { opponent: "Antonio Trocoli", odds: -1525 },
@@ -13825,6 +13841,33 @@
 };
 
 const FIGHT_HISTORY = {
+  "Kyle Nelson": [
+    { date: "Mar 28, 2026", opponent: "Terrance McKinney", result: "L", method: "KO (Punches)", round: 1, time: "0:24", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Matt Frevola", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Sep 7, 2024", opponent: "Steve Garcia", result: "L", method: "KO (Punches)", round: 1, time: "3:59", event: "UFC Fight Night: Burns vs. Brady", org: "UFC" },
+    { date: "Mar 30, 2024", opponent: "Bill Algeo", result: "W", method: "TKO (Punches)", round: 1, time: "4:00", event: "UFC Fight Night: Blanchfield vs. Fiorot", org: "UFC" },
+    { date: "Sep 16, 2023", opponent: "Fernando Padilla", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Noche UFC: Grasso vs. Shevchenko 2", org: "UFC" },
+    { date: "Jun 10, 2023", opponent: "Blake Bilder", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 289: Nunes vs. Aldana", org: "UFC" },
+    { date: "Feb 4, 2023", opponent: "Dooho Choi", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Spivac", org: "UFC" },
+    { date: "Jul 23, 2022", opponent: "Jai Herbert", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blaydes vs. Aspinall", org: "UFC" },
+    { date: "Sep 12, 2020", opponent: "Billy Quarantillo", result: "L", method: "KO (Punches)", round: 3, time: "0:07", event: "UFC Fight Night: Waterson vs. Hill", org: "UFC" },
+    { date: "Sep 21, 2019", opponent: "Polo Reyes", result: "W", method: "TKO (Punches)", round: 1, time: "1:36", event: "UFC Fight Night: Rodríguez vs. Stephens", org: "UFC" },
+    { date: "May 4, 2019", opponent: "Matt Sayles", result: "L", method: "Submission (Arm-Triangle Choke)", round: 3, time: "3:16", event: "UFC Fight Night: Iaquinta vs. Cerrone", org: "UFC" },
+    { date: "Dec 8, 2018", opponent: "Diego Ferreira", result: "L", method: "TKO (Punches)", round: 2, time: "1:23", event: "UFC 231: Holloway vs. Ortega", org: "UFC" },
+    { date: "Nov 19, 2018", opponent: "Morteza Rezaei", result: "W", method: "TKO", round: 1, time: "4:57", event: "RXF 32" },
+    { date: "May 27, 2017", opponent: "Khama Worthy", result: "W", method: "KO", round: 1, time: "1:03", event: "BTC 1: Genesis" },
+    { date: "Apr 25, 2017", opponent: "Gabriel Manuca", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:50", event: "RXF 26: Brasov" },
+    { date: "Oct 28, 2016", opponent: "Jonathan Brookins", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Z Promotions Fight Night 3" },
+    { date: "Jun 6, 2016", opponent: "Zoltan Turai", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:23", event: "RXF 23: Judgment Day" },
+    { date: "Apr 23, 2016", opponent: "Justin Bourgeois", result: "W", method: "TKO", round: 1, time: "2:01", event: "Elite 1: Meltdown" },
+    { date: "Sep 12, 2015", opponent: "Adrian Hadribeaj", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Triple X Cagefighting: Legends 6 (title)" },
+    { date: "May 30, 2014", opponent: "Ainsley Robinson", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:42", event: "Substance Cage Combat 2.0" },
+    { date: "Mar 8, 2014", opponent: "Alexander Halkias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFC 2" },
+    { date: "Jun 29, 2013", opponent: "Neelan Hordatt-Reece", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Substance Cage Combat 1" },
+    { date: "May 10, 2013", opponent: "Maxime Dubois", result: "W", method: "TKO", round: 2, time: "1:36", event: "UGC 32: Moment de Vérité" },
+    { date: "Oct 19, 2012", opponent: "Jo Petahtegoose", result: "W", method: "Submission (Armbar)", round: 1, time: "2:54", event: "Score Fighting Series 6" },
+    { date: "Mar 17, 2012", opponent: "Michael Dufort", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ringside MMA 13" }
+  ],
   "Mansur Abdul-Malik": [
     { date: "Mar 28, 2026", opponent: "Yousri Belgaroui", result: "L", method: "TKO (Punches)", round: 3, time: "3:39", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "Dec 6, 2025", opponent: "Antonio Trocoli", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:09", event: "UFC 323: Dvalishvili vs. Yan 2", org: "UFC" },
@@ -30906,6 +30949,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Kyle Nelson": [
+    { icon: "🏆", title: "Elite 1 MMA Featherweight Champion", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Mansur Abdul-Malik": [
     { icon: "🏅", title: "100% finish rate (all 9 wins by KO/TKO or submission)", detail: null },
     { icon: "🤼", title: "Former Division I wrestler at the University of Maryland", detail: null },
