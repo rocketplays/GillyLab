@@ -4299,7 +4299,7 @@
  // ── Women's Strawweight (final) ──
  "Loma Lookboonmee": { ht:"5'1\"", dob:"1996-01-18", reach:'61"', stance:"Orthodox", slpm:3.58, tdAcc:"50%", subAvg:0.3, strDef:"52%", kd:0.1, tdDef:"68%", finRate:"40%", streak:0, tdLanded:1.81, gym:"Bangtao Muay Thai & MMA (2021–present)" },
  "Yazmin Jauregui": { ht:"5'3\"", dob:"1999-02-28", reach:'64"', stance:"Orthodox", slpm:6.64, tdAcc:"0%", subAvg:0.0, strDef:"54%", kd:0.4, tdDef:"67%", finRate:"55%", streak:0, tdLanded:0.00, gym:"Entram Gym" },
- "Sam Hughes": { ht:"5'5\"", dob:"1992-06-28", reach:'64"', stance:"Orthodox", slpm:4.34, tdAcc:"35%", subAvg:0.2, strDef:"58%", kd:0.1, tdDef:"60%", finRate:"36%", streak:0, tdLanded:1.23, gym:"Fortis MMA (2021–present)" },
+ "Sam Hughes": { ht:"5'5\"", dob:"1992-06-28", reach:'64"', stance:"Orthodox", slpm:4.41, strAcc:"48%", sapm:4.69, strDef:"58%", kd:0.00, tdLanded:1.12, tdAcc:"29%", tdDef:"63%", subAvg:0.19, finRate:"55%", streak:0, gym:"Fortis MMA" },
  "Maria Oliveira": { ht:"5'6\"", dob:"1996-12-12", reach:'69"', stance:"Orthodox", slpm:5.03, tdAcc:"44%", subAvg:0.3, strDef:"44%", kd:0.2, tdDef:"53%", finRate:"46%", streak:0, tdLanded:0.95 },
  "Luana Pinheiro": { ht:"5'2\"", dob:"1992-11-18", reach:'62"', stance:"Orthodox", slpm:3.35, tdAcc:"36%", subAvg:0.5, strDef:"61%", kd:0.0, tdDef:"65%", finRate:"55%", streak:1, tdLanded:2.8, gym:"Nova União" },
  "Vanessa Demopoulos": { ht:"5'2\"", dob:"1988-09-22", reach:'59"', stance:"Orthodox", slpm:3.37, tdAcc:"10%", subAvg:1.1, strDef:"41%", kd:0.1, tdDef:"38%", finRate:"45%", streak:0, tdLanded:0.32, gym:"Ronin Training Center" },
@@ -12074,15 +12074,19 @@
     { opponent: "Harry Hunsucker", odds: -600 }
   ],
   "Sam Hughes": [
-    { opponent: "Piera Rodriguez", odds: 250 },
-    { opponent: "Shauna Bannon", odds: -400 },
-    { opponent: "Stephanie Luciano", odds: -175 },
-    { opponent: "Viktoriia Dudakova", odds: -175 },
-    { opponent: "Yazmin Jauregui", odds: 250 },
-    { opponent: "Jaqueline Amorim", odds: -275 },
-    { opponent: "Elise Reed", odds: -225 },
-    { opponent: "Loma Lookboonmee", odds: 275 },
-    { opponent: "Tecia Torres", odds: 500 }
+    { opponent: "Piera Rodriguez", odds: 120 },
+    { opponent: "Shauna Bannon", odds: -275 },
+    { opponent: "Stephanie Luciano", odds: 155 },
+    { opponent: "Victoria Dudakova", odds: 160 },
+    { opponent: "Yazmin Jauregui", odds: 425 },
+    { opponent: "Jaqueline Amorim", odds: 220 },
+    { opponent: "Piera Rodriguez", odds: 145 },
+    { opponent: "Elise Reed", odds: 120 },
+    { opponent: "Istela Nunes", odds: 195 },
+    { opponent: "Luana Pinheiro", odds: 315 },
+    { opponent: "Loma Lookboonmee", odds: 315 },
+    { opponent: "Tecia Torres", odds: 435 },
+    { opponent: "Danielle Hindley", odds: -365 }
   ],
   "Yazmin Jauregui": [
     { opponent: "Miranda Maverick", odds: 350 },
@@ -26069,18 +26073,18 @@ const FIGHT_HISTORY = {
     { date: "Aug 3, 2024", opponent: "Victoria Dudakova", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ABC: Sandhagen vs. Nurmagomedov", org: "UFC" },
     { date: "Feb 24, 2024", opponent: "Yazmin Jauregui", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Royval 2", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Jaqueline Amorim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 287", org: "UFC" },
-    { date: "Oct 15, 2022", opponent: "Piera Rodríguez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araújo", org: "UFC" },
+    { date: "Oct 15, 2022", opponent: "Piera Rodriguez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araújo", org: "UFC" },
     { date: "May 21, 2022", opponent: "Elise Reed", result: "W", method: "TKO (Elbow and punches)", round: 3, time: "3:52", event: "UFC Fight Night: Holm vs. Vieira", org: "UFC" },
     { date: "Apr 16, 2022", opponent: "Istela Nunes", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC on ESPN: Luque vs. Muhammad 2", org: "UFC" },
     { date: "Nov 20, 2021", opponent: "Luana Pinheiro", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vieira vs. Tate", org: "UFC" },
     { date: "May 1, 2021", opponent: "Loma Lookboonmee", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Reyes vs. Procházka", org: "UFC" },
-    { date: "Dec 12, 2020", opponent: "Tecia Torres", result: "L", method: "TKO (Doctor stoppage)", round: 1, time: "5:00", event: "UFC 256", org: "UFC" },
+    { date: "Dec 12, 2020", opponent: "Tecia Torres", result: "L", method: "TKO (Corner stoppage)", round: 1, time: "5:00", event: "UFC 256", org: "UFC" },
     { date: "Oct 16, 2020", opponent: "Danielle Hindley", result: "W", method: "Technical Submission (Guillotine choke)", round: 1, time: "5:00", event: "LFA 93", org: "LFA" },
     { date: "Jul 17, 2020", opponent: "Vanessa Demopoulos", result: "L", method: "Technical Submission (Inverted triangle choke)", round: 4, time: "2:21", event: "LFA 85", org: "LFA" },
     { date: "Jan 31, 2020", opponent: "Lisa Mauldin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 81", org: "LFA" },
     { date: "Oct 19, 2019", opponent: "Bethany Christensen", result: "W", method: "Submission (Armbar)", round: 1, time: "0:52", event: "Battle at the Bay 15" },
     { date: "Jul 13, 2019", opponent: "Loren Benjar", result: "W", method: "TKO (Knee to the body and punches)", round: 2, time: "1:30", event: "Xtreme Knockout 46" },
-    { date: "Feb 23, 2019", opponent: "Kyla Frajman", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:35", event: "Combat Games 62" }
+    { date: "Feb 23, 2019", opponent: "Kayla Frajman", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:35", event: "Combat Games 62" }
   ],
   "Yazmin Jauregui": [
     { date: "Sep 14, 2024", opponent: "Ketlen Souza", result: "L", method: "Technical Submission (Rear-naked choke)", round: 1, time: "3:02", event: "UFC 306", org: "UFC" },
@@ -33168,7 +33172,10 @@ const ACCOLADES = {
     { icon: "🥇", title: "IFMA World Muaythai Championships — 2015 Bangkok, Thailand — −45 kg", detail: null },
   ],
   "Sam Hughes": [
-    { icon: "🥋", title: "Blue belt in Brazilian jiu-jitsu", detail: null },
+    { icon: "🏆", title: "MMA South Carolina State Champion (Warfare MMA 16)", detail: null },
+    { icon: "🥊", title: "Undefeated amateur kickboxer", detail: null },
+    { icon: "🏃", title: "NCAA Division I cross country & track athlete (college steeplechase record holder)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Kanako Murata": [
     { icon: "🥋", title: "Purple belt in Brazilian jiu-jitsu", detail: null },
