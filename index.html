@@ -3850,6 +3850,11 @@
  // Stack of previously viewed fighter profiles, so the back button can
  // return to the previous fighter when navigating fighter → fighter.
  let fighterStack = [];
+ // Remembered scroll position for each top-level page, keyed by page element
+ // id (e.g. 'page-card'). Lets the back button return the user to the exact
+ // spot they were at — e.g. mid-scroll on a fight card before opening a
+ // fighter profile. Populated when leaving a page, consumed when returning.
+ const pageScroll = {};
  let currentFighter = null;
  // Tracks the in-flight fighter→fighter fade-transition timers (mirrors
  // pageTransitionTimer below) so that quickly tapping through several
@@ -3879,6 +3884,11 @@
  if (!targetPage) return;
  const activePage = document.querySelector('.page.active');
 
+ // Remember how far the user had scrolled on the page they're leaving so we
+ // can restore it on return. Skip when entering the fighter view: openFighter()
+ // already captured the outgoing page's scroll before scrolling the profile up.
+ if (page !== 'fighter' && activePage) pageScroll[activePage.id] = window.scrollY;
+
  if (page === 'fighter') {
  if (activePage && activePage.id !== 'page-fighter') {
  fighterReturnPage = activePage.id.replace(/^page-/, '');
@@ -3891,6 +3901,9 @@
  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.classList.remove('page-leaving'); });
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  targetPage.classList.add('active');
+ // Restore the scroll position for the page being shown (non-fighter pages
+ // only — the fighter profile always opens at the top, handled by openFighter).
+ if (page !== 'fighter') window.scrollTo(0, pageScroll[targetId] || 0);
  if (page !== 'fighter') {
  const tab = document.getElementById('tab-' + page);
  if (tab) {
@@ -33870,6 +33883,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  // from a non-fighter page (fresh entry into fighter view).
  const activePage = document.querySelector('.page.active');
  const stayingOnFighter = activePage && activePage.id === 'page-fighter';
+ // Save the scroll position of the page we're leaving (the card, rankings,
+ // etc.) so the back button can return the user to the exact same spot.
+ if (activePage && activePage.id !== 'page-fighter') pageScroll[activePage.id] = window.scrollY;
 
  if (!_skipPush) {
    if (stayingOnFighter && currentFighter) {
