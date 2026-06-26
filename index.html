@@ -553,14 +553,19 @@
       font-size: 0.72rem; letter-spacing: 0.05em; color: var(--accent);
       text-align: center; line-height: 1.2; white-space: nowrap;
     }
+    /* Past events have no countdown — hide the "Result / FINAL" box entirely. */
+    .event-header.gl-past-view .event-countdown { display: none; }
     @media (max-width: 768px) {
-      /* Stack the home event header on mobile so the location/date and the
-         full-width dropdown get the full width (matching the clean past-event
-         look) instead of being squeezed beside the countdown. The countdown
-         becomes a compact badge at the top-right. */
-      #page-home > .event-header { flex-direction: column; align-items: stretch; }
+      /* On mobile, give the event name / location / dropdown the full width and
+         float the countdown to the top-right corner (out of flow) so it sits
+         beside the title — not above or below the whole card. The name reserves
+         space on its right so it clears the countdown; that reservation is
+         removed on past events, where the countdown is hidden. */
+      #page-home > .event-header { flex-direction: column; align-items: stretch; position: relative; }
       #page-home > .event-header .event-info { width: 100%; min-width: 0; }
-      #page-home > .event-header .event-countdown { order: -1; align-self: flex-end; margin: 0 0 0.5rem; }
+      #page-home > .event-header .event-countdown { position: absolute; top: 0; right: 0; margin: 0; }
+      #page-home > .event-header .event-name { padding-right: 7rem; }
+      #page-home > .event-header.gl-past-view .event-name { padding-right: 0; }
       .countdown-label { white-space: nowrap; }
       .gl-prev-wrap { width: 100%; }
       .gl-prev-select { width: 100%; max-width: 100%; }
@@ -38264,10 +38269,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       sel.addEventListener('change', () => {
         sel.blur(); // don't leave the control stuck in its green focus state after picking
-        const cdBox = header.querySelector('.event-countdown');
         if (sel.value === '__featured__') {
           window.__GL_VIEWING_PAST = false;
-          if (cdBox) cdBox.style.display = ''; // restore the upcoming-event countdown
+          header.classList.remove('gl-past-view'); // restore the upcoming-event countdown
           if (featuredRaw && featuredRaw.startsAt) window.FEATURED_EVENT_STARTS_AT = featuredRaw.startsAt;
           updateCountdown();
           if (featuredRaw) glSwapFightCard(() => renderHomeFightCard(parseApiEvent(featuredRaw)));
@@ -38276,7 +38280,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const raw = list[parseInt(sel.value, 10)];
         if (!raw) return;
         window.__GL_VIEWING_PAST = true;
-        if (cdBox) cdBox.style.display = 'none'; // past events: drop the redundant "Result / FINAL" box
+        header.classList.add('gl-past-view'); // past events: drop the redundant "Result / FINAL" box
         glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
