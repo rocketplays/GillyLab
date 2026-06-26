@@ -3449,7 +3449,7 @@
  { name: "Zubaira Tukhugov", division: "FW", rank: "NR", record: "23-8-1", initials: "ZTU", country: "Russia" },
  { name: "Billy Quarantillo", division: "FW", rank: "NR", record: "19-8-0", initials: "BQU", country: "USA" },
  { name: "Lucas Almeida", division: "FW", rank: "NR", record: "22-5-0", initials: "LAL", country: "Brazil" },
- { name: "Julian Erosa", division: "FW", rank: "NR", record: "34-14-0", initials: "JER", country: "USA" },
+ { name: "Julian Erosa", division: "FW", rank: "NR", record: "31-14-0", initials: "JER", country: "USA" },
  { name: "Ricky Turcios", division: "BW", rank: "NR", record: "13-6-0", initials: "RTU", country: "USA" },
  { name: "Francis Marshall", division: "FW", rank: "NR", record: "11-3-0", initials: "FMA", country: "USA" },
  { name: "Harry Hardwick", division: "FW", rank: "NR", record: "13-5-1", initials: "HHA", country: "England" },
@@ -4369,7 +4369,7 @@
  // ── Featherweight (new) ──
  "Bill Algeo": { ht:"6'0\"", dob:"1989-06-09", reach:'73"', stance:"Switch", slpm:5.88, tdAcc:"50%", subAvg:0.1, strDef:"47%", kd:0.2, tdDef:"55%", finRate:"50%", streak:0, tdLanded:1.03, gym:"Balance MMA" },
  "Herbert Burns": { ht:"5'9\"", dob:"1988-02-02", reach:'73"', stance:"Orthodox", slpm:1.86, tdAcc:"34%", subAvg:1.8, strDef:"41%", kd:0.0, tdDef:"66%", finRate:"71%", streak:0, tdLanded:2.94, gym:"The Way Martial Arts (2022–present)" },
- "Julian Erosa": { ht:"6'1\"", dob:"1989-07-31", reach:'74"', stance:"Southpaw", slpm:6.18, tdAcc:"39%", subAvg:0.9, strDef:"48%", kd:0.3, tdDef:"51%", finRate:"74%", streak:0, tdLanded:1.44, gym:"10th Planet Las Vegas (2017–present)" },
+ "Julian Erosa": { ht:"6'1\"", dob:"1989-07-31", reach:'74.5"', stance:"Southpaw", slpm:6.18, strAcc:"48%", sapm:6.31, strDef:"49%", kd:0.20, tdLanded:1.73, tdAcc:"44%", tdDef:"62%", subAvg:0.71, finRate:"84%", streak:0, gym:"Xtreme Couture" },
  "Kai Kamaka III": { ht:"5'7\"", dob:"1995-01-05", reach:'69"', stance:"Orthodox", slpm:5.40, strAcc:"59%", sapm:5.67, strDef:"56%", kd:0.22, tdLanded:1.51, tdAcc:"54%", tdDef:"55%", subAvg:0.22, finRate:"22%", streak:2, gym:"Xtreme Couture" },
  "Jai Herbert": { ht:"6'1\"", dob:"1988-05-13", reach:'77"', stance:"Orthodox", slpm:3.07, tdAcc:"21%", subAvg:0.3, strDef:"53%", kd:0.2, tdDef:"75%", finRate:"69%", streak:0, tdLanded:0.43, gym:"MTK Global" },
  "Mason Jones": { ht:"5'10\"", dob:"1995-04-26", reach:'74"', stance:"Orthodox", slpm:5.98, strAcc:"43%", sapm:4.45, strDef:"51%", kd:0.17, tdLanded:3.48, tdAcc:"55%", tdDef:"74%", subAvg:0.17, finRate:"61%", streak:7, gym:"Pedro Bessa BJJ" },
@@ -11650,14 +11650,26 @@
     { opponent: "Stephanie Egger", odds: 210 }
   ],
   "Julian Erosa": [
-    { opponent: "Alex Caceres", odds: 250 },
-    { opponent: "Melsik Baghdasaryan", odds: -350 },
-    { opponent: "Hakeem Dawodu", odds: 225 },
-    { opponent: "Dan Ige", odds: 250 },
-    { opponent: "Joshua Culibao", odds: -300 },
-    { opponent: "Seung Woo Choi", odds: -350 },
-    { opponent: "Cub Swanson", odds: 350 },
-    { opponent: "Jamall Emmers", odds: -250 }
+    { opponent: "Lerryan Douglas", odds: 243 },
+    { opponent: "Melquizael Costa", odds: 135 },
+    { opponent: "Darren Elkins", odds: -285 },
+    { opponent: "Christian Rodriguez", odds: 203 },
+    { opponent: "Ricardo Ramos", odds: 145 },
+    { opponent: "Fernando Padilla", odds: -155 },
+    { opponent: "Alex Caceres", odds: -173 },
+    { opponent: "Hakeem Dawodu", odds: 181 },
+    { opponent: "Steven Peterson", odds: -325 },
+    { opponent: "Charles Jourdain", odds: 160 },
+    { opponent: "Choi Seung-woo", odds: 130 },
+    { opponent: "Nate Landwehr", odds: 120 },
+    { opponent: "Sean Woodson", odds: 395 },
+    { opponent: "Julio Arce", odds: 563 },
+    { opponent: "Grant Dawson", odds: 160 },
+    { opponent: "Devonte Smith", odds: 199 },
+    { opponent: "Jamall Emmers", odds: 223 },
+    { opponent: "Paddy Pimblett", odds: 135 },
+    { opponent: "Teruto Ishihara", odds: -175 },
+    { opponent: "Marcin Wrzosek", odds: 105 }
   ],
   "Julija Stoliarenko": [
     { opponent: "Katarina Zarinijey", odds: -400 },
@@ -25225,6 +25237,7 @@ const FIGHT_HISTORY = {
     { date: "May 19, 2016", opponent: "Daniel Swain", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "KOTC: Battle Zone" },
     { date: "Mar 5, 2016", opponent: "Teruto Ishihara", result: "L", method: "KO (Punches)", round: 2, time: "0:34", event: "UFC 196", org: "UFC" },
     { date: "Dec 11, 2015", opponent: "Marcin Wrzosek", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "The Ultimate Fighter: Team McGregor vs. Team Faber Finale" },
+    { date: "Dec 9, 2015", opponent: "Artem Lobov", result: "L", method: "TKO (Punches)", round: 1, time: "1:00", event: "The Ultimate Fighter 22 (semifinal)" },
     { date: "Feb 21, 2015", opponent: "Drew Brokenshire", result: "W", method: "Submission (Brabo choke)", round: 3, time: "4:35", event: "CageSport 34" },
     { date: "Dec 13, 2014", opponent: "Harrison Bevens", result: "W", method: "KO (Knee)", round: 2, time: "2:10", event: "CageSport 33" },
     { date: "May 22, 2014", opponent: "Ryan Mulvihill", result: "W", method: "Submission (Triangle choke)", round: 2, time: "4:19", event: "KOTC: Seek and Destroy" },
@@ -25240,11 +25253,7 @@ const FIGHT_HISTORY = {
     { date: "Jun 10, 2011", opponent: "John Martinez", result: "W", method: "TKO (Punches)", round: 3, time: "3:24", event: "Lords of the Cage 12" },
     { date: "Apr 23, 2011", opponent: "Ryan Mulvihill", result: "W", method: "Submission (Brabo choke)", round: 2, time: "1:23", event: "CageSport 14" },
     { date: "Feb 19, 2011", opponent: "Omar Avelar", result: "W", method: "Submission (Armbar)", round: 2, time: "2:32", event: "CageSport 13" },
-    { date: "Oct 2, 2010", opponent: "Angel Diaz", result: "W", method: "KO (Punches)", round: 1, time: "2:16", event: "CageSport 12" },
-    { date: "Dec 9, 2015", opponent: "Artem Lobov", result: "L", method: "TKO (Punches)", round: 1, time: "1:00", event: "The Ultimate Fighter: Team McGregor vs Team Faber" },
-    { opponent: "Abner Lloveras", result: "W", method: "Decision (Split)", time: "5:00" },
-    { opponent: "Mehdi Baghdad", result: "W", method: "Decision (Majority)", time: "5:00" },
-    { opponent: "Jason Soares", result: "W", method: "Decision (Unanimous)", time: "5:00" }
+    { date: "Oct 2, 2010", opponent: "Angel Diaz", result: "W", method: "KO (Punches)", round: 1, time: "2:16", event: "CageSport 12" }
   ],
 
 
@@ -30846,6 +30855,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Julian Erosa": [
+    { icon: "🏆", title: "CageSport Featherweight & Lightweight Champion", detail: null },
+    { icon: "🏆", title: "Prime Fighting Featherweight Champion", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "The Ultimate Fighter 22 cast member (Team Faber); 10-0 amateur", detail: null },
+  ],
   "Lerryan Douglas": [
     { icon: "🏆", title: "LFA Featherweight Champion (won interim title, then unified)", detail: null },
     { icon: "🏆", title: "Nação Cyborg Featherweight Champion (2020)", detail: null },
