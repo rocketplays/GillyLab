@@ -3372,6 +3372,7 @@
  { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-3-0", initials: "MRA", country: "USA" },
  { name: "Jai Herbert", division: "LW", rank: "NR", record: "14-6-1", initials: "JHE", country: "UK" },
  { name: "Manoel Sousa", division: "LW", rank: "NR", record: "14-1-0", initials: "MNS", country: "Brazil" },
+ { name: "Bolaji Oki", division: "LW", rank: "NR", record: "10-4-0", initials: "BOK", country: "Belgium" },
  { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
  // ─── WELTERWEIGHT (extended) ───
  { name: "Shavkat Rakhmonov", division: "WW", rank: "NR", record: "19-0-0", initials: "SHR", country: "Kazakhstan" },
@@ -3933,6 +3934,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+ "Bolaji Oki": { ht:"5'10\"", dob:"1995-11-15", reach:'73"', stance:"Orthodox", slpm:6.42, strAcc:"45%", sapm:5.12, strDef:"61%", kd:0.51, tdLanded:1.02, tdAcc:"57%", tdDef:"75%", subAvg:0.00, finRate:"60%", streak:0, gym:"Valon Team" },
  "SuYoung You": { ht:"5'6\"", dob:"1995-12-11", reach:'65"', stance:"Orthodox", slpm:2.15, strAcc:"47%", sapm:2.01, strDef:"69%", kd:0.00, tdLanded:4.26, tdAcc:"38%", tdDef:"67%", subAvg:0.37, finRate:"50%", streak:0, gym:"Black Combat" },
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"41%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
  "Jose Delgado": { ht:"5'11\"", dob:"1998-04-21", reach:'73"', stance:"Switch", slpm:7.48, strAcc:"55%", sapm:4.95, strDef:"50%", kd:1.51, tdLanded:1.51, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"91%", streak:1, gym:"The MMA Lab" },
@@ -6287,6 +6289,14 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Bolaji Oki": [
+    { opponent: "Manoel Sousa", odds: 235 },
+    { opponent: "Mason Jones", odds: 120 },
+    { opponent: "Michael Aswell", odds: -600 },
+    { opponent: "Chris Duncan", odds: -170 },
+    { opponent: "Timothy Cuamba", odds: -185 },
+    { opponent: "Dylan Salvador", odds: 150 }
+  ],
   "SuYoung You": [
     { opponent: "Elijah Smith", odds: 220 },
     { opponent: "Xiao Long", odds: -135 },
@@ -13647,6 +13657,22 @@
 };
 
 const FIGHT_HISTORY = {
+  "Bolaji Oki": [
+    { date: "Mar 14, 2026", opponent: "Manoel Sousa", result: "L", method: "KO (Punch)", round: 3, time: "4:12", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Sep 6, 2025", opponent: "Mason Jones", result: "L", method: "TKO (Elbows)", round: 2, time: "3:18", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
+    { date: "May 31, 2025", opponent: "Michael Aswell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Blanchfield vs. Barber", org: "UFC" },
+    { date: "Sep 28, 2024", opponent: "Chris Duncan", result: "L", method: "Technical Submission (Guillotine choke)", round: 1, time: "3:34", event: "UFC Fight Night: Moicano vs. Saint Denis", org: "UFC" },
+    { date: "Feb 10, 2024", opponent: "Timothy Cuamba", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
+    { date: "Aug 29, 2023", opponent: "Dylan Salvador", result: "W", method: "TKO (Punch to the body)", round: 1, time: "2:46", event: "Dana White's Contender Series 7 Week 4", org: "UFC" },
+    { date: "Mar 5, 2023", opponent: "Jocimar Ferreira", result: "W", method: "TKO (Knee to the body)", round: 1, time: "2:16", event: "AFC 3", org: "AFC" },
+    { date: "Oct 23, 2022", opponent: "Nair Melikyan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AFC 2", org: "AFC" },
+    { date: "Sep 18, 2022", opponent: "Assis Silva", result: "W", method: "TKO (Punches)", round: 1, time: "1:43", event: "AFC 1", org: "AFC" },
+    { date: "Oct 10, 2021", opponent: "Tudor Dermenji", result: "W", method: "TKO (Punches and knees)", round: 2, time: "4:12", event: "LFL 3", org: "LFL" },
+    { date: "Jul 25, 2021", opponent: "Hyram Rodriguez", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:38", event: "LFL 2", org: "LFL" },
+    { date: "Feb 2, 2019", opponent: "Fayad Djoumoi", result: "W", method: "TKO (Punches)", round: 3, time: "4:20", event: "European Beatdown 5", org: "EBD" },
+    { date: "Oct 13, 2018", opponent: "Jordan Beljic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "European Beatdown 4", org: "EBD" },
+    { date: "Mar 17, 2018", opponent: "Sebastien Di Franco", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "European Beatdown 3", org: "EBD" }
+  ],
   "SuYoung You": [
     { date: "Mar 14, 2026", opponent: "Elijah Smith", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:04", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Xiao Long", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
@@ -30559,6 +30585,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Bolaji Oki": [
+    { icon: "🏆", title: "Two-time Atomic FC Lightweight Champion (Belgium)", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2023 (Season 7; first-round TKO of Dylan Salvador)", detail: null },
+  ],
   "Manoel Sousa": [
     { icon: "🏆", title: "Standout Fighting Tournament (SFT) Lightweight Champion", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; TKO of Cristian Perez)", detail: null },
