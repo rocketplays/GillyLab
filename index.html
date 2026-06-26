@@ -3758,6 +3758,7 @@
  { name: "Vlasto Cepo", division: "MW", rank: "NR", record: "14-3-0", initials: "VCE", country: "Serbia" },
  { name: "Gilbert Urbina", division: "MW", rank: "NR", record: "7-4-0", initials: "GU", country: "USA" },
  { name: "Mantas Kondratavicius", division: "MW", rank: "NR", record: "9-1-0", initials: "MKO", country: "Lithuania" },
+ { name: "Yousri Belgaroui", division: "MW", rank: "NR", record: "10-3-0", initials: "YBE", country: "Netherlands" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -4263,6 +4264,7 @@
  // ── Middleweight (more) ──
  "Sedriques Dumas": { ht:"6'2\"", dob:"1995-08-06", reach:'79"', stance:"Orthodox", slpm:2.00, tdAcc:"31%", subAvg:0.6, strDef:"55%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.34 },
  "Mantas Kondratavicius": { ht:"6'2\"", dob:"1999-07-17", reach:'75.5"', stance:"Orthodox", slpm:4.97, strAcc:"66%", sapm:1.30, strDef:"57%", kd:1.86, tdLanded:2.80, tdAcc:"60%", tdDef:"92%", subAvg:0.93, finRate:"89%", streak:4, gym:"Fighter House" },
+ "Yousri Belgaroui": { ht:"6'6\"", dob:"1992-06-29", reach:'79"', stance:"Orthodox", slpm:6.10, strAcc:"64%", sapm:2.17, strDef:"64%", kd:0.86, tdLanded:0.29, tdAcc:"100%", tdDef:"67%", subAvg:0.00, finRate:"80%", streak:5, gym:"Teixeira MMA & Fitness" },
  // ── Welterweight (more) ──
  // ── Featherweight (more) ──
  "Kurtis Campbell": { ht:"5'9\"", dob:"2002-07-29", reach:'72"', stance:"Switch", slpm:3.50, strAcc:"48%", sapm:2.63, strDef:"51%", kd:0.00, tdLanded:8.76, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"75%", streak:0, gym:"The MMA Academy" },
@@ -6295,6 +6297,15 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Yousri Belgaroui": [
+    { opponent: "Mansur Abdul-Malik", odds: 130 },
+    { opponent: "Azamat Bekoev", odds: 245 },
+    { opponent: "Taiga Iwasaki", odds: -1025 },
+    { opponent: "Marco Tulio", odds: -140 },
+    { opponent: "Mohamad Osseili", odds: -178 },
+    { opponent: "Samir Zaidi", odds: -800 },
+    { opponent: "Ahmed Sami", odds: -245 }
+  ],
   "Lerryan Douglas": [
     { opponent: "Julian Erosa", odds: -308 },
     { opponent: "Cam Teague", odds: -650 },
@@ -13802,6 +13813,21 @@
 };
 
 const FIGHT_HISTORY = {
+  "Yousri Belgaroui": [
+    { date: "Mar 28, 2026", opponent: "Mansur Abdul-Malik", result: "W", method: "TKO (Punches)", round: 3, time: "3:39", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Azamat Bekoev", result: "W", method: "TKO (Punches)", round: 3, time: "0:55", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Sep 10, 2024", opponent: "Taiga Iwasaki", result: "W", method: "TKO (Punches)", round: 3, time: "2:34", event: "Dana White's Contender Series: Season 8, Week 5", org: "DWCS" },
+    { date: "Feb 18, 2024", opponent: "Ahmed Sami", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Levels Fight League 11 (title)", org: "LFL" },
+    { date: "Oct 29, 2023", opponent: "Giorgi Kvelidze", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "Levels Fight League 10", org: "LFL" },
+    { date: "Aug 29, 2023", opponent: "Marco Tulio", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 7, Week 4", org: "DWCS" },
+    { date: "Feb 24, 2023", opponent: "Stefan Pretorius", result: "W", method: "TKO (Punches)", round: 2, time: "0:43", event: "UAE Warriors 35: Africa 4", org: "UAE Warriors" },
+    { date: "Feb 5, 2023", opponent: "Bohdan Kotlovjanov", result: "W", method: "TKO (Punches)", round: 1, time: "1:50", event: "Levels Fight League 7", org: "LFL" },
+    { date: "Jul 3, 2022", opponent: "Mohamad Osseili", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 31: Arabia 8", org: "UAE Warriors" },
+    { date: "Mar 25, 2022", opponent: "Samir Zaidi", result: "W", method: "TKO (Punches)", round: 1, time: "4:32", event: "UAE Warriors 27: Africa 2", org: "UAE Warriors" },
+    { date: "Feb 25, 2022", opponent: "Ahmed Sami", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UAE Warriors 25: Africa", org: "UAE Warriors" },
+    { date: "Mar 19, 2021", opponent: "Sallah Dekhissi", result: "W", method: "TKO (Punches)", round: 1, time: "2:44", event: "UAE Warriors 17", org: "UAE Warriors" },
+    { date: "Jan 22, 2021", opponent: "Badreddine Diani", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 16", org: "UAE Warriors" }
+  ],
   "Lerryan Douglas": [
     { date: "Mar 28, 2026", opponent: "Julian Erosa", result: "W", method: "KO (Punches)", round: 1, time: "3:33", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "Sep 9, 2025", opponent: "Cam Teague", result: "W", method: "KO (Punches)", round: 1, time: "0:36", event: "Dana White's Contender Series: Season 9, Week 5", org: "DWCS" },
@@ -30855,6 +30881,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Yousri Belgaroui": [
+    { icon: "🏆", title: "Levels Fight League Middleweight Champion", detail: null },
+    { icon: "🥊", title: "Kickboxing European & World Champion; 3× Glory Middleweight title challenger", detail: null },
+    { icon: "🥊", title: "27-13 professional kickboxing record (faced Alex Pereira ×3, Israel Adesanya ×2)", detail: null },
+  ],
   "Julian Erosa": [
     { icon: "🏆", title: "CageSport Featherweight & Lightweight Champion", detail: null },
     { icon: "🏆", title: "Prime Fighting Featherweight Champion", detail: null },
