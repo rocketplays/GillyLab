@@ -540,8 +540,8 @@
     .gl-res-tag {
       display: inline-block; flex-shrink: 0;
       font-family: 'Barlow Condensed', sans-serif; font-weight: 800;
-      font-size: 0.62rem; letter-spacing: 0.06em;
-      padding: 0.05rem 0.32rem; border-radius: 4px; line-height: 1.4;
+      font-size: 0.6rem; letter-spacing: 0.06em;
+      padding: 0.03rem 0.3rem; border-radius: 4px; line-height: 1.15;
     }
     .gl-result-method {
       font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
@@ -34338,7 +34338,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fighter-cell" onclick="openFighter(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')" style="cursor:pointer;">' +
             ava(f.photo1, f.ini1, f.f1) +
             '<div style="min-width:0;flex:1;">' +
-              '<div class="fighter-rank">' + f.r1 + '</div>' +
+              (f.completed ? '' : '<div class="fighter-rank">' + f.r1 + '</div>') +
               (f.completed
                 ? '<div class="fighter-name gl-name-wrap"><span class="gl-name-txt">' + f.f1 + '</span>' + glResultTag(f, 1) + '</div>'
                 : '<div class="fighter-name">' + f.f1 + '</div>') +
@@ -34358,7 +34358,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
-              '<div class="fighter-rank">' + f.r2 + '</div>' +
+              (f.completed ? '' : '<div class="fighter-rank">' + f.r2 + '</div>') +
               (f.completed
                 ? '<div class="fighter-name gl-name-wrap right"><span class="gl-name-txt">' + f.f2 + '</span>' + glResultTag(f, 2) + '</div>'
                 : '<div class="fighter-name">' + f.f2 + '</div>') +
