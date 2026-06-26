@@ -3411,7 +3411,7 @@
  { name: "Rodolfo Bellato", division: "LHW", rank: "NR", record: "13-3-1", initials: "RBE", country: "Brazil" },
  { name: "Uran Satybaldiev", division: "LHW", rank: "NR", record: "9-1-0", initials: "USA2", country: "Kyrgyzstan" },
  { name: "Abdulrakhman Yakhyaev", division: "LHW", rank: "NR", record: "9-0-0", initials: "ARY", country: "Turkey" },
- { name: "Luke Fernandez", division: "LHW", rank: "NR", record: "7-0-0", initials: "LFE", country: "Australia" },
+ { name: "Luke Fernandez", division: "LHW", rank: "NR", record: "6-1-0", initials: "LFE", country: "USA" },
  { name: "Levi Rodrigues", division: "LHW", rank: "NR", record: "7-0-0", initials: "LRO", country: "Brazil" },
  { name: "Rafael Tobias", division: "LHW", rank: "NR", record: "14-2-0", initials: "RTO", country: "Brazil" },
  { name: "Diyar Nurgozhay", division: "LHW", rank: "NR", record: "11-2-0", initials: "DNR", country: "Kazakhstan" },
@@ -4585,7 +4585,7 @@
  "Austen Lane": { ht:"6'6\"", dob:"1987-11-09", reach:'80"', stance:"Orthodox", slpm:2.74, tdAcc:"28%", subAvg:0.0, strDef:"40%", kd:0.2, tdDef:"33%", finRate:"62%", streak:0, tdLanded:1.52, gym:"Bulldog Boxing, 10th Planet Jacksonville" },
  "Tuco Tokkos": { ht:"6'4\"", dob:"1990-06-30", reach:'76"', stance:"Orthodox", slpm:2.12, tdAcc:"47%", subAvg:0.5, strDef:"46%", kd:0.2, tdDef:"33%", finRate:"64%", streak:0, tdLanded:4.21, gym:"Kill Cliff FC" },
  "Kevin Christian": { ht:"6'7\"", dob:"1995-01-21", reach:'80"', stance:"Orthodox", slpm:1.64, tdAcc:"0%", subAvg:2.5, strDef:"44%", kd:0.1, tdDef:"50%", finRate:"78%", streak:0, tdLanded:0.00 },
- "Luke Fernandez": { ht:"6'1\"", dob:"1995-06-29", reach:'76"', stance:"Orthodox", slpm:32.00,tdAcc:"0%", subAvg:0.0, strDef:"100%",kd:2.0, tdDef:"0%", finRate:"83%", streak:0, tdLanded:0.00 },
+ "Luke Fernandez": { ht:"6'1\"", dob:"1995-06-29", reach:'76"', stance:"Orthodox", slpm:8.14, strAcc:"59%", sapm:10.17, strDef:"36%", kd:5.08, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"83%", streak:0, gym:"Dante Rivera BJJ" },
 
  // Heavyweight
  "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:3.75, tdAcc:"33%", subAvg:0.0, strDef:"22%", kd:0.3, tdDef:"0%", finRate:"60%", streak:0, tdLanded:4.69 },
@@ -13460,6 +13460,12 @@
   "Lucas Almeida": [
   ],
   "Luke Fernandez": [
+    { opponent: "Rodolfo Bellato", odds: -235 },
+    { opponent: "Rafael Pergentino", odds: -1000 },
+    { opponent: "Gregg Ellis", odds: -1600 },
+    { opponent: "Peter New", odds: -1000 },
+    { opponent: "Jesse Romans", odds: -675 },
+    { opponent: "Derik Overstreet", odds: -275 }
   ],
   "Marcio Barbosa": [
   ],
@@ -29963,7 +29969,13 @@ const FIGHT_HISTORY = {
 
 
   "Luke Fernandez": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
+    { date: "Mar 7, 2026", opponent: "Rodolfo Bellato", result: "L", method: "TKO (Punches)", round: 1, time: "2:42", event: "UFC 326", org: "UFC" },
+    { date: "Oct 7, 2025", opponent: "Rafael Pergentino", result: "W", method: "KO", round: 1, time: "0:15", event: "Dana White's Contender Series: Season 9, Week 9", org: "DWCS" },
+    { date: "May 24, 2025", opponent: "Christian Edwards", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "CFFC 142" },
+    { date: "Dec 13, 2024", opponent: "Gregg Ellis", result: "W", method: "TKO", round: 1, time: "4:49", event: "CFFC 138" },
+    { date: "Dec 15, 2023", opponent: "Peter New", result: "W", method: "TKO", round: 2, time: "2:42", event: "CFFC 128" },
+    { date: "Jun 16, 2023", opponent: "Jesse Romans", result: "W", method: "TKO", round: 1, time: "2:02", event: "CFFC 120" },
+    { date: "Mar 31, 2023", opponent: "Derik Overstreet", result: "W", method: "TKO", round: 1, time: "3:54", event: "CFFC 117" }
   ],
   "Marcio Barbosa": [
     { date: "Jan 27, 2023", opponent: "Itso Babulaidze", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Challenger Series 9", org: "PFL" },
@@ -30412,6 +30424,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Luke Fernandez": [
+    { icon: "🏆", title: "CFFC Light Heavyweight Champion (2 title defenses)", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; 15-second KO of Rafael Pergentino)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu (under Dante Rivera)", detail: null },
+    { icon: "🤼", title: "NCAA Division III college wrestler (Elizabethtown College)", detail: null },
+  ],
   "Rodolfo Bellato": [
     { icon: "🏆", title: "LFA Light Heavyweight Champion", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series contract winner — 2023 (Season 7; TKO of Murtaza Talha)", detail: null },
