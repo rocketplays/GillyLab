@@ -3473,7 +3473,7 @@
  { name: "Natan Levy", division: "BW", rank: "NR", record: "13-2-0", initials: "NLE", country: "Israel" },
  { name: "Marcus McGhee", division: "BW", rank: "#15", record: "11-2-0", initials: "MMG2", country: "USA" },
  { name: "Victor Henry", division: "BW", rank: "NR", record: "25-7-1", initials: "VHE", country: "USA" },
- { name: "Luan Lacerda", division: "BW", rank: "NR", record: "16-3-0", initials: "LLA", country: "Brazil" },
+ { name: "Luan Lacerda", division: "BW", rank: "NR", record: "13-4-0", initials: "LLA", country: "Brazil" },
  { name: "Hecher Sosa", division: "BW", rank: "NR", record: "15-1-0", initials: "HSO", country: "Spain" },
  { name: "John Castaneda", division: "BW", rank: "NR", record: "21-8-1", initials: "JCA4", country: "USA" },
  { name: "Mark Vologdin", division: "BW", rank: "NR", record: "12-4-2", initials: "MVL", country: "Russia" },
@@ -4560,7 +4560,7 @@
  "Luis Gurule": { ht:"5'5\"", dob:"1993-11-16", reach:'64"', stance:"Orthodox", slpm:4.93, tdAcc:"16%", subAvg:0.0, strDef:"61%", kd:0.3, tdDef:"56%", finRate:"78%", streak:0, tdLanded:0.41 },
  // Bantamweight
  "Jean Matsumoto": { ht:"5'6\"", dob:"1999-09-09", reach:'68.5"', stance:"Orthodox", slpm:5.37, strAcc:"40%", sapm:5.41, strDef:"48%", kd:0.00, tdAcc:"49%", tdDef:"56%", subAvg:0.53, finRate:"53%", streak:0, tdLanded:3.00, gym:"Inside MMA" },
- "Luan Lacerda": { ht:"5'7\"", dob:"1993-01-07", reach:'71"', stance:"Orthodox", slpm:4.02, tdAcc:"41%", subAvg:0.9, strDef:"46%", kd:0.2, tdDef:"66%", finRate:"62%", streak:0, tdLanded:2.29 },
+ "Luan Lacerda": { ht:"5'7\"", dob:"1993-01-07", reach:'71"', stance:"Orthodox", slpm:4.06, strAcc:"43%", sapm:6.15, strDef:"49%", kd:0.00, tdLanded:2.82, tdAcc:"39%", tdDef:"67%", subAvg:0.63, finRate:"85%", streak:0, gym:"Nova União" },
  "Juan Diaz": { ht:"5'8\"", dob:"1998-06-03", reach:'69"', stance:"Orthodox", slpm:5.82, tdAcc:"33%", subAvg:0.0, strDef:"60%", kd:0.4, tdDef:"0%", finRate:"69%", streak:0, tdLanded:3.01 },
  "Elijah Smith": { ht:"5'9\"", dob:"2002-09-05", reach:'71"', stance:"Orthodox", slpm:4.18, strAcc:"48%", sapm:2.96, strDef:"47%", kd:0.37, tdLanded:2.98, tdAcc:"53%", tdDef:"53%", subAvg:1.12, finRate:"70%", streak:8, gym:"Factory X" },
  "Ethyn Ewing": { ht:'5\'7"', dob:"1998-02-16", reach:'69"', stance:"Orthodox", slpm:7.44, strAcc:"55%", sapm:4.53, strDef:"63%", kd:0.56, tdLanded:1.68, tdAcc:"60%", tdDef:"100%", subAvg:0.00, finRate:"80%", streak:10, gym:"The Den Training Center" },
@@ -13500,8 +13500,10 @@
     { opponent: "Marc Diakiese", odds: -175 }
   ],
   "Luan Lacerda": [
-    { opponent: "Hecher Sosa", odds: 250 },
-    { opponent: "Louis Lee Scott", odds: -400 }
+    { opponent: "Hecher Sosa", odds: 175 },
+    { opponent: "Saimon Oliveira", odds: -370 },
+    { opponent: "Da'Mon Blackshear", odds: -145 },
+    { opponent: "Cody Stamann", odds: 275 }
   ],
   "Louis Lee Scott": [
     { opponent: "Luan Lacerda", odds: 350 }
@@ -29926,14 +29928,23 @@ const FIGHT_HISTORY = {
     { date: "Aug 5, 2018", opponent: "Jadson Oliveira", result: "W", method: "KO (Punches)", round: 1, time: "1:06", event: "Shooto Brazil 86 (debut)" }
   ],
   "Luan Lacerda": [
-    { date: "Mar 14, 2026", opponent: "Hecher Sosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos" },
-    { date: "Oct 18, 2025", opponent: "Louis Lee Scott", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:14", event: "UFC Fight Night: de Ridder vs. Allen (debut)" },
-    { date: "Jun 14, 2025", opponent: "Bruno Costa", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:44", event: "DWCS Season 9 Week 1 (contract)" },
-    { date: "Jun 10, 2023", opponent: "Claudio Ribeiro", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:49", event: "Shooto Brazil 114" },
-    { date: "Nov 26, 2022", opponent: "Eduardo Lima", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:14", event: "Shooto Brazil 109" },
-    { date: "Aug 20, 2022", opponent: "Marcio Henrique", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:14", event: "Shooto Brazil 107" },
-    { date: "Jun 11, 2022", opponent: "Thiago Mota", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:44", event: "Shooto Brazil 105" },
-    { date: "Mar 5, 2022", opponent: "Almir Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:55", event: "Shooto Brazil 103 (debut)" }
+    { date: "Mar 14, 2026", opponent: "Hecher Sosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Saimon Oliveira", result: "W", method: "Submission (Armbar)", round: 2, time: "3:55", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Jun 3, 2023", opponent: "Da'Mon Blackshear", result: "L", method: "TKO (Punches)", round: 2, time: "3:54", event: "UFC on ESPN: Kara-France vs. Albazi", org: "UFC" },
+    { date: "Jan 21, 2023", opponent: "Cody Stamann", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 283", org: "UFC" },
+    { date: "May 13, 2022", opponent: "Marcirley Alves", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:24", event: "LFA 132", org: "LFA" },
+    { date: "Jul 16, 2021", opponent: "Tayron Pedro", result: "W", method: "Submission (Heel hook)", round: 2, time: "1:06", event: "LFA 111", org: "LFA" },
+    { date: "Oct 25, 2020", opponent: "Wellington Lopes", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:30", event: "Shooto Brazil 102", org: "Shooto" },
+    { date: "Sep 28, 2018", opponent: "Carlos Alexandre", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:38", event: "Shooto Brazil 88", org: "Shooto" },
+    { date: "Sep 24, 2017", opponent: "Gaston Manzur", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "1:26", event: "Shooto Brazil 75", org: "Shooto" },
+    { date: "May 12, 2017", opponent: "Antonio Henrique Santos de Miranda", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "0:40", event: "Shooto Brazil 72", org: "Shooto" },
+    { date: "Dec 18, 2016", opponent: "Edilson Teixeira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 68", org: "Shooto" },
+    { date: "Jul 31, 2016", opponent: "Pedro Paulo Rocha", result: "W", method: "Submission (Triangle choke)", round: 2, time: "4:05", event: "Shooto Brazil 65", org: "Shooto" },
+    { date: "Oct 3, 2015", opponent: "Raulian Paiva", result: "W", method: "Submission (Anaconda choke)", round: 3, time: "3:50", event: "EFC 15", org: "EFC" },
+    { date: "May 9, 2015", opponent: "Rogerio Furtado", result: "W", method: "Submission (Armbar)", round: 3, time: "1:45", event: "NEC 17", org: "NEC" },
+    { date: "Aug 10, 2014", opponent: "Ary Farias", result: "L", method: "Submission (Kneebar)", round: 1, time: "2:48", event: "Nitrix Champion Fight 22", org: "NCF" },
+    { date: "Jun 15, 2012", opponent: "Guido Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Jungle Fight 40", org: "Jungle Fight" },
+    { date: "Mar 9, 2012", opponent: "Adauto Silva dos Santos", result: "W", method: "Submission (Armbar)", round: 2, time: "1:49", event: "Amazon Fight 14" }
   ],
   "Louis Lee Scott": [
     { date: "Oct 18, 2025", opponent: "Luan Lacerda", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:14", event: "UFC Fight Night: de Ridder vs. Allen (debut)" },
@@ -30636,6 +30647,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Luan Lacerda": [
+    { icon: "🏆", title: "Shooto Brazil Bantamweight Champion", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu (Nova União, under André Pederneiras)", detail: null },
+  ],
   "Hecher Sosa": [
     { icon: "🏆", title: "WOW FC Bantamweight Champion", detail: null },
     { icon: "🏆", title: "FCR (Fight Club Rush) Bantamweight Champion", detail: null },
