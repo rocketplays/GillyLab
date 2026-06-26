@@ -33711,8 +33711,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  }
  function openSearch() {
  document.getElementById('searchOverlay').classList.add('active');
- document.getElementById('searchInput').focus();
- filterSearch('');
+ const input = document.getElementById('searchInput');
+ input.focus();
+ filterSearch(input.value);
  }
  function closeSearch() {
  document.getElementById('searchOverlay').classList.remove('active');
