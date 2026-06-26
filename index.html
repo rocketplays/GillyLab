@@ -3490,7 +3490,7 @@
  { name: "Namsrai Batbayar", division: "FLW", rank: "NR", record: "10-1-0", initials: "NBA", country: "Mongolia" },
  // ─── WOMEN'S STRAWWEIGHT (extended) ───
  { name: "Luana Pinheiro", division: "WSW", rank: "NR", record: "13-5-0", initials: "LPN", country: "Brazil" },
- { name: "Shanelle Dyer", division: "WSW", rank: "NR", record: "6-1-0", initials: "SDY", country: "USA" },
+ { name: "Shanelle Dyer", division: "WSW", rank: "NR", record: "7-1-0", initials: "SDY", country: "England" },
  // ─── WOMEN'S FLYWEIGHT (extended) ───
  // ─── WOMEN'S BANTAMWEIGHT (extended) ───
  { name: "Nora Cornolle", division: "WBW", rank: "#13", record: "9-4-0", initials: "NCL", country: "France" },
@@ -4504,7 +4504,7 @@
  // ── Heavyweight (more) ──
  "Josh Parisian": { ht:"6'4\"", dob:"1989-06-28", reach:'79"', stance:"Orthodox", slpm:4.55, tdAcc:"29%", subAvg:0.4, strDef:"41%", kd:0.4, tdDef:"62%", finRate:"60%", streak:0, tdLanded:0.98, gym:"Scorpion Fighting System" },
  // ── Women's Strawweight (more) ──
- "Shanelle Dyer": { ht:"5'6\"", dob:"2001-04-23", reach:'65"', stance:"Orthodox", slpm:7.67, tdAcc:"8%", subAvg:0.0, strDef:"44%", kd:0.5, tdDef:"0%", finRate:"71%", streak:0, tdLanded:0.00 },
+ "Shanelle Dyer": { ht:"5'6\"", dob:"2001-04-23", reach:'65"', stance:"Orthodox", slpm:7.71, strAcc:"47%", sapm:6.72, strDef:"51%", kd:0.00, tdLanded:0.70, tdAcc:"8%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:1, gym:"Great Britain Top Team" },
  // ── Women's Flyweight (more) ──
  "Nicolle Caliari": { ht:"5'3\"", dob:"1996-11-04", reach:'62"', stance:"Orthodox", slpm:3.46, tdAcc:"24%", subAvg:1.0, strDef:"53%", kd:0.1, tdDef:"0%", finRate:"50%", streak:0, tdLanded:2.88 },
  // ── Women's Bantamweight (more) ──
@@ -13465,7 +13465,12 @@
     { opponent: "Tainara Lisboa", odds: 225 }
   ],
   "Shanelle Dyer": [
-    { opponent: "Ravena Oliveira", odds: -400 }
+    { opponent: "Ravena Oliveira", odds: -525 },
+    { opponent: "Carol Foro", odds: -188 },
+    { opponent: "Valentina Scatizzi", odds: -950 },
+    { opponent: "Mariam Torchinava", odds: -538 },
+    { opponent: "Liliya Kazak", odds: -649 },
+    { opponent: "Luisa Cifuentes", odds: -800 }
   ],
   "Shem Rock": [
     { opponent: "Abdul-Kareem Al-Selwady", odds: -125 },
@@ -29835,11 +29840,14 @@ const FIGHT_HISTORY = {
     { date: "Jun 22, 2022", opponent: "Viviane Pereira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 103" }
   ],
   "Shanelle Dyer": [
-    { date: "Mar 14, 2026", opponent: "Ravena Oliveira", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:59", event: "UFC Fight Night: Emmett vs. Vallejos (debut)" },
-    { date: "Oct 5, 2025", opponent: "Jaylissa Ramirez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:44", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Jun 7, 2025", opponent: "Ana Lima", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:17", event: "Submission Underground 24" },
-    { date: "Feb 22, 2025", opponent: "Jackie Cataline", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:32", event: "Ground Control 5" },
-    { date: "Nov 9, 2024", opponent: "Alexis Davis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ground Control 4" }
+    { date: "Mar 21, 2026", opponent: "Ravena Oliveira", result: "W", method: "TKO (Punches)", round: 2, time: "1:17", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Sep 9, 2025", opponent: "Carol Foro", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 9, Week 5", org: "DWCS" },
+    { date: "Sep 28, 2024", opponent: "Valentina Scatizzi", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "2024 PFL Europe Playoffs", org: "PFL Europe" },
+    { date: "Jun 8, 2024", opponent: "Mariam Torchinava", result: "W", method: "KO (Head Kick)", round: 1, time: "3:53", event: "2024 PFL Europe Regular Season: United Kingdom", org: "PFL Europe" },
+    { date: "Dec 15, 2023", opponent: "Liliya Kazak", result: "W", method: "TKO (Punches)", round: 3, time: "1:08", event: "Ares FC 18: Augen vs. Shiguemoto", org: "ARES FC" },
+    { date: "Sep 30, 2023", opponent: "Luisa Cifuentes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "2023 PFL Europe Playoffs", org: "PFL Europe" },
+    { date: "Apr 22, 2023", opponent: "Kamila Simkova", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "FCC 33: Full Contact Contender 33", org: "FCC" },
+    { date: "Mar 11, 2023", opponent: "Weronika Eszer", result: "W", method: "KO (Spinning Backfist)", round: 1, time: "4:56", event: "HMMA 7: Hexagone MMA", org: "Hexagone" }
   ],
   "Shem Rock": [
     { date: "Mar 21, 2026", opponent: "Abdul-Kareem Al-Selwady", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -30782,6 +30790,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Shanelle Dyer": [
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu (Polaris Submission of the Night)", detail: null },
+    { icon: "🥊", title: "5× Muay Thai world champion; 35 amateur Muay Thai titles & multiple European titles", detail: null },
+    { icon: "🥊", title: "Former UK No. 1 in Muay Thai; 100+ Muay Thai & K-1 bouts", detail: null },
+  ],
   "Shem Rock": [
     { icon: "🏆", title: "FCC (Full Contact Contender) Champion", detail: null },
     { icon: "🏆", title: "Clan Wars Champion", detail: null },
