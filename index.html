@@ -3497,7 +3497,7 @@
  { name: "Raul Rosas Jr.", division: "BW", rank: "#12", record: "12-1-0", initials: "RRJ", country: "Mexico" },
  { name: "Charles Jourdain", division: "BW", rank: "NR", record: "18-8-1", initials: "CHJ", country: "Canada" },
  { name: "Elijah Smith", division: "BW", rank: "NR", record: "10-1-0", initials: "ELS", country: "USA" },
- { name: "Su Young You", division: "BW", rank: "NR", record: "16-4-0", initials: "SYY", country: "South Korea" },
+ { name: "SuYoung You", division: "BW", rank: "NR", record: "16-4-0", initials: "SYY", country: "South Korea" },
  { name: "Cody Garbrandt", division: "BW", rank: "NR", record: "15-7-0", initials: "COG", country: "USA" },
  { name: "Daniel Marcos", division: "BW", rank: "NR", record: "18-1-0", initials: "DMR", country: "Peru" },
  { name: "Jean Matsumoto", division: "BW", rank: "NR", record: "17-2-0", initials: "JMT2", country: "Brazil" },
@@ -3920,7 +3920,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
- "Su Young You": { ht:"5'6\"", dob:"1995-12-11", reach:'65"', stance:"Orthodox", slpm:2.15, strAcc:"47%", sapm:2.01, strDef:"69%", kd:0.00, tdLanded:4.26, tdAcc:"38%", tdDef:"67%", subAvg:0.37, finRate:"50%", streak:0, gym:"Black Combat" },
+ "SuYoung You": { ht:"5'6\"", dob:"1995-12-11", reach:'65"', stance:"Orthodox", slpm:2.15, strAcc:"47%", sapm:2.01, strDef:"69%", kd:0.00, tdLanded:4.26, tdAcc:"38%", tdDef:"67%", subAvg:0.37, finRate:"50%", streak:0, gym:"Black Combat" },
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"41%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
  "Jose Delgado": { ht:"5'11\"", dob:"1998-04-21", reach:'73"', stance:"Switch", slpm:7.48, strAcc:"55%", sapm:4.95, strDef:"50%", kd:1.51, tdLanded:1.51, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"91%", streak:1, gym:"The MMA Lab" },
  "Levi Rodrigues Jr.": { ht:"6'0\"", dob:"1996-10-15", reach:'76.5"', stance:"Orthodox", slpm:4.50, strAcc:"79%", sapm:2.10, strDef:"22%", kd:4.50, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:5, gym:"Rasteira Fight Team" },
@@ -6274,7 +6274,7 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
-  "Su Young You": [
+  "SuYoung You": [
     { opponent: "Elijah Smith", odds: 220 },
     { opponent: "Xiao Long", odds: -135 },
     { opponent: "AJ Cunningham", odds: -540 },
@@ -12917,7 +12917,7 @@
     { opponent: "Nora Cornolle", odds: -375 },
   ],
   "Elijah Smith": [
-    { opponent: "Su Young You", odds: -270 },
+    { opponent: "SuYoung You", odds: -270 },
     { opponent: "Toshiomi Kazama", odds: -750 },
     { opponent: "Vince Morales", odds: -115 },
     { opponent: "Aaron Tau", odds: -275 },
@@ -13628,7 +13628,7 @@
 };
 
 const FIGHT_HISTORY = {
-  "Su Young You": [
+  "SuYoung You": [
     { date: "Mar 14, 2026", opponent: "Elijah Smith", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:04", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Xiao Long", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
     { date: "Mar 15, 2025", opponent: "AJ Cunningham", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
@@ -28315,7 +28315,7 @@ const FIGHT_HISTORY = {
 
 
   "Elijah Smith": [
-    { date: "Mar 14, 2026", opponent: "Su Young You", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:04", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Mar 14, 2026", opponent: "SuYoung You", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:04", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Aug 9, 2025", opponent: "Toshiomi Kazama", result: "W", method: "KO (Slam)", round: 1, time: "4:10", event: "UFC Fight Night: Dolidze vs. Hernandez", org: "UFC" },
     { date: "Feb 15, 2025", opponent: "Vince Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cannonier vs. Rodrigues", org: "UFC" },
     { date: "Sep 17, 2024", opponent: "Aaron Tau", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 8 Week 6", org: "UFC" },
@@ -30532,7 +30532,7 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
-  "Su Young You": [
+  "SuYoung You": [
     { icon: "🏆", title: "Road to UFC bantamweight tournament winner (Season 3, 2024)", detail: null },
     { icon: "🏆", title: "Champion at four promotions — Naiza, Deep, Zeus & Black Combat", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
