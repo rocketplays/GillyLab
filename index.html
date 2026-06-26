@@ -3736,6 +3736,7 @@
  { name: "Xiong Jingnan", division: "WSW", rank: "NR", record: "20-3-0", initials: "XJN", country: "China" },
  { name: "Sofia Montenegro", division: "WFLW", rank: "NR", record: "6-2-0", initials: "SMN", country: "Nicaragua" },
  { name: "Alexia Thainara", division: "WSW", rank: "#14", record: "14-1-0", initials: "ATH", country: "Brazil" },
+ { name: "Bruna Brasil", division: "WSW", rank: "NR", record: "11-7-1", initials: "BBR", country: "Brazil" },
  // Women's Flyweight
  { name: "Gabriella Fernandes", division: "WFLW", rank: "#15", record: "11-4-0", initials: "GFN", country: "Brazil" },
  // Women's Bantamweight
@@ -4472,6 +4473,7 @@
  // ── Middleweight (more) ──
  // ── Light Heavyweight (more) ──
  "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-08-09", reach:'81"', stance:"Orthodox", slpm:3.06, strAcc:"43%", sapm:4.00, strDef:"53%", kd:0.60, tdLanded:0.90, tdAcc:"43%", tdDef:"18%", subAvg:0.60, finRate:"94%", streak:0, gym:"Brazilian TKO" },
+ "Bruna Brasil": { ht:"5'6\"", dob:"1993-09-07", reach:'65.5"', stance:"Orthodox", slpm:2.56, strAcc:"57%", sapm:3.75, strDef:"52%", kd:0.12, tdLanded:1.23, tdAcc:"53%", tdDef:"57%", subAvg:0.12, finRate:"45%", streak:0, gym:"Fighting Nerds" },
  "Bruno Lopes": { ht:"6'2\"", dob:"1993-04-24", reach:'74.5"', stance:"Orthodox", slpm:2.88, strAcc:"43%", sapm:4.21, strDef:"54%", kd:0.00, tdLanded:1.93, tdAcc:"22%", tdDef:"100%", subAvg:0.00, finRate:"79%", streak:0, gym:"China Team" },
  "Julius Walker": { ht:"6'4\"", dob:"1999-07-16", reach:'78"', stance:"Orthodox", slpm:3.73, sapm:4.03, strAcc:"54%", tdAcc:"38%", subAvg:0.0, strDef:"43%", kd:0.41, tdDef:"100%", finRate:"86%", streak:0, tdLanded:4.09, gym:"Team Fusion" },
  "Zhang Mingyang": { ht:"6'2\"", dob:"1998-08-16", reach:'75"', stance:"Orthodox", slpm:7.44, tdAcc:"28%", subAvg:0.3, strDef:"42%", kd:0.7, tdDef:"67%", finRate:"79%", streak:0, tdLanded:0.97, gym:"Xtreme Couture Mixed Martial Arts" },
@@ -12419,6 +12421,18 @@
   "Jakub Wiklacz": [
     { opponent: "Muin Gafurov", odds: -350 },
     { opponent: "Patchy Mix", odds: -165 }
+  ],
+  "Bruna Brasil": [
+    { opponent: "Alexia Thainara", odds: 380 },
+    { opponent: "Ketlen Souza", odds: 125 },
+    { opponent: "Shi Ming", odds: -400 },
+    { opponent: "Wang Cong", odds: 275 },
+    { opponent: "Molly McCann", odds: 265 },
+    { opponent: "Loma Lookboonmee", odds: 240 },
+    { opponent: "Shauna Bannon", odds: -147 },
+    { opponent: "Denise Gomes", odds: -153 },
+    { opponent: "Marnic Mann", odds: -158 },
+    { opponent: "Yasmin Castanho", odds: 318 }
   ],
   "Bruno Lopes": [
     { opponent: "Navajo Stirling", odds: 360 },
@@ -26857,6 +26871,27 @@ const FIGHT_HISTORY = {
     { date: "Jul 1, 2017", opponent: "Sebastian Przybysz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACB 63" },
     { date: "Sep 23, 2017", opponent: "Blazej Majdan", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:03", event: "Spartan Fight 8" }
   ],
+  "Bruna Brasil": [
+    { date: "Mar 28, 2026", opponent: "Alexia Thainara", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
+    { date: "Feb 7, 2026", opponent: "Ketlen Souza", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
+    { date: "Aug 22, 2025", opponent: "Shi Ming", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC: Season 4 Semifinals", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Wang Cong", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
+    { date: "Jul 27, 2024", opponent: "Molly McCann", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 304", org: "UFC" },
+    { date: "Feb 10, 2024", opponent: "Loma Lookboonmee", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
+    { date: "Jul 22, 2023", opponent: "Shauna Bannon", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Aspinall vs. Tybura", org: "UFC" },
+    { date: "Apr 15, 2023", opponent: "Denise Gomes", result: "L", method: "TKO (Punches)", round: 2, time: "2:42", event: "UFC Fight Night: Holloway vs. Allen (UFC debut)", org: "UFC" },
+    { date: "Sep 13, 2022", opponent: "Marnic Mann", result: "W", method: "KO (Head Kick)", round: 2, time: "4:33", event: "Dana White's Contender Series 6.8 (contract)", org: "UFC" },
+    { date: "May 13, 2022", opponent: "Yasmin Castanho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 132", org: "LFA" },
+    { date: "Aug 21, 2021", opponent: "Ingrid Silva", result: "W", method: "KO (Knees and Punches)", round: 1, time: "0:26", event: "Brazilian Fighting Series 2" },
+    { date: "Nov 13, 2020", opponent: "Geisa Veloso", result: "W", method: "Submission (Guillotine)", round: 2, time: "1:50", event: "Shooto Brazil 104" },
+    { date: "Mar 1, 2020", opponent: "Aline Sattelmayer", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil: Grand Prix" },
+    { date: "Nov 8, 2019", opponent: "Alexia Thainara", result: "W", method: "Submission (Guillotine)", round: 3, time: "0:33", event: "Thunder Fight 20" },
+    { date: "Sep 28, 2019", opponent: "Jaqueline Jaensch", result: "W", method: "TKO (Punches)", round: 3, time: "3:10", event: "Curitiba Top Fight 12" },
+    { date: "Nov 18, 2017", opponent: "Jessica Delboni", result: "L", method: "TKO", round: 2, time: "4:12", event: "MMC 5: MMA Maringá Combat" },
+    { date: "May 13, 2017", opponent: "Aline Pires", result: "W", method: "Decision", round: 3, time: "5:00", event: "Panama Regional" },
+    { date: "Mar 11, 2017", opponent: "Pamela Mara", result: "D", method: "Draw", round: 3, time: "5:00", event: "Panama Regional" },
+    { date: "Nov 8, 2014", opponent: "Ariane Carnelossi", result: "L", method: "TKO (Punches)", round: 1, time: "4:00", event: "Show Combat MMA 2" }
+  ],
   "Bruno Lopes": [
     { date: "Mar 28, 2026", opponent: "Navajo Stirling", result: "L", method: "TKO (Punches)", round: 2, time: "4:05", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "May 31, 2025", opponent: "Dustin Jacoby", result: "L", method: "KO (Punches)", round: 1, time: "1:50", event: "UFC Fight Night: Blanchfield vs. Barber", org: "UFC" },
@@ -31455,6 +31490,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Open FC (Open Fighting Championship) Light Heavyweight Championship — 1 reign (won Jul 3, 2022 vs. Vladimir Seliverstov, OFC 20, Split Decision)", detail: null },
     { icon: "🥇", title: "Asian Judo Champion (per UFC Q&A — listed as grappling discipline accolade; no BJJ rank on record)", detail: null },
     { icon: "🥋", title: "Kyrgyz National Champion — Judo & Sambo (per UFC Q&A)", detail: null },
+  ],
+  "Bruna Brasil": [
+    { icon: "🏆", title: "Brazilian Kickboxing Champion (professional); multiple-time amateur kickboxing champion — State, South American & World titles", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — DWCS Season 6, Week 8 (Sep 13, 2022), head-kick KO of Marnic Mann (R2)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Brown Belt — Brazilian BJJ champion as a purple belt (per UFC Q&A)", detail: null },
+    { icon: "🥊", title: "Kickboxing Black Belt (per UFC Q&A)", detail: null },
   ],
   "Bruno Lopes": [
     { icon: "🏆", title: "LFA Light Heavyweight Championship — 1 reign (won Sep 30, 2022 vs. Willyanedson Paiva, LFA 143, TKO R2; defended Jan 27, 2024 vs. Marcos Brigagão, LFA 175, Arm-Triangle Submission R2)", detail: null },
