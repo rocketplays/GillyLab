@@ -3788,6 +3788,7 @@
  { name: "Lance Gibson Jr.", division: "LW", rank: "NR", record: "10-2-0", initials: "LGJ", country: "Canada" },
  { name: "Darrius Flowers", division: "LW", rank: "NR", record: "13-8-1", initials: "DFL", country: "USA" },
  { name: "Lando Vannata", division: "LW", rank: "NR", record: "12-8-2", initials: "LVA", country: "USA" },
+ { name: "Dakota Hope", division: "LW", rank: "NR", record: "11-2-0", initials: "DHO", country: "USA" },
  { name: "Patchy Mix", division: "BW", rank: "NR", record: "20-4-0", initials: "PM", country: "USA" },
  { name: "JooSang Yoo", division: "BW", rank: "NR", record: "12-4-0", initials: "JY", country: "South Korea" },
  { name: "Juan Martinetti", division: "BW", rank: "NR", record: "8-0-0", initials: "JMa", country: "Argentina" },
@@ -4720,6 +4721,7 @@
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
   "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
+  "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
   "Marc Diakiese": { ht:"5'10\"", dob:"1993-03-16", reach:'73"', stance:"Orthodox", slpm:2.54, tdAcc:"40%", subAvg:0.3, strDef:"52%", kd:0.1, tdDef:"57%", finRate:"53%", streak:0, tdLanded:0.82, gym:"London Shootfighters Scramble Academy Leeds" },
 
   "Marcus Buchecha": { ht:"6'2\"", dob:"1990-01-08", reach:'77"', stance:"Orthodox", slpm:1.7, tdAcc:"49%", subAvg:0.0, strDef:"51%", kd:0.0, tdDef:"16%", finRate:"60%", streak:0, tdLanded:2.0, gym:"American Kickboxing Academy (2014–present)" },
@@ -12898,6 +12900,12 @@
     { opponent: "Victoria Leonardo", odds: -1050 },
     { opponent: "Tereza Bledá", odds: 135 },
     { opponent: "Jasmine Jasudavicius", odds: 210 }
+  ],
+  "Dakota Hope": [
+    { opponent: "Kai Kamaka III", odds: 132 },
+    { opponent: "Mauricio Gomez", odds: -338 },
+    { opponent: "Damion Nelson", odds: 205 },
+    { opponent: "Jeremy Henry", odds: -250 }
   ],
   "Azamat Bekoev": [
     { opponent: "Tresean Gore", odds: -725 },
@@ -28167,6 +28175,21 @@ const FIGHT_HISTORY = {
 
 
 
+  "Dakota Hope": [
+    { date: "Apr 4, 2026", opponent: "Kai Kamaka III", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan (UFC debut)", org: "UFC" },
+    { date: "Feb 20, 2026", opponent: "Mauricio Gomez", result: "W", method: "TKO (Punches)", round: 1, time: "1:59", event: "Fury FC 116" },
+    { date: "Nov 21, 2025", opponent: "Damion Nelson", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Fury Challenger Series 15" },
+    { date: "Jun 13, 2025", opponent: "Jeremy Henry", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 210" },
+    { date: "Nov 2, 2024", opponent: "Yongqiang Liu", result: "W", method: "TKO (Elbows)", round: 1, time: "1:37", event: "JCK Fight Night 94" },
+    { date: "Oct 1, 2022", opponent: "Milko Tucto", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Peak Fighting Texas (title)" },
+    { date: "Jan 28, 2022", opponent: "David Bosnick", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "AKA 19 (title)" },
+    { date: "Apr 10, 2021", opponent: "Patrick Connors", result: "W", method: "Submission (Rear-Naked Choke)", round: 5, time: "3:25", event: "Peak Fighting 10 (title)" },
+    { date: "Jan 30, 2021", opponent: "Colton Hamm", result: "W", method: "TKO (Punches)", round: 1, time: "0:15", event: "Peak Fighting 7 (title)" },
+    { date: "Nov 15, 2019", opponent: "Akenbieke Ayijiake", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 40" },
+    { date: "Aug 24, 2019", opponent: "Shaoxiang Wang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Yunfeng Showdown" },
+    { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
+    { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
+  ],
   "Azamat Bekoev": [
     { date: "Apr 4, 2026", opponent: "Tresean Gore", result: "L", method: "Submission (Guillotine Choke)", round: 3, time: "3:27", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
     { date: "Oct 18, 2025", opponent: "Yousri Belgaroui", result: "L", method: "TKO (Punches)", round: 3, time: "0:55", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
@@ -34326,6 +34349,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Lights Out Championship Light Heavyweight Champion", detail: null },
     { icon: "🤼", title: "2× NCAA Division II Wrestling National Qualifier", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Dakota Hope": [
+    { icon: "🏆", title: "Regional MMA champion — won a pro title in January 2021 (Peak Fighting) and defended it twice", detail: null },
+    { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
+    { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
   ],
   "Azamat Bekoev": [
     { icon: "🏆", title: "2× LFA Middleweight Champion — won the title at LFA 160 (Jun 16, 2023 vs. Dylan Budka) and defended it twice (LFA 173, LFA 186)", detail: null },
