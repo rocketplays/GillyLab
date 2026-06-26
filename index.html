@@ -36206,6 +36206,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // "Abdulrakhman Yakhyaev").
   const SLUG_ALIASES = {
     'abdul-rakhman-yakhyaev': 'Abdulrakhman Yakhyaev',
+    // Flyweight "Bulldog" — the API slugs him 'bruno-silva' while our DB uses
+    // his full name. (The middleweight "Blindado" is a different person and the
+    // API slugs him 'bruno-silva-blindado', so this alias can't collide.)
+    'bruno-silva': 'Bruno Gustavo da Silva',
+    // The API sometimes returns the longer slug for this featherweight.
+    'jose-miguel-delgado': 'Jose Delgado',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -36216,6 +36222,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'nursultan ruziboev': 'Nursulton Ruziboev',
     'asu almabaev': 'Asu Almabayev',
     'javier reyes rugeles': 'Javier Reyes',
+    'jose miguel delgado': 'Jose Delgado',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
