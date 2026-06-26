@@ -3371,7 +3371,7 @@
  { name: "Chase Hooper", division: "LW", rank: "NR", record: "16-5-1", initials: "CHO", country: "USA" },
  { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-3-0", initials: "MRA", country: "USA" },
  { name: "Jai Herbert", division: "LW", rank: "NR", record: "14-6-1", initials: "JHE", country: "UK" },
- { name: "Manoel Sousa", division: "LW", rank: "NR", record: "15-1-0", initials: "MNS", country: "Brazil" },
+ { name: "Manoel Sousa", division: "LW", rank: "NR", record: "14-1-0", initials: "MNS", country: "Brazil" },
  { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
  // ─── WELTERWEIGHT (extended) ───
  { name: "Shavkat Rakhmonov", division: "WW", rank: "NR", record: "19-0-0", initials: "SHR", country: "Kazakhstan" },
@@ -4649,7 +4649,7 @@
  "Imanol Rodriguez": { ht:"5'8\"", dob:"2000-01-01", reach:'70"', stance:"Orthodox", slpm:4.20, tdAcc:"35%", subAvg:0.4, strDef:"55%", kd:0.3, tdDef:"65%", finRate:"71%", streak:0, tdLanded:1.40 },
  // ── True final 9 ──
  "Carlos Leal": { ht:"5'11\"", dob:"1994-05-04", reach:'74"', stance:"Orthodox", slpm:9.57, tdAcc:"25%", subAvg:0.0, strDef:"53%", kd:0.7, tdDef:"90%", finRate:"72%", streak:0, tdLanded:0.75 },
- "Manoel Sousa": { ht:"5'9\"", dob:"1997-06-04", reach:'70"', stance:"Orthodox", slpm:3.23, tdAcc:"0%", subAvg:2.3, strDef:"55%", kd:0.2, tdDef:"62%", finRate:"85%", streak:0, tdLanded:0.00 },
+ "Manoel Sousa": { ht:"5'9\"", dob:"1997-06-04", reach:'70"', stance:"Orthodox", slpm:4.15, strAcc:"45%", sapm:3.71, strDef:"51%", kd:1.10, tdLanded:0.00, tdAcc:"0%", tdDef:"60%", subAvg:1.65, finRate:"86%", streak:3, gym:"Academia Octógono" },
  "Rafael Estevam": { ht:"5'8\"", dob:"1996-08-10", reach:'69"', stance:"Orthodox", slpm:2.10, tdAcc:"38%", subAvg:0.3, strDef:"47%", kd:0.1, tdDef:"66%", finRate:"79%", streak:0, tdLanded:6.01 },
  "Guilherme Pat": { ht:"6'6\"", dob:"1994-04-20", reach:'81"', stance:"Orthodox", slpm:4.27, tdAcc:"0%", subAvg:0.0, strDef:"61%", kd:0.4, tdDef:"0%", finRate:"83%", streak:0, tdLanded:0.00 },
  "Rafael Tobias": { ht:"6'2\"", dob:"2003-03-20", reach:'74.5"', stance:"Orthodox", slpm:2.77, strAcc:"36%", sapm:5.81, strDef:"35%", kd:0.00, tdLanded:2.40, tdAcc:"33%", tdDef:"100%", subAvg:1.60, finRate:"79%", streak:0, gym:"Chute Boxe Monstro" },
@@ -12940,7 +12940,13 @@
     { opponent: "Roger Smith", odds: -400 }
   ],
   "Manoel Sousa": [
-    { opponent: "Alonzo Menifield Jr.", odds: -400 }
+    { opponent: "Bolaji Oki", odds: -295 },
+    { opponent: "Cristian Perez", odds: -275 },
+    { opponent: "Lucas Barros Oliveira", odds: -800 },
+    { opponent: "Archie Colgan", odds: 195 },
+    { opponent: "Tim Wilde", odds: -120 },
+    { opponent: "Paulo Henrique Laia", odds: -425 },
+    { opponent: "Mauro Chaulet", odds: -1300 }
   ],
   "Francis Marshall": [
     { opponent: "Youssef Zalal", odds: 275 },
@@ -28341,13 +28347,21 @@ const FIGHT_HISTORY = {
     { date: "Aug 21, 2022", opponent: "Roger Smith", result: "W", method: "TKO (Corner stoppage)", round: 2, time: "5:00", event: "Fury FC 68", org: "Fury FC" }
   ],
   "Manoel Sousa": [
-    { date: "Mar 14, 2026", opponent: "Alonzo Menifield Jr.", result: "W", method: "KO (Punches)", round: 1, time: "0:47", event: "UFC Fight Night: Emmett vs. Vallejos (debut)" },
-    { date: "Sep 28, 2025", opponent: "Logan Storley", result: "W", method: "TKO (Punches)", round: 1, time: "1:21", event: "DWCS Season 9 Week 3 (contract)" },
-    { date: "May 10, 2025", opponent: "Carlos Feijao", result: "W", method: "KO (Punches)", round: 1, time: "0:32", event: "Shooto Brazil 115" },
-    { date: "Feb 1, 2025", opponent: "Rafael Macedo", result: "W", method: "KO (Punches)", round: 1, time: "0:28", event: "Shooto Brazil 113" },
-    { date: "Nov 2, 2024", opponent: "Fernando Costa", result: "W", method: "KO (Punches)", round: 1, time: "0:44", event: "Shooto Brazil 112" },
-    { date: "Aug 3, 2024", opponent: "Diego Alves", result: "W", method: "KO (Punches)", round: 1, time: "0:59", event: "Shooto Brazil 110" },
-    { date: "Apr 27, 2024", opponent: "David Kabangu", result: "W", method: "KO (Punches)", round: 1, time: "0:38", event: "Shooto Brazil 108" }
+    { date: "Mar 14, 2026", opponent: "Bolaji Oki", result: "W", method: "KO (Punch)", round: 3, time: "4:12", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Aug 26, 2025", opponent: "Cristian Perez", result: "W", method: "TKO (Punches)", round: 3, time: "3:00", event: "Dana White's Contender Series 9 Week 3", org: "UFC" },
+    { date: "Mar 28, 2025", opponent: "Lucas Barros Oliveira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 205", org: "LFA" },
+    { date: "Sep 14, 2024", opponent: "Archie Colgan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator Champions Series London", org: "Bellator" },
+    { date: "Mar 22, 2024", opponent: "Tim Wilde", result: "W", method: "KO (Punch)", round: 1, time: "4:48", event: "Bellator Champions Series Belfast", org: "Bellator" },
+    { date: "Feb 17, 2023", opponent: "Paulo Henrique Laia", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "PFL Challenger Series 2023 Week 4", org: "PFL" },
+    { date: "May 27, 2022", opponent: "Mauro Chaulet", result: "W", method: "TKO (Punches)", round: 2, time: "1:45", event: "CFFC 109", org: "CFFC" },
+    { date: "Jan 29, 2022", opponent: "Trevor Ollison", result: "W", method: "Submission (Kimura)", round: 1, time: "2:13", event: "CFFC 105", org: "CFFC" },
+    { date: "Jul 15, 2021", opponent: "Brendo Bispo", result: "W", method: "TKO (Punches)", round: 1, time: "4:56", event: "SFT 27", org: "SFT" },
+    { date: "Nov 14, 2020", opponent: "Estabili Amato", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:45", event: "SFT 24", org: "SFT" },
+    { date: "Feb 29, 2020", opponent: "Vandirson Alves", result: "W", method: "KO (Punches)", round: 1, time: "1:52", event: "SFT 21", org: "SFT" },
+    { date: "Nov 30, 2019", opponent: "Mauricio Ruffy", result: "W", method: "KO (Punches)", round: 2, time: "2:41", event: "SFT 18", org: "SFT" },
+    { date: "Aug 31, 2019", opponent: "Richard Martins", result: "W", method: "TKO (Punches)", round: 1, time: "3:05", event: "SFT 15", org: "SFT" },
+    { date: "Jul 6, 2019", opponent: "Miguel Hernandez", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:18", event: "SFT 13", org: "SFT" },
+    { date: "May 25, 2019", opponent: "Eduardo Silva", result: "W", method: "TKO (Elbow and punches)", round: 2, time: "2:44", event: "SFT 12", org: "SFT" }
   ],
   "Francis Marshall": [
     { date: "Jun 7, 2025", opponent: "Youssef Zalal", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 316: Dvalishvili vs. O'Malley 2" },
@@ -30545,6 +30559,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Manoel Sousa": [
+    { icon: "🏆", title: "Standout Fighting Tournament (SFT) Lightweight Champion", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; TKO of Cristian Perez)", detail: null },
+    { icon: "🥊", title: "Undefeated kickboxer (26-0); brown belt in Muay Thai", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "SuYoung You": [
     { icon: "🏆", title: "Road to UFC bantamweight tournament winner (Season 3, 2024)", detail: null },
     { icon: "🏆", title: "Champion at four promotions — Naiza, Deep, Zeus & Black Combat", detail: null },
