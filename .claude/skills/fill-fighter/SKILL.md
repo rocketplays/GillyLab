@@ -70,20 +70,25 @@ robots-blocked — don't scrape it. Do not skip verification just because Wikipe
   the known under-count bug). `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
 - `streak` = consecutive wins since last loss/draw; NCs are skipped, not breakers.
 
-**No blank fields.** Every one of the 16 keys above must be present in the entry. Do NOT
-omit a field just because the first source lacked it. A field may be left out ONLY when:
-  1. it is confirmed unavailable after checking **several** sources (ufc.com, ESPN, Sherdog,
-     Tapology, Wikipedia) — and you say so in the commit message; or
-  2. it is genuinely 0 — but a genuine 0 is still written (`kd:0.00`, `tdAcc:"0%"`), never omitted.
-- Distinguish blank from 0: the script reports a real 0 as a value and a blank as `MISSING`.
-  Never copy a blank as 0, and never drop a key because the value is 0.
+**Blank vs. 0 vs. unavailable — keep the key, pick the right value.** Every one of the 16 keys
+above must be PRESENT in the entry; never drop a key. The value depends on what the sources show:
+  1. **Genuine 0** is written as the value (`kd:0.00`, `tdAcc:"0%"`), never omitted. The script
+     reports a real 0 as a value and a blank as `MISSING` — never copy a blank as 0.
+  2. **Genuinely unavailable/blank** (confirmed missing after checking **several** sources —
+     ufc.com, ESPN, Sherdog, Tapology, Wikipedia) is written as `null` (JS null, NOT the string
+     `"null"`, NOT a guessed number). The site renders a `null` stat as a dash (`—`) via
+     `setStatCard`, which is the correct "no data" display — do NOT fabricate a value to fill it.
+     Note the dashed field in the commit message.
 - `stance` is never on ufc.com's parse — take it from [ESPN] (or Sherdog/Tapology/Wikipedia).
-- When a fighter has landed 0 takedowns, `tdAcc` is `"0%"` — but confirm it's a real 0 via
-  the ESPN per-fight line `(VERIFIED per-fight 0/N)`, not ufc.com's bugged 0. When ufc.com leaves takedown
-  defense blank because no opponent has attempted a takedown (a fighter who's never been
-  taken down), use the verified value from another source; if none exists, treat 100% (never
-  taken down) as the value only when corroborated, otherwise note it unverified.
-- Resolve everything on the script's `>> STILL MISSING` line before committing.
+- When a fighter has landed 0 takedowns, `tdAcc` is `"0%"` — confirm it's a real 0 via the ESPN
+  per-fight line `(VERIFIED per-fight 0/N)`, not ufc.com's bugged 0.
+- **Takedown defense with no attempts faced:** when ufc.com leaves `tdDef` blank because no
+  opponent has ever attempted a takedown (a fighter who's never been taken down), use a
+  corroborated value from another source if one exists. If none exists, set `tdDef:null` so it
+  renders as a dash — do NOT write `"100%"` (an unverified fabrication) or `"0%"` (a blank
+  misread). The same rule applies to any other stat that is blank and uncorroborable.
+- Resolve everything on the script's `>> STILL MISSING` line before committing (resolving a field
+  can mean confirming it's genuinely blank and setting it to `null`).
 
 **ODDS_HISTORY** — rebuild from [BFO], newest first, one entry per fight that actually
 happened (match against FIGHT_HISTORY):
