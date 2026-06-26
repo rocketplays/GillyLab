@@ -4591,7 +4591,7 @@
  "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:3.75, tdAcc:"33%", subAvg:0.0, strDef:"22%", kd:0.3, tdDef:"0%", finRate:"60%", streak:0, tdLanded:4.69 },
  "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.2, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.00 },
  "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:2.85, strAcc:"70%", sapm:1.93, strDef:"58%", kd:0.95, tdLanded:2.38, tdAcc:"26%", tdDef:"100%", subAvg:0.95, finRate:"67%", streak:12, gym:"FightZone London" },
- "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:19.93,tdAcc:"0%", subAvg:0.0, strDef:"57%", kd:1.5, tdDef:"100%",finRate:"100%",streak:0, tdLanded:0.00 },
+ "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:10.05, strAcc:"52%", sapm:6.64, strDef:"50%", kd:1.25, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"86%", streak:0, gym:"Minnesota Top Team" },
  "Sean Sharaf": { ht:"6'3\"", dob:"1993-07-11", reach:'77"', stance:"Orthodox", slpm:7.41, tdAcc:"11%", subAvg:0.0, strDef:"42%", kd:0.5, tdDef:"0%", finRate:"50%", streak:0, tdLanded:0.93 },
  "Lukasz Brzeski": { ht:"6'3\"", dob:"1992-05-17", reach:'78"', stance:"Orthodox", slpm:4.90, tdAcc:"36%", subAvg:0.3, strDef:"47%", kd:0.4, tdDef:"67%", finRate:"56%", streak:0, tdLanded:1.61 },
  // Women's Strawweight
@@ -13236,7 +13236,13 @@
     { opponent: "Miguel Porto", odds: -550 }
   ],
   "Steven Asplund": [
-    
+    { opponent: "Vitor Petrino", odds: 175 },
+    { opponent: "Sean Sharaf", odds: -220 },
+    { opponent: "Anthony Guarascio", odds: 140 },
+    { opponent: "Raiden Kovacs", odds: -550 },
+    { opponent: "Denzel Freeman", odds: -130 },
+    { opponent: "Larry Gonzales", odds: -225 },
+    { opponent: "Billy Ray Valdez", odds: -188 }
   ],
   "Mark Vologdin": [
     { opponent: "Adrian Martinetti", odds: -172 },
@@ -29313,16 +29319,15 @@ const FIGHT_HISTORY = {
     { date: "Mar 19, 2022", opponent: "Roger Freitas", result: "W", method: "TKO", round: 1, time: "3:00", event: "Metanoia Fight Combat 2022" }
   ],
   "Steven Asplund": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
-    { date: "Oct 5, 2025", opponent: "Victor Valenzuela", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:44", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Jun 7, 2025", opponent: "Nick Fiore", result: "W", method: "TKO (Punches)", round: 1, time: "3:14", event: "LFA 182" },
-    { date: "Mar 1, 2025", opponent: "Tyler Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 177" },
-    { date: "Nov 16, 2024", opponent: "Kyle Nelson", result: "W", method: "TKO (Punches)", round: 2, time: "1:55", event: "LFA 174" },
-    { date: "Aug 17, 2024", opponent: "Marcus Perez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:14", event: "LFA 170" },
-    { date: "Apr 27, 2024", opponent: "Alex Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 167" },
-    { date: "Jan 20, 2024", opponent: "Carl Deaton", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 164" },
-    { date: "Oct 28, 2023", opponent: "Aaron Jeffery", result: "L", method: "KO (Punches)", round: 2, time: "3:44", event: "LFA 160" },
-    { date: "Aug 5, 2023", opponent: "Justin Medina", result: "W", method: "TKO (Punches)", round: 1, time: "1:22", event: "LFA 157" }
+    { date: "Mar 14, 2026", opponent: "Vitor Petrino", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Dec 13, 2025", opponent: "Sean Sharaf", result: "W", method: "TKO (Punches)", round: 2, time: "3:49", event: "UFC on ESPN: Royval vs. Kape", org: "UFC" },
+    { date: "Sep 9, 2025", opponent: "Anthony Guarascio", result: "W", method: "TKO (Punch and elbows)", round: 1, time: "0:16", event: "Dana White's Contender Series 9 Week 5", org: "UFC" },
+    { date: "Apr 11, 2025", opponent: "Raiden Kovacs", result: "W", method: "TKO (Elbow and punches)", round: 2, time: "1:53", event: "LFA 206", org: "LFA" },
+    { date: "Jan 25, 2025", opponent: "Hammer Morton", result: "W", method: "TKO (Punches)", round: 3, time: "1:29", event: "LFA 200", org: "LFA" },
+    { date: "Sep 20, 2024", opponent: "Denzel Freeman", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:17", event: "LFA 193", org: "LFA" },
+    { date: "Apr 5, 2024", opponent: "Larry Gonzales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 181", org: "LFA" },
+    { date: "Jan 12, 2024", opponent: "Billy Ray Valdez", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "4:48", event: "LFA 174", org: "LFA" },
+    { date: "Nov 11, 2023", opponent: "Anthony Garrett", result: "W", method: "TKO (Punches)", round: 1, time: "0:11", event: "Ignite Fights: Mecca 20" }
   ],
   "Mark Vologdin": [
     { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres" },
@@ -30484,6 +30489,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Steven Asplund": [
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; 16-second KO of Anthony Guarascio)", detail: null },
+    { icon: "🥊", title: "Three-time amateur champion (regional circuit)", detail: null },
+    { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Myktybek Orolbai": [
     { icon: "🏆", title: "Sulukta FC Welterweight Champion", detail: null },
     { icon: "🏆", title: "Sulukta FC Welterweight Grand Prix winner", detail: null },
