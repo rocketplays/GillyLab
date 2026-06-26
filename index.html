@@ -36033,9 +36033,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       payload.data.forEach(e => {
         const division = e.division || '';
         if (division.indexOf('Pound-for-Pound') !== -1) return;
-        const key = normalizeFighterNameForMatch(e.fighterName);
         const label = rankBadgeLabelForEntry(e);
-        if (key && label) lookup[key] = label;
+        if (!label) return;
+        const key = normalizeFighterNameForMatch(e.fighterName);
+        if (key) lookup[key] = label;
+        // Also key the rank under the canonical roster name when the rankings
+        // feed uses a fuller / alias name than the rest of the site (e.g.
+        // "Jose Miguel Delgado" -> "Jose Delgado", "Michael Venom Page" ->
+        // "Michael Page"). FIGHTERS, FIGHTER_STATS and the profile page are all
+        // keyed off the plain DB name, so without this the rank badge for an
+        // aliased fighter falls back to "NR" even when they're ranked.
+        if (typeof resolveCanonicalFighterName === 'function') {
+          const canonKey = normalizeFighterNameForMatch(
+            resolveCanonicalFighterName(e.fighterName, e.fighterSlug));
+          if (canonKey && canonKey !== key) lookup[canonKey] = label;
+        }
       });
     }
     return lookup;
