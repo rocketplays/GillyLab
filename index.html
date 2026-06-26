@@ -4436,7 +4436,7 @@
  "Aaron Pico": { ht:'5\'8"', dob:"1996-09-23", reach:'70.5"', stance:"Orthodox", slpm:6.16, strAcc:"53%", sapm:3.11, strDef:"45%", kd:0.0, tdLanded:6.54, tdAcc:"50%", tdDef:"0%", subAvg:0.0, finRate:"78%", streak:1, gym:"Jackson Wink MMA Academy" },
  // ── Lightweight (more) ──
  // ── Welterweight (more) ──
- "Myktybek Orolbai": { ht:"5'10\"", dob:"1998-02-10", reach:'74"', stance:"Orthodox", slpm:3.24, tdAcc:"45%", subAvg:0.6, strDef:"50%", kd:0.1, tdDef:"40%", finRate:"60%", streak:0, tdLanded:5.48, gym:"Team Alpha Male" },
+ "Myktybek Orolbai": { ht:"5'10\"", dob:"1998-02-10", reach:'74"', stance:"Orthodox", slpm:2.78, strAcc:"50%", sapm:2.70, strDef:"51%", kd:0.49, tdLanded:8.77, tdAcc:"59%", tdDef:"40%", subAvg:0.64, finRate:"81%", streak:3, gym:"Team Alpha Male" },
  // ── Middleweight (more) ──
  // ── Light Heavyweight (more) ──
  "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-08-09", reach:'81"', stance:"Orthodox", slpm:3.06, strAcc:"43%", sapm:4.00, strDef:"53%", kd:0.60, tdLanded:0.90, tdAcc:"43%", tdDef:"18%", subAvg:0.60, finRate:"94%", streak:0, gym:"Brazilian TKO" },
@@ -12656,12 +12656,14 @@
     { opponent: "Jena Bishop", odds: 159 },
   ],
   "Myktybek Orolbai": [
-    { opponent: "Chris Curtis", odds: -200 },
-    { opponent: "Jack Hermansson", odds: -300 },
-    { opponent: "Tofiq Musayev", odds: -200 },
-    { opponent: "Mateusz Rębecki", odds: 165 },
-    { opponent: "Elves Brener", odds: -350 },
-    { opponent: "Uroš Medić", odds: -350 }
+    { opponent: "Chris Curtis", odds: -475 },
+    { opponent: "Jack Hermansson", odds: -210 },
+    { opponent: "Tofiq Musayev", odds: -175 },
+    { opponent: "Mateusz Rębecki", odds: -275 },
+    { opponent: "Elves Brener", odds: -260 },
+    { opponent: "Uroš Medić", odds: -115 },
+    { opponent: "Hayward Charles", odds: -1695 },
+    { opponent: "Gláucio Eliziário", odds: -350 }
   ],
   "Xiong Jingnan": [
     { opponent: "Angela Lee", odds: -150 },
@@ -27681,7 +27683,7 @@ const FIGHT_HISTORY = {
     { date: "Aug 4, 2023", opponent: "Gláucio Eliziário", result: "W", method: "TKO (Punches)", round: 2, time: "1:33", event: "LFA 164", org: "LFA" },
     { date: "May 6, 2022", opponent: "Jalin Fuller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 131", org: "LFA" },
     { date: "Nov 26, 2021", opponent: "Kaldyadis Taalaybek Uulu", result: "W", method: "TKO (Retirement)", round: 4, time: "4:00", event: "Sulukta FC: Fight Night Grand Prix" },
-    { opponent: "Mashrapjon Sabirov", result: "W", method: "TKO (Punches)", event: "1" },
+    { date: "Nov 26, 2021", opponent: "Mashrabzhon Sobirov", result: "W", method: "TKO (Punches)", round: 1, time: "3:24", event: "Sulukta FC: Fight Night Grand Prix" },
     { date: "Aug 14, 2021", opponent: "Peyman Haciev", result: "W", method: "TKO (Punches)", round: 1, time: "2:30", event: "Open FC 8" },
     { date: "Dec 19, 2020", opponent: "Khalid Satuev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA Young Eagles 15", org: "ACA" },
     { date: "Jun 22, 2019", opponent: "Shamil Mutalimov", result: "W", method: "TKO (Punches)", round: 1, time: "3:37", event: "Road Fighting Championship Russia 6" },
@@ -30467,6 +30469,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Myktybek Orolbai": [
+    { icon: "🏆", title: "Sulukta FC Welterweight Champion", detail: null },
+    { icon: "🏆", title: "Sulukta FC Welterweight Grand Prix winner", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (1x — vs. Mateusz Rębecki, UFC 308)", detail: null },
+    { icon: "🏅", title: "UFC welterweight record — most takedowns in a fight (19 vs. Chris Curtis, UFC Vegas 114; 3rd-most in UFC history)", detail: null },
+    { icon: "🤼", title: "Former amateur MMA world champion", detail: null },
+  ],
   "Oumar Sy": [
     { icon: "🏅", title: "Entered the UFC undefeated at 9-0 — eight first-round finishes", detail: null },
     { icon: "🤼", title: "KSW light heavyweight standout (3-0 in KSW before signing with the UFC)", detail: null },
