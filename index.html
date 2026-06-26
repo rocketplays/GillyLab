@@ -3414,7 +3414,7 @@
  { name: "Luke Fernandez", division: "LHW", rank: "NR", record: "7-0-0", initials: "LFE", country: "Australia" },
  { name: "Levi Rodrigues", division: "LHW", rank: "NR", record: "7-0-0", initials: "LRO", country: "Brazil" },
  { name: "Rafael Tobias", division: "LHW", rank: "NR", record: "15-1-0", initials: "RTO", country: "Brazil" },
- { name: "Diyar Nurgozhay", division: "LHW", rank: "NR", record: "10-2-0", initials: "DNR", country: "Kazakhstan" },
+ { name: "Diyar Nurgozhay", division: "LHW", rank: "NR", record: "11-2-0", initials: "DNR", country: "Kazakhstan" },
  { name: "Bruno Lopes", division: "LHW", rank: "NR", record: "15-3-0", initials: "BLO", country: "Brazil" },
  { name: "Billy Elekana", division: "LHW", rank: "NR", record: "10-2-0", initials: "BEK", country: "New Zealand" },
  { name: "Julius Walker", division: "LHW", rank: "NR", record: "7-2-0", initials: "JUW", country: "USA" },
@@ -4475,7 +4475,7 @@
  "Antonio Trocoli": { ht:"6'5\"", dob:"1990-12-06", reach:'80"', stance:"Orthodox", slpm:1.37, tdAcc:"5%", subAvg:0.8, strDef:"24%", kd:0.1, tdDef:"33%", finRate:"58%", streak:0, tdLanded:0.79 },
  "Ihor Potieria": { ht:"6'3\"", dob:"1996-05-29", reach:'75"', stance:"Southpaw", slpm:4.44, tdAcc:"31%", subAvg:0.3, strDef:"50%", kd:0.3, tdDef:"65%", finRate:"60%", streak:0, tdLanded:0.97 },
  // ── Light Heavyweight (more) ──
- "Diyar Nurgozhay": { ht:"6'2\"", dob:"1997-04-22", reach:'74"', stance:"Southpaw", slpm:4.52, tdAcc:"75%", subAvg:0.3, strDef:"61%", kd:0.3, tdDef:"73%", finRate:"64%", streak:0, tdLanded:1.37 },
+ "Diyar Nurgozhay": { ht:"6'2\"", dob:"1997-04-22", reach:'74"', stance:"Southpaw", slpm:4.52, strAcc:"59%", sapm:2.81, strDef:"61%", kd:0.46, tdLanded:1.37, tdAcc:"75%", tdDef:"80%", subAvg:0.00, finRate:"73%", streak:1, gym:"Tobet Top Team" },
  "Ivan Erslan": { ht:"6'2\"", dob:"1991-11-15", reach:'72"', stance:"Orthodox", slpm:2.55, tdAcc:"20%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"61%", finRate:"57%", streak:0, tdLanded:0.45 },
  // ── Heavyweight (more) ──
  "Josh Parisian": { ht:"6'4\"", dob:"1989-06-28", reach:'79"', stance:"Orthodox", slpm:4.55, tdAcc:"29%", subAvg:0.4, strDef:"41%", kd:0.4, tdDef:"62%", finRate:"60%", streak:0, tdLanded:0.98, gym:"Scorpion Fighting System" },
@@ -12967,10 +12967,13 @@
     { opponent: "Shuai Yin", odds: -250 }
   ],
   "Diyar Nurgozhay": [
-    { opponent: "Melsik Baghdasaryan", odds: 250 },
-    { opponent: "Jean Silva", odds: 300 },
-    { opponent: "Christos Giagos", odds: -250 },
-    { opponent: "Elves Brener", odds: -350 }
+    { opponent: "Rafael Tobias", odds: 145 },
+    { opponent: "Uran Satybaldiev", odds: -115 },
+    { opponent: "Brendson Ribeiro", odds: -430 },
+    { opponent: "Bartosz Szewczyk", odds: -145 },
+    { opponent: "Emiliano Sordi", odds: -275 },
+    { opponent: "Magomed Magomedov", odds: 100 },
+    { opponent: "Sergio Souza", odds: -225 }
   ],
   "Zhang Mingyang": [
     { opponent: "Alonzo Menifield", odds: -258 },
@@ -28426,16 +28429,19 @@ const FIGHT_HISTORY = {
     { date: "Apr 3, 2022", opponent: "Norimasa Kobayashi", result: "W", method: "KO (Punches)", round: 2, time: "3:12", event: "RIZIN 35" }
   ],
   "Diyar Nurgozhay": [
-    { date: "Mar 22, 2025", opponent: "Melsik Baghdasaryan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Edwards vs. Brady (London)" },
-    { date: "Nov 22, 2025", opponent: "Jean Silva", result: "L", method: "KO (Punches)", round: 1, time: "0:00", event: "UFC Fight Night: Tsarukyan vs. Hooker" },
-    { date: "Oct 26, 2024", opponent: "Christos Giagos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 308: Topuria vs. Holloway" },
-    { date: "May 31, 2025", opponent: "Charlie Campbell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Barber" },
-    { date: "Sep 28, 2024", opponent: "Elves Brener", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis (debut)" },
-    { date: "Sep 9, 2023", opponent: "Anvar Yunusov", result: "W", method: "KO (Punches)", round: 1, time: "0:00", event: "Road to UFC Season 3 Final" },
-    { date: "Aug 26, 2023", opponent: "Jiaming Xu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 3 SF" },
-    { date: "Jul 15, 2023", opponent: "Tran Quang Loi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 3 QF" },
-    { date: "Oct 22, 2022", opponent: "Abubakar Tursunov", result: "W", method: "KO (Punches)", round: 1, time: "0:41", event: "Naiza FC 47" },
-    { date: "Jun 11, 2022", opponent: "Khurshed Kakhorov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Naiza FC 41" }
+    { date: "Mar 7, 2026", opponent: "Rafael Tobias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 326", org: "UFC" },
+    { date: "Aug 23, 2025", opponent: "Uran Satybaldiev", result: "L", method: "Submission (Ezekiel choke)", round: 1, time: "2:45", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
+    { date: "Mar 15, 2025", opponent: "Brendson Ribeiro", result: "L", method: "Submission (Kimura)", round: 2, time: "1:28", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
+    { date: "Oct 1, 2024", opponent: "Bartosz Szewczyk", result: "W", method: "KO (Head kick)", round: 2, time: "3:32", event: "Dana White's Contender Series: Season 8, Week 8", org: "DWCS" },
+    { date: "May 18, 2024", opponent: "Emiliano Sordi", result: "W", method: "TKO", round: 1, time: "4:17", event: "UAE Warriors 50" },
+    { date: "Aug 21, 2022", opponent: "Konstantin Andreitsev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Eagle FC 50" },
+    { date: "Oct 17, 2021", opponent: "Magomed Magomedov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eagle FC 42" },
+    { date: "Jun 18, 2021", opponent: "Sergio Souza", result: "W", method: "TKO", round: 1, time: "0:52", event: "Eagle FC 37" },
+    { date: "Dec 4, 2020", opponent: "Sergey Baryshev", result: "W", method: "TKO", round: 1, time: "0:27", event: "EFC 30" },
+    { date: "Apr 30, 2019", opponent: "Abbosbek Usarov", result: "W", method: "Submission (Kimura)", round: 1, time: "1:06", event: "Alash Pride FC" },
+    { date: "Jul 28, 2018", opponent: "Amhad Dzhanchuraev", result: "W", method: "Submission (Heel hook)", round: 1, time: "0:19", event: "Alash Pride FC" },
+    { date: "May 12, 2018", opponent: "Sultan Musayev", result: "W", method: "TKO", round: 1, time: "3:12", event: "Alash Pride FC" },
+    { date: "Dec 15, 2017", opponent: "Almanbet Nuraly", result: "W", method: "TKO", round: 1, time: "0:18", event: "WEF ProfFight 17" }
   ],
   "Zhang Mingyang": [
     { date: "May 30, 2026", opponent: "Alonzo Menifield", result: "L", method: "TKO (Punches)", round: 1, time: "4:15", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
@@ -30382,6 +30388,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Diyar Nurgozhay": [
+    { icon: "🏆", title: "Eagle FC Light Heavyweight Champion", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2024 (Season 8; head-kick KO of Bartosz Szewczyk)", detail: null },
+    { icon: "🥇", title: "2021 GAMMA World Amateur MMA Champion", detail: null },
+    { icon: "🥋", title: "World Champion in Pankration (Master of Sport, International Class)", detail: null },
+    { icon: "🥊", title: "National Champion in Muay Thai; 3× Kazakhstan hand-to-hand combat champion", detail: null },
+  ],
   "Jesus Aguilar": [
     { icon: "🏅", title: "Dana White's Contender Series contract winner — 2022 (Season 6; guillotine sub of Erisson Ferreira)", detail: null },
     { icon: "🏆", title: "UWC Mexico Flyweight Champion", detail: null },
