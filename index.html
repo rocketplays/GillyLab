@@ -3448,7 +3448,7 @@
  { name: "Billy Quarantillo", division: "FW", rank: "NR", record: "19-8-0", initials: "BQU", country: "USA" },
  { name: "Lucas Almeida", division: "FW", rank: "NR", record: "22-5-0", initials: "LAL", country: "Brazil" },
  { name: "Julian Erosa", division: "FW", rank: "NR", record: "34-14-0", initials: "JER", country: "USA" },
- { name: "Ricky Turcios", division: "FW", rank: "NR", record: "13-3-0", initials: "RTU", country: "USA" },
+ { name: "Ricky Turcios", division: "BW", rank: "NR", record: "13-6-0", initials: "RTU", country: "USA" },
  { name: "Francis Marshall", division: "FW", rank: "NR", record: "11-3-0", initials: "FMA", country: "USA" },
  { name: "Harry Hardwick", division: "FW", rank: "NR", record: "11-4-0", initials: "HHA", country: "UK" },
  { name: "Hyder Amil", division: "FW", rank: "NR", record: "11-3-0", initials: "HAM", country: "Philippines" },
@@ -4426,7 +4426,7 @@
  // ── Bantamweight (more) ──
  "Javid Basharat": { ht:"5'9\"", dob:"1995-09-07", reach:'69"', stance:"Orthodox", slpm:5.41, tdAcc:"40%", subAvg:0.2, strDef:"61%", kd:0.3, tdDef:"83%", finRate:"64%", streak:0, tdLanded:1.62, gym:"Xtreme Couture" },
  "Farid Basharat": { ht:"5'8\"", dob:"1997-08-02", reach:'71"', stance:"Orthodox", slpm:4.25, strAcc:"52%", sapm:2.89, strDef:"62%", kd:0.00, tdLanded:3.34, tdAcc:"45%", tdDef:"55%", subAvg:0.32, finRate:"47%", streak:15, gym:"American Top Team" },
- "Ricky Turcios": { ht:"5'9\"", dob:"1993-06-05", reach:'71"', stance:"Orthodox", slpm:4.73, tdAcc:"20%", subAvg:0.4, strDef:"52%", kd:0.3, tdDef:"44%", finRate:"62%", streak:0, tdLanded:0.91 },
+ "Ricky Turcios": { ht:"5'9\"", dob:"1993-06-05", reach:'71"', stance:"Orthodox", slpm:4.68, strAcc:"40%", sapm:3.84, strDef:"52%", kd:0.17, tdLanded:0.85, tdAcc:"18%", tdDef:"44%", subAvg:0.34, finRate:"31%", streak:0, gym:"Gracie Barra Woodlands" },
  "John Castaneda": { ht:"5'6\"", dob:"1991-12-18", reach:'71"', stance:"Switch", slpm:4.42, tdAcc:"37%", subAvg:0.4, strDef:"53%", kd:0.3, tdDef:"73%", finRate:"57%", streak:0, tdLanded:1.68, gym:"Bangtao Muay Thai & MMA (2023–present)" },
  // ── Featherweight (more) ──
  "Lerryan Douglas": { ht:"5'9\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:11.67,tdAcc:"87%", subAvg:0.0, strDef:"66%", kd:0.8, tdDef:"0%", finRate:"77%", streak:0, tdLanded:0.00 },
@@ -10574,14 +10574,13 @@
     { opponent: "Rani Yahya", odds: -300 }
   ],
   "Ricky Turcios": [
-    { opponent: "Bernardo Sopaj", odds: 175 },
-    { opponent: "Saidyokub Kakhramonov", odds: -300 },
-    { opponent: "Cameron Smotherman", odds: -300 },
-    { opponent: "Nohelin Hernandez", odds: -400 },
-    { opponent: "Drew Dober", odds: 450 },
-    { opponent: "Raoni Barcelos", odds: 175 },
-    { opponent: "Da'Mon Blackshear", odds: -250 },
-    { opponent: "Miles Johns", odds: -175 }
+    { opponent: "Alberto Montes", odds: 155 },
+    { opponent: "Bernardo Sopaj", odds: 250 },
+    { opponent: "Raul Rosas Jr.", odds: 225 },
+    { opponent: "Kevin Natividad", odds: -180 },
+    { opponent: "Aiemann Zahabi", odds: -215 },
+    { opponent: "Brady Hiestand", odds: -145 },
+    { opponent: "Boston Salmon", odds: 145 }
   ],
   "Mackenzie Dern": [
     { opponent: "Virna Jandiroba", odds: -200 },
@@ -22664,19 +22663,25 @@ const FIGHT_HISTORY = {
 
 
   "Ricky Turcios": [
-    { date: "Jan 18, 2025", opponent: "Bernardo Sopaj", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311: Makhachev vs. Moicano" },
-    { date: "Sep 14, 2024", opponent: "Saidyokub Kakhramonov", result: "W", method: "TKO (Punches)", round: 2, time: "4:22", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "May 18, 2024", opponent: "Cameron Smotherman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Murphy" },
-    { date: "Nov 25, 2023", opponent: "Nohelin Hernandez", result: "W", method: "TKO (Punches)", round: 2, time: "2:44", event: "UFC Fight Night: Tybura vs. Spivac" },
-    { date: "Mar 18, 2023", opponent: "Drew Dober", result: "L", method: "KO (Punches)", round: 1, time: "1:26", event: "UFC Fight Night: Yan vs. Dvalishvili" },
-    { date: "Aug 13, 2022", opponent: "Raoni Barcelos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vera vs. Cruz" },
-    { date: "Feb 12, 2022", opponent: "Da'Mon Blackshear", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 271: Adesanya vs. Whittaker 2" },
-    { date: "Nov 20, 2021", opponent: "Miles Johns", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vieira vs. Tate (debut)" },
-    { date: "Aug 28, 2021", opponent: "Luke Sanders", result: "W", method: "TKO (Punches)", round: 2, time: "1:44", event: "DWCS S5 W8 (contract)" },
-    { date: "Mar 27, 2021", opponent: "Ty Flores", result: "W", method: "TKO (Punches)", round: 3, time: "2:11", event: "LFA 100" },
-    { date: "Oct 17, 2020", opponent: "Dawond Pickney", result: "W", method: "TKO (Punches)", round: 1, time: "2:07", event: "LFA 94" },
-    { date: "Jun 20, 2020", opponent: "Michael Colby", result: "W", method: "TKO (Punches)", round: 2, time: "2:00", event: "Fury FC 48" },
-    { date: "Feb 29, 2020", opponent: "Miles Johns", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 83" }
+    { date: "Mar 7, 2026", opponent: "Alberto Montes", result: "L", method: "Submission (Anaconda choke)", round: 2, time: "0:40", event: "UFC 326", org: "UFC" },
+    { date: "Jan 18, 2025", opponent: "Bernardo Sopaj", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311", org: "UFC" },
+    { date: "Jun 8, 2024", opponent: "Raul Rosas Jr.", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:22", event: "UFC Fight Night: Cannonier vs. Imavov", org: "UFC" },
+    { date: "Nov 19, 2022", opponent: "Kevin Natividad", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Nzechukwu vs. Cutelaba", org: "UFC" },
+    { date: "Jul 9, 2022", opponent: "Aiemann Zahabi", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: dos Anjos vs. Fiziev", org: "UFC" },
+    { date: "Aug 28, 2021", opponent: "Brady Hiestand", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Chikadze (TUF 29 Finale)", org: "UFC" },
+    { date: "Jul 27, 2021", opponent: "Liudvik Sholinian", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter 29 Semifinal" },
+    { date: "Feb 23, 2020", opponent: "Kaleb Petereit", result: "W", method: "Submission (Armbar)", round: 2, time: "4:54", event: "Fury FC 42" },
+    { date: "Nov 3, 2018", opponent: "Mana Martinez", result: "L", method: "TKO", round: 1, time: "2:59", event: "Fury FC 27" },
+    { date: "Oct 6, 2018", opponent: "Josh Paiva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KOTC: Terminal Velocity" },
+    { date: "Jul 11, 2017", opponent: "Boston Salmon", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 1, Week 1", org: "DWCS" },
+    { date: "Sep 10, 2016", opponent: "Trent Meaux", result: "W", method: "TKO", round: 3, time: "0:56", event: "Fury FC 12" },
+    { date: "Apr 8, 2016", opponent: "Gerzan Chaw", result: "W", method: "TKO", round: 1, time: "2:59", event: "Fury FC 10" },
+    { date: "Mar 4, 2016", opponent: "Steve Garcia", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Bellator 151", org: "Bellator" },
+    { date: "Jan 15, 2016", opponent: "Akira Smith", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 9" },
+    { date: "May 22, 2015", opponent: "Tristan Grimsley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 6" },
+    { date: "Oct 24, 2014", opponent: "Edward Longoria", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 2" },
+    { date: "Mar 14, 2014", opponent: "Bob Bradshaw", result: "W", method: "TKO", round: 2, time: "1:46", event: "TCT: Texas City Throwdown 1" },
+    { date: "Jul 19, 2013", opponent: "Colin Wright", result: "W", method: "Decision (Split)", round: 3, time: "3:00", event: "Legacy FC 21" }
   ],
   "Marina Rodriguez": [
     { date: "Oct 5, 2024", opponent: "Carla Esparza", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:50", event: "UFC Fight Night: Grasso vs. Araujo 2" },
@@ -30373,6 +30378,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ricky Turcios": [
+    { icon: "🏆", title: "The Ultimate Fighter 29 Bantamweight Winner (2021)", detail: null },
+    { icon: "🏆", title: "Fury FC Bantamweight Champion", detail: null },
+    { icon: "🥊", title: "2× IKF World Classic Muay Thai Champion (amateur)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "Black belt in Taekwondo", detail: null },
+  ],
   "Donte Johnson": [
     { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; 1st-round TKO of Darion Abbey)", detail: null },
     { icon: "🏈", title: "Former college football player — University of Minnesota Duluth", detail: null },
