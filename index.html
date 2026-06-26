@@ -557,10 +557,10 @@
       .event-info { min-width: 0; }
       .gl-prev-wrap { width: 100%; }
       .gl-prev-select { width: 100%; max-width: 100%; }
-      .gl-name-wrap { display: block; }
-      .gl-name-wrap.right { text-align: right; }
-      .gl-name-wrap .gl-name-txt { display: inline; overflow: visible; white-space: normal; }
-      .gl-name-wrap .gl-res-tag { margin-left: 0.3rem; }
+      .gl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
+      .gl-name-wrap.right { align-items: flex-end; text-align: right; }
+      .gl-name-wrap .gl-name-txt { width: 100%; overflow: visible; white-space: normal; }
+      .gl-name-wrap .gl-res-tag { margin: 2px 0 0; font-size: 0.52rem; padding: 0.02rem 0.26rem; line-height: 1.1; }
       .gl-result-method { font-size: 0.5rem; }
       .gl-result-time { font-size: 0.56rem; }
     }
@@ -34382,7 +34382,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       const hasFlag = evt.fights.some(function(f) { return f.isMainCard; });
       let out;
-      if (hasFlag) {
+      if (evt.completed) {
+        // Past events aren't split into main card / prelims, so render every
+        // fight in one block with no "Main Card" section header or divider.
+        out = '<div class="fight-card-section">' + evt.fights.map(fightRow).join('') + '</div>';
+      } else if (hasFlag) {
         out = section('Main Card',    evt.fights.filter(function(f) { return f.isMainCard || f.isMain; })) +
               section('Prelims',      evt.fights.filter(function(f) { return !f.isMainCard && !f.isMain; }));
       } else {
@@ -34616,7 +34620,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<div class="fd-stat"><span class="fd-label">Age</span><span class="fd-value">' + snap.age + '</span></div>' +
         '<div class="fd-stat"><span class="fd-label">Height</span><span class="fd-value">' + snap.height + '</span></div>' +
         '<div class="fd-stat"><span class="fd-label">Reach</span><span class="fd-value">' + snap.reach + '</span></div>' +
-        '<div class="fd-stat"><span class="fd-label">Moneyline</span><span class="fd-value fight-ml-pending" data-f1="' + escHtmlAttr(f.f1) + '" data-f2="' + escHtmlAttr(f.f2) + '" data-side="' + side + '">' +
+        '<div class="fd-stat"><span class="fd-label">' + (f.completed ? 'Closing Odds' : 'Moneyline') + '</span><span class="fd-value fight-ml-pending" data-f1="' + escHtmlAttr(f.f1) + '" data-f2="' + escHtmlAttr(f.f2) + '" data-side="' + side + '">' +
           '<span style="color:var(--muted);font-size:0.78rem;">…</span></span></div>' +
         '<div class="fd-stat"><span class="fd-label">Last 5</span><span class="fd-value">' + lastFiveFormHTML(name) + '</span></div>' +
       '</div>';
@@ -38189,10 +38193,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     renderSimResults(nameA, nameB, result);
   }
 
-  // Past-events dropdown: lets you load any of the last 10 completed events
+  // Past-events dropdown: lets you load any of the last 15 completed events
   // (with results) into the featured slot, to verify result rendering. Pulls
   // completed events from the loaded feed, and merges an optional
   // data/event-recent.json (a real past-events fetch) if that file exists.
+  // Crossfade the featured fight card when swapping events from the dropdown,
+  // mirroring the site's page navigation: lift+fade the current card out, then
+  // render the new one and replay the shared `fadeIn` entrance keyframe.
+  function glSwapFightCard(renderFn) {
+    const c = document.getElementById('dynamic-fight-card');
+    if (!c) { renderFn(); return; }
+    c.style.animation = 'none';
+    c.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+    c.style.opacity = '0';
+    c.style.transform = 'translateY(-8px)';
+    setTimeout(() => {
+      renderFn();
+      c.style.transition = 'none';
+      c.style.transform = 'none';
+      c.style.opacity = '';
+      c.style.animation = 'fadeIn 0.3s ease';
+    }, 150);
+  }
+
   function setupPrevEventsDropdown(apiData, featuredRaw) {
     const header = document.querySelector('#page-home > .event-header');
     if (!header) return;
@@ -38226,7 +38249,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       list = list
         .filter(e => (e.bouts || []).length && isPast(e) && !isRoadToUFC(e) && hasResults(e))
         .sort((a, b) => startMs(b) - startMs(a))
-        .slice(0, 10);
+        .slice(0, 15);
       if (!list.length || document.getElementById('gl-prev-wrap')) return;
 
       const wrap = document.createElement('div');
@@ -38252,22 +38275,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       sel.addEventListener('change', () => {
         sel.blur(); // don't leave the control stuck in its green focus state after picking
-        const lbl = header.querySelector('.countdown-label');
+        const cdBox = header.querySelector('.event-countdown');
         if (sel.value === '__featured__') {
           window.__GL_VIEWING_PAST = false;
-          if (lbl) lbl.textContent = 'Days Until Event';
+          if (cdBox) cdBox.style.display = ''; // restore the upcoming-event countdown
           if (featuredRaw && featuredRaw.startsAt) window.FEATURED_EVENT_STARTS_AT = featuredRaw.startsAt;
           updateCountdown();
-          if (featuredRaw) renderHomeFightCard(parseApiEvent(featuredRaw));
+          if (featuredRaw) glSwapFightCard(() => renderHomeFightCard(parseApiEvent(featuredRaw)));
           return;
         }
         const raw = list[parseInt(sel.value, 10)];
         if (!raw) return;
         window.__GL_VIEWING_PAST = true;
-        if (lbl) lbl.textContent = 'Result';
-        const cd = document.getElementById('countdown');
-        if (cd) cd.textContent = 'FINAL';
-        renderHomeFightCard(parseApiEvent(raw));
+        if (cdBox) cdBox.style.display = 'none'; // past events: drop the redundant "Result / FINAL" box
+        glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
         window.scrollTo({ top: 0, behavior: 'smooth' });
       });
 
@@ -38286,11 +38307,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
 
     // Prefer the real past-events file written by the workflow
-    // (/ufc/events/recent → the actual last 10 completed cards). When present
+    // (/ufc/events/recent → the actual last 15 completed cards). When present
     // it REPLACES the upcoming feed's (future-dated, synthetic) completed
     // events so the dropdown shows true past events. Falls back to whatever
     // completed events are in the feed if the file is missing. build() sorts
-    // most-recent-first and caps at 10.
+    // most-recent-first and caps at 15.
     fetch('./data/event-recent.json')
       .then(r => {
         if (!r.ok) return null;
