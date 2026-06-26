@@ -555,6 +555,10 @@
     }
     @media (max-width: 768px) {
       .event-info { min-width: 0; }
+      /* Keep the countdown at its natural size so the full-width dropdown in
+         .event-info can't squeeze "Days Until Event" into an awkward wrap. */
+      .event-countdown { flex-shrink: 0; margin-left: 0.75rem; }
+      .countdown-label { white-space: nowrap; }
       .gl-prev-wrap { width: 100%; }
       .gl-prev-select { width: 100%; max-width: 100%; }
       .gl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
@@ -38202,18 +38206,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // mirroring the site's page navigation: lift+fade the current card out, then
   // render the new one and replay the shared `fadeIn` entrance keyframe.
   function glSwapFightCard(renderFn) {
-    const c = document.getElementById('dynamic-fight-card');
-    if (!c) { renderFn(); return; }
-    c.style.animation = 'none';
-    c.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
-    c.style.opacity = '0';
-    c.style.transform = 'translateY(-8px)';
+    // Fade the fight card AND the event name/details above it (but not the
+    // dropdown — it's being interacted with) so the whole featured block
+    // crossfades together.
+    const els = ['dynamic-fight-card', 'home-event-name', 'home-event-details']
+      .map(id => document.getElementById(id)).filter(Boolean);
+    if (!els.length) { renderFn(); return; }
+    els.forEach(c => {
+      c.style.animation = 'none';
+      c.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+      c.style.opacity = '0';
+      c.style.transform = 'translateY(-8px)';
+    });
     setTimeout(() => {
       renderFn();
-      c.style.transition = 'none';
-      c.style.transform = 'none';
-      c.style.opacity = '';
-      c.style.animation = 'fadeIn 0.3s ease';
+      els.forEach(c => {
+        c.style.transition = 'none';
+        c.style.transform = 'none';
+        c.style.opacity = '';
+        c.style.animation = 'fadeIn 0.3s ease';
+      });
     }, 150);
   }
 
@@ -38246,9 +38258,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let pool = (apiData.data || []).filter(e => e.status === 'completed' && (e.bouts || []).length);
     let recentStamp = null; // when data/event-recent.json was last refreshed
 
+    // Numbered-PPV sanity check: a real UFC number always increases with the
+    // date, so if a higher-numbered card has an EARLIER date than this one,
+    // this entry is stale/duplicated with a wrong date (e.g. 2025's UFC 314–316
+    // leaking into the 2026 feed) and is dropped.
+    const glUfcNumber = e => { const m = /^UFC\s+(\d+)\b/.exec(evtName(e)); return m ? parseInt(m[1], 10) : null; };
+
     const build = list => {
+      list = list.filter(e => (e.bouts || []).length && isPast(e) && !isRoadToUFC(e) && hasResults(e));
+      const numbered = list.map(e => ({ e, n: glUfcNumber(e), t: startMs(e) })).filter(x => x.n != null);
+      const outOfSeq = new Set();
+      numbered.forEach(a => { if (numbered.some(b => b.n > a.n && b.t < a.t)) outOfSeq.add(a.e); });
       list = list
-        .filter(e => (e.bouts || []).length && isPast(e) && !isRoadToUFC(e) && hasResults(e))
+        .filter(e => !outOfSeq.has(e))
         .sort((a, b) => startMs(b) - startMs(a))
         .slice(0, 15);
       if (!list.length || document.getElementById('gl-prev-wrap')) return;
