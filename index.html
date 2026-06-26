@@ -3741,6 +3741,7 @@
  // Women's Bantamweight
  { name: "Michelle Montague", division: "WBW", rank: "#14", record: "8-0-0", initials: "MMQ", country: "New Zealand" },
  { name: "Bia Mesquita", division: "WBW", rank: "NR", record: "8-0-0", initials: "BMS", country: "Brazil" },
+ { name: "Montse Rendon", division: "WBW", rank: "NR", record: "7-2-0", initials: "MRN", country: "Mexico" },
  { name: "Melissa Mullins", division: "WBW", rank: "NR", record: "7-3-0", initials: "MMU", country: "UK" },
  { name: "Lee Yi-sak", division: "MW", rank: "NR", record: "9-3-0", initials: "LYS", country: "South Korea" },
  { name: "Luis Felipe Dias", division: "MW", rank: "NR", record: "17-6-0", initials: "LFD", country: "Brazil" },
@@ -3934,6 +3935,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+ "Montse Rendon": { ht:"5'8\"", dob:"1989-03-16", reach:'68"', stance:"Orthodox", slpm:2.95, strAcc:"28%", sapm:3.65, strDef:"57%", kd:0.00, tdLanded:1.91, tdAcc:"38%", tdDef:"86%", subAvg:0.32, finRate:"0%", streak:0, gym:"ECR Fight Center" },
  "Bolaji Oki": { ht:"5'10\"", dob:"1995-11-15", reach:'73"', stance:"Orthodox", slpm:6.42, strAcc:"45%", sapm:5.12, strDef:"61%", kd:0.51, tdLanded:1.02, tdAcc:"57%", tdDef:"75%", subAvg:0.00, finRate:"60%", streak:0, gym:"Valon Team" },
  "SuYoung You": { ht:"5'6\"", dob:"1995-12-11", reach:'65"', stance:"Orthodox", slpm:2.15, strAcc:"47%", sapm:2.01, strDef:"69%", kd:0.00, tdLanded:4.26, tdAcc:"38%", tdDef:"67%", subAvg:0.37, finRate:"50%", streak:0, gym:"Black Combat" },
  "Austin Bashi": { ht:"5'6\"", dob:"2001-09-29", reach:'70"', stance:"Orthodox", slpm:1.75, strAcc:"47%", sapm:2.34, strDef:"49%", kd:0.00, tdLanded:7.81, tdAcc:"41%", tdDef:"63%", subAvg:1.67, finRate:"64%", streak:1, gym:"Warrior Way Martial Arts" },
@@ -6289,6 +6291,13 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Montse Rendon": [
+    { opponent: "Bia Mesquita", odds: 450 },
+    { opponent: "Alice Pereira", odds: 130 },
+    { opponent: "Darya Zheleznyakova", odds: 215 },
+    { opponent: "Tamires Vidal", odds: 195 },
+    { opponent: "Brittney Cloudy", odds: 130 }
+  ],
   "Bolaji Oki": [
     { opponent: "Manoel Sousa", odds: 235 },
     { opponent: "Mason Jones", odds: 120 },
@@ -13671,6 +13680,17 @@
 };
 
 const FIGHT_HISTORY = {
+  "Montse Rendon": [
+    { date: "Mar 14, 2026", opponent: "Bia Mesquita", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:07", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
+    { date: "Sep 13, 2025", opponent: "Alice Pereira", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Noche UFC: Lopes vs. Silva", org: "UFC" },
+    { date: "Mar 23, 2024", opponent: "Darya Zheleznyakova", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Ribas vs. Namajunas", org: "UFC" },
+    { date: "Sep 23, 2023", opponent: "Tamires Vidal", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Fiziev vs. Gamrot", org: "UFC" },
+    { date: "Sep 28, 2022", opponent: "Brittney Cloudy", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Invicta FC 49", org: "Invicta FC" },
+    { date: "Mar 19, 2022", opponent: "Claudia Zamora", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "GFC: Freedom Fight Night" },
+    { date: "Nov 19, 2021", opponent: "Kristina Pettigrew", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global" },
+    { date: "Oct 1, 2021", opponent: "Micaela Rampage", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global" },
+    { date: "Sep 25, 2020", opponent: "Janetti Delgado", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Fearless 6: Fearless Woman MMA" }
+  ],
   "Bolaji Oki": [
     { date: "Mar 14, 2026", opponent: "Manoel Sousa", result: "L", method: "KO (Punch)", round: 3, time: "4:12", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Sep 6, 2025", opponent: "Mason Jones", result: "L", method: "TKO (Elbows)", round: 2, time: "3:18", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
@@ -30599,6 +30619,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Montse Rendon": [
+    { icon: "🥇", title: "12-time Mexican national jiu-jitsu champion (multiple-time absolute champion)", detail: null },
+    { icon: "🥊", title: "Undefeated amateur MMA career (4-0)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Bolaji Oki": [
     { icon: "🏆", title: "Two-time Atomic FC Lightweight Champion (Belgium)", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series contract winner — 2023 (Season 7; first-round TKO of Dylan Salvador)", detail: null },
