@@ -3172,6 +3172,7 @@
  { name: "Kurtis Campbell", division: "FW", rank: "NR", record: "8-1-0", initials: "KC", country: "England" },
  { name: "Losene Keita", division: "FW", rank: "NR", record: "16-2-0", initials: "LK", country: "Belgium" },
  { name: "Giga Chikadze", division: "FW", rank: "NR", record: "15-6-0", initials: "GCH", country: "Georgia" },
+ { name: "Manolo Zecchini", division: "FW", rank: "NR", record: "11-5-0", initials: "MZE", country: "Italy" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Justin Gaethje", division: "LW", rank: "#IC", record: "27-5-0", initials: "JG", country: "USA" },
@@ -4473,6 +4474,7 @@
  // ── Middleweight (more) ──
  // ── Light Heavyweight (more) ──
  "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-08-09", reach:'81"', stance:"Orthodox", slpm:3.06, strAcc:"43%", sapm:4.00, strDef:"53%", kd:0.60, tdLanded:0.90, tdAcc:"43%", tdDef:"18%", subAvg:0.60, finRate:"94%", streak:0, gym:"Brazilian TKO" },
+ "Manolo Zecchini": { ht:"5'8\"", dob:"1996-10-22", reach:'68"', stance:"Orthodox", slpm:3.72, strAcc:"28%", sapm:12.82, strDef:"45%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"91%", streak:0, gym:"Jackson-Wink MMA" },
  "Bruna Brasil": { ht:"5'6\"", dob:"1993-09-07", reach:'65.5"', stance:"Orthodox", slpm:2.56, strAcc:"57%", sapm:3.75, strDef:"52%", kd:0.12, tdLanded:1.23, tdAcc:"53%", tdDef:"57%", subAvg:0.12, finRate:"45%", streak:0, gym:"Fighting Nerds" },
  "Bruno Lopes": { ht:"6'2\"", dob:"1993-04-24", reach:'74.5"', stance:"Orthodox", slpm:2.88, strAcc:"43%", sapm:4.21, strDef:"54%", kd:0.00, tdLanded:1.93, tdAcc:"22%", tdDef:"100%", subAvg:0.00, finRate:"79%", streak:0, gym:"China Team" },
  "Julius Walker": { ht:"6'4\"", dob:"1999-07-16", reach:'78"', stance:"Orthodox", slpm:3.73, sapm:4.03, strAcc:"54%", tdAcc:"38%", subAvg:0.0, strDef:"43%", kd:0.41, tdDef:"100%", finRate:"86%", streak:0, tdLanded:4.09, gym:"Team Fusion" },
@@ -12425,6 +12427,10 @@
   "Jakub Wiklacz": [
     { opponent: "Muin Gafurov", odds: -350 },
     { opponent: "Patchy Mix", odds: -165 }
+  ],
+  "Manolo Zecchini": [
+    { opponent: "Tommy McMillen", odds: 550 },
+    { opponent: "Morgan Charrière", odds: 273 }
   ],
   "Bruna Brasil": [
     { opponent: "Alexia Thainara", odds: 380 },
@@ -26879,6 +26885,24 @@ const FIGHT_HISTORY = {
     { date: "Jul 1, 2017", opponent: "Sebastian Przybysz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACB 63" },
     { date: "Sep 23, 2017", opponent: "Blazej Majdan", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:03", event: "Spartan Fight 8" }
   ],
+  "Manolo Zecchini": [
+    { date: "Apr 4, 2026", opponent: "Tommy McMillen", result: "L", method: "TKO (Knees and Punches)", round: 1, time: "3:57", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Sep 2, 2023", opponent: "Morgan Charrière", result: "L", method: "TKO (Punches)", round: 1, time: "3:51", event: "UFC Fight Night: Gane vs. Spivac (UFC debut)", org: "UFC" },
+    { date: "Oct 8, 2022", opponent: "Abou Tounkara", result: "W", method: "KO (Punches)", round: 2, time: "0:36", event: "Venator FC 12" },
+    { date: "May 14, 2022", opponent: "Souksavanh Khampasath", result: "W", method: "TKO (Punches)", round: 1, time: "3:20", event: "Venator FC 11" },
+    { date: "Mar 5, 2022", opponent: "Sufiev Karomatullo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Venator FC 10" },
+    { date: "Aug 31, 2019", opponent: "Chris Ocon", result: "W", method: "TKO (Punches)", round: 1, time: "0:54", event: "FIGMMA: Mazara Combat in the Cage" },
+    { date: "Jun 22, 2019", opponent: "Guilherme Neto", result: "W", method: "Submission (Armbar)", round: 1, time: "2:27", event: "Fight1: Street Fight Party 2" },
+    { date: "Mar 9, 2019", opponent: "Danny Mathiasen", result: "L", method: "TKO (Punches)", round: 2, time: "4:51", event: "Cage Warriors 103" },
+    { date: "Dec 15, 2018", opponent: "Mohamed Sayah", result: "W", method: "TKO (Punches)", round: 1, time: "2:33", event: "Italian Cage Fighting 6" },
+    { date: "Jun 9, 2018", opponent: "Francesco Moricca", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Golden Cage 2" },
+    { date: "Mar 10, 2018", opponent: "Gert Kocani", result: "L", method: "Submission (Triangle Choke)", round: 1, time: "2:58", event: "IFC 2: Penini vs. Aliu" },
+    { date: "Oct 14, 2017", opponent: "Marco Manara", result: "W", method: "TKO (Punches)", round: 1, time: "1:00", event: "Venator FC: Kingdom 1" },
+    { date: "Sep 10, 2016", opponent: "Tiziano Alquati", result: "W", method: "TKO (Punches)", round: 1, time: "0:12", event: "Mad Gym Fight Night" },
+    { date: "May 21, 2016", opponent: "Dennis Coste", result: "W", method: "TKO (Punches)", round: 1, time: "3:22", event: "Venator FC 3" },
+    { date: "Sep 20, 2014", opponent: "Rodrigo Silva Fernandes", result: "W", method: "KO (Punches)", round: 1, time: "1:30", event: "Precol Combat 13" },
+    { date: "Apr 6, 2013", opponent: "Alex Giacobazzi", result: "W", method: "TKO (Punches)", round: 1, time: "0:40", event: "Kombat League: Italian Extreme 10" }
+  ],
   "Bruna Brasil": [
     { date: "Mar 28, 2026", opponent: "Alexia Thainara", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "Feb 7, 2026", opponent: "Ketlen Souza", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bautista vs. Oliveira", org: "UFC" },
@@ -31512,6 +31536,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "Open FC (Open Fighting Championship) Light Heavyweight Championship — 1 reign (won Jul 3, 2022 vs. Vladimir Seliverstov, OFC 20, Split Decision)", detail: null },
     { icon: "🥇", title: "Asian Judo Champion (per UFC Q&A — listed as grappling discipline accolade; no BJJ rank on record)", detail: null },
     { icon: "🥋", title: "Kyrgyz National Champion — Judo & Sambo (per UFC Q&A)", detail: null },
+  ],
+  "Manolo Zecchini": [
+    { icon: "⭐", title: "UFC Fight of the Night — UFC Vegas 115 vs. Tommy McMillen (Apr 4, 2026)", detail: null },
+    { icon: "🥊", title: "Knockout finisher — 9 of 11 wins by KO/TKO, with nine first-round finishes", detail: null },
+    { icon: "🏅", title: "Second Italian-born fighter to compete in the UFC (after Marvin Vettori)", detail: null },
+    { icon: "🥋", title: "Karate Black Belt", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Blue Belt (per UFC Q&A)", detail: null },
   ],
   "Bruna Brasil": [
     { icon: "🏆", title: "Brazilian Kickboxing Champion (professional); multiple-time amateur kickboxing champion — State, South American & World titles", detail: null },
