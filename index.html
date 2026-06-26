@@ -3758,6 +3758,7 @@
  { name: "Nursulton Ruziboev", division: "MW", rank: "NR", record: "36-9-2", initials: "NR", country: "Uzbekistan" },
  { name: "Vlasto Cepo", division: "MW", rank: "NR", record: "14-3-0", initials: "VCE", country: "Serbia" },
  { name: "Gilbert Urbina", division: "MW", rank: "NR", record: "7-4-0", initials: "GU", country: "USA" },
+ { name: "Mantas Kondratavicius", division: "MW", rank: "NR", record: "9-1-0", initials: "MKO", country: "Lithuania" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -4261,6 +4262,7 @@
  "Marc-André Barriault": { ht:"6'1\"", dob:"1990-02-18", reach:'73"', stance:"Orthodox", slpm:5.65, strAcc:"47%", sapm:5.94, strDef:"49%", kd:0.34, tdLanded:0.34, tdAcc:"29%", tdDef:"68%", subAvg:0.09, finRate:"71%", streak:0, gym:"Kill Cliff FC" },
  // ── Middleweight (more) ──
  "Sedriques Dumas": { ht:"6'2\"", dob:"1995-08-06", reach:'79"', stance:"Orthodox", slpm:2.00, tdAcc:"31%", subAvg:0.6, strDef:"55%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.34 },
+ "Mantas Kondratavicius": { ht:"6'2\"", dob:"1999-07-17", reach:'75.5"', stance:"Orthodox", slpm:4.97, strAcc:"66%", sapm:1.30, strDef:"57%", kd:1.86, tdLanded:2.80, tdAcc:"60%", tdDef:"92%", subAvg:0.93, finRate:"89%", streak:4, gym:"Fighter House" },
  // ── Welterweight (more) ──
  // ── Featherweight (more) ──
  "Kurtis Campbell": { ht:"5'9\"", dob:"2002-07-29", reach:'72"', stance:"Switch", slpm:3.50, strAcc:"48%", sapm:2.63, strDef:"51%", kd:0.00, tdLanded:8.76, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"75%", streak:0, gym:"The MMA Academy" },
@@ -6293,6 +6295,14 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Mantas Kondratavicius": [
+    { opponent: "Antonio Trocoli", odds: -900 },
+    { opponent: "Djani Barbir", odds: 118 },
+    { opponent: "Michael Tchamou", odds: -151 },
+    { opponent: "Kirill Andreev", odds: -138 },
+    { opponent: "Virgil Augen", odds: 225 },
+    { opponent: "Ale Joseph", odds: 188 }
+  ],
   "Danny Silva": [
     { opponent: "Kurtis Campbell", odds: 210 },
     { opponent: "Kevin Vallejos", odds: 320 },
@@ -13734,6 +13744,18 @@
 };
 
 const FIGHT_HISTORY = {
+  "Mantas Kondratavicius": [
+    { date: "Mar 21, 2026", opponent: "Antonio Trocoli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Sep 23, 2025", opponent: "Djani Barbir", result: "W", method: "TKO (Punches)", round: 1, time: "1:06", event: "Dana White's Contender Series: Season 9, Week 7", org: "DWCS" },
+    { date: "Mar 14, 2025", opponent: "Michael Tchamou", result: "W", method: "KO (Punch)", round: 1, time: "0:47", event: "Cage Warriors 184: Unplugged", org: "Cage Warriors" },
+    { date: "Feb 10, 2024", opponent: "Kirill Andreev", result: "W", method: "Submission (Armbar)", round: 1, time: "N/A", event: "CAGE 61: Cage MMA Finland", org: "CAGE" },
+    { date: "Jun 23, 2023", opponent: "Virgil Augen", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:01", event: "Ares FC 16", org: "ARES FC" },
+    { date: "Nov 5, 2022", opponent: "Nicolai Garbuz", result: "W", method: "KO (Knee)", round: 1, time: "0:06", event: "KOK: World Series in Kaunas", org: "KOK" },
+    { date: "Sep 2, 2022", opponent: "Ale Joseph", result: "W", method: "TKO (Injury)", round: 1, time: "1:55", event: "Ares FC 8", org: "ARES FC" },
+    { date: "Jan 22, 2022", opponent: "Jack Comby", result: "W", method: "KO", round: 2, time: "4:04", event: "AFC 22: Almighty Fighting Championship 22", org: "AFC" },
+    { date: "Apr 24, 2021", opponent: "Artūrs Leisāns", result: "W", method: "TKO (Punches)", round: 2, time: "1:15", event: "King of Kings Classic 6", org: "KOK" },
+    { date: "Feb 8, 2021", opponent: "Rytis Kveselys", result: "W", method: "Submission", round: 2, time: "N/A", event: "King of Kings Classic 5", org: "KOK" }
+  ],
   "Danny Silva": [
     { date: "Mar 21, 2026", opponent: "Kurtis Campbell", result: "W", method: "TKO (Punches)", round: 2, time: "0:31", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
     { date: "Aug 2, 2025", opponent: "Kevin Vallejos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Taira vs. Park", org: "UFC" },
@@ -30717,6 +30739,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Mantas Kondratavicius": [
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9, Week 7; first-round TKO of Djani Barbir)", detail: null },
+    { icon: "🏅", title: "First male Lithuanian fighter to compete on the Contender Series", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🤼", title: "Lithuanian grappling champion; 3× Lithuanian Combat Sambo champion", detail: null },
+    { icon: "🥊", title: "Amateur Baltic & Lithuanian MMA champion; multiple K-1, Muay Thai & boxing amateur titles", detail: null },
+  ],
   "Losene Keita": [
     { icon: "🏆", title: "Oktagon MMA Lightweight Champion (two-time)", detail: null },
     { icon: "🏆", title: "Oktagon MMA Featherweight Champion", detail: null },
