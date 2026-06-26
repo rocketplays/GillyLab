@@ -3559,7 +3559,6 @@
  { name: "Deron Winn", division: "MW", rank: "NR", record: "9-4-0", initials: "DWN", country: "USA" },
  { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-3-0", initials: "ZRE2", country: "USA" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "10-4-0", initials: "EMC2", country: "USA" },
- { name: "Mantas Kondratavicus", division: "MW", rank: "NR", record: "9-1-0", initials: "MKN2", country: "Lithuania" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-4-0", initials: "ATR2", country: "Brazil" },
  { name: "Ryan Gandra", division: "MW", rank: "NR", record: "9-1-0", initials: "RGA", country: "Brazil" },
  // ─── WELTERWEIGHT (remaining) ───
@@ -4602,7 +4601,6 @@
  "Djorden Santos": { ht:"6'0\"", dob:"1997-08-01", reach:'75"', stance:"Orthodox", slpm:7.0, tdAcc:"33%", subAvg:0.0, strDef:"48%", kd:0.0, tdDef:"86%", finRate:"N/A", streak:0, tdLanded:0.67 },
  "Baysangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.0, tdDef:"100%", finRate:"N/A", streak:0, tdLanded:2.76 }, "Claudio Ribeiro": { ht:"6'1\"", dob:"1992-07-17", reach:'77"', stance:"Orthodox", slpm:3.59, tdAcc:"40%", subAvg:0.4, strDef:"30%", kd:0.2, tdDef:"57%", finRate:"55%", streak:0, tdLanded:1.29 },
  "Eric McConico": { ht:"6'0\"", dob:"1990-05-09", reach:'77"', stance:"Southpaw", slpm:2.61, tdAcc:"100%", subAvg:0.0, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"67%", streak:0, tdLanded:0.00 },
- "Mantas Kondratavicus": { ht:"6'2\"", dob:"1999-07-17", reach:'75"', stance:"Orthodox", slpm:4.55, tdAcc:"100%",subAvg:0.0, strDef:"60%", kd:0.4, tdDef:"0%", finRate:"89%", streak:0, tdLanded:13.64 },
  // Light Heavyweight
  "Billy Elekana": { ht:"6'3\"", dob:"1995-05-28", reach:'77"', stance:"Southpaw", slpm:2.71, tdAcc:"22%", subAvg:0.4, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.85, gym:"Uprising MMA Training Center" },
  "Austen Lane": { ht:"6'6\"", dob:"1987-11-09", reach:'80"', stance:"Orthodox", slpm:2.70, strAcc:"50%", sapm:2.45, strDef:"40%", kd:0.38, tdLanded:1.50, tdAcc:"29%", tdDef:"33%", subAvg:0.00, finRate:"92%", streak:0, gym:"Bulldog Boxing, 10th Planet Jacksonville" },
@@ -12816,7 +12814,7 @@
     { opponent: "Karoline Martins", odds: -475 }
   ],
   "Antonio Trocoli": [
-    { opponent: "Mantas Kondratavicus", odds: 300 },
+    { opponent: "Mantas Kondratavicius", odds: 300 },
     { opponent: "Mansur Abdul-Malik", odds: 350 },
     { opponent: "Tresean Gore", odds: 350 },
     { opponent: "Shara Magomedov", odds: 500 },
@@ -12949,14 +12947,6 @@
     { opponent: "Victor Altamirano", odds: -250 },
     { opponent: "Tim Elliott", odds: 275 },
     { opponent: "Carlos Hernandez", odds: -500 }
-  ],
-  "Mantas Kondratavicus": [
-    { opponent: "Antonio Trocoli", odds: -300 },
-    { opponent: "Gregory Rodrigues", odds: 350 },
-    { opponent: "Sedriques Dumas", odds: -175 },
-    { opponent: "Bo Nickal", odds: 500 },
-    { opponent: "Cody Brundage", odds: -400 },
-    { opponent: "Gerald Meerschaert", odds: -175 }
   ],
   "Pam Sorensen": [
     { opponent: "Talita Alencar", odds: 275 },
@@ -28066,7 +28056,7 @@ const FIGHT_HISTORY = {
     { date: "Mar 24, 2018", opponent: "Iasmin Lucindo", result: "W", method: "TKO (Punches)", round: 1, time: "3:20", event: "PFC 5: Parelhas Fight Combat 5" }
   ],
   "Antonio Trocoli": [
-    { date: "Mar 21, 2026", opponent: "Mantas Kondratavicus", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy (London, released after)" },
+    { date: "Mar 21, 2026", opponent: "Mantas Kondratavicius", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
     { date: "Dec 6, 2025", opponent: "Mansur Abdul-Malik", result: "L", method: "Submission (Guillotine choke)", round: 1, time: "1:09", event: "UFC 323: Dvalishvili vs. Yan 2" },
     { date: "Nov 9, 2024", opponent: "Tresean Gore", result: "L", method: "Submission (Guillotine choke)", round: 1, time: "1:23", event: "UFC Fight Night: Gamrot vs. Fiziev" },
     { date: "Jun 22, 2024", opponent: "Shara Magomedov", result: "L", method: "TKO (Punches)", round: 3, time: "2:27", event: "UFC on ABC 5" },
@@ -28362,18 +28352,6 @@ const FIGHT_HISTORY = {
     { date: "Oct 1, 2022", opponent: "Bruno Victor", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:16", event: "Shooto Brazil 104" },
     { date: "Jul 2, 2022", opponent: "Douglas Gomes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:34", event: "Shooto Brazil 102" },
     { date: "Apr 9, 2022", opponent: "Maycon Moraes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:58", event: "Shooto Brazil 100" }
-  ],
-  "Mantas Kondratavicus": [
-    { date: "Mar 21, 2026", opponent: "Antonio Trocoli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy (London)" },
-    { date: "Nov 8, 2025", opponent: "Gregory Rodrigues", result: "L", method: "TKO (Punches)", round: 1, time: "1:20", event: "UFC Fight Night: Bonfim vs. Brown" },
-    { date: "Sep 14, 2024", opponent: "Sedriques Dumas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "Jun 22, 2024", opponent: "Bo Nickal", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:33", event: "UFC on ABC 5" },
-    { date: "Dec 2, 2023", opponent: "Cody Brundage", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "3:54", event: "UFC on ESPN: Sandhagen vs. Font" },
-    { date: "Jun 10, 2023", opponent: "Gerald Meerschaert", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:00", event: "UFC 289: Nunes vs. Aldana (debut)" },
-    { date: "Jan 21, 2023", opponent: "Sven Engelen", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 6 Week 8 (contract)" },
-    { date: "Sep 3, 2022", opponent: "Bogdan Grad", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FEN 50" },
-    { date: "Apr 23, 2022", opponent: "Artur Troianovskis", result: "W", method: "TKO (Punches)", round: 1, time: "0:45", event: "FEN 46" },
-    { date: "Nov 13, 2021", opponent: "Dawid Florczak", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FEN 42" }
   ],
   "Pam Sorensen": [
     { date: "Nov 1, 2025", opponent: "Talita Alencar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vegas 110" },
