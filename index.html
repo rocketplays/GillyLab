@@ -3149,6 +3149,7 @@
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
+ { name: "Danny Silva", division: "FW", rank: "NR", record: "11-2-0", initials: "DSI", country: "USA" },
  { name: "Diego Lopes", division: "FW", rank: "#2", record: "27-8-0", initials: "DLO", country: "Brazil" },
  { name: "Lerone Murphy", division: "FW", rank: "#3", record: "17-1-1", initials: "LM", country: "UK" },
  { name: "Yair Rodríguez", division: "FW", rank: "#5", record: "20-5-0", initials: "YR", country: "Mexico" },
@@ -3935,6 +3936,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+ "Danny Silva": { ht:"5'11\"", dob:"1997-01-30", reach:'70"', stance:"Switch", slpm:6.35, strAcc:"55%", sapm:7.10, strDef:"61%", kd:0.69, tdLanded:2.06, tdAcc:"36%", tdDef:"75%", subAvg:0.23, finRate:"55%", streak:1, gym:"Bloodline Combat" },
  "Montse Rendon": { ht:"5'8\"", dob:"1989-03-16", reach:'68"', stance:"Orthodox", slpm:2.95, strAcc:"28%", sapm:3.65, strDef:"57%", kd:0.00, tdLanded:1.91, tdAcc:"38%", tdDef:"86%", subAvg:0.32, finRate:"0%", streak:0, gym:"ECR Fight Center" },
  "Bolaji Oki": { ht:"5'10\"", dob:"1995-11-15", reach:'73"', stance:"Orthodox", slpm:6.42, strAcc:"45%", sapm:5.12, strDef:"61%", kd:0.51, tdLanded:1.02, tdAcc:"57%", tdDef:"75%", subAvg:0.00, finRate:"60%", streak:0, gym:"Valon Team" },
  "SuYoung You": { ht:"5'6\"", dob:"1995-12-11", reach:'65"', stance:"Orthodox", slpm:2.15, strAcc:"47%", sapm:2.01, strDef:"69%", kd:0.00, tdLanded:4.26, tdAcc:"38%", tdDef:"67%", subAvg:0.37, finRate:"50%", streak:0, gym:"Black Combat" },
@@ -6291,6 +6293,16 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Danny Silva": [
+    { opponent: "Kurtis Campbell", odds: 210 },
+    { opponent: "Kevin Vallejos", odds: 320 },
+    { opponent: "Lucas Almeida", odds: -260 },
+    { opponent: "Josh Culibao", odds: 165 },
+    { opponent: "Angel Pacheco", odds: -205 },
+    { opponent: "Alex Valentino Arteaga", odds: -150 },
+    { opponent: "Canaan Kawaihae", odds: -160 },
+    { opponent: "Elijah Leggett", odds: 150 }
+  ],
   "Montse Rendon": [
     { opponent: "Bia Mesquita", odds: 450 },
     { opponent: "Alice Pereira", odds: 130 },
@@ -13709,6 +13721,21 @@
 };
 
 const FIGHT_HISTORY = {
+  "Danny Silva": [
+    { date: "Mar 21, 2026", opponent: "Kurtis Campbell", result: "W", method: "TKO (Punches)", round: 2, time: "0:31", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Aug 2, 2025", opponent: "Kevin Vallejos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Taira vs. Park", org: "UFC" },
+    { date: "Mar 1, 2025", opponent: "Lucas Almeida", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Kape vs. Almabayev", org: "UFC" },
+    { date: "Mar 16, 2024", opponent: "Josh Culibao", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Tuivasa vs. Tybura", org: "UFC" },
+    { date: "Sep 26, 2023", opponent: "Angel Pacheco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 7 Week 8", org: "UFC" },
+    { date: "Jun 23, 2023", opponent: "Alex Valentino Arteaga", result: "W", method: "TKO (Punches)", round: 1, time: "4:13", event: "LFA 161", org: "LFA" },
+    { date: "Dec 9, 2022", opponent: "Canaan Kawaihae", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "LFA 148", org: "LFA" },
+    { date: "Jul 29, 2022", opponent: "Elijah Leggett", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 137", org: "LFA" },
+    { date: "Apr 14, 2022", opponent: "Geoffrey Mellor", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Club OC 71", org: "FCOC" },
+    { date: "Feb 20, 2020", opponent: "Dennis Fisher", result: "W", method: "TKO (Punches)", round: 2, time: "3:37", event: "Fight Club OC 62", org: "FCOC" },
+    { date: "Sep 20, 2019", opponent: "Alejandro Corrales", result: "W", method: "TKO (Punches)", round: 3, time: "2:08", event: "Combate Americas", org: "Combate" },
+    { date: "Aug 22, 2019", opponent: "Paul Amaro", result: "W", method: "TKO (Cut)", round: 2, time: "3:09", event: "Fight Club OC 59", org: "FCOC" },
+    { date: "May 25, 2019", opponent: "Johnny Soto", result: "W", method: "TKO (Punches)", round: 3, time: "4:14", event: "CFFC 75", org: "CFFC" }
+  ],
   "Montse Rendon": [
     { date: "Mar 14, 2026", opponent: "Bia Mesquita", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:07", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Sep 13, 2025", opponent: "Alice Pereira", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Noche UFC: Lopes vs. Silva", org: "UFC" },
@@ -30679,6 +30706,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Danny Silva": [
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2023 (Season 7; decision over Angel Pacheco)", detail: null },
+    { icon: "🥊", title: "Regional MMA champion (ranked No. 2 in California)", detail: null },
+  ],
   "Luan Lacerda": [
     { icon: "🏆", title: "Shooto Brazil Bantamweight Champion", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu (Nova União, under André Pederneiras)", detail: null },
