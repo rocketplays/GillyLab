@@ -479,6 +479,29 @@
       letter-spacing: 0.08em;
     }
 
+    /* Inline countdown: sits on the event-title line, dot-separated, instead of
+       a separate block off to the right (home featured header + carousel). */
+    .event-title-row {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      column-gap: 0.55rem;
+      row-gap: 0.1rem;
+    }
+    .event-cd-sep { color: var(--muted); font-size: 1.3rem; line-height: 1; }
+    .event-title-row .event-countdown { display: inline-flex; align-items: baseline; gap: 0.4rem; text-align: left; }
+    .event-title-row .countdown-label { font-size: 0.62rem; white-space: nowrap; }
+    .event-title-row .countdown-time { font-size: 1.2rem; }
+    .event-header.gl-past-view .event-cd-sep { display: none; }
+    /* On the gold/freedom PPV cards the old block had a gradient pill; inline,
+       just keep the glowing colored text. */
+    .freedom-card .event-title-row .event-countdown,
+    .numbered-card .event-title-row .event-countdown,
+    .event-header.freedom-card .event-countdown,
+    .event-header.numbered-card .event-countdown {
+      background: none !important; border: none !important; padding: 0 !important;
+    }
+
     /* ── PAST-EVENT DROPDOWN (homepage) ── */
     .gl-prev-wrap {
       margin-top: 0.85rem;
@@ -556,17 +579,9 @@
     /* Past events have no countdown — hide the "Result / FINAL" box entirely. */
     .event-header.gl-past-view .event-countdown { display: none; }
     @media (max-width: 768px) {
-      /* On mobile, give the event name / location / dropdown the full width and
-         float the countdown to the top-right corner (out of flow) so it sits
-         beside the title — not above or below the whole card. The name reserves
-         space on its right so it clears the countdown; that reservation is
-         removed on past events, where the countdown is hidden. */
-      #page-home > .event-header { flex-direction: column; align-items: stretch; position: relative; }
+      /* The countdown is inline on the title row (see .event-title-row); just
+         keep the event-info full width so the dropdown below spans the row. */
       #page-home > .event-header .event-info { width: 100%; min-width: 0; }
-      #page-home > .event-header .event-countdown { position: absolute; top: 0; right: 0; margin: 0; }
-      #page-home > .event-header .event-name { padding-right: 7rem; }
-      #page-home > .event-header.gl-past-view .event-name { padding-right: 0; }
-      .countdown-label { white-space: nowrap; }
       .gl-prev-wrap { width: 100%; }
       .gl-prev-select { width: 100%; max-width: 100%; }
       .gl-name-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 0; }
@@ -2703,12 +2718,15 @@
 
   <div class="event-header">
     <div class="event-info">
-      <div class="event-name" id="home-event-name">UFC Fight Night — Allen vs. Costa</div>
+      <div class="event-title-row">
+        <div class="event-name" id="home-event-name">UFC Fight Night — Allen vs. Costa</div>
+        <span class="event-cd-sep" aria-hidden="true">·</span>
+        <div class="event-countdown">
+          <span class="countdown-label">Days Until Event</span>
+          <span class="countdown-time" id="countdown">—</span>
+        </div>
+      </div>
       <div class="event-details" id="home-event-details">📍 Prudential Center · Newark, NJ  ·  Saturday, May 9, 2026</div>
-    </div>
-    <div class="event-countdown">
-      <div class="countdown-label">Days Until Event</div>
-      <div class="countdown-time" id="countdown">—</div>
     </div>
   </div>
 
@@ -35737,12 +35755,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<div style="max-width:1300px;margin:0 auto;">' +
           '<div class="event-header">' +
             '<div class="event-info">' +
-              '<div class="event-name">' + flagSVG + nameHTML + '</div>' +
+              '<div class="event-title-row">' +
+                '<div class="event-name">' + flagSVG + nameHTML + '</div>' +
+                '<span class="event-cd-sep" aria-hidden="true">·</span>' +
+                '<div class="event-countdown">' +
+                  '<span class="countdown-label">Days Until Event</span>' +
+                  '<span class="countdown-time" id="cd-' + evt.slug + '">—</span>' +
+                '</div>' +
+              '</div>' +
               '<div class="event-details">' + (evt.details || '') + '</div>' +
-            '</div>' +
-            '<div class="event-countdown">' +
-              '<div class="countdown-label">Days Until Event</div>' +
-              '<div class="countdown-time" id="cd-' + evt.slug + '">—</div>' +
             '</div>' +
           '</div>' +
           sectionsHTML +
