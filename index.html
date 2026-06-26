@@ -3174,6 +3174,7 @@
  { name: "Giga Chikadze", division: "FW", rank: "NR", record: "15-6-0", initials: "GCH", country: "Georgia" },
  { name: "Manolo Zecchini", division: "FW", rank: "NR", record: "11-5-0", initials: "MZE", country: "Italy" },
  { name: "Jose Delano", division: "FW", rank: "NR", record: "17-3-0", initials: "JDE", country: "Brazil" },
+ { name: "Robert Ruchala", division: "FW", rank: "NR", record: "11-3-0", initials: "RRU", country: "Poland" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Justin Gaethje", division: "LW", rank: "#IC", record: "27-5-0", initials: "JG", country: "USA" },
@@ -4477,6 +4478,7 @@
  "Brendson Ribeiro": { ht:"6'3\"", dob:"1996-08-09", reach:'81"', stance:"Orthodox", slpm:3.06, strAcc:"43%", sapm:4.00, strDef:"53%", kd:0.60, tdLanded:0.90, tdAcc:"43%", tdDef:"18%", subAvg:0.60, finRate:"94%", streak:0, gym:"Brazilian TKO" },
  "Manolo Zecchini": { ht:"5'8\"", dob:"1996-10-22", reach:'68"', stance:"Orthodox", slpm:3.72, strAcc:"28%", sapm:12.82, strDef:"45%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"91%", streak:0, gym:"Jackson-Wink MMA" },
  "Jose Delano": { ht:"5'8\"", dob:"1996-09-11", reach:'70"', stance:"Orthodox", slpm:9.73, strAcc:"66%", sapm:2.53, strDef:"73%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"60%", subAvg:0.00, finRate:"53%", streak:5, gym:"Brazilian Top Team" },
+ "Robert Ruchala": { ht:"5'10\"", dob:"1998-05-15", reach:'72"', stance:"Switch", slpm:3.37, strAcc:"34%", sapm:5.20, strDef:"45%", kd:0.00, tdLanded:1.00, tdAcc:"22%", tdDef:"71%", subAvg:0.00, finRate:"55%", streak:0, gym:"American Top Team" },
  "Bruna Brasil": { ht:"5'6\"", dob:"1993-09-07", reach:'65.5"', stance:"Orthodox", slpm:2.56, strAcc:"57%", sapm:3.75, strDef:"52%", kd:0.12, tdLanded:1.23, tdAcc:"53%", tdDef:"57%", subAvg:0.12, finRate:"45%", streak:0, gym:"Fighting Nerds" },
  "Bruno Lopes": { ht:"6'2\"", dob:"1993-04-24", reach:'74.5"', stance:"Orthodox", slpm:2.88, strAcc:"43%", sapm:4.21, strDef:"54%", kd:0.00, tdLanded:1.93, tdAcc:"22%", tdDef:"100%", subAvg:0.00, finRate:"79%", streak:0, gym:"China Team" },
  "Julius Walker": { ht:"6'4\"", dob:"1999-07-16", reach:'78"', stance:"Orthodox", slpm:3.73, sapm:4.03, strAcc:"54%", tdAcc:"38%", subAvg:0.0, strDef:"43%", kd:0.41, tdDef:"100%", finRate:"86%", streak:0, tdLanded:4.09, gym:"Team Fusion" },
@@ -12433,6 +12435,18 @@
   "Manolo Zecchini": [
     { opponent: "Tommy McMillen", odds: 550 },
     { opponent: "Morgan Charrière", odds: 273 }
+  ],
+  "Robert Ruchala": [
+    { opponent: "Jose Delano", odds: 190 },
+    { opponent: "William Gomis", odds: 225 },
+    { opponent: "Kacper Formela", odds: -275 },
+    { opponent: "Patryk Kaczmarczyk", odds: -163 },
+    { opponent: "Salahdine Parnasse", odds: 300 },
+    { opponent: "Lom-Ali Eskiev", odds: -105 },
+    { opponent: "Damian Stasiak", odds: -206 },
+    { opponent: "Michele Baiano", odds: -388 },
+    { opponent: "Patryk Kaczmarczyk", odds: 123 },
+    { opponent: "Daniel Bazant", odds: -595 }
   ],
   "Jose Delano": [
     { opponent: "Robert Ruchala", odds: -240 },
@@ -26898,6 +26912,22 @@ const FIGHT_HISTORY = {
     { date: "Jul 1, 2017", opponent: "Sebastian Przybysz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACB 63" },
     { date: "Sep 23, 2017", opponent: "Blazej Majdan", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:03", event: "Spartan Fight 8" }
   ],
+  "Robert Ruchala": [
+    { date: "Apr 4, 2026", opponent: "Jose Delano", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Sep 6, 2025", opponent: "William Gomis", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Imavov vs. Borralho (UFC debut)", org: "UFC" },
+    { date: "Nov 16, 2024", opponent: "Kacper Formela", result: "W", method: "KO (Punches)", round: 3, time: "2:44", event: "KSW 100 (interim FW title)", org: "KSW" },
+    { date: "May 11, 2024", opponent: "Patryk Kaczmarczyk", result: "W", method: "KO (Punches)", round: 1, time: "0:59", event: "KSW 94 (interim FW title)", org: "KSW" },
+    { date: "Aug 19, 2023", opponent: "Salahdine Parnasse", result: "L", method: "TKO (Punches)", round: 4, time: "4:42", event: "KSW 85 (FW title unification)", org: "KSW" },
+    { date: "Mar 17, 2023", opponent: "Lom-Ali Eskiev", result: "W", method: "KO (Punches)", round: 5, time: "4:35", event: "KSW 80 (interim FW title)", org: "KSW" },
+    { date: "Oct 14, 2022", opponent: "Damian Stasiak", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "KSW 75", org: "KSW" },
+    { date: "Apr 23, 2022", opponent: "Michele Baiano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 69", org: "KSW" },
+    { date: "Oct 23, 2021", opponent: "Patryk Kaczmarczyk", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 64", org: "KSW" },
+    { date: "Jan 30, 2021", opponent: "Daniel Bazant", result: "W", method: "Submission (Armbar)", round: 3, time: "3:37", event: "KSW 58", org: "KSW" },
+    { date: "Nov 14, 2020", opponent: "Michal Domin", result: "W", method: "Submission (Armbar)", round: 1, time: "4:59", event: "KSW 56", org: "KSW" },
+    { date: "Jul 25, 2020", opponent: "Pawel Szumlas", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:37", event: "Wieczór Walk 6" },
+    { date: "Dec 14, 2019", opponent: "Dawid Kareta", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Wieczór Walk 5" },
+    { date: "Nov 9, 2019", opponent: "Mariusz Szyja", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Octagon No Mercy 8" }
+  ],
   "Jose Delano": [
     { date: "Apr 4, 2026", opponent: "Robert Ruchala", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan (UFC debut)", org: "UFC" },
     { date: "Aug 19, 2025", opponent: "Manuel Exposito", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 9.2 (contract)", org: "UFC" },
@@ -31571,6 +31601,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Open FC (Open Fighting Championship) Light Heavyweight Championship — 1 reign (won Jul 3, 2022 vs. Vladimir Seliverstov, OFC 20, Split Decision)", detail: null },
     { icon: "🥇", title: "Asian Judo Champion (per UFC Q&A — listed as grappling discipline accolade; no BJJ rank on record)", detail: null },
     { icon: "🥋", title: "Kyrgyz National Champion — Judo & Sambo (per UFC Q&A)", detail: null },
+  ],
+  "Robert Ruchala": [
+    { icon: "🏆", title: "2× KSW Interim Featherweight Champion — won the interim title at KSW 80 (Mar 17, 2023, KO of Lom-Ali Eskiev R5); regained it at KSW 94 (May 11, 2024, KO of Patryk Kaczmarczyk R1) and defended at KSW 100 (Nov 16, 2024 vs. Kacper Formela)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Brown Belt — multiple-time Polish BJJ champion across purple, brown & black belt divisions (per UFC Q&A)", detail: null },
+    { icon: "🏅", title: "Only Polish featherweight on the UFC roster", detail: null },
   ],
   "Jose Delano": [
     { icon: "🏆", title: "Shooto Brasil Featherweight Champion — won vacant title Nov 8, 2020 vs. Luciano Benício (Shooto Brazil 103)", detail: null },
