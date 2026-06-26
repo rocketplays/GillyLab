@@ -3745,6 +3745,7 @@
  { name: "Michelle Montague", division: "WBW", rank: "#14", record: "8-0-0", initials: "MMQ", country: "New Zealand" },
  { name: "Bia Mesquita", division: "WBW", rank: "NR", record: "8-0-0", initials: "BMS", country: "Brazil" },
  { name: "Montse Rendon", division: "WBW", rank: "NR", record: "7-2-0", initials: "MRN", country: "Mexico" },
+ { name: "Alice Pereira", division: "WBW", rank: "NR", record: "7-1-0", initials: "APE", country: "Brazil" },
  { name: "Melissa Mullins", division: "WBW", rank: "NR", record: "7-3-0", initials: "MMU", country: "UK" },
  { name: "Lee Yi-sak", division: "MW", rank: "NR", record: "9-3-0", initials: "LYS", country: "South Korea" },
  { name: "Luis Felipe Dias", division: "MW", rank: "NR", record: "17-6-0", initials: "LFD", country: "Brazil" },
@@ -4572,6 +4573,7 @@
  "Alessandro Costa": { ht:"5'4\"", dob:"1996-01-28", reach:'67"', stance:"Orthodox", slpm:3.73, strAcc:"45%", sapm:3.72, strDef:"57%", kd:0.79, tdLanded:0.79, tdAcc:"27%", tdDef:"86%", subAvg:0.40, finRate:"81%", streak:2, gym:"Brazilian Warriors BJJ" },
  "Darrius Flowers": { ht:"5'9\"", dob:"1994-08-25", reach:'71"', stance:"Orthodox", slpm:3.07, strAcc:"50%", sapm:5.49, strDef:"44%", kd:0.00, tdLanded:0.98, tdAcc:"44%", tdDef:"64%", subAvg:0.00, finRate:"77%", streak:1, gym:"Uprising MMA" },
  "Lando Vannata": { ht:"5'9\"", dob:"1992-03-14", reach:'71"', stance:"Orthodox", slpm:4.52, strAcc:"45%", sapm:4.76, strDef:"55%", kd:0.50, tdLanded:1.09, tdAcc:"36%", tdDef:"69%", subAvg:0.30, finRate:"75%", streak:0, gym:"Joel Diaz Boxing" },
+ "Alice Pereira": { ht:"5'10\"", dob:"2005-12-20", reach:'71"', stance:"Orthodox", slpm:2.83, strAcc:"37%", sapm:3.11, strDef:"67%", kd:0.61, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"86%", streak:1, gym:"Life MMA / Portugal Top Team" },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.66, tdAcc:"46%", subAvg:1.3, strDef:"55%", kd:0.0, tdDef:"37%", finRate:"N/A", streak:0, tdLanded:1.99 },
  "Edgar Chairez": { ht:"5'7\"", dob:"1996-01-27", reach:'71"', stance:"Orthodox", slpm:3.65, strAcc:"45%", sapm:4.75, strDef:"46%", kd:0.22, tdLanded:0.00, tdAcc:"0%", tdDef:"39%", subAvg:1.31, finRate:"93%", streak:3, gym:"Entram Gym" },
  "Daniel Lacerda": { ht:"5'6\"", dob:"1996-06-05", reach:'70"', stance:"Switch", slpm:3.95, tdAcc:"36%", subAvg:0.5, strDef:"45%", kd:0.2, tdDef:"58%", finRate:"60%", streak:0, tdLanded:1.23 },
@@ -13059,6 +13061,10 @@
     { opponent: "Ode Osbourne", odds: -350 },
     { opponent: "Daniel Barez", odds: -400 },
     { opponent: "Muhammad Mokaev", odds: 275 }
+  ],
+  "Alice Pereira": [
+    { opponent: "Hailey Cowan", odds: -158 },
+    { opponent: "Montse Rendon", odds: -157 }
   ],
   "Lando Vannata": [
     { opponent: "Darrius Flowers", odds: -250 },
@@ -28615,6 +28621,16 @@ const FIGHT_HISTORY = {
     { date: "Apr 10, 2021", opponent: "Marcelo Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:04", event: "Shooto Brazil 90" },
     { date: "Nov 21, 2020", opponent: "Carlos Junior", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:31", event: "Shooto Brazil 88" }
   ],
+  "Alice Pereira": [
+    { date: "Apr 4, 2026", opponent: "Hailey Cowan", result: "W", method: "KO (Punches)", round: 2, time: "4:24", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Sep 13, 2025", opponent: "Montse Rendon", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Noche UFC: Lopes vs. Silva (UFC debut)", org: "UFC" },
+    { date: "Dec 14, 2024", opponent: "Samara Santos", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Cage Masters FC 2 (title)" },
+    { date: "Aug 31, 2024", opponent: "Karla Thais", result: "W", method: "TKO (Punches)", round: 2, time: "1:13", event: "Qualify Combat 14" },
+    { date: "Jul 27, 2024", opponent: "Hosana Enny", result: "W", method: "KO (Punches)", round: 1, time: "0:11", event: "Dubai Fight 2" },
+    { date: "Apr 28, 2024", opponent: "Kristiane Silva", result: "W", method: "TKO (Punches)", round: 1, time: "2:50", event: "Demo Fight 19" },
+    { date: "Nov 25, 2023", opponent: "Sharolayne Almeida", result: "W", method: "TKO (Punches)", round: 1, time: "4:30", event: "Tucano Fight Combat 3" },
+    { date: "Aug 18, 2023", opponent: "Raquel de Andrade", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:04", event: "Candeias MMA Experience" }
+  ],
   "Lando Vannata": [
     { date: "Apr 4, 2026", opponent: "Darrius Flowers", result: "L", method: "TKO (Punches)", round: 2, time: "0:52", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
     { date: "Apr 15, 2023", opponent: "Daniel Zellhuber", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. Allen", org: "UFC" },
@@ -31681,6 +31697,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "2× KSW Interim Featherweight Champion — won the interim title at KSW 80 (Mar 17, 2023, KO of Lom-Ali Eskiev R5); regained it at KSW 94 (May 11, 2024, KO of Patryk Kaczmarczyk R1) and defended at KSW 100 (Nov 16, 2024 vs. Kacper Formela)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Brown Belt — multiple-time Polish BJJ champion across purple, brown & black belt divisions (per UFC Q&A)", detail: null },
     { icon: "🏅", title: "Only Polish featherweight on the UFC roster", detail: null },
+  ],
+  "Alice Pereira": [
+    { icon: "🏆", title: "Cage Masters FC Champion — won the title Dec 14, 2024 vs. Samara Santos (Cage Masters FC 2, 5-round decision)", detail: null },
+    { icon: "🏅", title: "Youngest fighter on the current UFC roster (born Dec 20, 2005)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Blue Belt — Copa Brasil Northeast champion (weight class & absolute); per UFC Q&A", detail: null },
+    { icon: "🥊", title: "Kickboxing Purple Belt & Sanda State Champion (Bahia) — per UFC Q&A", detail: null },
   ],
   "Lando Vannata": [
     { icon: "⭐", title: "5× UFC post-fight bonus — 4× Fight of the Night (incl. his 2016 debut vs. Tony Ferguson) + 1× Performance of the Night (spinning-wheel-kick KO of John Makdessi, UFC 206)", detail: null },
