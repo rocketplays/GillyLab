@@ -554,10 +554,13 @@
       text-align: center; line-height: 1.2; white-space: nowrap;
     }
     @media (max-width: 768px) {
-      .event-info { min-width: 0; }
-      /* Keep the countdown at its natural size so the full-width dropdown in
-         .event-info can't squeeze "Days Until Event" into an awkward wrap. */
-      .event-countdown { flex-shrink: 0; margin-left: 0.75rem; }
+      /* Stack the home event header on mobile so the location/date and the
+         full-width dropdown get the full width (matching the clean past-event
+         look) instead of being squeezed beside the countdown. The countdown
+         becomes a compact badge at the top-right. */
+      #page-home > .event-header { flex-direction: column; align-items: stretch; }
+      #page-home > .event-header .event-info { width: 100%; min-width: 0; }
+      #page-home > .event-header .event-countdown { order: -1; align-self: flex-end; margin: 0 0 0.5rem; }
       .countdown-label { white-space: nowrap; }
       .gl-prev-wrap { width: 100%; }
       .gl-prev-select { width: 100%; max-width: 100%; }
@@ -34262,7 +34265,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     //  - "UFC Freedom 250" -> red/white/blue .freedom-card with flag badge
     //  - Numbered PPVs ("UFC 329", "UFC 330", ...) -> gold .numbered-card
     const isFreedom = (evt.name || '').toLowerCase().includes('freedom') || (evt.slug || '').toLowerCase().includes('freedom');
-    const isNumbered = !isFreedom && /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
+    const isNumbered = !isFreedom && /^UFC\s+\d+\b/i.test((evt.name || '').trim());
     const specialClass = isFreedom ? 'freedom-card' : (isNumbered ? 'numbered-card' : '');
     const headerEl = document.querySelector('#page-home > .event-header');
     if (headerEl) {
@@ -35721,7 +35724,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // treatment to make them stand out from Fight Night / themed cards.
       // Matches "UFC" + number only (e.g. "UFC 329"), so themed numbered
       // events like "UFC Freedom 250" fall through to their own special style.
-      const isNumbered = !isFreedom && /^UFC\s+\d+\s*$/i.test((evt.name || '').trim());
+      const isNumbered = !isFreedom && /^UFC\s+\d+\b/i.test((evt.name || '').trim());
       const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : ''));
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
       const nameHTML = (isFreedom || isNumbered) ? evt.name : highlightFightNight(evt.name);
@@ -38280,15 +38283,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       wrap.appendChild(label);
       wrap.appendChild(sel);
-      if (recentStamp) {
-        const upd = document.createElement('span');
-        upd.className = 'gl-prev-updated';
-        let txt;
-        try { txt = new Date(recentStamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }); }
-        catch (_) { txt = recentStamp; }
-        upd.textContent = 'Results data updated ' + txt;
-        wrap.appendChild(upd);
-      }
       info.appendChild(wrap);
     };
 
@@ -38314,6 +38308,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       .catch(() => {})
       .finally(() => build(pool));
   }
+
+  // Touch devices apply :hover on tap and leave it stuck until you tap
+  // elsewhere — so the green highlight on the Fight Info toggle and the past-
+  // events dropdown lingers after collapsing/selecting. On scroll, briefly drop
+  // pointer-events on the body: the browser recomputes the hover target to
+  // nothing and clears the stuck :hover. We also blur the dropdown so its focus
+  // highlight clears too. The green still shows on tap (no scroll yet).
+  (function () {
+    let t;
+    window.addEventListener('scroll', () => {
+      const sel = document.getElementById('gl-prev-select');
+      if (sel && document.activeElement === sel) sel.blur();
+      document.body.style.pointerEvents = 'none';
+      clearTimeout(t);
+      t = setTimeout(() => { document.body.style.pointerEvents = ''; }, 120);
+    }, { passive: true });
+  })();
 
   async function initDynamicPages() {
     let evt = null;
