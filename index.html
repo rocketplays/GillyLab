@@ -3429,7 +3429,7 @@
  { name: "Justin Tafa", division: "HW", rank: "NR", record: "7-5-0", initials: "JTF", country: "Australia" },
  { name: "Josh Hokit", division: "HW", rank: "#5", record: "10-0-0", initials: "JHK", country: "USA" },
  { name: "Mick Parkin", division: "HW", rank: "#15", record: "10-1-0", initials: "MPR", country: "UK" },
- { name: "Iwo Baraniewski", division: "HW", rank: "NR", record: "13-7-1", initials: "IWB", country: "Poland" },
+ { name: "Iwo Baraniewski", division: "LHW", rank: "NR", record: "9-0-0", initials: "IWB", country: "Poland" },
  { name: "Tom Aspinall", division: "HW", rank: "NR", record: "15-3-0", initials: "TAS2", country: "UK" },
  { name: "Guilherme Pat", division: "HW", rank: "NR", record: "7-0-0", initials: "GPU", country: "Brazil" },
  { name: "Mario Pinto", division: "HW", rank: "NR", record: "12-0-0", initials: "MPT", country: "Portugal" },
@@ -4526,7 +4526,7 @@
  "Sam Patterson": { ht:"6'3\"", dob:"1996-04-30", reach:'78"', stance:"Orthodox", slpm:2.62, strAcc:"38%", sapm:3.06, strDef:"50%", kd:0.41, tdLanded:0.82, tdAcc:"50%", tdDef:"33%", subAvg:1.64, finRate:"93%", streak:0, gym:"Team Crossface" },
  "Saygid Izagakhmaev": { ht:"6'0\"", dob:"1994-09-03", reach:'74"', stance:"Orthodox", slpm:1.33, tdAcc:"40%", subAvg:0.0, strDef:"58%", kd:0.1, tdDef:"100%",finRate:"73%", streak:0, tdLanded:4.00 },
  "Thomas Petersen": { ht:"6'1\"", dob:"1995-03-30", reach:'74"', stance:"Southpaw", slpm:3.38, strAcc:"59%", sapm:2.95, strDef:"56%", kd:0.00, tdLanded:3.71, tdAcc:"50%", tdDef:"88%", subAvg:0.46, finRate:"73%", streak:1, gym:"The Striking Institute" },
- "Iwo Baraniewski": { ht:"6'0\"", dob:"1998-11-20", reach:'73"', stance:"Orthodox", slpm:14.31,tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:1.0, tdDef:"100%",finRate:"100%",streak:0, tdLanded:0.00, gym:"Aligatores Fight Club" },
+ "Iwo Baraniewski": { ht:"6'0\"", dob:"1998-11-20", reach:'73"', stance:"Orthodox", slpm:11.35, strAcc:"58%", sapm:8.65, strDef:"53%", kd:20.27, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:9, gym:"Aligatores Fight Club" },
  "Nurullo Aliev": { ht:"5'10\"", dob:"2000-12-08", reach:'72"', stance:"Orthodox", slpm:2.72, tdAcc:"43%", subAvg:0.5, strDef:"58%", kd:0.1, tdDef:"80%", finRate:"73%", streak:0, tdLanded:2.12 },
  "Murtazali Magomedov": { ht:"5'9\"", dob:"1999-08-26", reach:'70.5"', stance:"Orthodox", slpm:4.83, strAcc:"48%", sapm:2.07, strDef:"81%", kd:5.17, tdLanded:5.17, tdAcc:"50%", tdDef:null, subAvg:5.17, finRate:"100%", streak:11 },
  "Lone'er Kavanagh": { ht:"5'6\"", dob:"1999-06-09", reach:'67"', stance:"Orthodox", slpm:4.13, strAcc:"49%", sapm:3.49, strDef:"57%", kd:0.22, tdLanded:1.12, tdAcc:"45%", tdDef:"94%", subAvg:0.22, finRate:"50%", streak:1, gym:"GB Top Team" },
@@ -7034,7 +7034,10 @@
     { opponent: "Jorge Medina", odds: -550 }
   ],
   "Iwo Baraniewski": [
-    { opponent: "Ibo Aslan", odds: -400 }
+    { opponent: "Junior Tafa", odds: -450 },
+    { opponent: "Austen Lane", odds: -700 },
+    { opponent: "Ibo Aslan", odds: -210 },
+    { opponent: "Mahamed Aly", odds: 210 }
   ],
   "Matt Schnell": [
     { opponent: "Joseph Morales", odds: -275 },
@@ -15373,12 +15376,12 @@ const FIGHT_HISTORY = {
     { date: "Jun 6, 2026", opponent: "Junior Tafa", result: "W", method: "TKO (Leg kick and punches)", round: 1, time: "1:25", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Mar 21, 2026", opponent: "Austen Lane", result: "W", method: "TKO (Punches)", round: 1, time: "0:28", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
     { date: "Dec 6, 2025", opponent: "İbo Aslan", result: "W", method: "KO (Punches)", round: 1, time: "1:29", event: "UFC 323", org: "UFC" },
-    { date: "Sep 16, 2025", opponent: "Mahamed Aly", result: "W", method: "KO (Punches)", round: 1, time: "0:20", event: "Dana White's Contender Series 82", org: "UFC" },
-    { date: "Mar 14, 2025", opponent: "Kamil Stachura", result: "W", method: "TKO (Elbows and punches)", round: 1, time: "3:02", event: "Babilon MMA 51" },
-    { date: "Nov 22, 2024", opponent: "Sylwester Borys", result: "W", method: "TKO (Punches)", round: 1, time: "3:01", event: "Babilon MMA 49" },
-    { date: "Sep 28, 2024", opponent: "Cemey dos Santos", result: "W", method: "TKO (Punches)", round: 1, time: "1:11", event: "Babilon MMA 47" },
-    { date: "Jan 27, 2024", opponent: "Miroslav Uchytil", result: "W", method: "Submission (Armbar)", round: 1, time: "3:54", event: "Babilon MMA 42" },
-    { date: "Sep 30, 2023", opponent: "Kamil Bartosiński", result: "W", method: "Submission (Armbar)", round: 1, time: "3:17", event: "Babilon MMA 39" }
+    { date: "Sep 16, 2025", opponent: "Mahamed Aly", result: "W", method: "KO (Punches)", round: 1, time: "0:20", event: "Dana White's Contender Series 9 Week 6", org: "UFC" },
+    { date: "Mar 14, 2025", opponent: "Kamil Stachura", result: "W", method: "TKO (Elbows and punches)", round: 1, time: "3:02", event: "Babilon MMA 51", org: "Babilon" },
+    { date: "Nov 22, 2024", opponent: "Sylwester Borys", result: "W", method: "TKO (Punches)", round: 1, time: "3:01", event: "Babilon MMA 49", org: "Babilon" },
+    { date: "Sep 28, 2024", opponent: "Cemey dos Santos", result: "W", method: "TKO (Punches)", round: 1, time: "1:11", event: "Babilon MMA 47", org: "Babilon" },
+    { date: "Jan 27, 2024", opponent: "Miroslav Uchytil", result: "W", method: "Submission (Armbar)", round: 1, time: "3:54", event: "Babilon MMA 42", org: "Babilon" },
+    { date: "Sep 30, 2023", opponent: "Kamil Bartosiński", result: "W", method: "Submission (Armbar)", round: 1, time: "3:17", event: "Babilon MMA 39", org: "Babilon" }
   ],
   "Matt Schnell": [
     { date: "Jun 6, 2026", opponent: "Alessandro Costa", result: "L", method: "TKO (Punches)", round: 1, time: "2:32", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
@@ -32890,6 +32893,7 @@ const ACCOLADES = {
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
   ],
   "Iwo Baraniewski": [
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; 20-second KO of Mahamed Aly)", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian jiu-jitsu", detail: null },
     { icon: "🥋", title: "Black belt in Judo", detail: null },
     { icon: "🥇", title: "GAMMA European Championships — 2024 Vysoké Tatry — 120 kg", detail: null },
