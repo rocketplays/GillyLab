@@ -3243,6 +3243,7 @@
  { name: "Marco Tulio", division: "MW", rank: "NR", record: "15-8-0", initials: "MT", country: "Brazil" },
  { name: "Brad Tavares", division: "MW", rank: "NR", record: "21-12-0", initials: "BTV", country: "USA" },
  { name: "Edmen Shahbazyan", division: "MW", rank: "NR", record: "16-6-0", initials: "ESH", country: "USA" },
+ { name: "Donte Johnson", division: "MW", rank: "NR", record: "8-0-0", initials: "DJO", country: "USA" },
  { name: "Gerald Meerschaert", division: "MW", rank: "NR", record: "37-22-0", initials: "GM", country: "USA" },
  { name: "Jun Yong Park", division: "MW", rank: "NR", record: "19-7-0", initials: "JYP", country: "South Korea" },
  { name: "Eryk Anders", division: "MW", rank: "NR", record: "18-9-0", initials: "EAN", country: "USA" },
@@ -4168,6 +4169,7 @@
  "Bo Nickal": { ht:"6'1\"", dob:"1996-01-14", reach:'76"', stance:"Southpaw", slpm:3.36, strAcc:"62%", sapm:1.93, tdAcc:"58%", subAvg:2.27, strDef:"60%", kd:0.85, tdDef:"100%", finRate:"89%", streak:1, tdLanded:3.12, gym:"American Top Team" },
  "Gerald Meerschaert": { ht:"6'1\"", dob:"1987-12-18", reach:'77"', stance:"Southpaw", slpm:3.01, tdAcc:"30%", subAvg:1.4, strDef:"53%", kd:0.1, tdDef:"53%", finRate:"65%", streak:0, tdLanded:1.82, gym:"Agallar Combative Systems" },
  "Edmen Shahbazyan": { ht:"6'2\"", dob:"1997-11-20", reach:'74"', stance:"Orthodox", slpm:4.06, strAcc:"49%", sapm:3.87, strDef:"50%", kd:0.95, tdLanded:1.43, tdAcc:"36%", tdDef:"67%", subAvg:0.36, finRate:"88%", streak:0, gym:"Xtreme Couture" },
+ "Donte Johnson": { ht:"5'8\"", dob:"1999-01-25", reach:'74"', stance:"Southpaw", slpm:3.11, strAcc:"48%", sapm:2.00, strDef:"62%", kd:0.67, tdLanded:2.00, tdAcc:"100%", tdDef:"75%", subAvg:0.67, finRate:"88%", streak:8, gym:"Gnosis Combat Sports" },
  "Gregory Rodrigues": { ht:"6'3\"", dob:"1992-02-17", reach:'75"', stance:"Orthodox", slpm:5.53, strAcc:"52%", sapm:4.78, strDef:"51%", kd:1.01, tdLanded:1.90, tdAcc:"35%", tdDef:"75%", subAvg:0.38, finRate:"79%", streak:3, gym:"Kill Cliff FC (2021–present)" },
  "Abus Magomedov": { ht:"6'2\"", dob:"1990-09-02", reach:'78"', stance:"Orthodox", slpm:3.07, sapm:3.43, strAcc:"49%", tdAcc:"59%", subAvg:0.40, strDef:"56%", kd:0.20, tdDef:"100%", finRate:"75%", streak:0, tdLanded:2.61, gym:"UFD Gym" },
  "Brad Tavares": { ht:'5\'11"', dob:"1987-12-21", reach:'74"', stance:"Orthodox", slpm:3.41, strAcc:"44%", sapm:3.32, strDef:"55%", kd:0.21, tdLanded:0.70, tdAcc:"27%", tdDef:"80%", subAvg:0.0, finRate:"33%", streak:0, gym:"Xtreme Couture" },
@@ -6270,6 +6272,11 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Donte Johnson": [
+    { opponent: "Cody Brundage", odds: -820 },
+    { opponent: "Sedriques Dumas", odds: -360 },
+    { opponent: "Darion Abbey", odds: -250 },
+  ],
   "Austin Bashi": [
     { opponent: "John Yannis", odds: -975 },
     { opponent: "Christian Rodriguez", odds: -270 },
@@ -13532,6 +13539,16 @@
 };
 
 const FIGHT_HISTORY = {
+  "Donte Johnson": [
+    { date: "Mar 7, 2026", opponent: "Cody Brundage", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 326", org: "UFC" },
+    { date: "Nov 1, 2025", opponent: "Sedriques Dumas", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "1:25", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
+    { date: "Aug 26, 2025", opponent: "Darion Abbey", result: "W", method: "TKO (Punches)", round: 1, time: "1:04", event: "Dana White's Contender Series: Season 9, Week 3", org: "DWCS" },
+    { date: "Jul 27, 2025", opponent: "James Ford", result: "W", method: "KO/TKO", round: 1, time: "3:37", event: "Fury Challenger Series 14" },
+    { date: "Jun 14, 2025", opponent: "Ryan Parker", result: "W", method: "KO/TKO", round: 1, time: "4:27", event: "NIF MMA: North Iowa Fights 21" },
+    { date: "Apr 19, 2025", opponent: "Jordan Seufzer", result: "W", method: "KO/TKO", round: 1, time: "1:24", event: "NAFC: Super Brawl" },
+    { date: "Mar 23, 2025", opponent: "Deontre Butts", result: "W", method: "KO/TKO", round: 1, time: "1:09", event: "Anthony Pettis FC 16: Milwaukee Fight Night 7" },
+    { date: "Aug 17, 2024", opponent: "Gabriel Sayeg", result: "W", method: "KO/TKO", round: 1, time: "0:33", event: "Anthony Pettis FC: Waukesha RMBL" }
+  ],
   "Austin Bashi": [
     { date: "Aug 2, 2025", opponent: "John Yannis", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:39", event: "UFC Fight Night: Taira vs. Park", org: "UFC" },
     { date: "Jan 11, 2025", opponent: "Christian Rodriguez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
@@ -30350,6 +30367,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Donte Johnson": [
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2025 (Season 9; 1st-round TKO of Darion Abbey)", detail: null },
+    { icon: "🏈", title: "Former college football player — University of Minnesota Duluth", detail: null },
+  ],
   "Xiao Long": [
     { icon: "🏆", title: "WLF (Wu Lin Feng) MMA Bantamweight Champion", detail: null },
     { icon: "🏅", title: "Road to UFC Season 2 Bantamweight finalist (2023–24)", detail: null },
