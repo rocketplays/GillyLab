@@ -33492,7 +33492,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    navigate('fighter');
  }
  }
- const PHOTO_MAP = {
+ // Photos load from the local /photos folder only; if a fighter has no local
+ // photo we fall back to initials. The old Wikipedia/Wikimedia URL map is kept
+ // inert below (unused) so nothing fetches from Wikipedia anymore.
+ const PHOTO_MAP = {};
+ const _PHOTO_MAP_LEGACY = {
  // ── P4P / Champions ──
  "Islam Makhachev": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Islam_Makhachev_2023.jpg/320px-Islam_Makhachev_2023.jpg",
  "Ilia Topuria": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ilia_Topuria_2024.jpg/320px-Ilia_Topuria_2024.jpg",
@@ -33665,53 +33669,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    wrap.classList.add('has-photo');
  };
  imgEl.onerror = () => {
+   // No local photo — show initials. (No Wikipedia fallback.)
    imgEl.style.display = 'none';
    wrap.classList.remove('has-photo');
-   fetchFighterPhotoFallback(name, imgEl, wrap);
+   document.getElementById('f-avatar-initials').style.display = '';
  };
  imgEl.src = localUrl;
- }
- async function fetchFighterPhotoFallback(name, imgEl, wrap) {
- // PHOTO_MAP is global
- if (PHOTO_MAP[name]) {
- imgEl.src = PHOTO_MAP[name];
- imgEl.onload = () => {
- imgEl.style.display = 'block';
- document.getElementById('f-avatar-initials').style.display = 'none';
- wrap.classList.add('has-photo');
- };
- imgEl.onerror = () => {
- // Hardcoded URL failed — try live API as fallback
- tryWikipediaAPI(name, imgEl, wrap);
- };
- } else {
- // Not in map — try live Wikipedia API (works when hosted)
- tryWikipediaAPI(name, imgEl, wrap);
- }
- }
- async function tryWikipediaAPI(name, imgEl, wrap) {
- try {
- const encoded = encodeURIComponent(name);
- const url = `https://en.wikipedia.org/w/api.php?action=query&titles=${encoded}&prop=pageimages&format=json&pithumbsize=320&origin=*`;
- const res = await fetch(url);
- const data = await res.json();
- const pages = data.query.pages;
- const page = Object.values(pages)[0];
- if (page && page.thumbnail && page.thumbnail.source) {
- imgEl.src = page.thumbnail.source;
- imgEl.onload = () => {
- imgEl.style.display = 'block';
- document.getElementById('f-avatar-initials').style.display = 'none';
- wrap.classList.add('has-photo');
- };
- imgEl.onerror = () => {
- imgEl.style.display = 'none';
- document.getElementById('f-avatar-initials').style.display = '';
- };
- }
- } catch(e) {
- // Silent fail — initials stay
- }
  }
  function openSearch() {
  document.getElementById('searchOverlay').classList.add('active');
