@@ -3457,7 +3457,7 @@
  { name: "Marcio Barbosa", division: "FW", rank: "NR", record: "17-2-0", initials: "MAR", country: "Brazil" },
  { name: "Zhu Kangjie", division: "FW", rank: "NR", record: "10-3-0", initials: "ZKJ", country: "China" },
  { name: "Jose Mauro Delano", division: "FW", rank: "NR", record: "15-3-0", initials: "JMD", country: "Brazil" },
- { name: "Lerryan Douglas", division: "FW", rank: "NR", record: "13-5-0", initials: "LDO", country: "Brazil" },
+ { name: "Lerryan Douglas", division: "FW", rank: "NR", record: "14-5-0", initials: "LDO", country: "Brazil" },
  { name: "Kai Kamaka III", division: "FW", rank: "NR", record: "18-7-1", initials: "KK3", country: "USA" },
  { name: "Tommy McMillen", division: "FW", rank: "NR", record: "10-0-0", initials: "TMC", country: "USA" },
  { name: "Austin Bashi", division: "FW", rank: "NR", record: "14-1-0", initials: "ABS", country: "USA" },
@@ -4453,7 +4453,7 @@
  "Ricky Turcios": { ht:"5'9\"", dob:"1993-06-05", reach:'71"', stance:"Orthodox", slpm:4.68, strAcc:"40%", sapm:3.84, strDef:"52%", kd:0.17, tdLanded:0.85, tdAcc:"18%", tdDef:"44%", subAvg:0.34, finRate:"31%", streak:0, gym:"Gracie Barra Woodlands" },
  "John Castaneda": { ht:"5'6\"", dob:"1991-12-18", reach:'71"', stance:"Switch", slpm:4.42, tdAcc:"37%", subAvg:0.4, strDef:"53%", kd:0.3, tdDef:"73%", finRate:"57%", streak:0, tdLanded:1.68, gym:"Bangtao Muay Thai & MMA (2023–present)" },
  // ── Featherweight (more) ──
- "Lerryan Douglas": { ht:"5'9\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:11.67,tdAcc:"87%", subAvg:0.0, strDef:"66%", kd:0.8, tdDef:"0%", finRate:"77%", streak:0, tdLanded:0.00 },
+ "Lerryan Douglas": { ht:"5'10\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:8.67, strAcc:"64%", sapm:4.82, strDef:"64%", kd:14.46, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"79%", streak:6, gym:"Bloodline CSA" },
  "Losene Keita": { ht:"5'7\"", dob:"1997-12-30", reach:'72"', stance:"Orthodox", slpm:3.47, strAcc:"44%", sapm:4.47, strDef:"62%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"63%", streak:0, gym:"Lamiro Fight Club" },
  "Giga Chikadze": { ht:'6\'0"', dob:"1988-08-25", reach:'74"', stance:"Orthodox", slpm:3.75, strAcc:"43%", sapm:3.47, strDef:"60%", kd:0.54, tdLanded:0.18, tdAcc:"33%", tdDef:"66%", subAvg:0.18, finRate:"67%", streak:0, gym:"Kings MMA" },
  "Daniel Santos": { ht:"5'7\"", dob:"1995-03-12", reach:'67"', stance:"Orthodox", slpm:4.76, tdAcc:"40%", subAvg:0.0, strDef:"51%", kd:0.3, tdDef:"73%", finRate:"64%", streak:0, tdLanded:3.01, gym:"Chute Boxe Diego Lima" },
@@ -6295,6 +6295,15 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Lerryan Douglas": [
+    { opponent: "Julian Erosa", odds: -308 },
+    { opponent: "Cam Teague", odds: -650 },
+    { opponent: "Elijah Johns", odds: 130 },
+    { opponent: "Javier Reyes", odds: 140 },
+    { opponent: "Nathan Ghareeb", odds: 130 },
+    { opponent: "Ivan Tena", odds: 210 },
+    { opponent: "Isaac Thomson", odds: 200 }
+  ],
   "Abdul-Kareem Al-Selwady": [
     { opponent: "Shem Rock", odds: 105 },
     { opponent: "Loik Radzhabov", odds: -138 },
@@ -13781,6 +13790,27 @@
 };
 
 const FIGHT_HISTORY = {
+  "Lerryan Douglas": [
+    { date: "Mar 28, 2026", opponent: "Julian Erosa", result: "W", method: "KO (Punches)", round: 1, time: "3:33", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
+    { date: "Sep 9, 2025", opponent: "Cam Teague", result: "W", method: "KO (Punches)", round: 1, time: "0:36", event: "Dana White's Contender Series: Season 9, Week 5", org: "DWCS" },
+    { date: "Jan 25, 2025", opponent: "Elijah Johns", result: "W", method: "TKO (Punches)", round: 2, time: "2:35", event: "LFA 200: Johns vs. Douglas (title)", org: "LFA" },
+    { date: "Aug 23, 2024", opponent: "Javier Reyes", result: "W", method: "KO (Punches)", round: 2, time: "2:56", event: "LFA 190: Chapolin vs. Siqueira (interim title)", org: "LFA" },
+    { date: "May 17, 2024", opponent: "Nathan Ghareeb", result: "W", method: "KO (Punches)", round: 2, time: "0:45", event: "LFA 184: Diaz vs. Lewis", org: "LFA" },
+    { date: "Nov 17, 2023", opponent: "Ivan Tena", result: "W", method: "KO (Punches)", round: 1, time: "1:38", event: "LFA 172: Davis vs. Chapolin", org: "LFA" },
+    { date: "Aug 4, 2023", opponent: "Isaac Thomson", result: "L", method: "TKO (Punches)", round: 2, time: "1:40", event: "LFA 164: Mazo vs. Lavado", org: "LFA" },
+    { date: "Apr 16, 2022", opponent: "Juan Pedroso", result: "W", method: "TKO (Punches)", round: 2, time: "3:53", event: "Brazilian Fighting Series 8" },
+    { date: "Oct 22, 2021", opponent: "James Gonzalez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ring of Combat 74" },
+    { date: "Oct 17, 2020", opponent: "Emerson Rios", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Nação Cyborg 7 (title)", org: "Nação Cyborg" },
+    { date: "May 26, 2019", opponent: "Dienner dos Reis", result: "W", method: "TKO (Punches)", round: 1, time: "3:29", event: "Adventure Fighters Tournament 17" },
+    { date: "Nov 9, 2018", opponent: "Chepe Mariscal", result: "L", method: "Submission (Triangle Choke)", round: 1, time: "1:59", event: "HFC 37: Askar vs. Dombrow" },
+    { date: "Sep 9, 2017", opponent: "Saifullah Dzhabrailov", result: "L", method: "KO", round: 1, time: "1:02", event: "ACB 69: Young Eagles 22" },
+    { date: "Nov 28, 2014", opponent: "Jose Luis Alegre", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:40", event: "Pilsen Submission MMA 1" },
+    { date: "Sep 27, 2014", opponent: "Daniel Virginio", result: "L", method: "Submission (Guillotine)", round: 1, time: "3:22", event: "XFC International 6" },
+    { date: "Feb 22, 2014", opponent: "Thiago Misael", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Talent MMA Circuit 6" },
+    { date: "Dec 14, 2013", opponent: "Ricardo Sattelmayer", result: "W", method: "Submission", round: 1, time: "N/A", event: "Real Fights 10" },
+    { date: "Sep 7, 2013", opponent: "Jardel Evangelista", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Iron Fight Combat 4" },
+    { date: "Jun 15, 2013", opponent: "Leonardo Daldegan", result: "W", method: "Submission (Armbar)", round: 1, time: "4:00", event: "Striker's House Cup 27" }
+  ],
   "Abdul-Kareem Al-Selwady": [
     { date: "Mar 21, 2026", opponent: "Shem Rock", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
     { date: "Mar 2, 2024", opponent: "Loik Radzhabov", result: "L", method: "TKO (Punches)", round: 3, time: "0:49", event: "UFC Fight Night: Rozenstruik vs. Gaziev", org: "UFC" },
@@ -30816,6 +30846,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Lerryan Douglas": [
+    { icon: "🏆", title: "LFA Featherweight Champion (won interim title, then unified)", detail: null },
+    { icon: "🏆", title: "Nação Cyborg Featherweight Champion (2020)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "Black belt in Muay Thai", detail: null },
+    { icon: "🤼", title: "2012 Brazilian freestyle wrestling national champion; 10-0 amateur MMA", detail: null },
+  ],
   "Ravena Oliveira": [
     { icon: "🏆", title: "Regional MMA champion (LKC, IFC, Piemonte Fight & Calmon Fight)", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu (Bahia State BJJ champion)", detail: null },
