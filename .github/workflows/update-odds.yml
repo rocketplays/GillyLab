@@ -48,7 +48,7 @@ jobs:
           TODAY=$(date -u '+%Y-%m-%d')
           if curl -sf \
             -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
-            "https://api.citoapi.com/api/v1/ufc/events?to=${TODAY}&includeBouts=true&limit=15" \
+            "https://api.citoapi.com/api/v1/ufc/events?to=${TODAY}&includeBouts=true&limit=20" \
             -o data/event-recent.json; then
             echo "Recent events fetched — $(wc -c < data/event-recent.json) bytes"
           else
