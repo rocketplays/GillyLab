@@ -3784,6 +3784,7 @@
  { name: "Abdul-Kareem Al-Selwady", division: "LW", rank: "NR", record: "16-4-0", initials: "AKS", country: "Palestine" },
  { name: "Kyle Nelson", division: "LW", rank: "NR", record: "17-7-1", initials: "KNE", country: "Canada" },
  { name: "Lance Gibson Jr.", division: "LW", rank: "NR", record: "10-2-0", initials: "LGJ", country: "Canada" },
+ { name: "Darrius Flowers", division: "LW", rank: "NR", record: "13-8-1", initials: "DFL", country: "USA" },
  { name: "Patchy Mix", division: "BW", rank: "NR", record: "20-4-0", initials: "PM", country: "USA" },
  { name: "JooSang Yoo", division: "BW", rank: "NR", record: "12-4-0", initials: "JY", country: "South Korea" },
  { name: "Juan Martinetti", division: "BW", rank: "NR", record: "8-0-0", initials: "JMa", country: "Argentina" },
@@ -4568,6 +4569,7 @@
  "Alvin Hines": { ht:"6'2\"", dob:"1991-10-20", reach:'74"', stance:"Orthodox", slpm:5.47, strAcc:"32%", sapm:7.47, strDef:"38%", kd:0.00, tdLanded:1.00, tdAcc:"10%", tdDef:"100%", subAvg:0.00, finRate:"86%", streak:0, gym:"La Bodega Fight Team" },
  "Alibi Idiris": { ht:"5'6\"", dob:"1994-10-22", reach:'68"', stance:"Orthodox", slpm:3.47, tdAcc:"31%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"60%", finRate:"82%", streak:0, tdLanded:0.00 },
  "Alessandro Costa": { ht:"5'4\"", dob:"1996-01-28", reach:'67"', stance:"Orthodox", slpm:3.73, strAcc:"45%", sapm:3.72, strDef:"57%", kd:0.79, tdLanded:0.79, tdAcc:"27%", tdDef:"86%", subAvg:0.40, finRate:"81%", streak:2, gym:"Brazilian Warriors BJJ" },
+ "Darrius Flowers": { ht:"5'9\"", dob:"1994-08-25", reach:'71"', stance:"Orthodox", slpm:3.07, strAcc:"50%", sapm:5.49, strDef:"44%", kd:0.00, tdLanded:0.98, tdAcc:"44%", tdDef:"64%", subAvg:0.00, finRate:"77%", streak:1, gym:"Uprising MMA" },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.66, tdAcc:"46%", subAvg:1.3, strDef:"55%", kd:0.0, tdDef:"37%", finRate:"N/A", streak:0, tdLanded:1.99 },
  "Edgar Chairez": { ht:"5'7\"", dob:"1996-01-27", reach:'71"', stance:"Orthodox", slpm:3.65, strAcc:"45%", sapm:4.75, strDef:"46%", kd:0.22, tdLanded:0.00, tdAcc:"0%", tdDef:"39%", subAvg:1.31, finRate:"93%", streak:3, gym:"Entram Gym" },
  "Daniel Lacerda": { ht:"5'6\"", dob:"1996-06-05", reach:'70"', stance:"Switch", slpm:3.95, tdAcc:"36%", subAvg:0.5, strDef:"45%", kd:0.2, tdDef:"58%", finRate:"60%", streak:0, tdLanded:1.23 },
@@ -13055,6 +13057,15 @@
     { opponent: "Ode Osbourne", odds: -350 },
     { opponent: "Daniel Barez", odds: -400 },
     { opponent: "Muhammad Mokaev", odds: 275 }
+  ],
+  "Darrius Flowers": [
+    { opponent: "Lando Vannata", odds: 200 },
+    { opponent: "Evan Elder", odds: 397 },
+    { opponent: "Michael Johnson", odds: 123 },
+    { opponent: "Jake Matthews", odds: 215 },
+    { opponent: "Amiran Gogoladze", odds: 245 },
+    { opponent: "Tim Hiley", odds: 110 },
+    { opponent: "Daniel Gadley", odds: 133 }
   ],
   "Alessandro Costa": [
     { opponent: "Matt Schnell", odds: -465 },
@@ -28587,6 +28598,30 @@ const FIGHT_HISTORY = {
     { date: "Apr 10, 2021", opponent: "Marcelo Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:04", event: "Shooto Brazil 90" },
     { date: "Nov 21, 2020", opponent: "Carlos Junior", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:31", event: "Shooto Brazil 88" }
   ],
+  "Darrius Flowers": [
+    { date: "Apr 4, 2026", opponent: "Lando Vannata", result: "W", method: "TKO (Punches)", round: 2, time: "0:52", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
+    { date: "Jul 13, 2024", opponent: "Evan Elder", result: "L", method: "Submission (Arm-Triangle Choke)", round: 2, time: "1:46", event: "UFC Fight Night: Namajunas vs. Cortez", org: "UFC" },
+    { date: "Feb 10, 2024", opponent: "Michael Johnson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
+    { date: "Jul 29, 2023", opponent: "Jake Matthews", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:37", event: "UFC 291 (UFC debut)", org: "UFC" },
+    { date: "Aug 23, 2022", opponent: "Amiran Gogoladze", result: "W", method: "KO (Slam)", round: 1, time: "1:13", event: "Dana White's Contender Series 6.5 (contract)", org: "UFC" },
+    { date: "May 6, 2022", opponent: "Tim Hiley", result: "W", method: "KO (Punches)", round: 1, time: "0:43", event: "LFA 131", org: "LFA" },
+    { date: "Apr 22, 2022", opponent: "Daniel Gadley", result: "W", method: "TKO (Punches)", round: 2, time: "0:46", event: "LFA 130", org: "LFA" },
+    { date: "Apr 16, 2022", opponent: "Tim Caron", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combat Zone 76" },
+    { date: "Jun 4, 2021", opponent: "Ryan Leininger", result: "L", method: "Submission (Guillotine)", round: 2, time: "3:22", event: "Driller Combat Sports 71" },
+    { date: "Sep 10, 2019", opponent: "Jon Kennedy", result: "W", method: "Submission (Verbal)", round: 1, time: "4:17", event: "War In Rudd MMA 2" },
+    { date: "Jul 13, 2019", opponent: "Joe Vedepo", result: "L", method: "Submission (Keylock)", round: 1, time: "3:55", event: "Elite Fight League 6" },
+    { date: "Feb 15, 2019", opponent: "Jonathon Thomson", result: "W", method: "KO (Punches)", round: 1, time: "0:48", event: "LFA 60", org: "LFA" },
+    { date: "Dec 8, 2018", opponent: "Bobby Voelker", result: "L", method: "TKO (Punches)", round: 2, time: "2:56", event: "Shamrock FC 313" },
+    { date: "Oct 13, 2018", opponent: "Josh Weston", result: "W", method: "TKO (Corner Stoppage)", round: 1, time: "1:40", event: "KOTC: Epicenter 2" },
+    { date: "Jul 14, 2018", opponent: "Ed Smith", result: "W", method: "TKO (Punches)", round: 1, time: "4:24", event: "KOTC: Impending Attack" },
+    { date: "Jun 29, 2018", opponent: "Anthony Rozema", result: "W", method: "TKO (Punches)", round: 1, time: "0:22", event: "LFA 44", org: "LFA" },
+    { date: "Apr 20, 2018", opponent: "Jordon Larson", result: "L", method: "Submission (Arm-Triangle Choke)", round: 3, time: "2:50", event: "LFA 37", org: "LFA" },
+    { date: "Dec 29, 2017", opponent: "Andre Kase", result: "W", method: "TKO (Punches)", round: 1, time: "3:24", event: "RCC 14" },
+    { date: "Jul 14, 2017", opponent: "Devin Smyth", result: "L", method: "Submission", round: 1, time: "2:37", event: "WXC 69: Illuminate" },
+    { date: "May 6, 2017", opponent: "Adam Cella", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "True Revelation MMA 32" },
+    { date: "Apr 15, 2017", opponent: "Michael Robinson Jr.", result: "D", method: "Decision (Majority Draw)", round: 3, time: "5:00", event: "Hoosier Fight Club 33" },
+    { date: "Mar 3, 2017", opponent: "Thomas Powell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KOTC: Violent Confrontation" }
+  ],
   "Alessandro Costa": [
     { date: "Jun 6, 2026", opponent: "Matt Schnell", result: "W", method: "TKO (Punches)", round: 1, time: "2:28", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
     { date: "Apr 4, 2026", opponent: "Stewart Nicoll", result: "W", method: "TKO (Body Punch)", round: 2, time: "4:56", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
@@ -31605,6 +31640,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "2× KSW Interim Featherweight Champion — won the interim title at KSW 80 (Mar 17, 2023, KO of Lom-Ali Eskiev R5); regained it at KSW 94 (May 11, 2024, KO of Patryk Kaczmarczyk R1) and defended at KSW 100 (Nov 16, 2024 vs. Kacper Formela)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Brown Belt — multiple-time Polish BJJ champion across purple, brown & black belt divisions (per UFC Q&A)", detail: null },
     { icon: "🏅", title: "Only Polish featherweight on the UFC roster", detail: null },
+  ],
+  "Darrius Flowers": [
+    { icon: "🏅", title: "Dana White's Contender Series winner — Season 6, Week 5 (Aug 23, 2022), R1 slam KO of Amiran Gogoladze (earned UFC contract)", detail: null },
+    { icon: "🥊", title: "Knockout artist — 10 of 13 wins by KO/TKO, with seven first-round finishes", detail: null },
+    { icon: "🥇", title: "4× amateur MMA champion (reported 11-5 amateur record)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt (per UFC Q&A)", detail: null },
   ],
   "Alessandro Costa": [
     { icon: "🏆", title: "LUX Fight League Flyweight Champion (Mexico) — won the title Sep 18, 2020 vs. Luis Solórzano (Lux 10); defended at Lux 13, 18 & 27", detail: null },
