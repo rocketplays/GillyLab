@@ -3776,6 +3776,7 @@
  { name: "Shem Rock", division: "LW", rank: "NR", record: "13-4-0", initials: "SR", country: "Canada" },
  { name: "Muhammad Naimov", division: "LW", rank: "NR", record: "13-4-0", initials: "MN", country: "Tajikistan" },
  { name: "Matheus Camilo", division: "LW", rank: "NR", record: "10-3-0", initials: "MCAM", country: "Brazil" },
+ { name: "Abdul-Kareem Al-Selwady", division: "LW", rank: "NR", record: "16-4-0", initials: "AKS", country: "Palestine" },
  { name: "Patchy Mix", division: "BW", rank: "NR", record: "20-4-0", initials: "PM", country: "USA" },
  { name: "JooSang Yoo", division: "BW", rank: "NR", record: "12-4-0", initials: "JY", country: "South Korea" },
  { name: "Juan Martinetti", division: "BW", rank: "NR", record: "8-0-0", initials: "JMa", country: "Argentina" },
@@ -4267,6 +4268,7 @@
  "Kurtis Campbell": { ht:"5'9\"", dob:"2002-07-29", reach:'72"', stance:"Switch", slpm:3.50, strAcc:"48%", sapm:2.63, strDef:"51%", kd:0.00, tdLanded:8.76, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"75%", streak:0, gym:"The MMA Academy" },
  "Esteban Ribovics": { ht:"5'10\"", dob:"1996-04-27", reach:'69"', stance:"Orthodox", slpm:7.27, strAcc:"43%", sapm:5.83, strDef:"55%", kd:0.52, tdLanded:0.35, tdAcc:"67%", tdDef:"66%", subAvg:0.17, finRate:"80%", streak:0, gym:"Kill Cliff FC" },
  // ── Lightweight (more) ──
+ "Abdul-Kareem Al-Selwady": { ht:"5'8\"", dob:"1995-04-10", reach:'69"', stance:"Orthodox", slpm:4.61, strAcc:"41%", sapm:3.43, strDef:"61%", kd:0.00, tdLanded:1.47, tdAcc:"24%", tdDef:"55%", subAvg:0.00, finRate:"63%", streak:1, gym:"Fortis MMA" },
  // ── Flyweight (more) ──
  // ── Light Heavyweight (more) ──
  "Magomed Ankalaev": { ht:'6\'3"', dob:"1992-06-02", reach:'75"', stance:"Orthodox", slpm:3.65, strAcc:"53%", sapm:2.59, strDef:"56%", kd:0.56, tdLanded:0.79, tdAcc:"22%", tdDef:"88%", subAvg:0.00, finRate:"50%", streak:0, gym:"Gorets Fight Club" },
@@ -6293,6 +6295,14 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Abdul-Kareem Al-Selwady": [
+    { opponent: "Shem Rock", odds: 105 },
+    { opponent: "Loik Radzhabov", odds: -138 },
+    { opponent: "George Hardwick", odds: 305 },
+    { opponent: "Chris Pecero", odds: -2000 },
+    { opponent: "Nick Compton", odds: -1000 },
+    { opponent: "Jake Sebastian", odds: -418 }
+  ],
   "Mantas Kondratavicius": [
     { opponent: "Antonio Trocoli", odds: -900 },
     { opponent: "Djani Barbir", odds: 118 },
@@ -13737,6 +13747,28 @@
 };
 
 const FIGHT_HISTORY = {
+  "Abdul-Kareem Al-Selwady": [
+    { date: "Mar 21, 2026", opponent: "Shem Rock", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Mar 2, 2024", opponent: "Loik Radzhabov", result: "L", method: "TKO (Punches)", round: 3, time: "0:49", event: "UFC Fight Night: Rozenstruik vs. Gaziev", org: "UFC" },
+    { date: "Aug 15, 2023", opponent: "George Hardwick", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 7, Week 2", org: "DWCS" },
+    { date: "Feb 17, 2023", opponent: "Mike Murphy", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Fury FC 75 (title)", org: "Fury FC" },
+    { date: "Sep 23, 2022", opponent: "Chris Pecero", result: "W", method: "TKO (Punches)", round: 1, time: "2:44", event: "Fury FC 69", org: "Fury FC" },
+    { date: "Feb 27, 2022", opponent: "Nick Compton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 58", org: "Fury FC" },
+    { date: "Mar 26, 2021", opponent: "Jake Sebastian", result: "W", method: "TKO (Punches)", round: 1, time: "4:12", event: "LFA 103: Carlyle vs. Dagvadorj", org: "LFA" },
+    { date: "Nov 15, 2019", opponent: "Dumar Roa", result: "L", method: "TKO (Knee)", round: 1, time: "2:49", event: "Brave CF 29", org: "Brave CF" },
+    { date: "Apr 19, 2019", opponent: "Luan Santiago", result: "L", method: "TKO (Punches)", round: 1, time: "2:54", event: "Brave CF 23 (title)", org: "Brave CF" },
+    { date: "Nov 16, 2018", opponent: "Lucas Martins", result: "W", method: "TKO (Injury)", round: 1, time: "N/A", event: "Brave CF 18 (title)", org: "Brave CF" },
+    { date: "Mar 2, 2018", opponent: "Charlie Leary", result: "W", method: "Decision", round: 3, time: "5:00", event: "Brave CF 10", org: "Brave CF" },
+    { date: "Nov 17, 2017", opponent: "Erick da Silva", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "N/A", event: "Brave CF 9", org: "Brave CF" },
+    { date: "Mar 31, 2017", opponent: "Michael Deiga Scheck", result: "W", method: "TKO", round: 2, time: "3:55", event: "Brave CF 4", org: "Brave CF" },
+    { date: "Sep 23, 2016", opponent: "Rami Aziz", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:30", event: "Brave CF 1", org: "Brave CF" },
+    { date: "May 25, 2015", opponent: "Lois Cadet", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Desert Force 17: Homecoming", org: "Desert Force" },
+    { date: "Dec 15, 2014", opponent: "Aziz Julaidan", result: "L", method: "TKO (Punches)", round: 1, time: "N/A", event: "Desert Force 14", org: "Desert Force" },
+    { date: "Mar 7, 2014", opponent: "Hussein Salem", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:54", event: "Desert Force 11: Bahrain", org: "Desert Force" },
+    { date: "Jun 15, 2013", opponent: "Yousef Al-Hamad", result: "W", method: "KO (Punch)", round: 1, time: "4:59", event: "Desert Force 8", org: "Desert Force" },
+    { date: "Mar 7, 2013", opponent: "Ahmed Ansari", result: "W", method: "TKO (Punches)", round: 3, time: "1:00", event: "Desert Force 7", org: "Desert Force" },
+    { date: "Sep 7, 2012", opponent: "Nour el Din Essam", result: "W", method: "TKO (Punches)", round: 1, time: "4:01", event: "DFC 5: Desert Force", org: "Desert Force" }
+  ],
   "Mantas Kondratavicius": [
     { date: "Mar 21, 2026", opponent: "Antonio Trocoli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
     { date: "Sep 23, 2025", opponent: "Djani Barbir", result: "W", method: "TKO (Punches)", round: 1, time: "1:06", event: "Dana White's Contender Series: Season 9, Week 7", org: "DWCS" },
@@ -30734,6 +30766,14 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Abdul-Kareem Al-Selwady": [
+    { icon: "🏆", title: "Brave Combat Federation Lightweight Champion", detail: null },
+    { icon: "🏆", title: "Fury FC Lightweight Champion", detail: null },
+    { icon: "🏆", title: "Desert Force Featherweight Champion", detail: null },
+    { icon: "🏅", title: "Dana White's Contender Series contract winner — 2023 (Season 7, Week 2; decision over George Hardwick)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "22-1 amateur Muay Thai; multiple BJJ & Muay Thai gold medals", detail: null },
+  ],
   "Louie Sutherland": [
     { icon: "🏆", title: "Levels Fight League Heavyweight Champion", detail: null },
     { icon: "🏆", title: "FightStar Championship Heavyweight Champion", detail: null },
