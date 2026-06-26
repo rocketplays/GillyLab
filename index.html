@@ -3614,7 +3614,7 @@
  { name: "Tecia Torres", division: "WSW", rank: "NR", record: "14-7-0", initials: "TTE", country: "USA" },
  { name: "Sam Hughes", division: "WSW", rank: "NR", record: "11-7-0", initials: "SHU2", country: "USA" },
  { name: "Iasmin Lucindo", division: "WSW", rank: "NR", record: "18-6-0", initials: "ILC", country: "Brazil" },
- { name: "Ravena Oliveira", division: "WSW", rank: "NR", record: "9-3-0", initials: "ROV", country: "Brazil" },
+ { name: "Ravena Oliveira", division: "WSW", rank: "NR", record: "7-4-1", initials: "ROV", country: "Brazil" },
  { name: "Kanako Murata", division: "WSW", rank: "NR", record: "13-3-0", initials: "KMU2", country: "Japan" },
  { name: "Nina Nunes", division: "WSW", rank: "NR", record: "14-7-0", initials: "NNU", country: "Brazil" },
  { name: "Carla Esparza", division: "WSW", rank: "NR", record: "22-8-0", initials: "CES", country: "USA" },
@@ -4471,7 +4471,7 @@
  "Josh Hokit": { ht:"6'1\"", dob:"1997-11-12", reach:'73"', stance:"Orthodox", slpm:9.29, strAcc:"65%", sapm:5.28, strDef:"49%", kd:1.24, tdLanded:3.73, tdAcc:"47%", tdDef:"78%", subAvg:0.41, finRate:"90%", streak:10, gym:"Jackson Wink MMA Academy" },
  // ── Women's Strawweight (more) ──
  "JJ Aldrich": { ht:"5'5\"", dob:"1992-09-29", reach:'67"', stance:"Southpaw", slpm:3.92, strAcc:"46%", sapm:4.34, strDef:"62%", kd:0.00, tdLanded:0.70, tdAcc:"26%", tdDef:"68%", subAvg:0.00, finRate:"20%", streak:2, gym:"Tiger Beetle Martial Arts" },
- "Ravena Oliveira": { ht:"5'5\"", dob:"1997-02-20", reach:'65"', stance:"Orthodox", slpm:1.40, tdAcc:"66%", subAvg:0.0, strDef:"50%", kd:0.0, tdDef:"50%", finRate:"57%", streak:0, tdLanded:1.08 },
+ "Ravena Oliveira": { ht:"5'5\"", dob:"1997-02-20", reach:'65"', stance:"Orthodox", slpm:1.91, strAcc:"30%", sapm:3.72, strDef:"46%", kd:0.00, tdLanded:0.88, tdAcc:"50%", tdDef:"46%", subAvg:0.00, finRate:"100%", streak:0, gym:"Life MMA" },
  "Kanako Murata": { ht:"5'1\"", dob:"1993-08-10", reach:'62"', stance:"Orthodox", slpm:2.15, tdAcc:"56%", subAvg:0.5, strDef:"53%", kd:0.0, tdDef:"100%",finRate:"58%", streak:0, tdLanded:3.38, gym:"Combat Sports Academy (2019–present)" },
  // ── Women's Flyweight (more) ──
  "Julija Stoliarenko": { ht:"5'7\"", dob:"1993-04-08", reach:'66"', stance:"Orthodox", slpm:2.74, tdAcc:"35%", subAvg:1.3, strDef:"46%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:0.78, gym:"Roger Gracie Academy Kaunas / Fighter House" },
@@ -13461,8 +13461,9 @@
     { opponent: "Robson Junior", odds: -168 },
   ],
   "Ravena Oliveira": [
-    { opponent: "Shanelle Dyer", odds: 300 },
-    { opponent: "Tainara Lisboa", odds: 225 }
+    { opponent: "Shanelle Dyer", odds: 385 },
+    { opponent: "Stephanie Luciano", odds: 245 },
+    { opponent: "Tainara Lisboa", odds: 248 }
   ],
   "Shanelle Dyer": [
     { opponent: "Ravena Oliveira", odds: -525 },
@@ -29833,11 +29834,18 @@ const FIGHT_HISTORY = {
     { date: "Nov 18, 2017", opponent: "Adam Cruz", result: "W", method: "TKO (Punches)", round: 2, time: "1:04", event: "Dragon House 27" },
   ],
   "Ravena Oliveira": [
-    { date: "Apr 18, 2026", opponent: "Stephanie Egger", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan" },
-    { date: "Mar 14, 2026", opponent: "Shanelle Dyer", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "0:59", event: "UFC Fight Night: Emmett vs. Vallejos (debut)" },
-    { date: "Oct 5, 2025", opponent: "Eduarda Moura", result: "W", method: "TKO (Punches)", round: 1, time: "2:14", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Oct 14, 2023", opponent: "Tainara Lisboa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yusuff vs. Barboza" },
-    { date: "Jun 22, 2022", opponent: "Viviane Pereira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 103" }
+    { date: "Mar 21, 2026", opponent: "Shanelle Dyer", result: "L", method: "TKO (Punches)", round: 2, time: "1:17", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Stephanie Luciano", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "2:50", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Oct 14, 2023", opponent: "Tainara Lisboa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yusuff vs. Barboza", org: "UFC" },
+    { date: "Aug 12, 2023", opponent: "Simone da Silva", result: "W", method: "TKO", round: 3, time: "4:16", event: "LKC 5 (title)", org: "LKC" },
+    { date: "Jul 15, 2023", opponent: "Raquel de Andrade", result: "W", method: "KO", round: 1, time: "0:27", event: "MC Fight: Encontro de Campeões (title)", org: "MC Fight" },
+    { date: "Jan 29, 2022", opponent: "Sheila Amaral", result: "W", method: "Submission", round: 3, time: "1:38", event: "Demo Fight 11" },
+    { date: "Dec 18, 2021", opponent: "Gabriele Santana", result: "W", method: "TKO", round: 1, time: "3:58", event: "IFC: Ipira Fight Combat", org: "IFC" },
+    { date: "Oct 2, 2021", opponent: "Sharolayne Almeida", result: "W", method: "TKO", round: 1, time: "2:33", event: "Piemont Fight 2" },
+    { date: "Aug 14, 2021", opponent: "Edjane Agostinho", result: "W", method: "TKO", round: 2, time: "1:12", event: "Imperium MMA Pro 15" },
+    { date: "Feb 23, 2019", opponent: "Rosy Angela de Jesus", result: "W", method: "TKO", round: 1, time: "1:17", event: "PFL: Premier Fight League 20" },
+    { date: "Oct 25, 2018", opponent: "Waleska Sousa", result: "L", method: "Submission (Ezekiel Choke)", round: 1, time: "4:50", event: "GFC 63: Grand Fighting Championship 63" },
+    { date: "Jun 10, 2017", opponent: "Amanda Ferreira", result: "D", method: "Decision (Majority)", round: 3, time: "5:00", event: "Crococombat 2" }
   ],
   "Shanelle Dyer": [
     { date: "Mar 21, 2026", opponent: "Ravena Oliveira", result: "W", method: "TKO (Punches)", round: 2, time: "1:17", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -30790,6 +30798,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ravena Oliveira": [
+    { icon: "🏆", title: "Regional MMA champion (LKC, IFC, Piemonte Fight & Calmon Fight)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu (Bahia State BJJ champion)", detail: null },
+    { icon: "🥊", title: "Brown prajied in Muay Thai; kickboxing champion", detail: null },
+  ],
   "Shanelle Dyer": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu (Polaris Submission of the Night)", detail: null },
     { icon: "🥊", title: "5× Muay Thai world champion; 35 amateur Muay Thai titles & multiple European titles", detail: null },
