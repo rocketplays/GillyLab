@@ -565,7 +565,7 @@
       #page-home > .event-header,
       #carousel-track .event-header {
         display: flex; flex-wrap: wrap; align-items: baseline;
-        column-gap: 0.5rem; row-gap: 0.15rem;
+        column-gap: 0.4rem; row-gap: 0.15rem;
       }
       #page-home > .event-header .event-info,
       #carousel-track .event-header .event-info { display: contents; }
@@ -573,16 +573,16 @@
       #carousel-track .event-header .event-name { order: 1; }
       #page-home > .event-header .event-countdown,
       #carousel-track .event-header .event-countdown {
-        order: 2; display: inline-flex; align-items: baseline; gap: 0.35rem;
+        order: 2; display: inline-flex; align-items: baseline; gap: 0.22rem;
         white-space: nowrap; flex-shrink: 0; text-align: left;
       }
       #page-home > .event-header .event-countdown::before,
       #carousel-track .event-header .event-countdown::before {
-        content: "·"; color: var(--muted); margin-right: 0.1rem;
-        font-size: 1.1rem; line-height: 0;
+        content: "·"; color: var(--muted); margin-right: 0.05rem;
+        font-size: 0.85rem; line-height: 0;
       }
-      .event-countdown .countdown-label { font-size: 0.6rem; }
-      .event-countdown .countdown-time { font-size: 1.1rem; }
+      .event-countdown .countdown-label { font-size: 0.48rem; letter-spacing: 0.05em; }
+      .event-countdown .countdown-time { font-size: 0.85rem; }
       #page-home > .event-header .event-details,
       #carousel-track .event-header .event-details { order: 3; flex-basis: 100%; }
       #page-home > .event-header .gl-prev-wrap { order: 4; flex-basis: 100%; }
@@ -2459,9 +2459,8 @@
         align-items: flex-start;
       }
       .freedom-card .event-countdown {
-        background: linear-gradient(135deg, rgba(178,34,52,0.25), rgba(60,59,110,0.25)) !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
-        border-radius:8px;
+        background: none !important;
+        border: none !important;
       }
       .freedom-card .countdown-time { color:#ffffff !important; text-shadow: 0 0 12px rgba(178,34,52,0.8); }
       .freedom-card .section-title { color:#ffffff !important; letter-spacing:0.15em; }
@@ -2533,9 +2532,8 @@
         align-items: flex-start;
       }
       .numbered-card .event-countdown {
-        background: linear-gradient(135deg, rgba(212,175,55,0.28), rgba(120,95,20,0.22)) !important;
-        border: 1px solid rgba(212,175,55,0.35) !important;
-        border-radius:8px;
+        background: none !important;
+        border: none !important;
       }
       .numbered-card .countdown-time { color:#fff8dc !important; text-shadow: 0 0 12px rgba(212,175,55,0.85); }
       .numbered-card .section-title { color:#fff3c4 !important; letter-spacing:0.15em; }
