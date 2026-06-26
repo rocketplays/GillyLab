@@ -3759,6 +3759,7 @@
  { name: "Gilbert Urbina", division: "MW", rank: "NR", record: "7-4-0", initials: "GU", country: "USA" },
  { name: "Mantas Kondratavicius", division: "MW", rank: "NR", record: "9-1-0", initials: "MKO", country: "Lithuania" },
  { name: "Yousri Belgaroui", division: "MW", rank: "NR", record: "10-3-0", initials: "YBE", country: "Netherlands" },
+ { name: "Mansur Abdul-Malik", division: "MW", rank: "NR", record: "9-1-1", initials: "MAB", country: "USA" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -4265,6 +4266,7 @@
  "Sedriques Dumas": { ht:"6'2\"", dob:"1995-08-06", reach:'79"', stance:"Orthodox", slpm:2.00, tdAcc:"31%", subAvg:0.6, strDef:"55%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.34 },
  "Mantas Kondratavicius": { ht:"6'2\"", dob:"1999-07-17", reach:'75.5"', stance:"Orthodox", slpm:4.97, strAcc:"66%", sapm:1.30, strDef:"57%", kd:1.86, tdLanded:2.80, tdAcc:"60%", tdDef:"92%", subAvg:0.93, finRate:"89%", streak:4, gym:"Fighter House" },
  "Yousri Belgaroui": { ht:"6'6\"", dob:"1992-06-29", reach:'79"', stance:"Orthodox", slpm:6.10, strAcc:"64%", sapm:2.17, strDef:"64%", kd:0.86, tdLanded:0.29, tdAcc:"100%", tdDef:"67%", subAvg:0.00, finRate:"80%", streak:5, gym:"Teixeira MMA & Fitness" },
+ "Mansur Abdul-Malik": { ht:"6'2\"", dob:"1997-10-07", reach:'79.5"', stance:"Orthodox", slpm:3.28, strAcc:"45%", sapm:4.49, strDef:"46%", kd:0.33, tdLanded:1.65, tdAcc:"42%", tdDef:"83%", subAvg:0.33, finRate:"100%", streak:0, gym:"Xtreme Couture" },
  // ── Welterweight (more) ──
  // ── Featherweight (more) ──
  "Kurtis Campbell": { ht:"5'9\"", dob:"2002-07-29", reach:'72"', stance:"Switch", slpm:3.50, strAcc:"48%", sapm:2.63, strDef:"51%", kd:0.00, tdLanded:8.76, tdAcc:"40%", tdDef:"50%", subAvg:0.00, finRate:"75%", streak:0, gym:"The MMA Academy" },
@@ -6297,6 +6299,16 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Mansur Abdul-Malik": [
+    { opponent: "Yousri Belgaroui", odds: -156 },
+    { opponent: "Antonio Trocoli", odds: -1525 },
+    { opponent: "Cody Brundage", odds: -925 },
+    { opponent: "Nick Klein", odds: -1265 },
+    { opponent: "Dusko Todorovic", odds: -515 },
+    { opponent: "Wes Schultz", odds: -335 },
+    { opponent: "Allan St-Gelais", odds: -400 },
+    { opponent: "Cole Jordan", odds: -260 }
+  ],
   "Yousri Belgaroui": [
     { opponent: "Mansur Abdul-Malik", odds: 130 },
     { opponent: "Azamat Bekoev", odds: 245 },
@@ -13813,6 +13825,19 @@
 };
 
 const FIGHT_HISTORY = {
+  "Mansur Abdul-Malik": [
+    { date: "Mar 28, 2026", opponent: "Yousri Belgaroui", result: "L", method: "TKO (Punches)", round: 3, time: "3:39", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
+    { date: "Dec 6, 2025", opponent: "Antonio Trocoli", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:09", event: "UFC 323: Dvalishvili vs. Yan 2", org: "UFC" },
+    { date: "Jun 14, 2025", opponent: "Cody Brundage", result: "D", method: "Draw (Majority)", round: 3, time: "0:36", event: "UFC Fight Night: Usman vs. Buckley", org: "UFC" },
+    { date: "Feb 22, 2025", opponent: "Nick Klein", result: "W", method: "TKO (Punches)", round: 2, time: "3:24", event: "UFC Fight Night: Cejudo vs. Song", org: "UFC" },
+    { date: "Nov 9, 2024", opponent: "Duško Todorović", result: "W", method: "TKO (Knee and punches)", round: 1, time: "2:44", event: "UFC Fight Night: Magny vs. Prates", org: "UFC" },
+    { date: "Aug 13, 2024", opponent: "Wes Schultz", result: "W", method: "TKO (Punches)", round: 2, time: "3:55", event: "Dana White's Contender Series: Season 8, Week 1", org: "DWCS" },
+    { date: "Feb 9, 2024", opponent: "Allan St-Gelais", result: "W", method: "TKO (Punches)", round: 1, time: "1:40", event: "LFA 176: Johns vs. Walker", org: "LFA" },
+    { date: "Oct 7, 2023", opponent: "Donelei Benedetto", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "Shogun Fights 27" },
+    { date: "May 4, 2023", opponent: "Brexton Everett", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:12", event: "Jonathan Ogden Foundation: An Evening Ringside" },
+    { date: "Nov 12, 2022", opponent: "Zion Tomlinson", result: "W", method: "TKO (Punches)", round: 1, time: "0:45", event: "Shogun Fights 25" },
+    { date: "Oct 23, 2021", opponent: "Cole Jordan", result: "W", method: "TKO (Punches)", round: 1, time: "4:06", event: "XMMA 3: Vice City" }
+  ],
   "Yousri Belgaroui": [
     { date: "Mar 28, 2026", opponent: "Mansur Abdul-Malik", result: "W", method: "TKO (Punches)", round: 3, time: "3:39", event: "UFC Fight Night: Adesanya vs. Pyfer", org: "UFC" },
     { date: "Oct 18, 2025", opponent: "Azamat Bekoev", result: "W", method: "TKO (Punches)", round: 3, time: "0:55", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
@@ -30881,6 +30906,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Mansur Abdul-Malik": [
+    { icon: "🏅", title: "100% finish rate (all 9 wins by KO/TKO or submission)", detail: null },
+    { icon: "🤼", title: "Former Division I wrestler at the University of Maryland", detail: null },
+    { icon: "🤼", title: "Maryland high school state wrestling champion", detail: null },
+  ],
   "Yousri Belgaroui": [
     { icon: "🏆", title: "Levels Fight League Middleweight Champion", detail: null },
     { icon: "🥊", title: "Kickboxing European & World Champion; 3× Glory Middleweight title challenger", detail: null },
