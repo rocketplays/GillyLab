@@ -36339,17 +36339,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     var _statsBtn = '';
     if (f.completed && typeof _fsEventMatch === 'function' && _fsEventMatch(f.f1, f.f2, f.date)) {
-      _statsBtn = '<div style="text-align:center;padding:0.65rem 0 0.2rem;margin-top:0.4rem;border-top:1px solid rgba(255,255,255,0.06);">' +
+      _statsBtn = '<div style="text-align:center;padding:0 0 0.65rem;margin-bottom:0.55rem;border-bottom:1px solid rgba(255,255,255,0.06);">' +
         '<button type="button" onclick="event.stopPropagation();openEventFightStats(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.date || '') + '\')" ' +
         'style="background:rgba(212,175,55,0.1);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.72rem;padding:0.4rem 1rem;border-radius:4px;cursor:pointer;">View Full Fight Stats &rsaquo;</button>' +
       '</div>';
     }
     return '<div class="fight-details-panel">' +
-      '<div class="fd-collapse-inner"><div class="fd-cols">' +
+      '<div class="fd-collapse-inner">' + _statsBtn + '<div class="fd-cols">' +
         col(f.f1, s1, '1') +
         '<div class="fd-divider"></div>' +
         col(f.f2, s2, '2') +
-      '</div>' + _statsBtn + '</div>' +
+      '</div></div>' +
     '</div>';
   }
 
