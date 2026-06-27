@@ -3823,6 +3823,7 @@
   { name: "Santiago Luna", division: "BW", rank: "NR", record: "8-1-0", initials: "SL", country: "Mexico" }
 ,
   { name: "John Yannis", division: "BW", rank: "NR", record: "10-4-0", initials: "JY", country: "USA" },
+  { name: "Jamie Siraj", division: "BW", rank: "NR", record: "14-4-0", initials: "JSR", country: "Canada" },
   { name: "Josias Musasa", division: "BW", rank: "NR", record: "8-2-0", initials: "JMU", country: "DR Congo" },
   { name: "Chelsea Chandler", division: "WBW", rank: "NR", record: "7-4-0", initials: "CC2", country: "USA" }
 ,
@@ -3955,6 +3956,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Jamie Siraj": { ht:"5'8\"", dob:"1994-06-28", reach:'66"', stance:"Orthodox", slpm:2.21, strAcc:"25%", sapm:7.73, strDef:"38%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"79%", streak:0, gym:"Diaz Combat Sports" },
  "Cub Swanson": { ht:"5'8\"", dob:"1983-11-02", reach:'70"', stance:"Orthodox", slpm:4.84, strAcc:"52%", sapm:3.99, strDef:"59%", kd:0.46, tdLanded:1.00, tdAcc:"52%", tdDef:"64%", subAvg:0.39, finRate:"61%", streak:2, gym:"Bloodline Combat" },
  "Danny Silva": { ht:"5'11\"", dob:"1997-01-30", reach:'70"', stance:"Switch", slpm:6.35, strAcc:"55%", sapm:7.10, strDef:"61%", kd:0.69, tdLanded:2.06, tdAcc:"36%", tdDef:"75%", subAvg:0.23, finRate:"55%", streak:1, gym:"Bloodline Combat" },
  "Montse Rendon": { ht:"5'8\"", dob:"1989-03-16", reach:'68"', stance:"Orthodox", slpm:2.95, strAcc:"28%", sapm:3.65, strDef:"57%", kd:0.00, tdLanded:1.91, tdAcc:"38%", tdDef:"86%", subAvg:0.32, finRate:"0%", streak:0, gym:"ECR Fight Center" },
@@ -6327,6 +6329,12 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Jamie Siraj": [
+    { opponent: "John Yannis", odds: -245 },
+    { opponent: "Adonilton Matos", odds: -650 },
+    { opponent: "Gustavo Erak", odds: -800 },
+    { opponent: "Esteban Sedano", odds: -175 }
+  ],
   "Julien Leblanc": [
     { opponent: "Robert Valentin", odds: 140 },
     { opponent: "Ryan Rohovich", odds: -900 },
@@ -14181,6 +14189,26 @@
 };
 
 const FIGHT_HISTORY = {
+  "Jamie Siraj": [
+    { date: "Apr 18, 2026", opponent: "John Yannis", result: "L", method: "TKO (Punches)", round: 1, time: "2:43", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
+    { date: "Feb 19, 2026", opponent: "Adonilton Matos", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:33", event: "BFL 86" },
+    { date: "Oct 16, 2025", opponent: "Gustavo Erak", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:23", event: "BFL 85" },
+    { date: "Mar 14, 2025", opponent: "Diego Brandao", result: "L", method: "TKO (Punches)", round: 1, time: "3:28", event: "Tuff-N-Uff 142" },
+    { date: "Dec 4, 2024", opponent: "Nemat Abdrashitov", result: "W", method: "TKO (Punches)", round: 5, time: "4:37", event: "Tuff-N-Uff 140" },
+    { date: "Sep 6, 2024", opponent: "David Briones", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BFL 81" },
+    { date: "May 24, 2024", opponent: "Tariel Abbasov", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:35", event: "Tuff-N-Uff 137" },
+    { date: "Jun 9, 2023", opponent: "Esteban Sedano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BFL 77" },
+    { date: "Jul 27, 2019", opponent: "Blake Sigvaldason", result: "W", method: "TKO (Punches)", round: 1, time: "0:37", event: "Rise FC 4" },
+    { date: "Apr 13, 2019", opponent: "Gabe Sagman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Rise FC 3" },
+    { date: "Dec 7, 2018", opponent: "Michael Hay", result: "W", method: "TKO (Punches)", round: 5, time: "0:18", event: "Unified MMA 35" },
+    { date: "Jan 13, 2018", opponent: "JT Donaldson", result: "W", method: "Submission (Front choke)", round: 3, time: "2:55", event: "BFL 53" },
+    { date: "May 6, 2017", opponent: "Adam MacDougall", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "3:19", event: "Elite 1 MMA" },
+    { date: "Oct 29, 2016", opponent: "Cole Smith", result: "L", method: "Submission (Rear-naked choke)", round: 4, time: "2:15", event: "BFL 46" },
+    { date: "Jun 18, 2015", opponent: "Nick Ghaeni", result: "W", method: "Submission (Guillotine choke)", round: 3, time: "4:14", event: "BFL 44" },
+    { date: "Mar 28, 2015", opponent: "Nick Ghaeni", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BFL 35" },
+    { date: "Oct 24, 2014", opponent: "Robert Nelson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:46", event: "XFFC 5" },
+    { date: "Feb 22, 2014", opponent: "Jordan Mackin", result: "W", method: "TKO (Punches)", round: 1, time: "4:36", event: "UCL 20" }
+  ],
   "Julien Leblanc": [
     { date: "Apr 18, 2026", opponent: "Robert Valentin", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:22", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
     { date: "Nov 21, 2025", opponent: "Ryan Rohovich", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:19", event: "Samourai MMA 17" },
@@ -31764,6 +31792,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Jamie Siraj": [
+    { icon: "🏆", title: "Three-division champion — Battlefield Fight League, Unified MMA & Tuff-N-Uff", detail: null },
+    { icon: "🏆", title: "Tuff-N-Uff Featherweight Champion (2024)", detail: null },
+    { icon: "🏆", title: "Unified MMA Bantamweight Champion (2018)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "John Yannis": [
     { icon: "🏆", title: "Fury FC Bantamweight Champion", detail: "def. Nick Aguirre by 4th-round TKO" },
     { icon: "🏅", title: "Fury FC 2022 Fight of the Year", detail: "vs. Cameron Smotherman" },
