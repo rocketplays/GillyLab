@@ -3115,7 +3115,7 @@
  { name: "Joseph Morales", division: "FLW", rank: "#15", record: "15-2-0", initials: "JMO", country: "USA" },
  { name: "Zhalgas Zhumagulov", division: "FLW", rank: "NR", record: "19-9-0", initials: "ZZ", country: "Kazakhstan" },
  { name: "Clayton Carpenter", division: "FLW", rank: "NR", record: "8-3-0", initials: "CC", country: "USA" },
- { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "8-2-0", initials: "JO", country: "Peru" },
+ { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "9-2-0", initials: "JO", country: "Peru" }, // 1 NC
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "18-12-0", initials: "MSC", country: "USA" },
  { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-10-1", initials: "CDU", country: "USA" },
  { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "13-3-0", initials: "DLA", country: "Brazil" },
@@ -4706,7 +4706,7 @@
  "Bruno Gustavo da Silva":{ ht:"5'9\"", dob:"1990-03-16", reach:'71"', stance:"Orthodox", slpm:3.95, strAcc:"51%", sapm:4.72, strDef:"51%", kd:0.85, tdLanded:1.94, tdAcc:"24%", tdDef:"72%", subAvg:0.24, finRate:"73%", streak:0, gym:"American Top Team (2024–present)" },
  "Daniel Marcos": { ht:"5'8\"", dob:"1996-01-01", reach:'70"', stance:"Orthodox", slpm:3.80, tdAcc:"40%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"68%", finRate:"60%", streak:0, tdLanded:1.40, gym:"American Combat Gym" },
  "Mairon Santos": { ht:"5'7\"", dob:"1993-01-01", reach:'68"', stance:"Orthodox", slpm:3.50, tdAcc:"40%", subAvg:0.6, strDef:"50%", kd:0.2, tdDef:"65%", finRate:"65%", streak:0, tdLanded:1.60 },
- "Jose Ochoa": { ht:"5'7\"", dob:"2000-12-31", reach:'67"', stance:"Southpaw", slpm:3.01, tdAcc:"50%", subAvg:1.3, strDef:"60%", kd:0.0, tdDef:"59%", finRate:"N/A", streak:0, tdLanded:0.43 },
+ "Jose Ochoa": { ht:"5'7\"", dob:"2000-12-31", reach:'67"', stance:"Southpaw", slpm:5.16, strAcc:"47%", sapm:2.99, strDef:"59%", kd:0.60, tdLanded:0.30, tdAcc:"25%", tdDef:"66%", subAvg:0.90, finRate:"89%", streak:1, gym:"Chute Boxe Diego Lima" },
  "Jun Yong Park": { ht:"5'9\"", dob:"1991-01-01", reach:'71"', stance:"Orthodox", slpm:3.20, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.20, gym:"Korean Top Team" },
  "Kaue Fernandes": { ht:"5'8\"", dob:"1998-01-01", reach:'70"', stance:"Orthodox", slpm:6.74, tdAcc:"100%", subAvg:0.5, strDef:"55%", kd:1.4, tdDef:"65%", finRate:"80%", streak:3, tdLanded:1.50 },
  "Joao Benhavia": { ht:"5'9\"", dob:"1997-01-01", reach:'71"', stance:"Orthodox", slpm:4.20, tdAcc:"40%", subAvg:0.4, strDef:"52%", kd:0.3, tdDef:"65%", finRate:"65%", streak:0, tdLanded:1.40 },
@@ -7021,7 +7021,13 @@
     { opponent: "Logan Woods", odds: 160 }
   ],
   "Clayton Carpenter": [],
-  "Jose Ochoa": [],
+  "Jose Ochoa": [
+    { opponent: "Clayton Carpenter", odds: -185 },
+    { opponent: "Asu Almabayev", odds: -110 },
+    { opponent: "Cody Durden", odds: -215 },
+    { opponent: "Lone'er Kavanagh", odds: 265 },
+    { opponent: "Juscelino Pantoja", odds: -225 }
+  ],
   "Arnold Allen": [
     { opponent: "Melquizael Costa", odds: -120 },
     { opponent: "Jean Silva", odds: 180 },
@@ -15708,10 +15714,18 @@ const FIGHT_HISTORY = {
 
 
   "Jose Ochoa": [
-    { date: "May 9, 2026", opponent: "Clayton Carpenter", result: "W", method: "TKO (Punches)", round: 2, time: "2:14", event: "UFC 328", org: "UFC" },
-    { date: "Jul 26, 2025", opponent: "Asu Almabayev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
-    { date: "Jun 14, 2025", opponent: "Cody Durden", result: "W", method: "KO (Punches)", round: 2, time: "0:11", event: "UFC on ESPN: Usman vs. Buckley", org: "UFC" },
+    { date: "May 9, 2026", opponent: "Clayton Carpenter", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
+    { date: "Jul 26, 2025", opponent: "Asu Almabayev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. de Ridder", org: "UFC" },
+    { date: "Jun 14, 2025", opponent: "Cody Durden", result: "W", method: "KO/TKO", round: 2, time: "0:11", event: "UFC Fight Night: Usman vs. Buckley", org: "UFC" },
     { date: "Nov 23, 2024", opponent: "Lone'er Kavanagh", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Figueiredo", org: "UFC" },
+    { date: "Nov 3, 2023", opponent: "Juscelino Pantoja", result: "W", method: "Submission (Anaconda choke)", round: 1, time: "4:30", event: "LFA 171" },
+    { date: "Sep 30, 2023", opponent: "Jeferson Guilherme Pereira", result: "W", method: "KO/TKO", round: 1, time: "1:48", event: "Bison Kombat 3" },
+    { date: "Oct 1, 2021", opponent: "Jhoao Ruiz", result: "NC", method: "No Contest", round: 1, time: "2:38", event: "UWC Mexico 29" },
+    { date: "May 1, 2021", opponent: "Franklin Grifo", result: "W", method: "KO/TKO", round: 1, time: "1:51", event: "FFC 45: Ecuador" },
+    { date: "Jul 27, 2019", opponent: "Neto Castro", result: "W", method: "KO/TKO", round: 2, time: "2:15", event: "Iquitos Combat Championship 5" },
+    { date: "May 31, 2019", opponent: "Omar Torres", result: "W", method: "KO/TKO", round: 2, time: "4:34", event: "Combate Americas 38: Peru" },
+    { date: "Feb 23, 2019", opponent: "Dyllan Santiago", result: "W", method: "KO/TKO", round: 1, time: "2:47", event: "Iquitos Combat Championship 3" },
+    { date: "Nov 7, 2018", opponent: "Yhosue Mego", result: "W", method: "KO/TKO", round: 2, time: "2:30", event: "FFC 35: Tubarao vs. Zarauz" }
   ],
   "Marco Tulio": [
     { date: "May 9, 2026", opponent: "Roman Kopylov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
@@ -32538,6 +32552,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Jose Ochoa": [
+    { icon: "🌍", title: "First fighter from Moyobamba, Peru to reach the UFC", detail: null },
+    { icon: "🏅", title: "89% finish rate — 8 of 9 wins by stoppage (7 KO/TKO, 1 submission)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu blue belt", detail: null }
+  ],
   "Djorden Santos": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — decision over Will Currie)", detail: null },
     { icon: "🏆", title: "Thunder Fight Middleweight Champion (Brazil)", detail: null },
