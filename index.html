@@ -31397,11 +31397,13 @@ function populateFightHistory(name) {
  tr.title = 'View full fight stats';
  tr.style.boxShadow = 'inset 3px 0 0 var(--accent)';        // accent stripe marks interactive rows
  if (_baseBg === '') tr.style.background = 'rgba(212,175,55,0.035)'; // faint default tint on clickable rows
- const _last = tr.lastElementChild;
- if (_last) _last.insertAdjacentHTML('beforeend',
-   '<span class="fh-stats-chip" style="display:inline-flex;align-items:center;gap:4px;margin-left:8px;padding:2px 8px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.64rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;vertical-align:middle;line-height:1;">'
+ // Chip sits above the date in the first (far-left) cell so it's visible on
+ // mobile without horizontally scrolling the wide fight-history table.
+ const _first = tr.firstElementChild;
+ if (_first) _first.insertAdjacentHTML('afterbegin',
+   '<div style="margin-bottom:4px;"><span class="fh-stats-chip" style="display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.64rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;line-height:1;">'
    + '<svg width="9" height="9" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true"><rect x="0" y="6" width="3" height="6" rx="0.5"/><rect x="4.5" y="3" width="3" height="9" rx="0.5"/><rect x="9" y="0" width="3" height="12" rx="0.5"/></svg>'
-   + 'Stats</span>');
+   + 'Stats</span></div>');
  const _onBg = 'rgba(212,175,55,0.12)';
  const _offBg = (_baseBg === '' ? 'rgba(212,175,55,0.035)' : _baseBg);
  tr.addEventListener('mouseenter', () => { tr.style.background = _onBg; });
