@@ -31222,9 +31222,13 @@ function fightStatsFor(name, date){
 function _fsPct(l,a){ return a>0 ? Math.round(100*l/a) : 0; }
 function _fsBar(lv,rv){
   var tot=lv+rv, lp = tot>0 ? Math.round(100*lv/tot) : 50;
+  // The accent (green) fill goes on whichever fighter had the edge in this stat;
+  // the trailing side is dimmed. Equal values -> both dimmed (no advantage).
+  var acc='var(--accent)', dim='rgba(255,255,255,0.18)';
+  var lc = lv>rv ? acc : dim, rc = rv>lv ? acc : dim;
   return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.08);margin-top:4px;">'
-    + '<div style="width:'+lp+'%;background:var(--accent);"></div>'
-    + '<div style="width:'+(100-lp)+'%;background:rgba(255,255,255,0.22);"></div></div>';
+    + '<div style="width:'+lp+'%;background:'+lc+';"></div>'
+    + '<div style="width:'+(100-lp)+'%;background:'+rc+';"></div></div>';
 }
 function _fsRow(label, lhtml, rhtml, lv, rv, bar){
   return '<div style="padding:0.45rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">'
@@ -31234,16 +31238,49 @@ function _fsRow(label, lhtml, rhtml, lv, rv, bar){
     + '<span style="font-weight:700;color:#fff;min-width:60px;text-align:right;">'+rhtml+'</span></div>'
     + (bar ? _fsBar(lv,rv) : '') + '</div>';
 }
+// Circular thumbnail avatar for the modal header (falls back to initials).
+function _fsAva(nm){
+  var ini = (typeof fighterInitials === 'function') ? fighterInitials(nm) : String(nm||'?').trim().slice(0,2).toUpperCase();
+  ini = String(ini||'?').replace(/[^A-Za-z0-9]/g,'') || '?';
+  var slug = (typeof nameToSlug === 'function') ? nameToSlug(nm) : '';
+  var wrap = 'width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.78rem;color:#fff;';
+  if (!slug) return '<div style="'+wrap+'">'+ini+'</div>';
+  return '<div style="'+wrap+'"><img src="./photos/thumb/'+slug+'.png" alt="'+ini+'" style="width:100%;height:100%;object-fit:cover;object-position:top center;" onerror="this.parentNode.textContent=\''+ini+'\';"></div>';
+}
+// Find the FIGHT_HISTORY row (method/round/time/result) for this bout.
+function _fsHistRow(name, date){
+  var arr = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || null;
+  if (!arr) return null;
+  for (var i=0;i<arr.length;i++){ if (arr[i].date === date) return arr[i]; }
+  var dt = _fsParse(date); if (dt == null) return null;
+  for (var j=0;j<arr.length;j++){ var d2=_fsParse(arr[j].date); if (d2!=null && Math.abs(d2-dt) <= 36*3600*1000) return arr[j]; }
+  return null;
+}
 function openFightStats(name, date){
   var rec = fightStatsFor(name, date); if (!rec) return;
   var f = rec.f, o = rec.o;
-  var resColor = rec.result==='W' ? '#00e668' : (rec.result==='L' ? '#ff3d00' : 'rgba(255,255,255,0.6)');
   function sig(s){ return s.sigL+'/'+s.sigA+' <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">('+_fsPct(s.sigL,s.sigA)+'%)</span>'; }
+  // Result line ("Winner by Method R# - time") sourced from FIGHT_HISTORY.
+  var hr = _fsHistRow(name, date), resultLine = '';
+  if (hr) {
+    var mclean = String(hr.method||'').replace(/\s*\([^)]*\)\s*$/,'').trim();
+    if (hr.result==='W' || hr.result==='L') {
+      var winner = hr.result==='W' ? name : rec.opponent;
+      resultLine = winner + ' by ' + (mclean || hr.method || 'decision')
+                 + (hr.round ? ' R'+hr.round : '') + (hr.time ? ' - '+hr.time : '');
+    } else if (hr.result==='D') { resultLine = 'Draw' + (hr.round?' R'+hr.round:'') + (hr.time?' - '+hr.time:''); }
+    else if (hr.result==='NC') { resultLine = 'No Contest'; }
+  }
   var body =
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;gap:0.5rem;">'
-    +   '<span style="font-weight:800;color:#fff;flex:1;text-align:left;">'+_fsEsc(name)+'</span>'
-    +   '<span style="font-size:0.72rem;color:rgba(255,255,255,0.45);white-space:nowrap;">'+_fsEsc(rec.date)+' &middot; <b style="color:'+resColor+';">'+rec.result+'</b></span>'
-    +   '<span style="font-weight:800;color:#fff;flex:1;text-align:right;">'+_fsEsc(rec.opponent)+'</span>'
+      '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;margin-bottom:0.5rem;">'
+    +   '<div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">' + _fsAva(name)
+    +     '<span style="font-weight:800;color:#fff;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+_fsEsc(name)+'</span></div>'
+    +   '<div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;justify-content:flex-end;">'
+    +     '<span style="font-weight:800;color:#fff;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;">'+_fsEsc(rec.opponent)+'</span>' + _fsAva(rec.opponent) + '</div>'
+    + '</div>'
+    + '<div style="text-align:center;margin-bottom:0.9rem;">'
+    +   '<span style="font-size:0.72rem;color:rgba(255,255,255,0.45);">'+_fsEsc(rec.date)+'</span>'
+    +   (resultLine ? '<div style="font-size:0.74rem;color:var(--accent);font-weight:700;margin-top:3px;line-height:1.3;">'+_fsEsc(resultLine)+'</div>' : '')
     + '</div>'
     + _fsRow('Knockdowns', f.kd, o.kd, f.kd, o.kd, (f.kd+o.kd)>0)
     + _fsRow('Sig. Strikes', sig(f), sig(o), f.sigL, o.sigL, true)
@@ -31328,7 +31365,7 @@ function populateFightHistory(name) {
  const _offBg = (_baseBg === '' ? 'rgba(212,175,55,0.035)' : _baseBg);
  tr.addEventListener('mouseenter', () => { tr.style.background = _onBg; });
  tr.addEventListener('mouseleave', () => { tr.style.background = _offBg; });
- tr.addEventListener('click', () => openFightStats(name, f.date));
+ tr.addEventListener('click', (e) => { if (e.target && e.target.closest && e.target.closest('.fh-opponent')) return; openFightStats(name, f.date); });
  }
  tbody.appendChild(tr);
  });
