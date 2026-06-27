@@ -3388,7 +3388,7 @@
  { name: "Michael Chiesa", division: "WW", rank: "NR", record: "20-7-0", initials: "MCE", country: "USA" },
  { name: "Nicolas Dalby", division: "WW", rank: "NR", record: "24-6-1", initials: "NDA", country: "Denmark" },
  { name: "Mike Malott", division: "WW", rank: "#12", record: "14-2-1", initials: "MAL", country: "Canada" },
- { name: "Vicente Luque", division: "WW", rank: "NR", record: "25-13-1", initials: "VLQ", country: "Brazil" },
+ { name: "Vicente Luque", division: "WW", rank: "NR", record: "24-12-1", initials: "VLQ", country: "Brazil" },
  { name: "Myktybek Orolbai", division: "WW", rank: "NR", record: "16-2-1", initials: "MOR2", country: "Kyrgyzstan" },
  { name: "Gunnar Nelson", division: "WW", rank: "NR", record: "18-7-1", initials: "GNE", country: "Iceland" },
  { name: "Randy Brown", division: "WW", rank: "NR", record: "20-8-0", initials: "RBR2", country: "USA" },
@@ -4116,7 +4116,7 @@
  "Javier Reyes": { ht:"5'10\"", dob:"1993-10-10", reach:'73"', slpm:8.91, strAcc:"56%", sapm:2.53, tdAcc:"50%", subAvg:0.0, strDef:"47%", kd:3.99, tdDef:"50%", finRate:"83%", streak:3, tdLanded:2.00, gym:"UKF Gym" },
  // ── Welterweight (more) ──
  "Neil Magny": { ht:"6'3\"", dob:"1987-08-03", reach:'80"', stance:"Orthodox", slpm:3.4, tdAcc:"39%", subAvg:0.3, strDef:"51%", kd:0.1, tdDef:"55%", finRate:"39%", streak:0, tdLanded:2.17, gym:"Easton Training Center" },
- "Vicente Luque": { ht:"5'11\"", dob:"1991-11-27", reach:'75"', stance:"Orthodox", slpm:4.8, tdAcc:"48%", subAvg:0.7, strDef:"51%", kd:0.3, tdDef:"59%", finRate:"68%", streak:0, tdLanded:0.89, gym:"Kill Cliff FC (2017–present)" },
+ "Vicente Luque": { ht:"5'11\"", dob:"1991-11-27", reach:'75"', stance:"Orthodox", slpm:4.83, strAcc:"51%", sapm:5.30, strDef:"52%", kd:0.65, tdLanded:0.90, tdAcc:"48%", tdDef:"61%", subAvg:0.65, finRate:"88%", streak:1, gym:"Kill Cliff FC (2017–present)" },
  "Geoff Neal": { ht:"5'11\"", dob:"1990-08-28", reach:'75"', stance:"Southpaw", slpm:5.02, tdAcc:"45%", subAvg:0.1, strDef:"57%", kd:0.5, tdDef:"87%", finRate:"69%", streak:0, tdLanded:0.54, gym:"Fortis MMA" },
  "Michael Chiesa": { ht:"6'1\"", dob:"1987-12-07", reach:'75.5"', stance:"Southpaw", slpm:2.02, strAcc:"41%", sapm:1.73, strDef:"58%", kd:0.07, tdLanded:3.11, tdAcc:"48%", tdDef:"66%", subAvg:1.04, finRate:"65%", streak:4, gym:"Sikjitsu (Spokane, WA)" },
  // ── Middleweight (more) ──
@@ -9987,16 +9987,31 @@
     { opponent: "Jake Ellenberger", odds: -200 }
   ],
   "Vicente Luque": [
-    { opponent: "Kevin Holland", odds: -200 },
-    { opponent: "Rafael dos Anjos", odds: -175 },
-    { opponent: "Themba Gorimbo", odds: -450 },
-    { opponent: "Belal Muhammad", odds: 300 },
-    { opponent: "Geoff Neal", odds: 185 },
-    { opponent: "Michael Chiesa", odds: -175 },
-    { opponent: "Tyron Woodley", odds: -350 },
-    { opponent: "Randy Brown", odds: -250 },
-    { opponent: "Niko Price", odds: -300 },
-    { opponent: "Mike Perry", odds: -250 }
+    { opponent: "Kelvin Gastelum", odds: 217 },
+    { opponent: "Joel Álvarez", odds: 435 },
+    { opponent: "Kevin Holland", odds: 162 },
+    { opponent: "Themba Gorimbo", odds: 135 },
+    { opponent: "Joaquin Buckley", odds: -134 },
+    { opponent: "Rafael dos Anjos", odds: -100 },
+    { opponent: "Geoff Neal", odds: -188 },
+    { opponent: "Belal Muhammad", odds: -179 },
+    { opponent: "Michael Chiesa", odds: -110 },
+    { opponent: "Tyron Woodley", odds: -200 },
+    { opponent: "Randy Brown", odds: -197 },
+    { opponent: "Niko Price", odds: -262 },
+    { opponent: "Stephen Thompson", odds: -105 },
+    { opponent: "Mike Perry", odds: -241 },
+    { opponent: "Derrick Krantz", odds: -1171 },
+    { opponent: "Bryan Barberena", odds: -460 },
+    { opponent: "Jalin Turner", odds: -732 },
+    { opponent: "Chad Laprise", odds: -229 },
+    { opponent: "Niko Price", odds: -135 },
+    { opponent: "Leon Edwards", odds: -117 },
+    { opponent: "Belal Muhammad", odds: -124 },
+    { opponent: "Héctor Urbina", odds: -577 },
+    { opponent: "Álvaro Herrera", odds: -354 },
+    { opponent: "Hayder Hassan", odds: -127 },
+    { opponent: "Michael Graves", odds: -187 }
   ],
   "Calvin Kattar": [
     { opponent: "David Onama", odds: 115 },
@@ -21392,9 +21407,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 17, 2010", opponent: "Rodrigo Medeiros", result: "D", method: "Draw (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 18", org: "Shooto" },
     { date: "Jun 5, 2010", opponent: "Felipe Portela", result: "L", method: "Submission (Triangle armbar)", round: 3, time: "3:00", event: "Capital Fight 2" },
     { date: "Oct 24, 2009", opponent: "Pedro Borges Dos Santos", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:58", event: "The Gladiators 2" },
-    { date: "Jun 27, 2009", opponent: "Andre Playboy", result: "W", method: "TKO (Punches)", round: 1, time: "2:52", event: "Fight Club 300" },
-    { date: "Jul 8, 2015", opponent: "Hayder Hassan", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "The Ultimate Fighter: American Top Team vs. Blackzilians" },
-    { opponent: "Nathan Coy", result: "W", method: "Submission (Anaconda choke)", time: "2:26", event: "(airdate)" }
+    { date: "Jun 27, 2009", opponent: "Andre Playboy", result: "W", method: "TKO (Punches)", round: 1, time: "2:52", event: "Fight Club 300" }
   ],
 
 
@@ -33946,8 +33959,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Canadian welterweight nicknamed \"Proper\" / \"Captain Canada\"; WKC national kickboxing champion as an amateur", detail: null }
   ],
   "Vicente Luque": [
+    { icon: "⭐", title: "UFC Performance of the Night (five times) — vs. Hayder Hassan, Héctor Urbina, Randy Brown, Michael Chiesa & Themba Gorimbo", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (four times) — vs. Bryan Barberena, Mike Perry, Stephen Thompson & Tyron Woodley", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Toquinho Saldanha", detail: null },
-    { icon: "🏆", title: "Black belt in Luta Livre Esportiva under Erik Batista da Silva", detail: null },
+    { icon: "🥋", title: "Black belt in Luta Livre Esportiva under Erik Batista da Silva", detail: null },
+    { icon: "🥊", title: "Brazilian Amateur Kickboxing Cup champion (2009)", detail: null },
   ],
   "Volkan Oezdemir": [
     { icon: "🏆", title: "WKN Valhalla: Battle of the Vikings Tournament Champion", detail: "2013, Light Heavyweight" },
