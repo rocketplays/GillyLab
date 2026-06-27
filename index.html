@@ -4826,7 +4826,7 @@
   "Veronica Hardy": { ht:"5'3\"", dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
 
   "Shauna Bannon": { ht:"5'5\"", dob:"1998-07-22", reach:'65"', stance:"Orthodox", slpm:3.1, tdAcc:"33%", subAvg:0.5, strDef:"52%", kd:0.0, tdDef:"75%", finRate:"43%", streak:0, tdLanded:1.2 },
-  "Mateusz Rębecki": { ht:"5'11\"", dob:"1994-05-10", reach:'74"', stance:"Southpaw", slpm:5.8, tdAcc:"42%", subAvg:0.2, strDef:"55%", kd:0.8, tdDef:"82%", finRate:"53%", streak:0, tdLanded:1.4, gym:"American Top Team" },
+  "Mateusz Rębecki": { ht:"5'7\"", dob:"1992-10-03", reach:'66"', stance:"Southpaw", slpm:4.79, strAcc:"47%", sapm:4.36, strDef:"55%", kd:0.73, tdLanded:3.05, tdAcc:"49%", tdDef:"53%", subAvg:0.44, finRate:"80%", streak:0, gym:"American Top Team" },
   "Shuai Yin": { ht:"5'6\"", dob:"1999-09-12", reach:'68"', stance:"Orthodox", slpm:2.8, tdAcc:"38%", subAvg:0.3, strDef:"50%", kd:0.2, tdDef:"70%", finRate:"38%", streak:0, tdLanded:1.8 },
   "Santiago Luna": { ht:"5'9\"", dob:"2004-08-06", reach:'74"', stance:"Orthodox", slpm:4.74, strAcc:"53%", sapm:2.76, strDef:"68%", kd:0.92, tdLanded:2.30, tdAcc:"71%", tdDef:"57%", subAvg:0.92, finRate:"88%", streak:0, gym:"Entram Gym" },
   "John Yannis": { ht:"5'7\"", dob:"1994-07-07", reach:'70.5"', stance:"Southpaw", slpm:3.30, strAcc:"54%", sapm:1.26, strDef:"74%", kd:2.36, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.0, finRate:"60%", streak:1, gym:"Xtreme Plainview" },
@@ -14410,9 +14410,16 @@
   ],
 
   "Mateusz Rębecki": [
-    { opponent: "Brando Peričić", odds: -175 },
-    { opponent: "Ludovit Klein", odds: -165 },
-    { opponent: "Mateusz Gamrot", odds: -200 }
+    { opponent: "Grant Dawson", odds: 125 },
+    { opponent: "Ľudovít Klein", odds: 120 },
+    { opponent: "Chris Duncan", odds: -245 },
+    { opponent: "Myktybek Orolbai", odds: 230 },
+    { opponent: "Carlos Diego Ferreira", odds: -440 },
+    { opponent: "Roosevelt Roberts", odds: -800 },
+    { opponent: "Rodrigo Lídio", odds: -280 },
+    { opponent: "Arkadiy Osipyan", odds: -550 },
+    { opponent: "Felipe da Silva Maia", odds: -725 },
+    { opponent: "Jose Barrios Vargas", odds: -800 }
   ],
   "Shuai Yin": [
     { opponent: "DongHun Choi", odds: 300 },
@@ -32413,6 +32420,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Mateusz Rębecki": [
+    { icon: "🏆", title: "FEN (Fight Exclusive Night) Lightweight Champion — 7 title defenses", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (×3) — vs. Myktybek Orolbai, Chris Duncan & Ľudovít Klein", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2022 — submission of Rodrigo Lídio)", detail: null },
+    { icon: "🥇", title: "Two-time Polish ADCC champion; three-time European BJJ champion", detail: null }
+  ],
   "Ozzy Diaz": [
     { icon: "🏆", title: "LFA Middleweight Champion", detail: null },
     { icon: "🏆", title: "Lights Out Xtreme Fighting (LXF) Middleweight Champion", detail: null },
