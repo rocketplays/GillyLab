@@ -3572,7 +3572,7 @@
  { name: "Rinat Fakhretdinov", division: "WW", rank: "NR", record: "24-2-0", initials: "RFA", country: "Russia" },
  { name: "Themba Gorimbo", division: "WW", rank: "NR", record: "14-7-0", initials: "TGO", country: "Zimbabwe" },
  { name: "Ramiz Brahimaj", division: "WW", rank: "NR", record: "13-6-0", initials: "RBH2", country: "USA" },
- { name: "Francisco Prado", division: "WW", rank: "NR", record: "12-2-0", initials: "FPR", country: "Bolivia" },
+ { name: "Francisco Prado", division: "WW", rank: "NR", record: "12-5-0", initials: "FPR", country: "Argentina" },
  { name: "Chidi Njokuani", division: "WW", rank: "NR", record: "25-12-0", initials: "CNJ2", country: "USA" },
  { name: "Yadier del Valle", division: "WW", rank: "NR", record: "10-3-0", initials: "YDV", country: "Puerto Rico" },
  { name: "Kevin Jousset", division: "WW", rank: "NR", record: "10-5-0", initials: "KJO", country: "France" },
@@ -4267,7 +4267,7 @@
  "Randy Brown": { ht:"6'3\"", dob:"1990-07-08", reach:'78"', stance:"Orthodox", slpm:4.39, strAcc:"47%", sapm:3.35, strDef:"54%", kd:0.39, tdLanded:0.71, tdAcc:"34%", tdDef:"75%", subAvg:0.52, finRate:"65%", streak:0, gym:"Budokan Martial Arts Academy (2010–present); Marquez MMA (2021–present)" },
  "Khaos Williams": { ht:"6'0\"", dob:"1994-03-30", reach:'77"', stance:"Orthodox", slpm:5.12, tdAcc:"0%", subAvg:0.0, strDef:"41%", kd:0.9, tdDef:"51%", finRate:"81%", streak:1, tdLanded:0.00, gym:"Murcielago MMA" },
  "Kevin Jousset": { ht:"6'2\"", dob:"1993-05-02", reach:'75"', stance:"Orthodox", slpm:6.61, tdAcc:"40%", subAvg:0.3, strDef:"50%", kd:0.5, tdDef:"100%",finRate:"60%", streak:2, tdLanded:0.69, gym:"Boxing Squad (secondary) (2024–present)" },
- "Francisco Prado": { ht:"5'10\"", dob:"2002-06-16", reach:'69"', stance:"Orthodox", slpm:4.09, tdAcc:"19%", subAvg:0.5, strDef:"54%", kd:0.2, tdDef:"50%", finRate:"58%", streak:0, tdLanded:0.94 },
+ "Francisco Prado": { ht:"5'10\"", dob:"2002-06-16", reach:'69"', stance:"Orthodox", slpm:4.09, strAcc:"44%", sapm:4.95, strDef:"55%", kd:0.23, tdLanded:0.94, tdAcc:"19%", tdDef:"50%", subAvg:0.47, finRate:"100%", streak:0, gym:"American Top Team" },
  "Chris Curtis": { ht:"5'10\"", dob:"1987-07-15", reach:'75"', stance:"Orthodox", slpm:5.52, strAcc:"51%", sapm:5.75, strDef:"54%", kd:0.36, tdLanded:0.00, tdAcc:"0%", tdDef:"65%", subAvg:0.0, finRate:"56%", streak:0, gym:"Xtreme Couture" },
  // ── Bantamweight (more) ──
  "Raul Rosas Jr.": { ht:"5'9\"", dob:"2004-10-08", reach:'67"', stance:"Switch", slpm:1.34, strAcc:"42%", sapm:1.24, strDef:"53%", kd:0.17, tdLanded:6.10, tdAcc:"55%", tdDef:"25%", subAvg:0.87, finRate:"67%", streak:5, gym:"Rosas Brothers MMA" },
@@ -11493,10 +11493,11 @@
     { opponent: "Roman Dolidze", odds: 300 }
   ],
   "Francisco Prado": [
-    { opponent: "Daniel Zellhuber", odds: 350 },
-    { opponent: "Christos Giagos", odds: -300 },
-    { opponent: "Joshua Culibao", odds: -250 },
-    { opponent: "Thiago Moises", odds: 265 }
+    { opponent: "Charles Radtke", odds: 133 },
+    { opponent: "Jake Matthews", odds: 189 },
+    { opponent: "Daniel Zellhuber", odds: 245 },
+    { opponent: "Ottman Azaitar", odds: -115 },
+    { opponent: "Jamie Mullarkey", odds: 229 }
   ],
   "Gauge Young": [
     { opponent: "Thiago Moises", odds: -175 },
@@ -24809,16 +24810,23 @@ const FIGHT_HISTORY = {
     { date: "May 30, 2020", opponent: "Alex Polizzi", result: "W", method: "KO (Punches)", round: 2, time: "1:43", event: "LFA 87" }
   ],
   "Francisco Prado": [
-    { date: "Mar 29, 2025", opponent: "Daniel Zellhuber", result: "L", method: "TKO (Punches)", round: 1, time: "0:58", event: "UFC on ESPN: Moreno vs. Erceg" },
-    { date: "Nov 16, 2024", opponent: "Christos Giagos", result: "W", method: "KO (Punches)", round: 2, time: "1:13", event: "UFC 309: Jones vs. Miocic" },
-    { date: "Sep 16, 2023", opponent: "Daniel Zellhuber", result: "L", method: "TKO (Punches)", round: 1, time: "1:26", event: "Noche UFC 2023" },
-    { date: "Apr 22, 2023", opponent: "Joshua Culibao", result: "W", method: "KO (Punches)", round: 1, time: "1:40", event: "UFC Fight Night: Holloway vs. Allen" },
-    { date: "Jan 14, 2023", opponent: "Thiago Moises", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Strickland vs. Imavov (debut)" },
-    { date: "Sep 24, 2022", opponent: "Andre Lima", result: "W", method: "KO (Punches)", round: 1, time: "0:24", event: "DWCS Season 6 Week 4 (contract)" },
-    { date: "Jul 9, 2022", opponent: "Rodrigo Santos", result: "W", method: "KO (Punches)", round: 2, time: "2:14", event: "Xtreme Fight Night 15" },
-    { date: "May 1, 2022", opponent: "Carlos Bringas", result: "W", method: "KO (Punches)", round: 1, time: "1:17", event: "Xtreme Fight Night 13" },
-    { date: "Jan 16, 2022", opponent: "Ruben Bravo", result: "W", method: "KO (Punches)", round: 2, time: "1:49", event: "Combate Global" },
-    { date: "Sep 25, 2021", opponent: "Jose Casanova", result: "W", method: "KO (Punches)", round: 1, time: "0:47", event: "Combate Global" }
+    { date: "Apr 11, 2026", opponent: "Charles Radtke", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 327", org: "UFC" },
+    { date: "Jul 19, 2025", opponent: "Nikolay Veretennikov", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 318", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Jake Matthews", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
+    { date: "Feb 24, 2024", opponent: "Daniel Zellhuber", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Royval 2", org: "UFC" },
+    { date: "Jul 15, 2023", opponent: "Ottman Azaitar", result: "W", method: "KO (Punches)", round: 1, time: "4:05", event: "UFC Fight Night: Holm vs. Bueno Silva", org: "UFC" },
+    { date: "Feb 11, 2023", opponent: "Jamie Mullarkey", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 284", org: "UFC" },
+    { date: "Dec 16, 2022", opponent: "Jose Barrios Vargas", result: "W", method: "TKO (Strikes)", round: 1, time: "1:17", event: "Samurai Fight House 8" },
+    { date: "Oct 15, 2022", opponent: "Adrian Perrone", result: "W", method: "TKO (Strikes)", round: 1, time: "2:48", event: "Samurai Fight House 6" },
+    { date: "Jun 19, 2022", opponent: "Mauricio Ariel Pare", result: "W", method: "Submission (Shoulder choke)", round: 3, time: "1:07", event: "Samurai Fight House 5" },
+    { date: "Feb 12, 2022", opponent: "Diego Basualdo", result: "W", method: "TKO (Strikes)", round: 2, time: "0:34", event: "Samurai Fight House 3" },
+    { date: "Nov 6, 2021", opponent: "Gabriel Ribeiro", result: "W", method: "Submission (Armbar)", round: 1, time: "1:51", event: "Samurai Fight House 2" },
+    { date: "Aug 21, 2021", opponent: "Lucas Tavares", result: "W", method: "TKO (Strikes)", round: 1, time: "4:54", event: "Samurai Fight House 1" },
+    { date: "Jun 4, 2021", opponent: "Hugo Nogueira", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:15", event: "NFC 19" },
+    { date: "Apr 24, 2021", opponent: "Octavio Jobet", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:34", event: "CAM 2" },
+    { date: "Dec 7, 2019", opponent: "Fernando Silveira", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:00", event: "Parana Strike" },
+    { date: "Oct 12, 2019", opponent: "Rodrigo Gigena", result: "W", method: "Submission (Triangle choke)", round: 1, time: "0:41", event: "Fighting Champions 1" },
+    { date: "Jul 6, 2019", opponent: "Ayrton Puy", result: "W", method: "TKO (Strikes)", round: 1, time: "4:03", event: "Power Fight 5" }
   ],
   "Gauge Young": [
     { date: "Apr 18, 2026", opponent: "Thiago Moises", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates" },
@@ -31625,6 +31633,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Francisco Prado": [
+    { icon: "🏆", title: "Samurai Fight House South American Lightweight Champion (two defenses)", detail: null },
+    { icon: "🏆", title: "Samurai Fight House South American Super Lightweight (165 lb) Champion (two defenses)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥋", title: "Black belt in Taekwondo", detail: null },
+  ],
   "Charles Radtke": [
     { icon: "🏆", title: "CFFC (Cage Fury FC) Welterweight Champion", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
