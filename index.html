@@ -3787,6 +3787,7 @@
   { name: "Eric Nolan", division: "WW", rank: "NR", record: "8-4-0", initials: "EN", country: "USA" },
  { name: "Tahir Abdullayev", division: "WW", rank: "NR", record: "19-3-0", initials: "TAB", country: "Azerbaijan" },
  { name: "Jefferson Nascimento", division: "WW", rank: "NR", record: "13-0-0", initials: "JN", country: "Brazil" },
+ { name: "Victor Valenzuela", division: "WW", rank: "NR", record: "14-4-0", initials: "VVA", country: "Chile" },
  { name: "Marc Diakiese", division: "LW", rank: "NR", record: "18-8-0", initials: "MD", country: "UK" },
  { name: "Shem Rock", division: "LW", rank: "NR", record: "12-3-1", initials: "SR", country: "England" },
  { name: "Muhammad Naimov", division: "LW", rank: "NR", record: "13-4-0", initials: "MN", country: "Tajikistan" },
@@ -4617,6 +4618,7 @@
  "Michael Aswell Jr.": { ht:'5\'8"', dob:"2000-09-27", reach:'69"', stance:"Orthodox", slpm:7.60, strAcc:"43%", sapm:7.03, strDef:"52%", kd:0.49, tdLanded:0.24, tdAcc:"25%", tdDef:"56%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz. Fight Club" },
  "Francis Marshall": { ht:"5'9\"", dob:"1999-03-03", reach:'72"', stance:"Orthodox", slpm:3.19, strAcc:"34%", sapm:3.45, strDef:"55%", kd:0.34, tdLanded:2.71, tdAcc:"47%", tdDef:"89%", subAvg:0.51, finRate:"60%", streak:2, gym:"American Top Team" },
  "Lucas Brennan": { ht:"5'10\"", dob:"2000-06-03", reach:'72"', stance:"Southpaw", slpm:0.60, strAcc:"25%", sapm:2.20, strDef:"52%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"33%", subAvg:1.00, finRate:"91%", streak:0, gym:"Syndicate MMA" },
+ "Victor Valenzuela": { ht:"5'9\"", dob:"1994-02-09", reach:'71.5"', stance:"Orthodox", slpm:3.53, strAcc:"45%", sapm:2.67, strDef:"55%", kd:0.00, tdLanded:1.00, tdAcc:"50%", tdDef:"56%", subAvg:0.00, finRate:"64%", streak:2, gym:"MMA Masters" },
  "Harry Hardwick": { ht:"5'8\"", dob:"1994-09-29", reach:'71"', stance:"Switch", slpm:5.47, strAcc:"42%", sapm:8.54, strDef:"44%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"54%", streak:0, gym:"Middlesbrough Fight Academy" },
  "Hyder Amil": { ht:"5'9\"", dob:"1990-05-28", reach:'70"', stance:"Orthodox", slpm:5.83, strAcc:"53%", sapm:4.04, strDef:"51%", kd:0.26, tdLanded:0.52, tdAcc:"17%", tdDef:"66%", subAvg:0.78, finRate:"64%", streak:0, gym:"El Nino Training Center" },
  "Lucas Alexander": { ht:"5'11\"", dob:"1995-07-28", reach:'73"', stance:"Orthodox", slpm:4.69, tdAcc:"40%", subAvg:0.5, strDef:"56%", kd:0.3, tdDef:"69%", finRate:"56%", streak:0, tdLanded:1.79 },
@@ -13481,6 +13483,12 @@
     { opponent: "Matthew Skibicki", odds: -1300 },
     { opponent: "Andrew Salas", odds: -575 },
     { opponent: "Will Smith", odds: -575 }
+  ],
+  "Victor Valenzuela": [
+    { opponent: "Max Griffin", odds: -135 },
+    { opponent: "Michael Oliveira", odds: 230 },
+    { opponent: "Bruce Whitehead", odds: 105 },
+    { opponent: "Dustin Parrish", odds: -250 }
   ],
   "Alberto Montes": [
     { opponent: "Ricky Turcios", odds: -185 },
@@ -29407,6 +29415,26 @@ const FIGHT_HISTORY = {
     { date: "Nov 8, 2019", opponent: "Jacob Landin", result: "W", method: "Submission (Forearm choke)", round: 1, time: "3:36", event: "Bellator 233", org: "Bellator" },
     { date: "Jul 12, 2019", opponent: "Thomas Lopez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:02", event: "Bellator 224", org: "Bellator" }
   ],
+  "Victor Valenzuela": [
+    { date: "Apr 25, 2026", opponent: "Max Griffin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
+    { date: "Mar 30, 2026", opponent: "Yusaku Kinoshita", result: "W", method: "KO/TKO", round: 2, time: "4:13", event: "Lemino Shooto Vol. 4", org: "Shooto" },
+    { date: "Oct 14, 2025", opponent: "Michael Oliveira", result: "L", method: "KO/TKO (Punches)", round: 2, time: "3:56", event: "Dana White's Contender Series: Season 9, Week 10", org: "UFC" },
+    { date: "Jun 22, 2025", opponent: "Bruce Whitehead", result: "W", method: "KO/TKO (Knee)", round: 1, time: "1:28", event: "Fury FC 105 (Interim WW title)", org: "Fury FC" },
+    { date: "Mar 29, 2024", opponent: "Dustin Parrish", result: "W", method: "KO/TKO (Leg kick & punches)", round: 1, time: "2:43", event: "LFA 180", org: "LFA" },
+    { date: "May 13, 2023", opponent: "Shinsho Anzai", result: "W", method: "KO/TKO (Elbows & punches)", round: 2, time: "1:54", event: "Combate Global: Mexico vs. Japan", org: "Combate Global" },
+    { date: "Dec 10, 2022", opponent: "Matias Ibanez", result: "W", method: "KO/TKO (Punches)", round: 1, time: null, event: "Ragnarok Combate 4", org: "Ragnarok" },
+    { date: "Aug 26, 2022", opponent: "Bryan McDowell", result: "W", method: "Submission (Armbar)", round: 3, time: "0:58", event: "Combate Global: Solorzano vs. Osuna", org: "Combate Global" },
+    { date: "Jun 10, 2022", opponent: "Fernando Calvo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: Edwards vs. Rodriguez", org: "Combate Global" },
+    { date: "Jul 17, 2021", opponent: "Thomas Powell", result: "L", method: "DQ (Illegal head kick)", round: 1, time: "4:35", event: "Ring of Combat 73", org: "Ring of Combat" },
+    { date: "Mar 12, 2016", opponent: "Fabio Diaz", result: "W", method: "KO/TKO (Punches)", round: 1, time: "3:13", event: "Master Fighting Championship 12", org: "MFC" },
+    { date: "Apr 25, 2015", opponent: "Guillermo Martinez Ayme", result: "L", method: "KO/TKO (Punches)", round: 2, time: "4:54", event: "Master Fighters Championship 11", org: "MFC" },
+    { date: "Dec 20, 2014", opponent: "Evan Vasquez Matus", result: "L", method: "Submission", round: 1, time: null, event: "Arena Tour 4", org: "Arena Tour" },
+    { date: "Mar 22, 2014", opponent: "Martin Torres", result: "W", method: "Submission (Armbar)", round: 1, time: "2:51", event: "Arena Tour 2", org: "Arena Tour" },
+    { date: "Nov 29, 2013", opponent: "Diego Palau", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage MMA Night League", org: "CMMANL" },
+    { date: "Oct 6, 2013", opponent: "Rodrigo Carlos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Dominator Tournament 2", org: "CDT" },
+    { date: "Jun 22, 2013", opponent: "Horacio Bepre", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hualsur Sport Combat", org: "HSC" },
+    { date: "Apr 27, 2013", opponent: "Eric Farias", result: "W", method: "KO/TKO (Punch)", round: 1, time: "2:12", event: "Master Fighters Championship 9", org: "MFC" }
+  ],
   "Alberto Montes": [
     { date: "Mar 7, 2026", opponent: "Ricky Turcios", result: "W", method: "Submission (Anaconda choke)", round: 2, time: "0:40", event: "UFC 326: Holloway vs. Oliveira 2", org: "UFC" },
     { date: "Oct 1, 2024", opponent: "Carlos Calderon", result: "W", method: "Submission (Anaconda choke)", round: 2, time: "2:38", event: "Dana White's Contender Series 8 Week 8", org: "UFC" },
@@ -31903,6 +31931,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Victor Valenzuela": [
+    { icon: "🏆", title: "Fury FC Interim Welterweight Champion (2025)", detail: null },
+    { icon: "🥇", title: "WAKO Kickboxing World Cup Champion (2014) & Pan-American Champion (2017)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥋", title: "Black belt in kickboxing; brown belt in karate", detail: null },
+  ],
   "Lucas Brennan": [
     { icon: "🏅", title: "Went 9-0 in Bellator MMA; ranked #7 featherweight before the promotion's closure", detail: null },
     { icon: "🏅", title: "ESPN Top 25 Fighters Under 25 (#5)", detail: null },
