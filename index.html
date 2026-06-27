@@ -31265,6 +31265,17 @@ function openFightStats(name, date){
   if (m) m.style.display = 'block';
   document.body.style.overflow = 'hidden';
 }
+// Event-card bouts know both fighters but only one event date — open the modal
+// for whichever fighter has a backfilled box score (the record carries both sides).
+function _fsEventMatch(n1, n2, date){
+  if (fightStatsFor(n1, date)) return { name: n1, date: date };
+  if (fightStatsFor(n2, date)) return { name: n2, date: date };
+  return null;
+}
+function openEventFightStats(n1, n2, date){
+  var m = _fsEventMatch(n1, n2, date);
+  if (m) openFightStats(m.name, m.date);
+}
 
 function populateFightHistory(name) {
  try { window.__currentFighter = name; } catch(e){}
@@ -36245,12 +36256,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<div class="fd-stat"><span class="fd-label">Last 5</span><span class="fd-value">' + lastFiveFormHTML(name) + '</span></div>' +
       '</div>';
     }
+    var _statsBtn = '';
+    if (f.completed && typeof _fsEventMatch === 'function' && _fsEventMatch(f.f1, f.f2, f.date)) {
+      _statsBtn = '<div style="text-align:center;padding:0.65rem 0 0.2rem;margin-top:0.4rem;border-top:1px solid rgba(255,255,255,0.06);">' +
+        '<button type="button" onclick="event.stopPropagation();openEventFightStats(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.date || '') + '\')" ' +
+        'style="background:rgba(212,175,55,0.1);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.72rem;padding:0.4rem 1rem;border-radius:4px;cursor:pointer;">View Full Fight Stats &rsaquo;</button>' +
+      '</div>';
+    }
     return '<div class="fight-details-panel">' +
       '<div class="fd-collapse-inner"><div class="fd-cols">' +
         col(f.f1, s1, '1') +
         '<div class="fd-divider"></div>' +
         col(f.f2, s2, '2') +
-      '</div></div>' +
+      '</div>' + _statsBtn + '</div>' +
     '</div>';
   }
 
@@ -37235,6 +37253,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         photo2: blue.fighterSlug ? './photos/thumb/' + blue.fighterSlug + '.png' : '',
         label, isMain, isMainCard,
         won1, won2, completed,
+        date: dateStr,
         methodText: bout.method || '', resRound: bout.resultRound || '', resTime: bout.resultTime || '',
       };
     });
