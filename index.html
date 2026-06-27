@@ -31225,6 +31225,9 @@ function _fsBar(lv,rv){
   var tot=lv+rv, lp = tot>0 ? Math.round(100*lv/tot) : 50;
   // The accent (green) fill goes on whichever fighter had the edge in this stat;
   // the trailing side is dimmed. Equal values -> both dimmed (no advantage).
+  // Clamp so a lopsided stat (e.g. 1–0) keeps a sliver on the trailing side —
+  // otherwise the bar runs edge-to-edge and you can't tell which side it's from.
+  if (tot>0) lp = Math.max(8, Math.min(92, lp));
   var acc='var(--accent)', dim='rgba(255,255,255,0.18)';
   var lc = lv>rv ? acc : dim, rc = rv>lv ? acc : dim;
   return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.08);margin-top:4px;">'
