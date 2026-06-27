@@ -3457,7 +3457,7 @@
  // ─── FEATHERWEIGHT (extended) ───
  { name: "Bill Algeo", division: "FW", rank: "NR", record: "18-9-0", initials: "BAL", country: "USA" },
  { name: "Herbert Burns", division: "FW", rank: "NR", record: "14-5-0", initials: "HBU", country: "Brazil" },
- { name: "Dooho Choi", division: "FW", rank: "NR", record: "16-6-0", initials: "DHC", country: "South Korea" },
+ { name: "Dooho Choi", division: "FW", rank: "NR", record: "17-4-1", initials: "DHC", country: "South Korea" },
  { name: "Daniel Santos", division: "FW", rank: "NR", record: "19-7-0", initials: "DSA", country: "Brazil" },
  { name: "Chepe Mariscal", division: "FW", rank: "NR", record: "14-6-0", initials: "CHM", country: "USA" },
  { name: "Christian Rodriguez", division: "FW", rank: "NR", record: "13-4-0", initials: "CRD", country: "USA" },
@@ -4473,7 +4473,7 @@
  // ── Bantamweight (more) ──
  "Miles Johns": { ht:"5'7\"", dob:"1994-03-30", reach:'68"', stance:"Orthodox", slpm:3.36, tdAcc:"36%", subAvg:0.5, strDef:"65%", kd:0.2, tdDef:"75%", finRate:"60%", streak:0, tdLanded:1.80, gym:"Sampson Jiu-Jitsu Academy" },
  // ── Featherweight (more) ──
- "Dooho Choi": { ht:"5'10\"", dob:"1991-04-10", reach:'70"', stance:"Orthodox", slpm:4.67, tdAcc:"43%", subAvg:0.3, strDef:"57%", kd:0.3, tdDef:"64%", finRate:"75%", streak:0, tdLanded:0.97 },
+ "Dooho Choi": { ht:"5'9\"", dob:"1991-04-10", reach:'70"', stance:"Orthodox", slpm:5.00, strAcc:"56%", sapm:4.43, strDef:"57%", kd:0.90, tdLanded:1.26, tdAcc:"54%", tdDef:"59%", subAvg:0.54, finRate:"88%", streak:3, gym:"Busan Team MAD" },
  "Ariane Lipski": { ht:"5'6\"", dob:"1994-01-26", reach:'67"', stance:"Orthodox", slpm:4.05, tdAcc:"38%", subAvg:0.3, strDef:"50%", kd:0.2, tdDef:"68%", finRate:"59%", streak:0, tdLanded:0.47, gym:"Lioness Studio (2023–present)" },
  "Zubaira Tukhugov": { ht:"5'8\"", dob:"1991-01-15", reach:'68"', stance:"Orthodox", slpm:3.17, tdAcc:"36%", subAvg:0.4, strDef:"63%", kd:0.1, tdDef:"69%", finRate:"60%", streak:0, tdLanded:0.68, gym:"Berkut Fight Club" },
  // ── Lightweight (more) ──
@@ -7068,18 +7068,6 @@
     { opponent: "Thiago Moisés", odds: 330 },
     { opponent: "Junior Melo", odds: -250 },
     { opponent: "Italo Gomes", odds: -210 }
-  ],
-  "Doo Ho Choi": [
-    { opponent: "Daniel Santos", odds: 140 },
-    { opponent: "Nate Landwehr", odds: -240 },
-    { opponent: "Bill Algeo", odds: -310 },
-    { opponent: "Kyle Nelson", odds: -190 },
-    { opponent: "Charles Jourdain", odds: -155 },
-    { opponent: "Jeremy Stephens", odds: 285 },
-    { opponent: "Cub Swanson", odds: 150 },
-    { opponent: "Thiago Tavares", odds: -400 },
-    { opponent: "Sam Sicilia", odds: -550 },
-    { opponent: "Juan Puig", odds: -650 }
   ],
   "Daniel Santos": [
     { opponent: "JooSang Yoo", odds: -400 },
@@ -11534,13 +11522,13 @@
     { opponent: "Maximilian Cech", odds: -400 }
   ],
   "Dooho Choi": [
-    { opponent: "Nate Landwehr", odds: -115 },
-    { opponent: "Bill Algeo", odds: -200 },
-    { opponent: "Charles Jourdain", odds: -350 },
-    { opponent: "Jeremy Stephens", odds: 300 },
-    { opponent: "Cub Swanson", odds: 200 },
-    { opponent: "Thiago Tavares", odds: -500 },
-    { opponent: "Sam Sicilia", odds: -400 }
+    { opponent: "Daniel Santos", odds: 145 },
+    { opponent: "Bill Algeo", odds: 183 },
+    { opponent: "Jeremy Stephens", odds: -165 },
+    { opponent: "Cub Swanson", odds: -223 },
+    { opponent: "Thiago Tavares", odds: -213 },
+    { opponent: "Sam Sicilia", odds: -255 },
+    { opponent: "Juan Puig", odds: -420 }
   ],
   "Andreas Gustafsson": [
     { opponent: "Rinat Fakhretdinov", odds: -129 },
@@ -16172,32 +16160,6 @@ const FIGHT_HISTORY = {
 
 
 
-  "Doo Ho Choi": [
-    { date: "Dec 07, 2024", opponent: "Nate Landwehr", result: "W", method: "KO/TKO (Punches)", round: 3, time: "5:00", event: "UFC 310" },
-    { date: "Jul 20, 2024", opponent: "Bill Algeo", result: "W", method: "KO/TKO (Punches)", round: 2, time: "3:38", event: "UFC Fight Night: Namajunas vs. Cortez" },
-    { date: "Feb 04, 2023", opponent: "Kyle Nelson", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Spivak" },
-    { date: "Dec 21, 2019", opponent: "Charles Jourdain", result: "L", method: "KO/TKO (Punches)", round: 2, time: "4:32", event: "UFC on ESPN+ 23" },
-    { date: "Jan 14, 2018", opponent: "Jeremy Stephens", result: "L", method: "KO/TKO (Punches)", round: 2, time: "2:36", event: "UFC Fight Night: Stephens vs. Choi" },
-    { date: "Dec 10, 2016", opponent: "Cub Swanson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 206" },
-    { date: "Nov 5, 2016", opponent: "Thiago Tavares", result: "W", method: "TKO (Punches)", round: 1, time: "0:44", event: "UFC Fight Night 99 (debut)" },
-    { date: "Jul 08, 2016", opponent: "Thiago Tavares", result: "W", method: "KO/TKO (Punches)", round: 1, time: "2:42", event: "TUF 23 Finale" },
-    { date: "Nov 28, 2015", opponent: "Sam Sicilia", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:33", event: "UFC Fight Night: Henderson vs. Masvidal" },
-    { date: "Nov 22, 2014", opponent: "Juan Puig", result: "W", method: "KO/TKO (Punches)", round: 1, time: "0:18", event: "UFC Fight Night: Edgar vs. Swanson" },
-    { date: "Jun 15, 2013", opponent: "Shoji Maruyama", result: "W", method: "KO/TKO (Punches)", round: 2, time: "2:33", event: "DEEP Cage Impact 2013" },
-    { date: "Feb 16, 2013", opponent: "Tatsunao Nagakura", result: "W", method: "KO/TKO (Doctor Stoppage)", round: 2, time: "4:14", event: "DEEP 61 Impact" },
-    { date: "Aug 18, 2012", opponent: "Kosuke Umeda", result: "W", method: "KO/TKO (Punch)", round: 1, time: "2:49", event: "DEEP 59 Impact" },
-    { date: "Dec 16, 2011", opponent: "Mitsuhiro Ishida", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:33", event: "DEEP 56 Impact" },
-    { date: "Oct 29, 2011", opponent: "Nobuhiro Obiya", result: "W", method: "KO/TKO (Punches)", round: 1, time: "2:10", event: "DEEP" },
-    { date: "Sep 03, 2011", opponent: "Hisaki Hiraishi", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:20", event: "GLADIATOR" },
-    { date: "Aug 26, 2011", opponent: "Kazuki Itaya", result: "W", method: "KO/TKO (Punches)", round: 1, time: "0:55", event: "GLADIATOR" },
-    { date: "Sep 05, 2010", opponent: "Atsuhiro Tsuboi", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:30", event: "DEEP" },
-    { date: "Jun 27, 2010", opponent: "Yuichiro Ono", result: "W", method: "KO/TKO (Punches)", round: 1, time: "0:48", event: "GLADIATOR" },
-    { date: "Jun 20, 2010", opponent: "Ikuo Usuda", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Sengoku 13" },
-    { date: "Jun 06, 2010", opponent: "Yusuke Kagiyama", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "DEEP" },
-    { date: "Apr 24, 2010", opponent: "Otto Maxpower", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "King of Fighter" },
-    { date: "Mar 05, 2010", opponent: "Jong Hwa Lee", result: "W", method: "KO/TKO (Punches)", round: 2, time: "3:20", event: "M-1: Asian Selection 2010" },
-    { date: "Nov 29, 2009", opponent: "Takashi Matsuoka", result: "W", method: "Submission (Armbar)", round: 1, time: "1:05", event: "GRACHAN" }
-  ],
   "Daniel Santos": [
     { date: "May 16, 2026", opponent: "Choi Doo-ho", result: "L", method: "TKO (Punches)", round: 2, time: "4:29", event: "UFC Fight Night: Allen vs. Costa", org: "UFC" },
     { date: "Oct 4, 2025", opponent: "Yoo Joo-sang", result: "W", method: "TKO (Punches)", round: 2, time: "0:21", event: "UFC 320", org: "UFC" },
@@ -24879,21 +24841,28 @@ const FIGHT_HISTORY = {
     { date: "Sep 26, 2020", opponent: "Guilherme Cruz", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:29", event: "Eagle FC 33" }
   ],
   "Dooho Choi": [
-    { date: "May 16, 2026", opponent: "Daniel Santos", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Vegas 117" },
-    { date: "Dec 7, 2024", opponent: "Nate Landwehr", result: "W", method: "TKO (Punches)", round: 3, time: "1:36", event: "UFC 310: Pantoja vs. Asakura" },
-    { date: "Jul 20, 2024", opponent: "Bill Algeo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Santos vs. Strickland" },
-    { date: "Dec 21, 2019", opponent: "Charles Jourdain", result: "L", method: "TKO (Punches)", round: 2, time: "4:32", event: "UFC Fight Night: Dos Anjos vs. Ferguson" },
-    { date: "Jan 14, 2018", opponent: "Jeremy Stephens", result: "L", method: "TKO (Punches)", round: 2, time: "2:36", event: "UFC Fight Night: Stephens vs. Choi" },
-    { date: "Dec 10, 2016", opponent: "Cub Swanson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 206: Poirier vs. Oliveira" },
+    { date: "May 16, 2026", opponent: "Daniel Santos", result: "W", method: "TKO (Body Punch)", round: 2, time: "4:29", event: "UFC Fight Night: Allen vs. Costa" },
+    { date: "Dec 7, 2024", opponent: "Nate Landwehr", result: "W", method: "TKO (Elbows)", round: 3, time: "3:21", event: "UFC 310: Pantoja vs. Asakura" },
+    { date: "Jul 20, 2024", opponent: "Bill Algeo", result: "W", method: "TKO (Punches)", round: 2, time: "3:38", event: "UFC on ESPN 60: Lemos vs. Jandiroba" },
+    { date: "Feb 4, 2023", opponent: "Kyle Nelson", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Spivak" },
+    { date: "Dec 21, 2019", opponent: "Charles Jourdain", result: "L", method: "TKO (Punches)", round: 2, time: "4:32", event: "UFC Fight Night: Edgar vs. The Korean Zombie" },
+    { date: "Jan 14, 2018", opponent: "Jeremy Stephens", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "2:36", event: "UFC Fight Night: Stephens vs. Choi" },
+    { date: "Dec 10, 2016", opponent: "Cub Swanson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 206: Holloway vs. Pettis" },
     { date: "Jul 8, 2016", opponent: "Thiago Tavares", result: "W", method: "KO (Punches)", round: 1, time: "2:42", event: "TUF 23 Finale" },
-    { date: "Nov 28, 2015", opponent: "Sam Sicilia", result: "W", method: "TKO (Punches)", round: 2, time: "1:33", event: "UFC Fight Night: Magny vs. Gastelum" },
-    { date: "Nov 22, 2014", opponent: "Juan Puig", result: "W", method: "TKO (Punches)", round: 1, time: "0:18", event: "TUF: American Top Team vs. Blackzilians Finale (debut)" },
-    { date: "Aug 30, 2014", opponent: "Kwon-Beom Kwon", result: "W", method: "KO (Punches)", round: 2, time: "1:24", event: "Road FC 19" },
-    { date: "May 3, 2014", opponent: "Do-Young Kim", result: "W", method: "KO (Punches)", round: 1, time: "0:52", event: "Road FC 17" },
-    { date: "Nov 2, 2013", opponent: "Takaaki Koga", result: "W", method: "KO (Punches)", round: 1, time: "2:00", event: "Road FC 11" },
-    { date: "Mar 9, 2013", opponent: "Young-Suk Kang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road FC 7" },
-    { date: "Sep 15, 2012", opponent: "Chi-Hyeon Lee", result: "W", method: "KO (Punches)", round: 1, time: "1:38", event: "KSBA Fight 9" },
-    { date: "Mar 31, 2012", opponent: "Il-Ju Moon", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AOR 9 (debut)" }
+    { date: "Nov 28, 2015", opponent: "Sam Sicilia", result: "W", method: "KO (Punches)", round: 1, time: "1:33", event: "UFC Fight Night: Henderson vs. Masvidal" },
+    { date: "Nov 22, 2014", opponent: "Juan Puig", result: "W", method: "TKO (Punches)", round: 1, time: "0:18", event: "UFC Fight Night: Edgar vs. Swanson (debut)" },
+    { date: "Jun 15, 2013", opponent: "Shoji Maruyama", result: "W", method: "TKO (Punches)", round: 2, time: "2:33", event: "DEEP: Cage Impact 2013" },
+    { date: "Feb 16, 2013", opponent: "Tatsunao Nagakura", result: "W", method: "TKO (Corner Stoppage)", round: 2, time: "4:15", event: "DEEP 61 Impact" },
+    { date: "Aug 18, 2012", opponent: "Kosuke Umeda", result: "W", method: "KO (Punch)", round: 1, time: "2:49", event: "DEEP 59 Impact" },
+    { date: "Dec 16, 2011", opponent: "Mitsuhiro Ishida", result: "W", method: "TKO (Knee and Punches)", round: 1, time: "1:33", event: "DEEP 56 Impact" },
+    { date: "Oct 29, 2011", opponent: "Nobuhiro Obiya", result: "W", method: "KO (Flying Knee)", round: 3, time: "0:55", event: "DEEP: Cage Impact 2011 in Tokyo" },
+    { date: "Sep 3, 2011", opponent: "Hisaki Hiraishi", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Gladiator 23" },
+    { date: "Sep 5, 2010", opponent: "Atsuhiro Tsuboi", result: "W", method: "TKO (Punches)", round: 1, time: "4:53", event: "DEEP: clubDeep Nagoya" },
+    { date: "Jun 27, 2010", opponent: "Yuichiro Ono", result: "W", method: "TKO (Punches)", round: 1, time: "—", event: "Gladiator 7" },
+    { date: "Jun 20, 2010", opponent: "Ikuo Usuda", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Sengoku Raiden Championship 13" },
+    { date: "Jun 6, 2010", opponent: "Yusuke Kagiyama", result: "L", method: "Decision (Split)", round: 2, time: "5:00", event: "DEEP: Cage Impact 2010 in Osaka" },
+    { date: "Mar 5, 2010", opponent: "Jong Hwa Lee", result: "W", method: "TKO (Punches)", round: 2, time: "3:20", event: "M-1 Selection 2010: Asia Round 1" },
+    { date: "Nov 29, 2009", opponent: "Takashi Matsuoka", result: "W", method: "Submission (Armbar)", round: 1, time: "1:05", event: "Grachan 3" }
   ],
   "Andreas Gustafsson": [
     { date: "Sep 6, 2025", opponent: "Rinat Fakhretdinov", result: "L", method: "TKO (Punches)", round: 1, time: "0:54", event: "UFC Fight Night 258: Imavov vs. Borralho", org: "UFC" },
@@ -32568,6 +32537,14 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Dooho Choi": [
+    { icon: "🏆", title: "UFC Hall of Fame — Fight Wing (Class of 2022), Swanson vs. Choi at UFC 206", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (3×) — vs. Cub Swanson, Jeremy Stephens & Charles Jourdain", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (2×) — vs. Sam Sicilia & Thiago Tavares", detail: null },
+    { icon: "🏅", title: "2016 Fight of the Year (UFC.com, ESPN & World MMA Awards) vs. Cub Swanson", detail: null },
+    { icon: "🏅", title: "Tied (Dan Ige) for 5th-most knockouts in UFC Featherweight history (5)", detail: null },
+    { icon: "🥊", title: "\"The Korean Superboy\" — knockout artist (14 of 17 wins by KO/TKO)", detail: null }
+  ],
   "Clayton Carpenter": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2022 — decision over Édgar Cháirez)", detail: null },
     { icon: "🥇", title: "IBJJF World & European Champion (Gi & No-Gi); multiple-time IMMAF World Champion (BJJ, grappling & pankration)", detail: null },
