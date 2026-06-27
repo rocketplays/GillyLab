@@ -3565,7 +3565,7 @@
  { name: "Josh Fremd", division: "MW", rank: "NR", record: "11-5-0", initials: "JFR", country: "USA" },
  { name: "Deron Winn", division: "MW", rank: "NR", record: "9-4-0", initials: "DWN", country: "USA" },
  { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-3-0", initials: "ZRE2", country: "USA" },
- { name: "Eric McConico", division: "MW", rank: "NR", record: "10-4-0", initials: "EMC2", country: "USA" },
+ { name: "Eric McConico", division: "MW", rank: "NR", record: "11-4-1", initials: "EMC2", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
  { name: "Ryan Gandra", division: "MW", rank: "NR", record: "9-1-0", initials: "RGA", country: "Brazil" },
  // ─── WELTERWEIGHT (remaining) ───
@@ -4633,7 +4633,7 @@
  // Middleweight
  "Djorden Santos": { ht:"6'0\"", dob:"1997-08-01", reach:'75"', stance:"Orthodox", slpm:7.0, tdAcc:"33%", subAvg:0.0, strDef:"48%", kd:0.0, tdDef:"86%", finRate:"N/A", streak:0, tdLanded:0.67 },
  "Baysangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.0, tdDef:"100%", finRate:"N/A", streak:0, tdLanded:2.76 }, "Claudio Ribeiro": { ht:"6'1\"", dob:"1992-07-17", reach:'77"', stance:"Orthodox", slpm:3.59, tdAcc:"40%", subAvg:0.4, strDef:"30%", kd:0.2, tdDef:"57%", finRate:"55%", streak:0, tdLanded:1.29 },
- "Eric McConico": { ht:"6'0\"", dob:"1990-05-09", reach:'77"', stance:"Southpaw", slpm:2.61, tdAcc:"100%", subAvg:0.0, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"67%", streak:0, tdLanded:0.00 },
+ "Eric McConico": { ht:"6'0\"", dob:"1990-05-09", reach:'77"', stance:"Southpaw", slpm:2.61, strAcc:"44%", sapm:3.23, strDef:"47%", kd:0.00, tdLanded:0.00, tdAcc:"100%", tdDef:"64%", subAvg:0.00, finRate:"64%", streak:1, gym:"The MMA Lab" },
  // Light Heavyweight
  "Billy Elekana": { ht:"6'3\"", dob:"1995-05-28", reach:'77"', stance:"Southpaw", slpm:2.71, tdAcc:"22%", subAvg:0.4, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.85, gym:"Uprising MMA Training Center" },
  "Austen Lane": { ht:"6'6\"", dob:"1987-11-09", reach:'80"', stance:"Orthodox", slpm:2.70, strAcc:"50%", sapm:2.45, strDef:"40%", kd:0.38, tdLanded:1.50, tdAcc:"29%", tdDef:"33%", subAvg:0.00, finRate:"92%", streak:0, gym:"Bulldog Boxing, 10th Planet Jacksonville" },
@@ -13475,9 +13475,11 @@
     { opponent: "Austin Springer", odds: -345 },
   ],
   "Eric McConico": [
-    { opponent: "Rodolfo Vieira", odds: 350 },
-    { opponent: "Sedriques Dumas", odds: -175 },
-    { opponent: "Cody Brundage", odds: -250 }
+    { opponent: "Rodolfo Vieira", odds: 270 },
+    { opponent: "Baisangur Susurkaev", odds: 600 },
+    { opponent: "Cody Brundage", odds: 175 },
+    { opponent: "Nursulton Ruziboev", odds: 240 },
+    { opponent: "Kevem Felipe", odds: -105 }
   ],
   "Alibi Idiris": [
     { opponent: "Joseph Morales", odds: 125 },
@@ -29382,14 +29384,22 @@ const FIGHT_HISTORY = {
 
 
   "Eric McConico": [
-    { date: "Apr 25, 2026", opponent: "Rodolfo Vieira", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "1:45", event: "UFC Fight Night: Sterling vs. Zalal" },
-    { date: "Nov 1, 2025", opponent: "Sedriques Dumas", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Vegas 110" },
-    { date: "Jun 1, 2024", opponent: "Cody Brundage", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 302: Makhachev vs. Poirier" },
-    { date: "Oct 21, 2023", opponent: "Cody Brundage", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 294: Makhachev vs. Volkanovski 2" },
-    { date: "Jun 10, 2023", opponent: "Christian Leroy Duncan", result: "L", method: "TKO (Punches)", round: 1, time: "4:26", event: "UFC 289: Nunes vs. Aldana (debut)" },
-    { date: "Jan 21, 2023", opponent: "Quinton Randall", result: "W", method: "KO (Punches)", round: 1, time: "0:37", event: "DWCS Season 6 Week 8 (contract)" },
-    { date: "Oct 29, 2022", opponent: "Justin Medina", result: "W", method: "TKO (Punches)", round: 1, time: "2:04", event: "LFA 147" },
-    { date: "Jul 30, 2022", opponent: "Jordan Williams", result: "W", method: "KO (Punches)", round: 2, time: "1:41", event: "LFA 142" }
+    { date: "Apr 25, 2026", opponent: "Rodolfo Vieira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
+    { date: "Nov 15, 2025", opponent: "Baisangur Susurkaev", result: "L", method: "KO/TKO", round: 3, time: "1:38", event: "UFC 322: Della Maddalena vs. Makhachev", org: "UFC" },
+    { date: "Aug 9, 2025", opponent: "Cody Brundage", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Hernandez", org: "UFC" },
+    { date: "Feb 22, 2025", opponent: "Nursulton Ruziboev", result: "L", method: "KO/TKO", round: 2, time: "0:33", event: "UFC Fight Night: Cejudo vs. Song", org: "UFC" },
+    { date: "Jul 26, 2024", opponent: "Jarome Hatch", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:23", event: "Tuff-N-Uff 138" },
+    { date: "Feb 2, 2024", opponent: "Tyler Ray", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Tuff-N-Uff 135" },
+    { date: "Nov 12, 2023", opponent: "Maki Pitolo", result: "W", method: "TKO", round: 3, time: "2:35", event: "Tuff-N-Uff 134" },
+    { date: "May 19, 2023", opponent: "Kevem Felipe", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 158: Lebosnoyani vs. Jones" },
+    { date: "Nov 4, 2022", opponent: "Freddy Sandoval", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:40", event: "Freedom Fight Night 3" },
+    { date: "Dec 8, 2019", opponent: "Andre Walker", result: "L", method: "KO/TKO", round: 3, time: "1:56", event: "KOTC: Hard Drive" },
+    { date: "Jun 1, 2019", opponent: "Dejan Kajic", result: "L", method: "KO (Punch)", round: 1, time: "2:34", event: "BFL 61: Battlefield Fight League" },
+    { date: "Feb 2, 2019", opponent: "Zach Bunnell", result: "W", method: "TKO (Punches)", round: 3, time: "1:15", event: "KOTC: Head Hunter" },
+    { date: "Sep 8, 2018", opponent: "Gordy Gaetan", result: "W", method: "TKO (Punches)", round: 2, time: "0:16", event: "KOTC: Demolition 2" },
+    { date: "May 26, 2018", opponent: "Jeramy Burford", result: "W", method: "KO/TKO", round: 1, time: "4:16", event: "KOTC: Grand Finale" },
+    { date: "Mar 17, 2018", opponent: "Saeid Mirzaei", result: "D", method: "Draw", round: 3, time: "5:00", event: "BFL 54: Battlefield Fight League" },
+    { date: "Feb 10, 2018", opponent: "Dominique Smith", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:54", event: "CageSport 49: Stolen vs. Swain" }
   ],
   "Alibi Idiris": [
     { date: "Feb 21, 2026", opponent: "Ode Osbourne", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Strickland vs. Hernandez 2" },
@@ -31805,6 +31815,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Eric McConico": [
+    { icon: "🏆", title: "Three regional MMA championships (smaller promotions)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Adrián Luna Martinetti": [
     { icon: "🏆", title: "UWC Bantamweight Champion (three title defenses)", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series winner — earned UFC contract & $25K bonus (instant classic vs. Mark Vologdin, 2025)", detail: null },
