@@ -38642,6 +38642,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'bruno-silva': 'Bruno Gustavo da Silva',
     // The API sometimes returns the longer slug for this featherweight.
     'jose-miguel-delgado': 'Jose Delgado',
+    // Bobby Green legally changed his name to "King Green" (2024); some feeds
+    // (e.g. the UFC 328 card) slug him 'king-green', but the DB keeps "Bobby Green".
+    'king-green': 'Bobby Green',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -38653,6 +38656,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'asu almabaev': 'Asu Almabayev',
     'javier reyes rugeles': 'Javier Reyes',
     'jose miguel delgado': 'Jose Delgado',
+    // Bobby "King" Green — feeds that list his post-2024 legal name (and the
+    // slug-less Odds API) return "King Green"; map it to his DB profile.
+    'king green': 'Bobby Green',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
