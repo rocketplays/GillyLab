@@ -3232,6 +3232,7 @@
  { name: "Jeremiah Wells", division: "WW", rank: "NR", record: "14-4-1", initials: "JWE", country: "USA" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
+ { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
  { name: "Dricus du Plessis", division: "MW", rank: "#2", record: "23-3-0", initials: "DDP", country: "South Africa" },
  { name: "Sean Strickland", division: "MW", rank: "#C", record: "31-7-0", initials: "SS", country: "USA" },
  { name: "Israel Adesanya", division: "MW", rank: "#9", record: "24-6-0", initials: "IA", country: "Nigeria" },
@@ -3963,6 +3964,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Jacob Malkoun": { ht:"5'9\"", dob:"1995-08-26", reach:'73"', stance:"Orthodox", slpm:4.23, strAcc:"57%", sapm:2.33, strDef:"55%", kd:0.15, tdLanded:5.39, tdAcc:"43%", tdDef:"56%", subAvg:0.75, finRate:"30%", streak:3, gym:"Gracie Jiu-Jitsu Smeaton Grange" },
   "Georges St-Pierre": { ht:"5'11\"", dob:"1981-05-19", reach:'76"', stance:"Orthodox", slpm:3.83, strAcc:"53%", sapm:1.45, strDef:"68%", kd:0.39, tdLanded:3.94, tdAcc:"74%", tdDef:"82%", subAvg:1.05, finRate:"54%", streak:13, gym:"TriStar Gym" },
   "Robert Bryczek": { ht:"6'0\"", dob:"1990-07-04", reach:'75"', stance:"Orthodox", slpm:3.74, strAcc:"37%", sapm:4.08, strDef:"60%", kd:0.56, tdLanded:0.56, tdAcc:"100%", tdDef:"86%", subAvg:0.00, finRate:"72%", streak:0, gym:"Uniq Fight Club" },
   "Cam Rowston": { ht:"6'3\"", dob:"1995-01-19", reach:'78"', stance:"Orthodox", slpm:4.26, strAcc:"47%", sapm:2.62, strDef:"52%", kd:1.51, tdLanded:0.50, tdAcc:"44%", tdDef:"33%", subAvg:0.50, finRate:"87%", streak:7, gym:"City Kickboxing" },
@@ -6343,6 +6345,17 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Jacob Malkoun": [
+    { opponent: "Gerald Meerschaert", odds: -600 },
+    { opponent: "Torrez Finney", odds: -140 },
+    { opponent: "Andre Petroski", odds: -235 },
+    { opponent: "Cody Brundage", odds: -620 },
+    { opponent: "Nick Maximov", odds: 115 },
+    { opponent: "Brendan Allen", odds: 240 },
+    { opponent: "AJ Dobson", odds: 105 },
+    { opponent: "Abdul Razak Alhassan", odds: 250 },
+    { opponent: "Phil Hawes", odds: 205 }
+  ],
   "Robert Bryczek": [
     { opponent: "Cam Rowston", odds: 155 },
     { opponent: "Brad Tavares", odds: 170 },
@@ -14323,6 +14336,21 @@
 };
 
 const FIGHT_HISTORY = {
+  "Jacob Malkoun": [
+    { date: "May 2, 2026", opponent: "Gerald Meerschaert", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Feb 1, 2026", opponent: "Torrez Finney", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325", org: "UFC" },
+    { date: "Mar 30, 2024", opponent: "Andre Petroski", result: "W", method: "TKO (Body kick)", round: 2, time: "0:39", event: "UFC Fight Night: Blanchfield vs. Fiorot", org: "UFC" },
+    { date: "Sep 23, 2023", opponent: "Cody Brundage", result: "L", method: "DQ (Illegal elbow)", round: 1, time: "4:15", event: "UFC Fight Night: Fiziev vs. Gamrot", org: "UFC" },
+    { date: "Oct 15, 2022", opponent: "Nick Maximov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araujo", org: "UFC" },
+    { date: "Jun 11, 2022", opponent: "Brendan Allen", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 275", org: "UFC" },
+    { date: "Feb 12, 2022", opponent: "AJ Dobson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 271", org: "UFC" },
+    { date: "Apr 17, 2021", opponent: "Abdul Razak Alhassan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. Gastelum", org: "UFC" },
+    { date: "Oct 24, 2020", opponent: "Phil Hawes", result: "L", method: "KO (Punches)", round: 1, time: "0:18", event: "UFC 254", org: "UFC" },
+    { date: "Oct 4, 2019", opponent: "Sebastian Temesi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 48" },
+    { date: "Jul 12, 2019", opponent: "Christophe Van Dijck", result: "W", method: "TKO (Punches)", round: 2, time: "3:31", event: "Wollongong Wars 7" },
+    { date: "Oct 26, 2018", opponent: "Ryan Heketa", result: "W", method: "TKO (Punches)", round: 1, time: "1:32", event: "Hex Fight Series 17" },
+    { date: "Mar 18, 2017", opponent: "Cam Rowston", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BRACE 47" }
+  ],
   "Georges St-Pierre": [
     { date: "Nov 4, 2017", opponent: "Michael Bisping", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "4:23", event: "UFC 217: Bisping vs. St-Pierre", org: "UFC" },
     { date: "Nov 16, 2013", opponent: "Johny Hendricks", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 167: St-Pierre vs. Hendricks", org: "UFC" },
@@ -32144,6 +32172,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Jacob Malkoun": [
+    { icon: "🥇", title: "ADCC Asian & Oceanic Championship gold medalist — 99 kg (2019, Tokyo)", detail: null },
+    { icon: "🥇", title: "2019 Pan Pacific BJJ gold medalist", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null },
+    { icon: "🥊", title: "Undefeated professional boxer (3–0)", detail: null }
+  ],
   "Kevin Christian": [
     { icon: "🏆", title: "Rei da Selva Middleweight Champion", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — triangle-armbar submission of Francesco Mazzeo)", detail: null },
