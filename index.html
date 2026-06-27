@@ -3770,7 +3770,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
- { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "9-4-0", initials: "OD", country: "USA" },
+ { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-4-0", initials: "AP", country: "Russia" },
  { name: "Damian Pinas", division: "MW", rank: "NR", record: "9-1-0", initials: "DPI", country: "Suriname" },
  { name: "Cesar Almeida", division: "MW", rank: "NR", record: "7-2-0", initials: "CA", country: "Brazil" },
@@ -4179,7 +4179,7 @@
  "Baisangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.5, tdDef:"100%",finRate:"73%", streak:11, tdLanded:2.76 },
   "Julien Leblanc": { ht:"6'2\"", dob:"1992-01-21", reach:'74"', stance:"Southpaw", slpm:1.69, strAcc:"67%", sapm:2.96, strDef:"46%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"80%", streak:0, gym:"Patenaude Martial Arts / Kill Cliff FC" },
  "Ateba Gautier": { ht:"6'4\"", dob:"2002-04-10", reach:'81"', stance:"Switch", slpm:4.32, strAcc:"44%", sapm:2.60, strDef:"54%", kd:2.87, tdLanded:0.41, tdAcc:"100%", tdDef:"94%", subAvg:0.00, finRate:"82%", streak:10, gym:"Manchester Top Team" },
- "Ozzy Diaz": { ht:"6'4\"", dob:"1990-11-22", reach:'79"', stance:"Orthodox", slpm:6.44, tdAcc:"0%", subAvg:0.0, strDef:"59%", kd:0.0, tdDef:"50%", finRate:"N/A", streak:0, tdLanded:0.0 }, "Kelvin Gastelum": { ht:"5'9\"", dob:"1991-10-24", reach:'71"', stance:"Southpaw", slpm:3.67, strAcc:"42%", sapm:3.53, strDef:"57%", kd:0.44, tdLanded:1.01, tdAcc:"35%", tdDef:"60%", subAvg:0.09, finRate:"55%", streak:0, gym:"Kings MMA / Yuma United" },
+ "Ozzy Diaz": { ht:"6'4\"", dob:"1990-11-22", reach:'79"', stance:"Orthodox", slpm:5.33, strAcc:"49%", sapm:6.52, strDef:"61%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"50%", subAvg:0.00, finRate:"90%", streak:0, gym:"The Q" }, "Kelvin Gastelum": { ht:"5'9\"", dob:"1991-10-24", reach:'71"', stance:"Southpaw", slpm:3.67, strAcc:"42%", sapm:3.53, strDef:"57%", kd:0.44, tdLanded:1.01, tdAcc:"35%", tdDef:"60%", subAvg:0.09, finRate:"55%", streak:0, gym:"Kings MMA / Yuma United" },
  // ── Welterweight (UFC 328) ──
  "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.65, strAcc:"53%", sapm:1.38, strDef:"55%", kd:0.00, tdLanded:11.11, tdAcc:"54%", tdDef:"61%", subAvg:3.17, finRate:"73%", streak:3, gym:"American Top Team" },
  // ── Featherweight (UFC 328) ──
@@ -6917,7 +6917,16 @@
     { opponent: "José Medina", odds: -460 },
     { opponent: "Yura Naito", odds: -105 }
   ],
-  "Ozzy Diaz": [],
+  "Ozzy Diaz": [
+    { opponent: "Ateba Gautier", odds: 800 },
+    { opponent: "Djorden Santos", odds: 160 },
+    { opponent: "Zhang Mingyang", odds: 205 },
+    { opponent: "Bevon Lewis", odds: -190 },
+    { opponent: "Chuck Campbell", odds: -175 },
+    { opponent: "Joe Pyfer", odds: -110 },
+    { opponent: "Bruno Assis", odds: 135 },
+    { opponent: "Logan Woods", odds: 160 }
+  ],
   "Clayton Carpenter": [],
   "Jose Ochoa": [],
   "Arnold Allen": [
@@ -15611,11 +15620,20 @@ const FIGHT_HISTORY = {
 
 
   "Ozzy Diaz": [
-    { date: "May 9, 2026", opponent: "Jose Ochoa", result: "L", method: "TKO (Punches)", round: 2, time: "2:14", event: "UFC 328" },
-    { date: "Oct 5, 2025", opponent: "Djorden Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 320" },
-    { date: "Jun 21, 2025", opponent: "Tagir Ulanbekov", result: "W", method: "TKO (Punches)", round: 2, time: "2:30", event: "UFC Fight Night" },
-    { date: "Feb 22, 2025", opponent: "Asu Almabayev", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Strickland vs. Hernandez" },
-    { date: "Jun 14, 2015", opponent: "Leon Klee", result: "W", method: "TKO (Punches)", round: 1, time: "2:12", event: "KOTC: Sanctioned (debut)" }
+    { date: "May 9, 2026", opponent: "Ateba Gautier", result: "L", method: "TKO (Punches)", round: 2, time: "1:10", event: "UFC 328", org: "UFC" },
+    { date: "Mar 8, 2025", opponent: "Djorden Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 313", org: "UFC" },
+    { date: "Nov 23, 2024", opponent: "Zhang Mingyang", result: "L", method: "KO (Punches)", round: 1, time: "2:25", event: "UFC Fight Night: Yan vs. Figueiredo", org: "UFC" },
+    { date: "May 17, 2024", opponent: "Bevon Lewis", result: "W", method: "TKO (Punches)", round: 2, time: "3:24", event: "LFA 184" },
+    { date: "Mar 8, 2024", opponent: "Chuck Campbell", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "LFA 178" },
+    { date: "Jul 26, 2022", opponent: "Joe Pyfer", result: "L", method: "TKO (Punches)", round: 2, time: "1:39", event: "Dana White's Contender Series 6 (Week 1)", org: "UFC" },
+    { date: "Mar 25, 2022", opponent: "Bruno Assis", result: "W", method: "KO (Punches)", round: 1, time: "4:53", event: "LFA 127" },
+    { date: "Oct 30, 2021", opponent: "Moses Murrietta", result: "W", method: "TKO (Punches)", round: 2, time: "1:54", event: "LXF 6: Lights Out Xtreme Fighting 6" },
+    { date: "Oct 30, 2020", opponent: "Logan Woods", result: "W", method: "TKO (Punches)", round: 1, time: "1:36", event: "LFA 94" },
+    { date: "Sep 28, 2019", opponent: "Andre Walker", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:05", event: "Bellator 228" },
+    { date: "Jan 26, 2019", opponent: "Christopher Reyes", result: "W", method: "TKO (Punches)", round: 1, time: "4:15", event: "Bellator 214" },
+    { date: "Feb 15, 2018", opponent: "Santiago Diaz", result: "L", method: "TKO (Punches)", round: 1, time: "0:15", event: "Fight Club OC 50" },
+    { date: "Dec 7, 2017", opponent: "Saad Ul-Hasan", result: "W", method: "TKO (Punches)", round: 2, time: "1:54", event: "Fight Club OC" },
+    { date: "Jun 14, 2015", opponent: "Leon Klee", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:31", event: "KOTC: Sanctioned" }
   ],
   "Pat Sabatini": [
     { date: "May 9, 2026", opponent: "William Gomis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
@@ -32385,6 +32403,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ozzy Diaz": [
+    { icon: "🏆", title: "LFA Middleweight Champion", detail: null },
+    { icon: "🏆", title: "Lights Out Xtreme Fighting (LXF) Middleweight Champion", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt", detail: null }
+  ],
   "Ateba Gautier": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — KO of Yura Naito)", detail: null },
     { icon: "🌍", title: "Only active Cameroonian fighter on the UFC roster", detail: null },
