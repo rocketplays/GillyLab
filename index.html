@@ -31222,14 +31222,16 @@ function fightStatsFor(name, date){
 function _fsPct(l,a){ return a>0 ? Math.round(100*l/a) : 0; }
 function _fsSecs(t){ var m=String(t||'').match(/(\d+):(\d+)/); return m ? (+m[1]*60 + +m[2]) : 0; }  // "M:SS" -> seconds (for control-time bar)
 function _fsBar(lv,rv){
-  var tot=lv+rv, lp = tot>0 ? Math.round(100*lv/tot) : 50;
-  // The accent (green) fill goes on whichever fighter had the edge in this stat;
-  // the trailing side is dimmed. Equal values -> both dimmed (no advantage).
-  // Clamp so a lopsided stat (e.g. 1–0) keeps a sliver on the trailing side —
-  // otherwise the bar runs edge-to-edge and you can't tell which side it's from.
-  if (tot>0) lp = Math.max(8, Math.min(92, lp));
+  var tot=lv+rv;
+  if (tot<=0) return '';                                 // 0–0: genuinely no data, draw no bar
+  var lp = Math.max(8, Math.min(92, Math.round(100*lv/tot)));
+  // Clamp so a lopsided stat (e.g. 1–0) keeps a sliver on the trailing side.
+  if (lv === rv) lp = 50;                                // exact tie -> centered 50/50
+  // Accent (green) marks the side that's NOT behind: the leader on a lopsided
+  // stat, or BOTH sides on a tie (so a 6–6 shows a balanced green bar, not a
+  // blank/dim strip). The trailing side of a lopsided stat is dimmed.
   var acc='var(--accent)', dim='rgba(255,255,255,0.18)';
-  var lc = lv>rv ? acc : dim, rc = rv>lv ? acc : dim;
+  var lc = lv>=rv ? acc : dim, rc = rv>=lv ? acc : dim;
   return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.08);margin-top:4px;">'
     + '<div style="width:'+lp+'%;background:'+lc+';"></div>'
     + '<div style="width:'+(100-lp)+'%;background:'+rc+';"></div></div>';
