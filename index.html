@@ -3084,10 +3084,10 @@
 </footer>
 
 <!-- MODAL OVERLAY -->
-<div id="modal-overlay" onclick="closeModal()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9000;"></div>
+<div id="modal-overlay" onclick="closeModal()" style="display:none;opacity:0;transition:opacity 0.25s ease;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9000;"></div>
 
 <!-- MODAL BOX -->
-<div id="modal-box" style="display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9001;background:var(--card);border:1px solid var(--border);border-radius:10px;width:min(520px,92vw);max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
+<div id="modal-box" style="display:none;opacity:0;transition:opacity 0.25s ease,transform 0.25s ease;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9001;background:var(--card);border:1px solid var(--border);border-radius:10px;width:min(520px,92vw);max-height:80vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
   <div style="display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);">
     <div id="modal-title" style="font-family:'Barlow Condensed',sans-serif;font-size:1.1rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text);"></div>
     <button onclick="closeModal()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:1.4rem;line-height:1;padding:0 0.25rem;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">&#10005;</button>
@@ -31286,6 +31286,17 @@ function unlockPageScroll(){
   window.scrollTo(0, _scrollLockY);
   _scrollLocked = false;
 }
+// Fade the shared modal in (overlay + box), matching the site's nav transitions.
+// The box keeps its translate(-50%,-50%) centering and rises 8px as it fades.
+function _fadeModalIn(){
+  var ov=document.getElementById('modal-overlay'), m=document.getElementById('modal-box');
+  if(ov){ ov.style.display='block'; ov.style.opacity='0'; }
+  if(m){ m.style.display='block'; m.style.opacity='0'; m.style.transform='translate(-50%,-50%) translateY(8px)'; }
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    if(ov) ov.style.opacity='1';
+    if(m){ m.style.opacity='1'; m.style.transform='translate(-50%,-50%)'; }
+  }); });
+}
 function _fsInRoster(nm){ return (typeof FIGHTERS !== 'undefined') && FIGHTERS.some(function(x){ return x.name === nm; }); }
 // Modal header name: clickable into the fighter's profile when they're on the
 // roster (closes the modal first so the profile isn't left behind the overlay).
@@ -31343,8 +31354,7 @@ function openFightStats(name, date){
       ov=document.getElementById('modal-overlay'), m=document.getElementById('modal-box');
   if (t) t.textContent = name + ' vs ' + rec.opponent;
   if (b) b.innerHTML = body;
-  if (ov) ov.style.display = 'block';
-  if (m) m.style.display = 'block';
+  _fadeModalIn();
   lockPageScroll();
 }
 // Event-card bouts know both fighters but only one event date — open the modal
@@ -40191,17 +40201,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const m = document.getElementById('modal-box');
     if (t) t.textContent = c.title;
     if (b) b.innerHTML = c.body;
-    if (o) o.style.display = 'block';
-    if (m) m.style.display = 'block';
+    _fadeModalIn();
     lockPageScroll();
   }
 
   function closeModal() {
     const o = document.getElementById('modal-overlay');
     const m = document.getElementById('modal-box');
-    if (o) o.style.display = 'none';
-    if (m) m.style.display = 'none';
+    if (o) o.style.opacity = '0';
+    if (m) { m.style.opacity = '0'; m.style.transform = 'translate(-50%,-50%) translateY(8px)'; }
     unlockPageScroll();
+    setTimeout(function(){
+      if (o && o.style.opacity === '0') o.style.display = 'none';
+      if (m && m.style.opacity === '0') m.style.display = 'none';
+    }, 260);
   }
 
   document.addEventListener('keydown', function(e) {
