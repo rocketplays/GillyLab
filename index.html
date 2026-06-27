@@ -31195,7 +31195,79 @@ const FIGHT_HISTORY = {
 
 };
 
+// ── PER-FIGHT BOX-SCORE STATS (data/fight-stats.json, built by scripts/fight-stats-backfill.py) ──
+// ESPN box scores exist for UFC bouts; non-UFC fights have no record and stay un-clickable.
+window.FIGHT_STATS = window.FIGHT_STATS || {};
+(function(){
+  fetch('./data/fight-stats.json').then(r => r.ok ? r.json() : {}).then(d => {
+    window.FIGHT_STATS = d || {};
+    // if a fighter profile is already open, re-render so matching rows light up
+    if (window.__currentFighter) { try { populateFightHistory(window.__currentFighter); } catch(e){} }
+  }).catch(()=>{});
+})();
+function _fsEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function _fsParse(s){ var t = Date.parse(s); return isNaN(t) ? null : t; }
+function fightStatsFor(name, date){
+  var arr = (window.FIGHT_STATS && window.FIGHT_STATS[name]) || null;
+  if (!arr || !arr.length) return null;
+  for (var i=0;i<arr.length;i++){ if (arr[i].date === date) return arr[i]; }   // exact
+  var dt = _fsParse(date); if (dt == null) return null;                          // ±1 day (timezone)
+  for (var j=0;j<arr.length;j++){ var d2=_fsParse(arr[j].date); if (d2!=null && Math.abs(d2-dt) <= 36*3600*1000) return arr[j]; }
+  return null;
+}
+function _fsPct(l,a){ return a>0 ? Math.round(100*l/a) : 0; }
+function _fsBar(lv,rv){
+  var tot=lv+rv, lp = tot>0 ? Math.round(100*lv/tot) : 50;
+  return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,0.08);margin-top:4px;">'
+    + '<div style="width:'+lp+'%;background:var(--accent);"></div>'
+    + '<div style="width:'+(100-lp)+'%;background:rgba(255,255,255,0.22);"></div></div>';
+}
+function _fsRow(label, lhtml, rhtml, lv, rv, bar){
+  return '<div style="padding:0.45rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">'
+    + '<div style="display:flex;justify-content:space-between;align-items:baseline;gap:0.75rem;">'
+    + '<span style="font-weight:700;color:#fff;min-width:60px;text-align:left;">'+lhtml+'</span>'
+    + '<span style="font-size:0.66rem;letter-spacing:0.07em;text-transform:uppercase;color:rgba(255,255,255,0.4);white-space:nowrap;">'+label+'</span>'
+    + '<span style="font-weight:700;color:#fff;min-width:60px;text-align:right;">'+rhtml+'</span></div>'
+    + (bar ? _fsBar(lv,rv) : '') + '</div>';
+}
+function openFightStats(name, date){
+  var rec = fightStatsFor(name, date); if (!rec) return;
+  var f = rec.f, o = rec.o;
+  var resColor = rec.result==='W' ? '#00e668' : (rec.result==='L' ? '#ff3d00' : 'rgba(255,255,255,0.6)');
+  function sig(s){ return s.sigL+'/'+s.sigA+' <span style="color:rgba(255,255,255,0.4);font-size:0.78rem;">('+_fsPct(s.sigL,s.sigA)+'%)</span>'; }
+  var body =
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;gap:0.5rem;">'
+    +   '<span style="font-weight:800;color:#fff;flex:1;text-align:left;">'+_fsEsc(name)+'</span>'
+    +   '<span style="font-size:0.72rem;color:rgba(255,255,255,0.45);white-space:nowrap;">'+_fsEsc(rec.date)+' &middot; <b style="color:'+resColor+';">'+rec.result+'</b></span>'
+    +   '<span style="font-weight:800;color:#fff;flex:1;text-align:right;">'+_fsEsc(rec.opponent)+'</span>'
+    + '</div>'
+    + _fsRow('Knockdowns', f.kd, o.kd, f.kd, o.kd, (f.kd+o.kd)>0)
+    + _fsRow('Sig. Strikes', sig(f), sig(o), f.sigL, o.sigL, true)
+    + _fsRow('Total Strikes', f.totL+'/'+f.totA, o.totL+'/'+o.totA, f.totL, o.totL, true)
+    + _fsRow('Takedowns', f.tdL+'/'+f.tdA, o.tdL+'/'+o.tdA, f.tdL, o.tdL, (f.tdA+o.tdA)>0)
+    + _fsRow('Sub. Att', f.sub, o.sub, f.sub, o.sub, false)
+    + _fsRow('Reversals', f.rev, o.rev, f.rev, o.rev, false)
+    + _fsRow('Control', f.ctrl, o.ctrl, 0, 0, false)
+    + '<div style="margin-top:0.8rem;margin-bottom:0.15rem;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);">Sig. strikes by target</div>'
+    + _fsRow('Head', f.head[0]+'/'+f.head[1], o.head[0]+'/'+o.head[1], f.head[0], o.head[0], true)
+    + _fsRow('Body', f.body[0]+'/'+f.body[1], o.body[0]+'/'+o.body[1], f.body[0], o.body[0], true)
+    + _fsRow('Leg',  f.leg[0]+'/'+f.leg[1],  o.leg[0]+'/'+o.leg[1],  f.leg[0], o.leg[0], true)
+    + '<div style="margin-top:0.8rem;margin-bottom:0.15rem;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);">Sig. strikes by position</div>'
+    + _fsRow('Distance', f.dist[0]+'/'+f.dist[1], o.dist[0]+'/'+o.dist[1], f.dist[0], o.dist[0], true)
+    + _fsRow('Clinch', f.clinch[0]+'/'+f.clinch[1], o.clinch[0]+'/'+o.clinch[1], f.clinch[0], o.clinch[0], (f.clinch[1]+o.clinch[1])>0)
+    + _fsRow('Ground', f.ground[0]+'/'+f.ground[1], o.ground[0]+'/'+o.ground[1], f.ground[0], o.ground[0], (f.ground[1]+o.ground[1])>0)
+    + '<div style="margin-top:0.85rem;font-size:0.68rem;color:rgba(255,255,255,0.3);">Full-fight box score via ESPN.</div>';
+  var t=document.getElementById('modal-title'), b=document.getElementById('modal-body'),
+      ov=document.getElementById('modal-overlay'), m=document.getElementById('modal-box');
+  if (t) t.textContent = name + ' vs ' + rec.opponent;
+  if (b) b.innerHTML = body;
+  if (ov) ov.style.display = 'block';
+  if (m) m.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
 function populateFightHistory(name) {
+ try { window.__currentFighter = name; } catch(e){}
  const tbody = document.getElementById('fh-tbody');
  const wrap = document.getElementById('fh-table-wrap');
  const empty = document.getElementById('fh-empty');
@@ -31221,6 +31293,16 @@ function populateFightHistory(name) {
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.55);">${f.time}</td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}</td>`;
+ const _fs = (typeof fightStatsFor === 'function') ? fightStatsFor(name, f.date) : null;
+ if (_fs) {
+ tr.style.cursor = 'pointer';
+ tr.title = 'View full fight stats';
+ const _last = tr.lastElementChild;
+ if (_last) _last.innerHTML += ' <span style="color:var(--accent);font-weight:800;" title="Fight stats available">&rsaquo;</span>';
+ tr.addEventListener('mouseenter', () => { tr.style.background = 'rgba(212,175,55,0.08)'; });
+ tr.addEventListener('mouseleave', () => { tr.style.background = (i % 2 === 1 ? 'rgba(255,255,255,0.02)' : ''); });
+ tr.addEventListener('click', () => openFightStats(name, f.date));
+ }
  tbody.appendChild(tr);
  });
  }
