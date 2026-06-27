@@ -4219,7 +4219,7 @@
  "Alex Morono": { ht:"5'11\"", dob:"1990-08-16", reach:'72"', stance:"Orthodox", slpm:4.9, tdAcc:"29%", subAvg:0.5, strDef:"55%", kd:0.3, tdDef:"58%", finRate:"50%", streak:0, tdLanded:0.32, gym:"Fortis MMA (2018–present)" },
  "Islam Dulatov": { ht:"6'3\"", dob:"1998-08-02", reach:'75"', stance:"Orthodox", slpm:8.78, strAcc:"55%", sapm:4.24, strDef:"50%", kd:4.39, tdLanded:2.20, tdAcc:"100%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:12, gym:"Triple One Gym Düsseldorf" },
  "Wellington Turman": { ht:'6\'0"', dob:"1996-07-22", reach:'72"', stance:"Orthodox", slpm:3.23, strAcc:"51%", sapm:4.17, strDef:"45%", kd:0.00, tdLanded:1.55, tdAcc:"21%", tdDef:"43%", subAvg:0.78, finRate:"67%", streak:0, gym:"Teixeira MMA & Fitness" },
- "Themba Gorimbo": { ht:"6'1\"", dob:"1991-01-23", reach:'77"', stance:"Orthodox", slpm:2.72, tdAcc:"65%", subAvg:0.8, strDef:"51%", kd:0.1, tdDef:"72%", finRate:"64%", streak:0, tdLanded:5.07, gym:"MMA Masters" },
+ "Themba Gorimbo": { ht:"6'1\"", dob:"1991-01-23", reach:'77"', stance:"Orthodox", slpm:2.70, strAcc:"57%", sapm:1.75, strDef:"52%", kd:0.36, tdLanded:4.52, tdAcc:"62%", tdDef:"73%", subAvg:0.36, finRate:"57%", streak:0, gym:"Xtreme Couture" },
  "Elizeu Zaleski dos Santos": { ht:"5'11\"", dob:"1986-12-11", reach:'73"', stance:"Orthodox", slpm:4.16, tdAcc:"20%", subAvg:0.3, strDef:"55%", kd:0.4, tdDef:"71%", finRate:"60%", streak:0, tdLanded:0.79, gym:"CM System" },
  "Punahele Soriano": { ht:"5'11\"", dob:"1992-11-22", reach:'72"', stance:"Southpaw", slpm:4.66, tdAcc:"48%", subAvg:0.1, strDef:"47%", kd:0.3, tdDef:"40%", finRate:"58%", streak:0, tdLanded:1.83, gym:"Xtreme Couture" },
  // ── Lightweight (more) ──
@@ -12719,10 +12719,16 @@
     { opponent: "Oskar Piechota", odds: -350 }
   ],
   "Themba Gorimbo": [
-    { opponent: "Trevin Giles", odds: -400 },
-    { opponent: "Pete Rodriguez", odds: -500 },
-    { opponent: "Muslim Salikhov", odds: 275 },
-    { opponent: "Alex Morono", odds: -200 }
+    { opponent: "Jonathan Micallef", odds: 185 },
+    { opponent: "Jeremiah Wells", odds: -150 },
+    { opponent: "Vicente Luque", odds: -160 },
+    { opponent: "Niko Price", odds: -345 },
+    { opponent: "Ramiz Brahimaj", odds: -135 },
+    { opponent: "Pete Rodriguez", odds: -220 },
+    { opponent: "Takashi Sato", odds: -130 },
+    { opponent: "A.J. Fletcher", odds: 270 },
+    { opponent: "Julio Rafael Rodrigues", odds: -190 },
+    { opponent: "Handesson Ferreira", odds: 300 }
   ],
   "Chris Duncan": [
     { opponent: "Renato Moicano", odds: -142 },
@@ -32296,6 +32302,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Themba Gorimbo": [
+    { icon: "🏆", title: "EFC (Extreme Fighting Championship) Welterweight Champion", detail: null },
+    { icon: "🌍", title: "First Zimbabwean fighter to win a bout in the UFC", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu blue belt", detail: null }
+  ],
   "Jonathan Micallef": [
     { icon: "🏆", title: "Hex Fight Series Welterweight Champion", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round submission of Mohamed Ado)", detail: null },
