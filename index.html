@@ -3173,7 +3173,7 @@
  { name: "Conor McGregor", division: "FW", rank: "NR", record: "22-6-0", initials: "CM", country: "Ireland" },
  { name: "Sodiq Yusuff", division: "FW", rank: "NR", record: "15-3-0", initials: "SYU", country: "Nigeria" },
  { name: "Pat Sabatini", division: "FW", rank: "NR", record: "22-5-0", initials: "PSA", country: "USA" },
- { name: "William Gomis", division: "FW", rank: "NR", record: "8-3-0", initials: "WG", country: "France" },
+ { name: "William Gomis", division: "FW", rank: "NR", record: "15-4-0", initials: "WG", country: "France" },
  { name: "Nathaniel Wood", division: "FW", rank: "NR", record: "23-6-0", initials: "NWO", country: "UK" },
  { name: "Kurtis Campbell", division: "FW", rank: "NR", record: "8-1-0", initials: "KC", country: "England" },
  { name: "Losene Keita", division: "FW", rank: "NR", record: "16-2-0", initials: "LK", country: "Belgium" },
@@ -4183,7 +4183,7 @@
  // ── Welterweight (UFC 328) ──
  "Yaroslav Amosov": { ht:"6'0\"", dob:"1993-09-09", reach:'75"', stance:"Orthodox", slpm:2.65, strAcc:"53%", sapm:1.38, strDef:"55%", kd:0.00, tdLanded:11.11, tdAcc:"54%", tdDef:"61%", subAvg:3.17, finRate:"73%", streak:3, gym:"American Top Team" },
  // ── Featherweight (UFC 328) ──
- "William Gomis": { ht:"6'0\"", dob:"1997-06-13", reach:'73"', stance:"Southpaw", slpm:3.48, tdAcc:"38%", subAvg:0.3, strDef:"61%", kd:0.0, tdDef:"72%", finRate:"N/A", streak:0, tdLanded:0.86 },
+ "William Gomis": { ht:"6'0\"", dob:"1997-06-13", reach:'73"', stance:"Southpaw", slpm:3.20, strAcc:"49%", sapm:2.60, strDef:"62%", kd:0.00, tdLanded:0.73, tdAcc:"38%", tdDef:"78%", subAvg:0.29, finRate:"53%", streak:0, gym:"Venum Training Camp Paris" },
  // ── Bantamweight (additional) ──
  "Ricky Simon": { ht:"5'6\"", dob:"1992-08-31", reach:'69"', stance:"Orthodox", slpm:3.03, strAcc:"42%", sapm:3.90, strDef:"61%", kd:0.33, tdLanded:4.49, tdAcc:"41%", tdDef:"77%", subAvg:0.26, finRate:"50%", streak:0, gym:"Team Oyama" },
  "Jonathan Martinez": { ht:"5'8\"", dob:"1994-04-20", reach:'70"', stance:"Southpaw", slpm:4.44, tdAcc:"35%", subAvg:0.1, strDef:"56%", kd:0.3, tdDef:"68%", finRate:"47%", streak:0, tdLanded:0.38, gym:"Ohana Academy (2024–present)" },
@@ -6986,8 +6986,14 @@
     { opponent: "Boimah Karmo", odds: -625 }
   ],
   "William Gomis": [
-    { opponent: "William Gomis", odds: -165 },
-    { opponent: "Lucas Almeida", odds: -180 }
+    { opponent: "Pat Sabatini", odds: 180 },
+    { opponent: "Robert Ruchała", odds: -285 },
+    { opponent: "Hyder Amil", odds: -220 },
+    { opponent: "Joanderson Brito", odds: 250 },
+    { opponent: "Yanis Ghemmouri", odds: -235 },
+    { opponent: "Francis Marshall", odds: 170 },
+    { opponent: "Jose Marcos", odds: -575 },
+    { opponent: "Tobias Harila", odds: 250 }
   ],
   "Baysangur Susurkaev": [],
   "Djorden Santos": [],
@@ -15794,12 +15800,25 @@ const FIGHT_HISTORY = {
 
 
   "William Gomis": [
-    { date: "May 9, 2026", opponent: "William Gomis", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328" },
-    { date: "Apr 26, 2025", opponent: "Chepe Mariscal", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Machado Garry vs. Prates" },
-    { date: "Nov 16, 2024", opponent: "Lucas Almeida", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker" },
-    { date: "Aug 24, 2024", opponent: "Jamall Emmers", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cannonier vs. Borralho" },
-    { date: "Mar 27, 2021", opponent: "Felipe Colares", result: "W", method: "TKO (Punches)", round: 2, time: "2:20", event: "UFC Fight Night: Whittaker vs. Gastelum (debut)" },
-    { date: "Dec 2, 2017", opponent: "Julien Devaux", result: "W", method: "TKO (Punches)", round: 2, time: "0:58", event: "ARES FC (debut)" }
+    { date: "May 9, 2026", opponent: "Pat Sabatini", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
+    { date: "Sep 6, 2025", opponent: "Robert Ruchała", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
+    { date: "Mar 1, 2025", opponent: "Hyder Amil", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Kape vs. Almabayev", org: "UFC" },
+    { date: "Sep 28, 2024", opponent: "Joanderson Brito", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis", org: "UFC" },
+    { date: "Sep 2, 2023", opponent: "Yanis Ghemmouri", result: "W", method: "KO/TKO", round: 3, time: "2:20", event: "UFC Fight Night: Gane vs. Spivac", org: "UFC" },
+    { date: "Apr 22, 2023", opponent: "Francis Marshall", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Pavlovich vs. Blaydes", org: "UFC" },
+    { date: "Sep 3, 2022", opponent: "Jarno Errens", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Gane vs. Tuivasa", org: "UFC" },
+    { date: "Jun 25, 2022", opponent: "Jose Marcos", result: "W", method: "KO/TKO", round: 3, time: "3:29", event: "Ares FC 7" },
+    { date: "Mar 26, 2022", opponent: "Arip Yakubov", result: "W", method: "KO/TKO", round: 1, time: "4:56", event: "UAE Warriors 28" },
+    { date: "Oct 30, 2021", opponent: "Baba Boundjou Nadjombe", result: "W", method: "Submission (Guillotine)", round: 1, time: "1:13", event: "Hexagone MMA 2" },
+    { date: "Jun 26, 2021", opponent: "Tobias Harila", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 125" },
+    { date: "Apr 20, 2019", opponent: "Hyram Rodriguez", result: "W", method: "KO/TKO", round: 2, time: "0:32", event: "Le Roi du Fight 2019" },
+    { date: "Mar 9, 2019", opponent: "Carlos Eduardo de Azevedo", result: "W", method: "KO/TKO", round: 2, time: "2:40", event: "100% Fight 38" },
+    { date: "Jan 18, 2018", opponent: "Guilherme Cadena", result: "W", method: "KO/TKO", round: 2, time: "1:39", event: "100% Fight 33" },
+    { date: "Jan 18, 2018", opponent: "Cosmin Tutu", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "100% Fight 33" },
+    { date: "Nov 26, 2016", opponent: "Sofian Bougamoun", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "100% Fight: Contenders 33" },
+    { date: "Nov 26, 2016", opponent: "Morgan Charrière", result: "L", method: "Submission (Heel hook)", round: 2, time: "1:06", event: "100% Fight: Contenders 33" },
+    { date: "Nov 12, 2016", opponent: "Arouna Kanoute", result: "W", method: "TKO (Punches)", round: 2, time: "4:25", event: "Octagon Fighting Club 16" },
+    { date: "Feb 4, 2016", opponent: "Salahdine Parnasse", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "100% Fight 27" }
   ],
   "Yaroslav Amosov": [
     { date: "May 9, 2026", opponent: "Joel Álvarez", result: "W", method: "Submission (Arm-triangle choke)", round: 2, time: "1:13", event: "UFC 328", org: "UFC" },
@@ -32503,6 +32522,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "William Gomis": [
+    { icon: "🏆", title: "100% FIGHT Champion (French MMA promotion)", detail: null },
+    { icon: "🥊", title: "4× French Sanda Champion; European Sanda Champion", detail: null }
+  ],
   "Marco Tulio": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — KO of Matthieu Duclos)", detail: null },
     { icon: "🥊", title: "Muay Thai black belt; Minas Gerais state Muay Thai champion", detail: null },
