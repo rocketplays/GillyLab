@@ -3124,6 +3124,7 @@
  { name: "Ode Osbourne", division: "FLW", rank: "NR", record: "13-9-0", initials: "OO", country: "Jamaica" },
  // ─── BANTAMWEIGHT ───
  { name: "Petr Yan", division: "BW", rank: "#C", record: "20-5-0", initials: "PY", country: "Russia" },
+ { name: "Colby Thicknesse", division: "BW", rank: "NR", record: "9-1-0", initials: "CTH", country: "Australia" },
  { name: "Merab Dvalishvili", division: "BW", rank: "#1", record: "21-5-0", initials: "MD", country: "Georgia" },
  { name: "Umar Nurmagomedov", division: "BW", rank: "#2", record: "20-1-0", initials: "UN", country: "Russia" },
  { name: "Sean O'Malley", division: "BW", rank: "#3", record: "19-3-0", initials: "SOM", country: "USA" },
@@ -3964,6 +3965,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Colby Thicknesse": { ht:"5'7\"", dob:"1999-06-23", reach:'69"', stance:"Orthodox", slpm:3.24, strAcc:"41%", sapm:2.93, strDef:"54%", kd:0.00, tdLanded:0.67, tdAcc:"7%", tdDef:"33%", subAvg:1.67, finRate:"44%", streak:2, gym:"Freestyle Fighting Gym" },
   "Jacob Malkoun": { ht:"5'9\"", dob:"1995-08-26", reach:'73"', stance:"Orthodox", slpm:4.23, strAcc:"57%", sapm:2.33, strDef:"55%", kd:0.15, tdLanded:5.39, tdAcc:"43%", tdDef:"56%", subAvg:0.75, finRate:"30%", streak:3, gym:"Gracie Jiu-Jitsu Smeaton Grange" },
   "Georges St-Pierre": { ht:"5'11\"", dob:"1981-05-19", reach:'76"', stance:"Orthodox", slpm:3.83, strAcc:"53%", sapm:1.45, strDef:"68%", kd:0.39, tdLanded:3.94, tdAcc:"74%", tdDef:"82%", subAvg:1.05, finRate:"54%", streak:13, gym:"TriStar Gym" },
   "Robert Bryczek": { ht:"6'0\"", dob:"1990-07-04", reach:'75"', stance:"Orthodox", slpm:3.74, strAcc:"37%", sapm:4.08, strDef:"60%", kd:0.56, tdLanded:0.56, tdAcc:"100%", tdDef:"86%", subAvg:0.00, finRate:"72%", streak:0, gym:"Uniq Fight Club" },
@@ -6345,6 +6347,11 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Colby Thicknesse": [
+    { opponent: "Vince Morales", odds: -125 },
+    { opponent: "Josias Musasa", odds: 150 },
+    { opponent: "Aleksandre Topuria", odds: 270 }
+  ],
   "Jacob Malkoun": [
     { opponent: "Gerald Meerschaert", odds: -600 },
     { opponent: "Torrez Finney", odds: -140 },
@@ -14348,6 +14355,18 @@
 };
 
 const FIGHT_HISTORY = {
+  "Colby Thicknesse": [
+    { date: "May 2, 2026", opponent: "Vince Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Josias Musasa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Aleksandre Topuria", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
+    { date: "Nov 23, 2024", opponent: "Marvin Malunes", result: "W", method: "TKO (Elbows)", round: 1, time: "", event: "Hex Fight Series 33" },
+    { date: "Oct 27, 2024", opponent: "Norman Agcorpra", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:38", event: "Canggu Fight Night 32" },
+    { date: "Jul 21, 2024", opponent: "Jufri Gobel", result: "W", method: "TKO (Ground and pound)", round: 1, time: "1:50", event: "Canggu Fight Night 31" },
+    { date: "Mar 2, 2024", opponent: "Michael Mannu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hex Fight Series 29" },
+    { date: "Feb 24, 2023", opponent: "Michael Barber", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hex Fight Series 25" },
+    { date: "Sep 17, 2022", opponent: "Semakadde Kakembo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 70" },
+    { date: "Nov 21, 2020", opponent: "Shaun Johnson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:54", event: "Eternal MMA 55" }
+  ],
   "Jacob Malkoun": [
     { date: "May 2, 2026", opponent: "Gerald Meerschaert", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Feb 1, 2026", opponent: "Torrez Finney", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325", org: "UFC" },
@@ -32184,6 +32203,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Colby Thicknesse": [
+    { icon: "🏆", title: "Hex Fight Series Bantamweight Champion", detail: null },
+    { icon: "🥇", title: "IMMAF amateur MMA Champion", detail: null },
+    { icon: "🥊", title: "WKBF Bantamweight Champion (amateur kickboxing)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt (since 2022); National BJJ Champion", detail: null }
+  ],
   "Jacob Malkoun": [
     { icon: "🥇", title: "ADCC Asian & Oceanic Championship gold medalist — 99 kg (2019, Tokyo)", detail: null },
     { icon: "🥇", title: "2019 Pan Pacific BJJ gold medalist", detail: null },
