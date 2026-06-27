@@ -3256,7 +3256,7 @@
  { name: "Baisangur Susurkaev", division: "MW", rank: "NR", record: "10-3-0", initials: "BS", country: "Russia" },
   { name: "Julien Leblanc", division: "MW", rank: "NR", record: "10-3-0", initials: "JLB", country: "Canada" },
  { name: "Djorden Santos", division: "MW", rank: "NR", record: "9-5-0", initials: "DJS", country: "Brazil" },
- { name: "Marco Tulio", division: "MW", rank: "NR", record: "15-8-0", initials: "MT", country: "Brazil" },
+ { name: "Marco Tulio", division: "MW", rank: "NR", record: "14-3-0", initials: "MT", country: "Brazil" },
  { name: "Brad Tavares", division: "MW", rank: "NR", record: "21-12-0", initials: "BTV", country: "USA" },
  { name: "Edmen Shahbazyan", division: "MW", rank: "NR", record: "16-6-0", initials: "ESH", country: "USA" },
  { name: "Donte Johnson", division: "MW", rank: "NR", record: "8-0-0", initials: "DJO", country: "USA" },
@@ -4175,7 +4175,7 @@
  "Joel Alvarez": { ht:"6'3\"", dob:"1993-03-02", reach:'77"', stance:"Orthodox", slpm:4.53, strAcc:"55%", sapm:3.03, strDef:"54%", kd:0.18, tdLanded:0.18, tdAcc:"33%", tdDef:"46%", subAvg:1.06, finRate:"96%", streak:0, gym:"Centro Deportivo Tíbet" },
  // ── Middleweight (UFC 328 + additional) ──
  "Roman Kopylov": { ht:"6'0\"", dob:"1992-05-04", reach:'75"', stance:"Southpaw", slpm:4.54, strAcc:"50%", sapm:5.08, strDef:"53%", kd:0.92, tdLanded:1.12, tdAcc:"50%", tdDef:"89%", subAvg:0.00, finRate:"80%", streak:1, gym:"Ratiborets" },
- "Marco Tulio": { ht:"6'0\"", dob:"1994-06-13", reach:'74"', stance:"Orthodox", slpm:6.69, tdAcc:"26%", subAvg:0.3, strDef:"59%", kd:0.0, tdDef:"0%", finRate:"N/A", streak:0, tdLanded:1.42 },
+ "Marco Tulio": { ht:"6'0\"", dob:"1994-06-13", reach:'74"', stance:"Orthodox", slpm:6.02, strAcc:"54%", sapm:2.97, strDef:"57%", kd:1.31, tdLanded:1.05, tdAcc:"27%", tdDef:null, subAvg:0.26, finRate:"79%", streak:0, gym:"Chute Boxe Diego Lima" },
  "Baisangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.5, tdDef:"100%",finRate:"73%", streak:11, tdLanded:2.76 },
   "Julien Leblanc": { ht:"6'2\"", dob:"1992-01-21", reach:'74"', stance:"Southpaw", slpm:1.69, strAcc:"67%", sapm:2.96, strDef:"46%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"80%", streak:0, gym:"Patenaude Martial Arts / Kill Cliff FC" },
  "Ateba Gautier": { ht:"6'4\"", dob:"2002-04-10", reach:'81"', stance:"Switch", slpm:4.32, strAcc:"44%", sapm:2.60, strDef:"54%", kd:2.87, tdLanded:0.41, tdAcc:"100%", tdDef:"94%", subAvg:0.00, finRate:"82%", streak:10, gym:"Manchester Top Team" },
@@ -6967,7 +6967,10 @@
     { opponent: "Kobe Ortiz", odds: -750 }
   ],
   "Marco Tulio": [
-    { opponent: "Marco Tulio", odds: 154 }
+    { opponent: "Roman Kopylov", odds: -175 },
+    { opponent: "Christian Leroy Duncan", odds: -165 },
+    { opponent: "Tresean Gore", odds: -540 },
+    { opponent: "Matthieu Duclos", odds: -500 }
   ],
   "Pat Sabatini": [
     { opponent: "William Gomis", odds: -250 },
@@ -15691,12 +15694,23 @@ const FIGHT_HISTORY = {
     { date: "Nov 23, 2024", opponent: "Lone'er Kavanagh", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Figueiredo", org: "UFC" },
   ],
   "Marco Tulio": [
-    { date: "May 9, 2026", opponent: "Marco Tulio", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328" },
-    { date: "Nov 25, 2023", opponent: "Abdul Razak Alhassan", result: "W", method: "KO (Punches)", round: 1, time: "0:40", event: "UFC Fight Night: Holloway vs. Rodriguez" },
-    { date: "Jun 3, 2023", opponent: "Chris Leroy Duncan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Allen" },
-    { date: "Oct 22, 2022", opponent: "Dusko Todorovic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Luque vs. dos Anjos" },
-    { date: "Oct 30, 2021", opponent: "Albert Duraev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 267: Blachowicz vs. Teixeira (debut)" },
-    { date: "May 19, 2018", opponent: "Danilo Zanon", result: "W", method: "KO (Punch)", round: 1, time: "0:32", event: "Shooto Brazil 87 (debut)" }
+    { date: "May 9, 2026", opponent: "Roman Kopylov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 328", org: "UFC" },
+    { date: "Nov 8, 2025", opponent: "Christian Leroy Duncan", result: "L", method: "KO/TKO", round: 2, time: "3:20", event: "UFC Fight Night: Bonfim vs. Brown", org: "UFC" },
+    { date: "Apr 12, 2025", opponent: "Tresean Gore", result: "W", method: "KO/TKO", round: 2, time: "3:16", event: "UFC 314", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Ihor Potieria", result: "W", method: "KO/TKO", round: 1, time: "3:04", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "Aug 27, 2024", opponent: "Matthieu Duclos", result: "W", method: "KO/TKO", round: 2, time: "2:38", event: "Dana White's Contender Series 8 (Week 3)", org: "UFC" },
+    { date: "Jan 27, 2024", opponent: "Cemey dos Santos", result: "W", method: "KO/TKO", round: 2, time: "2:20", event: "LFA 175" },
+    { date: "Aug 29, 2023", opponent: "Yousri Belgaroui", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 7 (Week 4)", org: "UFC" },
+    { date: "Jan 28, 2023", opponent: "Weldon Silva de Oliveira", result: "W", method: "KO/TKO", round: 1, time: "4:26", event: "LFA 151" },
+    { date: "Nov 18, 2022", opponent: "Pedro Oliveira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Future FC 4" },
+    { date: "Aug 20, 2022", opponent: "Carlos Alberto Silva", result: "W", method: "KO/TKO", round: 1, time: "0:38", event: "Presas Combat" },
+    { date: "Jan 30, 2022", opponent: "Glaico Franca", result: "W", method: "KO/TKO", round: 2, time: "1:32", event: "Fight Music Show 1" },
+    { date: "Jul 10, 2021", opponent: "Uaslen Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imperio Fight 6" },
+    { date: "Sep 29, 2018", opponent: "Alexandre Silva", result: "L", method: "KO/TKO", round: 2, time: "3:52", event: "Standout Fighting Tournament 5" },
+    { date: "Aug 11, 2018", opponent: "Helvecio Bessa Jr.", result: "W", method: "KO/TKO", round: 1, time: "1:50", event: "Spartacus Combate 3" },
+    { date: "Dec 2, 2017", opponent: "Alex de Paula", result: "W", method: "KO/TKO", round: 1, time: "4:36", event: "Federação Fight 6" },
+    { date: "Sep 16, 2017", opponent: "Tulio Viana", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:25", event: "Federação Fight 5" },
+    { date: "Jun 10, 2017", opponent: "Ernandis Costa", result: "W", method: "KO/TKO", round: 1, time: "4:35", event: "UDI Combat 1" }
   ],
 
 
@@ -32489,6 +32503,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Marco Tulio": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — KO of Matthieu Duclos)", detail: null },
+    { icon: "🥊", title: "Muay Thai black belt; Minas Gerais state Muay Thai champion", detail: null },
+    { icon: "🥋", title: "São Paulo & Minas Gerais state jiu-jitsu champion", detail: null }
+  ],
   "Roman Kopylov": [
     { icon: "🏆", title: "Fight Nights Global Middleweight Champion (one title defense)", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night (×2) — vs. Punahele Soriano & Josh Fremd; Fight of the Night (×1) — vs. Chris Curtis", detail: null },
