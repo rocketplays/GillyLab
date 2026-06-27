@@ -3458,7 +3458,7 @@
  { name: "Bill Algeo", division: "FW", rank: "NR", record: "18-9-0", initials: "BAL", country: "USA" },
  { name: "Herbert Burns", division: "FW", rank: "NR", record: "14-5-0", initials: "HBU", country: "Brazil" },
  { name: "Dooho Choi", division: "FW", rank: "NR", record: "17-4-1", initials: "DHC", country: "South Korea" },
- { name: "Daniel Santos", division: "FW", rank: "NR", record: "19-7-0", initials: "DSA", country: "Brazil" },
+ { name: "Daniel Santos", division: "FW", rank: "NR", record: "14-3-0", initials: "DSA", country: "Brazil" },
  { name: "Chepe Mariscal", division: "FW", rank: "NR", record: "14-6-0", initials: "CHM", country: "USA" },
  { name: "Christian Rodriguez", division: "FW", rank: "NR", record: "13-4-0", initials: "CRD", country: "USA" },
  { name: "Zubaira Tukhugov", division: "FW", rank: "NR", record: "23-8-1", initials: "ZTU", country: "Russia" },
@@ -4508,7 +4508,7 @@
  "Lerryan Douglas": { ht:"5'10\"", dob:"1995-04-27", reach:'72"', stance:"Orthodox", slpm:8.67, strAcc:"64%", sapm:4.82, strDef:"64%", kd:14.46, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"79%", streak:6, gym:"Bloodline CSA" },
  "Losene Keita": { ht:"5'7\"", dob:"1997-12-30", reach:'72"', stance:"Orthodox", slpm:3.47, strAcc:"44%", sapm:4.47, strDef:"62%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"63%", streak:0, gym:"Lamiro Fight Club" },
  "Giga Chikadze": { ht:'6\'0"', dob:"1988-08-25", reach:'74"', stance:"Orthodox", slpm:3.75, strAcc:"43%", sapm:3.47, strDef:"60%", kd:0.54, tdLanded:0.18, tdAcc:"33%", tdDef:"66%", subAvg:0.18, finRate:"67%", streak:0, gym:"Kings MMA" },
- "Daniel Santos": { ht:"5'7\"", dob:"1995-03-12", reach:'67"', stance:"Orthodox", slpm:4.76, tdAcc:"40%", subAvg:0.0, strDef:"51%", kd:0.3, tdDef:"73%", finRate:"64%", streak:0, tdLanded:3.01, gym:"Chute Boxe Diego Lima" },
+ "Daniel Santos": { ht:"5'7\"", dob:"1995-03-12", reach:'67"', stance:"Orthodox", slpm:5.15, strAcc:"40%", sapm:5.38, strDef:"50%", kd:0.43, tdLanded:2.60, tdAcc:"33%", tdDef:"73%", subAvg:0.00, finRate:"64%", streak:0, gym:"Chute Boxe Diego Lima" },
  "Aaron Pico": { ht:'5\'8"', dob:"1996-09-23", reach:'70.5"', stance:"Orthodox", slpm:6.16, strAcc:"53%", sapm:3.11, strDef:"45%", kd:0.0, tdLanded:6.54, tdAcc:"50%", tdDef:"0%", subAvg:0.0, finRate:"78%", streak:1, gym:"Jackson Wink MMA Academy" },
  // ── Lightweight (more) ──
  // ── Welterweight (more) ──
@@ -7070,11 +7070,12 @@
     { opponent: "Italo Gomes", odds: -210 }
   ],
   "Daniel Santos": [
-    { opponent: "JooSang Yoo", odds: -400 },
-    { opponent: "JeongYeong Lee", odds: -250 },
-    { opponent: "Johnny Munoz Jr.", odds: -200 },
-    { opponent: "John Castaneda", odds: -155 },
-    { opponent: "Julio Arce", odds: 175 }
+    { opponent: "Dooho Choi", odds: -175 },
+    { opponent: "Yoo Joo-sang", odds: -144 },
+    { opponent: "Lee Jeong-yeong", odds: 113 },
+    { opponent: "Johnny Muñoz Jr.", odds: -220 },
+    { opponent: "John Castañeda", odds: 159 },
+    { opponent: "Julio Arce", odds: 165 }
   ],
   "Khaos Williams": [
     { opponent: "Nikolay Veretennikov", odds: -122 },
@@ -16161,7 +16162,7 @@ const FIGHT_HISTORY = {
 
 
   "Daniel Santos": [
-    { date: "May 16, 2026", opponent: "Choi Doo-ho", result: "L", method: "TKO (Punches)", round: 2, time: "4:29", event: "UFC Fight Night: Allen vs. Costa", org: "UFC" },
+    { date: "May 16, 2026", opponent: "Dooho Choi", result: "L", method: "TKO (Body Punch)", round: 2, time: "4:29", event: "UFC Fight Night: Allen vs. Costa", org: "UFC" },
     { date: "Oct 4, 2025", opponent: "Yoo Joo-sang", result: "W", method: "TKO (Punches)", round: 2, time: "0:21", event: "UFC 320", org: "UFC" },
     { date: "May 10, 2025", opponent: "Lee Jeong-yeong", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315", org: "UFC" },
     { date: "Jun 3, 2023", opponent: "Johnny Muñoz Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Kara-France vs. Albazi", org: "UFC" },
@@ -32537,6 +32538,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Daniel Santos": [
+    { icon: "⭐", title: "UFC Fight of the Night — vs. Dooho Choi (UFC Fight Night, 2026)", detail: null },
+    { icon: "🏅", title: "Three pro wins by spinning strikes (two spinning back kicks & a spinning back elbow)", detail: null },
+    { icon: "🥊", title: "Muay Thai striker out of Chute Boxe Diego Lima", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt", detail: null }
+  ],
   "Dooho Choi": [
     { icon: "🏆", title: "UFC Hall of Fame — Fight Wing (Class of 2022), Swanson vs. Choi at UFC 206", detail: null },
     { icon: "⭐", title: "UFC Fight of the Night (3×) — vs. Cub Swanson, Jeremy Stephens & Charles Jourdain", detail: null },
