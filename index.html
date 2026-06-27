@@ -3125,6 +3125,7 @@
  // ─── BANTAMWEIGHT ───
  { name: "Petr Yan", division: "BW", rank: "#C", record: "20-5-0", initials: "PY", country: "Russia" },
  { name: "Colby Thicknesse", division: "BW", rank: "NR", record: "9-1-0", initials: "CTH", country: "Australia" },
+ { name: "Vince Morales", division: "BW", rank: "NR", record: "16-11-0", initials: "VM", country: "USA" },
  { name: "Merab Dvalishvili", division: "BW", rank: "#1", record: "21-5-0", initials: "MD", country: "Georgia" },
  { name: "Umar Nurmagomedov", division: "BW", rank: "#2", record: "20-1-0", initials: "UN", country: "Russia" },
  { name: "Sean O'Malley", division: "BW", rank: "#3", record: "19-3-0", initials: "SOM", country: "USA" },
@@ -3965,6 +3966,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Vince Morales": { ht:"5'7\"", dob:"1990-11-12", reach:'70"', stance:"Orthodox", slpm:3.54, strAcc:"38%", sapm:3.91, strDef:"54%", kd:0.27, tdLanded:0.71, tdAcc:"47%", tdDef:"64%", subAvg:0.45, finRate:"75%", streak:0, gym:"Syndicate MMA" },
   "Colby Thicknesse": { ht:"5'7\"", dob:"1999-06-23", reach:'69"', stance:"Orthodox", slpm:3.24, strAcc:"41%", sapm:2.93, strDef:"54%", kd:0.00, tdLanded:0.67, tdAcc:"7%", tdDef:"33%", subAvg:1.67, finRate:"44%", streak:2, gym:"Freestyle Fighting Gym" },
   "Jacob Malkoun": { ht:"5'9\"", dob:"1995-08-26", reach:'73"', stance:"Orthodox", slpm:4.23, strAcc:"57%", sapm:2.33, strDef:"55%", kd:0.15, tdLanded:5.39, tdAcc:"43%", tdDef:"56%", subAvg:0.75, finRate:"30%", streak:3, gym:"Gracie Jiu-Jitsu Smeaton Grange" },
   "Georges St-Pierre": { ht:"5'11\"", dob:"1981-05-19", reach:'76"', stance:"Orthodox", slpm:3.83, strAcc:"53%", sapm:1.45, strDef:"68%", kd:0.39, tdLanded:3.94, tdAcc:"74%", tdDef:"82%", subAvg:1.05, finRate:"54%", streak:13, gym:"TriStar Gym" },
@@ -6347,6 +6349,23 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Vince Morales": [
+    { opponent: "Colby Thicknesse", odds: 105 },
+    { opponent: "Raul Rosas Jr.", odds: 400 },
+    { opponent: "Elijah Smith", odds: -110 },
+    { opponent: "Taylor Lapilus", odds: 285 },
+    { opponent: "Yuki Motoya", odds: 110 },
+    { opponent: "Teruto Ishihara", odds: -340 },
+    { opponent: "Miles Johns", odds: 145 },
+    { opponent: "Jonathan Martinez", odds: 210 },
+    { opponent: "Louis Smolka", odds: 140 },
+    { opponent: "Drako Rodriguez", odds: -110 },
+    { opponent: "Chris Gutierrez", odds: 100 },
+    { opponent: "Benito Lopez", odds: -115 },
+    { opponent: "Aiemann Zahabi", odds: 155 },
+    { opponent: "Song Yadong", odds: 410 },
+    { opponent: "Domingo Pilarte", odds: -300 }
+  ],
   "Colby Thicknesse": [
     { opponent: "Vince Morales", odds: -125 },
     { opponent: "Josias Musasa", odds: 150 },
@@ -14355,6 +14374,35 @@
 };
 
 const FIGHT_HISTORY = {
+  "Vince Morales": [
+    { date: "May 2, 2026", opponent: "Colby Thicknesse", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Mar 29, 2025", opponent: "Raul Rosas Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Erceg", org: "UFC" },
+    { date: "Feb 15, 2025", opponent: "Elijah Smith", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cannonier vs. Rodrigues", org: "UFC" },
+    { date: "Sep 28, 2024", opponent: "Taylor Lapilus", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis", org: "UFC" },
+    { date: "Aug 30, 2024", opponent: "Hunter Azure", result: "W", method: "Submission", round: 3, time: "4:06", event: "UFL 5: United Fight League" },
+    { date: "May 24, 2024", opponent: "Luis Guerrero", result: "W", method: "Submission", round: 2, time: "4:09", event: "Tuff-N-Uff 137" },
+    { date: "Dec 31, 2023", opponent: "Yuki Motoya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Rizin 45", org: "RIZIN" },
+    { date: "Jul 28, 2023", opponent: "Joe Penafiel", result: "W", method: "KO/TKO", round: 2, time: "2:19", event: "Front Street Fights 26" },
+    { date: "May 3, 2023", opponent: "Teruto Ishihara", result: "W", method: "Submission (Anaconda choke)", round: 3, time: "1:17", event: "XMMA 6" },
+    { date: "Nov 19, 2022", opponent: "Miles Johns", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Nzechukwu vs. Cutelaba", org: "UFC" },
+    { date: "May 21, 2022", opponent: "Jonathan Martinez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holm vs. Vieira", org: "UFC" },
+    { date: "Dec 4, 2021", opponent: "Louis Smolka", result: "W", method: "KO/TKO", round: 1, time: "2:02", event: "UFC Fight Night: Font vs. Aldo", org: "UFC" },
+    { date: "Aug 7, 2021", opponent: "Drako Rodriguez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 265", org: "UFC" },
+    { date: "May 30, 2020", opponent: "Chris Gutierrez", result: "L", method: "KO/TKO", round: 2, time: "4:27", event: "UFC Fight Night: Woodley vs. Burns", org: "UFC" },
+    { date: "Jul 13, 2019", opponent: "Benito Lopez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: De Randamie vs. Ladd", org: "UFC" },
+    { date: "May 4, 2019", opponent: "Aiemann Zahabi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Iaquinta vs. Cowboy", org: "UFC" },
+    { date: "Nov 24, 2018", opponent: "Song Yadong", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blaydes vs. Ngannou 2", org: "UFC" },
+    { date: "Sep 21, 2018", opponent: "Justin Williams-Hugo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 205" },
+    { date: "Jul 17, 2018", opponent: "Domingo Pilarte", result: "L", method: "Submission", round: 2, time: "1:52", event: "Dana White's Contender Series 2 (Week 5)", org: "UFC" },
+    { date: "Jan 19, 2018", opponent: "Brandon Hempleman", result: "W", method: "TKO", round: 2, time: "2:38", event: "Front Street Fights 15" },
+    { date: "Jun 17, 2017", opponent: "Rowdy Akers", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "1:58", event: "KOTC: Quick Draw" },
+    { date: "Dec 9, 2016", opponent: "Andrew Cruz", result: "W", method: "KO/TKO", round: 3, time: "3:07", event: "Front Street Fights 10" },
+    { date: "May 20, 2016", opponent: "Hamilton Ash", result: "W", method: "KO", round: 3, time: "2:32", event: "Bellator 155" },
+    { date: "Feb 13, 2016", opponent: "Patrick Trey Smith", result: "W", method: "TKO", round: 1, time: "4:15", event: "Front Street Fights 8" },
+    { date: "Sep 11, 2015", opponent: "Josh Wick", result: "L", method: "Submission (Armbar)", round: 2, time: "3:26", event: "Front Street Fights 6" },
+    { date: "Jul 11, 2015", opponent: "Jeremie Montgomery", result: "W", method: "TKO", round: 1, time: "2:28", event: "SFL 41: America 5" },
+    { date: "May 15, 2015", opponent: "Joseph Cleveland", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:51", event: "Front Street Fights 5" }
+  ],
   "Colby Thicknesse": [
     { date: "May 2, 2026", opponent: "Vince Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Sep 27, 2025", opponent: "Josias Musasa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
@@ -32203,6 +32251,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Vince Morales": [
+    { icon: "🏆", title: "United Fight League Bantamweight Champion", detail: null },
+    { icon: "🏆", title: "Front Street Fights Featherweight Champion", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt", detail: null }
+  ],
   "Colby Thicknesse": [
     { icon: "🏆", title: "Hex Fight Series Bantamweight Champion", detail: null },
     { icon: "🥇", title: "IMMAF amateur MMA Champion", detail: null },
