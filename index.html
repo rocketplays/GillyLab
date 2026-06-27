@@ -3236,6 +3236,7 @@
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
  { name: "Wes Schultz", division: "MW", rank: "NR", record: "9-3-0", initials: "WS", country: "USA" },
+ { name: "Ben Johnston", division: "MW", rank: "NR", record: "5-2-0", initials: "BJ", country: "Australia" },
  { name: "Dricus du Plessis", division: "MW", rank: "#2", record: "23-3-0", initials: "DDP", country: "South Africa" },
  { name: "Sean Strickland", division: "MW", rank: "#C", record: "31-7-0", initials: "SS", country: "USA" },
  { name: "Israel Adesanya", division: "MW", rank: "#9", record: "24-6-0", initials: "IA", country: "Nigeria" },
@@ -3967,6 +3968,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Ben Johnston": { ht:"6'4\"", dob:"1990-10-11", reach:'75"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:0, gym:"The Fight Centre" },
   "Wes Schultz": { ht:"6'2\"", dob:"1996-08-09", reach:'77"', stance:"Orthodox", slpm:2.91, strAcc:"47%", sapm:3.11, strDef:"43%", kd:1.20, tdLanded:2.39, tdAcc:"21%", tdDef:null, subAvg:3.59, finRate:"89%", streak:1, gym:"Pura Vida BJJ & MMA" },
   "Vince Morales": { ht:"5'7\"", dob:"1990-11-12", reach:'70"', stance:"Orthodox", slpm:3.54, strAcc:"38%", sapm:3.91, strDef:"54%", kd:0.27, tdLanded:0.71, tdAcc:"47%", tdDef:"64%", subAvg:0.45, finRate:"75%", streak:0, gym:"Syndicate MMA" },
   "Colby Thicknesse": { ht:"5'7\"", dob:"1999-06-23", reach:'69"', stance:"Orthodox", slpm:3.24, strAcc:"41%", sapm:2.93, strDef:"54%", kd:0.00, tdLanded:0.67, tdAcc:"7%", tdDef:"33%", subAvg:1.67, finRate:"44%", streak:2, gym:"Freestyle Fighting Gym" },
@@ -6351,6 +6353,9 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Ben Johnston": [
+    { opponent: "Wes Schultz", odds: -140 }
+  ],
   "Wes Schultz": [
     { opponent: "Ben Johnston", odds: 115 },
     { opponent: "Damian Pinas", odds: 195 },
@@ -14386,6 +14391,15 @@
 };
 
 const FIGHT_HISTORY = {
+  "Ben Johnston": [
+    { date: "May 2, 2026", opponent: "Wes Schultz", result: "L", method: "Submission (Guillotine)", round: 3, time: "1:50", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Mar 16, 2024", opponent: "John-Martin Fraser", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:15", event: "Eternal MMA 83" },
+    { date: "Sep 23, 2023", opponent: "Yoon Seo Shin", result: "W", method: "KO/TKO", round: 1, time: "3:42", event: "Eternal MMA 79" },
+    { date: "Jul 1, 2023", opponent: "Emil Jeries", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:44", event: "Eternal MMA 77" },
+    { date: "Jul 16, 2022", opponent: "Kahn Sandy", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:04", event: "Eternal MMA 67" },
+    { date: "Mar 19, 2022", opponent: "Kaleb Rideout", result: "L", method: "KO/TKO", round: 1, time: "1:10", event: "Eternal MMA 64" },
+    { date: "Jul 3, 2010", opponent: "Evan Smith", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:53", event: "Redlands MMA: Battle by the Bay" }
+  ],
   "Wes Schultz": [
     { date: "May 2, 2026", opponent: "Ben Johnston", result: "W", method: "Submission (Guillotine)", round: 3, time: "1:50", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Feb 28, 2026", opponent: "Damian Pinas", result: "L", method: "KO/TKO", round: 1, time: "2:30", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
@@ -32277,6 +32291,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ben Johnston": [
+    { icon: "🏆", title: "Eternal MMA Middleweight Champion", detail: null },
+    { icon: "🥊", title: "Former Muay Thai world champion", detail: null },
+    { icon: "🏅", title: "100% finish rate — all 5 wins by stoppage (4 submissions, 1 KO/TKO)", detail: null }
+  ],
   "Wes Schultz": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025 — first-round submission of Mario Mingaj)", detail: null },
     { icon: "🥇", title: "Two-time amateur MMA champion — Caged Aggression & Dynasty Combat Sports", detail: null },
