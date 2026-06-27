@@ -3255,7 +3255,7 @@
  { name: "Roman Kopylov", division: "MW", rank: "NR", record: "15-5-0", initials: "RK", country: "Russia" },
  { name: "Baisangur Susurkaev", division: "MW", rank: "NR", record: "12-0-0", initials: "BS", country: "Russia" },
   { name: "Julien Leblanc", division: "MW", rank: "NR", record: "10-3-0", initials: "JLB", country: "Canada" },
- { name: "Djorden Santos", division: "MW", rank: "NR", record: "9-5-0", initials: "DJS", country: "Brazil" },
+ { name: "Djorden Santos", division: "MW", rank: "NR", record: "11-3-0", initials: "DJS", country: "Brazil" },
  { name: "Marco Tulio", division: "MW", rank: "NR", record: "14-3-0", initials: "MT", country: "Brazil" },
  { name: "Brad Tavares", division: "MW", rank: "NR", record: "21-12-0", initials: "BTV", country: "USA" },
  { name: "Edmen Shahbazyan", division: "MW", rank: "NR", record: "16-6-0", initials: "ESH", country: "USA" },
@@ -4661,7 +4661,7 @@
  // Welterweight
  "Josiah Harrell": { ht:"5'7\"", dob:"1998-11-13", reach:'68"', stance:"Southpaw", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"73%", streak:0, tdLanded:0.00 },
  // Middleweight
- "Djorden Santos": { ht:"6'0\"", dob:"1997-08-01", reach:'75"', stance:"Orthodox", slpm:7.0, tdAcc:"33%", subAvg:0.0, strDef:"48%", kd:0.0, tdDef:"86%", finRate:"N/A", streak:0, tdLanded:0.67 },
+ "Djorden Santos": { ht:"6'0\"", dob:"1997-08-01", reach:'75"', stance:"Orthodox", slpm:6.64, strAcc:"43%", sapm:6.35, strDef:"49%", kd:0.00, tdLanded:0.51, tdAcc:"29%", tdDef:"85%", subAvg:0.00, finRate:"64%", streak:0, gym:"American Top Team" },
  "Baysangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.0, tdDef:"100%", finRate:"N/A", streak:0, tdLanded:2.76 }, "Claudio Ribeiro": { ht:"6'1\"", dob:"1992-07-17", reach:'77"', stance:"Orthodox", slpm:3.59, tdAcc:"40%", subAvg:0.4, strDef:"30%", kd:0.2, tdDef:"57%", finRate:"55%", streak:0, tdLanded:1.29 },
  "Eric McConico": { ht:"6'0\"", dob:"1990-05-09", reach:'77"', stance:"Southpaw", slpm:2.61, strAcc:"44%", sapm:3.23, strDef:"47%", kd:0.00, tdLanded:0.00, tdAcc:"100%", tdDef:"64%", subAvg:0.00, finRate:"64%", streak:1, gym:"The MMA Lab" },
  // Light Heavyweight
@@ -6996,7 +6996,12 @@
     { opponent: "Tobias Harila", odds: 250 }
   ],
   "Baysangur Susurkaev": [],
-  "Djorden Santos": [],
+  "Djorden Santos": [
+    { opponent: "Baisangur Susurkaev", odds: 550 },
+    { opponent: "Danny Barlow", odds: 205 },
+    { opponent: "Ozzy Diaz", odds: -190 },
+    { opponent: "Will Currie", odds: 335 }
+  ],
   "Ateba Gautier": [
     { opponent: "Ozzy Diaz", odds: -1600 },
     { opponent: "Andrey Pulyaev", odds: -1000 },
@@ -15428,10 +15433,20 @@ const FIGHT_HISTORY = {
     { date: "Nov 5, 2022", opponent: "Yhosoe Mego", result: "W", method: "TKO (Punches)", round: 2, time: "1:17", event: "LFA 143 (debut)" }
   ],
   "Djorden Santos": [
-    { date: "Mar 8, 2025", opponent: "Djorden Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 313" },
-    { date: "Nov 23, 2024", opponent: "Mingyang Zhang", result: "L", method: "TKO (Elbow)", round: 1, time: "2:25", event: "UFC Fight Night" },
-    { date: "Jul 26, 2022", opponent: "Joe Pyfer", result: "L", method: "TKO (Punches)", round: 2, time: "1:39", event: "DWCS Season 6 Week 7" },
-    { date: "Oct 30, 2020", opponent: "Logan Woods", result: "W", method: "TKO (Punches)", round: 1, time: "1:36", event: "LFA 94 (debut)" }
+    { date: "May 9, 2026", opponent: "Baisangur Susurkaev", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "4:12", event: "UFC 328", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Danny Barlow", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Mar 8, 2025", opponent: "Ozzy Diaz", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 313", org: "UFC" },
+    { date: "Sep 3, 2024", opponent: "Will Currie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 8 (Week 4)", org: "UFC" },
+    { date: "Nov 24, 2022", opponent: "Filipe Moitinho", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Thunder Fight 39" },
+    { date: "Dec 19, 2021", opponent: "Miguel Firmino", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Thunder Fight 33" },
+    { date: "Aug 14, 2021", opponent: "Daniel Chicao", result: "W", method: "KO/TKO", round: 2, time: "4:59", event: "X1 Kombat 4" },
+    { date: "Jul 31, 2021", opponent: "Rodolfo Andrade de Oliveira", result: "W", method: "TKO (Injury)", round: 2, time: "1:40", event: "Sul Fluminense Fight Night 4" },
+    { date: "Jan 25, 2019", opponent: "Cristhian Torres", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Titan FC 52" },
+    { date: "Sep 7, 2018", opponent: "Khristhian Da Silva Oliveira", result: "W", method: "KO/TKO", round: 3, time: "1:52", event: "Samurai Fight 1" },
+    { date: "Mar 31, 2017", opponent: "Jeronimo Oliveira", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:00", event: "Zero 11 Fight" },
+    { date: "Nov 26, 2016", opponent: "Cristiano Bonis", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:18", event: "Federal Gladiators Combat 2" },
+    { date: "Oct 8, 2016", opponent: "Eduardo Silva", result: "W", method: "Submission (Guillotine)", round: 2, time: "2:31", event: "Aspera Fighting Championship 45" },
+    { date: "Mar 21, 2015", opponent: "Bruno Fernandes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:51", event: "Full House: Battle Home 9" }
   ],
   "Grant Dawson": [
     { date: "May 9, 2026", opponent: "Mateusz Rębecki", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "4:42", event: "UFC 328", org: "UFC" },
@@ -32523,6 +32538,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Djorden Santos": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — decision over Will Currie)", detail: null },
+    { icon: "🏆", title: "Thunder Fight Middleweight Champion (Brazil)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Baisangur Susurkaev": [
     { icon: "🏅", title: "Undefeated (12-0); earned a UFC contract on Dana White's Contender Series (2025) and won his short-notice UFC debut four days later", detail: null },
     { icon: "🏆", title: "Russian MMA Champion", detail: null },
