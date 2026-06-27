@@ -31257,6 +31257,32 @@ function _fsHistRow(name, date){
   for (var j=0;j<arr.length;j++){ var d2=_fsParse(arr[j].date); if (d2!=null && Math.abs(d2-dt) <= 36*3600*1000) return arr[j]; }
   return null;
 }
+// Robust page scroll-lock for modals. Note: on this site <html> (not body) is
+// the scroll container, so `body.style.overflow='hidden'` alone does NOT stop
+// scrolling — especially touch scroll on mobile. Pinning the body with
+// position:fixed (preserving the scroll offset) reliably freezes the page
+// behind any modal on both desktop and mobile.
+var _scrollLockY = 0, _scrollLocked = false;
+function lockPageScroll(){
+  if (_scrollLocked) return;
+  _scrollLockY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+  document.body.style.top = (-_scrollLockY) + 'px';
+  document.body.style.position = 'fixed';
+  document.body.style.width = '100%';
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  _scrollLocked = true;
+}
+function unlockPageScroll(){
+  if (!_scrollLocked) return;
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  document.body.style.overflow = '';
+  document.documentElement.style.overflow = '';
+  window.scrollTo(0, _scrollLockY);
+  _scrollLocked = false;
+}
 function openFightStats(name, date){
   var rec = fightStatsFor(name, date); if (!rec) return;
   var f = rec.f, o = rec.o;
@@ -31305,7 +31331,7 @@ function openFightStats(name, date){
   if (b) b.innerHTML = body;
   if (ov) ov.style.display = 'block';
   if (m) m.style.display = 'block';
-  document.body.style.overflow = 'hidden';
+  lockPageScroll();
 }
 // Event-card bouts know both fighters but only one event date — open the modal
 // for whichever fighter has a backfilled box score (the record carries both sides).
@@ -40151,7 +40177,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (b) b.innerHTML = c.body;
     if (o) o.style.display = 'block';
     if (m) m.style.display = 'block';
-    document.body.style.overflow = 'hidden';
+    lockPageScroll();
   }
 
   function closeModal() {
@@ -40159,7 +40185,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const m = document.getElementById('modal-box');
     if (o) o.style.display = 'none';
     if (m) m.style.display = 'none';
-    document.body.style.overflow = '';
+    unlockPageScroll();
   }
 
   document.addEventListener('keydown', function(e) {
