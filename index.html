@@ -31286,6 +31286,17 @@ function unlockPageScroll(){
   window.scrollTo(0, _scrollLockY);
   _scrollLocked = false;
 }
+function _fsInRoster(nm){ return (typeof FIGHTERS !== 'undefined') && FIGHTERS.some(function(x){ return x.name === nm; }); }
+// Modal header name: clickable into the fighter's profile when they're on the
+// roster (closes the modal first so the profile isn't left behind the overlay).
+function _fsNameHTML(nm, align){
+  var base = 'font-weight:800;color:#fff;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' + (align==='right' ? 'text-align:right;' : '');
+  if (_fsInRoster(nm)) {
+    var safe = (typeof escJsAttr === 'function') ? escJsAttr(nm) : String(nm).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    return '<span onclick="closeModal();openFighterByName(\'' + safe + '\')" title="View profile" style="cursor:pointer;' + base + '" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'#fff\'">' + _fsEsc(nm) + '</span>';
+  }
+  return '<span style="' + base + '">' + _fsEsc(nm) + '</span>';
+}
 function openFightStats(name, date){
   var rec = fightStatsFor(name, date); if (!rec) return;
   var f = rec.f, o = rec.o;
@@ -31304,9 +31315,9 @@ function openFightStats(name, date){
   var body =
       '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;margin-bottom:0.5rem;">'
     +   '<div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;">' + _fsAva(name)
-    +     '<span style="font-weight:800;color:#fff;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+_fsEsc(name)+'</span></div>'
+    +     _fsNameHTML(name,'left')+'</div>'
     +   '<div style="display:flex;align-items:center;gap:0.5rem;flex:1;min-width:0;justify-content:flex-end;">'
-    +     '<span style="font-weight:800;color:#fff;font-size:0.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:right;">'+_fsEsc(rec.opponent)+'</span>' + _fsAva(rec.opponent) + '</div>'
+    +     _fsNameHTML(rec.opponent,'right') + _fsAva(rec.opponent) + '</div>'
     + '</div>'
     + '<div style="text-align:center;margin-bottom:0.9rem;">'
     +   '<span style="font-size:0.72rem;color:rgba(255,255,255,0.45);">'+_fsEsc(rec.date)+'</span>'
