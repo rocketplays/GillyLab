@@ -3701,7 +3701,7 @@
  { name: "Molly McCann", division: "WSW", rank: "NR", record: "14-8-0", initials: "MMC", country: "UK" },
  { name: "Hannah Goldy", division: "WSW", rank: "NR", record: "7-4-0", initials: "HGO", country: "USA" },
  { name: "Cory McKenna", division: "WSW", rank: "NR", record: "8-4-0", initials: "CMK", country: "UK" },
- { name: "Julia Polastri", division: "WSW", rank: "NR", record: "14-5-0", initials: "JPO", country: "Brazil" },
+ { name: "Julia Polastri", division: "WSW", rank: "NR", record: "14-6-0", initials: "JPO", country: "Brazil" },
  { name: "Elise Reed", division: "WSW", rank: "NR", record: "8-5-0", initials: "ERE", country: "USA" },
  { name: "Puja Tomar", division: "WSW", rank: "NR", record: "9-6-0", initials: "PTM", country: "India" },
  { name: "Polyana Viana", division: "WSW", rank: "NR", record: "13-9-0", initials: "PVI", country: "Brazil" },
@@ -4347,7 +4347,7 @@
  "Marlon Moraes": { ht:"5'6\"", dob:"1988-04-26", reach:'67"', stance:"Orthodox", slpm:3.37, tdAcc:"41%", subAvg:0.5, strDef:"54%", kd:0.5, tdDef:"66%", finRate:"61%", streak:0, tdLanded:0.87, gym:"American Top Team" },
  // ── Women's Strawweight (final) ──
  "Cory McKenna": { ht:"5'3\"", dob:"1999-07-11", reach:'58"', stance:"Orthodox", slpm:2.94, tdAcc:"38%", subAvg:0.4, strDef:"46%", kd:0.0, tdDef:"55%", finRate:"38%", streak:0, tdLanded:2.00, gym:"Team Alpha Male" },
- "Julia Polastri": { ht:"5'2\"", dob:"1998-03-05", reach:'64"', stance:"Orthodox", slpm:6.40, tdAcc:"80%", subAvg:0.3, strDef:"57%", kd:0.4, tdDef:"60%", finRate:"57%", streak:2, tdLanded:0.73 },
+ "Julia Polastri": { ht:"5'2\"", dob:"1998-03-05", reach:'64"', stance:"Orthodox", slpm:6.40, strAcc:"55%", sapm:5.40, strDef:"57%", kd:0.00, tdLanded:0.73, tdAcc:"80%", tdDef:"61%", subAvg:0.37, finRate:"57%", streak:0, gym:"CWB Fighter" },
  "Elise Reed": { ht:"5'3\"", dob:"1992-12-05", reach:'63"', stance:"Orthodox", slpm:3.41, tdAcc:"33%", subAvg:0.3, strDef:"51%", kd:0.1, tdDef:"64%", finRate:"50%", streak:0, tdLanded:0.46, gym:"Kickside Martial Arts" },
  "Puja Tomar": { ht:"5'4\"", dob:"1993-12-05", reach:'59"', stance:"Southpaw", slpm:5.61, tdAcc:"0%", subAvg:0.0, strDef:"46%", kd:0.3, tdDef:"100%",finRate:"56%", streak:0, tdLanded:0.00, gym:"Soma Fight Club" },
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, tdAcc:"44%", subAvg:0.4, strDef:"62%", kd:0.1, tdDef:"73%", finRate:"56%", streak:2, tdLanded:2.28, gym:"Academia Fight House" },
@@ -11961,11 +11961,15 @@
     { opponent: "Carlos Felipe", odds: -300 }
   ],
   "Julia Polastri": [
-    { opponent: "Piera Rodriguez", odds: -350 },
-    { opponent: "Yazmin Jauregui", odds: -300 },
-    { opponent: "Loopy Godinez", odds: 350 },
-    { opponent: "Ariane da Silva", odds: -250 },
-    { opponent: "Daria Zhelezniakova", odds: -450 }
+    { opponent: "Talita Alencar", odds: -240 },
+    { opponent: "Karolina Kowalkiewicz", odds: -550 },
+    { opponent: "Loopy Godinez", odds: 195 },
+    { opponent: "Cory McKenna", odds: -115 },
+    { opponent: "Josefine Knutsson", odds: 170 },
+    { opponent: "Patricia Alujas", odds: -700 },
+    { opponent: "Brenda Gottig", odds: -310 },
+    { opponent: "Bianca Sattelmayer", odds: -550 },
+    { opponent: "Jasmine Jasudavicius", odds: -105 }
   ],
   "Daria Zhelezniakova": [
     { opponent: "Melissa Croden", odds: 120 },
@@ -25947,17 +25951,26 @@ const FIGHT_HISTORY = {
 
 
   "Julia Polastri": [
-    { date: "Apr 11, 2026", opponent: "Piera Rodriguez", result: "W", method: "KO (Punches)", round: 2, time: "1:24", event: "UFC 327: Chimaev vs. Strickland 2" },
-    { date: "Nov 22, 2025", opponent: "Yazmin Jauregui", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker" },
-    { date: "Jun 28, 2025", opponent: "Piera Rodriguez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 317: Topuria vs. Oliveira" },
-    { date: "Mar 29, 2025", opponent: "Loopy Godinez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg" },
-    { date: "Nov 16, 2024", opponent: "Ariane da Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309: Jones vs. Miocic" },
-    { date: "Jun 8, 2024", opponent: "Daria Zhelezniakova", result: "W", method: "TKO (Punches)", round: 2, time: "2:04", event: "UFC Fight Night: Cannonier vs. Imavov (debut)" },
-    { date: "Jan 20, 2024", opponent: "Mariam Sildiliani", result: "W", method: "KO (Punches)", round: 1, time: "0:42", event: "DWCS Season 8 Week 1 (contract)" },
-    { date: "Oct 21, 2023", opponent: "Valentina Chianese", result: "W", method: "TKO (Punches)", round: 2, time: "2:35", event: "Tezos WNO 22" },
-    { date: "Jun 17, 2023", opponent: "Vanessa Montagna", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Polaris 23" },
-    { date: "Mar 18, 2023", opponent: "Romina Botto", result: "W", method: "TKO (Punches)", round: 1, time: "4:12", event: "Clash Fighting Championship" },
-    { date: "Dec 17, 2022", opponent: "Chiara Penco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MMA Italian Series 3" }
+    { date: "Apr 25, 2026", opponent: "Talita Alencar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
+    { date: "Oct 11, 2025", opponent: "Karolina Kowalkiewicz", result: "W", method: "KO/TKO (Head kick & punches)", round: 3, time: "2:56", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Mar 29, 2025", opponent: "Loopy Godinez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Erceg", org: "UFC" },
+    { date: "Oct 12, 2024", opponent: "Cory McKenna", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Taira", org: "UFC" },
+    { date: "Jun 15, 2024", opponent: "Josefine Knutsson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Perez vs. Taira", org: "UFC" },
+    { date: "Sep 12, 2023", opponent: "Patricia Alujas", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:05", event: "Dana White's Contender Series: Season 7, Week 6", org: "UFC" },
+    { date: "Jan 28, 2023", opponent: "Brenda Gottig", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "4:50", event: "LFA 151: Delano vs. Santos", org: "LFA" },
+    { date: "Nov 4, 2022", opponent: "Bianca Sattelmayer", result: "W", method: "KO/TKO", round: 3, time: "0:51", event: "LFA 146: Barbosa vs. Santos", org: "LFA" },
+    { date: "Jun 24, 2022", opponent: "Kalindra Faria", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Iron Man MMA 24", org: "Iron Man MMA" },
+    { date: "Sep 14, 2021", opponent: "Jasmine Jasudavicius", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 3", org: "UFC" },
+    { date: "Oct 31, 2020", opponent: "Jessica Cunha", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:18", event: "SFT 22: Serafim vs. Mara", org: "SFT" },
+    { date: "Oct 19, 2019", opponent: "Jessica Delboni", result: "W", method: "KO/TKO", round: 2, time: "4:35", event: "Shooto Brazil 97", org: "Shooto" },
+    { date: "May 25, 2019", opponent: "Geisa Veloso", result: "W", method: "KO/TKO", round: 2, time: "1:57", event: "Shooto Brazil 92", org: "Shooto" },
+    { date: "May 5, 2019", opponent: "Daniela Maria da Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MMA Brutus 2", org: "MMA Brutus" },
+    { date: "Dec 9, 2018", opponent: "Marcela Giantomassi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 89", org: "Shooto" },
+    { date: "Oct 6, 2018", opponent: "Beatriz Ferreira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Niteroi Top Fight 7", org: "Niteroi Top Fight" },
+    { date: "May 26, 2018", opponent: "Valesca Machado", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 84", org: "Shooto" },
+    { date: "Mar 3, 2018", opponent: "Vanessa Santos", result: "W", method: "KO/TKO (Punches)", round: 2, time: "3:55", event: "NCE 23: New Corpore Extreme", org: "NCE" },
+    { date: "Oct 21, 2017", opponent: "Nathielly Santos Campahy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NCE 19: New Corpore Extreme", org: "NCE" },
+    { date: "Sep 23, 2017", opponent: "Monique Adriane", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Super Combat Fight 6", org: "SCF" }
   ],
   "Daria Zhelezniakova": [
     { date: "Apr 18, 2026", opponent: "Melissa Croden", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
@@ -31989,6 +32002,13 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Julia Polastri": [
+    { icon: "🏆", title: "Shooto Brazil Women's Strawweight Champion (2019)", detail: null },
+    { icon: "🏆", title: "LFA Women's Strawweight Champion (2023)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (vs. Karolina Kowalkiewicz, 2025)", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2023)", detail: null },
+    { icon: "🥋", title: "Muay Thai black tip — no BJJ belt rank listed (striker)", detail: null },
+  ],
   "Max Griffin": [
     { icon: "🏆", title: "West Coast Fighting Championship 170 & 185 lb Champion", detail: null },
     { icon: "🏆", title: "Tachi Palace Fights Welterweight Champion", detail: null },
