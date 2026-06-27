@@ -4174,7 +4174,7 @@
 
  "Joel Alvarez": { ht:"6'3\"", dob:"1993-03-02", reach:'77"', stance:"Orthodox", slpm:4.53, strAcc:"55%", sapm:3.03, strDef:"54%", kd:0.18, tdLanded:0.18, tdAcc:"33%", tdDef:"46%", subAvg:1.06, finRate:"96%", streak:0, gym:"Centro Deportivo Tíbet" },
  // ── Middleweight (UFC 328 + additional) ──
- "Roman Kopylov": { ht:"6'0\"", dob:"1992-05-04", reach:'75"', stance:"Southpaw", slpm:4.59, tdAcc:"47%", subAvg:0.0, strDef:"52%", kd:0.0, tdDef:"88%", finRate:"N/A", streak:0, tdLanded:1.14, gym:"Ratiborets" },
+ "Roman Kopylov": { ht:"6'0\"", dob:"1992-05-04", reach:'75"', stance:"Southpaw", slpm:4.54, strAcc:"50%", sapm:5.08, strDef:"53%", kd:0.92, tdLanded:1.12, tdAcc:"50%", tdDef:"89%", subAvg:0.00, finRate:"80%", streak:1, gym:"Ratiborets" },
  "Marco Tulio": { ht:"6'0\"", dob:"1994-06-13", reach:'74"', stance:"Orthodox", slpm:6.69, tdAcc:"26%", subAvg:0.3, strDef:"59%", kd:0.0, tdDef:"0%", finRate:"N/A", streak:0, tdLanded:1.42 },
  "Baisangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.5, tdDef:"100%",finRate:"73%", streak:11, tdLanded:2.76 },
   "Julien Leblanc": { ht:"6'2\"", dob:"1992-01-21", reach:'74"', stance:"Southpaw", slpm:1.69, strAcc:"67%", sapm:2.96, strDef:"46%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"80%", streak:0, gym:"Patenaude Martial Arts / Kill Cliff FC" },
@@ -6951,7 +6951,21 @@
     { opponent: "Hacran Dias", odds: -155 },
     { opponent: "Michel Quiñones", odds: -135 }
   ],
-  "Roman Kopylov": [],
+  "Roman Kopylov": [
+    { opponent: "Marco Tulio", odds: 150 },
+    { opponent: "Gregory Rodrigues", odds: 160 },
+    { opponent: "Chris Curtis", odds: -255 },
+    { opponent: "César Almeida", odds: -105 },
+    { opponent: "Anthony Hernandez", odds: 180 },
+    { opponent: "Josh Fremd", odds: -400 },
+    { opponent: "Claudio Ribeiro", odds: -225 },
+    { opponent: "Punahele Soriano", odds: 125 },
+    { opponent: "Alessio Di Chirico", odds: -115 },
+    { opponent: "Albert Duraev", odds: 290 },
+    { opponent: "Karl Roberson", odds: -145 },
+    { opponent: "Abusupyan Alikhanov", odds: -110 },
+    { opponent: "Kobe Ortiz", odds: -750 }
+  ],
   "Marco Tulio": [
     { opponent: "Marco Tulio", odds: 154 }
   ],
@@ -32475,6 +32489,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Roman Kopylov": [
+    { icon: "🏆", title: "Fight Nights Global Middleweight Champion (one title defense)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (×2) — vs. Punahele Soriano & Josh Fremd; Fight of the Night (×1) — vs. Chris Curtis", detail: null },
+    { icon: "🏅", title: "Highest takedown defense percentage in UFC Middleweight history (88.9%)", detail: null },
+    { icon: "🥇", title: "Five-time world champion in hand-to-hand combat sambo; Honored Master of Sports", detail: null }
+  ],
   "Mateusz Rębecki": [
     { icon: "🏆", title: "FEN (Fight Exclusive Night) Lightweight Champion — 7 title defenses", detail: null },
     { icon: "⭐", title: "UFC Fight of the Night (×3) — vs. Myktybek Orolbai, Chris Duncan & Ľudovít Klein", detail: null },
