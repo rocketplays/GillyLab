@@ -31220,6 +31220,7 @@ function fightStatsFor(name, date){
   return null;
 }
 function _fsPct(l,a){ return a>0 ? Math.round(100*l/a) : 0; }
+function _fsSecs(t){ var m=String(t||'').match(/(\d+):(\d+)/); return m ? (+m[1]*60 + +m[2]) : 0; }  // "M:SS" -> seconds (for control-time bar)
 function _fsBar(lv,rv){
   var tot=lv+rv, lp = tot>0 ? Math.round(100*lv/tot) : 50;
   // The accent (green) fill goes on whichever fighter had the edge in this stat;
@@ -31286,9 +31287,9 @@ function openFightStats(name, date){
     + _fsRow('Sig. Strikes', sig(f), sig(o), f.sigL, o.sigL, true)
     + _fsRow('Total Strikes', f.totL+'/'+f.totA, o.totL+'/'+o.totA, f.totL, o.totL, true)
     + _fsRow('Takedowns', f.tdL+'/'+f.tdA, o.tdL+'/'+o.tdA, f.tdL, o.tdL, (f.tdA+o.tdA)>0)
-    + _fsRow('Sub. Att', f.sub, o.sub, f.sub, o.sub, false)
-    + _fsRow('Reversals', f.rev, o.rev, f.rev, o.rev, false)
-    + _fsRow('Control', f.ctrl, o.ctrl, 0, 0, false)
+    + _fsRow('Sub. Att', f.sub, o.sub, f.sub, o.sub, (f.sub+o.sub)>0)
+    + _fsRow('Reversals', f.rev, o.rev, f.rev, o.rev, (f.rev+o.rev)>0)
+    + _fsRow('Control', f.ctrl, o.ctrl, _fsSecs(f.ctrl), _fsSecs(o.ctrl), (_fsSecs(f.ctrl)+_fsSecs(o.ctrl))>0)
     + '<div style="margin-top:0.8rem;margin-bottom:0.15rem;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);">Sig. strikes by target</div>'
     + _fsRow('Head', f.head[0]+'/'+f.head[1], o.head[0]+'/'+o.head[1], f.head[0], o.head[0], true)
     + _fsRow('Body', f.body[0]+'/'+f.body[1], o.body[0]+'/'+o.body[1], f.body[0], o.body[0], true)
