@@ -3288,7 +3288,7 @@
  { name: "Marcin Tybura", division: "HW", rank: "#12", record: "27-11-0", initials: "MTY", country: "Poland" },
  { name: "Ante Delija", division: "HW", rank: "#11", record: "26-8-0", initials: "ADL", country: "Croatia" },
  { name: "Tallison Teixeira", division: "HW", rank: "#11", record: "9-2-0", initials: "TTX", country: "Brazil" },
- { name: "Shamil Gaziev", division: "HW", rank: "#12", record: "14-3-0", initials: "SGZ", country: "Russia" },
+ { name: "Shamil Gaziev", division: "HW", rank: "NR", record: "14-3-0", initials: "SGZ", country: "Russia" },
  { name: "Valter Walker", division: "HW", rank: "#13", record: "15-1-0", initials: "VWA", country: "Brazil" },
  { name: "Vitor Petrino", division: "HW", rank: "NR", record: "14-2-0", initials: "VP", country: "Brazil" },
  { name: "Jon Jones", division: "HW", rank: "NR", record: "28-1-0", initials: "JJ", country: "USA" },
@@ -4142,7 +4142,7 @@
  "Paul Craig": { ht:"6'3\"", dob:"1987-11-27", reach:'76"', stance:"Orthodox", slpm:2.50, tdAcc:"36%", subAvg:1.4, strDef:"43%", kd:0.2, tdDef:"52%", finRate:"59%", streak:0, tdLanded:1.43, gym:"Higher Level Martial Arts" },
 
  // ── Heavyweight (additional) ──
- "Shamil Gaziev": { ht:"6'4\"", dob:"1990-02-10", reach:'78"', stance:"Orthodox", slpm:2.62, tdAcc:"30%", subAvg:0.3, strDef:"45%", kd:0.5, tdDef:"83%", finRate:"79%", streak:3, tdLanded:0.93, gym:"KHK MMA Team" },
+ "Shamil Gaziev": { ht:"6'4\"", dob:"1990-02-10", reach:'78.5"', stance:"Orthodox", slpm:2.62, strAcc:"48%", sapm:3.97, strDef:"45%", kd:0.62, tdLanded:0.93, tdAcc:"33%", tdDef:"83%", subAvg:0.31, finRate:"86%", streak:0, gym:"KHK MMA Team" },
  "Ante Delija": { ht:"6'3\"", dob:"1990-08-07", reach:'78"', stance:"Orthodox", slpm:4.28, strAcc:"38%", sapm:3.95, strDef:"53%", kd:0.71, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"73%", streak:0, gym:"Aspinall BJJ / UFK Gladiator" },
  "Valter Walker": { ht:"6'6\"", dob:"1997-12-14", reach:'78.5"', stance:"Orthodox", slpm:2.00, strAcc:"52%", sapm:2.85, strDef:"43%", kd:0.00, tdLanded:5.74, tdAcc:"69%", tdDef:"0%", subAvg:2.55, finRate:"73%", streak:4, gym:"GOR MMA" },
  "Andrei Arlovski": { ht:"6'3\"", dob:"1979-02-04", reach:'77"', stance:"Orthodox", slpm:3.82, tdAcc:"35%", subAvg:0.2, strDef:"57%", kd:0.2, tdDef:"76%", finRate:"53%", streak:0, tdLanded:0.37, gym:"American Top Team (2017–present)" },
@@ -9034,11 +9034,17 @@
     { opponent: "Montana De La Rosa", odds: 155 }
   ],
   "Shamil Gaziev": [
-    { opponent: "Brando Pericic", odds: -165 },
-    { opponent: "Waldo Cortes-Acosta", odds: 215 },
-    { opponent: "Alexandr Romanov", odds: -300 },
-    { opponent: "Jairzinho Rozenstruik", odds: -170 },
-    { opponent: "Martin Buday", odds: -600 }
+    { opponent: "Brando Pericic", odds: -105 },
+    { opponent: "Waldo Cortes-Acosta", odds: 130 },
+    { opponent: "Thomas Petersen", odds: -350 },
+    { opponent: "Don'Tale Mayes", odds: -275 },
+    { opponent: "Jairzinho Rozenstruik", odds: -190 },
+    { opponent: "Martin Buday", odds: 105 },
+    { opponent: "Greg Velasco", odds: -475 },
+    { opponent: "Darko Stosic", odds: -150 },
+    { opponent: "Pavel Dailidko", odds: -685 },
+    { opponent: "Kirill Kornilov", odds: 185 },
+    { opponent: "Grigoriy Ponomarev", odds: 165 }
   ],
   "Tallison Teixeira": [
     { opponent: "Tai Tuivasa", odds: -175 },
@@ -19457,7 +19463,7 @@ const FIGHT_HISTORY = {
     { date: "Jun 25, 2022", opponent: "Kirill Kornilov", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Ares 7" },
     { date: "Mar 27, 2022", opponent: "Aleksandr Kolomytsev", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:13", event: "ProFC 70" },
     { date: "Sep 24, 2021", opponent: "Grigoriy Ponomarev", result: "W", method: "TKO (Knees and punches)", round: 1, time: "2:56", event: "AMC Fight Nights 104" },
-    { date: "Jul 29, 2021", opponent: "Murad Adyrbaev", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:59", event: "Belarusian FC: Contender Series 7", org: "UFC" },
+    { date: "Jul 29, 2021", opponent: "Murad Adyrbaev", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:59", event: "Belarusian FC: Contender Series 7" },
     { date: "Apr 3, 2021", opponent: "Alexey Druzhinin", result: "W", method: "TKO (Punches)", round: 1, time: "0:33", event: "MMA Series 29" },
     { date: "Feb 27, 2021", opponent: "Vladislav Kozlovskiy", result: "W", method: "TKO (Punches)", round: 1, time: "0:35", event: "Belarusian FC 66" },
     { date: "Dec 12, 2020", opponent: "Artur Bunkov", result: "W", method: "TKO (Punches)", round: 1, time: "0:20", event: "MMA Series 22" },
@@ -35394,10 +35400,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "4th-latest submission finish in UFC LHW history (R3 4:49 vs. Da Woon Jung)", detail: null },
   ],
   "Shamil Gaziev": [
-    { icon: "🥉", title: "IMMAF Senior World Championships — 2019 Manama — -120.2 kg", detail: null },
-    { icon: "🥇", title: "IMMAF European Open Championships — 2019 Rome — -120.2 kg", detail: null },
-    { icon: "🥇", title: "IMMAF Asian Open Championships — 2019 Bangkok — -120.2 kg", detail: null },
-    { icon: "🥇", title: "IMMAF African Open Championships — 2019 Johannesburg — -120.2 kg", detail: null },
+    { icon: "🏆", title: "Fight Nights Global Super Heavyweight Grand Prix champion", detail: null },
+    { icon: "🥇", title: "IMMAF European Open Championship — Heavyweight gold (2019, Rome)", detail: null },
+    { icon: "🥇", title: "IMMAF Asian Open Championship — Heavyweight gold (2019, Bangkok)", detail: null },
+    { icon: "🥇", title: "IMMAF African Open Championship — Heavyweight gold (2019, Johannesburg)", detail: null },
+    { icon: "🥉", title: "IMMAF Senior World Championships — Heavyweight bronze (2019, Manama)", detail: null },
+    { icon: "🤼", title: "Grappling-based heavyweight (3 RNC submissions); trained under Abdulmanap Nurmagomedov — no BJJ belt rank publicly listed", detail: null },
   ],
   "Jon Jones": [
     { icon: "🥇", title: "NJCAA Championships — 2006 Rochester — 197 lb", detail: null },
