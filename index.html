@@ -3777,6 +3777,7 @@
  { name: "Cam Rowston", division: "MW", rank: "NR", record: "15-3-0", initials: "CR", country: "Australia" },
  { name: "Robert Bryczek", division: "MW", rank: "NR", record: "18-7-0", initials: "RB", country: "Poland" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
+ { name: "Georges St-Pierre", division: "WW", rank: "NR", record: "26-2-0", initials: "GSP", country: "Canada" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
  { name: "Charles Radtke", division: "WW", rank: "NR", record: "12-5-0", initials: "CR", country: "USA" },
@@ -3962,6 +3963,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Georges St-Pierre": { ht:"5'11\"", dob:"1981-05-19", reach:'76"', stance:"Orthodox", slpm:3.83, strAcc:"53%", sapm:1.45, strDef:"68%", kd:0.39, tdLanded:3.94, tdAcc:"74%", tdDef:"82%", subAvg:1.05, finRate:"54%", streak:13, gym:"TriStar Gym" },
   "Robert Bryczek": { ht:"6'0\"", dob:"1990-07-04", reach:'75"', stance:"Orthodox", slpm:3.74, strAcc:"37%", sapm:4.08, strDef:"60%", kd:0.56, tdLanded:0.56, tdAcc:"100%", tdDef:"86%", subAvg:0.00, finRate:"72%", streak:0, gym:"Uniq Fight Club" },
   "Cam Rowston": { ht:"6'3\"", dob:"1995-01-19", reach:'78"', stance:"Orthodox", slpm:4.26, strAcc:"47%", sapm:2.62, strDef:"52%", kd:1.51, tdLanded:0.50, tdAcc:"44%", tdDef:"33%", subAvg:0.50, finRate:"87%", streak:7, gym:"City Kickboxing" },
   "Ollie Schmid": { ht:"5'11\"", dob:"2000-12-28", reach:'71"', stance:"Orthodox", slpm:3.23, strAcc:"30%", sapm:7.90, strDef:"45%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"75%", streak:0, gym:"City Kickboxing" },
@@ -14314,6 +14316,36 @@
 };
 
 const FIGHT_HISTORY = {
+  "Georges St-Pierre": [
+    { date: "Nov 4, 2017", opponent: "Michael Bisping", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "4:23", event: "UFC 217: Bisping vs. St-Pierre", org: "UFC" },
+    { date: "Nov 16, 2013", opponent: "Johny Hendricks", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "UFC 167: St-Pierre vs. Hendricks", org: "UFC" },
+    { date: "Mar 16, 2013", opponent: "Nick Diaz", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 158: St-Pierre vs. Diaz", org: "UFC" },
+    { date: "Nov 17, 2012", opponent: "Carlos Condit", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 154: St-Pierre vs. Condit", org: "UFC" },
+    { date: "Apr 30, 2011", opponent: "Jake Shields", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 129: St-Pierre vs. Shields", org: "UFC" },
+    { date: "Dec 11, 2010", opponent: "Josh Koscheck", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 124: St-Pierre vs. Koscheck 2", org: "UFC" },
+    { date: "Mar 27, 2010", opponent: "Dan Hardy", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 111: St-Pierre vs. Hardy", org: "UFC" },
+    { date: "Jul 11, 2009", opponent: "Thiago Alves", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 100: Lesnar vs. Mir 2", org: "UFC" },
+    { date: "Jan 31, 2009", opponent: "BJ Penn", result: "W", method: "TKO (Corner stoppage)", round: 4, time: "5:00", event: "UFC 94: St-Pierre vs. Penn 2", org: "UFC" },
+    { date: "Aug 9, 2008", opponent: "Jon Fitch", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 87: Seek and Destroy", org: "UFC" },
+    { date: "Apr 19, 2008", opponent: "Matt Serra", result: "W", method: "TKO (Knees to the body)", round: 2, time: "4:45", event: "UFC 83: Serra vs. St-Pierre 2", org: "UFC" },
+    { date: "Dec 29, 2007", opponent: "Matt Hughes", result: "W", method: "Submission (Armbar)", round: 2, time: "4:54", event: "UFC 79: Nemesis", org: "UFC" },
+    { date: "Aug 25, 2007", opponent: "Josh Koscheck", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 74: Respect", org: "UFC" },
+    { date: "Apr 7, 2007", opponent: "Matt Serra", result: "L", method: "TKO (Punches)", round: 1, time: "3:25", event: "UFC 69: Shootout", org: "UFC" },
+    { date: "Nov 18, 2006", opponent: "Matt Hughes", result: "W", method: "KO (Head kick and punches)", round: 2, time: "1:25", event: "UFC 65: Bad Intentions", org: "UFC" },
+    { date: "Mar 4, 2006", opponent: "BJ Penn", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 58: USA vs. Canada", org: "UFC" },
+    { date: "Nov 19, 2005", opponent: "Sean Sherk", result: "W", method: "TKO (Punches)", round: 2, time: "2:53", event: "UFC 56: Full Force", org: "UFC" },
+    { date: "Aug 20, 2005", opponent: "Frank Trigg", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:09", event: "UFC 54: Boiling Point", org: "UFC" },
+    { date: "Apr 16, 2005", opponent: "Jason Miller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 52: Couture vs. Liddell 2", org: "UFC" },
+    { date: "Jan 29, 2005", opponent: "Dave Strasser", result: "W", method: "Submission (Kimura)", round: 1, time: "1:52", event: "TKO 19: Rage" },
+    { date: "Oct 22, 2004", opponent: "Matt Hughes", result: "L", method: "Submission (Armbar)", round: 1, time: "4:59", event: "UFC 50: The War of '04", org: "UFC" },
+    { date: "Jun 19, 2004", opponent: "Jay Hieron", result: "W", method: "TKO (Punches)", round: 1, time: "1:42", event: "UFC 48: Payback", org: "UFC" },
+    { date: "Jan 31, 2004", opponent: "Karo Parisyan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 46: Supernatural", org: "UFC" },
+    { date: "Nov 29, 2003", opponent: "Pete Spratt", result: "W", method: "Submission (Strikes)", round: 1, time: "3:40", event: "TKO 14: Road Warriors" },
+    { date: "Jan 25, 2003", opponent: "Thomas Denny", result: "W", method: "TKO (Punches)", round: 2, time: "4:45", event: "UCC 12: Adrenaline" },
+    { date: "Oct 11, 2002", opponent: "Travis Galbraith", result: "W", method: "TKO (Punches)", round: 1, time: "2:03", event: "UCC 11: The Next Level" },
+    { date: "Jun 15, 2002", opponent: "Justin Bruckmann", result: "W", method: "Submission (Armbar)", round: 1, time: "3:23", event: "UCC 10" },
+    { date: "Jan 25, 2002", opponent: "Ivan Menjivar", result: "W", method: "TKO (Punches)", round: 1, time: "4:50", event: "UCC 7: Bad Boyz" }
+  ],
   "Robert Bryczek": [
     { date: "May 2, 2026", opponent: "Cam Rowston", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Sep 6, 2025", opponent: "Brad Tavares", result: "W", method: "TKO (Punches)", round: 3, time: "1:43", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
