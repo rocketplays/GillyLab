@@ -3184,6 +3184,7 @@
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
+ { name: "Dom Mar Fan", division: "LW", rank: "NR", record: "9-3-0", initials: "DMF", country: "Australia" },
  { name: "Justin Gaethje", division: "LW", rank: "#IC", record: "27-5-0", initials: "JG", country: "USA" },
  { name: "Arman Tsarukyan", division: "LW", rank: "#2", record: "23-3-0", initials: "AT", country: "Armenia" },
  { name: "Charles Oliveira", division: "LW", rank: "#3", record: "37-11-0", initials: "CO", country: "Brazil" },
@@ -3969,6 +3970,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Dom Mar Fan": { ht:"5'11\"", dob:"2000-03-19", reach:'75"', stance:"Orthodox", slpm:3.43, strAcc:"56%", sapm:2.31, strDef:"44%", kd:0.00, tdLanded:1.84, tdAcc:"25%", tdDef:"63%", subAvg:0.31, finRate:"44%", streak:0, gym:"Team Compton Training Centre" },
   "Kody Steele": { ht:"5'9\"", dob:"1995-04-21", reach:'71"', stance:"Orthodox", slpm:3.85, strAcc:"33%", sapm:6.20, strDef:"52%", kd:0.53, tdLanded:1.07, tdAcc:"25%", tdDef:"100%", subAvg:0.53, finRate:"75%", streak:1, gym:"Syndicate MMA" },
   "Ben Johnston": { ht:"6'4\"", dob:"1990-10-11", reach:'75"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:0, gym:"The Fight Centre" },
   "Wes Schultz": { ht:"6'2\"", dob:"1996-08-09", reach:'77"', stance:"Orthodox", slpm:2.91, strAcc:"47%", sapm:3.11, strDef:"43%", kd:1.20, tdLanded:2.39, tdAcc:"21%", tdDef:null, subAvg:3.59, finRate:"89%", streak:1, gym:"Pura Vida BJJ & MMA" },
@@ -6355,6 +6357,12 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Dom Mar Fan": [
+    { opponent: "Kody Steele", odds: 185 },
+    { opponent: "Sangwook Kim", odds: -155 },
+    { opponent: "Jae Hyun Park", odds: -105 },
+    { opponent: "Yuji Yannick Ephoeviga", odds: 450 }
+  ],
   "Kody Steele": [
     { opponent: "Dom Mar Fan", odds: -225 },
     { opponent: "Rongzhu", odds: -340 },
@@ -14411,6 +14419,20 @@
 };
 
 const FIGHT_HISTORY = {
+  "Dom Mar Fan": [
+    { date: "May 2, 2026", opponent: "Kody Steele", result: "L", method: "Submission (Heel hook)", round: 1, time: "3:56", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Feb 1, 2026", opponent: "Sangwook Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325", org: "UFC" },
+    { date: "Aug 22, 2025", opponent: "Jae Hyun Park", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 4 (Final)" },
+    { date: "May 23, 2025", opponent: "Yuji Yannick Ephoeviga", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 4 (Semifinal)" },
+    { date: "Nov 30, 2024", opponent: "Tom Pratt", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:20", event: "Eternal MMA 91" },
+    { date: "Jun 22, 2024", opponent: "Tim Rogers", result: "W", method: "TKO (Punches)", round: 2, time: "2:06", event: "Eternal MMA 86" },
+    { date: "Feb 10, 2024", opponent: "Quillan Salkilld", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:03", event: "Eternal MMA 82" },
+    { date: "Nov 4, 2023", opponent: "Michael Stanoff", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:36", event: "Eternal MMA 81" },
+    { date: "Sep 23, 2023", opponent: "James O'Brien", result: "W", method: "Submission (Guillotine)", round: 1, time: "4:40", event: "Eternal MMA 79" },
+    { date: "Jul 1, 2023", opponent: "Jordan Thomas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 77" },
+    { date: "Aug 20, 2022", opponent: "Quillan Salkilld", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "2:23", event: "Eternal MMA 68" },
+    { date: "May 7, 2022", opponent: "Roy Armistead", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 65" }
+  ],
   "Kody Steele": [
     { date: "May 2, 2026", opponent: "Dom Mar Fan", result: "W", method: "Submission (Heel hook)", round: 1, time: "3:56", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Feb 8, 2025", opponent: "Rongzhu", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
@@ -32325,6 +32347,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Dom Mar Fan": [
+    { icon: "🏆", title: "Road to UFC Season 4 Lightweight Tournament Champion (earned UFC contract)", detail: null },
+    { icon: "🥇", title: "Pan-Pacific BJJ Gold Medalist", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt (under Steve Compton)", detail: null },
+    { icon: "🥊", title: "Former amateur MMA champion", detail: null }
+  ],
   "Kody Steele": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — body-shot TKO of Chasen Blair)", detail: null },
     { icon: "🥇", title: "Combat Jiu-Jitsu World Champion", detail: null },
