@@ -3527,7 +3527,7 @@
  { name: "Bryce Mitchell", division: "BW", rank: "NR", record: "19-3-0", initials: "BYM", country: "USA" },
  { name: "Bekzat Almakhan", division: "BW", rank: "NR", record: "12-3-0", initials: "BAL3", country: "Kazakhstan" },
  { name: "Cameron Smotherman", division: "BW", rank: "NR", record: "11-8-0", initials: "CSM", country: "USA" },
- { name: "Malcolm Wellmaker", division: "BW", rank: "NR", record: "8-2-0", initials: "MWE", country: "USA" },
+ { name: "Malcolm Wellmaker", division: "BW", rank: "NR", record: "10-2-0", initials: "MWE", country: "USA" },
  { name: "Gaston Bolanos", division: "BW", rank: "NR", record: "9-5-0", initials: "GBO", country: "Peru" },
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
@@ -4631,7 +4631,7 @@
  "Cameron Smotherman": { ht:"5'9\"", dob:"1997-09-17", reach:'69"', stance:"Orthodox", slpm:4.07, tdAcc:"0%", subAvg:0.0, strDef:"58%", kd:0.3, tdDef:"71%", finRate:"67%", streak:0, tdLanded:0.00 },
  "Jakub Wiklacz": { ht:"5'10\"", dob:"1996-09-10", reach:'72"', stance:"Orthodox", slpm:3.40, tdAcc:"0%", subAvg:0.5, strDef:"46%", kd:0.2, tdDef:"41%", finRate:"50%", streak:0, tdLanded:0.00 },
  "Cody Chovancek": { ht:"5'8\"", dob:"1998-07-24", reach:'67"', stance:"Switch", slpm:2.85, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.2, tdDef:"80%", finRate:"56%", streak:0, tdLanded:0.00 },
- "Malcolm Wellmaker": { ht:"5'10\"", dob:"1994-06-04", reach:'71"', stance:"Switch", slpm:5.80, tdAcc:"0%", subAvg:0.0, strDef:"52%", kd:0.4, tdDef:"75%", finRate:"78%", streak:0, tdLanded:0.00 },
+ "Malcolm Wellmaker": { ht:"5'10\"", dob:"1994-06-04", reach:'71"', stance:"Switch", slpm:4.58, strAcc:"55%", sapm:4.23, strDef:"52%", kd:1.44, tdLanded:0.00, tdAcc:"0%", tdDef:"47%", subAvg:0.00, finRate:"80%", streak:0, gym:"Faglier's MMA" },
  "Gaston Bolanos": { ht:"5'7\"", dob:"1992-09-14", reach:'69"', stance:"Orthodox", slpm:3.91, strAcc:"48%", sapm:3.54, strDef:"55%", kd:0.00, tdLanded:0.75, tdAcc:"75%", tdDef:"50%", subAvg:0.00, finRate:"67%", streak:1, gym:"Combat Sports Academy" },
  "Mark Vologdin": { ht:"5'3\"", dob:"2000-04-18", reach:'65"', stance:"Orthodox", slpm:7.80, strAcc:"52%", sapm:11.00, strDef:"35%", kd:0.0, tdLanded:0.0, tdAcc:"14%", tdDef:"57%", subAvg:0.0, finRate:"83%", streak:0, gym:"Allstars Training Center" },
  "Josias Musasa": { ht:"5'8\"", dob:"", reach:'74"', stance:"Orthodox", slpm:3.19, strAcc:"45%", sapm:4.39, strDef:"36%", kd:0.0, tdLanded:0.90, tdAcc:"50%", tdDef:"81%", subAvg:0.45, finRate:"88%", streak:0, gym:"Elite Training Center" },
@@ -9991,8 +9991,11 @@
     { opponent: "Daniel Barez", odds: -450 }
   ],
   "Malcolm Wellmaker": [
-    { opponent: "Juan Díaz", odds: -225 },
-    { opponent: "Juan Diaz", odds: 265 }
+    { opponent: "Juan Diaz", odds: -245 },
+    { opponent: "Ethyn Ewing", odds: -455 },
+    { opponent: "Kris Moutinho", odds: -1825 },
+    { opponent: "Cameron Saaiman", odds: -126 },
+    { opponent: "Adam Bramhald", odds: -285 }
   ],
   "Gaston Bolanos": [
     { opponent: "Michael Aswell Jr.", odds: 315 },
@@ -21440,16 +21443,18 @@ const FIGHT_HISTORY = {
     { date: "Feb 18, 2017", opponent: "Abner Perez", result: "W", method: "TKO (Punches)", round: 1, time: "4:53", event: "Bellator 172: Thomson vs. Pitbull", org: "Bellator" },
   ],
   "Malcolm Wellmaker": [
-    { date: "May 16, 2026", opponent: "Juan Diaz", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:08", event: "UFC Fight Night: Allen vs. Costa (debut)" },
-    { date: "Oct 12, 2024", opponent: "Mario Bautista", result: "L", method: "TKO (Punches)", round: 1, time: "0:25", event: "LFA 195" },
-    { date: "Jul 20, 2024", opponent: "Johnny Munoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 190" },
-    { date: "Mar 2, 2024", opponent: "Cody Haddon", result: "W", method: "TKO (Punches)", round: 2, time: "2:34", event: "LFA 182" },
-    { date: "Nov 18, 2023", opponent: "Isaac Wanzeler", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 175" },
-    { date: "Aug 19, 2023", opponent: "Cody Haddon", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 169" },
-    { date: "Apr 15, 2023", opponent: "Logan Urban", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:18", event: "LFA 158" },
-    { date: "Dec 17, 2022", opponent: "Jarred Mercado", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 148" },
-    { date: "Aug 27, 2022", opponent: "Josh Parisian", result: "L", method: "KO (Punches)", round: 1, time: "0:38", event: "LFA 142" },
-    { date: "Jun 11, 2022", opponent: "Isaac Wanzeler", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 136" }
+    { date: "May 16, 2026", opponent: "Juan Diaz", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:08", event: "UFC Fight Night: Allen vs. Costa" },
+    { date: "Nov 15, 2025", opponent: "Ethyn Ewing", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 322: Della Maddalena vs. Makhachev" },
+    { date: "Jun 14, 2025", opponent: "Kris Moutinho", result: "W", method: "KO (Punch)", round: 1, time: "2:37", event: "UFC Fight Night: Usman vs. Buckley" },
+    { date: "Apr 26, 2025", opponent: "Cameron Saaiman", result: "W", method: "KO (Punch)", round: 1, time: "1:59", event: "UFC Fight Night: Machado Garry vs. Prates (UFC debut)" },
+    { date: "Aug 27, 2024", opponent: "Adam Bramhald", result: "W", method: "KO (Punch)", round: 1, time: "2:29", event: "Dana White's Contender Series S8 W3 (contract)" },
+    { date: "Jan 20, 2024", opponent: "Chase Boutwell", result: "W", method: "TKO", round: 2, time: "4:06", event: "NFC 161" },
+    { date: "Oct 14, 2023", opponent: "Taylor Moore", result: "W", method: "Decision (Majority)", round: 5, time: "5:00", event: "Conflict MMA 59" },
+    { date: "Jun 24, 2023", opponent: "Justin Hughes", result: "W", method: "TKO (Punches)", round: 1, time: "2:27", event: "Conflict MMA 58" },
+    { date: "May 5, 2023", opponent: "Zakariya Camara", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "B2 Fighting Series 181" },
+    { date: "Oct 14, 2022", opponent: "Christopher Wingate", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:18", event: "iKON FC 5" },
+    { date: "Aug 5, 2022", opponent: "Langston Sykes", result: "W", method: "KO (Punch)", round: 1, time: "3:13", event: "iKON FC 4" },
+    { date: "Jun 18, 2022", opponent: "Austin Carter", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:30", event: "Conflict MMA 52 (pro debut)" }
   ],
   "Juan Diaz": [
     { date: "May 16, 2026", opponent: "Malcolm Wellmaker", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:08", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
@@ -32549,6 +32554,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Malcolm Wellmaker": [
+    { icon: "⭐", title: "UFC Performance of the Night (2×) — vs. Cameron Saaiman & Kris Moutinho", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — R1 KO of 13-2 Adam Bramhald)", detail: null },
+    { icon: "🥊", title: "\"The Machine\" — 80% finish rate (6 KO/TKO, 2 submissions in 10 wins); one-punch KO power at 135", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu blue belt", detail: null }
+  ],
   "Juan Diaz": [
     { icon: "🏆", title: "Lux Fight League Bantamweight Champion (won the title and defended it)", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025 — spinning back elbow KO of Kwon Won Il)", detail: null },
