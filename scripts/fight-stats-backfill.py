@@ -149,6 +149,12 @@ def backfill_one(name, override=None, namecache=None):
             continue
         evref = it.get("event", {}).get("$ref", "")
         cref = it.get("competition", {}).get("$ref", "")
+        # Only UFC: ESPN flags RIZIN/regional bouts as boxscoreAvailable but
+        # returns all-zero stats for them. The event $ref encodes the real
+        # league (.../leagues/<slug>/events/...), so filter on it (no extra fetch).
+        league = re.search(r"/leagues/([a-z0-9-]+)/", evref) or re.search(r"/leagues/([a-z0-9-]+)/", cref)
+        if not league or league.group(1) != "ufc":
+            continue
         ev = re.search(r"/events/(\d+)", evref)
         co = re.search(r"/competitions/(\d+)", cref)
         if not (ev and co):
@@ -184,6 +190,9 @@ def backfill_one(name, override=None, namecache=None):
                 opp = rec
         if not (me and opp):
             continue
+        if (me["stats"]["totA"] + opp["stats"]["totA"]
+                + me["stats"]["sigA"] + opp["stats"]["sigA"]) == 0:
+            continue  # flagged available but no real data — don't tag an empty stat sheet
         out.append({
             "date": date_label,
             "opponent": opp["name"],
