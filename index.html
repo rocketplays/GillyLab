@@ -3822,7 +3822,7 @@
 ,
   { name: "Santiago Luna", division: "BW", rank: "NR", record: "8-1-0", initials: "SL", country: "Mexico" }
 ,
-  { name: "John Yannis", division: "BW", rank: "NR", record: "8-4-0", initials: "JY", country: "USA" },
+  { name: "John Yannis", division: "BW", rank: "NR", record: "10-4-0", initials: "JY", country: "USA" },
   { name: "Josias Musasa", division: "BW", rank: "NR", record: "8-2-0", initials: "JMU", country: "DR Congo" },
   { name: "Chelsea Chandler", division: "WBW", rank: "NR", record: "7-4-0", initials: "CC2", country: "USA" }
 ,
@@ -4799,7 +4799,7 @@
   "Mateusz Rębecki": { ht:"5'11\"", dob:"1994-05-10", reach:'74"', stance:"Southpaw", slpm:5.8, tdAcc:"42%", subAvg:0.2, strDef:"55%", kd:0.8, tdDef:"82%", finRate:"53%", streak:0, tdLanded:1.4, gym:"American Top Team" },
   "Shuai Yin": { ht:"5'6\"", dob:"1999-09-12", reach:'68"', stance:"Orthodox", slpm:2.8, tdAcc:"38%", subAvg:0.3, strDef:"50%", kd:0.2, tdDef:"70%", finRate:"38%", streak:0, tdLanded:1.8 },
   "Santiago Luna": { ht:"5'9\"", dob:"2004-08-06", reach:'74"', stance:"Orthodox", slpm:4.74, strAcc:"53%", sapm:2.76, strDef:"68%", kd:0.92, tdLanded:2.30, tdAcc:"71%", tdDef:"57%", subAvg:0.92, finRate:"88%", streak:0, gym:"Entram Gym" },
-  "John Yannis": { ht:"5'7\"", dob:"1994-08-17", reach:'68"', stance:"Southpaw", slpm:4.2, tdAcc:"38%", subAvg:0.3, strDef:"57%", kd:0.4, tdDef:"80%", finRate:"50%", streak:2, tdLanded:1.8 },
+  "John Yannis": { ht:"5'7\"", dob:"1994-07-07", reach:'70.5"', stance:"Southpaw", slpm:3.30, strAcc:"54%", sapm:1.26, strDef:"74%", kd:2.36, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.0, finRate:"60%", streak:1, gym:"Xtreme Plainview" },
   "Chelsea Chandler": { ht:"5'4\"", dob:"1995-06-09", reach:'64"', stance:"Orthodox", slpm:3.4, tdAcc:"42%", subAvg:0.7, strDef:"54%", kd:0.1, tdDef:"72%", finRate:"57%", streak:1, tdLanded:2.4, gym:"Cesar Gracie Jiu-Jitsu" },
   "Yuneisy Duben": { ht:"5'4\"", dob:"1998-05-14", reach:'64"', stance:"Southpaw", slpm:4.1, tdAcc:"50%", subAvg:0.0, strDef:"48%", kd:0.3, tdDef:"80%", finRate:"50%", streak:0, tdLanded:0.2 },
   "Ariane Carnelossi": { ht:"5'1\"", dob:"1995-10-20", reach:'62"', stance:"Orthodox", slpm:5.2, tdAcc:"20%", subAvg:0.0, strDef:"48%", kd:1.1, tdDef:"80%", finRate:"57%", streak:0, tdLanded:0.4, gym:"Inside Muay Thai" },
@@ -9863,8 +9863,16 @@
     { opponent: "Karina Rodriguez", odds: -400 }
   ],
   "John Yannis": [
-    { opponent: "Jamie Siraj", odds: 210 },
-    
+    { opponent: "Jamie Siraj", odds: 195 },
+    { opponent: "Austin Bashi", odds: 615 },
+    { opponent: "Dimas Chapa", odds: -163 },
+    { opponent: "Eduardo Alvarado", odds: -200 },
+    { opponent: "Mo Miller", odds: 175 },
+    { opponent: "Casey Jones", odds: -185 },
+    { opponent: "Thiago Macedo", odds: -290 },
+    { opponent: "Cameron Smotherman", odds: -142 },
+    { opponent: "Gabriel Echavarry", odds: 122 },
+    { opponent: "Eddie Torres", odds: 137 }
   ],
   "Rodrigo Vera": [
     { opponent: "Zhu Kangjie", odds: -112 },
@@ -21123,15 +21131,20 @@ const FIGHT_HISTORY = {
     { date: "Dec 3, 2022", opponent: "Sofia Torres", result: "W", method: "Submission (Armbar)", round: 2, time: "1:38", event: "MMA Venezuela 4 (debut)" }
   ],
   "John Yannis": [
-    { date: "Jun 6, 2026", opponent: "Marcus McGhee", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night 278: Muhammad vs. Bonfim" },
-    { date: "Feb 22, 2025", opponent: "Romain Pascaud", result: "W", method: "TKO (Punches)", round: 2, time: "1:44", event: "Cage Warriors 180 (CW BW Title)" },
-    { date: "Nov 9, 2024", opponent: "Gary Shercliff", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 177" },
-    { date: "Jun 22, 2024", opponent: "Luke Shanks", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:12", event: "Cage Warriors 172" },
-    { date: "Feb 3, 2024", opponent: "Dimitar Kostov", result: "W", method: "KO (Punches)", round: 1, time: "0:58", event: "Cage Warriors 168" },
-    { date: "Sep 23, 2023", opponent: "Paul Byrne", result: "W", method: "Submission (Triangle choke)", round: 2, time: "4:22", event: "Cage Warriors 165" },
-    { date: "Jun 10, 2023", opponent: "Connor Sheridan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 162" },
-    { date: "Feb 18, 2023", opponent: "Jordan Sheridan", result: "W", method: "KO (Punches)", round: 1, time: "0:37", event: "Cage Warriors 158" },
-    { date: "Nov 5, 2022", opponent: "Hayden Herbert", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 154 (debut)" }
+    { date: "Apr 18, 2026", opponent: "Jamie Siraj", result: "W", method: "TKO (Punches)", round: 1, time: "2:43", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
+    { date: "Aug 2, 2025", opponent: "Austin Bashi", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:39", event: "UFC Fight Night: Taira vs. Park", org: "UFC" },
+    { date: "May 25, 2025", opponent: "Nick Aguirre", result: "W", method: "TKO (Punches)", round: 4, time: "3:08", event: "Fury FC 104" },
+    { date: "Dec 15, 2024", opponent: "Carlos Jimenez", result: "W", method: "TKO (Punches)", round: 2, time: "0:09", event: "Fury FC 99" },
+    { date: "Sep 22, 2024", opponent: "Dimas Chapa", result: "W", method: "TKO (Punches)", round: 2, time: "1:59", event: "Fury FC 96" },
+    { date: "Mar 10, 2024", opponent: "Gabriel Wanderley", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:26", event: "Fury FC 87" },
+    { date: "Oct 22, 2023", opponent: "Eduardo Alvarado", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury Challenger Series 8" },
+    { date: "Jul 16, 2023", opponent: "Mo Miller", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 81" },
+    { date: "Mar 24, 2023", opponent: "Casey Jones", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 76" },
+    { date: "Jan 29, 2023", opponent: "Thiago Macedo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 73" },
+    { date: "Jun 5, 2022", opponent: "Cameron Smotherman", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 64" },
+    { date: "Feb 11, 2022", opponent: "Gabriel Echavarry", result: "W", method: "TKO (Punches)", round: 2, time: "3:48", event: "Fury FC 57" },
+    { date: "Aug 29, 2021", opponent: "Eddie Torres", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 49" },
+    { date: "Jan 30, 2021", opponent: "Nico Kambasis", result: "W", method: "TKO (Punches)", round: 3, time: "4:16", event: "Peak Fighting 7" }
   ],
   "Rodrigo Vera": [
     { date: "May 30, 2026", opponent: "Zhu Kangjie", result: "W", method: "TKO (Punches)", round: 1, time: "2:14", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
@@ -31751,6 +31764,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "John Yannis": [
+    { icon: "🏆", title: "Fury FC Bantamweight Champion", detail: "def. Nick Aguirre by 4th-round TKO" },
+    { icon: "🏅", title: "Fury FC 2022 Fight of the Year", detail: "vs. Cameron Smotherman" },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
   "Jamey-Lyn Horth": [
     { icon: "🏆", title: "LFA Women's Flyweight Champion (2021)", detail: "def. Mayra Cantuária by submission" },
     { icon: "🏆", title: "BFL Women's Flyweight Champion (2020)", detail: null },
