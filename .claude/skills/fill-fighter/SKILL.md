@@ -5,9 +5,20 @@ description: Fill or verify one fighter's GillyLab profile (stats, odds history,
 
 # Fill one fighter's GillyLab profile
 
-Work ONE fighter at a time. Target state: full FIGHTER_STATS entry (with strAcc + sapm),
-complete & corrected ODDS_HISTORY, verified FIGHT_HISTORY, and a real ACCOLADES list.
-Commit when the fighter is done. All four structures live in `index.html` and are keyed
+Work ONE fighter at a time. The job is to VERIFY AND CORRECT every field against live
+sources — not just fill blanks. Existing values are frequently stale or fabricated, so
+treat each one as unverified until a source confirms it. The fighter is done only when
+ALL of the following are independently checked and corrected:
+
+- **all bio info** — height, DOB, reach, stance, and the **gym** they currently train at
+- **all statistics** — slpm, **striking accuracy (strAcc)**, **strikes absorbed/min (sapm)**,
+  strDef, kd, tdLanded, tdAcc, tdDef, subAvg, finRate, streak (no stat left stale)
+- **full FIGHT_HISTORY** — every bout, corroborated, with the derived record matching the roster
+- **full closing-line ODDS_HISTORY** — one entry per real fight, built from BFO **closing** lines
+- **all ACCOLADES** — titles, bonuses, records, backgrounds, and any **BJJ/grappling belt rank**
+  (check ufc.com's Q&A if you can't find the belt elsewhere)
+
+Commit when the fighter is done. All four data structures live in `index.html` and are keyed
 by the fighter's exact name as it appears in the FIGHTERS array.
 
 ## Step 1 — gather data (one command)
@@ -23,6 +34,11 @@ This prints, compactly:
   (UFCStats.com is bot-blocked — don't try it). A field captured as `0`/`0.00` is a
   **genuine zero**; a field listed under `MISSING on ufc.com (blank, NOT a 0)` was left
   blank on the page and must be chased on another source — never copy a blank as 0.
+  This is the primary source for **strAcc, sapm**, slpm, strDef, kd, tdLanded, subAvg,
+  tdDef — verify each against it. The section also surfaces the **gym**, the fighter's
+  **fighting style**, and any **grappling belt rank** found in the page's bio + Q&A blocks
+  (a `belt rank / 'belt' mentions (ufc.com Q&A ...)` line) — this Q&A is often the only
+  place a BJJ/judo belt is stated, so use it for a 🥋 accolade.
   **Do NOT trust ufc.com's `tdAcc`** — it systematically under-counts takedowns *landed*
   and prints bogus low percentages (often 0–2%). Take tdAcc from [ESPN] instead (below).
 - **[ESPN]** bio fields (stance, height, reach, DOB, gym) pulled from ESPN's core API,
@@ -39,6 +55,15 @@ This prints, compactly:
   event date. Trust this raw table; do NOT WebFetch BFO pages (the summarizer flips
   fighter/opponent rows).
 
+The ESPN section also **downloads the fighter's headshot to `photos/<slug>.png`** (the
+slug is computed with the same rules as index.html's `nameToSlug`, so the profile page
+finds it automatically). The `photo:` line in the [ESPN] section reports the result —
+`saved photos/<slug>.png (N bytes)`, `kept existing ...` (a curated photo was already
+there; pass `--force-photo` to replace it), or a note that ESPN had no headshot. If ESPN
+matched the wrong athlete the photo is wrong too — rerun with `--espn-id <number>` (add
+`--force-photo` to overwrite the bad image). Commit the new `photos/<slug>.png` alongside
+index.html. Use `--no-photo` only if you explicitly don't want the download.
+
 The script ends with a **`>> STILL MISSING`** line listing any bio/stat field not found on
 either ufc.com or ESPN. Treat that list as a to-do: resolve every field on it (Step 2)
 before writing the entry — do not ship a profile with a field still on that list unless
@@ -51,7 +76,10 @@ If BFO returns multiple candidate IDs, rerun with `--bfo-id <Name-NNNN>`.
 WebFetch `https://en.wikipedia.org/wiki/<Fighter_Name>` asking in a single prompt for:
 DOB/height/reach/stance/gym, current record + any **scheduled** fight in the record table,
 last 3-5 fights, and ALL championships/accomplishments (title reigns with defense counts,
-UFC bonuses with counts + opponents, other-promotion titles, amateur/combat-sports background).
+UFC bonuses with counts + opponents, other-promotion titles, amateur/combat-sports background,
+and any **BJJ/judo/grappling belt rank**). If a belt rank still isn't found here or on the
+ufc.com Q&A line, check the fighter's gym/academy page or a grappling-news result before
+giving up — a black/brown belt is a real accolade worth carrying.
 
 **Do not trust Wikipedia's "current win streak" figure** — recompute it from the fight
 history (the lookup script already prints the derived streak and record).
@@ -69,6 +97,10 @@ robots-blocked — don't scrape it. Do not skip verification just because Wikipe
   **`tdAcc` comes from [ESPN]'s VERIFIED per-fight line, NOT ufc.com** (ufc.com's tdAcc is
   the known under-count bug). `finRate` = (KO + Sub wins) / total wins, rounded to whole %.
 - `streak` = consecutive wins since last loss/draw; NCs are skipped, not breakers.
+- **Re-verify every stat, even ones already present.** `strAcc` and `sapm` are the two most
+  often left stale: take `strAcc` from ufc.com's `Striking accuracy NN%` and `sapm` from its
+  `Sig. Str. Absorbed Per Min` — overwrite the old value when it differs. Do the same for the
+  whole stat line; a pre-existing number is not a verified number.
 
 **Blank vs. 0 vs. unavailable — keep the key, pick the right value.** Every one of the 16 keys
 above must be PRESENT in the entry; never drop a key. The value depends on what the sources show:
@@ -90,10 +122,11 @@ above must be PRESENT in the entry; never drop a key. The value depends on what 
 - Resolve everything on the script's `>> STILL MISSING` line before committing (resolving a field
   can mean confirming it's genuinely blank and setting it to `null`).
 
-**ODDS_HISTORY** — rebuild from [BFO], newest first, one entry per fight that actually
-happened (match against FIGHT_HISTORY):
-- Odds value = consensus of the closing range: midpoint of low/high, discarding a
-  single-book outlier when one end is far from the cluster and the open.
+**ODDS_HISTORY** — rebuild the FULL history from [BFO], newest first, one entry per fight
+that actually happened (match against FIGHT_HISTORY); don't stop at the last few fights.
+- Use the **CLOSING line, not the open.** Odds value = consensus of the closing range:
+  midpoint of the closing low/high, discarding a single-book outlier when one end is far
+  from the cluster and the open. (The open is the left-most number; never record it.)
 - **Skip** rows for fights that never happened: "Future Events" / "Unconfirmed" sections,
   and cancelled bookings (a BFO row whose opponent/date has no matching fight in the
   verified history — e.g. an opponent who pulled out). BFO keeps all of these.
@@ -108,17 +141,28 @@ site renders upcoming bouts from the events feed, not FIGHT_HISTORY.
 🏆 titles/championships, ⭐ UFC bonuses (with counts + opponents), 🏅 records & awards,
 🥇🥈🥉 medals, 🥋 belts/grappling ranks, 🥊/🤼 striking/wrestling backgrounds.
 Order: UFC titles → other titles → bonuses → records → backgrounds/belts.
+- **Always capture a BJJ/grappling belt rank when one exists** (e.g. `🥋 BJJ Black Belt`).
+  Sourcing order: the `belt rank / 'belt' mentions` line in [UFCCOM] (ufc.com's Q&A), then
+  Wikipedia, then the fighter's gym page or a grappling-news result. Distinguish a grappling
+  RANK from a championship "belt" the fighter won — read the surrounding Q&A snippet. Only
+  drop the belt accolade if no source states one.
 
 Also fix the FIGHTERS roster row if rank/record/country is stale —
 `data/rankings.json` (API-synced) is the authority for current rank and record.
 
 ## Step 4 — verify and commit
 
-- Re-run `python3 scripts/fighter-lookup.py "<Name>" --local-only` and check: stats line
-  has strAcc+sapm+gym, odds count ≈ number of fights with BFO lines, derived record matches
-  the roster row, streak matches stats.
-- Commit just index.html, message format:
-  `Name: full stats (strAcc/sapm, fix X), overhaul odds (N entries, fix Y), accolades`
+- Re-run `python3 scripts/fighter-lookup.py "<Name>" --local-only` and confirm EVERY area
+  was corrected, not just touched:
+  - **bio** — ht, dob, reach, stance, and **gym** all present and matching the sources
+  - **stats** — full line present including **strAcc** and **sapm**; tdAcc is the ESPN value
+  - **fight history** — derived record matches the roster row / `data/rankings.json`, streak matches
+  - **odds** — count ≈ number of fights with BFO lines, and values are closing (not opening) lines
+  - **accolades** — titles/bonuses/records present, plus a 🥋 **belt rank** if any source states one
+- Commit index.html together with the new `photos/<slug>.png` (if the lookup saved one
+  this run — check the [ESPN] `photo:` line; nothing to add if it said `kept existing`).
+  Message format:
+  `Name: full stats (strAcc/sapm, fix X), overhaul odds (N entries, fix Y), accolades, photo`
 
 ## Accuracy beats usage — non-negotiable
 

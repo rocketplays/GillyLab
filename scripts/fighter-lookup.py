@@ -11,7 +11,10 @@ Prints these sections:
   [LOCAL]   current data in index.html (stats / odds / fight history / accolades)
   [UFCCOM]  career stats parsed from ufc.com/athlete/<slug> (each field parsed
             independently; a field that is blank on the page is reported as
-            MISSING, distinct from a field genuinely listed as 0/0.00)
+            MISSING, distinct from a field genuinely listed as 0/0.00). Also
+            surfaces the fighter's gym, fighting style, and any grappling BELT
+            RANK from the page's bio + Q&A blocks (the Q&A is often the only
+            place a BJJ/judo belt is stated) -- use it for a 🥋 accolade.
   [ESPN]    bio fields (stance, height, reach, DOB, gym) from ESPN's core API --
             a second source so stance and other bio fields are not left blank;
             ALSO the VERIFIED takedown accuracy, summed from ESPN's per-fight
@@ -20,6 +23,10 @@ Prints these sections:
             under-reports takedowns LANDED and prints bogus low % (often 0-2%).
             If ufc.com and ESPN disagree, a "!! tdAcc MISMATCH" line tells you
             to use the ESPN value.
+            ALSO downloads the ESPN headshot to photos/<slug>.png (slug computed
+            with the same rules as index.html's nameToSlug). Existing photos are
+            kept unless --force-photo; use --no-photo to skip the download. The
+            "photo: ..." line in this section reports what happened.
   [BFO]     full odds history parsed from bestfightodds.com (fighter's rows only)
 
 A final ">> STILL MISSING" line lists any bio/stat field not found on EITHER
@@ -27,12 +34,17 @@ ufc.com or ESPN, so it can be chased on Sherdog/Tapology/Wikipedia before being
 left blank. Run from the repo root. Network fetches use curl with a browser UA.
 (UFCStats.com is bot-blocked; ufc.com + ESPN + BFO are the working sources.)
 """
-import argparse, json, re, subprocess, sys, unicodedata, urllib.request
+import argparse, json, os, re, subprocess, sys, unicodedata, urllib.request
 from datetime import datetime
 from html import unescape as html_unescape
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
 TODAY = datetime.now()
+
+# repo paths (this script lives in scripts/; photos/ sits at the repo root)
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+PHOTOS_DIR = os.path.join(ROOT, "photos")
 
 def curl(url):
     r = subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, url],
@@ -47,6 +59,51 @@ def fold(s):
 def slugify(name):
     s = fold(name).replace("'", "").replace("’", "")
     return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+# Canonical photo-file slug — MUST stay byte-for-byte identical to index.html's
+# nameToSlug(), because the site looks up photos/<slug>.png by that exact slug.
+# (slugify() above is for ufc.com/ESPN URL guesses and does NOT drop the Jr./Sr./
+# numeral suffixes or map special letters the way nameToSlug does, so the photo
+# filename uses this function instead.)
+SLUG_LETTER_MAP = {
+    "ł": "l", "Ł": "L", "đ": "d", "Đ": "D", "ø": "o", "Ø": "O",
+    "æ": "ae", "Æ": "AE", "œ": "oe", "Œ": "OE", "ß": "ss",
+    "ı": "i", "İ": "I",
+}
+SUFFIX_RE = re.compile(r"\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$", re.I)
+
+def canonical_slug(name):
+    s = name.lower()
+    s = SUFFIX_RE.sub("", s)                       # drop trailing Jr./Sr./II/III/IV/V
+    s = "".join(SLUG_LETTER_MAP.get(c, c) for c in s)
+    s = unicodedata.normalize("NFD", s)
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    s = s.replace("'", "").replace("’", "")        # drop apostrophes entirely
+    return re.sub(r"[^a-z0-9]+", "-", s).strip("-")
+
+def save_headshot(bio, name, force=False):
+    """Download the ESPN headshot from the athlete bio JSON to
+    photos/<canonical_slug>.png and return a short status string.
+    - keyed by canonical_slug(name) so the site finds it
+    - skips if a photo already exists (won't clobber a curated one) unless force
+    - guards against ESPN's tiny silhouette placeholder (<3000 bytes)
+    """
+    slug = canonical_slug(name)
+    hs = (bio.get("headshot") or {}).get("href")
+    dest = os.path.join(PHOTOS_DIR, slug + ".png")
+    rel = "photos/%s.png" % slug
+    if not hs:
+        return "no headshot on ESPN (leave %s for manual sourcing)" % rel
+    if os.path.exists(dest) and not force:
+        return "kept existing %s (re-run with --force-photo to overwrite)" % rel
+    os.makedirs(PHOTOS_DIR, exist_ok=True)
+    subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", dest, hs])
+    sz = os.path.getsize(dest) if os.path.exists(dest) else 0
+    if sz < 3000:                                   # silhouette / placeholder guard
+        if os.path.exists(dest):
+            os.remove(dest)
+        return "ESPN returned a placeholder/too-small image (%d bytes), skipped %s" % (sz, rel)
+    return "saved %s (%d bytes)" % (rel, sz)
 
 # ---------- local (index.html) ----------
 def block_of(html, const):
@@ -130,6 +187,20 @@ def ufccom_report(name):
             found[f] = m.group(1)
     m = re.search(r"Trains at ([^|]{3,60}?) (Fighting style|Age|Status)", txt)
     if m: found["gym"] = m.group(1).strip()
+    # Fighting style + grappling belt rank from ufc.com's bio + Q&A blocks. The
+    # Q&A is the best (often only) source for a fighter's BJJ/judo belt rank, e.g.
+    # "Black belt in BJJ" (Oliveira), "brown belt in BJJ" (O'Malley). Surface the
+    # raw context so it can be turned into a 🥋 ACCOLADE. Title/championship "belt"
+    # mentions also match — read the snippet to tell a grappling rank from a belt
+    # the fighter won.
+    m = re.search(r"Fighting style\s+(.+?)\s+(?:Age|Height|Status|Trains|Octagon)", txt)
+    if m: found["style"] = m.group(1).strip()
+    belts = []
+    for bm in re.finditer(r".{0,22}\bbelt\b.{0,22}", txt, re.I):
+        seg = re.sub(r"\s+", " ", bm.group(0)).strip()
+        if seg.lower() not in (b.lower() for b in belts):
+            belts.append(seg)
+    if belts: found["belts"] = belts
     wins = {}
     for n_, kind in set(re.findall(r"(\d+) Wins by (Knockout|Decision|Submission)", txt)):
         wins[kind] = n_
@@ -138,6 +209,10 @@ def ufccom_report(name):
                 "strDef", "tdDef", "kd", "avgTime", "strAcc", "tdAcc"] if k in found]
     if statbits: out.append(" ".join(statbits))
     if "gym" in found: out.append(f"gym: {found['gym']}")
+    if found.get("style"): out.append(f"fighting style (ufc.com): {found['style']}")
+    if found.get("belts"):
+        out.append("belt rank / 'belt' mentions (ufc.com Q&A — use for 🥋 accolade): "
+                   + "  ||  ".join(found["belts"][:5]))
     if wins: out.append(f"wins: {wins}  (finRate = (KO+Sub)/total wins)")
     missing = [k for k in UFC_STAT_FIELDS if k not in found]
     if missing:
@@ -193,7 +268,7 @@ def espn_tdacc(sid):
         return (0, TDL, TDA)
     return (round(100 * TDL / TDA), TDL, TDA)
 
-def espn_report(name, espn_id=None):
+def espn_report(name, espn_id=None, save_photo=True, force_photo=False):
     sid = espn_find_id(name, espn_id)
     if not sid:
         return "no ESPN match (try --espn-id <number>)", {}
@@ -219,6 +294,8 @@ def espn_report(name, espn_id=None):
         out.append(f"tdAcc (VERIFIED per-fight {tdl}/{tda}) = {acc}%   <- USE THIS for FIGHTER_STATS tdAcc{note}")
     else:
         out.append("tdAcc: no ESPN per-fight table (fall back to ufc.com, but sanity-check the value)")
+    if save_photo:
+        out.append("photo: " + save_headshot(d, name, force=force_photo))
     return "\n".join(out), found
 
 # ---------- bestfightodds ----------
@@ -254,6 +331,10 @@ if __name__ == "__main__":
     ap.add_argument("--bfo-id")
     ap.add_argument("--espn-id")
     ap.add_argument("--local-only", action="store_true")
+    ap.add_argument("--no-photo", action="store_true",
+                    help="skip downloading the ESPN headshot to photos/<slug>.png")
+    ap.add_argument("--force-photo", action="store_true",
+                    help="overwrite an existing photos/<slug>.png with the ESPN headshot")
     a = ap.parse_args()
     print(f"========== [LOCAL] {a.name}")
     print(local_report(a.name))
@@ -262,7 +343,9 @@ if __name__ == "__main__":
         ufc_txt, ufc_found = ufccom_report(a.name)
         print(ufc_txt)
         print(f"\n========== [ESPN] (bio/stance secondary source + VERIFIED tdAcc)")
-        espn_txt, espn_found = espn_report(a.name, a.espn_id)
+        espn_txt, espn_found = espn_report(a.name, a.espn_id,
+                                           save_photo=not a.no_photo,
+                                           force_photo=a.force_photo)
         print(espn_txt)
         u, e = ufc_found.get("tdAcc"), espn_found.get("tdAcc")
         if u is not None and e is not None and abs(int(u) - int(e)) >= 5:
