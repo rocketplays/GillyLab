@@ -205,20 +205,31 @@ def initials(name):
     if len(parts) == 1: return parts[0][:2].upper()
     return (parts[0][0] + parts[-1][0]).upper()
 
+def norm_ht(h):
+    # ESPN: "6' 0\"" -> site style "6'0\"" (display-only field; cosmetic match)
+    return h.replace(" ", "") if h else h
+
+def norm_reach(r):
+    # ESPN: "75\"" -> keep value; quote-style handled in js_stats
+    return r.strip() if r else r
+
 # ---------------- main per-fighter processing ----------------
-def process(sid, roster, verbose=True):
+def process(sid, roster, verbose=True, min_coverage=0.0):
     bio = get_json("%s/athletes/%s" % (CORE, sid))
     if not bio:
-        print("  !! could not fetch bio for id", sid); return None
+        if verbose: print("  !! could not fetch bio for id", sid)
+        return {"status": "no_bio", "espn_id": sid}
     name = bio.get("displayName") or bio.get("fullName")
     slug = name_to_slug(name)
     if slug in roster:
-        print("  -- %s already in roster, skipping" % name); return None
+        if verbose: print("  -- %s already in roster, skipping" % name)
+        return {"status": "in_roster", "espn_id": sid, "name": name, "slug": slug}
 
     hist = parse_history(sid)
     ufc_fights = [f for f in hist if is_ufc_event(f["event"])]
     if not ufc_fights:
-        print("  -- %s has 0 UFC fights on ESPN, skipping" % name); return None
+        if verbose: print("  -- %s has 0 UFC fights on ESPN, skipping" % name)
+        return {"status": "no_ufc", "espn_id": sid, "name": name, "slug": slug}
 
     own = parse_stat_tables(sid)
 
@@ -274,9 +285,9 @@ def process(sid, roster, verbose=True):
     def pct(num, den): return ("%d%%" % round(100 * num / den)) if den else None
 
     stats = {
-        "ht":   bio.get("displayHeight"),
+        "ht":   norm_ht(bio.get("displayHeight")),
         "dob":  (bio.get("dateOfBirth") or "")[:10] or None,
-        "reach": bio.get("displayReach"),
+        "reach": norm_reach(bio.get("displayReach")),
         "stance": (bio.get("stance") or {}).get("text"),
         "slpm": permin(SSL),
         "strAcc": pct(SSL, SSA),
@@ -317,7 +328,7 @@ def process(sid, roster, verbose=True):
 
     division = DIV_MAP.get((bio.get("weightClass") or {}).get("text"), "?")
     roster_row = dict(name=name, division=division, rank="NR", record=record,
-                      initials=initials(name), country=bio.get("citizenship"))
+                      initials=initials(name), country=bio.get("citizenship") or "")
 
     # ---- photo ----
     photo_status = "no headshot on ESPN"
@@ -333,10 +344,18 @@ def process(sid, roster, verbose=True):
         else:
             photo_status = "saved photos/%s.png (%d bytes)" % (slug, sz)
 
-    result = dict(name=name, slug=slug, espn_id=sid, roster_row=roster_row,
-                  fighter_stats=stats, fight_history=fh,
+    coverage = round(def_fights / len(statted_dates), 2) if statted_dates else 0.0
+    if not statted_dates:
+        status = "no_stats"          # has UFC fights but no per-fight stat tables
+    elif coverage < min_coverage:
+        status = "low_coverage"      # defensive stats (sapm/strDef/tdDef) thin
+    else:
+        status = "ok"
+
+    result = dict(status=status, name=name, slug=slug, espn_id=sid,
+                  roster_row=roster_row, fighter_stats=stats, fight_history=fh,
                   stat_fights=len(statted_dates), def_fights=def_fights,
-                  ufc_fights=len(ufc_fights), photo=photo_status)
+                  coverage=coverage, ufc_fights=len(ufc_fights), photo=photo_status)
 
     # ---- write paste-ready output ----
     os.makedirs(OUTDIR, exist_ok=True)
@@ -355,6 +374,8 @@ def js_stats(s):
     for k in order:
         v = s.get(k)
         if v is None: parts.append("%s:null" % k)
+        elif k == "reach" and isinstance(v, str):
+            parts.append("%s:'%s'" % (k, v))          # site style: reach:'76"'
         elif isinstance(v, str): parts.append('%s:"%s"' % (k, v.replace('"', '\\"')))
         else: parts.append("%s:%s" % (k, v))
     return "{ " + ", ".join(parts) + " }"
@@ -388,6 +409,7 @@ def print_summary(r):
     print("  roster   :", r["roster_row"]["division"], r["roster_row"]["record"],
           r["roster_row"]["country"])
     print("  stats    :", js_stats(s))
+    print("  status   :", r["status"], "(opponent-data coverage %.0f%%)" % (100 * r["coverage"]))
     print("  sample   : %d fights with stats, %d with opponent-data (for sapm/strDef/tdDef)"
           % (r["stat_fights"], r["def_fights"]))
     print("  history  : %d fights (UFC: %d)" % (len(r["fight_history"]), r["ufc_fights"]))
@@ -395,10 +417,9 @@ def print_summary(r):
     print("  output   : scripts/espn-import-output/%s.js (+ .json)" % r["slug"])
 
 # ---------------- discover ----------------
-def discover(limit):
-    roster, _ = roster_slugs()
-    ids = []
-    page = 1
+def all_ufc_ids():
+    """Every athlete id in ESPN's UFC league index (paginated)."""
+    ids, page = [], 1
     while True:
         d = get_json("%s/leagues/ufc/athletes?limit=1000&page=%d" % (CORE, page))
         if not d or not d.get("items"): break
@@ -407,10 +428,64 @@ def discover(limit):
             if m: ids.append(m.group(1))
         if page >= d.get("pageCount", 1): break
         page += 1
+    return ids
+
+def discover(limit):
+    roster, _ = roster_slugs()
+    ids = all_ufc_ids()
     print("ESPN UFC-league athletes:", len(ids))
-    print("(roster has %d fighters; candidates = UFC athletes not in roster,")
-    print(" with the >=1-UFC-fight check applied per fighter during processing)")
+    print("roster size:", len(roster))
+    print("(candidates = these ids minus roster; the >=1-UFC-fight and")
+    print(" stat-coverage checks are applied per fighter during --process-all)")
     return ids[:limit] if limit else ids
+
+# ---------------- process-all (the bulk loop) ----------------
+def process_all(min_coverage, limit, sleep_s):
+    roster, _ = roster_slugs()
+    os.makedirs(OUTDIR, exist_ok=True)
+    manifest = os.path.join(OUTDIR, "_manifest.csv")
+
+    # resume: skip espn ids already recorded in the manifest
+    done = set()
+    if os.path.exists(manifest):
+        for line in open(manifest):
+            cell = line.split(",")[0].strip()
+            if cell.isdigit(): done.add(cell)
+    new = not os.path.exists(manifest)
+    mf = open(manifest, "a")
+    if new:
+        mf.write("espn_id,status,slug,division,record,stat_fights,def_fights,coverage,photo_ok\n")
+
+    ids = all_ufc_ids()
+    if limit: ids = ids[:limit]
+    counts = {}
+    todo = [i for i in ids if i not in done]
+    print("UFC athletes: %d | already done: %d | to process: %d"
+          % (len(ids), len(done), len(todo)))
+
+    for n, sid in enumerate(todo, 1):
+        try:
+            r = process(sid, roster, verbose=False, min_coverage=min_coverage)
+        except Exception as e:
+            r = {"status": "error", "espn_id": sid, "slug": str(e)[:40]}
+        st = r.get("status", "error")
+        counts[st] = counts.get(st, 0) + 1
+        photo_ok = "1" if str(r.get("photo", "")).startswith("saved") else "0"
+        mf.write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+            sid, st, r.get("slug", ""),
+            r.get("roster_row", {}).get("division", ""),
+            r.get("roster_row", {}).get("record", ""),
+            r.get("stat_fights", ""), r.get("def_fights", ""),
+            r.get("coverage", ""), photo_ok))
+        mf.flush()
+        if n % 25 == 0 or st in ("ok", "low_coverage"):
+            print("  [%d/%d] %s -> %s" % (n, len(todo), r.get("slug", sid), st))
+        time.sleep(sleep_s)
+
+    mf.close()
+    print("\n=== done ===")
+    for k in sorted(counts): print("  %-14s %d" % (k, counts[k]))
+    print("manifest + per-fighter .js/.json in", OUTDIR)
 
 # ---------------- cli ----------------
 def find_id_by_name(name):
@@ -427,16 +502,23 @@ if __name__ == "__main__":
     ap.add_argument("--espn-id")
     ap.add_argument("--name")
     ap.add_argument("--discover", action="store_true")
+    ap.add_argument("--process-all", action="store_true",
+                    help="run the bulk import over all ex-UFC fighters not in roster")
+    ap.add_argument("--min-coverage", type=float, default=0.5,
+                    help="opponent-data coverage below this is flagged 'low_coverage'")
+    ap.add_argument("--sleep", type=float, default=0.5,
+                    help="seconds between fighters in --process-all")
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args()
 
     if a.discover:
-        discover(a.limit)
-        sys.exit(0)
+        discover(a.limit); sys.exit(0)
+    if a.process_all:
+        process_all(a.min_coverage, a.limit, a.sleep); sys.exit(0)
 
     roster, _ = roster_slugs()
     sid = a.espn_id or (find_id_by_name(a.name) if a.name else None)
     if not sid:
         print("provide --espn-id or --name (no match found)"); sys.exit(1)
     print("processing ESPN id", sid)
-    process(sid, roster)
+    process(sid, roster, min_coverage=a.min_coverage)
