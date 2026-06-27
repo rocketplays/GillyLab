@@ -3235,6 +3235,7 @@
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
+ { name: "Wes Schultz", division: "MW", rank: "NR", record: "9-3-0", initials: "WS", country: "USA" },
  { name: "Dricus du Plessis", division: "MW", rank: "#2", record: "23-3-0", initials: "DDP", country: "South Africa" },
  { name: "Sean Strickland", division: "MW", rank: "#C", record: "31-7-0", initials: "SS", country: "USA" },
  { name: "Israel Adesanya", division: "MW", rank: "#9", record: "24-6-0", initials: "IA", country: "Nigeria" },
@@ -3966,6 +3967,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Wes Schultz": { ht:"6'2\"", dob:"1996-08-09", reach:'77"', stance:"Orthodox", slpm:2.91, strAcc:"47%", sapm:3.11, strDef:"43%", kd:1.20, tdLanded:2.39, tdAcc:"21%", tdDef:null, subAvg:3.59, finRate:"89%", streak:1, gym:"Pura Vida BJJ & MMA" },
   "Vince Morales": { ht:"5'7\"", dob:"1990-11-12", reach:'70"', stance:"Orthodox", slpm:3.54, strAcc:"38%", sapm:3.91, strDef:"54%", kd:0.27, tdLanded:0.71, tdAcc:"47%", tdDef:"64%", subAvg:0.45, finRate:"75%", streak:0, gym:"Syndicate MMA" },
   "Colby Thicknesse": { ht:"5'7\"", dob:"1999-06-23", reach:'69"', stance:"Orthodox", slpm:3.24, strAcc:"41%", sapm:2.93, strDef:"54%", kd:0.00, tdLanded:0.67, tdAcc:"7%", tdDef:"33%", subAvg:1.67, finRate:"44%", streak:2, gym:"Freestyle Fighting Gym" },
   "Jacob Malkoun": { ht:"5'9\"", dob:"1995-08-26", reach:'73"', stance:"Orthodox", slpm:4.23, strAcc:"57%", sapm:2.33, strDef:"55%", kd:0.15, tdLanded:5.39, tdAcc:"43%", tdDef:"56%", subAvg:0.75, finRate:"30%", streak:3, gym:"Gracie Jiu-Jitsu Smeaton Grange" },
@@ -6349,6 +6351,16 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Wes Schultz": [
+    { opponent: "Ben Johnston", odds: 115 },
+    { opponent: "Damian Pinas", odds: 195 },
+    { opponent: "Mario Mingaj", odds: -200 },
+    { opponent: "Mansur Abdul-Malik", odds: 250 },
+    { opponent: "Adland Benson", odds: -650 },
+    { opponent: "Maurice Morris", odds: -350 },
+    { opponent: "Dylan Budka", odds: 200 },
+    { opponent: "Jon Knutson", odds: -600 }
+  ],
   "Vince Morales": [
     { opponent: "Colby Thicknesse", odds: 105 },
     { opponent: "Raul Rosas Jr.", odds: 400 },
@@ -14374,6 +14386,20 @@
 };
 
 const FIGHT_HISTORY = {
+  "Wes Schultz": [
+    { date: "May 2, 2026", opponent: "Ben Johnston", result: "W", method: "Submission (Guillotine)", round: 3, time: "1:50", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Feb 28, 2026", opponent: "Damian Pinas", result: "L", method: "KO/TKO", round: 1, time: "2:30", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
+    { date: "Oct 14, 2025", opponent: "Mario Mingaj", result: "W", method: "Submission", round: 1, time: "1:51", event: "Dana White's Contender Series 9 (Week 10)", org: "UFC" },
+    { date: "Apr 12, 2025", opponent: "Dustin Pape", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:55", event: "Michiana Fight League 56" },
+    { date: "Aug 13, 2024", opponent: "Mansur Abdul-Malik", result: "L", method: "KO/TKO", round: 2, time: "3:55", event: "Dana White's Contender Series 8 (Week 1)", org: "UFC" },
+    { date: "Apr 5, 2024", opponent: "Adland Benson", result: "W", method: "KO/TKO", round: 1, time: "3:39", event: "LFA 181" },
+    { date: "Jan 12, 2024", opponent: "Maurice Morris", result: "W", method: "KO/TKO", round: 1, time: "1:52", event: "LFA 174" },
+    { date: "May 13, 2023", opponent: "Zach Edington", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:20", event: "GE Fights: High Octane" },
+    { date: "Jan 13, 2023", opponent: "Dylan Budka", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 150" },
+    { date: "Aug 26, 2022", opponent: "Jon Knutson", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "0:53", event: "LFA 140" },
+    { date: "May 6, 2022", opponent: "Hamza Salim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 131" },
+    { date: "Oct 23, 2021", opponent: "Victor Jones", result: "W", method: "Submission (Shoulder choke)", round: 1, time: "0:24", event: "Pure FC 20" }
+  ],
   "Vince Morales": [
     { date: "May 2, 2026", opponent: "Colby Thicknesse", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Mar 29, 2025", opponent: "Raul Rosas Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Erceg", org: "UFC" },
@@ -32251,6 +32277,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Wes Schultz": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025 — first-round submission of Mario Mingaj)", detail: null },
+    { icon: "🥇", title: "Two-time amateur MMA champion — Caged Aggression & Dynasty Combat Sports", detail: null },
+    { icon: "🏅", title: "89% finish rate — 8 of 9 wins by stoppage (6 submissions, 2 KO/TKO)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Vince Morales": [
     { icon: "🏆", title: "United Fight League Bantamweight Champion", detail: null },
     { icon: "🏆", title: "Front Street Fights Featherweight Champion", detail: null },
