@@ -407,7 +407,7 @@ def print_summary(r):
     s = r["fighter_stats"]
     print("  name     :", r["name"], "(ESPN", r["espn_id"], "->", r["slug"] + ")")
     print("  roster   :", r["roster_row"]["division"], r["roster_row"]["record"],
-          r["roster_row"]["country"])
+          r["roster_row"]["country"] or "(country MISSING on ESPN — needs manual fill)")
     print("  stats    :", js_stats(s))
     print("  status   :", r["status"], "(opponent-data coverage %.0f%%)" % (100 * r["coverage"]))
     print("  sample   : %d fights with stats, %d with opponent-data (for sapm/strDef/tdDef)"
@@ -454,7 +454,7 @@ def process_all(min_coverage, limit, sleep_s):
     new = not os.path.exists(manifest)
     mf = open(manifest, "a")
     if new:
-        mf.write("espn_id,status,slug,division,record,stat_fights,def_fights,coverage,photo_ok\n")
+        mf.write("espn_id,status,slug,division,record,stat_fights,def_fights,coverage,photo_ok,country_ok\n")
 
     ids = all_ufc_ids()
     if limit: ids = ids[:limit]
@@ -471,12 +471,13 @@ def process_all(min_coverage, limit, sleep_s):
         st = r.get("status", "error")
         counts[st] = counts.get(st, 0) + 1
         photo_ok = "1" if str(r.get("photo", "")).startswith("saved") else "0"
-        mf.write("%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+        country_ok = "1" if r.get("roster_row", {}).get("country") else "0"
+        mf.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
             sid, st, r.get("slug", ""),
             r.get("roster_row", {}).get("division", ""),
             r.get("roster_row", {}).get("record", ""),
             r.get("stat_fights", ""), r.get("def_fights", ""),
-            r.get("coverage", ""), photo_ok))
+            r.get("coverage", ""), photo_ok, country_ok))
         mf.flush()
         if n % 25 == 0 or st in ("ok", "low_coverage"):
             print("  [%d/%d] %s -> %s" % (n, len(todo), r.get("slug", sid), st))
