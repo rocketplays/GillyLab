@@ -3428,7 +3428,7 @@
  { name: "Bruno Lopes", division: "LHW", rank: "NR", record: "14-3-0", initials: "BLO", country: "Brazil" },
  { name: "Billy Elekana", division: "LHW", rank: "NR", record: "10-2-0", initials: "BEK", country: "New Zealand" },
  { name: "Julius Walker", division: "LHW", rank: "NR", record: "7-2-0", initials: "JUW", country: "USA" },
- { name: "Kevin Christian", division: "LHW", rank: "NR", record: "9-3-0", initials: "KCH2", country: "USA" },
+ { name: "Kevin Christian", division: "LHW", rank: "NR", record: "9-4-0", initials: "KCH2", country: "Brazil" },
  { name: "Magomed Tuchalov", division: "LHW", rank: "NR", record: "6-0-0", initials: "MTU", country: "Russia" },
  // ─── HEAVYWEIGHT (extended) ───
  { name: "Tai Tuivasa", division: "HW", rank: "NR", record: "15-10-0", initials: "TTU", country: "Australia" },
@@ -4654,7 +4654,7 @@
  "Billy Elekana": { ht:"6'3\"", dob:"1995-05-28", reach:'77"', stance:"Southpaw", slpm:2.71, tdAcc:"22%", subAvg:0.4, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.85, gym:"Uprising MMA Training Center" },
  "Austen Lane": { ht:"6'6\"", dob:"1987-11-09", reach:'80"', stance:"Orthodox", slpm:2.70, strAcc:"50%", sapm:2.45, strDef:"40%", kd:0.38, tdLanded:1.50, tdAcc:"29%", tdDef:"33%", subAvg:0.00, finRate:"92%", streak:0, gym:"Bulldog Boxing, 10th Planet Jacksonville" },
  "Tuco Tokkos": { ht:"6'4\"", dob:"1990-06-30", reach:'76"', stance:"Orthodox", slpm:2.12, tdAcc:"47%", subAvg:0.5, strDef:"46%", kd:0.2, tdDef:"33%", finRate:"64%", streak:0, tdLanded:4.21, gym:"Kill Cliff FC" },
- "Kevin Christian": { ht:"6'7\"", dob:"1995-01-21", reach:'80"', stance:"Orthodox", slpm:1.64, tdAcc:"0%", subAvg:2.5, strDef:"44%", kd:0.1, tdDef:"50%", finRate:"78%", streak:0, tdLanded:0.00 },
+ "Kevin Christian": { ht:"6'7\"", dob:"1995-01-21", reach:'80"', stance:"Orthodox", slpm:2.19, strAcc:"59%", sapm:3.54, strDef:"40%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"50%", subAvg:1.93, finRate:"100%", streak:0, gym:"Cosme Junior Team" },
  "Luke Fernandez": { ht:"6'1\"", dob:"1995-06-29", reach:'76"', stance:"Orthodox", slpm:8.14, strAcc:"59%", sapm:10.17, strDef:"36%", kd:5.08, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"83%", streak:0, gym:"Dante Rivera BJJ" },
 
  // Heavyweight
@@ -14135,6 +14135,8 @@
     { opponent: "Mark Vologdin", odds: 140 }
   ],
   "Kevin Christian": [
+    { opponent: "Junior Tafa", odds: 185 },
+    { opponent: "Billy Elekana", odds: 210 }
   ],
   "Robert Valentin": [
     { opponent: "Ateba Gautier", odds: 240 },
@@ -31236,10 +31238,19 @@ const FIGHT_HISTORY = {
 
 
   "Kevin Christian": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
-    { date: "Sep 23, 2025", opponent: "Brandon Stockton", result: "W", method: "KO (Punches)", round: 1, time: "0:44", event: "DWCS Season 9 Week 7 (contract)" },
-    { date: "Jun 14, 2025", opponent: "Tyler Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 181" },
-    { date: "Mar 15, 2025", opponent: "Carl Deaton", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:44", event: "LFA 178" }
+    { date: "May 2, 2026", opponent: "Junior Tafa", result: "L", method: "KO (Elbows)", round: 1, time: "2:42", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Nov 1, 2025", opponent: "Billy Elekana", result: "L", method: "Technical Submission (Rear-naked choke)", round: 1, time: "3:33", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
+    { date: "Sep 24, 2024", opponent: "Francesco Mazzeo", result: "W", method: "Submission (Triangle armbar)", round: 2, time: "4:17", event: "Dana White's Contender Series 8 (Week 7)", org: "UFC" },
+    { date: "Jan 27, 2024", opponent: "Miguel Porto", result: "W", method: "KO/TKO", round: 2, time: "0:39", event: "LFA 175" },
+    { date: "Sep 28, 2019", opponent: "Alvaro Monteiro Tabosa", result: "W", method: "TKO (Retirement)", round: 1, time: "3:45", event: "Rei da Selva Combat 15" },
+    { date: "Mar 17, 2019", opponent: "Daniel Trindade", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "3:00", event: "Boa Vista Combat 4" },
+    { date: "Dec 1, 2018", opponent: "Luiz Tavares Augusto", result: "W", method: "KO/TKO", round: 1, time: "2:31", event: "Shark Fight Championship 2" },
+    { date: "Feb 25, 2017", opponent: "Nerivan Silva", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "0:45", event: "Rio Preto Show Fight 3" },
+    { date: "Oct 27, 2016", opponent: "Moises Costa", result: "L", method: "KO/TKO", round: 2, time: "4:38", event: "Amazon Talent 6" },
+    { date: "May 21, 2016", opponent: "Leandro Moreira", result: "W", method: "Submission (Armbar)", round: 1, time: "4:59", event: "Rei da Selva Combat 7" },
+    { date: "Feb 27, 2016", opponent: "Jordan Rocha", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:54", event: "Rio Preto Kombat 5" },
+    { date: "Dec 17, 2015", opponent: "Guilherme Martins", result: "W", method: "KO/TKO", round: 1, time: "4:31", event: "Mr. Cage 20" },
+    { date: "Sep 29, 2014", opponent: "Wanderley Freitas", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:00", event: "Rio Preto Show Fight" }
   ],
   "Robert Valentin": [
     { date: "Jun 27, 2026", opponent: "Julien Leblanc", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres", org: "UFC" },
@@ -32133,6 +32144,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Kevin Christian": [
+    { icon: "🏆", title: "Rei da Selva Middleweight Champion", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — triangle-armbar submission of Francesco Mazzeo)", detail: null },
+    { icon: "🏅", title: "100% finish rate — all 9 wins by stoppage (5 submissions, 4 KO/TKO)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null }
+  ],
   "Robert Bryczek": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🏆", title: "FEN (Fight Exclusive Night) Welterweight Champion", detail: null },
