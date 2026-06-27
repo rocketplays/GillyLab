@@ -3498,7 +3498,7 @@
  { name: "Cody Chovancek", division: "BW", rank: "NR", record: "12-0-0", initials: "CCH", country: "USA" },
  { name: "Louis Lee Scott", division: "BW", rank: "NR", record: "9-1-0", initials: "LLS", country: "UK" },
  { name: "Adrián Luna Martinetti", division: "BW", rank: "NR", record: "17-2-0", initials: "ALM2", country: "Ecuador" },
- { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-0", initials: "JDI", country: "Mexico" },
+ { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-1", initials: "JDI", country: "Peru" },
  // ─── FLYWEIGHT (extended) ───
  { name: "Sumudaerji", division: "FLW", rank: "NR", record: "19-7-0", initials: "SUM", country: "China" },
  { name: "Carlos Candelario", division: "FLW", rank: "NR", record: "12-4-0", initials: "CCA", country: "USA" },
@@ -4625,7 +4625,7 @@
  // Bantamweight
  "Jean Matsumoto": { ht:"5'6\"", dob:"1999-09-09", reach:'68.5"', stance:"Orthodox", slpm:5.37, strAcc:"40%", sapm:5.41, strDef:"48%", kd:0.00, tdAcc:"49%", tdDef:"56%", subAvg:0.53, finRate:"53%", streak:0, tdLanded:3.00, gym:"Inside MMA" },
  "Luan Lacerda": { ht:"5'7\"", dob:"1993-01-07", reach:'71"', stance:"Orthodox", slpm:4.06, strAcc:"43%", sapm:6.15, strDef:"49%", kd:0.00, tdLanded:2.82, tdAcc:"39%", tdDef:"67%", subAvg:0.63, finRate:"85%", streak:0, gym:"Nova União" },
- "Juan Diaz": { ht:"5'8\"", dob:"1998-06-03", reach:'69"', stance:"Orthodox", slpm:5.82, tdAcc:"33%", subAvg:0.0, strDef:"60%", kd:0.4, tdDef:"0%", finRate:"69%", streak:0, tdLanded:3.01 },
+ "Juan Diaz": { ht:"5'8\"", dob:"1998-06-03", reach:'69.5"', stance:"Orthodox", slpm:3.72, strAcc:"42%", sapm:3.40, strDef:"59%", kd:0.79, tdLanded:5.50, tdAcc:"50%", tdDef:null, subAvg:0.79, finRate:"50%", streak:9, gym:"Entram Gym" },
  "Elijah Smith": { ht:"5'9\"", dob:"2002-09-05", reach:'71"', stance:"Orthodox", slpm:4.18, strAcc:"48%", sapm:2.96, strDef:"47%", kd:0.37, tdLanded:2.98, tdAcc:"53%", tdDef:"53%", subAvg:1.12, finRate:"70%", streak:8, gym:"Factory X" },
  "Ethyn Ewing": { ht:'5\'7"', dob:"1998-02-16", reach:'69"', stance:"Orthodox", slpm:7.44, strAcc:"55%", sapm:4.53, strDef:"63%", kd:0.56, tdLanded:1.68, tdAcc:"60%", tdDef:"100%", subAvg:0.00, finRate:"80%", streak:10, gym:"The Den Training Center" },
  "Cameron Smotherman": { ht:"5'9\"", dob:"1997-09-17", reach:'69"', stance:"Orthodox", slpm:4.07, tdAcc:"0%", subAvg:0.0, strDef:"58%", kd:0.3, tdDef:"71%", finRate:"67%", streak:0, tdLanded:0.00 },
@@ -10006,7 +10006,9 @@
     { opponent: "Ysidro Gutierrez", odds: -1150 },
   ],
   "Juan Diaz": [
-    { opponent: "Malcolm Wellmaker", odds: -400 }
+    { opponent: "Malcolm Wellmaker", odds: 197 },
+    { opponent: "Kwon Won Il", odds: 147 },
+    { opponent: "Juan Campos", odds: -450 }
   ],
   "Cody Haddon": [
     { opponent: "Kyler Phillips", odds: 225 },
@@ -21438,7 +21440,7 @@ const FIGHT_HISTORY = {
     { date: "Feb 18, 2017", opponent: "Abner Perez", result: "W", method: "TKO (Punches)", round: 1, time: "4:53", event: "Bellator 172: Thomson vs. Pitbull", org: "Bellator" },
   ],
   "Malcolm Wellmaker": [
-    { date: "May 16, 2026", opponent: "Juan Diaz", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:22", event: "UFC Fight Night: Allen vs. Costa (debut)" },
+    { date: "May 16, 2026", opponent: "Juan Diaz", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:08", event: "UFC Fight Night: Allen vs. Costa (debut)" },
     { date: "Oct 12, 2024", opponent: "Mario Bautista", result: "L", method: "TKO (Punches)", round: 1, time: "0:25", event: "LFA 195" },
     { date: "Jul 20, 2024", opponent: "Johnny Munoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 190" },
     { date: "Mar 2, 2024", opponent: "Cody Haddon", result: "W", method: "TKO (Punches)", round: 2, time: "2:34", event: "LFA 182" },
@@ -21450,15 +21452,24 @@ const FIGHT_HISTORY = {
     { date: "Jun 11, 2022", opponent: "Isaac Wanzeler", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 136" }
   ],
   "Juan Diaz": [
-    { date: "May 16, 2026", opponent: "Malcolm Wellmaker", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:22", event: "UFC Fight Night: Allen vs. Costa (debut)" },
-    { date: "Aug 10, 2024", opponent: "Anderson Dos Reis", result: "W", method: "Submission (Armbar)", round: 1, time: "2:11", event: "DWCS Season 8 Week 3 (contract)" },
-    { date: "Mar 30, 2024", opponent: "Brandon Royval Jr.", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 182" },
-    { date: "Nov 4, 2023", opponent: "Esteban Zuniga", result: "W", method: "Submission (Armbar)", round: 1, time: "2:35", event: "LFA 170" },
-    { date: "Jul 15, 2023", opponent: "Nathan Maness", result: "W", method: "TKO (Punches)", round: 2, time: "0:48", event: "LFA 162" },
-    { date: "Mar 4, 2023", opponent: "Kevin Vallejos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 153" },
-    { date: "Oct 15, 2022", opponent: "Jose Cruz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 143" },
-    { date: "Jun 25, 2022", opponent: "Johnny Munoz", result: "W", method: "KO (Punch)", round: 1, time: "0:46", event: "LFA 135" },
-    { date: "Mar 5, 2022", opponent: "Alfonso Torres", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 125 (debut)" }
+    { date: "May 16, 2026", opponent: "Malcolm Wellmaker", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:08", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
+    { date: "Oct 14, 2025", opponent: "Kwon Won Il", result: "W", method: "KO (Spinning back elbow)", round: 2, time: "4:58", event: "Dana White's Contender Series S9 W10 (contract)" },
+    { date: "Feb 21, 2025", opponent: "Uriel Cossio", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Lux Fight League 50 (title)" },
+    { date: "Nov 1, 2024", opponent: "José Roura", result: "W", method: "TKO (Doctor Stoppage)", round: 4, time: "5:00", event: "Lux Fight League 47 (title)" },
+    { date: "Apr 26, 2024", opponent: "Abraham Nava", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lux Fight League 42" },
+    { date: "Dec 1, 2023", opponent: "José Roura", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Lux Fight League 38 (title)" },
+    { date: "Jul 21, 2023", opponent: "Luis Guerrero", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:59", event: "Lux Fight League 34" },
+    { date: "Feb 3, 2023", opponent: "Irvin Amaya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lux Fight League 30" },
+    { date: "Apr 29, 2022", opponent: "Andrés Leal", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UWC Mexico 33" },
+    { date: "Oct 23, 2021", opponent: "Rodrigo Vera", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 47: Vera vs. Diaz" },
+    { date: "Aug 13, 2021", opponent: "Juan Campos", result: "W", method: "KO (Punches)", round: 1, time: "3:21", event: "UWC Mexico 28" },
+    { date: "Dec 10, 2020", opponent: "Carlos Huachin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 44" },
+    { date: "Dec 6, 2019", opponent: "Javier Guzman", result: "W", method: "TKO (Punches)", round: 2, time: "1:49", event: "Crixus MMA 5" },
+    { date: "Sep 28, 2019", opponent: "Ramon Cardozo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fortis Fight Cage 2" },
+    { date: "Jun 15, 2019", opponent: "Arturo Lemus", result: "W", method: "Submission (Armbar)", round: 1, time: "3:22", event: "Martial Entertainment: Fight Night Champions 4" },
+    { date: "Dec 8, 2018", opponent: "Juan da Silva", result: "D", method: "Draw", round: 3, time: "5:00", event: "Hualsur FC 83" },
+    { date: "Sep 14, 2018", opponent: "Francisco Alessandria", result: "W", method: "TKO (Doctor Stoppage)", round: 3, time: "3:46", event: "Delirium Fest 4" },
+    { date: "Oct 14, 2017", opponent: "Nahuel Farias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hualsur FC" }
   ],
   "Cody Haddon": [
     { date: "May 30, 2026", opponent: "Aoriqileng", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
@@ -32538,6 +32549,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Juan Diaz": [
+    { icon: "🏆", title: "Lux Fight League Bantamweight Champion (won the title and defended it)", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025 — spinning back elbow KO of Kwon Won Il)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Daniel Santos": [
     { icon: "⭐", title: "UFC Fight of the Night — vs. Dooho Choi (UFC Fight Night, 2026)", detail: null },
     { icon: "🏅", title: "Three pro wins by spinning strikes (two spinning back kicks & a spinning back elbow)", detail: null },
