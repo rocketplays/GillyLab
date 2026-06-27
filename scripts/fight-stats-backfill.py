@@ -11,6 +11,7 @@ Usage:
     python3 scripts/fight-stats-backfill.py "Manel Kape"
     python3 scripts/fight-stats-backfill.py "Manel Kape" --espn-id 4236504
     python3 scripts/fight-stats-backfill.py --all          # every FIGHTERS name in index.html
+    python3 scripts/fight-stats-backfill.py --all --only-missing   # skip fighters already saved
     python3 scripts/fight-stats-backfill.py --all --sleep 0.4
 
 Notes
@@ -224,6 +225,12 @@ def main():
     ap.add_argument("name", nargs="?")
     ap.add_argument("--espn-id")
     ap.add_argument("--all", action="store_true")
+    ap.add_argument("--only-missing", action="store_true",
+                    help="with --all, skip fighters already in fight-stats.json "
+                         "(resumes a big run / adds new roster fighters without "
+                         "re-requesting everyone). Note: won't pick up NEW fights "
+                         "for already-saved fighters — re-run those by name, or a "
+                         "plain --all, after an event.")
     ap.add_argument("--sleep", type=float, default=0.3)
     a = ap.parse_args()
 
@@ -232,7 +239,14 @@ def main():
 
     if a.all:
         names = roster_names()
-        print("Backfilling %d roster fighters..." % len(names))
+        total = len(names)
+        if a.only_missing:
+            pending = [nm for nm in names if nm not in data]
+            print("Backfilling %d of %d roster fighters (%d already saved, skipping)..."
+                  % (len(pending), total, total - len(pending)))
+            names = pending
+        else:
+            print("Backfilling %d roster fighters..." % total)
         for i, nm in enumerate(names, 1):
             try:
                 rec = backfill_one(nm, namecache=namecache)
