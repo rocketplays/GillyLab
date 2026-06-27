@@ -3774,6 +3774,7 @@
  { name: "Mantas Kondratavicius", division: "MW", rank: "NR", record: "9-1-0", initials: "MKO", country: "Lithuania" },
  { name: "Yousri Belgaroui", division: "MW", rank: "NR", record: "10-3-0", initials: "YBE", country: "Netherlands" },
  { name: "Mansur Abdul-Malik", division: "MW", rank: "NR", record: "9-1-1", initials: "MAB", country: "USA" },
+ { name: "Cam Rowston", division: "MW", rank: "NR", record: "15-3-0", initials: "CR", country: "Australia" },
  { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "33-9-0", initials: "SP", country: "Argentina" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
  { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "8-2-0", initials: "SK", country: "South Korea" },
@@ -3960,6 +3961,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Cam Rowston": { ht:"6'3\"", dob:"1995-01-19", reach:'78"', stance:"Orthodox", slpm:4.26, strAcc:"47%", sapm:2.62, strDef:"52%", kd:1.51, tdLanded:0.50, tdAcc:"44%", tdDef:"33%", subAvg:0.50, finRate:"87%", streak:7, gym:"City Kickboxing" },
   "Ollie Schmid": { ht:"5'11\"", dob:"2000-12-28", reach:'71"', stance:"Orthodox", slpm:3.23, strAcc:"30%", sapm:7.90, strDef:"45%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"75%", streak:0, gym:"City Kickboxing" },
   "Jackson McVey": { ht:"6'4\"", dob:"1999-03-25", reach:'77"', stance:"Southpaw", slpm:5.87, strAcc:"68%", sapm:3.82, strDef:"24%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"100%", streak:1, gym:"St. Charles MMA" },
   "Jamie Siraj": { ht:"5'8\"", dob:"1994-06-28", reach:'66"', stance:"Orthodox", slpm:2.21, strAcc:"25%", sapm:7.73, strDef:"38%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"79%", streak:0, gym:"Diaz Combat Sports" },
@@ -6337,6 +6339,13 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Cam Rowston": [
+    { opponent: "Robert Bryczek", odds: -190 },
+    { opponent: "Cody Brundage", odds: -390 },
+    { opponent: "Andre Petroski", odds: 150 },
+    { opponent: "Brandon Holmes", odds: 110 },
+    { opponent: "Torrez Finney", odds: 325 }
+  ],
   "Ollie Schmid": [
     { opponent: "Marwan Rahiki", odds: 500 }
   ],
@@ -14291,6 +14300,26 @@
 };
 
 const FIGHT_HISTORY = {
+  "Cam Rowston": [
+    { date: "May 2, 2026", opponent: "Robert Bryczek", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
+    { date: "Jan 31, 2026", opponent: "Cody Brundage", result: "W", method: "TKO (Punches)", round: 2, time: "4:08", event: "UFC 325: Volkanovski vs. Lopes 2", org: "UFC" },
+    { date: "Sep 27, 2025", opponent: "Andre Petroski", result: "W", method: "KO (Punches)", round: 1, time: "2:41", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Aug 19, 2025", opponent: "Brandon Holmes", result: "W", method: "TKO (Punches)", round: 1, time: "2:58", event: "Dana White's Contender Series 9.2", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Alfred Stoddart", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 92" },
+    { date: "Nov 30, 2024", opponent: "Blair Bretag", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:54", event: "Eternal MMA 91" },
+    { date: "Oct 25, 2024", opponent: "Apaer Aerdake", result: "W", method: "Submission (Calf slicer)", round: 2, time: "2:59", event: "Stealth Fighters League 1" },
+    { date: "Aug 20, 2024", opponent: "Torrez Finney", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 8.2", org: "UFC" },
+    { date: "Sep 23, 2022", opponent: "Pane Haraki", result: "W", method: "Submission", round: 3, time: "1:13", event: "Shuriken Fight Series 12" },
+    { date: "Oct 3, 2020", opponent: "Eli Taufuiaevalu", result: "W", method: "TKO (Punches)", round: 2, time: "1:55", event: "Shuriken Fight Series 8" },
+    { date: "Dec 13, 2019", opponent: "Jayden Eynaud", result: "W", method: "Submission", round: 2, time: "2:15", event: "New Generation Cage MMA Series 4" },
+    { date: "Sep 6, 2019", opponent: "Leo Diaz", result: "W", method: "Submission", round: 1, time: "1:06", event: "Superfight MMA 13" },
+    { date: "Aug 2, 2019", opponent: "Martin Torres", result: "W", method: "TKO (Punches)", round: 1, time: "1:00", event: "New Generation Cage MMA Series 3" },
+    { date: "Sep 7, 2018", opponent: "Isi Fitikefu", result: "L", method: "TKO (Punches)", round: 1, time: "3:19", event: "Superfight MMA 8" },
+    { date: "Oct 28, 2017", opponent: "Dan Currie", result: "W", method: "TKO (Punches)", round: 1, time: "0:38", event: "BRACE 51" },
+    { date: "May 13, 2017", opponent: "Jye Wyllie", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "BRACE 50" },
+    { date: "Mar 18, 2017", opponent: "Jacob Malkoun", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BRACE 47" },
+    { date: "Nov 26, 2016", opponent: "Reza Almasi", result: "W", method: "Submission", round: 1, time: "3:44", event: "BRACE 45" }
+  ],
   "Ollie Schmid": [
     { date: "May 2, 2026", opponent: "Marwan Rahiki", result: "L", method: "KO/TKO", round: 1, time: "2:47", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Mar 7, 2026", opponent: "Jeff Mesa", result: "W", method: "KO/TKO", round: 1, time: "0:15", event: "Shuriken Fight Series 23" },
@@ -32026,6 +32055,14 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Cam Rowston": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025; TKO of Brandon Holmes)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥇", title: "ADCC New Zealand Absolute Champion", detail: null },
+    { icon: "🏆", title: "King in the Ring tournament winner (86kg & 92kg) — two-time, 3 fights in one night each", detail: null },
+    { icon: "🏆", title: "WKBF South Pacific Middleweight (kickboxing) Champion", detail: null },
+    { icon: "🥊", title: "Finished amateur career as No. 1 ranked middleweight in Australasia", detail: null },
+  ],
   "Ollie Schmid": [
     { icon: "🥇", title: "IMMAF Oceania Championships — Featherweight Gold (2019)", detail: null },
     { icon: "🥉", title: "IMMAF Oceania Championships — Lightweight Bronze (2020)", detail: null },
