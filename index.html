@@ -3681,6 +3681,7 @@
  { name: "Pannie Kianzad", division: "WBW", rank: "NR", record: "19-8-0", initials: "PKZ", country: "Iran" },
  // ── Fighters with stats but missing from search ──
  { name: "Aoriqileng", division: "BW", rank: "NR", record: "26-12-0", initials: "ARL", country: "China" },
+ { name: "Cody Haddon", division: "BW", rank: "NR", record: "9-1-0", initials: "CHD", country: "Australia" },
  { name: "Saidyokub Kakhramonov", division: "BW", rank: "NR", record: "10-3-0", initials: "SKK", country: "Uzbekistan" },
  { name: "Askar Askarov", division: "FLW", rank: "NR", record: "15-1-1", initials: "ASK", country: "Russia" },
  { name: "Marlon Moraes", division: "BW", rank: "NR", record: "23-13-1", initials: "MMO", country: "Brazil" },
@@ -4350,6 +4351,7 @@
  // ── Flyweight (final) ──
  "Cody Durden": { ht:"5'7\"", dob:"1991-03-29", reach:'67"', stance:"Southpaw", slpm:3.24, strAcc:"45%", sapm:3.94, strDef:"51%", kd:0.09, tdLanded:3.99, tdAcc:"49%", tdDef:"57%", subAvg:0.65, finRate:"67%", streak:1, gym:"American Top Team Gwinnett (2020–present)" },
  "Aoriqileng": { ht:"5'7\"", dob:"1993-06-25", reach:'69"', stance:"Orthodox", slpm:4.69, tdAcc:"43%", subAvg:0.3, strDef:"48%", kd:0.2, tdDef:"52%", finRate:"46%", streak:0, tdLanded:1.20 },
+ "Cody Haddon": { ht:"5'7\"", dob:"1998-09-08", reach:'69"', stance:"Orthodox", slpm:8.84, strAcc:"57%", sapm:2.72, strDef:"63%", kd:1.18, tdLanded:2.96, tdAcc:"36%", tdDef:"83%", subAvg:0.59, finRate:"89%", streak:7, gym:"Luistro Combat Academy" },
  "Joshua Van": { ht:"5'5\"", dob:"2001-10-10", reach:'65"', stance:"Orthodox", slpm:8.43, strAcc:"57%", sapm:5.82, strDef:"58%", kd:0.72, tdLanded:0.82, tdAcc:"62%", tdDef:"76%", subAvg:0.21, finRate:"65%", streak:7, gym:"4oz. Fight Club" },
  // ── Featherweight (final) ──
  "Chase Hooper": { ht:"6'1\"", dob:"1999-09-13", reach:'75.5"', stance:"Southpaw", slpm:4.50, strAcc:"49%", sapm:3.02, strDef:"40%", kd:0.12, tdLanded:2.43, tdAcc:"32%", tdDef:"55%", subAvg:2.08, finRate:"75%", streak:0, gym:"Combat Sport & Fitness" },
@@ -10107,9 +10109,9 @@
     { opponent: "Juan Campos", odds: -450 }
   ],
   "Cody Haddon": [
-    { opponent: "Kyler Phillips", odds: 225 },
-    { opponent: "Victor Henry", odds: 220 },
-    { opponent: "Raul Rosas Jr.", odds: 380 }
+    { opponent: "Aoriqileng", odds: -350 },
+    { opponent: "Dan Argueta", odds: -148 },
+    { opponent: "Billy Brand", odds: -160 }
   ],
   "Jingnan Xiong": [
     { opponent: "Rose Namajunas", odds: 255 },
@@ -21124,7 +21126,7 @@ const FIGHT_HISTORY = {
 
 
   "Aoriqileng": [
-    { date: "May 30, 2026", opponent: "Cody Haddon", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
+    { date: "May 30, 2026", opponent: "Cody Haddon", result: "L", method: "KO/TKO", round: 2, time: "2:11", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
     { date: "Sep 14, 2024", opponent: "Raul Rosas Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili" },
     { date: "Apr 13, 2024", opponent: "Victor Henry", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 300: Pereira vs. Hill" },
     { date: "Jun 10, 2023", opponent: "Aiemann Zahabi", result: "L", method: "KO (Punches)", round: 1, time: "1:04", event: "UFC 289: Nunes vs. Aldana" },
@@ -21652,17 +21654,16 @@ const FIGHT_HISTORY = {
     { date: "Oct 14, 2017", opponent: "Nahuel Farias", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hualsur FC" }
   ],
   "Cody Haddon": [
-    { date: "May 30, 2026", opponent: "Aoriqileng", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
-    { date: "Oct 12, 2024", opponent: "Kyler Phillips", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Taira" },
-    { date: "Jul 13, 2024", opponent: "Victor Henry", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Namajunas vs. Cortez" },
-    { date: "Mar 9, 2024", opponent: "Raul Rosas Jr.", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:22", event: "UFC 299: O'Malley vs. Vera 2 (debut)" },
-    { date: "Mar 2, 2024", opponent: "Malcolm Wellmaker", result: "L", method: "TKO (Punches)", round: 2, time: "2:34", event: "LFA 182" },
-    { date: "Aug 19, 2023", opponent: "Malcolm Wellmaker", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 169" },
-    { date: "Mar 18, 2023", opponent: "Raul Rosas Jr.", result: "L", method: "Submission (Armbar)", round: 1, time: "0:30", event: "LFA 121" },
-    { date: "Oct 29, 2022", opponent: "Montel Jackson", result: "L", method: "TKO (Punches)", round: 1, time: "0:37", event: "LFA 107" },
-    { date: "Jul 9, 2022", opponent: "Jose Aguilar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 135" },
-    { date: "Mar 19, 2022", opponent: "Michael Torres", result: "W", method: "TKO (Punches)", round: 2, time: "1:08", event: "LFA 122" },
-    { date: "Dec 4, 2021", opponent: "Joe Tovar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 113" }
+    { date: "May 30, 2026", opponent: "Aoriqileng", result: "W", method: "KO/TKO", round: 2, time: "2:11", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
+    { date: "Oct 12, 2024", opponent: "Dan Argueta", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Taira", org: "UFC" },
+    { date: "Aug 20, 2024", opponent: "Billy Brand", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:09", event: "Dana White's Contender Series: S8 W2 (contract)", org: "UFC" },
+    { date: "Mar 2, 2024", opponent: "Paul Loga", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:22", event: "Hex Fight Series 29" },
+    { date: "Aug 18, 2023", opponent: "Raja Shippen", result: "W", method: "KO (Knee)", round: 1, time: "1:00", event: "Hex Fight Series 27" },
+    { date: "Sep 30, 2022", opponent: "Dong Il Kim", result: "W", method: "TKO (Strikes)", round: 1, time: "0:56", event: "Rogue MMA 4" },
+    { date: "May 29, 2022", opponent: "Jarrett Wilbraham", result: "W", method: "KO/TKO", round: 3, time: "0:30", event: "Eternal MMA 66" },
+    { date: "Jun 5, 2021", opponent: "Steve Erceg", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 60" },
+    { date: "Feb 13, 2021", opponent: "Mark Familari", result: "W", method: "TKO (Punches)", round: 2, time: "1:27", event: "Eternal MMA 56" },
+    { date: "Oct 10, 2020", opponent: "Shantaram Maharaj", result: "W", method: "TKO (Punches)", round: 1, time: "1:08", event: "Eternal MMA 53" }
   ],
   "Jingnan Xiong": [
     { date: "May 30, 2026", opponent: "Angela Hill", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
@@ -32772,6 +32773,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Cody Haddon": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round submission of Billy Brand)", detail: null },
+    { icon: "🏆", title: "Hex Fight Series champion (finished both Raja Shippen and Paul Loga in title fights)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu — 89% finish rate (6 KO/TKO, 2 submissions) on a 7-fight win streak", detail: null }
+  ],
   "Ding Meng": [
     { icon: "🥊", title: "\"The Assassin\" — 28 career wins by KO/TKO (86% finish rate, 30 finishes in 35 wins)", detail: null },
     { icon: "🏆", title: "A1 Combat welterweight champion (2025 — second-round KO of Mirali Huseynov)", detail: null },
