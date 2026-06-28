@@ -3294,7 +3294,7 @@
  { name: "Derrick Lewis", division: "HW", rank: "#9", record: "29-14-0", initials: "DLE", country: "USA" },
  { name: "Marcin Tybura", division: "HW", rank: "#12", record: "27-11-0", initials: "MTY", country: "Poland" },
  { name: "Ante Delija", division: "HW", rank: "#11", record: "26-8-0", initials: "ADL", country: "Croatia" },
- { name: "Tallison Teixeira", division: "HW", rank: "#11", record: "9-2-0", initials: "TTX", country: "Brazil" },
+ { name: "Tallison Teixeira", division: "HW", rank: "NR", record: "9-2-0", initials: "TTX", country: "Brazil" },
  { name: "Shamil Gaziev", division: "HW", rank: "NR", record: "14-3-0", initials: "SGZ", country: "Russia" },
  { name: "Valter Walker", division: "HW", rank: "#13", record: "15-1-0", initials: "VWA", country: "Brazil" },
  { name: "Vitor Petrino", division: "HW", rank: "NR", record: "14-2-0", initials: "VP", country: "Brazil" },
@@ -4501,7 +4501,7 @@
  "Rodolfo Bellato": { ht:"6'3\"", dob:"1996-02-05", reach:'77.5"', stance:"Orthodox", slpm:5.37, strAcc:"60%", sapm:5.86, strDef:"47%", kd:0.46, tdLanded:1.38, tdAcc:"35%", tdDef:"94%", subAvg:0.23, finRate:"92%", streak:1, gym:"Team Nogueira" },
  "Uran Satybaldiev": { ht:"6'4\"", dob:"1994-08-10", reach:'79"', stance:"Orthodox", slpm:2.14, strAcc:"25%", sapm:3.66, strDef:"45%", kd:0.85, tdLanded:0.00, tdAcc:"0%", tdDef:"50%", subAvg:1.69, finRate:"78%", streak:1, gym:"Team Alpha Male" },
  // ── Heavyweight (more) ──
- "Tallison Teixeira": { ht:"6'7\"", dob:"1999-12-07", reach:'83"', stance:"Orthodox", slpm:5.02, tdAcc:"30%", subAvg:0.3, strDef:"42%", kd:0.5, tdDef:"73%", finRate:"78%", streak:0, tdLanded:2.48, gym:"Team Lucas Mineiro" },
+ "Tallison Teixeira": { ht:"6'7\"", dob:"1999-12-07", reach:'83"', stance:"Orthodox", slpm:4.85, strAcc:"63%", sapm:4.10, strDef:"41%", kd:1.60, tdLanded:2.40, tdAcc:"30%", tdDef:null, subAvg:0.00, finRate:"89%", streak:0, gym:"Team Lucas Mineiro" },
  "Marcos Rogerio de Lima":{ ht:"6'1\"", dob:"1985-06-25", reach:'75"', stance:"Orthodox", slpm:3.70, tdAcc:"36%", subAvg:0.4, strDef:"51%", kd:0.3, tdDef:"60%", finRate:"68%", streak:0, tdLanded:1.58, gym:"American Top Team" },
  "Justin Tafa": { ht:"6'0\"", dob:"1993-12-13", reach:'74"', stance:"Southpaw", slpm:4.05, tdAcc:"31%", subAvg:0.0, strDef:"47%", kd:0.5, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.52, gym:"Tafa Gang Fight Team/ NTG" },
  "Mick Parkin": { ht:"6'4\"", dob:"1995-10-02", reach:'79"', stance:"Orthodox", slpm:4.70, strAcc:"50%", sapm:4.13, strDef:"59%", kd:0.23, tdLanded:1.38, tdAcc:"46%", tdDef:"50%", subAvg:0.23, finRate:"70%", streak:0, gym:"Team Fish Tank MMA" },
@@ -9348,9 +9348,11 @@
     { opponent: "Grigoriy Ponomarev", odds: 165 }
   ],
   "Tallison Teixeira": [
-    { opponent: "Tai Tuivasa", odds: -175 },
-    { opponent: "Derrick Lewis", odds: 280 },
-    { opponent: "Justin Tafa", odds: -500 }
+    { opponent: "Sergei Pavlovich", odds: 450 },
+    { opponent: "Tai Tuivasa", odds: -325 },
+    { opponent: "Derrick Lewis", odds: -260 },
+    { opponent: "Justin Tafa", odds: -160 },
+    { opponent: "Arthur Lopes", odds: -1050 }
   ],
   "Mick Parkin": [
     { opponent: "Marcin Tybura", odds: -165 },
@@ -32686,6 +32688,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Tallison Teixeira": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round KO of Arthur Lopes)", detail: null },
+    { icon: "🥊", title: "\"Xicao\" — 6'7\" knockout artist; 89% finish rate (7 KO/TKO, 1 submission)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null }
+  ],
   "Shauna Bannon": [
     { icon: "🏆", title: "Cage Legacy Women's Strawweight Champion", detail: null },
     { icon: "🥋", title: "Taekwondo black belt; Brazilian Jiu-Jitsu purple belt", detail: null },
