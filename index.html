@@ -3424,7 +3424,7 @@
  { name: "Lyoto Machida", division: "LHW", rank: "NR", record: "28-12-0", initials: "LMA", country: "Brazil" },
  { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-10-0", initials: "BRI", country: "Brazil" },
  { name: "Tuco Tokkos", division: "LHW", rank: "NR", record: "11-6-0", initials: "TTK", country: "France" },
- { name: "Ivan Erslan", division: "LHW", rank: "NR", record: "14-6-0", initials: "IER", country: "Turkey" },
+ { name: "Ivan Erslan", division: "LHW", rank: "NR", record: "15-6-0", initials: "IER", country: "Croatia" },
  { name: "Rodolfo Bellato", division: "LHW", rank: "NR", record: "13-3-1", initials: "RBE", country: "Brazil" },
  { name: "Uran Satybaldiev", division: "LHW", rank: "NR", record: "9-1-0", initials: "USA2", country: "Kyrgyzstan" },
  { name: "Abdulrakhman Yakhyaev", division: "LHW", rank: "NR", record: "9-0-0", initials: "ARY", country: "Turkey" },
@@ -4564,7 +4564,7 @@
  "Ihor Potieria": { ht:"6'3\"", dob:"1996-05-29", reach:'75"', stance:"Southpaw", slpm:4.44, tdAcc:"31%", subAvg:0.3, strDef:"50%", kd:0.3, tdDef:"65%", finRate:"60%", streak:0, tdLanded:0.97 },
  // ── Light Heavyweight (more) ──
  "Diyar Nurgozhay": { ht:"6'2\"", dob:"1997-04-22", reach:'74"', stance:"Southpaw", slpm:4.52, strAcc:"59%", sapm:2.81, strDef:"61%", kd:0.46, tdLanded:1.37, tdAcc:"75%", tdDef:"80%", subAvg:0.00, finRate:"73%", streak:1, gym:"Tobet Top Team" },
- "Ivan Erslan": { ht:"6'2\"", dob:"1991-11-15", reach:'72"', stance:"Orthodox", slpm:2.55, tdAcc:"20%", subAvg:0.0, strDef:"53%", kd:0.2, tdDef:"61%", finRate:"57%", streak:0, tdLanded:0.45 },
+ "Ivan Erslan": { ht:"6'2\"", dob:"1991-11-15", reach:'72.5"', stance:"Orthodox", slpm:2.53, strAcc:"49%", sapm:4.57, strDef:"54%", kd:0.00, tdLanded:0.93, tdAcc:"38%", tdDef:"70%", subAvg:0.00, finRate:"73%", streak:1, gym:"American Top Team" },
  // ── Heavyweight (more) ──
  "Josh Parisian": { ht:"6'4\"", dob:"1989-06-28", reach:'79"', stance:"Orthodox", slpm:4.55, tdAcc:"29%", subAvg:0.4, strDef:"41%", kd:0.4, tdDef:"62%", finRate:"60%", streak:0, tdLanded:0.98, gym:"Scorpion Fighting System" },
  // ── Women's Strawweight (more) ──
@@ -7279,11 +7279,17 @@
     { opponent: "Oumar Sy", odds: 175 }
   ],
   "Ivan Erslan": [
-    { opponent: "Jimmy Crute", odds: 175 },
-    { opponent: "Navajo Stirling", odds: 190 },
-    { opponent: "Ion Cutelaba", odds: 215 },
-    { opponent: "Maxim Grishin", odds: 195 },
-    { opponent: "Zhan Biyakun", odds: -350 }
+    { opponent: "Tuco Tokkos", odds: -174 },
+    { opponent: "Jimmy Crute", odds: 190 },
+    { opponent: "Navajo Stirling", odds: 255 },
+    { opponent: "Ion Cutelaba", odds: -120 },
+    { opponent: "Bogdan Gnidko", odds: -110 },
+    { opponent: "Rafal Haratyk", odds: -175 },
+    { opponent: "Ibragim Chuzhigaev", odds: 204 },
+    { opponent: "Rafal Kijanczuk", odds: -473 },
+    { opponent: "Przemyslaw Mysiala", odds: -345 },
+    { opponent: "Tomasz Narkun", odds: 240 },
+    { opponent: "Darwin Rodriguez", odds: -335 }
   ],
   "Nicolas Dalby": [
     { opponent: "Gabriel Bonfim", odds: 175 },
@@ -16489,13 +16495,28 @@ const FIGHT_HISTORY = {
 
 
   "Ivan Erslan": [
+    { date: "May 16, 2026", opponent: "Tuco Tokkos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa" },
     { date: "Sep 27, 2025", opponent: "Jimmy Crute", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:19", event: "UFC Fight Night: Ulberg vs. Reyes" },
-    { date: "May 10, 2025", opponent: "Navajo Stirling", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315" },
+    { date: "May 10, 2025", opponent: "Navajo Stirling", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315: Muhammad vs. Della Maddalena" },
     { date: "Sep 28, 2024", opponent: "Ion Cutelaba", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis" },
-    { date: "Jul 15, 2023", opponent: "Maxim Grishin", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:44", event: "Road to UFC Season 1 Semifinal" },
-    { date: "Jun 09, 2022", opponent: "Zhan Biyakun", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 1 Round 1" },
-    { date: "Sep 04, 2021", opponent: "Mamed Khalidov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 64" },
-    { date: "Dec 05, 2020", opponent: "Maciej Graczyk", result: "W", method: "KO/TKO (Punches)", round: 1, time: "0:48", event: "KSW 57" }
+    { date: "Feb 24, 2024", opponent: "Bogdan Gnidko", result: "W", method: "KO (Punches)", round: 1, time: "0:54", event: "KSW Epic: Khalidov vs. Adamek" },
+    { date: "Oct 14, 2023", opponent: "Rafal Haratyk", result: "L", method: "TKO (Punches)", round: 1, time: "4:21", event: "KSW 87" },
+    { date: "May 28, 2023", opponent: "Dirlei Broenstrup", result: "W", method: "TKO (Punches)", round: 1, time: "1:57", event: "Fight Nation Championship 11" },
+    { date: "Dec 17, 2022", opponent: "Ibragim Chuzhigaev", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "KSW 77 (title)" },
+    { date: "May 28, 2022", opponent: "Rafal Kijanczuk", result: "W", method: "TKO (Punches)", round: 1, time: "3:31", event: "KSW 70" },
+    { date: "Dec 4, 2021", opponent: "Henrique da Silva", result: "W", method: "TKO (Punches)", round: 1, time: "3:20", event: "FNC 4: Armaggedon" },
+    { date: "Jun 5, 2021", opponent: "Przemyslaw Mysiala", result: "W", method: "TKO (Punches)", round: 1, time: "4:02", event: "KSW 61" },
+    { date: "Nov 14, 2020", opponent: "Tomasz Narkun", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "0:51", event: "KSW 56 (title)" },
+    { date: "Jul 31, 2020", opponent: "Jusuf Hajrovic", result: "W", method: "TKO (Punches)", round: 1, time: "3:38", event: "FNC 3" },
+    { date: "Nov 9, 2019", opponent: "Darwin Rodriguez", result: "W", method: "TKO (Punches)", round: 1, time: "1:29", event: "KSW 51" },
+    { date: "May 30, 2019", opponent: "Roger Carroll", result: "W", method: "TKO (Punches)", round: 1, time: "1:37", event: "FFC 37" },
+    { date: "Oct 19, 2018", opponent: "Branko Busick", result: "NC", method: "No Contest", round: 2, time: "4:41", event: "FFC 32" },
+    { date: "May 12, 2018", opponent: "Vlatko Pecalj", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "0:20", event: "Noc Gladijatora: Karlovac" },
+    { date: "Feb 17, 2018", opponent: "Toni Markulev", result: "W", method: "Decision", round: 3, time: "5:00", event: "Athletic FC 1" },
+    { date: "Apr 22, 2017", opponent: "Ivica Tadijanov", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "FFC 29" },
+    { date: "Jan 21, 2017", opponent: "Muhamad Mahmic", result: "W", method: "TKO (Punches)", round: 1, time: "0:23", event: "Munja Fighting Championship" },
+    { date: "Feb 20, 2016", opponent: "Vlado Neferanovic", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Nokaut FC 8" },
+    { date: "May 2, 2015", opponent: "Mateo Piscak", result: "W", method: "TKO (Punches)", round: 1, time: "2:30", event: "Nokaut FC 5 (pro debut)" }
   ],
   "Tuco Tokkos": [
     { date: "May 16, 2026", opponent: "Ivan Erslan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa", org: "UFC" },
@@ -32600,6 +32621,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ivan Erslan": [
+    { icon: "🏅", title: "Two-time KSW Light Heavyweight title challenger (vs. Tomasz Narkun & Ibragim Chuzhigaev)", detail: null },
+    { icon: "🥊", title: "Knockout artist — 10 of 15 wins by KO/TKO; boxing-based striker out of American Top Team", detail: null }
+  ],
   "Nikolay Veretennikov": [
     { icon: "🏆", title: "Fury Fighting Championship Welterweight Champion", detail: null },
     { icon: "🏅", title: "United Fight League Welterweight Grand Prix winner (2024)", detail: null },
