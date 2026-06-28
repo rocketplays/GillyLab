@@ -3417,7 +3417,7 @@
  // ─── MIDDLEWEIGHT (extended) ───
  { name: "Claudio Ribeiro", division: "MW", rank: "NR", record: "11-5-0", initials: "CRI", country: "Brazil" },
  { name: "Joe Pyfer", division: "MW", rank: "#7", record: "16-3-0", initials: "JPY2", country: "USA" },
- { name: "Mohammed Usman", division: "MW", rank: "NR", record: "11-4-0", initials: "MUS", country: "UK" },
+ { name: "Mohammed Usman", division: "HW", rank: "NR", record: "11-4-0", initials: "MUS", country: "Nigeria" },
  { name: "Nassourdine Imavov", division: "MW", rank: "#3", record: "17-4-0", initials: "NIM2", country: "France" },
  { name: "Brendan Allen", division: "MW", rank: "#4", record: "27-7-0", initials: "BAL2", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT (extended) ───
@@ -4499,7 +4499,7 @@
  "Niko Price": { ht:"6'0\"", dob:"1989-09-29", reach:'76"', stance:"Orthodox", slpm:5.11, strAcc:"43%", sapm:5.57, strDef:"48%", kd:0.44, tdLanded:1.06, tdAcc:"31%", tdDef:"50%", subAvg:0.62, finRate:"81%", streak:0, gym:"FightMe Combat Sports" },
  "Jeremiah Wells": { ht:"5'9\"", dob:"1986-10-30", reach:'74"', stance:"Switch", slpm:2.35, tdAcc:"46%", subAvg:0.5, strDef:"48%", kd:0.2, tdDef:"70%", finRate:"62%", streak:0, tdLanded:3.06, gym:"Extreme Evolution Fight Camp" },
  // ── Middleweight (more) ──
- "Mohammed Usman": { ht:"6'2\"", dob:"1989-04-01", reach:'79"', stance:"Orthodox", slpm:3.85, tdAcc:"38%", subAvg:0.3, strDef:"51%", kd:0.3, tdDef:"72%", finRate:"58%", streak:0, tdLanded:0.56 },
+ "Mohammed Usman": { ht:"6'2\"", dob:"1989-04-01", reach:'79"', stance:"Orthodox", slpm:3.85, strAcc:"39%", sapm:4.27, strDef:"51%", kd:0.19, tdLanded:0.56, tdAcc:"14%", tdDef:"67%", subAvg:0.0, finRate:"55%", streak:1, gym:"Kill Cliff FC" },
  // ── Light Heavyweight (more) ──
  "Navajo Stirling": { ht:"6'4\"", dob:"1997-11-07", reach:'79"', stance:"Orthodox", slpm:6.24, strAcc:"54%", sapm:2.62, strDef:"58%", kd:0.64, tdLanded:0.86, tdAcc:"27%", tdDef:"71%", subAvg:0.0, finRate:"60%", streak:10, gym:"City Kickboxing" },
  "Rodolfo Bellato": { ht:"6'3\"", dob:"1996-02-05", reach:'77.5"', stance:"Orthodox", slpm:5.37, strAcc:"60%", sapm:5.86, strDef:"47%", kd:0.46, tdLanded:1.38, tdAcc:"35%", tdDef:"94%", subAvg:0.23, finRate:"92%", streak:1, gym:"Team Nogueira" },
@@ -14514,6 +14514,12 @@
     { opponent: "Akhmed Salamov", odds: 450 },
   ],
   "Mohammed Usman": [
+    { opponent: "Hamdy Abdelwahab", odds: 110 },
+    { opponent: "Thomas Petersen", odds: -150 },
+    { opponent: "Mick Parkin", odds: 142 },
+    { opponent: "Jake Collier", odds: -150 },
+    { opponent: "Junior Tafa", odds: -120 },
+    { opponent: "Zac Pauga", odds: 170 }
   ],
   "Alden Coria": [
     { opponent: "Luis Gurule", odds: -410 },
@@ -32035,10 +32041,21 @@ const FIGHT_HISTORY = {
     { date: "Nov 26, 2016", opponent: "Paul Batomene", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:05", event: "We Love MMA 26", org: "WLMMA" },
   ],
   "Mohammed Usman": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
-    { date: "Oct 5, 2025", opponent: "Tyler Brassington", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:44", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Jun 14, 2025", opponent: "Aaron Shields", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 181" },
-    { date: "Mar 1, 2025", opponent: "Jordan Parker", result: "W", method: "KO (Punches)", round: 1, time: "0:34", event: "LFA 177" }
+    { date: "Jun 21, 2025", opponent: "Hamdy Abdelwahab", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hill vs. Rountree Jr.", org: "UFC" },
+    { date: "Jul 20, 2024", opponent: "Thomas Petersen", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lemos vs. Jandiroba", org: "UFC" },
+    { date: "Mar 23, 2024", opponent: "Mick Parkin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ribas vs. Namajunas", org: "UFC" },
+    { date: "Sep 23, 2023", opponent: "Jake Collier", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Fiziev vs. Gamrot", org: "UFC" },
+    { date: "Apr 22, 2023", opponent: "Junior Tafa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Pavlovich vs. Blaydes", org: "UFC" },
+    { date: "Aug 6, 2022", opponent: "Zac Pauga", result: "W", method: "KO (Punches)", round: 2, time: "0:36", event: "UFC Fight Night: Santos vs. Hill (TUF 30 HW final)", org: "UFC" },
+    { date: "May 6, 2021", opponent: "Brandon Sayles", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "3:42", event: "2021 PFL Regular Season", org: "PFL" },
+    { date: "Aug 28, 2020", opponent: "Terrance Hodges", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Titan FC 63" },
+    { date: "Dec 20, 2019", opponent: "Reggie Cato", result: "W", method: "TKO (Punches)", round: 1, time: "0:48", event: "Titan FC 58" },
+    { date: "Oct 19, 2019", opponent: "Alexis Garcia", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "Titan FC 57" },
+    { date: "Mar 15, 2019", opponent: "Frank Tate", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Titan FC 53" },
+    { date: "Apr 14, 2018", opponent: "Don'Tale Mayes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Victory FC 60" },
+    { date: "Nov 2, 2017", opponent: "Van Michael Palacio", result: "W", method: "TKO (Punches)", round: 1, time: "4:52", event: "Tachi Palace Fights 33" },
+    { date: "Aug 3, 2017", opponent: "Dante Harrell", result: "W", method: "Submission (Kimura)", round: 1, time: "1:08", event: "Tachi Palace Fights 32" },
+    { date: "May 18, 2017", opponent: "Derrick Williams", result: "W", method: "Submission (Kimura)", round: 1, time: "1:16", event: "Tachi Palace Fights 31" }
   ],
   "Alden Coria": [
     { date: "Feb 21, 2026", opponent: "Luis Gurule", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Strickland vs. Hernandez", org: "UFC" },
@@ -32929,6 +32946,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Mohammed Usman": [
+    { icon: "🏆", title: "The Ultimate Fighter 30 heavyweight tournament winner (2022)", detail: null },
+    { icon: "🥊", title: "\"The Motor\" — younger brother of former UFC welterweight champion Kamaru Usman", detail: null }
   ],
   "Saygid Izagakhmaev": [
     { icon: "🥋", title: "Grappling specialist — 13 of 22 wins by submission", detail: null },
