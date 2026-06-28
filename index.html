@@ -3113,7 +3113,7 @@
  { name: "Charles Johnson", division: "FLW", rank: "#14", record: "19-8-0", initials: "CJ", country: "USA" },
  { name: "Bruno Gustavo da Silva", division: "FLW", rank: "#14", record: "15-9-2", initials: "BGS", country: "Brazil" },
  { name: "Joseph Morales", division: "FLW", rank: "#15", record: "15-2-0", initials: "JMO", country: "USA" },
- { name: "Zhalgas Zhumagulov", division: "FLW", rank: "NR", record: "19-9-0", initials: "ZZ", country: "Kazakhstan" },
+ { name: "Zhalgas Zhumagulov", division: "FLW", rank: "NR", record: "19-9-0", initials: "ZZ", country: "Kazakhstan" }, // 1 NC
  { name: "Clayton Carpenter", division: "FLW", rank: "NR", record: "8-3-0", initials: "CC", country: "USA" },
  { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "9-2-0", initials: "JO", country: "Peru" }, // 1 NC
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "17-11-0", initials: "MSC", country: "USA" }, // 1 NC
@@ -4484,7 +4484,7 @@
  "Matt Schnell": { ht:"5'8\"", dob:"1990-01-15", reach:'70"', stance:"Orthodox", slpm:4.05, strAcc:"40%", sapm:4.18, strDef:"55%", kd:0.12, tdLanded:0.59, tdAcc:"45%", tdDef:"43%", subAvg:1.18, finRate:"65%", streak:0, gym:"Fortis MMA" },
  "Tyson Nam": { ht:"5'7\"", dob:"1983-10-06", reach:'68"', stance:"Orthodox", slpm:3.87, tdAcc:"0%", subAvg:0.0, strDef:"65%", kd:0.3, tdDef:"50%", finRate:"57%", streak:0, tdLanded:0.00, gym:"Gracie Technics (2021–present)" },
  "Charles Johnson": { ht:"5'9\"", dob:"1991-01-10", reach:'70"', stance:"Switch", slpm:4.77, strAcc:"50%", sapm:4.02, strDef:"56%", kd:0.34, tdLanded:0.51, tdAcc:"17%", tdDef:"69%", subAvg:0.34, finRate:"58%", streak:1, gym:"Fusion X-Cel" },
- "Zhalgas Zhumagulov": { ht:"5'4\"", dob:"1988-08-29", reach:'66"', stance:"Switch", slpm:5.24, tdAcc:"33%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"63%", finRate:"46%", streak:0, tdLanded:1.30, gym:"Erkin Kush" },
+ "Zhalgas Zhumagulov": { ht:"5'4\"", dob:"1988-08-29", reach:'66"', stance:"Switch", slpm:5.24, strAcc:"43%", sapm:5.86, strDef:"52%", kd:0.0, tdLanded:1.30, tdAcc:null, tdDef:"75%", subAvg:0.19, finRate:"53%", streak:5, gym:"Erkin Kush" },
  "Muhammad Mokaev": { ht:"5'7\"", dob:"2000-07-30", reach:'70"', stance:"Orthodox", slpm:1.61, tdAcc:"41%", subAvg:1.3, strDef:"57%", kd:0.1, tdDef:"25%", finRate:"77%", streak:0, tdLanded:5.29, gym:"Aspire Combat Sports Academy (2015–present)" },
  // ── Bantamweight (more) ──
  "Miles Johns": { ht:"5'7\"", dob:"1994-03-30", reach:'68"', stance:"Orthodox", slpm:3.36, tdAcc:"36%", subAvg:0.5, strDef:"65%", kd:0.2, tdDef:"75%", finRate:"60%", streak:0, tdLanded:1.80, gym:"Sampson Jiu-Jitsu Academy" },
@@ -13780,11 +13780,18 @@
     { opponent: "Jinh Yu Frey", odds: -175 }
   ],
   "Zhalgas Zhumagulov": [
-    { opponent: "Tagir Ulanbekov", odds: 250 },
-    { opponent: "Manel Kape", odds: 500 },
-    { opponent: "Jeff Molina", odds: 250 },
-    { opponent: "Amir Albazi", odds: 350 },
-    { opponent: "Su Mudaerji", odds: 300 }
+    { opponent: "Igor Severino", odds: 250 },
+    { opponent: "David Dvořák", odds: 120 },
+    { opponent: "Beno Adamia", odds: -400 },
+    { opponent: "Aaron Aby", odds: -275 },
+    { opponent: "Joshua Van", odds: 190 },
+    { opponent: "Charles Johnson", odds: 152 },
+    { opponent: "Jeff Molina", odds: 170 },
+    { opponent: "Manel Kape", odds: 275 },
+    { opponent: "Jerome Rivera", odds: -220 },
+    { opponent: "Amir Albazi", odds: -103 },
+    { opponent: "Raulian Paiva", odds: 140 },
+    { opponent: "Tagir Ulanbekov", odds: 375 }
   ],
   "Talita Alencar": [
     { opponent: "Julia Polastri", odds: 198 },
@@ -29971,9 +29978,9 @@ const FIGHT_HISTORY = {
     { date: "Jul 6, 2015", opponent: "Zhifa Shang", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Kunlun Fight: Cage Fight Series 3" },
     { date: "Jan 24, 2015", opponent: "Vartan Asatryan", result: "L", method: "TKO (Punches)", round: 2, time: "3:00", event: "Alash Pride: Royal Plaza Volume 2" },
     { date: "Oct 6, 2014", opponent: "Bekzat Aliev", result: "W", method: "TKO (Punches)", round: 3, time: "2:10", event: "Zhekpe Zhek: Bantamweight Grand Prix" },
-    { opponent: "Salat Biskhanov", result: "W", method: "TKO (Punches)", event: "1" },
-    { opponent: "Tyjybaev Andos", result: "W", method: "TKO (Punches)", event: "3" },
-    { opponent: "Nursulat Serker", result: "W", method: "TKO (Punches)", event: "1" },
+    { date: "Oct 6, 2014", opponent: "Salat Biskhanov", result: "W", method: "TKO (Punches)", round: 1, time: "1:10", event: "Zhekpe Zhek: Bantamweight Grand Prix" },
+    { date: "Oct 6, 2014", opponent: "Tyjybaev Andos", result: "W", method: "TKO (Punches)", round: 3, time: "2:10", event: "Zhekpe Zhek: Bantamweight Grand Prix" },
+    { date: "Oct 6, 2014", opponent: "Nursulat Serker", result: "W", method: "TKO (Punches)", round: 1, time: "2:47", event: "Zhekpe Zhek: Bantamweight Grand Prix" },
     { date: "Sep 25, 2014", opponent: "Nurbay Mirzaliev", result: "W", method: "TKO (Submission to punches)", round: 2, time: "3:14", event: "White Night FC: Elets Battle" },
     { date: "Sep 7, 2014", opponent: "Yerlan Semebekov", result: "W", method: "TKO (Punches)", round: 1, time: "3:54", event: "Altay Republik MMA League: Altay vs. Siberia" }
   ],
@@ -32829,6 +32836,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Zhalgas Zhumagulov": [
+    { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — won the title in 2025)", detail: null },
+    { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
+    { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
   "Joseph Morales": [
     { icon: "🥊", title: "\"Bopo\" — submission specialist (8 of 10 career finishes by submission)", detail: null },
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
