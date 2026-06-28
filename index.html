@@ -3488,7 +3488,7 @@
  // ─── BANTAMWEIGHT (extended) ───
  { name: "Kyler Phillips", division: "BW", rank: "NR", record: "12-5-0", initials: "KPH2", country: "USA" }, { name: "Natan Levy", division: "BW", rank: "NR", record: "13-2-0", initials: "NLE", country: "Israel" },
  { name: "Marcus McGhee", division: "BW", rank: "#15", record: "11-2-0", initials: "MMG2", country: "USA" },
- { name: "Victor Henry", division: "BW", rank: "NR", record: "25-7-1", initials: "VHE", country: "USA" },
+ { name: "Victor Henry", division: "BW", rank: "NR", record: "25-7-0", initials: "VHE", country: "USA" }, // 1 NC
  { name: "Luan Lacerda", division: "BW", rank: "NR", record: "13-4-0", initials: "LLA", country: "Brazil" },
  { name: "Hecher Sosa", division: "BW", rank: "NR", record: "15-1-0", initials: "HSO", country: "Spain" },
  { name: "John Castaneda", division: "BW", rank: "NR", record: "21-8-1", initials: "JCA4", country: "USA" },
@@ -4593,7 +4593,7 @@
  "Tainara Lisboa": { ht:"5'7\"", dob:"1991-03-02", reach:'67"', stance:"Orthodox", slpm:2.01, tdAcc:"31%", subAvg:0.3, strDef:"45%", kd:0.1, tdDef:"53%", finRate:"45%", streak:0, tdLanded:1.67 },
  // ── Final sweep ──
  "Rizvan Kuniev": { ht:'6\'4"', dob:"1992-03-10", reach:'76"', stance:"Orthodox", slpm:3.94, strAcc:"55%", sapm:2.33, strDef:"48%", kd:0.33, tdLanded:0.98, tdAcc:"75%", tdDef:"93%", subAvg:0.00, finRate:"62%", streak:1, gym:"Gorets Fight Club" },
- "Victor Henry": { ht:"5'7\"", dob:"1987-05-04", reach:'68"', stance:"Switch", slpm:7.17, tdAcc:"40%", subAvg:0.6, strDef:"48%", kd:0.3, tdDef:"72%", finRate:"56%", streak:0, tdLanded:1.04, gym:"UWF USA" },
+ "Victor Henry": { ht:"5'7\"", dob:"1987-05-04", reach:'68"', stance:"Switch", slpm:7.17, strAcc:"53%", sapm:5.19, strDef:"48%", kd:0.52, tdLanded:1.04, tdAcc:"43%", tdDef:"81%", subAvg:0.35, finRate:"60%", streak:1, gym:"UWF-USA" },
  "Quillan Salkilld": { ht:"6'0\"", dob:"1999-12-28", reach:'75"', stance:"Orthodox", slpm:5.01, strAcc:"58%", sapm:3.03, strDef:"45%", kd:1.14, tdLanded:7.25, tdAcc:"36%", tdDef:"80%", subAvg:0.76, finRate:"75%", streak:12, gym:"Luistro Combat Academy" },
  "Gauge Young": { ht:"5'9\"", dob:"2000-07-14", reach:'70"', stance:"Orthodox", slpm:6.32, strAcc:"52%", sapm:5.12, strDef:"49%", kd:0.25, tdLanded:0.75, tdAcc:"30%", tdDef:"77%", subAvg:0.0, finRate:"64%", streak:2, gym:"Ignite Jiu-Jitsu & MMA" },
  "Sam Patterson": { ht:"6'3\"", dob:"1996-04-30", reach:'78"', stance:"Orthodox", slpm:2.62, strAcc:"38%", sapm:3.06, strDef:"50%", kd:0.41, tdLanded:0.82, tdAcc:"50%", tdDef:"33%", subAvg:1.64, finRate:"93%", streak:0, gym:"Team Crossface" },
@@ -9838,13 +9838,7 @@
     { opponent: "Jean Silva", odds: 165 }
   ],
   "Victor Henry": [
-    { opponent: "Mario Bautista", odds: 210 },
-    { opponent: "Aoriqileng", odds: -350 },
-    { opponent: "Joanderson Brito", odds: -165 },
-    { opponent: "Chris Gutierrez", odds: -200 },
-    { opponent: "Brian Kelleher", odds: -300 },
-    { opponent: "Manel Kape", odds: 180 },
-    { opponent: "Felipe Colares", odds: -400 }
+    { opponent: "Raoni Barcelos", odds: 290 }
   ],
   "Norma Dumont": [
     { opponent: "Joselyne Edwards", odds: -220 },
@@ -21024,7 +21018,7 @@ const FIGHT_HISTORY = {
     { date: "Apr 5, 2025", opponent: "Pedro Falcão", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Emmett vs. Murphy", org: "UFC" },
     { date: "Nov 2, 2024", opponent: "Charles Jourdain", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "3:43", event: "UFC Fight Night: Moreno vs. Albazi", org: "UFC" },
     { date: "Apr 27, 2024", opponent: "Rani Yahya", result: "W", method: "TKO (Head kick and punches)", round: 3, time: "2:36", event: "UFC on ESPN: Nicolau vs. Perez", org: "UFC" },
-    { date: "Oct 21, 2023", opponent: "Javid Basharat", result: "D", method: "NC (Accidental groin kick)", round: 2, time: "0:15", event: "UFC 294", org: "UFC" },
+    { date: "Oct 21, 2023", opponent: "Javid Basharat", result: "NC", method: "NC (Accidental groin kick)", round: 2, time: "0:15", event: "UFC 294", org: "UFC" },
     { date: "Mar 11, 2023", opponent: "Tony Gravely", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Dvalishvili", org: "UFC" },
     { date: "Oct 15, 2022", opponent: "Raphael Assunção", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Araújo", org: "UFC" },
     { date: "Jan 22, 2022", opponent: "Raoni Barcelos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 270", org: "UFC" },
@@ -21051,9 +21045,9 @@ const FIGHT_HISTORY = {
     { date: "Aug 9, 2013", opponent: "Jeff Martin", result: "W", method: "Submission (Armbar)", round: 1, time: "4:22", event: "BAMMA Badbeat 10" },
     { date: "Jul 11, 2013", opponent: "Kevin Michel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KOTC: Validation" },
     { date: "May 16, 2013", opponent: "Bronson Casarez", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "Fight Club OC: Rumble on the Range 4" },
+    { date: "May 4, 2013", opponent: "Dillion Croushorn", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:36", event: "Respect in the Cage" },
     { date: "Jan 21, 2012", opponent: "Bobby Sanchez", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:34", event: "Respect in the Cage 16" },
-    { date: "Oct 9, 2010", opponent: "Gary Mikayelyan", result: "W", method: "TKO (Punches)", time: "N/A", event: "Respect in the Cage 8" },
-    { date: "Aug 21, 2010", opponent: "Dillion Croushorn", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:36", event: "Respect in the Cage 7" }
+    { date: "Oct 9, 2010", opponent: "Gary Michaels", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "Respect in the Cage 8" }
   ],
 
   "Norma Dumont": [
@@ -32918,6 +32912,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Victor Henry": [
+    { icon: "🥊", title: "\"La Mangosta\" — 15 of 25 wins by finish (8 submissions, 7 KO/TKO)", detail: null },
+    { icon: "🥋", title: "Black belt in Taekwondo", detail: null },
+    { icon: "🏆", title: "Former LXF bantamweight champion; Pancrase, RIZIN & DEEP veteran", detail: null }
   ],
   "Chepe Mariscal": [
     { icon: "🥋", title: "Black belt in judo and Japanese jiu-jitsu; purple belt in BJJ", detail: null },
