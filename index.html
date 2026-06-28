@@ -3597,6 +3597,7 @@
  { name: "Christian Edwards", division: "LHW", rank: "NR", record: "8-5-0", initials: "CED", country: "USA" },
  { name: "Benardo Sopaj", division: "BW", rank: "NR", record: "13-3-0", initials: "BSO", country: "Albania" },
  { name: "Timmy Cuamba", division: "BW", rank: "NR", record: "10-4-0", initials: "TCU", country: "USA" },
+ { name: "Nikolay Veretennikov", division: "WW", rank: "NR", record: "14-8-0", initials: "NVE", country: "Kazakhstan" },
  { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
@@ -4420,6 +4421,7 @@
  "Christian Edwards": { ht:"6'5\"", dob:"1998-11-05", reach:'78.5"', stance:"Orthodox", slpm:2.40, strAcc:"51%", sapm:2.40, strDef:"55%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"75%", streak:0, gym:"Jackson Wink MMA" },
  "Benardo Sopaj": { ht:"5'6\"", dob:"2000-09-25", reach:'66"', stance:"Orthodox", slpm:4.39, strAcc:"58%", sapm:4.69, strDef:"53%", kd:0.81, tdLanded:2.43, tdAcc:"60%", tdDef:"77%", subAvg:0.81, finRate:"85%", streak:2, gym:"Allstars Training Center" },
  "Timmy Cuamba": { ht:"5'9\"", dob:"1999-02-08", reach:'71"', stance:"Orthodox", slpm:2.77, strAcc:"44%", sapm:3.58, strDef:"58%", kd:0.22, tdLanded:1.31, tdAcc:"32%", tdDef:"72%", subAvg:0.00, finRate:"50%", streak:0, gym:"BK MMA" },
+ "Nikolay Veretennikov": { ht:"6'1\"", dob:"1989-12-22", reach:'74"', stance:"Orthodox", slpm:2.74, strAcc:"56%", sapm:3.43, strDef:"47%", kd:0.00, tdLanded:0.40, tdAcc:"17%", tdDef:"63%", subAvg:0.40, finRate:"79%", streak:0, gym:"Kings MMA" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -7096,11 +7098,13 @@
     { opponent: "Abdul Razak Alhassan", odds: 156 }
   ],
   "Nikolay Veretennikov": [
-    { opponent: "Niko Price", odds: -165 },
-    { opponent: "Punahele Soriano", odds: 180 },
-    { opponent: "Francisco Prado", odds: -125 },
-    { opponent: "Austin Vanderford", odds: 175 },
-    { opponent: "Danny Barlow", odds: -300 }
+    { opponent: "Khaos Williams", odds: -102 },
+    { opponent: "Niko Price", odds: -261 },
+    { opponent: "Punahele Soriano", odds: 285 },
+    { opponent: "Austin Vanderford", odds: -112 },
+    { opponent: "Danny Barlow", odds: 320 },
+    { opponent: "Michael Morales", odds: -191 },
+    { opponent: "Steve Jones", odds: -155 }
   ],
   "Christian Edwards": [
     { opponent: "Modestas Bukauskas", odds: 245 },
@@ -16236,26 +16240,28 @@ const FIGHT_HISTORY = {
 
 
   "Nikolay Veretennikov": [
-    { date: "Feb 07, 2026", opponent: "Niko Price", result: "W", method: "KO/TKO (Elbows)", round: 1, time: "1:42", event: "UFC Fight Night: Bautista vs. Oliveira" },
-    { date: "Oct 04, 2025", opponent: "Punahele Soriano", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 320" },
-    { date: "Jul 19, 2025", opponent: "Francisco Prado", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 318" },
-    { date: "Feb 22, 2025", opponent: "Austin Vanderford", result: "L", method: "KO/TKO (Ground Punches)", round: 2, time: "4:13", event: "UFC Fight Night: Cejudo vs. Song" },
+    { date: "May 16, 2026", opponent: "Khaos Williams", result: "L", method: "TKO (Punches)", round: 1, time: "3:31", event: "UFC Fight Night: Allen vs. Costa" },
+    { date: "Feb 7, 2026", opponent: "Niko Price", result: "W", method: "KO (Elbows)", round: 1, time: "1:42", event: "UFC Fight Night: Bautista vs. Oliveira" },
+    { date: "Oct 4, 2025", opponent: "Punahele Soriano", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 320: Ankalaev vs. Pereira 2" },
+    { date: "Jul 19, 2025", opponent: "Francisco Prado", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 318: Holloway vs. Poirier 3" },
+    { date: "Feb 22, 2025", opponent: "Austin Vanderford", result: "L", method: "TKO (Ground punches)", round: 2, time: "4:13", event: "UFC Fight Night: Cejudo vs. Song" },
     { date: "Aug 10, 2024", opponent: "Danny Barlow", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Tybura vs. Spivac 2" },
-    { date: "Apr 27, 2024", opponent: "Ashley Reece", result: "W", method: "KO/TKO (Punches)", round: 1, time: "2:47", event: "United Fight League 4" },
-    { date: "Aug 12, 2023", opponent: "Luis Iniguez", result: "W", method: "KO/TKO (Punches)", round: 2, time: "4:16", event: "United Fight League 3" },
+    { date: "Apr 27, 2024", opponent: "Ashley Reece", result: "W", method: "TKO (Punches)", round: 1, time: "2:47", event: "United Fight League 4 (title)" },
+    { date: "Aug 12, 2023", opponent: "Luis Iniguez", result: "W", method: "TKO (Punches)", round: 2, time: "4:16", event: "United Fight League 3" },
     { date: "May 13, 2023", opponent: "Demarques Jackson", result: "W", method: "Submission (Armbar)", round: 2, time: "1:38", event: "United Fight League 2" },
-    { date: "Sep 21, 2021", opponent: "Michael Morales", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 5 Week 4" },
-    { date: "May 16, 2021", opponent: "Anthony Ivy", result: "W", method: "KO/TKO (Punches)", round: 1, time: "2:00", event: "Fury FC 46" },
+    { date: "Sep 21, 2021", opponent: "Michael Morales", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series S5 W4" },
+    { date: "May 16, 2021", opponent: "Anthony Ivy", result: "W", method: "TKO (Punches)", round: 1, time: "2:00", event: "Fury FC 46 (title)" },
     { date: "Mar 19, 2021", opponent: "Steve Jones", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 102" },
-    { date: "Sep 28, 2019", opponent: "Austin Jones", result: "W", method: "KO/TKO (Punches)", round: 1, time: "1:15", event: "Fury FC 37" },
-    { date: "Dec 08, 2017", opponent: "Melvin Jordan", result: "W", method: "KO/TKO (Ground Punches)", round: 1, time: "2:00", event: "LFA 28" },
-    { date: "Mar 24, 2017", opponent: "Clovis Hancock", result: "W", method: "KO/TKO (Head Kick)", round: 3, time: "2:21", event: "LFA 7" },
-    { date: "Nov 04, 2016", opponent: "Artenas Young", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 13" },
-    { date: "Sep 10, 2016", opponent: "Charlie Ontiveros", result: "W", method: "KO/TKO (Knees)", round: 1, time: "2:10", event: "Fury FC 12" },
-    { date: "Apr 08, 2016", opponent: "Rasika Dissanayake", result: "W", method: "KO/TKO (Punches)", round: 2, time: "2:39", event: "Fury FC 10" },
-    { date: "Nov 22, 2014", opponent: "Ronny Landaeta", result: "L", method: "KO/TKO (Punches)", round: 2, time: "3:05", event: "M-1 Mix-Fighter" },
-    { date: "Jun 15, 2014", opponent: "Rashidkhan Abdurashidov", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:30", event: "M-1 Global" },
-    { date: "May 27, 2014", opponent: "Gadzhi Alisultanov", result: "L", method: "KO/TKO (Punches)", round: 1, time: "1:52", event: "M-1 Global" }
+    { date: "Sep 28, 2019", opponent: "Austin Jones", result: "W", method: "KO", round: 1, time: "—", event: "Fury FC 37" },
+    { date: "Dec 8, 2017", opponent: "Melvin Jordan", result: "W", method: "TKO (Punches)", round: 1, time: "0:20", event: "LFA 28" },
+    { date: "Mar 24, 2017", opponent: "Clovis Hancock", result: "W", method: "KO (Head kick)", round: 3, time: "2:21", event: "LFA 7" },
+    { date: "Nov 4, 2016", opponent: "Artenas Young", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 13" },
+    { date: "Sep 10, 2016", opponent: "Charlie Ontiveros", result: "W", method: "KO (Knees and punches)", round: 2, time: "2:10", event: "Fury FC 12" },
+    { date: "Apr 8, 2016", opponent: "Don Dissanayake", result: "W", method: "KO (Punch)", round: 2, time: "2:39", event: "Fury Fighting 10" },
+    { date: "Nov 22, 2014", opponent: "Ronny Landaeta", result: "L", method: "TKO (Punches)", round: 1, time: "3:30", event: "Russian MMA Union: New Horizons" },
+    { date: "Jun 15, 2014", opponent: "Rashidhan Abdurashidov", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:30", event: "M-1 Global: MixFighter S4" },
+    { date: "May 27, 2014", opponent: "Gadzhi Alisultanov", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Mix Fighter: New Horizons Qualifying" },
+    { date: "Oct 20, 2012", opponent: "Aleksey Badyukov", result: "W", method: "KO (Punch)", round: 1, time: "—", event: "Astana Fight Club 2 (pro debut)" }
   ],
   "Christian Edwards": [
     { date: "May 16, 2026", opponent: "Modestas Bukauskas", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
@@ -32594,6 +32600,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Nikolay Veretennikov": [
+    { icon: "🏆", title: "Fury Fighting Championship Welterweight Champion", detail: null },
+    { icon: "🏅", title: "United Fight League Welterweight Grand Prix winner (2024)", detail: null },
+    { icon: "🥊", title: "Combat Sambo stylist; knockout artist (10 of 14 wins by KO/TKO)", detail: null }
+  ],
   "Timmy Cuamba": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2023 — decision over Mateo Vogel)", detail: null },
     { icon: "🥇", title: "Two-time Tuff-N-Uff amateur champion", detail: null },
