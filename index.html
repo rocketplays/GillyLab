@@ -3544,7 +3544,7 @@
  { name: "Edgar Chairez", division: "FLW", rank: "#15", record: "14-6-1", initials: "ECH", country: "Mexico" },
  { name: "DongHun Choi", division: "FLW", rank: "NR", record: "9-0-0", initials: "DHC2", country: "South Korea" },
  { name: "Alessandro Costa", division: "FLW", rank: "NR", record: "16-5-0", initials: "ALC", country: "Brazil" },
- { name: "HyunSung Park", division: "FLW", rank: "NR", record: "9-4-0", initials: "HSP", country: "South Korea" },
+ { name: "HyunSung Park", division: "FLW", rank: "NR", record: "10-2-0", initials: "HSP", country: "South Korea" },
  { name: "Jafel Filho", division: "FLW", rank: "NR", record: "17-5-0", initials: "JAF", country: "Brazil" },
  { name: "Mitch Raposo", division: "FLW", rank: "NR", record: "11-3-0", initials: "MRP", country: "USA" },
  { name: "Jesus Aguilar", division: "FLW", rank: "NR", record: "12-4-0", initials: "JAG", country: "Mexico" },
@@ -4551,7 +4551,7 @@
  // ── Flyweight (more) ──
  "Francisco Figueiredo": { ht:"5'6\"", dob:"1989-10-23", reach:'68"', stance:"Southpaw", slpm:2.04, tdAcc:"75%", subAvg:0.7, strDef:"61%", kd:0.1, tdDef:"80%", finRate:"72%", streak:0, tdLanded:2.51, gym:"Team Figueiredo" },
  "DongHun Choi": { ht:"5'5\"", dob:"1999-01-02", reach:'66"', stance:"Switch", slpm:4.54, strAcc:"66%", sapm:3.13, strDef:"59%", kd:0.92, tdLanded:0.46, tdAcc:"0%", tdDef:"82%", subAvg:0.00, finRate:"44%", streak:9, gym:"Pohang Team MAD" },
- "HyunSung Park": { ht:"5'7\"", dob:"1995-11-04", reach:'66"', stance:"Orthodox", slpm:3.38, tdAcc:"41%", subAvg:0.6, strDef:"55%", kd:0.1, tdDef:"71%", finRate:"50%", streak:0, tdLanded:1.50 },
+ "HyunSung Park": { ht:"5'7\"", dob:"1995-11-04", reach:'66"', stance:"Orthodox", slpm:3.38, strAcc:"41%", sapm:3.14, strDef:"55%", kd:0.60, tdLanded:1.50, tdAcc:"33%", tdDef:"47%", subAvg:1.80, finRate:"90%", streak:0, gym:"Tiger Muay Thai" },
  "Namsrai Batbayar": { ht:"5'4\"", dob:"2000-12-29", reach:'68"', stance:"Orthodox", slpm:4.44, strAcc:"45%", sapm:3.42, strDef:"48%", kd:2.85, tdLanded:2.85, tdAcc:null, tdDef:"100%", subAvg:0.95, finRate:"100%", streak:6, gym:"One Team Fighting Center" },
  // ── Bantamweight (more) ──
  "Marcus McGhee": { ht:"5'8\"", dob:"1990-05-07", reach:'69"', stance:"Orthodox", slpm:5.44, strAcc:"44%", sapm:3.64, strDef:"56%", kd:0.72, tdLanded:0.24, tdAcc:"11%", tdDef:"90%", subAvg:0.24, finRate:"82%", streak:1, gym:"The MMA Lab" },
@@ -14217,8 +14217,13 @@
     { opponent: "Jeka Saragih", odds: -350 }
   ],
   "HyunSung Park": [
-    { opponent: "Sedriques Dumas", odds: 250 },
-    { opponent: "Maki Pitolo", odds: -500 }
+    { opponent: "Bruno Silva", odds: -240 },
+    { opponent: "Tatsuro Taira", odds: 275 },
+    { opponent: "Carlos Hernandez", odds: -188 },
+    { opponent: "Shannon Ross", odds: -450 },
+    { opponent: "SeungGuk Choi", odds: -195 },
+    { opponent: "Top Noi Kiwram", odds: -145 },
+    { opponent: "Jeremia Siregar", odds: -400 }
   ],
   "Jose Souza": [
     { opponent: "Ding Meng", odds: 100 }
@@ -31353,16 +31358,18 @@ const FIGHT_HISTORY = {
     { date: "Oct 15, 2021", opponent: "Jun Hee Jung", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:44", event: "AFC 17 (debut)" }
   ],
   "HyunSung Park": [
-    { date: "Aug 30, 2025", opponent: "Sedriques Dumas", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa" },
-    { date: "May 31, 2025", opponent: "Maki Pitolo", result: "W", method: "TKO (Punches)", round: 1, time: "0:44", event: "UFC Fight Night: Blanchfield vs. Barber (debut)" },
-    { date: "Sep 23, 2024", opponent: "Zhao Zhikui", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 8 Week 6 (contract)" },
-    { date: "May 10, 2024", opponent: "Liu Zida", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 4 Final" },
-    { date: "Aug 24, 2024", opponent: "Ilja Lunin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 4 SF" },
-    { date: "Jul 13, 2024", opponent: "Kim Dae-hoon", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 4 QF" },
-    { date: "Dec 23, 2023", opponent: "Park Jung-woo", result: "W", method: "KO (Punches)", round: 2, time: "1:34", event: "Road to UFC Season 3 Final" },
-    { date: "Sep 16, 2023", opponent: "Oh Hyun-seok", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 3 SF" },
-    { date: "Jul 15, 2023", opponent: "Yang Hao", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 3 QF" },
-    { date: "Nov 26, 2022", opponent: "Gyeong Su Jang", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 2 Final" }
+    { date: "Oct 18, 2025", opponent: "Bruno Silva", result: "L", method: "Submission", round: 3, time: "2:15", event: "UFC Fight Night: de Ridder vs. Allen" },
+    { date: "Aug 2, 2025", opponent: "Tatsuro Taira", result: "L", method: "Submission", round: 2, time: "1:06", event: "UFC Fight Night: Taira vs. Park" },
+    { date: "May 17, 2025", opponent: "Carlos Hernandez", result: "W", method: "Submission", round: 1, time: "2:26", event: "UFC Fight Night: Burns vs. Morales" },
+    { date: "Dec 9, 2023", opponent: "Shannon Ross", result: "W", method: "TKO", round: 2, time: "3:59", event: "UFC Fight Night: Song vs. Gutierrez" },
+    { date: "Feb 4, 2023", opponent: "SeungGuk Choi", result: "W", method: "Submission", round: 3, time: "3:11", event: "UFC Fight Night: Lewis vs. Spivac (Road to UFC S1 Final)" },
+    { date: "Oct 23, 2022", opponent: "Top Noi Kiwram", result: "W", method: "Submission", round: 1, time: "3:05", event: "Road to UFC: Episode 6 (semifinal)" },
+    { date: "Jun 10, 2022", opponent: "Jeremia Siregar", result: "W", method: "TKO", round: 1, time: "3:56", event: "Road to UFC: Episode 4 (quarterfinal)" },
+    { date: "Dec 30, 2021", opponent: "Joo Hwan Kim", result: "W", method: "TKO", round: 2, time: "3:40", event: "Double G FC 11 (Double G FLW Title)" },
+    { date: "Mar 19, 2021", opponent: "Kim Se Hyun", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:01", event: "Double G FC 6" },
+    { date: "Nov 28, 2020", opponent: "Dong Hyun Seo", result: "W", method: "TKO (Strikes)", round: 1, time: "2:09", event: "Double G FC 5" },
+    { date: "Mar 30, 2019", opponent: "Tsubasa Akiyama", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "0:40", event: "Double G FC 2: Fight To Prove" },
+    { date: "Nov 18, 2018", opponent: "Min Soo Kwon", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Double G FC 1" }
   ],
   "José Henrique Souza": [
     { date: "May 15, 2021", opponent: "André Muniz", result: "L", method: "Technical Submission (Armbar)", round: 1, time: "3:59", event: "UFC 262", org: "UFC" },
@@ -32934,6 +32941,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "HyunSung Park": [
+    { icon: "🏆", title: "Road to UFC Season 1 flyweight tournament winner (2023) — earned a UFC contract", detail: null },
+    { icon: "🏆", title: "Former Double G FC flyweight champion", detail: null },
+    { icon: "🥊", title: "\"Peace of Mind\" — 9 of 10 wins by finish (4 KO/TKO, 5 submission)", detail: null }
+  ],
   "DongHun Choi": [
     { icon: "🏆", title: "Road to UFC Season 3 flyweight tournament winner (2024) — earned a UFC contract with a first-round KO of Kiru Sahota in the final", detail: null },
     { icon: "🏆", title: "Former Double G FC flyweight champion — won and defended the title (2022)", detail: null },
