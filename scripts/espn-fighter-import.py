@@ -54,20 +54,41 @@ def curl(url):
                        capture_output=True, text=True)
     return r.stdout
 
-def get_json(url):
-    try:
-        return json.loads(curl(url))
-    except Exception:
-        return None
+def get_json(url, tries=3):
+    """Retry on transient empty/error responses — matters over a long bulk run."""
+    for n in range(tries):
+        try:
+            return json.loads(curl(url))
+        except Exception:
+            time.sleep(1.5 * (n + 1))
+    return None
 
-def get_html(url):
+def get_html(url, tries=3):
     """ESPN's www pages serve empty to curl and reject long UA strings; the
-    short 'Mozilla/5.0' UA over urllib is what works (same as fighter-lookup.py)."""
-    try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-        return urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
-    except Exception:
-        return ""
+    short 'Mozilla/5.0' UA over urllib is what works (same as fighter-lookup.py).
+    Retries because a transient empty here would silently blank a fighter's stats."""
+    for n in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            t = urllib.request.urlopen(req, timeout=30).read().decode("utf-8", "ignore")
+            if t:
+                return t
+        except Exception:
+            pass
+        time.sleep(1.5 * (n + 1))
+    return ""
+
+def espn_stated_record(sid):
+    """ESPN's own W-L-D for cross-checking the history-derived record (tripwire
+    for a missed or extra fight). Returns e.g. '26-2-0' or None."""
+    d = get_json("%s/athletes/%s/records?lang=en&region=us" % (CORE, sid))
+    if not d:
+        return None
+    items = d.get("items", [])
+    for it in items:
+        if it.get("type") == "total" or it.get("name", "").lower() in ("overall", "total"):
+            return (it.get("summary") or it.get("displayValue") or "").strip() or None
+    return ((items[0].get("summary") if items else None) or None)
 
 # ---------------- slug (must mirror index.html nameToSlug) ----------------
 SUFFIX_RE = re.compile(r"\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$", re.I)
@@ -344,6 +365,11 @@ def process(sid, roster, verbose=True, min_coverage=0.0):
         else:
             photo_status = "saved photos/%s.png (%d bytes)" % (slug, sz)
 
+    # tripwire: does the history-derived record match ESPN's stated record?
+    # a mismatch means a fight is missing/extra/misread in the parsed history.
+    stated = espn_stated_record(sid)
+    record_check = "ok" if (not stated or stated == record) else ("MISMATCH derived %s vs ESPN %s" % (record, stated))
+
     coverage = round(def_fights / len(statted_dates), 2) if statted_dates else 0.0
     if not statted_dates:
         status = "no_stats"          # has UFC fights but no per-fight stat tables
@@ -355,7 +381,8 @@ def process(sid, roster, verbose=True, min_coverage=0.0):
     result = dict(status=status, name=name, slug=slug, espn_id=sid,
                   roster_row=roster_row, fighter_stats=stats, fight_history=fh,
                   stat_fights=len(statted_dates), def_fights=def_fights,
-                  coverage=coverage, ufc_fights=len(ufc_fights), photo=photo_status)
+                  coverage=coverage, ufc_fights=len(ufc_fights), photo=photo_status,
+                  record_check=record_check)
 
     # ---- write paste-ready output ----
     os.makedirs(OUTDIR, exist_ok=True)
@@ -410,6 +437,8 @@ def print_summary(r):
           r["roster_row"]["country"] or "(country MISSING on ESPN — needs manual fill)")
     print("  stats    :", js_stats(s))
     print("  status   :", r["status"], "(opponent-data coverage %.0f%%)" % (100 * r["coverage"]))
+    print("  record   :", r["roster_row"]["record"],
+          "" if r["record_check"] == "ok" else "  !! " + r["record_check"])
     print("  sample   : %d fights with stats, %d with opponent-data (for sapm/strDef/tdDef)"
           % (r["stat_fights"], r["def_fights"]))
     print("  history  : %d fights (UFC: %d)" % (len(r["fight_history"]), r["ufc_fights"]))
@@ -454,7 +483,7 @@ def process_all(min_coverage, limit, sleep_s):
     new = not os.path.exists(manifest)
     mf = open(manifest, "a")
     if new:
-        mf.write("espn_id,status,slug,division,record,stat_fights,def_fights,coverage,photo_ok,country_ok\n")
+        mf.write("espn_id,status,slug,division,record,record_check,stat_fights,def_fights,coverage,photo_ok,country_ok\n")
 
     ids = all_ufc_ids()
     if limit: ids = ids[:limit]
@@ -472,10 +501,11 @@ def process_all(min_coverage, limit, sleep_s):
         counts[st] = counts.get(st, 0) + 1
         photo_ok = "1" if str(r.get("photo", "")).startswith("saved") else "0"
         country_ok = "1" if r.get("roster_row", {}).get("country") else "0"
-        mf.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
+        rec_chk = "ok" if r.get("record_check", "ok") == "ok" else "MISMATCH"
+        mf.write("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n" % (
             sid, st, r.get("slug", ""),
             r.get("roster_row", {}).get("division", ""),
-            r.get("roster_row", {}).get("record", ""),
+            r.get("roster_row", {}).get("record", ""), rec_chk,
             r.get("stat_fights", ""), r.get("def_fights", ""),
             r.get("coverage", ""), photo_ok, country_ok))
         mf.flush()
