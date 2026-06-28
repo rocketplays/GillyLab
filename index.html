@@ -3620,7 +3620,7 @@
  { name: "Alexandr Romanov", division: "HW", rank: "NR", record: "22-4-0", initials: "ARO", country: "Moldova" },
  { name: "Don'Tale Mayes", division: "HW", rank: "NR", record: "11-9-0", initials: "DTM", country: "USA" },
  { name: "Lukasz Brzeski", division: "HW", rank: "NR", record: "9-7-1", initials: "LBR", country: "Poland" },
- { name: "Karl Williams", division: "HW", rank: "NR", record: "12-5-0", initials: "KWI", country: "Australia" },
+ { name: "Karl Williams", division: "HW", rank: "NR", record: "10-6-0", initials: "KWI", country: "Virgin Islands" },
  { name: "Austen Lane", division: "LHW", rank: "NR", record: "13-8-0", initials: "ALA", country: "USA" },
  { name: "Josh Parisian", division: "HW", rank: "NR", record: "16-9-0", initials: "JPA", country: "USA" },
  // ─── WOMEN'S STRAWWEIGHT (remaining) ───
@@ -4289,7 +4289,7 @@
  "Allan Nascimento": { ht:"5'8\"", dob:"1991-09-11", reach:'69"', stance:"Orthodox", slpm:3.20, strAcc:"52%", sapm:2.53, strDef:"53%", kd:0.17, tdLanded:1.04, tdAcc:"20%", tdDef:"41%", subAvg:0.87, finRate:"77%", streak:0, gym:"Chute Boxe" },
  "Rei Tsuruya": { ht:"5'6\"", dob:"2002-06-22", reach:'68"', stance:"Orthodox", slpm:2.40, strAcc:"54%", sapm:1.91, strDef:"43%", kd:0.0, tdLanded:5.03, tdAcc:"25%", tdDef:"50%", subAvg:2.01, finRate:"82%", streak:1, gym:"Paraestra Matsudo" },
  // ── Heavyweight (more) ──
- "Karl Williams": { ht:"6'3\"", dob:"1990-01-06", reach:'79"', stance:"Orthodox", slpm:2.68, tdAcc:"48%", subAvg:0.2, strDef:"55%", kd:0.2, tdDef:"100%",finRate:"70%", streak:2, tdLanded:4.20 },
+ "Karl Williams": { ht:"6'3\"", dob:"1990-01-06", reach:'79"', stance:"Orthodox", slpm:2.68, strAcc:"49%", sapm:2.15, strDef:"56%", kd:0.20, tdLanded:4.20, tdAcc:null, tdDef:"100%", subAvg:0.20, finRate:"30%", streak:0, gym:"American Top Team Atlanta" },
  "Parker Porter": { ht:"6'0\"", dob:"1985-04-22", reach:'75"', stance:"Orthodox", slpm:6.55, tdAcc:"26%", subAvg:0.5, strDef:"51%", kd:0.3, tdDef:"66%", finRate:"43%", streak:0, tdLanded:1.35, gym:"Heavy Hitters Club (2020–present)" },
  "Ryan Spann": { ht:"6'5\"", dob:"1991-08-24", reach:'79"', stance:"Orthodox", slpm:3.19, strAcc:"39%", sapm:4.14, strDef:"43%", kd:0.98, tdLanded:1.30, tdAcc:"35%", tdDef:"52%", subAvg:1.79, finRate:"88%", streak:2, gym:"Fortis MMA" },
  "Jared Vanderaa": { ht:"6'4\"", dob:"1992-05-12", reach:'80"', stance:"Orthodox", slpm:4.96, tdAcc:"50%", subAvg:0.3, strDef:"45%", kd:0.4, tdDef:"20%", finRate:"42%", streak:0, tdLanded:0.18, gym:"Kings MMA (2022–present)" },
@@ -14418,7 +14418,10 @@
     { opponent: "Istela Nunes", odds: -200 }
   ],
   "Karl Williams": [
-    { opponent: "Alexandr Romanov", odds: 350 }
+    { opponent: "Jhonata Diniz", odds: -210 },
+    { opponent: "Justin Tafa", odds: -190 },
+    { opponent: "Chase Sherman", odds: -400 },
+    { opponent: "Lukasz Brzeski", odds: -200 }
   ],
   "Sam Patterson": [
     { opponent: "Michael Page", odds: 165 },
@@ -31814,14 +31817,22 @@ const FIGHT_HISTORY = {
     { date: "Aug 6, 2022", opponent: "Lara Fernandez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon MMA 32" }
   ],
   "Karl Williams": [
-    { date: "Mar 21, 2026", opponent: "Alexandr Romanov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy (London, debut)" },
-    { date: "Nov 16, 2025", opponent: "Jake Collier", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 9 Week 9 (contract)" },
-    { date: "Jun 21, 2025", opponent: "Tom Aspinall", result: "L", method: "Submission (Arm-triangle choke)", round: 1, time: "0:30", event: "Cage Warriors 182" },
-    { date: "Mar 22, 2025", opponent: "Ante Delija", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 178" },
-    { date: "Nov 16, 2024", opponent: "Alan Baudot", result: "W", method: "TKO (Punches)", round: 3, time: "4:44", event: "Cage Warriors 174" },
-    { date: "Aug 24, 2024", opponent: "Daniyar Iskalov", result: "W", method: "KO (Punches)", round: 2, time: "1:34", event: "Cage Warriors 171" },
-    { date: "Apr 6, 2024", opponent: "Norbert Novenyi Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 167" },
-    { date: "Jan 13, 2024", opponent: "Pawel Pawlak", result: "W", method: "TKO (Punches)", round: 2, time: "2:14", event: "Cage Warriors 164" }
+    { date: "May 2, 2026", opponent: "Maxwell Djantou Nana", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Sioux Falls: Storley vs. Zendeli" },
+    { date: "Feb 7, 2026", opponent: "Pouya Rahmani", result: "L", method: "Submission", round: 2, time: "3:41", event: "PFL Dubai: Nurmagomedov vs. Davis" },
+    { date: "Aug 21, 2025", opponent: "Sergei Bilostenniy", result: "L", method: "TKO (Punches)", round: 2, time: "4:11", event: "2025 PFL World Championships" },
+    { date: "May 1, 2025", opponent: "Oleg Popov", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "2025 PFL First Round" },
+    { date: "Aug 10, 2024", opponent: "Jhonata Diniz", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tybura vs. Spivac 2" },
+    { date: "Mar 23, 2024", opponent: "Justin Tafa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ribas vs. Namajunas" },
+    { date: "May 13, 2023", opponent: "Chase Sherman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rozenstruik vs. Almeida" },
+    { date: "Mar 11, 2023", opponent: "Lukasz Brzeski", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Dvalishvili" },
+    { date: "Sep 6, 2022", opponent: "Jimmy Lawson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 6, Week 7 (contract)" },
+    { date: "Jul 23, 2022", opponent: "Simon Marini", result: "W", method: "TKO", round: 1, time: "3:50", event: "XMMA 5: Southern Heat" },
+    { date: "Jun 3, 2022", opponent: "Kyle Wright", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "iKON FC 3" },
+    { date: "Feb 18, 2022", opponent: "Miles Amos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Challenger Series: Week 1" },
+    { date: "Dec 4, 2021", opponent: "Jason Butcher", result: "L", method: "Submission (Triangle choke)", round: 1, time: "1:38", event: "B2 Fighting Series 142" },
+    { date: "Oct 16, 2021", opponent: "Dashawn Boatwright", result: "W", method: "TKO (Injury)", round: 1, time: "2:50", event: "Stellar Fights 47" },
+    { date: "Sep 12, 2021", opponent: "Peter New", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NFC 137" },
+    { date: "Feb 20, 2021", opponent: "Charles Philpot", result: "W", method: "TKO", round: 1, time: "4:00", event: "AFC 6: Alabama Fighting Championship" }
   ],
   "Sam Patterson": [
     { date: "Mar 21, 2026", opponent: "Michael Page", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -32899,6 +32910,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Karl Williams": [
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2022)", detail: null },
+    { icon: "🤼", title: "Wrestling-based heavyweight — high takedown output and undefeated takedown defense in the UFC", detail: null }
+  ],
   "Lukasz Brzeski": [
     { icon: "🥋", title: "\"The Bull\" — kickboxing black belt; 6 of 9 wins by KO/TKO", detail: null }
   ],
