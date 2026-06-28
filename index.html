@@ -39303,6 +39303,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Bobby Green legally changed his name to "King Green" (2024); some feeds
     // (e.g. the UFC 328 card) slug him 'king-green', but the DB keeps "Bobby Green".
     'king-green': 'Bobby Green',
+    'yisak-lee': 'Yi Sak Lee',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -39317,6 +39318,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Bobby "King" Green — feeds that list his post-2024 legal name (and the
     // slug-less Odds API) return "King Green"; map it to his DB profile.
     'king green': 'Bobby Green',
+    // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
+    'yisak lee': 'Yi Sak Lee',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
