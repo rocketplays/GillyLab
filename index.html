@@ -3454,7 +3454,7 @@
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
  { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
  { name: "Sean Sharaf", division: "HW", rank: "NR", record: "4-2-0", initials: "SSH", country: "USA" },
- { name: "Denzel Freeman", division: "HW", rank: "NR", record: "8-2-0", initials: "DFR", country: "USA" },
+ { name: "Denzel Freeman", division: "HW", rank: "NR", record: "7-2-0", initials: "DFR", country: "USA" },
  // ─── FEATHERWEIGHT (extended) ───
  { name: "Bill Algeo", division: "FW", rank: "NR", record: "18-9-0", initials: "BAL", country: "USA" },
  { name: "Herbert Burns", division: "FW", rank: "NR", record: "14-5-0", initials: "HBU", country: "Brazil" },
@@ -4690,7 +4690,7 @@
 
  // Heavyweight
  "Louie Sutherland": { ht:"6'3\"", dob:"1994-02-08", reach:'76"', stance:"Orthodox", slpm:1.81, strAcc:"69%", sapm:2.03, strDef:"30%", kd:0.00, tdLanded:4.95, tdAcc:"43%", tdDef:null, subAvg:0.00, finRate:"73%", streak:1, gym:"Fightzone & Durrant's Gym" },
- "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.2, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.00 },
+ "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, strAcc:"57%", sapm:3.40, strDef:"50%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"50%", subAvg:0.0, finRate:"71%", streak:0, gym:"Kill Cliff FC" },
  "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:2.85, strAcc:"70%", sapm:1.93, strDef:"58%", kd:0.95, tdLanded:2.38, tdAcc:"26%", tdDef:"100%", subAvg:0.95, finRate:"67%", streak:12, gym:"FightZone London" },
  "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:10.05, strAcc:"52%", sapm:6.64, strDef:"50%", kd:1.25, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"86%", streak:0, gym:"Minnesota Top Team" },
  "Sean Sharaf": { ht:"6'3\"", dob:"1993-07-11", reach:'77"', stance:"Orthodox", slpm:7.41, strAcc:"44%", sapm:15.00, strDef:"43%", kd:0.0, tdLanded:0.93, tdAcc:"11%", tdDef:null, subAvg:0.0, finRate:"100%", streak:0, gym:"Xtreme Couture" },
@@ -13763,10 +13763,12 @@
     { opponent: "Juan Andres Luna", odds: -285 }
   ],
   "Denzel Freeman": [
-    { opponent: "Da Woon Jung", odds: -175 },
-    { opponent: "Rodolfo Bellato", odds: 200 },
-    { opponent: "Alonzo Menifield", odds: 350 },
-    { opponent: "Bogdan Guskov", odds: -250 }
+    { opponent: "Josh Hokit", odds: 225 },
+    { opponent: "Marek Bujlo", odds: -210 },
+    { opponent: "Hugo Cunha", odds: -175 },
+    { opponent: "Steven Asplund", odds: 100 },
+    { opponent: "Isaiah Pinson", odds: -175 },
+    { opponent: "Raiden Kovacs", odds: -450 }
   ],
   "Puja Tomar": [
     { opponent: "Angela Hill", odds: 350 },
@@ -29970,16 +29972,15 @@ const FIGHT_HISTORY = {
     { date: "Dec 5, 2015", opponent: "Jorge Gonzalez", result: "W", method: "Submission (Armbar)", round: 1, time: "0:56", event: "MMAX: Maximum Cage Fighting" }
   ],
   "Denzel Freeman": [
-    { date: "Jun 7, 2025", opponent: "Da Woon Jung", result: "W", method: "KO (Punches)", round: 1, time: "0:59", event: "UFC 316: Dvalishvili vs. O'Malley 2" },
-    { date: "Jan 25, 2025", opponent: "Da Woon Jung", result: "W", method: "KO (Punches)", round: 2, time: "1:32", event: "UFC 324: Gaethje vs. Pimblett" },
-    { date: "Aug 3, 2024", opponent: "Rodolfo Bellato", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sandhagen vs. Nurmagomedov" },
-    { date: "May 18, 2024", opponent: "Alonzo Menifield", result: "L", method: "TKO (Punches)", round: 1, time: "2:41", event: "UFC Fight Night: Barboza vs. Murphy" },
-    { date: "Aug 12, 2023", opponent: "Bogdan Guskov", result: "W", method: "KO (Punches)", round: 1, time: "1:09", event: "UFC Fight Night: Luque vs. Dos Anjos (debut)" },
-    { date: "May 6, 2023", opponent: "Hunter Miller", result: "W", method: "KO (Punches)", round: 1, time: "0:43", event: "DWCS Season 7 Week 1 (contract)" },
-    { date: "Jan 28, 2023", opponent: "Elan Jospeh", result: "W", method: "KO (Punches)", round: 1, time: "0:27", event: "LFA 152" },
-    { date: "Oct 29, 2022", opponent: "Devin Jacobus", result: "W", method: "TKO (Punches)", round: 1, time: "0:38", event: "LFA 147" },
-    { date: "Jun 25, 2022", opponent: "Jonathan Quiroz", result: "W", method: "KO (Punches)", round: 1, time: "0:34", event: "LFA 137" },
-    { date: "Apr 23, 2022", opponent: "Marcus Braziel", result: "W", method: "TKO (Punches)", round: 2, time: "1:13", event: "LFA 133" }
+    { date: "Jan 24, 2026", opponent: "Josh Hokit", result: "L", method: "KO (Punches)", round: 1, time: "4:59", event: "UFC 324: Gaethje vs. Pimblett", org: "UFC" },
+    { date: "Nov 22, 2025", opponent: "Marek Bujlo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker", org: "UFC" },
+    { date: "Mar 22, 2025", opponent: "Hugo Cunha", result: "W", method: "TKO (Ground and pound)", round: 2, time: "2:10", event: "LFA 204: Cunha vs. Freeman (title)" },
+    { date: "Sep 20, 2024", opponent: "Steven Asplund", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:17", event: "LFA 193" },
+    { date: "Jun 16, 2023", opponent: "Isaiah Pinson", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "2023 PFL Regular Season", org: "PFL" },
+    { date: "Mar 17, 2023", opponent: "Raiden Kovacs", result: "W", method: "KO (Punches)", round: 1, time: "0:27", event: "2023 PFL Challenger Series: Week 8" },
+    { date: "Jul 2, 2021", opponent: "Duane Crespo", result: "W", method: "KO (Punches)", round: 1, time: "0:47", event: "Titan FC 70" },
+    { date: "Apr 6, 2018", opponent: "Gustavo Trujillo", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Titan FC 49" },
+    { date: "Dec 15, 2017", opponent: "Davaun McKoy", result: "W", method: "TKO (Punches)", round: 2, time: "4:19", event: "Titan FC 47" }
   ],
   "Puja Tomar": [
     { date: "May 29, 2026", opponent: "Shi Ming", result: "L", method: "Submission (Arm-triangle choke)", round: 1, time: "3:12", event: "Road to UFC Season 5: Opening Round – Day 2" },
@@ -32947,6 +32948,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Denzel Freeman": [
+    { icon: "🏆", title: "Former LFA heavyweight champion", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Sean Sharaf": [
     { icon: "🥊", title: "\"The Smoke\" — all 4 career wins by first-round KO/TKO", detail: null },
