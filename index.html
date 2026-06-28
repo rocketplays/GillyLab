@@ -3678,7 +3678,7 @@
  { name: "Stephanie Egger", division: "WBW", rank: "NR", record: "10-4-0", initials: "SEW", country: "Switzerland" },
  { name: "Jacqueline Cavalcanti", division: "WBW", rank: "#10", record: "10-2-0", initials: "JCV2", country: "Portugal" },
  { name: "Tainara Lisboa", division: "WBW", rank: "NR", record: "9-3-0", initials: "TLI", country: "Brazil" },
- { name: "Ketlen Souza", division: "WBW", rank: "NR", record: "17-6-0", initials: "KSO", country: "Brazil" },
+ { name: "Ketlen Souza", division: "WSW", rank: "NR", record: "17-6-0", initials: "KSO", country: "Brazil" },
  { name: "Pannie Kianzad", division: "WBW", rank: "NR", record: "19-8-0", initials: "PKZ", country: "Iran" },
  // ── Fighters with stats but missing from search ──
  { name: "Aoriqileng", division: "BW", rank: "NR", record: "26-13-0", initials: "ARL", country: "China" }, // 1 NC
@@ -4612,7 +4612,7 @@
  "Ramazan Temirov": { ht:"5'4\"", dob:"1997-01-31", reach:'63"', stance:"Orthodox", slpm:4.37, strAcc:"40%", sapm:3.93, strDef:"59%", kd:2.52, tdLanded:0.84, tdAcc:"50%", tdDef:"100%", subAvg:0.00, finRate:"63%", streak:11, gym:"Legion Gym" },
  "Mitch Raposo": { ht:"5'5\"", dob:"1998-10-16", reach:'64.5"', stance:"Switch", slpm:1.91, strAcc:"38%", sapm:2.92, strDef:"61%", kd:0.00, tdLanded:1.98, tdAcc:"36%", tdDef:"68%", subAvg:0.00, finRate:"64%", streak:2, gym:"New England Cartel" },
  "Andre Lima": { ht:"5'7\"", dob:"1999-02-04", reach:'67.5"', stance:"Orthodox", slpm:3.94, strAcc:"57%", sapm:2.66, strDef:"59%", kd:0.00, tdLanded:1.11, tdAcc:"60%", tdDef:"76%", subAvg:0.93, finRate:"55%", streak:0, gym:"Mascote Team" },
- "Ketlen Souza": { ht:"5'3\"", dob:"1994-08-18", reach:'63"', stance:"Orthodox", slpm:4.01, tdAcc:"32%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"62%", finRate:"56%", streak:0, tdLanded:0.46, gym:"Team Felipe Rego" },
+ "Ketlen Souza": { ht:"5'3\"", dob:"1994-08-18", reach:'63"', stance:"Orthodox", slpm:4.11, strAcc:"57%", sapm:3.89, strDef:"53%", kd:0.45, tdLanded:0.45, tdAcc:"13%", tdDef:"54%", subAvg:0.23, finRate:"65%", streak:2, gym:"Ribas Family" },
  "Zarah Fairn dos Santos": { ht:"5'8\"", dob:"1983-12-10", reach:'72"', stance:"Orthodox", slpm:4.55, tdAcc:"0%", subAvg:0.0, strDef:"45%", kd:0.2, tdDef:"50%", finRate:"33%", streak:0, tdLanded:0.00 },
  // ── FINAL 100 ──
  // Flyweight
@@ -10032,12 +10032,15 @@
     { opponent: "Marina Mokhnatkina", odds: 245 }
   ],
   "Ketlen Souza": [
-    { opponent: "Bruna Brasil", odds: -350 },
-    { opponent: "Piera Rodriguez", odds: -180 },
-    { opponent: "Angela Hill", odds: -135 },
-    { opponent: "Yazmin Jauregui", odds: -500 },
-    { opponent: "Marnic Mann", odds: -500 },
-    { opponent: "Karine Silva", odds: 250 }
+    { opponent: "Ariane Carnelossi", odds: -320 },
+    { opponent: "Bruna Brasil", odds: -140 },
+    { opponent: "Piera Rodriguez", odds: 210 },
+    { opponent: "Angela Hill", odds: 100 },
+    { opponent: "Yazmin Jauregui", odds: 400 },
+    { opponent: "Marnic Mann", odds: -330 },
+    { opponent: "Karine Silva", odds: 185 },
+    { opponent: "Kristina Williams", odds: -120 },
+    { opponent: "Maiju Suotama", odds: -290 }
   ],
   "Lone'er Kavanagh": [
     { opponent: "Brandon Moreno", odds: 175 },
@@ -32804,6 +32807,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ketlen Souza": [
+    { icon: "🏆", title: "Former Mr. Cage Championship titleholder (multiple title fights in Brazil)", detail: null },
+    { icon: "🥊", title: "\"Esquentadinha\" — 11 finishes in 17 wins (9 KO/TKO, 2 submissions)", detail: null }
+  ],
   "Yuneisy Duben": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round KO upset of Shannon Clark)", detail: null },
     { icon: "🥊", title: "All 6 career wins by finish (5 KO/TKO, 1 submission)", detail: null },
