@@ -3594,6 +3594,7 @@
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "20-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
+ { name: "Christian Edwards", division: "LHW", rank: "NR", record: "8-5-0", initials: "CED", country: "USA" },
  { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
@@ -4414,6 +4415,7 @@
  // ── Light Heavyweight (more) ──
  "Jimmy Crute": { ht:"6'2\"", dob:"1996-03-04", reach:'74"', stance:"Orthodox", slpm:4.15, tdAcc:"40%", subAvg:0.5, strDef:"42%", kd:0.3, tdDef:"68%", finRate:"64%", streak:0, tdLanded:4.39, gym:"Combat 1 (2023–present)" },
  "Modestas Bukauskas": { ht:"6'3\"", dob:"1994-02-10", reach:'76"', stance:"Switch", slpm:3.14, strAcc:"43%", sapm:3.86, strDef:"51%", kd:0.11, tdLanded:0.23, tdAcc:"67%", tdDef:"82%", subAvg:0.11, finRate:"70%", streak:1, gym:"Gintas Combat / BST Academy" },
+ "Christian Edwards": { ht:"6'5\"", dob:"1998-11-05", reach:'78.5"', stance:"Orthodox", slpm:2.40, strAcc:"51%", sapm:2.40, strDef:"55%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"75%", streak:0, gym:"Jackson Wink MMA" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -7091,6 +7093,14 @@
     { opponent: "Francisco Prado", odds: -125 },
     { opponent: "Austin Vanderford", odds: 175 },
     { opponent: "Danny Barlow", odds: -300 }
+  ],
+  "Christian Edwards": [
+    { opponent: "Modestas Bukauskas", odds: 245 },
+    { opponent: "Rakim Cleveland", odds: -550 },
+    { opponent: "Grant Neal", odds: 126 },
+    { opponent: "Ben Parrish", odds: -1250 },
+    { opponent: "Simon Biyong", odds: -222 },
+    { opponent: "Hamza Salim", odds: -443 }
   ],
   "Modestas Bukauskas": [
     { opponent: "Christian Edwards", odds: -320 },
@@ -16240,6 +16250,21 @@ const FIGHT_HISTORY = {
     { date: "Nov 22, 2014", opponent: "Ronny Landaeta", result: "L", method: "KO/TKO (Punches)", round: 2, time: "3:05", event: "M-1 Mix-Fighter" },
     { date: "Jun 15, 2014", opponent: "Rashidkhan Abdurashidov", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:30", event: "M-1 Global" },
     { date: "May 27, 2014", opponent: "Gadzhi Alisultanov", result: "L", method: "KO/TKO (Punches)", round: 1, time: "1:52", event: "M-1 Global" }
+  ],
+  "Christian Edwards": [
+    { date: "May 16, 2026", opponent: "Modestas Bukauskas", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
+    { date: "Feb 21, 2026", opponent: "Glendal Whitney", result: "W", method: "TKO", round: 2, time: "4:22", event: "Shamrock FC 373" },
+    { date: "May 24, 2025", opponent: "Luke Fernandez", result: "L", method: "Decision (Unanimous)", round: 4, time: "5:00", event: "CFFC 142 (title)" },
+    { date: "Jan 18, 2025", opponent: "Jake Collier", result: "W", method: "TKO (Injury)", round: 1, time: "2:38", event: "Shamrock FC 360" },
+    { date: "Nov 8, 2024", opponent: "Jarome Hatch", result: "W", method: "TKO", round: 1, time: "4:15", event: "Fierce FC 34" },
+    { date: "Mar 31, 2023", opponent: "Rakim Cleveland", result: "L", method: "Submission", round: 3, time: "3:55", event: "Bellator 293" },
+    { date: "Apr 22, 2022", opponent: "Grant Neal", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 278" },
+    { date: "Sep 18, 2021", opponent: "Ben Parrish", result: "L", method: "TKO", round: 1, time: "0:38", event: "Bellator 266" },
+    { date: "Jun 25, 2021", opponent: "Simon Biyong", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 261" },
+    { date: "Oct 15, 2020", opponent: "Hamza Salim", result: "W", method: "Submission", round: 2, time: "1:28", event: "Bellator 249" },
+    { date: "Feb 21, 2020", opponent: "DiMarco Hutchison", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 239" },
+    { date: "Nov 8, 2019", opponent: "Cesar Bennett", result: "W", method: "TKO", round: 1, time: "0:16", event: "Bellator 233" },
+    { date: "Jul 12, 2019", opponent: "Justin Vargas", result: "W", method: "TKO", round: 1, time: "0:54", event: "Bellator 224 (pro debut)" }
   ],
   "Modestas Bukauskas": [
     { date: "May 16, 2026", opponent: "Christian Edwards", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa", org: "UFC" },
@@ -32558,6 +32583,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Christian Edwards": [
+    { icon: "🥊", title: "\"Pain\" — Jackson-Wink MMA light heavyweight and multi-year Bellator veteran", detail: null },
+    { icon: "🏅", title: "75% finish rate — 6 of 8 wins by stoppage (5 KO/TKO, 1 submission)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt", detail: null }
+  ],
   "Modestas Bukauskas": [
     { icon: "🏆", title: "Two-time Cage Warriors Light Heavyweight Champion", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night — vs. Andreas Michailidis (UFC debut)", detail: null },
