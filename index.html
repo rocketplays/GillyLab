@@ -3392,6 +3392,7 @@
  { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
  // ─── WELTERWEIGHT (extended) ───
  { name: "Shavkat Rakhmonov", division: "WW", rank: "NR", record: "19-0-0", initials: "SHR", country: "Kazakhstan" },
+ { name: "Carlston Harris", division: "WW", rank: "NR", record: "19-8-0", initials: "CHA", country: "Guyana" },
  { name: "Stephen Thompson", division: "WW", rank: "NR", record: "17-9-1", initials: "STH", country: "USA" },
  { name: "Michael Chiesa", division: "WW", rank: "NR", record: "20-7-0", initials: "MCE", country: "USA" },
  { name: "Nicolas Dalby", division: "WW", rank: "NR", record: "24-6-1", initials: "NDA", country: "Denmark" },
@@ -4641,6 +4642,7 @@
  "Elijah Smith": { ht:"5'9\"", dob:"2002-09-05", reach:'71"', stance:"Orthodox", slpm:4.18, strAcc:"48%", sapm:2.96, strDef:"47%", kd:0.37, tdLanded:2.98, tdAcc:"53%", tdDef:"53%", subAvg:1.12, finRate:"70%", streak:8, gym:"Factory X" },
  "Ethyn Ewing": { ht:'5\'7"', dob:"1998-02-16", reach:'69"', stance:"Orthodox", slpm:7.44, strAcc:"55%", sapm:4.53, strDef:"63%", kd:0.56, tdLanded:1.68, tdAcc:"60%", tdDef:"100%", subAvg:0.00, finRate:"80%", streak:10, gym:"The Den Training Center" },
  "Cameron Smotherman": { ht:"5'9\"", dob:"1997-09-17", reach:'69"', stance:"Orthodox", slpm:3.97, strAcc:"37%", sapm:3.57, strDef:"59%", kd:0.0, tdLanded:0.00, tdAcc:"0%", tdDef:"63%", subAvg:0.0, finRate:"58%", streak:0, gym:"Metro Fight Club" },
+ "Carlston Harris": { ht:"6'0\"", dob:"1987-07-09", reach:'76"', stance:"Orthodox", slpm:3.34, strAcc:"43%", sapm:3.50, strDef:"52%", kd:0.45, tdLanded:1.13, tdAcc:"20%", tdDef:"56%", subAvg:0.45, finRate:"58%", streak:0, gym:"Renovacao Fight Team" },
  "Jakub Wiklacz": { ht:"5'10\"", dob:"1996-09-10", reach:'72"', stance:"Orthodox", slpm:3.40, tdAcc:"0%", subAvg:0.5, strDef:"46%", kd:0.2, tdDef:"41%", finRate:"50%", streak:0, tdLanded:0.00 },
  "Cody Chovancek": { ht:"5'8\"", dob:"1998-07-24", reach:'67"', stance:"Switch", slpm:2.85, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.2, tdDef:"80%", finRate:"56%", streak:0, tdLanded:0.00 },
  "Malcolm Wellmaker": { ht:"5'10\"", dob:"1994-06-04", reach:'71"', stance:"Switch", slpm:4.58, strAcc:"55%", sapm:4.23, strDef:"52%", kd:1.44, tdLanded:0.00, tdAcc:"0%", tdDef:"47%", subAvg:0.00, finRate:"80%", streak:0, gym:"Faglier's MMA" },
@@ -9846,6 +9848,16 @@
     { opponent: "Felicia Spencer", odds: 160 },
     { opponent: "Ashlee Evans-Smith", odds: 135 },
     { opponent: "Megan Anderson", odds: 240 }
+  ],
+  "Carlston Harris": [
+    { opponent: "Jake Matthews", odds: 500 },
+    { opponent: "Santiago Ponzinibbio", odds: 135 },
+    { opponent: "Khaos Williams", odds: 115 },
+    { opponent: "Jeremiah Wells", odds: 108 },
+    { opponent: "Jared Gooden", odds: -300 },
+    { opponent: "Shavkat Rakhmonov", odds: 225 },
+    { opponent: "Impa Kasanganay", odds: 100 },
+    { opponent: "Christian Aguilera", odds: -189 }
   ],
   "Jake Matthews": [
     { opponent: "Carlston Harris", odds: -450 },
@@ -21055,6 +21067,35 @@ const FIGHT_HISTORY = {
     { date: "Sep 3, 2016", opponent: "Tainara Lisboa", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:58", event: "Jungle Fight 90" }
   ],
 
+  "Carlston Harris": [
+    { date: "May 30, 2026", opponent: "Jake Matthews", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Santiago Ponzinibbio", result: "L", method: "KO/TKO", round: 3, time: "3:13", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "May 18, 2024", opponent: "Khaos Williams", result: "L", method: "KO/TKO", round: 1, time: "1:30", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
+    { date: "Aug 5, 2023", opponent: "Jeremiah Wells", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "1:50", event: "UFC Fight Night: Sandhagen vs. Font", org: "UFC" },
+    { date: "Mar 11, 2023", opponent: "Jared Gooden", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Dvalishvili", org: "UFC" },
+    { date: "Feb 5, 2022", opponent: "Shavkat Rakhmonov", result: "L", method: "KO/TKO", round: 1, time: "4:10", event: "UFC Fight Night: Hermansson vs. Strickland", org: "UFC" },
+    { date: "Sep 18, 2021", opponent: "Impa Kasanganay", result: "W", method: "KO/TKO", round: 1, time: "2:38", event: "UFC Fight Night: Smith vs. Spann", org: "UFC" },
+    { date: "May 8, 2021", opponent: "Christian Aguilera", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:52", event: "UFC Fight Night: Rodriguez vs. Waterson", org: "UFC" },
+    { date: "Jan 15, 2021", opponent: "Saygid Izagakhmaev", result: "W", method: "Submission (Anaconda Choke)", round: 2, time: "2:36", event: "UAE Warriors 15" },
+    { date: "Sep 27, 2020", opponent: "Alexandro Rodrigues", result: "W", method: "KO", round: 2, time: "1:12", event: "Shooto Brazil 101" },
+    { date: "Dec 21, 2019", opponent: "Claudio Rocha", result: "W", method: "KO/TKO", round: 1, time: "—", event: "Shooto Brazil 99" },
+    { date: "Sep 21, 2018", opponent: "Jarrah Al-Silawi", result: "L", method: "KO/TKO", round: 1, time: "3:51", event: "Brave CF 16" },
+    { date: "Aug 12, 2017", opponent: "Carl Booth", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Brave CF 8" },
+    { date: "Mar 18, 2017", opponent: "Thiago Vieira", result: "W", method: "TKO (Punches)", round: 2, time: "1:04", event: "Brave CF 3" },
+    { date: "Dec 10, 2016", opponent: "Wellington Turman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Imortal FC 6" },
+    { date: "Aug 20, 2016", opponent: "Wellington Vicente", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "1:31", event: "SFC 1" },
+    { date: "Jun 25, 2016", opponent: "Julio Cesar Andrade", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "WOCS 43" },
+    { date: "Nov 28, 2015", opponent: "Michel Pereira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC International 12" },
+    { date: "Mar 15, 2015", opponent: "Paulo Cesar dos Santos", result: "W", method: "Submission (Brabo choke)", round: 1, time: "4:03", event: "XFC International 9" },
+    { date: "Nov 1, 2014", opponent: "Ariel Jaeger", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC International 7" },
+    { date: "Jun 21, 2014", opponent: "Claudio Rocha", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Combat 7" },
+    { date: "May 11, 2013", opponent: "Claudio Baptista Prisco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bitetti Combat 15" },
+    { date: "Mar 9, 2013", opponent: "Joilton Lutterbach", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bitetti Combat 14" },
+    { date: "Aug 25, 2012", opponent: "Aldo Ocampos", result: "W", method: "TKO (Punches)", round: 3, time: "2:21", event: "International Cage Combat 2" },
+    { date: "Mar 10, 2012", opponent: "Fernando Bruno", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 28" },
+    { date: "Dec 3, 2011", opponent: "Bruno Renascer", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:16", event: "Beija-Flor Fight Combat" },
+    { date: "Oct 8, 2011", opponent: "Christiano Marques", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Apocalypse Fighting Championship" }
+  ],
   "Jake Matthews": [
     { date: "May 30, 2026", opponent: "Carlston Harris", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
     { date: "Sep 28, 2025", opponent: "Neil Magny", result: "L", method: "Submission (Brabo choke)", round: 3, time: "3:08", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
@@ -32721,6 +32762,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Carlston Harris": [
+    { icon: "🏆", title: "Former Brave CF Welterweight Champion (2017 — five-round decision over Carl Booth)", detail: null },
+    { icon: "🥊", title: "\"Moçambique\" — 11 career finishes (6 submissions, 5 KO/TKO)", detail: null },
+    { icon: "🌍", title: "Guyanese-born welterweight fighting out of Renovação Fight Team in Rio de Janeiro", detail: null }
+  ],
   "Cameron Smotherman": [
     { icon: "🏆", title: "Fury FC Bantamweight Champion (won & defended the title before signing with the UFC)", detail: null },
     { icon: "🥊", title: "\"The Baby-Faced Killa\" — 58% finish rate (6 KO/TKO, 1 submission across 12 wins)", detail: null }
