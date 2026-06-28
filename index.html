@@ -38750,9 +38750,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   function pickFeaturedRawEvent(apiData) {
-    const events = (apiData.data || []).slice().sort((a, b) =>
-      new Date(a.startsAt) - new Date(b.startsAt)
-    );
+    const events = (apiData.data || []).slice()
+      // Drop phantom/wrong-year cards: the feed sometimes returns real PAST
+      // events stamped with a future date (e.g. "UFC 317" — actually Jun 2025 —
+      // dated 2026) and pre-marks them status:"completed". A genuinely upcoming
+      // card is "scheduled"/"confirmed", never "completed", so completed entries
+      // are never valid featured/next events. (Past results live in the
+      // prev-events dropdown, which filters for completed separately.)
+      .filter(e => e && e.status !== 'completed')
+      .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     return events.find(e => new Date(e.startsAt) >= today) || events[events.length - 1];
