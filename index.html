@@ -3671,7 +3671,7 @@
  // ── Fighters with stats but missing from search ──
  { name: "Aoriqileng", division: "BW", rank: "NR", record: "26-13-0", initials: "ARL", country: "China" }, // 1 NC
  { name: "Cody Haddon", division: "BW", rank: "NR", record: "9-1-0", initials: "CHD", country: "Australia" },
- { name: "Saidyokub Kakhramonov", division: "BW", rank: "NR", record: "10-3-0", initials: "SKK", country: "Uzbekistan" },
+ { name: "Saidyokub Kakhramonov", division: "BW", rank: "NR", record: "13-3-0", initials: "SKK", country: "Uzbekistan" },
  { name: "Askar Askarov", division: "FLW", rank: "NR", record: "15-1-1", initials: "ASK", country: "Russia" },
  { name: "Marlon Moraes", division: "BW", rank: "NR", record: "23-13-1", initials: "MMO", country: "Brazil" },
  { name: "Dan Ige", division: "FW", rank: "NR", record: "19-11-0", initials: "DIG", country: "USA" },
@@ -4349,7 +4349,7 @@
  "Jonathan Pearce": { ht:"6'0\"", dob:"1992-05-01", reach:'71"', stance:"Switch", slpm:5.12, tdAcc:"50%", subAvg:0.8, strDef:"54%", kd:0.3, tdDef:"55%", finRate:"57%", streak:2, tdLanded:5.02, gym:"Fight Ready MMA & Fitness (2019–present)" },
  "Maheshate": { ht:"6'0\"", dob:"1999-12-01", reach:'71"', stance:"Orthodox", slpm:3.96, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.4, tdDef:"50%", finRate:"60%", streak:0, tdLanded:0.00 },
  // ── Lightweight (final) ──
- "Saidyokub Kakhramonov": { ht:"5'8\"", dob:"1995-11-14", reach:'69"', stance:"Orthodox", slpm:2.05, tdAcc:"48%", subAvg:0.4, strDef:"58%", kd:0.0, tdDef:"83%", finRate:"60%", streak:3, tdLanded:6.63 },
+ "Saidyokub Kakhramonov": { ht:"5'8\"", dob:"1995-11-14", reach:'69"', stance:"Orthodox", slpm:2.05, strAcc:"51%", sapm:0.88, strDef:"59%", kd:0.00, tdLanded:6.63, tdAcc:"49%", tdDef:"83%", subAvg:1.95, finRate:"69%", streak:3, gym:"Warrior Camp MMA" },
  // ── Women's Strawweight (final) ──
  "Loma Lookboonmee": { ht:"5'1\"", dob:"1996-01-18", reach:'61"', stance:"Orthodox", slpm:3.58, strAcc:"56%", sapm:2.45, strDef:"54%", kd:0.0, tdLanded:1.76, tdAcc:null, tdDef:"70%", subAvg:0.1, finRate:"20%", streak:0, gym:"Bangtao Muay Thai & MMA" },
  "Yazmin Jauregui": { ht:"5'3\"", dob:"1999-02-28", reach:'64"', stance:"Orthodox", slpm:6.64, strAcc:"39%", sapm:5.25, strDef:"55%", kd:0.71, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"64%", streak:0, gym:"Entram Gym" },
@@ -14157,9 +14157,10 @@
     { opponent: "Josh Wick", odds: -540 }
   ],
   "Saidyokub Kakhramonov": [
-    { opponent: "Said Nurmagomedov", odds: 175 },
-    { opponent: "Trevin Jones", odds: -300 },
-    { opponent: "Timur Valiev", odds: 250 }
+    { opponent: "Omar El Bily", odds: -5000 },
+    { opponent: "Rafael Costa", odds: -900 },
+    { opponent: "Said Nurmagomedov", odds: -108 },
+    { opponent: "Ronnie Lawrence", odds: 112 }
   ],
   "Muhammad Naimov": [
     { opponent: "Mairon Santos", odds: 275 }
@@ -31049,18 +31050,22 @@ const FIGHT_HISTORY = {
     { date: "Feb 3, 2018", opponent: "Habib Habibov", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "MMAFT: Ismoili Somoni FC (debut)" }
   ],
   "Saidyokub Kakhramonov": [
-    { date: "Dec 17, 2022", opponent: "Said Nurmagomedov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cannonier vs. Strickland" },
-    { date: "Aug 21, 2021", opponent: "Trevin Jones", result: "W", method: "TKO (Punches)", round: 3, time: "0:21", event: "UFC Fight Night: Cannonier vs. Gastelum" },
-    { date: "Dec 19, 2020", opponent: "Timur Valiev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 256: Figueiredo vs. Moreno" },
-    { date: "Aug 22, 2020", opponent: "Trevin Jones", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN+: Figueiredo vs. Benavidez 2 (debut)" },
-    { date: "May 15, 2020", opponent: "Ray Borg", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 92" },
-    { date: "Jan 25, 2020", opponent: "Roque Martinez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 89" },
-    { date: "Aug 10, 2019", opponent: "Fares Ziam", result: "W", method: "KO (Punches)", round: 1, time: "1:23", event: "Bellator 226" },
-    { date: "May 18, 2019", opponent: "Jason Soares", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 82" },
-    { date: "Oct 28, 2018", opponent: "Kris Moutinho", result: "W", method: "KO (Punches)", round: 2, time: "4:29", event: "CFFC 76" },
-    { date: "Jun 30, 2018", opponent: "Robbie Peralta", result: "W", method: "KO (Punches)", round: 2, time: "0:35", event: "CFFC 74" },
-    { date: "Mar 24, 2018", opponent: "Luis Palomino", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 71" },
-    { date: "Oct 28, 2017", opponent: "Danny Duvall", result: "W", method: "KO (Punches)", round: 1, time: "0:52", event: "CFFC 67 (debut)" }
+    { date: "Oct 23, 2025", opponent: "Omar El Bily", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:13", event: "ACA 194: Johnson vs. Aliakbari" },
+    { date: "Mar 28, 2025", opponent: "Bruno Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "XFC 52: The Awakening" },
+    { date: "May 3, 2023", opponent: "Rafael Costa", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "0:55", event: "XMMA 6: Bash at the Beach" },
+    { date: "Dec 17, 2022", opponent: "Said Nurmagomedov", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "3:50", event: "UFC Fight Night: Cannonier vs. Strickland" },
+    { date: "Jul 9, 2022", opponent: "Ronnie Lawrence", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: dos Anjos vs. Fiziev" },
+    { date: "Aug 21, 2021", opponent: "Trevin Jones", result: "W", method: "Technical Submission (Guillotine choke)", round: 3, time: "4:39", event: "UFC Fight Night: Cannonier vs. Gastelum" },
+    { date: "Mar 11, 2021", opponent: "Tycen Lynn", result: "W", method: "KO (Punch)", round: 2, time: "0:45", event: "CFFC 92" },
+    { date: "Feb 7, 2020", opponent: "Askar Askar", result: "W", method: "KO (Punch)", round: 1, time: "0:30", event: "HFC 42: Hoosier Fight Club 42" },
+    { date: "Feb 27, 2019", opponent: "Felipe Vargas", result: "L", method: "KO (Flying knee)", round: 3, time: "3:17", event: "WXC 76: Warrior Wednesday 1" },
+    { date: "Sep 21, 2018", opponent: "Giorgi Kudukhashvili", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:48", event: "ROC 65: Ring of Combat 65" },
+    { date: "Aug 30, 2018", opponent: "Umar Nurmagomedov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL 7: 2018 Regular Season" },
+    { date: "Feb 3, 2018", opponent: "Jerrell Hodge", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "New League Fights 9" },
+    { date: "Nov 24, 2017", opponent: "Jordan Downey", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "HFC 35: Black & Blue" },
+    { date: "Oct 28, 2017", opponent: "John Dirham", result: "W", method: "Submission (Brabo choke)", round: 1, time: "3:51", event: "New League Fights 7" },
+    { date: "May 6, 2017", opponent: "Jernato Harris", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:48", event: "A&A Fight Time: Night of Explosions 2" },
+    { date: "Apr 15, 2017", opponent: "Bryan Ortiz", result: "W", method: "KO (Punch)", round: 1, time: "4:10", event: "HFC 33: Hoosier Fight Club 33 (debut)" }
   ],
   "Muhammad Naimov": [
     { date: "Dec 6, 2025", opponent: "Mairon Santos", result: "L", method: "TKO (Punches)", round: 3, time: "0:21", event: "UFC 323", org: "UFC" },
@@ -32884,6 +32889,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Saidyokub Kakhramonov": [
+    { icon: "🏆", title: "Former CFFC (Cage Fury) Bantamweight Champion", detail: null },
+    { icon: "🥉", title: "Combat Sambo World Championship bronze medalist", detail: null },
+    { icon: "🥋", title: "Judo black belt; Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Tainara Lisboa": [
     { icon: "🏆", title: "Two-time Muay Thai World Champion (Thailand); also Brazilian, South American and state Muay Thai champion", detail: null },
     { icon: "🥋", title: "\"Thai Panther\" — Muay Thai black belt", detail: null },
