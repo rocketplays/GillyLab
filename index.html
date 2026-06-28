@@ -3665,7 +3665,7 @@
  { name: "Shanna Young", division: "WBW", rank: "NR", record: "11-9-0", initials: "SYG", country: "USA" },
  { name: "Stephanie Egger", division: "WBW", rank: "NR", record: "10-4-0", initials: "SEW", country: "Switzerland" },
  { name: "Jacqueline Cavalcanti", division: "WBW", rank: "#10", record: "10-2-0", initials: "JCV2", country: "Portugal" },
- { name: "Tainara Lisboa", division: "WBW", rank: "NR", record: "9-3-0", initials: "TLI", country: "Brazil" },
+ { name: "Tainara Lisboa", division: "WBW", rank: "NR", record: "7-4-0", initials: "TLI", country: "Brazil" },
  { name: "Ketlen Souza", division: "WSW", rank: "NR", record: "17-6-0", initials: "KSO", country: "Brazil" },
  { name: "Pannie Kianzad", division: "WBW", rank: "NR", record: "19-8-0", initials: "PKZ", country: "Iran" },
  // ── Fighters with stats but missing from search ──
@@ -4580,7 +4580,7 @@
  // ── Women's Flyweight (final batch) ──
  "Ariane Silva": { ht:"5'6\"", dob:"1994-01-26", reach:'67"', stance:"Orthodox", slpm:4.05, tdAcc:"38%", subAvg:0.3, strDef:"50%", kd:0.2, tdDef:"68%", finRate:"59%", streak:0, tdLanded:0.47, gym:"Lioness Studio (2023–present)" },
  // ── Women's Bantamweight (final batch) ──
- "Tainara Lisboa": { ht:"5'7\"", dob:"1991-03-02", reach:'67"', stance:"Orthodox", slpm:2.01, tdAcc:"31%", subAvg:0.3, strDef:"45%", kd:0.1, tdDef:"53%", finRate:"45%", streak:0, tdLanded:1.67 },
+ "Tainara Lisboa": { ht:"5'7\"", dob:"1991-03-02", reach:'67"', stance:"Orthodox", slpm:2.01, strAcc:"44%", sapm:2.88, strDef:"46%", kd:0.00, tdLanded:1.67, tdAcc:"32%", tdDef:"53%", subAvg:0.28, finRate:"86%", streak:0, gym:"Damas 013" },
  // ── Final sweep ──
  "Rizvan Kuniev": { ht:'6\'4"', dob:"1992-03-10", reach:'76"', stance:"Orthodox", slpm:3.94, strAcc:"55%", sapm:2.33, strDef:"48%", kd:0.33, tdLanded:0.98, tdAcc:"75%", tdDef:"93%", subAvg:0.00, finRate:"62%", streak:1, gym:"Gorets Fight Club" },
  "Victor Henry": { ht:"5'7\"", dob:"1987-05-04", reach:'68"', stance:"Switch", slpm:7.17, strAcc:"53%", sapm:5.19, strDef:"48%", kd:0.52, tdLanded:1.04, tdAcc:"43%", tdDef:"81%", subAvg:0.35, finRate:"60%", streak:1, gym:"UWF-USA" },
@@ -14255,10 +14255,10 @@
     { opponent: "Igor Taylon", odds: -400 },
   ],
   "Tainara Lisboa": [
-    { opponent: "Melissa Croden", odds: 300 },
-    { opponent: "Luana Santos", odds: 275 },
-    { opponent: "Ravena Oliveira", odds: -350 },
-    { opponent: "Jessica-Rose Clark", odds: -400 }
+    { opponent: "Melissa Croden", odds: 115 },
+    { opponent: "Luana Santos", odds: 154 },
+    { opponent: "Ravena Oliveira", odds: -280 },
+    { opponent: "Jessica-Rose Clark", odds: -110 }
   ],
   "Hecher Sosa": [
     { opponent: "Luan Lacerda", odds: -215 },
@@ -32884,6 +32884,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Tainara Lisboa": [
+    { icon: "🏆", title: "Two-time Muay Thai World Champion (Thailand); also Brazilian, South American and state Muay Thai champion", detail: null },
+    { icon: "🥋", title: "\"Thai Panther\" — Muay Thai black belt", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt; CBJJE No-Gi World Champion", detail: null },
+    { icon: "🥊", title: "Submitted Jessica-Rose Clark by rear-naked choke in her UFC debut (2023)", detail: null }
+  ],
   "Tamires Vidal": [
     { icon: "🥋", title: "\"Tractor\" — Brazilian Jiu-Jitsu brown belt; multiple-time Brazilian grappling champion (Rei do Rio, CBJJO)", detail: null },
     { icon: "🥊", title: "Won her UFC debut by first-round TKO over Ramona Pascual (2022)", detail: null }
