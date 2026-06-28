@@ -4693,7 +4693,7 @@
  "Denzel Freeman": { ht:"6'1\"", dob:"1991-11-10", reach:'77"', stance:"Southpaw", slpm:2.45, tdAcc:"0%", subAvg:0.0, strDef:"50%", kd:0.2, tdDef:"50%", finRate:"71%", streak:0, tdLanded:0.00 },
  "Mario Pinto": { ht:"6'5\"", dob:"1998-03-14", reach:'79"', stance:"Orthodox", slpm:2.85, strAcc:"70%", sapm:1.93, strDef:"58%", kd:0.95, tdLanded:2.38, tdAcc:"26%", tdDef:"100%", subAvg:0.95, finRate:"67%", streak:12, gym:"FightZone London" },
  "Steven Asplund": { ht:"6'5\"", dob:"1998-07-16", reach:'78"', stance:"Orthodox", slpm:10.05, strAcc:"52%", sapm:6.64, strDef:"50%", kd:1.25, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"86%", streak:0, gym:"Minnesota Top Team" },
- "Sean Sharaf": { ht:"6'3\"", dob:"1993-07-11", reach:'77"', stance:"Orthodox", slpm:7.41, tdAcc:"11%", subAvg:0.0, strDef:"42%", kd:0.5, tdDef:"0%", finRate:"50%", streak:0, tdLanded:0.93 },
+ "Sean Sharaf": { ht:"6'3\"", dob:"1993-07-11", reach:'77"', stance:"Orthodox", slpm:7.41, strAcc:"44%", sapm:15.00, strDef:"43%", kd:0.0, tdLanded:0.93, tdAcc:"11%", tdDef:null, subAvg:0.0, finRate:"100%", streak:0, gym:"Xtreme Couture" },
  "Lukasz Brzeski": { ht:"6'3\"", dob:"1992-05-17", reach:'78"', stance:"Orthodox", slpm:4.90, tdAcc:"36%", subAvg:0.3, strDef:"47%", kd:0.4, tdDef:"67%", finRate:"56%", streak:0, tdLanded:1.61 },
  // Women's Strawweight
  "Alice Ardelean": { ht:"5'3\"", dob:"1992-04-19", reach:'62"', stance:"Orthodox", slpm:7.00, strAcc:"46%", sapm:4.97, strDef:"61%", kd:0.00, tdLanded:1.08, tdAcc:"50%", tdDef:"86%", subAvg:0.22, finRate:"75%", streak:3, gym:"Fusion X-Cel" },
@@ -14325,7 +14325,8 @@
     { opponent: "David Mgoyan", odds: 145 }
   ],
   "Sean Sharaf": [
-
+    { opponent: "Steven Asplund", odds: 285 },
+    { opponent: "Junior Tafa", odds: 210 }
   ],
   "Ronaldo Rodriguez": [
     { opponent: "Doo Ho Choi", odds: 350 }
@@ -31579,13 +31580,12 @@ const FIGHT_HISTORY = {
     { date: "Nov 9, 2019", opponent: "Ben Hollier", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "–", event: "Fusion Fight League: Rising Stars 2" }
   ],
   "Sean Sharaf": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" },
-    { date: "Oct 5, 2025", opponent: "Jared Brown", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:14", event: "DWCS Season 9 Week 4 (contract)" },
-    { date: "Jun 14, 2025", opponent: "Connor Matthews", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 181" },
-    { date: "Mar 1, 2025", opponent: "Kevin Jarvis", result: "W", method: "TKO (Punches)", round: 2, time: "0:44", event: "LFA 177" },
-    { date: "Nov 23, 2024", opponent: "Marcus Perez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 174" },
-    { date: "Aug 3, 2024", opponent: "David Mundell", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:14", event: "LFA 170" },
-    { date: "Apr 27, 2024", opponent: "Tyler Lovett", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 167" }
+    { date: "Dec 13, 2025", opponent: "Steven Asplund", result: "L", method: "KO (Punches)", round: 2, time: "3:49", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
+    { date: "Oct 12, 2024", opponent: "Junior Tafa", result: "L", method: "KO (Punches)", round: 2, time: "2:15", event: "UFC Fight Night: Royval vs. Taira (debut)", org: "UFC" },
+    { date: "Sep 6, 2024", opponent: "LJ Torres", result: "W", method: "TKO (Punches)", round: 1, time: "3:19", event: "Lights Out Xtreme Fighting 19" },
+    { date: "Apr 4, 2024", opponent: "Chadricc Kindle", result: "W", method: "TKO (Punches)", round: 1, time: "4:31", event: "Fight Club OC" },
+    { date: "Jul 1, 2023", opponent: "Nathan Mullett", result: "W", method: "TKO (Punches)", round: 1, time: "0:09", event: "Up Next Fighting 9" },
+    { date: "Sep 23, 2021", opponent: "Bruno Casillas", result: "W", method: "TKO (Ground and pound)", round: 1, time: "1:10", event: "Fight Club OC 65" }
   ],
   "Ronaldo Rodriguez": [
     { date: "Mar 29, 2025", opponent: "Kevin Borjas", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg", org: "UFC" },
@@ -32947,6 +32947,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Sean Sharaf": [
+    { icon: "🥊", title: "\"The Smoke\" — all 4 career wins by first-round KO/TKO", detail: null },
+    { icon: "🤼", title: "Trains at Xtreme Couture (Las Vegas)", detail: null }
   ],
   "Billy Elekana": [
     { icon: "🥊", title: "\"Son of Susie\" — 6 of 10 wins by finish (3 KO/TKO, 3 submission)", detail: null },
