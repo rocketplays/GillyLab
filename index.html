@@ -3556,7 +3556,7 @@
  { name: "David Dvorak", division: "FLW", rank: "NR", record: "22-7-0", initials: "DDV2", country: "Czech Republic" },
  { name: "Francisco Figueiredo", division: "FLW", rank: "NR", record: "13-6-1", initials: "FFG", country: "Brazil" },
  { name: "Tyson Nam", division: "FLW", rank: "NR", record: "23-15-1", initials: "TYN", country: "USA" },
- { name: "Kleydson Rodrigues", division: "FLW", rank: "NR", record: "12-4-0", initials: "KLR", country: "Brazil" },
+ { name: "Kleydson Rodrigues", division: "FLW", rank: "NR", record: "8-4-0", initials: "KLR", country: "Brazil" },
  { name: "Ethyn Ewing", division: "BW", rank: "NR", record: "10-2-0", initials: "EEW", country: "USA" },
  // ─── MIDDLEWEIGHT (remaining) ───
  { name: "Laureano Staropoli", division: "MW", rank: "NR", record: "15-7-0", initials: "LST", country: "Argentina" },
@@ -4547,7 +4547,7 @@
  "Nina Nunes": { ht:"5'5\"", dob:"1985-12-03", reach:'64"', stance:"Orthodox", slpm:4.39, tdAcc:"30%", subAvg:0.3, strDef:"51%", kd:0.1, tdDef:"67%", finRate:"50%", streak:0, tdLanded:0.81, gym:"MMA Masters (2012–2014)" },
  "Victor Altamirano": { ht:"5'8\"", dob:"1991-01-23", reach:'70"', stance:"Switch", slpm:4.58, strAcc:"53%", sapm:3.82, strDef:"53%", kd:0.16, tdLanded:2.88, tdAcc:"38%", tdDef:"63%", subAvg:0.0, finRate:"50%", streak:0, gym:"Double Five Mid-Cities" },
  // ── Women's Bantamweight (more) ──
- "Kleydson Rodrigues": { ht:"5'5\"", dob:"1995-10-22", reach:'67"', stance:"Orthodox", slpm:4.58, tdAcc:"22%", subAvg:0.4, strDef:"53%", kd:0.4, tdDef:"75%", finRate:"62%", streak:0, tdLanded:0.60 },
+ "Kleydson Rodrigues": { ht:"5'5\"", dob:"1995-10-22", reach:'67"', stance:"Orthodox", slpm:4.58, strAcc:"58%", sapm:2.29, strDef:"54%", kd:0.30, tdLanded:0.60, tdAcc:"22%", tdDef:"53%", subAvg:0.60, finRate:"75%", streak:0, gym:"Team Nogueira" },
  // ── Flyweight (more) ──
  "Francisco Figueiredo": { ht:"5'6\"", dob:"1989-10-23", reach:'68"', stance:"Southpaw", slpm:2.04, tdAcc:"75%", subAvg:0.7, strDef:"61%", kd:0.1, tdDef:"80%", finRate:"72%", streak:0, tdLanded:2.51, gym:"Team Figueiredo" },
  "DongHun Choi": { ht:"5'5\"", dob:"1999-01-02", reach:'66"', stance:"Switch", slpm:4.54, strAcc:"66%", sapm:3.13, strDef:"59%", kd:0.92, tdLanded:0.46, tdAcc:"0%", tdDef:"82%", subAvg:0.00, finRate:"44%", streak:9, gym:"Pohang Team MAD" },
@@ -13801,10 +13801,11 @@
     { opponent: "Sam Hughes", odds: 175 }
   ],
   "Kleydson Rodrigues": [
-    { opponent: "Joshua Van", odds: -175 },
-    { opponent: "Victor Altamirano", odds: -250 },
-    { opponent: "Tim Elliott", odds: 275 },
-    { opponent: "Carlos Hernandez", odds: -500 }
+    { opponent: "Alatengheili", odds: -150 },
+    { opponent: "Farid Basharat", odds: 300 },
+    { opponent: "Shannon Ross", odds: -335 },
+    { opponent: "CJ Vergara", odds: -270 },
+    { opponent: "Santo Curatolo", odds: -115 }
   ],
   "Pam Sorensen": [
     { opponent: "Talita Alencar", odds: 275 },
@@ -30104,17 +30105,18 @@ const FIGHT_HISTORY = {
     { date: "Oct 10, 2020", opponent: "Kierra Bermes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 93" }
   ],
   "Kleydson Rodrigues": [
-    { date: "Mar 28, 2026", opponent: "Joshua Van", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "0:57", event: "UFC Fight Night: Adesanya vs. Pyfer (Seattle)" },
-    { date: "Sep 13, 2025", opponent: "Zhumagulov", result: "W", method: "KO (Punches)", round: 2, time: "1:24", event: "UFC Fight Night: Lewis vs. Almeida" },
-    { date: "May 3, 2025", opponent: "Cody Durden", result: "L", method: "Sub (Leg Lock)", round: 2, time: "2:18", event: "UFC Fight Night: Sandhagen vs. Figueiredo" },
-    { date: "Jan 11, 2025", opponent: "Victor Altamirano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2" },
-    { date: "Jun 29, 2024", opponent: "Tim Elliott", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 303: Pereira vs. Procházka 2" },
-    { date: "Dec 2, 2023", opponent: "Carlos Hernandez", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:03", event: "UFC on ESPN: Sandhagen vs. Font" },
-    { date: "Apr 22, 2023", opponent: "Carlos Hernandez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:57", event: "UFC Fight Night: Holloway vs. Allen (debut)" },
-    { date: "Jan 21, 2023", opponent: "Elves Brener", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:14", event: "DWCS Season 6 Week 8 (contract)" },
-    { date: "Oct 1, 2022", opponent: "Bruno Victor", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:16", event: "Shooto Brazil 104" },
-    { date: "Jul 2, 2022", opponent: "Douglas Gomes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:34", event: "Shooto Brazil 102" },
-    { date: "Apr 9, 2022", opponent: "Maycon Moraes", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:58", event: "Shooto Brazil 100" }
+    { date: "May 18, 2024", opponent: "Alatengheili", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Murphy" },
+    { date: "Sep 2, 2023", opponent: "Farid Basharat", result: "L", method: "Submission", round: 1, time: "4:15", event: "UFC Fight Night: Gane vs. Spivac" },
+    { date: "Feb 11, 2023", opponent: "Shannon Ross", result: "W", method: "TKO", round: 1, time: "0:59", event: "UFC 284: Makhachev vs. Volkanovski" },
+    { date: "May 7, 2022", opponent: "CJ Vergara", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 274: Oliveira vs. Gaethje (debut)" },
+    { date: "Sep 21, 2021", opponent: "Santo Curatolo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 4 (contract)" },
+    { date: "Oct 26, 2019", opponent: "Eduardo Chapolin", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:58", event: "Jungle Fight 97" },
+    { date: "Sep 28, 2019", opponent: "Antonio da Silva", result: "W", method: "TKO (Retirement)", round: 1, time: "5:00", event: "Jungle Fight 95" },
+    { date: "Sep 16, 2018", opponent: "Romario Garcia", result: "W", method: "TKO", round: 1, time: "0:18", event: "Lux Combat 2" },
+    { date: "May 25, 2017", opponent: "Bruno Mesquita", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FLC 5: CUFA Fight Festival 5" },
+    { date: "Sep 2, 2016", opponent: "Dyllan Nascimento", result: "W", method: "Submission (Armbar)", round: 1, time: "2:04", event: "FLC 3: CUFA Fight Festival 3" },
+    { date: "Jun 14, 2015", opponent: "Ervani Melonio", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Guerreiros da Fé Combat" },
+    { date: "Jun 14, 2015", opponent: "Edney Michael", result: "W", method: "TKO", round: 1, time: "1:30", event: "Guerreiros da Fé Combat" }
   ],
   "Pam Sorensen": [
     { date: "Nov 1, 2025", opponent: "Talita Alencar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vegas 110" },
@@ -32949,6 +32951,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Kleydson Rodrigues": [
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021)", detail: null },
+    { icon: "🥊", title: "6 of 8 wins by finish (4 KO/TKO, 2 submission)", detail: null }
+  ],
   "Tyson Nam": [
     { icon: "🥊", title: "First-round KO of reigning Bellator bantamweight champion Eduardo Dantas (Shooto Brazil, 2012) — signature upset", detail: null },
     { icon: "🏆", title: "Multiple-time Hawaii regional champion (X-1 World Events, Destiny MMA)", detail: null },
