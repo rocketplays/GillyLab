@@ -3680,7 +3680,7 @@
  { name: "Jamall Emmers", division: "FW", rank: "NR", record: "22-8-0", initials: "JEM", country: "USA" },
  { name: "Jonathan Pearce", division: "FW", rank: "NR", record: "14-7-0", initials: "JPR", country: "UK" },
  { name: "Luke Riley", division: "FW", rank: "NR", record: "13-0-0", initials: "LRI", country: "UK" },
- { name: "Maheshate", division: "FW", rank: "NR", record: "10-5-0", initials: "MHT", country: "China" },
+ { name: "Maheshate", division: "LW", rank: "NR", record: "10-5-0", initials: "MHT", country: "China" },
  { name: "Daniel Zellhuber", division: "LW", rank: "NR", record: "15-4-0", initials: "DZL", country: "Mexico" },
  { name: "Khaos Williams", division: "WW", rank: "NR", record: "16-5-0", initials: "KWL", country: "USA" },
  { name: "Jared Gooden", division: "WW", rank: "NR", record: "23-12-0", initials: "JGD", country: "USA" },
@@ -4347,7 +4347,7 @@
  "Alex Caceres": { ht:"5'10\"", dob:"1988-06-20", reach:'73"', stance:"Southpaw", slpm:4.21, strAcc:"50%", sapm:3.09, strDef:"63%", kd:0.21, tdLanded:0.54, tdAcc:"68%", tdDef:"65%", subAvg:0.67, finRate:"52%", streak:0, gym:"MMA Lab" },
  "Jamall Emmers": { ht:"5'10\"", dob:"1989-07-24", reach:'74"', stance:"Orthodox", slpm:5.10, tdAcc:"30%", subAvg:0.3, strDef:"57%", kd:0.2, tdDef:"64%", finRate:"45%", streak:0, tdLanded:0.88, gym:"Pinnacle MMA" },
  "Jonathan Pearce": { ht:"6'0\"", dob:"1992-05-01", reach:'71"', stance:"Switch", slpm:5.12, tdAcc:"50%", subAvg:0.8, strDef:"54%", kd:0.3, tdDef:"55%", finRate:"57%", streak:2, tdLanded:5.02, gym:"Fight Ready MMA & Fitness (2019–present)" },
- "Maheshate": { ht:"6'0\"", dob:"1999-12-01", reach:'71"', stance:"Orthodox", slpm:3.96, tdAcc:"0%", subAvg:0.0, strDef:"51%", kd:0.4, tdDef:"50%", finRate:"60%", streak:0, tdLanded:0.00 },
+ "Maheshate": { ht:"6'0\"", dob:"1999-12-01", reach:'71"', stance:"Orthodox", slpm:3.96, strAcc:"31%", sapm:5.96, strDef:"52%", kd:0.36, tdLanded:0.00, tdAcc:"0%", tdDef:"47%", subAvg:0.00, finRate:"50%", streak:0, gym:"Enbo Fight Club" },
  // ── Lightweight (final) ──
  "Saidyokub Kakhramonov": { ht:"5'8\"", dob:"1995-11-14", reach:'69"', stance:"Orthodox", slpm:2.05, strAcc:"51%", sapm:0.88, strDef:"59%", kd:0.00, tdLanded:6.63, tdAcc:"49%", tdDef:"83%", subAvg:1.95, finRate:"69%", streak:3, gym:"Warrior Camp MMA" },
  // ── Women's Strawweight (final) ──
@@ -13664,13 +13664,10 @@
     { opponent: "Ashlee Evans-Smith", odds: 230 }
   ],
   "Maheshate": [
-    { opponent: "Charles Jourdain", odds: 225 },
-    { opponent: "Sang-Hun Bae", odds: -350 },
-    { opponent: "Ludovit Klein", odds: 200 },
-    { opponent: "TJ Brown", odds: -250 },
-    { opponent: "Christos Giagos", odds: -400 },
-    { opponent: "Mike Grundy", odds: -350 },
-    { opponent: "Te Edwards", odds: -600 }
+    { opponent: "Gauge Young", odds: 125 },
+    { opponent: "Gabriel Benitez", odds: -225 },
+    { opponent: "Rafa Garcia", odds: 140 },
+    { opponent: "Achilles Estremadura", odds: 575 }
   ],
   "TJ Brown": [
     { opponent: "Kai Kamaka III", odds: 175 },
@@ -29760,17 +29757,21 @@ const FIGHT_HISTORY = {
 
 
   "Maheshate": [
-    { date: "Mar 29, 2025", opponent: "Charles Jourdain", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kape vs. Almabayev" },
-    { date: "Aug 31, 2024", opponent: "Sang-Hun Bae", result: "W", method: "TKO (Punches)", round: 2, time: "1:50", event: "UFC Fight Night: Holloway vs. Poirier 3" },
-    { date: "Jan 13, 2024", opponent: "Ludovit Klein", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ankalaev vs. Walker 2" },
-    { date: "Jul 8, 2023", opponent: "TJ Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Santos vs. Strickland" },
-    { date: "Mar 4, 2023", opponent: "Christos Giagos", result: "W", method: "KO (Punches)", round: 1, time: "2:07", event: "UFC Fight Night: Vera vs. Sandhagen" },
-    { date: "Sep 10, 2022", opponent: "Mike Grundy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 279: Diaz vs. Ferguson" },
-    { date: "Mar 5, 2022", opponent: "Te Edwards", result: "W", method: "TKO (Punches)", round: 1, time: "1:10", event: "UFC 272: Covington vs. Masvidal (debut)" },
-    { date: "Dec 11, 2021", opponent: "Jing Ran", result: "W", method: "KO (Punches)", round: 1, time: "0:00", event: "DWCS Season 5 Week 9 (contract)" },
-    { date: "Sep 4, 2021", opponent: "Alim Qasim", result: "W", method: "KO (Punches)", round: 2, time: "0:00", event: "Legend FC 60" },
-    { date: "Jun 19, 2021", opponent: "Alim Qasim", result: "W", method: "TKO (Punches)", round: 2, time: "0:00", event: "Legend FC 58" },
-    { date: "Jan 24, 2021", opponent: "Yelizhan Shankarov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC 2021 EP1" }
+    { date: "Aug 23, 2025", opponent: "Gauge Young", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang" },
+    { date: "Nov 23, 2024", opponent: "Nikolas Motta", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yan vs. Figueiredo" },
+    { date: "Apr 27, 2024", opponent: "Gabriel Benitez", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Nicolau vs. Perez" },
+    { date: "May 20, 2023", opponent: "Viacheslav Borshchev", result: "L", method: "TKO (Punches)", round: 2, time: "2:37", event: "UFC Fight Night: Dern vs. Hill" },
+    { date: "Dec 17, 2022", opponent: "Rafa Garcia", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cannonier vs. Strickland" },
+    { date: "Jun 11, 2022", opponent: "Steve Garcia", result: "W", method: "KO (Punch)", round: 1, time: "1:14", event: "UFC 275: Teixeira vs. Procházka" },
+    { date: "Nov 2, 2021", opponent: "Achilles Estremadura", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 2021: Week 10 (contract)" },
+    { date: "Jan 14, 2021", opponent: "Damu Wu", result: "W", method: "TKO (Punches)", round: 1, time: "1:13", event: "WLF: W.A.R.S. 50" },
+    { date: "Sep 25, 2020", opponent: "Akenbieke Ayijiake", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 47" },
+    { date: "Jun 19, 2020", opponent: "Rongshuai Zhu", result: "W", method: "TKO (Corner stoppage)", round: 2, time: "1:09", event: "WLF: W.A.R.S. 44" },
+    { date: "Apr 26, 2020", opponent: "Yasen Sailikebieke", result: "W", method: "TKO (Punches)", round: 2, time: "0:50", event: "WLF: W.A.R.S. 42" },
+    { date: "Nov 15, 2019", opponent: "Nannan He", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 40" },
+    { date: "Aug 3, 2019", opponent: "Nikolay Goncharov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "M-1 Challenge 103: Kelades vs. Pletenko" },
+    { date: "Jul 12, 2019", opponent: "Nuliquwake Kazibai", result: "W", method: "Submission (Triangle choke)", round: 2, time: "1:26", event: "WLF: W.A.R.S. 36" },
+    { date: "Jun 14, 2019", opponent: "Xiaochen Xu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 35 (debut)" }
   ],
   "TJ Brown": [
     { date: "Dec 12, 2025", opponent: "Dylan Mantello", result: "W", method: "KO (Punches)", round: 1, time: "0:18", event: "Victory Fighting League: The Road to Redemption" },
@@ -32907,6 +32908,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Maheshate": [
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Achilles Estremadura)", detail: null },
+    { icon: "🥊", title: "Boxing-based striker; first-round KO of Steve Garcia in his UFC debut win (UFC 275)", detail: null }
+  ],
   "Alex Caceres": [
     { icon: "⭐", title: "Four-time UFC Fight of the Night (Pettis, Y. Rodríguez, Bravo, Pineda)", detail: null },
     { icon: "⭐", title: "Two-time UFC Submission of the Night (Page, Pettis)", detail: null },
