@@ -3680,7 +3680,7 @@
  { name: "Ketlen Souza", division: "WBW", rank: "NR", record: "17-6-0", initials: "KSO", country: "Brazil" },
  { name: "Pannie Kianzad", division: "WBW", rank: "NR", record: "19-8-0", initials: "PKZ", country: "Iran" },
  // ── Fighters with stats but missing from search ──
- { name: "Aoriqileng", division: "BW", rank: "NR", record: "26-12-0", initials: "ARL", country: "China" },
+ { name: "Aoriqileng", division: "BW", rank: "NR", record: "26-13-0", initials: "ARL", country: "China" }, // 1 NC
  { name: "Cody Haddon", division: "BW", rank: "NR", record: "9-1-0", initials: "CHD", country: "Australia" },
  { name: "Saidyokub Kakhramonov", division: "BW", rank: "NR", record: "10-3-0", initials: "SKK", country: "Uzbekistan" },
  { name: "Askar Askarov", division: "FLW", rank: "NR", record: "15-1-1", initials: "ASK", country: "Russia" },
@@ -4350,7 +4350,7 @@
  "Ricky Glenn": { ht:"6'0\"", dob:"1989-04-12", reach:'70"', stance:"Southpaw", slpm:3.79, tdAcc:"39%", subAvg:0.4, strDef:"51%", kd:0.2, tdDef:"66%", finRate:"50%", streak:0, tdLanded:1.22, gym:"Absolute MMA and Fitness (2019–present)" },
  // ── Flyweight (final) ──
  "Cody Durden": { ht:"5'7\"", dob:"1991-03-29", reach:'67"', stance:"Southpaw", slpm:3.24, strAcc:"45%", sapm:3.94, strDef:"51%", kd:0.09, tdLanded:3.99, tdAcc:"49%", tdDef:"57%", subAvg:0.65, finRate:"67%", streak:1, gym:"American Top Team Gwinnett (2020–present)" },
- "Aoriqileng": { ht:"5'7\"", dob:"1993-06-25", reach:'69"', stance:"Orthodox", slpm:4.69, tdAcc:"43%", subAvg:0.3, strDef:"48%", kd:0.2, tdDef:"52%", finRate:"46%", streak:0, tdLanded:1.20 },
+ "Aoriqileng": { ht:"5'7\"", dob:"1993-06-25", reach:'69"', stance:"Orthodox", slpm:4.40, strAcc:"50%", sapm:5.66, strDef:"47%", kd:0.47, tdLanded:1.11, tdAcc:"47%", tdDef:"60%", subAvg:0.16, finRate:"38%", streak:0, gym:"Fight Ready" },
  "Cody Haddon": { ht:"5'7\"", dob:"1998-09-08", reach:'69"', stance:"Orthodox", slpm:8.84, strAcc:"57%", sapm:2.72, strDef:"63%", kd:1.18, tdLanded:2.96, tdAcc:"36%", tdDef:"83%", subAvg:0.59, finRate:"89%", streak:7, gym:"Luistro Combat Academy" },
  "Joshua Van": { ht:"5'5\"", dob:"2001-10-10", reach:'65"', stance:"Orthodox", slpm:8.43, strAcc:"57%", sapm:5.82, strDef:"58%", kd:0.72, tdLanded:0.82, tdAcc:"62%", tdDef:"76%", subAvg:0.21, finRate:"65%", streak:7, gym:"4oz. Fight Club" },
  // ── Featherweight (final) ──
@@ -9888,15 +9888,10 @@
     { opponent: "Dashon Johnson", odds: -160 }
   ],
   "Aoriqileng": [
-    { opponent: "Victor Henry", odds: 180 },
-    { opponent: "Aiemann Zahabi", odds: 290 },
-    { opponent: "Sumudaerji", odds: -200 },
-    { opponent: "Jose Johnson", odds: -300 },
-    { opponent: "Danaa Batgerel", odds: 175 },
-    { opponent: "Batgerel", odds: 300 },
-    { opponent: "Cody Stamann", odds: 250 },
-    { opponent: "Miles Johns", odds: 200 },
-    { opponent: "Felipe Colares", odds: -200 }
+    { opponent: "Cody Haddon", odds: 360 },
+    { opponent: "Cody Gibson", odds: 170 },
+    { opponent: "Raul Rosas Jr.", odds: 660 },
+    { opponent: "Johnny Munoz", odds: 100 }
   ],
   "Asu Almabayev": [
     { opponent: "Alex Perez", odds: -213 },
@@ -21126,22 +21121,46 @@ const FIGHT_HISTORY = {
 
 
   "Aoriqileng": [
-    { date: "May 30, 2026", opponent: "Cody Haddon", result: "L", method: "KO/TKO", round: 2, time: "2:11", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
-    { date: "Sep 14, 2024", opponent: "Raul Rosas Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "Apr 13, 2024", opponent: "Victor Henry", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 300: Pereira vs. Hill" },
-    { date: "Jun 10, 2023", opponent: "Aiemann Zahabi", result: "L", method: "KO (Punches)", round: 1, time: "1:04", event: "UFC 289: Nunes vs. Aldana" },
-    { date: "Nov 19, 2022", opponent: "Sumudaerji", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blaydes vs. Lewis 2" },
-    { date: "Jul 2, 2022", opponent: "Jose Johnson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 276: Adesanya vs. Cannonier" },
-    { date: "Jan 22, 2022", opponent: "Danaa Batgerel", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 270: Ngannou vs. Gane" },
-    { date: "Aug 7, 2021", opponent: "Batgerel", result: "L", method: "KO (Punch)", round: 1, time: "1:28", event: "UFC 265: Poirier vs. McGregor 3" },
-    { date: "Nov 21, 2020", opponent: "Cody Stamann", result: "NC", method: "NC", round: 1, time: "0:00", event: "UFC Fight Night: Santos vs. Teixeira" },
-    { date: "Jul 11, 2020", opponent: "Cody Stamann", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 251: Usman vs. Masvidal" },
-    { date: "Feb 22, 2020", opponent: "Miles Johns", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night 169" },
-    { date: "Aug 3, 2019", opponent: "Felipe Colares", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 241: Cormier vs. Miocic 2" },
-    { date: "Apr 13, 2019", opponent: "Petr Yan", result: "L", method: "KO (Punches)", round: 1, time: "2:21", event: "UFC Fight Night 149 (debut)" },
-    { date: "Dec 22, 2018", opponent: "Xu Cen", result: "W", method: "KO (Punches)", round: 2, time: "1:34", event: "Kunlun Fight" },
-    { date: "Aug 18, 2018", opponent: "Ao Gong", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "One Championship" },
-    { date: "Mar 24, 2018", opponent: "Jia Baoshan", result: "W", method: "TKO (Punches)", round: 2, time: "2:18", event: "Warrior Fight (debut)" }
+    { date: "May 30, 2026", opponent: "Cody Haddon", result: "L", method: "KO/TKO", round: 2, time: "2:11", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
+    { date: "Oct 18, 2025", opponent: "Cody Gibson", result: "W", method: "KO/TKO", round: 1, time: "0:21", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "Sep 14, 2024", opponent: "Raul Rosas Jr.", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili", org: "UFC" },
+    { date: "Feb 10, 2024", opponent: "Daniel Marcos", result: "NC", method: "No Contest", round: 2, time: "3:28", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
+    { date: "Oct 7, 2023", opponent: "Johnny Munoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dawson vs. Green", org: "UFC" },
+    { date: "Jun 10, 2023", opponent: "Aiemann Zahabi", result: "L", method: "KO/TKO", round: 1, time: "1:04", event: "UFC 289: Nunes vs. Aldana", org: "UFC" },
+    { date: "Aug 20, 2022", opponent: "Jay Perrin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 278: Usman vs. Edwards 2", org: "UFC" },
+    { date: "Apr 23, 2022", opponent: "Cameron Else", result: "W", method: "KO/TKO", round: 1, time: "2:48", event: "UFC Fight Night: Lemos vs. Andrade", org: "UFC" },
+    { date: "Nov 20, 2021", opponent: "Cody Durden", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Vieira vs. Tate", org: "UFC" },
+    { date: "Apr 24, 2021", opponent: "Jeff Molina", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 261: Usman vs. Masvidal 2", org: "UFC" },
+    { date: "Jan 3, 2020", opponent: "Khirzri Abdulaev", result: "W", method: "KO/TKO", round: 2, time: "3:38", event: "WLF: W.A.R.S. 41" },
+    { date: "Oct 18, 2019", opponent: "Amirlan Amirov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 39" },
+    { date: "Jun 14, 2019", opponent: "Giorgi Borashvili", result: "W", method: "TKO (Retirement)", round: 2, time: "5:00", event: "WLF: W.A.R.S. 34" },
+    { date: "Jan 3, 2019", opponent: "E Yong", result: "W", method: "Submission (Armbar)", round: 1, time: "3:34", event: "WLF: W.A.R.S. 31" },
+    { date: "Dec 14, 2018", opponent: "Carlos Eduardo de Azevedo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 30" },
+    { date: "Nov 16, 2018", opponent: "Orazgeldi Atabayev", result: "W", method: "KO/TKO", round: 1, time: "4:40", event: "WLF: W.A.R.S. 29" },
+    { date: "Sep 14, 2018", opponent: "Amirlan Amirov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 27" },
+    { date: "Jun 10, 2018", opponent: "Shuo Wang", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CWM MMA: Chin Woo Men S10" },
+    { date: "May 12, 2018", opponent: "Sen Yang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CWM MMA: Chin Woo Men S9" },
+    { date: "Apr 14, 2018", opponent: "Jiaerken Ailimubai", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CWM MMA: Chin Woo Men S7" },
+    { date: "Mar 17, 2018", opponent: "Vladislav Doroshenko", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 22" },
+    { date: "Mar 11, 2018", opponent: "Xiaolong Wu", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "CWM MMA: Chin Woo Men S6" },
+    { date: "Jan 13, 2018", opponent: "Maksadzhon Yusupov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 21" },
+    { date: "Dec 9, 2017", opponent: "Ailiyaer Didaer", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CWM MMA: Chin Woo Men S1" },
+    { date: "Nov 11, 2017", opponent: "Kana Hyatt", result: "W", method: "TKO (Punches)", round: 1, time: "3:24", event: "WLF: W.A.R.S. 19" },
+    { date: "Sep 16, 2017", opponent: "Bu Huo You Ga", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 17" },
+    { date: "Aug 10, 2017", opponent: "Nakouzi Nakouzi", result: "W", method: "TKO (Punches)", round: 1, time: "2:29", event: "Guan Sheng Wushu Festival" },
+    { date: "Jul 16, 2017", opponent: "Vitalii Vitalii", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "1:44", event: "Fight King Gold Belt Contest" },
+    { date: "Jun 19, 2017", opponent: "Umidjon Musaev", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "1:01", event: "WLF: W.A.R.S. 15" },
+    { date: "May 20, 2017", opponent: "Kai Kara-France", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 14" },
+    { date: "Mar 11, 2017", opponent: "Kirill Tropinin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 12" },
+    { date: "Jan 24, 2017", opponent: "Max Leali", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kung Fu World Cup 2017" },
+    { date: "Dec 17, 2016", opponent: "Martial Seguy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "100% Fight - Contenders 34" },
+    { date: "Dec 17, 2016", opponent: "Willy Zancanaro", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "100% Fight - Contenders 34" },
+    { date: "Oct 24, 2016", opponent: "Ahmad Davlatov", result: "W", method: "TKO (Punches)", round: 1, time: "1:29", event: "WLF: E.P.I.C. 9" },
+    { date: "Sep 28, 2016", opponent: "Rishat Kharisov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: E.P.I.C. 8" },
+    { date: "May 4, 2016", opponent: "Husiman Siwuhaer", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "1:24", event: "CKF 65" },
+    { date: "Mar 13, 2016", opponent: "Grigorii Popov", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:35", event: "WLF: E.P.I.C. 2" },
+    { date: "Dec 20, 2015", opponent: "Minghui Bai", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Chinese Kung Fu Championships: Day 2" },
+    { date: "Nov 6, 2015", opponent: "Guoqing Zhong", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Chinese Kung Fu Championships 3" }
   ],
   "Asu Almabayev": [
     { date: "Nov 22, 2025", opponent: "Alex Perez", result: "W", method: "Submission (Guillotine choke)", round: 3, time: "0:22", event: "UFC Fight Night: Tsarukyan vs. Hooker", org: "UFC" },
@@ -32773,6 +32792,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Aoriqileng": [
+    { icon: "🥊", title: "\"The Mongolian Murderer\" — 9 career wins by KO/TKO", detail: null },
+    { icon: "🇨🇳", title: "Long-tenured UFC bantamweight from Inner Mongolia, China, now training at Fight Ready (Arizona)", detail: null }
+  ],
   "Cody Haddon": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round submission of Billy Brand)", detail: null },
     { icon: "🏆", title: "Hex Fight Series champion (finished both Raja Shippen and Paul Loga in title fights)", detail: null },
