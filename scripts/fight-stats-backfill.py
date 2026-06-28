@@ -13,6 +13,7 @@ Usage:
     python3 scripts/fight-stats-backfill.py --all          # every FIGHTERS name in index.html
     python3 scripts/fight-stats-backfill.py --all --only-missing   # skip fighters already saved
     python3 scripts/fight-stats-backfill.py --all --limit 20       # small test batch to review first
+    python3 scripts/fight-stats-backfill.py --all --strict         # confirm before saving suspicious matches
     python3 scripts/fight-stats-backfill.py --all --sleep 0.4
 
 Validation: every run cross-checks each saved bout against the fighter's own
@@ -355,8 +356,37 @@ def write_report(report, n_processed, n_bouts):
         f.write("\n".join(lines) + "\n")
 
 
-def process_fighter(nm, data, namecache, fh, override=None):
-    """Fetch + validate one fighter; updates data[nm]; returns warning list."""
+def _is_probably_wrong(bouts, fh_rows, warns):
+    """True when warnings point at a mis-identified athlete (not just thin history).
+    Severe = ESPN name conflict, opponent conflict, or — when the fighter DOES have
+    a history to compare against — most bouts failing to line up by date."""
+    if any(w.startswith("[NAME?]") or w.startswith("[OPP?]") for w in warns):
+        return True
+    date_misses = sum(1 for w in warns if w.startswith("[DATE?]"))
+    return bool(fh_rows) and bool(bouts) and date_misses >= max(2, (len(bouts) + 1) // 2)
+
+
+def _confirm_add(nm, meta, bouts, warns):
+    """Interactive y/N gate used by --strict. Defaults to NO (skip) on Enter/EOF."""
+    print("\n" + "!" * 66)
+    print("STRICT REVIEW — '%s' may be the WRONG athlete:" % nm)
+    print("   ESPN id=%s   ESPN name=%s   exact-slug-match=%s"
+          % (meta.get("sid"), meta.get("espn_name"), meta.get("exact")))
+    for w in warns:
+        print("   - %s" % w)
+    preview = ", ".join("%s vs %s" % (b["date"], b["opponent"]) for b in bouts[:6])
+    print("   ESPN bouts: %s%s" % (preview, " ..." if len(bouts) > 6 else ""))
+    try:
+        ans = input("   Add this fighter's stats anyway? [y/N] ").strip().lower()
+    except EOFError:
+        print("   (non-interactive input — skipping)")
+        return False
+    return ans in ("y", "yes")
+
+
+def process_fighter(nm, data, namecache, fh, override=None, strict=False):
+    """Fetch + validate one fighter; updates data[nm]; returns warning list.
+    In strict mode, a likely wrong-athlete match must be confirmed before saving."""
     try:
         bouts, meta = backfill_one(nm, override, namecache)
     except Exception as e:
@@ -364,8 +394,12 @@ def process_fighter(nm, data, namecache, fh, override=None):
         return ["[ERROR] %s" % e]
     if bouts is None:
         return ["[SKIP] %s" % (meta.get("reason") or "unknown")]
+    warns = validate(nm, meta, bouts, fh.get(nm, []))
+    if strict and warns and _is_probably_wrong(bouts, fh.get(nm, []), warns):
+        if not _confirm_add(nm, meta, bouts, warns):
+            return warns + ["[NOT-ADDED] skipped by user in --strict (likely wrong fighter)"]
     data[nm] = bouts
-    return validate(nm, meta, bouts, fh.get(nm, []))
+    return warns
 
 
 def main():
@@ -382,6 +416,10 @@ def main():
     ap.add_argument("--limit", type=int, default=0,
                     help="with --all, process at most N fighters (handy for a small "
                          "test batch you can review before the full run)")
+    ap.add_argument("--strict", action="store_true",
+                    help="pause and ask for confirmation before saving any fighter "
+                         "whose bouts look mis-identified (ESPN name/opponent conflicts). "
+                         "Declining (default on Enter) skips that fighter without saving.")
     ap.add_argument("--sleep", type=float, default=0.3)
     a = ap.parse_args()
 
@@ -404,7 +442,7 @@ def main():
             names = names[:a.limit]
             print("(--limit) processing first %d only." % len(names))
         for i, nm in enumerate(names, 1):
-            report.append((nm, process_fighter(nm, data, namecache, fh)))
+            report.append((nm, process_fighter(nm, data, namecache, fh, strict=a.strict)))
             n_processed += 1
             if i % 10 == 0:  # checkpoint to disk periodically
                 json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
@@ -412,7 +450,7 @@ def main():
     else:
         if not a.name:
             ap.error("provide a fighter name or --all")
-        report.append((a.name, process_fighter(a.name, data, namecache, fh, a.espn_id)))
+        report.append((a.name, process_fighter(a.name, data, namecache, fh, a.espn_id, strict=a.strict)))
         n_processed += 1
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
