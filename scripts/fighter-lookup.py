@@ -27,7 +27,9 @@ Prints these sections:
             with the same rules as index.html's nameToSlug). Existing photos are
             kept unless --force-photo; use --no-photo to skip the download. The
             "photo: ..." line in this section reports what happened.
-  [BFO]     full odds history parsed from bestfightodds.com (fighter's rows only)
+  [BFO]     full odds history parsed from bestfightodds.com (fighter's rows only).
+            ODDS_HISTORY records the CLOSING line: take the number right before
+            the % movement (the closer), not the opener (the first number).
 
 A final ">> STILL MISSING" line lists any bio/stat field not found on EITHER
 ufc.com or ESPN, so it can be chased on Sherdog/Tapology/Wikipedia before being
@@ -313,7 +315,10 @@ def bfo_report(name, bfo_id=None):
     if not bfo_id:
         return "no exact BFO match; candidates: " + ", ".join(cands[:12])
     h = curl(f"https://www.bestfightodds.com/fighters/{bfo_id}")
-    out = [f"page: /fighters/{bfo_id}"]
+    out = [f"page: /fighters/{bfo_id}",
+           "ODDS_HISTORY stores the CLOSING line: each row reads "
+           "'name | opener | ... | closer | %move | arrow' -> use the number "
+           "right before the % (the closer), NOT the opener (first number)."]
     rows = re.findall(r"<tr[^>]*>(.*?)</tr>", h, re.S)
     for r in rows:
         txt = re.sub(r"\s+", " ", re.sub(r"\|+", " | ", re.sub(r"<[^>]+>", "|", r))).strip(" |")
