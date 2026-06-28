@@ -4352,7 +4352,7 @@
  "Loma Lookboonmee": { ht:"5'1\"", dob:"1996-01-18", reach:'61"', stance:"Orthodox", slpm:3.58, strAcc:"56%", sapm:2.45, strDef:"54%", kd:0.0, tdLanded:1.76, tdAcc:null, tdDef:"70%", subAvg:0.1, finRate:"20%", streak:0, gym:"Bangtao Muay Thai & MMA" },
  "Yazmin Jauregui": { ht:"5'3\"", dob:"1999-02-28", reach:'64"', stance:"Orthodox", slpm:6.64, strAcc:"39%", sapm:5.25, strDef:"55%", kd:0.71, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"64%", streak:0, gym:"Entram Gym" },
  "Sam Hughes": { ht:"5'5\"", dob:"1992-06-28", reach:'64"', stance:"Orthodox", slpm:4.41, strAcc:"48%", sapm:4.69, strDef:"58%", kd:0.00, tdLanded:1.12, tdAcc:"29%", tdDef:"63%", subAvg:0.19, finRate:"55%", streak:0, gym:"Fortis MMA" },
- "Maria Oliveira": { ht:"5'6\"", dob:"1996-12-12", reach:'69"', stance:"Orthodox", slpm:5.03, tdAcc:"44%", subAvg:0.3, strDef:"44%", kd:0.2, tdDef:"53%", finRate:"46%", streak:0, tdLanded:0.95 },
+ "Maria Oliveira": { ht:"5'6\"", dob:"1996-12-12", reach:'69"', stance:"Orthodox", slpm:5.03, strAcc:"39%", sapm:5.76, strDef:"45%", kd:0.00, tdLanded:0.95, tdAcc:"44%", tdDef:"48%", subAvg:0.00, finRate:"62%", streak:0, gym:"Paraná Vale Tudo" },
  "Luana Pinheiro": { ht:"5'2\"", dob:"1992-11-18", reach:'62"', stance:"Orthodox", slpm:3.35, tdAcc:"36%", subAvg:0.5, strDef:"61%", kd:0.0, tdDef:"65%", finRate:"55%", streak:1, tdLanded:2.8, gym:"Nova União" },
  "Vanessa Demopoulos": { ht:"5'2\"", dob:"1988-09-22", reach:'59"', stance:"Orthodox", slpm:3.37, strAcc:"40%", sapm:5.39, strDef:"41%", kd:0.11, tdLanded:0.32, tdAcc:"10%", tdDef:"26%", subAvg:0.43, finRate:"45%", streak:0, gym:"Xtreme Couture" },
  // ── Women's Flyweight (final) ──
@@ -13825,9 +13825,10 @@
     { opponent: "Santo Curatolo", odds: -115 }
   ],
   "Maria Oliveira": [
-    { opponent: "Polyana Viana", odds: 250 },
-    { opponent: "Diana Belbita", odds: 300 },
-    { opponent: "Loma Lookboonmee", odds: 275 }
+    { opponent: "Diana Belbita", odds: 120 },
+    { opponent: "Vanessa Demopoulos", odds: -102 },
+    { opponent: "Gloria de Paula", odds: 260 },
+    { opponent: "Kanna Asakura", odds: -210 }
   ],
   "Shanna Young": [
     { opponent: "Sofia Montenegro", odds: 350 },
@@ -30100,11 +30101,26 @@ const FIGHT_HISTORY = {
     { date: "Jun 14, 2015", opponent: "Edney Michael", result: "W", method: "TKO", round: 1, time: "1:30", event: "Guerreiros da Fé Combat" }
   ],
   "Maria Oliveira": [
-    { date: "Sep 7, 2024", opponent: "Polyana Viana", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Brady" },
     { date: "Jun 10, 2023", opponent: "Diana Belbita", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 289: Nunes vs. Aldana" },
-    { date: "Mar 4, 2023", opponent: "Kay Hansen", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 285: Jones vs. Gane" },
-    { date: "Sep 10, 2022", opponent: "Denise Gomes", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 279: Diaz vs. Ferguson" },
-    { date: "May 7, 2022", opponent: "Loma Lookboonmee", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 274: Oliveira vs. Gaethje (debut)" }
+    { date: "Nov 19, 2022", opponent: "Vanessa Demopoulos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Nzechukwu vs. Cutelaba" },
+    { date: "Jun 18, 2022", opponent: "Gloria de Paula", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Emmett" },
+    { date: "Oct 23, 2021", opponent: "Tabatha Ricci", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Costa vs. Vettori" },
+    { date: "Feb 12, 2021", opponent: "Enila Tabosa", result: "W", method: "TKO", round: 1, time: "1:03", event: "Arena Global 10" },
+    { date: "Sep 28, 2019", opponent: "Diulye Duarte", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Curitiba Top Fight 12" },
+    { date: "Aug 11, 2018", opponent: "Marina Rodriguez", result: "L", method: "TKO", round: 1, time: "3:03", event: "Dana White's Contender Series: Brazil 2" },
+    { date: "Dec 31, 2017", opponent: "Kanna Asakura", result: "L", method: "Submission (Armbar)", round: 2, time: "3:40", event: "Rizin FF: World Grand Prix 2017 Final Round" },
+    { date: "Oct 15, 2017", opponent: "Alyssa Garcia", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Rizin FF 7" },
+    { date: "Jul 1, 2017", opponent: "Laisa Coimbra", result: "W", method: "TKO", round: 2, time: "4:15", event: "Curitiba Top Fight 11" },
+    { date: "Jun 10, 2017", opponent: "Valesca Machado", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Angels & Fight Contest (regional title)" },
+    { date: "Dec 16, 2016", opponent: "Geisa Veloso", result: "W", method: "TKO", round: 2, time: "3:42", event: "CUFA Fight Festival 4" },
+    { date: "Aug 20, 2016", opponent: "Raissa Lisboa", result: "W", method: "TKO", round: 1, time: "1:52", event: "Skull Fighting Championship 1" },
+    { date: "Aug 7, 2016", opponent: "Edlaine Franca Godoy", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Favela Kombat 21" },
+    { date: "Jul 9, 2016", opponent: "Cynthia Candido", result: "W", method: "Submission (Triangle choke)", round: 1, time: "4:42", event: "Matelândia Top Fight" },
+    { date: "Mar 13, 2016", opponent: "Silmara Martins", result: "W", method: "TKO (Retirement)", round: 1, time: "5:00", event: "Cascavel Top Fight 3" },
+    { date: "Jan 24, 2016", opponent: "Priscila Gomes", result: "W", method: "TKO", round: 1, time: "1:24", event: "Baixada Top Fight 5" },
+    { date: "Nov 28, 2015", opponent: "Tatiane Bergamaschi", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "New Corpore Extreme 3" },
+    { date: "Oct 18, 2015", opponent: "Karina Heiss", result: "W", method: "TKO", round: 1, time: "1:00", event: "Cascavel Top Fight 2" },
+    { date: "Sep 27, 2015", opponent: "Anne Ferreira", result: "L", method: "Submission (Armbar)", round: 1, time: "2:33", event: "Shooto Brazil 57 (debut)" }
   ],
   "Shanna Young": [
     { date: "Apr 11, 2026", opponent: "Viviane Araújo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Chicago: Pettis vs. McKee", org: "PFL" },
@@ -32902,6 +32918,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Maria Oliveira": [
+    { icon: "🏆", title: "Regional strawweight title winner (Angels & Fight Contest, 2017)", detail: null },
+    { icon: "🏅", title: "Competed in the Rizin FF 2017 World Grand Prix (def. Alyssa Garcia before falling to Kanna Asakura)", detail: null },
+    { icon: "🥊", title: "\"Spider-Girl\" — Muay Thai striker; 7 of 13 wins by KO/TKO", detail: null }
+  ],
   "Martin Buday": [
     { icon: "🏆", title: "Former OKTAGON MMA Heavyweight Champion (won the vacant title vs. Kamil Minda, 2021)", detail: null },
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Lorenzo Hood)", detail: null },
