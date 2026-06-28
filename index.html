@@ -4478,7 +4478,7 @@
  // ── Flyweight (more) ──
  "Sumudaerji": { ht:"5'8\"", dob:"1996-01-20", reach:'72"', stance:"Southpaw", slpm:4.40, strAcc:"50%", sapm:2.29, strDef:"63%", kd:0.38, tdLanded:0.76, tdAcc:"38%", tdDef:"73%", subAvg:0.51, finRate:"74%", streak:3, gym:"Team Alpha Male" },
  "Matt Schnell": { ht:"5'8\"", dob:"1990-01-15", reach:'70"', stance:"Orthodox", slpm:4.05, strAcc:"40%", sapm:4.18, strDef:"55%", kd:0.12, tdLanded:0.59, tdAcc:"45%", tdDef:"43%", subAvg:1.18, finRate:"65%", streak:0, gym:"Fortis MMA" },
- "Tyson Nam": { ht:"5'7\"", dob:"1983-10-06", reach:'68"', stance:"Orthodox", slpm:3.87, tdAcc:"0%", subAvg:0.0, strDef:"65%", kd:0.3, tdDef:"50%", finRate:"57%", streak:0, tdLanded:0.00, gym:"Gracie Technics (2021–present)" },
+ "Tyson Nam": { ht:"5'7\"", dob:"1983-10-06", reach:'68"', stance:"Orthodox", slpm:3.87, strAcc:"34%", sapm:4.97, strDef:"65%", kd:0.60, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"61%", streak:0, gym:"Sports Lab" },
  "Charles Johnson": { ht:"5'9\"", dob:"1991-01-10", reach:'70"', stance:"Switch", slpm:4.77, strAcc:"50%", sapm:4.02, strDef:"56%", kd:0.34, tdLanded:0.51, tdAcc:"17%", tdDef:"69%", subAvg:0.34, finRate:"58%", streak:1, gym:"Fusion X-Cel" },
  "Zhalgas Zhumagulov": { ht:"5'4\"", dob:"1988-08-29", reach:'66"', stance:"Switch", slpm:5.24, strAcc:"43%", sapm:5.86, strDef:"52%", kd:0.0, tdLanded:1.30, tdAcc:null, tdDef:"75%", subAvg:0.19, finRate:"53%", streak:5, gym:"Erkin Kush" },
  "Muhammad Mokaev": { ht:"5'7\"", dob:"2000-07-30", reach:'70"', stance:"Orthodox", slpm:1.61, tdAcc:"41%", subAvg:1.3, strDef:"57%", kd:0.1, tdDef:"25%", finRate:"77%", streak:0, tdLanded:5.29, gym:"Aspire Combat Sports Academy (2015–present)" },
@@ -13545,10 +13545,16 @@
     { opponent: "Shinya Aoki", odds: 300 }
   ],
   "Tyson Nam": [
-    { opponent: "Cody Durden", odds: 350 },
-    { opponent: "Ode Osbourne", odds: 225 },
-    { opponent: "Daniel Lacerda", odds: 400 },
-    { opponent: "Jerome Rivera", odds: -200 }
+    { opponent: "Azat Maksum", odds: 350 },
+    { opponent: "Bruno Gustavo da Silva", odds: 165 },
+    { opponent: "Ode' Osbourne", odds: 370 },
+    { opponent: "Matt Schnell", odds: -108 },
+    { opponent: "Jerome Rivera", odds: -175 },
+    { opponent: "Zarrukh Adashev", odds: -125 },
+    { opponent: "Kai Kara-France", odds: 225 },
+    { opponent: "Sergio Pettis", odds: 275 },
+    { opponent: "Cody Bollinger", odds: -130 },
+    { opponent: "Marlon Moraes", odds: 175 }
   ],
   "Mike Davis": [
     { opponent: "Grant Dawson", odds: 450 },
@@ -32943,6 +32949,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Tyson Nam": [
+    { icon: "🥊", title: "First-round KO of reigning Bellator bantamweight champion Eduardo Dantas (Shooto Brazil, 2012) — signature upset", detail: null },
+    { icon: "🏆", title: "Multiple-time Hawaii regional champion (X-1 World Events, Destiny MMA)", detail: null },
+    { icon: "🥊", title: "Heavy-handed veteran — 13 of 23 wins by knockout", detail: null }
+  ],
   "Ronaldo Rodriguez": [
     { icon: "🏆", title: "Former Jasaji Fighting League flyweight champion — five-round decision over José Roura (2018)", detail: null },
     { icon: "🥊", title: "\"Lazy Boy\" — 12 of 17 wins by finish (7 KO/TKO, 5 submission)", detail: null }
