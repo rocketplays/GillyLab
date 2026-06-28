@@ -3378,7 +3378,7 @@
  { name: "Mateusz Rębecki", division: "LW", rank: "NR", record: "20-5-0", initials: "MRE", country: "Poland" },
  { name: "Mairon Santos", division: "FW", rank: "NR", record: "17-1-0", initials: "MSN", country: "Brazil" },
  { name: "Chris Duncan", division: "LW", rank: "NR", record: "15-3-0", initials: "CDU", country: "UK" },
- { name: "Kaue Fernandes", division: "LW", rank: "NR", record: "10-2-0", initials: "KFE", country: "Brazil" },
+ { name: "Kaue Fernandes", division: "LW", rank: "NR", record: "11-2-0", initials: "KFE", country: "Brazil" },
  { name: "Ignacio Bahamondes", division: "LW", rank: "NR", record: "17-7-0", initials: "IBA", country: "Chile" },
  { name: "Thiago Moises", division: "LW", rank: "NR", record: "19-10-0", initials: "TMO", country: "Brazil" },
  { name: "Mike Davis", division: "LW", rank: "NR", record: "11-5-0", initials: "MDA", country: "USA" },
@@ -4725,7 +4725,7 @@
  "Mairon Santos": { ht:"5'7\"", dob:"2000-06-10", reach:'72"', stance:"Orthodox", slpm:3.33, strAcc:"48%", sapm:2.24, strDef:"66%", kd:0.64, tdLanded:0.0, tdAcc:"0%", tdDef:"69%", subAvg:0.0, finRate:"53%", streak:5, gym:"The Fighting Nerds" },
  "Jose Ochoa": { ht:"5'7\"", dob:"2000-12-31", reach:'67"', stance:"Southpaw", slpm:5.16, strAcc:"47%", sapm:2.99, strDef:"59%", kd:0.60, tdLanded:0.30, tdAcc:"25%", tdDef:"66%", subAvg:0.90, finRate:"89%", streak:1, gym:"Chute Boxe Diego Lima" },
  "Jun Yong Park": { ht:"5'10\"", dob:"1991-02-27", reach:'71"', stance:"Orthodox", slpm:4.64, strAcc:"52%", sapm:3.82, strDef:"51%", kd:0.09, tdLanded:1.69, tdAcc:"43%", tdDef:"55%", subAvg:0.85, finRate:"58%", streak:0, gym:"Korean Top Team" },
- "Kaue Fernandes": { ht:"5'8\"", dob:"1998-01-01", reach:'70"', stance:"Orthodox", slpm:6.74, tdAcc:"100%", subAvg:0.5, strDef:"55%", kd:1.4, tdDef:"65%", finRate:"80%", streak:3, tdLanded:1.50 },
+ "Kaue Fernandes": { ht:"5'9\"", dob:"1995-03-17", reach:'73"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:"100%", tdDef:null, subAvg:null, finRate:"73%", streak:3, gym:"Nova União" },
  "Joao Benhavia": { ht:"5'9\"", dob:"1997-01-01", reach:'71"', stance:"Orthodox", slpm:4.20, tdAcc:"40%", subAvg:0.4, strDef:"52%", kd:0.3, tdDef:"65%", finRate:"65%", streak:0, tdLanded:1.40 },
  "Jesus Aguilar": { ht:"5'4\"", dob:"1996-03-13", reach:'62.5"', stance:"Orthodox", slpm:2.54, strAcc:"38%", sapm:2.29, strDef:"61%", kd:0.19, tdLanded:1.52, tdAcc:"30%", tdDef:"45%", subAvg:1.14, finRate:"67%", streak:0, gym:"Entram Gym" },
  "Erik Shelton": { ht:"5'6\"", dob:"1991-02-02", reach:'68"', stance:"Orthodox", slpm:2.57, tdAcc:"42%", subAvg:0.4, strDef:"63%", kd:0.1, tdDef:"70%", finRate:"58%", streak:0, tdLanded:1.36 },
@@ -14480,10 +14480,11 @@
     { opponent: "Chris Sherley-Rios", odds: -445 }
   ],
   "Kaue Fernandes": [
-    { opponent: "Harry Hardwick", odds: -600 },
-    { opponent: "Guram Kutateladze", odds: -350 },
-    { opponent: "Merab Yahya", odds: -500 },
-    { opponent: "Marc Diakiese", odds: -175 }
+    { opponent: "Harry Hardwick", odds: -160 },
+    { opponent: "Mohammad Yahya", odds: -350 },
+    { opponent: "Marc Diakiese", odds: 130 },
+    { opponent: "Felipe Douglas", odds: 150 },
+    { opponent: "Jose Arly", odds: -130 }
   ],
   "Luan Lacerda": [
     { opponent: "Hecher Sosa", odds: 175 },
@@ -31877,16 +31878,19 @@ const FIGHT_HISTORY = {
     { date: "Jun 20, 2021", opponent: "Jonathon Moskowitz", result: "W", method: "TKO (Strikes)", round: 2, time: "1:05", event: "Fury FC 47" }
   ],
   "Kaue Fernandes": [
-    { date: "Sep 6, 2025", opponent: "Harry Hardwick", result: "W", method: "KO (Punches)", round: 1, time: "3:21", event: "UFC Fight Night: Imavov vs. Borralho (Paris)" },
-    { date: "Mar 22, 2025", opponent: "Guram Kutateladze", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Edwards vs. Brady (London)" },
-    { date: "Aug 3, 2024", opponent: "Merab Yahya", result: "W", method: "KO (Punches)", round: 1, time: "4:45", event: "UFC Fight Night: Sandhagen vs. Nurmagomedov" },
-    { date: "Nov 4, 2023", opponent: "Marc Diakiese", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Almeida vs. Lewis (debut)" },
-    { date: "Mar 10, 2023", opponent: "Francisco Douglas", result: "W", method: "KO (Punches)", round: 1, time: "0:45", event: "LFA 154 (contract)" },
-    { date: "Nov 5, 2022", opponent: "Lucas Alves", result: "W", method: "KO (Punches)", round: 2, time: "1:14", event: "LFA 145" },
-    { date: "Jul 30, 2022", opponent: "Michel Vieira", result: "W", method: "KO (Punches)", round: 1, time: "0:32", event: "LFA 141" },
-    { date: "Feb 5, 2022", opponent: "Dayvson Mafra", result: "W", method: "KO (Punches)", round: 1, time: "0:58", event: "LFA 129" },
-    { date: "Oct 30, 2021", opponent: "Leandro Fernandes", result: "W", method: "KO (Punches)", round: 1, time: "1:04", event: "Shooto Brazil 97" },
-    { date: "Aug 5, 2018", opponent: "Jadson Oliveira", result: "W", method: "KO (Punches)", round: 1, time: "1:06", event: "Shooto Brazil 86 (debut)" }
+    { date: "Sep 6, 2025", opponent: "Harry Hardwick", result: "W", method: "TKO (Leg kicks)", round: 1, time: "3:21", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
+    { date: "Mar 22, 2025", opponent: "Guram Kutateladze", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Edwards vs. Brady", org: "UFC" },
+    { date: "Aug 3, 2024", opponent: "Mohammad Yahya", result: "W", method: "TKO (Punches)", round: 1, time: "4:45", event: "UFC Fight Night: Sandhagen vs. Nurmagomedov", org: "UFC" },
+    { date: "Nov 4, 2023", opponent: "Marc Diakiese", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Almeida vs. Lewis (debut)", org: "UFC" },
+    { date: "Mar 10, 2023", opponent: "Felipe Douglas", result: "W", method: "KO (Punches)", round: 1, time: "0:45", event: "LFA 154 (contract)" },
+    { date: "Sep 30, 2022", opponent: "Jose Arly", result: "W", method: "TKO (Punches)", round: 1, time: "1:28", event: "LFA 143" },
+    { date: "Jul 16, 2021", opponent: "Luann Sardinha", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 111" },
+    { date: "Oct 19, 2019", opponent: "Marcio Breno", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 97" },
+    { date: "Aug 5, 2018", opponent: "Jameson Oliveira", result: "W", method: "TKO (Punches)", round: 1, time: "1:06", event: "Shooto Brazil 86 (title)" },
+    { date: "Dec 10, 2017", opponent: "Evandro Barbosa", result: "W", method: "Submission (Armbar)", round: 2, time: "1:36", event: "Shooto Brazil 79" },
+    { date: "Dec 18, 2016", opponent: "Eduardo Santiago", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brasil 68" },
+    { date: "Aug 21, 2015", opponent: "Luiz Felipe Oliveira", result: "W", method: "KO (Punches)", round: 1, time: "0:26", event: "Shooto Brasil 56" },
+    { date: "Apr 4, 2014", opponent: "Emanuel Souza", result: "W", method: "Submission (Armbar)", round: 1, time: "0:22", event: "Shooto Brazil 47" }
   ],
   "Luan Lacerda": [
     { date: "Mar 14, 2026", opponent: "Hecher Sosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -32888,6 +32892,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Kaue Fernandes": [
+    { icon: "🏆", title: "Former Shooto Brasil champion", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu and Muay Thai", detail: null },
+    { icon: "🥊", title: "8 of 11 wins by finish (7 in round 1)", detail: null }
   ],
   "Mairon Santos": [
     { icon: "🏆", title: "The Ultimate Fighter 32 featherweight tournament winner (2024)", detail: null },
