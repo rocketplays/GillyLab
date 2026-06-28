@@ -4413,7 +4413,7 @@
  "Michel Pereira": { ht:"6'1\"", dob:"1993-10-06", reach:'73"', stance:"Orthodox", slpm:4.46, strAcc:"52%", sapm:4.40, strDef:"51%", kd:0.28, tdLanded:1.21, tdAcc:"57%", tdDef:"76%", subAvg:0.65, finRate:"63%", streak:1, gym:"Overcome Academy" },
  // ── Light Heavyweight (more) ──
  "Jimmy Crute": { ht:"6'2\"", dob:"1996-03-04", reach:'74"', stance:"Orthodox", slpm:4.15, tdAcc:"40%", subAvg:0.5, strDef:"42%", kd:0.3, tdDef:"68%", finRate:"64%", streak:0, tdLanded:4.39, gym:"Combat 1 (2023–present)" },
- "Modestas Bukauskas": { ht:"6'3\"", dob:"1994-02-10", reach:'76"', stance:"Switch", slpm:3.31, tdAcc:"33%", subAvg:0.4, strDef:"51%", kd:0.5, tdDef:"72%", finRate:"67%", streak:1, tdLanded:0.44, gym:"Gintas Combat" },
+ "Modestas Bukauskas": { ht:"6'3\"", dob:"1994-02-10", reach:'76"', stance:"Switch", slpm:3.14, strAcc:"43%", sapm:3.86, strDef:"51%", kd:0.11, tdLanded:0.23, tdAcc:"67%", tdDef:"82%", subAvg:0.11, finRate:"70%", streak:1, gym:"Gintas Combat / BST Academy" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -7093,19 +7093,23 @@
     { opponent: "Danny Barlow", odds: -300 }
   ],
   "Modestas Bukauskas": [
-    { opponent: "Chris Edwards", odds: -310 },
-    { opponent: "Nikita Krylov", odds: 165 },
-    { opponent: "Paul Craig", odds: -118 },
-    { opponent: "Ion Cutelaba", odds: -145 },
-    { opponent: "Raffael Cerqueira", odds: -320 },
-    { opponent: "Marcin Prachnio", odds: -195 },
-    { opponent: "Vitor Petrino", odds: -140 },
-    { opponent: "Zac Pauga", odds: -185 },
-    { opponent: "Tyson Pedro", odds: -220 },
-    { opponent: "Khalil Rountree Jr.", odds: 155 },
-    { opponent: "Michal Oleksiejczuk", odds: 115 },
-    { opponent: "Jimmy Crute", odds: 200 },
-    { opponent: "Andreas Michailidis", odds: -300 }
+    { opponent: "Christian Edwards", odds: -320 },
+    { opponent: "Nikita Krylov", odds: -135 },
+    { opponent: "Paul Craig", odds: -358 },
+    { opponent: "Ion Cuțelaba", odds: -108 },
+    { opponent: "Raffael Cerqueira", odds: -288 },
+    { opponent: "Marcin Prachnio", odds: -156 },
+    { opponent: "Vitor Petrino", odds: 210 },
+    { opponent: "Zac Pauga", odds: -200 },
+    { opponent: "Tyson Pedro", odds: 188 },
+    { opponent: "Chuck Campbell", odds: -270 },
+    { opponent: "Lee Chadwick", odds: -350 },
+    { opponent: "Khalil Rountree Jr.", odds: -159 },
+    { opponent: "Michał Oleksiejczuk", odds: 152 },
+    { opponent: "Jimmy Crute", odds: 235 },
+    { opponent: "Andreas Michailidis", odds: -130 },
+    { opponent: "Riccardo Nosiglia", odds: -278 },
+    { opponent: "Marthin Hamlet", odds: 255 }
   ],
   "Rodolfo Bellato": [
     { opponent: "Luke Fernandez", odds: 185 },
@@ -32554,6 +32558,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Modestas Bukauskas": [
+    { icon: "🏆", title: "Two-time Cage Warriors Light Heavyweight Champion", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night — vs. Andreas Michailidis (UFC debut)", detail: null },
+    { icon: "🥊", title: "Four-time British kickboxing champion; \"The Baltic Gladiator\"", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt; black belt in Gintas Combat Self-Defense", detail: null }
+  ],
   "Malcolm Wellmaker": [
     { icon: "⭐", title: "UFC Performance of the Night (2×) — vs. Cameron Saaiman & Kris Moutinho", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — R1 KO of 13-2 Adam Bramhald)", detail: null },
