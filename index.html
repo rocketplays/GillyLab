@@ -3415,7 +3415,7 @@
  { name: "Leon Shahbazyan", division: "WW", rank: "NR", record: "12-5-0", initials: "LSH", country: "USA" },
  { name: "Levan Chokheli", division: "WW", rank: "NR", record: "15-3-0", initials: "LCH", country: "Georgia" },
  // ─── MIDDLEWEIGHT (extended) ───
- { name: "Claudio Ribeiro", division: "MW", rank: "NR", record: "12-2-0", initials: "CRI", country: "Brazil" },
+ { name: "Claudio Ribeiro", division: "MW", rank: "NR", record: "11-5-0", initials: "CRI", country: "Brazil" },
  { name: "Joe Pyfer", division: "MW", rank: "#7", record: "16-3-0", initials: "JPY2", country: "USA" },
  { name: "Mohammed Usman", division: "MW", rank: "NR", record: "11-4-0", initials: "MUS", country: "UK" },
  { name: "Nassourdine Imavov", division: "MW", rank: "#3", record: "17-4-0", initials: "NIM2", country: "France" },
@@ -4679,7 +4679,7 @@
  "Josiah Harrell": { ht:"5'7\"", dob:"1998-11-13", reach:'68"', stance:"Southpaw", slpm:0.00, tdAcc:"0%", subAvg:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"73%", streak:0, tdLanded:0.00 },
  // Middleweight
  "Djorden Santos": { ht:"6'0\"", dob:"1997-08-01", reach:'75"', stance:"Orthodox", slpm:6.64, strAcc:"43%", sapm:6.35, strDef:"49%", kd:0.00, tdLanded:0.51, tdAcc:"29%", tdDef:"85%", subAvg:0.00, finRate:"64%", streak:0, gym:"American Top Team" },
- "Baysangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.0, tdDef:"100%", finRate:"N/A", streak:0, tdLanded:2.76 }, "Claudio Ribeiro": { ht:"6'1\"", dob:"1992-07-17", reach:'77"', stance:"Orthodox", slpm:3.59, tdAcc:"40%", subAvg:0.4, strDef:"30%", kd:0.2, tdDef:"57%", finRate:"55%", streak:0, tdLanded:1.29 },
+ "Baysangur Susurkaev": { ht:"6'2\"", dob:"2001-01-08", reach:'79"', stance:"Orthodox", slpm:4.56, tdAcc:"28%", subAvg:0.7, strDef:"53%", kd:0.0, tdDef:"100%", finRate:"N/A", streak:0, tdLanded:2.76 }, "Claudio Ribeiro": { ht:"6'1\"", dob:"1992-07-17", reach:'77"', stance:"Orthodox", slpm:3.59, strAcc:"52%", sapm:4.90, strDef:"31%", kd:1.12, tdLanded:0.56, tdAcc:"50%", tdDef:"67%", subAvg:0.0, finRate:"100%", streak:0, gym:"Brazilian Black Thai" },
  "Eric McConico": { ht:"6'0\"", dob:"1990-05-09", reach:'77"', stance:"Southpaw", slpm:2.61, strAcc:"44%", sapm:3.23, strDef:"47%", kd:0.00, tdLanded:0.00, tdAcc:"100%", tdDef:"64%", subAvg:0.00, finRate:"64%", streak:1, gym:"The MMA Lab" },
  // Light Heavyweight
  "Billy Elekana": { ht:"6'3\"", dob:"1995-05-28", reach:'77"', stance:"Southpaw", slpm:2.71, tdAcc:"22%", subAvg:0.4, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.85, gym:"Uprising MMA Training Center" },
@@ -14556,6 +14556,10 @@
   "Carol Foro": [
   ],
   "Claudio Ribeiro": [
+    { opponent: "Christian Leroy Duncan", odds: 320 },
+    { opponent: "Roman Kopylov", odds: 200 },
+    { opponent: "Abdul Razak Alhassan", odds: 100 },
+    { opponent: "Ivan Valenzuela", odds: 100 }
   ],
   "Felipe Franco": [
     { opponent: "Mario Pinto", odds: 650 },
@@ -32032,8 +32036,22 @@ const FIGHT_HISTORY = {
     { date: "Mar 14, 2026", opponent: "Eduarda Moura", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos (debut)" }
   ],
   "Claudio Ribeiro": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres" },
-    { date: "Jun 10, 2023", opponent: "Luan Lacerda", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "0:49", event: "Shooto Brazil 114" }
+    { date: "Mar 2, 2024", opponent: "Christian Leroy Duncan", result: "L", method: "KO/TKO", round: 2, time: "1:57", event: "UFC Fight Night: Rozenstruik vs. Gaziev", org: "UFC" },
+    { date: "Jul 29, 2023", opponent: "Roman Kopylov", result: "L", method: "KO/TKO", round: 2, time: "0:33", event: "UFC 291", org: "UFC" },
+    { date: "May 6, 2023", opponent: "Joseph Holmes", result: "W", method: "KO/TKO", round: 2, time: "3:21", event: "UFC 288", org: "UFC" },
+    { date: "Jan 14, 2023", opponent: "Abdul Razak Alhassan", result: "L", method: "KO/TKO", round: 2, time: "0:28", event: "UFC Fight Night: Strickland vs. Imavov", org: "UFC" },
+    { date: "Aug 16, 2022", opponent: "Ivan Valenzuela", result: "W", method: "KO/TKO", round: 1, time: "0:25", event: "Dana White's Contender Series: S6 W4 (contract)", org: "UFC" },
+    { date: "Sep 24, 2021", opponent: "Kelles Albuquerque", result: "W", method: "TKO (Retirement)", round: 5, time: "2:29", event: "Future FC 13" },
+    { date: "Oct 11, 2020", opponent: "Marcus Vinicius", result: "W", method: "TKO (Punches)", round: 1, time: "1:47", event: "Thunder Fight 23" },
+    { date: "Dec 20, 2019", opponent: "Jhony Gregory", result: "W", method: "KO/TKO", round: 1, time: "4:50", event: "Thunder Fight 22" },
+    { date: "Oct 12, 2019", opponent: "Claudio Rocha", result: "W", method: "KO/TKO", round: 1, time: "1:59", event: "Thunder Fight 19" },
+    { date: "Apr 13, 2019", opponent: "Thiago Fernandes Lopes", result: "W", method: "KO/TKO", round: 1, time: "4:07", event: "Batalha MMA 16" },
+    { date: "Oct 27, 2018", opponent: "Kevem Catini", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Standout Fighting Tournament 6" },
+    { date: "Oct 21, 2018", opponent: "Davyson Machado", result: "W", method: "KO/TKO", round: 1, time: "1:00", event: "The Dog Tower FC 1" },
+    { date: "Mar 17, 2018", opponent: "Thales Adriel Borges", result: "W", method: "TKO (Punches)", round: 1, time: "2:50", event: "Vikings Fight Club 1" },
+    { date: "Oct 6, 2017", opponent: "Diego Rodrigues", result: "W", method: "TKO (Punches)", round: 1, time: "1:33", event: "Elite Fight Night 7" },
+    { date: "Apr 15, 2017", opponent: "Yuri Paixao", result: "W", method: "TKO (Punches)", round: 2, time: "1:52", event: "Elite Fight Night 5" },
+    { date: "Feb 10, 2017", opponent: "Guilherme Miranda", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "1:12", event: "Elite Fight Night 4" }
   ],
   "Felipe Franco": [
     { date: "Mar 21, 2026", opponent: "Mario Pinto", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -32807,6 +32825,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Claudio Ribeiro": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2022 — 25-second KO of Ivan Valenzuela)", detail: null },
+    { icon: "🥊", title: "All 11 career wins by KO/TKO (100% finish rate)", detail: null }
+  ],
   "Ariane Carnelossi": [
     { icon: "🥊", title: "\"Sorriso\" — 11 finishes in 15 wins (9 KO/TKO, 2 submissions)", detail: null },
     { icon: "🥋", title: "Black belt in Muay Thai, kickboxing, and Brazilian Jiu-Jitsu", detail: null }
