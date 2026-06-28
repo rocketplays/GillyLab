@@ -3499,7 +3499,7 @@
  { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-1", initials: "JDI", country: "Peru" },
  // ─── FLYWEIGHT (extended) ───
  { name: "Sumudaerji", division: "FLW", rank: "NR", record: "19-7-0", initials: "SUM", country: "China" },
- { name: "Carlos Candelario", division: "FLW", rank: "NR", record: "12-4-0", initials: "CCA", country: "USA" },
+ { name: "Carlos Candelario", division: "FLW", rank: "NR", record: "8-3-0", initials: "CCA", country: "USA" },
  { name: "Namsrai Batbayar", division: "FLW", rank: "NR", record: "10-1-0", initials: "NBA", country: "Mongolia" },
  // ─── WOMEN'S STRAWWEIGHT (extended) ───
  { name: "Luana Pinheiro", division: "WSW", rank: "NR", record: "13-5-0", initials: "LPN", country: "Brazil" },
@@ -4614,7 +4614,7 @@
  // Flyweight
  "Bekzat Almakhan": { ht:"5'7\"", dob:"1997-10-08", reach:'68"', stance:"Orthodox", slpm:1.61, strAcc:"34%", sapm:3.73, strDef:"37%", kd:0.97, tdAcc:"0%", tdDef:"42%", subAvg:0.0, finRate:"92%", streak:0, tdLanded:0.00, gym:"777 Fight Club" },
   "Theodor Berggren": { ht:"6'0\"", dob:"2000-04-09", finRate:"100%", streak:2, gym:"Renyi" },
- "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, tdAcc:"36%", subAvg:0.4, strDef:"44%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.28 },
+ "Carlos Candelario": { ht:"5'8\"", dob:"1991-06-04", reach:'68"', stance:"Southpaw", slpm:3.97, strAcc:"47%", sapm:5.17, strDef:"44%", kd:0.00, tdLanded:2.28, tdAcc:"36%", tdDef:"54%", subAvg:0.28, finRate:"63%", streak:0, gym:"Underdog BJJ" },
  "Alden Coria": { ht:"5'8\"", dob:"1998-04-24", reach:'67"', stance:"Orthodox", slpm:4.69, strAcc:"45%", sapm:2.40, strDef:"70%", kd:0.00, tdLanded:1.75, tdAcc:"33%", tdDef:"71%", subAvg:0.00, finRate:"75%", streak:5, gym:"4oz Fight Club, Aztlan Boxing" },
  "Stewart Nicoll": { ht:"5'5\"", dob:"1994-11-03", reach:'65.5"', stance:"Orthodox", slpm:3.63, strAcc:"39%", sapm:5.84, strDef:"50%", kd:0.00, tdLanded:1.63, tdAcc:"4%", tdDef:"29%", subAvg:0.00, finRate:"88%", streak:0, gym:"Team Compton Training Centre" },
  "Allen Frye Jr.": { ht:"6'5\"", dob:"1998-04-15", reach:'80.5"', stance:"Orthodox", slpm:2.20, strAcc:"38%", sapm:4.27, strDef:"36%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:0, gym:"Brunsons MMA and Fitness" },
@@ -12373,11 +12373,9 @@
     { opponent: "Kelly Clayton", odds: -460 }
   ],
   "Carlos Candelario": [
-    { opponent: "John Castaneda", odds: 250 },
-    { opponent: "Vinicius Oliveira", odds: 275 },
-    { opponent: "Joshua Van", odds: 350 },
-    { opponent: "Victor Henry", odds: -350 },
-    { opponent: "Da'Mon Blackshear", odds: 300 }
+    { opponent: "Jake Hadley", odds: 210 },
+    { opponent: "Tatsuro Taira", odds: 270 },
+    { opponent: "Victor Altamirano", odds: 195 }
   ],
   "Jamall Emmers": [
     { opponent: "Melsik Baghdasaryan", odds: 200 },
@@ -26787,19 +26785,17 @@ const FIGHT_HISTORY = {
     { date: "May 25, 2018", opponent: "Victoria Leonardo", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:27", event: "LFA 40: Aguilar vs. Le" }
   ],
   "Carlos Candelario": [
-    { date: "Mar 29, 2025", opponent: "John Castaneda", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Moreno vs. Erceg" },
-    { date: "Nov 9, 2024", opponent: "Vinicius Oliveira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Gamrot vs. Fiziev" },
-    { date: "Jun 22, 2024", opponent: "John Castaneda", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ABC 5" },
-    { date: "Jan 13, 2024", opponent: "Vinicius Oliveira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ankalaev vs. Walker 2" },
-    { date: "Jun 24, 2023", opponent: "Joshua Van", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC 5" },
-    { date: "Jan 21, 2023", opponent: "Victor Henry", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 283: Teixeira vs. Hill" },
-    { date: "Oct 1, 2022", opponent: "Da'Mon Blackshear", result: "L", method: "TKO (Punches)", round: 1, time: "4:50", event: "UFC Fight Night: Ladd vs. Dumont" },
-    { date: "Jun 18, 2022", opponent: "Johnny Munoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Emmett" },
-    { date: "Jan 22, 2022", opponent: "Johnny Munoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Chikadze" },
-    { date: "Nov 20, 2021", opponent: "Da'Mon Blackshear", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:43", event: "UFC Fight Night: Vieira vs. Tate (debut)" },
-    { date: "Aug 28, 2021", opponent: "Danial Williams", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 5 Week 8 (contract)" },
-    { date: "Mar 27, 2021", opponent: "Gustavo Hahn", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:12", event: "LFA 102" },
-    { date: "Nov 21, 2020", opponent: "Armando Lopez", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:50", event: "LFA 97" }
+    { date: "Nov 5, 2022", opponent: "Jake Hadley", result: "L", method: "Submission", round: 2, time: "2:39", event: "UFC Fight Night: Rodríguez vs. Lemos" },
+    { date: "May 14, 2022", opponent: "Tatsuro Taira", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Błachowicz vs. Rakić" },
+    { date: "Aug 31, 2021", opponent: "Victor Altamirano", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 1" },
+    { date: "Aug 6, 2021", opponent: "Miguel Restrepo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CES 63: Howard vs. Alvarez" },
+    { date: "Aug 1, 2017", opponent: "Ronaldo Candido de Oliveira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 1, Week 4" },
+    { date: "May 12, 2017", opponent: "Timothy Wheeler", result: "W", method: "TKO (Punches)", round: 1, time: "1:12", event: "CES MMA 44: Bessette vs. Trujillo" },
+    { date: "Jan 27, 2017", opponent: "Miguel Restrepo", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:11", event: "CES MMA 41: Bessette vs. Croom" },
+    { date: "Jun 10, 2016", opponent: "Roosevelt Archie", result: "W", method: "Submission (Guillotine)", round: 1, time: "1:16", event: "CES MMA 36: Andrews vs. Muro" },
+    { date: "Apr 1, 2016", opponent: "Luay Ashkar", result: "W", method: "KO", round: 1, time: "0:31", event: "CES MMA 34: Curtis vs. Burrell" },
+    { date: "Oct 30, 2015", opponent: "Jesse Gutierrez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CES MMA 31: De Freitas vs. Moraza-Pollard" },
+    { date: "Feb 26, 2011", opponent: "Josh Baker", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:22", event: "Reality Fighting: Mohegan Fight Night 2" }
   ],
   "Jamall Emmers": [
     { date: "Nov 8, 2025", opponent: "Hyder Amil", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Bonfim vs. Brown", org: "UFC" },
@@ -32911,6 +32907,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Carlos Candelario": [
+    { icon: "🥊", title: "\"The Cannon\" — 5 of 8 wins by finish (3 submissions, 2 KO/TKO); Golden Gloves amateur boxer", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu (Underdog BJJ)", detail: null }
+  ],
   "Daniel Lacerda": [
     { icon: "🏆", title: "Former Mr. Cage flyweight champion", detail: null },
     { icon: "🥊", title: "\"Miojo\" — all 13 career wins by finish (7 submissions, 6 KO/TKO)", detail: null },
