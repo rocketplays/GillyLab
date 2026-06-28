@@ -4231,7 +4231,7 @@
  "Manuel Torres": { ht:"5'10\"", dob:"1995-03-25", reach:'73.5"', stance:"Orthodox", slpm:7.29, strAcc:"60%", sapm:4.08, strDef:"54%", kd:4.31, tdLanded:1.72, tdAcc:"67%", tdDef:"91%", subAvg:0.86, finRate:"94%", streak:2, gym:"Aldama's Muay Thai Gym" },
  "Claudio Puelles": { ht:"5'10\"", dob:"1996-04-21", reach:'72"', stance:"Southpaw", slpm:2.69, tdAcc:"37%", subAvg:1.1, strDef:"60%", kd:0.0, tdDef:"64%", finRate:"69%", streak:0, tdLanded:2.68, gym:"Sanford MMA (2021–present)" },
  "Ludovit Klein": { ht:"5'7\"", dob:"1995-02-22", reach:'72"', stance:"Southpaw", slpm:3.76, strAcc:"54%", sapm:3.48, strDef:"53%", kd:0.49, tdLanded:1.37, tdAcc:"52%", tdDef:"76%", subAvg:0.0, finRate:"71%", streak:1, gym:"Spartakus Fight Gym" },
- "Daniel Zellhuber": { ht:"6'1\"", dob:"1999-07-07", reach:'77"', stance:"Switch", slpm:5.83, tdAcc:"25%", subAvg:0.1, strDef:"56%", kd:0.4, tdDef:"94%", finRate:"60%", streak:3, tdLanded:0.15, gym:"Xtreme Couture" },
+ "Daniel Zellhuber": { ht:"6'1\"", dob:"1999-07-07", reach:'77"', stance:"Switch", slpm:5.45, strAcc:"38%", sapm:6.17, strDef:"55%", kd:0.28, tdLanded:0.14, tdAcc:"25%", tdDef:"82%", subAvg:0.28, finRate:"67%", streak:0, gym:"Xtreme Couture" },
  // ── Middleweight (more) ──
  "Bo Nickal": { ht:"6'1\"", dob:"1996-01-14", reach:'76"', stance:"Southpaw", slpm:3.36, strAcc:"62%", sapm:1.93, tdAcc:"58%", subAvg:2.27, strDef:"60%", kd:0.85, tdDef:"100%", finRate:"89%", streak:1, tdLanded:3.12, gym:"American Top Team" },
  "Gerald Meerschaert": { ht:"6'1\"", dob:"1987-12-18", reach:'77"', stance:"Southpaw", slpm:2.95, strAcc:"45%", sapm:3.44, strDef:"54%", kd:0.20, tdLanded:1.70, tdAcc:"29%", tdDef:"40%", subAvg:1.49, finRate:"95%", streak:0, gym:"Valle Flow Striking Academy" },
@@ -11631,13 +11631,14 @@
     { opponent: "Teddy Ash", odds: -275 },
   ],
   "Daniel Zellhuber": [
-    { opponent: "Francisco Prado", odds: -600 },
-    { opponent: "Esteban Ribovics", odds: -400 },
-    { opponent: "Manuel Torres", odds: 275 },
-    { opponent: "Ignacio Bahamondes", odds: -350 },
-    { opponent: "Ludovit Klein", odds: 175 },
-    { opponent: "Rong Zhu", odds: -400 },
-    { opponent: "Rafa Garcia", odds: 275 }
+    { opponent: "Bobby Green", odds: -350 },
+    { opponent: "Esteban Ribovics", odds: -190 },
+    { opponent: "Francisco Prado", odds: -270 },
+    { opponent: "Christos Giagos", odds: -270 },
+    { opponent: "Lando Vannata", odds: -125 },
+    { opponent: "Trey Ogden", odds: -350 },
+    { opponent: "Lucas Almeida", odds: -235 },
+    { opponent: "Gian Franco Cortez", odds: -300 }
   ],
   "Albert Duraev": [
     { opponent: "Modestas Bukauskas", odds: -300 },
@@ -32908,6 +32909,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Daniel Zellhuber": [
+    { icon: "⭐", title: "UFC Fight of the Night vs. Esteban Ribovics (UFC 306, 2024) — widely named 2024 Fight of the Year", detail: null },
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Lucas Almeida)", detail: null },
+    { icon: "🥋", title: "\"Golden Boy\" — Brazilian Jiu-Jitsu black belt", detail: null }
+  ],
   "Maheshate": [
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Achilles Estremadura)", detail: null },
     { icon: "🥊", title: "Boxing-based striker; first-round KO of Steve Garcia in his UFC debut win (UFC 275)", detail: null }
