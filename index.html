@@ -4458,7 +4458,7 @@
  "Ovince Saint Preux": { ht:"6'3\"", dob:"1983-04-08", reach:'80"', stance:"Southpaw", slpm:3.03, tdAcc:"31%", subAvg:0.7, strDef:"47%", kd:0.4, tdDef:"66%", finRate:"70%", streak:0, tdLanded:1.08, gym:"Knoxville Martial Arts Academy" },
  "Chris Daukaus": { ht:"6'3\"", dob:"1989-09-25", reach:'76"', stance:"Orthodox", slpm:6.05, tdAcc:"0%", subAvg:0.0, strDef:"55%", kd:0.7, tdDef:"100%",finRate:"75%", streak:0, tdLanded:0.00, gym:"Martinez BJJ" },
  "Devin Clark": { ht:"6'0\"", dob:"1990-04-12", reach:'75"', stance:"Orthodox", slpm:3.03, tdAcc:"28%", subAvg:0.2, strDef:"54%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:2.23, gym:"Jackson-Wink MMA (2017–present)" },
- "Don'Tale Mayes": { ht:"6'6\"", dob:"1992-01-16", reach:'81"', stance:"Orthodox", slpm:3.22, tdAcc:"43%", subAvg:0.3, strDef:"43%", kd:0.4, tdDef:"57%", finRate:"64%", streak:0, tdLanded:1.40, gym:"Jackson Wink MMA Academy" },
+ "Don'Tale Mayes": { ht:"6'6\"", dob:"1992-01-16", reach:'81"', stance:"Orthodox", slpm:3.22, strAcc:"43%", sapm:3.61, strDef:"47%", kd:0.25, tdLanded:0.59, tdAcc:"39%", tdDef:"47%", subAvg:0.00, finRate:"64%", streak:0, gym:"Jackson-Wink MMA" },
  // ── Flyweight (new) ──
  "Kai Kara-France": { ht:"5'4\"", dob:"1993-03-26", reach:'69"', stance:"Orthodox", slpm:4.46, tdAcc:"34%", subAvg:0.3, strDef:"64%", kd:0.4, tdDef:"73%", finRate:"56%", streak:0, tdLanded:0.56, gym:"City Kickboxing (2016–present)" },
  // ── Women's Strawweight (new) ──
@@ -11652,15 +11652,21 @@
     { opponent: "Xavier Franklin", odds: -145 },
   ],
   "Don'Tale Mayes": [
-    { opponent: "Rodrigo Nascimento", odds: 300 },
-    { opponent: "Tallison Teixeira", odds: 275 },
-    { opponent: "Andrei Arlovski", odds: -300 },
-    { opponent: "Waldo Cortes-Acosta", odds: 225 },
-    { opponent: "Alan Baudot", odds: -400 },
-    { opponent: "Hamdy Abdelwawab", odds: -600 },
-    { opponent: "Josh Parisian", odds: -300 },
-    { opponent: "Parker Porter", odds: -450 },
-    { opponent: "Chris Daukaus", odds: 800 }
+    { opponent: "Thomas Petersen", odds: 265 },
+    { opponent: "Valter Walker", odds: 290 },
+    { opponent: "Shamil Gaziev", odds: 750 },
+    { opponent: "Caio Machado", odds: 122 },
+    { opponent: "Rodrigo Nascimento", odds: 175 },
+    { opponent: "Andrei Arlovski", odds: -107 },
+    { opponent: "Augusto Sakai", odds: 115 },
+    { opponent: "Hamdy Abdelwahab", odds: -115 },
+    { opponent: "Josh Parisian", odds: -165 },
+    { opponent: "Roque Martinez", odds: -250 },
+    { opponent: "Rodrigo Nascimento", odds: -105 },
+    { opponent: "Ciryl Gane", odds: 265 },
+    { opponent: "Ricardo Prasel", odds: -140 },
+    { opponent: "Mitchell Sipe", odds: 310 },
+    { opponent: "Allen Crowder", odds: -265 }
   ],
   "Armen Petrosyan": [
     { opponent: "Cesar Almeida", odds: 350 },
@@ -32889,6 +32895,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Don'Tale Mayes": [
+    { icon: "🥊", title: "\"Lord Kong\" — boxing-based heavyweight; 7 of 11 wins by KO/TKO", detail: null },
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2019); trains at Jackson-Wink MMA", detail: null }
+  ],
   "Colby Covington": [
     { icon: "🏆", title: "Former UFC interim welterweight champion — defeated Rafael dos Anjos (UFC 225, 2018)", detail: null },
     { icon: "🥇", title: "\"Chaos\" — three-time UFC welterweight title challenger (Kamaru Usman ×2, Leon Edwards)", detail: null },
