@@ -4354,7 +4354,7 @@
  "Saidyokub Kakhramonov": { ht:"5'8\"", dob:"1995-11-14", reach:'69"', stance:"Orthodox", slpm:2.05, tdAcc:"48%", subAvg:0.4, strDef:"58%", kd:0.0, tdDef:"83%", finRate:"60%", streak:3, tdLanded:6.63 },
  // ── Women's Strawweight (final) ──
  "Loma Lookboonmee": { ht:"5'1\"", dob:"1996-01-18", reach:'61"', stance:"Orthodox", slpm:3.58, strAcc:"56%", sapm:2.45, strDef:"54%", kd:0.0, tdLanded:1.76, tdAcc:null, tdDef:"70%", subAvg:0.1, finRate:"20%", streak:0, gym:"Bangtao Muay Thai & MMA" },
- "Yazmin Jauregui": { ht:"5'3\"", dob:"1999-02-28", reach:'64"', stance:"Orthodox", slpm:6.64, tdAcc:"0%", subAvg:0.0, strDef:"54%", kd:0.4, tdDef:"67%", finRate:"55%", streak:0, tdLanded:0.00, gym:"Entram Gym" },
+ "Yazmin Jauregui": { ht:"5'3\"", dob:"1999-02-28", reach:'64"', stance:"Orthodox", slpm:6.64, strAcc:"39%", sapm:5.25, strDef:"55%", kd:0.71, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"64%", streak:0, gym:"Entram Gym" },
  "Sam Hughes": { ht:"5'5\"", dob:"1992-06-28", reach:'64"', stance:"Orthodox", slpm:4.41, strAcc:"48%", sapm:4.69, strDef:"58%", kd:0.00, tdLanded:1.12, tdAcc:"29%", tdDef:"63%", subAvg:0.19, finRate:"55%", streak:0, gym:"Fortis MMA" },
  "Maria Oliveira": { ht:"5'6\"", dob:"1996-12-12", reach:'69"', stance:"Orthodox", slpm:5.03, tdAcc:"44%", subAvg:0.3, strDef:"44%", kd:0.2, tdDef:"53%", finRate:"46%", streak:0, tdLanded:0.95 },
  "Luana Pinheiro": { ht:"5'2\"", dob:"1992-11-18", reach:'62"', stance:"Orthodox", slpm:3.35, tdAcc:"36%", subAvg:0.5, strDef:"61%", kd:0.0, tdDef:"65%", finRate:"55%", streak:1, tdLanded:2.8, gym:"Nova União" },
@@ -12804,12 +12804,11 @@
     { opponent: "Danielle Hindley", odds: -365 }
   ],
   "Yazmin Jauregui": [
-    { opponent: "Miranda Maverick", odds: 350 },
-    { opponent: "Julia Polastri", odds: 250 },
-    { opponent: "Ketlen Souza", odds: 275 },
-    { opponent: "Sam Hughes", odds: -300 },
-    { opponent: "Cory McKenna", odds: -200 },
-    { opponent: "Diana Belbita", odds: -225 }
+    { opponent: "Ketlen Souza", odds: -500 },
+    { opponent: "Sam Hughes", odds: -500 },
+    { opponent: "Denise Gomes", odds: -375 },
+    { opponent: "Istela Nunes", odds: -340 },
+    { opponent: "Iasmin Lucindo", odds: -210 }
   ],
   "Vanessa Demopoulos": [
     { opponent: "Jamey-Lyn Horth", odds: 250 },
@@ -27621,9 +27620,9 @@ const FIGHT_HISTORY = {
     { date: "Jul 8, 2023", opponent: "Denise Gomes", result: "L", method: "TKO (Punches)", round: 1, time: "0:20", event: "UFC 290", org: "UFC" },
     { date: "Dec 3, 2022", opponent: "Istela Nunes", result: "W", method: "TKO (Punches)", round: 2, time: "4:06", event: "UFC on ESPN: Thompson vs. Holland", org: "UFC" },
     { date: "Aug 13, 2022", opponent: "Iasmin Lucindo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Vera vs. Cruz", org: "UFC" },
-    { date: "Aug 13, 2021", opponent: "Claire Lopez", result: "W", method: "TKO (Punches)", round: 1, time: "4:16", event: "Combate Global: Last Latina Standing" },
-    { opponent: "Criszaida Adames", result: "W", method: "TKO (Punches)", event: "1" },
-    { opponent: "Stephanie Frausto", result: "W", method: "Decision (Unanimous)", event: "1" },
+    { date: "Aug 13, 2021", opponent: "Claire Lopez", result: "W", method: "TKO (Punches)", round: 1, time: "4:16", event: "Combate Global: Last Latina Standing (final)" },
+    { date: "Aug 13, 2021", opponent: "Criszaida Adames", result: "W", method: "TKO (Punches)", round: 1, time: "3:14", event: "Combate Global: Last Latina Standing (semifinal)" },
+    { date: "Aug 13, 2021", opponent: "Stephanie Frausto", result: "W", method: "Decision (Unanimous)", round: 1, time: "5:00", event: "Combate Global: Last Latina Standing (quarterfinal)" },
     { date: "Nov 13, 2020", opponent: "Annely Jimenez Garcia", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "5:00", event: "UWC Mexico 24" },
     { date: "Sep 20, 2019", opponent: "Yajaira Romo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate 44: Mexicali" },
     { date: "Jun 7, 2019", opponent: "McKenna Mitchell", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "Combate 39: Unbreakable" },
@@ -32906,6 +32905,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Yazmin Jauregui": [
+    { icon: "🏆", title: "Combate Global \"Last Latina Standing\" one-night tournament winner (2021)", detail: null },
+    { icon: "🥊", title: "High-volume striker (6.6 significant strikes landed per minute); 7 of 11 wins by KO/TKO", detail: null }
+  ],
   "Iasmin Lucindo": [
     { icon: "🏆", title: "Multiple-time Brazilian regional champion (Action Fight, Samurai Fight House titles)", detail: null },
     { icon: "🥊", title: "Young UFC strawweight prospect — 11 of 18 wins by finish (8 KO/TKO, 3 submission)", detail: null }
