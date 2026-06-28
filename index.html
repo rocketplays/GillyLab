@@ -4372,7 +4372,7 @@
  "Julia Polastri": { ht:"5'2\"", dob:"1998-03-05", reach:'64"', stance:"Orthodox", slpm:6.40, strAcc:"55%", sapm:5.40, strDef:"57%", kd:0.00, tdLanded:0.73, tdAcc:"80%", tdDef:"61%", subAvg:0.37, finRate:"57%", streak:0, gym:"CWB Fighter" },
  "Elise Reed": { ht:"5'3\"", dob:"1992-12-05", reach:'63"', stance:"Orthodox", slpm:3.41, tdAcc:"33%", subAvg:0.3, strDef:"51%", kd:0.1, tdDef:"64%", finRate:"50%", streak:0, tdLanded:0.46, gym:"Kickside Martial Arts" },
  "Puja Tomar": { ht:"5'4\"", dob:"1993-12-05", reach:'59"', stance:"Southpaw", slpm:5.61, tdAcc:"0%", subAvg:0.0, strDef:"46%", kd:0.3, tdDef:"100%",finRate:"56%", streak:0, tdLanded:0.00, gym:"Soma Fight Club" },
- "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, tdAcc:"44%", subAvg:0.4, strDef:"62%", kd:0.1, tdDef:"73%", finRate:"56%", streak:2, tdLanded:2.28, gym:"Academia Fight House" },
+ "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
  "Piera Rodriguez": { ht:"5'3\"", dob:"1992-11-11", reach:'63"', stance:"Orthodox", slpm:4.04, strAcc:"47%", sapm:3.13, strDef:"54%", kd:0.14, tdLanded:4.04, tdAcc:"51%", tdDef:"82%", subAvg:0.00, finRate:"42%", streak:3, gym:"Xtreme Couture" },
  "Polyana Viana": { ht:"5'5\"", dob:"1992-06-14", reach:'67"', stance:"Orthodox", slpm:2.82, strAcc:"41%", sapm:2.74, strDef:"53%", kd:0.17, tdLanded:0.67, tdAcc:"33%", tdDef:"33%", subAvg:1.51, finRate:"100%", streak:0, gym:"Chute Boxe Diego Lima" },
  "Mizuki": { ht:"5'3\"", dob:"1994-08-19", reach:'65"', stance:"Orthodox", slpm:4.45, strAcc:"53%", sapm:4.65, strDef:"50%", kd:0.25, tdLanded:0.75, tdAcc:"33%", tdDef:"81%", subAvg:0.00, finRate:"56%", streak:2, gym:"Serra-Longo Fight Team (2018–present)" },
@@ -11994,12 +11994,13 @@
     { opponent: "Sam Hughes", odds: -350 }
   ],
   "Iasmin Lucindo": [
-    { opponent: "Amanda Lemos", odds: 155 },
-    { opponent: "Angela Hill", odds: -300 },
-    { opponent: "Luana Carolina", odds: -300 },
-    { opponent: "Melissa Gatto", odds: 225 },
-    { opponent: "Yazmin Jauregui", odds: -350 },
-    { opponent: "Tecia Torres", odds: 300 }
+    { opponent: "Angela Hill", odds: -172 },
+    { opponent: "Amanda Lemos", odds: -130 },
+    { opponent: "Marina Rodriguez", odds: -180 },
+    { opponent: "Karolina Kowalkiewicz", odds: -355 },
+    { opponent: "Polyana Viana", odds: -188 },
+    { opponent: "Brogan Walker", odds: -345 },
+    { opponent: "Yazmin Jauregui", odds: 188 }
   ],
   "Aljamain Sterling": [
     { opponent: "Youssef Zalal", odds: 110 },
@@ -32925,6 +32926,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Iasmin Lucindo": [
+    { icon: "🏆", title: "Multiple-time Brazilian regional champion (Action Fight, Samurai Fight House titles)", detail: null },
+    { icon: "🥊", title: "Young UFC strawweight prospect — 11 of 18 wins by finish (8 KO/TKO, 3 submission)", detail: null }
+  ],
   "Tecia Torres": [
     { icon: "🥋", title: "Black belt in Jhoon-Rhee Taekwondo; blue belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥊", title: "\"The Tiny Tornado\" — longtime UFC strawweight contender; faced a who's-who of champions (Esparza, Jędrzejczyk, Andrade, Zhang Weili, Namajunas)", detail: null }
