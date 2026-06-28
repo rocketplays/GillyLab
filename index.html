@@ -3118,7 +3118,7 @@
  { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "9-2-0", initials: "JO", country: "Peru" }, // 1 NC
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "17-11-0", initials: "MSC", country: "USA" }, // 1 NC
  { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-10-1", initials: "CDU", country: "USA" },
- { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "13-3-0", initials: "DLA", country: "Brazil" },
+ { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "11-6-0", initials: "DLA", country: "Brazil" }, // 1 NC
  { name: "Ramazan Temirov", division: "FLW", rank: "NR", record: "19-3-0", initials: "RTE", country: "Uzbekistan" },
  { name: "Victor Altamirano", division: "FLW", rank: "NR", record: "13-5-0", initials: "VAL", country: "Mexico" },
  { name: "Ode Osbourne", division: "FLW", rank: "NR", record: "13-9-0", initials: "OO", country: "Jamaica" },
@@ -4630,7 +4630,7 @@
  "Alice Pereira": { ht:"5'10\"", dob:"2005-12-20", reach:'71"', stance:"Orthodox", slpm:2.83, strAcc:"37%", sapm:3.11, strDef:"67%", kd:0.61, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"86%", streak:1, gym:"Life MMA / Portugal Top Team" },
  "Clayton Carpenter": { ht:"5'6\"", dob:"1996-06-09", reach:'66"', stance:"Orthodox", slpm:3.88, strAcc:"51%", sapm:4.47, strDef:"49%", kd:0.00, tdLanded:1.75, tdAcc:"35%", tdDef:"50%", subAvg:1.00, finRate:"75%", streak:0, gym:"The MMA Lab" },
  "Edgar Chairez": { ht:"5'7\"", dob:"1996-01-27", reach:'71"', stance:"Orthodox", slpm:3.65, strAcc:"45%", sapm:4.75, strDef:"46%", kd:0.22, tdLanded:0.00, tdAcc:"0%", tdDef:"39%", subAvg:1.31, finRate:"93%", streak:3, gym:"Entram Gym" },
- "Daniel Lacerda": { ht:"5'6\"", dob:"1996-06-05", reach:'70"', stance:"Switch", slpm:3.95, tdAcc:"36%", subAvg:0.5, strDef:"45%", kd:0.2, tdDef:"58%", finRate:"60%", streak:0, tdLanded:1.23 },
+ "Daniel Lacerda": { ht:"5'6\"", dob:"1996-06-05", reach:'70"', stance:"Switch", slpm:3.95, strAcc:"46%", sapm:8.28, strDef:"35%", kd:1.74, tdLanded:2.32, tdAcc:"50%", tdDef:null, subAvg:1.16, finRate:"100%", streak:0, gym:"Chute Boxe" },
  "Jafel Filho": { ht:"5'7\"", dob:"1993-05-05", reach:'68.5"', stance:"Orthodox", slpm:1.85, strAcc:"42%", sapm:1.62, strDef:"50%", kd:0.28, tdLanded:2.52, tdAcc:"48%", tdDef:"67%", subAvg:2.24, finRate:"94%", streak:0, gym:"Nova União" },
  "Hecher Sosa": { ht:"5'9\"", dob:"1995-08-25", reach:'70"', stance:"Orthodox", slpm:4.53, strAcc:"48%", sapm:2.50, strDef:"62%", kd:0.00, tdLanded:2.00, tdAcc:"36%", tdDef:"69%", subAvg:1.00, finRate:"60%", streak:12, gym:"AFC Villalba / BJJ Gando" },
  "Joseph Morales": { ht:"5'6\"", dob:"1994-08-22", reach:'68"', stance:"Switch", slpm:2.00, strAcc:"41%", sapm:2.05, strDef:"58%", kd:0.38, tdLanded:1.14, tdAcc:"43%", tdDef:"27%", subAvg:3.04, finRate:"67%", streak:6, gym:"Team Alpha Male" },
@@ -12495,12 +12495,9 @@
     { opponent: "Rodolfo Bellato", odds: -135 }
   ],
   "Daniel Lacerda": [
-    { opponent: "Josiah Harrell", odds: 350 },
-    { opponent: "Jake Hadley", odds: -300 },
-    { opponent: "Carlos Hernandez", odds: 225 },
-    { opponent: "Cody Durden", odds: -175 },
-    { opponent: "Muhammad Mokaev", odds: 350 },
-    { opponent: "Charles Johnson", odds: -400 }
+    { opponent: "Édgar Cháirez", odds: 385 },
+    { opponent: "Francisco Figueiredo", odds: -125 },
+    { opponent: "Jeff Molina", odds: 150 }
   ],
   "Kurtis Campbell": [
     { opponent: "Danny Silva", odds: -265 },
@@ -27057,17 +27054,24 @@ const FIGHT_HISTORY = {
 
 
   "Daniel Lacerda": [
-    { date: "Jun 14, 2026", opponent: "Francisco Figueiredo", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Freedom 250" },
-    { date: "Jan 18, 2025", opponent: "Josiah Harrell", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 311: Makhachev vs. Moicano" },
-    { date: "Sep 14, 2024", opponent: "Jake Hadley", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:45", event: "UFC 306: O'Malley vs. Dvalishvili" },
-    { date: "Jun 8, 2024", opponent: "Carlos Hernandez", result: "L", method: "TKO (Punches)", round: 2, time: "4:22", event: "UFC Fight Night: Cannonier vs. Imavov" },
-    { date: "Feb 10, 2024", opponent: "Cody Durden", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Imavov" },
-    { date: "Aug 26, 2023", opponent: "Muhammad Mokaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. Korean Zombie 2" },
-    { date: "Mar 4, 2023", opponent: "Charles Johnson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:54", event: "UFC 285: Jones vs. Gane (debut)" },
-    { date: "Oct 22, 2022", opponent: "Mateus Macedo", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:53", event: "DWCS Season 6 Week 6 (contract)" },
-    { date: "Aug 6, 2022", opponent: "Caio Moreti", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:30", event: "Shooto Brazil 103" },
-    { date: "May 7, 2022", opponent: "Mateus Macedo", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:22", event: "Shooto Brazil 100" },
-    { date: "Dec 11, 2021", opponent: "Cristiano Falco", result: "W", method: "Submission (Heel hook)", round: 1, time: "0:43", event: "Shooto Brazil 97" }
+    { date: "Feb 24, 2024", opponent: "Édgar Cháirez", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:17", event: "UFC Fight Night: Moreno vs. Royval 2", org: "UFC" },
+    { date: "Sep 16, 2023", opponent: "Édgar Cháirez", result: "NC", method: "No Contest", round: 1, time: "3:47", event: "Noche UFC: Grasso vs. Shevchenko 2", org: "UFC" },
+    { date: "Mar 25, 2023", opponent: "CJ Vergara", result: "L", method: "KO/TKO", round: 2, time: "4:04", event: "UFC Fight Night: Vera vs. Sandhagen", org: "UFC" },
+    { date: "Aug 20, 2022", opponent: "Victor Altamirano", result: "L", method: "KO/TKO", round: 1, time: "3:39", event: "UFC 278", org: "UFC" },
+    { date: "Apr 30, 2022", opponent: "Francisco Figueiredo", result: "L", method: "Submission (Guillotine choke)", round: 1, time: "1:18", event: "UFC Fight Night: Font vs. Vera", org: "UFC" },
+    { date: "Oct 23, 2021", opponent: "Jeff Molina", result: "L", method: "KO/TKO", round: 2, time: "0:46", event: "UFC Fight Night: Costa vs. Vettori", org: "UFC" },
+    { date: "Jul 24, 2021", opponent: "Rodrigo Lobato", result: "W", method: "KO/TKO", round: 1, time: "2:23", event: "Shooto Brazil 107" },
+    { date: "Oct 13, 2019", opponent: "Francisco Javier Asprilla", result: "W", method: "Submission (Armbar)", round: 1, time: "2:40", event: "Mr. Cage 39" },
+    { date: "Aug 8, 2019", opponent: "Augusto Cesar Saraiva", result: "W", method: "Submission (Triangle choke)", round: 1, time: "2:45", event: "Rei da Selva Combat 14" },
+    { date: "Mar 15, 2019", opponent: "Edilceu Silva Alves", result: "L", method: "TKO (Injury)", round: 1, time: "0:37", event: "Shooto Brazil 90" },
+    { date: "May 11, 2018", opponent: "Yarlei Martins Andrade Jr", result: "W", method: "TKO (Punches)", round: 1, time: "0:29", event: "Shooto Brazil 83" },
+    { date: "Mar 24, 2018", opponent: "Matheus da Silva Severino", result: "W", method: "KO", round: 2, time: "4:59", event: "Demolidor Fight MMA 12" },
+    { date: "Nov 18, 2017", opponent: "Cristiano Nogueira Vargas", result: "W", method: "Submission (Armbar)", round: 1, time: "1:08", event: "ATS Kombat Fight Night" },
+    { date: "Oct 14, 2017", opponent: "Emerson Galdino", result: "W", method: "Submission (Armbar)", round: 1, time: "0:26", event: "Guanambi Combat 2" },
+    { date: "Oct 7, 2017", opponent: "Felipe Oliveira Dornella", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "4:57", event: "JF Fight Evolution 18" },
+    { date: "Aug 26, 2017", opponent: "Humberto Vieira Rangel Jr.", result: "W", method: "TKO (Punches)", round: 1, time: "3:22", event: "Favela Kombat 25" },
+    { date: "May 27, 2017", opponent: "Welerson Matheus Santos", result: "W", method: "Submission (Triangle choke)", round: 1, time: "4:39", event: "Patao Combat MMA 2" },
+    { date: "Mar 18, 2017", opponent: "Vitor Mariano Eustaquio", result: "W", method: "Submission (Armbar)", round: 1, time: "1:56", event: "Vegas Fight Night" }
   ],
   "Kurtis Campbell": [
     { date: "Mar 21, 2026", opponent: "Danny Silva", result: "L", method: "TKO (Punches)", round: 2, time: "0:31", event: "UFC Fight Night: Evloev vs. Murphy", org: "UFC" },
@@ -32836,6 +32840,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Daniel Lacerda": [
+    { icon: "🏆", title: "Former Mr. Cage flyweight champion", detail: null },
+    { icon: "🥊", title: "\"Miojo\" — all 11 career wins by finish (6 submissions, 5 KO/TKO)", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null }
+  ],
   "Zhalgas Zhumagulov": [
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — won the title in 2025)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
