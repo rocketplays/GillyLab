@@ -4849,7 +4849,7 @@
   "John Yannis": { ht:"5'7\"", dob:"1994-07-07", reach:'70.5"', stance:"Southpaw", slpm:3.30, strAcc:"54%", sapm:1.26, strDef:"74%", kd:2.36, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.0, finRate:"60%", streak:1, gym:"Xtreme Plainview" },
   "Chelsea Chandler": { ht:"5'8\"", dob:"1990-11-23", reach:'68"', stance:"Southpaw", slpm:3.52, strAcc:"45%", sapm:4.27, strDef:"40%", kd:0.27, tdLanded:0.81, tdAcc:"60%", tdDef:"25%", subAvg:0.27, finRate:"57%", streak:1, gym:"Cesar Gracie Jiu-Jitsu" },
   "Yuneisy Duben": { ht:"5'4\"", dob:"1996-07-08", reach:'65"', stance:"Orthodox", slpm:5.65, strAcc:"53%", sapm:5.31, strDef:"43%", kd:0.84, tdLanded:1.68, tdAcc:"50%", tdDef:"50%", subAvg:0.0, finRate:"100%", streak:0, gym:"Team Ludus" },
-  "Ariane Carnelossi": { ht:"5'1\"", dob:"1995-10-20", reach:'62"', stance:"Orthodox", slpm:5.2, tdAcc:"20%", subAvg:0.0, strDef:"48%", kd:1.1, tdDef:"80%", finRate:"57%", streak:0, tdLanded:0.4, gym:"Inside Muay Thai" },
+  "Ariane Carnelossi": { ht:"5'2\"", dob:"1992-11-17", reach:'62"', stance:"Orthodox", slpm:2.68, strAcc:"39%", sapm:4.69, strDef:"44%", kd:0.0, tdLanded:1.06, tdAcc:"50%", tdDef:"23%", subAvg:0.21, finRate:"73%", streak:0, gym:"Inside Muay Thai" },
   "Rodrigo Vera": { ht:"5'7\"", dob:"1995-10-18", reach:null, stance:null, slpm:9.27, strAcc:"59%", sapm:3.82, strDef:"50%", kd:8.18, tdLanded:8.18, tdAcc:"100%", tdDef:null, subAvg:0.0, finRate:"55%", streak:14, gym:"Chute Boxe - Diego Lima" }
  };
  function calcAge(dob) {
@@ -9762,13 +9762,13 @@
     { opponent: "Tonya Evinger", odds: -600 }
   ],
   "Ariane Carnelossi": [
-    { opponent: "Tabatha Ricci", odds: 185 },
-    { opponent: "Diana Belbita", odds: -400 },
-    { opponent: "Luana Pinheiro", odds: -350 },
-    { opponent: "Loopy Godinez", odds: 175 },
-    { opponent: "Angela Hill", odds: 160 },
-    { opponent: "Loma Lookboonmee", odds: 155 },
-    { opponent: "Istela Nunes", odds: -300 }
+    { opponent: "Ketlen Souza", odds: 300 },
+    { opponent: "Talita Alencar", odds: 188 },
+    { opponent: "Piera Rodriguez", odds: 205 },
+    { opponent: "Lupita Godinez", odds: 165 },
+    { opponent: "Istela Nunes", odds: -135 },
+    { opponent: "Na Liang", odds: -210 },
+    { opponent: "Angela Hill", odds: 100 }
   ],
   "Tabatha Ricci": [
     { opponent: "Virna Jandiroba", odds: 115 },
@@ -20853,7 +20853,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 21, 2019", opponent: "Angela Hill", result: "L", method: "TKO (Doctor stoppage)", round: 3, time: "1:56", event: "UFC Fight Night: Rodríguez vs. Stephens", org: "UFC" },
     { date: "May 24, 2019", opponent: "Ketlen Souza", result: "W", method: "TKO (Body kick)", round: 3, time: "3:53", event: "Future FC 5" },
     { date: "Nov 3, 2018", opponent: "Joice Mara da Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 17" },
-    { opponent: "Aline Pires", result: "W", method: "KO (Punch)", event: "1" },
+    { date: "Nov 3, 2018", opponent: "Aline Pires", result: "W", method: "KO (Punch)", round: 1, time: "1:05", event: "Thunder Fight 16" },
     { date: "Jan 27, 2018", opponent: "Bianca Sattelmayer", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Batalha MMA 11" },
     { date: "Aug 26, 2017", opponent: "Kakau Costa", result: "W", method: "TKO (Punches)", round: 2, time: "2:54", event: "Max Fight 19" },
     { date: "Aug 4, 2017", opponent: "Gloria de Paula", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 11" },
@@ -32807,6 +32807,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ariane Carnelossi": [
+    { icon: "🥊", title: "\"Sorriso\" — 11 finishes in 15 wins (9 KO/TKO, 2 submissions)", detail: null },
+    { icon: "🥋", title: "Black belt in Muay Thai, kickboxing, and Brazilian Jiu-Jitsu", detail: null }
+  ],
   "Ketlen Souza": [
     { icon: "🏆", title: "Former Mr. Cage Championship titleholder (multiple title fights in Brazil)", detail: null },
     { icon: "🥊", title: "\"Esquentadinha\" — 11 finishes in 17 wins (9 KO/TKO, 2 submissions)", detail: null }
