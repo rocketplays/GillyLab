@@ -4324,7 +4324,7 @@
  "Tanner Boser": { ht:"6'2\"", dob:"1991-08-02", reach:'75.5"', stance:"Orthodox", slpm:4.82, strAcc:"54%", sapm:3.00, strDef:"58%", kd:0.25, tdLanded:0.0, tdAcc:"0%", tdDef:"70%", subAvg:0.0, finRate:"64%", streak:0, gym:"Frank Lee's Muay Thai" },
  // ── Heavyweight (more) ──
  "Rodrigo Nascimento": { ht:"6'2\"", dob:"1992-11-26", reach:'80"', stance:"Orthodox", slpm:3.71, tdAcc:"34%", subAvg:0.5, strDef:"44%", kd:0.2, tdDef:"55%", finRate:"67%", streak:0, tdLanded:1.48, gym:"American Top Team (2019–present)" },
- "Martin Buday": { ht:"6'4\"", dob:"1991-11-11", reach:'77"', stance:"Orthodox", slpm:4.39, tdAcc:"30%", subAvg:0.3, strDef:"55%", kd:0.4, tdDef:"83%", finRate:"63%", streak:3, tdLanded:0.15, gym:"Spartakus Fight Gym" },
+ "Martin Buday": { ht:"6'4\"", dob:"1991-11-11", reach:'77"', stance:"Orthodox", slpm:4.39, strAcc:"53%", sapm:4.49, strDef:"56%", kd:0.30, tdLanded:0.15, tdAcc:"20%", tdDef:"93%", subAvg:0.15, finRate:"56%", streak:0, gym:"Spartakus Fight Gym" },
  "Vitor Petrino": { ht:"6'2\"", dob:"1997-08-28", reach:'77.5"', stance:"Orthodox", slpm:3.24, strAcc:"49%", sapm:2.71, strDef:"51%", kd:0.58, tdLanded:2.60, tdAcc:"46%", tdDef:"79%", subAvg:0.72, finRate:"71%", streak:3, gym:"CM System" },
  // ── Middleweight (final) ──
  "Chidi Njokuani": { ht:"6'3\"", dob:"1988-12-31", reach:'80"', stance:"Orthodox", slpm:4.72, tdAcc:"0%", subAvg:0.2, strDef:"57%", kd:0.6, tdDef:"73%", finRate:"68%", streak:0, tdLanded:0.00, gym:"Sergio Penha BJJ" },
@@ -12775,14 +12775,18 @@
     { opponent: "Evan Elder", odds: -228 },
   ],
   "Martin Buday": [
-    { opponent: "Jhonata Diniz", odds: 275 },
-    { opponent: "Josh Parisian", odds: -250 },
-    { opponent: "Hamdy Abdelwawab", odds: -500 },
-    { opponent: "Renan Ferreira", odds: 400 },
-    { opponent: "Alexandr Romanov", odds: -200 },
-    { opponent: "Chase Sherman", odds: -500 },
-    { opponent: "Parker Porter", odds: -350 },
-    { opponent: "Jake Collier", odds: -200 }
+    { opponent: "Lazar Todev", odds: -145 },
+    { opponent: "Will Fleury", odds: -160 },
+    { opponent: "Marcus Buchecha", odds: 220 },
+    { opponent: "Uran Satybaldiev", odds: -163 },
+    { opponent: "Andrei Arlovski", odds: -250 },
+    { opponent: "Shamil Gaziev", odds: -115 },
+    { opponent: "Josh Parisian", odds: -198 },
+    { opponent: "Jake Collier", odds: -132 },
+    { opponent: "Łukasz Brzeski", odds: -300 },
+    { opponent: "Chris Barnett", odds: -250 },
+    { opponent: "Lorenzo Hood", odds: -600 },
+    { opponent: "Kamil Minda", odds: -270 }
   ],
   "Natan Levy": [
     { opponent: "Ricky Glenn", odds: 200 },
@@ -32898,6 +32902,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Martin Buday": [
+    { icon: "🏆", title: "Former OKTAGON MMA Heavyweight Champion (won the vacant title vs. Kamil Minda, 2021)", detail: null },
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Lorenzo Hood)", detail: null },
+    { icon: "🥋", title: "\"Badys\" — Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Albert Duraev": [
     { icon: "🏆", title: "Former ACB (Absolute Championship Berkut) Middleweight Champion — multiple title defenses", detail: null },
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, def. Caio Bittencourt)", detail: null },
