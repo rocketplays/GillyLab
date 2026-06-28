@@ -3599,6 +3599,7 @@
  { name: "Timmy Cuamba", division: "BW", rank: "NR", record: "10-4-0", initials: "TCU", country: "USA" },
  { name: "Nikolay Veretennikov", division: "WW", rank: "NR", record: "14-8-0", initials: "NVE", country: "Kazakhstan" },
  { name: "Tommy Gantt", division: "LW", rank: "NR", record: "12-0-0", initials: "TGA", country: "USA" },
+ { name: "Artur Minev", division: "LW", rank: "NR", record: "7-1-0", initials: "AMI", country: "Ukraine" },
  { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
@@ -4424,6 +4425,7 @@
  "Timmy Cuamba": { ht:"5'9\"", dob:"1999-02-08", reach:'71"', stance:"Orthodox", slpm:2.77, strAcc:"44%", sapm:3.58, strDef:"58%", kd:0.22, tdLanded:1.31, tdAcc:"32%", tdDef:"72%", subAvg:0.00, finRate:"50%", streak:0, gym:"BK MMA" },
  "Nikolay Veretennikov": { ht:"6'1\"", dob:"1989-12-22", reach:'74"', stance:"Orthodox", slpm:2.74, strAcc:"56%", sapm:3.43, strDef:"47%", kd:0.00, tdLanded:0.40, tdAcc:"17%", tdDef:"63%", subAvg:0.40, finRate:"79%", streak:0, gym:"Kings MMA" },
  "Tommy Gantt": { ht:"5'11\"", dob:"1993-01-09", reach:'76.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:"36%", tdDef:null, subAvg:null, finRate:"92%", streak:12, gym:"The Academy" },
+ "Artur Minev": { ht:"5'9\"", dob:"2003-09-27", reach:'69.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:0, gym:"Syndicate MMA" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -10001,7 +10003,9 @@
     { opponent: "Artur Minev", odds: -500 }
   ],
   "Artur Minev": [
-    { opponent: "Thomas Gantt", odds: 280 }
+    { opponent: "Tommy Gantt", odds: 160 },
+    { opponent: "Shane Keefe", odds: -1000 },
+    { opponent: "Cristobal Ibanez", odds: -250 }
   ],
   "Timmy Cuamba": [
     { opponent: "Benardo Sopaj", odds: 100 },
@@ -21448,15 +21452,14 @@ const FIGHT_HISTORY = {
     { date: "Apr 24, 2021", opponent: "Rudy Medina", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Legacy FC 61 (debut)" }
   ],
   "Artur Minev": [
-    { date: "May 16, 2026", opponent: "Thomas Gantt", result: "L", method: "TKO (Punches)", round: 2, time: "2:51", event: "UFC Fight Night: Allen vs. Costa (debut)" },
-    { date: "Oct 12, 2024", opponent: "Ali Taleb", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 183" },
-    { date: "Jun 29, 2024", opponent: "Filip Pejic", result: "W", method: "KO (Punches)", round: 2, time: "1:18", event: "Cage Warriors 178" },
-    { date: "Jan 27, 2024", opponent: "Felipe Amarante", result: "W", method: "KO (Punches)", round: 1, time: "2:44", event: "Cage Warriors 174" },
-    { date: "Sep 9, 2023", opponent: "Petr Smolka", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 170" },
-    { date: "May 6, 2023", opponent: "Alex Cowley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 165" },
-    { date: "Nov 5, 2022", opponent: "Karl Davies", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "1:29", event: "Cage Warriors 153" },
-    { date: "Jun 18, 2022", opponent: "Sergej Jovanovic", result: "W", method: "KO (Punch)", round: 1, time: "0:47", event: "Cage Warriors 148 (debut)" },
-    { date: "Feb 26, 2022", opponent: "Leon Stamper", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACB MMA" }
+    { date: "May 16, 2026", opponent: "Tommy Gantt", result: "L", method: "TKO (Ground and pound)", round: 2, time: "2:51", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
+    { date: "Jan 18, 2026", opponent: "Derek Campos", result: "W", method: "TKO", round: 1, time: "3:05", event: "Fury FC 113" },
+    { date: "Jul 18, 2025", opponent: "Junior Maranhao", result: "W", method: "Decision (Majority)", round: 5, time: "5:00", event: "Fury FC 106" },
+    { date: "Mar 23, 2025", opponent: "Shane Keefe", result: "W", method: "TKO", round: 1, time: "3:01", event: "Fury FC 103" },
+    { date: "Nov 3, 2024", opponent: "Cristobal Ibanez", result: "W", method: "KO", round: 1, time: "0:28", event: "Fury FC 98" },
+    { date: "Sep 27, 2024", opponent: "Brandon Evans", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:29", event: "XFC 51: Evolution" },
+    { date: "Sep 15, 2023", opponent: "Tony Pike", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:46", event: "Combat FC 5" },
+    { date: "Jul 8, 2023", opponent: "Matt Denning", result: "W", method: "TKO", round: 1, time: "1:37", event: "NEF 53: American Valor (pro debut)" }
   ],
   "Timmy Cuamba": [
     { date: "May 16, 2026", opponent: "Benardo Sopaj", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:25", event: "UFC Fight Night: Allen vs. Costa" },
@@ -32639,6 +32642,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Artur Minev": [
+    { icon: "🥊", title: "\"Headhunter\" — 86% finish rate (6 of 7 wins by stoppage: 4 KO/TKO, 2 submissions)", detail: null },
+    { icon: "🏅", title: "Entered the UFC a 7-0 Fury FC prospect; took his debut on short notice at age 22", detail: null }
+  ],
   "Tommy Gantt": [
     { icon: "🏅", title: "Undefeated (12-0, 1 NC); earned UFC contract on Dana White's Contender Series (2025 — R1 guillotine of Adam Livingston)", detail: null },
     { icon: "🤼", title: "NCAA Division I All-American wrestler — NC State (2016, 157 lbs)", detail: null },
