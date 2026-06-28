@@ -3536,7 +3536,7 @@
  { name: "Allan Nascimento", division: "FLW", rank: "NR", record: "22-7-0", initials: "ANS", country: "Brazil" },
  { name: "Rafael Estevam", division: "FLW", rank: "NR", record: "14-1-0", initials: "RES", country: "Brazil" },
  { name: "Andre Lima", division: "FLW", rank: "NR", record: "11-1-0", initials: "AND", country: "Brazil" },
- { name: "Rei Tsuruya", division: "FLW", rank: "NR", record: "8-3-0", initials: "RTS", country: "Japan" },
+ { name: "Rei Tsuruya", division: "FLW", rank: "NR", record: "11-1-0", initials: "RTS", country: "Japan" },
  { name: "Alden Coria", division: "FLW", rank: "NR", record: "12-3-0", initials: "ACO", country: "USA" },
  { name: "Stewart Nicoll", division: "FLW", rank: "NR", record: "8-3-0", initials: "SNI", country: "Australia" },
  { name: "Imanol Rodriguez", division: "FLW", rank: "NR", record: "11-1-0", initials: "IRO", country: "Mexico" },
@@ -4295,7 +4295,7 @@
  // ── Flyweight (more) ──
  "Kyoji Horiguchi": { ht:"5'4\"", dob:"1990-10-12", reach:'69"', stance:"Orthodox", slpm:3.64, strAcc:"48%", sapm:2.08, tdAcc:"40%", subAvg:0.10, strDef:"64%", kd:0.59, tdDef:"61%", finRate:"58%", streak:0, tdLanded:1.67, gym:"American Top Team" },
  "Allan Nascimento": { ht:"5'8\"", dob:"1991-09-11", reach:'69"', stance:"Orthodox", slpm:3.20, strAcc:"52%", sapm:2.53, strDef:"53%", kd:0.17, tdLanded:1.04, tdAcc:"20%", tdDef:"41%", subAvg:0.87, finRate:"77%", streak:0, gym:"Chute Boxe" },
- "Rei Tsuruya": { ht:"5'6\"", dob:"2002-06-22", reach:'68"', stance:"Orthodox", slpm:5.44, tdAcc:"25%", subAvg:1.8, strDef:"53%", kd:0.0, tdDef:"50%", finRate:"80%", streak:4, tdLanded:5.06 },
+ "Rei Tsuruya": { ht:"5'6\"", dob:"2002-06-22", reach:'68"', stance:"Orthodox", slpm:2.40, strAcc:"54%", sapm:1.91, strDef:"43%", kd:0.0, tdLanded:5.03, tdAcc:"25%", tdDef:"50%", subAvg:2.01, finRate:"82%", streak:1, gym:"Paraestra Matsudo" },
  // ── Heavyweight (more) ──
  "Karl Williams": { ht:"6'3\"", dob:"1990-01-06", reach:'79"', stance:"Orthodox", slpm:2.68, tdAcc:"48%", subAvg:0.2, strDef:"55%", kd:0.2, tdDef:"100%",finRate:"70%", streak:2, tdLanded:4.20 },
  "Parker Porter": { ht:"6'0\"", dob:"1985-04-22", reach:'75"', stance:"Orthodox", slpm:6.55, tdAcc:"26%", subAvg:0.5, strDef:"51%", kd:0.3, tdDef:"66%", finRate:"43%", streak:0, tdLanded:1.35, gym:"Heavy Hitters Club (2020–present)" },
@@ -9903,10 +9903,12 @@
     { opponent: "Ode' Osbourne", odds: -201 },
   ],
   "Rei Tsuruya": [
-    { opponent: "Luis Gurule", odds: -305 },
-    { opponent: "Tim Elliott", odds: -250 },
-    { opponent: "Joshua Van", odds: 200 },
-    { opponent: "Jiniushiyue", odds: -600 }
+    { opponent: "Luis Gurule", odds: -333 },
+    { opponent: "Joshua Van", odds: 132 },
+    { opponent: "Carlos Hernandez", odds: -400 },
+    { opponent: "Jiniushiyue", odds: -549 },
+    { opponent: "Mark Climaco", odds: -120 },
+    { opponent: "Ronal Siahaan", odds: -1000 }
   ],
   "Charles Johnson": [
     { opponent: "Bruno Gustavo da Silva", odds: -185 },
@@ -21198,18 +21200,18 @@ const FIGHT_HISTORY = {
 
 
   "Rei Tsuruya": [
-    { date: "May 30, 2026", opponent: "Jesus Aguilar", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Song vs. Figueiredo (Macau)" },
-    { date: "Mar 8, 2025", opponent: "Tim Elliott", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 313: Pereira vs. Ankalaev" },
-    { date: "Jun 29, 2024", opponent: "Joshua Van", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 303: Pereira vs. Procházka 2" },
-    { date: "Feb 3, 2024", opponent: "Jiniushiyue", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "UFC Fight Night (Road to UFC Final)" },
-    { date: "Nov 18, 2023", opponent: "Da'Mon Blackshear", result: "W", method: "Submission (Armbar)", round: 1, time: "1:30", event: "Road to UFC Season 2 Final" },
-    { date: "Aug 26, 2023", opponent: "Choi Seung-guk", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 2 SF" },
-    { date: "Jun 3, 2023", opponent: "Hideo Ogawa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PANCRASE 330" },
-    { date: "Jan 21, 2023", opponent: "Shooto lightweight bracket", result: "W", method: "TKO (Punches)", round: 1, time: "2:14", event: "PANCRASE 328" },
-    { date: "Sep 17, 2022", opponent: "Ryosuke Abe", result: "W", method: "KO (Punches)", round: 2, time: "0:29", event: "PANCRASE 323" },
-    { date: "May 28, 2022", opponent: "Daichi Suzuki", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PANCRASE 320" },
-    { date: "Feb 5, 2022", opponent: "Masaaki Osumi", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PANCRASE 317" },
-    { date: "Oct 16, 2021", opponent: "Yuki Ono", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PANCRASE 313 (debut)" }
+    { date: "May 30, 2026", opponent: "Luis Gurule", result: "W", method: "Submission", round: 1, time: "3:19", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
+    { date: "Mar 8, 2025", opponent: "Joshua Van", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 313: Pereira vs. Ankalaev", org: "UFC" },
+    { date: "Jun 29, 2024", opponent: "Carlos Hernandez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 303: Pereira vs. Procházka 2", org: "UFC" },
+    { date: "Feb 3, 2024", opponent: "Jiniushiyue", result: "W", method: "KO/TKO", round: 1, time: "4:59", event: "Road to UFC: Season 2 Finals", org: "UFC" },
+    { date: "Aug 27, 2023", opponent: "Mark Climaco", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC: Season 2, Ep 5", org: "UFC" },
+    { date: "May 27, 2023", opponent: "Ronal Siahaan", result: "W", method: "Submission (Kimura)", round: 2, time: "1:19", event: "Road to UFC: Season 2, Ep 1", org: "UFC" },
+    { date: "Dec 25, 2022", opponent: "Satoru Enomoto", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:03", event: "Pancrase 330" },
+    { date: "Sep 11, 2022", opponent: "Masatoshi Ueda", result: "W", method: "KO/TKO", round: 1, time: "2:33", event: "Pancrase 329" },
+    { date: "Apr 29, 2022", opponent: "Taiki Akiba", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:42", event: "Pancrase 327" },
+    { date: "Oct 23, 2021", opponent: "Kenta Kubo", result: "W", method: "KO/TKO", round: 2, time: "3:55", event: "Deep 104 Impact" },
+    { date: "Jul 4, 2021", opponent: "Ryo Araki", result: "W", method: "Submission (Front Choke)", round: 1, time: "2:05", event: "Deep 101 Impact" },
+    { date: "Feb 21, 2021", opponent: "Tatsuki Okano", result: "W", method: "KO/TKO", round: 2, time: "2:22", event: "Deep 100 Impact" }
   ],
   "Charles Johnson": [
     { date: "Mar 14, 2026", opponent: "Bruno Gustavo da Silva", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -32792,6 +32794,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Rei Tsuruya": [
+    { icon: "🏆", title: "Road to UFC Season 2 flyweight tournament winner (2024 — first-round KO of Jiniushiyue in the final)", detail: null },
+    { icon: "🏆", title: "Former Pancrase flyweight champion", detail: null },
+    { icon: "🥊", title: "82% finish rate (5 submissions, 4 KO/TKO)", detail: null }
+  ],
   "Aoriqileng": [
     { icon: "🥊", title: "\"The Mongolian Murderer\" — 9 career wins by KO/TKO", detail: null },
     { icon: "🇨🇳", title: "Long-tenured UFC bantamweight from Inner Mongolia, China, now training at Fight Ready (Arizona)", detail: null }
