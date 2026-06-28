@@ -3596,6 +3596,7 @@
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
  { name: "Christian Edwards", division: "LHW", rank: "NR", record: "8-5-0", initials: "CED", country: "USA" },
  { name: "Benardo Sopaj", division: "BW", rank: "NR", record: "13-3-0", initials: "BSO", country: "Albania" },
+ { name: "Timmy Cuamba", division: "BW", rank: "NR", record: "10-4-0", initials: "TCU", country: "USA" },
  { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
@@ -4418,6 +4419,7 @@
  "Modestas Bukauskas": { ht:"6'3\"", dob:"1994-02-10", reach:'76"', stance:"Switch", slpm:3.14, strAcc:"43%", sapm:3.86, strDef:"51%", kd:0.11, tdLanded:0.23, tdAcc:"67%", tdDef:"82%", subAvg:0.11, finRate:"70%", streak:1, gym:"Gintas Combat / BST Academy" },
  "Christian Edwards": { ht:"6'5\"", dob:"1998-11-05", reach:'78.5"', stance:"Orthodox", slpm:2.40, strAcc:"51%", sapm:2.40, strDef:"55%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"75%", streak:0, gym:"Jackson Wink MMA" },
  "Benardo Sopaj": { ht:"5'6\"", dob:"2000-09-25", reach:'66"', stance:"Orthodox", slpm:4.39, strAcc:"58%", sapm:4.69, strDef:"53%", kd:0.81, tdLanded:2.43, tdAcc:"60%", tdDef:"77%", subAvg:0.81, finRate:"85%", streak:2, gym:"Allstars Training Center" },
+ "Timmy Cuamba": { ht:"5'9\"", dob:"1999-02-08", reach:'71"', stance:"Orthodox", slpm:2.77, strAcc:"44%", sapm:3.58, strDef:"58%", kd:0.22, tdLanded:1.31, tdAcc:"32%", tdDef:"72%", subAvg:0.00, finRate:"50%", streak:0, gym:"BK MMA" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -6586,7 +6588,7 @@
     { opponent: "Mason Jones", odds: 120 },
     { opponent: "Michael Aswell", odds: -600 },
     { opponent: "Chris Duncan", odds: -170 },
-    { opponent: "Timothy Cuamba", odds: -185 },
+    { opponent: "Timmy Cuamba", odds: -185 },
     { opponent: "Dylan Salvador", odds: 150 }
   ],
   "SuYoung You": [
@@ -9985,9 +9987,8 @@
     { opponent: "Thomas Gantt", odds: 280 }
   ],
   "Timmy Cuamba": [
-    { opponent: "Benardo Sopaj", odds: 265 },
-    { opponent: "Rani Yahya", odds: -200 },
-    { opponent: "Saidyokub Kakhramonov", odds: 230 }
+    { opponent: "Benardo Sopaj", odds: 100 },
+    { opponent: "ChangHo Lee", odds: -107 }
   ],
   "Nicolle Caliari": [
     { opponent: "Shauna Bannon", odds: -250 },
@@ -15031,7 +15032,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 6, 2025", opponent: "Mason Jones", result: "L", method: "TKO (Elbows)", round: 2, time: "3:18", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
     { date: "May 31, 2025", opponent: "Michael Aswell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Blanchfield vs. Barber", org: "UFC" },
     { date: "Sep 28, 2024", opponent: "Chris Duncan", result: "L", method: "Technical Submission (Guillotine choke)", round: 1, time: "3:34", event: "UFC Fight Night: Moicano vs. Saint Denis", org: "UFC" },
-    { date: "Feb 10, 2024", opponent: "Timothy Cuamba", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
+    { date: "Feb 10, 2024", opponent: "Timmy Cuamba", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer", org: "UFC" },
     { date: "Aug 29, 2023", opponent: "Dylan Salvador", result: "W", method: "TKO (Punch to the body)", round: 1, time: "2:46", event: "Dana White's Contender Series 7 Week 4", org: "UFC" },
     { date: "Mar 5, 2023", opponent: "Jocimar Ferreira", result: "W", method: "TKO (Knee to the body)", round: 1, time: "2:16", event: "AFC 3", org: "AFC" },
     { date: "Oct 23, 2022", opponent: "Nair Melikyan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "AFC 2", org: "AFC" },
@@ -21410,14 +21411,19 @@ const FIGHT_HISTORY = {
   ],
   "Timmy Cuamba": [
     { date: "May 16, 2026", opponent: "Benardo Sopaj", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "2:25", event: "UFC Fight Night: Allen vs. Costa" },
-    { date: "Sep 6, 2025", opponent: "Rani Yahya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night 258" },
-    { date: "Feb 1, 2025", opponent: "Saidyokub Kakhramonov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325: Volkanovski vs. Lopes 2 (debut)" },
-    { date: "Sep 14, 2024", opponent: "Mehdi Nemmouche", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ARES FC 12" },
-    { date: "May 18, 2024", opponent: "Mzwandile Hlongwa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "EFC Africa 87" },
-    { date: "Feb 3, 2024", opponent: "Gideon Drotschie", result: "W", method: "Submission (Armbar)", round: 2, time: "2:40", event: "EFC Africa 85" },
-    { date: "Oct 28, 2023", opponent: "Duane Barnard", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "EFC Africa 83" },
-    { date: "Apr 29, 2023", opponent: "John Lineker", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "EFC Africa 80" },
-    { date: "Nov 26, 2022", opponent: "Gareth Buirski", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "EFC Africa 77 (debut)" }
+    { date: "Nov 1, 2025", opponent: "ChangHo Lee", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Garcia vs. Onama" },
+    { date: "Apr 26, 2025", opponent: "Roberto Romero", result: "W", method: "KO (Flying knee)", round: 2, time: "3:55", event: "UFC Fight Night: Machado Garry vs. Prates" },
+    { date: "Jun 15, 2024", opponent: "Lucas Almeida", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Perez vs. Taira" },
+    { date: "Feb 10, 2024", opponent: "Bolaji Oki", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Pyfer (UFC debut)" },
+    { date: "Feb 2, 2024", opponent: "Michael Stack", result: "W", method: "TKO (Punches)", round: 2, time: "1:02", event: "Tuff-N-Uff 135" },
+    { date: "Aug 29, 2023", opponent: "Mateo Vogel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series S7 W4 (contract)" },
+    { date: "Dec 2, 2022", opponent: "Alexander Schenk", result: "W", method: "TKO (Punches)", round: 2, time: "3:57", event: "iKON FC 6" },
+    { date: "Jul 15, 2022", opponent: "Cody Huard", result: "W", method: "TKO (Punches)", round: 2, time: "2:05", event: "Freedom Fight Night 2" },
+    { date: "Mar 19, 2022", opponent: "Demetri Miller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Gamebred FC: Freedom Fight Night" },
+    { date: "Oct 1, 2021", opponent: "Ivan Tena", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:29", event: "Combate Global" },
+    { date: "Aug 14, 2021", opponent: "James Lyons", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Fury FC 99" },
+    { date: "Apr 1, 2021", opponent: "Frank Wells", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Fury FC 94" },
+    { date: "Dec 17, 2020", opponent: "Joshua Francis", result: "W", method: "TKO (Punches)", round: 1, time: "3:58", event: "Cage Fury FC 90 (pro debut)" }
   ],
   "Nicolle Caliari": [
     { date: "May 16, 2026", opponent: "Shauna Bannon", result: "W", method: "Submission (Arm-triangle choke)", round: 3, time: "3:08", event: "UFC Fight Night: Allen vs. Costa" },
@@ -32584,6 +32590,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Timmy Cuamba": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2023 — decision over Mateo Vogel)", detail: null },
+    { icon: "🥇", title: "Two-time Tuff-N-Uff amateur champion", detail: null },
+    { icon: "🥊", title: "\"Twilight\" — Las Vegas striker; flying-knee KO of Roberto Romero (UFC Kansas City, 2025)", detail: null }
+  ],
   "Benardo Sopaj": [
     { icon: "🏆", title: "Fight Club Rush Bantamweight Champion (won and defended the title)", detail: null },
     { icon: "🏅", title: "85% finish rate — 11 of 13 wins by stoppage (7 KO/TKO, 4 submissions)", detail: null },
@@ -37235,7 +37246,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
          f2:'Juan Diaz',             r2:'NR',      rec2:'15-1-1',  ini2:'JD', div2:'BW',  isMainCard:true, label:'Bantamweight'},
         {f1:'Modestas Bukauskas',    r1:'NR',      rec1:'19-7-0',  ini1:'MB', div1:'LHW',
          f2:'Rodolfo Bellato',       r2:'NR',      rec2:'13-3-1',  ini2:'RB', div2:'LHW', isMainCard:true, label:'Light Heavyweight'},
-        {f1:'Timothy Cuamba',        r1:'NR',      rec1:'10-3-0',  ini1:'TC', div1:'BW',
+        {f1:'Timmy Cuamba',        r1:'NR',      rec1:'10-3-0',  ini1:'TC', div1:'BW',
          f2:'Benardo Sopaj',        r2:'NR',      rec2:'12-3-0',  ini2:'BS', div2:'BW',  isMainCard:true, label:'Bantamweight'},
         {f1:'Nikolay Veretennikov',  r1:'NR',      rec1:'14-7-0',  ini1:'NV', div1:'WW',
          f2:'Khaos Williams',        r2:'NR',      rec2:'15-5-0',  ini2:'KW', div2:'WW',  label:'Welterweight'},
