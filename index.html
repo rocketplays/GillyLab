@@ -2717,10 +2717,10 @@
     <div class="hero-subtitle">Click any fighter for full stats, history & analytics · Click "Fight Info" on a fight to expand the tale of the tape · Use the search bar above to look up any specific fighters</div>
   </div>
 
-  <div class="event-header" style="visibility:hidden">
+  <div class="event-header">
     <div class="event-info">
-      <div class="event-name" id="home-event-name">UFC Fight Night — Allen vs. Costa</div>
-      <div class="event-details" id="home-event-details">📍 Prudential Center · Newark, NJ  ·  Saturday, May 9, 2026</div>
+      <div class="event-name" id="home-event-name">Loading upcoming card…</div>
+      <div class="event-details" id="home-event-details">Fetching the latest event</div>
     </div>
     <div class="event-countdown">
       <div class="countdown-label">Days Until Event</div>
@@ -2728,7 +2728,7 @@
     </div>
   </div>
 
-  <div id="dynamic-fight-card"></div>
+  <div id="dynamic-fight-card"><div style="max-width:1300px;margin:0 auto;padding:3rem 1rem;text-align:center;opacity:0.55;font-size:0.95rem;">Loading upcoming card…</div></div>
 
   <!-- ══════════════════════════════════════
        UPCOMING EVENTS CAROUSEL
@@ -38127,7 +38127,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (headerEl) {
       headerEl.classList.toggle('freedom-card', isFreedom);
       headerEl.classList.toggle('numbered-card', isNumbered);
-      headerEl.style.visibility = 'visible'; // reveal once real event data is rendered (prevents hardcoded-card flash on load)
     }
 
     const nameEl    = document.getElementById('home-event-name');
