@@ -111,6 +111,16 @@ above must be PRESENT in the entry; never drop a key. The value depends on what 
      `"null"`, NOT a guessed number). The site renders a `null` stat as a dash (`—`) via
      `setStatCard`, which is the correct "no data" display — do NOT fabricate a value to fill it.
      Note the dashed field in the commit message.
+- **Only ONE UFC fight — KEEP the extrapolated per-minute stats, do NOT null them.** When a fighter
+  has a single UFC bout, ufc.com's per-minute / per-15-min figures (slpm, sapm, strDef, kd,
+  tdLanded, subAvg, strAcc) are computed from that one fight and can look extreme — e.g. strAcc
+  100%, or 10+ takedowns/15min off a sub-3-minute finish. Use them anyway; a one-fight
+  extrapolation is the official stat and is always preferred over a dash. Do NOT treat small sample
+  size as "unavailable." (Exceptions unchanged: take `tdAcc` from the ESPN VERIFIED per-fight line
+  when it spans more of the career than the lone UFC fight; keep `null` only for a field genuinely
+  blank/absent on the page, e.g. `tdDef` when no opponent attempted a takedown.) If the lookup
+  script prints these under `>> STILL MISSING` for a debut fighter, fetch the ufc.com athlete page
+  directly and read the single-fight numbers from it rather than nulling them.
 - `stance` is never on ufc.com's parse — take it from [ESPN] (or Sherdog/Tapology/Wikipedia).
 - When a fighter has landed 0 takedowns, `tdAcc` is `"0%"` — confirm it's a real 0 via the ESPN
   per-fight line `(VERIFIED per-fight 0/N)`, not ufc.com's bugged 0.
