@@ -37522,6 +37522,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const otherWon = side === 1 ? f.won2 : f.won1;
     if (won)      return '<span class="gl-res-tag" style="color:#04140a;background:#00e668;">WIN</span>';
     if (otherWon) return '<span class="gl-res-tag" style="color:#ff6a4d;border:1px solid rgba(255,61,0,0.5);">LOSS</span>';
+    if (f.isNC)   return '<span class="gl-res-tag" style="color:var(--muted);border:1px solid var(--border);">NC</span>';
     return '<span class="gl-res-tag" style="color:var(--muted);border:1px solid var(--border);">DRAW</span>';
   }
 
@@ -37537,7 +37538,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (u.includes('TKO')) return 'TKO';
     if (u.includes('KO')) return 'KO';
     if (u.includes('DISQUAL') || u === 'DQ') return 'DQ';
-    if (u.includes('NO CONTEST') || u === 'NC') return 'NC';
+    if (u.includes('NO CONTEST') || u === 'NC' || u === 'CNC') return 'NC';
     return String(m || '').trim();
   }
 
@@ -38841,10 +38842,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // consistently empty, so we ignore it in favor of the ranking JSON.)
       const r1 = eventCardRankBadge(red.fighterName, redName);
       const r2 = eventCardRankBadge(blue.fighterName, blueName);
-      const _ro = (red.outcome || '').toLowerCase();
-      const _bo = (blue.outcome || '').toLowerCase();
+      // Normalize outcome strings — the Cito feed uses "no_contest" (underscore)
+      // while older data/UI used "no contest" / "nc". Collapse underscores to
+      // spaces so every form matches (otherwise an NC bout never registers as
+      // completed and the card shows it with no result).
+      const _ro = (red.outcome || '').toLowerCase().replace(/_/g, ' ');
+      const _bo = (blue.outcome || '').toLowerCase().replace(/_/g, ' ');
       const won1 = _ro === 'win', won2 = _bo === 'win';
-      const completed = (bout.status === 'completed') && (won1 || won2 || _ro === 'loss' || _bo === 'loss' || _ro === 'draw' || _ro === 'nc' || _ro === 'no contest');
+      const isNC   = _ro === 'nc' || _ro === 'no contest' || _bo === 'nc' || _bo === 'no contest';
+      const isDraw = _ro === 'draw' || _bo === 'draw';
+      const completed = (bout.status === 'completed') && (won1 || won2 || _ro === 'loss' || _bo === 'loss' || isDraw || isNC);
       return {
         f1:   redName,
         f2:   blueName,
@@ -38858,7 +38865,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         photo1: red.fighterSlug  ? './photos/thumb/' + red.fighterSlug  + '.png' : '',
         photo2: blue.fighterSlug ? './photos/thumb/' + blue.fighterSlug + '.png' : '',
         label, isMain, isMainCard,
-        won1, won2, completed,
+        won1, won2, completed, isNC, isDraw,
         date: dateStr,
         methodText: bout.method || '', resRound: bout.resultRound || '', resTime: bout.resultTime || '',
       };
