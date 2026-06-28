@@ -3850,7 +3850,7 @@
   { name: "Josias Musasa", division: "BW", rank: "NR", record: "8-2-0", initials: "JMU", country: "DR Congo" },
   { name: "Chelsea Chandler", division: "WBW", rank: "NR", record: "7-4-0", initials: "CC2", country: "USA" }
 ,
-  { name: "Yuneisy Duben", division: "WFLW", rank: "NR", record: "7-4-0", initials: "YD", country: "Cuba" }
+  { name: "Yuneisy Duben", division: "WFLW", rank: "NR", record: "6-2-0", initials: "YD", country: "Venezuela" } // 1 NC
 ,
   { name: "Ariane Carnelossi", division: "WSW", rank: "NR", record: "15-5-0", initials: "AC2", country: "Brazil" }
 ];
@@ -4848,7 +4848,7 @@
   "Santiago Luna": { ht:"5'9\"", dob:"2004-08-06", reach:'74"', stance:"Orthodox", slpm:4.74, strAcc:"53%", sapm:2.76, strDef:"68%", kd:0.92, tdLanded:2.30, tdAcc:"71%", tdDef:"57%", subAvg:0.92, finRate:"88%", streak:0, gym:"Entram Gym" },
   "John Yannis": { ht:"5'7\"", dob:"1994-07-07", reach:'70.5"', stance:"Southpaw", slpm:3.30, strAcc:"54%", sapm:1.26, strDef:"74%", kd:2.36, tdLanded:0.0, tdAcc:"0%", tdDef:"67%", subAvg:0.0, finRate:"60%", streak:1, gym:"Xtreme Plainview" },
   "Chelsea Chandler": { ht:"5'8\"", dob:"1990-11-23", reach:'68"', stance:"Southpaw", slpm:3.52, strAcc:"45%", sapm:4.27, strDef:"40%", kd:0.27, tdLanded:0.81, tdAcc:"60%", tdDef:"25%", subAvg:0.27, finRate:"57%", streak:1, gym:"Cesar Gracie Jiu-Jitsu" },
-  "Yuneisy Duben": { ht:"5'4\"", dob:"1998-05-14", reach:'64"', stance:"Southpaw", slpm:4.1, tdAcc:"50%", subAvg:0.0, strDef:"48%", kd:0.3, tdDef:"80%", finRate:"50%", streak:0, tdLanded:0.2 },
+  "Yuneisy Duben": { ht:"5'4\"", dob:"1996-07-08", reach:'65"', stance:"Orthodox", slpm:5.65, strAcc:"53%", sapm:5.31, strDef:"43%", kd:0.84, tdLanded:1.68, tdAcc:"50%", tdDef:"50%", subAvg:0.0, finRate:"100%", streak:0, gym:"Team Ludus" },
   "Ariane Carnelossi": { ht:"5'1\"", dob:"1995-10-20", reach:'62"', stance:"Orthodox", slpm:5.2, tdAcc:"20%", subAvg:0.0, strDef:"48%", kd:1.1, tdDef:"80%", finRate:"57%", streak:0, tdLanded:0.4, gym:"Inside Muay Thai" },
   "Rodrigo Vera": { ht:"5'7\"", dob:"1995-10-18", reach:null, stance:null, slpm:9.27, strAcc:"59%", sapm:3.82, strDef:"50%", kd:8.18, tdLanded:8.18, tdAcc:"100%", tdDef:null, subAvg:0.0, finRate:"55%", streak:14, gym:"Chute Boxe - Diego Lima" }
  };
@@ -10265,7 +10265,9 @@
     { opponent: "Sofia Montenegro", odds: 205 }
   ],
   "Yuneisy Duben": [
-    { opponent: "Karina Rodriguez", odds: -400 }
+    { opponent: "Jeisla Chaves", odds: 230 },
+    { opponent: "Carli Judice", odds: 250 },
+    { opponent: "Shannon Clark", odds: 1000 }
   ],
   "John Yannis": [
     { opponent: "Jamie Siraj", odds: 195 },
@@ -21977,15 +21979,15 @@ const FIGHT_HISTORY = {
     { date: "Apr 15, 2023", opponent: "Josiane Ribeiro de Oliveira", result: "W", method: "KO/TKO", round: 1, time: "4:30", event: "Gomes Fight Championship 8" }
   ],
   "Yuneisy Duben": [
-    { date: "Jun 6, 2026", opponent: "Jeisla Chaves", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Muhammad vs. Bonfim" },
-    { date: "Mar 15, 2025", opponent: "Karina Rodriguez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Duncan (debut)" },
-    { date: "Nov 30, 2024", opponent: "Katelyn Holley", result: "W", method: "KO (Punches)", round: 1, time: "0:44", event: "DWCS Season 8 Week 5 (contract)" },
-    { date: "Aug 17, 2024", opponent: "Veronica Macedo", result: "W", method: "TKO (Punches)", round: 2, time: "1:05", event: "MMA Venezuela 14" },
-    { date: "May 11, 2024", opponent: "Alejandra Rengifo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MMA Venezuela 12" },
-    { date: "Nov 25, 2023", opponent: "Raquel Garcia", result: "W", method: "KO (Punches)", round: 1, time: "0:52", event: "MMA Venezuela 10" },
-    { date: "Jul 22, 2023", opponent: "Lucia Bolivar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MMA Venezuela 8" },
-    { date: "Mar 18, 2023", opponent: "Elena Mora", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MMA Venezuela 6" },
-    { date: "Dec 3, 2022", opponent: "Sofia Torres", result: "W", method: "Submission (Armbar)", round: 2, time: "1:38", event: "MMA Venezuela 4 (debut)" }
+    { date: "Jun 6, 2026", opponent: "Jeisla Chaves", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Muhammad vs. Bonfim", org: "UFC" },
+    { date: "Mar 15, 2025", opponent: "Carli Judice", result: "L", method: "KO/TKO", round: 1, time: "1:40", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
+    { date: "Sep 3, 2024", opponent: "Shannon Clark", result: "W", method: "KO/TKO", round: 1, time: "1:13", event: "Dana White's Contender Series: S8 W4 (contract)", org: "UFC" },
+    { date: "Apr 18, 2024", opponent: "Ingrid Garcia", result: "W", method: "TKO (Corner Stoppage)", round: 1, time: "3:58", event: "Fusion FC 74" },
+    { date: "Oct 18, 2019", opponent: "Andrea Velasquez", result: "W", method: "KO/TKO", round: 1, time: "1:07", event: "300 Sparta 34" },
+    { date: "Jul 19, 2019", opponent: "Regina Casana", result: "W", method: "KO/TKO", round: 2, time: "3:22", event: "Inka FC 31" },
+    { date: "Jun 15, 2019", opponent: "Mavet Torres", result: "W", method: "KO/TKO", round: 2, time: "4:51", event: "300 Sparta 32" },
+    { date: "Apr 30, 2019", opponent: "Maria Iparraguirre", result: "W", method: "Submission (Armbar)", round: 1, time: "1:18", event: "300 Sparta 31" },
+    { date: "Feb 1, 2019", opponent: "Mavet Torres", result: "NC", method: "No Contest", round: 3, time: "0:48", event: "300 Sparta 29" }
   ],
   "John Yannis": [
     { date: "Apr 18, 2026", opponent: "Jamie Siraj", result: "W", method: "TKO (Punches)", round: 1, time: "2:43", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
@@ -32802,6 +32804,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Yuneisy Duben": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — first-round KO upset of Shannon Clark)", detail: null },
+    { icon: "🥊", title: "All 6 career wins by finish (5 KO/TKO, 1 submission)", detail: null },
+    { icon: "🥋", title: "Black belt in taekwondo; blue belt in Brazilian Jiu-Jitsu", detail: null }
+  ],
   "Jeisla Chaves": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2025 — decision over Sofia Montenegro)", detail: null },
     { icon: "🏆", title: "Undefeated at 8-0 — former Gomes Fight Championship titleholder", detail: null },
