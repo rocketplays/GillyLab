@@ -3596,7 +3596,7 @@
  { name: "Nikolay Veretennikov", division: "WW", rank: "NR", record: "14-8-0", initials: "NVE", country: "Kazakhstan" },
  { name: "Tommy Gantt", division: "LW", rank: "NR", record: "12-0-0", initials: "TGA", country: "USA" },
  { name: "Artur Minev", division: "LW", rank: "NR", record: "7-1-0", initials: "AMI", country: "Ukraine" },
- { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
+ { name: "Da'Mon Blackshear", division: "BW", rank: "NR", record: "17-8-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
  { name: "Eduard Folayang", division: "LHW", rank: "NR", record: "26-12-0", initials: "EFO", country: "Philippines" },
@@ -4304,7 +4304,7 @@
  "Chris Curtis": { ht:"5'10\"", dob:"1987-07-15", reach:'75"', stance:"Orthodox", slpm:5.52, strAcc:"51%", sapm:5.75, strDef:"54%", kd:0.36, tdLanded:0.00, tdAcc:"0%", tdDef:"65%", subAvg:0.0, finRate:"56%", streak:0, gym:"Xtreme Couture" },
  // ── Bantamweight (more) ──
  "Raul Rosas Jr.": { ht:"5'9\"", dob:"2004-10-08", reach:'67"', stance:"Switch", slpm:1.34, strAcc:"42%", sapm:1.24, strDef:"53%", kd:0.17, tdLanded:6.10, tdAcc:"55%", tdDef:"25%", subAvg:0.87, finRate:"67%", streak:5, gym:"Rosas Brothers MMA" },
- "Da'Mon Blackshear": { ht:"5'10\"", dob:"1994-08-12", reach:'72"', stance:"Switch", slpm:4.33, tdAcc:"33%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"62%", finRate:"50%", streak:0, tdLanded:1.48 },
+ "Da'Mon Blackshear": { ht:"5'10\"", dob:"1994-08-12", reach:'72"', stance:"Switch", slpm:4.33, strAcc:"46%", sapm:4.19, strDef:"52%", kd:0.00, tdLanded:1.48, tdAcc:"33%", tdDef:"71%", subAvg:1.48, finRate:"76%", streak:0, gym:"Kill Cliff FC" },
  "Brady Hiestand": { ht:"5'8\"", dob:"1999-04-30", reach:'71"', stance:"Orthodox", slpm:2.70, strAcc:"51%", sapm:3.75, strDef:"51%", kd:0.00, tdLanded:4.80, tdAcc:"46%", tdDef:"43%", subAvg:1.07, finRate:"78%", streak:3, gym:"Sik-Jitsu MMA" },
  "Muin Gafurov": { ht:"5'7\"", dob:"1996-05-17", reach:'68"', stance:"Orthodox", slpm:3.36, strAcc:"47%", sapm:2.51, strDef:"56%", kd:0.20, tdLanded:1.57, tdAcc:"29%", tdDef:"70%", subAvg:0.00, finRate:"85%", streak:0, gym:"Syndicate MMA" },
  // ── Middleweight (more) ──
@@ -11525,13 +11525,16 @@
     { opponent: "Chris Gutiérrez", odds: 240 }
   ],
   "Da'Mon Blackshear": [
-    { opponent: "Vince Morales", odds: -350 },
-    { opponent: "Payton Talbott", odds: 500 },
-    { opponent: "Ricky Simon", odds: 215 },
-    { opponent: "Mario Bautista", odds: 250 },
-    { opponent: "Kyler Phillips", odds: 350 },
-    { opponent: "Jonathan Martinez", odds: 275 },
-    { opponent: "Ricky Turcios", odds: -175 }
+    { opponent: "Davey Grant", odds: -320 },
+    { opponent: "Alatengheili", odds: -500 },
+    { opponent: "Cody Gibson", odds: -395 },
+    { opponent: "Cody Stamann", odds: -250 },
+    { opponent: "Montel Jackson", odds: 114 },
+    { opponent: "Mario Bautista", odds: 184 },
+    { opponent: "Jose Johnson", odds: -238 },
+    { opponent: "Luan Lacerda", odds: 120 },
+    { opponent: "Farid Basharat", odds: 330 },
+    { opponent: "Youssef Zalal", odds: 115 }
   ],
   "Devin Clark": [
     { opponent: "Roman Dolidze", odds: 215 },
@@ -24803,20 +24806,32 @@ const FIGHT_HISTORY = {
 
 
   "Da'Mon Blackshear": [
-    { date: "Jan 18, 2025", opponent: "Vince Morales", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:33", event: "UFC 311: Makhachev vs. Moicano" },
-    { date: "Aug 17, 2024", opponent: "Payton Talbott", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305: du Plessis vs. Adesanya 2" },
-    { date: "May 4, 2024", opponent: "Ricky Simon", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 301: Pantoja vs. Erceg" },
-    { date: "Nov 4, 2023", opponent: "Mario Bautista", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Almeida vs. Lewis" },
-    { date: "Apr 8, 2023", opponent: "Kyler Phillips", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "2:07", event: "UFC 287: Pereira vs. Adesanya 2" },
-    { date: "Sep 10, 2022", opponent: "Jonathan Martinez", result: "L", method: "TKO (Punches)", round: 3, time: "4:41", event: "UFC 279: Diaz vs. Ferguson" },
-    { date: "Apr 9, 2022", opponent: "Ricky Turcios", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 273: Volkanovski vs. Korean Zombie" },
-    { date: "Feb 12, 2022", opponent: "Ricky Turcios", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 271: Adesanya vs. Whittaker 2" },
-    { date: "Apr 10, 2021", opponent: "Mario Bautista", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 260: Miocic vs. Ngannou" },
-    { date: "Nov 21, 2020", opponent: "Carlos Candelario", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "3:43", event: "UFC Fight Night: Vieira vs. Tate (debut)" },
-    { date: "Sep 19, 2020", opponent: "Ricky Turcios", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "DWCS Season 4 Week 2 (contract)" },
-    { date: "Jun 20, 2020", opponent: "Jamall Emmers", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:10", event: "LFA 88" },
-    { date: "Feb 29, 2020", opponent: "Jordan Espinosa", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:23", event: "LFA 82" },
-    { date: "Sep 28, 2019", opponent: "Tre Dobbins", result: "W", method: "Submission (Triangle choke)", round: 1, time: "2:46", event: "LFA 76" }
+    { date: "Jul 26, 2025", opponent: "Davey Grant", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. de Ridder" },
+    { date: "Apr 26, 2025", opponent: "Alatengheili", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Machado Garry vs. Prates" },
+    { date: "Mar 15, 2025", opponent: "Cody Gibson", result: "W", method: "Submission", round: 2, time: "4:09", event: "UFC Fight Night: Vettori vs. Dolidze 2" },
+    { date: "Nov 9, 2024", opponent: "Cody Stamann", result: "W", method: "Submission", round: 1, time: "4:19", event: "UFC Fight Night: Magny vs. Prates" },
+    { date: "Jul 13, 2024", opponent: "Montel Jackson", result: "L", method: "TKO", round: 1, time: "0:18", event: "UFC Fight Night: Namajunas vs. Cortez" },
+    { date: "Aug 19, 2023", opponent: "Mario Bautista", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 292: Sterling vs. O'Malley" },
+    { date: "Aug 12, 2023", opponent: "Jose Johnson", result: "W", method: "Submission (Twister)", round: 1, time: "3:47", event: "UFC Fight Night: Luque vs. Dos Anjos" },
+    { date: "Jun 3, 2023", opponent: "Luan Lacerda", result: "W", method: "TKO", round: 2, time: "3:54", event: "UFC Fight Night: Kara-France vs. Albazi" },
+    { date: "Mar 4, 2023", opponent: "Farid Basharat", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 285: Jones vs. Gane" },
+    { date: "Aug 13, 2022", opponent: "Youssef Zalal", result: "D", method: "Draw", round: 3, time: "5:00", event: "UFC Fight Night: Vera vs. Cruz" },
+    { date: "May 14, 2022", opponent: "Josh Smith", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "2:34", event: "CFFC 108 (CFFC BW Title)" },
+    { date: "Nov 19, 2021", opponent: "DeAndre Anderson", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:33", event: "CFFC 103 (CFFC BW Title)" },
+    { date: "Aug 14, 2021", opponent: "Mateo Vogel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Fury FC 99" },
+    { date: "Apr 30, 2021", opponent: "Joe Penafiel", result: "W", method: "Submission (Guillotine)", round: 3, time: "3:27", event: "CES 62" },
+    { date: "Feb 12, 2021", opponent: "Danny Sabatello", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Titan FC 67 (Titan FC BW Title)" },
+    { date: "Oct 15, 2020", opponent: "Mike Kimbel", result: "W", method: "Submission", round: 2, time: "4:14", event: "Bellator 249" },
+    { date: "Oct 25, 2019", opponent: "Kody Nordby", result: "W", method: "Submission (Arm-triangle choke)", round: 2, time: "3:17", event: "CES 59" },
+    { date: "Dec 14, 2018", opponent: "Pat Sabatini", result: "L", method: "Decision (Unanimous)", round: 4, time: "5:00", event: "CFFC 71" },
+    { date: "Sep 22, 2018", opponent: "Chris Wright", result: "W", method: "TKO (Punches)", round: 2, time: "3:06", event: "NLFC 9" },
+    { date: "Aug 3, 2018", opponent: "Kris Moutinho", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CES 51" },
+    { date: "Jun 16, 2018", opponent: "Aaron Lacey", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NEF 34" },
+    { date: "Aug 19, 2017", opponent: "Keith Richardson", result: "L", method: "Decision (Split)", round: 5, time: "5:00", event: "Warfare MMA 16" },
+    { date: "Jun 24, 2017", opponent: "Aalon Cruz", result: "W", method: "Submission (Rear-naked choke)", round: 4, time: "3:09", event: "Conflict MMA 43" },
+    { date: "May 6, 2017", opponent: "Jeremiah Scott", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Warfare MMA 15" },
+    { date: "Aug 20, 2016", opponent: "James Brown", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:44", event: "RDMMA 13" },
+    { date: "Mar 26, 2016", opponent: "Kenny Hill", result: "W", method: "Submission (Triangle choke)", round: 2, time: "2:30", event: "RDMMA 12" }
   ],
   "Devin Clark": [
     { date: "Aug 15, 2025", opponent: "Bevon Lewis", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 214", org: "LFA" },
@@ -32910,6 +32925,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Da'Mon Blackshear": [
+    { icon: "🏅", title: "Second \"twister\" submission in UFC history — submitted Jose Johnson (2023), earning Performance of the Night", detail: null },
+    { icon: "🏆", title: "Former CFFC (Cage Fury) bantamweight champion", detail: null },
+    { icon: "🥋", title: "\"The Monster\" — BJJ black belt; 11 of 17 wins by submission", detail: null }
+  ],
   "Yadier del Valle": [
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt; brown belt in judo", detail: null },
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2024)", detail: null },
