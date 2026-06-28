@@ -3423,7 +3423,7 @@
  { name: "Devin Clark", division: "LHW", rank: "NR", record: "14-10-0", initials: "DCL2", country: "USA" },
  { name: "Lyoto Machida", division: "LHW", rank: "NR", record: "28-12-0", initials: "LMA", country: "Brazil" },
  { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-10-0", initials: "BRI", country: "Brazil" },
- { name: "Tuco Tokkos", division: "LHW", rank: "NR", record: "11-6-0", initials: "TTK", country: "France" },
+ { name: "Tuco Tokkos", division: "LHW", rank: "NR", record: "11-6-0", initials: "TTK", country: "England" },
  { name: "Ivan Erslan", division: "LHW", rank: "NR", record: "15-6-0", initials: "IER", country: "Croatia" },
  { name: "Rodolfo Bellato", division: "LHW", rank: "NR", record: "13-3-1", initials: "RBE", country: "Brazil" },
  { name: "Uran Satybaldiev", division: "LHW", rank: "NR", record: "9-1-0", initials: "USA2", country: "Kyrgyzstan" },
@@ -4675,7 +4675,7 @@
  // Light Heavyweight
  "Billy Elekana": { ht:"6'3\"", dob:"1995-05-28", reach:'77"', stance:"Southpaw", slpm:2.71, tdAcc:"22%", subAvg:0.4, strDef:"46%", kd:0.2, tdDef:"64%", finRate:"60%", streak:0, tdLanded:0.85, gym:"Uprising MMA Training Center" },
  "Austen Lane": { ht:"6'6\"", dob:"1987-11-09", reach:'80"', stance:"Orthodox", slpm:2.70, strAcc:"50%", sapm:2.45, strDef:"40%", kd:0.38, tdLanded:1.50, tdAcc:"29%", tdDef:"33%", subAvg:0.00, finRate:"92%", streak:0, gym:"Bulldog Boxing, 10th Planet Jacksonville" },
- "Tuco Tokkos": { ht:"6'4\"", dob:"1990-06-30", reach:'76"', stance:"Orthodox", slpm:2.12, tdAcc:"47%", subAvg:0.5, strDef:"46%", kd:0.2, tdDef:"33%", finRate:"64%", streak:0, tdLanded:4.21, gym:"Kill Cliff FC" },
+ "Tuco Tokkos": { ht:"6'4\"", dob:"1990-06-30", reach:'76"', stance:"Orthodox", slpm:2.59, strAcc:"42%", sapm:3.70, strDef:"46%", kd:0.00, tdLanded:2.87, tdAcc:"33%", tdDef:"33%", subAvg:0.64, finRate:"82%", streak:0, gym:"Kill Cliff FC" },
  "Kevin Christian": { ht:"6'7\"", dob:"1995-01-21", reach:'80"', stance:"Orthodox", slpm:2.19, strAcc:"59%", sapm:3.54, strDef:"40%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"50%", subAvg:1.93, finRate:"100%", streak:0, gym:"Cosme Junior Team" },
  "Luke Fernandez": { ht:"6'1\"", dob:"1995-06-29", reach:'76"', stance:"Orthodox", slpm:8.14, strAcc:"59%", sapm:10.17, strDef:"36%", kd:5.08, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"83%", streak:0, gym:"Dante Rivera BJJ" },
 
@@ -7274,9 +7274,10 @@
     { opponent: "Warlley Alves", odds: -200 }
   ],
   "Tuco Tokkos": [
-    { opponent: "Junior Tafa", odds: -200 },
-    { opponent: "Navajo Stirling", odds: 195 },
-    { opponent: "Oumar Sy", odds: 175 }
+    { opponent: "Ivan Erslan", odds: 140 },
+    { opponent: "Junior Tafa", odds: 140 },
+    { opponent: "Navajo Stirling", odds: 625 },
+    { opponent: "Oumar Sy", odds: 390 }
   ],
   "Ivan Erslan": [
     { opponent: "Tuco Tokkos", odds: -174 },
@@ -32621,6 +32622,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Tuco Tokkos": [
+    { icon: "🏆", title: "Fury FC & Premier FC Light Heavyweight Champion", detail: null },
+    { icon: "🏅", title: "82% finish rate — 9 of 11 wins by stoppage (6 KO/TKO, 3 submissions)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu brown belt", detail: null }
+  ],
   "Ivan Erslan": [
     { icon: "🏅", title: "Two-time KSW Light Heavyweight title challenger (vs. Tomasz Narkun & Ibragim Chuzhigaev)", detail: null },
     { icon: "🥊", title: "Knockout artist — 10 of 15 wins by KO/TKO; boxing-based striker out of American Top Team", detail: null }
