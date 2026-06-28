@@ -3598,6 +3598,7 @@
  { name: "Benardo Sopaj", division: "BW", rank: "NR", record: "13-3-0", initials: "BSO", country: "Albania" },
  { name: "Timmy Cuamba", division: "BW", rank: "NR", record: "10-4-0", initials: "TCU", country: "USA" },
  { name: "Nikolay Veretennikov", division: "WW", rank: "NR", record: "14-8-0", initials: "NVE", country: "Kazakhstan" },
+ { name: "Tommy Gantt", division: "LW", rank: "NR", record: "12-0-0", initials: "TGA", country: "USA" },
  { name: "Da'Mon Blackshear", division: "LHW", rank: "NR", record: "10-5-1", initials: "DBL2", country: "USA" },
  { name: "Ihor Potieria", division: "LHW", rank: "NR", record: "21-4-0", initials: "IPO", country: "Ukraine" },
  { name: "Ocie Ike", division: "LHW", rank: "NR", record: "12-4-0", initials: "OIK", country: "USA" },
@@ -4422,6 +4423,7 @@
  "Benardo Sopaj": { ht:"5'6\"", dob:"2000-09-25", reach:'66"', stance:"Orthodox", slpm:4.39, strAcc:"58%", sapm:4.69, strDef:"53%", kd:0.81, tdLanded:2.43, tdAcc:"60%", tdDef:"77%", subAvg:0.81, finRate:"85%", streak:2, gym:"Allstars Training Center" },
  "Timmy Cuamba": { ht:"5'9\"", dob:"1999-02-08", reach:'71"', stance:"Orthodox", slpm:2.77, strAcc:"44%", sapm:3.58, strDef:"58%", kd:0.22, tdLanded:1.31, tdAcc:"32%", tdDef:"72%", subAvg:0.00, finRate:"50%", streak:0, gym:"BK MMA" },
  "Nikolay Veretennikov": { ht:"6'1\"", dob:"1989-12-22", reach:'74"', stance:"Orthodox", slpm:2.74, strAcc:"56%", sapm:3.43, strDef:"47%", kd:0.00, tdLanded:0.40, tdAcc:"17%", tdDef:"63%", subAvg:0.40, finRate:"79%", streak:0, gym:"Kings MMA" },
+ "Tommy Gantt": { ht:"5'11\"", dob:"1993-01-09", reach:'76.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:"36%", tdDef:null, subAvg:null, finRate:"92%", streak:12, gym:"The Academy" },
  // ── Bantamweight (new) ──
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, tdAcc:"30%", subAvg:0.2, strDef:"63%", kd:0.2, tdDef:"71%", finRate:"55%", streak:0, tdLanded:0.30, gym:"Factory X" },
@@ -16246,6 +16248,21 @@ const FIGHT_HISTORY = {
 
 
 
+  "Tommy Gantt": [
+    { date: "May 16, 2026", opponent: "Artur Minev", result: "W", method: "TKO (Ground and pound)", round: 2, time: "2:51", event: "UFC Fight Night: Allen vs. Costa (UFC debut)" },
+    { date: "Sep 16, 2025", opponent: "Adam Livingston", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "2:47", event: "Dana White's Contender Series S9 W6 (contract)" },
+    { date: "Feb 8, 2025", opponent: "Deven Paulsen", result: "W", method: "TKO", round: 1, time: "4:44", event: "Fight For It 24" },
+    { date: "Jan 4, 2025", opponent: "Anthony Benevides", result: "W", method: "TKO", round: 2, time: "2:34", event: "Reality Fighting" },
+    { date: "Nov 30, 2024", opponent: "Josh Henry", result: "W", method: "TKO", round: 3, time: "0:16", event: "North Iowa Fights 20 (title)" },
+    { date: "Oct 19, 2024", opponent: "Cody Carrillo", result: "W", method: "Submission", round: 2, time: "0:41", event: "RCWC: Halloween Brawl 8" },
+    { date: "Sep 7, 2024", opponent: "Montrell James", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shamrock FC 357" },
+    { date: "Aug 10, 2024", opponent: "Ernesto Zarate", result: "W", method: "TKO", round: 2, time: "2:10", event: "New Line Cagefighting 28 (title)" },
+    { date: "Aug 3, 2024", opponent: "Kyle Wright", result: "NC", method: "No Contest", round: 1, time: "3:32", event: "New Line Cagefighting 27" },
+    { date: "Jul 27, 2024", opponent: "Jon Kennedy", result: "W", method: "Submission", round: 1, time: "1:54", event: "North Iowa Fights 19" },
+    { date: "Jul 20, 2024", opponent: "Skylar Mauller", result: "W", method: "TKO", round: 2, time: "0:39", event: "New Line Cagefighting 26" },
+    { date: "Jun 29, 2024", opponent: "Joshua Hewlett", result: "W", method: "TKO", round: 1, time: "4:24", event: "New Line Cagefighting 25" },
+    { date: "Apr 6, 2024", opponent: "Paul Teague", result: "W", method: "Submission", round: 1, time: "0:21", event: "Showcase MMA 37 (pro debut)" }
+  ],
   "Nikolay Veretennikov": [
     { date: "May 16, 2026", opponent: "Khaos Williams", result: "L", method: "TKO (Punches)", round: 1, time: "3:31", event: "UFC Fight Night: Allen vs. Costa" },
     { date: "Feb 7, 2026", opponent: "Niko Price", result: "W", method: "KO (Elbows)", round: 1, time: "1:42", event: "UFC Fight Night: Bautista vs. Oliveira" },
@@ -32622,6 +32639,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Tommy Gantt": [
+    { icon: "🏅", title: "Undefeated (12-0, 1 NC); earned UFC contract on Dana White's Contender Series (2025 — R1 guillotine of Adam Livingston)", detail: null },
+    { icon: "🤼", title: "NCAA Division I All-American wrestler — NC State (2016, 157 lbs)", detail: null },
+    { icon: "🥊", title: "92% finish rate — 11 of 12 wins by stoppage (7 KO/TKO, 4 submissions)", detail: null }
+  ],
   "Tuco Tokkos": [
     { icon: "🏆", title: "Fury FC & Premier FC Light Heavyweight Champion", detail: null },
     { icon: "🏅", title: "82% finish rate — 9 of 11 wins by stoppage (6 KO/TKO, 3 submissions)", detail: null },
