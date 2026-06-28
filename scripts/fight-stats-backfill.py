@@ -12,7 +12,13 @@ Usage:
     python3 scripts/fight-stats-backfill.py "Manel Kape" --espn-id 4236504
     python3 scripts/fight-stats-backfill.py --all          # every FIGHTERS name in index.html
     python3 scripts/fight-stats-backfill.py --all --only-missing   # skip fighters already saved
+    python3 scripts/fight-stats-backfill.py --all --limit 20       # small test batch to review first
     python3 scripts/fight-stats-backfill.py --all --sleep 0.4
+
+Validation: every run cross-checks each saved bout against the fighter's own
+FIGHT_HISTORY (opponent + date) and flags fallback IDs / ESPN-name mismatches.
+A --all run writes data/fight-stats-report.txt; warnings also print to stdout.
+Data is still written when flagged — the report is a review list, not a blocker.
 
 Notes
 -----
@@ -24,11 +30,12 @@ Notes
   that fighter's array in the JSON, leaving everyone else untouched.
 * Be polite on --all: it sleeps between fighters and caches nothing server-side.
 """
-import argparse, json, os, re, sys, time, urllib.parse, urllib.request
+import argparse, datetime, json, os, re, sys, time, urllib.parse, urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 INDEX = os.path.join(ROOT, "index.html")
 OUT   = os.path.join(ROOT, "data", "fight-stats.json")
+REPORT = os.path.join(ROOT, "data", "fight-stats-report.txt")
 
 UA = {"User-Agent": "Mozilla/5.0 (GillyLab fight-stats backfill)"}
 CORE = "https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc"
@@ -64,16 +71,18 @@ def fold(s):
 
 
 def espn_id(name, override=None):
+    """Returns (id, exact) — exact=False means we fell back to the first search
+    result with no exact slug match (a wrong-athlete risk worth flagging)."""
     if override:
-        return str(override)
+        return str(override), True
     html = get(SEARCH + "?" + urllib.parse.urlencode(
         {"query": name, "limit": "12", "type": "player", "sport": "mma"}))
     cands = re.findall(r'/mma/fighter/_/id/(\d+)/([a-z0-9-]+)', html)
     want = fold(name)
     for cid, slug in cands:
         if fold(slug.replace("-", " ")) == want:
-            return cid
-    return cands[0][0] if cands else None
+            return cid, True
+    return (cands[0][0], False) if cands else (None, False)
 
 
 def iso_to_label(iso):
@@ -136,13 +145,18 @@ def athlete_name(ref, cache):
 
 def backfill_one(name, override=None, namecache=None):
     namecache = namecache if namecache is not None else {}
-    sid = espn_id(name, override)
+    sid, exact = espn_id(name, override)
+    meta = {"sid": sid, "exact": exact, "espn_name": None, "reason": None}
     if not sid:
-        print("  ! no ESPN id for %s" % name); return None
+        print("  ! no ESPN id for %s" % name)
+        meta["reason"] = "no ESPN id found"
+        return None, meta
     try:
         log = getj("%s/%s/eventlog" % (ATHL, sid))
     except Exception as e:
-        print("  ! eventlog failed for %s (%s)" % (name, e)); return None
+        print("  ! eventlog failed for %s (%s)" % (name, e))
+        meta["reason"] = "eventlog fetch failed (%s)" % e
+        return None, meta
     items = log.get("events", {}).get("items", [])
     out = []
     for it in items:
@@ -187,6 +201,8 @@ def backfill_one(name, override=None, namecache=None):
                    "name": athlete_name(aref, namecache), "stats": pack(stats)}
             if aid and aid.group(1) == sid:
                 me = rec
+                if not meta["espn_name"]:
+                    meta["espn_name"] = rec["name"]   # ESPN's own name for this athlete
             else:
                 opp = rec
         if not (me and opp):
@@ -200,8 +216,16 @@ def backfill_one(name, override=None, namecache=None):
             "result": "W" if me["winner"] else ("L" if opp["winner"] else "D"),
             "f": me["stats"], "o": opp["stats"],
         })
-    print("  %-26s id=%s  bouts with stats: %d" % (name, sid, len(out)))
-    return out
+    # For a fighter who produced no bouts we never fetched their athlete record,
+    # so grab the display name once so the wrong-ID name check can still run.
+    if not out and not meta["espn_name"]:
+        try:
+            meta["espn_name"] = getj("%s/%s" % (ATHL, sid)).get("displayName")
+        except Exception:
+            pass
+    print("  %-26s id=%s  bouts with stats: %d%s"
+          % (name, sid, len(out), "" if exact else "   [fallback id]"))
+    return out, meta
 
 
 def load_out():
@@ -220,6 +244,130 @@ def roster_names():
     return list(dict.fromkeys(re.findall(r'name:\s*"([^"]+)"', block)))
 
 
+# ───────────────────────────── validation ─────────────────────────────
+# Safeguards against a wrong-athlete ID quietly attaching the wrong career to a
+# name. Cross-checks each saved bout against the fighter's own FIGHT_HISTORY
+# (opponent + date), and flags fallback IDs / ESPN-name mismatches. Findings go
+# to data/fight-stats-report.txt and a stdout summary — they don't block writing.
+
+def _label_dt(s):
+    try:
+        return datetime.datetime.strptime(s, "%b %d, %Y")
+    except Exception:
+        return None
+
+
+def names_match(a, b):
+    fa, fb = fold(a), fold(b)
+    if not fa or not fb:
+        return True
+    if fa == fb or fa in fb or fb in fa:
+        return True
+    ta, tb = a.split(), b.split()
+    la = fold(ta[-1]) if ta else fa
+    lb = fold(tb[-1]) if tb else fb
+    return len(la) >= 3 and la == lb            # last-name match (handles "da Silva" etc.)
+
+
+def parse_fight_history():
+    """{fighter name: [{date, opponent, org, event}, ...]} parsed from index.html."""
+    html = open(INDEX, encoding="utf-8").read()
+    i = html.find("const FIGHT_HISTORY = {")
+    if i < 0:
+        return {}
+    j = html.find("\n};", i)
+    block = html[i:(j if j > 0 else len(html))]
+    fh = {}
+    for m in re.finditer(r'\n  "((?:[^"\\]|\\.)*)":\s*\[(.*?)\n  \],?', block, re.S):
+        fname = m.group(1).replace('\\"', '"')
+        rows = []
+        for rm in re.finditer(r'\{([^{}]*)\}', m.group(2)):
+            row = rm.group(1)
+            d = re.search(r'date:\s*"([^"]+)"', row)
+            o = re.search(r'opponent:\s*"((?:[^"\\]|\\.)*)"', row)
+            if not (d and o):
+                continue
+            org = re.search(r'org:\s*"([^"]*)"', row)
+            ev = re.search(r'event:\s*"((?:[^"\\]|\\.)*)"', row)
+            rows.append({"date": d.group(1),
+                         "opponent": o.group(1).replace('\\"', '"'),
+                         "org": (org.group(1) if org else ""),
+                         "event": (ev.group(1).replace('\\"', '"') if ev else "")})
+        fh[fname] = rows
+    return fh
+
+
+def is_ufc_row(r):
+    return r["org"] == "UFC" or (not r["org"] and r["event"][:3].upper() == "UFC")
+
+
+def validate(name, meta, bouts, fh_rows):
+    """Return a list of human-readable warning strings (empty == clean)."""
+    w = []
+    if not meta.get("exact", True):
+        w.append("[FALLBACK-ID] id=%s picked as first search result (no exact slug "
+                 "match) — confirm it's the right athlete" % meta.get("sid"))
+    en = meta.get("espn_name")
+    if en and not names_match(en, name):
+        w.append("[NAME?] ESPN athlete name '%s' != roster name '%s'" % (en, name))
+    ufc_hist = [r for r in fh_rows if is_ufc_row(r)]
+    if bouts is not None and len(bouts) == 0 and len(ufc_hist) > 0:
+        w.append("[NO-STATS] 0 ESPN stat bouts but %d UFC fights in history — "
+                 "possible wrong ID or ESPN data gap" % len(ufc_hist))
+    if not fh_rows and bouts:
+        w.append("[NO-HISTORY] %d bouts saved but fighter has no FIGHT_HISTORY yet "
+                 "— can't cross-check opponents" % len(bouts))
+        return w
+    for b in (bouts or []):
+        bdt = _label_dt(b["date"])
+        match = None
+        for r in fh_rows:
+            rdt = _label_dt(r["date"])
+            if rdt and bdt and abs((rdt - bdt).days) <= 1:
+                match = r
+                break
+        if not match:
+            w.append("[DATE?] bout %s vs %s has no history row within +/-1 day"
+                     % (b["date"], b["opponent"]))
+        elif not names_match(b["opponent"], match["opponent"]):
+            w.append("[OPP?] %s — ESPN opponent '%s' but history says '%s'"
+                     % (b["date"], b["opponent"], match["opponent"]))
+    return w
+
+
+def write_report(report, n_processed, n_bouts):
+    flagged = [(nm, ws) for nm, ws in report if ws]
+    lines = ["GillyLab fight-stats backfill — validation report",
+             "Generated: %s" % datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+             "Fighters processed: %d   |   flagged: %d   |   bouts saved this run: %d"
+             % (n_processed, len(flagged), n_bouts), ""]
+    if not flagged:
+        lines.append("No warnings — every saved bout matched its fighter's history.")
+    else:
+        lines.append("Review the fighters below (data was still written):")
+        lines.append("")
+        for nm, ws in flagged:
+            lines.append("== %s ==" % nm)
+            for x in ws:
+                lines.append("   - %s" % x)
+            lines.append("")
+    with open(REPORT, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+
+
+def process_fighter(nm, data, namecache, fh, override=None):
+    """Fetch + validate one fighter; updates data[nm]; returns warning list."""
+    try:
+        bouts, meta = backfill_one(nm, override, namecache)
+    except Exception as e:
+        print("  ! %s errored: %s" % (nm, e))
+        return ["[ERROR] %s" % e]
+    if bouts is None:
+        return ["[SKIP] %s" % (meta.get("reason") or "unknown")]
+    data[nm] = bouts
+    return validate(nm, meta, bouts, fh.get(nm, []))
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("name", nargs="?")
@@ -231,43 +379,60 @@ def main():
                          "re-requesting everyone). Note: won't pick up NEW fights "
                          "for already-saved fighters — re-run those by name, or a "
                          "plain --all, after an event.")
+    ap.add_argument("--limit", type=int, default=0,
+                    help="with --all, process at most N fighters (handy for a small "
+                         "test batch you can review before the full run)")
     ap.add_argument("--sleep", type=float, default=0.3)
     a = ap.parse_args()
 
     data = load_out()
     namecache = {}
+    fh = parse_fight_history()
+    report = []          # (name, [warnings])
+    n_processed = 0
 
     if a.all:
         names = roster_names()
         total = len(names)
         if a.only_missing:
-            pending = [nm for nm in names if nm not in data]
+            names = [nm for nm in names if nm not in data]
             print("Backfilling %d of %d roster fighters (%d already saved, skipping)..."
-                  % (len(pending), total, total - len(pending)))
-            names = pending
+                  % (len(names), total, total - len(names)))
         else:
             print("Backfilling %d roster fighters..." % total)
+        if a.limit and a.limit > 0:
+            names = names[:a.limit]
+            print("(--limit) processing first %d only." % len(names))
         for i, nm in enumerate(names, 1):
-            try:
-                rec = backfill_one(nm, namecache=namecache)
-            except Exception as e:
-                print("  ! %s errored: %s" % (nm, e)); rec = None
-            if rec is not None:
-                data[nm] = rec
-                if i % 10 == 0:  # checkpoint to disk periodically
-                    json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+            report.append((nm, process_fighter(nm, data, namecache, fh)))
+            n_processed += 1
+            if i % 10 == 0:  # checkpoint to disk periodically
+                json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
             time.sleep(a.sleep)
     else:
         if not a.name:
             ap.error("provide a fighter name or --all")
-        rec = backfill_one(a.name, a.espn_id, namecache)
-        if rec is None:
-            sys.exit(1)
-        data[a.name] = rec
+        report.append((a.name, process_fighter(a.name, data, namecache, fh, a.espn_id)))
+        n_processed += 1
 
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
     json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, indent=0)
+    n_bouts = sum(len(data.get(nm, [])) for nm, _ in report if isinstance(data.get(nm), list))
     print("Wrote %s (%d fighters total)." % (os.path.relpath(OUT, ROOT), len(data)))
+
+    # ── validation summary ──
+    flagged = [(nm, ws) for nm, ws in report if ws]
+    if a.all:
+        write_report(report, n_processed, n_bouts)
+        print("Validation report: %s" % os.path.relpath(REPORT, ROOT))
+    if flagged:
+        print("\n!! %d fighter(s) flagged for review:" % len(flagged))
+        for nm, ws in flagged:
+            print("  %s" % nm)
+            for x in ws:
+                print("     - %s" % x)
+    else:
+        print("\nOK - no validation warnings.")
 
 
 if __name__ == "__main__":
