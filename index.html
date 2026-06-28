@@ -3551,7 +3551,7 @@
  { name: "Mitch Raposo", division: "FLW", rank: "NR", record: "11-3-0", initials: "MRP", country: "USA" },
  { name: "Jesus Aguilar", division: "FLW", rank: "NR", record: "12-4-0", initials: "JAG", country: "Mexico" },
  { name: "Ronaldo Rodriguez", division: "FLW", rank: "NR", record: "17-3-0", initials: "RRO", country: "Mexico" },
- { name: "Daniel Barez", division: "FLW", rank: "NR", record: "7-4-0", initials: "DBA", country: "Spain" },
+ { name: "Daniel Barez", division: "FLW", rank: "NR", record: "17-8-0", initials: "DBA", country: "Spain" },
  { name: "Kevin Borjas", division: "FLW", rank: "NR", record: "11-5-0", initials: "KBO", country: "Peru" },
  { name: "Luis Gurule", division: "FLW", rank: "NR", record: "11-4-0", initials: "LGU", country: "USA" },
  { name: "Muhammad Mokaev", division: "FLW", rank: "NR", record: "17-0-0", initials: "MMK", country: "UK" },
@@ -4734,7 +4734,7 @@
  "Rafael Estevam": { ht:"5'8\"", dob:"1996-08-10", reach:'69"', stance:"Orthodox", slpm:2.10, strAcc:"54%", sapm:2.59, strDef:"47%", kd:0.00, tdLanded:6.01, tdAcc:"34%", tdDef:"67%", subAvg:0.29, finRate:"50%", streak:0, gym:"Nova União" },
  "Guilherme Pat": { ht:"6'6\"", dob:"1994-04-20", reach:'81"', stance:"Orthodox", slpm:4.27, strAcc:"64%", sapm:2.20, strDef:"62%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:null, subAvg:0.00, finRate:"67%", streak:0, gym:"Lotus MMA" },
  "Rafael Tobias": { ht:"6'2\"", dob:"2003-03-20", reach:'74.5"', stance:"Orthodox", slpm:2.77, strAcc:"36%", sapm:5.81, strDef:"35%", kd:0.00, tdLanded:2.40, tdAcc:"33%", tdDef:"100%", subAvg:1.60, finRate:"79%", streak:0, gym:"Chute Boxe Monstro" },
- "Daniel Barez": { ht:"5'6\"", dob:"1988-12-10", reach:'66"', stance:"Orthodox", slpm:3.65, tdAcc:"28%", subAvg:0.4, strDef:"50%", kd:0.2, tdDef:"80%", finRate:"59%", streak:0, tdLanded:1.93 },
+ "Daniel Barez": { ht:"5'6\"", dob:"1988-12-10", reach:'66"', stance:"Orthodox", slpm:4.60, strAcc:"48%", sapm:6.93, strDef:"50%", kd:0.49, tdLanded:1.71, tdAcc:"29%", tdDef:"80%", subAvg:0.49, finRate:"77%", streak:0, gym:"Entram Gym" },
  "Lucas Almeida": { ht:"5'11\"", dob:"1991-01-31", reach:'71"', stance:"Orthodox", slpm:4.94, tdAcc:"33%", subAvg:0.0, strDef:"44%", kd:0.3, tdDef:"68%", finRate:"50%", streak:0, tdLanded:1.51, gym:"LG System" },
  "Eric Shelton": { ht:"5'6\"", dob:"1991-02-02", reach:'68"', stance:"Orthodox", slpm:2.57, tdAcc:"42%", subAvg:0.4, strDef:"63%", kd:0.1, tdDef:"70%", finRate:"58%", streak:0, tdLanded:1.36, gym:"RPBJJ" },
  "Cole Howarth": { ht:"5'10\"", dob:"1997-01-01", reach:'72"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.2, tdDef:"62%", finRate:"60%", streak:0, tdLanded:1.20 },
@@ -10145,9 +10145,13 @@
     { opponent: "Taisha Gandy", odds: -1000 }
   ],
   "Daniel Barez": [
-    { opponent: "Luis Gurule", odds: 310 },
-    { opponent: "Andre Lima", odds: 195 },
-    { opponent: "Victor Altamirano", odds: -165 }
+    { opponent: "Luis Gurule", odds: 146 },
+    { opponent: "Andre Lima", odds: 362 },
+    { opponent: "Victor Altamirano", odds: 103 },
+    { opponent: "Jafel Filho", odds: -107 },
+    { opponent: "Carlos Hernandez", odds: -113 },
+    { opponent: "Andy Young", odds: 135 },
+    { opponent: "Mikael Silander", odds: 335 }
   ],
   "Fatima Kline": [
     { opponent: "Angela Hill", odds: -550 },
@@ -21775,15 +21779,30 @@ const FIGHT_HISTORY = {
   ],
   "Daniel Barez": [
     { date: "May 16, 2026", opponent: "Luis Gurule", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Costa" },
-    { date: "Mar 15, 2025", opponent: "Andre Lima", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "2:44", event: "UFC Fight Night: Moicano vs. Duncan" },
-    { date: "Sep 14, 2024", opponent: "Victor Altamirano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 306: O'Malley vs. Dvalishvili (debut)" },
-    { date: "Aug 24, 2024", opponent: "Jafel Filho", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "1:55", event: "DWCS Season 8 Week 2" },
-    { date: "Mar 23, 2024", opponent: "Carlos Hernandez", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "DWCS Season 7 Week 8" },
-    { date: "Sep 30, 2023", opponent: "Mehdi Bouatta", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 176" },
-    { date: "Jun 17, 2023", opponent: "Adam Borics", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 168" },
-    { date: "Feb 25, 2023", opponent: "Sergej Jovanovic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 163" },
-    { date: "Oct 15, 2022", opponent: "Jake Hadley", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "2:48", event: "Cage Warriors 151" },
-    { date: "Jun 18, 2022", opponent: "Roberto Bricio", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 147" }
+    { date: "Mar 15, 2025", opponent: "Andre Lima", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "3:05", event: "UFC Fight Night: Vettori vs. Dolidze 2" },
+    { date: "Sep 28, 2024", opponent: "Victor Altamirano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Saint Denis (UFC debut)" },
+    { date: "Jul 22, 2023", opponent: "Jafel Filho", result: "L", method: "Submission", round: 1, time: "3:26", event: "UFC Fight Night: Aspinall vs. Tybura" },
+    { date: "Feb 24, 2023", opponent: "Soslenis Carvalho", result: "W", method: "KO (Punches)", round: 1, time: "1:33", event: "UWC Mexico 41" },
+    { date: "Nov 25, 2022", opponent: "Francisco Benitez", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:15", event: "UWC Mexico 40" },
+    { date: "Jun 24, 2022", opponent: "Paul Marquez Moreno", result: "W", method: "TKO (Punches)", round: 1, time: "3:06", event: "UWC Mexico 35" },
+    { date: "Jan 21, 2022", opponent: "Ricardo Hernandez", result: "W", method: "TKO (Punches)", round: 1, time: "2:23", event: "Naciones MMA 3" },
+    { date: "Oct 5, 2021", opponent: "Carlos Hernandez", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series S5 W6" },
+    { date: "Dec 7, 2019", opponent: "Joao Camilo", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Combate Americas: Tito vs. Alberto" },
+    { date: "Apr 12, 2019", opponent: "Ivan Hernandez Flores", result: "W", method: "TKO (Punches)", round: 1, time: "2:04", event: "Combate Estrellas" },
+    { date: "Jan 26, 2019", opponent: "Adamson Torbiso", result: "W", method: "Submission (Triangle choke)", round: 1, time: "1:51", event: "Abu Dhabi Warriors 5" },
+    { date: "Nov 10, 2017", opponent: "Andy Young", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "BAMMA 32 (title)" },
+    { date: "Jul 7, 2017", opponent: "Ryan Curtis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BAMMA 30 (title)" },
+    { date: "Dec 10, 2016", opponent: "Jamie Powell", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "1:43", event: "Contenders Norwich 17" },
+    { date: "May 21, 2016", opponent: "Dawid Zywica", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PLMMA 67" },
+    { date: "Apr 25, 2015", opponent: "Chris Miah", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "1:46", event: "BAMMA 20" },
+    { date: "Apr 4, 2015", opponent: "Ronny Gomez", result: "W", method: "Submission (Triangle choke)", round: 1, time: "4:30", event: "West Coast Warriors" },
+    { date: "Dec 5, 2014", opponent: "Ivo Jurado", result: "W", method: "TKO", round: 1, time: "0:15", event: "Mix Fight Events" },
+    { date: "Dec 5, 2014", opponent: "Tony Caizedo", result: "W", method: "KO (Head kick)", round: 2, time: "2:10", event: "Mix Fight Events" },
+    { date: "Nov 29, 2014", opponent: "Manel Kape", result: "L", method: "Submission (Verbal)", round: 1, time: "3:25", event: "Ansgar Fighting League 2" },
+    { date: "Oct 10, 2014", opponent: "Andrew Braulio Lazaro Chiguano", result: "W", method: "Submission (Armbar)", round: 2, time: "3:20", event: "Mix Fight Events" },
+    { date: "Jul 25, 2014", opponent: "Francisco Javier Asprilla", result: "W", method: "TKO", round: 2, time: "4:29", event: "International Fighting Championship 1" },
+    { date: "Apr 5, 2014", opponent: "Mikael Silander", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage 26" },
+    { date: "Jun 12, 2010", opponent: "Andoni Sorando Rodriguez", result: "W", method: "Submission", round: 1, time: "—", event: "Almogavers 4 (pro debut)" }
   ],
   "Fatima Kline": [
     { date: "Nov 15, 2025", opponent: "Angela Hill", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 322", org: "UFC" },
@@ -32684,6 +32703,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Daniel Barez": [
+    { icon: "🏆", title: "BAMMA Flyweight Champion (won and defended the title)", detail: null },
+    { icon: "🏅", title: "77% finish rate — 13 of 17 wins by stoppage (7 KO/TKO, 6 submissions)", detail: null },
+    { icon: "🥊", title: "Veteran of BAMMA, Bellator & Combate Américas", detail: null }
+  ],
   "Luis Gurule": [
     { icon: "🏆", title: "Fury FC Flyweight Champion", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2024 — decision over Nick Piccininni)", detail: null },
