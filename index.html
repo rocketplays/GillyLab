@@ -3609,7 +3609,7 @@
  { name: "Damon Jackson", division: "FW", rank: "NR", record: "23-9-1", initials: "DJK", country: "USA" },
  { name: "Lucas Alexander", division: "FW", rank: "NR", record: "8-5-0", initials: "LAX", country: "Brazil" },
  { name: "Rinya Nakamura", division: "FW", rank: "NR", record: "10-1-0", initials: "RNK", country: "Japan" },
- { name: "Colby Covington", division: "FW", rank: "NR", record: "21-6-0", initials: "CLB", country: "USA" },
+ { name: "Colby Covington", division: "WW", rank: "NR", record: "17-5-0", initials: "CLB", country: "USA" },
  // ─── HEAVYWEIGHT (remaining) ───
  { name: "Andrei Arlovski", division: "HW", rank: "NR", record: "37-24-0", initials: "AAR", country: "Belarus" },
  { name: "Parker Porter", division: "HW", rank: "NR", record: "18-9-0", initials: "PPO", country: "USA" },
@@ -4024,7 +4024,7 @@
  "Rose Namajunas": { ht:"5'5\"", dob:"1992-06-29", reach:'65"', stance:"Orthodox", slpm:3.50, strAcc:"41%", sapm:3.38, strDef:"64%", kd:0.30, tdLanded:1.47, tdAcc:"48%", tdDef:"62%", subAvg:0.35, finRate:"50%", streak:0, gym:"Roufusport" },
  "Jiří Procházka": { ht:"6'3\"", dob:"1992-10-14", reach:'80"', stance:"Orthodox", slpm:5.61, strAcc:"56%", sapm:5.67, strDef:"45%", kd:0.81, tdLanded:0.49, tdAcc:"60%", tdDef:"68%", subAvg:0.16, finRate:"97%", streak:0, gym:"Jetsaam Gym" },
  // ── Welterweight ──
- "Colby Covington": { ht:"5'11\"", dob:"1988-02-22", reach:'72"', stance:"Orthodox", slpm:3.81, tdAcc:"42%", subAvg:0.2, strDef:"54%", kd:0.1, tdDef:"68%", finRate:"47%", streak:0, tdLanded:3.64 },
+ "Colby Covington": { ht:"5'11\"", dob:"1988-02-22", reach:'72"', stance:"Orthodox", slpm:3.81, strAcc:"38%", sapm:3.09, strDef:"55%", kd:0.05, tdLanded:3.64, tdAcc:"43%", tdDef:"69%", subAvg:0.16, finRate:"47%", streak:0, gym:"MMA Masters" },
  "Jorge Masvidal": { ht:"5'11\"", dob:"1984-11-12", reach:'74"', stance:"Orthodox", slpm:4.05, tdAcc:"59%", subAvg:0.3, strDef:"64%", kd:0.6, tdDef:"72%", finRate:"60%", streak:0, tdLanded:1.38, gym:"American Top Team (2007–2023)" },
  "Gilbert Burns": { ht:"5'10\"", dob:"1986-07-20", reach:'71"', stance:"Orthodox", slpm:3.16, strAcc:"48%", sapm:3.68, strDef:"53%", kd:0.19, tdLanded:2.04, tdAcc:"36%", tdDef:"54%", subAvg:0.44, finRate:"68%", streak:0, gym:"Kill Cliff FC" },
  "Joaquin Buckley": { ht:"5'10\"", dob:"1994-04-27", reach:'76"', stance:"Southpaw", slpm:3.62, strAcc:"36%", sapm:3.10, strDef:"59%", kd:0.68, tdLanded:1.43, tdAcc:"45%", tdDef:"70%", subAvg:0.08, finRate:"71%", streak:0, gym:"STL Boxing" },
@@ -8481,15 +8481,23 @@
     { opponent: "Eddie Alvarez", odds: 125 }
   ],
   "Colby Covington": [
-    { opponent: "Kamaru Usman", odds: 250 },
     { opponent: "Joaquin Buckley", odds: 180 },
     { opponent: "Leon Edwards", odds: 140 },
-    { opponent: "Tyron Woodley", odds: -300 },
-    { opponent: "Rafael dos Anjos", odds: -180 },
-    { opponent: "Demian Maia", odds: -190 },
-    { opponent: "Dong Hyun Kim", odds: -600 },
-    { opponent: "Warlley Alves", odds: -500 },
-    { opponent: "Belal Muhammad", odds: -350 }
+    { opponent: "Jorge Masvidal", odds: -300 },
+    { opponent: "Kamaru Usman", odds: 250 },
+    { opponent: "Tyron Woodley", odds: -325 },
+    { opponent: "Kamaru Usman", odds: 155 },
+    { opponent: "Robbie Lawler", odds: -300 },
+    { opponent: "Rafael dos Anjos", odds: -135 },
+    { opponent: "Demian Maia", odds: 100 },
+    { opponent: "Kim Dong-hyun", odds: -230 },
+    { opponent: "Bryan Barberena", odds: -315 },
+    { opponent: "Max Griffin", odds: -410 },
+    { opponent: "Jonathan Meunier", odds: -230 },
+    { opponent: "Warlley Alves", odds: -122 },
+    { opponent: "Mike Pyle", odds: -300 },
+    { opponent: "Wagner Silva", odds: -500 },
+    { opponent: "Wang Anying", odds: -415 }
   ],
   "Brandon Moreno": [
     { opponent: "Lone'er Kavanagh", odds: -205 },
@@ -32881,6 +32889,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Colby Covington": [
+    { icon: "🏆", title: "Former UFC interim welterweight champion — defeated Rafael dos Anjos (UFC 225, 2018)", detail: null },
+    { icon: "🥇", title: "\"Chaos\" — three-time UFC welterweight title challenger (Kamaru Usman ×2, Leon Edwards)", detail: null },
+    { icon: "🤼", title: "Decorated wrestler — NCAA Division I at Oregon State; junior-college national champion", detail: null }
+  ],
   "Lucas Alexander": [
     { icon: "🥊", title: "\"The Lion\" — striker out of Fusion X-Cel; all 3 of his stoppage wins by KO/TKO", detail: null }
   ],
