@@ -15,6 +15,9 @@ Prints these sections:
             surfaces the fighter's gym, fighting style, and any grappling BELT
             RANK from the page's bio + Q&A blocks (the Q&A is often the only
             place a BJJ/judo belt is stated) -- use it for a 🥋 accolade.
+            Record EVERY reported stat, even one-off/small-sample extrapolations
+            (never null a field that has a number); if a value looks suspicious,
+            sanity-check it against ESPN's per-fight stats page and recompute.
   [ESPN]    bio fields (stance, height, reach, DOB, gym) from ESPN's core API --
             a second source so stance and other bio fields are not left blank;
             ALSO the VERIFIED takedown accuracy, summed from ESPN's per-fight
@@ -209,7 +212,14 @@ def ufccom_report(name):
     out = []
     statbits = [f"{k}={found[k]}" for k in ["slpm", "sapm", "tdLanded", "subAvg",
                 "strDef", "tdDef", "kd", "avgTime", "strAcc", "tdAcc"] if k in found]
-    if statbits: out.append(" ".join(statbits))
+    if statbits:
+        out.append(" ".join(statbits))
+        out.append("ALWAYS record every value ufc.com reports, even a one-off / small-sample "
+                   "extrapolation (e.g. a single-fight kd of 2.95) -- never null a field that has "
+                   "a number. SANITY-CHECK any value that looks off (implausibly low/high, e.g. "
+                   "slpm 0.41) against ESPN's per-fight stats page "
+                   "(espn.com/mma/fighter/stats/_/id/<id>): sum the per-fight SSL/SSA/KD/TD over "
+                   "total fight time and use the ESPN-derived figure when ufc.com is clearly wrong.")
     if "gym" in found: out.append(f"gym: {found['gym']}")
     if found.get("style"): out.append(f"fighting style (ufc.com): {found['style']}")
     if found.get("belts"):
