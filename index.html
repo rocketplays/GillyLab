@@ -37893,31 +37893,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const dates  = Object.keys(byDate).sort();
       // Build the set of actually-scheduled bout pairings (both fighters must
       // match — a single shared name can be a hypothetical/unannounced odds entry)
+      // Mirror the homepage's featured event exactly. `evt` is the same event
+      // the homepage/carousel render (pickFeaturedRawEvent), which keeps the
+      // current card featured through fight night and only rolls to the next
+      // event the day after. We therefore show odds for THIS event's scheduled
+      // bouts, matched date-agnostically — so the page stays locked to the
+      // featured card (it won't drop a fight just because the bout's UTC date is
+      // already "yesterday") and switches when the homepage's featured event
+      // does. Matching by this event's bout pairings also keeps the feed's
+      // non-UFC entries out (the Odds API tags UFC, PFL & regional all as "MMA").
       const boutPairings = buildBoutPairings(evt.fights);
       let fights = [];
       if (boutPairings.length > 0) {
-        // Find the earliest upcoming date that has any scheduled-bout match, then
-        // collect all matching fights within a 3-day window (Odds API often lists
-        // prelims 1 day early)
-        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f =>
-          isScheduledBout(boutPairings, f.home_team, f.away_team)
-        ));
-        if (firstUfcDate) {
-          const windowEnd = new Date(firstUfcDate);
-          windowEnd.setDate(windowEnd.getDate() + 2);
-          const windowEndStr = windowEnd.toISOString().split('T')[0];
-          dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
-            (byDate[d] || []).forEach(f => {
-              if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
-            });
-          });
-        }
-      }
-      // Fallback: the featured event's bouts aren't in the odds feed yet (e.g.
-      // it's weeks out). Show the nearest upcoming card, but filtered to UFC
-      // roster fighters so PFL/regional/hypothetical bouts never leak in. (We
-      // never dump an entire date's worth of unfiltered "MMA" fights anymore.)
-      if (!fights.length) {
+        fights = data.filter(f => isScheduledBout(boutPairings, f.home_team, f.away_team));
+      } else {
+        // Featured event has no bout list yet — show the nearest upcoming card
+        // filtered to UFC-roster fighters (never the unfiltered all-promotions feed).
         const firstRosterDate = dates.find(d => d >= today && (byDate[d] || []).filter(bothFightersOnRoster).length >= 3);
         if (firstRosterDate) fights = (byDate[firstRosterDate] || []).filter(bothFightersOnRoster);
       }
@@ -38358,30 +38349,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const dates  = Object.keys(byDate).sort();
       // Build the set of actually-scheduled bout pairings (both fighters must
       // match — a single shared name can be a hypothetical/unannounced odds entry)
+      // Mirror the homepage's featured event exactly. `evt` is the same event
+      // the homepage/carousel render (pickFeaturedRawEvent), which keeps the
+      // current card featured through fight night and only rolls to the next
+      // event the day after. We therefore show odds for THIS event's scheduled
+      // bouts, matched date-agnostically — so the page stays locked to the
+      // featured card (it won't drop a fight just because the bout's UTC date is
+      // already "yesterday") and switches when the homepage's featured event
+      // does. Matching by this event's bout pairings also keeps the feed's
+      // non-UFC entries out (the Odds API tags UFC, PFL & regional all as "MMA").
       const boutPairings = buildBoutPairings(evt.fights);
       let fights = [];
       if (boutPairings.length > 0) {
-        // Find earliest upcoming date with any scheduled-bout match, then collect all
-        // matching fights within a 3-day window (Odds API often lists prelims 1 day early)
-        const firstUfcDate = dates.find(d => d >= today && (byDate[d] || []).some(f =>
-          isScheduledBout(boutPairings, f.home_team, f.away_team)
-        ));
-        if (firstUfcDate) {
-          const windowEnd = new Date(firstUfcDate);
-          windowEnd.setDate(windowEnd.getDate() + 2);
-          const windowEndStr = windowEnd.toISOString().split('T')[0];
-          dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
-            (byDate[d] || []).forEach(f => {
-              if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
-            });
-          });
-        }
-      }
-      // Fallback: the featured event's bouts aren't in the odds feed yet (e.g.
-      // it's weeks out). Show the nearest upcoming card, but filtered to UFC
-      // roster fighters so PFL/regional/hypothetical bouts never leak in. (We
-      // never dump an entire date's worth of unfiltered "MMA" fights anymore.)
-      if (!fights.length) {
+        fights = data.filter(f => isScheduledBout(boutPairings, f.home_team, f.away_team));
+      } else {
+        // Featured event has no bout list yet — show the nearest upcoming card
+        // filtered to UFC-roster fighters (never the unfiltered all-promotions feed).
         const firstRosterDate = dates.find(d => d >= today && (byDate[d] || []).filter(bothFightersOnRoster).length >= 3);
         if (firstRosterDate) fights = (byDate[firstRosterDate] || []).filter(bothFightersOnRoster);
       }
