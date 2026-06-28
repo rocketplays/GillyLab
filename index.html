@@ -37588,6 +37588,39 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
   }
 
+  // Is this odds-feed name one of our UFC roster fighters? The Odds API feed
+  // (sport=mma_mixed_martial_arts) returns ALL promotions tagged generically
+  // as "MMA" — UFC, PFL, regional, and hypothetical matchups alike. We have no
+  // promotion tag to filter on, so we treat "appears in the GillyLab UFC roster"
+  // as the UFC signal: slug-exact match, or same first initial + last name
+  // (allowing a 1-char spelling drift like Almabaev/Almabayev).
+  function fighterOnRoster(name) {
+    if (!name || typeof FIGHTERS === 'undefined') return false;
+    const slug = nameToSlug(resolveCanonicalFighterName(name, null) || name);
+    if (FIGHTERS.some(f => f && nameToSlug(f.name) === slug)) return true;
+    // Order-independent token match: count significant (3+ char) name tokens of
+    // the odds-feed name that have a close match in a single roster entry. Two
+    // shared tokens is a strong signal and survives name-order differences
+    // (e.g. odds "Weili Zhang" vs roster "Zhang Weili") and 1-char spelling
+    // drift (Almabaev/Almabayev). A lone shared surname is NOT enough.
+    const toks = nameTokens(name).filter(t => t.length >= 3);
+    if (toks.length < 2) return false;
+    return FIGHTERS.some(f => {
+      if (!f) return false;
+      const ft = nameTokens(f.name).filter(t => t.length >= 3);
+      if (!ft.length) return false;
+      let shared = 0;
+      for (const t of toks) {
+        if (ft.some(x => x === t || levenshteinDist(x, t) <= 1)) shared++;
+      }
+      return shared >= 2;
+    });
+  }
+  // Only true when BOTH fighters are on the UFC roster — drops PFL/regional bouts.
+  function bothFightersOnRoster(f) {
+    return fighterOnRoster(f && f.home_team) && fighterOnRoster(f && f.away_team);
+  }
+
   // ── FIGHT ROW EXPAND/COLLAPSE: per-fight fighter snapshot ──────────────────
   // Each fight row gets an "Info" toggle that reveals a panel with both
   // fighters' name, age, height, reach, current moneyline, and last-5 form —
@@ -37861,7 +37894,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Build the set of actually-scheduled bout pairings (both fighters must
       // match — a single shared name can be a hypothetical/unannounced odds entry)
       const boutPairings = buildBoutPairings(evt.fights);
-      let fights;
+      let fights = [];
       if (boutPairings.length > 0) {
         // Find the earliest upcoming date that has any scheduled-bout match, then
         // collect all matching fights within a 3-day window (Odds API often lists
@@ -37873,18 +37906,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           const windowEnd = new Date(firstUfcDate);
           windowEnd.setDate(windowEnd.getDate() + 2);
           const windowEndStr = windowEnd.toISOString().split('T')[0];
-          fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
               if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
             });
           });
-        } else {
-          fights = byDate[dates.find(d => d >= today) || dates[dates.length - 1]] || [];
         }
-      } else {
-        const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-        fights = byDate[target] || [];
+      }
+      // Fallback: the featured event's bouts aren't in the odds feed yet (e.g.
+      // it's weeks out). Show the nearest upcoming card, but filtered to UFC
+      // roster fighters so PFL/regional/hypothetical bouts never leak in. (We
+      // never dump an entire date's worth of unfiltered "MMA" fights anymore.)
+      if (!fights.length) {
+        const firstRosterDate = dates.find(d => d >= today && (byDate[d] || []).filter(bothFightersOnRoster).length >= 3);
+        if (firstRosterDate) fights = (byDate[firstRosterDate] || []).filter(bothFightersOnRoster);
       }
       if (!fights.length) throw new Error('no fights');
       // Match each odds-feed fight back to its evt.fights bout — fuzzy (see
@@ -38324,7 +38359,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Build the set of actually-scheduled bout pairings (both fighters must
       // match — a single shared name can be a hypothetical/unannounced odds entry)
       const boutPairings = buildBoutPairings(evt.fights);
-      let fights;
+      let fights = [];
       if (boutPairings.length > 0) {
         // Find earliest upcoming date with any scheduled-bout match, then collect all
         // matching fights within a 3-day window (Odds API often lists prelims 1 day early)
@@ -38335,18 +38370,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           const windowEnd = new Date(firstUfcDate);
           windowEnd.setDate(windowEnd.getDate() + 2);
           const windowEndStr = windowEnd.toISOString().split('T')[0];
-          fights = [];
           dates.filter(d => d >= firstUfcDate && d <= windowEndStr).forEach(d => {
             (byDate[d] || []).forEach(f => {
               if (isScheduledBout(boutPairings, f.home_team, f.away_team)) fights.push(f);
             });
           });
-        } else {
-          fights = byDate[dates.find(d => d >= today) || dates[dates.length - 1]] || [];
         }
-      } else {
-        const target = dates.find(d => d >= today && byDate[d].length >= 4) || dates.find(d => d >= today) || dates[dates.length - 1];
-        fights = byDate[target] || [];
+      }
+      // Fallback: the featured event's bouts aren't in the odds feed yet (e.g.
+      // it's weeks out). Show the nearest upcoming card, but filtered to UFC
+      // roster fighters so PFL/regional/hypothetical bouts never leak in. (We
+      // never dump an entire date's worth of unfiltered "MMA" fights anymore.)
+      if (!fights.length) {
+        const firstRosterDate = dates.find(d => d >= today && (byDate[d] || []).filter(bothFightersOnRoster).length >= 3);
+        if (firstRosterDate) fights = (byDate[firstRosterDate] || []).filter(bothFightersOnRoster);
       }
       if (!fights.length) throw new Error('no fights');
       // Sort fights to match evt.fights bout order — fuzzy (see
