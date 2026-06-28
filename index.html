@@ -4263,7 +4263,7 @@
  "Montel Jackson": { ht:"5'10\"", dob:"1992-04-24", reach:'75.5"', stance:"Southpaw", slpm:3.02, strAcc:"52%", sapm:1.40, strDef:"60%", kd:1.36, tdLanded:2.71, tdAcc:"64%", tdDef:"67%", subAvg:0.29, finRate:"60%", streak:0, gym:"Pura Vida BJJ & MMA" },
  "Davey Grant": { ht:"5'8\"", dob:"1985-12-18", reach:'69"', stance:"Orthodox", slpm:5.58, strAcc:"45%", sapm:4.04, strDef:"55%", kd:0.32, tdLanded:0.95, tdAcc:"34%", tdDef:"65%", subAvg:0.16, finRate:"72%", streak:1, gym:"SBG UK" },
  "David Martínez": { ht:'5\'5"', dob:"1998-08-03", reach:'67.5"', stance:"Orthodox", slpm:4.82, strAcc:"47%", sapm:2.90, strDef:"69%", kd:0.30, tdLanded:0.60, tdAcc:"25%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:10, gym:"Bonebreakers MMA" },
- "Felipe Lima": { ht:"5'6\"", dob:"1998-05-07", reach:'68"', stance:"Orthodox", slpm:2.86, tdAcc:"27%", subAvg:0.7, strDef:"64%", kd:0.1, tdDef:"85%", finRate:"57%", streak:0, tdLanded:2.18, gym:"Allstars Training Center" },
+ "Felipe Lima": { ht:"5'6\"", dob:"1998-05-07", reach:'68"', stance:"Orthodox", slpm:2.86, strAcc:"45%", sapm:2.91, strDef:"65%", kd:0.00, tdLanded:2.18, tdAcc:"27%", tdDef:"86%", subAvg:0.73, finRate:"50%", streak:0, gym:"Allstars Training Center" },
  // ── Flyweight (more) ──
  "Asu Almabayev": { ht:"5'4\"", dob:"1994-01-25", reach:'65"', stance:"Orthodox", slpm:2.31, strAcc:"51%", sapm:1.99, strDef:"54%", kd:0.17, tdLanded:4.46, tdAcc:"43%", tdDef:"44%", subAvg:1.49, finRate:"57%", streak:2, gym:"DAR Pro Team" },
  "David Dvorak": { ht:"5'5\"", dob:"1992-06-05", reach:'68"', stance:"Orthodox", slpm:3.48, tdAcc:"30%", subAvg:0.2, strDef:"59%", kd:0.1, tdDef:"70%", finRate:"45%", streak:0, tdLanded:0.58, gym:"All Sports Academy" },
@@ -14561,6 +14561,12 @@
     { opponent: "Freddy Vidal", odds: -510 }
   ],
   "Felipe Lima": [
+    { opponent: "Payton Talbott", odds: -150 },
+    { opponent: "Miles Johns", odds: -260 },
+    { opponent: "Muhammad Naimov", odds: 125 },
+    { opponent: "Jonas Mågård", odds: 150 },
+    { opponent: "Evgeniy Odnorog", odds: -649 },
+    { opponent: "Fernando Flores", odds: -400 }
   ],
   "Guilherme Pat": [
     { opponent: "Thomas Petersen", odds: -135 },
@@ -32161,7 +32167,7 @@ const FIGHT_HISTORY = {
     { date: "Jun 28, 2025", opponent: "Payton Talbott", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 317", org: "UFC" },
     { date: "Dec 14, 2024", opponent: "Miles Johns", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
     { date: "Jun 22, 2024", opponent: "Muhammad Naimov", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "1:15", event: "UFC on ABC: Whittaker vs. Aliskerov", org: "UFC" },
-    { date: "Jul 28, 2023", opponent: "Jonas Mågård", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Oktagon 45 Special" },
+    { date: "Jul 28, 2023", opponent: "Jonas Mågård", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Oktagon 45 Special (won Oktagon BW Title)" },
     { date: "Nov 20, 2021", opponent: "Evgeniy Odnorog", result: "W", method: "KO (Flying knee)", round: 1, time: "0:35", event: "Fight Club Rush 10" },
     { date: "Mar 6, 2021", opponent: "Fernando Flores", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Club Rush 8" },
     { date: "Aug 15, 2020", opponent: "Farbod Iran Nezhad", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 39", org: "BRAVE CF" },
@@ -32173,7 +32179,7 @@ const FIGHT_HISTORY = {
     { date: "Jul 29, 2017", opponent: "Isaias Monteiro da Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Arena Fight Championship 3" },
     { date: "Mar 4, 2017", opponent: "Dionatan Carvalho", result: "W", method: "Submission (Armbar)", round: 1, time: "2:33", event: "Amazon Talent 7" },
     { date: "Oct 29, 2015", opponent: "Tiago Santos", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:25", event: "Amazon Talent 3" },
-    { date: "Aug 8, 2015", opponent: "Ivan Luiz", result: "L", method: "Submission (Triangle choke)", round: 1, time: "N/A", event: "EnerGym Fight 1" }
+    { date: "Aug 8, 2015", opponent: "Ivan Luiz", result: "L", method: "Submission (Triangle choke)", round: 2, time: "3:39", event: "EnerGym Fight 1" }
   ],
 
 
@@ -32915,6 +32921,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Felipe Lima": [
+    { icon: "🏆", title: "Former Oktagon MMA Bantamweight Champion — five-round decision over defending champ Jonas Mågård (Oktagon 45, 2023)", detail: null },
+    { icon: "🥊", title: "\"Jungle Boy\" — fights out of Allstars Training Center; 7 of 14 wins by finish (4 KO/TKO, 3 submission)", detail: null }
+  ],
   "Daniel Marcos": [
     { icon: "🏆", title: "300 Sparta bantamweight champion — five-round decision over Marlon Cardoso dos Santos (2017)", detail: null },
     { icon: "🥊", title: "\"Soncora\" — entered the UFC undefeated (15-0); 9 of 18 wins by finish (8 KO/TKO, 1 submission)", detail: null }
