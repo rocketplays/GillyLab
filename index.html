@@ -3494,7 +3494,7 @@
  { name: "John Castaneda", division: "BW", rank: "NR", record: "21-8-1", initials: "JCA4", country: "USA" },
  { name: "Mark Vologdin", division: "BW", rank: "NR", record: "12-4-2", initials: "MVL", country: "Russia" },
  { name: "Adrian Yanez", division: "BW", rank: "NR", record: "17-6-1", initials: "AYA", country: "USA" }, { name: "Cody Chovancek", division: "BW", rank: "NR", record: "9-0-0", initials: "CCH", country: "Canada" },
- { name: "Louis Lee Scott", division: "BW", rank: "NR", record: "9-1-0", initials: "LLS", country: "UK" },
+ { name: "Louis Lee Scott", division: "BW", rank: "NR", record: "10-0-0", initials: "LLS", country: "England" },
  { name: "Adrián Luna Martinetti", division: "BW", rank: "NR", record: "17-2-0", initials: "ALM2", country: "Ecuador" },
  { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-1", initials: "JDI", country: "Peru" },
  // ─── FLYWEIGHT (extended) ───
@@ -4706,7 +4706,7 @@
  "Hailey Cowan": { ht:"5'8\"", dob:"1992-02-12", reach:'67"', stance:"Southpaw", slpm:2.66, strAcc:"44%", sapm:2.92, strDef:"41%", kd:0.00, tdLanded:1.95, tdAcc:"43%", tdDef:"80%", subAvg:0.00, finRate:"57%", streak:0, gym:"Xtreme Couture" },
  "Jacobe Smith": { ht:"5'10\"", dob:"1996-01-17", reach:'72"', stance:"Southpaw", slpm:6.89, strAcc:"68%", sapm:2.78, strDef:"48%", kd:0.71, tdLanded:7.78, tdAcc:"92%", tdDef:"100%", subAvg:0.71, finRate:"83%", streak:12, gym:"Fortis MMA" },
  "Levi Rodrigues": { ht:"5'5\"", dob:"1998-01-01", reach:'66"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.20 },
- "Louis Lee Scott": { ht:"5'7\"", dob:"1993-06-01", reach:'68"', stance:"Orthodox", slpm:3.30, tdAcc:"30%", subAvg:0.4, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"50%", streak:0, tdLanded:1.00 },
+ "Louis Lee Scott": { ht:"5'8\"", dob:"2000-02-26", reach:'70"', stance:"Orthodox", slpm:5.35, strAcc:"58%", sapm:0.81, strDef:"71%", kd:0.0, tdLanded:2.43, tdAcc:"67%", tdDef:"100%", subAvg:0.0, finRate:"80%", streak:10, gym:"Manchester Top Team" },
  "Yadier del Valle": { ht:"5'6\"", dob:"1995-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.5, strDef:"52%", kd:0.2, tdDef:"65%", finRate:"60%", streak:0, tdLanded:1.50 },
  "Pam Sorensen": { ht:"5'5\"", dob:"1993-01-01", reach:'65"', stance:"Orthodox", slpm:3.00, tdAcc:"30%", subAvg:0.3, strDef:"50%", kd:0.1, tdDef:"60%", finRate:"55%", streak:0, tdLanded:1.00 },
  "Ocie Ike": { ht:"5'6\"", dob:"1995-01-01", reach:'67"', stance:"Orthodox", slpm:3.50, tdAcc:"35%", subAvg:0.4, strDef:"52%", kd:0.2, tdDef:"62%", finRate:"60%", streak:0, tdLanded:1.20 },
@@ -14472,7 +14472,10 @@
     { opponent: "Cody Stamann", odds: 275 }
   ],
   "Louis Lee Scott": [
-    { opponent: "Luan Lacerda", odds: 350 }
+    { opponent: "Kaushik Saikumar", odds: -300 },
+    { opponent: "Youssouf Binate", odds: -125 },
+    { opponent: "Demarte Pena", odds: 163 },
+    { opponent: "Sam Robinson", odds: -800 }
   ],
   "Cody Chovancek": [
     { opponent: "Raphael Uchegbu", odds: 125 },
@@ -31926,16 +31929,16 @@ const FIGHT_HISTORY = {
     { date: "Mar 9, 2012", opponent: "Adauto Silva dos Santos", result: "W", method: "Submission (Armbar)", round: 2, time: "1:49", event: "Amazon Fight 14" }
   ],
   "Louis Lee Scott": [
-    { date: "Oct 18, 2025", opponent: "Luan Lacerda", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "2:14", event: "UFC Fight Night: de Ridder vs. Allen (debut)" },
-    { date: "Sep 23, 2025", opponent: "Ahmad Yusupov", result: "W", method: "TKO (Punches)", round: 1, time: "0:44", event: "DWCS Season 9 Week 7 (contract)" },
-    { date: "Jun 21, 2025", opponent: "Declan Doyle", result: "W", method: "TKO (Punches)", round: 2, time: "1:44", event: "Cage Warriors 182" },
-    { date: "Mar 22, 2025", opponent: "Tom Isherwood", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 177" },
-    { date: "Nov 16, 2024", opponent: "Lewis Sherwood", result: "W", method: "TKO (Punches)", round: 1, time: "2:14", event: "Cage Warriors 173" },
-    { date: "Aug 24, 2024", opponent: "Scott Futrell", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:44", event: "Cage Warriors 170" },
-    { date: "Apr 6, 2024", opponent: "Dean Hickey", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 167" },
-    { date: "Jan 13, 2024", opponent: "James Webb", result: "W", method: "TKO (Punches)", round: 1, time: "1:14", event: "Cage Warriors 164" },
-    { date: "Oct 14, 2023", opponent: "Patrick Doyle", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:14", event: "Cage Warriors 161" },
-    { date: "Jun 3, 2023", opponent: "Tom Ellis", result: "W", method: "TKO (Punches)", round: 2, time: "2:14", event: "Cage Warriors 156 (debut)" }
+    { date: "Aug 19, 2025", opponent: "Kaushik Saikumar", result: "W", method: "KO (Punches)", round: 3, time: "2:20", event: "Dana White's Contender Series: Season 9, Week 2 (contract)" },
+    { date: "Feb 14, 2025", opponent: "Youssouf Binate", result: "W", method: "Submission (Armbar)", round: 1, time: "4:31", event: "Ares FC 29" },
+    { date: "Mar 8, 2024", opponent: "Demarte Pena", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ares FC 19: Pena vs. Lee Scott (title)" },
+    { date: "Oct 20, 2023", opponent: "Edgar Rodrigues de Oliveira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Anthony Pettis FC 8" },
+    { date: "May 20, 2023", opponent: "Leandro Lima", result: "W", method: "TKO (Punches)", round: 3, time: "3:28", event: "Caged Steel FC 32" },
+    { date: "Mar 25, 2023", opponent: "Sam Robinson", result: "W", method: "KO (Punches)", round: 1, time: "0:21", event: "2023 PFL Europe Regular Season" },
+    { date: "Oct 3, 2022", opponent: "Lucas Tenorio", result: "W", method: "TKO (Punches)", round: 1, time: "4:50", event: "Vida Fight Championship 4" },
+    { date: "Mar 12, 2022", opponent: "Daire Toman", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:32", event: "UK Fighting Championships 18" },
+    { date: "Apr 10, 2021", opponent: "Dan Kneil", result: "W", method: "TKO (Punches)", round: 1, time: "3:36", event: "Caged Steel FC 25" },
+    { date: "Mar 14, 2020", opponent: "Brad Evans", result: "W", method: "TKO (Punches)", round: 1, time: "2:57", event: "Caged Steel Contenders 2" }
   ],
   "Cody Chovancek": [
     { date: "Sep 16, 2025", opponent: "Raphael Uchegbu", result: "W", method: "KO (Punches)", round: 3, time: "0:10", event: "Dana White's Contender Series: Season 9, Week 6 (contract)" },
@@ -32917,6 +32920,10 @@ const ACCOLADES = {
     { icon: "🏆", title: "Oktagon MMA Flyweight Champion (current — first Kazakh Oktagon champion; won title 2025, one defense)", detail: null },
     { icon: "🏆", title: "Former Fight Nights Global Flyweight Champion (one defense)", detail: null },
     { icon: "🥊", title: "\"Zhako\" — won the 2014 Zhekpe Zhek Bantamweight Grand Prix", detail: null }
+  ],
+  "Louis Lee Scott": [
+    { icon: "🥊", title: "\"Lightning\" — undefeated (10-0); earned UFC contract on Dana White's Contender Series (2025)", detail: null },
+    { icon: "🏆", title: "Former ARES FC bantamweight champion", detail: null }
   ],
   "Cody Chovancek": [
     { icon: "🥊", title: "\"The Best Fisherman in MMA\" — undefeated; earned UFC contract on Dana White's Contender Series (2025)", detail: null },
