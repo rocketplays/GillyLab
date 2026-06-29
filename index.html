@@ -3806,7 +3806,7 @@
  { name: "Patchy Mix", division: "BW", rank: "NR", record: "20-4-0", initials: "PM", country: "USA" },
  { name: "JooSang Yoo", division: "FW", rank: "NR", record: "9-1-0", initials: "JY", country: "South Korea" },
  { name: "Xiao Long", division: "BW", rank: "NR", record: "27-11-0", initials: "XL", country: "China" },
- { name: "CJ Vergara", division: "BW", rank: "NR", record: "12-7-1", initials: "CJV", country: "USA" },
+ { name: "CJ Vergara", division: "FLW", rank: "NR", record: "12-7-1", initials: "CJV", country: "USA" },
  { name: "Alonzo Menifield", division: "LHW", rank: "#15", record: "18-6-1", initials: "AM", country: "USA" },
  { name: "Kyle Daukaus", division: "LHW", rank: "NR", record: "17-4-0", initials: "KD", country: "USA" },
  { name: "Kennedy Nzechukwu", division: "HW", rank: "NR", record: "14-8-0", initials: "KN", country: "Nigeria" },
@@ -4752,7 +4752,7 @@
   "Ion Cutelaba": { ht:"6'1\"", dob:"1993-12-14", reach:'75"', stance:"Southpaw", slpm:4.13, strAcc:"44%", sapm:3.42, tdAcc:"51%", subAvg:0.27, strDef:"46%", kd:0.18, tdDef:"76%", finRate:"85%", streak:0, tdLanded:4.02, gym:"CSA Team Moldova" },
   "Cody Brundage": { ht:"6'0\"", dob:"1994-05-16", reach:'72"', stance:"Orthodox", slpm:2.50, strAcc:"51%", sapm:2.95, strDef:"51%", kd:0.48, tdLanded:1.80, tdAcc:"42%", tdDef:"67%", subAvg:0.48, finRate:"83%", streak:1, gym:"Factory X" },
   "Kennedy Nzechukwu": { ht:"6'5\"", dob:"1992-06-13", reach:'83"', stance:"Southpaw", slpm:4.96, tdAcc:"46%", subAvg:0.4, strDef:"51%", kd:0.4, tdDef:"27%", finRate:"71%", streak:0, tdLanded:0.73, gym:"War Room MMA (2024–present)" },
-  "CJ Vergara": { ht:"5'6\"", dob:"1991-06-18", reach:'68"', stance:"Orthodox", slpm:5.02, tdAcc:"39%", subAvg:1.2, strDef:"49%", kd:0.2, tdDef:"30%", finRate:"73%", streak:0, tdLanded:3.86, gym:"Pete Spratt Muay Thai" },
+  "CJ Vergara": { ht:"5'6\"", dob:"1991-06-18", reach:'68"', stance:"Orthodox", slpm:5.02, strAcc:"57%", sapm:4.69, strDef:"54%", kd:0.36, tdLanded:0.00, tdAcc:"0%", tdDef:"61%", subAvg:0.18, finRate:"58%", streak:0, gym:"Pete Spratt Muay Thai" },
   "Phil Rowe": { ht:"6'3\"", dob:"1990-07-18", reach:'80"', stance:"Orthodox", slpm:3.51, tdAcc:"49%", subAvg:0.2, strDef:"54%", kd:0.2, tdDef:"33%", finRate:"55%", streak:0, tdLanded:0.52, gym:"Fusion Xcel Performance" },
   "Leon Shahbazyan": { ht:'6\'4"', dob:"1995-11-18", reach:'77"', stance:"Orthodox", slpm:6.10, strAcc:"52%", sapm:8.45, strDef:"33%", kd:1.41, tdLanded:1.41, tdAcc:"50%", subAvg:0.00, finRate:"100%", streak:0, gym:"Glendale Fighting Club" },
   "Levan Chokheli": { ht:'6\'1"', dob:"1996-10-02", reach:'73"', stance:"Orthodox", slpm:15.65, strAcc:"55%", sapm:0.00, strDef:"100%", kd:39.13, tdLanded:0.00, tdAcc:"0%", subAvg:0.00, finRate:"80%", streak:2, gym:"Phoenix Sportakademie Kassel" },
@@ -11876,11 +11876,11 @@
     { opponent: "Salvador Becerra", odds: 118 }
   ],
   "CJ Vergara": [
-    { opponent: "Leem Hyun-Soo", odds: -700 },
-    { opponent: "Tatsuro Taira", odds: 400 },
-    { opponent: "Francisco Figueiredo", odds: 300 },
-    { opponent: "Ode Osbourne", odds: -400 },
-    { opponent: "Matt Schnell", odds: -200 }
+    { opponent: "Vinicius Salvador", odds: -150 },
+    { opponent: "Daniel Lacerda", odds: -240 },
+    { opponent: "Tatsuro Taira", odds: 255 },
+    { opponent: "Kleydson Rodrigues", odds: 380 },
+    { opponent: "Bruno Korea", odds: 205 }
   ],
   "Abus Magomedov": [
     { opponent: "Joe Pyfer", odds: 200 },
@@ -32924,6 +32924,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "CJ Vergara": [
+    { icon: "🏆", title: "Former Fury FC Flyweight Champion", detail: null },
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, body-knee KO of Bruno Korea)", detail: null },
+    { icon: "🥊", title: "Muay Thai-based knockout artist; all 7 finishes by KO/TKO (flying-knee and liver-knee finishes)", detail: null }
+  ],
   "JooSang Yoo": [
     { icon: "🏆", title: "AFC (Angel's Fighting Championship) Featherweight Champion", detail: null },
     { icon: "🥊", title: "\"Zombie Jr.\" — Korean Zombie (Chan Sung Jung) protégé out of Tiger Gym; 5 of 9 wins by stoppage, incl. a 28-second UFC KO of Jeka Saragih", detail: null }
