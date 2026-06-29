@@ -431,9 +431,51 @@ def verify(sid):
                            capture_output=True)
             print("photo    : saved/replaced photos/%s.png + thumb (%d bytes)" % (slug, sz))
 
+    # ---- drop stale odds history (verified fighters are one-and-done; the old
+    # odds data is largely inaccurate and they won't fight again) ----
+    if remove_odds_entry(name):
+        print("odds     : removed ODDS_HISTORY entry (stale/inaccurate, fighter inactive)")
+    else:
+        print("odds     : no ODDS_HISTORY entry to remove")
+
 def roster_minus(roster, name):
     """roster set without this fighter, so process() won't skip them as in-roster."""
     return roster - {name_to_slug(name)}
+
+def remove_odds_entry(name):
+    """Delete a fighter's entry from the ODDS_HISTORY const in index.html.
+    Used by --verify: these fighters are one-and-done, and the old odds data is
+    largely inaccurate, so we drop it rather than carry stale lines. Returns True
+    if an entry was removed. Scoped strictly to the ODDS_HISTORY object so the
+    same `"Name": [` pattern in FIGHT_HISTORY is never touched."""
+    html = open(INDEX, encoding="utf-8").read()
+    s = html.find("const ODDS_HISTORY = {")
+    if s == -1:
+        return False
+    k = html.index("{", s); depth = 0
+    block_end = len(html)
+    for j in range(k, len(html)):
+        if html[j] == "{": depth += 1
+        elif html[j] == "}":
+            depth -= 1
+            if depth == 0: block_end = j; break
+    key = '"%s": [' % name.replace('"', '\\"')
+    ki = html.find(key, k, block_end)
+    if ki == -1:
+        return False
+    bk = html.index("[", ki); d = 0
+    be = ki
+    for j in range(bk, block_end + 1):
+        if html[j] == "[": d += 1
+        elif html[j] == "]":
+            d -= 1
+            if d == 0: be = j; break
+    end = be + 1
+    if html[end:end + 1] == ",": end += 1
+    if html[end:end + 1] == "\n": end += 1
+    line_start = html.rfind("\n", k, ki) + 1
+    open(INDEX, "w", encoding="utf-8").write(html[:line_start] + html[end:])
+    return True
 
 def meth_cat(m):
     """Coarse finish category so 'Submission (RNC)' vs 'Submission' don't false-flag;
