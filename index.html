@@ -4374,7 +4374,7 @@
  // ── Women's Flyweight (final) ──
  "Melissa Gatto": { ht:"5'5\"", dob:"1996-05-02", reach:'69"', stance:"Orthodox", slpm:3.78, strAcc:"50%", sapm:2.84, strDef:"54%", kd:0.24, tdLanded:1.47, tdAcc:"27%", tdDef:"64%", subAvg:0.49, finRate:"78%", streak:0, gym:"KO Squad MMA" },
  "Eduarda Moura": { ht:"5'6\"", dob:"1994-02-28", reach:'67"', stance:"Orthodox", slpm:2.57, strAcc:"38%", sapm:2.50, strDef:"59%", kd:0.00, tdLanded:3.58, tdAcc:"35%", tdDef:"80%", subAvg:0.42, finRate:"75%", streak:0, gym:"Galpão da Luta" },
- "Diana Belbita": { ht:"5'7\"", dob:"1996-06-26", reach:'68"', stance:"Orthodox", slpm:6.45, tdAcc:"33%", subAvg:0.2, strDef:"51%", kd:0.3, tdDef:"55%", finRate:"40%", streak:0, tdLanded:0.68, gym:"House of Champions MMA" },
+ "Diana Belbita": { ht:"5'7\"", dob:"1996-06-26", reach:'68"', stance:"Orthodox", slpm:6.45, strAcc:"42%", sapm:6.55, strDef:"52%", kd:0.17, tdLanded:0.86, tdAcc:"62%", tdDef:"64%", subAvg:0.00, finRate:"67%", streak:0, gym:"House of Champions MMA" },
  "Katlyn Cerminara": { ht:"5'9\"", dob:"1988-12-28", reach:'68"', stance:"Orthodox", slpm:4.58, tdAcc:"35%", subAvg:0.2, strDef:"55%", kd:0.1, tdDef:"67%", finRate:"42%", streak:0, tdLanded:1.28, gym:"Renzo Gracie Combat Team" },
  // ── Women's Bantamweight (final) ──
  "Nora Cornolle": { ht:"5'7\"", dob:"1989-12-06", reach:'67"', stance:"Orthodox", slpm:2.73, strAcc:"55%", sapm:2.04, strDef:"56%", kd:0.22, tdLanded:0.22, tdAcc:"11%", tdDef:"48%", subAvg:0.22, finRate:"89%", streak:0, gym:"US Metro Bizot" },
@@ -12280,13 +12280,12 @@
     { opponent: "Greg Hardy", odds: -106 }
   ],
   "Diana Belbita": [
-    { opponent: "Cory McKenna", odds: -175 },
-    { opponent: "Gloria de Paula", odds: -400 },
-    { opponent: "Piera Rodriguez", odds: 250 },
-    { opponent: "Ailin Perez", odds: 250 },
-    { opponent: "Loma Lookboonmee", odds: -200 },
-    { opponent: "Yazmin Jauregui", odds: 200 },
-    { opponent: "Vanessa Demopoulos", odds: -350 }
+    { opponent: "Dione Barbosa", odds: 750 },
+    { opponent: "Molly McCann", odds: 235 },
+    { opponent: "Karolina Kowalkiewicz", odds: 130 },
+    { opponent: "Hannah Goldy", odds: -103 },
+    { opponent: "Liana Jojua", odds: -220 },
+    { opponent: "Molly McCann", odds: -500 }
   ],
   "José Aldo": [
     { opponent: "Aiemann Zahabi", odds: -175 },
@@ -32917,6 +32916,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Diana Belbita": [
+    { icon: "🏆", title: "Former World & European Kempo Champion", detail: null },
+    { icon: "🥋", title: "\"The Warrior Princess\" — KSW & RXF title challenger; judo, kickboxing and karate background", detail: null },
+    { icon: "🥊", title: "Romanian MMA pioneer; 10 of 15 wins by stoppage (6 KO/TKO, 4 submissions)", detail: null }
+  ],
   "Puja Tomar": [
     { icon: "🏅", title: "First Indian-born fighter to win a UFC bout (def. Rayanne dos Santos at UFC Louisville, 2024)", detail: null },
     { icon: "🏆", title: "Inaugural Matrix Fight Night Women's Strawweight Champion (won vs. Bi Nguyen, 2022; defended vs. Anastasia Feofanova)", detail: null },
