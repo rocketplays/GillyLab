@@ -3809,7 +3809,7 @@
  { name: "CJ Vergara", division: "FLW", rank: "NR", record: "12-7-1", initials: "CJV", country: "USA" },
  { name: "Alonzo Menifield", division: "LHW", rank: "#15", record: "18-6-1", initials: "AM", country: "USA" },
  { name: "Kyle Daukaus", division: "LHW", rank: "NR", record: "17-4-0", initials: "KD", country: "USA" },
- { name: "Kennedy Nzechukwu", division: "HW", rank: "NR", record: "14-8-0", initials: "KN", country: "Nigeria" },
+ { name: "Kennedy Nzechukwu", division: "HW", rank: "NR", record: "14-6-1", initials: "KN", country: "Nigeria" },
  { name: "Jhonata Diniz", division: "HW", rank: "NR", record: "9-2-0", initials: "JD", country: "Brazil" },
  { name: "Marcus Buchecha", division: "HW", rank: "NR", record: "5-3-1", initials: "MB", country: "Brazil" },
  { name: "Talita Alencar", division: "WSW", rank: "NR", record: "8-1-1", initials: "TA", country: "Brazil" },
@@ -4751,7 +4751,7 @@
   "Jéssica Andrade": { ht:"5'1\"", dob:"1991-09-25", reach:'62"', stance:"Orthodox", slpm:6.37, strAcc:"49%", sapm:5.58, strDef:"54%", kd:0.37, tdLanded:2.10, tdAcc:"54%", tdDef:"75%", subAvg:0.31, finRate:"69%", streak:0, gym:"Paraná Vale Tudo" },
   "Ion Cutelaba": { ht:"6'1\"", dob:"1993-12-14", reach:'75"', stance:"Southpaw", slpm:4.13, strAcc:"44%", sapm:3.42, tdAcc:"51%", subAvg:0.27, strDef:"46%", kd:0.18, tdDef:"76%", finRate:"85%", streak:0, tdLanded:4.02, gym:"CSA Team Moldova" },
   "Cody Brundage": { ht:"6'0\"", dob:"1994-05-16", reach:'72"', stance:"Orthodox", slpm:2.50, strAcc:"51%", sapm:2.95, strDef:"51%", kd:0.48, tdLanded:1.80, tdAcc:"42%", tdDef:"67%", subAvg:0.48, finRate:"83%", streak:1, gym:"Factory X" },
-  "Kennedy Nzechukwu": { ht:"6'5\"", dob:"1992-06-13", reach:'83"', stance:"Southpaw", slpm:4.96, tdAcc:"46%", subAvg:0.4, strDef:"51%", kd:0.4, tdDef:"27%", finRate:"71%", streak:0, tdLanded:0.73, gym:"War Room MMA (2024–present)" },
+  "Kennedy Nzechukwu": { ht:"6'5\"", dob:"1992-06-13", reach:'83"', stance:"Southpaw", slpm:4.96, strAcc:"47%", sapm:4.58, strDef:"51%", kd:0.40, tdLanded:0.50, tdAcc:"45%", tdDef:"80%", subAvg:0.20, finRate:"79%", streak:0, gym:"War Room MMA" },
   "CJ Vergara": { ht:"5'6\"", dob:"1991-06-18", reach:'68"', stance:"Orthodox", slpm:5.02, strAcc:"57%", sapm:4.69, strDef:"54%", kd:0.36, tdLanded:0.00, tdAcc:"0%", tdDef:"61%", subAvg:0.18, finRate:"58%", streak:0, gym:"Pete Spratt Muay Thai" },
   "Phil Rowe": { ht:"6'3\"", dob:"1990-07-18", reach:'80"', stance:"Orthodox", slpm:3.51, tdAcc:"49%", subAvg:0.2, strDef:"54%", kd:0.2, tdDef:"33%", finRate:"55%", streak:0, tdLanded:0.52, gym:"Fusion Xcel Performance" },
   "Leon Shahbazyan": { ht:'6\'4"', dob:"1995-11-18", reach:'77"', stance:"Orthodox", slpm:6.10, strAcc:"52%", sapm:8.45, strDef:"33%", kd:1.41, tdLanded:1.41, tdAcc:"50%", subAvg:0.00, finRate:"100%", streak:0, gym:"Glendale Fighting Club" },
@@ -12417,13 +12417,23 @@
     { opponent: "Lara Procópio", odds: -120 },
   ],
   "Kennedy Nzechukwu": [
-    { opponent: "Brendson Ribeiro", odds: -175 },
-    { opponent: "Albert Duraev", odds: -175 },
-    { opponent: "Ion Cutelaba", odds: -250 },
-    { opponent: "Dustin Jacoby", odds: 350 },
-    { opponent: "Da Woon Jung", odds: -175 },
-    { opponent: "Ryan Spann", odds: 175 },
-    { opponent: "Carlos Ulberg", odds: 500 }
+    { opponent: "Marcus Buchecha", odds: -115 },
+    { opponent: "Valter Walker", odds: -225 },
+    { opponent: "Łukasz Brzeski", odds: -549 },
+    { opponent: "Chris Barnett", odds: -715 },
+    { opponent: "Ovince Saint Preux", odds: -625 },
+    { opponent: "Dustin Jacoby", odds: -159 },
+    { opponent: "Devin Clark", odds: -170 },
+    { opponent: "Ion Cuțelaba", odds: -172 },
+    { opponent: "Karl Roberson", odds: 100 },
+    { opponent: "Nicolae Negumereanu", odds: -125 },
+    { opponent: "Jung Da-un", odds: 106 },
+    { opponent: "Danilo Marques", odds: 150 },
+    { opponent: "Carlos Ulberg", odds: 200 },
+    { opponent: "Darko Stošić", odds: 110 },
+    { opponent: "Paul Craig", odds: -175 },
+    { opponent: "Dennis Bryant", odds: -700 },
+    { opponent: "Anton Berzin", odds: 280 }
   ],
   "Kanako Murata": [
     { opponent: "Maryna Moroz", odds: 200 },
@@ -32924,6 +32934,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Kennedy Nzechukwu": [
+    { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2018, R1 KO of Dennis Bryant)", detail: null },
+    { icon: "🥊", title: "\"African Savage\" — Nigerian knockout artist; 11 of 14 wins by stoppage (10 KO/TKO), incl. a flying-knee KO of Ion Cuțelaba in a 2022 main event", detail: null }
+  ],
   "CJ Vergara": [
     { icon: "🏆", title: "Former Fury FC Flyweight Champion", detail: null },
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2021, body-knee KO of Bruno Korea)", detail: null },
