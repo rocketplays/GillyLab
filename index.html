@@ -37766,6 +37766,33 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  .replace(/ł/g, 'l').replace(/ø/g, 'o').replace(/đ/g, 'd')
  .replace(/ß/g, 'ss').replace(/æ/g, 'ae').replace(/œ/g, 'oe').replace(/þ/g, 'th');
  }
+ // Reuse the same alias maps that make alternate name renditions clickable
+ // elsewhere (NAME_ALIASES / SLUG_ALIASES) so the fighter search boxes resolve
+ // an alias to the real profile — e.g. searching "King Green" surfaces Bobby
+ // Green. Built once (lazily), normalized through searchNorm so accents/case
+ // don't matter. NAME_ALIASES/SLUG_ALIASES are declared later in this script
+ // but are always initialized by the time a user types into a search box.
+ let _searchAliasPairs = null;
+ function getSearchAliasPairs() {
+ if (_searchAliasPairs) return _searchAliasPairs;
+ const pairs = [];
+ const add = (alias, canonical) => { if (alias && canonical) pairs.push({ norm: searchNorm(alias), canonical }); };
+ try { if (typeof NAME_ALIASES !== 'undefined') for (const k in NAME_ALIASES) add(k, NAME_ALIASES[k]); } catch (e) {}
+ try { if (typeof SLUG_ALIASES !== 'undefined') for (const k in SLUG_ALIASES) add(k.replace(/-/g, ' '), SLUG_ALIASES[k]); } catch (e) {}
+ _searchAliasPairs = pairs;
+ return pairs;
+ }
+ // Canonical DB names whose alias matches the normalized query `q`. mode
+ // 'starts' requires the alias to start with q; 'includes' allows a substring.
+ function aliasCanonicalMatches(q, mode) {
+ if (!q) return [];
+ const out = [], seen = new Set();
+ for (const p of getSearchAliasPairs()) {
+ const hit = mode === 'starts' ? p.norm.startsWith(q) : p.norm.includes(q);
+ if (hit && !seen.has(p.canonical)) { seen.add(p.canonical); out.push(p.canonical); }
+ }
+ return out;
+ }
  function filterSearch(query) {
  const results = document.getElementById('searchResults');
  let filtered;
@@ -37779,6 +37806,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  searchNorm(f.division).includes(q) ||
  (f.country && searchNorm(f.country).includes(q))
  );
+ // Also surface fighters matched only by an alias (e.g. "King Green" -> Bobby Green).
+ const _aliasNames = aliasCanonicalMatches(q, 'includes');
+ if (_aliasNames.length) {
+ const _present = new Set(filtered.map(f => f.name));
+ _aliasNames.forEach(nm => {
+ if (!_present.has(nm)) FIGHTERS.filter(f => f.name === nm).forEach(f => { filtered.push(f); _present.add(f.name); });
+ });
+ }
  // Deduplicate by name (some fighters appear in multiple divisions)
  const seen = new Set();
  filtered = filtered.filter(f => {
@@ -40521,13 +40556,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function renderMatches() {
       const q = searchNorm(input.value.trim());
       if (!q) { hideList(); return; }
+      const roster = getRoster();
       const starts = [];
       const contains = [];
-      for (const name of getRoster()) {
+      for (const name of roster) {
         const ln = searchNorm(name);
         if (ln.startsWith(q)) starts.push(name);
         else if (ln.includes(q)) contains.push(name);
       }
+      // Include fighters matched only by an alias (e.g. "King Green" -> Bobby Green).
+      const _rosterSet = new Set(roster);
+      const _already = new Set(starts.concat(contains));
+      aliasCanonicalMatches(q, 'includes').forEach(nm => {
+        if (_rosterSet.has(nm) && !_already.has(nm)) { contains.push(nm); _already.add(nm); }
+      });
       const matches = starts.concat(contains).slice(0, 8);
       if (matches.length === 0) { hideList(); return; }
       // Only recompute the fixed position when the list is transitioning from
