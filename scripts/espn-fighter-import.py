@@ -24,6 +24,12 @@ Usage:
   # build the candidate list of ex-UFC fighters not in the roster:
   python3 scripts/espn-fighter-import.py --discover --limit 50
 
+  # bulk-import every ex-UFC fighter not in the roster (resume + manifest):
+  python3 scripts/espn-fighter-import.py --process-all --min-coverage 0.6
+
+  # VERIFY an existing roster fighter (diff DB vs ESPN; no writes):
+  python3 scripts/espn-fighter-import.py --verify "Cub Swanson"
+
 Run from the repo root. ESPN's core API (JSON) + the HTML stats/history pages
 are the sources; both are already proven to work in fighter-lookup.py.
 """
@@ -116,6 +122,146 @@ def roster_slugs():
                 block = html[i:j + 1]; break
     names = re.findall(r'name:\s*"([^"]+)"', block)
     return {name_to_slug(n) for n in names}, set(names)
+
+# ---------------- LOCAL (index.html) parsing for --verify ----------------
+def _const_block(html, const):
+    i = html.index("const %s = " % const)
+    k = i + len("const %s = " % const)
+    while html[k] not in "[{": k += 1
+    oc = html[k]; cc = "]" if oc == "[" else "}"
+    depth = 0
+    for j in range(k, len(html)):
+        if html[j] == oc: depth += 1
+        elif html[j] == cc:
+            depth -= 1
+            if depth == 0: return html[k:j + 1]
+    return ""
+
+def _fighter_array(block, name):
+    """Extract the [...] that follows  "Name":  inside a const block."""
+    key = '"%s":' % name
+    i = block.find(key)
+    if i == -1: return ""
+    k = block.find("[", i)
+    if k == -1: return ""
+    depth = 0
+    for j in range(k, len(block)):
+        if block[j] == "[": depth += 1
+        elif block[j] == "]":
+            depth -= 1
+            if depth == 0: return block[k:j + 1]
+    return ""
+
+def local_fighter(name):
+    html = open(INDEX, encoding="utf-8").read()
+    out = {"record": None, "stats": {}, "history": []}
+    m = re.search(r'name:\s*"%s".*?record:\s*"([\d-]+)"' % re.escape(name), html)
+    if m: out["record"] = m.group(1)
+    # stats object
+    sblock = _const_block(html, "FIGHTER_STATS")
+    sm = re.search(r'"%s":\s*\{(.*?)\}' % re.escape(name), sblock, re.S)
+    if sm:
+        for k, v in re.findall(r'(\w+)\s*:\s*(\'[^\']*\'|"[^"]*"|null|[\d.]+)', sm.group(1)):
+            out["stats"][k] = v.strip("'\"")
+    # fight history array
+    hblock = _const_block(html, "FIGHT_HISTORY")
+    arr = _fighter_array(hblock, name)
+    for row in re.findall(r"\{(.*?)\}", arr, re.S):
+        d = {}
+        for k, v in re.findall(r'(\w+)\s*:\s*("[^"]*"|\d+)', row):
+            d[k] = v.strip('"')
+        if d.get("date"): out["history"].append(d)
+    return out
+
+# ---------------- verify (diff LOCAL vs ESPN) ----------------
+def verify(sid):
+    bio = get_json("%s/athletes/%s" % (CORE, sid))
+    if not bio:
+        print("could not fetch ESPN bio for", sid); return
+    name = bio.get("displayName") or bio.get("fullName")
+    loc = local_fighter(name)
+    if not loc["history"] and not loc["stats"]:
+        print("!! '%s' not found in index.html (exact-name match). Check spelling." % name); return
+
+    espn_hist = parse_history(sid)
+    stated = espn_stated_record(sid)
+    derived = None
+    w = sum(1 for f in espn_hist if result_letter(f["result"]) == "W")
+    l = sum(1 for f in espn_hist if result_letter(f["result"]) == "L")
+    dr = sum(1 for f in espn_hist if result_letter(f["result"]) == "D")
+    derived = "%d-%d-%d" % (w, l, dr)
+
+    print("=== VERIFY: %s (ESPN %s) ===" % (name, sid))
+    rec_flag = "OK" if loc["record"] in (stated, derived) else "!! CHECK"
+    print("record   : DB %s | ESPN-stated %s | ESPN-derived %s   %s"
+          % (loc["record"], stated, derived, rec_flag))
+
+    # ---- fight history diff: match by opponent slug, then by date for the
+    # remainder (so a name-spelling variant on the same date is reported as a
+    # spelling diff, not a phantom missing+extra pair) ----
+    print("history  : DB %d fights | ESPN %d fights" % (len(loc["history"]), len(espn_hist)))
+    matched, namediffs = [], []
+    esp_by_slug = {}
+    for f in espn_hist:
+        esp_by_slug.setdefault(name_to_slug(f.get("opponent", "")), []).append(f)
+    rem_loc = []
+    for lf in loc["history"]:
+        s = name_to_slug(lf.get("opponent", ""))
+        if esp_by_slug.get(s):
+            matched.append((lf, esp_by_slug[s].pop(0)))
+        else:
+            rem_loc.append(lf)
+    rem_esp = [f for v in esp_by_slug.values() for f in v]
+    esp_by_date = {}
+    for f in rem_esp:
+        esp_by_date.setdefault(f.get("date", ""), []).append(f)
+    extra = []
+    for lf in rem_loc:
+        bucket = esp_by_date.get(lf.get("date", ""))
+        if bucket:
+            namediffs.append((lf, bucket.pop(0)))
+        else:
+            extra.append(lf)
+    missing = [f for v in esp_by_date.values() for f in v]
+
+    if missing:
+        print("  MISSING from DB (on ESPN — possible omission):")
+        for f in missing: print("     +", f["date"], f["opponent"], f["result"], f["method"])
+    if extra:
+        print("  IN DB but NOT on ESPN (verify / possible fabrication):")
+        for f in extra: print("     -", f.get("date"), f.get("opponent"), f.get("result"), f.get("method"))
+    if namediffs:
+        print("  opponent NAME differs (same date — likely just spelling):")
+        for a, b in namediffs: print("     ~ %s: DB '%s' / ESPN '%s'" % (a.get("date"), a.get("opponent"), b["opponent"]))
+    fdiffs = []
+    for a, b in matched:
+        al, bl = result_letter(a.get("result", "")), result_letter(b.get("result", ""))
+        if al != bl:
+            fdiffs.append("%s %s: result DB %s / ESPN %s" % (a.get("date"), a.get("opponent"), al, bl))
+        if a.get("round") and b.get("round") and str(a["round"]) != re.sub(r"\D", "", b["round"]):
+            fdiffs.append("%s %s: round DB %s / ESPN %s" % (a.get("date"), a.get("opponent"), a["round"], b["round"]))
+    if fdiffs:
+        print("  FIELD diffs on matched fights:")
+        for x in fdiffs: print("     ~", x)
+    if not (missing or extra or namediffs or fdiffs):
+        print("  fight history: matches ESPN")
+
+    # ---- stats side-by-side (ESPN-computed; volume stats are approximate) ----
+    roster, _ = roster_slugs()
+    r = process(sid, roster_minus(roster, name), verbose=False, write=False, fetch_photo=False)
+    if r and r.get("fighter_stats"):
+        es = r["fighter_stats"]
+        print("stats    : DB vs ESPN-computed (volume stats ~5-20% off by definition)")
+        for k in ["slpm","strAcc","sapm","strDef","kd","tdLanded","tdAcc","tdDef","subAvg"]:
+            dv = loc["stats"].get(k, "—"); ev = es.get(k)
+            flag = "" if str(dv) == str(ev) else "  <- differs"
+            print("    %-9s DB %-7s ESPN %-7s%s" % (k, dv, ev, flag))
+        print("  (opponent-data coverage %.0f%% — low coverage = noisier sapm/strDef/tdDef)"
+              % (100 * r.get("coverage", 0)))
+
+def roster_minus(roster, name):
+    """roster set without this fighter, so process() won't skip them as in-roster."""
+    return roster - {name_to_slug(name)}
 
 # ---------------- per-fight stat tables (HTML) ----------------
 DATE_RE = re.compile(r"^[A-Z][a-z]{2} \d{1,2}, \d{4}$")
@@ -235,7 +381,7 @@ def norm_reach(r):
     return r.strip() if r else r
 
 # ---------------- main per-fighter processing ----------------
-def process(sid, roster, verbose=True, min_coverage=0.0):
+def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo=True):
     bio = get_json("%s/athletes/%s" % (CORE, sid))
     if not bio:
         if verbose: print("  !! could not fetch bio for id", sid)
@@ -354,7 +500,7 @@ def process(sid, roster, verbose=True, min_coverage=0.0):
     # ---- photo ----
     photo_status = "no headshot on ESPN"
     hs = (bio.get("headshot") or {}).get("href")
-    if hs:
+    if hs and fetch_photo:
         os.makedirs(PHOTOS, exist_ok=True)
         dest = os.path.join(PHOTOS, slug + ".png")
         subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", dest, hs])
@@ -385,9 +531,10 @@ def process(sid, roster, verbose=True, min_coverage=0.0):
                   record_check=record_check)
 
     # ---- write paste-ready output ----
-    os.makedirs(OUTDIR, exist_ok=True)
-    write_snippet(result)
-    json.dump(result, open(os.path.join(OUTDIR, slug + ".json"), "w"), indent=2)
+    if write:
+        os.makedirs(OUTDIR, exist_ok=True)
+        write_snippet(result)
+        json.dump(result, open(os.path.join(OUTDIR, slug + ".json"), "w"), indent=2)
 
     if verbose:
         print_summary(result)
@@ -533,6 +680,8 @@ if __name__ == "__main__":
     ap.add_argument("--espn-id")
     ap.add_argument("--name")
     ap.add_argument("--discover", action="store_true")
+    ap.add_argument("--verify", metavar="NAME",
+                    help="diff an existing roster fighter's DB entry against ESPN (no writes)")
     ap.add_argument("--process-all", action="store_true",
                     help="run the bulk import over all ex-UFC fighters not in roster")
     ap.add_argument("--min-coverage", type=float, default=0.5,
@@ -544,6 +693,10 @@ if __name__ == "__main__":
 
     if a.discover:
         discover(a.limit); sys.exit(0)
+    if a.verify:
+        sid = a.espn_id or find_id_by_name(a.verify)
+        if not sid: print("no ESPN match for", a.verify); sys.exit(1)
+        verify(sid); sys.exit(0)
     if a.process_all:
         process_all(a.min_coverage, a.limit, a.sleep); sys.exit(0)
 
