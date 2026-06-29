@@ -3527,6 +3527,7 @@
  { name: "Cameron Smotherman", division: "BW", rank: "NR", record: "12-7-0", initials: "CSM", country: "USA" },
  { name: "Malcolm Wellmaker", division: "BW", rank: "NR", record: "10-2-0", initials: "MWE", country: "USA" },
  { name: "Gaston Bolanos", division: "BW", rank: "NR", record: "9-5-0", initials: "GBO", country: "Peru" },
+ { name: "Abdul Hussein", division: "BW", rank: "NR", record: "15-2-0", initials: "AHU", country: "Finland" },
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
  { name: "Lone'er Kavanagh", division: "FLW", rank: "NR", record: "10-1-0", initials: "LKV", country: "UK" },
@@ -3959,6 +3960,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Abdul Hussein": { ht:"5'5\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:8, gym:"Espoon Kehähait" },
   "Dom Mar Fan": { ht:"5'11\"", dob:"2000-03-19", reach:'75"', stance:"Orthodox", slpm:3.43, strAcc:"56%", sapm:2.31, strDef:"44%", kd:0.00, tdLanded:1.84, tdAcc:"25%", tdDef:"63%", subAvg:0.31, finRate:"44%", streak:0, gym:"Team Compton Training Centre" },
   "Kody Steele": { ht:"5'9\"", dob:"1995-04-21", reach:'71"', stance:"Orthodox", slpm:3.85, strAcc:"33%", sapm:6.20, strDef:"52%", kd:0.53, tdLanded:1.07, tdAcc:"25%", tdDef:"100%", subAvg:0.53, finRate:"75%", streak:1, gym:"Syndicate MMA" },
   "Ben Johnston": { ht:"6'4\"", dob:"1990-10-11", reach:'75"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:0, gym:"The Fight Centre" },
@@ -6335,6 +6337,14 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Abdul Hussein": [
+    { opponent: "Gift Walker", odds: -450 },
+    { opponent: "Eduardo Mora", odds: -3333 },
+    { opponent: "Hansraj Samota", odds: -2000 },
+    { opponent: "Mahmoud Abdel Raouf", odds: -350 },
+    { opponent: "Yari Orsini", odds: -675 },
+    { opponent: "Ilkhom Aliev", odds: -595 }
+  ],
   "Dom Mar Fan": [
     { opponent: "Kody Steele", odds: 185 },
     { opponent: "Sangwook Kim", odds: -155 },
@@ -14510,6 +14520,25 @@
 };
 
 const FIGHT_HISTORY = {
+  "Abdul Hussein": [
+    { date: "Dec 26, 2025", opponent: "Tyson Nam", result: "W", method: "KO (Punch)", round: 1, time: "4:22", event: "Ice Cage 6", org: "Ice Cage Fighting" },
+    { date: "Oct 22, 2025", opponent: "Gift Walker", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:47", event: "UAE Warriors 64", org: "UAE Warriors" },
+    { date: "Jun 12, 2025", opponent: "Sami Yahia", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "3:44", event: "UAE Warriors 59", org: "UAE Warriors" },
+    { date: "Feb 22, 2025", opponent: "Eduardo Mora", result: "W", method: "Submission (Bulldog Choke)", round: 2, time: "2:55", event: "UAE Warriors 58", org: "UAE Warriors" },
+    { date: "Sep 28, 2024", opponent: "Hansraj Samota", result: "W", method: "TKO (Punches)", round: 2, time: "4:25", event: "UAE Warriors 54", org: "UAE Warriors" },
+    { date: "Jul 28, 2024", opponent: "Mahmoud Abdel Raouf", result: "W", method: "Technical Submission (Rear-Naked Choke)", round: 1, time: "3:40", event: "UAE Warriors 52", org: "UAE Warriors" },
+    { date: "Nov 11, 2023", opponent: "Carlos Eduardo de Azevedo", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "1:52", event: "Hamara MMA Vol. 4", org: "Hamara MMA" },
+    { date: "Oct 14, 2023", opponent: "Ruslan Mammadov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:44", event: "Carelia Fight 17", org: "Carelia Fight" },
+    { date: "Mar 25, 2021", opponent: "Muhammad Mokaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 49", org: "BRAVE CF" },
+    { date: "Dec 7, 2019", opponent: "Martin De Beer", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "2:10", event: "Brave CF 31", org: "BRAVE CF" },
+    { date: "Mar 15, 2019", opponent: "John Cris Corton", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "N/A", event: "Brave CF 22", org: "BRAVE CF" },
+    { date: "Dec 8, 2018", opponent: "Sylvester Chipfumbu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 19", org: "BRAVE CF" },
+    { date: "Mar 2, 2018", opponent: "Nawras Abzakh", result: "L", method: "Technical Submission (Guillotine Choke)", round: 1, time: "1:30", event: "Brave CF 10", org: "BRAVE CF" },
+    { date: "Nov 25, 2017", opponent: "Yari Orsini", result: "W", method: "TKO (Elbows and Punches)", round: 1, time: "4:37", event: "Cage 41", org: "Cage" },
+    { date: "Sep 9, 2017", opponent: "Ilkhom Aliev", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:28", event: "Cage 40", org: "Cage" },
+    { date: "Feb 18, 2017", opponent: "Stefan Serghei", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:40", event: "Cage 38", org: "Cage" },
+    { date: "Nov 26, 2016", opponent: "Andre Colazingari", result: "W", method: "TKO (Elbows)", round: 2, time: "1:16", event: "Cage 37", org: "Cage" }
+  ],
   "Dom Mar Fan": [
     { date: "May 2, 2026", opponent: "Kody Steele", result: "L", method: "Submission (Heel hook)", round: 1, time: "3:56", event: "UFC Fight Night: Della Maddalena vs. Prates", org: "UFC" },
     { date: "Feb 1, 2026", opponent: "Sangwook Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325", org: "UFC" },
@@ -32678,6 +32707,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Abdul Hussein": [
+    { icon: "🏆", title: "Ice Cage Fighting Bantamweight Champion", detail: null },
+    { icon: "🥇", title: "IMMAF Amateur MMA World Champion (2016, –61.2 kg) — first refugee to win an IMMAF world title", detail: null },
+    { icon: "🏅", title: "Entered the UFC on an 8-fight win streak, all by finish", detail: null },
+    { icon: "🤼", title: "\"Abba\" — grappling-heavy finisher; 9 of 15 pro wins by submission (93% finish rate)", detail: null }
+  ],
   "Carol Foro": [
     { icon: "🏆", title: "Multiple-time Brazilian regional champion (Jungle Fight, Soldado Combat)", detail: null },
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2025, def. Shanelle Dyer)", detail: null },
