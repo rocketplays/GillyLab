@@ -3391,6 +3391,7 @@
  { name: "Manoel Sousa", division: "LW", rank: "NR", record: "14-1-0", initials: "MNS", country: "Brazil" },
  { name: "Bolaji Oki", division: "LW", rank: "NR", record: "10-4-0", initials: "BOK", country: "Belgium" },
  { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
+ { name: "Alex Reyes", division: "LW", rank: "NR", record: "13-5-0", initials: "ARE", country: "USA" },
  // ─── WELTERWEIGHT (extended) ───
  { name: "Shavkat Rakhmonov", division: "WW", rank: "NR", record: "19-0-0", initials: "SHR", country: "Kazakhstan" },
  { name: "Carlston Harris", division: "WW", rank: "NR", record: "19-8-0", initials: "CHA", country: "Guyana" },
@@ -3962,6 +3963,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Alex Reyes": { ht:"5'11\"", dob:"1986-10-02", reach:null, stance:null, slpm:4.46, strAcc:"47%", sapm:6.92, strDef:"48%", kd:0.00, tdLanded:1.50, tdAcc:null, tdDef:null, subAvg:0.00, finRate:"100%", streak:0, gym:"Cage Combat Academy / Pinnacle MMA" },
   "Aleksandre Topuria": { ht:"5'7\"", dob:"1996-01-28", reach:'68"', stance:"Orthodox", slpm:2.93, strAcc:"55%", sapm:2.57, strDef:"69%", kd:0.00, tdLanded:1.50, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:5, gym:"Climent Club" },
   "Alatengheili": { ht:"5'5\"", dob:"1991-12-14", reach:'66"', stance:"Orthodox", slpm:2.82, strAcc:"33%", sapm:5.12, strDef:"57%", kd:0.12, tdLanded:1.74, tdAcc:"44%", tdDef:"75%", subAvg:0.00, finRate:"47%", streak:0, gym:"Fight Ready" },
   "Abdul Hussein": { ht:"5'5\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:8, gym:"Espoon Kehähait" },
@@ -6341,6 +6343,11 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Alex Reyes": [
+    { opponent: "Tom Nolan", odds: 750 },
+    { opponent: "Charlie Campbell", odds: 375 },
+    { opponent: "Mike Perry", odds: 340 }
+  ],
   "Aleksandre Topuria": [
     { opponent: "Bekzat Almakhan", odds: -155 },
     { opponent: "Colby Thicknesse", odds: -350 }
@@ -14539,6 +14546,26 @@
 };
 
 const FIGHT_HISTORY = {
+  "Alex Reyes": [
+    { date: "Aug 17, 2024", opponent: "Tom Nolan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305", org: "UFC" },
+    { date: "Sep 16, 2023", opponent: "Charlie Campbell", result: "L", method: "TKO (Punches)", round: 1, time: "3:38", event: "UFC Fight Night: Grasso vs. Shevchenko 2", org: "UFC" },
+    { date: "Sep 16, 2017", opponent: "Mike Perry", result: "L", method: "KO (Knee)", round: 1, time: "1:19", event: "UFC Fight Night: Rockhold vs. Branch", org: "UFC" },
+    { date: "Aug 24, 2017", opponent: "Gil Guardado", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "1:06", event: "Fight Club OC 48", org: "FCOC" },
+    { date: "Aug 29, 2015", opponent: "Thomas Noel", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "1:40", event: "KOTC: Bitter Rivals", org: "KOTC" },
+    { date: "Mar 15, 2015", opponent: "Joshua Aveles", result: "W", method: "Submission (Arm-Triangle Choke)", round: 4, time: "2:26", event: "KOTC: Coming Home", org: "KOTC" },
+    { date: "Dec 4, 2014", opponent: "Victor Meza", result: "W", method: "Submission (Rear-Naked Choke)", round: 4, time: "4:43", event: "KOTC: Fisticuffs", org: "KOTC" },
+    { date: "Oct 2, 2014", opponent: "Quinton McCottrell", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:53", event: "KOTC: Battle For The Belt", org: "KOTC" },
+    { date: "Jun 28, 2014", opponent: "Anthony Ross", result: "W", method: "TKO (Punches)", round: 1, time: "2:15", event: "Gladiator Challenge: Iron Fist", org: "Gladiator Challenge" },
+    { date: "Feb 26, 2012", opponent: "Erin Belcher", result: "W", method: "TKO (Punches)", round: 1, time: "2:15", event: "Gladiator Challenge: Bombs Away", org: "Gladiator Challenge" },
+    { date: "Mar 25, 2011", opponent: "Darren Smith Jr.", result: "W", method: "TKO (Punches)", round: 1, time: "1:15", event: "CITC 8: Chaos in the Cage 8", org: "CITC" },
+    { date: "Mar 27, 2010", opponent: "George Sanchez", result: "W", method: "TKO (Punches)", round: 1, time: "2:20", event: "KFN: Karma Fight Nights", org: "KFN" },
+    { date: "Jun 7, 2009", opponent: "Alejandro Bautista", result: "W", method: "TKO (Punches)", round: 1, time: "0:28", event: "Fight Circuit MMA: Victorious", org: "Fight Circuit" },
+    { date: "Mar 28, 2009", opponent: "Mitchell Fredricks", result: "W", method: "KO (Punches)", round: 1, time: "2:51", event: "SJW 2: Slammin Jammin Weekend 2", org: "SJW" },
+    { date: "May 10, 2008", opponent: "Daniel McWilliams", result: "W", method: "TKO", round: 1, time: "N/A", event: "CITC 5: Chaos in the Cage 5", org: "CITC" },
+    { date: "Jan 18, 2008", opponent: "Ray Olmos", result: "W", method: "KO", round: 1, time: "1:04", event: "CITC 4: Chaos in the Cage 4", org: "CITC" },
+    { date: "Nov 3, 2007", opponent: "Josh McDonald", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RF: Unleashed Fury", org: "RF" },
+    { date: "Sep 15, 2007", opponent: "Daniel Dias Nova", result: "L", method: "TKO", round: 1, time: "2:37", event: "CITC 3: Chaos in the Cage 3", org: "CITC" }
+  ],
   "Aleksandre Topuria": [
     { date: "Nov 22, 2025", opponent: "Bekzat Almakhan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker", org: "UFC" },
     { date: "Feb 8, 2025", opponent: "Colby Thicknesse", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
@@ -32767,6 +32794,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Alex Reyes": [
+    { icon: "🥋", title: "IBJJF No-Gi World Champion (purple belt, absolute division)", detail: null },
+    { icon: "🥊", title: "\"The Executioner\" — all 13 pro wins by finish (9 KO/TKO, 4 submission)", detail: null },
+    { icon: "🤼", title: "Older brother of UFC light heavyweight title challenger Dominick Reyes", detail: null }
+  ],
   "Aleksandre Topuria": [
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt (promoted 2018, Climent Club)", detail: null },
     { icon: "🤼", title: "\"El Conquistador\" — Greco-Roman wrestling base; older brother of UFC two-division champion Ilia Topuria", detail: null }
