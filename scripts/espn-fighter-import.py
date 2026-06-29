@@ -167,8 +167,14 @@ def local_fighter(name):
     sblock = _const_block(html, "FIGHTER_STATS")
     sm = re.search(r'"%s":\s*\{(.*?)\}' % re.escape(name), sblock, re.S)
     if sm:
-        for k, v in re.findall(r'(\w+)\s*:\s*(\'[^\']*\'|"[^"]*"|null|[\d.]+)', sm.group(1)):
-            out["stats"][k] = v.strip("'\"")
+        for k, v in re.findall(r'(\w+)\s*:\s*("(?:\\.|[^"\\])*"|\'[^\']*\'|null|[\d.]+)', sm.group(1)):
+            if v.startswith('"'):
+                val = v[1:-1].replace('\\"', '"').replace("\\\\", "\\")
+            elif v.startswith("'"):
+                val = v[1:-1]
+            else:
+                val = v
+            out["stats"][k] = val
     # fight history array
     hblock = _const_block(html, "FIGHT_HISTORY")
     arr = _fighter_array(hblock, name)
@@ -201,6 +207,23 @@ def verify(sid):
     rec_flag = "OK" if loc["record"] in (stated, derived) else "!! CHECK"
     print("record   : DB %s | ESPN-stated %s | ESPN-derived %s   %s"
           % (loc["record"], stated, derived, rec_flag))
+
+    # ---- bio diff (ESPN-verify ht/dob/reach/stance; gym informational) ----
+    ebio = {"ht": norm_ht(bio.get("displayHeight")), "dob": (bio.get("dateOfBirth") or "")[:10] or None,
+            "reach": norm_reach(bio.get("displayReach")), "stance": (bio.get("stance") or {}).get("text"),
+            "gym": (bio.get("association") or {}).get("name")}
+    bio_lines = []
+    for k in ["ht", "dob", "reach", "stance"]:
+        dv = loc["stats"].get(k, "—"); ev = ebio.get(k)
+        if ev and str(dv) != str(ev):
+            bio_lines.append("    %-7s DB %-9s ESPN %-9s  <- CHECK" % (k, dv, ev))
+    gdv = loc["stats"].get("gym", "—")
+    if ebio.get("gym") and str(gdv) != str(ebio["gym"]):
+        bio_lines.append("    %-7s DB %-22s ESPN %-22s  (gym often differs — keep DB)" % ("gym", gdv, ebio["gym"]))
+    if bio_lines:
+        print("bio      :"); [print(x) for x in bio_lines]
+    else:
+        print("bio      : ht/dob/reach/stance match ESPN")
 
     # ---- fight history diff: match by opponent slug, then by date for the
     # remainder (so a name-spelling variant on the same date is reported as a
@@ -244,6 +267,9 @@ def verify(sid):
         al, bl = result_letter(a.get("result", "")), result_letter(b.get("result", ""))
         if al != bl:
             fdiffs.append("%s %s: result DB %s / ESPN %s" % (a.get("date"), a.get("opponent"), al, bl))
+        am, bm = meth_cat(a.get("method", "")), meth_cat(b.get("method", ""))
+        if am and bm and am != bm:
+            fdiffs.append("%s %s: method DB %s / ESPN %s" % (a.get("date"), a.get("opponent"), a.get("method"), b.get("method")))
         if a.get("round") and b.get("round") and str(a["round"]) != re.sub(r"\D", "", b["round"]):
             fdiffs.append("%s %s: round DB %s / ESPN %s" % (a.get("date"), a.get("opponent"), a["round"], b["round"]))
     if fdiffs:
@@ -278,6 +304,18 @@ def verify(sid):
 def roster_minus(roster, name):
     """roster set without this fighter, so process() won't skip them as in-roster."""
     return roster - {name_to_slug(name)}
+
+def meth_cat(m):
+    """Coarse finish category so 'Submission (RNC)' vs 'Submission' don't false-flag;
+    only a real category mismatch (e.g. DB Decision vs ESPN KO) is reported.
+    KO/TKO is checked before submission so 'TKO (submission to punches)' -> KO."""
+    m = (m or "").lower()
+    if "decision" in m: return "DEC"
+    if "no contest" in m or m.strip() in ("nc", "n/c"): return "NC"
+    if "draw" in m: return "DRAW"
+    if "tko" in m or "knockout" in m or re.search(r"\bko\b", m): return "KO"
+    if "submission" in m or "choke" in m or "tap" in m: return "SUB"
+    return ""
 
 # ---------------- per-fight stat tables (HTML) ----------------
 DATE_RE = re.compile(r"^[A-Z][a-z]{2} \d{1,2}, \d{4}$")
