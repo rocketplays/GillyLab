@@ -4375,7 +4375,7 @@
  "Melissa Gatto": { ht:"5'5\"", dob:"1996-05-02", reach:'69"', stance:"Orthodox", slpm:3.78, strAcc:"50%", sapm:2.84, strDef:"54%", kd:0.24, tdLanded:1.47, tdAcc:"27%", tdDef:"64%", subAvg:0.49, finRate:"78%", streak:0, gym:"KO Squad MMA" },
  "Eduarda Moura": { ht:"5'6\"", dob:"1994-02-28", reach:'67"', stance:"Orthodox", slpm:2.57, strAcc:"38%", sapm:2.50, strDef:"59%", kd:0.00, tdLanded:3.58, tdAcc:"35%", tdDef:"80%", subAvg:0.42, finRate:"75%", streak:0, gym:"Galpão da Luta" },
  "Diana Belbita": { ht:"5'7\"", dob:"1996-06-26", reach:'68"', stance:"Orthodox", slpm:6.45, strAcc:"42%", sapm:6.55, strDef:"52%", kd:0.17, tdLanded:0.86, tdAcc:"62%", tdDef:"64%", subAvg:0.00, finRate:"67%", streak:0, gym:"House of Champions MMA" },
- "Katlyn Cerminara": { ht:"5'9\"", dob:"1988-12-28", reach:'68"', stance:"Orthodox", slpm:4.58, tdAcc:"35%", subAvg:0.2, strDef:"55%", kd:0.1, tdDef:"67%", finRate:"42%", streak:0, tdLanded:1.28, gym:"Renzo Gracie Combat Team" },
+ "Katlyn Cerminara": { ht:"5'9\"", dob:"1988-12-28", reach:'68"', stance:"Orthodox", slpm:4.58, strAcc:"35%", sapm:4.48, strDef:"62%", kd:0.06, tdLanded:0.31, tdAcc:"16%", tdDef:"50%", subAvg:0.31, finRate:"17%", streak:0, gym:"Renzo Gracie Academy" },
  // ── Women's Bantamweight (final) ──
  "Nora Cornolle": { ht:"5'7\"", dob:"1989-12-06", reach:'67"', stance:"Orthodox", slpm:2.73, strAcc:"55%", sapm:2.04, strDef:"56%", kd:0.22, tdLanded:0.22, tdAcc:"11%", tdDef:"48%", subAvg:0.22, finRate:"89%", streak:0, gym:"US Metro Bizot" },
  "Mayra Bueno Silva": { ht:"5'6\"", dob:"1991-08-22", reach:'66.5"', stance:"Orthodox", slpm:3.71, strAcc:"57%", sapm:4.90, strDef:"52%", kd:0.00, tdLanded:0.51, tdAcc:"24%", tdDef:"64%", subAvg:1.33, finRate:"80%", streak:0, gym:"American Top Team" },
@@ -13427,15 +13427,23 @@
     { opponent: "Loma Lookboonmee", odds: 250 }
   ],
   "Katlyn Cerminara": [
-    { opponent: "Sabina Mazo", odds: 300 },
-    { opponent: "Maycee Barber", odds: 350 },
-    { opponent: "Manon Fiorot", odds: 400 },
-    { opponent: "Amanda Ribas", odds: -175 },
-    { opponent: "Jennifer Maia", odds: -350 },
-    { opponent: "Viviane Araújo", odds: -300 },
-    { opponent: "Cynthia Calvillo", odds: -400 },
-    { opponent: "Jessica Andrade", odds: 350 },
-    { opponent: "Valentina Shevchenko", odds: 800 }
+    { opponent: "Maycee Barber", odds: 170 },
+    { opponent: "Manon Fiorot", odds: 195 },
+    { opponent: "Amanda Ribas", odds: -172 },
+    { opponent: "Jennifer Maia", odds: -182 },
+    { opponent: "Viviane Araújo", odds: -124 },
+    { opponent: "Cynthia Calvillo", odds: 225 },
+    { opponent: "Jéssica Andrade", odds: 155 },
+    { opponent: "Antonina Shevchenko", odds: 125 },
+    { opponent: "Valentina Shevchenko", odds: 700 },
+    { opponent: "Jennifer Maia", odds: 137 },
+    { opponent: "Joanne Calderwood", odds: -105 },
+    { opponent: "Jessica Eye", odds: -213 },
+    { opponent: "Alexis Davis", odds: -156 },
+    { opponent: "Mara Romero Borella", odds: -190 },
+    { opponent: "Irene Aldana", odds: -133 },
+    { opponent: "Liz Carmouche", odds: -160 },
+    { opponent: "Lauren Murphy", odds: 160 }
   ],
   "Lucas Alexander": [
     { opponent: "Bogdan Grad", odds: -115 },
@@ -32916,6 +32924,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Katlyn Cerminara": [
+    { icon: "🏆", title: "UFC Women's Flyweight title challenger (vs. Valentina Shevchenko, UFC 247, 2020)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu brown belt under Renzo Gracie", detail: null },
+    { icon: "🏅", title: "Perennial top-five UFC flyweight contender (formerly Katlyn Chookagian); 18 career wins", detail: null }
+  ],
   "Diana Belbita": [
     { icon: "🏆", title: "Former World & European Kempo Champion", detail: null },
     { icon: "🥋", title: "\"The Warrior Princess\" — KSW & RXF title challenger; judo, kickboxing and karate background", detail: null },
