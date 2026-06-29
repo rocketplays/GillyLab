@@ -90,6 +90,27 @@ def get_html(url, tries=3):
         time.sleep(1.5 * (n + 1))
     return ""
 
+def espn_aggregate_stats(sid):
+    """Fallback for fighters whose per-fight stat tables don't exist on ESPN
+    (e.g. fighters who've left the UFC). ESPN's aggregate statistics endpoint
+    still carries career strike accuracy / TD accuracy / SLpM / TD avg / sub avg
+    — but NOT strikes-absorbed or knockdowns (those live only in the per-fight
+    tables). Returns the fields it has; sapm/kd stay unavailable."""
+    d = get_json("%s/athletes/%s/statistics?lang=en&region=us" % (CORE, sid))
+    if not d:
+        return {}
+    g = {s.get("name"): s.get("value") for c in d.get("splits", {}).get("categories", [])
+         for s in c.get("stats", [])}
+    def pct(v): return ("%d%%" % int(float(v) + 0.5)) if v is not None else None
+    def num(v): return round(float(v), 2) if v is not None else None
+    out = {}
+    if g.get("strikeAccuracy")   is not None: out["strAcc"]   = pct(g["strikeAccuracy"])
+    if g.get("takedownAccuracy") is not None: out["tdAcc"]    = pct(g["takedownAccuracy"])
+    if g.get("strikeLPM")        is not None: out["slpm"]     = num(g["strikeLPM"])
+    if g.get("takedownAvg")      is not None: out["tdLanded"] = num(g["takedownAvg"])
+    if g.get("submissionAvg")    is not None: out["subAvg"]   = num(g["submissionAvg"])
+    return out
+
 def espn_stated_record(sid):
     """ESPN's own W-L-D for cross-checking the history-derived record (tripwire
     for a missed or extra fight). Returns e.g. '26-2-0' or None."""
@@ -299,6 +320,8 @@ def verify(sid):
     if r and r.get("fighter_stats"):
         es = r["fighter_stats"]
         print("stats    : policy = ESPN-verify {strAcc, sapm, kd, tdAcc}; keep DB {slpm, strDef, tdLanded, tdDef, subAvg}")
+        if r.get("stats_source", "").startswith("aggregate"):
+            print("  NOTE: %s" % r["stats_source"])
         print("  --- ESPN-verify (apply these) ---")
         for k in VERIFY_FIELDS:
             dv = loc["stats"].get(k, "—"); ev = es.get(k)
@@ -558,6 +581,18 @@ def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo
         "gym": (bio.get("association") or {}).get("name"),
     }
 
+    # Fallback: no per-fight tables on ESPN (fighter left UFC, thin coverage, etc.)
+    # -> the aggregate stats API still has strAcc/tdAcc/slpm/tdLanded/subAvg.
+    # sapm and kd stay None (they live only in the per-fight tables).
+    stats_source = "per-fight"
+    if not statted_dates:
+        agg = espn_aggregate_stats(sid)
+        if agg:
+            stats_source = "aggregate (no per-fight tables; sapm/kd unavailable)"
+            for k in ("strAcc", "tdAcc", "slpm", "tdLanded", "subAvg"):
+                if agg.get(k) is not None:
+                    stats[k] = agg[k]
+
     # ---- record / streak / finRate from full history ----
     fh = []
     wins = ko = sub = 0
@@ -618,7 +653,7 @@ def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo
                   roster_row=roster_row, fighter_stats=stats, fight_history=fh,
                   stat_fights=len(statted_dates), def_fights=def_fights,
                   coverage=coverage, ufc_fights=len(ufc_fights), photo=photo_status,
-                  record_check=record_check)
+                  record_check=record_check, stats_source=stats_source)
 
     # ---- write paste-ready output ----
     if write:
