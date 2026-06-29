@@ -204,9 +204,21 @@ def verify(sid):
     derived = "%d-%d-%d" % (w, l, dr)
 
     print("=== VERIFY: %s (ESPN %s) ===" % (name, sid))
-    rec_flag = "OK" if loc["record"] in (stated, derived) else "!! CHECK"
-    print("record   : DB %s | ESPN-stated %s | ESPN-derived %s   %s"
-          % (loc["record"], stated, derived, rec_flag))
+    dw = sum(1 for f in loc["history"] if result_letter(f.get("result", "")) == "W")
+    dl = sum(1 for f in loc["history"] if result_letter(f.get("result", "")) == "L")
+    dd = sum(1 for f in loc["history"] if result_letter(f.get("result", "")) == "D")
+    db_derived = "%d-%d-%d" % (dw, dl, dd) if loc["history"] else "?"
+    # The roster label is the thing displayed; trust it only if it matches the
+    # DB's OWN fight history. label != db_derived => stale label (fix to db_derived,
+    # which should equal ESPN-derived when the fight lists agree).
+    if loc["record"] and db_derived != "?" and loc["record"] != db_derived:
+        rec_flag = "!! LABEL STALE (DB history says %s)" % db_derived
+    elif loc["record"] in (stated, derived) or not stated:
+        rec_flag = "OK"
+    else:
+        rec_flag = "!! ESPN differs — check history below"
+    print("record   : label %s | DB-history %s | ESPN-stated %s | ESPN-derived %s   %s"
+          % (loc["record"], db_derived, stated, derived, rec_flag))
 
     # ---- bio diff (ESPN-verify ht/dob/reach/stance; gym informational) ----
     ebio = {"ht": norm_ht(bio.get("displayHeight")), "dob": (bio.get("dateOfBirth") or "")[:10] or None,
