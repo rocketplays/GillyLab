@@ -111,6 +111,77 @@ def espn_aggregate_stats(sid):
     if g.get("submissionAvg")    is not None: out["subAvg"]   = num(g["submissionAvg"])
     return out
 
+def _iv(st, key):
+    v = st.get(key)
+    try: return int(round(float(v)))
+    except (TypeError, ValueError): return 0
+
+def espn_boxscore_stats(sid, sleep_s=0.15):
+    """Per-fight UFC box scores via eventlog -> league-scoped competition ->
+    each competitor's statistics. Both fighters' stats live in the SAME
+    competition object, so the opponent numbers (for sapm/strDef/tdDef) come
+    free — no separate opponent-page fetch, no coverage gaps. UFC fights only
+    (ESPN only box-scores UFC), which matches ufc.com's UFC-only methodology.
+    Returns aggregated sums + bout count + total seconds, or None if none."""
+    log = get_json("%s/athletes/%s/eventlog?lang=en&region=us" % (CORE, sid))
+    if not log:
+        return None
+    a = dict(ssl=0, ssa=0, kd=0, tdl=0, tda=0, sm=0,
+             ossl=0, ossa=0, otdl=0, otda=0, sec=0, bouts=0)
+    for it in log.get("events", {}).get("items", []):
+        if not it.get("played"):
+            continue
+        evref = (it.get("event") or {}).get("$ref", "")
+        cref = (it.get("competition") or {}).get("$ref", "")
+        lg = re.search(r"/leagues/([a-z0-9-]+)/", evref) or re.search(r"/leagues/([a-z0-9-]+)/", cref)
+        if not lg or lg.group(1) != "ufc":
+            continue
+        ev = re.search(r"/events/(\d+)", evref); co = re.search(r"/competitions/(\d+)", cref)
+        if not (ev and co):
+            continue
+        comp = get_json("%s/leagues/ufc/events/%s/competitions/%s?lang=en&region=us"
+                        % (CORE, ev.group(1), co.group(1)))
+        if not comp or not comp.get("boxscoreAvailable"):
+            continue
+        me = opp = None
+        for c in comp.get("competitors", []):
+            aid = re.search(r"/athletes/(\d+)", (c.get("athlete") or {}).get("$ref", ""))
+            sref = (c.get("statistics") or {}).get("$ref", "")
+            if not sref:
+                continue
+            sd = get_json(sref)
+            g = next((x for x in (sd or {}).get("splits", {}).get("categories", [])
+                      if x.get("name") == "general"), None)
+            if not g:
+                continue
+            st = {s.get("name"): s.get("value") for s in g.get("stats", [])}
+            rec = dict(ssl=_iv(st, "sigStrikesLanded"), ssa=_iv(st, "sigStrikesAttempted"),
+                       kd=_iv(st, "knockDowns"), tdl=_iv(st, "takedownsLanded"),
+                       tda=_iv(st, "takedownsAttempted"), sm=_iv(st, "submissions"))
+            if aid and aid.group(1) == str(sid):
+                me = rec
+            else:
+                opp = rec
+        if not (me and opp) or (me["ssa"] + opp["ssa"]) == 0:
+            continue  # missing a side or an all-zero "available" sheet
+        # duration: status gives final round (period) + elapsed clock in it
+        dsec = 0
+        stref = (comp.get("status") or {}).get("$ref", "")
+        stt = get_json(stref) if stref else None
+        if stt:
+            try:
+                mm, ss = (str(stt.get("displayClock") or "5:00").split(":") + ["0"])[:2]
+                dsec = (int(stt.get("period") or 1) - 1) * 300 + int(mm) * 60 + int(ss)
+            except Exception:
+                dsec = 0
+        for k in ("ssl", "ssa", "kd", "tdl", "tda", "sm"):
+            a[k] += me[k]
+        a["ossl"] += opp["ssl"]; a["ossa"] += opp["ssa"]
+        a["otdl"] += opp["tdl"]; a["otda"] += opp["tda"]
+        a["sec"] += dsec; a["bouts"] += 1
+        time.sleep(sleep_s)
+    return a if a["bouts"] else None
+
 def espn_stated_record(sid):
     """ESPN's own W-L-D for cross-checking the history-derived record (tripwire
     for a missed or extra fight). Returns e.g. '26-2-0' or None."""
@@ -511,54 +582,22 @@ def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo
         if verbose: print("  -- %s has 0 UFC fights on ESPN, skipping" % name)
         return {"status": "no_ufc", "espn_id": sid, "name": name, "slug": slug}
 
-    own = parse_stat_tables(sid)
-
-    # ufc.com career stats are computed over UFC-promotion fights only, so we
-    # restrict the aggregation to UFC dates (the full history still goes into
-    # FIGHT_HISTORY). Mixing in WEC/Strikeforce/regional bouts inflates the
-    # minute denominator and drags every per-minute stat low.
-    ufc_dates = {f["date"] for f in ufc_fights}
-
-    # ---- offensive aggregates over UFC fights that have a stats row ----
-    SSL = SSA = KD = TDL = TDA = SM = 0
-    sec = 0
-    dur_by_date = {f["date"]: dur_seconds(f["round"], f["time"]) for f in hist}
-    statted_dates = []
-    for d, s in own.items():
-        if "ssl" not in s or d not in ufc_dates:  # UFC fights with a striking row
-            continue
-        statted_dates.append(d)
-        SSL += s.get("ssl", 0); SSA += s.get("ssa", 0); KD += s.get("kd", 0)
-        TDL += s.get("tdl", 0); TDA += s.get("tda", 0); SM += s.get("sm", 0)
-        sec += dur_by_date.get(d, 0)
-    minutes = sec / 60.0 if sec else 0
-
-    # ---- defensive aggregates via opponent tables (strikes absorbed / defense) ----
-    oSSL = oSSA = oTDL = oTDA = 0
-    def_sec = 0
-    opp_cache = {}
-    oppid_by_date = {f["date"]: f["oppid"] for f in hist}
-    def_fights = 0
-    for d in statted_dates:
-        oid = oppid_by_date.get(d)
-        if not oid:
-            continue
-        if oid not in opp_cache:
-            opp_cache[oid] = parse_stat_tables(oid)
-            time.sleep(0.3)
-        # In the opponent's table find the row whose opponent is THIS fighter.
-        # Match by name (robust to the day-apart date discrepancy across pages),
-        # preferring the same date when a pair met more than once.
-        cand = [r for r in opp_cache[oid].values()
-                if "ssl" in r and name_to_slug(r.get("opp", "")) == slug]
-        orow = next((r for r in cand if r.get("_date") == d), cand[0] if cand else None)
-        if not orow:
-            continue
-        def_fights += 1
-        def_sec += dur_by_date.get(d, 0)
-        oSSL += orow.get("ssl", 0); oSSA += orow.get("ssa", 0)
-        oTDL += orow.get("tdl", 0); oTDA += orow.get("tda", 0)
-    def_minutes = def_sec / 60.0 if def_sec else 0
+    # ---- per-fight stats from ESPN box-score API (fighter + opponent in one
+    # competition object; UFC fights only, matching ufc.com methodology) ----
+    box = espn_boxscore_stats(sid)
+    if box:
+        SSL, SSA, KD = box["ssl"], box["ssa"], box["kd"]
+        TDL, TDA, SM = box["tdl"], box["tda"], box["sm"]
+        oSSL, oSSA, oTDL, oTDA = box["ossl"], box["ossa"], box["otdl"], box["otda"]
+        minutes = def_minutes = box["sec"] / 60.0 if box["sec"] else 0
+        def_fights = box["bouts"]
+        statted_dates = [None] * box["bouts"]   # len() drives coverage; opp always present
+    else:
+        SSL = SSA = KD = TDL = TDA = SM = 0
+        oSSL = oSSA = oTDL = oTDA = 0
+        minutes = def_minutes = 0
+        def_fights = 0
+        statted_dates = []
 
     def per15(x): return round(x / minutes * 15, 2) if minutes else None
     def permin(x): return round(x / minutes, 2) if minutes else None
@@ -584,11 +623,11 @@ def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo
     # Fallback: no per-fight tables on ESPN (fighter left UFC, thin coverage, etc.)
     # -> the aggregate stats API still has strAcc/tdAcc/slpm/tdLanded/subAvg.
     # sapm and kd stay None (they live only in the per-fight tables).
-    stats_source = "per-fight"
+    stats_source = "boxscore-api"
     if not statted_dates:
         agg = espn_aggregate_stats(sid)
         if agg:
-            stats_source = "aggregate (no per-fight tables; sapm/kd unavailable)"
+            stats_source = "aggregate (no box scores; sapm/kd unavailable)"
             for k in ("strAcc", "tdAcc", "slpm", "tdLanded", "subAvg"):
                 if agg.get(k) is not None:
                     stats[k] = agg[k]
