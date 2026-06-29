@@ -46,6 +46,12 @@ OUTDIR = os.path.join(HERE, "espn-import-output")
 
 CORE = "https://sports.core.api.espn.com/v2/sports/mma"
 
+# --verify policy: ESPN is authoritative for these four; the rest keep the
+# existing DB (ufc.com/UFCStats) value, since ESPN reads systematically low on
+# takedowns landed and knockdown avg and the DB figures are more accurate there.
+VERIFY_FIELDS = ["strAcc", "sapm", "kd", "tdAcc"]
+KEEP_FIELDS   = ["slpm", "strDef", "tdLanded", "tdDef", "subAvg"]
+
 DIV_MAP = {
     "Flyweight": "FLW", "Bantamweight": "BW", "Featherweight": "FW",
     "Lightweight": "LW", "Welterweight": "WW", "Middleweight": "MW",
@@ -246,17 +252,27 @@ def verify(sid):
     if not (missing or extra or namediffs or fdiffs):
         print("  fight history: matches ESPN")
 
-    # ---- stats side-by-side (ESPN-computed; volume stats are approximate) ----
+    # ---- stats side-by-side, split by the verify policy ----
+    # POLICY: ESPN verifies these four; the rest keep the DB (ufc.com) value
+    # because ESPN reads systematically low on takedowns/knockdowns and the
+    # DB values there are the more accurate UFCStats figures.
     roster, _ = roster_slugs()
     r = process(sid, roster_minus(roster, name), verbose=False, write=False, fetch_photo=False)
     if r and r.get("fighter_stats"):
         es = r["fighter_stats"]
-        print("stats    : DB vs ESPN-computed (volume stats ~5-20% off by definition)")
-        for k in ["slpm","strAcc","sapm","strDef","kd","tdLanded","tdAcc","tdDef","subAvg"]:
+        print("stats    : policy = ESPN-verify {strAcc, sapm, kd, tdAcc}; keep DB {slpm, strDef, tdLanded, tdDef, subAvg}")
+        print("  --- ESPN-verify (apply these) ---")
+        for k in VERIFY_FIELDS:
             dv = loc["stats"].get(k, "—"); ev = es.get(k)
-            flag = "" if str(dv) == str(ev) else "  <- differs"
-            print("    %-9s DB %-7s ESPN %-7s%s" % (k, dv, ev, flag))
-        print("  (opponent-data coverage %.0f%% — low coverage = noisier sapm/strDef/tdDef)"
+            if dv == "—":            note = "  <- FILL from ESPN"
+            elif str(dv) != str(ev): note = "  <- UPDATE to ESPN"
+            else:                    note = "  ok"
+            print("    %-9s DB %-7s ESPN %-7s%s" % (k, dv, ev, note))
+        print("  --- keep DB (informational only, do NOT change) ---")
+        for k in KEEP_FIELDS:
+            dv = loc["stats"].get(k, "—"); ev = es.get(k)
+            print("    %-9s DB %-7s ESPN %-7s  (keep DB)" % (k, dv, ev))
+        print("  (opponent-data coverage %.0f%% — low coverage = noisier ESPN defensive stats)"
               % (100 * r.get("coverage", 0)))
 
 def roster_minus(roster, name):
