@@ -3731,7 +3731,7 @@
  // Welterweight
  { name: "Ramiro Jimenez", division: "FW", rank: "NR", record: "11-0-0", initials: "RJM", country: "Mexico" },
  { name: "Christopher Alvidrez", division: "WW", rank: "NR", record: "7-1-0", initials: "CAL", country: "USA" },
- { name: "Abubakar Vagaev", division: "WW", rank: "NR", record: "24-5-0", initials: "AVG", country: "Russia" },
+ { name: "Abubakar Vagaev", division: "WW", rank: "NR", record: "24-4-0", initials: "AVG", country: "Russia" },
  { name: "Josiah Harrell", division: "WW", rank: "NR", record: "11-0-0", initials: "JHR2", country: "USA" },
  // Featherweight
  { name: "Melsik Baghdasaryan", division: "FW", rank: "NR", record: "8-4-0", initials: "MBG", country: "Armenia" },
@@ -4723,7 +4723,7 @@
  "Magomed Zaynukov": { ht:"5'10\"", dob:"1995-01-02", reach:'68"', stance:"Orthodox", slpm:15.67, strAcc:"61%", sapm:4.80, strDef:"58%", kd:0.00, tdLanded:2.00, tdAcc:"100%", tdDef:null, subAvg:0.00, finRate:"63%", streak:8, gym:"Abdulmanap Nurmagomedov Martial Arts School" },
  "Ramiro Jimenez": { ht:"5'9\"", dob:"1999-01-16", reach:'73"', stance:"Southpaw", slpm:14.22, strAcc:"65%", sapm:2.43, strDef:"82%", kd:5.20, tdLanded:5.20, tdAcc:"100%", tdDef:"100%", subAvg:0.00, finRate:"82%", streak:11, gym:"The Goat Shed" },
  "Christopher Alvidrez": { ht:"6'1\"", dob:"1996-12-27", reach:'74"', stance:"Orthodox", slpm:6.97, strAcc:"62%", sapm:2.11, strDef:"50%", kd:6.34, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"86%", streak:6, gym:"The Goat Shed" },
- "Abubakar Vagaev": { ht:"5'11\"", dob:"1994-01-01", reach:'72"', stance:"Orthodox", slpm:3.50, tdAcc:"40%", subAvg:0.5, strDef:"55%", kd:0.2, tdDef:"70%", finRate:"67%", streak:0, tdLanded:2.00 },
+ "Abubakar Vagaev": { ht:"6'0\"", dob:"1993-04-14", reach:null, stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"21%", streak:3, gym:"Akhmat Fight Team" },
  "Melsik Baghdasaryan": { ht:"5'8\"", dob:"1992-01-28", reach:'70"', stance:"Southpaw", slpm:4.98, strAcc:"59%", sapm:3.15, strDef:"56%", kd:0.23, tdLanded:0.00, tdAcc:"0%", tdDef:"71%", subAvg:0.00, finRate:"63%", streak:0, gym:"Glendale Fighting Club" },
  "Kaan Ofli": { ht:'5\'8"', dob:"1993-06-19", reach:'66"', stance:"--", slpm:2.33, sapm:3.34, strAcc:"46%", tdAcc:"7%", subAvg:0.38, strDef:"0%", kd:0, tdDef:"0%", finRate:"62%", streak:2, tdLanded:0.38, gym:"Absolute MMA" },
  "Xiong Jingnan": { ht:"5'5\"", dob:"1988-01-12", reach:'64"', stance:"Switch", slpm:4.53, strAcc:"34%", sapm:8.13, strDef:"38%", kd:0.0, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"63%", streak:0, gym:"The Block Bali" },
@@ -14613,6 +14613,9 @@
   "Rodrigo Sezinando": [
   ],
   "Abubakar Vagaev": [
+    { opponent: "Vitaly Slipenko", odds: -325 },
+    { opponent: "Ustarmagomed Gadzhidaudov", odds: -325 },
+    { opponent: "Murad Abdulaev", odds: -150 }
   ],
 
   "Mateusz Rębecki": [
@@ -32299,7 +32302,34 @@ const FIGHT_HISTORY = {
     { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
   ],
   "Abubakar Vagaev": [
-    { date: "Jun 27, 2026", opponent: "TBA", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres (debut)" }
+    { date: "Feb 8, 2025", opponent: "Albert Tumenov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 183: Tumenov vs. Vagaev (ACA welterweight title / GP final)" },
+    { date: "Mar 9, 2024", opponent: "Edil Esengulov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 172: Esengulov vs. Vagaev" },
+    { date: "Sep 2, 2023", opponent: "Michel Prazeres", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 162" },
+    { date: "Dec 16, 2022", opponent: "Vitaly Slipenko", result: "L", method: "TKO", round: 2, time: "0:20", event: "ACA 149 (ACA welterweight title)" },
+    { date: "Mar 26, 2022", opponent: "Ustarmagomed Gadzhidaudov", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "ACA 138 (ACA welterweight title)" },
+    { date: "Feb 26, 2021", opponent: "Murad Abdulaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 118: Abdulaev vs. Vagaev 2" },
+    { date: "Oct 4, 2020", opponent: "Yasubey Enomoto", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 112" },
+    { date: "Jul 24, 2020", opponent: "Gadzhimurad Khiramagomedov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 107" },
+    { date: "Oct 4, 2019", opponent: "Fernando Gonzalez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 100: Grozny" },
+    { date: "Oct 4, 2018", opponent: "Murad Abdulaev", result: "L", method: "TKO", round: 2, time: "1:25", event: "WFCA 53 (WFCA welterweight title)" },
+    { date: "Feb 24, 2018", opponent: "Rodrigo Cavalheiro", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 45: Grozny Battle" },
+    { date: "Oct 4, 2017", opponent: "Beslan Ushukov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "WFCA 43: Grozny Battle (WFCA welterweight title)" },
+    { date: "May 21, 2017", opponent: "Nodar Kudukhashvili", result: "W", method: "TKO", round: 1, time: "2:53", event: "WFCA 38: Grozny Battle" },
+    { date: "Apr 1, 2017", opponent: "Jorge Filho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 35: Battle in Astana" },
+    { date: "Feb 25, 2017", opponent: "Luiz Dutra Jr.", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "0:21", event: "WFCA 34: Battle in Moscow" },
+    { date: "Nov 19, 2016", opponent: "Beslan Ushukov", result: "L", method: "TKO", round: 4, time: "1:54", event: "WFCA 32: Grozny Battle" },
+    { date: "Jun 11, 2016", opponent: "Luis Melo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 23: Grand Prix Akhmat" },
+    { date: "Apr 9, 2016", opponent: "Michel Pereira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 17: Grand Prix Akhmat" },
+    { date: "Dec 26, 2015", opponent: "Tiago Varejao Lacerda", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 13: Grozny Battle" },
+    { date: "Oct 4, 2015", opponent: "David Castillo", result: "W", method: "TKO", round: 1, time: "2:18", event: "WFCA 9: Grozny Battle" },
+    { date: "Aug 22, 2015", opponent: "Ivica Truscek", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 6: Grozny Battle" },
+    { date: "Jun 13, 2015", opponent: "Yasubey Enomoto", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "WFCA 3: Grozny Battle" },
+    { date: "Mar 14, 2015", opponent: "Thibaud Larchet", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WFCA 1: Grozny Battle" },
+    { date: "Nov 14, 2014", opponent: "Artur Odilbekov", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "1:12", event: "ACB 11" },
+    { date: "Oct 4, 2014", opponent: "Piotr Wolowik", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "ACB 10: Coliseum Time" },
+    { date: "Jun 22, 2014", opponent: "Farhad Medzhidov", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:18", event: "ACB 9: Berkut Cup 2014" },
+    { date: "Jun 27, 2013", opponent: "Adlan Abdulatipov", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Radmer Cup 4" },
+    { date: "Jun 30, 2012", opponent: "Aleksandr Rudijanskiy", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Radmer Cup 2 (debut)" }
   ],
 
   "Mateusz Rębecki": [
@@ -32870,6 +32900,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Abubakar Vagaev": [
+    { icon: "🏆", title: "ACA Welterweight Champion & 2023 ACA Welterweight Grand Prix winner (def. Albert Tumenov in the final, 2025)", detail: null },
+    { icon: "🏆", title: "Former WFCA (World Fighting Championship Akhmat) Welterweight Champion", detail: null },
+    { icon: "🥊", title: "Akhmat Fight Team standout (Khamzat Chimaev's teammate); wins over Tumenov, Michel Prazeres & Michel Pereira", detail: null }
+  ],
   "Christopher Alvidrez": [
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2025, R1 TKO of Eliezer Kubanza)", detail: null },
     { icon: "🥊", title: "\"The Newborn\" — knockout artist; 6 of 7 wins by stoppage (5 KO/TKO, 1 submission)", detail: null }
