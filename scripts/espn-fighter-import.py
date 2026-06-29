@@ -301,6 +301,30 @@ def verify(sid):
         print("  (opponent-data coverage %.0f%% — low coverage = noisier ESPN defensive stats)"
               % (100 * r.get("coverage", 0)))
 
+    # ---- photo: always replace with the ESPN headshot ----
+    # Download to a temp file first so a placeholder/too-small response can't
+    # wipe a good existing photo; only swap it in when the download is valid.
+    slug = name_to_slug(name)
+    dest = os.path.join(PHOTOS, slug + ".png")
+    hs = (bio.get("headshot") or {}).get("href")
+    if not hs:
+        print("photo    : no ESPN headshot available — existing photo (if any) left as-is")
+    else:
+        os.makedirs(PHOTOS, exist_ok=True)
+        tmp = dest + ".tmp"
+        subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", tmp, hs])
+        sz = os.path.getsize(tmp) if os.path.exists(tmp) else 0
+        if sz < 3000:                      # placeholder/silhouette guard
+            if os.path.exists(tmp): os.remove(tmp)
+            print("photo    : ESPN headshot is a placeholder/too small — kept existing (%d bytes)" % sz)
+        else:
+            os.replace(tmp, dest)
+            thumb = os.path.join(PHOTOS, "thumb", slug + ".png")
+            if os.path.exists(thumb): os.remove(thumb)   # force thumb rebuild
+            subprocess.run(["python3", os.path.join(PHOTOS, "generate_thumbs.py")],
+                           capture_output=True)
+            print("photo    : saved/replaced photos/%s.png + thumb (%d bytes)" % (slug, sz))
+
 def roster_minus(roster, name):
     """roster set without this fighter, so process() won't skip them as in-roster."""
     return roster - {name_to_slug(name)}
@@ -735,7 +759,7 @@ if __name__ == "__main__":
     ap.add_argument("--name")
     ap.add_argument("--discover", action="store_true")
     ap.add_argument("--verify", metavar="NAME",
-                    help="diff an existing roster fighter's DB entry against ESPN (no writes)")
+                    help="diff an existing roster fighter's DB entry against ESPN; always replaces the photo with the ESPN headshot")
     ap.add_argument("--process-all", action="store_true",
                     help="run the bulk import over all ex-UFC fighters not in roster")
     ap.add_argument("--min-coverage", type=float, default=0.5,
