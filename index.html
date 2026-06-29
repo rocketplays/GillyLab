@@ -3528,6 +3528,7 @@
  { name: "Malcolm Wellmaker", division: "BW", rank: "NR", record: "10-2-0", initials: "MWE", country: "USA" },
  { name: "Gaston Bolanos", division: "BW", rank: "NR", record: "9-5-0", initials: "GBO", country: "Peru" },
  { name: "Abdul Hussein", division: "BW", rank: "NR", record: "15-2-0", initials: "AHU", country: "Finland" },
+ { name: "Alatengheili", division: "BW", rank: "NR", record: "17-10-2", initials: "AHL", country: "China" },
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
  { name: "Lone'er Kavanagh", division: "FLW", rank: "NR", record: "10-1-0", initials: "LKV", country: "UK" },
@@ -3960,6 +3961,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Alatengheili": { ht:"5'5\"", dob:"1991-12-14", reach:'66"', stance:"Orthodox", slpm:2.82, strAcc:"33%", sapm:5.12, strDef:"57%", kd:0.12, tdLanded:1.74, tdAcc:"44%", tdDef:"75%", subAvg:0.00, finRate:"47%", streak:0, gym:"Fight Ready" },
   "Abdul Hussein": { ht:"5'5\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:8, gym:"Espoon Kehähait" },
   "Dom Mar Fan": { ht:"5'11\"", dob:"2000-03-19", reach:'75"', stance:"Orthodox", slpm:3.43, strAcc:"56%", sapm:2.31, strDef:"44%", kd:0.00, tdLanded:1.84, tdAcc:"25%", tdDef:"63%", subAvg:0.31, finRate:"44%", streak:0, gym:"Team Compton Training Centre" },
   "Kody Steele": { ht:"5'9\"", dob:"1995-04-21", reach:'71"', stance:"Orthodox", slpm:3.85, strAcc:"33%", sapm:6.20, strDef:"52%", kd:0.53, tdLanded:1.07, tdAcc:"25%", tdDef:"100%", subAvg:0.53, finRate:"75%", streak:1, gym:"Syndicate MMA" },
@@ -6337,6 +6339,17 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Alatengheili": [
+    { opponent: "Da'Mon Blackshear", odds: 400 },
+    { opponent: "Kleydson Rodrigues", odds: 135 },
+    { opponent: "Chris Gutierrez", odds: 215 },
+    { opponent: "Chad Anheliger", odds: -180 },
+    { opponent: "Kevin Croom", odds: -180 },
+    { opponent: "Gustavo Lopez", odds: -135 },
+    { opponent: "Casey Kenney", odds: 315 },
+    { opponent: "Ryan Benoit", odds: -105 },
+    { opponent: "Danaa Batgerel", odds: -120 }
+  ],
   "Abdul Hussein": [
     { opponent: "Gift Walker", odds: -450 },
     { opponent: "Eduardo Mora", odds: -3333 },
@@ -14520,6 +14533,37 @@
 };
 
 const FIGHT_HISTORY = {
+  "Alatengheili": [
+    { date: "Apr 26, 2025", opponent: "Da'Mon Blackshear", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Machado Garry vs. Prates", org: "UFC" },
+    { date: "May 18, 2024", opponent: "Kleydson Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
+    { date: "Oct 14, 2023", opponent: "Chris Gutierrez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Yusuff vs. Barboza", org: "UFC" },
+    { date: "Sep 10, 2022", opponent: "Chad Anheliger", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 279", org: "UFC" },
+    { date: "Apr 16, 2022", opponent: "Kevin Croom", result: "W", method: "TKO (Punches)", round: 1, time: "0:47", event: "UFC Fight Night: Luque vs. Muhammad 2", org: "UFC" },
+    { date: "Sep 18, 2021", opponent: "Gustavo Lopez", result: "D", method: "Draw (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Smith vs. Spann", org: "UFC" },
+    { date: "Oct 3, 2020", opponent: "Casey Kenney", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holm vs. Aldana", org: "UFC" },
+    { date: "Dec 21, 2019", opponent: "Ryan Benoit", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Edgar vs. Korean Zombie", org: "UFC" },
+    { date: "Aug 31, 2019", opponent: "Danaa Batgerel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Andrade vs. Zhang", org: "UFC" },
+    { date: "May 12, 2018", opponent: "Kwak Jong-hyun", result: "W", method: "TKO (Punches)", round: 2, time: "2:40", event: "Road FC 47", org: "Road FC" },
+    { date: "Mar 10, 2018", opponent: "Jang Ik-hwan", result: "W", method: "KO (Punches)", round: 1, time: "3:06", event: "Road FC 46", org: "Road FC" },
+    { date: "Mar 11, 2017", opponent: "Kai Asakura", result: "L", method: "KO (Knee and Punches)", round: 1, time: "0:29", event: "Road FC 37", org: "Road FC" },
+    { date: "Nov 19, 2016", opponent: "Jo Nam-jin", result: "D", method: "Draw (Unanimous)", round: 3, time: "5:00", event: "Road FC 34", org: "Road FC" },
+    { date: "May 14, 2016", opponent: "Choi Mu-song", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Road FC 31", org: "Road FC" },
+    { date: "Apr 16, 2016", opponent: "Fumiya Sasaki", result: "W", method: "TKO (Punches)", round: 1, time: "4:04", event: "Road FC 30", org: "Road FC" },
+    { date: "Feb 21, 2016", opponent: "Kana Hyatt", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kunlun Fight 38", org: "Kunlun Fight" },
+    { date: "Jan 31, 2016", opponent: "Kwon Min-seok", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Road FC 28", org: "Road FC" },
+    { date: "Jan 13, 2016", opponent: "Emil Abbasov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF E.P.I.C. 1", org: "WLF" },
+    { date: "Sep 28, 2015", opponent: "Jessie Rafols", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "1:31", event: "Kunlun Fight 31", org: "Kunlun Fight" },
+    { date: "Jun 5, 2015", opponent: "Jo Nam-jin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WBK 4", org: "WBK" },
+    { date: "May 22, 2015", opponent: "Stephen Langdown", result: "W", method: "TKO (Punches and Soccer Kicks)", round: 2, time: "0:51", event: "ONE Championship 27: Warrior's Quest", org: "ONE Championship" },
+    { date: "Apr 4, 2015", opponent: "Altynbek Bazhimov", result: "L", method: "Submission (Armbar)", round: 1, time: "2:53", event: "Kunlun Fight: Cage Series 2", org: "Kunlun Fight" },
+    { date: "Dec 23, 2014", opponent: "Zhikang Zhao", result: "L", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Nov 16, 2014", opponent: "Denis Puric", result: "L", method: "TKO (Punches)", round: 2, time: "2:05", event: "Kunlun Fight 13", org: "Kunlun Fight" },
+    { date: "Nov 11, 2014", opponent: "Chao Huang", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:44", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Jun 7, 2014", opponent: "Baasankhuu Damnlanpurev", result: "L", method: "TKO (Punches)", round: 2, time: "2:03", event: "RUFF Fu", org: "RUFF" },
+    { date: "Mar 29, 2014", opponent: "Tom Ni", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "N/A", event: "RUFF 12", org: "RUFF" },
+    { date: "Nov 30, 2013", opponent: "Song Yadong", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RUFF 11", org: "RUFF" },
+    { date: "Oct 20, 2013", opponent: "Lee Woong-hee", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Real Fight MMA Championship 3", org: "Real FC" }
+  ],
   "Abdul Hussein": [
     { date: "Dec 26, 2025", opponent: "Tyson Nam", result: "W", method: "KO (Punch)", round: 1, time: "4:22", event: "Ice Cage 6", org: "Ice Cage Fighting" },
     { date: "Oct 22, 2025", opponent: "Gift Walker", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:47", event: "UAE Warriors 64", org: "UAE Warriors" },
@@ -32707,6 +32751,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Alatengheili": [
+    { icon: "⭐", title: "UFC Fight of the Night (1x) — debut win vs. Danaa Batgerel (UFC Shenzhen, 2019)", detail: null },
+    { icon: "🤼", title: "\"The Mongolian Knight\" — freestyle wrestling base from Inner Mongolia, China", detail: null }
+  ],
   "Abdul Hussein": [
     { icon: "🏆", title: "Ice Cage Fighting Bantamweight Champion", detail: null },
     { icon: "🥇", title: "IMMAF Amateur MMA World Champion (2016, –61.2 kg) — first refugee to win an IMMAF world title", detail: null },
