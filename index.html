@@ -3529,6 +3529,7 @@
  { name: "Gaston Bolanos", division: "BW", rank: "NR", record: "9-5-0", initials: "GBO", country: "Peru" },
  { name: "Abdul Hussein", division: "BW", rank: "NR", record: "15-2-0", initials: "AHU", country: "Finland" },
  { name: "Alatengheili", division: "BW", rank: "NR", record: "17-10-2", initials: "AHL", country: "China" },
+ { name: "Aleksandre Topuria", division: "BW", rank: "NR", record: "7-1-0", initials: "ATO", country: "Georgia" },
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
  { name: "Lone'er Kavanagh", division: "FLW", rank: "NR", record: "10-1-0", initials: "LKV", country: "UK" },
@@ -3961,6 +3962,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Aleksandre Topuria": { ht:"5'7\"", dob:"1996-01-28", reach:'68"', stance:"Orthodox", slpm:2.93, strAcc:"55%", sapm:2.57, strDef:"69%", kd:0.00, tdLanded:1.50, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:5, gym:"Climent Club" },
   "Alatengheili": { ht:"5'5\"", dob:"1991-12-14", reach:'66"', stance:"Orthodox", slpm:2.82, strAcc:"33%", sapm:5.12, strDef:"57%", kd:0.12, tdLanded:1.74, tdAcc:"44%", tdDef:"75%", subAvg:0.00, finRate:"47%", streak:0, gym:"Fight Ready" },
   "Abdul Hussein": { ht:"5'5\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"93%", streak:8, gym:"Espoon Kehähait" },
   "Dom Mar Fan": { ht:"5'11\"", dob:"2000-03-19", reach:'75"', stance:"Orthodox", slpm:3.43, strAcc:"56%", sapm:2.31, strDef:"44%", kd:0.00, tdLanded:1.84, tdAcc:"25%", tdDef:"63%", subAvg:0.31, finRate:"44%", streak:0, gym:"Team Compton Training Centre" },
@@ -6339,6 +6341,10 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Aleksandre Topuria": [
+    { opponent: "Bekzat Almakhan", odds: -155 },
+    { opponent: "Colby Thicknesse", odds: -350 }
+  ],
   "Alatengheili": [
     { opponent: "Da'Mon Blackshear", odds: 400 },
     { opponent: "Kleydson Rodrigues", odds: 135 },
@@ -14533,6 +14539,16 @@
 };
 
 const FIGHT_HISTORY = {
+  "Aleksandre Topuria": [
+    { date: "Nov 22, 2025", opponent: "Bekzat Almakhan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tsarukyan vs. Hooker", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Colby Thicknesse", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 312", org: "UFC" },
+    { date: "May 20, 2023", opponent: "Johan Segas", result: "W", method: "TKO (Punches)", round: 1, time: "1:27", event: "WOW 9: The Way of Warrior 9", org: "WOW" },
+    { date: "Mar 12, 2022", opponent: "Alberto Ibanez", result: "W", method: "TKO (Submission to Punches)", round: 1, time: "1:54", event: "WAR MMA 1", org: "WAR MMA" },
+    { date: "Dec 8, 2021", opponent: "Lucas Tenorio", result: "W", method: "TKO (Punches)", round: 1, time: "1:48", event: "Hombres de Honor 110", org: "HDH" },
+    { date: "May 29, 2015", opponent: "Ivo Ivanov", result: "L", method: "TKO (Punches)", round: 3, time: "4:10", event: "Mix Fight Events", org: "MFE" },
+    { date: "May 9, 2015", opponent: "Alejandro Rumin", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:59", event: "Climent Show MMA 4", org: "Climent Club" },
+    { date: "Apr 4, 2015", opponent: "Andres Braulio Lazaro Chiguano", result: "W", method: "Submission (Armbar)", round: 1, time: "1:30", event: "West Coast Warriors", org: "WCW" }
+  ],
   "Alatengheili": [
     { date: "Apr 26, 2025", opponent: "Da'Mon Blackshear", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Machado Garry vs. Prates", org: "UFC" },
     { date: "May 18, 2024", opponent: "Kleydson Rodrigues", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
@@ -32751,6 +32767,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Aleksandre Topuria": [
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt (promoted 2018, Climent Club)", detail: null },
+    { icon: "🤼", title: "\"El Conquistador\" — Greco-Roman wrestling base; older brother of UFC two-division champion Ilia Topuria", detail: null }
+  ],
   "Alatengheili": [
     { icon: "⭐", title: "UFC Fight of the Night (1x) — debut win vs. Danaa Batgerel (UFC Shenzhen, 2019)", detail: null },
     { icon: "🤼", title: "\"The Mongolian Knight\" — freestyle wrestling base from Inner Mongolia, China", detail: null }
