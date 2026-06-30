@@ -3283,6 +3283,7 @@
  { name: "Yaroslav Amosov", division: "WW", rank: "#11", record: "30-1-0", initials: "YA", country: "Ukraine" },
  { name: "Jeremiah Wells", division: "WW", rank: "NR", record: "13-4-1", initials: "JWE", country: "USA" },
  { name: "Court McGee", division: "WW", rank: "NR", record: "23-14-0", initials: "CMC", country: "USA" },
+ { name: "Daniel Frunza", division: "WW", rank: "NR", record: "9-4-0", initials: "DAF", country: "Romania" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
@@ -4792,6 +4793,7 @@
  "Court McGee": { ht:"5'11\"", dob:"1984-12-12", reach:'75.5"', stance:"Orthodox", slpm:4.50, strAcc:"37%", sapm:3.65, strDef:"61%", kd:0.15, tdLanded:1.78, tdAcc:"25%", tdDef:"71%", subAvg:0.45, finRate:"52%", streak:0, gym:"Agema Jiu-Jitsu" },
  "Cristian Quinonez": { ht:"5'8\"", dob:"1996-04-26", reach:'70"', stance:"Orthodox", slpm:3.67, strAcc:"44%", sapm:3.71, strDef:"56%", kd:0.31, tdLanded:3.14, tdAcc:"56%", tdDef:"86%", subAvg:0.63, finRate:"68%", streak:1, gym:"Entram Gym" },
  "Damir Hadžović": { ht:"5'9\"", dob:"1986-08-08", reach:'70"', stance:"Orthodox", slpm:3.34, strAcc:"48%", sapm:3.74, strDef:"59%", kd:0.30, tdLanded:0.91, tdAcc:"55%", tdDef:"35%", subAvg:0.15, finRate:"71%", streak:0, gym:"Rumble Sports - Copenhagen" },
+ "Daniel Frunza": { ht:"6'1\"", dob:"1994-04-13", reach:'73"', stance:"Orthodox", slpm:3.25, strAcc:"39%", sapm:4.32, strDef:"51%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"50%", subAvg:0.00, finRate:"89%", streak:0, gym:"KO Zone" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -12043,6 +12045,14 @@
     { opponent: "Martin Delaney", odds: -210 },
     { opponent: "John Maguire", odds: 165 },
     { opponent: "Renato Moicano", odds: 350 },
+  ],
+  "Daniel Frunza": [
+    { opponent: "Charles Radtke", odds: 155 },
+    { opponent: "Rhys McKee", odds: -115 },
+    { opponent: "Vadym Kutsyi", odds: 145 },
+    { opponent: "Haris Talundzic", odds: 163 },
+    { opponent: "Jalin Fuller", odds: 240 },
+    { opponent: "Gary Balletto Jr.", odds: 325 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -25907,6 +25917,21 @@ const FIGHT_HISTORY = {
     { date: "Sep 11, 2010", opponent: "Tim Waage", result: "W", method: "Submission (Brabo Choke)", round: 1, time: "4:18", event: "Fighter Gala 15: Hot as Hell", org: "FG" },
     { date: "Nov 14, 2009", opponent: "Alaan Briefkani", result: "W", method: "TKO", round: 1, time: "3:29", event: "Fighter Gala 11", org: "FG" },
   ],
+  "Daniel Frunza": [
+    { date: "Nov 1, 2025", opponent: "Charles Radtke", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "4:29", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
+    { date: "Apr 5, 2025", opponent: "Rhys McKee", result: "L", method: "TKO (Doctor Stoppage)", round: 1, time: "5:00", event: "UFC on ESPN: Emmett vs. Murphy", org: "UFC" },
+    { date: "Sep 24, 2024", opponent: "Vadym Kutsyi", result: "W", method: "TKO (Punches)", round: 2, time: "3:30", event: "Dana White's Contender Series 2024: Week 7", org: "DWCS" },
+    { date: "Oct 27, 2023", opponent: "Haris Talundzic", result: "W", method: "KO (Elbow and Punches)", round: 3, time: "4:59", event: "LFA 170: Talundzic vs. Frunza", org: "LFA" },
+    { date: "Aug 4, 2023", opponent: "Jalin Fuller", result: "W", method: "KO (Punches)", round: 1, time: "3:36", event: "LFA 164: Mazo vs. Lavado", org: "LFA" },
+    { date: "Apr 15, 2023", opponent: "Lindsey Jones", result: "W", method: "TKO", round: 2, time: "1:00", event: "K2S Combat: 100K Lightweight Grand Prix", org: "K2S Combat" },
+    { date: "Sep 10, 2022", opponent: "Pedro Henrique Dias", result: "W", method: "TKO", round: 1, time: "0:00", event: "Svperba Fight Night", org: "Svperba" },
+    { date: "Sep 17, 2021", opponent: "Gary Balletto Jr.", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:56", event: "CES MMA 64: Bessette vs. Boyington", org: "CES" },
+    { date: "Apr 6, 2019", opponent: "Enzo Orellana", result: "W", method: "TKO (Punches)", round: 1, time: "1:35", event: "MMA Fighter 3: Orellana vs. Frunza", org: "MMA Fighter" },
+    { date: "May 5, 2018", opponent: "Joans Lorca", result: "W", method: "TKO (Punches)", round: 3, time: "2:05", event: "WCT 2: Eguiluz vs. Ferreira", org: "WCT" },
+    { date: "Apr 22, 2017", opponent: "Angelo Marchesani Di Spalatro", result: "W", method: "TKO (Punches)", round: 2, time: "1:25", event: "Fight Net: Italian Extreme 12", org: "Fight Net" },
+    { date: "Apr 1, 2017", opponent: "Liviu Butuc", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Net: Trieste in the Arena 2", org: "Fight Net" },
+    { date: "Mar 19, 2016", opponent: "Simone Tessari", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:34", event: "Kombat League: Italian Extreme 11", org: "Kombat League" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37725,6 +37750,9 @@ const ACCOLADES = {
   "Damir Hadžović": [
     { icon: "⭐", title: "UFC Performance of the Night — vs. Marcin Held", detail: null },
     { icon: "🥋", title: "BJJ purple belt", detail: null },
+  ],
+  "Daniel Frunza": [
+    { icon: "🏅", title: "Dana White's Contender Series winner (earned UFC contract)", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
