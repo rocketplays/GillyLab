@@ -3443,6 +3443,7 @@
  { name: "Myktybek Orolbai", division: "WW", rank: "NR", record: "16-2-1", initials: "MOR2", country: "Kyrgyzstan" },
  { name: "Gunnar Nelson", division: "WW", rank: "NR", record: "19-6-1", initials: "GNE", country: "Iceland" },
  { name: "Randy Brown", division: "WW", rank: "NR", record: "20-8-0", initials: "RBR2", country: "USA" },
+ { name: "Austin Vanderford", division: "WW", rank: "NR", record: "13-3-0", initials: "AVA", country: "USA" },
  { name: "Muslim Salikhov", division: "WW", rank: "NR", record: "22-6-0", initials: "MSL", country: "Russia" },
  { name: "Jake Matthews", division: "WW", rank: "NR", record: "23-8-0", initials: "JMA2", country: "Australia" },
  { name: "Li Jingliang", division: "WW", rank: "NR", record: "19-9-0", initials: "LJL", country: "China" },
@@ -4410,6 +4411,7 @@
  "Jared Vanderaa": { ht:"6'4\"", dob:"1992-05-12", reach:'80"', stance:"Orthodox", slpm:4.96, strAcc:"45%", sapm:5.67, strDef:"45%", kd:0.0, tdLanded:0.18, tdAcc:"50%", tdDef:"20%", subAvg:0.3, finRate:"42%", streak:0, gym:"Kings MMA (2022–present)" },
  // ── Welterweight (more) ──
  "Randy Brown": { ht:"6'3\"", dob:"1990-07-08", reach:'78"', stance:"Orthodox", slpm:4.39, strAcc:"47%", sapm:3.35, strDef:"54%", kd:0.39, tdLanded:0.71, tdAcc:"34%", tdDef:"75%", subAvg:0.52, finRate:"65%", streak:0, gym:"Budokan Martial Arts Academy (2010–present); Marquez MMA (2021–present)" },
+ "Austin Vanderford": { ht:"5'11\"", dob:"1990-03-21", reach:'74"', stance:"Orthodox", slpm:3.04, strAcc:"59%", sapm:2.71, strDef:"48%", kd:0.00, tdLanded:3.08, tdAcc:"36%", tdDef:"100%", subAvg:1.23, finRate:"62%", streak:0, gym:"American Top Team" },
  "Khaos Williams": { ht:"6'0\"", dob:"1994-03-30", reach:'77"', stance:"Orthodox", slpm:4.97, strAcc:"39%", sapm:5.34, strDef:"41%", kd:0.88, tdLanded:0.00, tdAcc:"0%", tdDef:"52%", subAvg:0.00, finRate:"63%", streak:1, gym:"Murcielago MMA" },
  "Kevin Jousset": { ht:"6'2\"", dob:"1993-05-02", reach:'75"', stance:"Orthodox", slpm:6.61, strAcc:"52%", sapm:6.49, strDef:"50%", kd:0.0, tdLanded:0.69, tdAcc:"40%", tdDef:"100%", subAvg:0.3, finRate:"60%", streak:2, gym:"Boxing Squad (secondary) (2024–present)" },
  "Francisco Prado": { ht:"5'10\"", dob:"2002-06-16", reach:'69"', stance:"Orthodox", slpm:4.09, strAcc:"44%", sapm:4.95, strDef:"55%", kd:0.23, tdLanded:0.94, tdAcc:"19%", tdDef:"50%", subAvg:0.47, finRate:"100%", streak:0, gym:"American Top Team" },
@@ -10686,6 +10688,18 @@
     { opponent: "Erick Montaño", odds: -537 },
     { opponent: "Michael Graves", odds: 128 },
     { opponent: "Matt Dwyer", odds: -142 }
+  ],
+  "Austin Vanderford": [
+    { opponent: "Ramiz Brahimaj", odds: -275 },
+    { opponent: "Nikolay Veretennikov", odds: 102 },
+    { opponent: "Victor Romero", odds: -1587 },
+    { opponent: "Aaron Jeffery", odds: -178 },
+    { opponent: "Gegard Mousasi", odds: 220 },
+    { opponent: "Fabian Edwards", odds: -245 },
+    { opponent: "Vinicius de Jesus", odds: -410 },
+    { opponent: "Grachik Bozinyan", odds: -485 },
+    { opponent: "Cody Jones", odds: -556 },
+    { opponent: "Angelo Trevino", odds: -110 }
   ],
   "Santiago Ponzinibbio": [
     { opponent: "Daniel Rodriguez", odds: -138 },
@@ -22831,6 +22845,24 @@ const FIGHT_HISTORY = {
     { date: "Jan 23, 2015", opponent: "Mike Winters", result: "W", method: "TKO (Punches)", round: 2, time: "1:11", event: "Ring of Combat 50" },
     { date: "Sep 19, 2014", opponent: "Leonard Simpson", result: "W", method: "TKO (Punches)", round: 2, time: "0:52", event: "Ring of Combat 49" },
     { date: "May 16, 2014", opponent: "Steve Tyrrell", result: "W", method: "Submission (Armbar)", round: 1, time: "1:53", event: "Ring of Combat 48" }
+  ],
+  "Austin Vanderford": [
+    { date: "Oct 4, 2025", opponent: "Ramiz Brahimaj", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "2:24", event: "UFC 320", org: "UFC" },
+    { date: "Feb 22, 2025", opponent: "Nikolay Veretennikov", result: "W", method: "TKO (Punches)", round: 2, time: "4:13", event: "UFC Fight Night: Cejudo vs. Song", org: "UFC" },
+    { date: "Oct 18, 2024", opponent: "Victor Romero", result: "W", method: "TKO (Punch and elbows)", round: 1, time: "1:05", event: "LFA 194", org: "LFA" },
+    { date: "Aug 12, 2022", opponent: "Aaron Jeffery", result: "L", method: "TKO (Punches)", round: 1, time: "1:25", event: "Bellator 284", org: "Bellator" },
+    { date: "Feb 25, 2022", opponent: "Gegard Mousasi", result: "L", method: "TKO (Punches)", round: 1, time: "1:25", event: "Bellator 275", org: "Bellator" },
+    { date: "May 21, 2021", opponent: "Fabian Edwards", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 259", org: "Bellator" },
+    { date: "Nov 5, 2020", opponent: "Vinicius de Jesus", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 251", org: "Bellator" },
+    { date: "Nov 15, 2019", opponent: "Grachik Bozinyan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bellator 234", org: "Bellator" },
+    { date: "Aug 24, 2019", opponent: "Joseph Creer", result: "W", method: "TKO (Doctor stoppage)", round: 2, time: "5:00", event: "Bellator 225", org: "Bellator" },
+    { date: "Feb 15, 2019", opponent: "Cody Jones", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "4:49", event: "Bellator 215", org: "Bellator" },
+    { date: "Oct 19, 2018", opponent: "Edmilson Freitas", result: "W", method: "KO (Punch)", round: 1, time: "1:38", event: "Final Fight Championship 32" },
+    { date: "Jul 17, 2018", opponent: "Angelo Trevino", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:42", event: "Dana White's Contender Series 13", org: "UFC" },
+    { date: "Dec 16, 2017", opponent: "Kenny Licea", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "4:03", event: "Victory FC 59" },
+    { date: "Oct 14, 2017", opponent: "Ben Fodor", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "CageSport 47" },
+    { date: "Jul 8, 2017", opponent: "Adam Fugitt", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Arena Wars: Total Kombat" },
+    { date: "Mar 11, 2017", opponent: "Sol Renato", result: "W", method: "TKO (Punches)", round: 1, time: "2:33", event: "Prime Fighting 9" }
   ],
   "Santiago Ponzinibbio": [
     { date: "May 3, 2025", opponent: "Daniel Rodriguez", result: "L", method: "KO (Punch)", round: 3, time: "1:12", event: "UFC Fight Night: Sandhagen vs. Figueiredo", org: "UFC" },
@@ -36241,6 +36273,12 @@ const ACCOLADES = {
     { icon: "🏅", title: "MMAjunkie.com Submission of the Month (April 2021) — vs. Alex Oliveira", detail: null },
     { icon: "🏅", title: "UFC.com 2016 #4 Newcomer of the Year", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Nardu Debrah", detail: null },
+  ],
+  "Austin Vanderford": [
+    { icon: "🏆", title: "Former CageSport Welterweight Champion", detail: null },
+    { icon: "🏅", title: "Bellator Middleweight World Championship challenger (2022, vs. Gegard Mousasi)", detail: null },
+    { icon: "🤼", title: "2012 NAIA National Wrestling Champion (184 lb) and two-time NAIA All-American at Southern Oregon University", detail: null },
+    { icon: "🏅", title: "Two-time Alaska state high school wrestling champion; Alaska High School Hall of Fame inductee (2019)", detail: null },
   ],
   "Muslim Salikhov": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
