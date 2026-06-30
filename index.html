@@ -3448,6 +3448,7 @@
  { name: "Bolaji Oki", division: "LW", rank: "NR", record: "10-4-0", initials: "BOK", country: "Belgium" },
  { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
  { name: "Alex Reyes", division: "LW", rank: "NR", record: "13-5-0", initials: "ARE", country: "USA" },
+ { name: "Gabe Green", division: "LW", rank: "NR", record: "12-5-0", initials: "GG", country: "USA" },
  // ─── WELTERWEIGHT (extended) ───
  { name: "Shavkat Rakhmonov", division: "WW", rank: "NR", record: "19-0-0", initials: "SHR", country: "Kazakhstan" },
  { name: "Carlston Harris", division: "WW", rank: "NR", record: "19-8-0", initials: "CHA", country: "Guyana" },
@@ -4809,6 +4810,7 @@
  "Ernesta Kareckaite": { ht:"5'9\"", dob:"1998-07-05", reach:'71"', stance:"Orthodox", slpm:7.28, strAcc:"42%", sapm:6.47, strDef:"50%", kd:0.00, tdLanded:0.75, tdAcc:"60%", tdDef:"81%", subAvg:0.00, finRate:"33%", streak:0, gym:"Fighters Land MMA" },
  "Evan Elder": { ht:"5'10\"", dob:"1997-04-11", reach:'72"', stance:"Switch", slpm:5.66, strAcc:"51%", sapm:4.94, strDef:"57%", kd:0.48, tdLanded:0.48, tdAcc:"15%", tdDef:"40%", subAvg:0.48, finRate:"60%", streak:3, gym:"Syndicate MMA" },
  "Fernando Padilla": { ht:"6'1\"", dob:"1996-12-15", reach:'76"', stance:"Orthodox", slpm:6.07, strAcc:"40%", sapm:5.74, strDef:"52%", kd:1.23, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.61, finRate:"88%", streak:0, gym:"Team Oyama" },
+ "Gabe Green": { ht:"5'10\"", dob:"1993-05-02", reach:'73"', stance:"Switch", slpm:5.60, strAcc:"45%", sapm:6.19, strDef:"47%", kd:0.48, tdLanded:0.71, tdAcc:"50%", tdDef:"50%", subAvg:0.48, finRate:"92%", streak:1, gym:"Subfighter MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -12161,6 +12163,12 @@
     { opponent: "Donald Sanchez", odds: -300 },
     { opponent: "Talison Soares Costa", odds: -290 },
     { opponent: "Darrick Minner", odds: -140 },
+  ],
+  "Gabe Green": [
+    { opponent: "Matheus Camilo", odds: 165 },
+    { opponent: "Bryan Battle", odds: -137 },
+    { opponent: "Ian Garry", odds: 158 },
+    { opponent: "Philip Rowe", odds: -137 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -26221,6 +26229,25 @@ const FIGHT_HISTORY = {
     { date: "Aug 15, 2015", opponent: "Jose Manuel Landeros Gonzalez", result: "W", method: "Submission (Armbar)", round: 1, time: "2:03", event: "RC 1: Red Cage 1", org: "Red Cage" },
     { date: "Apr 18, 2015", opponent: "Carlos Rivera", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WBG 8: World Best Gladiators 8", org: "WBG" },
   ],
+  "Gabe Green": [
+    { date: "May 17, 2025", opponent: "Matheus Camilo", result: "W", method: "Submission (Face Crank)", round: 2, time: "3:43", event: "UFC Fight Night: Burns vs. Morales", org: "UFC" },
+    { date: "May 13, 2023", opponent: "Bryan Battle", result: "L", method: "KO (Punch)", round: 1, time: "0:14", event: "UFC on ABC: Rozenstruik vs. Almeida", org: "UFC" },
+    { date: "Jul 2, 2022", opponent: "Ian Garry", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 276", org: "UFC" },
+    { date: "Apr 30, 2022", opponent: "Yohan Lainesse", result: "W", method: "TKO (Punches)", round: 2, time: "4:02", event: "UFC on ESPN: Font vs. Vera", org: "UFC" },
+    { date: "Feb 13, 2021", opponent: "Philip Rowe", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 258: Usman vs. Burns", org: "UFC" },
+    { date: "May 30, 2020", opponent: "Daniel Rodriguez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Woodley vs. Burns", org: "UFC" },
+    { date: "Aug 25, 2018", opponent: "Richard LeRoy", result: "W", method: "KO (Punches)", round: 2, time: "4:52", event: "CXF 14: Boiling Point", org: "CXF" },
+    { date: "Apr 13, 2018", opponent: "Javier Garcia", result: "W", method: "Technical Submission (Rear-Naked Choke)", round: 3, time: "1:03", event: "Combate Americas: Combate Estrellas 1", org: "Combate Americas" },
+    { date: "Jan 20, 2018", opponent: "Chris Padilla", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:30", event: "Bellator 192", org: "Bellator" },
+    { date: "Oct 7, 2017", opponent: "Ivan Castillo", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:12", event: "Extreme Fighters MMA: Ready for War", org: "Extreme Fighters MMA" },
+    { date: "Jun 17, 2017", opponent: "Leon Shahbazyan", result: "W", method: "TKO (Punches)", round: 1, time: "3:23", event: "CXF 8", org: "CXF" },
+    { date: "Apr 29, 2017", opponent: "Matt Hagge", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:20", event: "CXF 7: Locked and Loaded", org: "CXF" },
+    { date: "Jan 21, 2017", opponent: "Jalin Turner", result: "L", method: "KO (Punches)", round: 1, time: "0:36", event: "Bellator 170", org: "Bellator" },
+    { date: "Nov 12, 2016", opponent: "Randen Abafo", result: "L", method: "TKO (Punches)", round: 1, time: "3:26", event: "Southside Boxing: War on the Valley Isle 5", org: "Southside Boxing" },
+    { date: "Aug 26, 2016", opponent: "Alex Trinidad", result: "W", method: "TKO (Punches)", round: 2, time: "2:01", event: "Bellator 160", org: "Bellator" },
+    { date: "Jun 9, 2016", opponent: "Hakop Ter-Petrosyan", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:13", event: "Fight Club OC", org: "FCOC" },
+    { date: "Apr 7, 2016", opponent: "Andrew Lagdaan", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:40", event: "Fight Club OC", org: "FCOC" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -38078,6 +38105,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Fury FC Featherweight Champion (TKO of Cameron Graves, 2021)", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night — vs. Luis Pajuelo", detail: null },
     { icon: "🥋", title: "Brown belt in 10th Planet Jiu-Jitsu", detail: null },
+  ],
+  "Gabe Green": [
+    { icon: "🏆", title: "CXF Lightweight Champion (CXF 160 lb Championship)", detail: null },
+    { icon: "🥋", title: "BJJ brown belt under Tracy Hess, Subfighter MMA", detail: null },
+    { icon: "🥇", title: "Knockout Promotions amateur 170-pound champion (6-0 amateur record)", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
