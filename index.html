@@ -3392,6 +3392,7 @@
  { name: "Katlyn Chookagian", division: "WFLW", rank: "NR", record: "18-6-0", initials: "KCH", country: "USA" },
  { name: "Andrea Lee", division: "WFLW", rank: "NR", record: "13-11-0", initials: "ALE", country: "USA" },
  { name: "Viviane Araújo", division: "WFLW", rank: "NR", record: "14-8-0", initials: "VAR", country: "Brazil" },
+ { name: "Ernesta Kareckaite", division: "WFLW", rank: "NR", record: "6-2-1", initials: "EK", country: "Lithuania" },
  // ─── WOMEN'S BANTAMWEIGHT ───
  { name: "Kayla Harrison", division: "WBW", rank: "#C", record: "19-1-0", initials: "KHA", country: "USA" },
  { name: "Julianna Peña", division: "WBW", rank: "#1", record: "13-6-0", initials: "JPE", country: "USA" },
@@ -4803,6 +4804,7 @@
  "Douglas Silva de Andrade": { ht:"5'7\"", dob:"1985-06-22", reach:'68.5"', stance:"Orthodox", slpm:3.54, strAcc:"39%", sapm:4.09, strDef:"57%", kd:0.54, tdLanded:0.54, tdAcc:"43%", tdDef:"72%", subAvg:0.18, finRate:"76%", streak:0, gym:"Academia Corinthians - Sao Paulo" },
  "Dustin Stoltzfus": { ht:"6'0\"", dob:"1991-11-15", reach:'75"', stance:"Orthodox", slpm:3.30, strAcc:"45%", sapm:3.23, strDef:"48%", kd:0.28, tdLanded:2.08, tdAcc:"38%", tdDef:"47%", subAvg:1.11, finRate:"56%", streak:0, gym:"Xtreme Couture" },
  "Elves Brener": { ht:"5'10\"", dob:"1997-09-27", reach:'72.5"', stance:"Orthodox", slpm:4.76, strAcc:"48%", sapm:5.86, strDef:"51%", kd:0.40, tdLanded:0.99, tdAcc:"17%", tdDef:"76%", subAvg:0.00, finRate:"88%", streak:0, gym:"Chute Boxe" },
+ "Ernesta Kareckaite": { ht:"5'9\"", dob:"1998-07-05", reach:'71"', stance:"Orthodox", slpm:7.28, strAcc:"42%", sapm:6.47, strDef:"50%", kd:0.00, tdLanded:0.75, tdAcc:"60%", tdDef:"81%", subAvg:0.00, finRate:"33%", streak:0, gym:"Fighters Land MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -12129,6 +12131,13 @@
     { opponent: "Joel Alvarez", odds: 128 },
     { opponent: "Myktybek Orolbai", odds: 215 },
     { opponent: "Kaynan Kruschewsky", odds: -230 },
+  ],
+  "Ernesta Kareckaite": [
+    { opponent: "Regina Tarin", odds: -146 },
+    { opponent: "Nicolle Caliari", odds: -284 },
+    { opponent: "Dione Barbosa", odds: 190 },
+    { opponent: "Carli Judice", odds: 167 },
+    { opponent: "Laetitia Blot", odds: 120 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -26140,6 +26149,17 @@ const FIGHT_HISTORY = {
     { date: "Sep 1, 2016", opponent: "Eurides Bandeira", result: "W", method: "Submission (Armbar)", round: 3, time: "4:20", event: "Amazon Talent 5", org: "AT" },
     { date: "May 1, 2016", opponent: "Thales Moraes", result: "W", method: "Submission (Armbar)", round: 1, time: "3:16", event: "Mr. Cage 22", org: "Mr. Cage" },
   ],
+  "Ernesta Kareckaite": [
+    { date: "Feb 28, 2026", opponent: "Regina Tarin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
+    { date: "Jan 11, 2025", opponent: "Nicolle Caliari", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "May 4, 2024", opponent: "Dione Barbosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 301", org: "UFC" },
+    { date: "Sep 26, 2023", opponent: "Carli Judice", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series 2023: Week 8", org: "UFC" },
+    { date: "Jan 22, 2023", opponent: "Laetitia Blot", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "HXMMA 6: Hexagone MMA 6", org: "Hexagone" },
+    { date: "Aug 28, 2022", opponent: "Kate Bacik", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "HXMMA 4: Hexagone MMA 4", org: "Hexagone" },
+    { date: "Oct 30, 2021", opponent: "Laetitia Blot", result: "D", method: "Draw (Unanimous)", round: 3, time: "5:00", event: "HXMMA 2: Hexagone MMA 2", org: "Hexagone" },
+    { date: "May 3, 2019", opponent: "Klaudia Pawicka", result: "W", method: "TKO (Punches)", round: 1, time: "0:00", event: "MMA Bushido 77: Fighting Championship in Vilnius", org: "MMA Bushido" },
+    { date: "Mar 16, 2019", opponent: "Tekle Iaganashvili", result: "W", method: "TKO", round: 1, time: "0:00", event: "King of Kings 69: World Series 2019 in Vilnius", org: "King of Kings" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37982,6 +38002,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Mr. Cage Championship titleholder (lightweight)", detail: null },
     { icon: "🏆", title: "Amazon Talent event champion", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu (earned at age 15)", detail: null },
+  ],
+  "Ernesta Kareckaite": [
+    { icon: "🏆", title: "Hexagone MMA World Flyweight Champion", detail: null },
+    { icon: "🥊", title: "Two-time Lithuanian kickboxing champion", detail: null },
+    { icon: "🥋", title: "Two-time Lithuanian Kudo champion", detail: null },
+    { icon: "🥋", title: "World IGF grappling champion", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
