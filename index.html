@@ -3192,6 +3192,7 @@
  { name: "Angel Pacheco", division: "BW", rank: "NR", record: "7-4-0", initials: "ANP", country: "USA" },
  { name: "Miles Johns", division: "BW", rank: "NR", record: "15-5-0", initials: "MIJ", country: "USA" }, // 1 NC
  { name: "Cameron Saaiman", division: "BW", rank: "NR", record: "9-3-0", initials: "CSA", country: "South Africa" },
+ { name: "Carlos Vera", division: "BW", rank: "NR", record: "12-4-0", initials: "CRV", country: "Ecuador" },
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
@@ -4776,6 +4777,7 @@
  "Chepe Mariscal": { ht:"5'7\"", dob:"1992-10-27", reach:'69"', stance:"Orthodox", slpm:4.14, strAcc:"55%", sapm:2.66, strDef:"52%", kd:0.0, tdLanded:2.34, tdAcc:"39%", tdDef:"59%", subAvg:0.18, finRate:"56%", streak:0, gym:"Syndicate MMA" },
  "Christian Rodriguez": { ht:"5'7\"", dob:"1997-12-17", reach:'71.5"', stance:"Orthodox", slpm:3.90, strAcc:"50%", sapm:2.94, strDef:"57%", kd:0.11, tdLanded:1.81, tdAcc:"40%", tdDef:"68%", subAvg:1.13, finRate:"62%", streak:1, gym:"Roufusport" },
  "Cameron Saaiman": { ht:"5'8\"", dob:"2000-12-20", reach:'67"', stance:"Southpaw", slpm:5.30, strAcc:"47%", sapm:4.14, strDef:"52%", kd:0.44, tdLanded:0.89, tdAcc:"29%", tdDef:"47%", subAvg:0.67, finRate:"78%", streak:0, gym:"Team CIT" },
+ "Carlos Vera": { ht:"5'6\"", dob:"1987-11-05", reach:'69"', stance:"Orthodox", slpm:1.53, strAcc:"57%", sapm:2.79, strDef:"50%", kd:0.82, tdLanded:0.00, tdAcc:"0%", tdDef:"25%", subAvg:1.64, finRate:"58%", streak:1, gym:"Fifty/50 Martial Arts Academy" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -11936,6 +11938,14 @@
     { opponent: "Joshua Weems", odds: -428 },
     { opponent: "Jonathan Pearce", odds: 315 },
     { opponent: "Reyes Cortez Jr.", odds: -193 },
+  ],
+  "Carlos Vera": [
+    { opponent: "Josias Musasa", odds: 600 },
+    { opponent: "Rinya Nakamura", odds: 870 },
+    { opponent: "Isaiah Gutierrez", odds: 100 },
+    { opponent: "Kale Moniz", odds: -135 },
+    { opponent: "Peter Caballero", odds: -155 },
+    { opponent: "Cody Freeman", odds: 240 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -25605,6 +25615,24 @@ const FIGHT_HISTORY = {
     { date: "Mar 14, 2020", opponent: "Zwelibanzi Ngema", result: "W", method: "TKO (Punches)", round: 2, time: "3:29", event: "EFC 84", org: "EFC" },
     { date: "Dec 14, 2019", opponent: "Corne Blom", result: "W", method: "TKO (Punches)", round: 1, time: "1:25", event: "EFC 83", org: "EFC" },
   ],
+  "Carlos Vera": [
+    { date: "Mar 15, 2025", opponent: "Josias Musasa", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:16", event: "UFC Fight Night: Vettori vs. Dolidze 2", org: "UFC" },
+    { date: "Feb 17, 2024", opponent: "Rinya Nakamura", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 298", org: "UFC" },
+    { date: "Sep 23, 2022", opponent: "Isaiah Gutierrez", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:41", event: "Fury FC 69", org: "Fury FC" },
+    { date: "Apr 24, 2022", opponent: "Kale Moniz", result: "W", method: "Submission (Guillotine Choke)", round: 3, time: "3:18", event: "Fury FC 60", org: "Fury FC" },
+    { date: "Dec 19, 2021", opponent: "Peter Caballero", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 55", org: "Fury FC" },
+    { date: "Sep 5, 2021", opponent: "Cody Freeman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fury FC 50", org: "Fury FC" },
+    { date: "Jan 25, 2020", opponent: "Levi Mowles", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:50", event: "Atlas Fights 51", org: "Atlas Fights" },
+    { date: "Jul 20, 2019", opponent: "Calvin Martin", result: "W", method: "Submission (Arm-Triangle Choke)", round: 1, time: "3:50", event: "Bayou FC 39: Battle of New Orleans", org: "Bayou FC" },
+    { date: "Apr 6, 2019", opponent: "Greg Fischer", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 21", org: "Shogun Fights" },
+    { date: "Oct 6, 2018", opponent: "Mike Otwell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 20", org: "Shogun Fights" },
+    { date: "Feb 10, 2017", opponent: "Joel Scott", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 3: Spann vs. Giles", org: "LFA" },
+    { date: "Jun 24, 2016", opponent: "Martin Castro", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "MCFP 1", org: "MCFP" },
+    { date: "Feb 19, 2016", opponent: "Josh Carter", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:28", event: "Renaissance MMA 36", org: "RMMA" },
+    { date: "Oct 16, 2015", opponent: "Brandon McMahan", result: "W", method: "Submission (Ankle Lock)", round: 3, time: "2:33", event: "Renaissance MMA 35", org: "RMMA" },
+    { date: "Mar 27, 2015", opponent: "Sammie Reese", result: "W", method: "TKO (Punches)", round: 1, time: "1:17", event: "Renaissance MMA 33", org: "RMMA" },
+    { date: "Nov 30, 2014", opponent: "Sidney Lessa de Oliveira", result: "L", method: "Submission (Arm-Triangle Choke)", round: 2, time: "4:55", event: "Parana Vale Tudo: Goioere 4", org: "PRVT" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37385,6 +37413,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "EFC Bantamweight Champion (won title via unanimous decision over Sindile Manengela, 2022)", detail: null },
     { icon: "⭐", title: "UFC Performance of the Night — vs. Steven Koslow (UFC 282)", detail: null },
     { icon: "🥊", title: "South African K-1 kickboxing champion before transitioning to MMA", detail: null },
+  ],
+  "Carlos Vera": [
+    { icon: "⭐", title: "UFC Performance of the Night — vs. Josias Musasa (UFC Vegas 104, first-round RNC as a +600 underdog)", detail: null },
+    { icon: "🏅", title: "Cast member, The Ultimate Fighter season 31 (Team McGregor vs. Team Chandler)", detail: null },
+    { icon: "🥋", title: "BJJ brown belt under Ryan Hall; 4th-degree black belt & instructor in Taekwondo; capoeira-trained", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
