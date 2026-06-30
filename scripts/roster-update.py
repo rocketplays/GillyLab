@@ -67,19 +67,24 @@ def main():
     print("ADDED (%d): %s" % (len(added), ", ".join(added) or "none"))
     print("REMOVED (%d): %s" % (len(removed), ", ".join(removed) or "none"))
 
-    if not added and not removed:
-        print("\nNo roster changes this week — nothing to write.")
-        return
     if a.dry_run:
         print("\n(dry run — no changes written)"); return
 
-    # replace ACTIVE_ROSTER
-    html = re.sub(r'const ACTIVE_ROSTER = \[.*?\];', lambda m: js_array(new), html, count=1, flags=re.S)
-    # prepend ROSTER_CHANGES entry (insert right after the opening [)
-    html = re.sub(r'(const ROSTER_CHANGES = \[)\n', r'\1\n' + js_changes_entry(week, added, removed), html, count=1)
+    # Always refresh the dated "Updated <date>" label at the top of the page to
+    # today (the day the update ran), whether or not the roster moved.
+    d = datetime.date.today()
+    label = "Updated %s %d, %d" % (d.strftime("%B"), d.day, d.year)
+    html = re.sub(r'(<div class="page-header-label" id="activeRosterUpdated">)[^<]*(</div>)',
+                  lambda m: m.group(1) + label + m.group(2), html, count=1)
+
+    if added or removed:
+        html = re.sub(r'const ACTIVE_ROSTER = \[.*?\];', lambda m: js_array(new), html, count=1, flags=re.S)
+        html = re.sub(r'(const ROSTER_CHANGES = \[)\n', r'\1\n' + js_changes_entry(week, added, removed), html, count=1)
+        note = "ACTIVE_ROSTER -> %d names; prepended '%s' changes (+%d / -%d)" % (len(new), week, len(added), len(removed))
+    else:
+        note = "no roster changes — refreshed the 'Updated' date only"
     open(INDEX, "w", encoding="utf-8").write(html)
-    print("\nWrote index.html: ACTIVE_ROSTER -> %d names; prepended '%s' changes entry "
-          "(+%d / -%d)." % (len(new), week, len(added), len(removed)))
+    print("\nWrote index.html: %s; label set to '%s'." % (note, label))
     print("Remember: 'removed' fighters stay in your DB (now former); 'added' are import candidates.")
 
 if __name__ == "__main__":
