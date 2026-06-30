@@ -3197,6 +3197,7 @@
  { name: "ChangHo Lee", division: "BW", rank: "NR", record: "11-2-0", initials: "CHL", country: "South Korea" },
  { name: "Cody Gibson", division: "BW", rank: "NR", record: "22-12-0", initials: "CGI", country: "USA" },
  { name: "Cristian Quinonez", division: "BW", rank: "NR", record: "19-5-0", initials: "CQ", country: "Mexico" },
+ { name: "Garrett Armfield", division: "BW", rank: "NR", record: "10-5-0", initials: "GA", country: "USA" },
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
@@ -4813,6 +4814,7 @@
  "Fernando Padilla": { ht:"6'1\"", dob:"1996-12-15", reach:'76"', stance:"Orthodox", slpm:6.07, strAcc:"40%", sapm:5.74, strDef:"52%", kd:1.23, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.61, finRate:"88%", streak:0, gym:"Team Oyama" },
  "Gabe Green": { ht:"5'10\"", dob:"1993-05-02", reach:'73"', stance:"Switch", slpm:5.60, strAcc:"45%", sapm:6.19, strDef:"47%", kd:0.48, tdLanded:0.71, tdAcc:"50%", tdDef:"50%", subAvg:0.48, finRate:"92%", streak:1, gym:"Subfighter MMA" },
  "Gabriel Santos": { ht:"5'9\"", dob:"1996-11-28", reach:'70"', stance:"Orthodox", slpm:4.35, strAcc:"61%", sapm:4.31, strDef:"45%", kd:0.29, tdLanded:3.80, tdAcc:"54%", tdDef:"88%", subAvg:1.17, finRate:"67%", streak:2, gym:"Chute Boxe Diego Lima" },
+ "Garrett Armfield": { ht:"5'6\"", dob:"1996-10-09", reach:'70"', stance:"Orthodox", slpm:5.35, strAcc:"54%", sapm:3.64, strDef:"56%", kd:0.55, tdLanded:1.10, tdAcc:"50%", tdDef:"65%", subAvg:0.55, finRate:"80%", streak:0, gym:"Marathon MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -12178,6 +12180,15 @@
     { opponent: "David Onama", odds: -223 },
     { opponent: "Jose Mauro Delano", odds: 278 },
     { opponent: "Marcio Barbosa", odds: -153 },
+  ],
+  "Garrett Armfield": [
+    { opponent: "Serhiy Sidey", odds: 116 },
+    { opponent: "Brady Hiestand", odds: -225 },
+    { opponent: "Brad Katona", odds: 195 },
+    { opponent: "Toshiomi Kazama", odds: -158 },
+    { opponent: "David Onama", odds: 610 },
+    { opponent: "Steven Graham", odds: -188 },
+    { opponent: "Mateo Alejandro Vogel", odds: -220 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -26273,6 +26284,23 @@ const FIGHT_HISTORY = {
     { date: "May 28, 2016", opponent: "Thiago Carvalho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SFF: Sao Francisco Fight 6", org: "SFF" },
     { date: "Sep 20, 2014", opponent: "Lucas de Sousa Silva", result: "W", method: "TKO (Punches)", round: 3, time: "1:54", event: "AF: Action Fight 1", org: "AF" },
   ],
+  "Garrett Armfield": [
+    { date: "Nov 2, 2024", opponent: "Serhiy Sidey", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Albazi", org: "UFC" },
+    { date: "Jun 15, 2024", opponent: "Brady Hiestand", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:52", event: "UFC Fight Night: Perez vs. Taira", org: "UFC" },
+    { date: "Jan 20, 2024", opponent: "Brad Katona", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 297", org: "UFC" },
+    { date: "Aug 26, 2023", opponent: "Toshiomi Kazama", result: "W", method: "TKO (Punches)", round: 1, time: "4:16", event: "UFC Fight Night: Holloway vs. The Korean Zombie", org: "UFC" },
+    { date: "Jul 9, 2022", opponent: "David Onama", result: "L", method: "Technical Submission (Arm-Triangle Choke)", round: 2, time: "3:13", event: "UFC on ESPN: dos Anjos vs. Fiziev", org: "UFC" },
+    { date: "May 6, 2022", opponent: "Steven Graham", result: "W", method: "KO (Punch)", round: 1, time: "0:33", event: "FAC 13: Fighting Alliance Championship 13", org: "FAC" },
+    { date: "Oct 9, 2021", opponent: "Mark Slyter", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Shamrock FC: Shamrock 332", org: "Shamrock FC" },
+    { date: "Jun 26, 2021", opponent: "Alex Macias", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:56", event: "Shamrock FC: Shamrock 329", org: "Shamrock FC" },
+    { date: "Apr 2, 2021", opponent: "Mateo Alejandro Vogel", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:28", event: "CFFC 95", org: "CFFC" },
+    { date: "Oct 29, 2020", opponent: "Kenneth Richmond", result: "W", method: "TKO (Punches)", round: 1, time: "4:18", event: "CFFC 86", org: "CFFC" },
+    { date: "Jan 11, 2020", opponent: "Chris Johnson", result: "W", method: "TKO (Punches)", round: 2, time: "1:42", event: "Shamrock FC: Shamrock 327", org: "Shamrock FC" },
+    { date: "Sep 6, 2019", opponent: "Earnest Walls", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:33", event: "Shamrock FC: Shamrock 322", org: "Shamrock FC" },
+    { date: "May 24, 2019", opponent: "Ronnie Lawrence", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 67", org: "LFA" },
+    { date: "Oct 27, 2018", opponent: "Joey Estrada", result: "W", method: "TKO (Punches)", round: 1, time: "0:11", event: "Walkout FC 13: New Era", org: "Walkout FC" },
+    { date: "Aug 18, 2018", opponent: "Shane Bridges", result: "W", method: "KO (Punches)", round: 1, time: "3:36", event: "Pyramid Fights 8", org: "Pyramid Fights" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -38141,6 +38169,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Future MMA national-level champion", detail: null },
     { icon: "🏆", title: "Coronel Combate state-level champion", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Garrett Armfield": [
+    { icon: "🏆", title: "FAC (Fighting Alliance Championship) Bantamweight Champion", detail: null },
+    { icon: "🏅", title: "Two-time amateur MMA champion (6-1 amateur record)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥋", title: "Black belt in Tae Kwon Do", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
