@@ -3339,6 +3339,7 @@
  { name: "Ion Cutelaba", division: "LHW", rank: "NR", record: "20-12-1", initials: "ICU", country: "Moldova" },
  { name: "Oumar Sy", division: "LHW", rank: "NR", record: "12-2-0", initials: "OSY", country: "France" },
  { name: "Navajo Stirling", division: "LHW", rank: "NR", record: "10-0-0", initials: "NST", country: "New Zealand" },
+ { name: "Ibo Aslan", division: "LHW", rank: "NR", record: "14-4-0", initials: "IBO", country: "Turkey" },
  // ─── HEAVYWEIGHT ───
  { name: "Ciryl Gane", division: "HW", rank: "#1", record: "13-2-0", initials: "CGN", country: "France" },
  { name: "Alexander Volkov", division: "HW", rank: "#2", record: "40-11-0", initials: "AVL", country: "Russia" },
@@ -4515,6 +4516,7 @@
  "Elise Reed": { ht:"5'3\"", dob:"1992-12-05", reach:'63"', stance:"Orthodox", slpm:3.41, strAcc:"53%", sapm:3.26, strDef:"52%", kd:0.15, tdLanded:0.46, tdAcc:"60%", tdDef:"53%", subAvg:0.0, finRate:"25%", streak:0, gym:"Kickside Martial Arts" },
  "Puja Tomar": { ht:"5'4\"", dob:"1993-12-05", reach:'59"', stance:"Southpaw", slpm:5.27, strAcc:"50%", sapm:5.42, strDef:"46%", kd:0.56, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"67%", streak:0, gym:"Soma Fight Club" },
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
+ "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
  "Piera Rodriguez": { ht:"5'3\"", dob:"1992-11-11", reach:'63"', stance:"Orthodox", slpm:4.04, strAcc:"47%", sapm:3.13, strDef:"54%", kd:0.14, tdLanded:4.04, tdAcc:"51%", tdDef:"82%", subAvg:0.00, finRate:"42%", streak:3, gym:"Xtreme Couture" },
  "Polyana Viana": { ht:"5'5\"", dob:"1992-06-14", reach:'67"', stance:"Orthodox", slpm:2.82, strAcc:"41%", sapm:2.74, strDef:"53%", kd:0.17, tdLanded:0.67, tdAcc:"33%", tdDef:"33%", subAvg:1.51, finRate:"100%", streak:0, gym:"Chute Boxe Diego Lima" },
  "Mizuki": { ht:"5'3\"", dob:"1994-08-19", reach:'65"', stance:"Orthodox", slpm:4.45, strAcc:"53%", sapm:4.65, strDef:"50%", kd:0.25, tdLanded:0.75, tdAcc:"33%", tdDef:"81%", subAvg:0.00, finRate:"56%", streak:2, gym:"Serra-Longo Fight Team (2018–present)" },
@@ -12385,6 +12387,14 @@
     { opponent: "Polyana Viana", odds: -188 },
     { opponent: "Brogan Walker", odds: -345 },
     { opponent: "Yazmin Jauregui", odds: 188 }
+  ],
+  "Ibo Aslan": [
+    { opponent: "Iwo Baraniewski", odds: 185 },
+    { opponent: "Billy Elekana", odds: -278 },
+    { opponent: "Ion Cutelaba", odds: -182 },
+    { opponent: "Raffael Cerqueira", odds: 100 },
+    { opponent: "Anton Turkalj", odds: -124 },
+    { opponent: "Paulo Renato Jr", odds: -167 },
   ],
   "Aljamain Sterling": [
     { opponent: "Youssef Zalal", odds: 110 },
@@ -26811,6 +26821,27 @@ const FIGHT_HISTORY = {
     { date: "May 10, 2017", opponent: "Alline Khyra", result: "W", method: "TKO (Punches)", round: 3, time: "4:12", event: "BigFight" }
   ],
 
+  "Ibo Aslan": [
+    { date: "Dec 6, 2025", opponent: "Iwo Baraniewski", result: "L", method: "KO (Punches)", round: 1, time: "1:29", event: "UFC 323: Dvalishvili vs. Yan 2", org: "UFC" },
+    { date: "Jul 26, 2025", opponent: "Billy Elekana", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
+    { date: "Feb 22, 2025", opponent: "Ion Cutelaba", result: "L", method: "Submission (Arm-Triangle Choke)", round: 1, time: "2:51", event: "UFC Fight Night: Cejudo vs. Song", org: "UFC" },
+    { date: "Oct 26, 2024", opponent: "Raffael Cerqueira", result: "W", method: "TKO (Punches)", round: 1, time: "0:51", event: "UFC 308", org: "UFC" },
+    { date: "Mar 30, 2024", opponent: "Anton Turkalj", result: "W", method: "TKO (Punch)", round: 3, time: "1:32", event: "UFC on ESPN: Blanchfield vs. Fiorot", org: "UFC" },
+    { date: "Aug 15, 2023", opponent: "Paulo Renato Jr", result: "W", method: "TKO (Punches)", round: 1, time: "2:22", event: "Dana White's Contender Series 2023: Week 2", org: "DWCS" },
+    { date: "Mar 18, 2023", opponent: "Giorgi Khubejashvili", result: "W", method: "TKO (Leg Kick and Punches)", round: 1, time: "1:30", event: "VFN 33: Vendetta Fight Nights 33" },
+    { date: "Apr 2, 2022", opponent: "Amilcar Alves", result: "W", method: "KO", round: 1, time: "1:45", event: "Sparta CF 1: Sparta Championship Fighting 1" },
+    { date: "Mar 13, 2022", opponent: "Felix Polianidis", result: "W", method: "TKO", round: 1, time: "0:20", event: "Tosan Fight Night" },
+    { date: "Aug 24, 2020", opponent: "Anton Turkalj", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:57", event: "Brave CF 40", org: "BRAVE CF" },
+    { date: "Jun 15, 2019", opponent: "Ivan Vicic", result: "W", method: "TKO (Strikes)", round: 1, time: "N/A", event: "VFN 18: Vendetta 18" },
+    { date: "Dec 1, 2018", opponent: "Robert Valentin", result: "W", method: "TKO (Punches)", round: 3, time: "1:36", event: "AFC: Austrian Fight Challenge 8", org: "AFC" },
+    { date: "Jun 16, 2018", opponent: "Bart Cillessen", result: "W", method: "KO (Punch)", round: 1, time: "0:35", event: "AFC: Austrian Fight Challenge 7", org: "AFC" },
+    { date: "Dec 9, 2017", opponent: "Milan Stojadinovic", result: "W", method: "KO (Punch)", round: 1, time: "2:35", event: "AFC: Austrian Fight Challenge 6", org: "AFC" },
+    { date: "Sep 23, 2017", opponent: "Sasa Mihajlovic", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "AFC: Austrian Fight Challenge New Talents 3", org: "AFC" },
+    { date: "Jun 10, 2017", opponent: "Igor Kantar", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "AFC: Austrian Fight Challenge New Talents 2", org: "AFC" },
+    { date: "Mar 4, 2017", opponent: "Milan Bodonji", result: "W", method: "TKO (Punches)", round: 1, time: "N/A", event: "AFC: Austrian Fight Challenge 5", org: "AFC" },
+    { date: "Oct 15, 2016", opponent: "Mattia Calore", result: "W", method: "TKO (Punches)", round: 1, time: "3:27", event: "AFC: Austrian Fight Challenge New Talents 1", org: "AFC" },
+  ],
+
   "Aljamain Sterling": [
     { date: "Apr 25, 2026", opponent: "Youssef Zalal", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Brian Ortega", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
@@ -33954,6 +33985,12 @@ const ACCOLADES = {
   "Iasmin Lucindo": [
     { icon: "🏆", title: "Multiple-time Brazilian regional champion (Action Fight, Samurai Fight House titles)", detail: null },
     { icon: "🥊", title: "Young UFC strawweight prospect — 11 of 18 wins by finish (8 KO/TKO, 3 submission)", detail: null }
+  ],
+  "Ibo Aslan": [
+    { icon: "🏆", title: "WFMC World Champion (Light Heavyweight)", detail: null },
+    { icon: "🏆", title: "AFC (Austrian Fight Challenge) Champion (Light Heavyweight)", detail: null },
+    { icon: "🏅", title: "Ranked No. 12 in Western Europe at Light Heavyweight (Tapology)", detail: null },
+    { icon: "🥊", title: "\"The Last Ottoman\" — only active Turkish fighter in the UFC; 14 of 14 career wins by knockout, 12 of them in the first round", detail: null }
   ],
   "Tecia Torres": [
     { icon: "🥋", title: "Black belt in Jhoon-Rhee Taekwondo; blue belt in Brazilian Jiu-Jitsu", detail: null },
