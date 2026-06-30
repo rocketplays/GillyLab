@@ -3364,6 +3364,7 @@
  { name: "Stipe Miocic", division: "HW", rank: "NR", record: "20-5-0", initials: "SMI", country: "USA" },
  { name: "Jailton Almeida", division: "HW", rank: "NR", record: "22-5-0", initials: "JAL2", country: "Brazil" },
  { name: "Brando Pericic", division: "HW", rank: "#14", record: "7-1-0", initials: "BPE", country: "Australia" },
+ { name: "Jose Montanha", division: "HW", rank: "NR", record: "6-1-0", initials: "JLM", country: "Brazil" },
  // ─── WOMEN'S STRAWWEIGHT ───
  { name: "Mackenzie Dern", division: "WSW", rank: "#C", record: "16-5-0", initials: "MDE", country: "USA" },
  { name: "Zhang Weili", division: "WSW", rank: "#1", record: "26-4-0", initials: "ZW", country: "China" },
@@ -4948,6 +4949,7 @@
   "Damian Pinas": { ht:"6'1\"", dob:"2002-03-12", reach:'79.5"', stance:"Orthodox", slpm:7.50, strAcc:"56%", sapm:3.75, tdAcc:"0%", subAvg:0.0, strDef:"57%", kd:10.55, tdDef:"100%", finRate:"89%", streak:5, tdLanded:0.00, gym:"Nova União" },
  "Cesar Almeida": { ht:"6'1\"", dob:"1988-03-28", reach:'74"', stance:"Orthodox", slpm:3.46, strAcc:"59%", sapm:2.03, strDef:"46%", kd:0.21, tdLanded:0.0, tdAcc:"0%", tdDef:"52%", subAvg:0.21, finRate:"71%", streak:0, gym:"Superfight Team / Rizzo RVT / Corinthians" },
   "Jhonata Diniz": { ht:"6'4\"", dob:"1991-06-23", reach:'79.5"', stance:"Orthodox", slpm:3.89, strAcc:"56%", sapm:3.62, strDef:"57%", kd:0.75, tdLanded:0.0, tdAcc:"0%", tdDef:"70%", subAvg:0.0, finRate:"78%", streak:0, gym:"Santa Fé Team" },
+ "Jose Montanha": { ht:"6'4\"", dob:"1996-08-25", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:3, gym:"Gile Ribeiro Team / Noguchi Team" },
   "Seokhyeon Ko": { ht:"5'10\"", dob:"1993-09-24", reach:'71"', stance:"Southpaw", slpm:2.73, strAcc:"59%", sapm:1.42, strDef:"59%", kd:0.00, tdLanded:4.00, tdAcc:"63%", tdDef:"75%", subAvg:0.33, finRate:"46%", streak:6, gym:"HAVAS Seoul" },
   "Brando Pericic": { ht:"6'5\"", dob:"1994-08-03", reach:'79"', stance:"Orthodox", slpm:11.00, strAcc:"58%", sapm:4.26, strDef:"58%", kd:1.20, tdLanded:0.0, tdAcc:"0%", tdDef:"71%", subAvg:0.0, finRate:"100%", streak:5, gym:"City Kickboxing" },
 
@@ -13464,6 +13466,7 @@
     { opponent: "Austen Lane", odds: -330 },
     { opponent: "Eduardo Neves", odds: -115 }
   ],
+  "Jose Montanha": [],
   "Gable Steveson": [
     { opponent: "Kevin Hein", odds: -8000 },
     { opponent: "Braden Peterson", odds: -3333 },
@@ -29245,6 +29248,16 @@ const FIGHT_HISTORY = {
     { date: "May 21, 2022", opponent: "José Rodrigo Guelke", result: "W", method: "TKO (Retirement)", round: 1, time: "2:30", event: "Spartacus MMA 5" }
   ],
 
+  "Jose Montanha": [
+    { date: "Aug 30, 2025", opponent: "Bruno de Jesus", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:29", event: "Curitiba Fight Pro 11" },
+    { date: "May 24, 2025", opponent: "Jhon Ribeiro", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:30", event: "Forja MMA 3" },
+    { date: "Aug 5, 2023", opponent: "Carlos Amaral Jr.", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:30", event: "Dragon Fight 5" },
+    { date: "Mar 19, 2022", opponent: "Richard Jacobi", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Metanoia Fight Combat: MFC 2022" },
+    { date: "Dec 12, 2021", opponent: "Sidney Araujo", result: "W", method: "KO/TKO", round: 2, time: "1:38", event: "Lucas Fight Combat 2" },
+    { date: "Sep 10, 2016", opponent: "Rodrigo Maia", result: "W", method: "KO/TKO", round: 1, time: "1:27", event: "Zanolli Institute: FICOP Fight 2" },
+    { date: "Jul 10, 2016", opponent: "Roberio Luiz", result: "W", method: "Decision", round: 3, time: "5:00", event: "Brazil Regional" },
+  ],
+
   "Gable Steveson": [
     { date: "Feb 19, 2026", opponent: "Hugo Lezama", result: "W", method: "TKO (Punches)", round: 1, time: "3:50", event: "Mexico Fight League 3" },
     { date: "Nov 23, 2025", opponent: "Kevin Hein", result: "W", method: "KO (Punch)", round: 1, time: "0:24", event: "Anthony Pettis FC 21" },
@@ -38129,6 +38142,9 @@ const ACCOLADES = {
   "Jhonata Diniz": [
     { icon: "🥋", title: "Blue belt in Brazilian Jiu-Jitsu under Sérgio Moraes", detail: null },
     { icon: "🥊", title: "Black belt in Muay Thai", detail: null }
+  ],
+  "Jose Montanha": [
+    { icon: "🥊", title: "UFC heavyweight prospect — 6-1 pro record with 5 finishes (3 submission, 2 KO/TKO) and a 3-fight win streak entering the UFC", detail: null }
   ],
   "Talita Alencar": [
     { icon: "🥋", title: "BJJ black belt", detail: null },
