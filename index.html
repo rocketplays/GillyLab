@@ -3229,6 +3229,7 @@
  { name: "Robert Ruchala", division: "FW", rank: "NR", record: "11-3-0", initials: "RRU", country: "Poland" },
  { name: "Darren Elkins", division: "FW", rank: "NR", record: "29-12-0", initials: "DE", country: "USA" },
  { name: "Douglas Silva de Andrade", division: "FW", rank: "NR", record: "29-7-0", initials: "DS", country: "Brazil" },
+ { name: "Isaac Thomson", division: "FW", rank: "NR", record: "9-3-0", initials: "ITH", country: "Australia" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
@@ -4517,6 +4518,7 @@
  "Puja Tomar": { ht:"5'4\"", dob:"1993-12-05", reach:'59"', stance:"Southpaw", slpm:5.27, strAcc:"50%", sapm:5.42, strDef:"46%", kd:0.56, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"67%", streak:0, gym:"Soma Fight Club" },
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
  "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
+ "Isaac Thomson": { ht:"5'11\"", dob:"2002-05-03", reach:'69.5"', stance:null, slpm:1.40, strAcc:"45%", sapm:2.20, strDef:"42%", kd:0.00, tdLanded:4.00, tdAcc:"80%", tdDef:"33%", subAvg:0.00, finRate:"56%", streak:0, gym:"Team Alpha Male" },
  "Piera Rodriguez": { ht:"5'3\"", dob:"1992-11-11", reach:'63"', stance:"Orthodox", slpm:4.04, strAcc:"47%", sapm:3.13, strDef:"54%", kd:0.14, tdLanded:4.04, tdAcc:"51%", tdDef:"82%", subAvg:0.00, finRate:"42%", streak:3, gym:"Xtreme Couture" },
  "Polyana Viana": { ht:"5'5\"", dob:"1992-06-14", reach:'67"', stance:"Orthodox", slpm:2.82, strAcc:"41%", sapm:2.74, strDef:"53%", kd:0.17, tdLanded:0.67, tdAcc:"33%", tdDef:"33%", subAvg:1.51, finRate:"100%", streak:0, gym:"Chute Boxe Diego Lima" },
  "Mizuki": { ht:"5'3\"", dob:"1994-08-19", reach:'65"', stance:"Orthodox", slpm:4.45, strAcc:"53%", sapm:4.65, strDef:"50%", kd:0.25, tdLanded:0.75, tdAcc:"33%", tdDef:"81%", subAvg:0.00, finRate:"56%", streak:2, gym:"Serra-Longo Fight Team (2018–present)" },
@@ -12395,6 +12397,17 @@
     { opponent: "Raffael Cerqueira", odds: 100 },
     { opponent: "Anton Turkalj", odds: -124 },
     { opponent: "Paulo Renato Jr", odds: -167 },
+  ],
+  "Isaac Thomson": [
+    { opponent: "Joanderson Brito", odds: 205 },
+    { opponent: "Akbarjon Islomboev", odds: 135 },
+    { opponent: "Jeremy Henry", odds: -649 },
+    { opponent: "Israel Delgado", odds: -800 },
+    { opponent: "Shaheen Santana", odds: -549 },
+    { opponent: "Aj Robb", odds: -300 },
+    { opponent: "Lerryan Douglas", odds: -275 },
+    { opponent: "Gary Konkol", odds: -180 },
+    { opponent: "Dorian Ramos", odds: -250 },
   ],
   "Aljamain Sterling": [
     { opponent: "Youssef Zalal", odds: 110 },
@@ -26842,6 +26855,21 @@ const FIGHT_HISTORY = {
     { date: "Oct 15, 2016", opponent: "Mattia Calore", result: "W", method: "TKO (Punches)", round: 1, time: "3:27", event: "AFC: Austrian Fight Challenge New Talents 1", org: "AFC" },
   ],
 
+  "Isaac Thomson": [
+    { date: "Dec 13, 2025", opponent: "Joanderson Brito", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Royval vs. Kape", org: "UFC" },
+    { date: "Oct 10, 2025", opponent: "Akbarjon Islomboev", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 219: Thomson vs. Islomboev", org: "LFA" },
+    { date: "Jul 26, 2025", opponent: "Jeremy Henry", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:34", event: "LFA 213: Gonzalez vs. Rosales", org: "LFA" },
+    { date: "Sep 13, 2024", opponent: "Israel Delgado", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 192: Climaco vs. Dias", org: "LFA" },
+    { date: "Apr 5, 2024", opponent: "Shaheen Santana", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 181: Siqueira vs. Hernandez", org: "LFA" },
+    { date: "Oct 27, 2023", opponent: "Aj Robb", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 170: Talundzic vs. Frunza", org: "LFA" },
+    { date: "Aug 4, 2023", opponent: "Lerryan Douglas", result: "W", method: "TKO (Punches)", round: 2, time: "1:40", event: "LFA 164: Mazo vs. Lavado", org: "LFA" },
+    { date: "Feb 3, 2023", opponent: "Benjamin Hollier", result: "W", method: "TKO (Punches)", round: 1, time: "1:55", event: "FSF: Front Street Fights 25" },
+    { date: "Jan 13, 2023", opponent: "Gary Konkol", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 150: Farias vs. Sweeney", org: "LFA" },
+    { date: "Dec 3, 2021", opponent: "Dorian Ramos", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "2:27", event: "LFA 119: Silveira vs. Revel", org: "LFA" },
+    { date: "May 8, 2021", opponent: "Jaime Garcia", result: "W", method: "KO", round: 1, time: "N/A", event: "EFC: Empire Fighting Championship 11" },
+    { date: "Dec 11, 2020", opponent: "Luis Gerardo Garcia Lucero", result: "W", method: "TKO (Punches)", round: 2, time: "4:20", event: "iFF 4: iKon Fighting Federation 4" },
+  ],
+
   "Aljamain Sterling": [
     { date: "Apr 25, 2026", opponent: "Youssef Zalal", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Sterling vs. Zalal", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Brian Ortega", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
@@ -33991,6 +34019,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "AFC (Austrian Fight Challenge) Champion (Light Heavyweight)", detail: null },
     { icon: "🏅", title: "Ranked No. 12 in Western Europe at Light Heavyweight (Tapology)", detail: null },
     { icon: "🥊", title: "\"The Last Ottoman\" — only active Turkish fighter in the UFC; 14 of 14 career wins by knockout, 12 of them in the first round", detail: null }
+  ],
+  "Isaac Thomson": [
+    { icon: "🏆", title: "WAKO Australian K1 Champion (-60kg and -66kg divisions)", detail: null },
+    { icon: "🏆", title: "Multiple Australian/international BJJ titles (ABJJF, IBJJF Kids International, AFBJJ NSW, 2017) and 2011 & 2014 ISKA BJJ World Champion", detail: null },
+    { icon: "🏆", title: "2011 & 2014 ISKA Koshiki Karate World Champion; multiple Australian and NSW state Koshiki titles", detail: null },
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "Combat-sports prodigy training since age 8; inducted into the ISKA Hall of Fame for BJJ (2015)", detail: null }
   ],
   "Tecia Torres": [
     { icon: "🥋", title: "Black belt in Jhoon-Rhee Taekwondo; blue belt in Brazilian Jiu-Jitsu", detail: null },
