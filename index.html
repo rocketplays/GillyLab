@@ -3189,6 +3189,7 @@
  { name: "Chris Gutierrez", division: "BW", rank: "NR", record: "22-7-2", initials: "CG", country: "USA" },
  { name: "Farid Basharat", division: "BW", rank: "NR", record: "15-0-0", initials: "FB", country: "Afghanistan" },
  { name: "Said Nurmagomedov", division: "BW", rank: "NR", record: "18-5-0", initials: "SN", country: "Russia" },
+ { name: "Angel Pacheco", division: "BW", rank: "NR", record: "7-4-0", initials: "ANP", country: "USA" },
  { name: "Miles Johns", division: "BW", rank: "NR", record: "15-5-0", initials: "MIJ", country: "USA" }, // 1 NC
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
@@ -4903,6 +4904,7 @@
 
   "Andreas Gustafsson": { ht:"6'1\"", dob:"1991-02-20", reach:'73.5"', stance:"--", slpm:5.82, sapm:3.63, strAcc:"72%", tdAcc:"59%", subAvg:0.0, strDef:"46%", kd:0.62, tdDef:"100%", finRate:"83%", streak:0, tdLanded:6.19, gym:"Västerås Fight Club" },
   "Andrey Pulyaev": { ht:'6\'4"', dob:"1997-09-10", reach:"--", stance:"--", slpm:3.84, sapm:3.14, strAcc:"56%", tdAcc:"17%", subAvg:0.00, strDef:"55%", kd:0.29, tdDef:"64%", finRate:"80%", streak:0, tdLanded:0.29, gym:"Storm Shlemenko Fight Team" },
+ "Angel Pacheco": { ht:'5\'8"', dob:"1992-01-13", reach:'70"', stance:"Orthodox", slpm:7.58, strAcc:"36%", sapm:10.56, strDef:"42%", kd:0.00, tdLanded:0.33, tdAcc:"50%", tdDef:"17%", subAvg:0.00, finRate:"100%", streak:0, gym:"New England Cartel" },
   "Carli Judice": { ht:"5'7\"", dob:"1999-03-02", reach:'68"', stance:"Southpaw", slpm:9.32, strAcc:"51%", sapm:6.62, strDef:"57%", kd:0.52, tdLanded:0.52, tdAcc:"25%", tdDef:"81%", subAvg:0.00, finRate:"83%", streak:3, gym:"Headkicks MMA" },
   "Carol Foro": { ht:"5'2\"", dob:"1997-03-21", reach:'61.5"', stance:"Orthodox", slpm:7.80, strAcc:"55%", sapm:7.67, strDef:"58%", kd:3.00, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"78%", streak:7, gym:"RPlay Thai" },
   "Cezary Oleksiejczuk": { ht:"6'3\"", dob:"2000-01-06", reach:'75.5"', stance:"Southpaw", slpm:1.99, strAcc:"86%", sapm:0.77, strDef:"48%", kd:0.0, tdLanded:5.77, tdAcc:"86%", tdDef:"100%", subAvg:0.0, finRate:"65%", streak:5, gym:"Fighting Nerds" },
@@ -7555,6 +7557,12 @@
     { opponent: "Carls John de Tomas", odds: -410 },
     { opponent: "Kevin Gray", odds: -160 },
     { opponent: "Ray Elizalde", odds: 190 }
+  ],
+  "Angel Pacheco": [
+    { opponent: "Santiago Luna", odds: 750 },
+    { opponent: "Caolán Loughran", odds: 400 },
+    { opponent: "Danny Silva", odds: 163 },
+    { opponent: "Vilson Ndregjoni", odds: 210 }
   ],
   "Angela Hill": [
     { opponent: "Xiong Jingnan", odds: 165 },
@@ -16839,6 +16847,19 @@ const FIGHT_HISTORY = {
   ],
 
 
+  "Angel Pacheco": [
+    { date: "Feb 28, 2026", opponent: "Santiago Luna", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
+    { date: "Mar 30, 2024", opponent: "Caolán Loughran", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Fiorot", org: "UFC" },
+    { date: "Sep 26, 2023", opponent: "Danny Silva", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 7, Week 8", org: "DWCS" },
+    { date: "Aug 26, 2022", opponent: "Vilson Ndregjoni", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:27", event: "CFFC 112: Perez vs. Wells", org: "CFFC" },
+    { date: "Jul 16, 2022", opponent: "Zack Schroeder", result: "W", method: "KO/TKO", round: 1, time: "1:19", event: "Bud Brawl 2: Huff Entertainment", org: "Bud Brawl" },
+    { date: "May 6, 2022", opponent: "Zack Schroeder", result: "W", method: "KO/TKO", round: 1, time: "0:47", event: "CES 68: Greene vs. Williams", org: "CES" },
+    { date: "Aug 28, 2021", opponent: "Damion Hill", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:59", event: "CFX 49: CFX vs. NSC", org: "CFX" },
+    { date: "Dec 11, 2020", opponent: "Nathan Williams", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "NFC 128: National Fighting Championship 128", org: "NFC" },
+    { date: "Feb 21, 2020", opponent: "Felipe Martinez Donis", result: "W", method: "KO/TKO", round: 2, time: "1:40", event: "LFA 82: Polizzi vs. Pogues", org: "LFA" },
+    { date: "Nov 15, 2019", opponent: "Sam Hernandez", result: "W", method: "KO/TKO", round: 1, time: "3:29", event: "Mecca 15: Driller Promotions", org: "Mecca" },
+    { date: "Apr 13, 2019", opponent: "Ash Majek", result: "W", method: "KO/TKO", round: 1, time: "1:34", event: "Bud Brawl: Huff Entertainment", org: "Bud Brawl" }
+  ],
   "Angela Hill": [
     { date: "May 30, 2026", opponent: "Xiong Jingnan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Figueiredo", org: "UFC" },
     { date: "Nov 15, 2025", opponent: "Fatima Kline", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 322", org: "UFC" },
@@ -35731,6 +35752,11 @@ const ACCOLADES = {
     { icon: "🥇", title: "IMMAF Senior World Championships — 2014 Las Vegas — Women's Flyweight (−56.7 kg)", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥋", title: "Black belt in Judo", detail: null },
+  ],
+  "Angel Pacheco": [
+    { icon: "🥋", title: "BJJ Black Belt under Brock Larson", detail: null },
+    { icon: "🏆", title: "CFX Featherweight Champion; Driller Promotions Featherweight Champion", detail: null },
+    { icon: "🥊", title: "100% finish rate — 7 of 7 wins by stoppage (5 KO/TKO, 2 submission)", detail: null }
   ],
   "Angela Hill": [
     { icon: "🏆", title: "Invicta FC Strawweight Champion (one title defense)", detail: null },
