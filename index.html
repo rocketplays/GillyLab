@@ -3427,6 +3427,7 @@
  { name: "Quillan Salkilld", division: "LW", rank: "#12", record: "12-1-0", initials: "QSA", country: "Australia" },
  { name: "Anshul Jubli", division: "LW", rank: "NR", record: "7-2-0", initials: "AJ", country: "India" },
  { name: "Drew Dober", division: "LW", rank: "NR", record: "29-15-0", initials: "DDO", country: "USA" },
+ { name: "Kyle Prepolec", division: "LW", rank: "NR", record: "18-10-0", initials: "KPR", country: "Canada" },
  { name: "Nurullo Aliev", division: "LW", rank: "NR", record: "11-0-0", initials: "NAL", country: "Tajikistan" },
  { name: "Chris Padilla", division: "LW", rank: "NR", record: "17-6-1", initials: "CPA", country: "USA" },
  { name: "MarQuel Mederos", division: "LW", rank: "NR", record: "11-1-1", initials: "MQM", country: "USA" },
@@ -4379,6 +4380,7 @@
  "Punahele Soriano": { ht:"5'11\"", dob:"1992-11-22", reach:'72"', stance:"Southpaw", slpm:4.42, strAcc:"54%", sapm:3.31, strDef:"47%", kd:0.74, tdLanded:1.97, tdAcc:"52%", tdDef:"49%", subAvg:0.12, finRate:"69%", streak:4, gym:"Xtreme Couture" },
  // ── Lightweight (more) ──
  "Drew Dober": { ht:"5'8\"", dob:"1988-10-19", reach:'70"', stance:"Southpaw", slpm:4.48, strAcc:"41%", sapm:4.33, strDef:"53%", kd:0.68, tdLanded:0.61, tdAcc:"17%", tdDef:"58%", subAvg:0.07, finRate:"76%", streak:2, gym:"Elevation Fight Team" },
+ "Kyle Prepolec": { ht:"5'10\"", dob:"1989-08-30", reach:'70"', stance:"Southpaw", slpm:3.25, strAcc:"34%", sapm:5.69, strDef:"49%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"45%", subAvg:0.00, finRate:"78%", streak:0, gym:"Maximum Training Centre" },
  "Farès Ziam": { ht:"6'1\"", dob:"1997-03-21", reach:'75"', stance:"Orthodox", slpm:2.68, strAcc:"52%", sapm:1.58, strDef:"64%", kd:0.21, tdLanded:1.86, tdAcc:"43%", tdDef:"71%", subAvg:0.52, finRate:"61%", streak:0, gym:"Ghost Arena" },
  "Terrance McKinney": { ht:"5'10\"", dob:"1994-09-15", reach:'73"', stance:"Switch", slpm:6.53, strAcc:"56%", sapm:3.45, strDef:"43%", kd:1.24, tdLanded:3.31, tdAcc:"40%", tdDef:"73%", subAvg:2.07, finRate:"100%", streak:1, gym:"Warrior Camp MMA" },
  "Tofiq Musayev": { ht:"5'10\"", dob:"1989-12-15", reach:'72"', stance:"Orthodox", slpm:1.84, strAcc:"46%", sapm:1.74, strDef:"51%", kd:0.0, tdLanded:2.30, tdAcc:"60%", tdDef:"50%", subAvg:0.0, finRate:"87%", streak:1, gym:"Mammadaliyev Team" },
@@ -11272,6 +11274,12 @@
     { opponent: "David Teymur", odds: 110 },
     { opponent: "Marc Diakiese", odds: 215 },
     { opponent: "Devin Powell", odds: -300 }
+  ],
+  "Kyle Prepolec": [
+    { opponent: "Drew Dober", odds: 300 },
+    { opponent: "Benoit Saint Denis", odds: 900 },
+    { opponent: "Austin Hubbard", odds: 129 },
+    { opponent: "Nordine Taleb", odds: 375 }
   ],
   "Drew Dober": [
     { opponent: "Michael Johnson", odds: -210 },
@@ -24495,6 +24503,36 @@ const FIGHT_HISTORY = {
     { date: "Apr 5, 2014", opponent: "Nolan McLaughlin", result: "W", method: "TKO (Punches)", round: 1, time: "3:10", event: "Duel for Domination 7" }
   ],
 
+  "Kyle Prepolec": [
+    { date: "Oct 18, 2025", opponent: "Drew Dober", result: "L", method: "TKO (Knees and punches)", round: 3, time: "1:16", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
+    { date: "May 10, 2025", opponent: "Benoit Saint Denis", result: "L", method: "Submission (Arm-triangle choke)", round: 2, time: "2:35", event: "UFC 315", org: "UFC" },
+    { date: "Jun 8, 2024", opponent: "Gustavo Wurlitzer", result: "W", method: "TKO (Punches)", round: 1, time: "3:04", event: "BTC 24: Apex" },
+    { date: "Apr 23, 2023", opponent: "Josh Henry", result: "W", method: "TKO (Head kick and punches)", round: 1, time: "2:14", event: "PFC 16: Prospect Fighting Championships 16" },
+    { date: "Oct 22, 2022", opponent: "Marco Elpidio", result: "W", method: "KO (Head kick)", round: 1, time: "3:23", event: "PFC 14: Prospect Fighting Championships 14" },
+    { date: "Mar 4, 2022", opponent: "Shane Campbell", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Unified MMA 43" },
+    { date: "Nov 19, 2021", opponent: "Michael Dufort", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "Samourai MMA" },
+    { date: "Sep 14, 2019", opponent: "Austin Hubbard", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cowboy vs. Gaethje", org: "UFC" },
+    { date: "May 4, 2019", opponent: "Nordine Taleb", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Iaquinta vs. Cowboy", org: "UFC" },
+    { date: "Mar 9, 2019", opponent: "Cody Pfister", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BTC 5: Typhoon" },
+    { date: "Jun 23, 2018", opponent: "Scott Hudson", result: "W", method: "TKO (Punches)", round: 2, time: "1:44", event: "BTC 3: Prophecy" },
+    { date: "Aug 5, 2017", opponent: "Troy Lamson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KOTC: Second Coming" },
+    { date: "Jan 13, 2017", opponent: "David Newport", result: "W", method: "TKO (Punch to the body)", round: 3, time: "3:49", event: "WXC 66: Night of Champions 9" },
+    { date: "Feb 20, 2016", opponent: "Adrian Hadribeaj", result: "W", method: "KO (Spinning backfist)", round: 4, time: "4:01", event: "Triple X Cagefighting: Legends 7" },
+    { date: "May 30, 2015", opponent: "Alessandro Ricci", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Global Warriors FC 2: Coming Home" },
+    { date: "Oct 18, 2014", opponent: "Damion Hill", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "0:00", event: "PFC 3: Showdown In The Downtown" },
+    { date: "Mar 8, 2014", opponent: "Keven Morin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFC 2: Fight Night" },
+    { date: "Oct 26, 2013", opponent: "Adam Assenza", result: "W", method: "TKO (Knees)", round: 2, time: "4:40", event: "PFC 1: Unrivaled" },
+    { date: "Apr 13, 2013", opponent: "Kevin Lee", result: "L", method: "Submission (Guillotine choke)", round: 2, time: "2:17", event: "MFL 29: Michiana Fight League 29" },
+    { date: "Oct 12, 2012", opponent: "Jason Fischer", result: "L", method: "Submission (Arm-triangle choke)", round: 3, time: "3:19", event: "Bellator 76: Alvarez vs. Pitbull", org: "Bellator" },
+    { date: "Aug 25, 2012", opponent: "Jason Meisel", result: "W", method: "Submission (Triangle choke)", round: 2, time: "2:58", event: "SFS 5: Fraser vs. Hill" },
+    { date: "Apr 6, 2012", opponent: "Lance Snow", result: "W", method: "Submission (Armbar)", round: 1, time: "2:54", event: "Bellator 64: Askren vs. Lima", org: "Bellator" },
+    { date: "Oct 28, 2011", opponent: "Mustafa Khalil", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Wreck MMA: Unfinished Business" },
+    { date: "Oct 1, 2011", opponent: "Benoit Guionnet", result: "W", method: "TKO (Punches)", round: 1, time: "2:19", event: "UGC 28: Montreal" },
+    { date: "May 14, 2011", opponent: "Keven Pellerin", result: "W", method: "TKO (Punches)", round: 1, time: "3:36", event: "Ringside MMA: Rising Star 3" },
+    { date: "May 30, 2009", opponent: "Pete Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fighting Spirit MMA: Under Fire" },
+    { date: "Feb 18, 2009", opponent: "Jay Dawns", result: "W", method: "Submission (Triangle choke)", round: 2, time: "4:04", event: "Fighting Spirit MMA: Bloody Valentine" },
+    { date: "Oct 18, 2008", opponent: "Justin Potter", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "Fighting Spirit MMA: Superfights" }
+  ],
   "Drew Dober": [
     { date: "Mar 7, 2026", opponent: "Michael Johnson", result: "W", method: "KO (Punch)", round: 2, time: "1:53", event: "UFC 326", org: "UFC" },
     { date: "Oct 18, 2025", opponent: "Kyle Prepolec", result: "W", method: "TKO (Knees and punches)", round: 3, time: "1:16", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
@@ -37268,6 +37306,11 @@ const ACCOLADES = {
     { icon: "⭐", title: "UFC Performance of the Night (submission win over Charlie Campbell)", detail: null },
     { icon: "🏅", title: "Dana White's Contender Series winner — first-round KO of Bogdan Grad (2023)", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Kyle Prepolec": [
+    { icon: "⭐", title: "UFC Fight of the Night (vs. Drew Dober, UFC Fight Night: de Ridder vs. Allen, 2025)", detail: null },
+    { icon: "🏆", title: "Former regional titleholder — BTC super lightweight belt, TXC lightweight belt, FCFL welterweight belt", detail: null },
+    { icon: "🥋", title: "Joslin's Fighting Arts grappling belt; amateur MMA belt; Kyokushin bare-knuckle background", detail: null }
   ],
   "Drew Dober": [
     { icon: "⭐", title: "UFC Performance of the Night × 5 — vs. Nasrat Haqparast, Alexander Hernandez, Rafael Alves, Ricky Glenn & Michael Johnson", detail: null },
