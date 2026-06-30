@@ -3964,8 +3964,8 @@
        + 'Roster changes will appear here once the weekly snapshot runs.</div>';
      return;
    }
-   const col = (title, items, color) =>
-     '<div style="flex:1;min-width:200px;">'
+   const col = (title, items, color, first) =>
+     '<div style="' + (first ? '' : 'margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,0.08);') + '">'
      + '<div style="display:flex;align-items:center;gap:0.45rem;font-size:0.72rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:' + color + ';margin-bottom:0.7rem;">'
      + '<span>' + title + '</span>'
      + '<span style="background:' + color + '22;border-radius:999px;padding:0.05rem 0.5rem;font-size:0.7rem;line-height:1.5;">' + items.length + '</span>'
@@ -3977,11 +3977,10 @@
          : '<div style="color:rgba(255,255,255,0.35);font-size:0.85rem;">None</div>');
    el.innerHTML = ROSTER_CHANGES.map(w =>
      '<div style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem;">'
-     + '<div style="font-size:0.8rem;font-weight:700;letter-spacing:0.02em;color:rgba(255,255,255,0.55);margin-bottom:1rem;">' + w.week + '</div>'
-     + '<div style="display:flex;gap:2.5rem;flex-wrap:wrap;">'
-     + col('Added', w.added || [], '#00e668')
-     + col('Removed', w.removed || [], '#ff9500')
-     + '</div></div>'
+     + '<div style="font-size:0.8rem;font-weight:700;letter-spacing:0.02em;color:rgba(255,255,255,0.55);margin-bottom:1.1rem;">' + w.week + '</div>'
+     + col('Added', w.added || [], '#00e668', true)
+     + col('Removed', w.removed || [], '#ff9500', false)
+     + '</div>'
    ).join('');
  }
  renderRosterChanges();
