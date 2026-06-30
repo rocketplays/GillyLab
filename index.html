@@ -3991,6 +3991,19 @@
  // ("Ailín Pérez" / "Abdulrakhman Yakhyaev") and stay clickable.
  function arNorm(s){ return (s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''); }
  const ACTIVE_ROSTER_DBNORM = (function(){ var m={}; FIGHTERS.forEach(function(f){ var k=arNorm(f.name); if(!(k in m)) m[k]=f.name; }); return m; })();
+ // Cross-name aliases: the roster lists these under a different name than the DB
+ // profile (legal-name change, name order, nickname, ring vs legal name). Kept
+ // here (not the canonical NAME_ALIASES, which is declared far below) so the very
+ // first roster render can resolve them. Values must be exact DB names.
+ const ACTIVE_ROSTER_ALIASES = {
+   "Jan Blachowicz": "Jan Błachowicz",
+   "Juan Martinetti": "Adrián Luna Martinetti",
+   "Jingnan Xiong": "Xiong Jingnan",
+   "King Green": "Bobby Green",
+   "Montserrat Conejo Ruiz": "Montserrat Ruiz",
+   "Patricio Freire": "Patrício Pitbull",
+   "Thomas Gantt": "Tommy Gantt"
+ };
  var activeRosterLetter = 'All';
  function setRosterLetter(L){ activeRosterLetter=L; renderActiveRoster(); }
  function renderActiveRoster(){
@@ -4001,7 +4014,7 @@
    var shown=ACTIVE_ROSTER.filter(function(n){return activeRosterLetter==='All'||n.toUpperCase().charAt(0)===activeRosterLetter;});
    list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(activeRosterLetter==='All'?' on the active roster':'')+'</div><div class="ar-grid">'+shown.map(function(n){
      var safe=n.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-     var canon=ACTIVE_ROSTER_DBSET.has(n)?n:ACTIVE_ROSTER_DBNORM[arNorm(n)];
+     var canon=ACTIVE_ROSTER_DBSET.has(n)?n:(ACTIVE_ROSTER_ALIASES[n]||ACTIVE_ROSTER_DBNORM[arNorm(n)]);
      if(canon){ var safeC=canon.replace(/&/g,'&amp;').replace(/</g,'&lt;'); return '<a class="ar-name" data-n="'+safeC+'" onclick="openFighterByName(this.dataset.n)">'+safe+'</a>'; }
      return '<span class="ar-name ar-missing" title="Not in your database yet">'+safe+'</span>';
    }).join('')+'</div>';
@@ -39962,6 +39975,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'king green': 'Bobby Green',
     // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
     'yisak lee': 'Yi Sak Lee',
+    // Active-roster spellings that differ from the DB profile (also mapped in
+    // ACTIVE_ROSTER_ALIASES near the roster render so the page is clickable).
+    'jan blachowicz': 'Jan Błachowicz',
+    'juan martinetti': 'Adrián Luna Martinetti',
+    'jingnan xiong': 'Xiong Jingnan',
+    'montserrat conejo ruiz': 'Montserrat Ruiz',
+    'patricio freire': 'Patrício Pitbull',
+    'thomas gantt': 'Tommy Gantt',
   };
 
   function resolveCanonicalFighterName(apiName, apiSlug) {
