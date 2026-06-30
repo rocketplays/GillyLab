@@ -3231,6 +3231,7 @@
  { name: "Douglas Silva de Andrade", division: "FW", rank: "NR", record: "29-7-0", initials: "DS", country: "Brazil" },
  { name: "Isaac Thomson", division: "FW", rank: "NR", record: "9-3-0", initials: "ITH", country: "Australia" },
  { name: "Jack Jenkins", division: "FW", rank: "NR", record: "14-4-0", initials: "JJK", country: "Australia" },
+ { name: "JeongYeong Lee", division: "FW", rank: "NR", record: "11-3-0", initials: "JYL", country: "South Korea" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
@@ -4524,6 +4525,7 @@
  "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
  "Isaac Thomson": { ht:"5'11\"", dob:"2002-05-03", reach:'69.5"', stance:null, slpm:1.40, strAcc:"45%", sapm:2.20, strDef:"42%", kd:0.00, tdLanded:4.00, tdAcc:"80%", tdDef:"33%", subAvg:0.00, finRate:"56%", streak:0, gym:"Team Alpha Male" },
  "Jack Jenkins": { ht:"5'7\"", dob:"1993-11-03", reach:'68"', stance:"Switch", slpm:4.48, strAcc:"61%", sapm:2.95, strDef:"59%", kd:0.50, tdLanded:1.98, tdAcc:"60%", tdDef:"72%", subAvg:0.17, finRate:"64%", streak:1, gym:"Absolute Mixed Martial Arts" },
+ "JeongYeong Lee": { ht:"5'10\"", dob:"1995-11-13", reach:'73.5"', stance:"Orthodox", slpm:3.38, strAcc:"49%", sapm:3.82, strDef:"51%", kd:0.32, tdLanded:0.63, tdAcc:"67%", tdDef:"73%", subAvg:0.32, finRate:"64%", streak:0, gym:"Fight Ready" },
  "Ismail Naurdiev": { ht:"6'0\"", dob:"1996-08-18", reach:'74"', stance:"Orthodox", slpm:3.66, strAcc:"53%", sapm:1.75, strDef:"65%", kd:0.16, tdLanded:1.48, tdAcc:"41%", tdDef:"73%", subAvg:0.16, finRate:"76%", streak:1, gym:"Top Team Salzburg" },
  "Piera Rodriguez": { ht:"5'3\"", dob:"1992-11-11", reach:'63"', stance:"Orthodox", slpm:4.04, strAcc:"47%", sapm:3.13, strDef:"54%", kd:0.14, tdLanded:4.04, tdAcc:"51%", tdDef:"82%", subAvg:0.00, finRate:"42%", streak:3, gym:"Xtreme Couture" },
  "Polyana Viana": { ht:"5'5\"", dob:"1992-06-14", reach:'67"', stance:"Orthodox", slpm:2.82, strAcc:"41%", sapm:2.74, strDef:"53%", kd:0.17, tdLanded:0.67, tdAcc:"33%", tdDef:"33%", subAvg:1.51, finRate:"100%", streak:0, gym:"Chute Boxe Diego Lima" },
@@ -12424,6 +12426,9 @@
     { opponent: "Don Shainis", odds: -460 },
     { opponent: "Emiliano Linares", odds: -338 },
     { opponent: "Sang Won Kim", odds: -425 },
+  ],
+  "JeongYeong Lee": [
+    { opponent: "Daniel Santos", odds: -138 },
   ],
   "Ismail Naurdiev": [
     { opponent: "Ryan Loder", odds: -124 },
@@ -26930,6 +26935,23 @@ const FIGHT_HISTORY = {
     { date: "Jun 17, 2016", opponent: "Alan Hartley", result: "W", method: "Submission (Triangle choke)", round: 1, time: "4:50", event: "Minotaur 4: Demolition" },
   ],
 
+  "JeongYeong Lee": [
+    { date: "May 10, 2025", opponent: "Daniel Santos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 315", org: "UFC" },
+    { date: "Jul 20, 2024", opponent: "Hyder Amil", result: "L", method: "TKO (Punches)", round: 1, time: "1:05", event: "UFC on ESPN: Lemos vs. Jandiroba", org: "UFC" },
+    { date: "Feb 3, 2024", opponent: "Blake Bilder", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dolidze vs. Imavov", org: "UFC" },
+    { date: "Feb 4, 2023", opponent: "Yizha", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Spivac", org: "UFC" },
+    { date: "Oct 23, 2022", opponent: "Lu Kai", result: "W", method: "KO/TKO", round: 1, time: "0:42", event: "Road to UFC Season 1: Episode 6", org: "UFC" },
+    { date: "Jun 10, 2022", opponent: "Xie Bin", result: "W", method: "Submission (Armbar)", round: 1, time: "0:36", event: "Road to UFC Season 1: Episode 3", org: "UFC" },
+    { date: "Sep 8, 2019", opponent: "Hae Jin Park", result: "W", method: "KO (Punch)", round: 1, time: "0:10", event: "Road FC 55", org: "Road FC" },
+    { date: "Nov 3, 2018", opponent: "Mu Gyeom Choi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road FC 50", org: "Road FC" },
+    { date: "Mar 10, 2018", opponent: "Se Young Kim", result: "W", method: "TKO (Punches)", round: 1, time: "3:30", event: "Road FC 46", org: "Road FC" },
+    { date: "Oct 28, 2017", opponent: "Marcio Cesar", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "1:44", event: "Road FC 43", org: "Road FC" },
+    { date: "Jun 10, 2017", opponent: "Se Young Kim", result: "L", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Road FC 39", org: "Road FC" },
+    { date: "Dec 10, 2016", opponent: "Ho-Joon Kim", result: "W", method: "Decision (Split)", round: 2, time: "5:00", event: "Road FC 35", org: "Road FC" },
+    { date: "Sep 24, 2016", opponent: "Kyung Yui Cho", result: "W", method: "Submission (Armbar)", round: 1, time: "0:18", event: "Road FC 33", org: "Road FC" },
+    { date: "Feb 9, 2014", opponent: "Se Yoon Kwon", result: "W", method: "Submission (Armbar)", round: 2, time: "3:21", event: "Road FC 14", org: "Road FC" },
+  ],
+
   "Ismail Naurdiev": [
     { date: "Nov 22, 2025", opponent: "Ryan Loder", result: "W", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
     { date: "Jun 21, 2025", opponent: "Jun Yong Park", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC 8: Hill vs. Rountree", org: "UFC" },
@@ -34142,6 +34164,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "Eternal MMA Featherweight Champion — 2020–2022 (2 successful defenses, vs. Jesse Medina and Rod Costa)", detail: null },
     { icon: "🏆", title: "Rogue MMA Featherweight Champion (2021)", detail: null },
     { icon: "🏅", title: "Won 11 of his last 13 professional fights", detail: null }
+  ],
+  "JeongYeong Lee": [
+    { icon: "🏆", title: "Road FC Featherweight Champion — youngest titleholder in promotion history (won via decision over Mu Gyeom Choi, Nov 2018)", detail: null },
+    { icon: "🏆", title: "Road to UFC Season 1 Featherweight Tournament Champion (def. Xie Bin, Lu Kai, and Yizha to win a UFC contract)", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Ismail Naurdiev": [
     { icon: "🏆", title: "Aggrelin AG Welterweight Champion (Submission win over Garik Shahbabyan, 2016)", detail: null },
