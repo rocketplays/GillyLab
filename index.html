@@ -3723,6 +3723,7 @@
  { name: "Priscila Cachoeira", division: "WBW", rank: "NR", record: "13-9-0", initials: "PCA2", country: "Brazil" },
  { name: "Vanessa Demopoulos", division: "WSW", rank: "NR", record: "11-8-0", initials: "VDM", country: "USA" },
  { name: "Brogan Walker", division: "WFLW", rank: "NR", record: "8-5-0", initials: "BWK", country: "USA" },
+ { name: "Juliana Miller", division: "WFLW", rank: "NR", record: "5-4-0", initials: "JMI", country: "USA" },
  { name: "Lucie Pudilova", division: "WFLW", rank: "NR", record: "17-12-0", initials: "LPD", country: "Czech Republic" },
  { name: "Jeisla Chaves", division: "WFLW", rank: "NR", record: "8-0-0", initials: "JCV", country: "Brazil" },
  { name: "Antonina Shevchenko", division: "WFLW", rank: "NR", record: "10-4-0", initials: "ANS2", country: "Kyrgyzstan" },
@@ -4865,6 +4866,7 @@
  // Women's Flyweight
  "Jeisla Chaves": { ht:"5'6\"", dob:"1997-02-02", reach:'68"', stance:"Orthodox", slpm:4.97, strAcc:"56%", sapm:4.20, strDef:"54%", kd:0.0, tdLanded:1.50, tdAcc:"38%", tdDef:"63%", subAvg:0.50, finRate:"50%", streak:8, gym:"Gomes Fight Team" },
  "Brogan Walker": { ht:"5'4\"", dob:"1988-08-02", reach:'67"', stance:"Switch", slpm:1.84, strAcc:"32%", sapm:3.32, strDef:"47%", kd:0.0, tdLanded:1.02, tdAcc:"75%", tdDef:"11%", subAvg:0.0, finRate:"38%", streak:0, gym:"Purebred BJJ Guam" },
+ "Juliana Miller": { ht:"5'7\"", dob:"1996-05-07", reach:'66"', stance:"Orthodox", slpm:2.65, strAcc:"40%", sapm:4.14, strDef:"45%", kd:0.00, tdLanded:2.16, tdAcc:"29%", tdDef:"44%", subAvg:1.20, finRate:"80%", streak:0, gym:"10th Planet Jiu-Jitsu" },
  "Shanna Young": { ht:"5'7\"", dob:"1991-02-20", reach:'67"', stance:"Orthodox", slpm:3.18, strAcc:"48%", sapm:4.88, strDef:"43%", kd:0.0, tdLanded:0.00, tdAcc:"0%", tdDef:"57%", subAvg:0.0, finRate:"44%", streak:0, gym:"Syndicate MMA (2022–present)" },
  // Women's Bantamweight
  "Jessica-Rose Clark": { ht:"5'5\"", dob:"1987-11-28", reach:'64.5"', stance:"Orthodox", slpm:3.73, strAcc:"52%", sapm:3.51, strDef:"58%", kd:0.0, tdLanded:1.66, tdAcc:"43%", tdDef:"62%", subAvg:0.3, finRate:"50%", streak:0, gym:"Team Ferreira BJJ (2023–present)" },
@@ -14677,6 +14679,15 @@
     { opponent: "Yuneisy Duben", odds: -280 },
     { opponent: "Gabriella Fernandes", odds: 140 },
     { opponent: "Ernesta Kareckaite", odds: -175 }
+  ],
+  "Juliana Miller": [
+    { opponent: "Carli Judice", odds: 550 },
+    { opponent: "Ivana Petrovic", odds: 193 },
+    { opponent: "Luana Santos", odds: 129 },
+    { opponent: "Veronica Hardy", odds: -403 },
+    { opponent: "Brogan Walker", odds: -135 },
+    { opponent: "Claire Guthrie", odds: -133 },
+    { opponent: "Kendal Holowell", odds: -128 },
   ],
   "Harry Hardwick": [
     { opponent: "Marwan Rahiki", odds: 235 },
@@ -32683,6 +32694,19 @@ const FIGHT_HISTORY = {
     { date: "Mar 25, 2023", opponent: "Tara Graff", result: "W", method: "TKO (Punches)", round: 1, time: "4:36", event: "Shogun Fights 26" },
     { date: "Oct 15, 2022", opponent: "Ivana Coleman", result: "W", method: "TKO (Punches)", round: 1, time: "0:17", event: "Caged Warrior Championship 27 (debut)" }
   ],
+
+  "Juliana Miller": [
+    { date: "Feb 21, 2026", opponent: "Carli Judice", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Strickland vs. Hernandez", org: "UFC" },
+    { date: "May 3, 2025", opponent: "Ivana Petrovic", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Sandhagen vs. Figueiredo", org: "UFC" },
+    { date: "Aug 12, 2023", opponent: "Luana Santos", result: "L", method: "TKO (Punches)", round: 1, time: "3:41", event: "UFC on ESPN: Luque vs. dos Anjos", org: "UFC" },
+    { date: "Mar 18, 2023", opponent: "Veronica Hardy", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 286", org: "UFC" },
+    { date: "Aug 6, 2022", opponent: "Brogan Walker", result: "W", method: "TKO (Punches and elbows)", round: 3, time: "3:57", event: "UFC on ESPN: Santos vs. Hill", org: "UFC" },
+    { date: "Jul 19, 2022", opponent: "Kaytlin Neil", result: "W", method: "Submission (Kimura)", round: 2, time: "3:34", event: "The Ultimate Fighter 30 Semifinal: Nunes vs. Peña", org: "UFC" },
+    { date: "May 21, 2021", opponent: "Claire Guthrie", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 44", org: "Invicta FC" },
+    { date: "Nov 20, 2020", opponent: "Kendal Holowell", result: "W", method: "Submission (Armbar)", round: 1, time: "2:49", event: "Invicta FC 43", org: "Invicta FC" },
+    { date: "Jun 9, 2019", opponent: "Sadie Hubbard", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:43", event: "CCW: California Cage Wars 13" },
+  ],
+
   "Harry Hardwick": [
     { date: "Mar 14, 2026", opponent: "Marwan Rahiki", result: "L", method: "TKO (Corner stoppage)", round: 2, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
     { date: "Sep 6, 2025", opponent: "Kauê Fernandes", result: "L", method: "TKO (Leg kicks)", round: 1, time: "3:21", event: "UFC Fight Night: Imavov vs. Borralho", org: "UFC" },
@@ -34044,6 +34068,10 @@ const ACCOLADES = {
   "Carli Judice": [
     { icon: "🥊", title: "\"Crispy\" — high-volume Muay Thai striker (9+ significant strikes/min); 5 of 6 wins by KO/TKO, incl. a viral liver-kick finish", detail: null },
     { icon: "🥇", title: "Amateur Muay Thai & MMA champion before turning pro", detail: null }
+  ],
+  "Juliana Miller": [
+    { icon: "🏆", title: "The Ultimate Fighter Season 30 (Flyweight) winner — avenged an earlier loss to Claire Guthrie in the quarterfinals, submitted Kaytlin Neil in the semifinals, then finished Brogan Walker in the tournament final (Aug 2022)", detail: null },
+    { icon: "🥋", title: "BJJ brown belt", detail: null }
   ],
   "Stephanie Luciano": [
     { icon: "🏆", title: "Former Jungle Fight Women's Strawweight Champion", detail: null },
