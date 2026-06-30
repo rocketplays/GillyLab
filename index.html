@@ -3194,6 +3194,7 @@
  { name: "Cameron Saaiman", division: "BW", rank: "NR", record: "9-3-0", initials: "CSA", country: "South Africa" },
  { name: "Carlos Vera", division: "BW", rank: "NR", record: "12-4-0", initials: "CRV", country: "Ecuador" },
  { name: "Chad Anheliger", division: "BW", rank: "NR", record: "13-8-0", initials: "CAH", country: "Canada" },
+ { name: "ChangHo Lee", division: "BW", rank: "NR", record: "11-2-0", initials: "CHL", country: "South Korea" },
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
@@ -4780,6 +4781,7 @@
  "Cameron Saaiman": { ht:"5'8\"", dob:"2000-12-20", reach:'67"', stance:"Southpaw", slpm:5.30, strAcc:"47%", sapm:4.14, strDef:"52%", kd:0.44, tdLanded:0.89, tdAcc:"29%", tdDef:"47%", subAvg:0.67, finRate:"78%", streak:0, gym:"Team CIT" },
  "Carlos Vera": { ht:"5'6\"", dob:"1987-11-05", reach:'69"', stance:"Orthodox", slpm:1.53, strAcc:"57%", sapm:2.79, strDef:"50%", kd:0.82, tdLanded:0.00, tdAcc:"0%", tdDef:"25%", subAvg:1.64, finRate:"58%", streak:1, gym:"Fifty/50 Martial Arts Academy" },
  "Chad Anheliger": { ht:"5'6\"", dob:"1986-12-01", reach:'64.5"', stance:"Orthodox", slpm:3.11, strAcc:"46%", sapm:2.76, strDef:"54%", kd:0.51, tdLanded:0.68, tdAcc:"31%", tdDef:"38%", subAvg:0.51, finRate:"77%", streak:0, gym:"Champion's Creed MMA" },
+ "ChangHo Lee": { ht:"5'8\"", dob:"1994-05-09", reach:'69"', stance:"Orthodox", slpm:3.88, strAcc:"67%", sapm:2.13, strDef:"38%", kd:0.00, tdLanded:2.71, tdAcc:"33%", tdDef:"40%", subAvg:0.27, finRate:"64%", streak:0, gym:"Extreme Combat" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -11956,6 +11958,14 @@
     { opponent: "Alatengheili", odds: 165 },
     { opponent: "Jesse Strader", odds: -240 },
     { opponent: "Muin Gafurov", odds: 370 },
+  ],
+  "ChangHo Lee": [
+    { opponent: "Timmy Cuamba", odds: -108 },
+    { opponent: "Cortavious Romious", odds: -150 },
+    { opponent: "Xiao Long", odds: 110 },
+    { opponent: "Zhawupasi Daermisi", odds: 210 },
+    { opponent: "Rana Rudra Pratap Singh", odds: -549 },
+    { opponent: "Sim Kai Xiong", odds: -300 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -25666,6 +25676,21 @@ const FIGHT_HISTORY = {
     { date: "May 27, 2011", opponent: "Marc Savoie", result: "L", method: "Submission (Armbar)", round: 1, time: "3:02", event: "School of Hard Knocks 13", org: "HKFC" },
     { date: "Dec 10, 2010", opponent: "Mitchell MacPhee", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "1:20", event: "Pure Fighting Championships 6", org: "PFC" },
   ],
+  "ChangHo Lee": [
+    { date: "Nov 1, 2025", opponent: "Timmy Cuamba", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
+    { date: "Apr 5, 2025", opponent: "Cortavious Romious", result: "W", method: "TKO (Punches and Elbows)", round: 2, time: "3:48", event: "UFC on ESPN: Emmett vs. Murphy", org: "UFC" },
+    { date: "Jun 22, 2024", opponent: "Xiao Long", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. Aliskerov", org: "UFC" },
+    { date: "Aug 27, 2023", opponent: "Zhawupasi Daermisi", result: "W", method: "TKO (Punches)", round: 3, time: "3:35", event: "Road to UFC: Season 2, Singapore Semifinals", org: "UFC" },
+    { date: "May 28, 2023", opponent: "Rana Rudra Pratap Singh", result: "W", method: "TKO (Elbows and Punches)", round: 1, time: "3:52", event: "Road to UFC: Season 2, Shanghai Quarterfinals", org: "UFC" },
+    { date: "Nov 5, 2022", opponent: "Chang Hyeon Shin", result: "W", method: "TKO (Elbows and Punches)", round: 2, time: "4:17", event: "Black Combat: Champions League 22-23 Season, Week 2", org: "Black Combat" },
+    { date: "Apr 30, 2022", opponent: "Sim Kai Xiong", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 58", org: "Brave CF" },
+    { date: "Jan 11, 2020", opponent: "Sung Joo Hwang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Zeus Fighting Championship 3", org: "ZFC" },
+    { date: "Dec 4, 2019", opponent: "Micael de Jesus", result: "W", method: "TKO (Punches)", round: 3, time: "2:28", event: "ONE Warrior Series 9", org: "ONE Championship" },
+    { date: "Nov 16, 2018", opponent: "Nigel Archer", result: "W", method: "TKO (Punches)", round: 1, time: "3:30", event: "Top FC 19", org: "Top FC" },
+    { date: "Feb 26, 2018", opponent: "Farmon Gafarov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Top FC 17", org: "Top FC" },
+    { date: "Jul 24, 2017", opponent: "Jong Kwan Lee", result: "W", method: "Submission (Kimura)", round: 2, time: "2:54", event: "Angel's Fighting Championship 4", org: "AFC" },
+    { date: "Jan 21, 2017", opponent: "Gi Won Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "TFC Dream 2: Lightweight Tournament Semifinals", org: "Top FC" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37455,6 +37480,9 @@ const ACCOLADES = {
   "Chad Anheliger": [
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (Sep 2021 — split-decision upset of Muin Gafurov as a 3-1 underdog; 2nd Canadian ever to win a contract on the show)", detail: null },
     { icon: "🥋", title: "BJJ black belt", detail: null },
+  ],
+  "ChangHo Lee": [
+    { icon: "🏆", title: "Road to UFC Season 2 Bantamweight Tournament Champion (won 3 straight finishes/decisions — QF, SF, and the Jun 2024 final over Xiao Long — to earn his UFC contract)", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
