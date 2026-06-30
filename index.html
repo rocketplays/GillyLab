@@ -3965,17 +3965,20 @@
      return;
    }
    const col = (title, items, color) =>
-     '<div style="flex:1;min-width:220px;">'
-     + '<div style="font-size:0.72rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:' + color + ';margin-bottom:0.5rem;">'
-     + title + ' (' + items.length + ')</div>'
+     '<div style="flex:1;min-width:200px;">'
+     + '<div style="display:flex;align-items:center;gap:0.45rem;font-size:0.72rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;color:' + color + ';margin-bottom:0.7rem;">'
+     + '<span>' + title + '</span>'
+     + '<span style="background:' + color + '22;border-radius:999px;padding:0.05rem 0.5rem;font-size:0.7rem;line-height:1.5;">' + items.length + '</span>'
+     + '</div>'
      + (items.length
-         ? '<ul style="list-style:none;margin:0;padding:0;">' + items.map(n =>
-             '<li style="padding:0.3rem 0;color:#fff;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.05);">' + n + '</li>').join('') + '</ul>'
+         ? '<div style="display:flex;flex-direction:column;gap:0.4rem;">' + items.map(n =>
+             '<div style="display:flex;align-items:center;gap:0.55rem;color:#fff;font-size:0.92rem;">'
+             + '<span style="color:' + color + ';font-size:0.58rem;">●</span><span>' + n + '</span></div>').join('') + '</div>'
          : '<div style="color:rgba(255,255,255,0.35);font-size:0.85rem;">None</div>');
    el.innerHTML = ROSTER_CHANGES.map(w =>
-     '<div style="margin-bottom:1.75rem;">'
-     + '<div style="font-size:0.95rem;font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(255,255,255,0.1);">' + w.week + '</div>'
-     + '<div style="display:flex;gap:2rem;flex-wrap:wrap;">'
+     '<div style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem;">'
+     + '<div style="font-size:0.8rem;font-weight:700;letter-spacing:0.02em;color:rgba(255,255,255,0.55);margin-bottom:1rem;">' + w.week + '</div>'
+     + '<div style="display:flex;gap:2.5rem;flex-wrap:wrap;">'
      + col('Added', w.added || [], '#00e668')
      + col('Removed', w.removed || [], '#ff9500')
      + '</div></div>'
