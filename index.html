@@ -3582,6 +3582,7 @@
  { name: "Jakub Wiklacz", division: "BW", rank: "NR", record: "18-3-2", initials: "JWK", country: "Poland" },
  { name: "Raul Rosas Jr.", division: "BW", rank: "#12", record: "12-1-0", initials: "RRJ", country: "Mexico" },
  { name: "Charles Jourdain", division: "BW", rank: "NR", record: "18-8-1", initials: "CHJ", country: "Canada" },
+ { name: "Louis Jourdain", division: "BW", rank: "NR", record: "9-3-0", initials: "LJO", country: "Canada" },
  { name: "Elijah Smith", division: "BW", rank: "NR", record: "10-1-0", initials: "ELS", country: "USA" },
  { name: "SuYoung You", division: "BW", rank: "NR", record: "16-4-0", initials: "SYY", country: "South Korea" },
  { name: "Cody Garbrandt", division: "BW", rank: "NR", record: "15-7-0", initials: "COG", country: "USA" },
@@ -4585,6 +4586,7 @@
  "Adrian Yanez": { ht:"5'7\"", dob:"1993-11-29", reach:'70"', stance:"Orthodox", slpm:5.96, strAcc:"42%", sapm:5.24, strDef:"57%", kd:1.45, tdLanded:0.0, tdAcc:"0%", tdDef:"75%", subAvg:0.0, finRate:"76%", streak:0, gym:"Metro Fight Club (2012–present)" },
  "Chris Gutierrez": { ht:"5'9\"", dob:"1991-04-22", reach:'67"', stance:"Orthodox", slpm:4.40, strAcc:"58%", sapm:2.65, strDef:"63%", kd:0.44, tdLanded:0.30, tdAcc:"31%", tdDef:"68%", subAvg:0.07, finRate:"45%", streak:0, gym:"Factory X" },
  "Charles Jourdain": { ht:"5'9\"", dob:"1995-11-27", reach:'69"', stance:"Switch", slpm:5.36, strAcc:"49%", sapm:4.11, strDef:"57%", kd:0.54, tdLanded:0.38, tdAcc:"22%", tdDef:"47%", subAvg:0.61, finRate:"83%", streak:3, gym:"Brazilian Top Team Canada" },
+ "Louis Jourdain": { ht:"5'9\"", dob:"1997-03-13", reach:'69"', stance:"Orthodox", slpm:7.32, strAcc:"49%", sapm:2.44, strDef:"54%", kd:1.41, tdLanded:0.00, tdAcc:null, tdDef:"67%", subAvg:1.41, finRate:"67%", streak:4, gym:"Brazilian Top Team Canada" },
  // ── Featherweight (new) ──
  "Bill Algeo": { ht:"6'0\"", dob:"1989-06-09", reach:'73"', stance:"Switch", slpm:5.88, strAcc:"52%", sapm:4.17, strDef:"47%", kd:0.23, tdLanded:1.03, tdAcc:"50%", tdDef:"55%", subAvg:0.1, finRate:"50%", streak:0, gym:"Balance MMA" },
  "Herbert Burns": { ht:"5'9\"", dob:"1988-02-02", reach:'73.5"', stance:"Orthodox", slpm:1.86, strAcc:"37%", sapm:5.39, strDef:"41%", kd:0.37, tdLanded:2.94, tdAcc:"35%", tdDef:"66%", subAvg:1.8, finRate:"71%", streak:0, gym:"The Way Martial Arts (2022–present)" },
@@ -11751,6 +11753,10 @@
     { opponent: "Donald Cerrone", odds: -210 },
     { opponent: "Olivier Aubin-Mercier", odds: -105 },
     { opponent: "Beneil Dariush", odds: 350 }
+  ],
+  "Louis Jourdain": [
+    { opponent: "Magno Dias", odds: -240 },
+    { opponent: "Gabe Sagman", odds: -275 }
   ],
   "Charles Jourdain": [
     { opponent: "Kyler Phillips", odds: -150 },
@@ -25351,6 +25357,20 @@ const FIGHT_HISTORY = {
     { date: "Nov 19, 2016", opponent: "Yuriy Protsenko", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:50", event: "Eagles FC 3" }
   ],
 
+  "Louis Jourdain": [
+    { date: "Sep 30, 2025", opponent: "Magno Dias", result: "W", method: "Submission (Rear-naked choke)", round: 3, time: "0:39", event: "Dana White's Contender Series 2025: Week 8", org: "DWCS" },
+    { date: "May 9, 2025", opponent: "Danilo Adreani", result: "W", method: "TKO (Elbows)", round: 2, time: "4:51", event: "Samourai MMA 14" },
+    { date: "May 26, 2023", opponent: "Diego Silva", result: "W", method: "TKO (Doctor stoppage)", round: 1, time: "5:00", event: "Samourai MMA 6" },
+    { date: "Dec 16, 2022", opponent: "Gabe Sagman", result: "W", method: "TKO (Corner stoppage)", round: 2, time: "5:00", event: "Unified MMA 48" },
+    { date: "Jan 15, 2021", opponent: "Avliyohon Hamidov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 15" },
+    { date: "Sep 21, 2018", opponent: "Sebastian Ruiz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "TKO 44: Hunter vs. Barriault" },
+    { date: "Sep 8, 2017", opponent: "Atsushi Fujino", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:07", event: "TKO 40: Denouement" },
+    { date: "Jun 16, 2017", opponent: "Tony Laramie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "TKO 39: Ultimatum" },
+    { date: "Jan 13, 2017", opponent: "Tyler Wilson", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:44", event: "TKO 37: Rivals" },
+    { date: "Nov 4, 2016", opponent: "Binaebi Otoru", result: "W", method: "TKO (Knees)", round: 2, time: "1:50", event: "TKO 36: Resurrection" },
+    { date: "Aug 18, 2016", opponent: "Sam Debalke", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Wreck MMA: Pro Series" },
+    { date: "May 21, 2016", opponent: "William Caron", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:29", event: "LAMMQ 5: Quebec Mixed Martial Arts League 5" }
+  ],
   "Charles Jourdain": [
     { date: "Apr 18, 2026", opponent: "Kyler Phillips", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
     { date: "Oct 18, 2025", opponent: "Davey Grant", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:05", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
@@ -37663,6 +37683,10 @@ const ACCOLADES = {
     { icon: "🏅", title: "2022 Newcomer of the Year (MMA Junkie)", detail: null },
     { icon: "🥇", title: "IMMAF Youth World Championships gold — 2019 Rome (−62 kg)", detail: null },
     { icon: "🥋", title: "1st degree black belt in Brazilian Jiu-Jitsu", detail: null },
+  ],
+  "Louis Jourdain": [
+    { icon: "🏅", title: "Earned a UFC contract via finish on Dana White's Contender Series (2025, def. Magno Dias)", detail: null },
+    { icon: "🏅", title: "6 of his 9 pro wins by stoppage (4 KO/TKO, 2 submission)", detail: null }
   ],
   "Charles Jourdain": [
     { icon: "🏆", title: "TKO Major League MMA Featherweight Champion", detail: null },
