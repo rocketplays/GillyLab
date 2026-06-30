@@ -3986,6 +3986,11 @@
  renderRosterChanges();
 
  const ACTIVE_ROSTER_DBSET = new Set(FIGHTERS.map(function(f){return f.name;}));
+ // Normalized lookup (strip diacritics/spacing/punct) so roster spellings like
+ // "Ailin Perez" or "Abdul Rakhman Yakhyaev" still resolve to the DB profile
+ // ("Ailín Pérez" / "Abdulrakhman Yakhyaev") and stay clickable.
+ function arNorm(s){ return (s||'').normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,''); }
+ const ACTIVE_ROSTER_DBNORM = (function(){ var m={}; FIGHTERS.forEach(function(f){ var k=arNorm(f.name); if(!(k in m)) m[k]=f.name; }); return m; })();
  var activeRosterLetter = 'All';
  function setRosterLetter(L){ activeRosterLetter=L; renderActiveRoster(); }
  function renderActiveRoster(){
@@ -3996,7 +4001,8 @@
    var shown=ACTIVE_ROSTER.filter(function(n){return activeRosterLetter==='All'||n.toUpperCase().charAt(0)===activeRosterLetter;});
    list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(activeRosterLetter==='All'?' on the active roster':'')+'</div><div class="ar-grid">'+shown.map(function(n){
      var safe=n.replace(/&/g,'&amp;').replace(/</g,'&lt;');
-     if(ACTIVE_ROSTER_DBSET.has(n)) return '<a class="ar-name" data-n="'+safe+'" onclick="openFighterByName(this.dataset.n)">'+safe+'</a>';
+     var canon=ACTIVE_ROSTER_DBSET.has(n)?n:ACTIVE_ROSTER_DBNORM[arNorm(n)];
+     if(canon){ var safeC=canon.replace(/&/g,'&amp;').replace(/</g,'&lt;'); return '<a class="ar-name" data-n="'+safeC+'" onclick="openFighterByName(this.dataset.n)">'+safe+'</a>'; }
      return '<span class="ar-name ar-missing" title="Not in your database yet">'+safe+'</span>';
    }).join('')+'</div>';
  }
