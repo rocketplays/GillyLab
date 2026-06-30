@@ -3254,6 +3254,7 @@
  { name: "Terrance McKinney", division: "LW", rank: "NR", record: "18-8-0", initials: "TMK", country: "USA" },
  { name: "Ludovit Klein", division: "LW", rank: "NR", record: "24-5-1", initials: "LKL", country: "Slovakia" },
  { name: "Esteban Ribovics", division: "LW", rank: "NR", record: "15-3-0", initials: "ERI", country: "Argentina" },
+ { name: "Charlie Campbell", division: "LW", rank: "NR", record: "9-3-0", initials: "CHC", country: "USA" },
  // ─── WELTERWEIGHT ───
  { name: "Islam Makhachev", division: "WW", rank: "#C", record: "28-1-0", initials: "IM2", country: "Russia" },
  { name: "Jack Della Maddalena", division: "WW", rank: "#4", record: "18-4-0", initials: "JDM", country: "Australia" },
@@ -4782,6 +4783,7 @@
  "Carlos Vera": { ht:"5'6\"", dob:"1987-11-05", reach:'69"', stance:"Orthodox", slpm:1.53, strAcc:"57%", sapm:2.79, strDef:"50%", kd:0.82, tdLanded:0.00, tdAcc:"0%", tdDef:"25%", subAvg:1.64, finRate:"58%", streak:1, gym:"Fifty/50 Martial Arts Academy" },
  "Chad Anheliger": { ht:"5'6\"", dob:"1986-12-01", reach:'64.5"', stance:"Orthodox", slpm:3.11, strAcc:"46%", sapm:2.76, strDef:"54%", kd:0.51, tdLanded:0.68, tdAcc:"31%", tdDef:"38%", subAvg:0.51, finRate:"77%", streak:0, gym:"Champion's Creed MMA" },
  "ChangHo Lee": { ht:"5'8\"", dob:"1994-05-09", reach:'69"', stance:"Orthodox", slpm:3.88, strAcc:"67%", sapm:2.13, strDef:"38%", kd:0.00, tdLanded:2.71, tdAcc:"33%", tdDef:"40%", subAvg:0.27, finRate:"64%", streak:0, gym:"Extreme Combat" },
+ "Charlie Campbell": { ht:"6'0\"", dob:"1995-07-03", reach:'72.5"', stance:"Orthodox", slpm:5.23, strAcc:"51%", sapm:4.17, strDef:"56%", kd:0.61, tdLanded:2.45, tdAcc:"36%", tdDef:"63%", subAvg:0.00, finRate:"67%", streak:0, gym:"LAW MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -11966,6 +11968,17 @@
     { opponent: "Zhawupasi Daermisi", odds: 210 },
     { opponent: "Rana Rudra Pratap Singh", odds: -549 },
     { opponent: "Sim Kai Xiong", odds: -300 },
+  ],
+  "Charlie Campbell": [
+    { opponent: "Tom Nolan", odds: 142 },
+    { opponent: "Trevor Peek", odds: -150 },
+    { opponent: "Alex Reyes", odds: -450 },
+    { opponent: "Josh Streacker", odds: -549 },
+    { opponent: "Chris Duncan", odds: -180 },
+    { opponent: "Guilherme Santos", odds: -1200 },
+    { opponent: "Vadim Ogar", odds: -333 },
+    { opponent: "Nick Giulietti", odds: -350 },
+    { opponent: "Nainoa Dung", odds: 245 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -25691,6 +25704,20 @@ const FIGHT_HISTORY = {
     { date: "Jul 24, 2017", opponent: "Jong Kwan Lee", result: "W", method: "Submission (Kimura)", round: 2, time: "2:54", event: "Angel's Fighting Championship 4", org: "AFC" },
     { date: "Jan 21, 2017", opponent: "Gi Won Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "TFC Dream 2: Lightweight Tournament Semifinals", org: "Top FC" },
   ],
+  "Charlie Campbell": [
+    { date: "Sep 27, 2025", opponent: "Tom Nolan", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:08", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Apr 6, 2024", opponent: "Trevor Peek", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Curtis 2", org: "UFC" },
+    { date: "Sep 16, 2023", opponent: "Alex Reyes", result: "W", method: "TKO (Punches)", round: 1, time: "3:38", event: "UFC Fight Night: Grasso vs. Shevchenko 2", org: "UFC" },
+    { date: "Jun 16, 2023", opponent: "Josh Streacker", result: "W", method: "KO (Punches)", round: 1, time: "2:01", event: "CFFC 120: Ndregjoni vs. Araujo", org: "CFFC" },
+    { date: "Aug 2, 2022", opponent: "Chris Duncan", result: "L", method: "KO (Punches)", round: 1, time: "1:43", event: "Dana White's Contender Series 6.2 (contract)", org: "UFC" },
+    { date: "Apr 15, 2022", opponent: "Guilherme Santos", result: "W", method: "KO (Punch)", round: 1, time: "3:16", event: "CFFC 107", org: "CFFC" },
+    { date: "Dec 17, 2021", opponent: "Vadim Ogar", result: "W", method: "TKO (Punches)", round: 2, time: "0:57", event: "CFFC 104", org: "CFFC" },
+    { date: "Jul 16, 2021", opponent: "Nick Giulietti", result: "W", method: "TKO (Leg Kicks and Punches)", round: 2, time: "1:30", event: "Bellator 262: Velasquez vs. Kielholtz", org: "Bellator" },
+    { date: "Mar 12, 2021", opponent: "Cedric Gunnison", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 93: Huckbody vs. Jeffery", org: "CFFC" },
+    { date: "Aug 7, 2020", opponent: "Nainoa Dung", result: "W", method: "TKO (Leg Kicks)", round: 2, time: "1:42", event: "Bellator 243: Chandler vs. Henderson 2", org: "Bellator" },
+    { date: "Nov 23, 2019", opponent: "Anthony Newton", result: "L", method: "Decision (Unanimous)", round: 3, time: "4:00", event: "Ring of Combat 70", org: "ROC" },
+    { date: "May 31, 2019", opponent: "Cody Zappone", result: "W", method: "Decision (Split)", round: 3, time: "4:00", event: "Ring of Combat 68", org: "ROC" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37483,6 +37510,10 @@ const ACCOLADES = {
   ],
   "ChangHo Lee": [
     { icon: "🏆", title: "Road to UFC Season 2 Bantamweight Tournament Champion (won 3 straight finishes/decisions — QF, SF, and the Jun 2024 final over Xiao Long — to earn his UFC contract)", detail: null },
+  ],
+  "Charlie Campbell": [
+    { icon: "⭐", title: "UFC Performance of the Night — UFC debut TKO of Alex Reyes at Noche UFC (Sep 2023)", detail: null },
+    { icon: "🥋", title: "BJJ blue belt under Matt Serra", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
