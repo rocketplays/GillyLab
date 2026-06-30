@@ -2700,6 +2700,7 @@
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds &amp; Projections</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
+        <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
       </ul>
     </div>
 
@@ -3056,6 +3057,26 @@
  </div>
  <div id="rankingPanels"></div>
  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     PAGE: ACTIVE ROSTER
+══════════════════════════════════════ -->
+<div class="page" id="page-active-roster">
+  <div class="page-header">
+    <div class="page-header-label">Updated weekly</div>
+    <div class="page-header-title">Active <span class="accent">Roster</span></div>
+    <div class="page-header-sub">Current UFC roster and weekly roster changes</div>
+  </div>
+  <div class="divider"></div>
+  <div style="max-width:1100px;margin:0 auto;padding:2rem;">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.25rem;">
+      <h2 style="font-size:1.4rem;font-weight:800;margin:0;color:#fff;">Roster <span class="accent">Changes</span></h2>
+      <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.4);">Updated weekly</span>
+    </div>
+    <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:1.5rem;">Additions to and removals from the UFC active roster, week by week.</div>
+    <div id="rosterChanges"></div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════
@@ -3908,6 +3929,38 @@
  // navigation (e.g. mashing nav tabs) cancels any pending swap rather
  // than letting a stale one land after a newer navigation has started.
  let pageTransitionTimer = null;
+
+ // Weekly UFC roster changes, newest week first. Populated by the weekly
+ // snapshot-and-diff pipeline. Each entry:
+ //   { week: "Jun 23–29, 2026", added: ["Name", ...], removed: ["Name", ...] }
+ const ROSTER_CHANGES = [];
+
+ function renderRosterChanges() {
+   const el = document.getElementById('rosterChanges');
+   if (!el) return;
+   if (!ROSTER_CHANGES.length) {
+     el.innerHTML = '<div style="padding:2rem;text-align:center;border:1px dashed rgba(255,255,255,0.15);border-radius:10px;color:rgba(255,255,255,0.45);font-size:0.9rem;">'
+       + 'Roster changes will appear here once the weekly snapshot runs.</div>';
+     return;
+   }
+   const col = (title, items, color) =>
+     '<div style="flex:1;min-width:220px;">'
+     + '<div style="font-size:0.72rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:' + color + ';margin-bottom:0.5rem;">'
+     + title + ' (' + items.length + ')</div>'
+     + (items.length
+         ? '<ul style="list-style:none;margin:0;padding:0;">' + items.map(n =>
+             '<li style="padding:0.3rem 0;color:#fff;font-size:0.9rem;border-bottom:1px solid rgba(255,255,255,0.05);">' + n + '</li>').join('') + '</ul>'
+         : '<div style="color:rgba(255,255,255,0.35);font-size:0.85rem;">None</div>');
+   el.innerHTML = ROSTER_CHANGES.map(w =>
+     '<div style="margin-bottom:1.75rem;">'
+     + '<div style="font-size:0.95rem;font-weight:700;color:rgba(255,255,255,0.85);margin-bottom:0.75rem;padding-bottom:0.4rem;border-bottom:1px solid rgba(255,255,255,0.1);">' + w.week + '</div>'
+     + '<div style="display:flex;gap:2rem;flex-wrap:wrap;">'
+     + col('Added', w.added || [], '#00e668')
+     + col('Removed', w.removed || [], '#ff9500')
+     + '</div></div>'
+   ).join('');
+ }
+ renderRosterChanges();
 
  function navigate(page) {
  const targetId = (page === 'fighter') ? 'page-fighter' : ('page-' + page);
