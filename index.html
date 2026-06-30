@@ -3703,6 +3703,7 @@
  { name: "Tecia Torres", division: "WSW", rank: "NR", record: "15-8-0", initials: "TTE", country: "USA" },
  { name: "Sam Hughes", division: "WSW", rank: "NR", record: "11-7-0", initials: "SHU2", country: "USA" },
  { name: "Iasmin Lucindo", division: "WSW", rank: "NR", record: "18-6-0", initials: "ILC", country: "Brazil" },
+ { name: "Karolina Kowalkiewicz", division: "WSW", rank: "NR", record: "16-10-0", initials: "KKO", country: "Poland" },
  { name: "Ravena Oliveira", division: "WSW", rank: "NR", record: "7-4-1", initials: "ROV", country: "Brazil" },
  { name: "Kanako Murata", division: "WSW", rank: "NR", record: "13-3-0", initials: "KMU2", country: "Japan" },
  { name: "Nina Nunes", division: "WSW", rank: "NR", record: "14-7-0", initials: "NNU", country: "Brazil" },
@@ -4400,6 +4401,7 @@
  "Jasmine Jasudavicius": { ht:"5'7\"", dob:"1989-03-01", reach:'68"', stance:"Orthodox", slpm:3.47, strAcc:"44%", sapm:3.46, strDef:"52%", kd:0.09, tdLanded:2.63, tdAcc:"44%", tdDef:"75%", subAvg:0.54, finRate:"40%", streak:1, gym:"Niagara Top Team" },
  "Wang Cong": { ht:"5'7\"", dob:"1992-05-15", reach:'66.5"', stance:"Southpaw", slpm:6.22, strAcc:"57%", sapm:2.19, strDef:"63%", kd:0.78, tdLanded:0.78, tdAcc:"75%", tdDef:"84%", subAvg:0.78, finRate:"44%", streak:3, gym:"Team Alpha Male" },
  "Karine Silva": { ht:"5'5\"", dob:"1993-12-02", reach:'67"', stance:"Orthodox", slpm:2.24, strAcc:"39%", sapm:2.74, strDef:"53%", kd:0.16, tdLanded:1.93, tdAcc:"50%", tdDef:"26%", subAvg:1.61, finRate:"89%", streak:0, gym:"Fighting Nerds" },
+ "Karolina Kowalkiewicz": { ht:"5'3\"", dob:"1985-10-15", reach:'64"', stance:"Orthodox", slpm:5.54, strAcc:"43%", sapm:5.77, strDef:"57%", kd:0.00, tdLanded:0.36, tdAcc:"23%", tdDef:"75%", subAvg:0.18, finRate:"25%", streak:0, gym:"American Top Team" },
  // ── Bantamweight (more) ──
  "Kyler Phillips": { ht:"5'8\"", dob:"1995-06-12", reach:'72"', stance:"Orthodox", slpm:4.75, strAcc:"43%", sapm:3.83, strDef:"59%", kd:0.33, tdLanded:2.82, tdAcc:"47%", tdDef:"76%", subAvg:0.33, finRate:"58%", streak:0, gym:"MMA Lab" },
  "Vinicius Oliveira": { ht:"5'9\"", dob:"1995-11-30", reach:'70"', stance:"Switch", slpm:5.44, strAcc:"48%", sapm:2.86, strDef:"59%", kd:0.73, tdLanded:1.27, tdAcc:"44%", tdDef:"71%", subAvg:0.18, finRate:"79%", streak:1, gym:"Sombra Team MMA" },
@@ -13795,6 +13797,31 @@
     { opponent: "Amanda Lemos", odds: 450 },
     { opponent: "Cheyanne Vlismas", odds: 265 },
     { opponent: "Janaisa Morandin", odds: 180 }
+  ],
+  "Karolina Kowalkiewicz": [
+    { opponent: "Julia Polastri", odds: 430 },
+    { opponent: "Denise Gomes", odds: 500 },
+    { opponent: "Iasmin Lucindo", odds: 320 },
+    { opponent: "Diana Belbita", odds: -135 },
+    { opponent: "Vanessa Demopoulos", odds: -130 },
+    { opponent: "Silvana Gomez Juarez", odds: 105 },
+    { opponent: "Felice Herrig", odds: 100 },
+    { opponent: "Jessica Penne", odds: -133 },
+    { opponent: "Yan Xiaonan", odds: 250 },
+    { opponent: "Alexa Grasso", odds: 105 },
+    { opponent: "Michelle Waterson", odds: -150 },
+    { opponent: "Jéssica Andrade", odds: 360 },
+    { opponent: "Felice Herrig", odds: -187 },
+    { opponent: "Jodie Esquibel", odds: -600 },
+    { opponent: "Cláudia Gadelha", odds: 255 },
+    { opponent: "Joanna Jedrzejczyk", odds: 340 },
+    { opponent: "Rose Namajunas", odds: 165 },
+    { opponent: "Heather Jo Clark", odds: -305 },
+    { opponent: "Randa Markos", odds: 145 },
+    { opponent: "Kalindra Faria", odds: -280 },
+    { opponent: "Mizuki Inoue", odds: 160 },
+    { opponent: "Jasminka Cive", odds: -600 },
+    { opponent: "Marta Chojnoska", odds: -280 }
   ],
   "Katlyn Cerminara": [
     { opponent: "Maycee Barber", odds: 170 },
@@ -30168,6 +30195,34 @@ const FIGHT_HISTORY = {
     { date: "Mar 30, 2014", opponent: "Lucy Moreno Murillo", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Gladiators Coliseum 10" }
   ],
 
+  "Karolina Kowalkiewicz": [
+    { date: "Oct 11, 2025", opponent: "Julia Polastri", result: "L", method: "TKO (Head Kick and Punches)", round: 3, time: "2:56", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Nov 9, 2024", opponent: "Denise Gomes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Magny vs. Prates", org: "UFC" },
+    { date: "May 4, 2024", opponent: "Iasmin Lucindo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 301", org: "UFC" },
+    { date: "Oct 7, 2023", opponent: "Diana Belbita", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dawson vs. Green", org: "UFC" },
+    { date: "May 20, 2023", opponent: "Vanessa Demopoulos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Hill", org: "UFC" },
+    { date: "Nov 12, 2022", opponent: "Silvana Gomez Juarez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 281", org: "UFC" },
+    { date: "Jun 4, 2022", opponent: "Felice Herrig", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:01", event: "UFC Fight Night: Volkov vs. Rozenstruik", org: "UFC" },
+    { date: "Aug 7, 2021", opponent: "Jessica Penne", result: "L", method: "Submission (Armbar)", round: 1, time: "4:32", event: "UFC 265", org: "UFC" },
+    { date: "Feb 23, 2020", opponent: "Yan Xiaonan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Felder vs. Hooker", org: "UFC" },
+    { date: "Jun 8, 2019", opponent: "Alexa Grasso", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 238", org: "UFC" },
+    { date: "Mar 30, 2019", opponent: "Michelle Waterson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Barboza vs. Gaethje", org: "UFC" },
+    { date: "Sep 8, 2018", opponent: "Jéssica Andrade", result: "L", method: "KO (Punch)", round: 1, time: "1:58", event: "UFC 228", org: "UFC" },
+    { date: "Apr 7, 2018", opponent: "Felice Herrig", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 223", org: "UFC" },
+    { date: "Oct 21, 2017", opponent: "Jodie Esquibel", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Cerrone vs. Till", org: "UFC" },
+    { date: "Jun 3, 2017", opponent: "Cláudia Gadelha", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:03", event: "UFC 212", org: "UFC" },
+    { date: "Nov 12, 2016", opponent: "Joanna Jedrzejczyk", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 205", org: "UFC" },
+    { date: "Jul 30, 2016", opponent: "Rose Namajunas", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 201", org: "UFC" },
+    { date: "May 8, 2016", opponent: "Heather Jo Clark", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Overeem vs. Arlovski", org: "UFC" },
+    { date: "Dec 19, 2015", opponent: "Randa Markos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on Fox: dos Anjos vs. Cerrone 2", org: "UFC" },
+    { date: "Feb 21, 2015", opponent: "Kalindra Faria", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "KSW 30", org: "KSW" },
+    { date: "Nov 1, 2014", opponent: "Mizuki Inoue", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Invicta FC 9", org: "Invicta FC" },
+    { date: "May 17, 2014", opponent: "Jasminka Cive", result: "W", method: "Submission (Armbar)", round: 1, time: "3:53", event: "KSW 27", org: "KSW" },
+    { date: "Sep 28, 2013", opponent: "Simona Soukupova", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KSW 24", org: "KSW" },
+    { date: "Jun 8, 2013", opponent: "Marta Chojnoska", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:11", event: "KSW 23", org: "KSW" },
+    { date: "Dec 1, 2012", opponent: "Paulina Bonkowska", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "KSW 21", org: "KSW" },
+    { date: "May 18, 2012", opponent: "Marzena Wojas", result: "W", method: "TKO (Punches)", round: 1, time: "3:12", event: "EFS 2", org: "EFS" }
+  ],
   "Katlyn Cerminara": [
     { date: "Mar 9, 2024", opponent: "Maycee Barber", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 299", org: "UFC" },
     { date: "Oct 22, 2022", opponent: "Manon Fiorot", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 280", org: "UFC" },
@@ -34132,6 +34187,13 @@ const ACCOLADES = {
   "Magomed Zaynukov": [
     { icon: "🏅", title: "Earned a UFC contract on Dana White's Contender Series (2025, def. Lucas Caldas); undefeated at 8-0", detail: null },
     { icon: "🥊", title: "\"Wild Chanco\" — trains at the Abdulmanap Nurmagomedov school (Khabib's camp); 5 of 8 wins by KO/TKO", detail: null }
+  ],
+  "Karolina Kowalkiewicz": [
+    { icon: "🏆", title: "Former KSW Women's Flyweight Champion (won inaugural title, 2012; one successful title defense)", detail: null },
+    { icon: "🏆", title: "UFC Women's Strawweight Championship challenger (vs. Joanna Jędrzejczyk, UFC 205, 2016)", detail: null },
+    { icon: "⭐", title: "UFC Fight of the Night (vs. Rose Namajunas, UFC 201, 2016)", detail: null },
+    { icon: "⭐", title: "Invicta FC Fight of the Night (vs. Mizuki Inoue, Invicta FC 9, 2014)", detail: null },
+    { icon: "🏅", title: "Tied for 2nd-most bouts in UFC Women's Strawweight division history (19)", detail: null }
   ],
   "Katlyn Cerminara": [
     { icon: "🏆", title: "UFC Women's Flyweight title challenger (vs. Valentina Shevchenko, UFC 247, 2020)", detail: null },
