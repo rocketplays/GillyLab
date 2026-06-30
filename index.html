@@ -3577,6 +3577,7 @@
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "7-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
  { name: "Ryan Gandra", division: "MW", rank: "NR", record: "9-1-0", initials: "RGA", country: "Brazil" },
+ { name: "Aliaskhab Khizriev", division: "MW", rank: "NR", record: "14-0-0", initials: "AKH", country: "Russia" },
  // ─── WELTERWEIGHT (remaining) ───
  { name: "Alex Morono", division: "WW", rank: "NR", record: "24-13-0", initials: "AMR", country: "USA" },
  { name: "Rinat Fakhretdinov", division: "WW", rank: "NR", record: "24-1-1", initials: "RFA", country: "Russia" },
@@ -3963,6 +3964,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Aliaskhab Khizriev": { ht:"5'9\"", dob:"1990-08-24", reach:'74"', stance:"Southpaw", slpm:6.01, strAcc:"64%", sapm:4.38, strDef:"62%", kd:0.00, tdLanded:5.64, tdAcc:"60%", tdDef:"100%", subAvg:3.76, finRate:"71%", streak:14, gym:"Fight Club Scorpion" },
   "Alex Reyes": { ht:"5'11\"", dob:"1986-10-02", reach:'73"', stance:"Orthodox", slpm:4.46, strAcc:"47%", sapm:6.92, strDef:"48%", kd:0.00, tdLanded:1.50, tdAcc:"29%", tdDef:null, subAvg:0.00, finRate:"100%", streak:0, gym:"Drysdale Jiu-Jitsu" },
   "Aleksandre Topuria": { ht:"5'7\"", dob:"1996-01-28", reach:'68"', stance:"Orthodox", slpm:2.93, strAcc:"55%", sapm:2.57, strDef:"69%", kd:0.00, tdLanded:1.50, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:5, gym:"Climent Club" },
   "Alatengheili": { ht:"5'5\"", dob:"1991-12-14", reach:'66"', stance:"Orthodox", slpm:2.82, strAcc:"33%", sapm:5.12, strDef:"57%", kd:0.12, tdLanded:1.74, tdAcc:"44%", tdDef:"75%", subAvg:0.00, finRate:"47%", streak:0, gym:"Fight Ready" },
@@ -6343,6 +6345,12 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Aliaskhab Khizriev": [
+    { opponent: "Makhmud Muradov", odds: -160 },
+    { opponent: "Denis Tiuliulin", odds: -1150 },
+    { opponent: "Henrique Shiguemoto", odds: -400 },
+    { opponent: "Rousimar Palhares", odds: -175 }
+  ],
   "Alex Reyes": [
     { opponent: "Tom Nolan", odds: 750 },
     { opponent: "Charlie Campbell", odds: 375 },
@@ -14546,6 +14554,23 @@
 };
 
 const FIGHT_HISTORY = {
+  "Aliaskhab Khizriev": [
+    { date: "Feb 3, 2024", opponent: "Makhmud Muradov", result: "NC", method: "No Contest", round: 1, time: "0:11", event: "UFC Fight Night: Dolidze vs. Imavov", org: "UFC" },
+    { date: "Mar 26, 2022", opponent: "Denis Tiuliulin", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "1:58", event: "UFC Fight Night: Blaydes vs. Daukaus", org: "UFC" },
+    { date: "Sep 8, 2020", opponent: "Henrique Shiguemoto", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:50", event: "Dana White's Contender Series 32", org: "DWCS" },
+    { date: "Mar 30, 2018", opponent: "Rousimar Palhares", result: "W", method: "KO (Punches)", round: 1, time: "0:58", event: "Fight Nights Global 85", org: "Fight Nights Global" },
+    { date: "Sep 29, 2017", opponent: "Yasubey Enomoto", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Nights Global 74", org: "Fight Nights Global" },
+    { date: "Mar 31, 2017", opponent: "Matej Truhan", result: "W", method: "KO", round: 1, time: "0:28", event: "Fight Nights Global 62", org: "Fight Nights Global" },
+    { date: "Oct 8, 2016", opponent: "Sergiy Kobchik", result: "W", method: "TKO", round: 1, time: "3:52", event: "Fight Nights Global 53", org: "Fight Nights Global" },
+    { date: "Nov 28, 2015", opponent: "Artur Magomedov", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "MMA Cup Moscow: Big Final", org: "MMA Cup" },
+    { date: "Nov 7, 2015", opponent: "Oleg Yatseniuk", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:39", event: "MMA Cup Dmitrov: Fight Challenge", org: "MMA Cup" },
+    { date: "Oct 23, 2015", opponent: "Dzhamal Magomedov", result: "W", method: "TKO", round: 1, time: "3:35", event: "MMA Cup Dmitrov: Beginning", org: "MMA Cup" },
+    { date: "Oct 4, 2015", opponent: "Marat Gulomov", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:57", event: "M-1 Global: Mix Fighter Challenge 1", org: "M-1 Global" },
+    { date: "Feb 21, 2015", opponent: "Baysar Kuliramov", result: "W", method: "Technical Submission (Rear-Naked Choke)", round: 1, time: "0:57", event: "M-1 Challenge 55", org: "M-1 Global" },
+    { date: "Sep 27, 2014", opponent: "Roman Mironenko", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "M-1 Global: MixFighter", org: "M-1 Global" },
+    { date: "Jun 15, 2014", opponent: "Maxim Grabovich", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "M-1 Global: MixFighter Season 4", org: "M-1 Global" },
+    { date: "May 27, 2014", opponent: "Marat Gulomov", result: "W", method: "TKO", round: 2, time: "2:40", event: "Mix Fighter: New Horizons Qualifying", org: "Mix Fighter" }
+  ],
   "Alex Reyes": [
     { date: "Aug 17, 2024", opponent: "Tom Nolan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305", org: "UFC" },
     { date: "Sep 16, 2023", opponent: "Charlie Campbell", result: "L", method: "TKO (Punches)", round: 1, time: "3:38", event: "UFC Fight Night: Grasso vs. Shevchenko 2", org: "UFC" },
@@ -32794,6 +32819,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Aliaskhab Khizriev": [
+    { icon: "🏆", title: "Fight Nights Global interim Welterweight Champion (2018) — 58-second KO of Rousimar Palhares", detail: null },
+    { icon: "🏅", title: "Undefeated (14-0, 1 NC); earned UFC contract on Dana White's Contender Series (2020)", detail: null },
+    { icon: "🤼", title: "\"The Black Wolf\" — Dagestani wrestling-heavy grappler from Makhachkala", detail: null }
+  ],
   "Alex Reyes": [
     { icon: "🥋", title: "IBJJF No-Gi World Champion (purple belt, absolute division)", detail: null },
     { icon: "🥊", title: "\"The Executioner\" — all 13 pro wins by finish (9 KO/TKO, 4 submission)", detail: null },
