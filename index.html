@@ -3230,6 +3230,7 @@
  { name: "Darren Elkins", division: "FW", rank: "NR", record: "29-12-0", initials: "DE", country: "USA" },
  { name: "Douglas Silva de Andrade", division: "FW", rank: "NR", record: "29-7-0", initials: "DS", country: "Brazil" },
  { name: "Isaac Thomson", division: "FW", rank: "NR", record: "9-3-0", initials: "ITH", country: "Australia" },
+ { name: "Jack Jenkins", division: "FW", rank: "NR", record: "14-4-0", initials: "JJK", country: "Australia" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#C", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
@@ -4520,6 +4521,7 @@
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
  "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
  "Isaac Thomson": { ht:"5'11\"", dob:"2002-05-03", reach:'69.5"', stance:null, slpm:1.40, strAcc:"45%", sapm:2.20, strDef:"42%", kd:0.00, tdLanded:4.00, tdAcc:"80%", tdDef:"33%", subAvg:0.00, finRate:"56%", streak:0, gym:"Team Alpha Male" },
+ "Jack Jenkins": { ht:"5'7\"", dob:"1993-11-03", reach:'68"', stance:"Switch", slpm:4.48, strAcc:"61%", sapm:2.95, strDef:"59%", kd:0.50, tdLanded:1.98, tdAcc:"60%", tdDef:"72%", subAvg:0.17, finRate:"64%", streak:1, gym:"Absolute Mixed Martial Arts" },
  "Ismail Naurdiev": { ht:"6'0\"", dob:"1996-08-18", reach:'74"', stance:"Orthodox", slpm:3.66, strAcc:"53%", sapm:1.75, strDef:"65%", kd:0.16, tdLanded:1.48, tdAcc:"41%", tdDef:"73%", subAvg:0.16, finRate:"76%", streak:1, gym:"Top Team Salzburg" },
  "Piera Rodriguez": { ht:"5'3\"", dob:"1992-11-11", reach:'63"', stance:"Orthodox", slpm:4.04, strAcc:"47%", sapm:3.13, strDef:"54%", kd:0.14, tdLanded:4.04, tdAcc:"51%", tdDef:"82%", subAvg:0.00, finRate:"42%", streak:3, gym:"Xtreme Couture" },
  "Polyana Viana": { ht:"5'5\"", dob:"1992-06-14", reach:'67"', stance:"Orthodox", slpm:2.82, strAcc:"41%", sapm:2.74, strDef:"53%", kd:0.17, tdLanded:0.67, tdAcc:"33%", tdDef:"33%", subAvg:1.51, finRate:"100%", streak:0, gym:"Chute Boxe Diego Lima" },
@@ -12410,6 +12412,16 @@
     { opponent: "Lerryan Douglas", odds: -275 },
     { opponent: "Gary Konkol", odds: -180 },
     { opponent: "Dorian Ramos", odds: -250 },
+  ],
+  "Jack Jenkins": [
+    { opponent: "Ramon Taveras", odds: -300 },
+    { opponent: "Gabriel Santos", odds: 178 },
+    { opponent: "Herbert Burns", odds: -549 },
+    { opponent: "Chepe Mariscal", odds: -211 },
+    { opponent: "Jamall Emmers", odds: 165 },
+    { opponent: "Don Shainis", odds: -460 },
+    { opponent: "Emiliano Linares", odds: -338 },
+    { opponent: "Sang Won Kim", odds: -425 },
   ],
   "Ismail Naurdiev": [
     { opponent: "Ryan Loder", odds: -124 },
@@ -26887,6 +26899,27 @@ const FIGHT_HISTORY = {
     { date: "Dec 11, 2020", opponent: "Luis Gerardo Garcia Lucero", result: "W", method: "TKO (Punches)", round: 2, time: "4:20", event: "iFF 4: iKon Fighting Federation 4" },
   ],
 
+  "Jack Jenkins": [
+    { date: "Sep 27, 2025", opponent: "Ramon Taveras", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Feb 8, 2025", opponent: "Gabriel Santos", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "2:06", event: "UFC 312", org: "UFC" },
+    { date: "Aug 18, 2024", opponent: "Herbert Burns", result: "W", method: "TKO (Retirement)", round: 3, time: "0:48", event: "UFC 305", org: "UFC" },
+    { date: "Sep 9, 2023", opponent: "Chepe Mariscal", result: "L", method: "TKO (Injury)", round: 2, time: "3:19", event: "UFC 293: Adesanya vs. Strickland", org: "UFC" },
+    { date: "Jun 24, 2023", opponent: "Jamall Emmers", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ABC: Emmett vs. Topuria", org: "UFC" },
+    { date: "Feb 12, 2023", opponent: "Don Shainis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 284", org: "UFC" },
+    { date: "Sep 27, 2022", opponent: "Emiliano Linares", result: "W", method: "TKO (Punches)", round: 3, time: "4:30", event: "Dana White's Contender Series: Season 6, Week 10", org: "UFC" },
+    { date: "Mar 19, 2022", opponent: "Rod Costa", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Eternal MMA 64" },
+    { date: "Dec 5, 2021", opponent: "Jason Petropoulos", result: "W", method: "TKO (Leg Kick)", round: 2, time: "1:44", event: "Rogue MMA 1" },
+    { date: "Mar 19, 2021", opponent: "Jesse Medina", result: "W", method: "TKO (Knees and Punches)", round: 2, time: "0:31", event: "Eternal MMA 57" },
+    { date: "Mar 7, 2020", opponent: "Diego Pereira", result: "W", method: "Submission (Rear-naked choke)", round: 4, time: "4:01", event: "Eternal MMA 52" },
+    { date: "Sep 6, 2019", opponent: "Naoya Uchibayashi", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:36", event: "Hex Fight Series 19" },
+    { date: "Mar 29, 2019", opponent: "Robby Lara", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Hex Fight Series 18" },
+    { date: "Mar 23, 2018", opponent: "Sang Won Kim", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "4:06", event: "Hex Fight Series 13" },
+    { date: "Sep 1, 2017", opponent: "Jesse Medina", result: "L", method: "Submission (Armbar)", round: 2, time: "2:08", event: "Hex Fight Series 11" },
+    { date: "Mar 31, 2017", opponent: "Jordan Wallace", result: "W", method: "TKO (Punches)", round: 2, time: "2:46", event: "Hex Fight Series 8" },
+    { date: "Dec 2, 2016", opponent: "George Milliaras", result: "W", method: "TKO (Punches)", round: 1, time: "1:32", event: "Hex Fight Series 7" },
+    { date: "Jun 17, 2016", opponent: "Alan Hartley", result: "W", method: "Submission (Triangle choke)", round: 1, time: "4:50", event: "Minotaur 4: Demolition" },
+  ],
+
   "Ismail Naurdiev": [
     { date: "Nov 22, 2025", opponent: "Ryan Loder", result: "W", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
     { date: "Jun 21, 2025", opponent: "Jun Yong Park", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC 8: Hill vs. Rountree", org: "UFC" },
@@ -34079,6 +34112,11 @@ const ACCOLADES = {
     { icon: "🏆", title: "2011 & 2014 ISKA Koshiki Karate World Champion; multiple Australian and NSW state Koshiki titles", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥊", title: "Combat-sports prodigy training since age 8; inducted into the ISKA Hall of Fame for BJJ (2015)", detail: null }
+  ],
+  "Jack Jenkins": [
+    { icon: "🏆", title: "Eternal MMA Featherweight Champion — 2020–2022 (2 successful defenses, vs. Jesse Medina and Rod Costa)", detail: null },
+    { icon: "🏆", title: "Rogue MMA Featherweight Champion (2021)", detail: null },
+    { icon: "🏅", title: "Won 11 of his last 13 professional fights", detail: null }
   ],
   "Ismail Naurdiev": [
     { icon: "🏆", title: "Aggrelin AG Welterweight Champion (Submission win over Garik Shahbabyan, 2016)", detail: null },
