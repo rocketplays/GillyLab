@@ -3193,6 +3193,7 @@
  { name: "Miles Johns", division: "BW", rank: "NR", record: "15-5-0", initials: "MIJ", country: "USA" }, // 1 NC
  { name: "Cameron Saaiman", division: "BW", rank: "NR", record: "9-3-0", initials: "CSA", country: "South Africa" },
  { name: "Carlos Vera", division: "BW", rank: "NR", record: "12-4-0", initials: "CRV", country: "Ecuador" },
+ { name: "Chad Anheliger", division: "BW", rank: "NR", record: "13-8-0", initials: "CAH", country: "Canada" },
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
@@ -4778,6 +4779,7 @@
  "Christian Rodriguez": { ht:"5'7\"", dob:"1997-12-17", reach:'71.5"', stance:"Orthodox", slpm:3.90, strAcc:"50%", sapm:2.94, strDef:"57%", kd:0.11, tdLanded:1.81, tdAcc:"40%", tdDef:"68%", subAvg:1.13, finRate:"62%", streak:1, gym:"Roufusport" },
  "Cameron Saaiman": { ht:"5'8\"", dob:"2000-12-20", reach:'67"', stance:"Southpaw", slpm:5.30, strAcc:"47%", sapm:4.14, strDef:"52%", kd:0.44, tdLanded:0.89, tdAcc:"29%", tdDef:"47%", subAvg:0.67, finRate:"78%", streak:0, gym:"Team CIT" },
  "Carlos Vera": { ht:"5'6\"", dob:"1987-11-05", reach:'69"', stance:"Orthodox", slpm:1.53, strAcc:"57%", sapm:2.79, strDef:"50%", kd:0.82, tdLanded:0.00, tdAcc:"0%", tdDef:"25%", subAvg:1.64, finRate:"58%", streak:1, gym:"Fifty/50 Martial Arts Academy" },
+ "Chad Anheliger": { ht:"5'6\"", dob:"1986-12-01", reach:'64.5"', stance:"Orthodox", slpm:3.11, strAcc:"46%", sapm:2.76, strDef:"54%", kd:0.51, tdLanded:0.68, tdAcc:"31%", tdDef:"38%", subAvg:0.51, finRate:"77%", streak:0, gym:"Champion's Creed MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -11946,6 +11948,14 @@
     { opponent: "Kale Moniz", odds: -135 },
     { opponent: "Peter Caballero", odds: -155 },
     { opponent: "Cody Freeman", odds: 240 },
+  ],
+  "Chad Anheliger": [
+    { opponent: "Cody Gibson", odds: 310 },
+    { opponent: "Charalampos Grigoriou", odds: 155 },
+    { opponent: "Jose Johnson", odds: 188 },
+    { opponent: "Alatengheili", odds: 165 },
+    { opponent: "Jesse Strader", odds: -240 },
+    { opponent: "Muin Gafurov", odds: 370 },
   ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
@@ -25633,6 +25643,29 @@ const FIGHT_HISTORY = {
     { date: "Mar 27, 2015", opponent: "Sammie Reese", result: "W", method: "TKO (Punches)", round: 1, time: "1:17", event: "Renaissance MMA 33", org: "RMMA" },
     { date: "Nov 30, 2014", opponent: "Sidney Lessa de Oliveira", result: "L", method: "Submission (Arm-Triangle Choke)", round: 2, time: "4:55", event: "Parana Vale Tudo: Goioere 4", org: "PRVT" },
   ],
+  "Chad Anheliger": [
+    { date: "Nov 2, 2024", opponent: "Cody Gibson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Albazi", org: "UFC" },
+    { date: "Mar 16, 2024", opponent: "Charalampos Grigoriou", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Tuivasa vs. Tybura", org: "UFC" },
+    { date: "Nov 18, 2023", opponent: "Jose Johnson", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "4:49", event: "UFC Fight Night: Allen vs. Craig", org: "UFC" },
+    { date: "Sep 10, 2022", opponent: "Alatengheili", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 279", org: "UFC" },
+    { date: "Feb 19, 2022", opponent: "Jesse Strader", result: "W", method: "TKO (Punches)", round: 3, time: "3:33", event: "UFC Fight Night: Walker vs. Hill", org: "UFC" },
+    { date: "Sep 7, 2021", opponent: "Muin Gafurov", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 2", org: "DWCS" },
+    { date: "Nov 30, 2019", opponent: "Brady Hiestand", result: "W", method: "TKO (Punches)", round: 3, time: "0:37", event: "Rise Fighting Championship 5", org: "Rise FC" },
+    { date: "Apr 13, 2019", opponent: "Craig Maclean", result: "W", method: "TKO (Punches)", round: 3, time: "1:29", event: "Rise Fighting Championship 3", org: "Rise FC" },
+    { date: "Nov 30, 2018", opponent: "Terrence Chan", result: "W", method: "TKO (Punches)", round: 1, time: "3:22", event: "Rise Fighting Championship 2", org: "Rise FC" },
+    { date: "Feb 23, 2018", opponent: "Eric Wilson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Modern Fighting Championship 1", org: "MFC" },
+    { date: "Nov 10, 2017", opponent: "Randy Turner", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:29", event: "Wreck MMA: Pro Series 2", org: "Wreck MMA" },
+    { date: "Mar 17, 2017", opponent: "Josh Smith", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "1:55", event: "Hard Knocks 54", org: "HKFC" },
+    { date: "Dec 2, 2016", opponent: "James Mancini", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:41", event: "Havoc Fighting Championship 11", org: "HFC" },
+    { date: "May 28, 2016", opponent: "Cory Chambers", result: "W", method: "KO (Punch)", round: 1, time: "0:53", event: "Saturday Night Fights: Round 11" },
+    { date: "Jun 13, 2014", opponent: "Rick Pfeifer", result: "L", method: "Submission (Armbar)", round: 2, time: "2:37", event: "Hard Knocks 37", org: "HKFC" },
+    { date: "Jan 17, 2014", opponent: "Mike O'Neill", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:54", event: "School of Hard Knocks 34", org: "HKFC" },
+    { date: "Oct 26, 2013", opponent: "Noah Ali", result: "L", method: "Submission (Triangle Choke)", round: 1, time: "0:51", event: "Rumble in the Cage 48", org: "RITC" },
+    { date: "Jun 15, 2012", opponent: "Adam Imhoff", result: "W", method: "TKO (Punches)", round: 1, time: "2:45", event: "School of Hard Knocks 25", org: "HKFC" },
+    { date: "Jan 20, 2012", opponent: "Chantha Bun", result: "W", method: "TKO (Doctor Stoppage)", round: 1, time: "2:15", event: "School of Hard Knocks 19", org: "HKFC" },
+    { date: "May 27, 2011", opponent: "Marc Savoie", result: "L", method: "Submission (Armbar)", round: 1, time: "3:02", event: "School of Hard Knocks 13", org: "HKFC" },
+    { date: "Dec 10, 2010", opponent: "Mitchell MacPhee", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "1:20", event: "Pure Fighting Championships 6", org: "PFC" },
+  ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
     { date: "Mar 14, 2026", opponent: "Jose Delgado", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Emmett vs. Vallejos", org: "UFC" },
@@ -37418,6 +37451,10 @@ const ACCOLADES = {
     { icon: "⭐", title: "UFC Performance of the Night — vs. Josias Musasa (UFC Vegas 104, first-round RNC as a +600 underdog)", detail: null },
     { icon: "🏅", title: "Cast member, The Ultimate Fighter season 31 (Team McGregor vs. Team Chandler)", detail: null },
     { icon: "🥋", title: "BJJ brown belt under Ryan Hall; 4th-degree black belt & instructor in Taekwondo; capoeira-trained", detail: null },
+  ],
+  "Chad Anheliger": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (Sep 2021 — split-decision upset of Muin Gafurov as a 3-1 underdog; 2nd Canadian ever to win a contract on the show)", detail: null },
+    { icon: "🥋", title: "BJJ black belt", detail: null },
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
