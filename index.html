@@ -3402,6 +3402,7 @@
  { name: "Rafa Garcia", division: "LW", rank: "NR", record: "19-4-0", initials: "RAG", country: "Mexico" },
  { name: "Drakkar Klose", division: "LW", rank: "NR", record: "16-3-1", initials: "DKL", country: "USA" },
  { name: "Quillan Salkilld", division: "LW", rank: "#12", record: "12-1-0", initials: "QSA", country: "Australia" },
+ { name: "Anshul Jubli", division: "LW", rank: "NR", record: "7-2-0", initials: "AJ", country: "India" },
  { name: "Drew Dober", division: "LW", rank: "NR", record: "29-15-0", initials: "DDO", country: "USA" },
  { name: "Nurullo Aliev", division: "LW", rank: "NR", record: "11-0-0", initials: "NAL", country: "Tajikistan" },
  { name: "Chris Padilla", division: "LW", rank: "NR", record: "17-6-1", initials: "CPA", country: "USA" },
@@ -4700,6 +4701,7 @@
  "Rizvan Kuniev": { ht:'6\'4"', dob:"1992-03-10", reach:'76"', stance:"Orthodox", slpm:3.94, strAcc:"55%", sapm:2.33, strDef:"48%", kd:0.33, tdLanded:0.98, tdAcc:"75%", tdDef:"93%", subAvg:0.00, finRate:"62%", streak:1, gym:"Gorets Fight Club" },
  "Victor Henry": { ht:"5'7\"", dob:"1987-05-04", reach:'68"', stance:"Switch", slpm:7.17, strAcc:"53%", sapm:5.19, strDef:"48%", kd:0.52, tdLanded:1.04, tdAcc:"43%", tdDef:"81%", subAvg:0.35, finRate:"60%", streak:1, gym:"UWF-USA" },
  "Quillan Salkilld": { ht:"6'0\"", dob:"1999-12-28", reach:'75"', stance:"Orthodox", slpm:5.01, strAcc:"58%", sapm:3.03, strDef:"45%", kd:1.14, tdLanded:7.25, tdAcc:"36%", tdDef:"80%", subAvg:0.76, finRate:"75%", streak:12, gym:"Luistro Combat Academy" },
+ "Anshul Jubli": { ht:"6'0\"", dob:"1995-01-13", reach:'69"', stance:"Orthodox", slpm:6.42, strAcc:"46%", sapm:5.72, strDef:"50%", kd:0.40, tdLanded:0.81, tdAcc:"20%", tdDef:"64%", subAvg:0.40, finRate:"43%", streak:0, gym:"Soma Fight Club" },
  "Gauge Young": { ht:"5'9\"", dob:"2000-07-14", reach:'70"', stance:"Orthodox", slpm:6.32, strAcc:"52%", sapm:5.12, strDef:"49%", kd:0.25, tdLanded:0.75, tdAcc:"30%", tdDef:"77%", subAvg:0.0, finRate:"64%", streak:2, gym:"Ignite Jiu-Jitsu & MMA" },
  "Sam Patterson": { ht:"6'3\"", dob:"1996-04-30", reach:'78"', stance:"Orthodox", slpm:2.62, strAcc:"38%", sapm:3.06, strDef:"50%", kd:0.41, tdLanded:0.82, tdAcc:"50%", tdDef:"33%", subAvg:1.64, finRate:"93%", streak:0, gym:"Team Crossface" },
  "Saygid Izagakhmaev": { ht:"6'1\"", dob:"1994-09-03", reach:'74"', stance:"Orthodox", slpm:1.33, strAcc:"59%", sapm:1.73, strDef:"59%", kd:0.0, tdLanded:4.00, tdAcc:"40%", tdDef:"100%", subAvg:0.0, finRate:"73%", streak:0, gym:"Khabib Nurmagomedov MMA" },
@@ -14119,6 +14121,12 @@
     { opponent: "Yanal Ashmouz", odds: -450 },
     { opponent: "Anshul Jubli", odds: -500 },
     { opponent: "Gauge Young", odds: -220 }
+  ],
+  "Anshul Jubli": [
+    { opponent: "Quillan Salkilld", odds: 400 },
+    { opponent: "Mike Breeden", odds: -258 },
+    { opponent: "Jeka Saragih", odds: 145 },
+    { opponent: "Kyung Pyo Kim", odds: 195 }
   ],
   "Jonathan Micallef": [
     { opponent: "Themba Gorimbo", odds: -235 },
@@ -31033,6 +31041,17 @@ const FIGHT_HISTORY = {
     { date: "Oct 30, 2021", opponent: "Nicko Flessas", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "2:01", event: "Eternal MMA 62" },
     { date: "Feb 13, 2021", opponent: "Pablo Torrealba", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "3:25", event: "Eternal MMA 56" }
   ],
+  "Anshul Jubli": [
+    { date: "Feb 8, 2025", opponent: "Quillan Salkilld", result: "L", method: "TKO (Punch)", round: 1, time: "0:19", event: "UFC 312", org: "UFC" },
+    { date: "Oct 21, 2023", opponent: "Mike Breeden", result: "L", method: "KO (Punches)", round: 3, time: "3:00", event: "UFC 294", org: "UFC" },
+    { date: "Feb 4, 2023", opponent: "Jeka Saragih", result: "W", method: "TKO (Punches and elbows)", round: 2, time: "3:44", event: "UFC Fight Night: Lewis vs. Spivac", org: "UFC" },
+    { date: "Oct 23, 2022", opponent: "Kyung Pyo Kim", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Road to UFC Season 1", org: "UFC" },
+    { date: "Sep 24, 2021", opponent: "Mohammad Mahmoudian", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:17", event: "Matrix Fight Night 6" },
+    { date: "Dec 15, 2020", opponent: "Srikant Sekhar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Matrix Fight Night 5" },
+    { date: "Feb 28, 2020", opponent: "Rajith Chandran", result: "W", method: "TKO (Punches)", round: 1, time: "4:44", event: "Matrix Fight Night 4" },
+    { date: "Dec 20, 2019", opponent: "Amit Raj Kumar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Matrix Fight Night 3" },
+    { date: "Jun 29, 2019", opponent: "Sanjeet Budhwar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Matrix Fight Night 2" }
+  ],
 
 
 
@@ -36031,6 +36050,12 @@ const ACCOLADES = {
     { icon: "⭐", title: "Three-time UFC Performance of the Night (vs. Anshul Jubli, Nasrat Haqparast, Jamie Mullarkey)", detail: null },
     { icon: "🏅", title: "2025 UFC Knockout of the Year — head-kick KO of Nasrat Haqparast", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian jiu-jitsu", detail: null },
+  ],
+  "Anshul Jubli": [
+    { icon: "🏆", title: "Road to UFC Season 1 Lightweight Tournament Winner (2023)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (vs. Jeka Saragih)", detail: null },
+    { icon: "🏅", title: "First Indian fighter to win the Road to UFC tournament; second Indian to sign with the UFC", detail: null },
+    { icon: "🥊", title: "Perfect 13–0 amateur MMA record; BodyPower India Light Heavyweight Tournament Winner (2016)", detail: null },
   ],
   "Tom Nolan": [
     { icon: "⭐", title: "UFC Performance of the Night (submission win over Charlie Campbell)", detail: null },
