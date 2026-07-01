@@ -3859,6 +3859,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
+ { name: "Saimon Oliveira", division: "BW", rank: "NR", record: "18-7-0", initials: "SOL", country: "Brazil" },
  { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
  { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-4-0", initials: "AP", country: "Russia" },
@@ -4971,6 +4972,7 @@
 
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
+  "Saimon Oliveira": { ht:"5'4\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:2.62, strAcc:"42%", sapm:3.87, strDef:"46%", kd:0.00, tdLanded:1.18, tdAcc:"29%", tdDef:"36%", subAvg:1.18, finRate:"89%", streak:0, gym:"Astra Fight Team" },
   "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
  "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
   "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
@@ -14147,6 +14149,13 @@
     { opponent: "Mauricio Gomez", odds: -338 },
     { opponent: "Damion Nelson", odds: 205 },
     { opponent: "Jeremy Henry", odds: -250 }
+  ],
+  "Saimon Oliveira": [
+    { opponent: "Luan Lacerda", odds: 310 },
+    { opponent: "David Martinez", odds: 540 },
+    { opponent: "Daniel Marcos", odds: -120 },
+    { opponent: "Tony Gravely", odds: 235 },
+    { opponent: "Jose Alday", odds: -140 }
   ],
   "Ryan Loder": [
     { opponent: "Ismail Naurdiev", odds: 111 },
@@ -31113,6 +31122,33 @@ const FIGHT_HISTORY = {
     { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
     { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
   ],
+  "Saimon Oliveira": [
+    { date: "Oct 11, 2025", opponent: "Luan Lacerda", result: "L", method: "Submission (Armbar)", round: 2, time: "3:55", event: "UFC Fight Night: Oliveira vs. Gamrot", org: "UFC" },
+    { date: "Mar 29, 2025", opponent: "David Martínez", result: "L", method: "TKO (Knee and punches)", round: 1, time: "4:38", event: "UFC on ESPN: Moreno vs. Erceg", org: "UFC" },
+    { date: "Jan 21, 2023", opponent: "Daniel Marcos", result: "L", method: "KO (Knee to the body and punches)", round: 2, time: "2:18", event: "UFC 283", org: "UFC" },
+    { date: "Jan 22, 2022", opponent: "Tony Gravely", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 270", org: "UFC" },
+    { date: "Sep 7, 2021", opponent: "Jose Alday", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Dana White's Contender Series 38", org: "UFC" },
+    { date: "Dec 11, 2019", opponent: "Wataru Mimura", result: "W", method: "Technical Submission (Guillotine choke)", round: 1, time: "1:14", event: "Pancrase 311", org: "Pancrase" },
+    { date: "Jul 20, 2019", opponent: "Jeferson Bastos", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "1:22", event: "MTK MMA 7" },
+    { date: "Sep 14, 2018", opponent: "Wesley Bull", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "2:06", event: "Sicario MMA 2" },
+    { date: "Sep 14, 2018", opponent: "Edezio da Hora Santana", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "4:45", event: "Sicario MMA 2" },
+    { date: "Mar 9, 2018", opponent: "Ary Farias", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACB 82: São Paulo" },
+    { date: "Oct 7, 2017", opponent: "Jesus Montero", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "3:42", event: "Fight Club Slam 2017" },
+    { date: "Mar 18, 2017", opponent: "Luan Duarte", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:59", event: "Aspera FC 50" },
+    { date: "Nov 19, 2016", opponent: "Marcelo Rodrigues Piazza Santos", result: "W", method: "TKO (Punches)", round: 3, time: "3:17", event: "Aspera FC 48" },
+    { date: "Aug 13, 2016", opponent: "Antonio Henrique Santos de Miranda", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:07", event: "Aspera FC 43" },
+    { date: "May 21, 2016", opponent: "Fernando Giacometi", result: "W", method: "Technical Submission (Guillotine choke)", round: 5, time: "1:00", event: "K.O. Combate 3" },
+    { date: "Nov 7, 2015", opponent: "Wagner Lima", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Blasius Combat 2" },
+    { date: "Oct 10, 2015", opponent: "Wagner Farias", result: "W", method: "KO (Punch)", round: 1, time: "0:56", event: "Felino Fight 4" },
+    { date: "Jul 12, 2015", opponent: "Roger Giovanni", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:33", event: "Aspera FC 22" },
+    { date: "Apr 4, 2015", opponent: "Carlos Diogo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Aspera FC 17" },
+    { date: "Nov 29, 2014", opponent: "Carlisson Diego Oliveira dos Santos", result: "W", method: "Submission (Triangle choke)", round: 2, time: "3:28", event: "Aspera FC 14" },
+    { date: "Nov 8, 2014", opponent: "Jonivaldo de Oliveira", result: "W", method: "TKO", round: 2, time: "3:56", event: "Secutor Challenge Fighter" },
+    { date: "Oct 11, 2014", opponent: "Danilo Pindombeira", result: "W", method: "TKO", round: 2, time: "2:09", event: "Blasius Combat 1" },
+    { date: "Mar 22, 2014", opponent: "Pedro Silva", result: "W", method: "TKO", round: 2, time: "3:20", event: "Floripa Fight Championship Revelations" },
+    { date: "Dec 7, 2013", opponent: "Josemir Raimundi", result: "W", method: "Decision", round: 3, time: "5:00", event: "K.O. Combate 1" },
+    { date: "Jul 20, 2013", opponent: "Endreo Teodoro", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:20", event: "GP Fight Show: Blasius vs. Schulte" }
+  ],
   "Ryan Loder": [
     { date: "Nov 22, 2025", opponent: "Ismail Naurdiev", result: "L", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
     { date: "May 3, 2025", opponent: "Azamat Bekoev", result: "L", method: "TKO (Punches)", round: 1, time: "2:44", event: "UFC Fight Night: Sandhagen vs. Figueiredo", org: "UFC" },
@@ -38929,6 +38965,12 @@ const ACCOLADES = {
     { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
     { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
+  ],
+  "Saimon Oliveira": [
+    { icon: "🏆", title: "Aspera FC Champion", detail: null },
+    { icon: "📺", title: "Awarded a UFC contract after a split decision win over Jose Alday on Dana White's Contender Series 38 (2021)", detail: null },
+    { icon: "🔥", title: "89% career finish rate (5 KO/TKO, 11 submissions in 18 wins); 10 first-round finishes", detail: null },
+    { icon: "🥋", title: "Muay Thai specialist; former butcher before turning to full-time fighting", detail: null }
   ],
   "Ryan Loder": [
     { icon: "🏆", title: "The Ultimate Fighter 32 Middleweight Tournament Winner (2024) — TKO'd Robert Valentin in the finale to earn his UFC contract", detail: null },
