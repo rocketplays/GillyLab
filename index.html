@@ -3787,6 +3787,7 @@
  { name: "Albert Duraev", division: "MW", rank: "NR", record: "16-5-0", initials: "ADU", country: "Russia" },
  { name: "Michel Pereira", division: "MW", rank: "#13", record: "32-14-0", initials: "MPER", country: "Brazil" },
  { name: "Milos Janicic", division: "LW", rank: "NR", record: "19-3-0", initials: "MJA", country: "Montenegro" },
+ { name: "Noah Gugnon", division: "LW", rank: "NR", record: "9-2-0", initials: "NGU", country: "France" },
  { name: "Jimmy Crute", division: "LHW", rank: "NR", record: "14-4-2", initials: "JCR", country: "Australia" },
  { name: "Ryan Spann", division: "HW", rank: "NR", record: "24-11-0", initials: "RSP", country: "USA" },
  { name: "Martin Buday", division: "HW", rank: "NR", record: "16-4-0", initials: "MBD", country: "Slovakia" },
@@ -4589,6 +4590,7 @@
  "Rodolfo Vieira": { ht:"6'0\"", dob:"1989-09-25", reach:'73"', stance:"Orthodox", slpm:3.55, strAcc:"54%", sapm:4.38, strDef:"49%", kd:0.00, tdLanded:2.70, tdAcc:"22%", tdDef:"75%", subAvg:0.90, finRate:"91%", streak:0, gym:"The Fighting Nerds" },
  "Michel Pereira": { ht:"6'1\"", dob:"1993-10-06", reach:'73"', stance:"Orthodox", slpm:4.46, strAcc:"52%", sapm:4.40, strDef:"51%", kd:0.28, tdLanded:1.21, tdAcc:"57%", tdDef:"76%", subAvg:0.65, finRate:"63%", streak:1, gym:"Overcome Academy" },
  "Milos Janicic": { ht:"5'11\"", dob:"1997-05-03", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:8, gym:"UFD Gym" },
+ "Noah Gugnon": { ht:"5'10\"", dob:"2000-10-18", reach:'68.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Bulgarian Top Team" },
  // ── Light Heavyweight (more) ──
  "Jimmy Crute": { ht:"6'2\"", dob:"1996-03-04", reach:'74"', stance:"Orthodox", slpm:4.15, strAcc:"53%", sapm:3.65, strDef:"42%", kd:0.73, tdLanded:4.39, tdAcc:"52%", tdDef:"58%", subAvg:2.01, finRate:"79%", streak:2, gym:"Greco and Stewie's House" },
  "Modestas Bukauskas": { ht:"6'3\"", dob:"1994-02-10", reach:'76"', stance:"Switch", slpm:3.14, strAcc:"43%", sapm:3.86, strDef:"51%", kd:0.11, tdLanded:0.23, tdAcc:"67%", tdDef:"82%", subAvg:0.11, finRate:"70%", streak:1, gym:"Gintas Combat / BST Academy" },
@@ -13691,6 +13693,12 @@
     { opponent: "Diego Sanchez", odds: -180 },
     { opponent: "Tristan Connelly", odds: -508 },
     { opponent: "Danny Roberts", odds: 205 },
+  ],
+  "Noah Gugnon": [
+    { opponent: "Bruno Matos de Sousa", odds: -1408 },
+    { opponent: "Adrian Prisceanu", odds: -3333 },
+    { opponent: "Ioan Harris", odds: 200 },
+    { opponent: "Mark Ewen", odds: 260 },
   ],
   "Milos Janicic": [
     { opponent: "Ebrahim Hosseinpour", odds: -800 },
@@ -29855,6 +29863,19 @@ const FIGHT_HISTORY = {
     { date: "Jul 28, 2018", opponent: "Hae Jun Yang", result: "W", method: "TKO (Knees and punches)", round: 3, time: "1:48", event: "Road FC 48" },
     { date: "May 27, 2018", opponent: "Sung Hyun Kim", result: "W", method: "TKO (Punches)", round: 1, time: "0:51", event: "HEAT 42" },
   ],
+  "Noah Gugnon": [
+    { date: "Apr 3, 2026", opponent: "Bruno Matos de Sousa", result: "W", method: "TKO (Elbows and Punches)", round: 1, time: "3:08", event: "Ares FC 39: Jbalia vs. Diatta", org: "ARES FC" },
+    { date: "Oct 18, 2025", opponent: "Adrian Prisceanu", result: "W", method: "TKO (Punches)", round: 1, time: "3:33", event: "Ares FC 35: Baki vs. Zebo", org: "ARES FC" },
+    { date: "Jun 14, 2025", opponent: "Ioan Harris", result: "W", method: "KO (Punch and Elbows)", round: 1, time: "1:02", event: "Ares FC 31: Sola vs. Oudelha", org: "ARES FC" },
+    { date: "Dec 7, 2024", opponent: "Nicolas Di Franco", result: "W", method: "TKO (Elbows)", round: 2, time: "3:24", event: "The King of Fighters 11" },
+    { date: "Oct 3, 2024", opponent: "Bruno Nunes", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:20", event: "Coliseum 1: Coliseum Fighting Championship" },
+    { date: "Feb 3, 2024", opponent: "Samvel Vardanyan", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Fight Parc Championship" },
+    { date: "Sep 23, 2023", opponent: "Mark Ewen", result: "L", method: "TKO (Elbows and Punches)", round: 2, time: "3:51", event: "Bellator 299: Eblen vs. Edwards", org: "Bellator" },
+    { date: "Jun 10, 2023", opponent: "Dukwach Kadimagomaev", result: "W", method: "TKO (Punches)", round: 2, time: "2:02", event: "Kingdom 1: Silva vs. El Ouassaidi" },
+    { date: "Apr 22, 2023", opponent: "David Hawker", result: "W", method: "KO (Punches)", round: 1, time: "1:33", event: "Bushido 88: Bushido Fighting Championship" },
+    { date: "Apr 16, 2022", opponent: "Sofiane Belaid", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:50", event: "Warrior Fight Night 1" },
+    { date: "Oct 29, 2021", opponent: "Jessy Chateauneuf", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:53", event: "100% Fight 44: 100% Fight Is Back" },
+  ],
   "Milos Janicic": [
     { date: "Dec 20, 2025", opponent: "Alex Oliveira", result: "W", method: "TKO (Punches)", round: 1, time: "1:50", event: "FNC 26: Janicic vs. Oliveira", org: "FNC" },
     { date: "May 24, 2025", opponent: "Marko Bojkovic", result: "W", method: "TKO (Punches)", round: 2, time: "2:20", event: "FNC 23: Fabjan vs. Moeil", org: "FNC" },
@@ -37740,6 +37761,10 @@ const ACCOLADES = {
     { icon: "⭐", title: "UFC Performance of the Night — 4× (vs. Roberts, Imadaev, Oleksiejczuk, Potieria)", detail: null },
     { icon: "⭐", title: "UFC Fight of the Night — 1× (vs. Ponzinibbio)", detail: null },
     { icon: "🏆", title: "Serbian Battle Championship Welterweight Championship — 2017", detail: null },
+  ],
+  "Noah Gugnon": [
+    { icon: "🥊", title: "UFC lightweight prospect — signed directly to the UFC (bypassing Dana White's Contender Series) off a 9-2 record with a 100% finish rate (6 KO/TKO, 3 submission, zero decisions)", detail: null },
+    { icon: "🏅", title: "Fought across 100% Fight, Bellator, and Ares FC before his UFC signing; managed by Guillaume Peltier", detail: null }
   ],
   "Milos Janicic": [
     { icon: "🥊", title: "UFC lightweight prospect — 19-3 pro record with a 100% finish rate (11 KO/TKO, 8 submission, zero decisions), signed for his UFC debut in Belgrade", detail: null },
