@@ -3218,6 +3218,7 @@
  { name: "Melquizael Costa", division: "FW", rank: "#13", record: "26-8-0", initials: "MCO", country: "Brazil" },
  { name: "Kevin Vallejos", division: "FW", rank: "#9", record: "18-1-0", initials: "KV", country: "Argentina" },
  { name: "David Onama", division: "FW", rank: "#14", record: "14-3-0", initials: "DON", country: "Uganda" },
+ { name: "Roberto Romero", division: "FW", rank: "NR", record: "8-5-1", initials: "RRO", country: "Mexico" },
  { name: "Conor McGregor", division: "FW", rank: "NR", record: "22-6-0", initials: "CM", country: "Ireland" },
  { name: "Sodiq Yusuff", division: "FW", rank: "NR", record: "13-5-0", initials: "SYU", country: "Nigeria" },
  { name: "Pat Sabatini", division: "FW", rank: "NR", record: "22-5-0", initials: "PSA", country: "USA" },
@@ -4621,6 +4622,7 @@
  "Kai Kamaka III": { ht:"5'7\"", dob:"1995-01-05", reach:'69"', stance:"Orthodox", slpm:5.40, strAcc:"59%", sapm:5.67, strDef:"56%", kd:0.22, tdLanded:1.51, tdAcc:"54%", tdDef:"55%", subAvg:0.22, finRate:"22%", streak:2, gym:"Xtreme Couture" },
  "Jai Herbert": { ht:"6'1\"", dob:"1988-05-13", reach:'77"', stance:"Orthodox", slpm:3.19, strAcc:"42%", sapm:3.34, strDef:"53%", kd:0.84, tdLanded:0.42, tdAcc:"21%", tdDef:"67%", subAvg:0.0, finRate:"79%", streak:1, gym:"Team Renegade" },
  "Mason Jones": { ht:"5'10\"", dob:"1995-04-26", reach:'74"', stance:"Orthodox", slpm:5.98, strAcc:"43%", sapm:4.45, strDef:"51%", kd:0.17, tdLanded:3.48, tdAcc:"55%", tdDef:"74%", subAvg:0.17, finRate:"61%", streak:7, gym:"Pedro Bessa BJJ" },
+ "Roberto Romero": { ht:"5'8\"", dob:"2000-01-30", reach:'70"', stance:"Orthodox", slpm:4.56, strAcc:"49%", sapm:6.44, strDef:"44%", kd:0.63, tdLanded:0.00, tdAcc:"0%", tdDef:"71%", subAvg:0.00, finRate:"63%", streak:0, gym:"Team Oyama" },
  "David Onama": { ht:"5'11\"", dob:"1994-06-07", reach:'74"', stance:"Orthodox", slpm:5.07, strAcc:"50%", sapm:4.89, strDef:"52%", kd:0.60, tdLanded:1.05, tdAcc:"30%", tdDef:"53%", subAvg:0.45, finRate:"79%", streak:0, gym:"FactoryX Muay Thai" },
  "Ignacio Bahamondes": { ht:"6'3\"", dob:"1997-08-27", reach:'75.5"', stance:"Orthodox", slpm:5.99, strAcc:"46%", sapm:4.07, strDef:"56%", kd:0.76, tdLanded:0.00, tdAcc:"0%", tdDef:"70%", subAvg:0.63, finRate:"76%", streak:0, gym:"Valle Flow Striking" },
  // ── Lightweight (new) ──
@@ -10069,6 +10071,10 @@
     { opponent: "Adam Fugitt", odds: -210 },
     { opponent: "Yohan Lainesse", odds: -250 },
     { opponent: "Mickey Gall", odds: -165 }
+  ],
+  "Roberto Romero": [
+    { opponent: "Timothy Cuamba", odds: -108 },
+    { opponent: "David Onama", odds: 850 }
   ],
   "David Onama": [
     { opponent: "Steve Garcia", odds: 115 },
@@ -21827,6 +21833,22 @@ const FIGHT_HISTORY = {
     { date: "Apr 16, 2011", opponent: "James Saunders", result: "W", method: "Submission (Armbar)", round: 1, time: "0:32", event: "Extreme Cage Combat 12" }
   ],
 
+  "Roberto Romero": [
+    { date: "Apr 26, 2025", opponent: "Timothy Cuamba", result: "L", method: "TKO (Flying knee)", round: 2, time: "3:55", event: "UFC on ESPN: Machado Garry vs. Prates", org: "UFC" },
+    { date: "Nov 16, 2024", opponent: "David Onama", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 309", org: "UFC" },
+    { date: "Jul 27, 2024", opponent: "Takahiro Ashida", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:45", event: "Combate Global: Mexico vs. Japan 2" },
+    { date: "Dec 17, 2023", opponent: "Patrick Lehane", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: Ireland vs. Mexico" },
+    { date: "Jul 16, 2023", opponent: "Justin Vazquez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global: El Showdown - Mexico vs. USA" },
+    { date: "Sep 30, 2022", opponent: "Daniel Ayala", result: "W", method: "TKO (Punches)", round: 1, time: "4:28", event: "Combate Global: Romero vs. Ayala" },
+    { date: "Aug 19, 2022", opponent: "Ivan Tena", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Combate Global: Tena vs. Romero" },
+    { date: "Oct 22, 2021", opponent: "Zedekiah Montanez", result: "D", method: "Draw (Majority)", round: 3, time: "5:00", event: "Combate Global: Montanez vs. Hernandez" },
+    { date: "Sep 10, 2021", opponent: "Carlos Tenorio", result: "W", method: "KO (Punch to the body)", round: 1, time: "2:50", event: "Combate Global: Perez vs. Roa" },
+    { date: "Aug 1, 2021", opponent: "Michael Martinez", result: "W", method: "TKO (Punches)", round: 1, time: "3:32", event: "Combate Global: Combat Cup" },
+    { date: "Mar 6, 2021", opponent: "Jorge Ramirez", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Jasaji Fighting League 22" },
+    { date: "Jul 6, 2019", opponent: "Julian Baez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lights Out Xtreme Fighting 2" },
+    { date: "Feb 23, 2019", opponent: "Hilario Portales", result: "L", method: "KO (Punch)", round: 1, time: "0:08", event: "Hardcore Fighter 4" },
+    { date: "Nov 3, 2018", opponent: "Francisco Javier Gomez Aguilar", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:21", event: "Hardcore Fighter 3" }
+  ],
   "David Onama": [
     { date: "Nov 1, 2025", opponent: "Steve Garcia", result: "L", method: "TKO (Punches)", round: 1, time: "3:34", event: "UFC Fight Night: Garcia vs. Onama", org: "UFC" },
     { date: "Apr 26, 2025", opponent: "Giga Chikadze", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Machado Garry vs. Prates", org: "UFC" },
@@ -36648,6 +36670,9 @@ const ACCOLADES = {
     { icon: "🏅", title: "Tied for 2nd-most submission wins in UFC Featherweight history (4)", detail: null },
     { icon: "🏅", title: "2017 World MMA Awards Breakthrough Fighter of the Year", detail: null },
     { icon: "🥋", title: "1st degree BJJ black belt under Rener Gracie (Gracie Jiu-Jitsu)", detail: null },
+  ],
+  "Roberto Romero": [
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu; 1st degree black belt in Limalama", detail: null }
   ],
   "David Onama": [
     { icon: "🏆", title: "Fighting Alliance Championship (FAC) Lightweight Champion (one time)", detail: null },
