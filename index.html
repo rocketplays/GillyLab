@@ -3860,6 +3860,7 @@
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
  { name: "Shi Ming", division: "WSW", rank: "NR", record: "18-6-0", initials: "SHM", country: "China" },
+ { name: "Song Kenan", division: "WW", rank: "NR", record: "22-9-0", initials: "SKE", country: "China" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4978,6 +4979,7 @@
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
   "Shi Ming": { ht:"5'2\"", dob:"1994-11-14", reach:'60"', stance:"Orthodox", slpm:3.09, strAcc:"37%", sapm:2.92, strDef:"53%", kd:0.51, tdLanded:1.02, tdAcc:"9%", tdDef:"60%", subAvg:0.25, finRate:"50%", streak:1, gym:"China Catch Wrestling" },
+  "Song Kenan": { ht:"6'0\"", dob:"1990-03-10", reach:'71.5"', stance:"Orthodox", slpm:4.49, strAcc:"47%", sapm:5.82, strDef:"51%", kd:0.70, tdLanded:0.42, tdAcc:"30%", tdDef:"74%", subAvg:0.00, finRate:"82%", streak:0, gym:"Beijing Black Tiger" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14162,6 +14164,12 @@
   ],
   "Shi Ming": [
     { opponent: "Feng Xiaocan", odds: 400 }
+  ],
+  "Song Kenan": [
+    { opponent: "Rolando Bedoya", odds: 310 },
+    { opponent: "Max Griffin", odds: 188 },
+    { opponent: "Callan Potter", odds: -200 },
+    { opponent: "Derrick Krantz", odds: 100 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31192,6 +31200,39 @@ const FIGHT_HISTORY = {
     { date: "Jul 7, 2016", opponent: "Rebecca Heintzman", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:48", event: "WKG: International MMA Tournament 2" },
     { date: "Aug 2, 2015", opponent: "Zhenyao Wang", result: "W", method: "Submission", round: 3, time: "—", event: "Dacheng Wuyi: Chinese MMA Super League Season 1, Day 1" }
   ],
+  "Song Kenan": [
+    { date: "Nov 23, 2024", opponent: "Muslim Salikhov", result: "L", method: "KO (Spinning wheel kick)", round: 1, time: "3:49", event: "UFC Fight Night: Yan vs. Figueiredo", org: "UFC" },
+    { date: "Aug 18, 2024", opponent: "Ricky Glenn", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 305", org: "UFC" },
+    { date: "Dec 9, 2023", opponent: "Kevin Jousset", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Gutierrez", org: "UFC" },
+    { date: "Aug 26, 2023", opponent: "Rolando Bedoya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. The Korean Zombie", org: "UFC" },
+    { date: "Mar 4, 2023", opponent: "Ian Garry", result: "L", method: "TKO (Punches)", round: 3, time: "4:22", event: "UFC 285", org: "UFC" },
+    { date: "Mar 20, 2021", opponent: "Max Griffin", result: "L", method: "KO (Punches)", round: 1, time: "2:20", event: "UFC Fight Night: Brunson vs. Holland", org: "UFC" },
+    { date: "Feb 23, 2020", opponent: "Callan Potter", result: "W", method: "KO (Punches)", round: 1, time: "2:20", event: "UFC Fight Night: Felder vs. Hooker", org: "UFC" },
+    { date: "Aug 31, 2019", opponent: "Derrick Krantz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Andrade vs. Zhang", org: "UFC" },
+    { date: "Nov 24, 2018", opponent: "Alex Morono", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blaydes vs. Ngannou 2", org: "UFC" },
+    { date: "Jun 23, 2018", opponent: "Hector Aldana", result: "W", method: "TKO (Punches)", round: 2, time: "4:42", event: "UFC Fight Night: Cerrone vs. Edwards", org: "UFC" },
+    { date: "Nov 25, 2017", opponent: "Bobby Nash", result: "W", method: "KO (Punches)", round: 1, time: "0:15", event: "UFC Fight Night: Bisping vs. Gastelum", org: "UFC" },
+    { date: "Feb 18, 2017", opponent: "Yerbota Yeluhan", result: "W", method: "Submission (Leg scissor choke)", round: 1, time: "2:13", event: "CWM MMA: Chin Woo Men, Stage 5" },
+    { date: "Jan 13, 2017", opponent: "Brad Riddell", result: "L", method: "KO (Punch to the body)", round: 2, time: "3:11", event: "Glory of Heroes 6" },
+    { date: "Nov 19, 2016", opponent: "Elnur Agaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road FC 34", org: "Road FC" },
+    { date: "Jun 25, 2016", opponent: "Gerhard Voigt", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:35", event: "Rebel FC 4" },
+    { date: "Apr 16, 2016", opponent: "Kenta Takagi", result: "W", method: "TKO (Punches)", round: 1, time: "3:04", event: "Superstar Fight 2" },
+    { date: "Mar 26, 2016", opponent: "Ooi Aik Tong", result: "W", method: "TKO (Punches)", round: 2, time: "2:25", event: "BFFC: Bullets Fly 4" },
+    { date: "Jan 8, 2016", opponent: "Isamu Kanazawa", result: "W", method: "TKO (Punches)", round: 1, time: "3:24", event: "Worldwide MMA Alliance Championship" },
+    { date: "Dec 19, 2015", opponent: "Nosherwan Khanzada", result: "W", method: "TKO (Punches)", round: 1, time: "0:24", event: "Chinese Kung Fu Championships 4: Day 1" },
+    { date: "Nov 6, 2015", opponent: "Zhao Zhang", result: "W", method: "TKO (Punches)", round: 1, time: "3:03", event: "Chinese Kung Fu Championships 3" },
+    { date: "Aug 8, 2015", opponent: "Israel Adesanya", result: "L", method: "TKO (Head kick)", round: 1, time: "1:59", event: "The Legend of Emei 3" },
+    { date: "Jun 27, 2015", opponent: "Sailike Makeshate", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "4:08", event: "Rebel FC 3" },
+    { date: "Mar 13, 2015", opponent: "Yincang Bao", result: "L", method: "Decision (Unanimous)", round: 5, time: "3:00", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Jan 6, 2015", opponent: "Yonghao Xu", result: "W", method: "Technical Submission (Rear-naked choke)", round: 3, time: "2:51", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Dec 23, 2014", opponent: "Sanae Kikuta", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Real Fight Championship 1" },
+    { date: "Nov 25, 2014", opponent: "Yubin Zhang", result: "W", method: "Submission (Straight armbar)", round: 1, time: "1:54", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Oct 27, 2014", opponent: "Dacheng Liu", result: "W", method: "Submission (Armbar)", round: 1, time: "2:51", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Oct 14, 2014", opponent: "Habiti Tuerxunbieke", result: "W", method: "Submission (Guillotine choke)", round: 2, time: "0:58", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Sep 2, 2014", opponent: "Nannan He", result: "W", method: "TKO (Retirement)", round: 1, time: "3:00", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "Jul 22, 2014", opponent: "Wenshuo Guo", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:08", event: "Chinese Kung Fu Championships", org: "CKFC" },
+    { date: "May 30, 2014", opponent: "Fakhriddin Fakhriddin", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "—", event: "Dragon Fighter International" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39142,6 +39183,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Road to UFC Season 3 strawweight tournament winner (2024) — earned her UFC contract with a third-round KO of Feng Xiaocan in the final", detail: null },
     { icon: "🥋", title: "Level-2 Catch wrestler, Taekwondo black belt, Yunnan province kickboxing champion, and Heroine FC champion in her pro career", detail: null },
     { icon: "🔥", title: "50% career finish rate (2 KO/TKO, 7 submissions in 18 wins), including 5 first-round finishes", detail: null },
+  ],
+  "Song Kenan": [
+    { icon: "🥊", title: "Nicknamed \"The Assassin\"; 13 first-round finishes across a 31-fight pro career (9 KO/TKO wins, 9 submission wins)", detail: null },
+    { icon: "🏆", title: "Former CKF (Chinese Kung Fu Championships) 80kg champion on the Chinese regional circuit before turning pro", detail: null },
+    { icon: "🥋", title: "Beat UFC/PRIDE/Pancrase veteran Sanae Kikuta by unanimous decision in 2014", detail: null },
+    { icon: "🚄", title: "Worked as a high-speed train machinist before becoming a full-time fighter", detail: null },
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
