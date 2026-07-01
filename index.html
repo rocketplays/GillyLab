@@ -3865,6 +3865,7 @@
  { name: "Taiyilake Nueraji", division: "WW", rank: "NR", record: "12-1-0", initials: "TNU", country: "China" },
  { name: "Tim Means", division: "WW", rank: "NR", record: "33-17-1", initials: "TME", country: "USA" },
  { name: "Torrez Finney", division: "MW", rank: "NR", record: "11-1-0", initials: "TFI", country: "USA" },
+ { name: "Toshiomi Kazama", division: "BW", rank: "NR", record: "11-5-0", initials: "TKA", country: "Japan" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4988,6 +4989,7 @@
   "Taiyilake Nueraji": { ht:"6'2\"", dob:"2001-01-12", reach:'75"', stance:"Southpaw", slpm:9.82, strAcc:"53%", sapm:5.01, strDef:"58%", kd:1.47, tdLanded:1.47, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:6, gym:"Enbo Gedou" },
   "Tim Means": { ht:"6'2\"", dob:"1984-02-20", reach:'75"', stance:"Orthodox", slpm:5.04, strAcc:"49%", sapm:3.65, strDef:"60%", kd:0.57, tdLanded:1.14, tdAcc:"40%", tdDef:"65%", subAvg:0.16, finRate:"76%", streak:0, gym:"FIT NHB Albuquerque, NM" },
   "Torrez Finney": { ht:"5'8\"", dob:"1998-10-24", reach:'75.5"', stance:"Orthodox", slpm:1.78, strAcc:"55%", sapm:3.34, strDef:"41%", kd:0.00, tdLanded:6.86, tdAcc:"59%", tdDef:"75%", subAvg:0.79, finRate:"73%", streak:0, gym:"Agoge Combatives" },
+  "Toshiomi Kazama": { ht:"5'7\"", dob:"1997-05-15", reach:'69"', stance:"Orthodox", slpm:1.49, strAcc:"53%", sapm:4.56, strDef:"38%", kd:0.00, tdLanded:1.94, tdAcc:"17%", tdDef:"67%", subAvg:0.97, finRate:"82%", streak:0, gym:"Wajutsu Keishukai Tokyo" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14231,6 +14233,13 @@
     { opponent: "Abdellah Er-Ramy", odds: -250 },
     { opponent: "Cameron Rowston", odds: -400 },
     { opponent: "Yuri Panferov", odds: -185 }
+  ],
+  "Toshiomi Kazama": [
+    { opponent: "Elijah Smith", odds: 575 },
+    { opponent: "Charalampos Grigoriou", odds: 215 },
+    { opponent: "Garrett Armfield", odds: 140 },
+    { opponent: "Rinya Nakamura", odds: 450 },
+    { opponent: "Keremuaili Maimaitituoheti", odds: 145 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31392,6 +31401,24 @@ const FIGHT_HISTORY = {
     { date: "Jun 11, 2022", opponent: "Jacob Zogg", result: "W", method: "KO", round: 1, time: "2:14", event: "Aries Fight Series 9" },
     { date: "Feb 19, 2022", opponent: "Wesley McCracken", result: "W", method: "TKO (Punches)", round: 2, time: "4:32", event: "NFC x Ares FC x Conflict MMA: Macon Fight Night" }
   ],
+  "Toshiomi Kazama": [
+    { date: "Aug 9, 2025", opponent: "Elijah Smith", result: "L", method: "KO (Slam)", round: 1, time: "4:10", event: "UFC Fight Night: Dolidze vs. Hernandez", org: "UFC" },
+    { date: "Aug 10, 2024", opponent: "Charalampos Grigoriou", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "1:55", event: "UFC on ESPN: Tybura vs. Spivac 2", org: "UFC" },
+    { date: "Aug 26, 2023", opponent: "Garrett Armfield", result: "L", method: "TKO (Punches)", round: 1, time: "4:16", event: "UFC Fight Night: Holloway vs. The Korean Zombie", org: "UFC" },
+    { date: "Feb 4, 2023", opponent: "Rinya Nakamura", result: "L", method: "KO (Punch)", round: 1, time: "0:33", event: "UFC Fight Night: Lewis vs. Spivac", org: "UFC" },
+    { date: "Jun 9, 2022", opponent: "Keremuaili Maimaitituoheti", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC: Singapore Quarterfinals 1" },
+    { date: "Apr 24, 2022", opponent: "Shoji Saito", result: "L", method: "KO (Flying Knee and Punches)", round: 2, time: "0:06", event: "LDH Martial Arts: Pound Storm" },
+    { date: "Jan 23, 2022", opponent: "Naoki Ueda", result: "W", method: "Technical Submission (Triangle Choke)", round: 1, time: "4:29", event: "Deep: Shintaro Ishiwatari Retirement Event - Otokojuku Succession" },
+    { date: "Jan 23, 2022", opponent: "Shunsuke Miyabi", result: "W", method: "Technical Submission (Hammerlock)", round: 1, time: "3:25", event: "Deep: Shintaro Ishiwatari Retirement Event - Otokojuku Succession" },
+    { date: "Dec 12, 2021", opponent: "Yuki Takasaka", result: "W", method: "Technical Submission (Hammerlock)", round: 1, time: "1:46", event: "Pancrase 325", org: "Pancrase" },
+    { date: "Sep 12, 2021", opponent: "Haruki Kawakita", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Pancrase 323", org: "Pancrase" },
+    { date: "Sep 12, 2021", opponent: "Ryo Tajima", result: "W", method: "Submission (Heel Hook)", round: 1, time: "0:55", event: "Pancrase 323", org: "Pancrase" },
+    { date: "May 30, 2021", opponent: "Ryosuke Takasugi", result: "W", method: "TKO (Punches)", round: 2, time: "2:36", event: "Pancrase 321", org: "Pancrase" },
+    { date: "Feb 22, 2021", opponent: "Kohei Maeda", result: "W", method: "TKO (Punches)", round: 1, time: "3:04", event: "Shooto: Road to ONE - 4th Young Guns" },
+    { date: "Dec 13, 2020", opponent: "Nobuaki Yamamoto", result: "W", method: "Submission (Armbar)", round: 1, time: "4:08", event: "Pancrase 320", org: "Pancrase" },
+    { date: "Sep 27, 2020", opponent: "Atsushi Ueda", result: "W", method: "TKO (Punches)", round: 3, time: "0:57", event: "Pancrase 318", org: "Pancrase" },
+    { date: "Jul 24, 2020", opponent: "Hiroyasu Sakurai", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Pancrase 316", org: "Pancrase" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39372,6 +39399,12 @@ const ACCOLADES = {
     { icon: "🤼", title: "Two-time Georgia high school wrestling state champion; went 40-0 as a senior and placed top 10 nationally", detail: null },
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu; reported 5-0 amateur MMA record, winning amateur Middleweight and Light Heavyweight titles", detail: null },
     { icon: "🥊", title: "Advanced through Dana White's Contender Series (Season 7 Week 10, 2023 and Season 8 Weeks 2 & 8, 2024) to earn his UFC contract; 7 of 8 pro wins by KO/TKO with 5 first-round finishes", detail: null }
+  ],
+  "Toshiomi Kazama": [
+    { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu; former BJJ instructor before turning full-time pro", detail: null },
+    { icon: "🏆", title: "27th Pancrase Neo-Blood Tournament winner (bantamweight); also won the Deep: Shintaro Ishiwatari Retirement Show one-night bantamweight tournament with two same-card submission finishes (Jan 23, 2022)", detail: null },
+    { icon: "🥊", title: "6 of 11 pro wins by submission (2 triangle chokes, 2 hammerlocks, a heel hook, and an armbar); 6 first-round finishes", detail: null },
+    { icon: "🏅", title: "Advanced to the Road to UFC Asia bantamweight tournament final (2022-23) via a unanimous decision quarterfinal win, earning his UFC contract", detail: null }
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
