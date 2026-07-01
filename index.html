@@ -3864,6 +3864,7 @@
  { name: "Steven Nguyen", division: "FW", rank: "NR", record: "10-2-0", initials: "SNG", country: "USA" },
  { name: "Taiyilake Nueraji", division: "WW", rank: "NR", record: "12-1-0", initials: "TNU", country: "China" },
  { name: "Tim Means", division: "WW", rank: "NR", record: "33-17-1", initials: "TME", country: "USA" },
+ { name: "Torrez Finney", division: "MW", rank: "NR", record: "11-1-0", initials: "TFI", country: "USA" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4986,6 +4987,7 @@
   "Steven Nguyen": { ht:"5'11\"", dob:"1993-05-19", reach:'73"', stance:"Switch", slpm:7.47, strAcc:"42%", sapm:7.10, strDef:"61%", kd:1.65, tdLanded:0.24, tdAcc:"100%", tdDef:"88%", subAvg:0.00, finRate:"80%", streak:1, gym:"Fortis MMA" },
   "Taiyilake Nueraji": { ht:"6'2\"", dob:"2001-01-12", reach:'75"', stance:"Southpaw", slpm:9.82, strAcc:"53%", sapm:5.01, strDef:"58%", kd:1.47, tdLanded:1.47, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:6, gym:"Enbo Gedou" },
   "Tim Means": { ht:"6'2\"", dob:"1984-02-20", reach:'75"', stance:"Orthodox", slpm:5.04, strAcc:"49%", sapm:3.65, strDef:"60%", kd:0.57, tdLanded:1.14, tdAcc:"40%", tdDef:"65%", subAvg:0.16, finRate:"76%", streak:0, gym:"FIT NHB Albuquerque, NM" },
+  "Torrez Finney": { ht:"5'8\"", dob:"1998-10-24", reach:'75.5"', stance:"Orthodox", slpm:1.78, strAcc:"55%", sapm:3.34, strDef:"41%", kd:0.00, tdLanded:6.86, tdAcc:"59%", tdDef:"75%", subAvg:0.79, finRate:"73%", streak:0, gym:"Agoge Combatives" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14222,6 +14224,13 @@
     { opponent: "Jorge Masvidal", odds: 100 },
     { opponent: "Justin Salas", odds: 132 },
     { opponent: "Bernardo Magalhaes", odds: 115 }
+  ],
+  "Torrez Finney": [
+    { opponent: "Jacob Malkoun", odds: 122 },
+    { opponent: "Robert Valentin", odds: -310 },
+    { opponent: "Abdellah Er-Ramy", odds: -250 },
+    { opponent: "Cameron Rowston", odds: -400 },
+    { opponent: "Yuri Panferov", odds: -185 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31369,6 +31378,20 @@ const FIGHT_HISTORY = {
     { date: "May 1, 2004", opponent: "Nathan Brown", result: "W", method: "TKO (Strikes)", round: 1, time: "—", event: "EFC 2" },
     { date: "Mar 13, 2004", opponent: "Josh Barlowe", result: "W", method: "TKO", round: 1, time: "—", event: "Rumble in the Desert" }
   ],
+  "Torrez Finney": [
+    { date: "Feb 1, 2026", opponent: "Jacob Malkoun", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 325", org: "UFC" },
+    { date: "Apr 5, 2025", opponent: "Robert Valentin", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Emmett vs. Murphy", org: "UFC" },
+    { date: "Oct 1, 2024", opponent: "Abdellah Er-Ramy", result: "W", method: "TKO (Punches)", round: 1, time: "4:10", event: "Dana White's Contender Series 2024: Week 8", org: "DWCS" },
+    { date: "Aug 20, 2024", opponent: "Cameron Rowston", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 2024: Week 2", org: "DWCS" },
+    { date: "May 4, 2024", opponent: "Tyson Jeffries", result: "W", method: "TKO", round: 1, time: "1:33", event: "Combat Night: Pro - May the 4th Be With You" },
+    { date: "Oct 10, 2023", opponent: "Yuri Panferov", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:43", event: "Dana White's Contender Series 2023: Week 10", org: "DWCS" },
+    { date: "Aug 4, 2023", opponent: "Eljeria Portee", result: "W", method: "TKO (Punches)", round: 1, time: "4:03", event: "Aries Fight Series: Nashville Underground" },
+    { date: "Apr 22, 2023", opponent: "Caleb Crump", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Aries Fight Series 16" },
+    { date: "Oct 14, 2022", opponent: "Ivan Batinich", result: "W", method: "TKO (Punches)", round: 3, time: "4:09", event: "iFC 5: Jorge Masvidal's iKon Fighting Championship 5" },
+    { date: "Aug 5, 2022", opponent: "Justin Dorsey", result: "W", method: "TKO (Punches)", round: 1, time: "2:06", event: "iFC 4: Jorge Masvidal's iKon Fighting Championship 4" },
+    { date: "Jun 11, 2022", opponent: "Jacob Zogg", result: "W", method: "KO", round: 1, time: "2:14", event: "Aries Fight Series 9" },
+    { date: "Feb 19, 2022", opponent: "Wesley McCracken", result: "W", method: "TKO (Punches)", round: 2, time: "4:32", event: "NFC x Ares FC x Conflict MMA: Macon Fight Night" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39343,6 +39366,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Former KOTC (King of the Cage) champion at lightweight, welterweight, and super welterweight on the regional New Mexico circuit", detail: null },
     { icon: "🔥", title: "76% career finish rate (20 KO/TKO, 5 submissions in 33 wins) across a 52-fight pro career dating back to 2004", detail: null },
     { icon: "🥋", title: "Worked construction and now helps coach kids at his gym, FIT NHB in Albuquerque, NM", detail: null },
+  ],
+  "Torrez Finney": [
+    { icon: "🏈", title: "Played college football at UT-Chattanooga (fullback/D-line); earned SoCon All-Conference honors as a sophomore, plus one season of college wrestling", detail: null },
+    { icon: "🤼", title: "Two-time Georgia high school wrestling state champion; went 40-0 as a senior and placed top 10 nationally", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu; reported 5-0 amateur MMA record, winning amateur Middleweight and Light Heavyweight titles", detail: null },
+    { icon: "🥊", title: "Advanced through Dana White's Contender Series (Season 7 Week 10, 2023 and Season 8 Weeks 2 & 8, 2024) to earn his UFC contract; 7 of 8 pro wins by KO/TKO with 5 first-round finishes", detail: null }
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
