@@ -3445,6 +3445,7 @@
  { name: "Evan Elder", division: "LW", rank: "NR", record: "10-2-0", initials: "EE", country: "USA" },
  { name: "Rongzhu", division: "LW", rank: "NR", record: "27-6-0", initials: "RON", country: "China" },
  { name: "Michael Johnson", division: "LW", rank: "NR", record: "24-20-0", initials: "MJO", country: "USA" },
+ { name: "Ottman Azaitar", division: "LW", rank: "NR", record: "13-3-0", initials: "OAZ", country: "Germany" },
  { name: "Joaquim Silva", division: "LW", rank: "NR", record: "14-6-0", initials: "JSL", country: "Brazil" },
  { name: "Edson Barboza", division: "LW", rank: "NR", record: "24-14-0", initials: "EDB", country: "Brazil" },
  { name: "Mateusz Rębecki", division: "LW", rank: "NR", record: "20-5-0", initials: "MRE", country: "Poland" },
@@ -4627,6 +4628,7 @@
  "Jordan Leavitt": { ht:"5'9\"", dob:"1995-06-02", reach:'71"', stance:"Southpaw", slpm:2.18, strAcc:"58%", sapm:1.57, strDef:"59%", kd:0.20, tdLanded:2.97, tdAcc:"31%", tdDef:"30%", subAvg:1.19, finRate:"69%", streak:0, gym:"Syndicate MMA" },
  "Ismael Bonfim": { ht:"5'8\"", dob:"1995-12-28", reach:'71.5"', stance:"Orthodox", slpm:5.51, strAcc:"54%", sapm:3.71, strDef:"65%", kd:0.53, tdLanded:1.06, tdAcc:"33%", tdDef:"77%", subAvg:0.00, finRate:"65%", streak:0, gym:"Cerrado MMA" },
  "Michael Johnson": { ht:"5'10\"", dob:"1986-06-04", reach:'73.5"', stance:"Southpaw", slpm:4.27, strAcc:"40%", sapm:3.78, strDef:"59%", kd:0.53, tdLanded:0.57, tdAcc:"39%", tdDef:"81%", subAvg:0.04, finRate:"50%", streak:0, gym:"Blackzilians/Kill Cliff FC" },
+ "Ottman Azaitar": { ht:"5'7\"", dob:"1990-02-20", reach:'71"', stance:"Switch", slpm:4.43, strAcc:"45%", sapm:4.11, strDef:"52%", kd:0.80, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"92%", streak:0, gym:"Team Morocco" },
  // ── Welterweight (new) ──
  "Li Jingliang": { ht:"6'0\"", dob:"1988-03-20", reach:'71"', stance:"Orthodox", slpm:4.46, strAcc:"42%", sapm:3.95, strDef:"57%", kd:0.79, tdLanded:1.19, tdAcc:"42%", tdDef:"60%", subAvg:0.0, finRate:"74%", streak:0, gym:"Kill Cliff FC" },
  "Muslim Salikhov": { ht:"5'11\"", dob:"1984-06-09", reach:'70"', stance:"Orthodox", slpm:3.37, strAcc:"50%", sapm:2.96, strDef:"62%", kd:0.59, tdLanded:1.07, tdAcc:"32%", tdDef:"72%", subAvg:0.0, finRate:"77%", streak:0, gym:"Abdulmanap Nurmagomedov Martial Arts School" },
@@ -13704,6 +13706,13 @@
     { opponent: "Ebrahim Hosseinpour", odds: -800 },
     { opponent: "Jaroslav Pokorny", odds: 100 },
     { opponent: "Roman Szymanski", odds: -115 }
+  ],
+  "Ottman Azaitar": [
+    { opponent: "Michael Johnson", odds: 220 },
+    { opponent: "Francisco Prado", odds: 100 },
+    { opponent: "Matt Frevola", odds: -163 },
+    { opponent: "Khama Worthy", odds: -145 },
+    { opponent: "Teemu Packalen", odds: -190 },
   ],
   "Michael Johnson": [
     { opponent: "Drew Dober", odds: 170 },
@@ -29927,6 +29936,24 @@ const FIGHT_HISTORY = {
     { date: "Apr 16, 2016", opponent: "Vladimir Prodanovic", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "SBC 9: Serbian Battle Championship 9", org: "SBC" },
     { date: "Jul 27, 2015", opponent: "Aleksandar Brajkovic", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:27", event: "MFC 3: Montenegro Fighting Championship 3", org: "MFC" },
   ],
+  "Ottman Azaitar": [
+    { date: "Dec 14, 2024", opponent: "Michael Johnson", result: "L", method: "KO (Punch)", round: 2, time: "2:03", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
+    { date: "Jul 15, 2023", opponent: "Francisco Prado", result: "L", method: "TKO (Punches)", round: 1, time: "4:05", event: "UFC Fight Night: Holm vs. Bueno Silva", org: "UFC" },
+    { date: "Nov 12, 2022", opponent: "Matt Frevola", result: "L", method: "KO (Punch)", round: 1, time: "2:30", event: "UFC 281", org: "UFC" },
+    { date: "Sep 12, 2020", opponent: "Khama Worthy", result: "W", method: "TKO (Punches)", round: 1, time: "1:33", event: "UFC Fight Night: Waterson vs. Hill", org: "UFC" },
+    { date: "Sep 7, 2019", opponent: "Teemu Packalen", result: "W", method: "KO (Punch)", round: 1, time: "3:33", event: "UFC 242", org: "UFC" },
+    { date: "Aug 18, 2018", opponent: "Danijel Kokora", result: "W", method: "KO (Punch)", round: 1, time: "0:32", event: "Brave CF 14: Azaitar vs. Kokora", org: "BRAVE CF" },
+    { date: "Nov 17, 2017", opponent: "Alejandro Martinez", result: "W", method: "TKO (Punches)", round: 3, time: "1:16", event: "Brave CF 9: The Kingdom of Champions", org: "BRAVE CF" },
+    { date: "Mar 31, 2017", opponent: "Charlie Leary", result: "W", method: "TKO (Punches)", round: 1, time: "2:22", event: "Brave CF 4: Unstoppable", org: "BRAVE CF" },
+    { date: "Dec 2, 2016", opponent: "Kevin Koldobsky", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Brave CF 2: Dynasty", org: "BRAVE CF" },
+    { date: "Apr 16, 2016", opponent: "Lukasz Szczerek", result: "W", method: "TKO (Punches)", round: 1, time: "0:56", event: "GMC 8: German MMA Championship 8", org: "GMC" },
+    { date: "Nov 28, 2015", opponent: "Ramunas Paliunis", result: "W", method: "TKO (Punches)", round: 1, time: "1:16", event: "Fair FC 4: Fair Fighting Championship 4", org: "Fair FC" },
+    { date: "Jun 5, 2015", opponent: "Christoph Hector", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "2:57", event: "Tempel Fight School: Mix Fight Gala 18" },
+    { date: "Apr 18, 2015", opponent: "Serge Dali", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:30", event: "GMC 6: German MMA Championship 6", org: "GMC" },
+    { date: "Mar 28, 2015", opponent: "Ilbey Akdas", result: "W", method: "KO (Punch)", round: 1, time: "0:14", event: "Fair FC 3: Fair Fighting Championship 3", org: "Fair FC" },
+    { date: "Nov 1, 2014", opponent: "Alexander Vogt", result: "W", method: "TKO (Submission to Punches)", round: 2, time: "4:01", event: "Fair FC 2: Fair Fighting Championship 2", org: "Fair FC" },
+    { date: "Jun 7, 2014", opponent: "Patrick Talmon", result: "W", method: "TKO (Punches)", round: 1, time: "0:19", event: "SFC: Showdown Fight Night", org: "SFC" },
+  ],
   "Michael Johnson": [
     { date: "Mar 7, 2026", opponent: "Drew Dober", result: "L", method: "KO (Punch)", round: 2, time: "1:53", event: "UFC 326", org: "UFC" },
     { date: "Jul 19, 2025", opponent: "Daniel Zellhuber", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 318", org: "UFC" },
@@ -37768,6 +37795,12 @@ const ACCOLADES = {
   "Milos Janicic": [
     { icon: "🥊", title: "UFC lightweight prospect — 19-3 pro record with a 100% finish rate (11 KO/TKO, 8 submission, zero decisions), signed for his UFC debut in Belgrade", detail: null },
     { icon: "🥋", title: "Also competes in kickboxing alongside his MMA career", detail: null }
+  ],
+  "Ottman Azaitar": [
+    { icon: "🏆", title: "Former BRAVE CF inaugural Lightweight Champion (TKO win over Alejandro Martinez, Nov 2017; stripped in 2018 for not defending the title in a timely manner)", detail: null },
+    { icon: "⭐", title: "UFC Performance of the Night (2×): Teemu Packalen (UFC debut, UFC 242), Khama Worthy (UFC Fight Night: Waterson vs. Hill)", detail: null },
+    { icon: "🥊", title: "German national Muay Thai champion (2012) and North Rhine-Westphalia state champion (2011); competed for Germany at the 2012 World Muay Thai Championships in Saint Petersburg", detail: null },
+    { icon: "🤼", title: "Younger brother of fellow UFC fighter Abu Azaitar", detail: null }
   ],
   "Michael Johnson": [
     { icon: "🏆", title: "XCF & Midwest Fight League Lightweight Champion (pre-UFC)", detail: null },
