@@ -3859,6 +3859,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
+ { name: "Shi Ming", division: "WSW", rank: "NR", record: "18-6-0", initials: "SHM", country: "China" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4976,6 +4977,7 @@
 
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
+  "Shi Ming": { ht:"5'2\"", dob:"1994-11-14", reach:'60"', stance:"Orthodox", slpm:3.09, strAcc:"37%", sapm:2.92, strDef:"53%", kd:0.51, tdLanded:1.02, tdAcc:"9%", tdDef:"60%", subAvg:0.25, finRate:"50%", streak:1, gym:"China Catch Wrestling" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14157,6 +14159,9 @@
     { opponent: "Mauricio Gomez", odds: -338 },
     { opponent: "Damion Nelson", odds: 205 },
     { opponent: "Jeremy Henry", odds: -250 }
+  ],
+  "Shi Ming": [
+    { opponent: "Feng Xiaocan", odds: 400 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31161,6 +31166,32 @@ const FIGHT_HISTORY = {
     { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
     { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
   ],
+  "Shi Ming": [
+    { date: "May 29, 2026", opponent: "Puja Tomar", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "3:12", event: "Road to UFC Season 5: Opening Round – Day 2" },
+    { date: "Aug 22, 2025", opponent: "Bruna Brasil", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC: Season 4 Semifinals", org: "UFC" },
+    { date: "Nov 23, 2024", opponent: "Feng Xiaocan", result: "W", method: "KO (Head kick)", round: 3, time: "0:46", event: "Road to UFC Season 3 Final (won tournament)" },
+    { date: "Aug 23, 2024", opponent: "Huaxiang Dong", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Road to UFC Season 3: Semifinals", org: "UFC" },
+    { date: "May 19, 2024", opponent: "Ye Dam Seo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC Season 3: Quarterfinals", org: "UFC" },
+    { date: "Oct 16, 2022", opponent: "Qianru Luo", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "0:52", event: "Kunming International Kung Fu Cultural Festival 5" },
+    { date: "Sep 28, 2022", opponent: "Xueying Yang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 59" },
+    { date: "Dec 29, 2021", opponent: "Wushamo Hailai", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 57" },
+    { date: "Aug 21, 2020", opponent: "Wanying Xu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 46" },
+    { date: "Jun 19, 2020", opponent: "Siyu Zhu", result: "W", method: "Submission (Keylock)", round: 1, time: "—", event: "WLF: W.A.R.S. 44" },
+    { date: "May 22, 2020", opponent: "Miao Ding", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 43" },
+    { date: "Apr 26, 2020", opponent: "Xiaoni Liu", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 42" },
+    { date: "Dec 14, 2019", opponent: "Su Yeon Lee", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Road FC 57", org: "Road FC" },
+    { date: "Oct 18, 2019", opponent: "Tahere Paketeghad", result: "W", method: "TKO (Punches)", round: 1, time: "1:28", event: "Nandeng International Championship" },
+    { date: "Dec 15, 2018", opponent: "Yu Ri Shim", result: "L", method: "TKO (Knees)", round: 2, time: "4:08", event: "Road FC 51", org: "Road FC" },
+    { date: "Aug 18, 2018", opponent: "Shiho Harada", result: "W", method: "Decision (Split)", round: 2, time: "5:00", event: "Road FC 49: In Paradise", org: "Road FC" },
+    { date: "Jul 21, 2018", opponent: "Masumeh Hadavand", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "—", event: "Heroine FC 2" },
+    { date: "May 30, 2018", opponent: "Natalia Denisova", result: "L", method: "Decision", round: 3, time: "5:00", event: "Heroine FC 1" },
+    { date: "Nov 14, 2017", opponent: "Ruyan Wei", result: "W", method: "Submission (Choke)", round: 1, time: "—", event: "Heroine FC" },
+    { date: "Oct 7, 2017", opponent: "Tingting Liu", result: "W", method: "Decision", round: 3, time: "5:00", event: "Heroine FC" },
+    { date: "Oct 7, 2017", opponent: "Guoguo Guo", result: "W", method: "Submission (Armbar)", round: 1, time: "—", event: "Heroine FC" },
+    { date: "Sep 28, 2016", opponent: "Karolina Iverenova", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "WLF: E.P.I.C. 8" },
+    { date: "Jul 7, 2016", opponent: "Rebecca Heintzman", result: "L", method: "Submission (Rear-naked choke)", round: 1, time: "3:48", event: "WKG: International MMA Tournament 2" },
+    { date: "Aug 2, 2015", opponent: "Zhenyao Wang", result: "W", method: "Submission", round: 3, time: "—", event: "Dacheng Wuyi: Chinese MMA Super League Season 1, Day 1" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39105,6 +39136,12 @@ const ACCOLADES = {
     { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
     { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
+  ],
+  "Shi Ming": [
+    { icon: "🥋", title: "Nicknamed \"Dr. Sleep\"; a licensed physician who graduated medical university in Kunming and worked in a hospital before turning to full-time MMA", detail: null },
+    { icon: "🏆", title: "Road to UFC Season 3 strawweight tournament winner (2024) — earned her UFC contract with a third-round KO of Feng Xiaocan in the final", detail: null },
+    { icon: "🥋", title: "Level-2 Catch wrestler, Taekwondo black belt, Yunnan province kickboxing champion, and Heroine FC champion in her pro career", detail: null },
+    { icon: "🔥", title: "50% career finish rate (2 KO/TKO, 7 submissions in 18 wins), including 5 first-round finishes", detail: null },
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
