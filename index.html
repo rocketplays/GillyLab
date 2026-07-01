@@ -3866,6 +3866,7 @@
  { name: "Tim Means", division: "WW", rank: "NR", record: "33-17-1", initials: "TME", country: "USA" },
  { name: "Torrez Finney", division: "MW", rank: "NR", record: "11-1-0", initials: "TFI", country: "USA" },
  { name: "Toshiomi Kazama", division: "BW", rank: "NR", record: "11-5-0", initials: "TKA", country: "Japan" },
+ { name: "Treston Vines", division: "MW", rank: "NR", record: "10-4-0", initials: "TVI", country: "USA" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4990,6 +4991,7 @@
   "Tim Means": { ht:"6'2\"", dob:"1984-02-20", reach:'75"', stance:"Orthodox", slpm:5.04, strAcc:"49%", sapm:3.65, strDef:"60%", kd:0.57, tdLanded:1.14, tdAcc:"40%", tdDef:"65%", subAvg:0.16, finRate:"76%", streak:0, gym:"FIT NHB Albuquerque, NM" },
   "Torrez Finney": { ht:"5'8\"", dob:"1998-10-24", reach:'75.5"', stance:"Orthodox", slpm:1.78, strAcc:"55%", sapm:3.34, strDef:"41%", kd:0.00, tdLanded:6.86, tdAcc:"59%", tdDef:"75%", subAvg:0.79, finRate:"73%", streak:0, gym:"Agoge Combatives" },
   "Toshiomi Kazama": { ht:"5'7\"", dob:"1997-05-15", reach:'69"', stance:"Orthodox", slpm:1.49, strAcc:"53%", sapm:4.56, strDef:"38%", kd:0.00, tdLanded:1.94, tdAcc:"17%", tdDef:"67%", subAvg:0.97, finRate:"82%", streak:0, gym:"Wajutsu Keishukai Tokyo" },
+  "Treston Vines": { ht:"6'0\"", dob:"1996-06-18", reach:'79"', stance:"Orthodox", slpm:0.00, strAcc:"0%", sapm:3.56, strDef:"50%", kd:0.00, tdLanded:0.00, tdAcc:"0%", tdDef:"0%", subAvg:0.00, finRate:"70%", streak:0, gym:"KageFit / Top Pressure Fight Team" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14240,6 +14242,11 @@
     { opponent: "Garrett Armfield", odds: 140 },
     { opponent: "Rinya Nakamura", odds: 450 },
     { opponent: "Keremuaili Maimaitituoheti", odds: 145 }
+  ],
+  "Treston Vines": [
+    { opponent: "Ateba Gautier", odds: 1100 },
+    { opponent: "Raheam Forest", odds: 200 },
+    { opponent: "Jalin Fuller", odds: -163 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31419,6 +31426,22 @@ const FIGHT_HISTORY = {
     { date: "Sep 27, 2020", opponent: "Atsushi Ueda", result: "W", method: "TKO (Punches)", round: 3, time: "0:57", event: "Pancrase 318", org: "Pancrase" },
     { date: "Jul 24, 2020", opponent: "Hiroyasu Sakurai", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Pancrase 316", org: "Pancrase" }
   ],
+  "Treston Vines": [
+    { date: "Oct 4, 2025", opponent: "Ateba Gautier", result: "L", method: "KO (Elbows and Punches)", round: 1, time: "1:41", event: "UFC 320", org: "UFC" },
+    { date: "Aug 30, 2025", opponent: "Ethan Hughes", result: "W", method: "TKO (Strikes)", round: 1, time: "3:10", event: "Alabama Fighting Championship: The Great Commission" },
+    { date: "Sep 20, 2024", opponent: "Robert Hale", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:45", event: "NFC 168: National Fighting Championship 168", org: "NFC" },
+    { date: "Jun 29, 2024", opponent: "Ratavious Williams", result: "W", method: "TKO (Strikes)", round: 1, time: "1:50", event: "Impact Promotions: Birmingham Beatdown 2" },
+    { date: "Mar 29, 2024", opponent: "Chris Mixan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "All In Combat 5: Mixan vs. Vines" },
+    { date: "Jul 14, 2023", opponent: "Raheam Forest", result: "L", method: "KO (Punches)", round: 1, time: "0:26", event: "CFFC 121: Perez vs. Vasil", org: "CFFC" },
+    { date: "Apr 22, 2023", opponent: "Ian Stephens", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Aries Fight Series 16" },
+    { date: "Aug 19, 2022", opponent: "Bahromjon Mashrapov", result: "L", method: "KO (Punch)", round: 1, time: "4:05", event: "B2 Fighting Series 173" },
+    { date: "May 7, 2022", opponent: "Shlomo Boyd", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "B2 Fighting Series 160" },
+    { date: "Mar 12, 2021", opponent: "Jalin Fuller", result: "L", method: "KO (Punches)", round: 1, time: "2:32", event: "LFA 101: The Undefeated", org: "LFA" },
+    { date: "Jan 23, 2021", opponent: "Sedric Johnson", result: "W", method: "KO (Punches)", round: 1, time: "1:18", event: "Strike Hard Productions 58" },
+    { date: "Aug 29, 2020", opponent: "Bryan McDowell", result: "W", method: "TKO (Punches)", round: 2, time: "2:36", event: "Strike Hard Productions 55" },
+    { date: "Jan 11, 2020", opponent: "Alvin Davis", result: "W", method: "TKO (Punches)", round: 1, time: "4:38", event: "Strike Hard Productions 54" },
+    { date: "Jun 22, 2019", opponent: "Ben DeLeon", result: "W", method: "TKO (Punches)", round: 1, time: "0:43", event: "Strike Hard Productions 52" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39405,6 +39428,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "27th Pancrase Neo-Blood Tournament winner (bantamweight); also won the Deep: Shintaro Ishiwatari Retirement Show one-night bantamweight tournament with two same-card submission finishes (Jan 23, 2022)", detail: null },
     { icon: "🥊", title: "6 of 11 pro wins by submission (2 triangle chokes, 2 hammerlocks, a heel hook, and an armbar); 6 first-round finishes", detail: null },
     { icon: "🏅", title: "Advanced to the Road to UFC Asia bantamweight tournament final (2022-23) via a unanimous decision quarterfinal win, earning his UFC contract", detail: null }
+  ],
+  "Treston Vines": [
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🏆", title: "Alabama FC (Alabama Fighting Championship) middleweight champion", detail: null },
+    { icon: "🥊", title: "Alabama State amateur MMA champion; also won a 2015 Golden Gloves boxing title and an IKF interstate cruiserweight Muay Thai title", detail: null },
+    { icon: "⭐", title: "6 of 10 pro wins by knockout with 5 first-round finishes; built his record across CFFC, LFA, B2 Fighting Series, and Strike Hard Productions before reaching the UFC", detail: null }
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
