@@ -3859,6 +3859,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
+ { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
  { name: "Samuel Sanches", division: "LW", rank: "NR", record: "11-1-0", initials: "SSA", country: "Brazil" },
  { name: "Saimon Oliveira", division: "BW", rank: "NR", record: "18-7-0", initials: "SOL", country: "Brazil" },
  { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
@@ -4973,6 +4974,7 @@
 
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
+  "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
   "Samuel Sanches": { ht:"5'10\"", dob:"2003-01-28", reach:'74.5"', stance:"Orthodox", slpm:5.95, strAcc:"75%", sapm:0.00, strDef:"100%", kd:7.44, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"82%", streak:8, gym:"Galpao Da Luta" },
   "Saimon Oliveira": { ht:"5'4\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:2.62, strAcc:"42%", sapm:3.87, strDef:"46%", kd:0.00, tdLanded:1.18, tdAcc:"29%", tdDef:"36%", subAvg:1.18, finRate:"89%", streak:0, gym:"Astra Fight Team" },
   "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
@@ -14151,6 +14153,19 @@
     { opponent: "Mauricio Gomez", odds: -338 },
     { opponent: "Damion Nelson", odds: 205 },
     { opponent: "Jeremy Henry", odds: -250 }
+  ],
+  "Sean Woodson": [
+    { opponent: "Dan Ige", odds: -188 },
+    { opponent: "Fernando Padilla", odds: -155 },
+    { opponent: "Alex Caceres", odds: -210 },
+    { opponent: "Charles Jourdain", odds: 180 },
+    { opponent: "Dennis Buzukja", odds: -170 },
+    { opponent: "Luis Saldaña", odds: -350 },
+    { opponent: "Collin Anglin", odds: -300 },
+    { opponent: "Youssef Zalal", odds: -145 },
+    { opponent: "Julian Erosa", odds: -500 },
+    { opponent: "Kyle Bochniak", odds: -105 },
+    { opponent: "Terrance McKinney", odds: 285 }
   ],
   "Samuel Sanches": [
     { opponent: "Chasen Blair", odds: 105 }
@@ -31127,6 +31142,24 @@ const FIGHT_HISTORY = {
     { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
     { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
   ],
+  "Sean Woodson": [
+    { date: "Apr 12, 2025", opponent: "Dan Ige", result: "L", method: "TKO (Punches)", round: 3, time: "1:12", event: "UFC 314", org: "UFC" },
+    { date: "Dec 14, 2024", opponent: "Fernando Padilla", result: "W", method: "TKO (Punches)", round: 1, time: "4:58", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
+    { date: "May 11, 2024", opponent: "Alex Caceres", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Lewis vs. Nascimento", org: "UFC" },
+    { date: "Jan 20, 2024", opponent: "Charles Jourdain", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 297", org: "UFC" },
+    { date: "Aug 5, 2023", opponent: "Dennis Buzukja", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Nashville", org: "UFC" },
+    { date: "Aug 20, 2022", opponent: "Luis Saldaña", result: "D", method: "Draw (Split)", round: 3, time: "5:00", event: "UFC 278", org: "UFC" },
+    { date: "Nov 13, 2021", opponent: "Collin Anglin", result: "W", method: "TKO (Punches to the body)", round: 1, time: "4:30", event: "UFC Fight Night: Holloway vs. Rodríguez", org: "UFC" },
+    { date: "Jun 5, 2021", opponent: "Youssef Zalal", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Rozenstruik vs. Sakai", org: "UFC" },
+    { date: "Jun 27, 2020", opponent: "Julian Erosa", result: "L", method: "Submission (Brabo choke)", round: 3, time: "2:44", event: "UFC on ESPN: Poirier vs. Hooker", org: "UFC" },
+    { date: "Oct 18, 2019", opponent: "Kyle Bochniak", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Reyes vs. Weidman", org: "UFC" },
+    { date: "Jul 23, 2019", opponent: "Terrance McKinney", result: "W", method: "KO (Flying knee)", round: 2, time: "1:49", event: "Dana White's Contender Series 21", org: "UFC" },
+    { date: "Nov 2, 2018", opponent: "Rashard Lovelace", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shamrock FC: Shamrock 311" },
+    { date: "Sep 22, 2017", opponent: "Seth Basler", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shamrock FC: Shamrock 295" },
+    { date: "Jun 2, 2017", opponent: "Rashard Lovelace", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shamrock FC: Shamrock 290" },
+    { date: "Jan 28, 2017", opponent: "Coltin Cole", result: "W", method: "TKO (Punches)", round: 1, time: "2:38", event: "Shamrock FC: Shamrock 283" },
+    { date: "Sep 30, 2016", opponent: "Kevin Brown Jr.", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "1:35", event: "RFA 44" }
+  ],
   "Samuel Sanches": [
     { date: "Sep 9, 2025", opponent: "Chasen Blair", result: "W", method: "KO (Punches)", round: 1, time: "2:01", event: "Dana White's Contender Series 81", org: "UFC" },
     { date: "Mar 30, 2025", opponent: "Evaldo dos Santos", result: "W", method: "TKO (Punches)", round: 1, time: "0:54", event: "Thunder Fight 47" },
@@ -38984,6 +39017,12 @@ const ACCOLADES = {
     { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
     { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
+  ],
+  "Sean Woodson": [
+    { icon: "📺", title: "Awarded a UFC contract after a second-round flying-knee KO of Terrance McKinney on Dana White's Contender Series, Season 3 Episode 5 (2019)", detail: null },
+    { icon: "🥊", title: "Golden Gloves boxing champion", detail: null },
+    { icon: "🥋", title: "Two-stripe Brazilian Jiu-Jitsu blue belt", detail: null },
+    { icon: "🎯", title: "Nicknamed \"The Sniper\" for his precise shot selection; trains out of The Wolves' Den Training Center in St. Louis, Missouri", detail: null }
   ],
   "Samuel Sanches": [
     { icon: "📺", title: "Awarded a UFC contract after a first-round KO of Chasen Blair on Dana White's Contender Series 81 (2025)", detail: null },
