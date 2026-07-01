@@ -3901,6 +3901,7 @@
   { name: "Eric Nolan", division: "WW", rank: "NR", record: "8-4-0", initials: "EN", country: "USA" },
  { name: "Tahir Abdullayev", division: "WW", rank: "NR", record: "19-3-0", initials: "TAB", country: "Azerbaijan" },
  { name: "Jefferson Nascimento", division: "WW", rank: "NR", record: "13-0-0", initials: "JN", country: "Brazil" },
+ { name: "Magomedrasul Gasanov", division: "MW", rank: "NR", record: "23-2-0", initials: "MRG", country: "Russia" },
  { name: "Victor Valenzuela", division: "WW", rank: "NR", record: "14-4-0", initials: "VVA", country: "Chile" },
  { name: "Max Griffin", division: "WW", rank: "NR", record: "20-13-0", initials: "MGR", country: "USA" },
  { name: "Pete Rodriguez", division: "WW", rank: "NR", record: "5-2-0", initials: "PRO", country: "USA" },
@@ -5068,6 +5069,7 @@
   "Farman Hasanov": { ht:"6'0\"", dob:"1995-08-01", reach:'74.5"', stance:"Orthodox", slpm:0.0, strAcc:null, sapm:0.0, strDef:"0%", kd:0.0, tdDef:"0%", finRate:"80%", streak:5, tdLanded:0.0, gym:"Renzo Gracie Academy" },
   "Tahir Abdullayev": { ht:"5'8\"", dob:"1997-02-02", reach:"--", stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:0.0, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"89%", streak:4, gym:"Team Alpha Male" },
   "Jefferson Nascimento": { ht:"5'8\"", dob:"1998-11-19", reach:"--", stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:0.0, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"62%", streak:13, gym:"Renovação Fight Team" },
+  "Magomedrasul Gasanov": { ht:"5'11\"", dob:"1994-11-23", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"35%", streak:18, gym:"Abdulmanap Nurmagomedov School" },
   "Eric Nolan": { ht:"5'11\"", dob:"1997-09-13", reach:'74"', stance:"Orthodox", slpm:3.14, sapm:5.13, strAcc:"39%", tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:0.0, tdDef:"71%", finRate:"75%", streak:0, tdLanded:0.0, gym:"Dante Rivera BJJ" },
   "Veronica Hardy": { ht:"5'3\"", dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
 
@@ -13903,6 +13905,12 @@
     { opponent: "Italo Gomes", odds: -133 },
     { opponent: "Matheus Rocha", odds: -273 },
     { opponent: "Uyran Carlos", odds: 165 }
+  ],
+  "Magomedrasul Gasanov": [
+    { opponent: "Albert Tumenov", odds: -800 },
+    { opponent: "Artem Frolov", odds: -600 },
+    { opponent: "Abdul-Rakhman Dzhanaev", odds: -288 },
+    { opponent: "Nikola Dipchikov", odds: -270 }
   ],
   "Eric Nolan": [
     { opponent: "Baisangur Susurkaev", odds: 725 },
@@ -30519,6 +30527,34 @@ const FIGHT_HISTORY = {
     { date: "Apr 4, 2015", opponent: "Azhibay Akylbekov", result: "W", method: "Submission (Armbar)", round: 2, time: "2:05", event: "Kyrgyzstan MMA Federation" }
   ],
 
+  "Magomedrasul Gasanov": [
+    { date: "Feb 6, 2026", opponent: "Albert Tumenov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 200 - Gasanov vs. Tumenov", org: "ACA" },
+    { date: "Aug 15, 2025", opponent: "Dmitry Aryshev", result: "W", method: "TKO (Punches)", round: 2, time: "3:55", event: "ACA 190 - Gasanov vs. Aryshev", org: "ACA" },
+    { date: "Feb 8, 2025", opponent: "Shamil Abdulaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 183 - Tumenov vs. Vagaev", org: "ACA" },
+    { date: "Feb 25, 2024", opponent: "Ibragim Magomedov", result: "W", method: "TKO (Punches)", round: 2, time: "4:56", event: "ACA 171 - Omarov vs. Polpudnikov", org: "ACA" },
+    { date: "Aug 11, 2023", opponent: "Salamu Abdurahmanov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 161 - Gasanov vs. Abdurakhmanov", org: "ACA" },
+    { date: "Aug 27, 2022", opponent: "Artem Frolov", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "ACA 143 - Gasanov vs. Frolov", org: "ACA" },
+    { date: "Jan 28, 2022", opponent: "Abdul-Rakhman Dzhanaev", result: "W", method: "TKO (Doctor Stoppage)", round: 4, time: "5:00", event: "ACA 135 - Gasanov vs. Dzhanaev", org: "ACA" },
+    { date: "Apr 9, 2021", opponent: "Nikola Dipchikov", result: "W", method: "TKO (Punches)", round: 2, time: "1:33", event: "ACA 121 - Kerefov vs. Albaskhanov", org: "ACA" },
+    { date: "Dec 13, 2020", opponent: "Artem Frolov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 115 - Ismailov vs. Shtyrkov", org: "ACA" },
+    { date: "Aug 8, 2020", opponent: "Husein Kushagov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 108 - Galiev vs. Adaev", org: "ACA" },
+    { date: "Dec 14, 2019", opponent: "Vyacheslav Babkin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 103 - Butorin vs. Yagshimuradov", org: "ACA" },
+    { date: "Mar 23, 2019", opponent: "Aleksander Podmarev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Berkut Young Eagles 8 - Grand Prix Finals" },
+    { date: "Dec 22, 2018", opponent: "Azamat Bekoev", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Berkut Young Eagles 7 - Grand Prix Semifinals" },
+    { date: "Oct 27, 2018", opponent: "Yakub Kediev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Berkut Young Eagles 6 - Grand Prix Quarterfinals" },
+    { date: "Apr 29, 2018", opponent: "Zalim Ayubov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Berkut Young Eagles 4 - Grand Prix Opening Round" },
+    { date: "Dec 25, 2017", opponent: "Azamat Serkinli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Zhekpe Zhek - World Championship" },
+    { date: "Dec 3, 2017", opponent: "Alinbek Ulan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Alash Pride FC" },
+    { date: "May 7, 2016", opponent: "Magomed Geroev", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "M-1 Global - Road to M-1: Battle in Nazran 3" },
+    { date: "Jun 11, 2015", opponent: "Saygid Izagakhmaev", result: "L", method: "Submission (Armbar)", round: 3, time: "1:15", event: "Fight Nights - Battle of Moscow 19" },
+    { date: "May 30, 2015", opponent: "Tomas Kuzela", result: "L", method: "Submission (Guillotine Choke)", round: 2, time: "3:46", event: "Full Fight 1 - Slovakia and Czech vs. Russia" },
+    { date: "Apr 2, 2015", opponent: "Arkady Pavlov", result: "W", method: "TKO (Punches)", round: 1, time: "1:50", event: "Fight Nights - Fight Club 5" },
+    { date: "Mar 19, 2015", opponent: "Pavel Ushakov", result: "W", method: "TKO (Punches)", round: 1, time: "1:09", event: "Fight Nights - Fight Club 3" },
+    { date: "Mar 5, 2015", opponent: "Vasiliy Kurochkin", result: "W", method: "TKO (Punches)", round: 1, time: "4:33", event: "Fight Nights - Fight Club 1" },
+    { date: "Dec 6, 2014", opponent: "Farhad Medzhidov", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:40", event: "BOS - Battle of Stars 3" },
+    { date: "May 31, 2014", opponent: "David Kochishvili", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "VHTHFF - Stalingrad Cup" }
+  ],
+
   "Jefferson Nascimento": [
     { date: "May 29, 2026", opponent: "Gian Maurente", result: "W", method: "KO (Front Kick to the Body)", round: 4, time: "2:00", event: "LFA 234 - Fernando vs. Soares", org: "LFA" },
     { date: "Sep 27, 2025", opponent: "Baysangur Makaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "LFA 218 - Nascimento vs. Makaev", org: "LFA" },
@@ -39533,6 +39569,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "LFA Interim Lightweight Champion — won the belt and defended it twice across his last three LFA bouts (Nov 2023–May 2026)", detail: null },
     { icon: "🏅", title: "Undefeated through 13 pro fights (13-0-0), 8 by finish (5 KO/TKO, 3 submission)", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu and Luta Livre, black level in Muay Thai, brown belt in Judo (per UFC.com)", detail: null },
+  ],
+  "Magomedrasul Gasanov": [
+    { icon: "🏆", title: "Former ACA Middleweight Champion — won the interim title at ACA 121 (Apr 2021, TKO of Nikola Dipchikov) and reigned nearly 5 years with 7 title defenses, the last over Albert Tumenov at ACA 200 (Feb 2026)", detail: null },
+    { icon: "🏆", title: "2018 Berkut Young Eagles Middleweight Grand Prix winner (beat Aleksander Podmarev in the Mar 2019 final)", detail: null },
+    { icon: "🏅", title: "Unbeaten since June 2015 — enters the UFC on an 18-fight win streak (23-2 overall, both losses by submission in 2015)", detail: null },
+    { icon: "🤼", title: "Dagestani wrestling base; trains at the Abdulmanap Nurmagomedov School in Makhachkala (Khabib's team; formerly Gorets FT)", detail: null },
   ],
   "Eric Nolan": [
     { icon: "🏆", title: "CFFC Welterweight Champion (2025)", detail: null },
