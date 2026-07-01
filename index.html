@@ -3232,6 +3232,7 @@
  { name: "Douglas Silva de Andrade", division: "FW", rank: "NR", record: "29-7-0", initials: "DS", country: "Brazil" },
  { name: "Isaac Thomson", division: "FW", rank: "NR", record: "9-3-0", initials: "ITH", country: "Australia" },
  { name: "Jack Jenkins", division: "FW", rank: "NR", record: "14-4-0", initials: "JJK", country: "Australia" },
+ { name: "Ramon Taveras", division: "FW", rank: "NR", record: "10-4-0", initials: "RTA", country: "USA" },
  { name: "JeongYeong Lee", division: "FW", rank: "NR", record: "11-3-0", initials: "JYL", country: "South Korea" },
  { name: "Morgan Charriere", division: "FW", rank: "NR", record: "21-12-1", initials: "MCR", country: "France" },
  // ─── LIGHTWEIGHT ───
@@ -4550,6 +4551,7 @@
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
  "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
  "Isaac Thomson": { ht:"5'11\"", dob:"2002-05-03", reach:'69.5"', stance:null, slpm:1.40, strAcc:"45%", sapm:2.20, strDef:"42%", kd:0.00, tdLanded:4.00, tdAcc:"80%", tdDef:"33%", subAvg:0.00, finRate:"56%", streak:0, gym:"Team Alpha Male" },
+ "Ramon Taveras": { ht:"5'8\"", dob:"1994-01-09", reach:'70"', stance:"Southpaw", slpm:4.07, strAcc:"43%", sapm:6.45, strDef:"54%", kd:0.63, tdLanded:0.00, tdAcc:"0%", tdDef:"73%", subAvg:0.00, finRate:"80%", streak:0, gym:"Bulldog Boxing" },
  "Jack Jenkins": { ht:"5'7\"", dob:"1993-11-03", reach:'68"', stance:"Switch", slpm:4.48, strAcc:"61%", sapm:2.95, strDef:"59%", kd:0.50, tdLanded:1.98, tdAcc:"60%", tdDef:"72%", subAvg:0.17, finRate:"64%", streak:1, gym:"Absolute Mixed Martial Arts" },
  "JeongYeong Lee": { ht:"5'10\"", dob:"1995-11-13", reach:'73.5"', stance:"Orthodox", slpm:3.38, strAcc:"49%", sapm:3.82, strDef:"51%", kd:0.32, tdLanded:0.63, tdAcc:"67%", tdDef:"73%", subAvg:0.32, finRate:"64%", streak:0, gym:"Fight Ready" },
  "Morgan Charriere": { ht:"5'8\"", dob:"1995-10-26", reach:'69"', stance:"Orthodox", slpm:4.02, strAcc:"50%", sapm:4.51, strDef:"54%", kd:0.88, tdLanded:2.06, tdAcc:"47%", tdDef:"83%", subAvg:0.29, finRate:"76%", streak:0, gym:"Team Chapa Quente" },
@@ -12535,6 +12537,13 @@
     { opponent: "Lerryan Douglas", odds: -275 },
     { opponent: "Gary Konkol", odds: -180 },
     { opponent: "Dorian Ramos", odds: -250 },
+  ],
+  "Ramon Taveras": [
+    { opponent: "Jack Jenkins", odds: 250 },
+    { opponent: "Davey Grant", odds: -108 },
+    { opponent: "Serhiy Sidey", odds: 180 },
+    { opponent: "Cortavious Romious", odds: 190 },
+    { opponent: "Serhiy Sidey", odds: 165 }
   ],
   "Jack Jenkins": [
     { opponent: "Ramon Taveras", odds: -300 },
@@ -27291,6 +27300,22 @@ const FIGHT_HISTORY = {
     { date: "Dec 11, 2020", opponent: "Luis Gerardo Garcia Lucero", result: "W", method: "TKO (Punches)", round: 2, time: "4:20", event: "iFF 4: iKon Fighting Federation 4" },
   ],
 
+  "Ramon Taveras": [
+    { date: "Sep 27, 2025", opponent: "Jack Jenkins", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
+    { date: "Dec 14, 2024", opponent: "Davey Grant", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
+    { date: "Jan 20, 2024", opponent: "Serhiy Sidey", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 297", org: "UFC" },
+    { date: "Oct 10, 2023", opponent: "Cortavious Romious", result: "W", method: "TKO (Punches)", round: 1, time: "0:29", event: "Dana White's Contender Series 2023: Week 10", org: "DWCS" },
+    { date: "Sep 5, 2023", opponent: "Serhiy Sidey", result: "L", method: "TKO (Punches)", round: 1, time: "2:26", event: "Dana White's Contender Series 2023: Week 5", org: "DWCS" },
+    { date: "May 6, 2023", opponent: "James Dunn", result: "W", method: "TKO", round: 2, time: "2:26", event: "Combat Night: Duval - Revenge of the Sixth" },
+    { date: "Mar 4, 2023", opponent: "Charles Bennett", result: "W", method: "TKO", round: 1, time: "2:10", event: "Combat Night Pro - Orlando" },
+    { date: "Apr 30, 2022", opponent: "Martin Day", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "2:40", event: "Combat Night Pro - Jacksonville" },
+    { date: "Aug 28, 2021", opponent: "Ryan Mondala", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combat Night Pro - Tallahassee" },
+    { date: "Apr 17, 2021", opponent: "Edward Massey", result: "L", method: "KO (Head kick)", round: 1, time: "0:34", event: "Combat Night Pro 21" },
+    { date: "Dec 12, 2020", opponent: "Anthony Tisdale", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "4:02", event: "Combat Night Pro 19" },
+    { date: "Mar 21, 2020", opponent: "Carlos Guerra", result: "W", method: "KO", round: 1, time: "4:20", event: "Combat Night Pro 18" },
+    { date: "Feb 15, 2020", opponent: "Ginseng Poit Du'Jour", result: "W", method: "KO", round: 3, time: "0:35", event: "Combat Night Pro 17" },
+    { date: "Nov 9, 2019", opponent: "Christopher Wingate", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "2:19", event: "Combat Night Pro 15" }
+  ],
   "Jack Jenkins": [
     { date: "Sep 27, 2025", opponent: "Ramon Taveras", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ulberg vs. Reyes", org: "UFC" },
     { date: "Feb 8, 2025", opponent: "Gabriel Santos", result: "L", method: "Submission (Rear-naked choke)", round: 3, time: "2:06", event: "UFC 312", org: "UFC" },
@@ -34771,6 +34796,9 @@ const ACCOLADES = {
     { icon: "🏆", title: "2011 & 2014 ISKA Koshiki Karate World Champion; multiple Australian and NSW state Koshiki titles", detail: null },
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥊", title: "Combat-sports prodigy training since age 8; inducted into the ISKA Hall of Fame for BJJ (2015)", detail: null }
+  ],
+  "Ramon Taveras": [
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2023) with a first-round TKO of Cortavious Romious, avenging an earlier Contender Series loss to Serhiy Sidey", detail: null }
   ],
   "Jack Jenkins": [
     { icon: "🏆", title: "Eternal MMA Featherweight Champion — 2020–2022 (2 successful defenses, vs. Jesse Medina and Rod Costa)", detail: null },
