@@ -3859,6 +3859,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
+ { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
  { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-4-0", initials: "AP", country: "Russia" },
  { name: "Damian Pinas", division: "MW", rank: "NR", record: "9-1-0", initials: "DPI", country: "Suriname" },
@@ -4970,7 +4971,8 @@
 
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
-  "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
+  "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
+ "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
   "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
   "Pete Rodriguez": { ht:"5'9\"", dob:"1996-11-13", reach:'71"', stance:"Switch", slpm:9.28, strAcc:"44%", sapm:12.83, strDef:"43%", kd:2.96, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"100%", streak:0, gym:"Dominate MMA" },
   "Marc Diakiese": { ht:"5'10\"", dob:"1993-03-16", reach:'73"', stance:"Orthodox", slpm:2.54, strAcc:"41%", sapm:2.7, strDef:"52%", kd:0.18, tdLanded:0.82, tdAcc:"47%", tdDef:"57%", subAvg:0.3, finRate:"53%", streak:0, gym:"London Shootfighters Scramble Academy Leeds" },
@@ -14145,6 +14147,12 @@
     { opponent: "Mauricio Gomez", odds: -338 },
     { opponent: "Damion Nelson", odds: 205 },
     { opponent: "Jeremy Henry", odds: -250 }
+  ],
+  "Ryan Loder": [
+    { opponent: "Ismail Naurdiev", odds: 111 },
+    { opponent: "Azamat Bekoev", odds: 300 },
+    { opponent: "Robert Valentin", odds: 124 },
+    { opponent: "Troy Green", odds: -140 }
   ],
   "Azamat Bekoev": [
     { opponent: "Tresean Gore", odds: -725 },
@@ -31105,6 +31113,18 @@ const FIGHT_HISTORY = {
     { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
     { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
   ],
+  "Ryan Loder": [
+    { date: "Nov 22, 2025", opponent: "Ismail Naurdiev", result: "L", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
+    { date: "May 3, 2025", opponent: "Azamat Bekoev", result: "L", method: "TKO (Punches)", round: 1, time: "2:44", event: "UFC Fight Night: Sandhagen vs. Figueiredo", org: "UFC" },
+    { date: "Aug 24, 2024", opponent: "Robert Valentin", result: "W", method: "TKO (Elbows)", round: 2, time: "1:49", event: "UFC on ESPN: Cannonier vs. Borralho (TUF 32 Finale)", org: "UFC" },
+    { date: "Aug 12, 2023", opponent: "Lajuan Davis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFL 3: Grand Prix Semi-Finals", org: "UFL" },
+    { date: "May 13, 2023", opponent: "Leon Shahbazyan", result: "W", method: "TKO (Punches)", round: 1, time: "1:25", event: "UFL 2", org: "UFL" },
+    { date: "Jan 13, 2023", opponent: "Troy Green", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Urijah Faber's A1 Combat 7" },
+    { date: "Jul 31, 2022", opponent: "Sean Sullivan", result: "W", method: "TKO (Elbows)", round: 1, time: "1:14", event: "Urijah Faber's A1 Combat 4" },
+    { date: "Jun 4, 2022", opponent: "Dorjan Dokaj", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BTC 15: Homecoming" },
+    { date: "Feb 12, 2022", opponent: "Marcus Gaines", result: "W", method: "KO", round: 2, time: "2:14", event: "FirePower Promotions MMA 4: Sudden Impact" },
+    { date: "Oct 23, 2021", opponent: "James Porter", result: "W", method: "KO (Slam)", round: 1, time: "0:12", event: "FirePower Promotions MMA: No Shelter" }
+  ],
   "Azamat Bekoev": [
     { date: "Apr 4, 2026", opponent: "Tresean Gore", result: "L", method: "Submission (Guillotine Choke)", round: 3, time: "3:27", event: "UFC Fight Night: Moicano vs. Duncan", org: "UFC" },
     { date: "Oct 18, 2025", opponent: "Yousri Belgaroui", result: "L", method: "TKO (Punches)", round: 3, time: "0:55", event: "UFC Fight Night: de Ridder vs. Allen", org: "UFC" },
@@ -38909,6 +38929,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
     { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
+  ],
+  "Ryan Loder": [
+    { icon: "🏆", title: "The Ultimate Fighter 32 Middleweight Tournament Winner (2024) — TKO'd Robert Valentin in the finale to earn his UFC contract", detail: null },
+    { icon: "🤼", title: "Former assistant wrestling coach at San Francisco State; wrestled at the University of Northern Iowa (Business Management degree, MBA)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null }
   ],
   "Azamat Bekoev": [
     { icon: "🏆", title: "2× LFA Middleweight Champion — won the title at LFA 160 (Jun 16, 2023 vs. Dylan Budka) and defended it twice (LFA 173, LFA 186)", detail: null },
