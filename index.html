@@ -3861,6 +3861,7 @@
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
  { name: "Shi Ming", division: "WSW", rank: "NR", record: "18-6-0", initials: "SHM", country: "China" },
  { name: "Song Kenan", division: "WW", rank: "NR", record: "22-9-0", initials: "SKE", country: "China" },
+ { name: "Steven Nguyen", division: "FW", rank: "NR", record: "10-2-0", initials: "SNG", country: "USA" },
  { name: "Shayilan Nuerdanbieke", division: "FW", rank: "NR", record: "39-12-0", initials: "SNU", country: "China" },
  { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
@@ -4980,6 +4981,7 @@
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
   "Shi Ming": { ht:"5'2\"", dob:"1994-11-14", reach:'60"', stance:"Orthodox", slpm:3.09, strAcc:"37%", sapm:2.92, strDef:"53%", kd:0.51, tdLanded:1.02, tdAcc:"9%", tdDef:"60%", subAvg:0.25, finRate:"50%", streak:1, gym:"China Catch Wrestling" },
   "Song Kenan": { ht:"6'0\"", dob:"1990-03-10", reach:'71.5"', stance:"Orthodox", slpm:4.49, strAcc:"47%", sapm:5.82, strDef:"51%", kd:0.70, tdLanded:0.42, tdAcc:"30%", tdDef:"74%", subAvg:0.00, finRate:"82%", streak:0, gym:"Beijing Black Tiger" },
+  "Steven Nguyen": { ht:"5'11\"", dob:"1993-05-19", reach:'73"', stance:"Switch", slpm:7.47, strAcc:"42%", sapm:7.10, strDef:"61%", kd:1.65, tdLanded:0.24, tdAcc:"100%", tdDef:"88%", subAvg:0.00, finRate:"80%", streak:1, gym:"Fortis MMA" },
   "Shayilan Nuerdanbieke": { ht:"5'8\"", dob:"1994-05-04", reach:'69"', stance:"Orthodox", slpm:1.95, strAcc:"46%", sapm:2.64, strDef:"50%", kd:0.71, tdLanded:3.30, tdAcc:"35%", tdDef:"29%", subAvg:0.24, finRate:"74%", streak:0, gym:"China Top Team" },
   "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
@@ -14170,6 +14172,14 @@
     { opponent: "Max Griffin", odds: 188 },
     { opponent: "Callan Potter", odds: -200 },
     { opponent: "Derrick Krantz", odds: 100 }
+  ],
+  "Steven Nguyen": [
+    { opponent: "Mohammad Yahya", odds: -320 },
+    { opponent: "Jarno Errens", odds: -160 },
+    { opponent: "AJ Cunningham", odds: -295 },
+    { opponent: "Theo Rlayang", odds: -300 },
+    { opponent: "Jorge Juarez", odds: -400 },
+    { opponent: "Aalon Cruz", odds: -160 }
   ],
   "Shayilan Nuerdanbieke": [
     { opponent: "Melquizael Costa", odds: 190 },
@@ -31233,6 +31243,20 @@ const FIGHT_HISTORY = {
     { date: "Jul 22, 2014", opponent: "Wenshuo Guo", result: "W", method: "Submission (Rear-naked choke)", round: 2, time: "1:08", event: "Chinese Kung Fu Championships", org: "CKFC" },
     { date: "May 30, 2014", opponent: "Fakhriddin Fakhriddin", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "—", event: "Dragon Fighter International" }
   ],
+  "Steven Nguyen": [
+    { date: "Jul 26, 2025", opponent: "Mohammad Yahya", result: "W", method: "TKO (Eye injury)", round: 2, time: "5:00", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
+    { date: "Mar 23, 2024", opponent: "Jarno Errens", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Ribas vs. Namajunas", org: "UFC" },
+    { date: "Sep 12, 2023", opponent: "AJ Cunningham", result: "W", method: "TKO (Punches)", round: 2, time: "4:06", event: "Dana White's Contender Series: Season 7, Week 6", org: "DWCS" },
+    { date: "Sep 21, 2021", opponent: "Theo Rlayang", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 4", org: "DWCS" },
+    { date: "Feb 19, 2021", opponent: "Jorge Juarez", result: "W", method: "KO (Punches)", round: 1, time: "0:30", event: "LFA 100" },
+    { date: "Jul 30, 2019", opponent: "Aalon Cruz", result: "L", method: "KO (Flying knee)", round: 3, time: "4:36", event: "Dana White's Contender Series: Season 3, Week 6", org: "DWCS" },
+    { date: "Apr 13, 2019", opponent: "Brandon Bailey", result: "W", method: "TKO (Punches)", round: 4, time: "3:37", event: "Evolution Fighting Championship 11" },
+    { date: "Apr 7, 2018", opponent: "Aaron Roberson", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "4:05", event: "Evolution Fighting Championship 8: Battle for Blood 2" },
+    { date: "May 13, 2017", opponent: "Jose Leyva", result: "W", method: "KO (Punch)", round: 1, time: "0:16", event: "Evolution Fighting Championship 5" },
+    { date: "Mar 11, 2017", opponent: "Garrett Mueller", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shamrock FC: Shamrock 285" },
+    { date: "Oct 1, 2016", opponent: "Steve Brown", result: "W", method: "Submission (Guillotine choke)", round: 1, time: "0:27", event: "Evolution Fighting Championship 4" },
+    { date: "Apr 30, 2016", opponent: "Edgar Urias", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:58", event: "Evolution Fighting Championship 3" }
+  ],
   "Shayilan Nuerdanbieke": [
     { date: "Jun 15, 2024", opponent: "Melquizael Costa", result: "L", method: "Submission (Face crank)", round: 3, time: "1:50", event: "UFC on ESPN: Perez vs. Taira", org: "UFC" },
     { date: "Apr 8, 2023", opponent: "Steve Garcia", result: "L", method: "KO (Body kick and punches)", round: 2, time: "0:36", event: "UFC 287", org: "UFC" },
@@ -39189,6 +39213,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Former CKF (Chinese Kung Fu Championships) 80kg champion on the Chinese regional circuit before turning pro", detail: null },
     { icon: "🥋", title: "Beat UFC/PRIDE/Pancrase veteran Sanae Kikuta by unanimous decision in 2014", detail: null },
     { icon: "🚄", title: "Worked as a high-speed train machinist before becoming a full-time fighter", detail: null },
+  ],
+  "Steven Nguyen": [
+    { icon: "🥋", title: "Nicknamed \"The Ninja\"; former Evolution Fighting Championship (EFC) featherweight titleholder on the regional Kansas/Texas circuit", detail: null },
+    { icon: "🥊", title: "Earned his UFC contract via Dana White's Contender Series (Season 5, 2021) after an earlier Contender Series loss in 2019", detail: null },
+    { icon: "🔥", title: "80% career finish rate (5 KO/TKO, 3 submissions in 10 wins)", detail: null },
+    { icon: "🎓", title: "Wichita State University graduate (Marketing and Management); trains out of Fortis MMA", detail: null },
   ],
   "Shayilan Nuerdanbieke": [
     { icon: "🥋", title: "Nicknamed \"Wolverine\"; 51-fight pro veteran of the Chinese regional circuit (Dacheng Wuyi, CWM MMA, Kunlun Fight, WLF, CKF) before reaching the UFC", detail: null },
