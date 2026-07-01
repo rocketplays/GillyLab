@@ -3384,6 +3384,7 @@
  { name: "Valentina Shevchenko", division: "WFLW", rank: "#C", record: "26-4-1", initials: "VS", country: "Kyrgyzstan" },
  { name: "Natália Silva", division: "WFLW", rank: "#1", record: "20-5-1", initials: "NSI", country: "Brazil" },
  { name: "Manon Fiorot", division: "WFLW", rank: "#2", record: "13-2-0", initials: "MFI", country: "France" },
+ { name: "Marnic Mann", division: "WSW", rank: "NR", record: "6-3-0", initials: "MMN", country: "USA" },
  { name: "Alexa Grasso", division: "WFLW", rank: "#3", record: "17-5-1", initials: "AGR", country: "Mexico" },
  { name: "Maycee Barber", division: "WFLW", rank: "#5", record: "15-3-0", initials: "MAB", country: "USA" },
  { name: "Jasmine Jasudavicius", division: "WFLW", rank: "#7", record: "15-4-0", initials: "JJA", country: "Canada" },
@@ -4224,6 +4225,7 @@
  "Kayla Harrison": { ht:"5'8\"", dob:"1990-07-02", reach:'66"', stance:"Southpaw", slpm:4.29, strAcc:"62%", sapm:1.10, strDef:"66%", kd:0.0, tdLanded:2.84, tdAcc:"38%", tdDef:"100%", subAvg:0.95, finRate:"74%", streak:4, gym:"American Top Team (2018–present)" },
  "Erin Blanchfield": { ht:"5'4\"", dob:"1999-05-04", reach:'66"', stance:"Orthodox", slpm:5.24, strAcc:"44%", sapm:4.25, strDef:"59%", kd:0.00, tdLanded:1.96, tdAcc:"34%", tdDef:"78%", subAvg:0.86, finRate:"50%", streak:2, gym:"Silver Fox BJJ" },
  "Manon Fiorot": { ht:"5'7\"", dob:"1990-02-17", reach:'65"', stance:"Orthodox", slpm:4.61, strAcc:"53%", sapm:3.26, strDef:"50%", kd:0.09, tdLanded:1.05, tdAcc:"29%", tdDef:"87%", subAvg:0.55, finRate:"54%", streak:1, gym:"Boxing Squad" },
+ "Marnic Mann": { ht:"5'0\"", dob:"1993-03-05", reach:'60"', stance:"Southpaw", slpm:1.47, strAcc:"41%", sapm:5.08, strDef:"31%", kd:0.00, tdLanded:1.90, tdAcc:"33%", tdDef:"25%", subAvg:0.38, finRate:"67%", streak:0, gym:"Montana Mixed Martial Arts" },
  // ── Lightweight (extended) ──
  "Michael Chandler": { ht:"5'8\"", dob:"1986-04-24", reach:'71"', stance:"Orthodox", slpm:3.91, strAcc:"49%", sapm:4.51, tdAcc:"38%", subAvg:0.54, strDef:"44%", kd:0.40, tdDef:"62%", finRate:"78%", streak:0, tdLanded:1.88, gym:"Kill Cliff FC" },
  "Renato Moicano": { ht:"5'11\"", dob:"1989-05-21", reach:'72"', stance:"Orthodox", slpm:4.10, strAcc:"49%", sapm:3.55, strDef:"60%", kd:0.16, tdLanded:1.68, tdAcc:"40%", tdDef:"64%", subAvg:0.56, finRate:"62%", streak:1, gym:"American Top Team" },
@@ -8805,6 +8807,14 @@
     { opponent: "Mayra Bueno Silva", odds: -300 },
     { opponent: "Tabatha Ricci", odds: -550 },
     { opponent: "Victoria Leonardo", odds: -215 }
+  ],
+  "Marnic Mann": [
+    { opponent: "Ketlen Souza", odds: 310 },
+    { opponent: "Josefine Knutsson", odds: 550 },
+    { opponent: "Amber Brown", odds: -305 },
+    { opponent: "Bruna Brasil", odds: 130 },
+    { opponent: "Kelsey Arnesen", odds: -333 },
+    { opponent: "Pauline Macias", odds: -150 }
   ],
   "Rafael Fiziev": [
     { opponent: "Mauricio Ruffy", odds: -125 },
@@ -18384,6 +18394,17 @@ const FIGHT_HISTORY = {
     { date: "Dec 14, 2019", opponent: "Amanda Lino", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "EFC 83" },
     { date: "Jun 29, 2019", opponent: "Mellony Geugjes", result: "W", method: "TKO (Punches)", round: 3, time: "4:17", event: "EFC 80" },
     { date: "Jun 16, 2018", opponent: "Leah McCourt", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Cage Warriors 94", org: "Cage Warriors" }
+  ],
+  "Marnic Mann": [
+    { date: "Apr 27, 2024", opponent: "Ketlen Souza", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Nicolau vs. Perez", org: "UFC" },
+    { date: "Sep 16, 2023", opponent: "Josefine Knutsson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Grasso vs. Shevchenko 2", org: "UFC" },
+    { date: "Apr 21, 2023", opponent: "Amber Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 157: Croden vs. Cavalcanti", org: "LFA" },
+    { date: "Sep 13, 2022", opponent: "Bruna Brasil", result: "L", method: "KO (Head Kick)", round: 2, time: "4:33", event: "Dana White's Contender Series 6.8 (contract)", org: "UFC" },
+    { date: "Apr 22, 2022", opponent: "Kelsey Arnesen", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "LFA 130: Ksiazkiewicz vs. Gambulino", org: "LFA" },
+    { date: "Oct 22, 2021", opponent: "Pauline Macias", result: "W", method: "Submission (Triangle Choke)", round: 3, time: "3:57", event: "LFA 116: Fremd vs. Valente", org: "LFA" },
+    { date: "Sep 19, 2020", opponent: "Jennifer Clausius", result: "W", method: "TKO (Punches)", round: 3, time: "4:42", event: "Fusion Fight League: Savage vs. Mann" },
+    { date: "Jun 27, 2020", opponent: "Jamie Thorton", result: "W", method: "TKO (Corner Stoppage)", round: 1, time: "N/A", event: "Fusion Fight League: Thorton vs. Mann" },
+    { date: "Apr 6, 2019", opponent: "Megan Winick", result: "W", method: "KO (Punches)", round: 1, time: "0:45", event: "ACE 1: Adventure Combat Enterprises Fight Night" },
   ],
 
 
@@ -37136,6 +37157,11 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥋", title: "Black belt in Karate (three-time French national champion)", detail: null },
     { icon: "🥊", title: "12-0 in amateur Muay Thai (two-time French national champion)", detail: null },
+  ],
+  "Marnic Mann": [
+    { icon: "🏆", title: "Fusion Fight League Strawweight Champion", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt", detail: null },
+    { icon: "🏅", title: "Longtime #1-ranked female fighter in Montana", detail: null }
   ],
   "Alexa Grasso": [
     { icon: "🏆", title: "UFC Women's Flyweight Champion (one title defense) — first Mexican woman to win a UFC title", detail: null },
