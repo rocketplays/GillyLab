@@ -3904,6 +3904,7 @@
  { name: "Magomedrasul Gasanov", division: "MW", rank: "NR", record: "23-2-0", initials: "MRG", country: "Russia" },
  { name: "Trevor Peek", division: "LW", rank: "NR", record: "9-3-0", initials: "TRP", country: "USA" },
  { name: "Trey Ogden", division: "LW", rank: "NR", record: "18-7-0", initials: "TOG", country: "USA" },
+ { name: "Trey Waters", division: "WW", rank: "NR", record: "9-2-0", initials: "TW", country: "USA" },
  { name: "Victor Valenzuela", division: "WW", rank: "NR", record: "14-4-0", initials: "VVA", country: "Chile" },
  { name: "Max Griffin", division: "WW", rank: "NR", record: "20-13-0", initials: "MGR", country: "USA" },
  { name: "Pete Rodriguez", division: "WW", rank: "NR", record: "5-2-0", initials: "PRO", country: "USA" },
@@ -5074,6 +5075,7 @@
   "Magomedrasul Gasanov": { ht:"5'11\"", dob:"1994-11-23", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"35%", streak:18, gym:"Abdulmanap Nurmagomedov School" },
   "Trevor Peek": { ht:"5'9\"", dob:"1995-01-09", reach:'70"', stance:"Switch", slpm:4.39, strAcc:"54%", sapm:3.88, strDef:"44%", kd:0.41, tdLanded:1.45, tdAcc:"50%", tdDef:"53%", subAvg:0.00, finRate:"89%", streak:0, gym:"Agoge Combatives" },
   "Trey Ogden": { ht:"5'11\"", dob:"1989-11-14", reach:'72"', stance:"Orthodox", slpm:3.20, strAcc:"50%", sapm:3.49, strDef:"56%", kd:0.00, tdLanded:1.89, tdAcc:"32%", tdDef:"100%", subAvg:0.73, finRate:"61%", streak:0, gym:"Marathon MMA" },
+  "Trey Waters": { ht:"6'5\"", dob:"1995-02-21", reach:'77"', stance:"Orthodox", slpm:6.39, strAcc:"44%", sapm:5.83, strDef:"56%", kd:0.00, tdLanded:0.40, tdAcc:"33%", tdDef:"86%", subAvg:0.81, finRate:"67%", streak:0, gym:"Ludus MMA" },
   "Eric Nolan": { ht:"5'11\"", dob:"1997-09-13", reach:'74"', stance:"Orthodox", slpm:3.14, sapm:5.13, strAcc:"39%", tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:0.0, tdDef:"71%", finRate:"75%", streak:0, tdLanded:0.0, gym:"Dante Rivera BJJ" },
   "Veronica Hardy": { ht:"5'3\"", dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
 
@@ -13935,6 +13937,14 @@
     { opponent: "JJ Okanovich", odds: 100 },
     { opponent: "Nick Browne", odds: -165 },
     { opponent: "Travis Perzynski", odds: 155 }
+  ],
+  "Trey Waters": [
+    { opponent: "Sam Patterson", odds: 162 },
+    { opponent: "Billy Ray Goff", odds: -150 },
+    { opponent: "Josh Quinlan", odds: 220 },
+    { opponent: "Jalin Fuller", odds: 100 },
+    { opponent: "Gabriel Bonfim", odds: 450 },
+    { opponent: "Benjamin Bennett", odds: 500 }
   ],
   "Eric Nolan": [
     { opponent: "Baisangur Susurkaev", odds: 725 },
@@ -30624,6 +30634,20 @@ const FIGHT_HISTORY = {
     { date: "Jan 24, 2015", opponent: "Herbert Morgan", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:49", event: "BFC 27 - Blackout Fighting Championship 27" }
   ],
 
+  "Trey Waters": [
+    { date: "Sep 6, 2025", opponent: "Sam Patterson", result: "L", method: "TKO (Punches)", round: 1, time: "3:01", event: "UFC Fight Night 258: Imavov vs. Borralho", org: "UFC" },
+    { date: "May 11, 2024", opponent: "Billy Ray Goff", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN 56: Lewis vs. Nascimento", org: "UFC" },
+    { date: "Apr 29, 2023", opponent: "Josh Quinlan", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN 45: Song vs. Simon", org: "UFC" },
+    { date: "Apr 14, 2023", opponent: "Jalin Fuller", result: "W", method: "KO (Punch)", round: 2, time: "2:53", event: "LFA 156: Fuller vs. Waters", org: "LFA" },
+    { date: "Sep 6, 2022", opponent: "Gabriel Bonfim", result: "L", method: "Submission (Shoulder Choke)", round: 1, time: "4:13", event: "Dana White's Contender Series 2022: Week 7", org: "UFC" },
+    { date: "Jun 3, 2022", opponent: "Benjamin Bennett", result: "W", method: "KO (Knee)", round: 3, time: "4:37", event: "LFA 133: Stack vs. Delano", org: "LFA" },
+    { date: "Nov 6, 2021", opponent: "Elias Ramirez", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "1:02", event: "Combat Night Pro - Jacksonville" },
+    { date: "Oct 8, 2021", opponent: "Heriberto Tovar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Combate Global - Castillo vs. Lloreda" },
+    { date: "Jun 5, 2021", opponent: "Sedric Johnson", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "3:41", event: "Combat Night Pro 22" },
+    { date: "Apr 17, 2021", opponent: "Sean Hotusing", result: "W", method: "TKO (Punches)", round: 1, time: "2:55", event: "Combat Night Pro 21" },
+    { date: "Mar 21, 2020", opponent: "Ramon Butts", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:12", event: "Combat Night Pro 18" }
+  ],
+
   "Jefferson Nascimento": [
     { date: "May 29, 2026", opponent: "Gian Maurente", result: "W", method: "KO (Front Kick to the Body)", round: 4, time: "2:00", event: "LFA 234 - Fernando vs. Soares", org: "LFA" },
     { date: "Sep 27, 2025", opponent: "Baysangur Makaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "LFA 218 - Nascimento vs. Makaev", org: "LFA" },
@@ -39656,6 +39680,12 @@ const ACCOLADES = {
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu; 1x IBJJF Dallas Open NoGi champion at black belt (per UFC.com Q&A)", detail: null },
     { icon: "🏅", title: "11 of 18 pro wins by submission (61% finish rate, all finishes by sub); never taken down in the UFC (100% TD defense)", detail: null },
     { icon: "🥊", title: "Owner & head coach of Marathon MMA in Kansas City — rebuilt the gym after the James Krause betting scandal while an active UFC lightweight", detail: null },
+  ],
+  "Trey Waters": [
+    { icon: "🏆", title: "Former LFA Welterweight Champion — won the title by RD2 KO of Jalin Fuller at LFA 156 (Apr 2023)", detail: null },
+    { icon: "🏅", title: "Upset then-undefeated Josh Quinlan as a +220 underdog in his UFC debut (Apr 2023)", detail: null },
+    { icon: "🏅", title: "Signed with PFL after his UFC release — SmartCage debut vs. Trukon Carson booked for PFL Charlotte (Aug 7, 2026)", detail: null },
+    { icon: "🥊", title: "6'5\" welterweight striker with a 77\" reach; 6 of 9 pro wins by finish (3 KO, 3 sub)", detail: null },
   ],
   "Eric Nolan": [
     { icon: "🏆", title: "CFFC Welterweight Champion (2025)", detail: null },
