@@ -3902,6 +3902,7 @@
  { name: "Tahir Abdullayev", division: "WW", rank: "NR", record: "19-3-0", initials: "TAB", country: "Azerbaijan" },
  { name: "Jefferson Nascimento", division: "WW", rank: "NR", record: "13-0-0", initials: "JN", country: "Brazil" },
  { name: "Magomedrasul Gasanov", division: "MW", rank: "NR", record: "23-2-0", initials: "MRG", country: "Russia" },
+ { name: "Trevor Peek", division: "LW", rank: "NR", record: "9-3-0", initials: "TRP", country: "USA" },
  { name: "Victor Valenzuela", division: "WW", rank: "NR", record: "14-4-0", initials: "VVA", country: "Chile" },
  { name: "Max Griffin", division: "WW", rank: "NR", record: "20-13-0", initials: "MGR", country: "USA" },
  { name: "Pete Rodriguez", division: "WW", rank: "NR", record: "5-2-0", initials: "PRO", country: "USA" },
@@ -5070,6 +5071,7 @@
   "Tahir Abdullayev": { ht:"5'8\"", dob:"1997-02-02", reach:"--", stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:0.0, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"89%", streak:4, gym:"Team Alpha Male" },
   "Jefferson Nascimento": { ht:"5'8\"", dob:"1998-11-19", reach:"--", stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:0.0, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"62%", streak:13, gym:"Renovação Fight Team" },
   "Magomedrasul Gasanov": { ht:"5'11\"", dob:"1994-11-23", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"35%", streak:18, gym:"Abdulmanap Nurmagomedov School" },
+  "Trevor Peek": { ht:"5'9\"", dob:"1995-01-09", reach:'70"', stance:"Switch", slpm:4.39, strAcc:"54%", sapm:3.88, strDef:"44%", kd:0.41, tdLanded:1.45, tdAcc:"50%", tdDef:"53%", subAvg:0.00, finRate:"89%", streak:0, gym:"Agoge Combatives" },
   "Eric Nolan": { ht:"5'11\"", dob:"1997-09-13", reach:'74"', stance:"Orthodox", slpm:3.14, sapm:5.13, strAcc:"39%", tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:0.0, tdDef:"71%", finRate:"75%", streak:0, tdLanded:0.0, gym:"Dante Rivera BJJ" },
   "Veronica Hardy": { ht:"5'3\"", dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
 
@@ -13911,6 +13913,14 @@
     { opponent: "Artem Frolov", odds: -600 },
     { opponent: "Abdul-Rakhman Dzhanaev", odds: -288 },
     { opponent: "Nikola Dipchikov", odds: -270 }
+  ],
+  "Trevor Peek": [
+    { opponent: "Yanal Ashmouz", odds: 105 },
+    { opponent: "Charlie Campbell", odds: 145 },
+    { opponent: "Mohammad Yahya", odds: -180 },
+    { opponent: "Chepe Mariscal", odds: -120 },
+    { opponent: "Erick Gonzalez", odds: -190 },
+    { opponent: "Malik Lewis", odds: 205 }
   ],
   "Eric Nolan": [
     { opponent: "Baisangur Susurkaev", odds: 725 },
@@ -30555,6 +30565,22 @@ const FIGHT_HISTORY = {
     { date: "May 31, 2014", opponent: "David Kochishvili", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "VHTHFF - Stalingrad Cup" }
   ],
 
+  "Trevor Peek": [
+    { date: "Sep 7, 2024", opponent: "Yanal Ashmouz", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night 242: Burns vs. Brady", org: "UFC" },
+    { date: "Apr 6, 2024", opponent: "Charlie Campbell", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night 240: Allen vs. Curtis 2", org: "UFC" },
+    { date: "Oct 21, 2023", opponent: "Mohammad Yahya", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 294", org: "UFC" },
+    { date: "Jun 24, 2023", opponent: "Chepe Mariscal", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ABC 5: Emmett vs. Topuria", org: "UFC" },
+    { date: "Feb 25, 2023", opponent: "Erick Gonzalez", result: "W", method: "KO (Punches)", round: 1, time: "4:59", event: "UFC Fight Night 220: Muniz vs. Allen", org: "UFC" },
+    { date: "Sep 13, 2022", opponent: "Malik Lewis", result: "W", method: "TKO (Punches)", round: 2, time: "2:37", event: "Dana White's Contender Series 2022: Week 8", org: "UFC" },
+    { date: "Aug 13, 2022", opponent: "Khama Worthy", result: "W", method: "KO (Punches)", round: 1, time: "4:44", event: "AFS - Aries Fight Series: Amp'd" },
+    { date: "Apr 16, 2022", opponent: "Warren Smith", result: "W", method: "KO (Punch)", round: 1, time: "1:13", event: "AFS 6 - Aries Fight Series 6" },
+    { date: "Jan 7, 2022", opponent: "David Robins", result: "W", method: "TKO (Punches)", round: 1, time: "0:32", event: "AFS 3 - Aries Fight Series 3" },
+    { date: "Sep 11, 2021", opponent: "Ben Brewer", result: "W", method: "TKO (Punches)", round: 3, time: "3:02", event: "AFC 8 - Alabama Fighting Championship: All American Bash" },
+    { date: "Jun 5, 2021", opponent: "Cris Mims", result: "W", method: "TKO (Knees and Punches)", round: 1, time: "4:49", event: "AFC 7 - Alabama Fighting Championship: Reunion" },
+    { date: "Feb 20, 2021", opponent: "Darnell Truett", result: "W", method: "KO (Punches)", round: 1, time: "2:23", event: "AFC 6 - Alabama Fighting Championship: Smoke in the Hills" },
+    { date: "Oct 3, 2020", opponent: "Stephen Wilhite", result: "NC", method: "No Contest (Accidental Groin Kick)", round: 1, time: "3:39", event: "AFC 5 - Alabama Fighting Championship: Five On It" }
+  ],
+
   "Jefferson Nascimento": [
     { date: "May 29, 2026", opponent: "Gian Maurente", result: "W", method: "KO (Front Kick to the Body)", round: 4, time: "2:00", event: "LFA 234 - Fernando vs. Soares", org: "LFA" },
     { date: "Sep 27, 2025", opponent: "Baysangur Makaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "LFA 218 - Nascimento vs. Makaev", org: "LFA" },
@@ -39575,6 +39601,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "2018 Berkut Young Eagles Middleweight Grand Prix winner (beat Aleksander Podmarev in the Mar 2019 final)", detail: null },
     { icon: "🏅", title: "Unbeaten since June 2015 — enters the UFC on an 18-fight win streak (23-2 overall, both losses by submission in 2015)", detail: null },
     { icon: "🤼", title: "Dagestani wrestling base; trains at the Abdulmanap Nurmagomedov School in Makhachkala (Khabib's team; formerly Gorets FT)", detail: null },
+  ],
+  "Trevor Peek": [
+    { icon: "⭐", title: "Performance of the Night (1): first-round KO of Erick Gonzalez in his UFC debut (UFC Fight Night 220, Feb 2023)", detail: null },
+    { icon: "🏆", title: "Earned his UFC contract on Dana White's Contender Series 2022 (RD2 TKO of Malik Lewis, Sep 2022)", detail: null },
+    { icon: "🏅", title: "KO'd former UFC fighter Khama Worthy to win the Aries Fight Series 'Amp'd' belt (Aug 2022; cited on his UFC.com Q&A)", detail: null },
+    { icon: "🥊", title: "8 of 9 pro wins by KO/TKO (89% finish rate); as an amateur won two 170-lb titles, 3x Fight of the Night and 1x KO of the Night", detail: null },
   ],
   "Eric Nolan": [
     { icon: "🏆", title: "CFFC Welterweight Champion (2025)", detail: null },
