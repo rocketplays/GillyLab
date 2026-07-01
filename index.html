@@ -3903,6 +3903,7 @@
  { name: "Jefferson Nascimento", division: "WW", rank: "NR", record: "13-0-0", initials: "JN", country: "Brazil" },
  { name: "Magomedrasul Gasanov", division: "MW", rank: "NR", record: "23-2-0", initials: "MRG", country: "Russia" },
  { name: "Trevor Peek", division: "LW", rank: "NR", record: "9-3-0", initials: "TRP", country: "USA" },
+ { name: "Trey Ogden", division: "LW", rank: "NR", record: "18-7-0", initials: "TOG", country: "USA" },
  { name: "Victor Valenzuela", division: "WW", rank: "NR", record: "14-4-0", initials: "VVA", country: "Chile" },
  { name: "Max Griffin", division: "WW", rank: "NR", record: "20-13-0", initials: "MGR", country: "USA" },
  { name: "Pete Rodriguez", division: "WW", rank: "NR", record: "5-2-0", initials: "PRO", country: "USA" },
@@ -5072,6 +5073,7 @@
   "Jefferson Nascimento": { ht:"5'8\"", dob:"1998-11-19", reach:"--", stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:0.0, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:0.0, finRate:"62%", streak:13, gym:"Renovação Fight Team" },
   "Magomedrasul Gasanov": { ht:"5'11\"", dob:"1994-11-23", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"35%", streak:18, gym:"Abdulmanap Nurmagomedov School" },
   "Trevor Peek": { ht:"5'9\"", dob:"1995-01-09", reach:'70"', stance:"Switch", slpm:4.39, strAcc:"54%", sapm:3.88, strDef:"44%", kd:0.41, tdLanded:1.45, tdAcc:"50%", tdDef:"53%", subAvg:0.00, finRate:"89%", streak:0, gym:"Agoge Combatives" },
+  "Trey Ogden": { ht:"5'11\"", dob:"1989-11-14", reach:'72"', stance:"Orthodox", slpm:3.20, strAcc:"50%", sapm:3.49, strDef:"56%", kd:0.00, tdLanded:1.89, tdAcc:"32%", tdDef:"100%", subAvg:0.73, finRate:"61%", streak:0, gym:"Marathon MMA" },
   "Eric Nolan": { ht:"5'11\"", dob:"1997-09-13", reach:'74"', stance:"Orthodox", slpm:3.14, sapm:5.13, strAcc:"39%", tdAcc:"0%", subAvg:0.0, strDef:"42%", kd:0.0, tdDef:"71%", finRate:"75%", streak:0, tdLanded:0.0, gym:"Dante Rivera BJJ" },
   "Veronica Hardy": { ht:"5'3\"", dob:"1995-10-30", reach:'64"', stance:"Orthodox", slpm:3.06, strAcc:"46%", sapm:3.24, strDef:"50%", kd:0.12, tdLanded:0.82, tdAcc:"41%", tdDef:"52%", subAvg:0.35, finRate:"30%", streak:1, gym:"Ankos MMA" },
 
@@ -13921,6 +13923,18 @@
     { opponent: "Chepe Mariscal", odds: -120 },
     { opponent: "Erick Gonzalez", odds: -190 },
     { opponent: "Malik Lewis", odds: 205 }
+  ],
+  "Trey Ogden": [
+    { opponent: "Thiago Moises", odds: 140 },
+    { opponent: "Loik Radzhabov", odds: 125 },
+    { opponent: "Kurt Holobaugh", odds: -125 },
+    { opponent: "Nikolas Motta", odds: 120 },
+    { opponent: "Ignacio Bahamondes", odds: 360 },
+    { opponent: "Daniel Zellhuber", odds: 375 },
+    { opponent: "Jordan Leavitt", odds: -135 },
+    { opponent: "JJ Okanovich", odds: 100 },
+    { opponent: "Nick Browne", odds: -165 },
+    { opponent: "Travis Perzynski", odds: 155 }
   ],
   "Eric Nolan": [
     { opponent: "Baisangur Susurkaev", odds: 725 },
@@ -30581,6 +30595,35 @@ const FIGHT_HISTORY = {
     { date: "Oct 3, 2020", opponent: "Stephen Wilhite", result: "NC", method: "No Contest (Accidental Groin Kick)", round: 1, time: "3:39", event: "AFC 5 - Alabama Fighting Championship: Five On It" }
   ],
 
+  "Trey Ogden": [
+    { date: "Jan 11, 2025", opponent: "Thiago Moises", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
+    { date: "Jul 20, 2024", opponent: "Loik Radzhabov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lemos vs. Jandiroba", org: "UFC" },
+    { date: "Mar 23, 2024", opponent: "Kurt Holobaugh", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Ribas vs. Namajunas", org: "UFC" },
+    { date: "Nov 18, 2023", opponent: "Nikolas Motta", result: "NC", method: "No Contest (Premature Stoppage)", round: 3, time: "3:11", event: "UFC Fight Night: Allen vs. Craig", org: "UFC" },
+    { date: "Apr 8, 2023", opponent: "Ignacio Bahamondes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 287", org: "UFC" },
+    { date: "Sep 17, 2022", opponent: "Daniel Zellhuber", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sandhagen vs. Song", org: "UFC" },
+    { date: "Apr 16, 2022", opponent: "Jordan Leavitt", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Luque vs. Muhammad 2", org: "UFC" },
+    { date: "Nov 14, 2021", opponent: "JJ Okanovich", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "3:43", event: "Fury FC 53" },
+    { date: "Aug 14, 2020", opponent: "Cody Carrillo", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:30", event: "FAC 3 - Fighting Alliance Championship" },
+    { date: "Dec 6, 2019", opponent: "Brad Grelck", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:40", event: "Blue Corner Promotions: Ultimate Blue Corner Battles" },
+    { date: "Sep 13, 2019", opponent: "Nick Browne", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:24", event: "LFA 76: Ogden vs. Browne", org: "LFA" },
+    { date: "Feb 15, 2019", opponent: "Anthony Baccam", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 60: Anglickas vs. York", org: "LFA" },
+    { date: "Dec 7, 2018", opponent: "Lucas Clay", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Ultimate Blue Corner Battles" },
+    { date: "Jul 28, 2018", opponent: "Thomas Gifford", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "1:04", event: "KCFA 29 - Kansas City Fighting Alliance 29" },
+    { date: "Mar 2, 2018", opponent: "Travis Perzynski", result: "W", method: "Submission (Guillotine Choke)", round: 3, time: "0:20", event: "LFA 34: Watley vs. Jenkins", org: "LFA" },
+    { date: "Dec 2, 2017", opponent: "Thomas Gifford", result: "L", method: "Submission (Guillotine Choke)", round: 1, time: "1:57", event: "KCFA 26 - Kansas City Fighting Alliance 26" },
+    { date: "Sep 1, 2017", opponent: "TJ Brown", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:27", event: "LFA 21: Noblitt vs. Branjao", org: "LFA" },
+    { date: "May 5, 2017", opponent: "Chance Thackston", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:19", event: "VFC 57 - Victory Fighting Championship 57" },
+    { date: "Dec 23, 2016", opponent: "Josh Pfeifer", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "VFC 55 - Victory Fighting Championship 55" },
+    { date: "Jul 22, 2016", opponent: "Manuel Meraz", result: "W", method: "Submission (Guillotine Choke)", round: 2, time: "2:37", event: "Bellator 159 - Caldwell vs. Taimanglo", org: "Bellator" },
+    { date: "Jun 3, 2016", opponent: "CJay Hunter", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "TBC - Ultimate Blue Corner Battles" },
+    { date: "Feb 27, 2016", opponent: "Kenny Licea", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "3:40", event: "KCFA 17 - Kansas City Fighting Alliance 17" },
+    { date: "Dec 5, 2015", opponent: "Kuchlong Kuchlong", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:27", event: "KCFA 16 - Kansas City Fighting Alliance 16" },
+    { date: "Sep 19, 2015", opponent: "Ryan Walker", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Titan FC 35 - Healy vs. Hawn" },
+    { date: "Apr 25, 2015", opponent: "Nick Radtka", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:11", event: "KCFA 14 - Kansas City Fighting Alliance 14" },
+    { date: "Jan 24, 2015", opponent: "Herbert Morgan", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:49", event: "BFC 27 - Blackout Fighting Championship 27" }
+  ],
+
   "Jefferson Nascimento": [
     { date: "May 29, 2026", opponent: "Gian Maurente", result: "W", method: "KO (Front Kick to the Body)", round: 4, time: "2:00", event: "LFA 234 - Fernando vs. Soares", org: "LFA" },
     { date: "Sep 27, 2025", opponent: "Baysangur Makaev", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "LFA 218 - Nascimento vs. Makaev", org: "LFA" },
@@ -39607,6 +39650,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Earned his UFC contract on Dana White's Contender Series 2022 (RD2 TKO of Malik Lewis, Sep 2022)", detail: null },
     { icon: "🏅", title: "KO'd former UFC fighter Khama Worthy to win the Aries Fight Series 'Amp'd' belt (Aug 2022; cited on his UFC.com Q&A)", detail: null },
     { icon: "🥊", title: "8 of 9 pro wins by KO/TKO (89% finish rate); as an amateur won two 170-lb titles, 3x Fight of the Night and 1x KO of the Night", detail: null },
+  ],
+  "Trey Ogden": [
+    { icon: "🏆", title: "Former Fury FC Lightweight Champion — won the belt by arm-triangle over JJ Okanovich (Fury FC 53, Nov 2021) in front of Dana White to earn his UFC contract", detail: null },
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu; 1x IBJJF Dallas Open NoGi champion at black belt (per UFC.com Q&A)", detail: null },
+    { icon: "🏅", title: "11 of 18 pro wins by submission (61% finish rate, all finishes by sub); never taken down in the UFC (100% TD defense)", detail: null },
+    { icon: "🥊", title: "Owner & head coach of Marathon MMA in Kansas City — rebuilt the gym after the James Krause betting scandal while an active UFC lightweight", detail: null },
   ],
   "Eric Nolan": [
     { icon: "🏆", title: "CFFC Welterweight Champion (2025)", detail: null },
