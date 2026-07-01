@@ -3801,6 +3801,7 @@
  { name: "Julia Polastri", division: "WSW", rank: "NR", record: "14-6-0", initials: "JPO", country: "Brazil" },
  { name: "Elise Reed", division: "WSW", rank: "NR", record: "8-5-0", initials: "ERE", country: "USA" },
  { name: "Puja Tomar", division: "WSW", rank: "NR", record: "9-6-0", initials: "PTM", country: "India" },
+ { name: "Rayanne dos Santos", division: "WSW", rank: "NR", record: "14-9-0", initials: "RDS", country: "Brazil" },
  { name: "Polyana Viana", division: "WSW", rank: "NR", record: "13-9-0", initials: "PVI", country: "Brazil" },
  { name: "Mizuki", division: "WSW", rank: "#15", record: "16-6-0", initials: "MZK", country: "Japan" },
  { name: "Melissa Gatto", division: "WFLW", rank: "NR", record: "9-3-2", initials: "MGT", country: "Brazil" },
@@ -4549,6 +4550,7 @@
  "Cory McKenna": { ht:"5'3\"", dob:"1999-07-11", reach:'58.5"', stance:"Orthodox", slpm:2.94, strAcc:"39%", sapm:3.68, strDef:"46%", kd:0.0, tdLanded:2.00, tdAcc:"48%", tdDef:"75%", subAvg:0.36, finRate:"50%", streak:0, gym:"Team Alpha Male" },
  "Julia Polastri": { ht:"5'2\"", dob:"1998-03-05", reach:'64"', stance:"Orthodox", slpm:6.40, strAcc:"55%", sapm:5.40, strDef:"57%", kd:0.00, tdLanded:0.73, tdAcc:"80%", tdDef:"61%", subAvg:0.37, finRate:"57%", streak:0, gym:"CWB Fighter" },
  "Elise Reed": { ht:"5'3\"", dob:"1992-12-05", reach:'63"', stance:"Orthodox", slpm:3.41, strAcc:"53%", sapm:3.26, strDef:"52%", kd:0.15, tdLanded:0.46, tdAcc:"60%", tdDef:"53%", subAvg:0.0, finRate:"25%", streak:0, gym:"Kickside Martial Arts" },
+ "Rayanne dos Santos": { ht:"5'2\"", dob:"1995-06-08", reach:'62"', stance:"Orthodox", slpm:4.57, strAcc:"40%", sapm:6.47, strDef:"59%", kd:0.00, tdLanded:0.50, tdAcc:"14%", tdDef:"80%", subAvg:0.00, finRate:"71%", streak:0, gym:"Marajo Brothers Team" },
  "Puja Tomar": { ht:"5'4\"", dob:"1993-12-05", reach:'59"', stance:"Southpaw", slpm:5.27, strAcc:"50%", sapm:5.42, strDef:"46%", kd:0.56, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"67%", streak:0, gym:"Soma Fight Club" },
  "Iasmin Lucindo": { ht:"5'3\"", dob:"2002-01-08", reach:'66"', stance:"Orthodox", slpm:3.22, strAcc:"45%", sapm:2.80, strDef:"62%", kd:0.00, tdLanded:2.28, tdAcc:"56%", tdDef:"69%", subAvg:0.15, finRate:"61%", streak:1, gym:"Academia Fight House" },
  "Ibo Aslan": { ht:"6'3\"", dob:"1996-04-23", reach:'77.5"', stance:"Orthodox", slpm:5.75, strAcc:"48%", sapm:3.96, strDef:"57%", kd:1.32, tdLanded:0.00, tdAcc:"0%", tdDef:"88%", subAvg:0.00, finRate:"100%", streak:0, gym:"Gym 23" },
@@ -14350,6 +14352,12 @@
     { opponent: "Steven Asplund", odds: 100 },
     { opponent: "Isaiah Pinson", odds: -175 },
     { opponent: "Raiden Kovacs", odds: -450 }
+  ],
+  "Rayanne dos Santos": [
+    { opponent: "Alice Ardelean", odds: -210 },
+    { opponent: "Puja Tomar", odds: -333 },
+    { opponent: "Talita Alencar", odds: -155 },
+    { opponent: "Jillian DeCoursey", odds: 128 }
   ],
   "Puja Tomar": [
     { opponent: "Shi Ming", odds: 185 },
@@ -31651,6 +31659,31 @@ const FIGHT_HISTORY = {
     { date: "Apr 6, 2018", opponent: "Gustavo Trujillo", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Titan FC 49" },
     { date: "Dec 15, 2017", opponent: "Davaun McKoy", result: "W", method: "TKO (Punches)", round: 2, time: "4:19", event: "Titan FC 47" }
   ],
+  "Rayanne dos Santos": [
+    { date: "May 31, 2025", opponent: "Alice Ardelean", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blanchfield vs. Barber" },
+    { date: "Jun 8, 2024", opponent: "Puja Tomar", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Cannonier vs. Imavov", org: "UFC" },
+    { date: "Dec 9, 2023", opponent: "Talita Alencar", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Gutiérrez", org: "UFC" },
+    { date: "May 3, 2023", opponent: "Jillian DeCoursey", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "Invicta FC 53", org: "Invicta FC" },
+    { date: "Jan 18, 2023", opponent: "Katie Saull", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 51", org: "Invicta FC" },
+    { date: "Oct 14, 2022", opponent: "Vitoria Karolina Cardoso", result: "W", method: "Technical Submission (Armbar)", round: 1, time: "1:57", event: "Mag Fight 01" },
+    { date: "Aug 23, 2022", opponent: "Denise Gomes", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series 51", org: "UFC" },
+    { date: "Feb 26, 2022", opponent: "Jucilene Cabra", result: "W", method: "Submission (Armbar)", round: 1, time: "4:09", event: "Benevides Combat 02" },
+    { date: "Dec 18, 2021", opponent: "Fabiola Barroso", result: "W", method: "TKO (Punches)", round: 2, time: "2:28", event: "Benevides Combat" },
+    { date: "Oct 30, 2021", opponent: "Maria Luciana Santos de Farias", result: "W", method: "Submission (Armbar)", round: 1, time: "4:50", event: "Maximum Impacto Fight 14" },
+    { date: "Oct 16, 2021", opponent: "Daniela Ribeiro dos Santos", result: "W", method: "Submission (Armbar)", round: 1, time: "3:48", event: "Azevedo Fight Combat 01" },
+    { date: "Jun 5, 2021", opponent: "Alexia Thainara", result: "L", method: "Submission (Rear-naked choke)", round: 2, time: "4:48", event: "Arena Global 12" },
+    { date: "May 8, 2021", opponent: "Alexia Santana de Queiroz", result: "W", method: "Submission (Armbar)", round: 1, time: "0:20", event: "Ipixuna Fight Champions 12" },
+    { date: "Dec 13, 2020", opponent: "Maiara Amanajas dos Santos", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 106", org: "Shooto" },
+    { date: "Sep 27, 2020", opponent: "Edna Oliveira Ajala", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto Brazil 101", org: "Shooto" },
+    { date: "Oct 26, 2019", opponent: "Isabela de Padua", result: "L", method: "TKO (Doctor stoppage)", round: 1, time: "5:00", event: "SFT 17: de Padua vs. Amanda" },
+    { date: "Aug 29, 2019", opponent: "Shirley Coutinho Duarte", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Sombra Fight Champions 13" },
+    { date: "Nov 24, 2018", opponent: "Lindsay Garbatt", result: "W", method: "Submission (Armbar)", round: 1, time: "1:50", event: "BTC 4: Vendetta" },
+    { date: "Aug 16, 2018", opponent: "Tatiane Ramos do Vale", result: "W", method: "Submission (Armbar)", round: 1, time: "0:36", event: "Sombra Fight Champions 8" },
+    { date: "Jun 23, 2018", opponent: "Lindsay Garbatt", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "BTC 3: Prophecy" },
+    { date: "Jan 18, 2018", opponent: "Naizi Cantanhede", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Sombra Fight Champions 6" },
+    { date: "Oct 26, 2017", opponent: "Leidiane do Socorro da Silva", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:25", event: "Sombra Fight Champions 5" },
+    { date: "Dec 5, 2015", opponent: "Jessica Cunha", result: "W", method: "TKO (Body kick and punches)", round: 2, time: "4:36", event: "Rec Combat 5" }
+  ],
   "Puja Tomar": [
     { date: "May 29, 2026", opponent: "Shi Ming", result: "L", method: "Submission (Arm-triangle choke)", round: 1, time: "3:12", event: "Road to UFC Season 5: Opening Round – Day 2" },
     { date: "Mar 23, 2025", opponent: "Shauna Bannon", result: "L", method: "Submission (Armbar)", round: 2, time: "3:22", event: "UFC Fight Night: Edwards vs. Brady", org: "UFC" },
@@ -34785,6 +34818,9 @@ const ACCOLADES = {
     { icon: "🏆", title: "Former World & European Kempo Champion", detail: null },
     { icon: "🥋", title: "\"The Warrior Princess\" — KSW & RXF title challenger; judo, kickboxing and karate background", detail: null },
     { icon: "🥊", title: "Romanian MMA pioneer; 10 of 15 wins by stoppage (6 KO/TKO, 4 submissions)", detail: null }
+  ],
+  "Rayanne dos Santos": [
+    { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu; comes from a family of black belts — her father, mother, and brothers all hold BJJ black belts", detail: null }
   ],
   "Puja Tomar": [
     { icon: "🏅", title: "First Indian-born fighter to win a UFC bout (def. Rayanne dos Santos at UFC Louisville, 2024)", detail: null },
