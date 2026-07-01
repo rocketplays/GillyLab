@@ -3859,6 +3859,7 @@
  { name: "Cody Brundage", division: "MW", rank: "NR", record: "12-9-1", initials: "CB", country: "USA" },
  { name: "Tresean Gore", division: "MW", rank: "NR", record: "7-4-0", initials: "TG", country: "USA" },
  { name: "Azamat Bekoev", division: "MW", rank: "NR", record: "20-5-0", initials: "ABE", country: "Russia" },
+ { name: "Serhiy Sidey", division: "BW", rank: "NR", record: "12-2-0", initials: "SSI", country: "Ukraine" },
  { name: "Sean Woodson", division: "FW", rank: "NR", record: "13-2-1", initials: "SWO", country: "USA" },
  { name: "Samuel Sanches", division: "LW", rank: "NR", record: "11-1-0", initials: "SSA", country: "Brazil" },
  { name: "Saimon Oliveira", division: "BW", rank: "NR", record: "18-7-0", initials: "SOL", country: "Brazil" },
@@ -4974,6 +4975,7 @@
 
   "Alonzo Menifield": { ht:"6'0\"", dob:"1987-10-18", reach:'76"', stance:"Orthodox", slpm:3.84, strAcc:"53%", sapm:3.81, strDef:"51%", kd:0.77, tdLanded:0.48, tdAcc:"31%", tdDef:"78%", subAvg:0.19, finRate:"78%", streak:1, gym:"Fortis MMA" },
   "Tresean Gore": { ht:"6'0\"", dob:"1994-06-21", reach:'75"', stance:"Switch", slpm:2.76, strAcc:"43%", sapm:7.48, strDef:"41%", kd:0.00, tdLanded:1.83, tdAcc:"73%", tdDef:"88%", subAvg:0.91, finRate:"86%", streak:1, gym:"American Top Team" },
+  "Serhiy Sidey": { ht:"5'11\"", dob:"1996-07-04", reach:'72"', stance:"Switch", slpm:4.49, strAcc:"40%", sapm:4.26, strDef:"54%", kd:0.32, tdLanded:1.58, tdAcc:"25%", tdDef:"20%", subAvg:1.26, finRate:"67%", streak:2, gym:"Burlington Training Centre" },
   "Sean Woodson": { ht:"6'2\"", dob:"1992-06-07", reach:'78"', stance:"Orthodox", slpm:5.57, strAcc:"47%", sapm:4.18, strDef:"59%", kd:0.46, tdLanded:0.58, tdAcc:"56%", tdDef:"85%", subAvg:0.35, finRate:"38%", streak:0, gym:"Wolves' Den Training Center" },
   "Samuel Sanches": { ht:"5'10\"", dob:"2003-01-28", reach:'74.5"', stance:"Orthodox", slpm:5.95, strAcc:"75%", sapm:0.00, strDef:"100%", kd:7.44, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"82%", streak:8, gym:"Galpao Da Luta" },
   "Saimon Oliveira": { ht:"5'4\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:2.62, strAcc:"42%", sapm:3.87, strDef:"46%", kd:0.00, tdLanded:1.18, tdAcc:"29%", tdDef:"36%", subAvg:1.18, finRate:"89%", streak:0, gym:"Astra Fight Team" },
@@ -14153,6 +14155,14 @@
     { opponent: "Mauricio Gomez", odds: -338 },
     { opponent: "Damion Nelson", odds: 205 },
     { opponent: "Jeremy Henry", odds: -250 }
+  ],
+  "Serhiy Sidey": [
+    { opponent: "Cameron Smotherman", odds: -138 },
+    { opponent: "Garrett Armfield", odds: -125 },
+    { opponent: "Ramon Taveras", odds: -180 },
+    { opponent: "Ramon Taveras", odds: -180 },
+    { opponent: "Ali Wasuk", odds: -225 },
+    { opponent: "Austin Russell", odds: -215 }
   ],
   "Sean Woodson": [
     { opponent: "Dan Ige", odds: -188 },
@@ -31142,6 +31152,22 @@ const FIGHT_HISTORY = {
     { date: "Mar 15, 2019", opponent: "Ailiyaer Didaer", result: "W", method: "TKO (Punches)", round: 1, time: "0:30", event: "WLF: W.A.R.S. 32" },
     { date: "Jan 12, 2019", opponent: "Jhonmar Sopranes", result: "W", method: "TKO (Punches)", round: 1, time: "0:55", event: "Aspera FC Asia 2 (title)" }
   ],
+  "Serhiy Sidey": [
+    { date: "May 3, 2025", opponent: "Cameron Smotherman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on ESPN: Sandhagen vs. Figueiredo", org: "UFC" },
+    { date: "Nov 2, 2024", opponent: "Garrett Armfield", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Albazi", org: "UFC" },
+    { date: "Jan 20, 2024", opponent: "Ramon Taveras", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 297", org: "UFC" },
+    { date: "Sep 5, 2023", opponent: "Ramon Taveras", result: "W", method: "TKO (Punches)", round: 1, time: "2:26", event: "Dana White's Contender Series 2023: Week 5", org: "DWCS" },
+    { date: "Jun 9, 2023", opponent: "Ali Wasuk", result: "W", method: "TKO (Punches)", round: 2, time: "4:07", event: "BFL 77" },
+    { date: "Mar 18, 2023", opponent: "Walel Watson", result: "W", method: "TKO (Punches)", round: 1, time: "3:05", event: "BTC 19: Fight Night Kingston" },
+    { date: "Apr 28, 2022", opponent: "Austin Russell", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "BFL 72" },
+    { date: "Dec 3, 2021", opponent: "Ali Wasuk", result: "W", method: "TKO (Punches to the body)", round: 4, time: "1:22", event: "BFL 70" },
+    { date: "Sep 30, 2021", opponent: "Gerico Platon", result: "W", method: "Submission (Triangle choke)", round: 1, time: "1:26", event: "BFL 68" },
+    { date: "Feb 29, 2020", opponent: "Mateo Alejandro Vogel", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BTC 9: Rampage" },
+    { date: "Aug 24, 2019", opponent: "Kevin Popowick-Bastien", result: "W", method: "TKO (Punches)", round: 1, time: "4:08", event: "BTC 7: Annihilation" },
+    { date: "Nov 24, 2018", opponent: "Avinash Chowtee", result: "W", method: "TKO (Punches)", round: 3, time: "1:30", event: "BTC 4: Vendetta" },
+    { date: "Aug 25, 2018", opponent: "P.J. Ste-Marie", result: "W", method: "TKO (Punches)", round: 2, time: "2:25", event: "PAKMMA Fighting Alliance 7: Legends" },
+    { date: "Jun 23, 2018", opponent: "Avinash Chowtee", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BTC 3: Prophecy" }
+  ],
   "Sean Woodson": [
     { date: "Apr 12, 2025", opponent: "Dan Ige", result: "L", method: "TKO (Punches)", round: 3, time: "1:12", event: "UFC 314", org: "UFC" },
     { date: "Dec 14, 2024", opponent: "Fernando Padilla", result: "W", method: "TKO (Punches)", round: 1, time: "4:58", event: "UFC on ESPN: Covington vs. Buckley", org: "UFC" },
@@ -39017,6 +39043,12 @@ const ACCOLADES = {
     { icon: "🥊", title: "Knockout finisher — 5 wins by KO, five first-round finishes; reached the UFC on a 5-fight win streak", detail: null },
     { icon: "🤼", title: "Division II wrestler — New Mexico Highlands University (one season)", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu Purple Belt under Daniel Pineda (per UFC)", detail: null },
+  ],
+  "Serhiy Sidey": [
+    { icon: "📺", title: "Awarded a UFC contract after a first-round TKO of Ramon Taveras on Dana White's Contender Series, Season 7 Episode 5 (2023)", detail: null },
+    { icon: "🏆", title: "4-time BFL (Battlefield Fight League) Champion (British Columbia); BTC Fight Promotions Champion (Ontario)", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🥊", title: "First-round TKO win over UFC veteran Walel Watson (Mar 2023); has won 7 of his last 8 fights", detail: null }
   ],
   "Sean Woodson": [
     { icon: "📺", title: "Awarded a UFC contract after a second-round flying-knee KO of Terrance McKinney on Dana White's Contender Series, Season 3 Episode 5 (2019)", detail: null },
