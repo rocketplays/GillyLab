@@ -3408,6 +3408,7 @@
  { name: "Andrea Lee", division: "WFLW", rank: "NR", record: "13-11-0", initials: "ALE", country: "USA" },
  { name: "Viviane Araújo", division: "WFLW", rank: "NR", record: "14-8-0", initials: "VAR", country: "Brazil" },
  { name: "Ernesta Kareckaite", division: "WFLW", rank: "NR", record: "6-2-1", initials: "EK", country: "Lithuania" },
+ { name: "Regina Tarin", division: "WFLW", rank: "NR", record: "8-0-0", initials: "RTAR", country: "Mexico" },
  // ─── WOMEN'S BANTAMWEIGHT ───
  { name: "Kayla Harrison", division: "WBW", rank: "#C", record: "19-1-0", initials: "KHA", country: "USA" },
  { name: "Julianna Peña", division: "WBW", rank: "#1", record: "13-6-0", initials: "JPE", country: "USA" },
@@ -4862,6 +4863,7 @@
  "Douglas Silva de Andrade": { ht:"5'7\"", dob:"1985-06-22", reach:'68.5"', stance:"Orthodox", slpm:3.54, strAcc:"39%", sapm:4.09, strDef:"57%", kd:0.54, tdLanded:0.54, tdAcc:"43%", tdDef:"72%", subAvg:0.18, finRate:"76%", streak:0, gym:"Academia Corinthians - Sao Paulo" },
  "Dustin Stoltzfus": { ht:"6'0\"", dob:"1991-11-15", reach:'75"', stance:"Orthodox", slpm:3.30, strAcc:"45%", sapm:3.23, strDef:"48%", kd:0.28, tdLanded:2.08, tdAcc:"38%", tdDef:"47%", subAvg:1.11, finRate:"56%", streak:0, gym:"Xtreme Couture" },
  "Elves Brener": { ht:"5'10\"", dob:"1997-09-27", reach:'72.5"', stance:"Orthodox", slpm:4.76, strAcc:"48%", sapm:5.86, strDef:"51%", kd:0.40, tdLanded:0.99, tdAcc:"17%", tdDef:"76%", subAvg:0.00, finRate:"88%", streak:0, gym:"Chute Boxe" },
+ "Regina Tarin": { ht:"5'7\"", dob:"2004-10-19", reach:'66"', stance:"Southpaw", slpm:7.60, strAcc:"48%", sapm:7.00, strDef:"58%", kd:0.00, tdLanded:1.00, tdAcc:"33%", tdDef:"50%", subAvg:0.00, finRate:"75%", streak:8, gym:"Bonebreakers MMA" },
  "Ernesta Kareckaite": { ht:"5'9\"", dob:"1998-07-05", reach:'71"', stance:"Orthodox", slpm:7.28, strAcc:"42%", sapm:6.47, strDef:"50%", kd:0.00, tdLanded:0.75, tdAcc:"60%", tdDef:"81%", subAvg:0.00, finRate:"33%", streak:0, gym:"Fighters Land MMA" },
  "Evan Elder": { ht:"5'10\"", dob:"1997-04-11", reach:'72"', stance:"Switch", slpm:5.66, strAcc:"51%", sapm:4.94, strDef:"57%", kd:0.48, tdLanded:0.48, tdAcc:"15%", tdDef:"40%", subAvg:0.48, finRate:"60%", streak:3, gym:"Syndicate MMA" },
  "Fernando Padilla": { ht:"6'1\"", dob:"1996-12-15", reach:'76"', stance:"Orthodox", slpm:6.07, strAcc:"40%", sapm:5.74, strDef:"52%", kd:1.23, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.61, finRate:"88%", streak:0, gym:"Team Oyama" },
@@ -12306,6 +12308,9 @@
     { opponent: "Joel Alvarez", odds: 128 },
     { opponent: "Myktybek Orolbai", odds: 215 },
     { opponent: "Kaynan Kruschewsky", odds: -230 },
+  ],
+  "Regina Tarin": [
+    { opponent: "Ernesta Kareckaite", odds: 133 }
   ],
   "Ernesta Kareckaite": [
     { opponent: "Regina Tarin", odds: -146 },
@@ -26735,6 +26740,16 @@ const FIGHT_HISTORY = {
     { date: "Sep 1, 2016", opponent: "Eurides Bandeira", result: "W", method: "Submission (Armbar)", round: 3, time: "4:20", event: "Amazon Talent 5", org: "AT" },
     { date: "May 1, 2016", opponent: "Thales Moraes", result: "W", method: "Submission (Armbar)", round: 1, time: "3:16", event: "Mr. Cage 22", org: "Mr. Cage" },
   ],
+  "Regina Tarin": [
+    { date: "Feb 28, 2026", opponent: "Ernesta Kareckaite", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
+    { date: "Nov 29, 2025", opponent: "Yurivia Jimenez", result: "W", method: "KO (Punches)", round: 1, time: "2:00", event: "Tough N Xtreme 1125" },
+    { date: "Jun 19, 2025", opponent: "Kaytlin Neil", result: "W", method: "TKO (Punches)", round: 2, time: "4:16", event: "Combate Global: Combate Female 2" },
+    { date: "Sep 27, 2024", opponent: "Luisa Fernanda Cifuentes", result: "W", method: "TKO (Punches)", round: 4, time: "2:27", event: "Budo Sento Championship 25" },
+    { date: "Jul 27, 2024", opponent: "Gisela Luna", result: "W", method: "TKO (Punches)", round: 1, time: "1:55", event: "Combate Global: Mexico vs. Japan 2" },
+    { date: "Jun 8, 2024", opponent: "Fernanda Marrufo", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "3:14", event: "Combate Global: Amaya vs. Jean-Francois" },
+    { date: "Apr 12, 2024", opponent: "Andrea Garcia", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Budo Sento Championship 21" },
+    { date: "Dec 1, 2023", opponent: "Citlalli Alcantar", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:02", event: "Budo Sento Championship 19" }
+  ],
   "Ernesta Kareckaite": [
     { date: "Feb 28, 2026", opponent: "Regina Tarin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moreno vs. Kavanagh", org: "UFC" },
     { date: "Jan 11, 2025", opponent: "Nicolle Caliari", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
@@ -39217,6 +39232,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Mr. Cage Championship titleholder (lightweight)", detail: null },
     { icon: "🏆", title: "Amazon Talent event champion", detail: null },
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu (earned at age 15)", detail: null },
+  ],
+  "Regina Tarin": [
+    { icon: "🏆", title: "Budo Sento Bantamweight Champion — won the title Sep 27, 2024 (TKO win over Luisa Fernanda Cifuentes, BSC 25)", detail: null },
+    { icon: "🥈", title: "2nd place, IMMAF Youth World Championships (2022); 3-time Mexican National Amateur MMA Champion; Golden Gloves boxing champion", detail: null },
+    { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
+    { icon: "🏅", title: "Won her UFC debut on just 3 days' notice (Feb 28, 2026), becoming the second-youngest fighter on the UFC roster at age 21", detail: null }
   ],
   "Ernesta Kareckaite": [
     { icon: "🏆", title: "Hexagone MMA World Flyweight Champion", detail: null },
