@@ -613,7 +613,12 @@ def save_headshot(tmp_path, slug):
     dest = os.path.join(PHOTOS, slug + ".jpg")
     try:
         from PIL import Image
-        im = Image.open(tmp_path).convert("RGB")
+        # ESPN headshots are transparent cutouts (RGBA). JPEG can't hold alpha,
+        # so composite onto the avatar's exact bg (#18181d) rather than letting
+        # convert("RGB") flatten to black — the hero shows it in a #18181d circle.
+        rgba = Image.open(tmp_path).convert("RGBA")
+        im = Image.new("RGB", rgba.size, (0x18, 0x18, 0x1d))
+        im.paste(rgba, (0, 0), rgba)
         w, h = im.size
         s = 400.0 / max(w, h)
         if s < 1:

@@ -29,8 +29,7 @@ THUMB_WIDTH = 110  # ~2.5x the largest avatar display size (44px), sharp on reti
 
 def main():
     os.makedirs(DST_DIR, exist_ok=True)
-    # Full photos are .jpg now (.png still supported for any legacy files).
-    files = [f for f in os.listdir(SRC_DIR) if f.lower().endswith(('.jpg', '.png'))]
+    files = [f for f in os.listdir(SRC_DIR) if f.lower().endswith('.png')]
 
     generated = []
     skipped_existing = []
@@ -38,7 +37,7 @@ def main():
 
     for f in files:
         src_path = os.path.join(SRC_DIR, f)
-        dst_path = os.path.join(DST_DIR, os.path.splitext(f)[0] + '.png')  # thumbs stay .png
+        dst_path = os.path.join(DST_DIR, f)
         if os.path.exists(dst_path):
             skipped_existing.append(f)
             continue
