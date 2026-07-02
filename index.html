@@ -3678,6 +3678,7 @@
  { name: "Wellington Turman", division: "WW", rank: "NR", record: "18-8-0", initials: "WTU", country: "Brazil" },
  { name: "Ty Miller", division: "WW", rank: "NR", record: "7-0-0", initials: "TMI", country: "USA" },
  { name: "Victor Martinez", division: "LW", rank: "NR", record: "13-7-0", initials: "VMA", country: "USA" },
+ { name: "Damian Rzepecki", division: "LW", rank: "NR", record: "10-0-0", initials: "DRZ", country: "Poland" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -4157,6 +4158,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Damian Rzepecki": { ht:"5'10\"", dob:"2001-11-23", reach:'73.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:10, gym:"Top Fit Center Piotrków Trybunalski" },
   "Yizha": { ht:"5'7\"", dob:"1997-01-08", reach:'71"', stance:"Orthodox", slpm:3.20, strAcc:"50%", sapm:3.27, strDef:"46%", kd:0.99, tdLanded:2.63, tdAcc:"29%", tdDef:"78%", subAvg:0.00, finRate:"77%", streak:0, gym:"Enbo Fight Club" },
   "Victor Martinez": { ht:"5'8\"", dob:"1991-07-17", reach:'70"', stance:"Orthodox", slpm:7.53, strAcc:"51%", sapm:7.75, strDef:"52%", kd:0.67, tdLanded:0.67, tdAcc:"33%", tdDef:"80%", subAvg:0.00, finRate:"62%", streak:0, gym:"Fortis MMA" },
   "Ty Miller": { ht:"6'2\"", dob:"2000-06-04", reach:'77"', stance:"Orthodox", slpm:7.16, strAcc:"39%", sapm:4.65, strDef:"65%", kd:0.75, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"43%", streak:7, gym:"Fit NHB" },
@@ -6616,6 +6618,13 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Damian Rzepecki": [
+    { opponent: "Corneliu Rotaru Lascar", odds: -250 },
+    { opponent: "Estabili Amato", odds: -225 },
+    { opponent: "Krzysztof Dobrzynski", odds: -333 },
+    { opponent: "Konrad Furmanek", odds: -250 },
+    { opponent: "Hubert Sulewski", odds: 150 }
+  ],
   "Yizha": [
     { opponent: "Kaan Ofli", odds: -225 },
     { opponent: "Westin Wilson", odds: -950 },
@@ -15550,6 +15559,18 @@
 };
 
 const FIGHT_HISTORY = {
+  "Damian Rzepecki": [
+    { date: "Apr 11, 2026", opponent: "Corneliu Rotaru Lascar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WOW 29: Valencia", org: "WOW" },
+    { date: "Jun 21, 2025", opponent: "Patryk Dunski", result: "W", method: "TKO (Liver Punch)", round: 2, time: "2:42", event: "FEN 59: Ostrowski vs. Janur", org: "FEN" },
+    { date: "Nov 23, 2024", opponent: "Marcin Jablonski", result: "W", method: "KO (Punch)", round: 3, time: "4:13", event: "FEN 57: Rzepecki vs. Jablonski", org: "FEN" },
+    { date: "Mar 16, 2024", opponent: "Giorgi Esiava", result: "W", method: "KO (Knee)", round: 3, time: "4:16", event: "FEN 53: Oleksiejczuk vs. Kuanyshbayev", org: "FEN" },
+    { date: "Oct 14, 2023", opponent: "Estabili Amato", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:52", event: "FEN 51: Oleksiejczuk vs. Fishgold", org: "FEN" },
+    { date: "May 27, 2023", opponent: "Krzysztof Dobrzynski", result: "W", method: "Submission (Brabo Choke)", round: 2, time: "3:14", event: "FEN 46: Kuberski vs. Wojciechowski", org: "FEN" },
+    { date: "Mar 11, 2023", opponent: "Konrad Furmanek", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:12", event: "FEN 45: TAURON Fight Night", org: "FEN" },
+    { date: "Aug 27, 2022", opponent: "Hubert Sulewski", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:57", event: "FEN 41: TAURON Fight Night Mragowo", org: "FEN" },
+    { date: "Mar 12, 2022", opponent: "Vladislav Bilorus", result: "W", method: "TKO (Punches)", round: 3, time: "1:01", event: "Anaconda Fight League 2", org: "Anaconda FL" },
+    { date: "Dec 4, 2021", opponent: "Dawid Gabara", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:57", event: "Anaconda Fight League 1", org: "Anaconda FL" }
+  ],
   "Yizha": [
     { date: "Jan 31, 2026", opponent: "Kaan Ofli", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC 325: Volkanovski vs. Lopes 2", org: "UFC" },
     { date: "Aug 23, 2025", opponent: "Westin Wilson", result: "W", method: "TKO", round: 1, time: "0:37", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
@@ -35435,6 +35456,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Damian Rzepecki": [
+    { icon: "🏆", title: "FEN (Fight Exclusive Night) Lightweight Champion (2024–present) — won the vacant title with a KO of Marcin Jablonski on his birthday; one successful defense (TKO of Patryk Dunski)", detail: null },
+    { icon: "⭐", title: "FEN Submission of the Night (three straight) plus WOW Fight of the Night (2026)", detail: null },
+    { icon: "🏅", title: "Undefeated 10-0 with 9 finishes (4 KO/TKO, 5 submission); signed directly to the UFC with no Contender Series stop, debut vs. Magomed Zaynukov booked for July 2026", detail: null },
+    { icon: "🥊", title: "\"The Butcher\" — Polish lightweight prospect out of Top Fit Center, Piotrków Trybunalski", detail: null }
+  ],
   "Yizha": [
     { icon: "🏆", title: "Road to UFC Season 2 Featherweight Tournament winner (2024) — first-round armbar of Kaiwen Li in the final to earn a UFC contract", detail: null },
     { icon: "🏅", title: "Road to UFC Season 1 finalist (2023) — lost a split decision to JeongYeong Lee in the final", detail: null },
