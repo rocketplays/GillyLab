@@ -1,0 +1,42 @@
+26 HELD FIGHTERS — VERIFIED & CORRECTED (cross-referenced vs Sherdog / Wikipedia / Tapology / ufcstats)
+Record shown is W-L-D (No Contests excluded per MMA convention). All 26 now inserted into the DB.
+Box-score stats came from ESPN's API (reliable); only the record/fight-history needed review.
+
+CLEAN — No-Contest cases (ESPN counted NCs as draws; fight history complete, record fixed + NC relabeled):
+  Donald Cerrone        36-17-0  (2 NC)   was ESPN-derived 36-17-2
+  Nick Diaz             26-10-0  (2 NC)   was 26-10-2
+  Daniel Pineda         28-17-0  (3 NC)   was 28-17-3
+  Phil Harris           22-12-0  (2 NC)   was 22-12-2
+  Carl Deaton III       17-7-0   (2 NC)   was 17-7-2
+  Thomas Gifford        17-9-0   (2 NC)   was 17-9-2
+  Dan Argueta           9-3-0    (2 NC)   was 9-3-2
+  Mara Romero Borella   12-9-0   (2 NC)   was 12-9-2
+
+CLEAN — ESPN's stated record was wrong, our fight-history-derived record was already correct:
+  Thiago Alves          23-15-0           (ESPN wrongly stated 28-15; derived 23-15 is right — kept)
+  Ji Yeon Kim           9-7-2             (2 real draws; ESPN stated omitted them — kept)
+
+RECORD FIXED, fight list has minor draw/NC labeling only (1 real draw + NCs; left as-is):
+  Jamie Varner          21-11-1  (2 NC)   was 21-11-3
+  Felipe Arantes        18-10-1  (2 NC)   was 18-10-3
+  Yves Edwards          42-22-1  (1 NC)   was 43-22-2  (ESPN also had 1 extra win)
+
+RECORD FIXED to verified value — ESPN's fight LIST is imperfect (missing/extra old regional bouts).
+Record is now correct; the displayed fight list may not perfectly sum (UFC bouts are complete/accurate):
+  Mark Coleman          16-10-0           ESPN list had 2 extra wins (showed 18-10)
+  Chris Leben           22-11-0           ESPN list had extra bouts (showed 26-11-1)
+  Chris Lytle           31-18-5           ESPN loss count inflated (showed 32-23); real 31-18-5
+  Krzysztof Soszynski   26-12-1           ESPN list short ~2 wins (showed 24-12-1)
+  Alexandre Ferreira    18-6-0            ESPN list short ~3 old bouts (showed 16-5)
+  Rafaello Oliveira     17-8-0            ESPN list short 2 wins (showed 15-8)
+  Tony Sims             12-4-0            ESPN list short 2 wins (showed 10-4)
+  Fabricio Camoes       14-9-1            ESPN list had 2 extra losses (showed 14-11-1)
+  Wang Guan             22-1-1            active in ONE; ESPN list short recent wins (showed 18-1-1)
+  Yazan Hajeh           7-3-0             ESPN list short (showed only 4 fights / 3-1)
+  Caio Bittencourt      18-10-0           ESPN history badly incomplete (only 1 fight listed) — WEAKEST list
+  James Gray            4-2-0             obscure; ESPN stated 4-2 used (low confidence; derived 3-1)
+
+NOTE: For the "fight LIST imperfect" group, the record is now verified-correct but the on-page fight
+history (ESPN-sourced, like the rest of the DB) may show fewer/more bouts than the record implies,
+mostly for pre-2010 or non-UFC regional fights. Their UFC fights + box-score stats are accurate.
+Caio Bittencourt is the weakest — consider a manual fight-history rebuild if you want his list complete.
