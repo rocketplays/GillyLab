@@ -1,0 +1,51 @@
+{
+  "status": "ok",
+  "name": "Rick Davis",
+  "slug": "rick-davis",
+  "espn_id": "2354540",
+  "roster_row": {
+    "name": "Rick Davis",
+    "division": "LW",
+    "rank": "NR",
+    "record": "0-1-0",
+    "initials": "RD",
+    "country": ""
+  },
+  "fighter_stats": {
+    "ht": null,
+    "dob": null,
+    "reach": null,
+    "stance": "Orthodox",
+    "slpm": 3.09,
+    "strAcc": "50%",
+    "sapm": 6.19,
+    "strDef": "64%",
+    "kd": 0.0,
+    "tdLanded": 0.0,
+    "tdAcc": null,
+    "tdDef": null,
+    "subAvg": 0.0,
+    "gym": "",
+    "finRate": null,
+    "streak": 0
+  },
+  "fight_history": [
+    {
+      "date": "May 27, 2006",
+      "opponent": "Melvin Guillard",
+      "result": "L",
+      "method": "KO/TKO",
+      "round": "1",
+      "time": "1:37",
+      "event": "UFC 60: Hughes vs. Gracie",
+      "org": "UFC"
+    }
+  ],
+  "stat_fights": 1,
+  "def_fights": 1,
+  "coverage": 1.0,
+  "ufc_fights": 1,
+  "photo": "no headshot on ESPN",
+  "record_check": "ok",
+  "stats_source": "boxscore-api"
+}
