@@ -3676,6 +3676,7 @@
  { name: "Gauge Young", division: "LW", rank: "NR", record: "11-3-0", initials: "GYO", country: "USA" },
  { name: "Islam Dulatov", division: "WW", rank: "NR", record: "12-1-0", initials: "IDU", country: "Russia" },
  { name: "Wellington Turman", division: "WW", rank: "NR", record: "18-8-0", initials: "WTU", country: "Brazil" },
+ { name: "Ty Miller", division: "WW", rank: "NR", record: "7-0-0", initials: "TMI", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -4154,6 +4155,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Ty Miller": { ht:"6'2\"", dob:"2000-06-04", reach:'77"', stance:"Orthodox", slpm:7.16, strAcc:"39%", sapm:4.65, strDef:"65%", kd:0.75, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"43%", streak:7, gym:"Fit NHB" },
   "Aliaskhab Khizriev": { ht:"5'9\"", dob:"1990-08-24", reach:'74"', stance:"Southpaw", slpm:6.01, strAcc:"64%", sapm:4.38, strDef:"62%", kd:0.00, tdLanded:5.64, tdAcc:"60%", tdDef:"100%", subAvg:3.76, finRate:"71%", streak:14, gym:"Fight Club Scorpion" },
   "Alex Reyes": { ht:"5'11\"", dob:"1986-10-02", reach:'73"', stance:"Orthodox", slpm:4.46, strAcc:"47%", sapm:6.92, strDef:"48%", kd:0.00, tdLanded:1.50, tdAcc:"29%", tdDef:null, subAvg:0.00, finRate:"100%", streak:0, gym:"Drysdale Jiu-Jitsu" },
   "Aleksandre Topuria": { ht:"5'7\"", dob:"1996-01-28", reach:'68"', stance:"Orthodox", slpm:2.93, strAcc:"55%", sapm:2.57, strDef:"69%", kd:0.00, tdLanded:1.50, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"71%", streak:5, gym:"Climent Club" },
@@ -6610,6 +6612,14 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Ty Miller": [
+    { opponent: "Adam Fugitt", odds: -410 },
+    { opponent: "Jimmy Drago", odds: -230 },
+    { opponent: "Arthur de Barros Vieira Rocha", odds: -450 },
+    { opponent: "Ryan Charlebois", odds: -138 },
+    { opponent: "Manny Morales", odds: -225 },
+    { opponent: "Eric Nolan", odds: -200 }
+  ],
   "Aliaskhab Khizriev": [
     { opponent: "Makhmud Muradov", odds: -160 },
     { opponent: "Denis Tiuliulin", odds: -1150 },
@@ -15524,6 +15534,16 @@
 };
 
 const FIGHT_HISTORY = {
+  "Ty Miller": [
+    { date: "Jan 24, 2026", opponent: "Adam Fugitt", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "UFC 324: Gaethje vs. Pimblett", org: "UFC" },
+    { date: "Aug 12, 2025", opponent: "Jimmy Drago", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 9, Week 1", org: "DWCS" },
+    { date: "Dec 6, 2024", opponent: "Arthur de Barros Vieira Rocha", result: "NC", method: "No Contest (Accidental Eye Poke)", round: 1, time: "3:30", event: "LFA 198: Miranda vs. Oyarzún", org: "LFA" },
+    { date: "Jun 22, 2024", opponent: "Ryan Charlebois", result: "W", method: "TKO", round: 1, time: "0:45", event: "LFA 186: Bekoev vs. Foxworth", org: "LFA" },
+    { date: "Mar 30, 2024", opponent: "Miguel Tovar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FightWorld 33", org: "FightWorld" },
+    { date: "Aug 26, 2022", opponent: "Manny Morales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 112: Perez vs. Wells", org: "CFFC" },
+    { date: "Apr 15, 2022", opponent: "Eric Nolan", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "CFFC 107: Bilder vs. Carvalho", org: "CFFC" },
+    { date: "Feb 12, 2022", opponent: "Justin Dorsey", result: "W", method: "TKO", round: 1, time: "2:26", event: "FightWorld 21", org: "FightWorld" }
+  ],
   "Aliaskhab Khizriev": [
     { date: "Feb 3, 2024", opponent: "Makhmud Muradov", result: "NC", method: "No Contest", round: 1, time: "0:11", event: "UFC Fight Night: Dolidze vs. Imavov", org: "UFC" },
     { date: "Mar 26, 2022", opponent: "Denis Tiuliulin", result: "W", method: "Submission (Arm-Triangle Choke)", round: 2, time: "1:58", event: "UFC Fight Night: Blaydes vs. Daukaus", org: "UFC" },
@@ -35343,6 +35363,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Ty Miller": [
+    { icon: "⭐", title: "UFC Performance of the Night — buzzer-beating first-round TKO of Adam Fugitt on his Octagon debut (UFC 324)", detail: null },
+    { icon: "🏅", title: "Undefeated (7-0, 1 NC); earned UFC contract on Dana White's Contender Series (2025) via unanimous decision over Jimmy Drago", detail: null },
+    { icon: "🤼", title: "\"Thriller\" — high school wrestler at Sandia High (Albuquerque); trains at Fit NHB", detail: null }
+  ],
   "Aliaskhab Khizriev": [
     { icon: "🏆", title: "Fight Nights Global interim Welterweight Champion (2018) — 58-second KO of Rousimar Palhares", detail: null },
     { icon: "🏅", title: "Undefeated (14-0, 1 NC); earned UFC contract on Dana White's Contender Series (2020)", detail: null },
