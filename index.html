@@ -3679,6 +3679,7 @@
  { name: "Ty Miller", division: "WW", rank: "NR", record: "7-0-0", initials: "TMI", country: "USA" },
  { name: "Victor Martinez", division: "LW", rank: "NR", record: "13-7-0", initials: "VMA", country: "USA" },
  { name: "Damian Rzepecki", division: "LW", rank: "NR", record: "10-0-0", initials: "DRZ", country: "Poland" },
+ { name: "Anderson Berinja", division: "BW", rank: "NR", record: "25-14-0", initials: "ABR", country: "Brazil" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -4158,6 +4159,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Anderson Berinja": { ht:"5'5\"", dob:"1985-07-24", reach:'70"', stance:"Orthodox", slpm:2.70, strAcc:"26%", sapm:5.37, strDef:"50%", kd:0.00, tdLanded:0.98, tdAcc:"14%", tdDef:"67%", subAvg:0.65, finRate:"76%", streak:0, gym:"Babuino Gold Team" },
   "Damian Rzepecki": { ht:"5'10\"", dob:"2001-11-23", reach:'73.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:10, gym:"Top Fit Center Piotrków Trybunalski" },
   "Yizha": { ht:"5'7\"", dob:"1997-01-08", reach:'71"', stance:"Orthodox", slpm:3.20, strAcc:"50%", sapm:3.27, strDef:"46%", kd:0.99, tdLanded:2.63, tdAcc:"29%", tdDef:"78%", subAvg:0.00, finRate:"77%", streak:0, gym:"Enbo Fight Club" },
   "Victor Martinez": { ht:"5'8\"", dob:"1991-07-17", reach:'70"', stance:"Orthodox", slpm:7.53, strAcc:"51%", sapm:7.75, strDef:"52%", kd:0.67, tdLanded:0.67, tdAcc:"33%", tdDef:"80%", subAvg:0.00, finRate:"62%", streak:0, gym:"Fortis MMA" },
@@ -6618,6 +6620,15 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Anderson Berinja": [
+    { opponent: "Patrizio de Sousa", odds: -188 },
+    { opponent: "Miles Johns", odds: 200 },
+    { opponent: "Martin Day", odds: 150 },
+    { opponent: "Andre Ewell", odds: 120 },
+    { opponent: "Nad Narimani", odds: 335 },
+    { opponent: "Andrew Whitney", odds: -220 },
+    { opponent: "Ricky Simon", odds: 350 }
+  ],
   "Damian Rzepecki": [
     { opponent: "Corneliu Rotaru Lascar", odds: -250 },
     { opponent: "Estabili Amato", odds: -225 },
@@ -15559,6 +15570,47 @@
 };
 
 const FIGHT_HISTORY = {
+  "Anderson Berinja": [
+    { date: "Nov 15, 2025", opponent: "Eduardo de Souza Silva", result: "L", method: "Submission (Guillotine)", round: 1, time: "3:12", event: "CEF 13: Coliseu Extreme Fight 13", org: "CEF" },
+    { date: "Apr 19, 2024", opponent: "Mikhail Egorov", result: "L", method: "TKO (Knees and Punches)", round: 2, time: "1:12", event: "ACA 174: Borisov vs. Vitruk", org: "ACA" },
+    { date: "Dec 24, 2023", opponent: "Alimardan Abdykarov", result: "L", method: "KO (Punch)", round: 1, time: "1:50", event: "ACA 168: Gadzhidaudov vs. Tumenov", org: "ACA" },
+    { date: "Sep 2, 2023", opponent: "Apti Bimarzaev", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ACA 162: Tumenov vs. Palmer", org: "ACA" },
+    { date: "Jun 16, 2023", opponent: "Patrizio de Sousa", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Centurion FC: Non Ducor, Duco", org: "Centurion FC" },
+    { date: "Feb 12, 2023", opponent: "Diego Barroso", result: "W", method: "Submission (Arm-Triangle Choke)", round: 3, time: "3:22", event: "Thunder Fight 41", org: "Thunder Fight" },
+    { date: "Aug 26, 2022", opponent: "Evgeniy Ignatiev", result: "L", method: "KO (Punch)", round: 1, time: "4:37", event: "RCC 12", org: "RCC" },
+    { date: "Mar 5, 2022", opponent: "Helio Nunes", result: "W", method: "Submission", round: 2, time: "1:20", event: "Fight Pro Championship 1", org: "FPC" },
+    { date: "Jan 15, 2022", opponent: "Edgar Oliveira", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Demolidor Fight 17", org: "Demolidor Fight" },
+    { date: "Aug 7, 2021", opponent: "Miles Johns", result: "L", method: "KO (Punch)", round: 3, time: "1:16", event: "UFC 265: Lewis vs. Gane", org: "UFC" },
+    { date: "Nov 28, 2020", opponent: "Martin Day", result: "W", method: "Submission (Guillotine)", round: 1, time: "4:35", event: "UFC on ESPN 18: Smith vs. Clark", org: "UFC" },
+    { date: "Jun 22, 2019", opponent: "Andre Ewell", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Moicano vs. Korean Zombie", org: "UFC" },
+    { date: "Nov 17, 2018", opponent: "Nad Narimani", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Magny vs. Ponzinibbio", org: "UFC" },
+    { date: "Nov 3, 2018", opponent: "Aleandro Caetano", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Thunder Fight 17: Rise of Immortals", org: "Thunder Fight" },
+    { date: "Jul 21, 2018", opponent: "Wanderley Levandovski", result: "W", method: "TKO", round: 1, time: "4:10", event: "SFT 3: Mexicano vs. Dos Santos", org: "SFT" },
+    { date: "Apr 22, 2018", opponent: "Fard Muhammad", result: "W", method: "Decision", round: 5, time: "5:00", event: "CCW: California Cage Wars 5", org: "CCW" },
+    { date: "Feb 24, 2018", opponent: "Victor Henry", result: "L", method: "TKO (Doctor Stoppage)", round: 2, time: "5:00", event: "KOTC: Energetic Pursuit", org: "KOTC" },
+    { date: "Aug 12, 2017", opponent: "Claudio Aparecido Bertarello", result: "W", method: "Submission (Guillotine)", round: 1, time: "2:17", event: "Demolidor Fight 10", org: "Demolidor Fight" },
+    { date: "Apr 1, 2017", opponent: "Said Nurmagomedov", result: "L", method: "Submission (Guillotine)", round: 1, time: "1:52", event: "WFCA 35: Battle in Astana", org: "WFCA" },
+    { date: "Nov 26, 2016", opponent: "Josema Jose da Paz", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:58", event: "Katana Fight: Gaucho vs. Gordillo", org: "Katana Fight" },
+    { date: "Oct 29, 2016", opponent: "Thiago dos Santos", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:11", event: "Gold Fight 8", org: "Gold Fight" },
+    { date: "Aug 5, 2016", opponent: "Andrew Whitney", result: "L", method: "TKO (Punches)", round: 2, time: "3:28", event: "Titan FC 40: Cavalcante vs. Assuncao", org: "Titan FC" },
+    { date: "Mar 4, 2016", opponent: "Ricky Simon", result: "W", method: "Technical Submission (Rear-Naked Choke)", round: 2, time: "2:38", event: "Titan FC 37: Simon vs. Dos Santos", org: "Titan FC" },
+    { date: "Dec 5, 2015", opponent: "Josinaldo Silva", result: "L", method: "TKO (Punches)", round: 3, time: "1:40", event: "Jungle Fight 84", org: "Jungle Fight" },
+    { date: "Jul 18, 2015", opponent: "Mario Danilo", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:48", event: "Bison Kombat 2", org: "Bison Kombat" },
+    { date: "May 9, 2015", opponent: "Eduardo de Souza Silva", result: "L", method: "Submission (Guillotine)", round: 1, time: "0:55", event: "CEF 12: Coliseu Extreme Fight 12", org: "CEF" },
+    { date: "Aug 9, 2014", opponent: "Arivaldo Lima da Silva", result: "W", method: "Submission (Guillotine)", round: 1, time: "4:40", event: "Talent MMA Circuit 10", org: "Talent MMA" },
+    { date: "Jun 11, 2014", opponent: "Michael de Oliveira", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:40", event: "Circuito de Lutas: Fight Night", org: "Circuito de Lutas" },
+    { date: "Feb 22, 2014", opponent: "Marcos Vinicius Borges", result: "W", method: "KO (Punch)", round: 1, time: "3:43", event: "Talent MMA Circuit 6", org: "Talent MMA" },
+    { date: "Sep 28, 2013", opponent: "Jose Alexandre", result: "W", method: "KO (Punch)", round: 2, time: "1:40", event: "Talent MMA Circuit 3", org: "Talent MMA" },
+    { date: "Jul 27, 2013", opponent: "Ricardo Sattelmayer", result: "W", method: "Submission (Armbar)", round: 1, time: "3:03", event: "XFMMA: X-Fight MMA 6", org: "XFMMA" },
+    { date: "Jul 4, 2013", opponent: "Leandro Souza Santos", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:59", event: "Bison Kombat 1", org: "Bison Kombat" },
+    { date: "Apr 5, 2013", opponent: "Fernando da Silva Lima", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:57", event: "Talent MMA Circuit 1", org: "Talent MMA" },
+    { date: "Dec 1, 2012", opponent: "Adilson Dias", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Supreme FC", org: "Supreme FC" },
+    { date: "Oct 20, 2012", opponent: "Edson Missio", result: "W", method: "TKO (Punches)", round: 1, time: "3:10", event: "Elite FC 4", org: "Elite FC" },
+    { date: "Apr 13, 2012", opponent: "Everaldo Souza", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Coliseum 1", org: "The Coliseum" },
+    { date: "Mar 24, 2012", opponent: "Cemir Silva", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Romani Fight Brasil 1", org: "Romani Fight" },
+    { date: "Mar 3, 2012", opponent: "Jorge Andrade", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:26", event: "MCC 2: Morganti Contact Championship 2", org: "MCC" },
+    { date: "Sep 14, 2011", opponent: "Ronielmo Lopes", result: "W", method: "KO (Punch)", round: 1, time: "3:06", event: "Fight Stars", org: "Fight Stars" }
+  ],
   "Damian Rzepecki": [
     { date: "Apr 11, 2026", opponent: "Corneliu Rotaru Lascar", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WOW 29: Valencia", org: "WOW" },
     { date: "Jun 21, 2025", opponent: "Patryk Dunski", result: "W", method: "TKO (Liver Punch)", round: 2, time: "2:42", event: "FEN 59: Ostrowski vs. Janur", org: "FEN" },
@@ -35456,6 +35508,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Anderson Berinja": [
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — 14 of 25 wins by submission", detail: null },
+    { icon: "🏅", title: "UFC bantamweight veteran (1-3, 2018–2021); notable regional win over future UFC contender Ricky Simon (Titan FC 37, 2016)", detail: null },
+    { icon: "🥊", title: "\"Berinja\" — veteran São Paulo grappler out of Babuino Gold Team with a 39-fight pro career", detail: null }
+  ],
   "Damian Rzepecki": [
     { icon: "🏆", title: "FEN (Fight Exclusive Night) Lightweight Champion (2024–present) — won the vacant title with a KO of Marcin Jablonski on his birthday; one successful defense (TKO of Patryk Dunski)", detail: null },
     { icon: "⭐", title: "FEN Submission of the Night (three straight) plus WOW Fight of the Night (2026)", detail: null },
