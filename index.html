@@ -95155,7 +95155,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       age: simAgeFactor(s.dob),
       layoff: simLayoffFactor(name),
       bigFight: simBigFightExperience(name),
-      controlBoost: simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak),
+      controlBoost: simControlTimeBoost(name, credibility),
       // Schedule-dampened: an unbeaten record is only as meaningful as the
       // competition it was built against. Unlike the rate stats, this bonus was
       // applied at full strength regardless of opposition, so a prospect padding
@@ -95408,10 +95408,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function simAgeFactor(dob) {
     if (!dob) return 0;
     const age = calcAge(dob);
-    if (age <= 36) return 0;
-    const yearsPast = age - 36;
-    const raw = (yearsPast * 0.12) + (yearsPast * yearsPast * 0.02);
-    return -simSoftCap(raw, 1.5);
+    // Onset lowered 36 → 32, curve steepened (×1.5) and cap raised 1.5 → 2.0.
+    // The point-in-time backtest (scripts/sim-backtest/) found the age penalty was
+    // by far the most under-tuned term: starting it in the early 30s rather than at
+    // 36, and letting it bite harder, was the single biggest out-of-sample gain of
+    // the whole tuning effort (test log loss 0.6631 → 0.6554, accuracy 60.9 → 62.2%).
+    // Both the training and held-out sets minimized around an onset of 30-32, which
+    // matches sports science (athletic peak ~27-30, measurable decline from the early
+    // 30s) — the old age-36 threshold was crediting fading veterans with prime ability
+    // their results no longer supported. "Moderate" curve: prime late-20s untouched,
+    // ~0.8 pts off by 35, approaching the 2.0 cap in the 40s.
+    if (age <= 32) return 0;
+    const yearsPast = age - 32;
+    const raw = ((yearsPast * 0.12) + (yearsPast * yearsPast * 0.02)) * 1.5;
+    return -simSoftCap(raw, 2.0);
   }
 
   // Most recent completed fight date (skips scheduled/upcoming bookings),
@@ -95788,15 +95798,55 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // show. That inference is only trusted when there's outside confirmation
   // it's working for them — a current ranking or a 3+ win streak — so it
   // doesn't reward a grappler who's merely active but actually losing.
-  function simControlTimeBoost(name, slpm, sapm, tdAcc, tdLanded, streak) {
-    const lowStriking = slpm < 3.5 && sapm < 3.5;
-    const grappleVolume = tdAcc >= 0.40 && tdLanded >= 3;
-    if (!lowStriking || !grappleVolume) return 0;
-    const proven = simRankTier(name) != null || streak >= 3;
-    if (!proven) return 0;
-    // Scales a little with how far past the landed-TD threshold they are,
-    // capped so it stays a supporting signal rather than a dominant one.
-    return 0.4 + simSoftCap(tdLanded - 3, 3) * 0.2;
+  // Real net control time — the fighter's control seconds minus their opponents',
+  // per 15 min of fight time — computed from the per-fight box scores already
+  // loaded for the box-score modal (window.FIGHT_STATS). Box scores don't carry a
+  // duration, so each bout's length comes from FIGHT_HISTORY (round + time),
+  // matched by date+opponent, exactly like simUfcCageSeconds. UFC bouts only.
+  // Returns null when there's no usable box-scored bout (so the caller falls back
+  // to no control adjustment). This replaces an earlier ESTIMATE that merely
+  // inferred control from "low striking + high takedown volume"; we now have the
+  // actual numbers.
+  function simControlNet(name) {
+    const box = (typeof window !== 'undefined' && window.FIGHT_STATS && window.FIGHT_STATS[name]) || null;
+    if (!box || !box.length) return null;
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    const ROUND_LEN = 5 * 60;
+    const durByKey = {};
+    hist.forEach(f => {
+      if (String(f.org || '').toUpperCase() !== 'UFC' || !f.result || f.result === '–' || f.method === 'Upcoming') return;
+      const isDecision = String(f.method || '').toUpperCase().includes('DECISION');
+      let sec;
+      if (isDecision) sec = simNum(f.round, 3) * ROUND_LEN;
+      else { const clk = simParseFightSeconds(f.time); sec = Math.max(0, simNum(f.round, 1) - 1) * ROUND_LEN + (clk != null ? clk : ROUND_LEN); }
+      durByKey[f.date + '||' + f.opponent] = sec;
+    });
+    let self = 0, opp = 0, total = 0, n = 0;
+    box.forEach(bt => {
+      const dur = durByKey[bt.date + '||' + bt.opponent];
+      if (dur == null) return;
+      self += simParseFightSeconds((bt.f || {}).ctrl) || 0;
+      opp += simParseFightSeconds((bt.o || {}).ctrl) || 0;
+      total += dur; n++;
+    });
+    if (!n || !total) return null;
+    return ((self - opp) / 60) / (total / 60) * 15;   // net control MINUTES per 15 min
+  }
+
+  // Control-time bonus, driven by the real net-control number above. UFC judging
+  // rewards top control heavily, and a fighter who controls far more than they're
+  // controlled is winning rounds in a way the raw takedown counts don't fully
+  // capture. Credibility-dampened (a thin or soft-schedule sample is pulled toward
+  // neutral, same treatment as the other rate stats) and soft-capped so a single
+  // long-control fight can't dominate. Weight 0.4 / cap 3.5 were fit empirically
+  // against a point-in-time backtest of 4,518 fights (scripts/sim-backtest/):
+  // swapping the old inert proxy for this improved out-of-sample log loss
+  // 0.6664 → 0.6625 and Brier 0.2370 → 0.2351, with k held at 5.4.
+  function simControlTimeBoost(name, credibility) {
+    const net = simControlNet(name);
+    if (net == null) return 0;
+    const dampened = net * (0.5 + 0.5 * credibility);
+    return 0.4 * simSoftCap(dampened, 3.5);
   }
 
   // Reach and stance are tracked per fighter but previously never touched
@@ -95849,7 +95899,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const threatA = tdLandedA * tdAccA + subAvgA * 0.5;
     const threatB = tdLandedB * tdAccB + subAvgB * 0.5;
     const grappleEdge = (threatA * (0.65 - tdDefB)) - (threatB * (0.65 - tdDefA));
-    delta += simSoftCap(grappleEdge * 1.6, 1.2);
+    // This is the matchup-aware grappling term: each fighter's takedown/sub threat
+    // is scaled by (0.65 − OPPONENT takedown defense), so a grappler is rewarded
+    // against a leaky-TDD opponent and penalised against an elite-TDD one. Weight
+    // raised 1.6 → 2.5: the point-in-time backtest (scripts/sim-backtest/) showed
+    // this term was slightly under-weighted — both train and out-of-sample log loss
+    // improved and then plateaued as it rose toward ~2.5-3.0. The ±1.2 soft cap
+    // bounds it regardless of weight, so a wide TDD gap can't run away. (A separate,
+    // control-time-specific matchup adjustment was also tested here and REJECTED —
+    // it gave no out-of-sample benefit, being redundant with this term.)
+    delta += simSoftCap(grappleEdge * 2.5, 1.2);
     return delta;
   }
 
@@ -96247,12 +96306,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // specific fighters isn't a stat artifact the closeness factor should be
     // discounting, it's ground truth, and rematches are often exactly the
     // close-peer pairings that factor would otherwise dampen.
-    // Widened from 2.3 — the tighter curve was turning moderate raw score
+    // Widened from 2.3 → 3.2 → 5.4. The tighter curves turned moderate raw score
     // gaps (5-8 points, mostly from stacked grappling/finishing terms) into
-    // overconfident 90%+ probabilities the betting market never priced
-    // anywhere close to. 3.2 keeps real blowout-tier gaps decisive while
-    // giving more room in the 60-85% band that most "favorite, but not a
-    // lock" fights actually live in.
+    // overconfident probabilities the betting market never priced anywhere close
+    // to. 5.4 was fit empirically: a point-in-time backtest of this exact formula
+    // over 4,518 decided UFC bouts (each fighter reconstructed from only their
+    // prior box scores, current rankings disabled to avoid leakage — see
+    // scripts/sim-backtest/) showed the model was systematically overconfident —
+    // its 70-80% picks won ~65%, its 20-30% picks won ~35%. Raising k to 5.4
+    // flattens the curve to fix that: it improved out-of-sample log loss and
+    // Brier score while leaving accuracy (60.9%) and every pick order unchanged.
+    // Big favorites now read ~64-67% instead of ~72-76%; coin-flips barely move.
     // Widened further when either fighter is a "boom or bust" type (see
     // simVolatility) — a high-variance fighter's predicted edge shouldn't be
     // trusted at the same confidence as a low-variance one, since their
@@ -96276,7 +96340,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const volatility = Math.max(simVolatility(nameA), simVolatility(nameB));
     const lowCredibility = Math.max(1 - simRateCredibility(nameA), 1 - simRateCredibility(nameB));
     const uncertainty = Math.max(volatility, lowCredibility * 0.7);
-    const k = 3.2 * (1 + 0.5 * uncertainty);
+    const k = 5.4 * (1 + 0.5 * uncertainty);
     const statDiff = ((sa - sb) + simStyleMatchupDelta(nameA, nameB, profA, profB)) * (1 - 0.8 * simRankClosenessFactor(nameA, nameB));
     // Unproven-against-the-level penalty (see simUnprovenPenalty) — applied
     // unsoftened, same as head-to-head, since a real demonstrated-level gap

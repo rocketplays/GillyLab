@@ -18,3 +18,6 @@ public/
 node_modules/
 .wrangler/
 .dev.vars
+
+# sim-backtest generated intermediates (regenerable via extract-sim.cjs / backtest.cjs)
+scripts/sim-backtest/_*
