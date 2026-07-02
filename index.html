@@ -11,9 +11,9 @@
        defaulting to white. -->
   <meta name="theme-color" content="#0a0a0b" />
   <title>GillyLab — UFC Analytics</title>
-  <link rel="icon" type="image/png" href="./gl-logo.png?v=4">
-  <link rel="shortcut icon" href="./gl-logo.png?v=4">
-  <link rel="apple-touch-icon" href="./gl-logo.png?v=4">
+  <link rel="icon" type="image/png" href="./gl-logo.png?v=5">
+  <link rel="shortcut icon" href="./gl-logo.png?v=5">
+  <link rel="apple-touch-icon" href="./gl-logo.png?v=5">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -1214,6 +1214,9 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+
+    .rc-fighter { transition: text-decoration-color 0.15s, color 0.15s; }
+    .rc-fighter:hover { color: #fff; text-decoration-color: #fff; }
 
     .proj-name:hover {
       color: var(--accent);
@@ -2704,7 +2707,7 @@
       </ul>
     </div>
 
-    <div class="nav-logo" onclick="navigate('home')" style="cursor:pointer;position:absolute;left:50%;transform:translateX(-50%);"><img src="gl-logo.png?v=4" alt="GL" style="height:44px;width:auto;display:block;" /></div>
+    <div class="nav-logo" onclick="navigate('home')" style="cursor:pointer;position:absolute;left:50%;transform:translateX(-50%);"><img src="gl-logo.png?v=5" alt="GL" style="height:44px;width:auto;display:block;" /></div>
   </nav>
 </div>
 
@@ -4052,9 +4055,14 @@
      + '<span style="background:' + color + '22;border-radius:999px;padding:0.05rem 0.5rem;font-size:0.7rem;line-height:1.5;">' + items.length + '</span>'
      + '</div>'
      + (items.length
-         ? '<div style="display:flex;flex-direction:column;gap:0.4rem;">' + items.map(n =>
-             '<div style="display:flex;align-items:center;gap:0.55rem;color:#fff;font-size:0.92rem;">'
-             + '<span style="color:' + color + ';font-size:0.58rem;">●</span><span>' + n + '</span></div>').join('') + '</div>'
+         ? '<div style="display:flex;flex-direction:column;gap:0.4rem;">' + items.map(n => {
+             const hasProfile = FIGHTERS.some(f => f.name === n);
+             const nameHtml = hasProfile
+               ? '<span class="rc-fighter" style="cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,255,255,0.3);text-underline-offset:3px;">' + n + '</span>'
+               : '<span>' + n + '</span>';
+             return '<div style="display:flex;align-items:center;gap:0.55rem;color:#fff;font-size:0.92rem;">'
+               + '<span style="color:' + color + ';font-size:0.58rem;">●</span>' + nameHtml + '</div>';
+           }).join('') + '</div>'
          : '<div style="color:rgba(255,255,255,0.35);font-size:0.85rem;">None</div>');
    el.innerHTML = ROSTER_CHANGES.map(w =>
      '<div style="border:1px solid rgba(255,255,255,0.1);border-radius:12px;background:rgba(255,255,255,0.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem;">'
@@ -41124,6 +41132,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const raw = fhEl.textContent.trim().replace(/\s+\d+$/, '');
       openFighterByName(raw);
     }
+
+    const rcEl = e.target.closest('.rc-fighter');
+    if (rcEl) openFighterByName(rcEl.textContent.trim());
   });
 
   // ════════════════════════════════════════════════════════
