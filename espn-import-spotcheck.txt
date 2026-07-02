@@ -1,0 +1,542 @@
+ESPN BULK IMPORT — SPOT CHECK SAMPLE (17 fighters)
+Each block = exactly what was inserted (FIGHTERS row / FIGHTER_STATS / FIGHT_HISTORY).
+Cross-check record, stats, and fight list against ESPN/Wikipedia.
+==============================================================================
+
+### matt-hughes   [status=ok, ESPN id=2335661, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Matt Hughes", division: "WW", rank: "NR", record: "45-9-0", initials: "MH", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Matt Hughes": { ht:"5'9\"", dob:"1973-10-13", reach:'73"', stance:"Switch", slpm:2.14, strAcc:"53%", sapm:1.36, strDef:"54%", kd:0.22, tdLanded:2.88, tdAcc:"49%", tdDef:"35%", subAvg:1.18, finRate:"76%", streak:0, gym:"Finney's HIT Squad" },
+
+// ---- FIGHT_HISTORY ----
+  "Matt Hughes": [
+    { date: "Sep 24, 2011", opponent: "Josh Koscheck", result: "L", method: "KO/TKO", round: 1, time: "4:59", event: "UFC 135: Jones vs. Rampage", org: "UFC" },
+    { date: "Nov 20, 2010", opponent: "BJ Penn", result: "L", method: "KO/TKO", round: 1, time: "0:21", event: "UFC 123: Rampage vs. Machida", org: "UFC" },
+    { date: "Aug 7, 2010", opponent: "Ricardo Almeida", result: "W", method: "Submission", round: 1, time: "3:15", event: "UFC 117: Silva vs. Sonnen", org: "UFC" },
+    { date: "Apr 10, 2010", opponent: "Renzo Gracie", result: "W", method: "KO/TKO", round: 3, time: "4:40", event: "UFC 112: Invincible", org: "UFC" },
+    { date: "May 23, 2009", opponent: "Matt Serra", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 98: Evans vs. Machida", org: "UFC" },
+    { date: "Jun 7, 2008", opponent: "Thiago Alves", result: "L", method: "KO/TKO", round: 2, time: "1:02", event: "UFC 85: Bedlam", org: "UFC" },
+    { date: "Dec 29, 2007", opponent: "Georges St-Pierre", result: "L", method: "Submission", round: 2, time: "4:54", event: "UFC 79: Nemesis", org: "UFC" },
+    { date: "Mar 3, 2007", opponent: "Chris Lytle", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 68: The Uprising", org: "UFC" },
+    { date: "Nov 18, 2006", opponent: "Georges St-Pierre", result: "L", method: "KO/TKO", round: 2, time: "1:25", event: "UFC 65: Bad Intentions", org: "UFC" },
+    { date: "Sep 23, 2006", opponent: "BJ Penn", result: "W", method: "KO/TKO", round: 3, time: "3:53", event: "UFC 63: Hughes vs. Penn", org: "UFC" },
+    { date: "May 27, 2006", opponent: "Royce Gracie", result: "W", method: "KO/TKO", round: 1, time: "4:39", event: "UFC 60: Hughes vs. Gracie", org: "UFC" },
+    { date: "Nov 19, 2005", opponent: "Joe Riggs", result: "W", method: "Submission", round: 1, time: "3:28", event: "UFC 56: Full Force", org: "UFC" },
+    { date: "Apr 16, 2005", opponent: "Frank Trigg", result: "W", method: "Submission", round: 1, time: "4:05", event: "UFC 52: Couture vs. Liddell 2", org: "UFC" },
+    { date: "Oct 22, 2004", opponent: "Georges St-Pierre", result: "W", method: "Submission", round: 1, time: "4:59", event: "UFC 50: The War of '04", org: "UFC" },
+    { date: "Jun 19, 2004", opponent: "Renato Verissimo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 48: Payback", org: "UFC" },
+    { date: "Jan 31, 2004", opponent: "BJ Penn", result: "L", method: "Submission", round: 1, time: "4:39", event: "UFC 46: Supernatural", org: "UFC" },
+    { date: "Nov 21, 2003", opponent: "Frank Trigg", result: "W", method: "Submission", round: 1, time: "3:54", event: "UFC 45: Revolution", org: "UFC" },
+    { date: "Apr 25, 2003", opponent: "Sean Sherk", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 42: Sudden Impact", org: "UFC" },
+    { date: "Nov 22, 2002", opponent: "Gil Castillo", result: "W", method: "TKO", round: 1, time: "5:00", event: "UFC 40: Vendetta", org: "UFC" },
+    { date: "Jul 13, 2002", opponent: "Carlos Newton", result: "W", method: "KO/TKO", round: 4, time: "3:37", event: "UFC 38: Brawl at the Hall", org: "UFC" },
+    { date: "Mar 22, 2002", opponent: "Hayato Sakurai", result: "W", method: "KO/TKO", round: 4, time: "3:01", event: "UFC 36: Worlds Collide", org: "UFC" },
+    { date: "Nov 2, 2001", opponent: "Carlos Newton", result: "W", method: "KO/TKO", round: 2, time: "1:27", event: "UFC 34: High Voltage", org: "UFC" },
+    { date: "Sep 8, 2001", opponent: "Steve Gomm", result: "W", method: "TKO", round: 2, time: "3:18", event: "EC 43: Extreme Challenge 43" },
+    { date: "Aug 11, 2001", opponent: "Hiromitsu Kanehara", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "Rings: 10th Anniversary" },
+    { date: "Jul 13, 2001", opponent: "Chatt Lavender", result: "W", method: "Submission (Arm Triangle)", round: 3, time: "2:31", event: "EC 41: Extreme Challenge 41" },
+    { date: "Jun 16, 2001", opponent: "Scott Johnson", result: "W", method: "KO/TKO", round: 1, time: "3:24", event: "EC 40: Extreme Challenge 40" },
+    { date: "May 11, 2001", opponent: "John Cronk", result: "W", method: "Submission (Punches)", round: 1, time: "-", event: "Gladiators 14: Gladiators 14" },
+    { date: "Mar 31, 2001", opponent: "Bruce Nelson", result: "W", method: "Submission (Guillotine)", round: 1, time: "3:04", event: "FCC 4: Freestyle Combat Challenge 4" },
+    { date: "Mar 17, 2001", opponent: "Brett Al-azzawi", result: "W", method: "Submission (Armbar)", round: 1, time: "3:27", event: "Rings USA: Battle of Champions" },
+    { date: "Feb 8, 2001", opponent: "Jose Landi-Jons", result: "L", method: "KO/TKO", round: 1, time: "4:45", event: "Shidokan Jitsu: Warriors War 1" },
+    { date: "Dec 16, 2000", opponent: "Dennis Hallman", result: "L", method: "Submission", round: 1, time: "0:20", event: "UFC 29: Defense of the Belts", org: "UFC" },
+    { date: "Nov 12, 2000", opponent: "Maynard Marcum", result: "W", method: "Submission (Keylock)", round: 1, time: "6:29", event: "Rings Australia: Free Fight Battle" },
+    { date: "Sep 30, 2000", opponent: "Robbie Newman", result: "W", method: "Sumission (Arm Triangle)", round: 1, time: "1:40", event: "Rings USA: Rising Stars Final" },
+    { date: "Aug 23, 2000", opponent: "Chris Haseman", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Rings: Millennium Combine 3" },
+    { date: "Jun 29, 2000", opponent: "Joe Guist", result: "W", method: "Submission (Armbar)", round: 1, time: "2:45", event: "EC 35" },
+    { date: "Jun 9, 2000", opponent: "Marcelo Aguiar", result: "W", method: "TKO", round: 1, time: "4:34", event: "UFC 26: Ultimate Field of Dreams", org: "UFC" },
+    { date: "May 21, 2000", opponent: "Shawn Peters", result: "W", method: "Submission (Choke)", round: 1, time: "2:52", event: "EC 32: Extreme Challenge 32" },
+    { date: "May 13, 2000", opponent: "Alexandre Barros", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WEF 9: World Class" },
+    { date: "Apr 15, 2000", opponent: "Eric DaVila", result: "W", method: "Submission (Keylock)", round: 2, time: "3:24", event: "SB 17: SuperBrawl 17" },
+    { date: "Jan 15, 2000", opponent: "Jorge Pereira", result: "W", method: "TKO", round: 1, time: "6:00", event: "WEF 8: Goin' Platinum" },
+    { date: "Nov 20, 1999", opponent: "Daniel Vianna", result: "W", method: "TKO", round: 1, time: "-", event: "JKD: Challenge 4" },
+    { date: "Nov 13, 1999", opponent: "LaVerne Clark", result: "W", method: "Submission (Rear Naked Choke)", round: 2, time: "1:35", event: "EC 29: Extreme Challenge 29" },
+    { date: "Nov 13, 1999", opponent: "Joe Doerksen", result: "W", method: "Submission (Knees)", round: 2, time: "0:25", event: "EC 29: Extreme Challenge 29" },
+    { date: "Nov 13, 1999", opponent: "Tom Schmitz", result: "W", method: "Submission", round: 1, time: "0:48", event: "EC 29: Extreme Challenge 29" },
+    { date: "Sep 24, 1999", opponent: "Valeri Ignatov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 22: There Can Be Only One Champion", org: "UFC" },
+    { date: "May 29, 1999", opponent: "Akihiro Gono", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shooto: 10th Anniversary Event" },
+    { date: "Apr 24, 1999", opponent: "Erick Snyder", result: "W", method: "TKO", round: 1, time: "-", event: "JKD: Challenge 3" },
+    { date: "Apr 2, 1999", opponent: "Joe Stern", result: "W", method: "TKO", round: 1, time: "2:30", event: "EC 23: Extreme Challenge 23" },
+    { date: "Sep 30, 2000", opponent: "Ryan Stout", result: "W", method: "TKO", round: 2, time: "5:00", event: "ES: Extreme Shootfighting" },
+    { date: "Oct 17, 1998", opponent: "Dennis Hallman", result: "L", method: "Submission (Guillotine)", round: 1, time: "0:17", event: "EC 21: Extreme Challenge 21" },
+    { date: "Oct 17, 1998", opponent: "Victor Hunsaker", result: "W", method: "TKO", round: 1, time: "1:39", event: "EC 21: Extreme Challenge 21" },
+    { date: "Oct 17, 1998", opponent: "Dave Menne", result: "W", method: "Decision (Unanimous)", round: 1, time: "15:00", event: "EC 21: Extreme Challenge 21" },
+    { date: "Apr 25, 1998", opponent: "Craig Quick", result: "W", method: "Submission (Punches)", round: 1, time: "-", event: "JKD: Challenge 2" },
+    { date: "Jan 1, 1998", opponent: "Erick Snyder", result: "W", method: "KO/TKO", round: 1, time: "0:15", event: "JKD: Challenge 1" },
+  ],
+
+------------------------------------------------------------------------------
+
+### greg-hardy   [status=ok, ESPN id=2220951, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Greg Hardy", division: "HW", rank: "NR", record: "7-5-1", initials: "GH", country: "USA" },
+
+// ---- FIGHTER_STATS ----
+  "Greg Hardy": { ht:"6'5\"", dob:"1988-07-28", reach:'80.5"', stance:"Orthodox", slpm:4.79, strAcc:"50%", sapm:3.31, strDef:"56%", kd:0.59, tdLanded:0.2, tdAcc:"33%", tdDef:"64%", subAvg:0.0, finRate:"86%", streak:0, gym:"American Top Team" },
+
+// ---- FIGHT_HISTORY ----
+  "Greg Hardy": [
+    { date: "Mar 5, 2022", opponent: "Serghei Spivac", result: "L", method: "KO/TKO", round: 1, time: "2:16", event: "UFC 272: Covington vs. Masvidal", org: "UFC" },
+    { date: "Jul 10, 2021", opponent: "Tai Tuivasa", result: "L", method: "KO/TKO", round: 1, time: "1:07", event: "UFC 264: Poirier vs. McGregor 3", org: "UFC" },
+    { date: "Dec 19, 2020", opponent: "Marcin Tybura", result: "L", method: "KO/TKO", round: 2, time: "4:31", event: "UFC Fight Night: Thompson vs. Neal", org: "UFC" },
+    { date: "Oct 31, 2020", opponent: "Maurice Greene", result: "W", method: "KO/TKO", round: 2, time: "1:12", event: "UFC Fight Night: Hall vs. Silva", org: "UFC" },
+    { date: "May 9, 2020", opponent: "Yorgan De Castro", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 249: Ferguson vs. Gaethje", org: "UFC" },
+    { date: "Nov 9, 2019", opponent: "Alexander Volkov", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Zabit vs. Kattar", org: "UFC" },
+    { date: "Oct 18, 2019", opponent: "Ben Sosoli", result: "D", method: "No Contest", round: 3, time: "5:00", event: "UFC Fight Night: Reyes vs. Weidman", org: "UFC" },
+    { date: "Jul 20, 2019", opponent: "Juan Adams", result: "W", method: "KO/TKO", round: 1, time: "0:45", event: "UFC Fight Night: Dos Anjos vs. Edwards", org: "UFC" },
+    { date: "Apr 27, 2019", opponent: "Dmitrii Smoliakov", result: "W", method: "KO/TKO", round: 1, time: "2:15", event: "UFC Fight Night: Jacare vs. Hermansson", org: "UFC" },
+    { date: "Jan 19, 2019", opponent: "Allen Crowder", result: "L", method: "DQ", round: 2, time: "2:28", event: "UFC Fight Night: Cejudo vs. Dillashaw", org: "UFC" },
+    { date: "Sep 29, 2018", opponent: "Ray Jones", result: "W", method: "KO/TKO", round: 1, time: "0:53", event: "XFN 352: Xtreme Fight Night 352" },
+    { date: "Aug 7, 2018", opponent: "Tebaris Gordon", result: "W", method: "KO/TKO", round: 1, time: "0:17", event: "Dana White's Contender Series: Season 2, Week 8", org: "UFC" },
+    { date: "Jun 12, 2018", opponent: "Austen Lane", result: "W", method: "KO/TKO", round: 1, time: "0:57", event: "Dana White's Contender Series: Season 2, Week 1", org: "UFC" },
+  ],
+
+------------------------------------------------------------------------------
+
+### germaine-de-randamie   [status=ok, ESPN id=2552777, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Germaine de Randamie", division: "WBW", rank: "NR", record: "10-5-0", initials: "GR", country: "Netherlands" },
+
+// ---- FIGHTER_STATS ----
+  "Germaine de Randamie": { ht:"5'9\"", dob:"1984-04-24", reach:'71"', stance:"Orthodox", slpm:2.57, strAcc:"48%", sapm:2.22, strDef:"65%", kd:0.24, tdLanded:0.0, tdAcc:"0%", tdDef:"66%", subAvg:0.36, finRate:"50%", streak:0, gym:"AKA (American Kickboxing Academy)" },
+
+// ---- FIGHT_HISTORY ----
+  "Germaine de Randamie": [
+    { date: "Apr 6, 2024", opponent: "Norma Dumont", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Allen vs. Curtis 2", org: "UFC" },
+    { date: "Oct 3, 2020", opponent: "Julianna Peña", result: "W", method: "Submission", round: 3, time: "3:25", event: "UFC Fight Night: Holm vs. Aldana", org: "UFC" },
+    { date: "Dec 14, 2019", opponent: "Amanda Nunes", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 245: Usman vs. Covington", org: "UFC" },
+    { date: "Jul 13, 2019", opponent: "Aspen Ladd", result: "W", method: "KO/TKO", round: 1, time: "0:16", event: "UFC Fight Night: De Randamie vs. Ladd", org: "UFC" },
+    { date: "Nov 10, 2018", opponent: "Raquel Pennington", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Korean Zombie vs. Rodriguez", org: "UFC" },
+    { date: "Feb 11, 2017", opponent: "Holly Holm", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 208: Holm vs. de Randamie", org: "UFC" },
+    { date: "May 8, 2016", opponent: "Anna Elmose", result: "W", method: "KO/TKO", round: 1, time: "3:46", event: "UFC Fight Night: Overeem vs. Arlovski", org: "UFC" },
+    { date: "Mar 14, 2015", opponent: "Larissa Pacheco", result: "W", method: "KO/TKO", round: 2, time: "2:02", event: "UFC 185: Pettis vs. dos Anjos", org: "UFC" },
+    { date: "Nov 6, 2013", opponent: "Amanda Nunes", result: "L", method: "KO/TKO", round: 1, time: "3:56", event: "UFC Fight Night: Fight for the Troops 3", org: "UFC" },
+    { date: "Jul 27, 2013", opponent: "Julie Kedzie", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on Fox: Johnson vs. Moraga", org: "UFC" },
+    { date: "Aug 18, 2012", opponent: "Hiroko Yamanaka", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strikeforce: Rousey vs. Kaufman" },
+    { date: "Jun 24, 2011", opponent: "Julia Budd", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strikeforce: Challengers 16" },
+    { date: "Jan 29, 2011", opponent: "Stephanie Webber", result: "W", method: "KO/TKO", round: 1, time: "4:25", event: "Strikeforce: Diaz vs. Cyborg" },
+    { date: "Sep 11, 2010", opponent: "Nikohl Johnson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PBFN: Playboy Fight Night 5" },
+    { date: "Dec 19, 2008", opponent: "Vanessa Porto", result: "L", method: "Submission (Armbar)", round: 1, time: "3:36", event: "RFC: Revolution Fight Club 2" },
+  ],
+
+------------------------------------------------------------------------------
+
+### andre-muniz   [status=ok, ESPN id=3091099, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Andre Muniz", division: "MW", rank: "NR", record: "24-8-0", initials: "AM", country: "Brazil" },
+
+// ---- FIGHTER_STATS ----
+  "Andre Muniz": { ht:"6'1\"", dob:"1990-02-17", reach:'78"', stance:"Southpaw", slpm:2.08, strAcc:"49%", sapm:2.46, strDef:"51%", kd:0.0, tdLanded:3.98, tdAcc:"48%", tdDef:"36%", subAvg:1.14, finRate:"79%", streak:0, gym:"Tata Fight Team" },
+
+// ---- FIGHT_HISTORY ----
+  "Andre Muniz": [
+    { date: "Oct 4, 2025", opponent: "Edmen Shahbazyan", result: "L", method: "KO/TKO", round: 1, time: "4:58", event: "UFC 320: Ankalaev vs. Pereira 2", org: "UFC" },
+    { date: "Apr 26, 2025", opponent: "Ikram Aliskerov", result: "L", method: "KO/TKO", round: 1, time: "4:54", event: "UFC Fight Night: Machado Garry vs. Prates", org: "UFC" },
+    { date: "Dec 9, 2023", opponent: "JunYong Park", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Song vs. Gutierrez", org: "UFC" },
+    { date: "Jul 22, 2023", opponent: "Paul Craig", result: "L", method: "KO/TKO", round: 2, time: "4:40", event: "UFC Fight Night: Aspinall vs. Tybura", org: "UFC" },
+    { date: "Feb 25, 2023", opponent: "Brendan Allen", result: "L", method: "Submission", round: 3, time: "4:25", event: "UFC Fight Night: Muniz vs. Allen", org: "UFC" },
+    { date: "Jul 2, 2022", opponent: "Uriah Hall", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 276: Adesanya vs. Cannonier", org: "UFC" },
+    { date: "Dec 11, 2021", opponent: "Eryk Anders", result: "W", method: "Submission", round: 1, time: "3:13", event: "UFC 269: Oliveira vs. Poirier", org: "UFC" },
+    { date: "May 15, 2021", opponent: "Jacare Souza", result: "W", method: "Submission", round: 1, time: "3:59", event: "UFC 262: Oliveira vs. Chandler", org: "UFC" },
+    { date: "Sep 5, 2020", opponent: "Bartosz Fabinski", result: "W", method: "Submission", round: 1, time: "2:42", event: "UFC Fight Night: Overeem vs. Sakai", org: "UFC" },
+    { date: "Nov 16, 2019", opponent: "Antonio Arroyo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Blachowicz vs. Jacare", org: "UFC" },
+    { date: "Aug 6, 2019", opponent: "Taylor Johnson", result: "W", method: "Submission", round: 1, time: "1:46", event: "Dana White's Contender Series: Season 3, Week 7", org: "UFC" },
+    { date: "Aug 11, 2018", opponent: "Bruno Assis", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Brazil 2", org: "UFC" },
+    { date: "Mar 24, 2018", opponent: "Willyanedson Paiva", result: "W", method: "Submission (Armbar)", round: 1, time: "0:38", event: "WOCS 49: Watch Out Combat Show 49" },
+    { date: "Dec 15, 2017", opponent: "Joao Paulo dos Santos", result: "W", method: "TKO", round: 1, time: "1:18", event: "WOCS 48: Watch Out Combat Show 48" },
+    { date: "Oct 2, 2016", opponent: "Azamat Murzakanov", result: "L", method: "KO/TKO", round: 1, time: "0:50", event: "Tech-Krep FC: International Caucasian Fight Championship" },
+    { date: "Apr 29, 2016", opponent: "Welington Lima Rafael", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:30", event: "WOC: War of Champions 6" },
+    { date: "Nov 14, 2015", opponent: "Carlos Eduardo Tavares Silva", result: "W", method: "Submission (Guillotine)", round: 1, time: "0:45", event: "X-Fight MMA 12: 2015 Brazil Grand Prix: Semifinals" },
+    { date: "Aug 21, 2015", opponent: "Flavio Rodrigo Magon", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "2:15", event: "X-Fight MMA 11: 2015 Brazil Grand Prix Phase 2" },
+    { date: "May 9, 2015", opponent: "Jose Aparecido Santos Gomes", result: "W", method: "Submission (Arm Triangle)", round: 2, time: "4:36", event: "CEF 12: Coliseu Extreme Fight 12" },
+    { date: "Feb 21, 2015", opponent: "Rafael Correia", result: "W", method: "Submission (D'Arce Choke)", round: 1, time: "4:58", event: "Face to Face 10: Pedra vs. Boxer" },
+    { date: "Dec 13, 2014", opponent: "Joao Paulo dos Santos", result: "W", method: "Submission (Arm Triangle)", round: 1, time: "2:40", event: "WOCS 40: Watch Out Combat Show 40" },
+    { date: "May 24, 2014", opponent: "Marcelo Barbosa Ramos", result: "W", method: "Submission (Guillotine)", round: 1, time: "-", event: "WOCS 34: Watch Out Combat Show 34" },
+    { date: "Feb 6, 2014", opponent: "Paulo Filho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "BC: Bitetti Combat 19" },
+    { date: "Oct 18, 2013", opponent: "Julio Cesar dos Santos", result: "L", method: "TKO", round: 2, time: "1:05", event: "WOCS: Watch Out Combat Show 30" },
+    { date: "Jul 19, 2013", opponent: "Tiago Monaco Tosato", result: "W", method: "Submission (Brabo Choke)", round: 1, time: "2:48", event: "BC: Bitetti Combat 16" },
+    { date: "Mar 23, 2013", opponent: "Daniel Oliveira", result: "W", method: "KO/TKO", round: 1, time: "2:55", event: "WOCS: Watch Out Combat Show 24" },
+    { date: "Nov 9, 2012", opponent: "Rodrigo Carlos", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "-", event: "WOCS: Watch Out Combat Show 22" },
+    { date: "May 12, 2012", opponent: "Douglas Moura", result: "L", method: "TKO", round: 1, time: "2:51", event: "JF: Jungle Fight 39" },
+    { date: "Oct 1, 2011", opponent: "Wagner Moura", result: "W", method: "TKO", round: 2, time: "1:15", event: "FBC: Fight Brazil Combat" },
+    { date: "Jun 18, 2011", opponent: "Julio Cesar dos Santos", result: "L", method: "TKO", round: 1, time: "5:00", event: "Bitetti Combat 9: Middleweight Combat Cup" },
+    { date: "Nov 15, 2009", opponent: "Paulo Victor Franco", result: "W", method: "TKO", round: 3, time: "-", event: "FBC: Fight Brazil Combat" },
+    { date: "Apr 3, 2009", opponent: "Ary Santos", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "-", event: "FBC 11: Fight Brazil Combat 11" },
+  ],
+
+------------------------------------------------------------------------------
+
+### spencer-fisher   [status=ok, ESPN id=2335716, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Spencer Fisher", division: "LW", rank: "NR", record: "24-9-0", initials: "SF", country: "USA" },
+
+// ---- FIGHTER_STATS ----
+  "Spencer Fisher": { ht:"5'7\"", dob:"1976-05-09", reach:'70"', stance:"Southpaw", slpm:3.17, strAcc:"44%", sapm:3.03, strDef:"64%", kd:0.22, tdLanded:0.67, tdAcc:"30%", tdDef:"60%", subAvg:0.75, finRate:"79%", streak:0, gym:"Miletich Martial Arts" },
+
+// ---- FIGHT_HISTORY ----
+  "Spencer Fisher": [
+    { date: "Jun 22, 2012", opponent: "Sam Stout", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on FX: Guida vs. Maynard", org: "UFC" },
+    { date: "Aug 27, 2011", opponent: "Thiago Tavares", result: "L", method: "KO/TKO", round: 2, time: "2:51", event: "UFC 134: Silva vs. Okami", org: "UFC" },
+    { date: "Feb 26, 2011", opponent: "Ross Pearson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 127: Penn vs. Fitch", org: "UFC" },
+    { date: "Oct 16, 2010", opponent: "Curt Warburton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 120: Bisping vs. Akiyama", org: "UFC" },
+    { date: "Jun 19, 2010", opponent: "Dennis Siver", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter 11 Finale" },
+    { date: "Oct 24, 2009", opponent: "Joe Stevenson", result: "L", method: "KO/TKO", round: 2, time: "4:03", event: "UFC 104: Machida vs. Shogun", org: "UFC" },
+    { date: "Jun 13, 2009", opponent: "Caol Uno", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 99: The Comeback", org: "UFC" },
+    { date: "Oct 25, 2008", opponent: "Shannon Gugerty", result: "W", method: "Submission", round: 3, time: "3:56", event: "UFC 90: Silva vs. Cote", org: "UFC" },
+    { date: "Jun 21, 2008", opponent: "Jeremy Stephens", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter 7 Finale" },
+    { date: "Nov 17, 2007", opponent: "Frankie Edgar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 78: Validation", org: "UFC" },
+    { date: "Jun 12, 2007", opponent: "Sam Stout", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Stout vs. Fisher", org: "UFC" },
+    { date: "Jan 25, 2007", opponent: "Hermes Franca", result: "L", method: "KO/TKO", round: 2, time: "4:03", event: "UFC Fight Night: Evans vs Salmon", org: "UFC" },
+    { date: "Oct 14, 2006", opponent: "Dan Lauzon", result: "W", method: "KO/TKO", round: 1, time: "4:38", event: "UFC 64: Unstoppable", org: "UFC" },
+    { date: "May 27, 2006", opponent: "Matt Wiman", result: "W", method: "KO/TKO", round: 2, time: "1:43", event: "UFC 60: Hughes vs. Gracie", org: "UFC" },
+    { date: "Mar 4, 2006", opponent: "Sam Stout", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 58: USA vs. Canada", org: "UFC" },
+    { date: "Feb 17, 2006", opponent: "Randy Hauer", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "4:18", event: "BATB: Battle at the Boardwalk" },
+    { date: "Jan 16, 2006", opponent: "Aaron Riley", result: "W", method: "TKO", round: 1, time: "5:00", event: "UFC Fight Night 3", org: "UFC" },
+    { date: "Oct 3, 2005", opponent: "Thiago Alves", result: "W", method: "Submission", round: 2, time: "4:43", event: "UFC Fight Night 2", org: "UFC" },
+    { date: "Apr 30, 2005", opponent: "Henry Matamoros", result: "W", method: "TKO", round: 1, time: "2:48", event: "SB 40: SuperBrawl 40" },
+    { date: "Mar 26, 2005", opponent: "Kyle Watson", result: "W", method: "KO/TKO", round: 1, time: "0:33", event: "CFC 2: Courage Fighting Championships 2" },
+    { date: "Mar 5, 2005", opponent: "Tim Means", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "1:44", event: "IFC: Eve Of Destruction" },
+    { date: "Nov 27, 2004", opponent: "John Strawn", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "3:32", event: "VFC 8: Fallout" },
+    { date: "Aug 7, 2004", opponent: "Shawn McCully", result: "W", method: "KO/TKO", round: 1, time: "1:42", event: "XKK: Xtreme Kage Kombat" },
+    { date: "May 14, 2004", opponent: "Carlo Prater", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 9: Freestyle Fighting Championships 9" },
+    { date: "Mar 6, 2004", opponent: "Josh Neer", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "VFC 7: Showdown" },
+    { date: "Jan 31, 2004", opponent: "Eddy Ellis", result: "W", method: "Submission (Armbar)", round: 2, time: "3:10", event: "IFC: Battleground Tahoe" },
+    { date: "Apr 18, 2003", opponent: "Daryl Guthmiller", result: "W", method: "Submission (Armbar)", round: 2, time: "2:45", event: "ICC 2: Rebellion" },
+    { date: "Feb 8, 2003", opponent: "Kurt Illeman", result: "W", method: "KO/TKO", round: 1, time: "1:42", event: "EC 49: Extreme Challenge 49" },
+    { date: "Dec 17, 2002", opponent: "Jonathan Spears", result: "W", method: "TKO", round: 1, time: "1:02", event: "TNF: Tuesday Night Fights" },
+    { date: "Nov 23, 2002", opponent: "Adam Copenhaver", result: "W", method: "TKO", round: 1, time: "3:54", event: "VFC 3: Total Chaos" },
+    { date: "Nov 23, 2002", opponent: "Tim Palmer", result: "W", method: "TKO", round: 1, time: "0:57", event: "VFC 3: Total Chaos" },
+    { date: "Nov 23, 2002", opponent: "Dave Gries", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:28", event: "VFC 3: Total Chaos" },
+    { date: "Aug 17, 2002", opponent: "Ryan Heckert", result: "W", method: "Submission (Armbar)", round: 1, time: "2:54", event: "VFC 2: Bragging Rights" },
+  ],
+
+------------------------------------------------------------------------------
+
+### alexis-davis   [status=ok, ESPN id=2563797, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Alexis Davis", division: "WFLW", rank: "NR", record: "21-11-0", initials: "AD", country: "Canada" },
+
+// ---- FIGHTER_STATS ----
+  "Alexis Davis": { ht:"5'6\"", dob:"1984-10-04", reach:'68"', stance:"Orthodox", slpm:4.16, strAcc:"47%", sapm:4.12, strDef:"55%", kd:0.0, tdLanded:0.99, tdAcc:"46%", tdDef:"27%", subAvg:0.74, finRate:"48%", streak:1, gym:"Combat Sports Academy" },
+
+// ---- FIGHT_HISTORY ----
+  "Alexis Davis": [
+    { date: "Feb 5, 2022", opponent: "Julija Stoliarenko", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Hermansson vs. Strickland", org: "UFC" },
+    { date: "Jun 12, 2021", opponent: "Pannie Kianzad", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 263: Adesanya vs. Vettori 2", org: "UFC" },
+    { date: "Feb 27, 2021", opponent: "Sabina Mazo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rozenstruik vs. Gane", org: "UFC" },
+    { date: "Jul 27, 2019", opponent: "Viviane Araújo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 240: Holloway vs. Edgar", org: "UFC" },
+    { date: "Mar 23, 2019", opponent: "Jennifer Maia", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Thompson vs. Pettis", org: "UFC" },
+    { date: "Jul 28, 2018", opponent: "Katlyn Cerminara", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Alvarez vs. Poirier 2", org: "UFC" },
+    { date: "Dec 9, 2017", opponent: "Liz Carmouche", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Swanson vs. Ortega", org: "UFC" },
+    { date: "Apr 22, 2017", opponent: "Cindy Dandois", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Swanson vs. Lobov", org: "UFC" },
+    { date: "Dec 3, 2016", opponent: "Sara McMann", result: "L", method: "Submission", round: 2, time: "2:52", event: "The Ultimate Fighter 24 Finale" },
+    { date: "Apr 25, 2015", opponent: "Sarah Kaufman", result: "W", method: "Submission", round: 2, time: "3:07", event: "UFC 186: Johnson vs. Horiguchi", org: "UFC" },
+    { date: "Jul 5, 2014", opponent: "Ronda Rousey", result: "L", method: "KO/TKO", round: 1, time: "0:16", event: "UFC 175: Weidman vs. Machida", org: "UFC" },
+    { date: "Feb 22, 2014", opponent: "Jessica Eye", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 170: Rousey vs. McMann", org: "UFC" },
+    { date: "Nov 6, 2013", opponent: "Liz Carmouche", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Fight for the Troops 3", org: "UFC" },
+    { date: "Jun 15, 2013", opponent: "Rosi Sexton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 161: Evans vs. Henderson", org: "UFC" },
+    { date: "Jan 5, 2013", opponent: "Shayna Baszler", result: "W", method: "Submission (Rear Naked Choke)", round: 3, time: "0:58", event: "Invicta FC 4: Esparza vs. Hyatt" },
+    { date: "Jul 28, 2012", opponent: "Hitomi Akano", result: "W", method: "Submission (Rear Naked Choke)", round: 2, time: "3:41", event: "Invicta FC 2: Baszler vs. McMann" },
+    { date: "Mar 3, 2012", opponent: "Sarah Kaufman", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "Strikeforce - Tate vs. Rousey" },
+    { date: "Sep 10, 2011", opponent: "Amanda Nunes", result: "W", method: "KO/TKO", round: 2, time: "4:53", event: "Strikeforce: Barnett vs. Kharitonov" },
+    { date: "Jul 30, 2011", opponent: "Julie Kedzie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strikeforce/M-1 Global: Fedor vs. Henderson" },
+    { date: "Nov 6, 2010", opponent: "Tonya Evinger", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:25", event: "RW 10: Mayhem in the Mist 5" },
+    { date: "Aug 28, 2010", opponent: "Elaina Maxwell", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "RW 9: Mayhem in the Mist 4" },
+    { date: "May 8, 2010", opponent: "Tonya Evinger", result: "W", method: "Submission (Rear Naked Choke)", round: 3, time: "1:47", event: "RW 7: Mayhem in the Mist 3" },
+    { date: "Mar 27, 2010", opponent: "Shayna Baszler", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FCF: Freestyle Cage Fighting 40" },
+    { date: "Oct 10, 2009", opponent: "Molly Helsel", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "RW 5: Mayhem in the Mist" },
+    { date: "Jan 23, 2009", opponent: "Tara LaRosa", result: "L", method: "TKO", round: 3, time: "4:23", event: "EC: Extreme Challenge: The War at the Shore" },
+    { date: "Nov 29, 2008", opponent: "Margarita Kolmykova", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:02", event: "United States Fight League: War in the Woods 5" },
+    { date: "Jun 27, 2008", opponent: "Kate Roy", result: "W", method: "Submission (Armbar)", round: 1, time: "3:09", event: "UCW 12: Heatwave" },
+    { date: "Apr 3, 2008", opponent: "Lizbeth Carreiro", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "FFF 4 : Call of the Wild" },
+    { date: "Dec 14, 2007", opponent: "Valerie Letourneau", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "TKO 31: Young Guns" },
+    { date: "Oct 20, 2007", opponent: "Tannaya Hantelman", result: "W", method: "Submission (Armbar)", round: 1, time: "1:09", event: "ECC 6: Hometown Heroes" },
+    { date: "May 6, 2007", opponent: "Jody Wadsworth", result: "W", method: "TKO", round: 1, time: "3:17", event: "KO Boxing: Warzone" },
+    { date: "Apr 7, 2007", opponent: "Sarah Kaufman", result: "L", method: "TKO", round: 3, time: "-", event: "UCW 7: Anarchy" },
+  ],
+
+------------------------------------------------------------------------------
+
+### jason-delucia   [status=ok, ESPN id=2335635, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Jason DeLucia", division: "MW", rank: "NR", record: "3-2-0", initials: "JD", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Jason DeLucia": { ht:"5'11\"", dob:null, reach:null, stance:"Southpaw", slpm:0.78, strAcc:"47%", sapm:0.33, strDef:"73%", kd:0.0, tdLanded:1.66, tdAcc:"33%", tdDef:"33%", subAvg:9.98, finRate:"67%", streak:0, gym:"" },
+
+// ---- FIGHT_HISTORY ----
+  "Jason DeLucia": [
+    { date: "Nov 19, 1999", opponent: "Joe Slick", result: "L", method: "KO/TKO", round: 1, time: "1:28", event: "UFC 23: Ultimate Japan 2", org: "UFC" },
+    { date: "Jul 6, 1999", opponent: "Chris Lytle", result: "W", method: "Decision (Majority)", round: 1, time: "10:00", event: "Pancrase: Breakthrough 7" },
+    { date: "Mar 11, 1994", opponent: "Scott Baker", result: "W", method: "Submission", round: 1, time: "6:41", event: "UFC 2: No Way Out", org: "UFC" },
+    { date: "Mar 11, 1994", opponent: "Royce Gracie", result: "L", method: "Submission", round: 1, time: "1:07", event: "UFC 2: No Way Out", org: "UFC" },
+    { date: "Nov 12, 1993", opponent: "Trent Jenkins", result: "W", method: "Submission", round: 1, time: "0:52", event: "UFC 1: The Beginning", org: "UFC" },
+  ],
+
+------------------------------------------------------------------------------
+
+### dan-evensen   [status=ok, ESPN id=2335874, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Dan Evensen", division: "HW", rank: "NR", record: "1-2-0", initials: "DE", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Dan Evensen": { ht:"6'3\"", dob:"1974-06-01", reach:null, stance:"Orthodox", slpm:0.27, strAcc:"11%", sapm:3.86, strDef:"38%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"0%", subAvg:3.99, finRate:"0%", streak:0, gym:"" },
+
+// ---- FIGHT_HISTORY ----
+  "Dan Evensen": [
+    { date: "Dec 27, 2008", opponent: "Pat Barry", result: "L", method: "KO/TKO", round: 1, time: "2:36", event: "UFC 92: The Ultimate 2008", org: "UFC" },
+    { date: "Aug 9, 2008", opponent: "Cheick Kongo", result: "L", method: "KO/TKO", round: 1, time: "4:55", event: "UFC 87: Seek and Destroy", org: "UFC" },
+    { date: "Nov 30, 2007", opponent: "Konstantin Gluhov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Bodog Fight : USA vs. Russia" },
+  ],
+
+------------------------------------------------------------------------------
+
+### chan-sung-jung   [status=ok, ESPN id=2501685, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Chan Sung Jung", division: "FW", rank: "NR", record: "17-8-0", initials: "CJ", country: "Korea" },
+
+// ---- FIGHTER_STATS ----
+  "Chan Sung Jung": { ht:"5'7\"", dob:"1987-03-17", reach:'72"', stance:"Orthodox", slpm:3.71, strAcc:"41%", sapm:4.38, strDef:"50%", kd:0.3, tdLanded:0.81, tdAcc:"47%", tdDef:"69%", subAvg:0.71, finRate:"82%", streak:0, gym:"Fight Ready" },
+
+// ---- FIGHT_HISTORY ----
+  "Chan Sung Jung": [
+    { date: "Aug 26, 2023", opponent: "Max Holloway", result: "L", method: "KO/TKO", round: 3, time: "0:23", event: "UFC Fight Night: Holloway vs. The Korean Zombie", org: "UFC" },
+    { date: "Apr 9, 2022", opponent: "Alexander Volkanovski", result: "L", method: "KO/TKO", round: 4, time: "0:45", event: "UFC 273: Volkanovski vs. The Korean Zombie", org: "UFC" },
+    { date: "Jun 19, 2021", opponent: "Dan Ige", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: The Korean Zombie vs. Ige", org: "UFC" },
+    { date: "Oct 17, 2020", opponent: "Brian Ortega", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Ortega vs. The Korean Zombie", org: "UFC" },
+    { date: "Dec 21, 2019", opponent: "Frankie Edgar", result: "W", method: "KO/TKO", round: 1, time: "3:18", event: "UFC Fight Night: Edgar vs. The Korean Zombie", org: "UFC" },
+    { date: "Jun 22, 2019", opponent: "Renato Moicano", result: "W", method: "KO/TKO", round: 1, time: "0:58", event: "UFC Fight Night: Moicano vs. The Korean Zombie", org: "UFC" },
+    { date: "Nov 10, 2018", opponent: "Yair Rodriguez", result: "L", method: "KO/TKO", round: 5, time: "4:59", event: "UFC Fight Night: Korean Zombie vs. Rodriguez", org: "UFC" },
+    { date: "Feb 4, 2017", opponent: "Dennis Bermudez", result: "W", method: "KO/TKO", round: 1, time: "2:29", event: "UFC Fight Night: Bermudez vs. The Korean Zombie", org: "UFC" },
+    { date: "Aug 3, 2013", opponent: "José Aldo", result: "L", method: "KO/TKO", round: 4, time: "2:00", event: "UFC 163: Aldo vs. Korean Zombie", org: "UFC" },
+    { date: "May 15, 2012", opponent: "Dustin Poirier", result: "W", method: "Submission", round: 4, time: "1:07", event: "UFC on Fuel TV: Korean Zombie vs. Poirier", org: "UFC" },
+    { date: "Dec 10, 2011", opponent: "Mark Hominick", result: "W", method: "KO/TKO", round: 1, time: "0:07", event: "UFC 140: Jones vs. Machida", org: "UFC" },
+    { date: "Mar 26, 2011", opponent: "Leonard Garcia", result: "W", method: "Submission", round: 2, time: "4:59", event: "UFC Fight Night: Davis vs. Nogueira", org: "UFC" },
+    { date: "Sep 30, 2010", opponent: "George Roop", result: "L", method: "KO/TKO", round: 2, time: "1:30", event: "WEC 51: Aldo vs. Gamburyan" },
+    { date: "Apr 24, 2010", opponent: "Leonard Garcia", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "WEC 48: Aldo vs. Faber" },
+    { date: "Aug 2, 2009", opponent: "Matt Jaggers", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "1:25", event: "Sengoku: Ninth Battle" },
+    { date: "May 2, 2009", opponent: "Masanori Kanehara", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Sengoku: Eighth Battle" },
+    { date: "Mar 20, 2009", opponent: "Shintaro Ishiwatari", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:29", event: "Sengoku: Seventh Battle" },
+    { date: "Dec 10, 2008", opponent: "Fanjin Son", result: "W", method: "KO/TKO", round: 1, time: "0:17", event: "Deep: 39 Impact" },
+    { date: "Aug 16, 2008", opponent: "Michihiro Omigawa", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "Deep: Gladiator" },
+    { date: "May 31, 2008", opponent: "Jung Beom Choi", result: "W", method: "Submission (Armbar)", round: 1, time: "2:15", event: "Korea FC: Tournament Series" },
+    { date: "May 31, 2008", opponent: "Dae Han Choi", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "3:58", event: "Korea FC: Tournament Series" },
+    { date: "May 31, 2008", opponent: "Jung Hun Jo", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Korea FC: Tournament Series" },
+    { date: "Dec 16, 2007", opponent: "In Seok Yoo", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:34", event: "Pancrase: 2007 Korea Neo-Blood Tournament" },
+    { date: "Dec 16, 2007", opponent: "Hyung Geol Lee", result: "W", method: "TKO", round: 1, time: "3:27", event: "Pancrase: 2007 Korea Neo-Blood Tournament" },
+    { date: "Jun 24, 2007", opponent: "Hyung Geol Lee", result: "W", method: "Submission (Armbar)", round: 2, time: "3:07", event: "SSF: Super Sambo Festival" },
+  ],
+
+------------------------------------------------------------------------------
+
+### kyle-kingsbury   [status=ok, ESPN id=2335640, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Kyle Kingsbury", division: "LHW", rank: "NR", record: "11-6-0", initials: "KK", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Kyle Kingsbury": { ht:"6'4\"", dob:"1982-03-22", reach:'79"', stance:"Orthodox", slpm:2.97, strAcc:"41%", sapm:3.81, strDef:"51%", kd:0.15, tdLanded:2.64, tdAcc:"42%", tdDef:"52%", subAvg:0.0, finRate:"55%", streak:0, gym:"AKA (American Kickboxing Academy)" },
+
+// ---- FIGHT_HISTORY ----
+  "Kyle Kingsbury": [
+    { date: "Jul 26, 2014", opponent: "Patrick Cummins", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC on Fox: Lawler vs. Brown", org: "UFC" },
+    { date: "Sep 29, 2012", opponent: "Jimi Manuwa", result: "L", method: "TKO", round: 2, time: "5:00", event: "UFC on FUEL TV: Struve vs. Miocic", org: "UFC" },
+    { date: "May 26, 2012", opponent: "Glover Teixeira", result: "L", method: "Submission", round: 1, time: "1:53", event: "UFC 146: dos Santos vs. Mir", org: "UFC" },
+    { date: "Nov 19, 2011", opponent: "Stephan Bonnar", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 139: Shogun vs. Henderson", org: "UFC" },
+    { date: "Jun 4, 2011", opponent: "Fabio Maldonado", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter 13 Finale" },
+    { date: "Feb 5, 2011", opponent: "Ricardo Romero", result: "W", method: "KO/TKO", round: 1, time: "0:21", event: "UFC 126: Silva vs. Belfort", org: "UFC" },
+    { date: "Sep 15, 2010", opponent: "Jared Hamman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Marquardt vs. Palhares", org: "UFC" },
+    { date: "Oct 24, 2009", opponent: "Razak Al-Hassan", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC 104: Machida vs. Shogun", org: "UFC" },
+    { date: "Dec 13, 2008", opponent: "Tom Lawlor", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "The Ultimate Fighter 8 Finale" },
+    { date: "Sep 15, 2007", opponent: "Tony Lopez", result: "L", method: "TKO", round: 1, time: "1:36", event: "KOTC: River Rage" },
+    { date: "Jul 21, 2007", opponent: "Demian Decorah", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "KOTC: Battle at the Bowl" },
+    { date: "Mar 10, 2007", opponent: "Angelo Mcleroy", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:39", event: "KOTC: Caged Chaos" },
+    { date: "Dec 2, 2006", opponent: "Rocky Batastini", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:19", event: "RITC 89: Triple Main Event" },
+    { date: "Sep 29, 2006", opponent: "Aric Dylan", result: "W", method: "KO/TKO", round: 1, time: "1:45", event: "RITC 87: Rage in the Cage" },
+    { date: "Aug 5, 2006", opponent: "Brian Ryan", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "RITC 85: Xtreme Cage Fighting" },
+    { date: "Jul 1, 2006", opponent: "Dan Glasgow", result: "W", method: "TKO", round: 1, time: "0:29", event: "RITC 84: Celebrity Theatre" },
+    { date: "Jun 10, 2006", opponent: "Johnathan Tsosie", result: "W", method: "KO/TKO", round: 1, time: "-", event: "RITC 83: Rampage" },
+  ],
+
+------------------------------------------------------------------------------
+
+### roger-bowling   [status=ok, ESPN id=2504955, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Roger Bowling", division: "LW", rank: "NR", record: "11-5-1", initials: "RB", country: "USA" },
+
+// ---- FIGHTER_STATS ----
+  "Roger Bowling": { ht:"5'9\"", dob:"1982-12-05", reach:'68"', stance:"Orthodox", slpm:3.24, strAcc:"37%", sapm:4.88, strDef:"49%", kd:0.0, tdLanded:3.07, tdAcc:"71%", tdDef:"25%", subAvg:1.84, finRate:"82%", streak:0, gym:"Team Vision" },
+
+// ---- FIGHT_HISTORY ----
+  "Roger Bowling": [
+    { date: "Dec 14, 2013", opponent: "Abel Trujillo", result: "L", method: "KO/TKO", round: 2, time: "1:35", event: "UFC on Fox: Johnson vs. Benavidez 2", org: "UFC" },
+    { date: "Aug 28, 2013", opponent: "Abel Trujillo", result: "D", method: "No Contest", round: 2, time: "4:57", event: "UFC Fight Night: Condit vs. Kampmann 2", org: "UFC" },
+    { date: "Apr 20, 2013", opponent: "Anthony Njokuani", result: "L", method: "KO/TKO", round: 2, time: "2:52", event: "UFC on Fox: Henderson vs. Melendez", org: "UFC" },
+    { date: "Aug 18, 2012", opponent: "Tarec Saffiedine", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strikeforce: Rousey vs. Kaufman" },
+    { date: "Mar 3, 2012", opponent: "Brandon Saling", result: "W", method: "KO/TKO", round: 2, time: "1:15", event: "Strikeforce - Tate vs. Rousey" },
+    { date: "Dec 17, 2011", opponent: "Jerron Peoples", result: "W", method: "KO/TKO", round: 1, time: "0:42", event: "Strikeforce: Melendez vs. Masvidal" },
+    { date: "Jul 22, 2011", opponent: "Bobby Voelker", result: "L", method: "KO/TKO", round: 2, time: "2:16", event: "Strikeforce: Challengers 17" },
+    { date: "Mar 5, 2011", opponent: "Josh Thornburg", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Strikeforce: Feijao vs. Henderson" },
+    { date: "Oct 22, 2010", opponent: "Bobby Voelker", result: "L", method: "KO/TKO", round: 2, time: "3:58", event: "Strikeforce: Challengers 11" },
+    { date: "May 21, 2010", opponent: "Bobby Voelker", result: "W", method: "Decision (Unanimous)", round: 3, time: "1:38", event: "Strikeforce: Challengers 8" },
+    { date: "Feb 20, 2010", opponent: "Jerrod Appenzeller", result: "W", method: "TKO", round: 2, time: "0:14", event: "MMA Big Show: Triple Threat" },
+    { date: "Jul 25, 2009", opponent: "Devon Plaisance", result: "W", method: "TKO", round: 1, time: "0:41", event: "MMA Big Show: Unstoppable" },
+    { date: "Mar 7, 2009", opponent: "Seth Baczynski", result: "W", method: "KO/TKO", round: 1, time: "0:09", event: "MMA Big Show: Retribution" },
+    { date: "Nov 1, 2008", opponent: "Paul Mann", result: "W", method: "Submission (Guillotine)", round: 1, time: "3:20", event: "MMA Big Show: Relentless" },
+    { date: "Apr 26, 2008", opponent: "Shamar Bailey", result: "W", method: "TKO", round: 1, time: "0:28", event: "RFL: Hostile Takeover" },
+    { date: "Sep 29, 2007", opponent: "Mike Skiba", result: "W", method: "Submission (Punches)", round: 1, time: "1:25", event: "MMA Big Show: Punishment" },
+    { date: "Jun 23, 2007", opponent: "Chris Runge", result: "W", method: "TKO", round: 1, time: "1:56", event: "MMA Big Show: Domination" },
+  ],
+
+------------------------------------------------------------------------------
+
+### steve-jennum   [status=ok, ESPN id=2951265, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Steve Jennum", division: "?", rank: "NR", record: "2-1-0", initials: "SJ", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Steve Jennum": { ht:null, dob:null, reach:null, stance:"Orthodox", slpm:2.24, strAcc:"50%", sapm:1.12, strDef:"57%", kd:0.0, tdLanded:5.59, tdAcc:"100%", tdDef:"0%", subAvg:0.0, finRate:"100%", streak:0, gym:"" },
+
+// ---- FIGHT_HISTORY ----
+  "Steve Jennum": [
+    { date: "Dec 16, 1995", opponent: "David Abbott", result: "L", method: "Submission", round: 1, time: "1:14", event: "UFC: Ultimate Ultimate 95", org: "UFC" },
+    { date: "Dec 16, 1994", opponent: "Melton Bowen", result: "W", method: "Submission", round: 1, time: "4:47", event: "UFC 4: Revenge of the Warriors", org: "UFC" },
+    { date: "Sep 9, 1994", opponent: "Harold Howard", result: "W", method: "KO/TKO", round: 1, time: "1:27", event: "UFC 3: The American Dream", org: "UFC" },
+  ],
+
+------------------------------------------------------------------------------
+
+### dieusel-berto   [status=ok, ESPN id=2504611, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Dieusel Berto", division: "?", rank: "NR", record: "0-1-0", initials: "DB", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Dieusel Berto": { ht:null, dob:null, reach:null, stance:"--", slpm:0.5, strAcc:"60%", sapm:3.53, strDef:"42%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:null, streak:0, gym:"" },
+
+// ---- FIGHT_HISTORY ----
+  "Dieusel Berto": [
+    { date: "Jul 12, 1996", opponent: "Geza Kalman", result: "L", method: "KO/TKO", round: 1, time: "5:57", event: "UFC 10: The Tournament", org: "UFC" },
+  ],
+
+------------------------------------------------------------------------------
+
+### blood-diamond   [status=ok, ESPN id=4899729, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Blood Diamond", division: "WW", rank: "NR", record: "3-3-0", initials: "BD", country: "Zimbabwe" },
+
+// ---- FIGHTER_STATS ----
+  "Blood Diamond": { ht:"5'11\"", dob:"1988-07-10", reach:'76"', stance:"Switch", slpm:3.12, strAcc:"55%", sapm:2.17, strDef:"49%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"74%", subAvg:0.0, finRate:"67%", streak:0, gym:"City Kickboxing" },
+
+// ---- FIGHT_HISTORY ----
+  "Blood Diamond": [
+    { date: "Sep 9, 2023", opponent: "Charles Radtke", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 293: Adesanya vs. Strickland", org: "UFC" },
+    { date: "Jul 30, 2022", opponent: "Orion Cosce", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 277: Peña vs. Nunes 2", org: "UFC" },
+    { date: "Feb 12, 2022", opponent: "Jeremiah Wells", result: "L", method: "Submission", round: 1, time: "4:38", event: "UFC 271: Adesanya vs. Whittaker 2", org: "UFC" },
+    { date: "Feb 22, 2020", opponent: "Dimps Gillies", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Eternal MMA 50" },
+    { date: "Jul 21, 2018", opponent: "Hyun Min Hwang", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "3:53", event: "Hex Fight Series 15" },
+    { date: "May 6, 2017", opponent: "Jo Van Duin", result: "W", method: "TKO", round: 2, time: "-", event: "SFS 1 - Shuriken Fight Series 1" },
+  ],
+
+------------------------------------------------------------------------------
+
+### rob-broughton   [status=ok, ESPN id=2509241, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Rob Broughton", division: "HW", rank: "NR", record: "15-7-1", initials: "RB", country: "" },
+
+// ---- FIGHTER_STATS ----
+  "Rob Broughton": { ht:"6'2\"", dob:"1983-03-03", reach:'74"', stance:"--", slpm:2.83, strAcc:"60%", sapm:2.54, strDef:"52%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"27%", subAvg:3.24, finRate:"80%", streak:0, gym:"Wolfslair Academy" },
+
+// ---- FIGHT_HISTORY ----
+  "Rob Broughton": [
+    { date: "Nov 5, 2011", opponent: "Phil de Fries", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 138: Leben vs. Munoz", org: "UFC" },
+    { date: "Sep 24, 2011", opponent: "Travis Browne", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 135: Jones vs. Rampage", org: "UFC" },
+    { date: "Oct 16, 2010", opponent: "Vinicius Queiroz", result: "W", method: "Submission", round: 3, time: "1:43", event: "UFC 120: Bisping vs. Akiyama", org: "UFC" },
+    { date: "Jan 30, 2010", opponent: "Oli Thompson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "ZT Fight Night: Heavyweights Collide" },
+    { date: "Jan 30, 2010", opponent: "James Thompson", result: "W", method: "KO/TKO", round: 2, time: "2:28", event: "ZT Fight Night: Heavyweights Collide" },
+    { date: "Jan 30, 2010", opponent: "Neil Wain", result: "W", method: "Submission (Guillotine)", round: 2, time: "1:16", event: "ZT Fight Night: Heavyweights Collide" },
+    { date: "Sep 26, 2009", opponent: "Akhmed Sultanov", result: "W", method: "Submission (Keylock)", round: 1, time: "4:31", event: "M-1 Challenge 19: 2009 Semifinals" },
+    { date: "Aug 28, 2009", opponent: "Jessie Gibbs", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "M-1 Global: Breakthrough" },
+    { date: "Jun 5, 2009", opponent: "Soufian Elgarne", result: "W", method: "TKO", round: 1, time: "2:02", event: "M-1 Challenge 16: USA" },
+    { date: "Apr 29, 2009", opponent: "Yusuke Kawaguchi", result: "W", method: "Decision (Unanimous)", round: 2, time: "5:00", event: "M-1 Challenge 14: Japan" },
+    { date: "Oct 4, 2008", opponent: "Ricco Rodriguez", result: "L", method: "Submission (Kneebar)", round: 2, time: "3:39", event: "CG 9: Beatdown" },
+    { date: "Mar 8, 2008", opponent: "Neil Grove", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "Cage Rage 25: Bring it On" },
+    { date: "Feb 10, 2007", opponent: "Tengiz Tedoradze", result: "L", method: "TKO", round: 2, time: "0:58", event: "Cage Rage 20: Born 2 Fight" },
+    { date: "Dec 9, 2006", opponent: "Eric Esch", result: "W", method: "Submission (Punches)", round: 2, time: "3:43", event: "Cage Rage 19: Fearless" },
+    { date: "Sep 30, 2006", opponent: "Robert Berry", result: "W", method: "TKO", round: 1, time: "3:33", event: "Cage Rage 18: Battleground" },
+    { date: "Jul 1, 2006", opponent: "James Thompson", result: "W", method: "TKO", round: 3, time: "-", event: "Cage Rage 17: Ultimate Challenge" },
+    { date: "Jun 17, 2006", opponent: "Martin Thompson", result: "W", method: "Submission (Guillotine)", round: 2, time: "3:40", event: "WIW: War in Workington 1" },
+    { date: "May 22, 2006", opponent: "Sidnei da Silva", result: "W", method: "TKO", round: 1, time: "0:44", event: "CG 1: Cage Gladiators 1" },
+    { date: "Jan 28, 2006", opponent: "Peter Cousins", result: "L", method: "Decision", round: 0, time: "-", event: "IF: Intense Fighting" },
+    { date: "Mar 12, 2005", opponent: "Andy Ryan", result: "W", method: "TKO", round: 1, time: "-", event: "Rings: Bushido Ireland" },
+    { date: "Mar 6, 2005", opponent: "Ryan Robinson", result: "W", method: "KO/TKO", round: 1, time: "-", event: "CFC 3: Cage Carnage" },
+    { date: "Nov 14, 2004", opponent: "Assim Assine", result: "D", method: "Draw", round: 2, time: "-", event: "CFC 2: Cage Carnage" },
+    { date: "Jul 11, 2004", opponent: "Milco Voorn", result: "L", method: "Submission (Choke)", round: 0, time: "-", event: "CFC 1: Cage Carnage" },
+  ],
+
+------------------------------------------------------------------------------
+
+### jason-witt   [status=ok, ESPN id=3913466, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Jason Witt", division: "WW", rank: "NR", record: "19-9-0", initials: "JW", country: "USA" },
+
+// ---- FIGHTER_STATS ----
+  "Jason Witt": { ht:"5'10\"", dob:"1986-11-07", reach:'70"', stance:"Orthodox", slpm:2.15, strAcc:"45%", sapm:2.54, strDef:"52%", kd:0.46, tdLanded:6.9, tdAcc:"48%", tdDef:"100%", subAvg:0.92, finRate:"58%", streak:0, gym:"Glory MMA & Fitness" },
+
+// ---- FIGHT_HISTORY ----
+  "Jason Witt": [
+    { date: "Aug 13, 2022", opponent: "Josh Quinlan", result: "L", method: "KO/TKO", round: 1, time: "2:09", event: "UFC Fight Night: Vera vs. Cruz", org: "UFC" },
+    { date: "Feb 5, 2022", opponent: "Phil Rowe", result: "L", method: "KO/TKO", round: 2, time: "2:15", event: "UFC Fight Night: Hermansson vs. Strickland", org: "UFC" },
+    { date: "Jul 31, 2021", opponent: "Bryan Barberena", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC Fight Night: Hall vs. Strickland", org: "UFC" },
+    { date: "Mar 13, 2021", opponent: "Matthew Semelsberger", result: "L", method: "KO/TKO", round: 1, time: "0:16", event: "UFC Fight Night: Edwards vs. Muhammad", org: "UFC" },
+    { date: "Oct 31, 2020", opponent: "Cole Williams", result: "W", method: "Submission", round: 2, time: "2:09", event: "UFC Fight Night: Hall vs. Silva", org: "UFC" },
+    { date: "Jun 27, 2020", opponent: "Takashi Sato", result: "L", method: "KO/TKO", round: 1, time: "0:48", event: "UFC Fight Night: Poirier vs. Hooker", org: "UFC" },
+    { date: "Feb 22, 2020", opponent: "Zak Bucia", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FAC 2: Fighting Alliance Championship" },
+    { date: "Sep 5, 2019", opponent: "Roberto Neves", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "FFC 40: Final Fight Championship 40" },
+    { date: "Jul 27, 2019", opponent: "Cliff Wright", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KC Fighting Alliance 34" },
+    { date: "Sep 21, 2018", opponent: "Ashkan Morvari", result: "W", method: "Submission", round: 3, time: "1:01", event: "LFA 50: Allen vs. Hiley" },
+    { date: "Apr 13, 2018", opponent: "Hugh Pulley", result: "L", method: "KO/TKO", round: 2, time: "1:44", event: "Stronger Men's Conference 2018" },
+    { date: "Jan 27, 2018", opponent: "Mark Lemminger", result: "W", method: "TKO", round: 3, time: "1:38", event: "CFFC: Chosen Few Fighting Championships 13" },
+    { date: "Dec 15, 2017", opponent: "Ty Freeman", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 29: Camus vs. Simon" },
+    { date: "Sep 30, 2017", opponent: "Jake Lindsey", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "KC Fighting Alliance 25" },
+    { date: "Jun 24, 2017", opponent: "Kenny Licea", result: "W", method: "KO/TKO", round: 2, time: "0:09", event: "Carden Combat Sports 2" },
+    { date: "May 13, 2017", opponent: "Wade Johnson", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:37", event: "Pyramid Fights 2" },
+    { date: "Mar 3, 2017", opponent: "Justin Patterson", result: "L", method: "TKO", round: 3, time: "0:13", event: "Bellator 174: Coenen vs. Budd" },
+    { date: "Dec 9, 2016", opponent: "Craig Eckelberg", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "4:31", event: "KC Fighting Alliance 21" },
+    { date: "Jul 16, 2016", opponent: "Dakota Cochrane", result: "L", method: "Submission (Rear Naked Choke)", round: 2, time: "3:17", event: "VFC 52: Kayne vs. Pitolo" },
+    { date: "Jul 18, 2015", opponent: "Isaac Vallie-Flagg", result: "W", method: "DQ (Kicking a Downed Opponent)", round: 3, time: "1:54", event: "Titan FC 34: Healy vs. Edwards" },
+    { date: "May 30, 2015", opponent: "Ryan Dickson", result: "W", method: "TKO", round: 1, time: "1:00", event: "GWFC 2: Coming Home" },
+    { date: "Apr 25, 2015", opponent: "Josh Tulley", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cageside Promotions: Kansas City Fighting Alliance 14" },
+    { date: "Jan 31, 2015", opponent: "Jeremy Small", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:16", event: "Cageside Promotions: Kansas City Fighting Alliance" },
+    { date: "May 17, 2014", opponent: "Jeremiah Denson", result: "L", method: "Submission (Guillotine)", round: 1, time: "2:54", event: "Shamrock FC: High Stakes" },
+    { date: "Dec 14, 2013", opponent: "Tommy O'Neal", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:42", event: "Epic Fight Night 2: Norwood vs. Marriott" },
+    { date: "Aug 30, 2013", opponent: "Chance Rencountre", result: "L", method: "TKO", round: 2, time: "0:56", event: "TFC 26: Titan Fighting Championship 26" },
+    { date: "Apr 26, 2013", opponent: "Nick Felix", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "1:37", event: "Shamrock FC: Fight Night" },
+    { date: "Mar 1, 2013", opponent: "Henry Lindsay", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "2:09", event: "CF: Centurion Fights" },
+  ],
+
+------------------------------------------------------------------------------
+
+### alexander-munoz   [status=ok, ESPN id=4355664, opp-coverage=1.0]
+// ---- FIGHTERS roster row ----
+ { name: "Alexander Munoz", division: "LW", rank: "NR", record: "7-2-0", initials: "AM", country: "USA" },
+
+// ---- FIGHTER_STATS ----
+  "Alexander Munoz": { ht:"5'9\"", dob:"1990-02-27", reach:'72"', stance:"Switch", slpm:3.7, strAcc:"43%", sapm:4.73, strDef:"55%", kd:0.25, tdLanded:3.0, tdAcc:"40%", tdDef:"100%", subAvg:0.0, finRate:"43%", streak:1, gym:"Team Alpha Male" },
+
+// ---- FIGHT_HISTORY ----
+  "Alexander Munoz": [
+    { date: "Jul 15, 2023", opponent: "Carl Deaton", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holm vs. Bueno Silva", org: "UFC" },
+    { date: "Apr 17, 2021", opponent: "Luis Pena", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Whittaker vs. Gastelum", org: "UFC" },
+    { date: "Aug 8, 2020", opponent: "Nasrat Haqparast", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Oleinik", org: "UFC" },
+    { date: "Oct 12, 2019", opponent: "Troy Lamson", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Trinity Kings 8: Munoz vs. Lamson" },
+    { date: "Jul 24, 2018", opponent: "Nick Newell", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 2, Week 6", org: "UFC" },
+    { date: "Nov 19, 2016", opponent: "Matheus Ubirajara", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "EOF: Evolution of Fighters 17" },
+    { date: "May 21, 2016", opponent: "Richie Richardson", result: "W", method: "Submission (Rear Naked Choke)", round: 1, time: "0:32", event: "Caribbean Ultimate Fist Fighting 10" },
+    { date: "Dec 5, 2015", opponent: "Jessie Moreno", result: "W", method: "KO/TKO", round: 1, time: "0:03", event: "XKO: Xtreme Knockout 28" },
+    { date: "Sep 12, 2015", opponent: "Sonnie Anzaldua", result: "W", method: "TKO", round: 1, time: "2:08", event: "XKO: Xtreme Knockout 27" },
+  ],
+
+------------------------------------------------------------------------------
+
