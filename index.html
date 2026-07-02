@@ -2873,7 +2873,7 @@
       <div class="fighter-tab active" onclick="switchFighterTab(this, 'ftab-history')">Fight History</div>
       <div class="fighter-tab" id="ftab-tape-btn" onclick="switchFighterTab(this, 'ftab-tape')">Tape Study</div>
       <div class="fighter-tab" id="ftab-odds-btn" onclick="switchFighterTab(this, 'ftab-odds')">Odds History</div>
-      <div class="fighter-tab" onclick="switchFighterTab(this, 'ftab-accolades')">Accolades</div>
+      <div class="fighter-tab" id="ftab-accolades-btn" onclick="switchFighterTab(this, 'ftab-accolades')">Accolades</div>
     </div>
 
     <div id="ftab-history" class="ftab-panel">
@@ -91704,14 +91704,30 @@ function populateAccolades(name) {
   const list  = document.getElementById('fa-list');
   const wrap  = document.getElementById('fa-list-wrap');
   const empty = document.getElementById('fa-empty');
+  const tabBtn = document.getElementById('ftab-accolades-btn');
   if (!list) return;
   list.innerHTML = '';
   const items = ACCOLADES[name];
   if (!items || items.length === 0) {
     if (wrap) wrap.style.display = 'none';
     if (empty) empty.style.display = '';
+    if (tabBtn) {
+      tabBtn.style.display = 'none';
+      // If Accolades was the active tab for the previous fighter, fall back to
+      // Fight History so we never land on a hidden tab.
+      if (tabBtn.classList.contains('active')) {
+        tabBtn.classList.remove('active');
+        const aPanel = document.getElementById('ftab-accolades');
+        if (aPanel) aPanel.style.display = 'none';
+        const historyBtn = document.querySelector('.fighter-tab[onclick*="ftab-history"]');
+        const historyPanel = document.getElementById('ftab-history');
+        if (historyBtn) historyBtn.classList.add('active');
+        if (historyPanel) historyPanel.style.display = 'block';
+      }
+    }
     return;
   }
+  if (tabBtn) tabBtn.style.display = '';
   if (wrap) wrap.style.display = '';
   if (empty) empty.style.display = 'none';
   items.forEach(function(a, i) {
