@@ -12,3 +12,9 @@ data/_paginated_fighters.txt
 espn-import-*.txt
 espn-missed-import-*.txt
 fight-stats-spotcheck.txt
+
+# Cloudflare Worker build artifacts / local
+public/
+node_modules/
+.wrangler/
+.dev.vars

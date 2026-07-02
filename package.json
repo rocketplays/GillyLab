@@ -1,0 +1,13 @@
+{
+  "name": "gillylab-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bash scripts/build-site.sh",
+    "dev": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^3.90.0"
+  }
+}

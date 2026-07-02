@@ -1,0 +1,47 @@
+# Cloudflare Worker that fronts gillylab.com: gates the app behind a paid Stripe
+# subscription, serves the public landing/login pages, and handles auth + Stripe.
+#
+# The Worker runs on EVERY request (run_worker_first) and decides what to serve:
+#   - public routes (landing, login, /api/*) -> handled inline by the Worker
+#   - everything else (the app + data + photos in ./public) -> only served to a
+#     valid, subscribed session via env.ASSETS.fetch()
+#
+# See PAYWALL-SETUP.md for the one-time setup (KV ids, secrets, DNS, Stripe).
+
+name = "gillylab"
+main = "worker/index.js"
+compatibility_date = "2026-04-01"
+
+# The assembled static site (run scripts/build-site.sh to produce ./public).
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = true          # gate: our Worker runs before any asset is served
+
+# Non-secret config (safe to commit). Secrets are set with `wrangler secret put`.
+[vars]
+SITE_URL   = "https://gillylab.com"
+FROM_EMAIL = "GillyLab <login@gillylab.com>"
+SESSION_TTL_HOURS = "12"
+
+# --- KV namespaces (create with `wrangler kv namespace create ...`, paste ids) ---
+[[kv_namespaces]]
+binding = "USERS"      # accounts: email -> {passHash, passSalt, stripeCustomerId, subscribed, ...}
+id = "REPLACE_WITH_USERS_KV_ID"
+
+[[kv_namespaces]]
+binding = "MAGIC"      # short-lived magic-link / verification tokens
+id = "REPLACE_WITH_MAGIC_KV_ID"
+
+# Secrets to set (NOT here — run these once, values never touch git):
+#   wrangler secret put STRIPE_SECRET_KEY       # sk_live_... (or sk_test_...)
+#   wrangler secret put STRIPE_WEBHOOK_SECRET    # whsec_...
+#   wrangler secret put STRIPE_PRICE_ID          # price_...  (your subscription price)
+#   wrangler secret put SESSION_SECRET           # long random string (openssl rand -hex 32)
+#   wrangler secret put RESEND_API_KEY           # re_...  (email provider for magic links)
+
+# Custom domain routing is configured in the Cloudflare dashboard (Workers Routes)
+# or here once the zone is on Cloudflare:
+# [[routes]]
+# pattern = "gillylab.com/*"
+# zone_name = "gillylab.com"
