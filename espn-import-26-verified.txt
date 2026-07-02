@@ -21,20 +21,23 @@ RECORD FIXED, fight list has minor draw/NC labeling only (1 real draw + NCs; lef
   Felipe Arantes        18-10-1  (2 NC)   was 18-10-3
   Yves Edwards          42-22-1  (1 NC)   was 43-22-2  (ESPN also had 1 extra win)
 
-RECORD FIXED to verified value — ESPN's fight LIST is imperfect (missing/extra old regional bouts).
-Record is now correct; the displayed fight list may not perfectly sum (UFC bouts are complete/accurate):
-  Mark Coleman          16-10-0           ESPN list had 2 extra wins (showed 18-10)
-  Chris Leben           22-11-0           ESPN list had extra bouts (showed 26-11-1)
-  Chris Lytle           31-18-5           ESPN loss count inflated (showed 32-23); real 31-18-5
-  Krzysztof Soszynski   26-12-1           ESPN list short ~2 wins (showed 24-12-1)
-  Alexandre Ferreira    18-6-0            ESPN list short ~3 old bouts (showed 16-5)
-  Rafaello Oliveira     17-8-0            ESPN list short 2 wins (showed 15-8)
-  Tony Sims             12-4-0            ESPN list short 2 wins (showed 10-4)
-  Fabricio Camoes       14-9-1            ESPN list had 2 extra losses (showed 14-11-1)
-  Wang Guan             22-1-1            active in ONE; ESPN list short recent wins (showed 18-1-1)
-  Yazan Hajeh           7-3-0             ESPN list short (showed only 4 fights / 3-1)
-  Caio Bittencourt      18-10-0           REBUILT: full 28-fight history restored from Sherdog (was 1 fight)
-  James Gray            4-2-0             obscure; ESPN stated 4-2 used (low confidence; derived 3-1)
+RECORD FIXED to verified value + FULL FIGHT HISTORY REBUILT from Sherdog (list now matches record):
+  Mark Coleman          16-10-0    (26 fights)
+  Chris Leben           22-12-0    (34 fights; record also corrected 22-11 -> 22-12 per Sherdog)
+  Chris Lytle           31-18-5    (54 fights)
+  Alexandre Ferreira    18-6-0     (24 fights)
+  Rafaello Oliveira     17-8-0     (25 fights)
+  Tony Sims             12-4-0     (16 fights)
+  Fabricio Camoes       14-9-1     (24 fights)
+  Wang Guan             22-1-1     (24 fights)
+  Yazan Hajeh           7-3-0      (10 fights)
+  James Gray            4-2-0      (6 fights)
+  Caio Bittencourt      18-10-0    (28 fights)
+
+RECORD FIXED; full rebuild NOT done (Sherdog's large pages time out; Wikipedia lacks fight dates).
+Their ESPN history is near-complete (off by 1-2 old regional bouts) and retains correct dates:
+  Krzysztof Soszynski   26-12-1    (ESPN list ~2 wins short)
+  Yves Edwards          42-22-1    (ESPN list has 1 extra win; NC shown as draw)
 
 NOTE: For the "fight LIST imperfect" group, the record is now verified-correct but the on-page fight
 history (ESPN-sourced, like the rest of the DB) may show fewer/more bouts than the record implies,
