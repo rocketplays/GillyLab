@@ -3677,6 +3677,7 @@
  { name: "Islam Dulatov", division: "WW", rank: "NR", record: "12-1-0", initials: "IDU", country: "Russia" },
  { name: "Wellington Turman", division: "WW", rank: "NR", record: "18-8-0", initials: "WTU", country: "Brazil" },
  { name: "Ty Miller", division: "WW", rank: "NR", record: "7-0-0", initials: "TMI", country: "USA" },
+ { name: "Victor Martinez", division: "LW", rank: "NR", record: "13-7-0", initials: "VMA", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
  { name: "Modestas Bukauskas", division: "LHW", rank: "NR", record: "20-7-0", initials: "MBU", country: "Lithuania" },
@@ -4155,6 +4156,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Victor Martinez": { ht:"5'8\"", dob:"1991-07-17", reach:'70"', stance:"Orthodox", slpm:7.53, strAcc:"51%", sapm:7.75, strDef:"52%", kd:0.67, tdLanded:0.67, tdAcc:"33%", tdDef:"80%", subAvg:0.00, finRate:"62%", streak:0, gym:"Fortis MMA" },
   "Ty Miller": { ht:"6'2\"", dob:"2000-06-04", reach:'77"', stance:"Orthodox", slpm:7.16, strAcc:"39%", sapm:4.65, strDef:"65%", kd:0.75, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"43%", streak:7, gym:"Fit NHB" },
   "Aliaskhab Khizriev": { ht:"5'9\"", dob:"1990-08-24", reach:'74"', stance:"Southpaw", slpm:6.01, strAcc:"64%", sapm:4.38, strDef:"62%", kd:0.00, tdLanded:5.64, tdAcc:"60%", tdDef:"100%", subAvg:3.76, finRate:"71%", streak:14, gym:"Fight Club Scorpion" },
   "Alex Reyes": { ht:"5'11\"", dob:"1986-10-02", reach:'73"', stance:"Orthodox", slpm:4.46, strAcc:"47%", sapm:6.92, strDef:"48%", kd:0.00, tdLanded:1.50, tdAcc:"29%", tdDef:null, subAvg:0.00, finRate:"100%", streak:0, gym:"Drysdale Jiu-Jitsu" },
@@ -6612,6 +6614,12 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Victor Martinez": [
+    { opponent: "Rongzhu", odds: 1600 },
+    { opponent: "Tom Nolan", odds: 430 },
+    { opponent: "Jordan Leavitt", odds: 120 },
+    { opponent: "Jacob Rosales", odds: 172 }
+  ],
   "Ty Miller": [
     { opponent: "Adam Fugitt", odds: -410 },
     { opponent: "Jimmy Drago", odds: -230 },
@@ -15534,6 +15542,28 @@
 };
 
 const FIGHT_HISTORY = {
+  "Victor Martinez": [
+    { date: "May 28, 2026", opponent: "Rongzhu", result: "L", method: "TKO (Punches)", round: 1, time: "1:10", event: "Road to UFC: Macau Day 1", org: "Road to UFC" },
+    { date: "May 18, 2024", opponent: "Tom Nolan", result: "L", method: "TKO", round: 1, time: "3:50", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
+    { date: "Feb 25, 2023", opponent: "Jordan Leavitt", result: "L", method: "TKO", round: 1, time: "2:27", event: "UFC Fight Night: Muniz vs. Allen", org: "UFC" },
+    { date: "Sep 21, 2021", opponent: "Jacob Rosales", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 5, Week 4", org: "DWCS" },
+    { date: "Dec 7, 2019", opponent: "Anselmo Luna", result: "W", method: "TKO", round: 1, time: "1:39", event: "Combate Americas: Tito vs. Alberto", org: "Combate Americas" },
+    { date: "Aug 30, 2019", opponent: "Nico Echeverry", result: "W", method: "TKO", round: 2, time: "0:31", event: "Fury FC 36", org: "Fury FC" },
+    { date: "Mar 3, 2019", opponent: "Gleidson Cutis", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury FC 30", org: "Fury FC" },
+    { date: "May 18, 2018", opponent: "Manny Muro", result: "W", method: "TKO", round: 2, time: "1:12", event: "STFC 46", org: "STFC" },
+    { date: "Nov 3, 2017", opponent: "Raymond Banda", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "STFC 44", org: "STFC" },
+    { date: "Feb 3, 2017", opponent: "Jose Cabral", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "STFC 41", org: "STFC" },
+    { date: "Apr 25, 2016", opponent: "Erick Gonzalez", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "Combate Americas: Road to the Championship 4", org: "Combate Americas" },
+    { date: "Feb 5, 2016", opponent: "Rocky Long", result: "W", method: "TKO", round: 1, time: "3:29", event: "STFC 38", org: "STFC" },
+    { date: "Aug 15, 2015", opponent: "James King", result: "W", method: "TKO", round: 1, time: "1:13", event: "STFC 36", org: "STFC" },
+    { date: "Feb 27, 2015", opponent: "Jose Flores", result: "L", method: "Submission (Armbar)", round: 1, time: "4:43", event: "STFC 33", org: "STFC" },
+    { date: "Nov 7, 2014", opponent: "Delis Borges", result: "W", method: "TKO", round: 2, time: "2:10", event: "STFC 32", org: "STFC" },
+    { date: "May 16, 2014", opponent: "Miguel Bustos", result: "W", method: "Decision (Unanimous)", round: 3, time: "3:00", event: "STFC 29", org: "STFC" },
+    { date: "Nov 1, 2013", opponent: "Michael Lytle", result: "W", method: "TKO", round: 3, time: "1:59", event: "STFC 27", org: "STFC" },
+    { date: "Sep 6, 2013", opponent: "Juan Pina", result: "W", method: "TKO", round: 2, time: "1:59", event: "STFC 26", org: "STFC" },
+    { date: "May 26, 2012", opponent: "Sonny Luque", result: "L", method: "Submission (Guillotine)", round: 2, time: "2:49", event: "UWF: Tournament of Warriors Round 2", org: "UWF" },
+    { date: "Nov 11, 2011", opponent: "Agapito Perez", result: "L", method: "TKO", round: 2, time: "2:17", event: "STFC 18", org: "STFC" }
+  ],
   "Ty Miller": [
     { date: "Jan 24, 2026", opponent: "Adam Fugitt", result: "W", method: "TKO (Punches)", round: 1, time: "4:59", event: "UFC 324: Gaethje vs. Pimblett", org: "UFC" },
     { date: "Aug 12, 2025", opponent: "Jimmy Drago", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 9, Week 1", org: "DWCS" },
@@ -35363,6 +35393,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Victor Martinez": [
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null },
+    { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2021) via unanimous decision over Jacob Rosales", detail: null },
+    { icon: "🥊", title: "\"The Brick\" — 8 of 13 wins by KO/TKO; Fortis MMA / Team Ferreira lightweight who also works as a firefighter in Texas", detail: null }
+  ],
   "Ty Miller": [
     { icon: "⭐", title: "UFC Performance of the Night — buzzer-beating first-round TKO of Adam Fugitt on his Octagon debut (UFC 324)", detail: null },
     { icon: "🏅", title: "Undefeated (7-0, 1 NC); earned UFC contract on Dana White's Contender Series (2025) via unanimous decision over Jimmy Drago", detail: null },
