@@ -98,6 +98,8 @@ def main():
                     help="concurrent per-bout fetches within one fighter")
     ap.add_argument("--seconds", type=float, default=38.0)
     ap.add_argument("--min-coverage", type=float, default=0.5)
+    ap.add_argument("--ids-file", default="",
+                    help="process this explicit list of ESPN ids (one per line) instead of the UFC-league index")
     a = ap.parse_args()
 
     install_html_throttle(a.html_workers)
@@ -115,7 +117,10 @@ def main():
     if new:
         mf.write("espn_id,status,slug,division,record,record_check,stat_fights,def_fights,coverage,photo_ok,country_ok\n")
 
-    ids = imp.all_ufc_ids()
+    if a.ids_file and os.path.exists(a.ids_file):
+        ids = [l.strip() for l in open(a.ids_file) if l.strip().isdigit()]
+    else:
+        ids = imp.all_ufc_ids()
     todo = [i for i in ids if i not in done]
     print("UFC athletes: %d | already done: %d | to process: %d" % (len(ids), len(done), len(todo)))
     if not todo:

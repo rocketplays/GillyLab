@@ -591,7 +591,8 @@ def result_letter(res):
 
 def is_ufc_event(ev):
     e = ev.lower()
-    return e.startswith("ufc") or "ultimate fighting" in e or "contender series" in e or "dana white" in e
+    return (e.startswith("ufc") or "ultimate fighting" in e or "contender series" in e
+            or "dana white" in e or "the ultimate fighter" in e)  # TUF Finale cards are UFC events
 
 def initials(name):
     parts = [p for p in re.split(r"\s+", name) if p]
