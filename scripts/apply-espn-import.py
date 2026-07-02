@@ -65,16 +65,22 @@ def main():
     ap.add_argument("--status", default="ok",
                     help="comma list of statuses to insert (ok,low_coverage,no_stats)")
     ap.add_argument("--slugs", default="", help="comma list of specific slugs (overrides --status filter)")
+    ap.add_argument("--exclude-file", default="", help="file of slugs to skip (one per line)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
 
     want_status = set(s.strip() for s in a.status.split(",") if s.strip())
     want_slugs  = set(s.strip() for s in a.slugs.split(",") if s.strip())
+    exclude = set()
+    if a.exclude_file and os.path.exists(a.exclude_file):
+        exclude = set(l.strip() for l in open(a.exclude_file) if l.strip())
 
     rows = list(csv.DictReader(open(MANIFEST)))
     sel = []
     for r in rows:
         slug = r["slug"]
+        if slug in exclude:
+            continue
         if want_slugs:
             if slug in want_slugs: sel.append(r)
         elif r["status"] in want_status:
