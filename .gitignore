@@ -3,3 +3,12 @@ __pycache__/
 *.pyc
 data/fight-stats-report.txt
 scripts/espn-import-output/
+
+# scratch / review artifacts (not part of the deployed site)
+Gilly Lab/
+fighter_data_wikipedia*.txt
+data/_*.json
+data/_paginated_fighters.txt
+espn-import-*.txt
+espn-missed-import-*.txt
+fight-stats-spotcheck.txt
