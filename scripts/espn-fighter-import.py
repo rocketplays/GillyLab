@@ -411,25 +411,24 @@ def verify(sid):
     # Download to a temp file first so a placeholder/too-small response can't
     # wipe a good existing photo; only swap it in when the download is valid.
     slug = name_to_slug(name)
-    dest = os.path.join(PHOTOS, slug + ".png")
     hs = (bio.get("headshot") or {}).get("href")
     if not hs:
         print("photo    : no ESPN headshot available — existing photo (if any) left as-is")
     else:
         os.makedirs(PHOTOS, exist_ok=True)
-        tmp = dest + ".tmp"
+        tmp = os.path.join(PHOTOS, slug + ".tmp")
         subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", tmp, hs])
         sz = os.path.getsize(tmp) if os.path.exists(tmp) else 0
         if sz < 3000:                      # placeholder/silhouette guard
             if os.path.exists(tmp): os.remove(tmp)
             print("photo    : ESPN headshot is a placeholder/too small — kept existing (%d bytes)" % sz)
         else:
-            os.replace(tmp, dest)
+            save_headshot(tmp, slug)
             thumb = os.path.join(PHOTOS, "thumb", slug + ".png")
             if os.path.exists(thumb): os.remove(thumb)   # force thumb rebuild
             subprocess.run(["python3", os.path.join(PHOTOS, "generate_thumbs.py")],
                            capture_output=True)
-            print("photo    : saved/replaced photos/%s.png + thumb (%d bytes)" % (slug, sz))
+            print("photo    : saved/replaced photos/%s.jpg + thumb (%d bytes)" % (slug, sz))
 
     # ---- drop stale odds history (verified fighters are one-and-done; the old
     # odds data is largely inaccurate and they won't fight again) ----
@@ -607,6 +606,26 @@ def norm_reach(r):
     # ESPN: "75\"" -> keep value; quote-style handled in js_stats
     return r.strip() if r else r
 
+def save_headshot(tmp_path, slug):
+    """Resize a downloaded headshot to 400px-max JPEG at photos/<slug>.jpg
+    (the profile hero displays it in a 120px circle, so 400px stays crisp and
+    the file is ~15KB instead of ~250KB). Removes the temp file."""
+    dest = os.path.join(PHOTOS, slug + ".jpg")
+    try:
+        from PIL import Image
+        im = Image.open(tmp_path).convert("RGB")
+        w, h = im.size
+        s = 400.0 / max(w, h)
+        if s < 1:
+            im = im.resize((round(w * s), round(h * s)), Image.LANCZOS)
+        im.save(dest, "JPEG", quality=82, optimize=True)
+    except Exception:
+        os.replace(tmp_path, dest)   # no PIL / decode error -> keep original bytes as .jpg
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+    return dest
+
 # ---------------- main per-fighter processing ----------------
 def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo=True):
     bio = get_json("%s/athletes/%s" % (CORE, sid))
@@ -709,14 +728,15 @@ def process(sid, roster, verbose=True, min_coverage=0.0, write=True, fetch_photo
     hs = (bio.get("headshot") or {}).get("href")
     if hs and fetch_photo:
         os.makedirs(PHOTOS, exist_ok=True)
-        dest = os.path.join(PHOTOS, slug + ".png")
-        subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", dest, hs])
-        sz = os.path.getsize(dest) if os.path.exists(dest) else 0
+        tmp = os.path.join(PHOTOS, slug + ".tmp")
+        subprocess.run(["curl", "-s", "--max-time", "60", "-L", "-A", UA, "-o", tmp, hs])
+        sz = os.path.getsize(tmp) if os.path.exists(tmp) else 0
         if sz < 3000:  # silhouette/placeholder guard
-            if os.path.exists(dest): os.remove(dest)
+            if os.path.exists(tmp): os.remove(tmp)
             photo_status = "placeholder/too-small, skipped (%d bytes)" % sz
         else:
-            photo_status = "saved photos/%s.png (%d bytes)" % (slug, sz)
+            save_headshot(tmp, slug)   # -> resized photos/<slug>.jpg
+            photo_status = "saved photos/%s.jpg" % slug
 
     # tripwire: does the history-derived record match ESPN's stated record?
     # a mismatch means a fight is missing/extra/misread in the parsed history.

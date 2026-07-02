@@ -92044,7 +92044,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  const imgEl = document.getElementById('f-avatar-img');
  const wrap = document.getElementById('f-avatar-wrap');
  // Try local /photos/ first (same source as fight card)
- const localUrl = './photos/' + nameToSlug(name) + '.png';
+ const localUrl = './photos/' + nameToSlug(name) + '.jpg';
  imgEl.onload = () => {
    imgEl.style.display = 'block';
    document.getElementById('f-avatar-initials').style.display = 'none';
