@@ -3691,6 +3691,7 @@
  { name: "Ihor Potieria", division: "MW", rank: "NR", record: "20-8-0", initials: "IPO", country: "Ukraine" },
  { name: "Azamat Murzakanov", division: "LHW", rank: "#8", record: "16-1-0", initials: "AMZ2", country: "Russia" },
  // ─── FEATHERWEIGHT (remaining) ───
+ { name: "Yizha", division: "FW", rank: "NR", record: "26-6-0", initials: "YIZ", country: "China" },
  { name: "Manel Kape", division: "FLW", rank: "#2", record: "23-7-0", initials: "MKP", country: "Angola" },
  { name: "Nate Landwehr", division: "FW", rank: "NR", record: "18-8-0", initials: "NLA", country: "USA" },
  { name: "Eric Shelton", division: "FW", rank: "NR", record: "21-9-0", initials: "ESH2", country: "USA" },
@@ -4156,6 +4157,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Yizha": { ht:"5'7\"", dob:"1997-01-08", reach:'71"', stance:"Orthodox", slpm:3.20, strAcc:"50%", sapm:3.27, strDef:"46%", kd:0.99, tdLanded:2.63, tdAcc:"29%", tdDef:"78%", subAvg:0.00, finRate:"77%", streak:0, gym:"Enbo Fight Club" },
   "Victor Martinez": { ht:"5'8\"", dob:"1991-07-17", reach:'70"', stance:"Orthodox", slpm:7.53, strAcc:"51%", sapm:7.75, strDef:"52%", kd:0.67, tdLanded:0.67, tdAcc:"33%", tdDef:"80%", subAvg:0.00, finRate:"62%", streak:0, gym:"Fortis MMA" },
   "Ty Miller": { ht:"6'2\"", dob:"2000-06-04", reach:'77"', stance:"Orthodox", slpm:7.16, strAcc:"39%", sapm:4.65, strDef:"65%", kd:0.75, tdLanded:0.00, tdAcc:"0%", tdDef:"75%", subAvg:0.00, finRate:"43%", streak:7, gym:"Fit NHB" },
   "Aliaskhab Khizriev": { ht:"5'9\"", dob:"1990-08-24", reach:'74"', stance:"Southpaw", slpm:6.01, strAcc:"64%", sapm:4.38, strDef:"62%", kd:0.00, tdLanded:5.64, tdAcc:"60%", tdDef:"100%", subAvg:3.76, finRate:"71%", streak:14, gym:"Fight Club Scorpion" },
@@ -6614,6 +6616,12 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Yizha": [
+    { opponent: "Kaan Ofli", odds: -225 },
+    { opponent: "Westin Wilson", odds: -950 },
+    { opponent: "Gabriel Santos", odds: 235 },
+    { opponent: "Kaiwen Li", odds: -200 }
+  ],
   "Victor Martinez": [
     { opponent: "Rongzhu", odds: 1600 },
     { opponent: "Tom Nolan", odds: 430 },
@@ -15542,6 +15550,40 @@
 };
 
 const FIGHT_HISTORY = {
+  "Yizha": [
+    { date: "Jan 31, 2026", opponent: "Kaan Ofli", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "UFC 325: Volkanovski vs. Lopes 2", org: "UFC" },
+    { date: "Aug 23, 2025", opponent: "Westin Wilson", result: "W", method: "TKO", round: 1, time: "0:37", event: "UFC Fight Night: Walker vs. Zhang", org: "UFC" },
+    { date: "Sep 7, 2024", opponent: "Gabriel Santos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Burns vs. Brady", org: "UFC" },
+    { date: "Feb 3, 2024", opponent: "Kaiwen Li", result: "W", method: "Submission (Armbar)", round: 1, time: "3:03", event: "Road to UFC: Season 2 Finals", org: "Road to UFC" },
+    { date: "Aug 27, 2023", opponent: "SangWon Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Road to UFC: Season 2, Episode 5", org: "Road to UFC" },
+    { date: "May 27, 2023", opponent: "Wuziazibieke Jiahefu", result: "W", method: "Submission (Armbar)", round: 1, time: "2:28", event: "Road to UFC: Season 2, Episode 1", org: "Road to UFC" },
+    { date: "Feb 4, 2023", opponent: "JeongYeong Lee", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC Fight Night: Lewis vs. Spivac (Road to UFC S1 Final)", org: "UFC" },
+    { date: "Oct 23, 2022", opponent: "Koyomi Matsushima", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Road to UFC: Episode 5", org: "Road to UFC" },
+    { date: "Jun 9, 2022", opponent: "Keisuke Sasu", result: "W", method: "Submission", round: 1, time: "2:14", event: "Road to UFC: Episode 1", org: "Road to UFC" },
+    { date: "Sep 12, 2021", opponent: "Jingtao Li", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "1:58", event: "WKG & M-1 Global: Chengdu Charity Tournament", org: "M-1 Global" },
+    { date: "Jan 14, 2021", opponent: "Maimaitituoheti Keremuaili", result: "L", method: "TKO", round: 2, time: "0:11", event: "WLF: W.A.R.S. 50", org: "WLF" },
+    { date: "Sep 25, 2020", opponent: "Chao Xie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 47", org: "WLF" },
+    { date: "Aug 21, 2020", opponent: "Fuyao Li", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:30", event: "WLF: W.A.R.S. 46", org: "WLF" },
+    { date: "May 22, 2020", opponent: "Renjie Cao", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "N/A", event: "WLF: W.A.R.S. 43", org: "WLF" },
+    { date: "Jan 3, 2020", opponent: "Gilbert Patrocinio", result: "W", method: "Decision (Split)", round: 5, time: "5:00", event: "WLF: W.A.R.S. 41", org: "WLF" },
+    { date: "Sep 14, 2019", opponent: "LiGe Teng", result: "W", method: "TKO", round: 2, time: "4:38", event: "Legend FC 13", org: "Legend FC" },
+    { date: "Jun 14, 2019", opponent: "Yusei Saiton", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:42", event: "WLF: W.A.R.S. 35", org: "WLF" },
+    { date: "Mar 15, 2019", opponent: "Alexey Fedonov", result: "W", method: "TKO", round: 2, time: "4:27", event: "WLF: W.A.R.S. 32", org: "WLF" },
+    { date: "Sep 15, 2018", opponent: "Chunbo Yuan", result: "L", method: "Submission (Heel Hook)", round: 1, time: "2:43", event: "Legend FC 12", org: "Legend FC" },
+    { date: "Aug 2, 2018", opponent: "Mario Sismundo", result: "W", method: "TKO", round: 1, time: "1:32", event: "ABA FC: Hongyuan", org: "ABA FC" },
+    { date: "Jun 27, 2018", opponent: "Amrali Saydoshurov", result: "W", method: "Submission (Guillotine)", round: 1, time: "4:08", event: "WLF: W.A.R.S. 25", org: "WLF" },
+    { date: "May 11, 2018", opponent: "Francisco Jose Vinuelas Borras", result: "W", method: "TKO (Punches)", round: 1, time: "4:06", event: "WLF: W.A.R.S. 24", org: "WLF" },
+    { date: "Mar 11, 2018", opponent: "Mark Abelardo", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Kunlun Fight 70", org: "Kunlun Fight" },
+    { date: "Sep 16, 2017", opponent: "Amirlan Amirov", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: W.A.R.S. 17", org: "WLF" },
+    { date: "Apr 7, 2017", opponent: "Getumuji Wu", result: "W", method: "Submission (Guillotine)", round: 1, time: "3:34", event: "CWM MMA: Chin Woo Men, Stage 6", org: "CWM" },
+    { date: "Jan 8, 2017", opponent: "Junzhou Bai", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:22", event: "CWM MMA: Chin Woo Men, Stage 3", org: "CWM" },
+    { date: "Nov 26, 2016", opponent: "Umidjon Musaev", result: "W", method: "TKO (Punches)", round: 1, time: "4:29", event: "WLF: W.A.R.S. 10", org: "WLF" },
+    { date: "Aug 20, 2016", opponent: "Stanislav Ermolov", result: "W", method: "TKO (Punches)", round: 1, time: "1:29", event: "WLF: E.P.I.C. 7", org: "WLF" },
+    { date: "Jun 29, 2016", opponent: "Junichi Hirata", result: "W", method: "Submission (Triangle Armbar)", round: 1, time: "4:59", event: "WLF: E.P.I.C. 5", org: "WLF" },
+    { date: "Apr 23, 2016", opponent: "Asfhin Keymasi", result: "W", method: "Submission (Triangle Armbar)", round: 1, time: "1:57", event: "WLF: E.P.I.C. 3", org: "WLF" },
+    { date: "Mar 13, 2016", opponent: "Seio Yamada", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "WLF: E.P.I.C. 2", org: "WLF" },
+    { date: "Jul 5, 2015", opponent: "Bulat Kiyalov", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "N/A", event: "China-Thailand International Fight Challenge", org: "China-Thailand" }
+  ],
   "Victor Martinez": [
     { date: "May 28, 2026", opponent: "Rongzhu", result: "L", method: "TKO (Punches)", round: 1, time: "1:10", event: "Road to UFC: Macau Day 1", org: "Road to UFC" },
     { date: "May 18, 2024", opponent: "Tom Nolan", result: "L", method: "TKO", round: 1, time: "3:50", event: "UFC Fight Night: Barboza vs. Murphy", org: "UFC" },
@@ -35393,6 +35435,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Yizha": [
+    { icon: "🏆", title: "Road to UFC Season 2 Featherweight Tournament winner (2024) — first-round armbar of Kaiwen Li in the final to earn a UFC contract", detail: null },
+    { icon: "🏅", title: "Road to UFC Season 1 finalist (2023) — lost a split decision to JeongYeong Lee in the final", detail: null },
+    { icon: "🤼", title: "Grappling-heavy finisher — 13 of 26 wins by submission (20 total finishes); longtime Wu Lin Feng (WLF) veteran out of China's Enbo Fight Club", detail: null }
+  ],
   "Victor Martinez": [
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt", detail: null },
     { icon: "🏅", title: "Earned UFC contract on Dana White's Contender Series (2021) via unanimous decision over Jacob Rosales", detail: null },
