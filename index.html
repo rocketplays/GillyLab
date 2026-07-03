@@ -172,9 +172,9 @@
       align-items: center;
     }
 
-    /* Account button — mirrors the nav dropdown, pinned to the right of the bar */
+    /* Account dropdown — mirrors the nav dropdown, pinned to the right of the bar */
+    .account-dropdown { margin-left: auto; position: relative; }
     .account-btn {
-      margin-left: auto;             /* pushes it to the far right, opposite the dropdown */
       display: flex;
       align-items: center;
       gap: 0.5rem;
@@ -189,13 +189,39 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--text);
-      text-decoration: none;
       cursor: pointer;
       transition: border-color 0.15s, color 0.15s;
       white-space: nowrap;
     }
     .account-btn:hover { border-color: var(--accent); color: var(--accent); }
-    .account-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .account-user-icon { width: 15px; height: 15px; flex-shrink: 0; }
+    .account-arrow { width: 10px; height: 6px; flex-shrink: 0; transition: transform 0.15s; }
+    .account-dropdown.open .account-arrow { transform: rotate(180deg); }
+    .account-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      min-width: 190px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px;
+      display: none;
+      z-index: 200;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .account-dropdown.open .account-menu { display: block; }
+    .account-menu a {
+      display: block;
+      padding: 0.6rem 0.75rem;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .account-menu a:hover { background: rgba(255,255,255,0.05); color: var(--accent); }
     @media (max-width: 560px) {
       .account-btn-label { display: none; }
       .account-btn { padding: 0 0.55rem; }
@@ -2738,11 +2764,18 @@
 
     <div class="nav-logo" onclick="navigate('home')" style="cursor:pointer;position:absolute;left:50%;transform:translateX(-50%);"><img src="gl-logo.png?v=5" alt="GL" style="height:44px;width:auto;display:block;" /></div>
 
-    <!-- Account / subscription management (Worker-served page). Opposite the dropdown. -->
-    <a class="account-btn" href="/account" title="Account &amp; subscription" aria-label="Account">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
-      <span class="account-btn-label">Account</span>
-    </a>
+    <!-- Account dropdown — quick actions (manage subscription, log out). Opposite the nav dropdown. -->
+    <div class="account-dropdown" id="account-dropdown">
+      <button class="account-btn" id="account-btn" onclick="toggleAccountMenu(event)" aria-haspopup="true" aria-expanded="false" aria-label="Account">
+        <svg class="account-user-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+        <span class="account-btn-label">Account</span>
+        <svg class="account-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="account-menu" id="account-menu" role="menu">
+        <a role="menuitem" href="/api/portal">Manage subscription</a>
+        <a role="menuitem" href="/api/logout">Log out</a>
+      </div>
+    </div>
   </nav>
 </div>
 
@@ -92334,6 +92367,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  dd.classList.remove('open');
  if (btn) btn.setAttribute('aria-expanded', 'false');
  }
+ // Account dropdown (right side of the header) — quick actions menu.
+ function toggleAccountMenu(e) {
+ e.stopPropagation();
+ const dd = document.getElementById('account-dropdown');
+ const btn = document.getElementById('account-btn');
+ const isOpen = dd.classList.toggle('open');
+ if (btn) btn.setAttribute('aria-expanded', isOpen);
+ }
+ function closeAccountMenu() {
+ const dd = document.getElementById('account-dropdown');
+ const btn = document.getElementById('account-btn');
+ if (dd) dd.classList.remove('open');
+ if (btn) btn.setAttribute('aria-expanded', 'false');
+ }
+ document.addEventListener('click', function(e) {
+ if (!document.getElementById('account-dropdown')?.contains(e.target)) closeAccountMenu();
+ });
+ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAccountMenu(); });
  // Close dropdown when clicking outside
  document.addEventListener('click', function(e) {
  if (!document.getElementById('nav-dropdown')?.contains(e.target)) {
