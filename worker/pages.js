@@ -1,7 +1,7 @@
 /* Public HTML pages served by the Worker (landing, auth, subscribe, account).
    Self-contained (no gated assets) and on-brand with the app: dark + #00e668. */
 
-const PRICE_LABEL = "$7.99 / month";   // display only — real price lives in Stripe
+const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in Stripe
 
 const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,7 +48,7 @@ function wire(formId, url, msgId){
     post(url,data).then(function(r){
       if(r.error){m.className="msg err";m.textContent=r.error;return;}
       if(r.redirect){window.location=r.redirect;return;}
-      if(r.ok){m.className="msg ok";m.textContent="Check your email for a sign-in link.";}
+      if(r.ok){m.className="msg ok";m.textContent="If an account exists for that email, a sign-in link is on its way — check your inbox. New here? Create an account below.";}
     }).catch(function(){m.className="msg err";m.textContent="Network error — try again.";});
   });
 }

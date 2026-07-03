@@ -17,21 +17,24 @@ compatibility_date = "2026-04-01"
 directory = "./public"
 binding = "ASSETS"
 run_worker_first = true          # gate: our Worker runs before any asset is served
+html_handling = "none"           # don't auto-redirect /index.html -> / (that caused a
+                                 # redirect loop: the Worker serves /index.html itself)
+not_found_handling = "none"      # missing asset returns 404, not a redirect
 
 # Non-secret config (safe to commit). Secrets are set with `wrangler secret put`.
 [vars]
 SITE_URL   = "https://gillylab.com"
-FROM_EMAIL = "GillyLab <login@gillylab.com>"
+FROM_EMAIL = "GillyLab <login@gillylab.com>"   # verified sending domain in Resend
 SESSION_TTL_HOURS = "12"
 
 # --- KV namespaces (create with `wrangler kv namespace create ...`, paste ids) ---
 [[kv_namespaces]]
 binding = "USERS"      # accounts: email -> {passHash, passSalt, stripeCustomerId, subscribed, ...}
-id = "REPLACE_WITH_USERS_KV_ID"
+id = "bf5600be8db945798f5b63218f024338"
 
 [[kv_namespaces]]
 binding = "MAGIC"      # short-lived magic-link / verification tokens
-id = "REPLACE_WITH_MAGIC_KV_ID"
+id = "aca631f159dd48c5869d4e18df10c64c"
 
 # Secrets to set (NOT here — run these once, values never touch git):
 #   wrangler secret put STRIPE_SECRET_KEY       # sk_live_... (or sk_test_...)
