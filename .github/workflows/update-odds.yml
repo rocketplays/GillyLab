@@ -91,11 +91,20 @@ jobs:
           done
           echo "Photos cached: $(ls data/photos/ 2>/dev/null | wc -l)"
 
+      # Compare the (faster) odds feed against the card feed and email if an
+      # upcoming card looks out of date — after the override steps, so anything
+      # already patched doesn't alert. Non-fatal.
+      - name: Alert on odds/card discrepancies
+        run: node scripts/odds-card-alert.cjs || true
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/
+          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
