@@ -340,7 +340,7 @@
          its own height in normal flow — adding padding here on top of
          that would double-count the header's height as blank space. */
       min-height: 100vh;
-      animation: fadeIn 0.3s ease;
+      animation: fadeIn 0.42s ease;
     }
 
     .page.active { display: block; }
@@ -356,7 +356,7 @@
       animation: none;
       opacity: 0;
       transform: translateY(-8px);
-      transition: opacity 0.15s ease, transform 0.15s ease;
+      transition: opacity 0.2s ease, transform 0.2s ease;
       pointer-events: none;
     }
 
@@ -6560,7 +6560,7 @@
  // in" transition rather than two unrelated effects.
  if (activePage && activePage !== targetPage) {
  activePage.classList.add('page-leaving');
- pageTransitionTimer = setTimeout(() => { pageTransitionTimer = null; applySwitch(); }, 140);
+ pageTransitionTimer = setTimeout(() => { pageTransitionTimer = null; applySwitch(); }, 170);
  } else {
  applySwitch();
  }
