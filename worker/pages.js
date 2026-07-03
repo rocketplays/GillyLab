@@ -53,7 +53,7 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
 </style></head><body><div class="wrap">${body}</div>
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
-function wire(formId, url, msgId){
+function wire(formId, url, msgId, okMsg){
   var f=document.getElementById(formId); if(!f)return;
   f.addEventListener("submit",function(e){e.preventDefault();
     var m=document.getElementById(msgId); m.className="msg"; m.textContent="Working…";
@@ -61,7 +61,7 @@ function wire(formId, url, msgId){
     post(url,data).then(function(r){
       if(r.error){m.className="msg err";m.textContent=r.error;return;}
       if(r.redirect){document.body.classList.add("leaving");setTimeout(function(){window.location=r.redirect;},180);return;}
-      if(r.ok){m.className="msg ok";m.textContent="If an account exists for that email, a sign-in link is on its way — check your inbox. New here? Create an account below.";}
+      if(r.ok){m.className="msg ok";m.textContent=okMsg||"If an account exists for that email, a sign-in link is on its way — check your inbox. New here? Create an account below.";}
     }).catch(function(){m.className="msg err";m.textContent="Network error — try again.";});
   });
 }
@@ -120,6 +120,7 @@ export const loginPage = () => shell("Log in to GillyLab", `
       <button type="submit">Log in</button>
       <div id="m" class="msg"></div>
     </form>
+    <p class="muted center" style="font-size:.82rem;margin:.55rem 0 0"><a href="/forgot">Forgot your password?</a></p>
     <hr class="or">
     <form id="mf">
       <p class="muted center" style="font-size:.88rem;margin:.6rem 0 0">Log in a different way — we'll email you a one-click link.</p>
@@ -155,6 +156,47 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
     <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<a class="btn" href="/subscribe">Subscribe →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
+
+export const changePasswordPage = () => shell("Change password — GillyLab", `
+  ${backLink}
+  <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
+  <div class="card">
+    <h1 style="font-size:1.4rem;text-align:center">Change password</h1>
+    <form id="f">
+      <label>Current password</label><input name="current" type="password" autocomplete="current-password" required>
+      <label>New password</label><input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="at least 8 characters">
+      <button type="submit">Update password</button>
+      <div id="m" class="msg"></div>
+    </form>
+    <div class="alt muted"><a href="/">Back to GillyLab</a></div>
+  </div>`, `wire("f","/api/change-password","m","Password updated.");`);
+
+export const forgotPasswordPage = () => shell("Reset your password — GillyLab", `
+  ${backLink}
+  <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
+  <div class="card">
+    <h1 style="font-size:1.4rem;text-align:center">Reset password</h1>
+    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Enter your email and we'll send you a link to set a new password.</p>
+    <form id="f">
+      <label>Email</label><input name="email" type="email" autocomplete="email" required>
+      <button type="submit">Email me a reset link</button>
+      <div id="m" class="msg"></div>
+    </form>
+    <div class="alt muted"><a href="/login">Back to log in</a></div>
+  </div>`, `wire("f","/api/reset/start","m","If an account exists for that email, a reset link is on its way — check your inbox.");`);
+
+export const resetPasswordPage = (token) => shell("Set a new password — GillyLab", `
+  <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
+  <div class="card">
+    <h1 style="font-size:1.4rem;text-align:center">Set a new password</h1>
+    <form id="f">
+      <input type="hidden" name="token" value="${String(token).replace(/"/g, "&quot;")}">
+      <label>New password</label><input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="at least 8 characters">
+      <button type="submit">Set password &amp; sign in</button>
+      <div id="m" class="msg"></div>
+    </form>
+    <div class="alt muted"><a href="/login">Back to log in</a></div>
+  </div>`, `wire("f","/api/reset/complete","m");`);
 
 export const notePage = (title, msg) => shell(title, `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

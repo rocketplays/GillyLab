@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage } from "./pages.js";
 
 const COOKIE = "gl_session";
 
@@ -171,12 +171,17 @@ export default {
       if (path === "/api/stripe-webhook" && request.method === "POST") return handleWebhook(request, env);
       if (path === "/api/magic/start" && request.method === "POST") return handleMagicStart(request, env);
       if (path === "/api/magic/verify") return handleMagicVerify(request, env, url);
+      if (path === "/api/change-password" && request.method === "POST") return handleChangePassword(request, env);
+      if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
+      if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
       if (path === "/healthz") return new Response("ok");
 
       // ---- public pages ----
       if (path === "/login") return html(loginPage());
       if (path === "/signup") return html(signupPage());
       if (path === "/subscribe") return html(subscribePage(url.searchParams.get("canceled")));
+      if (path === "/forgot") return html(forgotPasswordPage());
+      if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
 
       // ---- account page (must be logged in) ----
       if (path === "/account") {
@@ -184,6 +189,11 @@ export default {
         if (!s) return redirect(env.SITE_URL + "/login");
         const u = await getUser(env, s.email);
         return html(accountPage(s.email, !!u?.subscribed));
+      }
+      if (path === "/change-password") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/login");
+        return html(changePasswordPage());
       }
 
       // ---- everything else is GATED: the app, its data + photos ----
@@ -284,6 +294,52 @@ async function handlePortal(request, env) {
   } catch (e) {
     return html(notePage("Billing portal unavailable", "Couldn't open the billing portal just now — please try again in a moment."), 500);
   }
+}
+
+// Change password for a logged-in user — requires the current password.
+async function handleChangePassword(request, env) {
+  const s = await readSession(request, env);
+  if (!s) return json({ error: "Please log in again." }, 401);
+  const { current, password } = await readBody(request);
+  if (!password || password.length < 8) return json({ error: "New password must be at least 8 characters." }, 400);
+  const u = await getUser(env, s.email);
+  if (!u || !(await verifyPassword(current, u.passHash, u.passSalt))) return json({ error: "Your current password is incorrect." }, 401);
+  const { passHash, passSalt } = await hashPassword(password);
+  u.passHash = passHash; u.passSalt = passSalt;
+  await putUser(env, s.email, u);
+  return json({ ok: true });
+}
+
+// Forgot password — email a reset link (mirrors magic-link, distinct "r:" token).
+async function handleResetStart(request, env) {
+  const { email } = await readBody(request);
+  const e = normEmail(email);
+  if (!e) return json({ error: "Enter your email." }, 400);
+  const u = await getUser(env, e);   // only send if the account exists (no enumeration)
+  if (u) {
+    const token = randHex(32);
+    await env.MAGIC.put("r:" + token, e, { expirationTtl: 900 }); // 15 min
+    const link = `${env.SITE_URL}/reset?token=${token}`;
+    await sendEmail(env, e, "Reset your GillyLab password",
+      `<p>Click to set a new password for GillyLab:</p><p><a href="${link}">${link}</a></p><p>This link expires in 15 minutes. If you didn't request it, ignore this email.</p>`);
+  }
+  return json({ ok: true });
+}
+
+// Forgot password — set the new password from a valid reset token, then sign in.
+async function handleResetComplete(request, env) {
+  const { token, password } = await readBody(request);
+  if (!token) return json({ error: "Invalid reset link." }, 400);
+  if (!password || password.length < 8) return json({ error: "Password must be at least 8 characters." }, 400);
+  const e = await env.MAGIC.get("r:" + token);
+  if (!e) return json({ error: "That reset link has expired or was already used. Request a new one." }, 400);
+  await env.MAGIC.delete("r:" + token);
+  const u = (await getUser(env, e)) || { email: e, createdAt: Date.now(), subscribed: false };
+  const { passHash, passSalt } = await hashPassword(password);
+  u.passHash = passHash; u.passSalt = passSalt;
+  await putUser(env, e, u);
+  const cookie = await makeSessionCookie(env, e, !!u.subscribed);
+  return json({ ok: true, redirect: env.SITE_URL + (u.subscribed ? "/" : "/subscribe") }, 200, { "Set-Cookie": cookie });
 }
 
 async function handleWebhook(request, env) {
