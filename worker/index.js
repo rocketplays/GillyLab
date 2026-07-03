@@ -177,10 +177,19 @@ export default {
       if (path === "/healthz") return new Response("ok");
 
       // ---- public pages ----
-      if (path === "/login") return html(loginPage());
-      if (path === "/signup") return html(signupPage());
+      // Auth-entry pages: if already logged in, skip them and go to the app
+      // (or /subscribe if the account isn't subscribed yet).
+      if (path === "/login" || path === "/signup" || path === "/forgot") {
+        const s = await readSession(request, env);
+        if (s) {
+          const u = await getUser(env, s.email);
+          return redirect(env.SITE_URL + (u?.subscribed ? "/" : "/subscribe"));
+        }
+        if (path === "/login") return html(loginPage());
+        if (path === "/signup") return html(signupPage());
+        return html(forgotPasswordPage());
+      }
       if (path === "/subscribe") return html(subscribePage(url.searchParams.get("canceled")));
-      if (path === "/forgot") return html(forgotPasswordPage());
       if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
 
       // ---- account page (must be logged in) ----
