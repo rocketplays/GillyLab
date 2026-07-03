@@ -38,6 +38,12 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   .price{font-weight:800;color:var(--accent)}
   hr.or{border:0;border-top:1px solid var(--line);margin:1.4rem 0 .2rem;position:relative}
   hr.or::after{content:"or";position:absolute;top:-.7em;left:50%;transform:translateX(-50%);background:var(--card);padding:0 .6rem;color:var(--muted);font-size:.8rem}
+  /* Smooth page-to-page: fade in on load, fade out before navigating away */
+  .wrap{animation:glPageIn .28s ease both}
+  @keyframes glPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  body{transition:opacity .18s ease}
+  body.leaving{opacity:0}
+  @media (prefers-reduced-motion: reduce){.wrap{animation:none}body{transition:none}}
 </style></head><body><div class="wrap">${body}</div>
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
@@ -48,11 +54,19 @@ function wire(formId, url, msgId){
     var data={}; new FormData(f).forEach((v,k)=>data[k]=v);
     post(url,data).then(function(r){
       if(r.error){m.className="msg err";m.textContent=r.error;return;}
-      if(r.redirect){window.location=r.redirect;return;}
+      if(r.redirect){document.body.classList.add("leaving");setTimeout(function(){window.location=r.redirect;},180);return;}
       if(r.ok){m.className="msg ok";m.textContent="If an account exists for that email, a sign-in link is on its way — check your inbox. New here? Create an account below.";}
     }).catch(function(){m.className="msg err";m.textContent="Network error — try again.";});
   });
 }
+// Fade out before internal navigations so page-to-page feels smooth, not abrupt.
+document.addEventListener("click",function(e){
+  var a=e.target.closest&&e.target.closest("a[href]"); if(!a)return;
+  var href=a.getAttribute("href");
+  if(!href||href.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
+  e.preventDefault(); document.body.classList.add("leaving");
+  setTimeout(function(){window.location=href;},180);
+});
 ${extraJs}
 </script></body></html>`;
 

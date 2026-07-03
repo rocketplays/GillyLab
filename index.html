@@ -206,11 +206,20 @@
       border: 1px solid var(--border);
       border-radius: 6px;
       padding: 4px;
-      display: none;
       z-index: 200;
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      /* fade in AND out (not an abrupt display toggle) */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s linear 0.16s;
     }
-    .account-dropdown.open .account-menu { display: block; }
+    .account-dropdown.open .account-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      transition: opacity 0.16s ease, transform 0.16s ease, visibility 0s;
+    }
     .account-menu a {
       display: block;
       padding: 0.6rem 0.75rem;
