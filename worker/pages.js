@@ -42,9 +42,9 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   hr.or{border:0;border-top:1px solid var(--line);margin:1.4rem 0 .2rem;position:relative}
   hr.or::after{content:"or";position:absolute;top:-.7em;left:50%;transform:translateX(-50%);background:var(--card);padding:0 .6rem;color:var(--muted);font-size:.8rem}
   /* Smooth page-to-page: fade in on load, fade out before navigating away */
-  .wrap{animation:glPageIn .28s ease both}
+  .wrap{animation:glPageIn .2s ease both}
   @keyframes glPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  body{transition:opacity .18s ease}
+  body{transition:opacity .13s ease}
   body.leaving{opacity:0}
   @media (prefers-reduced-motion: reduce){.wrap{animation:none}body{transition:none}}
   .back-link{position:fixed;top:1.1rem;left:1.1rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
@@ -60,7 +60,7 @@ function wire(formId, url, msgId, okMsg){
     var data={}; new FormData(f).forEach((v,k)=>data[k]=v);
     post(url,data).then(function(r){
       if(r.error){m.className="msg err";m.textContent=r.error;return;}
-      if(r.redirect){document.body.classList.add("leaving");setTimeout(function(){window.location=r.redirect;},180);return;}
+      if(r.redirect){document.body.classList.add("leaving");setTimeout(function(){window.location=r.redirect;},130);return;}
       if(r.ok){m.className="msg ok";m.textContent=okMsg||"If an account exists for that email, a sign-in link is on its way — check your inbox. New here? Create an account below.";}
     }).catch(function(){m.className="msg err";m.textContent="Network error — try again.";});
   });
@@ -71,7 +71,7 @@ document.addEventListener("click",function(e){
   var href=a.getAttribute("href");
   if(!href||href.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
   e.preventDefault(); document.body.classList.add("leaving");
-  setTimeout(function(){window.location=href;},180);
+  setTimeout(function(){window.location=href;},130);
 });
 ${extraJs}
 </script></body></html>`;
