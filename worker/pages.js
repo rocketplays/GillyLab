@@ -211,30 +211,25 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <script>
 (function(){
   var A="#00e668",M="var(--muted)",L="rgba(255,255,255,.09)",BG="#0a0a0b";
-  var P={
-    topuria:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ilia_Topuria_2024.jpg/320px-Ilia_Topuria_2024.jpg",
-    jones:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jon_Jones_2022.jpg/320px-Jon_Jones_2022.jpg",
-    aspinall:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Tom_Aspinall_2023.jpg/320px-Tom_Aspinall_2023.jpg",
-    pereira:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Alex_Pereira_UFC_2023.jpg/320px-Alex_Pereira_UFC_2023.jpg",
-    makhachev:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Islam_Makhachev_2023.jpg/320px-Islam_Makhachev_2023.jpg"
-  };
-  function ava(init,photo,gold){
+  // Real database thumbnails (served publicly via the Worker's LANDING_PHOTOS
+  // allow-list); initials render if an image is ever unavailable.
+  function ava(slug,init,gold){
     var ring=gold?"#ffb340":A;
     var base="width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid "+ring+";flex:0 0 auto;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;";
-    if(!photo)return '<div style="'+base+'">'+init+'</div>';
-    return '<div style="'+base+'"><img src="'+photo+'" alt="'+init+'" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>';
+    if(!slug)return '<div style="'+base+'">'+init+'</div>';
+    return '<div style="'+base+'"><img src="/photos/thumb/'+slug+'.png" alt="'+init+'" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>';
   }
 
-  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava('IT',P.topuria)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">Ilia Topuria</div><div style="font-size:11px;color:'+M+'">Featherweight / Lightweight · 17-0-0 · <span style="color:#ffb340">Champion</span></div></div></div>'
+  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava('ilia-topuria','IT')+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">Ilia Topuria</div><div style="font-size:11px;color:'+M+'">Featherweight / Lightweight · 17-0-0 · <span style="color:#ffb340">Champion</span></div></div></div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
     +[['Strikes Landed / Min','4.82'],['Striking Accuracy','50%'],['Knockdowns / 15','1.15'],['Striking Defense','62%'],['Takedown Defense','95%'],['Finish Rate','88%']].map(function(s){
       return '<div class="statc"><div class="statc-l">'+s[0]+'</div><div class="statc-v">'+s[1]+'</div></div>';}).join('')+'</div>';
 
   function mrows(rows){return rows.map(function(r){return '<div style="display:flex;align-items:center;gap:7px;margin:5px 0"><div style="width:66px;font-size:10.5px;color:'+M+'">'+r[0]+'</div><div style="flex:1;height:6px;background:'+BG+';border-radius:4px;overflow:hidden"><div style="width:'+r[1]+'%;height:100%;background:'+A+'"></div></div><div style="width:28px;text-align:right;font-size:10.5px;font-weight:700">'+r[1]+'%</div></div>';}).join('');}
   function shead(av,name,count,pct,lead){return '<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><div style="display:flex;align-items:center;gap:9px">'+av+'<div><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:10.5px;color:'+M+'">'+count+'</div></div></div><div class="bc" style="font-size:22px;font-weight:900;color:'+(lead?A:'#fff')+'">'+pct+'%</div></div>';}
-  var sim=shead(ava('JJ',P.jones),'Jon Jones','5,410 / 10,000 wins','54',true)
+  var sim=shead(ava('jon-jones','JJ'),'Jon Jones','5,410 / 10,000 wins','54',true)
     +'<div style="height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;margin:8px 0"><div style="width:54%;height:100%;background:'+A+'"></div><div style="flex:1;background:'+M+'"></div></div>'
-    +shead(ava('TA',P.aspinall),'Tom Aspinall','4,590 / 10,000 wins','46',false)
+    +shead(ava('tom-aspinall','TA'),'Tom Aspinall','4,590 / 10,000 wins','46',false)
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px">'
     +'<div><div class="bc" style="font-size:11px;font-weight:700;color:'+M+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Jones — method of victory</div>'+mrows([['KO/TKO',28],['Submission',22],['Decision',50]])+'</div>'
     +'<div><div class="bc" style="font-size:11px;font-weight:700;color:'+M+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Aspinall — method of victory</div>'+mrows([['KO/TKO',71],['Submission',20],['Decision',9]])+'</div></div>'
@@ -248,22 +243,22 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +orow('DraftKings','#1a9e3a','-145','+125')+orow('FanDuel','#1493ff','-150','+130')+orow('BetMGM','#c9960a','-140','+120')+orow('Caesars','#7cb87c','-142','+124')+'</table>';
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
-  var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('AP',P.pereira)+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
+  var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('alex-pereira','AP')+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
     +trow('Oct 5, 2024','def. Khalil Rountree Jr.','KO/TKO · R4 · UFC 307')
     +trow('Jun 8, 2024','def. Jiří Procházka','KO/TKO · R2 · UFC 303')
     +trow('Apr 13, 2024','def. Jamahal Hill','KO/TKO · R1 · UFC 300')
     +trow('Jul 29, 2023','def. Jan Błachowicz','Decision · UFC 291');
 
-  function bhead(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem"><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">'+ava('IM',P.makhachev)+'<span style="font-weight:800;font-size:.9rem">Islam Makhachev</span></div><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end"><span style="font-weight:800;font-size:.9rem">A. Volkanovski</span>'+ava('AV',null)+'</div></div>';}
+  function bhead(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem"><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">'+ava('islam-makhachev','IM')+'<span style="font-weight:800;font-size:.9rem">Islam Makhachev</span></div><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end"><span style="font-weight:800;font-size:.9rem">A. Volkanovski</span>'+ava('alexander-volkanovski','AV')+'</div></div>';}
   function bbar(lv,rv){var t=lv+rv;if(t<=0)return '';var lp=Math.max(8,Math.min(92,Math.round(100*lv/t)));if(lv===rv)lp=50;var lc=lv>=rv?A:'rgba(255,255,255,.18)',rc=rv>=lv?A:'rgba(255,255,255,.18)';return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:4px"><div style="width:'+lp+'%;background:'+lc+'"></div><div style="width:'+(100-lp)+'%;background:'+rc+'"></div></div>';}
   function brow(lval,label,rval,lv,rv){return '<div style="padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.06)"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem"><span style="font-weight:700;font-size:.86rem;min-width:56px">'+lval+'</span><span style="font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;color:'+M+';white-space:nowrap">'+label+'</span><span style="font-weight:700;font-size:.86rem;min-width:56px;text-align:right">'+rval+'</span></div>'+bbar(lv,rv)+'</div>';}
   var box=bhead()
-    +'<div style="text-align:center;margin-bottom:.6rem"><span style="font-size:.72rem;color:'+M+'">Jun 1, 2024 · UFC 302</span><div style="font-size:.74rem;color:'+A+';font-weight:700;margin-top:2px">Islam Makhachev by Submission R5 - 3:38</div></div>'
-    +brow('1','Knockdowns','0',1,0)
-    +brow('106/196 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(54%)</span>','Sig. Strikes','98/171 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(57%)</span>',106,98)
-    +brow('4/9','Takedowns','0/2',4,0)
-    +brow('2','Sub. Att','0',2,0)
-    +brow('12:16','Control','0:52',736,52);
+    +'<div style="text-align:center;margin-bottom:.6rem"><span style="font-size:.72rem;color:'+M+'">Feb 11, 2023 · UFC 284</span><div style="font-size:.74rem;color:'+A+';font-weight:700;margin-top:2px">Islam Makhachev by Unanimous Decision</div></div>'
+    +brow('0','Knockdowns','1',0,1)
+    +brow('57/95 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(60%)</span>','Sig. Strikes','70/143 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(49%)</span>',57,70)
+    +brow('95/135','Total Strikes','164/255',95,164)
+    +brow('4/9','Takedowns','0/4',4,0)
+    +brow('7:37','Control','2:55',457,175);
 
   function rr(n,name,rec,move,mv,champ){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span><span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(move?'<span class="rmove '+mv+'">'+move+'</span>':(champ?'<span class="rtag">Champion</span>':''))+'</div>';}
   var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">Lightweight — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'

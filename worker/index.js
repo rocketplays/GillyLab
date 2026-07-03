@@ -21,6 +21,19 @@ import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePag
 
 const COOKIE = "gl_session";
 
+// Fighter thumbnails shown on the logged-out marketing landing page. These are
+// the ONLY files under ./public served without a subscribed session — an
+// explicit allow-list so the landing can use the real database photos while the
+// rest of the gated assets (the app, its data, all other photos) stay locked.
+const LANDING_PHOTOS = new Set([
+  "/photos/thumb/ilia-topuria.png",
+  "/photos/thumb/jon-jones.png",
+  "/photos/thumb/tom-aspinall.png",
+  "/photos/thumb/alex-pereira.png",
+  "/photos/thumb/islam-makhachev.png",
+  "/photos/thumb/alexander-volkanovski.png",
+]);
+
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */
 const enc = new TextEncoder();
 const b64url = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -203,6 +216,19 @@ export default {
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/login");
         return html(changePasswordPage());
+      }
+
+      // ---- public marketing assets ----
+      // Serve just the landing page's fighter thumbnails publicly (real DB
+      // photos); everything else under ./public stays gated below.
+      if (LANDING_PHOTOS.has(path)) {
+        const a = await env.ASSETS.fetch(request);
+        if (a.status === 200) {
+          const r = new Response(a.body, a);
+          r.headers.set("Cache-Control", "public, max-age=86400");
+          return r;
+        }
+        return a;
       }
 
       // ---- everything else is GATED: the app, its data + photos ----
