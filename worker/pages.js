@@ -15,8 +15,8 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   html{background:var(--bg)}   /* dark behind the body so tall screens / iOS overscroll never show white */
   body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#15201a 0%,var(--bg) 55%);color:#fff;
        font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;min-height:100dvh}
-  .wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
-  .hero{max-width:820px;text-align:center;padding-top:1rem}
+  .wrap{max-width:440px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  .hero{max-width:760px;text-align:center;padding-top:1rem}
   .brand{font-weight:900;letter-spacing:.14em;font-size:1rem}
   .brand .a{color:var(--accent)}
   h1{font-size:2.15rem;line-height:1.1;margin:1.4rem 0 .6rem;font-weight:850}
@@ -47,6 +47,8 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   body{transition:opacity .13s ease}
   body.leaving{opacity:0}
   @media (prefers-reduced-motion: reduce){.wrap{animation:none}body{transition:none}}
+  /* Only widen the landing on large displays; normal screens keep the original layout. */
+  @media (min-width:1650px){.wrap{max-width:900px}}
   .back-link{position:fixed;top:1.1rem;left:1.1rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
   .back-link:hover{color:#fff}
   .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
