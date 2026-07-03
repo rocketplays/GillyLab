@@ -17,7 +17,7 @@ const { applySnapshot, withKeys, stripKeys, pruneStale } = require('./odds-histo
 const ROOT = path.resolve(__dirname, '..');
 const ODDS_PATH = path.join(ROOT, 'data', 'odds.json');
 const HISTORY_PATH = path.join(ROOT, 'data', 'odds-history.json');
-const MAX_AGE_DAYS = 4; // keep matchups for a few days after the event so the closing line stays visible
+const MAX_AGE_DAYS = 21; // keep matchups ~3 weeks so recent past-event closing lines stay in the live file; ODDS_HISTORY covers older events
 
 function loadHistory() {
   try {

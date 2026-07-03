@@ -92984,6 +92984,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return homeIsF1 ? { o1: homeAvg, o2: awayAvg } : { o1: awayAvg, o2: homeAvg };
   }
 
+  // A fighter's permanent closing line vs a specific opponent, from the per-fighter
+  // ODDS_HISTORY (BestFightOdds closing averages, keyed by opponent). Used as the
+  // fallback for PAST events: their matchup has aged out of the live line-movement
+  // file (data/odds-history.json is pruned a few weeks after each card), but the
+  // fighter's own history keeps the closing line permanently.
+  function oddsHistoryClosing(fighter, opponent) {
+    if (typeof ODDS_HISTORY === 'undefined' || !fighter || !opponent) return null;
+    let arr = ODDS_HISTORY[fighter];
+    if (!Array.isArray(arr)) {
+      const key = Object.keys(ODDS_HISTORY).find(k =>
+        k.toLowerCase() === String(fighter).toLowerCase() || namesLikelyMatch(k, fighter));
+      if (key) arr = ODDS_HISTORY[key];
+    }
+    if (!Array.isArray(arr)) return null;
+    const oppLast = lastNameOf(opponent || '').toLowerCase();
+    const entry = arr.find(e => {
+      const el = lastNameOf(e.opponent || '').toLowerCase();
+      return (el && el === oppLast) || namesLikelyMatch(e.opponent, opponent);
+    });
+    return entry && typeof entry.odds === 'number' ? entry.odds : null;
+  }
+
   function fillPendingMoneylines() {
     const pending = document.querySelectorAll('.fight-ml-pending');
     if (!pending.length) return;
@@ -92992,7 +93014,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const f1 = el.getAttribute('data-f1'), f2 = el.getAttribute('data-f2');
         const side = el.getAttribute('data-side');
         const odds = findFightOdds(f1, f2, oddsData);
-        const price = odds ? (side === '2' ? odds.o2 : odds.o1) : null;
+        let price = odds ? (side === '2' ? odds.o2 : odds.o1) : null;
+        // Past events have aged out of the live odds feed — fall back to the
+        // fighter's permanent closing line from ODDS_HISTORY.
+        if (price === null || price === undefined) {
+          price = (side === '2') ? oddsHistoryClosing(f2, f1) : oddsHistoryClosing(f1, f2);
+        }
         el.innerHTML = (price === null || price === undefined)
           ? '<span style="color:var(--muted);font-size:0.78rem;">N/A</span>'
           : fmtOdds(price);
