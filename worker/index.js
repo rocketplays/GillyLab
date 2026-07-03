@@ -284,11 +284,11 @@ async function handlePortal(request, env) {
   const s = await readSession(request, env);
   if (!s) return redirect(env.SITE_URL + "/login");
   const u = await getUser(env, s.email);
-  if (!u || !u.stripeCustomerId) return redirect(env.SITE_URL + "/account");
+  if (!u || !u.stripeCustomerId) return redirect(env.SITE_URL + "/");
   try {
     const session = await stripe(env, "billing_portal/sessions", "POST", {
       customer: u.stripeCustomerId,
-      return_url: env.SITE_URL + "/account",
+      return_url: env.SITE_URL + "/",
     });
     return redirect(session.url);
   } catch (e) {
