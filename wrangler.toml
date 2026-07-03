@@ -11,6 +11,7 @@
 name = "gillylab"
 main = "worker/index.js"
 compatibility_date = "2026-04-01"
+account_id = "3a30e18d3451b136b515196675858f02"   # used by CI deploy (not secret)
 
 # The assembled static site (run scripts/build-site.sh to produce ./public).
 [assets]

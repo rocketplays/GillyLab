@@ -99,3 +99,14 @@ jobs:
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
+
+      # The live site is served by the Cloudflare Worker from files bundled at
+      # deploy time, so committing to git is no longer enough — we must redeploy
+      # for the fresh odds/events to reach gillylab.com. Runs every time so the
+      # live site always reflects the latest committed repo state.
+      - name: Publish to Cloudflare
+        run: |
+          npm install
+          npm run deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
