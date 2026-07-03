@@ -3,6 +3,9 @@
 
 const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in Stripe
 
+// Back-to-landing arrow, top-left (used on the signup + login pages).
+const backLink = `<a class="back-link" href="/" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
+
 const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
@@ -44,6 +47,9 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   body{transition:opacity .18s ease}
   body.leaving{opacity:0}
   @media (prefers-reduced-motion: reduce){.wrap{animation:none}body{transition:none}}
+  .back-link{position:fixed;top:1.1rem;left:1.1rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
+  .back-link:hover{color:#fff}
+  .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style></head><body><div class="wrap">${body}</div>
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
@@ -89,6 +95,7 @@ export const landingPage = () => shell("GillyLab — UFC fighter database", `
   </div>`);
 
 export const signupPage = () => shell("Create your GillyLab account", `
+  ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
     <h1 style="font-size:1.4rem;text-align:center">Create your account</h1>
@@ -103,6 +110,7 @@ export const signupPage = () => shell("Create your GillyLab account", `
   </div>`, `wire("f","/api/signup","m");`);
 
 export const loginPage = () => shell("Log in to GillyLab", `
+  ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
     <h1 style="font-size:1.4rem;text-align:center">Log in</h1>
