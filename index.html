@@ -235,6 +235,9 @@
       .account-btn-label { display: none; }
       .account-btn { padding: 0 0.55rem; }
     }
+    /* fade the app out when navigating to a Worker page (change password, etc.) */
+    body.gl-leaving { opacity: 0; transition: opacity 0.18s ease; }
+    @media (prefers-reduced-motion: reduce) { body.gl-leaving { transition: none; } }
 
     
 
@@ -92395,6 +92398,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  if (!document.getElementById('account-dropdown')?.contains(e.target)) closeAccountMenu();
  });
  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeAccountMenu(); });
+ // Fade the app out before navigating away via an account-menu link (change password, portal, log out).
+ document.querySelectorAll('.account-menu a').forEach(function(a) {
+ a.addEventListener('click', function(e) {
+ var href = a.getAttribute('href'); if (!href) return;
+ e.preventDefault();
+ document.body.classList.add('gl-leaving');
+ setTimeout(function() { window.location = href; }, 180);
+ });
+ });
  // Close dropdown when clicking outside
  document.addEventListener('click', function(e) {
  if (!document.getElementById('nav-dropdown')?.contains(e.target)) {
