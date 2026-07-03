@@ -15,14 +15,14 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   html{background:var(--bg)}   /* dark behind the body so tall screens / iOS overscroll never show white */
   body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#15201a 0%,var(--bg) 55%);color:#fff;
        font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;min-height:100dvh}
-  .wrap{max-width:440px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
-  .hero{max-width:760px;text-align:center;padding-top:1rem}
+  .wrap{max-width:900px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
+  .hero{max-width:820px;text-align:center;padding-top:1rem}
   .brand{font-weight:900;letter-spacing:.14em;font-size:1rem}
   .brand .a{color:var(--accent)}
   h1{font-size:2.15rem;line-height:1.1;margin:1.4rem 0 .6rem;font-weight:850}
   h1 .a{color:var(--accent)}
   .sub{color:var(--muted);font-size:1.02rem;max-width:520px;margin:0 auto 1.6rem}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.3rem;margin-top:1.25rem}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.3rem;margin:1.25rem auto 0;max-width:440px}
   label{display:block;font-size:.8rem;color:var(--muted);margin:.85rem 0 .3rem;font-weight:600}
   input{width:100%;padding:.7rem .8rem;background:#0e0e10;border:1px solid var(--line);border-radius:9px;color:#fff;font-size:1rem}
   input:focus{outline:none;border-color:var(--accent)}
