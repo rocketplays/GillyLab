@@ -15,7 +15,7 @@
 const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const { applySnapshot, stripKeys } = require('./odds-history-lib');
+const { applySnapshot, stripKeys } = require('./odds-history-lib.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const HISTORY_PATH = path.join(ROOT, 'data', 'odds-history.json');

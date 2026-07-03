@@ -12,7 +12,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { applySnapshot, withKeys, stripKeys, pruneStale } = require('./odds-history-lib');
+const { applySnapshot, withKeys, stripKeys, pruneStale } = require('./odds-history-lib.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const ODDS_PATH = path.join(ROOT, 'data', 'odds.json');

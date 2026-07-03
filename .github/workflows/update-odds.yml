@@ -25,7 +25,7 @@ jobs:
           echo "Odds fetched — $(wc -c < data/odds.json) bytes"
 
       - name: Update odds line-movement history
-        run: node scripts/update-odds-history.js
+        run: node scripts/update-odds-history.cjs
 
       - name: Fetch upcoming UFC events from Cito API
         run: |
@@ -56,13 +56,13 @@ jobs:
           fi
 
       - name: Re-apply manual card-section overrides
-        run: node scripts/apply-card-section-overrides.js
+        run: node scripts/apply-card-section-overrides.cjs
 
       - name: Re-apply manual fighter opponent overrides
-        run: node scripts/apply-fighter-overrides.js
+        run: node scripts/apply-fighter-overrides.cjs
 
       - name: Re-apply manual missing-bout overrides
-        run: node scripts/apply-missing-bout-overrides.js
+        run: node scripts/apply-missing-bout-overrides.cjs
 
       - name: Download fighter photos
         run: |
