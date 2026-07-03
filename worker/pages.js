@@ -129,7 +129,8 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
     <h1 style="font-size:1.4rem;text-align:center">Account</h1>
     <p class="muted">Signed in as <strong style="color:#fff">${email}</strong></p>
     <p>Subscription: <strong style="color:${subscribed ? "var(--accent)" : "#ff6a5e"}">${subscribed ? "Active" : "Inactive"}</strong></p>
-    ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>` : `<a class="btn" href="/subscribe">Subscribe →</a>`}
+    ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>
+    <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<a class="btn" href="/subscribe">Subscribe →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
 

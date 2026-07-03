@@ -167,6 +167,7 @@ export default {
       if (path === "/api/logout") return redirect(env.SITE_URL + "/", clearCookie());
       if (path === "/api/checkout" && request.method === "POST") return handleCheckout(request, env);
       if (path === "/api/checkout/success") return handleCheckoutSuccess(request, env, url);
+      if (path === "/api/portal") return handlePortal(request, env);
       if (path === "/api/stripe-webhook" && request.method === "POST") return handleWebhook(request, env);
       if (path === "/api/magic/start" && request.method === "POST") return handleMagicStart(request, env);
       if (path === "/api/magic/verify") return handleMagicVerify(request, env, url);
@@ -264,6 +265,25 @@ async function handleCheckoutSuccess(request, env, url) {
     return redirect(env.SITE_URL + "/?welcome=1", cookie);
   }
   return redirect(env.SITE_URL + "/subscribe");
+}
+
+// Stripe Customer Portal — lets a subscriber manage or cancel their subscription
+// and update their card. Requires the Customer Portal to be enabled once in the
+// Stripe dashboard (Settings -> Billing -> Customer portal), in both test and live.
+async function handlePortal(request, env) {
+  const s = await readSession(request, env);
+  if (!s) return redirect(env.SITE_URL + "/login");
+  const u = await getUser(env, s.email);
+  if (!u || !u.stripeCustomerId) return redirect(env.SITE_URL + "/account");
+  try {
+    const session = await stripe(env, "billing_portal/sessions", "POST", {
+      customer: u.stripeCustomerId,
+      return_url: env.SITE_URL + "/account",
+    });
+    return redirect(session.url);
+  } catch (e) {
+    return html(notePage("Billing portal unavailable", "Couldn't open the billing portal just now — please try again in a moment."), 500);
+  }
 }
 
 async function handleWebhook(request, env) {

@@ -172,6 +172,35 @@
       align-items: center;
     }
 
+    /* Account button — mirrors the nav dropdown, pinned to the right of the bar */
+    .account-btn {
+      margin-left: auto;             /* pushes it to the far right, opposite the dropdown */
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 0 0.95rem;
+      height: 36px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+    .account-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .account-btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    @media (max-width: 560px) {
+      .account-btn-label { display: none; }
+      .account-btn { padding: 0 0.55rem; }
+    }
+
     
 
     /* ── DROPDOWN NAV ── */
@@ -2708,6 +2737,12 @@
     </div>
 
     <div class="nav-logo" onclick="navigate('home')" style="cursor:pointer;position:absolute;left:50%;transform:translateX(-50%);"><img src="gl-logo.png?v=5" alt="GL" style="height:44px;width:auto;display:block;" /></div>
+
+    <!-- Account / subscription management (Worker-served page). Opposite the dropdown. -->
+    <a class="account-btn" href="/account" title="Account &amp; subscription" aria-label="Account">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>
+      <span class="account-btn-label">Account</span>
+    </a>
   </nav>
 </div>
 
