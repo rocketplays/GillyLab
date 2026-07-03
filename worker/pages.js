@@ -236,11 +236,16 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<div style="display:flex;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid '+L+'"><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900;color:'+A+'">91.2</div></div><div style="width:1px;height:30px;background:'+L+'"></div><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900">89.7</div></div></div>'
     +'<div style="font-size:10px;color:'+M+';text-align:center;margin-top:8px;line-height:1.4">Composite of striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>';
 
-  function ocell(v,cls){var c=cls==='f'?'#4cff8a':(cls==='d'?'#ff3d00':'#fff');return '<td style="padding:.55rem .7rem;text-align:center;font-family:\\'Barlow Condensed\\',sans-serif;font-weight:700;font-size:1rem;color:'+c+'">'+v+'</td>';}
-  function orow(book,col,a,b){return '<tr style="border-bottom:1px solid '+L+'"><td style="padding:.55rem .7rem;font-size:.78rem;font-weight:700;color:'+col+'">'+book+'</td>'+ocell(a,'f')+ocell(b,'d')+'</tr>';}
-  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">Makhachev vs Topuria · UFC 330 — moneyline by sportsbook</div>'
-    +'<table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:.4rem .7rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:'+M+'">Sportsbook</th><th style="padding:.4rem .7rem;font-size:.68rem;text-transform:uppercase;color:#fff;text-align:center">Makhachev</th><th style="padding:.4rem .7rem;font-size:.68rem;text-transform:uppercase;color:#fff;text-align:center">Topuria</th></tr>'
-    +orow('DraftKings','#1a9e3a','-145','+125')+orow('FanDuel','#1493ff','-150','+130')+orow('BetMGM','#c9960a','-140','+120')+orow('Caesars','#7cb87c','-142','+124')+'</table>';
+  function odd(v){var neg=v.charAt(0)==='-';return '<span class="bc" style="font-weight:700;font-size:1rem;min-width:46px;text-align:center;color:'+(neg?'#4cff8a':'#ff3d00')+'">'+v+'</span>';}
+  function obout(fA,oA,fB,oB){return '<div style="display:flex;align-items:center;padding:.6rem .2rem;border-bottom:1px solid '+L+';font-size:.86rem">'
+    +'<span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fA+'</span>'+odd(oA)
+    +'<span style="color:'+M+';font-size:.68rem;padding:0 .5rem">vs</span>'+odd(oB)
+    +'<span style="flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fB+'</span></div>';}
+  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">UFC 300 · Apr 13, 2024 — closing moneylines</div>'
+    +obout('Alex Pereira','-130','Jamahal Hill','+118')
+    +obout('Zhang Weili','-500','Yan Xiaonan','+390')
+    +obout('Justin Gaethje','-150','Max Holloway','+143')
+    +obout('Arman Tsarukyan','-210','Charles Oliveira','+173');
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
   var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('alex-pereira','AP')+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
@@ -261,12 +266,13 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +brow('7:37','Control','2:55',457,175);
 
   function rr(n,name,rec,move,mv,champ){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span><span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(move?'<span class="rmove '+mv+'">'+move+'</span>':(champ?'<span class="rtag">Champion</span>':''))+'</div>';}
-  var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">Lightweight — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'
-    +rr('C','Islam Makhachev','27-1-0','','',true)
-    +rr('1','Arman Tsarukyan','22-3-0','▲ 1','rmu')
-    +rr('2','Charles Oliveira','35-10-0','▼ 1','rmd')
-    +rr('3','Justin Gaethje','25-5-0','—','')
-    +rr('4','Max Holloway','26-7-0','▲ 2','rmu')+'</div>';
+  var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">Bantamweight — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'
+    +rr('C','Petr Yan','20-5-0','','',true)
+    +rr('1','Merab Dvalishvili','21-5-0','','')
+    +rr('2',"Sean O'Malley",'19-3-0','','')
+    +rr('3','Umar Nurmagomedov','20-1-0','','')
+    +rr('4','Cory Sandhagen','18-6-0','','')
+    +rr('5','Song Yadong','23-9-1','','')+'</div>';
 
   function rcol(title,color,items,first){return '<div style="'+(first?'':'margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.08)')+'"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+color+';margin-bottom:.6rem"><span>'+title+'</span><span style="background:'+color+'22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem">'+items.length+'</span></div><div style="display:flex;flex-direction:column;gap:.4rem">'+items.map(function(n){return '<div style="display:flex;align-items:center;gap:.55rem;font-size:.92rem"><span style="color:'+color+';font-size:.58rem">●</span><span>'+n+'</span></div>';}).join('')+'</div></div>';}
   var roster='<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.1rem 1.3rem"><div style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:1rem">Week of Jun 30 – Jul 6, 2026</div>'
@@ -276,10 +282,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var slides=[
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the finish comes.',h:sim},
-    {t:'Live odds for every card',d:'Moneylines across sportsbooks for every upcoming bout, refreshed twice daily.',h:odds},
+    {t:'Live odds for every card',d:'Live moneylines for every upcoming bout, plus closing lines on every past card.',h:odds},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
-    {t:'Always-current rankings',d:'Division rankings that update after every event, with movement at a glance.',h:rank},
+    {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
     {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster}
   ];
 
