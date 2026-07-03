@@ -225,10 +225,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     return '<div style="'+base+'"><img src="/photos/thumb/'+slug+'.png" alt="'+init+'" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>';
   }
 
-  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava('ilia-topuria','IT')+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">Ilia Topuria</div><div style="font-size:11px;color:'+M+'">Featherweight / Lightweight · 17-0-0 · <span style="color:#ffb340">Champion</span></div></div></div>'
+  var F=LD.featured;
+  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava(F.slug,F.initials,true)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+'"><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</div></div></div>'
     +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
-    +[['Strikes Landed / Min','4.82'],['Striking Accuracy','50%'],['Knockdowns / 15','1.15'],['Striking Defense','62%'],['Takedown Defense','95%'],['Finish Rate','88%']].map(function(s){
-      return '<div class="statc"><div class="statc-l">'+s[0]+'</div><div class="statc-v">'+s[1]+'</div></div>';}).join('')+'</div>';
+    +F.stats.map(function(s){return '<div class="statc"><div class="statc-l">'+s[0]+'</div><div class="statc-v">'+s[1]+'</div></div>';}).join('')+'</div>';
 
   function mrows(rows){return rows.map(function(r){return '<div style="display:flex;align-items:center;gap:7px;margin:5px 0"><div style="width:66px;font-size:10.5px;color:'+M+'">'+r[0]+'</div><div style="flex:1;height:6px;background:'+BG+';border-radius:4px;overflow:hidden"><div style="width:'+r[1]+'%;height:100%;background:'+A+'"></div></div><div style="width:28px;text-align:right;font-size:10.5px;font-weight:700">'+r[1]+'%</div></div>';}).join('');}
   function shead(av,name,count,pct,lead){return '<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><div style="display:flex;align-items:center;gap:9px">'+av+'<div><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:10.5px;color:'+M+'">'+count+'</div></div></div><div class="bc" style="font-size:22px;font-weight:900;color:'+(lead?A:'#fff')+'">'+pct+'%</div></div>';}

@@ -18,6 +18,7 @@
  */
 
 import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage } from "./pages.js";
+import landingData from "./landing-data.js";
 
 const COOKIE = "gl_session";
 
@@ -25,13 +26,14 @@ const COOKIE = "gl_session";
 // the ONLY files under ./public served without a subscribed session — an
 // explicit allow-list so the landing can use the real database photos while the
 // rest of the gated assets (the app, its data, all other photos) stay locked.
+// The featured champion's slug is added dynamically so it follows title changes.
 const LANDING_PHOTOS = new Set([
-  "/photos/thumb/ilia-topuria.png",
-  "/photos/thumb/jon-jones.png",
-  "/photos/thumb/tom-aspinall.png",
-  "/photos/thumb/alex-pereira.png",
-  "/photos/thumb/islam-makhachev.png",
-  "/photos/thumb/alexander-volkanovski.png",
+  "/photos/thumb/jon-jones.png",          // simulator
+  "/photos/thumb/tom-aspinall.png",       // simulator
+  "/photos/thumb/alex-pereira.png",       // tape study
+  "/photos/thumb/islam-makhachev.png",    // box score
+  "/photos/thumb/alexander-volkanovski.png", // box score
+  ...(landingData?.featured?.slug ? ["/photos/thumb/" + landingData.featured.slug + ".png"] : []),
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */
