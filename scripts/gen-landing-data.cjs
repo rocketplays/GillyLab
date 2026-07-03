@@ -22,7 +22,7 @@ const ROOT = path.join(__dirname, '..');
 // (esbuild) bundle can `import` it without JSON import assertions.
 const OUT = path.join(ROOT, 'worker', 'landing-data.js');
 const RANK_DIVISION = 'Bantamweight';    // division shown in the rankings slide
-const FEATURED_DIVISION = 'Heavyweight'; // its champion is the featured-analytics fighter
+const FEATURED_DIVISION = 'Welterweight'; // its champion is the featured-analytics fighter
 
 const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -92,7 +92,15 @@ function buildRoster() {
   let RC; eval('RC=' + idx.slice(idx.indexOf('[', s), end + 1));   // our own data literal
   if (!Array.isArray(RC) || !RC.length) return null;
   const w = RC[0];
-  return { week: w.week || '', added: w.added || [], removed: w.removed || [] };
+  // Only ship ONE name per column publicly (plus the totals) so the full weekly
+  // signings/cuts list isn't exposed on the logged-out page — the rest shows as
+  // "+N more".
+  const added = w.added || [], removed = w.removed || [];
+  return {
+    week: w.week || '',
+    added: added.slice(0, 1), addedTotal: added.length,
+    removed: removed.slice(0, 1), removedTotal: removed.length,
+  };
 }
 
 function main() {
