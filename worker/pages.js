@@ -78,23 +78,238 @@ document.addEventListener("click",function(e){
 ${extraJs}
 </script></body></html>`;
 
-export const landingPage = () => shell("GillyLab — UFC fighter database", `
-  <div class="hero" style="margin:0 auto">
+// Full marketing landing page. Standalone (does NOT use shell()) so it can run
+// its own full-width layout, the feature carousel, and the Barlow Condensed type
+// that matches the app — while the auth/subscribe pages keep the compact shell.
+// Feature previews are faithful recreations of the real in-app components
+// (stat cards, simulator, odds table, tape rows, box score, rankings, roster).
+export const landingPage = () => `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GillyLab — The Ultimate UFC Analytics Database</title>
+<meta name="description" content="Deep analytics for every UFC fighter and every bout, a fight simulator that predicts winner and method, live odds, one-click tape study, box scores, rankings, and weekly roster updates.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#00e668;--accent2:#ff3d00;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#666672;--surface2:#18181d}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%);color:#fff;
+       font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
+       animation:lpin .3s ease both}
+  @keyframes lpin{from{opacity:0}to{opacity:1}}
+  body.lp-out{opacity:0;transition:opacity .15s ease}
+  @media (prefers-reduced-motion: reduce){body{animation:none}body.lp-out{transition:none}}
+  a{text-decoration:none;color:inherit}
+  .bc{font-family:'Barlow Condensed',sans-serif}
+  .lp{max-width:1200px;margin:0 auto;padding:0 24px}
+  nav.lpnav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .brand{font-weight:900;letter-spacing:.15em;font-size:16px}
+  .brand .a{color:var(--accent)}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .btn-primary{font-size:14px;font-weight:800;color:#04120a;background:var(--accent);border-radius:10px;padding:10px 16px;display:inline-block}
+  .btn-primary:hover{background:#12f277}
+  .btn-ghost{font-size:14px;color:rgba(255,255,255,.75);padding:9px 12px;border-radius:10px}
+  .btn-ghost:hover{color:#fff}
+  .hero{text-align:center;max-width:700px;margin:14px auto 0;padding-top:8px}
+  .badge{display:inline-block;font-size:11px;letter-spacing:.08em;color:var(--accent);background:rgba(0,230,104,.1);border:1px solid rgba(0,230,104,.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
+  h1.hh{font-size:46px;line-height:1.05;font-weight:850;letter-spacing:-.015em;margin:0}
+  h1.hh .a{color:var(--accent)}
+  .sub{color:rgba(255,255,255,.62);font-size:16px;max-width:530px;margin:16px auto 0}
+  .stats{display:flex;gap:36px;justify-content:center;margin:26px 0 6px}
+  .stat .n{font-size:26px;font-weight:850;color:var(--accent)}
+  .stat .l{font-size:12px;color:rgba(255,255,255,.5)}
+  .hero-cta{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;align-items:center}
+  .big{font-size:15px;font-weight:800;color:#04120a;background:var(--accent);border-radius:11px;padding:13px 22px;display:inline-block}
+  .big:hover{background:#12f277}
+  .big.ghost{background:transparent;color:#fff;border:1px solid var(--border)}
+  .big.ghost:hover{border-color:#fff;background:transparent}
+  .showcase{max-width:620px;margin:44px auto 0}
+  .sc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+  .sc-title{font-size:14px;font-weight:700}
+  .sc-nav{display:flex;gap:8px}
+  .sc-arrow{cursor:pointer;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;user-select:none}
+  .sc-arrow:hover{border-color:var(--accent);color:var(--accent)}
+  .sc-stage{background:#0d0d10;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;min-height:344px}
+  #stg{transition:opacity .18s ease}
+  .sc-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
+  .sc-dot{width:7px;height:7px;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.22)}
+  .sc-desc{text-align:center;color:rgba(255,255,255,.55);font-size:13px;margin:10px auto 0;max-width:470px;min-height:2.4em}
+  .egrid{max-width:1040px;margin:58px auto 0}
+  .egrid-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .egrid-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  .ecard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+  .ecard h3{font-size:14px;font-weight:800;margin:10px 0 4px}
+  .ecard p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.45;margin:0}
+  .foot{text-align:center;margin:52px auto 0;padding-bottom:60px}
+  .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
+  /* Faithful in-app component styles */
+  .statc{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem .9rem}
+  .statc-l{font-size:.56rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
+  .statc-v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.7rem;letter-spacing:.02em;color:var(--accent);line-height:1}
+  .rrow{display:flex;align-items:center;gap:.7rem;background:var(--card);border:1px solid var(--border);border-radius:5px;padding:.5rem .8rem}
+  .rchamp{border-color:rgba(255,179,64,.35);background:linear-gradient(90deg,rgba(255,179,64,.06) 0%,var(--card) 100%)}
+  .rnum{font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:.95rem;color:var(--accent);min-width:22px;letter-spacing:.05em}
+  .rchamp .rnum{color:#ffb340}
+  .rname{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;flex:1;min-width:0;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rrec{font-size:.72rem;color:var(--muted)}
+  .rmove{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.68rem;padding:.1rem .3rem;border-radius:3px;white-space:nowrap}
+  .rmu{color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+  .rmd{color:#ef4444;background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.25)}
+  .rtag{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:#ffb340;border:1px solid rgba(255,179,64,.35);padding:.08rem .35rem;border-radius:2px}
+  @media (max-width:760px){
+    h1.hh{font-size:34px}
+    .egrid-cards{grid-template-columns:repeat(2,1fr)}
+    .stats{gap:24px}
+    .nav-cta .btn-primary{display:none}
+  }
+</style></head><body>
+<div class="lp">
+  <nav class="lpnav">
     <div class="brand">GILLY<span class="a">LAB</span></div>
-    <h1>The complete <span class="a">UFC</span> fighter database.</h1>
-    <p class="sub">Every fighter, full careers, verified records, and clickable per-fight box scores —
-       3,000+ fighters and 18,000+ bouts in one place.</p>
-    <div class="feat">
-      <div>Every UFC fighter, past and present — full fight histories</div>
-      <div>Per-fight box scores: strikes, takedowns, control time & more</div>
-      <div>Verified records, career stats, rankings & odds</div>
+    <div class="nav-cta">
+      <a class="btn-ghost" href="/login">Log in</a>
+      <a class="btn-primary" href="/signup">Get access</a>
     </div>
-    <div class="row">
-      <a class="btn" href="/signup">Get access — <span style="opacity:.85">${PRICE_LABEL}</span></a>
-      <a class="btn ghost" href="/login">Log in</a>
+  </nav>
+
+  <header class="hero">
+    <div class="badge">EVERY FIGHTER · EVERY FIGHT · EVERY BOX SCORE</div>
+    <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
+    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, live odds, one-click tape study, and weekly roster updates — all in one place.</p>
+    <div class="stats">
+      <div class="stat"><div class="n">3,000+</div><div class="l">fighters</div></div>
+      <div class="stat"><div class="n">18,000+</div><div class="l">bouts</div></div>
+      <div class="stat"><div class="n">50,000+</div><div class="l">simulations</div></div>
     </div>
-    <p class="muted center" style="margin-top:1.4rem;font-size:.82rem">Cancel anytime. Secure checkout by Stripe.</p>
-  </div>`);
+    <div class="hero-cta">
+      <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
+      <a class="big ghost" href="/login">Log in</a>
+    </div>
+  </header>
+
+  <section class="showcase">
+    <div class="sc-head">
+      <div class="sc-title" id="fl">Detailed fighter analytics</div>
+      <div class="sc-nav"><span class="sc-arrow" id="pv">‹</span><span class="sc-arrow" id="nx">›</span></div>
+    </div>
+    <div class="sc-stage"><div id="stg"></div></div>
+    <div class="sc-dots" id="dt"></div>
+    <p class="sc-desc" id="fd"></p>
+  </section>
+
+  <section class="egrid">
+    <div class="egrid-title">EVERYTHING INSIDE</div>
+    <div class="egrid-cards" id="grid"></div>
+  </section>
+
+  <footer class="foot">
+    <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
+    <div class="fine">Cancel anytime · Secure checkout by Stripe</div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var A="#00e668",M="var(--muted)",L="rgba(255,255,255,.09)",BG="#0a0a0b";
+  var P={
+    topuria:"https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Ilia_Topuria_2024.jpg/320px-Ilia_Topuria_2024.jpg",
+    jones:"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Jon_Jones_2022.jpg/320px-Jon_Jones_2022.jpg",
+    aspinall:"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/Tom_Aspinall_2023.jpg/320px-Tom_Aspinall_2023.jpg",
+    pereira:"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Alex_Pereira_UFC_2023.jpg/320px-Alex_Pereira_UFC_2023.jpg",
+    makhachev:"https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Islam_Makhachev_2023.jpg/320px-Islam_Makhachev_2023.jpg"
+  };
+  function ava(init,photo,gold){
+    var ring=gold?"#ffb340":A;
+    var base="width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid "+ring+";flex:0 0 auto;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;";
+    if(!photo)return '<div style="'+base+'">'+init+'</div>';
+    return '<div style="'+base+'"><img src="'+photo+'" alt="'+init+'" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>';
+  }
+
+  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava('IT',P.topuria)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">Ilia Topuria</div><div style="font-size:11px;color:'+M+'">Featherweight / Lightweight · 17-0-0 · <span style="color:#ffb340">Champion</span></div></div></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
+    +[['Strikes Landed / Min','4.82'],['Striking Accuracy','50%'],['Knockdowns / 15','1.15'],['Striking Defense','62%'],['Takedown Defense','95%'],['Finish Rate','88%']].map(function(s){
+      return '<div class="statc"><div class="statc-l">'+s[0]+'</div><div class="statc-v">'+s[1]+'</div></div>';}).join('')+'</div>';
+
+  function mrows(rows){return rows.map(function(r){return '<div style="display:flex;align-items:center;gap:7px;margin:5px 0"><div style="width:66px;font-size:10.5px;color:'+M+'">'+r[0]+'</div><div style="flex:1;height:6px;background:'+BG+';border-radius:4px;overflow:hidden"><div style="width:'+r[1]+'%;height:100%;background:'+A+'"></div></div><div style="width:28px;text-align:right;font-size:10.5px;font-weight:700">'+r[1]+'%</div></div>';}).join('');}
+  function shead(av,name,count,pct,lead){return '<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><div style="display:flex;align-items:center;gap:9px">'+av+'<div><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:10.5px;color:'+M+'">'+count+'</div></div></div><div class="bc" style="font-size:22px;font-weight:900;color:'+(lead?A:'#fff')+'">'+pct+'%</div></div>';}
+  var sim=shead(ava('JJ',P.jones),'Jon Jones','5,410 / 10,000 wins','54',true)
+    +'<div style="height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;display:flex;margin:8px 0"><div style="width:54%;height:100%;background:'+A+'"></div><div style="flex:1;background:'+M+'"></div></div>'
+    +shead(ava('TA',P.aspinall),'Tom Aspinall','4,590 / 10,000 wins','46',false)
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px">'
+    +'<div><div class="bc" style="font-size:11px;font-weight:700;color:'+M+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Jones — method of victory</div>'+mrows([['KO/TKO',28],['Submission',22],['Decision',50]])+'</div>'
+    +'<div><div class="bc" style="font-size:11px;font-weight:700;color:'+M+';text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px">Aspinall — method of victory</div>'+mrows([['KO/TKO',71],['Submission',20],['Decision',9]])+'</div></div>'
+    +'<div style="display:flex;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid '+L+'"><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900;color:'+A+'">91.2</div></div><div style="width:1px;height:30px;background:'+L+'"></div><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900">89.7</div></div></div>'
+    +'<div style="font-size:10px;color:'+M+';text-align:center;margin-top:8px;line-height:1.4">Composite of striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>';
+
+  function ocell(v,cls){var c=cls==='f'?'#4cff8a':(cls==='d'?'#ff3d00':'#fff');return '<td style="padding:.55rem .7rem;text-align:center;font-family:\\'Barlow Condensed\\',sans-serif;font-weight:700;font-size:1rem;color:'+c+'">'+v+'</td>';}
+  function orow(book,col,a,b){return '<tr style="border-bottom:1px solid '+L+'"><td style="padding:.55rem .7rem;font-size:.78rem;font-weight:700;color:'+col+'">'+book+'</td>'+ocell(a,'f')+ocell(b,'d')+'</tr>';}
+  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">Makhachev vs Topuria · UFC 330 — moneyline by sportsbook</div>'
+    +'<table style="width:100%;border-collapse:collapse"><tr><th style="text-align:left;padding:.4rem .7rem;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:'+M+'">Sportsbook</th><th style="padding:.4rem .7rem;font-size:.68rem;text-transform:uppercase;color:#fff;text-align:center">Makhachev</th><th style="padding:.4rem .7rem;font-size:.68rem;text-transform:uppercase;color:#fff;text-align:center">Topuria</th></tr>'
+    +orow('DraftKings','#1a9e3a','-145','+125')+orow('FanDuel','#1493ff','-150','+130')+orow('BetMGM','#c9960a','-140','+120')+orow('Caesars','#7cb87c','-142','+124')+'</table>';
+
+  function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
+  var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('AP',P.pereira)+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
+    +trow('Oct 5, 2024','def. Khalil Rountree Jr.','KO/TKO · R4 · UFC 307')
+    +trow('Jun 8, 2024','def. Jiří Procházka','KO/TKO · R2 · UFC 303')
+    +trow('Apr 13, 2024','def. Jamahal Hill','KO/TKO · R1 · UFC 300')
+    +trow('Jul 29, 2023','def. Jan Błachowicz','Decision · UFC 291');
+
+  function bhead(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem"><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">'+ava('IM',P.makhachev)+'<span style="font-weight:800;font-size:.9rem">Islam Makhachev</span></div><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end"><span style="font-weight:800;font-size:.9rem">A. Volkanovski</span>'+ava('AV',null)+'</div></div>';}
+  function bbar(lv,rv){var t=lv+rv;if(t<=0)return '';var lp=Math.max(8,Math.min(92,Math.round(100*lv/t)));if(lv===rv)lp=50;var lc=lv>=rv?A:'rgba(255,255,255,.18)',rc=rv>=lv?A:'rgba(255,255,255,.18)';return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:4px"><div style="width:'+lp+'%;background:'+lc+'"></div><div style="width:'+(100-lp)+'%;background:'+rc+'"></div></div>';}
+  function brow(lval,label,rval,lv,rv){return '<div style="padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.06)"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem"><span style="font-weight:700;font-size:.86rem;min-width:56px">'+lval+'</span><span style="font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;color:'+M+';white-space:nowrap">'+label+'</span><span style="font-weight:700;font-size:.86rem;min-width:56px;text-align:right">'+rval+'</span></div>'+bbar(lv,rv)+'</div>';}
+  var box=bhead()
+    +'<div style="text-align:center;margin-bottom:.6rem"><span style="font-size:.72rem;color:'+M+'">Jun 1, 2024 · UFC 302</span><div style="font-size:.74rem;color:'+A+';font-weight:700;margin-top:2px">Islam Makhachev by Submission R5 - 3:38</div></div>'
+    +brow('1','Knockdowns','0',1,0)
+    +brow('106/196 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(54%)</span>','Sig. Strikes','98/171 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(57%)</span>',106,98)
+    +brow('4/9','Takedowns','0/2',4,0)
+    +brow('2','Sub. Att','0',2,0)
+    +brow('12:16','Control','0:52',736,52);
+
+  function rr(n,name,rec,move,mv,champ){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span><span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(move?'<span class="rmove '+mv+'">'+move+'</span>':(champ?'<span class="rtag">Champion</span>':''))+'</div>';}
+  var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">Lightweight — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'
+    +rr('C','Islam Makhachev','27-1-0','','',true)
+    +rr('1','Arman Tsarukyan','22-3-0','▲ 1','rmu')
+    +rr('2','Charles Oliveira','35-10-0','▼ 1','rmd')
+    +rr('3','Justin Gaethje','25-5-0','—','')
+    +rr('4','Max Holloway','26-7-0','▲ 2','rmu')+'</div>';
+
+  function rcol(title,color,items,first){return '<div style="'+(first?'':'margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.08)')+'"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+color+';margin-bottom:.6rem"><span>'+title+'</span><span style="background:'+color+'22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem">'+items.length+'</span></div><div style="display:flex;flex-direction:column;gap:.4rem">'+items.map(function(n){return '<div style="display:flex;align-items:center;gap:.55rem;font-size:.92rem"><span style="color:'+color+';font-size:.58rem">●</span><span>'+n+'</span></div>';}).join('')+'</div></div>';}
+  var roster='<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.1rem 1.3rem"><div style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:1rem">Week of Jun 30 – Jul 6, 2026</div>'
+    +rcol('Added','#00e668',['Diego Marreta','Yuki Tanaka','Aisha Campbell'],true)
+    +rcol('Removed','#ff9500',['Corey Blakewood','Frank Ostrowski'],false)+'</div>';
+
+  var slides=[
+    {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
+    {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the finish comes.',h:sim},
+    {t:'Live odds for every card',d:'Moneylines across sportsbooks for every upcoming bout, refreshed twice daily.',h:odds},
+    {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
+    {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
+    {t:'Always-current rankings',d:'Division rankings that update after every event, with movement at a glance.',h:rank},
+    {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster}
+  ];
+
+  var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');
+  slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';if(k===0)d.style.background=A;d.onclick=function(){i=k;render();reset();};dt.appendChild(d);});
+  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');});stg.style.opacity=1;},150);}
+  var timer;function reset(){clearInterval(timer);timer=setInterval(function(){i=(i+1)%slides.length;render();},4200);}
+  document.getElementById('nx').onclick=function(){i=(i+1)%slides.length;render();reset();};
+  document.getElementById('pv').onclick=function(){i=(i-1+slides.length)%slides.length;render();reset();};
+
+  var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>'};
+  var cards=[[ic.c,'Fighter analytics','Full career stats for all 3,000+ fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.o,'Live odds','Moneyline, round O/U, method props and round prop odds for every upcoming fight'],[ic.t,'Tape study','One click from any fight to the film'],[ic.b,'Box scores','Head-to-head data for every bout ever'],[ic.r,'Rankings','Updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
+  document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
+
+  render();reset();
+
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="/"]');
+    if(!a)return;var href=a.getAttribute('href');
+    if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
+    e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);
+  });
+})();
+</script></body></html>`;
 
 export const signupPage = () => shell("Create your GillyLab account", `
   ${backLink}
