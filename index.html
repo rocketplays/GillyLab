@@ -93114,6 +93114,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return entry && typeof entry.odds === 'number' ? entry.odds : null;
   }
 
+  // Reconcile a bout's two independently-recorded ODDS_HISTORY closing lines (one
+  // per fighter, from BestFightOdds) into a single consistent pair, so the two
+  // displayed sides always correspond. Convert each recorded price to an implied
+  // probability, normalise them to sum to 100% (removing any residual vig/mismatch
+  // between the two separate records), then convert back to American odds. If only
+  // one side was recorded, derive the other as its exact complement.
+  function oddsHistoryPair(f1, f2) {
+    const toProb = o => (o < 0 ? Math.abs(o) / (Math.abs(o) + 100) : 100 / (o + 100));
+    const toAmerican = p => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
+    const r1 = oddsHistoryClosing(f1, f2), r2 = oddsHistoryClosing(f2, f1);
+    let p1 = (typeof r1 === 'number') ? toProb(r1) : null;
+    let p2 = (typeof r2 === 'number') ? toProb(r2) : null;
+    if (p1 == null && p2 == null) return null;
+    if (p1 == null) p1 = 1 - p2;
+    if (p2 == null) p2 = 1 - p1;
+    const sum = p1 + p2;
+    if (!(sum > 0)) return null;
+    return { o1: toAmerican(p1 / sum), o2: toAmerican(p2 / sum) };
+  }
+
   function fillPendingMoneylines() {
     const pending = document.querySelectorAll('.fight-ml-pending');
     if (!pending.length) return;
@@ -93123,10 +93143,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const side = el.getAttribute('data-side');
         const odds = findFightOdds(f1, f2, oddsData);
         let price = odds ? (side === '2' ? odds.o2 : odds.o1) : null;
-        // Past events have aged out of the live odds feed — fall back to the
-        // fighter's permanent closing line from ODDS_HISTORY.
+        // Past events have aged out of the live odds feed — fall back to ODDS_HISTORY,
+        // reconciled into a consistent no-vig pair so both sides always correspond.
         if (price === null || price === undefined) {
-          price = (side === '2') ? oddsHistoryClosing(f2, f1) : oddsHistoryClosing(f1, f2);
+          const pair = oddsHistoryPair(f1, f2);
+          if (pair) price = (side === '2') ? pair.o2 : pair.o1;
         }
         el.innerHTML = (price === null || price === undefined)
           ? '<span style="color:var(--muted);font-size:0.78rem;">N/A</span>'
