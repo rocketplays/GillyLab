@@ -100,11 +100,18 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
 
+      # Regenerate the public landing page's live data snapshot (featured
+      # division rankings + latest roster changes) from the current repo state,
+      # so the logged-out marketing page stays current. Self-guards: keeps the
+      # last-good file if a source can't be parsed. Non-fatal.
+      - name: Regenerate landing-page data snapshot
+        run: node scripts/gen-landing-data.cjs || true
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json
+          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json worker/landing-data.js
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
