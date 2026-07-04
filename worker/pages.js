@@ -93,19 +93,19 @@ ${extraJs}
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
-<meta name="description" content="Deep analytics for every UFC fighter and every bout, a fight simulator that predicts winner and method, live odds, one-click tape study, box scores, rankings, and weekly roster updates.">
+<meta name="description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, tape study, rankings, and weekly roster updates.">
 <link rel="canonical" href="${SITE_URL}/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GillyLab">
 <meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, live odds, tape study, box scores, rankings, and weekly roster updates.">
+<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, tape study, rankings, and weekly roster updates.">
 <meta property="og:url" content="${SITE_URL}/">
 <meta property="og:image" content="${SITE_URL}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta name="twitter:description" content="Every UFC fighter, every bout, a fight simulator, live odds, box scores, rankings, and more.">
+<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, live and historical odds, tape study, rankings, and more.">
 <meta name="twitter:image" content="${SITE_URL}/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
