@@ -331,13 +331,15 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   // Line-movement slide — real McGregor/Holloway moneyline trajectory (implied win %).
   var lmM=[300,288,278,268,259,251,243,236,229,222,216,210,202,197,193,189,180,176,172,169,166,163,161,160,162,176,189];
   var lmH=[-430,-412,-396,-382,-368,-356,-344,-333,-323,-313,-304,-296,-284,-278,-272,-266,-240,-235,-230,-226,-222,-218,-214,-210,-213,-223,-234];
-  function amp(o){return o<0?(-o)/((-o)+100):100/(o+100);}
-  var lmW=520,lmHt=130,lmP=8,lmN=lmM.length,lmA=0.20,lmB=0.85;
-  function lmy(o){return lmHt-lmP-(amp(o)-lmA)/(lmB-lmA)*(lmHt-2*lmP);}
+  var lmW=520,lmHt=130,lmP=10,lmN=lmM.length,lmLo=-460,lmHi=330;
+  function lmy(o){return lmHt-lmP-(o-lmLo)/(lmHi-lmLo)*(lmHt-2*lmP);}
   function lmpts(arr){return arr.map(function(o,k){return (lmP+(lmW-2*lmP)*k/(lmN-1)).toFixed(1)+','+lmy(o).toFixed(1);}).join(' ');}
   function lmdot(arr,col){return '<circle cx="'+(lmW-lmP)+'" cy="'+lmy(arr[arr.length-1]).toFixed(1)+'" r="3.6" fill="'+col+'"/>';}
-  var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement · implied win %</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
+  var lmZ=lmy(0).toFixed(1);
+  var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement (American odds)</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
     +'<svg viewBox="0 0 '+lmW+' '+lmHt+'" width="100%" style="display:block">'
+    +'<line x1="'+lmP+'" y1="'+lmZ+'" x2="'+(lmW-lmP)+'" y2="'+lmZ+'" stroke="rgba(255,255,255,.12)" stroke-width="1" stroke-dasharray="3 4"/>'
+    +'<text x="'+lmP+'" y="'+(lmZ-3)+'" fill="rgba(255,255,255,.3)" font-size="9" style="text-transform:uppercase;letter-spacing:.05em">even</text>'
     +'<polyline points="'+lmpts(lmH)+'" fill="none" stroke="#8a8a92" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
     +'<polyline points="'+lmpts(lmM)+'" fill="none" stroke="'+A+'" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'
     +lmdot(lmH,'#8a8a92')+lmdot(lmM,A)+'</svg>'
