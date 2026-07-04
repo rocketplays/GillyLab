@@ -217,7 +217,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <header class="hero">
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
-    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
+    <p class="sub">Deep analytics for every fighter and every bout, including a fight simulator that predicts winner and method, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
     <div class="stats">
       <div class="stat"><div class="n">3,000+</div><div class="l">fighters</div></div>
       <div class="stat"><div class="n">18,000+</div><div class="l">bouts</div></div>
