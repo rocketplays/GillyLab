@@ -313,14 +313,14 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   function oc(v){var neg=String(v).charAt(0)==='-';return '<span class="bc" style="font-weight:700;color:'+(neg?'#4cff8a':'#ff9500')+'">'+v+'</span>';}
   function osec(t){return '<div style="font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42);margin:.5rem 0 .18rem">'+t+'</div>';}
   function o3(book,col,a,b){return '<div style="display:flex;align-items:center;padding:.13rem 0;font-size:.78rem"><span style="flex:0 0 80px;font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span style="flex:1;text-align:center">'+oc(a)+'</span><span style="flex:1;text-align:center">'+oc(b)+'</span></div>';}
-  function o1(book,col,v){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.13rem 0;font-size:.78rem"><span style="font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span style="min-width:46px;text-align:right">'+oc(v)+'</span></div>';}
+  function o2(book,col,over,under){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.13rem 0;font-size:.78rem"><span style="font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span>'+oc(over)+' <span style="color:'+M+';font-weight:400">/</span> '+oc(under)+'</span></div>';}
   function opropRow(name,cells){return '<div style="font-size:.74rem;padding:.1rem 0;white-space:nowrap"><span style="color:'+M+';font-size:.68rem;display:inline-block;min-width:66px">'+name+'</span>'+cells+'</div>';}
   var odds='<div style="display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.25rem"><div style="display:flex;align-items:center;gap:7px">'+ava('conor-mcgregor','CM',false,28)+'<span style="font-weight:700;font-size:.86rem">Conor McGregor</span></div><span style="color:'+M+';font-size:.66rem">vs</span><div style="display:flex;align-items:center;gap:7px"><span style="font-weight:700;font-size:.86rem">Max Holloway</span>'+ava('max-holloway','MH',false,28)+'</div></div>'
     +'<div style="text-align:center;font-size:.6rem;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">UFC 329 · 5-round main event</div>'
     +osec('Moneyline · McGregor / Holloway')
     +o3('DraftKings',BK.dk,'+195','-238')+o3('FanDuel',BK.fd,'+196','-260')+o3('BetMGM',BK.mgm,'+175','-225')
-    +osec('Total rounds · Over 2.5')
-    +o1('DraftKings',BK.dk,'-105')+o1('FanDuel',BK.fd,'-102')+o1('BetMGM',BK.mgm,'-115')
+    +osec('Total rounds · Over/Under 2.5')
+    +o2('DraftKings',BK.dk,'-105','-125')+o2('FanDuel',BK.fd,'-102','-126')+o2('BetMGM',BK.mgm,'-115','-115')
     +osec('Method of victory')
     +opropRow('McGregor','KO/TKO '+oc('+300')+' &nbsp;Sub '+oc('+2500')+' &nbsp;Dec '+oc('+1100'))
     +opropRow('Holloway','KO/TKO '+oc('-120')+' &nbsp;Sub '+oc('+1300')+' &nbsp;Dec '+oc('+600'))
