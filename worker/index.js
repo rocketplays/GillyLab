@@ -35,6 +35,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/paddy-pimblett.png",     // tape study
   "/photos/thumb/islam-makhachev.png",    // box score
   "/photos/thumb/alexander-volkanovski.png", // box score
+  "/photos/thumb/charles-oliveira.png",   // accolades
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
 ]);
