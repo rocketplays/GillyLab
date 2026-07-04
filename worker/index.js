@@ -17,23 +17,24 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage } from "./pages.js";
 import landingData from "./landing-data.js";
 
 const COOKIE = "gl_session";
 
-// Fighter thumbnails shown on the logged-out marketing landing page. These are
-// the ONLY files under ./public served without a subscribed session — an
-// explicit allow-list so the landing can use the real database photos while the
-// rest of the gated assets (the app, its data, all other photos) stay locked.
-// The featured champion's slug is added dynamically so it follows title changes.
-const LANDING_PHOTOS = new Set([
+// The ONLY files under ./public served WITHOUT a subscribed session — an
+// explicit allow-list for the logged-out marketing page: the fighter thumbnails
+// its previews use, plus the share image and favicons. Everything else (the app,
+// its data, all other photos) stays gated. The featured champion's slug is added
+// dynamically so it follows title changes.
+const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/jon-jones.png",          // simulator
   "/photos/thumb/tom-aspinall.png",       // simulator
   "/photos/thumb/alex-pereira.png",       // tape study
   "/photos/thumb/islam-makhachev.png",    // box score
   "/photos/thumb/alexander-volkanovski.png", // box score
   ...(landingData?.featured?.slug ? ["/photos/thumb/" + landingData.featured.slug + ".png"] : []),
+  "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */
@@ -206,6 +207,8 @@ export default {
       }
       if (path === "/subscribe") return html(subscribePage(url.searchParams.get("canceled")));
       if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
+      if (path === "/terms") return html(termsPage());
+      if (path === "/privacy") return html(privacyPage());
 
       // ---- account page (must be logged in) ----
       if (path === "/account") {
@@ -221,9 +224,9 @@ export default {
       }
 
       // ---- public marketing assets ----
-      // Serve just the landing page's fighter thumbnails publicly (real DB
-      // photos); everything else under ./public stays gated below.
-      if (LANDING_PHOTOS.has(path)) {
+      // Serve just the landing page's thumbnails/share-image/favicons publicly;
+      // everything else under ./public stays gated below.
+      if (PUBLIC_LANDING_ASSETS.has(path)) {
         const a = await env.ASSETS.fetch(request);
         if (a.status === 200) {
           const r = new Response(a.body, a);

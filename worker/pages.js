@@ -6,6 +6,8 @@
 import landingData from "./landing-data.js";
 
 const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in Stripe
+const SITE_URL = "https://gillylab.com";        // for absolute OG/canonical URLs
+const CONTACT_EMAIL = "support@gillylab.com";   // shown in the footer + legal pages
 
 // Back-to-landing arrow, top-left (used on the signup + login pages).
 const backLink = `<a class="back-link" href="/" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
@@ -91,6 +93,23 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
 <meta name="description" content="Deep analytics for every UFC fighter and every bout, a fight simulator that predicts winner and method, live odds, one-click tape study, box scores, rankings, and weekly roster updates.">
+<link rel="canonical" href="${SITE_URL}/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GillyLab">
+<meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
+<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, live odds, tape study, box scores, rankings, and weekly roster updates.">
+<meta property="og:url" content="${SITE_URL}/">
+<meta property="og:image" content="${SITE_URL}/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
+<meta name="twitter:description" content="Every UFC fighter, every bout, a fight simulator, live odds, box scores, rankings, and more.">
+<meta name="twitter:image" content="${SITE_URL}/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#0a0a0b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -144,8 +163,22 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .ecard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
   .ecard h3{font-size:14px;font-weight:800;margin:10px 0 4px}
   .ecard p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.45;margin:0}
-  .foot{text-align:center;margin:52px auto 0;padding-bottom:60px}
+  .foot{text-align:center;margin:52px auto 0}
   .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
+  .trust{color:rgba(255,255,255,.42);font-size:12.5px;margin:16px auto 0;max-width:540px;line-height:1.5}
+  .faq{max-width:900px;margin:60px auto 0}
+  .faq-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+  .faq-item h3{font-size:14px;font-weight:800;margin:0 0 6px}
+  .faq-item p{font-size:13px;color:rgba(255,255,255,.58);line-height:1.55;margin:0}
+  .site-footer{max-width:1040px;margin:44px auto 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
+  .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px}
+  .foot-brand .a{color:var(--accent)}
+  .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .foot-links a{color:rgba(255,255,255,.6);font-size:13px}
+  .foot-links a:hover{color:#fff}
+  .foot-copy{color:rgba(255,255,255,.32);font-size:11.5px;line-height:1.6;max-width:660px;margin:0 auto}
   /* Faithful in-app component styles */
   .statc{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem .9rem}
   .statc-l{font-size:.56rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
@@ -163,6 +196,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   @media (max-width:760px){
     h1.hh{font-size:34px}
     .egrid-cards{grid-template-columns:repeat(2,1fr)}
+    .faq-grid{grid-template-columns:1fr}
     .stats{gap:24px}
     .nav-cta .btn-primary{display:none}
   }
@@ -189,15 +223,19 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
       <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
       <a class="big ghost" href="/login">Log in</a>
     </div>
+    <p class="trust">Built for bettors, analysts, and hardcore fans — verified data, updated after every event. Works on any device.</p>
   </header>
 
-  <section class="showcase">
+  <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
     <div class="sc-head">
-      <div class="sc-title" id="fl">Detailed fighter analytics</div>
-      <div class="sc-nav"><span class="sc-arrow" id="pv">‹</span><span class="sc-arrow" id="nx">›</span></div>
+      <div class="sc-title" id="fl" aria-live="polite">Detailed fighter analytics</div>
+      <div class="sc-nav">
+        <span class="sc-arrow" id="pv" role="button" tabindex="0" aria-label="Previous feature">‹</span>
+        <span class="sc-arrow" id="nx" role="button" tabindex="0" aria-label="Next feature">›</span>
+      </div>
     </div>
     <div class="sc-stage"><div id="stg"></div></div>
-    <div class="sc-dots" id="dt"></div>
+    <div class="sc-dots" id="dt" role="tablist" aria-label="Choose a feature"></div>
     <p class="sc-desc" id="fd"></p>
   </section>
 
@@ -206,9 +244,31 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="egrid-cards" id="grid"></div>
   </section>
 
+  <section class="faq">
+    <div class="faq-title">FREQUENTLY ASKED</div>
+    <div class="faq-grid">
+      <div class="faq-item"><h3>What's included?</h3><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, division rankings, and weekly roster updates.</p></div>
+      <div class="faq-item"><h3>How current is the data?</h3><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div>
+      <div class="faq-item"><h3>Which promotions does it cover?</h3><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div>
+      <div class="faq-item"><h3>Can I cancel anytime?</h3><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div>
+      <div class="faq-item"><h3>How does billing work?</h3><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div>
+      <div class="faq-item"><h3>Is this betting advice?</h3><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div>
+    </div>
+  </section>
+
   <footer class="foot">
     <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
     <div class="fine">Cancel anytime · Secure checkout by Stripe</div>
+  </footer>
+
+  <footer class="site-footer">
+    <div class="foot-brand">GILLY<span class="a">LAB</span></div>
+    <nav class="foot-links">
+      <a href="/terms">Terms of Service</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="mailto:${CONTACT_EMAIL}">Contact</a>
+    </nav>
+    <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>
 </div>
 
@@ -290,11 +350,14 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   ];
 
   var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');
-  slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';if(k===0)d.style.background=A;d.onclick=function(){i=k;render();reset();};dt.appendChild(d);});
-  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');});stg.style.opacity=1;},150);}
-  var timer;function reset(){clearInterval(timer);timer=setInterval(function(){i=(i+1)%slides.length;render();},4200);}
-  document.getElementById('nx').onclick=function(){i=(i+1)%slides.length;render();reset();};
-  document.getElementById('pv').onclick=function(){i=(i-1+slides.length)%slides.length;render();reset();};
+  var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function keyact(el,fn){el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});}
+  slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';d.setAttribute('role','tab');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Feature '+(k+1)+': '+slides[k].t);if(k===0)d.style.background=A;var pick=function(){i=k;render();reset();};d.onclick=pick;keyact(d,pick);dt.appendChild(d);});
+  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:150);}
+  var timer;function reset(){clearInterval(timer);if(RM)return;timer=setInterval(function(){i=(i+1)%slides.length;render();},4200);}
+  var nx=document.getElementById('nx'),pv=document.getElementById('pv');
+  var next=function(){i=(i+1)%slides.length;render();reset();},prev=function(){i=(i-1+slides.length)%slides.length;render();reset();};
+  nx.onclick=next;pv.onclick=prev;keyact(nx,next);keyact(pv,prev);
 
   var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
   var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>'};
@@ -423,3 +486,81 @@ export const notePage = (title, msg) => shell(title, `
     <p class="muted">${msg}</p>
     <a class="btn ghost" href="/login">Back to login</a>
   </div>`);
+
+// ── Legal pages (readable long-form; own shell, not the compact auth one) ─────
+const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${title} — GillyLab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any">
+<style>
+  *{box-sizing:border-box} html{background:#0a0a0b}
+  body{margin:0;background:#0a0a0b;color:#e8e8ea;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .doc{max-width:760px;margin:0 auto;padding:2.4rem 1.25rem 5rem}
+  .back{display:inline-flex;align-items:center;gap:.35rem;color:rgba(255,255,255,.55);text-decoration:none;font-size:.85rem;margin-bottom:1.6rem}
+  .back:hover{color:#fff}
+  .brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:1.3rem}
+  .brand .a{color:#00e668}
+  h1{font-size:1.7rem;margin:0 0 .3rem}
+  .updated{color:rgba(255,255,255,.45);font-size:.82rem;margin-bottom:1.6rem}
+  h2{font-size:1.08rem;color:#fff;margin:1.9rem 0 .5rem}
+  p,li{color:rgba(255,255,255,.72);font-size:.95rem}
+  ul{padding-left:1.2rem;margin:.4rem 0} li{margin:.25rem 0}
+  a{color:#00e668}
+</style></head><body>
+  <div class="doc">
+    <a class="back" href="/">← Back to GillyLab</a>
+    <div class="brand">GILLY<span class="a">LAB</span></div>
+    <h1>${title}</h1>
+    <div class="updated">Last updated: ${updated}</div>
+    ${bodyHtml}
+    <h2>Contact</h2>
+    <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+  </div>
+</body></html>`;
+
+export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
+  <p>These Terms of Service ("Terms") govern your access to and use of GillyLab (the "Service"). By creating an account or using the Service, you agree to these Terms.</p>
+  <h2>1. The Service</h2>
+  <p>GillyLab provides statistics, analytics, a fight-outcome simulator, betting odds, and related information about mixed martial arts, focused on the UFC. All content is provided for informational and entertainment purposes only.</p>
+  <h2>2. Subscriptions and billing</h2>
+  <p>Access requires a paid subscription (${PRICE_LABEL}). Subscriptions are billed in advance through our payment processor, Stripe, and renew automatically each period until cancelled. You can cancel at any time from your account; cancellation stops future renewals, and access continues until the end of the current billing period. Except where required by law, payments are non-refundable.</p>
+  <h2>3. Your account</h2>
+  <p>You are responsible for providing accurate information, keeping your password secure, and all activity under your account. An account is intended for a single individual; please do not share credentials.</p>
+  <h2>4. Acceptable use</h2>
+  <p>You agree not to scrape, bulk-download, resell, redistribute, or publicly republish the data or content; not to reverse engineer or attempt to bypass access controls; and not to use the Service unlawfully or to disrupt it.</p>
+  <h2>5. Data accuracy and no wagering advice</h2>
+  <p>We work to keep data accurate but do not warrant that it is complete, current, or error-free. Nothing on the Service is financial, investment, or betting advice, and simulator outputs and odds are estimates, not guarantees of any outcome. Any wagering decisions are your own — please gamble responsibly and only where legal.</p>
+  <h2>6. Trademarks and third-party content</h2>
+  <p>GillyLab is an independent product and is not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship, Zuffa, LLC, or any promotion. Fighter names, event names, and related marks are the property of their respective owners and are used for identification and informational purposes only.</p>
+  <h2>7. Disclaimers</h2>
+  <p>The Service is provided "as is" and "as available" without warranties of any kind, express or implied, including merchantability, fitness for a particular purpose, and non-infringement.</p>
+  <h2>8. Limitation of liability</h2>
+  <p>To the maximum extent permitted by law, GillyLab will not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss arising from wagering or from your use of (or inability to use) the Service. Our total liability for any claim will not exceed the amount you paid us in the twelve months before the claim.</p>
+  <h2>9. Termination</h2>
+  <p>You may stop using the Service at any time. We may suspend or terminate access if you violate these Terms or to protect the Service.</p>
+  <h2>10. Changes to these Terms</h2>
+  <p>We may update these Terms from time to time. Material changes are reflected by the "last updated" date above, and continued use after changes take effect constitutes acceptance.</p>
+`);
+
+export const privacyPage = () => legalShell("Privacy Policy", "July 3, 2026", `
+  <p>This Privacy Policy explains what information GillyLab ("we", "us") collects and how we use it when you use the Service.</p>
+  <h2>Information we collect</h2>
+  <ul>
+    <li><strong>Account information</strong> — your email address and a securely hashed version of your password (we never store your password in plain text).</li>
+    <li><strong>Subscription information</strong> — your subscription status and a customer identifier from our payment processor. We do not collect or store your card numbers; payment details are handled entirely by Stripe.</li>
+    <li><strong>Essential cookie</strong> — a single signed session cookie to keep you logged in. We do not use advertising or cross-site tracking cookies.</li>
+  </ul>
+  <h2>How we use it</h2>
+  <p>To create and secure your account, authenticate logins, process and manage your subscription, send account-related email (such as sign-in links and password resets), and operate and improve the Service.</p>
+  <h2>Service providers</h2>
+  <p>We share the minimum necessary information with providers that run the Service: <a href="https://stripe.com/privacy">Stripe</a> (payments), <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (hosting and delivery), and <a href="https://resend.com/legal/privacy-policy">Resend</a> (transactional email). We do not sell your personal information.</p>
+  <h2>Data retention and security</h2>
+  <p>We keep your account information while your account is active. Passwords are hashed, sessions are signed, and traffic is served over HTTPS. No system is perfectly secure, but we take reasonable measures to protect your data.</p>
+  <h2>Your choices</h2>
+  <p>You can change your password from your account, cancel your subscription at any time, and request access to or deletion of your account data by emailing us.</p>
+  <h2>Children</h2>
+  <p>The Service is intended for adults and is not directed to anyone under 18. We do not knowingly collect information from children.</p>
+  <h2>Changes</h2>
+  <p>We may update this policy; the "last updated" date above reflects the latest version.</p>
+`);
