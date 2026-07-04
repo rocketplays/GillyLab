@@ -143,24 +143,21 @@ def wiki_search(name):
     if not hits:
         return None
 
-    name_norm  = _norm(name)
-    name_words = name_norm.split()
-    first = name_words[0]  if name_words      else ""
-    last  = name_words[-1] if len(name_words) > 1 else ""
+    name_words = _norm(name).split()
+    if not name_words:
+        return None
+    first, last = name_words[0], name_words[-1]
 
-    # Strong match: both first AND last name appear in the title
+    # Require BOTH the first AND last name as WHOLE WORDS in the page title (ignoring
+    # a trailing "(fighter)" etc.). Whole-word set membership — not substring — so
+    # "Paul Jones" can't resolve to "Jon Jones" and "Justin Jones" can't resolve to a
+    # famous "Jones". No weak last-name-only fallback: a wrong page is far worse than
+    # no page, so an unconfident lookup returns None and the fighter is left blank.
     for h in hits:
-        t = _norm(h["title"])
-        if first and last and first in t and last in t:
+        title_core = re.sub(r'\s*\([^)]*\)\s*', ' ', h["title"])   # drop "(fighter)"
+        tw = set(_norm(title_core).split())
+        if first in tw and last in tw:
             return h["title"]
-
-    # Weaker match: just last name (only if >= 5 chars to avoid common short words)
-    if len(last) >= 5:
-        for h in hits:
-            if last in _norm(h["title"]):
-                return h["title"]
-
-    # No confident match — leave blank rather than return wrong fighter
     return None
 
 def wiki_wikitext(title):
@@ -187,6 +184,10 @@ def strip_wt(text):
     t = re.sub(r"<ref[^>]*>.*?</ref>","",t,flags=re.DOTALL)
     t = re.sub(r"<[^>]+>","",t)
     t = re.sub(r"\[\[(?:[^|\]]*\|)?([^\]]+)\]\]",r"\1",t)   # [[X|Y]]→Y
+    # External links: "[http://url display text]" → "display text"; "[http://url]" → ""
+    t = re.sub(r"\[https?://\S+\s+([^\]]+)\]", r"\1", t)
+    t = re.sub(r"\[https?://\S+\]", "", t)
+    t = re.sub(r"https?://\S+", "", t)   # any bare URL left over
     t = re.sub(r"\[+|\]+", "", t)   # remove any leftover bare [ or ] chars
     # Remove nested templates iteratively (handles up to 3 levels)
     # Use DOTALL so multi-line templates like {{ubl|...\n...}} are fully stripped
@@ -389,15 +390,18 @@ def parse_ranks(wikitext):
     """
     raw = get_infobox_field(wikitext, "rank")
 
-    # Also pull the 'wrestling' infobox field (e.g. "NCAA Division I Wrestling")
+    # Also pull the 'wrestling' infobox field (e.g. "NCAA Division I Wrestling").
+    # Split on <br> FIRST so multiple honours become separate entries — otherwise
+    # strip_wt drops the <br> and mashes words together ("wrestlingNCAA").
     wrestling_raw = get_infobox_field(wikitext, "wrestling")
     if wrestling_raw:
-        wrestling_entry = strip_wt(str(wrestling_raw)).strip()
-        # Only keep it if it's substantive (not a bare "wrestling" label) and not a year range
-        if (wrestling_entry
-                and wrestling_entry.lower() != "wrestling"
-                and not re.match(r'^\d{4}\s*[–—-]', wrestling_entry)):
-            raw = (raw + "\n" + wrestling_entry) if raw else wrestling_entry
+        for piece in re.split(r'<br\s*/?>', str(wrestling_raw)):
+            wrestling_entry = strip_wt(piece).strip()
+            # Only keep substantive pieces (not a bare "wrestling" label / year range)
+            if (wrestling_entry
+                    and wrestling_entry.lower() != "wrestling"
+                    and not re.match(r'^\d{4}\s*[–—-]', wrestling_entry)):
+                raw = (raw + "\n" + wrestling_entry) if raw else wrestling_entry
 
     if not raw:
         return []
