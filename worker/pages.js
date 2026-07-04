@@ -157,7 +157,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   #stg{transition:opacity .18s ease}
   .sc-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
   .sc-dot{width:7px;height:7px;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.22)}
-  .sc-desc{text-align:center;color:rgba(255,255,255,.55);font-size:13px;margin:10px auto 0;max-width:470px;min-height:2.4em}
+  .sc-desc{text-align:left;color:rgba(255,255,255,.55);font-size:13px;margin:2px 0 13px;max-width:560px;min-height:2.4em}
   .egrid{max-width:1040px;margin:58px auto 0}
   .egrid-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
   .egrid-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
@@ -238,9 +238,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
         <span class="sc-arrow" id="nx" role="button" tabindex="0" aria-label="Next feature">›</span>
       </div>
     </div>
+    <p class="sc-desc" id="fd"></p>
     <div class="sc-stage"><div id="stg"></div></div>
     <div class="sc-dots" id="dt" role="tablist" aria-label="Choose a feature"></div>
-    <p class="sc-desc" id="fd"></p>
   </section>
 
   <section class="egrid">
