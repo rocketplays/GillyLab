@@ -30,8 +30,8 @@ const CONTACT_TO = "support@gillylab.com";   // where the contact form is delive
 // champion, live odds, odds history) contribute their fighters via
 // landingData.photos, regenerated alongside the data.
 const PUBLIC_LANDING_ASSETS = new Set([
-  "/photos/thumb/jon-jones.png",          // simulator
-  "/photos/thumb/tom-aspinall.png",       // simulator
+  "/photos/thumb/joshua-van.png",         // simulator
+  "/photos/thumb/tatsuro-taira.png",      // simulator
   "/photos/thumb/paddy-pimblett.png",     // tape study
   "/photos/thumb/islam-makhachev.png",    // box score
   "/photos/thumb/alexander-volkanovski.png", // box score
