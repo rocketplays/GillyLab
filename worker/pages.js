@@ -327,15 +327,25 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +trow('Dec 10, 2022','def. Jared Gordon','Decision · UFC 282');
 
   function bhead(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem"><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">'+ava('islam-makhachev','IM')+'<span style="font-weight:800;font-size:.9rem">Islam Makhachev</span></div><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end"><span style="font-weight:800;font-size:.9rem">A. Volkanovski</span>'+ava('alexander-volkanovski','AV')+'</div></div>';}
-  function bbar(lv,rv){var t=lv+rv;if(t<=0)return '';var lp=Math.max(8,Math.min(92,Math.round(100*lv/t)));if(lv===rv)lp=50;var lc=lv>=rv?A:'rgba(255,255,255,.18)',rc=rv>=lv?A:'rgba(255,255,255,.18)';return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:4px"><div style="width:'+lp+'%;background:'+lc+'"></div><div style="width:'+(100-lp)+'%;background:'+rc+'"></div></div>';}
-  function brow(lval,label,rval,lv,rv){return '<div style="padding:.42rem 0;border-bottom:1px solid rgba(255,255,255,.06)"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:.75rem"><span style="font-weight:700;font-size:.86rem;min-width:56px">'+lval+'</span><span style="font-size:.62rem;letter-spacing:.07em;text-transform:uppercase;color:'+M+';white-space:nowrap">'+label+'</span><span style="font-weight:700;font-size:.86rem;min-width:56px;text-align:right">'+rval+'</span></div>'+bbar(lv,rv)+'</div>';}
+  function bbar(lv,rv){var t=lv+rv;if(t<=0)return '';var lp=Math.max(8,Math.min(92,Math.round(100*lv/t)));if(lv===rv)lp=50;var lc=lv>=rv?A:'rgba(255,255,255,.18)',rc=rv>=lv?A:'rgba(255,255,255,.18)';return '<div style="display:flex;height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:2px"><div style="width:'+lp+'%;background:'+lc+'"></div><div style="width:'+(100-lp)+'%;background:'+rc+'"></div></div>';}
+  function brow(lval,label,rval,lv,rv){return '<div style="padding:.16rem 0;border-bottom:1px solid rgba(255,255,255,.06)"><div style="display:flex;justify-content:space-between;align-items:baseline;gap:.6rem"><span style="font-weight:700;font-size:.76rem;min-width:50px">'+lval+'</span><span style="font-size:.56rem;letter-spacing:.05em;text-transform:uppercase;color:'+M+';white-space:nowrap">'+label+'</span><span style="font-weight:700;font-size:.76rem;min-width:50px;text-align:right">'+rval+'</span></div>'+bbar(lv,rv)+'</div>';}
+  function bsec(t){return '<div style="margin:.4rem 0 .05rem;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.34)">'+t+'</div>';}
+  function bpct(a){return ' <span style="color:rgba(255,255,255,.4);font-size:.64rem">('+a+')</span>';}
   var box=bhead()
-    +'<div style="text-align:center;margin-bottom:.6rem"><span style="font-size:.72rem;color:'+M+'">Feb 11, 2023 · UFC 284</span><div style="font-size:.74rem;color:'+A+';font-weight:700;margin-top:2px">Islam Makhachev by Unanimous Decision</div></div>'
+    +'<div style="text-align:center;margin-bottom:.45rem"><span style="font-size:.7rem;color:'+M+'">Feb 11, 2023 · UFC 284</span><div style="font-size:.72rem;color:'+A+';font-weight:700;margin-top:1px">Islam Makhachev by Unanimous Decision</div></div>'
     +brow('0','Knockdowns','1',0,1)
-    +brow('57/95 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(60%)</span>','Sig. Strikes','70/143 <span style="color:rgba(255,255,255,.4);font-size:.72rem">(49%)</span>',57,70)
+    +brow('57/95'+bpct('60%'),'Sig. Strikes','70/143'+bpct('49%'),57,70)
     +brow('95/135','Total Strikes','164/255',95,164)
     +brow('4/9','Takedowns','0/4',4,0)
-    +brow('7:37','Control','2:55',457,175);
+    +brow('7:37','Control','2:55',457,175)
+    +bsec('Sig. strikes by target')
+    +brow('36/72','Head','37/96',36,37)
+    +brow('18/20','Body','21/33',18,21)
+    +brow('3/3','Leg','12/14',3,12)
+    +bsec('Sig. strikes by position')
+    +brow('45/82','Distance','58/125',45,58)
+    +brow('12/13','Clinch','6/10',12,6)
+    +brow('0/0','Ground','6/8',0,6);
 
   function rr(n,name,rec,champ,slug,init){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span>'+ava(slug,init,champ,26)+'<span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(champ?'<span class="rtag">Champion</span>':'')+'</div>';}
   var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">'+LD.rankings.division+' — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'
