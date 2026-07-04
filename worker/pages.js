@@ -306,13 +306,27 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<div style="display:flex;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid '+L+'"><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900">7.08</div></div><div style="width:1px;height:30px;background:'+L+'"></div><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900;color:'+A+'">7.80</div></div></div>'
     +'<div style="font-size:10px;color:'+M+';text-align:center;margin-top:8px;line-height:1.4">Composite of striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>';
 
-  function odd(v){var neg=String(v).charAt(0)==='-';return '<span class="bc" style="font-weight:700;font-size:1rem;min-width:46px;text-align:center;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span>';}
-  function obout(sA,iA,fA,oA,sB,iB,fB,oB){return '<div style="display:flex;align-items:center;gap:7px;padding:.5rem .1rem;border-bottom:1px solid '+L+';font-size:.83rem">'
-    +ava(sA,iA,false,26)+'<span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fA+'</span>'+odd(oA)
-    +'<span style="color:'+M+';font-size:.66rem;padding:0 .3rem">vs</span>'+odd(oB)
-    +'<span style="flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fB+'</span>'+ava(sB,iB,false,26)+'</div>';}
-  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">'+LD.liveOdds.title+'</div>'
-    +LD.liveOdds.bouts.map(function(b){return obout(b.sA,b.iA,b.fA,b.oA,b.sB,b.iB,b.fB,b.oB);}).join('');
+  // Static single-matchup odds board (McGregor vs Holloway), mirroring the
+  // Odds & Projections page: moneyline + rounds O/U by book, method-of-victory
+  // and round props per fighter. PLACEHOLDER values — replace with real ones.
+  var BK={dk:'#1fbf4d',fd:'#4aa3ff',mgm:'#d1a10a'};
+  function oc(v){var neg=String(v).charAt(0)==='-';return '<span class="bc" style="font-weight:700;color:'+(neg?'#4cff8a':'#ff9500')+'">'+v+'</span>';}
+  function osec(t){return '<div style="font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42);margin:.5rem 0 .18rem">'+t+'</div>';}
+  function o3(book,col,a,b){return '<div style="display:flex;align-items:center;padding:.13rem 0;font-size:.78rem"><span style="flex:0 0 80px;font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span style="flex:1;text-align:center">'+oc(a)+'</span><span style="flex:1;text-align:center">'+oc(b)+'</span></div>';}
+  function o1(book,col,v){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.13rem 0;font-size:.78rem"><span style="font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span style="min-width:46px;text-align:right">'+oc(v)+'</span></div>';}
+  function opropRow(name,cells){return '<div style="font-size:.74rem;padding:.1rem 0;white-space:nowrap"><span style="color:'+M+';font-size:.68rem;display:inline-block;min-width:66px">'+name+'</span>'+cells+'</div>';}
+  var odds='<div style="display:flex;align-items:center;justify-content:space-between;gap:.4rem;margin-bottom:.25rem"><div style="display:flex;align-items:center;gap:7px">'+ava('conor-mcgregor','CM',false,28)+'<span style="font-weight:700;font-size:.86rem">Conor McGregor</span></div><span style="color:'+M+';font-size:.66rem">vs</span><div style="display:flex;align-items:center;gap:7px"><span style="font-weight:700;font-size:.86rem">Max Holloway</span>'+ava('max-holloway','MH',false,28)+'</div></div>'
+    +'<div style="text-align:center;font-size:.6rem;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin-bottom:.15rem">UFC 329 · 5-round main event</div>'
+    +osec('Moneyline · McGregor / Holloway')
+    +o3('DraftKings',BK.dk,'+195','-238')+o3('FanDuel',BK.fd,'+196','-260')+o3('BetMGM',BK.mgm,'+175','-225')
+    +osec('Total rounds · Over 2.5')
+    +o1('DraftKings',BK.dk,'-105')+o1('FanDuel',BK.fd,'-102')+o1('BetMGM',BK.mgm,'-115')
+    +osec('Method of victory')
+    +opropRow('McGregor','KO/TKO '+oc('+300')+' &nbsp;Sub '+oc('+2500')+' &nbsp;Dec '+oc('+1100'))
+    +opropRow('Holloway','KO/TKO '+oc('-120')+' &nbsp;Sub '+oc('+1300')+' &nbsp;Dec '+oc('+600'))
+    +osec('Round props — fight ends in')
+    +opropRow('McGregor','R1 '+oc('+600')+' R2 '+oc('+1200')+' R3 '+oc('+2200')+' R4 '+oc('+3300')+' R5 '+oc('+5000'))
+    +opropRow('Holloway','R1 '+oc('+500')+' R2 '+oc('+600')+' R3 '+oc('+650')+' R4 '+oc('+750')+' R5 '+oc('+1100'));
 
   var OH=LD.oddsHistory;
   var ohist='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(OH.slug,OH.initials,false,36)+'<div><div style="font-weight:700;font-size:1rem">'+OH.name+'</div><div style="font-size:11px;color:'+M+'">Closing line — career odds history</div></div></div>'
@@ -368,7 +382,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the finish comes.',h:sim},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter — ordered belt rank first, then championships newest to oldest.',h:acc},
-    {t:'Live odds for every card',d:'Consensus moneylines for the next card, refreshed twice daily.',h:odds},
+    {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
