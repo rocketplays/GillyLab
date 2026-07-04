@@ -359,10 +359,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var slides=[
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the finish comes.',h:sim},
+    {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Live odds for every card',d:'Consensus moneylines for the next card, refreshed twice daily.',h:odds},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
-    {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
     {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster}
   ];
@@ -372,7 +372,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   function keyact(el,fn){el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});}
   slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';d.setAttribute('role','tab');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Feature '+(k+1)+': '+slides[k].t);if(k===0)d.style.background=A;var pick=function(){i=k;render();reset();};d.onclick=pick;keyact(d,pick);dt.appendChild(d);});
   function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:220);}
-  var timer;function reset(){clearInterval(timer);if(RM)return;timer=setInterval(function(){i=(i+1)%slides.length;render();},4200);}
+  var timer;function reset(){clearInterval(timer);if(RM)return;timer=setInterval(function(){i=(i+1)%slides.length;render();},7000);}
   var nx=document.getElementById('nx'),pv=document.getElementById('pv');
   var next=function(){i=(i+1)%slides.length;render();reset();},prev=function(){i=(i-1+slides.length)%slides.length;render();reset();};
   nx.onclick=next;pv.onclick=prev;keyact(nx,next);keyact(pv,prev);
