@@ -128,9 +128,29 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json worker/landing-data.js
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json worker/landing-data.js"
+          git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
+          if git push; then exit 0; fi
+          # Another push (e.g. a manual deploy) landed on main since we checked
+          # out, so our push was a non-fast-forward. Reconcile: keep the freshly
+          # fetched raw feeds, reset to the latest main to pick up whatever landed
+          # (incl. manual edits), regenerate the derived files on top (generators
+          # are idempotent and update-odds-history preserves existing days), then
+          # push again.
+          echo "push rejected — reconciling with latest main…"
+          mkdir -p /tmp/feeds && cp -f data/odds.json data/event.json data/event-recent.json /tmp/feeds/ 2>/dev/null || true
+          git fetch origin main && git reset --hard origin/main
+          cp -f /tmp/feeds/odds.json /tmp/feeds/event.json /tmp/feeds/event-recent.json data/ 2>/dev/null || true
+          node scripts/update-odds-history.cjs || true
+          node scripts/apply-card-section-overrides.cjs || true
+          node scripts/apply-fighter-overrides.cjs || true
+          node scripts/apply-missing-bout-overrides.cjs || true
+          node scripts/gen-landing-data.cjs || true
+          git add $FILES
+          git diff --staged --quiet && echo "No changes after reconcile" && exit 0
+          git commit -m "chore: update UFC odds (reconciled) $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
 
       # The live site is served by the Cloudflare Worker from files bundled at
