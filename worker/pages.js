@@ -251,12 +251,12 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
-      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, division rankings, and weekly roster updates.</p></details>
-      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></details>
-      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></details>
-      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></details>
-      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></details>
-      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></details>
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
+      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
+      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
+      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><div class="faq-body"><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div></details>
+      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><div class="faq-body"><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div></details>
     </div>
   </section>
 
@@ -369,6 +369,29 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
+
+  // Smooth fade + height on the FAQ accordions (native <details> otherwise snaps
+  // open/closed). Falls back to the native instant toggle if JS or motion is off.
+  var RMf=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.faq-item'),function(d){
+    if(RMf)return;
+    var sum=d.querySelector('summary'),body=d.querySelector('.faq-body');if(!sum||!body)return;
+    body.style.overflow='hidden';body.style.transition='height .28s ease, opacity .28s ease';
+    if(!d.open){body.style.height='0';body.style.opacity='0';}
+    var busy=false;
+    sum.addEventListener('click',function(e){
+      e.preventDefault();if(busy)return;busy=true;
+      if(d.open){
+        body.style.height=body.scrollHeight+'px';
+        requestAnimationFrame(function(){body.style.height='0';body.style.opacity='0';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;d.open=false;body.removeEventListener('transitionend',h);busy=false;});
+      }else{
+        d.open=true;body.style.height='0';body.style.opacity='0';
+        requestAnimationFrame(function(){body.style.height=body.scrollHeight+'px';body.style.opacity='1';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;body.style.height='auto';body.removeEventListener('transitionend',h);busy=false;});
+      }
+    });
+  });
 
   document.addEventListener('click',function(e){
     var a=e.target.closest&&e.target.closest('a[href^="/"]');
@@ -516,7 +539,10 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any">
 <style>
   *{box-sizing:border-box} html{background:#0a0a0b}
-  body{margin:0;background:#0a0a0b;color:#e8e8ea;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:#0a0a0b;color:#e8e8ea;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;animation:lpin .3s ease both}
+  @keyframes lpin{from{opacity:0}to{opacity:1}}
+  body.lp-out{opacity:0;transition:opacity .15s ease}
+  @media (prefers-reduced-motion: reduce){body{animation:none}body.lp-out{transition:none}}
   .doc{max-width:760px;margin:0 auto;padding:2.4rem 1.25rem 5rem}
   .back{display:inline-flex;align-items:center;gap:.35rem;color:rgba(255,255,255,.55);text-decoration:none;font-size:.85rem;margin-bottom:1.6rem}
   .back:hover{color:#fff}
@@ -538,6 +564,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
     <h2>Contact</h2>
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
   </div>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
 </body></html>`;
 
 export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
