@@ -18,23 +18,40 @@ jobs:
 
       - name: Fetch odds from The Odds API
         run: |
+          # Non-fatal: fetch to a temp file and only swap it in on a successful,
+          # non-empty response — so a transient API error/rate-limit keeps the
+          # last-good odds.json and lets the rest of the run (and deploy) proceed.
           mkdir -p data
-          curl -sf \
+          if curl -sf \
             "https://api.the-odds-api.com/v4/sports/mma_mixed_martial_arts/odds/?apiKey=${{ secrets.ODDS_API_KEY }}&regions=us&markets=h2h,totals&oddsFormat=american" \
-            -o data/odds.json
-          echo "Odds fetched — $(wc -c < data/odds.json) bytes"
+            -o data/odds.json.new && [ -s data/odds.json.new ]; then
+            mv data/odds.json.new data/odds.json
+            echo "Odds fetched — $(wc -c < data/odds.json) bytes"
+          else
+            rm -f data/odds.json.new
+            echo "Odds fetch failed (non-fatal); keeping existing data/odds.json"
+          fi
 
       - name: Update odds line-movement history
         run: node scripts/update-odds-history.cjs
 
       - name: Fetch upcoming UFC events from Cito API
         run: |
+          # Non-fatal: the Cito API occasionally returns an HTTP error (exit 22),
+          # which used to fail the whole run. Fetch to a temp file and only swap
+          # it in on a successful, non-empty response; otherwise keep the
+          # last-good data/event.json so the run and deploy still proceed.
           TODAY=$(date -u '+%Y-%m-%d')
-          curl -sf \
+          if curl -sf \
             -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
             "https://api.citoapi.com/api/v1/ufc/events?from=${TODAY}&includeBouts=true&limit=20" \
-            -o data/event.json
-          echo "Events fetched — $(wc -c < data/event.json) bytes"
+            -o data/event.json.new && [ -s data/event.json.new ]; then
+            mv data/event.json.new data/event.json
+            echo "Events fetched — $(wc -c < data/event.json) bytes"
+          else
+            rm -f data/event.json.new
+            echo "Events fetch failed (non-fatal); keeping existing data/event.json"
+          fi
 
       - name: Fetch recent past UFC events (results) from Cito API
         run: |
