@@ -305,16 +305,17 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<div style="display:flex;align-items:center;margin-top:14px;padding-top:12px;border-top:1px solid '+L+'"><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900;color:'+A+'">91.2</div></div><div style="width:1px;height:30px;background:'+L+'"></div><div style="flex:1;text-align:center"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.1em">Power Score</div><div class="bc" style="font-size:19px;font-weight:900">89.7</div></div></div>'
     +'<div style="font-size:10px;color:'+M+';text-align:center;margin-top:8px;line-height:1.4">Composite of striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>';
 
-  function odd(v){var neg=v.charAt(0)==='-';return '<span class="bc" style="font-weight:700;font-size:1rem;min-width:46px;text-align:center;color:'+(neg?'#4cff8a':'#ff3d00')+'">'+v+'</span>';}
+  function odd(v){var neg=String(v).charAt(0)==='-';return '<span class="bc" style="font-weight:700;font-size:1rem;min-width:46px;text-align:center;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span>';}
   function obout(sA,iA,fA,oA,sB,iB,fB,oB){return '<div style="display:flex;align-items:center;gap:7px;padding:.5rem .1rem;border-bottom:1px solid '+L+';font-size:.83rem">'
     +ava(sA,iA,false,26)+'<span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fA+'</span>'+odd(oA)
     +'<span style="color:'+M+';font-size:.66rem;padding:0 .3rem">vs</span>'+odd(oB)
     +'<span style="flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fB+'</span>'+ava(sB,iB,false,26)+'</div>';}
-  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">UFC 300 · Apr 13, 2024 — closing moneylines</div>'
-    +obout('alex-pereira','AP','Alex Pereira','-130','jamahal-hill','JH','Jamahal Hill','+118')
-    +obout('zhang-weili','ZW','Zhang Weili','-500','yan-xiaonan','YX','Yan Xiaonan','+390')
-    +obout('justin-gaethje','JG','Justin Gaethje','-150','max-holloway','MH','Max Holloway','+143')
-    +obout('arman-tsarukyan','AT','Arman Tsarukyan','-210','charles-oliveira','CO','Charles Oliveira','+173');
+  var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">'+LD.liveOdds.title+'</div>'
+    +LD.liveOdds.bouts.map(function(b){return obout(b.sA,b.iA,b.fA,b.oA,b.sB,b.iB,b.fB,b.oB);}).join('');
+
+  var OH=LD.oddsHistory;
+  var ohist='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(OH.slug,OH.initials,false,36)+'<div><div style="font-weight:700;font-size:1rem">'+OH.name+'</div><div style="font-size:11px;color:'+M+'">Closing line — career odds history</div></div></div>'
+    +OH.rows.map(function(r){var neg=r.odds<0,v=r.odds>0?('+'+r.odds):String(r.odds);return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.46rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><span style="font-size:.85rem;font-weight:600">vs '+r.opponent+'</span><span class="bc" style="font-weight:800;font-size:1rem;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span></div>';}).join('');
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
   var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('alex-pereira','AP')+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
@@ -346,7 +347,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var slides=[
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the finish comes.',h:sim},
-    {t:'Live odds for every card',d:'Live moneylines for every upcoming bout, plus closing lines on every past card.',h:odds},
+    {t:'Live odds for every card',d:'Consensus moneylines for the next card, refreshed twice daily.',h:odds},
+    {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},

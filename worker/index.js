@@ -24,24 +24,18 @@ const COOKIE = "gl_session";
 const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
 
 // The ONLY files under ./public served WITHOUT a subscribed session — an
-// explicit allow-list for the logged-out marketing page: the fighter thumbnails
-// its previews use, plus the share image and favicons. Everything else (the app,
-// its data, all other photos) stays gated. The featured champion's slug is added
-// dynamically so it follows title changes.
+// explicit allow-list for the logged-out marketing page. Everything else (the
+// app, its data, all other photos) stays gated. Fixed thumbnails power the
+// unchanging slides (simulator, tape, box score); the changing slides (featured
+// champion, live odds, odds history) contribute their fighters via
+// landingData.photos, regenerated alongside the data.
 const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/jon-jones.png",          // simulator
   "/photos/thumb/tom-aspinall.png",       // simulator
   "/photos/thumb/alex-pereira.png",       // tape study
   "/photos/thumb/islam-makhachev.png",    // box score
   "/photos/thumb/alexander-volkanovski.png", // box score
-  "/photos/thumb/jamahal-hill.png",       // odds (UFC 300)
-  "/photos/thumb/zhang-weili.png",        // odds
-  "/photos/thumb/yan-xiaonan.png",        // odds
-  "/photos/thumb/justin-gaethje.png",     // odds
-  "/photos/thumb/max-holloway.png",       // odds
-  "/photos/thumb/arman-tsarukyan.png",    // odds
-  "/photos/thumb/charles-oliveira.png",   // odds
-  ...(landingData?.featured?.slug ? ["/photos/thumb/" + landingData.featured.slug + ".png"] : []),
+  ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
 ]);
 
