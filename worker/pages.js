@@ -290,7 +290,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   }
 
   var F=LD.featured;
-  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava(F.slug,F.initials,true)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+'"><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</div></div></div>'
+  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava(F.slug,F.initials,true)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+';display:flex;align-items:center;flex-wrap:wrap;gap:7px"><span><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</span><span style="color:#00e668;border:1px solid #00e668;background:rgba(0,230,104,.1);font-size:.58rem;font-weight:600;padding:.16rem .42rem;border-radius:5px;white-space:nowrap">Record Breakdown ⌄</span></div></div></div>'
     +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px">'
     +F.stats.map(function(s){return '<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .5rem"><div style="font-size:.5rem;color:var(--muted);letter-spacing:.11em;text-transform:uppercase;line-height:1.25;margin-bottom:.25rem;min-height:2.5em">'+s[0]+'</div><div class="bc" style="font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:var(--accent);line-height:1">'+s[1]+'</div></div>';}).join('')+'</div>';
 
