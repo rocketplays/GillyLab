@@ -34,6 +34,13 @@ const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/alex-pereira.png",       // tape study
   "/photos/thumb/islam-makhachev.png",    // box score
   "/photos/thumb/alexander-volkanovski.png", // box score
+  "/photos/thumb/jamahal-hill.png",       // odds (UFC 300)
+  "/photos/thumb/zhang-weili.png",        // odds
+  "/photos/thumb/yan-xiaonan.png",        // odds
+  "/photos/thumb/justin-gaethje.png",     // odds
+  "/photos/thumb/max-holloway.png",       // odds
+  "/photos/thumb/arman-tsarukyan.png",    // odds
+  "/photos/thumb/charles-oliveira.png",   // odds
   ...(landingData?.featured?.slug ? ["/photos/thumb/" + landingData.featured.slug + ".png"] : []),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
 ]);

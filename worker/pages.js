@@ -282,9 +282,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var A="#00e668",M="var(--muted)",L="rgba(255,255,255,.09)",BG="#0a0a0b";
   // Real database thumbnails (served publicly via the Worker's LANDING_PHOTOS
   // allow-list); initials render if an image is ever unavailable.
-  function ava(slug,init,gold){
-    var ring=gold?"#ffb340":A;
-    var base="width:34px;height:34px;border-radius:50%;overflow:hidden;border:2px solid "+ring+";flex:0 0 auto;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;";
+  function ava(slug,init,gold,sz){
+    var d=sz||34,ring=gold?"#ffb340":A;
+    var base="width:"+d+"px;height:"+d+"px;border-radius:50%;overflow:hidden;border:2px solid "+ring+";flex:0 0 auto;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:"+(d>=32?12:10)+"px;color:#fff;";
     if(!slug)return '<div style="'+base+'">'+init+'</div>';
     return '<div style="'+base+'"><img src="/photos/thumb/'+slug+'.png" alt="'+init+'" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>';
   }
@@ -306,15 +306,15 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<div style="font-size:10px;color:'+M+';text-align:center;margin-top:8px;line-height:1.4">Composite of striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>';
 
   function odd(v){var neg=v.charAt(0)==='-';return '<span class="bc" style="font-weight:700;font-size:1rem;min-width:46px;text-align:center;color:'+(neg?'#4cff8a':'#ff3d00')+'">'+v+'</span>';}
-  function obout(fA,oA,fB,oB){return '<div style="display:flex;align-items:center;padding:.6rem .2rem;border-bottom:1px solid '+L+';font-size:.86rem">'
-    +'<span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fA+'</span>'+odd(oA)
-    +'<span style="color:'+M+';font-size:.68rem;padding:0 .5rem">vs</span>'+odd(oB)
-    +'<span style="flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fB+'</span></div>';}
+  function obout(sA,iA,fA,oA,sB,iB,fB,oB){return '<div style="display:flex;align-items:center;gap:7px;padding:.5rem .1rem;border-bottom:1px solid '+L+';font-size:.83rem">'
+    +ava(sA,iA,false,26)+'<span style="flex:1;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fA+'</span>'+odd(oA)
+    +'<span style="color:'+M+';font-size:.66rem;padding:0 .3rem">vs</span>'+odd(oB)
+    +'<span style="flex:1;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+fB+'</span>'+ava(sB,iB,false,26)+'</div>';}
   var odds='<div style="font-size:11px;color:'+M+';margin-bottom:8px">UFC 300 · Apr 13, 2024 — closing moneylines</div>'
-    +obout('Alex Pereira','-130','Jamahal Hill','+118')
-    +obout('Zhang Weili','-500','Yan Xiaonan','+390')
-    +obout('Justin Gaethje','-150','Max Holloway','+143')
-    +obout('Arman Tsarukyan','-210','Charles Oliveira','+173');
+    +obout('alex-pereira','AP','Alex Pereira','-130','jamahal-hill','JH','Jamahal Hill','+118')
+    +obout('zhang-weili','ZW','Zhang Weili','-500','yan-xiaonan','YX','Yan Xiaonan','+390')
+    +obout('justin-gaethje','JG','Justin Gaethje','-150','max-holloway','MH','Max Holloway','+143')
+    +obout('arman-tsarukyan','AT','Arman Tsarukyan','-210','charles-oliveira','CO','Charles Oliveira','+173');
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
   var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('alex-pereira','AP')+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
