@@ -17,10 +17,11 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage } from "./pages.js";
 import landingData from "./landing-data.js";
 
 const COOKIE = "gl_session";
+const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
 
 // The ONLY files under ./public served WITHOUT a subscribed session — an
 // explicit allow-list for the logged-out marketing page: the fighter thumbnails
@@ -150,14 +151,38 @@ async function verifyStripeSig(payload, header, secret) {
 }
 
 /* ─────────────────────────────────── email (Resend) ────────────────────────── */
-async function sendEmail(env, to, subject, html) {
+async function sendEmail(env, to, subject, html, replyTo) {
   if (!env.RESEND_API_KEY) throw new Error("email not configured");
+  const payload = { from: env.FROM_EMAIL, to, subject, html };
+  if (replyTo) payload.reply_to = replyTo;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: "Bearer " + env.RESEND_API_KEY, "Content-Type": "application/json" },
-    body: JSON.stringify({ from: env.FROM_EMAIL, to, subject, html }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error("email send failed: " + (await res.text()));
+}
+
+// Contact form → email to CONTACT_TO, with reply-to set to the sender so a reply
+// goes straight back to them. Honeypot ("company") silently drops bot spam.
+async function handleContact(request, env) {
+  let b = {};
+  try { b = await request.json(); } catch {}
+  if (b.company) return json({ ok: true });   // honeypot filled → pretend success, drop
+  const name = String(b.name || "").trim();
+  const email = String(b.email || "").trim();
+  const message = String(b.message || "").trim();
+  if (!name || !email || !message) return json({ error: "Please add your name, email, and a message." }, 400);
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return json({ error: "Please enter a valid email address." }, 400);
+  if (message.length > 5000) return json({ error: "Please keep your message under 5,000 characters." }, 400);
+  const esc = (s) => String(s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
+  const bodyHtml = `<p><strong>From:</strong> ${esc(name)} &lt;${esc(email)}&gt;</p><p><strong>Message:</strong></p><p>${esc(message).replace(/\n/g, "<br>")}</p>`;
+  try {
+    await sendEmail(env, CONTACT_TO, `GillyLab contact — ${name}`, bodyHtml, email);
+    return json({ ok: true });
+  } catch {
+    return json({ error: "Couldn't send your message right now. Please email " + CONTACT_TO + " directly." }, 500);
+  }
 }
 
 /* ─────────────────────────────────── responses ─────────────────────────────── */
@@ -190,6 +215,7 @@ export default {
       if (path === "/api/change-password" && request.method === "POST") return handleChangePassword(request, env);
       if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
       if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
+      if (path === "/api/contact" && request.method === "POST") return handleContact(request, env);
       if (path === "/healthz") return new Response("ok");
 
       // ---- public pages ----
@@ -209,6 +235,7 @@ export default {
       if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
       if (path === "/terms") return html(termsPage());
       if (path === "/privacy") return html(privacyPage());
+      if (path === "/contact") return html(contactPage());
 
       // ---- account page (must be logged in) ----
       if (path === "/account") {

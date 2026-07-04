@@ -30,8 +30,9 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   .sub{color:var(--muted);font-size:1.02rem;max-width:520px;margin:0 auto 1.6rem}
   .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:1.4rem 1.3rem;margin:1.25rem auto 0;max-width:440px}
   label{display:block;font-size:.8rem;color:var(--muted);margin:.85rem 0 .3rem;font-weight:600}
-  input{width:100%;padding:.7rem .8rem;background:#0e0e10;border:1px solid var(--line);border-radius:9px;color:#fff;font-size:1rem}
-  input:focus{outline:none;border-color:var(--accent)}
+  input,textarea{width:100%;padding:.7rem .8rem;background:#0e0e10;border:1px solid var(--line);border-radius:9px;color:#fff;font-size:1rem;font-family:inherit}
+  textarea{resize:vertical;min-height:120px}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
   button,.btn{display:inline-block;width:100%;text-align:center;margin-top:1.1rem;padding:.8rem 1rem;border:0;border-radius:10px;
        background:var(--accent);color:#04120a;font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none}
   .btn.ghost{background:transparent;color:#fff;border:1px solid var(--line);font-weight:600}
@@ -166,12 +167,16 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .foot{text-align:center;margin:52px auto 0}
   .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
   .trust{color:rgba(255,255,255,.42);font-size:12.5px;margin:16px auto 0;max-width:540px;line-height:1.5}
-  .faq{max-width:900px;margin:60px auto 0}
+  .faq{max-width:720px;margin:60px auto 0}
   .faq-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
-  .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
-  .faq-item h3{font-size:14px;font-weight:800;margin:0 0 6px}
-  .faq-item p{font-size:13px;color:rgba(255,255,255,.58);line-height:1.55;margin:0}
+  .faq-list{display:flex;flex-direction:column;gap:10px}
+  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;font-size:14px;font-weight:800;color:#fff}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary:hover{color:var(--accent)}
+  .faq-chev{color:var(--muted);font-size:20px;line-height:1;transition:transform .2s;flex:0 0 auto}
+  .faq-item[open] .faq-chev{transform:rotate(90deg);color:var(--accent)}
+  .faq-item p{margin:0;padding:0 18px 16px;font-size:13px;color:rgba(255,255,255,.62);line-height:1.6}
   .site-footer{max-width:1040px;margin:44px auto 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
   .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px}
   .foot-brand .a{color:var(--accent)}
@@ -196,7 +201,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   @media (max-width:760px){
     h1.hh{font-size:34px}
     .egrid-cards{grid-template-columns:repeat(2,1fr)}
-    .faq-grid{grid-template-columns:1fr}
     .stats{gap:24px}
     .nav-cta .btn-primary{display:none}
   }
@@ -246,13 +250,13 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
-    <div class="faq-grid">
-      <div class="faq-item"><h3>What's included?</h3><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, division rankings, and weekly roster updates.</p></div>
-      <div class="faq-item"><h3>How current is the data?</h3><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div>
-      <div class="faq-item"><h3>Which promotions does it cover?</h3><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div>
-      <div class="faq-item"><h3>Can I cancel anytime?</h3><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div>
-      <div class="faq-item"><h3>How does billing work?</h3><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div>
-      <div class="faq-item"><h3>Is this betting advice?</h3><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, division rankings, and weekly roster updates.</p></details>
+      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></details>
+      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></details>
+      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></details>
+      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></details>
+      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></details>
     </div>
   </section>
 
@@ -266,7 +270,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <nav class="foot-links">
       <a href="/terms">Terms of Service</a>
       <a href="/privacy">Privacy Policy</a>
-      <a href="mailto:${CONTACT_EMAIL}">Contact</a>
+      <a href="/contact">Contact</a>
     </nav>
     <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>
@@ -478,6 +482,23 @@ export const resetPasswordPage = (token) => shell("Set a new password — GillyL
     </form>
     <div class="alt muted"><a href="/login">Back to log in</a></div>
   </div>`, `wire("f","/api/reset/complete","m");`);
+
+export const contactPage = () => shell("Contact GillyLab", `
+  ${backLink}
+  <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
+  <div class="card">
+    <h1 style="font-size:1.4rem;text-align:center">Contact us</h1>
+    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Questions, feedback, or an issue? Send a message and we'll get back to you.</p>
+    <form id="f">
+      <label>Your name</label><input name="name" type="text" autocomplete="name" required>
+      <label>Email</label><input name="email" type="email" autocomplete="email" required>
+      <label>Message</label><textarea name="message" required placeholder="How can we help?"></textarea>
+      <input type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none">
+      <button type="submit">Send message</button>
+      <div id="m" class="msg"></div>
+    </form>
+    <div class="alt muted"><a href="/">Back to GillyLab</a></div>
+  </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`);
 
 export const notePage = (title, msg) => shell(title, `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
