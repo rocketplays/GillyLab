@@ -93,19 +93,19 @@ ${extraJs}
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
-<meta name="description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, tape study, rankings, and weekly roster updates.">
+<meta name="description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, line-movement tracking, tape study, rankings, and weekly roster updates.">
 <link rel="canonical" href="${SITE_URL}/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GillyLab">
 <meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, tape study, rankings, and weekly roster updates.">
+<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, per-fight box scores, career accolades, live and historical odds, line-movement tracking, tape study, rankings, and weekly roster updates.">
 <meta property="og:url" content="${SITE_URL}/">
 <meta property="og:image" content="${SITE_URL}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, live and historical odds, tape study, rankings, and more.">
+<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, live and historical odds, line movement, tape study, rankings, and more.">
 <meta name="twitter:image" content="${SITE_URL}/og.png">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -217,7 +217,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <header class="hero">
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
-    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, career accolades, live/historical odds, one-click tape study, and weekly roster updates — all in one place.</p>
+    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
     <div class="stats">
       <div class="stat"><div class="n">3,000+</div><div class="l">fighters</div></div>
       <div class="stat"><div class="n">18,000+</div><div class="l">bouts</div></div>
@@ -251,7 +251,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
-      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, the fight simulator, per-fight box scores, career accolades, live and historical odds, tape links, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, the fight simulator, per-fight box scores, career accolades, live and historical odds, line-movement history, tape links, division rankings, and weekly roster updates.</p></div></details>
       <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
       <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
       <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
@@ -328,6 +328,23 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +opropRow('McGregor','R1 '+oc('+600')+' R2 '+oc('+1200')+' R3 '+oc('+2200')+' R4 '+oc('+3300')+' R5 '+oc('+5000'))
     +opropRow('Holloway','R1 '+oc('+500')+' R2 '+oc('+600')+' R3 '+oc('+650')+' R4 '+oc('+750')+' R5 '+oc('+1100'));
 
+  // Line-movement slide — real McGregor/Holloway moneyline trajectory (implied win %).
+  var lmM=[300,288,278,268,259,251,243,236,229,222,216,210,202,197,193,189,180,176,172,169,166,163,161,160,162,176,189];
+  var lmH=[-430,-412,-396,-382,-368,-356,-344,-333,-323,-313,-304,-296,-284,-278,-272,-266,-240,-235,-230,-226,-222,-218,-214,-210,-213,-223,-234];
+  function amp(o){return o<0?(-o)/((-o)+100):100/(o+100);}
+  var lmW=520,lmHt=130,lmP=8,lmN=lmM.length,lmA=0.20,lmB=0.85;
+  function lmy(o){return lmHt-lmP-(amp(o)-lmA)/(lmB-lmA)*(lmHt-2*lmP);}
+  function lmpts(arr){return arr.map(function(o,k){return (lmP+(lmW-2*lmP)*k/(lmN-1)).toFixed(1)+','+lmy(o).toFixed(1);}).join(' ');}
+  function lmdot(arr,col){return '<circle cx="'+(lmW-lmP)+'" cy="'+lmy(arr[arr.length-1]).toFixed(1)+'" r="3.6" fill="'+col+'"/>';}
+  var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement · implied win %</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
+    +'<svg viewBox="0 0 '+lmW+' '+lmHt+'" width="100%" style="display:block">'
+    +'<polyline points="'+lmpts(lmH)+'" fill="none" stroke="#8a8a92" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
+    +'<polyline points="'+lmpts(lmM)+'" fill="none" stroke="'+A+'" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'
+    +lmdot(lmH,'#8a8a92')+lmdot(lmM,A)+'</svg>'
+    +'<div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em;margin-top:1px"><span>Jun 5 · open</span><span>now</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:7px"><span><span style="color:'+A+'">●</span> McGregor <span class="bc" style="font-weight:700">+300 → +189</span></span><span><span style="color:#8a8a92">●</span> Holloway <span class="bc" style="font-weight:700">-430 → -234</span></span></div>'
+    +'<div style="font-size:11px;color:'+M+';margin-top:8px;line-height:1.45">Opened a +300 underdog; steady money on McGregor has bet the line down toward +160, with a slight tick back to +189.</div>';
+
   var OH=LD.oddsHistory;
   var ohist='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(OH.slug,OH.initials,false,36)+'<div><div style="font-weight:700;font-size:1rem">'+OH.name+'</div><div style="font-size:11px;color:'+M+'">Closing line — career odds history</div></div></div>'
     +OH.rows.map(function(r){var neg=r.odds<0,v=r.odds>0?('+'+r.odds):String(r.odds);return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.46rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><span style="font-size:.85rem;font-weight:600">vs '+r.opponent+'</span><span class="bc" style="font-weight:800;font-size:1rem;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span></div>';}).join('');
@@ -383,6 +400,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
     {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
+    {t:'Line movement',d:'Watch a bout’s odds move day by day, from open to now, across the whole market.',h:lm},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
@@ -400,8 +418,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   nx.onclick=next;pv.onclick=prev;keyact(nx,next);keyact(pv,prev);
 
   var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>'};
-  var cards=[[ic.c,'Fighter analytics','Full career stats for all 3,000+ fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.o,'Live odds','Moneyline, round totals, method-of-victory and round props by book for every upcoming fight'],[ic.h,'Historical odds','Closing-line history for every fighter, bout by bout'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
+  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',lm:sv+'<path d="M3 17l5-5 4 4 8-9"/><path d="M18 7h3v3"/></svg>'};
+  var cards=[[ic.c,'Fighter analytics','Full career stats for all 3,000+ fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
   document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
