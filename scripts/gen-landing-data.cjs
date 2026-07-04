@@ -49,7 +49,11 @@ function buildRankings(rk, recMap) {
   const grp = rk.filter(x => x.division === RANK_DIVISION);
   const champ = grp.find(x => x.isChampion);
   const top = grp.filter(x => !x.isChampion).sort((a, b) => a.rank - b.rank).slice(0, 5);
-  const row = (x, n) => ({ n, name: x.fighterName, record: recMap[x.fighterName] || '', champ: !!x.isChampion });
+  const row = (x, n) => ({
+    n, name: x.fighterName, record: recMap[x.fighterName] || '', champ: !!x.isChampion,
+    slug: photoExists(x.fighterSlug) ? x.fighterSlug : (photoExists(nameToSlug(x.fighterName)) ? nameToSlug(x.fighterName) : ''),
+    initials: initials2(x.fighterName),
+  });
   const rows = [...(champ ? [row(champ, 'C')] : []), ...top.map(x => row(x, String(x.rank)))];
   return { division: RANK_DIVISION, rows };
 }
@@ -61,8 +65,10 @@ function buildFeatured(rk, recMap) {
   if (!champ) return null;
   const st = fighterStat(champ.fighterName) || {};
   const stats = [
-    ['Strikes Landed / Min', st.slpm], ['Striking Accuracy', st.strAcc], ['Knockdowns / 15', st.kd],
-    ['Striking Defense', st.strDef], ['Takedown Defense', st.tdDef], ['Finish Rate', st.finRate],
+    ['Strikes Landed / Min', st.slpm], ['Striking Accuracy', st.strAcc], ['Strikes Absorbed / Min', st.sapm],
+    ['Striking Defense', st.strDef], ['Knockdowns / 15', st.kd], ['Takedowns / 15', st.tdLanded],
+    ['Takedown Accuracy', st.tdAcc], ['Takedown Defense', st.tdDef], ['Submission Avg', st.subAvg],
+    ['Finish Rate', st.finRate],
   ].filter(s => s[1] != null && s[1] !== '');
   if (stats.length < 4) return null;   // not enough data → keep last-good
   const ini = initialsOf(champ.fighterName);
@@ -214,7 +220,7 @@ function main() {
   }
 
   // Slugs the dynamic slides need served publicly (for the Worker allow-list).
-  const photos = [...new Set([featured.slug, oddsHistory.slug, ...liveOdds.bouts.flatMap(b => [b.sA, b.sB])].filter(Boolean))];
+  const photos = [...new Set([featured.slug, oddsHistory.slug, ...rankings.rows.map(r => r.slug), ...liveOdds.bouts.flatMap(b => [b.sA, b.sB])].filter(Boolean))];
 
   const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, liveOdds, oddsHistory, photos };
   fs.writeFileSync(OUT,

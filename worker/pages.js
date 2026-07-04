@@ -291,8 +291,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   var F=LD.featured;
   var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava(F.slug,F.initials,true)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+'"><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</div></div></div>'
-    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">'
-    +F.stats.map(function(s){return '<div class="statc"><div class="statc-l">'+s[0]+'</div><div class="statc-v">'+s[1]+'</div></div>';}).join('')+'</div>';
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px">'
+    +F.stats.map(function(s){return '<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .5rem"><div style="font-size:.5rem;color:var(--muted);letter-spacing:.11em;text-transform:uppercase;line-height:1.25;margin-bottom:.25rem;min-height:2.5em">'+s[0]+'</div><div class="bc" style="font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:var(--accent);line-height:1">'+s[1]+'</div></div>';}).join('')+'</div>';
 
   function mrows(rows){return rows.map(function(r){return '<div style="display:flex;align-items:center;gap:7px;margin:5px 0"><div style="width:66px;font-size:10.5px;color:'+M+'">'+r[0]+'</div><div style="flex:1;height:6px;background:'+BG+';border-radius:4px;overflow:hidden"><div style="width:'+r[1]+'%;height:100%;background:'+A+'"></div></div><div style="width:28px;text-align:right;font-size:10.5px;font-weight:700">'+r[1]+'%</div></div>';}).join('');}
   function shead(av,name,count,pct,lead){return '<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><div style="display:flex;align-items:center;gap:9px">'+av+'<div><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:10.5px;color:'+M+'">'+count+'</div></div></div><div class="bc" style="font-size:22px;font-weight:900;color:'+(lead?A:'#fff')+'">'+pct+'%</div></div>';}
@@ -318,11 +318,12 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +OH.rows.map(function(r){var neg=r.odds<0,v=r.odds>0?('+'+r.odds):String(r.odds);return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.46rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><span style="font-size:.85rem;font-weight:600">vs '+r.opponent+'</span><span class="bc" style="font-weight:800;font-size:1rem;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span></div>';}).join('');
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
-  var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('alex-pereira','AP')+'<div><div style="font-weight:600;font-size:.92rem">Alex Pereira</div><div style="font-size:.72rem;color:'+M+'">Light Heavyweight · 12-3-0</div></div></div>'
-    +trow('Oct 5, 2024','def. Khalil Rountree Jr.','KO/TKO · R4 · UFC 307')
-    +trow('Jun 8, 2024','def. Jiří Procházka','KO/TKO · R2 · UFC 303')
-    +trow('Apr 13, 2024','def. Jamahal Hill','KO/TKO · R1 · UFC 300')
-    +trow('Jul 29, 2023','def. Jan Błachowicz','Decision · UFC 291');
+  var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('paddy-pimblett','PP')+'<div><div style="font-weight:600;font-size:.92rem">Paddy Pimblett</div><div style="font-size:.72rem;color:'+M+'">Lightweight · 23-4-0</div></div></div>'
+    +trow('Jan 24, 2026','lost to Justin Gaethje','Decision · UFC 324')
+    +trow('Apr 12, 2025','def. Michael Chandler','TKO · R3 · UFC 314')
+    +trow('Jul 27, 2024','def. Bobby Green','Submission · R1 · UFC 304')
+    +trow('Dec 16, 2023','def. Tony Ferguson','Decision · UFC 296')
+    +trow('Dec 10, 2022','def. Jared Gordon','Decision · UFC 282');
 
   function bhead(){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem"><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0">'+ava('islam-makhachev','IM')+'<span style="font-weight:800;font-size:.9rem">Islam Makhachev</span></div><div style="display:flex;align-items:center;gap:.5rem;flex:1;min-width:0;justify-content:flex-end"><span style="font-weight:800;font-size:.9rem">A. Volkanovski</span>'+ava('alexander-volkanovski','AV')+'</div></div>';}
   function bbar(lv,rv){var t=lv+rv;if(t<=0)return '';var lp=Math.max(8,Math.min(92,Math.round(100*lv/t)));if(lv===rv)lp=50;var lc=lv>=rv?A:'rgba(255,255,255,.18)',rc=rv>=lv?A:'rgba(255,255,255,.18)';return '<div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:rgba(255,255,255,.08);margin-top:4px"><div style="width:'+lp+'%;background:'+lc+'"></div><div style="width:'+(100-lp)+'%;background:'+rc+'"></div></div>';}
@@ -335,9 +336,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +brow('4/9','Takedowns','0/4',4,0)
     +brow('7:37','Control','2:55',457,175);
 
-  function rr(n,name,rec,move,mv,champ){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span><span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(move?'<span class="rmove '+mv+'">'+move+'</span>':(champ?'<span class="rtag">Champion</span>':''))+'</div>';}
+  function rr(n,name,rec,champ,slug,init){return '<div class="rrow'+(champ?' rchamp':'')+'"><span class="rnum">'+n+'</span>'+ava(slug,init,champ,26)+'<span class="rname">'+name+'</span><span class="rrec">'+rec+'</span>'+(champ?'<span class="rtag">Champion</span>':'')+'</div>';}
   var rank='<div class="bc" style="font-size:1.05rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.6rem">'+LD.rankings.division+' — Top 5</div><div style="display:flex;flex-direction:column;gap:.4rem">'
-    +LD.rankings.rows.map(function(x){return rr(x.n,x.name,x.record,'','',x.champ);}).join('')+'</div>';
+    +LD.rankings.rows.map(function(x){return rr(x.n,x.name,x.record,x.champ,x.slug,x.initials);}).join('')+'</div>';
 
   function rcol(title,color,items,total,first){var extra=total-items.length;return '<div style="'+(first?'':'margin-top:1.1rem;padding-top:1.1rem;border-top:1px solid rgba(255,255,255,.08)')+'"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+color+';margin-bottom:.6rem"><span>'+title+'</span><span style="background:'+color+'22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem">'+total+'</span></div><div style="display:flex;flex-direction:column;gap:.4rem">'+(total?items.map(function(n){return '<div style="display:flex;align-items:center;gap:.55rem;font-size:.92rem"><span style="color:'+color+';font-size:.58rem">●</span><span>'+n+'</span></div>';}).join(''):'<div style="color:'+M+';font-size:.85rem">None</div>')+(extra>0?'<div style="color:'+M+';font-size:.8rem;padding-left:1.1rem">+'+extra+' more</div>':'')+'</div></div>';}
   var roster='<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.1rem 1.3rem"><div style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:1rem">'+LD.roster.week+'</div>'
