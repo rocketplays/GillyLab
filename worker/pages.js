@@ -328,7 +328,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +opropRow('McGregor','R1 '+oc('+600')+' R2 '+oc('+1200')+' R3 '+oc('+2200')+' R4 '+oc('+3300')+' R5 '+oc('+5000'))
     +opropRow('Holloway','R1 '+oc('+500')+' R2 '+oc('+600')+' R3 '+oc('+650')+' R4 '+oc('+750')+' R5 '+oc('+1100'));
 
-  // Line-movement slide — real McGregor/Holloway moneyline trajectory (implied win %).
+  // Line-movement slide — real McGregor/Holloway moneyline trajectory (raw American odds).
   var lmM=[300,288,278,268,259,251,243,236,229,222,216,210,202,197,193,189,180,176,172,169,166,163,161,160,162,176,189];
   var lmH=[-430,-412,-396,-382,-368,-356,-344,-333,-323,-313,-304,-296,-284,-278,-272,-266,-240,-235,-230,-226,-222,-218,-214,-210,-213,-223,-234];
   var lmW=520,lmHt=130,lmP=10,lmN=lmM.length,lmLo=-460,lmHi=330;
