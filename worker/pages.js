@@ -153,8 +153,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .sc-nav{display:flex;gap:8px}
   .sc-arrow{cursor:pointer;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;user-select:none}
   .sc-arrow:hover{border-color:var(--accent);color:var(--accent)}
-  .sc-stage{background:#0d0d10;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;min-height:344px}
-  #stg{transition:opacity .18s ease}
+  .sc-stage{background:#0d0d10;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:20px;min-height:384px;display:flex;align-items:center;touch-action:pan-y}
+  #stg{width:100%;transition:opacity .22s ease}
   .sc-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
   .sc-dot{width:7px;height:7px;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.22)}
   .sc-desc{text-align:left;color:rgba(255,255,255,.55);font-size:13px;margin:2px 0 13px;max-width:560px;min-height:2.4em}
@@ -357,7 +357,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function keyact(el,fn){el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});}
   slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';d.setAttribute('role','tab');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Feature '+(k+1)+': '+slides[k].t);if(k===0)d.style.background=A;var pick=function(){i=k;render();reset();};d.onclick=pick;keyact(d,pick);dt.appendChild(d);});
-  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:150);}
+  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:220);}
   var timer;function reset(){clearInterval(timer);if(RM)return;timer=setInterval(function(){i=(i+1)%slides.length;render();},4200);}
   var nx=document.getElementById('nx'),pv=document.getElementById('pv');
   var next=function(){i=(i+1)%slides.length;render();reset();},prev=function(){i=(i-1+slides.length)%slides.length;render();reset();};
@@ -369,6 +369,15 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
+
+  // Swipe left/right to change slides on touch devices.
+  var stage=document.querySelector('.sc-stage'),tx=0,ty=0;
+  stage.addEventListener('touchstart',function(e){var t=e.changedTouches[0];tx=t.clientX;ty=t.clientY;},{passive:true});
+  stage.addEventListener('touchend',function(e){var t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){(dx<0?next:prev)();}},{passive:true});
+  // Only auto-advance while the carousel is actually on screen.
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){reset();}else{clearInterval(timer);}});},{threshold:.2}).observe(document.querySelector('.showcase'));
+  }
 
   // Smooth fade + height on the FAQ accordions (native <details> otherwise snaps
   // open/closed). Falls back to the native instant toggle if JS or motion is off.
