@@ -217,7 +217,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <header class="hero">
     <div class="badge">EVERY FIGHTER · EVERY FIGHT · EVERY BOX SCORE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
-    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, live/historical odds, one-click tape study, career accolades, and weekly roster updates — all in one place.</p>
+    <p class="sub">Deep analytics for every fighter and every bout, a fight simulator that predicts winner and method, career accolades, live/historical odds, one-click tape study, and weekly roster updates — all in one place.</p>
     <div class="stats">
       <div class="stat"><div class="n">3,000+</div><div class="l">fighters</div></div>
       <div class="stat"><div class="n">18,000+</div><div class="l">bouts</div></div>
@@ -251,7 +251,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
-      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, per-fight box scores, the fight simulator, live odds, tape links, career accolades, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (3,000+) and bout (18,000+): full career analytics, the fight simulator, per-fight box scores, career accolades, live and historical odds, tape links, division rankings, and weekly roster updates.</p></div></details>
       <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
       <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
       <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
