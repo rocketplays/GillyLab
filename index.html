@@ -101317,16 +101317,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const zeroY = yFor(0).toFixed(1);
     function lineFor(key, color, w) {
       const pts = [];
-      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key]), d[key], d.date]); });
+      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key]), d[key], d.date, i]); });
       if (pts.length < 2) return '';
       const poly = pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
-      // Small per-day dots along the line...
-      const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="${color}" pointer-events="none"/>`).join('');
+      // Thin out the markers so the line doesn't get crowded (especially on
+      // mobile): show a dot roughly every 5 days, always including the first
+      // and last tracked day.
+      const STEP = 5;
+      const lastIdx = pts.length - 1;
+      const marked = pts.filter((p, k) => k === 0 || k === lastIdx || (p[4] % STEP === 0));
+      // Bigger, tappable dots at the sampled days...
+      const dots = marked.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="4.5" fill="${color}" pointer-events="none"/>`).join('');
       // ...with larger transparent hit targets that show the date + odds on
       // hover (desktop) or tap (mobile).
-      const hits = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="transparent" style="cursor:pointer;" data-date="${p[3]}" data-odds="${p[2]}" data-color="${color}" onmouseenter="showOddsTooltip(this)" onmouseleave="hideOddsTooltip()" ontouchstart="event.stopPropagation();showOddsTooltip(this)"/>`).join('');
-      const last = pts[pts.length - 1];
-      return `<polyline points="${poly}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>${dots}<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.6" fill="${color}"/>${hits}`;
+      const hits = marked.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="13" fill="transparent" style="cursor:pointer;" data-date="${p[3]}" data-odds="${p[2]}" data-color="${color}" onmouseenter="showOddsTooltip(this)" onmouseleave="hideOddsTooltip()" ontouchstart="event.stopPropagation();showOddsTooltip(this)"/>`).join('');
+      return `<polyline points="${poly}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>${dots}${hits}`;
     }
     return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">
       <line x1="${P}" y1="${zeroY}" x2="${W - P}" y2="${zeroY}" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
