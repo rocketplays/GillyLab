@@ -101004,11 +101004,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Match each odds-feed fight back to its evt.fights bout — fuzzy (see
       // namesLikelyMatch) since the odds feed doesn't always spell/format a
       // fighter's name exactly the way our event data does.
+      // Match an odds-feed fight to its event bout requiring BOTH fighters to
+      // line up (same both-names logic as isScheduledBout). Matching on a single
+      // name was too loose given the fuzzy comparison — e.g. "Cody Durden"
+      // fuzzy-matches "Cory Sandhagen" ("Cody"≈"Cory", 1 edit), which mapped a
+      // prelim to the wrong (main-card) bout and misplaced it in the order.
       function findEvtFight(fight) {
-        return (evt.fights || []).find(ef =>
-          namesLikelyMatch(ef.f1, fight.home_team) || namesLikelyMatch(ef.f2, fight.home_team) ||
-          namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
-        );
+        const n1 = lastNameOf(fight.home_team).toLowerCase(), n2 = lastNameOf(fight.away_team).toLowerCase();
+        return (evt.fights || []).find(ef => {
+          const a = lastNameOf(ef.f1).toLowerCase(), b = lastNameOf(ef.f2).toLowerCase();
+          if ((a === n1 && b === n2) || (a === n2 && b === n1)) return true;
+          return (namesLikelyMatch(ef.f1, fight.home_team) && namesLikelyMatch(ef.f2, fight.away_team)) ||
+                 (namesLikelyMatch(ef.f1, fight.away_team) && namesLikelyMatch(ef.f2, fight.home_team));
+        });
       }
       // Sort fights to match the EVENTS page display order. The featured card
       // there doesn't render bouts in raw evt.fights array order — it groups
@@ -101580,11 +101588,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           ? ef.filter(f => f.isMainCard || f.isMain).concat(ef.filter(f => !f.isMainCard && !f.isMain))
           : ef.filter(f => f.isMain).concat(ef.filter(f => !f.isMain));
       })();
+      // Require BOTH fighters to match (same both-names logic as isScheduledBout).
+      // Single-name fuzzy matching mapped e.g. "Cody Durden" to "Cory Sandhagen"
+      // ("Cody"≈"Cory"), misplacing a prelim among the main-card bouts.
       function evtFightIndexOf(fight) {
-        const idx = oddsDisplayOrder.findIndex(ef =>
-          namesLikelyMatch(ef.f1, fight.home_team) || namesLikelyMatch(ef.f2, fight.home_team) ||
-          namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
-        );
+        const n1 = lastNameOf(fight.home_team).toLowerCase(), n2 = lastNameOf(fight.away_team).toLowerCase();
+        const idx = oddsDisplayOrder.findIndex(ef => {
+          const a = lastNameOf(ef.f1).toLowerCase(), b = lastNameOf(ef.f2).toLowerCase();
+          if ((a === n1 && b === n2) || (a === n2 && b === n1)) return true;
+          return (namesLikelyMatch(ef.f1, fight.home_team) && namesLikelyMatch(ef.f2, fight.away_team)) ||
+                 (namesLikelyMatch(ef.f1, fight.away_team) && namesLikelyMatch(ef.f2, fight.home_team));
+        });
         return idx === -1 ? 999 : idx;
       }
       if (evt.fights && evt.fights.length) {
