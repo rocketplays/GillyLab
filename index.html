@@ -104352,37 +104352,79 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return losses > 0 ? finishLosses / losses : 0.5; // default 0.5 when no loss history
   }
 
-  // Sample size at which the opponent's how-they-lose profile reaches ~half its
-  // full weight. Lower = the opponent's record dominates sooner; higher = it
-  // takes more finishes before the opponent's tendency overrides the winner's
-  // own style. FINISH_CONF_K governs the finish-vs-decision split; TYPE_CONF_K
-  // the KO-vs-submission split within finishes.
+  // KO-vs-submission split within finishes: sample size at which the opponent's
+  // finish-type profile reaches its (capped) weight. The cap is deliberately
+  // low — the winner's OWN KO/sub tendency should dominate which kind of finish
+  // they score; the opponent's finish-loss type is only a modest nudge (a pure
+  // striker shouldn't suddenly rack up submissions just because the opponent has
+  // been submitted before).
+  const SIM_TYPE_CONF_K = 4;
+  const SIM_OPP_TYPE_WEIGHT_CAP = 0.35;
+  // Confidence in the opponent's finish-vs-decision (durability) signal grows
+  // with their loss sample; this is the sample size at which it reaches ~half.
   const SIM_FINISH_CONF_K = 6;
-  const SIM_TYPE_CONF_K = 3;
-  // Caps so the winner's own style is never entirely erased, even against an
-  // opponent with a huge finished-a-lot sample.
-  const SIM_OPP_FIN_WEIGHT_CAP = 0.65;
-  const SIM_OPP_TYPE_WEIGHT_CAP = 0.60;
-  // Durability credit: for hard-to-finish opponents, each career fight they
-  // were NOT finished in adds a fraction of a loss-data-point of confidence to
-  // the "won't be finished" signal, capped so the effect stays moderate. This
-  // lets a long clean record (e.g. Merab Dvalishvili — finished ~never across a
-  // deep career) read as genuinely finish-resistant instead of hinging on his
-  // handful of losses alone.
+  // Durability credit: for hard-to-finish opponents, each career fight they were
+  // NOT finished in adds a fraction of a loss-data-point of confidence to the
+  // "won't be finished" signal, capped so the effect stays moderate. Lets a long
+  // clean record (e.g. Merab Dvalishvili — finished ~never across a deep career)
+  // read as genuinely finish-resistant, not hinge on his handful of losses.
   const SIM_DURABILITY_PER_FIGHT = 0.25;
   const SIM_DURABILITY_BONUS_CAP = 4;
+  // League-average share of a fighter's losses that come by finish. The
+  // opponent's finishability is measured RELATIVE to this: an opponent with an
+  // average chin barely moves the winner's own finish rate; only unusually
+  // fragile or unusually durable opponents shift it. (Fixes the old bug where a
+  // 97%-finisher like McKinney was dragged to ~68% finish just because his
+  // opponent's finish-loss rate was a perfectly ordinary ~0.5.)
+  const SIM_BASELINE_FINISHABILITY = 0.5;
+  // How hard the opponent's finishability bends the winner's finish odds.
+  // Asymmetric on purpose: a fragile opponent pushes the finish share UP hard
+  // (SIM_FINISHABILITY_K_UP), a durable one pulls it DOWN only gently
+  // (SIM_FINISHABILITY_K_DOWN) — matching the ask that the durability effect
+  // stay moderate.
+  const SIM_FINISHABILITY_K_UP = 3;
+  const SIM_FINISHABILITY_K_DOWN = 1.5;
+  // Sample-size regression of the winner's OWN finish rate toward a league mean.
+  // A thin, all-or-nothing record (e.g. McKinney: 18 wins, ~97% by finish) isn't
+  // taken as gospel — it's pulled toward the prior mean until the sample earns
+  // trust, so a pure finisher still carries a realistic small chance of a
+  // decision. The prior mean is DIVISION-AWARE: finish rates swing hard by
+  // weight class (heavyweights finish ~2x as often as flyweights), so a
+  // thin-sample heavyweight regresses toward a finish-heavy mean and a
+  // thin-sample flyweight toward a decision-heavy one. Values are approximate
+  // UFC inside-the-distance rates per division.
+  const SIM_DIVISION_FINISH_PRIOR = {
+    HW: 0.70, LHW: 0.60, MW: 0.55, WW: 0.50, LW: 0.48, FW: 0.46, BW: 0.42, FLW: 0.36,
+    WSW: 0.34, WFLW: 0.36, WBW: 0.42, WFW: 0.45
+  };
+  const SIM_SELF_FIN_PRIOR_MEAN_DEFAULT = 0.50;
+  const SIM_SELF_FIN_PRIOR_STRENGTH = 4;
+  function simDivisionFinishPrior(name) {
+    const r = simGetFighterRoster(name);
+    const div = r && (SIM_DIVISION_ALIASES[r.division] || r.division);
+    return (div && SIM_DIVISION_FINISH_PRIOR[div]) || SIM_SELF_FIN_PRIOR_MEAN_DEFAULT;
+  }
+  // Matchup dominance → finish rate. A fighter finishes more often when they're
+  // dominating a big underdog and less in a coin-flip, so the winner's finish
+  // odds are bent by their win probability (centered at 50/50). Exponent kept
+  // modest and the factor capped so this is a secondary effect on top of the
+  // fighters' own tendencies, not an override.
+  const SIM_DOMINANCE_K = 0.30;
+  const SIM_DOMINANCE_FACTOR_CAP = 2.2;
 
   // Build the {KO/TKO, Submission, Decision} probability distribution for a win
-  // by `winnerName` over `loserName`. Starts from the winner's own weighted
-  // method pool (simMethodPool), then blends toward how the loser actually gets
-  // beaten. The blend weight scales with the loser's loss sample size, so:
-  //   • a lone KO loss (e.g. Lone'er Kavanagh, 1 defeat) barely nudges it;
-  //   • a heavily-finished fighter (e.g. Terrance McKinney / Matt Schnell)
-  //     pulls the winner's finish share up strongly and decision share down.
-  // A durable opponent whose losses are all decisions pulls the other way
-  // (more decisions, fewer finishes). Applies in both 3- and 5-round fights;
-  // 5-rounders get a small extra finish bump for the two additional rounds.
-  function simMethodDistribution(winnerName, loserName, rounds) {
+  // by `winnerName` over `loserName`.
+  //   1. Start from the winner's own weighted method pool (simMethodPool),
+  //      regressed toward a league mean by their win-sample size.
+  //   2. Bend that finish rate by how finishable the LOSER is RELATIVE to an
+  //      average chin — up hard for fragile opponents (McKinney/Schnell), down
+  //      gently for durable ones (Merab/Strickland), scaled by loss sample.
+  //   3. Split finishes into KO vs submission, tilted toward whatever has
+  //      actually stopped the loser.
+  // 5-round fights get a small extra finish bump for the two extra rounds.
+  // `winProb` (the winner's probability of winning this matchup, 0–1) bends the
+  // finish rate by how dominant the win is; omit/null to skip that step.
+  function simMethodDistribution(winnerName, loserName, rounds, winProb) {
     // Winner's own baseline, from their weighted win/method pool.
     const pool = simMethodPool(winnerName);
     let ko = 0, sub = 0, dec = 0;
@@ -104392,9 +104434,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       else dec++;
     });
     const tot = (ko + sub + dec) || 1;
-    let pKO = ko / tot, pSub = sub / tot, pDec = dec / tot;
-    let selfFin = pKO + pSub;
-    const selfKOshare = selfFin > 0 ? pKO / selfFin : 0.5;
+    const selfFinRaw = (ko + sub) / tot;
+    const selfKOshare = (ko + sub) > 0 ? ko / (ko + sub) : 0.5;
+
+    // Regress the winner's own finish rate toward the league mean by how many
+    // wins actually back it up (thin records are trusted less).
+    const winCount = ((typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[winnerName]) || [])
+      .filter(f => f.result === 'W').length;
+    const priorMean = simDivisionFinishPrior(winnerName);
+    let selfFin = (selfFinRaw * winCount + priorMean * SIM_SELF_FIN_PRIOR_STRENGTH)
+      / (winCount + SIM_SELF_FIN_PRIOR_STRENGTH);
 
     // Loser's how-they-lose profile, counted by method.
     const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[loserName]) || [];
@@ -104411,33 +104460,56 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const oppFin = oppKO + oppSub;
     const oppLosses = oppFin + oppDec;
 
-    if (oppLosses > 0) {
-      const oppFinFrac = oppFin / oppLosses;
-      // Confidence in the finish-vs-decision signal grows with total losses.
-      // For durable opponents (finishes are the minority of their losses), add
-      // moderate extra confidence for the many career fights they went without
-      // being finished — so a long clean record pulls a finisher's finish share
-      // down a bit more, symmetric in spirit with how a heavily-finished record
-      // pulls it up. Only nudges the durable direction; finish-prone opponents
-      // are unaffected.
+    let koShare = selfKOshare;
+    // Runs whenever the opponent has any decisive fights. An opponent with no
+    // losses at all still carries information: a long never-finished record is
+    // real durability evidence, credited via the un-finished-fights term below.
+    if (oppDecisive > 0) {
+      // "Of their losses, how often a finish" drives the finish-vs-decision
+      // signal. With zero losses there's no such data, so treat it as 0 (never
+      // finished) — the confidence weighting keeps that mild unless the clean
+      // record is long.
+      const oppFinFrac = oppLosses > 0 ? oppFin / oppLosses : 0;
+      // Confidence grows with loss sample; durable opponents also get moderate
+      // extra credit for the many career fights they went un-finished (this is
+      // what lets a rarely/never-finished fighter — even an undefeated one —
+      // read as finish-resistant rather than average-chinned).
       let effLosses = oppLosses;
-      if (oppFinFrac < 0.5) {
+      if (oppFinFrac < SIM_BASELINE_FINISHABILITY) {
         const unFinished = Math.max(0, oppDecisive - oppFin);
         effLosses += Math.min(SIM_DURABILITY_BONUS_CAP, unFinished * SIM_DURABILITY_PER_FIGHT);
       }
-      const wFin = Math.min(SIM_OPP_FIN_WEIGHT_CAP, effLosses / (effLosses + SIM_FINISH_CONF_K));
-      selfFin = selfFin * (1 - wFin) + oppFinFrac * wFin;
+      const wConf = effLosses / (effLosses + SIM_FINISH_CONF_K);
+      // Shrink the opponent's finishability toward the league baseline by
+      // confidence, then bend the winner's finish ODDS by how far it sits from
+      // that baseline (asymmetric: strong up, gentle down).
+      const ffAdj = SIM_BASELINE_FINISHABILITY + (oppFinFrac - SIM_BASELINE_FINISHABILITY) * wConf;
+      const factor = ffAdj / SIM_BASELINE_FINISHABILITY;
+      const k = factor >= 1 ? SIM_FINISHABILITY_K_UP : SIM_FINISHABILITY_K_DOWN;
+      const selfOdds = selfFin / (1 - selfFin);
+      const newOdds = selfOdds * Math.pow(factor, k);
+      selfFin = newOdds / (1 + newOdds);
       // Re-tilt KO vs submission within finishes toward whatever has actually
       // stopped this opponent, scaled by the finish-loss sub-sample.
-      let koShare = selfKOshare;
       if (oppFin > 0) {
         const wType = Math.min(SIM_OPP_TYPE_WEIGHT_CAP, oppFin / (oppFin + SIM_TYPE_CONF_K));
         koShare = selfKOshare * (1 - wType) + (oppKO / oppFin) * wType;
       }
-      pKO = selfFin * koShare;
-      pSub = selfFin * (1 - koShare);
-      pDec = 1 - selfFin;
     }
+
+    // Matchup dominance: bend the finish odds by the winner's win probability
+    // (a big favorite finishes more; a coin-flip winner less). Centered at 0.5
+    // so an even matchup is left untouched, and capped so it stays secondary.
+    if (winProb != null && winProb > 0 && winProb < 1) {
+      const domFactor = Math.min(SIM_DOMINANCE_FACTOR_CAP, Math.max(1 / SIM_DOMINANCE_FACTOR_CAP,
+        Math.pow(winProb / (1 - winProb), SIM_DOMINANCE_K)));
+      const fo = (selfFin / (1 - selfFin)) * domFactor;
+      selfFin = fo / (1 + fo);
+    }
+
+    let pKO = selfFin * koShare;
+    let pSub = selfFin * (1 - koShare);
+    let pDec = 1 - selfFin;
 
     // Two extra rounds in a 5-round fight = a bit more finish opportunity.
     // Shift a slice of the Decision share into finishes, keeping the KO:Sub
@@ -104470,11 +104542,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // standing in THIS matchup, not just their raw career-stat total.
     const powerA = simPowerScore(getSimProfile(nameA, rounds)) - simUnprovenPenalty(nameA, nameB);
     const powerB = simPowerScore(getSimProfile(nameB, rounds)) - simUnprovenPenalty(nameB, nameA);
-    // Method of victory is drawn from a blend of how the WINNER tends to win
-    // and how the LOSER tends to get beaten (opponent influence scaled by their
-    // loss sample size). See simMethodDistribution.
-    const distA = simMethodDistribution(nameA, nameB, rounds);
-    const distB = simMethodDistribution(nameB, nameA, rounds);
+    // Method of victory blends how the WINNER tends to win, how the LOSER tends
+    // to get beaten, and how dominant the win is (probA is A's win probability;
+    // B's is 1-probA). See simMethodDistribution.
+    const distA = simMethodDistribution(nameA, nameB, rounds, probA);
+    const distB = simMethodDistribution(nameB, nameA, rounds, 1 - probA);
 
     let winsA = 0, winsB = 0;
     const methodsA = { 'KO/TKO': 0, 'Submission': 0, 'Decision': 0 };
