@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage } from "./pages.js";
 import landingData from "./landing-data.js";
 
 const COOKIE = "gl_session";
@@ -240,6 +240,7 @@ export default {
       if (path === "/terms") return html(termsPage());
       if (path === "/privacy") return html(privacyPage());
       if (path === "/contact") return html(contactPage());
+      if (path === "/about") return html(aboutPage());
 
       // ---- account page (must be logged in) ----
       if (path === "/account") {

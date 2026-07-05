@@ -3312,6 +3312,7 @@
 <footer class="site-footer">
   <div class="foot-brand">GILLY<span class="a">LAB</span></div>
   <div class="foot-links">
+    <a href="/about">About Us</a>
     <a href="/terms">Terms of Service</a>
     <a href="/privacy">Privacy Policy</a>
     <a href="/contact">Contact</a>
@@ -101009,11 +101010,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
         );
       }
-      // Sort fights to match evt.fights bout order
+      // Sort fights to match the EVENTS page display order. The featured card
+      // there doesn't render bouts in raw evt.fights array order — it groups
+      // them into Main Card first, then Prelims (see the featured-card
+      // rendering). Mirror that exact grouping here so the two pages line up,
+      // rather than sorting by the raw array index (which interleaves the two).
       if (evt.fights && evt.fights.length) {
+        const hasMainCardFlag = evt.fights.some(f => f.isMainCard);
+        const displayOrder = hasMainCardFlag
+          ? evt.fights.filter(f => f.isMainCard || f.isMain)
+              .concat(evt.fights.filter(f => !f.isMainCard && !f.isMain))
+          : evt.fights.filter(f => f.isMain)
+              .concat(evt.fights.filter(f => !f.isMain));
         fights = fights.slice().sort((a, b) => {
-          const ia = evt.fights.indexOf(findEvtFight(a));
-          const ib = evt.fights.indexOf(findEvtFight(b));
+          const ia = displayOrder.indexOf(findEvtFight(a));
+          const ib = displayOrder.indexOf(findEvtFight(b));
           return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
         });
       }
@@ -101558,11 +101569,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         ? data.filter(f => isScheduledBout(boutPairings, f.home_team, f.away_team))
         : [];
       if (!fights.length) throw new Error('no fights');
-      // Sort fights to match evt.fights bout order — fuzzy (see
-      // namesLikelyMatch) since the odds feed doesn't always spell/format a
-      // fighter's name exactly the way our event data does.
+      // Sort fights to match the EVENTS page display order (Main Card first,
+      // then Prelims — see the featured-card rendering), not the raw evt.fights
+      // array order. Fuzzy name match since the odds feed doesn't always
+      // spell/format a fighter's name exactly the way our event data does.
+      const oddsDisplayOrder = (() => {
+        const ef = evt.fights || [];
+        const hasMainCardFlag = ef.some(f => f.isMainCard);
+        return hasMainCardFlag
+          ? ef.filter(f => f.isMainCard || f.isMain).concat(ef.filter(f => !f.isMainCard && !f.isMain))
+          : ef.filter(f => f.isMain).concat(ef.filter(f => !f.isMain));
+      })();
       function evtFightIndexOf(fight) {
-        const idx = (evt.fights || []).findIndex(ef =>
+        const idx = oddsDisplayOrder.findIndex(ef =>
           namesLikelyMatch(ef.f1, fight.home_team) || namesLikelyMatch(ef.f2, fight.home_team) ||
           namesLikelyMatch(ef.f1, fight.away_team) || namesLikelyMatch(ef.f2, fight.away_team)
         );
