@@ -119,9 +119,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   html{background:var(--bg)}
   body{margin:0;background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%);color:#fff;
        font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
-       animation:lpin .3s ease both}
+       opacity:1;transition:opacity .15s ease;animation:lpin .3s ease backwards}
   @keyframes lpin{from{opacity:0}to{opacity:1}}
-  body.lp-out{opacity:0;transition:opacity .15s ease}
+  body.lp-out{opacity:0}
   @media (prefers-reduced-motion: reduce){body{animation:none}body.lp-out{transition:none}}
   a{text-decoration:none;color:inherit}
   .bc{font-family:'Barlow Condensed',sans-serif}
