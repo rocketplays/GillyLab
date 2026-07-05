@@ -848,25 +848,26 @@
       color: var(--accent);
     }
     /* "Simulate" button in each fight row — jumps to the Fight Simulator with
-       both fighters pre-loaded. Styled like .fight-info-toggle but with an
-       always-on accent tint so it reads as an inviting action. */
+       both fighters pre-loaded. Styled identically to .fight-info-toggle. */
     .fight-sim-btn {
-      background: rgba(0, 230, 104, 0.1);
-      border: 1px solid var(--accent);
+      background: none;
+      border: 1px solid var(--border);
       border-radius: 4px;
-      color: var(--accent);
+      color: var(--muted);
       font-family: 'Barlow Condensed', sans-serif;
       font-size: 0.6rem;
-      font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
       padding: 0.2rem 0.4rem;
       cursor: pointer;
-      transition: background-color 0.15s;
+      transition: border-color 0.15s, color 0.15s;
       white-space: nowrap;
       margin-top: 0.15rem;
     }
-    .fight-sim-btn:hover { background: rgba(0, 230, 104, 0.2); }
+    .fight-sim-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
     /* Record Breakdown sits next to the fighter's record and is easy to miss
        against the muted .fight-info-toggle styling — give it its own
        always-on accent treatment (slightly larger + tinted) so it reads as
@@ -3172,6 +3173,7 @@
      PAGE: SIMULATOR
 ══════════════════════════════════════ -->
 <div class="page" id="page-projections">
+  <div class="back-btn" id="sim-back-btn" onclick="navigate('home')" style="display:none;">← Back to Events</div>
   <div class="page-header">
     <div class="page-header-title">Fight <span class="accent">Simulator</span></div>
     <div class="page-header-sub">Simulate any matchup using career stats &amp; fight history</div>
@@ -6512,6 +6514,11 @@
  // going home. Keyed by page id (e.g. 'home', 'projections', 'odds',
  // 'rankings'); label text mirrors each page's nav-tab name.
  let fighterReturnPage = 'home';
+ // True for exactly one navigate() call: set by simulateMatchup() (the per-fight
+ // "Simulate" buttons on the events page) so the simulator shows a "Back to
+ // Events" button. Consumed/reset on the next page switch so arriving at the
+ // simulator any other way (nav menu, etc.) doesn't show it.
+ let simEntryFromEvents = false;
  // Stack of previously viewed fighter profiles, so the back button can
  // return to the previous fighter when navigating fighter → fighter.
  let fighterStack = [];
@@ -6660,6 +6667,11 @@
  if (labelEl) labelEl.textContent = tab.textContent.trim();
  }
  }
+ // Show the simulator's "Back to Events" button only when we arrived via a
+ // per-fight Simulate button; hide it on every other page/entry.
+ const simBack = document.getElementById('sim-back-btn');
+ if (simBack) simBack.style.display = (page === 'projections' && simEntryFromEvents) ? 'inline-flex' : 'none';
+ simEntryFromEvents = false;
  };
 
  if (pageTransitionTimer) { clearTimeout(pageTransitionTimer); pageTransitionTimer = null; }
@@ -104582,6 +104594,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     const res = document.getElementById('simResults');
     if (res) res.style.display = 'none';
+    // Flag this navigation so the simulator shows its "Back to Events" button.
+    simEntryFromEvents = true;
     if (typeof navigate === 'function') navigate('projections');
     // navigate() runs a ~170ms fade transition before the simulator page
     // becomes active; run the simulation just after so the results render on
