@@ -630,7 +630,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
     <h2>Contact</h2>
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
   </div>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
 </body></html>`;
 
 export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
@@ -747,5 +747,5 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
     <p>As UFC bettors ourselves, we found it tedious — and sometimes downright difficult — to track down everything we needed to do our research. Stats, analytics, previous fight tape, historical results, accolades and belt ranks, odds: it all seemed to be scattered across a dozen corners of the internet.</p>
     <p>So we saw a gap in the market — a place to do all of your UFC research in one spot, plus tools built to help you become a smarter, more efficient bettor. That's why we built GillyLab.</p>
   </div>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
 </body></html>`;
