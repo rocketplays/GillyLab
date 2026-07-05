@@ -2475,17 +2475,20 @@
       display: block;
     }
   
-    footer {
-      background: var(--surface);
+    /* App footer — matches the landing page footer (brand + links + disclaimer) */
+    footer.site-footer {
+      max-width: 1040px;
+      margin: 3rem auto 0;
+      padding: 26px 24px 48px;
       border-top: 1px solid var(--border);
-      padding: 0.6rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      flex-wrap: wrap;
+      text-align: center;
     }
-    .footer-links { display: flex; gap: 0.5rem; align-items: center; }
+    .foot-brand { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; letter-spacing: 0.15em; font-size: 14px; margin-bottom: 12px; color: var(--text); }
+    .foot-brand .a { color: var(--accent); }
+    .foot-links { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+    .foot-links a { color: rgba(255,255,255,0.6); font-size: 13px; text-decoration: none; }
+    .foot-links a:hover { color: #fff; }
+    .foot-copy { color: rgba(255,255,255,0.32); font-size: 11.5px; line-height: 1.6; max-width: 660px; margin: 0 auto; }
     .footer-link-btn {
       background: transparent;
       border: 1px solid var(--border);
@@ -3207,14 +3210,14 @@
   </div>
 </div>
 
-<footer>
-  <div class="footer-logo"></div>
-  <div class="footer-text">Data updated daily · For informational and entertainment purposes only</div>
-  <div class="footer-links">
-    <button class="footer-link-btn" onclick="openModal('contact')">Contact</button>
-    <button class="footer-link-btn" onclick="openModal('tos')">Terms of Service</button>
-    <button class="footer-link-btn" onclick="openModal('privacy')">Privacy Policy</button>
-  </div>
+<footer class="site-footer">
+  <div class="foot-brand">GILLY<span class="a">LAB</span></div>
+  <nav class="foot-links">
+    <a href="/terms">Terms of Service</a>
+    <a href="/privacy">Privacy Policy</a>
+    <a href="/contact">Contact</a>
+  </nav>
+  <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
 </footer>
 
 <!-- MODAL OVERLAY -->
