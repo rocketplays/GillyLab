@@ -445,6 +445,10 @@
       position: absolute;
       top: 1.5rem;
       right: 2rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
       background: none;
       border: 1px solid var(--border);
       color: var(--muted);
@@ -2369,7 +2373,8 @@
       
 
       /* ── Search overlay ── */
-      .search-overlay    { padding: 1rem; }
+      .search-overlay    { padding: 4rem 1rem 1rem; }  /* top room so the X sits above the field, not on it */
+      .search-close      { top: 1rem; right: 1rem; }
       .search-box        { padding: 0.75rem 1rem; font-size: 0.9rem; }
       .search-result     { padding: 0.75rem 1rem; font-size: 0.85rem; }
 
