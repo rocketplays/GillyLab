@@ -1214,6 +1214,10 @@
 
     .obh-fighter.obh-right .obh-name { text-align: right; }
 
+    .obh-name-link, .obh-avatar-link { cursor: pointer; transition: color 0.12s ease; }
+    .obh-name-link:hover { color: var(--accent); }
+    .obh-avatar-link:hover { border-color: var(--accent); }
+
     .obh-vs {
       font-family: 'Barlow Condensed', sans-serif;
       font-size: 0.75rem;
@@ -6509,7 +6513,7 @@
  const FIGHTER_BACK_LABELS = {
  home: '← Back to Card',
  projections: '← Back to Simulator',
- odds: '← Back to Odds',
+ odds: '← Back to Odds & Projections',
  rankings: '← Back to Rankings',
  'tape-study': '← Back to Tape Study',
  'active-roster': '← Back to Active Roster',
@@ -100164,10 +100168,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (f) openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
   }
 
+  // Odds board uses raw Odds-API fighter names (e.g. "King Green",
+  // "Beatriz Mesquita"), which don't always match the DB profile name.
+  // Resolve to the canonical name before opening so the profile actually
+  // loads (photo, stats, history). No slug from the odds feed, so name-only.
+  function openOddsFighter(apiName) {
+    const canon = (typeof resolveCanonicalFighterName === 'function')
+      ? resolveCanonicalFighterName(apiName, '') : apiName;
+    openFighterByName(canon);
+  }
+
   // Wire up proj-name clicks via event delegation
   document.addEventListener('click', function(e) {
     const el = e.target.closest('.proj-name');
     if (el) openFighterByName(el.textContent.trim());
+
+    // Odds board: fighter name or avatar → open that fighter's profile.
+    const obhEl = e.target.closest('.obh-name-link, .obh-avatar-link');
+    if (obhEl && obhEl.dataset.fighter) openOddsFighter(obhEl.dataset.fighter);
 
     const fhEl = e.target.closest('.fh-opponent');
     if (fhEl) {
@@ -101394,13 +101412,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const f1 = f.home_team, f2 = f.away_team;
       const header = `<div class="odds-board-header">
         <div class="obh-fighter">
-          <div class="proj-avatar" data-fighter="${f1}">${oddsAvatarInitials(f1)}</div>
-          <div class="obh-name">${f1}</div>
+          <div class="proj-avatar obh-avatar-link" data-fighter="${f1}">${oddsAvatarInitials(f1)}</div>
+          <div class="obh-name obh-name-link" data-fighter="${f1}">${f1}</div>
         </div>
         <div class="obh-vs">vs</div>
         <div class="obh-fighter obh-right">
-          <div class="obh-name">${f2}</div>
-          <div class="proj-avatar" data-fighter="${f2}">${oddsAvatarInitials(f2)}</div>
+          <div class="obh-name obh-name-link" data-fighter="${f2}">${f2}</div>
+          <div class="proj-avatar obh-avatar-link" data-fighter="${f2}">${oddsAvatarInitials(f2)}</div>
         </div>
       </div>`;
       const mlId     = `api-f${i}-ml`;
