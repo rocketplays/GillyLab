@@ -100985,6 +100985,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 550, r2: 450, r3: 500, r4: 750,  r5: 1100 }, f2: { r1: 550, r2: 1200, r3: 1800, r4: 2500, r5: 4000 } },
       },
     },
+    // UFC 329 — Sandhagen vs Bautista (3 rounds; fightodds.io: DraftKings + FanDuel
+    // were the only books with prop lines). f1 = Bautista, f2 = Sandhagen.
+    'bautista|sandhagen': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 1600, sub: 900,  dec: 180 }, f2: { ko: 350, sub: 900,  dec: 175 } },
+        fanduel:    { f1: { ko: 1800, sub: 1100, dec: 190 }, f2: { ko: 380, sub: 1100, dec: 175 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 1200, r2: 1800, r3: 2500 }, f2: { r1: 500, r2: 800,  r3: 1200 } },
+        fanduel:    { f1: { r1: 1500, r2: 2200, r3: 3000 }, f2: { r1: 600, r2: 1000, r3: 1400 } },
+      },
+    },
+    // UFC 329 — Royval vs Kavanagh (3 rounds; DraftKings + FanDuel). f1 = Kavanagh, f2 = Royval.
+    'kavanagh|royval': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 210, sub: 1700, dec: 140 }, f2: { ko: 1300, sub: 650, dec: 370 } },
+        fanduel:    { f1: { ko: 240, sub: 2000, dec: 150 }, f2: { ko: 1400, sub: 700, dec: 390 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 450, r2: 650, r3: 950 },  f2: { r1: 900,  r2: 1300, r3: 1900 } },
+        fanduel:    { f1: { r1: 550, r2: 850, r3: 1100 }, f2: { r1: 1000, r2: 1500, r3: 2000 } },
+      },
+    },
+    // UFC 329 — Saint-Denis vs Pimblett (3 rounds; DraftKings + FanDuel + BetMGM).
+    // f1 = Pimblett, f2 = Saint-Denis.
+    'pimblett|saint-denis': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 450, sub: 600, dec: 400 }, f2: { ko: 300, sub: 300, dec: 400 } },
+        fanduel:    { f1: { ko: 500, sub: 700, dec: 440 }, f2: { ko: 320, sub: 340, dec: 440 } },
+        betmgm:     { f1: { ko: 450, sub: 550, dec: 400 }, f2: { ko: 300, sub: 300, dec: 400 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 550, r2: 850,  r3: 1100 }, f2: { r1: 275, r2: 550, r3: 850 } },
+        fanduel:    { f1: { r1: 650, r2: 1000, r3: 1300 }, f2: { r1: 320, r2: 600, r3: 900 } },
+        betmgm:     { f1: { r1: 550, r2: 850,  r3: 1100 }, f2: { r1: 275, r2: 550, r3: 850 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
