@@ -100966,7 +100966,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //       draftkings: { f1: { r1: 1200, r2: 700, r3: 350 }, f2: { r1: 800, r2: 600, r3: 400 } },
   //     },
   //   },
-  const MANUAL_PROP_ODDS = {};
+  const MANUAL_PROP_ODDS = {
+    // UFC 329 main event — McGregor vs Holloway 2 (5 rounds). Method + round props
+    // from fightodds.io (Bovada / DraftKings / FanDuel / BetMGM; BetOnline had no
+    // prop lines posted). f1 = Holloway, f2 = McGregor (alphabetical last name).
+    'holloway|mcgregor': {
+      rounds: 5,
+      method: {
+        bovada:     { f1: { ko: -120, sub: 1200, dec: 500 },  f2: { ko: 285, sub: 2800, dec: 1300 } },
+        draftkings: { f1: { ko: -120, sub: 1100, dec: 450 },  f2: { ko: 275, sub: 2500, dec: 1200 } },
+        fanduel:    { f1: { ko: -115, sub: 1300, dec: 600 },  f2: { ko: 290, sub: 2200, dec: 1100 } },
+        betmgm:     { f1: { ko: -125, sub: 1000, dec: 450 },  f2: { ko: 250, sub: 2500, dec: 1000 } },
+      },
+      roundProps: {
+        bovada:     { f1: { r1: 475, r2: 525, r3: 650, r4: 850,  r5: 1100 }, f2: { r1: 550, r2: 1000, r3: 1800, r4: 3300, r5: 3300 } },
+        draftkings: { f1: { r1: 550, r2: 450, r3: 500, r4: 750,  r5: 1100 }, f2: { r1: 550, r2: 1200, r3: 1800, r4: 2800, r5: 4500 } },
+        fanduel:    { f1: { r1: 500, r2: 600, r3: 700, r4: 750,  r5: 1100 }, f2: { r1: 550, r2: 1200, r3: 2200, r4: 3300, r5: 5000 } },
+        betmgm:     { f1: { r1: 550, r2: 450, r3: 500, r4: 750,  r5: 1100 }, f2: { r1: 550, r2: 1200, r3: 1800, r4: 2500, r5: 4000 } },
+      },
+    },
+  };
 
   function pairKey(n1, n2) {
     return [lastNameOf(n1).toLowerCase(), lastNameOf(n2).toLowerCase()].sort().join('|');
