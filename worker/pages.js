@@ -136,12 +136,14 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .btn-ghost:hover{color:#fff}
   /* Top-right nav dropdown menu (replaces the plain Log in link) */
   .nav-menu{position:relative}
-  .nav-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:rgba(255,255,255,.75);padding:9px 12px;border-radius:10px;background:transparent;border:0;cursor:pointer;font-family:inherit}
-  .nav-menu-btn:hover{color:#fff}
-  .nav-caret{font-size:10px;transition:transform .15s}
-  .nav-menu.open .nav-caret{transform:rotate(180deg)}
-  .nav-menu-list{position:absolute;right:0;top:calc(100% + 8px);min-width:176px;background:#141416;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;display:none;flex-direction:column;z-index:60;box-shadow:0 14px 34px rgba(0,0,0,.5)}
-  .nav-menu.open .nav-menu-list{display:flex}
+  .nav-menu-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px;border-radius:11px;background:transparent;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:border-color .15s,background-color .15s}
+  .nav-menu-btn:hover{border-color:#00e668;background:rgba(0,230,104,.09)}
+  .nav-menu-icon{display:block;stroke:rgba(255,255,255,.85);stroke-width:2.2;stroke-linecap:round;transition:stroke .15s}
+  .nav-menu-btn:hover .nav-menu-icon{stroke:#fff}
+  .nav-menu.open .nav-menu-btn{border-color:#00e668;background:rgba(0,230,104,.09)}
+  .nav-menu.open .nav-menu-icon{stroke:#00e668}
+  .nav-menu-list{position:absolute;right:0;top:calc(100% + 8px);min-width:176px;background:#141416;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;display:flex;flex-direction:column;z-index:60;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;transition:opacity .15s ease,transform .15s ease,visibility .15s ease}
+  .nav-menu.open .nav-menu-list{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
   .nav-menu-list a{display:block;padding:9px 12px;border-radius:8px;font-size:14px;color:rgba(255,255,255,.82);text-decoration:none;white-space:nowrap}
   .nav-menu-list a:hover{background:rgba(0,230,104,.12);color:#00e668}
   .hero{text-align:center;max-width:700px;margin:14px auto 0;padding-top:8px}
@@ -219,7 +221,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <div class="nav-cta">
       <div class="nav-menu" id="navMenu">
-        <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" onclick="glToggleNavMenu(event)">Menu <span class="nav-caret">&#9662;</span></button>
+        <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <div class="nav-menu-list" role="menu">
           <a role="menuitem" href="/signup">Create Account</a>
           <a role="menuitem" href="/login">Log In</a>
