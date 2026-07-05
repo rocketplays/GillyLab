@@ -101299,11 +101299,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const zeroY = yFor(0).toFixed(1);
     function lineFor(key, color, w) {
       const pts = [];
-      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key])]); });
+      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key]), d[key], d.date]); });
       if (pts.length < 2) return '';
       const poly = pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+      // Small per-day dots along the line...
+      const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="${color}" pointer-events="none"/>`).join('');
+      // ...with larger transparent hit targets that show the date + odds on
+      // hover (desktop) or tap (mobile).
+      const hits = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="9" fill="transparent" style="cursor:pointer;" data-date="${p[3]}" data-odds="${p[2]}" data-color="${color}" onmouseenter="showOddsTooltip(this)" onmouseleave="hideOddsTooltip()" ontouchstart="event.stopPropagation();showOddsTooltip(this)"/>`).join('');
       const last = pts[pts.length - 1];
-      return `<polyline points="${poly}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.6" fill="${color}"/>`;
+      return `<polyline points="${poly}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/>${dots}<circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.6" fill="${color}"/>${hits}`;
     }
     return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">
       <line x1="${P}" y1="${zeroY}" x2="${W - P}" y2="${zeroY}" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
