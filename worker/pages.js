@@ -134,6 +134,16 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .btn-primary:hover{background:#12f277}
   .btn-ghost{font-size:14px;color:rgba(255,255,255,.75);padding:9px 12px;border-radius:10px}
   .btn-ghost:hover{color:#fff}
+  /* Top-right nav dropdown menu (replaces the plain Log in link) */
+  .nav-menu{position:relative}
+  .nav-menu-btn{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:rgba(255,255,255,.75);padding:9px 12px;border-radius:10px;background:transparent;border:0;cursor:pointer;font-family:inherit}
+  .nav-menu-btn:hover{color:#fff}
+  .nav-caret{font-size:10px;transition:transform .15s}
+  .nav-menu.open .nav-caret{transform:rotate(180deg)}
+  .nav-menu-list{position:absolute;right:0;top:calc(100% + 8px);min-width:176px;background:#141416;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;display:none;flex-direction:column;z-index:60;box-shadow:0 14px 34px rgba(0,0,0,.5)}
+  .nav-menu.open .nav-menu-list{display:flex}
+  .nav-menu-list a{display:block;padding:9px 12px;border-radius:8px;font-size:14px;color:rgba(255,255,255,.82);text-decoration:none;white-space:nowrap}
+  .nav-menu-list a:hover{background:rgba(0,230,104,.12);color:#00e668}
   .hero{text-align:center;max-width:700px;margin:14px auto 0;padding-top:8px}
   .badge{display:inline-block;font-size:11px;letter-spacing:.08em;color:var(--accent);background:rgba(0,230,104,.1);border:1px solid rgba(0,230,104,.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
   h1.hh{font-size:46px;line-height:1.05;font-weight:850;letter-spacing:-.015em;margin:0}
@@ -202,17 +212,28 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     h1.hh{font-size:34px}
     .egrid-cards{grid-template-columns:repeat(2,1fr)}
     .stats{gap:24px}
-    .nav-cta .btn-primary{display:none}
   }
 </style></head><body>
 <div class="lp">
   <nav class="lpnav">
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <div class="nav-cta">
-      <a class="btn-ghost" href="/login">Log in</a>
-      <a class="btn-primary" href="/signup">Get access</a>
+      <div class="nav-menu" id="navMenu">
+        <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" onclick="glToggleNavMenu(event)">Menu <span class="nav-caret">&#9662;</span></button>
+        <div class="nav-menu-list" role="menu">
+          <a role="menuitem" href="/signup">Create Account</a>
+          <a role="menuitem" href="/login">Log In</a>
+          <a role="menuitem" href="/about">About Us</a>
+          <a role="menuitem" href="/contact">Contact Us</a>
+        </div>
+      </div>
     </div>
   </nav>
+  <script>
+    window.glToggleNavMenu=function(e){e.stopPropagation();var m=document.getElementById('navMenu');var b=document.getElementById('navMenuBtn');var open=m.classList.toggle('open');if(b)b.setAttribute('aria-expanded',open?'true':'false');};
+    document.addEventListener('click',function(e){var m=document.getElementById('navMenu');if(m&&!m.contains(e.target))m.classList.remove('open');});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('navMenu');if(m)m.classList.remove('open');}});
+  </script>
 
   <header class="hero">
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
@@ -268,10 +289,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <footer class="site-footer">
     <div class="foot-brand">GILLY<span class="a">LAB</span></div>
     <nav class="foot-links">
-      <a href="/about">About Us</a>
       <a href="/terms">Terms of Service</a>
       <a href="/privacy">Privacy Policy</a>
-      <a href="/contact">Contact</a>
     </nav>
     <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>
