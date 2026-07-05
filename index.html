@@ -847,6 +847,26 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* "Simulate" button in each fight row — jumps to the Fight Simulator with
+       both fighters pre-loaded. Styled like .fight-info-toggle but with an
+       always-on accent tint so it reads as an inviting action. */
+    .fight-sim-btn {
+      background: rgba(0, 230, 104, 0.1);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      color: var(--accent);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 600;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.4rem;
+      cursor: pointer;
+      transition: background-color 0.15s;
+      white-space: nowrap;
+      margin-top: 0.15rem;
+    }
+    .fight-sim-btn:hover { background: rgba(0, 230, 104, 0.2); }
     /* Record Breakdown sits next to the fighter's record and is easy to miss
        against the muted .fight-info-toggle styling — give it its own
        always-on accent treatment (slightly larger + tinted) so it reads as
@@ -2369,6 +2389,7 @@
       .fight-weight      { font-size: 0.47rem; letter-spacing: 0; white-space: normal; line-height: 1.2; }
       .fight-rounds      { font-size: 0.5rem; }
       .fight-info-toggle { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
+      .fight-sim-btn { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
       .fd-collapse-inner { padding: 0.85rem 0.85rem 0.6rem; }
       .fd-cols           { grid-template-columns: 1fr; gap: 0.85rem; }
       .fd-divider        { display: none; }
@@ -100486,6 +100507,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
                 ((f.resRound || f.resTime) ? '<div class="gl-result-time">' + (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' · ' : '') + (f.resTime ? escHtmlAttr(f.resTime) : '') + '</div>' : '')
               : '<div class="fight-rounds">' + rounds + '</div>') +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
+            (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate</button>') +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -101950,6 +101972,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
           '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
+          '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -102183,6 +102206,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
     'beatriz mesquita': 'Bia Mesquita',
+    // Odds feed drops the generational suffix our DB keeps.
+    'kai kamaka': 'Kai Kamaka III',
     // The Odds API (no fighter slug, so these only resolve via name lookup)
     // spells these two differently than our DB / event.json profile names.
     'abusupyian magomedov': 'Abus Magomedov',
@@ -104534,6 +104559,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btn3) { btn3.classList.toggle('active', rounds === 3); btn3.setAttribute('aria-checked', rounds === 3 ? 'true' : 'false'); }
     if (btn5) { btn5.classList.toggle('active', rounds === 5); btn5.setAttribute('aria-checked', rounds === 5 ? 'true' : 'false'); }
   }
+
+  // Jump to the Fight Simulator with a specific matchup pre-loaded and run it.
+  // Wired to the per-fight "Simulate" buttons on the events page (featured card
+  // + upcoming carousel). Sets both inputs' value + dataset.selected (the same
+  // fields simBuildAutocomplete's selectName sets) so runFightSimulator picks
+  // the fighters up directly, sets the round count to match the actual bout
+  // (5 rounds for main events / title fights, 3 otherwise), navigates to the
+  // simulator page, then auto-runs the simulation.
+  window.simulateMatchup = function(name1, name2, rounds) {
+    const inputA = document.getElementById('simFighterA');
+    const inputB = document.getElementById('simFighterB');
+    if (inputA) { inputA.value = name1; inputA.dataset.selected = name1; }
+    if (inputB) { inputB.value = name2; inputB.dataset.selected = name2; }
+    // Match the simulator's round toggle to the scheduled bout length.
+    if (typeof simSetRounds === 'function') simSetRounds(rounds === 5 ? 5 : 3);
+    // Clear any stale results/errors from a previous run so the pre-loaded
+    // matchup starts fresh.
+    ['simError', 'simWarning'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) { el.textContent = ''; el.style.display = 'none'; }
+    });
+    const res = document.getElementById('simResults');
+    if (res) res.style.display = 'none';
+    if (typeof navigate === 'function') navigate('projections');
+    // navigate() runs a ~170ms fade transition before the simulator page
+    // becomes active; run the simulation just after so the results render on
+    // the now-visible page.
+    setTimeout(function() { if (typeof runFightSimulator === 'function') runFightSimulator(); }, 200);
+  };
 
   function runFightSimulator() {
     const errBox = document.getElementById('simError');
