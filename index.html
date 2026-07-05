@@ -6514,11 +6514,12 @@
  // going home. Keyed by page id (e.g. 'home', 'projections', 'odds',
  // 'rankings'); label text mirrors each page's nav-tab name.
  let fighterReturnPage = 'home';
- // True for exactly one navigate() call: set by simulateMatchup() (the per-fight
- // "Simulate" buttons on the events page) so the simulator shows a "Back to
- // Events" button. Consumed/reset on the next page switch so arriving at the
- // simulator any other way (nav menu, etc.) doesn't show it.
- let simEntryFromEvents = false;
+ // Whether the simulator should show its "Back to Events" button. Set by
+ // simulateMatchup() (the per-fight "Simulate" buttons on the events page) and
+ // kept true for the whole simulator visit — including dipping into a fighter
+ // profile and returning — so the button doesn't vanish on the way back. It's
+ // cleared only when the user navigates somewhere else entirely (see navigate).
+ let simShowBackToEvents = false;
  // Stack of previously viewed fighter profiles, so the back button can
  // return to the previous fighter when navigating fighter → fighter.
  let fighterStack = [];
@@ -6667,11 +6668,13 @@
  if (labelEl) labelEl.textContent = tab.textContent.trim();
  }
  }
- // Show the simulator's "Back to Events" button only when we arrived via a
- // per-fight Simulate button; hide it on every other page/entry.
+ // "Back to Events" persists across the whole simulator visit, including
+ // dipping into a fighter profile and returning. Clear it only when the user
+ // navigates somewhere else entirely (not the fighter profile, not the
+ // simulator itself), so it doesn't linger once they've left the context.
+ if (page !== 'projections' && page !== 'fighter') simShowBackToEvents = false;
  const simBack = document.getElementById('sim-back-btn');
- if (simBack) simBack.style.display = (page === 'projections' && simEntryFromEvents) ? 'inline-flex' : 'none';
- simEntryFromEvents = false;
+ if (simBack) simBack.style.display = (page === 'projections' && simShowBackToEvents) ? 'inline-flex' : 'none';
  };
 
  if (pageTransitionTimer) { clearTimeout(pageTransitionTimer); pageTransitionTimer = null; }
@@ -104349,6 +104352,117 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return losses > 0 ? finishLosses / losses : 0.5; // default 0.5 when no loss history
   }
 
+  // Sample size at which the opponent's how-they-lose profile reaches ~half its
+  // full weight. Lower = the opponent's record dominates sooner; higher = it
+  // takes more finishes before the opponent's tendency overrides the winner's
+  // own style. FINISH_CONF_K governs the finish-vs-decision split; TYPE_CONF_K
+  // the KO-vs-submission split within finishes.
+  const SIM_FINISH_CONF_K = 6;
+  const SIM_TYPE_CONF_K = 3;
+  // Caps so the winner's own style is never entirely erased, even against an
+  // opponent with a huge finished-a-lot sample.
+  const SIM_OPP_FIN_WEIGHT_CAP = 0.65;
+  const SIM_OPP_TYPE_WEIGHT_CAP = 0.60;
+  // Durability credit: for hard-to-finish opponents, each career fight they
+  // were NOT finished in adds a fraction of a loss-data-point of confidence to
+  // the "won't be finished" signal, capped so the effect stays moderate. This
+  // lets a long clean record (e.g. Merab Dvalishvili — finished ~never across a
+  // deep career) read as genuinely finish-resistant instead of hinging on his
+  // handful of losses alone.
+  const SIM_DURABILITY_PER_FIGHT = 0.25;
+  const SIM_DURABILITY_BONUS_CAP = 4;
+
+  // Build the {KO/TKO, Submission, Decision} probability distribution for a win
+  // by `winnerName` over `loserName`. Starts from the winner's own weighted
+  // method pool (simMethodPool), then blends toward how the loser actually gets
+  // beaten. The blend weight scales with the loser's loss sample size, so:
+  //   • a lone KO loss (e.g. Lone'er Kavanagh, 1 defeat) barely nudges it;
+  //   • a heavily-finished fighter (e.g. Terrance McKinney / Matt Schnell)
+  //     pulls the winner's finish share up strongly and decision share down.
+  // A durable opponent whose losses are all decisions pulls the other way
+  // (more decisions, fewer finishes). Applies in both 3- and 5-round fights;
+  // 5-rounders get a small extra finish bump for the two additional rounds.
+  function simMethodDistribution(winnerName, loserName, rounds) {
+    // Winner's own baseline, from their weighted win/method pool.
+    const pool = simMethodPool(winnerName);
+    let ko = 0, sub = 0, dec = 0;
+    pool.forEach(p => {
+      if (p.method === 'KO/TKO') ko++;
+      else if (p.method === 'Submission') sub++;
+      else dec++;
+    });
+    const tot = (ko + sub + dec) || 1;
+    let pKO = ko / tot, pSub = sub / tot, pDec = dec / tot;
+    let selfFin = pKO + pSub;
+    const selfKOshare = selfFin > 0 ? pKO / selfFin : 0.5;
+
+    // Loser's how-they-lose profile, counted by method.
+    const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[loserName]) || [];
+    let oppKO = 0, oppSub = 0, oppDec = 0, oppDecisive = 0;
+    hist.forEach(f => {
+      if (!f.method) return;
+      if (f.result === 'W' || f.result === 'L') oppDecisive++; // career decisive fights
+      if (f.result !== 'L') return;
+      const m = f.method.toUpperCase();
+      if (m.includes('KO') || m.includes('TKO')) oppKO++;
+      else if (m.includes('SUB')) oppSub++;
+      else oppDec++; // decision / other non-finish loss → "goes the distance"
+    });
+    const oppFin = oppKO + oppSub;
+    const oppLosses = oppFin + oppDec;
+
+    if (oppLosses > 0) {
+      const oppFinFrac = oppFin / oppLosses;
+      // Confidence in the finish-vs-decision signal grows with total losses.
+      // For durable opponents (finishes are the minority of their losses), add
+      // moderate extra confidence for the many career fights they went without
+      // being finished — so a long clean record pulls a finisher's finish share
+      // down a bit more, symmetric in spirit with how a heavily-finished record
+      // pulls it up. Only nudges the durable direction; finish-prone opponents
+      // are unaffected.
+      let effLosses = oppLosses;
+      if (oppFinFrac < 0.5) {
+        const unFinished = Math.max(0, oppDecisive - oppFin);
+        effLosses += Math.min(SIM_DURABILITY_BONUS_CAP, unFinished * SIM_DURABILITY_PER_FIGHT);
+      }
+      const wFin = Math.min(SIM_OPP_FIN_WEIGHT_CAP, effLosses / (effLosses + SIM_FINISH_CONF_K));
+      selfFin = selfFin * (1 - wFin) + oppFinFrac * wFin;
+      // Re-tilt KO vs submission within finishes toward whatever has actually
+      // stopped this opponent, scaled by the finish-loss sub-sample.
+      let koShare = selfKOshare;
+      if (oppFin > 0) {
+        const wType = Math.min(SIM_OPP_TYPE_WEIGHT_CAP, oppFin / (oppFin + SIM_TYPE_CONF_K));
+        koShare = selfKOshare * (1 - wType) + (oppKO / oppFin) * wType;
+      }
+      pKO = selfFin * koShare;
+      pSub = selfFin * (1 - koShare);
+      pDec = 1 - selfFin;
+    }
+
+    // Two extra rounds in a 5-round fight = a bit more finish opportunity.
+    // Shift a slice of the Decision share into finishes, keeping the KO:Sub
+    // ratio intact. Opponent finishability is already folded in above, so this
+    // is a modest, matchup-independent bump.
+    if (rounds === 5 && pDec > 0) {
+      const shift = pDec * 0.15;
+      const finTot = (pKO + pSub) || 1;
+      pKO += shift * (pKO / finTot);
+      pSub += shift * (pSub / finTot);
+      pDec -= shift;
+    }
+
+    return { 'KO/TKO': pKO, 'Submission': pSub, 'Decision': pDec };
+  }
+
+  // Draw a single method from a {KO/TKO, Submission, Decision} distribution
+  // (probabilities sum to 1).
+  function simPickMethod(dist) {
+    const r = Math.random();
+    if (r < dist['KO/TKO']) return 'KO/TKO';
+    if (r < dist['KO/TKO'] + dist['Submission']) return 'Submission';
+    return 'Decision';
+  }
+
   function simRunTrials(nameA, nameB, n, rounds) {
     const probA = simWinProbability(nameA, nameB, rounds);
     // Displayed power score is opponent-adjusted: subtract each fighter's
@@ -104356,55 +104470,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // standing in THIS matchup, not just their raw career-stat total.
     const powerA = simPowerScore(getSimProfile(nameA, rounds)) - simUnprovenPenalty(nameA, nameB);
     const powerB = simPowerScore(getSimProfile(nameB, rounds)) - simUnprovenPenalty(nameB, nameA);
-    const poolA = simMethodPool(nameA);
-    const poolB = simMethodPool(nameB);
-
-    // In 5-round fights there are two extra rounds where a finish can land.
-    // A "would-be decision" (fighter wins, but the pool sample said Decision)
-    // has some chance of flipping to a finish — scaled by the WINNER's
-    // finishing ability and the LOSER's tendency to get stopped. The factor
-    // (0.25) is deliberately conservative: late rounds have lower per-round
-    // finish rates than early rounds, and the shift should be "relatively
-    // slight" rather than dramatic. Matchup-specific: a big finisher
-    // against a finish-vulnerable opponent in 5 rounds gets meaningfully
-    // more finish probability than two decision-heavy fighters do.
-    const finFracA = poolA.filter(p => p.method !== 'Decision').length / poolA.length;
-    const finFracB = poolB.filter(p => p.method !== 'Decision').length / poolB.length;
-    const lossFinFracA = simLossFinishFraction(nameA);
-    const lossFinFracB = simLossFinishFraction(nameB);
-    const extraRoundFactor = rounds === 5 ? 0.25 : 0;
-    // extraFinChanceA: probability a sampled Decision win for A becomes a
-    // finish instead, due to the extra 2 rounds. Scales by how often A
-    // finishes (finFracA) and a modest upward nudge from how finish-prone
-    // B is as a victim (lossFinFracB).
-    const extraFinChanceA = finFracA * (0.85 + lossFinFracB * 0.3) * extraRoundFactor;
-    const extraFinChanceB = finFracB * (0.85 + lossFinFracA * 0.3) * extraRoundFactor;
-    // Finish-only sub-pools for when a decision converts.
-    const finishPoolA = poolA.filter(p => p.method !== 'Decision');
-    const finishPoolB = poolB.filter(p => p.method !== 'Decision');
+    // Method of victory is drawn from a blend of how the WINNER tends to win
+    // and how the LOSER tends to get beaten (opponent influence scaled by their
+    // loss sample size). See simMethodDistribution.
+    const distA = simMethodDistribution(nameA, nameB, rounds);
+    const distB = simMethodDistribution(nameB, nameA, rounds);
 
     let winsA = 0, winsB = 0;
     const methodsA = { 'KO/TKO': 0, 'Submission': 0, 'Decision': 0 };
     const methodsB = { 'KO/TKO': 0, 'Submission': 0, 'Decision': 0 };
 
     for (let i = 0; i < n; i++) {
-      if (Math.random() < probA) {
-        winsA++;
-        let pick = poolA[Math.floor(Math.random() * poolA.length)];
-        if (pick.method === 'Decision' && extraFinChanceA > 0
-            && finishPoolA.length > 0 && Math.random() < extraFinChanceA) {
-          pick = finishPoolA[Math.floor(Math.random() * finishPoolA.length)];
-        }
-        methodsA[pick.method]++;
-      } else {
-        winsB++;
-        let pick = poolB[Math.floor(Math.random() * poolB.length)];
-        if (pick.method === 'Decision' && extraFinChanceB > 0
-            && finishPoolB.length > 0 && Math.random() < extraFinChanceB) {
-          pick = finishPoolB[Math.floor(Math.random() * finishPoolB.length)];
-        }
-        methodsB[pick.method]++;
-      }
+      if (Math.random() < probA) { winsA++; methodsA[simPickMethod(distA)]++; }
+      else { winsB++; methodsB[simPickMethod(distB)]++; }
     }
     return { probA, powerA, powerB, winsA, winsB, methodsA, methodsB, n };
   }
@@ -104594,8 +104672,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     const res = document.getElementById('simResults');
     if (res) res.style.display = 'none';
-    // Flag this navigation so the simulator shows its "Back to Events" button.
-    simEntryFromEvents = true;
+    // Flag this navigation so the simulator shows its "Back to Events" button
+    // (persists until the user leaves the simulator context).
+    simShowBackToEvents = true;
     if (typeof navigate === 'function') navigate('projections');
     // navigate() runs a ~170ms fade transition before the simulator page
     // becomes active; run the simulation just after so the results render on
