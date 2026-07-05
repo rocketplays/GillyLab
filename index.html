@@ -1184,6 +1184,74 @@
       margin-bottom: 1.25rem;
     }
 
+    /* Stacked odds board — photo header + labeled sections (no tabs) */
+    .odds-board-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .obh-fighter {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .obh-fighter.obh-right { justify-content: flex-end; }
+
+    .obh-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      line-height: 1.05;
+    }
+
+    .obh-fighter.obh-right .obh-name { text-align: right; }
+
+    .obh-vs {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .odds-board-header .proj-avatar {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.03em;
+      color: var(--muted);
+    }
+
+    .odds-section { margin-bottom: 1.75rem; }
+    .odds-section:last-child { margin-bottom: 0; }
+
+    .odds-section-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 700;
+      padding-bottom: 0.55rem;
+      margin-bottom: 0.85rem;
+      border-bottom: 1px solid var(--border);
+    }
+
     table.odds-table {
       width: 100%;
       border-collapse: collapse;
@@ -2356,6 +2424,11 @@
       .odds-table td     { padding: 0.65rem 0.75rem; font-size: 0.82rem; }
       .book-name         { font-size: 0.7rem; }
       .odds-value        { font-size: 0.9rem; }
+      .odds-board-header { gap: 0.6rem; margin-bottom: 1.25rem; }
+      .obh-fighter       { gap: 0.5rem; }
+      .obh-name          { font-size: 0.92rem; }
+      .odds-board-header .proj-avatar { width: 40px; height: 40px; min-width: 40px; font-size: 0.85rem; }
+      .odds-section-label { font-size: 0.62rem; letter-spacing: 0.16em; }
 
       /* ── Rankings page ── */
       .rankings-page     { padding: 1rem; }
@@ -100023,6 +100096,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // Same local-photo-first / PHOTO_MAP-fallback approach as
+  // loadProjectionPhotos(), but for the two avatars in each stacked odds
+  // board's header (#odds-dynamic-content .proj-avatar[data-fighter]). Each
+  // board keeps its initials until a real photo loads. Scoped to the odds
+  // container so it doesn't touch the projections/rankings avatars.
+  function loadOddsBoardPhotos() {
+    document.querySelectorAll('#odds-dynamic-content .proj-avatar[data-fighter]').forEach(cell => {
+      const name = cell.getAttribute('data-fighter');
+      if (!name || cell.querySelector('img')) return;
+      const localUrl = './photos/thumb/' + nameToSlug(name) + '.png';
+      const mapUrl   = PHOTO_MAP[name];
+      const img = document.createElement('img');
+      img.alt = name;
+      img.onload = () => {
+        cell.innerHTML = '';
+        cell.appendChild(img);
+      };
+      img.onerror = () => {
+        if (mapUrl && img.src.indexOf('./photos') !== -1) {
+          img.src = mapUrl; // fall back to PHOTO_MAP
+        }
+      };
+      img.src = localUrl;
+    });
+  }
+
+  // Same local-photo-first / PHOTO_MAP-fallback approach as
   // loadHomePagePhotos() / loadProjectionPhotos(), but for the small
   // circular avatars rendered next to each fighter's name on the
   // Rankings page (.rank-avatar). The name is carried on a data-fighter
@@ -101180,45 +101279,47 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Compact inline sparkline tracing each fighter's consensus moneyline
   // across the tracked days. Two polylines (green = home/f1, orange =
   // away/f2) on a shared min/max-scaled axis, with open/close date labels.
+  // Landing-page-styled moneyline sparkline: dashed "even" (zero) reference
+  // line, accent-green line for f1, gray for f2, end dots. Y-scale always
+  // spans zero so the even line stays meaningful.
   function buildLineMovementSVG(days) {
-    const W = 480, H = 130, padL = 10, padR = 10, padT = 14, padB = 22;
-    const innerW = W - padL - padR, innerH = H - padT - padB;
+    const W = 520, H = 130, P = 10;
     const n = days.length;
-    const xFor = i => (n > 1 ? padL + (i / (n - 1)) * innerW : padL + innerW / 2);
+    const xFor = i => (n > 1 ? P + (W - 2 * P) * i / (n - 1) : W / 2);
     const vals = [];
     days.forEach(d => {
       if (typeof d.price1 === 'number') vals.push(d.price1);
       if (typeof d.price2 === 'number') vals.push(d.price2);
     });
     if (!vals.length) return '';
-    const min = Math.min(...vals), max = Math.max(...vals);
-    const span = (max - min) || 1;
-    const yFor = v => padT + innerH - ((v - min) / span) * innerH;
-    function lineFor(key, color) {
+    let lo = Math.min(...vals, 0), hi = Math.max(...vals, 0);
+    const pad = (hi - lo) * 0.08 || 10;
+    lo -= pad; hi += pad;
+    const yFor = v => H - P - ((v - lo) / (hi - lo)) * (H - 2 * P);
+    const zeroY = yFor(0).toFixed(1);
+    function lineFor(key, color, w) {
       const pts = [];
-      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key]), d[key], d.date]); });
+      days.forEach((d, i) => { if (typeof d[key] === 'number') pts.push([xFor(i), yFor(d[key])]); });
       if (pts.length < 2) return '';
-      const path = 'M' + pts.map(p => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
-      const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3" fill="${color}" pointer-events="none" />`).join('');
-      const hits = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="8" fill="transparent" style="cursor:pointer;" data-date="${p[3]}" data-odds="${p[2]}" data-color="${color}" onmouseenter="showOddsTooltip(this)" onmouseleave="hideOddsTooltip()" ontouchstart="event.stopPropagation();showOddsTooltip(this)" />`).join('');
-      return `<path d="${path}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />${dots}${hits}`;
+      const poly = pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+      const last = pts[pts.length - 1];
+      return `<polyline points="${poly}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linejoin="round" stroke-linecap="round"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="3.6" fill="${color}"/>`;
     }
-    const firstDate = days[0] ? days[0].date : '';
-    const lastDate  = days[n - 1] ? days[n - 1].date : '';
-    return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block;" preserveAspectRatio="xMidYMid meet">
-      <line x1="${padL}" y1="${(padT + innerH).toFixed(1)}" x2="${(padL + innerW).toFixed(1)}" y2="${(padT + innerH).toFixed(1)}" stroke="rgba(255,255,255,0.12)" stroke-width="1" />
-      ${lineFor('price1', '#00e668')}
-      ${lineFor('price2', '#ff9500')}
-      <text x="${padL}" y="${H - 6}" font-size="9" fill="rgba(255,255,255,0.4)" font-family="monospace">${firstDate}</text>
-      <text x="${(padL + innerW).toFixed(1)}" y="${H - 6}" font-size="9" fill="rgba(255,255,255,0.4)" font-family="monospace" text-anchor="end">${lastDate}</text>
+    return `<svg viewBox="0 0 ${W} ${H}" width="100%" style="display:block;">
+      <line x1="${P}" y1="${zeroY}" x2="${W - P}" y2="${zeroY}" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="3 4"/>
+      <text x="${P}" y="${zeroY - 3}" fill="rgba(255,255,255,0.3)" font-size="9" style="text-transform:uppercase;letter-spacing:0.05em">even</text>
+      ${lineFor('price2', '#8a8a92', 2)}
+      ${lineFor('price1', '#00e668', 2.6)}
     </svg>`;
   }
 
-  // "Opened at X, now at Y" + sparkline trend for the matchup's consensus
-  // moneyline, sourced from data/odds-history.json (built by
+  // "Opened at X, now at Y" moneyline trend for the matchup's consensus
+  // line, sourced from data/odds-history.json (built by
   // scripts/update-odds-history.js, run as part of the twice-daily odds
   // refresh). historyEntry.f1/.f2 may be in a different home/away order
-  // than `fight` — detect and realign before plotting.
+  // than `fight` — detect and realign before plotting. Styled to match the
+  // landing-page carousel's line-movement slide: sparkline, open→now legend,
+  // and a plain-language blurb describing which way the money moved.
   function buildLineMovementHTML(fight, historyEntry) {
     const f1 = fight.home_team, f2 = fight.away_team;
     const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
@@ -101233,27 +101334,48 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const firstB = days.find(d => typeof d.price2 === 'number');
     const lastA  = days.slice().reverse().find(d => typeof d.price1 === 'number');
     const lastB  = days.slice().reverse().find(d => typeof d.price2 === 'number');
-    const summaryRow = (label, key, open, close) => `<div>
-        <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.3rem;">${label}</div>
-        <div style="font-size:0.92rem;display:flex;align-items:center;gap:0.4rem;">
-          <span>Opened ${open ? fmtOdds(open[key]) : 'N/A'}</span>
-          <span style="color:var(--muted);">→</span>
-          <span>Now ${close ? fmtOdds(close[key]) : 'N/A'}</span>
-        </div>
-      </div>`;
+    const openDate = days[0] ? days[0].date : '';
+    // Odds string for the legend (open → now), keeping the +/- sign.
+    const od = v => (typeof v !== 'number') ? 'N/A' : (v > 0 ? '+' + v : '' + v);
+    // American odds → implied win probability, used only to describe which
+    // direction the market moved for the blurb.
+    const prob = v => (typeof v !== 'number') ? null : (v < 0 ? (-v) / (-v + 100) : 100 / (v + 100));
+    const legend = (dot, name, open, close, key) => `<span style="white-space:nowrap;">
+        <span style="color:${dot};">●</span> ${name}
+        <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.03em;">${od(open ? open[key] : null)} → ${od(close ? close[key] : null)}</span>
+      </span>`;
+    let blurb;
+    const po = prob(firstA ? firstA.price1 : null), pc = prob(lastA ? lastA.price1 : null);
+    if (po === null || pc === null) {
+      blurb = `Tracked across ${days.length} days of consensus moneyline movement.`;
+    } else {
+      const delta = pc - po;
+      let move;
+      if (Math.abs(delta) < 0.02) move = `the line has held steady`;
+      else if (delta > 0)         move = `money has moved toward ${last1}, shortening ${last1}'s price`;
+      else                        move = `money has moved toward ${last2}, shortening ${last2}'s price`;
+      blurb = `Tracked across ${days.length} days: ${move}.`;
+    }
     return `
-      <div style="display:flex;flex-wrap:wrap;gap:1.75rem;margin-bottom:1.1rem;">
-        ${summaryRow(last1, 'price1', firstA, lastA)}
-        ${summaryRow(last2, 'price2', firstB, lastB)}
+      ${buildLineMovementSVG(days)}
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:0.06em;margin-top:1px;">
+        <span>${openDate} · open</span><span>now</span>
       </div>
-      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:1rem;">
-        ${buildLineMovementSVG(days)}
-        <div style="display:flex;gap:1.25rem;margin-top:0.6rem;font-size:0.72rem;color:var(--muted);">
-          <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#00e668;margin-right:0.4rem;vertical-align:middle;"></span>${last1}</span>
-          <span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#ff9500;margin-right:0.4rem;vertical-align:middle;"></span>${last2}</span>
-        </div>
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;font-size:0.78rem;margin-top:0.55rem;">
+        ${legend('#00e668', last1, firstA, lastA, 'price1')}
+        ${legend('#8a8a92', last2, firstB, lastB, 'price2')}
       </div>
-      <div style="margin-top:0.65rem;font-size:0.72rem;color:var(--muted);">${days.length} day${days.length === 1 ? '' : 's'} tracked · consensus moneyline average across sportsbooks</div>`;
+      <div style="font-size:0.75rem;color:var(--muted);margin-top:0.6rem;line-height:1.45;">${blurb} Consensus moneyline average across sportsbooks.</div>`;
+  }
+
+  // Two-letter initials fallback for the board avatars (first + last name
+  // initial), shown until loadOddsBoardPhotos() swaps in a real photo.
+  function oddsAvatarInitials(name) {
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    const a = parts[0][0] || '';
+    const b = parts.length > 1 ? (parts[parts.length - 1][0] || '') : '';
+    return (a + b).toUpperCase();
   }
 
   function renderOddsHTML(fights, findHistoryEntry) {
@@ -101263,26 +101385,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return `<button class="rank-div-btn${i === 0 ? ' active' : ''}" onclick="showFight('api-fight-${i}',this)">${s1} vs. ${s2}</button>`;
     }).join('');
     const panels = fights.map((f, i) => {
-      const mlId     = `api-f${i}-ml`;
-      const totId    = `api-f${i}-tot`;
-      const methodId = `api-f${i}-method`;
-      const roundId  = `api-f${i}-rounds`;
-      const lmId     = `api-f${i}-lm`;
       const historyEntry = typeof findHistoryEntry === 'function' ? findHistoryEntry(f) : null;
+      const f1 = f.home_team, f2 = f.away_team;
+      const header = `<div class="odds-board-header">
+        <div class="obh-fighter">
+          <div class="proj-avatar" data-fighter="${f1}">${oddsAvatarInitials(f1)}</div>
+          <div class="obh-name">${f1}</div>
+        </div>
+        <div class="obh-vs">vs</div>
+        <div class="obh-fighter obh-right">
+          <div class="obh-name">${f2}</div>
+          <div class="proj-avatar" data-fighter="${f2}">${oddsAvatarInitials(f2)}</div>
+        </div>
+      </div>`;
+      const section = (label, inner) => `<div class="odds-section">
+        <div class="odds-section-label">${label}</div>
+        ${inner}
+      </div>`;
       return `<div id="api-fight-${i}" class="fight-odds-panel"${i > 0 ? ' style="display:none;"' : ''}>
         <div class="odds-divider"></div>
-        <div class="odds-prop-tabs">
-          <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
-          <button class="odds-prop-btn" onclick="showProp(this,'${methodId}')">Method</button>
-          <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
-          <button class="odds-prop-btn" onclick="showProp(this,'${roundId}')">Round Props</button>
-          <button class="odds-prop-btn" onclick="showProp(this,'${lmId}')">Line Movement</button>
-        </div>
-        <div id="${mlId}" class="odds-prop-panel">${buildMoneylineTable(f)}</div>
-        <div id="${methodId}" class="odds-prop-panel" style="display:none;">${buildMethodTable(f)}</div>
-        <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
-        <div id="${roundId}" class="odds-prop-panel" style="display:none;">${buildRoundPropsTable(f)}</div>
-        <div id="${lmId}" class="odds-prop-panel" style="display:none;">${buildLineMovementHTML(f, historyEntry)}</div>
+        ${header}
+        ${section('Moneyline', buildMoneylineTable(f))}
+        ${section('Total Rounds — Over / Under', buildTotalsTable(f))}
+        ${section('Method of Victory', buildMethodTable(f))}
+        ${section('Round Props', buildRoundPropsTable(f))}
+        ${section('Line Movement', buildLineMovementHTML(f, historyEntry))}
       </div>`;
     }).join('');
     return `<div class="odds-grid">
@@ -101372,6 +101499,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fights = fights.slice().sort((a, b) => evtFightIndexOf(a) - evtFightIndexOf(b));
       }
       container.innerHTML = renderOddsHTML(fights, findHistoryEntry);
+      loadOddsBoardPhotos();
     } catch(e) {
       container.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--muted);">
         <div style="font-size:3rem;opacity:0.3;margin-bottom:1rem;">📋</div>
