@@ -744,7 +744,7 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
     <div class="divider"></div>
 
     <h2>Built by bettors, <span class="a">for bettors.</span></h2>
-    <p>As UFC bettors ourselves, we found it tedious — and sometimes downright difficult — to track down everything we needed to do our research. Stats, analytics, previous fight tape, historical results, odds: it all seemed to be scattered across a dozen corners of the internet.</p>
+    <p>As UFC bettors ourselves, we found it tedious — and sometimes downright difficult — to track down everything we needed to do our research. Stats, analytics, previous fight tape, historical results, accolades and belt ranks, odds: it all seemed to be scattered across a dozen corners of the internet.</p>
     <p>So we saw a gap in the market — a place to do all of your UFC research in one spot, plus tools built to help you become a smarter, more efficient bettor. That's why we built GillyLab.</p>
   </div>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
