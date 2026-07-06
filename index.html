@@ -102519,9 +102519,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return;
     }
     container.innerHTML = panels;
-    // Only show ranking-changes panel in official mode (changes not tracked for Meta)
-    if (!isMeta) renderRankingChangesSummary(payload);
-    else { const rc = document.getElementById('rankingChanges'); if (rc) rc.innerHTML = ''; }
+    // Show the ranking-changes panel in BOTH modes. Each payload (media vs Meta)
+    // carries its own separate rankChange / isNewEntry and compared dates, so the
+    // dropdown reflects that mode's changes independently.
+    renderRankingChangesSummary(payload);
     loadRankingPhotos();
 
     // Reset tab highlighting: highlight the first *visible* tab
