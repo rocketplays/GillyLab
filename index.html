@@ -2086,6 +2086,7 @@
     }
     .rank-move-up   { color: #22c55e; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); }
     .rank-move-down { color: #ef4444; background: rgba(239,68,68,0.10); border: 1px solid rgba(239,68,68,0.25); }
+    .rank-move-new  { color: #04120a; background: var(--accent); border: 1px solid var(--accent); font-weight: 800; }
 
     /* ── Recent Changes panel ── */
     .ranking-changes {
@@ -3224,7 +3225,7 @@
 
 <div class="page" id="page-rankings">
  <div class="page-header">
- <div class="page-header-label" id="rankingsDateLabel">Updated June 20, 2026</div>
+ <div class="page-header-label" id="rankingsDateLabel">Updated July 5, 2026</div>
  <div class="page-header-title">Fighter <span class="accent">Rankings</span></div>
  <div class="rankings-mode-toggle">
    <span class="rmt-label" id="rmt-official">Media Panel</span>
@@ -102311,6 +102312,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return { direction: delta > 0 ? 'up' : 'down', amount: Math.abs(delta),
                prevRank: currRank != null ? currRank + delta : null, currRank };
     }
+    // Newly ranked (not present in the previous snapshot) — flagged on the entry
+    // as isNewEntry by the ranking diff. Shown as a "NEW" tag (no up/down delta).
+    if (e.isNewEntry) {
+      return { direction: 'new', amount: 0, prevRank: null, currRank: e.rank };
+    }
     return null;
   }
 
@@ -102354,15 +102360,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const dm = (byDiv[div.name] || []).slice().sort((a, b) => a.currRank - b.currRank);
       if (!dm.length) continue;
       const rowsHtml = dm.map(m => {
-        const isUp = m.direction === 'up';
-        const sym  = isUp ? '▲' : '▼';
-        const cls  = isUp ? 'rank-move-up' : 'rank-move-down';
+        const isNew = m.direction === 'new';
+        const isUp  = m.direction === 'up';
+        const cls   = isNew ? 'rank-move-new' : (isUp ? 'rank-move-up' : 'rank-move-down');
+        const badge = isNew ? 'NEW' : ((isUp ? '▲' : '▼') + m.amount);
+        const ranks = isNew ? ('NR→#' + m.currRank) : ('#' + m.prevRank + '→#' + m.currRank);
         const canonName = resolveCanonicalFighterName(m.fighterName, m.fighterSlug);
         const onclick = "openFighter('" + escJsAttr(canonName) + "','" + escJsAttr(div.abbr) + "','','','','')";
         return '<div class="rch-row">' +
-          '<span class="rch-arrow ' + cls + '">' + sym + m.amount + '</span>' +
+          '<span class="rch-arrow ' + cls + '">' + badge + '</span>' +
           '<span class="rch-name" onclick="' + onclick + '">' + m.fighterName + '</span>' +
-          '<span class="rch-ranks">#' + m.prevRank + '→#' + m.currRank + '</span>' +
+          '<span class="rch-ranks">' + ranks + '</span>' +
         '</div>';
       }).join('');
       groupsHtml += '<div class="rch-group"><div class="rch-div-label">' + div.tag + '</div><div class="rch-rows">' + rowsHtml + '</div></div>';
@@ -102420,9 +102428,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const mov = getMovFromHistory(e);
       let movBadge = '';
       if (mov) {
-        const sym = mov.direction === 'up' ? '▲' : '▼';
-        const cls = mov.direction === 'up' ? 'rank-move-up' : 'rank-move-down';
-        movBadge = '<span class="rank-move ' + cls + '">' + sym + mov.amount + '</span>';
+        if (mov.direction === 'new') {
+          movBadge = '<span class="rank-move rank-move-new">NEW</span>';
+        } else {
+          const sym = mov.direction === 'up' ? '▲' : '▼';
+          const cls = mov.direction === 'up' ? 'rank-move-up' : 'rank-move-down';
+          movBadge = '<span class="rank-move ' + cls + '">' + sym + mov.amount + '</span>';
+        }
       }
 
       return '<div class="' + rowClass + '">' +
