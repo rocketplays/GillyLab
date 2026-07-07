@@ -6699,7 +6699,7 @@
  }
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
-  "Delphine Benouaich": { ht:null, dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:null },
+  "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
   "Ce Liu": { ht:"6'5\"", dob:"1996-09-04", reach:"78\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tangshan Buntai Riding Fight Club" },
   "Fedor Emelianenko": { ht:"6'0\"", dob:"1976-09-28", reach:'74"', stance:"Orthodox", slpm:3.18, strAcc:"52%", sapm:1.00, strDef:"63%", kd:1.17, tdLanded:2.00, tdAcc:null, tdDef:"83%", subAvg:1.92, finRate:"78%", streak:0, gym:"Fedor Team" },
   "Anderson Berinja": { ht:"5'5\"", dob:"1985-07-24", reach:'70"', stance:"Orthodox", slpm:2.70, strAcc:"26%", sapm:5.37, strDef:"50%", kd:0.00, tdLanded:0.98, tdAcc:"14%", tdDef:"67%", subAvg:0.65, finRate:"76%", streak:0, gym:"Babuino Gold Team" },
@@ -11482,6 +11482,11 @@
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
  const ODDS_HISTORY = {
+  "Delphine Benouaich": [
+    { opponent: "Lindsey Payne", odds: -450 },
+    { opponent: "Ingrid Silva", odds: -1400 },
+    { opponent: "Mileide Simplicio", odds: -138 }
+  ],
   "Fedor Emelianenko": [
     { opponent: "Ryan Bader", odds: 275 },
     { opponent: "Tim Johnson", odds: 160 },
@@ -87123,10 +87128,10 @@ function populateFightHistory(name) {
 // be filled in over time.
 const ACCOLADES = {
   "Delphine Benouaich": [
-    { icon: "🏅", title: "IMMAF Amateur World Championships silver medalist and European bronze medalist (2023) representing France", detail: null },
-    { icon: "🥋", title: "National titles in grappling and boxing; former vice-world champion in Sanda", detail: null },
-    { icon: "🏆", title: "Cast member of The Ultimate Fighter Season 34, competing for a UFC contract", detail: null },
-    { icon: "🥊", title: "7–2 as a pro with an ultra-offensive style — five of her seven wins by KO/TKO or submission", detail: null }
+    { icon: "🥈", title: "IMMAF Amateur MMA World Championships silver medalist (2023) and European Championships bronze medalist, representing France", detail: null },
+    { icon: "🥊", title: "Multi-discipline background — French national titles in grappling and boxing", detail: null },
+    { icon: "🏅", title: "Cast member of The Ultimate Fighter Season 34 (2026, Team Cormier vs. Team Bisping), competing for a UFC contract", detail: null },
+    { icon: "🏅", title: "Ultra-offensive finisher — five of her seven pro wins by KO/TKO or submission (7–2 overall)", detail: null }
   ],
   "Ce Liu": [
     { icon: "🏆", title: "K-1 Cruiserweight (−90 kg) Champion (2024) — one successful title defense", detail: null },
