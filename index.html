@@ -99851,8 +99851,16 @@ function openFighterNews(fullName) {
   setTimeout(function () {
     const btn = document.getElementById('ftab-news-btn');
     if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
+    // One authoritative vertical scroll that leaves room ABOVE the tab bar, so
+    // the "News" tab label stays in view (a plain scrollIntoView + the tab
+    // switch's own scroll tended to overshoot and hide the tabs, esp. on mobile).
     const tabs = document.querySelector('#page-fighter .fighter-tabs');
-    if (tabs && tabs.scrollIntoView) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (tabs) {
+      requestAnimationFrame(function () {
+        const y = window.scrollY + tabs.getBoundingClientRect().top - 90;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      });
+    }
     setTimeout(function () {
       const first = document.querySelector('#fn-list a');
       if (first) { first.classList.add('gl-news-flash'); setTimeout(function () { first.classList.remove('gl-news-flash'); }, 1700); }
