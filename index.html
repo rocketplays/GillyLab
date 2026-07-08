@@ -847,6 +847,13 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* Bout has recent injury / card-change news — draw attention to Fight Info.
+       ::before survives the button's textContent toggling. */
+    .fight-info-toggle.bout-news {
+      border-color: rgba(255, 176, 32, 0.5);
+      color: #ffcf7a;
+    }
+    .fight-info-toggle.bout-news::before { content: '⚠ '; color: #ffb020; }
     /* "Simulate" button in each fight row — jumps to the Fight Simulator with
        both fighters pre-loaded. Styled identically to .fight-info-toggle. */
     .fight-sim-btn {
@@ -99809,6 +99816,9 @@ function populateFighterNews(name) {
 // news, add a full-width tappable banner under the row that opens that fighter's
 // profile on the News tab. Renderer- and timing-agnostic (reads the cached news;
 // re-applied on nav). A comfortable tap target on mobile, clearly visible on desktop.
+// Marks the "Fight Info" button with a ⚠ on any fight whose fighters have recent
+// injury/card news, so the alert routes into Fight Info (where the bout-status /
+// short-notice detail lives) rather than off to a separate News tab.
 function applyInjuryFlags() {
   loadFighterNews().then(function (data) {
     if (!data || !data.fighters) return;
@@ -99817,60 +99827,14 @@ function applyInjuryFlags() {
       if (row.dataset.injChecked) return;
       row.dataset.injChecked = '1';
       const cells = [].slice.call(row.querySelectorAll('.fighter-cell'));
-      // Among this bout's fighters, prefer the one who is the SUBJECT of the
-      // injury/withdrawal — i.e. their own (last) name appears in an injury-
-      // flagged headline. The fighter who pulled out is named in their stories;
-      // the opponent is only flagged via generic "replacement / opponent change"
-      // news, so we don't want to mislabel them as the injured one.
-      let chosen = null; // { cell, name, subject }
-      for (let i = 0; i < cells.length; i++) {
-        const nameEl = cells[i].querySelector('.fighter-name');
-        if (!nameEl) continue;
-        const name = (nameEl.textContent || '').trim();
-        const entry = fighterNewsEntry(data, name);
-        if (!entry || !entry.hasInjuryNews) continue;
-        const last = _newsNorm(name).split(' ').filter(Boolean).pop();
-        const subject = (entry.items || []).some(function (it) {
-          return it.injury && last && _newsNorm(it.title).split(' ').indexOf(last) !== -1;
-        });
-        const cand = { cell: cells[i], name: name, subject: subject };
-        if (subject) { chosen = cand; break; }  // the actually-injured party wins
-        if (!chosen) chosen = cand;             // fallback: opponent / card-change only
-      }
-      if (!chosen) return;
-      const label = chosen.subject
-        ? (chosen.name + ' — recent injury / withdrawal news')
-        : 'Possible card change — recent news';
-      const bar = document.createElement('div');
-      bar.className = 'gl-injury-banner';
-      bar.setAttribute('role', 'button');
-      bar.tabIndex = 0;
-      bar.innerHTML = '<span class="gl-injury-ico">⚠</span>' +
-        '<span class="gl-injury-txt">' + label + '</span>' +
-        '<span class="gl-injury-go">View ›</span>';
-      const open = function (e) {
-        if (e) e.stopPropagation();
-        window._glSuppressProfileScroll = true;      // we'll scroll to the News tab ourselves
-        chosen.cell.click();                         // opens the fighter profile
-        setTimeout(function () {
-          const btn = document.getElementById('ftab-news-btn');
-          if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
-          // Land the user ON the News tab rather than at the top of the profile.
-          const tabs = document.querySelector('#page-fighter .fighter-tabs');
-          if (tabs && tabs.scrollIntoView) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          // Once the list has rendered, flash the first item to draw the eye.
-          setTimeout(function () {
-            const first = document.querySelector('#fn-list a');
-            if (first) {
-              first.classList.add('gl-news-flash');
-              setTimeout(function () { first.classList.remove('gl-news-flash'); }, 1700);
-            }
-          }, 480);
-        }, 300);
-      };
-      bar.addEventListener('click', open);
-      bar.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); } });
-      row.insertAdjacentElement('afterend', bar);
+      const hasNews = cells.some(function (c) {
+        const nameEl = c.querySelector('.fighter-name');
+        const entry = nameEl ? fighterNewsEntry(data, (nameEl.textContent || '').trim()) : null;
+        return entry && entry.hasInjuryNews;
+      });
+      if (!hasNews) return;
+      const btn = row.querySelector('.fight-info-toggle');
+      if (btn) btn.classList.add('bout-news');   // CSS ::before renders the ⚠ (survives text toggling)
     });
   }).catch(function () {});
 }
@@ -100096,7 +100060,6 @@ function renderScouting(host, name, opp, fightDate) {
         flagsWrap.appendChild(chip);
       };
       const who = (aE && aE.hasInjuryNews) ? short(name) : ((bE && bE.hasInjuryNews) ? short(opp) : null);
-      if (who) addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news');
       // Identify the actual short-notice REPLACEMENT. A headline naming a fighter
       // as the one being FACED ("…steps in to face Durden") means the OTHER
       // fighter is the replacement — so don't flag the fighter who's merely the
@@ -100121,7 +100084,14 @@ function renderScouting(host, name, opp, fightDate) {
         return scan(name, lastA, opp, lastB, aE) || scan(opp, lastB, name, lastA, bE);
       }
       const snName = shortNoticeFighter();
-      if (snName) addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepping in on short notice (per news)');
+      // If a replacement is confirmed (the current opponent IS the new fighter),
+      // the change has already happened — show that, and suppress the pending
+      // "bout may change" flag (which would otherwise fire on the now-stale news).
+      if (snName) {
+        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice (per news)');
+      } else if (who) {
+        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news');
+      }
     }).catch(function () {});
   }
 }
