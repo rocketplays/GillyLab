@@ -101420,6 +101420,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fanduel:    { f1: { r1: 175, r2: 600, r3: 1700 }, f2: { r1: 320, r2: 800, r3: 1500 } },
       },
     },
+    // UFC 329 — Durden vs Costa (3 rounds, 125 lbs; fightodds.io). f1 = Costa,
+    // f2 = Durden (alphabetical). BetMGM had no prop lines; Bovada round props only.
+    'costa|durden': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 180, sub: 350, dec: 275 }, f2: { ko: 800, sub: 1200, dec: 400 } },
+        fanduel:    { f1: { ko: 220, sub: 410, dec: 280 }, f2: { ko: 850, sub: 1300, dec: 470 } },
+      },
+      roundProps: {
+        bovada:     { f1: { r1: 300, r2: 450, r3: 750 }, f2: { r1: 1000, r2: 1500, r3: 2200 } },
+        draftkings: { f1: { r1: 275, r2: 450, r3: 700 }, f2: { r1: 1000, r2: 1400, r3: 2200 } },
+        fanduel:    { f1: { r1: 310, r2: 500, r3: 800 }, f2: { r1: 1100, r2: 1600, r3: 2200 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
