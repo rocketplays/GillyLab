@@ -101385,20 +101385,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 1600, r2: 2000, r3: 2500 }, f2: { r1: 450, r2: 650, r3: 1000 } },
       },
     },
-    // UFC 329 — Cortez vs Cong Wang (3 rounds, 125 lbs; fightodds.io). f1 = Cortez,
-    // f2 = Wang (alphabetical). Bovada posted round props only (no method lines).
-    'cortez|wang': {
+    // UFC 329 — Cortez vs Cong Wang (3 rounds, 125 lbs; fightodds.io). The data
+    // feed names her "Wang Cong" (family-name first), so lastNameOf yields "Cong"
+    // and the key is cong|cortez. f1 = Wang (Cong), f2 = Cortez. Bovada posted
+    // round props only (no method lines).
+    'cong|cortez': {
       rounds: 3,
       method: {
-        draftkings: { f1: { ko: 1600, sub: 1200, dec: 120 }, f2: { ko: 500, sub: 650, dec: 215 } },
-        fanduel:    { f1: { ko: 1600, sub: 1300, dec: 140 }, f2: { ko: 550, sub: 750, dec: 220 } },
-        betmgm:     { f1: { ko: 1400, sub: 1200, dec: 125 }, f2: { ko: 450, sub: 650, dec: 200 } },
+        draftkings: { f1: { ko: 500, sub: 650, dec: 215 }, f2: { ko: 1600, sub: 1200, dec: 120 } },
+        fanduel:    { f1: { ko: 550, sub: 750, dec: 220 }, f2: { ko: 1600, sub: 1300, dec: 140 } },
+        betmgm:     { f1: { ko: 450, sub: 650, dec: 200 }, f2: { ko: 1400, sub: 1200, dec: 125 } },
       },
       roundProps: {
-        bovada:     { f1: { r1: 1700, r2: 2200, r3: 3300 }, f2: { r1: 625, r2: 900,  r3: 1400 } },
-        draftkings: { f1: { r1: 1600, r2: 2000, r3: 2800 }, f2: { r1: 550, r2: 850,  r3: 1400 } },
-        fanduel:    { f1: { r1: 1700, r2: 2000, r3: 2700 }, f2: { r1: 650, r2: 1000, r3: 1800 } },
-        betmgm:     { f1: { r1: 1600, r2: 2000, r3: 2800 }, f2: { r1: 550, r2: 850,  r3: 1400 } },
+        bovada:     { f1: { r1: 625, r2: 900,  r3: 1400 }, f2: { r1: 1700, r2: 2200, r3: 3300 } },
+        draftkings: { f1: { r1: 550, r2: 850,  r3: 1400 }, f2: { r1: 1600, r2: 2000, r3: 2800 } },
+        fanduel:    { f1: { r1: 650, r2: 1000, r3: 1800 }, f2: { r1: 1700, r2: 2000, r3: 2700 } },
+        betmgm:     { f1: { r1: 550, r2: 850,  r3: 1400 }, f2: { r1: 1600, r2: 2000, r3: 2800 } },
       },
     },
     // UFC 329 — Pinas vs Almeida (3 rounds, 185 lbs; fightodds.io). f1 = Almeida,
