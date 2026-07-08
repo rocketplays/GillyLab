@@ -101305,6 +101305,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 250, r2: 750, r3: 1600 }, f2: { r1: -135, r2: 1000, r3: 2500 } },
       },
     },
+    // UFC 329 — Whittaker vs Krylov (3 rounds, 205 lbs; fightodds.io: Bovada /
+    // DraftKings / FanDuel / BetMGM). f1 = Krylov, f2 = Whittaker (alphabetical).
+    'krylov|whittaker': {
+      rounds: 3,
+      method: {
+        bovada:     { f1: { ko: 350, sub: 800, dec: 400 }, f2: { ko: 200, sub: 1400, dec: 250 } },
+        draftkings: { f1: { ko: 350, sub: 800, dec: 400 }, f2: { ko: 200, sub: 1400, dec: 250 } },
+        fanduel:    { f1: { ko: 390, sub: 850, dec: 440 }, f2: { ko: 230, sub: 1600, dec: 260 } },
+        betmgm:     { f1: { ko: 325, sub: 800, dec: 400 }, f2: { ko: 200, sub: 1400, dec: 250 } },
+      },
+      roundProps: {
+        bovada:     { f1: { r1: 600, r2: 800, r3: 1100 }, f2: { r1: 500, r2: 700, r3: 1000 } },
+        draftkings: { f1: { r1: 500, r2: 800, r3: 1200 }, f2: { r1: 450, r2: 650, r3: 900 } },
+        fanduel:    { f1: { r1: 550, r2: 900, r3: 1400 }, f2: { r1: 550, r2: 700, r3: 1100 } },
+        betmgm:     { f1: { r1: 500, r2: 800, r3: 1200 }, f2: { r1: 450, r2: 650, r3: 900 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
