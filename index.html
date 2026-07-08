@@ -99979,7 +99979,7 @@ function renderScouting(host, name, opp, fightDate) {
   const ageOf = st => (st && st.dob && typeof calcAge === 'function') ? calcAge(st.dob) : null;
   const lastFightTs = h => { const d = (h || []).filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–').map(f => parseD(f.date)).filter(Boolean).sort((a, b) => b - a); return d[0] || null; };
   const parseHt = s => { const m = /(\d+)'\s*(\d+)/.exec(String(s || '')); return m ? (+m[1]) * 12 + (+m[2]) : null; };
-  const parseReach = s => { const m = /(\d+)/.exec(String(s || '')); return m ? +m[1] : null; };
+  const parseReach = s => { const m = /(\d+(?:\.\d+)?)/.exec(String(s || '')); return m ? parseFloat(m[1]) : null; };
   const fmtHt = i => i == null ? '—' : (Math.floor(i / 12) + "'" + (i % 12) + '"');
   const diffTxt = (mine, theirs, unit) => (mine != null && theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
 
@@ -100106,8 +100106,8 @@ function renderScouting(host, name, opp, fightDate) {
     box.appendChild(paceTitle);
     const paceHead = document.createElement('div'); paceHead.className = 'sr-cmp-row sr-cmp-head';
     paceHead.innerHTML = '<div></div>';
-    const phA = document.createElement('div'); phA.textContent = short(name); phA.style.color = GREEN;
-    const phB = document.createElement('div'); phB.textContent = short(opp); phB.style.color = AMBER;
+    const phA = document.createElement('div'); phA.textContent = short(name);
+    const phB = document.createElement('div'); phB.textContent = short(opp);
     paceHead.appendChild(phA); paceHead.appendChild(phB); box.appendChild(paceHead);
     const paceRow = document.createElement('div'); paceRow.className = 'sr-cmp-row';
     const pl = document.createElement('div'); pl.className = 'sr-cmp-lbl'; pl.textContent = 'sig. strikes thrown / min';
@@ -100229,7 +100229,14 @@ function renderScouting(host, name, opp, fightDate) {
     };
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
-    cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
+    // Durability is comparative and rate-based (finishes per fight), so the more
+    // durable fighter greens and the more fragile reds — a vet finished twice in
+    // 35 fights isn't "the same red" as someone finished five times in twelve.
+    const durRate = p => (p.wins + p.losses) > 0 ? p.timesFinished / (p.wins + p.losses) : null;
+    const drA = durRate(fp), drB = durRate(op);
+    let tfA = '', tfB = '';
+    if (drA != null && drB != null && drA !== drB) { tfA = drA < drB ? 'w' : 'l'; tfB = drA < drB ? 'l' : 'w'; }
+    cmpRow(box, 'Times finished', fin(fp), fin(op), tfA, tfB);
   })();
 
   // Common opponents
