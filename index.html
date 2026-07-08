@@ -1993,6 +1993,8 @@
     .sr-common-title { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
     .sr-common-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-co-name { color: var(--muted); }
+    .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
+    .sr-co-name.sr-co-link:hover { color: var(--accent); }
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
@@ -99888,10 +99890,22 @@ function populateScoutingReport(name) {
   const upcoming = (typeof UPCOMING_OPP !== 'undefined') ? UPCOMING_OPP[_newsNorm(name)] : null;
   if (!upcoming || !upcoming.opponent) return;        // scoped to fighters on featured/upcoming cards
   const opp = upcoming.opponent;
+  const oppKey = scoutingHistKey(opp);
+  const oppStats = (oppKey && typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[oppKey]) || null;
+  const oppAge = (oppStats && oppStats.dob && typeof calcAge === 'function') ? calcAge(oppStats.dob) : null;
   const decided = hist.filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–')
                       .sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
   const shortName = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
   const abbr = m => (typeof glAbbrMethod === 'function') ? glAbbrMethod(m) : String(m || '').split(' ')[0];
+  // Resolve a common-opponent name to its active-roster entry (so we only make
+  // it clickable when a profile actually exists).
+  const fightersEntry = n => {
+    if (typeof FIGHTERS === 'undefined') return null;
+    let e = FIGHTERS.find(x => x.name === n);
+    if (e) return e;
+    const t = _newsNorm(n);
+    return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
+  };
 
   const chips = [];
   // Age / athletic prime
@@ -99903,6 +99917,14 @@ function populateScoutingReport(name) {
       if (age >= 38) { tone = 'warn'; note = 'Advanced age for the sport'; }
       else if (age >= 35) { tone = 'warn'; note = 'Past the typical prime'; }
       else if (age <= 23) { note = 'Young — still developing'; }
+      // Significant age gap vs the scheduled opponent takes precedence in the note.
+      if (oppAge && oppAge > 0) {
+        const gap = age - oppAge;
+        if (Math.abs(gap) >= 6) {
+          tone = 'warn';
+          note = Math.abs(gap) + ' yrs ' + (gap > 0 ? 'older' : 'younger') + ' than ' + shortName(opp);
+        }
+      }
       chips.push({ icon: '🎂', label: 'Age', value: age + ' yrs', note, tone });
     }
   }
@@ -99939,7 +99961,6 @@ function populateScoutingReport(name) {
   chips.forEach(addChip);
 
   // Common opponents vs the scheduled opponent
-  const oppKey = scoutingHistKey(opp);
   const oppHist = (oppKey && typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[oppKey]) ? FIGHT_HISTORY[oppKey] : [];
   if (oppHist.length) {
     const nn = _newsNorm(name), on = _newsNorm(opp);
@@ -99969,6 +99990,11 @@ function populateScoutingReport(name) {
         const a = resultVs(hist, oppName), b = resultVs(oppHist, oppName);
         const row = document.createElement('div'); row.className = 'sr-common-row';
         const nameEl = document.createElement('div'); nameEl.className = 'sr-co-name'; nameEl.textContent = oppName;
+        const fe = fightersEntry(oppName);
+        if (fe && typeof openFighterByName === 'function') {
+          nameEl.classList.add('sr-co-link');
+          nameEl.addEventListener('click', function () { openFighterByName(fe.name); });
+        }
         const aEl = document.createElement('div'); aEl.className = 'sr-co-res ' + (a && a.result === 'W' ? 'w' : (a && a.result === 'L' ? 'l' : '')); aEl.textContent = shortName(name) + ': ' + fmt(a);
         const bEl = document.createElement('div'); bEl.className = 'sr-co-res ' + (b && b.result === 'W' ? 'w' : (b && b.result === 'L' ? 'l' : '')); bEl.textContent = shortName(opp) + ': ' + fmt(b);
         row.appendChild(nameEl); row.appendChild(aEl); row.appendChild(bEl);
