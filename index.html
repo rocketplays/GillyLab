@@ -100117,7 +100117,11 @@ function renderScouting(host, name, opp, fightDate) {
     paceRow.appendChild(pv(oA, hiA)); paceRow.appendChild(pv(oB, hiB));
     box.appendChild(paceRow); host.appendChild(box);
 
-    const path = (self, other, otherN) => {
+    // Pronoun by division — women's UFC divisions are WSW/WFLW/WFLY/WBW/WFW
+    // (note WW is men's welterweight, so a bare "W" prefix isn't enough).
+    const WOMEN = { WSW: 1, WFLW: 1, WFLY: 1, WBW: 1, WFW: 1 };
+    const isFemale = nm => { const e = fightersEntry(nm); return !!(e && WOMEN[String(e.division || '').toUpperCase()]); };
+    const path = (self, other, otherN, female) => {
       if (!self) return 'Thin UFC data (short-notice / limited tape) — style and path read is provisional.';
       const la = lean(self), oN = short(otherN);
       const oKnown = !!other, lb = oKnown ? lean(other) : 50;
@@ -100188,6 +100192,7 @@ function renderScouting(host, name, opp, fightDate) {
         else line = 'Comfortable in both phases — no glaring edge on paper, so it comes down to who imposes their game first.';
         if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both phases');
       }
+      if (female) line = line.replace(/\bhe\b/g, 'she').replace(/\bhis\b/g, 'her');
       line = line.replace(/\.\s*$/, '');
       return line + (notes.length ? ' (' + notes.join('; ') + ').' : '.');
     };
@@ -100202,8 +100207,8 @@ function renderScouting(host, name, opp, fightDate) {
     };
     const pTitle = document.createElement('div'); pTitle.className = 'sr-common-title'; pTitle.style.marginTop = '0.9rem'; pTitle.textContent = 'Path to victory';
     box.appendChild(pTitle);
-    addPath(name, path(A, B, opp), GREEN);
-    addPath(opp, path(B, A, name), AMBER);
+    addPath(name, path(A, B, opp, isFemale(name)), GREEN);
+    addPath(opp, path(B, A, name, isFemale(opp)), AMBER);
   })();
 
   // Finish & durability
