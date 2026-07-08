@@ -100097,14 +100097,31 @@ function renderScouting(host, name, opp, fightDate) {
       };
       const who = (aE && aE.hasInjuryNews) ? short(name) : ((bE && bE.hasInjuryNews) ? short(opp) : null);
       if (who) addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news');
-      const snCheck = (entry, nm) => {
-        if (!entry || !entry.items) return false;
-        const last = _newsNorm(nm).split(' ').filter(Boolean).pop();
-        const SN = /short notice|steps? in|on \d+ days'? notice|late replacement|as a replacement|replaces\b/i;
-        return entry.items.some(it => SN.test(it.title || '') && last && _newsNorm(it.title).indexOf(last) !== -1);
-      };
-      if (snCheck(aE, name)) addChip('⚡', 'Short notice', short(name), 'Taking this fight on short notice (per news)');
-      if (snCheck(bE, opp)) addChip('⚡', 'Short notice', short(opp), 'Taking this fight on short notice (per news)');
+      // Identify the actual short-notice REPLACEMENT. A headline naming a fighter
+      // as the one being FACED ("…steps in to face Durden") means the OTHER
+      // fighter is the replacement — so don't flag the fighter who's merely the
+      // opponent. Only flag a fighter who is the subject stepping in, or their
+      // opponent when the fighter is named as the one being replaced-against.
+      const lastA = (_newsNorm(name).split(' ').filter(Boolean).pop()) || '';
+      const lastB = (_newsNorm(opp).split(' ').filter(Boolean).pop()) || '';
+      const SN = /short.?notice|steps? in|steps? up|late replacement|\breplaces\b|replacement (?:opponent|fighter|steps)/i;
+      const facedBy = (last, t) => !!last && new RegExp('(?:faces?|facing|against|vs\\.?|meets?)\\s+(?:[a-z.\'\\-]+\\s+){0,2}' + last + '\\b').test(t);
+      const isSubject = (last, t) => !!last && (new RegExp('\\b' + last + '\\b[^.]{0,25}?(?:steps? in|stepping in|replaces|steps? up|on short notice|as a (?:late )?replacement)').test(t) || new RegExp('(?:late replacement|short.?notice replacement)[^.]{0,20}?\\b' + last + '\\b').test(t));
+      function shortNoticeFighter() {
+        const scan = (selfName, selfLast, otherName, otherLast, entry) => {
+          if (!entry || !entry.items) return null;
+          for (const it of entry.items) {
+            const t = (it.title || '').toLowerCase();
+            if (!SN.test(t)) continue;
+            if (isSubject(selfLast, t) && !facedBy(selfLast, t)) return selfName;   // self stepped in
+            if (facedBy(selfLast, t)) return otherName;                              // replacement to FACE self ⇒ other is new
+          }
+          return null;
+        };
+        return scan(name, lastA, opp, lastB, aE) || scan(opp, lastB, name, lastA, bE);
+      }
+      const snName = shortNoticeFighter();
+      if (snName) addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepping in on short notice (per news)');
     }).catch(function () {});
   }
 }

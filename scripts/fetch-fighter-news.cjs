@@ -37,7 +37,10 @@ const DAY = 24 * 3600 * 1000;
 // Reputable MMA / sports outlets — everything else (SEO filler, betting-site
 // "when is X's next fight" pages, random aggregators) is dropped.
 const OUTLET_OK = /ufc\.com|mma\s?junkie|mma\s?fighting|mma\s?mania|bloody\s?elbow|sherdog|espn|bjpenn|lowkick|sports\s?illustrated|si\.com|mma\s?news|mmaweekly|yahoo|cbs\s?sports|the\s?sporting\s?news|talksport|tapology|the\s?score|givemesport|fox\s?sports|bleacher|sportingnews|mmauk|middleeasy/i;
-const INJURY_RE = /injur|withdr|pull(ed|s)?\b|replace|steps? in|short notice|miss(ed|es)? weight|off the card|out of (the )?(fight|card|bout|event)|forced out|scratch/i;
+// Injury / withdrawal / card-change signal. Kept tight to avoid false positives
+// (bare "pull"/"replace"/"scratch" matched things like "pulled hair in training"
+// or "replaces at the top of the rankings"). Requires specific phrasing.
+const INJURY_RE = /\binjur(?:y|ed|ies)\b|\bwithdraw|pull(?:ed|s)?\s+out\b|\bforced out\b|out of the (?:fight|card|bout|event)\b|off the card\b|miss(?:es|ed)?\s+weight\b|fail(?:s|ed)?\s+to make weight\b|\boverweight\b|short.?notice\b|late replacement\b|replacement (?:opponent|fighter)\b|steps? in\b|\bnew\b[^.]{0,15}?\bopponent\b|opponent change\b|\btorn\b|fractur|hospitaliz/i;
 
 function norm(s) {
   return String(s == null ? '' : s).toLowerCase().normalize('NFD')
