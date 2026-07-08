@@ -102822,17 +102822,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Some API events (esp. past cards in event-recent.json) list each matchup
     // twice under different bout IDs — dedupe by fighter pairing, keeping the
     // first (lowest boutOrder) so fights don't render multiple times.
-    const _seenPairs = new Set();
-    const bouts = (rawEvt.bouts || []).slice()
+    const _seenPairs = new Map();
+    const bouts = [];
+    (rawEvt.bouts || []).slice()
       .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
-      .filter(b => {
+      .forEach(b => {
         const key = (b.fighters || [])
           .map(f => (f.fighterName || f.fighterSlug || '').toLowerCase().replace(/[^a-z0-9]+/g, ''))
           .sort().join('|');
-        if (!key) return true;
-        if (_seenPairs.has(key)) return false;
-        _seenPairs.add(key);
-        return true;
+        if (!key) { bouts.push(b); return; }
+        const kept = _seenPairs.get(key);
+        if (kept) {
+          // Same matchup under a second bout id — the duplicate copies often differ
+          // in which result fields are populated (one may have the finishing detail,
+          // e.g. "Suloev Stretch", while the copy we kept has it null). Backfill any
+          // missing result fields onto the kept bout rather than discarding them.
+          if (!kept.methodDetails && b.methodDetails) kept.methodDetails = b.methodDetails;
+          if (!kept.method && b.method) kept.method = b.method;
+          if (!kept.resultRound && b.resultRound) kept.resultRound = b.resultRound;
+          if (!kept.resultTime && b.resultTime) kept.resultTime = b.resultTime;
+          return;
+        }
+        _seenPairs.set(key, b);
+        bouts.push(b);
       });
     const mainBoutOrder = bouts.length ? Math.min(...bouts.map(b => b.boutOrder)) : 1;
     const fights = bouts.map(bout => {
