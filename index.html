@@ -99757,7 +99757,8 @@ function applyInjuryFlags() {
         '<span class="gl-injury-go">View ›</span>';
       const open = function (e) {
         if (e) e.stopPropagation();
-        chosen.cell.click();                         // opens the fighter profile (scrolls to top)
+        window._glSuppressProfileScroll = true;      // we'll scroll to the News tab ourselves
+        chosen.cell.click();                         // opens the fighter profile
         setTimeout(function () {
           const btn = document.getElementById('ftab-news-btn');
           if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
@@ -99875,7 +99876,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
        backBtn.textContent = FIGHTER_BACK_LABELS[fighterReturnPage] || FIGHTER_BACK_LABELS.home;
      }
    }
-   window.scrollTo({ top: 0, behavior: 'smooth' });
+   // Normally the profile opens scrolled to the top. Callers that want to land
+   // the user somewhere specific (e.g. the injury banner jumping to the News
+   // tab) set this flag so their own scroll isn't fought by a smooth-scroll here.
+   if (window._glSuppressProfileScroll) { window._glSuppressProfileScroll = false; }
+   else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
    fetchFighterPhoto(name);
  }
 
