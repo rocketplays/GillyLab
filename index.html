@@ -2023,6 +2023,11 @@
     .sr-common { margin-top: 0.9rem; }
     .sr-common-row:last-child, .sr-common .sr-cmp-row:last-child { border-bottom: none; }
     .sr-common-title { font-size: 0.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem; }
+    /* Past-fight retrospective panel */
+    .pf-result { text-align: center; padding: 0.1rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
+    .pf-result .pf-win { color: var(--accent); font-weight: 800; }
+    .pf-method { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .pf-upset { color: #ffcf7a; font-size: 0.7rem; font-weight: 800; margin-left: 0.35rem; }
     .sr-common-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-co-name { color: var(--muted); }
     .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
@@ -101522,33 +101527,70 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') + '"><div class="sr-inner"></div></div>';
   }
 
+  // Completed-fight retrospective: result recap, closing line (+ upset flag), and
+  // box-score totals — what happened and how it beat the odds, not pre-fight
+  // scouting. (Upcoming fights use scoutingFightPanelHTML instead.)
   function fightDetailsPanelHTML(f) {
-    const s1 = fighterSnapshot(f.f1), s2 = fighterSnapshot(f.f2);
-    function col(name, snap, side) {
-      return '<div class="fd-col">' +
-        '<div class="fd-name">' + name + '</div>' +
-        '<div class="fd-stat"><span class="fd-label">Age</span><span class="fd-value">' + snap.age + '</span></div>' +
-        '<div class="fd-stat"><span class="fd-label">Height</span><span class="fd-value">' + snap.height + '</span></div>' +
-        '<div class="fd-stat"><span class="fd-label">Reach</span><span class="fd-value">' + snap.reach + '</span></div>' +
-        '<div class="fd-stat"><span class="fd-label">' + (f.completed ? 'Closing Odds' : 'Moneyline') + '</span><span class="fd-value fight-ml-pending" data-f1="' + escHtmlAttr(f.f1) + '" data-f2="' + escHtmlAttr(f.f2) + '" data-side="' + side + '">' +
-          '<span style="color:var(--muted);font-size:0.78rem;">…</span></span></div>' +
-        '<div class="fd-stat"><span class="fd-label">Last 5</span><span class="fd-value">' + lastFiveFormHTML(name) + '</span></div>' +
-      '</div>';
+    const esc = (typeof escHtmlAttr === 'function') ? escHtmlAttr : (s => String(s == null ? '' : s));
+    const short = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
+    const f1 = f.f1, f2 = f.f2;
+    const headRow = '<div class="sr-cmp-row sr-cmp-head"><div></div><div>' + esc(short(f1)) + '</div><div>' + esc(short(f2)) + '</div></div>';
+
+    // Result recap
+    let resultHTML;
+    if (f.won1 || f.won2) {
+      const winner = f.won1 ? f1 : f2, loser = f.won1 ? f2 : f1;
+      const method = (typeof glAbbrMethod === 'function') ? glAbbrMethod(f.methodText) : (f.methodText || '');
+      const rt = (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' ' : '') + (f.resTime || '');
+      resultHTML = '<div class="pf-result"><span class="pf-win">' + esc(winner) + '</span> def. ' + esc(loser) +
+        '<div class="pf-method">' + esc(method) + (rt ? ' · ' + esc(rt) : '') + '</div></div>';
+    } else {
+      resultHTML = '<div class="pf-result">' + (f.isNC ? 'No Contest' : 'Draw') + '</div>';
     }
-    var _statsBtn = '';
-    if (f.completed && typeof _fsEventMatch === 'function' && _fsEventMatch(f.f1, f.f2, f.date)) {
-      _statsBtn = '<div style="text-align:center;padding:0 0 0.65rem;margin-bottom:0.55rem;border-bottom:1px solid rgba(255,255,255,0.06);">' +
-        '<button type="button" onclick="event.stopPropagation();openEventFightStats(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.date || '') + '\')" ' +
-        'style="background:rgba(212,175,55,0.1);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;font-size:0.72rem;padding:0.4rem 1rem;border-radius:4px;cursor:pointer;">View Full Fight Stats &rsaquo;</button>' +
-      '</div>';
+
+    // Closing line + upset flag
+    let closingHTML = '';
+    const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f1, f2) : null;
+    if (pair && (pair.o1 != null || pair.o2 != null)) {
+      const fmt = o => (o == null ? '—' : (typeof fmtOdds === 'function' ? fmtOdds(o) : (o > 0 ? '+' + o : '' + o)));
+      const favSide = (pair.o1 != null && pair.o2 != null) ? (pair.o1 <= pair.o2 ? 1 : 2) : null;
+      const winSide = f.won1 ? 1 : (f.won2 ? 2 : 0);
+      const upset = winSide && favSide && winSide !== favSide;
+      closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing line' +
+        (upset ? ' <span class="pf-upset">⚡ Upset</span>' : '') + '</div>' + headRow +
+        '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
+          '<div class="sr-cmp-val ' + (winSide === 1 ? 'w' : '') + '">' + fmt(pair.o1) + '</div>' +
+          '<div class="sr-cmp-val ' + (winSide === 2 ? 'w' : '') + '">' + fmt(pair.o2) + '</div></div></div>';
     }
-    return '<div class="fight-details-panel">' +
-      '<div class="fd-collapse-inner">' + _statsBtn + '<div class="fd-cols">' +
-        col(f.f1, s1, '1') +
-        '<div class="fd-divider"></div>' +
-        col(f.f2, s2, '2') +
-      '</div></div>' +
-    '</div>';
+
+    // Box score totals (from fight-stats.json, if loaded)
+    let boxHTML = '';
+    let rec = (typeof fightStatsFor === 'function') ? fightStatsFor(f1, f.date) : null;
+    let aS = null, bS = null;
+    if (rec) { aS = rec.f; bS = rec.o; }
+    else { rec = (typeof fightStatsFor === 'function') ? fightStatsFor(f2, f.date) : null; if (rec) { aS = rec.o; bS = rec.f; } }
+    if (aS && bS) {
+      const secs = t => { const m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; };
+      const row = (label, ad, bd, an, bn) => '<div class="sr-cmp-row"><div class="sr-cmp-lbl">' + label + '</div><div class="sr-cmp-val ' + (an > bn ? 'w' : '') + '">' + ad + '</div><div class="sr-cmp-val ' + (bn > an ? 'w' : '') + '">' + bd + '</div></div>';
+      boxHTML = '<div class="sr-common"><div class="sr-common-title">Box score</div>' + headRow +
+        row('Sig. strikes', aS.sigL + '/' + aS.sigA, bS.sigL + '/' + bS.sigA, aS.sigL, bS.sigL) +
+        row('Takedowns', aS.tdL + '/' + aS.tdA, bS.tdL + '/' + bS.tdA, aS.tdL, bS.tdL) +
+        row('Knockdowns', aS.kd, bS.kd, aS.kd, bS.kd) +
+        row('Control', aS.ctrl || '0:00', bS.ctrl || '0:00', secs(aS.ctrl), secs(bS.ctrl)) +
+        '</div>';
+    }
+
+    // Full round-by-round box score in the modal
+    let statsBtn = '';
+    if (typeof _fsEventMatch === 'function' && _fsEventMatch(f1, f2, f.date)) {
+      statsBtn = '<div style="text-align:center;padding-top:0.7rem;">' +
+        '<button type="button" onclick="event.stopPropagation();openEventFightStats(\'' + escJsAttr(f1) + '\',\'' + escJsAttr(f2) + '\',\'' + escJsAttr(f.date || '') + '\')" ' +
+        'style="background:rgba(0,230,104,0.1);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;font-size:0.7rem;padding:0.4rem 1rem;border-radius:6px;cursor:pointer;">View Full Fight Stats &rsaquo;</button></div>';
+    }
+
+    return '<div class="fight-details-panel"><div class="fd-collapse-inner">' +
+      resultHTML + closingHTML + boxHTML + statsBtn +
+      '</div></div>';
   }
 
   function toggleFightDetails(btn) {
