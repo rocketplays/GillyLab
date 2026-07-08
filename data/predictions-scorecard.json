@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-07-08T02:08:58.126Z",
+  "nGraded": 0,
+  "note": "Internal proof-of-concept. Pre-upgrade CLV uses self-snapshotted close (approximate).",
+  "calibration": [],
+  "accuracy": {
+    "model": null,
+    "marketClose": null
+  },
+  "brier": {
+    "modelOpen": null,
+    "marketClose": null
+  },
+  "logloss": {
+    "modelOpen": null,
+    "marketClose": null
+  },
+  "clv": {
+    "nWithMovement": 0,
+    "hitRate": null,
+    "avgMovePts": null,
+    "leanedOnly": {
+      "n": 0,
+      "hitRate": null,
+      "avgMovePts": null
+    }
+  }
+}

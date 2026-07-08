@@ -135,11 +135,17 @@ jobs:
           node scripts/sim-backtest/extract-sim.cjs || true
           node scripts/log-predictions.cjs || true
 
+      # Grade any now-decided fights against the banked snapshots and recompute
+      # the internal CLV + calibration scorecard. Uses the freshly fetched
+      # event/event-recent results. Non-fatal.
+      - name: Grade resolved predictions
+        run: node scripts/grade-predictions.cjs || true
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json worker/landing-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json worker/landing-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -161,6 +167,7 @@ jobs:
           node scripts/gen-landing-data.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
           node scripts/log-predictions.cjs || true
+          node scripts/grade-predictions.cjs || true
           git add $FILES
           git diff --staged --quiet && echo "No changes after reconcile" && exit 0
           git commit -m "chore: update UFC odds (reconciled) $(date -u '+%Y-%m-%d %H:%M UTC')"
