@@ -1941,7 +1941,11 @@
       display: flex;
       border-bottom: 1px solid var(--border);
       margin-bottom: 1.5rem;
+      overflow-x: auto;                 /* keep the row inside the viewport; scroll if it doesn't fit */
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;            /* hide the scrollbar (Firefox) */
     }
+    .fighter-tabs::-webkit-scrollbar { display: none; }  /* hide the scrollbar (WebKit) */
 
     .fighter-tab {
       font-family: 'Barlow Condensed', sans-serif;
@@ -1954,6 +1958,8 @@
       color: var(--muted);
       border-bottom: 2px solid transparent;
       transition: color 0.2s, border-color 0.2s;
+      flex-shrink: 0;                   /* don't squash tabs; let the row scroll instead */
+      white-space: nowrap;
     }
 
     .fighter-tab.active {
@@ -1962,6 +1968,12 @@
     }
 
     .fighter-tab:hover { color: var(--text); }
+
+    /* On phones the 5 profile tabs won't all fit at full width — tighten them so
+       most are visible, and the bar scrolls horizontally for the rest. */
+    @media (max-width: 600px) {
+      .fighter-tab { padding: 0.7rem 0.7rem; letter-spacing: 0.08em; font-size: 0.72rem; }
+    }
 
     /* Fighter-profile tab panels (Fight History / Tape Study / Odds History /
        Accolades) swap via display:none<->block, which can't be transitioned —
@@ -6552,6 +6564,9 @@
  document.querySelectorAll('.ftab-panel').forEach(p => p.style.display = 'none');
  el.classList.add('active');
  document.getElementById(panelId).style.display = 'block';
+ // On mobile the tab bar scrolls horizontally, so make sure the tab we just
+ // activated is actually visible (e.g. the rightmost "News" tab).
+ if (el.scrollIntoView) { try { el.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { el.scrollIntoView(); } }
  }
  function showDiv(divId) {
  document.querySelectorAll('.rank-panel').forEach(p => p.style.display = 'none');
