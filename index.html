@@ -100062,10 +100062,12 @@ function renderScouting(host, name, opp, fightDate) {
   (function () {
     if (!histA.length || !histB.length) return;
     const nn = _newsNorm(name), on = _newsNorm(opp);
-    const resultVs = (h, target) => {
+    // All meetings vs a given opponent (most-recent first), so rivalries with
+    // multiple bouts (e.g. McGregor–Poirier, 3 fights) show the full head-to-head
+    // record rather than only the latest result.
+    const resultsVs = (h, target) => {
       const t = _newsNorm(target);
-      const rows = h.filter(f => f && f.method !== 'Upcoming' && f.result && f.result !== '–' && _newsNorm(f.opponent) === t).sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
-      return rows[0] || null;
+      return h.filter(f => f && f.method !== 'Upcoming' && f.result && f.result !== '–' && _newsNorm(f.opponent) === t).sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
     };
     const mineOpps = {};
     histA.forEach(f => { if (f && f.method !== 'Upcoming' && f.result && f.result !== '–' && f.opponent) mineOpps[_newsNorm(f.opponent)] = f.opponent; });
@@ -100074,15 +100076,26 @@ function renderScouting(host, name, opp, fightDate) {
     if (!shared.length) return;
     const box = document.createElement('div'); box.className = 'sr-common';
     const ct = document.createElement('div'); ct.className = 'sr-common-title'; ct.textContent = 'Common opponents'; box.appendChild(ct);
-    const fmt = r => r ? (r.result + (r.method ? ' (' + abbr(r.method) + (r.round ? ' R' + r.round : '') + ')' : '')) : '—';
+    // One meeting → "W (SUB R1)"; multiple → head-to-head record "1-2 (3 fights)".
+    const fmt = rows => {
+      if (!rows || !rows.length) return '—';
+      if (rows.length === 1) { const r = rows[0]; return r.result + (r.method ? ' (' + abbr(r.method) + (r.round ? ' R' + r.round : '') + ')' : ''); }
+      let w = 0, l = 0, d = 0; rows.forEach(r => { if (r.result === 'W') w++; else if (r.result === 'L') l++; else d++; });
+      return w + '-' + l + (d ? '-' + d : '') + ' (' + rows.length + ' fights)';
+    };
+    const resCls = rows => {
+      if (!rows || !rows.length) return '';
+      let w = 0, l = 0; rows.forEach(r => { if (r.result === 'W') w++; else if (r.result === 'L') l++; });
+      return w > l ? 'w' : (l > w ? 'l' : '');
+    };
     shared.slice(0, 6).forEach(oppName => {
-      const a = resultVs(histA, oppName), b = resultVs(histB, oppName);
+      const a = resultsVs(histA, oppName), b = resultsVs(histB, oppName);
       const row = document.createElement('div'); row.className = 'sr-common-row';
       const nameEl = document.createElement('div'); nameEl.className = 'sr-co-name'; nameEl.textContent = oppName;
       const fe = fightersEntry(oppName);
       if (fe && typeof openFighterByName === 'function') { nameEl.classList.add('sr-co-link'); nameEl.addEventListener('click', function () { openFighterByName(fe.name); }); }
-      const aEl = document.createElement('div'); aEl.className = 'sr-co-res ' + (a && a.result === 'W' ? 'w' : (a && a.result === 'L' ? 'l' : '')); aEl.textContent = short(name) + ': ' + fmt(a);
-      const bEl = document.createElement('div'); bEl.className = 'sr-co-res ' + (b && b.result === 'W' ? 'w' : (b && b.result === 'L' ? 'l' : '')); bEl.textContent = short(opp) + ': ' + fmt(b);
+      const aEl = document.createElement('div'); aEl.className = 'sr-co-res ' + resCls(a); aEl.textContent = short(name) + ': ' + fmt(a);
+      const bEl = document.createElement('div'); bEl.className = 'sr-co-res ' + resCls(b); bEl.textContent = short(opp) + ': ' + fmt(b);
       row.appendChild(nameEl); row.appendChild(aEl); row.appendChild(bEl); box.appendChild(row);
     });
     host.appendChild(box);
@@ -101541,9 +101554,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (f.won1 || f.won2) {
       const winner = f.won1 ? f1 : f2, loser = f.won1 ? f2 : f1;
       const method = (typeof glAbbrMethod === 'function') ? glAbbrMethod(f.methodText) : (f.methodText || '');
+      // Show the finishing technique (e.g. "Suloev Stretch", "Rear Naked Choke")
+      // when the feed carries it — but not if it just restates the method.
+      const det = String(f.methodDetail || '').trim();
+      const methodFull = (det && det.toUpperCase() !== method.toUpperCase()) ? (method + ' (' + det + ')') : method;
       const rt = (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' ' : '') + (f.resTime || '');
       resultHTML = '<div class="pf-result"><span class="pf-win">' + esc(winner) + '</span> def. ' + esc(loser) +
-        '<div class="pf-method">' + esc(method) + (rt ? ' · ' + esc(rt) : '') + '</div></div>';
+        '<div class="pf-method">' + esc(methodFull) + (rt ? ' · ' + esc(rt) : '') + '</div></div>';
     } else {
       resultHTML = '<div class="pf-result">' + (f.isNC ? 'No Contest' : 'Draw') + '</div>';
     }
@@ -102864,7 +102881,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         label, isMain, isMainCard,
         won1, won2, completed, isNC, isDraw,
         date: dateStr,
-        methodText: bout.method || '', resRound: bout.resultRound || '', resTime: bout.resultTime || '',
+        methodText: bout.method || '', methodDetail: bout.methodDetails || '', resRound: bout.resultRound || '', resTime: bout.resultTime || '',
       };
     });
     return {
