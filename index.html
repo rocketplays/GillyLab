@@ -99930,18 +99930,26 @@ function renderScouting(host, name, opp, fightDate) {
     let e = FIGHTERS.find(x => x.name === n); if (e) return e;
     const t = _newsNorm(n); return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
   };
-  const methodCat = m => { m = String(m || ''); if (/sub/i.test(m)) return 'sub'; if (/dec/i.test(m)) return 'dec'; if (/ko|tko|stoppage|doctor|retire/i.test(m)) return 'ko'; return 'other'; };
+  // Categorize a result method. /sub/i catches "Submission" and "Technical
+  // Submission"; DQ / disqualification is its own bucket.
+  const methodCat = m => {
+    m = String(m || '');
+    if (/sub/i.test(m)) return 'sub';
+    if (/disqualif|\bdq\b/i.test(m)) return 'dq';
+    if (/dec/i.test(m)) return 'dec';
+    if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return 'ko';
+    return 'other';
+  };
   const finishProfile = h => {
-    let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lFin = 0;
+    let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lKO = 0, lSub = 0, lDQ = 0;
     (h || []).forEach(f => {
       if (!f || f.method === 'Upcoming' || !f.result) return;
       const c = methodCat(f.method);
       if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }
-      else if (f.result === 'L' && (c === 'ko' || c === 'sub')) { losses++; lFin++; }
-      else if (f.result === 'L') { losses++; }
+      else if (f.result === 'L') { losses++; if (c === 'ko') lKO++; else if (c === 'sub') lSub++; else if (c === 'dq') lDQ++; }
     });
     const finWins = wKO + wSub;
-    return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lFin };
+    return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lKO + lSub + lDQ, lKO, lSub, lDQ };
   };
   const ageOf = st => (st && st.dob && typeof calcAge === 'function') ? calcAge(st.dob) : null;
   const lastFightTs = h => { const d = (h || []).filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–').map(f => parseD(f.date)).filter(Boolean).sort((a, b) => b - a); return d[0] || null; };
@@ -100009,7 +100017,15 @@ function renderScouting(host, name, opp, fightDate) {
     const box = cmpBlock('Finish & durability');
     const rate = p => p.finRate == null ? '—' : (Math.round(p.finRate * 100) + '% (' + p.finWins + '/' + p.wins + ')');
     const methods = p => { const parts = []; if (p.wKO) parts.push(p.wKO + ' KO'); if (p.wSub) parts.push(p.wSub + ' SUB'); if (p.wDec) parts.push(p.wDec + ' DEC'); return parts.join(' · ') || '—'; };
-    const fin = p => (p.wins || p.losses) ? (p.timesFinished ? (p.timesFinished + '×') : 'Never') : '—';
+    const fin = p => {
+      if (!(p.wins || p.losses)) return '—';
+      if (!p.timesFinished) return 'Never';
+      const parts = [];
+      if (p.lKO) parts.push(p.lKO + ' KO/TKO');
+      if (p.lSub) parts.push(p.lSub + ' SUB');
+      if (p.lDQ) parts.push(p.lDQ + ' DQ');
+      return p.timesFinished + '× (' + parts.join(', ') + ')';
+    };
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
     cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
