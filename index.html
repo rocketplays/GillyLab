@@ -100074,18 +100074,19 @@ function renderScouting(host, name, opp, fightDate) {
     const wrap = document.createElement('div'); wrap.className = 'sr-style-wrap';
     const track = document.createElement('div'); track.className = 'sr-style-track';
     // When the two dots sit close together their name labels would overlap
-    // (worse on mobile, where the track is narrow), so stack the second
-    // fighter's label on a higher row and reserve the vertical space for it.
+    // (worse on mobile, where the track is narrow). Instead of stacking both
+    // above, drop the second fighter's label just below the track so each name
+    // sits on its own side of the line. Reserve the vertical space both ways.
     const stacked = (leanA != null && leanB != null) && Math.abs(leanA - leanB) < 24;
-    if (stacked) wrap.style.marginTop = '1.85rem';
-    const addDot = (leanVal, color, nm, raise) => {
+    if (stacked) { wrap.style.marginTop = '1.2rem'; wrap.style.marginBottom = '1.45rem'; }
+    const addDot = (leanVal, color, nm, below) => {
       if (leanVal == null) return;
       const dot = document.createElement('div'); dot.className = 'sr-style-dot';
       dot.style.left = 'calc(' + leanVal + '% - 6px)'; dot.style.background = color;
       track.appendChild(dot);
       const lab = document.createElement('div'); lab.className = 'sr-style-lab';
       lab.style.left = leanVal + '%'; lab.style.color = color; lab.textContent = short(nm);
-      if (raise) lab.style.top = '-32px';
+      if (below) lab.style.top = '12px';
       wrap.appendChild(lab);
     };
     addDot(leanA, GREEN, name, false);
