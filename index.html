@@ -99935,122 +99935,32 @@ function scoutingHistKey(n) {
 // Two-sided, matchup-specific context: age (+ gap) & layoff, finish & durability,
 // physical edges, common opponents, and injury/short-notice flags from news.
 // Fills `host` for name (f1) vs opp (f2); fightDate anchors the layoff calc.
-function renderScouting(host, name, opp, fightDate) {
-  if (!host || !name || !opp) return;
-  host.innerHTML = '';
-  const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
-  const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
-  const aKey = HK(name), bKey = HK(opp);
-  const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
-  const FSt = typeof FIGHTER_STATS !== 'undefined' ? FIGHTER_STATS : {};
-  const histA = (aKey && FH[aKey]) ? FH[aKey] : [];
-  const histB = (bKey && FH[bKey]) ? FH[bKey] : [];
-  const statsA = (aKey && FSt[aKey]) || {};
-  const statsB = (bKey && FSt[bKey]) || {};
-  const short = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
-  const abbr = m => (typeof glAbbrMethod === 'function') ? glAbbrMethod(m) : String(m || '').split(' ')[0];
-  const refTs = parseD(fightDate) || Date.now();
-  const fightersEntry = n => {
-    if (typeof FIGHTERS === 'undefined') return null;
-    let e = FIGHTERS.find(x => x.name === n); if (e) return e;
-    const t = _newsNorm(n); return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
-  };
-  // Categorize a result method. /sub/i catches "Submission" and "Technical
-  // Submission"; DQ / disqualification is its own bucket.
-  const methodCat = m => {
-    m = String(m || '');
-    if (/sub/i.test(m)) return 'sub';
-    if (/disqualif|\bdq\b/i.test(m)) return 'dq';
-    if (/dec/i.test(m)) return 'dec';
-    if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return 'ko';
-    return 'other';
-  };
-  const finishProfile = h => {
-    let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lKO = 0, lSub = 0, lDQ = 0;
-    (h || []).forEach(f => {
-      if (!f || f.method === 'Upcoming' || !f.result) return;
-      const c = methodCat(f.method);
-      if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }
-      else if (f.result === 'L') { losses++; if (c === 'ko') lKO++; else if (c === 'sub') lSub++; else if (c === 'dq') lDQ++; }
-    });
-    const finWins = wKO + wSub;
-    return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lKO + lSub + lDQ, lKO, lSub, lDQ };
-  };
-  const ageOf = st => (st && st.dob && typeof calcAge === 'function') ? calcAge(st.dob) : null;
-  const lastFightTs = h => { const d = (h || []).filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–').map(f => parseD(f.date)).filter(Boolean).sort((a, b) => b - a); return d[0] || null; };
-  const parseHt = s => { const m = /(\d+)'\s*(\d+)/.exec(String(s || '')); return m ? (+m[1]) * 12 + (+m[2]) : null; };
-  const parseReach = s => { const m = /(\d+(?:\.\d+)?)/.exec(String(s || '')); return m ? parseFloat(m[1]) : null; };
-  const fmtHt = i => i == null ? '—' : (Math.floor(i / 12) + "'" + (i % 12) + '"');
-  const diffTxt = (mine, theirs, unit) => (mine != null && theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
-
-  const flagsWrap = document.createElement('div'); flagsWrap.className = 'sr-flags'; host.appendChild(flagsWrap);
-  const cmpBlock = titleText => {
-    const box = document.createElement('div'); box.className = 'sr-common';
-    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = titleText; box.appendChild(t);
-    const head = document.createElement('div'); head.className = 'sr-cmp-row sr-cmp-head';
-    ['', short(name), short(opp)].forEach(txt => { const d = document.createElement('div'); d.textContent = txt; head.appendChild(d); });
-    box.appendChild(head); host.appendChild(box); return box;
-  };
-  const cmpRow = (box, label, aVal, bVal, aCls, bCls) => {
-    const row = document.createElement('div'); row.className = 'sr-cmp-row';
-    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = label;
-    const a = document.createElement('div'); a.className = 'sr-cmp-val ' + (aCls || ''); a.textContent = aVal;
-    const b = document.createElement('div'); b.className = 'sr-cmp-val ' + (bCls || ''); b.textContent = bVal;
-    row.appendChild(l); row.appendChild(a); row.appendChild(b); box.appendChild(row);
-  };
-
-  // Overview: moneyline, age (+ gap), physical (height/reach/stance), layoff
-  (function () {
-    const ageA = ageOf(statsA), ageB = ageOf(statsB);
-    const lfA = lastFightTs(histA), lfB = lastFightTs(histB);
-    const moA = lfA ? Math.max(0, Math.round((refTs - lfA) / 2.628e9)) : null;
-    const moB = lfB ? Math.max(0, Math.round((refTs - lfB) / 2.628e9)) : null;
-    const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
-    const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
-    const aS = statsA.stance || null, bS = statsB.stance || null;
-    const box = cmpBlock('Overview');
-    // Moneyline — pending spans filled lazily by fillPendingMoneylines().
-    (function () {
+// Shared matchup breakdown: style spectrum, output pace, and matchup-aware paths
+// — plus an optional full tale-of-the-tape rate-stat table. Used by both the Fight
+// Info dropdown (tale off) and the fight simulator (tale on). All from career
+// FIGHTER_STATS + the FIGHTERS roster (for the pronoun division check).
+function renderMatchupBreakdown(host, nameA, nameB, opts) {
+    if (!host || !nameA || !nameB) return;
+    opts = opts || {};
+    const name = nameA, opp = nameB;
+    const FSt = typeof FIGHTER_STATS !== 'undefined' ? FIGHTER_STATS : {};
+    const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
+    const statsA = (FSt[HK(name)]) || {};
+    const statsB = (FSt[HK(opp)]) || {};
+    const short = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
+    const fightersEntry = n => {
+      if (typeof FIGHTERS === 'undefined') return null;
+      let e = FIGHTERS.find(x => x.name === n); if (e) return e;
+      const nm = (typeof _newsNorm === 'function') ? _newsNorm : (z => String(z || '').toLowerCase());
+      const t = nm(n); return FIGHTERS.find(x => nm(x.name) === t) || null;
+    };
+    const cmpRow = (bx, label, aVal, bVal, aCls, bCls) => {
       const row = document.createElement('div'); row.className = 'sr-cmp-row';
-      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Moneyline'; row.appendChild(l);
-      [['1', name, opp], ['2', name, opp]].forEach(([side]) => {
-        const d = document.createElement('div'); d.className = 'sr-cmp-val';
-        const sp = document.createElement('span'); sp.className = 'fight-ml-pending';
-        sp.setAttribute('data-f1', name); sp.setAttribute('data-f2', opp); sp.setAttribute('data-side', side);
-        sp.innerHTML = '<span style="color:var(--muted);font-size:0.78rem;">…</span>';
-        d.appendChild(sp); row.appendChild(d);
-      });
-      box.appendChild(row);
-    })();
-    if (ageA != null || ageB != null) {
-      const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
-      cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
-    }
-    if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
-    if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
-    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
-    if (moA != null || moB != null) {
-      const fmtMo = m => m == null ? '—' : (m >= 12 ? (Math.floor(m / 12) + 'y ' + (m % 12) + 'm') : (m + ' mo'));
-      cmpRow(box, 'Layoff', fmtMo(moA), fmtMo(moB), (moA != null && moA >= 12) ? 'l' : '', (moB != null && moB >= 12) ? 'l' : '');
-    }
-    // Last 5 (recent form) — HTML form tiles with hover/tap tooltips.
-    (function () {
-      const row = document.createElement('div'); row.className = 'sr-cmp-row';
-      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Last 5'; row.appendChild(l);
-      [aKey, bKey].forEach(k => {
-        const d = document.createElement('div'); d.className = 'sr-cmp-val sr-form';
-        d.innerHTML = (typeof lastFiveFormHTML === 'function') ? lastFiveFormHTML(k) : '—';
-        row.appendChild(d);
-      });
-      box.appendChild(row);
-    })();
-  })();
-
-  // Style, pace & path-to-victory — all derived from career UFC rate stats (no new
-  // data). Style lean: 0 (grappler) .. 100 (striker). Pace: sig. strikes thrown per
-  // minute (output = SLpM / accuracy) — how busy the fighter is, not inflated by
-  // getting hit. Paths are matchup-aware: each references the opponent's key stat.
-  (function () {
+      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = label;
+      const a = document.createElement('div'); a.className = 'sr-cmp-val ' + (aCls || ''); a.textContent = aVal;
+      const b = document.createElement('div'); b.className = 'sr-cmp-val ' + (bCls || ''); b.textContent = bVal;
+      row.appendChild(l); row.appendChild(a); row.appendChild(b); bx.appendChild(row);
+    };
     const pct = v => { const m = /([0-9.]+)/.exec(String(v == null ? '' : v)); return m ? parseFloat(m[1]) : null; };
     const okStats = s => s && s.slpm != null && s.strAcc != null && s.tdDef != null;
     const N = s => ({
@@ -100209,7 +100119,152 @@ function renderScouting(host, name, opp, fightDate) {
     box.appendChild(pTitle);
     addPath(name, path(A, B, opp, isFemale(name)), GREEN);
     addPath(opp, path(B, A, name, isFemale(opp)), AMBER);
+    if (opts.taleOfTape && (statsA.slpm != null || statsB.slpm != null)) {
+      const pn = v => { const m = /([0-9.]+)/.exec(String(v == null ? '' : v)); return m ? parseFloat(m[1]) : null; };
+      const num = v => { if (v == null || v === '') return '—'; const q = (+v).toFixed(2); return q.replace(/\.?0+$/, '') || '0'; };
+      const pctD = v => (v == null || v === '') ? '—' : String(v);
+      const box2 = document.createElement('div'); box2.className = 'sr-common';
+      const tt = document.createElement('div'); tt.className = 'sr-common-title'; tt.style.marginTop = '0.9rem'; tt.textContent = 'Tale of the tape'; box2.appendChild(tt);
+      const hd = document.createElement('div'); hd.className = 'sr-cmp-row sr-cmp-head'; hd.innerHTML = '<div></div>';
+      const h1 = document.createElement('div'); h1.textContent = short(name); const h2 = document.createElement('div'); h2.textContent = short(opp);
+      hd.appendChild(h1); hd.appendChild(h2); box2.appendChild(hd);
+      const rows = [
+        ['Sig. strikes / min', statsA.slpm, statsB.slpm, num(statsA.slpm), num(statsB.slpm), true],
+        ['Striking accuracy', pn(statsA.strAcc), pn(statsB.strAcc), pctD(statsA.strAcc), pctD(statsB.strAcc), true],
+        ['Strikes absorbed / min', statsA.sapm, statsB.sapm, num(statsA.sapm), num(statsB.sapm), false],
+        ['Striking defense', pn(statsA.strDef), pn(statsB.strDef), pctD(statsA.strDef), pctD(statsB.strDef), true],
+        ['Knockdowns / 15', statsA.kd, statsB.kd, num(statsA.kd), num(statsB.kd), true],
+        ['Takedowns / 15', statsA.tdLanded, statsB.tdLanded, num(statsA.tdLanded), num(statsB.tdLanded), true],
+        ['Takedown accuracy', pn(statsA.tdAcc), pn(statsB.tdAcc), pctD(statsA.tdAcc), pctD(statsB.tdAcc), true],
+        ['Takedown defense', pn(statsA.tdDef), pn(statsB.tdDef), pctD(statsA.tdDef), pctD(statsB.tdDef), true],
+        ['Sub. attempts / 15', statsA.subAvg, statsB.subAvg, num(statsA.subAvg), num(statsB.subAvg), true],
+        ['Finish rate', pn(statsA.finRate), pn(statsB.finRate), pctD(statsA.finRate), pctD(statsB.finRate), true],
+      ];
+      rows.forEach(r => {
+        const aR = r[1], bR = r[2]; let aCls = '', bCls = '';
+        if (aR != null && bR != null && aR !== bR) { const aBetter = r[5] ? aR > bR : aR < bR; if (aBetter) aCls = 'w'; else bCls = 'w'; }
+        cmpRow(box2, r[0], r[3], r[4], aCls, bCls);
+      });
+      host.appendChild(box2);
+    }
+}
+if (typeof window !== 'undefined') window.renderMatchupBreakdown = renderMatchupBreakdown;
+
+function renderScouting(host, name, opp, fightDate) {
+  if (!host || !name || !opp) return;
+  host.innerHTML = '';
+  const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
+  const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
+  const aKey = HK(name), bKey = HK(opp);
+  const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
+  const FSt = typeof FIGHTER_STATS !== 'undefined' ? FIGHTER_STATS : {};
+  const histA = (aKey && FH[aKey]) ? FH[aKey] : [];
+  const histB = (bKey && FH[bKey]) ? FH[bKey] : [];
+  const statsA = (aKey && FSt[aKey]) || {};
+  const statsB = (bKey && FSt[bKey]) || {};
+  const short = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
+  const abbr = m => (typeof glAbbrMethod === 'function') ? glAbbrMethod(m) : String(m || '').split(' ')[0];
+  const refTs = parseD(fightDate) || Date.now();
+  const fightersEntry = n => {
+    if (typeof FIGHTERS === 'undefined') return null;
+    let e = FIGHTERS.find(x => x.name === n); if (e) return e;
+    const t = _newsNorm(n); return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
+  };
+  // Categorize a result method. /sub/i catches "Submission" and "Technical
+  // Submission"; DQ / disqualification is its own bucket.
+  const methodCat = m => {
+    m = String(m || '');
+    if (/sub/i.test(m)) return 'sub';
+    if (/disqualif|\bdq\b/i.test(m)) return 'dq';
+    if (/dec/i.test(m)) return 'dec';
+    if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return 'ko';
+    return 'other';
+  };
+  const finishProfile = h => {
+    let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lKO = 0, lSub = 0, lDQ = 0;
+    (h || []).forEach(f => {
+      if (!f || f.method === 'Upcoming' || !f.result) return;
+      const c = methodCat(f.method);
+      if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }
+      else if (f.result === 'L') { losses++; if (c === 'ko') lKO++; else if (c === 'sub') lSub++; else if (c === 'dq') lDQ++; }
+    });
+    const finWins = wKO + wSub;
+    return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lKO + lSub + lDQ, lKO, lSub, lDQ };
+  };
+  const ageOf = st => (st && st.dob && typeof calcAge === 'function') ? calcAge(st.dob) : null;
+  const lastFightTs = h => { const d = (h || []).filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–').map(f => parseD(f.date)).filter(Boolean).sort((a, b) => b - a); return d[0] || null; };
+  const parseHt = s => { const m = /(\d+)'\s*(\d+)/.exec(String(s || '')); return m ? (+m[1]) * 12 + (+m[2]) : null; };
+  const parseReach = s => { const m = /(\d+(?:\.\d+)?)/.exec(String(s || '')); return m ? parseFloat(m[1]) : null; };
+  const fmtHt = i => i == null ? '—' : (Math.floor(i / 12) + "'" + (i % 12) + '"');
+  const diffTxt = (mine, theirs, unit) => (mine != null && theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
+
+  const flagsWrap = document.createElement('div'); flagsWrap.className = 'sr-flags'; host.appendChild(flagsWrap);
+  const cmpBlock = titleText => {
+    const box = document.createElement('div'); box.className = 'sr-common';
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = titleText; box.appendChild(t);
+    const head = document.createElement('div'); head.className = 'sr-cmp-row sr-cmp-head';
+    ['', short(name), short(opp)].forEach(txt => { const d = document.createElement('div'); d.textContent = txt; head.appendChild(d); });
+    box.appendChild(head); host.appendChild(box); return box;
+  };
+  const cmpRow = (box, label, aVal, bVal, aCls, bCls) => {
+    const row = document.createElement('div'); row.className = 'sr-cmp-row';
+    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = label;
+    const a = document.createElement('div'); a.className = 'sr-cmp-val ' + (aCls || ''); a.textContent = aVal;
+    const b = document.createElement('div'); b.className = 'sr-cmp-val ' + (bCls || ''); b.textContent = bVal;
+    row.appendChild(l); row.appendChild(a); row.appendChild(b); box.appendChild(row);
+  };
+
+  // Overview: moneyline, age (+ gap), physical (height/reach/stance), layoff
+  (function () {
+    const ageA = ageOf(statsA), ageB = ageOf(statsB);
+    const lfA = lastFightTs(histA), lfB = lastFightTs(histB);
+    const moA = lfA ? Math.max(0, Math.round((refTs - lfA) / 2.628e9)) : null;
+    const moB = lfB ? Math.max(0, Math.round((refTs - lfB) / 2.628e9)) : null;
+    const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
+    const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
+    const aS = statsA.stance || null, bS = statsB.stance || null;
+    const box = cmpBlock('Overview');
+    // Moneyline — pending spans filled lazily by fillPendingMoneylines().
+    (function () {
+      const row = document.createElement('div'); row.className = 'sr-cmp-row';
+      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Moneyline'; row.appendChild(l);
+      [['1', name, opp], ['2', name, opp]].forEach(([side]) => {
+        const d = document.createElement('div'); d.className = 'sr-cmp-val';
+        const sp = document.createElement('span'); sp.className = 'fight-ml-pending';
+        sp.setAttribute('data-f1', name); sp.setAttribute('data-f2', opp); sp.setAttribute('data-side', side);
+        sp.innerHTML = '<span style="color:var(--muted);font-size:0.78rem;">…</span>';
+        d.appendChild(sp); row.appendChild(d);
+      });
+      box.appendChild(row);
+    })();
+    if (ageA != null || ageB != null) {
+      const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
+      cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
+    }
+    if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
+    if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
+    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
+    if (moA != null || moB != null) {
+      const fmtMo = m => m == null ? '—' : (m >= 12 ? (Math.floor(m / 12) + 'y ' + (m % 12) + 'm') : (m + ' mo'));
+      cmpRow(box, 'Layoff', fmtMo(moA), fmtMo(moB), (moA != null && moA >= 12) ? 'l' : '', (moB != null && moB >= 12) ? 'l' : '');
+    }
+    // Last 5 (recent form) — HTML form tiles with hover/tap tooltips.
+    (function () {
+      const row = document.createElement('div'); row.className = 'sr-cmp-row';
+      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Last 5'; row.appendChild(l);
+      [aKey, bKey].forEach(k => {
+        const d = document.createElement('div'); d.className = 'sr-cmp-val sr-form';
+        d.innerHTML = (typeof lastFiveFormHTML === 'function') ? lastFiveFormHTML(k) : '—';
+        row.appendChild(d);
+      });
+      box.appendChild(row);
+    })();
   })();
+
+  // Style, pace, path-to-victory + tale of the tape now live in the shared
+  // renderMatchupBreakdown() (also used by the simulator's deep-dive). Fight Info
+  // stays lean here — tale of the tape off.
+  if (typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(host, name, opp, { taleOfTape: false });
 
   // Finish & durability
   (function () {
@@ -105807,8 +105862,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div>
       </div>
       <div class="sim-power-note">Composite rating from striking output/defense, grappling &amp; finishing rate, and recent form — drives the win-probability estimate above.</div>
+      <div style="margin-top:1.25rem;border-top:1px solid var(--border);"></div>
+      <div id="simBreakdown"></div>
     `;
     loadSimResultPhotos();
+    { const _bd = document.getElementById('simBreakdown'); if (_bd && typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(_bd, nameA, nameB, { taleOfTape: true }); }
   }
 
   // Same local-photo-first / PHOTO_MAP-fallback approach as
