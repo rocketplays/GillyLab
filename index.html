@@ -100119,6 +100119,56 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     box.appendChild(pTitle);
     addPath(name, path(A, B, opp, isFemale(name)), GREEN);
     addPath(opp, path(B, A, name, isFemale(opp)), AMBER);
+    // Storylines — notable, matchup-relevant nuggets from fight history, shown
+    // only when something actually stands out. No "never finished" note here —
+    // the Finish & durability section already says so.
+    (function () {
+      const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
+      const nowTs = Date.now(), YEAR = 365.25 * 24 * 3600 * 1000;
+      const mcat = mth => { const q = String(mth || ''); if (/sub/i.test(q)) return 'sub'; if (/dec/i.test(q)) return 'dec'; if (/dq|disqualif/i.test(q)) return 'dq'; if (/ko|tko|knockout|stoppage|doctor|retire/i.test(q)) return 'ko'; return 'other'; };
+      const isFin = c => c === 'ko' || c === 'sub';
+      const pd = d => { const t = Date.parse(d); return isFinite(t) ? t : null; };
+      const real = h => (h || []).filter(f => f && f.method !== 'Upcoming' && f.result && f.result !== '–').slice().sort((a, b) => (pd(b.date) || 0) - (pd(a.date) || 0));
+      const bullets = (h, oppStance) => {
+        const out = []; if (!h.length) return out;
+        let fs = 0; for (const f of h) { if (f.result === 'W' && isFin(mcat(f.method))) fs++; else break; }
+        if (fs >= 3) out.push('On a ' + fs + '-fight finish streak.');
+        else { const finW = h.slice(0, 5).filter(f => f.result === 'W' && isFin(mcat(f.method))).length; if (finW >= 3) out.push('Finished ' + finW + ' of the last 5.'); }
+        const fi = h.findIndex(f => f.result === 'L' && isFin(mcat(f.method)));
+        if (fi !== -1) {
+          const t = pd(h[fi].date); if (t) { const yrs = Math.floor((nowTs - t) / YEAR); if (yrs >= 4) out.push("Hasn't been finished in " + yrs + ' years.'); }
+          const finL3 = h.slice(0, 3).filter(f => f.result === 'L' && isFin(mcat(f.method))).length; if (finL3 >= 2) out.push('Finished in ' + finL3 + ' of the last 3 — durability questions.');
+        }
+        if (oppStance && /south|switch/i.test(oppStance)) {
+          let w = 0, l = 0;
+          for (const f of h) { const os = (FSt[HK(f.opponent)] || {}).stance; if (!os || String(os).toLowerCase() !== String(oppStance).toLowerCase()) continue; if (f.result === 'W') w++; else if (f.result === 'L') l++; }
+          const n = w + l, word = /switch/i.test(oppStance) ? 'switch-stance fighters' : 'southpaws';
+          if (n >= 3) {
+            if (l === 0) out.push(w + '-0 vs ' + word + '.');
+            else if (w === 0) out.push('0-' + l + ' vs ' + word + '.');
+            else if (w / n <= 0.34) out.push('Just ' + w + '-' + l + ' vs ' + word + '.');
+            else if (w / n >= 0.75) out.push(w + '-' + l + ' vs ' + word + '.');
+          }
+        }
+        return out;
+      };
+      const aBul = bullets(real(FH[HK(name)]), (statsB || {}).stance);
+      const bBul = bullets(real(FH[HK(opp)]), (statsA || {}).stance);
+      if (!aBul.length && !bBul.length) return;
+      const box3 = document.createElement('div'); box3.className = 'sr-common';
+      const t3 = document.createElement('div'); t3.className = 'sr-common-title'; t3.style.marginTop = '0.9rem'; t3.textContent = 'Storylines'; box3.appendChild(t3);
+      const add = (nm, color, arr) => {
+        arr.forEach(txt => {
+          const row = document.createElement('div'); row.style.cssText = 'font-size:0.74rem;line-height:1.5;padding:3px 0;color:var(--text);';
+          const tag = document.createElement('span'); tag.style.cssText = 'color:' + color + ';font-weight:700;margin-right:6px;'; tag.textContent = short(nm);
+          row.appendChild(tag); row.appendChild(document.createTextNode(txt)); box3.appendChild(row);
+        });
+      };
+      add(name, 'var(--accent)', aBul);
+      add(opp, '#ffcf7a', bBul);
+      host.appendChild(box3);
+    })();
+
     if (opts.taleOfTape && (statsA.slpm != null || statsB.slpm != null)) {
       const pn = v => { const m = /([0-9.]+)/.exec(String(v == null ? '' : v)); return m ? parseFloat(m[1]) : null; };
       const num = v => { if (v == null || v === '') return '—'; const q = (+v).toFixed(2); return q.replace(/\.?0+$/, '') || '0'; };
