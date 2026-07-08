@@ -770,3 +770,128 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
   </div>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
 </body></html>`;
+
+/* ── Internal model scorecard (founder-gated /scorecard) ───────────────────────
+ * Renders the embedded worker/scorecard-data.js (CLV + calibration) so we never
+ * serve the raw prediction files to subscribers. Proof-of-concept, internal only.
+ */
+export const scorecardPage = (data) => {
+  const d = data || {};
+  const sc = d.scorecard || {};
+  const graded = Array.isArray(d.graded) ? d.graded : [];
+  const pct = x => (x == null ? '—' : (x * 100).toFixed(0) + '%');
+  const pct1 = x => (x == null ? '—' : (x * 100).toFixed(1) + '%');
+  const pts = x => (x == null ? '—' : (x >= 0 ? '+' : '') + (x * 100).toFixed(1) + ' pts');
+  const esc = s => String(s == null ? '' : s).replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const n = sc.nGraded || 0;
+
+  // ---- calibration chart (predicted vs actual), SVG ----
+  const cal = Array.isArray(sc.calibration) ? sc.calibration : [];
+  const W = 320, H = 320, P = 34;
+  const sx = v => P + v * (W - 2 * P);
+  const sy = v => (H - P) - v * (H - 2 * P);
+  const dots = cal.map(b => {
+    const r = Math.max(4, Math.min(16, Math.sqrt(b.n) * 3));
+    return `<circle cx="${sx(b.predicted).toFixed(1)}" cy="${sy(b.actual).toFixed(1)}" r="${r.toFixed(1)}"
+      fill="rgba(0,230,104,.35)" stroke="var(--accent)" stroke-width="1.5"></circle>`;
+  }).join('');
+  const calChart = `<svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:340px">
+    <rect x="${P}" y="${P}" width="${W - 2 * P}" height="${H - 2 * P}" fill="none" stroke="var(--line)"></rect>
+    <line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(1)}" y2="${sy(1)}" stroke="var(--muted)" stroke-dasharray="4 4"></line>
+    ${dots}
+    <text x="${W / 2}" y="${H - 6}" fill="var(--muted)" font-size="11" text-anchor="middle">model predicted win %</text>
+    <text x="12" y="${H / 2}" fill="var(--muted)" font-size="11" text-anchor="middle" transform="rotate(-90 12 ${H / 2})">actual win %</text>
+  </svg>`;
+
+  const card = (label, val, sub) => `<div class="scard"><div class="slab">${label}</div><div class="sval">${val}</div>${sub ? `<div class="ssub">${sub}</div>` : ''}</div>`;
+
+  const clv = sc.clv || {};
+  const brier = sc.brier || {};
+  const acc = sc.accuracy || {};
+  const beatMkt = (brier.modelOpen != null && brier.marketClose != null)
+    ? (brier.modelOpen < brier.marketClose ? 'model ahead' : 'market ahead') : '';
+
+  const body = n === 0 ? `
+    <div class="empty">
+      <h2>No graded fights yet</h2>
+      <p class="muted">The logger is banking model-vs-market snapshots for every upcoming fight, and the grader will score them the day after each card resolves. Check back after the next event.</p>
+      <p class="muted" style="font-size:.82rem;margin-top:1.4rem">Snapshots are accumulating now — this is the capture phase. Calibration and CLV appear here once fights start resolving.</p>
+    </div>` : `
+    <div class="cards">
+      ${card('Graded fights', n, 'decided bouts')}
+      ${card('CLV hit rate', pct(clv.hitRate), `market moved toward model · n=${clv.nWithMovement || 0}`)}
+      ${card('CLV (leaned)', pct((clv.leanedOnly || {}).hitRate), `≥2pt disagreements · n=${(clv.leanedOnly || {}).n || 0}`)}
+      ${card('Avg line move', pts(clv.avgMovePts), 'toward model, per fight')}
+      ${card('Model Brier', brier.modelOpen == null ? '—' : brier.modelOpen.toFixed(3), `vs market ${brier.marketClose == null ? '—' : brier.marketClose.toFixed(3)} · ${beatMkt}`)}
+      ${card('Model accuracy', pct(acc.model), `market ${pct(acc.marketClose)}`)}
+    </div>
+    <div class="panel">
+      <h3>Calibration</h3>
+      <p class="muted">Each dot is a predicted-probability band; size ∝ sample. On the dashed line = perfectly calibrated.</p>
+      ${calChart}
+    </div>
+    <div class="panel">
+      <h3>Graded fights</h3>
+      <div class="tw"><table>
+        <thead><tr><th>Fight</th><th>Model</th><th>Mkt open→close</th><th>Result</th><th>CLV</th></tr></thead>
+        <tbody>
+        ${graded.map(g => {
+          const aName = (g.a && (g.a.feed || g.a.db)) || '?';
+          const bName = (g.b && (g.b.feed || g.b.db)) || '?';
+          const won = g.winner === 'A' ? aName : bName;
+          const clvCell = !g.clv || g.clv.toward == null ? '—'
+            : `<span class="${g.clv.toward ? 'good' : 'bad'}">${g.clv.toward ? '✓' : '✗'} ${pts(g.clv.pts)}</span>`;
+          return `<tr>
+            <td>${esc(aName)} <span class="muted">vs</span> ${esc(bName)}</td>
+            <td>${pct1(g.modelOpen)}</td>
+            <td>${pct1(g.marketOpen)} → ${pct1(g.marketClose)}</td>
+            <td>${esc(won)} <span class="muted">(${esc(g.method || '')}${g.round ? ' R' + g.round : ''})</span></td>
+            <td>${clvCell}</td>
+          </tr>`;
+        }).join('')}
+        </tbody>
+      </table></div>
+    </div>`;
+
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model Scorecard — GillyLab (internal)</title>
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55)}
+  *{box-sizing:border-box}html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:#fff;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:2.4rem 1.25rem 4rem}
+  .top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem}
+  .brand{font-weight:900;letter-spacing:.14em}.brand .a{color:var(--accent)}
+  .tag{font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#04120a;background:var(--accent);padding:.2rem .5rem;border-radius:6px}
+  h1{font-size:1.7rem;margin:1.2rem 0 .2rem}
+  .muted{color:var(--muted)}
+  .gen{color:var(--muted);font-size:.8rem;margin-bottom:1.6rem}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;margin:1.2rem 0}
+  .scard{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem}
+  .slab{font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .sval{font-size:1.6rem;font-weight:850;margin:.25rem 0 .1rem;color:var(--accent)}
+  .ssub{font-size:.76rem;color:var(--muted)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.2rem 1.2rem;margin:1.2rem 0}
+  .panel h3{margin:0 0 .3rem}
+  .tw{overflow-x:auto}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:.6rem}
+  th,td{text-align:left;padding:.5rem .5rem;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--muted);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.05em}
+  .good{color:var(--accent)}.bad{color:#ff6a5e}
+  .empty{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:2.4rem 1.6rem;text-align:center;margin-top:2rem}
+  .empty h2{margin:.2rem 0 .6rem}
+  .note{margin-top:1.6rem;font-size:.8rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.8rem}
+  a{color:var(--accent);text-decoration:none}
+</style></head><body><div class="wrap">
+  <div class="top">
+    <div class="brand">GILLY<span class="a">LAB</span></div>
+    <span class="tag">Internal · not public</span>
+  </div>
+  <h1>Model Scorecard</h1>
+  <div class="gen">Proof of concept — model win-probability vs market. ${sc.generatedAt ? 'Updated ' + esc(sc.generatedAt) : ''}</div>
+  ${body}
+  <div class="note">${esc(sc.note || '')} These numbers are internal and unvalidated until the sample is large enough to be meaningful; no public claims until then.</div>
+  <p style="margin-top:1.6rem"><a href="/">← Back to GillyLab</a></p>
+</div></body></html>`;
+};

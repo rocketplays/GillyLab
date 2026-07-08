@@ -17,11 +17,19 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage } from "./pages.js";
 import landingData from "./landing-data.js";
+import scorecardData from "./scorecard-data.js";
 
 const COOKIE = "gl_session";
 const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
+
+// Founder-only allow-list for the internal /scorecard model-performance page.
+// Add co-founder account emails here to grant them access. Everyone else — even
+// paying subscribers — gets bounced.
+const FOUNDER_EMAILS = new Set([
+  "jeffreyadler123@gmail.com",
+]);
 
 // The ONLY files under ./public served WITHOUT a subscribed session — an
 // explicit allow-list for the logged-out marketing page. Everything else (the
@@ -270,6 +278,14 @@ export default {
 
       // ---- everything else is GATED: the app, its data + photos ----
       const s = await readSession(request, env);
+
+      // Internal, founder-only: model-performance scorecard. Requires a session
+      // whose email is on the founder allow-list; not linked anywhere and never
+      // shown to ordinary subscribers.
+      if (path === "/scorecard") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        return html(scorecardPage(scorecardData), 200, { "Cache-Control": "private, no-store" });
+      }
 
       if (path === "/" || path === "/index.html") {
         if (!s) return html(landingPage());                    // logged-out -> marketing

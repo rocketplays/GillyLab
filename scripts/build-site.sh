@@ -12,6 +12,7 @@ git ls-files \
   | grep -vE '\.(py|md|sh)$' \
   | grep -vE '^[^/]*\.txt$' \
   | grep -vE '^data/_' \
+  | grep -vE '^data/predictions-' \
   > /tmp/gl-site-files
 rsync -a --files-from=/tmp/gl-site-files ./ public/
 
