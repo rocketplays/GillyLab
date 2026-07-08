@@ -100069,7 +100069,7 @@ function renderScouting(host, name, opp, fightDate) {
     const GREEN = 'var(--accent)', AMBER = '#ffcf7a';
 
     const box = document.createElement('div'); box.className = 'sr-common';
-    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = 'Style & pace'; box.appendChild(t);
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = 'Style'; box.appendChild(t);
 
     const wrap = document.createElement('div'); wrap.className = 'sr-style-wrap';
     const track = document.createElement('div'); track.className = 'sr-style-track';
@@ -100089,12 +100089,18 @@ function renderScouting(host, name, opp, fightDate) {
     ends.innerHTML = '<span>Grappler</span><span>Striker</span>'; box.appendChild(ends);
 
     const oA = A ? output(A) : null, oB = B ? output(B) : null;
+    const paceTitle = document.createElement('div'); paceTitle.className = 'sr-common-title'; paceTitle.style.marginTop = '0.9rem'; paceTitle.textContent = 'Pace';
+    box.appendChild(paceTitle);
+    const paceHead = document.createElement('div'); paceHead.className = 'sr-cmp-row sr-cmp-head';
+    paceHead.innerHTML = '<div></div>';
+    const phA = document.createElement('div'); phA.textContent = short(name); phA.style.color = GREEN;
+    const phB = document.createElement('div'); phB.textContent = short(opp); phB.style.color = AMBER;
+    paceHead.appendChild(phA); paceHead.appendChild(phB); box.appendChild(paceHead);
     const paceRow = document.createElement('div'); paceRow.className = 'sr-cmp-row';
-    const pl = document.createElement('div'); pl.className = 'sr-cmp-lbl';
-    pl.innerHTML = 'Pace<br><span style="font-size:0.62rem;color:var(--muted);">sig. strikes thrown / min</span>';
+    const pl = document.createElement('div'); pl.className = 'sr-cmp-lbl'; pl.textContent = 'sig. strikes thrown / min';
     paceRow.appendChild(pl);
     const hiA = oA != null && (oB == null || oA >= oB), hiB = oB != null && (oA == null || oB > oA);
-    const pv = (v, hi) => { const d = document.createElement('div'); d.className = 'sr-cmp-val' + (hi ? ' w' : ''); d.textContent = v == null ? '—' : v; return d; };
+    const pv = (v, hi) => { const d = document.createElement('div'); d.className = 'sr-cmp-val'; d.style.fontSize = '0.92rem'; d.style.fontWeight = hi ? '800' : '600'; if (hi) d.style.color = 'var(--accent)'; d.textContent = v == null ? '—' : v; return d; };
     paceRow.appendChild(pv(oA, hiA)); paceRow.appendChild(pv(oB, hiB));
     box.appendChild(paceRow); host.appendChild(box);
 
