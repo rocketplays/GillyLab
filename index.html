@@ -2013,6 +2013,7 @@
     .sr-chip.sr-warn { background: rgba(255, 176, 32, 0.1); border-color: rgba(255, 176, 32, 0.35); }
     .sr-chip.sr-chip-link { cursor: pointer; transition: background 0.15s, border-color 0.15s; }
     .sr-chip.sr-chip-link:hover, .sr-chip.sr-chip-link:focus-visible { background: rgba(255, 176, 32, 0.18); border-color: rgba(255, 176, 32, 0.6); outline: none; }
+    .sr-chip-go { margin-left: auto; flex-shrink: 0; color: #ffb020; font-weight: 800; font-size: 0.66rem; }
     .sr-chip-top { display: flex; align-items: center; gap: 0.4rem; }
     .sr-ico { font-size: 0.95rem; }
     .sr-lab { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
@@ -100081,7 +100082,7 @@ function renderScouting(host, name, opp, fightDate) {
       const bE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, opp) : null;
       const addChip = (icon, lab, val, note, onClick) => {
         const chip = document.createElement('div'); chip.className = 'sr-chip sr-warn';
-        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span></div><div class="sr-val"></div><div class="sr-note"></div>';
+        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span>' + (onClick ? '<span class="sr-chip-go">View ›</span>' : '') + '</div><div class="sr-val"></div><div class="sr-note"></div>';
         chip.querySelector('.sr-ico').textContent = icon; chip.querySelector('.sr-lab').textContent = lab;
         chip.querySelector('.sr-val').textContent = val; chip.querySelector('.sr-note').textContent = note;
         if (onClick) {
@@ -100092,6 +100093,10 @@ function renderScouting(host, name, opp, fightDate) {
         flagsWrap.appendChild(chip);
       };
       const who = (aE && aE.hasInjuryNews) ? short(name) : ((bE && bE.hasInjuryNews) ? short(opp) : null);
+      // Full name of whichever fighter's feed actually carries the injury/card
+      // news (the replacement's own feed is often empty — the story lives in the
+      // opponent's coverage), so both chips open the feed that has something.
+      const newsFull = (aE && aE.hasInjuryNews) ? name : ((bE && bE.hasInjuryNews) ? opp : null);
       // Identify the actual short-notice REPLACEMENT. A headline naming a fighter
       // as the one being FACED ("…steps in to face Durden") means the OTHER
       // fighter is the replacement — so don't flag the fighter who's merely the
@@ -100127,10 +100132,9 @@ function renderScouting(host, name, opp, fightDate) {
       // the change has already happened — show that, and suppress the pending
       // "bout may change" flag (which would otherwise fire on the now-stale news).
       if (snName) {
-        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice');
+        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', newsFull ? function () { openFighterNews(newsFull); } : null);
       } else if (who) {
-        const whoFull = (aE && aE.hasInjuryNews) ? name : opp;   // full name of the injured fighter
-        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news — tap for news', function () { openFighterNews(whoFull); });
+        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
       }
     }).catch(function () {});
   }
