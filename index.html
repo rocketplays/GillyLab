@@ -2049,6 +2049,26 @@
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
+    /* Parlay calculator — clickable odds cells + fixed bottom bet slip. */
+    .pl-pick { cursor: pointer; transition: background 0.15s; }
+    .pl-pick:hover { background: rgba(0, 230, 104, 0.08); }
+    .pl-pick.sel { background: rgba(0, 230, 104, 0.16); box-shadow: inset 0 0 0 1px var(--accent); }
+    .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: none; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45); }
+    .parlay-slip.open { display: block; }
+    .pl-inner { max-width: var(--cmax); margin: 0 auto; padding: 0.8rem 1.25rem 0.9rem; }
+    .pl-legs { max-height: 32vh; overflow-y: auto; }
+    .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.78rem; }
+    .pl-leg-x { cursor: pointer; color: var(--muted); font-weight: 800; padding: 0 4px; line-height: 1; }
+    .pl-leg-x:hover { color: #ff6a5e; }
+    .pl-warn { color: #ffcf7a; font-size: 0.7rem; padding: 6px 0 0; line-height: 1.4; }
+    .pl-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 0.6rem; flex-wrap: wrap; }
+    .pl-cap { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+    .pl-total { font-size: 1.05rem; font-weight: 800; color: var(--accent); }
+    .pl-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
+    .pl-clear:hover { color: #ff6a5e; border-color: #ff6a5e; }
+    .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 70; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    .pl-toast.show { opacity: 1; }
+    @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg { font-size: 0.72rem; } }
     .sr-style-wrap { position: relative; margin: 0.6rem 6px 0.3rem; }
     .sr-style-lab { position: absolute; top: -16px; transform: translateX(-50%); font-size: 0.66rem; white-space: nowrap; }
     .sr-style-track { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); position: relative; }
@@ -3315,6 +3335,7 @@
   <div class="divider"></div>
 
   <div id="odds-dynamic-content"></div>
+  <div id="parlaySlip" class="parlay-slip" aria-live="polite"></div>
 
   <div class="divider"></div>
   <div class="page-header" style="padding-top:2rem;">
@@ -102441,17 +102462,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!entry || !entry.method || !Object.keys(entry.method).length) return placeholder;
     const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
     const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
+    const fid = plFightId(fight), dist = plDistance(fight);
+    const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
       Object.keys(entry.method).forEach(bookKey => {
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.method[bookKey] && entry.method[bookKey][sideKey];
         if (!info || !vals) return;
+        const base = { fid: fid, dist: dist, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'method', side: sideKey };
         rows += `<tr class="row-${info.cls}">
           <td><span class="book-name book-${info.cls}">${info.label}</span></td>
-          <td>${fmtOdds(vals.ko)}</td>
-          <td>${fmtOdds(vals.sub)}</td>
-          <td>${fmtOdds(vals.dec)}</td>
+          ${plCell(Object.assign({}, base, { method: 'ko', label: name + ' by KO/TKO' }), vals.ko)}
+          ${plCell(Object.assign({}, base, { method: 'sub', label: name + ' by submission' }), vals.sub)}
+          ${plCell(Object.assign({}, base, { method: 'dec', label: name + ' by decision' }), vals.dec)}
         </tr>`;
       });
       return rows ? `<tr class="prop-subheader"><td colspan="4"><strong>${name}</strong></td></tr>${rows}` : '';
@@ -102470,13 +102494,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     for (let r = 1; r <= rounds; r++) roundKeys.push('r' + r);
     const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
     const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
+    const fid = plFightId(fight), dist = plDistance(fight);
+    const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
       Object.keys(entry.roundProps).forEach(bookKey => {
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.roundProps[bookKey] && entry.roundProps[bookKey][sideKey];
         if (!info || !vals) return;
-        const cells = roundKeys.map(rk => `<td>${fmtOdds(vals[rk])}</td>`).join('');
+        const base = { fid: fid, dist: dist, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'round', side: sideKey };
+        const cells = roundKeys.map((rk, i) => plCell(Object.assign({}, base, { round: i + 1, label: name + ' in R' + (i + 1) }), vals[rk])).join('');
         rows += `<tr class="row-${info.cls}"><td><span class="book-name book-${info.cls}">${info.label}</span></td>${cells}</tr>`;
       });
       return rows ? `<tr class="prop-subheader"><td colspan="${rounds + 1}"><strong>${name}</strong></td></tr>${rows}` : '';
@@ -102513,9 +102540,149 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return `<span class="odds-value ${cls}">${str}</span>`;
   }
 
+  // ── PARLAY CALCULATOR ─────────────────────────────────────────────────────
+  // Legs are picked by clicking any priced cell (moneyline, rounds O/U, method,
+  // round props). Rules: one sportsbook per slip (no cross-book), one
+  // winner/method/round pick per fight (those legs are correlated — a naive
+  // multiply would misprice them), and no logically impossible or redundant
+  // combinations. Compatible-but-correlated same-fight legs (e.g. Over 2.5 plus
+  // a round-3 finish, which can both land) are allowed with a warning.
+  //
+  // Contradiction/implication are decided by brute force over the fight's coarse
+  // outcome space rather than a hand-written conflict matrix, so the rules stay
+  // correct for both 3- and 5-round bouts.
+  const PARLAY = { book: null, legs: [] };
+  function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
+  function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
+  // Outcome = winner, method, ending round, and which half of that round (the
+  // ".5" on a totals line is the 2:30 mark of the next round).
+  function plOutcomes(dist) {
+    const out = [];
+    ['f1', 'f2'].forEach(w => {
+      out.push({ w: w, m: 'dec', r: dist, h: 'late' });
+      ['ko', 'sub'].forEach(m => { for (let r = 1; r <= dist; r++) { out.push({ w: w, m: m, r: r, h: 'early' }); out.push({ w: w, m: m, r: r, h: 'late' }); } });
+    });
+    return out;
+  }
+  function plOver(o, line, dist) {
+    if (o.m === 'dec') return dist > line;          // a decision goes the full distance
+    const N = Math.floor(line);
+    if (o.r > N + 1) return true;
+    if (o.r === N + 1) return o.h === 'late';       // past the 2:30 mark of round N+1
+    return false;
+  }
+  function plSat(leg, o, dist) {
+    if (leg.mkt === 'ml') return o.w === leg.side;
+    if (leg.mkt === 'method') return o.w === leg.side && o.m === leg.method;
+    if (leg.mkt === 'round') return o.w === leg.side && o.m !== 'dec' && o.r === Number(leg.round);
+    if (leg.mkt === 'total') return leg.ou === 'over' ? plOver(o, Number(leg.line), dist) : !plOver(o, Number(leg.line), dist);
+    return false;
+  }
+  function plSatisfiable(legs, dist) { return plOutcomes(dist).some(o => legs.every(l => plSat(l, o, dist))); }
+  function plImplies(a, b, dist) { let any = false; const os = plOutcomes(dist); for (let i = 0; i < os.length; i++) { if (plSat(a, os[i], dist)) { any = true; if (!plSat(b, os[i], dist)) return false; } } return any; }
+  function plValidate(legs, newLeg) {
+    const dist = Number(newLeg.dist);
+    const same = legs.filter(l => l.fid === newLeg.fid);
+    const isOutcome = l => l.mkt !== 'total';
+    if (isOutcome(newLeg) && same.some(isOutcome)) return { ok: false, reason: 'Only one winner / method / round pick per fight — those legs are correlated.' };
+    if (!plSatisfiable(same.concat([newLeg]), dist)) return { ok: false, reason: "That can't happen alongside another pick on this fight." };
+    for (let i = 0; i < same.length; i++) {
+      if (plImplies(same[i], newLeg, dist)) return { ok: false, reason: 'Redundant — a pick you already have guarantees this one.' };
+      if (plImplies(newLeg, same[i], dist)) return { ok: false, reason: 'Redundant — this pick would guarantee one you already have.' };
+    }
+    return { ok: true, warn: same.length > 0 };
+  }
+  function plLegKey(l) { return [l.fid, l.mkt, l.side || '', l.method || '', l.round || '', l.ou || '', l.line || ''].join('~'); }
+  function plFightId(fight) { return pairKey(fight.home_team, fight.away_team); }
+  function plDistance(fight) {
+    const e = findManualProps(fight);
+    if (e && (e.rounds === 5 || e.rounds === 3)) return e.rounds;
+    let maxLine = 0;
+    (fight.bookmakers || []).forEach(bk => { const m = (bk.markets || []).find(x => x.key === 'totals'); if (m) (m.outcomes || []).forEach(o => { if (typeof o.point === 'number' && o.point > maxLine) maxLine = o.point; }); });
+    return maxLine > 3 ? 5 : 3;
+  }
+  function plCell(meta, odds) {
+    if (odds === null || odds === undefined) return `<td>${fmtOdds(odds)}</td>`;
+    const attrs = Object.keys(meta).filter(k => meta[k] !== undefined && meta[k] !== null)
+      .map(k => `data-${k}="${escHtmlAttr(String(meta[k]))}"`).join(' ');
+    return `<td class="pl-pick" role="button" tabindex="0" ${attrs} data-odds="${odds}">${fmtOdds(odds)}</td>`;
+  }
+  function plToast(msg) {
+    let t = document.getElementById('plToast');
+    if (!t) { t = document.createElement('div'); t.id = 'plToast'; t.className = 'pl-toast'; (document.getElementById('page-odds') || document.body).appendChild(t); }
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(plToast._t); plToast._t = setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function plToggle(td) {
+    const ds = td.dataset;
+    const leg = { fid: ds.fid, dist: Number(ds.dist), book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
+      mkt: ds.mkt, side: ds.side, method: ds.method, round: ds.round ? Number(ds.round) : undefined,
+      ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label };
+    const key = plLegKey(leg);
+    const idx = PARLAY.legs.findIndex(l => plLegKey(l) === key);
+    if (idx >= 0) { PARLAY.legs.splice(idx, 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
+    if (PARLAY.legs.length && PARLAY.book && leg.book !== PARLAY.book) { plToast('One sportsbook per parlay — your slip is ' + PARLAY.legs[0].booklabel + ', that leg is ' + leg.booklabel + '.'); return; }
+    const v = plValidate(PARLAY.legs, leg);
+    if (!v.ok) { plToast(v.reason); return; }
+    PARLAY.book = leg.book; PARLAY.legs.push(leg); plRender();
+  }
+  function plRender() {
+    const el = document.getElementById('parlaySlip');
+    const keys = {}; PARLAY.legs.forEach(l => { keys[plLegKey(l)] = 1; });
+    document.querySelectorAll('#odds-dynamic-content .pl-pick').forEach(td => {
+      td.classList.toggle('sel', !!keys[plLegKey(td.dataset)]);
+    });
+    if (!el) return;
+    if (!PARLAY.legs.length) { el.classList.remove('open'); el.innerHTML = ''; return; }
+    const dec = PARLAY.legs.reduce((p, l) => p * plAmToDec(l.odds), 1);
+    const am = plDecToAm(dec);
+    const prob = (100 / dec).toFixed(1);
+    const ret = (100 * dec).toFixed(2);
+    const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
+    const correlated = Object.keys(byFight).some(k => byFight[k] > 1);
+    const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-leg">
+        <div style="min-width:0;"><span style="color:var(--muted);">${escHtmlAttr(l.fight || '')}</span> · ${escHtmlAttr(l.label)}</div>
+        <div style="display:flex;align-items:center;gap:10px;flex:0 0 auto;">
+          <span class="odds-value ${l.odds < 0 ? 'fav' : 'dog'}">${l.odds > 0 ? '+' : ''}${l.odds}</span>
+          <span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove">×</span>
+        </div></div>`).join('');
+    el.classList.add('open');
+    el.innerHTML = `<div class="pl-inner">
+      <div class="pl-legs">${legsHtml}</div>
+      ${correlated ? '<div class="pl-warn">⚠ Correlated legs on the same fight — books price these as a same-game parlay, so the true payout is lower than this straight multiply.</div>' : ''}
+      <div class="pl-foot">
+        <div style="font-size:0.72rem;color:var(--muted);">${PARLAY.legs.length} leg${PARLAY.legs.length > 1 ? 's' : ''} · ${escHtmlAttr(PARLAY.legs[0].booklabel)} · $100 returns <strong style="color:var(--text);">$${ret}</strong></div>
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div style="text-align:right;"><div class="pl-cap">Parlay odds</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
+          <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
+          <button type="button" id="plClear" class="pl-clear">Clear</button>
+        </div>
+      </div></div>`;
+  }
+  let plBound = false;
+  function plBind() {
+    if (plBound) return; plBound = true;
+    const hit = (e, sel) => e.target && e.target.closest ? e.target.closest(sel) : null;
+    document.addEventListener('click', e => {
+      const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
+      const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
+      if (hit(e, '#plClear')) { PARLAY.legs = []; PARLAY.book = null; plRender(); }
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { e.preventDefault(); plToggle(cell); return; }
+      const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); }
+    });
+  }
+  function plReset() { PARLAY.legs = []; PARLAY.book = null; plBind(); plRender(); }
+
   function buildMoneylineTable(fight) {
     const f1 = fight.home_team, f2 = fight.away_team;
     const books = fight.bookmakers || [];
+    const fid = plFightId(fight), dist = plDistance(fight);
+    const homeSide = manualSideFor(fight, 'home'), awaySide = manualSideFor(fight, 'away');
+    const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
+    const fightLabel = `${last1} vs ${last2}`;
     let rows = '';
     books.forEach(bk => {
       const info = BOOK_KEY_MAP[bk.key];
@@ -102524,14 +102691,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!market) return;
       const o1 = market.outcomes.find(o => o.name === f1);
       const o2 = market.outcomes.find(o => o.name === f2);
+      const base = { fid: fid, dist: dist, book: bk.key, booklabel: info.label, fight: fightLabel, mkt: 'ml' };
       rows += `<tr class="row-${info.cls}">
         <td><span class="book-name book-${info.cls}">${info.label}</span></td>
-        <td>${fmtOdds(o1?.price)}</td>
-        <td>${fmtOdds(o2?.price)}</td>
+        ${plCell(Object.assign({}, base, { side: homeSide, label: last1 + ' to win' }), o1?.price)}
+        ${plCell(Object.assign({}, base, { side: awaySide, label: last2 + ' to win' }), o2?.price)}
       </tr>`;
     });
     if (!rows) return '<p style="color:var(--muted);padding:1rem 0;">No moneyline data available yet.</p>';
-    const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
     return `<table class="odds-table"><thead><tr><th>Sportsbook</th><th>${last1}</th><th>${last2}</th></tr></thead><tbody>${rows}</tbody></table>`;
   }
 
@@ -102553,14 +102720,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     const lines = Object.keys(lineMap).map(Number).sort((a,b) => a - b);
     if (!lines.length) return '<p style="color:var(--muted);padding:1rem 0;">No rounds O/U data available yet.</p>';
+    const fid = plFightId(fight), dist = plDistance(fight);
+    const fightLabel = `${lastNameOf(fight.home_team)} vs ${lastNameOf(fight.away_team)}`;
     let body = '';
     lines.forEach(line => {
       body += `<tr class="prop-subheader"><td colspan="3"><strong>O/U ${line}</strong></td></tr>`;
-      Object.entries(lineMap[line]).forEach(([, data]) => {
+      Object.entries(lineMap[line]).forEach(([bkKey, data]) => {
+        const base = { fid: fid, dist: dist, book: bkKey, booklabel: data.info.label, fight: fightLabel, mkt: 'total', line: line };
         body += `<tr class="row-${data.info.cls}">
           <td><span class="book-name book-${data.info.cls}">${data.info.label}</span></td>
-          <td>${fmtOdds(data.over)}</td>
-          <td>${fmtOdds(data.under)}</td>
+          ${plCell(Object.assign({}, base, { ou: 'over', label: 'Over ' + line + ' rds' }), data.over)}
+          ${plCell(Object.assign({}, base, { ou: 'under', label: 'Under ' + line + ' rds' }), data.under)}
         </tr>`;
       });
     });
@@ -102823,6 +102993,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
       container.innerHTML = renderOddsHTML(fights, findHistoryEntry);
       loadOddsBoardPhotos();
+      plReset();   // tables were rebuilt — clear any stale parlay selections
     } catch(e) {
       container.innerHTML = `<div style="text-align:center;padding:6rem 2rem;color:var(--muted);">
         <div style="font-size:3rem;opacity:0.3;margin-bottom:1rem;">📋</div>
