@@ -868,6 +868,40 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* Injury / card-news banner: full-width tappable strip shown under a fight
+       row when a fighter has recent injury/withdrawal news. Comfortable tap
+       target on mobile, clearly legible on desktop. */
+    .gl-injury-banner {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin: 0.1rem 0 0.7rem;
+      padding: 0.7rem 0.9rem;
+      min-height: 44px;
+      border-radius: 10px;
+      cursor: pointer;
+      background: rgba(255, 176, 32, 0.12);
+      border: 1px solid rgba(255, 176, 32, 0.38);
+      color: #ffcf7a;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .gl-injury-banner:hover,
+    .gl-injury-banner:focus-visible {
+      background: rgba(255, 176, 32, 0.2);
+      border-color: rgba(255, 176, 32, 0.6);
+      outline: none;
+    }
+    .gl-injury-ico { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+    .gl-injury-txt { min-width: 0; }
+    .gl-injury-go { margin-left: auto; flex-shrink: 0; color: #ffb020; font-weight: 800; }
+    @media (max-width: 600px) {
+      .gl-injury-banner { font-size: 0.73rem; padding: 0.75rem 0.85rem; }
+    }
     /* Record Breakdown sits next to the fighter's record and is easy to miss
        against the muted .fight-info-toggle styling — give it its own
        always-on accent treatment (slightly larger + tinted) so it reads as
@@ -99641,29 +99675,50 @@ function populateFighterNews(name) {
   }).catch(function () {});
 }
 
-// Post-render pass: badge any fight-card fighter who has recent injury/withdrawal
-// news. Renderer- and timing-agnostic (reads the cached news; re-applied on nav).
+// Post-render pass: for any fight where a fighter has recent injury/withdrawal
+// news, add a full-width tappable banner under the row that opens that fighter's
+// profile on the News tab. Renderer- and timing-agnostic (reads the cached news;
+// re-applied on nav). A comfortable tap target on mobile, clearly visible on desktop.
 function applyInjuryFlags() {
   loadFighterNews().then(function (data) {
     if (!data || !data.fighters) return;
     const injKeys = Object.keys(data.fighters).filter(k => data.fighters[k].hasInjuryNews);
     if (!injKeys.length) return;
     const injTokens = injKeys.map(k => k.split(' ').filter(Boolean));
-    document.querySelectorAll('.fight-row .fighter-name, .fight-card-section .fighter-name').forEach(function (el) {
-      if (el.dataset.injChecked) return;
-      el.dataset.injChecked = '1';
-      const nm = _newsNorm(el.textContent);
-      if (!nm) return;
+    function isInjured(name) {
+      const nm = _newsNorm(name); if (!nm) return false;
       const t = nm.split(' ').filter(Boolean);
-      const match = injKeys.includes(nm) || injTokens.some(kt =>
+      return injKeys.includes(nm) || injTokens.some(kt =>
         t.length && (t.every(x => kt.includes(x)) || kt.every(x => t.includes(x))));
-      if (!match) return;
-      const b = document.createElement('span');
-      b.className = 'gl-injury-flag';
-      b.title = 'Recent injury / card news — see the fighter’s News tab';
-      b.textContent = ' ⚠';
-      b.style.cssText = 'color:#ffb020;font-size:0.85em;font-weight:700;';
-      el.appendChild(b);
+    }
+    document.querySelectorAll('.fight-row').forEach(function (row) {
+      if (row.dataset.injChecked) return;
+      row.dataset.injChecked = '1';
+      const cells = [].slice.call(row.querySelectorAll('.fighter-cell'));
+      let injuredCell = null, injuredName = '';
+      for (let i = 0; i < cells.length; i++) {
+        const nameEl = cells[i].querySelector('.fighter-name');
+        if (nameEl && isInjured(nameEl.textContent)) { injuredCell = cells[i]; injuredName = (nameEl.textContent || '').trim(); break; }
+      }
+      if (!injuredCell) return;
+      const bar = document.createElement('div');
+      bar.className = 'gl-injury-banner';
+      bar.setAttribute('role', 'button');
+      bar.tabIndex = 0;
+      bar.innerHTML = '<span class="gl-injury-ico">⚠</span>' +
+        '<span class="gl-injury-txt">' + injuredName + ' — recent injury / card news</span>' +
+        '<span class="gl-injury-go">View ›</span>';
+      const open = function (e) {
+        if (e) e.stopPropagation();
+        injuredCell.click();                         // opens the fighter profile
+        setTimeout(function () {                      // then land on the News tab
+          const btn = document.getElementById('ftab-news-btn');
+          if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
+        }, 260);
+      };
+      bar.addEventListener('click', open);
+      bar.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); } });
+      row.insertAdjacentElement('afterend', bar);
     });
   }).catch(function () {});
 }
