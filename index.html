@@ -2011,6 +2011,8 @@
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sr-chip { flex: 1 1 140px; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; }
     .sr-chip.sr-warn { background: rgba(255, 176, 32, 0.1); border-color: rgba(255, 176, 32, 0.35); }
+    .sr-chip.sr-chip-link { cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+    .sr-chip.sr-chip-link:hover, .sr-chip.sr-chip-link:focus-visible { background: rgba(255, 176, 32, 0.18); border-color: rgba(255, 176, 32, 0.6); outline: none; }
     .sr-chip-top { display: flex; align-items: center; gap: 0.4rem; }
     .sr-ico { font-size: 0.95rem; }
     .sr-lab { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 700; }
@@ -99839,13 +99841,36 @@ function applyInjuryFlags() {
   }).catch(function () {});
 }
 
+// Opens a fighter's profile on the News tab, scrolls it into view, and flashes
+// the first article — used by the clickable "bout may change" chip.
+function openFighterNews(fullName) {
+  if (typeof openFighterByName !== 'function') return;
+  window._glSuppressProfileScroll = true;
+  openFighterByName(fullName);
+  setTimeout(function () {
+    const btn = document.getElementById('ftab-news-btn');
+    if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
+    const tabs = document.querySelector('#page-fighter .fighter-tabs');
+    if (tabs && tabs.scrollIntoView) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () {
+      const first = document.querySelector('#fn-list a');
+      if (first) { first.classList.add('gl-news-flash'); setTimeout(function () { first.classList.remove('gl-news-flash'); }, 1700); }
+    }, 480);
+  }, 300);
+}
+
 // Index of every fighter on a featured/upcoming card → their scheduled opponent,
 // built from the same API event data the carousel uses. This is how we know a
 // fighter's next opponent (FIGHT_HISTORY only carries "Upcoming" rows for a few
 // manually-overridden bouts, not the whole card).
 let UPCOMING_OPP = {};
+// Normalized names of confirmed short-notice replacements (from the shortNotice
+// marker set by fighter-overrides — the news feed's generic "regional fighter
+// replacement" headlines often don't name the incoming fighter).
+let SHORT_NOTICE_SET = new Set();
 function buildUpcomingOpponentIndex(apiData) {
   UPCOMING_OPP = {};
+  SHORT_NOTICE_SET = new Set();
   const evs = (apiData && apiData.data) || [];
   const now = Date.now();
   for (const ev of evs) {
@@ -99855,7 +99880,9 @@ function buildUpcomingOpponentIndex(apiData) {
     if ((ev.bouts || []).some(b => b.winnerFighterSlug)) continue;      // mislabeled past event
     for (const b of ev.bouts || []) {
       if (b.isCancelled) continue;
-      const fs = (b.fighters || []).map(f => f.fighterName).filter(Boolean);
+      const fighters = (b.fighters || []);
+      fighters.forEach(f => { if (f && f.shortNotice && f.fighterName) SHORT_NOTICE_SET.add(_newsNorm(f.fighterName)); });
+      const fs = fighters.map(f => f.fighterName).filter(Boolean);
       if (fs.length < 2) continue;
       const rec = { date: ev.startsAt || ev.eventDate || '', event: ev.title || ev.shortTitle || '' };
       UPCOMING_OPP[_newsNorm(fs[0])] = Object.assign({ opponent: fs[1] }, rec);
@@ -100052,11 +100079,16 @@ function renderScouting(host, name, opp, fightDate) {
     loadFighterNews().then(function (data) {
       const aE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, name) : null;
       const bE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, opp) : null;
-      const addChip = (icon, lab, val, note) => {
+      const addChip = (icon, lab, val, note, onClick) => {
         const chip = document.createElement('div'); chip.className = 'sr-chip sr-warn';
         chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span></div><div class="sr-val"></div><div class="sr-note"></div>';
         chip.querySelector('.sr-ico').textContent = icon; chip.querySelector('.sr-lab').textContent = lab;
         chip.querySelector('.sr-val').textContent = val; chip.querySelector('.sr-note').textContent = note;
+        if (onClick) {
+          chip.classList.add('sr-chip-link'); chip.setAttribute('role', 'button'); chip.tabIndex = 0;
+          chip.addEventListener('click', onClick);
+          chip.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } });
+        }
         flagsWrap.appendChild(chip);
       };
       const who = (aE && aE.hasInjuryNews) ? short(name) : ((bE && bE.hasInjuryNews) ? short(opp) : null);
@@ -100083,14 +100115,22 @@ function renderScouting(host, name, opp, fightDate) {
         };
         return scan(name, lastA, opp, lastB, aE) || scan(opp, lastB, name, lastA, bE);
       }
-      const snName = shortNoticeFighter();
+      // Ground-truth short-notice marker (from fighter-overrides) wins; fall back
+      // to inferring the replacement from the news headlines.
+      let snName = null;
+      if (typeof SHORT_NOTICE_SET !== 'undefined') {
+        if (SHORT_NOTICE_SET.has(_newsNorm(name))) snName = name;
+        else if (SHORT_NOTICE_SET.has(_newsNorm(opp))) snName = opp;
+      }
+      if (!snName) snName = shortNoticeFighter();
       // If a replacement is confirmed (the current opponent IS the new fighter),
       // the change has already happened — show that, and suppress the pending
       // "bout may change" flag (which would otherwise fire on the now-stale news).
       if (snName) {
-        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice (per news)');
+        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice');
       } else if (who) {
-        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news');
+        const whoFull = (aE && aE.hasInjuryNews) ? name : opp;   // full name of the injured fighter
+        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news — tap for news', function () { openFighterNews(whoFull); });
       }
     }).catch(function () {});
   }

@@ -43,6 +43,10 @@ function buildReplacementFighter(original, replacement) {
     boutId: original.boutId,
     fighterSlug: replacement.fighterSlug,
     fighterName: replacement.fighterName,
+    // Ground-truth marker: this fighter is a short-notice replacement. The app
+    // reads this (the news feed's generic "regional fighter replacement"
+    // headlines often don't name the incoming fighter, so we can't rely on it).
+    shortNotice: replacement.shortNotice === true,
     corner: original.corner,
     outcome: null,
     rankText: null,
@@ -111,16 +115,24 @@ function main() {
       return;
     }
 
+    const replName = ov.replacement.fighterName.trim().toLowerCase();
     matchingEvents.forEach((evt) => {
       (evt.bouts || []).forEach((bout) => {
         (bout.fighters || []).forEach((fighter, idx) => {
           const name = String(fighter.fighterName || '').trim().toLowerCase();
-          if (name !== matchName) return;
-          if (name === ov.replacement.fighterName.trim().toLowerCase()) return; // already applied
-          const oldName = fighter.fighterName;
-          bout.fighters[idx] = buildReplacementFighter(fighter, ov.replacement);
-          console.log(`[fighter-overrides] ${evt.title} (${evt.slug}): boutOrder ${bout.boutOrder} "${oldName}" -> "${ov.replacement.fighterName}"`);
-          totalChanged += 1;
+          if (name === matchName && name !== replName) {
+            // API still lists the stale fighter — swap in the replacement.
+            const oldName = fighter.fighterName;
+            bout.fighters[idx] = buildReplacementFighter(fighter, ov.replacement);
+            console.log(`[fighter-overrides] ${evt.title} (${evt.slug}): boutOrder ${bout.boutOrder} "${oldName}" -> "${ov.replacement.fighterName}"`);
+            totalChanged += 1;
+          } else if (name === replName && ov.replacement.shortNotice === true && fighter.shortNotice !== true) {
+            // API already caught up to the replacement — just ensure the
+            // short-notice marker (the feed doesn't carry that fact).
+            fighter.shortNotice = true;
+            console.log(`[fighter-overrides] ${evt.title} (${evt.slug}): marked "${fighter.fighterName}" as short-notice replacement`);
+            totalChanged += 1;
+          }
         });
       });
     });
