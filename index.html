@@ -868,6 +868,25 @@
       border-color: var(--accent);
       color: var(--accent);
     }
+    /* Full-width Simulate bar — spans all 3 grid columns as a footer under the
+       matchup (moved out of the cramped centre column). */
+    .fight-sim-bar {
+      grid-column: 1 / -1;
+      border: 0;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 230, 104, 0.06);
+      color: var(--accent);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.6rem;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .fight-sim-bar:hover { background: rgba(0, 230, 104, 0.12); }
     /* Injury / card-news banner: full-width tappable strip shown under a fight
        row when a fighter has recent injury/withdrawal news. Comfortable tap
        target on mobile, clearly legible on desktop. */
@@ -101109,7 +101128,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
                 ((f.resRound || f.resTime) ? '<div class="gl-result-time">' + (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' · ' : '') + (f.resTime ? escHtmlAttr(f.resTime) : '') + '</div>' : '')
               : '<div class="fight-rounds">' + rounds + '</div>') +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-            (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate</button>') +
             (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>') +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
@@ -101122,6 +101140,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '</div>' +
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
+          (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
         '</div>' + fightDetailsPanelHTML(f);
       }
 
@@ -102768,7 +102787,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
           '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-          '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate</button>' +
           '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
@@ -102779,6 +102797,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '</div>' +
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
+        '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>' +
       '</div>' + fightDetailsPanelHTML(f);
     }
 
