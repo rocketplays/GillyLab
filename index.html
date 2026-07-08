@@ -2841,6 +2841,11 @@
         transition: border-color 0.2s, background 0.2s;
       }
       .numbered-card .fight-row:hover { border-color:rgba(212,175,55,0.4) !important; background:rgba(212,175,55,0.06) !important; }
+      /* Gold/freedom cards tighten the fight-row margin to 0.3rem, so the Fight
+         Info / Scouting panel's tuck-up must match — the default -0.75rem
+         over-pulls and hides the line below the card. */
+      .numbered-card .fight-details-panel, .numbered-card .scouting-fight-panel,
+      .freedom-card .fight-details-panel, .freedom-card .scouting-fight-panel { margin-top: -0.3rem !important; }
       .numbered-card .fight-vs {
         background: linear-gradient(135deg, #d4af37, #8a6d1a) !important;
         color:#fff !important; font-weight:900 !important;
