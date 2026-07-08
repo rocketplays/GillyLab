@@ -100090,7 +100090,7 @@ function renderScouting(host, name, opp, fightDate) {
       const bE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, opp) : null;
       const addChip = (icon, lab, val, note, onClick) => {
         const chip = document.createElement('div'); chip.className = 'sr-chip sr-warn';
-        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span>' + (onClick ? '<span class="sr-chip-go">View ›</span>' : '') + '</div><div class="sr-val"></div><div class="sr-note"></div>';
+        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span>' + (onClick ? '<span class="sr-chip-go">View news ›</span>' : '') + '</div><div class="sr-val"></div><div class="sr-note"></div>';
         chip.querySelector('.sr-ico').textContent = icon; chip.querySelector('.sr-lab').textContent = lab;
         chip.querySelector('.sr-val').textContent = val; chip.querySelector('.sr-note').textContent = note;
         if (onClick) {
