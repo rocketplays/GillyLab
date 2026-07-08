@@ -102201,6 +102201,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 550, r2: 450, r3: 550, r4: 750, r5: 1000 }, f2: { r1: 500, r2: 1100, r3: 1800, r4: 2800, r5: 4000 } },
       },
     },
+    // UFC 329 — Basharat vs Garza (3 rounds). John Garza came in on short notice,
+    // so FanDuel was the only book with a full prop slate posted (Polymarket's
+    // exchange contract on TKO/KO is noise and is excluded). f1 = Basharat, f2 = Garza.
+    'basharat|garza': {
+      rounds: 3,
+      method: {
+        fanduel: { f1: { ko: 900, sub: 155, dec: 130 }, f2: { ko: 850, sub: 4000, dec: 1300 } },
+      },
+      roundProps: {
+        fanduel: { f1: { r1: 370, r2: 500, r3: 800 }, f2: { r1: 1400, r2: 2200, r3: 3000 } },
+      },
+    },
     // UFC 329 — Sandhagen vs Bautista (3 rounds; Bovada + DraftKings + FanDuel +
     // BetMGM). f1 = Bautista, f2 = Sandhagen (alphabetical).
     'bautista|sandhagen': {
