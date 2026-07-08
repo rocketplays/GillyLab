@@ -101273,19 +101273,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fanduel:    { f1: { r1: 550, r2: 850, r3: 1100 }, f2: { r1: 1000, r2: 1500, r3: 2000 } },
       },
     },
-    // UFC 329 — Saint-Denis vs Pimblett (3 rounds; DraftKings + FanDuel + BetMGM).
-    // f1 = Pimblett, f2 = Saint-Denis.
+    // UFC 329 — Saint-Denis vs Pimblett (3 rounds; Bovada + DraftKings + FanDuel +
+    // BetMGM). f1 = Pimblett, f2 = Saint-Denis (alphabetical).
     'pimblett|saint-denis': {
       rounds: 3,
       method: {
-        draftkings: { f1: { ko: 450, sub: 600, dec: 400 }, f2: { ko: 300, sub: 300, dec: 400 } },
-        fanduel:    { f1: { ko: 500, sub: 700, dec: 440 }, f2: { ko: 320, sub: 340, dec: 440 } },
-        betmgm:     { f1: { ko: 450, sub: 550, dec: 400 }, f2: { ko: 300, sub: 300, dec: 400 } },
+        bovada:     { f1: { ko: 460, sub: 600, dec: 425 }, f2: { ko: 310, sub: 325, dec: 425 } },
+        draftkings: { f1: { ko: 400, sub: 550, dec: 400 }, f2: { ko: 330, sub: 330, dec: 400 } },
+        fanduel:    { f1: { ko: 500, sub: 700, dec: 450 }, f2: { ko: 350, sub: 360, dec: 450 } },
+        betmgm:     { f1: { ko: 450, sub: 500, dec: 400 }, f2: { ko: 300, sub: 300, dec: 400 } },
       },
       roundProps: {
-        draftkings: { f1: { r1: 550, r2: 850,  r3: 1100 }, f2: { r1: 275, r2: 550, r3: 850 } },
-        fanduel:    { f1: { r1: 650, r2: 1000, r3: 1300 }, f2: { r1: 320, r2: 600, r3: 900 } },
-        betmgm:     { f1: { r1: 550, r2: 850,  r3: 1100 }, f2: { r1: 275, r2: 550, r3: 850 } },
+        bovada:     { f1: { r1: 525, r2: 750, r3: 1300 }, f2: { r1: 350, r2: 550, r3: 900 } },
+        draftkings: { f1: { r1: 500, r2: 800, r3: 1100 }, f2: { r1: 275, r2: 550, r3: 1000 } },
+        fanduel:    { f1: { r1: 600, r2: 900, r3: 1300 }, f2: { r1: 350, r2: 650, r3: 1000 } },
+        betmgm:     { f1: { r1: 500, r2: 800, r3: 1100 }, f2: { r1: 275, r2: 500, r3: 1000 } },
       },
     },
     // UFC 329 — Green vs McKinney (3 rounds; fightodds.io: Bovada / DraftKings /
