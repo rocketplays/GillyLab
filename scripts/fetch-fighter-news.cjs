@@ -14,9 +14,10 @@
  * never blocks the odds update, and a fighter with no fresh result keeps their
  * previous entry.
  *
- * Usage: node scripts/fetch-fighter-news.cjs [--days N] [--horizon N]
- *   --days     recency window for a headline to count (default 30)
- *   --horizon  only include fighters on cards within N days (default 21)
+ * Usage: node scripts/fetch-fighter-news.cjs [--days N] [--horizon N] [--max-cards N]
+ *   --days       recency window for a headline to count (default 30)
+ *   --horizon    outer bound (days) on how far ahead to consider events (default 120)
+ *   --max-cards  how many upcoming cards to cover — featured + carousel (default 6)
  */
 'use strict';
 const fs = require('fs');
@@ -28,7 +29,8 @@ const OUT = path.join(ROOT, 'data', 'fighter-news.json');
 const args = process.argv.slice(2);
 const argN = (flag, def) => { const i = args.indexOf(flag); return i >= 0 ? +args[i + 1] : def; };
 const RECENCY_DAYS = argN('--days', 30);
-const HORIZON_DAYS = argN('--horizon', 21);
+const HORIZON_DAYS = argN('--horizon', 120);   // generous outer bound on how far ahead to look
+const MAX_CARDS = argN('--max-cards', 6);      // featured card + the carousel's next few events
 const PER_FIGHTER = 6;
 const DAY = 24 * 3600 * 1000;
 
@@ -97,10 +99,20 @@ function upcomingCardFighters() {
   const j = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8'));
   const evs = (j && (j.data || j)) || [];
   const now = Date.now();
+  // The next MAX_CARDS upcoming events that actually have a card — i.e. the
+  // featured event plus the events shown in the home "upcoming events" carousel.
+  // (Excludes Road to UFC, matching the carousel's own filter.)
+  const upcoming = evs
+    .map(ev => ({ ev, start: Date.parse(ev.startsAt || ev.eventDate || ev.venueDate || '') }))
+    .filter(x => isFinite(x.start) && x.start > now - DAY && x.start < now + HORIZON_DAYS * DAY)
+    .filter(x => x.ev.status !== 'completed')
+    .filter(x => !(x.ev.bouts || []).some(b => b.winnerFighterSlug))  // any decided bout ⇒ already happened (mislabeled past event)
+    .filter(x => !/road\s+to\s+(the\s+)?ufc/i.test(x.ev.title || x.ev.shortTitle || ''))
+    .filter(x => (x.ev.bouts || []).some(b => !b.isCancelled && (b.fighters || []).length >= 2))
+    .sort((a, b) => a.start - b.start)
+    .slice(0, MAX_CARDS);
   const names = new Map(); // norm -> display name
-  for (const ev of evs) {
-    const start = Date.parse(ev.startsAt || ev.eventDate || '');
-    if (!isFinite(start) || start < now - DAY || start > now + HORIZON_DAYS * DAY) continue;
+  for (const { ev } of upcoming) {
     for (const b of ev.bouts || []) {
       if (b.isCancelled) continue;
       for (const f of b.fighters || []) {

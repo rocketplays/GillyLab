@@ -101180,7 +101180,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function toggleFightDetails(btn) {
     const row = btn.closest('.fight-row');
-    const panel = row && row.nextElementSibling;
+    let panel = row && row.nextElementSibling;
+    // An injury banner may sit between the row and its details panel — skip it.
+    if (panel && panel.classList.contains('gl-injury-banner')) panel = panel.nextElementSibling;
     if (!panel || !panel.classList.contains('fight-details-panel')) return;
     const isOpen = panel.classList.contains('open');
     panel.classList.toggle('open', !isOpen);
@@ -102624,6 +102626,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     track.innerHTML = cards.join('');
     if (window.reinitCarousel) window.reinitCarousel(eventsForCarousel);
+    if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 50);
   }
 
   // ── RANKINGS PAGE (auto-updates from data/rankings.json) ─────────────────
