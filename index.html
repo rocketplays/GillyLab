@@ -2049,6 +2049,13 @@
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
+    .sr-style-wrap { position: relative; margin: 0.6rem 6px 0.3rem; }
+    .sr-style-lab { position: absolute; top: -16px; transform: translateX(-50%); font-size: 0.66rem; white-space: nowrap; }
+    .sr-style-track { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); position: relative; }
+    .sr-style-dot { position: absolute; top: -3px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid rgba(0, 0, 0, 0.4); }
+    .sr-style-ends { display: flex; justify-content: space-between; margin: 7px 6px 2px; font-size: 0.66rem; color: var(--muted); }
+    .sr-path { border-radius: 8px; padding: 8px 11px; margin-top: 8px; font-size: 0.74rem; line-height: 1.45; }
+    .sr-path-name { font-size: 0.66rem; font-weight: 800; margin-bottom: 2px; letter-spacing: 0.02em; }
     @media (max-width: 600px) {
       .sr-common-row { grid-template-columns: 1fr; gap: 0.15rem; }
       .sr-chip { flex-basis: calc(50% - 0.3rem); min-width: 0; }
@@ -100037,6 +100044,104 @@ function renderScouting(host, name, opp, fightDate) {
       });
       box.appendChild(row);
     })();
+  })();
+
+  // Style, pace & path-to-victory — all derived from career UFC rate stats (no new
+  // data). Style lean: 0 (grappler) .. 100 (striker). Pace: sig. strikes thrown per
+  // minute (output = SLpM / accuracy) — how busy the fighter is, not inflated by
+  // getting hit. Paths are matchup-aware: each references the opponent's key stat.
+  (function () {
+    const pct = v => { const m = /([0-9.]+)/.exec(String(v == null ? '' : v)); return m ? parseFloat(m[1]) : null; };
+    const okStats = s => s && s.slpm != null && s.strAcc != null && s.tdDef != null;
+    const N = s => ({
+      slpm: +s.slpm || 0, sapm: +s.sapm || 0, kd: s.kd != null ? +s.kd : null,
+      tdLanded: +s.tdLanded || 0, subAvg: +s.subAvg || 0,
+      strAcc: pct(s.strAcc), strDef: pct(s.strDef), tdDef: pct(s.tdDef), finRate: pct(s.finRate),
+    });
+    const aOK = okStats(statsA), bOK = okStats(statsB);
+    if (!aOK && !bOK) return;
+    const A = aOK ? N(statsA) : null, B = bOK ? N(statsB) : null;
+    // Grappling floor (0.3) stops fighters with zero recorded takedowns/subs from
+    // pinning to a hard 100 — otherwise the spectrum saturates at the striker end.
+    const lean = s => { const S = s.slpm / 2, G = Math.max(s.tdLanded + 1.5 * s.subAvg, 0.3); return Math.round(100 * S / (S + G)); };
+    const output = s => s.strAcc ? +(s.slpm / (s.strAcc / 100)).toFixed(1) : null;
+    const leanA = A ? lean(A) : null, leanB = B ? lean(B) : null;
+    const GREEN = 'var(--accent)', AMBER = '#ffcf7a';
+
+    const box = document.createElement('div'); box.className = 'sr-common';
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = 'Style & pace'; box.appendChild(t);
+
+    const wrap = document.createElement('div'); wrap.className = 'sr-style-wrap';
+    const track = document.createElement('div'); track.className = 'sr-style-track';
+    const addDot = (leanVal, color, nm) => {
+      if (leanVal == null) return;
+      const dot = document.createElement('div'); dot.className = 'sr-style-dot';
+      dot.style.left = 'calc(' + leanVal + '% - 6px)'; dot.style.background = color;
+      track.appendChild(dot);
+      const lab = document.createElement('div'); lab.className = 'sr-style-lab';
+      lab.style.left = leanVal + '%'; lab.style.color = color; lab.textContent = short(nm);
+      wrap.appendChild(lab);
+    };
+    addDot(leanA, GREEN, name);
+    addDot(leanB, AMBER, opp);
+    wrap.appendChild(track); box.appendChild(wrap);
+    const ends = document.createElement('div'); ends.className = 'sr-style-ends';
+    ends.innerHTML = '<span>Grappler</span><span>Striker</span>'; box.appendChild(ends);
+
+    const oA = A ? output(A) : null, oB = B ? output(B) : null;
+    const paceRow = document.createElement('div'); paceRow.className = 'sr-cmp-row';
+    const pl = document.createElement('div'); pl.className = 'sr-cmp-lbl';
+    pl.innerHTML = 'Pace<br><span style="font-size:0.62rem;color:var(--muted);">sig. strikes thrown / min</span>';
+    paceRow.appendChild(pl);
+    const hiA = oA != null && (oB == null || oA >= oB), hiB = oB != null && (oA == null || oB > oA);
+    const pv = (v, hi) => { const d = document.createElement('div'); d.className = 'sr-cmp-val' + (hi ? ' w' : ''); d.textContent = v == null ? '—' : v; return d; };
+    paceRow.appendChild(pv(oA, hiA)); paceRow.appendChild(pv(oB, hiB));
+    box.appendChild(paceRow); host.appendChild(box);
+
+    const path = (self, other, otherN) => {
+      if (!self) return 'Thin UFC data (short-notice / limited tape) — style and path read is provisional.';
+      const la = lean(self), oN = short(otherN);
+      const oKnown = !!other, lb = oKnown ? lean(other) : 50;
+      const striker = x => x >= 60, grappler = x => x <= 40;
+      const power = (self.kd != null && self.kd >= 0.6) || (self.finRate != null && self.finRate >= 75);
+      const notes = []; let line = '';
+      if (striker(la)) {
+        if (oKnown && lb <= 48) {
+          if (self.tdDef != null && self.tdDef >= 70) line = 'Keep it standing — his ' + self.tdDef + '% takedown defense should stall ' + oN + "'s entries — and win at range.";
+          else if (self.tdDef != null && self.tdDef <= 55) line = "Win early on the feet, but he's takedown-vulnerable (" + self.tdDef + '% TDD) and must stay off the cage.';
+          else line = 'Win the striking at range and make ' + oN + ' pay for shooting.';
+        } else if (oKnown) {
+          line = 'A striking battle — outland ' + oN + ' at range; edge to the higher output' + ((output(self) && output(other)) ? ' (' + output(self) + ' vs ' + output(other) + ' thrown/min)' : '') + '.';
+        } else line = 'Win it on the feet behind his output and range.';
+        if (power) notes.push('carries real knockout power');
+        else if (self.finRate != null && self.finRate <= 45) notes.push('more likely to need the judges');
+      } else if (grappler(la)) {
+        if (oKnown && grappler(lb) && other.tdDef >= 68 && self.tdDef >= 68) line = 'Neither grapples the other down easily (both stuff 68%+) — likely scrambles and top-control battles';
+        else { line = 'Get it to the mat'; if (oKnown && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.'; else if (oKnown && other.tdDef <= 55) line += ' — ' + oN + ' is takedown-vulnerable (' + other.tdDef + '% TDD), so get it down early and often.'; else line += ' and impose top control.'; }
+        if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
+        if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
+      } else {
+        if (oKnown && other.tdDef != null && other.tdDef <= 55) line = 'Comfortable everywhere — best route is the takedown (' + oN + ' defends only ' + other.tdDef + '%).';
+        else if (oKnown && other.strDef != null && other.strDef <= 52) line = 'Comfortable everywhere — test ' + oN + ' on the feet (' + other.strDef + '% striking defense) and mix in level changes.';
+        else line = 'Comfortable in both phases — dictate where it goes and grind the edge.';
+        if (power) notes.push('finishing ability in both phases');
+      }
+      line = line.replace(/\.\s*$/, '');
+      return line + (notes.length ? ' (' + notes.join('; ') + ').' : '.');
+    };
+    const addPath = (nm, txt, color) => {
+      const p = document.createElement('div'); p.className = 'sr-path';
+      const green = color === GREEN;
+      p.style.background = green ? 'rgba(0,230,104,0.07)' : 'rgba(255,207,122,0.06)';
+      p.style.border = '1px solid ' + (green ? 'rgba(0,230,104,0.25)' : 'rgba(255,207,122,0.22)');
+      const nmEl = document.createElement('div'); nmEl.className = 'sr-path-name'; nmEl.style.color = color; nmEl.textContent = short(nm);
+      const tx = document.createElement('div'); tx.style.color = 'var(--text)'; tx.style.opacity = '0.9'; tx.textContent = txt;
+      p.appendChild(nmEl); p.appendChild(tx); box.appendChild(p);
+    };
+    const pTitle = document.createElement('div'); pTitle.className = 'sr-common-title'; pTitle.style.marginTop = '0.9rem'; pTitle.textContent = 'Path to victory';
+    box.appendChild(pTitle);
+    addPath(name, path(A, B, opp), GREEN);
+    addPath(opp, path(B, A, name), AMBER);
   })();
 
   // Finish & durability
