@@ -100145,7 +100145,7 @@ function renderScouting(host, name, opp, fightDate) {
       // the change has already happened — show that, and suppress the pending
       // "bout may change" flag (which would otherwise fire on the now-stale news).
       if (snName) {
-        addChip('⚡', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', newsFull ? function () { openFighterNews(newsFull); } : null);
+        addChip('⚠', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', newsFull ? function () { openFighterNews(newsFull); } : null);
       } else if (who) {
         addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
       }
@@ -101559,7 +101559,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Only a genuine upset: the underdog won AND the favorite was at least a
       // -120 favorite (a -110/pick'em win isn't an upset).
       const upset = winSide && favSide && winSide !== favSide && favOdds != null && favOdds <= -120;
-      closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing line' +
+      closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds' +
         (upset ? ' <span class="pf-upset">💥 Upset</span>' : '') + '</div>' + headRow +
         '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
           '<div class="sr-cmp-val ' + (winSide === 1 ? 'w' : '') + '">' + fmt(pair.o1) + '</div>' +
@@ -101575,7 +101575,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (aS && bS) {
       const secs = t => { const m = String(t || '').match(/(\d+):(\d+)/); return m ? (+m[1] * 60 + +m[2]) : 0; };
       const row = (label, ad, bd, an, bn) => '<div class="sr-cmp-row"><div class="sr-cmp-lbl">' + label + '</div><div class="sr-cmp-val ' + (an > bn ? 'w' : '') + '">' + ad + '</div><div class="sr-cmp-val ' + (bn > an ? 'w' : '') + '">' + bd + '</div></div>';
-      boxHTML = '<div class="sr-common"><div class="sr-common-title">Box score</div>' + headRow +
+      boxHTML = '<div class="sr-common"><div class="sr-common-title">Stats at a glance</div>' + headRow +
         row('Sig. strikes', aS.sigL + '/' + aS.sigA, bS.sigL + '/' + bS.sigA, aS.sigL, bS.sigL) +
         row('Takedowns', aS.tdL + '/' + aS.tdA, bS.tdL + '/' + bS.tdA, aS.tdL, bS.tdL) +
         row('Knockdowns', aS.kd, bS.kd, aS.kd, bS.kd) +
