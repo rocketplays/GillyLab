@@ -87253,10 +87253,11 @@ function populateFightHistory(name) {
       const inner = panel.querySelector('.sr-inner');
       if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null);
       panel.dataset.filled = '1';
+      if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     }
     panel.classList.toggle('open', !isOpen);
     btn.classList.toggle('open', !isOpen);
-    btn.textContent = isOpen ? 'Scouting ⌄' : 'Scouting ⌃';
+    btn.textContent = isOpen ? 'Fight Info ⌄' : 'Fight Info ⌃';
   }
  function populateOddsHistory(name) {
   var tbody = document.getElementById("fo-tbody");
@@ -99964,18 +99965,36 @@ function renderScouting(host, name, opp, fightDate) {
     row.appendChild(l); row.appendChild(a); row.appendChild(b); box.appendChild(row);
   };
 
-  // Overview: age (+ gap) & layoff
+  // Overview: moneyline, age (+ gap), physical (height/reach/stance), layoff
   (function () {
     const ageA = ageOf(statsA), ageB = ageOf(statsB);
     const lfA = lastFightTs(histA), lfB = lastFightTs(histB);
     const moA = lfA ? Math.max(0, Math.round((refTs - lfA) / 2.628e9)) : null;
     const moB = lfB ? Math.max(0, Math.round((refTs - lfB) / 2.628e9)) : null;
-    if (ageA == null && ageB == null && moA == null && moB == null) return;
+    const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
+    const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
+    const aS = statsA.stance || null, bS = statsB.stance || null;
     const box = cmpBlock('Overview');
+    // Moneyline — pending spans filled lazily by fillPendingMoneylines().
+    (function () {
+      const row = document.createElement('div'); row.className = 'sr-cmp-row';
+      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Moneyline'; row.appendChild(l);
+      [['1', name, opp], ['2', name, opp]].forEach(([side]) => {
+        const d = document.createElement('div'); d.className = 'sr-cmp-val';
+        const sp = document.createElement('span'); sp.className = 'fight-ml-pending';
+        sp.setAttribute('data-f1', name); sp.setAttribute('data-f2', opp); sp.setAttribute('data-side', side);
+        sp.innerHTML = '<span style="color:var(--muted);font-size:0.78rem;">…</span>';
+        d.appendChild(sp); row.appendChild(d);
+      });
+      box.appendChild(row);
+    })();
     if (ageA != null || ageB != null) {
       const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
       cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
     }
+    if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
+    if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
+    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
     if (moA != null || moB != null) {
       const fmtMo = m => m == null ? '—' : (m >= 12 ? (Math.floor(m / 12) + 'y ' + (m % 12) + 'm') : (m + ' mo'));
       cmpRow(box, 'Layoff', fmtMo(moA), fmtMo(moB), (moA != null && moA >= 12) ? 'l' : '', (moB != null && moB >= 12) ? 'l' : '');
@@ -99993,18 +100012,6 @@ function renderScouting(host, name, opp, fightDate) {
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
     cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
-  })();
-
-  // Physical
-  (function () {
-    const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
-    const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
-    const aS = statsA.stance || null, bS = statsB.stance || null;
-    if (aHt == null && aR == null && !aS && bHt == null && bR == null && !bS) return;
-    const box = cmpBlock('Physical');
-    if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
-    if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
-    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
   })();
 
   // Common opponents
@@ -101123,8 +101130,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               ? '<div class="gl-result-method">' + escHtmlAttr(glAbbrMethod(f.methodText)) + '</div>' +
                 ((f.resRound || f.resTime) ? '<div class="gl-result-time">' + (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' · ' : '') + (f.resTime ? escHtmlAttr(f.resTime) : '') + '</div>' : '')
               : '<div class="fight-rounds">' + rounds + '</div>') +
-            '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-            (f.completed ? '' : '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Scouting ⌄</button>') +
+            (f.completed
+              ? '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>'
+              : '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Fight Info ⌄</button>') +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -101137,7 +101145,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
           (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
-        '</div>' + fightDetailsPanelHTML(f) + (f.completed ? '' : scoutingFightPanelHTML(f));
+        '</div>' + (f.completed ? fightDetailsPanelHTML(f) : scoutingFightPanelHTML(f));
       }
 
       function section(title, fights) {
@@ -102787,8 +102795,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fight-vs">VS</div>' +
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
-          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Scouting ⌄</button>' +
+          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Fight Info ⌄</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -102799,7 +102806,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
         '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>' +
-      '</div>' + fightDetailsPanelHTML(f) + scoutingFightPanelHTML(f);
+      '</div>' + scoutingFightPanelHTML(f);
     }
 
     function fightSection(title, fights) {
