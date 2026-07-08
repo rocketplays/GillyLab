@@ -100124,7 +100124,6 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     // the Finish & durability section already says so.
     (function () {
       const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
-      const nowTs = Date.now(), YEAR = 365.25 * 24 * 3600 * 1000;
       const mcat = mth => { const q = String(mth || ''); if (/sub/i.test(q)) return 'sub'; if (/dec/i.test(q)) return 'dec'; if (/dq|disqualif/i.test(q)) return 'dq'; if (/ko|tko|knockout|stoppage|doctor|retire/i.test(q)) return 'ko'; return 'other'; };
       const isFin = c => c === 'ko' || c === 'sub';
       const pd = d => { const t = Date.parse(d); return isFinite(t) ? t : null; };
@@ -100134,9 +100133,13 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         let fs = 0; for (const f of h) { if (f.result === 'W' && isFin(mcat(f.method))) fs++; else break; }
         if (fs >= 3) out.push('On a ' + fs + '-fight finish streak.');
         else { const finW = h.slice(0, 5).filter(f => f.result === 'W' && isFin(mcat(f.method))).length; if (finW >= 3) out.push('Finished ' + finW + ' of the last 5.'); }
+        // fi = position of the most recent finish loss in the newest-first list,
+        // i.e. the number of fights SINCE last being finished. Anchor durability to
+        // fights, not calendar time — a long layoff (e.g. McGregor, whose last bout
+        // WAS the finish) must not read as "hasn't been finished in X years".
         const fi = h.findIndex(f => f.result === 'L' && isFin(mcat(f.method)));
         if (fi !== -1) {
-          const t = pd(h[fi].date); if (t) { const yrs = Math.floor((nowTs - t) / YEAR); if (yrs >= 4) out.push("Hasn't been finished in " + yrs + ' years.'); }
+          if (fi >= 6) out.push("Hasn't been finished in his last " + fi + ' fights.');
           const finL3 = h.slice(0, 3).filter(f => f.result === 'L' && isFin(mcat(f.method))).length; if (finL3 >= 2) out.push('Finished in ' + finL3 + ' of the last 3 — durability questions.');
         }
         if (oppStance && /south|switch/i.test(oppStance)) {
