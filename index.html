@@ -2050,25 +2050,41 @@
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
     /* Parlay calculator — clickable odds cells + fixed bottom bet slip. */
-    .pl-pick { cursor: pointer; transition: background 0.15s; }
-    .pl-pick:hover { background: rgba(0, 230, 104, 0.08); }
-    .pl-pick.sel { background: rgba(0, 230, 104, 0.16); box-shadow: inset 0 0 0 1px var(--accent); }
+    /* The table's row-hover rule tints every cell in the row, which buried the
+       per-cell pick highlight. Pick cells opt out of it and carry their own
+       hover/selected treatment (higher specificity than `tr:hover td`). */
+    .pl-pick { cursor: pointer; position: relative; transition: background 0.15s; }
+    .odds-table tr:hover td.pl-pick { background: transparent; }
+    .odds-table td.pl-pick:hover { background: rgba(0, 230, 104, 0.14); }
+    .odds-table td.pl-pick.sel,
+    .odds-table tr:hover td.pl-pick.sel { background: rgba(0, 230, 104, 0.22); box-shadow: inset 0 0 0 2px var(--accent); }
+    .odds-table td.pl-pick.sel .odds-value { color: var(--accent) !important; font-weight: 800; }
+    .odds-table td.pl-pick.sel::after { content: '✓'; position: absolute; top: 2px; right: 5px; font-size: 0.58rem; line-height: 1; color: var(--accent); }
     .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: none; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45); }
     .parlay-slip.open { display: block; }
-    .pl-inner { max-width: var(--cmax); margin: 0 auto; padding: 0.8rem 1.25rem 0.9rem; }
-    .pl-legs { max-height: 32vh; overflow-y: auto; }
-    .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 6px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); font-size: 0.78rem; }
-    .pl-leg-x { cursor: pointer; color: var(--muted); font-weight: 800; padding: 0 4px; line-height: 1; }
+    .pl-inner { max-width: var(--cmax); margin: 0 auto; padding: 0.55rem 1.25rem 0.9rem; }
+    .pl-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; padding: 0.35rem 0; }
+    .pl-bar-left { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; min-width: 0; }
+    .pl-chev { display: inline-block; color: var(--muted); font-size: 0.9rem; transition: transform 0.2s; }
+    .parlay-slip.collapsed .pl-chev { transform: rotate(-90deg); }
+    .parlay-slip.collapsed .pl-body { display: none; }
+    .pl-bar-right { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
+    .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
+    .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .pl-leg-pick { font-size: 0.8rem; font-weight: 600; color: var(--text); }
+    .pl-leg-right { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+    .pl-leg-x { cursor: pointer; color: var(--muted); font-weight: 800; padding: 0 4px; line-height: 1; font-size: 1rem; }
     .pl-leg-x:hover { color: #ff6a5e; }
-    .pl-warn { color: #ffcf7a; font-size: 0.7rem; padding: 6px 0 0; line-height: 1.4; }
-    .pl-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 0.6rem; flex-wrap: wrap; }
+    .pl-warn { color: #ffcf7a; font-size: 0.7rem; padding: 8px 0 0; line-height: 1.4; }
+    .pl-foot { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 0.7rem; flex-wrap: wrap; }
     .pl-cap { font-size: 0.6rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
     .pl-total { font-size: 1.05rem; font-weight: 800; color: var(--accent); }
     .pl-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
     .pl-clear:hover { color: #ff6a5e; border-color: #ff6a5e; }
     .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 70; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .pl-toast.show { opacity: 1; }
-    @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg { font-size: 0.72rem; } }
+    @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg-pick { font-size: 0.74rem; } .pl-bar-right { gap: 10px; } }
     .sr-style-wrap { position: relative; margin: 0.6rem 6px 0.3rem; }
     .sr-style-lab { position: absolute; top: -16px; transform: translateX(-50%); font-size: 0.66rem; white-space: nowrap; }
     .sr-style-track { height: 6px; border-radius: 3px; background: rgba(255, 255, 255, 0.12); position: relative; }
@@ -102466,7 +102482,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
-      Object.keys(entry.method).forEach(bookKey => {
+      plOrderBooks(Object.keys(entry.method)).forEach(bookKey => {
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.method[bookKey] && entry.method[bookKey][sideKey];
         if (!info || !vals) return;
@@ -102498,7 +102514,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
-      Object.keys(entry.roundProps).forEach(bookKey => {
+      plOrderBooks(Object.keys(entry.roundProps)).forEach(bookKey => {
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.roundProps[bookKey] && entry.roundProps[bookKey][sideKey];
         if (!info || !vals) return;
@@ -102532,6 +102548,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     pointsbetus:    { cls: 'pbu',  label: 'PointsBet' },
   };
 
+  // Every odds table lists sportsbooks in this fixed order; a book with no line
+  // for that market is simply skipped. Books outside this list aren't shown.
+  const BOOK_ORDER = ['fanduel', 'draftkings', 'betmgm', 'betonlineag', 'bovada'];
+  function plOrderBooks(keys) { return BOOK_ORDER.filter(k => keys.indexOf(k) !== -1); }
+
   function fmtOdds(n) {
     if (n === null || n === undefined)
       return '<span class="odds-value" style="color:var(--muted);font-size:0.85rem;">N/A</span>';
@@ -102551,7 +102572,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Contradiction/implication are decided by brute force over the fight's coarse
   // outcome space rather than a hand-written conflict matrix, so the rules stay
   // correct for both 3- and 5-round bouts.
-  const PARLAY = { book: null, legs: [] };
+  const PARLAY = { book: null, legs: [], open: true };
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
   // Outcome = winner, method, ending round, and which half of that round (the
@@ -102638,24 +102659,39 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const am = plDecToAm(dec);
     const prob = (100 / dec).toFixed(1);
     const ret = (100 * dec).toFixed(2);
+    const n = PARLAY.legs.length;
     const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
     const correlated = Object.keys(byFight).some(k => byFight[k] > 1);
     const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-leg">
-        <div style="min-width:0;"><span style="color:var(--muted);">${escHtmlAttr(l.fight || '')}</span> · ${escHtmlAttr(l.label)}</div>
-        <div style="display:flex;align-items:center;gap:10px;flex:0 0 auto;">
+        <div style="min-width:0;">
+          <div class="pl-leg-fight">${escHtmlAttr(l.fight || '')}</div>
+          <div class="pl-leg-pick">${escHtmlAttr(l.label)}</div>
+        </div>
+        <div class="pl-leg-right">
           <span class="odds-value ${l.odds < 0 ? 'fav' : 'dog'}">${l.odds > 0 ? '+' : ''}${l.odds}</span>
-          <span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove">×</span>
+          <span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove leg" aria-label="Remove leg">×</span>
         </div></div>`).join('');
     el.classList.add('open');
+    el.classList.toggle('collapsed', !PARLAY.open);
     el.innerHTML = `<div class="pl-inner">
-      <div class="pl-legs">${legsHtml}</div>
-      ${correlated ? '<div class="pl-warn">⚠ Correlated legs on the same fight — books price these as a same-game parlay, so the true payout is lower than this straight multiply.</div>' : ''}
-      <div class="pl-foot">
-        <div style="font-size:0.72rem;color:var(--muted);">${PARLAY.legs.length} leg${PARLAY.legs.length > 1 ? 's' : ''} · ${escHtmlAttr(PARLAY.legs[0].booklabel)} · $100 returns <strong style="color:var(--text);">$${ret}</strong></div>
-        <div style="display:flex;align-items:center;gap:16px;">
+      <div class="pl-bar" id="plBar" role="button" tabindex="0" aria-expanded="${PARLAY.open ? 'true' : 'false'}">
+        <div class="pl-bar-left">
+          <span class="pl-chev">⌄</span>
+          <span><strong>${n} leg${n > 1 ? 's' : ''}</strong> <span style="color:var(--muted);">· ${escHtmlAttr(PARLAY.legs[0].booklabel)}</span></span>
+        </div>
+        <div class="pl-bar-right">
           <div style="text-align:right;"><div class="pl-cap">Parlay odds</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
-          <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
-          <button type="button" id="plClear" class="pl-clear">Clear</button>
+        </div>
+      </div>
+      <div class="pl-body">
+        <div class="pl-legs">${legsHtml}</div>
+        ${correlated ? '<div class="pl-warn">⚠ Correlated legs on the same fight — books price these as a same-game parlay, so the real payout would be lower than this straight multiply.</div>' : ''}
+        <div class="pl-foot">
+          <div style="font-size:0.72rem;color:var(--muted);">$100 returns <strong style="color:var(--text);">$${ret}</strong></div>
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
+            <button type="button" id="plClear" class="pl-clear">Clear</button>
+          </div>
         </div>
       </div></div>`;
   }
@@ -102666,15 +102702,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     document.addEventListener('click', e => {
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
-      if (hit(e, '#plClear')) { PARLAY.legs = []; PARLAY.book = null; plRender(); }
+      if (hit(e, '#plClear')) { PARLAY.legs = []; PARLAY.book = null; plRender(); return; }
+      if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plRender(); }
     });
     document.addEventListener('keydown', e => {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { e.preventDefault(); plToggle(cell); return; }
-      const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); }
+      const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
+      if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plRender(); }
     });
   }
-  function plReset() { PARLAY.legs = []; PARLAY.book = null; plBind(); plRender(); }
+  function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = true; plBind(); plRender(); }
 
   function buildMoneylineTable(fight) {
     const f1 = fight.home_team, f2 = fight.away_team;
@@ -102684,7 +102722,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
     const fightLabel = `${last1} vs ${last2}`;
     let rows = '';
-    books.forEach(bk => {
+    const byKey = {}; books.forEach(bk => { byKey[bk.key] = bk; });
+    plOrderBooks(Object.keys(byKey)).forEach(bookKey => {
+      const bk = byKey[bookKey];
       const info = BOOK_KEY_MAP[bk.key];
       if (!info) return;
       const market = bk.markets.find(m => m.key === 'h2h');
@@ -102725,7 +102765,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let body = '';
     lines.forEach(line => {
       body += `<tr class="prop-subheader"><td colspan="3"><strong>O/U ${line}</strong></td></tr>`;
-      Object.entries(lineMap[line]).forEach(([bkKey, data]) => {
+      plOrderBooks(Object.keys(lineMap[line])).forEach(bkKey => {
+        const data = lineMap[line][bkKey];
         const base = { fid: fid, dist: dist, book: bkKey, booklabel: data.info.label, fight: fightLabel, mkt: 'total', line: line };
         body += `<tr class="row-${data.info.cls}">
           <td><span class="book-name book-${data.info.cls}">${data.info.label}</span></td>
