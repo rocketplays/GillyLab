@@ -2014,6 +2014,14 @@
     .sr-co-name { color: var(--muted); }
     .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
     .sr-co-name.sr-co-link:hover { color: var(--accent); }
+    .sr-cmp-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.5rem; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
+    .sr-cmp-head { color: var(--muted); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
+    .sr-cmp-lbl { color: var(--muted); }
+    .sr-cmp-val { color: var(--text); font-weight: 600; }
+    .sr-cmp-val.w { color: var(--accent); }
+    .sr-cmp-val.l { color: #ff6a5e; }
+    .sr-cmp-val.hi { color: #ffcf7a; }
+    @media (max-width: 600px) { .sr-cmp-row { grid-template-columns: 1fr 1fr 1fr; font-size: 0.74rem; } }
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
@@ -99925,6 +99933,22 @@ function populateScoutingReport(name) {
     const t = _newsNorm(n);
     return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
   };
+  const methodCat = m => { m = String(m || ''); if (/sub/i.test(m)) return 'sub'; if (/dec/i.test(m)) return 'dec'; if (/ko|tko|stoppage|doctor|retire/i.test(m)) return 'ko'; return 'other'; };
+  const finishProfile = h => {
+    let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lFin = 0;
+    (h || []).forEach(f => {
+      if (!f || f.method === 'Upcoming' || !f.result) return;
+      const c = methodCat(f.method);
+      if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }
+      else if (f.result === 'L' && (c === 'ko' || c === 'sub')) { losses++; lFin++; }
+      else if (f.result === 'L') { losses++; }
+    });
+    const finWins = wKO + wSub;
+    return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lFin };
+  };
+  const parseHt = s => { const m = /(\d+)'\s*(\d+)/.exec(String(s || '')); return m ? (+m[1]) * 12 + (+m[2]) : null; };
+  const parseReach = s => { const m = /(\d+)/.exec(String(s || '')); return m ? +m[1] : null; };
+  const fmtHt = i => i == null ? '—' : (Math.floor(i / 12) + "'" + (i % 12) + '"');
 
   const chips = [];
   // Age / athletic prime
@@ -100022,6 +100046,52 @@ function populateScoutingReport(name) {
       host.appendChild(box);
     }
   }
+
+  // Comparison mini-table helpers (label | fighter | opponent).
+  function cmpBlock(titleText) {
+    ensureShell();
+    const box = document.createElement('div'); box.className = 'sr-common';
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = titleText;
+    box.appendChild(t);
+    const head = document.createElement('div'); head.className = 'sr-cmp-row sr-cmp-head';
+    ['', shortName(name), shortName(opp)].forEach(txt => { const d = document.createElement('div'); d.textContent = txt; head.appendChild(d); });
+    box.appendChild(head);
+    host.appendChild(box);
+    return box;
+  }
+  function cmpRow(box, label, aVal, bVal, aCls, bCls) {
+    const row = document.createElement('div'); row.className = 'sr-cmp-row';
+    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = label;
+    const a = document.createElement('div'); a.className = 'sr-cmp-val ' + (aCls || ''); a.textContent = aVal;
+    const b = document.createElement('div'); b.className = 'sr-cmp-val ' + (bCls || ''); b.textContent = bVal;
+    row.appendChild(l); row.appendChild(a); row.appendChild(b); box.appendChild(row);
+  }
+
+  // How they win / how they lose — finish rate + durability.
+  (function () {
+    const fp = finishProfile(hist), op = finishProfile(oppHist);
+    if (!fp.wins && !fp.losses) return;
+    const box = cmpBlock('Finish & durability');
+    const rate = p => p.finRate == null ? '—' : (Math.round(p.finRate * 100) + '% (' + p.finWins + '/' + p.wins + ')');
+    const methods = p => { const parts = []; if (p.wKO) parts.push(p.wKO + ' KO'); if (p.wSub) parts.push(p.wSub + ' SUB'); if (p.wDec) parts.push(p.wDec + ' DEC'); return parts.join(' · ') || '—'; };
+    const fin = p => p.timesFinished ? (p.timesFinished + '×') : 'Never';
+    cmpRow(box, 'Win finish rate', rate(fp), rate(op));
+    cmpRow(box, 'Win methods', methods(fp), methods(op));
+    cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
+  })();
+
+  // Physical edges vs the opponent (reach / height / stance).
+  (function () {
+    const myHt = parseHt(stats.ht), opHt = parseHt(oppStats && oppStats.ht);
+    const myR = parseReach(stats.reach), opR = parseReach(oppStats && oppStats.reach);
+    const myS = stats.stance || null, opS = (oppStats && oppStats.stance) || null;
+    if (myHt == null && myR == null && !myS) return;
+    const box = cmpBlock('Physical');
+    const diffTxt = (mine, theirs, unit) => (theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
+    if (myHt != null || opHt != null) cmpRow(box, 'Height', myHt == null ? '—' : fmtHt(myHt) + diffTxt(myHt, opHt, '"'), fmtHt(opHt));
+    if (myR != null || opR != null) cmpRow(box, 'Reach', myR == null ? '—' : (myR + '"' + diffTxt(myR, opR, '"')), opR == null ? '—' : opR + '"');
+    if (myS || opS) { const clash = myS && opS && myS !== opS; cmpRow(box, 'Stance', myS || '—', opS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
+  })();
 
   refreshVis();
   maybeAutoOpen();
