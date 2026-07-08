@@ -1,0 +1,1064 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-07-08T01:35:14.386Z",
+  "lastRun": "2026-07-08T01:35:14.556Z",
+  "snapshots": [
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T21:00:00Z",
+      "fightId": "alessandro costa|cody durden",
+      "cardSection": "Early Prelims",
+      "weightClass": "Flyweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Cody Durden",
+        "db": "Cody Durden"
+      },
+      "b": {
+        "feed": "Alessandro Costa",
+        "db": "Alessandro Costa"
+      },
+      "model": {
+        "pA": 0.3972,
+        "pB": 0.6028
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": 210,
+        "priceB": -260,
+        "impliedA": 0.3111,
+        "impliedB": 0.6889,
+        "totals": {
+          "point": 1.5,
+          "overPrice": -190,
+          "underPrice": 150,
+          "nBooks": 3
+        }
+      },
+      "edgeA": 0.0861
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T21:00:00Z",
+      "fightId": "benoit saint denis|paddy pimblett",
+      "cardSection": "Main Card",
+      "weightClass": "Lightweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Paddy Pimblett",
+        "db": "Paddy Pimblett"
+      },
+      "b": {
+        "feed": "Benoit Saint-Denis",
+        "db": "Benoît Saint Denis"
+      },
+      "model": {
+        "pA": 0.3148,
+        "pB": 0.6852
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": 114,
+        "priceB": -138,
+        "impliedA": 0.4428,
+        "impliedB": 0.5572,
+        "totals": {
+          "point": 2.5,
+          "overPrice": 124,
+          "underPrice": -160,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.128
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T21:00:00Z",
+      "fightId": "conor mcgregor|max holloway",
+      "cardSection": "Main Card",
+      "weightClass": "Welterweight Bout",
+      "titleBout": false,
+      "rounds": 5,
+      "a": {
+        "feed": "Max Holloway",
+        "db": "Max Holloway"
+      },
+      "b": {
+        "feed": "Conor McGregor",
+        "db": "Conor McGregor"
+      },
+      "model": {
+        "pA": 0.6228,
+        "pB": 0.3772
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -225,
+        "priceB": 185,
+        "impliedA": 0.6636,
+        "impliedB": 0.3364,
+        "totals": {
+          "point": 2.5,
+          "overPrice": -105,
+          "underPrice": -120,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.0408
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T21:30:00Z",
+      "fightId": "ryan gandra|zachary reese",
+      "cardSection": "Early Prelims",
+      "weightClass": "Middleweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Ryan Gandra",
+        "db": "Ryan Gandra"
+      },
+      "b": {
+        "feed": "Zachary Reese",
+        "db": "Zachary Reese"
+      },
+      "model": {
+        "pA": 0.61,
+        "pB": 0.39
+      },
+      "market": {
+        "nBooks": 4,
+        "priceA": -135,
+        "priceB": 112.5,
+        "impliedA": 0.5516,
+        "impliedB": 0.4484,
+        "totals": {
+          "point": 1.5,
+          "overPrice": 155,
+          "underPrice": -200,
+          "nBooks": 3
+        }
+      },
+      "edgeA": 0.0584
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T22:15:00Z",
+      "fightId": "cesar almeida|damian pinas",
+      "cardSection": "Early Prelims",
+      "weightClass": "Middleweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Damian Pinas",
+        "db": "Damian Pinas"
+      },
+      "b": {
+        "feed": "Cesar Almeida",
+        "db": "Cesar Almeida"
+      },
+      "model": {
+        "pA": 0.7125,
+        "pB": 0.2875
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -215,
+        "priceB": 172,
+        "impliedA": 0.6531,
+        "impliedB": 0.3469,
+        "totals": {
+          "point": 1.5,
+          "overPrice": -120,
+          "underPrice": -110,
+          "nBooks": 3
+        }
+      },
+      "edgeA": 0.0594
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T22:40:00Z",
+      "fightId": "tracy cortez|wang cong",
+      "cardSection": "Early Prelims",
+      "weightClass": "Flyweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Tracy Cortez",
+        "db": "Tracy Cortez"
+      },
+      "b": {
+        "feed": "Wang Cong",
+        "db": "Wang Cong"
+      },
+      "model": {
+        "pA": 0.4407,
+        "pB": 0.5593
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -105,
+        "priceB": -115,
+        "impliedA": 0.4892,
+        "impliedB": 0.5108,
+        "totals": {
+          "point": 2.5,
+          "overPrice": -280,
+          "underPrice": 210,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.0485
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-07-11T23:15:00Z",
+      "fightId": "kai kamaka|luke riley",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Luke Riley",
+        "db": "Luke Riley"
+      },
+      "b": {
+        "feed": "Kai Kamaka",
+        "db": "Kai Kamaka III"
+      },
+      "model": {
+        "pA": 0.5531,
+        "pB": 0.4469
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -290,
+        "priceB": 240,
+        "impliedA": 0.7163,
+        "impliedB": 0.2837,
+        "totals": {
+          "point": 2.5,
+          "overPrice": -210,
+          "underPrice": 165,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.1632
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-11T23:40:00Z",
+      "fightId": "adrian yanez|cody garbrandt",
+      "cardSection": "Prelims",
+      "weightClass": "Bantamweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Cody Garbrandt",
+        "db": "Cody Garbrandt"
+      },
+      "b": {
+        "feed": "Adrian Yanez",
+        "db": "Adrian Yanez"
+      },
+      "model": {
+        "pA": 0.5165,
+        "pB": 0.4835
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": 340,
+        "priceB": -440,
+        "impliedA": 0.2185,
+        "impliedB": 0.7815,
+        "totals": {
+          "point": 1.5,
+          "overPrice": -170,
+          "underPrice": 145,
+          "nBooks": 3
+        }
+      },
+      "edgeA": 0.298
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-12T00:15:00Z",
+      "fightId": "elisha ellison|gable steveson",
+      "cardSection": "Prelims",
+      "weightClass": "Heavyweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Gable Steveson",
+        "db": "Gable Steveson"
+      },
+      "b": {
+        "feed": "Elisha Ellison",
+        "db": "Elisha Ellison"
+      },
+      "model": {
+        "pA": 0.5266,
+        "pB": 0.4734
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -2700,
+        "priceB": 1100,
+        "impliedA": 0.9213,
+        "impliedB": 0.0787,
+        "totals": {
+          "point": 1.5,
+          "overPrice": 370,
+          "underPrice": -525,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.3947
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-12T00:35:00Z",
+      "fightId": "nikita krylov|robert whittaker",
+      "cardSection": "Prelims",
+      "weightClass": "Heavyweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Robert Whittaker",
+        "db": "Robert Whittaker"
+      },
+      "b": {
+        "feed": "Nikita Krylov",
+        "db": "Nikita Krylov"
+      },
+      "model": {
+        "pA": 0.4402,
+        "pB": 0.5598
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -142,
+        "priceB": 120,
+        "impliedA": 0.5635,
+        "impliedB": 0.4365,
+        "totals": {
+          "point": 1.5,
+          "overPrice": -200,
+          "underPrice": 160,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.1233
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-12T01:15:00Z",
+      "fightId": "king green|terrance mckinney",
+      "cardSection": "Main Card",
+      "weightClass": "Lightweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "King Green",
+        "db": "King Green"
+      },
+      "b": {
+        "feed": "Terrance Mckinney",
+        "db": "Terrance McKinney"
+      },
+      "model": {
+        "pA": 0.3884,
+        "pB": 0.6116
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": 127,
+        "priceB": -148,
+        "impliedA": 0.4254,
+        "impliedB": 0.5746,
+        "totals": {
+          "point": 1.5,
+          "overPrice": 289,
+          "underPrice": -360,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.037
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-12T01:45:00Z",
+      "fightId": "brandon royval|lone er kavanagh",
+      "cardSection": "Main Card",
+      "weightClass": "Flyweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Brandon Royval",
+        "db": "Brandon Royval"
+      },
+      "b": {
+        "feed": "Lone'er Kavanagh",
+        "db": "Lone'er Kavanagh"
+      },
+      "model": {
+        "pA": 0.577,
+        "pB": 0.423
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": 185,
+        "priceB": -225,
+        "impliedA": 0.3379,
+        "impliedB": 0.6621,
+        "totals": {
+          "point": 2.5,
+          "overPrice": -188,
+          "underPrice": 145,
+          "nBooks": 3
+        }
+      },
+      "edgeA": 0.2391
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 329",
+      "commenceTime": "2026-07-12T02:15:00Z",
+      "fightId": "cory sandhagen|mario bautista",
+      "cardSection": "Main Card",
+      "weightClass": "Bantamweight Bout",
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Cory Sandhagen",
+        "db": "Cory Sandhagen"
+      },
+      "b": {
+        "feed": "Mario Bautista",
+        "db": "Mario Bautista"
+      },
+      "model": {
+        "pA": 0.5175,
+        "pB": 0.4825
+      },
+      "market": {
+        "nBooks": 5,
+        "priceA": -148,
+        "priceB": 124,
+        "impliedA": 0.5721,
+        "impliedB": 0.4279,
+        "totals": {
+          "point": 2.5,
+          "overPrice": -270,
+          "underPrice": 200,
+          "nBooks": 3
+        }
+      },
+      "edgeA": -0.0546
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC Fight Night",
+      "commenceTime": "2026-07-19T04:30:00Z",
+      "fightId": "dricus du plessis|kamaru usman",
+      "cardSection": "Main Card",
+      "weightClass": "Middleweight Bout",
+      "titleBout": false,
+      "rounds": 5,
+      "a": {
+        "feed": "Dricus Du Plessis",
+        "db": "Dricus du Plessis"
+      },
+      "b": {
+        "feed": "Kamaru Usman",
+        "db": "Kamaru Usman"
+      },
+      "model": {
+        "pA": 0.5151,
+        "pB": 0.4849
+      },
+      "market": {
+        "nBooks": 4,
+        "priceA": -260,
+        "priceB": 217,
+        "impliedA": 0.696,
+        "impliedB": 0.304,
+        "totals": null
+      },
+      "edgeA": -0.1809
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-07-25T16:00:00Z",
+      "fightId": "khalil rountree|magomed ankalaev",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Magomed Ankalaev",
+        "db": "Magomed Ankalaev"
+      },
+      "b": {
+        "feed": "Khalil Rountree",
+        "db": "Khalil Rountree Jr."
+      },
+      "model": {
+        "pA": 0.5333,
+        "pB": 0.4667
+      },
+      "market": {
+        "nBooks": 4,
+        "priceA": -310,
+        "priceB": 252,
+        "impliedA": 0.7269,
+        "impliedB": 0.2731,
+        "totals": null
+      },
+      "edgeA": -0.1936
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "UFC 330",
+      "commenceTime": "2026-08-16T03:00:00Z",
+      "fightId": "gillian robertson|mackenzie dern",
+      "cardSection": "Main Card",
+      "weightClass": "Women's Strawweight Title Bout",
+      "titleBout": true,
+      "rounds": 5,
+      "a": {
+        "feed": "Mackenzie Dern",
+        "db": "Mackenzie Dern"
+      },
+      "b": {
+        "feed": "Gillian Robertson",
+        "db": "Gillian Robertson"
+      },
+      "model": {
+        "pA": 0.4584,
+        "pB": 0.5416
+      },
+      "market": {
+        "nBooks": 3,
+        "priceA": -225,
+        "priceB": 172,
+        "impliedA": 0.6531,
+        "impliedB": 0.3469,
+        "totals": null
+      },
+      "edgeA": -0.1947
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-08-16T04:00:00Z",
+      "fightId": "ian garry|islam makhachev",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Islam Makhachev",
+        "db": "Islam Makhachev"
+      },
+      "b": {
+        "feed": "Ian Garry",
+        "db": "Ian Machado Garry"
+      },
+      "model": {
+        "pA": 0.6366,
+        "pB": 0.3634
+      },
+      "market": {
+        "nBooks": 3,
+        "priceA": -350,
+        "priceB": 280,
+        "impliedA": 0.7497,
+        "impliedB": 0.2503,
+        "totals": null
+      },
+      "edgeA": -0.1131
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-08-29T07:00:00Z",
+      "fightId": "song yadong|umar nurmagomedov",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Umar Nurmagomedov",
+        "db": "Umar Nurmagomedov"
+      },
+      "b": {
+        "feed": "Song Yadong",
+        "db": "Song Yadong"
+      },
+      "model": {
+        "pA": 0.5192,
+        "pB": 0.4808
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -400,
+        "priceB": 330,
+        "impliedA": 0.7748,
+        "impliedB": 0.2252,
+        "totals": null
+      },
+      "edgeA": -0.2556
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-27T03:00:00Z",
+      "fightId": "joshua van|manel kape",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Manel Kape",
+        "db": "Manel Kape"
+      },
+      "b": {
+        "feed": "Joshua Van",
+        "db": "Joshua Van"
+      },
+      "model": {
+        "pA": 0.531,
+        "pB": 0.469
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -190,
+        "priceB": 165,
+        "impliedA": 0.6345,
+        "impliedB": 0.3655,
+        "totals": null
+      },
+      "edgeA": -0.1035
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T05:00:00Z",
+      "fightId": "alex pereira|josh hokit",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Josh Hokit",
+        "db": "Josh Hokit"
+      },
+      "b": {
+        "feed": "Alex Pereira",
+        "db": "Alex Pereira"
+      },
+      "model": {
+        "pA": 0.5369,
+        "pB": 0.4631
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -160,
+        "priceB": 140,
+        "impliedA": 0.5963,
+        "impliedB": 0.4037,
+        "totals": null
+      },
+      "edgeA": -0.0594
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T05:00:00Z",
+      "fightId": "arman tsarukyan|justin gaethje",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Justin Gaethje",
+        "db": "Justin Gaethje"
+      },
+      "b": {
+        "feed": "Arman Tsarukyan",
+        "db": "Arman Tsarukyan"
+      },
+      "model": {
+        "pA": 0.4118,
+        "pB": 0.5882
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": 385,
+        "priceB": -500,
+        "impliedA": 0.1983,
+        "impliedB": 0.8017,
+        "totals": null
+      },
+      "edgeA": 0.2135
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T05:00:00Z",
+      "fightId": "ciryl gane|josh hokit",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Ciryl Gane",
+        "db": "Ciryl Gane"
+      },
+      "b": {
+        "feed": "Josh Hokit",
+        "db": "Josh Hokit"
+      },
+      "model": {
+        "pA": 0.3767,
+        "pB": 0.6233
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -250,
+        "priceB": 210,
+        "impliedA": 0.6889,
+        "impliedB": 0.3111,
+        "totals": null
+      },
+      "edgeA": -0.3122
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T05:00:00Z",
+      "fightId": "ilia topuria|justin gaethje",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Justin Gaethje",
+        "db": "Justin Gaethje"
+      },
+      "b": {
+        "feed": "Ilia Topuria",
+        "db": "Ilia Topuria"
+      },
+      "model": {
+        "pA": 0.3963,
+        "pB": 0.6037
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": 210,
+        "priceB": -250,
+        "impliedA": 0.3111,
+        "impliedB": 0.6889,
+        "totals": null
+      },
+      "edgeA": 0.0852
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T15:00:00Z",
+      "fightId": "natalia silva|valentina shevchenko",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Valentina Shevchenko",
+        "db": "Valentina Shevchenko"
+      },
+      "b": {
+        "feed": "Natalia Silva",
+        "db": "Natália Silva"
+      },
+      "model": {
+        "pA": 0.5,
+        "pB": 0.5
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -250,
+        "priceB": 210,
+        "impliedA": 0.6889,
+        "impliedB": 0.3111,
+        "totals": null
+      },
+      "edgeA": -0.1889
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2026-12-31T17:00:00Z",
+      "fightId": "conor mcgregor|jorge masvidal",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Conor McGregor",
+        "db": "Conor McGregor"
+      },
+      "b": {
+        "feed": "Jorge Masvidal",
+        "db": "Jorge Masvidal"
+      },
+      "model": {
+        "pA": 0.53,
+        "pB": 0.47
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -145,
+        "priceB": 125,
+        "impliedA": 0.5711,
+        "impliedB": 0.4289,
+        "totals": null
+      },
+      "edgeA": -0.0411
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "alexandre pantoja|joshua van",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Alexandre Pantoja",
+        "db": "Alexandre Pantoja"
+      },
+      "b": {
+        "feed": "Joshua Van",
+        "db": "Joshua Van"
+      },
+      "model": {
+        "pA": 0.4219,
+        "pB": 0.5781
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -200,
+        "priceB": 170,
+        "impliedA": 0.6429,
+        "impliedB": 0.3571,
+        "totals": null
+      },
+      "edgeA": -0.221
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "ciryl gane|tom aspinall",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Tom Aspinall",
+        "db": "Tom Aspinall"
+      },
+      "b": {
+        "feed": "Ciryl Gane",
+        "db": "Ciryl Gane"
+      },
+      "model": {
+        "pA": 0.7066,
+        "pB": 0.2934
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -125,
+        "priceB": 105,
+        "impliedA": 0.5325,
+        "impliedB": 0.4675,
+        "totals": null
+      },
+      "edgeA": 0.1741
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "khamzat chimaev|paulo henrique costa",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Khamzat Chimaev",
+        "db": "Khamzat Chimaev"
+      },
+      "b": {
+        "feed": "Paulo Henrique Costa",
+        "db": "Paulo Costa"
+      },
+      "model": {
+        "pA": 0.722,
+        "pB": 0.278
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -500,
+        "priceB": 375,
+        "impliedA": 0.7983,
+        "impliedB": 0.2017,
+        "totals": null
+      },
+      "edgeA": -0.0763
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "khamzat chimaev|sean strickland",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Sean Strickland",
+        "db": "Sean Strickland"
+      },
+      "b": {
+        "feed": "Khamzat Chimaev",
+        "db": "Khamzat Chimaev"
+      },
+      "model": {
+        "pA": 0.4173,
+        "pB": 0.5827
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": 175,
+        "priceB": -205,
+        "impliedA": 0.3511,
+        "impliedB": 0.6489,
+        "totals": null
+      },
+      "edgeA": 0.0662
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "merab dvalishvili|petr yan",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Merab Dvalishvili",
+        "db": "Merab Dvalishvili"
+      },
+      "b": {
+        "feed": "Petr Yan",
+        "db": "Petr Yan"
+      },
+      "model": {
+        "pA": 0.4163,
+        "pB": 0.5837
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": 150,
+        "priceB": -175,
+        "impliedA": 0.386,
+        "impliedB": 0.614,
+        "totals": null
+      },
+      "edgeA": 0.0303
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-01-01T03:00:00Z",
+      "fightId": "nassourdine imavov|sean strickland",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Sean Strickland",
+        "db": "Sean Strickland"
+      },
+      "b": {
+        "feed": "Nassourdine Imavov",
+        "db": "Nassourdine Imavov"
+      },
+      "model": {
+        "pA": 0.4392,
+        "pB": 0.5608
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -106,
+        "priceB": -114,
+        "impliedA": 0.4913,
+        "impliedB": 0.5087,
+        "totals": null
+      },
+      "edgeA": -0.0521
+    },
+    {
+      "capturedAt": "2026-07-08T01:35:14.386Z",
+      "event": "MMA",
+      "commenceTime": "2027-07-02T02:00:00Z",
+      "fightId": "islam makhachev|kamaru usman",
+      "cardSection": null,
+      "weightClass": null,
+      "titleBout": false,
+      "rounds": 3,
+      "a": {
+        "feed": "Islam Makhachev",
+        "db": "Islam Makhachev"
+      },
+      "b": {
+        "feed": "Kamaru Usman",
+        "db": "Kamaru Usman"
+      },
+      "model": {
+        "pA": 0.7189,
+        "pB": 0.2811
+      },
+      "market": {
+        "nBooks": 1,
+        "priceA": -330,
+        "priceB": 270,
+        "impliedA": 0.7396,
+        "impliedB": 0.2604,
+        "totals": null
+      },
+      "edgeA": -0.0207
+    }
+  ]
+}

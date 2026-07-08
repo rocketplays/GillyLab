@@ -124,11 +124,22 @@ jobs:
       - name: Regenerate landing-page data snapshot
         run: node scripts/gen-landing-data.cjs || true
 
+      # Phase-0 prediction capture: regenerate the production scorer from the
+      # current index.html, then append a timestamped snapshot of each upcoming
+      # fight's model win-probability alongside the current de-vigged market
+      # price. Append-only, internal — this banks the time series we later grade
+      # for calibration and closing-line value. Non-fatal so a hiccup here never
+      # blocks the odds update/deploy.
+      - name: Log model predictions vs market
+        run: |
+          node scripts/sim-backtest/extract-sim.cjs || true
+          node scripts/log-predictions.cjs || true
+
       - name: Commit and push if changed
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json worker/landing-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json worker/landing-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -148,6 +159,8 @@ jobs:
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
           node scripts/gen-landing-data.cjs || true
+          node scripts/sim-backtest/extract-sim.cjs || true
+          node scripts/log-predictions.cjs || true
           git add $FILES
           git diff --staged --quiet && echo "No changes after reconcile" && exit 0
           git commit -m "chore: update UFC odds (reconciled) $(date -u '+%Y-%m-%d %H:%M UTC')"
