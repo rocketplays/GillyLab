@@ -1975,8 +1975,10 @@
       .fighter-tab { padding: 0.7rem 0.7rem; letter-spacing: 0.08em; font-size: 0.72rem; }
     }
 
-    /* Scouting Report — pre-fight context block on the fighter profile. */
-    .scouting-report { margin: 1.5rem 0 0; padding: 1.1rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 12px; }
+    /* Scouting Report — collapsible dropdown (mirrors Record Breakdown). */
+    .scouting-report-panel { display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; max-width: 700px; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-top 0.3s ease; }
+    .scouting-report-panel.open { margin-top: 0.85rem; grid-template-rows: 1fr; opacity: 1; }
+    .scouting-report-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1.1rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
     .sr-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sr-chip { flex: 1 1 140px; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; }
@@ -3060,8 +3062,10 @@
           </div>
           <div class="record-label">W · L · D</div>
           <button type="button" class="fight-info-toggle" id="f-record-toggle" onclick="toggleRecordBreakdown(this)">Record Breakdown ⌄</button>
+          <button type="button" class="fight-info-toggle" id="f-scouting-toggle" onclick="toggleScoutingReport(this)" style="display:none;">Scouting Report ⌄</button>
         </div>
         <div class="record-breakdown-panel" id="f-record-breakdown"><div class="rb-grid" id="f-record-breakdown-grid"></div></div>
+        <div class="scouting-report-panel" id="f-scouting-panel"><div class="sr-inner" id="f-scouting"></div></div>
       </div>
     </div>
   </div>
@@ -3140,8 +3144,6 @@
       <div class="stat-card-sub">Training camp</div>
     </div>
   </div>
-
-  <div class="scouting-report" id="f-scouting" style="display:none;"></div>
 
   <div class="fighter-content">
     <div class="fighter-tabs">
@@ -87204,6 +87206,14 @@ function populateFightHistory(name) {
     btn.classList.toggle('open', !isOpen);
     btn.textContent = isOpen ? 'Record Breakdown ⌄' : 'Record Breakdown ⌃';
   }
+  function toggleScoutingReport(btn) {
+    const panel = document.getElementById('f-scouting-panel');
+    if (!panel) return;
+    const isOpen = panel.classList.contains('open');
+    panel.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.textContent = isOpen ? 'Scouting Report ⌄' : 'Scouting Report ⌃';
+  }
  function populateOddsHistory(name) {
   var tbody = document.getElementById("fo-tbody");
   var wrap = document.getElementById("fo-table-wrap");
@@ -99857,9 +99867,21 @@ function scoutingHistKey(n) {
 // change" flag when either fighter has recent injury/card news.
 function populateScoutingReport(name) {
   const host = document.getElementById('f-scouting');
+  const toggleBtn = document.getElementById('f-scouting-toggle');
+  const panel = document.getElementById('f-scouting-panel');
   if (!host) return;
   host.innerHTML = '';
-  host.style.display = 'none';
+  if (panel) panel.classList.remove('open');
+  if (toggleBtn) { toggleBtn.style.display = 'none'; toggleBtn.classList.remove('open'); toggleBtn.textContent = 'Scouting Report ⌄'; }
+  const refreshVis = () => { if (toggleBtn) toggleBtn.style.display = host.children.length ? '' : 'none'; };
+  const maybeAutoOpen = () => {
+    if (!window._glOpenScouting || !host.children.length) return;
+    window._glOpenScouting = false;
+    if (panel && toggleBtn) {
+      panel.classList.add('open'); toggleBtn.classList.add('open'); toggleBtn.textContent = 'Scouting Report ⌃';
+      setTimeout(function () { if (panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 90);
+    }
+  };
 
   const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
   const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) ? FIGHT_HISTORY[name] : [];
@@ -99901,10 +99923,7 @@ function populateScoutingReport(name) {
 
   function ensureShell() {
     if (host.querySelector('.sr-flags')) return host.querySelector('.sr-flags');
-    const title = document.createElement('div'); title.className = 'sr-title'; title.textContent = 'Scouting Report';
-    host.appendChild(title);
     const wrap = document.createElement('div'); wrap.className = 'sr-flags'; host.appendChild(wrap);
-    host.style.display = '';
     return wrap;
   }
   function addChip(c) {
@@ -99959,6 +99978,9 @@ function populateScoutingReport(name) {
     }
   }
 
+  refreshVis();
+  maybeAutoOpen();
+
   // Async: short-notice flag + "bout may change" when either fighter has injury/card news.
   if (typeof loadFighterNews === 'function') {
     loadFighterNews().then(function (data) {
@@ -99984,9 +100006,20 @@ function populateScoutingReport(name) {
         const hit = meEntry.items.some(it => SN.test(it.title || '') && last && _newsNorm(it.title).indexOf(last) !== -1);
         if (hit) addChip({ icon: '⚡', label: 'Short notice', value: 'Replacement', note: 'Taking this fight on short notice (per news)', tone: 'warn' });
       }
+      refreshVis();
+      maybeAutoOpen();
     }).catch(function () {});
   }
 }
+
+// Opens a fighter's profile from the events page with the Scouting Report
+// dropdown auto-expanded and scrolled into view — used by the per-fight
+// "Scouting" button so the matchup context is one tap away.
+window.openFighterScouting = function (name, div, rec, rank, ini) {
+  window._glOpenScouting = true;
+  window._glSuppressProfileScroll = true;
+  if (typeof openFighter === 'function') openFighter(name, div, rec, rank, ini);
+};
 
 function fighterGoBack() {
  if (fighterStack.length > 0) {
@@ -101051,6 +101084,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               : '<div class="fight-rounds">' + rounds + '</div>') +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
             (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate</button>') +
+            (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>') +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -102709,6 +102743,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fight-rounds">' + rds + '</div>' +
           '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
           '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate</button>' +
+          '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
