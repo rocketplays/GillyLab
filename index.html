@@ -902,6 +902,14 @@
     @media (max-width: 600px) {
       .gl-injury-banner { font-size: 0.73rem; padding: 0.75rem 0.85rem; }
     }
+    /* Attention flash on the news item the injury banner points to: a quick
+       double fade in/out so the eye lands on it after auto-scrolling. */
+    @keyframes glNewsFlash {
+      0%, 40%, 100% { background-color: transparent; box-shadow: 0 0 0 0 rgba(0, 230, 104, 0); }
+      15%, 65% { background-color: rgba(0, 230, 104, 0.18); box-shadow: inset 0 0 0 1px rgba(0, 230, 104, 0.4); }
+    }
+    .gl-news-flash { animation: glNewsFlash 1.6s ease; border-radius: 8px; }
+    @media (prefers-reduced-motion: reduce) { .gl-news-flash { animation: none; } }
     /* Record Breakdown sits next to the fighter's record and is easy to miss
        against the muted .fight-info-toggle styling — give it its own
        always-on accent treatment (slightly larger + tinted) so it reads as
@@ -99720,11 +99728,22 @@ function applyInjuryFlags() {
         '<span class="gl-injury-go">View ›</span>';
       const open = function (e) {
         if (e) e.stopPropagation();
-        chosen.cell.click();                         // opens the fighter profile
-        setTimeout(function () {                      // then land on the News tab
+        chosen.cell.click();                         // opens the fighter profile (scrolls to top)
+        setTimeout(function () {
           const btn = document.getElementById('ftab-news-btn');
           if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
-        }, 260);
+          // Land the user ON the News tab rather than at the top of the profile.
+          const tabs = document.querySelector('#page-fighter .fighter-tabs');
+          if (tabs && tabs.scrollIntoView) tabs.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Once the list has rendered, flash the first item to draw the eye.
+          setTimeout(function () {
+            const first = document.querySelector('#fn-list a');
+            if (first) {
+              first.classList.add('gl-news-flash');
+              setTimeout(function () { first.classList.remove('gl-news-flash'); }, 1700);
+            }
+          }, 480);
+        }, 300);
       };
       bar.addEventListener('click', open);
       bar.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(e); } });
