@@ -2024,7 +2024,13 @@
     .sr-cmp-val.w { color: var(--accent); }
     .sr-cmp-val.l { color: #ff6a5e; }
     .sr-cmp-val.hi { color: #ffcf7a; }
-    @media (max-width: 600px) { .sr-cmp-row { grid-template-columns: 1fr 1fr 1fr; font-size: 0.74rem; } }
+    .sr-cmp-val.sr-form { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
+    .sr-cmp-val.sr-form .form-tile { flex: 0 0 auto; }
+    @media (max-width: 600px) {
+      .sr-cmp-row { grid-template-columns: 1fr 1fr 1fr; font-size: 0.74rem; }
+      .sr-cmp-val.sr-form { gap: 3px; }
+      .sr-cmp-val.sr-form .form-tile { width: 16px !important; height: 16px !important; font-size: 0.56rem !important; }
+    }
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
@@ -100013,7 +100019,7 @@ function renderScouting(host, name, opp, fightDate) {
       const row = document.createElement('div'); row.className = 'sr-cmp-row';
       const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Last 5'; row.appendChild(l);
       [aKey, bKey].forEach(k => {
-        const d = document.createElement('div'); d.className = 'sr-cmp-val';
+        const d = document.createElement('div'); d.className = 'sr-cmp-val sr-form';
         d.innerHTML = (typeof lastFiveFormHTML === 'function') ? lastFiveFormHTML(k) : '—';
         row.appendChild(d);
       });
