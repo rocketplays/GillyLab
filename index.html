@@ -101288,6 +101288,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 550, r2: 850,  r3: 1100 }, f2: { r1: 275, r2: 550, r3: 850 } },
       },
     },
+    // UFC 329 — Green vs McKinney (3 rounds; fightodds.io: Bovada / DraftKings /
+    // FanDuel / BetMGM). f1 = Green, f2 = McKinney (alphabetical last name).
+    'green|mckinney': {
+      rounds: 3,
+      method: {
+        bovada:     { f1: { ko: 215, sub: 700, dec: 1600 }, f2: { ko: 150, sub: 275, dec: 2500 } },
+        draftkings: { f1: { ko: 200, sub: 650, dec: 1800 }, f2: { ko: 165, sub: 275, dec: 2800 } },
+        fanduel:    { f1: { ko: 210, sub: 750, dec: 2000 }, f2: { ko: 175, sub: 300, dec: 3000 } },
+        betmgm:     { f1: { ko: 200, sub: 700, dec: 1600 }, f2: { ko: 150, sub: 250, dec: 2500 } },
+      },
+      roundProps: {
+        bovada:     { f1: { r1: 310, r2: 575, r3: 1200 }, f2: { r1: -106, r2: 800,  r3: 3300 } },
+        draftkings: { f1: { r1: 240, r2: 700, r3: 1600 }, f2: { r1: -125, r2: 1100, r3: 2800 } },
+        fanduel:    { f1: { r1: 260, r2: 800, r3: 1900 }, f2: { r1: -105, r2: 1200, r3: 2700 } },
+        betmgm:     { f1: { r1: 250, r2: 750, r3: 1600 }, f2: { r1: -135, r2: 1000, r3: 2500 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
