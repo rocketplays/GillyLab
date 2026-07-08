@@ -100132,7 +100132,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         const out = []; if (!h.length) return out;
         let fs = 0; for (const f of h) { if (f.result === 'W' && isFin(mcat(f.method))) fs++; else break; }
         if (fs >= 3) out.push('On a ' + fs + '-fight finish streak.');
-        else { const finW = h.slice(0, 5).filter(f => f.result === 'W' && isFin(mcat(f.method))).length; if (finW >= 3) out.push('Finished ' + finW + ' of the last 5.'); }
+        else { const finW = h.slice(0, 5).filter(f => f.result === 'W' && isFin(mcat(f.method))).length; if (finW >= 3) out.push('Won by finish in ' + finW + ' of the last 5.'); }
         // fi = position of the most recent finish loss in the newest-first list,
         // i.e. the number of fights SINCE last being finished. Anchor durability to
         // fights, not calendar time — a long layoff (e.g. McGregor, whose last bout
@@ -100140,7 +100140,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         const fi = h.findIndex(f => f.result === 'L' && isFin(mcat(f.method)));
         if (fi !== -1) {
           if (fi >= 6) out.push("Hasn't been finished in his last " + fi + ' fights.');
-          const finL3 = h.slice(0, 3).filter(f => f.result === 'L' && isFin(mcat(f.method))).length; if (finL3 >= 2) out.push('Finished in ' + finL3 + ' of the last 3 — durability questions.');
+          const finL3 = h.slice(0, 3).filter(f => f.result === 'L' && isFin(mcat(f.method))).length; if (finL3 >= 2) out.push('Lost by finish in ' + finL3 + ' of the last 3 — durability questions.');
         }
         if (oppStance && /south|switch/i.test(oppStance)) {
           let w = 0, l = 0;
