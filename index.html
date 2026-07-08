@@ -100073,17 +100073,23 @@ function renderScouting(host, name, opp, fightDate) {
 
     const wrap = document.createElement('div'); wrap.className = 'sr-style-wrap';
     const track = document.createElement('div'); track.className = 'sr-style-track';
-    const addDot = (leanVal, color, nm) => {
+    // When the two dots sit close together their name labels would overlap
+    // (worse on mobile, where the track is narrow), so stack the second
+    // fighter's label on a higher row and reserve the vertical space for it.
+    const stacked = (leanA != null && leanB != null) && Math.abs(leanA - leanB) < 24;
+    if (stacked) wrap.style.marginTop = '1.85rem';
+    const addDot = (leanVal, color, nm, raise) => {
       if (leanVal == null) return;
       const dot = document.createElement('div'); dot.className = 'sr-style-dot';
       dot.style.left = 'calc(' + leanVal + '% - 6px)'; dot.style.background = color;
       track.appendChild(dot);
       const lab = document.createElement('div'); lab.className = 'sr-style-lab';
       lab.style.left = leanVal + '%'; lab.style.color = color; lab.textContent = short(nm);
+      if (raise) lab.style.top = '-32px';
       wrap.appendChild(lab);
     };
-    addDot(leanA, GREEN, name);
-    addDot(leanB, AMBER, opp);
+    addDot(leanA, GREEN, name, false);
+    addDot(leanB, AMBER, opp, stacked);
     wrap.appendChild(track); box.appendChild(wrap);
     const ends = document.createElement('div'); ends.className = 'sr-style-ends';
     ends.innerHTML = '<span>Grappler</span><span>Striker</span>'; box.appendChild(ends);
@@ -100116,11 +100122,37 @@ function renderScouting(host, name, opp, fightDate) {
           if (self.tdDef != null && self.tdDef >= 70) line = 'Keep it standing — his ' + self.tdDef + '% takedown defense should stall ' + oN + "'s entries — and win at range.";
           else if (self.tdDef != null && self.tdDef <= 55) line = "Win early on the feet, but he's takedown-vulnerable (" + self.tdDef + '% TDD) and must stay off the cage.';
           else line = 'Win the striking at range and make ' + oN + ' pay for shooting.';
+          if (power) notes.push('carries real knockout power');
+          else if (self.finRate != null && self.finRate <= 45) notes.push('more likely to need the judges');
         } else if (oKnown) {
-          line = 'A striking battle — outland ' + oN + ' at range; edge to the higher output' + ((output(self) && output(other)) ? ' (' + output(self) + ' vs ' + output(other) + ' thrown/min)' : '') + '.';
-        } else line = 'Win it on the feet behind his output and range.';
-        if (power) notes.push('carries real knockout power');
-        else if (self.finRate != null && self.finRate <= 45) notes.push('more likely to need the judges');
+          // Two strikers: name THIS fighter's specific edge — volume vs power —
+          // instead of a generic "higher output" line on both cards.
+          const os = output(self), oo = output(other);
+          const haveOut = os != null && oo != null;
+          const nums = haveOut ? ' (' + os + ' vs ' + oo + ' thrown/min)' : '';
+          const outEdge = haveOut && os > oo;
+          const outClose = haveOut && Math.abs(os - oo) < 0.8;
+          const powerOther = (other.kd != null && other.kd >= 0.6) || (other.finRate != null && other.finRate >= 75);
+          let s = 'A striking battle — ';
+          if (outClose) {
+            s += 'output is even' + nums + ', so it turns on power and accuracy';
+            if (power && !powerOther) s += ' — and he carries the heavier hands';
+            else if (powerOther && !power) s += ' — but ' + oN + ' hits harder';
+          } else if (outEdge) {
+            s += 'he has the edge in output' + nums + ', so his path is volume and pace over the rounds';
+            if (powerOther && !power) s += ', while staying disciplined against ' + oN + "'s power";
+            else if (power) s += ', and he carries real power on top of it';
+          } else {
+            s += "he doesn't have the edge in output" + nums;
+            if (power) s += ', but he carries real knockout power — his path is the fight-ending shot, not the scorecards';
+            else s += ', so he has to steal rounds in bursts and avoid a track meet';
+          }
+          line = s + '.';
+        } else {
+          line = 'Win it on the feet behind his output and range.';
+          if (power) notes.push('carries real knockout power');
+          else if (self.finRate != null && self.finRate <= 45) notes.push('more likely to need the judges');
+        }
       } else if (grappler(la)) {
         if (oKnown && grappler(lb) && other.tdDef >= 68 && self.tdDef >= 68) line = 'Neither grapples the other down easily (both stuff 68%+) — likely scrambles and top-control battles';
         else { line = 'Get it to the mat'; if (oKnown && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.'; else if (oKnown && other.tdDef <= 55) line += ' — ' + oN + ' is takedown-vulnerable (' + other.tdDef + '% TDD), so get it down early and often.'; else line += ' and impose top control.'; }
