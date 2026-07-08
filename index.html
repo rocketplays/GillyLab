@@ -3069,6 +3069,7 @@
       <div class="fighter-tab" id="ftab-tape-btn" onclick="switchFighterTab(this, 'ftab-tape')">Tape Study</div>
       <div class="fighter-tab" id="ftab-odds-btn" onclick="switchFighterTab(this, 'ftab-odds')">Odds History</div>
       <div class="fighter-tab" id="ftab-accolades-btn" onclick="switchFighterTab(this, 'ftab-accolades')">Accolades</div>
+      <div class="fighter-tab" id="ftab-news-btn" onclick="switchFighterTab(this, 'ftab-news')" style="display:none;">News</div>
     </div>
 
     <div id="ftab-history" class="ftab-panel">
@@ -3143,6 +3144,15 @@
       <div id="fa-empty" class="empty-state">
         <div class="empty-state-icon">🏆</div>
         <div class="empty-state-text">Accolades will populate here</div>
+      </div>
+    </div>
+    <div id="ftab-news" class="ftab-panel" style="display:none;">
+      <div id="fn-list-wrap" style="display:none;">
+        <div id="fn-list"></div>
+      </div>
+      <div id="fn-empty" class="empty-state">
+        <div class="empty-state-icon">📰</div>
+        <div class="empty-state-text">No recent news</div>
       </div>
     </div>
   </div>
@@ -6662,6 +6672,7 @@
  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.classList.remove('page-leaving'); });
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  targetPage.classList.add('active');
+ if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
  // Restore the scroll position for the page being shown (non-fighter pages
  // only — the fighter profile always opens at the top, handled by openFighter).
  if (page !== 'fighter') window.scrollTo(0, pageScroll[targetId] || 0);
@@ -99557,6 +99568,106 @@ function populateAccolades(name) {
   });
 }
 
+// ── Fighter news (data/fighter-news.json, refreshed by the odds workflow) ──────
+let _fighterNewsPromise = null;
+function loadFighterNews() {
+  if (_fighterNewsPromise) return _fighterNewsPromise;
+  _fighterNewsPromise = fetch('./data/fighter-news.json')
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  return _fighterNewsPromise;
+}
+function _newsNorm(s) {
+  return String(s == null ? '' : s).toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+// Look up a fighter's news entry by normalized name, with an unambiguous
+// token-subset fallback (handles suffixes / alias spellings across feeds).
+function fighterNewsEntry(data, name) {
+  if (!data || !data.fighters) return null;
+  const nn = _newsNorm(name);
+  if (data.fighters[nn]) return data.fighters[nn];
+  const t = nn.split(' ').filter(Boolean); if (!t.length) return null;
+  let hit = null, hits = 0;
+  for (const k of Object.keys(data.fighters)) {
+    const kt = k.split(' ').filter(Boolean);
+    if (t.every(x => kt.includes(x)) || kt.every(x => t.includes(x))) { hit = data.fighters[k]; if (++hits > 1) break; }
+  }
+  return hits === 1 ? hit : null;
+}
+function populateFighterNews(name) {
+  const wrap = document.getElementById('fn-list-wrap');
+  const list = document.getElementById('fn-list');
+  const empty = document.getElementById('fn-empty');
+  const tabBtn = document.getElementById('ftab-news-btn');
+  if (!list) return;
+  list.innerHTML = '';
+  if (tabBtn) tabBtn.style.display = 'none';
+  if (wrap) wrap.style.display = 'none';
+  if (empty) empty.style.display = '';
+  loadFighterNews().then(function (data) {
+    if (!currentFighter || currentFighter.name !== name) return; // fighter changed
+    const entry = fighterNewsEntry(data, name);
+    const items = entry && Array.isArray(entry.items) ? entry.items : [];
+    if (!items.length) return;                       // leave tab hidden
+    if (tabBtn) tabBtn.style.display = '';
+    if (wrap) wrap.style.display = '';
+    if (empty) empty.style.display = 'none';
+    const searchUrl = 'https://news.google.com/search?q=' + encodeURIComponent('"' + name + '" UFC');
+    items.forEach(function (it, i) {
+      const row = document.createElement('a');
+      row.href = it.url || searchUrl;
+      row.target = '_blank'; row.rel = 'noopener noreferrer';
+      row.style.cssText = 'display:block;text-decoration:none;color:inherit;padding:0.75rem;' +
+        (i % 2 === 1 ? 'background:rgba(255,255,255,0.02);' : '') +
+        'border-bottom:1px solid rgba(255,255,255,0.06);';
+      const head = document.createElement('div');
+      head.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;';
+      if (it.injury) {
+        const flag = document.createElement('span');
+        flag.textContent = '⚠ Injury/Card news';
+        flag.style.cssText = 'font-size:0.62rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#ffb020;background:rgba(255,176,32,0.12);padding:0.1rem 0.4rem;border-radius:5px;flex-shrink:0;';
+        head.appendChild(flag);
+      }
+      const meta = document.createElement('span');
+      meta.style.cssText = 'font-size:0.7rem;color:rgba(255,255,255,0.4);';
+      meta.textContent = (it.source || '') + (it.date ? ' · ' + it.date : '');
+      head.appendChild(meta);
+      const title = document.createElement('div');
+      title.style.cssText = 'font-weight:600;color:#fff;font-size:0.85rem;line-height:1.35;';
+      title.textContent = it.title || '';
+      row.appendChild(head); row.appendChild(title);
+      list.appendChild(row);
+    });
+  }).catch(function () {});
+}
+
+// Post-render pass: badge any fight-card fighter who has recent injury/withdrawal
+// news. Renderer- and timing-agnostic (reads the cached news; re-applied on nav).
+function applyInjuryFlags() {
+  loadFighterNews().then(function (data) {
+    if (!data || !data.fighters) return;
+    const injKeys = Object.keys(data.fighters).filter(k => data.fighters[k].hasInjuryNews);
+    if (!injKeys.length) return;
+    const injTokens = injKeys.map(k => k.split(' ').filter(Boolean));
+    document.querySelectorAll('.fight-row .fighter-name, .fight-card-section .fighter-name').forEach(function (el) {
+      if (el.dataset.injChecked) return;
+      el.dataset.injChecked = '1';
+      const nm = _newsNorm(el.textContent);
+      if (!nm) return;
+      const t = nm.split(' ').filter(Boolean);
+      const match = injKeys.includes(nm) || injTokens.some(kt =>
+        t.length && (t.every(x => kt.includes(x)) || kt.every(x => t.includes(x))));
+      if (!match) return;
+      const b = document.createElement('span');
+      b.className = 'gl-injury-flag';
+      b.title = 'Recent injury / card news — see the fighter’s News tab';
+      b.textContent = ' ⚠';
+      b.style.cssText = 'color:#ffb020;font-size:0.85em;font-weight:700;';
+      el.appendChild(b);
+    });
+  }).catch(function () {});
+}
+
 function fighterGoBack() {
  if (fighterStack.length > 0) {
    const prev = fighterStack.pop();
@@ -99641,6 +99752,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    populateOddsHistory(name);
    populateTapeStudy(name);
    populateAccolades(name);
+   populateFighterNews(name);
    // Update back button label
    const backBtn = document.getElementById('fighter-back-btn');
    if (backBtn) {
@@ -105116,7 +105228,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // crossfades together.
     const els = ['dynamic-fight-card', 'home-event-name', 'home-event-details']
       .map(id => document.getElementById(id)).filter(Boolean);
-    if (!els.length) { renderFn(); return; }
+    if (!els.length) { renderFn(); if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 50); return; }
     els.forEach(c => {
       c.style.animation = 'none';
       c.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
@@ -105131,6 +105243,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         c.style.opacity = '';
         c.style.animation = 'fadeIn 0.3s ease';
       });
+      if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 50);
     }, 150);
   }
 
@@ -105289,6 +105402,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     try {
       if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
       renderHomeFightCard(evt);
+      if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 100);
       if (apiData && apiData.data && apiData.data.length) setupPrevEventsDropdown(apiData, featuredRaw);
       renderProjectionsPage(evt);
       initSimFighterPickers();

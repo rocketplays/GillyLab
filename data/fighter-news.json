@@ -1,0 +1,75 @@
+{
+  "generatedAt": "2026-07-08T02:38:39.201Z",
+  "recencyDays": 30,
+  "seededWithoutLinks": true,
+  "note": "Initial seed from real Google News RSS headlines (links omitted in seed; the scheduled fetch-fighter-news.cjs job repopulates full coverage + article links).",
+  "fighters": {
+    "conor mcgregor": {
+      "name": "Conor McGregor",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "UFC 329 custom shorts revealed for Conor McGregor, King Green", "source": "MMA Fighting", "date": "2026-07-07", "injury": false },
+        { "title": "Dustin Poirier makes bold claim about Conor McGregor's UFC return", "source": "Sports Illustrated", "date": "2026-07-07", "injury": false },
+        { "title": "UFC release footage showing Dana White's stunned reaction to Conor McGregor's last win", "source": "Bloody Elbow", "date": "2026-07-07", "injury": false },
+        { "title": "Chael Sonnen: Conor McGregor faces 'insurmountable' obstacle at UFC 329", "source": "MMA Junkie", "date": "2026-07-07", "injury": false }
+      ]
+    },
+    "max holloway": {
+      "name": "Max Holloway",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "Holloway predicts UFC 329 win vs. McGregor, trilogy at Allegiant", "source": "ESPN", "date": "2026-07-04", "injury": false },
+        { "title": "Tom Aspinall makes bold Conor McGregor vs. Max Holloway prediction", "source": "Sherdog", "date": "2026-07-07", "injury": false },
+        { "title": "When is the UFC 329 press conference? Fight week schedule for McGregor vs. Holloway 2", "source": "Sports Illustrated", "date": "2026-07-06", "injury": false },
+        { "title": "Max Holloway refuses to complain about BMF title loss to Charles Oliveira", "source": "BJPenn.com", "date": "2026-07-05", "injury": false }
+      ]
+    },
+    "cory sandhagen": {
+      "name": "Cory Sandhagen",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "Cory Sandhagen fight week interview | UFC 329", "source": "UFC.com", "date": "2026-07-07", "injury": false }
+      ]
+    },
+    "king green": {
+      "name": "King Green",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "UFC preview: King Green vs. Terrance McKinney", "source": "247Sports", "date": "2026-07-07", "injury": false },
+        { "title": "Green vs. McKinney odds, full fight preview & prediction", "source": "MMA Mania", "date": "2026-07-06", "injury": false }
+      ]
+    },
+    "wang cong": {
+      "name": "Wang Cong",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "Tracy Cortez says she is coming to 'hurt these girls' ahead of UFC 329 clash with Wang Cong", "source": "LowKickMMA.com", "date": "2026-07-07", "injury": false },
+        { "title": "Tracy Cortez previews UFC 329 bout vs. Wang Cong", "source": "MMA Junkie", "date": "2026-07-02", "injury": false }
+      ]
+    },
+    "ryan gandra": {
+      "name": "Ryan Gandra",
+      "hasInjuryNews": false,
+      "items": [
+        { "title": "UFC Fight Night 268 video: Ryan Gandra debuts with 41-second knockout", "source": "MMA Junkie", "date": "2026-06-29", "injury": false }
+      ]
+    },
+    "ethyn ewing": {
+      "name": "Ethyn Ewing",
+      "hasInjuryNews": true,
+      "items": [
+        { "title": "Ethyn Ewing breaks his silence after 'detrimental injury' forced him off Conor McGregor's return card", "source": "Bloody Elbow", "date": "2026-07-04", "injury": true },
+        { "title": "UFC 329 gets late replacement opponent change", "source": "MMA Fighting", "date": "2026-07-07", "injury": true },
+        { "title": "UFC 329 fight saved as late replacement opponent steps in on 6 days' notice", "source": "Bloody Elbow", "date": "2026-07-07", "injury": true }
+      ]
+    },
+    "farid basharat": {
+      "name": "Farid Basharat",
+      "hasInjuryNews": true,
+      "items": [
+        { "title": "Conor McGregor-led UFC 329 fight card gets last-second regional fighter replacement", "source": "MMA Mania", "date": "2026-07-07", "injury": true },
+        { "title": "UFC 329 gets late replacement opponent change", "source": "MMA Fighting", "date": "2026-07-07", "injury": true }
+      ]
+    }
+  }
+}

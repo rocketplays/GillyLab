@@ -72,6 +72,11 @@ jobs:
             echo "Recent-events fetch failed (non-fatal); keeping existing data/event-recent.json"
           fi
 
+      # Aggregate recent per-fighter news (Google News RSS) for fighters on the
+      # imminent card and flag injury/withdrawal stories. Non-fatal + keep-last-good.
+      - name: Fetch fighter news
+        run: node scripts/fetch-fighter-news.cjs || true
+
       - name: Re-apply manual card-section overrides
         run: node scripts/apply-card-section-overrides.cjs
 
@@ -150,7 +155,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -170,6 +175,7 @@ jobs:
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
           node scripts/gen-landing-data.cjs || true
+          node scripts/fetch-fighter-news.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
           node scripts/log-predictions.cjs || true
           node scripts/grade-predictions.cjs || true
