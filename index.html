@@ -101261,16 +101261,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fanduel:    { f1: { r1: 1500, r2: 2200, r3: 3000 }, f2: { r1: 600, r2: 1000, r3: 1400 } },
       },
     },
-    // UFC 329 — Royval vs Kavanagh (3 rounds; DraftKings + FanDuel). f1 = Kavanagh, f2 = Royval.
+    // UFC 329 — Royval vs Kavanagh (3 rounds; Bovada + DraftKings + FanDuel +
+    // BetMGM). f1 = Kavanagh, f2 = Royval (alphabetical).
     'kavanagh|royval': {
       rounds: 3,
       method: {
-        draftkings: { f1: { ko: 210, sub: 1700, dec: 140 }, f2: { ko: 1300, sub: 650, dec: 370 } },
-        fanduel:    { f1: { ko: 240, sub: 2000, dec: 150 }, f2: { ko: 1400, sub: 700, dec: 390 } },
+        bovada:     { f1: { ko: 215, sub: 1800, dec: 145 }, f2: { ko: 1400, sub: 650, dec: 385 } },
+        draftkings: { f1: { ko: 225, sub: 1800, dec: 140 }, f2: { ko: 1400, sub: 700, dec: 350 } },
+        fanduel:    { f1: { ko: 240, sub: 2000, dec: 150 }, f2: { ko: 1400, sub: 700, dec: 400 } },
+        betmgm:     { f1: { ko: 225, sub: 1800, dec: 125 }, f2: { ko: 1400, sub: 600, dec: 350 } },
       },
       roundProps: {
-        draftkings: { f1: { r1: 450, r2: 650, r3: 950 },  f2: { r1: 900,  r2: 1300, r3: 1900 } },
+        bovada:     { f1: { r1: 750, r2: 500, r3: 1200 }, f2: { r1: 1500, r2: 1000, r3: 2500 } },
+        draftkings: { f1: { r1: 450, r2: 700, r3: 1000 }, f2: { r1: 1000, r2: 1400, r3: 2000 } },
         fanduel:    { f1: { r1: 550, r2: 850, r3: 1100 }, f2: { r1: 1000, r2: 1500, r3: 2000 } },
+        betmgm:     { f1: { r1: 450, r2: 700, r3: 1000 }, f2: { r1: 1000, r2: 1400, r3: 2000 } },
       },
     },
     // UFC 329 — Saint-Denis vs Pimblett (3 rounds; Bovada + DraftKings + FanDuel +
