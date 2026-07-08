@@ -100187,10 +100187,10 @@ function renderScouting(host, name, opp, fightDate) {
       } else {
         if (oKnown && other.tdDef != null && other.tdDef <= 55) line = 'Comfortable everywhere — best route is the takedown (' + oN + ' defends only ' + other.tdDef + '%).';
         else if (oKnown && other.strDef != null && other.strDef <= 52) line = 'Comfortable everywhere — test ' + oN + ' on the feet (' + other.strDef + '% striking defense) and mix in level changes.';
-        else if (power) line = 'Comfortable everywhere — his edge is the bigger finishing threat; drag ' + oN + ' into his stronger phase.';
-        else if (oKnown && output(self) != null && output(other) != null && output(self) > output(other) + 0.8) line = 'Comfortable everywhere — his edge is work rate (' + output(self) + ' vs ' + output(other) + ' thrown/min); outwork ' + oN + ' in every phase.';
-        else line = 'Comfortable in both phases — no glaring edge on paper, so it comes down to who imposes their game first.';
-        if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both phases');
+        else if (power) line = 'Comfortable everywhere — his edge is the bigger finishing threat; drag ' + oN + ' into his stronger area.';
+        else if (oKnown && output(self) != null && output(other) != null && output(self) > output(other) + 0.8) line = 'Comfortable everywhere — his edge is work rate (' + output(self) + ' vs ' + output(other) + ' thrown/min); outwork ' + oN + ' in every area.';
+        else line = 'Comfortable in both areas — no glaring edge on paper, so it comes down to who imposes their game first.';
+        if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both areas');
       }
       if (female) line = line.replace(/\bhe\b/g, 'she').replace(/\bhis\b/g, 'her');
       line = line.replace(/\.\s*$/, '');
