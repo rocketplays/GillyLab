@@ -101322,6 +101322,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         betmgm:     { f1: { r1: 500, r2: 800, r3: 1200 }, f2: { r1: 450, r2: 650, r3: 900 } },
       },
     },
+    // UFC 329 — Steveson vs Ellison (3 rounds, 265 lbs; fightodds.io: Bovada /
+    // DraftKings / FanDuel / BetMGM). f1 = Ellison, f2 = Steveson (alphabetical).
+    'ellison|steveson': {
+      rounds: 3,
+      method: {
+        bovada:     { f1: { ko: 2500, sub: 5000, dec: 4000 }, f2: { ko: -300, sub: 240, dec: 1800 } },
+        draftkings: { f1: { ko: 2500, sub: 5000, dec: 4000 }, f2: { ko: -300, sub: 240, dec: 1800 } },
+        fanduel:    { f1: { ko: 2200, sub: 4500, dec: 5000 }, f2: { ko: -260, sub: 290, dec: 2200 } },
+        betmgm:     { f1: { ko: 2500, sub: 5000, dec: 4000 }, f2: { ko: -450, sub: 225, dec: 1800 } },
+      },
+      roundProps: {
+        bovada:     { f1: { r1: 3000, r2: 3300, r3: 3300 },  f2: { r1: -290, r2: 320, r3: 1600 } },
+        draftkings: { f1: { r1: 2500, r2: 6000, r3: 10000 }, f2: { r1: -300, r2: 500, r3: 1400 } },
+        fanduel:    { f1: { r1: 2700, r2: 4500, r3: 7000 },  f2: { r1: -400, r2: 700, r3: 2200 } },
+        betmgm:     { f1: { r1: 2500, r2: 6000, r3: 10000 }, f2: { r1: -325, r2: 500, r3: 1400 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
