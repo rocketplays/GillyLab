@@ -99682,35 +99682,45 @@ function populateFighterNews(name) {
 function applyInjuryFlags() {
   loadFighterNews().then(function (data) {
     if (!data || !data.fighters) return;
-    const injKeys = Object.keys(data.fighters).filter(k => data.fighters[k].hasInjuryNews);
-    if (!injKeys.length) return;
-    const injTokens = injKeys.map(k => k.split(' ').filter(Boolean));
-    function isInjured(name) {
-      const nm = _newsNorm(name); if (!nm) return false;
-      const t = nm.split(' ').filter(Boolean);
-      return injKeys.includes(nm) || injTokens.some(kt =>
-        t.length && (t.every(x => kt.includes(x)) || kt.every(x => t.includes(x))));
-    }
+    if (!Object.keys(data.fighters).some(k => data.fighters[k].hasInjuryNews)) return;
     document.querySelectorAll('.fight-row').forEach(function (row) {
       if (row.dataset.injChecked) return;
       row.dataset.injChecked = '1';
       const cells = [].slice.call(row.querySelectorAll('.fighter-cell'));
-      let injuredCell = null, injuredName = '';
+      // Among this bout's fighters, prefer the one who is the SUBJECT of the
+      // injury/withdrawal — i.e. their own (last) name appears in an injury-
+      // flagged headline. The fighter who pulled out is named in their stories;
+      // the opponent is only flagged via generic "replacement / opponent change"
+      // news, so we don't want to mislabel them as the injured one.
+      let chosen = null; // { cell, name, subject }
       for (let i = 0; i < cells.length; i++) {
         const nameEl = cells[i].querySelector('.fighter-name');
-        if (nameEl && isInjured(nameEl.textContent)) { injuredCell = cells[i]; injuredName = (nameEl.textContent || '').trim(); break; }
+        if (!nameEl) continue;
+        const name = (nameEl.textContent || '').trim();
+        const entry = fighterNewsEntry(data, name);
+        if (!entry || !entry.hasInjuryNews) continue;
+        const last = _newsNorm(name).split(' ').filter(Boolean).pop();
+        const subject = (entry.items || []).some(function (it) {
+          return it.injury && last && _newsNorm(it.title).split(' ').indexOf(last) !== -1;
+        });
+        const cand = { cell: cells[i], name: name, subject: subject };
+        if (subject) { chosen = cand; break; }  // the actually-injured party wins
+        if (!chosen) chosen = cand;             // fallback: opponent / card-change only
       }
-      if (!injuredCell) return;
+      if (!chosen) return;
+      const label = chosen.subject
+        ? (chosen.name + ' — recent injury / withdrawal news')
+        : 'Possible card change — recent news';
       const bar = document.createElement('div');
       bar.className = 'gl-injury-banner';
       bar.setAttribute('role', 'button');
       bar.tabIndex = 0;
       bar.innerHTML = '<span class="gl-injury-ico">⚠</span>' +
-        '<span class="gl-injury-txt">' + injuredName + ' — recent injury / card news</span>' +
+        '<span class="gl-injury-txt">' + label + '</span>' +
         '<span class="gl-injury-go">View ›</span>';
       const open = function (e) {
         if (e) e.stopPropagation();
-        injuredCell.click();                         // opens the fighter profile
+        chosen.cell.click();                         // opens the fighter profile
         setTimeout(function () {                      // then land on the News tab
           const btn = document.getElementById('ftab-news-btn');
           if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
