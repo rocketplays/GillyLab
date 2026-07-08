@@ -100029,6 +100029,17 @@ function renderScouting(host, name, opp, fightDate) {
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
     cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
+    // Last 5 (recent form) — HTML form tiles with hover/tap tooltips.
+    (function () {
+      const row = document.createElement('div'); row.className = 'sr-cmp-row';
+      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Last 5'; row.appendChild(l);
+      [aKey, bKey].forEach(k => {
+        const d = document.createElement('div'); d.className = 'sr-cmp-val';
+        d.innerHTML = (typeof lastFiveFormHTML === 'function') ? lastFiveFormHTML(k) : '—';
+        row.appendChild(d);
+      });
+      box.appendChild(row);
+    })();
   })();
 
   // Common opponents
