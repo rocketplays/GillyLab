@@ -100154,15 +100154,32 @@ function renderScouting(host, name, opp, fightDate) {
           else if (self.finRate != null && self.finRate <= 45) notes.push('more likely to need the judges');
         }
       } else if (grappler(la)) {
-        if (oKnown && grappler(lb) && other.tdDef >= 68 && self.tdDef >= 68) line = 'Neither grapples the other down easily (both stuff 68%+) — likely scrambles and top-control battles';
-        else { line = 'Get it to the mat'; if (oKnown && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.'; else if (oKnown && other.tdDef <= 55) line += ' — ' + oN + ' is takedown-vulnerable (' + other.tdDef + '% TDD), so get it down early and often.'; else line += ' and impose top control.'; }
-        if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
-        if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
+        const symMat = oKnown && grappler(lb) && other.tdDef != null && self.tdDef != null && other.tdDef >= 68 && self.tdDef >= 68;
+        if (symMat) {
+          // Both stuff takedowns — the fight lives in scrambles/clinch, so name
+          // THIS fighter's grappling edge instead of the shared "hard to take down".
+          const floor = Math.min(self.tdDef, other.tdDef);
+          let e;
+          if (self.subAvg >= 0.8 && self.subAvg >= (other.subAvg || 0) + 0.3) e = 'his edge is the busier submission game (' + self.subAvg + ' vs ' + (other.subAvg || 0) + ' sub att/15)';
+          else if (self.finRate != null && self.finRate >= 80 && self.finRate > (other.finRate || 0)) e = 'his edge is finishing instinct (' + self.finRate + '% of wins inside the distance)';
+          else if (self.tdLanded > (other.tdLanded || 0) + 0.6) e = 'his edge is the more persistent takedown entries (' + self.tdLanded + ' vs ' + other.tdLanded + '/15)';
+          else e = 'no clear grappling edge — he has to win the scrambles and positional exchanges';
+          line = 'Takedowns are hard both ways (both stuff ' + floor + '%+) — ' + e + '.';
+        } else {
+          line = 'Get it to the mat';
+          if (oKnown && other.tdDef != null && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.';
+          else if (oKnown && other.tdDef != null && other.tdDef <= 55) line += ' — ' + oN + ' is takedown-vulnerable (' + other.tdDef + '% TDD), so get it down early and often.';
+          else line += ' and impose top control.';
+          if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
+          if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
+        }
       } else {
         if (oKnown && other.tdDef != null && other.tdDef <= 55) line = 'Comfortable everywhere — best route is the takedown (' + oN + ' defends only ' + other.tdDef + '%).';
         else if (oKnown && other.strDef != null && other.strDef <= 52) line = 'Comfortable everywhere — test ' + oN + ' on the feet (' + other.strDef + '% striking defense) and mix in level changes.';
-        else line = 'Comfortable in both phases — dictate where it goes and grind the edge.';
-        if (power) notes.push('finishing ability in both phases');
+        else if (power) line = 'Comfortable everywhere — his edge is the bigger finishing threat; drag ' + oN + ' into his stronger phase.';
+        else if (oKnown && output(self) != null && output(other) != null && output(self) > output(other) + 0.8) line = 'Comfortable everywhere — his edge is work rate (' + output(self) + ' vs ' + output(other) + ' thrown/min); outwork ' + oN + ' in every phase.';
+        else line = 'Comfortable in both phases — no glaring edge on paper, so it comes down to who imposes their game first.';
+        if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both phases');
       }
       line = line.replace(/\.\s*$/, '');
       return line + (notes.length ? ' (' + notes.join('; ') + ').' : '.');
