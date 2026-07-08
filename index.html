@@ -101559,11 +101559,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Only a genuine upset: the underdog won AND the favorite was at least a
       // -120 favorite (a -110/pick'em win isn't an upset).
       const upset = winSide && favSide && winSide !== favSide && favOdds != null && favOdds <= -120;
-      closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds' +
-        (upset ? ' <span class="pf-upset">💥 Upset</span>' : '') + '</div>' + headRow +
+      const badge = ' <span class="pf-upset">▲ Upset</span>';
+      closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds</div>' + headRow +
         '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
-          '<div class="sr-cmp-val ' + (winSide === 1 ? 'w' : '') + '">' + fmt(pair.o1) + '</div>' +
-          '<div class="sr-cmp-val ' + (winSide === 2 ? 'w' : '') + '">' + fmt(pair.o2) + '</div></div></div>';
+          '<div class="sr-cmp-val ' + (winSide === 1 ? 'w' : '') + '">' + fmt(pair.o1) + (upset && winSide === 1 ? badge : '') + '</div>' +
+          '<div class="sr-cmp-val ' + (winSide === 2 ? 'w' : '') + '">' + fmt(pair.o2) + (upset && winSide === 2 ? badge : '') + '</div></div></div>';
     }
 
     // Box score totals (from fight-stats.json, if loaded)
