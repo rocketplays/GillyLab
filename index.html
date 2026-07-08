@@ -87049,10 +87049,12 @@ function openFightStats(name, date){
   // Result line ("Winner by Method R# - time") sourced from FIGHT_HISTORY.
   var hr = _fsHistRow(name, date), resultLine = '';
   if (hr) {
-    var mclean = String(hr.method||'').replace(/\s*\([^)]*\)\s*$/,'').trim();
+    // Keep the full method incl. the finishing detail in parentheses
+    // (e.g. "Submission (Suloev Stretch)", "KO (Punches)", "Decision (Unanimous)").
+    var mfull = String(hr.method||'').trim();
     if (hr.result==='W' || hr.result==='L') {
       var winner = hr.result==='W' ? name : rec.opponent;
-      resultLine = winner + ' by ' + (mclean || hr.method || 'decision')
+      resultLine = winner + ' by ' + (mfull || 'decision')
                  + (hr.round ? ' R'+hr.round : '') + (hr.time ? ' - '+hr.time : '');
     } else if (hr.result==='D') { resultLine = 'Draw' + (hr.round?' R'+hr.round:'') + (hr.time?' - '+hr.time:''); }
     else if (hr.result==='NC') { resultLine = 'No Contest'; }
