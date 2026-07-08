@@ -99665,7 +99665,21 @@ function populateFighterNews(name) {
     if (!currentFighter || currentFighter.name !== name) return; // fighter changed
     const entry = fighterNewsEntry(data, name);
     const items = entry && Array.isArray(entry.items) ? entry.items : [];
-    if (!items.length) return;                       // leave tab hidden
+    if (!items.length) {
+      // No news for this fighter. If the News tab was left active from the
+      // previously-viewed fighter, fall back to the first tab (Fight History)
+      // so we never show an empty News panel with its own tab hidden.
+      if (tabBtn && tabBtn.classList.contains('active')) {
+        tabBtn.classList.remove('active');
+        const panel = document.getElementById('ftab-news');
+        if (panel) panel.style.display = 'none';
+        const histBtn = document.querySelector('.fighter-tab[onclick*="ftab-history"]');
+        const histPanel = document.getElementById('ftab-history');
+        if (histBtn) histBtn.classList.add('active');
+        if (histPanel) histPanel.style.display = 'block';
+      }
+      return;                                        // leave tab hidden
+    }
     if (tabBtn) tabBtn.style.display = '';
     if (wrap) wrap.style.display = '';
     if (empty) empty.style.display = 'none';
