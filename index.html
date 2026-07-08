@@ -2027,7 +2027,7 @@
     .pf-result { text-align: center; padding: 0.1rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
     .pf-result .pf-win { color: var(--accent); font-weight: 800; }
     .pf-method { font-size: 0.72rem; color: var(--muted); margin-top: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    .pf-upset { color: #ffcf7a; font-size: 0.7rem; font-weight: 800; margin-left: 0.35rem; }
+    .pf-upset { color: #ffcf7a; font-size: 0.7rem; font-weight: 800; margin-left: 0.35rem; display: inline-flex; align-items: center; vertical-align: middle; white-space: nowrap; }
     .sr-common-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.5rem; align-items: center; padding: 0.4rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-co-name { color: var(--muted); }
     .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
@@ -2035,7 +2035,7 @@
     .sr-cmp-row { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 0.5rem; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-cmp-head { color: var(--muted); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
     .sr-cmp-lbl { color: var(--muted); }
-    .sr-cmp-val { color: var(--text); font-weight: 600; }
+    .sr-cmp-val { color: var(--text); font-weight: 600; display: flex; align-items: center; }
     .sr-cmp-val.w { color: var(--accent); }
     .sr-cmp-val.l { color: #ff6a5e; }
     .sr-cmp-val.hi { color: #ffcf7a; }
@@ -101559,7 +101559,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Only a genuine upset: the underdog won AND the favorite was at least a
       // -120 favorite (a -110/pick'em win isn't an upset).
       const upset = winSide && favSide && winSide !== favSide && favOdds != null && favOdds <= -120;
-      const badge = ' <span class="pf-upset">▲ Upset</span>';
+      const badge = ' <span class="pf-upset">⚠ Upset</span>';
       closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds</div>' + headRow +
         '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
           '<div class="sr-cmp-val ' + (winSide === 1 ? 'w' : '') + '">' + fmt(pair.o1) + (upset && winSide === 1 ? badge : '') + '</div>' +
