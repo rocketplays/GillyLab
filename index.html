@@ -99947,7 +99947,7 @@ function renderScouting(host, name, opp, fightDate) {
   const histB = (bKey && FH[bKey]) ? FH[bKey] : [];
   const statsA = (aKey && FSt[aKey]) || {};
   const statsB = (bKey && FSt[bKey]) || {};
-  const short = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
+  const short = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
   const abbr = m => (typeof glAbbrMethod === 'function') ? glAbbrMethod(m) : String(m || '').split(' ')[0];
   const refTs = parseD(fightDate) || Date.now();
   const fightersEntry = n => {
@@ -100073,12 +100073,14 @@ function renderScouting(host, name, opp, fightDate) {
 
     const wrap = document.createElement('div'); wrap.className = 'sr-style-wrap';
     const track = document.createElement('div'); track.className = 'sr-style-track';
-    // When the two dots sit close together their name labels would overlap
-    // (worse on mobile, where the track is narrow). Instead of stacking both
-    // above, drop the second fighter's label just below the track so each name
-    // sits on its own side of the line. Reserve the vertical space both ways.
+    // Names sit above their dot by default; when the two dots are close (would
+    // overlap, esp. on mobile) the second drops below the track so each is on
+    // its own side. Always reserve room above so labels clear the "Style"
+    // heading, and reserve room below when a label is dropped there so it clears
+    // the Grappler/Striker row.
     const stacked = (leanA != null && leanB != null) && Math.abs(leanA - leanB) < 24;
-    if (stacked) { wrap.style.marginTop = '1.2rem'; wrap.style.marginBottom = '1.45rem'; }
+    wrap.style.marginTop = '1.4rem';
+    if (stacked) wrap.style.marginBottom = '1.5rem';
     const addDot = (leanVal, color, nm, below) => {
       if (leanVal == null) return;
       const dot = document.createElement('div'); dot.className = 'sr-style-dot';
@@ -100086,6 +100088,10 @@ function renderScouting(host, name, opp, fightDate) {
       track.appendChild(dot);
       const lab = document.createElement('div'); lab.className = 'sr-style-lab';
       lab.style.left = leanVal + '%'; lab.style.color = color; lab.textContent = short(nm);
+      // Keep the label from spilling off the track ends when a fighter sits at
+      // an extreme (e.g. a pure wrestler like Steveson near the grappler end):
+      // anchor its inner edge to the dot instead of centering it.
+      lab.style.transform = 'translateX(' + (leanVal <= 12 ? '0' : leanVal >= 88 ? '-100%' : '-50%') + ')';
       if (below) lab.style.top = '12px';
       wrap.appendChild(lab);
     };
@@ -101708,7 +101714,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // scouting. (Upcoming fights use scoutingFightPanelHTML instead.)
   function fightDetailsPanelHTML(f) {
     const esc = (typeof escHtmlAttr === 'function') ? escHtmlAttr : (s => String(s == null ? '' : s));
-    const short = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
+    const short = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
     const f1 = f.f1, f2 = f.f2;
     const headRow = '<div class="sr-cmp-row sr-cmp-head"><div></div><div>' + esc(short(f1)) + '</div><div>' + esc(short(f2)) + '</div></div>';
 
