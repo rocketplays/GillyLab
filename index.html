@@ -1995,9 +1995,11 @@
     }
 
     /* Scouting Report — collapsible dropdown (mirrors Record Breakdown). */
-    .scouting-report-panel { display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; max-width: 700px; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-top 0.3s ease; }
-    .scouting-report-panel.open { margin-top: 0.85rem; grid-template-rows: 1fr; opacity: 1; }
-    .scouting-report-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1.1rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 8px; }
+    /* Per-fight Scouting dropdown on the events page — same 0fr/1fr grid collapse
+       as .fight-details-panel, sits full-width under the matchup card. */
+    .scouting-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
+    .scouting-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
+    .scouting-fight-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
     .sr-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sr-chip { flex: 1 1 140px; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; }
@@ -3091,10 +3093,8 @@
           </div>
           <div class="record-label">W · L · D</div>
           <button type="button" class="fight-info-toggle" id="f-record-toggle" onclick="toggleRecordBreakdown(this)">Record Breakdown ⌄</button>
-          <button type="button" class="fight-info-toggle" id="f-scouting-toggle" onclick="toggleScoutingReport(this)" style="display:none;">Scouting Report ⌄</button>
         </div>
         <div class="record-breakdown-panel" id="f-record-breakdown"><div class="rb-grid" id="f-record-breakdown-grid"></div></div>
-        <div class="scouting-report-panel" id="f-scouting-panel"><div class="sr-inner" id="f-scouting"></div></div>
       </div>
     </div>
   </div>
@@ -87235,13 +87235,28 @@ function populateFightHistory(name) {
     btn.classList.toggle('open', !isOpen);
     btn.textContent = isOpen ? 'Record Breakdown ⌄' : 'Record Breakdown ⌃';
   }
-  function toggleScoutingReport(btn) {
-    const panel = document.getElementById('f-scouting-panel');
+  // Per-fight Scouting dropdown on the events page. Finds this row's scouting
+  // panel (walking past any injury banner / details panel), lazy-renders the
+  // matchup report on first open, and toggles it.
+  function toggleFightScouting(btn) {
+    const row = btn.closest('.fight-row');
+    if (!row) return;
+    let el = row.nextElementSibling, panel = null;
+    while (el) {
+      if (el.classList && el.classList.contains('scouting-fight-panel')) { panel = el; break; }
+      if (el.classList && el.classList.contains('fight-row')) break;
+      el = el.nextElementSibling;
+    }
     if (!panel) return;
     const isOpen = panel.classList.contains('open');
+    if (!isOpen && !panel.dataset.filled) {
+      const inner = panel.querySelector('.sr-inner');
+      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null);
+      panel.dataset.filled = '1';
+    }
     panel.classList.toggle('open', !isOpen);
     btn.classList.toggle('open', !isOpen);
-    btn.textContent = isOpen ? 'Scouting Report ⌄' : 'Scouting Report ⌃';
+    btn.textContent = isOpen ? 'Scouting ⌄' : 'Scouting ⌃';
   }
  function populateOddsHistory(name) {
   var tbody = document.getElementById("fo-tbody");
@@ -99889,49 +99904,29 @@ function scoutingHistKey(n) {
   return h === 1 ? hit : null;
 }
 
-// ── Scouting Report ───────────────────────────────────────────────────────────
-// A pre-fight context block, shown ONLY for fighters with an upcoming bout (so we
-// know the opponent): age / athletic-prime, layoff-into-fight (ring rust), common
-// opponents vs the scheduled opponent, short-notice (from news), and a "bout may
-// change" flag when either fighter has recent injury/card news.
-function populateScoutingReport(name) {
-  const host = document.getElementById('f-scouting');
-  const toggleBtn = document.getElementById('f-scouting-toggle');
-  const panel = document.getElementById('f-scouting-panel');
-  if (!host) return;
+// ── Matchup Scouting (inline dropdown under each fight on the events page) ──────
+// Two-sided, matchup-specific context: age (+ gap) & layoff, finish & durability,
+// physical edges, common opponents, and injury/short-notice flags from news.
+// Fills `host` for name (f1) vs opp (f2); fightDate anchors the layoff calc.
+function renderScouting(host, name, opp, fightDate) {
+  if (!host || !name || !opp) return;
   host.innerHTML = '';
-  if (panel) panel.classList.remove('open');
-  if (toggleBtn) { toggleBtn.style.display = 'none'; toggleBtn.classList.remove('open'); toggleBtn.textContent = 'Scouting Report ⌄'; }
-  const refreshVis = () => { if (toggleBtn) toggleBtn.style.display = host.children.length ? '' : 'none'; };
-  const maybeAutoOpen = () => {
-    if (!window._glOpenScouting || !host.children.length) return;
-    window._glOpenScouting = false;
-    if (panel && toggleBtn) {
-      panel.classList.add('open'); toggleBtn.classList.add('open'); toggleBtn.textContent = 'Scouting Report ⌃';
-      setTimeout(function () { if (panel.scrollIntoView) panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 90);
-    }
-  };
-
   const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
-  const hist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) ? FIGHT_HISTORY[name] : [];
-  const upcoming = (typeof UPCOMING_OPP !== 'undefined') ? UPCOMING_OPP[_newsNorm(name)] : null;
-  if (!upcoming || !upcoming.opponent) return;        // scoped to fighters on featured/upcoming cards
-  const opp = upcoming.opponent;
-  const oppKey = scoutingHistKey(opp);
-  const oppStats = (oppKey && typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[oppKey]) || null;
-  const oppAge = (oppStats && oppStats.dob && typeof calcAge === 'function') ? calcAge(oppStats.dob) : null;
-  const decided = hist.filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–')
-                      .sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
-  const shortName = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
+  const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
+  const aKey = HK(name), bKey = HK(opp);
+  const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
+  const FSt = typeof FIGHTER_STATS !== 'undefined' ? FIGHTER_STATS : {};
+  const histA = (aKey && FH[aKey]) ? FH[aKey] : [];
+  const histB = (bKey && FH[bKey]) ? FH[bKey] : [];
+  const statsA = (aKey && FSt[aKey]) || {};
+  const statsB = (bKey && FSt[bKey]) || {};
+  const short = n => { const p = String(n || '').trim().split(/\s+/); return p[p.length - 1] || n; };
   const abbr = m => (typeof glAbbrMethod === 'function') ? glAbbrMethod(m) : String(m || '').split(' ')[0];
-  // Resolve a common-opponent name to its active-roster entry (so we only make
-  // it clickable when a profile actually exists).
+  const refTs = parseD(fightDate) || Date.now();
   const fightersEntry = n => {
     if (typeof FIGHTERS === 'undefined') return null;
-    let e = FIGHTERS.find(x => x.name === n);
-    if (e) return e;
-    const t = _newsNorm(n);
-    return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
+    let e = FIGHTERS.find(x => x.name === n); if (e) return e;
+    const t = _newsNorm(n); return FIGHTERS.find(x => _newsNorm(x.name) === t) || null;
   };
   const methodCat = m => { m = String(m || ''); if (/sub/i.test(m)) return 'sub'; if (/dec/i.test(m)) return 'dec'; if (/ko|tko|stoppage|doctor|retire/i.test(m)) return 'ko'; return 'other'; };
   const finishProfile = h => {
@@ -99946,195 +99941,127 @@ function populateScoutingReport(name) {
     const finWins = wKO + wSub;
     return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lFin };
   };
+  const ageOf = st => (st && st.dob && typeof calcAge === 'function') ? calcAge(st.dob) : null;
+  const lastFightTs = h => { const d = (h || []).filter(f => f && f.date && f.method !== 'Upcoming' && f.result && f.result !== '–').map(f => parseD(f.date)).filter(Boolean).sort((a, b) => b - a); return d[0] || null; };
   const parseHt = s => { const m = /(\d+)'\s*(\d+)/.exec(String(s || '')); return m ? (+m[1]) * 12 + (+m[2]) : null; };
   const parseReach = s => { const m = /(\d+)/.exec(String(s || '')); return m ? +m[1] : null; };
   const fmtHt = i => i == null ? '—' : (Math.floor(i / 12) + "'" + (i % 12) + '"');
+  const diffTxt = (mine, theirs, unit) => (mine != null && theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
 
-  const chips = [];
-  // Age / athletic prime
-  const stats = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
-  if (stats.dob && typeof calcAge === 'function') {
-    const age = calcAge(stats.dob);
-    if (age && age > 0 && age < 70) {
-      let tone = 'ok', note = 'In athletic prime';
-      if (age >= 38) { tone = 'warn'; note = 'Advanced age for the sport'; }
-      else if (age >= 35) { tone = 'warn'; note = 'Past the typical prime'; }
-      else if (age <= 23) { note = 'Young — still developing'; }
-      // Significant age gap vs the scheduled opponent takes precedence in the note.
-      if (oppAge && oppAge > 0) {
-        const gap = age - oppAge;
-        if (Math.abs(gap) >= 6) {
-          tone = 'warn';
-          note = Math.abs(gap) + ' yrs ' + (gap > 0 ? 'older' : 'younger') + ' than ' + shortName(opp);
-        }
-      }
-      chips.push({ icon: '🎂', label: 'Age', value: age + ' yrs', note, tone });
-    }
-  }
-  // Layoff into the fight (ring rust)
-  if (decided.length) {
-    const lastTs = parseD(decided[0].date);
-    if (lastTs) {
-      const refTs = parseD(upcoming.date) || Date.now();
-      const days = Math.max(0, Math.round((refTs - lastTs) / 86400000));
-      const months = Math.max(0, Math.round(days / 30.4));
-      let tone = 'ok', note = 'Active schedule';
-      if (days >= 547) { tone = 'warn'; note = 'Long layoff — ring-rust risk'; }
-      else if (days >= 365) { tone = 'warn'; note = 'Extended layoff'; }
-      const val = months >= 12 ? (Math.floor(months / 12) + 'y ' + (months % 12) + 'm') : (months + ' mo');
-      chips.push({ icon: '⏳', label: 'Layoff into fight', value: val, note, tone });
-    }
-  }
-
-  function ensureShell() {
-    if (host.querySelector('.sr-flags')) return host.querySelector('.sr-flags');
-    const wrap = document.createElement('div'); wrap.className = 'sr-flags'; host.appendChild(wrap);
-    return wrap;
-  }
-  function addChip(c) {
-    const wrap = ensureShell();
-    const chip = document.createElement('div'); chip.className = 'sr-chip sr-' + c.tone;
-    chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico">' + c.icon + '</span><span class="sr-lab"></span></div>' +
-      '<div class="sr-val"></div><div class="sr-note"></div>';
-    chip.querySelector('.sr-lab').textContent = c.label;
-    chip.querySelector('.sr-val').textContent = c.value;
-    chip.querySelector('.sr-note').textContent = c.note;
-    wrap.appendChild(chip);
-  }
-  chips.forEach(addChip);
-
-  // Common opponents vs the scheduled opponent
-  const oppHist = (oppKey && typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[oppKey]) ? FIGHT_HISTORY[oppKey] : [];
-  if (oppHist.length) {
-    const nn = _newsNorm(name), on = _newsNorm(opp);
-    const resultVs = (h, target) => {
-      const t = _newsNorm(target);
-      const rows = h.filter(f => f && f.method !== 'Upcoming' && f.result && f.result !== '–' && _newsNorm(f.opponent) === t)
-                    .sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
-      return rows[0] || null;
-    };
-    const mineOpps = {};
-    hist.forEach(f => { if (f && f.method !== 'Upcoming' && f.result && f.result !== '–' && f.opponent) mineOpps[_newsNorm(f.opponent)] = f.opponent; });
-    const shared = [], seen = {};
-    oppHist.forEach(f => {
-      if (!(f && f.method !== 'Upcoming' && f.result && f.result !== '–' && f.opponent)) return;
-      const k = _newsNorm(f.opponent);
-      if (k === nn || k === on || seen[k]) return;
-      if (mineOpps[k]) { seen[k] = 1; shared.push(mineOpps[k]); }
-    });
-    if (shared.length) {
-      ensureShell();
-      const box = document.createElement('div'); box.className = 'sr-common';
-      const ct = document.createElement('div'); ct.className = 'sr-common-title';
-      ct.textContent = 'Common opponents with ' + opp;
-      box.appendChild(ct);
-      const fmt = r => r ? (r.result + (r.method ? ' (' + abbr(r.method) + (r.round ? ' R' + r.round : '') + ')' : '')) : '—';
-      shared.slice(0, 6).forEach(oppName => {
-        const a = resultVs(hist, oppName), b = resultVs(oppHist, oppName);
-        const row = document.createElement('div'); row.className = 'sr-common-row';
-        const nameEl = document.createElement('div'); nameEl.className = 'sr-co-name'; nameEl.textContent = oppName;
-        const fe = fightersEntry(oppName);
-        if (fe && typeof openFighterByName === 'function') {
-          nameEl.classList.add('sr-co-link');
-          nameEl.addEventListener('click', function () { openFighterByName(fe.name); });
-        }
-        const aEl = document.createElement('div'); aEl.className = 'sr-co-res ' + (a && a.result === 'W' ? 'w' : (a && a.result === 'L' ? 'l' : '')); aEl.textContent = shortName(name) + ': ' + fmt(a);
-        const bEl = document.createElement('div'); bEl.className = 'sr-co-res ' + (b && b.result === 'W' ? 'w' : (b && b.result === 'L' ? 'l' : '')); bEl.textContent = shortName(opp) + ': ' + fmt(b);
-        row.appendChild(nameEl); row.appendChild(aEl); row.appendChild(bEl);
-        box.appendChild(row);
-      });
-      host.appendChild(box);
-    }
-  }
-
-  // Comparison mini-table helpers (label | fighter | opponent).
-  function cmpBlock(titleText) {
-    ensureShell();
+  const flagsWrap = document.createElement('div'); flagsWrap.className = 'sr-flags'; host.appendChild(flagsWrap);
+  const cmpBlock = titleText => {
     const box = document.createElement('div'); box.className = 'sr-common';
-    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = titleText;
-    box.appendChild(t);
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = titleText; box.appendChild(t);
     const head = document.createElement('div'); head.className = 'sr-cmp-row sr-cmp-head';
-    ['', shortName(name), shortName(opp)].forEach(txt => { const d = document.createElement('div'); d.textContent = txt; head.appendChild(d); });
-    box.appendChild(head);
-    host.appendChild(box);
-    return box;
-  }
-  function cmpRow(box, label, aVal, bVal, aCls, bCls) {
+    ['', short(name), short(opp)].forEach(txt => { const d = document.createElement('div'); d.textContent = txt; head.appendChild(d); });
+    box.appendChild(head); host.appendChild(box); return box;
+  };
+  const cmpRow = (box, label, aVal, bVal, aCls, bCls) => {
     const row = document.createElement('div'); row.className = 'sr-cmp-row';
     const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = label;
     const a = document.createElement('div'); a.className = 'sr-cmp-val ' + (aCls || ''); a.textContent = aVal;
     const b = document.createElement('div'); b.className = 'sr-cmp-val ' + (bCls || ''); b.textContent = bVal;
     row.appendChild(l); row.appendChild(a); row.appendChild(b); box.appendChild(row);
-  }
+  };
 
-  // How they win / how they lose — finish rate + durability.
+  // Overview: age (+ gap) & layoff
   (function () {
-    const fp = finishProfile(hist), op = finishProfile(oppHist);
-    if (!fp.wins && !fp.losses) return;
+    const ageA = ageOf(statsA), ageB = ageOf(statsB);
+    const lfA = lastFightTs(histA), lfB = lastFightTs(histB);
+    const moA = lfA ? Math.max(0, Math.round((refTs - lfA) / 2.628e9)) : null;
+    const moB = lfB ? Math.max(0, Math.round((refTs - lfB) / 2.628e9)) : null;
+    if (ageA == null && ageB == null && moA == null && moB == null) return;
+    const box = cmpBlock('Overview');
+    if (ageA != null || ageB != null) {
+      const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
+      cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
+    }
+    if (moA != null || moB != null) {
+      const fmtMo = m => m == null ? '—' : (m >= 12 ? (Math.floor(m / 12) + 'y ' + (m % 12) + 'm') : (m + ' mo'));
+      cmpRow(box, 'Layoff', fmtMo(moA), fmtMo(moB), (moA != null && moA >= 12) ? 'l' : '', (moB != null && moB >= 12) ? 'l' : '');
+    }
+  })();
+
+  // Finish & durability
+  (function () {
+    const fp = finishProfile(histA), op = finishProfile(histB);
+    if (!fp.wins && !fp.losses && !op.wins && !op.losses) return;
     const box = cmpBlock('Finish & durability');
     const rate = p => p.finRate == null ? '—' : (Math.round(p.finRate * 100) + '% (' + p.finWins + '/' + p.wins + ')');
     const methods = p => { const parts = []; if (p.wKO) parts.push(p.wKO + ' KO'); if (p.wSub) parts.push(p.wSub + ' SUB'); if (p.wDec) parts.push(p.wDec + ' DEC'); return parts.join(' · ') || '—'; };
-    const fin = p => p.timesFinished ? (p.timesFinished + '×') : 'Never';
+    const fin = p => (p.wins || p.losses) ? (p.timesFinished ? (p.timesFinished + '×') : 'Never') : '—';
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
     cmpRow(box, 'Times finished', fin(fp), fin(op), fp.timesFinished ? 'l' : 'w', op.timesFinished ? 'l' : 'w');
   })();
 
-  // Physical edges vs the opponent (reach / height / stance).
+  // Physical
   (function () {
-    const myHt = parseHt(stats.ht), opHt = parseHt(oppStats && oppStats.ht);
-    const myR = parseReach(stats.reach), opR = parseReach(oppStats && oppStats.reach);
-    const myS = stats.stance || null, opS = (oppStats && oppStats.stance) || null;
-    if (myHt == null && myR == null && !myS) return;
+    const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
+    const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
+    const aS = statsA.stance || null, bS = statsB.stance || null;
+    if (aHt == null && aR == null && !aS && bHt == null && bR == null && !bS) return;
     const box = cmpBlock('Physical');
-    const diffTxt = (mine, theirs, unit) => (theirs != null && mine !== theirs) ? (' (' + (mine > theirs ? '+' : '') + (mine - theirs) + (unit || '') + ')') : '';
-    if (myHt != null || opHt != null) cmpRow(box, 'Height', myHt == null ? '—' : fmtHt(myHt) + diffTxt(myHt, opHt, '"'), fmtHt(opHt));
-    if (myR != null || opR != null) cmpRow(box, 'Reach', myR == null ? '—' : (myR + '"' + diffTxt(myR, opR, '"')), opR == null ? '—' : opR + '"');
-    if (myS || opS) { const clash = myS && opS && myS !== opS; cmpRow(box, 'Stance', myS || '—', opS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
+    if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
+    if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
+    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
   })();
 
-  refreshVis();
-  maybeAutoOpen();
+  // Common opponents
+  (function () {
+    if (!histA.length || !histB.length) return;
+    const nn = _newsNorm(name), on = _newsNorm(opp);
+    const resultVs = (h, target) => {
+      const t = _newsNorm(target);
+      const rows = h.filter(f => f && f.method !== 'Upcoming' && f.result && f.result !== '–' && _newsNorm(f.opponent) === t).sort((a, b) => (parseD(b.date) || 0) - (parseD(a.date) || 0));
+      return rows[0] || null;
+    };
+    const mineOpps = {};
+    histA.forEach(f => { if (f && f.method !== 'Upcoming' && f.result && f.result !== '–' && f.opponent) mineOpps[_newsNorm(f.opponent)] = f.opponent; });
+    const shared = [], seen = {};
+    histB.forEach(f => { if (!(f && f.method !== 'Upcoming' && f.result && f.result !== '–' && f.opponent)) return; const k = _newsNorm(f.opponent); if (k === nn || k === on || seen[k]) return; if (mineOpps[k]) { seen[k] = 1; shared.push(mineOpps[k]); } });
+    if (!shared.length) return;
+    const box = document.createElement('div'); box.className = 'sr-common';
+    const ct = document.createElement('div'); ct.className = 'sr-common-title'; ct.textContent = 'Common opponents'; box.appendChild(ct);
+    const fmt = r => r ? (r.result + (r.method ? ' (' + abbr(r.method) + (r.round ? ' R' + r.round : '') + ')' : '')) : '—';
+    shared.slice(0, 6).forEach(oppName => {
+      const a = resultVs(histA, oppName), b = resultVs(histB, oppName);
+      const row = document.createElement('div'); row.className = 'sr-common-row';
+      const nameEl = document.createElement('div'); nameEl.className = 'sr-co-name'; nameEl.textContent = oppName;
+      const fe = fightersEntry(oppName);
+      if (fe && typeof openFighterByName === 'function') { nameEl.classList.add('sr-co-link'); nameEl.addEventListener('click', function () { openFighterByName(fe.name); }); }
+      const aEl = document.createElement('div'); aEl.className = 'sr-co-res ' + (a && a.result === 'W' ? 'w' : (a && a.result === 'L' ? 'l' : '')); aEl.textContent = short(name) + ': ' + fmt(a);
+      const bEl = document.createElement('div'); bEl.className = 'sr-co-res ' + (b && b.result === 'W' ? 'w' : (b && b.result === 'L' ? 'l' : '')); bEl.textContent = short(opp) + ': ' + fmt(b);
+      row.appendChild(nameEl); row.appendChild(aEl); row.appendChild(bEl); box.appendChild(row);
+    });
+    host.appendChild(box);
+  })();
 
-  // Async: short-notice flag + "bout may change" when either fighter has injury/card news.
+  // News flags (async): bout-may-change + short-notice
   if (typeof loadFighterNews === 'function') {
     loadFighterNews().then(function (data) {
-      if (!currentFighter || currentFighter.name !== name) return;
-      const meEntry = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, name) : null;
-      const oppEntry = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, opp) : null;
-      // Bout-may-change: either fighter has injury/card news.
-      const whoNews = (meEntry && meEntry.hasInjuryNews) ? shortName(name) : ((oppEntry && oppEntry.hasInjuryNews) ? shortName(opp) : null);
-      if (whoNews) {
-        // prepend so it reads first
-        const wrap = ensureShell();
+      const aE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, name) : null;
+      const bE = (typeof fighterNewsEntry === 'function') ? fighterNewsEntry(data, opp) : null;
+      const addChip = (icon, lab, val, note) => {
         const chip = document.createElement('div'); chip.className = 'sr-chip sr-warn';
-        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico">⚠</span><span class="sr-lab"></span></div><div class="sr-val"></div><div class="sr-note"></div>';
-        chip.querySelector('.sr-lab').textContent = 'Bout status';
-        chip.querySelector('.sr-val').textContent = 'May change';
-        chip.querySelector('.sr-note').textContent = whoNews + ' has recent injury / card news';
-        wrap.insertBefore(chip, wrap.firstChild);
-      }
-      // Short-notice: this fighter is the subject of a short-notice/replacement story.
-      if (meEntry && meEntry.items) {
-        const last = _newsNorm(name).split(' ').filter(Boolean).pop();
+        chip.innerHTML = '<div class="sr-chip-top"><span class="sr-ico"></span><span class="sr-lab"></span></div><div class="sr-val"></div><div class="sr-note"></div>';
+        chip.querySelector('.sr-ico').textContent = icon; chip.querySelector('.sr-lab').textContent = lab;
+        chip.querySelector('.sr-val').textContent = val; chip.querySelector('.sr-note').textContent = note;
+        flagsWrap.appendChild(chip);
+      };
+      const who = (aE && aE.hasInjuryNews) ? short(name) : ((bE && bE.hasInjuryNews) ? short(opp) : null);
+      if (who) addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news');
+      const snCheck = (entry, nm) => {
+        if (!entry || !entry.items) return false;
+        const last = _newsNorm(nm).split(' ').filter(Boolean).pop();
         const SN = /short notice|steps? in|on \d+ days'? notice|late replacement|as a replacement|replaces\b/i;
-        const hit = meEntry.items.some(it => SN.test(it.title || '') && last && _newsNorm(it.title).indexOf(last) !== -1);
-        if (hit) addChip({ icon: '⚡', label: 'Short notice', value: 'Replacement', note: 'Taking this fight on short notice (per news)', tone: 'warn' });
-      }
-      refreshVis();
-      maybeAutoOpen();
+        return entry.items.some(it => SN.test(it.title || '') && last && _newsNorm(it.title).indexOf(last) !== -1);
+      };
+      if (snCheck(aE, name)) addChip('⚡', 'Short notice', short(name), 'Taking this fight on short notice (per news)');
+      if (snCheck(bE, opp)) addChip('⚡', 'Short notice', short(opp), 'Taking this fight on short notice (per news)');
     }).catch(function () {});
   }
 }
-
-// Opens a fighter's profile from the events page with the Scouting Report
-// dropdown auto-expanded and scrolled into view — used by the per-fight
-// "Scouting" button so the matchup context is one tap away.
-window.openFighterScouting = function (name, div, rec, rank, ini) {
-  window._glOpenScouting = true;
-  window._glSuppressProfileScroll = true;
-  if (typeof openFighter === 'function') openFighter(name, div, rec, rank, ini);
-};
 
 function fighterGoBack() {
  if (fighterStack.length > 0) {
@@ -100221,7 +100148,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    populateTapeStudy(name);
    populateAccolades(name);
    populateFighterNews(name);
-   populateScoutingReport(name);
    // Update back button label
    const backBtn = document.getElementById('fighter-back-btn');
    if (backBtn) {
@@ -101198,7 +101124,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
                 ((f.resRound || f.resTime) ? '<div class="gl-result-time">' + (f.resRound ? 'R' + f.resRound : '') + (f.resRound && f.resTime ? ' · ' : '') + (f.resTime ? escHtmlAttr(f.resTime) : '') + '</div>' : '')
               : '<div class="fight-rounds">' + rounds + '</div>') +
             '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-            (f.completed ? '' : '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>') +
+            (f.completed ? '' : '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Scouting ⌄</button>') +
           '</div>' +
           '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
             '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -101211,7 +101137,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
           (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
-        '</div>' + fightDetailsPanelHTML(f);
+        '</div>' + fightDetailsPanelHTML(f) + (f.completed ? '' : scoutingFightPanelHTML(f));
       }
 
       function section(title, fights) {
@@ -101503,6 +101429,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         el.classList.remove('fight-ml-pending');
       });
     });
+  }
+
+  // Empty, collapsible Scouting panel per fight — lazy-filled by toggleFightScouting.
+  function scoutingFightPanelHTML(f) {
+    return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') + '"><div class="sr-inner"></div></div>';
   }
 
   function fightDetailsPanelHTML(f) {
@@ -102857,7 +102788,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fight-weight">' + wc + '</div>' +
           '<div class="fight-rounds">' + rds + '</div>' +
           '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightDetails(this)">Fight Info ⌄</button>' +
-          '<button type="button" class="fight-sim-btn" onclick="event.stopPropagation();openFighterScouting(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.div1) + '\',\'' + escJsAttr(f.rec1) + '\',\'' + escJsAttr(f.r1) + '\',\'' + escJsAttr(f.ini1) + '\')">Scouting</button>' +
+          '<button type="button" class="fight-info-toggle" onclick="event.stopPropagation();toggleFightScouting(this)">Scouting ⌄</button>' +
         '</div>' +
         '<div class="fighter-cell right" onclick="openFighter(\'' + escJsAttr(f.f2) + '\',\'' + escJsAttr(f.div2) + '\',\'' + escJsAttr(f.rec2) + '\',\'' + escJsAttr(f.r2) + '\',\'' + escJsAttr(f.ini2) + '\')" style="cursor:pointer;">' +
           '<div style="min-width:0;flex:1;text-align:right;">' +
@@ -102868,7 +102799,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
         '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>' +
-      '</div>' + fightDetailsPanelHTML(f);
+      '</div>' + fightDetailsPanelHTML(f) + scoutingFightPanelHTML(f);
     }
 
     function fightSection(title, fights) {
