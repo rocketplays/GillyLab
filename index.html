@@ -102731,6 +102731,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const prob = (100 / dec).toFixed(1);
     const stake = Math.max(0, Number(PARLAY.stake) || 0);
     const n = PARLAY.legs.length;
+    // A fight carrying two legs can only be ML + rounds O/U (plValidate enforces
+    // it). Those are still correlated, so flag that the book will treat it as a
+    // same-game parlay rather than the straight multiply we show.
+    const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
+    const sgpFights = Object.keys(byFight).filter(k => byFight[k] > 1)
+      .map(k => (PARLAY.legs.find(l => l.fid === k) || {}).fight).filter(Boolean);
+    const sgpHtml = sgpFights.length ? `<div class="pl-warn">⚠ Same-game parlay on ${escHtmlAttr(sgpFights.join(', '))} — a moneyline and a rounds O/U on one fight are correlated, so the book will likely price the pair below this straight multiply.</div>` : '';
     const prices = plBookPrices();
     const best = prices.length ? prices.reduce((a, b) => (b.dec > a.dec ? b : a), prices[0]) : null;
     const cmpHtml = prices.length > 1 ? `<div class="pl-books">
@@ -102763,6 +102770,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <div class="pl-body">
         <div class="pl-legs">${legsHtml}</div>
+        ${sgpHtml}
         ${cmpHtml}
         <div class="pl-foot">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -102836,11 +102844,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return `<div class="pl-help">
       <div class="pl-help-head">
         <span class="pl-help-badge">Parlay builder</span>
-        <span class="pl-help-lead">Click any price — moneyline, rounds O/U, method, or round props — to add it to your slip. It appears at the bottom with the combined odds.</span>
+        <span class="pl-help-lead">Click any price — moneyline, rounds O/U, method, or round props — to add it to your slip. The slip sits at the bottom: set a stake to see the payout, and compare the same picks across every book that prices them. Greyed-out cells can't be added.</span>
       </div>
       <ul class="pl-help-rules">
-        <li><strong>One sportsbook per parlay.</strong> Legs can't cross books.</li>
+        <li><strong>One sportsbook per parlay.</strong> Legs can't cross books — though the slip will show you what the same picks pay elsewhere, and can switch in one click.</li>
         <li><strong>On one fight, only a moneyline and a rounds O/U can be combined.</strong> Who wins and how long it lasts are treated as separate bets. Method and round props have to stand alone — they overlap the moneyline and each other, and multiplying overlapping prices misprices the parlay.</li>
+        <li><strong>Pairing those two is a same-game parlay.</strong> They're still correlated — a knockout artist winning skews toward the Under — so most books price the pair below the straight multiply shown here.</li>
       </ul>
       <div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>
     </div>`;
