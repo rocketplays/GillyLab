@@ -155,7 +155,6 @@ jobs:
           node scripts/apply-card-section-overrides.cjs || true
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
-          node scripts/fetch-espn-bouts.cjs || true
           node scripts/gen-landing-data.cjs || true
           node scripts/fetch-fighter-news.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
