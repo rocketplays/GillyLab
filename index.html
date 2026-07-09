@@ -2109,6 +2109,31 @@
     .parlay-slip.collapsed .pl-chev { transform: rotate(-90deg); }
     .parlay-slip.collapsed .pl-body { display: none; }
     .pl-bar-right { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
+    /* Shareable slip card: everything a screenshot needs (brand, event, book,
+       picks, price, payout) and nothing it doesn't. "Clean view" hides the bar,
+       the remove buttons and the editing controls so the card stands alone. */
+    .pl-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface2); padding: 0.8rem 1rem 0.7rem; margin-top: 0.4rem; }
+    .pl-card-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--border); }
+    .pl-brand { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.82rem; color: var(--text); flex: 0 0 auto; }
+    .pl-brand span { color: var(--accent); }
+    .pl-card-meta { font-size: 0.63rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; text-align: right; flex: 1; min-width: 0; }
+    .pl-shot { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.28rem 0.5rem; border-radius: 5px; cursor: pointer; flex: 0 0 auto; }
+    .pl-shot:hover { color: var(--text); border-color: var(--accent); }
+    .pl-card-legs { max-height: 32vh; overflow-y: auto; }
+    .pl-card-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    .pl-card-leg:last-child { border-bottom: none; }
+    .pl-card-odds { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1rem; color: var(--text); flex: 0 0 auto; }
+    .pl-card-total { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding-top: 0.65rem; border-top: 1px solid var(--border); }
+    .pl-pay { font-size: 0.78rem; color: var(--muted); }
+    .pl-pay strong { color: var(--accent); font-size: 0.95rem; }
+    .pl-card-foot { padding-top: 0.6rem; font-size: 0.58rem; color: var(--muted); letter-spacing: 0.05em; }
+    .pl-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 0.7rem; }
+    .parlay-slip.pl-clean .pl-bar,
+    .parlay-slip.pl-clean .pl-controls,
+    .parlay-slip.pl-clean .pl-books,
+    .parlay-slip.pl-clean .pl-leg-x { display: none; }
+    .parlay-slip.pl-clean .pl-card-legs { max-height: none; overflow: visible; }
+    .parlay-slip.pl-clean .pl-inner { padding-top: 0.9rem; }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -102614,7 +102639,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      those as a same-game parlay off a joint model we don't have, so we don't
   //      pretend to. Legs on *different* fights are effectively independent, which
   //      is exactly what makes multiplying their decimal odds valid.
-  const PARLAY = { book: null, legs: [], open: true, stake: 100 };
+  const PARLAY = { book: null, legs: [], open: false, stake: 100, clean: false };
   const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
@@ -102663,9 +102688,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function plUpdateMoney() {
     const dec = plDec(), s = Math.max(0, Number(PARLAY.stake) || 0);
-    const r = document.getElementById('plReturn'), p = document.getElementById('plProfit');
-    if (r) r.textContent = plMoney(s * dec);
-    if (p) p.textContent = plMoney(s * (dec - 1));
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('plReturn', plMoney(s * dec));
+    set('plProfit', plMoney(s * (dec - 1)));
+    set('plCardStake', plMoney(s));            // mirrored onto the shareable card
+    set('plCardReturn', plMoney(s * dec));
   }
   // Within one fight, the only combinable markets are the moneyline and the
   // rounds O/U — who wins and how long it lasts are treated as separate bets.
@@ -102754,17 +102781,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <span class="pl-cap" style="margin-right:2px;">Same picks at</span>
         ${prices.map(p => `<button type="button" class="pl-book-opt${p.book === PARLAY.book ? ' cur' : ''}${best && p.book === best.book ? ' best' : ''}" data-book="${p.book}" title="${p.book === PARLAY.book ? 'Current book' : 'Re-price this slip at ' + escHtmlAttr(p.label)}">${escHtmlAttr(p.label)} <strong>${p.am > 0 ? '+' : ''}${p.am}</strong>${best && p.book === best.book ? '<span class="pl-best-tag">best</span>' : ''}</button>`).join('')}
       </div>` : '';
-    const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-leg">
+    const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-card-leg">
         <div style="min-width:0;">
           <div class="pl-leg-fight">${escHtmlAttr(l.fight || '')}</div>
           <div class="pl-leg-pick">${escHtmlAttr(l.label)}</div>
         </div>
         <div class="pl-leg-right">
-          <span class="odds-value ${l.odds < 0 ? 'fav' : 'dog'}">${l.odds > 0 ? '+' : ''}${l.odds}</span>
+          <span class="pl-card-odds">${l.odds > 0 ? '+' : ''}${l.odds}</span>
           <span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove leg" aria-label="Remove leg">×</span>
         </div></div>`).join('');
+    const evLabel = ((document.getElementById('odds-event-label') || {}).textContent || 'UFC').trim();
+    const shotDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     el.classList.add('open');
+    // Clean view only makes sense expanded — it hides the bar, so a collapsed
+    // clean slip would render nothing at all.
+    const clean = PARLAY.clean && PARLAY.open;
     el.classList.toggle('collapsed', !PARLAY.open);
+    el.classList.toggle('pl-clean', clean);
     el.innerHTML = `<div class="pl-swipe">
       <button type="button" class="pl-swipe-clear" id="plSwipeClear" tabindex="-1" aria-hidden="true">Clear</button>
       <div class="pl-inner" id="plInner">
@@ -102779,16 +102812,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div>
       </div>
       <div class="pl-body">
-        <div class="pl-legs">${legsHtml}</div>
-        ${sgpHtml}
+        <div class="pl-card">
+          <div class="pl-card-head">
+            <div class="pl-brand">Gilly<span>Lab</span></div>
+            <div class="pl-card-meta">${escHtmlAttr(evLabel)} · ${escHtmlAttr(PARLAY.legs[0].booklabel)}</div>
+            <button type="button" id="plShot" class="pl-shot" title="Hide controls for a clean screenshot">${PARLAY.clean ? 'Edit' : 'Clean view'}</button>
+          </div>
+          <div class="pl-card-legs">${legsHtml}</div>
+          ${sgpHtml}
+          <div class="pl-card-total">
+            <div><div class="pl-cap">${n}-leg parlay</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
+            <div style="text-align:right;">
+              <div class="pl-cap">Stake <span id="plCardStake">${plMoney(stake)}</span></div>
+              <div class="pl-pay">Returns <strong id="plCardReturn">${plMoney(stake * dec)}</strong></div>
+            </div>
+          </div>
+          <div class="pl-card-foot">gillylab.com · implied ${prob}% · ${escHtmlAttr(shotDate)} · odds subject to change</div>
+        </div>
         ${cmpHtml}
-        <div class="pl-foot">
+        <div class="pl-controls">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
             <span class="pl-cap">Stake</span>
             <input id="plStake" class="pl-stake" type="number" min="0" step="5" value="${stake}" aria-label="Stake amount in dollars" inputmode="decimal">
-            <div style="font-size:0.72rem;color:var(--muted);">Profit <strong id="plProfit" style="color:var(--text);">${plMoney(stake * (dec - 1))}</strong> · Returns <strong id="plReturn" style="color:var(--text);">${plMoney(stake * dec)}</strong></div>
+            <div style="font-size:0.72rem;color:var(--muted);">Profit <strong id="plProfit" style="color:var(--text);">${plMoney(stake * (dec - 1))}</strong></div>
           </div>
-          <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
         </div>
       </div></div></div>`;
   }
@@ -102801,6 +102848,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       const bo = hit(e, '.pl-book-opt'); if (bo) { plSwitchBook(bo.dataset.book); return; }
+      if (hit(e, '#plShot')) { PARLAY.clean = !PARLAY.clean; if (PARLAY.clean) PARLAY.open = true; plRender(); return; }
       if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
       if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plRender(); }
     });
@@ -102846,7 +102894,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plRender(); }
     });
   }
-  function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = true; plBind(); plRender(); }
+  function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = false; PARLAY.clean = false; plBind(); plRender(); }
 
   // Sits above the fight selector so the click-to-build behaviour is discoverable
   // before the user starts poking at prices.
