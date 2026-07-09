@@ -103811,8 +103811,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     (rawEvt.bouts || []).slice()
       .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
       .forEach(b => {
+        // Strip accents BEFORE dropping non-alphanumerics — otherwise "Kauê"
+        // collapses to "kau" while "Kaue" stays "kaue", and the same bout from
+        // two sources (feed + manual override) would render twice.
         const key = (b.fighters || [])
-          .map(f => (f.fighterName || f.fighterSlug || '').toLowerCase().replace(/[^a-z0-9]+/g, ''))
+          .map(f => (f.fighterName || f.fighterSlug || '')
+            .normalize('NFD').replace(/[̀-ͯ]/g, '')
+            .toLowerCase().replace(/[^a-z0-9]+/g, ''))
           .sort().join('|');
         if (!key) { bouts.push(b); return; }
         const kept = _seenPairs.get(key);

@@ -155,7 +155,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
