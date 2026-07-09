@@ -2145,6 +2145,7 @@
     .pl-act.primary:hover { filter: brightness(1.08); }
     .pl-act.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
     .pl-act.ghost:hover { background: transparent; border-color: #ff6a5e; color: #ff6a5e; }
+    .pl-act:disabled { opacity: 0.45; cursor: default; pointer-events: none; }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -102908,9 +102909,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }, 'image/png');
   }
   // Render the PNG ahead of the click so share() can be called with activation.
+  // The actions stay disabled until it exists — otherwise a fast tap races the
+  // render and iOS would silently fall back to a download instead of the sheet.
   function plPrepShareAsset() {
     plShareAsset = null;
-    plFontsReady().then(() => plSlipFile((file, blob) => { plShareAsset = { file: file, blob: blob }; }));
+    plSetShareBusy(true);
+    plFontsReady().then(() => plSlipFile((file, blob) => {
+      plShareAsset = { file: file, blob: blob };
+      plSetShareBusy(false);
+    }));
+  }
+  function plSetShareBusy(busy) {
+    ['plSaveImg', 'plShareBtn'].forEach(id => {
+      const b = document.getElementById(id);
+      if (!b) return;
+      b.disabled = !!busy;
+      if (!b.dataset.label) b.dataset.label = b.textContent;
+      b.textContent = busy ? '…' : b.dataset.label;
+    });
   }
   function plCanShareFiles(file) {
     return !!(navigator.canShare && file && navigator.canShare({ files: [file] }));
@@ -102929,10 +102945,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function plSaveImage() {
     if (!PARLAY.legs.length) return;
     const asset = plShareAsset;
-    if (!asset) {   // not rendered yet — download path needs no activation
-      plFontsReady().then(() => plSlipFile((f, b) => { plShareAsset = { file: f, blob: b }; plDownload(b); }));
-      return;
-    }
+    if (!asset) return;   // button is disabled until the render lands
     if (PL_IOS && plCanShareFiles(asset.file)) {
       navigator.share({ files: [asset.file], title: 'GillyLab parlay' }).catch(() => {});
       return;
