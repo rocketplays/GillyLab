@@ -1,9 +1,11 @@
 # Tape study — outstanding items
 
 Generated 2026-07-09, revised 2026-07-09. Everything here needs a human decision;
-none of it was guessed at. Nothing below is currently showing a wrong video — the
-rows in section 2 render the same "no footage" placeholder as an uncatalogued
-fight.
+none of it was guessed at.
+
+**Open items are sections 2a, 4, and the three bullets in section 3.** Sections 1,
+1b, 1c, 2b/2c/2d are closed. One row is knowingly showing a wrong video by your
+decision (Dulatov, section 4).
 
 ---
 
@@ -168,6 +170,44 @@ Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
 
 ---
 
+## 4. Upload-sourced links — placement audit
+
+You hand-checked these links, so the question was never whether they load, only
+whether they landed on the right fight. Checked by pulling each video's **title**
+and comparing it to the row's two fighters. 181 rows, 179 distinct YouTube ids:
+
+| | count | verdict |
+|---|---|---|
+| title names both fighters | 118 | correct |
+| title names one fighter | 15 | correct — transliterations and nicknames ("고석현 VS SAKURAI RYUTA", "Marcio Lyoto vs Wellington Turman", "Mike Davis vs Vlacheslav Borschchev") |
+| title names neither | 22 | correct — event broadcasts and non-Latin titles ("Роберт Уиттакер vs Джаред Каннонир", "8 man tournament — CG #8", "BELLATOR 277 Prelims") |
+| no title returned | 26 | dead **now**, but that is liveness, not placement — left in place |
+
+Of the Fight Pass / Paramount+ links, 146 carry a name slug and 109 of those name
+both fighters. The rest are opaque ids with nothing to compare. None looked wrong.
+
+**Three real defects, one of them mine:**
+
+- **`Magomed Tuchalov vs Caio Machado` — FIXED.** `document.txt` line 352 has two
+  URLs run together with no separator (`…/969230https://…/945307`) and my parser
+  took the whole string as one href. The next line gives `969230` alone for Siyaku
+  Dumisa at UAE Warriors 67, a different event from Machado's UAE Warriors 69, so
+  they cannot share a video. Machado's is `945307`.
+
+- **`Alvin Hines vs Billy Ray Valdez` — REMOVED**, per your call. `Bxv8pKWPOnQ` is
+  titled "Aftershock 28: Justin Tafa versus Joe Harley" — different fighters,
+  promotion and continent. The row carried the `Pre-UFC` section marker, which
+  lives on the first pre-UFC row, so the marker was handed down to Mark Currier
+  (LFA 200) to keep the heading from collapsing.
+
+- **`Islam Dulatov vs Giorgi Kankava` — LEFT IN PLACE**, per your call.
+  `KN4CDr5eAbw` is titled "GMC Memories … Islam Dulatov vs Gjoni Palokaj I GMC 21".
+  Right fighter, wrong opponent; the row is his GMC Fight Night 8 bout.
+  `document.txt` line 373 spells the opponent "Giorgi Kamkava", which is why it
+  matched the `Kankava` history row. **This row currently plays the wrong fight.**
+
+---
+
 ## 3. Data inconsistencies worth a look
 
 - **`Lenny Lovoto` — settled, one loose end.** Usman's Legacy FC 30 row and its
@@ -217,15 +257,25 @@ Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
 
 ## Current state
 
-- `TAPE_STUDY`: **146 fighters, 1,622 rows**
-- Fight-history rows that resolve a video: **1,630**
-- Unplaced links from `document.txt`: **8** (was 19) — all in section 2a
-- Tape rows that can never render (no matching `FIGHT_HISTORY` row): **1** (was 51)
-- Rows showing a video from the wrong fight: **0** (was 17, plus 2 in 1c, plus the
-  Strickland/Du Plessis mislabel)
-- Rows pointing at a video that doesn't play: **0**. Every YouTube link on a
-  UFC-card bout has been loaded and checked individually.
+- `TAPE_STUDY`: **146 fighters, 1,621 rows**
+- Fight-history rows that resolve a video: **1,629**
+- Rows showing a video from the wrong fight: **1** — Dulatov, knowingly kept
+  (was 17, plus 2 in 1c, plus Strickland/Du Plessis, plus Alvin Hines)
+- Rows pointing at a video that doesn't play: **0** among pre-existing UFC-card
+  YouTube links; every one was loaded and checked individually. 26 upload-sourced
+  regional links have since gone dead (terminated channels) and were left alone.
+- Malformed URLs: **0**
 - Fight Pass and Paramount+ links are untouched throughout. They require a
   subscription to view; they are not broken.
-- Needs tape re-sourced from scratch: **Joshua Van, Tatsuro Taira, Alexander
-  Volkov** (every row they had was a dead link).
+
+### Still open
+
+1. **8 links, 2 fighters missing from the site** (section 2a) — RJ Harris, Anna
+   Melisano. Add the fighters and the tape drops straight in.
+2. **Tahir Abdullayev vs Maxim Butorin** — real video, but the bout is missing
+   from `FIGHT_HISTORY`. Add the row and it lights up.
+3. **Islam Dulatov vs Giorgi Kankava** — plays the wrong fight, kept by choice.
+4. **Joshua Van, Tatsuro Taira, Alexander Volkov** — no tape at all; every row
+   they had was a dead link. Need re-sourcing.
+5. Naming: `Chris Hatley` vs `Solo Hatley Jr`; `Lenny Lovoto` vs `Lovato`
+   (Ruediger's row); `Dricus du Plessis` vs `Du Plessis` capitalisation (cosmetic).
