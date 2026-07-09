@@ -1,39 +1,69 @@
 # Tape study — outstanding items
 
-Generated 2026-07-09. Everything here needs a human decision; none of it was
-guessed at. Nothing below is currently showing a wrong video — the rows in
-sections 1 and 2 render the same "no footage" placeholder as an uncatalogued
+Generated 2026-07-09, revised 2026-07-09. Everything here needs a human decision;
+none of it was guessed at. Nothing below is currently showing a wrong video — the
+rows in section 2 render the same "no footage" placeholder as an uncatalogued
 fight.
 
 ---
 
-## 1. Batch 1 fallout — one video attached to two or three fights
+## 1. Batch 1 fallout — CLOSED
 
-These URLs each sat on multiple rows in `TAPE_STUDY`, so they were wrong on all
-but one. YouTube titles aren't fetchable from here, so the URL was detached from
-every row rather than assigned at random. Pick the right fight for each and I'll
-reattach it.
+The 11 URLs pointed at videos that don't exist, so there was no right fight to
+reassign them to. The 25 rows holding them were deleted outright: a row with no
+video is indistinguishable from an uncatalogued fight, so it carried no
+information. `TAPE_STUDY` went 1,780 → 1,755 rows, and the number of fight-history
+rows that resolve a video was **unchanged at 1,723** — confirming the deleted
+rows were rendering nothing.
 
-| # | Fighter | URL | Candidate fights |
-|---|---------|-----|------------------|
-| 1 | Sean Strickland | `https://www.ufc.com/video/139275` | vs **Dricus du Plessis** (Feb 9, 2025 · UFC 312) · vs **Israel Adesanya** (Sep 10, 2023 · UFC 293) |
-| 2 | Sean Strickland | `https://www.ufc.com/athlete/sean-strickland` | **Not a video — an athlete profile page.** Was on Brendan Allen (Nov 14, 2020), Court McGee (Nov 11, 2017), Kamaru Usman (Apr 8, 2017). Probably just delete it. |
-| 3 | Jim Miller | `https://www.youtube.com/watch?v=ZDPa2eFVqMY` | vs **Chase Hooper** (Apr 12, 2025 · UFC 314) · vs **Nikolas Motta** (Feb 19, 2022) |
-| 4 | Jim Miller | `https://www.youtube.com/watch?v=BcVqxX4FNP0` | vs **Gabriel Benitez** (Jan 13, 2024) · vs **Donald Cerrone** (Jul 2, 2022 · UFC 276) · vs Drakkar Klose † |
-| 5 | Jim Miller | `https://www.youtube.com/watch?v=O5DMJPmETSY` | vs **Clay Guida** (Aug 3, 2019) · vs **Dustin Poirier** (Feb 11, 2017 · UFC 208) · vs **Joe Lauzon** (Aug 27, 2016) |
-| 6 | Jared Gordon | `https://www.youtube.com/watch?v=LNhQK2P3c7Y` | vs Billy Quarantillo † · vs Julio Arce † — **both fights are missing from FIGHT_HISTORY, so this link cannot display either way** |
-| 7 | Jared Gordon | `https://www.youtube.com/watch?v=8WqbX7T5mjs` | vs **Mark Madsen** (Nov 11, 2023 · UFC 295) · vs **Chris Fishgold** (Jul 16, 2020) |
-| 8 | Roman Kopylov | `https://www.youtube.com/watch?v=Ym9kG5hHsNA` | vs Abdul Razak Alhassan † · vs **Albert Duraev** (Oct 30, 2021 · UFC 267) |
-| 9 | Pat Sabatini | `https://www.youtube.com/watch?v=wLmYHqCEJbU` | vs **Chepe Mariscal** (Nov 15, 2025 · UFC 322) · vs **Tucker Lutz** (Nov 20, 2021) |
-| 10 | Pat Sabatini | `https://www.youtube.com/watch?v=vSoQBX5d9Tk` | vs **Lucas Almeida** (Jun 17, 2023) · vs Herbert Burns † |
-| 11 | Pat Sabatini | `https://www.youtube.com/watch?v=Z8KQFJRxJwU` | vs TJ Brown † · vs Felipe Colares † — **both missing from FIGHT_HISTORY** |
+Affected: Sean Strickland (5 rows), Jim Miller (8), Jared Gordon (4), Roman
+Kopylov (2), Pat Sabatini (6).
 
-† = that fight has no row in `FIGHT_HISTORY`, so a link attached to it would
-never render.
+One duplicate resolved itself and was kept: Brandon Royval's fightpass slug
+literally reads `ufc-vegas-34`, so the video stayed on the Aug 2021 Pantoja fight
+and came off the Dec 2023 one. His Dec 2023 row is now an ordinary uncatalogued
+fight.
 
-One duplicate resolved itself: Brandon Royval's fightpass slug literally reads
-`ufc-vegas-34`, so it stayed on the Aug 2021 Pantoja fight and came off the Dec
-2023 one.
+---
+
+## 1b. Pre-existing collisions — one video ID on two unrelated fights
+
+Found while cleaning up section 1, and **not introduced by either upload** — all
+12 predate the first tape-study commit. A YouTube ID identifies exactly one
+video, so in each pair one placement is wrong and is showing the wrong fight
+right now.
+
+I did not touch these. They were not part of what you asked for, and unlike
+section 1 the videos are presumably real, so the fix is to work out which fight
+each belongs to rather than delete.
+
+| URL | Placement A | Placement B |
+|-----|-------------|-------------|
+| `youtube.com/watch?v=mY9J4NqOqzU` | Joshua Van vs Rei Tsuruya (Mar 8, 2025) | Sean Brady vs Jake Matthews (Mar 6, 2021) |
+| `youtube.com/watch?v=tBmVkXqJcNA` | Joshua Van vs Felipe Bunes (Jan 13, 2024) | Jose Ochoa vs Asu Almabayev (Jul 26, 2025) |
+| `youtube.com/watch?v=mGbTkNxFpLE` | Joshua Van vs Kevin Borjas (Nov 11, 2023) | Jose Ochoa vs Lone'er Kavanagh (Nov 23, 2024) |
+| `youtube.com/watch?v=pQnKJxF7mYE` | Joshua Van vs Zhalgas Zhumagulov (Jun 24, 2023) | Jose Ochoa vs Cody Durden (Jun 14, 2025) |
+| `youtube.com/watch?v=Xm5RQ4sXhFE` | Alexander Volkov vs Walt Harris (Oct 24, 2020) | Waldo Cortes-Acosta vs Serghei Spivac (Jun 7, 2025) |
+| `youtube.com/watch?v=JKb3qjG7LZA` | Alexander Volkov vs Derrick Lewis (Oct 6, 2018) | Waldo Cortes-Acosta vs Derrick Lewis (Jan 24, 2026) |
+| `youtube.com/watch?v=XcMbEjPoW5A` | Grant Dawson vs Bobby Green (Oct 7, 2023) | Jim Miller vs Bobby Green (Apr 13, 2024) |
+| `youtube.com/watch?v=hQmSY8JpGnM` | Jim Miller vs Damon Jackson (Nov 16, 2024) | Clayton Carpenter vs Juancamilo Ronderos (Feb 18, 2023) |
+| `youtube.com/watch?v=3mK4wbD8YxY` | Joaquin Buckley vs Takashi Sato † | Marco Tulio vs Vitor Petrino † |
+| `youtube.com/watch?v=WJqxMbCPKlE` | Joaquin Buckley vs Michal Oleksiejczuk † | Marco Tulio vs Karl Roberson † |
+| `youtube.com/watch?v=T7A3q2Kwm_E` | Joel Alvarez vs Davi Ramos † | Grant Dawson vs Alan Patrick † |
+| `youtube.com/watch?v=GYN8f1N6P4s` | Joel Alvarez vs Stevie Ray † | Grant Dawson vs Nasrat Haqparast † |
+
+† = neither fight has a `FIGHT_HISTORY` row, so neither placement renders. Those
+four are harmless today but still wrong.
+
+The last two pairs share a suspicious shape — Volkov/Cortes-Acosta and
+Buckley/Marco Tulio and Alvarez/Dawson are each *heavyweight-ish fighter paired
+with a different heavyweight-ish fighter*, four fights deep. That looks like a
+block of links copied onto the wrong fighter wholesale, not four coincidences.
+
+Legitimate sharing, left alone: 42 URLs sit on two rows because the same video is
+the same fight seen from both fighters' pages, and 27 are event pages covering
+several bouts from one night (e.g. `ufcfightpass.com/video/206203` =
+*UFC Fight Night: Hall vs Silva*, on three fights from that card).
 
 ---
 
@@ -115,6 +145,7 @@ we're missing or a mislabelled opponent.
 
 ## Current state
 
-- `TAPE_STUDY`: **150 fighters, 1,780 rows**
-- Fight-history rows that resolve a video: **1,703** (was 1,214 before this batch)
-- Rows showing a video from the wrong fight: **0** (was 33)
+- `TAPE_STUDY`: **150 fighters, 1,755 rows**
+- Fight-history rows that resolve a video: **1,723**
+- Rows showing a video from the wrong fight: **12 pairs, all pre-existing** (section 1b).
+  Nothing either upload added is misplaced.
