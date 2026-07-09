@@ -53,7 +53,7 @@ jobs:
       - name: Is a card live?
         id: probe
         run: |
-          node scripts/fetch-espn-live.cjs --dry ${{ inputs.event && format('--event {0}', inputs.event) || '' }} | tee /tmp/probe.txt
+          node scripts/fetch-espn-live.cjs --dry --no-enrich ${{ inputs.event && format('--event {0}', inputs.event) || '' }} | tee /tmp/probe.txt
           if grep -q 'no card in its live window' /tmp/probe.txt; then
             echo "live=false" >> $GITHUB_OUTPUT
           else
@@ -108,7 +108,13 @@ jobs:
               # Another workflow (the twice-daily rebuild) may have pushed since we
               # checked out. Rebase onto it; our patch is idempotent, so if the
               # rebase is hopeless we can safely reset and re-derive next poll.
-              git add data/event.json data/fight-stats.json data/live-card.json
+              # data/fight-stats.json is 9.8MB; committing it after every fight would
+              # add ~19MB of git objects per card (~1GB/year). The browser gets the
+              # same rows from live-card.json (16KB), so the big file is committed
+              # once, when the card is done.
+              STAGE="data/event.json data/live-card.json"
+              if echo "$OUT" | grep -q '^allDecided=true'; then STAGE="$STAGE data/fight-stats.json"; fi
+              git add $STAGE
               if git diff --staged --quiet; then
                 echo "nothing staged, odd — skipping"
               else
@@ -116,7 +122,8 @@ jobs:
                 if ! git push; then
                   echo "push rejected — rebasing onto origin/main"
                   git fetch origin main
-                  git rebase origin/main || { git rebase --abort; git reset --hard origin/main; }
+                  # --autostash: fight-stats.json is intentionally left dirty mid-card
+                  git rebase --autostash origin/main || { git rebase --abort; git reset --hard origin/main; }
                   git push || { echo "::warning::push still failing; will re-derive next poll"; git reset --hard origin/main; }
                 fi
                 # The Worker serves data/ from the bundle, so results only reach
@@ -127,5 +134,15 @@ jobs:
 
             sleep "$POLL"
           done
+
+          # The box-score file may still be dirty (e.g. the last fight's stats landed
+          # on a poll that reported no other change). Commit it once on the way out.
+          git add data/event.json data/live-card.json data/fight-stats.json
+          if ! git diff --staged --quiet; then
+            git commit -m "live: final results + box scores $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push || { git fetch origin main; git rebase --autostash origin/main || git rebase --abort; git push || echo "::warning::final push failed"; }
+            npm run deploy || echo "::warning::final deploy failed"
+            echo "::notice::final sweep committed"
+          fi
 
           echo "::notice::poller exiting after ${POLLS} polls, ${DEPLOYS} deploys"
