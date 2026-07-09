@@ -144,7 +144,16 @@ function flagFor(a3) { return A3_FLAG[String(a3 || '').toUpperCase()] || null; }
 // data/cancelled-bout-overrides.json bypasses the news requirement (you looked
 // it up yourself), but still never fires on a suspiciously thin ESPN card.
 function decideCancellation(names, ctx) {
-  const { newsFlagged, forced, espnBoutCount, alreadyCancelled } = ctx;
+  const { newsFlagged, forced, espnBoutCount, alreadyCancelled, sticky } = ctx;
+
+  // A cancellation we already made, on evidence we already checked. News decays
+  // (the curated feed only keeps ~30 days), so a bout hidden today would un-hide
+  // itself the moment its corroborating headline aged out — while Cito, which
+  // rewrites event.json wholesale every run, still lists the dead fight. Once
+  // hidden, a bout stays hidden for as long as ESPN keeps omitting it. It
+  // un-hides only when ESPN lists it again, which drops it from the sticky set.
+  if (sticky) return { cancel: true, reason: sticky.reason, sticky: true };
+
   if (espnBoutCount < MIN_ESPN_BOUTS_TO_CANCEL) {
     return { cancel: false, reason: `ESPN listed only ${espnBoutCount} bouts — too thin to trust as a cancellation signal` };
   }
@@ -251,6 +260,7 @@ function reconcile(citoEvent, espnBouts, opts) {
   opts = opts || {};
   const newsFlagged = opts.newsFlagged || new Set();
   const forcedFor = opts.forcedFor || (() => null);
+  const stickyFor = opts.stickyFor || (() => null);
 
   const citoBouts = (citoEvent.bouts || []).filter((b) => (b.fighters || []).length >= 2);
   const citoNames = citoBouts.map((b) => b.fighters.map((f) => f.fighterName));
@@ -269,15 +279,19 @@ function reconcile(citoEvent, espnBouts, opts) {
 
   const toCancel = [];
   const onlyInCito = [];
+  let freshHides = 0;   // the per-card cap applies to NEW decisions, not standing ones
   dropped.forEach((x) => {
     const d = decideCancellation(x.names, {
       newsFlagged: x.names.find((n) => newsFlagged.has(normName(n))),
       forced: forcedFor(x.names),
+      sticky: stickyFor(x.names),
       espnBoutCount: espnBouts.length,
-      alreadyCancelled: toCancel.length,
+      alreadyCancelled: freshHides,
     });
-    if (d.cancel) toCancel.push(Object.assign({ reason: d.reason }, x));
-    else onlyInCito.push(Object.assign({ why: d.reason }, x));
+    if (d.cancel) {
+      if (!d.sticky) freshHides++;
+      toCancel.push(Object.assign({ reason: d.reason, sticky: !!d.sticky }, x));
+    } else onlyInCito.push(Object.assign({ why: d.reason }, x));
   });
 
   // ── pass 2: inject, treating dead bouts as if they were already gone ──
@@ -426,11 +440,22 @@ async function main() {
   // silently drop those bouts from the live site. Replay the last good set instead.
   const keepLastGood = (e, why) => {
     const rec = injectedDoc.events[e.slug];
-    if (!rec || !(rec.bouts || []).length) return;
+    if (!rec) return;
+
+    // Standing cancellations must survive an ESPN outage too — otherwise Cito's
+    // wholesale rewrite quietly puts a dead fight back on the card.
+    let c = 0;
+    (rec.cancelled || []).forEach((cx) => {
+      const b = (e.bouts || []).find((bb) => (bb.fighters || []).length >= 2
+        && !bb.isCancelled && sameBout(bb.fighters.map((f) => f.fighterName), cx.names));
+      if (b) { applyCancellation(b, cx.reason); c++; hidden++; }
+    });
+    if (c) console.warn(`[espn-bouts] ${e.title}: ${why} — re-applied ${c} standing cancellation(s).`);
+
+    let n = 0;
     const have = (e.bouts || []).filter((b) => (b.fighters || []).length >= 2)
       .map((b) => b.fighters.map((f) => f.fighterName));
-    let n = 0;
-    rec.bouts.forEach((b) => {
+    (rec.bouts || []).forEach((b) => {
       const names = (b.fighters || []).map((f) => f.fighterName);
       if (have.some((h) => sameBout(h, names))) return;
       (e.bouts = e.bouts || []).push(b);
@@ -438,13 +463,15 @@ async function main() {
     });
     if (n) {
       console.warn(`[espn-bouts] ${e.title}: ${why} — replayed ${n} previously-injected bout(s) so they don't vanish.`);
-      report.keptLastGood.push({ event: e.slug, bouts: n, why });
+      report.keptLastGood.push({ event: e.slug, bouts: n, cancellations: c, why });
     }
   };
 
   for (const { e } of upcoming) {
     if (!calendar) { keepLastGood(e, 'ESPN scoreboard unreachable'); continue; }
     const day = String(e.startsAt).slice(0, 10);
+    // "UFC Fight Night" is not a unique name — always log the date with it.
+    const tag = `${e.title} (${day})`;
     const numMatch = /\bUFC\s+(\d{2,4})\b/i.exec(e.title || '');
     // Numbered cards match on the number. Otherwise match on UTC date, allowing
     // ±1 day (a US evening card straddles midnight UTC, so the two feeds can
@@ -458,12 +485,14 @@ async function main() {
 
     let espnBouts;
     try { espnBouts = await espnBoutsForEvent(espnId, cache); }
-    catch (err) { console.warn(`[espn-bouts] ${e.title}: competitions fetch failed (non-fatal): ${err.message}`); keepLastGood(e, 'ESPN competitions fetch failed'); continue; }
-    if (!espnBouts.length) { console.log(`[espn-bouts] ${e.title}: ESPN lists no bouts yet.`); keepLastGood(e, 'ESPN lists no bouts'); continue; }
+    catch (err) { console.warn(`[espn-bouts] ${tag}: competitions fetch failed (non-fatal): ${err.message}`); keepLastGood(e, 'ESPN competitions fetch failed'); continue; }
+    if (!espnBouts.length) { console.log(`[espn-bouts] ${tag}: ESPN lists no bouts yet.`); keepLastGood(e, 'ESPN lists no bouts'); continue; }
 
     const forcedFor = (names) => cancelDoc.overrides.find((o) =>
       (!o.eventSlug || o.eventSlug === e.slug) && sameBout(o.matchFighterNames || [], names)) || null;
-    const { toInject, toCancel, onlyInCito, skipped } = reconcile(e, espnBouts, { newsFlagged, forcedFor });
+    const prior = (injectedDoc.events[e.slug] || {}).cancelled || [];
+    const stickyFor = (names) => prior.find((c) => sameBout(c.names, names)) || null;
+    const { toInject, toCancel, onlyInCito, skipped } = reconcile(e, espnBouts, { newsFlagged, forcedFor, stickyFor });
     report.events.push({ slug: e.slug, title: e.title, espnId, citoBouts: (e.bouts || []).length, espnBouts: espnBouts.length, injected: toInject.length });
 
     const injectedThisRun = [];
@@ -472,25 +501,39 @@ async function main() {
       (e.bouts = e.bouts || []).push(bout);
       injectedThisRun.push(bout);
       const label = b.fighters.map((f) => f.name).join(' vs ');
-      console.log(`[espn-bouts] ${e.title}: + ${label}  (${b.section})`);
+      console.log(`[espn-bouts] ${tag}: + ${label}  (${b.section})`);
       report.injected.push({ event: e.slug, bout: label, section: b.section });
       added++;
     });
-    // Record EXACTLY what we injected. Rewriting (not merging) means a bout ESPN
-    // has dropped simply falls out of the record — self-cleaning by construction.
-    injectedDoc.events[e.slug] = { startsAt: e.startsAt, bouts: injectedThisRun };
+    // Record EXACTLY what we injected and what stands cancelled. Rewriting (not
+    // merging) is what makes this self-cleaning: a bout ESPN has dropped falls
+    // out of `bouts`, and a bout ESPN has RE-LISTED is no longer in `dropped`,
+    // so it falls out of `cancelled` and un-hides itself on the next run.
+    injectedDoc.events[e.slug] = {
+      startsAt: e.startsAt,
+      bouts: injectedThisRun,
+      cancelled: toCancel.map((x) => ({
+        names: x.names, label: x.label, reason: x.reason,
+        since: (stickyFor(x.names) || {}).since || new Date().toISOString(),
+      })),
+    };
 
     toCancel.forEach((x) => {
       applyCancellation(x.bout, x.reason);
       hidden++;
-      console.warn(`[espn-bouts] ✖ ${e.title}: hiding [${x.label}] — ${x.reason}`);
-      report.cancelled.push({ event: e.slug, bout: x.label, reason: x.reason });
+      console.warn(`[espn-bouts] ${x.sticky ? '·' : '✖'} ${tag}: ${x.sticky ? 'still hiding' : 'hiding'} [${x.label}] — ${x.reason}`);
+      report.cancelled.push({ event: e.slug, bout: x.label, reason: x.reason, sticky: x.sticky });
+    });
+    // A previously-hidden bout that ESPN now lists again is simply absent from
+    // toCancel, so it is neither re-hidden nor recorded — it comes back on its own.
+    prior.filter((c) => !toCancel.some((x) => sameBout(x.names, c.names))).forEach((c) => {
+      console.log(`[espn-bouts] ${tag}: un-hiding [${c.label}] — ESPN lists it again.`);
     });
     onlyInCito.forEach((x) => {
-      console.warn(`[espn-bouts] ⚠ ${e.title}: Cito lists [${x.label}] but ESPN does not — ${x.why}. Left visible; verify.`);
+      console.warn(`[espn-bouts] ⚠ ${tag}: Cito lists [${x.label}] but ESPN does not — ${x.why}. Left visible; verify.`);
       report.onlyInCito.push({ event: e.slug, bout: x.label, why: x.why });
     });
-    skipped.forEach((s) => { console.warn(`[espn-bouts] ⚠ ${e.title}: skipped [${s.bout}] — ${s.reason}`); report.skipped.push(Object.assign({ event: e.slug }, s)); });
+    skipped.forEach((s) => { console.warn(`[espn-bouts] ⚠ ${tag}: skipped [${s.bout}] — ${s.reason}`); report.skipped.push(Object.assign({ event: e.slug }, s)); });
   }
 
   if (DRY) { console.log(`[espn-bouts] --dry: would inject ${added}, hide ${hidden}. Not writing.`); return; }

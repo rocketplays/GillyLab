@@ -188,5 +188,47 @@ console.log("\n=== same-card opponent swap (cancel must precede the booked check
   ok("manual override also frees the replacement", r3.toCancel.length===1 && r3.toInject.length===1);
 }
 
+console.log("\n=== sticky cancellation: news decays, the hide must not ===");
+{
+  const eb=n=>({section:"Main Card",sectionOrder:1,position:1,weightClass:"BW",titleBout:false,rounds:3,fighters:n.map(x=>({name:x,slug:x}))});
+  const cb=(...n)=>({isCancelled:false,fighters:n.map(x=>({fighterName:x}))});
+  const filler=[eb(["A A","B B"]),eb(["C C","D D"]),eb(["E E","F F"]),eb(["G G","H H"]),eb(["I I","J J"])];
+  const espn=filler;
+  const dead=["Umar Nurmagomedov","David Martinez"];
+  const cito=()=>({bouts:[cb(...dead),cb("A A","B B"),cb("C C","D D"),cb("E E","F F"),cb("G G","H H"),cb("I I","J J")]});
+
+  // Day 1: news corroborates -> hidden.
+  const r1=m.reconcile(cito(),espn,{newsFlagged:new Set([m.normName("David Martinez")])});
+  ok("day 1: hidden on ESPN+news agreement", r1.toCancel.length===1);
+  const persisted=r1.toCancel.map(x=>({names:x.names,label:x.label,reason:x.reason}));
+
+  // Day 31: the headline has aged out of the 30-day window. Cito still lists the
+  // bout (it rewrites event.json wholesale). Without stickiness it reappears.
+  const naive=m.reconcile(cito(),espn,{newsFlagged:new Set()});
+  ok("day 31 WITHOUT sticky: fight reappears (the bug)", naive.toCancel.length===0);
+
+  const stickyFor=(names)=>persisted.find(c=>m.sameBout(c.names,names))||null;
+  const r2=m.reconcile(cito(),espn,{newsFlagged:new Set(),stickyFor});
+  ok("day 31 WITH sticky: stays hidden", r2.toCancel.length===1);
+  ok("marked as standing, not a fresh decision", r2.toCancel[0].sticky===true);
+  ok("original reason preserved", /injury\/withdrawal news/.test(r2.toCancel[0].reason));
+
+  // ESPN re-lists it -> not in `dropped` -> falls out of toCancel -> un-hides.
+  const r3=m.reconcile(cito(),[eb(dead),...filler],{newsFlagged:new Set(),stickyFor});
+  ok("ESPN re-lists it -> un-hidden automatically", r3.toCancel.length===0 && r3.onlyInCito.length===0);
+
+  // Sticky bypasses the thin-card guard (it was decided on good data) but a
+  // thin card still cannot produce a NEW hide.
+  const thin=[eb(["A A","B B"])];
+  ok("sticky survives a thin ESPN card", m.reconcile(cito(),thin,{stickyFor}).toCancel.length===1);
+  ok("thin card still blocks new hides",
+     m.reconcile(cito(),thin,{newsFlagged:new Set([m.normName("David Martinez")])}).toCancel.length===0);
+
+  // Standing hides must not eat the per-card cap meant for fresh decisions.
+  const twoDead=()=>({bouts:[cb(...dead),cb("K K","L L"),cb("M M","N N"),cb("A A","B B"),cb("C C","D D"),cb("E E","F F"),cb("G G","H H"),cb("I I","J J")]});
+  const r4=m.reconcile(twoDead(),espn,{newsFlagged:new Set([m.normName("K K"),m.normName("M M")]),stickyFor});
+  ok("1 standing + 2 fresh hides all applied (cap counts fresh only)", r4.toCancel.length===3);
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);
