@@ -100154,6 +100154,44 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     // (note WW is men's welterweight, so a bare "W" prefix isn't enough).
     const WOMEN = { WSW: 1, WFLW: 1, WFLY: 1, WBW: 1, WFW: 1 };
     const isFemale = nm => { const e = fightersEntry(nm); return !!(e && WOMEN[String(e.division || '').toUpperCase()]); };
+    // The single most decisive measurable separation between two fighters, so two
+    // cards in the same bout never read as mirror images of each other. Each axis
+    // carries a threshold below which the gap is noise; the winner is whichever
+    // edge clears its threshold by the widest multiple. Gaps are signed, so if a
+    // fighter owns an axis his opponent cannot also claim it — the two cards are
+    // asymmetric by construction. `prefer` lets a branch weight the axes that
+    // matter to it (a striking battle should not lead with takedown defense).
+    const EDGE_AXES = {
+      kd:       { min: 0.30, gap: (a, b) => d(a.kd, b.kd),           label: 'power',                 phrase: (a, b) => 'heavier hands (' + a.kd + ' vs ' + b.kd + ' knockdowns/15)' },
+      strAcc:   { min: 6,    gap: (a, b) => d(a.strAcc, b.strAcc),   label: 'accuracy',              phrase: (a, b) => 'sharper accuracy (' + a.strAcc + '% vs ' + b.strAcc + '%)' },
+      strDef:   { min: 6,    gap: (a, b) => d(a.strDef, b.strDef),   label: 'head movement',         phrase: (a, b) => 'tighter defense (' + a.strDef + '% vs ' + b.strDef + '% of strikes avoided)' },
+      sapm:     { min: 0.70, gap: (a, b) => d(b.sapm, a.sapm),       label: 'defensive discipline',  phrase: (a, b) => 'cleaner defensive record (absorbs ' + a.sapm.toFixed(2) + ' vs ' + b.sapm.toFixed(2) + ' per min)' },
+      output:   { min: 0.80, gap: (a, b) => d(output(a), output(b)), label: 'volume',                phrase: (a, b) => 'higher output (' + output(a) + ' vs ' + output(b) + ' thrown/min)' },
+      tdDef:    { min: 10,   gap: (a, b) => d(a.tdDef, b.tdDef),     label: 'takedown defense',      phrase: (a, b) => 'better takedown defense (' + a.tdDef + '% vs ' + b.tdDef + '%)' },
+      tdLanded: { min: 0.60, gap: (a, b) => d(a.tdLanded, b.tdLanded), label: 'wrestling',           phrase: (a, b) => 'more persistent takedown entries (' + a.tdLanded + ' vs ' + b.tdLanded + ' per 15)' },
+      subAvg:   { min: 0.30, gap: (a, b) => d(a.subAvg, b.subAvg),   label: 'submission threat',     phrase: (a, b) => 'busier submission game (' + a.subAvg + ' vs ' + b.subAvg + ' attempts/15)' },
+      finRate:  { min: 12,   gap: (a, b) => d(a.finRate, b.finRate), label: 'finishing rate',        phrase: (a, b) => 'finishing instinct (' + a.finRate + '% of wins inside the distance vs ' + b.finRate + '%)' },
+    };
+    const d = (x, y) => (x != null && y != null) ? x - y : null;
+    const STRIKING_AXES = ['kd', 'strAcc', 'strDef', 'sapm', 'output', 'finRate'];
+    const GRAPPLING_AXES = ['tdLanded', 'subAvg', 'tdDef', 'finRate', 'kd', 'sapm'];
+    const ALL_AXES = Object.keys(EDGE_AXES);
+    const edge = (self, other, prefer) => {
+      if (!self || !other) return null;
+      const pick = (keys) => {
+        let best = null;
+        for (const k of keys) {
+          const ax = EDGE_AXES[k];
+          const g = ax.gap(self, other);
+          if (g == null || g < ax.min) continue;
+          const w = g / ax.min;
+          if (!best || w > best.w) best = { w: w, label: ax.label, phrase: ax.phrase(self, other) };
+        }
+        return best;
+      };
+      return pick(prefer || ALL_AXES) || (prefer ? pick(ALL_AXES) : null);
+    };
+
     const path = (self, other, otherN, female) => {
       if (!self) return 'Thin UFC data (short-notice / limited tape) — style and path read is provisional.';
       const la = lean(self), oN = short(otherN);
@@ -100179,9 +100217,15 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           const powerOther = (other.kd != null && other.kd >= 0.6) || (other.finRate != null && other.finRate >= 75);
           let s = 'A striking battle — ';
           if (outClose) {
-            s += 'output is even' + nums + ', so it turns on power and accuracy';
-            if (power && !powerOther) s += ' — and he carries the heavier hands';
-            else if (powerOther && !power) s += ' — but ' + oN + ' hits harder';
+            // Both cards used to read "output is even, so it turns on power and
+            // accuracy", differing only in the swapped numbers. Name the margin
+            // that actually belongs to THIS fighter.
+            s += 'output is even' + nums;
+            const mine = edge(self, other, STRIKING_AXES);
+            const theirs = edge(other, self, STRIKING_AXES);
+            if (mine) s += '; the margin is his ' + mine.phrase;
+            else if (theirs) s += ', and the margin belongs to ' + oN + ' (' + theirs.phrase + ') — he has to blunt that early';
+            else s += ' and nothing on tape separates them; whoever lands clean first dictates it';
           } else if (outEdge) {
             s += 'he has the edge in output' + nums + ', so his path is volume and pace over the rounds';
             if (powerOther && !power) s += ', while staying disciplined against ' + oN + "'s power";
@@ -100209,6 +100253,20 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           else if (self.tdLanded > (other.tdLanded || 0) + 0.6) e = 'his edge is the more persistent takedown entries (' + self.tdLanded + ' vs ' + other.tdLanded + '/15)';
           else e = 'no clear grappling edge — he has to win the scrambles and positional exchanges';
           line = 'Takedowns are hard both ways (both stuff ' + floor + '%+) — ' + e + '.';
+        } else if (oKnown && grappler(lb)) {
+          // Both men want it on the mat but neither stuffs takedowns well enough
+          // for symMat. Saying "X is takedown-vulnerable, get it down early" on
+          // BOTH cards is true and useless — it's the same sentence twice. Lead
+          // with each fighter's own separation instead.
+          const mine = edge(self, other, GRAPPLING_AXES);
+          const theirs = edge(other, self, GRAPPLING_AXES);
+          const tdc = (self.tdDef != null && other.tdDef != null) ? ' (neither stuffs much — ' + self.tdDef + '% / ' + other.tdDef + '% TDD)' : '';
+          line = 'Both want it on the mat' + tdc + ' — ';
+          if (mine) line += 'his edge is the ' + mine.phrase + '.';
+          else if (theirs) line += 'the grappling margin favours ' + oN + ' (' + theirs.phrase + '), so he has to win the scrambles rather than the entries.';
+          else line += 'the takedown battle is even; the first meaningful entry likely decides each round.';
+          if (self.subAvg >= 0.8 && !/submission/.test(line)) notes.push('live submission threat (' + self.subAvg + '/15)');
+          if (self.finRate != null && self.finRate >= 80 && !/finishing/.test(line)) notes.push(self.finRate + '% of wins are finishes');
         } else {
           line = 'Get it to the mat';
           if (oKnown && other.tdDef != null && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.';
@@ -100222,7 +100280,15 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         else if (oKnown && other.strDef != null && other.strDef <= 52) line = 'Comfortable everywhere — test ' + oN + ' on the feet (' + other.strDef + '% striking defense) and mix in level changes.';
         else if (power) line = 'Comfortable everywhere — his edge is the bigger finishing threat; drag ' + oN + ' into his stronger area.';
         else if (oKnown && output(self) != null && output(other) != null && output(self) > output(other) + 0.8) line = 'Comfortable everywhere — his edge is work rate (' + output(self) + ' vs ' + output(other) + ' thrown/min); outwork ' + oN + ' in every area.';
-        else line = 'Comfortable in both areas — no glaring edge on paper, so it comes down to who imposes their game first.';
+        else {
+          // This generic line was firing on 8 of 124 cards. Before conceding that
+          // nothing separates them, look for the widest real gap on any axis.
+          const mine = edge(self, other);
+          const theirs = edge(other, self);
+          if (mine) line = 'Comfortable everywhere — his edge is the ' + mine.phrase + '; drag ' + oN + ' into it.';
+          else if (theirs) line = 'Comfortable everywhere, but ' + oN + ' owns the one clear margin (' + theirs.phrase + ') — take that away and this is a coin flip.';
+          else line = 'Comfortable in both areas — no glaring edge on paper, so it comes down to who imposes their game first.';
+        }
         if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both areas');
       }
       if (female) line = line.replace(/\bhe\b/g, 'she').replace(/\bhis\b/g, 'her');
