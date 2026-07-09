@@ -62,22 +62,46 @@ link is unplayable — 24 gone, 1 private.
 That makes sense: UFC full fights aren't hosted on public YouTube, they're on
 Fight Pass. A YouTube link on a UFC bout was never going to work.
 
-### 1c. STILL OPEN — 108 more of the same
+### 1c. CLOSED — all 106 ids checked one by one, 101 rows deleted
 
-After deleting the 34, **108 pre-existing YouTube links remain on UFC-banner
-rows**, across 24 fighters. I verified 25 of that class were dead; the other 108
-are unverified but are the same shape, from the same source, on the same kind of
-bout.
+I did **not** delete the class on the pattern, and it's as well: **7 of them
+work.** Each of the 106 distinct ids was queried against YouTube's oembed
+endpoint, with every non-404 and a 9-id sample of the 404s confirmed against the
+real watch page.
 
-Worst offenders: Jeremy Stephens (10), Khamzat Chimaev (9), Sean Strickland (8),
-Tatsuro Taira (8), Joaquin Buckley (8), Alexander Volkov (7), Joshua Van (6).
+| Verdict | ids | Action |
+|---|---|---|
+| `404` — deleted or never existed | 93 | removed |
+| `403` — private | 3 | removed (never plays for a visitor) |
+| `400` — not even a valid video id | 1 | removed |
+| `200` — plays, **but shows the wrong fight** | 2 | removed |
+| `200` — plays, correct fight | 6 | **kept** |
+| `401` — plays, embedding disabled | 1 | **kept** |
 
-I stopped here rather than delete 108 rows on an inference. Two options: I can
-load all 108 in the browser and delete only the confirmed-dead ones (slow but
-certain), or delete the class outright on the pattern above. Your call.
+The two live-but-wrong were the nastiest thing in the file: `XNCytatM3cw` and
+`EjeHrWjdKFE` are real videos of *Chimaev vs Rhys McKee*, sitting on **Jeremy
+Stephens vs Doo Ho Choi** and **Jeremy Stephens vs Gilbert Melendez**. A dead link
+is honest; those two were confidently playing the wrong fight.
 
-Note the 245 pre-existing YouTube links on **regional** rows look fine and should
-be left alone — that's where the real footage lives.
+The keepers, all verified title-against-row: six Chimaev full fights (Whittaker,
+Usman, Burns, Meerschaert, McKee, Phillips) and Aaron Pico vs Lerone Murphy.
+
+Two calibration notes, both of which nearly cost us:
+
+- **oembed `401` does not mean broken.** The Pico video returns 401 because the
+  uploader disabled embedding; it plays fine. Status code alone is not
+  playability.
+- **oembed `404` does not mean "fabricated".** `bD5-FOay3VE` is a real id whose
+  channel was terminated, and it 404s too. 404 means "won't play", which is the
+  criterion we actually care about.
+
+Three fighters lost their entire `TAPE_STUDY` entry, because every row they had
+was a dead UFC-card YouTube link: **Joshua Van, Tatsuro Taira, Alexander Volkov**.
+They need tape re-sourced from scratch.
+
+The 245 pre-existing YouTube links on **regional / pre-UFC** rows were left alone.
+Every one sampled loads, and the video title names exactly the fight it sits on.
+That is where the real footage lives.
 
 ### Correction to my earlier count
 
@@ -168,10 +192,13 @@ Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
 
 ## Current state
 
-- `TAPE_STUDY`: **149 fighters, 1,726 rows**
-- Fight-history rows that resolve a video: **1,707**
+- `TAPE_STUDY`: **146 fighters, 1,625 rows**
+- Fight-history rows that resolve a video: **1,629**
 - Unplaced links from `document.txt`: **8** (was 19) — all in section 2a
-- Rows showing a video from the wrong fight: **0** (was 17)
-- Rows pointing at a video that almost certainly doesn't exist: **108**, all
-  pre-existing YouTube links on UFC-card bouts (section 1c). Nothing either
-  upload added is affected.
+- Rows showing a video from the wrong fight: **0** (was 17, plus 2 found in 1c)
+- Rows pointing at a video that doesn't play: **0**. Every YouTube link on a
+  UFC-card bout has been loaded and checked individually.
+- Fight Pass and Paramount+ links are untouched throughout. They require a
+  subscription to view; they are not broken.
+- Needs tape re-sourced from scratch: **Joshua Van, Tatsuro Taira, Alexander
+  Volkov** (every row they had was a dead link).
