@@ -102633,12 +102633,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // round props). Two rules, both about keeping the arithmetic honest:
   //
   //   1. One sportsbook per slip — legs can't cross books.
-  //   2. One pick per fight. Every pair of legs on the same fight is correlated
-  //      (Over 2.5 and a round-3 finish; a fighter's moneyline and their method),
-  //      and a straight multiply silently misprices correlation. Real books quote
-  //      those as a same-game parlay off a joint model we don't have, so we don't
-  //      pretend to. Legs on *different* fights are effectively independent, which
-  //      is exactly what makes multiplying their decimal odds valid.
+  //   2. On one fight, only the moneyline and the rounds O/U can be combined.
+  //      Method and round props either imply the moneyline (a KO win implies a
+  //      win) or overlap each other, so multiplying them misprices the parlay.
+  //      Even the allowed ML + O/U pair is correlated, so the slip flags it as a
+  //      same-game parlay — books price those two at lower odds, off a joint
+  //      model we don't have. Legs on *different* fights are effectively
+  //      independent, which is what makes multiplying their decimal odds valid.
   const PARLAY = { book: null, legs: [], open: false, stake: 100, clean: false };
   const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
@@ -102697,7 +102698,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Within one fight, the only combinable markets are the moneyline and the
   // rounds O/U — who wins and how long it lasts are treated as separate bets.
   // A method or round-prop leg must stand alone on its fight (those overlap the
-  // moneyline and each other, and a straight multiply can't price the overlap).
+  // moneyline and each other, and multiplying them can't price the overlap).
   const PL_PAIRABLE = { ml: 1, total: 1 };
   function plValidate(legs, newLeg) {
     const same = legs.filter(l => l.fid === newLeg.fid);
@@ -102769,8 +102770,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const stake = Math.max(0, Number(PARLAY.stake) || 0);
     const n = PARLAY.legs.length;
     // A fight carrying two legs can only be ML + rounds O/U (plValidate enforces
-    // it). Those are still correlated, so flag that the book will treat it as a
-    // same-game parlay rather than the straight multiply we show.
+    // it). Those are still correlated, so flag that the book treats it as a
+    // same-game parlay and will price these two at lower odds than we show.
     const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
     const sgpFights = Object.keys(byFight).filter(k => byFight[k] > 1)
       .map(k => (PARLAY.legs.find(l => l.fid === k) || {}).fight).filter(Boolean);
