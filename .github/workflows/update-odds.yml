@@ -72,11 +72,6 @@ jobs:
             echo "Recent-events fetch failed (non-fatal); keeping existing data/event-recent.json"
           fi
 
-      # Aggregate recent per-fighter news (Google News RSS) for fighters on the
-      # imminent card and flag injury/withdrawal stories. Non-fatal + keep-last-good.
-      - name: Fetch fighter news
-        run: node scripts/fetch-fighter-news.cjs || true
-
       - name: Re-apply manual card-section overrides
         run: node scripts/apply-card-section-overrides.cjs
 
@@ -85,6 +80,22 @@ jobs:
 
       - name: Re-apply manual missing-bout overrides
         run: node scripts/apply-missing-bout-overrides.cjs
+
+      # Cito owns events, results and method details, but its BOUT sync lags (it
+      # has been ~10 days stale). ESPN's free, unauthenticated fight list is the
+      # freshest source for who is actually booked, so reconcile against it and
+      # add anything Cito is missing. Additive only — a bout Cito lists that ESPN
+      # has dropped is reported (likely cancelled) but never auto-removed, so an
+      # ESPN hiccup can't wipe a real fight. Non-fatal; on any error event.json is
+      # left exactly as Cito returned it.
+      - name: Reconcile card bouts against ESPN
+        run: node scripts/fetch-espn-bouts.cjs || true
+
+      # Runs AFTER the override + ESPN steps so newly-added fighters get news too.
+      # Aggregate recent per-fighter news (Google News RSS) for fighters on the
+      # imminent card and flag injury/withdrawal stories. Non-fatal + keep-last-good.
+      - name: Fetch fighter news
+        run: node scripts/fetch-fighter-news.cjs || true
 
       - name: Download fighter photos
         run: |
@@ -155,7 +166,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-bouts-report.json worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -174,6 +185,7 @@ jobs:
           node scripts/apply-card-section-overrides.cjs || true
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
+          node scripts/fetch-espn-bouts.cjs || true
           node scripts/gen-landing-data.cjs || true
           node scripts/fetch-fighter-news.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
