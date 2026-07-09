@@ -135,6 +135,61 @@ const A3_FLAG = {
 };
 function flagFor(a3) { return A3_FLAG[String(a3 || '').toUpperCase()] || null; }
 
+// Cito slugs a card by its US-EASTERN calendar date, not UTC: a 2026-07-19T00:00Z
+// start (8pm ET on the 18th) is "ufc-fight-night-july-18-2026". Numbered cards
+// are just "ufc-330". Get this wrong and we mint a duplicate slug for a card
+// Cito later publishes.
+const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+function easternParts(iso) {
+  const f = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' });
+  const [y, m, d] = f.format(new Date(iso)).split('-');
+  return { year: +y, month: +m, day: +d };
+}
+function eventSlugFor(label, startsAt) {
+  const num = /\bUFC\s+(\d{2,4})\b/i.exec(label || '');
+  if (num) return 'ufc-' + num[1];
+  const { year, month, day } = easternParts(startsAt);
+  return `ufc-fight-night-${MONTHS[month - 1]}-${String(day).padStart(2, '0')}-${year}`;
+}
+function eventTitleFor(label) {
+  const num = /\bUFC\s+(\d{2,4})\b/i.exec(label || '');
+  return num ? 'UFC ' + num[1] : 'UFC Fight Night';   // Cito stores the bare title, not the headliner
+}
+
+// Build a Cito-shaped event for a card Cito has not published at all.
+function buildEvent(espnId, label, startsAt, venue) {
+  const slug = eventSlugFor(label, startsAt);
+  const title = eventTitleFor(label);
+  const addr = (venue && venue.address) || {};
+  const city = [addr.city, addr.state || addr.country].filter(Boolean).join(' ') || null;
+  const venueName = (venue && venue.fullName) || null;
+  const now = new Date().toISOString();
+  return {
+    id: 'espn-' + espnId, slug, title, shortTitle: title,
+    status: 'scheduled', startsAt,
+    venue: venueName, city, state: addr.state || null, country: addr.country || null,
+    locationText: [venueName, city].filter(Boolean).join(', ') || null,
+    imageUrl: null, broadcastInfo: { raw: '' },
+    dataAvailability: { bouts: 'espn-reconcile', warning: 'Event not yet published by the Cito feed; built from ESPN.', strategy: 'espn-reconcile', fetchedAt: now, dataAgeHours: 0, dataFreshness: 'espn-reconcile' },
+    createdAt: now, lastSyncedAt: now, dataId: 'espn-' + espnId,
+    hasStats: false, dataFreshness: now, freshnessStatus: 'espn-reconcile', dataAgeHours: 0,
+    dataSource: 'espn-reconcile',
+    warning: 'Added by fetch-espn-bouts.cjs — the Cito feed had not published this event.',
+    bouts: [],
+  };
+}
+
+// Pure: does this Cito event correspond to this ESPN calendar entry? Numbered
+// cards match on the number; otherwise on start time within a day and a half,
+// since the two feeds disagree about when a card that straddles midnight starts.
+function sameEvent(citoEvent, label, startDate) {
+  const num = /\bUFC\s+(\d{2,4})\b/i.exec(label || '');
+  if (num) return new RegExp(`\\bUFC\\s+${num[1]}\\b`, 'i').test(citoEvent.title || '');
+  const numCito = /\bUFC\s+(\d{2,4})\b/i.exec(citoEvent.title || '');
+  if (numCito) return false;   // a numbered Cito card is never an unnumbered ESPN card
+  return Math.abs(Date.parse(citoEvent.startsAt) - Date.parse(startDate)) <= 1.5 * DAY;
+}
+
 // Pure: should this Cito-only bout be hidden?
 //
 // ESPN dropping a bout is suggestive but not proof — ESPN reshuffles cards and
@@ -389,6 +444,18 @@ async function espnBoutsForEvent(eventId, cache) {
   return raw;
 }
 
+async function getVenue(ref, cache) {
+  const id = /\/venues\/(\d+)/.exec(String(ref || ''));
+  if (!id) return null;
+  cache.venues = cache.venues || {};
+  if (cache.venues[id[1]]) return cache.venues[id[1]];
+  try {
+    const v = await getJson(`https://sports.core.api.espn.com/v2/sports/mma/leagues/ufc/venues/${id[1]}`);
+    cache.venues[id[1]] = { fullName: v.fullName || null, address: v.address || {} };
+    return cache.venues[id[1]];
+  } catch (e) { return null; }
+}
+
 function loadJson(fp, fallback) {
   try { const raw = fs.readFileSync(fp, 'utf8').trim(); return raw ? JSON.parse(raw) : fallback; }
   catch (e) { return fallback; }
@@ -417,14 +484,12 @@ async function main() {
   const injectedDoc = loadJson(INJECTED_PATH, { events: {} });
   const newsFlagged = injuryFlaggedNames(loadJson(NEWS_PATH, { fighters: {} }));
   const now = Date.now();
-  const upcoming = eventDoc.data
+  const inHorizon = () => eventDoc.data
     .filter((e) => e.status !== 'completed')
     .map((e) => ({ e, t: Date.parse(e.startsAt || '') }))
     .filter((x) => isFinite(x.t) && x.t > now - DAY && x.t < now + HORIZON_DAYS * DAY)
     .sort((a, b) => a.t - b.t)
     .slice(0, MAX_EVENTS);
-
-  if (!upcoming.length) { console.log('[espn-bouts] no upcoming events in horizon.'); return; }
 
   let calendar = null;
   try {
@@ -432,8 +497,77 @@ async function main() {
     calendar = ((sb.leagues || [])[0] || {}).calendar || [];
   } catch (e) { console.warn('[espn-bouts] scoreboard fetch failed (non-fatal):', e.message, '— falling back to last-known injections.'); }
 
-  const report = { generatedAt: new Date().toISOString(), espnReachable: !!calendar, events: [], injected: [], cancelled: [], onlyInCito: [], skipped: [], keptLastGood: [] };
-  let added = 0, hidden = 0;
+  const report = { generatedAt: new Date().toISOString(), espnReachable: !!calendar, events: [], createdEvents: [], injected: [], cancelled: [], onlyInCito: [], skipped: [], keptLastGood: [] };
+  let added = 0, hidden = 0, createdEvents = 0;
+
+  // ── Cito sometimes hasn't published a card AT ALL (not just its bouts). Mint
+  // it from ESPN. We require at least one announced bout: an empty event is
+  // hidden by the app's own filter anyway, and minting it would only risk a
+  // duplicate slug for a card Cito is about to publish. Because event.json is
+  // rebuilt from Cito every run, a minted event that Cito later publishes simply
+  // stops being minted — no migration, no cleanup.
+  injectedDoc.createdEvents = injectedDoc.createdEvents || {};
+  const mintedThisRun = new Set();
+  const espnListedEvent = new Map();   // slug -> calendar entry seen this run
+  const mintFailed = new Set();
+
+  if (calendar) {
+    for (const c of calendar) {
+      const t = Date.parse(c.startDate);
+      if (!isFinite(t) || t < now - DAY || t > now + HORIZON_DAYS * DAY) continue;
+      if (eventDoc.data.some((e) => sameEvent(e, c.label, c.startDate))) continue;
+
+      const slug = eventSlugFor(c.label, c.startDate);
+      espnListedEvent.set(slug, c);
+
+      const espnId = refToId(c.event && c.event.$ref);
+      if (!espnId) continue;
+      let bouts;
+      try { bouts = await espnBoutsForEvent(espnId, cache); }
+      catch (err) { console.warn(`[espn-bouts] ${c.label}: competitions fetch failed (non-fatal): ${err.message}`); mintFailed.add(slug); continue; }
+      if (!bouts.length) { console.log(`[espn-bouts] ${c.label} (${String(c.startDate).slice(0, 10)}): Cito has no such event and ESPN lists no bouts — skipping.`); continue; }
+
+      let venue = null;
+      try {
+        const ev = await getJson(`${CORE}/leagues/ufc/events/${espnId}`);
+        venue = await getVenue(((ev.venues || [])[0] || {}).$ref, cache);
+      } catch (err) { /* venue is cosmetic */ }
+
+      const evt = buildEvent(espnId, c.label, c.startDate, venue);
+      bouts.forEach((b) => evt.bouts.push(buildBout(evt.slug, b)));
+      eventDoc.data.push(evt);
+      mintedThisRun.add(evt.slug);
+      injectedDoc.createdEvents[evt.slug] = { startsAt: c.startDate, label: c.label, event: evt };
+      createdEvents++; added += evt.bouts.length;
+      console.log(`[espn-bouts] ★ created event ${evt.slug} (${c.label}) with ${evt.bouts.length} bout(s) — Cito has not published it.`);
+      report.createdEvents.push({ slug: evt.slug, label: c.label, startsAt: c.startDate, bouts: evt.bouts.length });
+    }
+  }
+
+  // A minted event lives ONLY in our record — Cito's wholesale rewrite has no
+  // trace of it. So if ESPN is unreachable, or its competitions call fails, the
+  // whole card would silently disappear from the site. Replay it. But if ESPN is
+  // reachable and has genuinely dropped the event (postponed/cancelled), let it
+  // go rather than resurrecting it forever.
+  for (const slug of Object.keys(injectedDoc.createdEvents)) {
+    const rec = injectedDoc.createdEvents[slug];
+    if (mintedThisRun.has(slug)) continue;
+    if (eventDoc.data.some((e) => e.slug === slug || sameEvent(e, rec.label, rec.startsAt))) {
+      delete injectedDoc.createdEvents[slug];   // Cito published it; our copy is obsolete
+      console.log(`[espn-bouts] Cito now publishes ${slug} — dropping our minted copy.`);
+      continue;
+    }
+    if (!calendar || mintFailed.has(slug)) {
+      eventDoc.data.push(rec.event);
+      createdEvents++; added += (rec.event.bouts || []).length;
+      console.warn(`[espn-bouts] ${slug}: ESPN unavailable — replayed minted event so the card doesn't vanish.`);
+      report.keptLastGood.push({ event: slug, mintedEvent: true, why: 'ESPN unavailable' });
+    } else if (!espnListedEvent.has(slug)) {
+      delete injectedDoc.createdEvents[slug];
+      console.warn(`[espn-bouts] ✖ ${slug}: ESPN no longer lists this event — dropping our minted copy.`);
+    }
+  }
+  eventDoc.data.sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
 
   // Cito replaces event.json wholesale every run, so a bout we injected only
   // survives because we re-inject it. If ESPN is unreachable this run we would
@@ -467,8 +601,9 @@ async function main() {
     }
   };
 
-  for (const { e } of upcoming) {
+  for (const { e } of inHorizon()) {
     if (!calendar) { keepLastGood(e, 'ESPN scoreboard unreachable'); continue; }
+    if (e.dataSource === 'espn-reconcile') continue;   // just minted from ESPN; nothing to reconcile
     const day = String(e.startsAt).slice(0, 10);
     // "UFC Fight Night" is not a unique name — always log the date with it.
     const tag = `${e.title} (${day})`;
@@ -536,7 +671,7 @@ async function main() {
     skipped.forEach((s) => { console.warn(`[espn-bouts] ⚠ ${tag}: skipped [${s.bout}] — ${s.reason}`); report.skipped.push(Object.assign({ event: e.slug }, s)); });
   }
 
-  if (DRY) { console.log(`[espn-bouts] --dry: would inject ${added}, hide ${hidden}. Not writing.`); return; }
+  if (DRY) { console.log(`[espn-bouts] --dry: would create ${createdEvents} event(s), inject ${added} bout(s), hide ${hidden}. Not writing.`); return; }
 
   const dropped = pruneCache(cache);
   if (dropped) console.log(`[espn-bouts] pruned ${dropped} athlete(s) not seen on a card in ${ATHLETE_PRUNE_DAYS} days.`);
@@ -547,6 +682,10 @@ async function main() {
   for (const slug of Object.keys(injectedDoc.events)) {
     const age = daysSince(injectedDoc.events[slug].startsAt);
     if (age != null && age > PRUNE_AFTER_DAYS) delete injectedDoc.events[slug];
+  }
+  for (const slug of Object.keys(injectedDoc.createdEvents || {})) {
+    const age = daysSince(injectedDoc.createdEvents[slug].startsAt);
+    if (age != null && age > PRUNE_AFTER_DAYS) delete injectedDoc.createdEvents[slug];
   }
   fs.writeFileSync(INJECTED_PATH, JSON.stringify(injectedDoc, null, 2) + '\n');
 
@@ -564,13 +703,13 @@ async function main() {
   }
 
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + '\n');
-  if (added > 0 || hidden > 0) {
+  if (added > 0 || hidden > 0 || createdEvents > 0) {
     fs.writeFileSync(EVENT_PATH, JSON.stringify(eventDoc));  // compact, matching the feed
-    console.log(`[espn-bouts] injected ${added} bout(s), hid ${hidden} cancelled bout(s).`);
+    console.log(`[espn-bouts] created ${createdEvents} event(s), injected ${added} bout(s), hid ${hidden} cancelled bout(s).`);
   } else {
     console.log('[espn-bouts] card lists already agree — nothing to change.');
   }
 }
 
-module.exports = { normName, softName, deburr, pruneCache, decideCancellation, injuryFlaggedNames, applyCancellation, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
+module.exports = { normName, softName, deburr, pruneCache, decideCancellation, eventSlugFor, eventTitleFor, buildEvent, sameEvent, injuryFlaggedNames, applyCancellation, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
 if (require.main === module) main().catch((e) => { console.error('[espn-bouts] non-fatal error:', e.message); });

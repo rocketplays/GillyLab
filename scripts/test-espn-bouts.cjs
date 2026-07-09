@@ -230,5 +230,45 @@ console.log("\n=== sticky cancellation: news decays, the hide must not ===");
   ok("1 standing + 2 fresh hides all applied (cap counts fresh only)", r4.toCancel.length===3);
 }
 
+console.log("\n=== minting events Cito never published ===");
+{
+  // The slug must match Cito's convention exactly, or we mint a duplicate card
+  // when Cito catches up. Cito slugs by US-EASTERN date: a 2026-07-19T00:00Z
+  // start is 8pm ET on the 18th -> "...july-18-2026". These are the 8 real
+  // slugs from the live feed.
+  const real=[["UFC 329","2026-07-12T01:00:00.000Z","ufc-329"],
+    ["UFC Fight Night: Du Plessis vs. Usman","2026-07-19T00:00:00.000Z","ufc-fight-night-july-18-2026"],
+    ["UFC Fight Night: Ankalaev vs. Rountree","2026-07-25T16:00:00.000Z","ufc-fight-night-july-25-2026"],
+    ["UFC Fight Night: Medic vs. Rodriguez","2026-08-01T17:00:00.000Z","ufc-fight-night-august-01-2026"],
+    ["UFC 330: Makhachev vs. Machado Garry","2026-08-16T01:00:00.000Z","ufc-330"],
+    ["UFC Fight Night: Hernandez","2026-08-22T22:00:00.000Z","ufc-fight-night-august-22-2026"],
+    ["UFC Fight Night: Nurmagomedov vs. Song","2026-08-29T22:00:00.000Z","ufc-fight-night-august-29-2026"],
+    ["UFC Fight Night: Paris","2026-09-05T22:00:00.000Z","ufc-fight-night-september-05-2026"]];
+  ok("reproduces all 8 real Cito slugs", real.every(([l,d,w])=>m.eventSlugFor(l,d)===w));
+  ok("zero-pads the day", m.eventSlugFor("UFC Fight Night: Gamrot vs Salkilld","2026-08-08T21:00Z")==="ufc-fight-night-august-08-2026");
+  ok("title drops the headliner", m.eventTitleFor("UFC 330: Makhachev vs. Machado Garry")==="UFC 330");
+  ok("fight night title is bare", m.eventTitleFor("UFC Fight Night: Gamrot vs Salkilld")==="UFC Fight Night");
+
+  // sameEvent decides whether to mint. A false negative duplicates a card.
+  const cito=(t,d)=>({title:t,startsAt:d});
+  ok("numbered card matches by number, not date",
+     m.sameEvent(cito("UFC 330","2026-08-16T01:00:00.000Z"),"UFC 330: Makhachev vs. Machado Garry","2026-08-15T22:00Z"));
+  ok("numbered Cito card never matches an unnumbered ESPN card",
+     !m.sameEvent(cito("UFC 330","2026-08-16T01:00:00.000Z"),"UFC Fight Night: Whoever","2026-08-16T01:00Z"));
+  ok("fight night matches across the UTC midnight straddle",
+     m.sameEvent(cito("UFC Fight Night","2026-08-22T22:00:00.000Z"),"UFC Fight Night: Hernandez","2026-08-23T01:00Z"));
+  ok("distant fight nights do not match",
+     !m.sameEvent(cito("UFC Fight Night","2026-08-22T22:00:00.000Z"),"UFC Fight Night: Other","2026-08-29T22:00Z"));
+  ok("different UFC numbers do not match",
+     !m.sameEvent(cito("UFC 329","2026-07-12T01:00:00.000Z"),"UFC 330: Makhachev","2026-07-12T01:00Z"));
+
+  const e=m.buildEvent("600060621","UFC Fight Night: Gamrot vs Salkilld","2026-08-08T21:00Z",
+    {fullName:"Meta APEX",address:{city:"Las Vegas",state:"NV",country:"USA"}});
+  ok("Cito-shaped: slug/title/status", e.slug==="ufc-fight-night-august-08-2026" && e.title==="UFC Fight Night" && e.status==="scheduled");
+  ok("location fields the app reads", e.venue==="Meta APEX" && e.city==="Las Vegas NV");
+  ok("starts empty, tagged for audit", e.bouts.length===0 && e.dataSource==="espn-reconcile");
+  ok("survives a missing venue", m.buildEvent("1","UFC Fight Night","2026-08-08T21:00Z",null).venue===null);
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);
