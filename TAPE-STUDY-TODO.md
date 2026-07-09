@@ -3,9 +3,9 @@
 Generated 2026-07-09, revised 2026-07-09. Everything here needs a human decision;
 none of it was guessed at.
 
-**Open items are sections 2a, 4, and the three bullets in section 3.** Sections 1,
-1b, 1c, 2b/2c/2d are closed. One row is knowingly showing a wrong video by your
-decision (Dulatov, section 4).
+**Open items are section 4's Dulatov row and the bullets in section 3.** Sections
+1, 1b, 1c and all of section 2 are closed. One row is knowingly showing a wrong
+video by your decision (Dulatov, section 4).
 
 ---
 
@@ -123,25 +123,28 @@ Hall vs Silva*, on three fights from that card).
 
 ## 2. Batch 2 — links from `document.txt` that could not be placed
 
-**8 of 510 remain.** You resolved 11 of the original 19 on 2026-07-09; those are
-placed or deleted, per your calls, below.
+**0 of 510 remain — CLOSED.** 11 of the original 19 were resolved by your calls,
+and the last 8 went in once RJ Harris and Anna Melisano were added.
 
-### 2a. Fighter doesn't exist on the site (8 links) — STILL OPEN
+### 2a. CLOSED — both fighters added, all 8 links placed
 
-Neither name appears in `FIGHTERS` or `FIGHT_HISTORY`, so there is nowhere to
-attach the tape. Add the fighter first and these drop straight in.
+You added RJ Harris and Anna Melisano to the database on 2026-07-09; all eight
+links went straight in and every one renders.
 
-**RJ Harris**
-- vs Phillip Latu — `https://www.youtube.com/watch?v=_S8DCKXICHE`
-- vs Alex Marro — `https://www.youtube.com/watch?v=iKViS2-ebhg`
-- vs Austin Green — `https://www.youtube.com/watch?v=NmVDi_sQEqg`
-- vs Charlie Cleveland — `https://www.youtube.com/watch?v=xUax34bgFaI`
+RJ Harris's four YouTube videos were title-checked first — all four play and name
+both fighters ("RJ 'The Hammer' Harris Vs. Phillip 'The Doctor' Latu" from his own
+channel; "Austin 'The Bodyguard' Green vs. RJ 'The Hammer' Harris - FULL FIGHT"
+from Caged Thunder MMA). Melisano's four are Fight Pass ids: gated, so nothing to
+read, and left as supplied.
 
-**Anna Melisano**
-- vs Andrea Amaro — `https://ufcfightpass.com/video/901204`
-- vs Lydia Warren — `https://ufcfightpass.com/video/855716`
-- vs Blanca Medina — `https://ufcfightpass.com/video/757939`
-- vs Ana Martinez — `https://ufcfightpass.com/video/695542`
+Neither fighter has a UFC bout yet, so each entry opens with the `Pre-UFC`
+section marker on its newest row, matching John Garza and Magomed Tuchalov.
+
+Fights we still have no tape for: RJ Harris vs Quentin Campbell (Mar 2025), and
+Melisano vs Kendal Holowell, Miriam Nazar, Cheyanne Bowers. No rows were created
+for those — an empty row is indistinguishable from an uncatalogued fight.
+
+**All 510 links from `document.txt` are now resolved.**
 
 ### 2b, 2c, 2d — CLOSED
 
@@ -257,8 +260,8 @@ both fighters. The rest are opaque ids with nothing to compare. None looked wron
 
 ## Current state
 
-- `TAPE_STUDY`: **146 fighters, 1,621 rows**
-- Fight-history rows that resolve a video: **1,629**
+- `TAPE_STUDY`: **148 fighters, 1,629 rows**
+- Fight-history rows that resolve a video: **1,637**
 - Rows showing a video from the wrong fight: **1** — Dulatov, knowingly kept
   (was 17, plus 2 in 1c, plus Strickland/Du Plessis, plus Alvin Hines)
 - Rows pointing at a video that doesn't play: **0** among pre-existing UFC-card
