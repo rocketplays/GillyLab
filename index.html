@@ -2049,6 +2049,16 @@
     .sr-co-res { font-weight: 600; color: var(--text); }
     .sr-co-res.w { color: var(--accent); }
     .sr-co-res.l { color: #ff6a5e; }
+    /* Parlay builder instructions, above the fight selector. */
+    .pl-help { border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; background: rgba(0, 230, 104, 0.04); padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; }
+    .pl-help-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+    .pl-help-badge { font-size: 0.62rem; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; color: var(--accent); flex: 0 0 auto; }
+    .pl-help-lead { font-size: 0.78rem; color: var(--text); line-height: 1.5; }
+    .pl-help-rules { margin: 0.6rem 0 0; padding-left: 1.05rem; }
+    .pl-help-rules li { font-size: 0.74rem; color: var(--muted); line-height: 1.5; padding: 2px 0; }
+    .pl-help-rules li strong { color: var(--text); font-weight: 600; }
+    @media (max-width: 600px) { .pl-help { padding: 0.75rem 0.9rem; } .pl-help-lead { font-size: 0.74rem; } .pl-help-rules li { font-size: 0.7rem; } }
+
     /* Parlay calculator — clickable odds cells + fixed bottom bet slip. */
     /* The table's row-hover rule tints every cell in the row, which buried the
        per-cell pick highlight. Pick cells opt out of it and carry their own
@@ -102714,6 +102724,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = true; plBind(); plRender(); }
 
+  // Sits above the fight selector so the click-to-build behaviour is discoverable
+  // before the user starts poking at prices.
+  function plHelpHTML() {
+    return `<div class="pl-help">
+      <div class="pl-help-head">
+        <span class="pl-help-badge">Parlay builder</span>
+        <span class="pl-help-lead">Click any price — moneyline, rounds O/U, method, or round props — to add it to your slip. It appears at the bottom with the combined odds.</span>
+      </div>
+      <ul class="pl-help-rules">
+        <li><strong>One sportsbook per parlay.</strong> Legs can't cross books.</li>
+        <li><strong>One winner, method, or round pick per fight.</strong> Those legs are correlated, so multiplying them would misprice the parlay.</li>
+        <li><strong>Impossible and redundant combos are blocked.</strong> A round-1 finish can't pair with Over 2.5; a decision already guarantees Over 2.5.</li>
+        <li><strong>Same-fight legs that can both land are allowed</strong> — like Over 2.5 with a round-3 finish — but flagged as correlated, since a real book prices those as a same-game parlay.</li>
+      </ul>
+    </div>`;
+  }
+
   function buildMoneylineTable(fight) {
     const f1 = fight.home_team, f2 = fight.away_team;
     const books = fight.bookmakers || [];
@@ -102933,6 +102960,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>`;
     }).join('');
     return `<div class="odds-grid">
+      ${plHelpHTML()}
       <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:1.5rem;" id="fightSelectorBtns">${btns}</div>
       ${panels}
     </div>`;
