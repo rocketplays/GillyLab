@@ -104634,8 +104634,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         r1, r2,
         ini1: fighterInitials(red.fighterName),
         ini2: fighterInitials(blue.fighterName),
-        photo1: red.fighterSlug  ? './photos/thumb/' + red.fighterSlug  + '.png' : '',
-        photo2: blue.fighterSlug ? './photos/thumb/' + blue.fighterSlug + '.png' : '',
+        // Photos are filed under the CANONICAL name's slug, not the feed's. ESPN says
+        // 'zach-reese' and keeps generational suffixes ('khalil-rountree-jr'), while the
+        // library is 'zachary-reese' / 'khalil-rountree'. Using the feed slug left seven
+        // fighters showing initials on the card despite having a photo on disk.
+        photo1: redName  ? './photos/thumb/' + nameToSlug(redName)  + '.png' : '',
+        photo2: blueName ? './photos/thumb/' + nameToSlug(blueName) + '.png' : '',
         label, isMain, isMainCard,
         won1, won2, completed, isNC, isDraw,
         date: dateStr,
@@ -104935,6 +104939,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Bobby Green legally changed his name to "King Green" (2024); some feeds
     // (e.g. the UFC 328 card) slug him 'king-green', but the DB keeps "Bobby Green".
     'king-green': 'Bobby Green',
+    // ESPN shortens him to 'Zach Reese'; our DB (FIGHTERS, FIGHT_HISTORY,
+    // FIGHTER_STATS) keeps 'Zachary Reese'. Without this the events page linked
+    // to a hollow profile: no record, no history, no tape.
+    'zach-reese': 'Zachary Reese',
     // ufc.com's own athlete URL slugs him by his full legal name.
     'luis-dias-de-assis': 'Luis Felipe Dias',
     'yisak-lee': 'Yi Sak Lee',
@@ -104955,6 +104963,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Bobby "King" Green — feeds that list his post-2024 legal name (and the
     // slug-less Odds API) return "King Green"; map it to his DB profile.
     'king green': 'Bobby Green',
+    'zach reese': 'Zachary Reese',
     // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
     'yisak lee': 'Yi Sak Lee',
     // Active-roster spellings that differ from the DB profile (also mapped in
