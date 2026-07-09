@@ -270,5 +270,22 @@ console.log("\n=== minting events Cito never published ===");
   ok("survives a missing venue", m.buildEvent("1","UFC Fight Night","2026-08-08T21:00Z",null).venue===null);
 }
 
+console.log("\n=== event series: Road to UFC must not be mistaken for a Fight Night ===");
+{
+  // Cito's "Road to UFC Season 4 Semifinals" sits on 2026-08-22, the same day as
+  // ESPN's "UFC Fight Night: Hernandez vs Rodrigues". Matching unnumbered events
+  // on date alone equated them, so the reconciler thought the Fight Night already
+  // existed and refused to mint it. Found by shadow-testing against the live feed.
+  const road={title:"Road to UFC Season 4 Semifinals",startsAt:"2026-08-22T22:00:00.000Z"};
+  const fn={title:"UFC Fight Night",startsAt:"2026-08-22T22:00:00.000Z"};
+  ok("Road to UFC != same-day Fight Night", !m.sameEvent(road,"UFC Fight Night: Hernandez vs. Rodrigues","2026-08-23T01:00Z"));
+  ok("Fight Night still matches its own card", m.sameEvent(fn,"UFC Fight Night: Hernandez vs. Rodrigues","2026-08-23T01:00Z"));
+  ok("Road matches Road", m.sameEvent(road,"Road to UFC Season 4: Semifinals","2026-08-23T01:00Z"));
+  ok("numbered cards unaffected", m.sameEvent({title:"UFC 330",startsAt:"2026-08-16T01:00:00.000Z"},"UFC 330: Makhachev","2026-08-15T22:00Z"));
+  ok("series: road", m.seriesOf("Road to UFC Season 4")==="road");
+  ok("series: contender", m.seriesOf("Dana White's Contender Series 12")==="dwcs");
+  ok("series: plain ufc", m.seriesOf("UFC Fight Night: Whoever")==="ufc" && m.seriesOf("UFC 330")==="ufc");
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);

@@ -179,10 +179,25 @@ function buildEvent(espnId, label, startsAt, venue) {
   };
 }
 
+// Which UFC series is this? Road to UFC and Contender Series cards are often
+// scheduled on the same day as a numbered card or a Fight Night, so matching an
+// unnumbered event on date alone will happily equate "Road to UFC Season 4
+// Semifinals" with "UFC Fight Night: Hernandez vs Rodrigues". That false match
+// makes the reconciler believe the Fight Night already exists and refuse to
+// mint it.
+function seriesOf(title) {
+  const t = String(title || '').toLowerCase();
+  if (/road\s+to\s+(the\s+)?ufc/.test(t)) return 'road';
+  if (/contender\s+series|dana\s+white/.test(t)) return 'dwcs';
+  if (/ultimate\s+fighter|\btuf\b/.test(t)) return 'tuf';
+  return 'ufc';
+}
+
 // Pure: does this Cito event correspond to this ESPN calendar entry? Numbered
 // cards match on the number; otherwise on start time within a day and a half,
 // since the two feeds disagree about when a card that straddles midnight starts.
 function sameEvent(citoEvent, label, startDate) {
+  if (seriesOf(citoEvent.title) !== seriesOf(label)) return false;
   const num = /\bUFC\s+(\d{2,4})\b/i.exec(label || '');
   if (num) return new RegExp(`\\bUFC\\s+${num[1]}\\b`, 'i').test(citoEvent.title || '');
   const numCito = /\bUFC\s+(\d{2,4})\b/i.exec(citoEvent.title || '');
@@ -711,5 +726,5 @@ async function main() {
   }
 }
 
-module.exports = { normName, softName, deburr, pruneCache, decideCancellation, eventSlugFor, eventTitleFor, buildEvent, sameEvent, injuryFlaggedNames, applyCancellation, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
+module.exports = { normName, softName, deburr, pruneCache, decideCancellation, seriesOf, eventSlugFor, eventTitleFor, buildEvent, sameEvent, injuryFlaggedNames, applyCancellation, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
 if (require.main === module) main().catch((e) => { console.error('[espn-bouts] non-fatal error:', e.message); });
