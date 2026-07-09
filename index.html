@@ -2060,14 +2060,16 @@
     @media (max-width: 600px) { .pl-help { padding: 0.75rem 0.9rem; } .pl-help-lead { font-size: 0.74rem; } .pl-help-rules li { font-size: 0.7rem; } }
 
     /* Parlay calculator — clickable odds cells + fixed bottom bet slip. */
-    /* The table's row-hover rule tints every cell in the row, which buried the
-       per-cell pick highlight. Pick cells opt out of it and carry their own
-       hover/selected treatment (higher specificity than `tr:hover td`). */
+    /* Three layers, in ascending specificity so each always beats the one below:
+       (1) row hover tints the whole line neutrally, (2) the hovered price cell
+       gets a light accent wash, (3) a selected cell keeps its strong accent fill
+       + outline + check even while its row or itself is hovered. */
     .pl-pick { cursor: pointer; position: relative; transition: background 0.15s; }
-    .odds-table tr:hover td.pl-pick { background: transparent; }
-    .odds-table td.pl-pick:hover { background: rgba(0, 230, 104, 0.14); }
+    .odds-table td.pl-pick:hover,
+    .odds-table tr:hover td.pl-pick:hover { background: rgba(0, 230, 104, 0.16); }
     .odds-table td.pl-pick.sel,
-    .odds-table tr:hover td.pl-pick.sel { background: rgba(0, 230, 104, 0.22); box-shadow: inset 0 0 0 2px var(--accent); }
+    .odds-table tr:hover td.pl-pick.sel,
+    .odds-table tr:hover td.pl-pick.sel:hover { background: rgba(0, 230, 104, 0.26); box-shadow: inset 0 0 0 2px var(--accent); }
     .odds-table td.pl-pick.sel .odds-value { color: var(--accent) !important; font-weight: 800; }
     .odds-table td.pl-pick.sel::after { content: '✓'; position: absolute; top: 2px; right: 5px; font-size: 0.58rem; line-height: 1; color: var(--accent); }
     .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: none; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45); }
