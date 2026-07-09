@@ -2117,8 +2117,8 @@
     .pl-brand { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.82rem; color: var(--text); flex: 0 0 auto; }
     .pl-brand span { color: var(--accent); }
     .pl-card-meta { font-size: 0.63rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; text-align: right; flex: 1; min-width: 0; }
-    .pl-shot { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.28rem 0.5rem; border-radius: 5px; cursor: pointer; flex: 0 0 auto; }
-    .pl-shot:hover { color: var(--text); border-color: var(--accent); }
+    .pl-shot { background: rgba(0, 230, 104, 0.10); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-weight: 700; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.07em; padding: 0.3rem 0.6rem; border-radius: 5px; cursor: pointer; flex: 0 0 auto; }
+    .pl-shot:hover { background: var(--accent); color: #0e0f13; }
     .pl-card-legs { max-height: 32vh; overflow-y: auto; }
     .pl-card-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-card-leg:last-child { border-bottom: none; }
@@ -2137,7 +2137,14 @@
     .pl-share.open { display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
     .pl-share-inner { width: 100%; max-width: 460px; }
     .pl-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 0.9rem; }
-    .pl-share-hint { text-align: center; margin-top: 0.6rem; font-size: 0.66rem; color: var(--muted); }
+    .pl-share-hint { text-align: center; margin-top: 0.6rem; font-size: 0.66rem; color: var(--muted); line-height: 1.5; }
+    /* Share-sheet actions carry the site accent so they read as the primary move. */
+    .pl-act { background: rgba(0, 230, 104, 0.10); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.6rem 1.25rem; border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .pl-act:hover { background: var(--accent); color: #0e0f13; }
+    .pl-act.primary { background: var(--accent); color: #0e0f13; }
+    .pl-act.primary:hover { filter: brightness(1.08); }
+    .pl-act.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+    .pl-act.ghost:hover { background: transparent; border-color: #ff6a5e; color: #ff6a5e; }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -102764,9 +102771,159 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     try { document.execCommand('copy'); done(); } catch (e) { plToast("Couldn't copy — select the text manually."); }
     document.body.removeChild(ta);
   }
-  function plNativeShare() {
-    if (!navigator.share) { plCopyText(); return; }
-    navigator.share({ title: 'GillyLab parlay', text: plShareText() }).catch(() => {});
+  // ── Slip → PNG ────────────────────────────────────────────────────────────
+  // Drawn on a canvas rather than rasterising the DOM: the card is only text and
+  // rules, and html-to-canvas via <foreignObject> is unreliable in Safari — which
+  // is exactly the browser that matters for "save to camera roll".
+  function plFontsReady() { return (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve(); }
+  function plRoundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); return; }
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  function plWrap(ctx, text, maxW) {
+    const words = String(text).split(' '); const lines = []; let cur = '';
+    words.forEach(w => { const t = cur ? cur + ' ' + w : w; if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; } else cur = t; });
+    if (cur) lines.push(cur);
+    return lines;
+  }
+  // Single-line clamp with an ellipsis. Fighter names, event labels and pick
+  // descriptions are user/feed data of unbounded length — without this they
+  // happily run off the edge of the image.
+  function plClip(ctx, text, maxW) {
+    text = String(text);
+    if (maxW <= 0) return '';
+    if (ctx.measureText(text).width <= maxW) return text;
+    let lo = 0, hi = text.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1;
+      if (ctx.measureText(text.slice(0, mid) + '…').width <= maxW) lo = mid + 1; else hi = mid;
+    }
+    return text.slice(0, Math.max(1, lo - 1)) + '…';
+  }
+  function plDrawSlip() {
+    const S = Math.min(3, Math.max(2, Math.round(window.devicePixelRatio || 1) + 1));
+    const W = 560, PAD = 22;
+    const BG = '#14161b', BORDER = 'rgba(255,255,255,0.10)', DIV = 'rgba(255,255,255,0.08)';
+    const TXT = '#e8e8ea', MUT = '#8a8d94', ACC = '#00e668', AMB = '#ffcf7a', FTC = '#6f727a';
+    // Keep these stacks simple. ctx.font silently RETAINS its previous value if the
+    // string fails to parse, which would measure text at one size and draw it at
+    // another — wrapping and clamping then compute against the wrong metrics.
+    const SANS = "'Barlow', sans-serif";
+    const COND = "'Barlow Condensed', sans-serif";
+    const legs = PARLAY.legs, n = legs.length;
+    const dec = plDec(), am = plDecToAm(dec), stake = Math.max(0, Number(PARLAY.stake) || 0);
+    const prob = (100 / dec).toFixed(1);
+    const evLabel = ((document.getElementById('odds-event-label') || {}).textContent || 'UFC').trim();
+    const date = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const byFight = {}; legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
+    const sgpF = Object.keys(byFight).filter(k => byFight[k] > 1).map(k => (legs.find(l => l.fid === k) || {}).fight).filter(Boolean);
+    const warn = sgpF.length ? '⚠ Same-game parlay on ' + sgpF.join(', ') + ' — a moneyline and a rounds O/U on one fight are correlated, so the book will likely price these two at lower odds.' : '';
+
+    const cv = document.createElement('canvas'), ctx = cv.getContext('2d');
+    ctx.font = '400 12px ' + SANS;
+    const warnLines = warn ? plWrap(ctx, warn, W - 2 * PAD - 4) : [];
+    const HEAD = 32, LEGH = 48, TOTH = 62, FOOTH = 26, WARNLH = 16;
+    const warnH = warnLines.length ? warnLines.length * WARNLH + 12 : 0;
+    const H = PAD + HEAD + n * LEGH + warnH + TOTH + FOOTH + 8;
+
+    cv.width = Math.round(W * S); cv.height = Math.round(H * S);
+    ctx.scale(S, S);
+    plRoundRect(ctx, 0.5, 0.5, W - 1, H - 1, 12);
+    ctx.fillStyle = BG; ctx.fill(); ctx.strokeStyle = BORDER; ctx.lineWidth = 1; ctx.stroke();
+    const rule = (yy, col) => { ctx.strokeStyle = col; ctx.beginPath(); ctx.moveTo(PAD, yy + 0.5); ctx.lineTo(W - PAD, yy + 0.5); ctx.stroke(); };
+
+    let y = PAD;
+    ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+    ctx.font = '800 16px ' + COND; ctx.fillStyle = TXT; ctx.fillText('GILLY', PAD, y + 13);
+    const bw = ctx.measureText('GILLY').width;
+    ctx.fillStyle = ACC; ctx.fillText('LAB', PAD + bw, y + 13);
+    const brandW = bw + ctx.measureText('LAB').width;
+    ctx.font = '600 10px ' + SANS; ctx.fillStyle = MUT; ctx.textAlign = 'right';
+    ctx.fillText(plClip(ctx, (evLabel + ' · ' + legs[0].booklabel).toUpperCase(), W - 2 * PAD - brandW - 14), W - PAD, y + 12);
+    ctx.textAlign = 'left';
+    y += HEAD - 10; rule(y, DIV); y += 4;
+
+    legs.forEach((l, i) => {
+      const oddsTxt = (l.odds > 0 ? '+' : '') + l.odds;
+      ctx.font = '800 18px ' + COND;
+      const leftMax = W - 2 * PAD - ctx.measureText(oddsTxt).width - 16;
+      ctx.font = '600 10px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(plClip(ctx, String(l.fight || '').toUpperCase(), leftMax), PAD, y + 15);
+      ctx.font = '600 14px ' + SANS; ctx.fillStyle = TXT;
+      ctx.fillText(plClip(ctx, l.label, leftMax), PAD, y + 33);
+      ctx.font = '800 18px ' + COND; ctx.fillStyle = TXT; ctx.textAlign = 'right';
+      ctx.fillText(oddsTxt, W - PAD, y + 31);
+      ctx.textAlign = 'left';
+      y += LEGH;
+      if (i < n - 1) rule(y - 9, DIV);
+    });
+
+    if (warnLines.length) {
+      ctx.font = '400 12px ' + SANS; ctx.fillStyle = AMB;
+      warnLines.forEach(line => { y += WARNLH; ctx.fillText(line, PAD, y); });
+      y += 12;
+    }
+    rule(y, BORDER); y += 6;
+
+    ctx.font = '700 10px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText((n + '-LEG PARLAY'), PAD, y + 13);
+    ctx.font = '800 26px ' + COND; ctx.fillStyle = ACC;
+    ctx.fillText((am > 0 ? '+' : '') + am, PAD, y + 40);
+    ctx.textAlign = 'right';
+    ctx.font = '700 10px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText('STAKE ' + plMoney(stake), W - PAD, y + 13);
+    ctx.font = '800 19px ' + COND; ctx.fillStyle = ACC;
+    const rv = plMoney(stake * dec), rvw = ctx.measureText(rv).width;
+    ctx.fillText(rv, W - PAD, y + 40);
+    ctx.font = '400 12px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText('Returns', W - PAD - rvw - 7, y + 40);
+    ctx.textAlign = 'left';
+    y += TOTH - 8;
+
+    ctx.font = '400 10px ' + SANS; ctx.fillStyle = FTC;
+    ctx.fillText(plClip(ctx, 'gillylab.com · implied ' + prob + '% · ' + date + ' · odds subject to change', W - 2 * PAD), PAD, y + 10);
+    return cv;
+  }
+  function plSlipFile(cb) {
+    const cv = plDrawSlip();
+    if (!cv.toBlob) { plToast("This browser can't export the image."); return; }
+    cv.toBlob(b => {
+      if (!b) { plToast("Couldn't render the image."); return; }
+      cb(new File([b], 'gillylab-parlay.png', { type: 'image/png' }), b);
+    }, 'image/png');
+  }
+  // A web page can't write straight to the camera roll. On mobile the share sheet's
+  // "Save Image" does land in Photos, so route through it when files are shareable;
+  // otherwise fall back to a plain download.
+  function plSaveImage() {
+    if (!PARLAY.legs.length) return;
+    plFontsReady().then(() => plSlipFile((file, blob) => {
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: 'GillyLab parlay' }).catch(() => {});
+        return;
+      }
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'gillylab-parlay.png';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      plToast('Slip image saved.');
+    }));
+  }
+  function plShareSlip() {
+    if (!PARLAY.legs.length) return;
+    plFontsReady().then(() => plSlipFile(file => {
+      const text = plShareText();
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], text: text, title: 'GillyLab parlay' }).catch(() => {});
+      } else if (navigator.share) {
+        navigator.share({ text: text, title: 'GillyLab parlay' }).catch(() => {});
+      } else {
+        plCopyText();   // no share sheet — put the text on the clipboard instead
+      }
+    }));
   }
   function plShareOpen() {
     if (!PARLAY.legs.length) return;
@@ -102779,11 +102936,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     ov.innerHTML = `<div class="pl-share-inner">
       ${plCardHTML({ share: true })}
       <div class="pl-share-actions">
-        <button type="button" id="plShareCopy" class="pl-clear">Copy text</button>
-        ${navigator.share ? '<button type="button" id="plShareNative" class="pl-clear">Share…</button>' : ''}
-        <button type="button" id="plShareClose" class="pl-clear">Close</button>
+        <button type="button" id="plSaveImg" class="pl-act primary">Save</button>
+        <button type="button" id="plShareBtn" class="pl-act">Share</button>
+        <button type="button" id="plShareClose" class="pl-act ghost">Close</button>
       </div>
-      <div class="pl-share-hint">Screenshot the card above, or copy it as text.</div>
+      <div class="pl-share-hint">Save adds the image to your photos on mobile, or downloads it on desktop. Share opens your device's share sheet.</div>
     </div>`;
     ov.classList.add('open');
     if (typeof lockPageScroll === 'function') lockPageScroll();
@@ -102917,8 +103074,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       const bo = hit(e, '.pl-book-opt'); if (bo) { plSwitchBook(bo.dataset.book); return; }
       if (hit(e, '#plShareOpen')) { plShareOpen(); return; }
-      if (hit(e, '#plShareCopy')) { plCopyText(); return; }
-      if (hit(e, '#plShareNative')) { plNativeShare(); return; }
+      if (hit(e, '#plSaveImg')) { plSaveImage(); return; }
+      if (hit(e, '#plShareBtn')) { plShareSlip(); return; }
       // Close on the Close button or a click on the backdrop itself.
       if (hit(e, '#plShareClose') || (e.target && e.target.id === 'plShare')) { plShareClose(); return; }
       if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
