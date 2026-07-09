@@ -122,6 +122,21 @@ function eventStatusOf(bouts, startsAt, now) {
   return isFinite(started) && started < now ? 'completed' : 'scheduled';
 }
 
+// "Las Vegas, NV" / "Paris, France" -- not "Las Vegas NV". ESPN gives city, state
+// and country separately. US venues read naturally with the state; everywhere
+// else the country is what a reader wants (nobody writes "Toronto, ON"), so the
+// state is dropped abroad rather than stacking three parts.
+function cityLabel(addr) {
+  addr = addr || {};
+  const city = String(addr.city || '').trim();
+  const state = String(addr.state || '').trim();
+  const country = String(addr.country || '').trim();
+  const isUS = /^(usa|us|united states)$/i.test(country);
+  const tail = isUS ? state : (country || state);
+  if (!city) return tail || null;
+  return tail ? city + ', ' + tail : city;
+}
+
 function parseRecordText(t) {
   const m = String(t || '').match(/(\d+)-(\d+)-(\d+)/);
   if (!m) return { wins: 0, losses: 0, draws: 0, noContest: 0, text: t || '' };
@@ -288,7 +303,7 @@ async function buildEventFull(espnId, cache) {
   });
 
   const addr = (venue && venue.address) || {};
-  const city = [addr.city, addr.state || addr.country].filter(Boolean).join(' ') || null;
+  const city = cityLabel(addr);
   return {
     id: 'espn-' + espnId, slug,
     title: B.eventTitleFor(label), shortTitle: B.eventTitleFor(label),
@@ -367,5 +382,5 @@ async function main() {
   console.log(`[espn-events] wrote ${OUT_DIR}/event.json + event-recent.json`);
 }
 
-module.exports = { methodOf, resultTimeOf, boutStatusOf, eventStatusOf, outcomeFor, parseRecordText, buildEventFull, fixRef };
+module.exports = { methodOf, resultTimeOf, boutStatusOf, eventStatusOf, outcomeFor, cityLabel, parseRecordText, buildEventFull, fixRef };
 if (require.main === module) main().catch((e) => { console.error('[espn-events] fatal:', e.message); process.exit(1); });

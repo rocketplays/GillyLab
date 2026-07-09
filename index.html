@@ -103787,6 +103787,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!str) return str;
     for (const country of KNOWN_COUNTRY_NAMES) {
       if (str === country) return str;
+      // Already punctuated -- the ESPN feed emits "Paris, France" directly. Without
+      // this, the ' ' + country test below also matched ", France" and produced
+      // "Paris,, France".
+      if (str.endsWith(', ' + country)) return str;
       const suffix = ' ' + country;
       if (str.endsWith(suffix)) {
         const place = str.slice(0, -suffix.length).trim();

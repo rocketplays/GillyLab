@@ -265,7 +265,7 @@ console.log("\n=== minting events Cito never published ===");
   const e=m.buildEvent("600060621","UFC Fight Night: Gamrot vs Salkilld","2026-08-08T21:00Z",
     {fullName:"Meta APEX",address:{city:"Las Vegas",state:"NV",country:"USA"}});
   ok("Cito-shaped: slug/title/status", e.slug==="ufc-fight-night-august-08-2026" && e.title==="UFC Fight Night" && e.status==="scheduled");
-  ok("location fields the app reads", e.venue==="Meta APEX" && e.city==="Las Vegas NV");
+  ok("location fields the app reads, properly punctuated", e.venue==="Meta APEX" && e.city==="Las Vegas, NV");
   ok("starts empty, tagged for audit", e.bouts.length===0 && e.dataSource==="espn-reconcile");
   ok("survives a missing venue", m.buildEvent("1","UFC Fight Night","2026-08-08T21:00Z",null).venue===null);
 }
@@ -329,6 +329,19 @@ console.log("\n=== ESPN feed builder (fetch-espn-events) ===");
   }
 
   ok("rewrites ESPN's internal .pvt host", E.fixRef("http://sports.core.api.espn.pvt/v2/x")==="https://sports.core.api.espn.com/v2/x");
+
+  // "Las Vegas, NV" -- not "Las Vegas NV". US venues read with the state; abroad
+  // the country is what a reader wants, so a province is dropped rather than
+  // stacking three parts ("Toronto, ON, Canada").
+  ok("US venue takes the state", E.cityLabel({city:"Las Vegas",state:"NV",country:"USA"})==="Las Vegas, NV");
+  ok("Washington DC", E.cityLabel({city:"Washington",state:"DC",country:"USA"})==="Washington, DC");
+  ok("abroad takes the country", E.cityLabel({city:"Paris",state:"",country:"France"})==="Paris, France");
+  ok("abroad drops the province", E.cityLabel({city:"Toronto",state:"ON",country:"Canada"})==="Toronto, Canada");
+  ok("US with no state", E.cityLabel({city:"Las Vegas",country:"USA"})==="Las Vegas");
+  ok("no city -> tail only", E.cityLabel({country:"China"})==="China");
+  ok("empty -> null", E.cityLabel({})===null);
+  ok("null-safe", E.cityLabel(null)===null);
+
 }
 
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));

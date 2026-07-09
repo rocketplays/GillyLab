@@ -171,7 +171,9 @@ function buildEvent(espnId, label, startsAt, venue) {
   const slug = eventSlugFor(label, startsAt);
   const title = eventTitleFor(label);
   const addr = (venue && venue.address) || {};
-  const city = [addr.city, addr.state || addr.country].filter(Boolean).join(' ') || null;
+  const isUS = /^(usa|us|united states)$/i.test(String(addr.country || ''));
+  const tail = isUS ? (addr.state || '') : (addr.country || addr.state || '');
+  const city = [addr.city, tail].filter(Boolean).join(', ') || null;
   const venueName = (venue && venue.fullName) || null;
   const now = new Date().toISOString();
   return {
