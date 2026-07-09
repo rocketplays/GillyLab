@@ -6,7 +6,7 @@
  * slides from it, so the landing stays current without hand-edits.
  *
  * Sources (the same ones the app uses):
- *   - public/data/rankings.json  → official UFC media-panel division rankings
+ *   - data/rankings.json  → official UFC media-panel division rankings
  *   - index.html  → FIGHTERS records + the ROSTER_CHANGES weekly snapshot
  *
  * Safe by design: if either section can't be parsed, the existing
@@ -119,7 +119,14 @@ function nameToSlug(name) {
     .replace(/['’]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
-const photoExists = (slug) => !!slug && fs.existsSync(path.join(ROOT, 'public/photos/thumb', slug + '.png'));
+// public/photos/thumb is produced by the build, which runs AFTER this script, so
+// on a fresh CI checkout it is empty and every slug would resolve to '' -- the
+// landing page would silently lose its photos. data/photos holds the sources the
+// build resizes (and the workflow's photo step has already refreshed them by now),
+// so accept either.
+const photoExists = (slug) => !!slug && (
+  fs.existsSync(path.join(ROOT, 'public/photos/thumb', slug + '.png')) ||
+  fs.existsSync(path.join(ROOT, 'data/photos', slug + '.png')));
 const initials2 = (name) => { const p = String(name).trim().split(/\s+/); return (((p[0] || '')[0] || '') + ((p[p.length - 1] || '')[0] || '')).toUpperCase(); };
 const toProb = (o) => o < 0 ? (-o) / ((-o) + 100) : 100 / (o + 100);
 const toAmerican = (p) => p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p);
@@ -157,7 +164,16 @@ function buildOddsHistory() {
 
 function main() {
   const recMap = recordMap();
-  const rk = JSON.parse(fs.readFileSync(path.join(ROOT, 'public/data/rankings.json'), 'utf8')).data;
+  // public/ is assembled by build-site.sh, which runs at DEPLOY time -- after
+  // this script. On a fresh CI checkout it does not exist, so reading from it
+  // threw ENOENT straight into the step's `|| true` and the snapshot silently
+  // never regenerated (worker/landing-data.js sat 5 days stale). data/rankings.json
+  // is the tracked source build-site.sh copies from; prefer it, and fall back to
+  // the built copy for anyone running this after a local build.
+  const rkPath = [path.join(ROOT, 'data/rankings.json'), path.join(ROOT, 'public/data/rankings.json')]
+    .find((p) => fs.existsSync(p));
+  if (!rkPath) throw new Error('rankings.json not found in data/ or public/data/');
+  const rk = JSON.parse(fs.readFileSync(rkPath, 'utf8')).data;
   let rankings = null, roster = null, featured = null, oddsHistory = null;
   try { rankings = buildRankings(rk, recMap); } catch (e) { console.error('rankings parse failed:', e.message); }
   try { roster = buildRoster(); } catch (e) { console.error('roster parse failed:', e.message); }
