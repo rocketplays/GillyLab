@@ -2057,7 +2057,8 @@
     .pl-help-rules { margin: 0.6rem 0 0; padding-left: 1.05rem; }
     .pl-help-rules li { font-size: 0.74rem; color: var(--muted); line-height: 1.5; padding: 2px 0; }
     .pl-help-rules li strong { color: var(--text); font-weight: 600; }
-    @media (max-width: 600px) { .pl-help { padding: 0.75rem 0.9rem; } .pl-help-lead { font-size: 0.74rem; } .pl-help-rules li { font-size: 0.7rem; } }
+    .pl-help-note { margin-top: 0.6rem; padding-top: 0.55rem; border-top: 1px solid var(--border); font-size: 0.68rem; color: var(--muted); font-style: italic; line-height: 1.5; }
+    @media (max-width: 600px) { .pl-help { padding: 0.75rem 0.9rem; } .pl-help-lead { font-size: 0.74rem; } .pl-help-rules li { font-size: 0.7rem; } .pl-help-note { font-size: 0.65rem; } }
 
     /* Parlay calculator — clickable odds cells + fixed bottom bet slip. */
     /* Three layers, in ascending specificity so each always beats the one below:
@@ -102699,6 +102700,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <li><strong>One pick per fight.</strong> Any two legs on the same fight are correlated — a fighter's moneyline and their method, or Over 2.5 and a round-3 finish — and multiplying correlated prices misprices the parlay. Books quote those as a same-game parlay off a joint model that can't be recovered from the listed odds.</li>
         <li><strong>Legs on different fights multiply cleanly</strong>, since those outcomes are independent of each other. That's the price shown in the slip.</li>
       </ul>
+      <div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>
     </div>`;
   }
 
