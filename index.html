@@ -102596,7 +102596,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     return { ok: true };
   }
-  function plLegKey(l) { return [l.fid, l.mkt, l.side || '', l.method || '', l.round || '', l.ou || '', l.line || ''].join('~'); }
+  // Must include the book — otherwise every sportsbook's cell for the same
+  // fight/market/side shares a key and plRender() lights up the whole column.
+  function plLegKey(l) { return [l.fid, l.book, l.mkt, l.side || '', l.method || '', l.round || '', l.ou || '', l.line || ''].join('~'); }
   function plFightId(fight) { return pairKey(fight.home_team, fight.away_team); }
   function plCell(meta, odds) {
     if (odds === null || odds === undefined) return `<td>${fmtOdds(odds)}</td>`;
@@ -102698,7 +102700,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       <ul class="pl-help-rules">
         <li><strong>One sportsbook per parlay.</strong> Legs can't cross books.</li>
         <li><strong>One pick per fight.</strong> Any two legs on the same fight are correlated — a fighter's moneyline and their method, or Over 2.5 and a round-3 finish — and multiplying correlated prices misprices the parlay. Books quote those as a same-game parlay off a joint model that can't be recovered from the listed odds.</li>
-        <li><strong>Legs on different fights multiply cleanly</strong>, since those outcomes are independent of each other. That's the price shown in the slip.</li>
       </ul>
       <div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>
     </div>`;
