@@ -107025,6 +107025,72 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }, { passive: true });
   })();
 
+  // ── Live card auto-refresh ───────────────────────────────────────────────────
+  // data/event.json is bundled into the Worker at deploy time and served no-store,
+  // so a visitor who opened the page before the prelims would sit on a stale card
+  // all night. While the featured event is inside its live window, re-fetch and
+  // re-render in place. The server-side poller (scripts/fetch-espn-live.cjs) is
+  // what actually patches the file; this just picks the changes up.
+  //
+  // Deliberately quiet: nothing happens outside a live card, nothing happens on a
+  // hidden tab, and a re-render only fires when a RESULT actually changed -- not
+  // on every poll, which would restart the card's swap animation every minute.
+  const GL_LIVE_POLL_MS = 60000;
+  const GL_LIVE_LEAD_IN_MS = 30 * 60 * 1000;
+  const GL_LIVE_WINDOW_MS = 10 * 3600 * 1000;   // matches pickFeaturedRawEvent's CARD_RUNTIME_MS
+
+  function glInLiveWindow(rawEvt, now) {
+    if (!rawEvt) return false;
+    now = now || Date.now();
+    const open = Date.parse(rawEvt.prelimsStartsAt || rawEvt.startsAt);
+    const shut = Date.parse(rawEvt.startsAt) + GL_LIVE_WINDOW_MS;
+    if (!isFinite(open) || !isFinite(shut)) return false;
+    return now >= open - GL_LIVE_LEAD_IN_MS && now <= shut;
+  }
+
+  // Only the fields a finished bout changes. Anything else in the feed moving
+  // (timestamps, sync markers) must not trigger a re-render.
+  function glResultSignature(rawEvt) {
+    return ((rawEvt && rawEvt.bouts) || [])
+      .map(b => [b.status, b.winnerFighterSlug || '', b.method || '', b.resultRound || '', b.resultTime || ''].join('|'))
+      .join(';');
+  }
+
+  function glStartLiveRefresh(initialRaw) {
+    if (!glInLiveWindow(initialRaw)) return;
+    let signature = glResultSignature(initialRaw);
+    let timer = null;
+
+    const stop = () => { if (timer) { clearInterval(timer); timer = null; } };
+
+    const tick = async () => {
+      if (document.hidden || window.__GL_VIEWING_PAST) return;   // don't fight the past-event view
+      let data;
+      try {
+        const r = await fetch('./data/event.json', { cache: 'no-store' });
+        if (!r.ok) return;
+        data = await r.json();
+      } catch (e) { return; }                                    // transient; try again next minute
+      if (!data || !data.data || !data.data.length) return;
+
+      const raw = pickFeaturedRawEvent(data);
+      if (!glInLiveWindow(raw)) { stop(); return; }               // card is over
+
+      const sig = glResultSignature(raw);
+      if (sig === signature) return;
+      signature = sig;
+
+      try { buildUpcomingOpponentIndex(data); } catch (e) { /* non-fatal */ }
+      glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
+      if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 100);
+    };
+
+    timer = setInterval(tick, GL_LIVE_POLL_MS);
+    // Someone returning to the tab between fights should see the card immediately.
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+  }
+
+
   async function initDynamicPages() {
     let evt = null;
     let apiData = null;
@@ -107051,6 +107117,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (apiData && apiData.data && apiData.data.length) buildUpcomingOpponentIndex(apiData);
       if (apiData && apiData.data && apiData.data.length) renderCarousel(apiData, featuredRaw);
       renderHomeFightCard(evt);
+      glStartLiveRefresh(featuredRaw);   // no-op unless a card is live right now
       if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 100);
       if (apiData && apiData.data && apiData.data.length) setupPrevEventsDropdown(apiData, featuredRaw);
       renderProjectionsPage(evt);

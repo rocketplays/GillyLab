@@ -1,0 +1,131 @@
+name: Live results during a card
+
+# ESPN publishes a per-bout status with a live period/clock, so results land the
+# moment a fight ends. GitHub's scheduler is the weak link: the docs warn that
+# `schedule` "can be delayed during periods of high loads" and that "some queued
+# jobs may be dropped". A pure */10 cron would therefore give 10-30 minute
+# latency mid-card, with occasional gaps.
+#
+# So: a cheap cron tick wakes up, and if a card is actually live it stays awake
+# and polls every 2 minutes itself. The cron is only a kickstarter, the loop does
+# the real work, and the whole thing costs ~30 seconds on the ~99% of ticks that
+# find nothing on.
+#
+# Windows are UTC. Saturday 06:00-23:59 covers everything from an early Shanghai
+# card (prelims 07:00Z) to a Vegas main card (01:00Z Sunday); Sunday 00:00-09:00
+# carries that Vegas card to its end.
+on:
+  schedule:
+    - cron: '*/10 6-23 * * 6'   # Saturday, all day UTC
+    - cron: '*/10 0-9 * * 0'    # Sunday morning UTC — the tail of a US Saturday card
+  workflow_dispatch:
+    inputs:
+      event:
+        description: 'Force a specific event slug (testing)'
+        required: false
+
+# Never run two pollers at once. cancel-in-progress:false means a tick that
+# arrives mid-card queues instead of killing the live poller; GitHub keeps at
+# most one pending run per group, so ticks cannot pile up.
+concurrency:
+  group: gillylab-live-results
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350          # under the 6h hard cap on a job
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0        # the poller rebases onto origin/main; a shallow clone can't
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Bail in seconds on the overwhelming majority of ticks. Only if a card is
+      # inside its window do we pay for anything else.
+      - name: Is a card live?
+        id: probe
+        run: |
+          node scripts/fetch-espn-live.cjs --dry ${{ inputs.event && format('--event {0}', inputs.event) || '' }} | tee /tmp/probe.txt
+          if grep -q 'no card in its live window' /tmp/probe.txt; then
+            echo "live=false" >> $GITHUB_OUTPUT
+          else
+            echo "live=true" >> $GITHUB_OUTPUT
+          fi
+
+      # npm ci, not npm install: install can rewrite package-lock.json, which would
+      # then be swept into the results commit.
+      - name: Install deps (only when a card is live)
+        if: steps.probe.outputs.live == 'true'
+        run: npm ci
+
+      - name: Poll ESPN every 2 minutes until the card ends
+        if: steps.probe.outputs.live == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          set -uo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          DEADLINE=$(( $(date +%s) + 20400 ))   # 5h40m, inside the job timeout
+          POLL=120
+          POLLS=0
+          DEPLOYS=0
+          IDLE=0                                # consecutive no-change polls after the last fight
+
+          while [ "$(date +%s)" -lt "$DEADLINE" ]; do
+            POLLS=$((POLLS+1))
+            OUT=$(node scripts/fetch-espn-live.cjs ${{ inputs.event && format('--event {0}', inputs.event) || '' }} 2>&1) || true
+            echo "$OUT"
+
+            if echo "$OUT" | grep -q 'no card in its live window'; then
+              echo "::notice::card is over — polled ${POLLS}x, deployed ${DEPLOYS}x"
+              break
+            fi
+
+            # The card holds the featured slot for 10h, but once every bout is
+            # decided there is nothing left to fetch. Give it 5 quiet polls
+            # (~10 min) in case ESPN back-fills a method, then stop.
+            if echo "$OUT" | grep -q '^allDecided=true' && echo "$OUT" | grep -q '^changed=false'; then
+              IDLE=$((IDLE+1))
+              if [ "$IDLE" -ge 5 ]; then
+                echo "::notice::every bout decided and quiet — polled ${POLLS}x, deployed ${DEPLOYS}x"
+                break
+              fi
+            else
+              IDLE=0
+            fi
+
+            if echo "$OUT" | grep -q '^changed=true'; then
+              # Another workflow (the twice-daily rebuild) may have pushed since we
+              # checked out. Rebase onto it; our patch is idempotent, so if the
+              # rebase is hopeless we can safely reset and re-derive next poll.
+              git add data/event.json      # the live patcher touches nothing else
+              if git diff --staged --quiet; then
+                echo "nothing staged, odd — skipping"
+              else
+                git commit -m "live: results update $(date -u '+%Y-%m-%d %H:%M UTC')"
+                if ! git push; then
+                  echo "push rejected — rebasing onto origin/main"
+                  git fetch origin main
+                  git rebase origin/main || { git rebase --abort; git reset --hard origin/main; }
+                  git push || { echo "::warning::push still failing; will re-derive next poll"; git reset --hard origin/main; }
+                fi
+                # The Worker serves data/ from the bundle, so results only reach
+                # visitors after a redeploy. Deploy only when something changed.
+                if npm run deploy; then DEPLOYS=$((DEPLOYS+1)); else echo "::warning::deploy failed; next change will retry"; fi
+              fi
+            fi
+
+            sleep "$POLL"
+          done
+
+          echo "::notice::poller exiting after ${POLLS} polls, ${DEPLOYS} deploys"

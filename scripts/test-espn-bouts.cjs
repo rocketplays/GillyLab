@@ -344,5 +344,54 @@ console.log("\n=== ESPN feed builder (fetch-espn-events) ===");
 
 }
 
+console.log("\n=== live result patcher (fetch-espn-live) ===");
+{
+  const L = require("./fetch-espn-live.cjs");
+  const H = 3600e3;
+  const evt = (o) => Object.assign({ status: "scheduled", prelimsStartsAt: "2026-07-11T21:00:00Z", startsAt: "2026-07-12T01:00:00Z" }, o);
+  const at = (s) => Date.parse(s);
+
+  // The poller must be dormant almost all the time; a cheap `null` here is what
+  // keeps the cron tick to ~30 seconds on the ~99% of ticks with nothing on.
+  ok("dormant on a Wednesday", L.pickLiveEvent([evt({})], at("2026-07-08T12:00:00Z")) === null);
+  ok("dormant an hour before doors", L.pickLiveEvent([evt({})], at("2026-07-11T20:00:00Z")) === null);
+  ok("awake 30m before the first walkout", !!L.pickLiveEvent([evt({})], at("2026-07-11T20:31:00Z")));
+  ok("awake during the main event", !!L.pickLiveEvent([evt({})], at("2026-07-12T04:30:00Z")));
+  ok("awake through the aftermath (+10h)", !!L.pickLiveEvent([evt({})], at("2026-07-12T10:59:00Z")));
+  ok("dormant once the featured window shuts", L.pickLiveEvent([evt({})], at("2026-07-12T11:01:00Z")) === null);
+  ok("never polls a completed card", L.pickLiveEvent([evt({ status: "completed" })], at("2026-07-12T04:30:00Z")) === null);
+  ok("picks the earliest of two live cards",
+     L.pickLiveEvent([evt({ slug: "late", startsAt: "2026-07-12T03:00:00Z" }), evt({ slug: "early" })], at("2026-07-12T02:00:00Z")).slug === "early");
+
+  const bout = () => ({ status: "confirmed", winnerFighterSlug: null, resultRound: 0, resultTime: null, method: null, methodDetails: null,
+    dataAvailability: { result: "pending" },
+    fighters: [{ fighterSlug: "a", fighterName: "A Fighter", outcome: null }, { fighterSlug: "b", fighterName: "B Fighter", outcome: null }] });
+  const finished = { winnerSlug: "a", status: { type: { completed: true, state: "post" }, period: 2, displayClock: "3:14", result: { displayName: "Submission", description: "Rear Naked Choke" } } };
+
+  const b1 = bout();
+  const ch = L.applyResult(b1, finished);
+  ok("applies winner/method/detail/round/time", b1.winnerFighterSlug === "a" && b1.method === "Submission" && b1.methodDetails === "Rear Naked Choke" && b1.resultRound === 2 && b1.resultTime === "3:14");
+  ok("sets both corners", b1.fighters[0].outcome === "win" && b1.fighters[1].outcome === "loss");
+  ok("bout marked completed", b1.status === "completed" && b1.dataAvailability.result === "available");
+  ok("reports what changed", ch.length > 0);
+  ok("idempotent: a second identical poll writes nothing", L.applyResult(b1, finished).length === 0);
+
+  // The rule that matters most during a live card.
+  const blip = { winnerSlug: null, status: { type: { completed: false, state: "pre" } } };
+  const before = JSON.stringify(b1);
+  ok("a decided bout is never un-decided by an ESPN blip", L.applyResult(b1, blip).length === 0 && JSON.stringify(b1) === before);
+
+  // An in-progress bout gets a status but no result.
+  const b2 = bout();
+  L.applyResult(b2, { winnerSlug: null, status: { type: { completed: false, state: "in" }, period: 1, displayClock: "2:00" } });
+  ok("a bout underway is 'live', not decided", b2.status === "live" && !b2.winnerFighterSlug && b2.method === null);
+
+  // 'completed' is what evicts an event from event.json, so it must wait.
+  const done = [{ status: "completed" }, { status: "completed" }];
+  ok("card stays live while it owns the featured slot", L.liveEventStatus(done, "2026-07-12T01:00:00Z", at("2026-07-12T05:00:00Z")) === "live");
+  ok("card completes once the window shuts", L.liveEventStatus(done, "2026-07-12T01:00:00Z", at("2026-07-12T11:30:00Z")) === "completed");
+  ok("a card with one bout in progress is live", L.liveEventStatus([{ status: "completed" }, { status: "live" }], "2026-07-12T01:00:00Z", at("2026-07-12T03:00:00Z")) === "live");
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);
