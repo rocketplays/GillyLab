@@ -42,6 +42,21 @@ const OUTLET_OK = /ufc\.com|mma\s?junkie|mma\s?fighting|mma\s?mania|bloody\s?elb
 // or "replaces at the top of the rankings"). Requires specific phrasing.
 const INJURY_RE = /\binjur(?:y|ed|ies)\b|\bwithdraw|pull(?:ed|s)?\s+out\b|\bforced out\b|out of the (?:fight|card|bout|event)\b|off the card\b|miss(?:es|ed)?\s+weight\b|fail(?:s|ed)?\s+to make weight\b|\boverweight\b|short.?notice\b|late replacement\b|replacement (?:opponent|fighter)\b|steps? in\b|\bnew\b[^.]{0,15}?\bopponent\b|opponent change\b|\btorn\b|fractur|hospitaliz/i;
 
+// INJURY_RE matches the bare word "injury", so it also fires on retrospectives
+// about long-past bouts — e.g. "Conor McGregor's coach takes the blame for toe
+// injury that canceled UFC 303 comeback". That's history, not a card change.
+//
+// Guard: if a headline names UFC events and NONE of them are cards we're
+// currently tracking, treat it as historical. A headline that names no event at
+// all ("...detrimental injury forced him off McGregor's return card") is
+// unaffected, and one naming both a past and an upcoming card still flags.
+function refersToPastEvent(title, eventNums) {
+  if (!eventNums || !eventNums.size) return false;
+  const found = String(title || '').match(/\bUFC\s+\d{2,4}\b/gi) || [];
+  if (!found.length) return false;
+  return !found.some(f => eventNums.has(f.replace(/\D+/g, '')));
+}
+
 function norm(s) {
   return String(s == null ? '' : s).toLowerCase().normalize('NFD')
     .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
@@ -69,7 +84,7 @@ function parseItems(xml) {
 }
 
 // --- pure: curate a fighter's items (whitelist + recency + dedupe + cap) ---
-function curate(items, now) {
+function curate(items, now, eventNums) {
   now = now || Date.now();
   const seen = new Set();
   const out = [];
@@ -83,7 +98,7 @@ function curate(items, now) {
     out.push({
       title: it.title, url: it.url, source: it.source,
       date: isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : null,
-      injury: INJURY_RE.test(it.title)
+      injury: INJURY_RE.test(it.title) && !refersToPastEvent(it.title, eventNums)
     });
     if (out.length >= PER_FIGHTER) break;
   }
@@ -115,7 +130,10 @@ function upcomingCardFighters() {
     .sort((a, b) => a.start - b.start)
     .slice(0, MAX_CARDS);
   const names = new Map(); // norm -> display name
+  const eventNums = new Set(); // "329", "330" — the cards we're actually tracking
   for (const { ev } of upcoming) {
+    const m = /\bUFC\s+(\d{2,4})\b/i.exec(ev.title || ev.shortTitle || '');
+    if (m) eventNums.add(m[1]);
     for (const b of ev.bouts || []) {
       if (b.isCancelled) continue;
       for (const f of b.fighters || []) {
@@ -123,12 +141,12 @@ function upcomingCardFighters() {
       }
     }
   }
-  return [...names.values()];
+  return { names: [...names.values()], eventNums: eventNums };
 }
 
 async function main() {
-  let fighters;
-  try { fighters = upcomingCardFighters(); }
+  let fighters, eventNums;
+  try { const u = upcomingCardFighters(); fighters = u.names; eventNums = u.eventNums; }
   catch (e) { console.error('cannot read event.json:', e.message); return; }
   if (!fighters.length) { console.log('no fighters on cards within horizon; nothing to do.'); return; }
 
@@ -141,7 +159,7 @@ async function main() {
     const key = norm(name);
     try {
       const xml = await fetchFeed(name);
-      const items = curate(parseItems(xml), now);
+      const items = curate(parseItems(xml), now, eventNums);
       if (items.length) {
         result.fighters[key] = { name, hasInjuryNews: items.some(i => i.injury), items };
         ok++; kept += items.length; injuries += items.filter(i => i.injury).length;
@@ -157,5 +175,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE };
+module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters };
 if (require.main === module) main();
