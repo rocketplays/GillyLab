@@ -69,9 +69,10 @@ several bouts from one night (e.g. `ufcfightpass.com/video/206203` =
 
 ## 2. Batch 2 — links from `document.txt` that could not be placed
 
-19 of 510. Everything else is live.
+**8 of 510 remain.** You resolved 11 of the original 19 on 2026-07-09; those are
+placed or deleted, per your calls, below.
 
-### 2a. Fighter doesn't exist on the site (8 links)
+### 2a. Fighter doesn't exist on the site (8 links) — STILL OPEN
 
 Neither name appears in `FIGHTERS` or `FIGHT_HISTORY`, so there is nowhere to
 attach the tape. Add the fighter first and these drop straight in.
@@ -88,47 +89,41 @@ attach the tape. Add the fighter first and these drop straight in.
 - vs Blanca Medina — `https://ufcfightpass.com/video/757939`
 - vs Ana Martinez — `https://ufcfightpass.com/video/695542`
 
-### 2b. One video listed against two different fights (6 links)
+### 2b, 2c, 2d — CLOSED
 
-Same problem as section 1, in the source file this time. Tell me which fight each
-belongs to.
+| Link | Call | Done |
+|------|------|------|
+| Jacobe Smith `video/694840` | → Christien Savoie | placed (Oct 1, 2024, DWCS) |
+| David Martínez `_K14L-SQyXw&t=648s` | → Alan Cantú | placed (May 29, 2021) |
+| Magomedrasul Gasanov `LsoOrU5ST7Y` | bad link | dropped |
+| Magomed Ankalaev `cVkgL_QZ1BU` | combat sambo, not the bout | dropped |
+| Felipe Franco `yDMxL28AlUY` | → Murilo dos Santos Ferreira | placed (Aug 31, 2024) |
+| Ismael Bonfim `XNDAxNzYzMDc3Ng` | bad link | dropped |
+| Alvin Hines `video/606698` | → Justin Smith | placed (Apr 5, 2024, LFA 181) |
+| Alvin Hines `oFeqjtljfMY` | "Will Smith" is **Will Johnson** | placed (Jan 12, 2024, LFA 174) |
 
-| Fighter | URL | Listed against |
-|---------|-----|----------------|
-| Jacobe Smith | `https://ufcfightpass.com/video/694840` | Preston Parsons **and** Christien Savoie |
-| David Martinez | `https://www.youtube.com/watch?v=_K14L-SQyXw&t=648s` | Alan Cantu Garcia **and** Alex Gonzalez |
-| Magomedrasul Gasanov | `https://www.youtube.com/watch?v=LsoOrU5ST7Y` | Albert Tumenov **and** Salamu Abdurakhmanov |
+The four dropped links were never written to `index.html`, so nothing had to be
+removed — they only ever lived in this file.
 
-Two others in this class *were* placed, because the URL named its own fight:
-Valter Walker's `mma-seria-47-kobenov-ignasio` went to Aybek Kobenov, and Sam
-Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
+**David Martínez was never a collision.** `_K14L-SQyXw` is a single Combate Global
+broadcast of the May 29, 2021 bantamweight tournament, and the two links point at
+different timestamps of it: `t=4745s` is the Francisco Rivera fight (already
+placed), `t=648s` is Alan Cantú. Both are now on the right rows.
 
-### 2c. Opponent has no row in that fighter's FIGHT_HISTORY (3 links)
-
-The fight itself is missing from the site, so there's nothing to hang the video
-on. Either the bout is absent from `FIGHT_HISTORY` or the name is spelled
-differently enough that I wouldn't guess.
-
-- **Magomed Ankalaev** vs Nadir Bulkhadarov — `https://www.youtube.com/watch?v=cVkgL_QZ1BU`
-- **Felipe Franco** vs Murilo Magalhães — `https://www.youtube.com/watch?v=yDMxL28AlUY` (closest history row: *Murilo dos Santos Ferreira*, Aug 31, 2024)
-- **Ismael Bonfim** vs Mateus Nascimento — `https://v.youku.com/v_show/id_XNDAxNzYzMDc3Ng==.html` (closest: *Mateus Nery da Cruz*, Dec 22, 2018)
-
-### 2d. Two links, one fight on record (2 links)
-
-**Alvin Hines** has a `Justin Smith` fight (Apr 5, 2024) in `FIGHT_HISTORY` but no
-`Will Smith`. The file supplies tape for both, so one of them is either a fight
-we're missing or a mislabelled opponent.
-
-- vs Justin Smith — `https://ufcfightpass.com/video/606698`
-- vs Will Smith — `https://www.youtube.com/watch?v=oFeqjtljfMY`
+Two others in this class had been placed earlier, because the URL named its own
+fight: Valter Walker's `mma-seria-47-kobenov-ignasio` went to Aybek Kobenov, and
+Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
 
 ---
 
 ## 3. Data inconsistencies worth a look
 
-- **`Lenny Lovoto` vs `Lovato`.** `FIGHT_HISTORY` spells Usman's Legacy FC 30
-  opponent *Lovoto*; the first upload said *Lovato*. The link is attached (I used
-  your spelling), but one of the two is a typo.
+- **`Lenny Lovoto` — settled, one loose end.** Usman's Legacy FC 30 row and its
+  tape link both read *Lovoto*, per your call, so nothing changed. But
+  `FIGHT_HISTORY` also has **Gabe Ruediger vs `Lenny Lovato`** (Jul 9, 2010, TPF 5:
+  Stars and Strikes) — a different fight four years earlier. If that's the same
+  man, one of the two spellings is wrong. I left it alone rather than guess that
+  they're the same person.
 
 - **`Dricus du Plessis` vs `Dricus Du Plessis`.** 7 places in `index.html` use the
   capital `Du`, 20 use lowercase. The canonical `FIGHTERS` spelling is lowercase
@@ -145,7 +140,8 @@ we're missing or a mislabelled opponent.
 
 ## Current state
 
-- `TAPE_STUDY`: **150 fighters, 1,755 rows**
-- Fight-history rows that resolve a video: **1,723**
+- `TAPE_STUDY`: **150 fighters, 1,760 rows**
+- Fight-history rows that resolve a video: **1,728**
+- Unplaced links from `document.txt`: **8** (was 19) — all in section 2a
 - Rows showing a video from the wrong fight: **12 pairs, all pre-existing** (section 1b).
   Nothing either upload added is misplaced.
