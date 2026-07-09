@@ -52,18 +52,39 @@ const CORE = 'https://sports.core.api.espn.com/v2/sports/mma';
 // ── pure helpers (unit-tested; no network) ───────────────────────────────────
 
 const NAME_SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
-// ESPN writes "Kauê Fernandes" / "Khalil Rountree Jr."; Cito writes "Kaue
-// Fernandes" / "Khalil Rountree". Compare on a normalised form or we'd inject
-// duplicates of bouts that are already there.
-function normName(s) {
-  const t = String(s || '')
-    .normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()
-    .split(/\s+/).filter(Boolean);
+// NFD decomposes é -> e + accent, but NOT ł, ø, đ, ß … those are distinct
+// codepoints with no combining form, so "Błachowicz" would survive as
+// "b achowicz" once punctuation is stripped and never match ESPN's
+// "Blachowicz". Transliterate them explicitly first.
+const TRANSLIT = { 'ł': 'l', 'Ł': 'l', 'ø': 'o', 'Ø': 'o', 'đ': 'd', 'Đ': 'd', 'ð': 'd', 'þ': 'th', 'ß': 'ss', 'æ': 'ae', 'Æ': 'ae', 'œ': 'oe', 'Œ': 'oe', 'ı': 'i', 'ħ': 'h', 'ŧ': 't', 'ĸ': 'k' };
+function deburr(s) {
+  return String(s || '').replace(/[łŁøØđĐðþßæÆœŒıħŧĸ]/g, (c) => TRANSLIT[c] || c)
+    .normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+function nameTokens(s) {
+  const t = deburr(s).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(/\s+/).filter(Boolean);
   while (t.length > 1 && NAME_SUFFIXES.has(t[t.length - 1])) t.pop();
-  return t.join(' ');
+  return t;
+}
+function normName(s) { return nameTokens(s).join(' '); }
+
+// Feeds also disagree on given names — Cito "Zachary Reese" vs ESPN "Zach Reese".
+// A soft identity of "lastname:first-initial" catches that, while still telling
+// Michael Johnson (johnson:m) apart from Anthony Johnson (johnson:a).
+function softName(s) {
+  const t = nameTokens(s);
+  if (!t.length) return '';
+  const last = t[t.length - 1];
+  const initial = t.length > 1 ? t[0][0] : '';
+  return last + ':' + initial;
 }
 function boutKey(names) { return names.map(normName).sort().join('|'); }
+function boutSoftKey(names) { return names.map(softName).sort().join('|'); }
+// Two bouts are the same fight if the full names match, or the softer
+// lastname+initial identity matches.
+function sameBout(namesA, namesB) {
+  return boutKey(namesA) === boutKey(namesB) || boutSoftKey(namesA) === boutSoftKey(namesB);
+}
 
 const SEGMENTS = {
   'main card': { section: 'Main Card', order: 1 },
@@ -161,28 +182,29 @@ function buildBout(eventSlug, b) {
  *               fighters:[{name,slug,...}] }]
  */
 function reconcile(citoEvent, espnBouts) {
-  const have = new Set((citoEvent.bouts || []).map((b) => boutKey((b.fighters || []).map((f) => f.fighterName))));
-  const espnKeys = new Set(espnBouts.map((b) => boutKey(b.fighters.map((f) => f.name))));
+  const citoBouts = (citoEvent.bouts || []).filter((b) => (b.fighters || []).length >= 2);
+  const citoNames = citoBouts.map((b) => b.fighters.map((f) => f.fighterName));
+  const espnNames = espnBouts.map((b) => b.fighters.map((f) => f.name));
 
   // A fighter already booked elsewhere on this card means the matchup changed;
-  // injecting would list them twice.
+  // injecting would list them twice. Compare on the soft identity too, so
+  // "Zach" and "Zachary" are recognised as the same person.
   const booked = new Set();
-  (citoEvent.bouts || []).forEach((b) => (b.fighters || []).forEach((f) => booked.add(normName(f.fighterName))));
+  citoBouts.forEach((b) => (b.fighters || []).forEach((f) => { booked.add(normName(f.fighterName)); booked.add(softName(f.fighterName)); }));
 
   const toInject = [];
   const skipped = [];
-  espnBouts.forEach((b) => {
-    const k = boutKey(b.fighters.map((f) => f.name));
-    if (have.has(k)) return;
-    const clash = b.fighters.find((f) => booked.has(normName(f.name)));
-    if (clash) { skipped.push({ bout: b.fighters.map((f) => f.name).join(' vs '), reason: `${clash.name} already booked on this card` }); return; }
+  espnBouts.forEach((b, i) => {
+    if (citoNames.some((cn) => sameBout(cn, espnNames[i]))) return;   // already on the card
+    const clash = b.fighters.find((f) => booked.has(normName(f.name)) || booked.has(softName(f.name)));
+    if (clash) { skipped.push({ bout: espnNames[i].join(' vs '), reason: `${clash.name} already booked on this card` }); return; }
     toInject.push(b);
   });
 
-  const onlyInCito = (citoEvent.bouts || [])
-    .filter((b) => !b.isCancelled && (b.fighters || []).length >= 2)
-    .filter((b) => !espnKeys.has(boutKey(b.fighters.map((f) => f.fighterName))))
-    .map((b) => (b.fighters || []).map((f) => f.fighterName).join(' vs '));
+  const onlyInCito = citoBouts
+    .filter((b) => !b.isCancelled)
+    .filter((b, i) => !espnNames.some((en) => sameBout(en, citoNames[citoBouts.indexOf(b)])))
+    .map((b) => b.fighters.map((f) => f.fighterName).join(' vs '));
 
   return { toInject, onlyInCito, skipped };
 }
@@ -288,8 +310,13 @@ async function main() {
   for (const { e } of upcoming) {
     const day = String(e.startsAt).slice(0, 10);
     const numMatch = /\bUFC\s+(\d{2,4})\b/i.exec(e.title || '');
-    const cal = calendar.find((c) => String(c.startDate).slice(0, 10) === day)
-      || (numMatch && calendar.find((c) => new RegExp(`\\bUFC\\s+${numMatch[1]}\\b`, 'i').test(c.label || '')));
+    // Numbered cards match on the number. Otherwise match on UTC date, allowing
+    // ±1 day (a US evening card straddles midnight UTC, so the two feeds can
+    // legitimately disagree by a day) — but only when exactly one candidate fits.
+    const near = calendar.filter((c) => Math.abs(Date.parse(c.startDate) - Date.parse(e.startsAt)) <= 1.5 * DAY);
+    const cal = (numMatch && calendar.find((c) => new RegExp(`\\bUFC\\s+${numMatch[1]}\\b`, 'i').test(c.label || '')))
+      || calendar.find((c) => String(c.startDate).slice(0, 10) === day)
+      || (near.length === 1 ? near[0] : null);
     const espnId = cal && refToId(cal.event && cal.event.$ref);
     if (!espnId) { console.log(`[espn-bouts] ${e.title} (${day}): no ESPN event matched — skipping.`); continue; }
 
@@ -327,5 +354,5 @@ async function main() {
   }
 }
 
-module.exports = { normName, boutKey, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
+module.exports = { normName, softName, deburr, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
 if (require.main === module) main().catch((e) => { console.error('[espn-bouts] non-fatal error:', e.message); });
