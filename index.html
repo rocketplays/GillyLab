@@ -2110,8 +2110,8 @@
     .parlay-slip.collapsed .pl-body { display: none; }
     .pl-bar-right { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
     /* Shareable slip card: everything a screenshot needs (brand, event, book,
-       picks, price, payout) and nothing it doesn't. "Clean view" hides the bar,
-       the remove buttons and the editing controls so the card stands alone. */
+       picks, price, payout) and nothing it doesn't. Built by plCardHTML(), which
+       also renders it standalone inside the share overlay. */
     .pl-card { border: 1px solid var(--border); border-radius: 10px; background: var(--surface2); padding: 0.8rem 1rem 0.7rem; margin-top: 0.4rem; }
     .pl-card-head { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding-bottom: 0.55rem; border-bottom: 1px solid var(--border); }
     .pl-brand { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.82rem; color: var(--text); flex: 0 0 auto; }
@@ -2128,12 +2128,16 @@
     .pl-pay strong { color: var(--accent); font-size: 0.95rem; }
     .pl-card-foot { padding-top: 0.6rem; font-size: 0.58rem; color: var(--muted); letter-spacing: 0.05em; }
     .pl-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-top: 0.7rem; }
-    .parlay-slip.pl-clean .pl-bar,
-    .parlay-slip.pl-clean .pl-controls,
-    .parlay-slip.pl-clean .pl-books,
-    .parlay-slip.pl-clean .pl-leg-x { display: none; }
-    .parlay-slip.pl-clean .pl-card-legs { max-height: none; overflow: visible; }
-    .parlay-slip.pl-clean .pl-inner { padding-top: 0.9rem; }
+    /* Remove buttons stay quiet so the inline card is screenshot-ready as-is,
+       and come forward on hover/focus. */
+    .pl-card-leg .pl-leg-x { opacity: 0.35; transition: opacity 0.15s; }
+    .pl-card-leg:hover .pl-leg-x, .pl-leg-x:focus { opacity: 1; }
+    /* Share overlay: the card standing alone, plus copy / native-share actions. */
+    .pl-share { position: fixed; inset: 0; z-index: 80; display: none; background: rgba(0, 0, 0, 0.72); overflow-y: auto; }
+    .pl-share.open { display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
+    .pl-share-inner { width: 100%; max-width: 460px; }
+    .pl-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 0.9rem; }
+    .pl-share-hint { text-align: center; margin-top: 0.6rem; font-size: 0.66rem; color: var(--muted); }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -102640,7 +102644,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      same-game parlay — books price those two at lower odds, off a joint
   //      model we don't have. Legs on *different* fights are effectively
   //      independent, which is what makes multiplying their decimal odds valid.
-  const PARLAY = { book: null, legs: [], open: false, stake: 100, clean: false };
+  const PARLAY = { book: null, legs: [], open: false, stake: 100 };
   const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
@@ -102686,6 +102690,108 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       next.push(Object.assign({}, l, { book: bookKey, booklabel: label, odds: o }));
     }
     PARLAY.legs = next; PARLAY.book = bookKey; plRender();
+  }
+  // One card builder for both surfaces. `share:true` renders the standalone
+  // version — no remove buttons, no Share button, no ids (avoids duplicating
+  // the ids the live slip uses for in-place stake updates).
+  function plCardHTML(opts) {
+    opts = opts || {};
+    const share = !!opts.share;
+    const dec = plDec(), am = plDecToAm(dec), n = PARLAY.legs.length;
+    const stake = Math.max(0, Number(PARLAY.stake) || 0);
+    const prob = (100 / dec).toFixed(1);
+    const evLabel = ((document.getElementById('odds-event-label') || {}).textContent || 'UFC').trim();
+    const shotDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const legs = PARLAY.legs.map((l, i) => `<div class="pl-card-leg">
+        <div style="min-width:0;">
+          <div class="pl-leg-fight">${escHtmlAttr(l.fight || '')}</div>
+          <div class="pl-leg-pick">${escHtmlAttr(l.label)}</div>
+        </div>
+        <div class="pl-leg-right">
+          <span class="pl-card-odds">${l.odds > 0 ? '+' : ''}${l.odds}</span>
+          ${share ? '' : `<span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove leg" aria-label="Remove leg">×</span>`}
+        </div></div>`).join('');
+    const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
+    const sgpFights = Object.keys(byFight).filter(k => byFight[k] > 1)
+      .map(k => (PARLAY.legs.find(l => l.fid === k) || {}).fight).filter(Boolean);
+    const sgp = sgpFights.length ? `<div class="pl-warn">⚠ Same-game parlay on ${escHtmlAttr(sgpFights.join(', '))} — a moneyline and a rounds O/U on one fight are correlated, so the book will likely price these two at lower odds.</div>` : '';
+    return `<div class="pl-card">
+      <div class="pl-card-head">
+        <div class="pl-brand">Gilly<span>Lab</span></div>
+        <div class="pl-card-meta">${escHtmlAttr(evLabel)} · ${escHtmlAttr(PARLAY.legs[0].booklabel)}</div>
+        ${share ? '' : '<button type="button" id="plShareOpen" class="pl-shot" title="Share or screenshot this slip">Share</button>'}
+      </div>
+      <div class="pl-card-legs">${legs}</div>
+      ${sgp}
+      <div class="pl-card-total">
+        <div><div class="pl-cap">${n}-leg parlay</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
+        <div style="text-align:right;">
+          <div class="pl-cap">Stake ${share ? plMoney(stake) : `<span id="plCardStake">${plMoney(stake)}</span>`}</div>
+          <div class="pl-pay">Returns ${share ? `<strong>${plMoney(stake * dec)}</strong>` : `<strong id="plCardReturn">${plMoney(stake * dec)}</strong>`}</div>
+        </div>
+      </div>
+      <div class="pl-card-foot">gillylab.com · implied ${prob}% · ${escHtmlAttr(shotDate)} · odds subject to change</div>
+    </div>`;
+  }
+  // Plain-text version for clipboard / native share sheets.
+  function plShareText() {
+    const dec = plDec(), am = plDecToAm(dec);
+    const stake = Math.max(0, Number(PARLAY.stake) || 0);
+    const evLabel = ((document.getElementById('odds-event-label') || {}).textContent || 'UFC').trim();
+    const lines = PARLAY.legs.map(l => `• ${l.fight} — ${l.label}  ${l.odds > 0 ? '+' : ''}${l.odds}`);
+    return [
+      `${evLabel} · ${PARLAY.legs[0].booklabel}`,
+      `${PARLAY.legs.length}-leg parlay  ${am > 0 ? '+' : ''}${am}`,
+      '',
+      lines.join('\n'),
+      '',
+      `${plMoney(stake)} returns ${plMoney(stake * dec)} (implied ${(100 / dec).toFixed(1)}%)`,
+      'via gillylab.com',
+    ].join('\n');
+  }
+  function plCopyText() {
+    const txt = plShareText();
+    const done = () => plToast('Slip copied to clipboard.');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(txt).then(done).catch(() => plFallbackCopy(txt, done));
+    } else plFallbackCopy(txt, done);
+  }
+  function plFallbackCopy(txt, done) {
+    const ta = document.createElement('textarea');
+    ta.value = txt; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:absolute;left:-9999px;top:0;';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) { plToast("Couldn't copy — select the text manually."); }
+    document.body.removeChild(ta);
+  }
+  function plNativeShare() {
+    if (!navigator.share) { plCopyText(); return; }
+    navigator.share({ title: 'GillyLab parlay', text: plShareText() }).catch(() => {});
+  }
+  function plShareOpen() {
+    if (!PARLAY.legs.length) return;
+    let ov = document.getElementById('plShare');
+    if (!ov) {
+      ov = document.createElement('div'); ov.id = 'plShare'; ov.className = 'pl-share';
+      ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Share parlay slip');
+      (document.getElementById('page-odds') || document.body).appendChild(ov);
+    }
+    ov.innerHTML = `<div class="pl-share-inner">
+      ${plCardHTML({ share: true })}
+      <div class="pl-share-actions">
+        <button type="button" id="plShareCopy" class="pl-clear">Copy text</button>
+        ${navigator.share ? '<button type="button" id="plShareNative" class="pl-clear">Share…</button>' : ''}
+        <button type="button" id="plShareClose" class="pl-clear">Close</button>
+      </div>
+      <div class="pl-share-hint">Screenshot the card above, or copy it as text.</div>
+    </div>`;
+    ov.classList.add('open');
+    if (typeof lockPageScroll === 'function') lockPageScroll();
+  }
+  function plShareClose() {
+    const ov = document.getElementById('plShare');
+    if (ov) ov.classList.remove('open');
+    if (typeof unlockPageScroll === 'function') unlockPageScroll();
   }
   function plUpdateMoney() {
     const dec = plDec(), s = Math.max(0, Number(PARLAY.stake) || 0);
@@ -102766,39 +102872,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!PARLAY.legs.length) { el.classList.remove('open'); el.innerHTML = ''; return; }
     const dec = plDec();
     const am = plDecToAm(dec);
-    const prob = (100 / dec).toFixed(1);
     const stake = Math.max(0, Number(PARLAY.stake) || 0);
     const n = PARLAY.legs.length;
-    // A fight carrying two legs can only be ML + rounds O/U (plValidate enforces
-    // it). Those are still correlated, so flag that the book treats it as a
-    // same-game parlay and will price these two at lower odds than we show.
-    const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
-    const sgpFights = Object.keys(byFight).filter(k => byFight[k] > 1)
-      .map(k => (PARLAY.legs.find(l => l.fid === k) || {}).fight).filter(Boolean);
-    const sgpHtml = sgpFights.length ? `<div class="pl-warn">⚠ Same-game parlay on ${escHtmlAttr(sgpFights.join(', '))} — a moneyline and a rounds O/U on one fight are correlated, so the book will likely price these two at lower odds.</div>` : '';
     const prices = plBookPrices();
     const best = prices.length ? prices.reduce((a, b) => (b.dec > a.dec ? b : a), prices[0]) : null;
     const cmpHtml = prices.length > 1 ? `<div class="pl-books">
         <span class="pl-cap" style="margin-right:2px;">Same picks at</span>
         ${prices.map(p => `<button type="button" class="pl-book-opt${p.book === PARLAY.book ? ' cur' : ''}${best && p.book === best.book ? ' best' : ''}" data-book="${p.book}" title="${p.book === PARLAY.book ? 'Current book' : 'Re-price this slip at ' + escHtmlAttr(p.label)}">${escHtmlAttr(p.label)} <strong>${p.am > 0 ? '+' : ''}${p.am}</strong>${best && p.book === best.book ? '<span class="pl-best-tag">best</span>' : ''}</button>`).join('')}
       </div>` : '';
-    const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-card-leg">
-        <div style="min-width:0;">
-          <div class="pl-leg-fight">${escHtmlAttr(l.fight || '')}</div>
-          <div class="pl-leg-pick">${escHtmlAttr(l.label)}</div>
-        </div>
-        <div class="pl-leg-right">
-          <span class="pl-card-odds">${l.odds > 0 ? '+' : ''}${l.odds}</span>
-          <span class="pl-leg-x" role="button" tabindex="0" data-idx="${i}" title="Remove leg" aria-label="Remove leg">×</span>
-        </div></div>`).join('');
-    const evLabel = ((document.getElementById('odds-event-label') || {}).textContent || 'UFC').trim();
-    const shotDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     el.classList.add('open');
-    // Clean view only makes sense expanded — it hides the bar, so a collapsed
-    // clean slip would render nothing at all.
-    const clean = PARLAY.clean && PARLAY.open;
     el.classList.toggle('collapsed', !PARLAY.open);
-    el.classList.toggle('pl-clean', clean);
     el.innerHTML = `<div class="pl-swipe">
       <button type="button" class="pl-swipe-clear" id="plSwipeClear" tabindex="-1" aria-hidden="true">Clear</button>
       <div class="pl-inner" id="plInner">
@@ -102813,23 +102896,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div>
       </div>
       <div class="pl-body">
-        <div class="pl-card">
-          <div class="pl-card-head">
-            <div class="pl-brand">Gilly<span>Lab</span></div>
-            <div class="pl-card-meta">${escHtmlAttr(evLabel)} · ${escHtmlAttr(PARLAY.legs[0].booklabel)}</div>
-            <button type="button" id="plShot" class="pl-shot" title="Hide controls for a clean screenshot">${PARLAY.clean ? 'Edit' : 'Clean view'}</button>
-          </div>
-          <div class="pl-card-legs">${legsHtml}</div>
-          ${sgpHtml}
-          <div class="pl-card-total">
-            <div><div class="pl-cap">${n}-leg parlay</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
-            <div style="text-align:right;">
-              <div class="pl-cap">Stake <span id="plCardStake">${plMoney(stake)}</span></div>
-              <div class="pl-pay">Returns <strong id="plCardReturn">${plMoney(stake * dec)}</strong></div>
-            </div>
-          </div>
-          <div class="pl-card-foot">gillylab.com · implied ${prob}% · ${escHtmlAttr(shotDate)} · odds subject to change</div>
-        </div>
+        ${plCardHTML({})}
         ${cmpHtml}
         <div class="pl-controls">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
@@ -102841,7 +102908,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div></div></div>`;
   }
   let plBound = false;
-  function plClearAll() { PARLAY.legs = []; PARLAY.book = null; plRender(); }
+  function plClearAll() { PARLAY.legs = []; PARLAY.book = null; plShareClose(); plRender(); }
   function plBind() {
     if (plBound) return; plBound = true;
     const hit = (e, sel) => e.target && e.target.closest ? e.target.closest(sel) : null;
@@ -102849,7 +102916,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       const bo = hit(e, '.pl-book-opt'); if (bo) { plSwitchBook(bo.dataset.book); return; }
-      if (hit(e, '#plShot')) { PARLAY.clean = !PARLAY.clean; if (PARLAY.clean) PARLAY.open = true; plRender(); return; }
+      if (hit(e, '#plShareOpen')) { plShareOpen(); return; }
+      if (hit(e, '#plShareCopy')) { plCopyText(); return; }
+      if (hit(e, '#plShareNative')) { plNativeShare(); return; }
+      // Close on the Close button or a click on the backdrop itself.
+      if (hit(e, '#plShareClose') || (e.target && e.target.id === 'plShare')) { plShareClose(); return; }
       if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
       if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plRender(); }
     });
@@ -102895,7 +102966,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plRender(); }
     });
   }
-  function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = false; PARLAY.clean = false; plBind(); plRender(); }
+  function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = false; plShareClose(); plBind(); plRender(); }
 
   // Sits above the fight selector so the click-to-build behaviour is discoverable
   // before the user starts poking at prices.
