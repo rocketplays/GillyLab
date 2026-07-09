@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 /**
+ * NOTE (2026-07-09): Cito was retired and ESPN is now the sole feed, built by
+ * scripts/fetch-espn-events.cjs. That makes the reconciler below a no-op
+ * (ESPN against ESPN), so it no longer runs in CI. The file is kept because it
+ * is this project's tested library of ESPN helpers -- name normalization,
+ * segment/weight-class mapping, flags, slug + event matching, bout building --
+ * all of which fetch-espn-events.cjs imports. See scripts/test-espn-bouts.cjs.
+ *
  * Reconciles each upcoming card's bout list against ESPN.
  *
  * Division of labour: Cito owns events, results, method details and box scores —

@@ -103895,6 +103895,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
   }
 
+  // The countdown should target the FIRST fight of the night (early prelims),
+  // not the main card three hours later. The ESPN feed carries prelimsStartsAt;
+  // fall back to startsAt for any event that predates the field.
+  function eventCountdownStart(rawEvt) {
+    return (rawEvt && (rawEvt.prelimsStartsAt || rawEvt.startsAt)) || null;
+  }
+
   function pickFeaturedRawEvent(apiData) {
     const events = (apiData.data || []).slice()
       // Drop phantom/wrong-year cards: the feed sometimes returns real PAST
@@ -103909,8 +103916,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // day flips. startsAt is the MAIN CARD time (~9pm ET on a Saturday), so
     // flooring to local midnight handed the slot to next week's event at 00:00,
     // while the main event was still in the cage. A card runs ~4h from the main
-    // card bell; 6h leaves room for a long night and the immediate aftermath.
-    const CARD_RUNTIME_MS = 6 * 3600 * 1000;
+    // card bell; 10h from its start covers a long night, delays, and the
+    // immediate aftermath before the card drops to the past-events dropdown.
+    const CARD_RUNTIME_MS = 10 * 3600 * 1000;
     const now = Date.now();
     return events.find(e => Date.parse(e.startsAt) + CARD_RUNTIME_MS >= now) || events[events.length - 1];
   }
@@ -106884,7 +106892,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (sel.value === '__featured__') {
           window.__GL_VIEWING_PAST = false;
           header.classList.remove('gl-past-view'); // restore the upcoming-event countdown
-          if (featuredRaw && featuredRaw.startsAt) window.FEATURED_EVENT_STARTS_AT = featuredRaw.startsAt;
+          if (eventCountdownStart(featuredRaw)) window.FEATURED_EVENT_STARTS_AT = eventCountdownStart(featuredRaw);
           updateCountdown();
           if (featuredRaw) glSwapFightCard(() => renderHomeFightCard(parseApiEvent(featuredRaw)));
           return;
@@ -106955,8 +106963,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           await rankingsLookupReady;
           featuredRaw = pickFeaturedRawEvent(apiData);
           evt = parseApiEvent(featuredRaw);
-          if (featuredRaw && featuredRaw.startsAt) {
-            window.FEATURED_EVENT_STARTS_AT = featuredRaw.startsAt;
+          if (eventCountdownStart(featuredRaw)) {
+            window.FEATURED_EVENT_STARTS_AT = eventCountdownStart(featuredRaw);
             updateCountdown();
           }
         }

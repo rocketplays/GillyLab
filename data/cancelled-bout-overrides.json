@@ -1,4 +1,0 @@
-{
-  "_readme": "Force-hides a bout that Cito still lists but which is no longer happening. Use only when the automatic ESPN+news agreement has NOT fired (e.g. a fight is scrapped with no injury coverage, or a same-day withdrawal). The reconciler already auto-hides a bout when ESPN has dropped it AND fighter-news carries an injury/withdrawal story for one of its fighters, so most cancellations need no entry here. Entries self-prune 14 days after the event.",
-  "overrides": []
-}

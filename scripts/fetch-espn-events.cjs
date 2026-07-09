@@ -234,6 +234,13 @@ async function buildEventFull(espnId, cache) {
   const startsAt = new Date(mainDates.length ? Math.min(...mainDates) : Date.parse(ev.date)).toISOString();
   const slug = B.eventSlugFor(label, startsAt);
 
+  // When the FIRST fight of the night walks out — i.e. the early prelims. That's
+  // what a "days until" countdown should target, since doors open then, not when
+  // the main card starts three hours later. ESPN's event.date is already this
+  // value; the earliest bout is the same thing, computed from the card itself.
+  const allDates = raw.map((b) => Date.parse(b.date)).filter(isFinite);
+  const prelimsStartsAt = new Date(allDates.length ? Math.min(...allDates) : Date.parse(ev.date)).toISOString();
+
   // matchNumber 1 is the main event. Order within each segment.
   const bySeg = {};
   raw.sort((a, b) => a.matchNumber - b.matchNumber).forEach((b) => {
@@ -276,7 +283,7 @@ async function buildEventFull(espnId, cache) {
     id: 'espn-' + espnId, slug,
     title: B.eventTitleFor(label), shortTitle: B.eventTitleFor(label),
     espnName: label,   // the full "UFC Fight Night: Fiziev vs Torres" headline, for reference
-    status: eventStatusOf(bouts, startsAt), startsAt,
+    status: eventStatusOf(bouts, startsAt), startsAt, prelimsStartsAt,
     venue: (venue && venue.fullName) || null, city,
     state: addr.state || null, country: addr.country || null,
     locationText: [(venue && venue.fullName), city].filter(Boolean).join(', ') || null,
@@ -324,9 +331,22 @@ async function main() {
 
   console.log(`[espn-events] upcoming ${upcoming.length} (${upcoming.reduce((n, e) => n + e.bouts.length, 0)} bouts) · recent ${recent.length} (${recent.reduce((n, e) => n + e.bouts.length, 0)} bouts)`);
 
-  // Refuse to write a suspiciously empty feed over a good one: an ESPN hiccup
-  // must never blank the site's card list.
+  // ESPN is now the ONLY source for the card list, so a partial outage here is
+  // indistinguishable from "the fight was cancelled" unless we check. Refuse to
+  // overwrite a good feed with a degraded one.
   if (!upcoming.length) { console.error('[espn-events] ABORT: zero upcoming events — treating as a fetch failure, leaving files untouched.'); process.exitCode = 0; return; }
+
+  const prev = loadJson(path.join(OUT_DIR, 'event.json'), { data: [] });
+  for (const old of prev.data || []) {
+    const now2 = built.find((e) => e.slug === old.slug);
+    const oldN = (old.bouts || []).filter((b) => !b.isCancelled).length;
+    if (!now2 || oldN < 4) continue;                       // event passed, or too small to judge
+    const newN = (now2.bouts || []).length;
+    if (newN < oldN * 0.5) {
+      console.error(`[espn-events] ABORT: ${old.slug} dropped from ${oldN} to ${newN} bouts — that is an ESPN fetch problem, not a cancelled card. Leaving files untouched.`);
+      process.exitCode = 0; return;
+    }
+  }
 
   if (DRY) { console.log('[espn-events] --dry: not writing.'); return; }
   fs.mkdirSync(OUT_DIR, { recursive: true });

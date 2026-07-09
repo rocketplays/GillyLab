@@ -35,41 +35,21 @@ jobs:
       - name: Update odds line-movement history
         run: node scripts/update-odds-history.cjs
 
-      - name: Fetch upcoming UFC events from Cito API
+      # ESPN is the sole source for the card list and results. Cito was retired on
+      # 2026-07-09: it lagged ~10 days on bout sync, omitted whole cards, returned
+      # every bout twice with the duplicates disagreeing, and re-published 2025's
+      # PPVs (UFC 314-322) as upcoming 2026 cards. ESPN carries the finish detail
+      # natively ("Suloev Stretch"), one object per bout, and a live period/clock.
+      #
+      # No key, no quota. The script is defensive: it refuses to overwrite a good
+      # feed with a degraded one (zero upcoming events, or a card that suddenly
+      # lost half its bouts), so a partial ESPN outage keeps the last-good files.
+      - name: Fetch UFC events + results from ESPN
         run: |
-          # Non-fatal: the Cito API occasionally returns an HTTP error (exit 22),
-          # which used to fail the whole run. Fetch to a temp file and only swap
-          # it in on a successful, non-empty response; otherwise keep the
-          # last-good data/event.json so the run and deploy still proceed.
-          TODAY=$(date -u '+%Y-%m-%d')
-          if curl -sf \
-            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
-            "https://api.citoapi.com/api/v1/ufc/events?from=${TODAY}&includeBouts=true&limit=20" \
-            -o data/event.json.new && [ -s data/event.json.new ]; then
-            mv data/event.json.new data/event.json
-            echo "Events fetched — $(wc -c < data/event.json) bytes"
+          if node scripts/fetch-espn-events.cjs; then
+            echo "Events fetched — $(wc -c < data/event.json) bytes upcoming, $(wc -c < data/event-recent.json) bytes recent"
           else
-            rm -f data/event.json.new
-            echo "Events fetch failed (non-fatal); keeping existing data/event.json"
-          fi
-
-      - name: Fetch recent past UFC events (results) from Cito API
-        run: |
-          # Powers the homepage "View past event" dropdown. We query with an
-          # upper date bound (to=TODAY) so the API returns only events that have
-          # already happened — NOT the future-dated cards the feed pre-marks
-          # "completed" (e.g. UFC 322 in Nov). /events sorts newest-first, so
-          # limit=15 yields the 15 most-recent past cards; the page filters out
-          # Road to UFC and shows the top 10. Non-fatal: on error keep the
-          # previous file and let the dropdown fall back gracefully.
-          TODAY=$(date -u '+%Y-%m-%d')
-          if curl -sf \
-            -H "x-api-key: ${{ secrets.MMAAPI_KEY }}" \
-            "https://api.citoapi.com/api/v1/ufc/events?to=${TODAY}&includeBouts=true&limit=20" \
-            -o data/event-recent.json; then
-            echo "Recent events fetched — $(wc -c < data/event-recent.json) bytes"
-          else
-            echo "Recent-events fetch failed (non-fatal); keeping existing data/event-recent.json"
+            echo "ESPN fetch failed (non-fatal); keeping existing data/event.json + event-recent.json"
           fi
 
       - name: Re-apply manual card-section overrides
@@ -81,17 +61,7 @@ jobs:
       - name: Re-apply manual missing-bout overrides
         run: node scripts/apply-missing-bout-overrides.cjs
 
-      # Cito owns events, results and method details, but its BOUT sync lags (it
-      # has been ~10 days stale). ESPN's free, unauthenticated fight list is the
-      # freshest source for who is actually booked, so reconcile against it and
-      # add anything Cito is missing. Additive only — a bout Cito lists that ESPN
-      # has dropped is reported (likely cancelled) but never auto-removed, so an
-      # ESPN hiccup can't wipe a real fight. Non-fatal; on any error event.json is
-      # left exactly as Cito returned it.
-      - name: Reconcile card bouts against ESPN
-        run: node scripts/fetch-espn-bouts.cjs || true
-
-      # Runs AFTER the override + ESPN steps so newly-added fighters get news too.
+      # Runs AFTER the override steps so manually-added fighters get news too.
       # Aggregate recent per-fighter news (Google News RSS) for fighters on the
       # imminent card and flag injury/withdrawal stories. Non-fatal + keep-last-good.
       - name: Fetch fighter news
@@ -166,7 +136,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-bouts-report.json data/cancelled-bout-overrides.json data/espn-injected.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
