@@ -104977,10 +104977,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'thomas gantt': 'Tommy Gantt',
   };
 
+  // ESPN's athlete slug is NOT ascii-folded: it ships 'robert-ruchała', stroke and
+  // all, while nameToSlug() folds our 'Robert Ruchala' to 'robert-ruchala'. Compare
+  // the feed's NAME through the same slugifier as a second key, so any accented
+  // spelling lands on the canonical fighter without needing a per-name alias.
   function resolveCanonicalFighterName(apiName, apiSlug) {
-    if (apiSlug) {
-      if (SLUG_ALIASES[apiSlug]) return SLUG_ALIASES[apiSlug];
-      const match = FIGHTERS.find(f => f && nameToSlug(f.name) === apiSlug);
+    const keys = [];
+    if (apiSlug) keys.push(apiSlug);
+    if (apiName) { const s = nameToSlug(apiName); if (s && s !== apiSlug) keys.push(s); }
+    for (const k of keys) {
+      if (SLUG_ALIASES[k]) return SLUG_ALIASES[k];
+      const match = FIGHTERS.find(f => f && nameToSlug(f.name) === k);
       if (match) return match.name;
     }
     const lowerName = (apiName || '').toLowerCase();
