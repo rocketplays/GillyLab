@@ -2158,7 +2158,9 @@
     .pl-total { font-size: 1.05rem; font-weight: 800; color: var(--accent); }
     .pl-clear { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.4rem 0.8rem; border-radius: 6px; cursor: pointer; }
     .pl-clear:hover { color: #ff6a5e; border-color: #ff6a5e; }
-    .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 70; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+    /* z-index sits above the share overlay (80) so "Slip image saved." isn't
+       rendered behind the backdrop. */
+    .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 90; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .pl-toast.show { opacity: 1; }
     @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg-pick { font-size: 0.74rem; } .pl-bar-right { gap: 10px; } }
     .sr-style-wrap { position: relative; margin: 0.6rem 6px 0.3rem; }
@@ -102653,6 +102655,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      independent, which is what makes multiplying their decimal odds valid.
   const PARLAY = { book: null, legs: [], open: false, stake: 100 };
   const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
+  // navigator.share() needs transient activation — it must be called straight out
+  // of the click, with no await in between. So the PNG is rendered up front when
+  // the share overlay opens and cached here; the buttons then fire synchronously.
+  let plShareAsset = null;
+  // Only iOS routes "Save" through the share sheet: its sheet has a Save Image
+  // action that lands in Photos. Android's sheet lists apps, not a save action, so
+  // there a plain download (which Photos surfaces under Device folders) is right.
+  const PL_IOS = (function () {
+    const ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+  })();
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
   function plMoney(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -102894,36 +102907,49 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       cb(new File([b], 'gillylab-parlay.png', { type: 'image/png' }), b);
     }, 'image/png');
   }
-  // A web page can't write straight to the camera roll. On mobile the share sheet's
-  // "Save Image" does land in Photos, so route through it when files are shareable;
-  // otherwise fall back to a plain download.
+  // Render the PNG ahead of the click so share() can be called with activation.
+  function plPrepShareAsset() {
+    plShareAsset = null;
+    plFontsReady().then(() => plSlipFile((file, blob) => { plShareAsset = { file: file, blob: blob }; }));
+  }
+  function plCanShareFiles(file) {
+    return !!(navigator.canShare && file && navigator.canShare({ files: [file] }));
+  }
+  function plDownload(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'gillylab-parlay.png';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+    plToast('Slip image saved.');
+  }
+  // A web page can't write straight to the camera roll. iOS: the share sheet's
+  // "Save Image" lands in Photos. Android/desktop: a real download (Android files
+  // it under Downloads, which Photos shows as a device folder).
   function plSaveImage() {
     if (!PARLAY.legs.length) return;
-    plFontsReady().then(() => plSlipFile((file, blob) => {
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], title: 'GillyLab parlay' }).catch(() => {});
-        return;
-      }
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url; a.download = 'gillylab-parlay.png';
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
-      plToast('Slip image saved.');
-    }));
+    const asset = plShareAsset;
+    if (!asset) {   // not rendered yet — download path needs no activation
+      plFontsReady().then(() => plSlipFile((f, b) => { plShareAsset = { file: f, blob: b }; plDownload(b); }));
+      return;
+    }
+    if (PL_IOS && plCanShareFiles(asset.file)) {
+      navigator.share({ files: [asset.file], title: 'GillyLab parlay' }).catch(() => {});
+      return;
+    }
+    plDownload(asset.blob);
   }
   function plShareSlip() {
     if (!PARLAY.legs.length) return;
-    plFontsReady().then(() => plSlipFile(file => {
-      const text = plShareText();
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({ files: [file], text: text, title: 'GillyLab parlay' }).catch(() => {});
-      } else if (navigator.share) {
-        navigator.share({ text: text, title: 'GillyLab parlay' }).catch(() => {});
-      } else {
-        plCopyText();   // no share sheet — put the text on the clipboard instead
-      }
-    }));
+    const text = plShareText();
+    const asset = plShareAsset;
+    if (asset && plCanShareFiles(asset.file)) {
+      navigator.share({ files: [asset.file], text: text, title: 'GillyLab parlay' }).catch(() => {});
+    } else if (navigator.share) {
+      navigator.share({ text: text, title: 'GillyLab parlay' }).catch(() => {});
+    } else {
+      plCopyText();   // no share sheet — put the text on the clipboard instead
+    }
   }
   function plShareOpen() {
     if (!PARLAY.legs.length) return;
@@ -102940,14 +102966,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <button type="button" id="plShareBtn" class="pl-act">Share</button>
         <button type="button" id="plShareClose" class="pl-act ghost">Close</button>
       </div>
-      <div class="pl-share-hint">Save adds the image to your photos on mobile, or downloads it on desktop. Share opens your device's share sheet.</div>
+      <div class="pl-share-hint">${PL_IOS
+        ? 'Save opens the share sheet — choose Save Image to add it to Photos. Share sends the card to any app.'
+        : 'Save downloads the image. Share sends the card to any app on your device.'}</div>
     </div>`;
     ov.classList.add('open');
+    plPrepShareAsset();   // render the PNG now so the buttons keep user activation
     if (typeof lockPageScroll === 'function') lockPageScroll();
   }
   function plShareClose() {
     const ov = document.getElementById('plShare');
     if (ov) ov.classList.remove('open');
+    plShareAsset = null;
     if (typeof unlockPageScroll === 'function') unlockPageScroll();
   }
   function plUpdateMoney() {
