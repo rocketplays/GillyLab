@@ -104710,18 +104710,48 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const entries = TAPE_STUDY[fighterName];
     if (!entries || !entries.length) return null;
     const target = normalizeFighterNameForMatch(opponentName);
-    // Rematches are stored as "Opponent 1" / "Opponent 2" (chronological,
-    // oldest first) so multiple FIGHT_HISTORY rows can share one opponent
-    // name. Strip that trailing index before comparing.
     const hits = entries.filter(e => normalizeFighterNameForMatch(e.opponent).replace(/\s+\d+$/, '') === target);
     if (!hits.length) return null;
-    if (hits.length === 1) return hits[0].url || null;
-    const yearMatch = String(fightDate || '').match(/(\d{4})/);
-    if (yearMatch) {
-      const byYear = hits.find(e => String(e.event || '').includes(yearMatch[1]));
-      if (byYear) return byYear.url || null;
+
+    // How many times did they actually fight? FIGHT_HISTORY knows, and that is
+    // what makes a lookup ambiguous -- not the number of catalogued videos.
+    const meetings = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[fighterName] || [])
+      .filter(h => h && normalizeFighterNameForMatch(h.opponent) === target);
+
+    // One video, one meeting: unambiguous. Some older rows carry a mislabelled
+    // event year (Buckley's Usman row says "Dec 2024" for a Jun 2025 fight), so
+    // do not second-guess the year here.
+    if (hits.length === 1 && meetings.length <= 1) return hits[0].url || null;
+
+    // Event labels read "KSW 45 · Oct 2018", so month+year pins a bout exactly.
+    // Year alone cannot: Du Plessis fought Roberto Soldic twice in 2018 and both
+    // history rows resolved to the October video.
+    const fd = String(fightDate || '');
+    const my = fd.match(/([A-Z][a-z]{2})\s+\d+,\s*(\d{4})/);
+    const monthYear = my ? my[1] + ' ' + my[2] : null;
+    const year = (fd.match(/(\d{4})/) || [])[1] || null;
+    const eventYear = e => (String(e.event || '').match(/(\d{4})/) || [])[1] || null;
+
+    if (monthYear) {
+      const exact = hits.find(e => String(e.event || '').includes(monthYear));
+      if (exact) return exact.url || null;
     }
-    return hits[0].url || null;
+
+    // Looser fallbacks are only safe when every meeting has a video. When one of
+    // two meetings is uncatalogued -- Du Plessis met Bruno Mukulu twice, only the
+    // 2013 bout is on file -- the 2015 row must show a placeholder, not the wrong
+    // fight. A missing link is honest; a wrong one is not.
+    if (meetings.length <= hits.length) {
+      if (year) {
+        const byYear = hits.filter(e => eventYear(e) === year);
+        if (byYear.length === 1) return byYear[0].url || null;
+      }
+      if (hits.length === meetings.length) {
+        const idx = meetings.findIndex(h => h.date === fightDate);   // both lists run newest-first
+        if (idx >= 0 && hits[idx]) return hits[idx].url || null;
+      }
+    }
+    return null;
   }
 
   function tapeHistoryTableHTML(fighterName) {
