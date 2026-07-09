@@ -2089,7 +2089,12 @@
     .pl-best-tag { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-left: 3px; }
     .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: none; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45); }
     .parlay-slip.open { display: block; }
-    .pl-inner { max-width: var(--cmax); margin: 0 auto; padding: 0.55rem 1.25rem 0.9rem; }
+    /* Swipe-to-clear: the red Clear sits behind the slip and is revealed when
+       .pl-inner is dragged left on touch. Desktop never translates, so it stays hidden. */
+    .pl-swipe { position: relative; overflow: hidden; }
+    .pl-swipe-clear { position: absolute; top: 0; right: 0; bottom: 0; width: 88px; border: none; background: #ff6a5e; color: #14161b; font-family: inherit; font-weight: 800; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; cursor: pointer; }
+    .pl-inner { max-width: var(--cmax); margin: 0 auto; padding: 0.55rem 1.25rem 0.9rem; position: relative; z-index: 1; background: var(--card); transition: transform 0.2s ease; will-change: transform; }
+    @media (min-width: 601px) { .pl-swipe-clear { display: none; } }
     .pl-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; cursor: pointer; padding: 0.35rem 0; }
     .pl-bar-left { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; min-width: 0; }
     .pl-chev { display: inline-block; color: var(--muted); font-size: 0.9rem; transition: transform 0.2s; }
@@ -102600,6 +102605,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      pretend to. Legs on *different* fights are effectively independent, which
   //      is exactly what makes multiplying their decimal odds valid.
   const PARLAY = { book: null, legs: [], open: true, stake: 100 };
+  const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
   function plMoney(n) { return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
@@ -102651,13 +102657,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (r) r.textContent = plMoney(s * dec);
     if (p) p.textContent = plMoney(s * (dec - 1));
   }
+  // Within one fight, the only combinable markets are the moneyline and the
+  // rounds O/U — who wins and how long it lasts are treated as separate bets.
+  // A method or round-prop leg must stand alone on its fight (those overlap the
+  // moneyline and each other, and a straight multiply can't price the overlap).
+  const PL_PAIRABLE = { ml: 1, total: 1 };
   function plValidate(legs, newLeg) {
-    for (let i = 0; i < legs.length; i++) {
-      if (legs[i].fid === newLeg.fid) {
-        return { ok: false, reason: 'One pick per fight — legs from the same fight are correlated, so multiplying them would misprice the parlay.' };
-      }
+    const same = legs.filter(l => l.fid === newLeg.fid);
+    if (!same.length) return { ok: true };
+    if (!PL_PAIRABLE[newLeg.mkt] || same.some(l => !PL_PAIRABLE[l.mkt])) {
+      return { ok: false, reason: 'On one fight, only a moneyline and a rounds O/U can be combined — method and round props have to stand alone.' };
+    }
+    if (same.some(l => l.mkt === newLeg.mkt)) {
+      return { ok: false, reason: newLeg.mkt === 'ml' ? 'You already have a moneyline on this fight.' : 'You already have a rounds O/U on this fight.' };
     }
     return { ok: true };
+  }
+  function plLegFromDs(ds) {
+    return { fid: ds.fid, book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
+      mkt: ds.mkt, side: ds.side, method: ds.method, round: ds.round ? Number(ds.round) : undefined,
+      ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label };
   }
   // Must include the book — otherwise every sportsbook's cell for the same
   // fight/market/side shares a key and plRender() lights up the whole column.
@@ -102676,10 +102695,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     clearTimeout(plToast._t); plToast._t = setTimeout(() => t.classList.remove('show'), 2800);
   }
   function plToggle(td) {
-    const ds = td.dataset;
-    const leg = { fid: ds.fid, book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
-      mkt: ds.mkt, side: ds.side, method: ds.method, round: ds.round ? Number(ds.round) : undefined,
-      ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label };
+    const leg = plLegFromDs(td.dataset);
     const key = plLegKey(leg);
     const idx = PARLAY.legs.findIndex(l => plLegKey(l) === key);
     if (idx >= 0) { PARLAY.legs.splice(idx, 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
@@ -102690,19 +102706,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function plRender() {
     const el = document.getElementById('parlaySlip');
+    plSw.cur = 0;   // slip markup is rebuilt below, so any swipe offset is gone
     const keys = {}; PARLAY.legs.forEach(l => { keys[plLegKey(l)] = 1; });
-    const usedFights = {}; PARLAY.legs.forEach(l => { usedFights[l.fid] = 1; });
     document.querySelectorAll('#odds-dynamic-content .pl-pick').forEach(td => {
       const ds = td.dataset;
       const selected = !!keys[plLegKey(ds)];
       td.classList.toggle('sel', selected);
       td.setAttribute('aria-pressed', selected ? 'true' : 'false');
       // Dim what can't be picked: another book once the slip is locked, or any
-      // cell on a fight that already has a leg.
+      // pick the validator would reject. Derived from plValidate() so the greyed
+      // cells and the actual rule can never drift apart.
       let dim = false;
       if (!selected && PARLAY.legs.length) {
         if (PARLAY.book && ds.book !== PARLAY.book) dim = true;
-        else if (usedFights[ds.fid]) dim = true;
+        else if (!plValidate(PARLAY.legs, plLegFromDs(ds)).ok) dim = true;
       }
       td.classList.toggle('pl-dim', dim);
       if (dim) td.setAttribute('aria-disabled', 'true'); else td.removeAttribute('aria-disabled');
@@ -102731,7 +102748,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div></div>`).join('');
     el.classList.add('open');
     el.classList.toggle('collapsed', !PARLAY.open);
-    el.innerHTML = `<div class="pl-inner">
+    el.innerHTML = `<div class="pl-swipe">
+      <button type="button" class="pl-swipe-clear" id="plSwipeClear" tabindex="-1" aria-hidden="true">Clear</button>
+      <div class="pl-inner" id="plInner">
       <div class="pl-bar" id="plBar" role="button" tabindex="0" aria-expanded="${PARLAY.open ? 'true' : 'false'}">
         <div class="pl-bar-left">
           <span class="pl-chev">⌄</span>
@@ -102739,6 +102758,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         </div>
         <div class="pl-bar-right">
           <div style="text-align:right;"><div class="pl-cap">Parlay odds</div><div class="pl-total">${am > 0 ? '+' : ''}${am}</div></div>
+          <button type="button" id="plClear" class="pl-clear">Clear</button>
         </div>
       </div>
       <div class="pl-body">
@@ -102750,14 +102770,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             <input id="plStake" class="pl-stake" type="number" min="0" step="5" value="${stake}" aria-label="Stake amount in dollars" inputmode="decimal">
             <div style="font-size:0.72rem;color:var(--muted);">Profit <strong id="plProfit" style="color:var(--text);">${plMoney(stake * (dec - 1))}</strong> · Returns <strong id="plReturn" style="color:var(--text);">${plMoney(stake * dec)}</strong></div>
           </div>
-          <div style="display:flex;align-items:center;gap:16px;">
-            <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
-            <button type="button" id="plClear" class="pl-clear">Clear</button>
-          </div>
+          <div style="text-align:right;"><div class="pl-cap">Implied</div><div style="font-weight:800;">${prob}%</div></div>
         </div>
-      </div></div>`;
+      </div></div></div>`;
   }
   let plBound = false;
+  function plClearAll() { PARLAY.legs = []; PARLAY.book = null; plRender(); }
   function plBind() {
     if (plBound) return; plBound = true;
     const hit = (e, sel) => e.target && e.target.closest ? e.target.closest(sel) : null;
@@ -102765,8 +102783,39 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       const bo = hit(e, '.pl-book-opt'); if (bo) { plSwitchBook(bo.dataset.book); return; }
-      if (hit(e, '#plClear')) { PARLAY.legs = []; PARLAY.book = null; plRender(); return; }
+      if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
       if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plRender(); }
+    });
+    // Mobile: swipe the slip left to reveal a Clear action (iOS-style). Locks to
+    // the horizontal axis so the legs list still scrolls vertically, and ignores
+    // gestures that start on the stake input or a button.
+    const SW_MAX = -88, SW_SNAP = -44;
+    document.addEventListener('touchstart', e => {
+      const inner = hit(e, '#plInner');
+      if (!inner || hit(e, 'input, button')) { plSw.x = null; return; }
+      plSw.x = e.touches[0].clientX; plSw.y = e.touches[0].clientY;
+      plSw.base = plSw.cur; plSw.lock = null;
+      inner.style.transition = 'none';
+    }, { passive: true });
+    document.addEventListener('touchmove', e => {
+      if (plSw.x === null) return;
+      const inner = document.getElementById('plInner'); if (!inner) return;
+      const dx = e.touches[0].clientX - plSw.x, dy = e.touches[0].clientY - plSw.y;
+      if (plSw.lock === null) {
+        if (Math.abs(dx) > Math.abs(dy) + 4) plSw.lock = 'x';
+        else if (Math.abs(dy) > Math.abs(dx) + 4) plSw.lock = 'y';
+      }
+      if (plSw.lock !== 'x') return;
+      plSw.cur = Math.max(SW_MAX, Math.min(0, plSw.base + dx));
+      inner.style.transform = 'translateX(' + plSw.cur + 'px)';
+    }, { passive: true });
+    document.addEventListener('touchend', () => {
+      if (plSw.x === null) return;
+      plSw.x = null;
+      const inner = document.getElementById('plInner'); if (!inner) return;
+      inner.style.transition = '';
+      plSw.cur = plSw.cur < SW_SNAP ? SW_MAX : 0;
+      inner.style.transform = 'translateX(' + plSw.cur + 'px)';
     });
     // Stake edits update the money in place — a full re-render would blur the input.
     document.addEventListener('input', e => {
@@ -102791,7 +102840,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <ul class="pl-help-rules">
         <li><strong>One sportsbook per parlay.</strong> Legs can't cross books.</li>
-        <li><strong>One pick per fight.</strong> Any two legs on the same fight are correlated — a fighter's moneyline and their method, or Over 2.5 and a round-3 finish — and multiplying correlated prices misprices the parlay. Books quote those as a same-game parlay off a joint model that can't be recovered from the listed odds.</li>
+        <li><strong>On one fight, only a moneyline and a rounds O/U can be combined.</strong> Who wins and how long it lasts are treated as separate bets. Method and round props have to stand alone — they overlap the moneyline and each other, and multiplying overlapping prices misprices the parlay.</li>
       </ul>
       <div class="pl-help-note">Odds move frequently — the numbers here may have shifted slightly since they were last pulled. Always confirm the current price at the sportsbook before betting.</div>
     </div>`;
