@@ -35,6 +35,11 @@ const B = require('./fetch-espn-bouts.cjs');
 const ROOT = path.resolve(__dirname, '..');
 const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
 const CACHE_PATH = path.join(ROOT, 'data', 'espn-athletes.json');
+const STATS_PATH = path.join(ROOT, 'data', 'fight-stats.json');
+// Small companion file the browser merges in-session, so a visitor mid-card sees
+// the new history row and box score without re-downloading the 9.8MB fight-stats.
+const LIVE_PATH = path.join(ROOT, 'data', 'live-card.json');
+const LIVE_PRUNE_DAYS = 21;
 const CORE = 'https://sports.core.api.espn.com/v2/sports/mma';
 const LEAGUE = `${CORE}/leagues/ufc`;
 
@@ -43,6 +48,7 @@ const argS = (f, d) => { const i = args.indexOf(f); return i >= 0 ? args[i + 1] 
 const DRY = args.includes('--dry');
 const ONLY = argS('--event', null);
 const NOW = argS('--now', null) ? Date.parse(argS('--now', null)) : Date.now();
+const NO_ENRICH = args.includes('--no-enrich');   // results only; skip box score + history
 
 const HOUR = 3600 * 1000;
 // Start polling a little before the first walkout, and keep going for as long as
@@ -122,6 +128,97 @@ function liveEventStatus(bouts, startsAt, now) {
   return s;
 }
 
+// ── box score + fight history, derived from the bout we already have ─────────
+
+// ESPN returns statistics as nested split/category/stat objects. Flatten to a bag.
+function flatStats(doc) {
+  const out = {};
+  (((doc || {}).splits || {}).categories || []).forEach((c) => (c.stats || []).forEach((x) => { out[x.name] = x.value; }));
+  return out;
+}
+const nz = (v) => (typeof v === 'number' ? v : 0);
+const ctrlTime = (v) => { const t = Math.round(nz(v)); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+
+// The exact shape data/fight-stats.json already stores. Verified field-for-field
+// against 26 fighter-rows that fight-stats-backfill.py wrote for a real card:
+// zero mismatches, and head+body+leg and distance+clinch+ground each reconcile
+// to sigStrikesLanded.
+function boxFrom(st) {
+  const s = (...k) => k.reduce((a, x) => a + nz(st[x]), 0);
+  return {
+    kd: nz(st.knockDowns),
+    sigL: nz(st.sigStrikesLanded), sigA: nz(st.sigStrikesAttempted),
+    totL: nz(st.totalStrikesLanded), totA: nz(st.totalStrikesAttempted),
+    tdL: nz(st.takedownsLanded), tdA: nz(st.takedownsAttempted),
+    sub: nz(st.submissions), rev: nz(st.reversals), ctrl: ctrlTime(st.timeInControl),
+    head: [s('sigDistanceHeadStrikesLanded', 'sigClinchHeadStrikesLanded', 'sigGroundHeadStrikesLanded'),
+      s('sigDistanceHeadStrikesAttempted', 'sigClinchHeadStrikesAttempted', 'sigGroundHeadStrikesAttempted')],
+    body: [s('sigDistanceBodyStrikesLanded', 'sigClinchBodyStrikesLanded', 'sigGroundBodyStrikesLanded'),
+      s('sigDistanceBodyStrikesAttempted', 'sigClinchBodyStrikesAttempted', 'sigGroundBodyStrikesAttempted')],
+    leg: [s('sigDistanceLegStrikesLanded', 'sigClinchLegStrikesLanded', 'sigGroundLegStrikesLanded'),
+      s('sigDistanceLegStrikesAttempted', 'sigClinchLegStrikesAttempted', 'sigGroundLegStrikesAttempted')],
+    dist: [s('sigDistanceHeadStrikesLanded', 'sigDistanceBodyStrikesLanded', 'sigDistanceLegStrikesLanded'),
+      s('sigDistanceHeadStrikesAttempted', 'sigDistanceBodyStrikesAttempted', 'sigDistanceLegStrikesAttempted')],
+    clinch: [s('sigClinchHeadStrikesLanded', 'sigClinchBodyStrikesLanded', 'sigClinchLegStrikesLanded'),
+      s('sigClinchHeadStrikesAttempted', 'sigClinchBodyStrikesAttempted', 'sigClinchLegStrikesAttempted')],
+    ground: [s('sigGroundHeadStrikesLanded', 'sigGroundBodyStrikesLanded', 'sigGroundLegStrikesLanded'),
+      s('sigGroundHeadStrikesAttempted', 'sigGroundBodyStrikesAttempted', 'sigGroundLegStrikesAttempted')],
+  };
+}
+
+// ESPN publishes a statistics object BEFORE the fight, with every value zero.
+// Writing that would give the fighter an empty box score forever, so a row is
+// only worth saving once somebody has actually thrown something.
+function hasRealStats(a, b) {
+  const live = (x) => x.sigA > 0 || x.totA > 0 || x.tdA > 0 || x.kd > 0;
+  return live(a) || live(b);
+}
+
+// "KO/TKO" + "Punches" -> "KO/TKO (Punches)"; "Decision - Unanimous" -> "Decision (Unanimous)",
+// which is how every row already in FIGHT_HISTORY is written.
+function methodLabel(method, detail) {
+  const m = String(method || '').trim();
+  if (!m) return '';
+  const dec = /^decision\s*-\s*(.+)$/i.exec(m);
+  if (dec) return 'Decision (' + dec[1].trim() + ')';
+  const d = String(detail || '').trim();
+  if (!d || d.toLowerCase() === m.toLowerCase()) return m;
+  return m + ' (' + d + ')';
+}
+
+// FIGHT_HISTORY dates read "Jul 11, 2026" — the card's US-Eastern calendar day,
+// the same convention the event slug uses.
+function historyDate(startsAt) {
+  const d = new Date(startsAt);
+  if (!isFinite(d.getTime())) return '';
+  return new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', year: 'numeric' }).format(d);
+}
+const resultLetter = (outcome) => ({ win: 'W', loss: 'L', draw: 'D', no_contest: 'NC' }[outcome] || '');
+
+// Rows are keyed by (opponent, date) so a re-poll — or the permanent import
+// landing later — can never double up. Opponent alone is not enough: Fiziev has
+// fought Gaethje twice.
+function hasRow(rows, opponent, date) {
+  return (rows || []).some((r) => r.opponent === opponent && r.date === date);
+}
+
+// The live file only ever carries the current card. Anything older has long since
+// been folded into fight-stats.json and index.html by the permanent importers.
+function pruneLive(live, now) {
+  now = now || Date.now();
+  let dropped = 0;
+  for (const name of Object.keys(live.fighters || {})) {
+    const e = live.fighters[name];
+    const fresh = (rows) => (rows || []).filter((r) => {
+      const t = Date.parse(r.date);
+      return !isFinite(t) || (now - t) < LIVE_PRUNE_DAYS * 86400000;
+    });
+    e.history = fresh(e.history); e.stats = fresh(e.stats);
+    if (!e.history.length && !e.stats.length) { delete live.fighters[name]; dropped++; }
+  }
+  return dropped;
+}
+
 // ── network ──────────────────────────────────────────────────────────────────
 
 async function espnBouts(espnId, cache) {
@@ -152,9 +249,66 @@ async function espnBouts(espnId, cache) {
     }
     if (fighters.length !== 2) continue;
     const w = fighters.find((f) => f.winner);
-    out.push({ names: fighters.map((f) => f.name), winnerSlug: w ? w.slug : null, status });
+    out.push({
+      names: fighters.map((f) => f.name), slugs: fighters.map((f) => f.slug),
+      winnerSlug: w ? w.slug : null, status,
+      statRefs: cs.map((cc) => (cc.statistics && cc.statistics.$ref) || null),
+    });
   }
   return out;
+}
+
+// For a bout that has just been decided, pull both fighters' box scores and
+// write: a row into data/fight-stats.json (which the app already reads), and a
+// row into data/live-history.json for each fighter's FIGHT_HISTORY.
+//
+// Costs 2 requests, once, per finished bout. A bout already recorded costs zero.
+async function enrichFinishedBout(evt, bout, eb, stats, live) {
+  const date = historyDate(evt.startsAt);
+  const names = (bout.fighters || []).map((f) => f.fighterName);
+  if (names.length !== 2 || !date) return [];
+
+  const slot = (n) => (live.fighters[n] = live.fighters[n] || { history: [], stats: [] });
+  // Already captured (or the permanent import beat us to it).
+  if (hasRow(stats[names[0]], names[1], date) && hasRow(slot(names[0]).history, names[1], date)) return [];
+  if (!eb.statRefs || eb.statRefs.some((r) => !r)) return [];
+
+  let boxes;
+  try { boxes = await Promise.all(eb.statRefs.map(async (r) => boxFrom(flatStats(await getJson(r))))); }
+  catch (e) { console.warn(`[live] stats fetch failed for ${names.join(' vs ')} (will retry): ${e.message}`); return []; }
+
+  // ESPN can flip the result before it posts the numbers. Wait for real ones.
+  if (!hasRealStats(boxes[0], boxes[1])) { console.log(`[live] ${names.join(' vs ')}: stats still zeroed — retrying next poll.`); return []; }
+
+  // ESPN's competitor order and ours can differ; align by slug.
+  const idx = (slug) => { const i = (eb.slugs || []).indexOf(slug); return i < 0 ? null : i; };
+  const changed = [];
+  const method = methodLabel(bout.method, bout.methodDetails);
+  const eventName = evt.espnName || evt.title || '';
+
+  (bout.fighters || []).forEach((f, i) => {
+    const me = f.fighterName, them = (bout.fighters[1 - i] || {}).fighterName;
+    const mi = idx(f.fighterSlug), oi = idx((bout.fighters[1 - i] || {}).fighterSlug);
+    if (mi == null || oi == null) return;
+
+    const statRow = { date, opponent: them, result: resultLetter(f.outcome), f: boxes[mi], o: boxes[oi] };
+    const histRow = {
+      date, opponent: them, result: resultLetter(f.outcome), method,
+      round: bout.resultRound || null, time: bout.resultTime || null,
+      event: eventName, org: 'UFC',
+    };
+    if (!hasRow(stats[me], them, date)) {
+      (stats[me] = stats[me] || []).unshift(statRow);
+      changed.push(`box score: ${me} vs ${them}`);
+    }
+    const sl = slot(me);
+    if (!hasRow(sl.stats, them, date)) sl.stats.unshift(statRow);
+    if (!hasRow(sl.history, them, date)) {
+      sl.history.unshift(histRow);
+      changed.push(`history: ${me} ${resultLetter(f.outcome)} vs ${them}`);
+    }
+  });
+  return changed;
 }
 
 async function main() {
@@ -176,13 +330,27 @@ async function main() {
   catch (e) { console.warn('[live] ESPN fetch failed (non-fatal):', e.message); return emit(false, false); }
   if (!live.length) { console.log('[live] ESPN returned no bouts — leaving the card alone.'); return emit(false, false); }
 
+  const stats = loadJson(STATS_PATH, {});
+  const card = loadJson(LIVE_PATH, { fighters: {} });   // `live` is already the ESPN bout list
+  card.fighters = card.fighters || {};
+  pruneLive(card, NOW);
+  const statsBefore = JSON.stringify(stats).length, liveBefore = JSON.stringify(card.fighters);
+
   const changes = [];
   for (const eb of live) {
     const bout = (evt.bouts || []).find((b) => B.sameBout((b.fighters || []).map((f) => f.fighterName), eb.names));
     if (!bout) continue;   // additive changes are the daily rebuild's job, not ours
     const ch = applyResult(bout, eb);
     if (ch.length) changes.push(`${eb.names.join(' vs ')}: ${ch.join(', ')}`);
+
+    // A finished fight also belongs in both fighters' history and box score.
+    if (bout.status === 'completed' && !NO_ENRICH) {
+      const enr = await enrichFinishedBout(evt, bout, eb, stats, card);
+      changes.push(...enr);
+    }
   }
+  const statsDirty = JSON.stringify(stats).length !== statsBefore;
+  const liveDirty = JSON.stringify(card.fighters) !== liveBefore;
 
   const before = evt.status;
   evt.status = liveEventStatus(evt.bouts || [], evt.startsAt, NOW);
@@ -197,7 +365,9 @@ async function main() {
   if (!changes.length) return emit(false, allDecided);
   if (DRY) { console.log('[live] --dry: not writing.'); return emit(true, allDecided); }
 
-  fs.writeFileSync(EVENT_PATH, JSON.stringify(doc));   // event.json only — never the athlete cache
+  fs.writeFileSync(EVENT_PATH, JSON.stringify(doc));   // never the athlete cache
+  if (statsDirty) { fs.writeFileSync(STATS_PATH, JSON.stringify(stats)); console.log('[live] wrote data/fight-stats.json'); }
+  if (liveDirty) { card.generatedAt = new Date().toISOString(); fs.writeFileSync(LIVE_PATH, JSON.stringify(card, null, 1) + '\n'); console.log('[live] wrote data/live-card.json'); }
   console.log('[live] wrote data/event.json');
   return emit(true, allDecided);
 }
@@ -211,5 +381,5 @@ function emit(changed, allDecided) {
   console.log(`allDecided=${!!allDecided}`);
 }
 
-module.exports = { pickLiveEvent, applyResult, liveEventStatus, LEAD_IN_MS, FEATURED_WINDOW_MS };
+module.exports = { pickLiveEvent, applyResult, liveEventStatus, boxFrom, flatStats, hasRealStats, methodLabel, historyDate, resultLetter, hasRow, pruneLive, enrichFinishedBout, LEAD_IN_MS, FEATURED_WINDOW_MS };
 if (require.main === module) main().catch((e) => { console.error('[live] non-fatal error:', e.message); emit(false, false); });

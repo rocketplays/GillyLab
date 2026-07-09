@@ -87062,6 +87062,10 @@ window.FIGHT_STATS = window.FIGHT_STATS || {};
 (function(){
   fetch('./data/fight-stats.json').then(r => r.ok ? r.json() : {}).then(d => {
     window.FIGHT_STATS = d || {};
+    // This assignment REPLACES the object, so any rows glMergeLiveCard() already
+    // folded in are lost if this 9.8MB fetch resolves after it. Re-merge; the
+    // dedupe makes it a no-op once the file itself carries the fight.
+    if (typeof glMergeLiveCard === 'function') { glMergeLiveCard().catch(function(){}); }
     // if a fighter profile is already open, re-render so matching rows light up
     if (window.__currentFighter) { try { populateFightHistory(window.__currentFighter); } catch(e){} }
   }).catch(()=>{});
@@ -107063,6 +107067,51 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // 'upcoming' | 'live' | 'final' for the featured card. The header used to read
   // "TONIGHT" from the moment the countdown hit zero, right through the main event
   // and for ten hours afterwards. Now it says what is actually happening.
+  // ── Live card: fold in the fights that just happened ─────────────────────────
+  // The poller writes each finished bout into data/live-card.json: a FIGHT_HISTORY
+  // row and a box-score row for both fighters. Merging here rather than rewriting
+  // the 13MB index.html means a bad file can only cost us a history row -- it can
+  // never take the site down mid-card.
+  //
+  // Dedupe is on (opponent, date). Opponent alone would be wrong: Fiziev has fought
+  // Gaethje twice. That also makes this a no-op once the permanent importer folds
+  // the fight into index.html and data/fight-stats.json for good.
+  function glMergeRows(target, rows) {
+    let added = 0;
+    (rows || []).slice().reverse().forEach(r => {           // reverse: unshift preserves newest-first
+      if (!r || !r.opponent || !r.date) return;
+      if (target.some(x => x && x.opponent === r.opponent && x.date === r.date)) return;
+      target.unshift(r);
+      added++;
+    });
+    return added;
+  }
+
+  async function glMergeLiveCard() {
+    let doc;
+    try {
+      const r = await fetch('./data/live-card.json', { cache: 'no-store' });
+      if (!r.ok) return 0;
+      doc = await r.json();
+    } catch (e) { return 0; }                                // missing or malformed: carry on regardless
+    const fighters = (doc && doc.fighters) || {};
+    let n = 0;
+    for (const name of Object.keys(fighters)) {
+      const e = fighters[name] || {};
+      if (typeof FIGHT_HISTORY !== 'undefined' && Array.isArray(e.history) && e.history.length) {
+        FIGHT_HISTORY[name] = FIGHT_HISTORY[name] || [];
+        n += glMergeRows(FIGHT_HISTORY[name], e.history);
+      }
+      if (Array.isArray(e.stats) && e.stats.length) {
+        window.FIGHT_STATS = window.FIGHT_STATS || {};
+        window.FIGHT_STATS[name] = window.FIGHT_STATS[name] || [];
+        glMergeRows(window.FIGHT_STATS[name], e.stats);
+      }
+    }
+    return n;
+  }
+
+
   function glCardState(rawEvt, now) {
     if (!rawEvt) return 'upcoming';
     now = now || Date.now();
@@ -107099,6 +107148,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       signature = sig;
 
       try { buildUpcomingOpponentIndex(data); } catch (e) { /* non-fatal */ }
+      await glMergeLiveCard();                                  // new results -> new history + box score
       window.FEATURED_EVENT_STATE = glCardState(raw);
       updateCountdown();                                       // TONIGHT -> LIVE -> FINAL
       glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
@@ -107116,6 +107166,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let apiData = null;
     let featuredRaw = null;
     const rankingsLookupReady = loadRankingsLookup();
+    await glMergeLiveCard();   // a fight that finished mid-card belongs in both fighters' history
     try {
       const resp = await fetch('./data/event.json');
       if (resp.ok) {

@@ -108,7 +108,7 @@ jobs:
               # Another workflow (the twice-daily rebuild) may have pushed since we
               # checked out. Rebase onto it; our patch is idempotent, so if the
               # rebase is hopeless we can safely reset and re-derive next poll.
-              git add data/event.json      # the live patcher touches nothing else
+              git add data/event.json data/fight-stats.json data/live-card.json
               if git diff --staged --quiet; then
                 echo "nothing staged, odd — skipping"
               else

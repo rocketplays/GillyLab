@@ -430,5 +430,58 @@ console.log("\n=== a finished fight renders as final, mid-card ===");
   ok("a bout in progress is not completed", !fightCompleted(b4) && b4.status === "live");
 }
 
+console.log("\n=== live enrichment: box score + fight history ===");
+{
+  const L = require("./fetch-espn-live.cjs");
+
+  // ESPN's flat stat bag -> the exact shape data/fight-stats.json stores.
+  const st = { knockDowns: 1, sigStrikesLanded: 25, sigStrikesAttempted: 39, totalStrikesLanded: 28, totalStrikesAttempted: 43,
+    takedownsLanded: 2, takedownsAttempted: 2, submissions: 0, reversals: 0, timeInControl: 42,
+    sigDistanceHeadStrikesLanded: 8, sigDistanceHeadStrikesAttempted: 14, sigClinchHeadStrikesLanded: 2, sigClinchHeadStrikesAttempted: 3, sigGroundHeadStrikesLanded: 3, sigGroundHeadStrikesAttempted: 4,
+    sigDistanceBodyStrikesLanded: 1, sigDistanceBodyStrikesAttempted: 2, sigClinchBodyStrikesLanded: 0, sigClinchBodyStrikesAttempted: 1, sigGroundBodyStrikesLanded: 1, sigGroundBodyStrikesAttempted: 1,
+    sigDistanceLegStrikesLanded: 7, sigDistanceLegStrikesAttempted: 11, sigClinchLegStrikesLanded: 1, sigClinchLegStrikesAttempted: 1, sigGroundLegStrikesLanded: 2, sigGroundLegStrikesAttempted: 2 };
+  const b = L.boxFrom(st);
+  ok("direct fields map across", b.kd === 1 && b.sigL === 25 && b.tdL === 2 && b.totA === 43);
+  ok("timeInControl seconds -> M:SS", b.ctrl === "0:42");
+  ok("target split sums to sigL", b.head[0] + b.body[0] + b.leg[0] === b.sigL);
+  ok("position split sums to sigL", b.dist[0] + b.clinch[0] + b.ground[0] === b.sigL);
+  ok("attempts reconcile too", b.head[1] + b.body[1] + b.leg[1] === b.sigA);
+
+  // ESPN publishes a zeroed statistics object BEFORE the fight. Writing it would
+  // give the fighter an empty box score that no later run would ever correct.
+  const zero = L.boxFrom({});
+  ok("a pre-fight all-zero row is rejected", !L.hasRealStats(zero, zero));
+  ok("a real row is accepted", L.hasRealStats(zero, b));
+  ok("even a 5-second KO counts", L.hasRealStats(L.boxFrom({ sigStrikesAttempted: 1 }), zero));
+
+  // Method strings must match how FIGHT_HISTORY already writes them.
+  ok("KO with detail", L.methodLabel("KO/TKO", "Punches") === "KO/TKO (Punches)");
+  ok("submission with technique", L.methodLabel("Submission", "Rear Naked Choke") === "Submission (Rear Naked Choke)");
+  ok("decision reshaped", L.methodLabel("Decision - Unanimous", "Decision - Unanimous") === "Decision (Unanimous)");
+  ok("split decision", L.methodLabel("Decision - Split", "") === "Decision (Split)");
+  ok("draw stands alone", L.methodLabel("Draw", "") === "Draw");
+  ok("no method -> empty", L.methodLabel(null, null) === "");
+
+  // The card's US-Eastern day, matching what the backfill wrote for the same fight.
+  ok("main card after midnight UTC still reads the Saturday", L.historyDate("2026-07-12T01:00:00Z") === "Jul 11, 2026");
+  ok("an afternoon card", L.historyDate("2026-06-27T22:00:00Z") === "Jun 27, 2026");
+
+  ok("outcome -> letter", L.resultLetter("win") === "W" && L.resultLetter("loss") === "L" && L.resultLetter("draw") === "D" && L.resultLetter("no_contest") === "NC");
+
+  // Opponent alone is not a key: Fiziev has fought Gaethje twice.
+  const rows = [{ opponent: "Justin Gaethje", date: "Mar 8, 2025" }];
+  ok("same opponent, same date -> already have it", L.hasRow(rows, "Justin Gaethje", "Mar 8, 2025"));
+  ok("same opponent, different date -> a different fight", !L.hasRow(rows, "Justin Gaethje", "Sep 9, 2023"));
+  ok("empty rows", !L.hasRow(undefined, "X", "Y"));
+
+  // The live file only carries the current card.
+  const old = new Date(Date.now() - 40 * 86400000).toDateString();
+  const recent = new Date(Date.now() - 2 * 86400000).toDateString();
+  const card = { fighters: { Stale: { history: [{ opponent: "X", date: old }], stats: [] }, Fresh: { history: [{ opponent: "Y", date: recent }], stats: [] } } };
+  L.pruneLive(card, Date.now());
+  ok("a month-old fighter is pruned", !card.fighters.Stale);
+  ok("this card is kept", !!card.fighters.Fresh);
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);
