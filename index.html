@@ -101090,6 +101090,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  const el = document.getElementById('countdown');
  if (!el) return;
  if (window.__GL_VIEWING_PAST) { el.textContent = 'FINAL'; return; }
+ // Set on load and refreshed by the live poller as bouts resolve.
+ if (window.FEATURED_EVENT_STATE === 'final') { el.textContent = 'FINAL'; return; }
+ if (window.FEATURED_EVENT_STATE === 'live')  { el.textContent = 'LIVE';  return; }
  const iso = window.FEATURED_EVENT_STARTS_AT;
  const eventDate = iso ? new Date(iso) : new Date('2026-05-16T20:00:00');
  const now = new Date();
@@ -106967,6 +106970,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (sel.value === '__featured__') {
           window.__GL_VIEWING_PAST = false;
           header.classList.remove('gl-past-view'); // restore the upcoming-event countdown
+          window.FEATURED_EVENT_STATE = glCardState(featuredRaw);
           if (eventCountdownStart(featuredRaw)) window.FEATURED_EVENT_STARTS_AT = eventCountdownStart(featuredRaw);
           updateCountdown();
           if (featuredRaw) glSwapFightCard(() => renderHomeFightCard(parseApiEvent(featuredRaw)));
@@ -107056,6 +107060,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       .join(';');
   }
 
+  // 'upcoming' | 'live' | 'final' for the featured card. The header used to read
+  // "TONIGHT" from the moment the countdown hit zero, right through the main event
+  // and for ten hours afterwards. Now it says what is actually happening.
+  function glCardState(rawEvt, now) {
+    if (!rawEvt) return 'upcoming';
+    now = now || Date.now();
+    const bouts = (rawEvt.bouts || []).filter(b => !b.isCancelled);
+    if (bouts.length && bouts.every(b => b.status === 'completed')) return 'final';
+    const started = Date.parse(rawEvt.prelimsStartsAt || rawEvt.startsAt);
+    const anyAction = bouts.some(b => b.status === 'live' || b.status === 'completed');
+    if (anyAction || (isFinite(started) && now >= started)) return 'live';
+    return 'upcoming';
+  }
+
   function glStartLiveRefresh(initialRaw) {
     if (!glInLiveWindow(initialRaw)) return;
     let signature = glResultSignature(initialRaw);
@@ -107081,6 +107099,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       signature = sig;
 
       try { buildUpcomingOpponentIndex(data); } catch (e) { /* non-fatal */ }
+      window.FEATURED_EVENT_STATE = glCardState(raw);
+      updateCountdown();                                       // TONIGHT -> LIVE -> FINAL
       glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
       if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 100);
     };
@@ -107104,6 +107124,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           await rankingsLookupReady;
           featuredRaw = pickFeaturedRawEvent(apiData);
           evt = parseApiEvent(featuredRaw);
+          window.FEATURED_EVENT_STATE = glCardState(featuredRaw);
           if (eventCountdownStart(featuredRaw)) {
             window.FEATURED_EVENT_STARTS_AT = eventCountdownStart(featuredRaw);
             updateCountdown();

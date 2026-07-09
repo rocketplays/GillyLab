@@ -393,5 +393,42 @@ console.log("\n=== live result patcher (fetch-espn-live) ===");
   ok("a card with one bout in progress is live", L.liveEventStatus([{ status: "completed" }, { status: "live" }], "2026-07-12T01:00:00Z", at("2026-07-12T03:00:00Z")) === "live");
 }
 
+console.log("\n=== a finished fight renders as final, mid-card ===");
+{
+  const L = require("./fetch-espn-live.cjs");
+  // parseApiEvent's exact per-fight rule. It is what swaps the Fight Info
+  // dropdown for the results panel and hides the Simulate button.
+  const fightCompleted = (b) => {
+    const [red, blue] = b.fighters;
+    const ro = (red.outcome || "").toLowerCase().replace(/_/g, " ");
+    const bo = (blue.outcome || "").toLowerCase().replace(/_/g, " ");
+    const won1 = ro === "win", won2 = bo === "win";
+    const isNC = ro === "nc" || ro === "no contest" || bo === "nc" || bo === "no contest";
+    const isDraw = ro === "draw" || bo === "draw";
+    return (b.status === "completed") && (won1 || won2 || ro === "loss" || bo === "loss" || isDraw || isNC);
+  };
+  const bout = () => ({ status: "confirmed", isCancelled: false, winnerFighterSlug: null, resultRound: 0, resultTime: null,
+    method: null, methodDetails: null, dataAvailability: { result: "pending" },
+    fighters: [{ fighterSlug: "a", fighterName: "A", outcome: null }, { fighterSlug: "b", fighterName: "B", outcome: null }] });
+  const ko = { winnerSlug: "a", status: { type: { completed: true, state: "post" }, period: 1, displayClock: "4:02", result: { displayName: "KO/TKO", description: "Punches" } } };
+  const draw = { winnerSlug: null, status: { type: { completed: true, state: "post" }, period: 3, displayClock: "5:00", result: { displayName: "Draw" } } };
+  const nc = { winnerSlug: null, status: { type: { completed: true, state: "post" }, period: 2, displayClock: "1:10", result: { displayName: "No Contest" } } };
+
+  const b1 = bout(); ok("an untouched bout is not 'completed'", !fightCompleted(b1));
+  L.applyResult(b1, ko);
+  ok("a finished bout flips to completed -> results panel", fightCompleted(b1));
+
+  // A draw and a no contest have no winner. If they didn't register as completed
+  // the card would show them, forever, as if they hadn't happened.
+  const b2 = bout(); L.applyResult(b2, draw);
+  ok("a draw registers as completed", fightCompleted(b2) && !b2.winnerFighterSlug);
+  const b3 = bout(); L.applyResult(b3, nc);
+  ok("a no contest registers as completed", fightCompleted(b3) && b3.fighters[0].outcome === "no_contest");
+
+  // A bout underway must NOT render as final.
+  const b4 = bout(); L.applyResult(b4, { winnerSlug: null, status: { type: { completed: false, state: "in" }, period: 1 } });
+  ok("a bout in progress is not completed", !fightCompleted(b4) && b4.status === "live");
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);
