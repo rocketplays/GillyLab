@@ -26,44 +26,72 @@ fight.
 
 ---
 
-## 1b. Pre-existing collisions — one video ID on two unrelated fights
+## 1b. Pre-existing collisions — CLOSED, and they were a symptom
 
-Found while cleaning up section 1, and **not introduced by either upload** — all
-12 predate the first tape-study commit. A YouTube ID identifies exactly one
-video, so in each pair one placement is wrong and is showing the wrong fight
-right now.
+**17** URLs (not 12 — my first count had a bug, see below) each sat on two
+fights from different months. All 17 were YouTube. I loaded every one of them in
+a browser: **all 17 are dead**, showing "This video isn't available anymore".
+Both rows deleted for each, 34 rows total. Jose Ochoa's entire `TAPE_STUDY` entry
+came off, since all three of his links were in this set.
 
-I did not touch these. They were not part of what you asked for, and unlike
-section 1 the videos are presumably real, so the fix is to work out which fight
-each belongs to rather than delete.
+The collision was never the real problem.
 
-| URL | Placement A | Placement B |
-|-----|-------------|-------------|
-| `youtube.com/watch?v=mY9J4NqOqzU` | Joshua Van vs Rei Tsuruya (Mar 8, 2025) | Sean Brady vs Jake Matthews (Mar 6, 2021) |
-| `youtube.com/watch?v=tBmVkXqJcNA` | Joshua Van vs Felipe Bunes (Jan 13, 2024) | Jose Ochoa vs Asu Almabayev (Jul 26, 2025) |
-| `youtube.com/watch?v=mGbTkNxFpLE` | Joshua Van vs Kevin Borjas (Nov 11, 2023) | Jose Ochoa vs Lone'er Kavanagh (Nov 23, 2024) |
-| `youtube.com/watch?v=pQnKJxF7mYE` | Joshua Van vs Zhalgas Zhumagulov (Jun 24, 2023) | Jose Ochoa vs Cody Durden (Jun 14, 2025) |
-| `youtube.com/watch?v=Xm5RQ4sXhFE` | Alexander Volkov vs Walt Harris (Oct 24, 2020) | Waldo Cortes-Acosta vs Serghei Spivac (Jun 7, 2025) |
-| `youtube.com/watch?v=JKb3qjG7LZA` | Alexander Volkov vs Derrick Lewis (Oct 6, 2018) | Waldo Cortes-Acosta vs Derrick Lewis (Jan 24, 2026) |
-| `youtube.com/watch?v=XcMbEjPoW5A` | Grant Dawson vs Bobby Green (Oct 7, 2023) | Jim Miller vs Bobby Green (Apr 13, 2024) |
-| `youtube.com/watch?v=hQmSY8JpGnM` | Jim Miller vs Damon Jackson (Nov 16, 2024) | Clayton Carpenter vs Juancamilo Ronderos (Feb 18, 2023) |
-| `youtube.com/watch?v=3mK4wbD8YxY` | Joaquin Buckley vs Takashi Sato † | Marco Tulio vs Vitor Petrino † |
-| `youtube.com/watch?v=WJqxMbCPKlE` | Joaquin Buckley vs Michal Oleksiejczuk † | Marco Tulio vs Karl Roberson † |
-| `youtube.com/watch?v=T7A3q2Kwm_E` | Joel Alvarez vs Davi Ramos † | Grant Dawson vs Alan Patrick † |
-| `youtube.com/watch?v=GYN8f1N6P4s` | Joel Alvarez vs Stevie Ray † | Grant Dawson vs Nasrat Haqparast † |
+### What the check actually found
 
-† = neither fight has a `FIGHT_HISTORY` row, so neither placement renders. Those
-four are harmless today but still wrong.
+Chasing those 17 IDs surfaced a pattern. There are two distinct YouTube failure
+messages, and they mean different things:
 
-The last two pairs share a suspicious shape — Volkov/Cortes-Acosta and
-Buckley/Marco Tulio and Alvarez/Dawson are each *heavyweight-ish fighter paired
-with a different heavyweight-ish fighter*, four fights deep. That looks like a
-block of links copied onto the wrong fighter wholesale, not four coincidences.
+- *"the YouTube account associated with this video has been terminated"* — a real
+  video ID whose channel was later removed.
+- *"This video isn't available anymore"* — the generic response for an ID that was
+  deleted or never existed.
 
-Legitimate sharing, left alone: 42 URLs sit on two rows because the same video is
-the same fight seen from both fighters' pages, and 27 are event pages covering
-several bouts from one night (e.g. `ufcfightpass.com/video/206203` =
-*UFC Fight Night: Hall vs Silva*, on three fights from that card).
+Sampling 31 IDs across the corpus splits perfectly along one line, and it is not
+the line I expected:
+
+| | loaded OK | dead |
+|---|---|---|
+| YouTube link on a **regional / pre-UFC** row | 6 of 6 | 0 |
+| YouTube link on a **UFC-banner** row | 0 of 25 | 25 |
+
+Every regional link resolves to a real video whose **title names exactly the
+fight it is attached to** (e.g. `D40Qen3rFmQ` = "WFC 24 / Brave : Ivica Truscek vs
+Benoit St. Denis", on the Benoît Saint Denis vs Ivica Trušček row). Every UFC-card
+link is unplayable — 24 gone, 1 private.
+
+That makes sense: UFC full fights aren't hosted on public YouTube, they're on
+Fight Pass. A YouTube link on a UFC bout was never going to work.
+
+### 1c. STILL OPEN — 108 more of the same
+
+After deleting the 34, **108 pre-existing YouTube links remain on UFC-banner
+rows**, across 24 fighters. I verified 25 of that class were dead; the other 108
+are unverified but are the same shape, from the same source, on the same kind of
+bout.
+
+Worst offenders: Jeremy Stephens (10), Khamzat Chimaev (9), Sean Strickland (8),
+Tatsuro Taira (8), Joaquin Buckley (8), Alexander Volkov (7), Joshua Van (6).
+
+I stopped here rather than delete 108 rows on an inference. Two options: I can
+load all 108 in the browser and delete only the confirmed-dead ones (slow but
+certain), or delete the class outright on the pattern above. Your call.
+
+Note the 245 pre-existing YouTube links on **regional** rows look fine and should
+be left alone — that's where the real footage lives.
+
+### Correction to my earlier count
+
+I first reported 12 conflicts. The classifier was wrong: it called a group "one
+event page, several bouts" whenever the fights' dates collapsed to a single
+value, which is trivially true when only one of the two rows has a
+`FIGHT_HISTORY` date. Re-running it against the tape rows' own event labels
+(month + year) gives **17 conflicts, 42 mirrored, 22 event pages**. `gvNBqLJMT3s`
+and `8bF9kNbvKR4` were among the ones it wrongly cleared.
+
+Legitimate sharing, left alone: 42 URLs sit on two rows because it's the same
+fight seen from both fighters' pages, and 22 are event pages covering several
+bouts from one night (e.g. `ufcfightpass.com/video/206203` = *UFC Fight Night:
+Hall vs Silva*, on three fights from that card).
 
 ---
 
@@ -140,8 +168,10 @@ Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
 
 ## Current state
 
-- `TAPE_STUDY`: **150 fighters, 1,760 rows**
-- Fight-history rows that resolve a video: **1,728**
+- `TAPE_STUDY`: **149 fighters, 1,726 rows**
+- Fight-history rows that resolve a video: **1,707**
 - Unplaced links from `document.txt`: **8** (was 19) — all in section 2a
-- Rows showing a video from the wrong fight: **12 pairs, all pre-existing** (section 1b).
-  Nothing either upload added is misplaced.
+- Rows showing a video from the wrong fight: **0** (was 17)
+- Rows pointing at a video that almost certainly doesn't exist: **108**, all
+  pre-existing YouTube links on UFC-card bouts (section 1c). Nothing either
+  upload added is affected.
