@@ -120,13 +120,12 @@ function nameToSlug(name) {
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 // public/photos/thumb is produced by the build, which runs AFTER this script, so
-// on a fresh CI checkout it is empty and every slug would resolve to '' -- the
-// landing page would silently lose its photos. data/photos holds the sources the
-// build resizes (and the workflow's photo step has already refreshed them by now),
-// so accept either.
-const photoExists = (slug) => !!slug && (
-  fs.existsSync(path.join(ROOT, 'public/photos/thumb', slug + '.png')) ||
-  fs.existsSync(path.join(ROOT, 'data/photos', slug + '.png')));
+// on a fresh CI checkout it does not exist and every slug would resolve to '' --
+// the landing page would silently lose its photos. photos/thumb is the tracked
+// library the build copies from; data/photos holds sources the workflow's photo
+// step refreshes just before this runs. Accept any of the three.
+const PHOTO_DIRS = ['photos/thumb', 'public/photos/thumb', 'data/photos'];
+const photoExists = (slug) => !!slug && PHOTO_DIRS.some((d) => fs.existsSync(path.join(ROOT, d, slug + '.png')));
 const initials2 = (name) => { const p = String(name).trim().split(/\s+/); return (((p[0] || '')[0] || '') + ((p[p.length - 1] || '')[0] || '')).toUpperCase(); };
 const toProb = (o) => o < 0 ? (-o) / ((-o) + 100) : 100 / (o + 100);
 const toAmerican = (p) => p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p);
