@@ -103905,9 +103905,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // prev-events dropdown, which filters for completed separately.)
       .filter(e => e && e.status !== 'completed')
       .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return events.find(e => new Date(e.startsAt) >= today) || events[events.length - 1];
+    // Keep a card featured until it has actually finished, not until the calendar
+    // day flips. startsAt is the MAIN CARD time (~9pm ET on a Saturday), so
+    // flooring to local midnight handed the slot to next week's event at 00:00,
+    // while the main event was still in the cage. A card runs ~4h from the main
+    // card bell; 6h leaves room for a long night and the immediate aftermath.
+    const CARD_RUNTIME_MS = 6 * 3600 * 1000;
+    const now = Date.now();
+    return events.find(e => Date.parse(e.startsAt) + CARD_RUNTIME_MS >= now) || events[events.length - 1];
   }
 
   function buildEvtFromAPI(apiData) {
