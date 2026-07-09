@@ -145,6 +145,11 @@
       font-size: 0.875rem;
       letter-spacing: 0.03em;
       cursor: pointer;
+      /* Decorative only — the wrapping row handles the click. Letting this
+         readonly field take focus made iOS zoom in (any focused input under
+         16px does); staying transparent to pointer events avoids that without
+         resizing the header. */
+      pointer-events: none;
     }
 
     .header-search-input::placeholder { color: var(--muted); }
@@ -3079,9 +3084,11 @@
 <!-- SITE HEADER -->
 <div class="site-header">
   <!-- Row 1: Search -->
-  <div class="header-search-row" onclick="openSearch()">
-    <span class="header-search-icon">⌕</span>
-    <input class="header-search-input" placeholder="Search fighters..." readonly />
+  <div class="header-search-row" role="button" tabindex="0" aria-label="Search fighters"
+       onclick="openSearch()"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSearch();}">
+    <span class="header-search-icon" aria-hidden="true">⌕</span>
+    <input class="header-search-input" placeholder="Search fighters..." readonly tabindex="-1" aria-hidden="true" />
   </div>
 
   <!-- Row 2: Logo + Nav -->
