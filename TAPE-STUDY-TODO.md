@@ -182,20 +182,47 @@ Sam Patterson's `yanal-ashmoz-vs-sam-patterson-ufc-286` went to Yanal Ashmouz.
   and everything resolves through it via the slug, so nothing is broken — just
   inconsistent.
 
-- **51 tape rows point at an opponent with no `FIGHT_HISTORY` row** (42 of them
-  carry a URL). Those rows can never render, because the Tape Study page and the
-  profile's Fight History tab both iterate `FIGHT_HISTORY` and look the video up
-  per fight. Either the bouts are missing from history, or the opponent names
-  disagree between the two tables. Worth a sweep.
+- **The 51 orphan tape rows — swept, down to 1.** Rows whose opponent had no
+  `FIGHT_HISTORY` match, and so could never render. 51 → 31 → 5 as the dead-link
+  purges took most of them out; they were overwhelmingly the same junk. Of the
+  final five: two were typos, now fixed and rendering (`Lenadro Higo` →
+  **Leandro Higo**, `Abus Magomedov` → **Abusupiyan Magomedov**, both videos
+  verified against the row). Two were inert rows with no URL, deleted — Aaron Pico
+  vs `Solo Hatley Jr` and Roman Kopylov vs `Chris Leroy Duncan`.
+
+  **One remains, and it's a gap in `FIGHT_HISTORY`, not in the tape:**
+  **Tahir Abdullayev vs Maxim Butorin**, AMC Fight Nights 112, Jun 2022 —
+  `youtube.com/watch?v=bIUFj0HUFC0` is a real, playing video titled
+  "Тахир Абдуллаев vs Максим Буторин. AMC Fight Nights 112." His history jumps
+  from Oct 2021 straight to Sep 2022. The bout is missing from the site. Add the
+  history row and the video lights up on its own.
+
+  Also unresolved: Pico's Bellator 242 opponent is `Chris Hatley` in
+  `FIGHT_HISTORY` but was `Solo Hatley Jr` in the tape. Solo Hatley Jr is a real
+  fighter — `ts_2HzStZ9Y` is "Full Fight | Solo Hatley Jr vs. Gaston Bolanos -
+  Bellator 239" — so one of the two names is wrong. I didn't guess.
+
+- **`ufc.com/video/` links — 5 in the file, 2 were broken.** Found while checking
+  the above. A dead UFC video id does not 404: it **redirects to the fighter's
+  athlete page**, which is exactly where the mysterious
+  `ufc.com/athlete/sean-strickland` "link" in batch 1 came from. `132962`
+  (Strickland vs Imavov) does this, and was removed. `141363` was worse — it is
+  titled "Dricus Du Plessis vs Sean Strickland **1**" but sat on the **UFC 312
+  rematch** row; it has been relabelled to UFC 297 / Jan 2024, so it now plays on
+  the fight it actually shows, and the rematch correctly shows no video.
+  `135781` returns "Access denied", which for ufc.com means gated, not dead — a
+  bad id redirects to search instead. Left in place, same as Fight Pass.
 
 ---
 
 ## Current state
 
-- `TAPE_STUDY`: **146 fighters, 1,625 rows**
-- Fight-history rows that resolve a video: **1,629**
+- `TAPE_STUDY`: **146 fighters, 1,622 rows**
+- Fight-history rows that resolve a video: **1,630**
 - Unplaced links from `document.txt`: **8** (was 19) — all in section 2a
-- Rows showing a video from the wrong fight: **0** (was 17, plus 2 found in 1c)
+- Tape rows that can never render (no matching `FIGHT_HISTORY` row): **1** (was 51)
+- Rows showing a video from the wrong fight: **0** (was 17, plus 2 in 1c, plus the
+  Strickland/Du Plessis mislabel)
 - Rows pointing at a video that doesn't play: **0**. Every YouTube link on a
   UFC-card bout has been loaded and checked individually.
 - Fight Pass and Paramount+ links are untouched throughout. They require a
