@@ -44,6 +44,10 @@ const HORIZON_DAYS = argN('--horizon', 120);
 const MAX_EVENTS = argN('--max-events', 8);
 const DRY = args.includes('--dry');
 const ATHLETE_TTL_DAYS = 30;
+// A cached athlete not seen on any card for this long is dead weight — a
+// retired fighter, or someone who fought once in 2026. Drop them so the cache
+// tracks the active roster instead of growing forever.
+const ATHLETE_PRUNE_DAYS = 240;
 const DAY = 86400000;
 
 const SCOREBOARD = 'https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard';
@@ -117,6 +121,19 @@ const A3_FLAG = {
   SCO: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', WAL: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', JAM: '🇯🇲', CUB: '🇨🇺', DOM: '🇩🇴', SUR: '🇸🇷', PAN: '🇵🇦',
 };
 function flagFor(a3) { return A3_FLAG[String(a3 || '').toUpperCase()] || null; }
+
+// Pure: drop athletes whose last appearance on a tracked card is long past.
+// Falls back to fetchedAt for entries written before lastSeenAt existed.
+function pruneCache(cache, now) {
+  now = now || Date.now();
+  const athletes = (cache && cache.athletes) || {};
+  let dropped = 0;
+  for (const id of Object.keys(athletes)) {
+    const seen = Date.parse(athletes[id].lastSeenAt || athletes[id].fetchedAt || '');
+    if (isFinite(seen) && (now - seen) > ATHLETE_PRUNE_DAYS * DAY) { delete athletes[id]; dropped += 1; }
+  }
+  return dropped;
+}
 
 function parseRecordText(recordText) {
   const m = String(recordText || '').match(/(\d+)-(\d+)-(\d+)/);
@@ -233,7 +250,10 @@ function loadCache() { try { return JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8
 
 async function getAthlete(id, cache) {
   const hit = cache.athletes[id];
-  if (hit && hit.fetchedAt && (Date.now() - Date.parse(hit.fetchedAt)) < ATHLETE_TTL_DAYS * DAY) return hit;
+  if (hit && hit.fetchedAt && (Date.now() - Date.parse(hit.fetchedAt)) < ATHLETE_TTL_DAYS * DAY) {
+    hit.lastSeenAt = new Date().toISOString();  // keeps them safe from the prune
+    return hit;
+  }
   const a = await getJson(`${CORE}/athletes/${id}`);
   let recordText = null;
   try {
@@ -246,7 +266,7 @@ async function getAthlete(id, cache) {
     country: a.citizenship || null, flag: flagFor(a.citizenshipCountry && a.citizenshipCountry.abbreviation),
     division: (a.weightClass && a.weightClass.text) || null,
     headshot: (a.headshot && a.headshot.href) || null,
-    recordText, fetchedAt: new Date().toISOString(),
+    recordText, fetchedAt: new Date().toISOString(), lastSeenAt: new Date().toISOString(),
   };
   cache.athletes[id] = out;
   return out;
@@ -344,6 +364,8 @@ async function main() {
   }
 
   if (DRY) { console.log('[espn-bouts] --dry: not writing.'); return; }
+  const dropped = pruneCache(cache);
+  if (dropped) console.log(`[espn] pruned ${dropped} athlete(s) not seen on a card in ${ATHLETE_PRUNE_DAYS} days.`);
   fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2) + '\n');
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + '\n');
   if (added > 0) {
@@ -354,5 +376,5 @@ async function main() {
   }
 }
 
-module.exports = { normName, softName, deburr, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
+module.exports = { normName, softName, deburr, pruneCache, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
 if (require.main === module) main().catch((e) => { console.error('[espn-bouts] non-fatal error:', e.message); });
