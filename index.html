@@ -100080,7 +100080,12 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       row.appendChild(l); row.appendChild(a); row.appendChild(b); bx.appendChild(row);
     };
     const pct = v => { const m = /([0-9.]+)/.exec(String(v == null ? '' : v)); return m ? parseFloat(m[1]) : null; };
-    const okStats = s => s && s.slpm != null && s.strAcc != null && s.tdDef != null;
+    // Gate on the stats the read actually consumes: lean() needs slpm/tdLanded/
+    // subAvg, output() needs slpm/strAcc. tdDef was required too, but it is null
+    // whenever no opponent has ever ATTEMPTED a takedown on a fighter -- a fact
+    // about his opponents, not missing tape. It denied Kaue Fernandes, Jackson
+    // McVey and four others a style read they had complete data for.
+    const okStats = s => s && s.slpm != null && s.strAcc != null;
     const N = s => ({
       slpm: +s.slpm || 0, sapm: +s.sapm || 0, kd: s.kd != null ? +s.kd : null,
       tdLanded: +s.tdLanded || 0, subAvg: +s.subAvg || 0,
