@@ -149,6 +149,15 @@ async function getAthlete(ref, cache) {
   return out;
 }
 
+// A no contest is not a draw. ESPN reports both as "no winner", so read the
+// method to tell them apart, exactly as Cito did.
+function outcomeFor(decided, isWinner, hasWinner, method) {
+  if (!decided) return null;
+  if (isWinner) return 'win';
+  if (hasWinner) return 'loss';
+  return /no\s*contest|^nc$/i.test(String(method || '')) ? 'no_contest' : 'draw';   // Cito's exact spelling
+}
+
 function buildFighter(boutId, spec, corner, outcome) {
   return {
     id: 'espn-' + spec.slug, boutId,
@@ -172,7 +181,6 @@ function buildFighter(boutId, spec, corner, outcome) {
 async function buildEventFull(espnId, cache) {
   const ev = await getJson(`${LEAGUE}/events/${espnId}`);
   const label = ev.name || ev.shortName || 'UFC Fight Night';
-  const startsAt = new Date(ev.date).toISOString();
 
   let venue = null;
   try {
@@ -180,7 +188,6 @@ async function buildEventFull(espnId, cache) {
     if (vref) { const v = await getJson(vref); venue = { fullName: v.fullName || null, address: v.address || {} }; }
   } catch (e) { /* cosmetic */ }
 
-  const slug = B.eventSlugFor(label, startsAt);
   const comps = await getJson(`${LEAGUE}/events/${espnId}/competitions?limit=50`);
 
   const raw = (await pool(comps.items || [], CONCURRENCY, async (it) => {
@@ -204,6 +211,7 @@ async function buildEventFull(espnId, cache) {
     const seg = B.mapSegment(c.cardSegment && c.cardSegment.description);
     const { method, methodDetails } = methodOf(status && status.result);
     return {
+      date: c.date || null,
       matchNumber: c.matchNumber || 999,
       section: seg.section, sectionOrder: seg.order,
       weightClass: B.weightClassText((c.type && c.type.text) || '', !!(c.types && c.types.length)),
@@ -217,6 +225,14 @@ async function buildEventFull(espnId, cache) {
       fighters,
     };
   })).filter(Boolean);
+
+  // ESPN's event.date is when the EARLY PRELIMS start; Cito's startsAt was the
+  // main-card time, which is what the app displays and what the slug's Eastern
+  // date is derived from. ESPN's own main-card bouts carry that exact timestamp,
+  // so take the earliest of them and fall back to the event date.
+  const mainDates = raw.filter((b) => b.section === 'Main Card' && b.date).map((b) => Date.parse(b.date)).filter(isFinite);
+  const startsAt = new Date(mainDates.length ? Math.min(...mainDates) : Date.parse(ev.date)).toISOString();
+  const slug = B.eventSlugFor(label, startsAt);
 
   // matchNumber 1 is the main event. Order within each segment.
   const bySeg = {};
@@ -246,7 +262,7 @@ async function buildEventFull(espnId, cache) {
       createdAt: now, lastSyncedAt: b.lastUpdated || now,
       fighters: b.fighters.map((f, i) => buildFighter(
         boutId, f.spec, i === 0 ? 'red' : 'blue',
-        decided ? (f.winner ? 'win' : (win ? 'loss' : 'draw')) : null,
+        outcomeFor(decided, f.winner, !!win, b.method),
       )),
       roundStats: [], dataId: boutId, hasStats: false,
       dataFreshness: b.lastUpdated || now, freshnessStatus: 'espn', dataAgeHours: 0,
@@ -321,5 +337,5 @@ async function main() {
   console.log(`[espn-events] wrote ${OUT_DIR}/event.json + event-recent.json`);
 }
 
-module.exports = { methodOf, resultTimeOf, boutStatusOf, eventStatusOf, parseRecordText, buildEventFull, fixRef };
+module.exports = { methodOf, resultTimeOf, boutStatusOf, eventStatusOf, outcomeFor, parseRecordText, buildEventFull, fixRef };
 if (require.main === module) main().catch((e) => { console.error('[espn-events] fatal:', e.message); process.exit(1); });

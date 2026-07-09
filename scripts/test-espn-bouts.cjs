@@ -287,5 +287,33 @@ console.log("\n=== event series: Road to UFC must not be mistaken for a Fight Ni
   ok("series: plain ufc", m.seriesOf("UFC Fight Night: Whoever")==="ufc" && m.seriesOf("UFC 330")==="ufc");
 }
 
+console.log("\n=== ESPN feed builder (fetch-espn-events) ===");
+{
+  const E=require("./fetch-espn-events.cjs");
+  ok("winner -> win", E.outcomeFor(true,true,true,"KO/TKO")==="win");
+  ok("loser -> loss", E.outcomeFor(true,false,true,"KO/TKO")==="loss");
+  // ESPN reports a no contest and a draw identically (no winner). Only the
+  // method tells them apart, and Cito spelled it "no_contest".
+  ok("no contest -> no_contest, NOT draw", E.outcomeFor(true,false,false,"No Contest")==="no_contest");
+  ok("draw -> draw", E.outcomeFor(true,false,false,"Draw")==="draw");
+  ok("undecided bout -> null outcome", E.outcomeFor(false,false,false,null)===null);
+
+  ok("keeps the submission technique", E.methodOf({displayName:"Submission",description:"Suloev Stretch"}).methodDetails==="Suloev Stretch");
+  ok("keeps the KO detail", E.methodOf({displayName:"KO/TKO",description:"Punches"}).methodDetails==="Punches");
+  ok("drops redundant decision detail", E.methodOf({displayName:"Decision - Unanimous",description:"Decision - Unanimous"}).methodDetails===null);
+  ok("no result -> no method", E.methodOf(null).method===null);
+
+  ok("bout status: final", E.boutStatusOf({type:{completed:true,state:"post"}})==="completed");
+  ok("bout status: live", E.boutStatusOf({type:{completed:false,state:"in"}})==="live");
+  ok("bout status: upcoming", E.boutStatusOf({type:{completed:false,state:"pre"}})==="confirmed");
+  ok("result time only when final", E.resultTimeOf({type:{completed:false},displayClock:"2:30"})===null);
+
+  ok("event completed when all bouts are", E.eventStatusOf([{status:"completed"},{status:"completed"}],"2026-01-01")==="completed");
+  ok("event live when any bout is", E.eventStatusOf([{status:"live"},{status:"confirmed"}],"2099-01-01")==="live");
+  ok("future event scheduled", E.eventStatusOf([{status:"confirmed"}],"2099-01-01")==="scheduled");
+
+  ok("rewrites ESPN's internal .pvt host", E.fixRef("http://sports.core.api.espn.pvt/v2/x")==="https://sports.core.api.espn.com/v2/x");
+}
+
 console.log('\n' + (fails ? fails + ' TEST(S) FAILED' : 'all tests passed'));
 process.exit(fails ? 1 : 0);

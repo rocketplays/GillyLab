@@ -132,6 +132,9 @@ const A3_FLAG = {
   NGA: '🇳🇬', CMR: '🇨🇲', RSA: '🇿🇦', ZAF: '🇿🇦', SRB: '🇷🇸', CRO: '🇭🇷', BIH: '🇧🇦', SLO: '🇸🇮',
   ROU: '🇷🇴', BUL: '🇧🇬', GRE: '🇬🇷', HUN: '🇭🇺', MDA: '🇲🇩', LTU: '🇱🇹', LVA: '🇱🇻', EST: '🇪🇪',
   SCO: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', WAL: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', JAM: '🇯🇲', CUB: '🇨🇺', DOM: '🇩🇴', SUR: '🇸🇷', PAN: '🇵🇦',
+  ABW: '🇦🇼', ARU: '🇦🇼', NIR: '🇬🇧', BOL: '🇧🇴', PRY: '🇵🇾', PAR: '🇵🇾', URY: '🇺🇾', URU: '🇺🇾',
+  CRI: '🇨🇷', CRC: '🇨🇷', GTM: '🇬🇹', GUA: '🇬🇹', HND: '🇭🇳', NIC: '🇳🇮', TTO: '🇹🇹', GUY: '🇬🇾',
+  SGP: '🇸🇬', SIN: '🇸🇬', MYS: '🇲🇾', MAS: '🇲🇾', IDN: '🇮🇩', INA: '🇮🇩', TWN: '🇹🇼', TPE: '🇹🇼',
 };
 function flagFor(a3) { return A3_FLAG[String(a3 || '').toUpperCase()] || null; }
 
