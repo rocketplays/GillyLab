@@ -37,6 +37,11 @@ const ROOT = path.resolve(__dirname, '..');
 const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
 const CACHE_PATH = path.join(ROOT, 'data', 'espn-athletes.json');
 const REPORT_PATH = path.join(ROOT, 'data', 'espn-bouts-report.json');
+const CANCEL_PATH = path.join(ROOT, 'data', 'cancelled-bout-overrides.json');
+const NEWS_PATH = path.join(ROOT, 'data', 'fighter-news.json');
+// Durable record of what we injected last run, so an ESPN outage can't make
+// real bouts blink off the site (see keepLastGood below).
+const INJECTED_PATH = path.join(ROOT, 'data', 'espn-injected.json');
 
 const args = process.argv.slice(2);
 const argN = (flag, def) => { const i = args.indexOf(flag); return i >= 0 ? +args[i + 1] : def; };
@@ -48,6 +53,14 @@ const ATHLETE_TTL_DAYS = 30;
 // retired fighter, or someone who fought once in 2026. Drop them so the cache
 // tracks the active roster instead of growing forever.
 const ATHLETE_PRUNE_DAYS = 240;
+const PRUNE_AFTER_DAYS = 14;   // how long a dead override/injection record lingers
+// Guards on AUTO-cancelling. Hiding a real fight is the worst thing this script
+// can do, so both must hold: ESPN must have returned a plausibly complete card
+// (a half-synced card is not evidence of cancellation), and a single event may
+// never lose more than a couple of bouts at once — a bigger discrepancy means
+// our name matching broke, not that six fights got scrapped.
+const MIN_ESPN_BOUTS_TO_CANCEL = 5;
+const MAX_AUTO_CANCEL_PER_EVENT = 2;
 const DAY = 86400000;
 
 const SCOREBOARD = 'https://site.api.espn.com/apis/site/v2/sports/mma/ufc/scoreboard';
@@ -121,6 +134,42 @@ const A3_FLAG = {
   SCO: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', WAL: '🏴󠁧󠁢󠁷󠁬󠁳󠁿', JAM: '🇯🇲', CUB: '🇨🇺', DOM: '🇩🇴', SUR: '🇸🇷', PAN: '🇵🇦',
 };
 function flagFor(a3) { return A3_FLAG[String(a3 || '').toUpperCase()] || null; }
+
+// Pure: should this Cito-only bout be hidden?
+//
+// ESPN dropping a bout is suggestive but not proof — ESPN reshuffles cards and
+// occasionally serves a partial list. So we require a SECOND, independent
+// signal: a curated injury/withdrawal headline naming one of the two fighters.
+// Two sources agreeing is strong; either alone is not. A manual override in
+// data/cancelled-bout-overrides.json bypasses the news requirement (you looked
+// it up yourself), but still never fires on a suspiciously thin ESPN card.
+function decideCancellation(names, ctx) {
+  const { newsFlagged, forced, espnBoutCount, alreadyCancelled } = ctx;
+  if (espnBoutCount < MIN_ESPN_BOUTS_TO_CANCEL) {
+    return { cancel: false, reason: `ESPN listed only ${espnBoutCount} bouts — too thin to trust as a cancellation signal` };
+  }
+  if (alreadyCancelled >= MAX_AUTO_CANCEL_PER_EVENT) {
+    return { cancel: false, reason: `already hid ${alreadyCancelled} bouts on this card — refusing to hide more; check name matching` };
+  }
+  if (forced) return { cancel: true, reason: 'manual override: ' + (forced.reason || 'no reason given') };
+  if (newsFlagged) {
+    return { cancel: true, reason: `ESPN dropped this bout and injury/withdrawal news names ${newsFlagged}` };
+  }
+  return { cancel: false, reason: 'ESPN dropped it, but no corroborating news — reporting only' };
+}
+
+// Pure: index the curated news file to the set of fighters carrying an
+// injury/withdrawal story. Keyed by our own normName so suffixes and accents
+// line up with the bout names.
+function injuryFlaggedNames(newsDoc) {
+  const out = new Set();
+  const fighters = (newsDoc && newsDoc.fighters) || {};
+  for (const k of Object.keys(fighters)) {
+    const f = fighters[k];
+    if (f && f.hasInjuryNews && f.name) out.add(normName(f.name));
+  }
+  return out;
+}
 
 // Pure: drop athletes whose last appearance on a tracked card is long past.
 // Falls back to fetchedAt for entries written before lastSeenAt existed.
@@ -198,32 +247,57 @@ function buildBout(eventSlug, b) {
  * espnBouts: [{ section, sectionOrder, position, weightClass, titleBout, rounds,
  *               fighters:[{name,slug,...}] }]
  */
-function reconcile(citoEvent, espnBouts) {
+function reconcile(citoEvent, espnBouts, opts) {
+  opts = opts || {};
+  const newsFlagged = opts.newsFlagged || new Set();
+  const forcedFor = opts.forcedFor || (() => null);
+
   const citoBouts = (citoEvent.bouts || []).filter((b) => (b.fighters || []).length >= 2);
   const citoNames = citoBouts.map((b) => b.fighters.map((f) => f.fighterName));
   const espnNames = espnBouts.map((b) => b.fighters.map((f) => f.name));
 
-  // A fighter already booked elsewhere on this card means the matchup changed;
-  // injecting would list them twice. Compare on the soft identity too, so
-  // "Zach" and "Zachary" are recognised as the same person.
+  // ── pass 1: which Cito bouts has ESPN dropped, and which of those are dead? ──
+  // This MUST happen before we work out who is "already booked". When ESPN swaps
+  // an opponent on the same card, the stale Cito bout still names the fighter —
+  // if it counted as booked it would block the replacement bout from being
+  // injected, and then we'd hide the stale bout too, erasing that fighter from
+  // the card entirely.
+  const dropped = citoBouts
+    .map((b, i) => ({ bout: b, names: citoNames[i], label: citoNames[i].join(' vs ') }))
+    .filter((x) => !x.bout.isCancelled)
+    .filter((x) => !espnNames.some((en) => sameBout(en, x.names)));
+
+  const toCancel = [];
+  const onlyInCito = [];
+  dropped.forEach((x) => {
+    const d = decideCancellation(x.names, {
+      newsFlagged: x.names.find((n) => newsFlagged.has(normName(n))),
+      forced: forcedFor(x.names),
+      espnBoutCount: espnBouts.length,
+      alreadyCancelled: toCancel.length,
+    });
+    if (d.cancel) toCancel.push(Object.assign({ reason: d.reason }, x));
+    else onlyInCito.push(Object.assign({ why: d.reason }, x));
+  });
+
+  // ── pass 2: inject, treating dead bouts as if they were already gone ──
+  const isDead = (b) => toCancel.some((c) => c.bout === b);
+  const live = citoBouts.filter((b) => !isDead(b));
+  const liveNames = live.map((b) => b.fighters.map((f) => f.fighterName));
+
   const booked = new Set();
-  citoBouts.forEach((b) => (b.fighters || []).forEach((f) => { booked.add(normName(f.fighterName)); booked.add(softName(f.fighterName)); }));
+  live.forEach((b) => (b.fighters || []).forEach((f) => { booked.add(normName(f.fighterName)); booked.add(softName(f.fighterName)); }));
 
   const toInject = [];
   const skipped = [];
   espnBouts.forEach((b, i) => {
-    if (citoNames.some((cn) => sameBout(cn, espnNames[i]))) return;   // already on the card
+    if (liveNames.some((cn) => sameBout(cn, espnNames[i]))) return;   // already on the card
     const clash = b.fighters.find((f) => booked.has(normName(f.name)) || booked.has(softName(f.name)));
     if (clash) { skipped.push({ bout: espnNames[i].join(' vs '), reason: `${clash.name} already booked on this card` }); return; }
     toInject.push(b);
   });
 
-  const onlyInCito = citoBouts
-    .filter((b) => !b.isCancelled)
-    .filter((b, i) => !espnNames.some((en) => sameBout(en, citoNames[citoBouts.indexOf(b)])))
-    .map((b) => b.fighters.map((f) => f.fighterName).join(' vs '));
-
-  return { toInject, onlyInCito, skipped };
+  return { toInject, toCancel, onlyInCito, skipped };
 }
 
 // ── network layer (runs in CI; unofficial endpoints, all failures non-fatal) ──
@@ -301,6 +375,23 @@ async function espnBoutsForEvent(eventId, cache) {
   return raw;
 }
 
+function loadJson(fp, fallback) {
+  try { const raw = fs.readFileSync(fp, 'utf8').trim(); return raw ? JSON.parse(raw) : fallback; }
+  catch (e) { return fallback; }
+}
+function daysSince(iso) { const t = Date.parse(iso || ''); return isFinite(t) ? (Date.now() - t) / DAY : null; }
+
+// Mark, don't delete. The app's parser skips isCancelled bouts, and Cito's feed
+// requests includeCancelled:false, so a cancelled flag is exactly how a dead
+// bout looks natively — while the record itself stays in the file for us to audit.
+function applyCancellation(bout, reason) {
+  bout.isCancelled = true;
+  bout.status = 'cancelled';
+  bout.cancellationReason = reason;
+  bout.dataSource = 'espn-reconcile';
+  bout.warning = 'Hidden by fetch-espn-bouts.cjs — ' + reason;
+}
+
 async function main() {
   let eventDoc;
   try { eventDoc = JSON.parse(fs.readFileSync(EVENT_PATH, 'utf8')); }
@@ -308,6 +399,9 @@ async function main() {
   if (!eventDoc || !Array.isArray(eventDoc.data)) { console.log('[espn-bouts] event.json has no .data — skipping.'); return; }
 
   const cache = loadCache();
+  const cancelDoc = loadJson(CANCEL_PATH, { overrides: [] });
+  const injectedDoc = loadJson(INJECTED_PATH, { events: {} });
+  const newsFlagged = injuryFlaggedNames(loadJson(NEWS_PATH, { fighters: {} }));
   const now = Date.now();
   const upcoming = eventDoc.data
     .filter((e) => e.status !== 'completed')
@@ -318,16 +412,38 @@ async function main() {
 
   if (!upcoming.length) { console.log('[espn-bouts] no upcoming events in horizon.'); return; }
 
-  let calendar;
+  let calendar = null;
   try {
     const sb = await getJson(SCOREBOARD);
     calendar = ((sb.leagues || [])[0] || {}).calendar || [];
-  } catch (e) { console.warn('[espn-bouts] scoreboard fetch failed (non-fatal):', e.message); return; }
+  } catch (e) { console.warn('[espn-bouts] scoreboard fetch failed (non-fatal):', e.message, '— falling back to last-known injections.'); }
 
-  const report = { generatedAt: new Date().toISOString(), events: [], injected: [], onlyInCito: [], skipped: [] };
-  let added = 0;
+  const report = { generatedAt: new Date().toISOString(), espnReachable: !!calendar, events: [], injected: [], cancelled: [], onlyInCito: [], skipped: [], keptLastGood: [] };
+  let added = 0, hidden = 0;
+
+  // Cito replaces event.json wholesale every run, so a bout we injected only
+  // survives because we re-inject it. If ESPN is unreachable this run we would
+  // silently drop those bouts from the live site. Replay the last good set instead.
+  const keepLastGood = (e, why) => {
+    const rec = injectedDoc.events[e.slug];
+    if (!rec || !(rec.bouts || []).length) return;
+    const have = (e.bouts || []).filter((b) => (b.fighters || []).length >= 2)
+      .map((b) => b.fighters.map((f) => f.fighterName));
+    let n = 0;
+    rec.bouts.forEach((b) => {
+      const names = (b.fighters || []).map((f) => f.fighterName);
+      if (have.some((h) => sameBout(h, names))) return;
+      (e.bouts = e.bouts || []).push(b);
+      n++; added++;
+    });
+    if (n) {
+      console.warn(`[espn-bouts] ${e.title}: ${why} — replayed ${n} previously-injected bout(s) so they don't vanish.`);
+      report.keptLastGood.push({ event: e.slug, bouts: n, why });
+    }
+  };
 
   for (const { e } of upcoming) {
+    if (!calendar) { keepLastGood(e, 'ESPN scoreboard unreachable'); continue; }
     const day = String(e.startsAt).slice(0, 10);
     const numMatch = /\bUFC\s+(\d{2,4})\b/i.exec(e.title || '');
     // Numbered cards match on the number. Otherwise match on UTC date, allowing
@@ -338,43 +454,80 @@ async function main() {
       || calendar.find((c) => String(c.startDate).slice(0, 10) === day)
       || (near.length === 1 ? near[0] : null);
     const espnId = cal && refToId(cal.event && cal.event.$ref);
-    if (!espnId) { console.log(`[espn-bouts] ${e.title} (${day}): no ESPN event matched — skipping.`); continue; }
+    if (!espnId) { console.log(`[espn-bouts] ${e.title} (${day}): no ESPN event matched — skipping.`); keepLastGood(e, 'no ESPN event matched'); continue; }
 
     let espnBouts;
     try { espnBouts = await espnBoutsForEvent(espnId, cache); }
-    catch (err) { console.warn(`[espn-bouts] ${e.title}: competitions fetch failed (non-fatal): ${err.message}`); continue; }
-    if (!espnBouts.length) { console.log(`[espn-bouts] ${e.title}: ESPN lists no bouts yet.`); continue; }
+    catch (err) { console.warn(`[espn-bouts] ${e.title}: competitions fetch failed (non-fatal): ${err.message}`); keepLastGood(e, 'ESPN competitions fetch failed'); continue; }
+    if (!espnBouts.length) { console.log(`[espn-bouts] ${e.title}: ESPN lists no bouts yet.`); keepLastGood(e, 'ESPN lists no bouts'); continue; }
 
-    const { toInject, onlyInCito, skipped } = reconcile(e, espnBouts);
+    const forcedFor = (names) => cancelDoc.overrides.find((o) =>
+      (!o.eventSlug || o.eventSlug === e.slug) && sameBout(o.matchFighterNames || [], names)) || null;
+    const { toInject, toCancel, onlyInCito, skipped } = reconcile(e, espnBouts, { newsFlagged, forcedFor });
     report.events.push({ slug: e.slug, title: e.title, espnId, citoBouts: (e.bouts || []).length, espnBouts: espnBouts.length, injected: toInject.length });
 
+    const injectedThisRun = [];
     toInject.forEach((b) => {
       const bout = buildBout(e.slug, b);
       (e.bouts = e.bouts || []).push(bout);
+      injectedThisRun.push(bout);
       const label = b.fighters.map((f) => f.name).join(' vs ');
       console.log(`[espn-bouts] ${e.title}: + ${label}  (${b.section})`);
       report.injected.push({ event: e.slug, bout: label, section: b.section });
       added++;
     });
-    onlyInCito.forEach((b) => {
-      console.warn(`[espn-bouts] ⚠ ${e.title}: Cito lists [${b}] but ESPN does not — likely cancelled. Not removed automatically; verify.`);
-      report.onlyInCito.push({ event: e.slug, bout: b });
+    // Record EXACTLY what we injected. Rewriting (not merging) means a bout ESPN
+    // has dropped simply falls out of the record — self-cleaning by construction.
+    injectedDoc.events[e.slug] = { startsAt: e.startsAt, bouts: injectedThisRun };
+
+    toCancel.forEach((x) => {
+      applyCancellation(x.bout, x.reason);
+      hidden++;
+      console.warn(`[espn-bouts] ✖ ${e.title}: hiding [${x.label}] — ${x.reason}`);
+      report.cancelled.push({ event: e.slug, bout: x.label, reason: x.reason });
+    });
+    onlyInCito.forEach((x) => {
+      console.warn(`[espn-bouts] ⚠ ${e.title}: Cito lists [${x.label}] but ESPN does not — ${x.why}. Left visible; verify.`);
+      report.onlyInCito.push({ event: e.slug, bout: x.label, why: x.why });
     });
     skipped.forEach((s) => { console.warn(`[espn-bouts] ⚠ ${e.title}: skipped [${s.bout}] — ${s.reason}`); report.skipped.push(Object.assign({ event: e.slug }, s)); });
   }
 
-  if (DRY) { console.log('[espn-bouts] --dry: not writing.'); return; }
+  if (DRY) { console.log(`[espn-bouts] --dry: would inject ${added}, hide ${hidden}. Not writing.`); return; }
+
   const dropped = pruneCache(cache);
-  if (dropped) console.log(`[espn] pruned ${dropped} athlete(s) not seen on a card in ${ATHLETE_PRUNE_DAYS} days.`);
+  if (dropped) console.log(`[espn-bouts] pruned ${dropped} athlete(s) not seen on a card in ${ATHLETE_PRUNE_DAYS} days.`);
   fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 2) + '\n');
+
+  // Self-prune both stores: once an event is well past, its records can never
+  // fire again (the feed only returns from=TODAY), so drop the dead weight.
+  for (const slug of Object.keys(injectedDoc.events)) {
+    const age = daysSince(injectedDoc.events[slug].startsAt);
+    if (age != null && age > PRUNE_AFTER_DAYS) delete injectedDoc.events[slug];
+  }
+  fs.writeFileSync(INJECTED_PATH, JSON.stringify(injectedDoc, null, 2) + '\n');
+
+  const keptOv = cancelDoc.overrides.filter((o) => {
+    const age = daysSince(o.eventStartsAt);
+    if (age != null && age > PRUNE_AFTER_DAYS) {
+      console.log(`[espn-bouts] pruning expired cancellation override for ${o.eventSlug || o.eventStartsAt} (event was ${Math.round(age)} days ago).`);
+      return false;
+    }
+    return true;
+  });
+  if (keptOv.length !== cancelDoc.overrides.length) {
+    cancelDoc.overrides = keptOv;
+    fs.writeFileSync(CANCEL_PATH, JSON.stringify(cancelDoc, null, 2) + '\n');
+  }
+
   fs.writeFileSync(REPORT_PATH, JSON.stringify(report, null, 2) + '\n');
-  if (added > 0) {
+  if (added > 0 || hidden > 0) {
     fs.writeFileSync(EVENT_PATH, JSON.stringify(eventDoc));  // compact, matching the feed
-    console.log(`[espn-bouts] injected ${added} bout(s) Cito was missing.`);
+    console.log(`[espn-bouts] injected ${added} bout(s), hid ${hidden} cancelled bout(s).`);
   } else {
-    console.log('[espn-bouts] card lists already agree — nothing to add.');
+    console.log('[espn-bouts] card lists already agree — nothing to change.');
   }
 }
 
-module.exports = { normName, softName, deburr, pruneCache, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
+module.exports = { normName, softName, deburr, pruneCache, decideCancellation, injuryFlaggedNames, applyCancellation, boutKey, boutSoftKey, sameBout, mapSegment, weightClassText, flagFor, buildBout, reconcile, refToId };
 if (require.main === module) main().catch((e) => { console.error('[espn-bouts] non-fatal error:', e.message); });

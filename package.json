@@ -5,7 +5,8 @@
   "scripts": {
     "build": "bash scripts/build-site.sh",
     "dev": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run build && wrangler deploy",
+    "test": "node scripts/test-espn-bouts.cjs"
   },
   "devDependencies": {
     "wrangler": "^3.90.0"
