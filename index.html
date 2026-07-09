@@ -102490,7 +102490,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!entry || !entry.method || !Object.keys(entry.method).length) return placeholder;
     const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
     const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
-    const fid = plFightId(fight), dist = plDistance(fight);
+    const fid = plFightId(fight);
     const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
@@ -102498,7 +102498,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.method[bookKey] && entry.method[bookKey][sideKey];
         if (!info || !vals) return;
-        const base = { fid: fid, dist: dist, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'method', side: sideKey };
+        const base = { fid: fid, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'method', side: sideKey };
         rows += `<tr class="row-${info.cls}">
           <td><span class="book-name book-${info.cls}">${info.label}</span></td>
           ${plCell(Object.assign({}, base, { method: 'ko', label: name + ' by KO/TKO' }), vals.ko)}
@@ -102522,7 +102522,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     for (let r = 1; r <= rounds; r++) roundKeys.push('r' + r);
     const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
     const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
-    const fid = plFightId(fight), dist = plDistance(fight);
+    const fid = plFightId(fight);
     const fightLabel = `${last1} vs ${last2}`;
     function fighterBlock(name, sideKey) {
       let rows = '';
@@ -102530,7 +102530,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const info = BOOK_KEY_MAP[bookKey];
         const vals = entry.roundProps[bookKey] && entry.roundProps[bookKey][sideKey];
         if (!info || !vals) return;
-        const base = { fid: fid, dist: dist, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'round', side: sideKey };
+        const base = { fid: fid, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'round', side: sideKey };
         const cells = roundKeys.map((rk, i) => plCell(Object.assign({}, base, { round: i + 1, label: name + ' in R' + (i + 1) }), vals[rk])).join('');
         rows += `<tr class="row-${info.cls}"><td><span class="book-name book-${info.cls}">${info.label}</span></td>${cells}</tr>`;
       });
@@ -102575,65 +102575,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   // ── PARLAY CALCULATOR ─────────────────────────────────────────────────────
   // Legs are picked by clicking any priced cell (moneyline, rounds O/U, method,
-  // round props). Rules: one sportsbook per slip (no cross-book), one
-  // winner/method/round pick per fight (those legs are correlated — a naive
-  // multiply would misprice them), and no logically impossible or redundant
-  // combinations. Compatible-but-correlated same-fight legs (e.g. Over 2.5 plus
-  // a round-3 finish, which can both land) are allowed with a warning.
+  // round props). Two rules, both about keeping the arithmetic honest:
   //
-  // Contradiction/implication are decided by brute force over the fight's coarse
-  // outcome space rather than a hand-written conflict matrix, so the rules stay
-  // correct for both 3- and 5-round bouts.
+  //   1. One sportsbook per slip — legs can't cross books.
+  //   2. One pick per fight. Every pair of legs on the same fight is correlated
+  //      (Over 2.5 and a round-3 finish; a fighter's moneyline and their method),
+  //      and a straight multiply silently misprices correlation. Real books quote
+  //      those as a same-game parlay off a joint model we don't have, so we don't
+  //      pretend to. Legs on *different* fights are effectively independent, which
+  //      is exactly what makes multiplying their decimal odds valid.
   const PARLAY = { book: null, legs: [], open: true };
   function plAmToDec(a) { a = Number(a); return a > 0 ? 1 + a / 100 : 1 + 100 / (-a); }
   function plDecToAm(d) { return d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1)); }
-  // Outcome = winner, method, ending round, and which half of that round (the
-  // ".5" on a totals line is the 2:30 mark of the next round).
-  function plOutcomes(dist) {
-    const out = [];
-    ['f1', 'f2'].forEach(w => {
-      out.push({ w: w, m: 'dec', r: dist, h: 'late' });
-      ['ko', 'sub'].forEach(m => { for (let r = 1; r <= dist; r++) { out.push({ w: w, m: m, r: r, h: 'early' }); out.push({ w: w, m: m, r: r, h: 'late' }); } });
-    });
-    return out;
-  }
-  function plOver(o, line, dist) {
-    if (o.m === 'dec') return dist > line;          // a decision goes the full distance
-    const N = Math.floor(line);
-    if (o.r > N + 1) return true;
-    if (o.r === N + 1) return o.h === 'late';       // past the 2:30 mark of round N+1
-    return false;
-  }
-  function plSat(leg, o, dist) {
-    if (leg.mkt === 'ml') return o.w === leg.side;
-    if (leg.mkt === 'method') return o.w === leg.side && o.m === leg.method;
-    if (leg.mkt === 'round') return o.w === leg.side && o.m !== 'dec' && o.r === Number(leg.round);
-    if (leg.mkt === 'total') return leg.ou === 'over' ? plOver(o, Number(leg.line), dist) : !plOver(o, Number(leg.line), dist);
-    return false;
-  }
-  function plSatisfiable(legs, dist) { return plOutcomes(dist).some(o => legs.every(l => plSat(l, o, dist))); }
-  function plImplies(a, b, dist) { let any = false; const os = plOutcomes(dist); for (let i = 0; i < os.length; i++) { if (plSat(a, os[i], dist)) { any = true; if (!plSat(b, os[i], dist)) return false; } } return any; }
   function plValidate(legs, newLeg) {
-    const dist = Number(newLeg.dist);
-    const same = legs.filter(l => l.fid === newLeg.fid);
-    const isOutcome = l => l.mkt !== 'total';
-    if (isOutcome(newLeg) && same.some(isOutcome)) return { ok: false, reason: 'Only one winner / method / round pick per fight — those legs are correlated.' };
-    if (!plSatisfiable(same.concat([newLeg]), dist)) return { ok: false, reason: "That can't happen alongside another pick on this fight." };
-    for (let i = 0; i < same.length; i++) {
-      if (plImplies(same[i], newLeg, dist)) return { ok: false, reason: 'Redundant — a pick you already have guarantees this one.' };
-      if (plImplies(newLeg, same[i], dist)) return { ok: false, reason: 'Redundant — this pick would guarantee one you already have.' };
+    for (let i = 0; i < legs.length; i++) {
+      if (legs[i].fid === newLeg.fid) {
+        return { ok: false, reason: 'One pick per fight — legs from the same fight are correlated, so multiplying them would misprice the parlay.' };
+      }
     }
-    return { ok: true, warn: same.length > 0 };
+    return { ok: true };
   }
   function plLegKey(l) { return [l.fid, l.mkt, l.side || '', l.method || '', l.round || '', l.ou || '', l.line || ''].join('~'); }
   function plFightId(fight) { return pairKey(fight.home_team, fight.away_team); }
-  function plDistance(fight) {
-    const e = findManualProps(fight);
-    if (e && (e.rounds === 5 || e.rounds === 3)) return e.rounds;
-    let maxLine = 0;
-    (fight.bookmakers || []).forEach(bk => { const m = (bk.markets || []).find(x => x.key === 'totals'); if (m) (m.outcomes || []).forEach(o => { if (typeof o.point === 'number' && o.point > maxLine) maxLine = o.point; }); });
-    return maxLine > 3 ? 5 : 3;
-  }
   function plCell(meta, odds) {
     if (odds === null || odds === undefined) return `<td>${fmtOdds(odds)}</td>`;
     const attrs = Object.keys(meta).filter(k => meta[k] !== undefined && meta[k] !== null)
@@ -102648,7 +102611,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function plToggle(td) {
     const ds = td.dataset;
-    const leg = { fid: ds.fid, dist: Number(ds.dist), book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
+    const leg = { fid: ds.fid, book: ds.book, booklabel: ds.booklabel, fight: ds.fight,
       mkt: ds.mkt, side: ds.side, method: ds.method, round: ds.round ? Number(ds.round) : undefined,
       ou: ds.ou, line: ds.line ? Number(ds.line) : undefined, odds: Number(ds.odds), label: ds.label };
     const key = plLegKey(leg);
@@ -102672,8 +102635,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const prob = (100 / dec).toFixed(1);
     const ret = (100 * dec).toFixed(2);
     const n = PARLAY.legs.length;
-    const byFight = {}; PARLAY.legs.forEach(l => { byFight[l.fid] = (byFight[l.fid] || 0) + 1; });
-    const correlated = Object.keys(byFight).some(k => byFight[k] > 1);
     const legsHtml = PARLAY.legs.map((l, i) => `<div class="pl-leg">
         <div style="min-width:0;">
           <div class="pl-leg-fight">${escHtmlAttr(l.fight || '')}</div>
@@ -102697,7 +102658,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <div class="pl-body">
         <div class="pl-legs">${legsHtml}</div>
-        ${correlated ? '<div class="pl-warn">⚠ Correlated legs on the same fight — books price these as a same-game parlay, so the real payout would be lower than this straight multiply.</div>' : ''}
         <div class="pl-foot">
           <div style="font-size:0.72rem;color:var(--muted);">$100 returns <strong style="color:var(--text);">$${ret}</strong></div>
           <div style="display:flex;align-items:center;gap:16px;">
@@ -102736,9 +102696,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       </div>
       <ul class="pl-help-rules">
         <li><strong>One sportsbook per parlay.</strong> Legs can't cross books.</li>
-        <li><strong>One winner, method, or round pick per fight.</strong> Those legs are correlated, so multiplying them would misprice the parlay.</li>
-        <li><strong>Impossible and redundant combos are blocked.</strong> A round-1 finish can't pair with Over 2.5; a decision already guarantees Over 2.5.</li>
-        <li><strong>Same-fight legs that can both land are allowed</strong> — like Over 2.5 with a round-3 finish — but flagged as correlated, since a real book prices those as a same-game parlay.</li>
+        <li><strong>One pick per fight.</strong> Any two legs on the same fight are correlated — a fighter's moneyline and their method, or Over 2.5 and a round-3 finish — and multiplying correlated prices misprices the parlay. Books quote those as a same-game parlay off a joint model that can't be recovered from the listed odds.</li>
+        <li><strong>Legs on different fights multiply cleanly</strong>, since those outcomes are independent of each other. That's the price shown in the slip.</li>
       </ul>
     </div>`;
   }
@@ -102746,7 +102705,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function buildMoneylineTable(fight) {
     const f1 = fight.home_team, f2 = fight.away_team;
     const books = fight.bookmakers || [];
-    const fid = plFightId(fight), dist = plDistance(fight);
+    const fid = plFightId(fight);
     const homeSide = manualSideFor(fight, 'home'), awaySide = manualSideFor(fight, 'away');
     const last1 = lastNameOf(f1), last2 = lastNameOf(f2);
     const fightLabel = `${last1} vs ${last2}`;
@@ -102760,7 +102719,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!market) return;
       const o1 = market.outcomes.find(o => o.name === f1);
       const o2 = market.outcomes.find(o => o.name === f2);
-      const base = { fid: fid, dist: dist, book: bk.key, booklabel: info.label, fight: fightLabel, mkt: 'ml' };
+      const base = { fid: fid, book: bk.key, booklabel: info.label, fight: fightLabel, mkt: 'ml' };
       rows += `<tr class="row-${info.cls}">
         <td><span class="book-name book-${info.cls}">${info.label}</span></td>
         ${plCell(Object.assign({}, base, { side: homeSide, label: last1 + ' to win' }), o1?.price)}
@@ -102789,14 +102748,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     const lines = Object.keys(lineMap).map(Number).sort((a,b) => a - b);
     if (!lines.length) return '<p style="color:var(--muted);padding:1rem 0;">No rounds O/U data available yet.</p>';
-    const fid = plFightId(fight), dist = plDistance(fight);
+    const fid = plFightId(fight);
     const fightLabel = `${lastNameOf(fight.home_team)} vs ${lastNameOf(fight.away_team)}`;
     let body = '';
     lines.forEach(line => {
       body += `<tr class="prop-subheader"><td colspan="3"><strong>O/U ${line}</strong></td></tr>`;
       plOrderBooks(Object.keys(lineMap[line])).forEach(bkKey => {
         const data = lineMap[line][bkKey];
-        const base = { fid: fid, dist: dist, book: bkKey, booklabel: data.info.label, fight: fightLabel, mkt: 'total', line: line };
+        const base = { fid: fid, book: bkKey, booklabel: data.info.label, fight: fightLabel, mkt: 'total', line: line };
         body += `<tr class="row-${data.info.cls}">
           <td><span class="book-name book-${data.info.cls}">${data.info.label}</span></td>
           ${plCell(Object.assign({}, base, { ou: 'over', label: 'Over ' + line + ' rds' }), data.over)}
