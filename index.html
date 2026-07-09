@@ -2081,6 +2081,9 @@
     .odds-table tr:hover td.pl-pick.pl-dim:hover { background: transparent; }
     .pl-stake { width: 88px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: inherit; font-size: 0.85rem; font-weight: 700; padding: 0.32rem 0.5rem; border-radius: 6px; }
     .pl-stake:focus { outline: none; border-color: var(--accent); }
+    /* iOS Safari force-zooms into any focused input smaller than 16px. Bump the
+       stake field to exactly 16px on touch widths so tapping it doesn't zoom. */
+    @media (max-width: 600px) { .pl-stake { font-size: 16px; width: 96px; padding: 0.3rem 0.45rem; } }
     .pl-books { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; padding-top: 0.65rem; }
     .pl-book-opt { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: inherit; font-size: 0.7rem; padding: 0.3rem 0.55rem; border-radius: 6px; cursor: pointer; white-space: nowrap; }
     .pl-book-opt:hover { border-color: var(--accent); color: var(--text); }
