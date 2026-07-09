@@ -106,10 +106,20 @@ function boutStatusOf(status) {
   return 'confirmed';
 }
 
-function eventStatusOf(bouts, startsAt) {
+// A card is 'live' only while it is plausibly still running. If ESPN leaves a
+// single bout stuck on 'in' -- a cancelled fight it never resolved, a status it
+// forgot to flip -- the event would otherwise stay 'live' forever: the featured
+// picker skips it once startsAt+10h passes, and 'completed' is the only thing
+// that lands it in event-recent.json, so the card and its results would vanish
+// from the site entirely. After the card can no longer be running, call it done.
+const LIVE_WINDOW_MS = 12 * 3600 * 1000;
+function eventStatusOf(bouts, startsAt, now) {
+  now = now || Date.now();
+  const started = Date.parse(startsAt);
+  const stale = isFinite(started) && (now - started) > LIVE_WINDOW_MS;
   if (bouts.length && bouts.every((b) => b.status === 'completed')) return 'completed';
-  if (bouts.some((b) => b.status === 'live' || b.status === 'completed')) return 'live';
-  return Date.parse(startsAt) < Date.now() ? 'completed' : 'scheduled';
+  if (bouts.some((b) => b.status === 'live' || b.status === 'completed')) return stale ? 'completed' : 'live';
+  return isFinite(started) && started < now ? 'completed' : 'scheduled';
 }
 
 function parseRecordText(t) {

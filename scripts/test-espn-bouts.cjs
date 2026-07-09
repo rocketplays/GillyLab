@@ -309,8 +309,24 @@ console.log("\n=== ESPN feed builder (fetch-espn-events) ===");
   ok("result time only when final", E.resultTimeOf({type:{completed:false},displayClock:"2:30"})===null);
 
   ok("event completed when all bouts are", E.eventStatusOf([{status:"completed"},{status:"completed"}],"2026-01-01")==="completed");
-  ok("event live when any bout is", E.eventStatusOf([{status:"live"},{status:"confirmed"}],"2099-01-01")==="live");
   ok("future event scheduled", E.eventStatusOf([{status:"confirmed"}],"2099-01-01")==="scheduled");
+  {
+    // 'live' must be bounded. ESPN sometimes leaves one bout stuck on 'in';
+    // without a time bound the card stays 'live' forever, and since only
+    // 'completed' events reach event-recent.json, the card and its results
+    // would disappear from the site: never featured, never in the past dropdown.
+    const NOW = Date.parse("2026-07-12T04:00:00Z");
+    const midCard = "2026-07-12T01:00:00Z";        // 3h in
+    const longGone = "2026-07-05T01:00:00Z";       // a week ago
+    ok("mid-card with a live bout -> live", E.eventStatusOf([{status:"completed"},{status:"live"}],midCard,NOW)==="live");
+    ok("mid-card first bout underway -> live", E.eventStatusOf([{status:"live"},{status:"confirmed"}],midCard,NOW)==="live");
+    ok("week-old card with a stuck live bout -> completed",
+       E.eventStatusOf([{status:"completed"},{status:"completed"},{status:"live"}],longGone,NOW)==="completed");
+    ok("all-done card is completed regardless of clock",
+       E.eventStatusOf([{status:"completed"}],midCard,NOW)==="completed");
+    ok("card that never got results is still completed once past",
+       E.eventStatusOf([{status:"confirmed"}],longGone,NOW)==="completed");
+  }
 
   ok("rewrites ESPN's internal .pvt host", E.fixRef("http://sports.core.api.espn.pvt/v2/x")==="https://sports.core.api.espn.com/v2/x");
 }
