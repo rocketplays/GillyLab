@@ -101206,23 +101206,23 @@ const GL_SHEET = (function () {
       const dw = img.width * s, dh = img.height * s;
       ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
     } else {
-      ctx.fillStyle = MUT; ctx.font = '700 40px ' + COND;
+      ctx.fillStyle = MUT; ctx.font = '700 30px ' + COND;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(initials || '?', cx, cy + 2);
     }
     ctx.restore();
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = ring; ctx.lineWidth = 4; ctx.stroke();
+    ctx.strokeStyle = ring; ctx.lineWidth = 3; ctx.stroke();
   }
 
   function brand(ctx, y, kicker) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.font = '800 44px ' + COND;
+    ctx.font = '800 34px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText('GILLY', 64, y);
     const w = ctx.measureText('GILLY').width;
     ctx.fillStyle = ACC; ctx.fillText('LAB', 64 + w + 8, y);
     if (kicker) {
-      ctx.textAlign = 'right'; ctx.font = '700 26px ' + COND;
+      ctx.textAlign = 'right'; ctx.font = '700 22px ' + COND;
       ctx.fillStyle = MUT; ctx.fillText(String(kicker).toUpperCase(), W - 64, y);
       ctx.textAlign = 'left';
     }
@@ -101236,7 +101236,7 @@ const GL_SHEET = (function () {
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
   function versusBlock(ctx, a, b, imgA, imgB, y, radius, colA, colB, showForm) {
-    const cxA = 280, cxB = W - 280, R = radius || 72;
+    const cxA = 280, cxB = W - 280, R = radius || 46;
     colA = colA || NEU_A; colB = colB || NEU_B;
     avatar(ctx, imgA, cxA, y + R, R, a.initials, colA);
     avatar(ctx, imgB, cxB, y + R, R, b.initials, colB);
@@ -101324,12 +101324,10 @@ const GL_SHEET = (function () {
     ['Striking accuracy', 'strAcc', true],
     ['Sig. strikes absorbed / min', 'sapm', false],
     ['Striking defense', 'strDef', true],
-    ['Knockdowns / 15 min', 'kd', true],
     ['Takedowns / 15 min', 'tdLanded', true],
     ['Takedown accuracy', 'tdAcc', true],
     ['Takedown defense', 'tdDef', true],
     ['Sub. attempts / 15 min', 'subAvg', true],
-    ['Finish rate', 'finRate', true],
   ];
   const statNum = (v) => { if (v == null) return null; const m = /-?[\d.]+/.exec(String(v)); return m ? parseFloat(m[0]) : null; };
   const statTxt = (v) => (v == null ? '—' : String(v));
@@ -101407,14 +101405,14 @@ const GL_SHEET = (function () {
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 96, (ctxInfo && ctxInfo.event) || 'UFC');
-    ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+    brand(ctx, 82, (ctxInfo && ctxInfo.event) || 'UFC');
+    ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
     // 'LW' is jargon on a graphic that leaves the site.
     const divName = (window.simDivisionLabel ? window.simDivisionLabel(a.division) : a.division) || '';
     const line2 = [divName, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
-    if (line2) ctx.fillText(line2, 64, 136);
+    if (line2) ctx.fillText(line2, 64, 118);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 168, 72, colA, colB, true);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 142, 46, colA, colB, true);
 
 
     y = sectionTitle(ctx, 'Tale of the tape', y + 38);
@@ -101474,14 +101472,14 @@ const GL_SHEET = (function () {
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 76, 'Fight simulator');
+    brand(ctx, 72, 'Fight simulator');
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 112);
+    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 106);
 
     // Same rule as the matchup sheet: the accent marks the favourite, which here
     // the model actually knows.
     const colA = aLeads ? ACC : AMB, colB = aLeads ? AMB : ACC;
-    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 58, colA, colB, false);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 46, colA, colB, false);
 
     // Win probability — the headline number.
     y = sectionTitle(ctx, 'Win probability', y + 46) + 34;
