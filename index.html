@@ -100790,6 +100790,20 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       finRate:  { min: 12,   gap: (a, b) => d(a.finRate, b.finRate), label: 'finishing rate',        phrase: (a, b) => 'finishing instinct (' + a.finRate + '% of wins inside the distance vs ' + b.finRate + '%)' },
     };
     const d = (x, y) => (x != null && y != null) ? x - y : null;
+    // Which head-to-head lines are a real separation rather than noise. Reuses the
+    // EDGE_AXES minimums so the sheet's emphasis and the path-to-victory read can
+    // never disagree. slpm borrows output's threshold; tdAcc has no axis, so 8pts.
+    (function () {
+      const MIN = {};
+      Object.keys(EDGE_AXES).forEach((k) => { MIN[k] = EDGE_AXES[k].min; });
+      MIN.slpm = EDGE_AXES.output.min;
+      MIN.tdAcc = 8;
+      OUT.sig = {};
+      Object.keys(MIN).forEach((k) => {
+        const va = A ? A[k] : null, vb = B ? B[k] : null;
+        OUT.sig[k] = (va != null && vb != null) ? Math.abs(va - vb) >= MIN[k] : false;
+      });
+    })();
     const STRIKING_AXES = ['kd', 'strAcc', 'strDef', 'sapm', 'output', 'finRate'];
     const GRAPPLING_AXES = ['tdLanded', 'subAvg', 'tdDef', 'finRate', 'kd', 'sapm'];
     const ALL_AXES = Object.keys(EDGE_AXES);
@@ -101086,6 +101100,82 @@ const GL_SHEET = (function () {
       slug: (typeof nameToSlug === 'function') ? nameToSlug(name) : null
     };
   }
+  // Neutral pair, used when we have no odds and therefore no favourite. The brand
+  // accent means "favourite"; handing it to whoever happens to be listed first
+  // would let the sheet imply a pick it never made.
+  const NEU_A = '#8ab4ff', NEU_B = '#ffcf7a';
+  function hexA(hex, alpha) {
+    const h = hex.replace('#', '');
+    const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+    return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+  }
+  const fmtPrice = (p) => (p > 0 ? '+' : '') + p;
+
+  // data/odds.json once, shared. Resolves null on any failure — the odds row is
+  // optional and a missing moneyline must never block the sheet.
+  let oddsPromise = null;
+  function oddsJson() {
+    if (!oddsPromise) oddsPromise = fetch('./data/odds.json').then((r) => r.ok ? r.json() : null).catch(() => null);
+    return oddsPromise;
+  }
+  // American odds <-> implied probability. Averaging prices directly is wrong:
+  // -300 and +300 are not symmetric, so the mean of the two prices is nonsense.
+  // Average in probability space, then convert back.
+  const toProb = (p) => (p > 0 ? 100 / (p + 100) : -p / (-p + 100));
+  const toAmerican = (q) => (q >= 0.5 ? -Math.round((100 * q) / (1 - q)) : Math.round((100 * (1 - q)) / q));
+
+  // One consensus moneyline, averaged across every book that prices the fight,
+  // rather than quoting a single sportsbook. Uses the odds page's own name matcher.
+  async function oddsFor(nameA, nameB) {
+    const data = await oddsJson();
+    if (!Array.isArray(data)) return null;
+    const like = window.namesLikelyMatch || ((x, y) => x === y);
+    const ev = data.find((e) => e && e.home_team && e.away_team &&
+      ((like(e.home_team, nameA) && like(e.away_team, nameB)) ||
+       (like(e.home_team, nameB) && like(e.away_team, nameA))));
+    if (!ev || !Array.isArray(ev.bookmakers)) return null;
+    const qa = [], qb = [];
+    ev.bookmakers.forEach((bk) => {
+      const mkt = (bk.markets || []).find((m) => m.key === 'h2h');
+      if (!mkt || !Array.isArray(mkt.outcomes)) return;
+      const pa = (mkt.outcomes.find((o) => like(o.name, nameA)) || {}).price;
+      const pb = (mkt.outcomes.find((o) => like(o.name, nameB)) || {}).price;
+      if (pa == null || pb == null) return;
+      qa.push(toProb(pa)); qb.push(toProb(pb));
+    });
+    if (!qa.length) return null;
+    const mean = (xs) => xs.reduce((t, v) => t + v, 0) / xs.length;
+    const ma = mean(qa), mb = mean(qb);
+    return {
+      a: toAmerican(ma), b: toAmerican(mb),
+      books: qa.length,
+      favA: ma > mb, favB: mb > ma,   // favourite = higher implied probability
+    };
+  }
+
+  // Last five, most recent first. The fastest-reading thing on a fight graphic.
+  function recentForm(name) {
+    const FH = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
+    return FH.filter((f) => f && f.result && f.result !== '–' && f.method !== 'Upcoming')
+      .slice(0, 5).map((f) => f.result).reverse();   // oldest -> newest, reads left to right
+  }
+  const FORM_COL = { W: '#00e668', L: '#ff6a5e', D: '#8a8d94', NC: '#8a8d94' };
+  function formChips(ctx, cx, y, form) {
+    if (!form.length) return;
+    const w = 34, h = 26, gap = 7;
+    const total = form.length * w + (form.length - 1) * gap;
+    let x = cx - total / 2;
+    form.forEach((r) => {
+      roundRect(ctx, x, y, w, h, 5);
+      ctx.fillStyle = hexA(FORM_COL[r] || '#8a8d94', 0.16); ctx.fill();
+      ctx.strokeStyle = hexA(FORM_COL[r] || '#8a8d94', 0.5); ctx.lineWidth = 1; ctx.stroke();
+      ctx.font = '700 19px ' + SANS; ctx.fillStyle = FORM_COL[r] || '#8a8d94';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(r, x + w / 2, y + h / 2 + 1);
+      ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+      x += w + gap;
+    });
+  }
   // FIGHTERS.rank already carries its own '#' ("#4"), and champions are stored as
   // "C" / "#C" / "#IC". Prefixing another '#' produced Max Holloway's "##4".
   function rankTag(rank) {
@@ -101145,10 +101235,11 @@ const GL_SHEET = (function () {
     ctx.textAlign = 'left';
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
-  function versusBlock(ctx, a, b, imgA, imgB, y, radius) {
+  function versusBlock(ctx, a, b, imgA, imgB, y, radius, colA, colB, showForm) {
     const cxA = 280, cxB = W - 280, R = radius || 72;
-    avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
-    avatar(ctx, imgB, cxB, y + R, R, b.initials, AMB);
+    colA = colA || NEU_A; colB = colB || NEU_B;
+    avatar(ctx, imgA, cxA, y + R, R, a.initials, colA);
+    avatar(ctx, imgB, cxB, y + R, R, b.initials, colB);
     ctx.textAlign = 'center'; ctx.font = '800 60px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', W / 2, y + R + 20);
 
@@ -101161,20 +101252,26 @@ const GL_SHEET = (function () {
     ctx.fillText(a.record + rankTag(a.rank), cxA, ny);
     ctx.fillText(b.record + rankTag(b.rank), cxB, ny);
     ctx.textAlign = 'left';
-    return ny + 46;
+    if (!showForm) return ny + 46;
+    const fa = recentForm(a.name), fb = recentForm(b.name);
+    if (!fa.length && !fb.length) return ny + 46;
+    formChips(ctx, cxA, ny + 18, fa);
+    formChips(ctx, cxB, ny + 18, fb);
+    return ny + 76;
   }
+
   // "5'10"  HEIGHT  6'1"" — value, centred label, value.
-  function tapeRow(ctx, label, va, vb, y, hiA, hiB) {
+  function tapeRow(ctx, label, va, vb, y, hiA, hiB, colA, colB) {
     ctx.textAlign = 'left'; ctx.font = '700 42px ' + COND;
-    ctx.fillStyle = hiA ? ACC : TXT; ctx.fillText(va == null ? '—' : String(va), 64, y);
+    ctx.fillStyle = hiA ? (colA || NEU_A) : TXT; ctx.fillText(va == null ? '—' : String(va), 64, y);
     ctx.textAlign = 'right';
-    ctx.fillStyle = hiB ? AMB : TXT; ctx.fillText(vb == null ? '—' : String(vb), W - 64, y);
+    ctx.fillStyle = hiB ? (colB || NEU_B) : TXT; ctx.fillText(vb == null ? '—' : String(vb), W - 64, y);
     ctx.textAlign = 'center'; ctx.font = '600 24px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(String(label).toUpperCase(), W / 2, y - 4);
     ctx.textAlign = 'left';
   }
   // Striker ↔ grappler spectrum. lean is 0..100, 100 = pure striker.
-  function styleBar(ctx, y, leanA, leanB) {
+  function styleBar(ctx, y, leanA, leanB, colA, colB) {
     const x = 64, w = W - 128, h = 18;
     roundRect(ctx, x, y, w, h, h / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     const dot = (lean, col) => {
@@ -101184,7 +101281,7 @@ const GL_SHEET = (function () {
       ctx.fillStyle = col; ctx.fill();
       ctx.strokeStyle = BG; ctx.lineWidth = 4; ctx.stroke();
     };
-    dot(leanA, ACC); dot(leanB, AMB);
+    dot(leanA, colA || NEU_A); dot(leanB, colB || NEU_B);
     ctx.font = '600 23px ' + SANS; ctx.fillStyle = MUT;
     ctx.textAlign = 'left'; ctx.fillText('GRAPPLER', x, y + 54);
     ctx.textAlign = 'right'; ctx.fillText('STRIKER', x + w, y + 54);
@@ -101200,17 +101297,16 @@ const GL_SHEET = (function () {
     // Dropping the overflow words silently would end the sentence mid-thought on
     // an image meant for sharing. Mark the cut.
     if (all.length > cap) lines[cap - 1] = clip(ctx, lines[cap - 1] + ' …', w - 48);
-    const h = 56 + lines.length * 36;
+    const h = 54 + lines.length * 35;
     roundRect(ctx, x, y, w, h, 12);
-    ctx.fillStyle = colour === ACC ? 'rgba(0,230,104,0.07)' : 'rgba(255,207,122,0.06)';
-    ctx.fill();
-    ctx.strokeStyle = colour === ACC ? 'rgba(0,230,104,0.25)' : 'rgba(255,207,122,0.22)';
+    ctx.fillStyle = hexA(colour, 0.07); ctx.fill();
+    ctx.strokeStyle = hexA(colour, 0.24);
     ctx.lineWidth = 1; ctx.stroke();
     ctx.font = '700 30px ' + COND; ctx.fillStyle = colour;
     ctx.fillText(String(name).toUpperCase(), x + 24, y + 40);
     ctx.font = '400 28px ' + SANS; ctx.fillStyle = TXT;
-    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 74 + i * 36));
-    return y + h + 12;
+    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 72 + i * 35));
+    return y + h + 8;
   }
   function sectionTitle(ctx, t, y) {
     // hairline above the label groups the block visually — at 1080px wide the old
@@ -101237,24 +101333,29 @@ const GL_SHEET = (function () {
   ];
   const statNum = (v) => { if (v == null) return null; const m = /-?[\d.]+/.exec(String(v)); return m ? parseFloat(m[0]) : null; };
   const statTxt = (v) => (v == null ? '—' : String(v));
-  function h2hTable(ctx, sa, sb, y) {
-    sa = sa || {}; sb = sb || {};
+  function h2hTable(ctx, sa, sb, y, sig, colA, colB) {
+    sa = sa || {}; sb = sb || {}; sig = sig || {};
+    colA = colA || NEU_A; colB = colB || NEU_B;
     H2H_ROWS.forEach((r) => {
       const label = r[0], key = r[1], higher = r[2];
       const na = statNum(sa[key]), nb = statNum(sb[key]);
+      // A gap that doesn't clear the EDGE_AXES threshold is noise. Drawing ten
+      // equally loud rows buries the three that actually separate these two.
+      const real = !!sig[key];
       let hiA = false, hiB = false;
-      if (na != null && nb != null && na !== nb) { const aWins = higher ? na > nb : na < nb; hiA = aWins; hiB = !aWins; }
+      if (real && na != null && nb != null && na !== nb) { const aWins = higher ? na > nb : na < nb; hiA = aWins; hiB = !aWins; }
       ctx.textAlign = 'left'; ctx.font = (hiA ? '700 37px ' : '400 37px ') + COND;
-      ctx.fillStyle = hiA ? ACC : TXT; ctx.fillText(statTxt(sa[key]), 64, y);
+      ctx.fillStyle = hiA ? colA : (real ? TXT : MUT); ctx.fillText(statTxt(sa[key]), 64, y);
       ctx.textAlign = 'right'; ctx.font = (hiB ? '700 37px ' : '400 37px ') + COND;
-      ctx.fillStyle = hiB ? AMB : TXT; ctx.fillText(statTxt(sb[key]), W - 64, y);
-      ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillStyle = hiB ? colB : (real ? TXT : MUT); ctx.fillText(statTxt(sb[key]), W - 64, y);
+      ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = real ? MUT : FOOT;
       ctx.fillText(label, W / 2, y - 3);
       ctx.textAlign = 'left';
-      y += 39;
+      y += 34;
     });
     return y;
   }
+
 
   // One fighter's method split. Percentages are of that fighter's own wins, and
   // carry the same 1% floor simMethodRowsHtml uses: a method that never landed in
@@ -101285,6 +101386,11 @@ const GL_SHEET = (function () {
     const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
     // Same analysis object the Scouting Report renders from.
     const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
+    const odds = await oddsFor(nameA, nameB).catch(() => null);
+    // The brand accent means FAVOURITE, never "listed first". With no market to
+    // read, nobody gets it and both fighters take a neutral colour.
+    const colA = odds ? (odds.favA ? ACC : AMB) : NEU_A;
+    const colB = odds ? (odds.favB ? ACC : AMB) : NEU_B;
 
     const CH = H;                                  // 1920, story
     const cv = document.createElement('canvas');
@@ -101294,38 +101400,40 @@ const GL_SHEET = (function () {
 
     brand(ctx, 96, (ctxInfo && ctxInfo.event) || 'UFC');
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-    const line2 = [a.division, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
+    // 'LW' is jargon on a graphic that leaves the site.
+    const divName = (window.simDivisionLabel ? window.simDivisionLabel(a.division) : a.division) || '';
+    const line2 = [divName, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
     if (line2) ctx.fillText(line2, 64, 136);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 190);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 168, 72, colA, colB, true);
 
-    if (ctxInfo && ctxInfo.oddsA && ctxInfo.oddsB) {
-      y = sectionTitle(ctx, 'Moneyline' + (ctxInfo.book ? ' · ' + ctxInfo.book : ''), y + 10);
-      tapeRow(ctx, 'odds', ctxInfo.oddsA, ctxInfo.oddsB, y + 34, false, false);
-      y += 64;
+    if (odds) {
+      y = sectionTitle(ctx, 'Consensus moneyline · ' + odds.books + (odds.books === 1 ? ' book' : ' books'), y + 28);
+      tapeRow(ctx, 'odds', fmtPrice(odds.a), fmtPrice(odds.b), y + 40, odds.favA, odds.favB, colA, colB);
+      y += 58;
     }
 
-    y = sectionTitle(ctx, 'Tale of the tape', y + 46);
-    y += 42;
+    y = sectionTitle(ctx, 'Tale of the tape', y + 38);
+    y += 40;
     const ageA = ageOf(a.dob), ageB = ageOf(b.dob);
     const inches = (v) => { const m = /([\d.]+)/.exec(String(v || '')); return m ? parseFloat(m[1]) : null; };
     const rA = inches(a.reach), rB = inches(b.reach);
-    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 44;
-    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 44;
-    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 44;
-    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false); y += 30;
+    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false, colA, colB); y += 41;
+    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA, colA, colB); y += 41;
+    tapeRow(ctx, 'age', ageA, ageB, y, false, false, colA, colB); y += 41;
+    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 30;
 
     // Head-to-head career numbers, winner of each line in that fighter's colour.
-    y = sectionTitle(ctx, 'Head to head', y + 44) + 36;
-    y = h2hTable(ctx, ins.statsA, ins.statsB, y);
+    y = sectionTitle(ctx, 'Head to head', y + 36) + 32;
+    y = h2hTable(ctx, ins.statsA, ins.statsB, y, ins.sig, colA, colB);
 
-    y = sectionTitle(ctx, 'Style', y + 36);
-    styleBar(ctx, y + 14, ins.leanA, ins.leanB);
-    y += 100;   // bar + the GRAPPLER/STRIKER captions beneath it
+    y = sectionTitle(ctx, 'Style', y + 30);
+    styleBar(ctx, y + 14, ins.leanA, ins.leanB, colA, colB);
+    y += 90;   // bar + the GRAPPLER/STRIKER captions beneath it
 
-    y = sectionTitle(ctx, 'Path to victory', y + 38) + 12;
-    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 4);
-    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 4);
+    y = sectionTitle(ctx, 'Path to victory', y + 32) + 10;
+    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, colA, y, 4);
+    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, colB, y, 4);
 
     footer(ctx, CH);
     return cv;
@@ -101351,21 +101459,24 @@ const GL_SHEET = (function () {
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 112);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 58);
+    // Same rule as the matchup sheet: the accent marks the favourite, which here
+    // the model actually knows.
+    const colA = aLeads ? ACC : AMB, colB = aLeads ? AMB : ACC;
+    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 58, colA, colB, false);
 
     // Win probability — the headline number.
     y = sectionTitle(ctx, 'Win probability', y + 46) + 34;
     ctx.font = '800 104px ' + COND;
-    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 76);
-    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 76);
+    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? colA : MUT; ctx.fillText(pctA + '%', 64, y + 76);
+    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : colB; ctx.fillText(pctB + '%', W - 64, y + 76);
     ctx.textAlign = 'left';
     y += 100;
     const bx = 64, bw = W - 128, bh = 22;
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     ctx.save();
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
-    ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
-    ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
+    ctx.fillStyle = aLeads ? colA : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
+    ctx.fillStyle = aLeads ? MUT : colB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
     ctx.restore();
     y += 74;
 
@@ -101374,8 +101485,8 @@ const GL_SHEET = (function () {
     // sums to 100 and the two are read independently.
     y = sectionTitle(ctx, 'How each fighter wins', y + 20) + 24;
     const gap = 44, colW = (W - 128 - gap) / 2;
-    const yA = methodCol(ctx, 64, colW, a.name, result.methodsA, result.winsA, ACC, y);
-    const yB = methodCol(ctx, 64 + colW + gap, colW, b.name, result.methodsB, result.winsB, AMB, y);
+    const yA = methodCol(ctx, 64, colW, a.name, result.methodsA, result.winsA, colA, y);
+    const yB = methodCol(ctx, 64 + colW + gap, colW, b.name, result.methodsB, result.winsB, colB, y);
     y = Math.max(yA, yB);
 
     footer(ctx, CH);
@@ -102937,7 +103048,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
     }
     return false;
-  }
+  }  if (typeof window !== 'undefined') window.namesLikelyMatch = namesLikelyMatch;
+
 
   function buildBoutPairings(evtFights) {
     const pairings = [];
@@ -103814,6 +103926,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Every odds table lists sportsbooks in this fixed order; a book with no line
   // for that market is simply skipped. Books outside this list aren't shown.
   const BOOK_ORDER = ['fanduel', 'draftkings', 'betmgm', 'betonlineag', 'bovada'];
+
   function plOrderBooks(keys) { return BOOK_ORDER.filter(k => keys.indexOf(k) !== -1); }
 
   function fmtOdds(n) {
@@ -106040,7 +106153,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function simDivisionLabel(div) {
     return SIM_DIVISION_LABELS[div] || div || 'Unknown';
-  }
+  }  if (typeof window !== 'undefined') window.simDivisionLabel = simDivisionLabel;
+
 
   function simDivisionInfo(div) {
     const d = SIM_DIVISION_ALIASES[div] || div;
