@@ -101086,6 +101086,15 @@ const GL_SHEET = (function () {
       slug: (typeof nameToSlug === 'function') ? nameToSlug(name) : null
     };
   }
+  // FIGHTERS.rank already carries its own '#' ("#4"), and champions are stored as
+  // "C" / "#C" / "#IC". Prefixing another '#' produced Max Holloway's "##4".
+  function rankTag(rank) {
+    if (!rank || rank === 'NR') return '';
+    const t = String(rank).replace(/^#/, '');
+    if (t === 'C') return '  ·  Champion';
+    if (t === 'IC') return '  ·  Interim champ';
+    return '  ·  #' + t;
+  }
   function ageOf(dob) {
     if (!dob) return null;
     const d = new Date(dob); if (isNaN(d.getTime())) return null;
@@ -101128,14 +101137,16 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'left';
     }
   }
-  function footer(ctx) {
+  // The matchup sheet is a 1080x1920 story; the sim sheet carries far less and is
+  // a 1080x1080 square. Height is per-sheet, so the footer takes it as an argument.
+  function footer(ctx, h) {
     ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = FOOT;
-    ctx.fillText('gillylab.com · not betting advice', W / 2, H - 54);
+    ctx.fillText('gillylab.com · not betting advice', W / 2, h - 46);
     ctx.textAlign = 'left';
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
-  function versusBlock(ctx, a, b, imgA, imgB, y) {
-    const cxA = 280, cxB = W - 280, R = 110;
+  function versusBlock(ctx, a, b, imgA, imgB, y, radius) {
+    const cxA = 280, cxB = W - 280, R = radius || 110;
     avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
     avatar(ctx, imgB, cxB, y + R, R, b.initials, AMB);
     ctx.textAlign = 'center'; ctx.font = '800 72px ' + COND; ctx.fillStyle = MUT;
@@ -101147,9 +101158,8 @@ const GL_SHEET = (function () {
     ctx.fillText(clip(ctx, b.name.toUpperCase(), 420), cxB, ny);
     ny += 40;
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-    const sub = (m) => m.record + (m.rank && m.rank !== 'NR' ? '  ·  #' + m.rank : '');
-    ctx.fillText(sub(a), cxA, ny);
-    ctx.fillText(sub(b), cxB, ny);
+    ctx.fillText(a.record + rankTag(a.rank), cxA, ny);
+    ctx.fillText(b.record + rankTag(b.rank), cxB, ny);
     ctx.textAlign = 'left';
     return ny + 46;
   }
@@ -101249,11 +101259,11 @@ const GL_SHEET = (function () {
     // Same analysis object the Scouting Report renders from.
     const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
 
+    const CH = H;                                  // 1920, story
     const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
+    cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
-    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = ACC; ctx.fillRect(0, 0, W, 8);
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
     brand(ctx, 96, (ctxInfo && ctxInfo.event) || 'UFC');
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
@@ -101290,7 +101300,7 @@ const GL_SHEET = (function () {
     if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 3);
     if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 3);
 
-    footer(ctx);
+    footer(ctx, CH);
     return cv;
   }
 
@@ -101301,56 +101311,58 @@ const GL_SHEET = (function () {
     const pctA = Math.round((result.winsA / result.n) * 100), pctB = 100 - pctA;
     const aLeads = pctA >= pctB;
 
+    // Square. The sim sheet carries a fraction of the matchup sheet's content, so
+    // a story would be mostly empty space; 1080x1080 also drops straight into a
+    // feed or a chat without cropping.
+    const CH = 1080;
     const cv = document.createElement('canvas');
-    cv.width = W; cv.height = H;
+    cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
-    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = ACC; ctx.fillRect(0, 0, W, 8);
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 96, 'Fight simulator');
-    ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 136);
+    brand(ctx, 76, 'Fight simulator');
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 112);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 250);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 88);
 
-    // Win probability — the headline number. Removing the power score left a lot
-    // of room, so the numbers that survived get to breathe.
-    y = sectionTitle(ctx, 'Win probability', y + 70) + 50;
-    ctx.font = '800 150px ' + COND;
-    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 110);
-    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 110);
+    // Win probability — the headline number.
+    y = sectionTitle(ctx, 'Win probability', y + 24) + 34;
+    ctx.font = '800 104px ' + COND;
+    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 76);
+    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 76);
     ctx.textAlign = 'left';
-    y += 160;
-    const bx = 64, bw = W - 128, bh = 28;
+    y += 100;
+    const bx = 64, bw = W - 128, bh = 22;
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     ctx.save();
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
     ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
     ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
     ctx.restore();
-    y += 120;
+    y += 74;
 
     // Method of victory, for whoever the model favours.
     const favName = aLeads ? a.name : b.name;
     const favMethods = aLeads ? result.methodsA : result.methodsB;
     const favWins = aLeads ? result.winsA : result.winsB;
     const favCol = aLeads ? ACC : AMB;
-    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 60;
+    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 38;
     ['KO/TKO', 'Submission', 'Decision'].forEach((k) => {
       let pct = favWins > 0 ? Math.round(((favMethods[k] || 0) / favWins) * 100) : 0;
       if (pct === 0 && favWins > 0) pct = 1;   // mirrors simMethodRowsHtml's 1% floor
-      ctx.font = '400 34px ' + SANS; ctx.fillStyle = TXT;
-      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 24);
-      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 36px ' + COND;
-      ctx.fillText(pct + '%', W - 64, y + 24);
+      ctx.font = '400 28px ' + SANS; ctx.fillStyle = TXT;
+      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 20);
+      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 30px ' + COND;
+      ctx.fillText(pct + '%', W - 64, y + 20);
       ctx.textAlign = 'left';
-      const tx = 360, tw = W - 64 - 150 - tx;
-      roundRect(ctx, tx, y + 10, tw, 16, 8); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
-      roundRect(ctx, tx, y + 10, Math.max(8, tw * (pct / 100)), 16, 8); ctx.fillStyle = favCol; ctx.fill();
-      y += 96;
+      const tx = 320, tw = W - 64 - 120 - tx;
+      roundRect(ctx, tx, y + 8, tw, 13, 7); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+      roundRect(ctx, tx, y + 8, Math.max(7, tw * (pct / 100)), 13, 7); ctx.fillStyle = favCol; ctx.fill();
+      y += 58;
     });
 
-    footer(ctx);
+    footer(ctx, CH);
     return cv;
   }
 
@@ -101572,21 +101584,6 @@ function renderScouting(host, name, opp, fightDate) {
   // stays lean here — tale of the tape off.
   if (typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(host, name, opp, { taleOfTape: false });
 
-  // Shareable story-format matchup sheet. Appended last so it sits at the bottom
-  // of the Fight Info panel, under the analysis it summarises.
-  if (window.GL_SHEET) {
-    const shareBtn = document.createElement('button');
-    shareBtn.type = 'button';
-    shareBtn.className = 'gl-sheet-btn';
-    shareBtn.textContent = '↓ Generate matchup sheet';
-    shareBtn.addEventListener('click', (e) => {
-      e.stopPropagation();   // the panel's own toggle listens on the ancestor
-      const evLabel = ((document.getElementById('home-event-name') || {}).textContent || '').trim();
-      window.GL_SHEET.matchup(name, opp, { event: evLabel || 'UFC', date: fightDate || '' });
-    });
-    host.appendChild(shareBtn);
-  }
-
   // Finish & durability
   (function () {
     const fp = finishProfile(histA), op = finishProfile(histB);
@@ -101721,6 +101718,22 @@ function renderScouting(host, name, opp, fightDate) {
       }
     }).catch(function () {});
   }
+
+  // Shareable matchup sheet. Appended at the very end of renderScouting so it is
+  // the last thing in the Fight Info panel, under every section it summarises.
+  if (window.GL_SHEET) {
+    const shareBtn = document.createElement('button');
+    shareBtn.type = 'button';
+    shareBtn.className = 'gl-sheet-btn';
+    shareBtn.textContent = '↓ Generate matchup sheet';
+    shareBtn.addEventListener('click', function (e) {
+      e.stopPropagation();   // the panel's own open/close toggle listens on an ancestor
+      const evLabel = ((document.getElementById('home-event-name') || {}).textContent || '').trim();
+      window.GL_SHEET.matchup(name, opp, { event: evLabel || 'UFC', date: fightDate || '' });
+    });
+    host.appendChild(shareBtn);
+  }
+
 }
 
 function fighterGoBack() {
