@@ -2118,7 +2118,18 @@
        new each time and there is no previous state to animate from. A keyframe
        does work, because it plays when the element is inserted. */
     @keyframes plBodyIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-    .parlay-slip:not(.collapsed) .pl-body { animation: plBodyIn 0.22s ease; }
+    /* Only when the body is (re)appearing. Unconditional, this replayed on every
+       pick and every book switch, which is precisely what felt jumpy. */
+    .parlay-slip:not(.collapsed) .pl-body.pl-in { animation: plBodyIn 0.22s ease; }
+    /* One appended row, not the whole list. */
+    @keyframes plLegIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+    .pl-card-leg.pl-leg-in { animation: plLegIn 0.2s ease; }
+    /* Re-pricing at another book: same rows, new numbers. Move the numbers only. */
+    @keyframes plNumIn { from { opacity: 0.2; } to { opacity: 1; } }
+    .parlay-slip.pl-repriced .pl-card-odds,
+    .parlay-slip.pl-repriced .pl-total,
+    .parlay-slip.pl-repriced .pl-pay strong { animation: plNumIn 0.24s ease; }
+    .pl-book-opt { transition: border-color 0.15s, color 0.15s, background 0.15s; }
     .pl-bar-right { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
     /* Shareable slip card: everything a screenshot needs (brand, event, book,
        picks, price, payout) and nothing it doesn't. Built by plCardHTML(), which
@@ -2171,7 +2182,9 @@
        slip must still be hidden when parked, so only the movement is dropped. */
     @media (prefers-reduced-motion: reduce) {
       .parlay-slip, .pl-share { transition: none; }
-      .pl-share-inner, .parlay-slip:not(.collapsed) .pl-body, .pl-act.busy { animation: none; }
+      .pl-share-inner, .parlay-slip:not(.collapsed) .pl-body.pl-in, .pl-card-leg.pl-leg-in,
+      .parlay-slip.pl-repriced .pl-card-odds, .parlay-slip.pl-repriced .pl-total,
+      .parlay-slip.pl-repriced .pl-pay strong, .pl-act.busy { animation: none; }
     }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
@@ -103316,6 +103329,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //      independent, which is what makes multiplying their decimal odds valid.
   const PARLAY = { book: null, legs: [], open: false, stake: 100 };
   const plSw = { x: null, y: null, base: 0, cur: 0, lock: null };   // swipe-to-clear state
+  // plRender() replaces the slip's whole innerHTML, so without this every change
+  // — adding one pick, re-pricing at another book — re-animated the entire panel
+  // and reset its height in one frame. Each caller says what it changed, and only
+  // that part moves:
+  //   'body'    the body is (re)appearing — expand it
+  //   'leg'     one row was appended — fade in that row alone
+  //   'reprice' same rows, new numbers — flash the odds, leave the layout be
+  let plAnim = null;
+  const plReduceMotion = () => !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   // navigator.share() needs transient activation — it must be called straight out
   // of the click, with no await in between. So the PNG is rendered up front when
   // the share overlay opens and cached here; the buttons then fire synchronously.
@@ -103370,6 +103392,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (o === undefined) { plToast(label + " doesn't price every leg in this slip."); return; }
       next.push(Object.assign({}, l, { book: bookKey, booklabel: label, odds: o }));
     }
+    // Same rows, same count, different prices — only the numbers should move.
+    plAnim = 'reprice';
     PARLAY.legs = next; PARLAY.book = bookKey; plRender();
   }
   // One card builder for both surfaces. `share:true` renders the standalone
@@ -103726,7 +103750,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (PARLAY.legs.length && PARLAY.book && leg.book !== PARLAY.book) { plToast('One sportsbook per parlay — your slip is ' + PARLAY.legs[0].booklabel + ', that leg is ' + leg.booklabel + '.'); return; }
     const v = plValidate(PARLAY.legs, leg);
     if (!v.ok) { plToast(v.reason); return; }
+    // The first pick opens the body; later ones only append a row.
+    plAnim = PARLAY.legs.length ? 'leg' : 'body';
     PARLAY.book = leg.book; PARLAY.legs.push(leg); plRender();
+  }
+  // The slip is anchored to the bottom of the viewport, so a change in its height
+  // yanks the whole panel up or down in one frame. Measure before the rebuild,
+  // pin the old height, then let it settle into the new one.
+  function plTweenHeight(el, prevH) {
+    if (!prevH || plReduceMotion()) return;
+    const nextH = el.offsetHeight;
+    if (nextH === prevH) return;
+    el.style.overflow = 'hidden';       // the new content is taller than the pinned box
+    el.style.height = prevH + 'px';
+    void el.offsetHeight;               // flush, or the browser coalesces both heights
+    el.style.transition = 'height 0.22s ease';
+    el.style.height = nextH + 'px';
+    const done = () => {
+      clearTimeout(plTweenHeight._t);
+      el.removeEventListener('transitionend', onEnd);
+      el.style.height = ''; el.style.transition = ''; el.style.overflow = '';
+    };
+    const onEnd = (e) => { if (e.target === el && e.propertyName === 'height') done(); };
+    el.addEventListener('transitionend', onEnd);
+    plTweenHeight._t = setTimeout(done, 400);   // transitionend never fires if interrupted
   }
   function plRender() {
     const el = document.getElementById('parlaySlip');
@@ -103749,6 +103796,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (dim) td.setAttribute('aria-disabled', 'true'); else td.removeAttribute('aria-disabled');
     });
     if (!el) return;
+    // A height tween may still be running from the last render. Its inline
+    // `transition: height` would otherwise override the class's transform/opacity
+    // transition and the slip would vanish instead of sliding out. Reset first,
+    // which also means prevH below is measured against the natural height.
+    clearTimeout(plTweenHeight._t);
+    el.style.height = ''; el.style.transition = ''; el.style.overflow = '';
     // Emptying the markup here would wipe the slip before it could slide away.
     // Drop .open to start the transition, and clear the contents once it lands —
     // cancelled if a leg is added again mid-slide.
@@ -103768,6 +103821,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <span class="pl-cap" style="margin-right:2px;">Same picks at</span>
         ${prices.map(p => `<button type="button" class="pl-book-opt${p.book === PARLAY.book ? ' cur' : ''}${best && p.book === best.book ? ' best' : ''}" data-book="${p.book}" title="${p.book === PARLAY.book ? 'Current book' : 'Re-price this slip at ' + escHtmlAttr(p.label)}">${escHtmlAttr(p.label)} <strong>${p.am > 0 ? '+' : ''}${p.am}</strong>${best && p.book === best.book ? '<span class="pl-best-tag">best</span>' : ''}</button>`).join('')}
       </div>` : '';
+    // Everything below is destroyed by the innerHTML swap. Grab what has to
+    // survive it: the height we're animating from, where the legs list was
+    // scrolled to, and the caret if the stake box had focus.
+    const prevH = el.classList.contains('open') ? el.offsetHeight : 0;   // 0 = first open, it slides in instead
+    const oldLegs = el.querySelector('.pl-card-legs');
+    const prevScroll = oldLegs ? oldLegs.scrollTop : 0;
+    const act = document.activeElement;
+    const stakeHadFocus = !!(act && act.id === 'plStake');
+    const caret = stakeHadFocus ? act.selectionStart : null;
+
     el.classList.add('open');
     el.classList.toggle('collapsed', !PARLAY.open);
     el.innerHTML = `<div class="pl-swipe">
@@ -103794,6 +103857,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           </div>
         </div>
       </div></div></div>`;
+
+    // Put back what the rebuild threw away, before anything can be seen.
+    const newLegs = el.querySelector('.pl-card-legs');
+    if (newLegs && prevScroll) newLegs.scrollTop = prevScroll;
+    if (stakeHadFocus) {
+      const s = document.getElementById('plStake');
+      if (s) { s.focus(); try { s.setSelectionRange(caret, caret); } catch (err) { /* number inputs refuse a caret in some browsers */ } }
+    }
+
+    if (!plReduceMotion()) {
+      if (plAnim === 'body') {
+        const body = el.querySelector('.pl-body');
+        if (body) body.classList.add('pl-in');
+      } else if (plAnim === 'leg') {
+        const rows = el.querySelectorAll('.pl-card-leg');
+        if (rows.length) rows[rows.length - 1].classList.add('pl-leg-in');   // the leg we just pushed
+      } else if (plAnim === 'reprice') {
+        el.classList.add('pl-repriced');
+        clearTimeout(plRender._rp);
+        plRender._rp = setTimeout(() => el.classList.remove('pl-repriced'), 320);
+      }
+    }
+    plTweenHeight(el, prevH);
+    plAnim = null;   // consumed — a render nobody annotated animates nothing
   }
   let plBound = false;
   function plClearAll() { PARLAY.legs = []; PARLAY.book = null; plShareClose(); plRender(); }
@@ -103810,7 +103897,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Close on the Close button or a click on the backdrop itself.
       if (hit(e, '#plShareClose') || (e.target && e.target.id === 'plShare')) { plShareClose(); return; }
       if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
-      if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plRender(); }
+      if (hit(e, '#plBar')) { PARLAY.open = !PARLAY.open; plAnim = PARLAY.open ? 'body' : null; plRender(); }
     });
     // Mobile: swipe the slip left to reveal a Clear action (iOS-style). Locks to
     // the horizontal axis so the legs list still scrolls vertically, and ignores
@@ -103851,7 +103938,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { e.preventDefault(); plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
-      if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plRender(); }
+      if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plAnim = PARLAY.open ? 'body' : null; plRender(); }
     });
   }
   function plReset() { PARLAY.legs = []; PARLAY.book = null; PARLAY.open = false; plShareClose(); plBind(); plRender(); }
