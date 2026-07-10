@@ -2095,8 +2095,13 @@
     .pl-book-opt.cur { border-color: var(--accent); color: var(--text); background: rgba(0, 230, 104, 0.08); cursor: default; }
     .pl-book-opt.best strong { color: var(--accent); }
     .pl-best-tag { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-left: 3px; }
-    .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: none; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45); }
-    .parlay-slip.open { display: block; }
+    /* Stays in the layout so it can slide, rather than display:none popping it in
+       and out. visibility keeps it off the tab order and out of the way while
+       parked, and still transitions (unlike display). */
+    .parlay-slip { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; display: block; background: var(--card); border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.45);
+      visibility: hidden; opacity: 0; transform: translateY(100%); pointer-events: none;
+      transition: transform 0.24s ease, opacity 0.18s ease, visibility 0.24s; }
+    .parlay-slip.open { visibility: visible; opacity: 1; transform: translateY(0); pointer-events: auto; }
     /* Swipe-to-clear: the red Clear sits behind the slip and is revealed when
        .pl-inner is dragged left on touch. Desktop never translates, so it stays hidden. */
     .pl-swipe { position: relative; overflow: hidden; }
@@ -2108,6 +2113,12 @@
     .pl-chev { display: inline-block; color: var(--muted); font-size: 0.9rem; transition: transform 0.2s; }
     .parlay-slip.collapsed .pl-chev { transform: rotate(-90deg); }
     .parlay-slip.collapsed .pl-body { display: none; }
+    /* plRender() replaces the slip's innerHTML on every change, so a CSS
+       transition between collapsed and expanded can never run — the element is
+       new each time and there is no previous state to animate from. A keyframe
+       does work, because it plays when the element is inserted. */
+    @keyframes plBodyIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .parlay-slip:not(.collapsed) .pl-body { animation: plBodyIn 0.22s ease; }
     .pl-bar-right { display: flex; align-items: center; gap: 16px; flex: 0 0 auto; }
     /* Shareable slip card: everything a screenshot needs (brand, event, book,
        picks, price, payout) and nothing it doesn't. Built by plCardHTML(), which
@@ -2133,9 +2144,14 @@
     .pl-card-leg .pl-leg-x { opacity: 0.35; transition: opacity 0.15s; }
     .pl-card-leg:hover .pl-leg-x, .pl-leg-x:focus { opacity: 1; }
     /* Share overlay: the card standing alone, plus copy / native-share actions. */
-    .pl-share { position: fixed; inset: 0; z-index: 80; display: none; background: rgba(0, 0, 0, 0.72); overflow-y: auto; }
-    .pl-share.open { display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
-    .pl-share-inner { width: 100%; max-width: 460px; }
+    /* Same reasoning as .parlay-slip: display can't be transitioned, so the
+       overlay stays laid out and fades on opacity/visibility instead of popping. */
+    .pl-share { position: fixed; inset: 0; z-index: 80; display: flex; align-items: center; justify-content: center; padding: 1.25rem;
+      background: rgba(0, 0, 0, 0.72); overflow-y: auto;
+      visibility: hidden; opacity: 0; pointer-events: none; transition: opacity 0.18s ease, visibility 0.18s; }
+    .pl-share.open { visibility: visible; opacity: 1; pointer-events: auto; }
+    /* The inner markup is rebuilt on each open, so the keyframe replays. */
+    .pl-share-inner { width: 100%; max-width: 460px; animation: plBodyIn 0.24s ease; }
     .pl-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 0.9rem; }
     /* The hint sits over the page, not over the dimmed backdrop, so muted grey on
        whatever happens to be behind it was unreadable. Give it its own surface. */
@@ -2149,6 +2165,14 @@
     .pl-act.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
     .pl-act.ghost:hover { background: transparent; border-color: #ff6a5e; color: #ff6a5e; }
     .pl-act:disabled { opacity: 0.45; cursor: default; pointer-events: none; }
+    @keyframes plBusyPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.6; } }
+    .pl-act.busy { animation: plBusyPulse 0.9s ease-in-out infinite; }
+    /* Matches how the rest of the site treats motion (see body.gl-leaving). The
+       slip must still be hidden when parked, so only the movement is dropped. */
+    @media (prefers-reduced-motion: reduce) {
+      .parlay-slip, .pl-share { transition: none; }
+      .pl-share-inner, .parlay-slip:not(.collapsed) .pl-body, .pl-act.busy { animation: none; }
+    }
     .pl-legs { max-height: 34vh; overflow-y: auto; margin-top: 0.35rem; border-top: 1px solid rgba(255, 255, 255, 0.07); }
     .pl-leg { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 7px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
     .pl-leg-fight { font-size: 0.64rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -103555,13 +103579,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       plSetShareBusy(false);
     }));
   }
+  // Keep the label. Swapping it for '…' collapsed a 90px button to 20px and
+  // reflowed the row on every tap — the busy state was the jumpiest thing here.
+  // Dim and pulse in place instead; the width never changes.
   function plSetShareBusy(busy) {
     ['plSaveImg', 'plShareBtn'].forEach(id => {
       const b = document.getElementById(id);
       if (!b) return;
       b.disabled = !!busy;
-      if (!b.dataset.label) b.dataset.label = b.textContent;
-      b.textContent = busy ? '…' : b.dataset.label;
+      b.classList.toggle('busy', !!busy);
+      if (busy) b.setAttribute('aria-busy', 'true'); else b.removeAttribute('aria-busy');
     });
   }
   function plCanShareFiles(file) {
@@ -103722,7 +103749,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (dim) td.setAttribute('aria-disabled', 'true'); else td.removeAttribute('aria-disabled');
     });
     if (!el) return;
-    if (!PARLAY.legs.length) { el.classList.remove('open'); el.innerHTML = ''; return; }
+    // Emptying the markup here would wipe the slip before it could slide away.
+    // Drop .open to start the transition, and clear the contents once it lands —
+    // cancelled if a leg is added again mid-slide.
+    clearTimeout(plRender._clr);
+    if (!PARLAY.legs.length) {
+      el.classList.remove('open');
+      plRender._clr = setTimeout(() => { if (!PARLAY.legs.length) el.innerHTML = ''; }, 260);
+      return;
+    }
     const dec = plDec();
     const am = plDecToAm(dec);
     const stake = Math.max(0, Number(PARLAY.stake) || 0);
