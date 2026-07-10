@@ -103575,12 +103575,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // A web page can't write straight to the camera roll. iOS: the share sheet's
   // "Save Image" lands in Photos. Android/desktop: a real download (Android files
   // it under Downloads, which Photos shows as a device folder).
+  //
+  // On iOS the two buttons therefore both open a sheet, and the only way to tell
+  // them apart is the payload — iOS builds the sheet from what it is handed and
+  // ignores `title` completely. So:
+  //   Save  -> the image ALONE. A file-only sheet puts Save Image / Add to Photos
+  //            in the first action row, with no text to scroll past.
+  //   Share -> image + the odds text + the link. iOS renders a text preview above
+  //            the thumbnail and messaging apps attach the caption with the card.
+  // Passing `title` to a file share bought us nothing and made the two identical.
   function plSaveImage() {
     if (!PARLAY.legs.length) return;
     const asset = plShareAsset;
     if (!asset) return;   // button is disabled until the render lands
     if (PL_IOS && plCanShareFiles(asset.file)) {
-      navigator.share({ files: [asset.file], title: 'GillyLab parlay' }).catch(() => {});
+      navigator.share({ files: [asset.file] }).catch(() => {});
       return;
     }
     plDownload(asset.blob);
@@ -103589,10 +103598,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!PARLAY.legs.length) return;
     const text = plShareText();
     const asset = plShareAsset;
+    const url = 'https://gillylab.com';
     if (asset && plCanShareFiles(asset.file)) {
-      navigator.share({ files: [asset.file], text: text, title: 'GillyLab parlay' }).catch(() => {});
+      // Not every implementation accepts `url` together with `files`; the ones
+      // that don't reject the whole call, which would silently share nothing.
+      // Ask first, and drop the url rather than the card.
+      const withUrl = { files: [asset.file], text: text, url: url, title: 'GillyLab parlay' };
+      const payload = (navigator.canShare && navigator.canShare(withUrl))
+        ? withUrl
+        : { files: [asset.file], text: text, title: 'GillyLab parlay' };
+      navigator.share(payload).catch(() => {});
     } else if (navigator.share) {
-      navigator.share({ text: text, title: 'GillyLab parlay' }).catch(() => {});
+      navigator.share({ text: text, url: url, title: 'GillyLab parlay' }).catch(() => {});
     } else {
       plCopyText();   // no share sheet — put the text on the clipboard instead
     }
@@ -103608,13 +103625,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     ov.innerHTML = `<div class="pl-share-inner">
       ${plCardHTML({ share: true })}
       <div class="pl-share-actions">
-        <button type="button" id="plSaveImg" class="pl-act primary">Save</button>
-        <button type="button" id="plShareBtn" class="pl-act">Share</button>
+        <button type="button" id="plSaveImg" class="pl-act primary">Save photo</button>
+        <button type="button" id="plShareBtn" class="pl-act">Share slip</button>
         <button type="button" id="plShareClose" class="pl-act ghost">Close</button>
       </div>
       <div class="pl-share-hint">${PL_IOS
-        ? 'Save opens the share sheet — choose Save Image to add it to Photos. Share sends the card to any app.'
-        : 'Save downloads the image. Share sends the card to any app on your device.'}</div>
+        ? 'Save photo → tap Save Image to add it to Photos. Share slip sends the card with the odds and a link. iOS has no way for a web page to write to Photos directly, so both go through the share sheet.'
+        : 'Save photo downloads the image. Share slip sends the card with the odds and a link.'}</div>
     </div>`;
     ov.classList.add('open');
     plPrepShareAsset();   // render the PNG now so the buttons keep user activation
