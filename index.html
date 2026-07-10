@@ -101380,7 +101380,15 @@ const GL_SHEET = (function () {
     return yy;
   }
 
-  async function drawMatchup(nameA, nameB, ctxInfo) {
+  // Two shapes from one layout.
+  //   'portrait' 1080x1350 — Instagram's 4:5 feed max. Nothing gets covered by
+  //      story chrome, and it is the shape people actually scroll past.
+  //   'story'    1080x1920 — full depth, room for the analysis tail.
+  // Portrait is 570px short of the whole thing, and the two blocks that add up to
+  // 608px are the style bar and the path-to-victory prose. Everything else — the
+  // photos, records, form, odds, tape and head-to-head — survives intact. Shrinking
+  // the type to fit instead would undo the readability pass.
+  async function drawMatchup(nameA, nameB, ctxInfo, fmt) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
     const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
@@ -101392,7 +101400,8 @@ const GL_SHEET = (function () {
     const colA = odds ? (odds.favA ? ACC : AMB) : NEU_A;
     const colB = odds ? (odds.favB ? ACC : AMB) : NEU_B;
 
-    const CH = H;                                  // 1920, story
+    const story = fmt === 'story';
+    const CH = story ? H : 1350;
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
@@ -101407,11 +101416,6 @@ const GL_SHEET = (function () {
 
     let y = versusBlock(ctx, a, b, imgA, imgB, 168, 72, colA, colB, true);
 
-    if (odds) {
-      y = sectionTitle(ctx, 'Consensus moneyline · ' + odds.books + (odds.books === 1 ? ' book' : ' books'), y + 28);
-      tapeRow(ctx, 'odds', fmtPrice(odds.a), fmtPrice(odds.b), y + 40, odds.favA, odds.favB, colA, colB);
-      y += 58;
-    }
 
     y = sectionTitle(ctx, 'Tale of the tape', y + 38);
     y += 40;
@@ -101421,19 +101425,34 @@ const GL_SHEET = (function () {
     tapeRow(ctx, 'height', a.ht, b.ht, y, false, false, colA, colB); y += 41;
     tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA, colA, colB); y += 41;
     tapeRow(ctx, 'age', ageA, ageB, y, false, false, colA, colB); y += 41;
-    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 30;
+    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 41;
+    // The moneyline belongs with the other head-to-head facts, not in a section of
+    // its own. Smaller than the physical rows: it is context, not a measurement.
+    if (odds) {
+      ctx.textAlign = 'left'; ctx.font = '700 32px ' + COND;
+      ctx.fillStyle = odds.favA ? colA : TXT; ctx.fillText(fmtPrice(odds.a), 64, y);
+      ctx.textAlign = 'right'; ctx.fillStyle = odds.favB ? colB : TXT;
+      ctx.fillText(fmtPrice(odds.b), W - 64, y);
+      ctx.textAlign = 'center'; ctx.font = '400 20px ' + SANS; ctx.fillStyle = FOOT;
+      ctx.fillText('CONSENSUS MONEYLINE · ' + odds.books + (odds.books === 1 ? ' BOOK' : ' BOOKS'), W / 2, y - 3);
+      ctx.textAlign = 'left';
+      y += 12;
+    }
+    y += 18;
 
     // Head-to-head career numbers, winner of each line in that fighter's colour.
     y = sectionTitle(ctx, 'Head to head', y + 36) + 32;
     y = h2hTable(ctx, ins.statsA, ins.statsB, y, ins.sig, colA, colB);
 
-    y = sectionTitle(ctx, 'Style', y + 30);
-    styleBar(ctx, y + 14, ins.leanA, ins.leanB, colA, colB);
-    y += 90;   // bar + the GRAPPLER/STRIKER captions beneath it
+    if (story) {
+      y = sectionTitle(ctx, 'Style', y + 30);
+      styleBar(ctx, y + 14, ins.leanA, ins.leanB, colA, colB);
+      y += 90;   // bar + the GRAPPLER/STRIKER captions beneath it
 
-    y = sectionTitle(ctx, 'Path to victory', y + 32) + 10;
-    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, colA, y, 4);
-    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, colB, y, 4);
+      y = sectionTitle(ctx, 'Path to victory', y + 32) + 10;
+      if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, colA, y, 4);
+      if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, colB, y, 4);
+    }
 
     footer(ctx, CH);
     return cv;
@@ -101584,8 +101603,11 @@ const GL_SHEET = (function () {
   }
 
   return {
-    matchup: (a, b, info) => open(() => drawMatchup(a, b, info || {}),
-      'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
+    // Defaults to portrait: 4:5 is the tallest a feed post can be, and nothing is
+    // covered by story chrome. Pass 'story' for the 9:16 version with the analysis.
+    matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
+      'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
+        (fmt === 'story' ? '-story' : '') + '.png',
       a + ' vs ' + b + ' — matchup breakdown from gillylab.com'),
     sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
       'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
