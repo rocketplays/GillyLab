@@ -168,19 +168,19 @@ function heroMatchup() {
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
-<meta name="description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, matchup analysis of style, pace and path to victory, a parlay builder that re-prices your slip at every book, per-fight box scores, career accolades, live and historical odds, line-movement tracking, tape study, rankings, and weekly roster updates.">
+<meta name="description" content="Deep analytics for every UFC fighter, a fight simulator that predicts winner and method, per-fight box scores, career accolades, matchup analysis of style, pace and path to victory, live odds and props, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, tape study, rankings, and weekly roster updates.">
 <link rel="canonical" href="${SITE_URL}/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="GillyLab">
 <meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta property="og:description" content="Deep analytics for every UFC fighter and bout, a fight simulator that predicts winner and method, matchup analysis of style, pace and path to victory, a parlay builder that re-prices your slip at every book, per-fight box scores, career accolades, live and historical odds, line-movement tracking, tape study, rankings, and weekly roster updates.">
+<meta property="og:description" content="Deep analytics for every UFC fighter, a fight simulator that predicts winner and method, per-fight box scores, career accolades, matchup analysis of style, pace and path to victory, live odds and props, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, tape study, rankings, and weekly roster updates.">
 <meta property="og:url" content="${SITE_URL}/">
 <meta property="og:image" content="${SITE_URL}/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
-<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, matchup analysis, a parlay builder, box scores, career accolades, live and historical odds, line movement, tape study, rankings, and more.">
+<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, matchup analysis, live odds, line movement, a parlay builder, tape study, rankings, and more.">
 <meta name="twitter:image" content="${SITE_URL}/og.png">
 <link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico?v=6" sizes="any">
@@ -353,7 +353,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <header class="hero">
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
-    <p class="sub">Deep analytics for every fighter and every bout: a fight simulator that predicts winner and method, matchup analysis that reads each fighter’s style, pace and path to victory, a parlay builder that re-prices your slip at every book, full statistics for every UFC fight in history, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
+    <p class="sub">Deep analytics for every fighter, a fight simulator that predicts winner and method, a box score for every UFC bout in history, career accolades, matchup analysis that reads each fighter’s style, pace and path to victory, live odds and props, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, one-click tape study, always-current rankings, and weekly roster updates — all in one place.</p>
     <div class="hero-cta">
       <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
       <a class="big ghost" href="/login">Log in</a>
@@ -383,7 +383,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
-      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, matchup analysis — each fighter’s style, pace and path to victory — a parlay builder, per-fight box scores, career accolades, live and historical odds, line-movement history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
       <details class="faq-item"><summary>What is the matchup analysis?<span class="faq-chev">›</span></summary><div class="faq-body"><p>For any two fighters, GillyLab places each on a striker–grappler spectrum, projects the pace (significant strikes thrown per minute), and writes each fighter’s path to victory from their own statistical edges. It runs on every upcoming bout, and on any matchup you build yourself.</p></div></details>
       <details class="faq-item"><summary>What does the parlay builder do?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Build a slip from any market — moneylines, round totals, method of victory, round props — then see the identical slip priced at every book that offers all of its legs, so you can take the best number. It flags same-game correlation, because a moneyline and a method prop on one fight are not independent.</p></div></details>
       <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
