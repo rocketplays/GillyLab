@@ -3935,6 +3935,7 @@
  { name: "Matthieu Letho Duclos", division: "MW", rank: "NR", record: "9-3-0", initials: "MD", country: "France" },
  { name: "RJ Harris", division: "HW", rank: "NR", record: "5-0-0", initials: "RH", country: "USA" },
  { name: "Anna Melisano", division: "WSW", rank: "NR", record: "6-1-0", initials: "AM", country: "USA" },
+ { name: "Muhammad Said", division: "LHW", rank: "NR", record: "9-0-0", initials: "MS", country: "Russia" },
  { name: "Eduarda Moura", division: "WFLW", rank: "#13", record: "12-2-0", initials: "EMO", country: "Brazil" },
  { name: "JJ Aldrich", division: "WFLW", rank: "#14", record: "15-7-0", initials: "JJA2", country: "USA" },
  { name: "Jennifer Maia", division: "WFLW", rank: "NR", record: "23-10-1", initials: "JMA", country: "Brazil" },
@@ -7058,6 +7059,7 @@
   "Matthieu Letho Duclos": { ht:"6'3\"", dob:"1995-04-04", reach:"77\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"78%", streak:3, gym:"Venum Training Camp Paris" },
   "RJ Harris": { ht:"6'6\"", dob:"1998-10-01", reach:"80\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"80%", streak:5, gym:null },
   "Anna Melisano": { ht:"5'6\"", dob:"1997-05-20", reach:"70\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"50%", streak:6, gym:"SBG Alabama / Spartan Fitness MMA" },
+  "Muhammad Said": { ht:"6'2\"", dob:"1996-01-10", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"89%", streak:9, gym:"GOR MMA" },
   "Fedor Emelianenko": { ht:"6'0\"", dob:"1976-09-28", reach:'74"', stance:"Orthodox", slpm:3.18, strAcc:"52%", sapm:1.00, strDef:"63%", kd:1.17, tdLanded:2.00, tdAcc:null, tdDef:"83%", subAvg:1.92, finRate:"78%", streak:0, gym:"Fedor Team" },
   "Anderson Berinja": { ht:"5'5\"", dob:"1985-07-24", reach:'70"', stance:"Orthodox", slpm:2.70, strAcc:"26%", sapm:5.37, strDef:"50%", kd:0.00, tdLanded:0.98, tdAcc:"14%", tdDef:"67%", subAvg:0.65, finRate:"76%", streak:0, gym:"Babuino Gold Team" },
   "Damian Rzepecki": { ht:"5'10\"", dob:"2001-11-23", reach:'73.5"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"90%", streak:10, gym:"Top Fit Center Piotrków Trybunalski" },
@@ -12367,6 +12369,9 @@
   ],
   "Anna Melisano": [
     { opponent: "Andrea Amaro", odds: -210 }
+  ],
+  "Muhammad Said": [
+    { opponent: "Henrique da Silva", odds: -1000 }
   ],
   "Matthieu Letho Duclos": [
     { opponent: "Marco Tulio", odds: 400 },
@@ -21364,6 +21369,17 @@ const FIGHT_HISTORY = {
     { date: "Jun 1, 2024", opponent: "Marta Amigo Abeledo", result: "W", method: "TKO (Punches and Elbow)", round: 1, time: "3:45", event: "The King of Fighters 6", org: "KOF" },
     { date: "May 3, 2024", opponent: "Amina Mukhamed", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "The King of Fighters 5", org: "KOF" },
     { date: "Mar 15, 2024", opponent: "Gracy Maia", result: "W", method: "TKO (Knees and Elbow)", round: 3, time: "2:03", event: "The King of Fighters: Fight Club", org: "KOF" }
+  ],
+  "Muhammad Said": [
+    { date: "May 9, 2026", opponent: "Henrique da Silva", result: "W", method: "KO (Punches)", round: 1, time: "1:03", event: "UAE Warriors 71", org: "UAE Warriors" },
+    { date: "Sep 10, 2025", opponent: "Valmir da Silva", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UAE Warriors 63", org: "UAE Warriors" },
+    { date: "Dec 14, 2024", opponent: "Leonardo Guimaraes", result: "W", method: "TKO (Retirement)", round: 2, time: "1:07", event: "MMA Series 87", org: "MMA Series" },
+    { date: "Dec 2, 2023", opponent: "Ashraf Bashandy", result: "W", method: "KO (Head Kick)", round: 1, time: "0:17", event: "MMA Series 75", org: "MMA Series" },
+    { date: "Sep 2, 2023", opponent: "Ali Foladi", result: "W", method: "KO (Head Kick)", round: 2, time: "1:50", event: "MMA Series 71", org: "MMA Series" },
+    { date: "Jun 17, 2023", opponent: "Muslim Madaliev", result: "W", method: "KO (Spinning Wheel Kick)", round: 1, time: "1:30", event: "MMA Series 69", org: "MMA Series" },
+    { date: "Apr 8, 2023", opponent: "Mehdi Saremi", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "1:01", event: "MMA Series 65", org: "MMA Series" },
+    { date: "Oct 2, 2022", opponent: "Arsen Kaziev", result: "W", method: "Submission (Triangle Choke)", round: 2, time: "2:35", event: "MMA Series 57", org: "MMA Series" },
+    { date: "Jun 26, 2022", opponent: "Saidbek Dzharunov", result: "W", method: "TKO (Head Kick and Punches)", round: 2, time: "0:40", event: "Colosseum MMA: Battle of Champions 29", org: "Colosseum" }
   ],
   "Anna Melisano": [
     { date: "Dec 14, 2025", opponent: "Andrea Amaro", result: "W", method: "TKO (Doctor Stoppage)", round: 3, time: "2:56", event: "Fury FC 112", org: "Fury FC" },
@@ -87938,6 +87954,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "Multi-discipline background — French national titles in grappling and boxing", detail: null },
     { icon: "🏅", title: "Cast member of The Ultimate Fighter Season 34 (2026, Team Cormier vs. Team Bisping), competing for a UFC contract", detail: null },
     { icon: "🏅", title: "Ultra-offensive finisher — five of her seven pro wins by KO/TKO or submission (7–2 overall)", detail: null }
+  ],
+  "Muhammad Said": [
+    { icon: "🏅", title: "Undefeated 9–0 with an 89% finish rate — six KO/TKOs and two submissions; only one bout has reached a decision", detail: null },
+    { icon: "🏆", title: "MMA Series standout in Russia — six straight finishes (2022–2024), including a team-competition bronze belt", detail: null },
+    { icon: "🥊", title: "High-kick knockout artist out of GOR MMA in Moscow, competing as \"Kubik\"; also known as Magomed Saidov", detail: null }
   ],
   "Anna Melisano": [
     { icon: "🏅", title: "Riding a six-fight win streak — 6–1 as a pro and a perfect 4–0 in Fury FC", detail: null },
