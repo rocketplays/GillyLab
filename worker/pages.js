@@ -138,7 +138,8 @@ function heroMatchup() {
       <div class="mu-tick"><span>grappler</span><span>striker</span></div>
     </div>`;
   const foot = C ? `<div class="mu-foot">Live from <b>${n(C.fighters)}</b> fighters · <b>${n(C.bouts)}</b> bouts · <b>${n(C.videos)}</b> fight videos</div>` : '';
-  return `<div class="mu">
+  return `<div class="mu-kick"><span class="mu-live"></span>Next main event</div>
+  <div class="mu">
     <div class="mu-top">
       <span class="mu-ev">${esc(M.event)}${M.titleBout ? ' · Title' : ''}</span>
       <span class="mu-when">${esc(when)}${M.weightClass ? ' · ' + esc(M.weightClass) : ''}</span>
@@ -216,7 +217,13 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .stat .l{font-size:12px;color:rgba(255,255,255,.5)}
   /* Hero matchup: the real next main event, not three round numbers. Server-rendered
      from landing-data.js, so it is correct the instant the page is served. */
-  .mu{max-width:560px;margin:24px auto 4px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+  /* Eyebrow. Unlabelled, the card reads as decoration rather than a live example.
+     Rendered only when there is a real card to label. */
+  .mu-kick{display:flex;align-items:center;justify-content:center;gap:9px;margin:34px 0 11px;
+           font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.44);font-weight:700}
+  .mu-kick::before,.mu-kick::after{content:"";height:1px;width:36px;background:rgba(255,255,255,.13)}
+  .mu-live{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(0,230,104,.16)}
+  .mu{max-width:560px;margin:0 auto 4px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
       background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));padding:16px 18px 14px;text-align:left}
   .mu-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
   .mu-ev{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:800}
@@ -333,12 +340,12 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
     <p class="sub">Deep analytics for every fighter and every bout, including a fight simulator that predicts winner and method, full statistics for every UFC fight in history, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
-    ${heroMatchup()}
     <div class="hero-cta">
       <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
       <a class="big ghost" href="/login">Log in</a>
     </div>
     <p class="trust">Built for bettors, analysts, and hardcore fans — verified data, updated after every event. Works on any device.</p>
+    ${heroMatchup()}
   </header>
 
   <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
