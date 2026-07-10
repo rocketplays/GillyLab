@@ -2137,7 +2137,10 @@
     .pl-share.open { display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
     .pl-share-inner { width: 100%; max-width: 460px; }
     .pl-share-actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 0.9rem; }
-    .pl-share-hint { text-align: center; margin-top: 0.6rem; font-size: 0.66rem; color: var(--muted); line-height: 1.5; }
+    /* The hint sits over the page, not over the dimmed backdrop, so muted grey on
+       whatever happens to be behind it was unreadable. Give it its own surface. */
+    .pl-share-hint { text-align: center; margin-top: 0.6rem; font-size: 0.66rem; color: var(--text); line-height: 1.5;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem 0.75rem; }
     /* Share-sheet actions carry the site accent so they read as the primary move. */
     .pl-act { background: rgba(0, 230, 104, 0.10); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.6rem 1.25rem; border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s; }
     .pl-act:hover { background: var(--accent); color: #0e0f13; }
@@ -103630,7 +103633,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         <button type="button" id="plShareClose" class="pl-act ghost">Close</button>
       </div>
       <div class="pl-share-hint">${PL_IOS
-        ? 'Save photo → tap Save Image to add it to Photos. Share slip sends the card with the odds and a link. iOS has no way for a web page to write to Photos directly, so both go through the share sheet.'
+        ? 'Save photo → tap Save Image to add it to Photos. Share slip sends the card with the odds and a link.'
         : 'Save photo downloads the image. Share slip sends the card with the odds and a link.'}</div>
     </div>`;
     ov.classList.add('open');
