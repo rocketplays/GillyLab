@@ -2173,8 +2173,10 @@
     .pl-act:hover { background: var(--accent); color: #0e0f13; }
     .pl-act.primary { background: var(--accent); color: #0e0f13; }
     .pl-act.primary:hover { filter: brightness(1.08); }
-    .pl-act.ghost { background: transparent; border-color: var(--border); color: var(--muted); }
-    .pl-act.ghost:hover { background: transparent; border-color: #ff6a5e; color: #ff6a5e; }
+    /* transparent let the page read through the 0.72 backdrop, and --muted on top
+       of that was barely legible. Same surface as the hint below it. */
+    .pl-act.ghost { background: var(--surface); border-color: var(--border); color: var(--text); }
+    .pl-act.ghost:hover { background: var(--surface); border-color: #ff6a5e; color: #ff6a5e; }
     .pl-act:disabled { opacity: 0.45; cursor: default; pointer-events: none; }
     @keyframes plBusyPulse { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.6; } }
     .pl-act.busy { animation: plBusyPulse 0.9s ease-in-out infinite; }
