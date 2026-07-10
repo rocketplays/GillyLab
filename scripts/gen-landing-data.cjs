@@ -352,43 +352,58 @@ function buildParlay() {
   };
 }
 
-// ── Style / pace / path-to-victory, for the slide that advertises them ────────
-// Thresholds mirror index.html's EDGE_AXES. This drives one line of marketing
-// copy, not the app's analysis, so a drift here is cosmetic — but keep them
-// aligned or the slide will claim an edge the Scouting Report does not.
-const EDGE = [
-  { k: 'slpm', min: 0.80, big: true, label: 'higher output' },
-  { k: 'strAcc', min: 6, big: true, label: 'sharper accuracy' },
-  { k: 'strDef', min: 6, big: true, label: 'tighter defense' },
-  { k: 'sapm', min: 0.70, big: false, label: 'cleaner defensively' },
-  { k: 'kd', min: 0.30, big: true, label: 'heavier hands' },
-  { k: 'tdLanded', min: 0.60, big: true, label: 'more persistent wrestling' },
-  { k: 'tdDef', min: 10, big: true, label: 'better takedown defense' },
-  { k: 'subAvg', min: 0.30, big: true, label: 'busier submission threat' },
-  { k: 'finRate', min: 12, big: true, label: 'a higher finishing rate' },
-];
 const numOf = (v) => { if (v == null) return null; const m = /-?[\d.]+/.exec(String(v)); return m ? parseFloat(m[0]) : null; };
-// When no axis clears its threshold the honest answer is "no statistical edge",
-// not an invented phrase. Cory Sandhagen clears nothing against Mario Bautista --
-// every gap falls short -- and what actually separates them is style, not a stat.
-function styleWord(lean) {
-  if (lean == null) return '';
-  if (lean >= 60) return 'Striker';
-  if (lean <= 40) return 'Grappler';
-  return 'Hybrid';
-}
-function edgeOf(mine, theirs) {
-  if (!mine || !theirs) return null;
-  let best = null;
-  for (const ax of EDGE) {
-    const a = numOf(mine[ax.k]), b = numOf(theirs[ax.k]);
-    if (a == null || b == null) continue;
-    const gap = ax.big ? a - b : b - a;
-    if (gap < ax.min) continue;
-    const w = gap / ax.min;
-    if (!best || w > best.w) best = { w, label: ax.label };
+
+// ── The app's own matchup analysis, run headlessly ────────────────────────────
+// The slide shows style, pace and path to victory. Those are NOT recomputed here:
+// renderMatchupBreakdown() in index.html takes a null host, skips the DOM writes
+// and returns its analysis, so the slide and the Scouting Report can never
+// disagree. Reimplementing the prose in this script is exactly the drift trap
+// that put the wrong video on a fighter's page.
+//
+// It needs FIGHTERS, FIGHTER_STATS, FIGHT_HISTORY, scoutingHistKey, _newsNorm and
+// a document that can create throwaway elements. WOMEN and cmpRow are local to it.
+// The dep list was found by running it and following the ReferenceErrors, not by
+// reading — if it grows, the sandbox says so loudly instead of silently returning
+// null, which is why the failure below warns rather than swallowing.
+function extractDecl(name) {
+  const lines = idx.split('\n');
+  const i = lines.findIndex((l) => new RegExp('^\\s*(const|let|var|function)\\s+' + name + '\\b').test(l));
+  if (i < 0) return '';
+  let depth = 0, seen = false, end = i;
+  for (let k = i; k < lines.length; k++) {
+    for (const c of lines[k]) {
+      if (c === '{' || c === '[') { depth++; seen = true; }
+      else if (c === '}' || c === ']') depth--;
+    }
+    if (seen && depth === 0) { end = k; break; }
   }
-  return best ? best.label : null;
+  return lines.slice(i, end + 1).join('\n');
+}
+
+let _breakdown = null;
+function breakdownFor(nameA, nameB) {
+  if (!_breakdown) {
+    const stubEl = () => ({
+      style: {}, className: '', textContent: '', innerHTML: '',
+      classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+      appendChild() {}, setAttribute() {}, querySelector: () => null,
+    });
+    const doc = { createElement: stubEl, createTextNode: () => ({}) };
+    const src = [
+      extractDecl('FIGHTERS'),
+      extractDecl('FIGHTER_STATS'),
+      extractDecl('FIGHT_HISTORY'),
+      extractDecl('scoutingHistKey'),
+      extractDecl('_newsNorm'),
+      extractDecl('renderMatchupBreakdown'),
+      'return renderMatchupBreakdown;',
+    ].join('\n');
+    try { _breakdown = new Function('document', src)(doc); }
+    catch (e) { console.warn('landing-data.js: breakdown sandbox failed — ' + e.message); _breakdown = () => null; }
+  }
+  try { return _breakdown(null, nameA, nameB, {}) || null; }
+  catch (e) { console.warn('landing-data.js: breakdown(' + nameA + ' vs ' + nameB + ') threw — ' + e.message); return null; }
 }
 
 // The style / pace / path-to-victory slide. Prefers a named bout, but only while
@@ -412,32 +427,22 @@ function styleDemoPair() {
   return f.length === 2 ? [f[0].fighterName, f[1].fighterName] : STYLE_DEMO;
 }
 function buildStyleDemo(recMap) {
+  const pair = styleDemoPair();
+  const ins = breakdownFor(pair[0], pair[1]);
+  if (!ins || ins.leanA == null || ins.leanB == null || !ins.pathA || !ins.pathB) return null;
+
   const ranks = rankMap();
-  const one = (name) => {
-    const st = fighterStat(name);
-    if (!st) return null;
+  const one = (name, lean, pace, path) => {
     const slug = nameToSlug(name);
     return {
       name, slug: photoExists(slug) ? slug : '', initials: initials2(name),
       record: recMap[name] || '', rank: ranks[name] || '',
-      lean: styleLean(st),
-      slpm: numOf(st.slpm), sapm: numOf(st.sapm),
-      tdLanded: numOf(st.tdLanded), subAvg: numOf(st.subAvg),
-      _st: st,
+      lean, pace, path,
     };
   };
-  const pair = styleDemoPair();
-  const a = one(pair[0]), b = one(pair[1]);
-  if (!a || !b || a.lean == null || b.lean == null) return null;
-  a.edge = edgeOf(a._st, b._st);
-  b.edge = edgeOf(b._st, a._st);
-  a.style = styleWord(a.lean);
-  b.style = styleWord(b.lean);
-  delete a._st; delete b._st;
-  // Pace = combined significant strikes thrown-and-absorbed per minute; the app
-  // calls this the pace of the fight, not either man's output alone.
-  const pace = Math.round(((a.slpm + a.sapm + b.slpm + b.sapm) / 2) * 10) / 10;
-  return { a, b, pace };
+  const a = one(pair[0], ins.leanA, ins.paceA, ins.pathA);
+  const b = one(pair[1], ins.leanB, ins.paceB, ins.pathB);
+  return { a, b };
 }
 
 function buildMatchup(recMap) {
@@ -469,8 +474,6 @@ function buildMatchup(recMap) {
   };
   const a = side(bout.fighters[0]), b = side(bout.fighters[1]);
   if (a.lean == null || b.lean == null) return null;   // no stats, no demo
-  a.edge = edgeOf(a._st, b._st);
-  b.edge = edgeOf(b._st, a._st);
   delete a._st; delete b._st;
 
   return {
@@ -543,7 +546,8 @@ function main() {
     ? (parlay.legs.map((l) => l.pick + ' ' + l.odds).join(' + ') + ' = ' + parlay.combined + ' ($' + parlay.stake + ' -> $' + parlay.payout + ')')
     : 'none');
   console.log('landing-data.js: styleDemo %s', styleDemo
-    ? (styleDemo.a.name + ' (lean ' + styleDemo.a.lean + ', "' + styleDemo.a.edge + '") vs ' + styleDemo.b.name + ' (lean ' + styleDemo.b.lean + ', "' + styleDemo.b.edge + '") · pace ' + styleDemo.pace)
+    ? (styleDemo.a.name + ' (lean ' + styleDemo.a.lean + ', pace ' + styleDemo.a.pace + ') vs ' +
+       styleDemo.b.name + ' (lean ' + styleDemo.b.lean + ', pace ' + styleDemo.b.pace + ')')
     : 'none');
   console.log('landing-data.js: matchup %s', matchup ? (matchup.a.name + ' vs ' + matchup.b.name + ' · ' + matchup.event + (matchup.odds ? ' · odds ' + matchup.odds.a + '/' + matchup.odds.b + ' from ' + matchup.odds.books + ' books' : ' · no odds')) : 'none (hero falls back)');
 }

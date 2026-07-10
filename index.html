@@ -100757,6 +100757,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     ends.innerHTML = '<span>Grappler</span><span>Striker</span>'; box.appendChild(ends);
 
     const oA = A ? output(A) : null, oB = B ? output(B) : null;
+    OUT.paceA = oA; OUT.paceB = oB;   // sig. strikes thrown / min — the app's pace row
     const paceTitle = document.createElement('div'); paceTitle.className = 'sr-common-title'; paceTitle.style.marginTop = '0.9rem'; paceTitle.textContent = 'Pace';
     box.appendChild(paceTitle);
     const paceHead = document.createElement('div'); paceHead.className = 'sr-cmp-row sr-cmp-head';

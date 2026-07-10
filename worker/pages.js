@@ -549,13 +549,16 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     ):'';
 
     // ── Style / pace / path to victory ────────────────────────────────────────
-    // Both fighters plotted on the striker-grappler spectrum, the pace their
-    // numbers imply, and each man's biggest statistical edge. Where a fighter
-    // clears no threshold we say so rather than invent a phrase for him.
+    // Style, pace and both paths to victory come straight out of the app's own
+    // renderMatchupBreakdown() — the generator runs it headlessly. Nothing here is
+    // recomputed, so the slide and the Scouting Report cannot disagree.
     var SD=LD.styleDemo;
     function sdot(lean,col){return '<span style="position:absolute;top:50%;left:'+Math.max(2,Math.min(98,lean))+'%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;background:'+col+';border:2px solid '+BG+'"></span>';}
-    var style=SD?(
-      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">'
+    function pacebar(v,mx,col){return '<div style="flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.09);overflow:hidden"><div style="height:100%;width:'+Math.round(100*v/mx)+'%;background:'+col+'"></div></div>';}
+    var style=SD?(function(){
+      var mx=Math.max(SD.a.pace||0,SD.b.pace||0)||1;
+      return ''
+      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">'
       +ava(SD.a.slug,SD.a.initials,false,30)
       +'<div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700">'+SD.a.name+'</div>'
       +'<div style="font-size:10.5px;color:'+M+'">'+SD.a.record+(SD.a.rank&&SD.a.rank!=='NR'?' · '+SD.a.rank:'')+'</div></div>'
@@ -564,24 +567,19 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
       +'<div style="font-size:10.5px;color:'+M+'">'+SD.b.record+(SD.b.rank&&SD.b.rank!=='NR'?' · '+SD.b.rank:'')+'</div></div>'
       +ava(SD.b.slug,SD.b.initials,false,30)
       +'</div>'
-      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Style</div>'
+      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin-bottom:15px">Style</div>'
       +'<div style="position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.09);margin-bottom:6px">'+sdot(SD.a.lean,A)+sdot(SD.b.lean,'#ffcf7a')+'</div>'
       +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em">'
       +'<span>grappler</span><span>striker</span></div>'
-      +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px">'
-      +'<span><span style="color:'+A+'">●</span> '+SD.a.name.split(' ').pop()+' <span style="color:'+M+'">'+SD.a.style.toLowerCase()+'</span></span>'
-      +'<span><span style="color:#ffcf7a">●</span> '+SD.b.name.split(' ').pop()+' <span style="color:'+M+'">'+SD.b.style.toLowerCase()+'</span></span></div>'
-      +'<div style="display:flex;align-items:baseline;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid '+L+'">'
-      +'<span style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em">Projected pace</span>'
-      +'<span style="font-size:1.05rem;font-weight:800;color:'+A+'">'+SD.pace+'</span>'
-      +'<span style="font-size:10.5px;color:'+M+'">significant strikes / min, both men</span></div>'
-      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin:12px 0 7px">Path to victory</div>'
+      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin:14px 0 8px">Pace · sig. strikes thrown / min</div>'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:11px;width:74px;color:rgba(255,255,255,.75)">'+SD.a.name.split(' ').pop()+'</span>'+pacebar(SD.a.pace,mx,A)+'<span style="font-size:12px;font-weight:800;color:'+A+';width:34px;text-align:right">'+SD.a.pace+'</span></div>'
+      +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;width:74px;color:rgba(255,255,255,.75)">'+SD.b.name.split(' ').pop()+'</span>'+pacebar(SD.b.pace,mx,'#ffcf7a')+'<span style="font-size:12px;font-weight:800;color:#ffcf7a;width:34px;text-align:right">'+SD.b.pace+'</span></div>'
+      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin:15px 0 8px">Path to victory</div>'
       +[[SD.a,A],[SD.b,'#ffcf7a']].map(function(p){var f=p[0],c=p[1];
-        var txt=f.edge?('Wins on '+f.edge+'.'):('No statistical edge — his path is style: a '+f.style.toLowerCase()+'’s fight.');
-        return '<div style="border-left:2px solid '+c+';padding:2px 0 2px 9px;margin-bottom:7px">'
+        return '<div style="border-left:2px solid '+c+';padding:2px 0 2px 9px;margin-bottom:8px">'
           +'<div style="font-size:11px;font-weight:750;color:'+c+'">'+f.name.split(' ').pop().toUpperCase()+'</div>'
-          +'<div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.4">'+txt+'</div></div>';}).join('')
-    ):'';
+          +'<div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.45">'+f.path+'</div></div>';}).join('');
+    })():'';
 
   var slides=[
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
