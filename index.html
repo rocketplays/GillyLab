@@ -102709,8 +102709,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
   }
 
+  // Names arriving here come from feeds and rendered markup (news cards, fight
+  // history, odds board, projections), not from FIGHTERS itself, so they carry
+  // whatever spelling the source used: "Zach Reese" vs "Zachary Reese",
+  // "Dricus Du Plessis" vs "Dricus du Plessis", "Jan Blachowicz" vs the accented
+  // "Jan Błachowicz". An exact string match silently opened nothing at all.
+  //
+  // Exact match is still tried FIRST: resolveCanonicalFighterName() consults
+  // SLUG_ALIASES, and a fighter whose own slug happens to be an alias key must
+  // never be redirected away from his own profile. Canonicalisation is only a
+  // fallback for names that match no roster row.
   function openFighterByName(name) {
-    const f = FIGHTERS.find(f => f.name === name);
+    let f = FIGHTERS.find(f => f.name === name);
+    if (!f && name) {
+      const canon = resolveCanonicalFighterName(name, '');
+      if (canon && canon !== name) f = FIGHTERS.find(f => f.name === canon);
+    }
     if (f) openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
   }
 
