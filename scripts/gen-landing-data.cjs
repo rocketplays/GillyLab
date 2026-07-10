@@ -148,6 +148,122 @@ function extractObject(marker) {
   let O; eval('O=' + idx.slice(idx.indexOf('{', s), end + 1)); return O;
 }
 
+// Exact corpus counts, measured not rounded. "3,000+" is the shape every landing
+// page uses; a measured number reads as measured. Regenerated on every build, so
+// they cannot drift as the roster grows.
+// Extract a top-level `const NAME = {...};` literal by scanning braces line by
+// line, then parse it. Counting rows with a regex is not safe here: braces appear
+// inside strings (method names, event titles), so a character scan mis-bounds the
+// block, and no single pattern matched the true row count -- `{ date: "` missed 48
+// rows and `opponent: "` overcounted by 85.
+function parseConst(name) {
+  const lines = idx.split('\n');
+  const i = lines.findIndex((l) => l.includes('const ' + name));
+  if (i < 0) return null;
+  let depth = 0, seen = false, end = i;
+  for (let k = i; k < lines.length; k++) {
+    for (const c of lines[k]) { if (c === '{') { depth++; seen = true; } else if (c === '}') depth--; }
+    if (seen && depth === 0) { end = k; break; }
+  }
+  const body = lines.slice(i, end + 1).join('\n').replace(/^\s*const \w+\s*=\s*/, '').replace(/;\s*$/, '');
+  try { return new Function('return ' + body)(); } catch (e) { return null; }
+}
+function countStats() {
+  const fighters = (idx.match(/\{ name: "[^"]+", division: "/g) || []).length;
+  const FH = parseConst('FIGHT_HISTORY') || {};
+  let rows = 0;
+  for (const k of Object.keys(FH)) rows += (FH[k] || []).length;
+  const TS = parseConst('TAPE_STUDY') || {};
+  let videos = 0;
+  for (const k of Object.keys(TS)) videos += (TS[k] || []).filter((r) => r && r.url).length;
+  let photos = 0;
+  try { photos = fs.readdirSync(path.join(ROOT, 'photos')).filter((f) => f.endsWith('.jpg')).length; } catch (e) {}
+  // every bout appears once in each fighter's history
+  return { fighters, bouts: Math.round(rows / 2), historyRows: rows, videos, photos };
+}
+
+// ── The next main event, rendered as a live demo in the hero ──────────────────
+// The landing page used to show three round counters. This replaces them with the
+// actual next main event: the analytics, not a count of them. Everything here is
+// derived, never hand-written, so it can never go stale or overstate.
+function rankMap() {
+  const m = {}, re = /\{ name: "([^"]+)", division: "[^"]*", rank: "([^"]*)"/g;
+  let x; while ((x = re.exec(idx))) m[x[1]] = x[2];
+  return m;
+}
+// Striker-vs-grappler lean, 0..100. Identical to index.html's lean() — the 0.3
+// grappling floor stops a fighter with no recorded takedowns pinning to 100.
+function styleLean(st) {
+  if (!st) return null;
+  const slpm = parseFloat(st.slpm), td = parseFloat(st.tdLanded), sub = parseFloat(st.subAvg);
+  if (![slpm, td, sub].every((v) => isFinite(v))) return null;
+  const S = slpm / 2, G = Math.max(td + 1.5 * sub, 0.3);
+  return Math.round((100 * S) / (S + G));
+}
+// One consensus moneyline, averaged across every book that prices the fight.
+// Averaged in probability space: -300 and +300 are 75% and 25%, so the mean of
+// two prices is meaningless.
+function consensusOdds(nameA, nameB) {
+  let odds;
+  try { odds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'odds.json'), 'utf8')); } catch (e) { return null; }
+  if (!Array.isArray(odds)) return null;
+  const ln = lastName;
+  const ev = odds.find((e) => e && e.home_team && e.away_team &&
+    ((ln(e.home_team) === ln(nameA) && ln(e.away_team) === ln(nameB)) ||
+     (ln(e.home_team) === ln(nameB) && ln(e.away_team) === ln(nameA))));
+  if (!ev || !Array.isArray(ev.bookmakers)) return null;
+  const qa = [], qb = [];
+  ev.bookmakers.forEach((bk) => {
+    const mkt = (bk.markets || []).find((m) => m.key === 'h2h');
+    if (!mkt || !Array.isArray(mkt.outcomes)) return;
+    const pa = (mkt.outcomes.find((o) => ln(o.name) === ln(nameA)) || {}).price;
+    const pb = (mkt.outcomes.find((o) => ln(o.name) === ln(nameB)) || {}).price;
+    if (pa == null || pb == null) return;
+    qa.push(toProb(pa)); qb.push(toProb(pb));
+  });
+  if (!qa.length) return null;
+  const mean = (xs) => xs.reduce((t, v) => t + v, 0) / xs.length;
+  const ma = mean(qa), mb = mean(qb);
+  return { a: fmtOdds(toAmerican(ma)), b: fmtOdds(toAmerican(mb)), books: qa.length, favA: ma > mb, favB: mb > ma };
+}
+function buildMatchup(recMap) {
+  let feed;
+  try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8')); } catch (e) { return null; }
+  const events = (feed && feed.data) || [];
+  const ev = events.find((e) => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length);
+  if (!ev) return null;
+  // matchNumber 1 / cardPosition 1 is the main event; fall back to the first bout
+  const bout = ev.bouts.find((x) => x && x.cardPosition === 1 && !x.isCancelled) || ev.bouts.find((x) => x && !x.isCancelled);
+  if (!bout || !Array.isArray(bout.fighters) || bout.fighters.length !== 2) return null;
+
+  const ranks = rankMap();
+  const side = (f) => {
+    const name = f.fighterName;
+    const slug = nameToSlug(name);
+    const st = fighterStat(name);
+    return {
+      name,
+      slug: photoExists(slug) ? slug : '',
+      initials: initials2(name),
+      record: recMap[name] || '',
+      rank: ranks[name] || '',
+      lean: styleLean(st),
+    };
+  };
+  const a = side(bout.fighters[0]), b = side(bout.fighters[1]);
+  if (a.lean == null || b.lean == null) return null;   // no stats, no demo
+
+  return {
+    event: ev.title || 'UFC',
+    startsAt: ev.startsAt || null,
+    weightClass: (bout.weightClass || '').replace(/\s*Bout$/i, ''),
+    titleBout: !!bout.titleBout,
+    rounds: bout.numberOfRounds || 3,
+    a, b,
+    odds: consensusOdds(a.name, b.name),
+  };
+}
+
 // A marquee fighter's closing-line history — mirrors the profile Odds History tab.
 function buildOddsHistory() {
   const OH = extractObject('ODDS_HISTORY ='); if (!OH) return null;
@@ -187,14 +303,19 @@ function main() {
   }
 
   // Slugs the dynamic slides need served publicly (for the Worker allow-list).
-  const photos = [...new Set([featured.slug, oddsHistory.slug, ...rankings.rows.map(r => r.slug)].filter(Boolean))];
+  const matchup = buildMatchup(recMap);
+  const counts = countStats();
+  const photos = [...new Set([featured.slug, oddsHistory.slug, matchup && matchup.a.slug, matchup && matchup.b.slug, ...rankings.rows.map(r => r.slug)].filter(Boolean))];
 
-  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, photos };
+  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, matchup, counts, photos };
   fs.writeFileSync(OUT,
     '// AUTO-GENERATED by scripts/gen-landing-data.cjs — do not edit by hand.\n' +
     'export default ' + JSON.stringify(out, null, 2) + ';\n');
   console.log('landing-data.js: rankings %s · featured %s (%s) · oddsHistory %s (%d rows)',
     rankings.division, featured.name, featured.record, oddsHistory.name, oddsHistory.rows.length);
+  console.log('landing-data.js: counts %s fighters · %s bouts · %s videos · %s photos',
+    counts.fighters.toLocaleString(), counts.bouts.toLocaleString(), counts.videos.toLocaleString(), counts.photos.toLocaleString());
+  console.log('landing-data.js: matchup %s', matchup ? (matchup.a.name + ' vs ' + matchup.b.name + ' · ' + matchup.event + (matchup.odds ? ' · odds ' + matchup.odds.a + '/' + matchup.odds.b + ' from ' + matchup.odds.books + ' books' : ' · no odds')) : 'none (hero falls back)');
 }
 
 main();

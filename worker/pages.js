@@ -90,6 +90,66 @@ ${extraJs}
 // that matches the app — while the auth/subscribe pages keep the compact shell.
 // Feature previews are faithful recreations of the real in-app components
 // (stat cards, simulator, odds table, tape rows, box score, rankings, roster).
+// The hero used to carry three rounded counters. Two of them undersold the
+// database — "18,000+ bouts" against a measured 29,301 — and "50,000+ simulations"
+// was the simulator's per-run maximum, not an asset, and cannot be exceeded.
+// This shows the product instead: the real next main event, priced and profiled
+// from the same data the app runs on. With no upcoming card it falls back to the
+// measured corpus counts.
+function heroMatchup() {
+  const M = landingData && landingData.matchup;
+  const C = (landingData && landingData.counts) || null;
+  const n = (x) => Number(x || 0).toLocaleString('en-US');
+  if (!M) {
+    if (!C) return '';
+    return `<div class="stats">
+      <div class="stat"><div class="n">${n(C.fighters)}</div><div class="l">fighters</div></div>
+      <div class="stat"><div class="n">${n(C.bouts)}</div><div class="l">bouts</div></div>
+      <div class="stat"><div class="n">${n(C.videos)}</div><div class="l">fight videos</div></div>
+    </div>`;
+  }
+  const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // Computed at request time, so "Saturday" can never be a stale build artefact.
+  let when = '';
+  const t = M.startsAt ? Date.parse(M.startsAt) : NaN;
+  if (isFinite(t)) {
+    const days = Math.round((t - Date.now()) / 86400000);
+    const wd = new Date(t).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/New_York' });
+    when = days <= 0 ? 'Tonight' : days === 1 ? 'Tomorrow' : days <= 7 ? wd
+      : new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
+  }
+  const favA = !!(M.odds && M.odds.favA), favB = !!(M.odds && M.odds.favB);
+  const av = (f, fav) => f.slug
+    ? `<img class="mu-av${fav ? ' fav' : ''}" src="/photos/thumb/${esc(f.slug)}.png" alt="" width="44" height="44" loading="lazy">`
+    : `<div class="mu-av${fav ? ' fav' : ''}">${esc(f.initials)}</div>`;
+  const side = (f, fav, right) => `<div class="mu-f${right ? ' r' : ''}">${av(f, fav)}<div style="min-width:0">
+      <div class="mu-nm">${esc(f.name)}</div>
+      <div class="mu-rec">${esc(f.record)}${f.rank && f.rank !== 'NR' ? ' · ' + esc(f.rank) : ''}</div>
+    </div></div>`;
+  const oddsRow = M.odds ? `<div class="mu-odds">
+      <div class="mu-o ${favA ? 'fav' : 'dog'}">${esc(M.odds.a)}</div>
+      <div class="mu-olbl">consensus moneyline · ${M.odds.books} book${M.odds.books === 1 ? '' : 's'}</div>
+      <div class="mu-o ${favB ? 'fav' : 'dog'}">${esc(M.odds.b)}</div>
+    </div>` : '';
+  const dot = (lean, colour) => `<span class="mu-dot" style="left:${Math.max(2, Math.min(98, lean))}%;background:${colour}"></span>`;
+  const styleRow = `<div class="mu-style">
+      <div class="mu-bar">${dot(M.a.lean, favA ? 'var(--accent)' : '#ffcf7a')}${dot(M.b.lean, favB ? 'var(--accent)' : '#ffcf7a')}</div>
+      <div class="mu-tick"><span>grappler</span><span>striker</span></div>
+    </div>`;
+  const foot = C ? `<div class="mu-foot">Live from <b>${n(C.fighters)}</b> fighters · <b>${n(C.bouts)}</b> bouts · <b>${n(C.videos)}</b> fight videos</div>` : '';
+  return `<div class="mu">
+    <div class="mu-top">
+      <span class="mu-ev">${esc(M.event)}${M.titleBout ? ' · Title' : ''}</span>
+      <span class="mu-when">${esc(when)}${M.weightClass ? ' · ' + esc(M.weightClass) : ''}</span>
+    </div>
+    <div class="mu-row">${side(M.a, favA, false)}<span class="mu-vs">VS</span>${side(M.b, favB, true)}</div>
+    ${oddsRow}
+    ${styleRow}
+    ${foot}
+  </div>`;
+}
+
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
@@ -154,6 +214,38 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .stats{display:flex;gap:36px;justify-content:center;margin:26px 0 6px}
   .stat .n{font-size:26px;font-weight:850;color:var(--accent)}
   .stat .l{font-size:12px;color:rgba(255,255,255,.5)}
+  /* Hero matchup: the real next main event, not three round numbers. Server-rendered
+     from landing-data.js, so it is correct the instant the page is served. */
+  .mu{max-width:560px;margin:24px auto 4px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));padding:16px 18px 14px;text-align:left}
+  .mu-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .mu-ev{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:800}
+  .mu-when{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+  .mu-row{display:flex;align-items:center;gap:12px}
+  .mu-f{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+  .mu-f.r{flex-direction:row-reverse;text-align:right}
+  .mu-av{width:44px;height:44px;border-radius:50%;flex:0 0 44px;object-fit:cover;background:#1b1e25;
+         border:2px solid rgba(255,255,255,.14);display:grid;place-items:center;font-size:13px;font-weight:800;color:rgba(255,255,255,.5)}
+  .mu-av.fav{border-color:var(--accent)}
+  .mu-nm{font-size:15px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mu-rec{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+  .mu-vs{font-size:12px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:.08em;flex:0 0 auto}
+  .mu-odds{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:12px;
+           padding-top:11px;border-top:1px solid rgba(255,255,255,.08)}
+  .mu-o{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+  .mu-o.fav{color:var(--accent)}
+  .mu-o.dog{color:rgba(255,255,255,.72)}
+  .mu-olbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center;flex:1}
+  .mu-style{margin-top:13px}
+  .mu-bar{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.09);margin:16px 0 6px}
+  .mu-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #0b0c10}
+  .mu-tick{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+  .mu-foot{margin-top:12px;font-size:11px;color:rgba(255,255,255,.42);text-align:center}
+  .mu-foot b{color:rgba(255,255,255,.72);font-weight:700}
+  @media(max-width:560px){
+    .mu{margin-left:12px;margin-right:12px;padding:14px 14px 12px}
+    .mu-nm{font-size:13.5px}.mu-av{width:38px;height:38px;flex-basis:38px}
+  }
   .hero-cta{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;align-items:center}
   .big{font-size:15px;font-weight:800;color:#04120a;background:var(--accent);border-radius:11px;padding:13px 22px;display:inline-block}
   .big:hover{background:#12f277}
@@ -241,11 +333,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
     <p class="sub">Deep analytics for every fighter and every bout, including a fight simulator that predicts winner and method, full statistics for every UFC fight in history, career accolades, live/historical odds, line-movement tracking, one-click tape study, and weekly roster updates — all in one place.</p>
-    <div class="stats">
-      <div class="stat"><div class="n">3,000+</div><div class="l">fighters</div></div>
-      <div class="stat"><div class="n">18,000+</div><div class="l">bouts</div></div>
-      <div class="stat"><div class="n">50,000+</div><div class="l">simulations</div></div>
-    </div>
+    ${heroMatchup()}
     <div class="hero-cta">
       <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
       <a class="big ghost" href="/login">Log in</a>
@@ -443,7 +531,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
   var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',lm:sv+'<path d="M3 17l5-5 4 4 8-9"/><path d="M18 7h3v3"/></svg>'};
-  var cards=[[ic.c,'Fighter analytics','Full career stats for all 3,000+ fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
+  var cards=[[ic.c,'Fighter analytics','Full career stats for all '+(LD.counts?LD.counts.fighters.toLocaleString():'3,000+')+' fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
   document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
