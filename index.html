@@ -100712,7 +100712,10 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     const lean = s => { const S = s.slpm / 2, G = Math.max(s.tdLanded + 1.5 * s.subAvg, 0.3); return Math.round(100 * S / (S + G)); };
     const output = s => s.strAcc ? +(s.slpm / (s.strAcc / 100)).toFixed(1) : null;
     const leanA = A ? lean(A) : null, leanB = B ? lean(B) : null;
-    OUT.leanA = leanA; OUT.leanB = leanB; OUT.statsA = A || null; OUT.statsB = B || null;
+    // RAW FIGHTER_STATS, not N(statsA): the normalizer strips the '%' off strAcc /
+    // tdDef / finRate, and the sheet has to print "47%", not "47". The comparison
+    // re-parses the number back out of the string.
+    OUT.leanA = leanA; OUT.leanB = leanB; OUT.statsA = statsA; OUT.statsB = statsB;
     const GREEN = 'var(--accent)', AMBER = '#ffcf7a';
 
     const box = document.createElement('div'); box.className = 'sr-common';
@@ -101056,12 +101059,19 @@ const GL_SHEET = (function () {
     while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
     return s + '…';
   }
-  const loadImg = (src) => new Promise((res) => {
+  const loadOne = (src) => new Promise((res) => {
     if (!src) return res(null);
     const im = new Image();
     im.onload = () => res(im); im.onerror = () => res(null);
     im.src = src;
   });
+  // photos/thumb/*.png are 110x80 — drawing one into a 220px disc upscaled it
+  // ~2.8x and it showed. photos/*.jpg are 350x254, enough for the disc at 2x
+  // device pixel ratio. Fall back to the thumb only if the full-res is missing.
+  async function loadImg(slug) {
+    if (!slug) return null;
+    return (await loadOne('./photos/' + slug + '.jpg')) || (await loadOne('./photos/thumb/' + slug + '.png'));
+  }
 
   function meta(name) {
     const f = (typeof FIGHTERS !== 'undefined') ? FIGHTERS.find(x => x && x.name === name) : null;
@@ -101073,7 +101083,7 @@ const GL_SHEET = (function () {
       division: (f && f.division) || '',
       initials: (f && f.initials) || (name || '').split(/\s+/).map(p => p[0]).join('').slice(0, 3).toUpperCase(),
       ht: s.ht || null, reach: s.reach || null, stance: s.stance || null, dob: s.dob || null,
-      photo: (typeof nameToSlug === 'function') ? './photos/thumb/' + nameToSlug(name) + '.png' : null
+      slug: (typeof nameToSlug === 'function') ? nameToSlug(name) : null
     };
   }
   function ageOf(dob) {
@@ -101097,7 +101107,7 @@ const GL_SHEET = (function () {
       const dw = img.width * s, dh = img.height * s;
       ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
     } else {
-      ctx.fillStyle = MUT; ctx.font = '700 68px ' + COND;
+      ctx.fillStyle = MUT; ctx.font = '700 54px ' + COND;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(initials || '?', cx, cy + 2);
     }
@@ -101125,7 +101135,7 @@ const GL_SHEET = (function () {
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
   function versusBlock(ctx, a, b, imgA, imgB, y) {
-    const cxA = 280, cxB = W - 280, R = 150;
+    const cxA = 280, cxB = W - 280, R = 110;
     avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
     avatar(ctx, imgB, cxB, y + R, R, b.initials, AMB);
     ctx.textAlign = 'center'; ctx.font = '800 72px ' + COND; ctx.fillStyle = MUT;
@@ -101180,28 +101190,62 @@ const GL_SHEET = (function () {
     // Dropping the overflow words silently would end the sentence mid-thought on
     // an image meant for sharing. Mark the cut.
     if (all.length > cap) lines[cap - 1] = clip(ctx, lines[cap - 1] + ' …', w - 48);
-    const h = 62 + lines.length * 34;
+    const h = 56 + lines.length * 34;
     roundRect(ctx, x, y, w, h, 12);
     ctx.fillStyle = colour === ACC ? 'rgba(0,230,104,0.07)' : 'rgba(255,207,122,0.06)';
     ctx.fill();
     ctx.strokeStyle = colour === ACC ? 'rgba(0,230,104,0.25)' : 'rgba(255,207,122,0.22)';
     ctx.lineWidth = 1; ctx.stroke();
     ctx.font = '700 26px ' + COND; ctx.fillStyle = colour;
-    ctx.fillText(String(name).toUpperCase(), x + 24, y + 40);
+    ctx.fillText(String(name).toUpperCase(), x + 24, y + 36);
     ctx.font = '400 25px ' + SANS; ctx.fillStyle = TXT;
-    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 76 + i * 34));
-    return y + h + 22;
+    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 70 + i * 34));
+    return y + h + 18;
   }
   function sectionTitle(ctx, t, y) {
     ctx.font = '700 24px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(String(t).toUpperCase(), 64, y);
     return y + 26;
   }
+  // Career-stat comparison. `higher` says which direction wins the line — strikes
+  // absorbed per minute is won by the SMALLER number, so it can't just be a >.
+  const H2H_ROWS = [
+    ['Sig. strikes / min', 'slpm', true],
+    ['Striking accuracy', 'strAcc', true],
+    ['Sig. strikes absorbed / min', 'sapm', false],
+    ['Striking defense', 'strDef', true],
+    ['Knockdowns / 15 min', 'kd', true],
+    ['Takedowns / 15 min', 'tdLanded', true],
+    ['Takedown accuracy', 'tdAcc', true],
+    ['Takedown defense', 'tdDef', true],
+    ['Sub. attempts / 15 min', 'subAvg', true],
+    ['Finish rate', 'finRate', true],
+  ];
+  const statNum = (v) => { if (v == null) return null; const m = /-?[\d.]+/.exec(String(v)); return m ? parseFloat(m[0]) : null; };
+  const statTxt = (v) => (v == null ? '—' : String(v));
+  function h2hTable(ctx, sa, sb, y) {
+    sa = sa || {}; sb = sb || {};
+    H2H_ROWS.forEach((r) => {
+      const label = r[0], key = r[1], higher = r[2];
+      const na = statNum(sa[key]), nb = statNum(sb[key]);
+      let hiA = false, hiB = false;
+      if (na != null && nb != null && na !== nb) { const aWins = higher ? na > nb : na < nb; hiA = aWins; hiB = !aWins; }
+      ctx.textAlign = 'left'; ctx.font = (hiA ? '700 30px ' : '400 30px ') + COND;
+      ctx.fillStyle = hiA ? ACC : TXT; ctx.fillText(statTxt(sa[key]), 64, y);
+      ctx.textAlign = 'right'; ctx.font = (hiB ? '700 30px ' : '400 30px ') + COND;
+      ctx.fillStyle = hiB ? AMB : TXT; ctx.fillText(statTxt(sb[key]), W - 64, y);
+      ctx.textAlign = 'center'; ctx.font = '400 20px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(label, W / 2, y - 1);
+      ctx.textAlign = 'left';
+      y += 38;
+    });
+    return y;
+  }
 
   async function drawMatchup(nameA, nameB, ctxInfo) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
-    const [imgA, imgB] = await Promise.all([loadImg(a.photo), loadImg(b.photo)]);
+    const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
     // Same analysis object the Scouting Report renders from.
     const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
 
@@ -101224,23 +101268,27 @@ const GL_SHEET = (function () {
       y += 64;
     }
 
-    y = sectionTitle(ctx, 'Tale of the tape', y + 18);
-    y += 40;
+    y = sectionTitle(ctx, 'Tale of the tape', y + 14);
+    y += 36;
     const ageA = ageOf(a.dob), ageB = ageOf(b.dob);
     const inches = (v) => { const m = /([\d.]+)/.exec(String(v || '')); return m ? parseFloat(m[1]) : null; };
     const rA = inches(a.reach), rB = inches(b.reach);
-    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 58;
-    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 58;
-    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 58;
-    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false); y += 40;
+    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 44;
+    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 44;
+    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 44;
+    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false); y += 26;
 
-    y = sectionTitle(ctx, 'Style', y + 28);
-    styleBar(ctx, y + 14, ins.leanA, ins.leanB);
-    y += 92;
+    // Head-to-head career numbers, winner of each line in that fighter's colour.
+    y = sectionTitle(ctx, 'Head to head', y + 18) + 30;
+    y = h2hTable(ctx, ins.statsA, ins.statsB, y);
 
-    y = sectionTitle(ctx, 'Path to victory', y + 24) + 14;
-    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 5);
-    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 5);
+    y = sectionTitle(ctx, 'Style', y + 12);
+    styleBar(ctx, y + 10, ins.leanA, ins.leanB);
+    y += 78;
+
+    y = sectionTitle(ctx, 'Path to victory', y + 10) + 10;
+    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 3);
+    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 3);
 
     footer(ctx);
     return cv;
@@ -101249,7 +101297,7 @@ const GL_SHEET = (function () {
   async function drawSim(nameA, nameB, result, rounds) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
-    const [imgA, imgB] = await Promise.all([loadImg(a.photo), loadImg(b.photo)]);
+    const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
     const pctA = Math.round((result.winsA / result.n) * 100), pctB = 100 - pctA;
     const aLeads = pctA >= pctB;
 
@@ -101263,53 +101311,44 @@ const GL_SHEET = (function () {
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 136);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 190);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 250);
 
-    // Win probability — the headline number.
-    y = sectionTitle(ctx, 'Win probability', y + 20) + 20;
-    ctx.font = '800 104px ' + COND;
-    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 78);
-    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 78);
+    // Win probability — the headline number. Removing the power score left a lot
+    // of room, so the numbers that survived get to breathe.
+    y = sectionTitle(ctx, 'Win probability', y + 70) + 50;
+    ctx.font = '800 150px ' + COND;
+    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 110);
+    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 110);
     ctx.textAlign = 'left';
-    y += 110;
-    const bx = 64, bw = W - 128, bh = 20;
+    y += 160;
+    const bx = 64, bw = W - 128, bh = 28;
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     ctx.save();
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
     ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
     ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
     ctx.restore();
-    y += 74;
+    y += 120;
 
     // Method of victory, for whoever the model favours.
     const favName = aLeads ? a.name : b.name;
     const favMethods = aLeads ? result.methodsA : result.methodsB;
     const favWins = aLeads ? result.winsA : result.winsB;
     const favCol = aLeads ? ACC : AMB;
-    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 22;
+    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 60;
     ['KO/TKO', 'Submission', 'Decision'].forEach((k) => {
       let pct = favWins > 0 ? Math.round(((favMethods[k] || 0) / favWins) * 100) : 0;
       if (pct === 0 && favWins > 0) pct = 1;   // mirrors simMethodRowsHtml's 1% floor
-      ctx.font = '400 27px ' + SANS; ctx.fillStyle = TXT;
-      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 20);
-      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 27px ' + COND;
-      ctx.fillText(pct + '%', W - 64, y + 20);
+      ctx.font = '400 34px ' + SANS; ctx.fillStyle = TXT;
+      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 24);
+      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 36px ' + COND;
+      ctx.fillText(pct + '%', W - 64, y + 24);
       ctx.textAlign = 'left';
-      const tx = 320, tw = W - 64 - 130 - tx;
-      roundRect(ctx, tx, y + 8, tw, 12, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
-      roundRect(ctx, tx, y + 8, Math.max(6, tw * (pct / 100)), 12, 6); ctx.fillStyle = favCol; ctx.fill();
-      y += 54;
+      const tx = 360, tw = W - 64 - 150 - tx;
+      roundRect(ctx, tx, y + 10, tw, 16, 8); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+      roundRect(ctx, tx, y + 10, Math.max(8, tw * (pct / 100)), 16, 8); ctx.fillStyle = favCol; ctx.fill();
+      y += 96;
     });
-
-    // Power score.
-    y = sectionTitle(ctx, 'Power score', y + 26) + 30;
-    const pa = Math.round(result.powerA), pb = Math.round(result.powerB);
-    ctx.font = '800 76px ' + COND;
-    ctx.textAlign = 'left'; ctx.fillStyle = pa >= pb ? ACC : TXT; ctx.fillText(String(pa), 64, y + 40);
-    ctx.textAlign = 'right'; ctx.fillStyle = pb > pa ? AMB : TXT; ctx.fillText(String(pb), W - 64, y + 40);
-    ctx.textAlign = 'center'; ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText('striking, grappling & finishing, opponent-adjusted', W / 2, y + 34);
-    ctx.textAlign = 'left';
 
     footer(ctx);
     return cv;
