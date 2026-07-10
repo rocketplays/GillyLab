@@ -596,7 +596,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
     {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster}
-  ];
+  ].filter(function(s){return s.h;});   // a null payload drops its slide rather than rendering an empty stage
 
   var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');
   var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;

@@ -247,9 +247,27 @@ const PARLAY_PICKS = [
 ];
 const METHOD_LABEL = { ko: 'by KO/TKO', sub: 'by submission', dec: 'by decision' };
 
+// Consensus moneyline for one bout, averaged across every book that prices it.
+function mlConsensus(odds, nameA, nameB) {
+  const m = odds.find((o) => o && o.home_team && o.away_team &&
+    [lastLower(o.home_team), lastLower(o.away_team)].sort().join('|') === [lastLower(nameA), lastLower(nameB)].sort().join('|'));
+  if (!m || !Array.isArray(m.bookmakers)) return null;
+  const qa = [], qb = [];
+  m.bookmakers.forEach((bk) => {
+    const mkt = (bk.markets || []).find((x) => x.key === 'h2h');
+    if (!mkt) return;
+    const pa = (mkt.outcomes.find((o) => lastLower(o.name) === lastLower(nameA)) || {}).price;
+    const pb = (mkt.outcomes.find((o) => lastLower(o.name) === lastLower(nameB)) || {}).price;
+    if (pa == null || pb == null) return;
+    qa.push(toProb(pa)); qb.push(toProb(pb));
+  });
+  if (!qa.length) return null;
+  const mean = (xs) => xs.reduce((t, v) => t + v, 0) / xs.length;
+  const ma = mean(qa), mb = mean(qb);
+  return { a: toAmerican(ma), b: toAmerican(mb), favA: ma > mb, books: qa.length };
+}
+
 function buildParlay() {
-  const PROPS = parseConst('MANUAL_PROP_ODDS');
-  if (!PROPS) return null;
   let odds, feed;
   try {
     odds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'odds.json'), 'utf8'));
@@ -257,6 +275,7 @@ function buildParlay() {
   } catch (e) { return null; }
   if (!Array.isArray(odds)) return null;
   const ev = ((feed && feed.data) || []).find((e) => e && e.status !== 'completed' && (e.bouts || []).length);
+  if (!ev) return null;
 
   // Key off odds.json, not event.json: the two feeds spell names differently
   // ("Benoit Saint-Denis" vs "Benoît Saint Denis"), and MANUAL_PROP_ODDS is keyed
@@ -267,63 +286,65 @@ function buildParlay() {
     byKey.set([lastLower(e.home_team), lastLower(e.away_team)].sort().join('|'), [e.home_team, e.away_team]);
   }
 
-  // Find the entry whose key contains this fighter's last name.
+  // ── preferred: the hand-entered FanDuel method props, while they still apply ──
+  const PROPS = parseConst('MANUAL_PROP_ODDS') || {};
   const findFight = (pick) => {
     const ln = lastLower(pick);
     for (const key of Object.keys(PROPS)) {
       if (key.split('|').indexOf(ln) === -1) continue;
       const names = byKey.get(key);
       if (!names) continue;
-      const opp = lastLower(names[0]) === ln ? names[1] : names[0];
-      return { key, opponent: opp };
+      return { key, opponent: lastLower(names[0]) === ln ? names[1] : names[0] };
     }
     return null;
   };
-  const priceOf = (pick, method) => {
+  const propPrice = (pick, method) => {
     const f = findFight(pick);
     if (!f) return null;
     const fd = PROPS[f.key].method && PROPS[f.key].method.fanduel;
     if (!fd) return null;
-    const ln = lastLower(pick);
-    const side = ln === f.key.split('|')[0] ? 'f1' : 'f2';
+    const side = lastLower(pick) === f.key.split('|')[0] ? 'f1' : 'f2';
     const p = fd[side] && fd[side][method];
     return typeof p === 'number' ? { odds: p, opponent: f.opponent } : null;
   };
 
-  let legs = [];
+  let legs = [], kind = 'props', book = 'FanDuel';
   for (const want of PARLAY_PICKS) {
-    const got = priceOf(want.pick, want.method);
-    if (!got) { legs = []; break; }               // one missing -> rebuild from scratch
-    legs.push({ pick: want.pick, slug: nameToSlug(want.pick), method: want.method, label: want.label, opponent: got.opponent, odds: got.odds });
+    const got = propPrice(want.pick, want.method);
+    if (!got) { legs = []; break; }
+    legs.push({ pick: want.pick, slug: nameToSlug(want.pick), opponent: got.opponent, label: want.label, odds: got.odds });
   }
+
+  // ── fallback: consensus MONEYLINES off the current card ──────────────────────
+  // MANUAL_PROP_ODDS is hand-entered per card, so it goes stale the moment the
+  // card does and no prop leg can be found. odds.json refreshes twice daily and
+  // covers every upcoming event, so the moneyline is the only market that can
+  // carry this slide from one card to the next without a human touching it.
   if (!legs.length) {
-    // Fallback: the card moved on. Take the first three fighters with a plus-money
-    // FanDuel method price, so the slide always shows a live, buildable slip.
-    const seen = new Set();
-    for (const key of Object.keys(PROPS)) {
+    kind = 'moneyline';
+    const consensusBooks = [];
+    for (const bout of ev.bouts) {
       if (legs.length === 3) break;
-      const names = byKey.get(key);
-      if (!names) continue;
-      for (const nm of names) {
-        if (legs.length === 3 || seen.has(key)) break;
-        for (const m of ['ko', 'sub', 'dec']) {
-          const got = priceOf(nm, m);
-          if (got && got.odds > 0) {
-            legs.push({ pick: nm, slug: nameToSlug(nm), method: m, label: METHOD_LABEL[m], opponent: got.opponent, odds: got.odds });
-            seen.add(key);
-            break;
-          }
-        }
-      }
+      if (bout.isCancelled) continue;
+      const f = (bout.fighters || []).map((x) => x.fighterName);
+      if (f.length !== 2) continue;
+      const c = mlConsensus(odds, f[0], f[1]);
+      if (!c) continue;
+      const pick = c.favA ? f[0] : f[1];
+      const opp = c.favA ? f[1] : f[0];
+      consensusBooks.push(c.books);
+      legs.push({ pick, slug: nameToSlug(pick), opponent: opp, label: 'to win', odds: c.favA ? c.a : c.b });
     }
+    const n = consensusBooks.length ? Math.min.apply(null, consensusBooks) : 0;
+    book = 'Consensus · ' + n + ' book' + (n === 1 ? '' : 's');
   }
   if (legs.length < 3) return null;
 
   const dec = legs.reduce((t, l) => t * toDecimal(l.odds), 1);
   const stake = 100;
   return {
-    event: (ev && ev.title) || 'UFC',
-    book: 'FanDuel',
+    event: ev.title || 'UFC',
+    kind, book,
     legs: legs.map((l) => ({ pick: l.pick, slug: l.slug, opponent: l.opponent, label: l.label, odds: fmtOdds(l.odds) })),
     combined: fmtOdds(toAmerican(1 / dec)),
     stake,
@@ -518,7 +539,7 @@ function main() {
     rankings.division, featured.name, featured.record, oddsHistory.name, oddsHistory.rows.length);
   console.log('landing-data.js: counts %s fighters · %s bouts · %s videos · %s photos',
     counts.fighters.toLocaleString(), counts.bouts.toLocaleString(), counts.videos.toLocaleString(), counts.photos.toLocaleString());
-  console.log('landing-data.js: parlay %s', parlay
+  console.log('landing-data.js: parlay [%s] %s', parlay ? parlay.kind : '-', parlay
     ? (parlay.legs.map((l) => l.pick + ' ' + l.odds).join(' + ') + ' = ' + parlay.combined + ' ($' + parlay.stake + ' -> $' + parlay.payout + ')')
     : 'none');
   console.log('landing-data.js: styleDemo %s', styleDemo
