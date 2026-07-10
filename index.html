@@ -88006,7 +88006,7 @@ function populateFightHistory(name) {
     const isOpen = panel.classList.contains('open');
     if (!isOpen && !panel.dataset.filled) {
       const inner = panel.querySelector('.sr-inner');
-      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null);
+      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null, panel.dataset.wc || '');
       panel.dataset.filled = '1';
       if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     }
@@ -101443,8 +101443,11 @@ const GL_SHEET = (function () {
 
     brand(ctx, 82, (ctxInfo && ctxInfo.event) || 'UFC');
     ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-    // 'LW' is jargon on a graphic that leaves the site.
-    const divName = (window.simDivisionLabel ? window.simDivisionLabel(a.division) : a.division) || '';
+    // The BOUT's weight class first — a fighter's home division is not what he is
+    // fighting at tonight. McGregor is FW on the roster and welterweight at UFC 329.
+    // Only fall back to the roster division, expanded ('LW' is jargon off-site).
+    const divName = (ctxInfo && ctxInfo.weightClass)
+      || (window.simDivisionLabel ? window.simDivisionLabel(a.division) : a.division) || '';
     const line2 = [divName, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
     if (line2) ctx.fillText(line2, 64, 118);
 
@@ -101650,7 +101653,7 @@ const GL_SHEET = (function () {
 })();
 if (typeof window !== 'undefined') window.GL_SHEET = GL_SHEET;
 
-function renderScouting(host, name, opp, fightDate) {
+function renderScouting(host, name, opp, fightDate, weightClass) {
   if (!host || !name || !opp) return;
   host.innerHTML = '';
   const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
@@ -101911,7 +101914,7 @@ function renderScouting(host, name, opp, fightDate) {
     shareBtn.addEventListener('click', function (e) {
       e.stopPropagation();   // the panel's own open/close toggle listens on an ancestor
       const evLabel = ((document.getElementById('home-event-name') || {}).textContent || '').trim();
-      window.GL_SHEET.matchup(name, opp, { event: evLabel || 'UFC', date: fightDate || '' });
+      window.GL_SHEET.matchup(name, opp, { event: evLabel || 'UFC', date: fightDate || '', weightClass: weightClass || '' });
     });
     host.appendChild(shareBtn);
   }
@@ -103293,7 +103296,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   // Empty, collapsible Scouting panel per fight — lazy-filled by toggleFightScouting.
   function scoutingFightPanelHTML(f) {
-    return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') + '"><div class="sr-inner"></div></div>';
+    return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') +
+      '" data-wc="' + escHtmlAttr(f.wc || '') + '"><div class="sr-inner"></div></div>';
   }
 
   // Completed-fight retrospective: result recap, closing line (+ upset flag), and
@@ -105326,6 +105330,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return {
         f1:   redName,
         f2:   blueName,
+        // The BOUT's weight class, not either fighter's division. A fighter moving
+        // up for one fight (McGregor at welterweight, Whittaker at light heavy) has
+        // a home division that says nothing about tonight's contract weight.
+        wc,
         div1: red.profile  ? (red.profile.division  || wc) : wc,
         div2: blue.profile ? (blue.profile.division || wc) : wc,
         rec1: computeRecord(redName)  || parseRecord(red.profile  ? red.profile.recordText  : '') || recordFallback(red.fighterName),
