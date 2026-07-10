@@ -101116,13 +101116,13 @@ const GL_SHEET = (function () {
       const dw = img.width * s, dh = img.height * s;
       ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
     } else {
-      ctx.fillStyle = MUT; ctx.font = '700 54px ' + COND;
+      ctx.fillStyle = MUT; ctx.font = '700 40px ' + COND;
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillText(initials || '?', cx, cy + 2);
     }
     ctx.restore();
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = ring; ctx.lineWidth = 5; ctx.stroke();
+    ctx.strokeStyle = ring; ctx.lineWidth = 4; ctx.stroke();
   }
 
   function brand(ctx, y, kicker) {
@@ -101146,13 +101146,13 @@ const GL_SHEET = (function () {
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
   function versusBlock(ctx, a, b, imgA, imgB, y, radius) {
-    const cxA = 280, cxB = W - 280, R = radius || 110;
+    const cxA = 280, cxB = W - 280, R = radius || 72;
     avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
     avatar(ctx, imgB, cxB, y + R, R, b.initials, AMB);
-    ctx.textAlign = 'center'; ctx.font = '800 72px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('VS', W / 2, y + R + 24);
+    ctx.textAlign = 'center'; ctx.font = '800 60px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', W / 2, y + R + 20);
 
-    let ny = y + 2 * R + 66;
+    let ny = y + 2 * R + 56;
     ctx.font = '700 40px ' + COND; ctx.fillStyle = TXT;
     ctx.fillText(clip(ctx, a.name.toUpperCase(), 420), cxA, ny);
     ctx.fillText(clip(ctx, b.name.toUpperCase(), 420), cxB, ny);
@@ -101252,6 +101252,29 @@ const GL_SHEET = (function () {
     return y;
   }
 
+  // One fighter's method split. Percentages are of that fighter's own wins, and
+  // carry the same 1% floor simMethodRowsHtml uses: a method that never landed in
+  // this batch of trials isn't truly impossible.
+  function methodCol(ctx, x, w, name, methods, wins, col, y) {
+    ctx.textAlign = 'left';
+    ctx.font = '700 28px ' + COND; ctx.fillStyle = col;
+    ctx.fillText(clip(ctx, String(name).toUpperCase(), w), x, y);
+    let yy = y + 34;
+    ['KO/TKO', 'Submission', 'Decision'].forEach((k) => {
+      let pct = wins > 0 ? Math.round(((methods[k] || 0) / wins) * 100) : 0;
+      if (pct === 0 && wins > 0) pct = 1;
+      ctx.font = '400 24px ' + SANS; ctx.fillStyle = TXT;
+      ctx.textAlign = 'left'; ctx.fillText(k, x, yy + 18);
+      ctx.textAlign = 'right'; ctx.font = '700 26px ' + COND; ctx.fillStyle = col;
+      ctx.fillText(pct + '%', x + w, yy + 18);
+      ctx.textAlign = 'left';
+      roundRect(ctx, x, yy + 30, w, 10, 5); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+      roundRect(ctx, x, yy + 30, Math.max(6, w * (pct / 100)), 10, 5); ctx.fillStyle = col; ctx.fill();
+      yy += 62;
+    });
+    return yy;
+  }
+
   async function drawMatchup(nameA, nameB, ctxInfo) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
@@ -101297,8 +101320,8 @@ const GL_SHEET = (function () {
     y += 78;
 
     y = sectionTitle(ctx, 'Path to victory', y + 10) + 10;
-    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 3);
-    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 3);
+    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 4);
+    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 4);
 
     footer(ctx, CH);
     return cv;
@@ -101324,7 +101347,7 @@ const GL_SHEET = (function () {
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 112);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 88);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 150, 58);
 
     // Win probability — the headline number.
     y = sectionTitle(ctx, 'Win probability', y + 24) + 34;
@@ -101342,25 +101365,17 @@ const GL_SHEET = (function () {
     ctx.restore();
     y += 74;
 
-    // Method of victory, for whoever the model favours.
-    const favName = aLeads ? a.name : b.name;
-    const favMethods = aLeads ? result.methodsA : result.methodsB;
-    const favWins = aLeads ? result.winsA : result.winsB;
-    const favCol = aLeads ? ACC : AMB;
-    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 38;
-    ['KO/TKO', 'Submission', 'Decision'].forEach((k) => {
-      let pct = favWins > 0 ? Math.round(((favMethods[k] || 0) / favWins) * 100) : 0;
-      if (pct === 0 && favWins > 0) pct = 1;   // mirrors simMethodRowsHtml's 1% floor
-      ctx.font = '400 28px ' + SANS; ctx.fillStyle = TXT;
-      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 20);
-      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 30px ' + COND;
-      ctx.fillText(pct + '%', W - 64, y + 20);
-      ctx.textAlign = 'left';
-      const tx = 320, tw = W - 64 - 120 - tx;
-      roundRect(ctx, tx, y + 8, tw, 13, 7); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
-      roundRect(ctx, tx, y + 8, Math.max(7, tw * (pct / 100)), 13, 7); ctx.fillStyle = favCol; ctx.fill();
-      y += 58;
-    });
+    // Method of victory for BOTH fighters, side by side. Each percentage is a share
+    // of that fighter's own simulated wins, not of all trials — so each column
+    // sums to 100 and the two are read independently.
+    y = sectionTitle(ctx, 'How each fighter wins', y);
+    ctx.font = '400 20px ' + SANS; ctx.fillStyle = FOOT;
+    ctx.fillText('share of that fighter\u2019s simulated wins', 64, y + 22);
+    y += 52;
+    const gap = 44, colW = (W - 128 - gap) / 2;
+    const yA = methodCol(ctx, 64, colW, a.name, result.methodsA, result.winsA, ACC, y);
+    const yB = methodCol(ctx, 64 + colW + gap, colW, b.name, result.methodsB, result.winsB, AMB, y);
+    y = Math.max(yA, yB);
 
     footer(ctx, CH);
     return cv;
