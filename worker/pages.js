@@ -107,9 +107,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
 <meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, live and historical odds, line movement, tape study, rankings, and more.">
 <meta name="twitter:image" content="${SITE_URL}/og.png">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico?v=6" sizes="any">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
@@ -623,7 +623,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title} — GillyLab</title>
 <meta name="robots" content="noindex">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml"><link rel="icon" href="/favicon.ico?v=6" sizes="any">
 <style>
   *{box-sizing:border-box} html{background:#0a0a0b}
   body{margin:0;background:#0a0a0b;color:#e8e8ea;font:15px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;animation:lpin .3s ease both}
@@ -712,7 +712,7 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About GillyLab</title>
 <meta name="description" content="Built by bettors, for bettors — one place to do all of your UFC research.">
-<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml"><link rel="icon" href="/favicon.ico?v=6" sizes="any">
 <style>
   *{box-sizing:border-box} html{background:#0a0a0b}
   body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#15201a 0%,#0a0a0b 55%);color:#e8e8ea;

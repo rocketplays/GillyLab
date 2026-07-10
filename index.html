@@ -11,9 +11,14 @@
        defaulting to white. -->
   <meta name="theme-color" content="#0a0a0b" />
   <title>GillyLab — UFC Analytics</title>
-  <link rel="icon" type="image/png" href="./gl-logo.png?v=5">
-  <link rel="shortcut icon" href="./gl-logo.png?v=5">
-  <link rel="apple-touch-icon" href="./gl-logo.png?v=5">
+  <!-- Absolute, not ./ — the app renders under several routes and a relative icon
+       resolves differently on each. These four are on the Worker's public
+       allowlist; gl-logo.png is not, so an unauthenticated icon fetch 401'd and
+       the browser fell back to a generic mark. gl-logo.png is also 63x48, which
+       Apple will not use as a touch icon at all — it must be square. -->
+  <link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
+  <link rel="icon" href="/favicon.ico?v=6" sizes="any">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
