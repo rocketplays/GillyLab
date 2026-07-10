@@ -2203,6 +2203,13 @@
     .pl-clear:hover { color: #ff6a5e; border-color: #ff6a5e; }
     /* z-index sits above the share overlay (80) so "Slip image saved." isn't
        rendered behind the backdrop. */
+    /* The sheets are 1080×1920 stories — far taller than the parlay card, so the
+       preview needs its own scroll box rather than pushing the buttons off-screen. */
+    .gl-sheet-inner { max-width: 380px; }
+    .gl-sheet-preview { max-height: 62vh; overflow-y: auto; border-radius: 10px; border: 1px solid var(--border); background: var(--surface); }
+    .gl-sheet-preview img { display: block; width: 100%; height: auto; }
+    .gl-sheet-btn { display: block; width: 100%; margin-top: 0.65rem; background: rgba(0, 230, 104, 0.10); border: 1px solid var(--accent); color: var(--accent); font-family: inherit; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; padding: 0.5rem 0.75rem; border-radius: 6px; cursor: pointer; transition: background 0.15s, color 0.15s; }
+    .gl-sheet-btn:hover { background: var(--accent); color: #0e0f13; }
     .pl-toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 30vh; z-index: 90; background: #1c1f26; border: 1px solid #ff6a5e; color: #ffd9d5; padding: 9px 14px; border-radius: 8px; font-size: 0.76rem; max-width: 90vw; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
     .pl-toast.show { opacity: 1; }
     @media (max-width: 600px) { .pl-foot { gap: 0.6rem; } .pl-leg-pick { font-size: 0.74rem; } .pl-bar-right { gap: 10px; } }
@@ -100658,9 +100665,14 @@ function scoutingHistKey(n) {
 // — plus an optional full tale-of-the-tape rate-stat table. Used by both the Fight
 // Info dropdown (tale off) and the fight simulator (tale on). All from career
 // FIGHTER_STATS + the FIGHTERS roster (for the pronoun division check).
+// `host` is optional. Passing null computes the analysis and returns it without
+// touching the DOM, which is how the shareable matchup sheet gets the same style
+// lean and path-to-victory the Scouting Report shows — derived here once rather
+// than reimplemented on a canvas, where the two would silently drift apart.
 function renderMatchupBreakdown(host, nameA, nameB, opts) {
-    if (!host || !nameA || !nameB) return;
+    if (!nameA || !nameB) return null;
     opts = opts || {};
+    const OUT = {};
     const name = nameA, opp = nameB;
     const FSt = typeof FIGHTER_STATS !== 'undefined' ? FIGHTER_STATS : {};
     const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
@@ -100700,6 +100712,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     const lean = s => { const S = s.slpm / 2, G = Math.max(s.tdLanded + 1.5 * s.subAvg, 0.3); return Math.round(100 * S / (S + G)); };
     const output = s => s.strAcc ? +(s.slpm / (s.strAcc / 100)).toFixed(1) : null;
     const leanA = A ? lean(A) : null, leanB = B ? lean(B) : null;
+    OUT.leanA = leanA; OUT.leanB = leanB; OUT.statsA = A || null; OUT.statsB = B || null;
     const GREEN = 'var(--accent)', AMBER = '#ffcf7a';
 
     const box = document.createElement('div'); box.className = 'sr-common';
@@ -100749,7 +100762,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     const hiA = oA != null && (oB == null || oA >= oB), hiB = oB != null && (oA == null || oB > oA);
     const pv = (v, hi) => { const d = document.createElement('div'); d.className = 'sr-cmp-val'; d.style.fontSize = '0.92rem'; d.style.fontWeight = hi ? '800' : '600'; if (hi) d.style.color = 'var(--accent)'; d.textContent = v == null ? '—' : v; return d; };
     paceRow.appendChild(pv(oA, hiA)); paceRow.appendChild(pv(oB, hiB));
-    box.appendChild(paceRow); host.appendChild(box);
+    box.appendChild(paceRow); if (host) host.appendChild(box);
 
     // Pronoun by division — women's UFC divisions are WSW/WFLW/WFLY/WBW/WFW
     // (note WW is men's welterweight, so a bare "W" prefix isn't enough).
@@ -100907,8 +100920,10 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     };
     const pTitle = document.createElement('div'); pTitle.className = 'sr-common-title'; pTitle.style.marginTop = '0.9rem'; pTitle.textContent = 'Path to victory';
     box.appendChild(pTitle);
-    addPath(name, path(A, B, opp, isFemale(name)), GREEN);
-    addPath(opp, path(B, A, name, isFemale(opp)), AMBER);
+    OUT.pathA = path(A, B, opp, isFemale(name));
+    OUT.pathB = path(B, A, name, isFemale(opp));
+    addPath(name, OUT.pathA, GREEN);
+    addPath(opp, OUT.pathB, AMBER);
     // Storylines — notable, matchup-relevant nuggets from fight history, shown
     // only when something actually stands out. No "never finished" note here —
     // the Finish & durability section already says so.
@@ -100959,7 +100974,8 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       };
       add(name, 'var(--accent)', aBul);
       add(opp, '#ffcf7a', bBul);
-      host.appendChild(box3);
+      OUT.storyA = aBul; OUT.storyB = bBul;
+      if (host) host.appendChild(box3);
     })();
 
     if (opts.taleOfTape && (statsA.slpm != null || statsB.slpm != null)) {
@@ -100988,10 +101004,418 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         if (aR != null && bR != null && aR !== bR) { const aBetter = r[5] ? aR > bR : aR < bR; if (aBetter) aCls = 'w'; else bCls = 'w'; }
         cmpRow(box2, r[0], r[3], r[4], aCls, bCls);
       });
-      host.appendChild(box2);
+      if (host) host.appendChild(box2);
     }
+    return OUT;
 }
 if (typeof window !== 'undefined') window.renderMatchupBreakdown = renderMatchupBreakdown;
+
+/* ── SHAREABLE SHEETS ─────────────────────────────────────────────────────────
+   Story-format (1080×1920) PNGs for the matchup preview and the simulator
+   result. Both are drawn on a canvas rather than screenshotted from the DOM, so
+   they look the same on every device and don't drag the page's layout with them.
+
+   The analysis is NOT recomputed here. renderMatchupBreakdown(null, a, b)
+   returns the same style lean and path-to-victory the Scouting Report renders;
+   reimplementing either on the canvas would let the sheet and the site drift.
+
+   Photos are same-origin (the Worker serves /photos), so the canvas stays
+   untainted and toBlob() works. A cross-origin image would silently poison it,
+   which is why loadImg() resolves null on error instead of throwing. */
+const GL_SHEET = (function () {
+  const W = 1080, H = 1920;
+  const BG = '#0e1014', CARD = '#14161b', LINE = 'rgba(255,255,255,0.10)';
+  const TXT = '#f0f0f0', MUT = '#8a8d94', ACC = '#00e668', AMB = '#ffcf7a', FOOT = '#6f727a';
+  const SANS = "'Barlow', sans-serif", COND = "'Barlow Condensed', sans-serif";
+  // Same detection as the parlay slip: only iOS routes Save through the share
+  // sheet, because its sheet is the only path to Photos.
+  const IOS = (function () {
+    const ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
+  })();
+
+  const fontsReady = () => (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  function wrap(ctx, text, maxW) {
+    const words = String(text || '').split(/\s+/).filter(Boolean), out = [];
+    let line = '';
+    for (const w of words) {
+      const t = line ? line + ' ' + w : w;
+      if (ctx.measureText(t).width > maxW && line) { out.push(line); line = w; } else line = t;
+    }
+    if (line) out.push(line);
+    return out;
+  }
+  function clip(ctx, text, maxW) {
+    let s = String(text || '');
+    if (ctx.measureText(s).width <= maxW) return s;
+    while (s.length > 1 && ctx.measureText(s + '…').width > maxW) s = s.slice(0, -1);
+    return s + '…';
+  }
+  const loadImg = (src) => new Promise((res) => {
+    if (!src) return res(null);
+    const im = new Image();
+    im.onload = () => res(im); im.onerror = () => res(null);
+    im.src = src;
+  });
+
+  function meta(name) {
+    const f = (typeof FIGHTERS !== 'undefined') ? FIGHTERS.find(x => x && x.name === name) : null;
+    const s = (typeof FIGHTER_STATS !== 'undefined' && FIGHTER_STATS[name]) || {};
+    return {
+      name: name,
+      record: (f && f.record) || '—',
+      rank: (f && f.rank) || 'NR',
+      division: (f && f.division) || '',
+      initials: (f && f.initials) || (name || '').split(/\s+/).map(p => p[0]).join('').slice(0, 3).toUpperCase(),
+      ht: s.ht || null, reach: s.reach || null, stance: s.stance || null, dob: s.dob || null,
+      photo: (typeof nameToSlug === 'function') ? './photos/thumb/' + nameToSlug(name) + '.png' : null
+    };
+  }
+  function ageOf(dob) {
+    if (!dob) return null;
+    const d = new Date(dob); if (isNaN(d.getTime())) return null;
+    const t = new Date(); let a = t.getFullYear() - d.getFullYear();
+    const m = t.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && t.getDate() < d.getDate())) a--;
+    return a >= 0 && a < 90 ? a : null;
+  }
+
+  // A circular headshot, or the fighter's initials on a disc when we have no photo.
+  function avatar(ctx, img, cx, cy, r, initials, ring) {
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.closePath();
+    ctx.fillStyle = '#1b1e25'; ctx.fill();
+    if (img) {
+      ctx.clip();
+      // cover-fit: fill the disc, crop the overflow, never squash the face
+      const s = Math.max((r * 2) / img.width, (r * 2) / img.height);
+      const dw = img.width * s, dh = img.height * s;
+      ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+    } else {
+      ctx.fillStyle = MUT; ctx.font = '700 68px ' + COND;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(initials || '?', cx, cy + 2);
+    }
+    ctx.restore();
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = ring; ctx.lineWidth = 5; ctx.stroke();
+  }
+
+  function brand(ctx, y, kicker) {
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '800 44px ' + COND;
+    ctx.fillStyle = TXT; ctx.fillText('GILLY', 64, y);
+    const w = ctx.measureText('GILLY').width;
+    ctx.fillStyle = ACC; ctx.fillText('LAB', 64 + w + 8, y);
+    if (kicker) {
+      ctx.textAlign = 'right'; ctx.font = '700 26px ' + COND;
+      ctx.fillStyle = MUT; ctx.fillText(String(kicker).toUpperCase(), W - 64, y);
+      ctx.textAlign = 'left';
+    }
+  }
+  function footer(ctx) {
+    ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = FOOT;
+    ctx.fillText('gillylab.com · not betting advice', W / 2, H - 54);
+    ctx.textAlign = 'left';
+  }
+  // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
+  function versusBlock(ctx, a, b, imgA, imgB, y) {
+    const cxA = 280, cxB = W - 280, R = 150;
+    avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
+    avatar(ctx, imgB, cxB, y + R, R, b.initials, AMB);
+    ctx.textAlign = 'center'; ctx.font = '800 72px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('VS', W / 2, y + R + 24);
+
+    let ny = y + 2 * R + 66;
+    ctx.font = '700 40px ' + COND; ctx.fillStyle = TXT;
+    ctx.fillText(clip(ctx, a.name.toUpperCase(), 420), cxA, ny);
+    ctx.fillText(clip(ctx, b.name.toUpperCase(), 420), cxB, ny);
+    ny += 40;
+    ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+    const sub = (m) => m.record + (m.rank && m.rank !== 'NR' ? '  ·  #' + m.rank : '');
+    ctx.fillText(sub(a), cxA, ny);
+    ctx.fillText(sub(b), cxB, ny);
+    ctx.textAlign = 'left';
+    return ny + 46;
+  }
+  // "5'10"  HEIGHT  6'1"" — value, centred label, value.
+  function tapeRow(ctx, label, va, vb, y, hiA, hiB) {
+    ctx.textAlign = 'left'; ctx.font = '700 34px ' + COND;
+    ctx.fillStyle = hiA ? ACC : TXT; ctx.fillText(va == null ? '—' : String(va), 64, y);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = hiB ? AMB : TXT; ctx.fillText(vb == null ? '—' : String(vb), W - 64, y);
+    ctx.textAlign = 'center'; ctx.font = '600 22px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(String(label).toUpperCase(), W / 2, y - 2);
+    ctx.textAlign = 'left';
+  }
+  // Striker ↔ grappler spectrum. lean is 0..100, 100 = pure striker.
+  function styleBar(ctx, y, leanA, leanB) {
+    const x = 64, w = W - 128, h = 14;
+    roundRect(ctx, x, y, w, h, h / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    const dot = (lean, col) => {
+      if (lean == null) return;
+      const px = x + (w * (lean / 100));
+      ctx.beginPath(); ctx.arc(px, y + h / 2, 15, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+      ctx.strokeStyle = BG; ctx.lineWidth = 4; ctx.stroke();
+    };
+    dot(leanA, ACC); dot(leanB, AMB);
+    ctx.font = '600 21px ' + SANS; ctx.fillStyle = MUT;
+    ctx.textAlign = 'left'; ctx.fillText('GRAPPLER', x, y + 48);
+    ctx.textAlign = 'right'; ctx.fillText('STRIKER', x + w, y + 48);
+    ctx.textAlign = 'left';
+  }
+  // A tinted block of wrapped prose, keyed to one fighter's colour.
+  function pathBlock(ctx, name, text, colour, y, maxLines) {
+    const x = 64, w = W - 128;
+    ctx.font = '400 25px ' + SANS;
+    const cap = maxLines || 5;
+    const all = wrap(ctx, text, w - 48);
+    const lines = all.slice(0, cap);
+    // Dropping the overflow words silently would end the sentence mid-thought on
+    // an image meant for sharing. Mark the cut.
+    if (all.length > cap) lines[cap - 1] = clip(ctx, lines[cap - 1] + ' …', w - 48);
+    const h = 62 + lines.length * 34;
+    roundRect(ctx, x, y, w, h, 12);
+    ctx.fillStyle = colour === ACC ? 'rgba(0,230,104,0.07)' : 'rgba(255,207,122,0.06)';
+    ctx.fill();
+    ctx.strokeStyle = colour === ACC ? 'rgba(0,230,104,0.25)' : 'rgba(255,207,122,0.22)';
+    ctx.lineWidth = 1; ctx.stroke();
+    ctx.font = '700 26px ' + COND; ctx.fillStyle = colour;
+    ctx.fillText(String(name).toUpperCase(), x + 24, y + 40);
+    ctx.font = '400 25px ' + SANS; ctx.fillStyle = TXT;
+    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 76 + i * 34));
+    return y + h + 22;
+  }
+  function sectionTitle(ctx, t, y) {
+    ctx.font = '700 24px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(String(t).toUpperCase(), 64, y);
+    return y + 26;
+  }
+
+  async function drawMatchup(nameA, nameB, ctxInfo) {
+    await fontsReady();
+    const a = meta(nameA), b = meta(nameB);
+    const [imgA, imgB] = await Promise.all([loadImg(a.photo), loadImg(b.photo)]);
+    // Same analysis object the Scouting Report renders from.
+    const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
+
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = ACC; ctx.fillRect(0, 0, W, 8);
+
+    brand(ctx, 96, (ctxInfo && ctxInfo.event) || 'UFC');
+    ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+    const line2 = [a.division, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
+    if (line2) ctx.fillText(line2, 64, 136);
+
+    let y = versusBlock(ctx, a, b, imgA, imgB, 190);
+
+    if (ctxInfo && ctxInfo.oddsA && ctxInfo.oddsB) {
+      y = sectionTitle(ctx, 'Moneyline' + (ctxInfo.book ? ' · ' + ctxInfo.book : ''), y + 10);
+      tapeRow(ctx, 'odds', ctxInfo.oddsA, ctxInfo.oddsB, y + 34, false, false);
+      y += 64;
+    }
+
+    y = sectionTitle(ctx, 'Tale of the tape', y + 18);
+    y += 40;
+    const ageA = ageOf(a.dob), ageB = ageOf(b.dob);
+    const inches = (v) => { const m = /([\d.]+)/.exec(String(v || '')); return m ? parseFloat(m[1]) : null; };
+    const rA = inches(a.reach), rB = inches(b.reach);
+    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 58;
+    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 58;
+    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 58;
+    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false); y += 40;
+
+    y = sectionTitle(ctx, 'Style', y + 28);
+    styleBar(ctx, y + 14, ins.leanA, ins.leanB);
+    y += 92;
+
+    y = sectionTitle(ctx, 'Path to victory', y + 24) + 14;
+    if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 5);
+    if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 5);
+
+    footer(ctx);
+    return cv;
+  }
+
+  async function drawSim(nameA, nameB, result, rounds) {
+    await fontsReady();
+    const a = meta(nameA), b = meta(nameB);
+    const [imgA, imgB] = await Promise.all([loadImg(a.photo), loadImg(b.photo)]);
+    const pctA = Math.round((result.winsA / result.n) * 100), pctB = 100 - pctA;
+    const aLeads = pctA >= pctB;
+
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = ACC; ctx.fillRect(0, 0, W, 8);
+
+    brand(ctx, 96, 'Fight simulator');
+    ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 136);
+
+    let y = versusBlock(ctx, a, b, imgA, imgB, 190);
+
+    // Win probability — the headline number.
+    y = sectionTitle(ctx, 'Win probability', y + 20) + 20;
+    ctx.font = '800 104px ' + COND;
+    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 78);
+    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 78);
+    ctx.textAlign = 'left';
+    y += 110;
+    const bx = 64, bw = W - 128, bh = 20;
+    roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    ctx.save();
+    roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
+    ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
+    ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
+    ctx.restore();
+    y += 74;
+
+    // Method of victory, for whoever the model favours.
+    const favName = aLeads ? a.name : b.name;
+    const favMethods = aLeads ? result.methodsA : result.methodsB;
+    const favWins = aLeads ? result.winsA : result.winsB;
+    const favCol = aLeads ? ACC : AMB;
+    y = sectionTitle(ctx, 'How ' + favName + ' wins', y) + 22;
+    ['KO/TKO', 'Submission', 'Decision'].forEach((k) => {
+      let pct = favWins > 0 ? Math.round(((favMethods[k] || 0) / favWins) * 100) : 0;
+      if (pct === 0 && favWins > 0) pct = 1;   // mirrors simMethodRowsHtml's 1% floor
+      ctx.font = '400 27px ' + SANS; ctx.fillStyle = TXT;
+      ctx.textAlign = 'left'; ctx.fillText(k, 64, y + 20);
+      ctx.textAlign = 'right'; ctx.fillStyle = favCol; ctx.font = '700 27px ' + COND;
+      ctx.fillText(pct + '%', W - 64, y + 20);
+      ctx.textAlign = 'left';
+      const tx = 320, tw = W - 64 - 130 - tx;
+      roundRect(ctx, tx, y + 8, tw, 12, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+      roundRect(ctx, tx, y + 8, Math.max(6, tw * (pct / 100)), 12, 6); ctx.fillStyle = favCol; ctx.fill();
+      y += 54;
+    });
+
+    // Power score.
+    y = sectionTitle(ctx, 'Power score', y + 26) + 30;
+    const pa = Math.round(result.powerA), pb = Math.round(result.powerB);
+    ctx.font = '800 76px ' + COND;
+    ctx.textAlign = 'left'; ctx.fillStyle = pa >= pb ? ACC : TXT; ctx.fillText(String(pa), 64, y + 40);
+    ctx.textAlign = 'right'; ctx.fillStyle = pb > pa ? AMB : TXT; ctx.fillText(String(pb), W - 64, y + 40);
+    ctx.textAlign = 'center'; ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText('striking, grappling & finishing, opponent-adjusted', W / 2, y + 34);
+    ctx.textAlign = 'left';
+
+    footer(ctx);
+    return cv;
+  }
+
+  // ── the share overlay (mirrors the parlay slip's, including the iOS split) ──
+  let asset = null;
+  function toFile(cv) {
+    return new Promise((res, rej) => {
+      if (!cv.toBlob) return rej(new Error("This browser can't export the image."));
+      try {
+        cv.toBlob((b) => {
+          if (!b) return rej(new Error("Couldn't render the image."));
+          res({ file: new File([b], 'gillylab.png', { type: 'image/png' }), blob: b });
+        }, 'image/png');
+      } catch (e) { rej(e); }   // tainted canvas throws here, not in the callback
+    });
+  }
+  const canShareFiles = (f) => !!(navigator.canShare && f && navigator.canShare({ files: [f] }));
+  function download(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url; link.download = filename;
+    document.body.appendChild(link); link.click(); link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  function close() {
+    const ov = document.getElementById('glSheet');
+    if (ov) ov.classList.remove('open');
+    asset = null;
+    if (typeof unlockPageScroll === 'function') unlockPageScroll();
+  }
+  function busy(on) {
+    ['glSheetSave', 'glSheetShare'].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.disabled = !!on; el.classList.toggle('busy', !!on);
+    });
+  }
+  async function open(drawFn, filename, shareText) {
+    let ov = document.getElementById('glSheet');
+    if (!ov) {
+      ov = document.createElement('div'); ov.id = 'glSheet'; ov.className = 'pl-share';
+      ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Share sheet');
+      document.body.appendChild(ov);
+    }
+    ov.innerHTML = `<div class="pl-share-inner gl-sheet-inner">
+      <div class="gl-sheet-preview"><img id="glSheetImg" alt="Shareable sheet"></div>
+      <div class="pl-share-actions">
+        <button type="button" id="glSheetSave" class="pl-act primary">Save photo</button>
+        <button type="button" id="glSheetShare" class="pl-act">Share</button>
+        <button type="button" id="glSheetClose" class="pl-act ghost">Close</button>
+      </div>
+      <div class="pl-share-hint">${IOS
+        ? 'Save photo → tap Save Image to add it to Photos. Share sends the sheet with a link.'
+        : 'Save photo downloads the image. Share sends the sheet with a link.'}</div>
+    </div>`;
+    ov.classList.add('open');
+    if (typeof lockPageScroll === 'function') lockPageScroll();
+
+    ov.querySelector('#glSheetClose').addEventListener('click', close);
+    ov.addEventListener('click', (e) => { if (e.target === ov) close(); });
+
+    busy(true);
+    let cv;
+    try { cv = await drawFn(); asset = await toFile(cv); }
+    catch (err) {
+      ov.querySelector('.pl-share-hint').textContent = err.message || "Couldn't build the image.";
+      busy(false);
+      return;
+    }
+    const img = ov.querySelector('#glSheetImg');
+    img.src = cv.toDataURL('image/png');
+    busy(false);
+
+    // navigator.share() needs transient activation, so it must be called straight
+    // out of the click — the PNG is already rendered by the time the buttons enable.
+    ov.querySelector('#glSheetSave').addEventListener('click', () => {
+      if (!asset) return;
+      if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
+      download(asset.blob, filename);
+    });
+    ov.querySelector('#glSheetShare').addEventListener('click', () => {
+      if (!asset) return;
+      const url = 'https://gillylab.com';
+      if (canShareFiles(asset.file)) {
+        const withUrl = { files: [asset.file], text: shareText, url: url, title: 'GillyLab' };
+        const payload = (navigator.canShare && navigator.canShare(withUrl)) ? withUrl : { files: [asset.file], text: shareText, title: 'GillyLab' };
+        navigator.share(payload).catch(() => {});
+      } else if (navigator.share) {
+        navigator.share({ text: shareText, url: url, title: 'GillyLab' }).catch(() => {});
+      }
+    });
+  }
+
+  return {
+    matchup: (a, b, info) => open(() => drawMatchup(a, b, info || {}),
+      'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
+      a + ' vs ' + b + ' — matchup breakdown from gillylab.com'),
+    sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
+      'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
+      a + ' vs ' + b + ' — ' + result.n.toLocaleString() + ' simulations on gillylab.com'),
+    close: close
+  };
+})();
+if (typeof window !== 'undefined') window.GL_SHEET = GL_SHEET;
 
 function renderScouting(host, name, opp, fightDate) {
   if (!host || !name || !opp) return;
@@ -101108,6 +101532,21 @@ function renderScouting(host, name, opp, fightDate) {
   // renderMatchupBreakdown() (also used by the simulator's deep-dive). Fight Info
   // stays lean here — tale of the tape off.
   if (typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(host, name, opp, { taleOfTape: false });
+
+  // Shareable story-format matchup sheet. Appended last so it sits at the bottom
+  // of the Fight Info panel, under the analysis it summarises.
+  if (window.GL_SHEET) {
+    const shareBtn = document.createElement('button');
+    shareBtn.type = 'button';
+    shareBtn.className = 'gl-sheet-btn';
+    shareBtn.textContent = '↓ Generate matchup sheet';
+    shareBtn.addEventListener('click', (e) => {
+      e.stopPropagation();   // the panel's own toggle listens on the ancestor
+      const evLabel = ((document.getElementById('home-event-name') || {}).textContent || '').trim();
+      window.GL_SHEET.matchup(name, opp, { event: evLabel || 'UFC', date: fightDate || '' });
+    });
+    host.appendChild(shareBtn);
+  }
 
   // Finish & durability
   (function () {
@@ -107459,6 +107898,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       <div id="simBreakdown"></div>
     `;
     loadSimResultPhotos();
+    // Shareable story sheet: win %, method split and power score only — none of
+    // the deep-dive that follows below it on the page.
+    if (window.GL_SHEET) {
+      const sb = document.createElement('button');
+      sb.type = 'button'; sb.className = 'gl-sheet-btn'; sb.textContent = '↓ Share this simulation';
+      sb.addEventListener('click', () => window.GL_SHEET.sim(nameA, nameB, result, simSelectedRounds));
+      // Sits above the deep-dive breakdown, not buried beneath it.
+      const bd = box.querySelector('#simBreakdown');
+      if (bd) box.insertBefore(sb, bd.previousElementSibling || bd); else box.appendChild(sb);
+    }
     { const _bd = document.getElementById('simBreakdown'); if (_bd && typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(_bd, nameA, nameB, { taleOfTape: true }); }
   }
 
