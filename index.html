@@ -6833,6 +6833,28 @@
  // activated is actually visible (e.g. the rightmost "News" tab).
  if (el.scrollIntoView) { try { el.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) { el.scrollIntoView(); } }
  }
+ // A fighter profile always opens on Fight History.
+ //
+ // openFighter() never reset the tabs, so whichever tab was active on the
+ // PREVIOUS fighter stayed active on the next one — and because that panel sits
+ // far down the page, the browser re-anchored scroll to it as the profile
+ // rebuilt underneath. It read as the profile auto-scrolling to a tab nobody
+ // clicked.
+ //
+ // populateTapeStudy() and the odds populate already fall back to Fight History
+ // when THEIR tab has to be hidden for the next fighter, which is why this only
+ // ever bit the tabs that stay visible for everyone (Accolades, or Tape Study
+ // between two fighters who both have film).
+ function resetFighterTabs() {
+   const scope = document.getElementById('page-fighter');
+   if (!scope) return;
+   scope.querySelectorAll('.fighter-tab').forEach(t => t.classList.remove('active'));
+   scope.querySelectorAll('.ftab-panel').forEach(p => p.style.display = 'none');
+   const btn = scope.querySelector('.fighter-tab[onclick*="ftab-history"]');
+   const panel = document.getElementById('ftab-history');
+   if (btn) btn.classList.add('active');
+   if (panel) panel.style.display = 'block';
+ }
  function showDiv(divId) {
  document.querySelectorAll('.rank-panel').forEach(p => p.style.display = 'none');
  // Scoped to #rankingDivTabs -- .rank-div-btn is also reused by the Odds
@@ -101984,6 +102006,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
  // Populates all fighter profile content for the given fighter.
  function _doPopulate() {
+   // Reset to Fight History before anything populates, so the populate helpers'
+   // hidden-tab fallbacks still see a sane active tab. openFighterNews() switches
+   // to News afterwards on its own timer, and now won't early-return in
+   // switchFighterTab() from News already being active.
+   resetFighterTabs();
    document.getElementById('f-name').textContent = name;
    // Rank line is driven by the same data as the Rankings page so the two never
    // drift: official UFC media-panel rank (rankings.json) shown as the primary
