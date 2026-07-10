@@ -120,9 +120,16 @@ function heroMatchup() {
       : new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
   }
   const favA = !!(M.odds && M.odds.favA), favB = !!(M.odds && M.odds.favB);
-  const av = (f, fav) => f.slug
-    ? `<img class="mu-av${fav ? ' fav' : ''}" src="/photos/thumb/${esc(f.slug)}.png" alt="" width="44" height="44" loading="lazy">`
-    : `<div class="mu-av${fav ? ' fav' : ''}">${esc(f.initials)}</div>`;
+  // One colour per fighter, used by BOTH his avatar ring and his style dot. They
+  // were picking independently, so the underdog's ring stayed neutral white while
+  // his dot was amber — leaving no way to tell which dot belonged to whom.
+  const colourOf = (fav) => (fav ? 'var(--accent)' : '#ffcf7a');
+  const av = (f, fav) => {
+    const ring = `style="border-color:${colourOf(fav)}"`;
+    return f.slug
+      ? `<img class="mu-av" ${ring} src="/photos/thumb/${esc(f.slug)}.png" alt="" width="44" height="44" loading="lazy">`
+      : `<div class="mu-av" ${ring}>${esc(f.initials)}</div>`;
+  };
   const side = (f, fav, right) => `<div class="mu-f${right ? ' r' : ''}">${av(f, fav)}<div style="min-width:0">
       <div class="mu-nm">${esc(f.name)}</div>
       <div class="mu-rec">${esc(f.record)}${f.rank && f.rank !== 'NR' ? ' · ' + esc(f.rank) : ''}</div>
@@ -134,7 +141,7 @@ function heroMatchup() {
     </div>` : '';
   const dot = (lean, colour) => `<span class="mu-dot" style="left:${Math.max(2, Math.min(98, lean))}%;background:${colour}"></span>`;
   const styleRow = `<div class="mu-style">
-      <div class="mu-bar">${dot(M.a.lean, favA ? 'var(--accent)' : '#ffcf7a')}${dot(M.b.lean, favB ? 'var(--accent)' : '#ffcf7a')}</div>
+      <div class="mu-bar">${dot(M.a.lean, colourOf(favA))}${dot(M.b.lean, colourOf(favB))}</div>
       <div class="mu-tick"><span>grappler</span><span>striker</span></div>
     </div>`;
   const foot = C ? `<div class="mu-foot">Live from <b>${n(C.fighters)}</b> fighters · <b>${n(C.bouts)}</b> bouts · <b>${n(C.videos)}</b> fight videos</div>` : '';
@@ -231,9 +238,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .mu-row{display:flex;align-items:center;gap:12px}
   .mu-f{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
   .mu-f.r{flex-direction:row-reverse;text-align:right}
+  /* ring colour is set inline, from the same colourOf() the style dots use */
   .mu-av{width:44px;height:44px;border-radius:50%;flex:0 0 44px;object-fit:cover;background:#1b1e25;
          border:2px solid rgba(255,255,255,.14);display:grid;place-items:center;font-size:13px;font-weight:800;color:rgba(255,255,255,.5)}
-  .mu-av.fav{border-color:var(--accent)}
   .mu-nm{font-size:15px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mu-rec{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
   .mu-vs{font-size:12px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:.08em;flex:0 0 auto}
