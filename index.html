@@ -101141,7 +101141,7 @@ const GL_SHEET = (function () {
   // a 1080x1080 square. Height is per-sheet, so the footer takes it as an argument.
   function footer(ctx, h) {
     ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = FOOT;
-    ctx.fillText('gillylab.com · not betting advice', W / 2, h - 46);
+    ctx.fillText('gillylab.com · not betting advice', W / 2, h - 40);
     ctx.textAlign = 'left';
   }
   // Header + both fighters, shared by the two sheets. Returns the y to carry on from.
@@ -101210,13 +101210,13 @@ const GL_SHEET = (function () {
     ctx.fillText(String(name).toUpperCase(), x + 24, y + 40);
     ctx.font = '400 28px ' + SANS; ctx.fillStyle = TXT;
     lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 74 + i * 36));
-    return y + h + 16;
+    return y + h + 12;
   }
   function sectionTitle(ctx, t, y) {
     // hairline above the label groups the block visually — at 1080px wide the old
     // bare 24px label read as a stray word rather than a heading.
     ctx.strokeStyle = LINE; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(64, y - 26.5); ctx.lineTo(W - 64, y - 26.5); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(64, y - 40.5); ctx.lineTo(W - 64, y - 40.5); ctx.stroke();
     ctx.font = '700 29px ' + SANS; ctx.fillStyle = TXT;
     ctx.fillText(String(t).toUpperCase(), 64, y);
     return y + 30;
@@ -101251,7 +101251,7 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText(label, W / 2, y - 3);
       ctx.textAlign = 'left';
-      y += 43;
+      y += 39;
     });
     return y;
   }
@@ -101305,25 +101305,25 @@ const GL_SHEET = (function () {
       y += 64;
     }
 
-    y = sectionTitle(ctx, 'Tale of the tape', y + 32);
+    y = sectionTitle(ctx, 'Tale of the tape', y + 46);
     y += 42;
     const ageA = ageOf(a.dob), ageB = ageOf(b.dob);
     const inches = (v) => { const m = /([\d.]+)/.exec(String(v || '')); return m ? parseFloat(m[1]) : null; };
     const rA = inches(a.reach), rB = inches(b.reach);
-    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 48;
-    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 48;
-    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 48;
+    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false); y += 44;
+    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA); y += 44;
+    tapeRow(ctx, 'age', ageA, ageB, y, false, false); y += 44;
     tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false); y += 30;
 
     // Head-to-head career numbers, winner of each line in that fighter's colour.
-    y = sectionTitle(ctx, 'Head to head', y + 30) + 36;
+    y = sectionTitle(ctx, 'Head to head', y + 44) + 36;
     y = h2hTable(ctx, ins.statsA, ins.statsB, y);
 
-    y = sectionTitle(ctx, 'Style', y + 26);
+    y = sectionTitle(ctx, 'Style', y + 36);
     styleBar(ctx, y + 14, ins.leanA, ins.leanB);
     y += 100;   // bar + the GRAPPLER/STRIKER captions beneath it
 
-    y = sectionTitle(ctx, 'Path to victory', y + 30) + 14;
+    y = sectionTitle(ctx, 'Path to victory', y + 38) + 12;
     if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 4);
     if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, AMB, y, 4);
 
@@ -101354,7 +101354,7 @@ const GL_SHEET = (function () {
     let y = versusBlock(ctx, a, b, imgA, imgB, 150, 58);
 
     // Win probability — the headline number.
-    y = sectionTitle(ctx, 'Win probability', y + 24) + 34;
+    y = sectionTitle(ctx, 'Win probability', y + 46) + 34;
     ctx.font = '800 104px ' + COND;
     ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? ACC : MUT; ctx.fillText(pctA + '%', 64, y + 76);
     ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : AMB; ctx.fillText(pctB + '%', W - 64, y + 76);
@@ -101372,7 +101372,7 @@ const GL_SHEET = (function () {
     // Method of victory for BOTH fighters, side by side. Each percentage is a share
     // of that fighter's own simulated wins, not of all trials — so each column
     // sums to 100 and the two are read independently.
-    y = sectionTitle(ctx, 'How each fighter wins', y) + 24;
+    y = sectionTitle(ctx, 'How each fighter wins', y + 20) + 24;
     const gap = 44, colW = (W - 128 - gap) / 2;
     const yA = methodCol(ctx, 64, colW, a.name, result.methodsA, result.winsA, ACC, y);
     const yB = methodCol(ctx, 64 + colW + gap, colW, b.name, result.methodsB, result.winsB, AMB, y);
