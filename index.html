@@ -101297,7 +101297,7 @@ const GL_SHEET = (function () {
     // Dropping the overflow words silently would end the sentence mid-thought on
     // an image meant for sharing. Mark the cut.
     if (all.length > cap) lines[cap - 1] = clip(ctx, lines[cap - 1] + ' …', w - 48);
-    const h = 54 + lines.length * 35;
+    const h = 58 + lines.length * 37;
     roundRect(ctx, x, y, w, h, 12);
     ctx.fillStyle = hexA(colour, 0.07); ctx.fill();
     ctx.strokeStyle = hexA(colour, 0.24);
@@ -101305,8 +101305,8 @@ const GL_SHEET = (function () {
     ctx.font = '700 30px ' + COND; ctx.fillStyle = colour;
     ctx.fillText(String(name).toUpperCase(), x + 24, y + 40);
     ctx.font = '400 28px ' + SANS; ctx.fillStyle = TXT;
-    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 72 + i * 35));
-    return y + h + 8;
+    lines.forEach((ln, i) => ctx.fillText(ln, x + 24, y + 76 + i * 37));
+    return y + h + 14;
   }
   function sectionTitle(ctx, t, y) {
     // hairline above the label groups the block visually — at 1080px wide the old
@@ -101349,7 +101349,7 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = real ? MUT : FOOT;
       ctx.fillText(label, W / 2, y - 3);
       ctx.textAlign = 'left';
-      y += 34;
+      y += 39;
     });
     return y;
   }
@@ -101378,14 +101378,15 @@ const GL_SHEET = (function () {
     return yy;
   }
 
-  // Two shapes from one layout.
-  //   'portrait' 1080x1350 — Instagram's 4:5 feed max. Nothing gets covered by
-  //      story chrome, and it is the shape people actually scroll past.
-  //   'story'    1080x1920 — full depth, room for the analysis tail.
-  // Portrait is 570px short of the whole thing, and the two blocks that add up to
-  // 608px are the style bar and the path-to-victory prose. Everything else — the
-  // photos, records, form, odds, tape and head-to-head — survives intact. Shrinking
-  // the type to fit instead would undo the readability pass.
+  // Two shapes from one layout. The default is the full 1080x1920: it is the only
+  // one that carries the style spectrum and both paths to victory, which are the
+  // analysis the sheet exists to show off.
+  //
+  // 'portrait' is 1080x1350 (Instagram's 4:5 feed maximum) and physically cannot
+  // hold them — style bar + paths cost 626px against ~217px of slack. Rather than
+  // truncate the prose and shrink the type back to unreadable, portrait drops
+  // those two blocks and keeps photos, form, odds, tape and head-to-head at full
+  // size. It is a lighter variant, not a smaller copy.
   async function drawMatchup(nameA, nameB, ctxInfo, fmt) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
@@ -101398,7 +101399,7 @@ const GL_SHEET = (function () {
     const colA = odds ? (odds.favA ? ACC : AMB) : NEU_A;
     const colB = odds ? (odds.favB ? ACC : AMB) : NEU_B;
 
-    const story = fmt === 'story';
+    const story = fmt !== 'portrait';   // full sheet unless portrait is asked for
     const CH = story ? H : 1350;
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = CH;
@@ -101412,18 +101413,18 @@ const GL_SHEET = (function () {
     const line2 = [divName, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
     if (line2) ctx.fillText(line2, 64, 118);
 
-    let y = versusBlock(ctx, a, b, imgA, imgB, 142, 46, colA, colB, true);
+    let y = versusBlock(ctx, a, b, imgA, imgB, 152, 46, colA, colB, true);
 
 
-    y = sectionTitle(ctx, 'Tale of the tape', y + 38);
-    y += 40;
+    y = sectionTitle(ctx, 'Tale of the tape', y + 46);
+    y += 44;
     const ageA = ageOf(a.dob), ageB = ageOf(b.dob);
     const inches = (v) => { const m = /([\d.]+)/.exec(String(v || '')); return m ? parseFloat(m[1]) : null; };
     const rA = inches(a.reach), rB = inches(b.reach);
-    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false, colA, colB); y += 41;
-    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA, colA, colB); y += 41;
-    tapeRow(ctx, 'age', ageA, ageB, y, false, false, colA, colB); y += 41;
-    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 41;
+    tapeRow(ctx, 'height', a.ht, b.ht, y, false, false, colA, colB); y += 45;
+    tapeRow(ctx, 'reach', a.reach, b.reach, y, rA != null && rB != null && rA > rB, rA != null && rB != null && rB > rA, colA, colB); y += 45;
+    tapeRow(ctx, 'age', ageA, ageB, y, false, false, colA, colB); y += 45;
+    tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 45;
     // The moneyline belongs with the other head-to-head facts, not in a section of
     // its own. Smaller than the physical rows: it is context, not a measurement.
     if (odds) {
@@ -101439,15 +101440,15 @@ const GL_SHEET = (function () {
     y += 18;
 
     // Head-to-head career numbers, winner of each line in that fighter's colour.
-    y = sectionTitle(ctx, 'Head to head', y + 36) + 32;
+    y = sectionTitle(ctx, 'Head to head', y + 44) + 38;
     y = h2hTable(ctx, ins.statsA, ins.statsB, y, ins.sig, colA, colB);
 
     if (story) {
-      y = sectionTitle(ctx, 'Style', y + 30);
-      styleBar(ctx, y + 14, ins.leanA, ins.leanB, colA, colB);
-      y += 90;   // bar + the GRAPPLER/STRIKER captions beneath it
+      y = sectionTitle(ctx, 'Style', y + 40);
+      styleBar(ctx, y + 18, ins.leanA, ins.leanB, colA, colB);
+      y += 100;   // bar + the GRAPPLER/STRIKER captions beneath it
 
-      y = sectionTitle(ctx, 'Path to victory', y + 32) + 10;
+      y = sectionTitle(ctx, 'Path to victory', y + 42) + 14;
       if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, colA, y, 4);
       if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, colB, y, 4);
     }
@@ -101601,11 +101602,10 @@ const GL_SHEET = (function () {
   }
 
   return {
-    // Defaults to portrait: 4:5 is the tallest a feed post can be, and nothing is
-    // covered by story chrome. Pass 'story' for the 9:16 version with the analysis.
+    // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
-        (fmt === 'story' ? '-story' : '') + '.png',
+        (fmt === 'portrait' ? '-feed' : '') + '.png',
       a + ' vs ' + b + ' — matchup breakdown from gillylab.com'),
     sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
       'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
