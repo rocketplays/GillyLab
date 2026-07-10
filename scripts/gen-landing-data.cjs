@@ -226,6 +226,199 @@ function consensusOdds(nameA, nameB) {
   const ma = mean(qa), mb = mean(qb);
   return { a: fmtOdds(toAmerican(ma)), b: fmtOdds(toAmerican(mb)), books: qa.length, favA: ma > mb, favB: mb > ma };
 }
+// ── A real three-leg parlay off the next card ─────────────────────────────────
+// The slide advertises the parlay builder, so the slip must be a real one. These
+// are method-of-victory props, which do NOT come from odds.json — that feed only
+// carries h2h and totals. They live in MANUAL_PROP_ODDS inside index.html,
+// hand-entered per card, so this reads them from there.
+//
+// The combined price multiplies DECIMAL odds. Adding or averaging American odds
+// is meaningless: +270 and -270 are 3.70 and 1.37.
+const toDecimal = (a) => (a > 0 ? 1 + a / 100 : 1 + 100 / -a);
+const lastLower = (s) => String(s || '').toLowerCase().trim().split(/\s+/).pop();
+
+// The demo slip, by name. If any of these bouts leaves the card the slip rebuilds
+// itself from whatever the current card offers, so the slide can never advertise
+// a fight that already happened.
+const PARLAY_PICKS = [
+  { pick: 'Conor McGregor', method: 'ko', label: 'by KO/TKO' },
+  { pick: 'Paddy Pimblett', method: 'sub', label: 'by submission' },
+  { pick: 'Cory Sandhagen', method: 'dec', label: 'by decision' },
+];
+const METHOD_LABEL = { ko: 'by KO/TKO', sub: 'by submission', dec: 'by decision' };
+
+function buildParlay() {
+  const PROPS = parseConst('MANUAL_PROP_ODDS');
+  if (!PROPS) return null;
+  let odds, feed;
+  try {
+    odds = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'odds.json'), 'utf8'));
+    feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8'));
+  } catch (e) { return null; }
+  if (!Array.isArray(odds)) return null;
+  const ev = ((feed && feed.data) || []).find((e) => e && e.status !== 'completed' && (e.bouts || []).length);
+
+  // Key off odds.json, not event.json: the two feeds spell names differently
+  // ("Benoit Saint-Denis" vs "Benoît Saint Denis"), and MANUAL_PROP_ODDS is keyed
+  // the way the app keys it — from the odds.json name.
+  const byKey = new Map();
+  for (const e of odds) {
+    if (!e || !e.home_team || !e.away_team) continue;
+    byKey.set([lastLower(e.home_team), lastLower(e.away_team)].sort().join('|'), [e.home_team, e.away_team]);
+  }
+
+  // Find the entry whose key contains this fighter's last name.
+  const findFight = (pick) => {
+    const ln = lastLower(pick);
+    for (const key of Object.keys(PROPS)) {
+      if (key.split('|').indexOf(ln) === -1) continue;
+      const names = byKey.get(key);
+      if (!names) continue;
+      const opp = lastLower(names[0]) === ln ? names[1] : names[0];
+      return { key, opponent: opp };
+    }
+    return null;
+  };
+  const priceOf = (pick, method) => {
+    const f = findFight(pick);
+    if (!f) return null;
+    const fd = PROPS[f.key].method && PROPS[f.key].method.fanduel;
+    if (!fd) return null;
+    const ln = lastLower(pick);
+    const side = ln === f.key.split('|')[0] ? 'f1' : 'f2';
+    const p = fd[side] && fd[side][method];
+    return typeof p === 'number' ? { odds: p, opponent: f.opponent } : null;
+  };
+
+  let legs = [];
+  for (const want of PARLAY_PICKS) {
+    const got = priceOf(want.pick, want.method);
+    if (!got) { legs = []; break; }               // one missing -> rebuild from scratch
+    legs.push({ pick: want.pick, slug: nameToSlug(want.pick), method: want.method, label: want.label, opponent: got.opponent, odds: got.odds });
+  }
+  if (!legs.length) {
+    // Fallback: the card moved on. Take the first three fighters with a plus-money
+    // FanDuel method price, so the slide always shows a live, buildable slip.
+    const seen = new Set();
+    for (const key of Object.keys(PROPS)) {
+      if (legs.length === 3) break;
+      const names = byKey.get(key);
+      if (!names) continue;
+      for (const nm of names) {
+        if (legs.length === 3 || seen.has(key)) break;
+        for (const m of ['ko', 'sub', 'dec']) {
+          const got = priceOf(nm, m);
+          if (got && got.odds > 0) {
+            legs.push({ pick: nm, slug: nameToSlug(nm), method: m, label: METHOD_LABEL[m], opponent: got.opponent, odds: got.odds });
+            seen.add(key);
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (legs.length < 3) return null;
+
+  const dec = legs.reduce((t, l) => t * toDecimal(l.odds), 1);
+  const stake = 100;
+  return {
+    event: (ev && ev.title) || 'UFC',
+    book: 'FanDuel',
+    legs: legs.map((l) => ({ pick: l.pick, slug: l.slug, opponent: l.opponent, label: l.label, odds: fmtOdds(l.odds) })),
+    combined: fmtOdds(toAmerican(1 / dec)),
+    stake,
+    payout: Math.round(stake * dec),
+  };
+}
+
+// ── Style / pace / path-to-victory, for the slide that advertises them ────────
+// Thresholds mirror index.html's EDGE_AXES. This drives one line of marketing
+// copy, not the app's analysis, so a drift here is cosmetic — but keep them
+// aligned or the slide will claim an edge the Scouting Report does not.
+const EDGE = [
+  { k: 'slpm', min: 0.80, big: true, label: 'higher output' },
+  { k: 'strAcc', min: 6, big: true, label: 'sharper accuracy' },
+  { k: 'strDef', min: 6, big: true, label: 'tighter defense' },
+  { k: 'sapm', min: 0.70, big: false, label: 'cleaner defensively' },
+  { k: 'kd', min: 0.30, big: true, label: 'heavier hands' },
+  { k: 'tdLanded', min: 0.60, big: true, label: 'more persistent wrestling' },
+  { k: 'tdDef', min: 10, big: true, label: 'better takedown defense' },
+  { k: 'subAvg', min: 0.30, big: true, label: 'busier submission threat' },
+  { k: 'finRate', min: 12, big: true, label: 'a higher finishing rate' },
+];
+const numOf = (v) => { if (v == null) return null; const m = /-?[\d.]+/.exec(String(v)); return m ? parseFloat(m[0]) : null; };
+// When no axis clears its threshold the honest answer is "no statistical edge",
+// not an invented phrase. Cory Sandhagen clears nothing against Mario Bautista --
+// every gap falls short -- and what actually separates them is style, not a stat.
+function styleWord(lean) {
+  if (lean == null) return '';
+  if (lean >= 60) return 'Striker';
+  if (lean <= 40) return 'Grappler';
+  return 'Hybrid';
+}
+function edgeOf(mine, theirs) {
+  if (!mine || !theirs) return null;
+  let best = null;
+  for (const ax of EDGE) {
+    const a = numOf(mine[ax.k]), b = numOf(theirs[ax.k]);
+    if (a == null || b == null) continue;
+    const gap = ax.big ? a - b : b - a;
+    if (gap < ax.min) continue;
+    const w = gap / ax.min;
+    if (!best || w > best.w) best = { w, label: ax.label };
+  }
+  return best ? best.label : null;
+}
+
+// The style / pace / path-to-victory slide. Prefers a named bout, but only while
+// both men are actually booked on the upcoming card. Once they fight, the slide
+// rolls to that card's main event on its own — no hand-editing, and it can never
+// advertise a matchup that already happened.
+const STYLE_DEMO = ['Cory Sandhagen', 'Mario Bautista'];
+function styleDemoPair() {
+  let feed;
+  try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8')); } catch (e) { return STYLE_DEMO; }
+  const ev = ((feed && feed.data) || []).find((e) => e && e.status !== 'completed' && (e.bouts || []).length);
+  if (!ev) return STYLE_DEMO;
+  const booked = new Set();
+  for (const bout of ev.bouts) {
+    if (bout.isCancelled) continue;
+    (bout.fighters || []).forEach((f) => booked.add(f.fighterName));
+  }
+  if (STYLE_DEMO.every((n) => booked.has(n))) return STYLE_DEMO;
+  const main = ev.bouts.find((x) => x && x.cardPosition === 1 && !x.isCancelled) || ev.bouts.find((x) => x && !x.isCancelled);
+  const f = (main && main.fighters) || [];
+  return f.length === 2 ? [f[0].fighterName, f[1].fighterName] : STYLE_DEMO;
+}
+function buildStyleDemo(recMap) {
+  const ranks = rankMap();
+  const one = (name) => {
+    const st = fighterStat(name);
+    if (!st) return null;
+    const slug = nameToSlug(name);
+    return {
+      name, slug: photoExists(slug) ? slug : '', initials: initials2(name),
+      record: recMap[name] || '', rank: ranks[name] || '',
+      lean: styleLean(st),
+      slpm: numOf(st.slpm), sapm: numOf(st.sapm),
+      tdLanded: numOf(st.tdLanded), subAvg: numOf(st.subAvg),
+      _st: st,
+    };
+  };
+  const pair = styleDemoPair();
+  const a = one(pair[0]), b = one(pair[1]);
+  if (!a || !b || a.lean == null || b.lean == null) return null;
+  a.edge = edgeOf(a._st, b._st);
+  b.edge = edgeOf(b._st, a._st);
+  a.style = styleWord(a.lean);
+  b.style = styleWord(b.lean);
+  delete a._st; delete b._st;
+  // Pace = combined significant strikes thrown-and-absorbed per minute; the app
+  // calls this the pace of the fight, not either man's output alone.
+  const pace = Math.round(((a.slpm + a.sapm + b.slpm + b.sapm) / 2) * 10) / 10;
+  return { a, b, pace };
+}
+
 function buildMatchup(recMap) {
   let feed;
   try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8')); } catch (e) { return null; }
@@ -248,10 +441,16 @@ function buildMatchup(recMap) {
       record: recMap[name] || '',
       rank: ranks[name] || '',
       lean: styleLean(st),
+      slpm: st && numOf(st.slpm),
+      sapm: st && numOf(st.sapm),
+      _st: st,
     };
   };
   const a = side(bout.fighters[0]), b = side(bout.fighters[1]);
   if (a.lean == null || b.lean == null) return null;   // no stats, no demo
+  a.edge = edgeOf(a._st, b._st);
+  b.edge = edgeOf(b._st, a._st);
+  delete a._st; delete b._st;
 
   return {
     event: ev.title || 'UFC',
@@ -304,10 +503,14 @@ function main() {
 
   // Slugs the dynamic slides need served publicly (for the Worker allow-list).
   const matchup = buildMatchup(recMap);
+  const parlay = buildParlay();
+  const styleDemo = buildStyleDemo(recMap);
   const counts = countStats();
-  const photos = [...new Set([featured.slug, oddsHistory.slug, matchup && matchup.a.slug, matchup && matchup.b.slug, ...rankings.rows.map(r => r.slug)].filter(Boolean))];
+  const photos = [...new Set([featured.slug, oddsHistory.slug, matchup && matchup.a.slug, matchup && matchup.b.slug,
+    ...((parlay && parlay.legs) || []).map((l) => l.slug),
+    styleDemo && styleDemo.a.slug, styleDemo && styleDemo.b.slug, ...rankings.rows.map(r => r.slug)].filter(Boolean))];
 
-  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, matchup, counts, photos };
+  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, matchup, parlay, styleDemo, counts, photos };
   fs.writeFileSync(OUT,
     '// AUTO-GENERATED by scripts/gen-landing-data.cjs — do not edit by hand.\n' +
     'export default ' + JSON.stringify(out, null, 2) + ';\n');
@@ -315,6 +518,12 @@ function main() {
     rankings.division, featured.name, featured.record, oddsHistory.name, oddsHistory.rows.length);
   console.log('landing-data.js: counts %s fighters · %s bouts · %s videos · %s photos',
     counts.fighters.toLocaleString(), counts.bouts.toLocaleString(), counts.videos.toLocaleString(), counts.photos.toLocaleString());
+  console.log('landing-data.js: parlay %s', parlay
+    ? (parlay.legs.map((l) => l.pick + ' ' + l.odds).join(' + ') + ' = ' + parlay.combined + ' ($' + parlay.stake + ' -> $' + parlay.payout + ')')
+    : 'none');
+  console.log('landing-data.js: styleDemo %s', styleDemo
+    ? (styleDemo.a.name + ' (lean ' + styleDemo.a.lean + ', "' + styleDemo.a.edge + '") vs ' + styleDemo.b.name + ' (lean ' + styleDemo.b.lean + ', "' + styleDemo.b.edge + '") · pace ' + styleDemo.pace)
+    : 'none');
   console.log('landing-data.js: matchup %s', matchup ? (matchup.a.name + ' vs ' + matchup.b.name + ' · ' + matchup.event + (matchup.odds ? ' · odds ' + matchup.odds.a + '/' + matchup.odds.b + ' from ' + matchup.odds.books + ' books' : ' · no odds')) : 'none (hero falls back)');
 }
 

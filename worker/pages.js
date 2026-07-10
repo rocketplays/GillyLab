@@ -520,13 +520,78 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +rcol('Added','#00e668',LD.roster.added,LD.roster.addedTotal,true)
     +rcol('Removed','#ff9500',LD.roster.removed,LD.roster.removedTotal,false)+'</div>';
 
+    // ── Parlay builder ────────────────────────────────────────────────────────
+    // Real legs, real FanDuel method-of-victory prices, and a combined price that
+    // multiplies the DECIMAL odds. Summing American odds is meaningless: +270 and
+    // +700 are 3.70 and 8.00, not 970.
+    var PB=LD.parlay;
+    var parlay=PB?(
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:10px">'
+      +'<div style="font-weight:700;font-size:.95rem">'+PB.event+' parlay</div>'
+      +'<div style="font-size:11px;color:'+M+';text-transform:uppercase;letter-spacing:.06em">'+PB.book+' · 3 legs</div>'
+      +'</div>'
+      +PB.legs.map(function(l){return ''
+        +'<div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid '+L+'">'
+        +ava(l.slug,l.pick.split(' ').map(function(w){return w[0];}).join('').slice(0,2),false,26)
+        +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:12.5px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+l.pick+' '+l.label+'</div>'
+        +'<div style="font-size:10.5px;color:'+M+'">vs '+l.opponent+'</div>'
+        +'</div>'
+        +'<div style="font-size:13px;font-weight:800;color:'+A+';font-variant-numeric:tabular-nums">'+l.odds+'</div>'
+        +'</div>';}).join('')
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:11px">'
+      +'<div><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.07em">Parlay odds</div>'
+      +'<div style="font-size:1.35rem;font-weight:850;color:'+A+';line-height:1.1">'+PB.combined+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.07em">$'+PB.stake+' returns</div>'
+      +'<div style="font-size:1.35rem;font-weight:850;line-height:1.1">$'+PB.payout.toLocaleString()+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:10.5px;color:'+M+';margin-top:9px;line-height:1.45">Build a slip from any market, then re-price the identical slip at every other book.</div>'
+    ):'';
+
+    // ── Style / pace / path to victory ────────────────────────────────────────
+    // Both fighters plotted on the striker-grappler spectrum, the pace their
+    // numbers imply, and each man's biggest statistical edge. Where a fighter
+    // clears no threshold we say so rather than invent a phrase for him.
+    var SD=LD.styleDemo;
+    function sdot(lean,col){return '<span style="position:absolute;top:50%;left:'+Math.max(2,Math.min(98,lean))+'%;transform:translate(-50%,-50%);width:11px;height:11px;border-radius:50%;background:'+col+';border:2px solid '+BG+'"></span>';}
+    var style=SD?(
+      '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px">'
+      +ava(SD.a.slug,SD.a.initials,false,30)
+      +'<div style="flex:1;min-width:0"><div style="font-size:12.5px;font-weight:700">'+SD.a.name+'</div>'
+      +'<div style="font-size:10.5px;color:'+M+'">'+SD.a.record+(SD.a.rank&&SD.a.rank!=='NR'?' · '+SD.a.rank:'')+'</div></div>'
+      +'<div style="font-size:10.5px;color:'+M+';font-weight:800;letter-spacing:.08em">VS</div>'
+      +'<div style="flex:1;min-width:0;text-align:right"><div style="font-size:12.5px;font-weight:700">'+SD.b.name+'</div>'
+      +'<div style="font-size:10.5px;color:'+M+'">'+SD.b.record+(SD.b.rank&&SD.b.rank!=='NR'?' · '+SD.b.rank:'')+'</div></div>'
+      +ava(SD.b.slug,SD.b.initials,false,30)
+      +'</div>'
+      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin-bottom:14px">Style</div>'
+      +'<div style="position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.09);margin-bottom:6px">'+sdot(SD.a.lean,A)+sdot(SD.b.lean,'#ffcf7a')+'</div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:9.5px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em">'
+      +'<span>grappler</span><span>striker</span></div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px">'
+      +'<span><span style="color:'+A+'">●</span> '+SD.a.name.split(' ').pop()+' <span style="color:'+M+'">'+SD.a.style.toLowerCase()+'</span></span>'
+      +'<span><span style="color:#ffcf7a">●</span> '+SD.b.name.split(' ').pop()+' <span style="color:'+M+'">'+SD.b.style.toLowerCase()+'</span></span></div>'
+      +'<div style="display:flex;align-items:baseline;gap:8px;margin-top:13px;padding-top:11px;border-top:1px solid '+L+'">'
+      +'<span style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em">Projected pace</span>'
+      +'<span style="font-size:1.05rem;font-weight:800;color:'+A+'">'+SD.pace+'</span>'
+      +'<span style="font-size:10.5px;color:'+M+'">significant strikes / min, both men</span></div>'
+      +'<div style="font-size:10px;color:'+M+';text-transform:uppercase;letter-spacing:.08em;margin:12px 0 7px">Path to victory</div>'
+      +[[SD.a,A],[SD.b,'#ffcf7a']].map(function(p){var f=p[0],c=p[1];
+        var txt=f.edge?('Wins on '+f.edge+'.'):('No statistical edge — his path is style: a '+f.style.toLowerCase()+'’s fight.');
+        return '<div style="border-left:2px solid '+c+';padding:2px 0 2px 9px;margin-bottom:7px">'
+          +'<div style="font-size:11px;font-weight:750;color:'+c+'">'+f.name.split(' ').pop().toUpperCase()+'</div>'
+          +'<div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.4">'+txt+'</div></div>';}).join('')
+    ):'';
+
   var slides=[
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the fight ends.',h:sim},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
+    {t:'Style, pace & path to victory',d:'Where each fighter sits on the striker\u2013grappler spectrum, the pace they imply, and how each one wins.',h:style},
     {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
     {t:'Line movement',d:'Watch a bout’s odds move day by day, from open to now, across the whole market.',h:lm},
+    {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
@@ -544,8 +609,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   nx.onclick=next;pv.onclick=prev;keyact(nx,next);keyact(pv,prev);
 
   var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',lm:sv+'<path d="M3 17l5-5 4 4 8-9"/><path d="M18 7h3v3"/></svg>'};
-  var cards=[[ic.c,'Fighter analytics','Full career stats for all '+(LD.counts?LD.counts.fighters.toLocaleString():'3,000+')+' fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
+  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',lm:sv+'<path d="M3 17l5-5 4 4 8-9"/><path d="M18 7h3v3"/></svg>',p:sv+'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>',v:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>'};
+  var cards=[[ic.c,'Fighter analytics','Full career stats for all '+(LD.counts?LD.counts.fighters.toLocaleString():'3,000+')+' fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.v,'Style & path to victory','Striker-vs-grappler read, projected pace, and how each fighter wins'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.p,'Parlay builder','Build a slip, then re-price it at every book to find the best number'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
   document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
