@@ -575,10 +575,15 @@
       text-transform: lowercase;
     }
 
+    /* Helper is a full-width third line inside .event-header (above its
+       divider), so it sits tight under the header content and the border still
+       separates the whole header — including the numbered/freedom gold — from
+       the fight card below. order:5 keeps it last in the mobile flex reflow. */
+    #page-home > .event-header { flex-wrap: wrap; }
     .events-helper {
-      max-width: var(--cmax);
-      margin: 0 auto;
-      padding: 0.65rem 2rem 0;
+      order: 5;
+      flex-basis: 100%;
+      padding: 0.55rem 0 0;
       font-size: 0.72rem;
       color: var(--muted);
       letter-spacing: 0.02em;
@@ -3257,9 +3262,8 @@
       <div class="countdown-label">Time Until Event</div>
       <div class="countdown-time" id="countdown">—</div>
     </div>
+    <div class="events-helper"><span class="eh-arrow">›</span>Tap a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape and analytics · search any fighter up top</div>
   </div>
-
-  <div class="events-helper"><span class="eh-arrow">›</span>Tap a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape and analytics · search any fighter up top</div>
 
   <div id="dynamic-fight-card"><div style="max-width:var(--cmax);margin:0 auto;padding:3rem 1rem;text-align:center;opacity:0.55;font-size:0.95rem;">Loading upcoming card…</div></div>
 
