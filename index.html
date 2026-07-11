@@ -3358,10 +3358,8 @@
       .pk-bouts-locked { pointer-events: none; }
       .pk-bouts-locked .pk-bout:not(.pk-bout-result) { opacity: 0.6; filter: saturate(0.6); }
       /* finished-bout result cards stay on the page */
-      .pk-bout-result { border-left: 3px solid var(--border); }
-      .pk-bout-result.hit { border-left-color: var(--accent); }
-      .pk-bout-result.miss { border-left-color: #ff6a5e; }
-      .pk-bout-result.void { border-left-color: var(--muted); }
+      .pk-mark-ok { color: var(--accent); font-weight: 800; }
+      .pk-mark-x { color: #ff6a5e; font-weight: 800; }
       .pk-res-final { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 0.1rem 0.4rem; }
       .pk-res-outcome { font-size: 1rem; color: var(--text); margin-bottom: 0.4rem; }
       .pk-res-outcome strong { font-weight: 700; }
@@ -109448,16 +109446,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         ? (f.isNC ? 'No Contest' : 'Draw')
         : (g.winner ? '<strong>' + esc(g.winner) + '</strong> def. ' + esc(loser) : 'Result');
       const methodStr = g.voided ? '' : (g.method ? g.method + (g.method !== 'Decision' && g.round ? ' · R' + g.round : '') : '');
+      const ok = '<span class="pk-mark-ok">✓</span>', xm = '<span class="pk-mark-x">✗</span>';
       let cls, pickLine, pts = '';
       if (g.nopick) { cls = 'void'; pickLine = 'No pick made'; }
       else if (g.voided) { cls = 'void'; pickLine = 'You picked ' + esc(p.winner) + ' — bout voided'; pts = '<span class="pk-res-pts zero">0</span>'; }
       else if (g.winnerHit) {
         cls = 'hit';
-        pickLine = 'You called ' + esc(p.winner) + ' ✓' + (g.methodHit ? ' · method ✓' : '') + (g.roundHit ? ' · round ✓' : '');
+        pickLine = 'You called ' + esc(p.winner) + ' ' + ok + (g.methodHit ? ' · method ' + ok : '') + (g.roundHit ? ' · round ' + ok : '');
         pts = '<span class="pk-res-pts pos">+' + g.points + '</span>';
       } else {
         cls = 'miss';
-        pickLine = 'You called ' + esc(p.winner) + ' ✗';
+        pickLine = 'You called ' + esc(p.winner) + ' ' + xm;
         pts = '<span class="pk-res-pts neg">' + g.points + '</span>';
       }
       return '<div class="pk-bout pk-bout-result ' + cls + '">' +
