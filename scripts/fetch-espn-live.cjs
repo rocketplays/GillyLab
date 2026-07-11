@@ -55,6 +55,10 @@ const HOUR = 3600 * 1000;
 // the card holds the featured slot on the site (index.html: startsAt + 10h).
 const LEAD_IN_MS = 30 * 60 * 1000;
 const FEATURED_WINDOW_MS = 10 * HOUR;
+// ESPN posts a live/unofficial box score first, then the official numbers shortly
+// after. For this long after a bout's box score is first captured, keep re-fetching
+// so the official stats overwrite the early ones; after it, the box is treated final.
+const BOX_REFRESH_MS = 45 * 60 * 1000;
 
 const loadJson = (p, d) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch (e) { return d; } };
 
@@ -315,40 +319,53 @@ async function enrichFinishedBout(evt, bout, eb, stats, live) {
     });
   });
 
-  // Already captured (or the permanent import beat us to it).
-  if (hasRow(stats[names[0]], names[1], date) && hasRow(slot(names[0]).history, names[1], date)) return reconciled;
-  if (!eb.statRefs || eb.statRefs.some((r) => !r)) return [];
+  // Skip only when the box score is SETTLED: a row captured more than BOX_REFRESH_MS
+  // ago (or a legacy/backfilled row with no capturedAt stamp) is treated as final.
+  // Inside that window we re-fetch every poll so ESPN's OFFICIAL numbers overwrite
+  // the live/unofficial ones it posts first.
+  const priorStat = (stats[names[0]] || []).find((r) => r && r.opponent === names[1] && r.date === date);
+  const settled = priorStat && (!priorStat.capturedAt || (Date.now() - Date.parse(priorStat.capturedAt) > BOX_REFRESH_MS));
+  if (settled && hasRow(slot(names[0]).history, names[1], date)) return reconciled;
+  if (!eb.statRefs || eb.statRefs.some((r) => !r)) return reconciled;
 
   let boxes;
   try { boxes = await Promise.all(eb.statRefs.map(async (r) => boxFrom(flatStats(await getJson(r))))); }
-  catch (e) { console.warn(`[live] stats fetch failed for ${names.join(' vs ')} (will retry): ${e.message}`); return []; }
+  catch (e) { console.warn(`[live] stats fetch failed for ${names.join(' vs ')} (will retry): ${e.message}`); return reconciled; }
 
   // ESPN can flip the result before it posts the numbers. Wait for real ones.
-  if (!hasRealStats(boxes[0], boxes[1])) { console.log(`[live] ${names.join(' vs ')}: stats still zeroed — retrying next poll.`); return []; }
+  if (!hasRealStats(boxes[0], boxes[1])) { console.log(`[live] ${names.join(' vs ')}: stats still zeroed — retrying next poll.`); return reconciled; }
 
   // ESPN's competitor order and ours can differ; align by slug.
   const idx = (slug) => { const i = (eb.slugs || []).indexOf(slug); return i < 0 ? null : i; };
-  const changed = [];
+  const changed = reconciled.slice();
   const method = methodLabel(bout.method, bout.methodDetails);
   const eventName = evt.espnName || evt.title || '';
+  const sameBox = (a, b) => JSON.stringify([a.f, a.o]) === JSON.stringify([b.f, b.o]);
+  // Add a box row, or refresh its numbers in place when they've changed (keeping the
+  // original capturedAt so the refresh window still closes on schedule).
+  const upsertBox = (arr, row) => {
+    const ex = arr.find((r) => r && r.opponent === row.opponent && r.date === row.date);
+    if (!ex) { arr.unshift(row); return 'add'; }
+    if (!sameBox(ex, row)) { ex.f = row.f; ex.o = row.o; ex.result = row.result; return 'update'; }
+    return 'same';
+  };
 
   (bout.fighters || []).forEach((f, i) => {
     const me = f.fighterName, them = (bout.fighters[1 - i] || {}).fighterName;
     const mi = idx(f.fighterSlug), oi = idx((bout.fighters[1 - i] || {}).fighterSlug);
     if (mi == null || oi == null) return;
 
-    const statRow = { date, opponent: them, result: resultLetter(f.outcome), f: boxes[mi], o: boxes[oi] };
+    const statRow = { date, opponent: them, result: resultLetter(f.outcome), f: boxes[mi], o: boxes[oi], capturedAt: new Date().toISOString() };
     const histRow = {
       date, opponent: them, result: resultLetter(f.outcome), method,
       round: bout.resultRound || null, time: bout.resultTime || null,
       event: eventName, org: 'UFC',
     };
-    if (!hasRow(stats[me], them, date)) {
-      (stats[me] = stats[me] || []).unshift(statRow);
-      changed.push(`box score: ${me} vs ${them}`);
-    }
+    const r1 = upsertBox(stats[me] = stats[me] || [], statRow);
+    if (r1 === 'add') changed.push(`box score: ${me} vs ${them}`);
+    else if (r1 === 'update') changed.push(`box refresh: ${me} vs ${them}`);
     const sl = slot(me);
-    if (!hasRow(sl.stats, them, date)) sl.stats.unshift(statRow);
+    upsertBox(sl.stats = sl.stats || [], statRow);
     if (!hasRow(sl.history, them, date)) {
       sl.history.unshift(histRow);
       changed.push(`history: ${me} ${resultLetter(f.outcome)} vs ${them}`);
@@ -380,7 +397,7 @@ async function main() {
   const card = loadJson(LIVE_PATH, { fighters: {} });   // `live` is already the ESPN bout list
   card.fighters = card.fighters || {};
   pruneLive(card, NOW);
-  const statsBefore = JSON.stringify(stats).length, liveBefore = JSON.stringify(card.fighters);
+  const statsBefore = JSON.stringify(stats), liveBefore = JSON.stringify(card.fighters);
 
   const changes = [];
   for (const eb of live) {
@@ -395,7 +412,7 @@ async function main() {
       changes.push(...enr);
     }
   }
-  const statsDirty = JSON.stringify(stats).length !== statsBefore;
+  const statsDirty = JSON.stringify(stats) !== statsBefore;   // full compare: a same-length box refresh still counts
   const liveDirty = JSON.stringify(card.fighters) !== liveBefore;
 
   const before = evt.status;

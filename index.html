@@ -109152,14 +109152,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Gaethje twice. That also makes this a no-op once the permanent importer folds
   // the fight into index.html and data/fight-stats.json for good.
   function glMergeRows(target, rows) {
-    let added = 0;
+    let changed = 0;
     (rows || []).slice().reverse().forEach(r => {           // reverse: unshift preserves newest-first
       if (!r || !r.opponent || !r.date) return;
-      if (target.some(x => x && x.opponent === r.opponent && x.date === r.date)) return;
+      const i = target.findIndex(x => x && x.opponent === r.opponent && x.date === r.date);
+      if (i >= 0) {
+        // Update in place when the live card carries a CORRECTION for a row we
+        // already have — a fixed result, or ESPN's official box score replacing the
+        // earlier live/unofficial numbers. Skipping (the old behaviour) left the
+        // "Stats at a glance" panel stale even after the full box score was right.
+        if (JSON.stringify(target[i]) !== JSON.stringify(r)) { target[i] = r; changed++; }
+        return;
+      }
       target.unshift(r);
-      added++;
+      changed++;
     });
-    return added;
+    return changed;
   }
 
   async function glMergeLiveCard() {
