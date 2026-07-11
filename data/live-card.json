@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T23:10:22.864Z",
+ "generatedAt": "2026-07-11T23:41:02.399Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -930,6 +930,194 @@
       ]
      },
      "capturedAt": "2026-07-11T23:10:22.743Z"
+    }
+   ]
+  },
+  "Luke Riley": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Kai Kamaka III",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:03",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Kai Kamaka III",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 43,
+      "sigA": 67,
+      "totL": 43,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       30,
+       53
+      ],
+      "body": [
+       9,
+       10
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       35,
+       58
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 41,
+      "totL": 23,
+      "totA": 41,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       23
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       23,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-11T23:41:02.281Z"
+    }
+   ]
+  },
+  "Kai Kamaka III": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Luke Riley",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "3:03",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Luke Riley",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 23,
+      "sigA": 41,
+      "totL": 23,
+      "totA": 41,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       23
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       23,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 43,
+      "sigA": 67,
+      "totL": 43,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       30,
+       53
+      ],
+      "body": [
+       9,
+       10
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       35,
+       58
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-07-11T23:41:02.281Z"
     }
    ]
   }
