@@ -101879,6 +101879,9 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       const lastA = (_newsNorm(name).split(' ').filter(Boolean).pop()) || '';
       const lastB = (_newsNorm(opp).split(' ').filter(Boolean).pop()) || '';
       const SN = /short.?notice|steps? in|steps? up|late replacement|\breplaces\b|replacement (?:opponent|fighter|steps)/i;
+      const WD = /\bwithd?rew\b|\bwithdraws?\b|pull(?:ed|s)?\s+out\b|forced out\b|out of the (?:fight|card|bout|event)\b|off the card\b/i;
+      // "the opponent" stepping in, from the perspective of the fighter who stayed.
+      const OPP_SN = /\bopponent\b[^.]{0,30}?(?:steps? in|stepping in|on short notice|on \d+\s*days?)|(?:late replacement|short.?notice)[^.]{0,15}?\bopponent\b[^.]{0,30}?(?:steps? in|notice)/i;
       const facedBy = (last, t) => !!last && new RegExp('(?:faces?|facing|against|vs\\.?|meets?)\\s+(?:[a-z.\'\\-]+\\s+){0,2}' + last + '\\b').test(t);
       const isSubject = (last, t) => !!last && (new RegExp('\\b' + last + '\\b[^.]{0,25}?(?:steps? in|stepping in|replaces|steps? up|on short notice|as a (?:late )?replacement)').test(t) || new RegExp('(?:late replacement|short.?notice replacement)[^.]{0,20}?\\b' + last + '\\b').test(t));
       function shortNoticeFighter() {
@@ -101887,12 +101890,37 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
           for (const it of entry.items) {
             const t = (it.title || '').toLowerCase();
             if (!SN.test(t)) continue;
+            if (isSubject(otherLast, t)) return otherName;                         // headline names the OTHER as stepping in
             if (isSubject(selfLast, t) && !facedBy(selfLast, t)) return selfName;   // self stepped in
-            if (facedBy(selfLast, t)) return otherName;                              // replacement to FACE self ⇒ other is new
+            if (facedBy(selfLast, t)) return otherName;                            // replacement steps in to FACE self ⇒ other is new
           }
           return null;
         };
-        return scan(name, lastA, opp, lastB, aE) || scan(opp, lastB, name, lastA, bE);
+        const named = scan(name, lastA, opp, lastB, aE) || scan(opp, lastB, name, lastA, bE);
+        if (named) return named;
+        // The headline often doesn't NAME the replacement — it says "Bisping's
+        // pick steps in" or "late replacement opponent steps in on 6 days'
+        // notice". Both still leave an asymmetry between the two fighters' feeds
+        // that pins down who stepped in. Only use a signal that appears in
+        // exactly ONE feed (never guess when both or neither carry it), and only
+        // once we know it's a replacement bout (short-notice language present).
+        const titlesOf = e => (e && e.items) ? e.items.map(it => (it.title || '').toLowerCase()) : [];
+        const tA = titlesOf(aE), tB = titlesOf(bE);
+        if (!tA.concat(tB).some(t => SN.test(t))) return null;
+        // (a) "my opponent stepped in" — the feed's owner is the fighter who
+        // stayed, so the OTHER fighter is the replacement.
+        const oppStepIn = ts => ts.some(t => OPP_SN.test(t));
+        const oA = oppStepIn(tA), oB = oppStepIn(tB);
+        if (oA && !oB) return opp;
+        if (oB && !oA) return name;
+        // (b) a withdrawal story about a THIRD party (neither current fighter)
+        // clusters in the replacement's own coverage.
+        const nameIn = (last, t) => !!last && new RegExp('\\b' + last + '\\b').test(t);
+        const thirdPartyWD = ts => ts.some(t => WD.test(t) && !nameIn(lastA, t) && !nameIn(lastB, t));
+        const wA = thirdPartyWD(tA), wB = thirdPartyWD(tB);
+        if (wA && !wB) return name;
+        if (wB && !wA) return opp;
+        return null;
       }
       // Ground-truth short-notice marker (from fighter-overrides) wins; fall back
       // to inferring the replacement from the news headlines.
