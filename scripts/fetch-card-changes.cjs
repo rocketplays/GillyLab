@@ -94,31 +94,61 @@ function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
   return false;
 }
 
+// Withdrawal language (a fighter leaving a bout).
+const WITHDRAW = /\bwithd?rew\b|\bwithdrawn\b|\bwithdraw\b|pull(?:ed|s)?\s+out\b|forced out\b|out of the (?:fight|card|bout|event)\b|off the card\b|had to withdraw\b|removed from the card\b/i;
+// Is F named as the one who LEFT this paragraph's bout? (so we don't flag the
+// departed fighter as "may change" — we flag the one who stayed).
+function isWithdrawalSubject(name, para) {
+  const L = '\\b' + escapeRe(name).replace(/\s+/g, '\\s+') + '\\b';
+  return new RegExp(L + '[^.]{0,25}?(?:' + WITHDRAW.source + ')', 'i').test(para);
+}
+const nameRe = (name, flags) => new RegExp('\\b' + escapeRe(name).replace(/\s+/g, '\\s+') + '\\b', flags);
+
 /**
  * @param {string} wikitext  Wikipedia article wikitext.
  * @param {string[]} currentNames  Exact fighter names on the live card.
- * @returns {Array<{replacement:string, sentence:string}>}
+ * @returns {{shortNotice:Array<{replacement,sentence}>, mayChange:Array<{fighter,sentence}>}}
  */
 function extractCardChanges(wikitext, currentNames) {
   const text = stripWiki(backgroundSection(wikitext));
-  const found = new Map(); // normLoose -> {replacement, sentence}
-  for (const F of currentNames) {
-    const key = normLoose(F);
-    if (found.has(key)) continue;
-    // Match this fighter's FULL name wherever it appears — linked names were
-    // unwrapped to plain text above, and newcomers are plain text to begin with.
-    const re = new RegExp('\\b' + escapeRe(F).replace(/\s+/g, '\\s+') + '\\b', 'gi');
-    let m;
-    while ((m = re.exec(text))) {
-      const [s, e] = sentenceBounds(text, m.index, re.lastIndex);
-      const sentence = text.slice(s, e);
-      if (isReplacementRole(sentence, m.index - s, re.lastIndex - s)) {
-        found.set(key, { replacement: F, sentence: sentence.replace(/\s+/g, ' ').trim() });
-        break;
+  const paras = text.split(/\n\s*\n/).map((p) => p.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const shortNotice = new Map();
+  const mayChange = new Map();
+  for (const para of paras) {
+    const present = currentNames.filter((F) => nameRe(F).test(para));
+    if (!present.length) continue;
+
+    // 1) A replacement named in this bout-paragraph — flag the fighter who stepped in.
+    let hadReplacement = false;
+    for (const F of present) {
+      const key = normLoose(F);
+      const re = nameRe(F, 'gi');
+      let m;
+      while ((m = re.exec(para))) {
+        const [s, e] = sentenceBounds(para, m.index, re.lastIndex);
+        const sentence = para.slice(s, e);
+        if (isReplacementRole(sentence, m.index - s, re.lastIndex - s)) {
+          if (!shortNotice.has(key)) shortNotice.set(key, { replacement: F, sentence: sentence.trim() });
+          hadReplacement = true;
+          break;
+        }
+      }
+    }
+    if (hadReplacement) continue;
+
+    // 2) A withdrawal with NO replacement yet — flag the fighter who STAYED
+    // (the one still on the card whose opponent left). Skip the fighter who left,
+    // and skip a bout merely moved to another card (no withdrawal language).
+    if (WITHDRAW.test(para)) {
+      for (const F of present) {
+        const key = normLoose(F);
+        if (shortNotice.has(key) || mayChange.has(key)) continue;
+        if (isWithdrawalSubject(F, para)) continue;   // this fighter is the one who left
+        mayChange.set(key, { fighter: F, sentence: para.trim() });
       }
     }
   }
-  return [...found.values()];
+  return { shortNotice: [...shortNotice.values()], mayChange: [...mayChange.values()] };
 }
 
 // ── network (CI only) ────────────────────────────────────────────────────────
@@ -203,21 +233,23 @@ async function main() {
     await sleep(700);   // be polite — serialized with delays to avoid throttling
     const query = evt.espnName || evt.title || evt.slug;
     const names = cardFighterNames(evt);
-    let title = null, changes = [];
+    let title = null, cc = { shortNotice: [], mayChange: [] };
     try {
       title = await resolvePageTitle(query);
       if (!titleMatchesEvent(title, evt)) title = null;   // reject a nearby-but-wrong page
       if (title) {
         await sleep(400);
         const wt = await fetchWikitext(title);
-        changes = extractCardChanges(wt, names);
+        cc = extractCardChanges(wt, names);
         if (DUMP) dump += '\n===== ' + evt.slug + '  <-  ' + title + ' =====\n' + backgroundSection(wt).replace(/\n{3,}/g, '\n\n').trim() + '\n';
       }
     } catch (e) {
       console.warn(`[card-changes] ${evt.slug}: ${e.message}`);
     }
-    result.events.push({ slug: evt.slug, wikiTitle: title, shortNotice: changes });
-    console.log(`[card-changes] ${evt.slug} <- ${title || '(no page)'} : ${changes.map((c) => c.replacement).join(', ') || 'none'}`);
+    const sn = cc.shortNotice.map((c) => c.replacement);
+    const mc = cc.mayChange.map((c) => c.fighter);
+    result.events.push({ slug: evt.slug, wikiTitle: title, shortNotice: sn, mayChange: mc });
+    console.log(`[card-changes] ${evt.slug} <- ${title || '(no page)'} : short-notice [${sn.join(', ') || '-'}]  may-change [${mc.join(', ') || '-'}]`);
   }
   fs.writeFileSync(OUT_PATH, JSON.stringify(result, null, 2));
   console.log('[card-changes] wrote ' + path.relative(ROOT, OUT_PATH));

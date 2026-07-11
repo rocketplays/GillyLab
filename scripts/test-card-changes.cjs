@@ -52,26 +52,33 @@ function check(label, cond, extra) {
   if (!cond) fail++;
 }
 
-function run(label, wt, names, expected, mustNot) {
-  const got = extractCardChanges(wt, names).map((c) => c.replacement).sort();
-  console.log('\n== ' + label + ' ==  detected: [' + got.join(', ') + ']');
-  expected.forEach((n) => check('flags ' + n, got.includes(n)));
-  mustNot.forEach((n) => check('does NOT flag ' + n, !got.includes(n)));
-  check('exactly ' + expected.length + ' flagged', got.length === expected.length, 'got ' + got.length);
+function run(label, wt, names, expSN, expMC, mustNot) {
+  const cc = extractCardChanges(wt, names);
+  const sn = cc.shortNotice.map((c) => c.replacement).sort();
+  const mc = cc.mayChange.map((c) => c.fighter).sort();
+  console.log('\n== ' + label + ' ==\n  short-notice: [' + sn.join(', ') + ']\n  may-change:   [' + mc.join(', ') + ']');
+  expSN.forEach((n) => check('short-notice flags ' + n, sn.includes(n)));
+  expMC.forEach((n) => check('may-change flags ' + n, mc.includes(n)));
+  mustNot.forEach((n) => check('does NOT flag ' + n + ' (either)', !sn.includes(n) && !mc.includes(n)));
+  check('exactly ' + expSN.length + ' short-notice', sn.length === expSN.length, 'got ' + sn.length);
+  check('exactly ' + expMC.length + ' may-change', mc.length === expMC.length, 'got ' + mc.length);
 }
 
-// Post-change OKC roster: three replacements (Ricci, Melisano, Harris) + the
-// fighters who stayed. Withdrawn fighters (Ribas, Hardy, Tavares, Frye, Holland)
-// are gone from the card, so they aren't in this list.
+// Post-change OKC roster: three replacements (Ricci, Melisano, Harris), two
+// bouts in limbo (Barriault & Jacobe Smith, whose opponents withdrew with no
+// replacement yet), and the fighters who stayed. Withdrawn/moved fighters
+// (Ribas, Hardy, Tavares, Frye, Holland, Vera, Jourdain) are off the card.
 run('UFC Oklahoma City', OKC,
   ['Dricus du Plessis', 'Kamaru Usman', 'Tabatha Ricci', 'Fatima Kline', 'Dione Barbosa',
    'Anna Melisano', 'Alvin Hines', 'RJ Harris', 'Marc-André Barriault', 'Jacobe Smith'],
-  ['Tabatha Ricci', 'Anna Melisano', 'RJ Harris'],
-  ['Fatima Kline', 'Dione Barbosa', 'Alvin Hines', 'Marc-André Barriault', 'Jacobe Smith', 'Dricus du Plessis', 'Kamaru Usman']);
+  ['Tabatha Ricci', 'Anna Melisano', 'RJ Harris'],   // short-notice
+  ['Marc-André Barriault', 'Jacobe Smith'],           // may-change (opponent out, no replacement)
+  ['Fatima Kline', 'Dione Barbosa', 'Alvin Hines', 'Dricus du Plessis', 'Kamaru Usman']);
 
 run('UFC 329 (constructed)', U329,
   ['Conor McGregor', 'Max Holloway', 'Cody Durden', 'Alessandro Costa', 'Farid Basharat', 'John Garza'],
   ['Alessandro Costa', 'John Garza'],
+  [],
   ['Cody Durden', 'Farid Basharat', 'Conor McGregor', 'Max Holloway']);
 
 // Negative: a card with no replacements at all — nothing should be flagged.
@@ -80,9 +87,9 @@ const CLEAN = `
 A bout between [[Conor McGregor]] and [[Max Holloway]] headlined the event. It was their second meeting.
 `;
 (function () {
-  const got = extractCardChanges(CLEAN, ['Conor McGregor', 'Max Holloway']);
-  console.log('\n== clean card (no changes) ==  detected: [' + got.map((c) => c.replacement).join(', ') + ']');
-  check('no false positives on a clean card', got.length === 0, 'got ' + got.length);
+  const cc = extractCardChanges(CLEAN, ['Conor McGregor', 'Max Holloway']);
+  console.log('\n== clean card (no changes) ==  detected: sn ' + cc.shortNotice.length + ' / mc ' + cc.mayChange.length);
+  check('no false positives on a clean card', cc.shortNotice.length === 0 && cc.mayChange.length === 0);
 })();
 
 console.log('\n' + (fail ? '  ' + fail + ' FAILURE(S)' : '  all checks passed'));
