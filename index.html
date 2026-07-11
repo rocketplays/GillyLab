@@ -1541,28 +1541,6 @@
       background: rgba(255,255,255,0.28);
     }
 
-    .proj-bar-wrap {
-      height: 8px;
-      background: var(--surface2);
-      border-radius: 4px;
-      overflow: hidden;
-      display: flex;
-    }
-
-    .proj-bar-left {
-      height: 100%;
-      background: var(--accent);
-      transition: width 1s ease;
-      border-radius: 4px 0 0 4px;
-    }
-
-    .proj-bar-right {
-      height: 100%;
-      background: var(--muted);
-      flex: 1;
-      border-radius: 0 4px 4px 0;
-    }
-
     .proj-foot {
       display: flex;
       align-items: center;
@@ -1774,12 +1752,16 @@
 
     .sim-results { margin-top: 1.5rem; display: none; }
 
-    .sim-results-header {
+    .sim-results-top {
       display: flex;
+      align-items: flex-end;
       justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.75rem;
+      gap: 1rem;
+      margin-bottom: 0.7rem;
     }
+
+    .sim-results-fighter.right { justify-content: flex-end; text-align: right; }
+    .sim-results-fighter.fav .sim-results-avatar { border-color: var(--accent); }
 
     .sim-results-name {
       font-family: 'Barlow Condensed', sans-serif;
@@ -1787,11 +1769,13 @@
       font-size: 1rem;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      color: #a9a9b0;
       cursor: pointer;
       transition: color 0.15s;
     }
 
     .sim-results-name:hover { color: var(--accent); }
+    .sim-results-fighter.fav .sim-results-name { color: var(--text); }
 
     .sim-results-fighter {
       display: flex;
@@ -1819,14 +1803,8 @@
       display: block;
     }
 
-    .sim-results-pct {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 900;
-      font-size: 1.6rem;
-      color: var(--accent);
-    }
-
-    .sim-results-pct.right { color: var(--muted); }
+    .sim-bar { height: 34px; }
+    .sim-bar .proj-seg-pct { font-size: 1.3rem; }
 
     .sim-results-count {
       font-size: 0.72rem;
@@ -108116,38 +108094,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!box) return;
     const pctA = Math.round((result.winsA / result.n) * 100);
     const pctB = 100 - pctA;
-    const aLeads = pctA >= pctB;
-    const aPctCls = aLeads ? 'sim-results-pct' : 'sim-results-pct right';
-    const bPctCls = aLeads ? 'sim-results-pct right' : 'sim-results-pct';
-    const barLeftColor = aLeads ? 'var(--accent)' : 'var(--muted)';
-    const barRightColor = aLeads ? 'var(--muted)' : 'var(--accent)';
+    const aFav = pctA >= pctB;
     const nameAAttr = escHtmlAttr(nameA);
     const nameBAttr = escHtmlAttr(nameB);
     box.style.display = 'block';
     box.innerHTML = `
-      <div class="sim-results-header">
-        <div class="sim-results-fighter">
+      <div class="sim-results-top">
+        <div class="sim-results-fighter${aFav ? ' fav' : ''}">
           <div class="sim-results-avatar" data-fighter="${nameAAttr}"></div>
           <div>
             <div class="sim-results-name" ${simFighterOpenAttr(nameA)}>${nameA}</div>
             <div class="sim-results-count">${result.winsA.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
           </div>
         </div>
-        <div class="${aPctCls}">${pctA}%</div>
-      </div>
-      <div class="proj-bar-wrap">
-        <div class="proj-bar-left" style="width:${pctA}%;background:${barLeftColor};"></div>
-        <div class="proj-bar-right" style="background:${barRightColor};"></div>
-      </div>
-      <div class="sim-results-header" style="margin-top:0.5rem;">
-        <div class="sim-results-fighter">
-          <div class="sim-results-avatar" data-fighter="${nameBAttr}"></div>
+        <div class="sim-results-fighter right${aFav ? '' : ' fav'}">
           <div>
             <div class="sim-results-name" ${simFighterOpenAttr(nameB)}>${nameB}</div>
             <div class="sim-results-count">${result.winsB.toLocaleString()} / ${result.n.toLocaleString()} wins</div>
           </div>
+          <div class="sim-results-avatar" data-fighter="${nameBAttr}"></div>
         </div>
-        <div class="${bPctCls}">${pctB}%</div>
+      </div>
+      <div class="proj-bar2 sim-bar">
+        <div class="proj-seg proj-seg-left ${aFav ? 'win' : 'lose'}" style="width:${pctA}%;"><span class="proj-seg-pct">${pctA}%</span></div>
+        <div class="proj-seg proj-seg-right ${aFav ? 'lose' : 'win'}"><span class="proj-seg-pct">${pctB}%</span></div>
+        <div class="proj-mid"></div>
       </div>
 
       <div class="sim-methods-row">
