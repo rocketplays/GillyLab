@@ -3352,7 +3352,7 @@
       .pk-hist-stat-lbl { display: block; color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
       .pk-viewhist { width: 100%; margin-top: 0.7rem; }
       /* top button row on the pick'em page */
-      .pk-subnav { max-width: 760px; margin: 0.4rem auto 0; padding: 0 1rem; display: flex; gap: 0.5rem; }
+      .pk-subnav { display: flex; gap: 0.5rem; margin: 0 0 1.1rem; }
       .pk-subnav-btn { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 9px; padding: 0.55rem 0.6rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: border-color .12s, background .12s; }
       .pk-subnav-btn:hover { border-color: var(--accent); background: rgba(0,230,104,0.08); }
       .pk-hist-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -3710,10 +3710,6 @@
   <div class="page-header">
     <div class="page-header-label" id="pickem-event-label">Loading…</div>
     <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
-  </div>
-  <div class="pk-subnav">
-    <button type="button" class="pk-subnav-btn" onclick="openPickemLeaderboard()">🏆 Leaderboard</button>
-    <button type="button" class="pk-subnav-btn" onclick="openPickemHistory()">📊 My history</button>
   </div>
   <div class="divider"></div>
   <div id="pickem-content"></div>
@@ -7356,7 +7352,7 @@
    if (!host) return;
    const tab = (id, label) => '<button type="button" class="pk-tab' + (PK_LB_SCOPE === id ? ' sel' : '') + '" onclick="renderPickemLeaderboard(\'' + id + '\')">' + label + '</button>';
    host.innerHTML = pkBackBtn() +
-     '<div class="pk-tabs">' + tab('recent', 'This card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
+     '<div class="pk-tabs">' + tab('recent', 'Previous card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
      '<div class="pk-board-list" id="pk-board-list"><div class="pk-board-empty">Loading…</div></div>';
    const res = await pkFetch('/api/pickem/leaderboard?scope=' + PK_LB_SCOPE);
    const listEl = document.getElementById('pk-board-list');
@@ -109483,6 +109479,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<div class="pk-wrap">' +
           '<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. ' +
           'Higher confidence is worth more points if you’re right — and costs more if you’re wrong. Your picks save on this device.</p>' +
+          '<div class="pk-subnav">' +
+            '<button type="button" class="pk-subnav-btn" onclick="openPickemLeaderboard()">🏆 Leaderboard</button>' +
+            '<button type="button" class="pk-subnav-btn" onclick="openPickemHistory()">📊 My history</button>' +
+          '</div>' +
           BOUTS.map(boutHTML).join('') +
         '</div>' +
         summaryHTML();
