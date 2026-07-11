@@ -100564,13 +100564,16 @@ function populateFighterNews(name) {
 function applyInjuryFlags() {
   loadFighterNews().then(function (data) {
     if (!data || !data.fighters) return;
-    // Flag a row if a fighter has injury/card news OR is a confirmed short-notice
-    // replacement (whose own news often isn't classed as "injury"). Bail only
-    // when there's neither.
+    // Flag a row if a fighter has injury/card news, is a confirmed short-notice
+    // replacement, or is in a bout that may change (opponent withdrew, no
+    // replacement yet) — the last two often carry no "injury"-classed news of
+    // their own. Bail only when there's none of the three.
     const _snSet = (typeof SHORT_NOTICE_SET !== 'undefined') ? SHORT_NOTICE_SET : null;
+    const _mcSet = (typeof MAY_CHANGE_SET !== 'undefined') ? MAY_CHANGE_SET : null;
     const anyInjury = Object.keys(data.fighters).some(k => data.fighters[k].hasInjuryNews);
     const anySN = _snSet && _snSet.size > 0;
-    if (!anyInjury && !anySN) return;
+    const anyMC = _mcSet && _mcSet.size > 0;
+    if (!anyInjury && !anySN && !anyMC) return;
     document.querySelectorAll('.fight-row').forEach(function (row) {
       if (row.dataset.injChecked) return;
       row.dataset.injChecked = '1';
@@ -100579,8 +100582,10 @@ function applyInjuryFlags() {
         const nameEl = c.querySelector('.fighter-name');
         const nm = nameEl ? (nameEl.textContent || '').trim() : '';
         const entry = nm ? fighterNewsEntry(data, nm) : null;
-        const isSN = _snSet && typeof _newsNorm === 'function' && _snSet.has(_newsNorm(nm));
-        return (entry && entry.hasInjuryNews) || isSN;
+        const nn = typeof _newsNorm === 'function' ? _newsNorm(nm) : nm;
+        const isSN = _snSet && _snSet.has(nn);
+        const isMC = _mcSet && _mcSet.has(nn);
+        return (entry && entry.hasInjuryNews) || isSN || isMC;
       });
       if (!hasNews) return;
       const btn = row.querySelector('.fight-info-toggle');
@@ -100630,9 +100635,14 @@ let UPCOMING_OPP = {};
 // marker set by fighter-overrides — the news feed's generic "regional fighter
 // replacement" headlines often don't name the incoming fighter).
 let SHORT_NOTICE_SET = new Set();
+// Fighters whose opponent withdrew with no replacement set yet (mayChange marker
+// from card-changes / fighter-overrides) — drives the "May change" tile even when
+// the news feed carries nothing.
+let MAY_CHANGE_SET = new Set();
 function buildUpcomingOpponentIndex(apiData) {
   UPCOMING_OPP = {};
   SHORT_NOTICE_SET = new Set();
+  MAY_CHANGE_SET = new Set();
   const evs = (apiData && apiData.data) || [];
   const now = Date.now();
   for (const ev of evs) {
@@ -100643,7 +100653,11 @@ function buildUpcomingOpponentIndex(apiData) {
     for (const b of ev.bouts || []) {
       if (b.isCancelled) continue;
       const fighters = (b.fighters || []);
-      fighters.forEach(f => { if (f && f.shortNotice && f.fighterName) SHORT_NOTICE_SET.add(_newsNorm(f.fighterName)); });
+      fighters.forEach(f => {
+        if (!f || !f.fighterName) return;
+        if (f.shortNotice) SHORT_NOTICE_SET.add(_newsNorm(f.fighterName));
+        if (f.mayChange) MAY_CHANGE_SET.add(_newsNorm(f.fighterName));
+      });
       const fs = fighters.map(f => f.fighterName).filter(Boolean);
       if (fs.length < 2) continue;
       const rec = { date: ev.startsAt || ev.eventDate || '', event: ev.title || ev.shortTitle || '' };
@@ -101940,8 +101954,19 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
         const snEntry = snName === name ? aE : (snName === opp ? bE : null);
         const snLink = (snEntry && snEntry.items && snEntry.items.length) ? snName : newsFull;
         addChip('⚠', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', snLink ? function () { openFighterNews(snLink); } : null);
-      } else if (who) {
-        addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
+      } else {
+        // "May change": prefer the definitive marker (a fighter whose opponent
+        // withdrew with no replacement set yet), then fall back to the softer
+        // "has recent injury/card news" signal from the news feed.
+        const mc = (typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(_newsNorm(name))) ? name
+                 : ((typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(_newsNorm(opp))) ? opp : null);
+        if (mc) {
+          const mcEntry = mc === name ? aE : (mc === opp ? bE : null);
+          const mcLink = (mcEntry && mcEntry.items && mcEntry.items.length) ? mc : newsFull;
+          addChip('⚠', 'Bout status', 'May change', short(mc) + '’s opponent withdrew — no replacement set yet', mcLink ? function () { openFighterNews(mcLink); } : null);
+        } else if (who) {
+          addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
+        }
       }
     }).catch(function () {});
   }
