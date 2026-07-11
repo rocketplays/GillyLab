@@ -3278,7 +3278,12 @@
         position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--card);
         border-top: 1px solid var(--border); box-shadow: 0 -6px 24px rgba(0,0,0,0.45);
         padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom, 0px));
-        display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+        display: flex; flex-direction: column; gap: 0.5rem;
+      }
+      .pk-summary-row { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+      .pk-err {
+        background: rgba(255,60,60,0.12); border: 1px solid rgba(255,80,80,0.4); color: #ff8a80;
+        border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.76rem; font-weight: 600; line-height: 1.4;
       }
       .pk-summary-info { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
       .pk-summary-count { font-size: 0.78rem; font-weight: 600; color: var(--text); }
@@ -108942,11 +108947,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const CONF = ['High', 'Med', 'Low'];
     const CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
     const P_WIN = 10, P_METHOD = 5, P_ROUND = 5;
-    let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default';
+    let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const idOf = (f) => (f.f1 + '__' + f.f2).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
     const roundsOf = (f) => { const m = (f.label || '').match(/(\d)\s*Round/i); return m ? +m[1] : (f.isMain ? 5 : 3); };
+    // A bout's pick is COMPLETE when the winner, method, confidence AND (for a
+    // finish) the round are all set. Decisions have no round, so they don't need one.
+    function isComplete(f) {
+      const p = PICKS[idOf(f)];
+      if (!p || !p.winner || !p.method || !p.confidence) return false;
+      if (p.method !== 'Decision' && !p.round) return false;
+      return true;
+    }
     // Just the official divisional rank ("#8"), dropping the "| … Meta AI" tail and "NR".
     const shortRank = (r) => { const t = String(r || '').split('|')[0].trim(); return (!t || t === 'NR') ? '' : t; };
 
@@ -109016,16 +109029,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
 
     function summaryHTML() {
-      const made = BOUTS.filter(f => (PICKS[idOf(f)] || {}).winner).length;
+      const complete = BOUTS.filter(isComplete).length;
       const pot = BOUTS.reduce((t, f) => t + potential(PICKS[idOf(f)]), 0);
       return '<div class="pk-summary">' +
-        '<div class="pk-summary-info">' +
-          '<span class="pk-summary-count">' + made + ' of ' + BOUTS.length + ' picks made</span>' +
-          '<span class="pk-summary-pts">Points at stake: <strong>' + pot + '</strong></span>' +
-        '</div>' +
-        '<div class="pk-summary-actions">' +
-          '<button type="button" class="pk-btn ghost" data-pk-reset>Reset</button>' +
-          '<button type="button" class="pk-btn primary" data-pk-share' + (made ? '' : ' disabled') + '>Share picks</button>' +
+        (ERR ? '<div class="pk-err">' + esc(ERR) + '</div>' : '') +
+        '<div class="pk-summary-row">' +
+          '<div class="pk-summary-info">' +
+            '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete</span>' +
+            '<span class="pk-summary-pts">Points at stake: <strong>' + pot + '</strong></span>' +
+          '</div>' +
+          '<div class="pk-summary-actions">' +
+            '<button type="button" class="pk-btn ghost" data-pk-reset>Reset</button>' +
+            '<button type="button" class="pk-btn primary" data-pk-share>Share picks</button>' +
+          '</div>' +
         '</div>' +
       '</div>';
     }
@@ -109064,12 +109080,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     // ---- state mutations ----
     function setWinner(id, name) {
+      ERR = '';
       const p = PICKS[id] || {};
       if (p.winner === name) { delete PICKS[id]; }      // tapping your pick again clears it
       else { p.winner = name; if (!p.confidence) p.confidence = 'Med'; PICKS[id] = p; }
       persist(); render();
     }
     function setField(id, field, val) {
+      ERR = '';
       const p = PICKS[id]; if (!p || !p.winner) return;
       if (field === 'method') {
         p.method = val;
@@ -109086,7 +109104,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function resetAll() {
       if (!Object.keys(PICKS).length) return;
       if (!window.confirm('Clear all your picks for this card?')) return;
-      PICKS = {}; persist(); render();
+      PICKS = {}; ERR = ''; persist(); render();
     }
 
     // Assemble the picked bouts (in card order) for the share card.
@@ -109114,6 +109132,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       };
     }
     function share() {
+      if (!BOUTS.length) return;
+      // Every fight must have a complete pick before a card can be shared.
+      const missing = BOUTS.filter(f => !isComplete(f)).length;
+      if (missing > 0) {
+        ERR = 'Finish all your picks first — ' + missing + ' of ' + BOUTS.length +
+          ' fight' + (missing === 1 ? '' : 's') + ' still ' + (missing === 1 ? 'needs' : 'need') +
+          ' a winner, method, round and confidence.';
+        render();
+        return;
+      }
+      ERR = '';
       const data = sharePayload();
       if (!data.picks.length) return;
       if (typeof GL_SHEET !== 'undefined' && GL_SHEET.pickem) GL_SHEET.pickem(data);
