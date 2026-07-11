@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T23:41:02.399Z",
+ "generatedAt": "2026-07-11T23:57:31.926Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -1118,6 +1118,194 @@
       ]
      },
      "capturedAt": "2026-07-11T23:41:02.281Z"
+    }
+   ]
+  },
+  "Cody Garbrandt": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Adrian Yanez",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:47",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Adrian Yanez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 32,
+      "totL": 13,
+      "totA": 32,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       10,
+       29
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       29
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 30,
+      "totL": 16,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       13,
+       27
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       25
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-11T23:57:31.805Z"
+    }
+   ]
+  },
+  "Adrian Yanez": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cody Garbrandt",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:47",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cody Garbrandt",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 30,
+      "totL": 16,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       13,
+       27
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       25
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 32,
+      "totL": 13,
+      "totA": 32,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       10,
+       29
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       29
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-11T23:57:31.805Z"
     }
    ]
   }
