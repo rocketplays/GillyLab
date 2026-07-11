@@ -108937,16 +108937,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
      confidence tier (High/Med/Low). Picks are saved locally (localStorage, keyed
      by event slug) and can be exported as a square social card.
 
-     Scoring is PREVIEWED here as "points at stake": a correct winner is worth 10,
-     +5 for the right method, +5 for the right round (finishes only), and the whole
-     bout is multiplied by confidence (High ×2, Med ×1.5, Low ×1). A wrong winner
-     costs points scaled by confidence — more reward, more risk. Actual grading
-     against results + per-profile totals is a server-side follow-up (phase 2). */
+     Scoring is PREVIEWED here as "points at stake". A correct winner is the
+     foundation (10 pts). On top of that, a correct method adds +5, and a correct
+     round adds a bonus that GROWS with how late you call it (R1 +4, R2 +5, R3 +6,
+     R4 +7, R5 +8) — later rounds are harder to predict, so they pay more. The bout
+     total is multiplied by confidence (High ×2, Med ×1.5, Low ×1). Getting the
+     winner right but the method or round wrong costs nothing — you simply forgo
+     those bonuses; only a WRONG WINNER loses points (scaled by confidence). More
+     reward, more risk. Actual grading against results + per-profile totals is a
+     server-side follow-up (phase 2). */
   const PICKEM = (function () {
     const METHODS = ['KO/TKO', 'Submission', 'Decision'];
     const CONF = ['High', 'Med', 'Low'];
     const CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
-    const P_WIN = 10, P_METHOD = 5, P_ROUND = 5;
+    const P_WIN = 10, P_METHOD = 5;
+    // A correct round pays more the later it is (harder to call): R1 +4 … R5 +8.
+    // Anchored so R2 stays at the old flat +5. Wrong round costs nothing.
+    const roundBonus = (r) => (r ? 3 + r : 0);
     let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -108966,12 +108973,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function persist() { try { localStorage.setItem(KEY, JSON.stringify(PICKS)); } catch (e) {} }
     function load() { try { PICKS = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { PICKS = {}; } }
 
-    // Max points a bout can earn as currently picked (fully correct) at its confidence.
+    // Max points a bout can earn as currently picked (fully correct) at its
+    // confidence. Winner is the base; method + round add bonuses (round scaled by
+    // how late it is). A wrong method/round just forgoes its bonus — no penalty.
     function potential(p) {
       if (!p || !p.winner) return 0;
       let base = P_WIN;
       if (p.method) base += P_METHOD;
-      if (p.method && p.method !== 'Decision' && p.round) base += P_ROUND;
+      if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
       return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
     }
 
