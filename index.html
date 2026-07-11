@@ -2369,6 +2369,10 @@
     }
     .rank-p4p-btn.rmt-hidden { display: none !important; }
 
+    /* Was an inline padding:2rem on the container, which media queries can't
+       override — so on mobile the rankings stayed boxed into a narrow column. */
+    .rankings-wrap { max-width: var(--cmax); margin: 0 auto; padding: 2rem; }
+
     .rank-div-btn {
       background: var(--card);
       border: 1px solid var(--border);
@@ -2813,6 +2817,7 @@
 
       /* ── Rankings page ── */
       .rankings-page     { padding: 1rem; }
+      .rankings-wrap     { padding: 1rem 0.75rem; }
       .rank-div-tabs     { gap: 0.3rem; flex-wrap: wrap; padding: 0 1rem 0.75rem; }
       .rank-div-btn      { font-size: 0.62rem; padding: 0.35rem 0.6rem; }
       .rank-panel        { padding: 0 1rem 1rem; }
@@ -3534,7 +3539,7 @@
  </div>
  </div>
  <div class="divider"></div>
- <div style="max-width:var(--cmax);margin:0 auto;padding:2rem;">
+ <div class="rankings-wrap">
  <div id="rankingChanges"></div>
  <div style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-bottom:2rem;" id="rankingDivTabs">
  <button class="rank-div-btn rank-p4p-btn active" onclick="showDiv('p4p-m')">Men's P4P</button>
