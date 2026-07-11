@@ -109022,8 +109022,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
          (Gable Steveson) floors near 6, and an underdog scales up — a slight bump
          for a ~+200 dog (Conor), a lot for a longshot (Elisha Ellison), capped ~30.
        • a correct METHOD adds a bonus scaled to how UNLIKELY that method is —
-         blending the winner's finishing style with the opponent's durability
-         (career history): a longshot finish pays ~8, the chalk ~2-3, neutral ~5.
+         the winner's finishing style combined MULTIPLICATIVELY with the opponent's
+         way of losing (a method needs both): a real longshot pays ~7-8, chalk ~2-3,
+         neutral ~5.
        • a correct ROUND adds a bonus that GROWS with how late you call it
          (R1 +4, R2 +5, R3 +6, R4 +7, R5 +8) — later finishes are harder to call.
      The bout total is multiplied by confidence (High ×2, Med ×1.5, Low ×1). Getting
@@ -109120,24 +109121,37 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       });
       return { ko, sub, dec };
     }
-    // Laplace-smoothed share of a bucket (+1 each) so a thin record can't produce a
-    // 0% or 100%, and no history lands at a neutral ⅓.
-    function bucketShare(dist, method) {
-      const b = { 'KO/TKO': dist.ko, 'Submission': dist.sub, 'Decision': dist.dec }[method] || 0;
-      return (b + 1) / (dist.ko + dist.sub + dist.dec + 3);
+    // Laplace-smoothed distribution over the three method buckets (+1 each) so a
+    // thin record can't produce a 0% or 100%, and no history lands at a neutral ⅓.
+    function smoothedDist(d) {
+      const t = d.ko + d.sub + d.dec + 3;
+      return { 'KO/TKO': (d.ko + 1) / t, 'Submission': (d.sub + 1) / t, 'Decision': (d.dec + 1) / t };
     }
-    // Method bonus scales inversely with how LIKELY that method is here — the rarer,
-    // the bigger. Likelihood blends how the winner tends to WIN (65%) with how the
-    // opponent tends to LOSE (35%): Green by finish pays less against Terrance
-    // McKinney (often finished) than against a durable opponent. Anchored so a
-    // neutral matchup yields the old flat +5; clamped so the likely method still
-    // scores (min 2) and a true longshot is capped (max 8).
+    // Given the winner wins, how likely is EACH method in THIS matchup? We combine
+    // the winner's finishing style with the opponent's way of losing MULTIPLICATIVELY
+    // (a method needs both sides), then normalize to sum to 1. Multiplying — not
+    // averaging — is the key: a fighter who never submits (Holloway) stays a
+    // submission longshot even against someone who gets submitted a lot (McGregor),
+    // because his ~zero submission rate zeroes the product. Averaging let the
+    // opponent's sub-losses prop the likelihood up and killed the longshot bonus.
+    function methodLikelihoods(winner, opponent) {
+      const off = smoothedDist(methodDist(winner, 'W'));    // winner's finishing style
+      const def = smoothedDist(methodDist(opponent, 'L'));  // opponent's way of losing (neutral if unknown)
+      const M = ['KO/TKO', 'Submission', 'Decision'];
+      const joint = {}; let sum = 0;
+      M.forEach(m => { joint[m] = off[m] * def[m]; sum += joint[m]; });
+      const p = {};
+      M.forEach(m => { p[m] = sum > 0 ? joint[m] / sum : 1 / 3; });
+      return p;
+    }
+    // Bonus scales inversely with that conditional likelihood — a real longshot
+    // pays a decent boost, a chalky method much less. Anchored so a neutral matchup
+    // yields ~5; clamped so the likely method still scores (min 2) and a longshot
+    // is capped (max 8) so method never dictates the whole score.
     function methodBonus(winner, method, opponent) {
       if (!method) return 0;
-      const off = bucketShare(methodDist(winner, 'W'), method);   // winner's finishing style
-      const def = bucketShare(methodDist(opponent, 'L'), method); // opponent's way of losing
-      const likely = 0.65 * off + 0.35 * def;
-      const raw = P_METHOD * 1.5 * (1 - likely);   // neutral ⅓ → 5
+      const p = methodLikelihoods(winner, opponent)[method];
+      const raw = P_METHOD * 1.5 * (1 - (p == null ? 1 / 3 : p));   // neutral ⅓ → 5
       return Math.max(2, Math.min(8, Math.round(raw)));
     }
 
