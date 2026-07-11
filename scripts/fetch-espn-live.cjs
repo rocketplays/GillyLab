@@ -101,9 +101,16 @@ function applyResult(bout, espn) {
   const decided = !!(espn.status && espn.status.type && espn.status.type.completed);
   if (bout.winnerFighterSlug && !espn.winnerSlug && !espn.winnerName) return changed;   // never un-decide
 
-  set('status', E.boutStatusOf(espn.status));
   if (decided) {
     const { method, methodDetails } = E.methodOf(espn.status.result);
+    const hasWinner = !!(espn.winnerSlug || espn.winnerName);
+    // Only a genuine draw / no-contest has NO winner. A decisive method (Decision,
+    // KO/TKO, Submission) with no winner flag is a race — ESPN posted the result
+    // before it posted the winner. Don't finalize a phantom draw; keep it live and
+    // wait for the winner on a later poll.
+    const drawMethod = /draw|no\s*contest|^\s*nc\s*$/i.test(String(method || ''));
+    if (!hasWinner && !drawMethod) { set('status', 'live'); if (changed.length) bout.lastSyncedAt = new Date().toISOString(); return changed; }
+    set('status', 'completed');
     set('method', method);
     if (methodDetails != null && bout.methodDetails !== methodDetails) { changed.push('methodDetails=' + methodDetails); bout.methodDetails = methodDetails; }
     set('resultRound', (espn.status.period || 0) || null);
@@ -116,7 +123,6 @@ function applyResult(bout, espn) {
     let winner = null;
     if (espn.winnerSlug) winner = (bout.fighters || []).find((f) => f.fighterSlug === espn.winnerSlug);
     if (!winner && espn.winnerName) winner = (bout.fighters || []).find((f) => nm(f.fighterName) === nm(espn.winnerName));
-    const hasWinner = !!(espn.winnerSlug || espn.winnerName);
     set('winnerFighterSlug', winner ? winner.fighterSlug : espn.winnerSlug);
     (bout.fighters || []).forEach((f) => {
       const isWinner = winner ? (f === winner) : (espn.winnerSlug != null && f.fighterSlug === espn.winnerSlug);
@@ -124,6 +130,8 @@ function applyResult(bout, espn) {
       if (f.outcome !== o) { changed.push(f.fighterName + '=' + o); f.outcome = o; }
     });
     if (bout.dataAvailability) bout.dataAvailability.result = 'available';
+  } else {
+    set('status', E.boutStatusOf(espn.status));   // live / confirmed
   }
   if (changed.length) bout.lastSyncedAt = new Date().toISOString();
   return changed;

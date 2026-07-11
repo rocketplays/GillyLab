@@ -396,6 +396,14 @@ console.log("\n=== live result patcher (fetch-espn-live) ===");
   L.applyResult(b6, { winnerSlug: null, winnerName: null, status: { type: { completed: true, state: "post" }, period: 3, displayClock: "5:00", result: { displayName: "Draw" } } });
   ok("no winner at all -> draw", b6.fighters[0].outcome === "draw" && b6.fighters[1].outcome === "draw");
 
+  // A DECISIVE method (Decision/KO/Sub) with no winner flag is a race — ESPN posted
+  // the result before the winner. It must NOT finalize as a phantom draw.
+  const b7 = bout();
+  L.applyResult(b7, { winnerSlug: null, winnerName: null, status: { type: { completed: true, state: "post" }, period: 3, displayClock: "5:00", result: { displayName: "Decision - Unanimous" } } });
+  ok("decision w/ no winner yet stays live (no phantom draw)", b7.status === "live" && !b7.method && b7.fighters[0].outcome === null && b7.fighters[1].outcome === null);
+  L.applyResult(b7, { winnerSlug: "a", status: { type: { completed: true, state: "post" }, period: 3, displayClock: "5:00", result: { displayName: "Decision - Unanimous" } } });
+  ok("...then finalizes once the winner posts", b7.status === "completed" && b7.fighters[0].outcome === "win" && b7.fighters[1].outcome === "loss" && b7.method === "Decision - Unanimous");
+
   // 'completed' is what evicts an event from event.json, so it must wait.
   const done = [{ status: "completed" }, { status: "completed" }];
   ok("card stays live while it owns the featured slot", L.liveEventStatus(done, "2026-07-12T01:00:00Z", at("2026-07-12T05:00:00Z")) === "live");
