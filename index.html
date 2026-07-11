@@ -3344,6 +3344,10 @@
       .pk-hist-stat-num { display: block; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text); line-height: 1.1; }
       .pk-hist-stat-lbl { display: block; color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
       .pk-viewhist { width: 100%; margin-top: 0.7rem; }
+      /* top button row on the pick'em page */
+      .pk-subnav { max-width: 760px; margin: 0.4rem auto 0; padding: 0 1rem; display: flex; gap: 0.5rem; }
+      .pk-subnav-btn { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 9px; padding: 0.55rem 0.6rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: border-color .12s, background .12s; }
+      .pk-subnav-btn:hover { border-color: var(--accent); background: rgba(0,230,104,0.08); }
       .pk-hist-list { display: flex; flex-direction: column; gap: 0.5rem; }
       .pk-hist-row { display: flex; align-items: center; gap: 0.7rem; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: 0.7rem 0.85rem; cursor: pointer; font-family: inherit; color: var(--text); transition: border-color .12s; }
       .pk-hist-row:hover { border-color: rgba(255,255,255,0.28); }
@@ -3429,7 +3433,7 @@
         <svg class="account-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="account-menu" id="account-menu" role="menu">
-        <a role="menuitem" href="#" onclick="navigate('pickem-history'); renderPickemHistory(); closeAccountMenu(); return false;">Pick'em history</a>
+        <a role="menuitem" href="#" onclick="openPickemHistory(); closeAccountMenu(); return false;">Pick'em history</a>
         <a role="menuitem" href="/api/portal">Manage subscription</a>
         <a role="menuitem" href="/change-password">Change password</a>
         <a role="menuitem" href="/api/logout">Log out</a>
@@ -3700,9 +3704,25 @@
     <div class="page-header-label" id="pickem-event-label">Loading…</div>
     <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
   </div>
+  <div class="pk-subnav">
+    <button type="button" class="pk-subnav-btn" onclick="openPickemLeaderboard()">🏆 Leaderboard</button>
+    <button type="button" class="pk-subnav-btn" onclick="openPickemHistory()">📊 My history</button>
+  </div>
   <div class="divider"></div>
   <div id="pickem-content"></div>
-  <div id="pickem-leaderboard" class="pk-wrap"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE: PICK'EM LEADERBOARD
+══════════════════════════════════════ -->
+<div class="page" id="page-pickem-leaderboard">
+  <div class="page-header">
+    <div class="page-header-label">Pick'em</div>
+    <div class="page-header-title"><span class="accent">Leaderboard</span></div>
+  </div>
+  <div class="divider"></div>
+  <div id="pickem-leaderboard-content" class="pk-wrap"></div>
 </div>
 
 
@@ -7220,6 +7240,111 @@
  applySwitch();
  }
  }
+
+ // ── PICK'EM sub-pages (history + leaderboard) ──────────────────────────────
+ // Defined at top level (like navigate) and fully self-contained, so they're
+ // reachable from the account menu and the pick'em page buttons regardless of any
+ // module scope. Both open their own gated page.
+ const PK_ESC_MAP = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+ function pkEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => PK_ESC_MAP[c]); }
+ function pkEscJs(s) { return String(s == null ? '' : s).replace(/[\\'"]/g, c => '\\' + c).replace(/\n/g, '\\n'); }
+ async function pkFetch(path) {
+   try { const r = await fetch(path, { credentials: 'same-origin' }); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
+   catch (e) { return { status: 0 }; }
+ }
+ function pkBackBtn() { return '<button type="button" class="pk-hist-back" onclick="navigate(\'pickem\')">← Back to Pick\'em</button>'; }
+
+ function openPickemHistory() { navigate('pickem-history'); renderPickemHistory(); }
+ async function renderPickemHistory() {
+   const host = document.getElementById('pickem-history-content');
+   if (!host) return;
+   host.innerHTML = pkBackBtn() + '<div class="pk-board-empty">Loading…</div>';
+   const res = await pkFetch('/api/pickem/history');
+   if (res.status === 401) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">Log in to see your pick\'em history.</div>'; return; }
+   if (res.status !== 200) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">History unavailable right now.</div>'; return; }
+   const evs = res.events || [];
+   const pct = (n, d) => d ? Math.round(100 * n / d) + '%' : '—';
+   const head = '<div class="pk-hist-head">' +
+     (res.name ? '<div class="pk-hist-name">' + pkEsc(res.name) + '</div>' : '') +
+     '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
+     '<span class="pk-hist-total-lbl">total points · ' + evs.length + ' card' + (evs.length === 1 ? '' : 's') + '</span></div>' +
+     '<div class="pk-hist-stats">' +
+       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.correct || 0) + '/' + (res.decided || 0) + '</span>' +
+         '<span class="pk-hist-stat-lbl">picks correct · ' + pct(res.correct, res.decided) + '</span></div>' +
+       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.dogCorrect || 0) + '/' + (res.dogPicks || 0) + '</span>' +
+         '<span class="pk-hist-stat-lbl">underdogs hit · ' + pct(res.dogCorrect, res.dogPicks) + '</span></div>' +
+     '</div></div>';
+   if (!evs.length) { host.innerHTML = pkBackBtn() + head + '<div class="pk-hist-empty">No graded cards yet. Make your picks on the Pick\'em page — they\'ll be scored here after the event.</div>'; return; }
+   const rows = evs.map(e => {
+     const pts = e.points || 0;
+     return '<button type="button" class="pk-hist-row" onclick="renderPickemHistoryEvent(\'' + pkEscJs(e.slug) + '\')">' +
+       '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + pkEsc(e.event || e.slug) + '</div>' +
+       '<div class="pk-hist-meta">' + pkEsc(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
+       '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div>' +
+       '<div class="pk-hist-arrow">›</div></button>';
+   }).join('');
+   host.innerHTML = pkBackBtn() + head + '<div class="pk-hist-list">' + rows + '</div>';
+ }
+ async function renderPickemHistoryEvent(slug) {
+   const host = document.getElementById('pickem-history-content');
+   if (!host) return;
+   host.innerHTML = '<div class="pk-board-empty">Loading…</div>';
+   const res = await pkFetch('/api/pickem/history?event=' + encodeURIComponent(slug));
+   const back = '<button type="button" class="pk-hist-back" onclick="renderPickemHistory()">← All cards</button>';
+   if (res.status !== 200) { host.innerHTML = back + '<div class="pk-hist-empty">Couldn\'t load that card.</div>'; return; }
+   const bouts = res.bouts || [];
+   const rows = bouts.map(b => {
+     let tag = 'pending', label = 'Pending';
+     if (b.voided) { tag = 'void'; label = 'No contest — void'; }
+     else if (b.pending) { tag = 'pending'; label = 'Pending'; }
+     else if (b.winnerHit) { tag = 'hit'; label = 'Winner' + (b.methodHit ? ' + method' : '') + (b.roundHit ? ' + round' : ''); }
+     else { tag = 'miss'; label = 'Wrong winner'; }
+     const pts = b.points || 0;
+     const sub = (b.method || '—') + (b.round ? ' · R' + b.round : '') + ' · ' + (b.confidence || '') + ' conf · ' + label;
+     return '<div class="pk-hist-bout ' + tag + '">' +
+       '<div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">' + pkEsc(b.winner || '') + '</div>' +
+       '<div class="pk-hist-bout-detail">' + pkEsc(sub) + '</div></div>' +
+       '<div class="pk-hist-bout-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+   }).join('');
+   const total = res.total || 0;
+   host.innerHTML = back +
+     '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + pkEsc(res.event || slug) + '</div>' +
+     '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
+     (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 0.6rem;">Not fully graded yet — results still coming in.</div>') +
+     '<div class="pk-hist-bouts">' + rows + '</div>';
+ }
+
+ let PK_LB_SCOPE = 'recent';
+ function openPickemLeaderboard(scope) { navigate('pickem-leaderboard'); renderPickemLeaderboard(scope || PK_LB_SCOPE); }
+ async function renderPickemLeaderboard(scope) {
+   PK_LB_SCOPE = scope || PK_LB_SCOPE;
+   const host = document.getElementById('pickem-leaderboard-content');
+   if (!host) return;
+   const tab = (id, label) => '<button type="button" class="pk-tab' + (PK_LB_SCOPE === id ? ' sel' : '') + '" onclick="renderPickemLeaderboard(\'' + id + '\')">' + label + '</button>';
+   host.innerHTML = pkBackBtn() +
+     '<div class="pk-tabs">' + tab('recent', 'This card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
+     '<div class="pk-board-list" id="pk-board-list"><div class="pk-board-empty">Loading…</div></div>';
+   const res = await pkFetch('/api/pickem/leaderboard?scope=' + PK_LB_SCOPE);
+   const listEl = document.getElementById('pk-board-list');
+   if (!listEl) return;
+   if (res.status === 401) { listEl.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
+   if (res.status !== 200 || !Array.isArray(res.rows)) { listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
+   if (!res.rows.length) { listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>'; return; }
+   const meName = res.me && res.me.name;
+   const row = (r, me) => '<div class="pk-board-row' + (me ? ' me' : '') + '">' +
+     '<span class="pk-board-rank">' + r.rank + '</span>' +
+     '<span class="pk-board-name">' + pkEsc(r.name) + (me ? ' <span class="pk-you">you</span>' : '') + '</span>' +
+     '<span class="pk-board-pts">' + r.points + '</span></div>';
+   let out = res.rows.map(r => row(r, meName && r.name === meName)).join('');
+   if (res.me && !res.rows.some(r => r.name === meName)) out += '<div class="pk-board-sep">···</div>' + row(res.me, true);
+   listEl.innerHTML = out;
+ }
+ if (typeof window !== 'undefined') {
+   window.openPickemHistory = openPickemHistory; window.renderPickemHistory = renderPickemHistory;
+   window.renderPickemHistoryEvent = renderPickemHistoryEvent;
+   window.openPickemLeaderboard = openPickemLeaderboard; window.renderPickemLeaderboard = renderPickemLeaderboard;
+ }
+
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
   "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
@@ -109052,7 +109177,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
     // Phase-2 server state: display name, whether this card is submitted/locked, a
     // transient status message, and the leaderboard scope.
-    let NAME = null, SUBMITTED = false, LOCKED = false, MSG = null, PRELIMS_AT = null, BOARD_SCOPE = 'recent';
+    let NAME = null, SUBMITTED = false, LOCKED = false, MSG = null, PRELIMS_AT = null;
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const idOf = (f) => (f.f1 + '__' + f.f2).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -109450,38 +109575,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       input.onkeydown = (e) => { if (e.key === 'Enter') ov.querySelector('#pkNameSave').click(); };
     }
 
-    // ── leaderboard ──────────────────────────────────────────────────────────
-    function boardShellHTML() {
-      const tab = (id, label) => '<button type="button" class="pk-tab' + (BOARD_SCOPE === id ? ' sel' : '') + '" data-pk-scope="' + id + '">' + label + '</button>';
-      return '<div class="pk-board">' +
-        '<div class="pk-board-title">Leaderboard</div>' +
-        '<div class="pk-tabs">' + tab('recent', 'This card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
-        '<div id="pk-board-list" class="pk-board-list"><div class="pk-board-empty">Loading…</div></div>' +
-        '<button type="button" class="pk-btn ghost pk-viewhist" data-pk-history>View my pick\'em history →</button>' +
-      '</div>';
-    }
-    function boardRow(r, me) {
-      return '<div class="pk-board-row' + (me ? ' me' : '') + '">' +
-        '<span class="pk-board-rank">' + r.rank + '</span>' +
-        '<span class="pk-board-name">' + esc(r.name) + (me ? ' <span class="pk-you">you</span>' : '') + '</span>' +
-        '<span class="pk-board-pts">' + r.points + '</span></div>';
-    }
-    async function loadBoard(scope) {
-      BOARD_SCOPE = scope || BOARD_SCOPE;
-      const host = document.getElementById('pickem-leaderboard');
-      if (!host) return;
-      host.innerHTML = boardShellHTML();
-      const listEl = document.getElementById('pk-board-list');
-      const res = await api('/api/pickem/leaderboard?scope=' + BOARD_SCOPE);
-      if (!listEl) return;
-      if (res.status === 401) { listEl.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
-      if (res.status !== 200 || !Array.isArray(res.rows)) { listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
-      if (!res.rows.length) { listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>'; return; }
-      const meName = res.me && res.me.name;
-      let out = res.rows.map(r => boardRow(r, meName && r.name === meName)).join('');
-      if (res.me && !res.rows.some(r => r.name === meName)) out += '<div class="pk-board-sep">···</div>' + boardRow(res.me, true);
-      listEl.innerHTML = out;
-    }
+    // (Leaderboard + history now live on their own pages — see the top-level
+    // renderPickemLeaderboard / renderPickemHistory globals.)
 
     // One delegated listener for the whole page.
     function bindOnce() {
@@ -109499,9 +109594,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (cBtn) return setField(cBtn.getAttribute('data-bout'), 'confidence', cBtn.getAttribute('data-c'));
         const clr = e.target.closest('[data-clear]');
         if (clr) return clear(clr.getAttribute('data-clear'));
-        const scopeBtn = e.target.closest('[data-pk-scope]');
-        if (scopeBtn) return loadBoard(scopeBtn.getAttribute('data-pk-scope'));
-        if (e.target.closest('[data-pk-history]')) { navigate('pickem-history'); renderPickemHistory(); return; }
         if (e.target.closest('[data-pk-reset]')) return resetAll();
         if (e.target.closest('[data-pk-share]')) return share();
         if (e.target.closest('[data-pk-submit]')) return submit();
@@ -109541,80 +109633,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       bindOnce();
       render();
       loadOdds().then(() => render());   // odds refine the winner base
-      loadBoard(BOARD_SCOPE);            // leaderboard (default: this card)
       syncServer();                      // name + submitted/locked state
     }
-    return { init, loadBoard };
+    return { init };
   })();
   function renderPickemPage(evt) { try { PICKEM.init(evt); } catch (e) { console.error('[GillyLab] pickem render error:', e); } }
 
-  // ── Pick'em history page (opened from the account menu) ─────────────────────
-  async function pkHistApi(path) {
-    try { const r = await fetch(path, { credentials: 'same-origin' }); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
-    catch (e) { return { status: 0 }; }
-  }
-  async function renderPickemHistory() {
-    const host = document.getElementById('pickem-history-content');
-    if (!host) return;
-    host.innerHTML = '<div class="pk-board-empty">Loading…</div>';
-    const res = await pkHistApi('/api/pickem/history');
-    if (res.status === 401) { host.innerHTML = '<div class="pk-hist-empty">Log in to see your pick\'em history.</div>'; return; }
-    if (res.status !== 200) { host.innerHTML = '<div class="pk-hist-empty">History unavailable right now.</div>'; return; }
-    const evs = res.events || [];
-    const pct = (n, d) => d ? Math.round(100 * n / d) + '%' : '—';
-    const head = '<div class="pk-hist-head">' +
-      (res.name ? '<div class="pk-hist-name">' + escHtmlAttr(res.name) + '</div>' : '') +
-      '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
-      '<span class="pk-hist-total-lbl">total points · ' + evs.length + ' card' + (evs.length === 1 ? '' : 's') + '</span></div>' +
-      '<div class="pk-hist-stats">' +
-        '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.correct || 0) + '/' + (res.decided || 0) + '</span>' +
-          '<span class="pk-hist-stat-lbl">picks correct · ' + pct(res.correct, res.decided) + '</span></div>' +
-        '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.dogCorrect || 0) + '/' + (res.dogPicks || 0) + '</span>' +
-          '<span class="pk-hist-stat-lbl">underdogs hit · ' + pct(res.dogCorrect, res.dogPicks) + '</span></div>' +
-      '</div></div>';
-    if (!evs.length) {
-      host.innerHTML = head + '<div class="pk-hist-empty">No graded cards yet. Make your picks on the Pick\'em page — they\'ll be scored here after the event.</div>';
-      return;
-    }
-    const rows = evs.map(e => {
-      const pts = e.points || 0;
-      return '<button type="button" class="pk-hist-row" onclick="renderPickemHistoryEvent(\'' + escJsAttr(e.slug) + '\')">' +
-        '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + escHtmlAttr(e.event || e.slug) + '</div>' +
-        '<div class="pk-hist-meta">' + escHtmlAttr(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
-        '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div>' +
-        '<div class="pk-hist-arrow">›</div></button>';
-    }).join('');
-    host.innerHTML = head + '<div class="pk-hist-list">' + rows + '</div>';
-  }
-  async function renderPickemHistoryEvent(slug) {
-    const host = document.getElementById('pickem-history-content');
-    if (!host) return;
-    host.innerHTML = '<div class="pk-board-empty">Loading…</div>';
-    const res = await pkHistApi('/api/pickem/history?event=' + encodeURIComponent(slug));
-    const back = '<button type="button" class="pk-hist-back" onclick="renderPickemHistory()">← All cards</button>';
-    if (res.status !== 200) { host.innerHTML = back + '<div class="pk-hist-empty">Couldn\'t load that card.</div>'; return; }
-    const bouts = res.bouts || [];
-    const rows = bouts.map(b => {
-      let tag = 'pending', label = 'Pending';
-      if (b.voided) { tag = 'void'; label = 'No contest — void'; }
-      else if (b.pending) { tag = 'pending'; label = 'Pending'; }
-      else if (b.winnerHit) { tag = 'hit'; label = 'Winner' + (b.methodHit ? ' + method' : '') + (b.roundHit ? ' + round' : ''); }
-      else { tag = 'miss'; label = 'Wrong winner'; }
-      const pts = b.points || 0;
-      const sub = (b.method || '—') + (b.round ? ' · R' + b.round : '') + ' · ' + (b.confidence || '') + ' conf · ' + label;
-      return '<div class="pk-hist-bout ' + tag + '">' +
-        '<div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">' + escHtmlAttr(b.winner || '') + '</div>' +
-        '<div class="pk-hist-bout-detail">' + escHtmlAttr(sub) + '</div></div>' +
-        '<div class="pk-hist-bout-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
-    }).join('');
-    const total = res.total || 0;
-    host.innerHTML = back +
-      '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + escHtmlAttr(res.event || slug) + '</div>' +
-      '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
-      (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 0.6rem;">Not fully graded yet — results still coming in.</div>') +
-      '<div class="pk-hist-bouts">' + rows + '</div>';
-  }
-  if (typeof window !== 'undefined') { window.renderPickemHistory = renderPickemHistory; window.renderPickemHistoryEvent = renderPickemHistoryEvent; }
 
 
   async function initDynamicPages() {
