@@ -2718,7 +2718,7 @@
       .fd-name           { white-space: normal; }
 
       /* ── Fighter profile page ── */
-      .fighter-hero      { padding: 2rem 1rem 0.4rem; }
+      .fighter-hero      { padding: 2rem 1rem 0.15rem; }
       .fighter-hero-inner {
         grid-template-columns: auto 1fr;
         gap: 1rem;
@@ -2736,7 +2736,7 @@
         gap: 0.85rem;
       }
       .rb-section-title  { font-size: 0.68rem; }
-      .fighter-stats-v2 { padding: 0.4rem 1rem 1rem; }
+      .fighter-stats-v2 { padding: 0.15rem 1rem 1rem; }
       .fsx-card         { padding: 1rem; }
       .fsx-bio          { gap: 1rem; }
       .fsx-label        { flex-basis: 148px; font-size: 0.76rem; }
@@ -101918,6 +101918,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    // to News afterwards on its own timer, and now won't early-return in
    // switchFighterTab() from News already being active.
    resetFighterTabs();
+   // Record breakdown starts collapsed on every profile — its open state is
+   // per-fighter and shouldn't carry over to the next one.
+   const _rbPanel = document.getElementById('f-record-breakdown');
+   const _rbBtn = document.getElementById('f-record-toggle');
+   if (_rbPanel) _rbPanel.classList.remove('open');
+   if (_rbBtn) { _rbBtn.classList.remove('open'); _rbBtn.textContent = 'Record Breakdown ⌄'; }
    document.getElementById('f-name').textContent = name;
    // Rank line is driven by the same data as the Rankings page so the two never
    // drift: official UFC media-panel rank (rankings.json) shown as the primary
