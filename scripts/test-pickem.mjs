@@ -1,6 +1,6 @@
 // Unit tests for worker/pickem.mjs — the pure scoring/grading/aggregation core.
 import {
-  gradeBout, gradeCard, buildLeaderboard, userHistory, cleanName,
+  gradeBout, gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName,
   pairKey, methodBucket, CONF_MULT, CONF_PENALTY,
 } from '../worker/pickem.mjs';
 
@@ -69,6 +69,11 @@ eq('last5 == all here: Bravo 110, Alpha 90, Charlie 5', last5.map(r => [r.name, 
 const all = buildLeaderboard(aggs, ordered, 'all');
 eq('all: Bravo 110, Alpha 90, Charlie 5', all.map(r => [r.name, r.points]), [['Bravo', 110], ['Alpha', 90], ['Charlie', 5]]);
 eq('ranks assigned 1..n', all.map(r => r.rank), [1, 2, 3]);
+
+console.log('\n== playerRanks ==');
+eq('Bravo is #1 all-time, Alpha #2', [playerRanks(aggs, ordered, 'Bravo').all, playerRanks(aggs, ordered, 'Alpha').all], [1, 2]);
+eq('recent card: Alpha #1, Bravo #2 -> Bravo last5 still #1', [playerRanks(aggs, ordered, 'Bravo').last5, playerRanks(aggs, ordered, 'Alpha').last5], [1, 2]);
+eq('unknown name -> null ranks', [playerRanks(aggs, ordered, 'Nobody').all, playerRanks(aggs, ordered, 'Nobody').last5], [null, null]);
 
 console.log('\n== userHistory ==');
 const hist = userHistory(aggs[0], ordered);

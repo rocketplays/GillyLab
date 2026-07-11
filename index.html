@@ -3313,9 +3313,16 @@
       .pk-tab:hover { border-color: rgba(255,255,255,0.28); }
       .pk-tab.sel { border-color: var(--accent); background: rgba(0,230,104,0.12); color: var(--text); }
       .pk-board-list { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-      .pk-board-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .pk-board-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); width: 100%; background: none; border-left: none; border-right: none; border-top: none; color: var(--text); font-family: inherit; text-align: left; cursor: pointer; transition: background .12s; }
       .pk-board-row:last-child { border-bottom: none; }
+      .pk-board-row:hover { background: rgba(255,255,255,0.04); }
       .pk-board-row.me { background: rgba(0,230,104,0.08); }
+      .pk-board-row.me:hover { background: rgba(0,230,104,0.12); }
+      .pk-board-chev { flex: 0 0 auto; color: var(--muted); font-size: 1.05rem; margin-left: 0.1rem; }
+      /* leaderboard rank badges on a profile */
+      .pk-hist-ranks { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.1rem 0 0.2rem; }
+      .pk-rank-badge { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent); background: rgba(0,230,104,0.12); border: 1px solid rgba(0,230,104,0.35); border-radius: 6px; padding: 0.15rem 0.45rem; }
+      .pk-hist-row-static { cursor: default; }
       .pk-board-rank { flex: 0 0 2rem; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--muted); font-size: 0.95rem; }
       .pk-board-row.me .pk-board-rank { color: var(--accent); }
       .pk-board-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 0.88rem; }
@@ -3736,6 +3743,19 @@
   </div>
   <div class="divider"></div>
   <div id="pickem-history-content" class="pk-wrap"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE: PICK'EM PLAYER PROFILE
+══════════════════════════════════════ -->
+<div class="page" id="page-pickem-player">
+  <div class="page-header">
+    <div class="page-header-label">Player</div>
+    <div class="page-header-title">Pick'em <span class="accent">Profile</span></div>
+  </div>
+  <div class="divider"></div>
+  <div id="pickem-player-content" class="pk-wrap"></div>
 </div>
 
 
@@ -7254,6 +7274,30 @@
  }
  function pkBackBtn() { return '<button type="button" class="pk-hist-back" onclick="navigate(\'pickem\')">← Back to Pick\'em</button>'; }
 
+ // Shared stats header for the history + player-profile pages: display name,
+ // leaderboard rank badges, cumulative points, overall record and underdog record.
+ function pkRankBadges(res) {
+   const parts = [];
+   if (res.rankAll) parts.push('All-time #' + res.rankAll);
+   if (res.rankLast5) parts.push('Last 5 #' + res.rankLast5);
+   return parts.length ? '<div class="pk-hist-ranks">' + parts.map(p => '<span class="pk-rank-badge">' + p + '</span>').join('') + '</div>' : '';
+ }
+ function pkStatsHead(res) {
+   const pct = (n, d) => d ? Math.round(100 * n / d) + '%' : '—';
+   const n = (res.events || []).length;
+   return '<div class="pk-hist-head">' +
+     (res.name ? '<div class="pk-hist-name">' + pkEsc(res.name) + '</div>' : '') +
+     pkRankBadges(res) +
+     '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
+     '<span class="pk-hist-total-lbl">total points · ' + n + ' card' + (n === 1 ? '' : 's') + '</span></div>' +
+     '<div class="pk-hist-stats">' +
+       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.correct || 0) + '/' + (res.decided || 0) + '</span>' +
+         '<span class="pk-hist-stat-lbl">picks correct · ' + pct(res.correct, res.decided) + '</span></div>' +
+       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.dogCorrect || 0) + '/' + (res.dogPicks || 0) + '</span>' +
+         '<span class="pk-hist-stat-lbl">underdogs hit · ' + pct(res.dogCorrect, res.dogPicks) + '</span></div>' +
+     '</div></div>';
+ }
+
  function openPickemHistory() { navigate('pickem-history'); renderPickemHistory(); }
  async function renderPickemHistory() {
    const host = document.getElementById('pickem-history-content');
@@ -7263,17 +7307,7 @@
    if (res.status === 401) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">Log in to see your pick\'em history.</div>'; return; }
    if (res.status !== 200) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">History unavailable right now.</div>'; return; }
    const evs = res.events || [];
-   const pct = (n, d) => d ? Math.round(100 * n / d) + '%' : '—';
-   const head = '<div class="pk-hist-head">' +
-     (res.name ? '<div class="pk-hist-name">' + pkEsc(res.name) + '</div>' : '') +
-     '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
-     '<span class="pk-hist-total-lbl">total points · ' + evs.length + ' card' + (evs.length === 1 ? '' : 's') + '</span></div>' +
-     '<div class="pk-hist-stats">' +
-       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.correct || 0) + '/' + (res.decided || 0) + '</span>' +
-         '<span class="pk-hist-stat-lbl">picks correct · ' + pct(res.correct, res.decided) + '</span></div>' +
-       '<div class="pk-hist-stat"><span class="pk-hist-stat-num">' + (res.dogCorrect || 0) + '/' + (res.dogPicks || 0) + '</span>' +
-         '<span class="pk-hist-stat-lbl">underdogs hit · ' + pct(res.dogCorrect, res.dogPicks) + '</span></div>' +
-     '</div></div>';
+   const head = pkStatsHead(res);
    if (!evs.length) { host.innerHTML = pkBackBtn() + head + '<div class="pk-hist-empty">No graded cards yet. Make your picks on the Pick\'em page — they\'ll be scored here after the event.</div>'; return; }
    const rows = evs.map(e => {
      const pts = e.points || 0;
@@ -7331,18 +7365,44 @@
    if (res.status !== 200 || !Array.isArray(res.rows)) { listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
    if (!res.rows.length) { listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>'; return; }
    const meName = res.me && res.me.name;
-   const row = (r, me) => '<div class="pk-board-row' + (me ? ' me' : '') + '">' +
+   // Each row opens that player's profile.
+   const row = (r, me) => '<button type="button" class="pk-board-row' + (me ? ' me' : '') + '" onclick="openPickemPlayer(\'' + pkEscJs(r.name) + '\')">' +
      '<span class="pk-board-rank">' + r.rank + '</span>' +
      '<span class="pk-board-name">' + pkEsc(r.name) + (me ? ' <span class="pk-you">you</span>' : '') + '</span>' +
-     '<span class="pk-board-pts">' + r.points + '</span></div>';
+     '<span class="pk-board-pts">' + r.points + '</span><span class="pk-board-chev">›</span></button>';
    let out = res.rows.map(r => row(r, meName && r.name === meName)).join('');
    if (res.me && !res.rows.some(r => r.name === meName)) out += '<div class="pk-board-sep">···</div>' + row(res.me, true);
    listEl.innerHTML = out;
  }
+
+ // ── Player profile (opened from a leaderboard name) ─────────────────────────
+ function openPickemPlayer(name) { navigate('pickem-player'); renderPickemPlayer(name); }
+ async function renderPickemPlayer(name) {
+   const host = document.getElementById('pickem-player-content');
+   if (!host) return;
+   const back = '<button type="button" class="pk-hist-back" onclick="navigate(\'pickem-leaderboard\')">← Back to leaderboard</button>';
+   host.innerHTML = back + '<div class="pk-board-empty">Loading…</div>';
+   const res = await pkFetch('/api/pickem/player?name=' + encodeURIComponent(name));
+   if (res.status === 404) { host.innerHTML = back + '<div class="pk-hist-empty">Player not found.</div>'; return; }
+   if (res.status !== 200) { host.innerHTML = back + '<div class="pk-hist-empty">Profile unavailable right now.</div>'; return; }
+   if (!res.name) res.name = name;
+   const evs = res.events || [];
+   const rows = evs.map(e => {
+     const pts = e.points || 0;
+     return '<div class="pk-hist-row pk-hist-row-static">' +
+       '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + pkEsc(e.event || e.slug) + '</div>' +
+       '<div class="pk-hist-meta">' + pkEsc(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
+       '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+   }).join('');
+   host.innerHTML = back + pkStatsHead(res) +
+     (evs.length ? '<div class="pk-hist-list">' + rows + '</div>' : '<div class="pk-hist-empty">No graded cards yet.</div>');
+ }
+
  if (typeof window !== 'undefined') {
    window.openPickemHistory = openPickemHistory; window.renderPickemHistory = renderPickemHistory;
    window.renderPickemHistoryEvent = renderPickemHistoryEvent;
    window.openPickemLeaderboard = openPickemLeaderboard; window.renderPickemLeaderboard = renderPickemLeaderboard;
+   window.openPickemPlayer = openPickemPlayer; window.renderPickemPlayer = renderPickemPlayer;
  }
 
  // ── VERIFIED STATS FROM UFCSTATS.COM ──

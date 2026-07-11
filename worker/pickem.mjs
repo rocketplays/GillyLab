@@ -112,6 +112,13 @@ export function buildLeaderboard(aggs, orderedSlugs, scope) {
   return rows.map((r, i) => ({ rank: i + 1, name: r.name, points: r.points, played: r.played }));
 }
 
+// This player's 1-based rank in the all-time and last-5 leaderboards (null if
+// they don't place in that scope).
+export function playerRanks(aggs, orderedSlugs, name) {
+  const find = (scope) => { const r = buildLeaderboard(aggs, orderedSlugs, scope).find(x => x.name === name); return r ? r.rank : null; };
+  return { all: find('all'), last5: find('last5') };
+}
+
 // A single user's history, newest first, with cumulative totals + records.
 export function userHistory(agg, orderedSlugs) {
   const events = orderedSlugs

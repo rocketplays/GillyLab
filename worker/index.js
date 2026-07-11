@@ -20,7 +20,7 @@
 import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
-import { gradeCard, buildLeaderboard, userHistory, cleanName } from "./pickem.mjs";
+import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
 
 const COOKIE = "gl_session";
 const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
@@ -330,13 +330,21 @@ async function ensureGraded(env, url) {
   return events.map(e => e.slug);
 }
 
+// Finalized slug order + every user's agg record (for leaderboards + ranks).
+async function pickemBoardData(env, url) {
+  const ordered = await ensureGraded(env, url);
+  const aggs = [];
+  for (const k of await listAllKeys(env, "ag:")) { const a = await pkGet(env, k); if (a) aggs.push(a); }
+  return { ordered, aggs };
+}
+
 async function handlePickemHistory(request, env, url) {
   const s = await pickemSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
-  const ordered = await ensureGraded(env, url);
   // ?event=slug -> per-bout breakdown of that card for this user (drill-down).
   const slug = url.searchParams.get("event");
   if (slug) {
+    await ensureGraded(env, url);
     const rec = await pkGet(env, "pk:" + slug + ":" + s.email);
     if (!rec) return json({ error: "no picks for that event" }, 404);
     const results = await loadResults(env, url);
@@ -344,19 +352,32 @@ async function handlePickemHistory(request, env, url) {
     const card = ev ? gradeCard(rec, ev.bouts) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
     return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts });
   }
+  const { ordered, aggs } = await pickemBoardData(env, url);
   const ag = (await pkGet(env, "ag:" + s.email)) || { name: await getDisplayName(env, s.email), byEvent: {} };
-  return json(userHistory(ag, ordered));
+  const ranks = ag.name ? playerRanks(aggs, ordered, ag.name) : { all: null, last5: null };
+  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 });
 }
 async function handlePickemLeaderboard(request, env, url) {
   const s = await pickemSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
   const scope = url.searchParams.get("scope") || "all";
-  const ordered = await ensureGraded(env, url);
-  const aggs = [];
-  for (const k of await listAllKeys(env, "ag:")) { const a = await pkGet(env, k); if (a) aggs.push(a); }
+  const { ordered, aggs } = await pickemBoardData(env, url);
   const rows = buildLeaderboard(aggs, ordered, scope);
   const myName = await getDisplayName(env, s.email);
   return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null });
+}
+// Public (subscriber) profile for any player by display name.
+async function handlePickemPlayer(request, env, url) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const name = (url.searchParams.get("name") || "").trim();
+  if (!name) return json({ error: "missing name" }, 400);
+  const email = await env.PICKS.get("nm:" + name.toLowerCase());
+  if (!email) return json({ error: "not found" }, 404);
+  const { ordered, aggs } = await pickemBoardData(env, url);
+  const ag = (await pkGet(env, "ag:" + email)) || { name, byEvent: {} };
+  const ranks = playerRanks(aggs, ordered, ag.name || name);
+  return json({ ...userHistory(ag, ordered), rankAll: ranks.all, rankLast5: ranks.last5 });
 }
 
 /* ─────────────────────────────────── responses ─────────────────────────────── */
@@ -399,6 +420,7 @@ export default {
       if (path === "/api/pickem/mine") return handlePickemMine(request, env, url);
       if (path === "/api/pickem/history") return handlePickemHistory(request, env, url);
       if (path === "/api/pickem/leaderboard") return handlePickemLeaderboard(request, env, url);
+      if (path === "/api/pickem/player") return handlePickemPlayer(request, env, url);
 
       // ---- public pages ----
       // Auth-entry pages: if already logged in, skip them and go to the app
