@@ -2779,7 +2779,10 @@
         gap: 0.85rem;
       }
       .rb-section-title  { font-size: 0.68rem; }
-      .fighter-stats-v2 { padding: 0 1rem 0.4rem; }
+      /* Pull the divider up into the empty space under the record row: the
+         record number's line-box sits below the button's baseline but the
+         digits have no descenders, so that band reads as a gap above the line. */
+      .fighter-stats-v2 { padding: 0 1rem 0.4rem; margin-top: -0.45rem; }
       .fsx-card         { padding: 1rem; }
       .fsx-bio          { gap: 1rem; padding: 0.6rem 0; }
       .fsx-label        { flex-basis: 148px; font-size: 0.76rem; }
