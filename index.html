@@ -100536,6 +100536,7 @@ function populateFighterNews(name) {
       const head = document.createElement('div');
       head.style.cssText = 'display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;';
       if (it.injury) {
+        row.dataset.inj = '1';   // so "View news" can flash the flagged article, not just the newest
         const flag = document.createElement('span');
         flag.textContent = '⚠ Injury/Card news';
         flag.style.cssText = 'font-size:0.62rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase;color:#ffb020;background:rgba(255,176,32,0.12);padding:0.1rem 0.4rem;border-radius:5px;flex-shrink:0;';
@@ -100609,19 +100610,23 @@ function openFighterNews(fullName) {
   setTimeout(function () {
     const btn = document.getElementById('ftab-news-btn');
     if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
-    // One authoritative vertical scroll that leaves room ABOVE the tab bar, so
-    // the "News" tab label stays in view (a plain scrollIntoView + the tab
-    // switch's own scroll tended to overshoot and hide the tabs, esp. on mobile).
-    const tabs = document.querySelector('#page-fighter .fighter-tabs');
-    if (tabs) {
-      requestAnimationFrame(function () {
-        const y = window.scrollY + tabs.getBoundingClientRect().top - 90;
-        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
-      });
-    }
     setTimeout(function () {
-      const first = document.querySelector('#fn-list a');
-      if (first) { first.classList.add('gl-news-flash'); setTimeout(function () { first.classList.remove('gl-news-flash'); }, 1700); }
+      // Flash the article flagged as injury/card news if there is one; otherwise
+      // the newest (top) article — e.g. RJ Harris has a single, un-flagged item.
+      const target = document.querySelector('#fn-list a[data-inj]') || document.querySelector('#fn-list a');
+      // One smooth scroll that leaves the "News" tab label in view (a plain
+      // scrollIntoView + the tab switch's own scroll tended to overshoot and hide
+      // the tabs on mobile), dropping a little further only when the flagged
+      // article sits below the fold so it's actually on screen when it flashes.
+      const tabs = document.querySelector('#page-fighter .fighter-tabs');
+      let y = tabs ? (window.scrollY + tabs.getBoundingClientRect().top - 90) : window.scrollY;
+      if (target) {
+        const r = target.getBoundingClientRect();
+        const targetAbs = window.scrollY + r.top;
+        if (targetAbs + r.height > y + window.innerHeight - 30) y = targetAbs - 130;
+      }
+      window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      if (target) { target.classList.add('gl-news-flash'); setTimeout(function () { target.classList.remove('gl-news-flash'); }, 1700); }
     }, 480);
   }, 300);
 }
