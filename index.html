@@ -100564,15 +100564,23 @@ function populateFighterNews(name) {
 function applyInjuryFlags() {
   loadFighterNews().then(function (data) {
     if (!data || !data.fighters) return;
-    if (!Object.keys(data.fighters).some(k => data.fighters[k].hasInjuryNews)) return;
+    // Flag a row if a fighter has injury/card news OR is a confirmed short-notice
+    // replacement (whose own news often isn't classed as "injury"). Bail only
+    // when there's neither.
+    const _snSet = (typeof SHORT_NOTICE_SET !== 'undefined') ? SHORT_NOTICE_SET : null;
+    const anyInjury = Object.keys(data.fighters).some(k => data.fighters[k].hasInjuryNews);
+    const anySN = _snSet && _snSet.size > 0;
+    if (!anyInjury && !anySN) return;
     document.querySelectorAll('.fight-row').forEach(function (row) {
       if (row.dataset.injChecked) return;
       row.dataset.injChecked = '1';
       const cells = [].slice.call(row.querySelectorAll('.fighter-cell'));
       const hasNews = cells.some(function (c) {
         const nameEl = c.querySelector('.fighter-name');
-        const entry = nameEl ? fighterNewsEntry(data, (nameEl.textContent || '').trim()) : null;
-        return entry && entry.hasInjuryNews;
+        const nm = nameEl ? (nameEl.textContent || '').trim() : '';
+        const entry = nm ? fighterNewsEntry(data, nm) : null;
+        const isSN = _snSet && typeof _newsNorm === 'function' && _snSet.has(_newsNorm(nm));
+        return (entry && entry.hasInjuryNews) || isSN;
       });
       if (!hasNews) return;
       const btn = row.querySelector('.fight-info-toggle');
@@ -101898,7 +101906,12 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       // the change has already happened — show that, and suppress the pending
       // "bout may change" flag (which would otherwise fire on the now-stale news).
       if (snName) {
-        addChip('⚠', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', newsFull ? function () { openFighterNews(newsFull); } : null);
+        // Prefer linking to the replacement's OWN news feed (a short-notice
+        // fighter often has news that isn't classed as "injury"), falling back
+        // to whichever feed carries the injury/card story.
+        const snEntry = snName === name ? aE : (snName === opp ? bE : null);
+        const snLink = (snEntry && snEntry.items && snEntry.items.length) ? snName : newsFull;
+        addChip('⚠', 'Short notice', short(snName), short(snName) + ' stepped in on short notice', snLink ? function () { openFighterNews(snLink); } : null);
       } else if (who) {
         addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
       }
