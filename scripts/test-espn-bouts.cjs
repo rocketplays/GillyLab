@@ -386,6 +386,16 @@ console.log("\n=== live result patcher (fetch-espn-live) ===");
   L.applyResult(b2, { winnerSlug: null, status: { type: { completed: false, state: "in" }, period: 1, displayClock: "2:00" } });
   ok("a bout underway is 'live', not decided", b2.status === "live" && !b2.winnerFighterSlug && b2.method === null);
 
+  // Late replacement: ESPN flags a winner but that athlete's record has a null
+  // slug. The bout must resolve win/loss BY NAME, not fall back to a draw.
+  const b5 = bout();
+  L.applyResult(b5, { winnerSlug: null, winnerName: "A Fighter", status: { type: { completed: true, state: "post" }, period: 1, displayClock: "2:34", result: { displayName: "Submission", description: "Rear Naked Choke" } } });
+  ok("null-slug winner resolves by name (not a draw)", b5.fighters[0].outcome === "win" && b5.fighters[1].outcome === "loss" && b5.winnerFighterSlug === "a" && b5.method === "Submission");
+  // A genuine draw (no winner at all) still resolves to a draw.
+  const b6 = bout();
+  L.applyResult(b6, { winnerSlug: null, winnerName: null, status: { type: { completed: true, state: "post" }, period: 3, displayClock: "5:00", result: { displayName: "Draw" } } });
+  ok("no winner at all -> draw", b6.fighters[0].outcome === "draw" && b6.fighters[1].outcome === "draw");
+
   // 'completed' is what evicts an event from event.json, so it must wait.
   const done = [{ status: "completed" }, { status: "completed" }];
   ok("card stays live while it owns the featured slot", L.liveEventStatus(done, "2026-07-12T01:00:00Z", at("2026-07-12T05:00:00Z")) === "live");

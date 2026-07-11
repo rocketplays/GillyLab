@@ -99,7 +99,7 @@ function applyResult(bout, espn) {
   const set = (k, v) => { if (v != null && bout[k] !== v) { changed.push(k + '=' + v); bout[k] = v; } };
 
   const decided = !!(espn.status && espn.status.type && espn.status.type.completed);
-  if (bout.winnerFighterSlug && !espn.winnerSlug) return changed;   // never un-decide
+  if (bout.winnerFighterSlug && !espn.winnerSlug && !espn.winnerName) return changed;   // never un-decide
 
   set('status', E.boutStatusOf(espn.status));
   if (decided) {
@@ -108,10 +108,19 @@ function applyResult(bout, espn) {
     if (methodDetails != null && bout.methodDetails !== methodDetails) { changed.push('methodDetails=' + methodDetails); bout.methodDetails = methodDetails; }
     set('resultRound', (espn.status.period || 0) || null);
     set('resultTime', E.resultTimeOf(espn.status));
-    set('winnerFighterSlug', espn.winnerSlug);
+    // Identify the winning bout fighter by slug, falling back to NAME. ESPN can
+    // flag a winner (competitor.winner === true) while that athlete's record has a
+    // null slug — common for a late replacement — which used to leave the bout a
+    // draw despite a real, methodful result.
+    const nm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '');
+    let winner = null;
+    if (espn.winnerSlug) winner = (bout.fighters || []).find((f) => f.fighterSlug === espn.winnerSlug);
+    if (!winner && espn.winnerName) winner = (bout.fighters || []).find((f) => nm(f.fighterName) === nm(espn.winnerName));
+    const hasWinner = !!(espn.winnerSlug || espn.winnerName);
+    set('winnerFighterSlug', winner ? winner.fighterSlug : espn.winnerSlug);
     (bout.fighters || []).forEach((f) => {
-      const isWinner = espn.winnerSlug != null && f.fighterSlug === espn.winnerSlug;
-      const o = E.outcomeFor(true, isWinner, !!espn.winnerSlug, method);
+      const isWinner = winner ? (f === winner) : (espn.winnerSlug != null && f.fighterSlug === espn.winnerSlug);
+      const o = E.outcomeFor(true, isWinner, hasWinner, method);
       if (f.outcome !== o) { changed.push(f.fighterName + '=' + o); f.outcome = o; }
     });
     if (bout.dataAvailability) bout.dataAvailability.result = 'available';
@@ -251,7 +260,7 @@ async function espnBouts(espnId, cache) {
     const w = fighters.find((f) => f.winner);
     out.push({
       names: fighters.map((f) => f.name), slugs: fighters.map((f) => f.slug),
-      winnerSlug: w ? w.slug : null, status,
+      winnerSlug: w ? w.slug : null, winnerName: w ? w.name : null, status,
       statRefs: cs.map((cc) => (cc.statistics && cc.statistics.$ref) || null),
     });
   }
