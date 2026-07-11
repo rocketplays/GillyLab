@@ -101981,7 +101981,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    const _setRankLine = () => {
      const offBadge  = (typeof fighterDivisionRankBadge === 'function') ? fighterDivisionRankBadge(name) : '';
      const metaBadge = (typeof fighterMetaRankBadge === 'function') ? fighterMetaRankBadge(name) : '';
-     let line = division + ' · ' + (offBadge || 'NR');
+     // Spell the division out for the profile header (FIGHTERS stores it
+     // abbreviated: WW, FW, LW, ...). Falls back to the raw value if unknown.
+     const _divFull = ({ FLW: 'Flyweight', BW: 'Bantamweight', FW: 'Featherweight', LW: 'Lightweight', WW: 'Welterweight', MW: 'Middleweight', LHW: 'Light Heavyweight', HW: 'Heavyweight', WSW: "Women's Strawweight", WFLW: "Women's Flyweight", WBW: "Women's Bantamweight", WFW: "Women's Featherweight" })[division] || division;
+     let line = _divFull + ' · ' + (offBadge || 'NR');
      if (metaBadge) line += ' | ' + metaBadge + ' Meta AI';
      const el = document.getElementById('f-division');
      if (el) el.textContent = line;
