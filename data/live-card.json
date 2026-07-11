@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T22:14:47.010Z",
+ "generatedAt": "2026-07-11T22:20:59.999Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -554,6 +554,192 @@
       "ground": [
        10,
        14
+      ]
+     }
+    }
+   ]
+  },
+  "Damian Pinas": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cesar Almeida",
+     "result": "D",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "0:41",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cesar Almeida",
+     "result": "D",
+     "f": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 32,
+      "totL": 20,
+      "totA": 32,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       7,
+       16
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       20,
+       32
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 56,
+      "totL": 30,
+      "totA": 58,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       3,
+       18
+      ],
+      "body": [
+       15,
+       23
+      ],
+      "leg": [
+       10,
+       15
+      ],
+      "dist": [
+       28,
+       56
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  "Cesar Almeida": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Damian Pinas",
+     "result": "D",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "0:41",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Damian Pinas",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 56,
+      "totL": 30,
+      "totA": 58,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       3,
+       18
+      ],
+      "body": [
+       15,
+       23
+      ],
+      "leg": [
+       10,
+       15
+      ],
+      "dist": [
+       28,
+       56
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 20,
+      "sigA": 32,
+      "totL": 20,
+      "totA": 32,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       7,
+       16
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       20,
+       32
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
       ]
      }
     }
