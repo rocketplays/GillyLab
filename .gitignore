@@ -21,3 +21,6 @@ node_modules/
 
 # sim-backtest generated intermediates (regenerable via extract-sim.cjs / backtest.cjs)
 scripts/sim-backtest/_*
+
+# card-changes.cjs --dump output (debug only)
+data/card-changes-debug.txt
