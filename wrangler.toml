@@ -40,7 +40,7 @@ id = "aca631f159dd48c5869d4e18df10c64c"
 [[kv_namespaces]]
 binding = "PICKS"      # pick'em: display names, per-event picks, graded aggregates
 # Create it once and paste the id here:  wrangler kv namespace create PICKS
-id = "REPLACE_WITH_PICKS_KV_ID"
+id = "c5a25c12d945410c9e52c2777cdbd116"
 
 # Secrets to set (NOT here — run these once, values never touch git):
 #   wrangler secret put STRIPE_SECRET_KEY       # sk_live_... (or sk_test_...)
