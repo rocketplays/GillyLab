@@ -109158,16 +109158,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     } catch (e) { return 0; }                                // missing or malformed: carry on regardless
     const fighters = (doc && doc.fighters) || {};
     let n = 0;
-    for (const name of Object.keys(fighters)) {
-      const e = fighters[name] || {};
+    // The live poller keys rows by ESPN's name (e.g. "Zach Reese"), which won't
+    // match the roster / photos / profile lookups ("Zachary Reese"). Canonicalize
+    // the fighter key AND each row's opponent so the merged rows land on the right
+    // profile and render with a headshot + a clickable name.
+    const canon = (nm) => (typeof resolveCanonicalFighterName === 'function') ? resolveCanonicalFighterName(nm, null) : nm;
+    const fixRows = (rows) => (rows || []).map(r => (r && r.opponent) ? Object.assign({}, r, { opponent: canon(r.opponent) }) : r);
+    for (const rawName of Object.keys(fighters)) {
+      const e = fighters[rawName] || {};
+      const name = canon(rawName);
       if (typeof FIGHT_HISTORY !== 'undefined' && Array.isArray(e.history) && e.history.length) {
         FIGHT_HISTORY[name] = FIGHT_HISTORY[name] || [];
-        n += glMergeRows(FIGHT_HISTORY[name], e.history);
+        n += glMergeRows(FIGHT_HISTORY[name], fixRows(e.history));
       }
       if (Array.isArray(e.stats) && e.stats.length) {
         window.FIGHT_STATS = window.FIGHT_STATS || {};
         window.FIGHT_STATS[name] = window.FIGHT_STATS[name] || [];
-        glMergeRows(window.FIGHT_STATS[name], e.stats);
+        glMergeRows(window.FIGHT_STATS[name], fixRows(e.stats));
       }
     }
     return n;
