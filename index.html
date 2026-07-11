@@ -1438,24 +1438,32 @@
 
     .projection-card:hover { border-color: var(--border); }
 
-    .projection-fighters {
+    .proj-top {
       display: flex;
-      align-items: center;
+      align-items: flex-end;
+      justify-content: space-between;
       gap: 1rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.7rem;
     }
 
     .proj-fighter {
       flex: 1;
       min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
+
+    .proj-fighter.right { justify-content: flex-end; }
+    .proj-fighter.fav .proj-avatar { border-color: var(--accent); }
 
     .proj-name {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.05em;
       text-transform: uppercase;
+      color: #a9a9b0;
       cursor: pointer;
       transition: color 0.15s;
       min-width: 0;
@@ -1464,6 +1472,8 @@
       white-space: nowrap;
     }
 
+    .proj-fighter.fav .proj-name { color: var(--text); }
+
     .rc-fighter { transition: text-decoration-color 0.15s, color 0.15s; }
     .rc-fighter:hover { color: #fff; text-decoration-color: #fff; }
 
@@ -1471,14 +1481,24 @@
       color: var(--accent);
     }
 
-    .proj-name-row {
+    .proj-bar2 {
+      position: relative;
+      height: 26px;
+      background: var(--surface2);
+      border-radius: 5px;
+      overflow: hidden;
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      min-width: 0;
     }
 
-    .proj-fighter.right .proj-name-row { justify-content: flex-end; }
+    .proj-seg {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      transition: width 1s ease;
+    }
+
+    .proj-seg-left  { justify-content: flex-start; padding-left: 0.6rem; border-radius: 5px 0 0 5px; }
+    .proj-seg-right { flex: 1; justify-content: flex-end; padding-right: 0.6rem; border-radius: 0 5px 5px 0; }
 
     .proj-avatar {
       width: 32px;
@@ -1500,22 +1520,25 @@
       display: block;
     }
 
-    .proj-pct {
+    .proj-seg-pct {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 900;
-      font-size: 1.8rem;
-      color: var(--accent);
+      font-size: 1rem;
       line-height: 1;
     }
 
-    .proj-pct.right-fighter { color: var(--muted); }
+    .proj-seg.win  { background: var(--accent); }
+    .proj-seg.win  .proj-seg-pct { color: #062a13; }
+    .proj-seg.lose { background: #3a3a44; }
+    .proj-seg.lose .proj-seg-pct { color: var(--text); }
 
-    .proj-vs-label {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
+    .proj-mid {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(255,255,255,0.28);
     }
 
     .proj-bar-wrap {
@@ -1540,13 +1563,29 @@
       border-radius: 0 4px 4px 0;
     }
 
+    .proj-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.7rem;
+    }
+
     .proj-weight {
       font-size: 0.7rem;
       color: var(--muted);
       letter-spacing: 0.15em;
       text-transform: uppercase;
-      margin-top: 0.75rem;
-      text-align: center;
+    }
+
+    .proj-main-tag {
+      font-size: 0.62rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      border: 1px solid var(--accent);
+      border-radius: 3px;
+      padding: 1px 6px;
+      white-space: nowrap;
     }
 
     /* ── FIGHT SIMULATOR ── */
@@ -2807,12 +2846,12 @@
       .fighter-name      { font-size: 0.75rem; }
 
       /* ── Win Projections cards ── */
-      .projection-card     { padding: 0.75rem; }
-      .projection-fighters { gap: 0.5rem; }
-      .proj-name-row       { gap: 0.35rem; }
-      .proj-name           { font-size: 0.85rem; }
-      .proj-pct            { font-size: 1.3rem; }
+      .projection-card     { padding: 0.85rem 0.9rem; }
+      .proj-top            { gap: 0.5rem; }
+      .proj-name           { font-size: 0.9rem; }
       .proj-avatar         { width: 26px; height: 26px; min-width: 26px; }
+      .proj-bar2           { height: 24px; }
+      .proj-seg-pct        { font-size: 0.92rem; }
     }
 
     .fight-odds-panel { animation: fadeIn 0.2s ease; }
@@ -103545,7 +103584,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         });
       }
 
-      const cards = fights.map(fight => {
+      const cards = fights.map((fight, idx) => {
         const pcts = noVigPcts(fight);
         if (!pcts) return null;
         const evtFight = findEvtFight(fight);
@@ -103554,19 +103593,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const awayName = resolveCanonicalFighterName(fight.away_team, null);
         const n1Esc = String(homeName).replace(/"/g, '&quot;');
         const n2Esc = String(awayName).replace(/"/g, '&quot;');
-        const p1Leads = pcts.pct1 >= pcts.pct2;
-        const p1PctCls = p1Leads ? 'proj-pct' : 'proj-pct right-fighter';
-        const p2PctCls = p1Leads ? 'proj-pct right-fighter' : 'proj-pct';
-        const barLeftColor = p1Leads ? 'var(--accent)' : 'var(--muted)';
-        const barRightColor = p1Leads ? 'var(--muted)' : 'var(--accent)';
+        const aFav = pcts.pct1 >= pcts.pct2;
         return `<div class="projection-card">
-          <div class="projection-fighters">
-            <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${homeName}</div></div><div class="${p1PctCls}">${pcts.pct1}%</div></div>
-            <div class="proj-vs-label">VS</div>
-            <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${awayName}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div><div class="${p2PctCls}" style="text-align:right;">${pcts.pct2}%</div></div>
+          <div class="proj-top">
+            <div class="proj-fighter${aFav ? ' fav' : ''}"><div class="proj-avatar" data-fighter="${n1Esc}"></div><div class="proj-name">${homeName}</div></div>
+            <div class="proj-fighter right${aFav ? '' : ' fav'}"><div class="proj-name">${awayName}</div><div class="proj-avatar" data-fighter="${n2Esc}"></div></div>
           </div>
-          <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${pcts.pct1}%;background:${barLeftColor};"></div><div class="proj-bar-right" style="background:${barRightColor};"></div></div>
-          <div class="proj-weight">${label}</div>
+          <div class="proj-bar2">
+            <div class="proj-seg proj-seg-left ${aFav ? 'win' : 'lose'}" style="width:${pcts.pct1}%;"><span class="proj-seg-pct">${pcts.pct1}%</span></div>
+            <div class="proj-seg proj-seg-right ${aFav ? 'lose' : 'win'}"><span class="proj-seg-pct">${pcts.pct2}%</span></div>
+            <div class="proj-mid"></div>
+          </div>
+          <div class="proj-foot">
+            <div class="proj-weight">${label}</div>
+            ${idx === 0 ? '<div class="proj-main-tag">Main event</div>' : ''}
+          </div>
         </div>`;
       }).filter(Boolean).join('');
 
@@ -103579,23 +103620,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     } catch(e) {
       // Fallback: use manual projections if available
       if (evt.projections) {
-        const html = evt.projections.map(p => {
+        const html = evt.projections.map((p, idx) => {
           const f1Esc = String(p.f1).replace(/"/g, '&quot;');
           const f2Esc = String(p.f2).replace(/"/g, '&quot;');
-          const p1Leads = p.pct1 >= p.pct2;
-          const p1PctCls = p1Leads ? 'proj-pct' : 'proj-pct right-fighter';
-          const p2PctCls = p1Leads ? 'proj-pct right-fighter' : 'proj-pct';
-          const barLeftColor = p1Leads ? 'var(--accent)' : 'var(--muted)';
-          const barRightColor = p1Leads ? 'var(--muted)' : 'var(--accent)';
+          const aFav = p.pct1 >= p.pct2;
           return `
           <div class="projection-card">
-            <div class="projection-fighters">
-              <div class="proj-fighter"><div class="proj-name-row"><div class="proj-avatar" data-fighter="${f1Esc}"></div><div class="proj-name">${p.f1}</div></div><div class="${p1PctCls}">${p.pct1}%</div></div>
-              <div class="proj-vs-label">VS</div>
-              <div class="proj-fighter right" style="text-align:right;"><div class="proj-name-row"><div class="proj-name" style="text-align:right;">${p.f2}</div><div class="proj-avatar" data-fighter="${f2Esc}"></div></div><div class="${p2PctCls}" style="text-align:right;">${p.pct2}%</div></div>
+            <div class="proj-top">
+              <div class="proj-fighter${aFav ? ' fav' : ''}"><div class="proj-avatar" data-fighter="${f1Esc}"></div><div class="proj-name">${p.f1}</div></div>
+              <div class="proj-fighter right${aFav ? '' : ' fav'}"><div class="proj-name">${p.f2}</div><div class="proj-avatar" data-fighter="${f2Esc}"></div></div>
             </div>
-            <div class="proj-bar-wrap"><div class="proj-bar-left" style="width:${p.pct1}%;background:${barLeftColor};"></div><div class="proj-bar-right" style="background:${barRightColor};"></div></div>
-            <div class="proj-weight">${p.label}</div>
+            <div class="proj-bar2">
+              <div class="proj-seg proj-seg-left ${aFav ? 'win' : 'lose'}" style="width:${p.pct1}%;"><span class="proj-seg-pct">${p.pct1}%</span></div>
+              <div class="proj-seg proj-seg-right ${aFav ? 'lose' : 'win'}"><span class="proj-seg-pct">${p.pct2}%</span></div>
+              <div class="proj-mid"></div>
+            </div>
+            <div class="proj-foot">
+              <div class="proj-weight">${p.label}</div>
+              ${idx === 0 ? '<div class="proj-main-tag">Main event</div>' : ''}
+            </div>
           </div>`;
         }).join('');
         container.className = 'projections-grid';
