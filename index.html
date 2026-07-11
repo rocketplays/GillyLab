@@ -3353,8 +3353,25 @@
       .pk-viewhist { width: 100%; margin-top: 0.7rem; }
       /* top button row on the pick'em page */
       .pk-subnav { display: flex; gap: 0.5rem; margin: 0 0 1.1rem; }
-      /* card started: freeze the picks (visual + no pointer events) */
-      .pk-bouts-locked { opacity: 0.6; pointer-events: none; filter: saturate(0.6); }
+      /* card started: freeze the picks. Dim only the still-editable pick cards —
+         finished-result cards stay full-visibility. */
+      .pk-bouts-locked { pointer-events: none; }
+      .pk-bouts-locked .pk-bout:not(.pk-bout-result) { opacity: 0.6; filter: saturate(0.6); }
+      /* finished-bout result cards stay on the page */
+      .pk-bout-result { border-left: 3px solid var(--border); }
+      .pk-bout-result.hit { border-left-color: var(--accent); }
+      .pk-bout-result.miss { border-left-color: #ff6a5e; }
+      .pk-bout-result.void { border-left-color: var(--muted); }
+      .pk-res-final { font-size: 0.6rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--border); border-radius: 5px; padding: 0.1rem 0.4rem; }
+      .pk-res-outcome { font-size: 1rem; color: var(--text); margin-bottom: 0.4rem; }
+      .pk-res-outcome strong { font-weight: 700; }
+      .pk-res-method { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
+      .pk-res-foot { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+      .pk-res-pick { color: var(--muted); font-size: 0.8rem; }
+      .pk-res-pts { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.25rem; flex: 0 0 auto; }
+      .pk-res-pts.pos, .pk-pos { color: var(--accent); }
+      .pk-res-pts.neg, .pk-neg { color: #ff6a5e; }
+      .pk-res-pts.zero { color: var(--muted); }
       .pk-subnav-btn { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 9px; padding: 0.55rem 0.6rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: border-color .12s, background .12s; }
       .pk-subnav-btn:hover { border-color: var(--accent); background: rgba(0,230,104,0.08); }
       .pk-hist-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -109232,6 +109249,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const METHODS = ['KO/TKO', 'Submission', 'Decision'];
     const CONF = ['High', 'Med', 'Low'];
     const CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
+    const CONF_PENALTY = { High: 10, Med: 5, Low: 0 };   // cost of a wrong winner, by confidence
     const P_WIN = 10, P_METHOD = 5;
     // A correct round pays more the later it is (harder to call): R1 +4 … R5 +8.
     // Anchored so R2 stays at the old flat +5. Wrong round costs nothing.
@@ -109255,6 +109273,34 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!p || !p.winner || !p.method || !p.confidence) return false;
       if (p.method !== 'Decision' && !p.round) return false;
       return true;
+    }
+    // A bout with a real result (finished + decided).
+    const isDone = (f) => !!(f && f.completed);
+    function methodBucketOf(s) {
+      s = String(s || '').toLowerCase();
+      if (/sub/.test(s)) return 'Submission';
+      if (/dec/.test(s)) return 'Decision';
+      if (/ko|tko|knockout|stoppage|punch|kick|elbow|knee|slam/.test(s)) return 'KO/TKO';
+      return null;
+    }
+    // The actual outcome of a finished bout, from the live-updated fight data.
+    function actualOf(f) {
+      const winner = f.won1 ? f.f1 : (f.won2 ? f.f2 : null);
+      const voided = !!(f.isDraw || f.isNC) || (!f.won1 && !f.won2);
+      return { winner, voided, method: methodBucketOf(f.methodText), round: f.resRound ? +f.resRound : null };
+    }
+    // Grade a user's pick for a finished bout — mirrors the server's gradeBout so
+    // the per-fight points shown here match what lands on the profile.
+    function gradePick(p, f) {
+      const a = actualOf(f);
+      if (!p || !p.winner) return Object.assign({ points: 0, nopick: true }, a);
+      if (a.voided) return Object.assign({ points: 0, voided: true }, a);
+      if (p.winner !== a.winner) return Object.assign({ points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false }, a);
+      const parts = scoreParts(p, f);
+      const methodHit = !!p.method && p.method === a.method;
+      const roundHit = methodHit && p.method !== 'Decision' && p.round != null && +p.round === a.round;
+      const earned = parts.wPts + (methodHit ? parts.mPts : 0) + (roundHit ? parts.rPts : 0);
+      return Object.assign({ points: Math.round(earned * (CONF_MULT[p.confidence] || CONF_MULT.Med)), winnerHit: true, methodHit, roundHit }, a);
     }
     // Just the official divisional rank ("#8"), dropping the "| … Meta AI" tail and "NR".
     const shortRank = (r) => { const t = String(r || '').split('|')[0].trim(); return (!t || t === 'NR') ? '' : t; };
@@ -109386,7 +109432,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
 
     // ---- rendering ----
+    // A finished bout: show the result, the user's pick, and points won/lost.
+    function resultBoutHTML(f) {
+      const p = PICKS[idOf(f)];
+      const g = gradePick(p, f);
+      const loser = g.winner ? (g.winner === f.f1 ? f.f2 : f.f1) : null;
+      const outcome = g.voided
+        ? (f.isNC ? 'No Contest' : 'Draw')
+        : (g.winner ? '<strong>' + esc(g.winner) + '</strong> def. ' + esc(loser) : 'Result');
+      const methodStr = g.voided ? '' : (g.method ? g.method + (g.method !== 'Decision' && g.round ? ' · R' + g.round : '') : '');
+      let cls, pickLine, pts = '';
+      if (g.nopick) { cls = 'void'; pickLine = 'No pick made'; }
+      else if (g.voided) { cls = 'void'; pickLine = 'You picked ' + esc(p.winner) + ' — bout voided'; pts = '<span class="pk-res-pts zero">0</span>'; }
+      else if (g.winnerHit) {
+        cls = 'hit';
+        pickLine = 'You called ' + esc(p.winner) + ' ✓' + (g.methodHit ? ' · method ✓' : '') + (g.roundHit ? ' · round ✓' : '');
+        pts = '<span class="pk-res-pts pos">+' + g.points + '</span>';
+      } else {
+        cls = 'miss';
+        pickLine = 'You called ' + esc(p.winner) + ' ✗';
+        pts = '<span class="pk-res-pts neg">' + g.points + '</span>';
+      }
+      return '<div class="pk-bout pk-bout-result ' + cls + '">' +
+        '<div class="pk-bout-head"><span class="pk-bout-label">' + esc(f.label || f.wc || '') + '</span><span class="pk-res-final">Final</span></div>' +
+        '<div class="pk-res-outcome">' + outcome + (methodStr ? ' <span class="pk-res-method">· ' + esc(methodStr) + '</span>' : '') + '</div>' +
+        '<div class="pk-res-foot"><span class="pk-res-pick">' + pickLine + '</span>' + pts + '</div>' +
+      '</div>';
+    }
     function boutHTML(f) {
+      if (isDone(f)) return resultBoutHTML(f);
       const id = idOf(f);
       const p = PICKS[id] || {};
       const rounds = roundsOf(f);
@@ -109446,17 +109520,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return '';
     }
     function summaryHTML() {
-      const complete = BOUTS.filter(isComplete).length;
-      const pot = BOUTS.reduce((t, f) => t + potential(PICKS[idOf(f)], f), 0);
+      const done = BOUTS.filter(isDone);
+      const pending = BOUTS.filter(f => !isDone(f));
+      const scored = done.reduce((t, f) => t + gradePick(PICKS[idOf(f)], f).points, 0);
+      const atStake = pending.reduce((t, f) => t + potential(PICKS[idOf(f)], f), 0);
+      const complete = pending.filter(isComplete).length;
       const sl = statusLine();
+      const info = done.length
+        ? '<span class="pk-summary-count">Scored so far: <strong class="' + (scored >= 0 ? 'pk-pos' : 'pk-neg') + '">' + (scored > 0 ? '+' : '') + scored + '</strong> pts</span>' +
+          '<span class="pk-summary-pts">' + (pending.length ? 'Still at stake: <strong>' + atStake + '</strong>' : 'Card complete') + '</span>'
+        : '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete' +
+            (Object.keys(PICKS).length ? ' · <button type="button" class="pk-reset-link" data-pk-reset>reset</button>' : '') + '</span>' +
+          '<span class="pk-summary-pts">Points at stake: <strong>' + atStake + '</strong></span>';
       return '<div class="pk-summary">' +
         (sl || '') +
         '<div class="pk-summary-row">' +
-          '<div class="pk-summary-info">' +
-            '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete' +
-              (Object.keys(PICKS).length ? ' · <button type="button" class="pk-reset-link" data-pk-reset>reset</button>' : '') + '</span>' +
-            '<span class="pk-summary-pts">Points at stake: <strong>' + pot + '</strong></span>' +
-          '</div>' +
+          '<div class="pk-summary-info">' + info + '</div>' +
           '<div class="pk-summary-actions">' +
             '<button type="button" class="pk-btn ghost" data-pk-share>Share</button>' +
             (LOCKED
@@ -109697,8 +109776,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     function init(evt) {
       EVT = evt || null;
+      // Keep finished bouts on the page (they render as results); only drop TBAs.
       BOUTS = (evt && evt.fights || []).filter(f =>
-        f && f.f1 && f.f2 && !f.completed && !/^\s*TBA\s*$/i.test(f.f1) && !/^\s*TBA\s*$/i.test(f.f2));
+        f && f.f1 && f.f2 && !/^\s*TBA\s*$/i.test(f.f1) && !/^\s*TBA\s*$/i.test(f.f2));
       KEY = 'glPickem:' + ((evt && evt.slug) || (evt && evt.date) || 'default');
       PRELIMS_AT = window.FEATURED_EVENT_STARTS_AT || null;
       LOCKED = !!(PRELIMS_AT && Date.now() >= Date.parse(PRELIMS_AT));
