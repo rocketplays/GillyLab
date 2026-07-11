@@ -101999,19 +101999,26 @@ const GL_SHEET = (function () {
     const col = PK_CONF_COL[p.confidence] || MUT;
     const pad = 7;
     roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();   // confidence spine
-    const tx = x + 26, cy = y + h / 2 + 1;
+    const tx = x + 26, cy = y + h / 2 + 1, right = x + w - 12;
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-    // method measured first so we can reserve its width to the right of the name
+    // method measured first so it always fits at the end
     const methodStr = pkMethodLabel(p);
     ctx.font = '400 26px ' + SANS; const methodW = ctx.measureText(methodStr).width;
-    // winner name
+    // winner name (bold), capped so opponent + method still fit
     ctx.font = '700 38px ' + COND; ctx.fillStyle = TXT;
-    const name = clip(ctx, p.winner, w - (tx - x) - methodW - 36);
+    const name = clip(ctx, p.winner, Math.min((right - tx) - methodW - 100, (right - tx) * 0.6));
     ctx.fillText(name, tx, cy);
-    const nameW = ctx.measureText(name).width;
+    let cx = tx + ctx.measureText(name).width + 16;
+    // "vs opponent" — smaller + muted, clipped to whatever's left before the method
+    if (p.loser) {
+      ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
+      const vs = clip(ctx, 'vs ' + p.loser, right - cx - methodW - 18);
+      ctx.fillText(vs, cx, cy);
+      cx += ctx.measureText(vs).width + 16;
+    }
     // method, inline + muted
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(methodStr, tx + nameW + 18, cy);
+    ctx.fillText(methodStr, cx, cy);
     ctx.textBaseline = 'alphabetic';
   }
   async function drawPickem(data) {
