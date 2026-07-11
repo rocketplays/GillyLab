@@ -54,15 +54,18 @@ function backgroundSection(wikitext) {
   return next ? rest.slice(0, next.index) : rest;
 }
 
-// Every [[wiki link]] occurrence with its char span, link target and display text.
-function linkOccurrences(text) {
-  const re = /\[\[([^\]|#]+?)(?:\|([^\]]+))?\]\]/g;
-  const out = [];
-  let m;
-  while ((m = re.exec(text))) {
-    out.push({ idx: m.index, end: re.lastIndex, target: m[1].trim(), disp: (m[2] || m[1]).trim() });
-  }
-  return out;
+// Flatten wikitext to readable prose: drop <ref>…</ref> citations and {{…}}
+// templates, and unwrap [[target|display]] links to their display text. Crucial
+// because promotional newcomers (the most common short-notice replacements)
+// have no article, so they appear as PLAIN TEXT, not [[links]].
+function stripWiki(text) {
+  return String(text || '')
+    .replace(/<ref[^>]*\/>/gi, ' ')
+    .replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi, ' ')
+    .replace(/\{\{[^{}]*\}\}/g, ' ')
+    .replace(/\[\[([^\]|#]+?)(?:\|([^\]]+))?\]\]/g, (m, t, d) => d || t)
+    .replace(/'''?/g, '')
+    .replace(/&nbsp;/g, ' ');
 }
 
 // Bounds of the sentence containing [a, b).
@@ -83,8 +86,8 @@ function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
   if (/\breplaced (?:by|with)\s+(?:(?:the |a )?(?:promotional )?newcomer\s+|(?:a |the )?short.?notice replacement\s+)?$/i.test(before)) return true;
   if (/(?:short.?notice|late)\s+replacement[^.]{0,20}$/i.test(before)) return true;
   // "<F> stepped in / steps in ..."  |  "<F> replaced ..."  |  "<F> was booked/tabbed/added as ... replacement"
-  if (/^\s*(?:,?\s*(?:who|and)\s+)?(?:[a-z][\w.'-]*\s+){0,3}?stepp(?:ed|ing)?\s+in\b/i.test(after)) return true;
-  if (/^\s*(?:[a-z][\w.'-]*\s+){0,2}?replaced\b/i.test(after)) return true;
+  if (/^\s*(?:,?\s*(?:who|and)\s+)?(?:(?:has|had|since)\s+)*stepp(?:ed|ing|s)?\s+in\b/i.test(after)) return true;
+  if (/^\s+replaced\b/i.test(after)) return true;   // active "F replaced X" (passive "F was replaced" is handled by the before-check)
   if (/^[^.]{0,50}?(?:was|were)\s+(?:booked|tabbed|added|brought in|called (?:in|up))\b[^.]{0,30}?\breplacement\b/i.test(after)) return true;
   if (/^[^.]{0,50}?\bas (?:a|the) (?:short.?notice )?replacement\b/i.test(after)) return true;
   if (/^[^.]{0,50}?\bon (?:short notice|(?:less than )?\w+[\s-]days?'?\s+notice)\b/i.test(after)) return true;
@@ -97,20 +100,22 @@ function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
  * @returns {Array<{replacement:string, sentence:string}>}
  */
 function extractCardChanges(wikitext, currentNames) {
-  const text = backgroundSection(wikitext);
-  const byNorm = new Map();
-  currentNames.forEach((n) => { byNorm.set(normLoose(n), n); });
-  const occ = linkOccurrences(text);
+  const text = stripWiki(backgroundSection(wikitext));
   const found = new Map(); // normLoose -> {replacement, sentence}
-  for (const o of occ) {
-    const key = byNorm.has(normLoose(o.target)) ? normLoose(o.target)
-              : (byNorm.has(normLoose(o.disp)) ? normLoose(o.disp) : null);
-    if (!key) continue;                       // not a fighter on this card
+  for (const F of currentNames) {
+    const key = normLoose(F);
     if (found.has(key)) continue;
-    const [s, e] = sentenceBounds(text, o.idx, o.end);
-    const sentence = text.slice(s, e);
-    if (isReplacementRole(sentence, o.idx - s, o.end - s)) {
-      found.set(key, { replacement: byNorm.get(key), sentence: sentence.replace(/\s+/g, ' ').trim() });
+    // Match this fighter's FULL name wherever it appears — linked names were
+    // unwrapped to plain text above, and newcomers are plain text to begin with.
+    const re = new RegExp('\\b' + escapeRe(F).replace(/\s+/g, '\\s+') + '\\b', 'gi');
+    let m;
+    while ((m = re.exec(text))) {
+      const [s, e] = sentenceBounds(text, m.index, re.lastIndex);
+      const sentence = text.slice(s, e);
+      if (isReplacementRole(sentence, m.index - s, re.lastIndex - s)) {
+        found.set(key, { replacement: F, sentence: sentence.replace(/\s+/g, ' ').trim() });
+        break;
+      }
     }
   }
   return [...found.values()];

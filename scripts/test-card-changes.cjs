@@ -8,28 +8,31 @@ const fs = require('fs');
 const path = require('path');
 const { extractCardChanges } = require('./fetch-card-changes.cjs');
 
-const ev = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'data', 'event.json'), 'utf8'));
-function namesFor(slug) {
-  const e = (ev.data || []).find((x) => x.slug === slug);
-  const out = [];
-  (e.bouts || []).forEach((b) => (b.fighters || []).forEach((f) => f && f.fighterName && out.push(f.fighterName)));
-  return out;
-}
+// Explicit post-change rosters (the fighters actually booked after the changes),
+// so the test is deterministic and doesn't depend on the live event.json.
 
-// Realistic Background sections (wikitext with [[links]]).
+// Real Background wikitext from the UFC Oklahoma City page (verbatim excerpts),
+// exercising the hard parts: newcomer replacements as PLAIN TEXT (Melisano,
+// Harris), an established replacement as a [[link]] (Ricci), withdrawals with NO
+// replacement yet (Tavares, Holland), and a bout merely moved to another card
+// (Vera/Jourdain) — none of which should flag the fighter who stayed.
 const OKC = `
 == Background ==
-This event marked the promotion's return to Oklahoma City.
+A middleweight bout between former [[UFC Middleweight Championship|UFC Middleweight Champion]] [[Dricus du Plessis]] and former [[UFC Welterweight Championship|UFC Welterweight Champion]] [[Kamaru Usman]] is scheduled to headline the event.<ref name="main"/>
 
-A [[UFC Middleweight Championship|middleweight]] bout between former champion [[Dricus du Plessis]] and [[Kamaru Usman]] headlined the event.
+A women's strawweight bout between [[Amanda Ribas]] and [[Fatima Kline]] was scheduled for the event.<ref/> However, Ribas withdrew due to dizziness and was replaced by [[Tabatha Ricci]].<ref/>
 
-A [[women's strawweight]] bout between [[Veronica Hardy]] and [[Dione Barbosa]] was expected to take place at the event. However, Hardy withdrew from the bout in early July and was replaced by promotional newcomer [[Anna Melisano]].
+[[Brad Tavares]] was expected to face [[Marc-André Barriault]] in a middleweight bout.<ref/> However, Tavares pulled out due to undisclosed reasons and a replacement is currently being sought.<ref name="Barriault"/>
 
-[[Alvin Hines]] was scheduled to face [[Allen Frye Jr.]] in a heavyweight bout. However, Frye was removed from the card and [[RJ Harris]] stepped in on short notice.
+[[Veronica Hardy]] and Dione Barbosa were expected to meet in a women's flyweight bout at the preliminary card.<ref/> However, Hardy pulled out in early July after suffering a cut during training and was replaced by promotional newcomer Anna Melisano.<ref name="Melisano"/>
 
-A [[lightweight]] bout between [[Terrance McKinney]] and [[Kaue Fernandes]] was also scheduled for the card.
+A bantamweight bout between [[Marlon Vera]] and [[Charles Jourdain]] was reportedly scheduled to take place as the co-main event.<ref/> However, the bout was moved to [[UFC 331]] for unknown reasons.<ref/>
 
-== Results ==
+A heavyweight bout between Alvin Hines and Allen Frye Jr. was originally booked for the event.<ref/> However, Frye Jr. pulled out due to undisclosed reasons and was replaced by promotional newcomer RJ Harris.<ref name="Harris"/>
+
+In addition, a welterweight bout between [[Kevin Holland]] and undefeated prospect Jacobe Smith was scheduled for the event.<ref/> However, Holland had to withdraw due to an undisclosed injury and it is currently unclear whether a replacement opponent will be found.<ref name="Smith"/>
+
+== Fight card ==
 `;
 
 const U329 = `
@@ -49,20 +52,25 @@ function check(label, cond, extra) {
   if (!cond) fail++;
 }
 
-function run(slug, wt, expected, mustNot) {
-  const names = namesFor(slug);
+function run(label, wt, names, expected, mustNot) {
   const got = extractCardChanges(wt, names).map((c) => c.replacement).sort();
-  console.log('\n== ' + slug + ' ==  detected: [' + got.join(', ') + ']');
+  console.log('\n== ' + label + ' ==  detected: [' + got.join(', ') + ']');
   expected.forEach((n) => check('flags ' + n, got.includes(n)));
   mustNot.forEach((n) => check('does NOT flag ' + n, !got.includes(n)));
   check('exactly ' + expected.length + ' flagged', got.length === expected.length, 'got ' + got.length);
 }
 
-run('ufc-fight-night-july-18-2026', OKC,
-  ['Anna Melisano', 'RJ Harris'],
-  ['Dione Barbosa', 'Alvin Hines', 'Dricus du Plessis', 'Kamaru Usman', 'Terrance McKinney', 'Kaue Fernandes']);
+// Post-change OKC roster: three replacements (Ricci, Melisano, Harris) + the
+// fighters who stayed. Withdrawn fighters (Ribas, Hardy, Tavares, Frye, Holland)
+// are gone from the card, so they aren't in this list.
+run('UFC Oklahoma City', OKC,
+  ['Dricus du Plessis', 'Kamaru Usman', 'Tabatha Ricci', 'Fatima Kline', 'Dione Barbosa',
+   'Anna Melisano', 'Alvin Hines', 'RJ Harris', 'Marc-André Barriault', 'Jacobe Smith'],
+  ['Tabatha Ricci', 'Anna Melisano', 'RJ Harris'],
+  ['Fatima Kline', 'Dione Barbosa', 'Alvin Hines', 'Marc-André Barriault', 'Jacobe Smith', 'Dricus du Plessis', 'Kamaru Usman']);
 
-run('ufc-329', U329,
+run('UFC 329 (constructed)', U329,
+  ['Conor McGregor', 'Max Holloway', 'Cody Durden', 'Alessandro Costa', 'Farid Basharat', 'John Garza'],
   ['Alessandro Costa', 'John Garza'],
   ['Cody Durden', 'Farid Basharat', 'Conor McGregor', 'Max Holloway']);
 
@@ -72,7 +80,7 @@ const CLEAN = `
 A bout between [[Conor McGregor]] and [[Max Holloway]] headlined the event. It was their second meeting.
 `;
 (function () {
-  const got = extractCardChanges(CLEAN, namesFor('ufc-329'));
+  const got = extractCardChanges(CLEAN, ['Conor McGregor', 'Max Holloway']);
   console.log('\n== clean card (no changes) ==  detected: [' + got.map((c) => c.replacement).join(', ') + ']');
   check('no false positives on a clean card', got.length === 0, 'got ' + got.length);
 })();
