@@ -10302,6 +10302,24 @@
    const n = parseFloat(String(v).replace('%', ''));
    return isNaN(n) ? null : n;
  }
+ // Canonical DB names on the current UFC roster. ACTIVE_ROSTER holds
+ // roster-watch names; resolve them to FIGHTERS names exactly as the Active
+ // Roster page does. Built once, lazily.
+ let _ACTIVE_DB_SET = null;
+ function activeRosterDbSet() {
+   if (_ACTIVE_DB_SET) return _ACTIVE_DB_SET;
+   const set = new Set();
+   try {
+     if (typeof ACTIVE_ROSTER !== 'undefined') {
+       for (const n of ACTIVE_ROSTER) {
+         const canon = ACTIVE_ROSTER_DBSET.has(n) ? n : (ACTIVE_ROSTER_ALIASES[n] || ACTIVE_ROSTER_DBNORM[arNorm(n)]);
+         if (canon) set.add(canon);
+       }
+     }
+   } catch (e) { /* leave empty -> statDivMedians falls back to all fighters */ }
+   _ACTIVE_DB_SET = set;
+   return set;
+ }
  // Per-division median + a 95th-percentile scale cap for each rate stat, so a
  // fighter's bar reads against the typical fighter in his OWN division. Median,
  // not mean: MMA rate stats are right-skewed (a few very high-volume strikers,
@@ -10311,7 +10329,11 @@
  function statDivMedians(division) {
    if (_DIV_STAT_CACHE[division]) return _DIV_STAT_CACHE[division];
    const fields = ['slpm', 'strAcc', 'sapm', 'strDef', 'kd', 'tdLanded', 'tdAcc', 'tdDef', 'subAvg', 'finRate'];
-   const peers = FIGHTERS.filter((f) => f && f.division === division && FIGHTER_STATS[f.name]);
+   // Baseline off CURRENT fighters only — FIGHTERS carries thousands of retired
+   // fighters who would skew the division median. Restrict to the active roster,
+   // but fall back to everyone if that set is somehow empty so bars don't vanish.
+   const active = activeRosterDbSet();
+   const peers = FIGHTERS.filter((f) => f && f.division === division && FIGHTER_STATS[f.name] && (active.size === 0 || active.has(f.name)));
    const out = {};
    for (const fld of fields) {
      const vals = [];
