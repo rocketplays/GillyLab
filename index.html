@@ -108938,11 +108938,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
      by event slug) and can be exported as a square social card.
 
      Scoring is PREVIEWED here as "points at stake". A correct winner is the
-     foundation (10 pts). On top of that, a correct method adds +5, and a correct
-     round adds a bonus that GROWS with how late you call it (R1 +4, R2 +5, R3 +6,
-     R4 +7, R5 +8) — later rounds are harder to predict, so they pay more. The bout
-     total is multiplied by confidence (High ×2, Med ×1.5, Low ×1). Getting the
-     winner right but the method or round wrong costs nothing — you simply forgo
+     foundation (10 pts). On top of that:
+       • a correct METHOD adds a bonus scaled to how UNLIKELY that method is for
+         the winner (from their career history): a longshot like Conor by
+         submission pays ~8, his usual KO ~2-3, a neutral tendency ~5.
+       • a correct ROUND adds a bonus that GROWS with how late you call it
+         (R1 +4, R2 +5, R3 +6, R4 +7, R5 +8) — later finishes are harder to call.
+     The bout total is multiplied by confidence (High ×2, Med ×1.5, Low ×1). Getting
+     the winner right but the method or round wrong costs nothing — you simply forgo
      those bonuses; only a WRONG WINNER loses points (scaled by confidence). More
      reward, more risk. Actual grading against results + per-profile totals is a
      server-side follow-up (phase 2). */
@@ -108973,13 +108976,41 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function persist() { try { localStorage.setItem(KEY, JSON.stringify(PICKS)); } catch (e) {} }
     function load() { try { PICKS = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { PICKS = {}; } }
 
+    // How often a fighter wins by a given method, from their career history —
+    // Laplace-smoothed (+1 per bucket) so a thin record can't produce a 0% or 100%
+    // and a fighter with no history lands at a neutral ⅓. Buckets: KO/TKO, Submission,
+    // Decision (DQ/other wins are ignored).
+    function methodShare(winner, method) {
+      const FH = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[winner]) || [];
+      let ko = 0, sub = 0, dec = 0;
+      FH.forEach(f => {
+        if (!f || f.result !== 'W') return;
+        const m = (f.method || '').toLowerCase();
+        if (/sub/.test(m)) sub++;
+        else if (/dec/.test(m)) dec++;
+        else if (/ko|tko|knockout|stoppage/.test(m)) ko++;
+      });
+      const bucket = { 'KO/TKO': ko, 'Submission': sub, 'Decision': dec }[method] || 0;
+      return (bucket + 1) / (ko + sub + dec + 3);
+    }
+    // The rarer that method is for THIS fighter, the bigger the bonus — calling
+    // Conor by submission pays far more than calling him by KO. Anchored so a
+    // neutral ⅓ tendency yields the old flat +5; clamped so the likely method still
+    // scores (min 2) and a true longshot is capped (max 8).
+    function methodBonus(winner, method) {
+      if (!method) return 0;
+      const raw = P_METHOD * 1.5 * (1 - methodShare(winner, method));   // ⅓ → 5
+      return Math.max(2, Math.min(8, Math.round(raw)));
+    }
+
     // Max points a bout can earn as currently picked (fully correct) at its
-    // confidence. Winner is the base; method + round add bonuses (round scaled by
-    // how late it is). A wrong method/round just forgoes its bonus — no penalty.
+    // confidence. Winner is the base; method adds a likelihood-weighted bonus and
+    // round adds a lateness-weighted bonus. A wrong method/round forgoes only its
+    // bonus — no penalty.
     function potential(p) {
       if (!p || !p.winner) return 0;
       let base = P_WIN;
-      if (p.method) base += P_METHOD;
+      if (p.method) base += methodBonus(p.winner, p.method);
       if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
       return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
     }
