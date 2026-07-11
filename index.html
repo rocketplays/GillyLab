@@ -3299,6 +3299,70 @@
       .pk-btn.primary:disabled { opacity: 0.45; cursor: not-allowed; }
       .pk-btn.ghost:hover { border-color: rgba(255,255,255,0.28); }
       .pk-empty { padding: 3rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.9rem; }
+      .pk-reset-link { background: none; border: none; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: inherit; font-family: inherit; padding: 0; }
+      .pk-reset-link:hover { color: #ff6a5e; }
+      /* status notes */
+      .pk-note { border-radius: 8px; padding: 0.5rem 0.7rem; font-size: 0.78rem; font-weight: 600; line-height: 1.4; }
+      .pk-note.pk-ok { background: rgba(0,230,104,0.12); border: 1px solid rgba(0,230,104,0.4); color: #7dffb4; }
+      .pk-note.pk-locked { background: rgba(255,207,122,0.12); border: 1px solid rgba(255,207,122,0.4); color: #ffdca0; }
+      /* leaderboard */
+      .pk-board { margin: 1.5rem 0 0.5rem; }
+      .pk-board-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1.1rem; color: var(--text); margin-bottom: 0.6rem; }
+      .pk-tabs { display: flex; gap: 0.4rem; margin-bottom: 0.7rem; }
+      .pk-tab { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); border-radius: 8px; padding: 0.45rem 0.4rem; font-size: 0.76rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: color .12s, border-color .12s, background .12s; }
+      .pk-tab:hover { border-color: rgba(255,255,255,0.28); }
+      .pk-tab.sel { border-color: var(--accent); background: rgba(0,230,104,0.12); color: var(--text); }
+      .pk-board-list { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+      .pk-board-row { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); }
+      .pk-board-row:last-child { border-bottom: none; }
+      .pk-board-row.me { background: rgba(0,230,104,0.08); }
+      .pk-board-rank { flex: 0 0 2rem; text-align: center; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--muted); font-size: 0.95rem; }
+      .pk-board-row.me .pk-board-rank { color: var(--accent); }
+      .pk-board-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; font-size: 0.88rem; }
+      .pk-you { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: #06231a; background: var(--accent); border-radius: 4px; padding: 0.05rem 0.3rem; margin-left: 0.35rem; }
+      .pk-board-pts { flex: 0 0 auto; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent); }
+      .pk-board-sep { text-align: center; color: var(--muted); padding: 0.15rem; letter-spacing: 0.2em; }
+      .pk-board-empty { padding: 1.5rem 1rem; text-align: center; color: var(--muted); font-size: 0.82rem; }
+      /* name modal */
+      .pk-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; padding: 1rem; }
+      .pk-modal.open { display: flex; }
+      .pk-modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; max-width: 380px; width: 100%; }
+      .pk-modal-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--text); }
+      .pk-modal-sub { color: var(--muted); font-size: 0.8rem; line-height: 1.45; margin: 0.35rem 0 0.9rem; }
+      .pk-modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 0.7rem 0.8rem; color: var(--text); font-size: 0.95rem; font-family: inherit; }
+      .pk-modal-input:focus { outline: none; border-color: var(--accent); }
+      .pk-modal-err { color: #ff8a80; font-size: 0.76rem; min-height: 1rem; margin-top: 0.4rem; }
+      .pk-modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.6rem; }
+      /* history page */
+      .pk-hist-head { display: flex; flex-direction: column; gap: 0.15rem; margin-bottom: 1.1rem; }
+      .pk-hist-name { font-weight: 700; font-size: 1rem; color: var(--text); }
+      .pk-hist-total { display: flex; align-items: baseline; gap: 0.5rem; }
+      .pk-hist-total-num { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 2.4rem; color: var(--accent); line-height: 1; }
+      .pk-hist-total-lbl { color: var(--muted); font-size: 0.82rem; }
+      .pk-hist-list { display: flex; flex-direction: column; gap: 0.5rem; }
+      .pk-hist-row { display: flex; align-items: center; gap: 0.7rem; text-align: left; background: var(--card); border: 1px solid var(--border); border-radius: 11px; padding: 0.7rem 0.85rem; cursor: pointer; font-family: inherit; color: var(--text); transition: border-color .12s; }
+      .pk-hist-row:hover { border-color: rgba(255,255,255,0.28); }
+      .pk-hist-row-main { flex: 1; min-width: 0; }
+      .pk-hist-ev { font-weight: 600; font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .pk-hist-meta { color: var(--muted); font-size: 0.72rem; margin-top: 0.15rem; }
+      .pk-hist-pts { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.2rem; }
+      .pk-hist-pts.pos, .pk-hist-bout-pts.pos, .pk-hist-ev-total.pos { color: var(--accent); }
+      .pk-hist-pts.neg, .pk-hist-bout-pts.neg, .pk-hist-ev-total.neg { color: #ff6a5e; }
+      .pk-hist-arrow { color: var(--muted); font-size: 1.2rem; flex: 0 0 auto; }
+      .pk-hist-empty { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
+      .pk-hist-back { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; padding: 0.2rem 0; margin-bottom: 0.7rem; }
+      .pk-hist-ev-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.7rem; margin-bottom: 0.7rem; }
+      .pk-hist-ev-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--text); }
+      .pk-hist-ev-total { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; }
+      .pk-hist-bouts { display: flex; flex-direction: column; gap: 0.4rem; }
+      .pk-hist-bout { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.8rem; border-radius: 9px; border: 1px solid var(--border); background: var(--card); border-left-width: 3px; }
+      .pk-hist-bout.hit { border-left-color: var(--accent); }
+      .pk-hist-bout.miss { border-left-color: #ff6a5e; }
+      .pk-hist-bout.pending, .pk-hist-bout.void { border-left-color: var(--muted); }
+      .pk-hist-bout-main { flex: 1; min-width: 0; }
+      .pk-hist-bout-pick { font-weight: 600; font-size: 0.88rem; }
+      .pk-hist-bout-detail { color: var(--muted); font-size: 0.72rem; margin-top: 0.12rem; }
+      .pk-hist-bout-pts { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; flex: 0 0 auto; }
       @media (max-width: 600px) {
         .pk-fname { font-size: 0.8rem; }
         .pk-row-label { flex-basis: 3.9rem; font-size: 0.62rem; }
@@ -3360,6 +3424,7 @@
         <svg class="account-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="account-menu" id="account-menu" role="menu">
+        <a role="menuitem" href="#" onclick="navigate('pickem-history'); renderPickemHistory(); closeAccountMenu(); return false;">Pick'em history</a>
         <a role="menuitem" href="/api/portal">Manage subscription</a>
         <a role="menuitem" href="/change-password">Change password</a>
         <a role="menuitem" href="/api/logout">Log out</a>
@@ -3632,6 +3697,20 @@
   </div>
   <div class="divider"></div>
   <div id="pickem-content"></div>
+  <div id="pickem-leaderboard" class="pk-wrap"></div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE: PICK'EM HISTORY
+══════════════════════════════════════ -->
+<div class="page" id="page-pickem-history">
+  <div class="page-header">
+    <div class="page-header-label">Your record</div>
+    <div class="page-header-title">Pick'em <span class="accent">History</span></div>
+  </div>
+  <div class="divider"></div>
+  <div id="pickem-history-content" class="pk-wrap"></div>
 </div>
 
 
@@ -108961,6 +109040,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Anchored so R2 stays at the old flat +5. Wrong round costs nothing.
     const roundBonus = (r) => (r ? 3 + r : 0);
     let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
+    // Phase-2 server state: display name, whether this card is submitted/locked, a
+    // transient status message, and the leaderboard scope.
+    let NAME = null, SUBMITTED = false, LOCKED = false, MSG = null, PRELIMS_AT = null, BOARD_SCOPE = 'recent';
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const idOf = (f) => (f.f1 + '__' + f.f2).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -109071,6 +109153,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
       return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
     }
+    // The pre-confidence component points, snapshotted into the submit payload so
+    // the server can grade without the odds/history data — and so a pick's value is
+    // locked at submit time (the line can move afterwards). Mirrors potential().
+    function scoreParts(p, f) {
+      const opp = f ? (p.winner === f.f1 ? f.f2 : f.f1) : null;
+      return {
+        wPts: winnerBase(p.winner, opp),
+        mPts: p.method ? methodBonus(p.winner, p.method, opp) : 0,
+        rPts: (p.method && p.method !== 'Decision' && p.round) ? roundBonus(p.round) : 0,
+      };
+    }
 
     // ---- rendering ----
     function boutHTML(f) {
@@ -109125,19 +109218,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '</div>';
     }
 
+    function statusLine() {
+      if (ERR) return '<div class="pk-err">' + esc(ERR) + '</div>';
+      if (MSG) return '<div class="pk-note pk-' + (MSG.type === 'err' ? 'err' : 'ok') + '">' + esc(MSG.text) + '</div>';
+      if (LOCKED) return '<div class="pk-note pk-locked">🔒 Picks are locked — the card has started.' + (SUBMITTED ? ' Your submitted picks are in.' : '') + '</div>';
+      if (SUBMITTED) return '<div class="pk-note pk-ok">✓ Picks submitted — editable until the prelims start.</div>';
+      return '';
+    }
     function summaryHTML() {
       const complete = BOUTS.filter(isComplete).length;
       const pot = BOUTS.reduce((t, f) => t + potential(PICKS[idOf(f)], f), 0);
+      const sl = statusLine();
       return '<div class="pk-summary">' +
-        (ERR ? '<div class="pk-err">' + esc(ERR) + '</div>' : '') +
+        (sl || '') +
         '<div class="pk-summary-row">' +
           '<div class="pk-summary-info">' +
-            '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete</span>' +
+            '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete' +
+              (Object.keys(PICKS).length ? ' · <button type="button" class="pk-reset-link" data-pk-reset>reset</button>' : '') + '</span>' +
             '<span class="pk-summary-pts">Points at stake: <strong>' + pot + '</strong></span>' +
           '</div>' +
           '<div class="pk-summary-actions">' +
-            '<button type="button" class="pk-btn ghost" data-pk-reset>Reset</button>' +
-            '<button type="button" class="pk-btn primary" data-pk-share>Share picks</button>' +
+            '<button type="button" class="pk-btn ghost" data-pk-share>Share</button>' +
+            (LOCKED
+              ? '<button type="button" class="pk-btn primary" disabled>Locked</button>'
+              : '<button type="button" class="pk-btn primary" data-pk-submit>' + (SUBMITTED ? 'Update picks' : 'Submit picks') + '</button>') +
           '</div>' +
         '</div>' +
       '</div>';
@@ -109177,14 +109281,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     // ---- state mutations ----
     function setWinner(id, name) {
-      ERR = '';
+      ERR = ''; MSG = null;
       const p = PICKS[id] || {};
       if (p.winner === name) { delete PICKS[id]; }      // tapping your pick again clears it
       else { p.winner = name; if (!p.confidence) p.confidence = 'Med'; PICKS[id] = p; }
       persist(); render();
     }
     function setField(id, field, val) {
-      ERR = '';
+      ERR = ''; MSG = null;
       const p = PICKS[id]; if (!p || !p.winner) return;
       if (field === 'method') {
         p.method = val;
@@ -109245,6 +109349,110 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (typeof GL_SHEET !== 'undefined' && GL_SHEET.pickem) GL_SHEET.pickem(data);
     }
 
+    // ── server (phase 2) ─────────────────────────────────────────────────────
+    async function api(path, opts) {
+      opts = opts || {};
+      const init = { method: opts.method || 'GET', credentials: 'same-origin', headers: {} };
+      if (opts.body) { init.headers['Content-Type'] = 'application/json'; init.body = JSON.stringify(opts.body); }
+      try { const r = await fetch(path, init); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
+      catch (e) { return { status: 0, error: 'network' }; }
+    }
+    // The submit payload snapshots each pick's score components (locking in the odds
+    // and likelihood at submit time) so the server can grade without that data.
+    function submitPayload() {
+      const picks = [];
+      BOUTS.forEach(f => {
+        const p = PICKS[idOf(f)];
+        if (!p || !p.winner) return;
+        const parts = scoreParts(p, f);
+        picks.push({ f1: f.f1, f2: f.f2, winner: p.winner, method: p.method,
+          round: (p.method && p.method !== 'Decision') ? (p.round || null) : null, confidence: p.confidence,
+          wPts: parts.wPts, mPts: parts.mPts, rPts: parts.rPts });
+      });
+      return { eventSlug: (EVT && EVT.slug) || '', eventName: (EVT && EVT.name) || '',
+        eventDate: (EVT && EVT.details) || '', prelimsAt: PRELIMS_AT, picks };
+    }
+    async function submit() {
+      ERR = ''; MSG = null;
+      const missing = BOUTS.filter(f => !isComplete(f)).length;
+      if (missing > 0) {
+        ERR = 'Finish all your picks first — ' + missing + ' of ' + BOUTS.length + ' fight' + (missing === 1 ? '' : 's') +
+          ' still ' + (missing === 1 ? 'needs' : 'need') + ' a winner, method, round and confidence.';
+        return render();
+      }
+      if (LOCKED) { MSG = { type: 'err', text: 'Picks are locked — the card has already started.' }; return render(); }
+      if (!NAME) return showNameModal(submit);
+      MSG = { type: 'ok', text: 'Submitting…' }; render();
+      const res = await api('/api/pickem/save', { method: 'POST', body: submitPayload() });
+      if (res.status === 200 && res.ok) { SUBMITTED = true; MSG = { type: 'ok', text: 'Picks submitted! Editable until the prelims start.' }; }
+      else if (res.status === 428 || res.error === 'needs-name') return showNameModal(submit);
+      else if (res.status === 403 || res.locked) { LOCKED = true; MSG = { type: 'err', text: 'Picks are locked — the card has started.' }; }
+      else if (res.status === 401) { MSG = { type: 'err', text: 'Please log in again to submit your picks.' }; }
+      else { MSG = { type: 'err', text: res.error || 'Could not submit right now — try again.' }; }
+      render();
+    }
+
+    // Display-name modal (leaderboard identity). afterSave re-runs the caller (submit).
+    function showNameModal(afterSave) {
+      let ov = document.getElementById('pkNameModal');
+      if (!ov) { ov = document.createElement('div'); ov.id = 'pkNameModal'; ov.className = 'pk-modal'; document.body.appendChild(ov); }
+      ov.innerHTML = '<div class="pk-modal-card">' +
+        '<div class="pk-modal-title">Choose your display name</div>' +
+        '<div class="pk-modal-sub">This is how you appear on the leaderboard — your email is never shown. 2–20 characters.</div>' +
+        '<input id="pkNameInput" class="pk-modal-input" maxlength="20" placeholder="e.g. ChokeArtist" value="' + esc(NAME || '') + '">' +
+        '<div class="pk-modal-err" id="pkNameErr"></div>' +
+        '<div class="pk-modal-actions">' +
+          '<button type="button" class="pk-btn ghost" id="pkNameCancel">Cancel</button>' +
+          '<button type="button" class="pk-btn primary" id="pkNameSave">Save name</button>' +
+        '</div></div>';
+      ov.classList.add('open');
+      const input = ov.querySelector('#pkNameInput');
+      setTimeout(() => input && input.focus(), 30);
+      const close = () => ov.classList.remove('open');
+      ov.querySelector('#pkNameCancel').onclick = close;
+      ov.onclick = (e) => { if (e.target === ov) close(); };
+      ov.querySelector('#pkNameSave').onclick = async () => {
+        const errEl = ov.querySelector('#pkNameErr'); errEl.textContent = '';
+        const res = await api('/api/pickem/name', { method: 'POST', body: { name: input.value } });
+        if (res.status === 200 && res.name) { NAME = res.name; close(); render(); if (typeof afterSave === 'function') afterSave(); }
+        else if (res.status === 401) errEl.textContent = 'Please log in again to set a name.';
+        else errEl.textContent = res.error || 'Try another name.';
+      };
+      input.onkeydown = (e) => { if (e.key === 'Enter') ov.querySelector('#pkNameSave').click(); };
+    }
+
+    // ── leaderboard ──────────────────────────────────────────────────────────
+    function boardShellHTML() {
+      const tab = (id, label) => '<button type="button" class="pk-tab' + (BOARD_SCOPE === id ? ' sel' : '') + '" data-pk-scope="' + id + '">' + label + '</button>';
+      return '<div class="pk-board">' +
+        '<div class="pk-board-title">Leaderboard</div>' +
+        '<div class="pk-tabs">' + tab('recent', 'This card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
+        '<div id="pk-board-list" class="pk-board-list"><div class="pk-board-empty">Loading…</div></div>' +
+      '</div>';
+    }
+    function boardRow(r, me) {
+      return '<div class="pk-board-row' + (me ? ' me' : '') + '">' +
+        '<span class="pk-board-rank">' + r.rank + '</span>' +
+        '<span class="pk-board-name">' + esc(r.name) + (me ? ' <span class="pk-you">you</span>' : '') + '</span>' +
+        '<span class="pk-board-pts">' + r.points + '</span></div>';
+    }
+    async function loadBoard(scope) {
+      BOARD_SCOPE = scope || BOARD_SCOPE;
+      const host = document.getElementById('pickem-leaderboard');
+      if (!host) return;
+      host.innerHTML = boardShellHTML();
+      const listEl = document.getElementById('pk-board-list');
+      const res = await api('/api/pickem/leaderboard?scope=' + BOARD_SCOPE);
+      if (!listEl) return;
+      if (res.status === 401) { listEl.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
+      if (res.status !== 200 || !Array.isArray(res.rows)) { listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
+      if (!res.rows.length) { listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>'; return; }
+      const meName = res.me && res.me.name;
+      let out = res.rows.map(r => boardRow(r, meName && r.name === meName)).join('');
+      if (res.me && !res.rows.some(r => r.name === meName)) out += '<div class="pk-board-sep">···</div>' + boardRow(res.me, true);
+      listEl.innerHTML = out;
+    }
+
     // One delegated listener for the whole page.
     function bindOnce() {
       const host = document.getElementById('page-pickem');
@@ -109261,9 +109469,33 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (cBtn) return setField(cBtn.getAttribute('data-bout'), 'confidence', cBtn.getAttribute('data-c'));
         const clr = e.target.closest('[data-clear]');
         if (clr) return clear(clr.getAttribute('data-clear'));
+        const scopeBtn = e.target.closest('[data-pk-scope]');
+        if (scopeBtn) return loadBoard(scopeBtn.getAttribute('data-pk-scope'));
         if (e.target.closest('[data-pk-reset]')) return resetAll();
         if (e.target.closest('[data-pk-share]')) return share();
+        if (e.target.closest('[data-pk-submit]')) return submit();
       });
+    }
+
+    // Pull the server state for this card: display name, and whether we've already
+    // submitted / the card is locked. Restores picks from the server if this device
+    // has none saved locally. Re-renders as each piece arrives.
+    async function syncServer() {
+      const nameRes = await api('/api/pickem/name');
+      if (nameRes.status === 200) { NAME = nameRes.name || null; render(); }
+      if (!EVT || !EVT.slug) return;
+      const mine = await api('/api/pickem/mine?event=' + encodeURIComponent(EVT.slug));
+      if (mine.status === 200 && mine.record) {
+        SUBMITTED = true;
+        LOCKED = !!mine.locked;
+        if (!Object.keys(PICKS).length && Array.isArray(mine.record.picks)) {
+          mine.record.picks.forEach(p => {
+            PICKS[idOf({ f1: p.f1, f2: p.f2 })] = { winner: p.winner, method: p.method, round: p.round || undefined, confidence: p.confidence || 'Med' };
+          });
+          persist();
+        }
+        render();
+      }
     }
 
     function init(evt) {
@@ -109271,15 +109503,80 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       BOUTS = (evt && evt.fights || []).filter(f =>
         f && f.f1 && f.f2 && !f.completed && !/^\s*TBA\s*$/i.test(f.f1) && !/^\s*TBA\s*$/i.test(f.f2));
       KEY = 'glPickem:' + ((evt && evt.slug) || (evt && evt.date) || 'default');
+      PRELIMS_AT = window.FEATURED_EVENT_STARTS_AT || null;
+      LOCKED = !!(PRELIMS_AT && Date.now() >= Date.parse(PRELIMS_AT));
+      NAME = null; SUBMITTED = false; MSG = null; ERR = '';
       load();
       bindOnce();
       render();
-      // Odds refine the winner's base points; re-render once they arrive.
-      loadOdds().then(() => render());
+      loadOdds().then(() => render());   // odds refine the winner base
+      loadBoard(BOARD_SCOPE);            // leaderboard (default: this card)
+      syncServer();                      // name + submitted/locked state
     }
-    return { init };
+    return { init, loadBoard };
   })();
   function renderPickemPage(evt) { try { PICKEM.init(evt); } catch (e) { console.error('[GillyLab] pickem render error:', e); } }
+
+  // ── Pick'em history page (opened from the account menu) ─────────────────────
+  async function pkHistApi(path) {
+    try { const r = await fetch(path, { credentials: 'same-origin' }); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
+    catch (e) { return { status: 0 }; }
+  }
+  async function renderPickemHistory() {
+    const host = document.getElementById('pickem-history-content');
+    if (!host) return;
+    host.innerHTML = '<div class="pk-board-empty">Loading…</div>';
+    const res = await pkHistApi('/api/pickem/history');
+    if (res.status === 401) { host.innerHTML = '<div class="pk-hist-empty">Log in to see your pick\'em history.</div>'; return; }
+    if (res.status !== 200) { host.innerHTML = '<div class="pk-hist-empty">History unavailable right now.</div>'; return; }
+    const evs = res.events || [];
+    const head = '<div class="pk-hist-head">' +
+      (res.name ? '<div class="pk-hist-name">' + escHtmlAttr(res.name) + '</div>' : '') +
+      '<div class="pk-hist-total"><span class="pk-hist-total-num">' + (res.total || 0) + '</span>' +
+      '<span class="pk-hist-total-lbl">total points · ' + evs.length + ' card' + (evs.length === 1 ? '' : 's') + '</span></div></div>';
+    if (!evs.length) {
+      host.innerHTML = head + '<div class="pk-hist-empty">No graded cards yet. Make your picks on the Pick\'em page — they\'ll be scored here after the event.</div>';
+      return;
+    }
+    const rows = evs.map(e => {
+      const pts = e.points || 0;
+      return '<button type="button" class="pk-hist-row" onclick="renderPickemHistoryEvent(\'' + escJsAttr(e.slug) + '\')">' +
+        '<div class="pk-hist-row-main"><div class="pk-hist-ev">' + escHtmlAttr(e.event || e.slug) + '</div>' +
+        '<div class="pk-hist-meta">' + escHtmlAttr(e.date || '') + ' · ' + (e.correct || 0) + '/' + (e.boutCount || 0) + ' winners</div></div>' +
+        '<div class="pk-hist-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div>' +
+        '<div class="pk-hist-arrow">›</div></button>';
+    }).join('');
+    host.innerHTML = head + '<div class="pk-hist-list">' + rows + '</div>';
+  }
+  async function renderPickemHistoryEvent(slug) {
+    const host = document.getElementById('pickem-history-content');
+    if (!host) return;
+    host.innerHTML = '<div class="pk-board-empty">Loading…</div>';
+    const res = await pkHistApi('/api/pickem/history?event=' + encodeURIComponent(slug));
+    const back = '<button type="button" class="pk-hist-back" onclick="renderPickemHistory()">← All cards</button>';
+    if (res.status !== 200) { host.innerHTML = back + '<div class="pk-hist-empty">Couldn\'t load that card.</div>'; return; }
+    const bouts = res.bouts || [];
+    const rows = bouts.map(b => {
+      let tag = 'pending', label = 'Pending';
+      if (b.voided) { tag = 'void'; label = 'No contest — void'; }
+      else if (b.pending) { tag = 'pending'; label = 'Pending'; }
+      else if (b.winnerHit) { tag = 'hit'; label = 'Winner' + (b.methodHit ? ' + method' : '') + (b.roundHit ? ' + round' : ''); }
+      else { tag = 'miss'; label = 'Wrong winner'; }
+      const pts = b.points || 0;
+      const sub = (b.method || '—') + (b.round ? ' · R' + b.round : '') + ' · ' + (b.confidence || '') + ' conf · ' + label;
+      return '<div class="pk-hist-bout ' + tag + '">' +
+        '<div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">' + escHtmlAttr(b.winner || '') + '</div>' +
+        '<div class="pk-hist-bout-detail">' + escHtmlAttr(sub) + '</div></div>' +
+        '<div class="pk-hist-bout-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+    }).join('');
+    const total = res.total || 0;
+    host.innerHTML = back +
+      '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + escHtmlAttr(res.event || slug) + '</div>' +
+      '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
+      (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 0.6rem;">Not fully graded yet — results still coming in.</div>') +
+      '<div class="pk-hist-bouts">' + rows + '</div>';
+  }
+  if (typeof window !== 'undefined') { window.renderPickemHistory = renderPickemHistory; window.renderPickemHistoryEvent = renderPickemHistoryEvent; }
 
 
   async function initDynamicPages() {

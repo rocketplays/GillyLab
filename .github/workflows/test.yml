@@ -7,10 +7,12 @@ on:
   push:
     paths:
       - 'scripts/**'
+      - 'worker/**'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
       - 'scripts/**'
+      - 'worker/**'
   workflow_dispatch:
 
 jobs:
@@ -26,9 +28,11 @@ jobs:
           node -c scripts/apply-fighter-overrides.cjs
           node -c scripts/fetch-espn-events.cjs
           node -c scripts/fetch-fighter-news.cjs
+          node -c scripts/emit-pickem-results.cjs
 
       - name: Run unit tests
         run: |
           node scripts/test-card-changes.cjs
           node scripts/test-fighter-news.cjs
           node scripts/test-espn-bouts.cjs
+          node scripts/test-pickem.mjs

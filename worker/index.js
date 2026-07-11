@@ -20,6 +20,7 @@
 import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
+import { gradeCard, buildLeaderboard, userHistory, cleanName } from "./pickem.mjs";
 
 const COOKIE = "gl_session";
 const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
@@ -197,6 +198,166 @@ async function handleContact(request, env) {
   }
 }
 
+/* ─────────────────────────────────── pick'em ───────────────────────────────── */
+// All pick'em state lives in the PICKS KV namespace:
+//   pf:<email>            -> { name }               display name (profile)
+//   nm:<lowername>        -> email                  reservation, enforces uniqueness
+//   pk:<slug>:<email>     -> { name, prelimsAt, eventName, eventDate, slug, picks:[…] }
+//   ag:<email>            -> { name, byEvent:{ slug: { points, event, date, correct, boutCount } } }
+//   gr:<slug>             -> "1"                     per-event grade-sweep marker
+const pkGet = async (env, key) => { const v = await env.PICKS.get(key); return v ? JSON.parse(v) : null; };
+const pkPut = (env, key, obj) => env.PICKS.put(key, JSON.stringify(obj));
+const clampNum = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n) || 0));
+
+// A logged-in AND subscribed session, or null — pick'em is a subscriber feature.
+async function pickemSession(request, env) {
+  const s = await readSession(request, env);
+  if (!s) return null;
+  const u = await getUser(env, s.email);
+  if (!u || !u.subscribed) return null;
+  return { email: s.email };
+}
+async function getDisplayName(env, email) { const p = await pkGet(env, "pf:" + email); return (p && p.name) || null; }
+
+async function handlePickemGetName(request, env) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  return json({ name: await getDisplayName(env, s.email) });
+}
+async function handlePickemSetName(request, env) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const { name } = await readBody(request);
+  const clean = cleanName(name);
+  if (!clean) return json({ error: "Pick a name 2–20 characters long (letters, numbers, spaces, _ . -)." }, 400);
+  const lower = clean.toLowerCase();
+  const owner = await env.PICKS.get("nm:" + lower);
+  if (owner && owner !== s.email) return json({ error: "That name is taken — try another." }, 409);
+  const prev = await getDisplayName(env, s.email);
+  if (prev && prev.toLowerCase() !== lower) await env.PICKS.delete("nm:" + prev.toLowerCase());
+  await env.PICKS.put("nm:" + lower, s.email);
+  await pkPut(env, "pf:" + s.email, { name: clean });
+  const ag = await pkGet(env, "ag:" + s.email);
+  if (ag) { ag.name = clean; await pkPut(env, "ag:" + s.email, ag); }   // keep leaderboard name fresh
+  return json({ name: clean });
+}
+
+// Save/overwrite this user's picks for an event. Rejected once the prelims have
+// started — that's the lock. Component points are clamped so a tampered client
+// can't inflate a score.
+async function handlePickemSave(request, env) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const name = await getDisplayName(env, s.email);
+  if (!name) return json({ error: "needs-name" }, 428);   // client must set a display name first
+  const body = await readBody(request);
+  const slug = String(body.eventSlug || "").slice(0, 120);
+  if (!slug) return json({ error: "missing event" }, 400);
+  const prelimsAt = Date.parse(body.prelimsAt);
+  if (isFinite(prelimsAt) && Date.now() >= prelimsAt) return json({ error: "locked", locked: true }, 403);
+  const CONF = { High: 1, Med: 1, Low: 1 }, METHOD = { "KO/TKO": 1, "Submission": 1, "Decision": 1 };
+  const picks = (Array.isArray(body.picks) ? body.picks : []).slice(0, 20).map(p => {
+    const winner = String(p.winner || ""), f1 = String(p.f1 || ""), f2 = String(p.f2 || "");
+    if (!winner || !f1 || !f2 || (winner !== f1 && winner !== f2)) return null;
+    if (!CONF[p.confidence] || !METHOD[p.method]) return null;
+    return {
+      f1, f2, winner, method: p.method, confidence: p.confidence,
+      round: p.method !== "Decision" && p.round != null ? clampNum(p.round, 1, 5) : null,
+      wPts: clampNum(p.wPts, 0, 60), mPts: clampNum(p.mPts, 0, 20), rPts: clampNum(p.rPts, 0, 20),
+    };
+  }).filter(Boolean);
+  if (!picks.length) return json({ error: "no valid picks" }, 400);
+  await pkPut(env, "pk:" + slug + ":" + s.email, {
+    name, submittedAt: Date.now(), prelimsAt: body.prelimsAt || null,
+    eventName: String(body.eventName || "").slice(0, 160), eventDate: String(body.eventDate || "").slice(0, 60),
+    slug, picks,
+  });
+  return json({ ok: true, saved: picks.length });
+}
+
+// The user's own stored picks for an event (to restore + show a locked state).
+async function handlePickemMine(request, env, url) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const slug = url.searchParams.get("event") || "";
+  const rec = slug ? await pkGet(env, "pk:" + slug + ":" + s.email) : null;
+  const locked = !!(rec && rec.prelimsAt && Date.now() >= Date.parse(rec.prelimsAt));
+  return json({ record: rec, locked });
+}
+
+// Finalized results, written by the results workflow and read from the bundle:
+//   { events: [{ slug, name, date, bouts:[{ f1, f2, winner, method, round, voided }] }] }
+async function loadResults(env, url) {
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/pickem-results.json", url)));
+    if (!r.ok) return { events: [] };
+    const j = await r.json();
+    return j && Array.isArray(j.events) ? j : { events: [] };
+  } catch { return { events: [] }; }
+}
+async function listAllKeys(env, prefix) {
+  const out = []; let cursor;
+  do {
+    const page = await env.PICKS.list({ prefix, cursor });
+    out.push(...page.keys.map(k => k.name));
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  return out;
+}
+// Grade every final, not-yet-swept event and fold each user's total into their
+// agg record. Idempotent via the gr:<slug> marker. Returns finalized slugs, newest first.
+async function ensureGraded(env, url) {
+  const results = await loadResults(env, url);
+  const events = results.events.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  for (const ev of events) {
+    if (!ev.slug || !Array.isArray(ev.bouts) || !ev.bouts.length) continue;
+    if (await env.PICKS.get("gr:" + ev.slug)) continue;
+    const prefix = "pk:" + ev.slug + ":";
+    for (const key of await listAllKeys(env, prefix)) {
+      const rec = await pkGet(env, key);
+      if (!rec) continue;
+      const card = gradeCard(rec, ev.bouts);
+      const email = key.slice(prefix.length);
+      const ag = (await pkGet(env, "ag:" + email)) || { name: rec.name, byEvent: {} };
+      ag.name = (await getDisplayName(env, email)) || rec.name || ag.name;
+      ag.byEvent[ev.slug] = { points: card.total, event: ev.name || rec.eventName || "",
+                              date: ev.date || rec.eventDate || "", correct: card.correct, boutCount: card.boutCount };
+      await pkPut(env, "ag:" + email, ag);
+    }
+    await env.PICKS.put("gr:" + ev.slug, "1");
+  }
+  return events.map(e => e.slug);
+}
+
+async function handlePickemHistory(request, env, url) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const ordered = await ensureGraded(env, url);
+  // ?event=slug -> per-bout breakdown of that card for this user (drill-down).
+  const slug = url.searchParams.get("event");
+  if (slug) {
+    const rec = await pkGet(env, "pk:" + slug + ":" + s.email);
+    if (!rec) return json({ error: "no picks for that event" }, 404);
+    const results = await loadResults(env, url);
+    const ev = (results.events || []).find(e => e.slug === slug);
+    const card = ev ? gradeCard(rec, ev.bouts) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
+    return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts });
+  }
+  const ag = (await pkGet(env, "ag:" + s.email)) || { name: await getDisplayName(env, s.email), byEvent: {} };
+  return json(userHistory(ag, ordered));
+}
+async function handlePickemLeaderboard(request, env, url) {
+  const s = await pickemSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const scope = url.searchParams.get("scope") || "all";
+  const ordered = await ensureGraded(env, url);
+  const aggs = [];
+  for (const k of await listAllKeys(env, "ag:")) { const a = await pkGet(env, k); if (a) aggs.push(a); }
+  const rows = buildLeaderboard(aggs, ordered, scope);
+  const myName = await getDisplayName(env, s.email);
+  return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null });
+}
+
 /* ─────────────────────────────────── responses ─────────────────────────────── */
 const html = (body, status = 200, headers = {}) => new Response(body, { status, headers: { "Content-Type": "text/html; charset=utf-8", ...headers } });
 const json = (obj, status = 200, headers = {}) => new Response(JSON.stringify(obj), { status, headers: { "Content-Type": "application/json", ...headers } });
@@ -229,6 +390,14 @@ export default {
       if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
       if (path === "/api/contact" && request.method === "POST") return handleContact(request, env);
       if (path === "/healthz") return new Response("ok");
+
+      // ---- pick'em (subscriber feature; each handler checks the session) ----
+      if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);
+      if (path === "/api/pickem/name" && request.method === "POST") return handlePickemSetName(request, env);
+      if (path === "/api/pickem/save" && request.method === "POST") return handlePickemSave(request, env);
+      if (path === "/api/pickem/mine") return handlePickemMine(request, env, url);
+      if (path === "/api/pickem/history") return handlePickemHistory(request, env, url);
+      if (path === "/api/pickem/leaderboard") return handlePickemLeaderboard(request, env, url);
 
       // ---- public pages ----
       // Auth-entry pages: if already logged in, skip them and go to the app
