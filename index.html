@@ -472,7 +472,7 @@
 
     /* ── HOME PAGE ── */
     .hero {
-      padding: 4rem 2rem 2rem;
+      padding: 2.5rem 2rem 0;
       max-width: var(--cmax);
       margin: 0 auto;
     }
@@ -562,10 +562,30 @@
     .countdown-time {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
-      font-size: 1.5rem;
+      font-size: 1.75rem;
       color: var(--accent);
       letter-spacing: 0.08em;
     }
+
+    .countdown-time .cd-unit {
+      font-size: 0.5em;
+      letter-spacing: 0.06em;
+      margin-left: 0.15em;
+      opacity: 0.7;
+      text-transform: lowercase;
+    }
+
+    .events-helper {
+      max-width: var(--cmax);
+      margin: 0 auto;
+      padding: 0.65rem 2rem 0;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+      line-height: 1.45;
+    }
+    .events-helper .eh-arrow { color: var(--accent); margin-right: 0.35rem; font-weight: 700; }
+    .events-helper b { color: rgba(255,255,255,0.62); font-weight: 600; }
 
     /* ── PAST-EVENT DROPDOWN (homepage) ── */
     .gl-prev-wrap {
@@ -3226,8 +3246,6 @@
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-label">Weekly Card Preview</div>
-    <div class="hero-title">Fight <span class="accent">Database</span></div>
-    <div class="hero-subtitle">Click any fighter for full stats, history & analytics · Click "Fight Info" on a fight to expand the tale of the tape · Use the search bar above to look up any specific fighters</div>
   </div>
 
   <div class="event-header">
@@ -3236,10 +3254,12 @@
       <div class="event-details" id="home-event-details">Fetching the latest event</div>
     </div>
     <div class="event-countdown">
-      <div class="countdown-label">Days Until Event</div>
+      <div class="countdown-label">Time Until Event</div>
       <div class="countdown-time" id="countdown">—</div>
     </div>
   </div>
+
+  <div class="events-helper"><span class="eh-arrow">›</span>Tap a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape · search any fighter up top</div>
 
   <div id="dynamic-fight-card"><div style="max-width:var(--cmax);margin:0 auto;padding:3rem 1rem;text-align:center;opacity:0.55;font-size:0.95rem;">Loading upcoming card…</div></div>
 
@@ -102343,7 +102363,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
  if (diff > 0) {
  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
- el.textContent = days > 0 ? `${days}d ${hours}h` : `${hours}h`;
+ const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+ let num, unit;
+ if (days >= 1) { num = days; unit = days === 1 ? 'day' : 'days'; }
+ else if (hours >= 1) { num = hours; unit = 'h'; }
+ else { num = Math.max(1, mins); unit = 'm'; }
+ el.innerHTML = num + '<span class="cd-unit">' + unit + '</span>';
  } else {
  el.textContent = 'TONIGHT';
  }
