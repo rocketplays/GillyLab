@@ -57,6 +57,24 @@ function refersToPastEvent(title, eventNums) {
   return !found.some(f => eventNums.has(f.replace(/\D+/g, '')));
 }
 
+// Google News surfaces a fighter's static PROFILE / STATS pages (ESPN "MMA
+// Profile", CBS Sports player page, Sherdog fighter page, …) as if they were
+// articles. They pass the outlet whitelist but aren't news, so drop them: they
+// either carry an explicit profile/stats marker, or the whole headline is just
+// the fighter's name (Google titles are "Headline - Source", so we look at the
+// part before the trailing source).
+function isProfilePage(title, name) {
+  const t = String(title || '');
+  if (/\bMMA Profile\b|\b(?:Player|Fighter|Athlete)\s+(?:Page|Profile)\b|\bBio,\s*Stats\b|\bStats,\s*(?:News|Bio)\b|\bNews,\s*Stats\b|\bCareer\s+(?:Stats|Record)\b|\b(?:MMA|Fight)\s+Record\b/i.test(t)) return true;
+  if (!name) return false;
+  const headline = t.replace(/\s+[|–—-]\s+[^|–—-]+$/, '');   // strip trailing " - Source"
+  const rem = headline
+    .replace(new RegExp('\\b' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+') + '\\b', 'i'), '')
+    .replace(/\([^)]*\)/g, '')
+    .replace(/[^A-Za-z0-9]+/g, '');
+  return rem.length === 0;   // headline was nothing but the fighter's name
+}
+
 function norm(s) {
   return String(s == null ? '' : s).toLowerCase().normalize('NFD')
     .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
@@ -84,12 +102,13 @@ function parseItems(xml) {
 }
 
 // --- pure: curate a fighter's items (whitelist + recency + dedupe + cap) ---
-function curate(items, now, eventNums) {
+function curate(items, now, eventNums, name) {
   now = now || Date.now();
   const seen = new Set();
   const out = [];
   for (const it of items) {
     if (!OUTLET_OK.test(it.source)) continue;
+    if (isProfilePage(it.title, name)) continue;   // static profile/stats page, not an article
     const ts = Date.parse(it.date);
     if (isFinite(ts) && (now - ts) > RECENCY_DAYS * DAY) continue;
     const key = norm(it.title).slice(0, 80);
@@ -159,7 +178,7 @@ async function main() {
     const key = norm(name);
     try {
       const xml = await fetchFeed(name);
-      const items = curate(parseItems(xml), now, eventNums);
+      const items = curate(parseItems(xml), now, eventNums, name);
       if (items.length) {
         result.fighters[key] = { name, hasInjuryNews: items.some(i => i.injury), items };
         ok++; kept += items.length; injuries += items.filter(i => i.injury).length;
