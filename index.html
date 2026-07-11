@@ -100526,8 +100526,14 @@ function applyInjuryFlags() {
 // the first article — used by the clickable "bout may change" chip.
 function openFighterNews(fullName) {
   if (typeof openFighterByName !== 'function') return;
-  window._glSuppressProfileScroll = true;
-  openFighterByName(fullName);
+  // Timestamped one-shot, not a bare boolean: _doPopulate() only honours it for
+  // ~1.5s and always clears it. If openFighterByName below fails to resolve the
+  // name, _doPopulate never runs to consume the flag — a bare boolean would then
+  // stay true and suppress the scroll-to-top on the NEXT (unrelated) profile the
+  // user opens, landing them partway down the page. The timestamp bounds that to
+  // a moment; the guard below clears it immediately on a failed open.
+  window._glSuppressProfileScroll = Date.now();
+  if (!openFighterByName(fullName)) { window._glSuppressProfileScroll = 0; return; }
   setTimeout(function () {
     const btn = document.getElementById('ftab-news-btn');
     if (btn && btn.style.display !== 'none' && typeof switchFighterTab === 'function') switchFighterTab(btn, 'ftab-news');
@@ -101977,9 +101983,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    }
    // Normally the profile opens scrolled to the top. Callers that want to land
    // the user somewhere specific (e.g. the injury banner jumping to the News
-   // tab) set this flag so their own scroll isn't fought by a smooth-scroll here.
-   if (window._glSuppressProfileScroll) { window._glSuppressProfileScroll = false; }
-   else { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+   // tab) set a timestamp so their own scroll isn't fought by a smooth-scroll
+   // here. Read-and-clear unconditionally, and only honour a suppression that
+   // was requested in the last ~1.5s — so a request left over from an open that
+   // never completed can't silently poison this one.
+   const _sup = window._glSuppressProfileScroll;
+   window._glSuppressProfileScroll = 0;
+   if (!(_sup && (Date.now() - _sup) < 1500)) {
+     window.scrollTo({ top: 0, behavior: 'smooth' });
+   }
    fetchFighterPhoto(name);
  }
 
@@ -102632,13 +102644,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // SLUG_ALIASES, and a fighter whose own slug happens to be an alias key must
   // never be redirected away from his own profile. Canonicalisation is only a
   // fallback for names that match no roster row.
+  // Returns true if a profile was actually opened, false if the name resolved
+  // to nobody. Callers (openFighterNews) rely on this to avoid leaving state
+  // set for an open that never happened.
   function openFighterByName(name) {
     let f = FIGHTERS.find(f => f.name === name);
     if (!f && name) {
       const canon = resolveCanonicalFighterName(name, '');
       if (canon && canon !== name) f = FIGHTERS.find(f => f.name === canon);
     }
-    if (f) openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
+    if (!f) return false;
+    openFighter(f.name, f.division, f.record, f.rank, f.initials, f.country);
+    return true;
   }
 
   // Odds board uses raw Odds-API fighter names (e.g. "King Green",
