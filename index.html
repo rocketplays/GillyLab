@@ -108976,41 +108976,50 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function persist() { try { localStorage.setItem(KEY, JSON.stringify(PICKS)); } catch (e) {} }
     function load() { try { PICKS = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { PICKS = {}; } }
 
-    // How often a fighter wins by a given method, from their career history —
-    // Laplace-smoothed (+1 per bucket) so a thin record can't produce a 0% or 100%
-    // and a fighter with no history lands at a neutral ⅓. Buckets: KO/TKO, Submission,
-    // Decision (DQ/other wins are ignored).
-    function methodShare(winner, method) {
-      const FH = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[winner]) || [];
+    // Count a fighter's bouts by method bucket for a given result ('W' or 'L').
+    // Buckets: KO/TKO, Submission, Decision (DQ/other are ignored).
+    function methodDist(name, want) {
+      const FH = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
       let ko = 0, sub = 0, dec = 0;
       FH.forEach(f => {
-        if (!f || f.result !== 'W') return;
+        if (!f || f.result !== want) return;
         const m = (f.method || '').toLowerCase();
         if (/sub/.test(m)) sub++;
         else if (/dec/.test(m)) dec++;
         else if (/ko|tko|knockout|stoppage/.test(m)) ko++;
       });
-      const bucket = { 'KO/TKO': ko, 'Submission': sub, 'Decision': dec }[method] || 0;
-      return (bucket + 1) / (ko + sub + dec + 3);
+      return { ko, sub, dec };
     }
-    // The rarer that method is for THIS fighter, the bigger the bonus — calling
-    // Conor by submission pays far more than calling him by KO. Anchored so a
-    // neutral ⅓ tendency yields the old flat +5; clamped so the likely method still
+    // Laplace-smoothed share of a bucket (+1 each) so a thin record can't produce a
+    // 0% or 100%, and no history lands at a neutral ⅓.
+    function bucketShare(dist, method) {
+      const b = { 'KO/TKO': dist.ko, 'Submission': dist.sub, 'Decision': dist.dec }[method] || 0;
+      return (b + 1) / (dist.ko + dist.sub + dist.dec + 3);
+    }
+    // Method bonus scales inversely with how LIKELY that method is here — the rarer,
+    // the bigger. Likelihood blends how the winner tends to WIN (65%) with how the
+    // opponent tends to LOSE (35%): Green by finish pays less against Terrance
+    // McKinney (often finished) than against a durable opponent. Anchored so a
+    // neutral matchup yields the old flat +5; clamped so the likely method still
     // scores (min 2) and a true longshot is capped (max 8).
-    function methodBonus(winner, method) {
+    function methodBonus(winner, method, opponent) {
       if (!method) return 0;
-      const raw = P_METHOD * 1.5 * (1 - methodShare(winner, method));   // ⅓ → 5
+      const off = bucketShare(methodDist(winner, 'W'), method);   // winner's finishing style
+      const def = bucketShare(methodDist(opponent, 'L'), method); // opponent's way of losing
+      const likely = 0.65 * off + 0.35 * def;
+      const raw = P_METHOD * 1.5 * (1 - likely);   // neutral ⅓ → 5
       return Math.max(2, Math.min(8, Math.round(raw)));
     }
 
     // Max points a bout can earn as currently picked (fully correct) at its
-    // confidence. Winner is the base; method adds a likelihood-weighted bonus and
-    // round adds a lateness-weighted bonus. A wrong method/round forgoes only its
-    // bonus — no penalty.
-    function potential(p) {
+    // confidence. Winner is the base; method adds a likelihood-weighted bonus
+    // (winner's style + opponent's durability) and round adds a lateness-weighted
+    // bonus. A wrong method/round forgoes only its bonus — no penalty.
+    function potential(p, f) {
       if (!p || !p.winner) return 0;
+      const opp = f ? (p.winner === f.f1 ? f.f2 : f.f1) : null;
       let base = P_WIN;
-      if (p.method) base += methodBonus(p.winner, p.method);
+      if (p.method) base += methodBonus(p.winner, p.method, opp);
       if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
       return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
     }
@@ -109046,7 +109055,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<button type="button" class="' + (p.confidence === c ? 'sel' : '') + '" data-bout="' + id + '" data-c="' + c + '">' + c + '</button>'
       ).join('');
       const detail = p.winner ? '' : ' hidden';
-      const pts = potential(p);
+      const pts = potential(p, f);
       return '<div class="pk-bout" data-boutcard="' + id + '">' +
         '<div class="pk-bout-head">' +
           '<span class="pk-bout-label">' + esc(f.label || f.wc || '') + '</span>' +
@@ -109070,7 +109079,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     function summaryHTML() {
       const complete = BOUTS.filter(isComplete).length;
-      const pot = BOUTS.reduce((t, f) => t + potential(PICKS[idOf(f)]), 0);
+      const pot = BOUTS.reduce((t, f) => t + potential(PICKS[idOf(f)], f), 0);
       return '<div class="pk-summary">' +
         (ERR ? '<div class="pk-err">' + esc(ERR) + '</div>' : '') +
         '<div class="pk-summary-row">' +
@@ -109161,7 +109170,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           confidence: p.confidence || 'Med',
           label: f.label || f.wc || '',
           isMain: !!f.isMain,
-          points: potential(p),
+          points: potential(p, f),
         });
       });
       return {
