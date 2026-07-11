@@ -117,10 +117,16 @@ function extractCardChanges(wikitext, currentNames) {
 }
 
 // ── network (CI only) ────────────────────────────────────────────────────────
+const API = 'https://en.wikipedia.org/w/api.php';
+// Wikimedia asks for a descriptive User-Agent with contact/URL; a generic one
+// gets throttled aggressively.
+const UA = 'GillyLab-card-changes/1.0 (https://github.com/rocketplays/GillyLab)';
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 function httpGet(url, redirects = 0) {
   return new Promise((resolve, reject) => {
     if (redirects > 5) return reject(new Error('too many redirects'));
-    https.get(url, { headers: { 'User-Agent': 'GillyLab/1.0 (rocketplays/GillyLab card-changes)' } }, (r) => {
+    https.get(url, { headers: { 'User-Agent': UA, 'Accept': 'application/json' } }, (r) => {
       if (r.statusCode >= 300 && r.statusCode < 400 && r.headers.location) {
         r.resume();
         return resolve(httpGet(r.headers.location, redirects + 1));
@@ -131,21 +137,41 @@ function httpGet(url, redirects = 0) {
     }).on('error', reject);
   });
 }
-const API = 'https://en.wikipedia.org/w/api.php';
+// GET the API with retries: a rate-limited response is plain text ("You are
+// making too many requests…"), not JSON — back off and retry rather than crash.
+async function apiJson(params) {
+  const url = API + '?' + new URLSearchParams(Object.assign({ format: 'json', formatversion: '2', maxlag: '5' }, params)).toString();
+  let last = '';
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const { status, body } = await httpGet(url);
+    try { return JSON.parse(body); } catch (e) { last = 'status ' + status + ': ' + String(body).replace(/\s+/g, ' ').slice(0, 70); }
+    await sleep(1500 * (attempt + 1));   // throttled — back off
+  }
+  throw new Error('wiki API not JSON (' + last + ')');
+}
 async function resolvePageTitle(query) {
-  const u = API + '?action=query&list=search&srsearch=' + encodeURIComponent(query) +
-    '&srlimit=1&srnamespace=0&format=json&formatversion=2';
-  const { body } = await httpGet(u);
-  const j = JSON.parse(body);
+  const j = await apiJson({ action: 'query', list: 'search', srsearch: query, srlimit: '1', srnamespace: '0' });
   const hit = j && j.query && j.query.search && j.query.search[0];
   return hit ? hit.title : null;
 }
 async function fetchWikitext(title) {
-  const u = API + '?action=parse&page=' + encodeURIComponent(title) +
-    '&prop=wikitext&redirects=1&format=json&formatversion=2';
-  const { body } = await httpGet(u);
-  const j = JSON.parse(body);
+  const j = await apiJson({ action: 'parse', page: title, prop: 'wikitext', redirects: '1' });
   return (j && j.parse && j.parse.wikitext) || '';
+}
+// Guard against the search returning a nearby-but-wrong event (e.g. an event
+// with no page yet resolving to a different card). Numbered events must match
+// "UFC <n>"; Fight Nights must share a main-event surname from the ESPN name.
+function titleMatchesEvent(title, evt) {
+  if (!title) return false;
+  const t = title.toLowerCase();
+  const nm = /\bUFC\s+(\d{2,4})\b/i.exec(evt.espnName || evt.title || '');
+  if (nm) return new RegExp('\\bufc\\s+' + nm[1] + '\\b').test(t) && !/fight night/.test(t);
+  const me = /:\s*(.+?)\s+vs\.?\s+(.+)$/i.exec(evt.espnName || '');
+  if (me) {
+    const surs = [me[1], me[2]].map((x) => x.trim().split(/\s+/).pop().toLowerCase().replace(/[^a-z]/g, ''));
+    return surs.some((s) => s && t.includes(s));
+  }
+  return true;
 }
 
 function upcomingEvents(eventDoc) {
@@ -163,18 +189,24 @@ function cardFighterNames(evt) {
 }
 
 async function main() {
+  const DUMP = process.argv.includes('--dump');
   const eventDoc = JSON.parse(fs.readFileSync(EVENT_PATH, 'utf8'));
   const events = upcomingEvents(eventDoc);
   const result = { generatedAt: new Date().toISOString(), events: [] };
+  let dump = '';
   for (const evt of events) {
+    await sleep(700);   // be polite — serialized with delays to avoid throttling
     const query = evt.espnName || evt.title || evt.slug;
     const names = cardFighterNames(evt);
     let title = null, changes = [];
     try {
       title = await resolvePageTitle(query);
+      if (!titleMatchesEvent(title, evt)) title = null;   // reject a nearby-but-wrong page
       if (title) {
+        await sleep(400);
         const wt = await fetchWikitext(title);
         changes = extractCardChanges(wt, names);
+        if (DUMP) dump += '\n===== ' + evt.slug + '  <-  ' + title + ' =====\n' + backgroundSection(wt).replace(/\n{3,}/g, '\n\n').trim() + '\n';
       }
     } catch (e) {
       console.warn(`[card-changes] ${evt.slug}: ${e.message}`);
@@ -184,6 +216,11 @@ async function main() {
   }
   fs.writeFileSync(OUT_PATH, JSON.stringify(result, null, 2));
   console.log('[card-changes] wrote ' + path.relative(ROOT, OUT_PATH));
+  if (DUMP) {
+    const dp = path.join(ROOT, 'data', 'card-changes-debug.txt');
+    fs.writeFileSync(dp, dump.trim() + '\n');
+    console.log('[card-changes] wrote ' + path.relative(ROOT, dp) + ' (raw Background text for tuning)');
+  }
 }
 
 module.exports = { extractCardChanges, backgroundSection, norm, normLoose };
