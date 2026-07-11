@@ -23,7 +23,9 @@ console.log('\n== gradeBout ==');
 const pick = { winner: 'A', method: 'KO/TKO', round: 2, confidence: 'High', wPts: 14, mPts: 6, rPts: 5 };
 eq('perfect: (14+6+5)*2 = 50', gradeBout(pick, { winner: 'A', method: 'KO/TKO', round: 2 }).points, 50);
 eq('right winner+method, wrong round: (14+6)*2 = 40', gradeBout(pick, { winner: 'A', method: 'KO/TKO', round: 5 }).points, 40);
-eq('right winner, wrong method: 14*2 = 28', gradeBout(pick, { winner: 'A', method: 'Submission', round: 1 }).points, 28);
+eq('right winner+round, wrong method: (14+5)*2 = 38', gradeBout(pick, { winner: 'A', method: 'Submission', round: 2 }).points, 38);   // round independent of method
+eq('right winner only (wrong method+round): 14*2 = 28', gradeBout(pick, { winner: 'A', method: 'Submission', round: 1 }).points, 28);
+eq('a decision gives no round credit', gradeBout(pick, { winner: 'A', method: 'Decision', round: 2 }).roundHit, false);
 eq('wrong winner (High): -10', gradeBout(pick, { winner: 'B', method: 'KO/TKO', round: 2 }).points, -10);
 eq('wrong winner (Low): 0', gradeBout({ ...pick, confidence: 'Low' }, { winner: 'B' }).points, 0);
 eq('voided bout: 0', gradeBout(pick, { voided: true }).points, 0);

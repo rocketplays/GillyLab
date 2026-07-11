@@ -51,8 +51,13 @@ export function gradeBout(pick, result) {
   if (result.voided) return { points: 0, voided: true, winnerHit: false, methodHit: false, roundHit: false, pending: false };
   const winnerHit = normName(pick.winner) === normName(result.winner);
   if (!winnerHit) return { points: -(CONF_PENALTY[conf] || 0), winnerHit: false, methodHit: false, roundHit: false, voided: false, pending: false };
+  // Method and round are scored INDEPENDENTLY (once the winner is right). Round
+  // credit only requires that the fight actually ended in the round you called — it
+  // does NOT require the method to be right. It just can't apply to a decision (no
+  // finishing round). So calling the winner + round but the wrong method still earns
+  // the winner + round bonuses.
   const methodHit = !!pick.method && pick.method === result.method;
-  const roundHit = methodHit && pick.method !== 'Decision' && pick.round != null && Number(pick.round) === Number(result.round);
+  const roundHit = result.method !== 'Decision' && pick.round != null && Number(pick.round) === Number(result.round);
   const earned = (pick.wPts || 0) + (methodHit ? (pick.mPts || 0) : 0) + (roundHit ? (pick.rPts || 0) : 0);
   return { points: Math.round(earned * (CONF_MULT[conf] || 1)), winnerHit: true, methodHit, roundHit, voided: false, pending: false };
 }

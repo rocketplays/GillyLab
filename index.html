@@ -109325,8 +109325,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (a.voided) return Object.assign({ points: 0, voided: true }, a);
       if (p.winner !== a.winner) return Object.assign({ points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false }, a);
       const parts = scoreParts(p, f);
+      // Method + round scored independently: round credit only needs the fight to
+      // have ended in the round you called (not for the method to be right too).
       const methodHit = !!p.method && p.method === a.method;
-      const roundHit = methodHit && p.method !== 'Decision' && p.round != null && +p.round === a.round;
+      const roundHit = a.method !== 'Decision' && p.round != null && +p.round === a.round;
       const earned = parts.wPts + (methodHit ? parts.mPts : 0) + (roundHit ? parts.rPts : 0);
       return Object.assign({ points: Math.round(earned * (CONF_MULT[p.confidence] || CONF_MULT.Med)), winnerHit: true, methodHit, roundHit }, a);
     }
