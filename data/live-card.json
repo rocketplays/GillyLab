@@ -1,1 +1,191 @@
-{ "generatedAt": null, "fighters": {} }
+{
+ "generatedAt": "2026-07-11T21:17:02.938Z",
+ "fighters": {
+  "Alessandro Costa": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cody Durden",
+     "result": "D",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "2:19",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Cody Durden",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 49,
+      "totL": 25,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       15,
+       36
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       2,
+       6
+      ],
+      "dist": [
+       19,
+       45
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 73,
+      "totL": 30,
+      "totA": 75,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       21,
+       66
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       27,
+       71
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  "Cody Durden": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Alessandro Costa",
+     "result": "D",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "2:19",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Alessandro Costa",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 73,
+      "totL": 30,
+      "totA": 75,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       21,
+       66
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       27,
+       71
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 49,
+      "totL": 25,
+      "totA": 53,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       15,
+       36
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       2,
+       6
+      ],
+      "dist": [
+       19,
+       45
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
