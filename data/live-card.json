@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T22:50:45.388Z",
+ "generatedAt": "2026-07-11T23:10:22.864Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -742,6 +742,194 @@
        1
       ]
      }
+    }
+   ]
+  },
+  "Tracy Cortez": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Wang Cong",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Wang Cong",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 72,
+      "sigA": 156,
+      "totL": 74,
+      "totA": 158,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       48,
+       127
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       66,
+       149
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 137,
+      "sigA": 215,
+      "totL": 153,
+      "totA": 231,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:22",
+      "head": [
+       77,
+       140
+      ],
+      "body": [
+       28,
+       33
+      ],
+      "leg": [
+       32,
+       42
+      ],
+      "dist": [
+       126,
+       199
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       5,
+       8
+      ]
+     },
+     "capturedAt": "2026-07-11T23:10:22.743Z"
+    }
+   ]
+  },
+  "Wang Cong": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Tracy Cortez",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Tracy Cortez",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 137,
+      "sigA": 215,
+      "totL": 153,
+      "totA": 231,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:22",
+      "head": [
+       77,
+       140
+      ],
+      "body": [
+       28,
+       33
+      ],
+      "leg": [
+       32,
+       42
+      ],
+      "dist": [
+       126,
+       199
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       5,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 72,
+      "sigA": 156,
+      "totL": 74,
+      "totA": 158,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       48,
+       127
+      ],
+      "body": [
+       12,
+       17
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       66,
+       149
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-11T23:10:22.743Z"
     }
    ]
   }
