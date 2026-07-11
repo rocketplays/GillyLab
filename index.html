@@ -109040,6 +109040,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // A correct round pays more the later it is (harder to call): R1 +4 … R5 +8.
     // Anchored so R2 stays at the old flat +5. Wrong round costs nothing.
     const roundBonus = (r) => (r ? 3 + r : 0);
+    // Recent form counts more than ancient history when reading a fighter's method
+    // tendencies: each fight older than the last is weighted ×this (newest = 1). So
+    // Green's long-ago submissions barely register next to his recent decisions/KOs.
+    const RECENCY_DECAY = 0.9;
     let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
     // Phase-2 server state: display name, whether this card is submitted/locked, a
     // transient status message, and the leaderboard scope.
@@ -109107,18 +109111,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return P_WIN * Math.max(0.6, Math.min(3, Math.pow(0.5 / q, 0.7)));
     }
 
-    // Count a fighter's bouts by method bucket for a given result ('W' or 'L').
-    // Buckets: KO/TKO, Submission, Decision (DQ/other are ignored).
+    // Recency-weighted count of a fighter's bouts by method bucket for a given
+    // result ('W' or 'L'). FIGHT_HISTORY is newest-first, so each older bout is
+    // weighted ×RECENCY_DECAY^position — recent form dominates. Buckets: KO/TKO,
+    // Submission, Decision (DQ/other ignored). Position counts every real bout so a
+    // win's weight reflects how long ago it actually was.
     function methodDist(name, want) {
       const FH = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[name]) || [];
-      let ko = 0, sub = 0, dec = 0;
-      FH.forEach(f => {
-        if (!f || f.result !== want) return;
+      let ko = 0, sub = 0, dec = 0, i = 0;
+      for (const f of FH) {
+        if (!f || !f.result || f.result === '–' || f.method === 'Upcoming') continue;
+        const w = Math.pow(RECENCY_DECAY, i);
+        i++;
+        if (f.result !== want) continue;
         const m = (f.method || '').toLowerCase();
-        if (/sub/.test(m)) sub++;
-        else if (/dec/.test(m)) dec++;
-        else if (/ko|tko|knockout|stoppage/.test(m)) ko++;
-      });
+        if (/sub/.test(m)) sub += w;
+        else if (/dec/.test(m)) dec += w;
+        else if (/ko|tko|knockout|stoppage/.test(m)) ko += w;
+      }
       return { ko, sub, dec };
     }
     // Laplace-smoothed distribution over the three method buckets (+1 each) so a
