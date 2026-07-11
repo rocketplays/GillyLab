@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T21:17:02.938Z",
+ "generatedAt": "2026-07-11T21:29:37.782Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -182,6 +182,192 @@
       "ground": [
        2,
        3
+      ]
+     }
+    }
+   ]
+  },
+  "Ryan Gandra": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Zach Reese",
+     "result": "D",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:15",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Zach Reese",
+     "result": "D",
+     "f": {
+      "kd": 1,
+      "sigL": 10,
+      "sigA": 20,
+      "totL": 10,
+      "totA": 20,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       8,
+       16
+      ],
+      "body": [
+       2,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       13
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 10,
+      "totL": 5,
+      "totA": 10,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       8
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  "Zach Reese": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Ryan Gandra",
+     "result": "D",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:15",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Ryan Gandra",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 10,
+      "totL": 5,
+      "totA": 10,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       3,
+       8
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 10,
+      "sigA": 20,
+      "totL": 10,
+      "totA": 20,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       8,
+       16
+      ],
+      "body": [
+       2,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       5,
+       13
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
       ]
      }
     }
