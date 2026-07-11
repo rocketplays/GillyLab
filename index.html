@@ -3353,6 +3353,8 @@
       .pk-viewhist { width: 100%; margin-top: 0.7rem; }
       /* top button row on the pick'em page */
       .pk-subnav { display: flex; gap: 0.5rem; margin: 0 0 1.1rem; }
+      /* card started: freeze the picks (visual + no pointer events) */
+      .pk-bouts-locked { opacity: 0.6; pointer-events: none; filter: saturate(0.6); }
       .pk-subnav-btn { flex: 1; background: var(--surface2); border: 1px solid var(--border); color: var(--text); border-radius: 9px; padding: 0.55rem 0.6rem; font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: inherit; transition: border-color .12s, background .12s; }
       .pk-subnav-btn:hover { border-color: var(--accent); background: rgba(0,230,104,0.08); }
       .pk-hist-list { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -109483,7 +109485,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '<button type="button" class="pk-subnav-btn" onclick="openPickemLeaderboard()">🏆 Leaderboard</button>' +
             '<button type="button" class="pk-subnav-btn" onclick="openPickemHistory()">📊 My history</button>' +
           '</div>' +
-          BOUTS.map(boutHTML).join('') +
+          '<div class="pk-bouts' + (LOCKED ? ' pk-bouts-locked' : '') + '">' + BOUTS.map(boutHTML).join('') + '</div>' +
         '</div>' +
         summaryHTML();
       hydratePhotos(host);
@@ -109504,6 +109506,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     // ---- state mutations ----
     function setWinner(id, name) {
+      if (LOCKED) return;                                 // card started — picks are frozen
       ERR = ''; MSG = null;
       const p = PICKS[id] || {};
       if (p.winner === name) { delete PICKS[id]; }      // tapping your pick again clears it
@@ -109511,6 +109514,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       persist(); render();
     }
     function setField(id, field, val) {
+      if (LOCKED) return;
       ERR = ''; MSG = null;
       const p = PICKS[id]; if (!p || !p.winner) return;
       if (field === 'method') {
@@ -109524,8 +109528,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
       persist(); render();
     }
-    function clear(id) { delete PICKS[id]; persist(); render(); }
+    function clear(id) { if (LOCKED) return; delete PICKS[id]; persist(); render(); }
     function resetAll() {
+      if (LOCKED) return;
       if (!Object.keys(PICKS).length) return;
       if (!window.confirm('Clear all your picks for this card?')) return;
       PICKS = {}; ERR = ''; persist(); render();
