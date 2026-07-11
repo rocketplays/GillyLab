@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T21:29:37.782Z",
+ "generatedAt": "2026-07-11T22:04:17.113Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -368,6 +368,192 @@
       "ground": [
        5,
        7
+      ]
+     }
+    }
+   ]
+  },
+  "Farid Basharat": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "John Garza",
+     "result": "D",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "John Garza",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 124,
+      "totL": 72,
+      "totA": 137,
+      "tdL": 5,
+      "tdA": 22,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:02",
+      "head": [
+       37,
+       96
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       15,
+       15
+      ],
+      "dist": [
+       48,
+       102
+      ],
+      "clinch": [
+       3,
+       8
+      ],
+      "ground": [
+       10,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 194,
+      "totL": 62,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       30,
+       161
+      ],
+      "body": [
+       22,
+       30
+      ],
+      "leg": [
+       0,
+       3
+      ],
+      "dist": [
+       48,
+       186
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     }
+    }
+   ]
+  },
+  "John Garza": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Farid Basharat",
+     "result": "D",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Farid Basharat",
+     "result": "D",
+     "f": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 194,
+      "totL": 62,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       30,
+       161
+      ],
+      "body": [
+       22,
+       30
+      ],
+      "leg": [
+       0,
+       3
+      ],
+      "dist": [
+       48,
+       186
+      ],
+      "clinch": [
+       4,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 61,
+      "sigA": 124,
+      "totL": 72,
+      "totA": 137,
+      "tdL": 5,
+      "tdA": 22,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:02",
+      "head": [
+       37,
+       96
+      ],
+      "body": [
+       9,
+       13
+      ],
+      "leg": [
+       15,
+       15
+      ],
+      "dist": [
+       48,
+       102
+      ],
+      "clinch": [
+       3,
+       8
+      ],
+      "ground": [
+       10,
+       14
       ]
      }
     }
