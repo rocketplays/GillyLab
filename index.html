@@ -3440,7 +3440,7 @@
         <svg class="account-arrow" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <div class="account-menu" id="account-menu" role="menu">
-        <a role="menuitem" href="#" onclick="openPickemHistory(); closeAccountMenu(); return false;">Pick'em history</a>
+        <a role="menuitem" href="#" onclick="event.preventDefault(); closeAccountMenu(); openPickemHistory(); return false;">Pick'em history</a>
         <a role="menuitem" href="/api/portal">Manage subscription</a>
         <a role="menuitem" href="/change-password">Change password</a>
         <a role="menuitem" href="/api/logout">Log out</a>
@@ -101957,78 +101957,87 @@ const GL_SHEET = (function () {
     return cv;
   }
 
-  // ── PICK'EM CARD (1080×1080 square) ──────────────────────────────────────
-  // A shareable list of the user's picks for the featured card. Winner + method
-  // + round + a colour-coded confidence pill per bout, with total points at
-  // stake. Always square; rows shrink to fit a long card.
+  // ── PICK'EM CARD (1080 wide, height grows with the card) ─────────────────
+  // A shareable list of the user's picks. Each bout is a roomy two-line row —
+  // winner, then method · round · opponent — with a colour-coded confidence pill.
+  // Headlined by the player's name; height grows with the number of picks so
+  // nothing gets squished (square-ish for short cards, taller for a full slate).
   const PK_CONF_COL = { High: ACC, Med: AMB, Low: MUT };
   function pkMethodLabel(p) {
     if (!p.method) return 'Method TBD';
     if (p.method === 'Decision') return 'Decision';
     return p.method + (p.round ? '  ·  Round ' + p.round : '');
   }
+  function pkPossessive(name) { return name ? (name + (/s$/i.test(name) ? "'" : "'s")) : 'My'; }
   function pkBadge(ctx, x, y, w, h, text, col) {
     roundRect(ctx, x, y, w, h, h / 2);
     ctx.fillStyle = hexA(col, 0.16); ctx.fill();
     ctx.strokeStyle = hexA(col, 0.7); ctx.lineWidth = 1.5; ctx.stroke();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.font = '700 20px ' + SANS; ctx.fillStyle = col;
+    ctx.font = '700 23px ' + SANS; ctx.fillStyle = col;
     ctx.fillText(String(text).toUpperCase(), x + w / 2, y + h / 2 + 1);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   }
   function pkRow(ctx, p, x, y, w, h) {
     const col = PK_CONF_COL[p.confidence] || MUT;
-    const pad = 5;
-    roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();   // confidence spine
-    const tx = x + 24;
-    const twoLine = h >= 62;
-    const badgeW = 104, badgeH = 32;
-    const nameMaxW = w - (tx - x) - badgeW - 28;
+    const pad = 8;
+    roundRect(ctx, x, y + pad, 7, h - pad * 2, 3.5); ctx.fillStyle = col; ctx.fill();   // confidence spine
+    const tx = x + 30;
+    const badgeW = 122, badgeH = 42;
+    const nameMaxW = w - (tx - x) - badgeW - 36;
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.font = '700 ' + (twoLine ? 34 : 27) + 'px ' + COND; ctx.fillStyle = TXT;
-    const nameY = twoLine ? y + h / 2 - 3 : y + h / 2 + 9;
-    ctx.fillText(clip(ctx, p.winner, nameMaxW), tx, nameY);
-    if (twoLine) {
-      ctx.font = '400 22px ' + SANS; ctx.fillStyle = MUT;
-      const line2 = pkMethodLabel(p) + (p.loser ? '   over ' + p.loser : '');
-      ctx.fillText(clip(ctx, line2, nameMaxW), tx, y + h / 2 + 27);
-    }
+    // winner
+    ctx.font = '700 42px ' + COND; ctx.fillStyle = TXT;
+    ctx.fillText(clip(ctx, p.winner, nameMaxW), tx, y + h / 2 - 4);
+    // method · round · opponent
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    const line2 = pkMethodLabel(p) + (p.loser ? '  ·  over ' + p.loser : '');
+    ctx.fillText(clip(ctx, line2, nameMaxW), tx, y + h / 2 + 32);
+    // confidence pill
     pkBadge(ctx, x + w - badgeW, y + h / 2 - badgeH / 2, badgeW, badgeH, p.confidence || 'Med', col);
   }
   async function drawPickem(data) {
     await fontsReady();
     const picks = (data.picks || []).slice();
-    const CH = 1080;
+    const n = picks.length || 1;
+    const title = pkPossessive(data.name) + ' Picks';
+
     const cv = document.createElement('canvas');
-    cv.width = W; cv.height = CH;
-    const ctx = cv.getContext('2d');
+    cv.width = W;
+    let ctx = cv.getContext('2d');
+    ctx.font = '800 60px ' + COND;
+    const titleLines = wrap(ctx, title, W - 128).slice(0, 2);
+    const L = titleLines.length;
+    const lastTitleY = 152 + (L - 1) * 64;
+    const subY = lastTitleY + 46;
+    const divY = subY + 26;
+    const listTop = divY + 24;
+    const rowH = 96, footerBlockH = 172;
+    const CH = Math.max(1080, Math.round(listTop + n * rowH + footerBlockH));
+    cv.height = CH;                 // resizing clears the canvas + resets state
+    ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 74, "Pick'em");
+    brand(ctx, 78, "Pick'em");
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = TXT; ctx.font = '800 52px ' + COND;
-    let y = 150;
-    wrap(ctx, data.eventName || 'My Picks', W - 128).slice(0, 2).forEach(line => { ctx.fillText(line, 64, y); y += 58; });
-    ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-    const sub = [data.eventDate, picks.length + ' pick' + (picks.length === 1 ? '' : 's')].filter(Boolean).join('   ·   ');
-    ctx.fillText(sub, 64, y); y += 26;
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    titleLines.forEach((line, i) => ctx.fillText(line, 64, 152 + i * 64));
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    const sub = [data.eventName, data.eventDate, n + ' pick' + (n === 1 ? '' : 's')].filter(Boolean).join('   ·   ');
+    ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, divY); ctx.lineTo(W - 64, divY); ctx.stroke();
 
-    ctx.strokeStyle = LINE; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(64, y); ctx.lineTo(W - 64, y); ctx.stroke();
-    y += 20;
-
-    const listTop = y, listBottom = CH - 150;
-    const n = picks.length || 1;
-    const rowH = Math.min(98, Math.floor((listBottom - listTop) / n));
-    let ry = listTop + Math.max(0, (listBottom - listTop - rowH * n) / 2);
+    const listBottom = CH - footerBlockH;
+    const slack = Math.max(0, (listBottom - listTop) - n * rowH);
+    let ry = listTop + slack / 2;
     picks.forEach(p => { pkRow(ctx, p, 64, ry, W - 128, rowH); ry += rowH; });
 
     // total points at stake
-    ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 128); ctx.lineTo(W - 64, CH - 128); ctx.stroke();
-    ctx.textAlign = 'left'; ctx.font = '700 26px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
-    ctx.fillText('POINTS AT STAKE', 64, CH - 92);
-    ctx.textAlign = 'right'; ctx.font = '800 46px ' + COND; ctx.fillStyle = ACC;
-    ctx.fillText(String(data.totalPoints || 0), W - 64, CH - 84);
+    ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
+    ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
+    ctx.fillText('POINTS AT STAKE', 64, CH - 84);
+    ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND; ctx.fillStyle = ACC;
+    ctx.fillText(String(data.totalPoints || 0), W - 64, CH - 76);
     ctx.textAlign = 'left';
 
     footer(ctx, CH);
@@ -109540,6 +109549,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         });
       });
       return {
+        name: NAME || null,
         eventName: (EVT && EVT.name) || 'UFC Card',
         eventDate: (EVT && EVT.details) || '',
         picks,
