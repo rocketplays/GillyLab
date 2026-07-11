@@ -194,5 +194,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters };
+module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters, isProfilePage };
 if (require.main === module) main();

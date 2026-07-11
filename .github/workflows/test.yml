@@ -30,4 +30,5 @@ jobs:
       - name: Run unit tests
         run: |
           node scripts/test-card-changes.cjs
+          node scripts/test-fighter-news.cjs
           node scripts/test-espn-bouts.cjs
