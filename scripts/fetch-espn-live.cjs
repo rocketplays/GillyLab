@@ -280,14 +280,17 @@ async function espnBouts(espnId, cache) {
 }
 
 // Update an already-written row in place if the bout's result was corrected after
-// we wrote it (ESPN posts a draw / no-winner first, then flips it). Returns true if
-// anything changed. Stat rows carry only `result`; history rows also carry method/round.
-function reconcileRow(row, want, method, round) {
+// we wrote it (ESPN posts a draw / no-winner first — or an early finish time — then
+// corrects it). Returns true if anything changed. Stat rows carry only `result`;
+// history rows also carry method / round / time.
+function reconcileRow(row, want, method, round, time) {
   if (!row) return false;
+  const has = (k) => Object.prototype.hasOwnProperty.call(row, k);
   let ch = false;
   if (want && row.result !== want) { row.result = want; ch = true; }
-  if (Object.prototype.hasOwnProperty.call(row, 'method') && method && row.method !== method) { row.method = method; ch = true; }
-  if (Object.prototype.hasOwnProperty.call(row, 'round') && row.round !== round) { row.round = round; ch = true; }
+  if (has('method') && method && row.method !== method) { row.method = method; ch = true; }
+  if (has('round') && row.round !== round) { row.round = round; ch = true; }
+  if (has('time') && time != null && row.time !== time) { row.time = time; ch = true; }
   return ch;
 }
 
@@ -309,13 +312,14 @@ async function enrichFinishedBout(evt, bout, eb, stats, live) {
   // both profiles even after event.json is right.
   const curMethod = methodLabel(bout.method, bout.methodDetails);
   const curRound = bout.resultRound || null;
+  const curTime = bout.resultTime || null;
   const reconciled = [];
   (bout.fighters || []).forEach((f, i) => {
     const me = f.fighterName, them = (bout.fighters[1 - i] || {}).fighterName;
     const want = resultLetter(f.outcome);
     const findRow = (rows) => (rows || []).find((r) => r && r.opponent === them && r.date === date);
     [stats[me], slot(me).stats, slot(me).history].forEach((rows) => {
-      if (reconcileRow(findRow(rows), want, curMethod, curRound)) reconciled.push(`fix ${me} ${want} vs ${them}`);
+      if (reconcileRow(findRow(rows), want, curMethod, curRound, curTime)) reconciled.push(`fix ${me} ${want} vs ${them}`);
     });
   });
 
