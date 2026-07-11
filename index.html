@@ -2722,6 +2722,12 @@
          on its .freedom-card/.numbered-card wrapper, so this is a no-op
          conflict-wise for that structure — it simply applies cleanly. */
       .freedom-card, .numbered-card { padding-top: 1.85rem !important; }
+      /* ...but the featured/home event-header disables its star row
+         (.event-header.numbered-card::before { content: none }), so that
+         clearance just pushes the event name away from the eyebrow above it.
+         Zero it for the featured header only — carousel cards keep the star
+         clearance via the id+class rule below. */
+      .event-header.numbered-card, .event-header.freedom-card { padding-top: 0 !important; }
       /* The rule above gets silently zeroed out for carousel cards specifically:
          #carousel-track .carousel-card (a few lines up) sets a shorthand
          `padding: 0 0.75rem !important`, whose padding-top:0 sub-property
