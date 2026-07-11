@@ -1208,43 +1208,36 @@
        viewport — the stats spilling off the right edge the user saw.
        Removed the inline duplicate; let this rule + the mobile overrides
        own the column count so they can actually take effect. */
-    .fighter-stats-grid {
-      max-width: var(--cmax);
-      margin: 0 auto;
-      padding: 2rem;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1rem;
-    }
+    .fighter-stats-v2 { max-width: var(--cmax); margin: 0 auto; padding: 2rem; }
 
-    .stat-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.25rem;
-    }
+    .fsx-card { background: var(--card); border: 1px solid var(--border); border-radius: 6px; padding: 1.25rem 1.5rem; }
 
-    .stat-card-label {
-      font-size: 0.68rem;
-      color: var(--muted);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
+    .fsx-bio { display: flex; flex-wrap: wrap; gap: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border); }
+    .fsx-bio-k { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .fsx-bio-v { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.15rem; margin-top: 0.15rem; }
 
-    .stat-card-value {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      font-size: 2rem;
-      letter-spacing: 0.02em;
-      color: var(--accent);
-    }
+    .fsx-caption { font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; margin: 0.85rem 0 0.1rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; align-items: center; }
+    .fsx-legend { display: inline-flex; align-items: center; gap: 0.9rem; }
+    .fsx-lg { display: inline-flex; align-items: center; gap: 0.35rem; }
+    .fsx-lg-sw { width: 16px; height: 7px; border-radius: 2px; display: inline-block; }
+    .fsx-lg-tick { width: 2px; height: 12px; background: #fff; display: inline-block; }
 
-    .stat-card-sub {
-      font-size: 0.75rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
-    }
+    .fsx-group { margin-top: 1.15rem; }
+    .fsx-group-t { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.65rem; }
+
+    .fsx-row { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.6rem; }
+    .fsx-label { flex: 0 0 200px; font-size: 0.82rem; color: #c9c9d0; }
+    .fsx-bar { position: relative; flex: 1; min-width: 60px; }
+    .fsx-track { height: 9px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+    .fsx-track-empty { background: transparent; }
+    .fsx-fill { height: 100%; border-radius: 4px; }
+    .fsx-fill.good { background: var(--accent); }
+    .fsx-fill.bad { background: #c76a54; }
+    .fsx-tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: #fff; border-radius: 1px; }
+    .fsx-val { flex: 0 0 56px; text-align: right; font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.2rem; color: var(--text); }
+    .fsx-val.good { color: var(--accent); }
+    .fsx-val.bad { color: #c76a54; }
+    .fsx-empty { color: var(--muted); font-size: 0.85rem; padding: 1rem 0; }
 
     .back-btn {
       display: inline-flex;
@@ -2742,24 +2735,12 @@
         gap: 0.85rem;
       }
       .rb-section-title  { font-size: 0.68rem; }
-      .fighter-stats-grid {
-        padding: 1rem;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 0.5rem;
-      }
-      /* Desktop sizes each card for a 4-up row of fairly long labels
-         ("Strikes Landed / Min"), so .stat-card carries generous
-         1.25rem padding, a 2rem value, and 0.5rem of label->value
-         margin. At 2-up on phones the cards are much narrower but kept
-         that same spacing — which reads as a wall of mostly-empty boxes
-         (label, a couple lines of breathing room, one short number/dash,
-         repeat x14). Tighten padding and the label/value/sub rhythm so
-         each card hugs its actual content; with 14 cards stacked in 7
-         rows this compounds into noticeably less scrolling overall. */
-      .stat-card         { padding: 0.65rem 0.7rem; }
-      .stat-card-label   { font-size: 0.58rem; margin-bottom: 0.3rem; }
-      .stat-card-value   { font-size: 1.3rem; line-height: 1.15; }
-      .stat-card-sub     { font-size: 0.62rem; margin-top: 0.1rem; }
+      .fighter-stats-v2 { padding: 1rem; }
+      .fsx-card         { padding: 1rem; }
+      .fsx-bio          { gap: 1rem; }
+      .fsx-label        { flex-basis: 148px; font-size: 0.76rem; }
+      .fsx-val          { flex-basis: 48px; font-size: 1.05rem; }
+      .fsx-row          { gap: 0.6rem; }
       .back-btn          { padding: 0 1rem; }
 
       /* Fighter tabs */
@@ -2817,7 +2798,6 @@
       .nav-dropdown-btn  { padding: 0 0.6rem; font-size: 0.62rem; letter-spacing: 0.05em; gap: 0.3rem; }
       .hero-title        { font-size: 1.8rem; }
       .fighter-big-name  { font-size: 1.65rem; }
-      .fighter-stats-grid { grid-template-columns: repeat(2, 1fr); }
       .fight-row         { grid-template-columns: 1fr 62px 1fr; }
       .fighter-cell      { padding: 0.6rem 0.4rem; gap: 0.3rem; }
       .fighter-avatar    { width: 30px; height: 30px; min-width: 30px; font-size: 0.6rem; flex-shrink: 0; }
@@ -3321,80 +3301,7 @@
     </div>
   </div>
 
-  <div class="fighter-stats-grid">
-    <div class="stat-card">
-      <div class="stat-card-label">Age</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Years old</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Height</div>
-      <div class="stat-card-value">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Reach</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Inches</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Stance</div>
-      <div class="stat-card-value" style="font-size:1.3rem;">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Strikes Landed / Min</div>
-      <div class="stat-card-value">5.21</div>
-      <div class="stat-card-sub">Significant Strikes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Striking Accuracy</div>
-      <div class="stat-card-value">—</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Strikes Absorbed / Min</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Significant Strikes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Striking Defense</div>
-      <div class="stat-card-value">66%</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Knockdowns Landed</div>
-      <div class="stat-card-value">0.21</div>
-      <div class="stat-card-sub">Per 15 minutes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Takedowns Landed</div>
-      <div class="stat-card-value">3.4</div>
-      <div class="stat-card-sub">Per 15 minutes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Takedown Accuracy</div>
-      <div class="stat-card-value">62%</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Takedown Defense</div>
-      <div class="stat-card-value">89%</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Submission Avg</div>
-      <div class="stat-card-value">1.4</div>
-      <div class="stat-card-sub">Per 15 minutes</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Finish Rate</div>
-      <div class="stat-card-value">73%</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Win Streak</div>
-      <div class="stat-card-value">14</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Gym</div>
-      <div class="stat-card-value">—</div>
-      <div class="stat-card-sub">Training camp</div>
-    </div>
-  </div>
+  <div class="fighter-stats-v2" id="fighter-stats-v2"></div>
 
   <div class="fighter-content">
     <div class="fighter-tabs">
@@ -10338,55 +10245,120 @@
  if (n < new Date(n.getFullYear(), b.getMonth(), b.getDate())) age--;
  return age;
  }
- function setStatCard(index, value, sub) {
-    const cards = document.querySelectorAll('.stat-card');
-    if (!cards[index]) return;
-    const display = index >= 4 && (value === 0 || value === '0' || value === '0%' || value === null) ? '—' : value;
-    cards[index].querySelector('.stat-card-value').textContent = display;
-    if (sub !== undefined) { const subEl = cards[index].querySelector('.stat-card-sub'); if (subEl) subEl.textContent = sub; }
-  }
+ const _DIV_STAT_CACHE = {};
+ function _statNum(v) {
+   if (v == null) return null;
+   if (typeof v === 'number') return v;
+   const n = parseFloat(String(v).replace('%', ''));
+   return isNaN(n) ? null : n;
+ }
+ // Per-division median + a 95th-percentile scale cap for each rate stat, so a
+ // fighter's bar reads against the typical fighter in his OWN division. Median,
+ // not mean: MMA rate stats are right-skewed (a few very high-volume strikers,
+ // a few 100% takedown-defense guys) and a mean is dragged up by them, making
+ // ordinary fighters look below par. Cached per division, filled lazily the
+ // first time anyone from it is opened.
+ function statDivMedians(division) {
+   if (_DIV_STAT_CACHE[division]) return _DIV_STAT_CACHE[division];
+   const fields = ['slpm', 'strAcc', 'sapm', 'strDef', 'kd', 'tdLanded', 'tdAcc', 'tdDef', 'subAvg', 'finRate'];
+   const peers = FIGHTERS.filter((f) => f && f.division === division && FIGHTER_STATS[f.name]);
+   const out = {};
+   for (const fld of fields) {
+     const vals = [];
+     for (const pf of peers) {
+       const v = _statNum(FIGHTER_STATS[pf.name][fld]);
+       if (v != null && !isNaN(v) && v !== 0) vals.push(v);
+     }
+     // Under 8 peers with the stat: a "median" would be noise, so no bar.
+     if (vals.length < 8) { out[fld] = null; continue; }
+     vals.sort((a, b) => a - b);
+     const half = vals.length / 2;
+     const median = vals.length % 2 ? vals[(vals.length - 1) / 2] : (vals[half - 1] + vals[half]) / 2;
+     let cap = vals[Math.min(vals.length - 1, Math.floor(0.95 * vals.length))];
+     if (!(cap > 0)) cap = 1;
+     out[fld] = { median: median, cap: cap, n: vals.length };
+   }
+   _DIV_STAT_CACHE[division] = out;
+   return out;
+ }
+ const _DIVLABEL = { FLW: 'flyweight', BW: 'bantamweight', FW: 'featherweight', LW: 'lightweight', WW: 'welterweight', MW: 'middleweight', LHW: 'light heavyweight', HW: 'heavyweight', WSW: "women's strawweight", WFLW: "women's flyweight", WBW: "women's bantamweight", WFW: "women's featherweight" };
  function populateFighterStats(name) {
- const s = FIGHTER_STATS[name];
- if (!s) {
- // Clear to dashes if no data
- document.querySelectorAll('.stat-card .stat-card-value').forEach(el => el.textContent = '—');
- return;
+   const host = document.getElementById('fighter-stats-v2');
+   if (!host) return;
+   const s = FIGHTER_STATS[name];
+   if (!s) { host.innerHTML = '<div class="fsx-empty">No statistical profile available for this fighter.</div>'; return; }
+   const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+   const rosterRow = FIGHTERS.find((f) => f && f.name === name);
+   const division = (rosterRow && rosterRow.division) || (typeof currentFighter !== 'undefined' && currentFighter && currentFighter.division) || '';
+   const med = division ? statDivMedians(division) : {};
+
+   // Finish rate + win streak computed live from FIGHT_HISTORY (same as before).
+   const fhFights = (FIGHT_HISTORY[name] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+   const wins = fhFights.filter((f) => f.result === 'W');
+   const finishes = wins.filter((f) => /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(f.method || ''));
+   const liveFinRate = wins.length ? Math.round(finishes.length / wins.length * 100) : _statNum(s.finRate);
+   let streak = 0;
+   for (const f of fhFights) { if (f.result === 'W') streak++; else break; }
+
+   const bio = [
+     ['Age', s.dob ? calcAge(s.dob) : null],
+     ['Height', s.ht || null],
+     ['Reach', s.reach || null],
+     ['Stance', (s.stance && s.stance !== '--') ? s.stance : null],
+     ['Gym', s.gym || null],
+   ].filter((b) => b[1] != null && b[1] !== '');
+
+   // [label, rawNumber, isPercent, medianField (null = no bar), lowerIsBetter]
+   const groups = [
+     ['Striking', [
+       ['Sig. strikes landed / min', _statNum(s.slpm), false, 'slpm', false],
+       ['Striking accuracy', _statNum(s.strAcc), true, 'strAcc', false],
+       ['Sig. strikes absorbed / min', _statNum(s.sapm), false, 'sapm', true],
+       ['Striking defense', _statNum(s.strDef), true, 'strDef', false],
+       ['Knockdowns / 15 min', _statNum(s.kd), false, 'kd', false],
+     ]],
+     ['Grappling', [
+       ['Takedowns / 15 min', _statNum(s.tdLanded), false, 'tdLanded', false],
+       ['Takedown accuracy', _statNum(s.tdAcc), true, 'tdAcc', false],
+       ['Takedown defense', _statNum(s.tdDef), true, 'tdDef', false],
+       ['Submissions / 15 min', _statNum(s.subAvg), false, 'subAvg', false],
+     ]],
+     ['Finishing', [
+       ['Finish rate', liveFinRate, true, 'finRate', false],
+       ['Win streak', (streak || null), false, null, false],
+     ]],
+   ];
+
+   const clamp = (x) => Math.max(0, Math.min(100, x));
+   const S = (raw, isPct) => (raw == null || raw === 0) ? '—' : (isPct ? raw + '%' : String(raw));
+   const rowHtml = (r) => {
+     const label = r[0], raw = r[1], isPct = r[2], field = r[3], invert = r[4];
+     const ref = field ? med[field] : null;
+     let cls = '', bar;
+     if (ref && raw != null && raw !== 0) {
+       const better = invert ? (raw < ref.median) : (raw > ref.median);
+       cls = better ? 'good' : 'bad';
+       const w = clamp(raw / ref.cap * 100);
+       const ax = clamp(ref.median / ref.cap * 100);
+       bar = '<div class="fsx-bar"><div class="fsx-track"><div class="fsx-fill ' + cls + '" style="width:' + w + '%"></div></div><div class="fsx-tick" style="left:' + ax + '%"></div></div>';
+     } else {
+       bar = '<div class="fsx-bar"><div class="fsx-track fsx-track-empty"></div></div>';
+     }
+     return '<div class="fsx-row"><div class="fsx-label">' + label + '</div>' + bar + '<div class="fsx-val ' + cls + '">' + S(raw, isPct) + '</div></div>';
+   };
+
+   const bioHtml = bio.map((b) => '<div><div class="fsx-bio-k">' + b[0] + '</div><div class="fsx-bio-v">' + esc(b[1]) + '</div></div>').join('');
+   const groupsHtml = groups.map((g) => '<div class="fsx-group"><div class="fsx-group-t">' + g[0] + '</div>' + g[1].map(rowHtml).join('') + '</div>').join('');
+   const hasBars = Object.keys(med).some((k) => med[k]);
+   const divName = _DIVLABEL[division] || 'division';
+   const caption = hasBars
+     ? '<div class="fsx-caption"><span>Bars vs. the ' + divName + ' median</span><span class="fsx-legend"><span class="fsx-lg"><span class="fsx-lg-sw" style="background:var(--accent)"></span>better</span><span class="fsx-lg"><span class="fsx-lg-sw" style="background:#c76a54"></span>below</span><span class="fsx-lg"><span class="fsx-lg-tick"></span>median</span></span></div>'
+     : '';
+
+   host.innerHTML = '<div class="fsx-card">' + (bioHtml ? '<div class="fsx-bio">' + bioHtml + '</div>' : '') + caption + groupsHtml + '</div>';
  }
- // Card order in the markup is: Age, Height, Reach, Stance, Strikes
- // Landed/Min, Striking Accuracy, Strikes Absorbed/Min, Striking
- // Defense, Knockdowns Landed, Takedowns Landed, Takedown Accuracy,
- // Takedown Defense, Submission Avg, Finish Rate, Win Streak, Gym —
- // keep these indices in lockstep with that DOM order (see #page-fighter).
- setStatCard(0, calcAge(s.dob), "Years old");
- setStatCard(1, s.ht);
- setStatCard(2, s.reach, "Reach (inches)");
- setStatCard(3, s.stance);
- setStatCard(4, s.slpm, "Sig. strikes / min");
- setStatCard(5, s.strAcc);
- setStatCard(6, s.sapm, "Sig. strikes / min");
- setStatCard(7, s.strDef);
- setStatCard(8, s.kd, "Per 15 minutes");
- setStatCard(9, s.tdLanded, "Per 15 minutes");
- setStatCard(10, s.tdAcc);
- setStatCard(11, s.tdDef);
- setStatCard(12, s.subAvg, "Per 15 minutes");
- // Compute finish rate live from FIGHT_HISTORY
- const fhFights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
- {
-   const wins = fhFights.filter(f => f.result === 'W');
-   const finishes = wins.filter(f => /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(f.method || ''));
-   const liveFinRate = wins.length ? Math.round(finishes.length / wins.length * 100) + '%' : null;
-   setStatCard(13, liveFinRate ?? s.finRate);
- }
- // Compute win streak live from FIGHT_HISTORY (most-recent first)
- let streak = 0;
- for (const f of fhFights) {
-   if (f.result === 'W') streak++;
-   else break;
- }
- setStatCard(14, streak || null);
- setStatCard(15, s.gym || null, "Training camp");
- }
+
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
  const TAPE_STUDY = {
   "Dustin Jacoby": [
