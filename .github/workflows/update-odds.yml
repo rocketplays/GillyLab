@@ -52,6 +52,17 @@ jobs:
             echo "ESPN fetch failed (non-fatal); keeping existing data/event.json + event-recent.json"
           fi
 
+      # Derive short-notice replacements + "bout may change" (opponent withdrew,
+      # no replacement yet) from each upcoming event's Wikipedia Background
+      # section and mark them on event.json. Runs BEFORE the manual override
+      # steps so a hand-entered override still has the final say. Non-fatal:
+      # Wikipedia may be unavailable or a very new event may have no page yet.
+      - name: Derive card changes from Wikipedia
+        run: node scripts/fetch-card-changes.cjs || true
+
+      - name: Apply card changes to event.json
+        run: node scripts/apply-card-changes.cjs || true
+
       - name: Re-apply manual card-section overrides
         run: node scripts/apply-card-section-overrides.cjs
 
@@ -136,7 +147,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -148,10 +159,12 @@ jobs:
           # are idempotent and update-odds-history preserves existing days), then
           # push again.
           echo "push rejected — reconciling with latest main…"
-          mkdir -p /tmp/feeds && cp -f data/odds.json data/event.json data/event-recent.json /tmp/feeds/ 2>/dev/null || true
+          mkdir -p /tmp/feeds && cp -f data/odds.json data/event.json data/event-recent.json data/card-changes.json /tmp/feeds/ 2>/dev/null || true
           git fetch origin main && git reset --hard origin/main
           cp -f /tmp/feeds/odds.json /tmp/feeds/event.json /tmp/feeds/event-recent.json data/ 2>/dev/null || true
+          cp -f /tmp/feeds/card-changes.json data/ 2>/dev/null || true
           node scripts/update-odds-history.cjs || true
+          node scripts/apply-card-changes.cjs || true
           node scripts/apply-card-section-overrides.cjs || true
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
