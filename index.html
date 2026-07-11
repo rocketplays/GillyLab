@@ -591,6 +591,8 @@
     }
     .events-helper .eh-arrow { color: var(--accent); margin-right: 0.35rem; font-weight: 700; }
     .events-helper b { color: rgba(255,255,255,0.62); font-weight: 600; }
+    /* "Click" on desktop (pointer), "Tap" on touch/mobile — see the 768px block. */
+    .events-helper .eh-tap { display: none; }
 
     /* ── PAST-EVENT DROPDOWN (homepage) ── */
     .gl-prev-wrap {
@@ -694,6 +696,9 @@
       #page-home > .event-header .event-details,
       #carousel-track .event-header .event-details { order: 3; flex-basis: 100%; }
       #page-home > .event-header .gl-prev-wrap { order: 4; flex-basis: 100%; }
+      /* Touch device: "Tap" instead of "Click". */
+      .events-helper .eh-click { display: none; }
+      .events-helper .eh-tap { display: inline; }
       /* gold/freedom pill looks cramped inline on mobile — keep colored text only */
       .freedom-card .event-countdown, .numbered-card .event-countdown {
         background: none !important; border: none !important; padding: 0 !important;
@@ -3266,7 +3271,7 @@
       <div class="countdown-label">Time Until Event</div>
       <div class="countdown-time" id="countdown">—</div>
     </div>
-    <div class="events-helper"><span class="eh-arrow">|</span>Tap a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape and analytics · search any fighter up top</div>
+    <div class="events-helper"><span class="eh-arrow">|</span><span class="eh-click">Click</span><span class="eh-tap">Tap</span> a fighter for their full profile · expand <b>Fight Info</b> on any bout for the tale of the tape and analytics · search any fighter up top</div>
   </div>
 
   <div id="dynamic-fight-card"><div style="max-width:var(--cmax);margin:0 auto;padding:3rem 1rem;text-align:center;opacity:0.55;font-size:0.95rem;">Loading upcoming card…</div></div>
