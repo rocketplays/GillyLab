@@ -108937,11 +108937,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
      confidence tier (High/Med/Low). Picks are saved locally (localStorage, keyed
      by event slug) and can be exported as a square social card.
 
-     Scoring is PREVIEWED here as "points at stake". A correct winner is the
-     foundation (10 pts). On top of that:
-       • a correct METHOD adds a bonus scaled to how UNLIKELY that method is for
-         the winner (from their career history): a longshot like Conor by
-         submission pays ~8, his usual KO ~2-3, a neutral tendency ~5.
+     Scoring is PREVIEWED here as "points at stake":
+       • WINNER is the base (≈10), scaled by underdog status from the consensus
+         no-vig moneyline (data/odds.json): a coin-flip stays ~10, a heavy favourite
+         (Gable Steveson) floors near 6, and an underdog scales up — a slight bump
+         for a ~+200 dog (Conor), a lot for a longshot (Elisha Ellison), capped ~30.
+       • a correct METHOD adds a bonus scaled to how UNLIKELY that method is —
+         blending the winner's finishing style with the opponent's durability
+         (career history): a longshot finish pays ~8, the chalk ~2-3, neutral ~5.
        • a correct ROUND adds a bonus that GROWS with how late you call it
          (R1 +4, R2 +5, R3 +6, R4 +7, R5 +8) — later finishes are harder to call.
      The bout total is multiplied by confidence (High ×2, Med ×1.5, Low ×1). Getting
@@ -108975,6 +108978,51 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     function persist() { try { localStorage.setItem(KEY, JSON.stringify(PICKS)); } catch (e) {} }
     function load() { try { PICKS = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { PICKS = {}; } }
+
+    // ── betting-odds underdog weighting ──────────────────────────────────────
+    // The winner's base points scale with how much of an underdog they are, from the
+    // consensus no-vig moneyline (data/odds.json). Loaded once, async; the page
+    // re-renders when it arrives, and falls back to the flat base when odds are absent.
+    let ODDS = null, oddsReady = null;
+    function loadOdds() {
+      if (oddsReady) return oddsReady;
+      oddsReady = fetch('./data/odds.json').then(r => r.ok ? r.json() : null)
+        .then(d => { ODDS = Array.isArray(d) ? d : null; }).catch(() => { ODDS = null; });
+      return oddsReady;
+    }
+    const toProb = (american) => american > 0 ? 100 / (american + 100) : -american / (-american + 100);
+    // No-vig win probability for `winner` in this bout, averaged across every book
+    // that prices it. Returns null when the fight isn't in the feed yet.
+    function winProb(winner, opponent) {
+      if (!ODDS || !opponent) return null;
+      const like = window.namesLikelyMatch || ((x, y) => x === y);
+      const ev = ODDS.find(e => e && e.home_team && e.away_team &&
+        ((like(e.home_team, winner) && like(e.away_team, opponent)) ||
+         (like(e.home_team, opponent) && like(e.away_team, winner))));
+      if (!ev || !Array.isArray(ev.bookmakers)) return null;
+      const qw = [], qo = [];
+      ev.bookmakers.forEach(bk => {
+        const mkt = (bk.markets || []).find(m => m.key === 'h2h');
+        if (!mkt || !Array.isArray(mkt.outcomes)) return;
+        const pw = (mkt.outcomes.find(o => like(o.name, winner)) || {}).price;
+        const po = (mkt.outcomes.find(o => like(o.name, opponent)) || {}).price;
+        if (pw == null || po == null) return;
+        qw.push(toProb(pw)); qo.push(toProb(po));
+      });
+      if (!qw.length) return null;
+      const mean = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
+      const mw = mean(qw), mo = mean(qo);
+      return (mw + mo) > 0 ? mw / (mw + mo) : null;   // strip the vig -> qw + qo = 1
+    }
+    // Base points for calling this winner, scaled by underdog status. Anchored so a
+    // coin-flip (50%) stays at the flat P_WIN; a big favourite floors near 6 (×0.6),
+    // a big underdog is capped near 30 (×3). The 0.7 exponent keeps mild dogs gentle
+    // (a ~+200 line is only a slight bump) while letting true longshots scale.
+    function winnerBase(winner, opponent) {
+      const q = winProb(winner, opponent);
+      if (q == null || !isFinite(q) || q <= 0) return P_WIN;
+      return P_WIN * Math.max(0.6, Math.min(3, Math.pow(0.5 / q, 0.7)));
+    }
 
     // Count a fighter's bouts by method bucket for a given result ('W' or 'L').
     // Buckets: KO/TKO, Submission, Decision (DQ/other are ignored).
@@ -109018,7 +109066,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     function potential(p, f) {
       if (!p || !p.winner) return 0;
       const opp = f ? (p.winner === f.f1 ? f.f2 : f.f1) : null;
-      let base = P_WIN;
+      let base = winnerBase(p.winner, opp);
       if (p.method) base += methodBonus(p.winner, p.method, opp);
       if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
       return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
@@ -109226,6 +109274,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       load();
       bindOnce();
       render();
+      // Odds refine the winner's base points; re-render once they arrive.
+      loadOdds().then(() => render());
     }
     return { init };
   })();
