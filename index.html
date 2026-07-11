@@ -471,8 +471,10 @@
     .search-close:hover { color: var(--text); border-color: var(--text); }
 
     /* ── HOME PAGE ── */
+    /* Eyebrow sits centered between the nav's bottom line and the event name:
+       top padding ≈ bottom padding + .hero-label's 0.5rem margin-bottom. */
     .hero {
-      padding: 2.5rem 2rem 0;
+      padding: 1rem 2rem 0.5rem;
       max-width: var(--cmax);
       margin: 0 auto;
     }
@@ -2662,7 +2664,7 @@
       .nav-dropdown-arrow { width: 8px; height: 5px; }
 
       /* ── Hero (home) ── */
-      .hero              { padding: 2rem 2rem 0.15rem; }
+      .hero              { padding: 0.65rem 2rem 0.15rem; }
       .hero-title        { font-size: 2.2rem; }
       .hero-subtitle     { font-size: 0.85rem; }
 
