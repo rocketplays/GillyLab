@@ -102036,7 +102036,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
    const _sup = window._glSuppressProfileScroll;
    window._glSuppressProfileScroll = 0;
    if (!(_sup && (Date.now() - _sup) < 1500)) {
-     window.scrollTo({ top: 0, behavior: 'smooth' });
+     // Instant, not smooth: this runs before navigate('fighter') swaps in the
+     // (usually shorter) profile page. A smooth scroll is async, so the window
+     // would still be at the old, deep scroll position when the page swaps —
+     // clamping to the profile's bottom (and on mobile the animation gets
+     // interrupted by the swap and stays there). Jumping to 0 synchronously
+     // means the profile is already at the top before it's shown.
+     window.scrollTo(0, 0);
    }
    fetchFighterPhoto(name);
  }
