@@ -295,6 +295,79 @@ async function loadResults(env, url) {
     return j && Array.isArray(j.events) ? j : { events: [] };
   } catch { return { events: [] }; }
 }
+// Turn one ESPN bout into a gradeable result, or null if it isn't decided yet.
+// A bout is decided when a fighter has a `win` outcome (winnerFighterSlug can be
+// null for a late replacement) or the method reads draw/no-contest.
+function boutToResult(b) {
+  if (!b || b.isCancelled) return null;
+  const fs = b.fighters || [];
+  if (fs.length !== 2) return null;
+  const f1 = fs[0].fighterName, f2 = fs[1].fighterName;
+  if (!f1 || !f2) return null;
+  const win = (b.winnerFighterSlug && fs.find(f => f.fighterSlug === b.winnerFighterSlug)) ||
+              fs.find(f => f.outcome === "win");
+  if (win) return { f1, f2, winner: win.fighterName, method: b.method || "", round: b.resultRound || null, voided: false };
+  const drawNC = /draw|no\s*contest|^\s*nc\s*$/i.test(b.method || "") || fs.every(f => f.outcome === "draw");
+  if (drawNC) return { f1, f2, winner: null, method: b.method || "", round: b.resultRound || null, voided: true };
+  return null;   // still pending
+}
+// Read the live ESPN feed from the bundle and return the "focus" card — the one in
+// progress (or, between cards, the most recently started card that has results) —
+// as gradeable bouts. This lets the leaderboard score a card AS IT HAPPENS, without
+// waiting for the end-of-card results sweep. Returns null when nothing has results.
+async function loadFocusEvent(env, url) {
+  let feed;
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/event.json", url)));
+    if (!r.ok) return null;
+    feed = await r.json();
+  } catch { return null; }
+  const events = Array.isArray(feed && feed.data) ? feed.data : [];
+  // Only a card that actually has results can be the focus, so we don't need a
+  // start-time filter (a future card has no decided bouts). This also sidesteps the
+  // prelims-vs-main-card start-time ambiguity.
+  const withResults = events
+    .map(ev => ({ ev, bouts: (ev.bouts || []).map(boutToResult).filter(Boolean) }))
+    .filter(x => x.bouts.length);
+  if (!withResults.length) return null;
+  // Prefer a live card; otherwise the most recently started card that has results.
+  withResults.sort((a, b) => (Date.parse(b.ev.startsAt || 0) || 0) - (Date.parse(a.ev.startsAt || 0) || 0));
+  const pick = withResults.find(x => x.ev.status === "live") || withResults[0];
+  const total = (pick.ev.bouts || []).filter(b => b && !b.isCancelled && (b.fighters || []).length === 2).length;
+  return {
+    slug: pick.ev.slug,
+    name: pick.ev.title || pick.ev.espnName || pick.ev.shortTitle || pick.ev.slug,
+    date: (pick.ev.startsAt || "").slice(0, 10),
+    live: pick.ev.status === "live",
+    bouts: pick.bouts, decided: pick.bouts.length, total,
+  };
+}
+// Live standings for the focus card: grade every submitted entry against the
+// decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
+// records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
+async function currentBoard(env, url, myName) {
+  const focus = await loadFocusEvent(env, url);
+  if (!focus) return { scope: "current", event: null, live: false, rows: [], me: null };
+  const prefix = "pk:" + focus.slug + ":";
+  const rows = [];
+  for (const key of await listAllKeys(env, prefix)) {
+    const rec = await pkGet(env, key);
+    if (!rec) continue;
+    const email = key.slice(prefix.length);
+    const name = (await getDisplayName(env, email)) || rec.name;
+    if (!name) continue;
+    const card = gradeCard(rec, focus.bouts);
+    rows.push({ name, points: card.total, correct: card.correct, played: focus.decided });
+  }
+  rows.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
+  const ranked = rows.map((r, i) => ({ rank: i + 1, ...r }));
+  return {
+    scope: "current", event: focus.name, date: focus.date, live: focus.live,
+    decided: focus.decided, total: focus.total,
+    rows: ranked.slice(0, 100),
+    me: myName ? (ranked.find(r => r.name === myName) || null) : null,
+  };
+}
 async function listAllKeys(env, prefix) {
   const out = []; let cursor;
   do {
@@ -361,9 +434,11 @@ async function handlePickemLeaderboard(request, env, url) {
   const s = await pickemSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
   const scope = url.searchParams.get("scope") || "all";
+  const myName = await getDisplayName(env, s.email);
+  // The "current" scope grades the in-progress card live from the ESPN feed.
+  if (scope === "current") return json(await currentBoard(env, url, myName));
   const { ordered, aggs } = await pickemBoardData(env, url);
   const rows = buildLeaderboard(aggs, ordered, scope);
-  const myName = await getDisplayName(env, s.email);
   return json({ scope, rows: rows.slice(0, 100), me: myName ? (rows.find(r => r.name === myName) || null) : null });
 }
 // Public (subscriber) profile for any player by display name.

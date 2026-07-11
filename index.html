@@ -3330,6 +3330,13 @@
       .pk-board-pts { flex: 0 0 auto; font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--accent); }
       .pk-board-sep { text-align: center; color: var(--muted); padding: 0.15rem; letter-spacing: 0.2em; }
       .pk-board-empty { padding: 1.5rem 1rem; text-align: center; color: var(--muted); font-size: 0.82rem; }
+      /* live "this card" status header */
+      .pk-board-status-row { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin: -0.2rem 0 0.6rem; }
+      .pk-board-event { font-weight: 600; font-size: 0.82rem; color: var(--text); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .pk-board-prog { font-size: 0.72rem; color: var(--muted); margin-left: auto; }
+      .pk-live-badge { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.05em; color: #06231a; background: var(--accent); border-radius: 5px; padding: 0.12rem 0.4rem; display: inline-flex; align-items: center; gap: 0.25rem; animation: pkLivePulse 1.8s ease-in-out infinite; }
+      .pk-final-badge { font-size: 0.64rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 5px; padding: 0.12rem 0.4rem; }
+      @keyframes pkLivePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
       /* name modal */
       .pk-modal { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; padding: 1rem; }
       .pk-modal.open { display: flex; }
@@ -7360,22 +7367,55 @@
      '<div class="pk-hist-bouts">' + rows + '</div>';
  }
 
- let PK_LB_SCOPE = 'recent';
+ let PK_LB_SCOPE = 'current';
+ let PK_LB_TIMER = null;
+ function pkClearBoardTimer() { if (PK_LB_TIMER) { clearInterval(PK_LB_TIMER); PK_LB_TIMER = null; } }
  function openPickemLeaderboard(scope) { navigate('pickem-leaderboard'); renderPickemLeaderboard(scope || PK_LB_SCOPE); }
  async function renderPickemLeaderboard(scope) {
    PK_LB_SCOPE = scope || PK_LB_SCOPE;
+   pkClearBoardTimer();
    const host = document.getElementById('pickem-leaderboard-content');
    if (!host) return;
    const tab = (id, label) => '<button type="button" class="pk-tab' + (PK_LB_SCOPE === id ? ' sel' : '') + '" onclick="renderPickemLeaderboard(\'' + id + '\')">' + label + '</button>';
    host.innerHTML = pkBackBtn() +
-     '<div class="pk-tabs">' + tab('recent', 'Previous card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
+     '<div class="pk-tabs">' + tab('current', 'This card') + tab('last5', 'Last 5') + tab('all', 'All-time') + '</div>' +
+     '<div id="pk-board-status"></div>' +
      '<div class="pk-board-list" id="pk-board-list"><div class="pk-board-empty">Loading…</div></div>';
-   const res = await pkFetch('/api/pickem/leaderboard?scope=' + PK_LB_SCOPE);
+   await pkBoardPaint();
+   // The "this card" board grades live off the results feed — refresh it while the
+   // user is watching so standings move as fights finish.
+   if (PK_LB_SCOPE === 'current') PK_LB_TIMER = setInterval(pkBoardPaint, 45000);
+ }
+ // Fetch + paint the list (and, for the current card, the live status header).
+ // Safe to call on a timer: it no-ops if the user has navigated away or switched tabs.
+ async function pkBoardPaint() {
+   const scope = PK_LB_SCOPE;
+   const res = await pkFetch('/api/pickem/leaderboard?scope=' + scope);
    const listEl = document.getElementById('pk-board-list');
-   if (!listEl) return;
-   if (res.status === 401) { listEl.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
+   const statusEl = document.getElementById('pk-board-status');
+   if (!listEl || listEl.offsetParent === null) { pkClearBoardTimer(); return; }   // gone or navigated away
+   if (scope !== PK_LB_SCOPE) return;               // user switched tabs mid-fetch
+   if (statusEl) statusEl.innerHTML = '';
+   if (res.status === 401) { pkClearBoardTimer(); listEl.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
    if (res.status !== 200 || !Array.isArray(res.rows)) { listEl.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
-   if (!res.rows.length) { listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>'; return; }
+   if (scope === 'current') {
+     if (statusEl && res.event) {
+       const badge = res.live ? '<span class="pk-live-badge">● LIVE</span>' : '<span class="pk-final-badge">Final</span>';
+       const prog = res.total ? ((res.decided || 0) + ' of ' + res.total + ' fights scored') : '';
+       statusEl.innerHTML = '<div class="pk-board-status-row">' + badge +
+         '<span class="pk-board-event">' + pkEsc(res.event) + '</span>' +
+         (prog ? '<span class="pk-board-prog">' + prog + '</span>' : '') + '</div>';
+     }
+     if (!res.rows.length) {
+       listEl.innerHTML = '<div class="pk-board-empty">' + (res.event
+         ? 'No fights scored yet — standings update as results come in.'
+         : 'No card in progress. Try the Last 5 or All-time boards.') + '</div>';
+       return;
+     }
+   } else if (!res.rows.length) {
+     listEl.innerHTML = '<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>';
+     return;
+   }
    const meName = res.me && res.me.name;
    // Each row opens that player's profile.
    const row = (r, me) => '<button type="button" class="pk-board-row' + (me ? ' me' : '') + '" onclick="openPickemPlayer(\'' + pkEscJs(r.name) + '\')">' +
