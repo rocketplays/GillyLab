@@ -97,10 +97,14 @@ function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
 // Withdrawal language (a fighter leaving a bout).
 const WITHDRAW = /\bwithd?rew\b|\bwithdrawn\b|\bwithdraw\b|pull(?:ed|s)?\s+out\b|forced out\b|out of the (?:fight|card|bout|event)\b|off the card\b|had to withdraw\b|removed from the card\b/i;
 // Is F named as the one who LEFT this paragraph's bout? (so we don't flag the
-// departed fighter as "may change" — we flag the one who stayed).
+// departed fighter as "may change" — we flag the one who stayed). Withdrawals
+// usually reference the fighter by LAST NAME after the first mention ("Hardy
+// pulled out"), so match the last name too, not just the full name.
 function isWithdrawalSubject(name, para) {
-  const L = '\\b' + escapeRe(name).replace(/\s+/g, '\\s+') + '\\b';
-  return new RegExp(L + '[^.]{0,25}?(?:' + WITHDRAW.source + ')', 'i').test(para);
+  const full = escapeRe(name).replace(/\s+/g, '\\s+');
+  const last = escapeRe(name.split(/\s+/).pop() || '');
+  const who = (last && last.toLowerCase() !== full.toLowerCase()) ? '(?:' + full + '|' + last + ')' : full;
+  return new RegExp('\\b' + who + '\\b[^.]{0,25}?(?:' + WITHDRAW.source + ')', 'i').test(para);
 }
 const nameRe = (name, flags) => new RegExp('\\b' + escapeRe(name).replace(/\s+/g, '\\s+') + '\\b', flags);
 

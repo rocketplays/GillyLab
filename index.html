@@ -101963,7 +101963,7 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
         if (mc) {
           const mcEntry = mc === name ? aE : (mc === opp ? bE : null);
           const mcLink = (mcEntry && mcEntry.items && mcEntry.items.length) ? mc : newsFull;
-          addChip('⚠', 'Bout status', 'May change', short(mc) + '’s opponent withdrew — no replacement set yet', mcLink ? function () { openFighterNews(mcLink); } : null);
+          addChip('⚠', 'Bout status', 'May change', short(mc) + '’s opponent withdrew — matchup may change', mcLink ? function () { openFighterNews(mcLink); } : null);
         } else if (who) {
           addChip('⚠', 'Bout status', 'May change', who + ' has recent injury / card news', function () { openFighterNews(newsFull); });
         }

@@ -81,6 +81,26 @@ run('UFC 329 (constructed)', U329,
   [],
   ['Cody Durden', 'Farid Basharat', 'Conor McGregor', 'Max Holloway']);
 
+// The "Wikipedia is ahead of ESPN" guarantee. Wikipedia already names a
+// replacement, but our event.json still lists the ORIGINAL fighter (ESPN hasn't
+// swapped yet). The replacement must NOT be flagged short-notice (they're not on
+// our card); the fighter who stayed is flagged may-change until ESPN catches up.
+const AHEAD = `
+== Background ==
+[[Veronica Hardy]] and Dione Barbosa were expected to meet in a women's flyweight bout.<ref/> However, Hardy pulled out in early July and was replaced by promotional newcomer Anna Melisano.<ref name="Melisano"/>
+`;
+run('Wikipedia ahead of ESPN (feed still shows the withdrawn fighter)', AHEAD,
+  ['Veronica Hardy', 'Dione Barbosa'],   // ESPN hasn't swapped Hardy -> Melisano yet
+  [],                                    // short-notice: NONE (Melisano isn't on our feed)
+  ['Dione Barbosa'],                     // may-change: her opponent is on the way out
+  ['Veronica Hardy']);                   // the fighter who left is not flagged
+
+run('ESPN caught up (replacement now on the feed)', AHEAD,
+  ['Anna Melisano', 'Dione Barbosa'],    // ESPN swapped in Melisano
+  ['Anna Melisano'],                     // now short-notice
+  [],                                    // Barbosa no longer may-change
+  ['Dione Barbosa', 'Veronica Hardy']);
+
 // Negative: a card with no replacements at all — nothing should be flagged.
 const CLEAN = `
 == Background ==
