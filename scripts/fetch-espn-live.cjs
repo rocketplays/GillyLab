@@ -267,6 +267,18 @@ async function espnBouts(espnId, cache) {
   return out;
 }
 
+// Update an already-written row in place if the bout's result was corrected after
+// we wrote it (ESPN posts a draw / no-winner first, then flips it). Returns true if
+// anything changed. Stat rows carry only `result`; history rows also carry method/round.
+function reconcileRow(row, want, method, round) {
+  if (!row) return false;
+  let ch = false;
+  if (want && row.result !== want) { row.result = want; ch = true; }
+  if (Object.prototype.hasOwnProperty.call(row, 'method') && method && row.method !== method) { row.method = method; ch = true; }
+  if (Object.prototype.hasOwnProperty.call(row, 'round') && row.round !== round) { row.round = round; ch = true; }
+  return ch;
+}
+
 // For a bout that has just been decided, pull both fighters' box scores and
 // write: a row into data/fight-stats.json (which the app already reads), and a
 // row into data/live-history.json for each fighter's FIGHT_HISTORY.
@@ -278,8 +290,25 @@ async function enrichFinishedBout(evt, bout, eb, stats, live) {
   if (names.length !== 2 || !date) return [];
 
   const slot = (n) => (live.fighters[n] = live.fighters[n] || { history: [], stats: [] });
+
+  // ESPN can post a bout with no winner first (a draw, or a late replacement whose
+  // slug arrives late) and correct it a poll later. Reconcile the rows we already
+  // wrote so a flipped result updates IN PLACE — otherwise a phantom draw sticks on
+  // both profiles even after event.json is right.
+  const curMethod = methodLabel(bout.method, bout.methodDetails);
+  const curRound = bout.resultRound || null;
+  const reconciled = [];
+  (bout.fighters || []).forEach((f, i) => {
+    const me = f.fighterName, them = (bout.fighters[1 - i] || {}).fighterName;
+    const want = resultLetter(f.outcome);
+    const findRow = (rows) => (rows || []).find((r) => r && r.opponent === them && r.date === date);
+    [stats[me], slot(me).stats, slot(me).history].forEach((rows) => {
+      if (reconcileRow(findRow(rows), want, curMethod, curRound)) reconciled.push(`fix ${me} ${want} vs ${them}`);
+    });
+  });
+
   // Already captured (or the permanent import beat us to it).
-  if (hasRow(stats[names[0]], names[1], date) && hasRow(slot(names[0]).history, names[1], date)) return [];
+  if (hasRow(stats[names[0]], names[1], date) && hasRow(slot(names[0]).history, names[1], date)) return reconciled;
   if (!eb.statRefs || eb.statRefs.some((r) => !r)) return [];
 
   let boxes;
@@ -390,5 +419,5 @@ function emit(changed, allDecided) {
   console.log(`allDecided=${!!allDecided}`);
 }
 
-module.exports = { pickLiveEvent, applyResult, liveEventStatus, boxFrom, flatStats, hasRealStats, methodLabel, historyDate, resultLetter, hasRow, pruneLive, enrichFinishedBout, LEAD_IN_MS, FEATURED_WINDOW_MS };
+module.exports = { pickLiveEvent, applyResult, liveEventStatus, boxFrom, flatStats, hasRealStats, methodLabel, historyDate, resultLetter, hasRow, reconcileRow, pruneLive, enrichFinishedBout, LEAD_IN_MS, FEATURED_WINDOW_MS };
 if (require.main === module) main().catch((e) => { console.error('[live] non-fatal error:', e.message); emit(false, false); });

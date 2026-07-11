@@ -478,6 +478,15 @@ console.log("\n=== live enrichment: box score + fight history ===");
 
   ok("outcome -> letter", L.resultLetter("win") === "W" && L.resultLetter("loss") === "L" && L.resultLetter("draw") === "D" && L.resultLetter("no_contest") === "NC");
 
+  // A phantom draw that ESPN later corrects must update the already-written row in
+  // place (Zach Reese/Ryan Gandra: flagged D first, then Gandra by KO).
+  const hRow = { date: "Jul 11, 2026", opponent: "Zach Reese", result: "D", method: "KO/TKO", round: null };
+  ok("reconcile flips a stale draw to a win", L.reconcileRow(hRow, "W", "KO/TKO (Punch)", 1) && hRow.result === "W" && hRow.method === "KO/TKO (Punch)" && hRow.round === 1);
+  const sRow = { date: "Jul 11, 2026", opponent: "Ryan Gandra", result: "D", f: {}, o: {} };   // stat rows have no method/round
+  ok("reconcile flips a stat row's result only", L.reconcileRow(sRow, "L", "KO/TKO (Punch)", 1) && sRow.result === "L" && !("method" in sRow));
+  ok("reconcile no-ops when already correct", !L.reconcileRow({ opponent: "X", date: "d", result: "W", method: "KO/TKO (Punch)", round: 1 }, "W", "KO/TKO (Punch)", 1));
+  ok("reconcile tolerates a missing row", !L.reconcileRow(undefined, "W", "KO/TKO", 1));
+
   // Opponent alone is not a key: Fiziev has fought Gaethje twice.
   const rows = [{ opponent: "Justin Gaethje", date: "Mar 8, 2025" }];
   ok("same opponent, same date -> already have it", L.hasRow(rows, "Justin Gaethje", "Mar 8, 2025"));
