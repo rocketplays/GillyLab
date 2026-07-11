@@ -10283,7 +10283,6 @@
    _DIV_STAT_CACHE[division] = out;
    return out;
  }
- const _DIVLABEL = { FLW: 'flyweight', BW: 'bantamweight', FW: 'featherweight', LW: 'lightweight', WW: 'welterweight', MW: 'middleweight', LHW: 'light heavyweight', HW: 'heavyweight', WSW: "women's strawweight", WFLW: "women's flyweight", WBW: "women's bantamweight", WFW: "women's featherweight" };
  function populateFighterStats(name) {
    const host = document.getElementById('fighter-stats-v2');
    if (!host) return;
@@ -10353,9 +10352,8 @@
    const bioHtml = bio.map((b) => '<div><div class="fsx-bio-k">' + b[0] + '</div><div class="fsx-bio-v">' + esc(b[1]) + '</div></div>').join('');
    const groupsHtml = groups.map((g) => '<div class="fsx-group"><div class="fsx-group-t">' + g[0] + '</div>' + g[1].map(rowHtml).join('') + '</div>').join('');
    const hasBars = Object.keys(med).some((k) => med[k]);
-   const divName = _DIVLABEL[division] || 'division';
    const caption = hasBars
-     ? '<div class="fsx-caption"><span>Bars vs. the ' + divName + ' median</span><span class="fsx-legend"><span class="fsx-lg"><span class="fsx-lg-sw" style="background:var(--accent)"></span>better</span><span class="fsx-lg"><span class="fsx-lg-sw" style="background:#c76a54"></span>below</span><span class="fsx-lg"><span class="fsx-lg-tick"></span>median</span></span></div>'
+     ? '<div class="fsx-caption"><span class="fsx-legend"><span class="fsx-lg"><span class="fsx-lg-sw" style="background:var(--accent)"></span>better than average</span><span class="fsx-lg"><span class="fsx-lg-sw" style="background:#c76a54"></span>below average</span><span class="fsx-lg"><span class="fsx-lg-tick"></span>division average</span></span></div>'
      : '';
 
    host.innerHTML = '<div class="fsx-card">' + (bioHtml ? '<div class="fsx-bio">' + bioHtml + '</div>' : '') + caption + groupsHtml + '</div>';
