@@ -101995,11 +101995,15 @@ const GL_SHEET = (function () {
     });
     ctx.textBaseline = 'alphabetic';
   }
-  function pkRow(ctx, p, x, y, w, h) {
+  function pkRow(ctx, p, x, y, w, h, img) {
     const col = PK_CONF_COL[p.confidence] || MUT;
     const pad = 7;
     roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();   // confidence spine
-    const tx = x + 26, cy = y + h / 2 + 1, right = x + w - 12;
+    // small circular headshot of the picked winner (initials disc when no photo)
+    const r = 22, avCx = x + 24 + r, avCy = y + h / 2;
+    const ini = String(p.winner || '').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+    avatar(ctx, img, avCx, avCy, r, ini, LINE);
+    const tx = avCx + r + 16, cy = y + h / 2 + 1, right = x + w - 12;
     ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     // method measured first so it always fits at the end
     const methodStr = pkMethodLabel(p);
@@ -102057,7 +102061,8 @@ const GL_SHEET = (function () {
     const listBottom = CH - footerBlockH;
     const slack = Math.max(0, (listBottom - listTop) - n * rowH);
     let ry = listTop + slack / 2;
-    picks.forEach(p => { pkRow(ctx, p, 64, ry, W - 128, rowH); ry += rowH; });
+    const rowImgs = await Promise.all(picks.map(p => loadImg(p.winnerSlug)));
+    picks.forEach((p, i) => { pkRow(ctx, p, 64, ry, W - 128, rowH, rowImgs[i]); ry += rowH; });
 
     // total points at stake
     ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
@@ -109654,6 +109659,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const loser = p.winner === f.f1 ? f.f2 : f.f1;
         picks.push({
           winner: p.winner, loser,
+          winnerSlug: (typeof nameToSlug === 'function') ? nameToSlug(p.winner) : null,
           method: p.method || null,
           round: (p.method && p.method !== 'Decision') ? (p.round || null) : null,
           confidence: p.confidence || 'Med',
