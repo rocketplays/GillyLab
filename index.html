@@ -3213,8 +3213,12 @@
 
       /* ── PICK'EM PAGE ──────────────────────────────────────────────────── */
       .pk-wrap { max-width: 760px; margin: 0 auto; padding: 0 1rem 7rem; }
-      .pk-intro { color: var(--muted); font-size: 0.82rem; line-height: 1.5; margin: 0.25rem 0 1.25rem; }
-      .pk-intro strong { color: var(--text); font-weight: 600; }
+      .pk-intro {
+        color: #c9ccd3; font-size: 0.9rem; line-height: 1.55; margin: 0.25rem 0 1.25rem;
+        background: rgba(0,230,104,0.06); border: 1px solid rgba(0,230,104,0.22);
+        border-left: 3px solid var(--accent); border-radius: 10px; padding: 0.8rem 0.95rem;
+      }
+      .pk-intro strong { color: var(--text); font-weight: 700; }
       .pk-bout {
         background: var(--card); border: 1px solid var(--border); border-radius: 14px;
         padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.9rem;
@@ -3620,7 +3624,7 @@
   <div class="page-header">
     <div class="page-header-label" id="pickem-event-label">Loading…</div>
     <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
-    <div class="page-header-sub">Call the winner, method &amp; round · set your confidence · share your card</div>
+    <div class="page-header-sub">Choose the winner, method &amp; round · set your confidence · share your card</div>
   </div>
   <div class="divider"></div>
   <div id="pickem-content"></div>
@@ -109038,7 +109042,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
       host.innerHTML =
         '<div class="pk-wrap">' +
-          '<p class="pk-intro">Call the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. ' +
+          '<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. ' +
           'Higher confidence is worth more points if you’re right — and costs more if you’re wrong. Your picks save on this device.</p>' +
           BOUTS.map(boutHTML).join('') +
         '</div>' +
