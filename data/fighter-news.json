@@ -1,9 +1,57 @@
 {
-  "generatedAt": "2026-07-10T14:06:18.580Z",
+  "generatedAt": "2026-07-11T01:15:35.205Z",
   "recencyDays": 30,
   "fighters": {
     "conor mcgregor": {
       "name": "Conor McGregor",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "Conor McGregor is in a new fight for his future identity - ESPN",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNa2R2ejRLVmUzR2JJYVlWRXhCQklXemMycXMzcW9saVVfQnJIc2d3aXlpa0lmT0txUTljeU5oU295N1dJMTBUZFIyQUNTX1FvMXd3Y0VxYzdnLXFXWUtIMkgxNDJnNDdsalV0dndHUUp5TFYtd0dSM3VmZnVNZjlwMDJDTU1rZjBTb2RwQXdpVmVrOHlmSVV1amZBQQ?oc=5",
+          "source": "ESPN",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Drake Makes $1 Million Bet on Conor McGregor to Win UFC Fight: ‘The Mac Is Back’ - Yahoo",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxOWnRSNEkySUlIWTJhZVlaRDVmOTREMktVNmo0SzB1bjlKeHQ1NGszOXNBSFhMdXVhTjBRS3F3X0NfT2FQUy15cm1FYXgtWG4ySGlNdHBDd0Naam5jSjk4eUpQMzR0RnphcFUxWFNaTFlRNFktQkpnSlZmS3VSVmowY3RQdmpBU1dsS1loZ1JtaTdXNk00Z1A3ZFpqWQ?oc=5",
+          "source": "Yahoo",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Main Card Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBtNzM4Nks1ODREb041SnFMZ1NLU0hZbzZLR2tjX3VUR1J1Si03cDYwNFNjZlJHZWg0VHRsMmQ5bnZIMlBBMHNHcDZpZnRXUWJOdjlaRmlXVzFkZXg3SkpuckliN25scE0zN0ZIelg1R08?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-11",
+          "injury": false
+        },
+        {
+          "title": "UFC 329 fight card predictions: Expert picks, odds for Conor McGregor vs. Max Holloway in Las Vegas - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPbUVjbG43V05pOEVySUNTMHFvNFJPd19QcEVVX1RGLXhGelN3MmdxNkNuTVJwTnVBQlE0Vlcyb1FrNjF2UHJTUUl1TnBkc1YzZ29vaWRwVjV3NnJmb3l1bkZoVHozNzdhdGVPZzB0b0hoanRWU3VYcUtPZm1qaURlMjBJQktCTUc5d1FRMmV0WDhwekQ1c2J3U1JTaExSY3hkNVp6Y29xQnl6ekNkRzhJ?oc=5",
+          "source": "CBS Sports",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Conor McGregor vs. Max Holloway Final Face-Off Live Stream Before UFC Fight Tomorrow - Sports Illustrated",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNQ2RiaEZhNW5aUjYxZHkycEtRTGV0NjlvMkhFbjVTeS1Ob0duU2hzOWJYVkIzaUYtajZhNklFUUFMVkZDWlNXU0pfVHNmWWhTbTNMamNLblU3SnVjRElTNXBIYkNZLUV4WXYyV1MzT1NFMThSd0Rqa3Yta3BQUGJOZ29rbDV6bHM5S3JROWFsc09ULTk3TlNOd0tnajVmaG9OS3FFeFlfZ1Z5VUYyb00xczdycUk?oc=5",
+          "source": "Sports Illustrated",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Pros predict Conor McGregor vs. Max Holloway showdown at UFC 329 - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPaHNhUFc0Slk2NTF2T0F4RVBSMmpySE95aEl5YXh5N2Z3SzBab2Y2cGtEZVlHT090d25GeW10Ym1HMjFaZEdKU29WVWlDSnlydjJVSHN3RlBndGNIMlFuT193TU9PQkVuSUZYT3l4YWdSSDhVMU5XdFlvQ3BhOV9uVzVQVWh6cUFzSTZpbmxyQ1l2Y09NQ2Q1aE1MQWZDNGtQbkJ6UA?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-10",
+          "injury": false
+        }
+      ]
+    },
+    "max holloway": {
+      "name": "Max Holloway",
       "hasInjuryNews": false,
       "items": [
         {
@@ -17,6 +65,13 @@
           "title": "Main Card Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBtNzM4Nks1ODREb041SnFMZ1NLU0hZbzZLR2tjX3VUR1J1Si03cDYwNFNjZlJHZWg0VHRsMmQ5bnZIMlBBMHNHcDZpZnRXUWJOdjlaRmlXVzFkZXg3SkpuckliN25scE0zN0ZIelg1R08?oc=5",
           "source": "UFC.com",
+          "date": "2026-07-11",
+          "injury": false
+        },
+        {
+          "title": "UFC 329 fight card predictions: Expert picks, odds for Conor McGregor vs. Max Holloway in Las Vegas - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxPbUVjbG43V05pOEVySUNTMHFvNFJPd19QcEVVX1RGLXhGelN3MmdxNkNuTVJwTnVBQlE0Vlcyb1FrNjF2UHJTUUl1TnBkc1YzZ29vaWRwVjV3NnJmb3l1bkZoVHozNzdhdGVPZzB0b0hoanRWU3VYcUtPZm1qaURlMjBJQktCTUc5d1FRMmV0WDhwekQ1c2J3U1JTaExSY3hkNVp6Y29xQnl6ekNkRzhJ?oc=5",
+          "source": "CBS Sports",
           "date": "2026-07-10",
           "injury": false
         },
@@ -28,64 +83,9 @@
           "injury": false
         },
         {
-          "title": "Conor McGregor’s still a draw, but not the kind who once turned the combat world green - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNTTVoamkteVlpcjh2V3NtQUlxQ1NsNG96eVhRN1dkTHVqUlNpVS1jYzRSUFgyYXdIOExYS19mVzNGc0dNVS11VUIwZjV3OFZVVlUxbjdSME1tNG9HZzk3ejFoOGVmeVd2eWo3bkVhWVZ4V19qNXl1dFI5dXNYV3UyWFM4VzJLRFNrOHlUYmtFdUtWa1ltQ1RtUE00ZEFjLVR0Tk53MVlmdm9EaTczYWtHaEp1b2FEMmZIam1LcUwtUGc2TmkwVlZmUnVDT3VzQWZDSWc?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Prelim Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5VdFl2Qll6YlQtZWZBU2l4RUR5Q00zbW9VcVFLbmZ2MmNsVFl4NU9DQmV4eHVLcUdsa0lkeWRfZ1IzT3phYVRXTl95dTZaS1EtckNyTjdhSjJFUEs4cTNUbWlONzk0MjVWTk11YkJsRlYybGdTdTEwMTVR?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Conor McGregor scoffs at Max Holloway predicting trilogy after UFC 329: ‘I forecast Holloway’s retirement on Saturday night’ - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxPWllZWlBLNlM4YThWVXR0Wk9IcVNnN0ZnUE9GTTRNLV9mMHVTNy1tQnhoVlp4R0J5VVU0bkd3SWZXMThOZEhnSWJCa2tscVdldGwyVXFNZXgtaTZ6RzNNU2hPQjQ1dkt5bUpRaVhtdTRsekVkdTQyNVUtekoyLU5XNnRxYkNaZ1FkeFpiZUVHOEp5Y3FDbkZIUGQ3YUpWTWJUMlpwU3VPZ0FHUi1tYkw1LVFvQnZ3RzRQS1ZXY2dKSkxtUV9wVC1kSEJFZGdLRkg0UXBNeFdoTFJIUXZ6Z3FVSWg3LW1TWWdlVWZiMkNlcDk?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-10",
-          "injury": false
-        }
-      ]
-    },
-    "max holloway": {
-      "name": "Max Holloway",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "UFC 329 press conference: Conor McGregor, Max Holloway get physical during first face off - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNZlgtazVicVFSai1WOWN6Zk9sNUxQajRlakhFVHB3dWRqanMzeUJPTURuSVBGR3NlS0F6eXFVUm9fYkNWS3oyc3ZzdVFPY2xOaTNjRFUzbTd3N1Y2MnJ2UWlGUUlPb2dGYlJIeVRjQmFkdmFPOWxTOHpReVdQOGZ1LUNkYTFPcEFZRjlUTE42YkV1WFNWOWkyRHZfVGhPQQ?oc=5",
-          "source": "CBS Sports",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "'Max is massive': Max Holloway still expecting weight cut for UFC 329 welterweight debut against Conor McGregor - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNbVpJZUZYVV85Tm9WbmIzbTVXa0N6czRlZFRvZVBaVmJsWm9XWU9hSXNkNHRWdG81VDJwX3R2YmJWWFplcWp5YkFSVTA5MXQyTGFKT3F1emFEMEl2eFBNblRFV1JzeWVXSVVweGRvRGxXTTMxWVcxME1XZlpTLVZORjF6YTZhTGYzQWw0MHd5bDJUQWU0djZQdEVmd002dnZ0R2h1RWxyMkg5TlJPRnpZWUN2T0ZQNTA4RHFYMTdSYXZrMFdrSHJkcEJFa1U2cF9JV0VGZDNvWERnV2NqbjRYenp0SkJPbFZzbm02RzVJT3hRUQ?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Main Card Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBtNzM4Nks1ODREb041SnFMZ1NLU0hZbzZLR2tjX3VUR1J1Si03cDYwNFNjZlJHZWg0VHRsMmQ5bnZIMlBBMHNHcDZpZnRXUWJOdjlaRmlXVzFkZXg3SkpuckliN25scE0zN0ZIelg1R08?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "UFC 329 predictions, odds for massive Conor McGregor vs Max Holloway card - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxORDVGM2lQYm1nbUhfaVJSWVhJbm9WMXdsS08yS0RIcnVvT1pIdnJhdjBaWHBXVG5sb1lGQlJkc3VyaGFvUUxpUXo1dU80TEUzSmx3SjBybGt6bEZrRTJhUEZXYm1yMkpSY29xaU83MzY1QzNQTzZEcmpXdjFyaGhRTTN1am9mVUxv?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Conor McGregor scoffs at Max Holloway predicting trilogy after UFC 329: ‘I forecast Holloway’s retirement on Saturday night’ - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxPWllZWlBLNlM4YThWVXR0Wk9IcVNnN0ZnUE9GTTRNLV9mMHVTNy1tQnhoVlp4R0J5VVU0bkd3SWZXMThOZEhnSWJCa2tscVdldGwyVXFNZXgtaTZ6RzNNU2hPQjQ1dkt5bUpRaVhtdTRsekVkdTQyNVUtekoyLU5XNnRxYkNaZ1FkeFpiZUVHOEp5Y3FDbkZIUGQ3YUpWTWJUMlpwU3VPZ0FHUi1tYkw1LVFvQnZ3RzRQS1ZXY2dKSkxtUV9wVC1kSEJFZGdLRkg0UXBNeFdoTFJIUXZ6Z3FVSWg3LW1TWWdlVWZiMkNlcDk?oc=5",
-          "source": "MMA Fighting",
+          "title": "Conor McGregor vs. Max Holloway Final Face-Off Live Stream Before UFC Fight Tomorrow - Sports Illustrated",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxNQ2RiaEZhNW5aUjYxZHkycEtRTGV0NjlvMkhFbjVTeS1Ob0duU2hzOWJYVkIzaUYtajZhNklFUUFMVkZDWlNXU0pfVHNmWWhTbTNMamNLblU3SnVjRElTNXBIYkNZLUV4WXYyV1MzT1NFMThSd0Rqa3Yta3BQUGJOZ29rbDV6bHM5S3JROWFsc09ULTk3TlNOd0tnajVmaG9OS3FFeFlfZ1Z5VUYyb00xczdycUk?oc=5",
+          "source": "Sports Illustrated",
           "date": "2026-07-10",
           "injury": false
         },
@@ -103,17 +103,17 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Paddy Pimblett and Benoit Saint-Denis keep it civil in head-to-head at UFC 329 press conference - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQRThuVW1jSnJaTzdLZWZ4WnN0OWhQOTFUeFFLb2VTYmc5YnVqN1A5dUhTb09JcFZCbG5DSmxIODkwMWJIc2poMmUxZE93TnRDUy13Q2RxcW5pNE9VWVltZVFFeEF1M3BSbzlCZXRrdnlpR3lnWi1aLVkyOGZQOVgxQWtERTFoLWRIOFlUa3N3TG9ia3dmWDBFVS1jTDIzcnZTWkI3S0pRdUFtbkQxcGtOeEZfY1QyVnhuTlc4NS1tckkzdVZHZ0M5R183MA?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-10",
+          "title": "Pimblett Vs. Saint-Denis Odds, Full Fight Preview & Prediction - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPMVRteUYyeUlfWXVkdlhNcWhDam40RjFQS1ZyLVJDWnlYVHMyVHl1NjI3NnhDTUNHc2EtQWVWQ1dtbFdhUTlhX05FUEw3eTFtbENfUDlPX0c2TTJkNFNsOE04T1FETXplcER6MDJJU3c5OTFEUm1UWFd5ZVZjQWotbm1JbW1id1llT2dmSlU4N3NsSVVIelhPODVZUk95eUVHNldtdWZtUm1aNGNaRk9jQWh5OXMxd3dpOXc5bzhtTmlWWDN0YWJkRV93?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-09",
           "injury": false
         },
         {
-          "title": "Benoit St. Denis breaks silence on UFC 329 fight scare - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxNdHZ5UHBYTHJVbjRTeUlHYnA1aHRIaEc4MC1KYW9nbHFNTXJocVJVc1d4X05TbmVJSUdTTHBPaTZvLThwc2lmTXNEN0NwN1dmNDh3blhVcDUzaTBSbEJQeUpRWkJfdExzaXREX0lfZkZLRjJ2a015Y1dIZThwRkllYmtwcDc2Y1hsM2hrSTJQcHdST3VLLThJeGZ30gGfAUFVX3lxTE5RMkZfbmxCaEl4dHUtamZuYnd3RGFXUEtFcTdvRlAtS0JFeGVZdm9aSkR6ckxQdGx1eHlzSjdKazVfOGprb1BfQ285bDg0SE9yQk5RZHJTQ2sxNzVkMEtRZ3hqSHRiZGdPU2pNeHdFN0FzWTRXYUJ6WmxzeVBSdDA3TG1WelYyc2pNMXk1RG05X2FLVjIwMVpIVXc4dW8zbw?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
+          "title": "UFC 329 Embedded | Episode 4 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTFB6UHBhQUF3M0FycTMzNmZRQk54dzdaUHFfeTZqRnkzM09Sa0ZmaU9tanZsZ1JXWkJBclotblAwcjVONzVEYlF3?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-09",
           "injury": false
         },
         {
@@ -131,17 +131,17 @@
           "injury": false
         },
         {
-          "title": "Main Card Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBtNzM4Nks1ODREb041SnFMZ1NLU0hZbzZLR2tjX3VUR1J1Si03cDYwNFNjZlJHZWg0VHRsMmQ5bnZIMlBBMHNHcDZpZnRXUWJOdjlaRmlXVzFkZXg3SkpuckliN25scE0zN0ZIelg1R08?oc=5",
-          "source": "UFC.com",
+          "title": "Conor McGregor vs. Max Holloway; Paddy Pimblett co-main event: How to watch UFC 329 in UK, TV channel, live stream, fight start time, date, prelims - ESPN",
+          "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxPcTNJT3FIYi1XTlljU2gteGkxc2FZd2p2dnZEem5zdXRVTV8yREJCbEVUeTNiTHZJWURWUUZZQkN0R2xXNnU5ZlVOaXgxRDBieG1SaXVxLXJPMlJHMVRyRjlUZzljYW9GbnRmZmctTVRSNnBEU09rZTZQWGZGcUcyNVdNZGV4VXl4bnoxQXl3V3didkpJVjJEQjcyVDd3SkhicDdvWGFuM2FzNlhQanNpM1RjRW9qTEZKWkYydnRQeHNzUnZGLVpWODRsZFpLQm9uWG1EUU5oYmdjZHZBV3NnQ1NDbTdzOUZnUWR2c194M0ZfdG1uLXBlVloyVVVJTm1GSGhr?oc=5",
+          "source": "ESPN",
           "date": "2026-07-10",
           "injury": false
         },
         {
-          "title": "Conor McGregor vs. Max Holloway; Paddy Pimblett co-main event: How to watch UFC 329 in UK, TV channel, live stream, fight start time, date, prelims - ESPN",
-          "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxPcTNJT3FIYi1XTlljU2gteGkxc2FZd2p2dnZEem5zdXRVTV8yREJCbEVUeTNiTHZJWURWUUZZQkN0R2xXNnU5ZlVOaXgxRDBieG1SaXVxLXJPMlJHMVRyRjlUZzljYW9GbnRmZmctTVRSNnBEU09rZTZQWGZGcUcyNVdNZGV4VXl4bnoxQXl3V3didkpJVjJEQjcyVDd3SkhicDdvWGFuM2FzNlhQanNpM1RjRW9qTEZKWkYydnRQeHNzUnZGLVpWODRsZFpLQm9uWG1EUU5oYmdjZHZBV3NnQ1NDbTdzOUZnUWR2c194M0ZfdG1uLXBlVloyVVVJTm1GSGhr?oc=5",
-          "source": "ESPN",
-          "date": "2026-07-09",
+          "title": "Main Card Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBtNzM4Nks1ODREb041SnFMZ1NLU0hZbzZLR2tjX3VUR1J1Si03cDYwNFNjZlJHZWg0VHRsMmQ5bnZIMlBBMHNHcDZpZnRXUWJOdjlaRmlXVzFkZXg3SkpuckliN25scE0zN0ZIelg1R08?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-11",
           "injury": false
         }
       ]
@@ -151,6 +151,20 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "Gaethje Picks ‘Dangerous’ Topuria To Beat Up ‘Goofy’ Baddy - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxQOXltR01ZdktvTG8wQ290VlNyS1FKT2l2amFtOHViMmxyMlZpVnczTF94empUeWpKTEcwb0pad3dDVVFYVlVmQWdhU3VEdlhGZEc2SURzYnBEQVBQR3p6aUZ6a3FfOVFKa1U4STN5X1d3LUFHMWFCQjluYUFRQklTWXBZUXNrM29OWk9KLUtubFM3LXVZM2s0UjB5dm1QR1lJQ1dZanJfVDhheWotUFVjdkRFRDA0Ty1QQWNJMnBxZ0dUQjZld2hzenFRZnZzT0thQXFXY1pfQkh3cFpyWjF2Q1ZMYnVrSlk?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Justin Gaethje: Topuria 'more dangerous,' beats Pimblett 97 out of 100 times - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxQbmRROGYzRHVCZFMzZFMybzFYTWVnM2FYR1ZQaFlkaXQ5YnA2QlhQYXpJQ1NOUGVaTDRHZXZ6bHBsdTVURVJSUnRrLV9PZE9EQWkzRW8zTVlkbU5sRzF2bk9mUWswb0luUHBkQ3BGNHNuNFNoQk51X0w3MXp0QVFaMm85RUk0OG1MNDVTRl9tYnlMaTR0RWJwcFBZcVJmaEJLNEVyYVpfVGlCNHhKVmJLUHIwY1ZtM2FjOVYyNnBrdTBNbloxVnVJMmdkOGtkY2JRMnBXdS1CM1N5MjVHVEZyVXBrNThCdk9ZYVZaWElfN05iZzI2UmFHeW1hbzVrZ0E?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
           "title": "Justin Gaethje makes ’97 times out of 100′ prediction about Ilia Topuria vs. Paddy Pimblett - Bloody Elbow",
           "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPWk1YbXdaU3FHaGoxNk8zNVFXMVlvd0F2ZG9SaEp2LUxOUFFyVmpZSDR3c1BfbGFCRmQ5NWxqZU8wYi00aGxwbXBYc19kT0ZnRTlYZDIwQ1YwXzFfVXlZMFV2M2FIZ2tXblE2LTdpU0JGWGxHTmZyTHdJaTNwTU1ya2FndFRmb3VmT0NCQVRLa0lRMDFhNnAxSVZQSlpxYTYyeWRBRnlSTGlGa0dsb3RlTjVTOHRYQjZFY2ZPdGR0VjBhdw?oc=5",
           "source": "Bloody Elbow",
@@ -158,38 +172,24 @@
           "injury": false
         },
         {
-          "title": "Mailbag: Is Paddy Pimblett in the hottest of seats at UFC 329? - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPU2tZTklORWRlc2ZPUXloZkdBQlpBRkl6WEpIc01USUc1cFhWak95YldNcDBPeTJvZHgyZU9kYlpCTGdJb3g3Z0YxRG5tZlJteVBhbVg4UGZ3U3hUc3REZjBtcXZnSW1FZlkwaGhmWEpYZUVFdGtmam81S25QOEpKYkdaQ3phNVJHTC10MktENjFXVUJDZ0FQUTlfRXBkTVpDWmxjQ21JeWFUNVpRakZFVjl3?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
           "title": "UFC 329 predictions, odds, best bets: Max Holloway and Paddy Pimblett among top picks to consider - CBS Sports",
           "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQY0R5T0JMRjVZaDBheS1kbWQxOElydm50bWR0S3dUaGNPWkZsSE8xR2t6b0poVzN4QmRCUUxnd2RpUU9RZDBoSmJIMHc2TllHbkg3WHlkTzg2QmFXUGxrQmNoelEtdVVZOG9HUVZ6a25vcHlsOEZqSlpLQ0xEVFkta2dUb2ZFSTZSQXFyTFZEZHdwRzZLNGd4enpWeTM4V3c?oc=5",
           "source": "CBS Sports",
-          "date": "2026-07-09",
+          "date": "2026-07-10",
           "injury": false
         },
         {
-          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPZUxzb0RSbFRrd2NiakVRUEp5TEJOdXZTNTNPRjN6WDExVWFMcWJlTi1VdUo4cWNEUkE3WGNLcGRVUXhKbjJXRm1mc3ZKZmdaVEZENXhtdWh0YjR1ZmoyRGUwcDlZU0Z4SEtKWGRRNE1qVl9ERHl6VDNjUXhXM0VTeDh0bGVwTGdvd0czZ05n0gGTAUFVX3lxTFBKeGZZaVYzNHlVVVNzc3prcWpLZV9ROGczX2wxNDJSZ29Rem8zTWoxc2tsWENpUkdSazMzSk1WWDZVWXdfUW1mZHRtZVU4TzdSQjNyVzBQTk9nWVBFeFpVenMxWVBKdGhfcUcxQ0hqejQ5NVI2dUIyUnBxLVl1bzhNOGpndHhyUGw3WE1lcmEyOWpVYw?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-09",
+          "title": "Official Weigh-In Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOWEtCbjVZQkktSjJ0M2J5cDFKVTRfTGY3SVg4RkNESm00N0Rac3V1YzFPN0NpNThucWhPUzZBNGcwY2tGd2pxbmN0YndOZXJVRElPLWthQkdIcXZPYmhOVlpmUjRqQzc4aFlOa0EyQWtfWVQxd2RuZC1yY3lYZnJ1T2lGd0w?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
           "injury": false
         },
         {
-          "title": "Paddy Pimblett criticizes Arman Tsarukyan’s lack of activity, tells him to stop ‘tickling people’ in RAF - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQWElkbDNZOHE1WUhWc2JycVc5bWNrVFI5Q0E0SE1LNHVMT256WGEwZ1Y3MldNTkdfMUZDMHhMV2lJRW9FTXlsbzlzOFRLREVMREhjVjNjR3lRTk4zTWp4WEwxczFGeENKQnY2N2VvaXM5M0UyNTgxQkhIRzRoWVlvWUxvcGZEZ0RucU1GUEVDeE8tbWswZFBDYjZWNkdYVEg4VGVPMmdMazFLekNiSzJOYjlseWpleEx5OVVnVEtnQ084Q0VyRkFTWlFTTVFjZE1oYTZySVBn?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Paddy Pimblett questions Arman Tsarukyan’s UFC title shot case - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPbmEyd3dEOVVoTTRRd1B6SDhhR1BWMTl6WjAzU3VtdnE4RzRQcTlsNnNGWkF0UnY1RHBxZXRNNDhGbVdrYkkxaUhaRXlWXzFrbHh0a0tuWFVQYVB0M1A2TGU2cFY4V0ZjWnFmOG5zSmN6cjR1QVhOZzNkeDJLYmVKMEhfaWxMSDhUNXA2dkR6ZTNfZ09ockRPcjM5MVFwX0R0ckVaRNIBqgFBVV95cUxPdmpzSTNMdW9QZjNrU3dfS2Rpa1M0dm9FaUU4bkhkRDMyWGM1Tjk0eG50RnA4TXYtaktXQmNhNmtoemtma3FGbXEzd3ZIZ3RublNtblRiMWZkaWxFTkVtNVUzSXBOMWluQ2xoTTZZOXJUam5wM2x4YVdLYTkxZl9GTFo5WHJ0Ykx2QXRoaDNRcnp1Nll6QVVLeFNNQTl1T2dDdW1ZUWZPcXRQUQ?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-09",
+          "title": "UFC 329 'Embedded,' No. 5: Conor McGregor, Max Holloway faceoff gets tense - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxOQVRfZU16VEowX0dGd0liYVRDejFJMGFlUWhuM1I5akVJZ1pITUJwVEgtUWIxZF9BUElWZUZ0R0JLQ3hFb05QcGpGVTdjU1BFQnZ0ZzB2MGtVYnJaY05KMWI4VGNIcFlyRnk4REVnbFc0akJFdW10QWpwcFlBcVBtekFmS3l4YU96V2pYR1U4RWxYbl9KaWJmV3VhSUFGTEh0bWR0YmhEWU5nM1FXYk9lT29qajFaUTVEblNlTHh1VEtaNHJiZC1mcHZHeUE5c1dRUlpQWnZEdw?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-10",
           "injury": false
         }
       ]
@@ -199,10 +199,24 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPVV9CaVpLemNsN2dFRk85LXRna0tGLXBzT2dKWm5Qek9QT3diY0swbEVrRHp6RlI3cHIxVk83cU9Ta0FtbHJ2N0pucFA1RmhGQjVWaGt5WXdZTkI3TG12LTBXUzN3SWdsZWJpWW9JZ3dVaVJPVy0tS09meFVGWjlEclB2djhEaE4wTl9Oa0NB0gGTAUFVX3lxTE0xeWpZdHN2LU9pRXlEd1lSd2p4RUVDcmprU0Zqd3dlZE9obDlYOXJrd1M0aGk5eFYwa0pBYmxxak8tYm9YRXI4Qi0wOXZyaVdCbmV6bFdHREtzSXI5LUJVYTc0RkY1MmNSczZQdGE0R1lWUUpTX2g4WTFLeUpZRFl2cXBHTXRCY0tUVlVyOWthRmd1OA?oc=5",
-          "source": "Sherdog",
+          "title": "UFC 329: B/R Main Card Staff Predictions - Bleacher Report",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbjhlbTY4MXozUDZmWU80dFZHYklpakpQa0o5STRxTmtiSnhvbzY0OEV2R1pKb1pqbnZnNGFaR0s2a21ka3Q0N1V0UlQ0N2hDVTY0Z3hUQVZEc0hjSEVjelFiNlltZ1V1UDhJamJkcmdIVzVLRnh3UE84ZWlKVUUtU3lpQ1NBR2ljOHBn?oc=5",
+          "source": "Bleacher Report",
           "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "Cory Sandhagen explains why he'll be difficult for Mario Bautista to 'deal with' in UFC 329 rematch - BJPenn.com",
+          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPdnZYTEUwTnJGWFA2R0VWdzV3MVQ1d1ZxaE5RbVdDbVZVamhnMWY1a1dGeFBLQURWbmZKSHNVMWM4cHdReVQ3UjYxdC1ubmR5TkFFOG1Rc2RnTUxQaGNrRlRBbDVaRlVySUdCckgtZW1yb1BlS1QyanNNNlJiOGtWYWx6U3UtY3NKZUtoeUJTTTl3TWlxaVBna19JSHBoN1RoM2lDOGlmNUJDOHdUSm15Q1N5WkJNYVJ0UnM2TEpMY1NUeE5DMVJkQ2tDWWNWZE0xNHdCdDNib3duaW5Q?oc=5",
+          "source": "BJPenn.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Cory Sandhagen on sharing card with McGregor: 'I do a lot better the more eyes' - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxNbFpqYTdhbmFuS1hDcWNpLWVGeVJhRUxpVW5qckdNTWdRd0Y4M3NDV05XRlE3aWRCY21KX1ZYODQwVlNscnBzZmt1WjR6a3VYSU1MMmxYemhZaERsQWZvMjRKUTF6RlBQV1dEcVV1c0hiYnJpSDgxa3ozTkVETFpGbUdnNlpTWExCS1ozbXgyRExpVTFuMFNTNjdSeU5GaHdZUkFfNUhPcHU1bUkySnJyUjhMMUluSV9yOUZ5dzBBdTViQzIxcmh1UWd0VGdJY2tDOXFWTzN2TTRlWlYyZ1RBaWVzQ3Y2bk9aQmVFRzJQN1c0T0hCREdrVlZXV2V6TGM?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -213,24 +227,10 @@
           "injury": false
         },
         {
-          "title": "Cory Sandhagen: UFC 329 fight vs. Mario Bautista doesn't 'feel like a rematch' - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPWHltaVdpaGJkYzRMVm9XTEZXMlFfWWhlMGN5YU5mZUxCcGdTdVVmZXkzWjZ0bWVXZmxfVHlQM3RlQmJFNXRLamFDSGZrb3lEVmpodVEwaTRHcEU5WXMtUGc1ZkViN1BfbVJOdS1meVRpbzB4a29WcGxXX2JjemRXOU83azNER29SVVlsaXo2ZHNLZ0ZGcllxNGNrMk40eW4tcEVrTGh0cElpMFlwMmhDdmZaVlFuR1M2UVluWWpmLW4yRGRwMHV4bThCbFVCcjg?oc=5",
-          "source": "MMA Junkie",
+          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPVV9CaVpLemNsN2dFRk85LXRna0tGLXBzT2dKWm5Qek9QT3diY0swbEVrRHp6RlI3cHIxVk83cU9Ta0FtbHJ2N0pucFA1RmhGQjVWaGt5WXdZTkI3TG12LTBXUzN3SWdsZWJpWW9JZ3dVaVJPVy0tS09meFVGWjlEclB2djhEaE4wTl9Oa0NB0gGTAUFVX3lxTE0xeWpZdHN2LU9pRXlEd1lSd2p4RUVDcmprU0Zqd3dlZE9obDlYOXJrd1M0aGk5eFYwa0pBYmxxak8tYm9YRXI4Qi0wOXZyaVdCbmV6bFdHREtzSXI5LUJVYTc0RkY1MmNSczZQdGE0R1lWUUpTX2g4WTFLeUpZRFl2cXBHTXRCY0tUVlVyOWthRmd1OA?oc=5",
+          "source": "Sherdog",
           "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "UFC 329: B/R Main Card Staff Predictions - Bleacher Report",
-          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbjhlbTY4MXozUDZmWU80dFZHYklpakpQa0o5STRxTmtiSnhvbzY0OEV2R1pKb1pqbnZnNGFaR0s2a21ka3Q0N1V0UlQ0N2hDVTY0Z3hUQVZEc0hjSEVjelFiNlltZ1V1UDhJamJkcmdIVzVLRnh3UE84ZWlKVUUtU3lpQ1NBR2ljOHBn?oc=5",
-          "source": "Bleacher Report",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Sandhagen Vs. Bautista 2 Odds, Full Fight Preview & Prediction - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNanp1UHdOazRvU3h5akY0cjdwRE5uRWszVVpIV2hNQU5ZX3F5X0xCRU5Ec3NrXzczTFFQeks3cnVBbUptUmt2VlRKdGlxeG9iV0xyTnZqQ3AyRUxuZGFGbjhqMVhEM0xQUGswQlVfd1BxajBwWkhNQVdPZFBEbE03QkxFMGp4WGNQLV94eUJMdEVtbGVZbVNnQlhHWjhEQ3liUF9ncWRCNjltLU9LU2M0cFE3bUV3NHVhR1NocUFIR2lPdUtJZWlr?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-08",
           "injury": false
         },
         {
@@ -247,17 +247,17 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Mario Bautista Is Ready For His Revenge Mission - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQeG91NkxXMU5WNjdscGJ0T1FMcEJWVk9qM1RTbzAwYUZiRGQ2Q1hMM1pVUGhld3VSZElERmJEMzJxdUllRUxHVE81WjhVZ1ROS3pKXzJ4UkRTc2ZQbWM4X3FmYjR5LVQ5ZWRfVWlldGZsM2IwNGZRaC1TSmhPUi1ETWZmNTRFakU?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-08",
+          "title": "UFC 329: B/R Main Card Staff Predictions - Bleacher Report",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbjhlbTY4MXozUDZmWU80dFZHYklpakpQa0o5STRxTmtiSnhvbzY0OEV2R1pKb1pqbnZnNGFaR0s2a21ka3Q0N1V0UlQ0N2hDVTY0Z3hUQVZEc0hjSEVjelFiNlltZ1V1UDhJamJkcmdIVzVLRnh3UE84ZWlKVUUtU3lpQ1NBR2ljOHBn?oc=5",
+          "source": "Bleacher Report",
+          "date": "2026-07-09",
           "injury": false
         },
         {
-          "title": "Sandhagen Vs. Bautista 2 Odds, Full Fight Preview & Prediction - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNanp1UHdOazRvU3h5akY0cjdwRE5uRWszVVpIV2hNQU5ZX3F5X0xCRU5Ec3NrXzczTFFQeks3cnVBbUptUmt2VlRKdGlxeG9iV0xyTnZqQ3AyRUxuZGFGbjhqMVhEM0xQUGswQlVfd1BxajBwWkhNQVdPZFBEbE03QkxFMGp4WGNQLV94eUJMdEVtbGVZbVNnQlhHWjhEQ3liUF9ncWRCNjltLU9LU2M0cFE3bUV3NHVhR1NocUFIR2lPdUtJZWlr?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-08",
+          "title": "Cory Sandhagen explains why he'll be difficult for Mario Bautista to 'deal with' in UFC 329 rematch - BJPenn.com",
+          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxPdnZYTEUwTnJGWFA2R0VWdzV3MVQ1d1ZxaE5RbVdDbVZVamhnMWY1a1dGeFBLQURWbmZKSHNVMWM4cHdReVQ3UjYxdC1ubmR5TkFFOG1Rc2RnTUxQaGNrRlRBbDVaRlVySUdCckgtZW1yb1BlS1QyanNNNlJiOGtWYWx6U3UtY3NKZUtoeUJTTTl3TWlxaVBna19JSHBoN1RoM2lDOGlmNUJDOHdUSm15Q1N5WkJNYVJ0UnM2TEpMY1NUeE5DMVJkQ2tDWWNWZE0xNHdCdDNib3duaW5Q?oc=5",
+          "source": "BJPenn.com",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -268,24 +268,24 @@
           "injury": false
         },
         {
-          "title": "Cory Sandhagen: UFC 329 fight vs. Mario Bautista doesn't 'feel like a rematch' - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxPWHltaVdpaGJkYzRMVm9XTEZXMlFfWWhlMGN5YU5mZUxCcGdTdVVmZXkzWjZ0bWVXZmxfVHlQM3RlQmJFNXRLamFDSGZrb3lEVmpodVEwaTRHcEU5WXMtUGc1ZkViN1BfbVJOdS1meVRpbzB4a29WcGxXX2JjemRXOU83azNER29SVVlsaXo2ZHNLZ0ZGcllxNGNrMk40eW4tcEVrTGh0cElpMFlwMmhDdmZaVlFuR1M2UVluWWpmLW4yRGRwMHV4bThCbFVCcjg?oc=5",
+          "title": "Cory Sandhagen on sharing card with McGregor: 'I do a lot better the more eyes' - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxNbFpqYTdhbmFuS1hDcWNpLWVGeVJhRUxpVW5qckdNTWdRd0Y4M3NDV05XRlE3aWRCY21KX1ZYODQwVlNscnBzZmt1WjR6a3VYSU1MMmxYemhZaERsQWZvMjRKUTF6RlBQV1dEcVV1c0hiYnJpSDgxa3ozTkVETFpGbUdnNlpTWExCS1ozbXgyRExpVTFuMFNTNjdSeU5GaHdZUkFfNUhPcHU1bUkySnJyUjhMMUluSV9yOUZ5dzBBdTViQzIxcmh1UWd0VGdJY2tDOXFWTzN2TTRlWlYyZ1RBaWVzQ3Y2bk9aQmVFRzJQN1c0T0hCREdrVlZXV2V6TGM?oc=5",
           "source": "MMA Junkie",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPVV9CaVpLemNsN2dFRk85LXRna0tGLXBzT2dKWm5Qek9QT3diY0swbEVrRHp6RlI3cHIxVk83cU9Ta0FtbHJ2N0pucFA1RmhGQjVWaGt5WXdZTkI3TG12LTBXUzN3SWdsZWJpWW9JZ3dVaVJPVy0tS09meFVGWjlEclB2djhEaE4wTl9Oa0NB0gGTAUFVX3lxTE0xeWpZdHN2LU9pRXlEd1lSd2p4RUVDcmprU0Zqd3dlZE9obDlYOXJrd1M0aGk5eFYwa0pBYmxxak8tYm9YRXI4Qi0wOXZyaVdCbmV6bFdHREtzSXI5LUJVYTc0RkY1MmNSczZQdGE0R1lWUUpTX2g4WTFLeUpZRFl2cXBHTXRCY0tUVlVyOWthRmd1OA?oc=5",
+          "source": "Sherdog",
           "date": "2026-07-09",
           "injury": false
         },
         {
-          "title": "Mario Bautista expects 'completely different fight' against Cory Sandhagen at UFC 329 - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOcXgxTEdnVmowcVN5dHJoYVY5QktVQ0JveVpoemhiWVhvbHlwUDVicHRPbHR2ejFaVWlfWmJIeDFXdlVxeno4S2tBbHBxenlGbEdwM0ZFWHJSeUsxVkVaN0pEYUJYNFljbE14M2R2bVJnNmh6c2JTZGt0eGliY2hQT3kzNmZTNC1xLXJUVlRZaUVLZ2xhMGpRWVk5WEhNVkdPTGdtMklZMzFialZiQlFEclJWdlBZNW5WWk9UeDRwbU52UdIBxwFBVV95cUxPSm1mX1BHM2dEWW95aXlXZldYSDh3Ny1kN2V5Nm5PdGIwVEkycmstYWR1YzZ6MFppNVI3cy1neTZSY1pQQVp3cG1nX200THRDVXZxVnFnMmFzemVoNHVzSDZ1VlFlUVJrd09Id2hqMVljOTNNbmpMcVlhWWNFaloyR2UtSEtaaWpKWUh0Nm5yd1lOcTByaFlBSEF5bFNDX2VNOG1aWmlabjJyeXAyZGdqZ1RpamIxbkdLa2cwS2k0X2Jhd0lOQnZz?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "UFC 329: Cory Sandhagen vs Mario Bautista 2 Preview | Deep Waters Stream of UFC - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxObjFNTzNBS2M4WEJuTjRTUmNqRWp5RWdqelV0dzlYN2xveTFfRzE5eGtaQU81dUZIZFRnM3RWWlZZc25HNW5mVkRfSjZSTllXRUtIbGZzZ0t6dHYydVJMbm11RThaazV5eFhkMUxORTFhVmEwM09mVDNRVHRDeWYtQXBmNlRBTTBJbEVLTVg2U2ZpTlBNZG1DVnZ2NjdJelVYdC1fR0xyMA?oc=5",
+          "title": "Cory Sandhagen Previews Fight vs Mario Bautista at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNRFBKbFhkbFJkeUZIX1lPMG5QUlJ6RW5WdktoOVBmMjlrQ2p6SmVHMk5say1PN2NUZE01VlVUbmpWeWJWaXBxaURPTjhXcVl0cmtLNnJqaUJUalF0akRVbWFlUzhrVDdEZWd1aURjcmZtc2Y4WUZhZGJ5SlpDQlFqdmFjaFRBZGpMckl3Zm0yVjkyMlM0SFBSa2dZT0hwamJYUnJqUkwxcDJGZFk?oc=5",
           "source": "CBS Sports",
-          "date": "2026-07-07",
+          "date": "2026-07-10",
           "injury": false
         }
       ]
@@ -295,10 +295,72 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "Here’s MMAmania.com’s UFC 329 betting odds ‘Weekend Lock’ … what’s yours? - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPZWVTNFRzZVhZdC03b2w3Y2lEdTlpTnZQTlFYbm1QS0lQTjY4ZG5fVjBFXzY3S2xUQy1mUUg0d2RqNG14WHU4bEtMb3M3MlhXNmw0MDBvMy1Wc25QbGVyZHNOR192YTUtcE1Lb19LX3piWnQ4dFg4N0F5X2ZKd0lFU01Rc0thOWt3X18zSHJsdm1iRmNrRVBBeWlSSXhiX2tjNDhwZXJ0Q3NVVVR6bjZmM2dzLW42Tk5WNWpTdUF2VzRjMkVLaEgw?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
           "title": "UFC 329: B/R Main Card Staff Predictions - Bleacher Report",
           "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbjhlbTY4MXozUDZmWU80dFZHYklpakpQa0o5STRxTmtiSnhvbzY0OEV2R1pKb1pqbnZnNGFaR0s2a21ka3Q0N1V0UlQ0N2hDVTY0Z3hUQVZEc0hjSEVjelFiNlltZ1V1UDhJamJkcmdIVzVLRnh3UE84ZWlKVUUtU3lpQ1NBR2ljOHBn?oc=5",
           "source": "Bleacher Report",
           "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "Brandon Royval: Kavanagh fight personal, UFC 'trying to push me out' of rankings - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOemlOYkZWbnJFLXNKbmFJeGRfSG1zQ044TEdGank3M0U5MzVFNzBINkotcU1MTmw5NHRqLV9rSnJ1R0tKWWpub01rZFpHdll5THRJQktqTTJsZTRndGtnMi00bC1MdnlaMFY0Q0hOM3R1NWYxaWFYTzV4Q0llVWZ2Nm9yaVFuQUNHdXR3ajUtcmxERXBoeGticm1ZNzk5bkVVb2dLVTRhYXVkdXBsTTNxQ3pNOHNNQkZfWVh6aWRjc1l6R0d5eF91c0JPQ1N1RnBQU3drTFM4Ml9lX1Z2Y0xzRjlUekRzWEt5UDFVMg?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNRmJBeVJjMTFBNEQ2RmRhTTl3VWo4ZEFFd1d6TGw5X1Rxc3NaMllaQ1JmeEY3YUNNN2p6S3ZaUXdRUlhSYVd5VXRrZndkdEUzUVRoTzk2cDF5LVp2Z1RneGRVRWg3Vlc0b0hYeGctcGxCNkZfQ3RabmllYzYzRWZWUFFFclNZR2VUVGFuTXln0gGTAUFVX3lxTFBZQ1A5WVF1Q25na1FJYXh3QmRjS2JYd2ZzZUlCelZvbF9mYjU4NXRTUU1COVUtcWhlQ2w2NFVSWVJveDFsMDk2TjExM20yY1dDNHBzQUFUeDBXX19hN1NsWkpxczJpY3pLZkJnUGhkb01QS3JmNWhCa21HemFwb3B4Wnl5UUNsTjI3d09IczlsbG16TQ?oc=5",
+          "source": "Sherdog",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "Lone'er Kavanagh Previews Fight vs Brandon Royval at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOYkFVV0dPeVROaXRJUjVDMGVIVzMxS0ZzQ3JsTDh6SmNRdk5TTVUwcERJNVNrZGY1MW5URzRRbXVEMGRJUV85N3JCNEdLb1lmRlI5Um8xYXRsRjlOa2RGMUlzSXIxa1lNRlVLNXZsbEdJR0F4VlpQczc2eFNnUHJoajNJZWxsQlJFelJzeEUyRGIzbGRRUFRZUzhlZEtjNXRxQV8yQmVqT0xJWlNo?oc=5",
+          "source": "CBS Sports",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "UFC 329’s Brandon Royval believes the promotion is ‘trying to push him out’ of the rankings – ‘It’s personal’ - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOTmFpdVA5QlJNNGx6YlZnRW5MZ1dBbW9VbVN1UFBibVpTT3JrVzlhQl9sU3dXV0RHR2dXX0dZOUUzcGdXWHl5OHpXWjlEbUdzQmF0ZmMyN2RpdVlBMVZIWVpCQ0ZCTjBjby1jc0laSzJIR0VOVVZLOXFKOVlueHNSNmJlcnJVS1U?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-08",
+          "injury": false
+        }
+      ]
+    },
+    "lone er kavanagh": {
+      "name": "Lone'er Kavanagh",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNRmJBeVJjMTFBNEQ2RmRhTTl3VWo4ZEFFd1d6TGw5X1Rxc3NaMllaQ1JmeEY3YUNNN2p6S3ZaUXdRUlhSYVd5VXRrZndkdEUzUVRoTzk2cDF5LVp2Z1RneGRVRWg3Vlc0b0hYeGctcGxCNkZfQ3RabmllYzYzRWZWUFFFclNZR2VUVGFuTXln0gGTAUFVX3lxTFBZQ1A5WVF1Q25na1FJYXh3QmRjS2JYd2ZzZUlCelZvbF9mYjU4NXRTUU1COVUtcWhlQ2w2NFVSWVJveDFsMDk2TjExM20yY1dDNHBzQUFUeDBXX19hN1NsWkpxczJpY3pLZkJnUGhkb01QS3JmNWhCa21HemFwb3B4Wnl5UUNsTjI3d09IczlsbG16TQ?oc=5",
+          "source": "Sherdog",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "Here’s MMAmania.com’s UFC 329 betting odds ‘Weekend Lock’ … what’s yours? - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxPZWVTNFRzZVhZdC03b2w3Y2lEdTlpTnZQTlFYbm1QS0lQTjY4ZG5fVjBFXzY3S2xUQy1mUUg0d2RqNG14WHU4bEtMb3M3MlhXNmw0MDBvMy1Wc25QbGVyZHNOR192YTUtcE1Lb19LX3piWnQ4dFg4N0F5X2ZKd0lFU01Rc0thOWt3X18zSHJsdm1iRmNrRVBBeWlSSXhiX2tjNDhwZXJ0Q3NVVVR6bjZmM2dzLW42Tk5WNWpTdUF2VzRjMkVLaEgw?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Lone'er Kavanagh Previews Fight vs Brandon Royval at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOYkFVV0dPeVROaXRJUjVDMGVIVzMxS0ZzQ3JsTDh6SmNRdk5TTVUwcERJNVNrZGY1MW5URzRRbXVEMGRJUV85N3JCNEdLb1lmRlI5Um8xYXRsRjlOa2RGMUlzSXIxa1lNRlVLNXZsbEdJR0F4VlpQczc2eFNnUHJoajNJZWxsQlJFelJzeEUyRGIzbGRRUFRZUzhlZEtjNXRxQV8yQmVqT0xJWlNo?oc=5",
+          "source": "CBS Sports",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -316,72 +378,10 @@
           "injury": false
         },
         {
-          "title": "UFC 329 Embedded | Episode 2 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE1MSEplczJvaGNXZHJFU0hqdkVXMG9BT2t4TjRGR2tOcjVZeWJnNXI1OXJRZDVKNVJJcnRrcGtJVThFVGQtVjln?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "UFC fighter Brandon Royval’s five-year commitment outside the Octagon - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPdWozc3dzcHVsc3F5WFU0NC1sQTZsM1V6NG15N1dDS2R3T3EtYVRLSG8tVU5TWWh2c0hrQUdtdVdfX1BTQ3B0N0hpU2w3R1BhWVEteW9sa3pVdGRvOUJhT1hLTXNtQzdJa2RhWFJyTDNWSVNOY1pXckJwVDBRakxxZUQ0clU1ZGk1dXJ2eFRKeWppa1NSSFlEUU5qV0V4LU44Z2V0WTN4THZHZFdX0gGyAUFVX3lxTFA0bERGd3dUekg2OVc4dFpHTG03U0lmY283UEpGVENpV3ZiWHplRFFwREJZNjRIVFdzdHMtMzZUT3FuNEtPRmV1LTFhSkt6N0d5ODJiaFY0Uktjd25CVS10dnJkX0Rma0NuMVN4SF9LQ2ZjVzZaLTJ5ZmdpOGpBTGVEdTItUTFJYUxCRWw2OWoxcmhqYjUtd2wwMHBhSzhEcEtfaHNvV1gxenEyaExUQjJ1WHc?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Brandon Royval Previews Lone'er Kavanagh Fight at UFC 329 | UFC 329 Stream of UFC - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPRkJSYjZZc0JsalVERVNZUS01WnBaZ0ZnLU9QRjlYR2Vodi1VY21aWjdiZlBqM3pNYS1JMS14a3pSUWZuZWZxeEYwcXE0S1VmV0tQQTJWeUY4YUNkYzJORTlwSG9MSkVrd25rYW55d204dThmSnNUanJsTjZzWjlKR2pGbG9oZHRUWUQ3cE9qLWJMbEpicUcxb2JELU1mZDlaenVSV0d5dUlLUQ?oc=5",
-          "source": "CBS Sports",
+          "title": "UFC 329: B/R Main Card Staff Predictions - Bleacher Report",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxPbjhlbTY4MXozUDZmWU80dFZHYklpakpQa0o5STRxTmtiSnhvbzY0OEV2R1pKb1pqbnZnNGFaR0s2a21ka3Q0N1V0UlQ0N2hDVTY0Z3hUQVZEc0hjSEVjelFiNlltZ1V1UDhJamJkcmdIVzVLRnh3UE84ZWlKVUUtU3lpQ1NBR2ljOHBn?oc=5",
+          "source": "Bleacher Report",
           "date": "2026-07-09",
-          "injury": false
-        }
-      ]
-    },
-    "lone er kavanagh": {
-      "name": "Lone'er Kavanagh",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Lone’er Kavanagh | Sometimes You’ve Got to Jump - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTE9oWURuSHBjbjJjZTV0MENJSGxoRmw1S2FHV1FoVlFKNEZ6cnUtWWlSVXpUT09rUm5qeVJvQ1dva2FCQV9Ra25POTA2a0YwbExvZklteGlLLUNzbjRsQ0l4S1pKUFFZSTlkZ21CenhNSkhwV1U?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-06",
-          "injury": false
-        },
-        {
-          "title": "Kavanagh Vs. Royval Odds, Full Fight Preview & Prediction - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOSnM4eFh6WmIyUTk3YXk0S3cwSXd0ZTIzUXRtdDgyaW9kVnRMRWItTk15N3hTWWo0N1VpVjg1dG9EeWowaklYVzEyVC1oU2h4bWw5cm9VZHBQWUs2U2s3RWRpaktDVUV6dU15X3h3emJfVnBMRkMzWUlkM2ZtQ3RtN3U0VmJmWXJLRTRQU04tVjYtcUdoZ09DWm1FM0g3ZllVU1BxeHlyc3pVM20tZEZHcnlEamUzc0w2dHVJQkE5TFlYLW96VHc?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Brandon Royval Previews Lone'er Kavanagh Fight at UFC 329 | UFC 329 Stream of UFC - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPRkJSYjZZc0JsalVERVNZUS01WnBaZ0ZnLU9QRjlYR2Vodi1VY21aWjdiZlBqM3pNYS1JMS14a3pSUWZuZWZxeEYwcXE0S1VmV0tQQTJWeUY4YUNkYzJORTlwSG9MSkVrd25rYW55d204dThmSnNUanJsTjZzWjlKR2pGbG9oZHRUWUQ3cE9qLWJMbEpicUcxb2JELU1mZDlaenVSV0d5dUlLUQ?oc=5",
-          "source": "CBS Sports",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Brandon Royval Looks To Reassert Himself Among Flyweight Division’s Elite At UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQdkhpYlQtLUxyZTNIcElsN3UycWZBNzZULTl5YkRyc3pIc3VvQWtWTUJPTVJQOWhjVmpYTzg3N1FObVFaS0lVNzhRWk5WVDduQWxsb2EybXJXVGdvRVFWV3o3TXlZS0dlelllVkF1ZWZRN2xsSmNfZ3JCX0JEQkhDeVk1TUt3ME9jOENDbjEya0JnbHJaeWY5N0EwTG5mcENhVEd1Y1FzLTk?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Lone'er Kavanagh Fight Week Interview | UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTFBURFZhTmF3MFd3SGJzYzFLWHlGN2xCSkx6X1ZidmowS05RbnVJa1Q5RXY5a1FaeWVGQl9Ud0Y4Q0pKSGxMbzFN?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Lone'er Kavanagh's Journey To The Octagon | UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE1mTlZiWjNiRlZSTHFrb3pKdUliTVFOeWxnWElvX0M5VEY1cml6RjBkM0lxU2h4LU5rd0Nwb0ktZWxjV1pQTEJZ?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-06",
           "injury": false
         }
       ]
@@ -405,23 +405,9 @@
           "injury": false
         },
         {
-          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNVGQ2YVA4TVFhTzFjSl96cDRtM2F0a3p1LUhRcnpuZ21xYVVKQmR4Z1VicEtzUXZIRVA4SFhCQklhUnFZVHd4UFRybnNQeWhBdFl4ZTZyN1kyQl9GVjBoblpnQ2Y3TENScUt4Y2ZfX3ozRGRnek9mUDQwWWFlc1N3ZDRuUXpzVXZxN0JrVkdB0gGTAUFVX3lxTE5zdlc1UmFLVmo4dWZyMnZJOGdxcmRPSW1IYWdCb0RySEMzNnNKUHFsaE1pMTh4eXY1RjI5QjI3cDQxTFdvOGVkdHR1SElON2JCMXJCdFZERUF5RHZVcDNHRkJ6bFhlTlU1akxnLWVQRk1XOTRJR2lhVFhTT3JVNXF1RG4wQjdSbkEzdS1GbnZHLS02TQ?oc=5",
+          "title": "King Green says Terrance McKinney UFC 329 fight feels like betrayal - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQTlliNnlINTNtSWVJeHg3bDVDWVRsVlluWFRZR3paTXZVcWVuSnp1S3pYZUM4djg1Z2ZSekxoNzI5OGw3LVU2X2ozRHQwRVBDVmpzOHRSY0dkUDJrSjZWSFNOS0hJN0FlREU3Z3poNkpaTkRyUE1XVzk0XzQzeWMyVkVMbEhIaThCdmlwcjZvUHNTRnBMSWUyN2UxaUxfbUhYRnUwUU1ibjlkelRo0gGyAUFVX3lxTE90WHFrZUVJQzJfTlJwYjdFM0g2NTFsaXQtWU5zS3Y5RllGalRuRndkVGFwb21PbFZqVXd3VXYwc2Y0S1dsbEdtOF9QdV9lZmlqYWFpRTRmZEIyOXJwajBKblZrTmJXSFRHeURJLXVLcXNOZHpINUxRckR6Z0NteGg0U0tvU2IwQWVvTHk1a3hTVF9DRm5TQmdybl9ZUFhnTkZTZ0JDeUYzeVV5LW9jcDFHamc?oc=5",
           "source": "Sherdog",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "UFC 329 custom shorts revealed for Conor McGregor, King Green - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNbzlNeThpZkRULWN2ZFk0UDdfZUIwTUhRcnpGS1pfS3hiczE0WHAtLTJfQ3JKaEVKYTNYMWpLNmtqdUtvb2MzeXB1ajdUN25nNlhLdTY3MXNGb29ESWdCTmo0bnpqUF92dXBNYzhJOE94ZUttQWllVU9wQXV6bzA5UV9UR3d0aDFaMzRLSThCdzBtb3VwVmJSRHB6U2ZnQTg3?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Terrance McKinney Media Day Interview | UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE5DdEdnaFlGaW1NYTBEbm4tbXdFUWtGeFViZDhWanpQTU1RLVVqQzhjdnBsZ3ZGWFdQekhXc1J0bmx6X3p1RXpr?oc=5",
-          "source": "UFC.com",
           "date": "2026-07-09",
           "injury": false
         },
@@ -429,6 +415,20 @@
           "title": "Terrance McKinney warns King Green about trash talking during their UFC 329 clash - BJPenn.com",
           "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQSV96VkZSRE1mRUR3cDFDNGNqWHJJb0hET0ctdUxha0o2Z1pmS2h2TjVud2pIT0JZYzJ6QnJseU1JMjBfeGJ0ek9Ba1lmY3JLVmdoSEVZOEQtQXBNNDRlM284V3Y5TURVYUVoZzZveUstczFoQ1hwT21mLVF5LUdLNV81QzVuZzNCRmtoaWhhbDBGQnVxc0cxdDBJUnp0MHJhNEdFd3JxVkhvZGxxNm54R3JvQjRyQ3JydmxOMnM5LUE4MFpCb1g0VU5HT3I?oc=5",
           "source": "BJPenn.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "King Green | Always Focused On The Mission - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE44Tzd3SjdtU2NCODBmODdBVldpLXRDTXlYUnU2UlhYT3VCLWtyMGtOZ3hhWWF2Z1kza2lFdEFIaFg1WTdncGpnQWJ1QTdTXzdRRzhYM2taOXNqWHVmNG9fR0M0OGxrME9EZEIyU0VDTnRsdG1u?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "King Green vs Terrance McKinney Predictions, Picks & Odds for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOSVNjY1MwSzFDNjUwckdBT2JVdXBMOVZBbU1QcFQtUXViM2FwLVFpeXNfMjYzR0xSWUszN3hHZm1GRVZsdzNCc1NJN3JaREFTakEtUFR5bl9yYWRValNTYXVnd1hQek5xOWpCYndfN1F0V29SdUNlQVdmd0pGaFJnLXEzaTlROVk?oc=5",
+          "source": "Yahoo Sports",
           "date": "2026-07-10",
           "injury": false
         }
@@ -446,16 +446,9 @@
           "injury": false
         },
         {
-          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNVGQ2YVA4TVFhTzFjSl96cDRtM2F0a3p1LUhRcnpuZ21xYVVKQmR4Z1VicEtzUXZIRVA4SFhCQklhUnFZVHd4UFRybnNQeWhBdFl4ZTZyN1kyQl9GVjBoblpnQ2Y3TENScUt4Y2ZfX3ozRGRnek9mUDQwWWFlc1N3ZDRuUXpzVXZxN0JrVkdB0gGTAUFVX3lxTE5zdlc1UmFLVmo4dWZyMnZJOGdxcmRPSW1IYWdCb0RySEMzNnNKUHFsaE1pMTh4eXY1RjI5QjI3cDQxTFdvOGVkdHR1SElON2JCMXJCdFZERUF5RHZVcDNHRkJ6bFhlTlU1akxnLWVQRk1XOTRJR2lhVFhTT3JVNXF1RG4wQjdSbkEzdS1GbnZHLS02TQ?oc=5",
+          "title": "King Green says Terrance McKinney UFC 329 fight feels like betrayal - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQTlliNnlINTNtSWVJeHg3bDVDWVRsVlluWFRZR3paTXZVcWVuSnp1S3pYZUM4djg1Z2ZSekxoNzI5OGw3LVU2X2ozRHQwRVBDVmpzOHRSY0dkUDJrSjZWSFNOS0hJN0FlREU3Z3poNkpaTkRyUE1XVzk0XzQzeWMyVkVMbEhIaThCdmlwcjZvUHNTRnBMSWUyN2UxaUxfbUhYRnUwUU1ibjlkelRo0gGyAUFVX3lxTE90WHFrZUVJQzJfTlJwYjdFM0g2NTFsaXQtWU5zS3Y5RllGalRuRndkVGFwb21PbFZqVXd3VXYwc2Y0S1dsbEdtOF9QdV9lZmlqYWFpRTRmZEIyOXJwajBKblZrTmJXSFRHeURJLXVLcXNOZHpINUxRckR6Z0NteGg0U0tvU2IwQWVvTHk1a3hTVF9DRm5TQmdybl9ZUFhnTkZTZ0JDeUYzeVV5LW9jcDFHamc?oc=5",
           "source": "Sherdog",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Terrance McKinney Media Day Interview | UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE5DdEdnaFlGaW1NYTBEbm4tbXdFUWtGeFViZDhWanpQTU1RLVVqQzhjdnBsZ3ZGWFdQekhXc1J0bmx6X3p1RXpr?oc=5",
-          "source": "UFC.com",
           "date": "2026-07-09",
           "injury": false
         },
@@ -467,15 +460,22 @@
           "injury": false
         },
         {
-          "title": "King Green won't let 'quick pumper' Terrance McKinney out early at UFC 329 - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxQQmJxYmIxM29Wb3RVMHJpOWtwNU02MDdodVRVazE1d0tXV0M1eDhzZ0ZKNTIxLWZpQV9VZ3pmM3g3M1JxZmZBX3J6ZWYzUnBoeG95emR2U3hlNlVDdVpFdWJhZ3hFNmFfRmI0WERoOWZtQnI5R0hXNWRRQjF5bk5KaXVUVDY1MkMwMUw4S2VGRTJHR0tLOUU5cE9OS3pXc28yUWJvc2h3Ync2ZmJHaDUzVVJ5VmdjeEVxekdCNkM4SncyQnlwRHk2cWNiNlgxNUtwTjYxX3o4Y3h3Z0xJdENLV1pYZ3NXNHlmdWIta0FB?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-09",
+          "title": "King Green vs Terrance McKinney Predictions, Picks & Odds for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxOSVNjY1MwSzFDNjUwckdBT2JVdXBMOVZBbU1QcFQtUXViM2FwLVFpeXNfMjYzR0xSWUszN3hHZm1GRVZsdzNCc1NJN3JaREFTakEtUFR5bl9yYWRValNTYXVnd1hQek5xOWpCYndfN1F0V29SdUNlQVdmd0pGaFJnLXEzaTlROVk?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-10",
           "injury": false
         },
         {
-          "title": "King Green says Terrance McKinney UFC 329 fight feels like betrayal - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQTlliNnlINTNtSWVJeHg3bDVDWVRsVlluWFRZR3paTXZVcWVuSnp1S3pYZUM4djg1Z2ZSekxoNzI5OGw3LVU2X2ozRHQwRVBDVmpzOHRSY0dkUDJrSjZWSFNOS0hJN0FlREU3Z3poNkpaTkRyUE1XVzk0XzQzeWMyVkVMbEhIaThCdmlwcjZvUHNTRnBMSWUyN2UxaUxfbUhYRnUwUU1ibjlkelRo0gGyAUFVX3lxTE90WHFrZUVJQzJfTlJwYjdFM0g2NTFsaXQtWU5zS3Y5RllGalRuRndkVGFwb21PbFZqVXd3VXYwc2Y0S1dsbEdtOF9QdV9lZmlqYWFpRTRmZEIyOXJwajBKblZrTmJXSFRHeURJLXVLcXNOZHpINUxRckR6Z0NteGg0U0tvU2IwQWVvTHk1a3hTVF9DRm5TQmdybl9ZUFhnTkZTZ0JDeUYzeVV5LW9jcDFHamc?oc=5",
+          "title": "King Green | Always Focused On The Mission - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE44Tzd3SjdtU2NCODBmODdBVldpLXRDTXlYUnU2UlhYT3VCLWtyMGtOZ3hhWWF2Z1kza2lFdEFIaFg1WTdncGpnQWJ1QTdTXzdRRzhYM2taOXNqWHVmNG9fR0M0OGxrME9EZEIyU0VDTnRsdG1u?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Preview: UFC 329 ‘McGregor vs. Holloway 2’ - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNVGQ2YVA4TVFhTzFjSl96cDRtM2F0a3p1LUhRcnpuZ21xYVVKQmR4Z1VicEtzUXZIRVA4SFhCQklhUnFZVHd4UFRybnNQeWhBdFl4ZTZyN1kyQl9GVjBoblpnQ2Y3TENScUt4Y2ZfX3ozRGRnek9mUDQwWWFlc1N3ZDRuUXpzVXZxN0JrVkdB0gGTAUFVX3lxTE5zdlc1UmFLVmo4dWZyMnZJOGdxcmRPSW1IYWdCb0RySEMzNnNKUHFsaE1pMTh4eXY1RjI5QjI3cDQxTFdvOGVkdHR1SElON2JCMXJCdFZERUF5RHZVcDNHRkJ6bFhlTlU1akxnLWVQRk1XOTRJR2lhVFhTT3JVNXF1RG4wQjdSbkEzdS1GbnZHLS02TQ?oc=5",
           "source": "Sherdog",
           "date": "2026-07-09",
           "injury": false
@@ -487,9 +487,23 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Robert Whittaker wary of Nikita Krylov's power, but says movement is key - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQLU5oTlR1NjdIRWtEc3RCMERQdkk5U09oV1V4WWk0dGRJUm5jTlFMQUZPR1FmNEpYU1FOWFFadFZIbmgzczRfcjFrTEFuVTdoUVpoN2UzZlNQRzU1NDZNWnptbUpadm9tYzB0S2Q5ZkVxa1VwRGpnY0k2aFc3OFEzbHF4anRPX2tLV0d1M1NESTBnVzFxUFMwWC12M2tlSUhLbVlYMVJRYXBzTDdCbzM1Z01nbHA4eFVfNklvNFB3UUhYTWN2Nnc?oc=5",
+          "title": "Nikita Krylov won't fanboy out against a personal favorite at UFC 329 - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxOYm5KOUlkM1g3U2F4bVNsd1F1aGxjcy1lUVZWLU1Oa1JONEl1WUNfN25nS0Q4Q09BQ3R2RnV6Mi16MGlQT1pNQk9TZmd4SzcwX19LcjBiQ0Nxal92U01ubjE1TDdYczk5QnA3SHNpZXpudkZiVHZjWFRPZDdKMUcwaG9YcnllT0l6Z3l5eFVRM3JxZi15TjZZLXdGamtsTHM1Y2RsbU5PYlYxMEtORXJfWk1QRkUwZmJfdEUyWmg4dWNIQUQ1SEZwazdGcEppdkk0MTR5SnVSdkxURWZyQVFXYg?oc=5",
           "source": "MMA Junkie",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Robert Whittaker: ‘I definitely have a few more in me now’ thanks to light heavyweight move - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQZGQ3WC1ZVjlFMlNuZUhWakVZa2I4eFdMazFJTkhYNHlsYVZTS1ZRdk4ya3Y3dG9uSXZqSHJ4SUpkNjE4N1NsQ0pGbGhSTnJGcjRxaDhnM1JzeDd2SlpkcC1RWE5FdWZ4eEYzdEpldFFSTFVwWHBDR1hRa0EycXlKdkc4ckNLMlFJUUx3U1lKS0RXeEd6ZUl0dmRVSUhXTmZZRnUxakRYSE1aSkxwbjUtYWhURlRyay1GYkgwcTJ2UzAyWlU4X2c?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-08",
+          "injury": false
+        },
+        {
+          "title": "Robert Whittaker's personal decision could make the difference at UFC 329: 'I'm enjoying it now' - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNVXRBUTRWZy1zTElzbGZUdTJ3RWtVci1SV0szNThsd1FjT1RsX0ZkUVBPUW80OGNEbE9qQ245YTdHX1Y5dmRBODdQc1dSOXZ5WTE5ZGZOUDk1YmJCUFA3QjN6Z1lxRGI1WVVaRkctRkZ1dVRLdGJxQnlVbVk3SjZTX09qX3lvMmttWHRBM2JoenJYVDY1MHFWcmlNVVNBTjdHckNZcXNibW1heG0xcGpDdDhRdVdjRTE3ZTBNd1VndlFMemhmOWc?oc=5",
+          "source": "Bloody Elbow",
           "date": "2026-07-10",
           "injury": false
         },
@@ -501,31 +515,17 @@
           "injury": false
         },
         {
-          "title": "Whittaker reveals Aussie farewell dream, special weigh-in plan for ‘kill or be killed’ test on Conor card - Fox Sports",
-          "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxOdWQtWDVQRktON095djVqbUZfS3ZiNXI3TnppOV9vUndySktETVpPeW5OSFg3STQyVk1Bc2UxNkhIdURkVmRYYWJsQVI5SG1kQVVCVTItM0t2SHJUN1ZhbTM0bHc4ZndKTHpOYjNRN2NJaXBYQkF6SUZIckJpTVRWT0Y2VUkxRy1mTkdCOWtkM2ttTDJTOWVEUWZoOGJzRlZKRjF3QUQyZVNqaVVNak1sNVB4U1hreDRnZVF4RmhpOW5rZzNZR0FsdnM5SVFadlBoR2lLTVBIWkxzOVZfVkxsVzRWLXlMUnlURnM5cm41SdIB7wFBVV95cUxOdWQtWDVQRktON095djVqbUZfS3ZiNXI3TnppOV9vUndySktETVpPeW5OSFg3STQyVk1Bc2UxNkhIdURkVmRYYWJsQVI5SG1kQVVCVTItM0t2SHJUN1ZhbTM0bHc4ZndKTHpOYjNRN2NJaXBYQkF6SUZIckJpTVRWT0Y2VUkxRy1mTkdCOWtkM2ttTDJTOWVEUWZoOGJzRlZKRjF3QUQyZVNqaVVNak1sNVB4U1hreDRnZVF4RmhpOW5rZzNZR0FsdnM5SVFadlBoR2lLTVBIWkxzOVZfVkxsVzRWLXlMUnlURnM5cm41SQ?oc=5",
-          "source": "Fox Sports",
-          "date": "2026-07-09",
+          "title": "Robert Whittaker wary of Nikita Krylov's power, but says movement is key - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQLU5oTlR1NjdIRWtEc3RCMERQdkk5U09oV1V4WWk0dGRJUm5jTlFMQUZPR1FmNEpYU1FOWFFadFZIbmgzczRfcjFrTEFuVTdoUVpoN2UzZlNQRzU1NDZNWnptbUpadm9tYzB0S2Q5ZkVxa1VwRGpnY0k2aFc3OFEzbHF4anRPX2tLV0d1M1NESTBnVzFxUFMwWC12M2tlSUhLbVlYMVJRYXBzTDdCbzM1Z01nbHA4eFVfNklvNFB3UUhYTWN2Nnc?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-10",
           "injury": false
         },
         {
-          "title": "Robert Whittaker defends move to light heavyweight ahead of UFC 329: ‘Reddit absolutely kills me’ - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNSElCUDBTUDhFcFlpcEI4Q2lVTkI1LXZIajlKT0tiUnpMM0dBSTEySkp6TnVnam56LTFCUnNaM3N5SlpqRTVEZllJTmgtNnYzSTJfU3pKN2JFYW0yZV9kRFFDdDg0WGFvV3prd0NqLTJYX3lxeE02V21RVDJveTNINlRmVnRjbmVMeU9nYTBNZ1NfRWtzZkk2dUxraWhmVlVscWpCN1B2UTlMdVhYalFibTk1bF9WYkVSSXZqYmZidTZ4ZjFHcEctbzdR?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-04",
-          "injury": false
-        },
-        {
-          "title": "Preview: UFC 329 Prelims - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5ZcTl5SlVwTjk1alZ3RTB3TWtGWUdPYzB4UjZYOXlrVXpzbHhmSHZxS002R1VqdVlnbjRsa0RtTUZab3RmX3U0V1pXZGowbjl0bEU1eWNFYXJlcUE4WUlLemNyWEZDb2tqODdyUnpOZnFiQ0tQTlFFUmJB0gF_QVVfeXFMTVVWMENiVlQ4b2NVZ3lBVTBLWjRndERUVFV4d0xKWmhYaldUbHhoRkJKc3RDemFzRC05TENqT1pYeGtONUhwM2NtZEVmS1FKajBpSVZCRm9FODUteDJiZVJqQUxBb3NSeHdITER5ZnE5NXVPQmxPbVFQRy00UXg0TQ?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Is The Betting Market Backing Robert Whittaker In His Light Heavyweight Debut At UFC 329? - LowKickMMA.com",
-          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxPbXhVQVpGeWEzR2h0eXFRYTNzVGRPZ2JkZDB6UGotQXFha1piX1BxTkk1NUpPTlowLVJya2xGMG5Hd1RvVEd1LTNSY1NnSVNLOTRKZzNEMnB5U0JSUWltZGRLVnB5RElvMWc4eENfQTlLTURDYjd5bXRhelFMOWdpVGFULUNYRlJNTWFlTktfSVV0ZkFtM1JfY0xJd0EtbDFGVlF3dnhaYVRtZG5FdDNwOEYxSUZ5QkU?oc=5",
-          "source": "LowKickMMA.com",
-          "date": "2026-06-22",
+          "title": "Robert Whittaker believes Nikita Krylov is a 'great guy to test the waters' at light heavyweight at UFC 329 - BJPenn.com",
+          "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxORlVLMzQ4dTZpRFIwSWpNbXJRbnBUX3ZYdWtEcDhTSmhVUXdIWkVlT09fdmQxQXpkRHItcktnVlRsc1NxRUp3NU1PVnZ0ZURyb0dzTkpxVmtLN0EwdmZKZVJiWUFLemVUY3Q3NG9lTVJuVmpqczdFUHEwNGdYdkZrUDVhMWtKWFFsTnhqa0x5UF9GVDZYN25kOE1EZDdBdlk2NGtzX05ITkQySDNMZElySndyOWhLTlo5ZE5wa3h1R0JEWlNuUlhsT2htNHlwRVY1ZnlRUF9qMjhLTzlNOHFDbW9lcy0tWEc5SFRJ?oc=5",
+          "source": "BJPenn.com",
+          "date": "2026-07-07",
           "injury": false
         }
       ]
@@ -542,31 +542,31 @@
           "injury": false
         },
         {
-          "title": "Preview: UFC 329 Prelims - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5ZcTl5SlVwTjk1alZ3RTB3TWtGWUdPYzB4UjZYOXlrVXpzbHhmSHZxS002R1VqdVlnbjRsa0RtTUZab3RmX3U0V1pXZGowbjl0bEU1eWNFYXJlcUE4WUlLemNyWEZDb2tqODdyUnpOZnFiQ0tQTlFFUmJB0gF_QVVfeXFMTVVWMENiVlQ4b2NVZ3lBVTBLWjRndERUVFV4d0xKWmhYaldUbHhoRkJKc3RDemFzRC05TENqT1pYeGtONUhwM2NtZEVmS1FKajBpSVZCRm9FODUteDJiZVJqQUxBb3NSeHdITER5ZnE5NXVPQmxPbVFQRy00UXg0TQ?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
+          "title": "Robert Whittaker | Happy Again - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNY2RzZ19HUUZmRlpMcEd3S2d6WUJOYjd4S3FNdEVlQU9pV1hnRmF2UXd0RmdFX1VDSjJ6VHE2UlV1THNQVkJJQ1kwWUZFY3Y0T28xbjM0c2t2aUNvYjhxSjZSdEVlNE9sWmxyNVQ1NWdqVER2MzRiemhkZ1dZV1lfYTlaY3dvdw?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-09",
           "injury": false
         },
         {
-          "title": "Robert Whittaker wary of Nikita Krylov's power, but says movement is key - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxQLU5oTlR1NjdIRWtEc3RCMERQdkk5U09oV1V4WWk0dGRJUm5jTlFMQUZPR1FmNEpYU1FOWFFadFZIbmgzczRfcjFrTEFuVTdoUVpoN2UzZlNQRzU1NDZNWnptbUpadm9tYzB0S2Q5ZkVxa1VwRGpnY0k2aFc3OFEzbHF4anRPX2tLV0d1M1NESTBnVzFxUFMwWC12M2tlSUhLbVlYMVJRYXBzTDdCbzM1Z01nbHA4eFVfNklvNFB3UUhYTWN2Nnc?oc=5",
-          "source": "MMA Junkie",
+          "title": "Robert Whittaker Previews Fight vs Nikita Krylov at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNQllGSjUyOE5NQUtKYTlqOVEtVzJiQV9Bd2tSZWJuVFpkQUwzR0V1NmdSZVJMSTI5Zi1pOEdJUUlMVVNLc1A0RExXdW0tZWM5YnVNTU1fTXJhQVdpck1WQnRFWGl6bjhOajZ3TkxraVFFTWtHclVxLWh3dGZEUlI3QXFXVGs1T2N1NWRWSm8wczVrUnpjMEhVZksxQ2FhZkRwZlh5N3psUWZuRHFP?oc=5",
+          "source": "CBS Sports",
           "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Robert Whittaker vs. Nikita Krylov prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNTzFoVTR2SWdQRE9EcU9lcHQwcTJ1amJZQVBBZ3BTMzY0Rzd0M05RYWoweDZGejJ6NV9VVnhWVWtfLWNQc28zbXg4ZUo1bmVUajdlMDM4SFk5eUxmeWFLV0thcGdPR1lZOGlEYVliWDAtRDdhN0VrbXJxZEdmSnpwV1R6d3c4MnFVSWc?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
           "injury": false
         },
         {
           "title": "Prelim Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5VdFl2Qll6YlQtZWZBU2l4RUR5Q00zbW9VcVFLbmZ2MmNsVFl4NU9DQmV4eHVLcUdsa0lkeWRfZ1IzT3phYVRXTl95dTZaS1EtckNyTjdhSjJFUEs4cTNUbWlONzk0MjVWTk11YkJsRlYybGdTdTEwMTVR?oc=5",
           "source": "UFC.com",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Robert Whittaker defends move to light heavyweight ahead of UFC 329: ‘Reddit absolutely kills me’ - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNSElCUDBTUDhFcFlpcEI4Q2lVTkI1LXZIajlKT0tiUnpMM0dBSTEySkp6TnVnam56LTFCUnNaM3N5SlpqRTVEZllJTmgtNnYzSTJfU3pKN2JFYW0yZV9kRFFDdDg0WGFvV3prd0NqLTJYX3lxeE02V21RVDJveTNINlRmVnRjbmVMeU9nYTBNZ1NfRWtzZkk2dUxraWhmVlVscWpCN1B2UTlMdVhYalFibTk1bF9WYkVSSXZqYmZidTZ4ZjFHcEctbzdR?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-04",
+          "date": "2026-07-11",
           "injury": false
         },
         {
@@ -583,17 +583,10 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Gable Steveson reacts to historic UFC 329 odds - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxORjNkTzlJVG16WGNXaUlIUWotcVNsM056bFBaU2RkMktaS0g2Q3gwOTM4RzFQcmRnNHd5MkVGbkFuLWVvOE1IcTYzS3NsZ3pibkFoRUhnZ3BsTVFVenRCaExKcHgzSnFMUzB1Y2x4S1V0dDNJZ2NFcG10S09feDQ5VjFLZzhBdXpiOEo5amxWbVhsSnFleTlZUndrLTVUNkM2TWNiYmQyRW9UTUw4OEhEMGhicWFEM1ozR3JzZFZTNk8xSkpjZmc?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "UFC 329 fight card: Paddy Pimblett, Gable Steveson among top undercard bouts to watch in Las Vegas - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPUEFGa3BDeUNLbzBRUl9hU2FyaW1FUEZEVXhNbTk3cmh5cmlNcEJDdzVMWXMwTHFvNVhiWUVSWHNXb2ROR3l3c0l0VWRBRDZFTFl0ZDl0MWRmWFhYR3MtRGd1M2YtMjBoTlRpOThXY3R6MnpWcGdfc2FSR250QzlXWVhWTlhpYVlabzg2aXdfZzUzLWxPcDZNUTNVbDFsNDFnVWc?oc=5",
-          "source": "CBS Sports",
-          "date": "2026-07-07",
+          "title": "Gable Steveson expresses interest in training with Daniel Cormier despite loyalty to Jon Jones: \"I would love that\" - BJPenn.com",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxPMHVBQ2c0U1RRaE9Pd2puYTA2LUlYNWpXUjlEQnhXQTBCLWxHdVlhdmpuLVF4WDY0S1ZCcnVIeDl6N3EzYnpRMlQyRXhwTW9wdjJrY1R5WDNkdm9USEJzYWl4cUVvUFVJSzZscDNhQW9Jdlh2R0NZdlpYSXJxcFNaYnRxc19jVzl0U3F6a29FaVBGQ3o3QktEVWFfVVh4MDdtUjloZFdZcjRSM2tlbXpyUngyYWRURjdEdTFqdWJmYXoyX2lLbVpzWHZ3NHZrclZNVktOSnQwUUlEdGxZc25SUFhEcw?oc=5",
+          "source": "BJPenn.com",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -618,10 +611,17 @@
           "injury": false
         },
         {
-          "title": "Gable Steveson embracing status as massive favorite early in career | UFC 329 - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxOejlXTDNnVHROZWo0cnNxcmFtZFhQVFQ4OWEzSjdaMGZlVFduNnE5WElnLWREQkNkYndDRWdMajRFc2JYU0wyQldxRmdUaW54WFhLMFJrdzJjaERSVFpQN21BclUySkZEQ2lrRnBldmg2RHRTVUttOVVBdVpveW9SOExiUWtBejh2bUNqWU9uSmNsQS03M2FHM1NLMVhJMjhuUml2NXVPQ2s3VDJpNmdvN1ZjbEpUSDc3Wl9NZjdQU3Jvbm9vS2hVMDZDOC1KZEZNWE02ZnVrZUlxUQ?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-09",
+          "title": "Gable Steveson says he can be the best at any sport before UFC debut - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxQZzB0c19QMzhZNFNRMjR0d0c0OXVSajlLazdUbE80UFF2QkpZY1pIMGMyWjVLRjhhM21NTUV3YWZUbUpaT21fRWZmSGpWdlloaFpTeERBdWVOWlZfRWlOXy1OaTMxZldTQUVpTWR4TUc5NllCWjBtNGx2eWNYWXdwcEJlSzJmYWFzRElncU4zdXFnYUxQWW0yVkNBTnhRTlNYZHRVQ196VmoxMlRXdVHSAbMBQVVfeXFMUDZDNE5VX2N5NklnZ2NFN00xUTBVU1dJcHljTTR6dF8tY0xxblh0MEgyZmR2Q24xX1lQMFVMaHZnOVJEdDZkaWZ5RUxUYi1wN3U4SG1oTnVvbGFRcjZnNTVHb1hoTVBFaVMwN1oyRGtmS0FuX1hXNVUzUUFNclVaTkMzSFl5aEFTVFJUUUZlN3dRcURVUk8wRk44elpDRHVOaERZMjVYaE4wMHJrTFVhNjhnbmM?oc=5",
+          "source": "Sherdog",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Gable Steveson Has Arrived - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFA4SFdFOFY3ajE4eFQxSWtlOTBhQzlMd29JTG5ETDlUZ014d0pmVFZOWEM0NWg5b1dieUIyaGVEVndrMjA4ek51OVFsR1VvOEV2Q0RleDB0em5uazJtaGNCcmNOLTlYZHhFUFE?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
           "injury": false
         }
       ]
@@ -635,6 +635,20 @@
           "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxORjNkTzlJVG16WGNXaUlIUWotcVNsM056bFBaU2RkMktaS0g2Q3gwOTM4RzFQcmRnNHd5MkVGbkFuLWVvOE1IcTYzS3NsZ3pibkFoRUhnZ3BsTVFVenRCaExKcHgzSnFMUzB1Y2x4S1V0dDNJZ2NFcG10S09feDQ5VjFLZzhBdXpiOEo5amxWbVhsSnFleTlZUndrLTVUNkM2TWNiYmQyRW9UTUw4OEhEMGhicWFEM1ozR3JzZFZTNk8xSkpjZmc?oc=5",
           "source": "MMA Junkie",
           "date": "2026-07-09",
+          "injury": false
+        },
+        {
+          "title": "MMA saved ex-police officer Elisha Ellison's life before he tries to spoil Gable Steveson's UFC 329 debut - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQY3NMenNhZEZPN2I2ckJkLVF3YmZlREw1LWduVWo0NTVtUjViVkgtOWZndU9yWkF4cnR6NHNja1VGWEZDbVUxQ1Uwd3J2YjdxTDM0QjlIWmkzSkFPcER4VlM5OE8xSl94bkV6YlRJRm5MOFhZQzZPLVc0aWczV2JKcENmOGJvdmZKbG1tbkJYMDFtSDZzZE90Yk5kelNlZDJtNUZreThDcHNtWU5nMWZOUTN6VTFDbjF1cjdqalJxSUpObEF5eHZ3S0ItNGhweHdjQjhvY1N3?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-07",
+          "injury": false
+        },
+        {
+          "title": "Biggest betting favorite in UFC history? Prized Octagon newcomer, Gable Stevenson, just broke the record - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNRmNieXB3NlJWMHVQaTZEVldaMkhqSDU5UWZEWi1zMTJfTGFnNHZ0RFlDOHEteDJJbE5QazlpR01qdFh6Z05aRzN3Y3JVQUVxa3JlWVFVWUd6T01xQ1JwNkZ2M2t3Y1BZSDl1YlJrZ0Z6X2NVVjNtd25aUFFjLWg4d2dIYkdqNUlFRHdpMkF1UVBxOUJSNzd1X1A3RHV1bElVX1hWMVl0YmZUWVVncW5CTDliWlJjcW1Cd3RhVDF3b1N2SGJrdGRCYUQ1MUQwMlJHUkpBMTRFdk1rQQ?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-07",
           "injury": false
         },
         {
@@ -665,16 +679,23 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Cody Garbrandt wants UFC to do more to set up fighters for retirement - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNbWd1dkZxSDZSblB4NHMtcDNBcVdNMzVhcGJMVlcydWwxdEtTRmJCcDZrMS02bWh3Y1NRSFZfcXFoTWw4eWFPNXpHQXQ1cXZ3MWNLM081bE1JRkZMYkFudmZxWGp2YXNhNklsMXpfZ1JSeGRkQWE4ZnNOT1Ryal9zc2xfS2c5Q05TeGNiSWp2Q1lvcFk0d1hKOWYwdWZvRGlTb19jSXlPWXhkcC1jdVhzanN0ODNvQQ?oc=5",
-          "source": "MMA Junkie",
+          "title": "LIVE! UFC 329 Early Weigh Ins Video! - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPYTJkb2pvckZadnp1ZXNWZWlEeFlYLXFiajQ4cVF0d3JlLUNNU2I0R1lrVGFGMVN4WnduWFUxLUdQMHhabXd6aUtEc1JyTGxWcUVFUXJpQTkwU01pa2xzS2tlWWFBVHBBT3hYOU0tVXpJZ0NPelNrcE10azdoN1ZpdzBLeWtHbUZBYm95V3VGYlBWUlZ3dTlETDQzbjdFRmYxZ05ZR0hPSjF6b09OOXlKX2pmVlo2OFdkMVJ4TGlsbTV1RDBUSFN1cUcwNFFOblZk?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Preview: UFC 329 Prelims - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9LaHI1enZhSW1qVDhPbEZ2VlNCd0tYUEtINy0tdmdiMkFjd3JmeTdtYk5hNUdwZlRWNTRTd3hpY0ZCMUoyekZ0V2dlai16ZW80OFNlZEQzbGc3OWdidC1fRm9BNVZTMnMxZllzendCZVA1R01OT3FRR0Fn0gF_QVVfeXFMUEtmc203T1NJMHZDSHExQWQ0YkZNNnkyZjlrcEtTMHQ4WGJ0SGRnMnBfVmJ0eXhVNERuaVlFZ2Ryc1JuaU9lbDdHQVpBZFhTTHRvVEN0Wmc1NllUa2Q5V3hDYUpURFZLbWRXck8wQnhwcGxlZ1RpWFhSZEJoS2cxYw?oc=5",
+          "source": "Sherdog",
           "date": "2026-07-08",
           "injury": false
         },
         {
-          "title": "UFC 329 star calls for better fighter care from the promotion after Dustin Poirier’s recent issues - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQNG5VRDhwcWctOC1GYktVc3NVM2p6Nmw5QWw1c3d0NU1BU00taU1FOVVFSk1sMEtaSUpYVHdpYU1uekRtZUs2eW9sRU1RR1p1QW1YZGFSaUZNV0RrREN4eFRsZWNTakFMUHRSSUhsSXpqeXJrX2tLMEp6ZFUzeHFURzFMbG9iUE5LOENXbmJfMUczZFY5cDFaWWYxbEtQT01kZ25mRWowaDFXbGtGc1F5VGF5OEVIVDRWU1JYWENRTFJhMTRiLTlSRFZhMGN0UQ?oc=5",
-          "source": "Bloody Elbow",
+          "title": "UFC 329 Embedded | Episode 3 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE81MFMzeTRCQlFCSXJfZUctRjEyZzBsRDNrLXB4ZHZNOEprQUtXZzZ4U1J2MHJxNWdtSEsyTmpCeWE3UFc2OWFB?oc=5",
+          "source": "UFC.com",
           "date": "2026-07-08",
           "injury": false
         },
@@ -686,13 +707,6 @@
           "injury": false
         },
         {
-          "title": "Midnight Mania! Could UFC Help More With ‘Scary’ Life After Fighting? - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxONXFIZlJFNWhvNEJ5OEs0d2I5UmlMVGRmWGpIZkg4QlVRTGZBanlOZE1IMkFYaTlyOV9iVjZXMmwyQVlReG5oSG9fZUtjeFdQSi1KWDBnNDlOSF9WZG5oT2dUNERkNmRvdkJZQTc2ajAtV0ZuQ01yc0JxSC1faXIwTkRHUUN2Nm5NY0pnT3BTRmdGdll2RjVxR3VaYjRSRkN6TTJmU1ItNERHRVJ4UGRmLVFGbkJaOE1DUGFqSDZ3?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
           "title": "UFC 329: Cody Garbrandt lobbies for more fighter support from UFC - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQcHA5X2R0aXdUanlVWE1IQXlhSkt5Y1dTdE45TXJTXy1vRlBNVV9JU3ZKTkIzREtCcFNNcS1mSXBNMlhpWFNkWW5FVWprMnB6M0prd0hIUFJFOHRuN0pQNTM0LWZRMGRBNWRwX2Q4ZGh2WW1tQmxRLVZPeE9KNDF1MDRJY3Uzb05Jd1lhSW96VTVDUGtiaWxsSmlGQjJ5TG5ISFU4alJPdUZLR2hqTFRPMUlfRDB2M0hZOEthUlFOV2ZlR3lhQ0M3a2lzY3kzZ25xZE9Z?oc=5",
           "source": "MMA Junkie",
@@ -700,9 +714,9 @@
           "injury": false
         },
         {
-          "title": "Preview: UFC 329 Prelims - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE9LaHI1enZhSW1qVDhPbEZ2VlNCd0tYUEtINy0tdmdiMkFjd3JmeTdtYk5hNUdwZlRWNTRTd3hpY0ZCMUoyekZ0V2dlai16ZW80OFNlZEQzbGc3OWdidC1fRm9BNVZTMnMxZllzendCZVA1R01OT3FRR0Fn0gF_QVVfeXFMUEtmc203T1NJMHZDSHExQWQ0YkZNNnkyZjlrcEtTMHQ4WGJ0SGRnMnBfVmJ0eXhVNERuaVlFZ2Ryc1JuaU9lbDdHQVpBZFhTTHRvVEN0Wmc1NllUa2Q5V3hDYUpURFZLbWRXck8wQnhwcGxlZ1RpWFhSZEJoS2cxYw?oc=5",
-          "source": "Sherdog",
+          "title": "UFC 329 star calls for better fighter care from the promotion after Dustin Poirier’s recent issues - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQNG5VRDhwcWctOC1GYktVc3NVM2p6Nmw5QWw1c3d0NU1BU00taU1FOVVFSk1sMEtaSUpYVHdpYU1uekRtZUs2eW9sRU1RR1p1QW1YZGFSaUZNV0RrREN4eFRsZWNTakFMUHRSSUhsSXpqeXJrX2tLMEp6ZFUzeHFURzFMbG9iUE5LOENXbmJfMUczZFY5cDFaWWYxbEtQT01kZ25mRWowaDFXbGtGc1F5VGF5OEVIVDRWU1JYWENRTFJhMTRiLTlSRFZhMGN0UQ?oc=5",
+          "source": "Bloody Elbow",
           "date": "2026-07-08",
           "injury": false
         }
@@ -732,13 +746,6 @@
           "source": "MMA Junkie",
           "date": "2026-07-04",
           "injury": false
-        },
-        {
-          "title": "Adrian Yanez expecting a 'war' against Cody Garbrandt at UFC 329: 'Two heavy-handed guys' - BJPenn.com",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPbG01enVTMnhVZlV2ZXA4MlplZFNvMldUSFpJUlhtaTdQcGlhUlNiZ2R6cWNrLUIzMWRpZ2JiVXBkQzFKMnJGZ1l0NnI0ZDBtcXBBOHFNT0VBbnlPSW5ndDNmOUhubk4ya1Q5aHVzVERQRVprNkV2NjFoUUN0MVAxaEZtWHFJWDFVa19FZUtKVWpJanJUS0lqc085X25MWC1nSTFMRDRVVFdfNGtoNU1RaGNMX0pLb3RNdzNPenhfaEV0aUV1dXQ3ZndB?oc=5",
-          "source": "BJPenn.com",
-          "date": "2026-07-09",
-          "injury": false
         }
       ]
     },
@@ -747,10 +754,24 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "Luke Riley | The Liverpool Standard - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFB2RU1ITjR0VFA5ZEFwQ1NhQVFVa2VITE4xQ3AwWngxZFVDTVpyU2UxR2VvU21CYUhmOEthd3dtRjl3eDZIZndPWWtUR2lxeUREang1bk1ZNldkSFRNYmwya0JhNmNkTk1lRzBFSno2NEw0eEk?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Luke Riley vs. Kai Kamaka III prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBHMkh5WXhEQ1FFMnVwUDlhano2WnFUX09ETU9GazdSUm9wZW5DV1VBd0U4SnQ1Z0d3RExMTEFzV0hTZnI4NlNmUXV3N0pURkNrWHZiMjNZdTVKa3Z3Qmc5XzlNSk1RbFRFa0FXa3ZhRXJlM3d4c252ZzBLNTZ1Zw?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
           "title": "Prelim Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5VdFl2Qll6YlQtZWZBU2l4RUR5Q00zbW9VcVFLbmZ2MmNsVFl4NU9DQmV4eHVLcUdsa0lkeWRfZ1IzT3phYVRXTl95dTZaS1EtckNyTjdhSjJFUEs4cTNUbWlONzk0MjVWTk11YkJsRlYybGdTdTEwMTVR?oc=5",
           "source": "UFC.com",
-          "date": "2026-07-10",
+          "date": "2026-07-11",
           "injury": false
         },
         {
@@ -766,6 +787,13 @@
           "source": "UFC.com",
           "date": "2026-07-05",
           "injury": false
+        },
+        {
+          "title": "Conor McGregor vs Max Holloway undercard in full: Start times and running order before UFC 329 main event - talkSPORT",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPQXRHT1d3UkhFd0huNmN3SEo5cF9VTEluX2Q0dk9BODQ2Rnhkbm1vZmNQeXhHSVM2XzFpeXNpQmZSSHhmbEw1b1N6QnpsWnRmU3FTdUJ4dUdvRDlRYlRZSXZZdWcxajVjU2JITHViejdkZm4ySHk3YmFHUXVpUl9abFVVc1JsLW55RVVxUXE2enp3dVphRTN0QmluSkJDWk93UkVneg?oc=5",
+          "source": "talkSPORT",
+          "date": "2026-07-09",
+          "injury": false
         }
       ]
     },
@@ -773,6 +801,13 @@
       "name": "Kai Kamaka III",
       "hasInjuryNews": false,
       "items": [
+        {
+          "title": "Luke Riley vs. Kai Kamaka III prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBHMkh5WXhEQ1FFMnVwUDlhano2WnFUX09ETU9GazdSUm9wZW5DV1VBd0U4SnQ1Z0d3RExMTEFzV0hTZnI4NlNmUXV3N0pURkNrWHZiMjNZdTVKa3Z3Qmc5XzlNSk1RbFRFa0FXa3ZhRXJlM3d4c252ZzBLNTZ1Zw?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
         {
           "title": "Preview: UFC 329 Prelims - Riley vs. Kamaka III - Sherdog",
           "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE43dHdnODQ4Y2FTNWNNZDFtMGVZZTREenQ0ZDNtN0d1SXhMSG40LVdHaGVldjQxMnNrR3k0OGFhdEZYdGxKcXJvQ0w3SmJOQlBKNF90aEpFSjFKZ0VIVy1LRlVTbkdvdld4UjVTUDIzVjdqMTVqQUk2Sm5R?oc=5",
@@ -786,6 +821,20 @@
       "name": "Tracy Cortez",
       "hasInjuryNews": false,
       "items": [
+        {
+          "title": "UFC 329 fighter Tracy Cortez already prepared for opponent's signature 'Joker' face-off antics - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNMzdCQ24zV0ZVWmhjMmxwNHl3eWRmbTJObDItc21MRzkxSS0xT24wTVBDZGVSbHFzMUl4blF2dkw2eVFWMEhFb1NJaWxfdHg2ZG5ZbmIwSUZITGdva0o3cVVIc1A1eHJBcjVpVGNCS3Vod21Cbkp0eWxxcklZTUk5MXpqdWRoc3h6Vk4tWEttZ2VrVXF2RWNENFdPUklzOGhMX0ZVMlA3QWlZYVhRbHNKbmRRSm9jcHBaY2lwVTJ6blFLNnFRR2c?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Tracy Cortez Previews Fight vs Wang Cong at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQN254cXNJYnpVSnFpVElDeGpVTEpSV0VXa2lxZll3SktqWnA1R251elRFMXVxOURhVTF4bXotaWtRRl9vSmY4UDc4Qy1UX3VPcFNCejJJajBjVmhDREpnakhPdkJob2hEcUNreTJGRGs3VS1tdkpGQnRqV3JGV2RremoyVmlXalpqYVpxN1NjZVJQdjQ2SWVieTRwdHgzQThkZnc?oc=5",
+          "source": "CBS Sports",
+          "date": "2026-07-10",
+          "injury": false
+        },
         {
           "title": "UFC Unfiltered | Cory Sandhagen, Tracy Cortez, Final UFC 329 Picks - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTFBmM1FjSTZUUDFCeFBSVVlDUjlDZENBRnpyMnZtWWJBQ1daR0paS2dGOVlSeG1fS05UT0hXeGM5MkdueEM0LWVj?oc=5",
@@ -813,20 +862,6 @@
           "source": "MMA Junkie",
           "date": "2026-07-05",
           "injury": false
-        },
-        {
-          "title": "Tracy Cortez has created separation between 'entitled' fans and her life ahead of UFC 329 return - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPQWVQb3JCb0FjbVB5dGhQUkpnalVlYTFzTnhsM0c4QzZZeFkwR21BTjRtc2VaS2UxczZDLXBQOWdHMWZQY083X0VfUlNNMFRuc3Z5R1k0SG9DWXNBZlZpSWZsWmlXODIyQzYzdTNvbUtKMWd4Sk9hS0dGdE12S1Y3UFpUQkdGVTM2Q2gxX3JkS2xYQWFUTVVyNkZVTS1lZ3lvUElzYWhLVnMyVnNRdFUwWUV4eG5VMzVmb1VXeWtIY0U1RjBPeTRxN3FB?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Tracy Cortez Wants To Make Her Mark - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE4wNlNkVGNPSy01R29zRURSOEd1VmM0Zks2ZEhqZnk3c3Bna2txdFNvOVplc2tyaU5CVlJCSl92bnVvLTV6UjdMeEp1aHR5TVhOeUhYLTJlaFlRTjd0MWIwd0trcUJtZTBPb3g5NHpB?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-09",
-          "injury": false
         }
       ]
     },
@@ -834,6 +869,20 @@
       "name": "Wang Cong",
       "hasInjuryNews": false,
       "items": [
+        {
+          "title": "Tracy Cortez Previews Fight vs Wang Cong at UFC 329 | HQ UFC Stream of UFC - CBS Sports",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQN254cXNJYnpVSnFpVElDeGpVTEpSV0VXa2lxZll3SktqWnA1R251elRFMXVxOURhVTF4bXotaWtRRl9vSmY4UDc4Qy1UX3VPcFNCejJJajBjVmhDREpnakhPdkJob2hEcUNreTJGRGs3VS1tdkpGQnRqV3JGV2RremoyVmlXalpqYVpxN1NjZVJQdjQ2SWVieTRwdHgzQThkZnc?oc=5",
+          "source": "CBS Sports",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "UFC 329 fighter Tracy Cortez already prepared for opponent's signature 'Joker' face-off antics - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNMzdCQ24zV0ZVWmhjMmxwNHl3eWRmbTJObDItc21MRzkxSS0xT24wTVBDZGVSbHFzMUl4blF2dkw2eVFWMEhFb1NJaWxfdHg2ZG5ZbmIwSUZITGdva0o3cVVIc1A1eHJBcjVpVGNCS3Vod21Cbkp0eWxxcklZTUk5MXpqdWRoc3h6Vk4tWEttZ2VrVXF2RWNENFdPUklzOGhMX0ZVMlA3QWlZYVhRbHNKbmRRSm9jcHBaY2lwVTJ6blFLNnFRR2c?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-10",
+          "injury": false
+        },
         {
           "title": "Tracy Cortez looking to make statement at UFC 329 - MMAWeekly.com",
           "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPOFU3YVlIT21KbkIySUlKZjM5WFlLTHlPczFmVnp4bXhPX1lweXZIUkpKRjdIaUg5UjhiUGtlTTFZUVp3M1hoMTZOYnotWXU0NmxSM1FvMDBLS2Q4MTZiRUx6TFJyR0FaeEJndU1lX3phX3JSYUtVYXVWaU0xWkUzVjJHYVRrbUk?oc=5",
@@ -869,6 +918,13 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "Damian Pinas vs. Cesar Almeida prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNWWZKa09lR2N2MXU3SDU3RFlmbk1wTjF5ZUxNa2lWNFBJY2pHcWh3eTJONUdvckVFaGRwQjVzMHgtN3J6a2NSc0RueFFrSTQ2Z29IemFpbGVGTjA2OUxoOVZGRmoyRWRKbkxPMkdfMTNHMFFJOXRJTVEzUl9pbXVLcnJiMDU?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
           "title": "Pic: Wendy’s drops first-ever fighter combo meal ahead of UFC 329 (and it’s not Conor McGregor) - MMA Mania",
           "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxOcUR0VmJxLTREZ2RTVk00bkdwdG45b3Zwc0d6S294QXViR1MwdUtYbWFGaHNFc3pDdmk2b1A4eEVicXRONUg4b2tCZ3BFa1QtREJOMzYtcFFhekF4Q0FtYTlVM0dqczgyY2dMNzhUM0RaT1J0Nmd2TGlwRVpoWTFxUXpIMFl5ZmNpWXpqQW93TTM2elBoc3Jmb1VsSFVXalp6UXMyTnhuLXljNXQ2WEZvc251ak9sMm4zM3AxYlpsdWNNTFYyX3NzeWRTdzhiQ1U?oc=5",
           "source": "MMA Mania",
@@ -895,6 +951,13 @@
       "name": "Cesar Almeida",
       "hasInjuryNews": false,
       "items": [
+        {
+          "title": "Damian Pinas vs. Cesar Almeida prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNWWZKa09lR2N2MXU3SDU3RFlmbk1wTjF5ZUxNa2lWNFBJY2pHcWh3eTJONUdvckVFaGRwQjVzMHgtN3J6a2NSc0RueFFrSTQ2Z29IemFpbGVGTjA2OUxoOVZGRmoyRWRKbkxPMkdfMTNHMFFJOXRJTVEzUl9pbXVLcnJiMDU?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
         {
           "title": "Cesar Almeida - CBS Sports",
           "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE5yM19HYWV5YkVEWVcyTDJwbHBGUlNkeUVvM0tNejNFRmNHQTN5Q1VMckYyTGxEeUdCXzhvbmM5VWRCNmRnekQ3UElHcTNiNEFlM2k5ODFzeEd2dHJGcTJzUFU4VnRuM01lSVVyVmV3?oc=5",
@@ -944,10 +1007,10 @@
           "injury": true
         },
         {
-          "title": "Farid Basharat reveals he’s competing at UFC 329 on final fight of his contract: ‘It’s a gamble’ - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNa3BxQWJxR1IwOEs5bGNuakhIbG9PZDc3cE53SXF3ZThpMXE0anVoZ21IMUpPc0xndzB0bHFQN05Ca1BTcHpQbnZaYm1qY0taMWpKZHR6emQxM2hMSUpLcmNMY3Nuc2lDdEMtQzVleGtxdlRuR2F6N1RoTzh3aWdrUkczRzl5cXFsek5ydkMwQTJzMjluVGZ6bHJWNDBXOXduc1RpeDdNR2oxQ1hHNUhNLUZHMkNEWXVmbXBJTWRmTV8yLTF2NEVvNnVn?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-04",
+          "title": "Updates To UFC 329: McGregor vs Holloway 2 - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE04V0RHMTJyWHh4UlRGMHFrdTF1ZFlEdTVKSGxkdHkwQ1BqdFpfUFFjMlBDU1dpaFJXdFBrR2hPNzc4c2xwcXFucHh2X3Z3WkVfLTgyS08yNEVRd1VBaGZfb2hDWENOeTZENFg0RldJVjg?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-06",
           "injury": false
         }
       ]
@@ -967,7 +1030,7 @@
           "title": "John Garza - CBS Sports",
           "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBXQjFNUlBiX1JrNFFWay12NEE0cWdycDQtQmN4NVphZGtTaGJ2dk9DVjZkZFRINW1NRzg4VEhJb2lMZTBBdl96UEU1bTJ2a2lzcHdIazZGMU5tbVp1VGVmeWdaVS1aVVc3OHc?oc=5",
           "source": "CBS Sports",
-          "date": "2026-07-09",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -1005,6 +1068,13 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "Zach Reese vs. Ryan Gandra prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1ZWHhVNS1UbXlUMTRpVVpPWEh3Tm9sTnEtZTRBeW5xam1mbndaaVRvVmFsLUU5RWZMaVRhVUxPckNpV2taTjV0MjN6M0ZBQmVRbVo4T0tLcjN0eXBPRFdqUGtZalJkSXN2eXNYQ0FQcFZRM2NLZXdwbk1MbnJUd0E?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
           "title": "Preview: UFC 329 Prelims - Sherdog",
           "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE0wcHh6T0V6a0ZCUWJSMFBjMjF3aFdVT2xwdzFKZ0ZGeGFjSDdvdDZWNnVZMFhZc3pxUzBRak94M0VNODVsbzdLNFNfVkFDa3A5YjlVdGV0Z1pWZ3o2SGwyTXZTWFZFclBqaWRsS2dfa1F6VFZQN1d4TldR0gF_QVVfeXFMUGRYZlVMcW1IMVFjc0lEVWp5VzFLTnlHeUxtdmItWGhVbndnaDFubEhmSDhNYndLelBBRDBVT3ZFS182WmIxMUVvYWhTMUNjT0hvVkU5anpPSUpvT3lxaU42Q3Q0R1F3dWpUVWtDTjdWR1NpdzRzWGpOM0p3Mk1pUQ?oc=5",
           "source": "Sherdog",
@@ -1013,10 +1083,30 @@
         }
       ]
     },
+    "zach reese": {
+      "name": "Zach Reese",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "Zach Reese vs. Ryan Gandra prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1ZWHhVNS1UbXlUMTRpVVpPWEh3Tm9sTnEtZTRBeW5xam1mbndaaVRvVmFsLUU5RWZMaVRhVUxPckNpV2taTjV0MjN6M0ZBQmVRbVo4T0tLcjN0eXBPRFdqUGtZalJkSXN2eXNYQ0FQcFZRM2NLZXdwbk1MbnJUd0E?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        }
+      ]
+    },
     "alessandro costa": {
       "name": "Alessandro Costa",
       "hasInjuryNews": true,
       "items": [
+        {
+          "title": "Alessandro Costa vs. Cody Durden prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQdElLdl9ndWs5d3NJSjJnMmZWTDV5T2RzUlJVQV9oV2MzRXZvQ1BQbzhDR2ZudlVOcXZMQ1U2dHJ2NHlQWllwTkFVM0pFLU5HU2lrYUY1RS1NV1pYZnNRZEljMXV2LVdUVVlLSTEyRWhOT0JKTDVvNkNFVWV6VDFPSE8tU1huaVk?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
+        },
         {
           "title": "Alessandro Costa unsure of new UFC rankings: 'It's very confusing' - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNMm5SUGZaalJ4ZjZucF93SG1CYWVVYjd4WmhubUliQmJWRDhVN2plVGN6VlFlZUdObC1nYXZlVXZ0QkdpNE1tbDhBV09hWUFuU0VrQ1I5TG1FLTFBQ0ktZk9jeEVTeXFVdFMxYTdXcE1iSU9EQWlja1hDamt0dnJFdVdZdmVqUUpUa3dXenpNSTRsb1c0bkxwd1hVQmo0OXlNM0c1ZkRQRmw2WS1Ddzh0X0ZFUDVEY2drc3RmdXc4V05fcDY0NXFyWThZVU9NS2Ez?oc=5",
@@ -1041,15 +1131,15 @@
           "title": "Prelim Results | UFC 329: McGregor vs Holloway 2 - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5VdFl2Qll6YlQtZWZBU2l4RUR5Q00zbW9VcVFLbmZ2MmNsVFl4NU9DQmV4eHVLcUdsa0lkeWRfZ1IzT3phYVRXTl95dTZaS1EtckNyTjdhSjJFUEs4cTNUbWlONzk0MjVWTk11YkJsRlYybGdTdTEwMTVR?oc=5",
           "source": "UFC.com",
-          "date": "2026-07-10",
+          "date": "2026-07-11",
           "injury": false
         },
         {
-          "title": "Cody Durden gets new UFC 329 opponent - Yahoo Sports Canada",
-          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1oOTlhNm52eU8yN05iQ2pvckItZEVHcjhGRzJiTmFuWlBidnByMlBfS0ZOYzBSbFBpc25USlhIYmxabm50WWUwSC1qamd4TDhuUS1HcUZ5MkNERll6cVJHQ3VsTG1QYjFIaFhpYnQzZTAyVG5GR1BYRGIybjc?oc=5",
-          "source": "Yahoo Sports Canada",
-          "date": "2026-07-01",
-          "injury": true
+          "title": "Alessandro Costa vs. Cody Durden prediction, odds, pick for UFC 329 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQdElLdl9ndWs5d3NJSjJnMmZWTDV5T2RzUlJVQV9oV2MzRXZvQ1BQbzhDR2ZudlVOcXZMQ1U2dHJ2NHlQWllwTkFVM0pFLU5HU2lrYUY1RS1NV1pYZnNRZEljMXV2LVdUVVlLSTEyRWhOT0JKTDVvNkNFVWV6VDFPSE8tU1huaVk?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-09",
+          "injury": false
         },
         {
           "title": "Preview: UFC 329 Prelims - Sherdog",
@@ -1057,6 +1147,13 @@
           "source": "Sherdog",
           "date": "2026-07-08",
           "injury": false
+        },
+        {
+          "title": "Cody Durden gets new UFC 329 opponent - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPTnowNHE0empDX1ZfdXNmM1B0TWxObzdMVnVWSWxGWV9yWDl6TlUtd1F3Q3UyTE8zX1RFWFljakJMTnI4eXVJbUVMRDY1QVc4RlNrb1BmcERUUmIxaEp6T3M2ei1XNjEzWEMxLVFyWWd4b0UwVmdPS1NtcDhrVWV6U0QwcHluZjVVSS1ONzdPY09KTXZYWVAzdTMyTVFjQWNPclZWR1JBSkJSeWtLX1dxZFBPODJ3SVdqQ3c?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-01",
+          "injury": true
         },
         {
           "title": "UFC 329 loses fighter due to injury - MMA Junkie",
@@ -1071,66 +1168,11 @@
           "source": "MMA Mania",
           "date": "2026-06-24",
           "injury": false
-        },
-        {
-          "title": "UFC 329: Make predictions for Conor McGregor vs. Max Holloway 2 - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxORkdPOVBRSDQ1WG04cHFmdExhVWx5aUw3b3VhVHJlck1qSi1OZkh4S0ozeGp0Nm93UGdsRDRnTWpZZWdUQkpITW1KVEp1Y3dLal96ZFVVbjJEb1duLUxpTXBUQk0zeEdjQlNiT1NyNVU4dlEyc01oTHhGY2ZQMEEtQXF6NW1LS2hoSlBWSU5rd2JzWXJnOXg4SmFtUmdfU1RQRDlmN25rQjBCVkVVb0Z5VC1idVljaGxwYmZMTEwydl9LS0N4dS14U2pyTXlTREduS2hfWDJIY25oTXRsX1pfZnFxQXBvYTUyUmlKdw?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-06",
-          "injury": false
         }
       ]
     },
     "dricus du plessis": {
       "name": "Dricus Du Plessis",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Dricus Du Plessis: Conor McGregor has 'scary timing,' beats Max Holloway - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxON1RYMWQ3Rm5wQXFJWXpTRDl1MjdSVl9PeVRJNGx4WVJvYXZqOVdhUzVxVlE0ZGVKVTQ3RXNhRHVydmFkdjh0eHc2YThjZUpvU1N5SlE2YUpjeU5hNy03WmlFOWFoVUN1eUNnbkN6WmtsLUtFRUNZa2JrVzVxVUowQWJCcTZRdzJ3TjNkSF9HNi15c25rb3RIU3BHMkMwSW5xeGowR1diS19LMUxYaG9CQURBdlVsUEw5ZTNNandLeXFGUXNlVGdfYUZBbEd4NlNyZnI1amt3LXVjQQ?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Dricus du Plessis won’t let Kamaru Usman ride off into the sunset on a high - BJPenn.com",
-          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNQndHWVZxc3hjcXl5dVZORklGX2xKbEhVeGZfNEJ4QWRZamQwMXQ3WlgtbC1GZ0s0ZGQ5RzZNZHUtSVRoeTFQUWM3NUViSTItdUMtSTZkdzc1YmdYbnRuTjVTNXp1bmRfV3dBOGh3ZGtRcEdhU01jT3FnQW5zQ21OTkdyeFB1ZzdvQm9CZW9kdVZzU1dqcnVEbXJsdF9XdVVMaFhFSVp6UFVSak5QR1ZwMUFOYnRUTGcxTy1YVndiYzBrTzQ?oc=5",
-          "source": "BJPenn.com",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Dricus Du Plessis weighs in on Conor McGregor vs. Max Holloway rematch - MMAWeekly.com",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPMkZHT1k5SHNid0IwMmZnaVBXMTdKaHhVSTFma0ozejk4U0lfZlU4RE5aTDZlcHR5bzhFcDVpWS0zMERSdENhXzVqUmFMY3FIb1phZndUZEM1T25ZMnhaWThCT19EQUtuOWZ1SUIydUhMbmVFTXdnZWxjXzk0Q2VxbDVFQjB3RTh0RUpPWkMxanFCaFBNLTFZTmR2aUw1RUhhU0E?oc=5",
-          "source": "MMAWeekly.com",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Dricus du Plessis says Kamaru Usman needed convincing to sign fight - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQdXI0TmV4bkx3UXBIaXlON1RSQ1U4amhpTTZhZm4tSlAtVkR1Y2VSd29TOV83V1NibHB0SkxmZ3R0Y3I1UjF1cW5oVFMybXFvSXlGd1h0S0p3dzJNaTRSeHR4QVcySFdaeEV0a1hIeWJtSENuRkJzTTBjeEZEUGxkNGNHcGlhZnpqdEsxck5kSmFURVRvbWgyQ0JDM0hDVHc4ZHA3OUxWQ1drOHlH0gGyAUFVX3lxTE54U0VsS2gwaDdsc0Y0eDZMU1V3U3o5YTFpbGRlRjNQN0dFNHItWVhWeDFBOEV2Q0xqU2k5ODNvVjRSNkNobzRZYXpQendrOWx0b2RrczhBc0R1MjNvejlwSHhha2F3REtnYktieXYxMzdXcF9hQlBJMFk2bVJKN1ZnMlBhOXZSa19nd1F3eDMwSUlwckRUNzFUb2wtbFdGaEZodlhoc3hSRk81a3laRW9ZcUE?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-08",
-          "injury": false
-        },
-        {
-          "title": "Conor McGregor Backed by Ex-UFC Champion to Stun Max Holloway at UFC 329 - Sports Illustrated",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNY3hnaE1iZ0V3TFZvTVBkRXhmellLS0IzT2FXNmJZY2NxYlYyeVZKYXIwZk1IT0dPU1h5eEZYZ1BfaWtHMGlIWnlPdWk3WExfby1vQ082RUxmRWZRS0JUMnpTZEpzclVldlMxeV9iQTc4d2p5a0t0U1BzY0JWVG42NGVhY1Yzd2RkcHlyNVlhWjYzbk9TOEVvbUNHaVBVMnM?oc=5",
-          "source": "Sports Illustrated",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Dricus Du Plessis eager to spoil Kamaru Usman's storybook ending - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQNDFRWGpUMTZKYjBlOUg2UzQ3dG12VUxBaER5SWsyUlZkSk9ZRXdUcUpuc3g3MU90LVdtY3VqRlBNTHhxWU1zMjh3ekhZbWNMd00ySkNucmY3Y0tWbmo5Mk0yUXdQMG4tRGVnTl9CUF9DRS12b3ZlSGtJci1qeDNZbllQZ1hpbGFjRk8zSTNiYmZUVXpkeGNHRGJLM3JNcFUtRjlwSU9KVW9INjJOaW0yWThVN2YxMnh6alBOcHppRkdweXdGbTVWZVF3anFRd0VK?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-07",
-          "injury": false
-        }
-      ]
-    },
-    "kamaru usman": {
-      "name": "Kamaru Usman",
       "hasInjuryNews": false,
       "items": [
         {
@@ -1155,10 +1197,58 @@
           "injury": false
         },
         {
+          "title": "Dricus du Plessis says Kamaru Usman needed convincing to sign fight - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQdXI0TmV4bkx3UXBIaXlON1RSQ1U4amhpTTZhZm4tSlAtVkR1Y2VSd29TOV83V1NibHB0SkxmZ3R0Y3I1UjF1cW5oVFMybXFvSXlGd1h0S0p3dzJNaTRSeHR4QVcySFdaeEV0a1hIeWJtSENuRkJzTTBjeEZEUGxkNGNHcGlhZnpqdEsxck5kSmFURVRvbWgyQ0JDM0hDVHc4ZHA3OUxWQ1drOHlH0gGyAUFVX3lxTE54U0VsS2gwaDdsc0Y0eDZMU1V3U3o5YTFpbGRlRjNQN0dFNHItWVhWeDFBOEV2Q0xqU2k5ODNvVjRSNkNobzRZYXpQendrOWx0b2RrczhBc0R1MjNvejlwSHhha2F3REtnYktieXYxMzdXcF9hQlBJMFk2bVJKN1ZnMlBhOXZSa19nd1F3eDMwSUlwckRUNzFUb2wtbFdGaEZodlhoc3hSRk81a3laRW9ZcUE?oc=5",
+          "source": "Sherdog",
+          "date": "2026-07-08",
+          "injury": false
+        },
+        {
           "title": "Usman moving up to middleweight to face Du Plessis on July 18 - ESPN",
           "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOakZUdjI4NFNlcWxWT2Y0V05adVg5ejZsVnNKQ0ZwMjZremJ4VjIxelEybWFFUUpVS25SSzlLczV2WHlNUmhMYnEySkxMNk5YZDlLT1pDNm13TktCY2FYaHlxS0psX1RkTndQTFQ5bVVhRHlxOUdEeGR5ZDFXdkFBZGZEUE8wZGozbnZQNThpZWo4Y015WmtnX3FB?oc=5",
           "source": "ESPN",
           "date": "2026-06-20",
+          "injury": false
+        },
+        {
+          "title": "Dricus Du Plessis weighs in on Conor McGregor vs. Max Holloway rematch - MMAWeekly.com",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPMkZHT1k5SHNid0IwMmZnaVBXMTdKaHhVSTFma0ozejk4U0lfZlU4RE5aTDZlcHR5bzhFcDVpWS0zMERSdENhXzVqUmFMY3FIb1phZndUZEM1T25ZMnhaWThCT19EQUtuOWZ1SUIydUhMbmVFTXdnZWxjXzk0Q2VxbDVFQjB3RTh0RUpPWkMxanFCaFBNLTFZTmR2aUw1RUhhU0E?oc=5",
+          "source": "MMAWeekly.com",
+          "date": "2026-07-09",
+          "injury": false
+        }
+      ]
+    },
+    "kamaru usman": {
+      "name": "Kamaru Usman",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "FORMER CHAMPIONS COLLIDE AS DRICUS DU PLESSIS AND KAMARU USMAN HEADLINE UFC RETURN TO OKLAHOMA CITY - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQTDJpQ2pzV2JkYl9vTUg3VzZndERvUE5rTHBVajh2YmN0WEswbHlvVkVUbWw4QzU5ZjdqaS04SjVFOGE4eHlUSGtoUWJZT2RiMlBBa09icUlCaHQ3LWhrTUo5bTNKaGVZQTZIV3VTX0lfSlU0YVlxbUVwTEQxRGpkVnpRaFp5VmJkLWtQcDV2d2ZkZzQyV0VNSy0zZjZLYzQ5MXlnWGctRU40c1F6R2lsR3NHRkhwRnR6OUE?oc=5",
+          "source": "UFC.com",
+          "date": "2026-06-23",
+          "injury": false
+        },
+        {
+          "title": "Dricus Du Plessis eager to spoil Kamaru Usman's storybook ending - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQNDFRWGpUMTZKYjBlOUg2UzQ3dG12VUxBaER5SWsyUlZkSk9ZRXdUcUpuc3g3MU90LVdtY3VqRlBNTHhxWU1zMjh3ekhZbWNMd00ySkNucmY3Y0tWbmo5Mk0yUXdQMG4tRGVnTl9CUF9DRS12b3ZlSGtJci1qeDNZbllQZ1hpbGFjRk8zSTNiYmZUVXpkeGNHRGJLM3JNcFUtRjlwSU9KVW9INjJOaW0yWThVN2YxMnh6alBOcHppRkdweXdGbTVWZVF3anFRd0VK?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-07",
+          "injury": false
+        },
+        {
+          "title": "Usman moving up to middleweight to face Du Plessis on July 18 - ESPN",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOakZUdjI4NFNlcWxWT2Y0V05adVg5ejZsVnNKQ0ZwMjZremJ4VjIxelEybWFFUUpVS25SSzlLczV2WHlNUmhMYnEySkxMNk5YZDlLT1pDNm13TktCY2FYaHlxS0psX1RkTndQTFQ5bVVhRHlxOUdEeGR5ZDFXdkFBZGZEUE8wZGozbnZQNThpZWo4Y015WmtnX3FB?oc=5",
+          "source": "ESPN",
+          "date": "2026-06-20",
+          "injury": false
+        },
+        {
+          "title": "Dricus du Plessis accuses Kamaru Usman of avoiding UFC Oklahoma City fight: ‘He didn’t want to sign the contract’ - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxQWHp4NHFNcTdPZHVJNUJzVHlucXhjdnN0blR6ZUk5N0c3bDNyaEhsbHRHaUpyYWoycDhma3VMS1J5OHU4X2pZZlBaem1Eampkc0t2RW1fa09DSFQwSEZ0dmNPdUNGNl9CTlh2SVNEX2pldml3bElkWF9RYzNiYzRFVV81Z282ald3OEMwcjJQNTY3TlZfV0xXRXk5Z0xHOW9GdEppWWpaYU04azVlZXcydXAzcGNObi1IZ3Y5Yk9SYk5lRXZBSURKUXNhSEhZZFBiNWd3OXFrczJ6S3NOcTZIaUp3?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-06",
           "injury": false
         },
         {
@@ -1177,60 +1267,6 @@
         }
       ]
     },
-    "kevin holland": {
-      "name": "Kevin Holland",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Kevin Holland out of UFC Oklahoma City fight against Jacobe Smith - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxORkV2NnotSDlLWDhlUGlUNHV5cUI0YV9ONHgwdDJ1WnNkc3JEYmozVGd6RmlRUDZNSmJtMnRJSGZ3TGZZOGx6LXlwNWVNZmZrOTJWd2I2M3V5TEk4OENzVllRVGE1SWNiYnFGTVpLX1M2ckZNT1FpUW8tWnIzcTNwb3NWOF80d3RxX01wSC1vTjB2VDRRZWhQeTVVdC1ISkc0dkdjQkNLVQ?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "UFC Oklahoma City loses Kevin Holland from lineup - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNRmZLQ295d0dTWGNiRnFOd3YzMzU1RWhCdnl3QXhOVEg2R1ZpX3ozSk8tc2RkblJ3ZnhSZHo1c1REYktBMF94RXpETzYwanV6SUp4X3ZyN3BtX2JTTG1RUW9fWm9OWFU3OElicTlwcUtWcHhvd19FZ2NoZDFLSTgxSFhLdEFGZGhmTzJiYkoxb0RHVXg1Z21nMVBUMTRKUGhZUXhYbGpQZmY4bEtZY2Fsd0J6cEh4eUFYNVl3bE1HNzY?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Bummer! UFC Oklahoma City loses big fight one week before fight night - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOVnZINk5NdG5ZWWFzNTJ3Mlk3NzlvQkhQRngzMU1oTVpsWDY2MHBUQllrNEFKTkhsM3JvQ2dMUFdnelVnUFRxVnZ6V3B1b3B5bHBmMThmY3FOQ1JyUmZOLVRIem9HN1pFa3FBMzFwWWVOcGNKT3AwMzExTEl2NzhlS2ZLV3EzZlltNUo3MnJGaENQcmgtcVJjRmtoekxSY0NKVndvaDJBdXkySVpFb1ZaRXZLMVE1aUpHcnViNFRQU2FXdw?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
-          "title": "Kevin Holland Sets A Goal For Himself For The Remainder Of His UFC Career - LowKickMMA.com",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1jSnpLU3RYSVpWZFhsWFJ0emdJRVRGbnhxcWFCRzJLU3E3Ukg2cV9ETHEtVVU2eWM3VkltZ0UxMlFvekJ1ZlpnWEszVnprM0tfY2xqVkdtU2tDWHlpTkM5ZlVMOXlBV3dSbnBVa2J5bw?oc=5",
-          "source": "LowKickMMA.com",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Kevin Holland has specific UFC marker in mind that will signal retirement - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxQTkVJNjI5UDNwbjdTS09zTjlHYUJaUDYyVjk2QlhFQTB1ZTl1ZWIyemtUM2tIYnpzQmV3VUQxREVwTjN5SVRrbzJRSE40aEhGZ2taQVJaR1BnWXVZa0FHZlVhM2t1Y183UF9LX1ppMzV0MzV0T2s3aWx5d290X2pUVVpWVVNoRWwxT2d0bE1YWnU5aFI0N09LYU1xOE9yMnlBb05GSWdDZW9jOXY0c3p4UmRHb3QtSUsyX0pV?oc=5",
-          "source": "MMA Junkie",
-          "date": "2026-07-08",
-          "injury": false
-        }
-      ]
-    },
-    "jacobe smith": {
-      "name": "Jacobe Smith",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Kevin Holland out of UFC Oklahoma City fight against Jacobe Smith - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxORkV2NnotSDlLWDhlUGlUNHV5cUI0YV9ONHgwdDJ1WnNkc3JEYmozVGd6RmlRUDZNSmJtMnRJSGZ3TGZZOGx6LXlwNWVNZmZrOTJWd2I2M3V5TEk4OENzVllRVGE1SWNiYnFGTVpLX1M2ckZNT1FpUW8tWnIzcTNwb3NWOF80d3RxX01wSC1vTjB2VDRRZWhQeTVVdC1ISkc0dkdjQkNLVQ?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-09",
-          "injury": false
-        }
-      ]
-    },
     "chase hooper": {
       "name": "Chase Hooper",
       "hasInjuryNews": false,
@@ -1239,20 +1275,7 @@
           "title": "UFC Baku newcomer Jefferson Nascimento questions why ‘easy money’ Chase Hooper is still on the UFC roster - MMA Fighting",
           "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQOEp5cDd1bWlENXZGdGlKS0JSeWlFeFIxempRMkJzMVItcW1sdFFDRXJmakhHLUxremJYZzhXS1BoTWRJd1Vnc0dZMXNaVmw3U2Y0VWg1UlZ6ZmNuaDNqM1psUko2UUNCajF0eGlxWFBCZFJpcmtHNUJndWNpNXE4aEp0T2lmd2c5Tkd6UEZkamZBTXBMX1pJQ0ZKV0xacWVoaFRTWWhyX0RBbGVDY1RFemlVTHVTalNyR21nQS1TSktLQUVIM0Z6SXoxcHdFLVNocWRuMWctWEt3dw?oc=5",
           "source": "MMA Fighting",
-          "date": "2026-06-26",
-          "injury": false
-        }
-      ]
-    },
-    "tommy mcmillen": {
-      "name": "Tommy McMillen",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "UFC Oklahoma City: Du Plessis vs. Usman officially adds 8 new fights - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQaTNUcTNQekNHT0dzY3oydW5zV2hUcjBoSFAzNG8tU3lBZjF5RzZ4Vml0MUNGYkZPWXVkc041N1diYjJxcXRIMk82M1JSejBuV015TUxuQ1IyZTA2cU9iQW9JSm11Tkd2aWMzNjVkbklRNS1XdjFLVHVaekJOeUJFS0xmYmFVSW1FMzVCNnh0YjE0S05jdV9OdjFXdjFLM0FlN1BBRm5lYUc?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-06-23",
+          "date": "2026-06-25",
           "injury": false
         }
       ]
@@ -1297,6 +1320,19 @@
         }
       ]
     },
+    "tommy mcmillen": {
+      "name": "Tommy McMillen",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "UFC Oklahoma City: Du Plessis vs. Usman officially adds 8 new fights - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQaTNUcTNQekNHT0dzY3oydW5zV2hUcjBoSFAzNG8tU3lBZjF5RzZ4Vml0MUNGYkZPWXVkc041N1diYjJxcXRIMk82M1JSejBuV015TUxuQ1IyZTA2cU9iQW9JSm11Tkd2aWMzNjVkbklRNS1XdjFLVHVaekJOeUJFS0xmYmFVSW1FMzVCNnh0YjE0S05jdV9OdjFXdjFLM0FlN1BBRm5lYUc?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-06-23",
+          "injury": false
+        }
+      ]
+    },
     "austin bashi": {
       "name": "Austin Bashi",
       "hasInjuryNews": false,
@@ -1337,21 +1373,41 @@
         }
       ]
     },
-    "veronica hardy": {
-      "name": "Veronica Hardy",
+    "rj harris": {
+      "name": "RJ Harris",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "Updates To UFC Oklahoma City - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1xUGtkRklrdTktbFRTVTJocWFDbE91SHNYX3FaZnpTaTQ2dkJ1d0tRVHNyb0xpRnBXeU5jWlBmc3pGSXk4czgySlAxRnhtU3luNFpfaGRYQmRLNDVBQVdB?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
+          "injury": false
+        }
+      ]
+    },
+    "anna melisano": {
+      "name": "Anna Melisano",
       "hasInjuryNews": true,
       "items": [
+        {
+          "title": "Michael Bisping’s No. 1 TUF 34 pick steps in to save fight at UFC Oklahoma City - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNdE1qa190QWViYnhwSTU1NnJxRVJuTVgycUFfcElOc09YcnRkT3VncFF0QVRsVjFKWGVPT0cyaFA1QmFQR3N2T3FUS3hmT09rOTNnUTcwNk5KR0VuVmZrUklpUncyYVJDYlRCMlpYRDBiVk53bTgxeWQ5Nkx1U1dCampIUjZQa3FyRU5HNFY0VEZxa2xUblBYaEswQ1RDeGdLWkNFVjNqQk1sUmtlOHdnUmc3d2VFVTQ?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-06",
+          "injury": true
+        },
+        {
+          "title": "Get To Know Strawweight Anna Melisano | The Ultimate Fighter: Team Cormier vs Team Bisping - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE56czJCQXBiNmY1YzBpUExKT3JwRG5RbmswcHA0X1pxZmt4STlzVnQ3U3EtbUpTNXUtNU5veG5WLTY5RmRHTEt3?oc=5",
+          "source": "UFC.com",
+          "date": "2026-06-21",
+          "injury": false
+        },
         {
           "title": "Why Veronica Hardy pulled out of UFC Oklahoma City bout - Sherdog",
           "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNMVBaMDhOM0hwaEZUX2JfN1M3bDB4TXdjZFpJU1lqcnhDS3lvbnZ0UHFacWRucXdlZVNOMU13d0pUZVA0aUxlRDQxaWlNcmJ6U1l4RTNQYWpwb0kzdk5VWXRpdUR3c0llV0t5NE4yYy12VmRFZlVUY28wWkN2ZmVULXRucHRPUWN5dE9yY2JJM3E1ZzBuYTYweDdMZnXSAaIBQVVfeXFMUDdLN3VyNnlYTzRsT18tbHFmRFR0ZUtkM3UtRDBuRTFSQUN3cVB3WE9oM1NzYmxsR01yN2JaTmItUkU1c3hCUjAxSzlDVmE2dW9obGxEMmlobWg4LTVpSjJ3NmVfbDMxVTlvcUlLV1pVRVBEdHNCa2FsYk5ZQzcwbTFHeGNvRExfLWt2NTNSSS1UamlaMXJ1WnU1emJIWFpnSV93?oc=5",
           "source": "Sherdog",
-          "date": "2026-07-07",
-          "injury": true
-        },
-        {
-          "title": "Why Veronica Hardy pulled out of UFC Oklahoma City bout - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxOMEl5TnlHeXUwSVlnd01vZ0tYN2ZkQUJaVG1RZzg0Qm53Z1huVDcyVVE2RVdGOFJnRnhQQzJBOElqOHdrWEo3LVZIWnc1NS1qT1lCZTlkdUNTMnhUdUFuaFN0anhTYnUxU2hDN1ZDMkNiZGtmQzU0aEVZckhmQ0cxZ2h3?oc=5",
-          "source": "Yahoo Sports",
           "date": "2026-07-07",
           "injury": true
         }
@@ -1475,6 +1531,13 @@
           "source": "LowKickMMA.com",
           "date": "2026-07-01",
           "injury": false
+        },
+        {
+          "title": "John Pork, ‘Contender Series’ hero who snuck Dillon Danis, books UFC debut for July 25 in Abu Dhabi - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPajR6T29sVjVFbHo1SHdPX3FkYlBHSEU4elRUVmo0aWVnMVNoaHgwdjBCRTlucV9JY1NXTEwzVEtER0loRTZFcWJ1cjJMaGpoZ0wxYUhleksxT2dsVkZBT2xWdE9yOUp2bnBIelNDOXNldGN6TGE3X0xHbEJ6S2N0YkdBYTNEYTA?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-06-30",
+          "injury": false
         }
       ]
     },
@@ -1484,7 +1547,7 @@
       "items": [
         {
           "title": "Valter Walker says Shara ‘Bullet’ repeatedly pulled hair during training - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOV2g3TXhhTVVxRktiS3dPMnBobk9jemR4ZXo1QWQ3cHhJZmRuRnh2Z0YtYVdNaTJsZWhwMXo4QmR6OHZ5dnZtUFFZYmNwN2dvTXVGakxIYm9oT1lhcl9BcGozQTh5NGtyTXdCMTJpMWxXazZFTHFFSHJjVEhfc3RMcXZKYmZkaWtLUnZYR1pLT1VwUkIzMFFVSUJhOTZpOGtPamlHM0g2SUdBYmdjVmR5cw?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOV2g3TXhhTVVxRktiS3dPMnBobk9jemR4ZXo1QWQ3cHhJZmRuRnh2Z0YtYVdNaTJsZWhwMXo4QmR6OHZ5dnZtUFFZYmNwN2dvTXVGakxIYm9oT1lhcl9BcGozQTh5NGtyTXdCMTJpMWxXazZFTHFFSHJjVEhfc3RMcXZKYmZkaWtLUnZYR1pLT1VwUkIzMFFVSUJhOTZpOGtPamlHM0g2SUdBYmdjVmR5c9IBtgFBVV95cUxQbVViWldOS1gyLUlwemkxWDRwYzl3anhhVzk1MnVHMTNpTnVtX3VWOFVJN3djTjRBdkRGdXdhNmdrb3ZiZGhacV8za2gxVVhfdmNZWENjOW13Y0M1Y3FVVVUzREtCdGMwWHV1a1djOVpsVVhsYVJOelFIMmxoRHpvTm83bHVYbTczbkZKX1N4YUF0bFpPOUlQRFVyMzlZNFliclpJdGZhSjlCWnQtekZGOHVGekFnQQ?oc=5",
           "source": "Sherdog",
           "date": "2026-07-02",
           "injury": false
@@ -1552,7 +1615,7 @@
     },
     "jan blachowicz": {
       "name": "Jan Blachowicz",
-      "hasInjuryNews": false,
+      "hasInjuryNews": true,
       "items": [
         {
           "title": "Jan Blachowicz all patched up, books Bogdan Guskov rematch for UFC Belgrade on Aug. 1 - MMA Mania",
@@ -1574,6 +1637,20 @@
           "source": "MMA Junkie",
           "date": "2026-06-19",
           "injury": false
+        },
+        {
+          "title": "Light heavyweight contenders set for rematch at UFC Belgrade - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPeGoxUFRsNGxHMkJJZkFlZThxb29xcGIyemQxWUdIcUNJeUYyRGFGYTBKNENtbnEzUmRVUUI1X1k1Mm0zZUkySjhNTXNwYWZzNW8xRVdFVE5MMHJxSU5mUmVVZWpSakZsbnlXNWd5NGV1UlVjbldoYWZZXzhHbG9KWVl2aEE3TFFJaFNPeWExYVhpeTJ5U19zb2tuZW1XLXpEVFhv0gGoAUFVX3lxTE0tYTg2T2RfTFNQNkNXLTA1LXB1b25iZmg5aFJGbHVFd3dFMDZ0S1lLMnJHQmJkRFJ1ZGtSSlhUX2RtM19TZVdHNFBWU2x2UGtJeWxQS0FoOGZuRTVyZ3RlZUFNYktoRVIteF85LURPQkNLVU9CZFlDbUl3VlFDRGIzS3hBSDUwb0UzTGVicVoyUHktRDExWHRqTEpCX05WRnpRRk5PYVNqOA?oc=5",
+          "source": "Sherdog",
+          "date": "2026-06-20",
+          "injury": false
+        },
+        {
+          "title": "Former UFC champion books rematch two months on from suffering torn meniscus injury - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPcG5hQ2IwZE1HMmlod2NCZ25mUW5DcUlTb0VucHZLT3F0amVHU2dtcUNOYVNqLUl4c1p6akZ3anJyTDVHbWk4TmNCMW1pWjVjMWZ2MEtDSU5MM1dQTDRTQ3JMNkZORHlwU2dxUUplVGN1OXVBMU9UTnhHMlBtcU9QallHOGVJYzVsZFJlb1QzbTRJNW9iLWdQSmNKZUs1T194Q3ZmMzRZMWtxdTlDYkh5MkV4WVh3UGQyYzhZ?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-06-19",
+          "injury": true
         }
       ]
     },
@@ -1663,9 +1740,9 @@
           "injury": false
         },
         {
-          "title": "‘Idiot’ Arman may lose UFC title shot (again) after turning down Mateusz Gamrot rematch - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNdG9RSmhaV3RQMGNsSGQ0VjZ0Y2dJQTRQWGVoMDFmTDEyMlhXQ1h2MEl5UkpYLTNKN3YxTVAwZ0ZJNmJkNUlZMDE5QVJCMzQzcjlEWmxTVHd3N3dDY1Y1NE56LXdKWE5rbGxXc3lsVGpiTzM5ZmVBREF6UG5DOF9sdE0xMHVQcUh4aWlUbjltY0lWenhERGNpd2ZZNTJEZEhoemFsbmROVmZud1A1QTBHRmhya3VtM3NLV0pyWGhpNlZFZw?oc=5",
-          "source": "MMA Mania",
+          "title": "‘Idiot’ Arman may lose UFC title shot (again) after turning down Mateusz Gamrot rematch - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBIT1V1MnU5SlNJblpxSWhNMHRmQzBjNWRXLWtQOTRlRVhnaXJXNnU0SEM4Z3MwM2p0SXlIb3U3cUtETFdMNnNxUHZpV1BObHhKTk5ROVBlZnNvbkZoYWNUTzhvaVNYNlF6U01CdHhtdTFVLU1mVkVLT1h6ay0tZw?oc=5",
+          "source": "Yahoo Sports",
           "date": "2026-06-25",
           "injury": false
         },
@@ -1738,31 +1815,17 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Joe Rogan says Ian Machado Garry has a ‘real chance’ of beating Islam Makhachev at UFC 330 - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNTVJfa19PVDEyTy1JV0NETlhzdm9KcVRhdjJUMEUzd1dNTzRQTnJ1U1hJQzk2WE4yU1BscWgwbE5UaFhxYUhVelJoYzc1M3JtWjZQRFFlcHZmVE1KZjNrZGFuaTM1am85OFpkdGhLaXlRU0VMbngwZ09fR0cweTNpTklROV9YM3RpQTlGUXBUYmVVRGVIdHAzSWRRckNjazRhcm9taTgwX09CUFppUVowcGhmSnA3NG0yenNXWDBUbnFrUQ?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-10",
-          "injury": false
-        },
-        {
-          "title": "Ian Garry says elite wrestlers ‘ragdolled’ him before Islam Makhachev fight - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPUFFaTFIwRnBzTlhUc01pdnE0RzdZdW9lVFEtYldzSmY2NE9BSGJVVTEwdW5LM19sb3h5SlRZTDJfUkFDamhfZzJZMi1fMHduZFJZUkZ3WWhNQmdXUXhVQnl0aURWUDZxTndLZG9oUzltUnFrb0hvRWg1NVh0RHlHV0xEWS04S0d2c0dkZUxPUVZ4aHNnRjhTRXhnNTdZaE1Uemd5SmVDTzFENElOU1JCQTZGWWPSAboBQVVfeXFMTU9NSlZvUkRWbExBSncyX3FHU2hMNWRHSnZmcUx4M2I3WUYzR0lfRWtkVVVlc2Vid2hOM1ktTUd3UjRTUDBadVIxWjlpWGdoTVlUVjByNXRTRFhzRjhOTlhHTTFMdDNxNVp3dWQ0dnh2c1RyV0tRX0x4ZmhqSmQ2VGlvNzRMbW0wb3Y2ZjMweWlmM2hfT204VURMd0gtUkRlYmF1Z18xUkRXSVdNSS1sSU1WYkVDaXFxcWd3?oc=5",
+          "title": "Conor McGregor makes surprise Islam Makhachev GOAT claim - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPZ1NvM3hKcmJMeUFfd2JyMFNUV3hucW5KaGlBMmYxT1ZDYjUtcHVrQVRKZVkzQnlKVE16Q3UtYUVmbEpCeVNKRlUzSWNJUjFDQ0h2VWx5dEtFcHlwUEh0NmExblJaUWFMRkVkay1CSkx3RHpMUWV6YkJ5bEZZRXBGUTM4MmgwMHdKZ2t5eW0xVXJTaEFVZGZfTkVTN1k0QdIBowFBVV95cUxQTFFwUEszNk53b0JudVA3WHpIT1pBV3NiNWdoLUc1dEZYS29FcnZISEJvV3NjUTNjLXI0aUNiaUZfM3BWcW1lSTNKSURMMEFkVFFqb0lyT1Y3NFJReVdyU2Uzd0NlSFBnRElTaUQ4SHlkMXBLZ3dtVUswaWJuX2ZQU2YzbkdreWd6MVRZcm8zZE16d0ZfcmtLLVpYWkFDOHVKdEd3?oc=5",
           "source": "Sherdog",
           "date": "2026-07-09",
           "injury": false
         },
         {
-          "title": "UFC 330: Makhachev vs. Machado Garry official poster revealed - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPSkdJamtzOVZXRmRxQ3U5U0VUSkZCVHZCQXJvOUVRSDlkNHRBc241SWcwcFQzV1BsT1RpT2VqeUdfampVUzNwSnlwbWhFc1l6RkJXOHRmRlJ0RTlDY09jVDBEYWJGQ1hqTjRoLWsxRFFBVkZiR3lZdmJ3aGRZazM4dm12eXphZ1hKU2ZtRjM2TEg4Zlh3OUpKWHBzWDd2WnM?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-07",
-          "injury": false
-        },
-        {
-          "title": "Pic: UFC 330 poster drops for ‘Islam vs. Garry’ on Aug. 15 - ‘Broad Street Brawls’ - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMjk2OWNCa3Q3WUFnQnVGOFhWWHRSUVNZSlU2QjNPelhiLXplS1NDSjN6NDJWQXZZSjk3cllvdll3c016OFBVUlFOQkxfVm1GbTBndGRXTXoyeXZBeXYwYXdyd2VpU256WG1DbjNtNFFHcVlvaGtKTU92X1A1R21jYU5XTnFCTlhxQkdSalppSUVrQ1NBLXhRY3kwUVNrSWZucGZxTWh2ZzJfQUI4RU9yTjlPT0xZajNPeHlhWG4wS1UySktKbkRGVQ?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-07-07",
+          "title": "Joe Rogan says Ian Machado Garry has a ‘real chance’ of beating Islam Makhachev at UFC 330 - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNTVJfa19PVDEyTy1JV0NETlhzdm9KcVRhdjJUMEUzd1dNTzRQTnJ1U1hJQzk2WE4yU1BscWgwbE5UaFhxYUhVelJoYzc1M3JtWjZQRFFlcHZmVE1KZjNrZGFuaTM1am85OFpkdGhLaXlRU0VMbngwZ09fR0cweTNpTklROV9YM3RpQTlGUXBUYmVVRGVIdHAzSWRRckNjazRhcm9taTgwX09CUFppUVowcGhmSnA3NG0yenNXWDBUbnFrUQ?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-10",
           "injury": false
         },
         {
@@ -1778,19 +1841,6 @@
           "source": "BJPenn.com",
           "date": "2026-07-08",
           "injury": false
-        }
-      ]
-    },
-    "ian machado garry": {
-      "name": "Ian Machado Garry",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Joe Rogan says Ian Machado Garry has a ‘real chance’ of beating Islam Makhachev at UFC 330 - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNTVJfa19PVDEyTy1JV0NETlhzdm9KcVRhdjJUMEUzd1dNTzRQTnJ1U1hJQzk2WE4yU1BscWgwbE5UaFhxYUhVelJoYzc1M3JtWjZQRFFlcHZmVE1KZjNrZGFuaTM1am85OFpkdGhLaXlRU0VMbngwZ09fR0cweTNpTklROV9YM3RpQTlGUXBUYmVVRGVIdHAzSWRRckNjazRhcm9taTgwX09CUFppUVowcGhmSnA3NG0yenNXWDBUbnFrUQ?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-10",
-          "injury": false
         },
         {
           "title": "UFC 330: Makhachev vs. Machado Garry official poster revealed - MMA Fighting",
@@ -1800,10 +1850,44 @@
           "injury": false
         },
         {
+          "title": "Pic: UFC 330 poster drops for ‘Islam vs. Garry’ on Aug. 15 - ‘Broad Street Brawls’ - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMjk2OWNCa3Q3WUFnQnVGOFhWWHRSUVNZSlU2QjNPelhiLXplS1NDSjN6NDJWQXZZSjk3cllvdll3c016OFBVUlFOQkxfVm1GbTBndGRXTXoyeXZBeXYwYXdyd2VpU256WG1DbjNtNFFHcVlvaGtKTU92X1A1R21jYU5XTnFCTlhxQkdSalppSUVrQ1NBLXhRY3kwUVNrSWZucGZxTWh2ZzJfQUI4RU9yTjlPT0xZajNPeHlhWG4wS1UySktKbkRGVQ?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-07-07",
+          "injury": false
+        }
+      ]
+    },
+    "ian machado garry": {
+      "name": "Ian Machado Garry",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "What impact would Conor McGregor vs. Ian Machado Garry have on Irish MMA? - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQRlNLbHRuY053ODlmcEdMb1hDVW5jR2tXeWNPQUpuRTZJOFlveF9ESDBWX3ZkaEhnTWxwSjJ1MXZfd0FHWEN2ZDhsUmJXU25ubGF5cjJFNE5QMDQ2VXlZNXZWb29TSmF4NEVwRndiLWtNb01kUWxmVERVQkFNNmlsOWlUVjJTbUltdTN5cy1lbWc1TkpfQzExUkhFeFo5WGZqQkJJSkhGM2t5SHRERW9jYldWSGg1V0M2OVE?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Joe Rogan says Ian Machado Garry has a ‘real chance’ of beating Islam Makhachev at UFC 330 - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNTVJfa19PVDEyTy1JV0NETlhzdm9KcVRhdjJUMEUzd1dNTzRQTnJ1U1hJQzk2WE4yU1BscWgwbE5UaFhxYUhVelJoYzc1M3JtWjZQRFFlcHZmVE1KZjNrZGFuaTM1am85OFpkdGhLaXlRU0VMbngwZ09fR0cweTNpTklROV9YM3RpQTlGUXBUYmVVRGVIdHAzSWRRckNjazRhcm9taTgwX09CUFppUVowcGhmSnA3NG0yenNXWDBUbnFrUQ?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
           "title": "BLOCKBUSTER WELTERWEIGHT MAIN EVENT BETWEEN (C) ISLAM MAKHACHEV AND (#1) IAN MACHADO GARRY HEADLINES UFC RETURN TO PHILADELPHIA - UFC.com",
           "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxOODhLaWs2WFd6OHVqLVIzTE1NWUVBWnVZakdQUVpsZkV4ZUFRb3ptdlM3M0RYRjlyYnVZVVU5bVkyZlQtR0stOXdiVVhLUjR5RS1PdFF5OTVUbTcxTkFaWmpZSkV2RkxCcVhWc1JFZ1MzYVZPR1dycGNQbnlBdFdsc0VIa1pORkgxZmlxSko4ZXZZZ1R6Y1FNWWlDZXREOXhzY1V5NmNVNHFuYmwyd2NN?oc=5",
           "source": "UFC.com",
           "date": "2026-07-01",
+          "injury": false
+        },
+        {
+          "title": "UFC 330: Makhachev vs. Machado Garry official poster revealed - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPSkdJamtzOVZXRmRxQ3U5U0VUSkZCVHZCQXJvOUVRSDlkNHRBc241SWcwcFQzV1BsT1RpT2VqeUdfampVUzNwSnlwbWhFc1l6RkJXOHRmRlJ0RTlDY09jVDBEYWJGQ1hqTjRoLWsxRFFBVkZiR3lZdmJ3aGRZazM4dm12eXphZ1hKU2ZtRjM2TEg4Zlh3OUpKWHBzWDd2WnM?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-07",
           "injury": false
         },
         {
@@ -1819,13 +1903,6 @@
           "source": "MMA Junkie",
           "date": "2026-07-04",
           "injury": false
-        },
-        {
-          "title": "Conor McGregor Backs Ian Machado Garry Title Win at UFC 330, Says He’d Be Ready to Fight “The Future” Next - LowKickMMA.com",
-          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNRER3aGZHTFFxV293MDlJWnVWcms1dXJpOFNxN0JndDhyUjV6VzhJVWRHc0t2X2NMcXRjNTZFTTZNTzVIejR3aHZtX0U0MzNJXzhEeC1fcDNxeUJybkJHNHY1UWQ0V0ktU2JDUDRZR3daVXA3Vk1OWXNueExwQzAyc3FnRlpKTFdLRjZOM2NLX2lPYnlKUFhqVnFMX0FIOWhnbWRZRGJ3V3Z4QWxoeW1UclJlY0Z4VmtJWEFVbHRSUXd6LVE3ZHFURmNB?oc=5",
-          "source": "LowKickMMA.com",
-          "date": "2026-07-10",
-          "injury": false
         }
       ]
     },
@@ -1834,17 +1911,10 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Gillian Robertson responds to 'reckless' Mackenzie Dern ahead of UFC 330: 'It's MMA, she's had issues' - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxORGszZEktOHZReGRkMDVKNFB2Q1RLMm1PNGVqVjd0ckRjZm0zWWhkdTJEODg1RGFObDhJQWVJbWc5RzdJc0lJX3FpREc5aS1YY0pqN3o5THZLVDVDdkNlUzgwdEhqRUVaQzcxVzhHVHN0SlotOW04ZWlHMVlZeHlwX01JUlJaRjkzbWF1cGtMVmtaUk5UOFhtendnLV9kX3I4MjRFWFhzcTRieXlKaGhLWjQ0RjU1NGtUTEdZbnE0NTdCMUthdEROX1lpa1RRM001aGZCMW9qVUI1NmxtY2xB?oc=5",
+          "title": "Mackenzie Dern motivated to submit Gillian Robertson and prove a point after UFC 330 challenger's jiu-jitsu 'shade' - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOVng5dENzeFlEc2l6RnBHdzZDMlBmUjczaHNibVB3MzNzQjBqX1N6YkVzWWFCbTNDNV9TeFBHd0FUQ2M2LUZuZnlWVHhhM2xuci1FdTVZLVFNZEN0M3dFTVJDODRrRi12bzRnbjRwbG9WOENXSzlGUWFrSF9Eb2xrdGhhSlc3aXQ3bE0zeDBTUnpsRWJocE1uZWlibEd5YjZqWUJIZjRpQWpfTXlvQ2toUGhHY3k2cDVEZEc3Tm8zb2pDVUcyWkE0MUE5ZURPZHAxeUU2T3QzSDZjanNIaVVxbWdHRFFmZDJrVi1haU5OdDBPWkpRLUpMTEhTSQ?oc=5",
           "source": "Yahoo Sports",
-          "date": "2026-06-30",
-          "injury": false
-        },
-        {
-          "title": "UFC Unfiltered | Mackenzie Dern talks 1st title defense, guest co-host Michael Chiesa talks UFC Baku & UFC 329 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiP0FVX3lxTE9rWTBpMUIxdDNoZ0lSdnVwQ19mTzExc09uZ2hkOE94UERpc2ZHRU03V2c2M0haejJDTXBoZUNLSQ?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-02",
+          "date": "2026-06-29",
           "injury": false
         },
         {
@@ -1862,6 +1932,13 @@
           "injury": false
         },
         {
+          "title": "Mackenzie Dern reveals how Gillian Robertson beat out Weili Zhang for UFC 330 title shot - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQbDFQT3FNV3ctY1VWRmt5YUFiM2YyVmFhdlBnRXI3MXRqaDlIZ1ByazBXZFlCOGE4dGd1SlNtMXdPbGE2Zm40MV9NMnRLT1lrSUZnUlFiX1VqbThIaWtlTk5yanNtYW5BZHl2UDFSNUZMR0FzYnh2TUpRY0tQR0VZZV9vSFAyVTBiamhwc05JamxwZ3BPT0Z2MTF2Mmowc1hWY1dnc0ljdXZ5eXpabGJKWjhSb2NNYTJPRWZGam5iS3BrQQ?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-06-29",
+          "injury": false
+        },
+        {
           "title": "UFC 330’s Mackenzie Dern addresses missing Weili Zhang fight: ‘Not sure what happened’ - MMA Mania",
           "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxORGZsUU51S0JGNmI3d2c4aWxDZjd3b01TYTJJV1YwcHVoUThrdTI2UGZhUzUyMEJMUmNKQkxrN0N6a1NWMUdtU3NQSUszWjN0b1IzQlU4aEUzd1UwY2Q5ZTRFdUN4NldwSWdWMnRaMzZHS3JmZzVlc1hKbVFISlZiWTVqeHFpRmkxVnFKT01rV0k5cEdqZklOOEFueWlVSVpZNFdzTFpyTWdsYlpjVmN4N0Y5VnBocVVxY3ZmV3dKU3FYRlBK?oc=5",
           "source": "MMA Mania",
@@ -1869,10 +1946,10 @@
           "injury": false
         },
         {
-          "title": "Mackenzie Dern motivated to submit Gillian Robertson and prove a point after UFC 330 challenger's jiu-jitsu 'shade' - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOVng5dENzeFlEc2l6RnBHdzZDMlBmUjczaHNibVB3MzNzQjBqX1N6YkVzWWFCbTNDNV9TeFBHd0FUQ2M2LUZuZnlWVHhhM2xuci1FdTVZLVFNZEN0M3dFTVJDODRrRi12bzRnbjRwbG9WOENXSzlGUWFrSF9Eb2xrdGhhSlc3aXQ3bE0zeDBTUnpsRWJocE1uZWlibEd5YjZqWUJIZjRpQWpfTXlvQ2toUGhHY3k2cDVEZEc3Tm8zb2pDVUcyWkE0MUE5ZURPZHAxeUU2T3QzSDZjanNIaVVxbWdHRFFmZDJrVi1haU5OdDBPWkpRLUpMTEhTSQ?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-06-29",
+          "title": "Islam Makhachev vs. Ian Machado Garry, Mackenzie Dern vs. Gillian Robertson announced for UFC 330 - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxOOHhoUTIxWXJqNGRRelhPM1lFZGVLc08zcTMxdzgzWVF1LWNGNnNhN1Q3LUcyWmtGQXpnRmkwU01YVkxfdXZia2xuV01wMTJibTlYempXOW9tYXN4QU5wTXlVV0lURkxQSWE4RFVyZFZ5UVdQUHBJQklHUzRkbnVtV1lmTV9SdEU4ZlJzdXJvcno3T0R0aGxFRkNXYy1HUGozd09FRVZyekZPM1NyRXFLWWdQQU91TVE2a2ZnQmZ1dU1STmM2OWhDYl9fdm1kUQ?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-06-17",
           "injury": false
         }
       ]
@@ -1930,13 +2007,6 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "Tracy Cortez Wants To Make Her Mark - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE9ZVW45a1poTU9PVmJ0RUhpRFVWODlFYVJQMUdzTGRqNzFqeWNqUFBDTnNxa3FZUXNzMUp5NlpBZTJSOVgwSEhtam5hVHpfX0lDNXRNcGNJOVBpX3NxTEJwamUxTlp4amRZcnRXVWZOYw?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-09",
-          "injury": false
-        },
-        {
           "title": "Tracy Cortez expects eventual trilogy vs. Erin Blanchfield - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxNNnRZNEpFWUIwaWVmLU1yT3dna1dOb3RrdjAyd3FUM0pFdzg4eFh6US00TjRMOFpWWDI1TC1GdW1JS3dhTXlKS3ZmVHlHQXdXeWxaS0ZlUjdRaFhfU0VPbEJxR0t6WVVBTEJyS0N6ZXQtMGtWeW5nLUJlQ0VGcDZza1laQXp1Q3ZwNy1md2pPYXlGN0RnM2ZYTnZIc3JWZ2ZlWjR5MG05OG9kbkRiRWg0Z1E3OWpKUlBFMnphUng5dTdyTHR5TUNmdnRoempMWWp0aWlzVjg2bXdDa2dPck5uUkU1QUM2LVdpcFhRc3RNT3RSWk10ZjFZ?oc=5",
           "source": "MMA Junkie",
@@ -1944,10 +2014,31 @@
           "injury": false
         },
         {
+          "title": "Tracy Cortez 'honored' to be on Conor McGregor's return card following lack of showcase women's bouts - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxPQ0EzS05oWmNFb0d4WllydVgxbmxGZFd4eXo0YkdUdElGdnVUWlBMbVBxaHdrNmpuTVByMTV6XzJJS3pKbDJRYlBPNG9oTzBPTzA3ZVdnZk85WVBNX3hKM1hxZXBlUXpBc0FyeXcwSndfd3pjT3RYVVNacGY1c2I3RFVmeHdlUVRWdWNSMWlwTXkwb0F0UjVlRmdHWDdLSVo5OXBHSnh2Rmp0QmhIbERpQzNkT3d5bTJoMkxSQ2k4MEdWa3ZUWWRYT1J1T0h5QQ?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Tracy Cortez Wants To Make Her Mark - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE4wNlNkVGNPSy01R29zRURSOEd1VmM0Zks2ZEhqZnk3c3Bna2txdFNvOVplc2tyaU5CVlJCSl92bnVvLTV6UjdMeEp1aHR5TVhOeUhYLTJlaFlRTjd0MWIwd0trcUJtZTBPb3g5NHpB?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-09",
+          "injury": false
+        },
+        {
           "title": "UFC 330 adds Erin Blanchfield vs. Jasmine Jasudavicius - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQVkwydVF6NTZqbF9sQkdmZFlyTVB5dnhqZVljYjM2cW84X2s0bi1TdGpvc1NOd2RIVVY5cEV5VF9ITmhDa0t4ejZaNTNJT0NPQ0N0dmYxd2g2cmhIVGZaUEU5MVAzdnYtTVU4d25mQ1RFRVJXak9DRTU0ZWJHSXJKcVNuMEdDeHluMTZzRXB1WTZyOHVoWXZNSWNRRUM1V1M4Rmk2dVBWclNEalNLRnp3NUhKLTROTzhSSmtJR3VHOVdwNXNkMWpyUExjTQ?oc=5",
           "source": "MMA Junkie",
           "date": "2026-06-17",
+          "injury": false
+        },
+        {
+          "title": "UFC 330 gets matchup of ranked flyweights - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQMmFKc2FOQzd4NnFncEVsM0wzckhIZVlJRTVJY0VxQXU5RnZudDFqWWVieTdJTnBlc0I5WGNCenNFLW1BX2tWaDNmTlhMZ1lqdFozMDZ6Y0M4SEhBVjNLZGU0SS1MWTR1T3pmR2pYa1k0bzdJVHgzM1RhSGEwSUpVVnhMSV9TRHkyclHSAY8BQVVfeXFMUHdyTWVoeTNSRkg5cS1LOTN2MkJndjQ1MUhfTWFsVXQ4bWFockV1bHM3LXV0ZW1ZYktkVU5yeVFpZzJXeW84WWxxWTlIQzRDWE93MzRaQnJFaWRhLXp5RGx5aG1WdWVKVGw2MGNzcTJaMHdZRVgwY3k2YlpTZk81Z1JfME5mdEhtZG9SZlJpUGM?oc=5",
+          "source": "Sherdog",
+          "date": "2026-06-18",
           "injury": false
         }
       ]
@@ -1961,6 +2052,13 @@
           "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQVkwydVF6NTZqbF9sQkdmZFlyTVB5dnhqZVljYjM2cW84X2s0bi1TdGpvc1NOd2RIVVY5cEV5VF9ITmhDa0t4ejZaNTNJT0NPQ0N0dmYxd2g2cmhIVGZaUEU5MVAzdnYtTVU4d25mQ1RFRVJXak9DRTU0ZWJHSXJKcVNuMEdDeHluMTZzRXB1WTZyOHVoWXZNSWNRRUM1V1M4Rmk2dVBWclNEalNLRnp3NUhKLTROTzhSSmtJR3VHOVdwNXNkMWpyUExjTQ?oc=5",
           "source": "MMA Junkie",
           "date": "2026-06-17",
+          "injury": false
+        },
+        {
+          "title": "UFC 330 gets matchup of ranked flyweights - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxQMmFKc2FOQzd4NnFncEVsM0wzckhIZVlJRTVJY0VxQXU5RnZudDFqWWVieTdJTnBlc0I5WGNCenNFLW1BX2tWaDNmTlhMZ1lqdFozMDZ6Y0M4SEhBVjNLZGU0SS1MWTR1T3pmR2pYa1k0bzdJVHgzM1RhSGEwSUpVVnhMSV9TRHkyclHSAY8BQVVfeXFMUHdyTWVoeTNSRkg5cS1LOTN2MkJndjQ1MUhfTWFsVXQ4bWFockV1bHM3LXV0ZW1ZYktkVU5yeVFpZzJXeW84WWxxWTlIQzRDWE93MzRaQnJFaWRhLXp5RGx5aG1WdWVKVGw2MGNzcTJaMHdZRVgwY3k2YlpTZk81Z1JfME5mdEhtZG9SZlJpUGM?oc=5",
+          "source": "Sherdog",
+          "date": "2026-06-18",
           "injury": false
         }
       ]
@@ -2027,6 +2125,19 @@
           "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNNzI1VUFqNUVKb2JMQjdVblp1T0NfYmdyY3E1WXdxMDF3RE9NVS0tSkJTTkNtN2JBaEtXVnFmNHU3d1FOVTV4UjE2anlCWEcxazd4QWljZUNnLS1DOURzdHFEMW83Z09ST1JQWE1TVm5scU11ZWp1bjJVNmwtVU1XTkxZZU5RZHJHQVBXTmUzb1FVd0lpemZDcWk4NXYwT3lFWXNYeWV3b2F1NlV4clcxdmxRZS1Vbmwtb0dKQjFVOW1FOEE?oc=5",
           "source": "Bloody Elbow",
           "date": "2026-06-24",
+          "injury": false
+        }
+      ]
+    },
+    "vicente luque": {
+      "name": "Vicente Luque",
+      "hasInjuryNews": false,
+      "items": [
+        {
+          "title": "UFC Fan Favorite Reportedly Set for Huge Fight at UFC 330 in Philadelphia - Sports Illustrated",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOOEZtcW1IcS10VFdibm14YkpsTXZjTDRlaGZZYWJrVkxtOTZJM3pMSl91YW5fc1VKckxMSUtadzBhYXF6VVkwbHRJRTk4cEQ0T3JwRUN5TVNNVE9pc0dOUG1rc1hvaXFKei1xX21FelJEZ0JQX3NBYmFFV2hQUFVyRjMwQ2lNV1JNLWdKZEpheHkwMi1BRzZ3eU5rc3gtSzRUaTVv?oc=5",
+          "source": "Sports Illustrated",
+          "date": "2026-06-16",
           "injury": false
         }
       ]
