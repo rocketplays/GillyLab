@@ -1,0 +1,33 @@
+name: Tests
+
+# Guards the data/parsing scripts. Runs only when script code changes (not on the
+# odds-data cron commits), and is separate from update-odds so a failing test
+# never blocks the odds/news/events refresh.
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'scripts/**'
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax-check key scripts
+        run: |
+          node -c scripts/fetch-card-changes.cjs
+          node -c scripts/apply-card-changes.cjs
+          node -c scripts/apply-fighter-overrides.cjs
+          node -c scripts/fetch-espn-events.cjs
+          node -c scripts/fetch-fighter-news.cjs
+
+      - name: Run unit tests
+        run: |
+          node scripts/test-card-changes.cjs
+          node scripts/test-espn-bouts.cjs
