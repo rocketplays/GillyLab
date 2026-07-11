@@ -321,7 +321,8 @@ async function ensureGraded(env, url) {
       const ag = (await pkGet(env, "ag:" + email)) || { name: rec.name, byEvent: {} };
       ag.name = (await getDisplayName(env, email)) || rec.name || ag.name;
       ag.byEvent[ev.slug] = { points: card.total, event: ev.name || rec.eventName || "",
-                              date: ev.date || rec.eventDate || "", correct: card.correct, boutCount: card.boutCount };
+                              date: ev.date || rec.eventDate || "", correct: card.correct, boutCount: card.boutCount,
+                              decided: card.decided, dogPicks: card.dogPicks, dogCorrect: card.dogCorrect };
       await pkPut(env, "ag:" + email, ag);
     }
     await env.PICKS.put("gr:" + ev.slug, "1");

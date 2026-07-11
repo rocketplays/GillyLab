@@ -16,6 +16,10 @@
 export const CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
 // A wrong winner costs points, scaled by how confident the pick was.
 export const CONF_PENALTY = { High: 10, Med: 5, Low: 0 };
+// A pick counts as an "underdog pick" when the snapshotted winner base (wPts) is
+// above this — winnerBase is 10 at a coin flip and climbs with the underdog price,
+// so >11 ≈ betting the dog (implied win prob under ~42%).
+export const UNDERDOG_WPTS = 11;
 
 export function normName(s) {
   return String(s == null ? '' : s).toLowerCase().normalize('NFD')
@@ -69,12 +73,19 @@ export function gradeCard(record, resultsBouts) {
     const res = map[pairKey(p.f1, p.f2)] || null;
     const g = gradeBout(p, res);
     return { f1: p.f1, f2: p.f2, winner: p.winner, method: p.method || null, round: p.round || null,
-             confidence: p.confidence || 'Med', result: res, ...g };
+             confidence: p.confidence || 'Med', wPts: p.wPts, result: res, ...g };
   });
   const total = bouts.reduce((t, b) => t + (b.points || 0), 0);
   const decided = bouts.filter(b => b.result && !b.voided).length;
   const correct = bouts.filter(b => b.winnerHit).length;
-  return { bouts, total, decided, correct, boutCount: bouts.length };
+  // Underdog record: of the decided bouts where the user backed a clear underdog,
+  // how many came in.
+  let dogPicks = 0, dogCorrect = 0;
+  bouts.forEach(b => {
+    if (!b.result || b.voided) return;
+    if (Number(b.wPts) > UNDERDOG_WPTS) { dogPicks++; if (b.winnerHit) dogCorrect++; }
+  });
+  return { bouts, total, decided, correct, dogPicks, dogCorrect, boutCount: bouts.length };
 }
 
 // ── aggregation across events ────────────────────────────────────────────────
@@ -101,13 +112,21 @@ export function buildLeaderboard(aggs, orderedSlugs, scope) {
   return rows.map((r, i) => ({ rank: i + 1, name: r.name, points: r.points, played: r.played }));
 }
 
-// A single user's history, newest first, with a cumulative total.
+// A single user's history, newest first, with cumulative totals + records.
 export function userHistory(agg, orderedSlugs) {
   const events = orderedSlugs
     .filter(s => agg && agg.byEvent && agg.byEvent[s])
     .map(s => ({ slug: s, ...agg.byEvent[s] }));
-  const total = events.reduce((t, e) => t + (e.points || 0), 0);
-  return { name: (agg && agg.name) || null, total, events };
+  const sum = (k) => events.reduce((t, e) => t + (e[k] || 0), 0);
+  return {
+    name: (agg && agg.name) || null,
+    total: sum('points'),
+    correct: sum('correct'),
+    decided: events.reduce((t, e) => t + (e.decided != null ? e.decided : (e.boutCount || 0)), 0),
+    dogCorrect: sum('dogCorrect'),
+    dogPicks: sum('dogPicks'),
+    events,
+  };
 }
 
 // ── display-name validation ──────────────────────────────────────────────────

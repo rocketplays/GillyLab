@@ -35,9 +35,9 @@ ok('accent-insensitive winner match', gradeBout({ ...dec, winner: 'José Aldo' }
 
 console.log('\n== gradeCard ==');
 const record = { picks: [
-  { f1: 'A', f2: 'B', winner: 'A', method: 'KO/TKO', round: 1, confidence: 'High', wPts: 12, mPts: 4, rPts: 4 },
-  { f1: 'C', f2: 'D', winner: 'D', method: 'Decision', confidence: 'Med', wPts: 10, mPts: 5, rPts: 0 },
-  { f1: 'E', f2: 'F', winner: 'E', method: 'Submission', round: 3, confidence: 'Low', wPts: 20, mPts: 7, rPts: 6 },
+  { f1: 'A', f2: 'B', winner: 'A', method: 'KO/TKO', round: 1, confidence: 'High', wPts: 12, mPts: 4, rPts: 4 },  // fav (wPts 12 -> underdog by >11), hit
+  { f1: 'C', f2: 'D', winner: 'D', method: 'Decision', confidence: 'Med', wPts: 10, mPts: 5, rPts: 0 },           // fav, wrong winner
+  { f1: 'E', f2: 'F', winner: 'E', method: 'Submission', round: 3, confidence: 'Low', wPts: 20, mPts: 7, rPts: 6 }, // big dog, hit
 ] };
 const results = [
   { f1: 'B', f2: 'A', winner: 'A', method: 'KO (Punch)', round: 1 },   // perfect (order flipped) -> (12+4+4)*2 = 40
@@ -48,10 +48,15 @@ const card = gradeCard(record, results);
 eq('card total = 40 - 5 + 27 = 62', card.total, 62);
 eq('correct winners = 2', card.correct, 2);
 eq('decided = 3', card.decided, 3);
+eq('underdog picks (wPts>11) = 2', card.dogPicks, 2);
+eq('underdog correct = 2', card.dogCorrect, 2);
 
 console.log('\n== leaderboard ==');
 const aggs = [
-  { name: 'Alpha', byEvent: { e3: { points: 50, date: '2026-07-18' }, e2: { points: 10, date: '2026-07-11' }, e1: { points: 30, date: '2026-07-04' } } },
+  { name: 'Alpha', byEvent: {
+      e3: { points: 50, date: '2026-07-18', correct: 8, decided: 10, dogPicks: 3, dogCorrect: 2 },
+      e2: { points: 10, date: '2026-07-11', correct: 5, decided: 9,  dogPicks: 2, dogCorrect: 0 },
+      e1: { points: 30, date: '2026-07-04', correct: 7, decided: 8,  dogPicks: 4, dogCorrect: 2 } } },
   { name: 'Bravo', byEvent: { e3: { points: 20, date: '2026-07-18' }, e1: { points: 90, date: '2026-07-04' } } },
   { name: 'Charlie', byEvent: { e2: { points: 5, date: '2026-07-11' } } },
   { name: null, byEvent: { e3: { points: 999 } } },   // no display name -> excluded
@@ -69,6 +74,10 @@ console.log('\n== userHistory ==');
 const hist = userHistory(aggs[0], ordered);
 eq('Alpha total = 90', hist.total, 90);
 eq('Alpha events newest first', hist.events.map(e => e.slug), ['e3', 'e2', 'e1']);
+eq('Alpha record correct = 20', hist.correct, 20);
+eq('Alpha record decided = 27', hist.decided, 27);
+eq('Alpha underdogs picked = 9', hist.dogPicks, 9);
+eq('Alpha underdogs correct = 4', hist.dogCorrect, 4);
 
 console.log('\n== cleanName ==');
 eq('trims + collapses spaces', cleanName('  Choke   Artist '), 'Choke Artist');
