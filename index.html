@@ -104037,7 +104037,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const oppLast = lastNameOf(opponent || '').toLowerCase();
     const entry = arr.find(e => {
       const el = lastNameOf(e.opponent || '').toLowerCase();
-      return (el && el === oppLast) || namesLikelyMatch(e.opponent, opponent);
+      if (!el || !oppLast) return false;
+      if (el === oppLast) return true;
+      // Allow a small typo on the LAST name (e.g. Almabayev/Almabaev), but do NOT
+      // fall back to full-name fuzzy matching. That matched different fighters who
+      // merely share a first name — "Brandon Moreno" ~ "Brandon Royval", or the
+      // near-identical "Cody Durden" ~ "Cory Sandhagen" — pulling in the wrong line.
+      const tol = Math.max(el.length, oppLast.length) >= 7 ? 2 : 1;
+      return levenshteinDist(el, oppLast) <= tol;
     });
     return entry && typeof entry.odds === 'number' ? entry.odds : null;
   }
