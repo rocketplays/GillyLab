@@ -102020,6 +102020,7 @@ const GL_SHEET = (function () {
   // by the legend up top. Headlined by the player's name; height grows with the
   // number of picks so nothing gets squished.
   const PK_CONF_COL = { High: ACC, Med: AMB, Low: MUT };
+  const PK_RED = '#ff5f57';
   function pkMethodLabel(p) {
     if (!p.method) return 'method TBD';
     if (p.method === 'Decision') return 'Decision';
@@ -102071,11 +102072,55 @@ const GL_SHEET = (function () {
     ctx.fillText(methodStr, cx, cy);
     ctx.textBaseline = 'alphabetic';
   }
+  // Graded variant: same left cluster (spine + headshot + winner vs opp + method),
+  // plus a ✓ / ✗ / – result mark and the points won or lost on the right.
+  function pkResultRow(ctx, p, x, y, w, h, img) {
+    const col = PK_CONF_COL[p.confidence] || MUT;
+    const pad = 7;
+    roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();
+    const r = (h - pad * 2) / 2, avCx = x + 24 + r, avCy = y + h / 2;
+    const ini = String(p.winner || '').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+    avatar(ctx, img, avCx, avCy, r, ini, LINE);
+    const tx = avCx + r + 16, cy = y + h / 2 + 1, right = x + w - 12;
+    ctx.textBaseline = 'middle';
+    // right cluster: points (bold, coloured) with a ✓ / ✗ / – mark to its left
+    const pts = p.points | 0;
+    const ptsStr = (pts > 0 ? '+' : '') + pts;
+    const ptsCol = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
+    const mark = p.voided ? '–' : (p.winnerHit ? '✓' : '✗');
+    const markCol = p.voided ? MUT : (p.winnerHit ? ACC : PK_RED);
+    ctx.textAlign = 'right';
+    ctx.font = '800 40px ' + COND; ctx.fillStyle = ptsCol;
+    ctx.fillText(ptsStr, right, cy);
+    const ptsW = ctx.measureText(ptsStr).width;
+    ctx.font = '700 34px ' + COND; ctx.fillStyle = markCol;
+    const markX = right - ptsW - 18;
+    ctx.fillText(mark, markX, cy);
+    const leftLimit = markX - ctx.measureText(mark).width - 20;
+    // left cluster, clipped so it never runs into the points
+    ctx.textAlign = 'left';
+    const methodStr = pkMethodLabel(p);
+    ctx.font = '400 24px ' + SANS; const methodW = ctx.measureText(methodStr).width;
+    ctx.font = '700 38px ' + COND; ctx.fillStyle = TXT;
+    const name = clip(ctx, p.winner, Math.min((leftLimit - tx) - methodW - 90, (leftLimit - tx) * 0.62));
+    ctx.fillText(name, tx, cy);
+    let cx = tx + ctx.measureText(name).width + 14;
+    if (p.loser) {
+      ctx.font = '400 22px ' + SANS; ctx.fillStyle = MUT;
+      const vs = clip(ctx, 'vs ' + p.loser, leftLimit - cx - methodW - 16);
+      ctx.fillText(vs, cx, cy);
+      cx += ctx.measureText(vs).width + 14;
+    }
+    ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, methodStr, leftLimit - cx), cx, cy);
+    ctx.textBaseline = 'alphabetic';
+  }
   async function drawPickem(data) {
     await fontsReady();
     const picks = (data.picks || []).slice();
     const n = picks.length || 1;
-    const title = pkPossessive(data.name) + ' Picks';
+    const graded = !!data.graded;
+    const title = pkPossessive(data.name) + (graded ? ' Results' : ' Picks');
 
     const cv = document.createElement('canvas');
     cv.width = W;
@@ -102099,7 +102144,10 @@ const GL_SHEET = (function () {
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
     titleLines.forEach((line, i) => ctx.fillText(line, 64, 152 + i * 64));
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-    const sub = [data.eventName, data.eventDate, n + ' pick' + (n === 1 ? '' : 's')].filter(Boolean).join('   ·   ');
+    const tail = graded
+      ? (picks.filter(p => p.winnerHit).length + '/' + n + ' winners')
+      : (n + ' pick' + (n === 1 ? '' : 's'));
+    const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
     pkLegend(ctx, 64, legendY);
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, divY); ctx.lineTo(W - 64, divY); ctx.stroke();
@@ -102108,14 +102156,17 @@ const GL_SHEET = (function () {
     const slack = Math.max(0, (listBottom - listTop) - n * rowH);
     let ry = listTop + slack / 2;
     const rowImgs = await Promise.all(picks.map(p => loadImg(p.winnerSlug)));
-    picks.forEach((p, i) => { pkRow(ctx, p, 64, ry, W - 128, rowH, rowImgs[i]); ry += rowH; });
+    const drawRow = graded ? pkResultRow : pkRow;
+    picks.forEach((p, i) => { drawRow(ctx, p, 64, ry, W - 128, rowH, rowImgs[i]); ry += rowH; });
 
-    // total points at stake
+    // footer total — points at stake (picks) or total scored (results)
+    const total = data.totalPoints || 0;
     ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
     ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
-    ctx.fillText('POINTS AT STAKE', 64, CH - 84);
-    ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND; ctx.fillStyle = ACC;
-    ctx.fillText(String(data.totalPoints || 0), W - 64, CH - 76);
+    ctx.fillText(graded ? 'TOTAL POINTS' : 'POINTS AT STAKE', 64, CH - 84);
+    ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND;
+    ctx.fillStyle = graded ? (total < 0 ? PK_RED : ACC) : ACC;
+    ctx.fillText((graded && total > 0 ? '+' : '') + total, W - 64, CH - 76);
     ctx.textAlign = 'left';
 
     footer(ctx, CH);
@@ -109705,14 +109756,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       PICKS = {}; ERR = ''; persist(); render();
     }
 
-    // Assemble the picked bouts (in card order) for the share card.
+    // Assemble the picked bouts (in card order) for the share card. Once every fight
+    // on the card is final, the card switches to a graded RESULTS sheet (each pick
+    // marked right/wrong with the points won or lost, plus the total scored).
     function sharePayload() {
+      const graded = BOUTS.length > 0 && BOUTS.every(isDone);
       const picks = [];
       BOUTS.forEach(f => {
         const p = PICKS[idOf(f)];
         if (!p || !p.winner) return;
         const loser = p.winner === f.f1 ? f.f2 : f.f1;
-        picks.push({
+        const base = {
           winner: p.winner, loser,
           winnerSlug: (typeof nameToSlug === 'function') ? nameToSlug(p.winner) : null,
           method: p.method || null,
@@ -109720,27 +109774,37 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           confidence: p.confidence || 'Med',
           label: f.label || f.wc || '',
           isMain: !!f.isMain,
-          points: potential(p, f),
-        });
+        };
+        if (graded) {
+          const g = gradePick(p, f);
+          picks.push({ ...base, points: g.points, winnerHit: !!g.winnerHit, methodHit: !!g.methodHit, roundHit: !!g.roundHit, voided: !!g.voided });
+        } else {
+          picks.push({ ...base, points: potential(p, f) });
+        }
       });
       return {
         name: NAME || null,
         eventName: (EVT && EVT.name) || 'UFC Card',
         eventDate: (EVT && EVT.details) || '',
+        graded,
         picks,
         totalPoints: picks.reduce((t, p) => t + p.points, 0),
       };
     }
     function share() {
       if (!BOUTS.length) return;
-      // Every fight must have a complete pick before a card can be shared.
-      const missing = BOUTS.filter(f => !isComplete(f)).length;
-      if (missing > 0) {
-        ERR = 'Finish all your picks first — ' + missing + ' of ' + BOUTS.length +
-          ' fight' + (missing === 1 ? '' : 's') + ' still ' + (missing === 1 ? 'needs' : 'need') +
-          ' a winner, method, round and confidence.';
-        render();
-        return;
+      // Before the card is final we share a PREDICTION sheet, so every fight must have
+      // a complete pick. Once it's all graded we share RESULTS, so that gate is moot.
+      const graded = BOUTS.every(isDone);
+      if (!graded) {
+        const missing = BOUTS.filter(f => !isComplete(f)).length;
+        if (missing > 0) {
+          ERR = 'Finish all your picks first — ' + missing + ' of ' + BOUTS.length +
+            ' fight' + (missing === 1 ? '' : 's') + ' still ' + (missing === 1 ? 'needs' : 'need') +
+            ' a winner, method, round and confidence.';
+          render();
+          return;
+        }
       }
       ERR = '';
       const data = sharePayload();
