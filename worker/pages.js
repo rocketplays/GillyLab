@@ -328,6 +328,30 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     .egrid-cards{grid-template-columns:repeat(2,1fr)}
     .stats{gap:24px}
   }
+  /* Featured-fighter slide — mirrors the profile's grouped median bars. */
+  .fsx-bio{display:flex;flex-wrap:wrap;gap:1.1rem;padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .fsx-bio-k{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .fsx-bio-v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.05rem;margin-top:.15rem;color:#ececf0}
+  .fsx-caption{font-size:.62rem;color:var(--muted);margin:.7rem 0 .1rem;display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:center}
+  .fsx-legend{display:inline-flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+  .fsx-lg{display:inline-flex;align-items:center;gap:.3rem}
+  .fsx-lg-sw{width:14px;height:6px;border-radius:2px;display:inline-block}
+  .fsx-lg-tick{width:2px;height:11px;background:#fff;display:inline-block}
+  .fsx-group{margin-top:.9rem}
+  .fsx-group-t{font-size:.58rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.55rem}
+  .fsx-row{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+  .fsx-group:last-child .fsx-row:last-child{margin-bottom:0}
+  .fsx-label{flex:0 0 140px;font-size:.74rem;color:#c9c9d0}
+  .fsx-bar{position:relative;flex:1;min-width:50px}
+  .fsx-track{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden}
+  .fsx-track-empty{background:transparent}
+  .fsx-fill{height:100%;border-radius:4px}
+  .fsx-fill.good{background:var(--accent)}
+  .fsx-fill.bad{background:#c76a54}
+  .fsx-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:1px}
+  .fsx-val{flex:0 0 46px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;color:#ececf0}
+  .fsx-val.good{color:var(--accent)}
+  .fsx-val.bad{color:#c76a54}
 </style></head><body>
 <div class="lp">
   <nav class="lpnav">
@@ -423,9 +447,16 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   }
 
   var F=LD.featured;
-  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">'+ava(F.slug,F.initials,true)+'<div><div class="bc" style="font-weight:700;font-size:1.25rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+';display:flex;align-items:center;flex-wrap:wrap;gap:7px"><span><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</span><span style="color:#00e668;border:1px solid #00e668;background:rgba(0,230,104,.1);font-size:.58rem;font-weight:600;padding:.16rem .42rem;border-radius:5px;white-space:nowrap">Record Breakdown ⌄</span></div></div></div>'
-    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:6px">'
-    +F.stats.map(function(s){return '<div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .5rem"><div style="font-size:.5rem;color:var(--muted);letter-spacing:.11em;text-transform:uppercase;line-height:1.25;margin-bottom:.25rem;min-height:2.5em">'+s[0]+'</div><div class="bc" style="font-weight:700;font-size:1.1rem;letter-spacing:.02em;color:var(--accent);line-height:1">'+s[1]+'</div></div>';}).join('')+'</div>';
+  function fsxRow(r){
+    var bar=r.bar
+      ? '<div class="fsx-bar"><div class="fsx-track"><div class="fsx-fill '+r.cls+'" style="width:'+r.w+'%"></div></div><div class="fsx-tick" style="left:'+r.tickX+'%"></div></div>'
+      : '<div class="fsx-bar"><div class="fsx-track fsx-track-empty"></div></div>';
+    return '<div class="fsx-row"><div class="fsx-label">'+r.label+'</div>'+bar+'<div class="fsx-val '+r.cls+'">'+r.val+'</div></div>';
+  }
+  var analytics='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(F.slug,F.initials,true,38)+'<div><div class="bc" style="font-weight:700;font-size:1.2rem;letter-spacing:.03em;text-transform:uppercase">'+F.name+'</div><div style="font-size:11px;color:'+M+'"><span style="color:#ffb340">'+F.division+' Champion</span>'+(F.record?' · '+F.record:'')+'</div></div></div>'
+    +((F.bio&&F.bio.length)?'<div class="fsx-bio">'+F.bio.map(function(b){return '<div><div class="fsx-bio-k">'+b[0]+'</div><div class="fsx-bio-v">'+b[1]+'</div></div>';}).join('')+'</div>':'')
+    +(F.hasBars?'<div class="fsx-caption"><span class="fsx-legend"><span class="fsx-lg"><span class="fsx-lg-sw" style="background:'+A+'"></span>better than average</span><span class="fsx-lg"><span class="fsx-lg-sw" style="background:#c76a54"></span>below average</span><span class="fsx-lg"><span class="fsx-lg-tick"></span>division average</span></span></div>':'')
+    +(F.groups||[]).map(function(g){return '<div class="fsx-group"><div class="fsx-group-t">'+g.t+'</div>'+g.rows.map(fsxRow).join('')+'</div>';}).join('');
 
   function mrows(rows){return rows.map(function(r){return '<div style="display:flex;align-items:center;gap:7px;margin:5px 0"><div style="width:66px;font-size:10.5px;color:'+M+'">'+r[0]+'</div><div style="flex:1;height:6px;background:'+BG+';border-radius:4px;overflow:hidden"><div style="width:'+r[1]+'%;height:100%;background:'+A+'"></div></div><div style="width:28px;text-align:right;font-size:10.5px;font-weight:700">'+r[1]+'%</div></div>';}).join('');}
   function shead(av,name,count,pct,lead){return '<div style="display:flex;align-items:center;justify-content:space-between;margin:3px 0"><div style="display:flex;align-items:center;gap:9px">'+av+'<div><div style="font-weight:700;font-size:13px">'+name+'</div><div style="font-size:10.5px;color:'+M+'">'+count+'</div></div></div><div class="bc" style="font-size:22px;font-weight:900;color:'+(lead?A:'#fff')+'">'+pct+'%</div></div>';}

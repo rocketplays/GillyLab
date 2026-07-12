@@ -63,17 +63,89 @@ function buildRankings(rk, recMap) {
 
 // The current champion of FEATURED_DIVISION, with real stats/record/photo — so
 // the featured-analytics slide always shows whoever actually holds the belt.
+// ── featured fighter, rendered like the current profile (grouped median bars) ──
+const _statNumG = (v) => { if (v == null) return null; const s = String(v).trim(); if (!s || s === '--' || s === '-') return null; const m = s.match(/-?[\d.]+/); return m ? parseFloat(m[0]) : null; };
+function _ageFromDob(dob) { if (!dob) return null; const d = new Date(dob); if (isNaN(d.getTime())) return null; const t = new Date(); let a = t.getFullYear() - d.getFullYear(); const mo = t.getMonth() - d.getMonth(); if (mo < 0 || (mo === 0 && t.getDate() < d.getDate())) a--; return (a >= 0 && a < 90) ? a : null; };
+// A fighter's roster division ABBREVIATION ("WW", "LW", …) and the peers who share
+// it — FIGHTERS stores the abbreviation, which is what the profile's medians use too.
+function _fighterDivAbbrev(name) {
+  const m = idx.match(new RegExp('\\{ name: "' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"'));
+  return m ? m[1] : '';
+}
+function _divToNames(abbrev) {
+  if (!abbrev) return [];
+  const re = /\{ name: "([^"]+)", division: "([^"]*)"/g; let x; const out = [];
+  while ((x = re.exec(idx))) { if (x[2] === abbrev) out.push(x[1]); }
+  return out;
+}
+function _activeSet() {
+  const m = idx.match(/const ACTIVE_ROSTER\s*=\s*(\[[\s\S]*?\]);/);
+  if (!m) return new Set();
+  try { return new Set(JSON.parse(m[1])); } catch (e) { return new Set(); }
+}
+const _MED_CACHE = {};
+function _divMedians(abbrev) {
+  if (_MED_CACHE[abbrev]) return _MED_CACHE[abbrev];
+  const FS = parseConst('FIGHTER_STATS') || {};
+  const active = _activeSet();
+  const peers = _divToNames(abbrev).filter((n) => FS[n] && (active.size === 0 || active.has(n)));
+  const fields = ['slpm', 'strAcc', 'sapm', 'strDef', 'kd', 'tdLanded', 'tdAcc', 'tdDef', 'subAvg', 'finRate'];
+  const out = {};
+  for (const fld of fields) {
+    const vals = [];
+    for (const n of peers) { const v = _statNumG(FS[n][fld]); if (v != null && !isNaN(v) && v !== 0) vals.push(v); }
+    if (vals.length < 8) { out[fld] = null; continue; }
+    vals.sort((a, b) => a - b);
+    const half = vals.length / 2;
+    const median = vals.length % 2 ? vals[(vals.length - 1) / 2] : (vals[half - 1] + vals[half]) / 2;
+    let cap = vals[Math.min(vals.length - 1, Math.floor(0.95 * vals.length))]; if (!(cap > 0)) cap = 1;
+    out[fld] = { median, cap };
+  }
+  _MED_CACHE[abbrev] = out;
+  return out;
+}
 function buildFeatured(rk, recMap) {
   const champ = rk.find(x => x.division === FEATURED_DIVISION && x.isChampion);
   if (!champ) return null;
   const st = fighterStat(champ.fighterName) || {};
-  const stats = [
-    ['Strikes Landed / Min', st.slpm], ['Striking Accuracy', st.strAcc], ['Strikes Absorbed / Min', st.sapm],
-    ['Striking Defense', st.strDef], ['Knockdowns / 15', st.kd], ['Takedowns / 15', st.tdLanded],
-    ['Takedown Accuracy', st.tdAcc], ['Takedown Defense', st.tdDef], ['Submission Avg', st.subAvg],
-    ['Finish Rate', st.finRate],
-  ].filter(s => s[1] != null && s[1] !== '');
-  if (stats.length < 4) return null;   // not enough data → keep last-good
+  const med = _divMedians(_fighterDivAbbrev(champ.fighterName));
+  const clamp = (x) => Math.max(0, Math.min(100, x));
+  const round1 = (x) => Math.round(x * 10) / 10;
+  // [label, raw, isPercent, medianField, lowerIsBetter] — mirrors populateFighterStats.
+  const mkRow = (label, raw, isPct, field, invert) => {
+    const ref = field ? med[field] : null;
+    let cls = '', w = 0, tickX = null, bar = false;
+    if (ref && raw != null && raw !== 0) {
+      cls = (invert ? raw < ref.median : raw > ref.median) ? 'good' : 'bad';
+      w = round1(clamp(raw / ref.cap * 100));
+      tickX = round1(clamp(ref.median / ref.cap * 100));
+      bar = true;
+    }
+    return { label, val: (raw == null || raw === 0) ? '—' : (isPct ? raw + '%' : String(raw)), cls, w, tickX, bar };
+  };
+  const groups = [
+    { t: 'Striking', rows: [
+      mkRow('Sig. strikes landed / min', _statNumG(st.slpm), false, 'slpm', false),
+      mkRow('Striking accuracy', _statNumG(st.strAcc), true, 'strAcc', false),
+      mkRow('Sig. strikes absorbed / min', _statNumG(st.sapm), false, 'sapm', true),
+      mkRow('Striking defense', _statNumG(st.strDef), true, 'strDef', false),
+      mkRow('Knockdowns / 15 min', _statNumG(st.kd), false, 'kd', false),
+    ]},
+    { t: 'Grappling', rows: [
+      mkRow('Takedowns / 15 min', _statNumG(st.tdLanded), false, 'tdLanded', false),
+      mkRow('Takedown accuracy', _statNumG(st.tdAcc), true, 'tdAcc', false),
+      mkRow('Takedown defense', _statNumG(st.tdDef), true, 'tdDef', false),
+      mkRow('Submissions / 15 min', _statNumG(st.subAvg), false, 'subAvg', false),
+    ]},
+    { t: 'Miscellaneous', rows: [
+      mkRow('Finish rate', _statNumG(st.finRate), true, 'finRate', false),
+    ]},
+  ];
+  if (groups.reduce((n, g) => n + g.rows.filter(r => r.val !== '—').length, 0) < 4) return null;
+  const bio = [
+    ['Age', _ageFromDob(st.dob)], ['Height', st.ht || null], ['Reach', st.reach || null],
+    ['Stance', (st.stance && st.stance !== '--') ? st.stance : null], ['Gym', st.gym || null],
+  ].filter(b => b[1] != null && b[1] !== '');
   const ini = initialsOf(champ.fighterName);
   return {
     name: champ.fighterName,
@@ -81,7 +153,7 @@ function buildFeatured(rk, recMap) {
     division: FEATURED_DIVISION,
     record: recMap[champ.fighterName] || '',
     initials: ((ini[0] || '') + (ini[ini.length - 1] || '')).toUpperCase(),
-    stats,
+    bio, groups, hasBars: groups.some(g => g.rows.some(r => r.bar)),
   };
 }
 
