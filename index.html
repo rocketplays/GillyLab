@@ -101740,7 +101740,7 @@ const GL_SHEET = (function () {
     ctx.font = '800 34px ' + COND;
     ctx.fillStyle = TXT; ctx.fillText('GILLY', tx, y);
     const w = ctx.measureText('GILLY').width;
-    ctx.fillStyle = ACC; ctx.fillText('LAB', tx + w + 8, y);
+    ctx.fillStyle = ACC; ctx.fillText('LAB', tx + w, y);
     if (kicker) {
       ctx.textAlign = 'right'; ctx.font = '700 22px ' + COND;
       ctx.fillStyle = MUT; ctx.fillText(String(kicker).toUpperCase(), W - 64, y);
@@ -101764,9 +101764,17 @@ const GL_SHEET = (function () {
     ctx.fillText('VS', W / 2, y + R + 20);
 
     let ny = y + 2 * R + 56;
-    ctx.font = '700 46px ' + COND; ctx.fillStyle = TXT;
-    ctx.fillText(clip(ctx, a.name.toUpperCase(), 420), cxA, ny);
-    ctx.fillText(clip(ctx, b.name.toUpperCase(), 420), cxB, ny);
+    ctx.fillStyle = TXT;
+    // Shrink both names in lockstep until the longest fits, so "Christian Leroy
+    // Duncan" is not clipped to "Christian Leroy Dunc…". Clip only as a last resort.
+    const nmA = a.name.toUpperCase(), nmB = b.name.toUpperCase();
+    const nameMaxW = 460;
+    let nameSize = 46;
+    const nameFits = (s) => { ctx.font = '700 ' + s + 'px ' + COND; return ctx.measureText(nmA).width <= nameMaxW && ctx.measureText(nmB).width <= nameMaxW; };
+    while (nameSize > 30 && !nameFits(nameSize)) nameSize -= 2;
+    ctx.font = '700 ' + nameSize + 'px ' + COND;
+    ctx.fillText(clip(ctx, nmA, nameMaxW), cxA, ny);
+    ctx.fillText(clip(ctx, nmB, nameMaxW), cxB, ny);
     ny += 40;
     ctx.font = '400 28px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(a.record + rankTag(a.rank), cxA, ny);
@@ -101969,9 +101977,11 @@ const GL_SHEET = (function () {
 
     let y = versusBlock(ctx, a, b, imgA, imgB, 152, 46, colA, colB, true);
     if (divName) {
+      // Centered in the empty gap between the two fighters, just above the first
+      // divider (the 'Tale of the tape' hairline sits at y + 5.5).
       ctx.save();
       ctx.textAlign = 'center'; ctx.font = '600 22px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(divName.toUpperCase(), W / 2, 262);   // just below the VS (baseline 218)
+      ctx.fillText(divName.toUpperCase(), W / 2, y - 3);
       ctx.restore();
     }
 
