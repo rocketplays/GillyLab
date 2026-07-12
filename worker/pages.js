@@ -353,6 +353,25 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .fsx-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:1px}
   .fsx-val{flex:0 0 46px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.05rem;color:#ececf0}
   .fsx-val.good{color:var(--accent)}
+  /* Free vs Premium plans */
+  .plans{max-width:780px;margin:0 auto;padding:8px 20px}
+  .plans-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .plan{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 22px;display:flex;flex-direction:column}
+  .plan.featured{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .plan-name{font-weight:800;font-size:1.05rem;letter-spacing:.02em}
+  .plan-tag{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.25);border-radius:999px;padding:2px 8px;vertical-align:middle}
+  .plan-price{font-size:1.9rem;font-weight:900;margin:10px 0 2px}
+  .plan-price small{font-size:.8rem;font-weight:600;color:var(--muted)}
+  .plan-sub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+  .plan-feats{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:9px}
+  .plan-feats li{position:relative;padding-left:24px;font-size:.9rem;line-height:1.35;color:#d7d7db}
+  .plan-feats li::before{content:"✓";position:absolute;left:0;top:0;color:var(--accent);font-weight:800}
+  .plan-feats li.off{color:var(--muted)}
+  .plan-feats li.off::before{content:"—";color:var(--muted)}
+  .plan .big{margin-top:auto;text-align:center}
+  .plans-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:14px}
+  @media(max-width:640px){.plans-grid{grid-template-columns:1fr}}
   .fsx-val.bad{color:#c76a54}
 </style></head><body>
 <div class="lp">
@@ -362,8 +381,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
       <div class="nav-menu" id="navMenu">
         <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <div class="nav-menu-list" role="menu">
-          <a role="menuitem" href="/signup">Create Account</a>
+          <a role="menuitem" href="/signup">Start free</a>
           <a role="menuitem" href="/login">Log In</a>
+          <a role="menuitem" href="/signup?next=/subscribe">Go Premium</a>
           <a role="menuitem" href="/about">About Us</a>
           <a role="menuitem" href="/contact">Contact Us</a>
         </div>
@@ -381,10 +401,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
     <p class="sub">Deep analytics for every fighter, a fight simulator that predicts winner and method, a box score for every UFC bout in history, career accolades, matchup analysis that reads each fighter’s style, pace and path to victory, live odds and props, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, one-click tape study, always-current rankings, and weekly roster updates — all in one place.</p>
     <div class="hero-cta">
-      <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
-      <a class="big ghost" href="/login">Log in</a>
+      <a class="big" href="/signup">Start free →</a>
+      <a class="big ghost" href="#plans">Compare plans</a>
     </div>
-    <p class="trust">Built for bettors, analysts, and hardcore fans — verified data, updated after every event. Works on any device.</p>
+    <p class="trust">Free to start, no card required — play Pick'em and climb the leaderboard. Upgrade for the full database and tools. Works on any device.</p>
     ${heroMatchup()}
   </header>
 
@@ -406,9 +426,45 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="egrid-cards" id="grid"></div>
   </section>
 
+  <section class="plans" id="plans">
+    <div class="plans-title">TWO WAYS IN</div>
+    <div class="plans-grid">
+      <div class="plan">
+        <div><span class="plan-name">Free</span></div>
+        <div class="plan-price">$0<small> / forever</small></div>
+        <p class="plan-sub">Create an account and play every fight week.</p>
+        <ul class="plan-feats">
+          <li>Pick'em — predict every card</li>
+          <li>Live leaderboard &amp; your pick history</li>
+          <li>Division rankings &amp; active roster</li>
+          <li>This week's card &amp; the main-event breakdown</li>
+          <li class="off">Full fighter database &amp; profiles</li>
+          <li class="off">Fight simulator &amp; matchup analytics</li>
+        </ul>
+        <a class="big ghost" href="/signup">Start free →</a>
+      </div>
+      <div class="plan featured">
+        <div><span class="plan-name">Premium</span><span class="plan-tag">FULL ACCESS</span></div>
+        <div class="plan-price">${PRICE_LABEL}</div>
+        <p class="plan-sub">Everything in Free, plus the whole database and every tool.</p>
+        <ul class="plan-feats">
+          <li>Every fighter &amp; every bout — full analytics</li>
+          <li>Fight simulator: winner, method &amp; rounds</li>
+          <li>Matchup analysis — style, pace &amp; path to victory</li>
+          <li>Live odds, props &amp; the parlay builder</li>
+          <li>Closing-line history &amp; line movement</li>
+          <li>Tape study, accolades, box scores &amp; more</li>
+        </ul>
+        <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
+      </div>
+    </div>
+    <p class="plans-note">Start free, upgrade whenever — cancel Premium anytime.</p>
+  </section>
+
   <section class="faq">
     <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
+      <details class="faq-item"><summary>Is there a free version?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. A free account lets you play Pick'em, climb the live leaderboard, keep your pick history, and browse division rankings and the active roster — no card required. Premium (${PRICE_LABEL}) unlocks the full fighter database, the simulator, matchup analytics, the odds and parlay tools, and everything else.</p></div></details>
       <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
       <details class="faq-item"><summary>What is the matchup analysis?<span class="faq-chev">›</span></summary><div class="faq-body"><p>For any two fighters, GillyLab places each on a striker–grappler spectrum, projects the pace (significant strikes thrown per minute), and writes each fighter’s path to victory from their own statistical edges. It runs on every upcoming bout, and on any matchup you build yourself.</p></div></details>
       <details class="faq-item"><summary>What does the parlay builder do?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Build a slip from any market — moneylines, round totals, method of victory, round props — then see the identical slip priced at every book that offers all of its legs, so you can take the best number. It flags same-game correlation, because a moneyline and a method prop on one fight are not independent.</p></div></details>
@@ -421,8 +477,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   </section>
 
   <footer class="foot">
-    <a class="big" href="/signup">Get access — ${PRICE_LABEL}</a>
-    <div class="fine">Cancel anytime · Secure checkout by Stripe</div>
+    <a class="big" href="/signup">Start free →</a>
+    <div class="fine">Free to start · Premium ${PRICE_LABEL}, cancel anytime · Secure checkout by Stripe</div>
   </footer>
 
   <footer class="site-footer">
