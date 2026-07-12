@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T03:03:24.315Z",
+ "generatedAt": "2026-07-12T03:13:40.778Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2246,6 +2246,194 @@
       ]
      },
      "capturedAt": "2026-07-12T02:57:11.268Z"
+    }
+   ]
+  },
+  "Benoît Saint Denis": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Paddy Pimblett",
+     "result": "L",
+     "method": "Submission",
+     "round": 1,
+     "time": "4:18",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Paddy Pimblett",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       0,
+       3
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 3,
+      "totL": 2,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-12T03:13:40.659Z"
+    }
+   ]
+  },
+  "Paddy Pimblett": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Benoît Saint Denis",
+     "result": "W",
+     "method": "Submission",
+     "round": 1,
+     "time": "4:18",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Benoît Saint Denis",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 3,
+      "totL": 2,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 3,
+      "totL": 0,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       0,
+       3
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       3
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-12T03:13:40.659Z"
     }
    ]
   }
