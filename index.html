@@ -12904,6 +12904,10 @@
  });
  }
  // ── ODDS HISTORY DATA (UFC fights only, closing moneyline avg) ──
+ // Each entry is { opponent, odds }. Add an optional `date: "YYYY-MM-DD"` when two
+ // fighters have met more than once — the retrospective then picks the meeting
+ // closest to the bout being shown, so a rematch doesn't inherit the first fight's
+ // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
   "Delphine Benouaich": [
     { opponent: "Lindsey Payne", odds: -450 },
@@ -14710,7 +14714,7 @@
     { opponent: "Clay Collard", odds: -675 },
     { opponent: "Andre Fili", odds: 123 },
     { opponent: "Will Chope", odds: -273 },
-    { opponent: "Conor McGregor", odds: 228 },
+    { opponent: "Conor McGregor", odds: 228, date: "2013-08-17" },
     { opponent: "Dennis Bermudez", odds: 258 },
     { opponent: "Leonard Garcia", odds: -415 },
     { opponent: "Justin Lawrence", odds: -165 },
@@ -17022,7 +17026,7 @@
     { opponent: "Dennis Siver", odds: -988 },
     { opponent: "Dustin Poirier", odds: -258 },
     { opponent: "Diego Brandão", odds: -645 },
-    { opponent: "Max Holloway", odds: -268 },
+    { opponent: "Max Holloway", odds: -268, date: "2013-08-17" },
     { opponent: "Marcus Brimage", odds: -155 },
     { opponent: "Ivan Buchinger", odds: -140 },
     { opponent: "Dave Hill", odds: -245 },
@@ -104025,7 +104029,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // fallback for PAST events: their matchup has aged out of the live line-movement
   // file (data/odds-history.json is pruned a few weeks after each card), but the
   // fighter's own history keeps the closing line permanently.
-  function oddsHistoryClosing(fighter, opponent) {
+  // A dated ODDS_HISTORY line more than this far from the bout is a DIFFERENT
+  // meeting between the same two fighters (a rematch), not the fight being shown.
+  const ODDS_MAX_MEETING_GAP_DAYS = 240;
+  function oddsHistoryClosing(fighter, opponent, boutDate) {
     if (typeof ODDS_HISTORY === 'undefined' || !fighter || !opponent) return null;
     let arr = ODDS_HISTORY[fighter];
     if (!Array.isArray(arr)) {
@@ -104035,18 +104042,34 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     if (!Array.isArray(arr)) return null;
     const oppLast = lastNameOf(opponent || '').toLowerCase();
-    const entry = arr.find(e => {
+    // Every recorded line against this opponent — a rematch has more than one.
+    // Match on LAST name (exact or a small typo like Almabayev/Almabaev); do NOT
+    // fall back to full-name fuzzy matching, which wrongly linked different fighters
+    // sharing a first name ("Brandon Moreno" ~ "Brandon Royval", "Cody" ~ "Cory").
+    const matches = arr.filter(e => {
       const el = lastNameOf(e.opponent || '').toLowerCase();
       if (!el || !oppLast) return false;
       if (el === oppLast) return true;
-      // Allow a small typo on the LAST name (e.g. Almabayev/Almabaev), but do NOT
-      // fall back to full-name fuzzy matching. That matched different fighters who
-      // merely share a first name — "Brandon Moreno" ~ "Brandon Royval", or the
-      // near-identical "Cody Durden" ~ "Cory Sandhagen" — pulling in the wrong line.
       const tol = Math.max(el.length, oppLast.length) >= 7 ? 2 : 1;
       return levenshteinDist(el, oppLast) <= tol;
-    });
-    return entry && typeof entry.odds === 'number' ? entry.odds : null;
+    }).filter(e => typeof e.odds === 'number');
+    if (!matches.length) return null;
+    // Date-aware selection: when the bout date is known and any match carries a
+    // `date`, pick the meeting closest to it (disambiguating rematches). If the
+    // closest dated line is still a different meeting away, prefer an undated line
+    // if one exists, else show nothing rather than the wrong fight's number.
+    const bt = boutDate ? Date.parse(boutDate) : NaN;
+    if (isFinite(bt)) {
+      const dated = matches.filter(e => e.date && !isNaN(Date.parse(e.date)));
+      if (dated.length) {
+        dated.sort((a, b) => Math.abs(Date.parse(a.date) - bt) - Math.abs(Date.parse(b.date) - bt));
+        const best = dated[0];
+        if (Math.abs(Date.parse(best.date) - bt) <= ODDS_MAX_MEETING_GAP_DAYS * 86400000) return best.odds;
+        const undated = matches.find(e => !e.date);
+        return undated ? undated.odds : null;
+      }
+    }
+    return matches[0].odds;
   }
 
   // Reconcile a bout's two independently-recorded ODDS_HISTORY closing lines (one
@@ -104055,10 +104078,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // probability, normalise them to sum to 100% (removing any residual vig/mismatch
   // between the two separate records), then convert back to American odds. If only
   // one side was recorded, derive the other as its exact complement.
-  function oddsHistoryPair(f1, f2) {
+  function oddsHistoryPair(f1, f2, boutDate) {
     const toProb = o => (o < 0 ? Math.abs(o) / (Math.abs(o) + 100) : 100 / (o + 100));
     const toAmerican = p => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
-    const r1 = oddsHistoryClosing(f1, f2), r2 = oddsHistoryClosing(f2, f1);
+    const r1 = oddsHistoryClosing(f1, f2, boutDate), r2 = oddsHistoryClosing(f2, f1, boutDate);
     let p1 = (typeof r1 === 'number') ? toProb(r1) : null;
     let p2 = (typeof r2 === 'number') ? toProb(r2) : null;
     if (p1 == null && p2 == null) return null;
@@ -104125,7 +104148,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     // Closing line + upset flag
     let closingHTML = '';
-    const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f1, f2) : null;
+    const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f1, f2, f.date) : null;
     if (pair && (pair.o1 != null || pair.o2 != null)) {
       const fmt = o => (o == null ? '—' : (typeof fmtOdds === 'function' ? fmtOdds(o) : (o > 0 ? '+' + o : '' + o)));
       const favSide = (pair.o1 != null && pair.o2 != null) ? (pair.o1 <= pair.o2 ? 1 : 2) : null;
