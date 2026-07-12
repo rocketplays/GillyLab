@@ -12916,9 +12916,6 @@
   "Zach Reese": [
     { opponent: "Ryan Gandra", odds: 113, date: "2026-07-11" }
   ],
-  "King Green": [
-    { opponent: "Terrance McKinney", odds: -105, date: "2026-07-11" }
-  ],
   "Delphine Benouaich": [
     { opponent: "Lindsey Payne", odds: -450 },
     { opponent: "Ingrid Silva", odds: -1400 },
@@ -13440,6 +13437,7 @@
     { opponent: "Logan Storley", odds: 405 }
   ],
   "Bobby Green": [
+    { opponent: "Terrance McKinney", odds: -105, date: "2026-07-11" },
     { opponent: "Jeremy Stephens", odds: -450 },
     { opponent: "Daniel Zellhuber", odds: 320 },
     { opponent: "Lance Gibson Jr.", odds: -183 },
@@ -19912,7 +19910,7 @@
     { opponent: "Justin Scoggins", odds: -115 }
   ],
   "Terrance McKinney": [
-    { opponent: "King Green", odds: -115, date: "2026-07-11" },
+    { opponent: "Bobby Green", odds: -115, date: "2026-07-11" },
     { opponent: "Kyle Nelson", odds: -175 },
     { opponent: "Chris Duncan", odds: 110 },
     { opponent: "Viacheslav Borshchev", odds: -172 },
@@ -104186,9 +104184,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const favSide = (pair.o1 != null && pair.o2 != null) ? (pair.o1 <= pair.o2 ? 1 : 2) : null;
       const winSide = f.won1 ? 1 : (f.won2 ? 2 : 0);
       const winOdds = winSide === 1 ? pair.o1 : (winSide === 2 ? pair.o2 : null);
-      // Only a genuine upset: the underdog won AND its closing price was +110 or
-      // longer (a pick'em / short-dog win isn't an upset).
-      const upset = winSide && favSide && winSide !== favSide && winOdds != null && winOdds >= 110;
+      // The underdog won: any plus-money winner (+101 or longer) counts, since that's
+      // technically an underdog.
+      const upset = winSide && favSide && winSide !== favSide && winOdds != null && winOdds >= 101;
       const badge = ' <span class="pf-upset">⚠ Upset</span>';
       closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds</div>' + headRow +
         '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
@@ -109426,6 +109424,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     try { const r = await fetch('./data/odds-closing.json', { cache: 'no-store' }); if (!r.ok) return; doc = await r.json(); }
     catch (e) { return; }
     if (!doc || !Array.isArray(doc.fights)) return;
+    // Key by the CANONICAL name (e.g. ESPN's "King Green" -> roster's "Bobby Green")
+    // so the entry lands on the same ODDS_HISTORY key the profile reads, not a duplicate.
+    const canon = (nm) => (typeof resolveCanonicalFighterName === 'function') ? (resolveCanonicalFighterName(nm, null) || nm) : nm;
     const ln = (s) => String(s || '').trim().split(/\s+/).pop().toLowerCase();
     const add = (fighter, opponent, odds, date) => {
       if (!fighter || typeof odds !== 'number') return;
@@ -109434,7 +109435,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (dup) { dup.odds = odds; return; }
       arr.unshift({ opponent, odds, date });
     };
-    doc.fights.forEach(f => { if (!f) return; add(f.f1, f.f2, f.o1, f.date); add(f.f2, f.f1, f.o2, f.date); });
+    doc.fights.forEach(f => {
+      if (!f) return;
+      const c1 = canon(f.f1), c2 = canon(f.f2);
+      add(c1, c2, f.o1, f.date); add(c2, c1, f.o2, f.date);
+    });
   }
 
 
