@@ -12921,9 +12921,6 @@
   "King Green": [
     { opponent: "Terrance McKinney", odds: -105, date: "2026-07-11" }
   ],
-  "Benoit Saint-Denis": [
-    { opponent: "Paddy Pimblett", odds: -141, date: "2026-07-11" }
-  ],
   "Delphine Benouaich": [
     { opponent: "Lindsey Payne", odds: -450 },
     { opponent: "Ingrid Silva", odds: -1400 },
@@ -14559,7 +14556,7 @@
     { opponent: "Francis Ngannou", odds: -156 }
   ],
   "Paddy Pimblett": [
-    { opponent: "Benoit Saint-Denis", odds: 119, date: "2026-07-11" },
+    { opponent: "Benoît Saint Denis", odds: 119, date: "2026-07-11" },
     { opponent: "Justin Gaethje", odds: -238 },
     { opponent: "Michael Chandler", odds: -159 },
     { opponent: "Bobby Green", odds: -153 },
@@ -14706,7 +14703,7 @@
     { opponent: "Cláudio Silva", odds: -208 }
   ],
   "Max Holloway": [
-    { opponent: "Conor McGregor", odds: -250, date: "2026-07-11" },
+    { opponent: "Conor McGregor", odds: -325, date: "2026-07-11" },
     { opponent: "Charles Oliveira", odds: -208 },
     { opponent: "Dustin Poirier", odds: -116 },
     { opponent: "Ilia Topuria", odds: 228 },
@@ -18194,6 +18191,7 @@
     { opponent: "Christina Marks", odds: -360 }
   ],
   "Benoît Saint Denis": [
+    { opponent: "Paddy Pimblett", odds: -141, date: "2026-07-11" },
     { opponent: "Dan Hooker", odds: -333 },
     { opponent: "Beneil Dariush", odds: -176 },
     { opponent: "Mauricio Ruffy", odds: 150 },
@@ -104193,11 +104191,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (pair && (pair.o1 != null || pair.o2 != null)) {
       const fmt = o => (o == null ? '—' : (typeof fmtOdds === 'function' ? fmtOdds(o) : (o > 0 ? '+' + o : '' + o)));
       const favSide = (pair.o1 != null && pair.o2 != null) ? (pair.o1 <= pair.o2 ? 1 : 2) : null;
-      const favOdds = favSide === 1 ? pair.o1 : (favSide === 2 ? pair.o2 : null);
       const winSide = f.won1 ? 1 : (f.won2 ? 2 : 0);
-      // Only a genuine upset: the underdog won AND the favorite was at least a
-      // -120 favorite (a -110/pick'em win isn't an upset).
-      const upset = winSide && favSide && winSide !== favSide && favOdds != null && favOdds <= -120;
+      const winOdds = winSide === 1 ? pair.o1 : (winSide === 2 ? pair.o2 : null);
+      // Only a genuine upset: the underdog won AND its closing price was +110 or
+      // longer (a pick'em / short-dog win isn't an upset).
+      const upset = winSide && favSide && winSide !== favSide && winOdds != null && winOdds >= 110;
       const badge = ' <span class="pf-upset">⚠ Upset</span>';
       closingHTML = '<div class="sr-common"><div class="sr-common-title">Closing odds</div>' + headRow +
         '<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div>' +
