@@ -104,68 +104,6 @@ function cnt(key, fallback) {
   return C && C[key] ? Number(C[key]).toLocaleString('en-US') : fallback;
 }
 
-function heroMatchup() {
-  const M = landingData && landingData.matchup;
-  const C = (landingData && landingData.counts) || null;
-  const n = (x) => Number(x || 0).toLocaleString('en-US');
-  if (!M) {
-    if (!C) return '';
-    return `<div class="stats">
-      <div class="stat"><div class="n">${n(C.fighters)}</div><div class="l">fighters</div></div>
-      <div class="stat"><div class="n">${n(C.bouts)}</div><div class="l">bouts</div></div>
-      <div class="stat"><div class="n">${n(C.videos)}</div><div class="l">fight videos</div></div>
-    </div>`;
-  }
-  const esc = (t) => String(t == null ? '' : t).replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  // Computed at request time, so "Saturday" can never be a stale build artefact.
-  let when = '';
-  const t = M.startsAt ? Date.parse(M.startsAt) : NaN;
-  if (isFinite(t)) {
-    const days = Math.round((t - Date.now()) / 86400000);
-    const wd = new Date(t).toLocaleDateString('en-US', { weekday: 'long', timeZone: 'America/New_York' });
-    when = days <= 0 ? 'Tonight' : days === 1 ? 'Tomorrow' : days <= 7 ? wd
-      : new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' });
-  }
-  const favA = !!(M.odds && M.odds.favA), favB = !!(M.odds && M.odds.favB);
-  // One colour per fighter, used by BOTH his avatar ring and his style dot. They
-  // were picking independently, so the underdog's ring stayed neutral white while
-  // his dot was amber — leaving no way to tell which dot belonged to whom.
-  const colourOf = (fav) => (fav ? 'var(--accent)' : '#ffcf7a');
-  const av = (f, fav) => {
-    const ring = `style="border-color:${colourOf(fav)}"`;
-    return f.slug
-      ? `<img class="mu-av" ${ring} src="/photos/thumb/${esc(f.slug)}.png" alt="" width="44" height="44" loading="lazy">`
-      : `<div class="mu-av" ${ring}>${esc(f.initials)}</div>`;
-  };
-  const side = (f, fav, right) => `<div class="mu-f${right ? ' r' : ''}">${av(f, fav)}<div style="min-width:0">
-      <div class="mu-nm">${esc(f.name)}</div>
-      <div class="mu-rec">${esc(f.record)}${f.rank && f.rank !== 'NR' ? ' · ' + esc(f.rank) : ''}</div>
-    </div></div>`;
-  const oddsRow = M.odds ? `<div class="mu-odds">
-      <div class="mu-o ${favA ? 'fav' : 'dog'}">${esc(M.odds.a)}</div>
-      <div class="mu-olbl">consensus moneyline · ${M.odds.books} book${M.odds.books === 1 ? '' : 's'}</div>
-      <div class="mu-o ${favB ? 'fav' : 'dog'}">${esc(M.odds.b)}</div>
-    </div>` : '';
-  const dot = (lean, colour) => `<span class="mu-dot" style="left:${Math.max(2, Math.min(98, lean))}%;background:${colour}"></span>`;
-  const styleRow = `<div class="mu-style">
-      <div class="mu-bar">${dot(M.a.lean, colourOf(favA))}${dot(M.b.lean, colourOf(favB))}</div>
-      <div class="mu-tick"><span>grappler</span><span>striker</span></div>
-    </div>`;
-  const foot = C ? `<div class="mu-foot">Live from <b>${n(C.fighters)}</b> fighters · <b>${n(C.bouts)}</b> bouts · <b>${n(C.videos)}</b> fight videos</div>` : '';
-  return `<div class="mu-kick">Next main event</div>
-  <div class="mu">
-    <div class="mu-top">
-      <span class="mu-ev">${esc(M.event)}${M.titleBout ? ' · Title' : ''}</span>
-      <span class="mu-when">${esc(when)}${M.weightClass ? ' · ' + esc(M.weightClass) : ''}</span>
-    </div>
-    <div class="mu-row">${side(M.a, favA, false)}<span class="mu-vs">VS</span>${side(M.b, favB, true)}</div>
-    ${oddsRow}
-    ${styleRow}
-    ${foot}
-  </div>`;
-}
-
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
@@ -405,7 +343,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
       <a class="big ghost" href="#plans">Compare plans</a>
     </div>
     <p class="trust">Free to start, no card required — play Pick'em and climb the leaderboard. Upgrade for the full database and tools. Works on any device.</p>
-    ${heroMatchup()}
   </header>
 
   <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
