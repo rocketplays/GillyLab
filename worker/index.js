@@ -49,6 +49,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/max-holloway.png",       // odds board (static)
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
+  "/gl-logo.png",                          // brand mark in the landing nav
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */

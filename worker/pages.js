@@ -356,7 +356,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 </style></head><body>
 <div class="lp">
   <nav class="lpnav">
-    <div class="brand"><img src="gl-logo.png?v=8" alt="" class="brand-logo"/>GILLY<span class="a">LAB</span></div>
+    <div class="brand"><img src="gl-logo.png?v=8" alt="" class="brand-logo"/><span class="brand-word">GILLY<span class="a">LAB</span></span></div>
     <div class="nav-cta">
       <div class="nav-menu" id="navMenu">
         <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>

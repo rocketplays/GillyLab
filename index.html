@@ -101963,10 +101963,17 @@ const GL_SHEET = (function () {
     // Only fall back to the roster division, expanded ('LW' is jargon off-site).
     const divName = (ctxInfo && ctxInfo.weightClass)
       || (window.simDivisionLabel ? window.simDivisionLabel(a.division) : a.division) || '';
-    const line2 = [divName, (ctxInfo && ctxInfo.date) || ''].filter(Boolean).join('  ·  ');
-    if (line2) ctx.fillText(line2, 64, 118);
+    // Date stays under the wordmark; the weight class moves down to sit under the VS.
+    const dateStr = (ctxInfo && ctxInfo.date) || '';
+    if (dateStr) ctx.fillText(dateStr, 64, 118);
 
     let y = versusBlock(ctx, a, b, imgA, imgB, 152, 46, colA, colB, true);
+    if (divName) {
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.font = '600 22px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(divName.toUpperCase(), W / 2, 262);   // just below the VS (baseline 218)
+      ctx.restore();
+    }
 
 
     y = sectionTitle(ctx, 'Tale of the tape', y + 46);
@@ -102027,8 +102034,10 @@ const GL_SHEET = (function () {
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
     brand(ctx, 72, 'Fight simulator', logo);
-    ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 106);
+    // Sits on the right, directly under the "Fight simulator" kicker.
+    ctx.textAlign = 'right'; ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', W - 64, 104);
+    ctx.textAlign = 'left';
 
     // Same rule as the matchup sheet: the accent marks the favourite, which here
     // the model actually knows.
