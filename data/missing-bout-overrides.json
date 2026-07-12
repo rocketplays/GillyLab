@@ -1,45 +1,4 @@
 {
   "_comment": "Manual corrections for bouts that are real/booked (confirmed via UFC.com, Sherdog, BestFightOdds, etc.) but are entirely missing from the Cito API feed — as opposed to fighter-overrides.json, which swaps one fighter within an EXISTING bout, this file injects a brand-new bout object into an existing event. The update-odds workflow re-fetches data/event.json from scratch every run and would otherwise never show these bouts — apply-missing-bout-overrides.js re-applies every entry here on top of the fresh fetch before it's committed. Remove an entry once the upstream API picks the bout up on its own (the script also auto-skips if a bout with the same fighters already exists, so it's safe to leave entries in after the API catches up).",
-  "overrides": [
-    {
-      "eventSlug": "ufc-fight-night-june-27-2026",
-      "eventStartsAt": "2026-06-27T16:00:00.000Z",
-      "matchFighterNames": [
-        "Tahir Abdullayev",
-        "Jefferson Nascimento"
-      ],
-      "bout": {
-        "cardSection": "Prelims",
-        "cardSectionOrder": 2,
-        "cardPosition": "Prelims 7",
-        "boutOrder": 2007,
-        "weightClass": "Welterweight Bout",
-        "titleBout": false,
-        "fighters": [
-          {
-            "corner": "red",
-            "fighterSlug": "tahir-abdullayev",
-            "fighterName": "Tahir Abdullayev",
-            "nickname": "Tank",
-            "country": "Azerbaijan",
-            "flag": "🇦🇿",
-            "division": "Welterweight",
-            "recordText": "19-3-0 (W-L-D)"
-          },
-          {
-            "corner": "blue",
-            "fighterSlug": "jefferson-nascimento",
-            "fighterName": "Jefferson Nascimento",
-            "nickname": "Toddynho",
-            "country": "Brazil",
-            "flag": "🇧🇷",
-            "division": "Welterweight",
-            "recordText": "13-0-0 (W-L-D)"
-          }
-        ]
-      },
-      "reason": "Tahir Abdullayev vs Jefferson Nascimento is a confirmed UFC debut bout for UFC Fight Night (Baku), June 27, 2026 — verified via UFC.com athlete pages, Sherdog event card, and BestFightOdds betting lines — but is entirely absent from the Cito API's bouts list for this event as of this writing. Injected manually so it shows on the homepage/odds pages; local fighter DB profiles (FIGHTER_STATS/FIGHT_HISTORY/etc.) intentionally left unfilled for now.",
-      "addedOn": "2026-06-23"
-    }
-  ]
+  "overrides": []
 }
