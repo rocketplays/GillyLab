@@ -493,8 +493,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +opropRow('Holloway','R1 '+oc('+500')+' R2 '+oc('+600')+' R3 '+oc('+650')+' R4 '+oc('+750')+' R5 '+oc('+1100'));
 
   // Line-movement slide — real McGregor/Holloway moneyline trajectory (raw American odds).
-  var lmM=[300,288,278,268,259,251,243,236,229,222,216,210,202,197,193,189,180,176,172,169,166,163,161,160,162,176,189];
-  var lmH=[-430,-412,-396,-382,-368,-356,-344,-333,-323,-313,-304,-296,-284,-278,-272,-266,-240,-235,-230,-226,-222,-218,-214,-210,-213,-223,-234];
+  var lmM=[300,288,278,268,259,251,243,236,229,222,216,210,202,197,193,189,180,176,172,169,166,163,161,160,162,176,185,181,184,184,187,187,186,210,263];
+  var lmH=[-430,-412,-396,-382,-368,-356,-344,-333,-323,-313,-304,-296,-284,-278,-272,-266,-240,-235,-230,-226,-222,-218,-214,-210,-213,-223,-229,-224,-226,-226,-228,-229,-227,-257,-324];
   var lmW=520,lmHt=130,lmP=10,lmN=lmM.length,lmLo=-460,lmHi=330;
   function lmy(o){return lmHt-lmP-(o-lmLo)/(lmHi-lmLo)*(lmHt-2*lmP);}
   function lmpts(arr){return arr.map(function(o,k){return (lmP+(lmW-2*lmP)*k/(lmN-1)).toFixed(1)+','+lmy(o).toFixed(1);}).join(' ');}
@@ -507,9 +507,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<polyline points="'+lmpts(lmH)+'" fill="none" stroke="#8a8a92" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>'
     +'<polyline points="'+lmpts(lmM)+'" fill="none" stroke="'+A+'" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>'
     +lmdot(lmH,'#8a8a92')+lmdot(lmM,A)+'</svg>'
-    +'<div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em;margin-top:1px"><span>Jun 5 · open</span><span>now</span></div>'
-    +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:7px"><span><span style="color:'+A+'">●</span> McGregor <span class="bc" style="font-weight:700">+300 → +189</span></span><span><span style="color:#8a8a92">●</span> Holloway <span class="bc" style="font-weight:700">-430 → -234</span></span></div>'
-    +'<div style="font-size:11px;color:'+M+';margin-top:8px;line-height:1.45">Opened a +300 underdog; steady money on McGregor has bet the line down toward +160, with a slight tick back to +189.</div>';
+    +'<div style="display:flex;justify-content:space-between;font-size:9px;color:rgba(255,255,255,.32);text-transform:uppercase;letter-spacing:.06em;margin-top:1px"><span>Jun 5 · open</span><span>Jul 11 · close</span></div>'
+    +'<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:7px"><span><span style="color:'+A+'">●</span> McGregor <span class="bc" style="font-weight:700">+300 → +263</span></span><span><span style="color:#8a8a92">●</span> Holloway <span class="bc" style="font-weight:700">-430 → -324</span></span></div>'
+    +'<div style="font-size:11px;color:'+M+';margin-top:8px;line-height:1.45">Opened a +300 underdog; early money on McGregor bet him in to +160 (Holloway -210), but late steam swung back to Holloway and the line closed McGregor +263 / Holloway -324.</div>';
 
   var OH=LD.oddsHistory;
   var ohist='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(OH.slug,OH.initials,false,36)+'<div><div style="font-weight:700;font-size:1rem">'+OH.name+'</div><div style="font-size:11px;color:'+M+'">Closing line — career odds history</div></div></div>'
