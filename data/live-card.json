@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T00:30:11.486Z",
+ "generatedAt": "2026-07-12T01:02:47.371Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -1494,6 +1494,194 @@
       ]
      },
      "capturedAt": "2026-07-12T00:30:11.369Z"
+    }
+   ]
+  },
+  "Nikita Krylov": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Robert Whittaker",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:01",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Robert Whittaker",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 100,
+      "totL": 44,
+      "totA": 109,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:10",
+      "head": [
+       15,
+       63
+      ],
+      "body": [
+       13,
+       26
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       36,
+       95
+      ],
+      "clinch": [
+       1,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 112,
+      "totL": 41,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       40,
+       111
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       40,
+       111
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-12T01:02:47.253Z"
+    }
+   ]
+  },
+  "Robert Whittaker": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Nikita Krylov",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "1:01",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Nikita Krylov",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 40,
+      "sigA": 112,
+      "totL": 41,
+      "totA": 113,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       40,
+       111
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       40,
+       111
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 100,
+      "totL": 44,
+      "totA": 109,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:10",
+      "head": [
+       15,
+       63
+      ],
+      "body": [
+       13,
+       26
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       36,
+       95
+      ],
+      "clinch": [
+       1,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-12T01:02:47.253Z"
     }
    ]
   }
