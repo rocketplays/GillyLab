@@ -1,0 +1,85 @@
+name: Capture closing odds
+
+# On fight day, ~30 minutes before each card section starts, snapshot the consensus
+# moneyline for that section into data/odds-closing.json (the client overlays it onto
+# ODDS_HISTORY, so the retrospective's "Closing odds" fills in automatically):
+#   • ~30 min before prelims  -> prelim + early-prelim bouts
+#   • ~30 min before main card -> main-card bouts
+# A cheap */15 tick self-gates via ESPN's prelimsStartsAt / startsAt; only the ticks
+# inside a capture window do any work, and idempotency makes repeats no-ops.
+on:
+  schedule:
+    - cron: '*/15 6-23 * * 6'   # Saturday, UTC — covers 30-min-before for early intl. + US cards
+    - cron: '*/15 0-9 * * 0'    # Sunday morning UTC — tail of a US Saturday card
+  workflow_dispatch:
+    inputs:
+      force_slug:  { description: 'Force an event slug (manual capture)', required: false }
+      force_phase: { description: 'prelims | maincard', required: false }
+
+# Never let two captures race; a queued tick waits rather than duplicating work.
+concurrency:
+  group: gillylab-closing-odds
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Cheap gate: is a card section ~30 min from starting right now? (Manual runs
+      # always proceed.)
+      - name: Is a capture window open?
+        id: gate
+        run: |
+          node scripts/capture-closing-odds.cjs --check | tee /tmp/gate.txt
+          if grep -q '^capture=true' /tmp/gate.txt || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch fresh odds
+        if: steps.gate.outputs.go == 'true'
+        run: |
+          curl -sf "https://api.the-odds-api.com/v4/sports/mma_mixed_martial_arts/odds/?apiKey=${{ secrets.ODDS_API_KEY }}&regions=us&markets=h2h&oddsFormat=american" \
+            -o /tmp/odds-live.json && [ -s /tmp/odds-live.json ] \
+            || { echo "odds fetch failed — nothing to capture"; echo "SKIP=1" >> "$GITHUB_ENV"; }
+
+      - name: Capture closing lines
+        if: steps.gate.outputs.go == 'true' && env.SKIP != '1'
+        env:
+          ODDS_SRC: /tmp/odds-live.json
+          FORCE_SLUG: ${{ github.event.inputs.force_slug }}
+          FORCE_PHASE: ${{ github.event.inputs.force_phase }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ github.event.inputs.force_phase }}" ]; then
+            node scripts/capture-closing-odds.cjs --force
+          else
+            node scripts/capture-closing-odds.cjs
+          fi
+
+      - name: Commit + deploy if changed
+        if: steps.gate.outputs.go == 'true' && env.SKIP != '1'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/odds-closing.json
+          if git diff --staged --quiet; then echo "no new closing lines"; exit 0; fi
+          git commit -m "closing odds: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          if ! git push; then
+            git fetch origin main
+            git rebase --autostash origin/main || { git rebase --abort; git reset --hard origin/main; git add data/odds-closing.json; git commit -m "closing odds (redo): $(date -u '+%Y-%m-%d %H:%M UTC')" || true; }
+            git push || echo "::warning::push failed; next tick will retry"
+          fi
+          npm ci && npm run deploy || echo "::warning::deploy failed; a later deploy will publish it"

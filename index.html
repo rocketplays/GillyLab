@@ -88130,6 +88130,7 @@ window.FIGHT_STATS = window.FIGHT_STATS || {};
     // folded in are lost if this 9.8MB fetch resolves after it. Re-merge; the
     // dedupe makes it a no-op once the file itself carries the fight.
     if (typeof glMergeLiveCard === 'function') { glMergeLiveCard().catch(function(){}); }
+    if (typeof glMergeClosingOdds === 'function') { glMergeClosingOdds().catch(function(){}); }
     // if a fighter profile is already open, re-render so matching rows light up
     if (window.__currentFighter) { try { populateFightHistory(window.__currentFighter); } catch(e){} }
   }).catch(()=>{});
@@ -109415,6 +109416,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
     }
     return n;
+  }
+
+  // Overlay the auto-captured closing lines (data/odds-closing.json, written ~30 min
+  // before each card section starts by scripts/capture-closing-odds.cjs) onto
+  // ODDS_HISTORY, so the retrospective's "Closing odds" fills in for every card
+  // without hand-editing this file. Merged in place, deduped by opponent last name +
+  // date, so it's a no-op if a line is already present (e.g. hand-entered here).
+  async function glMergeClosingOdds() {
+    if (typeof ODDS_HISTORY === 'undefined') return;
+    let doc;
+    try { const r = await fetch('./data/odds-closing.json', { cache: 'no-store' }); if (!r.ok) return; doc = await r.json(); }
+    catch (e) { return; }
+    if (!doc || !Array.isArray(doc.fights)) return;
+    const ln = (s) => String(s || '').trim().split(/\s+/).pop().toLowerCase();
+    const add = (fighter, opponent, odds, date) => {
+      if (!fighter || typeof odds !== 'number') return;
+      const arr = ODDS_HISTORY[fighter] || (ODDS_HISTORY[fighter] = []);
+      const dup = arr.find(e => e && e.date === date && ln(e.opponent) === ln(opponent));
+      if (dup) { dup.odds = odds; return; }
+      arr.unshift({ opponent, odds, date });
+    };
+    doc.fights.forEach(f => { if (!f) return; add(f.f1, f.f2, f.o1, f.date); add(f.f2, f.f1, f.o2, f.date); });
   }
 
 
