@@ -3394,6 +3394,7 @@
       .pk-hist-pts { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.2rem; }
       .pk-hist-pts.pos, .pk-hist-bout-pts.pos, .pk-hist-ev-total.pos { color: var(--accent); }
       .pk-hist-pts.neg, .pk-hist-bout-pts.neg, .pk-hist-ev-total.neg { color: #ff6a5e; }
+      .pk-hist-pts.zero, .pk-hist-bout-pts.zero, .pk-hist-ev-total.zero { color: var(--muted); }
       .pk-hist-arrow { color: var(--muted); font-size: 1.2rem; flex: 0 0 auto; }
       .pk-hist-empty { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
       .pk-hist-back { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; padding: 0.2rem 0; margin-bottom: 0.7rem; }
@@ -7365,7 +7366,7 @@
      return '<div class="pk-hist-bout ' + tag + '">' +
        '<div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">' + pkEsc(b.winner || '') + '</div>' +
        '<div class="pk-hist-bout-detail">' + pkEsc(sub) + '</div></div>' +
-       '<div class="pk-hist-bout-pts ' + (pts >= 0 ? 'pos' : 'neg') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
+       '<div class="pk-hist-bout-pts ' + (pts > 0 ? 'pos' : pts < 0 ? 'neg' : 'zero') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
    }).join('');
    const total = res.total || 0;
    host.innerHTML = back +

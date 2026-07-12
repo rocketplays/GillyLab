@@ -380,17 +380,22 @@ async function listAllKeys(env, prefix) {
   } while (cursor);
   return out;
 }
-// Grade every final, not-yet-swept event and fold each user's total into their
-// agg record. Idempotent via the gr:<slug> marker. Returns finalized slugs, newest first.
+// Grade-logic version. The gr:<slug> marker stores this; bump it whenever the grading
+// rules change (e.g. name-matching tolerance) to force a one-time re-grade sweep of
+// every finalized event, so cached agg totals pick up the new logic. Currently on "2"
+// (re-grade after tolerant name matching fixed picks like Bobby/King Green).
+const GRADE_VERSION = "2";
+// Grade every final event whose marker doesn't match GRADE_VERSION and fold each
+// user's total into their agg record. Returns finalized slugs, newest first.
 async function ensureGraded(env, url) {
   const results = await loadResults(env, url);
   const events = results.events.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
   const valid = events.filter(ev => ev.slug && Array.isArray(ev.bouts) && ev.bouts.length);
-  // Which events still need grading? Check all gr: markers concurrently — this is the
+  // Which events still need (re)grading? Check all markers concurrently — this is the
   // steady-state path (hit on every leaderboard/history request once all are graded),
   // and a sequential per-event get was adding latency there.
   const marks = await Promise.all(valid.map(ev => env.PICKS.get("gr:" + ev.slug)));
-  const todo = valid.filter((_, i) => !marks[i]);
+  const todo = valid.filter((_, i) => marks[i] !== GRADE_VERSION);
   for (const ev of todo) {
     const prefix = "pk:" + ev.slug + ":";
     for (const key of await listAllKeys(env, prefix)) {
@@ -405,7 +410,7 @@ async function ensureGraded(env, url) {
                               decided: card.decided, dogPicks: card.dogPicks, dogCorrect: card.dogCorrect };
       await pkPut(env, "ag:" + email, ag);
     }
-    await env.PICKS.put("gr:" + ev.slug, "1");
+    await env.PICKS.put("gr:" + ev.slug, GRADE_VERSION);
   }
   return events.map(e => e.slug);
 }
