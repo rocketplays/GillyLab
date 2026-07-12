@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T03:15:52.927Z",
+ "generatedAt": "2026-07-12T03:46:20.802Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2434,6 +2434,194 @@
       ]
      },
      "capturedAt": "2026-07-12T03:13:40.659Z"
+    }
+   ]
+  },
+  "Conor McGregor": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Max Holloway",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "3:51",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Max Holloway",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 9,
+      "totL": 1,
+      "totA": 10,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       9
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 19,
+      "totL": 12,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       9,
+       15
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "capturedAt": "2026-07-12T03:46:20.683Z"
+    }
+   ]
+  },
+  "Max Holloway": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Conor McGregor",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "3:51",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Conor McGregor",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 19,
+      "totL": 12,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       9,
+       15
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       3,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       9,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 9,
+      "totL": 1,
+      "totA": 10,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       9
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       5
+      ]
+     },
+     "capturedAt": "2026-07-12T03:46:20.683Z"
     }
    ]
   }
