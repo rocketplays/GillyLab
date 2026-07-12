@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T03:13:40.778Z",
+ "generatedAt": "2026-07-12T03:15:52.927Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2255,9 +2255,9 @@
      "date": "Jul 11, 2026",
      "opponent": "Paddy Pimblett",
      "result": "L",
-     "method": "Submission",
+     "method": "Submission (D'Arce Choke)",
      "round": 1,
-     "time": "4:18",
+     "time": "0:52",
      "event": "UFC 329: McGregor vs. Holloway 2",
      "org": "UFC"
     }
@@ -2269,9 +2269,9 @@
      "result": "L",
      "f": {
       "kd": 0,
-      "sigL": 0,
+      "sigL": 1,
       "sigA": 3,
-      "totL": 0,
+      "totL": 1,
       "totA": 3,
       "tdL": 0,
       "tdA": 1,
@@ -2279,7 +2279,7 @@
       "rev": 0,
       "ctrl": "0:04",
       "head": [
-       0,
+       1,
        3
       ],
       "body": [
@@ -2291,7 +2291,7 @@
        0
       ],
       "dist": [
-       0,
+       1,
        3
       ],
       "clinch": [
@@ -2305,30 +2305,30 @@
      },
      "o": {
       "kd": 0,
-      "sigL": 2,
-      "sigA": 3,
-      "totL": 2,
-      "totA": 3,
+      "sigL": 4,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 5,
       "tdL": 0,
       "tdA": 0,
       "sub": 1,
       "rev": 0,
       "ctrl": "0:37",
       "head": [
-       1,
-       2
+       2,
+       3
       ],
       "body": [
        0,
        0
       ],
       "leg": [
-       1,
-       1
+       2,
+       2
       ],
       "dist": [
-       2,
-       3
+       4,
+       5
       ],
       "clinch": [
        0,
@@ -2349,9 +2349,9 @@
      "date": "Jul 11, 2026",
      "opponent": "Benoît Saint Denis",
      "result": "W",
-     "method": "Submission",
+     "method": "Submission (D'Arce Choke)",
      "round": 1,
-     "time": "4:18",
+     "time": "0:52",
      "event": "UFC 329: McGregor vs. Holloway 2",
      "org": "UFC"
     }
@@ -2363,30 +2363,30 @@
      "result": "W",
      "f": {
       "kd": 0,
-      "sigL": 2,
-      "sigA": 3,
-      "totL": 2,
-      "totA": 3,
+      "sigL": 4,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 5,
       "tdL": 0,
       "tdA": 0,
       "sub": 1,
       "rev": 0,
       "ctrl": "0:37",
       "head": [
-       1,
-       2
+       2,
+       3
       ],
       "body": [
        0,
        0
       ],
       "leg": [
-       1,
-       1
+       2,
+       2
       ],
       "dist": [
-       2,
-       3
+       4,
+       5
       ],
       "clinch": [
        0,
@@ -2399,9 +2399,9 @@
      },
      "o": {
       "kd": 0,
-      "sigL": 0,
+      "sigL": 1,
       "sigA": 3,
-      "totL": 0,
+      "totL": 1,
       "totA": 3,
       "tdL": 0,
       "tdA": 1,
@@ -2409,7 +2409,7 @@
       "rev": 0,
       "ctrl": "0:04",
       "head": [
-       0,
+       1,
        3
       ],
       "body": [
@@ -2421,7 +2421,7 @@
        0
       ],
       "dist": [
-       0,
+       1,
        3
       ],
       "clinch": [
