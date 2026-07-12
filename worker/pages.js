@@ -290,6 +290,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   .plan{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 22px;display:flex;flex-direction:column}
   .plan.featured{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .plan-eyebrow{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
   .plan-name{font-weight:800;font-size:1.05rem;letter-spacing:.02em}
   .plan-tag{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.25);border-radius:999px;padding:2px 8px;vertical-align:middle}
   .plan-price{font-size:1.9rem;font-weight:900;margin:10px 0 2px}
@@ -369,6 +370,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
         <a class="big ghost" href="/signup">Start free →</a>
       </div>
       <div class="plan featured">
+        <div class="plan-eyebrow">Built for bettors, analysts &amp; hardcore fans</div>
         <div><span class="plan-name">Premium</span><span class="plan-tag">FULL ACCESS</span></div>
         <div class="plan-price">${PRICE_LABEL}</div>
         <p class="plan-sub">Everything in Free, plus the whole database and every tool.</p>
