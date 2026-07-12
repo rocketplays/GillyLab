@@ -41,6 +41,11 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* Interactive controls opt out of the double-tap-to-zoom gesture (and its 300ms
+       tap delay) — rapid taps on tightly-packed controls (e.g. the Pick'em winner/
+       method/round buttons) were triggering an iOS Safari zoom-in that then lagged.
+       Pinch-to-zoom on the rest of the page is unaffected. */
+    button, a, input, select, textarea, label, [role="button"], summary { touch-action: manipulation; }
 
     /* `overflow-x: hidden` was only ever set on <body>, not <html>. On
        mobile, <html> is the element that actually scrolls the page — if
@@ -3343,7 +3348,8 @@
       .pk-modal-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.3rem; max-width: 380px; width: 100%; }
       .pk-modal-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--text); }
       .pk-modal-sub { color: var(--muted); font-size: 0.8rem; line-height: 1.45; margin: 0.35rem 0 0.9rem; }
-      .pk-modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 0.7rem 0.8rem; color: var(--text); font-size: 0.95rem; font-family: inherit; }
+      /* 16px min so iOS Safari doesn't auto-zoom when the field is focused. */
+      .pk-modal-input { width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 9px; padding: 0.7rem 0.8rem; color: var(--text); font-size: 16px; font-family: inherit; }
       .pk-modal-input:focus { outline: none; border-color: var(--accent); }
       .pk-modal-err { color: #ff8a80; font-size: 0.76rem; min-height: 1rem; margin-top: 0.4rem; }
       .pk-modal-actions { display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 0.6rem; }
