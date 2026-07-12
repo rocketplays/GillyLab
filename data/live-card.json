@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T01:41:50.892Z",
+ "generatedAt": "2026-07-12T02:24:35.893Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -1870,6 +1870,194 @@
       ]
      },
      "capturedAt": "2026-07-12T01:39:39.808Z"
+    }
+   ]
+  },
+  "Brandon Royval": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Lone'er Kavanagh",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "3:40",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Lone'er Kavanagh",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 84,
+      "sigA": 152,
+      "totL": 146,
+      "totA": 218,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "4:53",
+      "head": [
+       78,
+       146
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       55,
+       117
+      ],
+      "clinch": [
+       11,
+       13
+      ],
+      "ground": [
+       18,
+       22
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 56,
+      "sigA": 94,
+      "totL": 63,
+      "totA": 101,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "2:09",
+      "head": [
+       31,
+       63
+      ],
+      "body": [
+       17,
+       19
+      ],
+      "leg": [
+       8,
+       12
+      ],
+      "dist": [
+       34,
+       61
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       12,
+       20
+      ]
+     },
+     "capturedAt": "2026-07-12T02:24:35.776Z"
+    }
+   ]
+  },
+  "Lone'er Kavanagh": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Brandon Royval",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "3:40",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Brandon Royval",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 56,
+      "sigA": 94,
+      "totL": 63,
+      "totA": 101,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "2:09",
+      "head": [
+       31,
+       63
+      ],
+      "body": [
+       17,
+       19
+      ],
+      "leg": [
+       8,
+       12
+      ],
+      "dist": [
+       34,
+       61
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       12,
+       20
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 84,
+      "sigA": 152,
+      "totL": 146,
+      "totA": 218,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "4:53",
+      "head": [
+       78,
+       146
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       55,
+       117
+      ],
+      "clinch": [
+       11,
+       13
+      ],
+      "ground": [
+       18,
+       22
+      ]
+     },
+     "capturedAt": "2026-07-12T02:24:35.776Z"
     }
    ]
   }
