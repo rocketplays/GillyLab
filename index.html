@@ -102164,12 +102164,11 @@ const GL_SHEET = (function () {
     const L = titleLines.length;
     const lastTitleY = 152 + (L - 1) * 64;
     const subY = lastTitleY + 46;
-    // Results card: a compact total sits under the subtitle, the legend is tighter,
-    // and there's no big footer total block — so the whole thing is shorter.
-    const totalY = graded ? subY + 38 : subY;
-    const legendY = (graded ? totalY + 40 : subY + 44);
-    const divY = legendY + (graded ? 20 : 24);
-    const listTop = divY + (graded ? 20 : 26);
+    // Results card: the total rides on the confidence-legend row (right side), and
+    // there's no big footer total block — so the whole thing is shorter.
+    const legendY = subY + 44;
+    const divY = legendY + (graded ? 22 : 24);
+    const listTop = divY + (graded ? 22 : 26);
     const rowH = graded ? 96 : 70;
     const footerBlockH = graded ? 88 : 172;
     const CH = Math.max(1080, Math.round(listTop + n * rowH + footerBlockH));
@@ -102187,19 +102186,19 @@ const GL_SHEET = (function () {
       : (n + ' pick' + (n === 1 ? '' : 's'));
     const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
+    pkLegend(ctx, 64, legendY);
     if (graded) {
       const total = data.totalPoints || 0;
-      // Right-aligned, so it sits directly under the "N/M winners" at the end of the subtitle.
-      ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'right';
+      // Right-aligned above the per-fight points column, level with the legend row.
+      ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
       const valStr = (total > 0 ? '+' : '') + total + ' pts';
-      ctx.font = '800 30px ' + COND; ctx.fillStyle = total < 0 ? PK_RED : ACC;
-      ctx.fillText(valStr, W - 64, totalY);
+      ctx.font = '800 32px ' + COND; ctx.fillStyle = total < 0 ? PK_RED : ACC;
+      ctx.fillText(valStr, W - 64, legendY + 1);
       const vw = ctx.measureText(valStr).width;
       ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
-      ctx.fillText('TOTAL', W - 64 - vw - 12, totalY);
-      ctx.textAlign = 'left';
+      ctx.fillText('TOTAL', W - 64 - vw - 12, legendY + 1);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     }
-    pkLegend(ctx, 64, legendY);
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, divY); ctx.lineTo(W - 64, divY); ctx.stroke();
 
     const listBottom = CH - footerBlockH;
