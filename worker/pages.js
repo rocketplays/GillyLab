@@ -223,12 +223,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .sc-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
   .sc-dot{width:7px;height:7px;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.22)}
   .sc-desc{text-align:left;color:rgba(255,255,255,.55);font-size:13px;margin:2px 0 13px;max-width:560px;min-height:2.4em}
-  .egrid{max-width:1040px;margin:58px auto 0}
-  .egrid-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
-  .egrid-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-  .ecard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
-  .ecard h3{font-size:14px;font-weight:800;margin:10px 0 4px}
-  .ecard p{font-size:12px;color:rgba(255,255,255,.5);line-height:1.45;margin:0}
   .foot{text-align:center;margin:52px auto 0}
   .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
   .trust{color:rgba(255,255,255,.42);font-size:12.5px;margin:16px auto 0;max-width:540px;line-height:1.5}
@@ -265,7 +259,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .rtag{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:#ffb340;border:1px solid rgba(255,179,64,.35);padding:.08rem .35rem;border-radius:2px}
   @media (max-width:760px){
     h1.hh{font-size:34px}
-    .egrid-cards{grid-template-columns:repeat(2,1fr)}
     .stats{gap:24px}
   }
   /* Featured-fighter slide — mirrors the profile's grouped median bars. */
@@ -356,11 +349,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <p class="sc-desc" id="fd"></p>
     <div class="sc-stage"><div id="stg"></div></div>
     <div class="sc-dots" id="dt" role="tablist" aria-label="Choose a feature"></div>
-  </section>
-
-  <section class="egrid">
-    <div class="egrid-title">EVERYTHING INSIDE</div>
-    <div class="egrid-cards" id="grid"></div>
   </section>
 
   <section class="plans" id="plans">
@@ -640,11 +628,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   var nx=document.getElementById('nx'),pv=document.getElementById('pv');
   var next=function(){i=(i+1)%slides.length;render();reset();},prev=function(){i=(i-1+slides.length)%slides.length;render();reset();};
   nx.onclick=next;pv.onclick=prev;keyact(nx,next);keyact(pv,prev);
-
-  var sv='<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e668" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
-  var ic={c:sv+'<path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>',s:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',o:sv+'<path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>',t:sv+'<circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4z" fill="#00e668"/></svg>',b:sv+'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>',r:sv+'<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 4H4v2a3 3 0 0 0 3 3M17 4h3v2a3 3 0 0 1-3 3"/></svg>',u:sv+'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M17 11l2 2 3-3"/></svg>',f:sv+'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>',a:sv+'<circle cx="12" cy="8" r="6"/><path d="M8.5 13.5L7 22l5-3 5 3-1.5-8.5"/></svg>',h:sv+'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',lm:sv+'<path d="M3 17l5-5 4 4 8-9"/><path d="M18 7h3v3"/></svg>',p:sv+'<path d="M6 2h12v20l-3-2-3 2-3-2-3 2V2z"/><path d="M9 7h6M9 11h6M9 15h4"/></svg>',v:sv+'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>'};
-  var cards=[[ic.c,'Fighter analytics','Full career stats for all '+(LD.counts?LD.counts.fighters.toLocaleString():'3,000+')+' fighters'],[ic.s,'Fight simulator','Predicts the winner and the method up to 50,000 times'],[ic.b,'Box scores','Head-to-head data for every UFC bout ever'],[ic.a,'Accolades','Titles, belt ranks, records, and fight-night awards for every fighter'],[ic.v,'Style & path to victory','Striker-vs-grappler read, projected pace, and how each fighter wins'],[ic.o,'Live/Historical Odds','Moneyline, round totals, method and round props for upcoming fights, plus closing-line history for past fights'],[ic.lm,'Line movement','Day-by-day line movement for every bout, from open to now'],[ic.p,'Parlay builder','Build a slip, then re-price it at every book to find the best number'],[ic.t,'Tape study','One click from any fight to the film'],[ic.r,'Rankings','Media panel and Meta AI rankings, updated after every event'],[ic.u,'Roster tracker','Weekly signings and cuts'],[ic.f,'Instant search','See detailed analytics for any fighter, past or present, with a quick search']];
-  document.getElementById('grid').innerHTML=cards.map(function(c){return '<div class="ecard">'+c[0]+'<h3>'+c[1]+'</h3><p>'+c[2]+'</p></div>';}).join('');
 
   render();reset();
 
