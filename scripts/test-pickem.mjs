@@ -50,8 +50,26 @@ const card = gradeCard(record, results);
 eq('card total = 40 - 5 + 27 = 62', card.total, 62);
 eq('correct winners = 2', card.correct, 2);
 eq('decided = 3', card.decided, 3);
-eq('underdog picks (wPts>11) = 2', card.dogPicks, 2);
+eq('underdog picks (wPts>10) = 2', card.dogPicks, 2);
 eq('underdog correct = 2', card.dogCorrect, 2);
+
+console.log('\n== underdog counting includes slight dogs (wPts just over 10) ==');
+const dogCard = gradeCard(
+  { picks: [
+    { f1: 'Dog1', f2: 'Fav1', winner: 'Dog1', method: 'Decision', confidence: 'Med', wPts: 10.4, mPts: 5, rPts: 0 }, // +110-ish dog, wins
+    { f1: 'Dog2', f2: 'Fav2', winner: 'Dog2', method: 'Decision', confidence: 'Med', wPts: 10.2, mPts: 5, rPts: 0 }, // slight dog, loses
+    { f1: 'Fav3', f2: 'Dog3', winner: 'Fav3', method: 'Decision', confidence: 'Med', wPts: 8, mPts: 5, rPts: 0 },    // favorite (wPts<10), not a dog
+    { f1: 'Even1', f2: 'Even2', winner: 'Even1', method: 'Decision', confidence: 'Med', wPts: 10, mPts: 5, rPts: 0 }, // pick'em, not a dog
+  ] },
+  [
+    { f1: 'Dog1', f2: 'Fav1', winner: 'Dog1', method: 'Decision' },
+    { f1: 'Dog2', f2: 'Fav2', winner: 'Fav2', method: 'Decision' },
+    { f1: 'Fav3', f2: 'Dog3', winner: 'Fav3', method: 'Decision' },
+    { f1: 'Even1', f2: 'Even2', winner: 'Even1', method: 'Decision' },
+  ]
+);
+eq('slight dogs counted: dogPicks = 2', dogCard.dogPicks, 2);
+eq('one slight dog hit: dogCorrect = 1', dogCard.dogCorrect, 1);
 
 console.log('\n== namesMatch (display-name drift between pick + results) ==');
 ok('exact match', namesMatch('Ryan Gandra', 'Ryan Gandra'));

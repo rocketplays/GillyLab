@@ -381,10 +381,10 @@ async function listAllKeys(env, prefix) {
   return out;
 }
 // Grade-logic version. The gr:<slug> marker stores this; bump it whenever the grading
-// rules change (e.g. name-matching tolerance) to force a one-time re-grade sweep of
-// every finalized event, so cached agg totals pick up the new logic. Currently on "2"
-// (re-grade after tolerant name matching fixed picks like Bobby/King Green).
-const GRADE_VERSION = "2";
+// rules change to force a one-time re-grade sweep of every finalized event, so cached
+// agg totals pick up the new logic. "3" = tolerant name matching (Bobby/King Green)
+// + underdog threshold lowered to any dog (wPts > 10).
+const GRADE_VERSION = "3";
 // Grade every final event whose marker doesn't match GRADE_VERSION and fold each
 // user's total into their agg record. Returns finalized slugs, newest first.
 async function ensureGraded(env, url) {

@@ -17,9 +17,10 @@ export const CONF_MULT = { High: 2, Med: 1.5, Low: 1 };
 // A wrong winner costs points, scaled by how confident the pick was.
 export const CONF_PENALTY = { High: 10, Med: 5, Low: 0 };
 // A pick counts as an "underdog pick" when the snapshotted winner base (wPts) is
-// above this — winnerBase is 10 at a coin flip and climbs with the underdog price,
-// so >11 ≈ betting the dog (implied win prob under ~42%).
-export const UNDERDOG_WPTS = 11;
+// above this. winnerBase is exactly 10 at a coin flip and rises above 10 for ANY
+// underdog (no-vig win prob under 50%), so >10 flags every underdog picked — slight
+// +100 / -105 dogs included — not just clear ones.
+export const UNDERDOG_WPTS = 10;
 
 export function normName(s) {
   return String(s == null ? '' : s).toLowerCase().normalize('NFD')
