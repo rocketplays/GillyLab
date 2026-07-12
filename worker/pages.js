@@ -202,8 +202,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .bc{font-family:'Barlow Condensed',sans-serif}
   .lp{max-width:1200px;margin:0 auto;padding:0 24px}
   nav.lpnav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
-  .brand{font-weight:900;letter-spacing:.15em;font-size:16px}
+  .brand{font-weight:900;letter-spacing:.15em;font-size:16px;display:inline-flex;align-items:center;gap:8px}
   .brand .a{color:var(--accent)}
+  .brand-logo{height:26px;width:auto;display:block}
   .nav-cta{display:flex;gap:10px;align-items:center}
   .btn-primary{font-size:14px;font-weight:800;color:#04120a;background:var(--accent);border-radius:10px;padding:10px 16px;display:inline-block}
   .btn-primary:hover{background:#12f277}
@@ -355,7 +356,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 </style></head><body>
 <div class="lp">
   <nav class="lpnav">
-    <div class="brand">GILLY<span class="a">LAB</span></div>
+    <div class="brand"><img src="gl-logo.png?v=8" alt="" class="brand-logo"/>GILLY<span class="a">LAB</span></div>
     <div class="nav-cta">
       <div class="nav-menu" id="navMenu">
         <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>

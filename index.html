@@ -101597,6 +101597,9 @@ const GL_SHEET = (function () {
     if (!slug) return null;
     return (await loadOne('./photos/' + slug + '.jpg')) || (await loadOne('./photos/thumb/' + slug + '.png'));
   }
+  // The GL fist mark, loaded once and reused across every share sheet's wordmark.
+  let _brandLogoP;
+  function loadBrandLogo() { return (_brandLogoP = _brandLogoP || loadOne('gl-logo.png?v=8')); }
 
   function meta(name) {
     const f = (typeof FIGHTERS !== 'undefined') ? FIGHTERS.find(x => x && x.name === name) : null;
@@ -101726,12 +101729,18 @@ const GL_SHEET = (function () {
     ctx.strokeStyle = ring; ctx.lineWidth = 3; ctx.stroke();
   }
 
-  function brand(ctx, y, kicker) {
+  function brand(ctx, y, kicker, logo) {
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    let tx = 64;
+    if (logo && logo.width) {
+      const bh = 52, bw = logo.width * (bh / logo.height);
+      ctx.drawImage(logo, 64, y - 40, bw, bh);   // vertically centered on the wordmark
+      tx = 64 + bw + 16;
+    }
     ctx.font = '800 34px ' + COND;
-    ctx.fillStyle = TXT; ctx.fillText('GILLY', 64, y);
+    ctx.fillStyle = TXT; ctx.fillText('GILLY', tx, y);
     const w = ctx.measureText('GILLY').width;
-    ctx.fillStyle = ACC; ctx.fillText('LAB', 64 + w + 8, y);
+    ctx.fillStyle = ACC; ctx.fillText('LAB', tx + w + 8, y);
     if (kicker) {
       ctx.textAlign = 'right'; ctx.font = '700 22px ' + COND;
       ctx.fillStyle = MUT; ctx.fillText(String(kicker).toUpperCase(), W - 64, y);
@@ -101931,7 +101940,7 @@ const GL_SHEET = (function () {
   async function drawMatchup(nameA, nameB, ctxInfo, fmt) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
-    const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
+    const [imgA, imgB, logo] = await Promise.all([loadImg(a.slug), loadImg(b.slug), loadBrandLogo()]);
     // Same analysis object the Scouting Report renders from.
     const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
     const odds = await oddsFor(nameA, nameB).catch(() => null);
@@ -101947,7 +101956,7 @@ const GL_SHEET = (function () {
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 82, (ctxInfo && ctxInfo.event) || 'UFC');
+    brand(ctx, 82, (ctxInfo && ctxInfo.event) || 'UFC', logo);
     ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
     // The BOUT's weight class first — a fighter's home division is not what he is
     // fighting at tonight. McGregor is FW on the roster and welterweight at UFC 329.
@@ -102004,7 +102013,7 @@ const GL_SHEET = (function () {
   async function drawSim(nameA, nameB, result, rounds) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
-    const [imgA, imgB] = await Promise.all([loadImg(a.slug), loadImg(b.slug)]);
+    const [imgA, imgB, logo] = await Promise.all([loadImg(a.slug), loadImg(b.slug), loadBrandLogo()]);
     const pctA = Math.round((result.winsA / result.n) * 100), pctB = 100 - pctA;
     const aLeads = pctA >= pctB;
 
@@ -102017,7 +102026,7 @@ const GL_SHEET = (function () {
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 72, 'Fight simulator');
+    brand(ctx, 72, 'Fight simulator', logo);
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', 64, 106);
 
@@ -102192,6 +102201,7 @@ const GL_SHEET = (function () {
   }
   async function drawPickem(data) {
     await fontsReady();
+    const logo = await loadBrandLogo();
     const picks = (data.picks || []).slice();
     const n = picks.length || 1;
     const graded = !!data.graded;
@@ -102217,7 +102227,7 @@ const GL_SHEET = (function () {
     ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
 
-    brand(ctx, 78, "Pick'em");
+    brand(ctx, 78, "Pick'em", logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
     titleLines.forEach((line, i) => ctx.fillText(line, 64, 152 + i * 64));
