@@ -31,6 +31,29 @@ export function normName(s) {
 // which fighter is listed first.
 export function pairKey(a, b) { return [normName(a), normName(b)].sort().join('__'); }
 
+// Normalized LAST name (accents/suffixes/punctuation stripped).
+export function lastNorm(s) {
+  const toks = String(s == null ? '' : s).toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/\b(jr|sr|iv|iii|ii|v)\b/g, ' ')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .trim().split(/\s+/).filter(Boolean);
+  return toks.length ? toks[toks.length - 1] : '';
+}
+// Two fighter names refer to the same person. Handles the feed disagreeing on a
+// fighter's display name between pick time and results: nicknames ("King Green" vs
+// "Bobby Green"), short forms ("Zach" vs "Zachary Reese"), accents and suffixes.
+// Exact normalized match wins; otherwise a shared last name (a bout only pairs two
+// fighters, so a same-last-name coincidence can't cross bouts).
+export function namesMatch(a, b) {
+  const na = normName(a), nb = normName(b);
+  if (!na || !nb) return false;
+  if (na === nb) return true;
+  if (na.length >= 5 && nb.length >= 5 && (na.startsWith(nb) || nb.startsWith(na))) return true;
+  const la = lastNorm(a), lb = lastNorm(b);
+  return !!la && la === lb && la.length >= 3;
+}
+
 // Bucket any raw method string into KO/TKO | Submission | Decision | null.
 export function methodBucket(m) {
   const s = String(m || '').toLowerCase();
@@ -49,7 +72,7 @@ export function gradeBout(pick, result) {
   const conf = CONF_MULT[pick && pick.confidence] != null ? pick.confidence : 'Med';
   if (!result) return { points: 0, pending: true, winnerHit: false, methodHit: false, roundHit: false, voided: false };
   if (result.voided) return { points: 0, voided: true, winnerHit: false, methodHit: false, roundHit: false, pending: false };
-  const winnerHit = normName(pick.winner) === normName(result.winner);
+  const winnerHit = namesMatch(pick.winner, result.winner);
   if (!winnerHit) return { points: -(CONF_PENALTY[conf] || 0), winnerHit: false, methodHit: false, roundHit: false, voided: false, pending: false };
   // Method and round are scored INDEPENDENTLY (once the winner is right). Round
   // credit only requires that the fight actually ended in the round you called — it
@@ -65,17 +88,21 @@ export function gradeBout(pick, result) {
 // Grade a full card. record.picks = [{ f1, f2, winner, method, round, confidence, wPts, mPts, rPts }].
 // resultsBouts = [{ f1, f2, winner, method, round, voided }] (raw method ok — bucketed here).
 export function gradeCard(record, resultsBouts) {
-  const map = {};
-  (resultsBouts || []).forEach(r => {
-    map[pairKey(r.f1, r.f2)] = {
-      winner: r.winner,
-      method: r.method && /KO|Sub|Dec/i.test(r.method) && (r.method === 'KO/TKO' || r.method === 'Submission' || r.method === 'Decision') ? r.method : methodBucket(r.method),
-      round: r.round != null ? Number(r.round) : null,
-      voided: !!r.voided,
-    };
-  });
+  const results = (resultsBouts || []).map(r => ({
+    f1: r.f1, f2: r.f2,
+    winner: r.winner,
+    method: r.method && /KO|Sub|Dec/i.test(r.method) && (r.method === 'KO/TKO' || r.method === 'Submission' || r.method === 'Decision') ? r.method : methodBucket(r.method),
+    round: r.round != null ? Number(r.round) : null,
+    voided: !!r.voided,
+  }));
+  // Match a pick to its result by fighter names (order-independent, name-tolerant),
+  // rather than a strict normalized-full-name key — so a display-name change between
+  // pick time and results ("Bobby Green" -> "King Green") still grades.
+  const boutMatches = (p, r) =>
+    (namesMatch(p.f1, r.f1) && namesMatch(p.f2, r.f2)) ||
+    (namesMatch(p.f1, r.f2) && namesMatch(p.f2, r.f1));
   const bouts = (record.picks || []).map(p => {
-    const res = map[pairKey(p.f1, p.f2)] || null;
+    const res = results.find(r => boutMatches(p, r)) || null;
     const g = gradeBout(p, res);
     return { f1: p.f1, f2: p.f2, winner: p.winner, method: p.method || null, round: p.round || null,
              confidence: p.confidence || 'Med', wPts: p.wPts, result: res, ...g };

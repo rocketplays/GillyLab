@@ -3401,10 +3401,7 @@
       .pk-hist-ev-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--text); }
       .pk-hist-ev-total { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; }
       .pk-hist-bouts { display: flex; flex-direction: column; gap: 0.4rem; }
-      .pk-hist-bout { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.8rem; border-radius: 9px; border: 1px solid var(--border); background: var(--card); border-left-width: 3px; }
-      .pk-hist-bout.hit { border-left-color: var(--accent); }
-      .pk-hist-bout.miss { border-left-color: #ff6a5e; }
-      .pk-hist-bout.pending, .pk-hist-bout.void { border-left-color: var(--muted); }
+      .pk-hist-bout { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.8rem; border-radius: 9px; border: 1px solid var(--border); background: var(--card); }
       .pk-hist-bout-main { flex: 1; min-width: 0; }
       .pk-hist-bout-pick { font-weight: 600; font-size: 0.88rem; }
       .pk-hist-bout-detail { color: var(--muted); font-size: 0.72rem; margin-top: 0.12rem; }
@@ -109564,13 +109561,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const voided = !!(f.isDraw || f.isNC) || (!f.won1 && !f.won2);
       return { winner, voided, method: methodBucketOf(f.methodText), round: f.resRound ? +f.resRound : null };
     }
+    // Two fighter names are the same person even if the feed's display name changed
+    // between pick time and results ("Bobby Green" vs "King Green", "Zach" vs
+    // "Zachary Reese"). Mirrors the server's namesMatch. Exact normalized match, then
+    // a shared last name.
+    function pkNameEq(a, b) {
+      const nn = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\b(jr|sr|iv|iii|ii|v)\b/g, '').replace(/[^a-z0-9]+/g, '');
+      const na = nn(a), nb = nn(b);
+      if (!na || !nb) return false;
+      if (na === nb) return true;
+      if (na.length >= 5 && nb.length >= 5 && (na.startsWith(nb) || nb.startsWith(na))) return true;
+      const ln = s => { const t = String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/\b(jr|sr|iv|iii|ii|v)\b/g, ' ').replace(/[^a-z0-9\s]/g, ' ').trim().split(/\s+/).filter(Boolean); return t.length ? t[t.length - 1] : ''; };
+      const la = ln(a), lb = ln(b);
+      return !!la && la === lb && la.length >= 3;
+    }
     // Grade a user's pick for a finished bout — mirrors the server's gradeBout so
     // the per-fight points shown here match what lands on the profile.
     function gradePick(p, f) {
       const a = actualOf(f);
       if (!p || !p.winner) return Object.assign({ points: 0, nopick: true }, a);
       if (a.voided) return Object.assign({ points: 0, voided: true }, a);
-      if (p.winner !== a.winner) return Object.assign({ points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false }, a);
+      if (!pkNameEq(p.winner, a.winner)) return Object.assign({ points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false }, a);
       const parts = (LOCKED && SNAP[idOf(f)]) || scoreParts(p, f);
       // Method + round scored independently: round credit only needs the fight to
       // have ended in the round you called (not for the method to be right too).

@@ -1,7 +1,7 @@
 // Unit tests for worker/pickem.mjs — the pure scoring/grading/aggregation core.
 import {
   gradeBout, gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName,
-  pairKey, methodBucket, CONF_MULT, CONF_PENALTY,
+  pairKey, methodBucket, namesMatch, CONF_MULT, CONF_PENALTY,
 } from '../worker/pickem.mjs';
 
 let fail = 0;
@@ -52,6 +52,23 @@ eq('correct winners = 2', card.correct, 2);
 eq('decided = 3', card.decided, 3);
 eq('underdog picks (wPts>11) = 2', card.dogPicks, 2);
 eq('underdog correct = 2', card.dogCorrect, 2);
+
+console.log('\n== namesMatch (display-name drift between pick + results) ==');
+ok('exact match', namesMatch('Ryan Gandra', 'Ryan Gandra'));
+ok('nickname first name (King vs Bobby Green)', namesMatch('Bobby Green', 'King Green'));
+ok('short vs full first name (Zach vs Zachary Reese)', namesMatch('Zachary Reese', 'Zach Reese'));
+ok('accents (José vs Jose Aldo)', namesMatch('José Aldo', 'Jose Aldo'));
+ok('different fighters do NOT match', !namesMatch('Cody Durden', 'Cory Sandhagen'));
+ok('shared first name only does NOT match', !namesMatch('Brandon Moreno', 'Brandon Royval'));
+
+console.log('\n== gradeCard tolerates a renamed fighter ==');
+const drift = gradeCard(
+  { picks: [{ f1: 'Bobby Green', f2: 'Terrance McKinney', winner: 'Bobby Green', method: 'KO/TKO', round: 1, confidence: 'Med', wPts: 10, mPts: 4, rPts: 4 }] },
+  [{ f1: 'King Green', f2: 'Terrance McKinney', winner: 'King Green', method: 'KO/TKO', round: 1 }]
+);
+eq('renamed winner grades (not pending): 1 decided', drift.decided, 1);
+eq('renamed winner counted correct', drift.correct, 1);
+ok('renamed bout is not pending', drift.bouts[0].pending === false && drift.bouts[0].winnerHit === true);
 
 console.log('\n== leaderboard ==');
 const aggs = [
