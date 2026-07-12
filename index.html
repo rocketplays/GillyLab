@@ -102164,10 +102164,14 @@ const GL_SHEET = (function () {
     const L = titleLines.length;
     const lastTitleY = 152 + (L - 1) * 64;
     const subY = lastTitleY + 46;
-    const legendY = subY + 44;
-    const divY = legendY + 24;
-    const listTop = divY + 26;
-    const rowH = graded ? 108 : 70, footerBlockH = 172;
+    // Results card: a compact total sits under the subtitle, the legend is tighter,
+    // and there's no big footer total block — so the whole thing is shorter.
+    const totalY = graded ? subY + 38 : subY;
+    const legendY = (graded ? totalY + 40 : subY + 44);
+    const divY = legendY + (graded ? 20 : 24);
+    const listTop = divY + (graded ? 20 : 26);
+    const rowH = graded ? 96 : 70;
+    const footerBlockH = graded ? 88 : 172;
     const CH = Math.max(1080, Math.round(listTop + n * rowH + footerBlockH));
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
@@ -102183,6 +102187,15 @@ const GL_SHEET = (function () {
       : (n + ' pick' + (n === 1 ? '' : 's'));
     const sub = [data.eventName, data.eventDate, tail].filter(Boolean).join('   ·   ');
     ctx.fillText(clip(ctx, sub, W - 128), 64, subY);
+    if (graded) {
+      const total = data.totalPoints || 0;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+      ctx.fillText('TOTAL', 64, totalY);
+      const lw = ctx.measureText('TOTAL').width;
+      ctx.font = '800 30px ' + COND; ctx.fillStyle = total < 0 ? PK_RED : ACC;
+      ctx.fillText((total > 0 ? '+' : '') + total + ' pts', 64 + lw + 16, totalY + 1);
+    }
     pkLegend(ctx, 64, legendY);
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, divY); ctx.lineTo(W - 64, divY); ctx.stroke();
 
@@ -102193,15 +102206,16 @@ const GL_SHEET = (function () {
     const drawRow = graded ? pkResultRow : pkRow;
     picks.forEach((p, i) => { drawRow(ctx, p, 64, ry, W - 128, rowH, rowImgs[i]); ry += rowH; });
 
-    // footer total — points at stake (picks) or total scored (results)
-    const total = data.totalPoints || 0;
-    ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
-    ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
-    ctx.fillText(graded ? 'TOTAL POINTS' : 'POINTS AT STAKE', 64, CH - 84);
-    ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND;
-    ctx.fillStyle = graded ? (total < 0 ? PK_RED : ACC) : ACC;
-    ctx.fillText((graded && total > 0 ? '+' : '') + total, W - 64, CH - 76);
-    ctx.textAlign = 'left';
+    // Points-at-stake footer for the picks card; the results card shows its total up top.
+    if (!graded) {
+      const total = data.totalPoints || 0;
+      ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
+      ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
+      ctx.fillText('POINTS AT STAKE', 64, CH - 84);
+      ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND; ctx.fillStyle = ACC;
+      ctx.fillText(String(total), W - 64, CH - 76);
+      ctx.textAlign = 'left';
+    }
 
     footer(ctx, CH);
     return cv;
