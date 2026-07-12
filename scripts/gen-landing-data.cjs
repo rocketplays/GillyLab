@@ -42,7 +42,13 @@ function fighterStat(name) {
   const m = idx.match(re);
   if (!m) return null;
   const o = {};
-  m[1].replace(/(\w+):\s*("(?:[^"\\]|\\.)*"|'[^']*'|-?[\d.]+)/g, (_, k, v) => { o[k] = v.replace(/^['"]|['"]$/g, ''); });
+  m[1].replace(/(\w+):\s*("(?:[^"\\]|\\.)*"|'[^']*'|-?[\d.]+)/g, (_, k, v) => {
+    // Strip the surrounding quotes AND unescape inner backslash-escapes, so a source
+    // value like ht:"5'10\"" yields 5'10" — not 5'10\" with a stray backslash.
+    o[k] = v[0] === '"' ? v.slice(1, -1).replace(/\\(["\\])/g, '$1')
+         : v[0] === "'" ? v.slice(1, -1)
+         : v;
+  });
   return o;
 }
 const initialsOf = (name) => String(name || '').trim().split(/\s+/).map(w => w[0] || '').filter(Boolean);
