@@ -1,6 +1,125 @@
 {
-  "generatedAt": "2026-07-12T01:21:37.576Z",
+  "generatedAt": "2026-07-12T04:09:04.179Z",
   "events": [
+    {
+      "slug": "ufc-329",
+      "name": "UFC 329",
+      "date": "2026-07-12",
+      "bouts": [
+        {
+          "f1": "Conor McGregor",
+          "f2": "Max Holloway",
+          "winner": "Max Holloway",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Benoît Saint Denis",
+          "f2": "Paddy Pimblett",
+          "winner": "Paddy Pimblett",
+          "method": "Submission",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Cory Sandhagen",
+          "f2": "Mario Bautista",
+          "winner": "Mario Bautista",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Brandon Royval",
+          "f2": "Lone'er Kavanagh",
+          "winner": "Brandon Royval",
+          "method": "Submission",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "King Green",
+          "f2": "Terrance McKinney",
+          "winner": "King Green",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Nikita Krylov",
+          "f2": "Robert Whittaker",
+          "winner": "Robert Whittaker",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Gable Steveson",
+          "f2": "Elisha Ellison",
+          "winner": "Gable Steveson",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Cody Garbrandt",
+          "f2": "Adrian Yanez",
+          "winner": "Adrian Yanez",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Luke Riley",
+          "f2": "Kai Kamaka III",
+          "winner": "Luke Riley",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Tracy Cortez",
+          "f2": "Wang Cong",
+          "winner": "Wang Cong",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Damian Pinas",
+          "f2": "Cesar Almeida",
+          "winner": "Damian Pinas",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Farid Basharat",
+          "f2": "John Garza",
+          "winner": "Farid Basharat",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Ryan Gandra",
+          "f2": "Zach Reese",
+          "winner": "Ryan Gandra",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Alessandro Costa",
+          "f2": "Cody Durden",
+          "winner": "Alessandro Costa",
+          "method": "Submission",
+          "round": 2,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-june-27-2026",
       "name": "UFC Fight Night",
