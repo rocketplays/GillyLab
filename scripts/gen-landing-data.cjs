@@ -33,9 +33,12 @@ function recordMap() {
   return m;
 }
 
-// A single fighter's stat object from the FIGHTER_STATS map in index.html
+// A single fighter's stat object from the FIGHTER_STATS map in index.html.
+// Case-insensitive: the ESPN feed and the roster disagree on capitalization for
+// some names ("Dricus Du Plessis" vs "Dricus du Plessis"), and only FIGHTER_STATS
+// uses the "Name": { ... } shape, so this can't match the wrong structure.
 function fighterStat(name) {
-  const re = new RegExp('"' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}');
+  const re = new RegExp('"' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}', 'i');
   const m = idx.match(re);
   if (!m) return null;
   const o = {};
@@ -190,6 +193,14 @@ function rankMap() {
   const m = {}, re = /\{ name: "([^"]+)", division: "[^"]*", rank: "([^"]*)"/g;
   let x; while ((x = re.exec(idx))) m[x[1]] = x[2];
   return m;
+}
+// Case-insensitive map lookup — the feed and roster disagree on capitalization for
+// some names ("Dricus Du Plessis" vs "Dricus du Plessis").
+function ciLookup(map, name) {
+  if (map[name] != null) return map[name];
+  const low = String(name || '').toLowerCase();
+  const k = Object.keys(map).find((key) => key.toLowerCase() === low);
+  return k ? map[k] : '';
 }
 // Striker-vs-grappler lean, 0..100. Identical to index.html's lean() — the 0.3
 // grappling floor stops a fighter with no recorded takedowns pinning to 100.
@@ -436,7 +447,7 @@ function buildStyleDemo(recMap) {
     const slug = nameToSlug(name);
     return {
       name, slug: photoExists(slug) ? slug : '', initials: initials2(name),
-      record: recMap[name] || '', rank: ranks[name] || '',
+      record: ciLookup(recMap, name), rank: ciLookup(ranks, name),
       lean, pace, path,
     };
   };
@@ -464,8 +475,8 @@ function buildMatchup(recMap) {
       name,
       slug: photoExists(slug) ? slug : '',
       initials: initials2(name),
-      record: recMap[name] || '',
-      rank: ranks[name] || '',
+      record: ciLookup(recMap, name),
+      rank: ciLookup(ranks, name),
       lean: styleLean(st),
       slpm: st && numOf(st.slpm),
       sapm: st && numOf(st.sapm),
