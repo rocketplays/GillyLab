@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T03:46:20.802Z",
+ "generatedAt": "2026-07-12T03:48:33.347Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2445,7 +2445,7 @@
      "result": "L",
      "method": "KO/TKO",
      "round": 1,
-     "time": "3:51",
+     "time": "1:09",
      "event": "UFC 329: McGregor vs. Holloway 2",
      "org": "UFC"
     }
@@ -2458,9 +2458,9 @@
      "f": {
       "kd": 0,
       "sigL": 0,
-      "sigA": 9,
-      "totL": 1,
-      "totA": 10,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 11,
       "tdL": 0,
       "tdA": 0,
       "sub": 0,
@@ -2468,7 +2468,7 @@
       "ctrl": "0:00",
       "head": [
        0,
-       9
+       6
       ],
       "body": [
        0,
@@ -2480,30 +2480,30 @@
       ],
       "dist": [
        0,
-       4
+       5
       ],
       "clinch": [
        0,
-       0
+       1
       ],
       "ground": [
        0,
-       5
+       0
       ]
      },
      "o": {
       "kd": 0,
       "sigL": 12,
       "sigA": 19,
-      "totL": 12,
-      "totA": 19,
+      "totL": 14,
+      "totA": 22,
       "tdL": 0,
       "tdA": 0,
       "sub": 0,
       "rev": 0,
       "ctrl": "0:37",
       "head": [
-       9,
+       8,
        15
       ],
       "body": [
@@ -2511,20 +2511,20 @@
        0
       ],
       "leg": [
-       3,
+       4,
        4
       ],
       "dist": [
-       3,
-       5
+       5,
+       6
       ],
       "clinch": [
        0,
        0
       ],
       "ground": [
-       9,
-       14
+       7,
+       13
       ]
      },
      "capturedAt": "2026-07-12T03:46:20.683Z"
@@ -2539,7 +2539,7 @@
      "result": "W",
      "method": "KO/TKO",
      "round": 1,
-     "time": "3:51",
+     "time": "1:09",
      "event": "UFC 329: McGregor vs. Holloway 2",
      "org": "UFC"
     }
@@ -2553,15 +2553,15 @@
       "kd": 0,
       "sigL": 12,
       "sigA": 19,
-      "totL": 12,
-      "totA": 19,
+      "totL": 14,
+      "totA": 22,
       "tdL": 0,
       "tdA": 0,
       "sub": 0,
       "rev": 0,
       "ctrl": "0:37",
       "head": [
-       9,
+       8,
        15
       ],
       "body": [
@@ -2569,28 +2569,28 @@
        0
       ],
       "leg": [
-       3,
+       4,
        4
       ],
       "dist": [
-       3,
-       5
+       5,
+       6
       ],
       "clinch": [
        0,
        0
       ],
       "ground": [
-       9,
-       14
+       7,
+       13
       ]
      },
      "o": {
       "kd": 0,
       "sigL": 0,
-      "sigA": 9,
-      "totL": 1,
-      "totA": 10,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 11,
       "tdL": 0,
       "tdA": 0,
       "sub": 0,
@@ -2598,7 +2598,7 @@
       "ctrl": "0:00",
       "head": [
        0,
-       9
+       6
       ],
       "body": [
        0,
@@ -2610,15 +2610,15 @@
       ],
       "dist": [
        0,
-       4
+       5
       ],
       "clinch": [
        0,
-       0
+       1
       ],
       "ground": [
        0,
-       5
+       0
       ]
      },
      "capturedAt": "2026-07-12T03:46:20.683Z"
