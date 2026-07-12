@@ -385,9 +385,13 @@ async function listAllKeys(env, prefix) {
 async function ensureGraded(env, url) {
   const results = await loadResults(env, url);
   const events = results.events.slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
-  for (const ev of events) {
-    if (!ev.slug || !Array.isArray(ev.bouts) || !ev.bouts.length) continue;
-    if (await env.PICKS.get("gr:" + ev.slug)) continue;
+  const valid = events.filter(ev => ev.slug && Array.isArray(ev.bouts) && ev.bouts.length);
+  // Which events still need grading? Check all gr: markers concurrently — this is the
+  // steady-state path (hit on every leaderboard/history request once all are graded),
+  // and a sequential per-event get was adding latency there.
+  const marks = await Promise.all(valid.map(ev => env.PICKS.get("gr:" + ev.slug)));
+  const todo = valid.filter((_, i) => !marks[i]);
+  for (const ev of todo) {
     const prefix = "pk:" + ev.slug + ":";
     for (const key of await listAllKeys(env, prefix)) {
       const rec = await pkGet(env, key);
@@ -409,8 +413,10 @@ async function ensureGraded(env, url) {
 // Finalized slug order + every user's agg record (for leaderboards + ranks).
 async function pickemBoardData(env, url) {
   const ordered = await ensureGraded(env, url);
-  const aggs = [];
-  for (const k of await listAllKeys(env, "ag:")) { const a = await pkGet(env, k); if (a) aggs.push(a); }
+  // Read all agg records concurrently — a sequential await-in-loop is what made the
+  // Last 5 / All-time / My-history tabs slow once a few dozen players existed.
+  const keys = await listAllKeys(env, "ag:");
+  const aggs = (await Promise.all(keys.map(k => pkGet(env, k)))).filter(Boolean);
   return { ordered, aggs };
 }
 
