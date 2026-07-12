@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-11T23:57:31.926Z",
+ "generatedAt": "2026-07-12T00:30:11.486Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -1306,6 +1306,194 @@
       ]
      },
      "capturedAt": "2026-07-11T23:57:31.805Z"
+    }
+   ]
+  },
+  "Gable Steveson": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Elisha Ellison",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:31",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Elisha Ellison",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 41,
+      "sigA": 57,
+      "totL": 41,
+      "totA": 57,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:10",
+      "head": [
+       25,
+       39
+      ],
+      "body": [
+       12,
+       14
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       28,
+       40
+      ],
+      "clinch": [
+       12,
+       16
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 33,
+      "totL": 14,
+      "totA": 34,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       10,
+       30
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       9,
+       28
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-12T00:30:11.369Z"
+    }
+   ]
+  },
+  "Elisha Ellison": {
+   "history": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Gable Steveson",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:31",
+     "event": "UFC 329: McGregor vs. Holloway 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 11, 2026",
+     "opponent": "Gable Steveson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 33,
+      "totL": 14,
+      "totA": 34,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       10,
+       30
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       9,
+       28
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 41,
+      "sigA": 57,
+      "totL": 41,
+      "totA": 57,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:10",
+      "head": [
+       25,
+       39
+      ],
+      "body": [
+       12,
+       14
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       28,
+       40
+      ],
+      "clinch": [
+       12,
+       16
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-12T00:30:11.369Z"
     }
    ]
   }
