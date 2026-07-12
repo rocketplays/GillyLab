@@ -102072,47 +102072,73 @@ const GL_SHEET = (function () {
     ctx.fillText(methodStr, cx, cy);
     ctx.textBaseline = 'alphabetic';
   }
-  // Graded variant: same left cluster (spine + headshot + winner vs opp + method),
-  // plus a ✓ / ✗ / – result mark and the points won or lost on the right.
-  function pkResultRow(ctx, p, x, y, w, h, img) {
-    const col = PK_CONF_COL[p.confidence] || MUT;
-    const pad = 7;
-    roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();
-    const r = (h - pad * 2) / 2, avCx = x + 24 + r, avCy = y + h / 2;
-    const ini = String(p.winner || '').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
-    avatar(ctx, img, avCx, avCy, r, ini, LINE);
-    const tx = avCx + r + 16, cy = y + h / 2 + 1, right = x + w - 12;
-    ctx.textBaseline = 'middle';
-    // right cluster: points (bold, coloured) with a ✓ / ✗ / – mark to its left
-    const pts = p.points | 0;
-    const ptsStr = (pts > 0 ? '+' : '') + pts;
-    const ptsCol = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
-    const mark = p.voided ? '–' : (p.winnerHit ? '✓' : '✗');
-    const markCol = p.voided ? MUT : (p.winnerHit ? ACC : PK_RED);
-    ctx.textAlign = 'right';
-    ctx.font = '800 40px ' + COND; ctx.fillStyle = ptsCol;
-    ctx.fillText(ptsStr, right, cy);
-    const ptsW = ctx.measureText(ptsStr).width;
-    ctx.font = '700 34px ' + COND; ctx.fillStyle = markCol;
-    const markX = right - ptsW - 18;
-    ctx.fillText(mark, markX, cy);
-    const leftLimit = markX - ctx.measureText(mark).width - 20;
-    // left cluster, clipped so it never runs into the points
-    ctx.textAlign = 'left';
-    const methodStr = pkMethodLabel(p);
-    ctx.font = '400 24px ' + SANS; const methodW = ctx.measureText(methodStr).width;
-    ctx.font = '700 38px ' + COND; ctx.fillStyle = TXT;
-    const name = clip(ctx, p.winner, Math.min((leftLimit - tx) - methodW - 90, (leftLimit - tx) * 0.62));
-    ctx.fillText(name, tx, cy);
-    let cx = tx + ctx.measureText(name).width + 14;
-    if (p.loser) {
-      ctx.font = '400 22px ' + SANS; ctx.fillStyle = MUT;
-      const vs = clip(ctx, 'vs ' + p.loser, leftLimit - cx - methodW - 16);
-      ctx.fillText(vs, cx, cy);
-      cx += ctx.measureText(vs).width + 14;
+  // Draw a run of coloured text segments left→right; clips the running text to maxX.
+  function drawSegs(ctx, segs, x, y, maxX) {
+    let cx = x;
+    for (const s of segs) {
+      ctx.font = s.f; ctx.fillStyle = s.c;
+      let t = s.t;
+      if (maxX != null && cx + ctx.measureText(t).width > maxX) t = clip(ctx, t, Math.max(0, maxX - cx));
+      if (!t) continue;
+      ctx.fillText(t, cx, y);
+      cx += ctx.measureText(t).width;
+      if (maxX != null && cx >= maxX) break;
     }
-    ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(clip(ctx, methodStr, leftLimit - cx), cx, cy);
+    return cx;
+  }
+  // Graded variant, styled like the on-page result tile: "Winner def. Opponent" up
+  // top (the ACTUAL result), then "You called <your pick> ✓ · method ✓ · round ✓"
+  // beneath (green ticks for each part you got right, a red ✗ for a wrong winner),
+  // with the points won or lost on the right.
+  function pkResultRow(ctx, p, x, y, w, h, img) {
+    const col = PK_CONF_COL[p.confidence] || MUT, pad = 7;
+    roundRect(ctx, x, y + pad, 6, h - pad * 2, 3); ctx.fillStyle = col; ctx.fill();
+    const r = Math.min(30, (h - pad * 2) / 2), avCx = x + 24 + r, avCy = y + h / 2;
+    const win = p.actualWinner || p.winner, los = p.actualLoser || p.loser || '';
+    const ini = String(win || '').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+    avatar(ctx, img, avCx, avCy, r, ini, LINE);
+    const tx = avCx + r + 18, right = x + w - 12;
+    ctx.textBaseline = 'middle';
+    // points, vertically centred on the right
+    const pts = p.points | 0, ptsStr = (pts > 0 ? '+' : '') + pts;
+    const ptsCol = p.voided ? MUT : (pts > 0 ? ACC : (pts < 0 ? PK_RED : MUT));
+    ctx.textAlign = 'right'; ctx.font = '800 42px ' + COND; ctx.fillStyle = ptsCol;
+    ctx.fillText(ptsStr, right, y + h / 2 + 1);
+    const rightLimit = right - ctx.measureText(ptsStr).width - 30;
+    ctx.textAlign = 'left';
+    const cy1 = y + h / 2 - 14, cy2 = y + h / 2 + 18;
+    // line 1 — the actual result
+    if (p.voided) {
+      drawSegs(ctx, [{ t: 'Draw / No Contest', f: '700 32px ' + COND, c: TXT }], tx, cy1, rightLimit);
+    } else {
+      ctx.font = '700 33px ' + COND;
+      const winName = clip(ctx, win, (rightLimit - tx) * 0.52);
+      const seg1 = [
+        { t: winName, f: '700 33px ' + COND, c: TXT },
+        { t: '  def. ', f: '400 23px ' + SANS, c: MUT },
+        { t: los, f: '400 25px ' + SANS, c: '#c8ccd2' },
+      ];
+      if (p.resultMethod) seg1.push({ t: '   ·  ' + p.resultMethod + (p.resultRound ? ' · R' + p.resultRound : ''), f: '400 21px ' + SANS, c: MUT });
+      drawSegs(ctx, seg1, tx, cy1, rightLimit);
+    }
+    // line 2 — your pick + result ticks (mirrors the page's "You called …")
+    ctx.font = '600 22px ' + SANS;
+    const callName = clip(ctx, p.winner, (rightLimit - tx) * 0.5);
+    const seg2 = [
+      { t: 'You called ', f: '400 22px ' + SANS, c: MUT },
+      { t: callName, f: '600 22px ' + SANS, c: TXT },
+      { t: ' ', f: '400 22px ' + SANS, c: MUT },
+    ];
+    if (p.voided) {
+      seg2.push({ t: '— bout voided', f: '400 22px ' + SANS, c: MUT });
+    } else if (p.winnerHit) {
+      seg2.push({ t: '✓', f: '700 24px ' + COND, c: ACC });
+      if (p.methodHit) seg2.push({ t: ' · method ', f: '400 22px ' + SANS, c: MUT }, { t: '✓', f: '700 24px ' + COND, c: ACC });
+      if (p.roundHit) seg2.push({ t: ' · round ', f: '400 22px ' + SANS, c: MUT }, { t: '✓', f: '700 24px ' + COND, c: ACC });
+    } else {
+      seg2.push({ t: '✗', f: '700 24px ' + COND, c: PK_RED });
+    }
+    drawSegs(ctx, seg2, tx, cy2, right - 4);
     ctx.textBaseline = 'alphabetic';
   }
   async function drawPickem(data) {
@@ -102133,7 +102159,7 @@ const GL_SHEET = (function () {
     const legendY = subY + 44;
     const divY = legendY + 24;
     const listTop = divY + 26;
-    const rowH = 70, footerBlockH = 172;
+    const rowH = graded ? 92 : 70, footerBlockH = 172;
     const CH = Math.max(1080, Math.round(listTop + n * rowH + footerBlockH));
     cv.height = CH;                 // resizing clears the canvas + resets state
     ctx = cv.getContext('2d');
@@ -109777,7 +109803,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         };
         if (graded) {
           const g = gradePick(p, f);
-          picks.push({ ...base, points: g.points, winnerHit: !!g.winnerHit, methodHit: !!g.methodHit, roundHit: !!g.roundHit, voided: !!g.voided });
+          const aw = g.winner || null;                        // who actually won
+          const al = aw ? (aw === f.f1 ? f.f2 : f.f1) : null;  // who they beat
+          picks.push({ ...base,
+            winnerSlug: (typeof nameToSlug === 'function') ? nameToSlug(aw || p.winner) : null,  // avatar = actual winner
+            actualWinner: aw, actualLoser: al,
+            resultMethod: g.method || null, resultRound: g.round || null,
+            points: g.points, winnerHit: !!g.winnerHit, methodHit: !!g.methodHit, roundHit: !!g.roundHit, voided: !!g.voided });
         } else {
           picks.push({ ...base, points: potential(p, f) });
         }
