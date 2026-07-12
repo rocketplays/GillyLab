@@ -14701,7 +14701,7 @@
     { opponent: "Cláudio Silva", odds: -208 }
   ],
   "Max Holloway": [
-    { opponent: "Conor McGregor", odds: -325, date: "2026-07-11" },
+    { opponent: "Conor McGregor", odds: -324, date: "2026-07-11" },
     { opponent: "Charles Oliveira", odds: -208 },
     { opponent: "Dustin Poirier", odds: -116 },
     { opponent: "Ilia Topuria", odds: 228 },
@@ -17034,7 +17034,7 @@
     { opponent: "Curtis Millender", odds: -120 }
   ],
   "Conor McGregor": [
-    { opponent: "Max Holloway", odds: 205, date: "2026-07-11" },
+    { opponent: "Max Holloway", odds: 263, date: "2026-07-11" },
     { opponent: "Dustin Poirier", odds: 108 },
     { opponent: "Dustin Poirier", odds: -312 },
     { opponent: "Donald Cerrone", odds: -312 },
@@ -104109,24 +104109,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return matches[0].odds;
   }
 
-  // Reconcile a bout's two independently-recorded ODDS_HISTORY closing lines (one
-  // per fighter, from BestFightOdds) into a single consistent pair, so the two
-  // displayed sides always correspond. Convert each recorded price to an implied
-  // probability, normalise them to sum to 100% (removing any residual vig/mismatch
-  // between the two separate records), then convert back to American odds. If only
-  // one side was recorded, derive the other as its exact complement.
+  // A bout's two ODDS_HISTORY closing lines (one per fighter). When both are recorded,
+  // show them EXACTLY as stored — the recorded consensus closing lines, vig and all —
+  // so the panel matches the odds history. When only one side is on record, derive the
+  // other as its exact no-vig complement.
   function oddsHistoryPair(f1, f2, boutDate) {
     const toProb = o => (o < 0 ? Math.abs(o) / (Math.abs(o) + 100) : 100 / (o + 100));
     const toAmerican = p => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
     const r1 = oddsHistoryClosing(f1, f2, boutDate), r2 = oddsHistoryClosing(f2, f1, boutDate);
-    let p1 = (typeof r1 === 'number') ? toProb(r1) : null;
-    let p2 = (typeof r2 === 'number') ? toProb(r2) : null;
-    if (p1 == null && p2 == null) return null;
-    if (p1 == null) p1 = 1 - p2;
-    if (p2 == null) p2 = 1 - p1;
-    const sum = p1 + p2;
-    if (!(sum > 0)) return null;
-    return { o1: toAmerican(p1 / sum), o2: toAmerican(p2 / sum) };
+    const has1 = typeof r1 === 'number', has2 = typeof r2 === 'number';
+    if (!has1 && !has2) return null;
+    if (has1 && has2) return { o1: r1, o2: r2 };
+    const comp = toAmerican(1 - toProb(has1 ? r1 : r2));
+    return has1 ? { o1: r1, o2: comp } : { o1: comp, o2: r2 };
   }
 
   function fillPendingMoneylines() {
