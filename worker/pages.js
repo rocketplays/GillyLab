@@ -130,7 +130,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <style>
   :root{--accent:#00e668;--accent2:#ff3d00;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#666672;--surface2:#18181d}
   *{box-sizing:border-box}
-  html{background:var(--bg)}
+  html{background:var(--bg);scroll-behavior:smooth}
   body{margin:0;background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%);color:#fff;
        font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
        opacity:1;transition:opacity .15s ease;animation:lpin .3s ease backwards}
