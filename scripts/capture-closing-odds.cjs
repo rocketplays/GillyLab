@@ -30,15 +30,23 @@ const WIN_EARLY_MS = 40 * 60 * 1000;
 const WIN_LATE_MS  = 15 * 60 * 1000;
 
 const loadJson = (p, fb) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return fb; } };
-// event.json and the odds feed spell names differently ("Benoît Saint Denis" vs
-// "Benoit Saint-Denis", "Javier Reyes" vs "Javier Reyes Rugeles"), so match on an
-// accent/punctuation-stripped comparison, then a last-name fallback.
-const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]/g, '');
+// event.json and the odds feed spell names differently — accents ("Benoît" vs
+// "Benoit"), punctuation ("Saint-Denis" vs "Saint Denis"), generational suffixes
+// ("Khalil Rountree Jr" vs "Khalil Rountree", "Kai Kamaka III" vs "Kai Kamaka"), and
+// extra surnames ("Javier Reyes" vs "Javier Reyes Rugeles"). Normalize all of those
+// away, then compare (with a last-name fallback).
+const SUFFIXES = new Set(['jr', 'sr', 'ii', 'iii', 'iv', 'v']);
+const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .replace(/[^a-z0-9\s]/g, ' ').trim().split(/\s+/)   // punctuation -> word break
+  .filter(t => t && !SUFFIXES.has(t))                  // drop Jr / Sr / II–V
+  .join('');
 function fighterMatch(a, b) {
   const na = norm(a), nb = norm(b);
   if (!na || !nb) return false;
-  if (na === nb || na.includes(nb) || nb.includes(na)) return true;
-  return norm(lastNameOf(a)) === norm(lastNameOf(b)) && norm(lastNameOf(a)).length >= 4;
+  if (na === nb) return true;
+  if (na.length >= 6 && nb.length >= 6 && (na.includes(nb) || nb.includes(na))) return true;
+  const la = norm(lastNameOf(a)), lb = norm(lastNameOf(b));
+  return la && la === lb && la.length >= 4;
 }
 function findFight(f1, f2, odds) {
   return odds.find(o => o && o.home_team && o.away_team && (
