@@ -7288,8 +7288,13 @@
  function pkEsc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => PK_ESC_MAP[c]); }
  function pkEscJs(s) { return String(s == null ? '' : s).replace(/[\\'"]/g, c => '\\' + c).replace(/\n/g, '\\n'); }
  async function pkFetch(path) {
-   try { const r = await fetch(path, { credentials: 'same-origin' }); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
+   // Abort after 12s so a slow/hung request surfaces an error instead of spinning
+   // on "Loading…" forever.
+   const ctl = new AbortController();
+   const to = setTimeout(() => ctl.abort(), 12000);
+   try { const r = await fetch(path, { credentials: 'same-origin', signal: ctl.signal }); const j = await r.json().catch(() => ({})); return Object.assign({ status: r.status }, j); }
    catch (e) { return { status: 0 }; }
+   finally { clearTimeout(to); }
  }
  function pkBackBtn() { return '<button type="button" class="pk-hist-back" onclick="navigate(\'pickem\')">← Back to Pick\'em</button>'; }
 
@@ -109333,6 +109338,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Green's long-ago submissions barely register next to his recent decisions/KOs.
     const RECENCY_DECAY = 0.9;
     let EVT = null, BOUTS = [], PICKS = {}, KEY = 'glPickem:default', ERR = '';
+    // Score components snapshotted at submit (keyed by bout id), pulled back from the
+    // server so finished-fight points here match what the server/leaderboard award.
+    // The line moves after you lock, so a live recompute would drift; this doesn't.
+    let SNAP = {};
     // Phase-2 server state: display name, whether this card is submitted/locked, a
     // transient status message, and the leaderboard scope.
     let NAME = null, SUBMITTED = false, LOCKED = false, MSG = null, PRELIMS_AT = null;
@@ -109370,7 +109379,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!p || !p.winner) return Object.assign({ points: 0, nopick: true }, a);
       if (a.voided) return Object.assign({ points: 0, voided: true }, a);
       if (p.winner !== a.winner) return Object.assign({ points: -(CONF_PENALTY[p.confidence] || 0), winnerHit: false }, a);
-      const parts = scoreParts(p, f);
+      const parts = (LOCKED && SNAP[idOf(f)]) || scoreParts(p, f);
       // Method + round scored independently: round credit only needs the fight to
       // have ended in the round you called (not for the method to be right too).
       const methodHit = !!p.method && p.method === a.method;
@@ -109489,11 +109498,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // bonus. A wrong method/round forgoes only its bonus — no penalty.
     function potential(p, f) {
       if (!p || !p.winner) return 0;
+      const mult = CONF_MULT[p.confidence] || CONF_MULT.Med;
+      // Once submitted, use the locked snapshot so the "at stake" preview matches
+      // what the server will actually award.
+      const s = LOCKED && f && SNAP[idOf(f)];
+      if (s) return Math.round((s.wPts + s.mPts + s.rPts) * mult);
       const opp = f ? (p.winner === f.f1 ? f.f2 : f.f1) : null;
       let base = winnerBase(p.winner, opp);
       if (p.method) base += methodBonus(p.winner, p.method, opp);
       if (p.method && p.method !== 'Decision' && p.round) base += roundBonus(p.round);
-      return Math.round(base * (CONF_MULT[p.confidence] || CONF_MULT.Med));
+      return Math.round(base * mult);
     }
     // The pre-confidence component points, snapshotted into the submit payload so
     // the server can grade without the odds/history data — and so a pick's value is
@@ -109842,11 +109856,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (mine.status === 200 && mine.record) {
         SUBMITTED = true;
         LOCKED = !!mine.locked;
-        if (!Object.keys(PICKS).length && Array.isArray(mine.record.picks)) {
+        if (Array.isArray(mine.record.picks)) {
+          const empty = !Object.keys(PICKS).length;
           mine.record.picks.forEach(p => {
-            PICKS[idOf({ f1: p.f1, f2: p.f2 })] = { winner: p.winner, method: p.method, round: p.round || undefined, confidence: p.confidence || 'Med' };
+            const id = idOf({ f1: p.f1, f2: p.f2 });
+            // Lock in the server's snapshotted score components for this bout so our
+            // "scored so far" matches the leaderboard exactly.
+            SNAP[id] = { wPts: +p.wPts || 0, mPts: +p.mPts || 0, rPts: +p.rPts || 0 };
+            if (empty) PICKS[id] = { winner: p.winner, method: p.method, round: p.round || undefined, confidence: p.confidence || 'Med' };
           });
-          persist();
+          if (empty) persist();
         }
         render();
       }
@@ -109860,7 +109879,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       KEY = 'glPickem:' + ((evt && evt.slug) || (evt && evt.date) || 'default');
       PRELIMS_AT = window.FEATURED_EVENT_STARTS_AT || null;
       LOCKED = !!(PRELIMS_AT && Date.now() >= Date.parse(PRELIMS_AT));
-      NAME = null; SUBMITTED = false; MSG = null; ERR = '';
+      NAME = null; SUBMITTED = false; MSG = null; ERR = ''; SNAP = {};
       load();
       bindOnce();
       render();

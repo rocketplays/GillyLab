@@ -349,16 +349,19 @@ async function currentBoard(env, url, myName) {
   const focus = await loadFocusEvent(env, url);
   if (!focus) return { scope: "current", event: null, live: false, rows: [], me: null };
   const prefix = "pk:" + focus.slug + ":";
-  const rows = [];
-  for (const key of await listAllKeys(env, prefix)) {
+  const keys = await listAllKeys(env, prefix);
+  // Grade every entry concurrently — a sequential loop of KV reads is what made this
+  // slow (and occasionally time out) once a few dozen people had entered.
+  const graded = await Promise.all(keys.map(async (key) => {
     const rec = await pkGet(env, key);
-    if (!rec) continue;
+    if (!rec) return null;
     const email = key.slice(prefix.length);
     const name = (await getDisplayName(env, email)) || rec.name;
-    if (!name) continue;
+    if (!name) return null;
     const card = gradeCard(rec, focus.bouts);
-    rows.push({ name, points: card.total, correct: card.correct, played: focus.decided });
-  }
+    return { name, points: card.total, correct: card.correct, played: focus.decided };
+  }));
+  const rows = graded.filter(Boolean);
   rows.sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
   const ranked = rows.map((r, i) => ({ rank: i + 1, ...r }));
   return {
