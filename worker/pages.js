@@ -152,7 +152,7 @@ function heroMatchup() {
       <div class="mu-tick"><span>grappler</span><span>striker</span></div>
     </div>`;
   const foot = C ? `<div class="mu-foot">Live from <b>${n(C.fighters)}</b> fighters · <b>${n(C.bouts)}</b> bouts · <b>${n(C.videos)}</b> fight videos</div>` : '';
-  return `<div class="mu-kick"><span class="mu-live"></span>Next main event</div>
+  return `<div class="mu-kick">Next main event</div>
   <div class="mu">
     <div class="mu-top">
       <span class="mu-ev">${esc(M.event)}${M.titleBout ? ' · Title' : ''}</span>
