@@ -210,13 +210,12 @@ const pkGet = async (env, key) => { const v = await env.PICKS.get(key); return v
 const pkPut = (env, key, obj) => env.PICKS.put(key, JSON.stringify(obj));
 const clampNum = (n, lo, hi) => Math.max(lo, Math.min(hi, Number(n) || 0));
 
-// A logged-in AND subscribed session, or null — pick'em is a subscriber feature.
+// Any logged-in session, or null. Pick'em is a FREE feature: it requires an
+// account (for a leaderboard identity + saved picks) but NOT a subscription, so
+// free and paid users share one leaderboard through two different doors.
 async function pickemSession(request, env) {
   const s = await readSession(request, env);
-  if (!s) return null;
-  const u = await getUser(env, s.email);
-  if (!u || !u.subscribed) return null;
-  return { email: s.email };
+  return s ? { email: s.email } : null;
 }
 async function getDisplayName(env, email) { const p = await pkGet(env, "pf:" + email); return (p && p.name) || null; }
 
@@ -480,6 +479,19 @@ async function readBody(request) {
   const form = await request.formData();
   return Object.fromEntries(form.entries());
 }
+// A caller-supplied post-auth destination — but only if it's a safe same-site path
+// (leading single "/", no protocol, no "//host"), so ?next= can't become an open
+// redirect. Free-tier flows land here; falls back to the tier's default home.
+function safeNext(raw) {
+  const s = typeof raw === "string" ? raw : "";
+  return /^\/(?!\/)[A-Za-z0-9/_\-?=&.]*$/.test(s) ? s : null;
+}
+// Where a just-authenticated account should go: an explicit safe ?next=, else the
+// full app for subscribers or the account page (a working, non-bouncing home) for
+// free accounts. Point the free default at /pickem once that page ships (Phase 3).
+function authDest(next, subscribed) {
+  return next || (subscribed ? "/" : "/account");
+}
 
 /* ─────────────────────────────────── the Worker ────────────────────────────── */
 export default {
@@ -519,7 +531,7 @@ export default {
         const s = await readSession(request, env);
         if (s) {
           const u = await getUser(env, s.email);
-          return redirect(env.SITE_URL + (u?.subscribed ? "/" : "/subscribe"));
+          return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed));
         }
         if (path === "/login") return html(loginPage());
         if (path === "/signup") return html(signupPage());
@@ -600,7 +612,9 @@ export default {
 
 /* ─────────────────────────────── route handlers ────────────────────────────── */
 async function handleSignup(request, env) {
-  const { email, password } = await readBody(request);
+  const body = await readBody(request);
+  const { email, password } = body;
+  const next = safeNext(body.next);
   const e = normEmail(email);
   if (!e || !password || password.length < 8) return json({ error: "Enter an email and a password of at least 8 characters." }, 400);
   const existing = await getUser(env, e);
@@ -609,18 +623,20 @@ async function handleSignup(request, env) {
   const u = Object.assign(existing || { email: e, createdAt: Date.now(), subscribed: false }, { passHash, passSalt });
   await putUser(env, e, u);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
-  if (u.subscribed) return json({ ok: true, redirect: "/" }, 200, { "Set-Cookie": cookie });
-  const checkoutUrl = await createCheckout(env, e, u.stripeCustomerId);
-  return json({ ok: true, redirect: checkoutUrl }, 200, { "Set-Cookie": cookie });
+  // Signup now creates a FREE account — no forced checkout. Subscribing is a
+  // separate, opt-in step from /account or /subscribe.
+  return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 
 async function handleLogin(request, env) {
-  const { email, password } = await readBody(request);
+  const body = await readBody(request);
+  const { email, password } = body;
+  const next = safeNext(body.next);
   const e = normEmail(email);
   const u = await getUser(env, e);
   if (!u || !(await verifyPassword(password, u.passHash, u.passSalt))) return json({ error: "Incorrect email or password." }, 401);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
-  return json({ ok: true, redirect: u.subscribed ? "/" : "/subscribe" }, 200, { "Set-Cookie": cookie });
+  return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 
 async function handleCheckout(request, env) {
@@ -709,7 +725,7 @@ async function handleResetComplete(request, env) {
   u.passHash = passHash; u.passSalt = passSalt;
   await putUser(env, e, u);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
-  return json({ ok: true, redirect: env.SITE_URL + (u.subscribed ? "/" : "/subscribe") }, 200, { "Set-Cookie": cookie });
+  return json({ ok: true, redirect: env.SITE_URL + authDest(null, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 
 async function handleWebhook(request, env) {
@@ -766,5 +782,5 @@ async function handleMagicVerify(request, env, url) {
   await env.MAGIC.delete("m:" + token);
   const u = await getUser(env, e);
   const cookie = await makeSessionCookie(env, e, !!u?.subscribed);
-  return redirect(env.SITE_URL + (u?.subscribed ? "/" : "/subscribe"), cookie);
+  return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed), cookie);
 }

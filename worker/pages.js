@@ -67,6 +67,7 @@ function wire(formId, url, msgId, okMsg){
   f.addEventListener("submit",function(e){e.preventDefault();
     var m=document.getElementById(msgId); m.className="msg"; m.textContent="Working…";
     var data={}; new FormData(f).forEach((v,k)=>data[k]=v);
+    var nx=new URLSearchParams(location.search).get("next"); if(nx)data.next=nx;
     post(url,data).then(function(r){
       if(r.error){m.className="msg err";m.textContent=r.error;return;}
       if(r.redirect){document.body.classList.add("leaving");setTimeout(function(){window.location=r.redirect;},130);return;}
@@ -699,12 +700,12 @@ export const signupPage = () => shell("Create your GillyLab account", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
-    <h1 style="font-size:1.4rem;text-align:center">Create your account</h1>
-    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Then continue to secure checkout (${PRICE_LABEL}).</p>
+    <h1 style="font-size:1.4rem;text-align:center">Create your free account</h1>
+    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Free to join — play Pick'em and climb the leaderboard. Upgrade any time for the full database.</p>
     <form id="f">
       <label>Email</label><input name="email" type="email" autocomplete="email" required>
       <label>Password</label><input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="at least 8 characters">
-      <button type="submit">Continue to payment →</button>
+      <button type="submit">Create free account →</button>
       <div id="m" class="msg"></div>
     </form>
     <div class="alt muted">Already a member? <a href="/login">Log in</a></div>
@@ -752,9 +753,10 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
   <div class="card">
     <h1 style="font-size:1.4rem;text-align:center">Account</h1>
     <p class="muted">Signed in as <strong style="color:#fff">${email}</strong></p>
-    <p>Subscription: <strong style="color:${subscribed ? "var(--accent)" : "#ff6a5e"}">${subscribed ? "Active" : "Inactive"}</strong></p>
+    <p>Plan: <strong style="color:${subscribed ? "var(--accent)" : "#fff"}">${subscribed ? "Premium" : "Free"}</strong></p>
     ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>
-    <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<a class="btn" href="/subscribe">Subscribe →</a>`}
+    <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<p class="muted" style="font-size:.9rem">Your free account plays Pick'em and rides the leaderboard. Upgrade for the full fighter database, matchup analytics and the fight simulator.</p>
+    <a class="btn" href="/subscribe">Upgrade to Premium →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
 
