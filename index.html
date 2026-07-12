@@ -102087,7 +102087,7 @@ const GL_SHEET = (function () {
     return cx;
   }
   // Graded variant, styled like the on-page result tile: "Winner def. Opponent" up
-  // top (the ACTUAL result), then "You called <your pick> ✓ · method ✓ · round ✓"
+  // top (the ACTUAL result), then "You picked <your pick> ✓ · method ✓ · round ✓"
   // beneath (green ticks for each part you got right, a red ✗ for a wrong winner),
   // with the points won or lost on the right.
   function pkResultRow(ctx, p, x, y, w, h, img) {
@@ -102121,11 +102121,11 @@ const GL_SHEET = (function () {
       if (p.resultMethod) seg1.push({ t: '   ·  ' + p.resultMethod + (p.resultRound ? ' · R' + p.resultRound : ''), f: '400 21px ' + SANS, c: MUT });
       drawSegs(ctx, seg1, tx, cy1, rightLimit);
     }
-    // line 2 — your pick + result ticks (mirrors the page's "You called …")
+    // line 2 — your pick + result ticks (mirrors the page's "You picked …")
     ctx.font = '600 22px ' + SANS;
     const callName = clip(ctx, p.winner, (rightLimit - tx) * 0.5);
     const seg2 = [
-      { t: 'You called ', f: '400 22px ' + SANS, c: MUT },
+      { t: 'You picked ', f: '400 22px ' + SANS, c: MUT },
       { t: callName, f: '600 22px ' + SANS, c: TXT },
       { t: ' ', f: '400 22px ' + SANS, c: MUT },
     ];
@@ -109614,11 +109614,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       else if (g.voided) { cls = 'void'; pickLine = 'You picked ' + esc(p.winner) + ' — bout voided'; pts = '<span class="pk-res-pts zero">0</span>'; }
       else if (g.winnerHit) {
         cls = 'hit';
-        pickLine = 'You called ' + esc(p.winner) + ' ' + ok + (g.methodHit ? ' · method ' + ok : '') + (g.roundHit ? ' · round ' + ok : '');
+        pickLine = 'You picked ' + esc(p.winner) + ' ' + ok + (g.methodHit ? ' · method ' + ok : '') + (g.roundHit ? ' · round ' + ok : '');
         pts = '<span class="pk-res-pts pos">+' + g.points + '</span>';
       } else {
         cls = 'miss';
-        pickLine = 'You called ' + esc(p.winner) + ' ' + xm;
+        pickLine = 'You picked ' + esc(p.winner) + ' ' + xm;
         pts = '<span class="pk-res-pts neg">' + g.points + '</span>';
       }
       return '<div class="pk-bout pk-bout-result ' + cls + '">' +
