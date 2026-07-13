@@ -1980,6 +1980,161 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
 </body></html>`;
 };
 
+// ── Public lite fighter profile (/fighter/<slug>) ─────────────────────────────
+// Readable + indexable logged-out for SEO (same HTML for humans + crawlers, no
+// cloaking) but unlinked from the funnel — discoverable only via the sitemap.
+// Shows a "lite" profile: photo, record, division, physicals + the same
+// division-relative stat bars the app uses; the deep stuff (full fight history,
+// tape study, odds/closing-line history, accolades, scouting report, simulator)
+// is locked behind a Go-Premium CTA.
+export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const f = fighter || {};
+  const ini = String(f.name || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
+  const rankLabel = f.rank && f.rank !== "NR" ? (/C/.test(f.rank) ? "Champion" : f.rank) : "";
+  const av = f.photo
+    ? `<div class="fp-av"><img src="/photos/thumb/${esc(f.photo)}.png" alt="${esc(f.name)}" onerror="this.parentNode.textContent='${esc(ini)}'"></div>`
+    : `<div class="fp-av">${esc(ini)}</div>`;
+
+  // Physicals (only render the ones we actually have).
+  const phys = f.phys || {};
+  const physItem = (k, v) => v ? `<div class="fp-phys-i"><div class="fp-phys-k">${k}</div><div class="fp-phys-v">${esc(v)}</div></div>` : "";
+  const physCells = [physItem("Age", phys.age), physItem("Height", phys.ht), physItem("Reach", phys.reach), physItem("Stance", phys.stance)].filter(Boolean).join("");
+  const physHTML = physCells ? `<div class="fp-phys">${physCells}</div>` : "";
+
+  // Division-relative stat bars — identical shape to the in-app / matchup popup.
+  const barRow = (r) => `<div class="mp-row"><span class="mp-lbl">${esc(r.label)}</span>${
+    r.bar
+      ? `<span class="mp-bar"><span class="mp-fill ${r.cls}" style="width:${r.w}%"></span>${r.tickX != null ? `<span class="mp-tick" style="left:${r.tickX}%"></span>` : ""}</span><span class="mp-val ${r.cls}">${esc(r.val)}</span>`
+      : `<span class="mp-val ${r.cls}">${esc(r.val)}</span>`
+  }</div>`;
+  const groupsHTML = (f.groups || []).map((g) => `<div class="mp-grp-t">${esc(g.t)}</div>` + (g.rows || []).map(barRow).join("")).join("");
+  const legend = f.bars
+    ? `<div class="mp-legend"><span class="mp-lg"><span class="mp-lg-sw good"></span>better than division average</span><span class="mp-lg"><span class="mp-lg-sw bad"></span>below average</span><span class="mp-lg"><span class="mp-lg-tick"></span>division average</span></div>`
+    : "";
+  const statsBlock = groupsHTML
+    ? `<div class="fp-sec"><div class="fp-sec-t">Career stats</div><div class="fp-sec-sub">Per-fight rates vs. everyone else in the ${esc(f.division || "division")} division.</div>${legend}${groupsHTML}</div>`
+    : "";
+
+  // The paywalled depth — locked.
+  const lockItem = (t, d) => `<div class="fp-lock-i"><div class="fp-lock-it">${t}</div><div class="fp-lock-id">${d}</div></div>`;
+  const lockGrid = [
+    lockItem("Full fight history", "Every pro bout — result, method, round & opponent."),
+    lockItem("Tape study", "Round-by-round breakdown of how the fights actually went."),
+    lockItem("Odds &amp; closing-line history", "Where the market opened and closed on each fight."),
+    lockItem("Accolades", "Titles, finishes, performance bonuses & records."),
+    lockItem("Scouting report", "Style, tendencies and the path to beating them."),
+    lockItem("Fight simulator", "Run this fighter against anyone on the roster."),
+  ].join("");
+  const cta = subscribed
+    ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
+    : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the full profile →</a>`;
+  const lockBlock = `<div class="fp-sec fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile</div></div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
+
+  // SEO.
+  const metaBits = [f.record ? f.record : "", f.division || "", f.country || ""].filter(Boolean);
+  const seoTitle = `${f.name} — UFC Record, Stats & Tale of the Tape · GillyLab`;
+  const seoDesc = `${f.name}${f.record ? " (" + f.record + ")" : ""}${f.division ? ", " + f.division : ""}${f.country ? " · " + f.country : ""}. Career striking & grappling stats and physical tale of the tape. Full fight history, tape study, odds history and more on GillyLab.`;
+
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(seoTitle)}</title>
+<meta name="description" content="${esc(seoDesc)}">
+<link rel="canonical" href="${SITE_URL}/fighter/${esc(f.slug)}">
+${ogTags(seoTitle, seoDesc, "/fighter/" + f.slug)}
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
+  body.leaving{opacity:0;animation:none}
+  body{animation:pgIn .22s ease both}
+  @keyframes pgIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){body{animation:none;transition:none}}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  /* profile header */
+  .fp-head{display:flex;align-items:center;gap:1rem;margin:.4rem 0 1.1rem}
+  .fp-av{width:76px;height:76px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid var(--accent);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.4rem;color:var(--muted)}
+  .fp-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .fp-h-main{min-width:0}
+  .fp-name{font-size:1.5rem;font-weight:800;line-height:1.1;margin:0}
+  .fp-sub{color:var(--muted);font-size:.86rem;margin-top:.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .5rem}
+  .fp-rec{color:var(--text);font-weight:700}
+  .fp-chip{background:rgba(0,230,104,.14);color:var(--accent);border-radius:999px;padding:.08rem .55rem;font-size:.72rem;font-weight:800;letter-spacing:.02em}
+  .fp-dot{color:rgba(255,255,255,.25)}
+  /* physicals */
+  .fp-phys{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.5rem;margin-bottom:1.3rem}
+  .fp-phys-i{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.6rem .5rem;text-align:center}
+  .fp-phys-k{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .fp-phys-v{font-size:1rem;font-weight:800;margin-top:.15rem}
+  /* section */
+  .fp-sec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem 1.15rem;margin-bottom:1.1rem}
+  .fp-sec-t{font-size:.95rem;font-weight:800;margin-bottom:.15rem}
+  .fp-sec-sub{font-size:.76rem;color:var(--muted);margin-bottom:.7rem;line-height:1.4}
+  /* stat bars (shared shape with the app / matchup popup) */
+  .mp-grp-t{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:1.05rem 0 .5rem}
+  .mp-grp-t:first-child{margin-top:.2rem}
+  .mp-row{display:flex;align-items:center;gap:.6rem;padding:.3rem 0}
+  .mp-lbl{flex:0 0 44%;font-size:.76rem;color:#c9ccd3}
+  .mp-bar{flex:1;position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09)}
+  .mp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+  .mp-fill.good{background:var(--accent)}.mp-fill.bad{background:#c76a54}
+  .mp-tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;border-radius:1px}
+  .mp-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .9rem;margin:.15rem 0 1rem;font-size:.68rem;color:var(--muted)}
+  .mp-lg{display:inline-flex;align-items:center;gap:.32rem}
+  .mp-lg-sw{width:14px;height:6px;border-radius:2px;display:inline-block}
+  .mp-lg-sw.good{background:var(--accent)}.mp-lg-sw.bad{background:#c76a54}
+  .mp-lg-tick{width:2px;height:11px;background:#fff;display:inline-block;border-radius:1px}
+  .mp-val{flex:0 0 48px;text-align:right;font-weight:800;font-size:.85rem;color:#ececf0}
+  .mp-val.good{color:var(--accent)}.mp-val.bad{color:#c76a54}
+  /* locked block */
+  .fp-lock{background:var(--surface2)}
+  .fp-lock-h{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+  .fp-lock-ico{opacity:.85}
+  .fp-lock-t{font-size:.95rem;font-weight:800}
+  .fp-lock-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
+  .fp-lock-i{border:1px solid var(--border);border-radius:9px;padding:.6rem .65rem;background:rgba(255,255,255,.015)}
+  .fp-lock-it{font-size:.8rem;font-weight:700;line-height:1.25}
+  .fp-lock-id{font-size:.7rem;color:var(--muted);margin-top:.2rem;line-height:1.35}
+  .fp-lock-btn{display:block;text-align:center;background:var(--accent);color:#04120a;font-weight:800;font-size:.86rem;text-decoration:none;border-radius:9px;padding:.65rem .7rem}
+  @media (max-width:420px){.fp-lock-grid{grid-template-columns:1fr}}
+</style></head><body>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${freeNavLinks(loggedIn, subscribed)}
+    </div>
+  </nav>
+  <main>
+    ${loggedIn ? "" : signupBanner}
+    <div class="fp-head">
+      ${av}
+      <div class="fp-h-main">
+        <h1 class="fp-name">${esc(f.name)}</h1>
+        <div class="fp-sub">${f.record ? `<span class="fp-rec">${esc(f.record)}</span>` : ""}${rankLabel ? `<span class="fp-chip">${esc(rankLabel)}</span>` : ""}${f.division ? `${f.record || rankLabel ? '<span class="fp-dot">·</span>' : ""}<span>${esc(f.division)}</span>` : ""}${f.country ? `<span class="fp-dot">·</span><span>${esc(f.country)}</span>` : ""}</div>
+      </div>
+    </div>
+    ${physHTML}
+    ${statsBlock}
+    ${lockBlock}
+  </main>
+  ${FREE_FOOTER}
+  <script>
+    document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
+  </script>
+</body></html>`;
+};
+
 export const changePasswordPage = () => shell("Change password — GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

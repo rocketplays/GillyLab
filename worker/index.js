@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -845,8 +845,12 @@ export default {
       }
       if (path === "/sitemap.xml") {
         const urls = ["/", "/matchup", "/rankings", "/roster", "/about", "/terms", "/privacy", "/contact"];
+        // Enumerate every published lite fighter profile so crawlers can find the
+        // (deliberately unlinked) /fighter/<slug> pages.
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const fighterUrls = lite && lite.bySlug ? Object.keys(lite.bySlug).map((slug) => "/fighter/" + slug) : [];
         const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-          urls.map((u) => "  <url><loc>" + env.SITE_URL + u + "</loc></url>").join("\n") + "\n</urlset>\n";
+          urls.concat(fighterUrls).map((u) => "  <url><loc>" + env.SITE_URL + u + "</loc></url>").join("\n") + "\n</urlset>\n";
         return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
       }
 
@@ -941,6 +945,18 @@ export default {
         const s = await readSession(request, env);
         const u = s ? await getUser(env, s.email) : null;
         return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
+      }
+      // Lite fighter profiles (unlinked from the funnel; discoverable via sitemap).
+      if (path.startsWith("/fighter/")) {
+        const slug = decodeURIComponent(path.slice("/fighter/".length)).replace(/\/+$/, "").toLowerCase();
+        const s = await readSession(request, env);
+        const [u, lite] = await Promise.all([
+          s ? getUser(env, s.email) : null,
+          loadAssetJson(env, url, "/data/fighter-lite.json"),
+        ]);
+        const fighter = lite && lite.bySlug && lite.bySlug[slug];
+        if (!fighter) return html('<!doctype html><meta charset="utf-8"><title>Fighter not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Fighter not found</h1><p style="color:#8a8f99;margin:0 0 1.2rem">We don\'t have a profile at that address.</p><a href="/matchup" style="color:#00e668;font-weight:700;text-decoration:none">See the upcoming card →</a></div></body>', 404, pubHeaders(s));
+        return html(fighterLitePage({ fighter, subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
       }
 
       // ---- account page (must be logged in) ----
