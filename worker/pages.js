@@ -215,6 +215,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .showcase{max-width:620px;margin:44px auto 0}
   .sc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .sc-title{font-size:14px;font-weight:700}
+  .sc-titlewrap{display:flex;align-items:center;gap:10px;min-width:0}
+  .sc-tag{font-size:10px;font-weight:700;letter-spacing:.06em;padding:2px 8px;border-radius:999px;white-space:nowrap}
+  .sc-tag.free{color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.28)}
+  .sc-tag.prem{color:#ffcf7a;background:rgba(255,207,122,.10);border:1px solid rgba(255,207,122,.28)}
   .sc-nav{display:flex;gap:8px}
   .sc-arrow{cursor:pointer;width:30px;height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;user-select:none}
   .sc-arrow:hover{border-color:var(--accent);color:var(--accent)}
@@ -342,7 +346,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
     <div class="sc-head">
-      <div class="sc-title" id="fl" aria-live="polite">Detailed fighter analytics</div>
+      <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Detailed fighter analytics</span><span class="sc-tag" id="ft"></span></div>
       <div class="sc-nav">
         <span class="sc-arrow" id="pv" role="button" tabindex="0" aria-label="Previous feature">‹</span>
         <span class="sc-arrow" id="nx" role="button" tabindex="0" aria-label="Next feature">›</span>
@@ -410,8 +414,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   <footer class="foot">
     <div class="hero-cta">
-      <a class="big" href="/signup">Start free →</a>
-      <a class="big ghost" href="/signup?next=/subscribe">Go Premium →</a>
+      <a class="big ghost" href="/signup">Start free →</a>
+      <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
     </div>
     <div class="fine">Free to start · Premium ${PRICE_LABEL}, cancel anytime · Secure checkout by Stripe</div>
   </footer>
@@ -625,15 +629,15 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
-    {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank},
-    {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster}
+    {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank,f:1},
+    {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster,f:1}
   ].filter(function(s){return s.h;});   // a null payload drops its slide rather than rendering an empty stage
 
   var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');
   var RM=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function keyact(el,fn){el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fn();}});}
   slides.forEach(function(_,k){var d=document.createElement('span');d.className='sc-dot';d.setAttribute('role','tab');d.setAttribute('tabindex','0');d.setAttribute('aria-label','Feature '+(k+1)+': '+slides[k].t);if(k===0)d.style.background=A;var pick=function(){i=k;render();reset();};d.onclick=pick;keyact(d,pick);dt.appendChild(d);});
-  function render(){stg.style.opacity=0;setTimeout(function(){stg.innerHTML=slides[i].h;document.getElementById('fl').textContent=slides[i].t;document.getElementById('fd').textContent=slides[i].d;Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:220);}
+  function render(){stg.style.opacity=0;setTimeout(function(){var s=slides[i];stg.innerHTML=s.h;document.getElementById('fl').textContent=s.t;document.getElementById('fd').textContent=s.d;var ft=document.getElementById('ft');if(ft){ft.textContent=s.f?'FREE':'PREMIUM';ft.className='sc-tag '+(s.f?'free':'prem');}Array.prototype.forEach.call(dt.children,function(c,k){c.style.background=(k===i?A:'rgba(255,255,255,.22)');c.setAttribute('aria-selected',k===i?'true':'false');});stg.style.opacity=1;},RM?0:220);}
   var timer;function reset(){clearInterval(timer);if(RM)return;timer=setInterval(function(){i=(i+1)%slides.length;render();},7000);}
   var nx=document.getElementById('nx'),pv=document.getElementById('pv');
   var next=function(){i=(i+1)%slides.length;render();reset();},prev=function(){i=(i-1+slides.length)%slides.length;render();reset();};
@@ -692,7 +696,7 @@ export const signupPage = (next) => {
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
-    <h1 style="font-size:1.4rem;text-align:center">${premium ? "Get GillyLab Premium" : "Create your free account"}</h1>
+    <h1 style="font-size:1.4rem;text-align:center">${premium ? "Go Premium" : "Create your free account"}</h1>
     <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">${premium
       ? `Create your account, then continue to secure checkout (${PRICE_LABEL}). Cancel anytime.`
       : `Free to join — play Pick'em and climb the leaderboard. Upgrade any time for the full database.`}</p>
@@ -737,10 +741,11 @@ export const loginPage = (next) => {
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card center">
-    <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "One step left"}</h1>
-    <p class="muted">Your account is ready — start your subscription to unlock the full database.</p>
+    <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
+    <p class="muted">Your account is ready — go Premium to unlock the full fighter database, the simulator and every tool.</p>
     <p class="price" style="font-size:1.2rem;margin:.6rem 0">${PRICE_LABEL}</p>
-    <button id="go">Subscribe with Stripe →</button>
+    <button id="go">Go Premium →</button>
+    <p class="muted" style="font-size:.8rem;margin:.55rem 0 0">Secure checkout by Stripe · cancel anytime</p>
     <div id="m" class="msg"></div>
     <div class="alt"><a href="/api/logout">Log out</a></div>
   </div>`, `
@@ -757,7 +762,7 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
     <p>Plan: <strong style="color:${subscribed ? "var(--accent)" : "#fff"}">${subscribed ? "Premium" : "Free"}</strong></p>
     ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>
     <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<p class="muted" style="font-size:.9rem">Your free account plays Pick'em and rides the leaderboard. Upgrade for the full fighter database, matchup analytics and the fight simulator.</p>
-    <a class="btn" href="/subscribe">Upgrade to Premium →</a>`}
+    <a class="btn" href="/subscribe">Go Premium →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
 
