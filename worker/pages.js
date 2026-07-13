@@ -841,6 +841,146 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
 
+// ── Standalone Pick'em page (FREE feature, its own server-rendered surface so the
+// paywalled app bundle never ships to free accounts) ────────────────────────────
+export const pickemPage = ({ card, email, name, subscribed }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const initials = (nm) => String(nm || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
+  const av = (slug, init) => slug
+    ? `<div class="pk-avatar"><img src="/photos/thumb/${esc(slug)}.png" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(init)}'"></div>`
+    : `<div class="pk-avatar">${esc(init)}</div>`;
+  const boutHTML = (b) => `
+      <div class="pk-bout" data-bout="${esc(b.id)}" data-f1="${esc(b.f1)}" data-f2="${esc(b.f2)}">
+        <div class="pk-bout-head"><span class="pk-bout-label">${esc(b.wc)}${b.title ? " · Title" : ""}</span><span class="pk-bout-main">${esc(b.pos || b.section)}</span></div>
+        <div class="pk-fighters">
+          <button type="button" class="pk-fighter" data-pick="${esc(b.f1)}">${av(b.s1, initials(b.f1))}<div class="pk-fname">${esc(b.f1)}</div><div class="pk-pick-check">✓ Your pick</div></button>
+          <button type="button" class="pk-fighter" data-pick="${esc(b.f2)}">${av(b.s2, initials(b.f2))}<div class="pk-fname">${esc(b.f2)}</div><div class="pk-pick-check">✓ Your pick</div></button>
+        </div>
+      </div>`;
+  const bouts = (card && card.bouts && card.bouts.length)
+    ? card.bouts.map(boutHTML).join("")
+    : `<p class="pk-empty">No upcoming card is posted yet — check back on fight week.</p>`;
+  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const lockNote = card ? (card.locked ? "Picks are locked — this card has started." : "Lock your picks before the prelims begin.") : "";
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pick'em — GillyLab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  .pk-head h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .pk-sub{color:var(--muted);font-size:.9rem;margin:0}
+  .pk-lock{font-size:.82rem;color:${card && card.locked ? "#ff8a7a" : "var(--accent)"};margin:.5rem 0 0;font-weight:600}
+  .pk-tabs{display:flex;gap:6px;margin:1.1rem 0 1rem;border-bottom:1px solid var(--border)}
+  .pk-tab{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.86rem;padding:.55rem .6rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .pk-tab.sel{color:var(--text);border-bottom-color:var(--accent)}
+  .pk-panel[hidden]{display:none}
+  .pk-name-prompt{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem}
+  .pk-name-prompt h2{font-size:1rem;margin:0 0 .3rem}
+  .pk-name-prompt p{color:var(--muted);font-size:.85rem;margin:0 0 .7rem}
+  .pk-name-row{display:flex;gap:8px}
+  .pk-name-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:.6rem .7rem;font:inherit;font-size:16px}
+  .pk-btn{background:var(--accent);color:#04120a;border:none;border-radius:9px;padding:.6rem 1rem;font:inherit;font-weight:800;cursor:pointer}
+  .pk-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .pk-msg{font-size:.82rem;margin-top:.5rem;min-height:1em}
+  .pk-msg.err{color:#ff8a7a}.pk-msg.ok{color:var(--accent)}
+  .pk-bout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem .9rem 1rem;margin-bottom:.9rem}
+  .pk-bout-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem}
+  .pk-bout-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .pk-bout-main{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .pk-fighters{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+  .pk-fighter{display:flex;flex-direction:column;align-items:center;gap:.4rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:11px;padding:.8rem .5rem;cursor:pointer;transition:border-color .12s,background .12s,transform .08s;text-align:center;color:var(--text);font:inherit}
+  .pk-fighter:hover{border-color:rgba(255,255,255,.28)}
+  .pk-fighter:active{transform:scale(.98)}
+  .pk-fighter.sel{border-color:var(--accent);background:rgba(0,230,104,.10);box-shadow:inset 0 0 0 1px var(--accent)}
+  .pk-avatar{width:52px;height:52px;border-radius:50%;object-fit:cover;background:#1b1e25;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.05rem;color:var(--muted);border:2px solid rgba(255,255,255,.12);overflow:hidden}
+  .pk-fighter.sel .pk-avatar{border-color:var(--accent)}
+  .pk-avatar img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .pk-fname{font-weight:600;font-size:.86rem;line-height:1.15}
+  .pk-pick-check{font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);opacity:0;height:.7rem}
+  .pk-fighter.sel .pk-pick-check{opacity:1}
+  .pk-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .pk-foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:1.5rem}
+  .pk-foot a{color:var(--accent);text-decoration:none}
+</style></head><body>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
+      <a href="/account">Account</a>
+    </div>
+  </nav>
+  <main>
+    <div class="pk-head">
+      <h1>Pick'em</h1>
+      <p class="pk-sub">${card ? esc(card.name) + (when ? " · " + esc(when) : "") : "Predict the fights, climb the leaderboard."}</p>
+      ${lockNote ? `<p class="pk-lock">${esc(lockNote)}</p>` : ""}
+    </div>
+    ${name ? "" : `<div class="pk-name-prompt" id="pkNamePrompt">
+      <h2>Pick a display name</h2>
+      <p>This is how you'll show up on the leaderboard.</p>
+      <div class="pk-name-row"><input id="pkNameInput" maxlength="20" placeholder="e.g. KO_Merchant" autocomplete="off"><button class="pk-btn" id="pkNameSave">Save</button></div>
+      <div class="pk-msg" id="pkNameMsg"></div>
+    </div>`}
+    <div class="pk-tabs" role="tablist">
+      <button type="button" class="pk-tab sel" data-panel="picks">Make picks</button>
+      <button type="button" class="pk-tab" data-panel="leaderboard">Leaderboard</button>
+      <button type="button" class="pk-tab" data-panel="history">My history</button>
+    </div>
+    <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
+      ${bouts}
+    </div>
+    <div class="pk-panel" id="panel-leaderboard" hidden><p class="pk-empty">Loading leaderboard…</p></div>
+    <div class="pk-panel" id="panel-history" hidden><p class="pk-empty">Loading your history…</p></div>
+    <p class="pk-foot">Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.</p>
+  </main>
+  <script>
+    var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
+    function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
+    // Tab switching
+    var tabs=document.querySelectorAll(".pk-tab");
+    tabs.forEach(function(t){t.addEventListener("click",function(){
+      tabs.forEach(function(x){x.classList.remove("sel");});t.classList.add("sel");
+      ["picks","leaderboard","history"].forEach(function(p){var el=document.getElementById("panel-"+p);if(el)el.hidden=(p!==t.dataset.panel);});
+    });});
+    // Winner selection (visual for now; submit + scoring wired next)
+    document.querySelectorAll(".pk-bout").forEach(function(b){
+      if(PK_LOCKED)return;
+      b.querySelectorAll(".pk-fighter").forEach(function(f){
+        f.addEventListener("click",function(){
+          b.querySelectorAll(".pk-fighter").forEach(function(x){x.classList.remove("sel");});
+          f.classList.add("sel");
+        });
+      });
+    });
+    // Display-name save
+    var nameSave=document.getElementById("pkNameSave");
+    if(nameSave){nameSave.addEventListener("click",function(){
+      var inp=document.getElementById("pkNameInput"),msg=document.getElementById("pkNameMsg");
+      msg.className="pk-msg";msg.textContent="Saving…";
+      pkApi("/api/pickem/name",{method:"POST",body:JSON.stringify({name:inp.value})}).then(function(r){
+        if(r.error){msg.className="pk-msg err";msg.textContent=r.error;return;}
+        PK_NAME=r.name;msg.className="pk-msg ok";msg.textContent="Saved!";
+        var pr=document.getElementById("pkNamePrompt");if(pr)pr.style.display="none";
+      }).catch(function(){msg.className="pk-msg err";msg.textContent="Network error — try again.";});
+    });}
+  </script>
+</body></html>`;
+};
+
 export const changePasswordPage = () => shell("Change password — GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -342,6 +342,47 @@ async function loadFocusEvent(env, url) {
     bouts: pick.bouts, decided: pick.bouts.length, total,
   };
 }
+// The next upcoming card to PICK — the soonest event that hasn't finished, with its
+// bouts (main event first). Powers the standalone /pickem page. Returns a compact
+// shape: names + slugs (for photos) + card position + rounds, and the prelims lock.
+async function loadUpcomingCard(env, url) {
+  let feed;
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/event.json", url)));
+    if (!r.ok) return null;
+    feed = await r.json();
+  } catch { return null; }
+  const events = (Array.isArray(feed && feed.data) ? feed.data : []).filter(ev => ev && (ev.bouts || []).length);
+  if (!events.length) return null;
+  const now = Date.now();
+  const byStart = events.slice().sort((a, b) => (Date.parse(a.startsAt || 0) || 0) - (Date.parse(b.startsAt || 0) || 0));
+  // The soonest card still in the future (6h grace so a live card stays selected),
+  // else the earliest listed.
+  const ev = byStart.find(e => (Date.parse(e.startsAt || 0) || 0) >= now - 6 * 3600 * 1000) || byStart[0];
+  const bouts = (ev.bouts || [])
+    .filter(b => b && !b.isCancelled && (b.fighters || []).length === 2)
+    .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
+    .map((b, i) => {
+      const f = b.fighters;
+      return {
+        id: b.id || (ev.slug + "-" + i),
+        f1: f[0].fighterName, f2: f[1].fighterName,
+        s1: f[0].fighterSlug || null, s2: f[1].fighterSlug || null,
+        section: b.cardSection || "", pos: b.cardPosition || "",
+        wc: String(b.weightClass || "").replace(/\s*bout\s*$/i, "").trim(),
+        rounds: b.numberOfRounds || 3, title: !!b.titleBout,
+      };
+    });
+  const prelimsAt = ev.prelimsStartsAt || ev.startsAt || null;
+  return {
+    slug: ev.slug,
+    name: ev.title || ev.espnName || ev.shortTitle || ev.slug,
+    date: (ev.startsAt || "").slice(0, 10),
+    prelimsAt,
+    locked: prelimsAt ? now >= Date.parse(prelimsAt) : false,
+    bouts,
+  };
+}
 // Live standings for the focus card: grade every submitted entry against the
 // decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
 // records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
@@ -544,6 +585,17 @@ export default {
       if (path === "/privacy") return html(privacyPage());
       if (path === "/contact") return html(contactPage());
       if (path === "/about") return html(aboutPage());
+
+      // ---- Pick'em (FREE feature — any logged-in account; logged-out are sent to
+      // sign up and returned here) ----
+      if (path === "/pickem") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/pickem");
+        const [u, card, name] = await Promise.all([
+          getUser(env, s.email), loadUpcomingCard(env, url), getDisplayName(env, s.email),
+        ]);
+        return html(pickemPage({ card, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+      }
 
       // ---- account page (must be logged in) ----
       if (path === "/account") {
