@@ -930,7 +930,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   const rounds = (b) => { let s = ""; for (let r = 1; r <= (b.rounds || 3); r++) s += `<button type="button" data-round="${r}">R${r}</button>`; return s; };
   const boutHTML = (b) => `
       <div class="pk-bout" data-bout="${esc(b.id)}" data-f1="${esc(b.f1)}" data-f2="${esc(b.f2)}" data-s1="${esc(b.s1 || "")}" data-s2="${esc(b.s2 || "")}">
-        <div class="pk-bout-head"><span class="pk-bout-label">${esc(b.wc)}${b.title ? " · Title" : ""}</span><span class="pk-bout-main">${esc(b.pos || b.section)}</span></div>
+        <div class="pk-bout-head"><span class="pk-bout-label">${esc(b.wc)}${b.title ? " · Title" : ""}</span><span class="pk-bout-main">${esc(b.pos || b.section)}</span><span class="pk-bout-check" aria-hidden="true">✓</span></div>
         <div class="pk-fighters">
           <button type="button" class="pk-fighter" data-pick="${esc(b.f1)}">${av(b.s1, initials(b.f1))}<div class="pk-fname">${esc(b.f1)}</div><div class="pk-pick-check">✓ Your pick</div></button>
           <button type="button" class="pk-fighter" data-pick="${esc(b.f2)}">${av(b.s2, initials(b.f2))}<div class="pk-fname">${esc(b.f2)}</div><div class="pk-pick-check">✓ Your pick</div></button>
@@ -1015,10 +1015,13 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-msg.err{color:#ff8a7a}.pk-msg.ok{color:var(--accent)}
   .pk-intro{color:#c9ccd3;font-size:.9rem;line-height:1.55;margin:0 0 1.25rem;background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.22);border-radius:10px;padding:.8rem .95rem}
   .pk-intro strong{color:var(--text);font-weight:700}
-  .pk-bout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem .9rem 1rem;margin-bottom:.9rem}
-  .pk-bout-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem}
-  .pk-bout-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .pk-bout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem .9rem 1rem;margin-bottom:.9rem;transition:border-color .15s ease;scroll-margin-top:76px}
+  .pk-bout.done{border-color:rgba(0,230,104,.45)}
+  .pk-bout-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem}
+  .pk-bout-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:auto}
   .pk-bout-main{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  .pk-bout-check{display:none;flex:0 0 auto;width:16px;height:16px;border-radius:50%;background:var(--accent);color:#04120a;font-size:.62rem;font-weight:900;align-items:center;justify-content:center;line-height:1}
+  .pk-bout.done .pk-bout-check{display:inline-flex}
   .pk-fighters{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
   .pk-fighter{display:flex;flex-direction:column;align-items:center;gap:.4rem;background:var(--surface2);border:1.5px solid var(--border);border-radius:11px;padding:.8rem .5rem;cursor:pointer;transition:border-color .12s,background .12s,transform .08s;text-align:center;color:var(--text);font:inherit}
   .pk-fighter:hover{border-color:rgba(255,255,255,.28)}
@@ -1048,7 +1051,12 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-pts strong{color:var(--accent);font-weight:700}
   .pk-clear{background:none;border:none;color:var(--muted);font:inherit;font-size:.7rem;cursor:pointer;text-decoration:underline;padding:0}
   .pk-clear:hover{color:#ff6a5e}
-  .pk-submitbar{position:sticky;bottom:10px;margin-top:1.1rem;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 6px 22px rgba(0,0,0,.4)}
+  .pk-submitbar{position:sticky;bottom:10px;margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 6px 22px rgba(0,0,0,.4)}
+  .pk-bar-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .pk-progress{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+  .pk-progress-fill{height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .28s ease}
+  .pk-next{background:transparent;border:1px solid var(--border);color:var(--text);border-radius:9px;padding:.6rem .8rem;font:inherit;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap}
+  .pk-next:hover{border-color:var(--accent);color:var(--accent)}
   .pk-bar-info{font-size:.82rem;color:var(--muted)}
   .pk-bar-info b{color:var(--text);font-weight:700}
   .pk-submitbar .pk-btn:disabled{opacity:.45;cursor:default}
@@ -1155,7 +1163,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p><button type="button" class="pk-howlink" id="pkHowBtn">How scoring works →</button>` : ""}
       ${bouts}
-      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div>` : ""}
+      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-progress"><div class="pk-progress-fill" id="pkProgFill"></div></div><div class="pk-bar-row"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-next" id="pkNext" hidden>Next ↓</button><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
@@ -1326,14 +1334,20 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       el.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("sel",p.confidence===b.dataset.c);});
       var pts=el.querySelector(".pk-pts");if(pts)pts.innerHTML=p.winner?("Total possible points: <strong>"+potential(p)+"</strong>"):"Tap a fighter to pick the winner";
       var clr=el.querySelector(".pk-clear");if(clr)clr.style.display=p.winner?"":"none";
+      el.classList.toggle("done",isComplete(p));
     }
     function updateBar(){
       var bar=document.getElementById("pkBar");if(!bar)return;
-      var done=0,stake=0;BOUT_IDS.forEach(function(id){var p=PICKS[id];if(isComplete(p))done++;if(p&&p.winner)stake+=potential(p);});
-      document.getElementById("pkBarCount").textContent=done+"/"+BOUT_IDS.length;
+      var total=BOUT_IDS.length,done=0,stake=0;BOUT_IDS.forEach(function(id){var p=PICKS[id];if(isComplete(p))done++;if(p&&p.winner)stake+=potential(p);});
+      document.getElementById("pkBarCount").textContent=done+"/"+total;
       document.getElementById("pkBarStake").textContent="+"+stake;
-      var sb=document.getElementById("pkSubmit");if(sb&&sb.textContent.indexOf("Submitting")<0)sb.disabled=PK_LOCKED||done<BOUT_IDS.length;
+      var fill=document.getElementById("pkProgFill");if(fill)fill.style.width=(total?Math.round(done/total*100):0)+"%";
+      var nx=document.getElementById("pkNext");if(nx)nx.hidden=(done>=total);
+      var sb=document.getElementById("pkSubmit");if(sb&&sb.textContent.indexOf("Submitting")<0)sb.disabled=PK_LOCKED||done<total;
     }
+    function firstIncompleteEl(){for(var i=0;i<BOUT_IDS.length;i++){if(!isComplete(PICKS[BOUT_IDS[i]]))return boutEl(BOUT_IDS[i]);}return null;}
+    var pkNextBtn=document.getElementById("pkNext");
+    if(pkNextBtn)pkNextBtn.addEventListener("click",function(){var el=firstIncompleteEl();if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
     function renderAll(){BOUT_IDS.forEach(updateBout);updateBar();}
     var picksPanel=document.getElementById("panel-picks");
     if(picksPanel&&!PK_LOCKED){
