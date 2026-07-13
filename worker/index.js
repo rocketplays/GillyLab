@@ -579,15 +579,15 @@ const listUnsubHeaders = (unsubHref) => ({ "List-Unsubscribe": "<" + unsubHref +
 // attribute (honoured even by clients that drop CSS backgrounds). color-scheme hints
 // keep dark-mode clients from re-inverting our already-dark palette.
 function emailShell(bodyHtml, unsubHref) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
-<body style="margin:0;padding:0;background-color:#0a0a0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
+<body style="margin:0;padding:0;width:100%;background-color:#0a0a0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0a0b" style="background-color:#0a0a0b;width:100%;margin:0;padding:0">
     <tr><td align="center" bgcolor="#0a0a0b" style="background-color:#0a0a0b;padding:24px 12px">
-      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" bgcolor="#14141a" style="width:480px;max-width:100%;background-color:#14141a;border:1px solid #2a2a32;border-radius:14px;overflow:hidden">
-        <tr><td style="padding:22px 26px 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#f4f5f7">GILLY<span style="color:#00e668">LAB</span></div></td></tr>
-        <tr><td style="padding:14px 26px 26px;color:#f4f5f7;font-size:15px;line-height:1.55">${bodyHtml}</td></tr>
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%">
+        <tr><td bgcolor="#14141a" style="background-color:#14141a;padding:22px 26px 6px;border:1px solid #2a2a32;border-bottom:0;border-radius:14px 14px 0 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#f4f5f7">GILLY<span style="color:#00e668">LAB</span></div></td></tr>
+        <tr><td bgcolor="#14141a" style="background-color:#14141a;padding:8px 26px 26px;color:#f4f5f7;font-size:15px;line-height:1.55;border:1px solid #2a2a32;border-top:0;border-radius:0 0 14px 14px">${bodyHtml}</td></tr>
       </table>
-      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td style="color:#6b6b76;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></td></tr></table>
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td align="center" bgcolor="#0a0a0b" style="background-color:#0a0a0b;color:#8a8f99;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></td></tr></table>
     </td></tr>
   </table>
 </body></html>`;
