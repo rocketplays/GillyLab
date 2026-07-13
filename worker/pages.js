@@ -1704,6 +1704,11 @@ export const matchupPage = ({ subscribed }) => {
   .mp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
   .mp-fill.good{background:var(--accent)}.mp-fill.bad{background:#c76a54}
   .mp-tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;border-radius:1px}
+  .mp-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .9rem;margin:.15rem 0 1rem;font-size:.68rem;color:var(--muted)}
+  .mp-lg{display:inline-flex;align-items:center;gap:.32rem}
+  .mp-lg-sw{width:14px;height:6px;border-radius:2px;display:inline-block}
+  .mp-lg-sw.good{background:var(--accent)}.mp-lg-sw.bad{background:#c76a54}
+  .mp-lg-tick{width:2px;height:11px;background:#fff;display:inline-block;border-radius:1px}
   .mp-val{flex:0 0 48px;text-align:right;font-weight:800;font-size:.85rem;color:#ececf0}
   .mp-val.good{color:var(--accent)}.mp-val.bad{color:#c76a54}
   .mp-foot{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:.84rem;color:var(--muted);line-height:1.5}
@@ -1733,7 +1738,8 @@ export const matchupPage = ({ subscribed }) => {
       var ini=String(p.name||"").trim().split(/\\s+/).map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase()||"?";
       var av=p.slug?'<div class="mp-av"><img src="/photos/thumb/'+mpEsc(p.slug)+'.png" alt="" onerror="this.parentNode.textContent=\\''+ini+'\\'"></div>':'<div class="mp-av">'+ini+'</div>';
       var grps=(p.groups||[]).map(function(g){return '<div class="mp-grp-t">'+mpEsc(g.t)+'</div>'+g.rows.map(function(r){return '<div class="mp-row"><span class="mp-lbl">'+mpEsc(r.label)+'</span>'+mpBar(r)+'</div>';}).join("");}).join("");
-      return '<div class="mp-hdr">'+av+'<div><div class="mp-name">'+mpEsc(p.name)+'</div><div class="mp-meta">'+mpEsc(p.record)+(p.rank&&p.rank!=="NR"?" · "+mpEsc(p.rank):"")+'</div></div><button type="button" class="mp-close" onclick="mpClose()" aria-label="Close">×</button></div>'+grps+'<div class="mp-foot">Full profile — fight history, tape study, odds history, accolades &amp; more, on this fighter and every fighter.<br><a href="/subscribe">Go Premium →</a></div>';
+      var legend=p.bars?'<div class="mp-legend"><span class="mp-lg"><span class="mp-lg-sw good"></span>better than average</span><span class="mp-lg"><span class="mp-lg-sw bad"></span>below average</span><span class="mp-lg"><span class="mp-lg-tick"></span>division average</span></div>':"";
+      return '<div class="mp-hdr">'+av+'<div><div class="mp-name">'+mpEsc(p.name)+'</div><div class="mp-meta">'+mpEsc(p.record)+(p.rank&&p.rank!=="NR"?" · "+mpEsc(p.rank):"")+'</div></div><button type="button" class="mp-close" onclick="mpClose()" aria-label="Close">×</button></div>'+legend+grps+'<div class="mp-foot">Full profile — fight history, tape study, odds history, accolades &amp; more, on this fighter and every fighter.<br><a href="/subscribe">Go Premium →</a></div>';
     }
     window.mpOpen=function(which){var p=MP[which];if(!p)return;document.getElementById("mpSheet").innerHTML=mpRender(p);document.getElementById("mpSheet").scrollTop=0;document.getElementById("mpOverlay").hidden=false;document.body.style.overflow="hidden";};
     window.mpClose=function(){document.getElementById("mpOverlay").hidden=true;document.body.style.overflow="";};
