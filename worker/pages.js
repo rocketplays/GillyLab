@@ -12,8 +12,14 @@ const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in S
 const SITE_URL = "https://gillylab.com";        // for absolute OG/canonical URLs
 const CONTACT_EMAIL = "support@gillylab.com";   // shown in the footer + legal pages
 
+// Smart "back": return to the previous page when the user actually came from one
+// on this site (else fall back to home). href="#" keeps the pages' internal-link
+// fade handler from hijacking it, and the referrer check avoids sending free users
+// to "/" (which redirects them to /subscribe). Inline so it works without extra JS.
+const BACK_JS = "event.preventDefault();if(document.referrer&&document.referrer.indexOf(location.origin)===0){history.back()}else{location.assign('/')}";
+
 // Back-to-landing arrow, top-left (used on the signup + login pages).
-const backLink = `<a class="back-link" href="/" aria-label="Back to home"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
+const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
 const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1810,7 +1816,7 @@ export const contactPage = () => shell("Contact GillyLab", `
       <button type="submit">Send message</button>
       <div id="m" class="msg"></div>
     </form>
-    <div class="alt muted"><a href="/">Back to GillyLab</a></div>
+    <div class="alt muted"><a href="#" onclick="${BACK_JS}">Back</a></div>
   </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`);
 
 export const notePage = (title, msg) => shell(title, `
@@ -1846,7 +1852,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
   a{color:#00e668}
 </style></head><body>
   <div class="doc">
-    <a class="back" href="/">← Back to GillyLab</a>
+    <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <h1>${title}</h1>
     <div class="updated">Last updated: ${updated}</div>
@@ -1945,7 +1951,7 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
   a{color:#00e668}
 </style></head><body>
   <div class="doc">
-    <a class="back" href="/">← Back to GillyLab</a>
+    <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <h1>About us</h1>
     <p class="lede">Two UFC bettors who got tired of doing research the hard way.</p>
