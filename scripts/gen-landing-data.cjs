@@ -72,6 +72,20 @@ function buildRankings(rk, recMap) {
 // ── featured fighter, rendered like the current profile (grouped median bars) ──
 const _statNumG = (v) => { if (v == null) return null; const s = String(v).trim(); if (!s || s === '--' || s === '-') return null; const m = s.match(/-?[\d.]+/); return m ? parseFloat(m[0]) : null; };
 function _ageFromDob(dob) { if (!dob) return null; const d = new Date(dob); if (isNaN(d.getTime())) return null; const t = new Date(); let a = t.getFullYear() - d.getFullYear(); const mo = t.getMonth() - d.getMonth(); if (mo < 0 || (mo === 0 && t.getDate() < d.getDate())) a--; return (a >= 0 && a < 90) ? a : null; };
+// The featured slide's bio is one line per field; a full gym name like "American
+// Kickboxing Academy / Eagles MMA" wraps and makes the slide tall on mobile. Map
+// the common gyms to short forms; unknown gyms pass through unchanged.
+const _GYM_ABBR = {
+  'american kickboxing academy': 'AKA', 'eagles mma': 'Eagles', 'american top team': 'ATT',
+  'city kickboxing': 'City KB', 'jackson wink mma': 'Jackson-Wink', 'jackson-wink mma': 'Jackson-Wink',
+  'team alpha male': 'Team Alpha Male', 'kill cliff fc': 'Kill Cliff', 'fortis mma': 'Fortis',
+  'sanford mma': 'Sanford', 'xtreme couture': 'Xtreme Couture', 'the mma lab': 'MMA Lab',
+  'alliance mma': 'Alliance', 'nova uniao': 'Nova Uniao', 'american kickboxing academy (aka)': 'AKA',
+};
+function _shortGym(g) {
+  if (!g) return g;
+  return String(g).split('/').map(p => { const t = p.trim(); return _GYM_ABBR[t.toLowerCase()] || t; }).join('/');
+}
 // A fighter's roster division ABBREVIATION ("WW", "LW", …) and the peers who share
 // it — FIGHTERS stores the abbreviation, which is what the profile's medians use too.
 function _fighterDivAbbrev(name) {
@@ -150,7 +164,7 @@ function buildFeatured(rk, recMap) {
   if (groups.reduce((n, g) => n + g.rows.filter(r => r.val !== '—').length, 0) < 4) return null;
   const bio = [
     ['Age', _ageFromDob(st.dob)], ['Height', st.ht || null], ['Reach', st.reach || null],
-    ['Stance', (st.stance && st.stance !== '--') ? st.stance : null], ['Gym', st.gym || null],
+    ['Stance', (st.stance && st.stance !== '--') ? st.stance : null], ['Gym', _shortGym(st.gym) || null],
   ].filter(b => b[1] != null && b[1] !== '');
   const ini = initialsOf(champ.fighterName);
   return {
