@@ -313,8 +313,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
       <div class="nav-menu" id="navMenu">
         <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
         <div class="nav-menu-list" role="menu">
-          <a role="menuitem" href="/signup">Start free</a>
           <a role="menuitem" href="/login">Log In</a>
+          <a role="menuitem" href="/signup">Start free</a>
           <a role="menuitem" href="/signup?next=/subscribe">Go Premium</a>
           <a role="menuitem" href="/about">About Us</a>
           <a role="menuitem" href="/contact">Contact Us</a>
