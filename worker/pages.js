@@ -954,10 +954,10 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   *{box-sizing:border-box}
   html{background:var(--bg)}
   body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
-  body.leaving{opacity:0}
-  main{animation:pkPageIn .2s ease both}
-  @keyframes pkPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  body.leaving{opacity:0;animation:none}
+  body{animation:pgIn .22s ease both}
+  @keyframes pgIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){body{animation:none;transition:none}}
   a{color:inherit}
   .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
   .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
@@ -1360,10 +1360,10 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   *{box-sizing:border-box}
   html{background:var(--bg)}
   body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
-  body.leaving{opacity:0}
-  main{animation:fpIn .2s ease both}
-  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  body.leaving{opacity:0;animation:none}
+  body{animation:pgIn .22s ease both}
+  @keyframes pgIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){body{animation:none;transition:none}}
   a{color:inherit}
   .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
   .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
@@ -1457,10 +1457,10 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   *{box-sizing:border-box}
   html{background:var(--bg)}
   body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
-  body.leaving{opacity:0}
-  main{animation:fpIn .2s ease both}
-  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  body.leaving{opacity:0;animation:none}
+  body{animation:pgIn .22s ease both}
+  @keyframes pgIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){body{animation:none;transition:none}}
   a{color:inherit}
   .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
   .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
@@ -1610,10 +1610,10 @@ export const matchupPage = ({ subscribed }) => {
   *{box-sizing:border-box}
   html{background:var(--bg)}
   body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
-  body.leaving{opacity:0}
-  main{animation:fpIn .2s ease both}
-  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  body.leaving{opacity:0;animation:none}
+  body{animation:pgIn .22s ease both}
+  @keyframes pgIn{from{opacity:0}to{opacity:1}}
+  @media (prefers-reduced-motion:reduce){body{animation:none;transition:none}}
   a{color:inherit}
   .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
   .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
