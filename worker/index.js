@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -627,6 +627,12 @@ export default {
         if (!s) return redirect(env.SITE_URL + "/signup?next=/roster");
         const u = await getUser(env, s.email);
         return html(rosterPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+      }
+      if (path === "/matchup") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/matchup");
+        const u = await getUser(env, s.email);
+        return html(matchupPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // ---- account page (must be logged in) ----

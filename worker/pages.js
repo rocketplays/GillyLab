@@ -1430,6 +1430,151 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   </script>
 </body></html>`;
 
+// ── Free /matchup page (login-gated; the upcoming card + main-event breakdown) ──
+export const matchupPage = ({ subscribed }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const card = (landingData && landingData.card) || null;
+  const fmtO = (o) => (o == null ? "—" : (o > 0 ? "+" + o : "" + o));
+  const initials = (nm) => String(nm || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
+  const av = (slug, init) => slug
+    ? `<div class="mf-av"><img src="/photos/thumb/${esc(slug)}.png" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(init)}'"></div>`
+    : `<div class="mf-av">${esc(init)}</div>`;
+  const pnum = (v) => { const m = /([0-9.]+)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[1]) : null; };
+  const disp = (v) => { if (v == null || v === "") return "—"; if (typeof v === "number") { const q = (+v).toFixed(2); return q.replace(/\.?0+$/, "") || "0"; } return String(v); };
+
+  // Main-event breakdown (tale of the tape + style + h2h stats + path).
+  const breakdownHTML = (mf, t) => {
+    if (!t) return "";
+    const cmp = (label, a, b, lo) => {
+      let aC = "", bC = "";
+      const na = pnum(a), nb = pnum(b);
+      if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
+      return `<div class="mb-row"><div class="mb-lbl">${label}</div><div class="mb-val ${aC}">${esc(disp(a))}</div><div class="mb-val ${bC}">${esc(disp(b))}</div></div>`;
+    };
+    const H2H = [["Sig. strikes / min", "slpm", 0], ["Striking accuracy", "strAcc", 0], ["Strikes absorbed / min", "sapm", 1], ["Striking defense", "strDef", 0], ["Knockdowns / 15", "kd", 0], ["Takedowns / 15", "tdLanded", 0], ["Takedown accuracy", "tdAcc", 0], ["Takedown defense", "tdDef", 0], ["Sub. attempts / 15", "subAvg", 0], ["Finish rate", "finRate", 0]];
+    const sa = t.stats.a || {}, sb = t.stats.b || {};
+    const h2h = H2H.map((r) => cmp(r[0], sa[r[1]], sb[r[1]], r[2])).join("");
+    const lean = t.lean || {}, pace = t.pace || {};
+    const dot = (v, col) => v == null ? "" : `<span class="mb-dot" style="left:${Math.max(2, Math.min(98, v))}%;background:${col}"></span>`;
+    const path = (nm, p, col) => p ? `<div class="mb-path"><div class="mb-path-h" style="color:${col}">${esc(String(nm).split(" ").pop().toUpperCase())}</div><div>${esc(p)}</div></div>` : "";
+    return `<div class="mf-panel" hidden>
+      <div class="mb-head"><div></div><div>${esc(mf.f1.split(" ").pop())}</div><div>${esc(mf.f2.split(" ").pop())}</div></div>
+      ${cmp("Moneyline", mf.o1, mf.o2, 1)}
+      <div class="mb-sec">Style &amp; pace</div>
+      <div class="mb-bar">${dot(lean.a, "#00e668")}${dot(lean.b, "#ffcf7a")}</div>
+      <div class="mb-tick"><span>Grappler</span><span>Striker</span></div>
+      ${cmp("Pace · strikes/min", pace.a, pace.b, 0)}
+      <div class="mb-sec">Tale of the tape</div>
+      ${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Stance", t.a.stance, t.b.stance, 0)}
+      <div class="mb-sec">Head to head</div>
+      ${h2h}
+      <div class="mb-sec">Path to victory</div>
+      ${path(mf.f1, t.path && t.path.a, "#00e668")}${path(mf.f2, t.path && t.path.b, "#ffcf7a")}
+    </div>`;
+  };
+
+  const rowHTML = (f) => {
+    const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
+    return `<div class="mf-card${f.main ? " main" : ""}">
+      <div class="mf-row">
+        <div class="mf-side">${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div></div>
+        <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>${f.main ? `<button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button>` : ""}</div>
+        <div class="mf-side right"><div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}</div>
+      </div>
+      ${f.main ? breakdownHTML(f, card && card.main) : ""}
+    </div>`;
+  };
+
+  // Group fights by card section (Main Card / Prelims / …), main event first.
+  let body = `<p class="mf-empty">No upcoming card is posted yet — check back on fight week.</p>`;
+  if (card && card.fights && card.fights.length) {
+    const secOrder = ["Main Card", "Prelims", "Early Prelims", "Preliminary Card"];
+    const bySec = {}; card.fights.forEach((f) => { (bySec[f.section || "Main Card"] = bySec[f.section || "Main Card"] || []).push(f); });
+    const secs = Object.keys(bySec).sort((a, b) => (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99));
+    body = secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map(rowHTML).join("")).join("");
+  }
+  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Main Event Breakdown — GillyLab</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
+  body.leaving{opacity:0}
+  main{animation:fpIn .2s ease both}
+  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .mf-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
+  .mf-sechdr{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
+  .mf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.7rem;overflow:hidden}
+  .mf-card.main{border-color:rgba(0,230,104,.45)}
+  .mf-row{display:flex;align-items:center;gap:.4rem;padding:.7rem .6rem}
+  .mf-side{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
+  .mf-side.right{flex-direction:row-reverse;text-align:right}
+  .mf-av{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid rgba(255,255,255,.14);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--muted)}
+  .mf-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .mf-meta{min-width:0;flex:1}
+  .mf-rank{font-size:.6rem;font-weight:700;color:var(--accent);letter-spacing:.03em}
+  .mf-name{font-weight:700;font-size:.9rem;line-height:1.15}
+  .mf-rec{font-size:.72rem;color:var(--muted)}
+  .mf-rec b{color:var(--text)}
+  .mf-center{flex:0 0 78px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.15rem}
+  .mf-vs{font-weight:800;font-size:.75rem;color:var(--muted);letter-spacing:.08em}
+  .mf-wt{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
+  .mf-rds{font-size:.58rem;color:var(--muted)}
+  .mf-info{margin-top:.2rem;background:none;border:none;color:var(--accent);font:inherit;font-size:.62rem;font-weight:700;cursor:pointer;white-space:nowrap}
+  .mf-panel{border-top:1px solid var(--border);padding:.9rem 1rem 1.1rem;background:rgba(255,255,255,.015)}
+  .mf-panel[hidden]{display:none}
+  .mb-sec{font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:1rem 0 .5rem}
+  .mb-head{display:grid;grid-template-columns:1fr 3.2rem 3.2rem;gap:.4rem;font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding-bottom:.35rem;text-align:right}
+  .mb-head div:first-child{text-align:left}
+  .mb-row{display:grid;grid-template-columns:1fr 3.2rem 3.2rem;gap:.4rem;padding:.32rem 0;border-top:1px solid rgba(255,255,255,.05);font-size:.82rem}
+  .mb-lbl{color:var(--muted)}
+  .mb-val{text-align:right;font-weight:600}
+  .mb-val.w{color:var(--accent)}
+  .mb-bar{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.09);margin:.2rem 0 .3rem}
+  .mb-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;border:2px solid var(--bg)}
+  .mb-tick{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .mb-path{margin-top:.55rem;font-size:.82rem;line-height:1.45;color:#d7d7db}
+  .mb-path-h{font-size:.62rem;font-weight:800;letter-spacing:.05em;margin-bottom:.15rem}
+  .mf-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
+  .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+</style></head><body>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
+      <a href="/account">Account</a>
+    </div>
+  </nav>
+  <main>
+    <h1>${card ? esc(card.event) : "Next Card"}</h1>
+    <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card, with the main-event breakdown. Tap “Fight Info” on the main event.</p>
+    ${body}
+    <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
+  </main>
+  <script>
+    document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    window.mfToggle=function(btn){var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;var open=!p.hidden?false:true;p.hidden=!open;btn.textContent=open?"Fight Info ⌃":"Fight Info ⌄";if(open)p.scrollIntoView({behavior:"smooth",block:"nearest"});};
+  </script>
+</body></html>`;
+};
+
 export const changePasswordPage = () => shell("Change password — GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
