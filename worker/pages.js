@@ -1358,6 +1358,78 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   </script>
 </body></html>`;
 
+// ── Free /roster page (login-gated; active roster + weekly changes) ──────────────
+export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Active Roster — GillyLab</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
+  body.leaving{opacity:0}
+  main{animation:fpIn .2s ease both}
+  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .rs-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.3rem}
+  .ar-bar{display:flex;flex-wrap:wrap;gap:.3rem;margin:1.4rem 0 1.3rem}
+  .ar-letter{background:var(--surface2);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.35rem .62rem;font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;line-height:1}
+  .ar-letter:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+  .ar-letter.active{background:var(--accent);color:#04130a;border-color:transparent}
+  .ar-count{font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:.85rem}
+  .ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 1.25rem}
+  .ar-name{display:block;padding:.4rem 0;font-size:.92rem;color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
+  .rs-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .rs-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
+  .rs-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+</style></head><body>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
+      <a href="/account">Account</a>
+    </div>
+  </nav>
+  <main>
+    <h1>Active Roster</h1>
+    <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
+    <div id="rsChanges"></div>
+    <div class="ar-bar" id="rsAZ"></div>
+    <div id="rsList"><p class="rs-empty">Loading roster…</p></div>
+    <div class="rs-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for every fighter's full analytics.` : `Roster is free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
+  </main>
+  <script>
+    function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    var ROSTER=[],CHANGES=[],LETTER="All";
+    function renderChanges(){
+      var el=document.getElementById("rsChanges");if(!CHANGES.length){el.innerHTML="";return;}
+      function col(title,items,color,first){return '<div style="'+(first?"":"margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);")+'"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+color+';margin-bottom:.7rem"><span>'+title+'</span><span style="background:'+color+'22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">'+items.length+'</span></div>'+(items.length?'<div style="display:flex;flex-direction:column;gap:.4rem">'+items.map(function(n){return '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:'+color+';font-size:.58rem">●</span><span>'+esc(n)+'</span></div>';}).join("")+'</div>':'<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');}
+      el.innerHTML=CHANGES.map(function(w){return '<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem"><div style="font-size:.8rem;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.55);margin-bottom:1.1rem">'+esc(w.week)+'</div>'+col("Added",w.added||[],"#00e668",true)+col("Removed",w.removed||[],"#ff9500",false)+'</div>';}).join("");
+    }
+    function renderList(){
+      var az=document.getElementById("rsAZ"),list=document.getElementById("rsList");
+      var letters=["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
+      az.innerHTML=letters.map(function(L){return '<button type="button" class="ar-letter'+(L===LETTER?" active":"")+'" data-l="'+L+'">'+L+'</button>';}).join("");
+      var shown=ROSTER.filter(function(n){return LETTER==="All"||String(n).toUpperCase().charAt(0)===LETTER;});
+      list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(LETTER==="All"?" on the active roster":"")+'</div><div class="ar-grid">'+shown.map(function(n){return '<span class="ar-name">'+esc(n)+'</span>';}).join("")+'</div>';
+    }
+    document.getElementById("rsAZ").addEventListener("click",function(e){var b=e.target.closest(".ar-letter");if(b){LETTER=b.dataset.l;renderList();}});
+    fetch("/data/roster.json").then(function(r){return r.json();}).then(function(j){ROSTER=(j&&j.fighters)||[];CHANGES=(j&&j.changes)||[];renderChanges();renderList();}).catch(function(){document.getElementById("rsList").innerHTML='<p class="rs-empty">Roster unavailable right now.</p>';});
+  </script>
+</body></html>`;
+
 export const changePasswordPage = () => shell("Change password — GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

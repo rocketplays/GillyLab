@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -51,6 +51,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
   "/gl-logo.png",                          // brand mark in the landing nav
   "/data/rankings.json", "/data/rankings-meta.json", "/data/rankings-extra.json",  // public UFC rankings (free /rankings page)
+  "/data/roster.json",                     // active roster + weekly changes (free /roster page)
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */
@@ -620,6 +621,12 @@ export default {
         if (!s) return redirect(env.SITE_URL + "/signup?next=/rankings");
         const u = await getUser(env, s.email);
         return html(rankingsPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+      }
+      if (path === "/roster") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/roster");
+        const u = await getUser(env, s.email);
+        return html(rosterPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // ---- account page (must be logged in) ----
