@@ -102474,7 +102474,7 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
     const aHt = parseHt(statsA.ht), bHt = parseHt(statsB.ht);
     const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
     const aS = statsA.stance || null, bS = statsB.stance || null;
-    const box = cmpBlock('Overview');
+    const box = cmpBlock('Tale of the tape');
     // Moneyline — pending spans filled lazily by fillPendingMoneylines().
     (function () {
       const row = document.createElement('div'); row.className = 'sr-cmp-row';

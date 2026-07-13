@@ -1472,17 +1472,15 @@ export const matchupPage = ({ subscribed }) => {
     const stLine = (nm, col, arr) => (arr || []).map((x) => `<div style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
     const storyBox = ((st.a && st.a.length) || (st.b && st.b.length))
       ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Storylines</div>${stLine(mf.f1, "var(--accent)", st.a)}${stLine(mf.f2, AMBER, st.b)}</div>` : "";
-    // Tale of the tape (the h2h stats table)
-    const H2H = [["Sig. strikes / min", "slpm", 0], ["Striking accuracy", "strAcc", 0], ["Strikes absorbed / min", "sapm", 1], ["Striking defense", "strDef", 0], ["Knockdowns / 15", "kd", 0], ["Takedowns / 15", "tdLanded", 0], ["Takedown accuracy", "tdAcc", 0], ["Takedown defense", "tdDef", 0], ["Sub. attempts / 15", "subAvg", 0], ["Finish rate", "finRate", 0]];
-    const sa = t.stats.a || {}, sb = t.stats.b || {};
+    // Tale of the tape (physical — mirrors the app's fight-info "Tale of the tape":
+    // moneyline + age/height/reach/stance, not a striking/grappling stats table).
     const cmp = (label, a, b, lo) => {
       let aC = "", bC = ""; const na = pnum(a), nb = pnum(b);
       if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
       return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
     };
-    const rows = H2H.map((r) => cmp(r[0], sa[r[1]], sb[r[1]], r[2])).join("");
-    const tapeBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Tale of the tape</div>${head}${rows}</div>`;
-    return `<div class="mf-panel" hidden>${style}${paceBox}${pathBox}${storyBox}${tapeBox}</div>`;
+    const tape = `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div><div class="sr-cmp-val">${esc(fmtO(mf.o1))}</div><div class="sr-cmp-val">${esc(fmtO(mf.o2))}</div></div>${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Stance", t.a.stance, t.b.stance, 0)}</div>`;
+    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}</div>`;
   };
 
   const rowHTML = (f) => {
