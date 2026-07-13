@@ -1558,6 +1558,23 @@ export const matchupPage = ({ subscribed }) => {
   const pnum = (v) => { const m = /([0-9.]+)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[1]) : null; };
   const disp = (v) => { if (v == null || v === "") return "—"; if (typeof v === "number") { const q = (+v).toFixed(2); return q.replace(/\.?0+$/, "") || "0"; } return String(v); };
 
+  // Tale of the tape (physical: age/height/reach/stance) — shown FREE on every bout.
+  // The main event also gets the paywalled depth below; other bouts get a locked teaser.
+  const cmpRow = (label, a, b, lo) => {
+    let aC = "", bC = ""; const na = pnum(a), nb = pnum(b);
+    if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
+    return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
+  };
+  const taleHTML = (mf, t) => {
+    if (!t || !t.a || !t.b) return "";
+    const sA = surname(mf.f1), sB = surname(mf.f2);
+    const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
+    return `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}</div>`;
+  };
+  // Locked teaser for the paywalled sections on non-main bouts.
+  const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Style · Pace · Path to victory · Storylines</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
+  const nonMainPanel = (f) => `<div class="mf-panel" hidden>${taleHTML(f, f.tape)}${lockedTeaser}</div>`;
+
   // Main-event breakdown — mirrors the in-app scouting panel exactly:
   // Style → Pace → Path to victory → Storylines → Tale of the tape (h2h stats).
   const GREEN = "var(--accent)", AMBER = "#ffcf7a";
@@ -1588,14 +1605,8 @@ export const matchupPage = ({ subscribed }) => {
     const stLine = (nm, col, arr) => (arr || []).map((x) => `<div style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
     const storyBox = ((st.a && st.a.length) || (st.b && st.b.length))
       ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Storylines</div>${stLine(mf.f1, "var(--accent)", st.a)}${stLine(mf.f2, AMBER, st.b)}</div>` : "";
-    // Tale of the tape (physical — mirrors the app's fight-info "Tale of the tape":
-    // moneyline + age/height/reach/stance, not a striking/grappling stats table).
-    const cmp = (label, a, b, lo) => {
-      let aC = "", bC = ""; const na = pnum(a), nb = pnum(b);
-      if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
-      return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
-    };
-    const tape = `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Stance", t.a.stance, t.b.stance, 0)}</div>`;
+    // Tale of the tape (physical: age/height/reach/stance) — shared with non-main bouts.
+    const tape = taleHTML(mf, t);
     return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}</div>`;
   };
 
@@ -1605,11 +1616,11 @@ export const matchupPage = ({ subscribed }) => {
     return `<div class="mf-card${f.main ? " main" : ""}">
       <div class="mf-row">
         <div class="mf-side"${tap("a")}>${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div></div>
-        <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>${f.main ? `<button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button>` : ""}</div>
+        <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
         <div class="mf-side right"${tap("b")}><div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}</div>
       </div>
       ${f.main ? `<div class="mf-taphint">Tap a fighter for their stats</div>` : ""}
-      ${f.main ? breakdownHTML(f, card && card.main) : ""}
+      ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
     </div>`;
   };
 
@@ -1684,6 +1695,12 @@ export const matchupPage = ({ subscribed }) => {
   .sr-path-name{font-size:.66rem;font-weight:800;margin-bottom:2px;letter-spacing:.02em}
   .mf-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .mf-taphint{text-align:center;font-size:.68rem;color:var(--muted);padding:0 0 .6rem}
+  .mf-lock{margin-top:1rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:.85rem .9rem}
+  .mf-lock-head{display:flex;align-items:flex-start;gap:.55rem}
+  .mf-lock-ico{font-size:.95rem;line-height:1.3;flex:0 0 auto;opacity:.85}
+  .mf-lock-t{font-size:.78rem;font-weight:700;color:var(--text);line-height:1.35}
+  .mf-lock-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
+  .mf-lock-btn{display:block;text-align:center;margin-top:.75rem;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;text-decoration:none;border-radius:8px;padding:.55rem .7rem}
   .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}
   /* fighter stat popup */
@@ -1724,7 +1741,7 @@ export const matchupPage = ({ subscribed }) => {
   <main>
     ${freeTabs("/matchup")}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
-    <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card, with the main-event breakdown. Tap “Fight Info” on the main event.</p>
+    <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card — tap “Fight Info” on any bout for the tale of the tape, plus the complete main-event breakdown.</p>
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>

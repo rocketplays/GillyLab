@@ -595,6 +595,13 @@ function buildMatchup(recMap) {
 // The full upcoming card (every bout: records, ranks, odds) + the main event's
 // deep breakdown (tale of the tape, style/pace/path, h2h stats) — for the free
 // /matchup page, which mirrors the events page.
+// Physical "tale of the tape" for one fighter (age/height/reach/stance) — the ONLY
+// breakdown shown free on non-main bouts (the rest is paywalled). Same shape the
+// main-event tape uses, so the /matchup renderer can share one component.
+function _physOf(name) {
+  const st = fighterStat(name) || {};
+  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "" };
+}
 function buildMainTape(m) {
   const st1 = fighterStat(m.f1), st2 = fighterStat(m.f2);
   const ins = breakdownFor(m.f1, m.f2) || {};
@@ -675,6 +682,7 @@ function buildCard(recMap) {
       weight: (b.weightClass || "").replace(/\s*Bout$/i, ""), rounds: b.numberOfRounds || 3,
       o1: od ? od.a : null, o2: od ? od.b : null, books: od ? od.books : 0,
       title: !!b.titleBout, section: b.cardSection || "", pos: b.cardPosition || "", main: i === 0,
+      tape: { a: _physOf(f1), b: _physOf(f2) },
     };
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;
