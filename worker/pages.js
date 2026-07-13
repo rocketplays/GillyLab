@@ -814,10 +814,14 @@ export const loginPage = (next) => {
 };
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
+  <a class="back-link" href="/pickem" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card center">
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
-    <p class="muted">Your account is ready — go Premium to unlock the full fighter database, the simulator and every tool.</p>
+    <p class="muted">Everything in your free Pick'em account, plus the whole database and every tool:</p>
+    <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
+      ${["Every fighter &amp; every bout — full analytics","Fight simulator: winner, method &amp; round","Build &amp; simulate any matchup you want","Matchup analysis — style, pace &amp; path to victory","Auto scouting reports &amp; fighter injury news","Live odds, props &amp; the parlay builder","Closing-line history &amp; line movement","Tape study, accolades &amp; full box scores"].map(f => `<li style="position:relative;padding-left:1.5rem;font-size:.88rem;line-height:1.35"><span style="position:absolute;left:0;color:var(--accent);font-weight:800">✓</span>${f}</li>`).join("")}
+    </ul>
     <p class="price" style="font-size:1.2rem;margin:.6rem 0">${PRICE_LABEL}</p>
     <button id="go">Go Premium →</button>
     <p class="muted" style="font-size:.8rem;margin:.55rem 0 0">Secure checkout by Stripe · cancel anytime</p>
@@ -875,7 +879,11 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
   *{box-sizing:border-box}
   html{background:var(--bg)}
-  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
+  body.leaving{opacity:0}
+  main{animation:pkPageIn .2s ease both}
+  @keyframes pkPageIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
   a{color:inherit}
   .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
   .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
@@ -955,6 +963,14 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
+    // Fade out before internal navigations (matches the auth/subscribe pages).
+    document.addEventListener("click",function(e){
+      var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;
+      var href=a.getAttribute("href");
+      if(!href||href.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
+      e.preventDefault();document.body.classList.add("leaving");
+      setTimeout(function(){window.location=href;},130);
+    });
     // Picks are the page; the two buttons open leaderboard / history (each with its
     // own back button), matching the in-app Pick'em layout.
     function pkShow(which){
