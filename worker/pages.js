@@ -1121,6 +1121,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   ${FREE_FOOTER}
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
+    var PK_UID=${JSON.stringify(email || "")};
     var PK_SCORE=${JSON.stringify(scoreMap)}, PK_EVT=${JSON.stringify(evtInfo)};
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
     // Fade out before internal navigations (matches the auth/subscribe pages).
@@ -1224,8 +1225,13 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     // roundBonus (rPts) from the embedded per-card table, × confidence multiplier.
     var CONF_MULT={High:2,Med:1.5,Low:1};
     var BOUT_IDS=[];document.querySelectorAll(".pk-bout").forEach(function(el){BOUT_IDS.push(el.dataset.bout);});
-    var PK_KEY="glPickem:"+((PK_EVT&&PK_EVT.slug)||"default");
+    // Scope local picks to the signed-in account, not just the event — otherwise a
+    // second account on the same browser would inherit the first account's clicked
+    // (un-submitted) picks from a shared localStorage key.
+    var PK_KEY="glPickem:"+((PK_EVT&&PK_EVT.slug)||"default")+":"+(PK_UID||"anon");
     var PICKS={};try{PICKS=JSON.parse(localStorage.getItem(PK_KEY)||"{}")||{};}catch(e){PICKS={};}
+    // Remove the old account-agnostic key (pre-fix) so previously-leaked picks don't linger.
+    try{localStorage.removeItem("glPickem:"+((PK_EVT&&PK_EVT.slug)||"default"));}catch(e){}
     function persist(){try{localStorage.setItem(PK_KEY,JSON.stringify(PICKS));}catch(e){}}
     function boutEl(id){return document.querySelector('.pk-bout[data-bout="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');}
     function sideOf(el,name){return name===el.dataset.f1?"f1":"f2";}
