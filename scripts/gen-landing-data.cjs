@@ -33,20 +33,43 @@ function recordMap() {
   return m;
 }
 
+// Feed→DB name aliases (roster lists a fighter under a different name than the DB
+// profile). Read from index.html's ACTIVE_ROSTER_ALIASES so the free pages resolve
+// the same names the app does ("Jose Miguel Delgado" -> "Jose Delgado").
+const STAT_ALIASES = (() => {
+  const m = idx.match(/const ACTIVE_ROSTER_ALIASES\s*=\s*\{([\s\S]*?)\n\s*\};/);
+  const o = {}; if (!m) return o;
+  const re = /"([^"]+)"\s*:\s*"([^"]+)"/g; let x;
+  while ((x = re.exec(m[1]))) o[x[1]] = x[2];
+  return o;
+})();
+// Does FIGHTER_STATS have an exact (case-insensitive) entry for this name?
+function _statMatch(name) {
+  return idx.match(new RegExp('"' + String(name).replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}', 'i'));
+}
+// Resolve a feed name to the DB's canonical name: exact match, else alias, else a
+// first+last fallback (drops a middle name like "Jose Miguel Delgado" -> "Jose Delgado")
+// when THAT resolves. Used for every stat/history/division lookup.
+function canonStatName(name) {
+  if (!name) return name;
+  if (_statMatch(name)) return name;
+  if (STAT_ALIASES[name] && _statMatch(STAT_ALIASES[name])) return STAT_ALIASES[name];
+  const p = String(name).trim().split(/\s+/);
+  if (p.length >= 3) { const fl = p[0] + ' ' + p[p.length - 1]; if (_statMatch(fl)) return fl; }
+  return STAT_ALIASES[name] || name;
+}
 // A single fighter's stat object from the FIGHTER_STATS map in index.html.
-// Case-insensitive: the ESPN feed and the roster disagree on capitalization for
-// some names ("Dricus Du Plessis" vs "Dricus du Plessis"), and only FIGHTER_STATS
-// uses the "Name": { ... } shape, so this can't match the wrong structure.
+// Case-insensitive + alias-resolved so feed spellings ("Dricus Du Plessis",
+// "Jose Miguel Delgado") still find the DB entry.
 function fighterStat(name) {
-  const re = new RegExp('"' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '":\\s*\\{([^}]*)\\}', 'i');
-  const m = idx.match(re);
+  const m = _statMatch(canonStatName(name));
   if (!m) return null;
   const o = {};
-  m[1].replace(/(\w+):\s*("(?:[^"\\]|\\.)*"|'[^']*'|-?[\d.]+)/g, (_, k, v) => {
+  m[1].replace(/(\w+):\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|-?[\d.]+)/g, (_, k, v) => {
     // Strip the surrounding quotes AND unescape inner backslash-escapes, so a source
-    // value like ht:"5'10\"" yields 5'10" — not 5'10\" with a stray backslash.
+    // value like ht:"5'10\"" (or single-quoted ht:'5\'11"') yields 5'10" / 5'11".
     o[k] = v[0] === '"' ? v.slice(1, -1).replace(/\\(["\\])/g, '$1')
-         : v[0] === "'" ? v.slice(1, -1)
+         : v[0] === "'" ? v.slice(1, -1).replace(/\\(['\\])/g, '$1')
          : v;
   });
   return o;
@@ -89,9 +112,10 @@ function _shortGym(g) {
 // A fighter's roster division ABBREVIATION ("WW", "LW", …) and the peers who share
 // it — FIGHTERS stores the abbreviation, which is what the profile's medians use too.
 function _fighterDivAbbrev(name) {
-  // Case-insensitive so a feed spelling ("Dricus Du Plessis") still resolves to the
-  // DB's ("Dricus du Plessis") — same as fighterStat().
-  const m = idx.match(new RegExp('\\{ name: "' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"', 'i'));
+  // Case-insensitive + alias-resolved so a feed spelling ("Dricus Du Plessis",
+  // "Jose Miguel Delgado") still resolves to the DB's canonical entry.
+  const cn = canonStatName(name);
+  const m = idx.match(new RegExp('\\{ name: "' + cn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"', 'i'));
   return m ? m[1] : '';
 }
 function _divToNames(abbrev) {
@@ -621,7 +645,7 @@ function buildMainTape(m) {
 let _FH_CACHE = null;
 function _winStreak(name) {
   if (!_FH_CACHE) _FH_CACHE = parseConst('FIGHT_HISTORY') || {};
-  const fh = (_FH_CACHE[name] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+  const fh = (_FH_CACHE[canonStatName(name)] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
   let streak = 0;
   for (const f of fh) { if (f.result === 'W') streak++; else break; }
   return streak;
