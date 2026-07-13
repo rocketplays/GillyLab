@@ -402,6 +402,11 @@ async function loadPickemScore(env, url) {
     return await r.json();
   } catch { return null; }
 }
+// Generic public JSON asset loader — used to server-render the rankings/roster
+// pages so crawlers get the real content instead of a "Loading…" shell.
+async function loadAssetJson(env, url, p) {
+  try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
+}
 // Live standings for the focus card: grade every submitted entry against the
 // decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
 // records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
@@ -904,13 +909,20 @@ export default {
       const pubHeaders = (s) => s ? { "Cache-Control": "private, no-store" } : { "Cache-Control": "public, max-age=300" };
       if (path === "/rankings") {
         const s = await readSession(request, env);
-        const u = s ? await getUser(env, s.email) : null;
-        return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
+        const [u, rk, ex] = await Promise.all([
+          s ? getUser(env, s.email) : null,
+          loadAssetJson(env, url, "/data/rankings.json"),
+          loadAssetJson(env, url, "/data/rankings-extra.json"),
+        ]);
+        return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s, rankings: rk, extra: (ex && ex.bySlug) || {} }), 200, pubHeaders(s));
       }
       if (path === "/roster") {
         const s = await readSession(request, env);
-        const u = s ? await getUser(env, s.email) : null;
-        return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
+        const [u, ro] = await Promise.all([
+          s ? getUser(env, s.email) : null,
+          loadAssetJson(env, url, "/data/roster.json"),
+        ]);
+        return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s, roster: ro }), 200, pubHeaders(s));
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);

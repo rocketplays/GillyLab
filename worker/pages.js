@@ -1470,8 +1470,35 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 </body></html>`;
 };
 
-// ── Free /rankings page (login-gated; public UFC rankings, fetched client-side) ──
-export const rankingsPage = ({ subscribed, loggedIn }) => `<!doctype html><html lang="en"><head>
+// ── Server-side rankings render (SEO): crawlers + first paint get the full, real
+// rankings instead of "Loading…". The page's own JS hydrates over this on load
+// (adds the media/meta toggle + single-division tabs); mirrors that client logic.
+const RK_DIVS = { "Heavyweight": { tag: "Heavyweight" }, "Light Heavyweight": { tag: "Light Heavyweight" }, "Middleweight": { tag: "Middleweight" }, "Welterweight": { tag: "Welterweight" }, "Lightweight": { tag: "Lightweight" }, "Featherweight": { tag: "Featherweight" }, "Bantamweight": { tag: "Bantamweight" }, "Flyweight": { tag: "Flyweight" }, "Women's Strawweight": { tag: "Strawweight" }, "Women's Flyweight": { tag: "W. Flyweight" }, "Women's Bantamweight": { tag: "W. Bantamweight" } };
+const RK_PORDER = ["Men's Pound-for-Pound Top Rank", "Women's Pound-for-Pound Top Rank", "Heavyweight", "Light Heavyweight", "Middleweight", "Welterweight", "Lightweight", "Featherweight", "Bantamweight", "Flyweight", "Women's Strawweight", "Women's Flyweight", "Women's Bantamweight"];
+const RK_SHORT = { "Men's Pound-for-Pound Top Rank": "Men's P4P", "Women's Pound-for-Pound Top Rank": "Women's P4P", "Light Heavyweight": "Light Heavy", "Women's Strawweight": "W. Strawweight", "Women's Flyweight": "W. Flyweight", "Women's Bantamweight": "W. Bantamweight" };
+function rankingsSSR(rankings, extra) {
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  if (!rankings || !Array.isArray(rankings.data) || !rankings.data.length) return { tabs: "", panels: `<p class="rk-empty">Loading rankings…</p>`, date: "Official divisional rankings." };
+  const EX = extra || {};
+  const inits = (n) => String(n || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
+  const tag = (name) => name.indexOf("Pound-for-Pound") >= 0 ? (name.indexOf("Women") === 0 ? "Women's Pound-for-Pound" : "Men's Pound-for-Pound") : (RK_DIVS[name] ? RK_DIVS[name].tag : name);
+  const tabLabel = (n) => RK_SHORT[n] || (RK_DIVS[n] ? RK_DIVS[n].tag : n);
+  const movBadge = (e) => { const c = e.rankChange; const t = (e.rankChangeText || "").toUpperCase(); if (t === "NEW" || e.isNewEntry) return '<span class="rk-mov new">NEW</span>'; if (typeof c === "number" && c > 0) return '<span class="rk-mov up">▲' + c + '</span>'; if (typeof c === "number" && c < 0) return '<span class="rk-mov down">▼' + Math.abs(c) + '</span>'; return '<span class="rk-mov"></span>'; };
+  const rowHTML = (e) => { const ex = EX[e.fighterSlug] || {}; const name = ex.name || e.fighterName; const champ = e.isChampion; const num = champ ? "C" : ("#" + (e.rank != null ? e.rank : "?")); const ini = esc(inits(name)); const localThumb = "/photos/thumb/" + esc(ex.photo || e.fighterSlug || "x") + ".png"; const primary = (e.imageUrl && e.imageUrl.length > 10) ? esc(e.imageUrl) : localThumb; const img = '<img class="rk-av" src="' + primary + '" data-fb="' + localThumb + '" data-ini="' + ini + '" alt="" loading="lazy" onerror="rkImgErr(this)">'; const flag = e.flag || ex.flag || ""; return '<div class="rk-row' + (champ ? " rk-champ" : "") + '"><span class="rk-num">' + num + '</span>' + img + '<span class="rk-name">' + esc(name) + '</span>' + (flag ? '<span class="rk-flag">' + esc(flag) + '</span>' : "") + movBadge(e) + '</div>'; };
+  const byDiv = {}; rankings.data.forEach((e) => (byDiv[e.division] = byDiv[e.division] || []).push(e));
+  const divs = RK_PORDER.filter((d) => byDiv[d] && byDiv[d].length);
+  const tabs = divs.map((d) => `<button type="button" class="rk-tab" data-div="${esc(d)}">${esc(tabLabel(d))}</button>`).join("");
+  const panels = divs.map((d) => {
+    const entries = byDiv[d].slice().sort((a, b) => (a.isChampion ? -1 : 0) - (b.isChampion ? -1 : 0) || (a.rank || 99) - (b.rank || 99));
+    return `<div class="rk-panel-title">${esc(tag(d))}</div>` + entries.map(rowHTML).join("");
+  }).join("");
+  let date = "Official divisional rankings.";
+  if (rankings.meta && rankings.meta.latestSnapshotDate) { const dt = new Date(rankings.meta.latestSnapshotDate + "T00:00:00Z"); if (!isNaN(dt.getTime())) date = "Updated " + dt.toLocaleDateString("en-US", { timeZone: "UTC", month: "long", day: "numeric", year: "numeric" }) + " · UFC Media Panel"; }
+  return { tabs, panels, date };
+}
+
+// ── Free /rankings page (public for SEO; server-rendered, then hydrated client-side) ──
+export const rankingsPage = ({ subscribed, loggedIn, rankings, extra }) => { const rk = rankingsSSR(rankings, extra); return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UFC Rankings — Every Division · GillyLab</title>
 <meta name="description" content="Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.">
@@ -1530,10 +1557,10 @@ export const rankingsPage = ({ subscribed, loggedIn }) => `<!doctype html><html 
     ${freeTabs("/rankings")}
     ${loggedIn ? "" : signupBanner}
     <h1>UFC Rankings</h1>
-    <p class="rk-sub" id="rkDate">Official divisional rankings.</p>
+    <p class="rk-sub" id="rkDate">${rk.date}</p>
     <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
-    <div class="rk-tabs" id="rkTabs"></div>
-    <div id="rkPanels"><p class="rk-empty">Loading rankings…</p></div>
+    <div class="rk-tabs" id="rkTabs">${rk.tabs}</div>
+    <div id="rkPanels">${rk.panels}</div>
     <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
   </main>
   ${FREE_FOOTER}
@@ -1552,8 +1579,8 @@ export const rankingsPage = ({ subscribed, loggedIn }) => `<!doctype html><html 
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
     function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(name)+'</span>'+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
     function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
-    function load(){
-      document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
+    function load(keep){
+      if(!keep)document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
       fetch("/data/"+(SRC==="meta"?"rankings-meta.json":"rankings.json")).then(function(r){return r.json();}).then(function(p){
         if(!p||!Array.isArray(p.data)){document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Rankings unavailable right now.</p>';return;}
         BYDIV={};p.data.forEach(function(e){(BYDIV[e.division]=BYDIV[e.division]||[]).push(e);});
@@ -1566,12 +1593,26 @@ export const rankingsPage = ({ subscribed, loggedIn }) => `<!doctype html><html 
     document.getElementById("rkTabs").addEventListener("click",function(e){var b=e.target.closest(".rk-tab");if(b)showDiv(b.dataset.div);});
     Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(b){b.addEventListener("click",function(){SRC=b.dataset.src;Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(x){x.classList.remove("sel");});b.classList.add("sel");ACTIVE=null;load();});});
     // Canonical name / photo-slug / flag overrides for fighters the UFC feed leaves incomplete.
-    fetch("/data/rankings-extra.json").then(function(r){return r.json();}).then(function(j){EX=(j&&j.bySlug)||{};}).catch(function(){}).then(load);
+    fetch("/data/rankings-extra.json").then(function(r){return r.json();}).then(function(j){EX=(j&&j.bySlug)||{};}).catch(function(){}).then(function(){load(true);});
   </script>
-</body></html>`;
+</body></html>`; };
 
 // ── Free /roster page (login-gated; active roster + weekly changes) ──────────────
-export const rosterPage = ({ subscribed, loggedIn }) => `<!doctype html><html lang="en"><head>
+// Server-side roster render (SEO): the full A–Z fighter list + weekly changes in the
+// initial HTML; the page's JS hydrates over it (adds letter filtering) on load.
+function rosterSSR(roster) {
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const R = (roster && roster.fighters) || [];
+  const CH = (roster && roster.changes) || [];
+  const col = (title, items, color, first) => '<div style="' + (first ? "" : "margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);") + '"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:' + color + ';margin-bottom:.7rem"><span>' + title + '</span><span style="background:' + color + '22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">' + items.length + '</span></div>' + (items.length ? '<div style="display:flex;flex-direction:column;gap:.4rem">' + items.map((n) => '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:' + color + ';font-size:.58rem">●</span><span>' + esc(n) + '</span></div>').join("") + '</div>' : '<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');
+  const changes = CH.length ? CH.map((w) => '<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem"><div style="font-size:.8rem;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.55);margin-bottom:1.1rem">' + esc(w.week) + '</div>' + col("Added", w.added || [], "#00e668", true) + col("Removed", w.removed || [], "#ff9500", false) + '</div>').join("") : "";
+  const az = ["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).map((L) => '<button type="button" class="ar-letter' + (L === "All" ? " active" : "") + '" data-l="' + L + '">' + L + '</button>').join("");
+  const list = R.length
+    ? '<div class="ar-count">' + R.length + ' fighters on the active roster</div><div class="ar-grid">' + R.map((n) => '<span class="ar-name">' + esc(n) + '</span>').join("") + '</div>'
+    : '<p class="rs-empty">Loading roster…</p>';
+  return { changes, az, list };
+}
+export const rosterPage = ({ subscribed, loggedIn, roster }) => { const rs = rosterSSR(roster); return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
 <meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
@@ -1619,9 +1660,9 @@ export const rosterPage = ({ subscribed, loggedIn }) => `<!doctype html><html la
     ${loggedIn ? "" : signupBanner}
     <h1>Active Roster</h1>
     <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
-    <div id="rsChanges"></div>
-    <div class="ar-bar" id="rsAZ"></div>
-    <div id="rsList"><p class="rs-empty">Loading roster…</p></div>
+    <div id="rsChanges">${rs.changes}</div>
+    <div class="ar-bar" id="rsAZ">${rs.az}</div>
+    <div id="rsList">${rs.list}</div>
     <div class="rs-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for every fighter's full analytics.` : `Roster is free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
   </main>
   ${FREE_FOOTER}
@@ -1645,7 +1686,7 @@ export const rosterPage = ({ subscribed, loggedIn }) => `<!doctype html><html la
     document.getElementById("rsAZ").addEventListener("click",function(e){var b=e.target.closest(".ar-letter");if(b){LETTER=b.dataset.l;renderList();}});
     fetch("/data/roster.json").then(function(r){return r.json();}).then(function(j){ROSTER=(j&&j.fighters)||[];CHANGES=(j&&j.changes)||[];renderChanges();renderList();}).catch(function(){document.getElementById("rsList").innerHTML='<p class="rs-empty">Roster unavailable right now.</p>';});
   </script>
-</body></html>`;
+</body></html>`; };
 
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
 export const matchupPage = ({ subscribed, loggedIn }) => {
