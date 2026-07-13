@@ -110181,6 +110181,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       initSimFighterPickers();
       handleOddsPage(evt);
       renderPickemPage(evt);
+      // Deep-link: an email/CTA can open the app straight on Pick'em via /#pickem.
+      // Runs once, then clears the hash so re-renders/refresh don't re-hijack nav.
+      if (location.hash === '#pickem' && !window._pkDeepLinked) {
+        window._pkDeepLinked = true;
+        try { navigate('pickem'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
+      }
       if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
       console.error('[GillyLab] render error before rankings:', e);

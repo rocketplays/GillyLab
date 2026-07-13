@@ -573,6 +573,9 @@ async function unsubUrl(env, email) {
 // RFC 8058 one-click unsubscribe headers — gives clients a native "Unsubscribe"
 // control and signals a legitimate bulk sender (helps deliverability / inbox tab).
 const listUnsubHeaders = (unsubHref) => ({ "List-Unsubscribe": "<" + unsubHref + ">", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
+// Where the email's CTA points: subscribers deep-link into the in-app Pick'em
+// (the app opens on #pickem); free accounts get the standalone /pickem page.
+const pickemLink = (env, subscribed) => env.SITE_URL + (subscribed ? "/#pickem" : "/pickem");
 
 // Inline-styled shell — email clients strip <style>/<head> CSS, and Gmail ignores
 // <body> backgrounds, so the dark canvas lives on a full-width table with a bgcolor
@@ -592,15 +595,15 @@ function emailShell(bodyHtml, unsubHref) {
   </table>
 </body></html>`;
 }
-function lockEmailHtml(env, card, unsubHref) {
+function lockEmailHtml(env, card, unsubHref, ctaUrl) {
   const when = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
-  const btn = env.SITE_URL + "/pickem";
+  const btn = ctaUrl || (env.SITE_URL + "/pickem");
   return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">Your picks lock soon</h1>
     <p style="margin:0 0 18px;color:#4a4d55"><strong style="color:#15151a">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
 }
-function recapEmailHtml(env, ev, score, unsubHref) {
-  const btn = env.SITE_URL + "/pickem";
+function recapEmailHtml(env, ev, score, unsubHref, ctaUrl) {
+  const btn = ctaUrl || (env.SITE_URL + "/pickem");
   const pts = score && typeof score.points === "number" ? score.points : 0;
   const line = score
     ? `You scored <strong style="color:#0b8f45">${pts > 0 ? "+" : ""}${pts} points</strong>${(score.correct != null && score.boutCount != null) ? ` — ${score.correct}/${score.boutCount} winners` : ""}.`
@@ -609,8 +612,8 @@ function recapEmailHtml(env, ev, score, unsubHref) {
     <p style="margin:0 0 18px;color:#4a4d55">${line} See where you landed on the leaderboard, then get set for the next card.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
 }
-function missedEmailHtml(env, gradedEv, nextCard, unsubHref) {
-  const btn = env.SITE_URL + "/pickem";
+function missedEmailHtml(env, gradedEv, nextCard, unsubHref, ctaUrl) {
+  const btn = ctaUrl || (env.SITE_URL + "/pickem");
   const nextWhen = (nextCard && nextCard.date) ? new Date(nextCard.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
   const nextLine = (nextCard && nextCard.name && nextCard.slug !== gradedEv.slug)
     ? `<strong style="color:#15151a">${escHtml(nextCard.name)}</strong> is up next${nextWhen ? " · " + escHtml(nextWhen) : ""}.`
@@ -646,12 +649,14 @@ async function runLockReminders(env, base, opts = {}) {
     if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
     if (await env.PICKS.get("em:l:" + card.slug + ":" + email)) continue;   // already emailed
     if (await pkGet(env, "pk:" + card.slug + ":" + email)) continue;        // already picked
-    if (await isOptedOut(env, email)) continue;                            // unsubscribed
+    const u = await getUser(env, email);
+    if (u && u.emailOptOut) continue;                                      // unsubscribed
     targeted++;
     if (dry) continue;
     try {
       const unsub = await unsubUrl(env, email);
-      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub), null, listUnsubHeaders(unsub));
+      const cta = pickemLink(env, !!(u && u.subscribed));
+      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub, cta), null, listUnsubHeaders(unsub));
       await env.PICKS.put("em:l:" + card.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
       sent++;
     } catch (e) { /* bad address — skip, keep going */ }
@@ -677,7 +682,8 @@ async function runResultRecaps(env, base, opts = {}) {
       if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
       const email = key.slice(prefix.length);
       if (await env.PICKS.get("em:r:" + ev.slug + ":" + email)) continue;
-      if (await isOptedOut(env, email)) continue;
+      const u = await getUser(env, email);
+      if (u && u.emailOptOut) continue;
       const ag = await pkGet(env, "ag:" + email);
       const score = ag && ag.byEvent && ag.byEvent[ev.slug];
       if (!score) continue;   // not graded for this user yet
@@ -685,7 +691,8 @@ async function runResultRecaps(env, base, opts = {}) {
       if (dry) continue;
       try {
         const unsub = await unsubUrl(env, email);
-        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub), null, listUnsubHeaders(unsub));
+        const cta = pickemLink(env, !!(u && u.subscribed));
+        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub, cta), null, listUnsubHeaders(unsub));
         await env.PICKS.put("em:r:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
         sent++;
       } catch (e) { /* skip, keep going */ }
@@ -715,12 +722,14 @@ async function runMissedNudges(env, base, opts = {}) {
       if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
       if (await env.PICKS.get("em:m:" + ev.slug + ":" + email)) continue;   // already emailed
       if (await pkGet(env, "pk:" + ev.slug + ":" + email)) continue;        // they played → recap covers them
-      if (await isOptedOut(env, email)) continue;                          // unsubscribed
+      const u = await getUser(env, email);
+      if (u && u.emailOptOut) continue;                                    // unsubscribed
       targeted++;
       if (dry) continue;
       try {
         const unsub = await unsubUrl(env, email);
-        await sendEmail(env, email, "You missed " + ev.name + " — the next card's coming up", missedEmailHtml(env, ev, nextCard, unsub), null, listUnsubHeaders(unsub));
+        const cta = pickemLink(env, !!(u && u.subscribed));
+        await sendEmail(env, email, "You missed " + ev.name + " — the next card's coming up", missedEmailHtml(env, ev, nextCard, unsub, cta), null, listUnsubHeaders(unsub));
         await env.PICKS.put("em:m:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
         sent++;
       } catch (e) { /* skip, keep going */ }
@@ -764,18 +773,20 @@ async function handleAdminReminders(request, env, url) {
   const test = url.searchParams.get("test");
   if (test) {
     const unsub = await unsubUrl(env, s.email);
+    const me = await getUser(env, s.email);
+    const cta = pickemLink(env, !!(me && me.subscribed));   // test CTA matches your own plan
     if (test === "recap") {
       const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
-      await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub));
+      await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub, cta));
     } else if (test === "missed") {
       const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
       const nextCard = await loadUpcomingCard(env, base);
-      await sendEmail(env, s.email, "[test] You missed " + ev.name, missedEmailHtml(env, ev, nextCard, unsub));
+      await sendEmail(env, s.email, "[test] You missed " + ev.name, missedEmailHtml(env, ev, nextCard, unsub, cta));
     } else {
       const card = (await loadUpcomingCard(env, base)) || { name: "Sample Card", date: "", slug: "sample" };
-      await sendEmail(env, s.email, "[test] Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub));
+      await sendEmail(env, s.email, "[test] Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub, cta));
     }
-    return json({ ok: true, sentTestTo: s.email, type: test });
+    return json({ ok: true, sentTestTo: s.email, type: test, cta });
   }
   const run = url.searchParams.get("run") === "1";
   return json(await runReminders(env, { dry: !run, force: run }));
