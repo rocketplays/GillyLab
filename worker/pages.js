@@ -366,7 +366,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
     <div class="sc-head">
-      <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Detailed fighter analytics</span><span class="sc-tag" id="ft"></span></div>
+      <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Pick'em predictions</span><span class="sc-tag free" id="ft">FREE</span></div>
       <div class="sc-nav">
         <span class="sc-arrow" id="pv" role="button" tabindex="0" aria-label="Previous feature">‹</span>
         <span class="sc-arrow" id="nx" role="button" tabindex="0" aria-label="Next feature">›</span>
@@ -667,7 +667,30 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           +'<div style="font-size:11px;color:rgba(255,255,255,.75);line-height:1.45">'+f.path+'</div></div>';}).join('');
     })():'';
 
+  // ── Pick'em (free) ──────────────────────────────────────────────────────────
+  // Self-contained: a sample pick card + a leaderboard line, so it never depends on
+  // gated data or photos. Confidence tiers use the app's High/Med/Low colours.
+  var pkbout=function(pick,opp,conf,pts,cc){return '<div style="display:flex;align-items:center;gap:.55rem;padding:.5rem .65rem;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.02)">'
+    +'<span style="color:'+A+';font-weight:800">\\u2713</span>'
+    +'<span style="font-weight:700;font-size:.9rem">'+pick+'</span>'
+    +'<span style="color:'+M+';font-size:.8rem">vs '+opp+'</span>'
+    +'<span style="margin-left:auto;display:flex;align-items:center;gap:.45rem">'
+    +'<span style="font-size:.6rem;font-weight:800;letter-spacing:.04em;color:'+cc+';background:'+cc+'22;border:1px solid '+cc+'55;border-radius:999px;padding:.1rem .45rem">'+conf+'</span>'
+    +'<span style="font-weight:800;color:'+A+';font-size:.9rem">+'+pts+'</span></span></div>';};
+  var pickem='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.7rem">'
+    +'<div style="font-weight:700;font-size:.95rem">Your Pick\\u2019em card</div>'
+    +'<div style="font-size:.72rem;color:'+M+'">Locks at prelims</div></div>'
+    +'<div style="display:flex;flex-direction:column;gap:.45rem">'
+    +pkbout('Holloway','McGregor','HIGH',38,'#00e668')
+    +pkbout('Pimblett','Chandler','MED',24,'#ffb340')
+    +pkbout('Cortez','Ara\\u00fajo','LOW',12,'#8a8f99')
+    +'</div>'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.08);font-size:.82rem">'
+    +'<span style="color:'+M+'">Live leaderboard</span>'
+    +'<span><b>You</b> \\u00b7 #3 of 128 \\u00b7 <span style="color:'+A+'">+74 last card</span></span></div>';
+
   var slides=[
+    {t:'Pick\\u2019em predictions',d:'Call every fight on the card, lock in before the prelims, then climb the live leaderboard — free.',h:pickem,f:1},
     {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the fight ends.',h:sim},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
