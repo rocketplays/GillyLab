@@ -335,6 +335,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <div class="hero-cta">
       <a class="big" href="/signup">Start free →</a>
       <a class="big ghost" href="#plans">Compare plans</a>
+      <a class="big ghost" href="/login">Log in</a>
     </div>
     <p class="trust">Free to start, no card required — play Pick'em and climb the leaderboard. Upgrade for the full database and tools. Works on any device.</p>
   </header>
@@ -408,7 +409,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   </section>
 
   <footer class="foot">
-    <a class="big" href="/signup">Start free →</a>
+    <div class="hero-cta">
+      <a class="big" href="/signup">Start free →</a>
+      <a class="big ghost" href="/signup?next=/subscribe">Go Premium →</a>
+    </div>
     <div class="fine">Free to start · Premium ${PRICE_LABEL}, cancel anytime · Secure checkout by Stripe</div>
   </footer>
 
