@@ -609,6 +609,16 @@ function buildMainTape(m) {
 // A single fighter's stat card — the profile's grouped median bars, WITHOUT the
 // paywalled depth (no fight history, odds history, tape, accolades, record
 // breakdown). Powers the tap-a-fighter popup on the free /matchup page.
+// Win streak, computed from FIGHT_HISTORY exactly like the in-app profile: count
+// leading wins over real (non-upcoming) bouts in the history's most-recent-first order.
+let _FH_CACHE = null;
+function _winStreak(name) {
+  if (!_FH_CACHE) _FH_CACHE = parseConst('FIGHT_HISTORY') || {};
+  const fh = (_FH_CACHE[name] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+  let streak = 0;
+  for (const f of fh) { if (f.result === 'W') streak++; else break; }
+  return streak;
+}
 function fighterProfileCard(name, recMap, ranks) {
   const st = fighterStat(name) || {};
   const med = _divMedians(_fighterDivAbbrev(name));
@@ -637,7 +647,10 @@ function fighterProfileCard(name, recMap, ranks) {
       mkRow("Takedown defense", _statNumG(st.tdDef), true, "tdDef", false),
       mkRow("Submissions / 15 min", _statNumG(st.subAvg), false, "subAvg", false),
     ]},
-    { t: "Miscellaneous", rows: [mkRow("Finish rate", _statNumG(st.finRate), true, "finRate", false)] },
+    { t: "Miscellaneous", rows: [
+      mkRow("Finish rate", _statNumG(st.finRate), true, "finRate", false),
+      mkRow("Win streak", _winStreak(name), false, null, false),
+    ]},
   ];
   const slug = nameToSlug(name);
   return {

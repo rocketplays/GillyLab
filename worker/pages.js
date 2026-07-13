@@ -814,7 +814,7 @@ export const loginPage = (next) => {
 };
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
-  <a class="back-link" href="/pickem" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
+  <a class="back-link" href="/matchup" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card center">
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
@@ -1046,7 +1046,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-foot a{color:var(--accent);text-decoration:none}
 </style></head><body>
   <nav class="pk-nav">
-    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
       <a href="/account">Account</a>
@@ -1348,7 +1348,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   .rk-cta a{color:var(--accent);text-decoration:none;font-weight:700}
 </style></head><body>
   <nav class="pk-nav">
-    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
       <a href="/account">Account</a>
@@ -1431,7 +1431,7 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   .rs-cta a{color:var(--accent);text-decoration:none;font-weight:700}
 </style></head><body>
   <nav class="pk-nav">
-    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
       <a href="/account">Account</a>
@@ -1570,6 +1570,9 @@ export const matchupPage = ({ subscribed }) => {
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .mf-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
+  .mf-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 1rem}
+  .mf-tabs a{flex:1 1 auto;text-align:center;min-width:96px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease}
+  .mf-tabs a:hover{border-color:var(--accent);background:var(--surface2)}
   .mf-sechdr{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
   .mf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.7rem;overflow:hidden}
   .mf-card.main{border-color:rgba(0,230,104,.45)}
@@ -1633,13 +1636,18 @@ export const matchupPage = ({ subscribed }) => {
   .mp-foot a{color:var(--accent);text-decoration:none;font-weight:700}
 </style></head><body>
   <nav class="pk-nav">
-    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
       <a href="/account">Account</a>
     </div>
   </nav>
   <main>
+    <nav class="mf-tabs">
+      <a href="/pickem">Pick'em</a>
+      <a href="/rankings">Rankings</a>
+      <a href="/roster">Active Roster</a>
+    </nav>
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card, with the main-event breakdown. Tap “Fight Info” on the main event.</p>
     ${body}

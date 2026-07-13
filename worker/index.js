@@ -541,10 +541,10 @@ function safeNext(raw) {
   return /^\/(?!\/)[A-Za-z0-9/_\-?=&.]*$/.test(s) ? s : null;
 }
 // Where a just-authenticated account should go: an explicit safe ?next=, else the
-// full app for subscribers or the account page (a working, non-bouncing home) for
-// free accounts. Point the free default at /pickem once that page ships (Phase 3).
+// full app for subscribers or /matchup (the free section's "homepage" — the main-event
+// breakdown with top nav to Pick'em / Rankings / Active Roster) for free accounts.
 function authDest(next, subscribed) {
-  return next || (subscribed ? "/" : "/pickem");
+  return next || (subscribed ? "/" : "/matchup");
 }
 
 /* ─────────────────────────────────── the Worker ────────────────────────────── */
