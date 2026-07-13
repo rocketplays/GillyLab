@@ -579,15 +579,15 @@ const listUnsubHeaders = (unsubHref) => ({ "List-Unsubscribe": "<" + unsubHref +
 // attribute (honoured even by clients that drop CSS backgrounds). color-scheme hints
 // keep dark-mode clients from re-inverting our already-dark palette.
 function emailShell(bodyHtml, unsubHref) {
-  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
-<body style="margin:0;padding:0;width:100%;background-color:#0a0a0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0a0b" style="background-color:#0a0a0b;width:100%;margin:0;padding:0">
-    <tr><td align="center" bgcolor="#0a0a0b" style="background-color:#0a0a0b;padding:24px 12px">
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head>
+<body style="margin:0;padding:0;width:100%;background-color:#f2f3f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f3f5" style="background-color:#f2f3f5;width:100%;margin:0;padding:0">
+    <tr><td align="center" bgcolor="#f2f3f5" style="background-color:#f2f3f5;padding:24px 12px">
       <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%">
-        <tr><td bgcolor="#14141a" style="background-color:#14141a;padding:22px 26px 6px;border:1px solid #2a2a32;border-bottom:0;border-radius:14px 14px 0 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#f4f5f7">GILLY<span style="color:#00e668">LAB</span></div></td></tr>
-        <tr><td bgcolor="#14141a" style="background-color:#14141a;padding:8px 26px 26px;color:#f4f5f7;font-size:15px;line-height:1.55;border:1px solid #2a2a32;border-top:0;border-radius:0 0 14px 14px">${bodyHtml}</td></tr>
+        <tr><td bgcolor="#ffffff" style="background-color:#ffffff;padding:22px 26px 6px;border:1px solid #e4e6ea;border-bottom:0;border-radius:14px 14px 0 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#15151a">GILLY<span style="color:#00b551">LAB</span></div></td></tr>
+        <tr><td bgcolor="#ffffff" style="background-color:#ffffff;padding:8px 26px 26px;color:#15151a;font-size:15px;line-height:1.55;border:1px solid #e4e6ea;border-top:0;border-radius:0 0 14px 14px">${bodyHtml}</td></tr>
       </table>
-      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td align="center" bgcolor="#0a0a0b" style="background-color:#0a0a0b;color:#8a8f99;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></td></tr></table>
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td align="center" bgcolor="#f2f3f5" style="background-color:#f2f3f5;color:#8a8f99;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#6b7280;text-decoration:underline">Unsubscribe</a></td></tr></table>
     </td></tr>
   </table>
 </body></html>`;
@@ -595,28 +595,28 @@ function emailShell(bodyHtml, unsubHref) {
 function lockEmailHtml(env, card, unsubHref) {
   const when = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
   const btn = env.SITE_URL + "/pickem";
-  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">Your picks lock soon</h1>
-    <p style="margin:0 0 18px;color:#c9c9d0"><strong style="color:#fff">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">Your picks lock soon</h1>
+    <p style="margin:0 0 18px;color:#4a4d55"><strong style="color:#15151a">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
 }
 function recapEmailHtml(env, ev, score, unsubHref) {
   const btn = env.SITE_URL + "/pickem";
   const pts = score && typeof score.points === "number" ? score.points : 0;
   const line = score
-    ? `You scored <strong style="color:#00e668">${pts > 0 ? "+" : ""}${pts} points</strong>${(score.correct != null && score.boutCount != null) ? ` — ${score.correct}/${score.boutCount} winners` : ""}.`
+    ? `You scored <strong style="color:#0b8f45">${pts > 0 ? "+" : ""}${pts} points</strong>${(score.correct != null && score.boutCount != null) ? ` — ${score.correct}/${score.boutCount} winners` : ""}.`
     : "Your card is graded.";
-  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">${escHtml(ev.name)} — results are in</h1>
-    <p style="margin:0 0 18px;color:#c9c9d0">${line} See where you landed on the leaderboard, then get set for the next card.</p>
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">${escHtml(ev.name)} — results are in</h1>
+    <p style="margin:0 0 18px;color:#4a4d55">${line} See where you landed on the leaderboard, then get set for the next card.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
 }
 function missedEmailHtml(env, gradedEv, nextCard, unsubHref) {
   const btn = env.SITE_URL + "/pickem";
   const nextWhen = (nextCard && nextCard.date) ? new Date(nextCard.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
   const nextLine = (nextCard && nextCard.name && nextCard.slug !== gradedEv.slug)
-    ? `<strong style="color:#fff">${escHtml(nextCard.name)}</strong> is up next${nextWhen ? " · " + escHtml(nextWhen) : ""}.`
+    ? `<strong style="color:#15151a">${escHtml(nextCard.name)}</strong> is up next${nextWhen ? " · " + escHtml(nextWhen) : ""}.`
     : "There's another card coming up soon.";
-  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">You missed ${escHtml(gradedEv.name)}</h1>
-    <p style="margin:0 0 18px;color:#c9c9d0">The card's in the books and the leaderboard's settled — you sat this one out. ${nextLine} Call the winner, method and round for each bout, lock in before the prelims, and climb the leaderboard — it's free.</p>
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">You missed ${escHtml(gradedEv.name)}</h1>
+    <p style="margin:0 0 18px;color:#4a4d55">The card's in the books and the leaderboard's settled — you sat this one out. ${nextLine} Call the winner, method and round for each bout, lock in before the prelims, and climb the leaderboard — it's free.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
 }
 
