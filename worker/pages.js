@@ -1017,6 +1017,10 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-intro strong{color:var(--text);font-weight:700}
   .pk-bout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem .9rem 1rem;margin-bottom:.9rem;transition:border-color .15s ease;scroll-margin-top:76px}
   .pk-bout.done{border-color:rgba(0,230,104,.45)}
+  .pk-bout.warn{border-color:rgba(255,207,122,.55)}
+  .pk-need-txt{color:#ffcf7a;font-weight:700}
+  .pk-row.pk-need .pk-row-label{color:#ffcf7a}
+  .pk-row.pk-need .pk-seg{outline:1.5px dashed rgba(255,207,122,.7);outline-offset:3px;border-radius:8px}
   .pk-bout-head{display:flex;align-items:center;gap:.5rem;margin-bottom:.7rem}
   .pk-bout-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:auto}
   .pk-bout-main{font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:700}
@@ -1336,9 +1340,23 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       var rs=el.querySelector(".pk-round");if(rs)rs.classList.toggle("pk-disabled",p.method==="Decision");
       el.querySelectorAll("[data-round]").forEach(function(b){b.classList.toggle("sel",p.method!=="Decision"&&String(p.round)===b.dataset.round);});
       el.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("sel",p.confidence===b.dataset.c);});
-      var pts=el.querySelector(".pk-pts");if(pts)pts.innerHTML=p.winner?("Total possible points: <strong>"+potential(p)+"</strong>"):"Tap a fighter to pick the winner";
+      // Started-but-unfinished: winner picked, but method and/or round still missing.
+      var needMethod=!!(p.winner&&!p.method);
+      var needRound=!!(p.winner&&p.method&&p.method!=="Decision"&&!p.round);
+      var complete=isComplete(p),incomplete=!!(p.winner&&!complete);
+      el.classList.toggle("done",complete);
+      el.classList.toggle("warn",incomplete);
+      var mSeg=el.querySelector(".pk-method"),rSeg=el.querySelector(".pk-round");
+      var mRow=mSeg&&mSeg.closest(".pk-row"),rRow=rSeg&&rSeg.closest(".pk-row");
+      if(mRow)mRow.classList.toggle("pk-need",needMethod);
+      if(rRow)rRow.classList.toggle("pk-need",needRound);
+      var pts=el.querySelector(".pk-pts");
+      if(pts){
+        if(!p.winner)pts.innerHTML="Tap a fighter to pick the winner";
+        else if(incomplete){var miss=[];if(needMethod)miss.push("method");if(needRound)miss.push("round");pts.innerHTML='<span class="pk-need-txt">⚠ Still need: '+miss.join(" & ")+'</span>';}
+        else pts.innerHTML="Total possible points: <strong>"+potential(p)+"</strong>";
+      }
       var clr=el.querySelector(".pk-clear");if(clr)clr.style.display=p.winner?"":"none";
-      el.classList.toggle("done",isComplete(p));
     }
     function updateBar(){
       var bar=document.getElementById("pkBar");if(!bar)return;

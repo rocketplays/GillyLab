@@ -3229,6 +3229,10 @@
         padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.9rem; scroll-margin-top: 70px; transition: border-color .15s ease;
       }
       .pk-bout.done { border-color: rgba(0,230,104,0.45); }
+      .pk-bout.warn { border-color: rgba(255,207,122,0.55); }
+      .pk-need-txt { color: #ffcf7a; font-weight: 700; }
+      .pk-row.pk-need .pk-row-label { color: #ffcf7a; }
+      .pk-row.pk-need .pk-seg { outline: 1.5px dashed rgba(255,207,122,0.7); outline-offset: 3px; border-radius: 8px; }
       .pk-bout-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; }
       .pk-bout-label { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-right: auto; }
       .pk-bout-main { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
@@ -109828,7 +109832,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       ).join('');
       const detail = p.winner ? '' : ' hidden';
       const pts = potential(p, f);
-      return '<div class="pk-bout' + (isComplete(f) ? ' done' : '') + '" data-boutcard="' + id + '">' +
+      // Started-but-unfinished: winner picked, but method and/or round still missing.
+      const needMethod = !!(p.winner && !p.method);
+      const needRound = !!(p.winner && p.method && p.method !== 'Decision' && !p.round);
+      const incomplete = !!(p.winner && !isComplete(f));
+      const footTxt = !p.winner ? 'Tap a fighter to pick the winner'
+        : (incomplete ? '<span class="pk-need-txt">⚠ Still need: ' + [needMethod ? 'method' : '', needRound ? 'round' : ''].filter(Boolean).join(' & ') + '</span>'
+          : 'Total possible points: <strong>' + pts + '</strong>');
+      return '<div class="pk-bout' + (isComplete(f) ? ' done' : (incomplete ? ' warn' : '')) + '" data-boutcard="' + id + '">' +
         '<div class="pk-bout-head">' +
           '<span class="pk-bout-label">' + esc(f.label || f.wc || '') + '</span>' +
           (f.isMain ? '<span class="pk-bout-main">Main Event</span>' : (f.isMainCard ? '<span class="pk-bout-main">Main Card</span>' : '')) +
@@ -109839,12 +109850,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           fighterBtn(f.f2, f.ini2, f.photo2, f.rec2, f.r2, 'r') +
         '</div>' +
         '<div class="pk-detail' + detail + '">' +
-          '<div class="pk-row"><span class="pk-row-label">Method</span>' + seg('pk-method', methodBtns) + '</div>' +
-          '<div class="pk-row"><span class="pk-row-label">Round</span>' + seg('pk-round' + (isDec ? ' pk-disabled' : ''), roundBtns) + '</div>' +
+          '<div class="pk-row' + (needMethod ? ' pk-need' : '') + '"><span class="pk-row-label">Method</span>' + seg('pk-method', methodBtns) + '</div>' +
+          '<div class="pk-row' + (needRound ? ' pk-need' : '') + '"><span class="pk-row-label">Round</span>' + seg('pk-round' + (isDec ? ' pk-disabled' : ''), roundBtns) + '</div>' +
           '<div class="pk-row"><span class="pk-row-label">Confidence</span>' + seg('pk-conf', confBtns) + '</div>' +
         '</div>' +
         '<div class="pk-bout-foot">' +
-          '<span class="pk-pts">' + (p.winner ? 'Total possible points: <strong>' + pts + '</strong>' : 'Tap a fighter to pick the winner') + '</span>' +
+          '<span class="pk-pts">' + footTxt + '</span>' +
           (p.winner ? '<button type="button" class="pk-clear" data-clear="' + id + '">Clear</button>' : '') +
         '</div>' +
       '</div>';
