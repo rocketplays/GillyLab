@@ -924,6 +924,8 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
   .pk-msg{font-size:.82rem;margin-top:.5rem;min-height:1em}
   .pk-msg.err{color:#ff8a7a}.pk-msg.ok{color:var(--accent)}
+  .pk-intro{color:#c9ccd3;font-size:.9rem;line-height:1.55;margin:0 0 1.25rem;background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.22);border-radius:10px;padding:.8rem .95rem}
+  .pk-intro strong{color:var(--text);font-weight:700}
   .pk-bout{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.9rem .9rem 1rem;margin-bottom:.9rem}
   .pk-bout-head{display:flex;align-items:center;justify-content:space-between;gap:.5rem;margin-bottom:.7rem}
   .pk-bout-label{font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
@@ -1048,6 +1050,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       <button type="button" class="pk-subnav-btn" data-open="history">📊 My history</button>
     </div>
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
+      ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p>` : ""}
       ${bouts}
       ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div>` : ""}
     </div>
