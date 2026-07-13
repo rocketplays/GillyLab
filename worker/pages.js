@@ -12,6 +12,15 @@ const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in S
 const SITE_URL = "https://gillylab.com";        // for absolute OG/canonical URLs
 const CONTACT_EMAIL = "support@gillylab.com";   // shown in the footer + legal pages
 
+// Open Graph / Twitter card tags for a public page, so shared links (iMessage,
+// Twitter, Facebook, Slack) get a rich preview with the brand og image.
+const ogTags = (title, desc, canonicalPath) => {
+  const t = String(title || "").replace(/"/g, "&quot;");
+  const d = String(desc || "").replace(/"/g, "&quot;");
+  const url = SITE_URL + canonicalPath;
+  return `<meta property="og:type" content="website"><meta property="og:site_name" content="GillyLab"><meta property="og:title" content="${t}"><meta property="og:description" content="${d}"><meta property="og:url" content="${url}"><meta property="og:image" content="${SITE_URL}/og.png?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${t}"><meta name="twitter:description" content="${d}"><meta name="twitter:image" content="${SITE_URL}/og.png?v=2">`;
+};
+
 // Smart "back": return to the previous page when the user actually came from one
 // on this site (else fall back to home). href="#" keeps the pages' internal-link
 // fade handler from hijacking it, and the referrer check avoids sending free users
@@ -1504,6 +1513,7 @@ export const rankingsPage = ({ subscribed, loggedIn, rankings, extra }) => { con
 <title>UFC Rankings — Every Division · GillyLab</title>
 <meta name="description" content="Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.">
 <link rel="canonical" href="${SITE_URL}/rankings">
+${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.", "/rankings")}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -1618,6 +1628,7 @@ export const rosterPage = ({ subscribed, loggedIn, roster }) => { const rs = ros
 <title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
 <meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
 <link rel="canonical" href="${SITE_URL}/roster">
+${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.", "/roster")}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -1793,6 +1804,7 @@ export const matchupPage = ({ subscribed, loggedIn }) => {
 <title>${seoTitle}</title>
 <meta name="description" content="${seoDesc}">
 <link rel="canonical" href="${SITE_URL}/matchup">
+${ogTags(seoTitle, seoDesc, "/matchup")}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
