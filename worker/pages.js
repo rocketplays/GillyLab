@@ -851,12 +851,13 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
 
 // ── Standalone Pick'em page (FREE feature, its own server-rendered surface so the
 // paywalled app bundle never ships to free accounts) ────────────────────────────
-export const pickemPage = ({ card, email, name, subscribed }) => {
+export const pickemPage = ({ card, score, email, name, subscribed }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const initials = (nm) => String(nm || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
   const av = (slug, init) => slug
     ? `<div class="pk-avatar"><img src="/photos/thumb/${esc(slug)}.png" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(init)}'"></div>`
     : `<div class="pk-avatar">${esc(init)}</div>`;
+  const rounds = (b) => { let s = ""; for (let r = 1; r <= (b.rounds || 3); r++) s += `<button type="button" data-round="${r}">R${r}</button>`; return s; };
   const boutHTML = (b) => `
       <div class="pk-bout" data-bout="${esc(b.id)}" data-f1="${esc(b.f1)}" data-f2="${esc(b.f2)}">
         <div class="pk-bout-head"><span class="pk-bout-label">${esc(b.wc)}${b.title ? " · Title" : ""}</span><span class="pk-bout-main">${esc(b.pos || b.section)}</span></div>
@@ -864,10 +865,22 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
           <button type="button" class="pk-fighter" data-pick="${esc(b.f1)}">${av(b.s1, initials(b.f1))}<div class="pk-fname">${esc(b.f1)}</div><div class="pk-pick-check">✓ Your pick</div></button>
           <button type="button" class="pk-fighter" data-pick="${esc(b.f2)}">${av(b.s2, initials(b.f2))}<div class="pk-fname">${esc(b.f2)}</div><div class="pk-pick-check">✓ Your pick</div></button>
         </div>
+        <div class="pk-detail hidden">
+          <div class="pk-row"><span class="pk-row-label">Method</span><div class="pk-seg pk-method"><button type="button" data-method="KO/TKO">KO/TKO</button><button type="button" data-method="Submission">Submission</button><button type="button" data-method="Decision">Decision</button></div></div>
+          <div class="pk-row"><span class="pk-row-label">Round</span><div class="pk-seg pk-round">${rounds(b)}</div></div>
+          <div class="pk-row"><span class="pk-row-label">Confidence</span><div class="pk-seg pk-conf"><button type="button" data-c="High">High</button><button type="button" data-c="Med">Med</button><button type="button" data-c="Low">Low</button></div></div>
+        </div>
+        <div class="pk-bout-foot"><span class="pk-pts">Tap a fighter to pick the winner</span><button type="button" class="pk-clear" style="display:none">Clear</button></div>
       </div>`;
   const bouts = (card && card.bouts && card.bouts.length)
     ? card.bouts.map(boutHTML).join("")
     : `<p class="pk-empty">No upcoming card is posted yet — check back on fight week.</p>`;
+  // Scoring table keyed by bout id (winnerBase/methodBonus/roundBonus per slot),
+  // embedded so the client prices picks exactly like the app — no paywalled data.
+  const scoreMap = {};
+  if (score && Array.isArray(score.bouts)) score.bouts.forEach((b) => { scoreMap[b.id] = { wPts: b.wPts, mPts: b.mPts, rPts: b.rPts }; });
+  const evtInfo = card ? { slug: card.slug, name: card.name, date: card.date, prelimsAt: card.prelimsAt || null } : { slug: "", name: "", date: "", prelimsAt: null };
+  const nBouts = (card && card.bouts && card.bouts.length) || 0;
   const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
   const lockNote = card ? (card.locked ? "Picks are locked — this card has started." : "Lock your picks before the prelims begin.") : "";
   return `<!doctype html><html lang="en"><head>
@@ -926,6 +939,28 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
   .pk-fname{font-weight:600;font-size:.86rem;line-height:1.15}
   .pk-pick-check{font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);opacity:0;height:.7rem}
   .pk-fighter.sel .pk-pick-check{opacity:1}
+  .pk-detail{margin-top:.85rem;display:grid;gap:.6rem}
+  .pk-detail.hidden{display:none}
+  .pk-row{display:flex;align-items:center;gap:.55rem}
+  .pk-row-label{flex:0 0 4.7rem;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+  .pk-seg{display:flex;flex:1;gap:.3rem;flex-wrap:wrap}
+  .pk-seg button{flex:1;min-width:2.3rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:.4rem .3rem;font:inherit;font-size:.74rem;font-weight:600;cursor:pointer;transition:border-color .12s,background .12s}
+  .pk-seg button:hover{border-color:rgba(255,255,255,.28)}
+  .pk-seg button.sel{border-color:var(--accent);background:rgba(0,230,104,.14)}
+  .pk-seg.pk-round button.sel{border-color:#8ab4ff;background:rgba(138,180,255,.16)}
+  .pk-round.pk-disabled{opacity:.4;pointer-events:none}
+  .pk-seg.pk-conf button[data-c="High"].sel{border-color:#00e668;background:rgba(0,230,104,.16);color:#7dffb4}
+  .pk-seg.pk-conf button[data-c="Med"].sel{border-color:#ffcf7a;background:rgba(255,207,122,.16);color:#ffdca0}
+  .pk-seg.pk-conf button[data-c="Low"].sel{border-color:#8a8d94;background:rgba(138,141,148,.18);color:#c3c6cd}
+  .pk-bout-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;gap:.5rem}
+  .pk-pts{font-size:.72rem;color:var(--muted)}
+  .pk-pts strong{color:var(--accent);font-weight:700}
+  .pk-clear{background:none;border:none;color:var(--muted);font:inherit;font-size:.7rem;cursor:pointer;text-decoration:underline;padding:0}
+  .pk-clear:hover{color:#ff6a5e}
+  .pk-submitbar{position:sticky;bottom:10px;margin-top:1.1rem;display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 6px 22px rgba(0,0,0,.4)}
+  .pk-bar-info{font-size:.82rem;color:var(--muted)}
+  .pk-bar-info b{color:var(--text);font-weight:700}
+  .pk-submitbar .pk-btn:disabled{opacity:.45;cursor:default}
   .pk-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .pk-foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:1.5rem}
   .pk-foot a{color:var(--accent);text-decoration:none}
@@ -955,6 +990,7 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
     </div>
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${bouts}
+      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> at stake</div><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
@@ -962,6 +998,7 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
   </main>
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
+    var PK_SCORE=${JSON.stringify(scoreMap)}, PK_EVT=${JSON.stringify(evtInfo)};
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
     // Fade out before internal navigations (matches the auth/subscribe pages).
     document.addEventListener("click",function(e){
@@ -982,16 +1019,93 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
     }
     document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){pkShow(b.dataset.open);});});
     document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){pkShow("picks");});});
-    // Winner selection (visual for now; submit + scoring wired next)
-    document.querySelectorAll(".pk-bout").forEach(function(b){
-      if(PK_LOCKED)return;
-      b.querySelectorAll(".pk-fighter").forEach(function(f){
-        f.addEventListener("click",function(){
-          b.querySelectorAll(".pk-fighter").forEach(function(x){x.classList.remove("sel");});
-          f.classList.add("sel");
-        });
+    // ── pick engine ──────────────────────────────────────────────────────────
+    // Mirrors the in-app scoring: winnerBase (wPts) + methodBonus (mPts) +
+    // roundBonus (rPts) from the embedded per-card table, × confidence multiplier.
+    var CONF_MULT={High:2,Med:1.5,Low:1};
+    var BOUT_IDS=[];document.querySelectorAll(".pk-bout").forEach(function(el){BOUT_IDS.push(el.dataset.bout);});
+    var PK_KEY="glPickem:"+((PK_EVT&&PK_EVT.slug)||"default");
+    var PICKS={};try{PICKS=JSON.parse(localStorage.getItem(PK_KEY)||"{}")||{};}catch(e){PICKS={};}
+    function persist(){try{localStorage.setItem(PK_KEY,JSON.stringify(PICKS));}catch(e){}}
+    function boutEl(id){return document.querySelector('.pk-bout[data-bout="'+(window.CSS&&CSS.escape?CSS.escape(id):id)+'"]');}
+    function sideOf(el,name){return name===el.dataset.f1?"f1":"f2";}
+    function partsFor(id,side,method,round){
+      var sc=PK_SCORE[id];if(!sc)return{wPts:0,mPts:0,rPts:0};
+      var wPts=(sc.wPts&&sc.wPts[side])||0;
+      var mPts=method&&sc.mPts&&sc.mPts[side]?(sc.mPts[side][method]||0):0;
+      var rPts=(method&&method!=="Decision"&&round&&sc.rPts)?(sc.rPts[round]||0):0;
+      return{wPts:wPts,mPts:mPts,rPts:rPts};
+    }
+    function potential(p){if(!p||!p.winner)return 0;var pt=partsFor(p.boutId,p.side,p.method,p.round);var m=CONF_MULT[p.confidence]||CONF_MULT.Med;return Math.round((pt.wPts+pt.mPts+pt.rPts)*m);}
+    function isComplete(p){return !!(p&&p.winner&&p.method&&p.confidence&&(p.method==="Decision"||p.round));}
+    function updateBout(id){
+      var el=boutEl(id);if(!el)return;var p=PICKS[id]||{};
+      el.querySelectorAll(".pk-fighter").forEach(function(b){b.classList.toggle("sel",!!p.winner&&b.dataset.pick===p.winner);});
+      var det=el.querySelector(".pk-detail");if(det)det.classList.toggle("hidden",!p.winner);
+      el.querySelectorAll("[data-method]").forEach(function(b){b.classList.toggle("sel",p.method===b.dataset.method);});
+      var rs=el.querySelector(".pk-round");if(rs)rs.classList.toggle("pk-disabled",p.method==="Decision");
+      el.querySelectorAll("[data-round]").forEach(function(b){b.classList.toggle("sel",p.method!=="Decision"&&String(p.round)===b.dataset.round);});
+      el.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("sel",p.confidence===b.dataset.c);});
+      var pts=el.querySelector(".pk-pts");if(pts)pts.innerHTML=p.winner?("Points at stake: <strong>"+potential(p)+"</strong>"):"Tap a fighter to pick the winner";
+      var clr=el.querySelector(".pk-clear");if(clr)clr.style.display=p.winner?"":"none";
+    }
+    function updateBar(){
+      var bar=document.getElementById("pkBar");if(!bar)return;
+      var done=0,stake=0;BOUT_IDS.forEach(function(id){var p=PICKS[id];if(isComplete(p))done++;if(p&&p.winner)stake+=potential(p);});
+      document.getElementById("pkBarCount").textContent=done+"/"+BOUT_IDS.length;
+      document.getElementById("pkBarStake").textContent="+"+stake;
+      var sb=document.getElementById("pkSubmit");if(sb&&sb.textContent.indexOf("Submitting")<0)sb.disabled=PK_LOCKED||done<BOUT_IDS.length;
+    }
+    function renderAll(){BOUT_IDS.forEach(updateBout);updateBar();}
+    var picksPanel=document.getElementById("panel-picks");
+    if(picksPanel&&!PK_LOCKED){
+      picksPanel.addEventListener("click",function(e){
+        var t=e.target.closest("button");if(!t)return;var el=e.target.closest(".pk-bout");
+        if(t.classList.contains("pk-clear")&&el){delete PICKS[el.dataset.bout];updateBout(el.dataset.bout);updateBar();persist();return;}
+        if(!el)return;var id=el.dataset.bout;var p=PICKS[id]||(PICKS[id]={boutId:id});
+        if(t.dataset.pick){p.winner=t.dataset.pick;p.side=sideOf(el,t.dataset.pick);if(!p.confidence)p.confidence="Med";}
+        else if(t.dataset.method){p.method=t.dataset.method;if(p.method==="Decision")p.round=null;}
+        else if(t.dataset.round!==undefined&&t.dataset.round!==""){p.round=parseInt(t.dataset.round,10);}
+        else if(t.dataset.c){p.confidence=t.dataset.c;}
+        else return;
+        updateBout(id);updateBar();persist();
       });
-    });
+    }
+    // Submit — snapshots each pick's score parts, POSTs to /api/pickem/save.
+    var submitBtn=document.getElementById("pkSubmit");
+    function focusName(msg){var pr=document.getElementById("pkNamePrompt");if(pr){pr.scrollIntoView({behavior:"smooth"});}var inp=document.getElementById("pkNameInput");if(inp)inp.focus();var m=document.getElementById("pkNameMsg");if(m&&msg){m.className="pk-msg err";m.textContent=msg;}}
+    function doSubmit(){
+      if(PK_LOCKED)return;
+      if(!PK_NAME){focusName("Pick a display name first, then submit.");return;}
+      var picks=[];
+      BOUT_IDS.forEach(function(id){var p=PICKS[id];if(!isComplete(p))return;var el=boutEl(id);var pt=partsFor(id,p.side,p.method,p.round);
+        picks.push({f1:el.dataset.f1,f2:el.dataset.f2,winner:p.winner,method:p.method,round:p.method!=="Decision"?p.round:null,confidence:p.confidence,wPts:pt.wPts,mPts:pt.mPts,rPts:pt.rPts});});
+      if(!picks.length)return;
+      submitBtn.disabled=true;submitBtn.textContent="Submitting…";
+      pkApi("/api/pickem/save",{method:"POST",body:JSON.stringify({eventSlug:PK_EVT.slug,eventName:PK_EVT.name,eventDate:PK_EVT.date,prelimsAt:PK_EVT.prelimsAt,picks:picks})}).then(function(r){
+        if(r&&r.ok){submitBtn.textContent="Picks submitted ✓";setTimeout(function(){submitBtn.textContent="Update picks";updateBar();},1500);}
+        else if(r&&r.error==="needs-name"){PK_NAME=null;submitBtn.textContent="Submit picks";focusName("Pick a display name first, then submit.");updateBar();}
+        else if(r&&r.locked){PK_LOCKED=true;submitBtn.textContent="Locked";}
+        else{submitBtn.textContent="Submit picks";updateBar();var m=(r&&r.error)||"Could not submit — try again.";var pr=document.getElementById("pkNamePrompt");alert(m);}
+      }).catch(function(){submitBtn.textContent="Submit picks";updateBar();});
+    }
+    if(submitBtn)submitBtn.addEventListener("click",doSubmit);
+    // Restore any picks already saved on the server (and reflect submitted/lock state).
+    renderAll();
+    if(PK_EVT&&PK_EVT.slug){
+      pkApi("/api/pickem/mine?event="+encodeURIComponent(PK_EVT.slug)).then(function(r){
+        if(r&&r.record&&Array.isArray(r.record.picks)){
+          r.record.picks.forEach(function(sp){
+            var el=Array.prototype.find.call(document.querySelectorAll(".pk-bout"),function(b){return (b.dataset.f1===sp.f1&&b.dataset.f2===sp.f2)||(b.dataset.f1===sp.f2&&b.dataset.f2===sp.f1);});
+            if(!el)return;var id=el.dataset.bout;
+            PICKS[id]={boutId:id,winner:sp.winner,side:sideOf(el,sp.winner),method:sp.method,round:sp.round||null,confidence:sp.confidence};
+          });
+          persist();if(submitBtn)submitBtn.textContent="Update picks";
+        }
+        if(r&&r.locked)PK_LOCKED=true;
+        renderAll();
+      }).catch(function(){});
+    }
     // Display-name save
     var nameSave=document.getElementById("pkNameSave");
     if(nameSave){nameSave.addEventListener("click",function(){

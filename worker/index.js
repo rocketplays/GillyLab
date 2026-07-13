@@ -383,6 +383,16 @@ async function loadUpcomingCard(env, url) {
     bouts,
   };
 }
+// The per-card scoring table (data/pickem-card.json) — winnerBase/methodBonus/
+// roundBonus keyed by bout id + f1/f2 slot. Embedded into /pickem so the client
+// prices picks identically to the app without the paywalled odds/history data.
+async function loadPickemScore(env, url) {
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/pickem-card.json", url)));
+    if (!r.ok) return null;
+    return await r.json();
+  } catch { return null; }
+}
 // Live standings for the focus card: grade every submitted entry against the
 // decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
 // records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
@@ -591,10 +601,10 @@ export default {
       if (path === "/pickem") {
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/signup?next=/pickem");
-        const [u, card, name] = await Promise.all([
-          getUser(env, s.email), loadUpcomingCard(env, url), getDisplayName(env, s.email),
+        const [u, card, name, score] = await Promise.all([
+          getUser(env, s.email), loadUpcomingCard(env, url), getDisplayName(env, s.email), loadPickemScore(env, url),
         ]);
-        return html(pickemPage({ card, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+        return html(pickemPage({ card, score, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // ---- account page (must be logged in) ----
