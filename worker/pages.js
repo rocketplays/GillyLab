@@ -962,6 +962,65 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-bar-info b{color:var(--text);font-weight:700}
   .pk-submitbar .pk-btn:disabled{opacity:.45;cursor:default}
   .pk-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  /* leaderboard / history / player */
+  .pk-tabs{display:flex;gap:.4rem;margin-bottom:.7rem}
+  .pk-tab{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:.45rem .4rem;font:inherit;font-size:.76rem;font-weight:600;cursor:pointer;transition:color .12s,border-color .12s,background .12s}
+  .pk-tab:hover{border-color:rgba(255,255,255,.28)}
+  .pk-tab.sel{border-color:var(--accent);background:rgba(0,230,104,.12);color:var(--text)}
+  .pk-board-list{border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .pk-board-row{display:flex;align-items:center;gap:.7rem;padding:.55rem .8rem;border-bottom:1px solid rgba(255,255,255,.05);width:100%;background:none;border-left:none;border-right:none;border-top:none;color:var(--text);font:inherit;text-align:left;cursor:pointer;transition:background .12s}
+  .pk-board-row:last-child{border-bottom:none}
+  .pk-board-row:hover{background:rgba(255,255,255,.04)}
+  .pk-board-row.me{background:rgba(0,230,104,.08)}
+  .pk-board-rank{flex:0 0 2rem;text-align:center;font-weight:700;color:var(--muted);font-size:.95rem}
+  .pk-board-row.me .pk-board-rank{color:var(--accent)}
+  .pk-board-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:.88rem}
+  .pk-you{font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:#04120a;background:var(--accent);border-radius:4px;padding:.05rem .3rem;margin-left:.35rem}
+  .pk-board-pts{flex:0 0 auto;font-weight:800;font-size:1.05rem;color:var(--accent)}
+  .pk-board-chev{flex:0 0 auto;color:var(--muted);font-size:1.05rem}
+  .pk-board-sep{text-align:center;color:var(--muted);padding:.15rem;letter-spacing:.2em}
+  .pk-board-empty{padding:1.5rem 1rem;text-align:center;color:var(--muted);font-size:.82rem}
+  .pk-board-status-row{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin:0 0 .6rem}
+  .pk-board-event{font-weight:600;font-size:.82rem;color:var(--text);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pk-board-prog{font-size:.72rem;color:var(--muted);margin-left:auto}
+  .pk-live-badge{font-size:.64rem;font-weight:800;letter-spacing:.05em;color:#04120a;background:var(--accent);border-radius:5px;padding:.12rem .4rem}
+  .pk-final-badge{font-size:.64rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:.12rem .4rem}
+  .pk-hist-head{display:flex;flex-direction:column;gap:.15rem;margin-bottom:1.1rem}
+  .pk-hist-name{font-weight:700;font-size:1rem;color:var(--text)}
+  .pk-hist-ranks{display:flex;gap:.4rem;flex-wrap:wrap;margin:.1rem 0 .2rem}
+  .pk-rank-badge{font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.35);border-radius:6px;padding:.15rem .45rem}
+  .pk-hist-total{display:flex;align-items:baseline;gap:.5rem}
+  .pk-hist-total-num{font-weight:900;font-size:2.4rem;color:var(--accent);line-height:1}
+  .pk-hist-total-lbl{color:var(--muted);font-size:.82rem}
+  .pk-hist-stats{display:flex;gap:.6rem;margin-top:.8rem}
+  .pk-hist-stat{flex:1;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.7rem .8rem}
+  .pk-hist-stat-num{display:block;font-weight:800;font-size:1.5rem;color:var(--text);line-height:1.1}
+  .pk-hist-stat-lbl{display:block;color:var(--muted);font-size:.72rem;margin-top:.15rem}
+  .pk-hist-list{display:flex;flex-direction:column;gap:.5rem}
+  .pk-hist-row{display:flex;align-items:center;gap:.7rem;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:11px;padding:.7rem .85rem;cursor:pointer;font:inherit;color:var(--text);transition:border-color .12s}
+  .pk-hist-row:hover{border-color:rgba(255,255,255,.22)}
+  .pk-hist-row-static{cursor:default}
+  .pk-hist-row-main{flex:1;min-width:0}
+  .pk-hist-ev{font-weight:600;font-size:.9rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pk-hist-meta{color:var(--muted);font-size:.72rem;margin-top:.15rem}
+  .pk-hist-pts{font-weight:800;font-size:1.2rem}
+  .pk-hist-pts.pos,.pk-hist-bout-pts.pos,.pk-hist-ev-total.pos{color:var(--accent)}
+  .pk-hist-pts.neg,.pk-hist-bout-pts.neg,.pk-hist-ev-total.neg{color:#ff6a5e}
+  .pk-hist-pts.zero,.pk-hist-bout-pts.zero,.pk-hist-ev-total.zero{color:var(--muted)}
+  .pk-hist-arrow{color:var(--muted);font-size:1.2rem;flex:0 0 auto}
+  .pk-hist-empty{padding:2.5rem 1.5rem;text-align:center;color:var(--muted);font-size:.88rem;line-height:1.5}
+  .pk-hist-back{background:none;border:none;color:var(--accent);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;padding:.2rem 0;margin-bottom:.7rem}
+  .pk-hist-ev-head{display:flex;align-items:baseline;justify-content:space-between;gap:.7rem;margin-bottom:.7rem}
+  .pk-hist-ev-name{font-weight:800;font-size:1.4rem;color:var(--text)}
+  .pk-hist-ev-total{font-weight:800;font-size:1.4rem}
+  .pk-hist-bouts{display:flex;flex-direction:column;gap:.4rem}
+  .pk-hist-bout{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:9px;border:1px solid var(--border);background:var(--card)}
+  .pk-hist-bout-main{flex:1;min-width:0}
+  .pk-hist-bout-pick{font-weight:600;font-size:.88rem}
+  .pk-hist-bout-detail{color:var(--muted);font-size:.72rem;margin-top:.12rem}
+  .pk-hist-bout-pts{font-weight:800;font-size:1.05rem;flex:0 0 auto}
+  .pk-note{border-radius:8px;padding:.5rem .7rem;font-size:.78rem;font-weight:600;line-height:1.4}
+  .pk-note.pk-locked{background:rgba(255,207,122,.12);border:1px solid rgba(255,207,122,.4);color:#ffdca0}
   .pk-foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:1.5rem}
   .pk-foot a{color:var(--accent);text-decoration:none}
 </style></head><body>
@@ -1017,8 +1076,85 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       document.getElementById("panel-history").hidden=(which!=="history");
       window.scrollTo(0,0);
     }
-    document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){pkShow(b.dataset.open);});});
-    document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){pkShow("picks");});});
+    function pkEscH(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    function pkGet(url){return fetch(url,{credentials:"same-origin"}).then(function(r){return r.json().then(function(j){return Object.assign({status:r.status},j);}).catch(function(){return{status:r.status};});}).catch(function(){return{status:0};});}
+    function pkStatsHead(res){
+      var pct=function(n,d){return d?Math.round(100*n/d)+"%":"—";};var n=(res.events||[]).length;var badges="";
+      if(res.rankAll)badges+='<span class="pk-rank-badge">All-time #'+res.rankAll+'</span>';
+      if(res.rankLast5)badges+='<span class="pk-rank-badge">Last 5 #'+res.rankLast5+'</span>';
+      return '<div class="pk-hist-head">'+(res.name?'<div class="pk-hist-name">'+pkEscH(res.name)+'</div>':'')+(badges?'<div class="pk-hist-ranks">'+badges+'</div>':'')+'<div class="pk-hist-total"><span class="pk-hist-total-num">'+(res.total||0)+'</span><span class="pk-hist-total-lbl">total points · '+n+' card'+(n===1?"":"s")+'</span></div><div class="pk-hist-stats"><div class="pk-hist-stat"><span class="pk-hist-stat-num">'+(res.correct||0)+'/'+(res.decided||0)+'</span><span class="pk-hist-stat-lbl">picks correct · '+pct(res.correct,res.decided)+'</span></div><div class="pk-hist-stat"><span class="pk-hist-stat-num">'+(res.dogCorrect||0)+'/'+(res.dogPicks||0)+'</span><span class="pk-hist-stat-lbl">underdogs hit · '+pct(res.dogCorrect,res.dogPicks)+'</span></div></div></div>';
+    }
+    // ── leaderboard ──────────────────────────────────────────────────────────
+    var PK_LB_SCOPE="current",PK_LB_TIMER=null;
+    function pkLbClear(){if(PK_LB_TIMER){clearInterval(PK_LB_TIMER);PK_LB_TIMER=null;}}
+    function pkRenderLeaderboard(scope){
+      PK_LB_SCOPE=scope||PK_LB_SCOPE;pkLbClear();
+      var host=document.getElementById("lb-body");if(!host)return;
+      var tab=function(id,l){return '<button type="button" class="pk-tab'+(PK_LB_SCOPE===id?" sel":"")+'" data-scope="'+id+'">'+l+'</button>';};
+      host.innerHTML='<div class="pk-tabs">'+tab("current","This card")+tab("last5","Last 5")+tab("all","All-time")+'</div><div id="lb-status"></div><div class="pk-board-list" id="lb-list"><div class="pk-board-empty">Loading…</div></div>';
+      pkLbPaint();if(PK_LB_SCOPE==="current")PK_LB_TIMER=setInterval(pkLbPaint,45000);
+    }
+    function pkLbPaint(){
+      var scope=PK_LB_SCOPE;
+      pkGet("/api/pickem/leaderboard?scope="+scope).then(function(res){
+        var listEl=document.getElementById("lb-list"),statusEl=document.getElementById("lb-status");
+        if(!listEl||listEl.offsetParent===null){pkLbClear();return;}if(scope!==PK_LB_SCOPE)return;
+        if(statusEl)statusEl.innerHTML="";
+        if(res.status===401){pkLbClear();listEl.innerHTML='<div class="pk-board-empty">Log in to see the leaderboard.</div>';return;}
+        if(res.status!==200||!Array.isArray(res.rows)){listEl.innerHTML='<div class="pk-board-empty">Leaderboard unavailable right now.</div>';return;}
+        if(scope==="current"){
+          if(statusEl&&res.event){var badge=res.live?'<span class="pk-live-badge">● LIVE</span>':'<span class="pk-final-badge">Final</span>';var prog=res.total?((res.decided||0)+" of "+res.total+" fights scored"):"";statusEl.innerHTML='<div class="pk-board-status-row">'+badge+'<span class="pk-board-event">'+pkEscH(res.event)+'</span>'+(prog?'<span class="pk-board-prog">'+prog+'</span>':'')+'</div>';}
+          if(!res.rows.length){listEl.innerHTML='<div class="pk-board-empty">'+(res.event?"No fights scored yet — standings update as results come in.":"No card in progress. Try Last 5 or All-time.")+'</div>';return;}
+        }else if(!res.rows.length){listEl.innerHTML='<div class="pk-board-empty">No graded picks yet — check back after the next card.</div>';return;}
+        var meName=res.me&&res.me.name;
+        var row=function(r,me){return '<button type="button" class="pk-board-row'+(me?" me":"")+'" data-player="'+pkEscH(r.name)+'"><span class="pk-board-rank">'+r.rank+'</span><span class="pk-board-name">'+pkEscH(r.name)+(me?' <span class="pk-you">you</span>':'')+'</span><span class="pk-board-pts">'+r.points+'</span><span class="pk-board-chev">›</span></button>';};
+        var out=res.rows.map(function(r){return row(r,meName&&r.name===meName);}).join("");
+        if(res.me&&!res.rows.some(function(r){return r.name===meName;}))out+='<div class="pk-board-sep">···</div>'+row(res.me,true);
+        listEl.innerHTML=out;
+      });
+    }
+    function pkRenderPlayer(nm){
+      pkLbClear();var host=document.getElementById("lb-body");if(!host)return;
+      var back='<button type="button" class="pk-hist-back" data-lbback>← Back to leaderboard</button>';
+      host.innerHTML=back+'<div class="pk-board-empty">Loading…</div>';
+      pkGet("/api/pickem/player?name="+encodeURIComponent(nm)).then(function(res){
+        if(res.status===404){host.innerHTML=back+'<div class="pk-hist-empty">Player not found.</div>';return;}
+        if(res.status!==200){host.innerHTML=back+'<div class="pk-hist-empty">Profile unavailable right now.</div>';return;}
+        if(!res.name)res.name=nm;var evs=res.events||[];
+        var rows=evs.map(function(e){var pts=e.points||0;return '<div class="pk-hist-row pk-hist-row-static"><div class="pk-hist-row-main"><div class="pk-hist-ev">'+pkEscH(e.event||e.slug)+'</div><div class="pk-hist-meta">'+pkEscH(e.date||"")+' · '+(e.correct||0)+'/'+(e.boutCount||0)+' winners</div></div><div class="pk-hist-pts '+(pts>=0?"pos":"neg")+'">'+(pts>0?"+":"")+pts+'</div></div>';}).join("");
+        host.innerHTML=back+pkStatsHead(res)+(evs.length?'<div class="pk-hist-list">'+rows+'</div>':'<div class="pk-hist-empty">No graded cards yet.</div>');
+      });
+    }
+    // ── my history ───────────────────────────────────────────────────────────
+    function pkRenderHistory(){
+      var host=document.getElementById("hist-body");if(!host)return;host.innerHTML='<div class="pk-board-empty">Loading…</div>';
+      pkGet("/api/pickem/history").then(function(res){
+        if(res.status===401){host.innerHTML='<div class="pk-hist-empty">Log in to see your history.</div>';return;}
+        if(res.status!==200){host.innerHTML='<div class="pk-hist-empty">History unavailable right now.</div>';return;}
+        var evs=res.events||[],head=pkStatsHead(res);
+        if(!evs.length){host.innerHTML=head+'<div class="pk-hist-empty">No graded cards yet. Make your picks — they\\u2019ll be scored here after the event.</div>';return;}
+        var rows=evs.map(function(e){var pts=e.points||0;return '<button type="button" class="pk-hist-row" data-event="'+pkEscH(e.slug)+'"><div class="pk-hist-row-main"><div class="pk-hist-ev">'+pkEscH(e.event||e.slug)+'</div><div class="pk-hist-meta">'+pkEscH(e.date||"")+' · '+(e.correct||0)+'/'+(e.boutCount||0)+' winners</div></div><div class="pk-hist-pts '+(pts>=0?"pos":"neg")+'">'+(pts>0?"+":"")+pts+'</div><div class="pk-hist-arrow">›</div></button>';}).join("");
+        host.innerHTML=head+'<div class="pk-hist-list">'+rows+'</div>';
+      });
+    }
+    function pkRenderHistoryEvent(slug){
+      var host=document.getElementById("hist-body");if(!host)return;host.innerHTML='<div class="pk-board-empty">Loading…</div>';
+      pkGet("/api/pickem/history?event="+encodeURIComponent(slug)).then(function(res){
+        var back='<button type="button" class="pk-hist-back" data-histall>← All cards</button>';
+        if(res.status!==200){host.innerHTML=back+'<div class="pk-hist-empty">Couldn\\u2019t load that card.</div>';return;}
+        var bouts=res.bouts||[];
+        var rows=bouts.map(function(b){var tag="pending",label="Pending";if(b.voided){tag="void";label="No contest — void";}else if(b.pending){tag="pending";label="Pending";}else if(b.winnerHit){tag="hit";label="Winner"+(b.methodHit?" + method":"")+(b.roundHit?" + round":"");}else{tag="miss";label="Wrong winner";}var pts=b.points||0;var sub=(b.method||"—")+(b.round?" · R"+b.round:"")+" · "+(b.confidence||"")+" conf · "+label;return '<div class="pk-hist-bout '+tag+'"><div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">'+pkEscH(b.winner||"")+'</div><div class="pk-hist-bout-detail">'+pkEscH(sub)+'</div></div><div class="pk-hist-bout-pts '+(pts>0?"pos":pts<0?"neg":"zero")+'">'+(pts>0?"+":"")+pts+'</div></div>';}).join("");
+        var total=res.total||0;
+        host.innerHTML=back+'<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">'+pkEscH(res.event||slug)+'</div><div class="pk-hist-ev-total '+(total>=0?"pos":"neg")+'">'+(total>0?"+":"")+total+' pts</div></div>'+(res.graded?"":'<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>')+'<div class="pk-hist-bouts">'+rows+'</div>';
+      });
+    }
+    // subnav open (loads content) + back (returns to picks)
+    document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){var w=b.dataset.open;pkShow(w);if(w==="leaderboard")pkRenderLeaderboard();else if(w==="history")pkRenderHistory();});});
+    document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){pkLbClear();pkShow("picks");});});
+    var lbPanel=document.getElementById("panel-leaderboard");
+    if(lbPanel)lbPanel.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;if(t.dataset.scope)pkRenderLeaderboard(t.dataset.scope);else if(t.dataset.player)pkRenderPlayer(t.dataset.player);else if(t.hasAttribute("data-lbback"))pkRenderLeaderboard();});
+    var histPanel=document.getElementById("panel-history");
+    if(histPanel)histPanel.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;if(t.dataset.event)pkRenderHistoryEvent(t.dataset.event);else if(t.hasAttribute("data-histall"))pkRenderHistory();});
     // ── pick engine ──────────────────────────────────────────────────────────
     // Mirrors the in-app scoring: winnerBase (wPts) + methodBonus (mPts) +
     // roundBonus (rPts) from the embedded per-card table, × confidence multiplier.
