@@ -2036,12 +2036,31 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   const seoTitle = `${f.name} — UFC Record, Stats & Tale of the Tape · GillyLab`;
   const seoDesc = `${f.name}${f.record ? " (" + f.record + ")" : ""}${f.division ? ", " + f.division : ""}${f.country ? " · " + f.country : ""}. Career striking & grappling stats and physical tale of the tape. Full fight history, tape study, odds history and more on GillyLab.`;
 
+  // Structured data (schema.org Person, wrapped in a ProfilePage) so search
+  // engines read this as a fighter entity — helps rank for "<name> stats/record"
+  // and feeds richer results / knowledge-panel association. Invisible to users.
+  const person = {
+    "@type": "Person",
+    name: f.name,
+    url: `${SITE_URL}/fighter/${f.slug}`,
+    jobTitle: "Professional mixed martial artist",
+    description: seoDesc,
+  };
+  if (f.photo) person.image = `${SITE_URL}/photos/thumb/${f.photo}.png`;
+  if (f.country) person.nationality = f.country;
+  if (phys.ht) person.height = phys.ht;
+  if (phys.stance) person.additionalProperty = { "@type": "PropertyValue", name: "Stance", value: phys.stance };
+  const ld = { "@context": "https://schema.org", "@type": "ProfilePage", mainEntity: person };
+  // JSON.stringify escapes quotes; also neutralize "</script>" just in case.
+  const ldScript = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`;
+
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(seoTitle)}</title>
 <meta name="description" content="${esc(seoDesc)}">
 <link rel="canonical" href="${SITE_URL}/fighter/${esc(f.slug)}">
 ${ogTags(seoTitle, seoDesc, "/fighter/" + f.slug)}
+${ldScript}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
