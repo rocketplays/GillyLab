@@ -104,6 +104,25 @@ function cnt(key, fallback) {
   return C && C[key] ? Number(C[key]).toLocaleString('en-US') : fallback;
 }
 
+// The app/landing footer (brand + About/Terms/Privacy/Contact + disclaimer), shared
+// across every standalone free page. Styles are scoped inline so each page can drop
+// it in without touching its own <style> block. Uses the free pages' theme vars.
+const FREE_FOOTER = `
+  <style>
+    .site-footer{margin:3rem 0 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
+    .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px;color:var(--text)}
+    .foot-brand .a{color:var(--accent)}
+    .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+    .foot-links a{color:var(--muted);font-size:13px;text-decoration:none}
+    .foot-links a:hover{color:var(--text)}
+    .foot-copy{color:var(--muted);opacity:.7;font-size:11.5px;line-height:1.6;max-width:660px;margin:0 auto}
+  </style>
+  <footer class="site-footer">
+    <div class="foot-brand">GILLY<span class="a">LAB</span></div>
+    <div class="foot-links"><a href="/about">About Us</a><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a><a href="/contact">Contact</a></div>
+    <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
+  </footer>`;
+
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
@@ -829,8 +848,14 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <div class="alt"><a href="/api/logout">Log out</a></div>
   </div>`, `
   document.getElementById("go").addEventListener("click",function(){
-    var m=document.getElementById("m"); m.className="msg"; m.textContent="Redirecting to secure checkout…";
-    post("/api/checkout",{}).then(function(r){ if(r.redirect){window.location=r.redirect;} else {m.className="msg err";m.textContent=r.error||"Error";}});
+    var b=document.getElementById("go"); var m=document.getElementById("m");
+    m.className="msg"; m.textContent="Redirecting to secure checkout…"; b.disabled=true;
+    post("/api/checkout",{}).then(function(r){
+      if(r&&r.redirect){window.location=r.redirect;return;}
+      m.className="msg err"; m.textContent=(r&&r.error)||"Couldn't start checkout — please try again."; b.disabled=false;
+    }).catch(function(){
+      m.className="msg err"; m.textContent="Couldn't start checkout — please try again in a moment."; b.disabled=false;
+    });
   });`);
 
 export const accountPage = (email, subscribed) => shell("Account — GillyLab", `
@@ -1077,6 +1102,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
     <p class="pk-foot">Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.</p>
   </main>
+  ${FREE_FOOTER}
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
     var PK_SCORE=${JSON.stringify(scoreMap)}, PK_EVT=${JSON.stringify(evtInfo)};
@@ -1362,6 +1388,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     <div id="rkPanels"><p class="rk-empty">Loading rankings…</p></div>
     <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
   </main>
+  ${FREE_FOOTER}
   <script>
     var DIVS={'Heavyweight':{abbr:'HW',tag:'Heavyweight'},'Light Heavyweight':{abbr:'LHW',tag:'Light Heavyweight'},'Middleweight':{abbr:'MW',tag:'Middleweight'},'Welterweight':{abbr:'WW',tag:'Welterweight'},'Lightweight':{abbr:'LW',tag:'Lightweight'},'Featherweight':{abbr:'FW',tag:'Featherweight'},'Bantamweight':{abbr:'BW',tag:'Bantamweight'},'Flyweight':{abbr:'FLW',tag:'Flyweight'},"Women's Strawweight":{abbr:'WSW',tag:'Strawweight'},"Women's Flyweight":{abbr:'WFLW',tag:'W. Flyweight'},"Women's Bantamweight":{abbr:'WBW',tag:'W. Bantamweight'}};
     var PORDER=["Men's Pound-for-Pound Top Rank","Women's Pound-for-Pound Top Rank",'Heavyweight','Light Heavyweight','Middleweight','Welterweight','Lightweight','Featherweight','Bantamweight','Flyweight',"Women's Strawweight","Women's Flyweight","Women's Bantamweight"];
@@ -1445,6 +1472,7 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
     <div id="rsList"><p class="rs-empty">Loading roster…</p></div>
     <div class="rs-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for every fighter's full analytics.` : `Roster is free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
   </main>
+  ${FREE_FOOTER}
   <script>
     function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
@@ -1653,6 +1681,7 @@ export const matchupPage = ({ subscribed }) => {
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>
+  ${FREE_FOOTER}
   <div class="mp-overlay" id="mpOverlay" hidden><div class="mp-sheet" id="mpSheet"></div></div>
   <script>
     var MP={a:${JSON.stringify((card && card.main && card.main.pA) || null)},b:${JSON.stringify((card && card.main && card.main.pB) || null)}};

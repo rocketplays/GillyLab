@@ -745,9 +745,19 @@ async function handleCheckout(request, env) {
   const body = await readBody(request).catch(() => ({}));
   const e = normEmail(s?.email || body.email);
   if (!e) return json({ error: "Log in first." }, 401);
+  if (!env.STRIPE_SECRET_KEY || !env.STRIPE_PRICE_ID) {
+    return json({ error: "Checkout isn't configured yet — please try again shortly." }, 503);
+  }
   const u = await getUser(env, e);
-  const checkoutUrl = await createCheckout(env, e, u?.stripeCustomerId);
-  return json({ ok: true, redirect: checkoutUrl });
+  try {
+    const checkoutUrl = await createCheckout(env, e, u?.stripeCustomerId);
+    if (!checkoutUrl) return json({ error: "Couldn't start checkout — please try again." }, 502);
+    return json({ ok: true, redirect: checkoutUrl });
+  } catch (err) {
+    // Surface the reason as JSON (never an HTML 500) so the client can show it
+    // instead of hanging on "Redirecting…".
+    return json({ error: "Couldn't start checkout: " + String((err && err.message) || err) }, 502);
+  }
 }
 
 async function handleCheckoutSuccess(request, env, url) {
