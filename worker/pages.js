@@ -1580,7 +1580,7 @@ export const matchupPage = ({ subscribed }) => {
     return `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}</div>`;
   };
   // Locked teaser for the paywalled sections on non-main bouts.
-  const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Style · Pace · Path to victory · Storylines</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
+  const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Style · Pace · Path to victory · Storylines · H2H stats</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
   const nonMainPanel = (f) => `<div class="mf-panel" hidden>${taleHTML(f, f.tape)}${lockedTeaser}</div>`;
 
   // Main-event breakdown — mirrors the in-app scouting panel exactly:
