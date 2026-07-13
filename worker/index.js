@@ -50,7 +50,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
   "/gl-logo.png",                          // brand mark in the landing nav
-  "/data/rankings.json", "/data/rankings-meta.json",  // public UFC rankings (free /rankings page)
+  "/data/rankings.json", "/data/rankings-meta.json", "/data/rankings-extra.json",  // public UFC rankings (free /rankings page)
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */

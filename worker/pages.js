@@ -1336,9 +1336,9 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     function tabLabel(n){return SHORT[n]||(DIVS[n]?DIVS[n].tag:n);}
     function rkImgErr(img){var fb=img.getAttribute("data-fb");if(fb&&img.getAttribute("src").indexOf(fb)<0&&!img.getAttribute("data-tried")){img.setAttribute("data-tried","1");img.src=fb;return;}img.outerHTML='<div class="rk-av">'+(img.getAttribute("data-ini")||"?")+'</div>';}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
-    var SRC="media",BYDIV={},ACTIVE=null;
+    var SRC="media",BYDIV={},ACTIVE=null,EX={};
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
-    function rowHTML(e){var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(e.fighterName));var localThumb="/photos/thumb/"+esc(e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(e.fighterName)+'</span>'+(e.flag?'<span class="rk-flag">'+esc(e.flag)+'</span>':"")+movBadge(e)+'</div>';}
+    function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(name)+'</span>'+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
     function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
     function load(){
       document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
@@ -1353,7 +1353,8 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     }
     document.getElementById("rkTabs").addEventListener("click",function(e){var b=e.target.closest(".rk-tab");if(b)showDiv(b.dataset.div);});
     Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(b){b.addEventListener("click",function(){SRC=b.dataset.src;Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(x){x.classList.remove("sel");});b.classList.add("sel");ACTIVE=null;load();});});
-    load();
+    // Canonical name / photo-slug / flag overrides for fighters the UFC feed leaves incomplete.
+    fetch("/data/rankings-extra.json").then(function(r){return r.json();}).then(function(j){EX=(j&&j.bySlug)||{};}).catch(function(){}).then(load);
   </script>
 </body></html>`;
 
