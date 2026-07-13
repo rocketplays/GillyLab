@@ -616,6 +616,12 @@ export default {
         const [u, card, name, score] = await Promise.all([
           getUser(env, s.email), loadUpcomingCard(env, url), getDisplayName(env, s.email), loadPickemScore(env, url),
         ]);
+        // The photo slug the app uses is nameToSlug(canonical name), not the ESPN
+        // fighterSlug — the scoring table carries it (ps1/ps2). Overlay onto the card.
+        if (card && card.bouts && score && Array.isArray(score.bouts)) {
+          const byId = {}; score.bouts.forEach((b) => (byId[b.id] = b));
+          card.bouts.forEach((b) => { const sb = byId[b.id]; if (sb) { if (sb.ps1) b.s1 = sb.ps1; if (sb.ps2) b.s2 = sb.ps2; } });
+        }
         return html(pickemPage({ card, score, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 

@@ -1199,7 +1199,10 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
         var t=e.target.closest("button");if(!t)return;var el=e.target.closest(".pk-bout");
         if(t.classList.contains("pk-clear")&&el){delete PICKS[el.dataset.bout];updateBout(el.dataset.bout);updateBar();persist();return;}
         if(!el)return;var id=el.dataset.bout;var p=PICKS[id]||(PICKS[id]={boutId:id});
-        if(t.dataset.pick){p.winner=t.dataset.pick;p.side=sideOf(el,t.dataset.pick);if(!p.confidence)p.confidence="Med";}
+        if(t.dataset.pick){
+          if(p.winner===t.dataset.pick){delete PICKS[id];updateBout(id);updateBar();persist();return;}
+          p.winner=t.dataset.pick;p.side=sideOf(el,t.dataset.pick);if(!p.confidence)p.confidence="Med";
+        }
         else if(t.dataset.method){p.method=t.dataset.method;if(p.method==="Decision")p.round=null;}
         else if(t.dataset.round!==undefined&&t.dataset.round!==""){p.round=parseInt(t.dataset.round,10);}
         else if(t.dataset.c){p.confidence=t.dataset.c;}

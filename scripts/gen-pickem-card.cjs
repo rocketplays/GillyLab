@@ -187,17 +187,19 @@ const bouts = (ev.bouts || [])
     for (let r = 1; r <= rounds; r++) rPts[r] = roundBonus(r);
     return {
       id: b.id || (ev.slug + "-" + i), f1, f2,
+      // Photo slug = nameToSlug(canonical name) — the app names thumbnails this way,
+      // NOT by the ESPN fighterSlug (which differs for many fighters).
+      ps1: nameToSlug(c1), ps2: nameToSlug(c2),
       wPts: { f1: winnerBase(c1, c2), f2: winnerBase(c2, c1) },
       mPts: { f1: mb(c1, c2), f2: mb(c2, c1) },
       rPts,
     };
   });
 
-// Fighter thumbnail slugs on this card, so the Worker can serve just these photos
+// Canonical photo slugs on this card, so the Worker can serve just these thumbnails
 // publicly (free accounts otherwise can't fetch the gated /photos/*).
-const slugs = [];
-(ev.bouts || []).forEach((b) => (b.fighters || []).forEach((f) => { if (f.fighterSlug) slugs.push(f.fighterSlug); }));
-const out = { slug: ev.slug, generatedAt: new Date().toISOString(), slugs: Array.from(new Set(slugs)), bouts };
+const slugs = Array.from(new Set(bouts.flatMap((b) => [b.ps1, b.ps2]).filter(Boolean)));
+const out = { slug: ev.slug, generatedAt: new Date().toISOString(), slugs, bouts };
 fs.writeFileSync(path.join(ROOT, "data/pickem-card.json"), JSON.stringify(out, null, 2) + "\n");
 console.log(`pickem-card.json: ${ev.slug} · ${bouts.length} bouts · FIGHT_HISTORY ${FH_TEXT ? "loaded" : "MISSING"}`);
 bouts.slice(0, 3).forEach((b) =>
