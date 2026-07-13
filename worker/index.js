@@ -547,6 +547,177 @@ function authDest(next, subscribed) {
   return next || (subscribed ? "/" : "/matchup");
 }
 
+/* ───────────────────────── Pick'em email reminders (cron) ───────────────────────
+ * Two emails, sent from an hourly Cloudflare cron (see `scheduled` + wrangler
+ * [triggers]):
+ *   • "picks lock soon" — the day before a card, to accounts that HAVEN'T submitted
+ *   • "results recap"   — after a card grades, to everyone who submitted picks
+ * Every send is de-duplicated (per-user + per-event markers in PICKS KV) so a re-run
+ * never double-sends, and every email carries a one-click unsubscribe link. Actual
+ * sending is gated behind env.EMAIL_REMINDERS_ENABLED === "1" so a deploy can never
+ * blast users by accident; a founder-only endpoint can dry-run or send a test first.
+ */
+const REMINDER_SEND_HOUR_UTC = 16;   // ~11am ET / 8am PT — when the day-before email goes out
+const REMINDER_MAX_PER_RUN = 500;    // safety cap on sends per cron invocation
+const REMINDER_MARK_TTL = 60 * 60 * 24 * 45;   // dedup markers self-expire after ~45 days
+
+const escHtml = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+const unsubToken = (env, email) => hmac(env.SESSION_SECRET, "unsub:" + normEmail(email));
+async function unsubUrl(env, email) {
+  const e = normEmail(email);
+  return env.SITE_URL + "/api/unsubscribe?e=" + encodeURIComponent(e) + "&t=" + (await unsubToken(env, e));
+}
+
+// Inline-styled shell — email clients strip <style>/<head> CSS. Dark, on-brand.
+function emailShell(bodyHtml, unsubHref) {
+  return `<!doctype html><html><body style="margin:0;background:#0a0a0b;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
+      <table role="presentation" cellpadding="0" cellspacing="0" style="width:480px;max-width:92%;background:#14141a;border:1px solid #2a2a32;border-radius:14px;overflow:hidden">
+        <tr><td style="padding:22px 26px 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#f4f5f7">GILLY<span style="color:#00e668">LAB</span></div></td></tr>
+        <tr><td style="padding:14px 26px 26px;color:#f4f5f7;font-size:15px;line-height:1.55">${bodyHtml}</td></tr>
+      </table>
+      <div style="width:480px;max-width:92%;color:#6b6b76;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></div>
+    </td></tr></table>
+  </body></html>`;
+}
+function lockEmailHtml(env, card, unsubHref) {
+  const when = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const btn = env.SITE_URL + "/pickem";
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">Your picks lock soon</h1>
+    <p style="margin:0 0 18px;color:#c9c9d0"><strong style="color:#fff">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
+    <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
+}
+function recapEmailHtml(env, ev, score, unsubHref) {
+  const btn = env.SITE_URL + "/pickem";
+  const pts = score && typeof score.points === "number" ? score.points : 0;
+  const line = score
+    ? `You scored <strong style="color:#00e668">${pts > 0 ? "+" : ""}${pts} points</strong>${(score.correct != null && score.boutCount != null) ? ` — ${score.correct}/${score.boutCount} winners` : ""}.`
+    : "Your card is graded.";
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">${escHtml(ev.name)} — results are in</h1>
+    <p style="margin:0 0 18px;color:#c9c9d0">${line} See where you landed on the leaderboard, then get set for the next card.</p>
+    <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
+}
+
+// Every account email (USERS keys are "u:<email>"; "cust:" link keys are skipped).
+async function listAllUserEmails(env) {
+  const out = []; let cursor;
+  do {
+    const page = await env.USERS.list({ prefix: "u:", cursor });
+    for (const k of page.keys) out.push(k.name.slice(2));
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  return out;
+}
+const isOptedOut = async (env, email) => { const u = await getUser(env, email); return !!(u && u.emailOptOut); };
+
+// "Picks lock soon" — the day before the upcoming card, to accounts without an entry.
+async function runLockReminders(env, base, opts = {}) {
+  const dry = !!opts.dry, force = !!opts.force;
+  const card = await loadUpcomingCard(env, base);
+  if (!card || !card.prelimsAt || card.locked) return { type: "lock", skipped: "no upcoming open card" };
+  const hoursToLock = (Date.parse(card.prelimsAt) - Date.now()) / 3600000;
+  const inWindow = hoursToLock > 6 && hoursToLock <= 40 && new Date().getUTCHours() === REMINDER_SEND_HOUR_UTC;
+  if (!dry && !force && !inWindow) return { type: "lock", skipped: "outside send window", hoursToLock: Math.round(hoursToLock) };
+  if (!dry && await env.PICKS.get("em:ldone:" + card.slug)) return { type: "lock", skipped: "already sent", event: card.slug };
+  let sent = 0, targeted = 0, capped = false;
+  for (const email of await listAllUserEmails(env)) {
+    if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
+    if (await env.PICKS.get("em:l:" + card.slug + ":" + email)) continue;   // already emailed
+    if (await pkGet(env, "pk:" + card.slug + ":" + email)) continue;        // already picked
+    if (await isOptedOut(env, email)) continue;                            // unsubscribed
+    targeted++;
+    if (dry) continue;
+    try {
+      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, await unsubUrl(env, email)));
+      await env.PICKS.put("em:l:" + card.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
+      sent++;
+    } catch (e) { /* bad address — skip, keep going */ }
+  }
+  if (!dry && !capped) await env.PICKS.put("em:ldone:" + card.slug, "1", { expirationTtl: REMINDER_MARK_TTL });
+  return { type: "lock", event: card.slug, targeted, sent, capped, dry };
+}
+
+// "Results recap" — after a card grades, to everyone who submitted an entry.
+async function runResultRecaps(env, base, opts = {}) {
+  const dry = !!opts.dry;
+  await ensureGraded(env, base);   // fold any newly-final cards into agg records first
+  const results = await loadResults(env, base);
+  const recent = (results.events || [])
+    .filter((ev) => ev.slug && ev.date && (Date.now() - Date.parse(ev.date + "T00:00:00")) < 5 * 24 * 3600 * 1000)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const out = [];
+  for (const ev of recent) {
+    if (!dry && await env.PICKS.get("em:rdone:" + ev.slug)) continue;
+    const prefix = "pk:" + ev.slug + ":";
+    let sent = 0, targeted = 0, capped = false;
+    for (const key of await listAllKeys(env, prefix)) {
+      if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
+      const email = key.slice(prefix.length);
+      if (await env.PICKS.get("em:r:" + ev.slug + ":" + email)) continue;
+      if (await isOptedOut(env, email)) continue;
+      const ag = await pkGet(env, "ag:" + email);
+      const score = ag && ag.byEvent && ag.byEvent[ev.slug];
+      if (!score) continue;   // not graded for this user yet
+      targeted++;
+      if (dry) continue;
+      try {
+        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, await unsubUrl(env, email)));
+        await env.PICKS.put("em:r:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
+        sent++;
+      } catch (e) { /* skip, keep going */ }
+    }
+    if (!dry && !capped) await env.PICKS.put("em:rdone:" + ev.slug, "1", { expirationTtl: REMINDER_MARK_TTL });
+    out.push({ event: ev.slug, targeted, sent, capped });
+  }
+  return { type: "recap", events: out, dry };
+}
+async function runReminders(env, opts = {}) {
+  const base = new URL(env.SITE_URL);
+  return {
+    at: new Date().toISOString(),
+    enabled: env.EMAIL_REMINDERS_ENABLED === "1",
+    lock: await runLockReminders(env, base, opts),
+    recap: await runResultRecaps(env, base, opts),
+  };
+}
+
+// One-click unsubscribe (token = HMAC of the email). Public, no session needed.
+async function handleUnsubscribe(request, env, url) {
+  const email = normEmail(url.searchParams.get("e") || "");
+  const token = url.searchParams.get("t") || "";
+  if (!email || !token || !timingSafeEq(token, await unsubToken(env, email))) {
+    return html(notePage("Invalid link", "This unsubscribe link is invalid or has expired."), 400);
+  }
+  const u = await getUser(env, email);
+  if (u) { u.emailOptOut = true; await putUser(env, email, u); }
+  return html(notePage("Unsubscribed", "You won't get Pick'em reminder emails anymore. You can still play any time at " + env.SITE_URL + "/pickem."), 200);
+}
+
+// Founder-only: preview or fire reminders on demand.
+//   ?dry=1 (default) → who WOULD be emailed, nothing sent
+//   ?run=1           → actually send now (bypasses the day-before clock window)
+//   ?test=lock|recap → send a single sample email to yourself
+async function handleAdminReminders(request, env, url) {
+  const s = await readSession(request, env);
+  if (!s || !FOUNDER_EMAILS.has(s.email)) return json({ error: "forbidden" }, 403);
+  const base = new URL(env.SITE_URL);
+  const test = url.searchParams.get("test");
+  if (test) {
+    const unsub = await unsubUrl(env, s.email);
+    if (test === "recap") {
+      const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
+      await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub));
+    } else {
+      const card = (await loadUpcomingCard(env, base)) || { name: "Sample Card", date: "", slug: "sample" };
+      await sendEmail(env, s.email, "[test] Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub));
+    }
+    return json({ ok: true, sentTestTo: s.email, type: test });
+  }
+  const run = url.searchParams.get("run") === "1";
+  return json(await runReminders(env, { dry: !run, force: run }));
+}
+
 /* ─────────────────────────────────── the Worker ────────────────────────────── */
 export default {
   async fetch(request, env, ctx) {
@@ -567,6 +738,8 @@ export default {
       if (path === "/api/reset/start" && request.method === "POST") return handleResetStart(request, env);
       if (path === "/api/reset/complete" && request.method === "POST") return handleResetComplete(request, env);
       if (path === "/api/contact" && request.method === "POST") return handleContact(request, env);
+      if (path === "/api/unsubscribe") return handleUnsubscribe(request, env, url);
+      if (path === "/api/admin/reminders") return handleAdminReminders(request, env, url);
       if (path === "/healthz") return new Response("ok");
 
       // ---- pick'em (subscriber feature; each handler checks the session) ----
@@ -708,6 +881,14 @@ export default {
     } catch (err) {
       return html(notePage("Something went wrong", String(err && err.message || err)), 500);
     }
+  },
+
+  // Hourly cron (wrangler [triggers]). Sends the day-before "picks lock soon" and
+  // post-grade "results recap" emails. No-op unless EMAIL_REMINDERS_ENABLED === "1",
+  // so the feature ships dark and is switched on only after a dry-run/test.
+  async scheduled(event, env, ctx) {
+    if (env.EMAIL_REMINDERS_ENABLED !== "1") return;
+    ctx.waitUntil(runReminders(env, { dry: false }).catch(() => {}));
   },
 };
 

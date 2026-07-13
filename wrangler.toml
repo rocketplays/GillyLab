@@ -27,6 +27,13 @@ not_found_handling = "none"      # missing asset returns 404, not a redirect
 SITE_URL   = "https://gillylab.com"
 FROM_EMAIL = "GillyLab <login@gillylab.com>"   # verified sending domain in Resend
 SESSION_TTL_HOURS = "720"   # 30 days — keep users logged in longer
+# Pick'em reminder emails ship OFF. Flip to "1" (and redeploy) only after you've
+# dry-run + test-sent via /api/admin/reminders. The hourly cron no-ops while "0".
+EMAIL_REMINDERS_ENABLED = "0"
+
+# Hourly cron drives the Pick'em reminder emails (see `scheduled` in worker/index.js).
+[triggers]
+crons = ["0 * * * *"]
 
 # --- KV namespaces (create with `wrangler kv namespace create ...`, paste ids) ---
 [[kv_namespaces]]
