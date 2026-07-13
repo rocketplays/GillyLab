@@ -363,7 +363,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li>Pick'em — predict every card</li>
           <li>Live leaderboard &amp; your pick history</li>
           <li>Division rankings &amp; active roster</li>
-          <li>This week's card &amp; the main-event breakdown</li>
+          <li>Main event breakdown and analysis</li>
           <li class="off">Full fighter database &amp; profiles</li>
           <li class="off">Fight simulator &amp; matchup analytics</li>
         </ul>
