@@ -969,6 +969,10 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   const scoreMap = {};
   if (score && Array.isArray(score.bouts)) score.bouts.forEach((b) => { scoreMap[b.id] = { wPts: b.wPts, mPts: b.mPts, rPts: b.rPts }; });
   const evtInfo = card ? { slug: card.slug, name: card.name, date: card.date, prelimsAt: card.prelimsAt || null } : { slug: "", name: "", date: "", prelimsAt: null };
+  // Per-bout results (once decided) so the share button can render a graded RESULTS
+  // sheet — byte-identical to premium — instead of a picks sheet after the card ends.
+  const resultsMap = {};
+  if (card && card.bouts) card.bouts.forEach((b) => { if (b.res) resultsMap[b.id] = b.res; });
   const nBouts = (card && card.bouts && card.bouts.length) || 0;
   const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
   const lockNote = card ? (card.locked ? "Picks are locked — this card has started." : "Lock your picks before the prelims begin.") : "";
@@ -1212,6 +1216,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
     var PK_UID=${JSON.stringify(email || "")};
     var PK_SCORE=${JSON.stringify(scoreMap)}, PK_EVT=${JSON.stringify(evtInfo)};
+    var PK_RESULTS=${JSON.stringify(resultsMap)}, PK_FINAL=${card && card.final ? "true" : "false"};
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
     // Fade out before internal navigations (matches the auth/subscribe pages).
     document.addEventListener("click",function(e){
@@ -1435,15 +1440,37 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     // Share picks — builds the SAME payload shape the in-app share uses, then hands it
     // to the shared GL_SHEET renderer so the free image is byte-identical to premium.
     var shareBtn=document.getElementById("pkShare");
-    function revealShare(){if(shareBtn)shareBtn.hidden=false;}
+    // Once the card is final the button shares a graded RESULTS sheet (and relabels).
+    function revealShare(){if(shareBtn){shareBtn.hidden=false;shareBtn.textContent=PK_FINAL?"Share results":"Share picks";}}
+    // Grade one pick against its result — mirrors the server/app scoring so the shared
+    // image's ticks + points match the leaderboard.
+    var CONF_PENALTY={High:10,Med:5,Low:0};
+    function pkNameEq(a,b){var nn=function(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/\\b(jr|sr|iv|iii|ii|v)\\b/g,"").replace(/[^a-z0-9]+/g,"");};var na=nn(a),nb=nn(b);if(!na||!nb)return false;if(na===nb)return true;return na.length>=5&&nb.length>=5&&(na.indexOf(nb)===0||nb.indexOf(na)===0);}
+    function gradedPick(p,res){
+      if(res.voided)return{points:0,voided:true,winnerHit:false,methodHit:false,roundHit:false};
+      if(!pkNameEq(p.winner,res.winner))return{points:-(CONF_PENALTY[p.confidence]||0),winnerHit:false,methodHit:false,roundHit:false,voided:false};
+      var pt=partsFor(p.boutId,p.side,p.method,p.round);
+      var methodHit=!!p.method&&p.method===res.method;
+      var roundHit=res.method!=="Decision"&&p.round!=null&&(+p.round===+res.round);
+      var earned=pt.wPts+(methodHit?pt.mPts:0)+(roundHit?pt.rPts:0);
+      return{points:Math.round(earned*(CONF_MULT[p.confidence]||1.5)),winnerHit:true,methodHit:methodHit,roundHit:roundHit,voided:false};
+    }
     function pkSharePayload(){
-      var picks=[];
+      var graded=!!PK_FINAL;var picks=[];
       BOUT_IDS.forEach(function(id){var p=PICKS[id];if(!isComplete(p))return;var el=boutEl(id);if(!el)return;
         var loser=p.winner===el.dataset.f1?el.dataset.f2:el.dataset.f1;
-        var slug=p.side==="f1"?el.dataset.s1:el.dataset.s2;
-        picks.push({winner:p.winner,loser:loser,winnerSlug:slug||null,method:p.method||null,round:(p.method&&p.method!=="Decision")?(p.round||null):null,confidence:p.confidence||"Med",label:"",isMain:false,points:potential(p)});});
+        var mySlug=p.side==="f1"?el.dataset.s1:el.dataset.s2;
+        var base={winner:p.winner,loser:loser,winnerSlug:mySlug||null,method:p.method||null,round:(p.method&&p.method!=="Decision")?(p.round||null):null,confidence:p.confidence||"Med",label:"",isMain:false};
+        var res=graded?PK_RESULTS[id]:null;
+        if(res){
+          var g=gradedPick(p,res);var aw=res.voided?null:res.winner;
+          var al=aw?(aw===el.dataset.f1?el.dataset.f2:el.dataset.f1):null;
+          var awSlug=aw?(aw===el.dataset.f1?el.dataset.s1:el.dataset.s2):mySlug;
+          picks.push({winner:p.winner,loser:loser,winnerSlug:awSlug||null,method:base.method,round:base.round,confidence:base.confidence,label:"",isMain:false,actualWinner:aw,actualLoser:al,resultMethod:res.voided?null:res.method,resultRound:res.voided?null:res.round,points:g.points,winnerHit:!!g.winnerHit,methodHit:!!g.methodHit,roundHit:!!g.roundHit,voided:!!g.voided});
+        }else{base.points=potential(p);picks.push(base);}
+      });
       var d="";try{if(PK_EVT&&PK_EVT.date)d=new Date(PK_EVT.date+"T00:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}catch(e){}
-      return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:false,picks:picks,totalPoints:picks.reduce(function(t,p){return t+p.points;},0)};
+      return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:graded,picks:picks,totalPoints:picks.reduce(function(t,p){return t+(p.points||0);},0)};
     }
     if(shareBtn)shareBtn.addEventListener("click",function(){
       var data=pkSharePayload();if(!data.picks.length){alert("Make at least one complete pick to share.");return;}

@@ -307,6 +307,14 @@ async function loadResults(env, url) {
 // Turn one ESPN bout into a gradeable result, or null if it isn't decided yet.
 // A bout is decided when a fighter has a `win` outcome (winnerFighterSlug can be
 // null for a late replacement) or the method reads draw/no-contest.
+// Bucket a raw method string into the pick vocabulary (mirrors the app's methodBucketOf).
+function methodBucket(s) {
+  s = String(s || "").toLowerCase();
+  if (/sub/.test(s)) return "Submission";
+  if (/dec/.test(s)) return "Decision";
+  if (/ko|tko|knockout|stoppage|punch|kick|elbow|knee|slam/.test(s)) return "KO/TKO";
+  return null;
+}
 function boutToResult(b) {
   if (!b || b.isCancelled) return null;
   const fs = b.fighters || [];
@@ -373,21 +381,26 @@ async function loadUpcomingCard(env, url) {
     .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
     .map((b, i) => {
       const f = b.fighters;
+      // Once a bout is decided, carry its result so the client can render a graded
+      // "results" share sheet (method bucketed to the pick vocabulary).
+      const r = boutToResult(b);
+      const res = r ? { winner: r.winner, method: methodBucket(r.method), round: r.round, voided: !!r.voided } : null;
       return {
         id: b.id || (ev.slug + "-" + i),
         f1: f[0].fighterName, f2: f[1].fighterName,
         s1: f[0].fighterSlug || null, s2: f[1].fighterSlug || null,
         section: b.cardSection || "", pos: b.cardPosition || "",
         wc: String(b.weightClass || "").replace(/\s*bout\s*$/i, "").trim(),
-        rounds: b.numberOfRounds || 3, title: !!b.titleBout,
+        rounds: b.numberOfRounds || 3, title: !!b.titleBout, res,
       };
     });
   const prelimsAt = ev.prelimsStartsAt || ev.startsAt || null;
+  const final = bouts.length > 0 && bouts.every((x) => x.res);
   return {
     slug: ev.slug,
     name: ev.title || ev.espnName || ev.shortTitle || ev.slug,
     date: (ev.startsAt || "").slice(0, 10),
-    prelimsAt,
+    prelimsAt, final,
     locked: prelimsAt ? now >= Date.parse(prelimsAt) : false,
     bouts,
   };

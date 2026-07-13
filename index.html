@@ -109897,7 +109897,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="pk-summary-info">' + info + '</div>' +
           '<div class="pk-summary-actions">' +
             nextBtn +
-            '<button type="button" class="pk-btn ghost" data-pk-share>Share</button>' +
+            '<button type="button" class="pk-btn ghost" data-pk-share>' + ((BOUTS.length && done.length === BOUTS.length) ? 'Share results' : 'Share picks') + '</button>' +
             submitBtn +
           '</div>' +
         '</div>' +
