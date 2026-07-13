@@ -3739,6 +3739,7 @@
     <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
   </div>
   <div class="divider"></div>
+  <div style="text-align:center;margin:0 0 0.9rem;"><button type="button" onclick="openModal('pkScoring')" style="background:none;border:none;color:var(--accent);font:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">How scoring works &rarr;</button></div>
   <div id="pickem-content"></div>
 </div>
 
@@ -7246,6 +7247,8 @@
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  targetPage.classList.add('active');
  if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
+ // One-time "how scoring works" explainer, the first time a user opens Pick'em.
+ if (page === 'pickem') { try { if (!localStorage.getItem('glPkScoringSeen')) { localStorage.setItem('glPkScoringSeen', '1'); if (typeof openModal === 'function') setTimeout(function(){ openModal('pkScoring'); }, 280); } } catch (e) {} }
  // Restore the scroll position for the page being shown (non-fighter pages
  // only — the fighter profile always opens at the top, handled by openFighter).
  if (page !== 'fighter') window.scrollTo(0, pageScroll[targetId] || 0);
@@ -110198,6 +110201,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   
   // ── FOOTER MODALS ────────────────────────────────────────────────────────
   const MODAL_CONTENT = {
+    pkScoring: {
+      title: 'How scoring works',
+      body: `<ol style="margin:0;padding-left:1.15rem;display:flex;flex-direction:column;gap:0.55rem;">
+               <li style="line-height:1.5;">Make your picks. For each bout, call the <strong style="color:var(--text);">winner</strong>, plus the <strong style="color:var(--text);">method</strong> (KO/TKO, submission or decision) and the <strong style="color:var(--text);">round</strong>.</li>
+               <li style="line-height:1.5;">Earn points. A correct winner scores base points, and you add bonuses for nailing the method and round. Calling an <strong style="color:var(--text);">underdog</strong> is worth more than a favorite.</li>
+               <li style="line-height:1.5;">Set your confidence — it multiplies what that pick is worth: <strong style="color:var(--text);">High &times;2</strong>, <strong style="color:var(--text);">Medium &times;1.5</strong>, <strong style="color:var(--text);">Low &times;1</strong>.</li>
+               <li style="line-height:1.5;">Mind the risk. Get the winner wrong and the confident picks cost you: <strong style="color:var(--text);">High &minus;10</strong>, <strong style="color:var(--text);">Medium &minus;5</strong>, <strong style="color:var(--text);">Low 0</strong>. Low is safe; High is high-risk, high-reward.</li>
+             </ol>
+             <p style="margin-top:1rem;font-size:0.85rem;color:rgba(255,255,255,0.55);">The “total possible points” under each fight already includes your confidence — so you can see exactly what a pick is worth before you lock it in.</p>`
+    },
     contact: {
       title: 'Contact',
       body: `<p>Have a question, correction, or feedback?</p>
