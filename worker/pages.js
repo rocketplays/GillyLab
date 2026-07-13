@@ -1434,7 +1434,10 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
 export const matchupPage = ({ subscribed }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const card = (landingData && landingData.card) || null;
-  const fmtO = (o) => (o == null ? "—" : (o > 0 ? "+" + o : "" + o));
+  // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
+  // it (that produced the "++220" double plus on underdogs).
+  const fmtO = (o) => (o == null || o === "" ? "—" : String(o));
+  const surname = (n) => { const p = String(n || "").trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
   const initials = (nm) => String(nm || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
   const av = (slug, init) => slug
     ? `<div class="mf-av"><img src="/photos/thumb/${esc(slug)}.png" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(init)}'"></div>`
@@ -1442,35 +1445,44 @@ export const matchupPage = ({ subscribed }) => {
   const pnum = (v) => { const m = /([0-9.]+)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[1]) : null; };
   const disp = (v) => { if (v == null || v === "") return "—"; if (typeof v === "number") { const q = (+v).toFixed(2); return q.replace(/\.?0+$/, "") || "0"; } return String(v); };
 
-  // Main-event breakdown (tale of the tape + style + h2h stats + path).
+  // Main-event breakdown — mirrors the in-app scouting panel exactly:
+  // Style → Pace → Path to victory → Storylines → Tale of the tape (h2h stats).
+  const GREEN = "var(--accent)", AMBER = "#ffcf7a";
   const breakdownHTML = (mf, t) => {
     if (!t) return "";
-    const cmp = (label, a, b, lo) => {
-      let aC = "", bC = "";
-      const na = pnum(a), nb = pnum(b);
-      if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
-      return `<div class="mb-row"><div class="mb-lbl">${label}</div><div class="mb-val ${aC}">${esc(disp(a))}</div><div class="mb-val ${bC}">${esc(disp(b))}</div></div>`;
-    };
+    const sA = surname(mf.f1), sB = surname(mf.f2);
+    const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
+    // Style bar
+    const lean = t.lean || {};
+    const dot = (v, col) => v == null ? "" : `<div class="sr-style-dot" style="left:calc(${v}% - 6px);background:${col}"></div>`;
+    const lab = (v, col, nm) => v == null ? "" : `<div class="sr-style-lab" style="left:${v}%;color:${col};transform:translateX(${v <= 12 ? "0" : v >= 88 ? "-100%" : "-50%"})">${esc(surname(nm))}</div>`;
+    const style = `<div class="sr-common"><div class="sr-common-title">Style</div>
+      <div class="sr-style-wrap" style="margin-top:1.4rem">${lab(lean.a, GREEN, mf.f1)}${lab(lean.b, AMBER, mf.f2)}<div class="sr-style-track">${dot(lean.a, GREEN)}${dot(lean.b, AMBER)}</div></div>
+      <div class="sr-style-ends"><span>Grappler</span><span>Striker</span></div>`;
+    // Pace (part of the same box)
+    const pace = t.pace || {};
+    const hiA = pace.a != null && (pace.b == null || pace.a >= pace.b), hiB = pace.b != null && (pace.a == null || pace.b > pace.a);
+    const pv = (v, hi) => `<div class="sr-cmp-val" style="font-weight:${hi ? 800 : 600}${hi ? ";color:var(--accent)" : ""}">${v == null ? "—" : esc(disp(v))}</div>`;
+    const paceBox = `<div class="sr-common-title" style="margin-top:.9rem">Pace</div>${head}<div class="sr-cmp-row"><div class="sr-cmp-lbl">sig. strikes thrown / min</div>${pv(pace.a, hiA)}${pv(pace.b, hiB)}</div></div>`;
+    // Path to victory
+    const pathCard = (nm, p, green) => p ? `<div class="sr-path" style="background:${green ? "rgba(0,230,104,.07)" : "rgba(255,207,122,.06)"};border:1px solid ${green ? "rgba(0,230,104,.25)" : "rgba(255,207,122,.22)"}"><div class="sr-path-name" style="color:${green ? GREEN : AMBER}">${esc(surname(nm))}</div><div style="opacity:.9">${esc(p)}</div></div>` : "";
+    const pathBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Path to victory</div>${pathCard(mf.f1, t.path && t.path.a, true)}${pathCard(mf.f2, t.path && t.path.b, false)}</div>`;
+    // Storylines (only if any)
+    const st = t.story || { a: [], b: [] };
+    const stLine = (nm, col, arr) => (arr || []).map((x) => `<div style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
+    const storyBox = ((st.a && st.a.length) || (st.b && st.b.length))
+      ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Storylines</div>${stLine(mf.f1, "var(--accent)", st.a)}${stLine(mf.f2, AMBER, st.b)}</div>` : "";
+    // Tale of the tape (the h2h stats table)
     const H2H = [["Sig. strikes / min", "slpm", 0], ["Striking accuracy", "strAcc", 0], ["Strikes absorbed / min", "sapm", 1], ["Striking defense", "strDef", 0], ["Knockdowns / 15", "kd", 0], ["Takedowns / 15", "tdLanded", 0], ["Takedown accuracy", "tdAcc", 0], ["Takedown defense", "tdDef", 0], ["Sub. attempts / 15", "subAvg", 0], ["Finish rate", "finRate", 0]];
     const sa = t.stats.a || {}, sb = t.stats.b || {};
-    const h2h = H2H.map((r) => cmp(r[0], sa[r[1]], sb[r[1]], r[2])).join("");
-    const lean = t.lean || {}, pace = t.pace || {};
-    const dot = (v, col) => v == null ? "" : `<span class="mb-dot" style="left:${Math.max(2, Math.min(98, v))}%;background:${col}"></span>`;
-    const path = (nm, p, col) => p ? `<div class="mb-path"><div class="mb-path-h" style="color:${col}">${esc(String(nm).split(" ").pop().toUpperCase())}</div><div>${esc(p)}</div></div>` : "";
-    return `<div class="mf-panel" hidden>
-      <div class="mb-head"><div></div><div>${esc(mf.f1.split(" ").pop())}</div><div>${esc(mf.f2.split(" ").pop())}</div></div>
-      ${cmp("Moneyline", mf.o1, mf.o2, 1)}
-      <div class="mb-sec">Style &amp; pace</div>
-      <div class="mb-bar">${dot(lean.a, "#00e668")}${dot(lean.b, "#ffcf7a")}</div>
-      <div class="mb-tick"><span>Grappler</span><span>Striker</span></div>
-      ${cmp("Pace · strikes/min", pace.a, pace.b, 0)}
-      <div class="mb-sec">Tale of the tape</div>
-      ${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Stance", t.a.stance, t.b.stance, 0)}
-      <div class="mb-sec">Head to head</div>
-      ${h2h}
-      <div class="mb-sec">Path to victory</div>
-      ${path(mf.f1, t.path && t.path.a, "#00e668")}${path(mf.f2, t.path && t.path.b, "#ffcf7a")}
-    </div>`;
+    const cmp = (label, a, b, lo) => {
+      let aC = "", bC = ""; const na = pnum(a), nb = pnum(b);
+      if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
+      return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
+    };
+    const rows = H2H.map((r) => cmp(r[0], sa[r[1]], sb[r[1]], r[2])).join("");
+    const tapeBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Tale of the tape</div>${head}${rows}</div>`;
+    return `<div class="mf-panel" hidden>${style}${paceBox}${pathBox}${storyBox}${tapeBox}</div>`;
   };
 
   const rowHTML = (f) => {
@@ -1537,20 +1549,23 @@ export const matchupPage = ({ subscribed }) => {
   .mf-wt{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
   .mf-rds{font-size:.58rem;color:var(--muted)}
   .mf-info{margin-top:.2rem;background:none;border:none;color:var(--accent);font:inherit;font-size:.62rem;font-weight:700;cursor:pointer;white-space:nowrap}
-  .mf-panel{border-top:1px solid var(--border);padding:.9rem 1rem 1.1rem;background:rgba(255,255,255,.015)}
+  .mf-panel{border-top:1px solid var(--border);padding:.5rem 1rem 1.1rem;background:rgba(255,255,255,.015)}
   .mf-panel[hidden]{display:none}
-  .mb-sec{font-size:.66rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:1rem 0 .5rem}
-  .mb-head{display:grid;grid-template-columns:1fr 3.2rem 3.2rem;gap:.4rem;font-size:.66rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;padding-bottom:.35rem;text-align:right}
-  .mb-head div:first-child{text-align:left}
-  .mb-row{display:grid;grid-template-columns:1fr 3.2rem 3.2rem;gap:.4rem;padding:.32rem 0;border-top:1px solid rgba(255,255,255,.05);font-size:.82rem}
-  .mb-lbl{color:var(--muted)}
-  .mb-val{text-align:right;font-weight:600}
-  .mb-val.w{color:var(--accent)}
-  .mb-bar{position:relative;height:8px;border-radius:4px;background:rgba(255,255,255,.09);margin:.2rem 0 .3rem}
-  .mb-dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:12px;height:12px;border-radius:50%;border:2px solid var(--bg)}
-  .mb-tick{display:flex;justify-content:space-between;font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-  .mb-path{margin-top:.55rem;font-size:.82rem;line-height:1.45;color:#d7d7db}
-  .mb-path-h{font-size:.62rem;font-weight:800;letter-spacing:.05em;margin-bottom:.15rem}
+  .sr-common{margin-top:.9rem}
+  .sr-common .sr-cmp-row:last-child{border-bottom:none}
+  .sr-common-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+  .sr-cmp-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+  .sr-cmp-head{color:var(--muted);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
+  .sr-cmp-lbl{color:var(--muted)}
+  .sr-cmp-val{color:var(--text);font-weight:600;display:flex;align-items:center}
+  .sr-cmp-val.w{color:var(--accent)}
+  .sr-style-wrap{position:relative;margin:.6rem 6px .3rem}
+  .sr-style-lab{position:absolute;top:-16px;transform:translateX(-50%);font-size:.66rem;white-space:nowrap}
+  .sr-style-track{height:6px;border-radius:3px;background:rgba(255,255,255,.12);position:relative}
+  .sr-style-dot{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;border:2px solid rgba(0,0,0,.4)}
+  .sr-style-ends{display:flex;justify-content:space-between;margin:7px 6px 2px;font-size:.66rem;color:var(--muted)}
+  .sr-path{border-radius:8px;padding:8px 11px;margin-top:8px;font-size:.74rem;line-height:1.45}
+  .sr-path-name{font-size:.66rem;font-weight:800;margin-bottom:2px;letter-spacing:.02em}
   .mf-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}

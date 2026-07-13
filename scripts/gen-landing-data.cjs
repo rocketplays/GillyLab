@@ -601,7 +601,7 @@ function buildMainTape(m) {
     a: phys(st1), b: phys(st2),
     stats: { a: ins.statsA || {}, b: ins.statsB || {}, sig: ins.sig || {} },
     lean: { a: ins.leanA, b: ins.leanB }, pace: { a: ins.paceA, b: ins.paceB },
-    path: { a: ins.pathA, b: ins.pathB },
+    path: { a: ins.pathA, b: ins.pathB }, story: { a: ins.storyA || [], b: ins.storyB || [] },
   };
 }
 function buildCard(recMap) {
