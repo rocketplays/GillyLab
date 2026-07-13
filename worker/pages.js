@@ -830,18 +830,20 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   });`);
 
 export const accountPage = (email, subscribed) => shell("Account — GillyLab", `
+  <a class="back-link" href="${subscribed ? "/" : "/pickem"}" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
     <h1 style="font-size:1.4rem;text-align:center">Account</h1>
     <p class="muted">Signed in as <strong style="color:#fff">${email}</strong></p>
     <p>Plan: <strong style="color:${subscribed ? "var(--accent)" : "#fff"}">${subscribed ? "Premium" : "Free"}</strong></p>
     ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>
-    <a class="btn ghost" href="/pickem">Play Pick'em</a>
     <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<p class="muted" style="font-size:.9rem">Your free account plays Pick'em and rides the leaderboard. Upgrade for the full fighter database, matchup analytics and the fight simulator.</p>
-    <a class="btn" href="/pickem">Play Pick'em →</a>
-    <a class="btn ghost" href="/subscribe">Go Premium →</a>`}
+    <a class="btn" href="/subscribe" id="goPremium">Go Premium →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
-  </div>`);
+  </div>`, `
+  var gp=document.getElementById("goPremium");
+  if(gp){gp.addEventListener("click",function(e){e.preventDefault();gp.textContent="Redirecting to checkout…";post("/api/checkout",{}).then(function(r){window.location=(r&&r.redirect)?r.redirect:"/subscribe";}).catch(function(){window.location="/subscribe";});});}
+  `);
 
 // ── Standalone Pick'em page (FREE feature, its own server-rendered surface so the
 // paywalled app bundle never ships to free accounts) ────────────────────────────
