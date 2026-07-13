@@ -123,6 +123,21 @@ const FREE_FOOTER = `
     <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>`;
 
+// Shared sub-nav across every free page so users can always move between the free
+// sections (and back to the /matchup home). Styles are scoped inline; the current
+// page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
+function freeTabs(active) {
+  const items = [["/matchup", "Main Event"], ["/pickem", "Pick'em"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
+  return `
+  <style>
+    .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 1.1rem}
+    .ftabs a{flex:1 1 auto;text-align:center;min-width:92px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease,color .13s ease}
+    .ftabs a:hover{border-color:var(--accent);background:var(--surface2)}
+    .ftabs a.active{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
+  </style>
+  <nav class="ftabs">${items.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>`;
+}
+
 export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GillyLab — The Ultimate UFC Analytics Database</title>
@@ -1078,6 +1093,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     </div>
   </nav>
   <main>
+    ${freeTabs("/pickem")}
     <div class="pk-head">
       <h1>Pick'em</h1>
       <p class="pk-sub">${card ? esc(card.name) + (when ? " · " + esc(when) : "") : "Predict the fights, climb the leaderboard."}</p>
@@ -1381,6 +1397,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     </div>
   </nav>
   <main>
+    ${freeTabs("/rankings")}
     <h1>UFC Rankings</h1>
     <p class="rk-sub" id="rkDate">Official divisional rankings.</p>
     <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
@@ -1465,6 +1482,7 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
     </div>
   </nav>
   <main>
+    ${freeTabs("/roster")}
     <h1>Active Roster</h1>
     <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
     <div id="rsChanges"></div>
@@ -1598,9 +1616,6 @@ export const matchupPage = ({ subscribed }) => {
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .mf-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
-  .mf-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 1rem}
-  .mf-tabs a{flex:1 1 auto;text-align:center;min-width:96px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease}
-  .mf-tabs a:hover{border-color:var(--accent);background:var(--surface2)}
   .mf-sechdr{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
   .mf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.7rem;overflow:hidden}
   .mf-card.main{border-color:rgba(0,230,104,.45)}
@@ -1671,11 +1686,7 @@ export const matchupPage = ({ subscribed }) => {
     </div>
   </nav>
   <main>
-    <nav class="mf-tabs">
-      <a href="/pickem">Pick'em</a>
-      <a href="/rankings">Rankings</a>
-      <a href="/roster">Active Roster</a>
-    </nav>
+    ${freeTabs("/matchup")}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card, with the main-event breakdown. Tap “Fight Info” on the main event.</p>
     ${body}
