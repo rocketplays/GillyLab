@@ -1454,10 +1454,13 @@ export const matchupPage = ({ subscribed }) => {
     const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
     // Style bar
     const lean = t.lean || {};
+    // When the two dots are close their labels would overlap — drop the second one
+    // below the track (same fix the in-app style bar uses).
+    const stacked = (lean.a != null && lean.b != null) && Math.abs(lean.a - lean.b) < 24;
     const dot = (v, col) => v == null ? "" : `<div class="sr-style-dot" style="left:calc(${v}% - 6px);background:${col}"></div>`;
-    const lab = (v, col, nm) => v == null ? "" : `<div class="sr-style-lab" style="left:${v}%;color:${col};transform:translateX(${v <= 12 ? "0" : v >= 88 ? "-100%" : "-50%"})">${esc(surname(nm))}</div>`;
+    const lab = (v, col, nm, below) => v == null ? "" : `<div class="sr-style-lab" style="left:${v}%;color:${col};${below ? "top:12px;" : ""}transform:translateX(${v <= 12 ? "0" : v >= 88 ? "-100%" : "-50%"})">${esc(surname(nm))}</div>`;
     const style = `<div class="sr-common"><div class="sr-common-title">Style</div>
-      <div class="sr-style-wrap" style="margin-top:1.4rem">${lab(lean.a, GREEN, mf.f1)}${lab(lean.b, AMBER, mf.f2)}<div class="sr-style-track">${dot(lean.a, GREEN)}${dot(lean.b, AMBER)}</div></div>
+      <div class="sr-style-wrap" style="margin-top:1.4rem${stacked ? ";margin-bottom:1.5rem" : ""}">${lab(lean.a, GREEN, mf.f1, false)}${lab(lean.b, AMBER, mf.f2, stacked)}<div class="sr-style-track">${dot(lean.a, GREEN)}${dot(lean.b, AMBER)}</div></div>
       <div class="sr-style-ends"><span>Grappler</span><span>Striker</span></div>`;
     // Pace (part of the same box)
     const pace = t.pace || {};
@@ -1583,7 +1586,23 @@ export const matchupPage = ({ subscribed }) => {
   </main>
   <script>
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
-    window.mfToggle=function(btn){var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;var open=!p.hidden?false:true;p.hidden=!open;btn.textContent=open?"Fight Info ⌃":"Fight Info ⌄";if(open)p.scrollIntoView({behavior:"smooth",block:"nearest"});};
+    var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.mfToggle=function(btn){
+      var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;
+      var opening=p.hasAttribute("hidden");
+      btn.textContent=opening?"Fight Info ⌃":"Fight Info ⌄";
+      if(MF_RM){if(opening)p.removeAttribute("hidden");else p.setAttribute("hidden","");return;}
+      if(opening){
+        p.removeAttribute("hidden");p.style.overflow="hidden";p.style.height="0px";
+        var target=p.scrollHeight;
+        requestAnimationFrame(function(){p.style.transition="height .3s ease";p.style.height=target+"px";});
+        p.addEventListener("transitionend",function te(e){if(e.propertyName!=="height")return;p.style.transition="";p.style.height="auto";p.style.overflow="";p.removeEventListener("transitionend",te);});
+      }else{
+        p.style.overflow="hidden";p.style.height=p.scrollHeight+"px";
+        requestAnimationFrame(function(){p.style.transition="height .3s ease";p.style.height="0px";});
+        p.addEventListener("transitionend",function te(e){if(e.propertyName!=="height")return;p.setAttribute("hidden","");p.style.transition="";p.style.height="";p.style.overflow="";p.removeEventListener("transitionend",te);});
+      }
+    };
   </script>
 </body></html>`;
 };
