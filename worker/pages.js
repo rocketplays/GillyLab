@@ -668,24 +668,27 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     })():'';
 
   // ── Pick'em (free) ──────────────────────────────────────────────────────────
-  // Self-contained: a sample pick card + a leaderboard line, so it never depends on
-  // gated data or photos. Confidence tiers use the app's High/Med/Low colours.
-  var pkbout=function(pick,opp,conf,pts,cc){return '<div style="display:flex;align-items:center;gap:.55rem;padding:.5rem .65rem;border:1px solid rgba(255,255,255,.09);border-radius:10px;background:rgba(255,255,255,.02)">'
-    +'<span style="color:'+A+';font-weight:800">\\u2713</span>'
-    +'<span style="font-weight:700;font-size:.9rem">'+pick+'</span>'
-    +'<span style="color:'+M+';font-size:.8rem">vs '+opp+'</span>'
-    +'<span style="margin-left:auto;display:flex;align-items:center;gap:.45rem">'
-    +'<span style="font-size:.6rem;font-weight:800;letter-spacing:.04em;color:'+cc+';background:'+cc+'22;border:1px solid '+cc+'55;border-radius:999px;padding:.1rem .45rem">'+conf+'</span>'
-    +'<span style="font-weight:800;color:'+A+';font-size:.9rem">+'+pts+'</span></span></div>';};
-  var pickem='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.7rem">'
+  // Mirrors the real Pick'em page: per-bout cards with two photo tiles, the picked
+  // fighter highlighted green with a "✓ Your pick" flag, a colour-coded confidence
+  // segment, and a points-at-stake foot. Only whitelisted thumbs are used so the
+  // logged-out landing page can load them (else the initials fallback kicks in).
+  function pkav(slug,init,sel){var ring=sel?A:'rgba(255,255,255,.14)';var base='width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid '+ring+';background:#1b1e25;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;color:'+M+';flex:0 0 auto;';return slug?'<div style="'+base+'"><img src="/photos/thumb/'+slug+'.png" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent=\\''+init+'\\'"></div>':'<div style="'+base+'">'+init+'</div>';}
+  function pktile(slug,init,name,rec,sel){var sc=sel?'border-color:'+A+';background:rgba(0,230,104,.10);box-shadow:inset 0 0 0 1px '+A:'border-color:rgba(255,255,255,.12)';return '<div style="display:flex;flex-direction:column;align-items:center;gap:.32rem;background:rgba(255,255,255,.03);border:1.5px solid transparent;'+sc+';border-radius:11px;padding:.7rem .5rem;text-align:center">'+pkav(slug,init,sel)+'<div style="font-weight:600;font-size:.82rem;line-height:1.15">'+name+'</div><div style="font-size:.64rem;color:'+M+'">'+rec+'</div><div style="font-size:.55rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:'+A+';'+(sel?'':'visibility:hidden')+'">\\u2713 Your pick</div></div>';}
+  function pkseg(l,sel){var c=l==='High'?'#00e668':l==='Med'?'#ffcf7a':'#8a8d94';var css=sel?'border-color:'+c+';background:'+c+'28;color:#fff':'border-color:var(--border);color:'+M;return '<div style="flex:1;text-align:center;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;padding:.32rem .3rem;font-size:.66rem;font-weight:700;'+css+'">'+l+'</div>';}
+  function pkbout(wc,main,ta,tb,conf,pts,mr){return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:.75rem .75rem .8rem;margin-bottom:.6rem">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.55rem">'
+    +'<span style="font-size:.62rem;letter-spacing:.06em;text-transform:uppercase;color:'+M+';font-weight:600">'+wc+'</span>'
+    +'<span style="font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:'+A+';font-weight:700">'+main+'</span></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem">'+ta+tb+'</div>'
+    +(conf?'<div style="display:flex;align-items:center;gap:.5rem;margin-top:.6rem"><span style="flex:0 0 4rem;font-size:.58rem;text-transform:uppercase;letter-spacing:.05em;color:'+M+';font-weight:600">Confidence</span><div style="display:flex;flex:1;gap:.3rem">'+pkseg('High',conf==='High')+pkseg('Med',conf==='Med')+pkseg('Low',conf==='Low')+'</div></div>':'')
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.6rem"><span style="font-size:.66rem;color:'+M+'">Points at stake <b style="color:'+A+'">+'+pts+'</b></span>'+(mr?'<span style="font-size:.6rem;color:'+M+'">'+mr+'</span>':'')+'</div>'
+    +'</div>';}
+  var pickem='<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:.65rem">'
     +'<div style="font-weight:700;font-size:.95rem">Your Pick\\u2019em card</div>'
-    +'<div style="font-size:.72rem;color:'+M+'">Locks at prelims</div></div>'
-    +'<div style="display:flex;flex-direction:column;gap:.45rem">'
-    +pkbout('Holloway','McGregor','HIGH',38,'#00e668')
-    +pkbout('Pimblett','Chandler','MED',24,'#ffb340')
-    +pkbout('Cortez','Ara\\u00fajo','LOW',12,'#8a8f99')
-    +'</div>'
-    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.8rem;padding-top:.7rem;border-top:1px solid rgba(255,255,255,.08);font-size:.82rem">'
+    +'<div style="font-size:.68rem;color:'+M+'">Locks at prelims</div></div>'
+    +pkbout('Welterweight','Main event',pktile('max-holloway','MH','Holloway','26-8-0',true),pktile('conor-mcgregor','CM','McGregor','22-6-0',false),'High',38,'KO/TKO \\u00b7 R2')
+    +pkbout('Lightweight','Co-main',pktile('islam-makhachev','IM','Makhachev','27-1-0',true),pktile('alexander-volkanovski','AV','Volkanovski','26-4-0',false),'Med',24,'Decision')
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:.55rem;padding-top:.6rem;border-top:1px solid rgba(255,255,255,.08);font-size:.8rem">'
     +'<span style="color:'+M+'">Live leaderboard</span>'
     +'<span><b>You</b> \\u00b7 #3 of 128 \\u00b7 <span style="color:'+A+'">+74 last card</span></span></div>';
 
