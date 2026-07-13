@@ -264,6 +264,11 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   @media (max-width:760px){
     h1.hh{font-size:34px}
     .stats{gap:24px}
+    .hero-cta{gap:8px}
+    .hero-cta .big{padding:11px 13px;font-size:13.5px}
+  }
+  @media (max-width:400px){
+    .hero-cta .big{padding:10px 10px;font-size:12.5px}
   }
   /* Featured-fighter slide — mirrors the profile's grouped median bars. */
   .fsx-bio{display:flex;flex-wrap:wrap;gap:1.1rem;padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
@@ -307,7 +312,22 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .plan-feats li.off::before{content:"—";color:var(--muted)}
   .plan .big{margin-top:auto;text-align:center}
   .plans-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:14px}
-  @media(max-width:640px){.plans-grid{grid-template-columns:1fr}}
+  /* Mobile: swap the two stacked cards for a single side-by-side comparison table */
+  .plans-table{display:none;max-width:520px;margin:0 auto}
+  .ptbl{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+  .ptbl th,.ptbl td{padding:9px 4px;border-top:1px solid rgba(255,255,255,.08)}
+  .ptbl thead th{border-top:0;padding-bottom:12px;vertical-align:bottom}
+  .ptbl .pf{text-align:left;width:54%;padding-left:0;color:#d7d7db}
+  .ptbl .pc{text-align:center;width:23%}
+  .ptbl .prem{background:rgba(0,230,104,.06)}
+  .ptbl .yes{color:var(--accent);font-weight:800}
+  .ptbl .no{color:#4a4a52}
+  .ptbl .pt-name{font-weight:800;font-size:14px}
+  .ptbl .pt-name.a{color:var(--accent)}
+  .ptbl .pt-price{font-size:11px;color:var(--muted);font-weight:600}
+  .plans-cta{display:flex;gap:10px;margin-top:16px}
+  .plans-cta .big{flex:1;padding:12px 8px;text-align:center}
+  @media(max-width:640px){.plans-grid{display:none}.plans-table{display:block}}
   .fsx-val.bad{color:#c76a54}
 </style></head><body>
 <div class="lp">
@@ -391,6 +411,35 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li>Closing-line history &amp; line movement</li>
           <li>Tape study, accolades &amp; full box scores</li>
         </ul>
+        <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
+      </div>
+    </div>
+    <div class="plans-table">
+      <table class="ptbl">
+        <thead>
+          <tr>
+            <th class="pf"></th>
+            <th class="pc"><div class="pt-name">Free</div><div class="pt-price">$0</div></th>
+            <th class="pc prem"><div class="pt-name a">Premium</div><div class="pt-price">${PRICE_LABEL.split(' ')[0]}/mo</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pf">Pick'em predictions</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Leaderboard &amp; pick history</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Rankings, roster &amp; weekly changes</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Main-event breakdown &amp; analysis</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Every other bout, this &amp; future cards</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Full fighter database &amp; profiles</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Fight simulator — any matchup</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Matchup analysis: style, pace &amp; path</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Scouting reports &amp; injury news</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Odds, props &amp; parlay builder</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Closing-line &amp; movement history</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Tape study, accolades &amp; box scores</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+        </tbody>
+      </table>
+      <div class="plans-cta">
+        <a class="big ghost" href="/signup">Start free</a>
         <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
       </div>
     </div>
