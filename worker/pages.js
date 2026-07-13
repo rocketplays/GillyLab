@@ -364,7 +364,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li>Live leaderboard &amp; your pick history</li>
           <li>Division rankings, current active roster and weekly roster changes</li>
           <li>Main event breakdown and analysis</li>
-          <li class="off">Every other bout on the card</li>
+          <li class="off">Full analysis and breakdown of every other bout on the card and future cards</li>
           <li class="off">Full fighter database &amp; profiles</li>
           <li class="off">Fight simulator &amp; any-matchup builder</li>
           <li class="off">Live odds, props &amp; parlay tools</li>
