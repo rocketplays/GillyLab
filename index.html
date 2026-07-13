@@ -3226,11 +3226,14 @@
       .pk-intro strong { color: var(--text); font-weight: 700; }
       .pk-bout {
         background: var(--card); border: 1px solid var(--border); border-radius: 14px;
-        padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.9rem;
+        padding: 0.9rem 0.9rem 1rem; margin-bottom: 0.9rem; scroll-margin-top: 70px; transition: border-color .15s ease;
       }
-      .pk-bout-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.7rem; }
-      .pk-bout-label { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+      .pk-bout.done { border-color: rgba(0,230,104,0.45); }
+      .pk-bout-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.7rem; }
+      .pk-bout-label { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-right: auto; }
       .pk-bout-main { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+      .pk-bout-check { display: none; flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); color: #06231a; font-size: 0.62rem; font-weight: 900; align-items: center; justify-content: center; line-height: 1; }
+      .pk-bout.done .pk-bout-check { display: inline-flex; }
       /* winner selector — two fighters */
       .pk-fighters { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
       .pk-fighter {
@@ -3295,6 +3298,11 @@
       .pk-summary-pts { font-size: 0.7rem; color: var(--muted); }
       .pk-summary-pts strong { color: var(--accent); }
       .pk-summary-actions { display: flex; gap: 0.5rem; flex: 0 0 auto; }
+      .pk-progress { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+      .pk-progress-fill { height: 100%; width: 0; background: var(--accent); border-radius: 3px; transition: width .28s ease; }
+      .pk-next { border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 9px; padding: 0.55rem 0.8rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; font-family: inherit; white-space: nowrap; }
+      .pk-next:hover { border-color: var(--accent); color: var(--accent); }
+      .pk-btn.primary.pk-done { background: transparent; border-color: var(--accent); color: var(--accent); opacity: 1; cursor: default; }
       .pk-btn {
         border: 1px solid var(--border); background: var(--surface2); color: var(--text);
         border-radius: 9px; padding: 0.55rem 0.9rem; font-size: 0.8rem; font-weight: 700; cursor: pointer;
@@ -109568,7 +109576,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let SNAP = {};
     // Phase-2 server state: display name, whether this card is submitted/locked, a
     // transient status message, and the leaderboard scope.
-    let NAME = null, SUBMITTED = false, LOCKED = false, MSG = null, PRELIMS_AT = null;
+    let NAME = null, SUBMITTED = false, DIRTY = false, LOCKED = false, MSG = null, PRELIMS_AT = null;
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const idOf = (f) => (f.f1 + '__' + f.f2).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -109820,10 +109828,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       ).join('');
       const detail = p.winner ? '' : ' hidden';
       const pts = potential(p, f);
-      return '<div class="pk-bout" data-boutcard="' + id + '">' +
+      return '<div class="pk-bout' + (isComplete(f) ? ' done' : '') + '" data-boutcard="' + id + '">' +
         '<div class="pk-bout-head">' +
           '<span class="pk-bout-label">' + esc(f.label || f.wc || '') + '</span>' +
           (f.isMain ? '<span class="pk-bout-main">Main Event</span>' : (f.isMainCard ? '<span class="pk-bout-main">Main Card</span>' : '')) +
+          '<span class="pk-bout-check" aria-hidden="true">✓</span>' +
         '</div>' +
         '<div class="pk-fighters">' +
           fighterBtn(f.f1, f.ini1, f.photo1, f.rec1, f.r1, 'l') +
@@ -109861,15 +109870,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         : '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete' +
             (Object.keys(PICKS).length ? ' · <button type="button" class="pk-reset-link" data-pk-reset>reset</button>' : '') + '</span>' +
           '<span class="pk-summary-pts">Total possible points: <strong>' + atStake + '</strong></span>';
+      const cComplete = BOUTS.filter(isComplete).length, cTotal = BOUTS.length;
+      const pct = cTotal ? Math.round(cComplete / cTotal * 100) : 0;
+      const progress = LOCKED ? '' : '<div class="pk-progress"><div class="pk-progress-fill" style="width:' + pct + '%"></div></div>';
+      const nextBtn = (LOCKED || cComplete >= cTotal) ? '' : '<button type="button" class="pk-next" data-pk-next>Next ↓</button>';
+      const submitBtn = LOCKED
+        ? '<button type="button" class="pk-btn primary" disabled>Locked</button>'
+        : (SUBMITTED && !DIRTY
+          ? '<button type="button" class="pk-btn primary pk-done" data-pk-submit disabled>Picks submitted ✓</button>'
+          : '<button type="button" class="pk-btn primary" data-pk-submit>' + (SUBMITTED ? 'Update picks' : 'Submit picks') + '</button>');
       return '<div class="pk-summary">' +
         (sl || '') +
+        progress +
         '<div class="pk-summary-row">' +
           '<div class="pk-summary-info">' + info + '</div>' +
           '<div class="pk-summary-actions">' +
+            nextBtn +
             '<button type="button" class="pk-btn ghost" data-pk-share>Share</button>' +
-            (LOCKED
-              ? '<button type="button" class="pk-btn primary" disabled>Locked</button>'
-              : '<button type="button" class="pk-btn primary" data-pk-submit>' + (SUBMITTED ? 'Update picks' : 'Submit picks') + '</button>') +
+            submitBtn +
           '</div>' +
         '</div>' +
       '</div>';
@@ -109918,7 +109936,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const p = PICKS[id] || {};
       if (p.winner === name) { delete PICKS[id]; }      // tapping your pick again clears it
       else { p.winner = name; if (!p.confidence) p.confidence = 'Med'; PICKS[id] = p; }
-      persist(); render();
+      DIRTY = true; persist(); render();
     }
     function setField(id, field, val) {
       if (LOCKED) return;
@@ -109933,14 +109951,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       } else if (field === 'confidence') {
         p.confidence = val;
       }
-      persist(); render();
+      DIRTY = true; persist(); render();
     }
-    function clear(id) { if (LOCKED) return; delete PICKS[id]; persist(); render(); }
+    function clear(id) { if (LOCKED) return; delete PICKS[id]; DIRTY = true; persist(); render(); }
     function resetAll() {
       if (LOCKED) return;
       if (!Object.keys(PICKS).length) return;
       if (!window.confirm('Clear all your picks for this card?')) return;
-      PICKS = {}; ERR = ''; persist(); render();
+      PICKS = {}; ERR = ''; DIRTY = true; persist(); render();
     }
 
     // Assemble the picked bouts (in card order) for the share card. Once every fight
@@ -110040,7 +110058,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!NAME) return showNameModal(submit);
       MSG = { type: 'ok', text: 'Submitting…' }; render();
       const res = await api('/api/pickem/save', { method: 'POST', body: submitPayload() });
-      if (res.status === 200 && res.ok) { SUBMITTED = true; MSG = { type: 'ok', text: 'Picks submitted! Editable until the prelims start.' }; }
+      if (res.status === 200 && res.ok) { SUBMITTED = true; DIRTY = false; MSG = { type: 'ok', text: 'Picks submitted! Editable until the prelims start.' }; }
       else if (res.status === 428 || res.error === 'needs-name') return showNameModal(submit);
       else if (res.status === 403 || res.locked) { LOCKED = true; MSG = { type: 'err', text: 'Picks are locked — the card has started.' }; }
       else if (res.status === 401) { MSG = { type: 'err', text: 'Please log in again to submit your picks.' }; }
@@ -110097,6 +110115,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const clr = e.target.closest('[data-clear]');
         if (clr) return clear(clr.getAttribute('data-clear'));
         if (e.target.closest('[data-pk-reset]')) return resetAll();
+        if (e.target.closest('[data-pk-next]')) {
+          const f = BOUTS.find(b => !isComplete(b));
+          if (f) { const el = document.querySelector('[data-boutcard="' + idOf(f) + '"]'); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+          return;
+        }
         if (e.target.closest('[data-pk-share]')) return share();
         if (e.target.closest('[data-pk-submit]')) return submit();
       });
@@ -110111,7 +110134,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (!EVT || !EVT.slug) return;
       const mine = await api('/api/pickem/mine?event=' + encodeURIComponent(EVT.slug));
       if (mine.status === 200 && mine.record) {
-        SUBMITTED = true;
+        SUBMITTED = true; DIRTY = false;
         LOCKED = !!mine.locked;
         if (Array.isArray(mine.record.picks)) {
           const empty = !Object.keys(PICKS).length;
