@@ -836,8 +836,10 @@ export const accountPage = (email, subscribed) => shell("Account — GillyLab", 
     <p class="muted">Signed in as <strong style="color:#fff">${email}</strong></p>
     <p>Plan: <strong style="color:${subscribed ? "var(--accent)" : "#fff"}">${subscribed ? "Premium" : "Free"}</strong></p>
     ${subscribed ? `<a class="btn" href="/">Open GillyLab →</a>
+    <a class="btn ghost" href="/pickem">Play Pick'em</a>
     <a class="btn ghost" href="/api/portal">Manage subscription &amp; billing</a>` : `<p class="muted" style="font-size:.9rem">Your free account plays Pick'em and rides the leaderboard. Upgrade for the full fighter database, matchup analytics and the fight simulator.</p>
-    <a class="btn" href="/subscribe">Go Premium →</a>`}
+    <a class="btn" href="/pickem">Play Pick'em →</a>
+    <a class="btn ghost" href="/subscribe">Go Premium →</a>`}
     <a class="btn ghost" href="/api/logout">Log out</a>
   </div>`);
 

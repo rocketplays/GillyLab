@@ -531,7 +531,7 @@ function safeNext(raw) {
 // full app for subscribers or the account page (a working, non-bouncing home) for
 // free accounts. Point the free default at /pickem once that page ships (Phase 3).
 function authDest(next, subscribed) {
-  return next || (subscribed ? "/" : "/account");
+  return next || (subscribed ? "/" : "/pickem");
 }
 
 /* ─────────────────────────────────── the Worker ────────────────────────────── */
