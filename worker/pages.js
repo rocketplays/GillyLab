@@ -678,26 +678,40 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 })();
 </script></body></html>`;
 
-export const signupPage = () => shell("Create your GillyLab account", `
+export const signupPage = (next) => {
+  // The "Go Premium" button routes here with ?next=/subscribe. In that case the
+  // account is still created first (you need one to subscribe), but the page tells
+  // the premium story and continues to checkout — instead of reading as "free".
+  const premium = next === "/subscribe";
+  const q = next ? "?next=" + encodeURIComponent(next) : "";
+  return shell(premium ? "Start GillyLab Premium" : "Create your GillyLab account", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
-    <h1 style="font-size:1.4rem;text-align:center">Create your free account</h1>
-    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Free to join — play Pick'em and climb the leaderboard. Upgrade any time for the full database.</p>
+    <h1 style="font-size:1.4rem;text-align:center">${premium ? "Get GillyLab Premium" : "Create your free account"}</h1>
+    <p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">${premium
+      ? `Create your account, then continue to secure checkout (${PRICE_LABEL}). Cancel anytime.`
+      : `Free to join — play Pick'em and climb the leaderboard. Upgrade any time for the full database.`}</p>
     <form id="f">
       <label>Email</label><input name="email" type="email" autocomplete="email" required>
       <label>Password</label><input name="password" type="password" autocomplete="new-password" minlength="8" required placeholder="at least 8 characters">
-      <button type="submit">Create free account →</button>
+      <button type="submit">${premium ? "Continue to checkout →" : "Create free account →"}</button>
       <div id="m" class="msg"></div>
     </form>
-    <div class="alt muted">Already a member? <a href="/login">Log in</a></div>
+    ${premium ? `<p class="muted center" style="font-size:.82rem;margin:.55rem 0 0">Just want to play Pick'em? <a href="/signup">Create a free account</a> instead.</p>` : ``}
+    <div class="alt muted">Already a member? <a href="/login${q}">Log in</a></div>
   </div>`, `wire("f","/api/signup","m");`);
+};
 
-export const loginPage = () => shell("Log in to GillyLab", `
+export const loginPage = (next) => {
+  const premium = next === "/subscribe";
+  const q = next ? "?next=" + encodeURIComponent(next) : "";
+  return shell("Log in to GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="card">
     <h1 style="font-size:1.4rem;text-align:center">Log in</h1>
+    ${premium ? `<p class="muted center" style="margin:.2rem 0 0;font-size:.9rem">Log in to continue to checkout.</p>` : ``}
     <form id="f">
       <label>Email</label><input name="email" type="email" autocomplete="email" required>
       <label>Password</label><input name="password" type="password" autocomplete="current-password" required>
@@ -712,8 +726,9 @@ export const loginPage = () => shell("Log in to GillyLab", `
       <button type="submit" class="ghost" style="background:transparent;border:1px solid var(--line);color:#fff">Email me a sign-in link</button>
       <div id="mm" class="msg"></div>
     </form>
-    <div class="alt muted">New here? <a href="/signup">Create an account</a></div>
+    <div class="alt muted">New here? <a href="/signup${q}">Create an account</a></div>
   </div>`, `wire("f","/api/login","m"); wire("mf","/api/magic/start","mm");`);
+};
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

@@ -533,8 +533,9 @@ export default {
           const u = await getUser(env, s.email);
           return redirect(env.SITE_URL + authDest(safeNext(url.searchParams.get("next")), !!u?.subscribed));
         }
-        if (path === "/login") return html(loginPage());
-        if (path === "/signup") return html(signupPage());
+        const next = safeNext(url.searchParams.get("next"));
+        if (path === "/login") return html(loginPage(next));
+        if (path === "/signup") return html(signupPage(next));
         return html(forgotPasswordPage());
       }
       if (path === "/subscribe") return html(subscribePage(url.searchParams.get("canceled")));
