@@ -548,10 +548,11 @@ function authDest(next, subscribed) {
 }
 
 /* ───────────────────────── Pick'em email reminders (cron) ───────────────────────
- * Two emails, sent from an hourly Cloudflare cron (see `scheduled` + wrangler
+ * Three emails, sent from an hourly Cloudflare cron (see `scheduled` + wrangler
  * [triggers]):
  *   • "picks lock soon" — the day before a card, to accounts that HAVEN'T submitted
  *   • "results recap"   — after a card grades, to everyone who submitted picks
+ *   • "you missed it"   — after a card grades, to accounts that DIDN'T enter it
  * Every send is de-duplicated (per-user + per-event markers in PICKS KV) so a re-run
  * never double-sends, and every email carries a one-click unsubscribe link. Actual
  * sending is gated behind env.EMAIL_REMINDERS_ENABLED === "1" so a deploy can never
@@ -597,6 +598,16 @@ function recapEmailHtml(env, ev, score, unsubHref) {
   return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">${escHtml(ev.name)} — results are in</h1>
     <p style="margin:0 0 18px;color:#c9c9d0">${line} See where you landed on the leaderboard, then get set for the next card.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
+}
+function missedEmailHtml(env, gradedEv, nextCard, unsubHref) {
+  const btn = env.SITE_URL + "/pickem";
+  const nextWhen = (nextCard && nextCard.date) ? new Date(nextCard.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const nextLine = (nextCard && nextCard.name && nextCard.slug !== gradedEv.slug)
+    ? `<strong style="color:#fff">${escHtml(nextCard.name)}</strong> is up next${nextWhen ? " · " + escHtml(nextWhen) : ""}.`
+    : "There's another card coming up soon.";
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#fff">You missed ${escHtml(gradedEv.name)}</h1>
+    <p style="margin:0 0 18px;color:#c9c9d0">The card's in the books and the leaderboard's settled — you sat this one out. ${nextLine} Call the winner, method and round for each bout, lock in before the prelims, and climb the leaderboard — it's free.</p>
+    <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
 }
 
 // Every account email (USERS keys are "u:<email>"; "cust:" link keys are skipped).
@@ -672,6 +683,40 @@ async function runResultRecaps(env, base, opts = {}) {
   }
   return { type: "recap", events: out, dry };
 }
+
+// "You missed it" — after a card grades, to accounts that DIDN'T enter it. Skips
+// anyone who submitted picks (they get the recap instead), unsubscribed, or already
+// emailed. Points them at the next upcoming card.
+async function runMissedNudges(env, base, opts = {}) {
+  const dry = !!opts.dry;
+  const results = await loadResults(env, base);
+  const recent = (results.events || [])
+    .filter((ev) => ev.slug && ev.date && (Date.now() - Date.parse(ev.date + "T00:00:00")) < 5 * 24 * 3600 * 1000)
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  if (!recent.length) return { type: "missed", events: [] };
+  const nextCard = await loadUpcomingCard(env, base);
+  const out = [];
+  for (const ev of recent) {
+    if (!dry && await env.PICKS.get("em:mdone:" + ev.slug)) continue;
+    let sent = 0, targeted = 0, capped = false;
+    for (const email of await listAllUserEmails(env)) {
+      if (sent >= REMINDER_MAX_PER_RUN) { capped = true; break; }
+      if (await env.PICKS.get("em:m:" + ev.slug + ":" + email)) continue;   // already emailed
+      if (await pkGet(env, "pk:" + ev.slug + ":" + email)) continue;        // they played → recap covers them
+      if (await isOptedOut(env, email)) continue;                          // unsubscribed
+      targeted++;
+      if (dry) continue;
+      try {
+        await sendEmail(env, email, "You missed " + ev.name + " — the next card's coming up", missedEmailHtml(env, ev, nextCard, await unsubUrl(env, email)));
+        await env.PICKS.put("em:m:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
+        sent++;
+      } catch (e) { /* skip, keep going */ }
+    }
+    if (!dry && !capped) await env.PICKS.put("em:mdone:" + ev.slug, "1", { expirationTtl: REMINDER_MARK_TTL });
+    out.push({ event: ev.slug, targeted, sent, capped });
+  }
+  return { type: "missed", events: out, dry };
+}
 async function runReminders(env, opts = {}) {
   const base = new URL(env.SITE_URL);
   return {
@@ -679,6 +724,7 @@ async function runReminders(env, opts = {}) {
     enabled: env.EMAIL_REMINDERS_ENABLED === "1",
     lock: await runLockReminders(env, base, opts),
     recap: await runResultRecaps(env, base, opts),
+    missed: await runMissedNudges(env, base, opts),
   };
 }
 
@@ -708,6 +754,10 @@ async function handleAdminReminders(request, env, url) {
     if (test === "recap") {
       const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
       await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub));
+    } else if (test === "missed") {
+      const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
+      const nextCard = await loadUpcomingCard(env, base);
+      await sendEmail(env, s.email, "[test] You missed " + ev.name, missedEmailHtml(env, ev, nextCard, unsub));
     } else {
       const card = (await loadUpcomingCard(env, base)) || { name: "Sample Card", date: "", slug: "sample" };
       await sendEmail(env, s.email, "[test] Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub));
