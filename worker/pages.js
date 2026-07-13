@@ -364,8 +364,10 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li>Live leaderboard &amp; your pick history</li>
           <li>Division rankings &amp; active roster</li>
           <li>Main event breakdown and analysis</li>
+          <li class="off">Every other bout on the card</li>
           <li class="off">Full fighter database &amp; profiles</li>
-          <li class="off">Fight simulator &amp; matchup analytics</li>
+          <li class="off">Fight simulator &amp; any-matchup builder</li>
+          <li class="off">Live odds, props &amp; parlay tools</li>
         </ul>
         <a class="big ghost" href="/signup">Start free →</a>
       </div>
@@ -376,11 +378,13 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
         <p class="plan-sub">Everything in Free, plus the whole database and every tool.</p>
         <ul class="plan-feats">
           <li>Every fighter &amp; every bout — full analytics</li>
-          <li>Fight simulator: winner, method &amp; rounds</li>
+          <li>Fight simulator: winner, method &amp; round</li>
+          <li>Build &amp; simulate any matchup you want</li>
           <li>Matchup analysis — style, pace &amp; path to victory</li>
+          <li>Auto scouting reports &amp; fighter injury news</li>
           <li>Live odds, props &amp; the parlay builder</li>
           <li>Closing-line history &amp; line movement</li>
-          <li>Tape study, accolades, box scores &amp; more</li>
+          <li>Tape study, accolades &amp; full box scores</li>
         </ul>
         <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
       </div>
