@@ -89,7 +89,9 @@ function _shortGym(g) {
 // A fighter's roster division ABBREVIATION ("WW", "LW", …) and the peers who share
 // it — FIGHTERS stores the abbreviation, which is what the profile's medians use too.
 function _fighterDivAbbrev(name) {
-  const m = idx.match(new RegExp('\\{ name: "' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"'));
+  // Case-insensitive so a feed spelling ("Dricus Du Plessis") still resolves to the
+  // DB's ("Dricus du Plessis") — same as fighterStat().
+  const m = idx.match(new RegExp('\\{ name: "' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"', 'i'));
   return m ? m[1] : '';
 }
 function _divToNames(abbrev) {
@@ -604,6 +606,46 @@ function buildMainTape(m) {
     path: { a: ins.pathA, b: ins.pathB }, story: { a: ins.storyA || [], b: ins.storyB || [] },
   };
 }
+// A single fighter's stat card — the profile's grouped median bars, WITHOUT the
+// paywalled depth (no fight history, odds history, tape, accolades, record
+// breakdown). Powers the tap-a-fighter popup on the free /matchup page.
+function fighterProfileCard(name, recMap, ranks) {
+  const st = fighterStat(name) || {};
+  const med = _divMedians(_fighterDivAbbrev(name));
+  const clamp = (x) => Math.max(0, Math.min(100, x));
+  const round1 = (x) => Math.round(x * 10) / 10;
+  const mkRow = (label, raw, isPct, field, invert) => {
+    const ref = field ? med[field] : null;
+    let cls = "", w = 0, tickX = null, bar = false;
+    if (ref && raw != null && raw !== 0) {
+      cls = (invert ? raw < ref.median : raw > ref.median) ? "good" : "bad";
+      w = round1(clamp(raw / ref.cap * 100)); tickX = round1(clamp(ref.median / ref.cap * 100)); bar = true;
+    }
+    return { label, val: (raw == null || raw === 0) ? "—" : (isPct ? raw + "%" : String(raw)), cls, w, tickX, bar };
+  };
+  const groups = [
+    { t: "Striking", rows: [
+      mkRow("Sig. strikes landed / min", _statNumG(st.slpm), false, "slpm", false),
+      mkRow("Striking accuracy", _statNumG(st.strAcc), true, "strAcc", false),
+      mkRow("Sig. strikes absorbed / min", _statNumG(st.sapm), false, "sapm", true),
+      mkRow("Striking defense", _statNumG(st.strDef), true, "strDef", false),
+      mkRow("Knockdowns / 15 min", _statNumG(st.kd), false, "kd", false),
+    ]},
+    { t: "Grappling", rows: [
+      mkRow("Takedowns / 15 min", _statNumG(st.tdLanded), false, "tdLanded", false),
+      mkRow("Takedown accuracy", _statNumG(st.tdAcc), true, "tdAcc", false),
+      mkRow("Takedown defense", _statNumG(st.tdDef), true, "tdDef", false),
+      mkRow("Submissions / 15 min", _statNumG(st.subAvg), false, "subAvg", false),
+    ]},
+    { t: "Miscellaneous", rows: [mkRow("Finish rate", _statNumG(st.finRate), true, "finRate", false)] },
+  ];
+  const slug = nameToSlug(name);
+  return {
+    name, slug: photoExists(slug) ? slug : "", record: ciLookup(recMap, name) || "",
+    rank: ciLookup(ranks, name) || "", groups,
+    bars: groups.some((g) => g.rows.some((r) => r.bar)),
+  };
+}
 function buildCard(recMap) {
   let feed; try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "event.json"), "utf8")); } catch (e) { return null; }
   const ev = ((feed && feed.data) || []).find((e) => e && e.status !== "completed" && Array.isArray(e.bouts) && e.bouts.length);
@@ -622,7 +664,9 @@ function buildCard(recMap) {
       title: !!b.titleBout, section: b.cardSection || "", pos: b.cardPosition || "", main: i === 0,
     };
   });
-  return { event: ev.title || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, fights, main: fights[0] ? buildMainTape(fights[0]) : null };
+  const main = fights[0] ? buildMainTape(fights[0]) : null;
+  if (main) { main.pA = fighterProfileCard(fights[0].f1, recMap, ranks); main.pB = fighterProfileCard(fights[0].f2, recMap, ranks); }
+  return { event: ev.title || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, fights, main };
 }
 
 // A marquee fighter's closing-line history — mirrors the profile Odds History tab.

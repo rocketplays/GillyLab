@@ -1488,12 +1488,14 @@ export const matchupPage = ({ subscribed }) => {
 
   const rowHTML = (f) => {
     const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
+    const tap = (side) => f.main ? ` onclick="mpOpen('${side}')" style="cursor:pointer"` : "";
     return `<div class="mf-card${f.main ? " main" : ""}">
       <div class="mf-row">
-        <div class="mf-side">${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div></div>
+        <div class="mf-side"${tap("a")}>${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div></div>
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>${f.main ? `<button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button>` : ""}</div>
-        <div class="mf-side right"><div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}</div>
+        <div class="mf-side right"${tap("b")}><div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}</div>
       </div>
+      ${f.main ? `<div class="mf-taphint">Tap a fighter for their stats</div>` : ""}
       ${f.main ? breakdownHTML(f, card && card.main) : ""}
     </div>`;
   };
@@ -1568,8 +1570,31 @@ export const matchupPage = ({ subscribed }) => {
   .sr-path{border-radius:8px;padding:8px 11px;margin-top:8px;font-size:.74rem;line-height:1.45}
   .sr-path-name{font-size:.66rem;font-weight:800;margin-bottom:2px;letter-spacing:.02em}
   .mf-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .mf-taphint{text-align:center;font-size:.68rem;color:var(--muted);padding:0 0 .6rem}
   .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+  /* fighter stat popup */
+  .mp-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
+  .mp-overlay[hidden]{display:none}
+  .mp-sheet{background:var(--card);border:1px solid var(--border);border-radius:16px 16px 0 0;width:100%;max-width:640px;max-height:88vh;overflow-y:auto;padding:1.1rem 1.1rem 1.5rem;animation:mpUp .25s ease}
+  @keyframes mpUp{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+  .mp-hdr{display:flex;align-items:center;gap:.7rem;margin-bottom:.4rem}
+  .mp-av{width:56px;height:56px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid var(--accent);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted)}
+  .mp-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
+  .mp-name{font-weight:800;font-size:1.1rem;line-height:1.15}
+  .mp-meta{font-size:.8rem;color:var(--muted)}
+  .mp-close{margin-left:auto;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;line-height:1;padding:0 .2rem}
+  .mp-grp-t{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:1.1rem 0 .5rem}
+  .mp-row{display:flex;align-items:center;gap:.6rem;padding:.3rem 0}
+  .mp-lbl{flex:0 0 44%;font-size:.76rem;color:#c9ccd3}
+  .mp-bar{flex:1;position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09)}
+  .mp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+  .mp-fill.good{background:var(--accent)}.mp-fill.bad{background:#c76a54}
+  .mp-tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;border-radius:1px}
+  .mp-val{flex:0 0 48px;text-align:right;font-weight:800;font-size:.85rem;color:#ececf0}
+  .mp-val.good{color:var(--accent)}.mp-val.bad{color:#c76a54}
+  .mp-foot{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:.84rem;color:var(--muted);line-height:1.5}
+  .mp-foot a{color:var(--accent);text-decoration:none;font-weight:700}
 </style></head><body>
   <nav class="pk-nav">
     <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
@@ -1584,7 +1609,21 @@ export const matchupPage = ({ subscribed }) => {
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>
+  <div class="mp-overlay" id="mpOverlay" hidden><div class="mp-sheet" id="mpSheet"></div></div>
   <script>
+    var MP={a:${JSON.stringify((card && card.main && card.main.pA) || null)},b:${JSON.stringify((card && card.main && card.main.pB) || null)}};
+    function mpEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    function mpBar(r){if(!r.bar)return '<span class="mp-val '+r.cls+'">'+mpEsc(r.val)+'</span>';return '<span class="mp-bar"><span class="mp-fill '+r.cls+'" style="width:'+r.w+'%"></span>'+(r.tickX!=null?'<span class="mp-tick" style="left:'+r.tickX+'%"></span>':"")+'</span><span class="mp-val '+r.cls+'">'+mpEsc(r.val)+'</span>';}
+    function mpRender(p){
+      var ini=String(p.name||"").trim().split(/\\s+/).map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase()||"?";
+      var av=p.slug?'<div class="mp-av"><img src="/photos/thumb/'+mpEsc(p.slug)+'.png" alt="" onerror="this.parentNode.textContent=\\''+ini+'\\'"></div>':'<div class="mp-av">'+ini+'</div>';
+      var grps=(p.groups||[]).map(function(g){return '<div class="mp-grp-t">'+mpEsc(g.t)+'</div>'+g.rows.map(function(r){return '<div class="mp-row"><span class="mp-lbl">'+mpEsc(r.label)+'</span>'+mpBar(r)+'</div>';}).join("");}).join("");
+      return '<div class="mp-hdr">'+av+'<div><div class="mp-name">'+mpEsc(p.name)+'</div><div class="mp-meta">'+mpEsc(p.record)+(p.rank&&p.rank!=="NR"?" · "+mpEsc(p.rank):"")+'</div></div><button type="button" class="mp-close" onclick="mpClose()" aria-label="Close">×</button></div>'+grps+'<div class="mp-foot">Full profile — fight history, tape study, odds history, accolades &amp; more, on this fighter and every fighter.<br><a href="/subscribe">Go Premium →</a></div>';
+    }
+    window.mpOpen=function(which){var p=MP[which];if(!p)return;document.getElementById("mpSheet").innerHTML=mpRender(p);document.getElementById("mpSheet").scrollTop=0;document.getElementById("mpOverlay").hidden=false;document.body.style.overflow="hidden";};
+    window.mpClose=function(){document.getElementById("mpOverlay").hidden=true;document.body.style.overflow="";};
+    document.getElementById("mpOverlay").addEventListener("click",function(e){if(e.target===this)mpClose();});
+    document.addEventListener("keydown",function(e){if(e.key==="Escape")mpClose();});
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
