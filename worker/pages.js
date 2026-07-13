@@ -1092,7 +1092,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      <a href="/account">Account</a>
+      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
     </div>
   </nav>
   <main>
@@ -1402,7 +1402,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      <a href="/account">Account</a>
+      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
     </div>
   </nav>
   <main>
@@ -1487,7 +1487,7 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      <a href="/account">Account</a>
+      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
     </div>
   </nav>
   <main>
@@ -1691,7 +1691,7 @@ export const matchupPage = ({ subscribed }) => {
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
       ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      <a href="/account">Account</a>
+      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
     </div>
   </nav>
   <main>
