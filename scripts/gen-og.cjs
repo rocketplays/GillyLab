@@ -38,8 +38,8 @@ const FONT = "sans-serif";
 
   // Logo mark + wordmark, centered as a group.
   const logo = await loadImage(path.join(ROOT, "gl-logo.png"));
-  const lh = 88, lw = (logo.width / logo.height) * lh, gap = 26;
-  ctx.font = "800 128px " + FONT;
+  const lh = 96, lw = (logo.width / logo.height) * lh, gap = 22;
+  ctx.font = "800 92px " + FONT;
   const gilly = "GILLY", lab = "LAB";
   const gw = ctx.measureText(gilly).width, lw2 = ctx.measureText(lab).width;
   const totalW = lw + gap + gw + lw2;
