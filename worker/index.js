@@ -21,8 +21,13 @@ import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePag
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
+import { pickemModel } from "./pickem-model.js";
 
 const COOKIE = "gl_session";
+// Model win % for a fighter (results-recap upsell). Name-normalized to match the
+// generated map; null when we have no recent model line for that fighter.
+const _normFighter = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/[^a-z0-9]+/g, "");
+const modelPctFor = (name) => pickemModel[_normFighter(name)] || null;
 const CONTACT_TO = "support@gillylab.com";   // where the contact form is delivered
 
 // Founder-only allow-list for the internal /scorecard model-performance page.
@@ -602,7 +607,14 @@ function lockEmailHtml(env, card, unsubHref, ctaUrl) {
     <p style="margin:0 0 18px;color:#4a4d55"><strong style="color:#15151a">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
 }
-function recapEmailHtml(env, ev, score, unsubHref, ctaUrl) {
+// The "pick with the numbers" upsell box — free users only. Shows the model's
+// pre-fight win % for one of the recipient's own picks.
+function recapSellHtml(env, pickName, pct) {
+  return `<div style="background:#f6faf6;border:1px solid #cfe9d6;border-radius:10px;padding:12px 14px;margin:0 0 18px;font-size:14px;line-height:1.5;color:#2a3b2f">
+    Before the bell, our model gave your pick <strong style="color:#0b8f45">${escHtml(pickName)} ${pct}%</strong>. Premium shows you every fighter's model win probability <em>before</em> you lock in.<br><a href="${env.SITE_URL}/subscribe" style="color:#0b8f45;font-weight:800;text-decoration:underline;display:inline-block;margin-top:6px">Pick with the numbers &rarr;</a>
+  </div>`;
+}
+function recapEmailHtml(env, ev, score, unsubHref, ctaUrl, sellHtml) {
   const btn = ctaUrl || (env.SITE_URL + "/pickem");
   const pts = score && typeof score.points === "number" ? score.points : 0;
   const line = score
@@ -610,7 +622,7 @@ function recapEmailHtml(env, ev, score, unsubHref, ctaUrl) {
     : "Your card is graded.";
   return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">${escHtml(ev.name)} — results are in</h1>
     <p style="margin:0 0 18px;color:#4a4d55">${line} See where you landed on the leaderboard, then get set for the next card.</p>
-    <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
+    ${sellHtml || ""}<a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">View the leaderboard &rarr;</a>`, unsubHref);
 }
 function missedEmailHtml(env, gradedEv, nextCard, unsubHref, ctaUrl) {
   const btn = ctaUrl || (env.SITE_URL + "/pickem");
@@ -692,7 +704,17 @@ async function runResultRecaps(env, base, opts = {}) {
       try {
         const unsub = await unsubUrl(env, email);
         const cta = pickemLink(env, !!(u && u.subscribed));
-        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub, cta), null, listUnsubHeaders(unsub));
+        // Free users get the "pick with the numbers" upsell showing the model's take
+        // on one of their own picks; subscribers get the plain recap (no sell).
+        let sell = "";
+        if (!(u && u.subscribed)) {
+          const rec = await pkGet(env, "pk:" + ev.slug + ":" + email);
+          for (const p of (rec && rec.picks) || []) {
+            const pct = p && p.winner ? modelPctFor(p.winner) : null;
+            if (pct) { sell = recapSellHtml(env, p.winner, pct); break; }
+          }
+        }
+        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub, cta, sell), null, listUnsubHeaders(unsub));
         await env.PICKS.put("em:r:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
         sent++;
       } catch (e) { /* skip, keep going */ }
@@ -777,7 +799,7 @@ async function handleAdminReminders(request, env, url) {
     const cta = pickemLink(env, !!(me && me.subscribed));   // test CTA matches your own plan
     if (test === "recap") {
       const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
-      await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub, cta));
+      await sendEmail(env, s.email, "[test] " + ev.name + " — your Pick'em results", recapEmailHtml(env, ev, { points: 42, correct: 6, boutCount: 8 }, unsub, cta, recapSellHtml(env, "Max Holloway", 61)));
     } else if (test === "missed") {
       const ev = (await loadResults(env, base)).events[0] || { name: "Sample Card", slug: "sample" };
       const nextCard = await loadUpcomingCard(env, base);

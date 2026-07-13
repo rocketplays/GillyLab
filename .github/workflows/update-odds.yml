@@ -132,6 +132,12 @@ jobs:
       - name: Regenerate subscribe carousel
         run: node scripts/gen-carousel.cjs || true
 
+      # Compact server-only model-win-% map (from the paywalled predictions log) that
+      # the Worker uses in the results-recap email to show FREE players the model's
+      # take on their pick. Bundled into the Worker, never served to clients.
+      - name: Regenerate pick'em model map
+        run: node scripts/gen-pickem-model.cjs || true
+
       # Per-card Pick'em scoring table (winnerBase/methodBonus/roundBonus for the
       # current card) so the free /pickem page prices picks identically to the app
       # without shipping the paywalled odds/history. Reads the fresh odds + event.
@@ -178,7 +184,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -202,6 +208,7 @@ jobs:
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-carousel.cjs || true
+          node scripts/gen-pickem-model.cjs || true
           node scripts/gen-pickem-card.cjs || true
           node scripts/gen-rankings-extra.cjs || true
           node scripts/gen-roster.cjs || true
