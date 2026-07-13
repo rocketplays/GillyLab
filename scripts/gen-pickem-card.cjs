@@ -193,7 +193,11 @@ const bouts = (ev.bouts || [])
     };
   });
 
-const out = { slug: ev.slug, generatedAt: new Date().toISOString(), bouts };
+// Fighter thumbnail slugs on this card, so the Worker can serve just these photos
+// publicly (free accounts otherwise can't fetch the gated /photos/*).
+const slugs = [];
+(ev.bouts || []).forEach((b) => (b.fighters || []).forEach((f) => { if (f.fighterSlug) slugs.push(f.fighterSlug); }));
+const out = { slug: ev.slug, generatedAt: new Date().toISOString(), slugs: Array.from(new Set(slugs)), bouts };
 fs.writeFileSync(path.join(ROOT, "data/pickem-card.json"), JSON.stringify(out, null, 2) + "\n");
 console.log(`pickem-card.json: ${ev.slug} · ${bouts.length} bouts · FIGHT_HISTORY ${FH_TEXT ? "loaded" : "MISSING"}`);
 bouts.slice(0, 3).forEach((b) =>
