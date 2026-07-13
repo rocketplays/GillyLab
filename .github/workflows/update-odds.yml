@@ -121,6 +121,12 @@ jobs:
       - name: Regenerate landing-page data snapshot
         run: node scripts/gen-landing-data.cjs || true
 
+      # Regenerate gl-sheet.js (the share-sheet renderer) from index.html so the free
+      # /pickem "Share picks" image stays byte-identical to the in-app premium sheet.
+      # Generated, never forked — index.html is the single source of truth.
+      - name: Regenerate share-sheet renderer
+        run: node scripts/gen-gl-sheet.cjs || true
+
       # Per-card Pick'em scoring table (winnerBase/methodBonus/roundBonus for the
       # current card) so the free /pickem page prices picks identically to the app
       # without shipping the paywalled odds/history. Reads the fresh odds + event.
@@ -167,7 +173,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json worker/landing-data.js worker/scorecard-data.js"
+          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json gl-sheet.js worker/landing-data.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -189,8 +195,10 @@ jobs:
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
           node scripts/gen-landing-data.cjs || true
+          node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-pickem-card.cjs || true
           node scripts/gen-rankings-extra.cjs || true
+          node scripts/gen-roster.cjs || true
           node scripts/fetch-fighter-news.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
           node scripts/log-predictions.cjs || true

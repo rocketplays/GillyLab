@@ -859,7 +859,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     : `<div class="pk-avatar">${esc(init)}</div>`;
   const rounds = (b) => { let s = ""; for (let r = 1; r <= (b.rounds || 3); r++) s += `<button type="button" data-round="${r}">R${r}</button>`; return s; };
   const boutHTML = (b) => `
-      <div class="pk-bout" data-bout="${esc(b.id)}" data-f1="${esc(b.f1)}" data-f2="${esc(b.f2)}">
+      <div class="pk-bout" data-bout="${esc(b.id)}" data-f1="${esc(b.f1)}" data-f2="${esc(b.f2)}" data-s1="${esc(b.s1 || "")}" data-s2="${esc(b.s2 || "")}">
         <div class="pk-bout-head"><span class="pk-bout-label">${esc(b.wc)}${b.title ? " · Title" : ""}</span><span class="pk-bout-main">${esc(b.pos || b.section)}</span></div>
         <div class="pk-fighters">
           <button type="button" class="pk-fighter" data-pick="${esc(b.f1)}">${av(b.s1, initials(b.f1))}<div class="pk-fname">${esc(b.f1)}</div><div class="pk-pick-check">✓ Your pick</div></button>
@@ -888,7 +888,25 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 <title>Pick'em — GillyLab</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="/gl-sheet.js?v=1" defer></script>
 <style>
+  .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}
+  .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}
+  .pl-share-inner{width:100%;max-width:460px}
+  .pl-share-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.9rem}
+  .pl-share-hint{text-align:center;margin-top:.6rem;font-size:.66rem;color:var(--text);line-height:1.5;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .75rem}
+  .pl-act{background:rgba(0,230,104,.10);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}
+  .pl-act:hover{background:var(--accent);color:#0e0f13}
+  .pl-act.primary{background:var(--accent);color:#0e0f13}
+  .pl-act.ghost{background:var(--card);border-color:var(--border);color:var(--text)}
+  .pl-act.ghost:hover{border-color:#ff6a5e;color:#ff6a5e}
+  .pl-act:disabled{opacity:.45;cursor:default;pointer-events:none}
+  .pl-act.busy{animation:plBusy .9s ease-in-out infinite}
+  @keyframes plBusy{0%,100%{opacity:.35}50%{opacity:.6}}
+  .gl-sheet-inner{max-width:380px}
+  .gl-sheet-preview{max-height:62vh;overflow-y:auto;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+  .gl-sheet-preview img{display:block;width:100%;height:auto}
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
   *{box-sizing:border-box}
   html{background:var(--bg)}
@@ -922,6 +940,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-name-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:.6rem .7rem;font:inherit;font-size:16px}
   .pk-btn{background:var(--accent);color:#04120a;border:none;border-radius:9px;padding:.6rem 1rem;font:inherit;font-weight:800;cursor:pointer}
   .pk-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .pk-bar-actions{display:flex;gap:8px;align-items:center}
   .pk-msg{font-size:.82rem;margin-top:.5rem;min-height:1em}
   .pk-msg.err{color:#ff8a7a}.pk-msg.ok{color:var(--accent)}
   .pk-intro{color:#c9ccd3;font-size:.9rem;line-height:1.55;margin:0 0 1.25rem;background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.22);border-radius:10px;padding:.8rem .95rem}
@@ -1052,7 +1071,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p>` : ""}
       ${bouts}
-      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div>` : ""}
+      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
@@ -1225,13 +1244,30 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       if(!picks.length)return;
       submitBtn.disabled=true;submitBtn.textContent="Submitting…";
       pkApi("/api/pickem/save",{method:"POST",body:JSON.stringify({eventSlug:PK_EVT.slug,eventName:PK_EVT.name,eventDate:PK_EVT.date,prelimsAt:PK_EVT.prelimsAt,picks:picks})}).then(function(r){
-        if(r&&r.ok){submitBtn.textContent="Picks submitted ✓";setTimeout(function(){submitBtn.textContent="Update picks";updateBar();},1500);}
+        if(r&&r.ok){submitBtn.textContent="Picks submitted ✓";revealShare();setTimeout(function(){submitBtn.textContent="Update picks";updateBar();},1500);}
         else if(r&&r.error==="needs-name"){PK_NAME=null;submitBtn.textContent="Submit picks";focusName("Pick a display name first, then submit.");updateBar();}
         else if(r&&r.locked){PK_LOCKED=true;submitBtn.textContent="Locked";}
         else{submitBtn.textContent="Submit picks";updateBar();var m=(r&&r.error)||"Could not submit — try again.";var pr=document.getElementById("pkNamePrompt");alert(m);}
       }).catch(function(){submitBtn.textContent="Submit picks";updateBar();});
     }
     if(submitBtn)submitBtn.addEventListener("click",doSubmit);
+    // Share picks — builds the SAME payload shape the in-app share uses, then hands it
+    // to the shared GL_SHEET renderer so the free image is byte-identical to premium.
+    var shareBtn=document.getElementById("pkShare");
+    function revealShare(){if(shareBtn)shareBtn.hidden=false;}
+    function pkSharePayload(){
+      var picks=[];
+      BOUT_IDS.forEach(function(id){var p=PICKS[id];if(!isComplete(p))return;var el=boutEl(id);if(!el)return;
+        var loser=p.winner===el.dataset.f1?el.dataset.f2:el.dataset.f1;
+        var slug=p.side==="f1"?el.dataset.s1:el.dataset.s2;
+        picks.push({winner:p.winner,loser:loser,winnerSlug:slug||null,method:p.method||null,round:(p.method&&p.method!=="Decision")?(p.round||null):null,confidence:p.confidence||"Med",label:"",isMain:false,points:potential(p)});});
+      var d="";try{if(PK_EVT&&PK_EVT.date)d=new Date(PK_EVT.date+"T00:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}catch(e){}
+      return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:false,picks:picks,totalPoints:picks.reduce(function(t,p){return t+p.points;},0)};
+    }
+    if(shareBtn)shareBtn.addEventListener("click",function(){
+      var data=pkSharePayload();if(!data.picks.length){alert("Make at least one complete pick to share.");return;}
+      if(window.GL_SHEET&&GL_SHEET.pickem){GL_SHEET.pickem(data);}else{alert("Share sheet still loading — try again in a moment.");}
+    });
     // Restore any picks already saved on the server (and reflect submitted/lock state).
     renderAll();
     if(PK_EVT&&PK_EVT.slug){
@@ -1242,7 +1278,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
             if(!el)return;var id=el.dataset.bout;
             PICKS[id]={boutId:id,winner:sp.winner,side:sideOf(el,sp.winner),method:sp.method,round:sp.round||null,confidence:sp.confidence};
           });
-          persist();if(submitBtn)submitBtn.textContent="Update picks";
+          persist();if(submitBtn)submitBtn.textContent="Update picks";revealShare();
         }
         if(r&&r.locked)PK_LOCKED=true;
         renderAll();

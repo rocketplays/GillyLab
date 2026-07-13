@@ -50,6 +50,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
   "/gl-logo.png",                          // brand mark in the landing nav
+  "/gl-sheet.js",                          // shared share-sheet renderer (free /pickem share)
   "/data/rankings.json", "/data/rankings-meta.json", "/data/rankings-extra.json",  // public UFC rankings (free /rankings page)
   "/data/roster.json",                     // active roster + weekly changes (free /roster page)
 ]);
