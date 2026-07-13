@@ -1263,6 +1263,97 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 </body></html>`;
 };
 
+// ── Free /rankings page (login-gated; public UFC rankings, fetched client-side) ──
+export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UFC Rankings — GillyLab</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;transition:opacity .13s ease}
+  body.leaving{opacity:0}
+  main{animation:fpIn .2s ease both}
+  @keyframes fpIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){main{animation:none}body{transition:none}}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .rk-sub{color:var(--muted);font-size:.85rem;margin:0}
+  .rk-toggle{display:inline-flex;gap:6px;margin:1rem 0 .3rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:3px}
+  .rk-toggle button{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.8rem;padding:.4rem .8rem;border-radius:7px;cursor:pointer}
+  .rk-toggle button.sel{background:var(--accent);color:#04120a}
+  .rk-tabs{display:flex;gap:6px;overflow-x:auto;padding:.9rem 0 .3rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .rk-tabs::-webkit-scrollbar{display:none}
+  .rk-tab{flex:0 0 auto;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:.4rem .8rem;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap}
+  .rk-tab.sel{border-color:var(--accent);background:rgba(0,230,104,.12);color:var(--text)}
+  .rk-panel-title{font-weight:800;font-size:1.1rem;margin:1.1rem 0 .7rem;letter-spacing:.02em}
+  .rk-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)}
+  .rk-row:last-child{border-bottom:none}
+  .rk-num{flex:0 0 2.2rem;text-align:center;font-weight:800;color:var(--muted);font-size:.95rem}
+  .rk-champ .rk-num{color:#ffcf7a}
+  .rk-av{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top center;background:#1b1e25;flex:0 0 auto;border:2px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--muted)}
+  .rk-champ .rk-av{border-color:#ffcf7a}
+  .rk-name{flex:1;min-width:0;font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .rk-champ .rk-name{font-weight:800}
+  .rk-flag{font-size:1rem;flex:0 0 auto}
+  .rk-mov{flex:0 0 auto;font-size:.72rem;font-weight:800;min-width:2.2rem;text-align:right}
+  .rk-mov.up{color:var(--accent)}.rk-mov.down{color:#ff6a5e}.rk-mov.new{color:#ffcf7a}
+  .rk-empty{color:var(--muted);text-align:center;padding:2rem 0}
+  .rk-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center}
+  .rk-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+</style></head><body>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/pickem"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
+      <a href="/account">Account</a>
+    </div>
+  </nav>
+  <main>
+    <h1>UFC Rankings</h1>
+    <p class="rk-sub" id="rkDate">Official divisional rankings.</p>
+    <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">GillyLab AI</button></div>
+    <div class="rk-tabs" id="rkTabs"></div>
+    <div id="rkPanels"><p class="rk-empty">Loading rankings…</p></div>
+    <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
+  </main>
+  <script>
+    var DIVS={'Heavyweight':{abbr:'HW',tag:'Heavyweight'},'Light Heavyweight':{abbr:'LHW',tag:'Light Heavyweight'},'Middleweight':{abbr:'MW',tag:'Middleweight'},'Welterweight':{abbr:'WW',tag:'Welterweight'},'Lightweight':{abbr:'LW',tag:'Lightweight'},'Featherweight':{abbr:'FW',tag:'Featherweight'},'Bantamweight':{abbr:'BW',tag:'Bantamweight'},'Flyweight':{abbr:'FLW',tag:'Flyweight'},"Women's Strawweight":{abbr:'WSW',tag:'Strawweight'},"Women's Flyweight":{abbr:'WFLW',tag:'W. Flyweight'},"Women's Bantamweight":{abbr:'WBW',tag:'W. Bantamweight'}};
+    var PORDER=["Men's Pound-for-Pound Top Rank","Women's Pound-for-Pound Top Rank",'Heavyweight','Light Heavyweight','Middleweight','Welterweight','Lightweight','Featherweight','Bantamweight','Flyweight',"Women's Strawweight","Women's Flyweight","Women's Bantamweight"];
+    function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+    function inits(n){return String(n||"").trim().split(/\\s+/).map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase()||"?";}
+    function tag(name){return name.indexOf("Pound-for-Pound")>=0?(name.indexOf("Women")===0?"Women's P4P":"Men's P4P"):(DIVS[name]?DIVS[name].tag:name);}
+    document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    var SRC="media",BYDIV={},ACTIVE=null;
+    function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
+    function rowHTML(e){var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var img=e.imageUrl?'<img class="rk-av" src="'+esc(e.imageUrl)+'" alt="" loading="lazy" onerror="this.outerHTML=\\'<div class=&quot;rk-av&quot;>'+esc(inits(e.fighterName))+'</div>\\'">':'<div class="rk-av">'+esc(inits(e.fighterName))+'</div>';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(e.fighterName)+'</span>'+(e.flag?'<span class="rk-flag">'+esc(e.flag)+'</span>':"")+movBadge(e)+'</div>';}
+    function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
+    function load(){
+      document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
+      fetch("/data/"+(SRC==="meta"?"rankings-meta.json":"rankings.json")).then(function(r){return r.json();}).then(function(p){
+        if(!p||!Array.isArray(p.data)){document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Rankings unavailable right now.</p>';return;}
+        BYDIV={};p.data.forEach(function(e){(BYDIV[e.division]=BYDIV[e.division]||[]).push(e);});
+        var tabs=PORDER.filter(function(d){return BYDIV[d]&&BYDIV[d].length;});
+        document.getElementById("rkTabs").innerHTML=tabs.map(function(d){return '<button type="button" class="rk-tab" data-div="'+esc(d)+'">'+esc(tag(d))+'</button>';}).join("");
+        if(p.meta&&p.meta.latestSnapshotDate){var dt=new Date(p.meta.latestSnapshotDate+"T00:00:00Z");if(!isNaN(dt.getTime()))document.getElementById("rkDate").textContent="Updated "+dt.toLocaleDateString("en-US",{timeZone:"UTC",month:"long",day:"numeric",year:"numeric"})+" · "+(SRC==="meta"?"GillyLab AI":"UFC Media Panel");}
+        showDiv(tabs.indexOf(ACTIVE)>=0?ACTIVE:tabs[0]);
+      }).catch(function(){document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Rankings unavailable right now.</p>';});
+    }
+    document.getElementById("rkTabs").addEventListener("click",function(e){var b=e.target.closest(".rk-tab");if(b)showDiv(b.dataset.div);});
+    Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(b){b.addEventListener("click",function(){SRC=b.dataset.src;Array.prototype.forEach.call(document.querySelectorAll(".rk-toggle button"),function(x){x.classList.remove("sel");});b.classList.add("sel");ACTIVE=null;load();});});
+    load();
+  </script>
+</body></html>`;
+
 export const changePasswordPage = () => shell("Change password — GillyLab", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

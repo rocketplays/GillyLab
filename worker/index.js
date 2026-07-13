@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage } from "./pages.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -50,6 +50,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
   "/gl-logo.png",                          // brand mark in the landing nav
+  "/data/rankings.json", "/data/rankings-meta.json",  // public UFC rankings (free /rankings page)
 ]);
 
 /* ─────────────────────────── small crypto/util helpers ─────────────────────── */
@@ -623,6 +624,14 @@ export default {
           card.bouts.forEach((b) => { const sb = byId[b.id]; if (sb) { if (sb.ps1) b.s1 = sb.ps1; if (sb.ps2) b.s2 = sb.ps2; } });
         }
         return html(pickemPage({ card, score, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+      }
+
+      // ---- Free pages (any logged-in account; logged-out sent to sign up) ----
+      if (path === "/rankings") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/rankings");
+        const u = await getUser(env, s.email);
+        return html(rankingsPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // ---- account page (must be logged in) ----
