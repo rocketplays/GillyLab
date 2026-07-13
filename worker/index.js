@@ -820,6 +820,18 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     try {
+      // ---- crawler files (public) ----
+      if (path === "/robots.txt") {
+        return new Response("User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: " + env.SITE_URL + "/sitemap.xml\n",
+          { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" } });
+      }
+      if (path === "/sitemap.xml") {
+        const urls = ["/", "/matchup", "/rankings", "/roster", "/about", "/terms", "/privacy", "/contact"];
+        const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
+          urls.map((u) => "  <url><loc>" + env.SITE_URL + u + "</loc></url>").join("\n") + "\n</urlset>\n";
+        return new Response(xml, { headers: { "Content-Type": "application/xml; charset=utf-8", "Cache-Control": "public, max-age=3600" } });
+      }
+
       // ---- public API ----
       if (path === "/api/signup" && request.method === "POST") return handleSignup(request, env);
       if (path === "/api/login" && request.method === "POST") return handleLogin(request, env);
@@ -885,24 +897,25 @@ export default {
         return html(pickemPage({ card, score, email: s.email, name, subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
       }
 
-      // ---- Free pages (any logged-in account; logged-out sent to sign up) ----
+      // ---- Public content pages (readable + indexable logged-OUT for SEO; the
+      // interactive/paywalled bits stay gated, and logged-out visitors get a
+      // "create a free account" CTA). Same HTML for humans + crawlers (no cloaking).
+      // Cache-Control differs only by login state so a logged-in nav isn't cached.
+      const pubHeaders = (s) => s ? { "Cache-Control": "private, no-store" } : { "Cache-Control": "public, max-age=300" };
       if (path === "/rankings") {
         const s = await readSession(request, env);
-        if (!s) return redirect(env.SITE_URL + "/signup?next=/rankings");
-        const u = await getUser(env, s.email);
-        return html(rankingsPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+        const u = s ? await getUser(env, s.email) : null;
+        return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
       }
       if (path === "/roster") {
         const s = await readSession(request, env);
-        if (!s) return redirect(env.SITE_URL + "/signup?next=/roster");
-        const u = await getUser(env, s.email);
-        return html(rosterPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+        const u = s ? await getUser(env, s.email) : null;
+        return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);
-        if (!s) return redirect(env.SITE_URL + "/signup?next=/matchup");
-        const u = await getUser(env, s.email);
-        return html(matchupPage({ subscribed: !!u?.subscribed }), 200, { "Cache-Control": "private, no-store" });
+        const u = s ? await getUser(env, s.email) : null;
+        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
       }
 
       // ---- account page (must be logged in) ----

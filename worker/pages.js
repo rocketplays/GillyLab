@@ -136,6 +136,15 @@ const FREE_FOOTER = `
     <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>`;
 
+// The public content pages (rankings/roster/matchup) are readable logged-OUT for
+// SEO. Logged-out visitors get "Log in / Sign up" (no "Log out") and a sign-up CTA;
+// the same HTML is served to everyone (crawlers included) — no cloaking.
+function freeNavLinks(loggedIn, subscribed) {
+  if (!loggedIn) return `<a href="/login">Log in</a><a class="pk-upg" href="/signup">Sign up free</a>`;
+  return `${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}`;
+}
+const signupBanner = `<a href="/signup" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:12px;padding:.8rem 1rem;margin:0 0 1.1rem;text-decoration:none;color:var(--text)"><span style="font-size:.85rem;line-height:1.4">Create a <strong>free account</strong> to play Pick'em, make your picks, and unlock the full fighter database.</span><span style="flex:0 0 auto;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;white-space:nowrap">Sign up free &rarr;</span></a>`;
+
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
 // page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
@@ -1462,9 +1471,11 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 };
 
 // ── Free /rankings page (login-gated; public UFC rankings, fetched client-side) ──
-export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en"><head>
+export const rankingsPage = ({ subscribed, loggedIn }) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UFC Rankings — GillyLab</title>
+<title>UFC Rankings — Every Division · GillyLab</title>
+<meta name="description" content="Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.">
+<link rel="canonical" href="${SITE_URL}/rankings">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -1512,12 +1523,12 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
-      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
+      ${freeNavLinks(loggedIn, subscribed)}
     </div>
   </nav>
   <main>
     ${freeTabs("/rankings")}
+    ${loggedIn ? "" : signupBanner}
     <h1>UFC Rankings</h1>
     <p class="rk-sub" id="rkDate">Official divisional rankings.</p>
     <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
@@ -1560,9 +1571,11 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
 </body></html>`;
 
 // ── Free /roster page (login-gated; active roster + weekly changes) ──────────────
-export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><head>
+export const rosterPage = ({ subscribed, loggedIn }) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Active Roster — GillyLab</title>
+<title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
+<meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
+<link rel="canonical" href="${SITE_URL}/roster">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -1598,12 +1611,12 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
-      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
+      ${freeNavLinks(loggedIn, subscribed)}
     </div>
   </nav>
   <main>
     ${freeTabs("/roster")}
+    ${loggedIn ? "" : signupBanner}
     <h1>Active Roster</h1>
     <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
     <div id="rsChanges"></div>
@@ -1634,8 +1647,8 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   </script>
 </body></html>`;
 
-// ── Free /matchup page (login-gated; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed }) => {
+// ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
+export const matchupPage = ({ subscribed, loggedIn }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const card = (landingData && landingData.card) || null;
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
@@ -1724,10 +1737,20 @@ export const matchupPage = ({ subscribed }) => {
     body = secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map(rowHTML).join("")).join("");
   }
   const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  // Card-specific SEO (title + description) so this page ranks for "<event> fight card".
+  const mainF = card && card.fights && card.fights[0];
+  const evName = card ? esc(card.event) : "Next UFC card";
+  const mainVs = mainF ? esc(surname(mainF.f1)) + " vs " + esc(surname(mainF.f2)) : "";
+  const seoTitle = (card ? evName + (mainVs ? ": " + mainVs : "") + " — Fight Card & Tale of the Tape" : "Upcoming UFC Fight Card & Tale of the Tape") + " · GillyLab";
+  const seoDesc = card
+    ? "Full fight card for " + evName + (mainVs ? " (" + mainVs + ")" : "") + " — the tale of the tape for every bout, plus a free main-event breakdown."
+    : "The next UFC card with the tale of the tape for every bout and a free main-event breakdown.";
 
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Main Event Breakdown — GillyLab</title>
+<title>${seoTitle}</title>
+<meta name="description" content="${seoDesc}">
+<link rel="canonical" href="${SITE_URL}/matchup">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -1825,12 +1848,12 @@ export const matchupPage = ({ subscribed }) => {
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
-      ${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}
-      ${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}
+      ${freeNavLinks(loggedIn, subscribed)}
     </div>
   </nav>
   <main>
     ${freeTabs("/matchup")}
+    ${loggedIn ? "" : signupBanner}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card — tap “Fight Info” on any bout for the tale of the tape, plus the complete main-event breakdown.</p>
     ${body}
