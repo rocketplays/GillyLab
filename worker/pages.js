@@ -888,11 +888,13 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
   .pk-head h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .pk-sub{color:var(--muted);font-size:.9rem;margin:0}
   .pk-lock{font-size:.82rem;color:${card && card.locked ? "#ff8a7a" : "var(--accent)"};margin:.5rem 0 0;font-weight:600}
-  .pk-tabs{display:flex;gap:6px;margin:1.1rem 0 1rem;border-bottom:1px solid var(--border)}
-  .pk-tab{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.86rem;padding:.55rem .6rem;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
-  .pk-tab.sel{color:var(--text);border-bottom-color:var(--accent)}
+  .pk-subnav{display:flex;gap:.5rem;margin:1.2rem 0 1.1rem}
+  .pk-subnav-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:9px;padding:.6rem;font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;transition:border-color .12s,background .12s}
+  .pk-subnav-btn:hover{border-color:var(--accent);background:rgba(0,230,104,.08)}
+  .pk-back{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.84rem;cursor:pointer;padding:0;margin:0 0 1rem;display:inline-flex;align-items:center;gap:.35rem}
+  .pk-back:hover{color:var(--text)}
   .pk-panel[hidden]{display:none}
-  .pk-name-prompt{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-bottom:1rem}
+  .pk-name-prompt{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin:1.3rem 0 0}
   .pk-name-prompt h2{font-size:1rem;margin:0 0 .3rem}
   .pk-name-prompt p{color:var(--muted);font-size:.85rem;margin:0 0 .7rem}
   .pk-name-row{display:flex;gap:8px}
@@ -939,27 +941,31 @@ export const pickemPage = ({ card, email, name, subscribed }) => {
       <div class="pk-name-row"><input id="pkNameInput" maxlength="20" placeholder="e.g. KO_Merchant" autocomplete="off"><button class="pk-btn" id="pkNameSave">Save</button></div>
       <div class="pk-msg" id="pkNameMsg"></div>
     </div>`}
-    <div class="pk-tabs" role="tablist">
-      <button type="button" class="pk-tab sel" data-panel="picks">Make picks</button>
-      <button type="button" class="pk-tab" data-panel="leaderboard">Leaderboard</button>
-      <button type="button" class="pk-tab" data-panel="history">My history</button>
+    <div class="pk-subnav">
+      <button type="button" class="pk-subnav-btn" data-open="leaderboard">🏆 Leaderboard</button>
+      <button type="button" class="pk-subnav-btn" data-open="history">📊 My history</button>
     </div>
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${bouts}
     </div>
-    <div class="pk-panel" id="panel-leaderboard" hidden><p class="pk-empty">Loading leaderboard…</p></div>
-    <div class="pk-panel" id="panel-history" hidden><p class="pk-empty">Loading your history…</p></div>
+    <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
+    <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
     <p class="pk-foot">Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.</p>
   </main>
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
-    // Tab switching
-    var tabs=document.querySelectorAll(".pk-tab");
-    tabs.forEach(function(t){t.addEventListener("click",function(){
-      tabs.forEach(function(x){x.classList.remove("sel");});t.classList.add("sel");
-      ["picks","leaderboard","history"].forEach(function(p){var el=document.getElementById("panel-"+p);if(el)el.hidden=(p!==t.dataset.panel);});
-    });});
+    // Picks are the page; the two buttons open leaderboard / history (each with its
+    // own back button), matching the in-app Pick'em layout.
+    function pkShow(which){
+      document.getElementById("panel-picks").hidden=(which!=="picks");
+      document.querySelector(".pk-subnav").hidden=(which!=="picks");
+      document.getElementById("panel-leaderboard").hidden=(which!=="leaderboard");
+      document.getElementById("panel-history").hidden=(which!=="history");
+      window.scrollTo(0,0);
+    }
+    document.querySelectorAll("[data-open]").forEach(function(b){b.addEventListener("click",function(){pkShow(b.dataset.open);});});
+    document.querySelectorAll("[data-back]").forEach(function(b){b.addEventListener("click",function(){pkShow("picks");});});
     // Winner selection (visual for now; submit + scoring wired next)
     document.querySelectorAll(".pk-bout").forEach(function(b){
       if(PK_LOCKED)return;
