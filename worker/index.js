@@ -168,10 +168,11 @@ async function verifyStripeSig(payload, header, secret) {
 }
 
 /* ─────────────────────────────────── email (Resend) ────────────────────────── */
-async function sendEmail(env, to, subject, html, replyTo) {
+async function sendEmail(env, to, subject, html, replyTo, headers) {
   if (!env.RESEND_API_KEY) throw new Error("email not configured");
   const payload = { from: env.FROM_EMAIL, to, subject, html };
   if (replyTo) payload.reply_to = replyTo;
+  if (headers) payload.headers = headers;
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: "Bearer " + env.RESEND_API_KEY, "Content-Type": "application/json" },
@@ -569,18 +570,27 @@ async function unsubUrl(env, email) {
   const e = normEmail(email);
   return env.SITE_URL + "/api/unsubscribe?e=" + encodeURIComponent(e) + "&t=" + (await unsubToken(env, e));
 }
+// RFC 8058 one-click unsubscribe headers — gives clients a native "Unsubscribe"
+// control and signals a legitimate bulk sender (helps deliverability / inbox tab).
+const listUnsubHeaders = (unsubHref) => ({ "List-Unsubscribe": "<" + unsubHref + ">", "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" });
 
-// Inline-styled shell — email clients strip <style>/<head> CSS. Dark, on-brand.
+// Inline-styled shell — email clients strip <style>/<head> CSS, and Gmail ignores
+// <body> backgrounds, so the dark canvas lives on a full-width table with a bgcolor
+// attribute (honoured even by clients that drop CSS backgrounds). color-scheme hints
+// keep dark-mode clients from re-inverting our already-dark palette.
 function emailShell(bodyHtml, unsubHref) {
-  return `<!doctype html><html><body style="margin:0;background:#0a0a0b;padding:24px 0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">
-      <table role="presentation" cellpadding="0" cellspacing="0" style="width:480px;max-width:92%;background:#14141a;border:1px solid #2a2a32;border-radius:14px;overflow:hidden">
+  return `<!doctype html><html><head><meta charset="utf-8"><meta name="color-scheme" content="dark"><meta name="supported-color-schemes" content="dark"></head>
+<body style="margin:0;padding:0;background-color:#0a0a0b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#0a0a0b" style="background-color:#0a0a0b;width:100%;margin:0;padding:0">
+    <tr><td align="center" bgcolor="#0a0a0b" style="background-color:#0a0a0b;padding:24px 12px">
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" bgcolor="#14141a" style="width:480px;max-width:100%;background-color:#14141a;border:1px solid #2a2a32;border-radius:14px;overflow:hidden">
         <tr><td style="padding:22px 26px 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#f4f5f7">GILLY<span style="color:#00e668">LAB</span></div></td></tr>
         <tr><td style="padding:14px 26px 26px;color:#f4f5f7;font-size:15px;line-height:1.55">${bodyHtml}</td></tr>
       </table>
-      <div style="width:480px;max-width:92%;color:#6b6b76;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></div>
-    </td></tr></table>
-  </body></html>`;
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td style="color:#6b6b76;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#8a8f99;text-decoration:underline">Unsubscribe</a></td></tr></table>
+    </td></tr>
+  </table>
+</body></html>`;
 }
 function lockEmailHtml(env, card, unsubHref) {
   const when = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
@@ -640,7 +650,8 @@ async function runLockReminders(env, base, opts = {}) {
     targeted++;
     if (dry) continue;
     try {
-      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, await unsubUrl(env, email)));
+      const unsub = await unsubUrl(env, email);
+      await sendEmail(env, email, "Your " + card.name + " picks lock soon", lockEmailHtml(env, card, unsub), null, listUnsubHeaders(unsub));
       await env.PICKS.put("em:l:" + card.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
       sent++;
     } catch (e) { /* bad address — skip, keep going */ }
@@ -673,7 +684,8 @@ async function runResultRecaps(env, base, opts = {}) {
       targeted++;
       if (dry) continue;
       try {
-        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, await unsubUrl(env, email)));
+        const unsub = await unsubUrl(env, email);
+        await sendEmail(env, email, ev.name + " — your Pick'em results", recapEmailHtml(env, ev, score, unsub), null, listUnsubHeaders(unsub));
         await env.PICKS.put("em:r:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
         sent++;
       } catch (e) { /* skip, keep going */ }
@@ -707,7 +719,8 @@ async function runMissedNudges(env, base, opts = {}) {
       targeted++;
       if (dry) continue;
       try {
-        await sendEmail(env, email, "You missed " + ev.name + " — the next card's coming up", missedEmailHtml(env, ev, nextCard, await unsubUrl(env, email)));
+        const unsub = await unsubUrl(env, email);
+        await sendEmail(env, email, "You missed " + ev.name + " — the next card's coming up", missedEmailHtml(env, ev, nextCard, unsub), null, listUnsubHeaders(unsub));
         await env.PICKS.put("em:m:" + ev.slug + ":" + email, "1", { expirationTtl: REMINDER_MARK_TTL });
         sent++;
       } catch (e) { /* skip, keep going */ }
