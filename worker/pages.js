@@ -127,15 +127,18 @@ const FREE_FOOTER = `
 // sections (and back to the /matchup home). Styles are scoped inline; the current
 // page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
 function freeTabs(active) {
-  const items = [["/matchup", "Main Event"], ["/pickem", "Pick'em"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
+  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
   return `
   <style>
-    .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 1.1rem}
+    .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 .6rem}
     .ftabs a{flex:1 1 auto;text-align:center;min-width:92px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease,color .13s ease}
     .ftabs a:hover{border-color:var(--accent);background:var(--surface2)}
     .ftabs a.active{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
+    .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:800;font-size:.95rem;letter-spacing:.01em;color:#04120a;background:var(--accent);border:none;border-radius:11px;padding:.8rem;margin:0 0 1.2rem;transition:filter .13s ease}
+    .ftab-pick:hover{filter:brightness(1.06)}
   </style>
-  <nav class="ftabs">${items.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>`;
+  <nav class="ftabs">${row.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>
+  <a class="ftab-pick${active === "/pickem" ? " active" : ""}" href="/pickem">Play Pick'em →</a>`;
 }
 
 export const landingPage = () => `<!doctype html><html lang="en"><head>
