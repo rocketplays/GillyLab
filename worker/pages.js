@@ -1479,7 +1479,7 @@ export const matchupPage = ({ subscribed }) => {
       if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
       return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
     };
-    const tape = `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}<div class="sr-cmp-row"><div class="sr-cmp-lbl">Moneyline</div><div class="sr-cmp-val">${esc(fmtO(mf.o1))}</div><div class="sr-cmp-val">${esc(fmtO(mf.o2))}</div></div>${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Stance", t.a.stance, t.b.stance, 0)}</div>`;
+    const tape = `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmp("Age", t.a.age, t.b.age, 1)}${cmp("Height", t.a.ht, t.b.ht, 0)}${cmp("Reach", t.a.reach, t.b.reach, 0)}${cmp("Stance", t.a.stance, t.b.stance, 0)}</div>`;
     return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}</div>`;
   };
 
