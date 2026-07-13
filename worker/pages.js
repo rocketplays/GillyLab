@@ -1114,6 +1114,19 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-note.pk-locked{background:rgba(255,207,122,.12);border:1px solid rgba(255,207,122,.4);color:#ffdca0}
   .pk-foot{color:var(--muted);font-size:.78rem;text-align:center;margin-top:1.5rem}
   .pk-foot a{color:var(--accent);text-decoration:none}
+  .pk-howlink{background:none;border:none;color:var(--accent);font:inherit;font-size:.8rem;font-weight:700;cursor:pointer;padding:0;margin:-.55rem 0 1rem;text-decoration:underline}
+  .pk-modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.66);display:flex;align-items:center;justify-content:center;padding:1.1rem}
+  .pk-modal[hidden]{display:none}
+  .pk-modal-card{background:var(--card);border:1px solid var(--border);border-radius:14px;max-width:440px;width:100%;max-height:88vh;overflow-y:auto;padding:1.3rem 1.3rem 1.4rem;position:relative;animation:pkPop .22s ease}
+  @keyframes pkPop{from{transform:translateY(10px);opacity:.5}to{transform:none;opacity:1}}
+  @media (prefers-reduced-motion:reduce){.pk-modal-card{animation:none}}
+  .pk-modal-x{position:absolute;top:.5rem;right:.65rem;background:none;border:none;color:var(--muted);font-size:1.5rem;line-height:1;cursor:pointer;padding:.1rem .3rem}
+  .pk-modal-card h2{font-size:1.2rem;margin:0 .5rem .9rem 0;font-weight:800}
+  .pk-how{margin:0 0 1rem;padding-left:1.15rem;display:flex;flex-direction:column;gap:.55rem}
+  .pk-how li{font-size:.85rem;line-height:1.5;color:var(--text)}
+  .pk-how li::marker{color:var(--accent);font-weight:800}
+  .pk-how b{color:var(--text)}
+  .pk-how-tip{font-size:.78rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;line-height:1.45;margin-bottom:1.1rem}
 </style></head><body>
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
@@ -1140,7 +1153,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       <button type="button" class="pk-subnav-btn" data-open="history">📊 My history</button>
     </div>
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
-      ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p>` : ""}
+      ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p><button type="button" class="pk-howlink" id="pkHowBtn">How scoring works →</button>` : ""}
       ${bouts}
       ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div>` : ""}
     </div>
@@ -1148,6 +1161,20 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
     <p class="pk-foot">Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.</p>
   </main>
+  ${nBouts ? `<div class="pk-modal" id="pkScoreModal" hidden>
+    <div class="pk-modal-card">
+      <button type="button" class="pk-modal-x" id="pkScoreClose" aria-label="Close">×</button>
+      <h2>How scoring works</h2>
+      <ol class="pk-how">
+        <li><b>Make your picks.</b> For each bout, call the <b>winner</b>, plus the <b>method</b> (KO/TKO, submission or decision) and the <b>round</b>.</li>
+        <li><b>Earn points.</b> A correct winner scores base points, and you add bonuses for nailing the method and round. Calling an <b>underdog</b> is worth more than a favorite.</li>
+        <li><b>Set your confidence</b> — it multiplies what that pick is worth: <b>High ×2</b>, <b>Medium ×1.5</b>, <b>Low ×1</b>.</li>
+        <li><b>Mind the risk.</b> Get the winner wrong and the confident picks cost you: <b>High −10</b>, <b>Medium −5</b>, <b>Low 0</b>. Low is safe; High is high-risk, high-reward.</li>
+      </ol>
+      <div class="pk-how-tip">The “total possible points” under each fight already includes your confidence — so you can see exactly what a pick is worth before you lock it in.</div>
+      <button type="button" class="pk-btn" id="pkScoreOk">Got it</button>
+    </div>
+  </div>` : ""}
   ${FREE_FOOTER}
   <script>
     var PK_NAME=${JSON.stringify(name || null)}, PK_LOCKED=${card && card.locked ? "true" : "false"};
@@ -1163,6 +1190,20 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       setTimeout(function(){window.location=href;},130);
     });
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
+    // One-time "how scoring works" explainer — auto-opens on a first visit (per
+    // device), and the "How scoring works" link reopens it any time.
+    (function(){
+      var m=document.getElementById("pkScoreModal");if(!m)return;
+      function open(){m.hidden=false;document.body.style.overflow="hidden";}
+      function close(){m.hidden=true;document.body.style.overflow="";try{localStorage.setItem("glPkScoringSeen","1");}catch(e){}}
+      var b=document.getElementById("pkHowBtn");if(b)b.addEventListener("click",open);
+      var x=document.getElementById("pkScoreClose");if(x)x.addEventListener("click",close);
+      var ok=document.getElementById("pkScoreOk");if(ok)ok.addEventListener("click",close);
+      m.addEventListener("click",function(e){if(e.target===m)close();});
+      document.addEventListener("keydown",function(e){if(e.key==="Escape"&&!m.hidden)close();});
+      var seen;try{seen=localStorage.getItem("glPkScoringSeen");}catch(e){}
+      if(!seen)open();
+    })();
     // Picks are the page; the two buttons open leaderboard / history (each with its
     // own back button), matching the in-app Pick'em layout.
     function pkShow(which){
