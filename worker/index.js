@@ -54,6 +54,7 @@ const PUBLIC_LANDING_ASSETS = new Set([
   "/photos/thumb/max-holloway.png",       // odds board (static)
   ...((landingData?.photos) || []).map((s) => "/photos/thumb/" + s + ".png"),
   "/og.png", "/favicon.ico", "/favicon.svg", "/apple-touch-icon.png",
+  "/favicon-96.png", "/favicon-48.png", "/favicon-192.png",  // square PNG favicons (Google prefers PNG, multiple of 48px)
   "/gl-logo.png",                          // brand mark in the landing nav
   "/gl-sheet.js",                          // shared share-sheet renderer (free /pickem share)
   "/data/rankings.json", "/data/rankings-meta.json", "/data/rankings-extra.json",  // public UFC rankings (free /rankings page)

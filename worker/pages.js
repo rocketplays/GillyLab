@@ -189,9 +189,11 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
 <meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, matchup analysis, live odds, line movement, a parlay builder, tape study, rankings, and more.">
 <meta name="twitter:image" content="${SITE_URL}/og.png?v=2">
-<link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
-<link rel="icon" href="/favicon.ico?v=6" sizes="any">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
+<link rel="icon" href="/favicon.ico?v=7" sizes="any">
+<link rel="icon" href="/favicon.svg?v=7" type="image/svg+xml">
+<link rel="icon" href="/favicon-96.png?v=7" type="image/png" sizes="96x96">
+<link rel="icon" href="/favicon-48.png?v=7" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7">
 <meta name="theme-color" content="#0a0a0b">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
