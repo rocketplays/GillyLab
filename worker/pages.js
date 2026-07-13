@@ -1060,6 +1060,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-bar-info{font-size:.82rem;color:var(--muted)}
   .pk-bar-info b{color:var(--text);font-weight:700}
   .pk-submitbar .pk-btn:disabled{opacity:.45;cursor:default}
+  .pk-submitbar .pk-btn.pk-done{opacity:1;background:transparent;border:1px solid var(--accent);color:var(--accent);cursor:default}
   .pk-empty{color:var(--muted);text-align:center;padding:2rem 0}
   /* leaderboard / history / player */
   .pk-tabs{display:flex;gap:.4rem;margin-bottom:.7rem}
@@ -1324,6 +1325,9 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     }
     function potential(p){if(!p||!p.winner)return 0;var pt=partsFor(p.boutId,p.side,p.method,p.round);var m=CONF_MULT[p.confidence]||CONF_MULT.Med;return Math.round((pt.wPts+pt.mPts+pt.rPts)*m);}
     function isComplete(p){return !!(p&&p.winner&&p.method&&p.confidence&&(p.method==="Decision"||p.round));}
+    // PK_SUBMITTED: picks are saved on the server. PK_DIRTY: changed since that save.
+    // The submit button stays "Picks submitted ✓" until you actually change something.
+    var PK_SUBMITTED=false,PK_DIRTY=false;
     function updateBout(id){
       var el=boutEl(id);if(!el)return;var p=PICKS[id]||{};
       el.querySelectorAll(".pk-fighter").forEach(function(b){b.classList.toggle("sel",!!p.winner&&b.dataset.pick===p.winner);});
@@ -1343,7 +1347,13 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       document.getElementById("pkBarStake").textContent="+"+stake;
       var fill=document.getElementById("pkProgFill");if(fill)fill.style.width=(total?Math.round(done/total*100):0)+"%";
       var nx=document.getElementById("pkNext");if(nx)nx.hidden=(done>=total);
-      var sb=document.getElementById("pkSubmit");if(sb&&sb.textContent.indexOf("Submitting")<0)sb.disabled=PK_LOCKED||done<total;
+      var sb=document.getElementById("pkSubmit");
+      if(sb&&sb.textContent.indexOf("Submitting")<0){
+        sb.classList.remove("pk-done");
+        if(PK_LOCKED){sb.textContent="Locked";sb.disabled=true;}
+        else if(PK_SUBMITTED&&!PK_DIRTY){sb.textContent="Picks submitted ✓";sb.disabled=true;sb.classList.add("pk-done");}   // settled — stays until you change a pick
+        else{sb.textContent=PK_SUBMITTED?"Update picks":"Submit picks";sb.disabled=done<total;}
+      }
     }
     function firstIncompleteEl(){for(var i=0;i<BOUT_IDS.length;i++){if(!isComplete(PICKS[BOUT_IDS[i]]))return boutEl(BOUT_IDS[i]);}return null;}
     var pkNextBtn=document.getElementById("pkNext");
@@ -1353,17 +1363,17 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     if(picksPanel&&!PK_LOCKED){
       picksPanel.addEventListener("click",function(e){
         var t=e.target.closest("button");if(!t)return;var el=e.target.closest(".pk-bout");
-        if(t.classList.contains("pk-clear")&&el){delete PICKS[el.dataset.bout];updateBout(el.dataset.bout);updateBar();persist();return;}
+        if(t.classList.contains("pk-clear")&&el){delete PICKS[el.dataset.bout];PK_DIRTY=true;updateBout(el.dataset.bout);updateBar();persist();return;}
         if(!el)return;var id=el.dataset.bout;var p=PICKS[id]||(PICKS[id]={boutId:id});
         if(t.dataset.pick){
-          if(p.winner===t.dataset.pick){delete PICKS[id];updateBout(id);updateBar();persist();return;}
+          if(p.winner===t.dataset.pick){delete PICKS[id];PK_DIRTY=true;updateBout(id);updateBar();persist();return;}
           p.winner=t.dataset.pick;p.side=sideOf(el,t.dataset.pick);if(!p.confidence)p.confidence="Med";
         }
         else if(t.dataset.method){p.method=t.dataset.method;if(p.method==="Decision")p.round=null;}
         else if(t.dataset.round!==undefined&&t.dataset.round!==""){p.round=parseInt(t.dataset.round,10);}
         else if(t.dataset.c){p.confidence=t.dataset.c;}
         else return;
-        updateBout(id);updateBar();persist();
+        PK_DIRTY=true;updateBout(id);updateBar();persist();
       });
     }
     // Submit — snapshots each pick's score parts, POSTs to /api/pickem/save.
@@ -1378,7 +1388,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       if(!picks.length)return;
       submitBtn.disabled=true;submitBtn.textContent="Submitting…";
       pkApi("/api/pickem/save",{method:"POST",body:JSON.stringify({eventSlug:PK_EVT.slug,eventName:PK_EVT.name,eventDate:PK_EVT.date,prelimsAt:PK_EVT.prelimsAt,picks:picks})}).then(function(r){
-        if(r&&r.ok){submitBtn.textContent="Picks submitted ✓";revealShare();setTimeout(function(){submitBtn.textContent="Update picks";updateBar();},1500);}
+        if(r&&r.ok){PK_SUBMITTED=true;PK_DIRTY=false;submitBtn.textContent="Picks submitted ✓";revealShare();updateBar();}
         else if(r&&r.error==="needs-name"){PK_NAME=null;submitBtn.textContent="Submit picks";focusName("Pick a display name first, then submit.");updateBar();}
         else if(r&&r.locked){PK_LOCKED=true;submitBtn.textContent="Locked";}
         else{submitBtn.textContent="Submit picks";updateBar();var m=(r&&r.error)||"Could not submit — try again.";var pr=document.getElementById("pkNamePrompt");alert(m);}
@@ -1412,7 +1422,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
             if(!el)return;var id=el.dataset.bout;
             PICKS[id]={boutId:id,winner:sp.winner,side:sideOf(el,sp.winner),method:sp.method,round:sp.round||null,confidence:sp.confidence};
           });
-          persist();if(submitBtn)submitBtn.textContent="Update picks";revealShare();
+          persist();PK_SUBMITTED=true;PK_DIRTY=false;revealShare();
         }
         if(r&&r.locked)PK_LOCKED=true;
         renderAll();
