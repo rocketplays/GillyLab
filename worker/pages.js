@@ -990,7 +990,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
     </div>
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${bouts}
-      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> at stake</div><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div>` : ""}
+      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
@@ -1046,7 +1046,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       var rs=el.querySelector(".pk-round");if(rs)rs.classList.toggle("pk-disabled",p.method==="Decision");
       el.querySelectorAll("[data-round]").forEach(function(b){b.classList.toggle("sel",p.method!=="Decision"&&String(p.round)===b.dataset.round);});
       el.querySelectorAll("[data-c]").forEach(function(b){b.classList.toggle("sel",p.confidence===b.dataset.c);});
-      var pts=el.querySelector(".pk-pts");if(pts)pts.innerHTML=p.winner?("Points at stake: <strong>"+potential(p)+"</strong>"):"Tap a fighter to pick the winner";
+      var pts=el.querySelector(".pk-pts");if(pts)pts.innerHTML=p.winner?("Total possible points: <strong>"+potential(p)+"</strong>"):"Tap a fighter to pick the winner";
       var clr=el.querySelector(".pk-clear");if(clr)clr.style.display=p.winner?"":"none";
     }
     function updateBar(){

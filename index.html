@@ -102283,7 +102283,7 @@ const GL_SHEET = (function () {
       const total = data.totalPoints || 0;
       ctx.strokeStyle = LINE; ctx.beginPath(); ctx.moveTo(64, CH - 124); ctx.lineTo(W - 64, CH - 124); ctx.stroke();
       ctx.textAlign = 'left'; ctx.font = '700 28px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'alphabetic';
-      ctx.fillText('POINTS AT STAKE', 64, CH - 84);
+      ctx.fillText('TOTAL POSSIBLE POINTS', 64, CH - 84);
       ctx.textAlign = 'right'; ctx.font = '800 50px ' + COND; ctx.fillStyle = ACC;
       ctx.fillText(String(total), W - 64, CH - 76);
       ctx.textAlign = 'left';
@@ -109832,7 +109832,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="pk-row"><span class="pk-row-label">Confidence</span>' + seg('pk-conf', confBtns) + '</div>' +
         '</div>' +
         '<div class="pk-bout-foot">' +
-          '<span class="pk-pts">' + (p.winner ? 'Points at stake: <strong>' + pts + '</strong>' : 'Tap a fighter to pick the winner') + '</span>' +
+          '<span class="pk-pts">' + (p.winner ? 'Total possible points: <strong>' + pts + '</strong>' : 'Tap a fighter to pick the winner') + '</span>' +
           (p.winner ? '<button type="button" class="pk-clear" data-clear="' + id + '">Clear</button>' : '') +
         '</div>' +
       '</div>';
@@ -109857,7 +109857,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<span class="pk-summary-pts">' + (pending.length ? 'Still at stake: <strong>' + atStake + '</strong>' : 'Card complete') + '</span>'
         : '<span class="pk-summary-count">' + complete + ' of ' + BOUTS.length + ' fights complete' +
             (Object.keys(PICKS).length ? ' · <button type="button" class="pk-reset-link" data-pk-reset>reset</button>' : '') + '</span>' +
-          '<span class="pk-summary-pts">Points at stake: <strong>' + atStake + '</strong></span>';
+          '<span class="pk-summary-pts">Total possible points: <strong>' + atStake + '</strong></span>';
       return '<div class="pk-summary">' +
         (sl || '') +
         '<div class="pk-summary-row">' +
