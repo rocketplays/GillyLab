@@ -62,6 +62,8 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   .back-link{position:fixed;top:1.1rem;left:1.1rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
   .back-link:hover{color:#fff}
   .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .logout-link{position:fixed;top:1.1rem;right:1.1rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
+  .logout-link:hover{color:#fff}
 </style></head><body><div class="wrap">${body}</div>
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
@@ -855,8 +857,9 @@ export const loginPage = (next) => {
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   <a class="back-link" href="/matchup" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
+  <a class="logout-link" href="/api/logout">Log out</a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
-  <div class="card center">
+  <div class="center" style="margin-top:1.25rem">
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
     <p class="muted">Everything in your free Pick'em account, plus the whole database and every tool:</p>
     <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
@@ -866,7 +869,6 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <button id="go">Go Premium →</button>
     <p class="muted" style="font-size:.8rem;margin:.55rem 0 0">Secure checkout by Stripe · cancel anytime</p>
     <div id="m" class="msg"></div>
-    <div class="alt"><a href="/api/logout">Log out</a></div>
   </div>
   <div class="sub-cx">
     <style>
