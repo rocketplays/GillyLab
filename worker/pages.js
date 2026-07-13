@@ -25,7 +25,7 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
 <style>
-  :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55)}
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--border:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55);--text:#f4f5f7}
   *{box-sizing:border-box}
   html{background:var(--bg)}   /* dark behind the body so tall screens / iOS overscroll never show white */
   body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#15201a 0%,var(--bg) 55%);color:#fff;
@@ -900,6 +900,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <div class="sub-cx-head">See everything Premium unlocks</div>
     ${carouselMarkup}
   </div>
+  ${FREE_FOOTER}
   ${carouselScript()}`, `
   document.getElementById("go").addEventListener("click",function(){
     var b=document.getElementById("go"); var m=document.getElementById("m");
