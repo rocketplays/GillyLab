@@ -173,13 +173,13 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
 <meta property="og:description" content="Deep analytics for every UFC fighter, a fight simulator that predicts winner and method, per-fight box scores, career accolades, matchup analysis of style, pace and path to victory, live odds and props, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, tape study, rankings, and weekly roster updates.">
 <meta property="og:url" content="${SITE_URL}/">
-<meta property="og:image" content="${SITE_URL}/og.png">
+<meta property="og:image" content="${SITE_URL}/og.png?v=2">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
 <meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, matchup analysis, live odds, line movement, a parlay builder, tape study, rankings, and more.">
-<meta name="twitter:image" content="${SITE_URL}/og.png">
+<meta name="twitter:image" content="${SITE_URL}/og.png?v=2">
 <link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico?v=6" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=6">
