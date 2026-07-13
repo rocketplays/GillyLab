@@ -394,18 +394,6 @@ async function loadPickemScore(env, url) {
     return await r.json();
   } catch { return null; }
 }
-// The current card's fighter-thumbnail paths, cached ~10 min per isolate, so the
-// Worker can serve just those photos publicly without reading the file per request.
-let _pkThumbs = null, _pkThumbsAt = 0;
-async function pickemCardThumbs(env, url) {
-  const now = Date.now();
-  if (_pkThumbs && now - _pkThumbsAt < 600000) return _pkThumbs;
-  try {
-    const r = await env.ASSETS.fetch(new Request(new URL("/data/pickem-card.json", url)));
-    if (r.ok) { const j = await r.json(); _pkThumbs = new Set((j.slugs || []).map((sg) => "/photos/thumb/" + sg + ".png")); _pkThumbsAt = now; }
-  } catch { /* keep last-good */ }
-  return _pkThumbs || new Set();
-}
 // Live standings for the focus card: grade every submitted entry against the
 // decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
 // records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
@@ -660,15 +648,13 @@ export default {
         return a;
       }
 
-      // The current Pick'em card's fighter thumbnails are public (free accounts see
-      // faces on /pickem); the rest of /photos/ stays gated below.
+      // Fighter thumbnails are public — free accounts see faces on /pickem,
+      // /rankings, etc. They're just headshots; the paywalled data stays gated.
+      // Full-size /photos/*.png (non-thumb) remains gated below.
       if (path.startsWith("/photos/thumb/") && path.endsWith(".png")) {
-        const thumbs = await pickemCardThumbs(env, url);
-        if (thumbs.has(path)) {
-          const a = await env.ASSETS.fetch(request);
-          if (a.status === 200) { const r = new Response(a.body, a); r.headers.set("Cache-Control", "public, max-age=86400"); return r; }
-          return a;
-        }
+        const a = await env.ASSETS.fetch(request);
+        if (a.status === 200) { const r = new Response(a.body, a); r.headers.set("Cache-Control", "public, max-age=86400"); return r; }
+        return a;
       }
 
       // ---- everything else is GATED: the app, its data + photos ----

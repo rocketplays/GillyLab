@@ -1291,10 +1291,10 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   .rk-toggle{display:inline-flex;gap:6px;margin:1rem 0 .3rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:3px}
   .rk-toggle button{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.8rem;padding:.4rem .8rem;border-radius:7px;cursor:pointer}
   .rk-toggle button.sel{background:var(--accent);color:#04120a}
-  .rk-tabs{display:flex;gap:6px;overflow-x:auto;padding:.9rem 0 .3rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-  .rk-tabs::-webkit-scrollbar{display:none}
-  .rk-tab{flex:0 0 auto;background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:.4rem .8rem;font:inherit;font-size:.78rem;font-weight:700;cursor:pointer;white-space:nowrap}
-  .rk-tab.sel{border-color:var(--accent);background:rgba(0,230,104,.12);color:var(--text)}
+  .rk-tabs{display:flex;flex-wrap:wrap;gap:.4rem;padding:.9rem 0 .3rem}
+  .rk-tab{background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:4px;padding:.4rem .7rem;font:inherit;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;cursor:pointer;white-space:nowrap;transition:color .15s,border-color .15s,background .15s}
+  .rk-tab:hover{color:var(--text);border-color:var(--text)}
+  .rk-tab.sel{color:var(--accent);border-color:var(--accent);background:rgba(0,230,104,.07)}
   .rk-panel-title{font-weight:800;font-size:1.1rem;margin:1.1rem 0 .7rem;letter-spacing:.02em}
   .rk-row{display:flex;align-items:center;gap:.7rem;padding:.5rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)}
   .rk-row:last-child{border-bottom:none}
@@ -1321,7 +1321,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
   <main>
     <h1>UFC Rankings</h1>
     <p class="rk-sub" id="rkDate">Official divisional rankings.</p>
-    <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">GillyLab AI</button></div>
+    <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
     <div class="rk-tabs" id="rkTabs"></div>
     <div id="rkPanels"><p class="rk-empty">Loading rankings…</p></div>
     <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
@@ -1331,11 +1331,14 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     var PORDER=["Men's Pound-for-Pound Top Rank","Women's Pound-for-Pound Top Rank",'Heavyweight','Light Heavyweight','Middleweight','Welterweight','Lightweight','Featherweight','Bantamweight','Flyweight',"Women's Strawweight","Women's Flyweight","Women's Bantamweight"];
     function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
     function inits(n){return String(n||"").trim().split(/\\s+/).map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase()||"?";}
-    function tag(name){return name.indexOf("Pound-for-Pound")>=0?(name.indexOf("Women")===0?"Women's P4P":"Men's P4P"):(DIVS[name]?DIVS[name].tag:name);}
+    function tag(name){return name.indexOf("Pound-for-Pound")>=0?(name.indexOf("Women")===0?"Women's Pound-for-Pound":"Men's Pound-for-Pound"):(DIVS[name]?DIVS[name].tag:name);}
+    var SHORT={"Men's Pound-for-Pound Top Rank":"Men's P4P","Women's Pound-for-Pound Top Rank":"Women's P4P",'Light Heavyweight':'Light Heavy',"Women's Strawweight":'W. Strawweight',"Women's Flyweight":'W. Flyweight',"Women's Bantamweight":'W. Bantamweight'};
+    function tabLabel(n){return SHORT[n]||(DIVS[n]?DIVS[n].tag:n);}
+    function rkImgErr(img){var fb=img.getAttribute("data-fb");if(fb&&img.getAttribute("src").indexOf(fb)<0&&!img.getAttribute("data-tried")){img.setAttribute("data-tried","1");img.src=fb;return;}img.outerHTML='<div class="rk-av">'+(img.getAttribute("data-ini")||"?")+'</div>';}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     var SRC="media",BYDIV={},ACTIVE=null;
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
-    function rowHTML(e){var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var img=e.imageUrl?'<img class="rk-av" src="'+esc(e.imageUrl)+'" alt="" loading="lazy" onerror="this.outerHTML=\\'<div class=&quot;rk-av&quot;>'+esc(inits(e.fighterName))+'</div>\\'">':'<div class="rk-av">'+esc(inits(e.fighterName))+'</div>';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(e.fighterName)+'</span>'+(e.flag?'<span class="rk-flag">'+esc(e.flag)+'</span>':"")+movBadge(e)+'</div>';}
+    function rowHTML(e){var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(e.fighterName));var localThumb="/photos/thumb/"+esc(e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(e.fighterName)+'</span>'+(e.flag?'<span class="rk-flag">'+esc(e.flag)+'</span>':"")+movBadge(e)+'</div>';}
     function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
     function load(){
       document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
@@ -1343,8 +1346,8 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
         if(!p||!Array.isArray(p.data)){document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Rankings unavailable right now.</p>';return;}
         BYDIV={};p.data.forEach(function(e){(BYDIV[e.division]=BYDIV[e.division]||[]).push(e);});
         var tabs=PORDER.filter(function(d){return BYDIV[d]&&BYDIV[d].length;});
-        document.getElementById("rkTabs").innerHTML=tabs.map(function(d){return '<button type="button" class="rk-tab" data-div="'+esc(d)+'">'+esc(tag(d))+'</button>';}).join("");
-        if(p.meta&&p.meta.latestSnapshotDate){var dt=new Date(p.meta.latestSnapshotDate+"T00:00:00Z");if(!isNaN(dt.getTime()))document.getElementById("rkDate").textContent="Updated "+dt.toLocaleDateString("en-US",{timeZone:"UTC",month:"long",day:"numeric",year:"numeric"})+" · "+(SRC==="meta"?"GillyLab AI":"UFC Media Panel");}
+        document.getElementById("rkTabs").innerHTML=tabs.map(function(d){return '<button type="button" class="rk-tab" data-div="'+esc(d)+'">'+esc(tabLabel(d))+'</button>';}).join("");
+        if(p.meta&&p.meta.latestSnapshotDate){var dt=new Date(p.meta.latestSnapshotDate+"T00:00:00Z");if(!isNaN(dt.getTime()))document.getElementById("rkDate").textContent="Updated "+dt.toLocaleDateString("en-US",{timeZone:"UTC",month:"long",day:"numeric",year:"numeric"})+" · "+(SRC==="meta"?"Meta AI":"UFC Media Panel");}
         showDiv(tabs.indexOf(ACTIVE)>=0?ACTIVE:tabs[0]);
       }).catch(function(){document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Rankings unavailable right now.</p>';});
     }
