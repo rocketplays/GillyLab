@@ -94,6 +94,8 @@ document.addEventListener("click",function(e){
   e.preventDefault(); document.body.classList.add("leaving");
   setTimeout(function(){window.location=href;},130);
 });
+// Clear the fade-out on restore (incl. back/forward cache) so Back never shows a blank page.
+window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
 ${extraJs}
 </script></body></html>`;
 
@@ -806,6 +808,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
     e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);
   });
+  // Reset the fade-out when the page is restored (esp. from the back/forward cache),
+  // otherwise Back lands on a page still faded to opacity 0 — a blank screen.
+  window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});
 })();
 </script></body></html>`;
 
@@ -1157,6 +1162,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
       e.preventDefault();document.body.classList.add("leaving");
       setTimeout(function(){window.location=href;},130);
     });
+    window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     // Picks are the page; the two buttons open leaderboard / history (each with its
     // own back button), matching the in-app Pick'em layout.
     function pkShow(which){
@@ -1447,6 +1453,7 @@ export const rankingsPage = ({ subscribed }) => `<!doctype html><html lang="en">
     function tabLabel(n){return SHORT[n]||(DIVS[n]?DIVS[n].tag:n);}
     function rkImgErr(img){var fb=img.getAttribute("data-fb");if(fb&&img.getAttribute("src").indexOf(fb)<0&&!img.getAttribute("data-tried")){img.setAttribute("data-tried","1");img.src=fb;return;}img.outerHTML='<div class="rk-av">'+(img.getAttribute("data-ini")||"?")+'</div>';}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     var SRC="media",BYDIV={},ACTIVE=null,EX={};
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
     function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(name)+'</span>'+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
@@ -1525,6 +1532,7 @@ export const rosterPage = ({ subscribed }) => `<!doctype html><html lang="en"><h
   <script>
     function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     var ROSTER=[],CHANGES=[],LETTER="All";
     function renderChanges(){
       var el=document.getElementById("rsChanges");if(!CHANGES.length){el.innerHTML="";return;}
@@ -1763,6 +1771,7 @@ export const matchupPage = ({ subscribed }) => {
     document.getElementById("mpOverlay").addEventListener("click",function(e){if(e.target===this)mpClose();});
     document.addEventListener("keydown",function(e){if(e.key==="Escape")mpClose();});
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
+    window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
       var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;
@@ -1883,7 +1892,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
     <h2>Contact</h2>
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
   </div>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
 </body></html>`;
 
 export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
@@ -2000,7 +2009,7 @@ export const aboutPage = () => `<!doctype html><html lang="en"><head>
     <p>As UFC bettors ourselves, we found it tedious — and sometimes downright difficult — to track down everything we needed to do our research. Stats, analytics, previous fight tape, historical results, accolades and belt ranks, odds: it all seemed to be scattered across a dozen corners of the internet.</p>
     <p>So we saw a gap in the market — a place to do all of your UFC research in one spot, plus tools built to help you become a smarter, more efficient bettor. That's why we built GillyLab.</p>
   </div>
-<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});</script>
+<script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
 </body></html>`;
 
 /* ── Internal model scorecard (founder-gated /scorecard) ───────────────────────
