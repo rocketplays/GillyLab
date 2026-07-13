@@ -138,7 +138,7 @@ function freeTabs(active) {
     .ftab-pick:hover{filter:brightness(1.06)}
   </style>
   <nav class="ftabs">${row.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>
-  <a class="ftab-pick${active === "/pickem" ? " active" : ""}" href="/pickem">Play Pick'em →</a>`;
+  ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}`;
 }
 
 export const landingPage = () => `<!doctype html><html lang="en"><head>
