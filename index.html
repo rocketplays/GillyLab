@@ -102684,7 +102684,16 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
         if (SHORT_NOTICE_SET.has(_newsNorm(name))) snName = name;
         else if (SHORT_NOTICE_SET.has(_newsNorm(opp))) snName = opp;
       }
-      if (!snName) snName = shortNoticeFighter();
+      // Prefer a pending "may change" over a GUESSED short-notice. When Wikipedia
+      // already knows a bout changed but ESPN hasn't synced the replacement yet,
+      // fetch-card-changes withholds that replacement from SHORT_NOTICE_SET (it only
+      // emits names that match a live bout fighter) and instead flags the staying
+      // fighter as "may change". The news heuristic could otherwise mis-name the
+      // WITHDRAWN fighter as the one stepping in, so skip it while may-change is set —
+      // only a ground-truth marker (the replacement actually in the corner) shows
+      // "short notice", i.e. once the two feeds agree on the lineup.
+      var _mcFlagged = (typeof MAY_CHANGE_SET !== 'undefined') && (MAY_CHANGE_SET.has(_newsNorm(name)) || MAY_CHANGE_SET.has(_newsNorm(opp)));
+      if (!snName && !_mcFlagged) snName = shortNoticeFighter();
       // If a replacement is confirmed (the current opponent IS the new fighter),
       // the change has already happened — show that, and suppress the pending
       // "bout may change" flag (which would otherwise fire on the now-stale news).
