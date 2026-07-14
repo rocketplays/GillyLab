@@ -101576,7 +101576,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       const num = v => { if (v == null || v === '') return '—'; const q = (+v).toFixed(2); return q.replace(/\.?0+$/, '') || '0'; };
       const pctD = v => (v == null || v === '') ? '—' : String(v);
       const box2 = document.createElement('div'); box2.className = 'sr-common';
-      const tt = document.createElement('div'); tt.className = 'sr-common-title'; tt.style.marginTop = '0.9rem'; tt.textContent = 'Tale of the tape'; box2.appendChild(tt);
+      const tt = document.createElement('div'); tt.className = 'sr-common-title'; tt.textContent = 'Head-to-head'; box2.appendChild(tt);
       const hd = document.createElement('div'); hd.className = 'sr-cmp-row sr-cmp-head'; hd.innerHTML = '<div></div>';
       const h1 = document.createElement('div'); h1.textContent = short(name); const h2 = document.createElement('div'); h2.textContent = short(opp);
       hd.appendChild(h1); hd.appendChild(h2); box2.appendChild(hd);
@@ -101597,7 +101597,11 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         if (aR != null && bR != null && aR !== bR) { const aBetter = r[5] ? aR > bR : aR < bR; if (aBetter) aCls = 'w'; else bCls = 'w'; }
         cmpRow(box2, r[0], r[3], r[4], aCls, bCls);
       });
-      if (host) host.appendChild(box2);
+      // Simulator only: put the head-to-head stat table at the TOP of the breakdown
+      // (just below "Share this simulation"), above the Style spectrum — rather than
+      // at the very bottom. Insert before whatever's already in the host (the style
+      // box + storylines), so it leads the deep-dive.
+      if (host) host.insertBefore(box2, host.firstChild);
     }
     return OUT;
 }
