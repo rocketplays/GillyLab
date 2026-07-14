@@ -1043,6 +1043,9 @@
       background: var(--border);
     }
     /* ── Bet & CLV Tracker ─────────────────────────────────────────────── */
+    /* A bet log is a narrow-column read — don't let it stretch to --cmax (1300px). */
+    #page-bets .bt-tabs, #bt-history, #bt-log, #page-bets .sim-disclaimer { max-width: 720px; margin-left: auto; margin-right: auto; }
+    @media (min-width: 700px) { .bt-grid { grid-template-columns: repeat(4, 1fr); } }
     .bt-tabs { display: flex; border-bottom: 1px solid var(--border); margin: 0 0 1.1rem; }
     .bt-tabs div { flex: 1; text-align: center; padding: 10px 0; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
     .bt-tabs div.active { color: var(--accent); border-bottom-color: var(--accent); }
@@ -110555,6 +110558,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btFmtO = a => (a == null ? '—' : (a > 0 ? '+' + a : '' + a));
   const btShort = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
   const btEsc = s => (typeof escHtmlAttr === 'function' ? escHtmlAttr(s) : String(s == null ? '' : s));
+  // Most cards are just "UFC Fight Night" — the date is what tells them apart.
+  const btEvDate = e => { const t = Date.parse(e && e.startsAt); return isFinite(t) ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' }) : ''; };
+  const btEvLabel = e => { const d = btEvDate(e); return e.short + (d ? ' · ' + d : ''); };
 
   function btLoad() { try { return JSON.parse(localStorage.getItem(BT_KEY)) || []; } catch (e) { return []; } }
   function btSave(list) { try { localStorage.setItem(BT_KEY, JSON.stringify(list)); } catch (e) {} }
@@ -110588,7 +110594,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btAllFights = () => (BT_EVENTS || []).reduce((a, e) => a.concat(e.fights), []);
   // Segment start gates CLV; a started segment means its close is already locked.
   const btSegStarted = f => { const t = Date.parse(f.segAt); return isFinite(t) && t <= Date.now(); };
-  const btSegName = f => f.section === 'main' ? 'main card' : 'prelims';
   const btNoClvWhy = f => f.section === 'main' ? 'main card has started' : 'prelims already started';
   // A bout is loggable until it has a result. We can't know each bout's exact bell
   // time (the feed only publishes segment starts), so the result IS the lock.
@@ -110831,7 +110836,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       else {
         h += '<label>Event</label><select id="bt-esel" onchange="btPickEvent(this.value)"><option value="">Choose an event…</option>';
         BT_EVENTS.forEach((e, i) => { if (!e.fights.some(f => !btLocked(f))) return;
-          h += '<option value="' + i + '"' + (btEvent === e ? ' selected' : '') + '>' + btEsc(e.short) + '</option>'; });
+          h += '<option value="' + i + '"' + (btEvent === e ? ' selected' : '') + '>' + btEsc(btEvLabel(e)) + '</option>'; });
         h += '</select>';
         if (btEvent) {
           h += '<label>Fight</label><select id="bt-fsel" onchange="btPickFight(this.value)"><option value="">Choose a fight…</option>';
@@ -110850,7 +110855,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           h += priced
             ? (btSegStarted(f)
               ? '<div class="bt-note lock"><b>Won\'t count toward CLV — ' + btNoClvWhy(f) + '.</b> We snapshot each segment\'s closing line ' + BT_CLOSE_LEAD_MIN + ' minutes before it begins, so that number is already locked in. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>'
-              : '<div class="bt-note">Verified — auto-graded when the fight resolves, with <b style="color:var(--accent)">CLV</b> measured against the ' + btSegName(f) + ' closing line (captured ' + BT_CLOSE_LEAD_MIN + ' min before it starts).</div>')
+              : '<div class="bt-note">Verified — auto-graded when the fight resolves, with <b style="color:var(--accent)">CLV</b> measured against the closing line.</div>')
             : '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> Props move fast and the price varies a lot book to book, so there\'s no closing line we\'d trust to measure against. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>';
           h += '<button type="button" class="bt-btn" onclick="btSubmitCard()">Add bet</button>';
         }
