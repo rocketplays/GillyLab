@@ -1080,6 +1080,7 @@
     .bt-b-neg { color: #ff6a5e; background: rgba(255,106,94,0.09); }
     .bt-b-self { color: #ffcf7a; background: rgba(255,207,122,0.09); }
     .bt-b-none { color: var(--muted); background: rgba(138,143,153,0.1); }
+    .bt-badge .bt-v { color: var(--accent); }
     .bt-acts { display: flex; gap: 6px; margin-top: 8px; }
     .bt-acts button { flex: 1; font: inherit; font-size: 0.74rem; font-weight: 700; border-radius: 6px; padding: 5px; cursor: pointer; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text, #f4f5f7); }
     .bt-acts .win { border-color: rgba(0,230,104,0.5); color: var(--accent); }
@@ -110780,10 +110781,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let badge;
     if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
     else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
-    else if (b.noClv) badge = '<span class="bt-badge bt-b-none">no CLV · ' + btEsc(b.noClv) + '</span>';
-    else if (b.priced) badge = '<span class="bt-badge bt-b-none">verified · pending</span>';
-    else badge = '<span class="bt-badge bt-b-none">verified · no CLV</span>';
-    const line = 'You <b>' + btFmtO(b.odds) + '</b>' + (b.closeOdds != null ? ' → close <b>' + btFmtO(b.closeOdds) + '</b>' : '') + ' · ' + b.stake + 'u';
+    else if (b.noClv) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV · ' + btEsc(b.noClv) + '</span>';
+    else if (b.priced) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · pending</span>';
+    else badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV</span>';
+    // "You" only earns its place once there's a closing line to contrast it with.
+    const line = (b.closeOdds != null
+      ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
+      : '<b>' + btFmtO(b.odds) + '</b>') + ' · ' + b.stake + 'u';
     // Editable only while pending AND before the segment locks — after that the
     // close is known, so letting someone change their price would fake CLV.
     let acts = '';
