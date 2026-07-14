@@ -1808,8 +1808,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     if (!l5 || !l5.length) return `<span style="color:var(--muted);font-size:.72rem">No data</span>`;
     return l5.map((f) => {
       const c = RCOL[f.r] || "rgba(255,255,255,0.45)";
-      const tip = [f.opp, f.method, f.round ? "R" + f.round : "", f.time].filter(Boolean).join(" · ");
-      return `<span class="form-tile" title="${esc(tip)}" style="background:${c}26;border:1px solid ${c};color:${c}">${esc(f.r)}</span>`;
+      return `<span class="form-tile" data-opp="${esc(f.opp)}" data-method="${esc(f.method)}" data-round="${esc(f.round)}" data-time="${esc(f.time)}" style="background:${c}26;border:1px solid ${c};color:${c}">${esc(f.r)}</span>`;
     }).join("");
   };
   // Layoff row: months since last bout; long (>=12mo) layoffs flag red like the app.
@@ -2001,7 +2000,10 @@ ${eventLd}
   .sr-cmp-val.l{color:#ff6a5e}
   .sr-cmp-val.hi{color:#ffcf7a}
   .sr-cmp-val.sr-form{display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
-  .form-tile{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;font-weight:800;font-size:.65rem;flex:0 0 auto;cursor:default}
+  .form-tile{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;font-weight:800;font-size:.65rem;flex:0 0 auto;cursor:pointer;position:relative}
+  .form-tile-tooltip{position:fixed;z-index:9999;background:#1a1a2e;border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:.45rem .65rem;pointer-events:none;white-space:nowrap;font-size:.76rem;color:#e8e8f0;box-shadow:0 4px 18px rgba(0,0,0,.55);line-height:1.5;display:none}
+  .form-tile-tooltip.visible{display:block}
+  .form-tile-tooltip strong{font-weight:800}
   .sr-common-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
   .sr-common-row:last-child{border-bottom:none}
   .sr-co-name{color:var(--muted)}
@@ -2090,6 +2092,34 @@ ${eventLd}
         p.addEventListener("transitionend",function te(e){if(e.propertyName!=="height")return;p.setAttribute("hidden","");p.style.transition="";p.style.height="";p.style.overflow="";p.removeEventListener("transitionend",te);});
       }
     };
+    // W/L form-tile hover/tap tooltip — mirrors the in-app version. Hover on
+    // desktop, tap to toggle on touch. No affordance text needed anywhere.
+    (function(){
+      var tip=null,activeTile=null;
+      function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+      function ensureTip(){if(!tip){tip=document.createElement("div");tip.className="form-tile-tooltip";document.body.appendChild(tip);}return tip;}
+      function showTip(tile,x,y){
+        var opp=tile.dataset.opp||"",method=tile.dataset.method||"",round=tile.dataset.round||"",time=tile.dataset.time||"";
+        if(!opp&&!method)return;
+        var html="<strong>"+esc(opp)+"</strong>";
+        if(method)html+="<br>"+esc(method);
+        if(round||time)html+="<br>Rd "+esc(round)+(time?" · "+esc(time):"");
+        var t=ensureTip();t.innerHTML=html;t.classList.add("visible");positionTip(t,x,y);
+      }
+      function positionTip(t,x,y){t.style.left="0px";t.style.top="0px";var w=t.offsetWidth,h=t.offsetHeight,vw=window.innerWidth,left=x+10,top=y-h-8;if(left+w>vw-8)left=x-w-10;if(top<8)top=y+18;t.style.left=left+"px";t.style.top=top+"px";}
+      function hideTip(){if(tip)tip.classList.remove("visible");}
+      document.addEventListener("mouseover",function(e){var tile=e.target.closest&&e.target.closest(".form-tile");if(tile)showTip(tile,e.clientX,e.clientY);else hideTip();});
+      document.addEventListener("mousemove",function(e){if(tip&&tip.classList.contains("visible"))positionTip(tip,e.clientX,e.clientY);});
+      document.addEventListener("mouseout",function(e){if(!e.relatedTarget||!(e.relatedTarget.closest&&e.relatedTarget.closest(".form-tile")))hideTip();});
+      document.addEventListener("click",function(e){
+        var tile=e.target.closest&&e.target.closest(".form-tile");
+        if(tile){
+          if(activeTile===tile&&tip&&tip.classList.contains("visible")){hideTip();activeTile=null;}
+          else{var r=tile.getBoundingClientRect();showTip(tile,r.left+r.width/2,r.top);activeTile=tile;e.stopPropagation();}
+        }else{hideTip();activeTile=null;}
+      },true);
+      document.addEventListener("scroll",function(){hideTip();activeTile=null;},true);
+    })();
   </script>
 </body></html>`;
 };
