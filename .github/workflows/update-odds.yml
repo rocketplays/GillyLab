@@ -126,6 +126,16 @@ jobs:
       - name: Recompute post-card fighter stats
         run: python3 scripts/recompute-card-stats.py --recent || true
 
+      # Fold the finished bouts the live poller captured (data/live-card.json) into
+      # the STATIC FIGHT_HISTORY in index.html. The app live-merges that file in the
+      # browser so the full profile is always current, but the lite (SEO) profiles are
+      # generated from static FIGHT_HISTORY — so record, finish rate and win streak lag
+      # there until the bout is persisted. De-duped by opponent+date, idempotent (the
+      # 3-day window re-runs never double-add). Must run BEFORE gen-landing-data so the
+      # derived record/finRate/streak pick up the new bout. Non-fatal.
+      - name: Persist finished bouts into static fight history
+        run: node scripts/append-card-history.cjs || true
+
       # Regenerate the public landing page's live data snapshot (featured
       # division rankings + latest roster changes) from the current repo state,
       # so the logged-out marketing page stays current. Self-guards: keeps the
@@ -218,6 +228,7 @@ jobs:
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
           python3 scripts/recompute-card-stats.py --recent || true
+          node scripts/append-card-history.cjs || true
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-carousel.cjs || true

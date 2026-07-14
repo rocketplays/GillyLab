@@ -661,8 +661,48 @@ function _winStreak(name) {
   for (const f of fh) { if (f.result === 'W') streak++; else break; }
   return streak;
 }
+// Real (non-upcoming) bouts from FIGHT_HISTORY, most-recent-first.
+function _fhReal(name) {
+  if (!_FH_CACHE) _FH_CACHE = parseConst('FIGHT_HISTORY') || {};
+  return (_FH_CACHE[canonStatName(name)] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+}
+// W-L-D derived from FIGHT_HISTORY (like the in-app computeRecord), or null if none.
+function _computeRecord(name) {
+  const fh = _fhReal(name); if (!fh.length) return null;
+  let w = 0, l = 0, d = 0;
+  for (const f of fh) { if (f.result === 'W') w++; else if (f.result === 'L') l++; else if (f.result === 'D') d++; }
+  return { w, l, d, total: w + l + d, str: `${w}-${l}-${d}` };
+}
+// Finish rate (KO/TKO + submission wins ÷ total wins), or null if no wins in history.
+function _deriveFinRate(name) {
+  const wins = _fhReal(name).filter((f) => f.result === 'W');
+  if (!wins.length) return null;
+  const fin = wins.filter((f) => /^(?:KO|TKO|Submission|Technical Submission)\b/i.test(f.method || '')).length;
+  return Math.round(fin / wins.length * 100);
+}
+// The curated FIGHTERS record is authoritative (FIGHT_HISTORY sometimes carries
+// stray/miscounted bouts — e.g. a fighter who is really 17-0 showing an extra loss).
+// So only override it when the derived record is EXACTLY "static record + the single
+// newest bout" — i.e. the static record is precisely one fight stale (a bout we just
+// appended). That fixes just-fought fighters and never trusts a discrepant history.
+function _recordAndFinRate(name, staticRec, staticFin) {
+  const sm = String(staticRec || '').match(/(\d+)-(\d+)-(\d+)/);
+  const dr = _computeRecord(name);
+  const fh = _fhReal(name);
+  if (sm && dr && fh.length) {
+    let ew = dr.w, el = dr.l, ed = dr.d;
+    const rec = fh[0].result;
+    if (rec === 'W') ew--; else if (rec === 'L') el--; else if (rec === 'D') ed--;
+    if (ew === +sm[1] && el === +sm[2] && ed === +sm[3]) {   // static == derived minus newest bout
+      const df = _deriveFinRate(name);
+      return { record: dr.str, finRate: df != null ? df : staticFin };
+    }
+  }
+  return { record: staticRec || '', finRate: staticFin };
+}
 function fighterProfileCard(name, recMap, ranks) {
   const st = fighterStat(name) || {};
+  const rf = _recordAndFinRate(name, ciLookup(recMap, name), _statNumG(st.finRate));
   const med = _divMedians(_fighterDivAbbrev(name));
   const clamp = (x) => Math.max(0, Math.min(100, x));
   const round1 = (x) => Math.round(x * 10) / 10;
@@ -690,13 +730,13 @@ function fighterProfileCard(name, recMap, ranks) {
       mkRow("Submissions / 15 min", _statNumG(st.subAvg), false, "subAvg", false),
     ]},
     { t: "Miscellaneous", rows: [
-      mkRow("Finish rate", _statNumG(st.finRate), true, "finRate", false),
+      mkRow("Finish rate", rf.finRate, true, "finRate", false),
       mkRow("Win streak", _winStreak(name), false, null, false),
     ]},
   ];
   const slug = nameToSlug(name);
   return {
-    name, slug: photoExists(slug) ? slug : "", record: ciLookup(recMap, name) || "",
+    name, slug: photoExists(slug) ? slug : "", record: rf.record,
     rank: ciLookup(ranks, name) || "", groups,
     bars: groups.some((g) => g.rows.some((r) => r.bar)),
   };
