@@ -1045,6 +1045,7 @@
     /* ── Bet & CLV Tracker ─────────────────────────────────────────────── */
     /* A bet log is a narrow-column read — don't let it stretch to --cmax (1300px). */
     #page-bets .bt-tabs, #bt-history, #bt-log, #page-bets .sim-disclaimer { max-width: 720px; margin-left: auto; margin-right: auto; }
+    .bt-blurb { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
     @media (min-width: 700px) { .bt-grid { grid-template-columns: repeat(4, 1fr); } }
     .bt-tabs { display: flex; border-bottom: 1px solid var(--border); margin: 0 0 1.1rem; }
     .bt-tabs div { flex: 1; text-align: center; padding: 10px 0; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
@@ -3808,8 +3809,8 @@
 ══════════════════════════════════════ -->
 <div class="page" id="page-bets">
   <div class="page-header">
-    <div class="page-header-label">Your record vs the closing line</div>
     <div class="page-header-title">Bet &amp; <span class="accent">CLV</span> Tracker</div>
+    <div class="bt-blurb">Input your bets to track CLV, ROI, units and record.</div>
   </div>
   <div class="divider"></div>
   <div class="bt-tabs">
@@ -110744,7 +110745,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '<div class="' + (btScope === 'all' ? 'on' : '') + '" onclick="btSetScope(\'all\')">All (incl. self-reported)</div></div>';
     h += '<div class="bt-ranges">' + rangeBtn('7d', '7D') + rangeBtn('30d', '30D') + rangeBtn('6m', '6M') + rangeBtn('12m', '12M') + rangeBtn('all', 'All time') + '</div>';
     if (!shown.length) {
-      h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.<br>Use <b style="color:var(--accent)">Log a bet</b> to track one.</div>';
+      h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.</div>';
     } else {
       h += shown.slice().sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     }
