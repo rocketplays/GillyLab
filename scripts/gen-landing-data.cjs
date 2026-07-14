@@ -230,10 +230,14 @@ function buildRoster() {
   // signings/cuts list isn't exposed on the logged-out page — the rest shows as
   // "+N more".
   const added = w.added || [], removed = w.removed || [];
+  // A-Z snippet of the active roster (the full list is public on /roster anyway) —
+  // a taste of names plus the total, shown under the weekly changes on the slide.
+  const active = [..._activeSet()].filter(Boolean).sort((a, b) => a.localeCompare(b));
   return {
     week: w.week || '',
     added: added.slice(0, 1), addedTotal: added.length,
     removed: removed.slice(0, 1), removedTotal: removed.length,
+    names: active.slice(0, 12), total: active.length,
   };
 }
 
