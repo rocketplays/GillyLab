@@ -2019,16 +2019,20 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   const lockItem = (t, d) => `<div class="fp-lock-i"><div class="fp-lock-it">${t}</div><div class="fp-lock-id">${d}</div></div>`;
   const lockGrid = [
     lockItem("Fight simulator", "Run this fighter against anyone on the roster."),
-    lockItem("Full fight history", "Every pro bout — result, method, round & opponent."),
+    lockItem("Full fight history", "Every pro bout — result, method, round &amp; opponent."),
+    lockItem("Box scores", "Strikes, takedowns &amp; control for every bout, head-to-head."),
     lockItem("Tape study", "Links to full video of each of their previous fights."),
-    lockItem("Odds &amp; closing-line history", "Where the market opened and closed on each fight."),
+    lockItem("Closing-line history", "Their closing line for each fight — favorite or underdog."),
     lockItem("Accolades", "Belt ranks, titles, finishes, bonuses &amp; records."),
-    lockItem("Scouting report", "Style, tendencies and the path to beating them."),
+    lockItem("Scouting report", "Style, pace, tendencies and the path to beating them."),
+    lockItem("Live odds &amp; props", "Moneyline, round totals &amp; method props by book."),
+    lockItem("Line-movement tracking", "Every bout's odds, day by day, from open to now."),
+    lockItem("Parlay builder", "Build a slip, then re-price it at every book."),
   ].join("");
   const cta = subscribed
     ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
-    : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the full profile →</a>`;
-  const lockBlock = `<div class="fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile</div></div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
+    : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the full profile &amp; tools →</a>`;
+  const lockBlock = `<div class="fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile &amp; tools</div></div><div class="fp-lock-sub">Everything GillyLab Premium unlocks:</div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
 
   // SEO.
   const metaBits = [f.record ? f.record : "", f.division || "", f.country || ""].filter(Boolean);
@@ -2116,7 +2120,8 @@ ${ldScript}
   @media (max-width:520px){.fsx-label{flex-basis:148px;font-size:.76rem}.fsx-val{flex-basis:48px;font-size:1.05rem}.fsx-row{gap:.6rem}.fsx-bio{gap:1rem}}
   /* locked block */
   .fp-lock{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem 1.15rem;margin-top:1.6rem}
-  .fp-lock-h{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
+  .fp-lock-h{display:flex;align-items:center;gap:.5rem;margin-bottom:.3rem}
+  .fp-lock-sub{font-size:.76rem;color:var(--muted);margin-bottom:.85rem;line-height:1.4}
   .fp-lock-ico{opacity:.85}
   .fp-lock-t{font-size:.95rem;font-weight:800}
   .fp-lock-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
