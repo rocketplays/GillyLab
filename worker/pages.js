@@ -30,7 +30,7 @@ const BACK_JS = "event.preventDefault();if(document.referrer&&document.referrer.
 // Back-to-landing arrow, top-left (used on the signup + login pages).
 const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
-const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><head>
+const shell = (title, body, extraJs = "", footer = false) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
 <style>
@@ -79,7 +79,7 @@ const shell = (title, body, extraJs = "") => `<!doctype html><html lang="en"><he
   .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .logout-link{position:fixed;top:1.1rem;right:1.1rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
   .logout-link:hover{color:#fff}
-</style></head><body><div class="wrap">${body}</div>
+</style></head><body><div class="wrap">${body}</div>${footer ? FREE_FOOTER : ""}
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
 function wire(formId, url, msgId, okMsg){
@@ -856,7 +856,7 @@ export const signupPage = (next) => {
     </form>
     ${premium ? `<p class="muted center" style="font-size:.82rem;margin:.55rem 0 0">Just want to play Pick'em? <a href="/signup">Create a free account</a> instead.</p>` : ``}
     <div class="alt muted">Already a member? <a href="/login${q}">Log in</a></div>
-  </div>`, `wire("f","/api/signup","m");`);
+  </div>`, `wire("f","/api/signup","m");`, true);
 };
 
 export const loginPage = (next) => {
@@ -883,7 +883,7 @@ export const loginPage = (next) => {
       <div id="mm" class="msg"></div>
     </form>
     <div class="alt muted">New here? <a href="/signup${q}">Create an account</a></div>
-  </div>`, `wire("f","/api/login","m"); wire("mf","/api/magic/start","mm");`);
+  </div>`, `wire("f","/api/login","m"); wire("mf","/api/magic/start","mm");`, true);
 };
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
