@@ -624,7 +624,7 @@ function buildMatchup(recMap) {
 // main-event tape uses, so the /matchup renderer can share one component.
 function _physOf(name) {
   const st = fighterStat(name) || {};
-  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "" };
+  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "", gym: st.gym || "" };
 }
 function buildMainTape(m) {
   const st1 = fighterStat(m.f1), st2 = fighterStat(m.f2);

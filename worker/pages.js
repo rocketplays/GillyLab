@@ -1999,7 +1999,7 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   // Physicals — same bordered bio row as the in-app profile (.fsx-bio).
   const phys = f.phys || {};
   const bioItem = (k, v) => v ? `<div><div class="fsx-bio-k">${k}</div><div class="fsx-bio-v">${esc(v)}</div></div>` : "";
-  const bioCells = [bioItem("Height", phys.ht), bioItem("Reach", phys.reach), bioItem("Age", phys.age), bioItem("Stance", phys.stance)].filter(Boolean).join("");
+  const bioCells = [bioItem("Height", phys.ht), bioItem("Reach", phys.reach), bioItem("Age", phys.age), bioItem("Stance", phys.stance), bioItem("Gym", phys.gym)].filter(Boolean).join("");
   const physHTML = bioCells ? `<div class="fsx-bio">${bioCells}</div>` : "";
 
   // Division-relative stat bars — identical markup + styling to the in-app profile.
@@ -2018,12 +2018,12 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   // The paywalled depth — locked.
   const lockItem = (t, d) => `<div class="fp-lock-i"><div class="fp-lock-it">${t}</div><div class="fp-lock-id">${d}</div></div>`;
   const lockGrid = [
-    lockItem("Full fight history", "Every pro bout — result, method, round & opponent."),
-    lockItem("Tape study", "Round-by-round breakdown of how the fights actually went."),
-    lockItem("Odds &amp; closing-line history", "Where the market opened and closed on each fight."),
-    lockItem("Accolades", "Titles, finishes, performance bonuses & records."),
-    lockItem("Scouting report", "Style, tendencies and the path to beating them."),
     lockItem("Fight simulator", "Run this fighter against anyone on the roster."),
+    lockItem("Full fight history", "Every pro bout — result, method, round & opponent."),
+    lockItem("Tape study", "Links to full video of each of their previous fights."),
+    lockItem("Odds &amp; closing-line history", "Where the market opened and closed on each fight."),
+    lockItem("Accolades", "Belt ranks, titles, finishes, bonuses &amp; records."),
+    lockItem("Scouting report", "Style, tendencies and the path to beating them."),
   ].join("");
   const cta = subscribed
     ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
@@ -2083,7 +2083,7 @@ ${ldScript}
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
   /* profile header */
   .fp-head{display:flex;align-items:center;gap:1rem;margin:.4rem 0 1.1rem}
-  .fp-av{width:76px;height:76px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid var(--accent);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.4rem;color:var(--muted)}
+  .fp-av{width:58px;height:58px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid var(--accent);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;color:var(--muted)}
   .fp-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
   .fp-h-main{min-width:0}
   .fp-name{font-size:1.5rem;font-weight:800;line-height:1.1;margin:0}
