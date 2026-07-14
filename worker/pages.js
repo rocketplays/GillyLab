@@ -1590,6 +1590,8 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .rk-sub{color:var(--muted);font-size:.85rem;margin:0}
+  .rk-hint{font-size:.78rem;color:var(--muted);margin:.6rem 0 .1rem}
+  .rk-hint b{color:var(--accent);font-weight:700}
   .rk-toggle{display:inline-flex;gap:6px;margin:1rem 0 .3rem;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:3px}
   .rk-toggle button{background:none;border:none;color:var(--muted);font:inherit;font-weight:700;font-size:.8rem;padding:.4rem .8rem;border-radius:7px;cursor:pointer}
   .rk-toggle button.sel{background:var(--accent);color:#04120a}
@@ -1627,6 +1629,7 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
     <h1>UFC Rankings</h1>
     <p class="rk-sub" id="rkDate">${rk.date}</p>
     <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
+    <p class="rk-hint">Tap or click any name to open their <b>lite profile</b>.</p>
     <div class="rk-tabs" id="rkTabs">${rk.tabs}</div>
     <div id="rkPanels">${rk.panels}</div>
     <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
@@ -1674,7 +1677,8 @@ function rosterSSR(roster, slugMap) {
   const R = (roster && roster.fighters) || [];
   const CH = (roster && roster.changes) || [];
   const nameCell = (n) => M[n] ? '<a class="ar-name" href="/fighter/' + M[n] + '">' + esc(n) + '</a>' : '<span class="ar-name">' + esc(n) + '</span>';
-  const col = (title, items, color, first) => '<div style="' + (first ? "" : "margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);") + '"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:' + color + ';margin-bottom:.7rem"><span>' + title + '</span><span style="background:' + color + '22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">' + items.length + '</span></div>' + (items.length ? '<div style="display:flex;flex-direction:column;gap:.4rem">' + items.map((n) => '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:' + color + ';font-size:.58rem">●</span><span>' + esc(n) + '</span></div>').join("") + '</div>' : '<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');
+  const chName = (n) => M[n] ? '<a class="ch-name" href="/fighter/' + M[n] + '">' + esc(n) + '</a>' : esc(n);
+  const col = (title, items, color, first) => '<div style="' + (first ? "" : "margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);") + '"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:' + color + ';margin-bottom:.7rem"><span>' + title + '</span><span style="background:' + color + '22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">' + items.length + '</span></div>' + (items.length ? '<div style="display:flex;flex-direction:column;gap:.4rem">' + items.map((n) => '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:' + color + ';font-size:.58rem">●</span><span>' + chName(n) + '</span></div>').join("") + '</div>' : '<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');
   const changes = CH.length ? CH.map((w) => '<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem"><div style="font-size:.8rem;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.55);margin-bottom:1.1rem">' + esc(w.week) + '</div>' + col("Added", w.added || [], "#00e668", true) + col("Removed", w.removed || [], "#ff9500", false) + '</div>').join("") : "";
   const az = ["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).map((L) => '<button type="button" class="ar-letter' + (L === "All" ? " active" : "") + '" data-l="' + L + '">' + L + '</button>').join("");
   const list = R.length
@@ -1721,6 +1725,10 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
   .ar-name{display:block;padding:.4rem 0;font-size:.92rem;color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
   a.ar-name{text-decoration:none;cursor:pointer;transition:color .12s}
   a.ar-name:hover{color:var(--accent)}
+  a.ch-name{color:#fff;text-decoration:none;cursor:pointer;transition:color .12s}
+  a.ch-name:hover{color:var(--accent)}
+  .rs-hint{font-size:.78rem;color:var(--muted);margin:.2rem 0 1.1rem}
+  .rs-hint b{color:var(--accent);font-weight:700}
   .rs-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .rs-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .rs-cta a{color:var(--accent);text-decoration:none;font-weight:700}
@@ -1736,6 +1744,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
     ${loggedIn ? "" : signupBanner}
     <h1>Active Roster</h1>
     <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
+    <p class="rs-hint">Tap or click any name to open their <b>lite profile</b>.</p>
     <div id="rsChanges">${rs.changes}</div>
     <div class="ar-bar" id="rsAZ">${rs.az}</div>
     <div id="rsList">${rs.list}</div>
@@ -1844,6 +1853,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
         ${sideR}
       </div>
+      ${f.main && (sA || sB) ? `<div class="mf-taphint">Tap (or click on desktop) a fighter for their lite profile</div>` : ""}
       ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
     </div>`;
   };
@@ -1856,7 +1866,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const secs = Object.keys(bySec).sort((a, b) => (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99));
     body = secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map(rowHTML).join("")).join("");
   }
-  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "";
   // Card-specific SEO (title + description) so this page ranks for "<event> fight card".
   const mainF = card && card.fights && card.fights[0];
   const evName = card ? esc(card.event) : "Next UFC card";
@@ -1979,7 +1989,7 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
     ${freeTabs("/matchup")}
     ${loggedIn ? "" : signupBanner}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
-    <p class="mf-sub">${when ? esc(when) + " · " : ""}Tap a fighter for their profile, or “Fight Info” on any bout for the tale of the tape and the main-event breakdown.</p>
+    <p class="mf-sub">${when ? esc(when) : "Upcoming card"}</p>
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>
