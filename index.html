@@ -1042,6 +1042,56 @@
       width: 1px;
       background: var(--border);
     }
+    /* ── Bet & CLV Tracker ─────────────────────────────────────────────── */
+    .bt-tabs { display: flex; border-bottom: 1px solid var(--border); margin: 0 0 1.1rem; }
+    .bt-tabs div { flex: 1; text-align: center; padding: 10px 0; font-weight: 800; font-size: 0.9rem; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .bt-tabs div.active { color: var(--accent); border-bottom-color: var(--accent); }
+    .bt-hero { background: var(--surface2, #14141a); border: 1px solid rgba(0,230,104,0.35); border-radius: 12px; padding: 14px 16px; margin-bottom: 0.9rem; }
+    .bt-hero-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .bt-hero-row { display: flex; align-items: baseline; gap: 10px; }
+    .bt-big { font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1.15; white-space: nowrap; }
+    .bt-big span { font-size: 0.7rem; font-weight: 700; color: var(--muted); margin-left: 3px; }
+    .bt-big.neg { color: #ff6a5e; }
+    .bt-hero-sub { font-size: 0.78rem; color: #c9ccd3; flex: 1; min-width: 0; line-height: 1.35; }
+    .bt-foot { font-size: 0.68rem; color: #6f727a; margin-top: 6px; line-height: 1.5; }
+    .bt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.9rem; }
+    .bt-tile { background: var(--surface2, #14141a); border-radius: 10px; padding: 12px 14px; }
+    .bt-tile-t { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+    .bt-tile-v { font-size: 1.25rem; font-weight: 800; margin-top: 3px; }
+    .bt-pos { color: var(--accent); } .bt-neg { color: #ff6a5e; }
+    .bt-toggle, .bt-ranges { display: flex; gap: 6px; margin-bottom: 0.85rem; }
+    .bt-toggle div { flex: 1; text-align: center; padding: 7px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.78rem; cursor: pointer; }
+    .bt-toggle div.on { background: var(--accent); color: #04120a; font-weight: 800; }
+    .bt-ranges div { flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.72rem; cursor: pointer; }
+    .bt-ranges div.on { background: rgba(0,230,104,0.13); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(0,230,104,0.4); }
+    .bt-bet { background: var(--surface2, #14141a); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; margin-bottom: 9px; }
+    .bt-bet-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .bt-nm { font-weight: 700; font-size: 0.9rem; }
+    .bt-mk { color: var(--muted); font-weight: 600; font-size: 0.76rem; margin-top: 1px; }
+    .bt-res { font-weight: 800; font-size: 0.88rem; white-space: nowrap; }
+    .bt-mid { display: flex; justify-content: space-between; align-items: center; margin-top: 7px; font-size: 0.75rem; color: var(--muted); gap: 8px; }
+    .bt-mid b { color: var(--text, #f4f5f7); }
+    .bt-badge { font-weight: 700; border-radius: 5px; padding: 2px 7px; font-size: 0.7rem; white-space: nowrap; }
+    .bt-b-clv { color: var(--accent); background: rgba(0,230,104,0.09); }
+    .bt-b-neg { color: #ff6a5e; background: rgba(255,106,94,0.09); }
+    .bt-b-self { color: #ffcf7a; background: rgba(255,207,122,0.09); }
+    .bt-b-none { color: var(--muted); background: rgba(138,143,153,0.1); }
+    .bt-acts { display: flex; gap: 6px; margin-top: 8px; }
+    .bt-acts button { flex: 1; font: inherit; font-size: 0.74rem; font-weight: 700; border-radius: 6px; padding: 5px; cursor: pointer; border: 1px solid var(--border); background: rgba(255,255,255,0.04); color: var(--text, #f4f5f7); }
+    .bt-acts .win { border-color: rgba(0,230,104,0.5); color: var(--accent); }
+    .bt-acts .lose { border-color: rgba(255,106,94,0.5); color: #ff6a5e; }
+    .bt-panel { background: var(--surface2, #14141a); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+    .bt-seg { display: flex; gap: 6px; margin-bottom: 12px; }
+    .bt-seg div { flex: 1; text-align: center; padding: 7px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.78rem; cursor: pointer; }
+    .bt-seg div.on { background: rgba(0,230,104,0.13); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(0,230,104,0.4); }
+    #page-bets label { display: block; font-size: 0.72rem; color: var(--muted); margin: 9px 0 4px; text-transform: uppercase; letter-spacing: 0.05em; }
+    #page-bets select, #page-bets input { width: 100%; font: inherit; font-size: 0.85rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text, #f4f5f7); border-radius: 7px; padding: 8px 10px; }
+    #page-bets select:disabled { opacity: 0.45; }
+    .bt-row2 { display: flex; gap: 8px; } .bt-row2 > div { flex: 1; }
+    .bt-note { font-size: 0.72rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+    .bt-note.lock { color: #ffcf7a; }
+    .bt-btn { width: 100%; text-align: center; font: inherit; font-weight: 800; font-size: 0.9rem; border-radius: 9px; padding: 11px; cursor: pointer; border: none; background: var(--accent); color: #04120a; margin-top: 12px; }
+    .bt-empty { color: var(--muted); text-align: center; font-size: 0.84rem; padding: 2rem 0; line-height: 1.6; }
     /* W/L tile tooltip */
     .form-tile { cursor: default; position: relative; }
     .form-tile-tooltip {
@@ -3467,6 +3517,7 @@
         <li role="menuitem" id="tab-home"        class="active" onclick="navigate('home');        closeNavDropdown()">Events</li>
         <li role="menuitem" id="tab-projections"            onclick="navigate('projections'); closeNavDropdown()">Simulator</li>
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds &amp; Projections</li>
+        <li role="menuitem" id="tab-bets"                   onclick="navigate('bets');        closeNavDropdown()">Bet &amp; CLV Tracker</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
         <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
@@ -3743,6 +3794,28 @@
 
     <div class="sim-disclaimer">These are purely statistical simulations based on historical data, not actual fight predictions, and may not reflect real results.</div>
   </div>
+</div>
+
+
+<!-- ══════════════════════════════════════
+     PAGE: BET & CLV TRACKER
+     Personal bet log. Bets on fights we track auto-grade from the result and are
+     tagged "verified"; anything else is self-reported and the user settles it.
+     CLV is moneylines only, measured against the segment closing line.
+══════════════════════════════════════ -->
+<div class="page" id="page-bets">
+  <div class="page-header">
+    <div class="page-header-label">Your record vs the closing line</div>
+    <div class="page-header-title">Bet &amp; <span class="accent">CLV</span> Tracker</div>
+  </div>
+  <div class="divider"></div>
+  <div class="bt-tabs">
+    <div id="bt-tab-history" class="active" onclick="btSetView('history')">My bet history</div>
+    <div id="bt-tab-log" onclick="btSetView('log')">Log a bet</div>
+  </div>
+  <div id="bt-history"></div>
+  <div id="bt-log" style="display:none"></div>
+  <div class="sim-disclaimer">A personal record-keeping tool only. GillyLab doesn't accept wagers, handle money, or offer betting advice.</div>
 </div>
 
 
@@ -7265,6 +7338,7 @@
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  targetPage.classList.add('active');
  if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
+ if (page === 'bets' && typeof btRender === 'function') btRender();
  // One-time "how scoring works" explainer, the first time a user opens Pick'em.
  if (page === 'pickem') { try { if (!localStorage.getItem('glPkScoringSeen')) { localStorage.setItem('glPkScoringSeen', '1'); if (typeof openModal === 'function') setTimeout(function(){ openModal('pkScoring'); }, 280); } } catch (e) {} }
  // Restore the scroll position for the page being shown (non-fighter pages
@@ -110441,6 +110515,382 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const tip = document.getElementById('odds-dot-tooltip');
     if (tip) tip.style.display = 'none';
   }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     BET & CLV TRACKER  (phase 1: client-side; phase 2 moves storage to the
+     Worker + KV, phase 3 moves grading to the results cron)
+
+     Two lanes. A bet on a fight we track, logged before the bout starts, is
+     VERIFIED: auto-graded from the result. Anything else is SELF-REPORTED: the
+     user settles it and it never touches the verified numbers.
+
+     CLV is MONEYLINES ONLY, measured against the segment's closing line (we
+     snapshot 10 min before the prelims / main card start). Once a segment
+     starts its close is locked, so bets on it can't earn CLV — they still grade
+     and count toward record / ROI / units.
+
+     Bets bind to a BOUT ID, never a name pair, so a rematch can never be
+     settled by an earlier fight between the same two men.
+  ══════════════════════════════════════════════════════════════════════════ */
+  const BT_KEY = 'glBets.v1';
+  const BT_CLOSE_LEAD_MIN = 10;
+  const BT_MARKETS = {
+    ML:        'Moneyline (winner)',
+    METHOD:    'Method (how the fight ends)',
+    ENDROUND:  'Fight ends in a round',
+    TOTAL:     'Total rounds (over / under)',
+    ROUNDSTART:'Will the fight start a round?',
+    DISTANCE:  'Fight goes the distance?',
+    INSIDE:    'Win inside the distance',
+  };
+  const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
+  let BT_EVENTS = null, BT_ODDS = null;
+  let btView = 'history', btScope = 'verified', btRange = 'all';
+  let btEvent = null, btFight = null, btMarket = 'ML';
+  const BT_RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, 'all': null };
+
+  const btImpl = a => a < 0 ? (-a) / ((-a) + 100) : 100 / (a + 100);
+  const btClvPts = (yours, close) => Math.round((btImpl(close) - btImpl(yours)) * 1000) / 10;
+  const btProfit = b => b.status === 'won' ? b.stake * (b.odds > 0 ? b.odds / 100 : 100 / -b.odds) : (b.status === 'lost' ? -b.stake : 0);
+  const btFmtO = a => (a == null ? '—' : (a > 0 ? '+' + a : '' + a));
+  const btShort = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
+  const btEsc = s => (typeof escHtmlAttr === 'function' ? escHtmlAttr(s) : String(s == null ? '' : s));
+
+  function btLoad() { try { return JSON.parse(localStorage.getItem(BT_KEY)) || []; } catch (e) { return []; } }
+  function btSave(list) { try { localStorage.setItem(BT_KEY, JSON.stringify(list)); } catch (e) {} }
+  let BT_BETS = btLoad();
+
+  // ── card data: every upcoming event we list, from the same feed the app uses
+  function btLoadEvents() {
+    if (BT_EVENTS) return Promise.resolve(BT_EVENTS);
+    return fetch('./data/event.json').then(r => r.ok ? r.json() : null).then(feed => {
+      const evs = (feed && feed.data) || [];
+      BT_EVENTS = evs.filter(e => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length).map(e => {
+        const mainAt = e.startsAt || null, prelimsAt = e.prelimsStartsAt || e.startsAt || null;
+        const fights = (e.bouts || []).filter(b => b && !b.isCancelled && (b.fighters || []).length === 2).map(b => {
+          const sec = String(b.cardSection || '').toLowerCase();
+          const isMain = sec.indexOf('main') !== -1 && sec.indexOf('prelim') === -1;
+          return {
+            id: b.id || b.boutId || (e.slug + '|' + b.boutOrder),   // bout identity — never a name pair
+            f1: b.fighters[0].fighterName, f2: b.fighters[1].fighterName,
+            rounds: b.numberOfRounds || 3,
+            section: isMain ? 'main' : 'prelim',
+            segAt: isMain ? mainAt : prelimsAt,
+            evSlug: e.slug, evShort: e.title || 'UFC',
+          };
+        });
+        return { slug: e.slug, short: e.title || 'UFC', date: (e.startsAt || '').slice(0, 10), startsAt: e.startsAt, fights };
+      }).filter(e => e.fights.length);
+      BT_EVENTS.forEach(e => e.fights.forEach(f => { f.ev = e; }));
+      return BT_EVENTS;
+    }).catch(() => { BT_EVENTS = []; return BT_EVENTS; });
+  }
+  const btAllFights = () => (BT_EVENTS || []).reduce((a, e) => a.concat(e.fights), []);
+  // Segment start gates CLV; a started segment means its close is already locked.
+  const btSegStarted = f => { const t = Date.parse(f.segAt); return isFinite(t) && t <= Date.now(); };
+  const btSegName = f => f.section === 'main' ? 'main card' : 'prelims';
+  const btNoClvWhy = f => f.section === 'main' ? 'main card has started' : 'prelims already started';
+  // A bout is loggable until it has a result. We can't know each bout's exact bell
+  // time (the feed only publishes segment starts), so the result IS the lock.
+  const btResultFor = f => btFightResult(f);
+  const btLocked = f => !!btResultFor(f);
+
+  // ── result lookup, bound to the bout (opponent + this event's date), so a
+  // rematch is never graded off an earlier meeting.
+  function btFightResult(f) {
+    const FH = typeof FIGHT_HISTORY !== 'undefined' ? FIGHT_HISTORY : {};
+    const HK = typeof scoutingHistKey === 'function' ? scoutingHistKey : (x => x);
+    const key = HK(f.f1); if (!key || !FH[key]) return null;
+    const nn = typeof _newsNorm === 'function' ? _newsNorm : (s => String(s || '').toLowerCase());
+    const evTs = Date.parse(f.ev && f.ev.startsAt);
+    const row = (FH[key] || []).find(r => {
+      if (!r || !r.date || !r.result || r.result === '–' || r.method === 'Upcoming') return false;
+      if (nn(r.opponent) !== nn(f.f2)) return false;
+      const rt = Date.parse(r.date);
+      return !isFinite(evTs) || !isFinite(rt) || Math.abs(rt - evTs) < 4 * 864e5;   // same event window
+    });
+    if (!row) return null;
+    const m = String(row.method || '');
+    const isNC = /no contest|\bnc\b/i.test(m) || row.result === 'NC';
+    const isDraw = row.result === 'D' || /^draw/i.test(m);
+    let cat = 'DEC';
+    if (/sub/i.test(m)) cat = 'SUB';
+    else if (/dec/i.test(m)) cat = 'DEC';
+    else if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) cat = 'KO';
+    const secs = (String(row.time || '').match(/(\d+):(\d+)/) || null);
+    return {
+      win: isDraw || isNC ? null : (row.result === 'W' ? 1 : 2),
+      methodCat: cat, round: Number(row.round) || 1,
+      endSec: secs ? (+secs[1] * 60 + +secs[2]) : 300,
+      isDraw, isNC, date: row.date,
+    };
+  }
+
+  // ── grading: one rule per market, all off winner / method / round / time
+  function btGradeWin(b, R, tr) {
+    const P = b.params || {};
+    if (b.market === 'ML') return R.win === P.side;
+    if (b.market === 'METHOD') return (P.side === 'any' || R.win === P.side) && R.methodCat === P.methodCat;
+    if (b.market === 'ENDROUND') {
+      const fin = R.methodCat !== 'DEC' && R.round === P.round;
+      const methOK = !P.meth || P.meth === 'ANY' || R.methodCat === P.meth;
+      return fin && methOK && (P.side === 'any' || R.win === P.side);
+    }
+    if (b.market === 'TOTAL') {
+      const sec = R.methodCat === 'DEC' ? tr * 300 : ((R.round - 1) * 300 + R.endSec);
+      const over = sec > (Math.floor(P.line) * 300 + 150);   // the X.5 line resolves at 2:30
+      return P.ou === 'O' ? over : !over;
+    }
+    if (b.market === 'ROUNDSTART') {
+      const s = R.methodCat === 'DEC' ? (P.round <= tr) : (P.round <= R.round);
+      return P.yn === 'Y' ? s : !s;
+    }
+    if (b.market === 'DISTANCE') { const went = R.methodCat === 'DEC'; return P.yn === 'Y' ? went : !went; }
+    if (b.market === 'INSIDE') return R.win === P.side && R.methodCat !== 'DEC';
+    return false;
+  }
+  // No contest voids everything. A draw voids ONLY the moneyline — standard book
+  // practice: method / inside-the-distance lose (nobody won), while totals,
+  // round-start, distance and "either fighter by decision" all still happened, so
+  // they settle normally. Those fall out of btGradeWin because a draw has no winner.
+  function btSettle(b, R, tr) {
+    if (R.isNC) return 'void';
+    if (R.isDraw && b.market === 'ML') return 'void';
+    return btGradeWin(b, R, tr) ? 'won' : 'lost';
+  }
+  function btGradeAll() {
+    let changed = false;
+    BT_BETS.forEach(b => {
+      if (b.kind !== 'tracked' || b.status !== 'pending') return;
+      const f = btAllFights().find(x => x.id === b.fightId);   // bout id, never names
+      if (!f) return;
+      const R = btFightResult(f); if (!R) return;
+      b.status = btSettle(b, R, f.rounds);
+      if (b.priced && b.clvOk !== false) {
+        const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
+        if (pair) { const c = b.closeSide === 2 ? pair.o2 : pair.o1; if (c != null) { b.closeOdds = c; b.clv = btClvPts(b.odds, c); } }
+      }
+      changed = true;
+    });
+    if (changed) btSave(BT_BETS);
+  }
+  window.btGradeAll = btGradeAll;
+
+  // ── stats ────────────────────────────────────────────────────────────────
+  const btInRange = b => { const d = BT_RANGE_DAYS[btRange]; return !d || (Date.now() - b.ts) <= d * 864e5; };
+  function btStats(list) {
+    const st = list.filter(b => ['won', 'lost', 'push', 'void'].indexOf(b.status) !== -1);
+    const w = st.filter(b => b.status === 'won').length, l = st.filter(b => b.status === 'lost').length;
+    const staked = st.filter(b => b.status !== 'push' && b.status !== 'void').reduce((s, b) => s + b.stake, 0);
+    const u = st.reduce((s, b) => s + btProfit(b), 0);
+    const clvs = st.filter(b => b.clv != null);
+    return {
+      w: w, l: l, roi: staked ? (u / staked * 100) : null, units: u,
+      avgClv: clvs.length ? clvs.reduce((s, b) => s + b.clv, 0) / clvs.length : null,
+      beat: clvs.filter(b => b.clv > 0).length, clvN: clvs.length,
+      pending: list.filter(b => b.status === 'pending').length,
+      voided: st.filter(b => b.status === 'void').length,
+    };
+  }
+
+  // ── views ────────────────────────────────────────────────────────────────
+  function btSetView(v) {
+    btView = v;
+    document.getElementById('bt-history').style.display = v === 'history' ? 'block' : 'none';
+    document.getElementById('bt-log').style.display = v === 'log' ? 'block' : 'none';
+    document.getElementById('bt-tab-history').classList.toggle('active', v === 'history');
+    document.getElementById('bt-tab-log').classList.toggle('active', v === 'log');
+    if (v === 'log') { btEvent = null; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
+    else btRenderHistory();
+  }
+  function btSetScope(s) { btScope = s; btRenderHistory(); }
+  function btSetRange(r) { btRange = r; btRenderHistory(); }
+  window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange;
+
+  function btRender() {
+    btLoadEvents().then(function () {
+      if (typeof loadOddsDataOnce === 'function') loadOddsDataOnce().then(function (o) { BT_ODDS = o; });
+      btGradeAll();
+      btSetView(btView);
+    });
+  }
+  window.btRender = btRender;
+
+  function btRenderHistory() {
+    const host = document.getElementById('bt-history'); if (!host) return;
+    const scoped = BT_BETS.filter(btInRange);
+    const verified = scoped.filter(b => b.verified);
+    const vs = btStats(verified);
+    const shown = btScope === 'verified' ? verified : scoped;
+    const s = btStats(shown);
+    const rangeBtn = (k, lbl) => '<div class="' + (btRange === k ? 'on' : '') + '" onclick="btSetRange(\'' + k + '\')">' + lbl + '</div>';
+    const clvTxt = vs.avgClv == null ? '—' : (vs.avgClv > 0 ? '+' : '') + vs.avgClv.toFixed(1) + '<span>pts</span>';
+    let h = '<div class="bt-hero"><div class="bt-hero-lbl">Verified closing line value</div><div class="bt-hero-row">' +
+      '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '">' + clvTxt + '</div>' +
+      '<div class="bt-hero-sub">' + (vs.clvN ? 'beat the close on <b style="color:var(--text)">' + vs.beat + ' of ' + vs.clvN + '</b> moneylines' : 'no graded moneylines in this range') + '</div></div>' +
+      '<div class="bt-foot">CLV counts <b style="color:#c9ccd3">moneylines only</b> — props move too fast and vary too much between books to have a closing line worth trusting. Prop bets are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
+    h += '<div class="bt-grid">' +
+      '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + s.w + '-' + s.l + '</div></div>' +
+      '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (s.roi > 0 ? 'bt-pos' : s.roi < 0 ? 'bt-neg' : '') + '">' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + s.roi.toFixed(1) + '%') + '</div></div>' +
+      '<div class="bt-tile"><div class="bt-tile-t">Units</div><div class="bt-tile-v ' + (s.units > 0 ? 'bt-pos' : s.units < 0 ? 'bt-neg' : '') + '">' + (s.units > 0 ? '+' : '') + s.units.toFixed(1) + 'u</div></div>' +
+      '<div class="bt-tile"><div class="bt-tile-t">Pending</div><div class="bt-tile-v">' + s.pending + '</div></div>' +
+      '</div>';
+    h += '<div class="bt-toggle"><div class="' + (btScope === 'verified' ? 'on' : '') + '" onclick="btSetScope(\'verified\')">Verified only</div>' +
+      '<div class="' + (btScope === 'all' ? 'on' : '') + '" onclick="btSetScope(\'all\')">All (incl. self-reported)</div></div>';
+    h += '<div class="bt-ranges">' + rangeBtn('7d', '7D') + rangeBtn('30d', '30D') + rangeBtn('6m', '6M') + rangeBtn('12m', '12M') + rangeBtn('all', 'All time') + '</div>';
+    if (!shown.length) {
+      h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.<br>Use <b style="color:var(--accent)">Log a bet</b> to track one.</div>';
+    } else {
+      h += shown.slice().sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    }
+    host.innerHTML = h;
+  }
+
+  function btBetHTML(b) {
+    let res;
+    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won +' + btProfit(b).toFixed(1) + 'u</span>';
+    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + btProfit(b).toFixed(1) + 'u</span>';
+    else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void · stake back</span>';
+    else if (b.status === 'push') res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
+    else res = '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span>';
+    let badge;
+    if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
+    else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
+    else if (b.noClv) badge = '<span class="bt-badge bt-b-none">no CLV · ' + btEsc(b.noClv) + '</span>';
+    else if (b.priced) badge = '<span class="bt-badge bt-b-none">verified · pending</span>';
+    else badge = '<span class="bt-badge bt-b-none">verified · no CLV</span>';
+    const line = 'You <b>' + btFmtO(b.odds) + '</b>' + (b.closeOdds != null ? ' → close <b>' + btFmtO(b.closeOdds) + '</b>' : '') + ' · ' + b.stake + 'u';
+    // Editable only while pending AND before the segment locks — after that the
+    // close is known, so letting someone change their price would fake CLV.
+    let acts = '';
+    if (b.status === 'pending') {
+      const bits = [];
+      if (b.kind === 'manual') bits.push('<button class="win" onclick="btSettle(' + b.id + ',\'won\')">Won</button><button class="lose" onclick="btSettle(' + b.id + ',\'lost\')">Lost</button><button onclick="btSettle(' + b.id + ',\'push\')">Push</button>');
+      if (b.editable !== false) bits.push('<button onclick="btDelete(' + b.id + ')">Delete</button>');
+      if (bits.length) acts = '<div class="bt-acts">' + bits.join('') + '</div>';
+    }
+    return '<div class="bt-bet"><div class="bt-bet-top"><div><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
+      '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
+  }
+  function btSettleBet(id, res) { const b = BT_BETS.find(x => x.id === id); if (b) { b.status = res; btSave(BT_BETS); btRenderHistory(); } }
+  function btDelete(id) { BT_BETS = BT_BETS.filter(x => x.id !== id); btSave(BT_BETS); btRenderHistory(); }
+  window.btSettle = btSettleBet; window.btDelete = btDelete;
+
+  // ── log a bet: event → fight → market → selection ────────────────────────
+  let btKind = 'card';
+  function btSetKind(k) { btKind = k; btRenderLog(k); }
+  function btPickEvent(i) { btEvent = i === '' ? null : BT_EVENTS[+i]; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
+  function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btRenderLog('card'); }
+  function btSetMarket(m) { btMarket = m; btRenderLog('card'); }
+  function btMlPrefill() { const s = +document.getElementById('bt-mlwin').value; const o = btOddsFor(btFight); if (o) document.getElementById('bt-odds').value = s === 1 ? o.o1 : o.o2; }
+  window.btSetKind = btSetKind; window.btPickEvent = btPickEvent; window.btPickFight = btPickFight;
+  window.btSetMarket = btSetMarket; window.btMlPrefill = btMlPrefill;
+
+  function btOddsFor(f) {
+    if (!f || !BT_ODDS || typeof findFightOdds !== 'function') return null;
+    return findFightOdds(f.f1, f.f2, BT_ODDS);
+  }
+  function btSelUI(f) {
+    const rds = n => { let o = ''; for (let i = 1; i <= n; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return o; };
+    if (btMarket === 'ML') {
+      const o = btOddsFor(f);
+      return '<label>Winner</label><select id="bt-mlwin" onchange="btMlPrefill()"><option value="1">' + btEsc(f.f1) + (o ? ' (' + btFmtO(o.o1) + ')' : '') + '</option><option value="2">' + btEsc(f.f2) + (o ? ' (' + btFmtO(o.o2) + ')' : '') + '</option></select>';
+    }
+    if (btMarket === 'METHOD') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mfr"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select></div><div><label>Method</label><select id="bt-mmeth"><option value="KO">KO/TKO</option><option value="SUB">Submission</option><option value="DEC">Decision</option></select></div></div>';
+    if (btMarket === 'ENDROUND') return '<label>Winner</label><select id="bt-erf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select>' +
+      '<div class="bt-row2"><div><label>Method</label><select id="bt-erm"><option value="ANY">Any finish</option><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div><div><label>Ends in</label><select id="bt-err">' + rds(f.rounds) + '</select></div></div>';
+    if (btMarket === 'TOTAL') { let o = ''; for (let i = 1; i < f.rounds; i++) o += '<option value="' + i + '.5">' + i + '.5 rounds</option>'; return '<div class="bt-row2"><div><label>Line</label><select id="bt-tline">' + o + '</select></div><div><label>Over / Under</label><select id="bt-tou"><option value="O">Over</option><option value="U">Under</option></select></div></div>'; }
+    if (btMarket === 'ROUNDSTART') { let o = ''; for (let i = 2; i <= f.rounds; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return '<div class="bt-row2"><div><label>Round</label><select id="bt-rsr">' + o + '</select></div><div><label>Will it start?</label><select id="bt-rsyn"><option value="Y">Will start</option><option value="N">Won\'t start</option></select></div></div>'; }
+    if (btMarket === 'DISTANCE') return '<label>Does the fight reach a decision?</label><select id="bt-dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>';
+    if (btMarket === 'INSIDE') return '<label>Who wins inside the distance (KO or sub)?</label><select id="bt-ifr"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select>';
+    return '';
+  }
+  function btBuildPick(f) {
+    const g = id => document.getElementById(id);
+    if (btMarket === 'ML') { const s = +g('bt-mlwin').value; return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' ML', p: { side: s }, priced: true, closeSide: s }; }
+    if (btMarket === 'METHOD') { const sv = g('bt-mfr').value, m = g('bt-mmeth').value, any = sv === 'any';
+      return { pick: any ? ('Fight ends by ' + BT_METH[m]) : (btShort(sv === '1' ? f.f1 : f.f2) + ' by ' + BT_METH[m]), p: { side: any ? 'any' : +sv, methodCat: m }, priced: false }; }
+    if (btMarket === 'ENDROUND') { const sv = g('bt-erf').value, mv = g('bt-erm').value, n = +g('bt-err').value, any = sv === 'any';
+      const mt = mv === 'ANY' ? '' : (mv === 'KO' ? ' by KO/TKO' : ' by submission');
+      return { pick: any ? ('Fight ends' + mt + ' in round ' + n) : (btShort(sv === '1' ? f.f1 : f.f2) + (mv === 'ANY' ? ' to win' : mt) + ' in round ' + n), p: { side: any ? 'any' : +sv, meth: mv, round: n }, priced: false }; }
+    if (btMarket === 'TOTAL') { const L = parseFloat(g('bt-tline').value), ou = g('bt-tou').value; return { pick: (ou === 'O' ? 'Over ' : 'Under ') + L + ' rounds', p: { line: L, ou: ou }, priced: false }; }
+    if (btMarket === 'ROUNDSTART') { const n = +g('bt-rsr').value, yn = g('bt-rsyn').value; return { pick: 'Fight ' + (yn === 'Y' ? 'starts' : 'does NOT start') + ' round ' + n, p: { round: n, yn: yn }, priced: false }; }
+    if (btMarket === 'DISTANCE') { const yn = g('bt-dyn').value; return { pick: yn === 'Y' ? 'Goes the distance' : 'Does NOT go the distance', p: { yn: yn }, priced: false }; }
+    const s = +g('bt-ifr').value; return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' inside the distance', p: { side: s }, priced: false };
+  }
+
+  function btRenderLog(kind) {
+    btKind = kind || btKind;
+    const host = document.getElementById('bt-log'); if (!host) return;
+    let h = '<div class="bt-panel"><div class="bt-seg">' +
+      '<div class="' + (btKind === 'card' ? 'on' : '') + '" onclick="btSetKind(\'card\')">Upcoming fights</div>' +
+      '<div class="' + (btKind === 'custom' ? 'on' : '') + '" onclick="btSetKind(\'custom\')">Custom bet</div></div>';
+    if (btKind === 'card') {
+      const evs = (BT_EVENTS || []).filter(e => e.fights.some(f => !btLocked(f)));
+      if (!evs.length) h += '<div class="bt-empty">No upcoming fights are posted right now.</div>';
+      else {
+        h += '<label>Event</label><select id="bt-esel" onchange="btPickEvent(this.value)"><option value="">Choose an event…</option>';
+        BT_EVENTS.forEach((e, i) => { if (!e.fights.some(f => !btLocked(f))) return;
+          h += '<option value="' + i + '"' + (btEvent === e ? ' selected' : '') + '>' + btEsc(e.short) + '</option>'; });
+        h += '</select>';
+        if (btEvent) {
+          h += '<label>Fight</label><select id="bt-fsel" onchange="btPickFight(this.value)"><option value="">Choose a fight…</option>';
+          btEvent.fights.forEach(f => { h += btLocked(f)
+            ? '<option value="" disabled>' + btEsc(f.f1) + ' vs ' + btEsc(f.f2) + ' — 🔒 finished</option>'
+            : '<option value="' + btEsc(f.id) + '"' + (btFight && btFight.id === f.id ? ' selected' : '') + '>' + btEsc(f.f1) + ' vs ' + btEsc(f.f2) + '</option>'; });
+          h += '</select>';
+        }
+        if (btFight) {
+          const f = btFight, priced = btMarket === 'ML', o = btOddsFor(f);
+          h += '<label>Market</label><select id="bt-mkt" onchange="btSetMarket(this.value)">';
+          Object.keys(BT_MARKETS).forEach(k => { h += '<option value="' + k + '"' + (btMarket === k ? ' selected' : '') + '>' + BT_MARKETS[k] + '</option>'; });
+          h += '</select>' + btSelUI(f);
+          h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (priced && o ? o.o1 : '') + '" placeholder="-150"></div>' +
+            '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="1" step="0.5" min="0.5"></div></div>';
+          h += priced
+            ? (btSegStarted(f)
+              ? '<div class="bt-note lock"><b>Won\'t count toward CLV — ' + btNoClvWhy(f) + '.</b> We snapshot each segment\'s closing line ' + BT_CLOSE_LEAD_MIN + ' minutes before it begins, so that number is already locked in. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>'
+              : '<div class="bt-note">Verified — auto-graded when the fight resolves, with <b style="color:var(--accent)">CLV</b> measured against the ' + btSegName(f) + ' closing line (captured ' + BT_CLOSE_LEAD_MIN + ' min before it starts).</div>')
+            : '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> Props move fast and the price varies a lot book to book, so there\'s no closing line we\'d trust to measure against. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>';
+          h += '<button type="button" class="bt-btn" onclick="btSubmitCard()">Add bet</button>';
+        }
+      }
+    } else {
+      h += '<label>Matchup / event</label><input id="bt-cmatch" placeholder="e.g. Silva vs Jones — PFL 7">' +
+        '<label>Your pick + market</label><input id="bt-csel" placeholder="e.g. Silva inside the distance">' +
+        '<div class="bt-row2"><div><label>Your odds</label><input id="bt-codds" type="number" placeholder="-150"></div><div><label>Stake (units)</label><input id="bt-cstake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+        '<div class="bt-note">We don\'t track this fight, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, and it\'s excluded from verified CLV / ROI.</div>' +
+        '<button type="button" class="bt-btn" onclick="btSubmitCustom()">Add bet</button>';
+    }
+    host.innerHTML = h + '</div>';
+  }
+
+  function btSubmitCard() {
+    const f = btFight; if (!f) return;
+    if (btLocked(f)) { alert('That fight has already finished.'); return; }
+    const odds = parseInt(document.getElementById('bt-odds').value, 10);
+    const stake = parseFloat(document.getElementById('bt-stake').value) || 1;
+    if (!isFinite(odds)) { alert('Enter the odds you got.'); return; }
+    const p = btBuildPick(f);
+    const clvOk = !btSegStarted(f);   // segment start locks the close
+    BT_BETS.push({
+      id: Date.now(), kind: 'tracked', verified: true, fightId: f.id, evSlug: f.evSlug,
+      market: btMarket, pick: p.pick, match: btShort(f.f1) + ' vs ' + btShort(f.f2) + ' · ' + f.ev.short,
+      params: p.p, priced: p.priced, closeSide: p.closeSide, clvOk: clvOk, noClv: clvOk ? null : btNoClvWhy(f),
+      odds: odds, stake: stake, status: 'pending', clv: null, closeOdds: null,
+      ts: Date.parse(f.ev.startsAt) || Date.now(), createdAt: Date.now(), editable: clvOk,
+    });
+    btSave(BT_BETS); btSetView('history');
+  }
+  function btSubmitCustom() {
+    const m = document.getElementById('bt-cmatch').value.trim(), s = document.getElementById('bt-csel').value.trim();
+    const odds = parseInt(document.getElementById('bt-codds').value, 10), stake = parseFloat(document.getElementById('bt-cstake').value) || 1;
+    if (!m || !s || !isFinite(odds)) { alert('Fill in the matchup, your pick and the odds.'); return; }
+    BT_BETS.push({ id: Date.now(), kind: 'manual', verified: false, market: 'CUSTOM', pick: s, match: m,
+      odds: odds, stake: stake, status: 'pending', clv: null, ts: Date.now(), createdAt: Date.now(), editable: true });
+    btSave(BT_BETS); btSetView('history');
+  }
+  window.btSubmitCard = btSubmitCard; window.btSubmitCustom = btSubmitCustom;
 
 
 
