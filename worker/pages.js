@@ -1875,14 +1875,20 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   // format it in America/New_York so the day is correct (fall back to card.date).
   const evTs = card && (card.prelimsAt || (card.date ? card.date + "T18:00:00Z" : null));
   const when = evTs ? new Date(evTs).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" }) : "";
-  // Card-specific SEO (title + description) so this page ranks for "<event> fight card".
+  // Card-specific SEO: lead with the FULL main-event names + the city ("UFC
+  // <City>") so the page ranks for "<fighter> vs <fighter>" and "UFC <city>"
+  // rather than the generic path. Falls back gracefully when no card is posted.
   const mainF = card && card.fights && card.fights[0];
   const evName = card ? esc(card.event) : "Next UFC card";
-  const mainVs = mainF ? esc(surname(mainF.f1)) + " vs " + esc(surname(mainF.f2)) : "";
-  const seoTitle = (card ? evName + (mainVs ? ": " + mainVs : "") + " — Fight Card & Tale of the Tape" : "Upcoming UFC Fight Card & Tale of the Tape") + " · GillyLab";
+  const mainFull = mainF ? esc(mainF.f1) + " vs " + esc(mainF.f2) : "";
+  const cityName = card && card.city ? esc(card.city) : "";
+  const ufcCity = cityName ? "UFC " + cityName : "";
+  const seoTitle = card
+    ? (mainFull ? mainFull + " — " : "") + evName + (cityName ? ", " + cityName : "") + " · GillyLab"
+    : "Upcoming UFC Fight Card, Odds & Tale of the Tape · GillyLab";
   const seoDesc = card
-    ? "Full fight card for " + evName + (mainVs ? " (" + mainVs + ")" : "") + " — the tale of the tape for every bout, plus a free main-event breakdown."
-    : "The next UFC card with the tale of the tape for every bout and a free main-event breakdown.";
+    ? (mainFull ? mainFull + " headlines " : "") + evName + (ufcCity ? " (" + ufcCity + ")" : "") + (when ? ", " + esc(when) : "") + " — full fight card, live odds and the tale of the tape for every bout, free on GillyLab."
+    : "The next UFC card with live odds and the tale of the tape for every bout, free on GillyLab.";
 
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
