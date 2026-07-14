@@ -1855,7 +1855,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
         ${sideR}
       </div>
-      ${f.main && (sA || sB) ? `<div class="mf-taphint"><span class="tapword">Tap</span> a fighter for their lite profile</div>` : ""}
+      ${f.main && (sA || sB) ? `<div class="mf-taphint"><span class="tapword">Tap</span> any fighter for their lite profile</div>` : ""}
       ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
     </div>`;
   };
@@ -2204,7 +2204,7 @@ ${ldScript}
   <script>
     // Show "Back" only when arriving from within the site (internal nav) — not from
     // a search engine / external link / direct visit, where this reads as a landing page.
-    (function(){var b=document.getElementById("fpBack");if(!b)return;if(document.referrer&&document.referrer.indexOf(location.origin+"/")===0){b.hidden=false;b.addEventListener("click",function(e){e.preventDefault();history.back();});}})();
+    (function(){var b=document.getElementById("fpBack");if(!b)return;if(document.referrer&&document.referrer.indexOf(location.origin+"/")===0){b.hidden=false;b.addEventListener("click",function(e){e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){history.back();},130);});}})();
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
   </script>
