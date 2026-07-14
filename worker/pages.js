@@ -2113,6 +2113,9 @@ ${ldScript}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  .fp-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);text-decoration:none;font-size:.85rem;margin:0 0 .85rem;transition:color .12s}
+  .fp-back:hover{color:var(--text)}
+  .fp-back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   /* profile header */
   .fp-head{display:flex;align-items:center;gap:1rem;margin:.4rem 0 1.1rem}
   .fp-av{width:58px;height:58px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid var(--accent);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;color:var(--muted)}
@@ -2167,6 +2170,7 @@ ${ldScript}
     </div>
   </nav>
   <main>
+    <a id="fpBack" class="fp-back" href="#" hidden><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
     ${loggedIn ? "" : signupBanner}
     <div class="fp-head">
       ${av}
@@ -2181,6 +2185,9 @@ ${ldScript}
   </main>
   ${FREE_FOOTER}
   <script>
+    // Show "Back" only when arriving from within the site (internal nav) — not from
+    // a search engine / external link / direct visit, where this reads as a landing page.
+    (function(){var b=document.getElementById("fpBack");if(!b)return;if(document.referrer&&document.referrer.indexOf(location.origin+"/")===0){b.hidden=false;b.addEventListener("click",function(e){e.preventDefault();history.back();});}})();
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
   </script>
