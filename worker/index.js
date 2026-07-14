@@ -421,6 +421,156 @@ async function loadPickemScore(env, url) {
 async function loadAssetJson(env, url, p) {
   try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
 }
+
+/* ─────────────────────────── bet & clv tracker ──────────────────────────────
+   Bets ride in the PICKS namespace under a bt: prefix, so there's no new KV
+   binding to provision:
+     bt:<email> -> [ { id, kind, verified, fightId, evSlug, market, pick, match,
+                       params, priced, closeSide, clvOk, noClv, odds, stake, ts,
+                       createdAt, editable, status? } ]
+
+   THE CLIENT NEVER DECIDES ANYTHING THAT MATTERS. The server stamps createdAt,
+   `verified` and `clvOk`, and it re-derives the lock from the feed — so a
+   tampered client can't backdate a bet onto a fight that already happened, nor
+   claim CLV on a segment whose closing line is already captured.
+
+   Only SELF-REPORTED bets carry a stored `status`. A tracked bet's result is
+   derived from the fight result and is never written by the client, so nobody
+   can mark their own bets won.
+──────────────────────────────────────────────────────────────────────────── */
+const BT_MAX = 750;              // per-user cap; KV values are 25MB, this is nowhere near
+const BT_CLOSE_LEAD_MIN = 10;    // we snapshot each segment's close 10 min before it starts
+const btKey = (email) => "bt:" + email;
+// Premium feature: the page itself is behind the paywall, but verify here too.
+async function betsSession(request, env) {
+  const s = await readSession(request, env);
+  if (!s) return null;
+  const u = await getUser(env, s.email);
+  return (u && u.subscribed) ? { email: s.email } : null;
+}
+const btGetBets = async (env, email) => { const v = await env.PICKS.get(btKey(email)); return v ? JSON.parse(v) : []; };
+const btPutBets = (env, email, list) => env.PICKS.put(btKey(email), JSON.stringify(list.slice(-BT_MAX)));
+
+// Find a bout in the upcoming feed by its bout id — the same identity the client
+// bets against, so a rematch can never be confused with the earlier fight.
+async function btFindBout(env, url, fightId) {
+  const feed = await loadAssetJson(env, url, "/data/event.json");
+  const evs = (feed && feed.data) || [];
+  for (const e of evs) {
+    if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
+    for (const b of e.bouts) {
+      if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
+      const id = b.id || b.boutId || (e.slug + "|" + b.boutOrder);
+      if (id !== fightId) continue;
+      const sec = String(b.cardSection || "").toLowerCase();
+      const isMain = sec.indexOf("main") !== -1 && sec.indexOf("prelim") === -1;
+      return {
+        id, ev: e, bout: b, section: isMain ? "main" : "prelim",
+        segAt: isMain ? e.startsAt : (e.prelimsStartsAt || e.startsAt),
+        f1: b.fighters[0].fighterName, f2: b.fighters[1].fighterName,
+      };
+    }
+  }
+  return null;
+}
+// Has this bout already been decided? Checks the live card first (a card in
+// progress) then the finalized results. Names are safe to match on here because
+// we're scoped to ONE event, so a rematch on another card can't collide.
+async function btBoutDecided(env, url, hit) {
+  const norm = (s) => String(s == null ? "" : s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  const live = await loadAssetJson(env, url, "/data/live-card.json");
+  const lf = (live && live.fighters) || {};
+  for (const nm of Object.keys(lf)) {
+    if (norm(nm) !== norm(hit.f1) && norm(nm) !== norm(hit.f2)) continue;
+    const rows = (lf[nm] && lf[nm].history) || [];
+    if (rows.some((r) => r && r.result && r.result !== "–" && (norm(r.opponent) === norm(hit.f1) || norm(r.opponent) === norm(hit.f2)))) return true;
+  }
+  const res = await loadAssetJson(env, url, "/data/pickem-results.json");
+  const ev = ((res && res.events) || []).find((x) => x && x.slug === hit.ev.slug);
+  if (ev && (ev.bouts || []).some((b) => (norm(b.f1) === norm(hit.f1) && norm(b.f2) === norm(hit.f2)) || (norm(b.f1) === norm(hit.f2) && norm(b.f2) === norm(hit.f1)))) return true;
+  return false;
+}
+
+async function handleBetsList(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  return json({ bets: await btGetBets(env, s.email) });
+}
+
+// Log a bet. The server owns the lock and CLV eligibility.
+async function handleBetsAdd(request, env, url) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const body = await readBody(request);
+  const kind = body.kind === "manual" ? "manual" : "tracked";
+  const odds = parseInt(body.odds, 10);
+  const stake = Math.max(0.1, Math.min(1000, Number(body.stake) || 1));
+  if (!isFinite(odds) || odds === 0) return json({ error: "Enter the odds you got." }, 400);
+  const now = Date.now();
+  const list = await btGetBets(env, s.email);
+  if (list.length >= BT_MAX) return json({ error: "Bet log is full." }, 400);
+
+  let rec;
+  if (kind === "manual") {
+    const match = String(body.match || "").slice(0, 160), pick = String(body.pick || "").slice(0, 160);
+    if (!match || !pick) return json({ error: "Fill in the matchup and your pick." }, 400);
+    // Self-reported: never verified, never CLV, user settles it.
+    rec = { id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "manual", verified: false,
+      market: "CUSTOM", pick, match, odds, stake, status: "pending", ts: now, createdAt: now, editable: true };
+  } else {
+    const hit = await btFindBout(env, url, String(body.fightId || ""));
+    if (!hit) return json({ error: "That fight isn't on an upcoming card." }, 400);
+    if (await btBoutDecided(env, url, hit)) return json({ error: "That fight has already finished.", locked: true }, 403);
+    const segAt = Date.parse(hit.segAt);
+    // Once a segment starts, its closing line is already captured — the bet still
+    // grades, it just can't earn CLV. Server-decided, so the client can't fake it.
+    const clvOk = !(isFinite(segAt) && now >= segAt);
+    const noClv = clvOk ? null : (hit.section === "main" ? "main card has started" : "prelims already started");
+    rec = {
+      id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "tracked", verified: true,
+      fightId: hit.id, evSlug: hit.ev.slug,
+      market: String(body.market || "ML").slice(0, 16),
+      pick: String(body.pick || "").slice(0, 160), match: String(body.match || "").slice(0, 160),
+      params: body.params && typeof body.params === "object" ? body.params : {},
+      priced: !!body.priced, closeSide: body.closeSide === 2 ? 2 : 1,
+      clvOk, noClv, odds, stake, ts: Date.parse(hit.ev.startsAt) || now,
+      createdAt: now, editable: clvOk,
+    };
+  }
+  list.push(rec);
+  await btPutBets(env, s.email, list);
+  return json({ ok: true, bet: rec });
+}
+
+// Settle a SELF-REPORTED bet. Tracked bets are graded from the result and can
+// never be settled by hand — that's what keeps the verified numbers honest.
+async function handleBetsSettle(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const { id, status } = await readBody(request);
+  if (["won", "lost", "push", "void"].indexOf(status) === -1) return json({ error: "bad status" }, 400);
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.kind !== "manual") return json({ error: "Tracked bets grade automatically." }, 403);
+  b.status = status;
+  await btPutBets(env, s.email, list);
+  return json({ ok: true });
+}
+
+// Delete while still pending and before the segment locks. After that the close
+// is knowable, so removing a losing CLV bet would launder the number.
+async function handleBetsDelete(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const { id } = await readBody(request);
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.editable === false) return json({ error: "This bet is locked in." }, 403);
+  await btPutBets(env, s.email, list.filter((x) => x.id !== id));
+  return json({ ok: true });
+}
 // Set of slugs that have a published lite profile — used to link fighter names on
 // the public pages ONLY when a /fighter/<slug> page actually exists (never 404).
 async function loadProfileSlugs(env, url) {
@@ -882,6 +1032,12 @@ export default {
       if (path === "/healthz") return new Response("ok");
 
       // ---- pick'em (subscriber feature; each handler checks the session) ----
+      // Bet & CLV tracker (premium). The server owns the lock + CLV eligibility.
+      if (path === "/api/bets" && request.method === "GET") return handleBetsList(request, env);
+      if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
+      if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
+      if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env);
+
       if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);
       if (path === "/api/pickem/name" && request.method === "POST") return handlePickemSetName(request, env);
       if (path === "/api/pickem/save" && request.method === "POST") return handlePickemSave(request, env);

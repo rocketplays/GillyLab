@@ -110536,7 +110536,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
      Bets bind to a BOUT ID, never a name pair, so a rematch can never be
      settled by an earlier fight between the same two men.
   ══════════════════════════════════════════════════════════════════════════ */
-  const BT_KEY = 'glBets.v1';
   const BT_CLOSE_LEAD_MIN = 10;
   const BT_MARKETS = {
     ML:        'Moneyline (winner)',
@@ -110563,9 +110562,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btEvDate = e => { const t = Date.parse(e && e.startsAt); return isFinite(t) ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' }) : ''; };
   const btEvLabel = e => { const d = btEvDate(e); return e.short + (d ? ' · ' + d : ''); };
 
-  function btLoad() { try { return JSON.parse(localStorage.getItem(BT_KEY)) || []; } catch (e) { return []; } }
-  function btSave(list) { try { localStorage.setItem(BT_KEY, JSON.stringify(list)); } catch (e) {} }
-  let BT_BETS = btLoad();
+  // Storage lives in the Worker (KV). The server stamps createdAt / verified /
+  // clvOk and owns the lock, so none of that is decided here.
+  let BT_BETS = [];
+  const btApi = (p, body) => fetch(p, body
+      ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+      : { method: 'GET' })
+    .then(r => r.json().then(j => ({ status: r.status, j: j })).catch(() => ({ status: r.status, j: {} })));
+  function btFetchBets() {
+    return btApi('/api/bets').then(function (r) {
+      BT_BETS = (r.status === 200 && Array.isArray(r.j.bets)) ? r.j.bets : [];
+      return BT_BETS;
+    }).catch(function () { BT_BETS = []; return BT_BETS; });
+  }
 
   // ── card data: every upcoming event we list, from the same feed the app uses
   function btLoadEvents() {
@@ -110664,10 +110673,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (R.isDraw && b.market === 'ML') return 'void';
     return btGradeWin(b, R, tr) ? 'won' : 'lost';
   }
-  function btGradeAll() {
-    let changed = false;
+  // Derive each tracked bet's result IN MEMORY at render time. Never persisted and
+  // never sent to the server — a bet's outcome is a fact about the fight, so it's
+  // recomputed from the result rather than stored (and so can't be forged by
+  // writing a status back). Self-reported bets keep the status the user set.
+  // Phase 3 moves this same derivation server-side for the results cron.
+  function btDeriveAll() {
     BT_BETS.forEach(b => {
-      if (b.kind !== 'tracked' || b.status !== 'pending') return;
+      if (b.kind !== 'tracked') return;
+      b.status = 'pending'; b.clv = null; b.closeOdds = null;
       const f = btAllFights().find(x => x.id === b.fightId);   // bout id, never names
       if (!f) return;
       const R = btFightResult(f); if (!R) return;
@@ -110676,11 +110690,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
         if (pair) { const c = b.closeSide === 2 ? pair.o2 : pair.o1; if (c != null) { b.closeOdds = c; b.clv = btClvPts(b.odds, c); } }
       }
-      changed = true;
     });
-    if (changed) btSave(BT_BETS);
   }
-  window.btGradeAll = btGradeAll;
+  window.btDeriveAll = btDeriveAll;
 
   // ── stats ────────────────────────────────────────────────────────────────
   const btInRange = b => { const d = BT_RANGE_DAYS[btRange]; return !d || (Date.now() - b.ts) <= d * 864e5; };
@@ -110714,9 +110726,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange;
 
   function btRender() {
-    btLoadEvents().then(function () {
+    Promise.all([btLoadEvents(), btFetchBets()]).then(function () {
       if (typeof loadOddsDataOnce === 'function') loadOddsDataOnce().then(function (o) { BT_ODDS = o; });
-      btGradeAll();
+      btDeriveAll();
       btSetView(btView);
     });
   }
@@ -110778,8 +110790,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return '<div class="bt-bet"><div class="bt-bet-top"><div><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
       '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
-  function btSettleBet(id, res) { const b = BT_BETS.find(x => x.id === id); if (b) { b.status = res; btSave(BT_BETS); btRenderHistory(); } }
-  function btDelete(id) { BT_BETS = BT_BETS.filter(x => x.id !== id); btSave(BT_BETS); btRenderHistory(); }
+  function btSettleBet(id, res) {
+    btApi('/api/bets/settle', { id: id, status: res }).then(function (r) {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not settle that bet.'); return; }
+      const b = BT_BETS.find(x => x.id === id); if (b) b.status = res;
+      btRenderHistory();
+    });
+  }
+  function btDelete(id) {
+    btApi('/api/bets/delete', { id: id }).then(function (r) {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not delete that bet.'); return; }
+      BT_BETS = BT_BETS.filter(x => x.id !== id);
+      btRenderHistory();
+    });
+  }
   window.btSettle = btSettleBet; window.btDelete = btDelete;
 
   // ── log a bet: event → fight → market → selection ────────────────────────
@@ -110871,30 +110895,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     host.innerHTML = h + '</div>';
   }
 
+  // The client sends only facts (which bout, which market, the price, the stake).
+  // The server re-derives the lock and CLV eligibility from the feed and its own
+  // clock, and returns the stored record.
   function btSubmitCard() {
     const f = btFight; if (!f) return;
-    if (btLocked(f)) { alert('That fight has already finished.'); return; }
     const odds = parseInt(document.getElementById('bt-odds').value, 10);
     const stake = parseFloat(document.getElementById('bt-stake').value) || 1;
     if (!isFinite(odds)) { alert('Enter the odds you got.'); return; }
     const p = btBuildPick(f);
-    const clvOk = !btSegStarted(f);   // segment start locks the close
-    BT_BETS.push({
-      id: Date.now(), kind: 'tracked', verified: true, fightId: f.id, evSlug: f.evSlug,
-      market: btMarket, pick: p.pick, match: btShort(f.f1) + ' vs ' + btShort(f.f2) + ' · ' + f.ev.short,
-      params: p.p, priced: p.priced, closeSide: p.closeSide, clvOk: clvOk, noClv: clvOk ? null : btNoClvWhy(f),
-      odds: odds, stake: stake, status: 'pending', clv: null, closeOdds: null,
-      ts: Date.parse(f.ev.startsAt) || Date.now(), createdAt: Date.now(), editable: clvOk,
+    btApi('/api/bets', {
+      kind: 'tracked', fightId: f.id, market: btMarket, pick: p.pick,
+      match: btShort(f.f1) + ' vs ' + btShort(f.f2) + ' · ' + f.ev.short,
+      params: p.p, priced: p.priced, closeSide: p.closeSide, odds: odds, stake: stake,
+    }).then(function (r) {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
+      BT_BETS.push(r.j.bet); btDeriveAll(); btSetView('history');
     });
-    btSave(BT_BETS); btSetView('history');
   }
   function btSubmitCustom() {
     const m = document.getElementById('bt-cmatch').value.trim(), s = document.getElementById('bt-csel').value.trim();
     const odds = parseInt(document.getElementById('bt-codds').value, 10), stake = parseFloat(document.getElementById('bt-cstake').value) || 1;
     if (!m || !s || !isFinite(odds)) { alert('Fill in the matchup, your pick and the odds.'); return; }
-    BT_BETS.push({ id: Date.now(), kind: 'manual', verified: false, market: 'CUSTOM', pick: s, match: m,
-      odds: odds, stake: stake, status: 'pending', clv: null, ts: Date.now(), createdAt: Date.now(), editable: true });
-    btSave(BT_BETS); btSetView('history');
+    btApi('/api/bets', { kind: 'manual', match: m, pick: s, odds: odds, stake: stake }).then(function (r) {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
+      BT_BETS.push(r.j.bet); btSetView('history');
+    });
   }
   window.btSubmitCard = btSubmitCard; window.btSubmitCustom = btSubmitCustom;
 
