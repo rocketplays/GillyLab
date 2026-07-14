@@ -173,7 +173,7 @@ function freeNavLinks(loggedIn, subscribed) {
   if (!loggedIn) return `<a href="/login">Log in</a><a class="pk-upg" href="/signup">Sign up free</a>`;
   return `${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}`;
 }
-const signupBanner = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:12px;padding:.8rem 1rem;margin:0 0 1.1rem;color:var(--text)"><span style="font-size:.85rem;line-height:1.4">Create a <strong>free account</strong> to play Pick'em and make your picks, or <a href="/subscribe" style="color:var(--accent);font-weight:700;text-decoration:none">Go Premium</a> for the full fighter database.</span><a href="/signup" style="flex:0 0 auto;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;white-space:nowrap;text-decoration:none">Sign up free &rarr;</a></div>`;
+const signupBanner = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:12px;padding:.8rem 1rem;margin:0 0 1.1rem;color:var(--text)"><span style="font-size:.85rem;line-height:1.4">Create a <strong>free account</strong> to play Pick'em and make your picks, or <a href="/subscribe" style="color:var(--accent);font-weight:700;text-decoration:none">Go Premium</a> for the full fighter database and tools.</span><a href="/signup" style="flex:0 0 auto;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;white-space:nowrap;text-decoration:none">Sign up free &rarr;</a></div>`;
 
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
@@ -1792,7 +1792,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     return `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}</div>`;
   };
   // Locked teaser for the paywalled sections on non-main bouts.
-  const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Style · Pace · Path to victory · Storylines · H2H stats</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
+  const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Fight simulator · Style · Pace · Path to victory · Storylines · H2H stats</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
   const nonMainPanel = (f) => `<div class="mf-panel" hidden>${taleHTML(f, f.tape)}${lockedTeaser}</div>`;
 
   // Main-event breakdown — mirrors the in-app scouting panel exactly:
@@ -2048,7 +2048,7 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   const lockGrid = [
     lockItem("Fight simulator", "Run this fighter against anyone on the roster."),
     lockItem("Full fight history", "Every pro bout — result, method, round &amp; opponent."),
-    lockItem("Box scores", "Strikes, takedowns &amp; control for every bout, head-to-head."),
+    lockItem("Box scores", "Full detailed statistics for every UFC bout in history, head-to-head."),
     lockItem("Tape study", "Links to full video of each of their previous fights."),
     lockItem("Closing-line history", "Their closing line for each fight — favorite or underdog."),
     lockItem("Accolades", "Belt ranks, titles, finishes, bonuses &amp; records."),
