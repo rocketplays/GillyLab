@@ -43,6 +43,25 @@ PCT = ["strAcc", "strDef", "tdAcc", "tdDef"]
 UA = {"User-Agent": "Mozilla/5.0 (GillyLab recompute-card-stats)"}
 
 
+def load_aliases():
+    """feed/ESPN slug -> DB FIGHTER_STATS key, parsed from index.html's SLUG_ALIASES
+    so this stays in sync with the app (e.g. 'king-green' -> 'Bobby Green',
+    'zach-reese' -> 'Zachary Reese') without a second hand-kept list."""
+    try:
+        h = open(INDEX, encoding="utf-8").read()
+    except Exception:
+        return {}
+    m = re.search(r"const SLUG_ALIASES\s*=\s*\{([\s\S]*?)\n\s*\};", h)
+    d = {}
+    if m:
+        for k, v in re.findall(r"'([^']+)'\s*:\s*'([^']+)'", m.group(1)):
+            d[k] = v
+    return d
+
+
+ALIASES = load_aliases()
+
+
 def espn_find_id(name):
     """Fallback id resolution via ESPN search (for fighters not in the idmap)."""
     try:
@@ -71,10 +90,22 @@ def db_name_map():
     return slug2name, stats_keys
 
 
+def resolve_db_name(slug, slug2name, feed_name):
+    """feed slug -> the FIGHTER_STATS key: alias first, then the roster's slug map,
+    else the feed name."""
+    return ALIASES.get(slug) or slug2name.get(slug) or feed_name
+
+
 def pick_fighters(args, slug2name):
-    """Return a de-duped list of (dbName, fighterSlug) to recompute."""
+    """Return a de-duped list of (dbName, fighterSlug, feedName) to recompute.
+    feedName is kept so ESPN id resolution can search under the name ESPN uses
+    (e.g. "King Green"), even when the DB key is the alias ("Bobby Green")."""
     if args.names:
-        return [(n, rv.imp.name_to_slug(n)) for n in args.names]
+        out = []
+        for n in args.names:
+            slug = rv.imp.name_to_slug(n)
+            out.append((resolve_db_name(slug, slug2name, n), slug, n))
+        return out
     try:
         ev = json.load(open(EVENT_RECENT, encoding="utf-8"))
     except Exception:
@@ -98,14 +129,15 @@ def pick_fighters(args, slug2name):
                 continue
         for b in (e.get("bouts") or []):
             for f in (b.get("fighters") or []):
-                slug = f.get("fighterSlug") or rv.imp.name_to_slug(f.get("fighterName", ""))
-                dbn = slug2name.get(slug) or f.get("fighterName")
+                feed = f.get("fighterName", "")
+                slug = f.get("fighterSlug") or rv.imp.name_to_slug(feed)
+                dbn = resolve_db_name(slug, slug2name, feed)
                 if dbn:
-                    picked.append((dbn, slug))
+                    picked.append((dbn, slug, feed))
     seen = set(); out = []
-    for dbn, slug in picked:
+    for dbn, slug, feed in picked:
         if dbn not in seen:
-            seen.add(dbn); out.append((dbn, slug))
+            seen.add(dbn); out.append((dbn, slug, feed))
     return out
 
 
@@ -172,8 +204,8 @@ def main():
     print("recomputing stats for %d fighter(s):" % len(fighters))
     h = open(INDEX, encoding="utf-8").read()
     updated = fields = noid = nostats = unchanged = 0
-    for dbn, slug in fighters:
-        sid = slug2id.get(slug) or idmap.get(dbn) or espn_find_id(dbn)
+    for dbn, slug, feed in fighters:
+        sid = slug2id.get(slug) or idmap.get(dbn) or espn_find_id(feed) or espn_find_id(dbn)
         if not sid:
             print("  %-26s  (no ESPN id — skipped)" % dbn); noid += 1; continue
         try:
