@@ -851,7 +851,9 @@ export default {
           { headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" } });
       }
       if (path === "/sitemap.xml") {
-        const urls = ["/", "/matchup", "/rankings", "/roster", "/about", "/terms", "/privacy", "/contact"];
+        // Note: /terms + /privacy are intentionally noindex (boilerplate), so they're
+        // omitted here — a noindex URL in the sitemap trips a Search Console warning.
+        const urls = ["/", "/matchup", "/rankings", "/roster", "/about", "/contact"];
         // Enumerate every published lite fighter profile so crawlers can find the
         // (deliberately unlinked) /fighter/<slug> pages.
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");

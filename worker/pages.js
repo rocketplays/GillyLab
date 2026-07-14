@@ -51,9 +51,12 @@ function profileSlugFor(name, slugSet, ...extra) {
   return "";
 }
 
-const shell = (title, body, extraJs = "", footer = false) => `<!doctype html><html lang="en"><head>
+const shell = (title, body, extraJs = "", footer = false, seo = null) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
+${seo ? `<meta name="description" content="${String(seo.desc || "").replace(/"/g, "&quot;")}">
+<link rel="canonical" href="${SITE_URL}${seo.path}">
+${ogTags(title, seo.desc, seo.path)}` : ""}
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--border:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55);--text:#f4f5f7}
   *{box-sizing:border-box}
@@ -216,6 +219,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 <link rel="icon" href="/favicon-48.png?v=7" type="image/png" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7">
 <meta name="theme-color" content="#0a0a0b">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"${SITE_URL}/#org","name":"GillyLab","url":"${SITE_URL}/","logo":"${SITE_URL}/gl-logo.png","description":"The ultimate UFC analytics database — deep fighter stats, a fight simulator, live odds, matchup breakdowns, rankings and more."},{"@type":"WebSite","@id":"${SITE_URL}/#website","name":"GillyLab","url":"${SITE_URL}/","publisher":{"@id":"${SITE_URL}/#org"}}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
@@ -945,7 +949,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     }).catch(function(){
       m.className="msg err"; m.textContent="Couldn't start checkout — please try again in a moment."; b.disabled=false;
     });
-  });`);
+  });`, false, { desc: "Go Premium on GillyLab — the fight simulator, full fighter analytics, career box scores, live odds, line-movement tracking, a parlay builder, tape study and more.", path: "/subscribe" });
 
 export const accountPage = (email, subscribed) => shell("Account — GillyLab", `
   <a class="back-link" href="${subscribed ? "/" : "/pickem"}" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
@@ -1890,12 +1894,28 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     ? (mainFull ? mainFull + " headlines " : "") + evName + (ufcCity ? " (" + ufcCity + ")" : "") + (when ? ", " + esc(when) : "") + " — full fight card, live odds and the tale of the tape for every bout, free on GillyLab."
     : "The next UFC card with live odds and the tale of the tape for every bout, free on GillyLab.";
 
+  // schema.org Event structured data for the upcoming card (name, date, venue,
+  // competitors) so it can surface as a rich event result.
+  const eventLd = card ? `<script type="application/ld+json">${JSON.stringify(Object.assign({
+    "@context": "https://schema.org", "@type": "Event",
+    name: card.event + (mainF ? ": " + mainF.f1 + " vs " + mainF.f2 : ""),
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    url: SITE_URL + "/matchup",
+    image: SITE_URL + "/og.png",
+  },
+    (card.prelimsAt || card.date) ? { startDate: card.prelimsAt || card.date } : {},
+    card.location ? { location: { "@type": "Place", name: card.location.split(",")[0].trim(), address: card.location } } : {},
+    (card.fights && card.fights.length) ? { performer: card.fights.flatMap((f) => [{ "@type": "Person", name: f.f1 }, { "@type": "Person", name: f.f2 }]) } : {}
+  )).replace(/</g, "\\u003c")}</script>` : "";
+
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${seoTitle}</title>
 <meta name="description" content="${seoDesc}">
 <link rel="canonical" href="${SITE_URL}/matchup">
 ${ogTags(seoTitle, seoDesc, "/matchup")}
+${eventLd}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
@@ -2275,7 +2295,7 @@ export const contactPage = () => shell("Contact GillyLab", `
       <div id="m" class="msg"></div>
     </form>
     <div class="alt muted"><a href="#" onclick="${BACK_JS}">Back</a></div>
-  </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`);
+  </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`, false, { desc: "Questions, feedback or an issue with GillyLab? Send us a message and we'll get back to you.", path: "/contact" });
 
 export const notePage = (title, msg) => shell(title, `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
@@ -2377,8 +2397,10 @@ const MANDRELL_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOgAAADoCAY
 // ── About us (public, own readable shell — mirrors the legal pages) ───────────
 export const aboutPage = () => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>About GillyLab</title>
-<meta name="description" content="Built by bettors, for bettors — one place to do all of your UFC research.">
+<title>About GillyLab — UFC Analytics Built by Bettors</title>
+<meta name="description" content="Built by bettors, for bettors — one place to do all of your UFC research: deep fighter analytics, a fight simulator, live odds, matchup breakdowns and more.">
+<link rel="canonical" href="${SITE_URL}/about">
+${ogTags("About GillyLab — UFC Analytics Built by Bettors", "Built by bettors, for bettors — one place to do all of your UFC research: deep fighter analytics, a fight simulator, live odds, matchup breakdowns and more.", "/about")}
 <link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml"><link rel="icon" href="/favicon.ico?v=6" sizes="any">
 <style>
   *{box-sizing:border-box} html{background:#0a0a0b}
