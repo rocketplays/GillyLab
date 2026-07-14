@@ -191,6 +191,7 @@ function buildFeatured(rk, recMap) {
     ]},
     { t: 'Miscellaneous', rows: [
       mkRow('Finish rate', _statNumG(st.finRate), true, 'finRate', false),
+      mkRow('Win streak', _winStreak(champ.fighterName), false, null, false),
     ]},
   ];
   if (groups.reduce((n, g) => n + g.rows.filter(r => r.val !== '—').length, 0) < 4) return null;

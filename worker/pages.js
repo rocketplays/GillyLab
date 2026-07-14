@@ -457,7 +457,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
     <div class="sc-head">
-      <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Detailed fighter analytics</span><span class="sc-tag prem" id="ft">PREMIUM</span></div>
+      <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Fight simulator</span><span class="sc-tag prem" id="ft">PREMIUM</span></div>
       <div class="sc-nav">
         <span class="sc-arrow" id="pv" role="button" tabindex="0" aria-label="Previous feature">‹</span>
         <span class="sc-arrow" id="nx" role="button" tabindex="0" aria-label="Next feature">›</span>
@@ -784,7 +784,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<span><b>You</b> \\u00b7 #3 of 128 \\u00b7 <span style="color:'+A+'">+74 last card</span></span></div>';
 
   var slides=[
-    {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — champions to prospects.',h:analytics},
     {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the fight ends.',h:sim},
     {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
     {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
@@ -794,6 +793,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
     {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
+    {t:'Detailed fighter analytics',d:'Career striking and grappling stats for every fighter — free on every lite profile.',h:analytics,f:1},
     {t:'Pick\\u2019em predictions',d:'Call every fight on the card, lock in before the prelims, then climb the live leaderboard — free.',h:pickem,f:1},
     {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank,f:1},
     {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster,f:1}
