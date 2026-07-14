@@ -109,6 +109,12 @@ function _shortGym(g) {
   if (!g) return g;
   return String(g).split('/').map(p => { const t = p.trim(); return _GYM_ABBR[t.toLowerCase()] || t; }).join('/');
 }
+// Division abbreviation aliases — "WFLY" is a pre-existing alternate code for
+// Women's Flyweight (WFLW) used on a handful of fighters; the app normalizes it
+// via SIM_DIVISION_ALIASES, so mirror that here or those fighters form their own
+// tiny (<8) cohort and get no median bars.
+const DIV_ALIAS = { WFLY: 'WFLW' };
+const _canonDiv = (d) => DIV_ALIAS[d] || d || '';
 // A fighter's roster division ABBREVIATION ("WW", "LW", …) and the peers who share
 // it — FIGHTERS stores the abbreviation, which is what the profile's medians use too.
 function _fighterDivAbbrev(name) {
@@ -116,12 +122,12 @@ function _fighterDivAbbrev(name) {
   // "Jose Miguel Delgado") still resolves to the DB's canonical entry.
   const cn = canonStatName(name);
   const m = idx.match(new RegExp('\\{ name: "' + cn.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '", division: "([^"]*)"', 'i'));
-  return m ? m[1] : '';
+  return m ? _canonDiv(m[1]) : '';
 }
 function _divToNames(abbrev) {
   if (!abbrev) return [];
   const re = /\{ name: "([^"]+)", division: "([^"]*)"/g; let x; const out = [];
-  while ((x = re.exec(idx))) { if (x[2] === abbrev) out.push(x[1]); }
+  while ((x = re.exec(idx))) { if (_canonDiv(x[2]) === abbrev) out.push(x[1]); }
   return out;
 }
 function _activeSet() {
@@ -751,7 +757,7 @@ function buildFighterLite(recMap, ranks) {
       name, slug,
       record: card.record || f.record || "",
       rank: card.rank || "",
-      division: _DIV_NAMES[f.div] || f.div || "",
+      division: _DIV_NAMES[_canonDiv(f.div)] || _canonDiv(f.div) || "",
       country: f.country || "",
       photo: card.slug || (photoExists(slug) ? slug : ""),
       phys: _physOf(name),
