@@ -16,7 +16,7 @@ Selection (in priority order):
   * positional NAMES                        -> just those fighters
   * --event <slug>                          -> that event's fighters
   * (default / --recent) --within-days N    -> fighters on every COMPLETED event
-      in data/event-recent.json whose start is within N days (default 2). This
+      in data/event-recent.json whose start is within N days (default 3). This
       is what the daily workflow uses: it no-ops on days with no fresh card, and
       is idempotent (a second run finds nothing left to change).
 
@@ -157,7 +157,7 @@ def main():
     ap.add_argument("names", nargs="*")
     ap.add_argument("--event")
     ap.add_argument("--recent", action="store_true")
-    ap.add_argument("--within-days", type=float, default=2.0)
+    ap.add_argument("--within-days", type=float, default=3.0)
     ap.add_argument("--bout-workers", type=int, default=12)
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()

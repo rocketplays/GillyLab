@@ -118,8 +118,9 @@ jobs:
       # sapm, strDef, kd, tdLanded, tdAcc, tdDef, subAvg) for that card's fighters
       # from ESPN's full bout log, so career averages include the new fight, and
       # patch just those fields in index.html. --recent no-ops when no completed
-      # card fell in the last 2 days; idempotent + self-healing (re-runs correct
-      # any ESPN lag). Bio, fight history and odds history are handled elsewhere.
+      # card fell in the last 3 days; idempotent + self-healing (re-runs correct
+      # any ESPN lag/provisional box scores). Bio, fight history and odds history
+      # are handled elsewhere.
       # Runs BEFORE the landing/profile regen so the lite profiles pick up the
       # fresh stats. Non-fatal.
       - name: Recompute post-card fighter stats
