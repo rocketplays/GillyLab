@@ -109625,7 +109625,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return n;
   }
 
-  // Overlay the auto-captured closing lines (data/odds-closing.json, written ~30 min
+  // Overlay the auto-captured closing lines (data/odds-closing.json, written ~10 min
   // before each card section starts by scripts/capture-closing-odds.cjs) onto
   // ODDS_HISTORY, so the retrospective's "Closing odds" fills in for every card
   // without hand-editing this file. Merged in place, deduped by opponent last name +
@@ -110587,7 +110587,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           const sec = String(b.cardSection || '').toLowerCase();
           const isMain = sec.indexOf('main') !== -1 && sec.indexOf('prelim') === -1;
           return {
-            id: b.id || b.boutId || (e.slug + '|' + b.boutOrder),   // bout identity — never a name pair
+            // Bout identity. ESPN's b.id is NAME-DERIVED ("espn-<f1>-vs-<f2>"), so a
+            // rematch produces the SAME id on a different card — scope it to the
+            // event or a bet on the rematch would settle off the first fight.
+            id: e.slug + '|' + (b.id || b.boutOrder),
+            rawId: b.id || String(b.boutOrder),
             f1: b.fighters[0].fighterName, f2: b.fighters[1].fighterName,
             rounds: b.numberOfRounds || 3,
             section: isMain ? 'main' : 'prelim',
@@ -110682,7 +110686,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     BT_BETS.forEach(b => {
       if (b.kind !== 'tracked') return;
       b.status = 'pending'; b.clv = null; b.closeOdds = null;
-      const f = btAllFights().find(x => x.id === b.fightId);   // bout id, never names
+      // Composite <event>|<bout> id. Falls back to the bare id scoped by event so
+      // bets logged before the composite fix still resolve.
+      const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
       if (!f) return;
       const R = btFightResult(f); if (!R) return;
       b.status = btSettle(b, R, f.rounds);

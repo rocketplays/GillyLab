@@ -453,6 +453,8 @@ const btPutBets = (env, email, list) => env.PICKS.put(btKey(email), JSON.stringi
 
 // Find a bout in the upcoming feed by its bout id — the same identity the client
 // bets against, so a rematch can never be confused with the earlier fight.
+// NOTE: ESPN's bout id is name-derived ("espn-<f1>-vs-<f2>"), so it repeats for a
+// rematch. The identity is therefore "<eventSlug>|<boutId>", never the bare id.
 async function btFindBout(env, url, fightId) {
   const feed = await loadAssetJson(env, url, "/data/event.json");
   const evs = (feed && feed.data) || [];
@@ -460,7 +462,7 @@ async function btFindBout(env, url, fightId) {
     if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
     for (const b of e.bouts) {
       if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
-      const id = b.id || b.boutId || (e.slug + "|" + b.boutOrder);
+      const id = e.slug + "|" + (b.id || b.boutOrder);
       if (id !== fightId) continue;
       const sec = String(b.cardSection || "").toLowerCase();
       const isMain = sec.indexOf("main") !== -1 && sec.indexOf("prelim") === -1;
