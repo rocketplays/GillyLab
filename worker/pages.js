@@ -2094,6 +2094,7 @@ ${ldScript}
   .fp-sub{color:var(--muted);font-size:.86rem;margin-top:.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .5rem}
   .fp-rec{color:var(--text);font-weight:700}
   .fp-chip{background:rgba(0,230,104,.14);color:var(--accent);border-radius:999px;padding:.08rem .55rem;font-size:.72rem;font-weight:800;letter-spacing:.02em}
+  .fp-chip.fp-champ{background:rgba(255,199,64,.16);color:#ffcb3d}
   .fp-dot{color:rgba(255,255,255,.25)}
   /* physicals + stat bars — identical styling to the in-app profile (.fsx-*) */
   .fsx-bio{display:flex;flex-wrap:wrap;gap:1.5rem;padding:1rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:.3rem}
@@ -2143,7 +2144,7 @@ ${ldScript}
       ${av}
       <div class="fp-h-main">
         <h1 class="fp-name">${esc(f.name)}</h1>
-        <div class="fp-sub">${f.record ? `<span class="fp-rec">${esc(f.record)}</span>` : ""}${rankLabel ? `<span class="fp-chip">${esc(rankLabel)}</span>` : ""}${f.division ? `${f.record || rankLabel ? '<span class="fp-dot">·</span>' : ""}<span>${esc(f.division)}</span>` : ""}${f.country ? `<span class="fp-dot">·</span><span>${esc(f.country)}</span>` : ""}</div>
+        <div class="fp-sub">${f.record ? `<span class="fp-rec">${esc(f.record)}</span>` : ""}${rankLabel ? `<span class="fp-chip${rankLabel === "Champion" ? " fp-champ" : ""}">${esc(rankLabel)}</span>` : ""}${f.division ? `${f.record || rankLabel ? '<span class="fp-dot">·</span>' : ""}<span>${esc(f.division)}</span>` : ""}${f.country ? `<span class="fp-dot">·</span><span>${esc(f.country)}</span>` : ""}</div>
       </div>
     </div>
     ${physHTML}
