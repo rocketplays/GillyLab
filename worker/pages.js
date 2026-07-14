@@ -1876,12 +1876,18 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}</div>`;
   };
 
+  // Moneyline color: the favorite (smaller American number, e.g. -247 < +200)
+  // greens, the underdog reds. Left white when either price is missing or even.
+  const mlNum = (v) => { const m = /([+-]?\d+(?:\.\d+)?)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[0]) : null; };
   const rowHTML = (f) => {
     const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
     const sA = profileSlugFor(f.f1, profileSlugs, f.s1);
     const sB = profileSlugFor(f.f2, profileSlugs, f.s2);
-    const innerL = `${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div>`;
-    const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
+    const o1n = mlNum(f.o1), o2n = mlNum(f.o2);
+    let c1 = "", c2 = "";
+    if (o1n != null && o2n != null && o1n !== o2n) { c1 = o1n < o2n ? "fav" : "dog"; c2 = o1n < o2n ? "dog" : "fav"; }
+    const innerL = `${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b class="${c1}">${fmtO(f.o1)}</b></div></div>`;
+    const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b class="${c2}">${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
     const sideL = sA ? `<a class="mf-side mf-link" href="/fighter/${esc(sA)}">${innerL}</a>` : `<div class="mf-side">${innerL}</div>`;
     const sideR = sB ? `<a class="mf-side right mf-link" href="/fighter/${esc(sB)}">${innerR}</a>` : `<div class="mf-side right">${innerR}</div>`;
     return `<div class="mf-card${f.main ? " main" : ""}">
@@ -1982,6 +1988,8 @@ ${eventLd}
   .mf-name{font-weight:700;font-size:.9rem;line-height:1.15}
   .mf-rec{font-size:.72rem;color:var(--muted)}
   .mf-rec b{color:var(--text)}
+  .mf-rec b.fav{color:var(--accent)}
+  .mf-rec b.dog{color:#ff6a5e}
   .mf-center{flex:0 0 78px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.15rem}
   .mf-vs{font-weight:800;font-size:.75rem;color:var(--muted);letter-spacing:.08em}
   .mf-wt{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}

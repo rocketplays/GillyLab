@@ -826,6 +826,10 @@
       letter-spacing: 0.06em;
       margin-top: 0.15rem;
     }
+    /* Moneyline chip next to the record: favorite greens, underdog reds. */
+    .fighter-record .gl-ml { font-weight: 700; }
+    .fighter-record .gl-ml-fav { color: var(--accent); }
+    .fighter-record .gl-ml-dog { color: #ff6a5e; }
 
     .fighter-rank {
       font-size: 0.7rem;
@@ -102536,19 +102540,8 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
     const aR = parseReach(statsA.reach), bR = parseReach(statsB.reach);
     const aS = statsA.stance || null, bS = statsB.stance || null;
     const box = cmpBlock('Tale of the tape');
-    // Moneyline — pending spans filled lazily by fillPendingMoneylines().
-    (function () {
-      const row = document.createElement('div'); row.className = 'sr-cmp-row';
-      const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Moneyline'; row.appendChild(l);
-      [['1', name, opp], ['2', name, opp]].forEach(([side]) => {
-        const d = document.createElement('div'); d.className = 'sr-cmp-val';
-        const sp = document.createElement('span'); sp.className = 'fight-ml-pending';
-        sp.setAttribute('data-f1', name); sp.setAttribute('data-f2', opp); sp.setAttribute('data-side', side);
-        sp.innerHTML = '<span style="color:var(--muted);font-size:0.78rem;">…</span>';
-        d.appendChild(sp); row.appendChild(d);
-      });
-      box.appendChild(row);
-    })();
+    // Moneyline moved out to sit next to each fighter's record on the card itself
+    // (see mlRecHTML); the Tale of the tape now leads with age.
     if (ageA != null || ageB != null) {
       const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
       cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
@@ -103910,7 +103903,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               (f.completed
                 ? '<div class="fighter-name gl-name-wrap"><span class="gl-name-txt">' + f.f1 + '</span>' + glResultTag(f, 1) + '</div>'
                 : '<div class="fighter-name">' + f.f1 + '</div>') +
-              '<div class="fighter-record">' + f.rec1 + '</div>' +
+              '<div class="fighter-record">' + mlRecHTML(f, 1, f.rec1) + '</div>' +
             '</div>' +
           '</div>' +
           '<div class="fight-center">' +
@@ -103932,7 +103925,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
               (f.completed
                 ? '<div class="fighter-name gl-name-wrap right"><span class="gl-name-txt">' + f.f2 + '</span>' + glResultTag(f, 2) + '</div>'
                 : '<div class="fighter-name">' + f.f2 + '</div>') +
-              '<div class="fighter-record">' + f.rec2 + '</div>' +
+              '<div class="fighter-record">' + mlRecHTML(f, 2, f.rec2) + '</div>' +
             '</div>' +
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
@@ -103978,6 +103971,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
     }
 
+    // Fill the record-adjacent moneyline chips now that the cards are in the DOM.
+    if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     setTimeout(loadHomePagePhotos, 100);
   }
 
@@ -104230,6 +104225,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return has1 ? { o1: r1, o2: comp } : { o1: comp, o2: r2 };
   }
 
+  // Moneyline chip shown next to a fighter's record on the event + carousel cards
+  // (upcoming bouts only — completed fights show closing odds in the details panel).
+  // A pending span fillPendingMoneylines() resolves to the colored price; the
+  // favorite (smaller American number) greens, the underdog reds, matching the
+  // free /matchup page. Reads "record · ML" on the left, "ML · record" on the right.
+  function mlRecHTML(f, side, rec) {
+    if (f && f.completed) return rec;
+    const sp = '<span class="fight-ml-pending gl-ml" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') + '" data-side="' + side + '">…</span>';
+    return side === 2 ? (sp + ' · ' + rec) : (rec + ' · ' + sp);
+  }
   function fillPendingMoneylines() {
     const pending = document.querySelectorAll('.fight-ml-pending');
     if (!pending.length) return;
@@ -104239,16 +104244,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const side = el.getAttribute('data-side');
         const odds = findFightOdds(f1, f2, oddsData);
         let price = odds ? (side === '2' ? odds.o2 : odds.o1) : null;
+        let other = odds ? (side === '2' ? odds.o1 : odds.o2) : null;
         // Past events have aged out of the live odds feed — fall back to ODDS_HISTORY,
         // reconciled into a consistent no-vig pair so both sides always correspond.
-        if (price === null || price === undefined) {
+        // Fetch the opponent's price too, so the favorite/underdog colour is correct.
+        if (price === null || price === undefined || other === null || other === undefined) {
           const pair = oddsHistoryPair(f1, f2);
-          if (pair) price = (side === '2') ? pair.o2 : pair.o1;
+          if (pair) {
+            if (price === null || price === undefined) price = (side === '2') ? pair.o2 : pair.o1;
+            if (other === null || other === undefined) other = (side === '2') ? pair.o1 : pair.o2;
+          }
         }
+        el.classList.remove('fight-ml-pending', 'gl-ml-fav', 'gl-ml-dog');
+        // Favorite = the smaller American number (e.g. -247 < +200).
+        if (price != null && other != null && price !== other) el.classList.add(price < other ? 'gl-ml-fav' : 'gl-ml-dog');
         el.innerHTML = (price === null || price === undefined)
           ? '<span style="color:var(--muted);font-size:0.78rem;">N/A</span>'
           : fmtOdds(price);
-        el.classList.remove('fight-ml-pending');
       });
     });
   }
@@ -106378,7 +106390,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div style="min-width:0;flex:1;">' +
             '<div class="fighter-rank">' + f.r1 + '</div>' +
             '<div class="fighter-name">' + f.f1 + '</div>' +
-            '<div class="fighter-record">' + f.rec1 + '</div>' +
+            '<div class="fighter-record">' + mlRecHTML(f, 1, f.rec1) + '</div>' +
           '</div>' +
         '</div>' +
         '<div class="fight-center">' +
@@ -106391,7 +106403,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div style="min-width:0;flex:1;text-align:right;">' +
             '<div class="fighter-rank">' + f.r2 + '</div>' +
             '<div class="fighter-name">' + f.f2 + '</div>' +
-            '<div class="fighter-record">' + f.rec2 + '</div>' +
+            '<div class="fighter-record">' + mlRecHTML(f, 2, f.rec2) + '</div>' +
           '</div>' +
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
@@ -106510,6 +106522,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
 
     track.innerHTML = cards.join('');
+    if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     if (window.reinitCarousel) window.reinitCarousel(eventsForCarousel);
     if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 50);
   }
