@@ -711,7 +711,7 @@ function buildCard(recMap) {
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;
   if (main) { main.pA = fighterProfileCard(fights[0].f1, recMap, ranks); main.pB = fighterProfileCard(fights[0].f2, recMap, ranks); }
-  return { event: ev.title || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, fights, main };
+  return { event: ev.title || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, location: ev.locationText || [ev.venue, ev.city].filter(Boolean).join(", ") || "", fights, main };
 }
 
 // A marquee fighter's closing-line history — mirrors the profile Odds History tab.

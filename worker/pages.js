@@ -1629,7 +1629,7 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
     <h1>UFC Rankings</h1>
     <p class="rk-sub" id="rkDate">${rk.date}</p>
     <div class="rk-toggle"><button type="button" data-src="media" class="sel">Media Panel</button><button type="button" data-src="meta">Meta AI</button></div>
-    <p class="rk-hint">Tap or click any name to open their <b>lite profile</b>.</p>
+    <p class="rk-hint"><span class="tapword">Tap</span> any name to open their <b>lite profile</b>.</p>
     <div class="rk-tabs" id="rkTabs">${rk.tabs}</div>
     <div id="rkPanels">${rk.panels}</div>
     <div class="rk-cta">${subscribed ? `Every fighter's full profile is in the app. <a href="/">Open GillyLab →</a>` : `Rankings are free. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>
@@ -1646,6 +1646,7 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
     function rkImgErr(img){var fb=img.getAttribute("data-fb");if(fb&&img.getAttribute("src").indexOf(fb)<0&&!img.getAttribute("data-tried")){img.setAttribute("data-tried","1");img.src=fb;return;}img.outerHTML='<div class="rk-av">'+(img.getAttribute("data-ini")||"?")+'</div>';}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
+    (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
     var SRC="media",BYDIV={},ACTIVE=null,EX={},KSLUG=${JSON.stringify(KSLUG)};
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
     function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";var psl=KSLUG[e.fighterSlug];var nameHTML=psl?'<a class="rk-name" href="/fighter/'+psl+'">'+esc(name)+'</a>':'<span class="rk-name">'+esc(name)+'</span>';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+nameHTML+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
@@ -1744,7 +1745,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
     ${loggedIn ? "" : signupBanner}
     <h1>Active Roster</h1>
     <p class="rs-sub">Every fighter on the UFC roster, plus the week's signings and releases.</p>
-    <p class="rs-hint">Tap or click any name to open their <b>lite profile</b>.</p>
+    <p class="rs-hint"><span class="tapword">Tap</span> any name to open their <b>lite profile</b>.</p>
     <div id="rsChanges">${rs.changes}</div>
     <div class="ar-bar" id="rsAZ">${rs.az}</div>
     <div id="rsList">${rs.list}</div>
@@ -1757,6 +1758,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     // Roster is embedded server-side (already rendered above); the client only adds
     // letter filtering. No fetch — so nothing can wipe the server-rendered list.
+    (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
     var ROSTER=${JSON.stringify(R)},RSLUG=${JSON.stringify(RSLUG)},LETTER="All";
     function nameCell(n){var s=RSLUG[n];return s?'<a class="ar-name" href="/fighter/'+s+'">'+esc(n)+'</a>':'<span class="ar-name">'+esc(n)+'</span>';}
     function renderList(){
@@ -1853,7 +1855,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
         ${sideR}
       </div>
-      ${f.main && (sA || sB) ? `<div class="mf-taphint">Tap (or click on desktop) a fighter for their lite profile</div>` : ""}
+      ${f.main && (sA || sB) ? `<div class="mf-taphint"><span class="tapword">Tap</span> a fighter for their lite profile</div>` : ""}
       ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
     </div>`;
   };
@@ -1866,7 +1868,11 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const secs = Object.keys(bySec).sort((a, b) => (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99));
     body = secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map(rowHTML).join("")).join("");
   }
-  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) : "";
+  // card.date is a UTC calendar date, which for US-evening cards is a day ahead of
+  // the real (Eastern-time) event date. Anchor on the actual prelims timestamp and
+  // format it in America/New_York so the day is correct (fall back to card.date).
+  const evTs = card && (card.prelimsAt || (card.date ? card.date + "T18:00:00Z" : null));
+  const when = evTs ? new Date(evTs).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" }) : "";
   // Card-specific SEO (title + description) so this page ranks for "<event> fight card".
   const mainF = card && card.fights && card.fights[0];
   const evName = card ? esc(card.event) : "Next UFC card";
@@ -1989,7 +1995,7 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
     ${freeTabs("/matchup")}
     ${loggedIn ? "" : signupBanner}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
-    <p class="mf-sub">${when ? esc(when) : "Upcoming card"}</p>
+    <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}</p>
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>
@@ -1997,6 +2003,7 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
   <script>
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
+    (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
       var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;
