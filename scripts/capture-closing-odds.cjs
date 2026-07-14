@@ -1,9 +1,9 @@
 'use strict';
-// Closing-line capture. Runs on fight day and, ~30 minutes before a card section
+// Closing-line capture. Runs on fight day and, ~10 minutes before a card section
 // starts, records the consensus moneyline for the fights in THAT section into
 // data/odds-closing.json. Two firings per card:
-//   • ~30 min before prelims  -> capture the prelim + early-prelim bouts
-//   • ~30 min before main card -> capture the main-card bouts
+//   • ~10 min before prelims  -> capture the prelim + early-prelim bouts
+//   • ~10 min before main card -> capture the main-card bouts
 // Capturing each section right before it starts gives a truer closing line (main
 // card odds keep moving after prelims begin). The client merges this overlay into
 // ODDS_HISTORY at load, so the retrospective's "Closing odds" fills in automatically
@@ -24,10 +24,16 @@ const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
 const CLOSING_PATH = path.join(ROOT, 'data', 'odds-closing.json');
 const ODDS_SRC = process.env.ODDS_SRC || path.join(ROOT, 'data', 'odds.json');
 
-// Fire ~30 min out: capture on the first cron tick inside [start-40m, start-15m];
+// Fire ~10 min out: capture on the first cron tick inside [start-12m, start-2m];
 // idempotency (a fight already recorded) makes later ticks in the window no-ops.
-const WIN_EARLY_MS = 40 * 60 * 1000;
-const WIN_LATE_MS  = 15 * 60 * 1000;
+// The first tick inside wins, so the capture skews to the EARLY edge — which is
+// why the window opens at 12m, not 10m, to land nearer 10 than 2.
+// This window is only 10 min wide, so the workflow ticks */5 (a */15 cron would
+// step straight over it). If every tick in the window is dropped or delayed past
+// start-2m we simply capture nothing for that section: those bets keep grading,
+// they just carry no closing line and so earn no CLV.
+const WIN_EARLY_MS = 12 * 60 * 1000;
+const WIN_LATE_MS  = 2 * 60 * 1000;
 
 const loadJson = (p, fb) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return fb; } };
 // event.json and the odds feed spell names differently — accents ("Benoît" vs
@@ -61,7 +67,7 @@ function easternDateStr(iso) {
 }
 const isMainCard = (b) => /main\s*card/i.test(b.cardSection || '');
 
-// Which event + section is ~30 min from starting right now (or null).
+// Which event + section is ~10 min from starting right now (or null).
 function pickTarget(events, now) {
   const inWin = (t) => isFinite(t) && now >= t - WIN_EARLY_MS && now <= t - WIN_LATE_MS;
   for (const ev of events) {

@@ -1,16 +1,21 @@
 name: Capture closing odds
 
-# On fight day, ~30 minutes before each card section starts, snapshot the consensus
+# On fight day, ~10 minutes before each card section starts, snapshot the consensus
 # moneyline for that section into data/odds-closing.json (the client overlays it onto
 # ODDS_HISTORY, so the retrospective's "Closing odds" fills in automatically):
-#   • ~30 min before prelims  -> prelim + early-prelim bouts
-#   • ~30 min before main card -> main-card bouts
-# A cheap */15 tick self-gates via ESPN's prelimsStartsAt / startsAt; only the ticks
+#   • ~10 min before prelims  -> prelim + early-prelim bouts
+#   • ~10 min before main card -> main-card bouts
+# A cheap tick self-gates via ESPN's prelimsStartsAt / startsAt; only the ticks
 # inside a capture window do any work, and idempotency makes repeats no-ops.
+#
+# The cron ticks */5, not */15: the capture window is [start-12m, start-2m], only
+# 10 minutes wide, so a quarter-hourly tick would step clean over it. That's ~3x
+# the (tiny, gate-only) fight-day runs — the cost of a closing line taken nearer
+# the bell.
 on:
   schedule:
-    - cron: '*/15 6-23 * * 6'   # Saturday, UTC — covers 30-min-before for early intl. + US cards
-    - cron: '*/15 0-9 * * 0'    # Sunday morning UTC — tail of a US Saturday card
+    - cron: '*/5 6-23 * * 6'    # Saturday, UTC — covers 10-min-before for early intl. + US cards
+    - cron: '*/5 0-9 * * 0'     # Sunday morning UTC — tail of a US Saturday card
   workflow_dispatch:
     inputs:
       force_slug:  { description: 'Force an event slug (manual capture)', required: false }
@@ -35,7 +40,7 @@ jobs:
         with:
           node-version: '20'
 
-      # Cheap gate: is a card section ~30 min from starting right now? (Manual runs
+      # Cheap gate: is a card section ~10 min from starting right now? (Manual runs
       # always proceed.)
       - name: Is a capture window open?
         id: gate
