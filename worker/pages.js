@@ -1652,7 +1652,7 @@ function rosterSSR(roster) {
     : '<p class="rs-empty">Loading roster…</p>';
   return { changes, az, list };
 }
-export const rosterPage = ({ subscribed, loggedIn, roster }) => { const rs = rosterSSR(roster); return `<!doctype html><html lang="en"><head>
+export const rosterPage = ({ subscribed, loggedIn, roster }) => { const rs = rosterSSR(roster); const R = (roster && roster.fighters) || []; return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
 <meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
@@ -1711,21 +1711,19 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
     function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
-    var ROSTER=[],CHANGES=[],LETTER="All";
-    function renderChanges(){
-      var el=document.getElementById("rsChanges");if(!CHANGES.length){el.innerHTML="";return;}
-      function col(title,items,color,first){return '<div style="'+(first?"":"margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);")+'"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:'+color+';margin-bottom:.7rem"><span>'+title+'</span><span style="background:'+color+'22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">'+items.length+'</span></div>'+(items.length?'<div style="display:flex;flex-direction:column;gap:.4rem">'+items.map(function(n){return '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:'+color+';font-size:.58rem">●</span><span>'+esc(n)+'</span></div>';}).join("")+'</div>':'<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');}
-      el.innerHTML=CHANGES.map(function(w){return '<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem"><div style="font-size:.8rem;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.55);margin-bottom:1.1rem">'+esc(w.week)+'</div>'+col("Added",w.added||[],"#00e668",true)+col("Removed",w.removed||[],"#ff9500",false)+'</div>';}).join("");
-    }
+    // Roster is embedded server-side (already rendered above); the client only adds
+    // letter filtering. No fetch — so nothing can wipe the server-rendered list.
+    var ROSTER=${JSON.stringify(R)},LETTER="All";
     function renderList(){
       var az=document.getElementById("rsAZ"),list=document.getElementById("rsList");
+      if(!az||!list)return;
       var letters=["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
       az.innerHTML=letters.map(function(L){return '<button type="button" class="ar-letter'+(L===LETTER?" active":"")+'" data-l="'+L+'">'+L+'</button>';}).join("");
       var shown=ROSTER.filter(function(n){return LETTER==="All"||String(n).toUpperCase().charAt(0)===LETTER;});
       list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(LETTER==="All"?" on the active roster":"")+'</div><div class="ar-grid">'+shown.map(function(n){return '<span class="ar-name">'+esc(n)+'</span>';}).join("")+'</div>';
     }
-    document.getElementById("rsAZ").addEventListener("click",function(e){var b=e.target.closest(".ar-letter");if(b){LETTER=b.dataset.l;renderList();}});
-    fetch("/data/roster.json").then(function(r){return r.json();}).then(function(j){ROSTER=(j&&j.fighters)||[];CHANGES=(j&&j.changes)||[];renderChanges();renderList();}).catch(function(){document.getElementById("rsList").innerHTML='<p class="rs-empty">Roster unavailable right now.</p>';});
+    var rsAZ=document.getElementById("rsAZ");
+    if(rsAZ)rsAZ.addEventListener("click",function(e){var b=e.target.closest(".ar-letter");if(b&&b.dataset.l!==LETTER){LETTER=b.dataset.l;renderList();}});
   </script>
 </body></html>`; };
 
