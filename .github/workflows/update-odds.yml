@@ -114,6 +114,17 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
 
+      # After a card, recompute the 9 box-score FIGHTER_STATS fields (slpm, strAcc,
+      # sapm, strDef, kd, tdLanded, tdAcc, tdDef, subAvg) for that card's fighters
+      # from ESPN's full bout log, so career averages include the new fight, and
+      # patch just those fields in index.html. --recent no-ops when no completed
+      # card fell in the last 2 days; idempotent + self-healing (re-runs correct
+      # any ESPN lag). Bio, fight history and odds history are handled elsewhere.
+      # Runs BEFORE the landing/profile regen so the lite profiles pick up the
+      # fresh stats. Non-fatal.
+      - name: Recompute post-card fighter stats
+        run: python3 scripts/recompute-card-stats.py --recent || true
+
       # Regenerate the public landing page's live data snapshot (featured
       # division rankings + latest roster changes) from the current repo state,
       # so the logged-out marketing page stays current. Self-guards: keeps the
@@ -184,7 +195,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
@@ -205,6 +216,7 @@ jobs:
           node scripts/apply-card-section-overrides.cjs || true
           node scripts/apply-fighter-overrides.cjs || true
           node scripts/apply-missing-bout-overrides.cjs || true
+          python3 scripts/recompute-card-stats.py --recent || true
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-carousel.cjs || true
