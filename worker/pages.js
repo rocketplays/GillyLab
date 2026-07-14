@@ -30,6 +30,27 @@ const BACK_JS = "event.preventDefault();if(document.referrer&&document.referrer.
 // Back-to-landing arrow, top-left (used on the signup + login pages).
 const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
+// Fighter-name → profile slug (mirrors scripts/gen-landing-data.cjs nameToSlug so
+// links line up with the /fighter/<slug> pages). Only ever LINK when the slug is
+// known to exist (checked against the fighter-lite slug set) so clicks never 404.
+const SLUG_MAP = { "ł": "l", "Ł": "l", "đ": "d", "Đ": "d", "ø": "o", "Ø": "o", "æ": "ae", "Æ": "ae", "œ": "oe", "Œ": "oe", "ß": "ss", "ı": "i", "İ": "i" };
+function nameToSlug(name) {
+  return String(name).toLowerCase()
+    .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, "")
+    .replace(/[łŁđĐøØæÆœŒßıİ]/g, (ch) => SLUG_MAP[ch] || ch)
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/['’]/g, "")
+    .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+// Resolve a display name to an existing profile slug, or "" if none. `extra`
+// slugs (e.g. a page's own photo slug) are tried as fallbacks.
+function profileSlugFor(name, slugSet, ...extra) {
+  if (!slugSet || !slugSet.size) return "";
+  const cands = [nameToSlug(name), ...extra.filter(Boolean)];
+  for (const c of cands) if (c && slugSet.has(c)) return c;
+  return "";
+}
+
 const shell = (title, body, extraJs = "", footer = false) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title}</title>
@@ -1515,15 +1536,16 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 const RK_DIVS = { "Heavyweight": { tag: "Heavyweight" }, "Light Heavyweight": { tag: "Light Heavyweight" }, "Middleweight": { tag: "Middleweight" }, "Welterweight": { tag: "Welterweight" }, "Lightweight": { tag: "Lightweight" }, "Featherweight": { tag: "Featherweight" }, "Bantamweight": { tag: "Bantamweight" }, "Flyweight": { tag: "Flyweight" }, "Women's Strawweight": { tag: "Strawweight" }, "Women's Flyweight": { tag: "W. Flyweight" }, "Women's Bantamweight": { tag: "W. Bantamweight" } };
 const RK_PORDER = ["Men's Pound-for-Pound Top Rank", "Women's Pound-for-Pound Top Rank", "Heavyweight", "Light Heavyweight", "Middleweight", "Welterweight", "Lightweight", "Featherweight", "Bantamweight", "Flyweight", "Women's Strawweight", "Women's Flyweight", "Women's Bantamweight"];
 const RK_SHORT = { "Men's Pound-for-Pound Top Rank": "Men's P4P", "Women's Pound-for-Pound Top Rank": "Women's P4P", "Light Heavyweight": "Light Heavy", "Women's Strawweight": "W. Strawweight", "Women's Flyweight": "W. Flyweight", "Women's Bantamweight": "W. Bantamweight" };
-function rankingsSSR(rankings, extra) {
+function rankingsSSR(rankings, extra, kslug) {
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   if (!rankings || !Array.isArray(rankings.data) || !rankings.data.length) return { tabs: "", panels: `<p class="rk-empty">Loading rankings…</p>`, date: "Official divisional rankings." };
   const EX = extra || {};
+  const KS = kslug || {};
   const inits = (n) => String(n || "").trim().split(/\s+/).map((w) => w[0] || "").slice(0, 2).join("").toUpperCase() || "?";
   const tag = (name) => name.indexOf("Pound-for-Pound") >= 0 ? (name.indexOf("Women") === 0 ? "Women's Pound-for-Pound" : "Men's Pound-for-Pound") : (RK_DIVS[name] ? RK_DIVS[name].tag : name);
   const tabLabel = (n) => RK_SHORT[n] || (RK_DIVS[n] ? RK_DIVS[n].tag : n);
   const movBadge = (e) => { const c = e.rankChange; const t = (e.rankChangeText || "").toUpperCase(); if (t === "NEW" || e.isNewEntry) return '<span class="rk-mov new">NEW</span>'; if (typeof c === "number" && c > 0) return '<span class="rk-mov up">▲' + c + '</span>'; if (typeof c === "number" && c < 0) return '<span class="rk-mov down">▼' + Math.abs(c) + '</span>'; return '<span class="rk-mov"></span>'; };
-  const rowHTML = (e) => { const ex = EX[e.fighterSlug] || {}; const name = ex.name || e.fighterName; const champ = e.isChampion; const num = champ ? "C" : ("#" + (e.rank != null ? e.rank : "?")); const ini = esc(inits(name)); const localThumb = "/photos/thumb/" + esc(ex.photo || e.fighterSlug || "x") + ".png"; const primary = (e.imageUrl && e.imageUrl.length > 10) ? esc(e.imageUrl) : localThumb; const img = '<img class="rk-av" src="' + primary + '" data-fb="' + localThumb + '" data-ini="' + ini + '" alt="" loading="lazy" onerror="rkImgErr(this)">'; const flag = e.flag || ex.flag || ""; return '<div class="rk-row' + (champ ? " rk-champ" : "") + '"><span class="rk-num">' + num + '</span>' + img + '<span class="rk-name">' + esc(name) + '</span>' + (flag ? '<span class="rk-flag">' + esc(flag) + '</span>' : "") + movBadge(e) + '</div>'; };
+  const rowHTML = (e) => { const ex = EX[e.fighterSlug] || {}; const name = ex.name || e.fighterName; const champ = e.isChampion; const num = champ ? "C" : ("#" + (e.rank != null ? e.rank : "?")); const ini = esc(inits(name)); const localThumb = "/photos/thumb/" + esc(ex.photo || e.fighterSlug || "x") + ".png"; const primary = (e.imageUrl && e.imageUrl.length > 10) ? esc(e.imageUrl) : localThumb; const img = '<img class="rk-av" src="' + primary + '" data-fb="' + localThumb + '" data-ini="' + ini + '" alt="" loading="lazy" onerror="rkImgErr(this)">'; const flag = e.flag || ex.flag || ""; const psl = KS[e.fighterSlug]; const nameHTML = psl ? '<a class="rk-name" href="/fighter/' + psl + '">' + esc(name) + '</a>' : '<span class="rk-name">' + esc(name) + '</span>'; return '<div class="rk-row' + (champ ? " rk-champ" : "") + '"><span class="rk-num">' + num + '</span>' + img + nameHTML + (flag ? '<span class="rk-flag">' + esc(flag) + '</span>' : "") + movBadge(e) + '</div>'; };
   const byDiv = {}; rankings.data.forEach((e) => (byDiv[e.division] = byDiv[e.division] || []).push(e));
   const divs = RK_PORDER.filter((d) => byDiv[d] && byDiv[d].length);
   const tabs = divs.map((d) => `<button type="button" class="rk-tab" data-div="${esc(d)}">${esc(tabLabel(d))}</button>`).join("");
@@ -1537,7 +1559,11 @@ function rankingsSSR(rankings, extra) {
 }
 
 // ── Free /rankings page (public for SEO; server-rendered, then hydrated client-side) ──
-export const rankingsPage = ({ subscribed, loggedIn, rankings, extra }) => { const rk = rankingsSSR(rankings, extra); return `<!doctype html><html lang="en"><head>
+export const rankingsPage = ({ subscribed, loggedIn, rankings, extra, profileSlugs }) => {
+  // fighterSlug → existing profile slug, for the ranked fighters that have a lite profile.
+  const KSLUG = {}; const _EX = extra || {};
+  ((rankings && rankings.data) || []).forEach((e) => { const nm = (_EX[e.fighterSlug] && _EX[e.fighterSlug].name) || e.fighterName; const s = profileSlugFor(nm, profileSlugs); if (s && e.fighterSlug) KSLUG[e.fighterSlug] = s; });
+  const rk = rankingsSSR(rankings, extra, KSLUG); return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UFC Rankings — Every Division · GillyLab</title>
 <meta name="description" content="Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.">
@@ -1579,6 +1605,8 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .rk-av{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:top center;background:#1b1e25;flex:0 0 auto;border:2px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--muted)}
   .rk-champ .rk-av{border-color:#ffcf7a}
   .rk-name{flex:1;min-width:0;font-weight:600;font-size:.92rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  a.rk-name{color:inherit;text-decoration:none;cursor:pointer;transition:color .12s}
+  a.rk-name:hover{color:var(--accent)}
   .rk-champ .rk-name{font-weight:800}
   .rk-flag{font-size:1rem;flex:0 0 auto}
   .rk-mov{flex:0 0 auto;font-size:.72rem;font-weight:800;min-width:2.2rem;text-align:right}
@@ -1615,9 +1643,9 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
     function rkImgErr(img){var fb=img.getAttribute("data-fb");if(fb&&img.getAttribute("src").indexOf(fb)<0&&!img.getAttribute("data-tried")){img.setAttribute("data-tried","1");img.src=fb;return;}img.outerHTML='<div class="rk-av">'+(img.getAttribute("data-ini")||"?")+'</div>';}
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
-    var SRC="media",BYDIV={},ACTIVE=null,EX={};
+    var SRC="media",BYDIV={},ACTIVE=null,EX={},KSLUG=${JSON.stringify(KSLUG)};
     function movBadge(e){var c=e.rankChange;var t=(e.rankChangeText||"").toUpperCase();if(t==="NEW"||e.isNewEntry)return '<span class="rk-mov new">NEW</span>';if(typeof c==="number"&&c>0)return '<span class="rk-mov up">▲'+c+'</span>';if(typeof c==="number"&&c<0)return '<span class="rk-mov down">▼'+Math.abs(c)+'</span>';return '<span class="rk-mov"></span>';}
-    function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+'<span class="rk-name">'+esc(name)+'</span>'+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
+    function rowHTML(e){var ex=EX[e.fighterSlug]||{};var name=ex.name||e.fighterName;var champ=e.isChampion;var num=champ?"C":("#"+(e.rank!=null?e.rank:"?"));var ini=esc(inits(name));var localThumb="/photos/thumb/"+esc(ex.photo||e.fighterSlug||"x")+".png";var primary=(e.imageUrl&&e.imageUrl.length>10)?esc(e.imageUrl):localThumb;var img='<img class="rk-av" src="'+primary+'" data-fb="'+localThumb+'" data-ini="'+ini+'" alt="" loading="lazy" onerror="rkImgErr(this)">';var flag=e.flag||ex.flag||"";var psl=KSLUG[e.fighterSlug];var nameHTML=psl?'<a class="rk-name" href="/fighter/'+psl+'">'+esc(name)+'</a>':'<span class="rk-name">'+esc(name)+'</span>';return '<div class="rk-row'+(champ?" rk-champ":"")+'"><span class="rk-num">'+num+'</span>'+img+nameHTML+(flag?'<span class="rk-flag">'+esc(flag)+'</span>':"")+movBadge(e)+'</div>';}
     function showDiv(name){ACTIVE=name;Array.prototype.forEach.call(document.querySelectorAll(".rk-tab"),function(b){b.classList.toggle("sel",b.dataset.div===name);});var entries=(BYDIV[name]||[]).slice().sort(function(a,b){return (a.isChampion?-1:0)-(b.isChampion?-1:0)||(a.rank||99)-(b.rank||99);});document.getElementById("rkPanels").innerHTML='<div class="rk-panel-title">'+esc(tag(name))+'</div>'+(entries.length?entries.map(rowHTML).join(""):'<p class="rk-empty">No entries.</p>');}
     function load(keep){
       if(!keep)document.getElementById("rkPanels").innerHTML='<p class="rk-empty">Loading rankings…</p>';
@@ -1640,19 +1668,24 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
 // ── Free /roster page (login-gated; active roster + weekly changes) ──────────────
 // Server-side roster render (SEO): the full A–Z fighter list + weekly changes in the
 // initial HTML; the page's JS hydrates over it (adds letter filtering) on load.
-function rosterSSR(roster) {
+function rosterSSR(roster, slugMap) {
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const M = slugMap || {};
   const R = (roster && roster.fighters) || [];
   const CH = (roster && roster.changes) || [];
+  const nameCell = (n) => M[n] ? '<a class="ar-name" href="/fighter/' + M[n] + '">' + esc(n) + '</a>' : '<span class="ar-name">' + esc(n) + '</span>';
   const col = (title, items, color, first) => '<div style="' + (first ? "" : "margin-top:1.35rem;padding-top:1.35rem;border-top:1px solid rgba(255,255,255,.08);") + '"><div style="display:flex;align-items:center;gap:.45rem;font-size:.72rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:' + color + ';margin-bottom:.7rem"><span>' + title + '</span><span style="background:' + color + '22;border-radius:999px;padding:.05rem .5rem;font-size:.7rem;line-height:1.5">' + items.length + '</span></div>' + (items.length ? '<div style="display:flex;flex-direction:column;gap:.4rem">' + items.map((n) => '<div style="display:flex;align-items:center;gap:.55rem;color:#fff;font-size:.92rem"><span style="color:' + color + ';font-size:.58rem">●</span><span>' + esc(n) + '</span></div>').join("") + '</div>' : '<div style="color:rgba(255,255,255,.35);font-size:.85rem">None</div>');
   const changes = CH.length ? CH.map((w) => '<div style="border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.025);padding:1.25rem 1.5rem;margin-bottom:1.1rem"><div style="font-size:.8rem;font-weight:700;letter-spacing:.02em;color:rgba(255,255,255,.55);margin-bottom:1.1rem">' + esc(w.week) + '</div>' + col("Added", w.added || [], "#00e668", true) + col("Removed", w.removed || [], "#ff9500", false) + '</div>').join("") : "";
   const az = ["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("")).map((L) => '<button type="button" class="ar-letter' + (L === "All" ? " active" : "") + '" data-l="' + L + '">' + L + '</button>').join("");
   const list = R.length
-    ? '<div class="ar-count">' + R.length + ' fighters on the active roster</div><div class="ar-grid">' + R.map((n) => '<span class="ar-name">' + esc(n) + '</span>').join("") + '</div>'
+    ? '<div class="ar-count">' + R.length + ' fighters on the active roster</div><div class="ar-grid">' + R.map(nameCell).join("") + '</div>'
     : '<p class="rs-empty">Loading roster…</p>';
   return { changes, az, list };
 }
-export const rosterPage = ({ subscribed, loggedIn, roster }) => { const rs = rosterSSR(roster); const R = (roster && roster.fighters) || []; return `<!doctype html><html lang="en"><head>
+export const rosterPage = ({ subscribed, loggedIn, roster, profileSlugs }) => {
+  const R = (roster && roster.fighters) || [];
+  const RSLUG = {}; R.forEach((n) => { const s = profileSlugFor(n, profileSlugs); if (s) RSLUG[n] = s; });
+  const rs = rosterSSR(roster, RSLUG); return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
 <meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
@@ -1686,6 +1719,8 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
   .ar-count{font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:.85rem}
   .ar-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 1.25rem}
   .ar-name{display:block;padding:.4rem 0;font-size:.92rem;color:#fff;border-bottom:1px solid rgba(255,255,255,.06)}
+  a.ar-name{text-decoration:none;cursor:pointer;transition:color .12s}
+  a.ar-name:hover{color:var(--accent)}
   .rs-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .rs-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .rs-cta a{color:var(--accent);text-decoration:none;font-weight:700}
@@ -1713,14 +1748,15 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     // Roster is embedded server-side (already rendered above); the client only adds
     // letter filtering. No fetch — so nothing can wipe the server-rendered list.
-    var ROSTER=${JSON.stringify(R)},LETTER="All";
+    var ROSTER=${JSON.stringify(R)},RSLUG=${JSON.stringify(RSLUG)},LETTER="All";
+    function nameCell(n){var s=RSLUG[n];return s?'<a class="ar-name" href="/fighter/'+s+'">'+esc(n)+'</a>':'<span class="ar-name">'+esc(n)+'</span>';}
     function renderList(){
       var az=document.getElementById("rsAZ"),list=document.getElementById("rsList");
       if(!az||!list)return;
       var letters=["All"].concat("ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""));
       az.innerHTML=letters.map(function(L){return '<button type="button" class="ar-letter'+(L===LETTER?" active":"")+'" data-l="'+L+'">'+L+'</button>';}).join("");
       var shown=ROSTER.filter(function(n){return LETTER==="All"||String(n).toUpperCase().charAt(0)===LETTER;});
-      list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(LETTER==="All"?" on the active roster":"")+'</div><div class="ar-grid">'+shown.map(function(n){return '<span class="ar-name">'+esc(n)+'</span>';}).join("")+'</div>';
+      list.innerHTML='<div class="ar-count">'+shown.length+' fighters'+(LETTER==="All"?" on the active roster":"")+'</div><div class="ar-grid">'+shown.map(nameCell).join("")+'</div>';
     }
     var rsAZ=document.getElementById("rsAZ");
     if(rsAZ)rsAZ.addEventListener("click",function(e){var b=e.target.closest(".ar-letter");if(b&&b.dataset.l!==LETTER){LETTER=b.dataset.l;renderList();}});
@@ -1728,7 +1764,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
 </body></html>`; };
 
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed, loggedIn }) => {
+export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const card = (landingData && landingData.card) || null;
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
@@ -1796,14 +1832,18 @@ export const matchupPage = ({ subscribed, loggedIn }) => {
 
   const rowHTML = (f) => {
     const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
-    const tap = (side) => f.main ? ` onclick="mpOpen('${side}')" style="cursor:pointer"` : "";
+    const sA = profileSlugFor(f.f1, profileSlugs, f.s1);
+    const sB = profileSlugFor(f.f2, profileSlugs, f.s2);
+    const innerL = `${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div>`;
+    const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
+    const sideL = sA ? `<a class="mf-side mf-link" href="/fighter/${esc(sA)}">${innerL}</a>` : `<div class="mf-side">${innerL}</div>`;
+    const sideR = sB ? `<a class="mf-side right mf-link" href="/fighter/${esc(sB)}">${innerR}</a>` : `<div class="mf-side right">${innerR}</div>`;
     return `<div class="mf-card${f.main ? " main" : ""}">
       <div class="mf-row">
-        <div class="mf-side"${tap("a")}>${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b>${fmtO(f.o1)}</b></div></div></div>
+        ${sideL}
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
-        <div class="mf-side right"${tap("b")}><div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b>${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}</div>
+        ${sideR}
       </div>
-      ${f.main ? `<div class="mf-taphint">Tap a fighter for their stats</div>` : ""}
       ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
     </div>`;
   };
@@ -1858,6 +1898,9 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
   .mf-card.main{border-color:rgba(0,230,104,.45)}
   .mf-row{display:flex;align-items:center;gap:.4rem;padding:.7rem .6rem}
   .mf-side{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
+  a.mf-side.mf-link{text-decoration:none;color:inherit;cursor:pointer;border-radius:8px;transition:opacity .12s}
+  a.mf-side.mf-link:hover .mf-name{color:var(--accent)}
+  a.mf-side.mf-link:active{opacity:.7}
   .mf-side.right{flex-direction:row-reverse;text-align:right}
   .mf-av{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid rgba(255,255,255,.14);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--muted)}
   .mf-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
@@ -1936,27 +1979,12 @@ ${ogTags(seoTitle, seoDesc, "/matchup")}
     ${freeTabs("/matchup")}
     ${loggedIn ? "" : signupBanner}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
-    <p class="mf-sub">${when ? esc(when) + " · " : ""}Full card — tap “Fight Info” on any bout for the tale of the tape, plus the complete main-event breakdown.</p>
+    <p class="mf-sub">${when ? esc(when) + " · " : ""}Tap a fighter for their profile, or “Fight Info” on any bout for the tale of the tape and the main-event breakdown.</p>
     ${body}
     <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
   </main>
   ${FREE_FOOTER}
-  <div class="mp-overlay" id="mpOverlay" hidden><div class="mp-sheet" id="mpSheet"></div></div>
   <script>
-    var MP={a:${JSON.stringify((card && card.main && card.main.pA) || null)},b:${JSON.stringify((card && card.main && card.main.pB) || null)}};
-    function mpEsc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
-    function mpBar(r){if(!r.bar)return '<span class="mp-val '+r.cls+'">'+mpEsc(r.val)+'</span>';return '<span class="mp-bar"><span class="mp-fill '+r.cls+'" style="width:'+r.w+'%"></span>'+(r.tickX!=null?'<span class="mp-tick" style="left:'+r.tickX+'%"></span>':"")+'</span><span class="mp-val '+r.cls+'">'+mpEsc(r.val)+'</span>';}
-    function mpRender(p){
-      var ini=String(p.name||"").trim().split(/\\s+/).map(function(w){return w[0]||"";}).slice(0,2).join("").toUpperCase()||"?";
-      var av=p.slug?'<div class="mp-av"><img src="/photos/thumb/'+mpEsc(p.slug)+'.png" alt="" onerror="this.parentNode.textContent=\\''+ini+'\\'"></div>':'<div class="mp-av">'+ini+'</div>';
-      var grps=(p.groups||[]).map(function(g){return '<div class="mp-grp-t">'+mpEsc(g.t)+'</div>'+g.rows.map(function(r){return '<div class="mp-row"><span class="mp-lbl">'+mpEsc(r.label)+'</span>'+mpBar(r)+'</div>';}).join("");}).join("");
-      var legend=p.bars?'<div class="mp-legend"><span class="mp-lg"><span class="mp-lg-sw good"></span>better than average</span><span class="mp-lg"><span class="mp-lg-sw bad"></span>below average</span><span class="mp-lg"><span class="mp-lg-tick"></span>division average</span></div>':"";
-      return '<div class="mp-hdr">'+av+'<div><div class="mp-name">'+mpEsc(p.name)+'</div><div class="mp-meta">'+mpEsc(p.record)+(p.rank&&p.rank!=="NR"?" · "+mpEsc(p.rank):"")+'</div></div><button type="button" class="mp-close" onclick="mpClose()" aria-label="Close">×</button></div>'+legend+grps+'<div class="mp-foot">Full profile — fight history, tape study, odds history, accolades &amp; more, on this fighter and every fighter.<br><a href="/subscribe">Go Premium →</a></div>';
-    }
-    window.mpOpen=function(which){var p=MP[which];if(!p)return;document.getElementById("mpSheet").innerHTML=mpRender(p);document.getElementById("mpSheet").scrollTop=0;document.getElementById("mpOverlay").hidden=false;document.body.style.overflow="hidden";};
-    window.mpClose=function(){document.getElementById("mpOverlay").hidden=true;document.body.style.overflow="";};
-    document.getElementById("mpOverlay").addEventListener("click",function(e){if(e.target===this)mpClose();});
-    document.addEventListener("keydown",function(e){if(e.key==="Escape")mpClose();});
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;

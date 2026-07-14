@@ -421,6 +421,12 @@ async function loadPickemScore(env, url) {
 async function loadAssetJson(env, url, p) {
   try { const r = await env.ASSETS.fetch(new Request(new URL(p, url))); if (!r.ok) return null; return await r.json(); } catch { return null; }
 }
+// Set of slugs that have a published lite profile — used to link fighter names on
+// the public pages ONLY when a /fighter/<slug> page actually exists (never 404).
+async function loadProfileSlugs(env, url) {
+  const j = await loadAssetJson(env, url, "/data/fighter-lite.json");
+  return new Set(j && j.bySlug ? Object.keys(j.bySlug) : []);
+}
 // Live standings for the focus card: grade every submitted entry against the
 // decided-so-far bouts, fresh each request. Read-only — it does NOT touch the agg
 // records or the gr:<slug> marker, so the end-of-card sweep still runs once, later.
@@ -927,25 +933,30 @@ export default {
       const pubHeaders = (s) => s ? { "Cache-Control": "private, no-store" } : { "Cache-Control": "public, max-age=300" };
       if (path === "/rankings") {
         const s = await readSession(request, env);
-        const [u, rk, ex] = await Promise.all([
+        const [u, rk, ex, profileSlugs] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadAssetJson(env, url, "/data/rankings.json"),
           loadAssetJson(env, url, "/data/rankings-extra.json"),
+          loadProfileSlugs(env, url),
         ]);
-        return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s, rankings: rk, extra: (ex && ex.bySlug) || {} }), 200, pubHeaders(s));
+        return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s, rankings: rk, extra: (ex && ex.bySlug) || {}, profileSlugs }), 200, pubHeaders(s));
       }
       if (path === "/roster") {
         const s = await readSession(request, env);
-        const [u, ro] = await Promise.all([
+        const [u, ro, profileSlugs] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadAssetJson(env, url, "/data/roster.json"),
+          loadProfileSlugs(env, url),
         ]);
-        return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s, roster: ro }), 200, pubHeaders(s));
+        return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s, roster: ro, profileSlugs }), 200, pubHeaders(s));
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);
-        const u = s ? await getUser(env, s.email) : null;
-        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
+        const [u, profileSlugs] = await Promise.all([
+          s ? getUser(env, s.email) : null,
+          loadProfileSlugs(env, url),
+        ]);
+        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs }), 200, pubHeaders(s));
       }
       // Lite fighter profiles (unlinked from the funnel; discoverable via sitemap).
       if (path.startsWith("/fighter/")) {
