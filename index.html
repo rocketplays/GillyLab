@@ -105752,7 +105752,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }).join('');
     const panels = fights.map((f, i) => {
       const historyEntry = typeof findHistoryEntry === 'function' ? findHistoryEntry(f) : null;
-      const f1 = f.home_team, f2 = f.away_team;
+      // Display/photo/link off the CANONICAL name so an Odds-API romanization that
+      // differs from our DB (e.g. "Seok Hyun Ko" vs "Seokhyeon Ko") still shows the
+      // right name, headshot and profile link. Price lookups below stay on the raw
+      // odds object `f` (its home_team/away_team keys must match the bookmaker rows).
+      const f1 = (typeof resolveCanonicalFighterName === 'function' ? resolveCanonicalFighterName(f.home_team, '') : '') || f.home_team;
+      const f2 = (typeof resolveCanonicalFighterName === 'function' ? resolveCanonicalFighterName(f.away_team, '') : '') || f.away_team;
       const header = `<div class="odds-board-header">
         <div class="obh-fighter">
           <div class="proj-avatar obh-avatar-link" data-fighter="${f1}">${oddsAvatarInitials(f1)}</div>
@@ -106581,6 +106586,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // ufc.com's own athlete URL slugs him by his full legal name.
     'luis-dias-de-assis': 'Luis Felipe Dias',
     'yisak-lee': 'Yi Sak Lee',
+    // The Odds API romanizes his Korean name syllable-by-syllable ("Seok Hyun Ko");
+    // our DB / ESPN use "Seokhyeon Ko".
+    'seok-hyun-ko': 'Seokhyeon Ko',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -106594,6 +106602,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'asu almabaev': 'Asu Almabayev',
     'javier reyes rugeles': 'Javier Reyes',
     'jose miguel delgado': 'Jose Delgado',
+    'seok hyun ko': 'Seokhyeon Ko',
     'luis dias de assis': 'Luis Felipe Dias',
     // Bobby "King" Green — feeds that list his post-2024 legal name (and the
     // slug-less Odds API) return "King Green"; map it to his DB profile.
