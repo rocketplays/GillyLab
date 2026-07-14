@@ -1872,7 +1872,9 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const commonBox = common.length ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Common opponents</div>${common.map((c) => `<div class="sr-common-row"><div class="sr-co-name">${esc(c.opp)}</div><div class="sr-co-res ${c.aCls}">${esc(sA)}: ${esc(c.a)}</div><div class="sr-co-res ${c.bCls}">${esc(sB)}: ${esc(c.b)}</div></div>`).join("")}</div>` : "";
     // Tale of the tape (physical: age/height/reach/stance) — shared with non-main bouts.
     const tape = taleHTML(mf, t);
-    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}${finishBox}${commonBox}</div>`;
+    // Storylines sit at the very bottom of the dropdown (after finish/durability
+    // and common opponents), mirroring the in-app Fight Info order.
+    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}</div>`;
   };
 
   const rowHTML = (f) => {

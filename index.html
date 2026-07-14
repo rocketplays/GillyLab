@@ -101560,8 +101560,11 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       };
       add(name, 'var(--accent)', aBul);
       add(opp, '#ffcf7a', bBul);
-      OUT.storyA = aBul; OUT.storyB = bBul;
-      if (host) host.appendChild(box3);
+      OUT.storyA = aBul; OUT.storyB = bBul; OUT.storylinesBox = box3;
+      // Fight Info defers storylines to the very bottom of the dropdown (appended
+      // by renderScouting via the returned OUT.storylinesBox); the simulator keeps
+      // them inline here.
+      if (host && !opts.deferStorylines) host.appendChild(box3);
     })();
 
     if (opts.taleOfTape && (statsA.slpm != null || statsB.slpm != null)) {
@@ -102572,8 +102575,11 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
 
   // Style, pace, path-to-victory + tale of the tape now live in the shared
   // renderMatchupBreakdown() (also used by the simulator's deep-dive). Fight Info
-  // stays lean here — tale of the tape off.
-  if (typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(host, name, opp, { taleOfTape: false });
+  // stays lean here — tale of the tape off. Storylines are deferred and appended
+  // at the very bottom of the dropdown (see below), so they sit just above the
+  // matchup-sheet button rather than in the middle of the breakdown.
+  let _bd = null;
+  if (typeof renderMatchupBreakdown === 'function') _bd = renderMatchupBreakdown(host, name, opp, { taleOfTape: false, deferStorylines: true });
 
   // Finish & durability
   (function () {
@@ -102762,6 +102768,10 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       }
     }).catch(function () {});
   }
+
+  // Storylines last — appended here (deferred from renderMatchupBreakdown) so they
+  // sit at the bottom of the dropdown, just above the matchup-sheet button.
+  if (_bd && _bd.storylinesBox) host.appendChild(_bd.storylinesBox);
 
   // Shareable matchup sheet. Appended at the very end of renderScouting so it is
   // the last thing in the Fight Info panel, under every section it summarises.
