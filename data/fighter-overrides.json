@@ -71,6 +71,22 @@
       },
       "reason": "Allen Frye Jr. fell off the UFC Oklahoma City card; RJ Harris stepped in on short notice to face Alvin Hines. The ESPN feed already lists Harris, so this entry only marks him as the short-notice replacement.",
       "addedOn": "2026-07-11"
+    },
+    {
+      "eventSlug": "ufc-fight-night-july-25-2026",
+      "eventStartsAt": "2026-07-25T16:00:00.000Z",
+      "matchFighterName": "Khalil Rountree Jr.",
+      "replacement": {
+        "fighterSlug": "bogdan-guskov",
+        "fighterName": "Bogdan Guskov",
+        "country": "Uzbekistan",
+        "flag": "🇺🇿",
+        "nickname": "",
+        "recordText": "18-3-1 (W-L-D)",
+        "shortNotice": true
+      },
+      "reason": "Khalil Rountree Jr. withdrew from the UFC Fight Night main event vs. Magomed Ankalaev; Bogdan Guskov stepped in on short notice — Wikipedia already retitled the card 'Ankalaev vs. Guskov'. The ESPN feed still lists Rountree as of this writing, so swap the blue corner to Guskov and mark him the short-notice replacement (which also suppresses the mis-fired 'Rountree stepped in on short notice' / bout-may-change flags).",
+      "addedOn": "2026-07-14"
     }
   ]
 }
