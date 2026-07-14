@@ -887,7 +887,7 @@ export const loginPage = (next) => {
 };
 
 export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
-  <a class="back-link" href="/matchup" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
+  ${backLink}
   <a class="logout-link" href="/api/logout">Log out</a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
   <div class="center" style="margin-top:1.25rem">
