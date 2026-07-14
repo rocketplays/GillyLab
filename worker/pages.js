@@ -1996,25 +1996,24 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
     ? `<div class="fp-av"><img src="/photos/thumb/${esc(f.photo)}.png" alt="${esc(f.name)}" onerror="this.parentNode.textContent='${esc(ini)}'"></div>`
     : `<div class="fp-av">${esc(ini)}</div>`;
 
-  // Physicals (only render the ones we actually have).
+  // Physicals — same bordered bio row as the in-app profile (.fsx-bio).
   const phys = f.phys || {};
-  const physItem = (k, v) => v ? `<div class="fp-phys-i"><div class="fp-phys-k">${k}</div><div class="fp-phys-v">${esc(v)}</div></div>` : "";
-  const physCells = [physItem("Age", phys.age), physItem("Height", phys.ht), physItem("Reach", phys.reach), physItem("Stance", phys.stance)].filter(Boolean).join("");
-  const physHTML = physCells ? `<div class="fp-phys">${physCells}</div>` : "";
+  const bioItem = (k, v) => v ? `<div><div class="fsx-bio-k">${k}</div><div class="fsx-bio-v">${esc(v)}</div></div>` : "";
+  const bioCells = [bioItem("Height", phys.ht), bioItem("Reach", phys.reach), bioItem("Age", phys.age), bioItem("Stance", phys.stance)].filter(Boolean).join("");
+  const physHTML = bioCells ? `<div class="fsx-bio">${bioCells}</div>` : "";
 
-  // Division-relative stat bars — identical shape to the in-app / matchup popup.
-  const barRow = (r) => `<div class="mp-row"><span class="mp-lbl">${esc(r.label)}</span>${
-    r.bar
-      ? `<span class="mp-bar"><span class="mp-fill ${r.cls}" style="width:${r.w}%"></span>${r.tickX != null ? `<span class="mp-tick" style="left:${r.tickX}%"></span>` : ""}</span><span class="mp-val ${r.cls}">${esc(r.val)}</span>`
-      : `<span class="mp-val ${r.cls}">${esc(r.val)}</span>`
-  }</div>`;
-  const groupsHTML = (f.groups || []).map((g) => `<div class="mp-grp-t">${esc(g.t)}</div>` + (g.rows || []).map(barRow).join("")).join("");
+  // Division-relative stat bars — identical markup + styling to the in-app profile.
+  const rowHtml = (r) => {
+    const bar = r.bar
+      ? `<div class="fsx-bar"><div class="fsx-track"><div class="fsx-fill ${r.cls}" style="width:${r.w}%"></div></div><div class="fsx-tick" style="left:${r.tickX}%"></div></div>`
+      : `<div class="fsx-bar"><div class="fsx-track fsx-track-empty"></div></div>`;
+    return `<div class="fsx-row"><div class="fsx-label">${esc(r.label)}</div>${bar}<div class="fsx-val ${r.cls}">${esc(r.val)}</div></div>`;
+  };
+  const groupsHTML = (f.groups || []).map((g) => `<div class="fsx-group"><div class="fsx-group-t">${esc(g.t)}</div>${(g.rows || []).map(rowHtml).join("")}</div>`).join("");
   const legend = f.bars
-    ? `<div class="mp-legend"><span class="mp-lg"><span class="mp-lg-sw good"></span>better than division average</span><span class="mp-lg"><span class="mp-lg-sw bad"></span>below average</span><span class="mp-lg"><span class="mp-lg-tick"></span>division average</span></div>`
+    ? `<div class="fsx-caption"><span class="fsx-legend"><span class="fsx-lg"><span class="fsx-lg-sw" style="background:var(--accent)"></span>better than average</span><span class="fsx-lg"><span class="fsx-lg-sw" style="background:#c76a54"></span>below average</span><span class="fsx-lg"><span class="fsx-lg-tick"></span>division average</span></span></div>`
     : "";
-  const statsBlock = groupsHTML
-    ? `<div class="fp-sec"><div class="fp-sec-t">Career stats</div><div class="fp-sec-sub">Per-fight rates vs. everyone else in the ${esc(f.division || "division")} division.</div>${legend}${groupsHTML}</div>`
-    : "";
+  const statsBlock = groupsHTML ? `${legend}${groupsHTML}` : "";
 
   // The paywalled depth — locked.
   const lockItem = (t, d) => `<div class="fp-lock-i"><div class="fp-lock-it">${t}</div><div class="fp-lock-id">${d}</div></div>`;
@@ -2029,7 +2028,7 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   const cta = subscribed
     ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
     : `<a class="fp-lock-btn" href="/subscribe">Go Premium for the full profile →</a>`;
-  const lockBlock = `<div class="fp-sec fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile</div></div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
+  const lockBlock = `<div class="fp-lock"><div class="fp-lock-h"><span class="fp-lock-ico">🔒</span><div class="fp-lock-t">The full profile</div></div><div class="fp-lock-grid">${lockGrid}</div>${cta}</div>`;
 
   // SEO.
   const metaBits = [f.record ? f.record : "", f.division || "", f.country || ""].filter(Boolean);
@@ -2062,6 +2061,8 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
 ${ogTags(seoTitle, seoDesc, "/fighter/" + f.slug)}
 ${ldScript}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
   *{box-sizing:border-box}
@@ -2090,33 +2091,31 @@ ${ldScript}
   .fp-rec{color:var(--text);font-weight:700}
   .fp-chip{background:rgba(0,230,104,.14);color:var(--accent);border-radius:999px;padding:.08rem .55rem;font-size:.72rem;font-weight:800;letter-spacing:.02em}
   .fp-dot{color:rgba(255,255,255,.25)}
-  /* physicals */
-  .fp-phys{display:grid;grid-template-columns:repeat(auto-fit,minmax(72px,1fr));gap:.5rem;margin-bottom:1.3rem}
-  .fp-phys-i{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.6rem .5rem;text-align:center}
-  .fp-phys-k{font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-  .fp-phys-v{font-size:1rem;font-weight:800;margin-top:.15rem}
-  /* section */
-  .fp-sec{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem 1.15rem;margin-bottom:1.1rem}
-  .fp-sec-t{font-size:.95rem;font-weight:800;margin-bottom:.15rem}
-  .fp-sec-sub{font-size:.76rem;color:var(--muted);margin-bottom:.7rem;line-height:1.4}
-  /* stat bars (shared shape with the app / matchup popup) */
-  .mp-grp-t{font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:1.05rem 0 .5rem}
-  .mp-grp-t:first-child{margin-top:.2rem}
-  .mp-row{display:flex;align-items:center;gap:.6rem;padding:.3rem 0}
-  .mp-lbl{flex:0 0 44%;font-size:.76rem;color:#c9ccd3}
-  .mp-bar{flex:1;position:relative;height:7px;border-radius:4px;background:rgba(255,255,255,.09)}
-  .mp-fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
-  .mp-fill.good{background:var(--accent)}.mp-fill.bad{background:#c76a54}
-  .mp-tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:#fff;border-radius:1px}
-  .mp-legend{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .9rem;margin:.15rem 0 1rem;font-size:.68rem;color:var(--muted)}
-  .mp-lg{display:inline-flex;align-items:center;gap:.32rem}
-  .mp-lg-sw{width:14px;height:6px;border-radius:2px;display:inline-block}
-  .mp-lg-sw.good{background:var(--accent)}.mp-lg-sw.bad{background:#c76a54}
-  .mp-lg-tick{width:2px;height:11px;background:#fff;display:inline-block;border-radius:1px}
-  .mp-val{flex:0 0 48px;text-align:right;font-weight:800;font-size:.85rem;color:#ececf0}
-  .mp-val.good{color:var(--accent)}.mp-val.bad{color:#c76a54}
+  /* physicals + stat bars — identical styling to the in-app profile (.fsx-*) */
+  .fsx-bio{display:flex;flex-wrap:wrap;gap:1.5rem;padding:1rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:.3rem}
+  .fsx-bio-k{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .fsx-bio-v{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:1.15rem;margin-top:.15rem}
+  .fsx-caption{font-size:.68rem;color:var(--muted);letter-spacing:.04em;margin:.85rem 0 .1rem;display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center}
+  .fsx-legend{display:inline-flex;align-items:center;gap:.9rem;flex-wrap:wrap}
+  .fsx-lg{display:inline-flex;align-items:center;gap:.35rem}
+  .fsx-lg-sw{width:16px;height:7px;border-radius:2px;display:inline-block}
+  .fsx-lg-tick{width:2px;height:12px;background:#fff;display:inline-block}
+  .fsx-group{margin-top:1.15rem}
+  .fsx-group-t{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.65rem}
+  .fsx-row{display:flex;align-items:center;gap:.85rem;margin-bottom:.6rem}
+  .fsx-group:last-child .fsx-row:last-child{margin-bottom:0}
+  .fsx-label{flex:0 0 200px;font-size:.82rem;color:#c9c9d0}
+  .fsx-bar{position:relative;flex:1;min-width:60px}
+  .fsx-track{height:9px;background:var(--surface2);border-radius:4px;overflow:hidden}
+  .fsx-track-empty{background:transparent}
+  .fsx-fill{height:100%;border-radius:4px}
+  .fsx-fill.good{background:var(--accent)}.fsx-fill.bad{background:#c76a54}
+  .fsx-tick{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:1px}
+  .fsx-val{flex:0 0 56px;text-align:right;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:1.2rem;color:var(--text)}
+  .fsx-val.good{color:var(--accent)}.fsx-val.bad{color:#c76a54}
+  @media (max-width:520px){.fsx-label{flex-basis:148px;font-size:.76rem}.fsx-val{flex-basis:48px;font-size:1.05rem}.fsx-row{gap:.6rem}.fsx-bio{gap:1rem}}
   /* locked block */
-  .fp-lock{background:var(--surface2)}
+  .fp-lock{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem 1.15rem;margin-top:1.6rem}
   .fp-lock-h{display:flex;align-items:center;gap:.5rem;margin-bottom:.85rem}
   .fp-lock-ico{opacity:.85}
   .fp-lock-t{font-size:.95rem;font-weight:800}
