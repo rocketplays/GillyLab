@@ -1022,7 +1022,9 @@ export default {
         // refresh subscription status from KV so cancellations/renewals reflect fast
         const u = await getUser(env, s.email);
         const subscribed = !!u?.subscribed;
-        if (!subscribed) return redirect(env.SITE_URL + "/subscribe");
+        // Logged-in but not subscribed → the free home (/matchup), NOT a forced
+        // /subscribe dead-end. Matches authDest() used by the login/signup flow.
+        if (!subscribed) return redirect(env.SITE_URL + "/matchup");
         const cookie = subscribed !== s.sub ? await makeSessionCookie(env, s.email, subscribed) : null;
         const res = await env.ASSETS.fetch(new Request(new URL("/index.html", url), request));
         const out = new Response(res.body, res);
