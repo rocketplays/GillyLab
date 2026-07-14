@@ -635,17 +635,17 @@ function buildMatchup(recMap) {
 // main-event tape uses, so the /matchup renderer can share one component.
 function _physOf(name) {
   const st = fighterStat(name) || {};
-  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "", gym: st.gym || "" };
+  const lo = _layoff(name);
+  return { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "", gym: st.gym || "", layoff: lo, l5: _lastFive(name) };
 }
 function buildMainTape(m) {
-  const st1 = fighterStat(m.f1), st2 = fighterStat(m.f2);
   const ins = breakdownFor(m.f1, m.f2) || {};
-  const phys = (st) => (st ? { ht: st.ht || "", reach: st.reach || "", age: _ageFromDob(st.dob), stance: (st.stance && st.stance !== "--") ? st.stance : "" } : {});
   return {
-    a: phys(st1), b: phys(st2),
+    a: _physOf(m.f1), b: _physOf(m.f2),
     stats: { a: ins.statsA || {}, b: ins.statsB || {}, sig: ins.sig || {} },
     lean: { a: ins.leanA, b: ins.leanB }, pace: { a: ins.paceA, b: ins.paceB },
     path: { a: ins.pathA, b: ins.pathB }, story: { a: ins.storyA || [], b: ins.storyB || [] },
+    finishDur: _finishDur(m.f1, m.f2), common: _commonOpps(m.f1, m.f2),
   };
 }
 // A single fighter's stat card — the profile's grouped median bars, WITHOUT the
@@ -661,11 +661,112 @@ function _winStreak(name) {
   for (const f of fh) { if (f.result === 'W') streak++; else break; }
   return streak;
 }
+// Resolve a feed/stats name to its FIGHT_HISTORY key — mirrors index.html's
+// scoutingHistKey (exact, then case/accent-insensitive, then an unambiguous
+// token-subset match), because the history map sometimes spells a name
+// differently than FIGHTER_STATS (e.g. "Dricus du Plessis" vs "Dricus Du Plessis").
+function _histKey(name) {
+  if (!_FH_CACHE) _FH_CACHE = parseConst('FIGHT_HISTORY') || {};
+  if (_FH_CACHE[name]) return name;
+  const t = _newsNormG(name), keys = Object.keys(_FH_CACHE);
+  for (const k of keys) if (_newsNormG(k) === t) return k;
+  const tt = t.split(' ').filter(Boolean); if (!tt.length) return null;
+  let hit = null, h = 0;
+  for (const k of keys) { const kt = _newsNormG(k).split(' ').filter(Boolean); if (tt.every((x) => kt.includes(x)) || kt.every((x) => tt.includes(x))) { hit = k; if (++h > 1) break; } }
+  return h === 1 ? hit : null;
+}
 // Real (non-upcoming) bouts from FIGHT_HISTORY, most-recent-first.
 function _fhReal(name) {
   if (!_FH_CACHE) _FH_CACHE = parseConst('FIGHT_HISTORY') || {};
-  return (_FH_CACHE[canonStatName(name)] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+  const k = _histKey(name);
+  return (k && _FH_CACHE[k] || []).filter((f) => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
 }
+// ── Scouting ports: layoff, last-5 form, finish/durability, common opponents ──
+// Faithful Node reimplementations of index.html's renderScouting so the free
+// /matchup page shows the same numbers as the in-app Fight Info dropdown.
+function _parseD(s) { const t = Date.parse(s); return isFinite(t) ? t : null; }
+function _methodCat(m) {
+  m = String(m || '');
+  if (/sub/i.test(m)) return 'sub';
+  if (/disqualif|\bdq\b/i.test(m)) return 'dq';
+  if (/dec/i.test(m)) return 'dec';
+  if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return 'ko';
+  return 'other';
+}
+// Layoff: whole months from the most recent real bout to now. Same formatting
+// as the app ("8 mo" / "1y 2m"); flags long (>=12mo) layoffs.
+function _layoff(name) {
+  const d = _fhReal(name).map((f) => _parseD(f.date)).filter(Boolean).sort((a, b) => b - a);
+  if (!d.length) return null;
+  const mo = Math.max(0, Math.round((Date.now() - d[0]) / 2.628e9));
+  const txt = mo >= 12 ? (Math.floor(mo / 12) + 'y ' + (mo % 12) + 'm') : (mo + ' mo');
+  return { txt, mo, long: mo >= 12 };
+}
+// Last 5 results, most-recent-first, as form tiles {r, opp, method, round, time}.
+const _RESULT_COLORS = { W: '#00e668', L: '#ff3d00', D: '#ffb340', NC: 'rgba(255,255,255,0.45)', DQ: '#ff3d00' };
+function _lastFive(name) {
+  return _fhReal(name).slice(0, 5).map((f) => ({
+    r: f.result, opp: f.opponent || '', method: f.method || '',
+    round: f.round != null ? String(f.round) : '', time: f.time || '',
+  }));
+}
+// Finish & durability profile — mirrors finishProfile() in renderScouting.
+function _finishProfile(name) {
+  let wins = 0, losses = 0, wKO = 0, wSub = 0, wDec = 0, lKO = 0, lSub = 0, lDQ = 0;
+  _fhReal(name).forEach((f) => {
+    const c = _methodCat(f.method);
+    if (f.result === 'W') { wins++; if (c === 'ko') wKO++; else if (c === 'sub') wSub++; else if (c === 'dec') wDec++; }
+    else if (f.result === 'L') { losses++; if (c === 'ko') lKO++; else if (c === 'sub') lSub++; else if (c === 'dq') lDQ++; }
+  });
+  const finWins = wKO + wSub;
+  return { wins, losses, wKO, wSub, wDec, finWins, finRate: wins ? finWins / wins : null, timesFinished: lKO + lSub + lDQ, lKO, lSub, lDQ };
+}
+// The full Finish & durability block for a bout: the three rows + the derived
+// durability highlight (lower finish-rate-against greens, higher reds).
+function _abbrMethod(m) {
+  const c = _methodCat(m); if (c === 'ko') return 'KO/TKO'; if (c === 'sub') return 'SUB'; if (c === 'dec') return 'DEC'; if (c === 'dq') return 'DQ';
+  return String(m || '').split(' ')[0] || '';
+}
+function _finishDur(nameA, nameB) {
+  const fp = _finishProfile(nameA), op = _finishProfile(nameB);
+  if (!fp.wins && !fp.losses && !op.wins && !op.losses) return null;
+  const rate = (p) => p.finRate == null ? '—' : (Math.round(p.finRate * 100) + '% (' + p.finWins + '/' + p.wins + ')');
+  const methods = (p) => { const parts = []; if (p.wKO) parts.push(p.wKO + ' KO'); if (p.wSub) parts.push(p.wSub + ' SUB'); if (p.wDec) parts.push(p.wDec + ' DEC'); return parts.join(' · ') || '—'; };
+  const fin = (p) => {
+    if (!(p.wins || p.losses)) return '—';
+    if (!p.timesFinished) return 'Never';
+    const parts = []; if (p.lKO) parts.push(p.lKO + ' KO/TKO'); if (p.lSub) parts.push(p.lSub + ' SUB'); if (p.lDQ) parts.push(p.lDQ + ' DQ');
+    return p.timesFinished + '× (' + parts.join(', ') + ')';
+  };
+  const durRate = (p) => (p.wins + p.losses) > 0 ? p.timesFinished / (p.wins + p.losses) : null;
+  const drA = durRate(fp), drB = durRate(op);
+  let tfA = '', tfB = '';
+  if (drA != null && drB != null && drA !== drB) { tfA = drA < drB ? 'w' : 'l'; tfB = drA < drB ? 'l' : 'w'; }
+  return { finRate: { a: rate(fp), b: rate(op) }, methods: { a: methods(fp), b: methods(op) }, timesFinished: { a: fin(fp), b: fin(op), aCls: tfA, bCls: tfB } };
+}
+// Common opponents both fighters have faced — mirrors the app's block.
+function _commonOpps(nameA, nameB) {
+  const histA = _fhReal(nameA), histB = _fhReal(nameB);
+  if (!histA.length || !histB.length) return [];
+  const nn = _newsNormG(nameA), on = _newsNormG(nameB);
+  const resultsVs = (h, target) => { const t = _newsNormG(target); return h.filter((f) => _newsNormG(f.opponent) === t).sort((a, b) => (_parseD(b.date) || 0) - (_parseD(a.date) || 0)); };
+  const mineOpps = {}; histA.forEach((f) => { if (f.opponent) mineOpps[_newsNormG(f.opponent)] = f.opponent; });
+  const shared = [], seen = {};
+  histB.forEach((f) => { if (!f.opponent) return; const k = _newsNormG(f.opponent); if (k === nn || k === on || seen[k]) return; if (mineOpps[k]) { seen[k] = 1; shared.push(mineOpps[k]); } });
+  const fmt = (rows) => {
+    if (!rows.length) return '—';
+    if (rows.length === 1) { const r = rows[0]; return r.result + (r.method ? ' (' + _abbrMethod(r.method) + (r.round ? ' R' + r.round : '') + ')' : ''); }
+    let w = 0, l = 0, d = 0; rows.forEach((r) => { if (r.result === 'W') w++; else if (r.result === 'L') l++; else d++; });
+    return w + '-' + l + (d ? '-' + d : '') + ' (' + rows.length + ' fights)';
+  };
+  const resCls = (rows) => { let w = 0, l = 0; rows.forEach((r) => { if (r.result === 'W') w++; else if (r.result === 'L') l++; }); return w > l ? 'w' : (l > w ? 'l' : ''); };
+  return shared.slice(0, 6).map((opp) => {
+    const a = resultsVs(histA, opp), b = resultsVs(histB, opp);
+    return { opp, a: fmt(a), b: fmt(b), aCls: resCls(a), bCls: resCls(b) };
+  });
+}
+// Normalizer matching index.html's _newsNorm (lowercase, strip accents/punct).
+function _newsNormG(s) { return String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim(); }
 // W-L-D derived from FIGHT_HISTORY (like the in-app computeRecord), or null if none.
 function _computeRecord(name) {
   const fh = _fhReal(name); if (!fh.length) return null;

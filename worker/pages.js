@@ -1802,11 +1802,32 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     if (na != null && nb != null && na !== nb) { (lo ? na < nb : na > nb) ? (aC = "w") : (bC = "w"); }
     return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${label}</div><div class="sr-cmp-val ${aC}">${esc(disp(a))}</div><div class="sr-cmp-val ${bC}">${esc(disp(b))}</div></div>`;
   };
+  // Last-5 form tiles (static; native title tooltip in place of the in-app JS one).
+  const RCOL = { W: "#00e668", L: "#ff3d00", D: "#ffb340", NC: "rgba(255,255,255,0.45)", DQ: "#ff3d00" };
+  const formTiles = (l5) => {
+    if (!l5 || !l5.length) return `<span style="color:var(--muted);font-size:.72rem">No data</span>`;
+    return l5.map((f) => {
+      const c = RCOL[f.r] || "rgba(255,255,255,0.45)";
+      const tip = [f.opp, f.method, f.round ? "R" + f.round : "", f.time].filter(Boolean).join(" · ");
+      return `<span class="form-tile" title="${esc(tip)}" style="background:${c}26;border:1px solid ${c};color:${c}">${esc(f.r)}</span>`;
+    }).join("");
+  };
+  // Layoff row: months since last bout; long (>=12mo) layoffs flag red like the app.
+  const layoffRow = (t) => {
+    const cell = (l) => l ? `<div class="sr-cmp-val ${l.long ? "l" : ""}">${esc(l.txt)}</div>` : `<div class="sr-cmp-val">—</div>`;
+    if (!t.a.layoff && !t.b.layoff) return "";
+    return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">Layoff</div>${cell(t.a.layoff)}${cell(t.b.layoff)}</div>`;
+  };
+  const l5Row = (t) => {
+    const has = (x) => x && x.length;
+    if (!has(t.a.l5) && !has(t.b.l5)) return "";
+    return `<div class="sr-cmp-row"><div class="sr-cmp-lbl">Last 5</div><div class="sr-cmp-val sr-form">${formTiles(t.a.l5)}</div><div class="sr-cmp-val sr-form">${formTiles(t.b.l5)}</div></div>`;
+  };
   const taleHTML = (mf, t) => {
     if (!t || !t.a || !t.b) return "";
     const sA = surname(mf.f1), sB = surname(mf.f2);
     const head = `<div class="sr-cmp-row sr-cmp-head"><div></div><div>${esc(sA)}</div><div>${esc(sB)}</div></div>`;
-    return `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}</div>`;
+    return `<div class="sr-common"><div class="sr-common-title">Tale of the tape</div>${head}${cmpRow("Age", t.a.age, t.b.age, 1)}${cmpRow("Height", t.a.ht, t.b.ht, 0)}${cmpRow("Reach", t.a.reach, t.b.reach, 0)}${cmpRow("Stance", t.a.stance, t.b.stance, 0)}${layoffRow(t)}${l5Row(t)}</div>`;
   };
   // Locked teaser for the paywalled sections on non-main bouts.
   const lockedTeaser = `<div class="mf-lock"><div class="mf-lock-head"><span class="mf-lock-ico">🔒</span><div><div class="mf-lock-t">Fight simulator · Style · Pace · Path to victory · Storylines · H2H stats</div><div class="mf-lock-sub">The full breakdown of every bout is a Premium feature.</div></div></div><a class="mf-lock-btn" href="/subscribe">Go Premium for the rest →</a></div>`;
@@ -1842,9 +1863,16 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const stLine = (nm, col, arr) => (arr || []).map((x) => `<div style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
     const storyBox = ((st.a && st.a.length) || (st.b && st.b.length))
       ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Storylines</div>${stLine(mf.f1, "var(--accent)", st.a)}${stLine(mf.f2, AMBER, st.b)}</div>` : "";
+    // Finish & durability (main event only) — win finish rate, methods, times finished.
+    const fd = t.finishDur;
+    const fdRow = (lbl, a, b, aCls, bCls) => `<div class="sr-cmp-row"><div class="sr-cmp-lbl">${lbl}</div><div class="sr-cmp-val ${aCls || ""}">${esc(a)}</div><div class="sr-cmp-val ${bCls || ""}">${esc(b)}</div></div>`;
+    const finishBox = fd ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Finish &amp; durability</div>${head}${fdRow("Win finish rate", fd.finRate.a, fd.finRate.b)}${fdRow("Win methods", fd.methods.a, fd.methods.b)}${fdRow("Times finished", fd.timesFinished.a, fd.timesFinished.b, fd.timesFinished.aCls, fd.timesFinished.bCls)}</div>` : "";
+    // Common opponents (main event only) — head-to-head vs shared foes.
+    const common = t.common || [];
+    const commonBox = common.length ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Common opponents</div>${common.map((c) => `<div class="sr-common-row"><div class="sr-co-name">${esc(c.opp)}</div><div class="sr-co-res ${c.aCls}">${esc(sA)}: ${esc(c.a)}</div><div class="sr-co-res ${c.bCls}">${esc(sB)}: ${esc(c.b)}</div></div>`).join("")}</div>` : "";
     // Tale of the tape (physical: age/height/reach/stance) — shared with non-main bouts.
     const tape = taleHTML(mf, t);
-    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}</div>`;
+    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${storyBox}${finishBox}${commonBox}</div>`;
   };
 
   const rowHTML = (f) => {
@@ -1968,6 +1996,17 @@ ${eventLd}
   .sr-cmp-lbl{color:var(--muted)}
   .sr-cmp-val{color:var(--text);font-weight:600;display:flex;align-items:center}
   .sr-cmp-val.w{color:var(--accent)}
+  .sr-cmp-val.l{color:#ff6a5e}
+  .sr-cmp-val.hi{color:#ffcf7a}
+  .sr-cmp-val.sr-form{display:flex;gap:4px;align-items:center;flex-wrap:nowrap}
+  .form-tile{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;font-weight:800;font-size:.65rem;flex:0 0 auto;cursor:default}
+  .sr-common-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+  .sr-common-row:last-child{border-bottom:none}
+  .sr-co-name{color:var(--muted)}
+  .sr-co-res{font-weight:600;color:var(--text)}
+  .sr-co-res.w{color:var(--accent)}
+  .sr-co-res.l{color:#ff6a5e}
+  @media (max-width:520px){.sr-cmp-val.sr-form .form-tile{width:16px;height:16px;font-size:.56rem}.sr-common-row{grid-template-columns:1fr;gap:.15rem}}
   .sr-style-wrap{position:relative;margin:.6rem 6px .3rem}
   .sr-style-lab{position:absolute;top:-16px;transform:translateX(-50%);font-size:.66rem;white-space:nowrap}
   .sr-style-track{height:6px;border-radius:3px;background:rgba(255,255,255,.12);position:relative}
