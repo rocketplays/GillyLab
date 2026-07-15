@@ -111342,11 +111342,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   let btPre = null;
   function btLogFromOdds(payload) {
+    // Set the target state BEFORE navigating, then navigate exactly once.
+    // navigate('bets') already fires btRender() itself — kicking off a second one
+    // here raced it: whichever resolved last re-ran btSetView('log'), which resets
+    // btEvent/btFight/btMarket, and by then the first render had already consumed
+    // btPre. The form came up empty. One render, one consumer.
     btPre = payload || null;
-    navigate('bets');
-    // btRender() re-fetches, then btSetView('log') picks btPre up.
     btView = 'log';
-    btRender();
+    navigate('bets');
   }
   window.btLogFromOdds = btLogFromOdds;
 
