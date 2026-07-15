@@ -111180,13 +111180,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void · stake back</span>';
     else if (b.status === 'push') res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
     else res = '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span>';
+    // CLV is only a fact once a bet is graded — while it's pending there's nothing
+    // to measure against, so don't editorialise. Say "pending" (or, for a parlay,
+    // how many legs are in). The no-CLV reason lands once it's settled.
+    // Order matters: the pending check has to come before the noClv one, which the
+    // Worker sets at log time — otherwise a pending parlay reported its no-CLV
+    // reason instead of its leg progress.
+    const V = '<span class="bt-v">verified</span>';
     let badge;
     if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
+    else if (b.status === 'pending') badge = '<span class="bt-badge bt-b-none">' + V + ' · ' +
+      (b.market === 'PARLAY' && b.legsLive ? (b.legsIn || 0) + ' of ' + b.legsLive + ' legs in' : 'pending') + '</span>';
     else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
-    else if (b.noClv) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV · ' + btEsc(b.noClv) + '</span>';
-    else if (b.market === 'PARLAY') badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV · ' + (b.status === 'pending' ? (b.legsIn || 0) + ' of ' + (b.legsLive || (b.legs || []).length) + ' legs in' : 'parlay') + '</span>';
-    else if (b.priced) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · pending</span>';
-    else badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV</span>';
+    else if (b.priced && b.noClv) badge = '<span class="bt-badge bt-b-none">' + V + ' · no CLV · ' + btEsc(b.noClv) + '</span>';
+    else badge = '<span class="bt-badge bt-b-none">' + V + ' · no CLV</span>';
     // "You" only earns its place once there's a closing line to contrast it with.
     const reprice = (b.effOdds != null && b.effOdds !== b.odds);
     const line = (b.closeOdds != null
