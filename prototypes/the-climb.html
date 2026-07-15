@@ -199,7 +199,32 @@ const ATTRS = [
 // wrestling lean. Worth surfacing to the player rather than letting them learn
 // it by dying.
 const POINTS_START = 24, ATTR_MAX = 10;
-const upCost = v => Math.ceil(v/2);
+
+// FLAT COST — one point per level, always.
+//
+// Playtest nailed this: "the way it is now, you could spend as much as you want
+// maxing out something, but then you're just spending extra points for nothing,
+// when you could spend less points on other categories that do more anyway."
+//
+// The old curve was cost = ceil(v/2), so 9->10 cost 5 points and 1->2 cost 1 —
+// while the STAT MAPPING IS LINEAR (kd = 0.1 + v*0.55), so both bought the same
+// bump. Measured value per point spent, holding everything else at 3:
+//     1->2   +0.80 win%   1 pt   = 0.80 per point
+//     5->6   +1.23 win%   3 pts  = 0.41
+//     9->10  +0.49 win%   5 pts  = 0.10      <- 8x worse than level 2
+// Spreading wasn't a strategy the model preferred. It was arbitrage on my own
+// pricing. The raw GAIN actually RISES through level 7 (+0.80 -> +1.32) — the
+// sim already rewards commitment — and I stacked a second, steeper diminishing
+// return on top of it, which inverted the whole thing.
+//
+// Flat pricing closed the specialist/spread gap from ~8 points to ~0.4 at a
+// 24-point budget. It doesn't fully flip: the sim has its OWN soft cap per stat,
+// so a 10 is worth less than two 7s. That part is the model, not the layer, and
+// it's honest — well-rounded fighters really do win.
+//
+// Maxing everything still isn't possible: 7 attributes x 9 levels = 63 points,
+// and a full run earns ~45-50.
+const upCost = v => 1;
 const pct = n => Math.round(n)+'%';
 
 // Playtest: "should there be more tune-up fights at the beginning in order to
