@@ -40,6 +40,11 @@
 
   /* attribute sliders */
   .attr{display:grid;grid-template-columns:120px 1fr 42px;gap:.6rem;align-items:center;margin:.35rem 0}
+  /* The upgrade rows reuse .attr but their third column is a BUTTON reading
+     "+1 · 2 pts", not a 2-char number. 42px clipped it straight out of the
+     container. Own grid, auto-width column. */
+  .attr.up{grid-template-columns:120px 1fr auto}
+  .attr.up button{min-width:74px}
   .attr label{font-size:.8rem}
   .attr .v{font-size:.8rem;color:var(--accent);text-align:right;font-variant-numeric:tabular-nums}
   input[type=range]{width:100%;accent-color:var(--accent)}
@@ -209,15 +214,30 @@ function offers(){
   });
 }
 function buildOffers(){
-  const unranked = D.ladder.filter(f=>f.rankNum===99 && !G.beat.has(f.name));
-  const ranked   = D.ladder.filter(f=>f.rankNum<99 && !G.beat.has(f.name)).sort((a,b)=>b.rankNum-a.rankNum);
+  // Exclude everyone you've FOUGHT, not just everyone you've BEATEN.
+  //
+  // Playtest: "when losing, it doesn't refresh the opponents." I couldn't
+  // reproduce that literally — the cache is keyed on losses, so a loss DOES
+  // re-roll the list. But G.beat only ever recorded WINS, so the man who just
+  // knocked you out stayed in the pool and came back 15% of the time. Getting
+  // re-offered your conqueror reads exactly like "nothing changed".
+  const fought = new Set(G.log.map(f=>f.opp));
+  const avail = f => !G.beat.has(f.name) && !fought.has(f.name);
+  const unranked = D.ladder.filter(f=>f.rankNum===99 && avail(f));
+  const ranked   = D.ladder.filter(f=>f.rankNum<99 && avail(f)).sort((a,b)=>b.rankNum-a.rankNum);
   const pool = [];
   if (G.rank == null) {
     // Unranked phase: three gatekeepers of rising difficulty, drawn at random
     // from each third so the same faces don't reappear every run.
+    //
+    // A loss softens the field HERE TOO. The step-down used to be ranked-only,
+    // but your first loss almost always lands while you're still unranked —
+    // which is precisely when it was doing nothing. Post-loss, draw all three
+    // from the easier half.
     const s = unranked.slice().sort((a,b)=>winProb(b.name)-winProb(a.name));
-    const t = Math.max(1, Math.floor(s.length/3));
-    pool.push(pick(s.slice(0,t)), pick(s.slice(t,t*2)), pick(s.slice(t*2)));
+    const src = G.losses > 0 ? s.slice(0, Math.max(3, Math.ceil(s.length/2))) : s;
+    const t = Math.max(1, Math.floor(src.length/3));
+    pool.push(pick(src.slice(0,t)), pick(src.slice(t,t*2)), pick(src.slice(t*2)));
   } else {
     // Ranked phase: someone below, someone near, someone a few spots ABOVE.
     //
@@ -276,14 +296,24 @@ function buildOffers(){
 //                     should mean something)
 // It also gives the run a story for free — "you won rounds 1 and 3".
 function fight(o){
-  const rounds = [0,1,2].map(()=>Math.random() < o.p);
-  const roundsWon = rounds.filter(Boolean).length;
+  let rounds = [0,1,2].map(()=>Math.random() < o.p);
+  let roundsWon = rounds.filter(Boolean).length;
   const won = roundsWon >= 2;
   // Finish chance scales with Power/Grappling — how you win matters (~8pts to
   // the model), so the build should drive it.
   const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
   const fin = won && Math.random() < (0.25 + finBias*0.4);
-  G.log.push({ opp:o.f.name, won, fin, p:o.p, rank:o.f.rankNum, rounds, roundsWon });
+  // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
+  // shows all 3 rounds as if it were a decision." The rounds array and the
+  // finish roll were computed independently, so a first-round KO still printed
+  // R1 ✓ R2 ✓ R3 ✓. Truncate at the round it ended in — the first round you won.
+  let finRound = 0;
+  if (fin) {
+    finRound = rounds.indexOf(true) + 1;          // you finish a round you were winning
+    rounds = rounds.slice(0, finRound);
+    roundsWon = rounds.filter(Boolean).length;
+  }
+  G.log.push({ opp:o.f.name, won, fin, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     G.pts += o.reward + (fin?1:0);
@@ -391,7 +421,8 @@ function resultBox(){
   const rd=document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + L.rounds.map((w,i)=>
     '<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(i+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ') +
-    ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (3-L.roundsWon);
+    (L.fin ? ' &nbsp;→&nbsp; <b style="color:var(--accent)">finished in R'+L.finRound+'</b>'
+           : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
   const n=document.createElement('div'); n.className='note';
   n.textContent = 'The model gave you '+(o.p*100).toFixed(1)+'% per round ('+amer(o.p)+'), '+
@@ -414,7 +445,7 @@ function upgrade(){
   const p=document.createElement('div'); p.className='panel';
   p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')</div>';
   for(const A of ATTRS){
-    const row=document.createElement('div'); row.className='attr';
+    const row=document.createElement('div'); row.className='attr up';
     const l=document.createElement('label'); l.textContent=A.label;
     const bar=document.createElement('div');
     bar.style.cssText='height:6px;background:var(--surface2);border-radius:3px;overflow:hidden';
