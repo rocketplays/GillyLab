@@ -832,7 +832,106 @@ const GL_SHEET = (function () {
     });
   }
 
+  /* ── Bet & CLV Tracker sheets ────────────────────────────────────────────
+     Two square 1080 cards, sized for a feed: one for the user's record over the
+     date range they're looking at, one for the pending bets on a single card.  */
+  const BT_RED = '#ff6a5e';
+  function btTile(ctx, x, y, w, h, label, val, col) {
+    roundRect(ctx, x, y, w, h, 14); ctx.fillStyle = CARD; ctx.fill();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText(String(label).toUpperCase(), x + 26, y + 44);
+    ctx.font = '800 54px ' + COND; ctx.fillStyle = col || TXT;
+    ctx.fillText(String(val), x + 26, y + 106);
+  }
+  async function drawBetHistory(data) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const CH = 1080;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 78, 'Bet & CLV Tracker', logo);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    ctx.fillText(clip(ctx, data.title || 'My betting record', W - 128), 64, 158);
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+
+    // Hero: CLV is the headline the whole product is about.
+    roundRect(ctx, 64, 240, W - 128, 210, 16); ctx.fillStyle = CARD; ctx.fill();
+    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('CLOSING LINE VALUE', 96, 296);
+    const clvNull = data.clv == null;
+    ctx.font = '800 108px ' + COND; ctx.fillStyle = clvNull ? MUT : (data.clv > 0 ? ACC : BT_RED);
+    const clvTxt = clvNull ? '—' : (data.clv > 0 ? '+' : '') + Number(data.clv).toFixed(1);
+    ctx.fillText(clvTxt, 96, 396);
+    if (!clvNull) {
+      const cw = ctx.measureText(clvTxt).width;
+      ctx.font = '700 30px ' + COND; ctx.fillStyle = MUT; ctx.fillText('pts', 96 + cw + 12, 396);
+    }
+    ctx.font = '400 25px ' + SANS; ctx.fillStyle = '#c9ccd3'; ctx.textAlign = 'right';
+    ctx.fillText(data.clvSub || '', W - 96, 396);
+    ctx.textAlign = 'left';
+
+    const gw = (W - 128 - 20) / 2, gh = 140;
+    btTile(ctx, 64, 476, gw, gh, 'Record', data.record || '0-0', TXT);
+    btTile(ctx, 64 + gw + 20, 476, gw, gh, 'ROI', data.roi == null ? '—' : (data.roi > 0 ? '+' : '') + Number(data.roi).toFixed(1) + '%', data.roi == null ? TXT : (data.roi > 0 ? ACC : BT_RED));
+    btTile(ctx, 64, 476 + gh + 20, gw, gh, 'Units', (data.units > 0 ? '+' : '') + Number(data.units || 0).toFixed(1) + 'u', data.units > 0 ? ACC : (data.units < 0 ? BT_RED : TXT));
+    btTile(ctx, 64 + gw + 20, 476 + gh + 20, gw, gh, 'Beat the close', data.beatTxt || '—', TXT);
+
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('CLV measured against the closing line · moneylines only', W / 2, CH - 96);
+    ctx.fillText('gillylab.com', W / 2, CH - 56);
+    ctx.textAlign = 'left';
+    return cv;
+  }
+  async function drawBetCard(data) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const bets = (data.bets || []).slice(0, 10);
+    const rowH = 78, listTop = 268;
+    const CH = Math.max(1080, listTop + bets.length * rowH + 190);
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 78, 'Bet & CLV Tracker', logo);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    ctx.fillText(clip(ctx, data.title || 'My card', W - 128), 64, 158);
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();
+
+    let y = listTop;
+    bets.forEach((b) => {
+      roundRect(ctx, 64, y, W - 128, rowH - 12, 12); ctx.fillStyle = CARD; ctx.fill();
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = '800 30px ' + COND; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, b.pick || '', W - 128 - 240), 92, y + 32);
+      ctx.font = '400 21px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(clip(ctx, b.match || '', W - 128 - 240), 92, y + 56);
+      ctx.textAlign = 'right';
+      ctx.font = '800 32px ' + COND; ctx.fillStyle = ACC;
+      ctx.fillText(b.odds > 0 ? '+' + b.odds : String(b.odds), W - 92, y + 34);
+      ctx.font = '400 20px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(b.stake + 'u', W - 92, y + 58);
+      ctx.textAlign = 'left';
+      y += rowH;
+    });
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('Tracked on gillylab.com', W / 2, CH - 60);
+    ctx.textAlign = 'left';
+    return cv;
+  }
+
   return {
+    // Square card of the user's tracked record over the selected date range.
+    betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-bet-record.png',
+      'My betting record on gillylab.com'),
+    // Square card of the pending bets on one upcoming event.
+    betCard: (data) => open(() => drawBetCard(data || {}), 'gillylab-my-card.png',
+      'My card on gillylab.com'),
     // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +

@@ -560,6 +560,29 @@ async function handleBetsSettle(request, env) {
   return json({ ok: true });
 }
 
+// Edit the price / stake while still pending and before the segment locks. Same
+// gate as delete, and for the same reason: once the close is knowable, letting
+// someone rewrite the price they "got" would manufacture CLV out of thin air.
+// Only odds and stake are editable — never the bout, market or selection (that
+// would be a different bet, logged at a different time).
+async function handleBetsEdit(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const { id, odds, stake } = await readBody(request);
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.editable === false) return json({ error: "This bet is locked in." }, 403);
+  if (b.status && b.status !== "pending") return json({ error: "That bet has already settled." }, 403);
+  const o = parseInt(odds, 10);
+  if (!isFinite(o) || o === 0) return json({ error: "Enter the odds you got." }, 400);
+  b.odds = o;
+  b.stake = Math.max(0.1, Math.min(1000, Number(stake) || b.stake));
+  b.editedAt = Date.now();
+  await btPutBets(env, s.email, list);
+  return json({ ok: true, bet: b });
+}
+
 // Delete while still pending and before the segment locks. After that the close
 // is knowable, so removing a losing CLV bet would launder the number.
 async function handleBetsDelete(request, env) {
@@ -1038,6 +1061,7 @@ export default {
       if (path === "/api/bets" && request.method === "GET") return handleBetsList(request, env);
       if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
       if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
+      if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env);
       if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env);
 
       if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);

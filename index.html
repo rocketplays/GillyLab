@@ -1097,6 +1097,10 @@
     .bt-note.lock { color: #ffcf7a; }
     .bt-btn { width: 100%; text-align: center; font: inherit; font-weight: 800; font-size: 0.9rem; border-radius: 9px; padding: 11px; cursor: pointer; border: none; background: var(--accent); color: #04120a; margin-top: 12px; }
     .bt-empty { color: var(--muted); text-align: center; font-size: 0.84rem; padding: 2rem 0; line-height: 1.6; }
+    .bt-cardhdr { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0 0.6rem; }
+    .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
+    .bt-editrow { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     /* W/L tile tooltip */
     .form-tile { cursor: default; position: relative; }
     .form-tile-tooltip {
@@ -102531,7 +102535,106 @@ const GL_SHEET = (function () {
     });
   }
 
+  /* ── Bet & CLV Tracker sheets ────────────────────────────────────────────
+     Two square 1080 cards, sized for a feed: one for the user's record over the
+     date range they're looking at, one for the pending bets on a single card.  */
+  const BT_RED = '#ff6a5e';
+  function btTile(ctx, x, y, w, h, label, val, col) {
+    roundRect(ctx, x, y, w, h, 14); ctx.fillStyle = CARD; ctx.fill();
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText(String(label).toUpperCase(), x + 26, y + 44);
+    ctx.font = '800 54px ' + COND; ctx.fillStyle = col || TXT;
+    ctx.fillText(String(val), x + 26, y + 106);
+  }
+  async function drawBetHistory(data) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const CH = 1080;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 78, 'Bet & CLV Tracker', logo);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    ctx.fillText(clip(ctx, data.title || 'My betting record', W - 128), 64, 158);
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+
+    // Hero: CLV is the headline the whole product is about.
+    roundRect(ctx, 64, 240, W - 128, 210, 16); ctx.fillStyle = CARD; ctx.fill();
+    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('CLOSING LINE VALUE', 96, 296);
+    const clvNull = data.clv == null;
+    ctx.font = '800 108px ' + COND; ctx.fillStyle = clvNull ? MUT : (data.clv > 0 ? ACC : BT_RED);
+    const clvTxt = clvNull ? '—' : (data.clv > 0 ? '+' : '') + Number(data.clv).toFixed(1);
+    ctx.fillText(clvTxt, 96, 396);
+    if (!clvNull) {
+      const cw = ctx.measureText(clvTxt).width;
+      ctx.font = '700 30px ' + COND; ctx.fillStyle = MUT; ctx.fillText('pts', 96 + cw + 12, 396);
+    }
+    ctx.font = '400 25px ' + SANS; ctx.fillStyle = '#c9ccd3'; ctx.textAlign = 'right';
+    ctx.fillText(data.clvSub || '', W - 96, 396);
+    ctx.textAlign = 'left';
+
+    const gw = (W - 128 - 20) / 2, gh = 140;
+    btTile(ctx, 64, 476, gw, gh, 'Record', data.record || '0-0', TXT);
+    btTile(ctx, 64 + gw + 20, 476, gw, gh, 'ROI', data.roi == null ? '—' : (data.roi > 0 ? '+' : '') + Number(data.roi).toFixed(1) + '%', data.roi == null ? TXT : (data.roi > 0 ? ACC : BT_RED));
+    btTile(ctx, 64, 476 + gh + 20, gw, gh, 'Units', (data.units > 0 ? '+' : '') + Number(data.units || 0).toFixed(1) + 'u', data.units > 0 ? ACC : (data.units < 0 ? BT_RED : TXT));
+    btTile(ctx, 64 + gw + 20, 476 + gh + 20, gw, gh, 'Beat the close', data.beatTxt || '—', TXT);
+
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('CLV measured against the closing line · moneylines only', W / 2, CH - 96);
+    ctx.fillText('gillylab.com', W / 2, CH - 56);
+    ctx.textAlign = 'left';
+    return cv;
+  }
+  async function drawBetCard(data) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const bets = (data.bets || []).slice(0, 10);
+    const rowH = 78, listTop = 268;
+    const CH = Math.max(1080, listTop + bets.length * rowH + 190);
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 78, 'Bet & CLV Tracker', logo);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    ctx.fillText(clip(ctx, data.title || 'My card', W - 128), 64, 158);
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();
+
+    let y = listTop;
+    bets.forEach((b) => {
+      roundRect(ctx, 64, y, W - 128, rowH - 12, 12); ctx.fillStyle = CARD; ctx.fill();
+      ctx.textBaseline = 'alphabetic';
+      ctx.font = '800 30px ' + COND; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, b.pick || '', W - 128 - 240), 92, y + 32);
+      ctx.font = '400 21px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(clip(ctx, b.match || '', W - 128 - 240), 92, y + 56);
+      ctx.textAlign = 'right';
+      ctx.font = '800 32px ' + COND; ctx.fillStyle = ACC;
+      ctx.fillText(b.odds > 0 ? '+' + b.odds : String(b.odds), W - 92, y + 34);
+      ctx.font = '400 20px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(b.stake + 'u', W - 92, y + 58);
+      ctx.textAlign = 'left';
+      y += rowH;
+    });
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('Tracked on gillylab.com', W / 2, CH - 60);
+    ctx.textAlign = 'left';
+    return cv;
+  }
+
   return {
+    // Square card of the user's tracked record over the selected date range.
+    betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-bet-record.png',
+      'My betting record on gillylab.com'),
+    // Square card of the pending bets on one upcoming event.
+    betCard: (data) => open(() => drawBetCard(data || {}), 'gillylab-my-card.png',
+      'My card on gillylab.com'),
     // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
@@ -110549,8 +110652,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   };
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null;
-  let btView = 'history', btScope = 'verified', btRange = 'all';
-  let btEvent = null, btFight = null, btMarket = 'ML';
+  let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all';
+  let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null;
   const BT_RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, 'all': null };
 
   const btImpl = a => a < 0 ? (-a) / ((-a) + 100) : 100 / (a + 100);
@@ -110730,7 +110833,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function btSetScope(s) { btScope = s; btRenderHistory(); }
   function btSetRange(r) { btRange = r; btRenderHistory(); }
-  window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange;
+  function btSetCard(c) { btCardFilter = c; btRenderHistory(); }
+  window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
+
+  // Pending bets, grouped by the card they're on. Bets on a card three weeks out
+  // shouldn't sit in the same pile as tonight's.
+  function btPendingCards() {
+    const seen = {}, out = [];
+    BT_BETS.filter(b => b.status === 'pending' && b.kind === 'tracked' && b.evSlug).forEach(b => {
+      if (seen[b.evSlug]) { seen[b.evSlug].n++; return; }
+      const ev = (BT_EVENTS || []).find(e => e.slug === b.evSlug);
+      seen[b.evSlug] = { slug: b.evSlug, label: ev ? btEvLabel(ev) : (b.match.split(' · ').pop() || 'Card'), ev: ev, ts: b.ts, n: 1 };
+      out.push(seen[b.evSlug]);
+    });
+    return out.sort((a, b) => a.ts - b.ts);
+  }
+  // Share the pending bets on one card.
+  function btShareCard(slug) {
+    if (!window.GL_SHEET) return;
+    const c = btPendingCards().find(x => x.slug === slug); if (!c) return;
+    const bets = BT_BETS.filter(b => b.status === 'pending' && b.evSlug === slug)
+      .map(b => ({ pick: b.pick, match: b.match.split(' · ')[0], odds: b.odds, stake: b.stake }));
+    GL_SHEET.betCard({ title: 'My card', eventName: c.ev ? c.ev.short : c.label, eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
+  }
+  // Share the record for whatever range/scope is on screen.
+  function btShareHistory() {
+    if (!window.GL_SHEET) return;
+    const scoped = BT_BETS.filter(btInRange);
+    const verified = scoped.filter(b => b.verified);
+    const vs = btStats(verified);
+    const s = btStats(btScope === 'verified' ? verified : scoped);
+    const RL = { '7d': 'Last 7 days', '30d': 'Last 30 days', '6m': 'Last 6 months', '12m': 'Last 12 months', 'all': 'All time' };
+    GL_SHEET.betHistory({
+      title: 'My betting record',
+      rangeLabel: RL[btRange] + (btScope === 'verified' ? ' · verified' : ' · incl. self-reported'),
+      settled: s.w + s.l, record: s.w + '-' + s.l, roi: s.roi, units: s.units,
+      clv: vs.avgClv, clvSub: vs.clvN ? ('on ' + vs.clvN + ' moneyline' + (vs.clvN === 1 ? '' : 's')) : '',
+      beatTxt: vs.clvN ? (vs.beat + ' of ' + vs.clvN) : '—',
+    });
+  }
+  window.btShareCard = btShareCard; window.btShareHistory = btShareHistory;
 
   function btRender() {
     Promise.all([btLoadEvents(), btFetchBets()]).then(function () {
@@ -110763,11 +110905,36 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     h += '<div class="bt-toggle"><div class="' + (btScope === 'verified' ? 'on' : '') + '" onclick="btSetScope(\'verified\')">Verified only</div>' +
       '<div class="' + (btScope === 'all' ? 'on' : '') + '" onclick="btSetScope(\'all\')">All (incl. self-reported)</div></div>';
     h += '<div class="bt-ranges">' + rangeBtn('7d', '7D') + rangeBtn('30d', '30D') + rangeBtn('6m', '6M') + rangeBtn('12m', '12M') + rangeBtn('all', 'All time') + '</div>';
-    if (!shown.length) {
-      h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.</div>';
-    } else {
-      h += shown.slice().sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    if (s.w + s.l > 0) h += '<button type="button" class="gl-sheet-btn" style="margin:0 0 1rem" onclick="btShareHistory()">↓ Share bet history</button>';
+
+    // Pending bets sit above settled ones, split by card — each with its own
+    // share button — so a card three weeks out isn't piled in with tonight's.
+    const pend = shown.filter(b => b.status === 'pending');
+    const settled = shown.filter(b => b.status !== 'pending');
+    const cards = btPendingCards().filter(c => pend.some(b => b.evSlug === c.slug));
+    if (cards.length > 1) {
+      h += '<div class="bt-ranges">' + '<div class="' + (btCardFilter === 'all' ? 'on' : '') + '" onclick="btSetCard(\'all\')">All cards</div>' +
+        cards.map(c => '<div class="' + (btCardFilter === c.slug ? 'on' : '') + '" onclick="btSetCard(\'' + btEsc(c.slug) + '\')">' + btEsc(c.ev ? c.ev.short : c.label) + ' (' + c.n + ')</div>').join('') + '</div>';
     }
+    const showCards = cards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug);
+    showCards.forEach(c => {
+      const rows = pend.filter(b => b.evSlug === c.slug);
+      if (!rows.length) return;
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + '</div>' +
+        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share this card</button></div>';
+      h += rows.sort((a, b) => b.createdAt - a.createdAt).map(btBetHTML).join('');
+    });
+    // Pending self-reported bets have no card to group under.
+    const loose = pend.filter(b => !b.evSlug || !cards.some(c => c.slug === b.evSlug));
+    if (loose.length && btCardFilter === 'all') {
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other pending</div></div>';
+      h += loose.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    }
+    if (settled.length && btCardFilter === 'all') {
+      if (pend.length) h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Settled</div></div>';
+      h += settled.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    }
+    if (!shown.length) h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.</div>';
     host.innerHTML = h;
   }
 
@@ -110790,16 +110957,44 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       : '<b>' + btFmtO(b.odds) + '</b>') + ' · ' + b.stake + 'u';
     // Editable only while pending AND before the segment locks — after that the
     // close is known, so letting someone change their price would fake CLV.
+    // Bet ids are strings, so quote them into the handlers.
+    const A = (fn, arg) => 'onclick="' + fn + '(&quot;' + btEsc(b.id) + '&quot;' + (arg ? ',&quot;' + arg + '&quot;' : '') + ')"';
     let acts = '';
     if (b.status === 'pending') {
       const bits = [];
-      if (b.kind === 'manual') bits.push('<button class="win" onclick="btSettle(' + b.id + ',\'won\')">Won</button><button class="lose" onclick="btSettle(' + b.id + ',\'lost\')">Lost</button><button onclick="btSettle(' + b.id + ',\'push\')">Push</button>');
-      if (b.editable !== false) bits.push('<button onclick="btDelete(' + b.id + ')">Delete</button>');
+      if (b.kind === 'manual') bits.push(
+        '<button class="win" ' + A('btSettle', 'won') + '>Won</button>' +
+        '<button class="lose" ' + A('btSettle', 'lost') + '>Lost</button>' +
+        '<button ' + A('btSettle', 'push') + '>Push</button>');
+      if (b.editable !== false) bits.push('<button ' + A('btEditOpen') + '>Edit</button><button ' + A('btDelete') + '>Delete</button>');
       if (bits.length) acts = '<div class="bt-acts">' + bits.join('') + '</div>';
+      // Inline edit — price and stake only. The bout, market and selection can't
+      // change: that would be a different bet, placed at a different time.
+      if (btEditId === b.id) {
+        acts += '<div class="bt-editrow"><div class="bt-row2">' +
+          '<div><label>Your odds</label><input id="bt-e-odds" type="number" value="' + b.odds + '"></div>' +
+          '<div><label>Stake (units)</label><input id="bt-e-stake" type="number" step="0.5" min="0.5" value="' + b.stake + '"></div></div>' +
+          '<div class="bt-acts"><button class="win" ' + A('btEditSave') + '>Save</button><button onclick="btEditCancel()">Cancel</button></div></div>';
+      }
     }
     return '<div class="bt-bet"><div class="bt-bet-top"><div><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
       '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
+  function btEditOpen(id) { btEditId = id; btRenderHistory(); }
+  function btEditCancel() { btEditId = null; btRenderHistory(); }
+  function btEditSave(id) {
+    const odds = parseInt(document.getElementById('bt-e-odds').value, 10);
+    const stake = parseFloat(document.getElementById('bt-e-stake').value);
+    if (!isFinite(odds) || odds === 0) { alert('Enter the odds you got.'); return; }
+    btApi('/api/bets/edit', { id: id, odds: odds, stake: stake }).then(function (r) {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not edit that bet.'); return; }
+      const b = BT_BETS.find(x => x.id === id);
+      if (b && r.j.bet) { b.odds = r.j.bet.odds; b.stake = r.j.bet.stake; }
+      btEditId = null; btDeriveAll(); btRenderHistory();
+    });
+  }
+  window.btEditOpen = btEditOpen; window.btEditCancel = btEditCancel; window.btEditSave = btEditSave;
+
   function btSettleBet(id, res) {
     btApi('/api/bets/settle', { id: id, status: res }).then(function (r) {
       if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not settle that bet.'); return; }
