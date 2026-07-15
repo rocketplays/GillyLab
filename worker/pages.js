@@ -666,7 +666,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +osec('UFC 329 · settled')
     +brow('max-holloway','MH','Holloway ML','Holloway vs McGregor','-205 \\u00b7 5u','+2.44u',A,'CLV +2.4',A)
     +brow('paddy-pimblett','PP','Pimblett by submission','Pimblett vs Saint-Denis','+700 \\u00b7 0.5u','+3.5u',A,'no CLV','#8a8f99')
-    +brow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','-1u','#ff6a5e','no CLV','#8a8f99')
+    +brow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','+0.91u',A,'no CLV','#8a8f99')
     +'<div style="font-size:.58rem;color:'+M+';margin-top:.45rem;line-height:1.5">Log a bet before the bell and it grades itself off the result. CLV is measured against the real closing line \\u2014 moneylines only.</div>';
 
   var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement (American odds)</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
