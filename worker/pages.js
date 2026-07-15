@@ -649,7 +649,11 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   function btile(lab,val,col){return '<div style="flex:1;background:rgba(255,255,255,.04);border-radius:8px;padding:.4rem .5rem"><div style="font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:'+M+'">'+lab+'</div><div style="font-size:.95rem;font-weight:800;color:'+(col||'inherit')+'">'+val+'</div></div>';}
   // The fighter you actually bet on gets the face — same rule as btBetNames() in
   // the app: a fighter-specific pick shows one headshot.
-  function brow(slug,init,pick,match,odds,res,rescol,tag,tagcol){
+  // NB: named btkrow, not brow — the box-score slide already owns brow(), and a
+  // second brow() in the same script silently wins by being declared later,
+  // swallowing these args into the wrong signature. (No backticks in here: this
+  // whole block lives inside a template literal.)
+  function btkrow(slug,init,pick,match,odds,res,rescol,tag,tagcol){
     return '<div style="display:flex;align-items:center;gap:8px;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05)">'
       +ava(slug,init,false,26)
       +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+pick+'</div>'
@@ -664,9 +668,9 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     +'<span style="font-size:.66rem;color:#c9ccd3">beat the close on <b>27 of 40</b> moneylines</span></div>'
     +'<div style="display:flex;gap:6px;margin-bottom:.55rem">'+btile('Record','24-16')+btile('ROI','+11.8%',A)+btile('Units','+9.2u',A)+btile('Pending','3')+'</div>'
     +osec('UFC 329 · settled')
-    +brow('max-holloway','MH','Holloway ML','Holloway vs McGregor','-205 \\u00b7 5u','+2.44u',A,'CLV +2.4',A)
-    +brow('paddy-pimblett','PP','Pimblett by submission','Pimblett vs Saint-Denis','+700 \\u00b7 0.5u','+3.5u',A,'no CLV','#8a8f99')
-    +brow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','+0.91u',A,'no CLV','#8a8f99')
+    +btkrow('max-holloway','MH','Holloway ML','Holloway vs McGregor','-205 \\u00b7 5u','+2.44u',A,'CLV +2.4',A)
+    +btkrow('paddy-pimblett','PP','Pimblett by submission','Pimblett vs Saint-Denis','+700 \\u00b7 0.5u','+3.5u',A,'no CLV','#8a8f99')
+    +btkrow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','+0.91u',A,'no CLV','#8a8f99')
     +'<div style="font-size:.58rem;color:'+M+';margin-top:.45rem;line-height:1.5">Log a bet before the bell and it grades itself off the result. CLV is measured against the real closing line \\u2014 moneylines only.</div>';
 
   var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement (American odds)</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
