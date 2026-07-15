@@ -188,17 +188,51 @@ Verified by injecting a real collision (Merab "fought" Jon Jones on a day Jones
 wasn't fighting): guard exits 1 and names it. Clean tree exits 0.
 
 
-THE PERMANENT FIX, NOT YET DONE
+ISSUE 4 — RECIPROCAL collisions  [OPEN — the gate is blind to these]
 ------------------------------------------------------------------------------
-Names should not be identities. ESPN already issues stable athlete IDs (Bruno
-"Blindado" is 4333158; scripts/fighter-lookup.py surfaces them). Keying
-FIGHT_HISTORY by ID kills this entire bug class forever.
+The reciprocity gate only catches collisions that are ONE-SIDED. When both
+halves of a merged identity are real fights, every edge reciprocates and the
+seam is invisible.
 
-It is a real migration — every consumer of FIGHT_HISTORY matches by name — and
-today's user-facing harm is close to zero, so it is NOT scheduled. Let the guard
-run. If it fires often, that is the evidence that justifies the project. If it
-fires twice a year, hand-fixing two names is cheaper. Decide with data rather
-than by feel; the whole reason this file exists is that we had none.
+    Ryan Parker   L vs Remco Pardoel   Sep 8, 1995    UFC 7
+                  L vs Josh Fremd      Nov 3, 2017    Bellator 186
+                  ... losses on regional cards through Jun 2025
+
+Two men. Pardoel really did fight a Ryan Parker in 1995; Donte Johnson really
+did fight one in 2025. All 48 Six Degrees tests passed with this on the board.
+
+Screen: the biggest HOLE between consecutive bouts (sharper than total career
+span — Arlovski has a legitimate 25-year career with no hole). 14 fighters have
+a 10+ year hole; 12 are on the Six Degrees board. It is a SCREEN, not a verdict:
+
+    LIKELY COLLISIONS   Ryan Parker (22y), Patrick Trey Smith (21y)
+    LIKELY REAL         Pat Miletich (comeback at 55), Gokhan Saki + Antonina
+                        Shevchenko (kickboxers crossing to MMA), Ronda Rousey
+
+Only a human who knows the sport can split those. 14 names, tractable — but not
+done. Not urgent now that Six Degrees is dead (see SIX-DEGREES-POSTMORTEM.txt);
+these only matter to code that asserts a RELATIONSHIP between two fighters, and
+nothing shipping does that.
+
+
+THE PERMANENT FIX — DOESN'T EXIST. Checked.
+------------------------------------------------------------------------------
+The obvious answer is to stop keying identity on names and use stable IDs.
+Measured, and it does not work:
+
+    ESPN athletes on file:              496
+    distinct people in FIGHT_HISTORY: 22,443   -> ESPN covers 2%
+    ...with UFC experience:            3,269   -> ESPN covers 15%
+
+The graph is overwhelmingly regional fighters ESPN has never heard of. Worse,
+the lookup that ASSIGNS an ID is itself by name — "Bruno Silva" resolves to one
+ID and the collision survives the migration intact. Months of work, bug not
+fixed.
+
+MMA has no central identity registry. This is not solvable with the sources
+available at any price today. So: live with it, run the guard, fix the handful
+that touch active fighters, and DON'T build features that assert relationships
+between fighters. That last clause is the real conclusion.
 
 A worked example of the hazard, from the day this was written: giving the
 middleweight a FIGHTERS row made him UNREACHABLE, because a SLUG_ALIASES entry

@@ -1,0 +1,126 @@
+Six Degrees of the Octagon — DEAD. Do not rebuild.
+==================================================
+2026-07-15. Prototype built, playtested, killed the same day. This file exists so
+nobody re-pitches it in six months, because it is a genuinely good idea and it
+WILL get re-pitched.
+
+The idea: your 58,518 bout rows are a social graph. 22,432 fighters, fully
+connected, most pairs ~4 hops apart. Give people two fighters, make them build
+the chain. Bogdan Guskov -> Ryan Spann -> Rogerio Nogueira -> Kazushi Sakuraba ->
+Royce Gracie: a man fighting this month is four handshakes from UFC 1. Nobody
+else has shipped this. It's unique, it's ours, and it's dead.
+
+
+WHY IT'S DEAD
+------------------------------------------------------------------------------
+Not because of bugs. Because the bugs can't be BOUNDED.
+
+Six Degrees is the only thing on the site that asserts a RELATIONSHIP between two
+fighters. Everything else — profiles, scouting, lite pages, the tracker — shows
+one fighter's own record. A bad row on a profile is survivable and fixable when
+someone reports it. In Six Degrees, a bad row IS the puzzle, and the puzzle is
+the product. Same data, categorically different blast radius.
+
+And the data cannot support that assertion. Two separate bug classes were found
+in one afternoon, each AFTER the data had been declared clean:
+
+  1. ONE-SIDED COLLISION. Brendan Allen "fought" a flyweight Bruno Silva. Caught
+     by a reciprocity gate — a real bout appears in both corners' records.
+     Found by a playtester, not a test.
+
+  2. RECIPROCAL COLLISION. Ryan Parker fought Remco Pardoel at UFC 7 in 1995 and
+     also lost to Donte Johnson on a regional card in 2025. Two men, one key —
+     and EVERY EDGE RECIPROCATES, because both halves are real fights. The gate
+     is structurally blind to it. All 48 tests passed while this sat on the board.
+     Found only by asking an unrelated question (who has an implausible career
+     span?).
+
+Two classes, two accidents. There is no reason to believe there isn't a third.
+A game whose entire pitch is "these two men really are connected" dies the first
+time someone sees Conor McGregor bridged to 1995 through a phantom — and it takes
+the site's credibility with it, including the parts that earn money.
+
+
+THE ESCAPE HATCH DOESN'T EXIST
+------------------------------------------------------------------------------
+The obvious fix is to stop keying identity on names and use stable IDs. I said
+that during the session. I was wrong, and this is the most important paragraph
+in the file:
+
+    ESPN athletes on file:              496
+    distinct people in FIGHT_HISTORY: 22,443   -> ESPN covers 2%
+    ...with UFC experience:            3,269   -> ESPN covers 15%
+
+The graph is overwhelmingly regional fighters ESPN has never heard of. And the
+lookup that ASSIGNS an ID is itself by name — so "Bruno Silva" resolves to one
+ID and the collision survives the migration completely intact. An ID merge would
+cost months and not fix the thing it's supposed to fix.
+
+This is not a GillyLab problem. MMA has no central identity registry. Nobody's
+database has clean identities for 22,000 regional fighters — not Tapology's, not
+the competitors'. That is probably why nobody has built Six Degrees despite the
+idea being obvious to anyone who looks at the data.
+
+So: not "parked pending a big job." Dead.
+
+
+WHAT WOULD UNPARK IT
+------------------------------------------------------------------------------
+A source of per-bout fighter IDs covering the regional circuit, which does not
+currently exist at any price. If that ever changes, the work is ~a day: the
+generator, the era scoping, the prototype and 48 passing tests are all still in
+the repo.
+
+    prototypes/six-degrees.html          the game (click-to-navigate, no typing)
+    prototypes/sixdegrees-data.json      the board
+    scripts/gen-sixdegrees-data.cjs      the generator + reciprocity gate
+    scripts/test-sixdegrees.cjs          48 checks, driven through the real page
+
+Do NOT resurrect it by "just auditing the fighters." 2,917 board nodes, and the
+audit only finds the classes you already thought of. That's the trap.
+
+
+WHAT THE PROTOTYPE ACTUALLY BOUGHT — all of it kept
+------------------------------------------------------------------------------
+The prototype's job turned out to be finding the bug, and it did:
+
+  - Bruno "Blindado" Silva has a real record (36 bouts, 23-13). He had NONE.
+  - The flyweight is untangled; the two men shared 24 opponents, now zero.
+  - Jose/José Aldo + Viviane Araujo/Araújo merged. Both canonical records GAINED
+    10 closing lines that were stranded in dead shards.
+  - scripts/audit-name-links.cjs: splits one-sided links into aliases vs
+    collisions by DATE, not by name. 481 real fights recovered, 180 collisions
+    identified and triaged (69 touch an active fighter; "Jean Silva" x7 is next).
+  - data/name-aliases.json + a CI guard that names the next Bruno on day one
+    instead of eight months later.
+
+Five permanent wins on the real product, from a game that never shipped. That's
+a good trade. The lesson isn't "don't prototype" — it's that a prototype's
+highest-value output is sometimes the thing it breaks.
+
+
+THE DESIGN NOTES, FOR WHATEVER COMES NEXT
+------------------------------------------------------------------------------
+Four rounds of "still too hard", each fix measured and each still wrong:
+
+  - Typing is the enemy. Free recall from 3,269 names is brutal. Click, never
+    type — recognition, not recall. It's Wikirace, not Wordle.
+  - Recognition fixes READING, not ROUTING. Knowing which of 41 opponents bends
+    toward the target needs the TARGET's opponent list. Blind: 18% solve rate.
+    With the dossier: 52%.
+  - Don't make people do set-intersection by eye. That's a chore, not a game.
+    Highlighting the overlap took it to 73%. Worth noting: my "floor" simulation
+    had ALREADY assumed the player finds every overlap for free — I was
+    measuring a highlighted game and shipping an unhighlighted one.
+  - Stock the on-ramp, not the hardest tier. Random star pairs land on par 4-5
+    two-thirds of the time; par 4-5 is ~39% solvable. The first build was 38 of
+    60 puzzles at par 4+ and a playtester went 0-for. That was the pool's fault,
+    not the player's.
+  - Era scoping is the biggest difficulty lever there is — bigger than par,
+    bigger than the budget. An all-time board asks you to know 25 years of MMA
+    no matter how it's sorted.
+  - A game you cannot lose is not a game. The first build had no fail state at
+    all, so no pick could be "wrong".
+
+Every one of those was found by someone PLAYING, never by me measuring. That is
+the actual lesson of the day.
