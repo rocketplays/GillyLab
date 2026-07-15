@@ -8,10 +8,6 @@
   PROTOTYPE. Deliberately ugly. Needs a local server (it fetches climb-data.json):
       python3 -m http.server        then  localhost:8000/prototypes/the-climb.html
 
-  This exists to answer ONE question no amount of measuring can: is the run fun?
-  Everything else is tunable. Play three runs. If you find yourself thinking
-  "one more, I'll build him differently" — it works.
-
   WHAT'S REAL AND WHAT ISN'T — say it plainly, because the page used to claim
   "every fight is scored by the real GillyLab simulator, no fake difficulty" and
   that stopped being true the moment we took the wheel.
@@ -103,21 +99,34 @@
     line-height:1.55;color:#c8c8cf}
   .tipbox b{color:var(--text)}
   .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}
+
+  /* weight class picker */
+  .divpick{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.4rem}
+  .divbtn{text-align:left;padding:.45rem .6rem;line-height:1.3}
+  .divbtn b{display:block;font-size:.78rem;font-weight:600}
+  .divbtn span{display:block;font-size:.66rem;color:var(--muted);margin-top:.1rem}
+  .divbtn.on{border-color:var(--accent);background:rgba(0,230,104,.09)}
+  .divbtn.on b{color:var(--accent)}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>The <span class="g">Climb</span></h1>
   <p class="sub">Build a fighter. Pick your fights. Two losses and you're cut.
-    Real UFC lightweights, real rankings, real GillyLab power ratings.</p>
-  <div id="app"><div class="load">Loading the division…</div></div>
+    Real UFC fighters, real rankings, real GillyLab power ratings.</p>
+  <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
 
-<script src="climb-scorer.js"></script>
 <script>
 const $ = s => document.querySelector(s);
-let D=null, S=null, ME='__YOU__';
+let D=null, ME='__YOU__';
+let DIV=null; // chosen weight class
 let G=null;   // game state
+// Every read of the board goes through here. D.ladder no longer exists — the
+// data is keyed by division now, and a stale D.ladder would read undefined and
+// fail somewhere far away from the cause.
+const LADDER = () => (D && DIV && D.divisions[DIV]) ? D.divisions[DIV].ladder : [];
+const DIVLABEL = () => (D && DIV && D.divisions[DIV]) ? D.divisions[DIV].label : '';
 
 // ── the attribute sheet ─────────────────────────────────────────────────────
 // NINE SLIDERS, and every one of them is a real choice again.
@@ -382,7 +391,7 @@ function styleDelta(a, st){
   return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d));
 }
 
-function oppByName(nm){ return D.ladder.find(f=>f.name===nm) || null; }
+function oppByName(nm){ return LADDER().find(f=>f.name===nm) || null; }
 
 // P(win a single fight). Base from the rating gap, then the style triangle, then
 // the record. Cardio is a real attribute now — it was impossible while the sim
@@ -452,8 +461,8 @@ function buildOffers(){
   // re-offered your conqueror reads exactly like "nothing changed".
   const fought = new Set(G.log.map(f=>f.opp));
   const avail = f => !G.beat.has(f.name) && !fought.has(f.name);
-  const unranked = D.ladder.filter(f=>f.rankNum===99 && avail(f));
-  const ranked   = D.ladder.filter(f=>f.rankNum<99 && avail(f)).sort((a,b)=>b.rankNum-a.rankNum);
+  const unranked = LADDER().filter(f=>f.rankNum===99 && avail(f));
+  const ranked   = LADDER().filter(f=>f.rankNum<99 && avail(f)).sort((a,b)=>b.rankNum-a.rankNum);
   const pool = [];
   if (G.rank == null) {
     // Unranked phase: three gatekeepers of rising difficulty, drawn at random
@@ -599,7 +608,27 @@ function render(){
 
 function creator(){
   const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">Create your fighter</div>';
+  p.innerHTML='<div class="rl">Choose your division</div>';
+
+  // WEIGHT CLASS PICKER. Changing division RESTARTS the run — you can't carry a
+  // 6-0 record and a half-built fighter into a new weight class, and the ladder,
+  // opponents and champion all change underneath. newGame() resets everything,
+  // which is the honest behaviour; silently keeping your points while swapping
+  // the entire board would be the bug.
+  const dv=document.createElement('div'); dv.className='divpick';
+  for(const key of D.order){
+    const b=document.createElement('button');
+    b.className='btn divbtn'+(key===DIV?' on':'');
+    const champ=D.divisions[key].ladder.find(f=>f.rankNum===0);
+    b.innerHTML='<b>'+D.divisions[key].label+'</b><span>'+(champ?champ.name:'vacant')+'</span>';
+    b.onclick=()=>{ if(key===DIV) return; DIV=key; newGame(); };
+    dv.appendChild(b);
+  }
+  p.appendChild(dv);
+
+  const hd=document.createElement('div'); hd.className='rl'; hd.style.marginTop='.9rem';
+  hd.textContent='Create your fighter — '+DIVLABEL();
+  p.appendChild(hd);
   const left=POINTS_START-spent();
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr';
@@ -779,8 +808,12 @@ function endBox(msg){
 }
 
 fetch('climb-data.json').then(r=>r.json()).then(d=>{
+  // No createScorer any more. The 90KB browser-wrapped simulator and the 443KB
+  // of FIGHTER_STATS/FIGHT_HISTORY it ate are gone: the game scores fights
+  // itself, so all it needs is the ladder. 10 divisions now cost 17KB gzipped —
+  // 26x less than ONE division used to.
   D=d;
-  S = window.createScorer(d.FIGHTER_STATS, d.FIGHT_HISTORY, d.FIGHTERS);
+  DIV = d.order[0];
   newGame();
 }).catch(e=>{
   $('#app').innerHTML='<div class="load">Could not load climb-data.json — '+e.message+
