@@ -172,7 +172,7 @@ function main() {
     // same climb, ~1.5 rungs harder or easier the whole way up. Big enough that
     // picking a soft division is a real (and slightly cowardly) strategy; small
     // enough that no division is a walkover.
-    const DIV_SWING = 12;
+    const DIV_SWING = 6;
     const sAdj = (strengthNorm(DIV) - 0.5) * DIV_SWING;
     const powerOf = f => {
       const r = rankNum(f);

@@ -638,6 +638,27 @@ function buildOffers(){
     // Fallbacks so the offer list is never empty at the top of the ladder.
     if(!pool.filter(Boolean).length) pool.push(...ranked.slice(0,3));
   }
+
+  // LAST RESORT: A REMATCH BEATS AN EMPTY BOARD.
+  //
+  // avail() hides everyone you've already beaten, and the fallback above was
+  // built from `ranked` — which is ALREADY filtered by avail(), so when the pool
+  // ran dry the fallback was empty too. Measured over 25 runs a division: LHW x2,
+  // BW x1, WBW x1 came back with NO FIGHTS and the run simply stopped. Narrowing
+  // the bands (STEP 3->1) caused it: a 15-fight run exhausts three or four rungs
+  // of a division, and then there is nobody left who is both close to you and
+  // new.
+  //
+  // Beating a man twice is a real career. An empty board is a dead end that looks
+  // like a bug, because it is one. So: if the board would be empty, re-offer from
+  // the whole ladder ignoring who you've already beaten.
+  if(!pool.filter(Boolean).length){
+    const all = LADDER().filter(f => f.name !== (G.last && G.last.o && G.last.o.f.name));
+    const near = all.filter(f => G.rank==null ? f.rankNum===99
+                                              : Math.abs(f.rankNum - G.rank) <= 4 && f.rankNum < 99);
+    const src = near.length ? near : all;
+    for(let i=0;i<3;i++) pool.push(pickDiverse(src, pool));
+  }
   return pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i).map(f=>{
     const p = winProb(f.name);
     // Reward scales with how much of a dog you are. This is THE risk/reward
