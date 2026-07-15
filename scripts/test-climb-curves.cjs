@@ -98,7 +98,7 @@ setTimeout(()=>{
     ' var o='+JSON.stringify(OPPS)+'.map(n=>winProb(n)).filter(x=>x!=null);'+
     ' return o.reduce((a,b)=>a+b,0)/o.length; })()');
   let collapsed=[], inert=[];
-  for(const attr of ['power','grappling','wrestling']){
+  for(const attr of ['striking','grappling','wrestling']){
     const lo=winAt(attr,0), mid=winAt(attr,5), hi=winAt(attr,10);
     const bottomHalf=mid-lo, topHalf=hi-mid;
     if(hi-lo < 2) inert.push(attr+' moves only '+(hi-lo).toFixed(1)+'pts end to end');

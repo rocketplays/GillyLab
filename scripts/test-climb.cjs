@@ -34,7 +34,7 @@ const win=dom.window;
 
   // a build change must move the model
   const before=peek('offers()[0].p');
-  win.eval('G.attrs.power=10; G.attrs.technique=10; render();');
+  win.eval('G.attrs.striking=10; G.attrs.wrestling=10; render();');
   await new Promise(r=>setTimeout(r,10));
   const after=peek('offers()[0].p');
   ok(after>before,'maxing Power+Technique raises your win prob',

@@ -107,9 +107,9 @@ let D=null, S=null, ME='__YOU__';
 let G=null;   // game state
 
 // ── the attribute sheet ──────────────────────────────────────────────────────
-// Vague on the front, specific on the back — the player sees "Power", the model
-// sees kd + slpm. Every point MUST move a lever the sim actually reads, or the
-// slider is a lie. The sim's 9 settable levers are bundled into 5 archetypes.
+// Vague on the front, specific on the back — the player sees "Striking", the
+// model sees kd + slpm + strAcc. Every point MUST move a lever the sim actually
+// reads, or the slider is a lie. The sim's 9 settable levers, 5 archetypes.
 //
 // Cardio is deliberately ABSENT: the sim has no cardio input. What it has is
 // bigFightExperience ("composure and cardio when a fight goes long") — EARNED by
@@ -122,13 +122,42 @@ let G=null;   // game state
 // Technique silently changed your output volume, so no slider meant what it
 // said. Now every lever has exactly one owner:
 //
-//   Power        -> kd                how often you drop people
-//   Pace         -> slpm              how much you throw
-//   Technique    -> strAcc            how much of it lands
+//   Striking     -> kd, slpm, strAcc  hurting them standing
 //   Defense      -> strDef, sapm      not getting hit
 //   Wrestling    -> tdLanded, tdAcc   getting them to the ground
 //   Grappling    -> subAvg            finishing them there
 //   Takedown def -> tdDef             staying upright
+//
+// POWER, PACE AND TECHNIQUE ARE ONE SLIDER NOW, and the reason isn't tidiness.
+// Measured, the value of +5 levels in each, against six different opponents:
+//
+//                Topuria  Oliveira  Gamrot  Gaethje  Holloway   avg   SPREAD
+//     power          3.8       3.8     4.1      4.0       4.1   4.0      0.3
+//     pace           1.1       1.1     1.2      1.2       1.2   1.2      0.1
+//     technique      0.3       0.3     0.4      0.4       0.4   0.4      0.0
+//     wrestling      3.5       6.3     3.8      4.7       4.1   4.5      2.7
+//     takedef        2.0       2.3     3.1      0.9       1.0   1.9      2.2
+//
+// STRIKING DOES NOT CARE WHO YOU ARE FIGHTING. Power is worth 4.0 against
+// Topuria's 95% takedown defence and 4.0 against Gaethje — a spread of 0.3
+// across the whole division. Wrestling swings 3.5->6.3 by opponent; takedown
+// defence swings 0.9->3.1. So Power vs Pace was never a decision: Power is 3.3x
+// better than Pace at the same price, against everyone, always. It was one
+// choice with two decoys attached.
+//
+// That is a property of THE MODEL, not of MMA, and it's worth stating plainly:
+// trained on 4,518 real fights, it learned matchup structure on the grappling
+// axis and essentially none on the striking axis, where output is priced as a
+// flat quantity. The game inherits that. Build identity in The Climb lives on
+// the grappling axis because that's the only axis the model has opinions about.
+//
+// The merge is NOT a repeat of the Grappling bug below. Three levers on one
+// slider measures at 1.08 win% per point against Grappling's 1.18 — balanced,
+// because the levers don't add linearly (4.0+1.2+0.4 = 5.6 apart, 5.4 together).
+// Bundling three WEAK levers is fine. Grappling was 3x efficient because it
+// bundled three STRONG ones. The rule isn't "one lever per slider" — it's
+// "value per point must match", and one lever per slider was only ever a
+// convenient way to guarantee that.
 //
 // WRESTLING AND GRAPPLING ARE SEPARATE. Playtest: "does it seem clear that one
 // category is worth more than another?" Measured: NO — the grappler beat every
@@ -204,9 +233,8 @@ const cv  = (k,v) => CURVES[k][Math.max(0, Math.min(10, Math.round(v)))];
 const cvp = (k,v) => pct(cv(k,v));
 
 const ATTRS = [
-  { id:'power',    label:'Power',        note:'knockdowns',     apply:(s,v)=>{ s.kd = cv('kd',v); } },
-  { id:'pace',     label:'Pace',         note:'output volume',  apply:(s,v)=>{ s.slpm = cv('slpm',v); } },
-  { id:'technique',label:'Technique',    note:'accuracy',       apply:(s,v)=>{ s.strAcc = cvp('strAcc',v); } },
+  { id:'striking', label:'Striking',     note:'power, volume, accuracy',
+    apply:(s,v)=>{ s.kd = cv('kd',v); s.slpm = cv('slpm',v); s.strAcc = cvp('strAcc',v); } },
   { id:'defense',  label:'Defense',      note:'not getting hit',apply:(s,v)=>{ s.strDef = cvp('strDef',v); s.sapm = cv('sapm',v); } },
   { id:'wrestling',label:'Wrestling',    note:'getting them to the ground', apply:(s,v)=>{ s.tdLanded = cv('tdLanded',v); s.tdAcc = cvp('tdAcc',v); } },
   { id:'grappling',label:'Grappling',    note:'submissions',    apply:(s,v)=>{ s.subAvg = cv('subAvg',v); } },
@@ -464,7 +492,7 @@ function fight(o){
   const won = roundsWon >= 2;
   // Finish chance scales with Power/Grappling — how you win matters (~8pts to
   // the model), so the build should drive it.
-  const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);   // KO power + submissions
+  const finBias = (G.attrs.striking + G.attrs.grappling) / (ATTR_MAX*2);   // KO power + submissions
   const fin = won && Math.random() < (0.25 + finBias*0.4);
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
   // shows all 3 rounds as if it were a decision." The rounds array and the
@@ -561,10 +589,18 @@ function creator(){
   }
   p.appendChild(legend);
   const tip=document.createElement('div'); tip.className='tipbox';
+  // THIS TEXT WAS WRONG AND SHIPPED. It used to read "leave no hole: the model
+  // punishes a zero harder than it rewards a ten. Get competent everywhere, then
+  // lean." That was measured off the old fantasy stat curves, where the top of
+  // every attribute was inert. With curves anchored to real fighters it reverses:
+  // committing beats spreading by ~9 points at a 24-point budget. Player-facing
+  // advice derived from a broken measurement is the worst kind of bug — it's a
+  // lie the player can't check.
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
     'bad takedown defence, and stalls against elite TDD.<br>'+
-    'But leave no hole: the model punishes a zero harder than it rewards a ten. '+
-    'Get competent everywhere, then lean.';
+    'Commit. A ten beats two fives — the last level of anything is worth more than '+
+    'the first. But the ground game is where matchups actually turn: striking pays '+
+    'the same against everyone.';
   p.appendChild(tip);
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
   b.style.marginTop='.6rem';
