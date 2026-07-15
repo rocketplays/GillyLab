@@ -225,7 +225,7 @@ const ATTRS = [
 //
 // So: 24 -> 14 to start. 14 is 35% of a maxed fighter, the same fraction 24 was
 // of the old 70-point ceiling — the creator screen is worth what it was worth.
-const POINTS_START = 14, ATTR_MAX = 10, ATTR_MIN = 1;
+const POINTS_START = 20, ATTR_MAX = 10, ATTR_MIN = 1;
 
 // FLAT COST — one point per level, always.
 //
@@ -574,6 +574,41 @@ function pickDiverse(arr, taken){
 // because you moved a slider), but their probabilities are recomputed on every
 // read against your current build.
 let _offerCache = null, _offerKey = '';
+// REWARD = RISK x ALTITUDE. Both halves are playtest asks, and together they fix
+// the economy the odds bug had been hiding.
+//
+// Was: max(1, min(2, round((1-p)*3))) — 1 or 2 points, barely varying, and
+// completely FLAT by rank. Beating the #2 contender paid what beating a
+// gatekeeper paid. No reason to take a hard fight and no reason to climb, which
+// is a strange thing to say about a game called The Climb.
+//
+// It only looked survivable because the bo3 bug inflated every number. With
+// honest odds both strategies hit 0% titles and died at #23-33 — the belt was
+// off the end of the map. So the economy pays more, and the money goes on the
+// two axes the player actually chooses between.
+//
+//   RISK      a coin flip pays ~2.6x what a gimme pays. The file header still
+//             says "the model won't supply the risk/reward on its own" — true,
+//             so the game supplies it here.
+//   ALTITUDE  contenders pay double gatekeepers, so climbing compounds: the
+//             higher you get the faster you grow, and a run accelerates instead
+//             of grinding.
+//
+// ONE DEFINITION. This lived inline in buildOffers() AND was recomputed in
+// offers() — two copies of the same formula, and I edited one. A reward that
+// silently disagrees with itself between the card and the payout is exactly the
+// class of bug that has cost this prototype the most today.
+function rewardFor(f, p){
+  const risk = 1 + Math.max(0, 1 - p) * 3.2;              // 1.0 gimme -> ~2.6 coin flip
+  const r = f.rankNum;
+  const altitude = r >= 99 ? 1.0                           // unranked gatekeeper
+                 : r > 10  ? 1.35                          // edge of the rankings
+                 : r > 5   ? 1.7                           // real contender
+                 : r > 0.5 ? 2.1                           // top 5
+                 : 2.5;                                    // champion / interim
+  return Math.max(1, Math.round(risk * altitude));
+}
+
 function offers(){
   // DIV IS IN THE KEY. It wasn't, and the failure was silent and total: switch
   // weight class at fight 0 and the key ("0|0|0|null") was unchanged, so you got
@@ -587,7 +622,7 @@ function offers(){
   // re-price against the CURRENT build every time
   return _offerCache.map(o => {
     const p = winProb(o.f.name);
-    return { f:o.f, p, reward:Math.max(1, Math.min(2, Math.round((1-p)*3))), jump:o.jump };
+    return { f:o.f, p, reward:rewardFor(o.f, p), jump:o.jump };
   });
 }
 function buildOffers(){
@@ -684,14 +719,7 @@ function buildOffers(){
   }
   return pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i).map(f=>{
     const p = winProb(f.name);
-    // Reward scales with how much of a dog you are. This is THE risk/reward
-    // dial: the model only pays ~1pt more for beating a contender than a can,
-    // so the incentive to take a hard fight has to be manufactured here.
-    // Capped at 2 — +8 made one upset worth more than the whole early career,
-    // and 3 was sized for a 70-point ceiling. Four attributes cost 40 to max, so
-    // 1-3 per win plus a finish bonus let a full run buy the entire fighter with
-    // ~19 points left over. See the POINTS_START note.
-    const reward = Math.max(1, Math.min(2, Math.round((1-p)*3)));
+    const reward = rewardFor(f, p);
     const jump = f.rankNum<99 ? f.rankNum : null;
     return { f, p, reward, jump };
   });
