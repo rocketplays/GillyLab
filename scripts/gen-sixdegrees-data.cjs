@@ -103,12 +103,50 @@ function main() {
   const edgeInfo = Object.create(null);
   const ek = (a, b) => a < b ? a + '|' + b : b + '|' + a;
 
+  // RECIPROCITY GATE. Names are not identities, and norm() silently welds two
+  // people into one node when they share a normalised name.
+  //
+  // Found by a playtester: "Charles Johnson and Brendan Allen had a common
+  // opponent of Bruno Silva" — impossible, they're a flyweight and a
+  // middleweight. Johnson fought Bruno "Bulldog" Gustavo da Silva (FLW); Allen
+  // fought Bruno "Blindado" Silva (MW). The middleweight has NO record of his
+  // own in FIGHT_HISTORY — he exists only as the opponent string "Bruno Silva"
+  // — so his fights got welded onto the flyweight's node and invented a link
+  // between two men 40 pounds apart.
+  //
+  // The tell: a genuine bout is RECIPROCAL — it appears in BOTH corners'
+  // records. A collision is one-sided. Allen says he fought Bruno Silva; the
+  // Bruno Silva record has never heard of Allen.
+  //
+  // So an edge needs both corners to agree, whenever both have records. If the
+  // opponent has no record at all we can't check, and we keep it — that's the
+  // ordinary case for regional opponents, not a collision.
+  //
+  // 691 one-sided links exist across FIGHT_HISTORY. Some are aliases (same man,
+  // two spellings) rather than collisions, so this drops a few real edges too.
+  // That trade is right for a PUZZLE: a missing edge makes a path one hop
+  // longer, a fake edge makes the puzzle wrong.
+  const keyByNorm = Object.create(null);
+  for (const key of Object.keys(FH)) keyByNorm[norm(key)] = key;
+  const claims = Object.create(null);   // normA -> Set(normOpponent) straight from A's own record
+  for (const key of Object.keys(FH)) {
+    const a = norm(key);
+    claims[a] = claims[a] || new Set();
+    for (const b of FH[key]) { const o = norm(b.opponent); if (o) claims[a].add(o); }
+  }
+  const agreed = (a, o) => {
+    if (!keyByNorm[o]) return true;     // opponent keeps no record — nothing to contradict
+    return claims[o] && claims[o].has(a);
+  };
+
+  let dropped = 0;
   for (const key of Object.keys(FH)) {
     const a = norm(key);
     if (!isUFC[a]) continue;
     for (const b of FH[key]) {
       const o = norm(b.opponent);
       if (!o || !isUFC[o] || o === a) continue;
+      if (!agreed(a, o)) { dropped++; continue; }   // one-sided → unverifiable → not on the board
       (adj[a] = adj[a] || new Set()).add(o);
       (adj[o] = adj[o] || new Set()).add(a);
       const k = ek(a, o);
@@ -119,6 +157,7 @@ function main() {
       }
     }
   }
+  console.log('  reciprocity gate: dropped ' + dropped + ' one-sided links (name collisions + aliases)');
 
   // ---- giant connected component ----
   const bfsAll = start => {

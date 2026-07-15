@@ -1,0 +1,95 @@
+FIGHT_HISTORY data integrity — open issues
+==========================================
+Found 2026-07-15 while building the Six Degrees prototype. Filed here because
+they outlive that prototype: FIGHT_HISTORY backs the scouting report, common
+opponents, lite profiles, and the matchup pages.
+
+Surfaced by a playtester, not by a test:
+  "it was showing charles johnson and brendan allen had a common opponent of
+   bruno silva ... it is confusing middleweight bruno silva with flyweight
+   bruno gustavo da silva"
+
+Root cause in one line: NAMES ARE NOT IDENTITIES. Every consumer of
+FIGHT_HISTORY matches fighters by normalised name, and that silently welds two
+different people together whenever they share one.
+
+
+ISSUE 1 — the middleweight Bruno "Blindado" Silva has no record  [REAL, OPEN]
+------------------------------------------------------------------------------
+There are two real fighters:
+  Bruno "Bulldog" Gustavo da Silva   flyweight
+  Bruno "Blindado" Silva             middleweight
+
+FIGHT_HISTORY has keys "Bruno Gustavo da Silva" and "Bruno Silva" — but BOTH
+hold the FLYWEIGHT's record (see issue 2). The middleweight has no key at all.
+He exists only as the opponent string "Bruno Silva" inside other fighters'
+records (Brendan Allen, Jun 24 2023, UFC on ABC: Emmett vs. Topuria).
+
+So any code resolving "Bruno Silva" -> a fighter lands on the flyweight, and
+the middleweight's bouts get attributed to a man 40lb lighter.
+
+Impact:
+  - Six Degrees: invented an edge Brendan Allen — (flyweight) Bruno Silva,
+    which is what the playtester caught. FIXED there by a reciprocity gate.
+  - The app's common-opponents: currently SAFE, but only by luck. It intersects
+    opponent NAME STRINGS, and Johnson's record happens to say "Bruno Gustavo
+    da Silva" while Allen's says "Bruno Silva". If both records had used the
+    short form, the app would print a fake common opponent. This is an accident,
+    not a defence.
+
+Fix: add the middleweight as his own key, and make the ingest disambiguate.
+Needs a source decision — probably an explicit alias/identity map rather than
+more string heuristics.
+
+
+ISSUE 2 — duplicate keys for one fighter  [REAL, OPEN]
+------------------------------------------------------------------------------
+"Bruno Silva" and "Bruno Gustavo da Silva" are the SAME flyweight, stored twice:
+  27 bouts each, 12 UFC each, 89% identical by date+result.
+The 3 "differences" are date noise on the same three opponents:
+  Ulanbekov   Oct 10, 2020  vs  Oct 11, 2020
+  Khalid Taha Oct  5, 2019  vs  Oct  6, 2019
+  Ralph Acosta Oct 27, 2018 vs  Dec 15, 2018   (WFF 40 / World Fighting Federation 40)
+
+Two more duplicate pairs, accent-only, caught by normalised-name comparison:
+  ["Viviane Araujo", "Viviane Araújo"]
+  ["Jose Aldo", "José Aldo"]
+
+These are the same class as the RDA duplicates merged earlier in the project.
+The Aldo/Araujo pairs are trivially safe to merge. The Bruno pair is NOT — it's
+entangled with issue 1, since collapsing them still leaves the middleweight
+homeless and his fights mis-attributed. Fix issue 1 first.
+
+
+ISSUE 3 — 691 one-sided links  [MOSTLY BENIGN, WORTH AUDITING]
+------------------------------------------------------------------------------
+A genuine bout is reciprocal: it appears in both corners' records. Across
+FIGHT_HISTORY:
+    reciprocal   25,540
+    one-sided       691   (2.6%)
+
+One-sided links are a mix of:
+  (a) name collisions   — two people, one name (issue 1). These are BUGS.
+  (b) aliases           — one person, two spellings, so each record names the
+                          other differently. e.g. "Anderson Berinja" claims 8
+                          bouts that none of his opponents' records echo.
+                          These are real bouts under a wrong/alt name.
+
+Six Degrees now drops all 691 (the gate is cheap and a fake edge breaks a
+puzzle, while a missing edge just adds a hop). The app should NOT blanket-drop
+them — it would lose real history. Worth an audit to split (a) from (b) and
+build a proper alias map.
+
+Reproduce:
+    node -e '<reciprocity scan>'   # see scripts/gen-sixdegrees-data.cjs,
+                                   # the `agreed()` helper
+
+
+WHAT THE PROTOTYPE DOES ABOUT IT
+------------------------------------------------------------------------------
+scripts/gen-sixdegrees-data.cjs gates every edge on reciprocity: both corners
+must name each other, whenever both keep records. If the opponent has no record
+we can't check and we keep the edge (the ordinary case for regional opponents).
+Drops 673 links from the board. Regression-tested in scripts/test-sixdegrees.cjs
+under "== name collisions ==", which asserts the specific Allen/Johnson case AND
+the general invariant that no one-sided edge survives.

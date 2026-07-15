@@ -78,6 +78,39 @@ for (const p of P) {
   // unfollowable — the player can never click that tile.
   if (p.sol.some(i => F[i].l < cut)) outOfEra++;
 }
+// ── name collisions ─────────────────────────────────────────────────────────
+// Found in playtest: "Charles Johnson and Brendan Allen had a common opponent
+// of Bruno Silva" — a flyweight and a middleweight, 40lb apart. Johnson fought
+// Bruno "Bulldog" Gustavo da Silva (FLW); Allen fought Bruno "Blindado" Silva
+// (MW), who has NO record of his own, so norm() welded his fights onto the
+// flyweight's node. Names are not identities.
+console.log('\n== name collisions ==');
+{
+  const i = n => F.findIndex(f => f.n === n);
+  const allen = i('Brendan Allen'), john = i('Charles Johnson'), bs = i('Bruno Silva');
+  ok(!(allen >= 0 && bs >= 0 && F[allen].o.includes(bs)),
+    'Brendan Allen is NOT linked to the flyweight Bruno Silva');
+  if (allen >= 0 && john >= 0) {
+    const shared = F[allen].o.filter(o => F[john].o.includes(o)).map(o => F[o].n);
+    ok(shared.length === 0, 'Allen and Johnson share no fabricated opponent', shared.join(', '));
+  }
+  // Generalised: every edge on the board must be reciprocal wherever both
+  // corners keep records. This is the invariant, not the anecdote.
+  const nrm = s => String(s || '').toLowerCase().normalize('NFD')
+    .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+  const byName = new Map(F.map((f, ix) => [nrm(f.n), ix]));
+  let oneSided = 0;
+  for (let a = 0; a < F.length; a++) {
+    for (const o of F[a].o) {
+      if (!F[o].o.includes(a)) oneSided++;
+    }
+  }
+  ok(oneSided === 0, 'no one-sided edge survives onto the board', 'found=' + oneSided);
+  ok(byName.size === F.length, 'no two board nodes share a normalised name',
+    (F.length - byName.size) + ' collisions');
+}
+
+console.log('\n== puzzles (cont) ==');
 ok(unsolvable === 0, 'every puzzle is reachable', 'unsolvable=' + unsolvable);
 ok(badPar === 0, 'stated par equals true shortest path', 'wrong=' + badPar);
 ok(badSol === 0, 'shipped solution matches par and endpoints', 'bad=' + badSol);
