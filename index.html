@@ -1076,7 +1076,13 @@
     .bt-ranges div { flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.72rem; cursor: pointer; }
     .bt-ranges div.on { background: rgba(0,230,104,0.13); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(0,230,104,0.4); }
     .bt-bet { background: var(--surface2, #14141a); border: 1px solid var(--border); border-radius: 8px; padding: 11px 13px; margin-bottom: 9px; }
-    .bt-bet-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .bt-bet-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .bt-bet-txt { flex: 1; min-width: 0; }
+    .bt-avs { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; }
+    .bt-av { width: 34px; height: 34px; border-radius: 50%; overflow: hidden; background: #1b1e25; border: 2px solid rgba(255,255,255,0.14); flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.6rem; color: var(--muted); }
+    .bt-av img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .bt-avs-2 .bt-av { width: 28px; height: 28px; font-size: 0.52rem; }
+    .bt-vs { font-size: 0.5rem; font-weight: 800; color: var(--muted); text-transform: uppercase; }
     .bt-nm { font-weight: 700; font-size: 0.9rem; }
     .bt-mk { color: var(--muted); font-weight: 600; font-size: 0.76rem; margin-top: 1px; }
     .bt-res { font-weight: 800; font-size: 0.88rem; white-space: nowrap; }
@@ -110872,6 +110878,26 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btFindFight(fightId, evSlug) {
     return btAllFights().find(x => x.id === fightId || (x.rawId === fightId && x.evSlug === evSlug));
   }
+  // Who a bet is "about": the named fighter, or both when it's about the FIGHT
+  // (a total, the distance, a round start, an either-fighter method). A parlay
+  // spans bouts, so nobody. Shared by the bet list and the share card so the two
+  // can't disagree about whose face belongs on a bet.
+  function btBetNames(b) {
+    if (!b || b.market === 'PARLAY') return [];
+    const f = btFindFight(b.fightId, b.evSlug); if (!f) return [];
+    const side = b.params && b.params.side;
+    return (side === 1 || side === 2) ? [side === 1 ? f.f1 : f.f2] : [f.f1, f.f2];
+  }
+  function btAvHTML(name) {
+    const ini = btEsc(String(name || '').trim().split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase());
+    return '<div class="bt-av"><img src="./photos/thumb/' + btEsc(nameToSlug(name)) + '.png" alt="" loading="lazy"' +
+      ' onerror="this.parentNode.textContent=\'' + ini + '\'"></div>';
+  }
+  function btAvsHTML(names) {
+    if (!names.length) return '';
+    if (names.length === 1) return '<div class="bt-avs">' + btAvHTML(names[0]) + '</div>';
+    return '<div class="bt-avs bt-avs-2">' + btAvHTML(names[0]) + '<span class="bt-vs">v</span>' + btAvHTML(names[1]) + '</div>';
+  }
   // Grade a parlay leg by leg. All legs sit on ONE event (enforced at log time).
   //  • a voided leg drops out and the price recomputes from the survivors
   //  • the parlay is LOST the moment any surviving leg loses — it genuinely
@@ -110983,15 +111009,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!window.GL_SHEET) return;
     const c = btPendingCards().find(x => x.slug === slug); if (!c) return;
     const bets = BT_BETS.filter(b => b.status === 'pending' && b.evSlug === slug).map(b => {
-      // One headshot when the bet names a fighter; both (A vs B) when it's about
-      // the fight itself — a total, the distance, a round start, or side:'any'.
-      // A parlay spans fights, so it gets none rather than an arbitrary one.
-      let names = [];
-      const f = b.market === 'PARLAY' ? null : btFindFight(b.fightId, b.evSlug);
-      if (f) {
-        const side = b.params && b.params.side;
-        names = (side === 1 || side === 2) ? [side === 1 ? f.f1 : f.f2] : [f.f1, f.f2];
-      }
+      const names = btBetNames(b);
       return { pick: b.pick, match: b.match.split(' · ')[0], odds: (b.effOdds != null ? b.effOdds : b.odds),
         stake: b.stake, names: names, slugs: names.map(n => nameToSlug(n)) };
     });
@@ -111144,7 +111162,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="bt-acts"><button class="win" ' + A('btEditSave') + '>Save</button><button onclick="btEditCancel()">Cancel</button></div></div>';
       }
     }
-    return '<div class="bt-bet"><div class="bt-bet-top"><div><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
+    return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btBetNames(b)) +
+      '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
       legsHTML + '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
   function btEditOpen(id) { btEditId = id; btRenderHistory(); }
