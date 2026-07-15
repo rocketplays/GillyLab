@@ -21,7 +21,12 @@ const win=dom.window;
   const nAt = peek('ATTRS.length');
   ok(doc.querySelectorAll('input[type=range]').length===nAt,'one slider per attribute',
     doc.querySelectorAll('input[type=range]').length+'/'+nAt);
-  ok(!/Cardio/i.test(app()) || /no cardio input/i.test(app()),'no fake cardio slider');
+  // WAS: 'no fake cardio slider' — asserted Cardio must NOT exist, because the
+  // sim had no cardio input. That test encoded a limitation as a principle. The
+  // sim no longer referees, so cardio and durability are real attributes now:
+  // the two things every fan argues about after a fight were the exact two the
+  // model couldn't hear. Inverted deliberately.
+  ok(/Cardio/i.test(app()) && /Durability/i.test(app()),'cardio + durability exist');
 
   console.log('\n== the sim actually scores the run ==');
   win.eval('G.started=true; render();');
@@ -72,8 +77,15 @@ const win=dom.window;
   ok(lens.every(l=>l>0),'every run actually plays');
   // Reachability is STRUCTURAL, not a bot's win rate. Failing the build because
   // a bad strategy loses is testing the wrong thing.
+  // A REALISTIC end-of-run fighter, not a maxed one. Maxing all nine costs ~160
+  // points; a championship run earns ~44. The old test set every attribute to 7
+  // (~100 points) and then failed the build for being a 97% favourite — it was
+  // testing a fighter who cannot exist. Spend a real budget instead.
   win.eval('newGame(); G.started=true; G.rank=1; G.wins=10; G.streak=10; G.fightNo=10;'+
-           'for(const a of ATTRS) G.attrs[a.id]=7;');
+           'G.pts=44; (function(){var O=["power","technique","wrestling","chin","cardio","takedef","grappling","pace","strdef"];'+
+           'while(G.pts>0){var moved=false;'+
+           'for(const id of O){var c=upCost(G.attrs[id]); if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;moved=true;break;}}'+
+           'if(!moved)break;}})();');
   const champOffer = peek('offers().filter(o=>o.f.rankNum===0)');
   ok(champOffer.length>0,'a #1 contender is offered the title shot');
   if(champOffer.length){

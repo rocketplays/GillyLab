@@ -99,13 +99,74 @@ function main() {
   const hist = {};
   for (const n of keep) if (FIGHT_HISTORY[n]) hist[n] = FIGHT_HISTORY[n];
 
+  // ---- POWER + STYLE: what the game actually scores with ----
+  //
+  // THE SIM IS NO LONGER THE REFEREE. It ranks and it flavours; the game decides
+  // who wins. That's a deliberate reversal, and the reason is measured: across
+  // 2,600 possible three-man offers, a striker, a wrestler and a grappler wanted
+  // the SAME opponent 92% of the time. The model is a power ladder, not a matchup
+  // engine — it was trained to price real fights, and real-fight pricing is
+  // dominated by "who is better", with style interaction as a rounding error. A
+  // game whose whole loop is "pick your matchup" cannot be built on that.
+  //
+  // So the jobs are split. The sim is superb at the thing the game can't fake —
+  // how good a fighter really is — and hopeless at the thing the game is about.
+  //
+  // POWER: rank-led, sim-textured.
+  // The sim's own ordering is NOT the UFC's: round-robined against the division
+  // it puts Benoît Saint Denis and a 3-fight Quillan Salkilld above Ilia
+  // Topuria, drops Michael Chandler to last of 40, and agrees with the real
+  // rankings on only 68% of ranked pairs. All defensible as statistics, all
+  // absurd as a climb — nobody believes fighting Salkilld is harder than
+  // fighting the champion. The RANK is the thing the player is climbing, so the
+  // rank leads. The sim then separates fighters inside a tier, which is exactly
+  // what a ranking (an integer from a media panel) cannot do.
+  const rr = {};
+  {
+    const sc = createScorer(FIGHTER_STATS, hist, FIGHTERS);
+    sc.setNow(Date.now()); sc.setRankBadge(null);
+    const names = ladder.map(f => f.name);
+    for (const a of names) {
+      let s = 0, c = 0;
+      for (const b of names) { if (a === b) continue; const p = sc.simWinProbability(a, b); if (p != null) { s += p; c++; } }
+      rr[a] = c ? s / c : 0.5;
+    }
+  }
+  const rrVals = Object.values(rr).sort((a, b) => a - b);
+  const rrLo = rrVals[0], rrHi = rrVals[rrVals.length - 1];
+  const rrNorm = n => (rrHi > rrLo) ? (rr[n] - rrLo) / (rrHi - rrLo) : 0.5;   // 0..1
+
+  const powerOf = f => {
+    const r = rankNum(f);
+    // The ladder the player feels: champion at the top, then #1..#15, then the
+    // unranked pool. Gaps are deliberate — the belt is a real step up.
+    const tier = r === 0 ? 100 : r <= 0.5 ? 92 : r <= 15 ? 86 - (r - 1) * 1.6 : 48;
+    // The sim's texture, +-6. Enough to make two #8s feel different, never
+    // enough to make a gatekeeper harder than a contender.
+    return Math.round((tier + (rrNorm(f.name) - 0.5) * 12) * 10) / 10;
+  };
+
+  // STYLE: read off their REAL stats, so the triangle has something honest to
+  // bite on. The archetype is the game's invention; the numbers under it aren't.
+  const numOf = v => { const m = /(-?\d+(\.\d+)?)/.exec(String(v == null ? '' : v)); return m ? +m[1] : null; };
+  const styleOf = name => {
+    const s = FIGHTER_STATS[name] || {};
+    const g = (k, d) => { const v = numOf(s[k]); return v == null ? d : v; };
+    return {
+      tdDef: g('tdDef', 60), strDef: g('strDef', 52),
+      td: g('tdLanded', 1.4), sub: g('subAvg', 0.5), kd: g('kd', 0.4),
+      slpm: g('slpm', 4.4), sapm: g('sapm', 4.0), tdAcc: g('tdAcc', 35)
+    };
+  };
+
   const out = {
     generatedAt: new Date().toISOString(),
     division: DIV,
     note: 'One division ladder for The Climb. FIGHTERS + FIGHTER_STATS are shipped whole (cheap, and strength-of-schedule reads opponents\' roster rows). FIGHT_HISTORY is trimmed to the ladder. Box scores omitted: worth 0.3pt, costs 8MB.',
     ladder: ladder.map(f => ({
       name: f.name, rank: f.rank, record: f.record, initials: f.initials,
-      country: f.country, rankNum: rankNum(f)
+      country: f.country, rankNum: rankNum(f),
+      power: powerOf(f), style: styleOf(f.name)
     })),
     FIGHTERS, FIGHTER_STATS, FIGHT_HISTORY: hist
   };

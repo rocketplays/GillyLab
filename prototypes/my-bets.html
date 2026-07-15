@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GillyLab · My Bets (prototype)</title>
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7;--red:#ff6a5e;--amber:#ffcf7a}
+  *{box-sizing:border-box}
+  body{margin:0;background:#06060a;color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;display:flex;justify-content:center;padding:24px 12px}
+  .phone{width:420px;background:var(--bg);border:1px solid var(--border);border-radius:24px;overflow:hidden}
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border)}
+  .brand{font-weight:900;letter-spacing:.14em;font-size:13px}.brand .a{color:var(--accent)}
+  .pill{font-size:11px;font-weight:800;color:#04120a;background:var(--accent);border-radius:6px;padding:3px 9px}
+  main{padding:18px 16px 40px}
+  h1{font-size:1.35rem;font-weight:800;margin:0 0 2px}
+  .sub{font-size:.82rem;color:var(--muted);margin:0 0 16px}
+  .hero{background:var(--card);border:1px solid rgba(0,230,104,.35);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+  .hero .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+  .hero .big{font-size:1.5rem;font-weight:800;color:var(--accent);line-height:1.15;white-space:nowrap}
+  .hero .big span{font-size:.7rem;font-weight:700;color:var(--muted);margin-left:3px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .tile{background:var(--card);border-radius:10px;padding:12px 14px}
+  .tile .t{font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .tile .v{font-size:1.25rem;font-weight:800;margin-top:3px}
+  .pos{color:var(--accent)}.neg{color:var(--red)}
+  .toggle{display:flex;gap:6px;margin-bottom:14px;font-size:.78rem}
+  .toggle div{flex:1;text-align:center;padding:7px;border-radius:8px;background:var(--surface2);color:var(--muted);font-weight:700;cursor:pointer}
+  .toggle div.on{background:var(--accent);color:#04120a;font-weight:800}
+  .ranges{display:flex;gap:6px;margin-bottom:14px}
+  .ranges div{flex:1;text-align:center;padding:6px 0;border-radius:7px;background:var(--surface2);color:var(--muted);font-weight:700;font-size:.72rem;cursor:pointer}
+  .ranges div.on{background:#00e66822;color:var(--accent);box-shadow:inset 0 0 0 1px rgba(0,230,104,.4)}
+  .bet{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:9px}
+  .tabs{display:flex;border-bottom:1px solid var(--border);margin:2px 0 16px}
+  .tabs div{flex:1;text-align:center;padding:10px 0;font-weight:800;font-size:.9rem;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabs div.on{color:var(--accent);border-bottom-color:var(--accent)}
+  .bet .top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .bet .nm{font-weight:700;font-size:.9rem}
+  .bet .mk{color:var(--muted);font-weight:600;font-size:.76rem;margin-top:1px}
+  .bet .res{font-weight:800;font-size:.88rem;white-space:nowrap}
+  .bet .mid{display:flex;justify-content:space-between;align-items:center;margin-top:7px;font-size:.75rem;color:var(--muted);gap:8px}
+  .bet .mid b{color:var(--text)}
+  .badge{font-weight:700;border-radius:5px;padding:2px 7px;font-size:.7rem;white-space:nowrap}
+  .b-clv{color:var(--accent);background:#00e66815}.b-neg{color:var(--red);background:#ff6a5e15}
+  .b-self{color:var(--amber);background:#ffcf7a15}.b-none{color:var(--muted);background:#8a8f9915}
+  .settle{display:flex;gap:6px;margin-top:8px}
+  .settle button{flex:1;font:inherit;font-size:.76rem;font-weight:700;border-radius:6px;padding:5px;cursor:pointer;border:1px solid var(--border);background:var(--surface2);color:var(--text)}
+  .settle .win{border-color:rgba(0,230,104,.5);color:var(--accent)}.settle .lose{border-color:rgba(255,106,94,.5);color:var(--red)}
+  .actions{display:flex;gap:8px;margin:14px 0}
+  .btn{flex:1;text-align:center;font:inherit;font-weight:800;font-size:.9rem;border-radius:9px;padding:11px;cursor:pointer;border:none}
+  .btn-primary{background:var(--accent);color:#04120a}.btn-ghost{background:var(--surface2);color:var(--text);border:1px solid var(--border)}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+  .panel h3{margin:0 0 10px;font-size:.9rem}
+  .seg{display:flex;gap:6px;margin-bottom:12px}
+  .seg div{flex:1;text-align:center;padding:7px;border-radius:8px;background:var(--surface2);color:var(--muted);font-weight:700;font-size:.78rem;cursor:pointer}
+  .seg div.on{background:#00e66822;color:var(--accent);border:1px solid rgba(0,230,104,.4)}
+  label{display:block;font-size:.72rem;color:var(--muted);margin:9px 0 4px;text-transform:uppercase;letter-spacing:.05em}
+  select,input{width:100%;font:inherit;font-size:.85rem;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 10px}
+  select:disabled{opacity:.45}
+  .row2{display:flex;gap:8px}.row2>div{flex:1}
+  .note{font-size:.72rem;color:var(--muted);margin-top:10px;line-height:1.5}
+  .lock{color:var(--amber)}
+  .empty{color:var(--muted);text-align:center;font-size:.82rem;padding:1.2rem 0}
+  .foot{font-size:.68rem;color:#6f727a;margin-top:6px;line-height:1.5}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="nav"><div class="brand">GILLY<span class="a">LAB</span></div><div class="pill">PREMIUM</div></div>
+  <main>
+    <h1>My Bets</h1>
+    <p class="sub" id="clock"></p>
+    <div class="tabs">
+      <div id="tabHist" class="on" onclick="setView('history')">My bet history</div>
+      <div id="tabLog" onclick="setView('log')">Log a bet</div>
+    </div>
+    <div id="history">
+    <div class="hero">
+      <div class="lbl">Verified closing line value</div>
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <div class="big" id="clv">—</div>
+        <div style="font-size:.78rem;color:#c9ccd3;flex:1;min-width:0;line-height:1.35" id="clvsub"></div>
+      </div>
+      <div class="foot">CLV counts <b style="color:#c9ccd3">moneylines only</b> — props move too fast and vary too much between books to have a closing line worth trusting. Prop bets are still <b style="color:#c9ccd3">verified</b> and auto-graded, and they count toward your record, ROI and units.</div>
+    </div>
+    <div class="grid">
+      <div class="tile"><div class="t">Record</div><div class="v" id="rec">0-0</div></div>
+      <div class="tile"><div class="t">ROI</div><div class="v" id="roi">—</div></div>
+      <div class="tile"><div class="t">Units</div><div class="v" id="units">—</div></div>
+      <div class="tile"><div class="t">Pending</div><div class="v" id="pend">0</div></div>
+    </div>
+    <div class="toggle">
+      <div id="tgV" class="on" onclick="setScope('verified')">Verified only</div>
+      <div id="tgA" onclick="setScope('all')">All (incl. self-reported)</div>
+    </div>
+    <div class="ranges">
+      <div onclick="setRange('7d',this)">7D</div>
+      <div onclick="setRange('30d',this)">30D</div>
+      <div onclick="setRange('6m',this)">6M</div>
+      <div onclick="setRange('12m',this)">12M</div>
+      <div class="on" onclick="setRange('all',this)">All time</div>
+    </div>
+    <div id="list"></div>
+    <button class="btn btn-ghost" style="width:100%;margin-top:14px" onclick="simulate()">▶ Simulate the card finishing</button>
+    </div>
+    <div id="log" style="display:none"><div id="form" class="panel"></div></div>
+  </main>
+</div>
+
+<script>
+// ---- mock "server" clock + card (a real build reads these from event.json) ----
+const NOW = Date.parse('2026-07-22T18:00:00Z');
+// Every upcoming event we list — the featured card plus everything in the
+// carousel. In the real build this comes straight from data/event.json's feed.
+// Each event carries its two segment start times. We snapshot each segment's
+// closing line CLOSE_LEAD_MIN before it begins; once a segment starts, its close
+// is locked and bets on that segment can no longer earn CLV.
+const EVENTS = [
+  { short:'UFC Vegas 111', date:'tonight', prelimsAt:'2026-07-22T17:00:00Z', mainAt:'2026-07-22T20:00:00Z', fights:[
+    { id:'live-p1', f1:'Elisha Ellison',   f2:'John Garza',       section:'prelim', start:'2026-07-22T17:05:00Z', rounds:3, o:{1:-140,2:120} }, // already started
+    { id:'live-p2', f1:'Kai Kamaka III',   f2:'Adrian Yanez',     section:'prelim', start:'2026-07-22T18:30:00Z', rounds:3, o:{1:130,2:-155} }, // prelims underway -> no CLV
+    { id:'live-m1', f1:'Cody Garbrandt',   f2:'Mario Bautista',   section:'main',   start:'2026-07-22T20:15:00Z', rounds:3, o:{1:175,2:-210} },
+    { id:'live-m2', f1:'Brandon Royval',   f2:'Manel Kape',       section:'main',   start:'2026-07-22T22:00:00Z', rounds:5, o:{1:-125,2:105} },
+  ]},
+  { short:'UFC 330', date:'Jul 25', prelimsAt:'2026-07-25T20:00:00Z', mainAt:'2026-07-25T22:00:00Z', fights:[
+    { id:'ddp-usman',   f1:'Dricus du Plessis', f2:'Kamaru Usman',    section:'main',   start:'2026-07-25T23:30:00Z', rounds:5, o:{1:-247,2:200} },
+    { id:'holl-pimb',   f1:'Max Holloway',      f2:'Paddy Pimblett',  section:'main',   start:'2026-07-25T22:15:00Z', rounds:3, o:{1:-160,2:135} },
+    { id:'costa-reese', f1:'Alessandro Costa',  f2:'Zachary Reese',   section:'prelim', start:'2026-07-25T20:30:00Z', rounds:3, o:{1:-135,2:115} },
+  ]},
+  { short:'UFC Vegas 112', date:'Aug 8', prelimsAt:'2026-08-08T21:00:00Z', mainAt:'2026-08-08T23:00:00Z', fights:[
+    { id:'cann-imav',   f1:'Jared Cannonier',   f2:'Nassourdine Imavov', section:'main',   start:'2026-08-08T23:30:00Z', rounds:5, o:{1:145,2:-175} },
+    { id:'cortez-wang', f1:'Tracy Cortez',      f2:'Wang Cong',       section:'prelim', start:'2026-08-08T21:15:00Z', rounds:3, o:{1:120,2:-145} },
+  ]},
+  { short:'UFC 331', date:'Aug 22', prelimsAt:'2026-08-22T20:00:00Z', mainAt:'2026-08-22T22:00:00Z', fights:[
+    { id:'top-gaethje', f1:'Ilia Topuria',      f2:'Justin Gaethje',  section:'main',   start:'2026-08-22T23:30:00Z', rounds:5, o:{1:-280,2:230} },
+    // REMATCH of the UFC 330 main event — same two names, different bout id. Grading
+    // keys off the bout id, never the name pair, so UFC 330's result can't settle this.
+    { id:'ddp-usman-2', f1:'Dricus du Plessis', f2:'Kamaru Usman',    section:'main',   start:'2026-08-22T22:30:00Z', rounds:5, o:{1:-200,2:165} },
+    { id:'nickal-riley',f1:'Bo Nickal',         f2:'Luke Riley',      section:'prelim', start:'2026-08-22T20:30:00Z', rounds:3, o:{1:-350,2:275} },
+  ]},
+  { short:'UFC 329', date:'Jul 11', prelimsAt:'2026-07-11T20:00:00Z', mainAt:'2026-07-11T22:00:00Z', fights:[
+    // Every bout has started, so this card no longer appears in the picker at all.
+    { id:'past-nickal', f1:'Bo Nickal',         f2:'Cody Brundage',   section:'main',   start:'2026-07-11T22:00:00Z', rounds:3, o:{1:-500,2:380} },
+  ]},
+];
+const FIGHTS = EVENTS.flatMap(e => e.fights.map(f => Object.assign({}, f, { ev:e })));
+const CLOSE_LEAD_MIN = 10;
+const segStart  = f => f.section==='main' ? f.ev.mainAt : f.ev.prelimsAt;
+const segStarted= f => Date.parse(segStart(f)) <= NOW;      // server clock decides
+const segName   = f => f.section==='main' ? 'main card' : 'prelims';
+const noClvWhy  = f => f.section==='main' ? 'main card has started' : 'prelims already started';
+// how each fight actually ends (used by the "simulate" button to grade every market)
+const OUTCOME = {
+  'ddp-usman':  { win:1, methodCat:'SUB', round:3, endSec:145, close:{1:-300,2:250} }, // DDP sub, R3
+  'holl-pimb':  { win:1, methodCat:'DEC', round:3, endSec:300, close:{1:-135,2:115} }, // Holloway decision
+  'costa-reese':{ win:2, methodCat:'KO',  round:1, endSec:130, close:{1:-115,2:-105} },// Reese KO, R1
+};
+const MARKETS = {
+  ML:      'Moneyline (winner)',
+  METHOD:  'Method (how the fight ends)',
+  ENDROUND:'Fight ends in a round',
+  TOTAL:   'Total rounds (over / under)',
+  ROUNDSTART:'Will the fight start a round?',
+  DISTANCE:'Fight goes the distance?',
+  INSIDE:  'Win inside the distance',
+};
+const METH = { KO:'KO/TKO', SUB:'submission', DEC:'decision' };
+
+// CLV is moneylines ONLY. Props move fast, are thinly traded and vary wildly by
+// book, so there's no closing line we'd trust — they're still verified and
+// auto-graded, they just never touch the CLV number.
+const CLV_MARKETS = ['ML'];
+const RANGE_DAYS = { '7d':7, '30d':30, '6m':182, '12m':365, 'all':null };
+let bets=[], scope='verified', range='all', betId=1;
+let formEvent=null, formFight=null, formMarket='ML';
+const inRange = b => { const d=RANGE_DAYS[range]; return !d || (NOW - b.ts) <= d*86400000; };
+function setRange(r,el){ range=r; document.querySelectorAll('.ranges div').forEach(d=>d.classList.remove('on')); el.classList.add('on'); render(); }
+const impl = a => a<0 ? (-a)/((-a)+100) : 100/(a+100);
+const clvPts = (y,c) => +(((impl(c)-impl(y))*100).toFixed(1));
+const profit = b => b.status==='won' ? b.stake*(b.odds>0?b.odds/100:100/-b.odds) : (b.status==='lost'? -b.stake : 0);
+const fmtO = a => a>0?'+'+a:''+a;
+const short = n => { const p=String(n).trim().split(/\s+/); return p[p.length-1]; };
+const started = f => Date.parse(f.start) <= NOW;
+document.getElementById('clock').textContent = 'Server time '+new Date(NOW).toUTCString().replace(':00 GMT',' GMT');
+
+function setScope(s){ scope=s; document.getElementById('tgV').classList.toggle('on',s==='verified'); document.getElementById('tgA').classList.toggle('on',s==='all'); render(); }
+function setView(v){
+  document.getElementById('history').style.display = v==='history'?'block':'none';
+  document.getElementById('log').style.display = v==='log'?'block':'none';
+  document.getElementById('tabHist').classList.toggle('on', v==='history');
+  document.getElementById('tabLog').classList.toggle('on', v==='log');
+  if(v==='log'){ formEvent=null; formFight=null; formMarket='ML'; renderForm('card'); }
+}
+let formKind='card';
+function setKind(k){ formKind=k; renderForm(k); }
+function pickEvent(i){ formEvent = i===''?null:EVENTS[+i]; formFight=null; formMarket='ML'; renderForm('card'); }
+function pickFight(id){ formFight=FIGHTS.find(x=>x.id===id)||null; formMarket='ML'; renderForm('card'); }
+function setMarket(m){ formMarket=m; renderForm('card'); }
+function mlPrefill(){ const s=+document.getElementById('mlwin').value; if(formFight) document.getElementById('odds').value=formFight.o[s]; }
+
+// selection UI per market
+function selUI(f){
+  if(formMarket==='ML') return `<label>Winner</label><select id="mlwin" onchange="mlPrefill()"><option value="1">${f.f1} (${fmtO(f.o[1])})</option><option value="2">${f.f2} (${fmtO(f.o[2])})</option></select>`;
+  if(formMarket==='METHOD') return `<div class="row2"><div><label>Winner</label><select id="mfr"><option value="1">${f.f1}</option><option value="2">${f.f2}</option><option value="any">Either fighter</option></select></div><div><label>Method</label><select id="mmeth"><option value="KO">KO/TKO</option><option value="SUB">Submission</option><option value="DEC">Decision</option></select></div></div>`;
+  if(formMarket==='ENDROUND'){ let opts=''; for(let i=1;i<=f.rounds;i++) opts+=`<option value="${i}">Round ${i}</option>`;
+    return `<label>Winner</label><select id="erf"><option value="1">${f.f1}</option><option value="2">${f.f2}</option><option value="any">Either fighter</option></select>
+      <div class="row2"><div><label>Method</label><select id="erm"><option value="ANY">Any finish</option><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div><div><label>Ends in</label><select id="err">${opts}</select></div></div>`; }
+  if(formMarket==='TOTAL'){ let opts=''; for(let i=1;i<f.rounds;i++) opts+=`<option value="${i}.5">${i}.5 rounds</option>`; return `<div class="row2"><div><label>Line</label><select id="tline">${opts}</select></div><div><label>Over / Under</label><select id="tou"><option value="O">Over</option><option value="U">Under</option></select></div></div>`; }
+  if(formMarket==='ROUNDSTART'){ let opts=''; for(let i=2;i<=f.rounds;i++) opts+=`<option value="${i}">Round ${i}</option>`; return `<div class="row2"><div><label>Round</label><select id="rsr">${opts}</select></div><div><label>Will it start?</label><select id="rsyn"><option value="Y">Will start</option><option value="N">Won't start</option></select></div></div>`; }
+  if(formMarket==='DISTANCE') return `<label>Does the fight reach a decision?</label><select id="dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>`;
+  if(formMarket==='INSIDE') return `<label>Who wins inside the distance (KO or sub)?</label><select id="ifr"><option value="1">${f.f1}</option><option value="2">${f.f2}</option></select>`;
+  return '';
+}
+function renderForm(kind){
+  formKind=kind;
+  let h = `<h3>Log a bet</h3><div class="seg">
+    <div class="${kind==='card'?'on':''}" onclick="setKind('card')">Upcoming fights</div>
+    <div class="${kind==='custom'?'on':''}" onclick="setKind('custom')">Custom bet</div></div>`;
+  if(kind==='card'){
+    // Event first, then the fight on that card.
+    // Only cards with something still to come. Once every bout on a card has
+    // started, the event drops off the picker entirely — in the real build this
+    // falls out for free, since it's the same upcoming-events set the carousel
+    // renders. (Bets already logged on it are unaffected: they still auto-grade
+    // and stay in history.)
+    h+=`<label>Event</label><select id="esel" onchange="pickEvent(this.value)"><option value="">Choose an event…</option>`;
+    EVENTS.forEach((e,i)=>{ if(e.fights.every(started)) return;
+      h+=`<option value="${i}" ${formEvent===e?'selected':''}>${e.short} · ${e.date}</option>`; });
+    h+=`</select>`;
+    let locked=[];
+    if(formEvent){
+      locked=formEvent.fights.filter(started);
+      h+=`<label>Fight</label><select id="fsel" onchange="pickFight(this.value)"><option value="">Choose a fight…</option>`;
+      formEvent.fights.forEach(f=>h+= started(f)
+        ? `<option value="" disabled>${f.f1} vs ${f.f2} — 🔒 started</option>`
+        : `<option value="${f.id}" ${formFight&&formFight.id===f.id?'selected':''}>${f.f1} vs ${f.f2}</option>`);
+      h+=`</select>`;
+    }
+    if(formFight){
+      const f=formFight;
+      h+=`<label>Market</label><select id="mkt" onchange="setMarket(this.value)">`;
+      Object.keys(MARKETS).forEach(k=>h+=`<option value="${k}" ${formMarket===k?'selected':''}>${MARKETS[k]}</option>`); h+=`</select>`;
+      h+=selUI(f);
+      const priced = formMarket==='ML';
+      h+=`<div class="row2"><div><label>Your odds</label><input id="odds" type="number" value="${priced?f.o[1]:''}" placeholder="${priced?'':'-150'}"></div><div><label>Stake (units)</label><input id="stake" type="number" value="1" step="0.5" min="0.5"></div></div>`;
+      h+= priced
+        ? (segStarted(f)
+          ? `<div class="note lock"><b>Won't count toward CLV — ${noClvWhy(f)}.</b> We snapshot each segment's closing line ${CLOSE_LEAD_MIN} minutes before it begins, so that number is already locked in. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>`
+          : `<div class="note">Verified — auto-graded when the fight resolves, with <b style="color:var(--accent)">CLV</b> measured against the ${segName(f)} closing line (captured ${CLOSE_LEAD_MIN} min before it starts).</div>`)
+        : `<div class="note"><b style="color:var(--text)">Won't count toward CLV.</b> Props move fast and the price varies a lot book to book, so there's no closing line we'd trust to measure against. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>`;
+      h+=`<div class="actions"><button class="btn btn-primary" onclick="submitCard()">Add bet</button></div>`;
+    }
+    if(locked.length) h+=`<div class="note lock">🔒 ${locked.length} fight${locked.length>1?'s have':' has'} already started — the server checks the bell time, so past results can't be logged as verified.</div>`;
+  } else {
+    h+=`<label>Matchup / event</label><input id="cmatch" placeholder="e.g. Silva vs Jones — PFL 7">
+      <label>Your pick + market</label><input id="csel" placeholder="e.g. Silva inside the distance">
+      <div class="row2"><div><label>Your odds</label><input id="codds" type="number" placeholder="-150"></div><div><label>Stake (units)</label><input id="cstake" type="number" value="1" step="0.5" min="0.5"></div></div>
+      <div class="note">We don't track this fight, so it's tagged <b style="color:var(--amber)">self-reported</b>: you settle it yourself and it's excluded from verified CLV / ROI.</div>
+      <div class="actions"><button class="btn btn-primary" onclick="submitCustom()">Add bet</button></div>`;
+  }
+  document.getElementById('form').innerHTML=h;
+}
+
+// build the plain-language pick + grading params from the form selection
+function buildPick(f){
+  const g=id=>document.getElementById(id);
+  if(formMarket==='ML'){ const s=+g('mlwin').value; return { pick:short(s===1?f.f1:f.f2)+' ML', p:{side:s}, priced:true, closeSide:s }; }
+  if(formMarket==='METHOD'){ const sv=g('mfr').value, m=g('mmeth').value, any=sv==='any';
+    return { pick: any ? ('Fight ends by '+METH[m]) : (short(sv==='1'?f.f1:f.f2)+' by '+METH[m]), p:{ side: any?'any':+sv, methodCat:m }, priced:false }; }
+  if(formMarket==='ENDROUND'){ const sv=g('erf').value, mv=g('erm').value, n=+g('err').value, any=sv==='any';
+    const mtxt = mv==='ANY' ? '' : (mv==='KO' ? ' by KO/TKO' : ' by submission');
+    const pick = any ? ('Fight ends'+mtxt+' in round '+n)
+                     : (short(sv==='1'?f.f1:f.f2) + (mv==='ANY'?' to win':mtxt) + ' in round '+n);
+    return { pick, p:{ side: any?'any':+sv, meth:mv, round:n }, priced:false }; }
+  if(formMarket==='TOTAL'){ const L=parseFloat(g('tline').value), ou=g('tou').value; return { pick:(ou==='O'?'Over ':'Under ')+L+' rounds', p:{line:L,ou}, priced:false }; }
+  if(formMarket==='ROUNDSTART'){ const n=+g('rsr').value, yn=g('rsyn').value; return { pick:'Fight '+(yn==='Y'?'starts':'does NOT start')+' round '+n, p:{round:n,yn}, priced:false }; }
+  if(formMarket==='DISTANCE'){ const yn=g('dyn').value; return { pick:yn==='Y'?'Goes the distance':'Does NOT go the distance', p:{yn}, priced:false }; }
+  const s=+g('ifr').value; return { pick:short(s===1?f.f1:f.f2)+' inside the distance', p:{side:s}, priced:false };
+}
+function submitCard(){
+  const f=formFight; if(!f){ alert('Pick a fight'); return; }
+  if(started(f)){ alert('That fight has already started.'); return; }
+  const odds=parseInt(document.getElementById('odds').value,10), stake=parseFloat(document.getElementById('stake').value)||1;
+  if(isNaN(odds)){ alert('Enter your odds'); return; }
+  const b=buildPick(f);
+  // The server decides CLV eligibility at log time: once a segment starts, its
+  // closing line is already locked, so bets on it can't earn CLV.
+  const clvOk = !segStarted(f);
+  bets.unshift({ id:betId++, kind:'tracked', verified:true, fightId:f.id, market:formMarket, pick:b.pick, match:short(f.f1)+' vs '+short(f.f2)+' · '+f.ev.short, params:b.p, priced:b.priced, closeSide:b.closeSide, clvOk, noClv: clvOk?null:noClvWhy(f), odds, stake, status:'pending', clv:null, ts:Date.parse(f.start) });
+  setView('history'); render();
+}
+function submitCustom(){
+  const m=document.getElementById('cmatch').value.trim(), s=document.getElementById('csel').value.trim();
+  const odds=parseInt(document.getElementById('codds').value,10), stake=parseFloat(document.getElementById('cstake').value)||1;
+  if(!m||!s||isNaN(odds)){ alert('Fill in matchup, pick and odds'); return; }
+  bets.unshift({ id:betId++, kind:'manual', verified:false, pick:s, match:m, odds, stake, status:'pending', clv:null, ts:NOW });
+  setView('history'); render();
+}
+
+// grade any market from the fight result
+function gradeWin(b, R, tr){
+  const P=b.params||{};
+  if(b.market==='ML')     return R.win===P.side;
+  // side:'any' = "how does the fight end", ignoring who wins.
+  if(b.market==='METHOD') return (P.side==='any' || R.win===P.side) && R.methodCat===P.methodCat;
+  // "Ends in round N" is a finish bet — a decision loses, even though a decision
+  // technically "ends" in the final round. side:'any' ignores who won; meth:'ANY'
+  // accepts any finish, otherwise the method has to match too (round+method exacta).
+  if(b.market==='ENDROUND'){
+    const fin = R.methodCat!=='DEC' && R.round===P.round;
+    const methOK = !P.meth || P.meth==='ANY' || R.methodCat===P.meth;
+    const sideOK = P.side==='any' || R.win===P.side;
+    return fin && methOK && sideOK;
+  }
+  if(b.market==='TOTAL'){ const sec = R.methodCat==='DEC' ? tr*300 : ((R.round-1)*300+R.endSec); const thr=Math.floor(P.line)*300+150; const over=sec>thr; return P.ou==='O'?over:!over; }
+  // A round "starts" only if the fight got past the end of the round before it.
+  // A decision means every scheduled round started; a finish in round R means
+  // rounds 1..R started and R+1 never did.
+  if(b.market==='ROUNDSTART'){ const startedRd = R.methodCat==='DEC' ? (P.round<=tr) : (P.round<=R.round); return P.yn==='Y'?startedRd:!startedRd; }
+  if(b.market==='DISTANCE'){ const went=R.methodCat==='DEC'; return P.yn==='Y'?went:!went; }
+  if(b.market==='INSIDE')  return R.win===P.side && R.methodCat!=='DEC';
+  return false;
+}
+function simulate(){
+  bets.forEach(b=>{
+    if(b.kind==='tracked' && b.status==='pending'){
+      const R=OUTCOME[b.fightId]; if(!R) return;
+      const f=FIGHTS.find(x=>x.id===b.fightId);
+      b.status = gradeWin(b,R,f?f.rounds:3) ? 'won':'lost';
+      if(b.priced && R.close && b.clvOk!==false){ b.closeOdds=R.close[b.closeSide]; b.clv=clvPts(b.odds,b.closeOdds); }
+    }
+  });
+  render();
+}
+function settle(id,res){ const b=bets.find(x=>x.id===id); if(b){ b.status=res; render(); } }
+
+function statsFor(list){
+  const st=list.filter(b=>['won','lost','push'].includes(b.status));
+  const w=st.filter(b=>b.status==='won').length, l=st.filter(b=>b.status==='lost').length;
+  const staked=st.filter(b=>b.status!=='push').reduce((s,b)=>s+b.stake,0);
+  const u=st.reduce((s,b)=>s+profit(b),0);
+  const clvs=st.filter(b=>b.clv!=null);
+  return { w,l, roi:staked?u/staked*100:null, units:u, avgClv:clvs.length?clvs.reduce((s,b)=>s+b.clv,0)/clvs.length:null, beat:clvs.filter(b=>b.clv>0).length, clvN:clvs.length, pending:list.filter(b=>b.status==='pending').length };
+}
+function render(){
+  const scoped=bets.filter(inRange);
+  const verified=scoped.filter(b=>b.verified), vs=statsFor(verified);
+  const clvEl=document.getElementById('clv');
+  clvEl.innerHTML = vs.avgClv==null?'—':(vs.avgClv>0?'+':'')+vs.avgClv.toFixed(1)+'<span>pts</span>';
+  clvEl.className='big '+(vs.avgClv>0?'pos':vs.avgClv<0?'neg':'');
+  document.getElementById('clvsub').innerHTML = vs.clvN?`beat the close on <b style="color:var(--text)">${vs.beat} of ${vs.clvN}</b> moneylines`:'no graded moneylines in this range';
+  const shown = scope==='verified'?verified:scoped, s=statsFor(shown);
+  document.getElementById('rec').textContent=s.w+'-'+s.l;
+  const roi=document.getElementById('roi'); roi.textContent=s.roi==null?'—':(s.roi>0?'+':'')+s.roi.toFixed(1)+'%'; roi.className='v '+(s.roi>0?'pos':s.roi<0?'neg':'');
+  const un=document.getElementById('units'); un.textContent=(s.units>0?'+':'')+s.units.toFixed(1)+'u'; un.className='v '+(s.units>0?'pos':s.units<0?'neg':'');
+  document.getElementById('pend').textContent=s.pending;
+  const listEl=document.getElementById('list');
+  if(!shown.length){ listEl.innerHTML='<div class="empty">No bets yet — log one above.</div>'; return; }
+  listEl.innerHTML=shown.map(b=>{
+    const cls=b.status==='won'?'w':b.status==='lost'?'l':'p';
+    let res = b.status==='won'?`<span class="res pos">Won +${profit(b).toFixed(1)}u</span>`
+            : b.status==='lost'?`<span class="res neg">Lost ${profit(b).toFixed(1)}u</span>`
+            : b.status==='push'?`<span class="res" style="color:var(--muted)">Push</span>`
+            : `<span class="res" style="color:var(--amber);font-size:.8rem">Open</span>`;
+    let badge;
+    if(!b.verified) badge=`<span class="badge b-self">self-reported</span>`;
+    else if(b.clv!=null) badge=`<span class="badge ${b.clv>0?'b-clv':'b-neg'}">CLV ${b.clv>0?'+':''}${b.clv}</span>`;
+    else if(b.noClv) badge=`<span class="badge b-none">no CLV · ${b.noClv}</span>`;
+    else if(b.priced) badge=`<span class="badge b-none">verified · pending</span>`;
+    else badge=`<span class="badge b-none">verified · no CLV</span>`;
+    const line = `You <b>${fmtO(b.odds)}</b>${b.closeOdds!=null?` → close <b>${fmtO(b.closeOdds)}</b>`:''} · ${b.stake}u`;
+    let settle = (b.status==='pending'&&b.kind==='manual')
+      ? `<div class="settle"><button class="win" onclick="settle(${b.id},'won')">Won</button><button class="lose" onclick="settle(${b.id},'lost')">Lost</button><button onclick="settle(${b.id},'push')">Push</button></div>` : '';
+    return `<div class="bet ${cls}"><div class="top"><div><div class="nm">${b.pick}</div><div class="mk">${b.match}</div></div>${res}</div><div class="mid"><div>${line}</div>${badge}</div>${settle}</div>`;
+  }).join('');
+}
+
+// seed history spread across time so the range filters have something to show
+const D = n => NOW - n*86400000;
+bets=[
+  { id:betId++, kind:'tracked', verified:true, market:'ML',     pick:'Topuria ML',                match:'Topuria vs Oliveira',  params:{side:1}, priced:true,  closeSide:1, odds:-160, closeOdds:-190, stake:2, status:'won',  clv:3.6,  ts:D(5)   },
+  { id:betId++, kind:'tracked', verified:true, market:'METHOD', pick:'Pantoja by submission',     match:'Pantoja vs Asakura',   params:{side:1,methodCat:'SUB'}, priced:false, odds:140, stake:1, status:'won',  clv:null, ts:D(6)   },
+  { id:betId++, kind:'tracked', verified:true, market:'TOTAL',  pick:'Under 1.5 rounds',          match:'Gaethje vs Chandler',  params:{line:1.5,ou:'U'}, priced:false, odds:110, stake:1, status:'lost', clv:null, ts:D(20)  },
+  { id:betId++, kind:'manual',  verified:false, market:'CUSTOM',pick:'Silva inside the distance', match:'Cage Warriors 180',    odds:-120, stake:1, status:'won',  clv:null, ts:D(100) },
+  { id:betId++, kind:'tracked', verified:true, market:'ML',     pick:'Makhachev ML',              match:'Makhachev vs Tsarukyan',params:{side:1}, priced:true,  closeSide:1, odds:-220, closeOdds:-260, stake:2, status:'lost', clv:3.5,  ts:D(250) },
+  { id:betId++, kind:'tracked', verified:true, market:'ML',     pick:'Adesanya ML',               match:'Adesanya vs Pereira',  params:{side:1}, priced:true,  closeSide:1, odds:105,  closeOdds:-110, stake:1, status:'won',  clv:3.6,  ts:D(800) },
+];
+render();
+</script>
+</body>
+</html>
