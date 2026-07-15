@@ -96,8 +96,9 @@ ${ogTags(title, seo.desc, seo.path)}` : ""}
   body{transition:opacity .13s ease}
   body.leaving{opacity:0}
   @media (prefers-reduced-motion: reduce){.wrap{animation:none}body{transition:none}}
-  /* Only widen the landing on large displays; normal screens keep the original layout. */
-  @media (min-width:1650px){.wrap{max-width:900px}}
+  /* Desktop gets room to breathe. The .card inside stays capped at 440px, so
+     forms don't stretch — this only widens the page around them. */
+  @media (min-width:1000px){.wrap{max-width:900px}}
   .back-link{position:fixed;top:1.1rem;left:1.1rem;display:inline-flex;align-items:center;gap:.35rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
   .back-link:hover{color:#fff}
   .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -161,7 +162,7 @@ const FREE_FOOTER = `
     .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
     .foot-links a{color:var(--muted);font-size:13px;text-decoration:none}
     .foot-links a:hover{color:var(--text)}
-    .foot-copy{color:var(--muted);opacity:.7;font-size:11.5px;line-height:1.6;max-width:660px;margin:0 auto}
+    .foot-copy{color:var(--muted);opacity:.7;font-size:11.5px;line-height:1.6;max-width:900px;margin:0 auto}
   </style>
   <footer class="site-footer">
     <div class="foot-brand">GILLY<span class="a">LAB</span></div>
@@ -341,7 +342,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
   .foot-links a{color:rgba(255,255,255,.6);font-size:13px}
   .foot-links a:hover{color:#fff}
-  .foot-copy{color:rgba(255,255,255,.32);font-size:11.5px;line-height:1.6;max-width:660px;margin:0 auto}
+  .foot-copy{color:rgba(255,255,255,.32);font-size:11.5px;line-height:1.6;max-width:900px;margin:0 auto}
   /* Faithful in-app component styles */
   .statc{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem .9rem}
   .statc-l{font-size:.56rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
@@ -964,7 +965,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   </div>
   <div class="sub-cx">
     <style>
-      .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:440px}
+      .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:620px}
       .sub-cx-head{text-align:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
       ${carouselCSS}
     </style>
@@ -1079,7 +1080,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   .pk-head h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .pk-sub{color:var(--muted);font-size:.9rem;margin:0}
   .pk-lock{font-size:.82rem;color:${card && card.locked ? "#ff8a7a" : "var(--accent)"};margin:.5rem 0 0;font-weight:600}
@@ -1627,7 +1628,7 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .rk-sub{color:var(--muted);font-size:.85rem;margin:0}
   .rk-hint{font-size:.78rem;color:var(--muted);margin:.6rem 0 .1rem}
@@ -1754,7 +1755,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-  main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .rs-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.3rem}
   .ar-bar{display:flex;flex-wrap:wrap;gap:.3rem;margin:1.4rem 0 1.3rem}
@@ -2003,7 +2004,7 @@ ${eventLd}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .mf-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
   .mf-sechdr{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
@@ -2271,7 +2272,7 @@ ${ldScript}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
   .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-  main{max-width:640px;margin:0 auto;padding:20px 16px 60px}
+  main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   .fp-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);text-decoration:none;font-size:.85rem;margin:0 0 .85rem;transition:color .12s}
   .fp-back:hover{color:var(--text)}
   .fp-back svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
