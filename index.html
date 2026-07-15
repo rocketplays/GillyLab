@@ -111207,8 +111207,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.status === 'pending') badge = '<span class="bt-badge bt-b-none">' + V + ' · ' +
       (b.market === 'PARLAY' && b.legsLive ? (b.legsIn || 0) + ' of ' + b.legsLive + ' legs in' : 'pending') + '</span>';
     else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
+    // A moneyline that missed its close still explains itself — it's the one market
+    // that could have earned CLV. Everything else just reads "verified": the log
+    // form warns before you place it and the hero footnote says it again, so
+    // stamping "no CLV" on every settled prop is nagging about a metric that was
+    // never going to apply.
     else if (b.priced && b.noClv) badge = '<span class="bt-badge bt-b-none">' + V + ' · no CLV · ' + btEsc(b.noClv) + '</span>';
-    else badge = '<span class="bt-badge bt-b-none">' + V + ' · no CLV</span>';
+    else badge = '<span class="bt-badge bt-b-none">' + V + '</span>';
     // "You" only earns its place once there's a closing line to contrast it with.
     const reprice = (b.effOdds != null && b.effOdds !== b.odds);
     const line = (b.closeOdds != null
