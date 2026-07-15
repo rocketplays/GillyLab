@@ -102,7 +102,11 @@ const ATTRS = [
   { id:'grappling',label:'Grappling',    note:'tdLanded, tdAcc, subAvg', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); s.subAvg = 0.05+v*0.35; } },
   { id:'takedef',  label:'Takedown def', note:'tdDef',              apply:(s,v)=>{ s.tdDef = pct(35+v*6); } },
 ];
-const POINTS_START = 20, ATTR_MAX = 10;
+// Playtest: "you get a ton of upgrades right off the bat". You started with 20,
+// spent 10 on the floor of 2/attr, and had 10 to dump before fight one — plus
+// rewards up to +8. The creator screen was the whole game.
+// Now: 12 points, floor of 1, so 7 to place. Rewards are 1-3.
+const POINTS_START = 12, ATTR_MAX = 10;
 const pct = n => Math.round(n)+'%';
 
 function buildStats(a){
@@ -140,6 +144,9 @@ function winProb(oppName){
   return (p==null) ? 0.5 : p;
 }
 const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+// P(win >= 2 of 3 rounds). The card shows THIS, not the per-round number —
+// showing 92% and then losing 8% of the time was the whole complaint.
+const bo3 = p => 3*p*p*(1-p) + p*p*p;
 const amer = p => { const o = p>=0.5 ? -Math.round(100*p/(1-p)) : Math.round(100*(1-p)/p); return (o>0?'+':'')+o; };
 
 // ── opponent selection ───────────────────────────────────────────────────────
@@ -176,21 +183,41 @@ function offers(){
   }
   return pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i).map(f=>{
     const p = winProb(f.name);
-    // reward scales with how much of a dog you are — the tuning dial
-    const reward = Math.max(1, Math.round((1-p)*8));
+    // Reward scales with how much of a dog you are. This is THE risk/reward
+    // dial: the model only pays ~1pt more for beating a contender than a can,
+    // so the incentive to take a hard fight has to be manufactured here.
+    // Capped at 3 — +8 made one upset worth more than the whole early career.
+    const reward = Math.max(1, Math.min(3, Math.round((1-p)*5)));
     const jump = f.rankNum<99 ? f.rankNum : null;
     return { f, p, reward, jump };
   });
 }
 
+// A fight is THREE ROUNDS, not one coin flip.
+//
+// Playtest: "I lost against someone I was favored 79% over, then lost to someone
+// I was 92% over ... that makes it entirely RNG based, more luck than anything."
+// Correct. One flip per fight meant an 8% roll ended a run you had no input on,
+// and the only decision was picking the highest number.
+//
+// The fix isn't to fudge the model, it's to use it honestly: the sim's number
+// prices a ROUND. Win 2 of 3 and you win the fight. That sharpens the extremes
+// and leaves close fights as coin flips, which is exactly where drama belongs:
+//     92% -> 98.2%   (upsets 8% -> 1.8%)
+//     79% -> 88.6%
+//     50% -> 50.0%   (unchanged — a pick'em is still a pick'em)
+//     30% -> 21.6%   (underdog runs get HARDER, correctly: beating a contender
+//                     should mean something)
+// It also gives the run a story for free — "you won rounds 1 and 3".
 function fight(o){
-  const roll = Math.random();
-  const won = roll < o.p;
+  const rounds = [0,1,2].map(()=>Math.random() < o.p);
+  const roundsWon = rounds.filter(Boolean).length;
+  const won = roundsWon >= 2;
   // Finish chance scales with Power/Grappling — how you win matters (~8pts to
   // the model), so the build should drive it.
   const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
   const fin = won && Math.random() < (0.25 + finBias*0.4);
-  G.log.push({ opp:o.f.name, won, fin, p:o.p, rank:o.f.rankNum });
+  G.log.push({ opp:o.f.name, won, fin, p:o.p, rank:o.f.rankNum, rounds, roundsWon });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     G.pts += o.reward + (fin?1:0);
@@ -206,7 +233,7 @@ function fight(o){
 
 // ── render ───────────────────────────────────────────────────────────────────
 function newGame(){
-  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,2])), pts:POINTS_START - ATTRS.length*2,
+  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,1])), pts:POINTS_START - ATTRS.length*1,
         wins:0, losses:0, streak:0, rank:null, log:[], beat:new Set(), champ:false, started:false, last:null };
   render();
 }
@@ -242,6 +269,12 @@ function creator(){
   const f=document.createElement('div');
   f.innerHTML='<div class="pts'+(left<0?' over':'')+'" style="margin:.6rem 0">Points left: '+left+'</div>';
   p.appendChild(f);
+  const hint=document.createElement('div'); hint.className='note';
+  hint.innerHTML='<b>Power</b> is knockdowns + volume · <b>Technique</b> is accuracy · '+
+    '<b>Defense</b> is not getting hit · <b>Grappling</b> is takedowns + subs · '+
+    '<b>Takedown def</b> is staying upright.<br>Once you turn pro, every +1 shows '+
+    'exactly what it\'s worth against your next opponent.';
+  p.appendChild(hint);
   const note=document.createElement('div'); note.className='note';
   note.textContent='No cardio slider — the sim has no cardio input. What it has is five-round experience, and you earn that by surviving deep water. Same as real life.';
   p.appendChild(note);
@@ -270,16 +303,40 @@ function resultBox(){
   const b=document.createElement('div'); b.className='big '+(won?'win':'loss');
   b.textContent = won ? ('def. '+o.f.name+(fin?' by KO/TKO':' by decision')) : ('lost to '+o.f.name);
   p.appendChild(b);
+  const L=G.log[G.log.length-1];
+  const rd=document.createElement('div'); rd.className='note';
+  rd.innerHTML = 'Rounds: ' + L.rounds.map((w,i)=>
+    '<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(i+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ') +
+    ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (3-L.roundsWon);
+  p.appendChild(rd);
   const n=document.createElement('div'); n.className='note';
-  n.textContent = 'The model had you at '+(o.p*100).toFixed(1)+'% ('+amer(o.p)+').'+
-    (won?' +'+(o.reward+(fin?1:0))+' upgrade points.':' One life left.'!==''&&G.losses<2?' One life left.':'');
+  n.textContent = 'The model gave you '+(o.p*100).toFixed(1)+'% per round ('+amer(o.p)+'), '+
+    (bo3(o.p)*100).toFixed(1)+'% to win the fight.'+
+    (won ? '  +'+(o.reward+(fin?1:0))+' upgrade points.' : (G.losses<2?'  One life left.':''));
   p.appendChild(n);
   return p;
 }
 
+// What is +1 in this category actually WORTH? Playtest: "it's not clear how
+// impactful each category is." So don't make them guess — ASK THE MODEL. Bump
+// the attribute, re-score the hardest fight on offer, show the delta. It's the
+// honest answer, it teaches what the sim cares about, and it makes the choice a
+// decision instead of a shrug.
+function marginal(attrId, oppName){
+  const before = winProb(oppName);
+  const old = G.attrs[attrId];
+  if (old >= ATTR_MAX) return null;
+  G.attrs[attrId] = old + 1;
+  const after = winProb(oppName);
+  G.attrs[attrId] = old;
+  return bo3(after) - bo3(before);
+}
+
 function upgrade(){
   const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')</div>';
+  const target = (offers()[1] || offers()[0] || {}).f;
+  p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')' +
+    (target ? ' — value of +1 vs '+target.name : '') + '</div>';
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr';
     const l=document.createElement('label'); l.textContent=A.label;
@@ -287,7 +344,10 @@ function upgrade(){
     bar.style.cssText='height:6px;background:var(--surface2);border-radius:3px;overflow:hidden';
     bar.innerHTML='<div style="height:100%;width:'+(G.attrs[A.id]/ATTR_MAX*100)+'%;background:var(--accent)"></div>';
     const btn=document.createElement('button'); btn.className='btn';
-    btn.textContent='+1'; btn.style.padding='.15rem .4rem'; btn.style.fontSize='.7rem';
+    const mv = target ? marginal(A.id, target.name) : null;
+    btn.textContent = (mv==null) ? '+1' : ('+1  ('+(mv>=0?'+':'')+(mv*100).toFixed(1)+'%)');
+    btn.style.padding='.15rem .4rem'; btn.style.fontSize='.68rem'; btn.style.whiteSpace='nowrap';
+    if(mv!=null && mv>0.004) btn.style.borderColor='var(--accent)';
     btn.disabled = G.pts<1 || G.attrs[A.id]>=ATTR_MAX;
     if(btn.disabled) btn.style.opacity=.3;
     btn.onclick=()=>{ if(G.pts<1||G.attrs[A.id]>=ATTR_MAX) return; G.attrs[A.id]++; G.pts--; render(); };
@@ -306,7 +366,8 @@ function offerBox(){
     const b=document.createElement('button'); b.className='opp'+(o.p<0.4?' risky':'');
     const rk=o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
     b.innerHTML='<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div>'+
-      '<div class="odds">You: <b style="color:'+(o.p>=0.5?'var(--accent)':'var(--accent2)')+'">'+amer(o.p)+'</b> · '+(o.p*100).toFixed(0)+'%</div>'+
+      '<div class="odds">You: <b style="color:'+(bo3(o.p)>=0.5?'var(--accent)':'var(--accent2)')+'">'+amer(bo3(o.p))+'</b> · '+(bo3(o.p)*100).toFixed(0)+'% to win</div>'+
+      '<div class="note" style="margin:.15rem 0 0">'+(o.p*100).toFixed(0)+'% per round · best of 3</div>'+
       '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;

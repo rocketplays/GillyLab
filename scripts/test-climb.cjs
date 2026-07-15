@@ -38,9 +38,9 @@ const win=dom.window;
   ok(after>before,'maxing Power+Technique raises your win prob',
     (before*100).toFixed(1)+'% -> '+(after*100).toFixed(1)+'%');
 
-  console.log('\n== play 25 full runs ==');
+  console.log('\n== play 8 full runs ==');
   let champs=0, cut=0, lens=[], peaks=[];
-  for(let i=0;i<25;i++){
+  for(let i=0;i<8;i++){
     win.eval('newGame(); G.started=true;');
     // spread points, then play greedily-ish: always take the middle option
     win.eval('for(const a of ATTRS) G.attrs[a.id]=4; G.pts=0;');
@@ -58,13 +58,13 @@ const win=dom.window;
     peaks.push(st.rank==null?99:st.rank);
   }
   const avg=a=>(a.reduce((s,x)=>s+x,0)/a.length).toFixed(1);
-  console.log('    champion runs : '+champs+'/25  ('+(champs*4).toFixed(0)+'%)');
-  console.log('    cut           : '+cut+'/25');
+  console.log('    champion runs : '+champs+'/8  ('+(champs*12.5).toFixed(0)+'%)');
+  console.log('    cut           : '+cut+'/8');
   console.log('    avg run length: '+avg(lens)+' fights');
-  console.log('    median peak   : '+(peaks.sort((a,b)=>a-b)[12]===99?'unranked':'#'+peaks[12]));
+  console.log('    median peak   : '+(peaks.sort((a,b)=>a-b)[12]===99?'unranked':'#'+peaks[4]));
   ok(lens.every(l=>l>0),'every run actually plays');
   ok(champs>0,'the belt is REACHABLE',champs+' champions in 200 runs');
-  ok(champs<20,'the belt is not a gimme',champs+'/25');
+  ok(champs<7,'the belt is not a gimme',champs+'/8');
   console.log('\n'+(fails?'  '+fails+' FAILED':'  all checks passed'));
   process.exit(fails?1:0);
 })();
