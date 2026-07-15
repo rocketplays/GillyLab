@@ -630,9 +630,11 @@ function creator(){
     const o=document.createElement('option');
     o.value=key; o.selected=(key===DIV);
     const champ=D.divisions[key].ladder.find(f=>f.rankNum===0);
-    // The champion's name is the whole reason to care which division you pick, so
-    // it stays — just inline instead of on its own line.
-    o.textContent=D.divisions[key].label+(champ?'  —  '+champ.name:'  —  vacant');
+    // "Lightweight — Justin Gaethje" doesn't say WHO Gaethje is to you; an em
+    // dash reads as apposition, so the name could be anything. "Lightweight ·
+    // C Justin Gaethje" borrows the belt marker the rest of the game already
+    // uses (#C on the ladder), so the label explains itself.
+    o.textContent=D.divisions[key].label+(champ?'  ·  C  '+champ.name:'  ·  vacant');
     sel.appendChild(o);
   }
   sel.onchange=e=>{ if(e.target.value===DIV) return; DIV=e.target.value; newGame(); };
