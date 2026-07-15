@@ -107,12 +107,28 @@ let G=null;   // game state
 // Technique silently changed your output volume, so no slider meant what it
 // said. Now every lever has exactly one owner:
 //
-//   Power        -> kd          how often you drop people
-//   Pace         -> slpm        how much you throw
-//   Technique    -> strAcc      how much of it lands
-//   Defense      -> strDef, sapm   not getting hit
-//   Grappling    -> tdLanded, tdAcc, subAvg
-//   Takedown def -> tdDef
+//   Power        -> kd                how often you drop people
+//   Pace         -> slpm              how much you throw
+//   Technique    -> strAcc            how much of it lands
+//   Defense      -> strDef, sapm      not getting hit
+//   Wrestling    -> tdLanded, tdAcc   getting them to the ground
+//   Grappling    -> subAvg            finishing them there
+//   Takedown def -> tdDef             staying upright
+//
+// WRESTLING AND GRAPPLING ARE SEPARATE. Playtest: "does it seem clear that one
+// category is worth more than another?" Measured: NO — the grappler beat every
+// build against every opponent, 65% even into Topuria's 95% takedown defence.
+//
+// The cause was an accounting bug in MY layer, not the model. A single
+// "Grappling" attribute moved THREE levers (tdLanded, tdAcc, subAvg) for the
+// same price Power paid for ONE (kd). It was 3x more point-efficient than
+// anything else, so a grappler cost 33 points where an equivalent striker cost
+// 52 — and the striker lost every matchup while paying more.
+//
+// The rock-paper-scissors was ALREADY THERE, just drowned out: the grappler
+// still ran 65% into elite takedown defence and 92% into poor. That 27-point
+// swing is the model reading the matchup correctly. Splitting wrestling from
+// submissions makes the price honest so that signal can actually surface.
 //
 // NO DURABILITY. Not an oversight — checked the model. simDurabilityBoost is
 // "when you lose, do you survive to the scorecards or get finished?", and it
@@ -125,7 +141,8 @@ const ATTRS = [
   { id:'pace',     label:'Pace',         note:'output volume',  apply:(s,v)=>{ s.slpm = 1.8+v*0.95; } },
   { id:'technique',label:'Technique',    note:'accuracy',       apply:(s,v)=>{ s.strAcc = pct(28+v*6); } },
   { id:'defense',  label:'Defense',      note:'not getting hit',apply:(s,v)=>{ s.strDef = pct(40+v*5.5); s.sapm = 6.0-v*0.45; } },
-  { id:'grappling',label:'Grappling',    note:'takedowns + subs', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); s.subAvg = 0.05+v*0.35; } },
+  { id:'wrestling',label:'Wrestling',    note:'getting them to the ground', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); } },
+  { id:'grappling',label:'Grappling',    note:'submissions',    apply:(s,v)=>{ s.subAvg = 0.05+v*0.4; } },
   { id:'takedef',  label:'Takedown def', note:'staying upright',apply:(s,v)=>{ s.tdDef = pct(35+v*6); } },
 ];
 // Playtest: "why do you get to pick attributes to build your fighter, then get
@@ -322,7 +339,7 @@ function fight(o){
   const won = roundsWon >= 2;
   // Finish chance scales with Power/Grappling — how you win matters (~8pts to
   // the model), so the build should drive it.
-  const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
+  const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);   // KO power + submissions
   const fin = won && Math.random() < (0.25 + finBias*0.4);
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
   // shows all 3 rounds as if it were a decision." The rounds array and the
@@ -404,9 +421,10 @@ function creator(){
     ' <span style="color:var(--muted);font-weight:400;font-size:.72rem">— higher levels cost more</span></div>';
   p.appendChild(f);
   const hint=document.createElement('div'); hint.className='note';
-  hint.innerHTML='<b>Power</b> knockdowns · <b>Pace</b> output volume · <b>Technique</b> accuracy · '+
-    '<b>Defense</b> not getting hit · <b>Grappling</b> takedowns + subs · '+
-    '<b>Takedown def</b> staying upright.<br>'+
+  hint.innerHTML='<b>Power</b> knockdowns · <b>Pace</b> volume · <b>Technique</b> accuracy · '+
+    '<b>Defense</b> not getting hit · <b>Wrestling</b> getting them to the ground · '+
+    '<b>Grappling</b> submissions · <b>Takedown def</b> staying upright.<br>'+
+    'A wrestler eats a striker with bad takedown defence and stalls against elite TDD. Build for the path you want.<br>'+
     'No cardio or durability sliders — the model earns both from your career, not your build.';
   p.appendChild(hint);
   const note=document.createElement('div'); note.className='note';
