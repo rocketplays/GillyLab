@@ -102,15 +102,35 @@ const ATTRS = [
   { id:'grappling',label:'Grappling',    note:'tdLanded, tdAcc, subAvg', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); s.subAvg = 0.05+v*0.35; } },
   { id:'takedef',  label:'Takedown def', note:'tdDef',              apply:(s,v)=>{ s.tdDef = pct(35+v*6); } },
 ];
-// Playtest: "you get a ton of upgrades right off the bat". You started with 20,
-// spent 10 on the floor of 2/attr, and had 10 to dump before fight one — plus
-// rewards up to +8. The creator screen was the whole game.
-// Now: 12 points, floor of 1, so 7 to place. Rewards are 1-3.
+// Playtest: "why do you get to pick attributes to build your fighter, then get
+// another +7 right off the bat?" — a straight BUG. The creator's sliders and
+// G.pts were two separate wallets that never spoke: G.pts was set once at
+// newGame() and the sliders never decremented it. You placed 12 points in the
+// creator and then got 7 more free. One pool now; the creator spends from it.
+//
+// UPGRADES ESCALATE. Playtest: "by the time I got to the championship fight I
+// was nearly maxed out and was 88% against Ilia Topuria." Measured: maxed + 18
+// wins is 97.8% vs the champ, maxed + 0 wins is 50.9%. The record is worth ~47
+// points at the top, so once you've climbed you're unbeatable and the title
+// fight is a formality.
+//
+// Flat costs let an 18-fight run buy EVERYTHING (18 fights x ~2pts + 12 start =
+// 48, and maxing all five costs 45). So the fix isn't fewer points, it's that
+// the LAST point in a category must cost more than the first. Now cost(v->v+1)
+// = ceil(v/2): maxing one attribute costs 25, all five costs 125. A full run
+// earns ~40. You can master one thing and be decent at another. You cannot be
+// good at everything, so the build stays a real choice all the way up.
 const POINTS_START = 12, ATTR_MAX = 10;
+const upCost = v => Math.ceil(v/2);
 const pct = n => Math.round(n)+'%';
 
+const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 function buildStats(a){
-  const s = { ht:"5'11\"", dob:"1999-01-01", reach:'72"', stance:'Orthodox',
+  // dob was HARDCODED, so `age` — a real lever the sim reads — never moved. You
+  // were 27 forever. Now every fight ages you.
+  const age = START_AGE + Math.floor(((G&&G.fightNo)||0) * MONTHS_PER_FIGHT / 12);
+  const born = new Date().getFullYear() - age;
+  const s = { ht:"5'11\"", dob:born+"-01-01", reach:'72"', stance:'Orthodox',
     slpm:0, strAcc:'0%', sapm:0, strDef:'0%', kd:0, tdLanded:0, tdAcc:'0%',
     tdDef:'0%', subAvg:0, finRate:'0%', streak:0, gym:'—' };
   for (const A of ATTRS) A.apply(s, a[A.id]||0);
@@ -227,17 +247,31 @@ function fight(o){
   } else {
     G.losses++; G.streak = 0;
   }
+  // EVERY FIGHT AGES YOU, win or lose. Playtest: "it took a long time to get to
+  // the title. I went 18-1." Ducking was free — beating someone ranked BELOW you
+  // moves you nowhere, so the safe path had no cost and the run never ended.
+  //
+  // Now the clock is the cost. ~4 months a fight, so an 18-fight run takes you
+  // from 24 to 30. The sim reads `age` and applies its real age curve, so this
+  // isn't an invented penalty — it's the model. (Honest caveat: measured, that
+  // curve is WEAK for a fighter with a big record — 27 to 38 only cost 1.4pts.
+  // So this makes ducking cost something, but it is not yet a hard run limit.
+  // If runs still drag, the next dial is retiring at ~35.)
+  G.fightNo = (G.fightNo||0) + 1;
   G.last = { o, won, fin };
   render();
 }
 
 // ── render ───────────────────────────────────────────────────────────────────
 function newGame(){
-  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,1])), pts:POINTS_START - ATTRS.length*1,
-        wins:0, losses:0, streak:0, rank:null, log:[], beat:new Set(), champ:false, started:false, last:null };
+  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,1])), pts:POINTS_START - ATTRS.length*0,
+        wins:0, losses:0, streak:0, rank:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0 };
   render();
 }
-const spent = () => ATTRS.reduce((s,a)=>s+G.attrs[a.id],0);
+// What the current sheet has cost, in points — NOT the sum of levels, now that
+// costs escalate. The creator and the in-run upgrade panel share this.
+const costTo = lvl => { let c=0; for(let v=1; v<lvl; v++) c+=upCost(v); return c; };
+const spent = () => ATTRS.reduce((s,a)=>s+costTo(G.attrs[a.id]),0);
 
 function render(){
   const app = $('#app'); app.innerHTML='';
@@ -259,15 +293,18 @@ function creator(){
     const row=document.createElement('div'); row.className='attr';
     const l=document.createElement('label'); l.textContent=A.label;
     const i=document.createElement('input'); i.type='range'; i.min=0; i.max=ATTR_MAX; i.value=G.attrs[A.id];
-    i.oninput=e=>{ const v=+e.target.value; const d=v-G.attrs[A.id];
-      if (spent()+d>POINTS_START) { e.target.value=G.attrs[A.id]; return; }
-      G.attrs[A.id]=v; render(); };
+    i.oninput=e=>{ const v=+e.target.value; const old=G.attrs[A.id];
+      G.attrs[A.id]=v;
+      if (spent()>POINTS_START) { G.attrs[A.id]=old; e.target.value=old; return; }
+      G.pts = POINTS_START - spent();          // ONE wallet, not two
+      render(); };
     const v=document.createElement('div'); v.className='v'; v.textContent=G.attrs[A.id];
     row.appendChild(l); row.appendChild(i); row.appendChild(v);
     p.appendChild(row);
   }
   const f=document.createElement('div');
-  f.innerHTML='<div class="pts'+(left<0?' over':'')+'" style="margin:.6rem 0">Points left: '+left+'</div>';
+  f.innerHTML='<div class="pts'+(left<0?' over':'')+'" style="margin:.6rem 0">Points left: '+left+
+    ' <span style="color:var(--muted);font-weight:400;font-size:.72rem">— higher levels cost more</span></div>';
   p.appendChild(f);
   const hint=document.createElement('div'); hint.className='note';
   hint.innerHTML='<b>Power</b> is knockdowns + volume · <b>Technique</b> is accuracy · '+
@@ -293,6 +330,7 @@ function hud(){
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
     '<div><span>Upgrade pts</span><b style="color:var(--accent)">'+G.pts+'</b></div>'+
+    '<div><span>Age</span><b>'+(START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12))+'</b></div>'+
     '<div><span>Lives</span><b>'+(2-G.losses)+'</b></div>';
   p.appendChild(d); return p;
 }
@@ -348,9 +386,11 @@ function upgrade(){
     btn.textContent = (mv==null) ? '+1' : ('+1  ('+(mv>=0?'+':'')+(mv*100).toFixed(1)+'%)');
     btn.style.padding='.15rem .4rem'; btn.style.fontSize='.68rem'; btn.style.whiteSpace='nowrap';
     if(mv!=null && mv>0.004) btn.style.borderColor='var(--accent)';
-    btn.disabled = G.pts<1 || G.attrs[A.id]>=ATTR_MAX;
+    const cost = upCost(G.attrs[A.id]);
+    btn.disabled = G.pts<cost || G.attrs[A.id]>=ATTR_MAX;
     if(btn.disabled) btn.style.opacity=.3;
-    btn.onclick=()=>{ if(G.pts<1||G.attrs[A.id]>=ATTR_MAX) return; G.attrs[A.id]++; G.pts--; render(); };
+    if(!btn.disabled && cost>1) btn.textContent += '  −'+cost+'pt';
+    btn.onclick=()=>{ if(G.pts<cost||G.attrs[A.id]>=ATTR_MAX) return; G.attrs[A.id]++; G.pts-=cost; render(); };
     row.appendChild(l); row.appendChild(bar); row.appendChild(btn);
     p.appendChild(row);
   }
