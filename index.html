@@ -110682,6 +110682,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // of the surviving legs, exactly as a book would recompute it.
   const btProfit = b => { const o = (b.effOdds != null ? b.effOdds : b.odds);
     return b.status === 'won' ? b.stake * (o > 0 ? o / 100 : 100 / -o) : (b.status === 'lost' ? -b.stake : 0); };
+  // Profit if it lands, at the price that would actually pay.
+  const btToWin = b => { const o = (b.effOdds != null ? b.effOdds : b.odds);
+    return b.stake * (o > 0 ? o / 100 : 100 / -o); };
+  // Trim to at most 2dp without leaving trailing zeros: 0.67 / 1.5 / 10
+  const btU = n => (Math.round(n * 100) / 100).toFixed(2).replace(/\.?0+$/, '');
   const btAm2Dec = a => a > 0 ? (a / 100 + 1) : (100 / -a + 1);
   const btDec2Am = d => d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1));
   const btCombine = list => btDec2Am(list.reduce((p, o) => p * btAm2Dec(o), 1));
@@ -111011,7 +111016,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const line = (b.closeOdds != null
       ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
       : '<b>' + btFmtO(reprice ? b.effOdds : b.odds) + '</b>' + (reprice ? ' <span style="opacity:.7">(was ' + btFmtO(b.odds) + ', leg voided)</span>' : ''))
-      + ' · ' + b.stake + 'u';
+      + ' · ' + b.stake + 'u'
+      // What's still live: profit at risk, on the price that would actually pay
+      // (effOdds, so a parlay with a voided leg quotes the re-priced return).
+      + (b.status === 'pending' ? ' <span style="opacity:.75">to win ' + btU(btToWin(b)) + 'u</span>' : '');
     // Parlay: show each leg and how many are in.
     let legsHTML = '';
     if (b.market === 'PARLAY' && b.legs) {
