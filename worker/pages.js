@@ -952,7 +952,11 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   ${backLink}
   <a class="logout-link" href="/api/logout">Log out</a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
-  <div class="center" style="margin-top:1.25rem">
+  <!-- Capped at 440 like the .card the other shell pages use: .wrap now runs to
+       900 on desktop, and this block's <ul> and full-width button have no cap of
+       their own, so they'd stretch across the whole page. The carousel below sits
+       outside this and keeps its own wider 620. -->
+  <div class="center" style="max-width:440px;margin:1.25rem auto 0">
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
     <p class="muted">Everything in your free Pick'em account, plus the whole database and every tool:</p>
     <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
