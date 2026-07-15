@@ -488,6 +488,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li class="off">Full fighter database &amp; profiles</li>
           <li class="off">Fight simulator &amp; any-matchup builder</li>
           <li class="off">Live odds, props &amp; parlay tools</li>
+          <li class="off">Bet &amp; CLV tracker</li>
         </ul>
         <a class="big ghost" href="/signup">Start free →</a>
       </div>
@@ -503,6 +504,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <li>Matchup analysis — style, pace &amp; path to victory</li>
           <li>Auto scouting reports &amp; fighter injury news</li>
           <li>Live odds, props &amp; the parlay builder</li>
+          <li>Bet &amp; CLV tracker — grade your bets, track ROI</li>
           <li>Closing-line history &amp; line movement</li>
           <li>Tape study, accolades &amp; full box scores</li>
         </ul>
@@ -641,6 +643,27 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   function lmpts(arr){return arr.map(function(o,k){return (lmP+(lmW-2*lmP)*k/(lmN-1)).toFixed(1)+','+lmy(o).toFixed(1);}).join(' ');}
   function lmdot(arr,col){return '<circle cx="'+(lmW-lmP)+'" cy="'+lmy(arr[arr.length-1]).toFixed(1)+'" r="3.6" fill="'+col+'"/>';}
   var lmZ=lmy(0).toFixed(1);
+  // Bet & CLV tracker — the pitch is the honesty of the number: bets on fights we
+  // track auto-grade, and CLV is measured against a real closing line.
+  function btile(lab,val,col){return '<div style="flex:1;background:rgba(255,255,255,.04);border-radius:8px;padding:.4rem .5rem"><div style="font-size:.52rem;letter-spacing:.08em;text-transform:uppercase;color:'+M+'">'+lab+'</div><div style="font-size:.95rem;font-weight:800;color:'+(col||'inherit')+'">'+val+'</div></div>';}
+  function brow(pick,match,odds,res,rescol,tag,tagcol){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:.3rem 0;border-bottom:1px solid rgba(255,255,255,.05)">'
+      +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+pick+'</div>'
+      +'<div style="font-size:.6rem;color:'+M+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+match+'</div></div>'
+      +'<div style="text-align:right"><div style="font-weight:800;font-size:.78rem;color:'+rescol+'">'+res+'</div>'
+      +'<div style="font-size:.58rem;color:'+M+'">'+odds+'</div></div>'
+      +'<span style="flex:0 0 auto;font-size:.52rem;font-weight:700;border-radius:4px;padding:2px 5px;color:'+tagcol+';background:'+tagcol+'1a;white-space:nowrap">'+tag+'</span></div>';
+  }
+  var bets='<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:.1rem"><span style="font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42)">Closing line value</span></div>'
+    +'<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:.5rem"><span style="font-size:1.6rem;font-weight:800;color:'+A+';line-height:1">+3.1<span style="font-size:.6rem;color:'+M+';margin-left:2px">pts</span></span>'
+    +'<span style="font-size:.66rem;color:#c9ccd3">beat the close on <b>27 of 40</b> moneylines</span></div>'
+    +'<div style="display:flex;gap:6px;margin-bottom:.55rem">'+btile('Record','24-16')+btile('ROI','+11.8%',A)+btile('Units','+9.2u',A)+btile('Pending','3')+'</div>'
+    +osec('UFC 329 · settled')
+    +brow('Costa ML','Costa vs Durden','-140 \\u00b7 2u','+1.4u',A,'CLV +1.5',A)
+    +brow('Holloway by decision','Holloway vs McGregor','+140 \\u00b7 1u','+1.4u',A,'no CLV','#8a8f99')
+    +brow('Usman ML','Usman vs Du Plessis','+200 \\u00b7 1u','-1u','#ff6a5e','CLV +3.8',A)
+    +'<div style="font-size:.58rem;color:'+M+';margin-top:.45rem;line-height:1.5">Log a bet before the bell and it grades itself off the result. CLV is measured against the real closing line \\u2014 moneylines only.</div>';
+
   var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement (American odds)</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
     +'<svg viewBox="0 0 '+lmW+' '+lmHt+'" width="100%" style="display:block">'
     +'<line x1="'+lmP+'" y1="'+lmZ+'" x2="'+(lmW-lmP)+'" y2="'+lmZ+'" stroke="rgba(255,255,255,.12)" stroke-width="1" stroke-dasharray="3 4"/>'
@@ -795,6 +818,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
     {t:'Style, pace & path to victory',d:'Where each fighter sits on the striker\u2013grappler spectrum, the pace they imply, and how each one wins.',h:style},
     {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
+    {t:'Bet & CLV tracker',d:'Log a bet before the bell and it grades itself off the result — record, ROI, units, and your closing-line value.',h:bets},
     {t:'Line movement',d:'Watch a bout’s odds move day by day, from open to now, across the whole market.',h:lm},
     {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
     {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
@@ -921,7 +945,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
     <p class="muted">Everything in your free Pick'em account, plus the whole database and every tool:</p>
     <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
-      ${["Every fighter &amp; every bout — full analytics","Fight simulator: winner, method &amp; round","Build &amp; simulate any matchup you want","Matchup analysis — style, pace &amp; path to victory","Auto scouting reports &amp; fighter injury news","Live odds, props &amp; the parlay builder","Closing-line history &amp; line movement","Tape study, accolades &amp; full box scores"].map(f => `<li style="position:relative;padding-left:1.5rem;font-size:.88rem;line-height:1.35"><span style="position:absolute;left:0;color:var(--accent);font-weight:800">✓</span>${f}</li>`).join("")}
+      ${["Every fighter &amp; every bout — full analytics","Fight simulator: winner, method &amp; round","Build &amp; simulate any matchup you want","Matchup analysis — style, pace &amp; path to victory","Auto scouting reports &amp; fighter injury news","Live odds, props &amp; the parlay builder","Bet &amp; CLV tracker — grade your bets, track ROI","Closing-line history &amp; line movement","Tape study, accolades &amp; full box scores"].map(f => `<li style="position:relative;padding-left:1.5rem;font-size:.88rem;line-height:1.35"><span style="position:absolute;left:0;color:var(--accent);font-weight:800">✓</span>${f}</li>`).join("")}
     </ul>
     <p class="price" style="font-size:1.2rem;margin:.6rem 0">${PRICE_LABEL}</p>
     <button id="go">Go Premium →</button>
@@ -2180,6 +2204,7 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
     lockItem("Live odds &amp; props", "Moneyline, round totals &amp; method props by book."),
     lockItem("Line-movement tracking", "Every bout's odds, day by day, from open to now."),
     lockItem("Parlay builder", "Build a slip, then re-price it at every book."),
+    lockItem("Bet &amp; CLV tracker", "Log a bet and it grades itself \u2014 ROI, units &amp; closing-line value."),
   ].join("");
   const cta = subscribed
     ? `<a class="fp-lock-btn" href="/">Open the full profile in GillyLab →</a>`
