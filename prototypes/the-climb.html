@@ -398,7 +398,15 @@ function styleDelta(a, st){
   return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d));
 }
 
-function oppByName(nm){ return LADDER().find(f=>f.name===nm) || null; }
+// If this is ever asked for a fighter who isn't on the current ladder, something
+// upstream is wrong (a stale cache, a division switch that didn't reset). Say so
+// instead of quietly pricing the fight at 50/50 — that's how a total scoring
+// failure across ten divisions looked exactly like a plausible board.
+function oppByName(nm){
+  const f = LADDER().find(x=>x.name===nm);
+  if (!f && nm) console.warn('The Climb: "'+nm+'" is not on the '+DIV+' ladder — stale offer?');
+  return f || null;
+}
 
 // P(win a single fight). Base from the rating gap, then the style triangle, then
 // the record. Cardio is a real attribute now — it was impossible while the sim
@@ -450,7 +458,14 @@ function pick(arr){ return arr.length ? arr[Math.floor(Math.random()*arr.length)
 // read against your current build.
 let _offerCache = null, _offerKey = '';
 function offers(){
-  const key = [G.fightNo||0, G.wins, G.losses, G.rank].join('|');
+  // DIV IS IN THE KEY. It wasn't, and the failure was silent and total: switch
+  // weight class at fight 0 and the key ("0|0|0|null") was unchanged, so you got
+  // HEAVYWEIGHT'S three fighters handed back from cache. They aren't in the new
+  // division's ladder, so oppByName() returned null and winProb()'s `if(!o)
+  // return 0.5` fallback made every fight in ten of eleven divisions an exact
+  // coin flip. Nothing threw. The tell was a column of 50.0% — a fallback
+  // constant wearing a plausible number's clothes.
+  const key = [DIV, G.fightNo||0, G.wins, G.losses, G.rank].join('|');
   if (_offerKey !== key || !_offerCache) { _offerKey = key; _offerCache = buildOffers(); }
   // re-price against the CURRENT build every time
   return _offerCache.map(o => {

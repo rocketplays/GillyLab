@@ -167,10 +167,17 @@ function main() {
     //
     // Identical tier shape in every division, which is what should let one set
     // of difficulty dials cover all eleven.
+    // DIV_SWING: how much the division's talent moves every rung. +-6 means a
+    // welterweight champion rates 106 and a light-heavyweight champion 94 — the
+    // same climb, ~1.5 rungs harder or easier the whole way up. Big enough that
+    // picking a soft division is a real (and slightly cowardly) strategy; small
+    // enough that no division is a walkover.
+    const DIV_SWING = 12;
+    const sAdj = (strengthNorm(DIV) - 0.5) * DIV_SWING;
     const powerOf = f => {
       const r = rankNum(f);
       const tier = r === 0 ? 100 : r <= 0.5 ? 92 : r <= 15 ? 86 - (r - 1) * 1.6 : 48;
-      return Math.round((tier + (rrNorm(f.name) - 0.5) * 12) * 10) / 10;
+      return Math.round((tier + sAdj + (rrNorm(f.name) - 0.5) * 12) * 10) / 10;
     };
     // STYLE: read off their REAL stats, so the invented triangle bites on
     // something true.
@@ -184,6 +191,7 @@ function main() {
 
     return {
       label: LABELS[DIV] || DIV,
+      strength: Math.round(strengthNorm(DIV) * 100) / 100,   // 0 = softest, 1 = hardest
       ladder: ladder.map(f => ({
         name: f.name, rank: rankTxt(f), record: f.record, initials: f.initials,
         country: f.country, rankNum: rankNum(f), power: powerOf(f), style: styleOf(f.name)
@@ -200,6 +208,45 @@ function main() {
       if (d !== DIV && rows.some(r => r.key === k)) return true;
     return false;
   }
+
+  // ---- DIVISION STRENGTH: not every belt is worth the same climb ----
+  //
+  // Playtest: "in talent-heavy divisions it should be harder to climb the ranks;
+  // thinner divisions with less talent (like heavyweight) should make the rise
+  // quicker." Right idea, and the example is wrong — measured, HEAVYWEIGHT IS
+  // NOT WEAK. Average sim power score of each division's ranked 15:
+  //
+  //     WW 4.97   LW 4.80   FW 4.38   HW 4.28   MW 4.18   BW 4.06
+  //     FLW 3.72  WSW 3.53  WFLW 3.39  WBW 3.26  LHW 3.19
+  //
+  // Depth predicts talent well (r=0.89 across the 11), but heavyweight breaks
+  // the trend: shallow (177 actives) yet the 4th-strongest top 15, because its
+  // ranked fighters are stat monsters even though there's little behind them.
+  // The genuinely soft climbs are LIGHT HEAVYWEIGHT and the women's divisions.
+  //
+  // So strength is measured, not assumed. Welterweight's belt is the hardest in
+  // the game and light heavyweight's is the softest, because that's what the
+  // fighters say — not because anyone decided it.
+  const strengthOf = {};
+  {
+    const sc = createScorer(FIGHTER_STATS, FIGHT_HISTORY, FIGHTERS);
+    sc.setNow(Date.now()); sc.setRankBadge(null);
+    for (const DIV of ORDER) {
+      const rows = (RANKS.byDiv[DIV] || []).filter(r => r.rankNum < 99).slice(0, 15);
+      const ps = rows.map(r => {
+        const f = FIGHTERS.find(x => x && norm(x.name) === r.key);
+        if (!f || !FIGHTER_STATS[f.name]) return null;
+        const v = sc.simPowerScore(sc.getSimProfile(f.name));
+        return isFinite(v) ? v : null;
+      }).filter(v => v != null);
+      strengthOf[DIV] = ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : null;
+    }
+  }
+  const sv = Object.values(strengthOf).filter(v => v != null);
+  const sLo = Math.min(...sv), sHi = Math.max(...sv);
+  // 0 = softest division in the game, 1 = hardest.
+  const strengthNorm = DIV => (strengthOf[DIV] == null || sHi <= sLo) ? 0.5
+    : (strengthOf[DIV] - sLo) / (sHi - sLo);
 
   const divisions = {};
   const skipped = [];
@@ -234,7 +281,9 @@ function main() {
   console.log('');
   for (const [k, d] of Object.entries(divisions)) {
     const ch = d.ladder.find(f => f.rankNum === 0);
-    console.log('  ' + k.padEnd(5) + d.label.padEnd(22) + String(d.ladder.length).padStart(3) + ' deep   champ: ' + (ch ? ch.name : '—'));
+    const bar = '#'.repeat(Math.round(d.strength * 10)).padEnd(10, '.');
+    console.log('  ' + k.padEnd(5) + d.label.padEnd(22) + 'talent ' + bar + '  champ ' +
+      String(ch ? ch.power : '—').padStart(6) + '  ' + (ch ? ch.name : '—'));
   }
 }
 
