@@ -100,6 +100,17 @@
   .tipbox b{color:var(--text)}
   .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}
 
+  /* opponent avatar. The initials sit UNDER the photo, so a 404 reveals them
+     rather than needing a JS fallback. */
+  .av{position:relative;width:44px;height:44px;border-radius:50%;flex:0 0 44px;
+    background:var(--surface2);border:1px solid var(--border);overflow:hidden}
+  .av span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}
+  .av img{position:relative;width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .opphd{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem}
+  .oppwho{min-width:0}
+  .opp .rec{margin:.1rem 0 0}
+
   /* level readout: bar + "7/10", shared by the creator and the upgrade panel */
   .lvlwrap{display:flex;align-items:center;gap:.5rem;min-width:0}
   .lvlbar{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:40px}
@@ -613,6 +624,31 @@ function roundP(pFight){
 // what you were, which is when it reads as information instead of a promise —
 // and when you lose as a big favourite the game says so out loud rather than
 // letting you suspect it.
+// PHOTOS. 2,331 of them already live in photos/thumb/<slug>.png, named by the
+// Cito API's fighterSlug. This mirrors index.html's nameToSlug() — the rules
+// look fussy and each one is load-bearing: the API drops generational suffixes
+// and apostrophes rather than turning them into dashes, so "Sean O'Malley" is
+// sean-omalley (not sean-o-malley) and "Michael Aswell Jr." is michael-aswell.
+// Get any of it wrong and the photo silently 404s to initials, which looks like
+// "we have no picture" rather than "the slug is wrong".
+const SLUG_LETTERS = { 'ł':'l','Ł':'l','đ':'d','Đ':'d','ø':'o','Ø':'o','æ':'ae','Æ':'ae','œ':'oe','Œ':'oe','ß':'ss','ı':'i','İ':'i' };
+function nameToSlug(name){
+  return String(name||'').toLowerCase()
+    .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, '')
+    .replace(/[łŁđĐøØæÆœŒßıİ]/g, ch => SLUG_LETTERS[ch] || ch)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/['’]/g, '')
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+// The disc is built with the initials ALREADY in it, and the <img> sits on top.
+// If the photo 404s the img hides itself and the initials are simply revealed —
+// no onerror text surgery, no flash of a broken-image icon.
+function avatarHTML(f){
+  return '<div class="av"><span>'+(f.initials||'?')+'</span>'+
+    '<img src="../photos/thumb/'+nameToSlug(f.name)+'.png" alt="" loading="lazy" '+
+    'onerror="this.style.display=\'none\'"></div>';
+}
+
 function oddsBand(p){
   if (p >= 0.82) return { t:'Heavy favourite', c:'var(--accent)' };
   if (p >= 0.66) return { t:'Favourite',       c:'var(--accent)' };
@@ -856,7 +892,48 @@ function buildOffers(){
     const src = near.length ? near : all;
     for(let i=0;i<3;i++) pool.push(pickDiverse(src, pool));
   }
-  return pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i).map(f=>{
+  // ALWAYS A CHOICE. Playtest: "sometimes it only gives you one option for a
+  // matchup. there should always be 2+."
+  //
+  // Measured, 80 runs: 21.6% of boards offered a single fight, and it clustered
+  // exactly where you'd notice — 72% of boards at #15, ~48% at #1-#4. Narrowing
+  // the rank bands (STEP 3->1, BELOW cap 3) to make style decide the ORDER also
+  // made the three picks collide: at #15 'below' is #16-18, who don't exist, and
+  // 'near'/'up' both resolve to #14. The dedup then collapsed three picks into
+  // one. It's worst at the EDGES of the ladder, where there is no room on one
+  // side — which is precisely where a matchup screen with no matchup on it is
+  // most galling, because you're at the top and being handed a fait accompli.
+  //
+  // So: top up from a widening radius until there are three. Never a dead end,
+  // never a fake choice.
+  let picked = pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i);
+  if (picked.length < 3) {
+    const beaten = f => G.beat.has(f.name);
+    for (const radius of [2,4,7,12,99]) {
+      if (picked.length >= 3) break;
+      const band = LADDER().filter(f =>
+        !picked.includes(f) && !beaten(f) &&
+        (G.rank == null ? f.rankNum === 99
+                        : (f.rankNum < 99 && Math.abs(f.rankNum - G.rank) <= radius && f.rankNum > 0.5)));
+      while (picked.length < 3 && band.length) {
+        const nxt = pickDiverse(band, picked);
+        if (!nxt) break;
+        picked.push(nxt); band.splice(band.indexOf(nxt), 1);
+      }
+    }
+    // Still short in a picked-clean division? Allow rematches before allowing a
+    // one-card board — see the empty-board note above.
+    if (picked.length < 2) {
+      const any = LADDER().filter(f => !picked.includes(f) &&
+        f.name !== (G.last && G.last.o && G.last.o.f.name));
+      while (picked.length < 3 && any.length) {
+        const nxt = pickDiverse(any, picked);
+        if (!nxt) break;
+        picked.push(nxt); any.splice(any.indexOf(nxt), 1);
+      }
+    }
+  }
+  return picked.map(f=>{
     const p = winProb(f.name);
     const reward = rewardFor(f, p);
     const jump = f.rankNum<99 ? f.rankNum : null;
@@ -1154,9 +1231,9 @@ function offerBox(){
   for(const o of list){
     const b=document.createElement('button'); b.className='opp'+(o.p<0.4?' risky':'');
     const rk=o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
-    b.innerHTML='<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div>'+
+    b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
+        '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-
       '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;

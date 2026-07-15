@@ -40,6 +40,33 @@ setTimeout(()=>{
   ok(peek('spent()')===0,'the baseline sheet costs nothing','spent='+peek('spent()'));
   ok(peek('G.pts')===peek('POINTS_START'),'you start with the full budget');
 
+  console.log('\n== 1c. the board always offers a choice ==');
+  // Playtest: "sometimes it only gives you one option for a matchup. there
+  // should always be 2+." Measured at 21.6% of boards, 72% of them at #15 —
+  // narrowing the rank bands made the three picks collide and the dedup
+  // collapsed them. Guard every rung, not just the middle ones.
+  let thin=[];
+  for(const dv of peek('D.order')){
+    for(const rk of [null,15,14,10,6,3,2,1]){
+      win.eval('DIV="'+dv+'"; newGame(); G.started=true; G.rank='+(rk===null?'null':rk)+'; G.wins=6;');
+      const n=peek('offers().length');
+      if(n<2) thin.push(dv+' @ '+(rk===null?'unranked':'#'+rk)+' -> '+n);
+    }
+  }
+  ok(thin.length===0,'every rung of every division offers 2+ fights',thin.join('; '));
+
+  console.log('\n== 1d. opponents have faces ==');
+  win.eval('DIV="LW"; newGame(); G.started=true; G.pts=40; render();');
+  const avs=[...doc.querySelectorAll('.opp .av img')];
+  const cards=doc.querySelectorAll('.opp').length;
+  ok(avs.length===cards,'every opponent card carries an avatar',avs.length+'/'+cards);
+  // A wrong slug 404s to initials and looks like "no photo" rather than a bug,
+  // so assert the files are really there.
+  const fsx=require('fs'), R2=require('path').resolve(__dirname,'..')+'/';
+  const gone=avs.map(i=>i.getAttribute('src').split('/').pop())
+                .filter(f=>!fsx.existsSync(R2+'photos/thumb/'+f));
+  ok(gone.length===0,'the photos those avatars point at exist',gone.join(', '));
+
   console.log('\n== 2. a finish ends the fight ==');
   let sawFin=false, badFin=0, sawDec=false, badDec=0;
   for(let i=0;i<60;i++){
