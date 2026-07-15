@@ -909,7 +909,7 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' card', W - 128), 64, 158);
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + (data.results ? ' results' : ' card'), W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
     // Own line rather than tacked onto the subtitle — a billed event name plus the
@@ -917,10 +917,22 @@ const GL_SHEET = (function () {
     // second line. Numbers carry the weight; the return greens.
     let rx = 64;
     const seg = (t, font, col) => { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 244); rx += ctx.measureText(t).width; };
-    seg('Risking ', '400 25px ' + SANS, MUT);
-    seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
-    seg(' to win ', '400 25px ' + SANS, MUT);
-    seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+    if (data.results) {
+      // Settled card: the line that matters is how it went.
+      const up = (data.units || 0) > 0, dn = (data.units || 0) < 0;
+      seg(data.record || '0-0', '800 28px ' + COND, TXT);
+      seg('   ·   ', '400 25px ' + SANS, MUT);
+      seg((up ? '+' : '') + uFmt(data.units || 0) + 'u', '800 28px ' + COND, up ? ACC : (dn ? BT_RED : TXT));
+      if (data.roi != null) {
+        seg('   ·   ', '400 25px ' + SANS, MUT);
+        seg((data.roi > 0 ? '+' : '') + data.roi.toFixed(1) + '% ROI', '800 28px ' + COND, data.roi > 0 ? ACC : (data.roi < 0 ? BT_RED : TXT));
+      }
+    } else {
+      seg('Risking ', '400 25px ' + SANS, MUT);
+      seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
+      seg(' to win ', '400 25px ' + SANS, MUT);
+      seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+    }
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 272); ctx.lineTo(W - 64, 272); ctx.stroke();
 
     let y = listTop;
@@ -943,13 +955,26 @@ const GL_SHEET = (function () {
         tx = 96 + r * 2 + 22;
       }
       const right = W - 96;
-      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-      ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
       const oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
-      ctx.fillText(oStr, right, cy - 12);
-      const oW = ctx.measureText(oStr).width;
-      ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(b.stake + 'u', right, cy + 22);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      let oW;
+      if (data.results) {
+        // Settled: lead with how it went, price demoted underneath.
+        const won = b.status === 'won', lost = b.status === 'lost';
+        const rStr = won ? '+' + uFmt(b.profit) + 'u' : lost ? uFmt(b.profit) + 'u' : (b.status === 'void' ? 'Void' : '—');
+        ctx.font = '800 44px ' + COND; ctx.fillStyle = won ? ACC : lost ? BT_RED : MUT;
+        ctx.fillText(rStr, right, cy - 12);
+        oW = ctx.measureText(rStr).width;
+        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 22);
+        oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u').width);
+      } else {
+        ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
+        ctx.fillText(oStr, right, cy - 12);
+        oW = ctx.measureText(oStr).width;
+        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(b.stake + 'u', right, cy + 22);
+      }
       const maxW = right - tx - Math.max(oW, 60) - 28;
       ctx.textAlign = 'left';
       ctx.font = '800 40px ' + COND; ctx.fillStyle = TXT;

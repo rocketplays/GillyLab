@@ -1114,7 +1114,8 @@
     .bt-cards div { padding: 6px 11px; border-radius: 7px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.72rem; cursor: pointer; }
     .bt-cards div.on { background: rgba(0,230,104,0.13); color: var(--accent); box-shadow: inset 0 0 0 1px rgba(0,230,104,0.4); }
     .bt-cardhdr { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0 0.6rem; }
-    .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bt-cardsum { font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
     .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
     .bt-editrow { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     .bt-legs { margin: 8px 0 2px; border-left: 2px solid var(--border); padding-left: 10px; }
@@ -102637,7 +102638,7 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' card', W - 128), 64, 158);
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + (data.results ? ' results' : ' card'), W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
     // Own line rather than tacked onto the subtitle — a billed event name plus the
@@ -102645,10 +102646,22 @@ const GL_SHEET = (function () {
     // second line. Numbers carry the weight; the return greens.
     let rx = 64;
     const seg = (t, font, col) => { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 244); rx += ctx.measureText(t).width; };
-    seg('Risking ', '400 25px ' + SANS, MUT);
-    seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
-    seg(' to win ', '400 25px ' + SANS, MUT);
-    seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+    if (data.results) {
+      // Settled card: the line that matters is how it went.
+      const up = (data.units || 0) > 0, dn = (data.units || 0) < 0;
+      seg(data.record || '0-0', '800 28px ' + COND, TXT);
+      seg('   ·   ', '400 25px ' + SANS, MUT);
+      seg((up ? '+' : '') + uFmt(data.units || 0) + 'u', '800 28px ' + COND, up ? ACC : (dn ? BT_RED : TXT));
+      if (data.roi != null) {
+        seg('   ·   ', '400 25px ' + SANS, MUT);
+        seg((data.roi > 0 ? '+' : '') + data.roi.toFixed(1) + '% ROI', '800 28px ' + COND, data.roi > 0 ? ACC : (data.roi < 0 ? BT_RED : TXT));
+      }
+    } else {
+      seg('Risking ', '400 25px ' + SANS, MUT);
+      seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
+      seg(' to win ', '400 25px ' + SANS, MUT);
+      seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+    }
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 272); ctx.lineTo(W - 64, 272); ctx.stroke();
 
     let y = listTop;
@@ -102671,13 +102684,26 @@ const GL_SHEET = (function () {
         tx = 96 + r * 2 + 22;
       }
       const right = W - 96;
-      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-      ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
       const oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
-      ctx.fillText(oStr, right, cy - 12);
-      const oW = ctx.measureText(oStr).width;
-      ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(b.stake + 'u', right, cy + 22);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      let oW;
+      if (data.results) {
+        // Settled: lead with how it went, price demoted underneath.
+        const won = b.status === 'won', lost = b.status === 'lost';
+        const rStr = won ? '+' + uFmt(b.profit) + 'u' : lost ? uFmt(b.profit) + 'u' : (b.status === 'void' ? 'Void' : '—');
+        ctx.font = '800 44px ' + COND; ctx.fillStyle = won ? ACC : lost ? BT_RED : MUT;
+        ctx.fillText(rStr, right, cy - 12);
+        oW = ctx.measureText(rStr).width;
+        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 22);
+        oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u').width);
+      } else {
+        ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
+        ctx.fillText(oStr, right, cy - 12);
+        oW = ctx.measureText(oStr).width;
+        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(b.stake + 'u', right, cy + 22);
+      }
       const maxW = right - tx - Math.max(oW, 60) - 28;
       ctx.textAlign = 'left';
       ctx.font = '800 40px ' + COND; ctx.fillStyle = TXT;
@@ -110971,17 +110997,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btSetCard(c) { btCardFilter = c; btRenderHistory(); }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
 
-  // Pending bets, grouped by the card they're on. Bets on a card three weeks out
-  // shouldn't sit in the same pile as tonight's.
-  function btPendingCards() {
+  // Every card we hold tracked bets on, pending or settled. Bets on a card three
+  // weeks out shouldn't sit in the same pile as tonight's — and once a card is
+  // done, its group becomes the "previous event" you can share results from.
+  function btCards(list) {
     const seen = {}, out = [];
-    BT_BETS.filter(b => b.status === 'pending' && b.kind === 'tracked' && b.evSlug).forEach(b => {
-      if (seen[b.evSlug]) { seen[b.evSlug].n++; return; }
-      const ev = (BT_EVENTS || []).find(e => e.slug === b.evSlug);
-      seen[b.evSlug] = { slug: b.evSlug, label: ev ? btEvLabel(ev) : (b.match.split(' · ').pop() || 'Card'), ev: ev, ts: b.ts, n: 1 };
-      out.push(seen[b.evSlug]);
+    (list || BT_BETS).filter(b => b.kind === 'tracked' && b.evSlug).forEach(b => {
+      if (!seen[b.evSlug]) {
+        const ev = (BT_EVENTS || []).find(e => e.slug === b.evSlug);
+        seen[b.evSlug] = { slug: b.evSlug, label: ev ? btEvLabel(ev) : (b.match.split(' · ').pop() || 'Card'),
+          ev: ev, ts: b.ts, n: 0, pending: 0 };
+        out.push(seen[b.evSlug]);
+      }
+      seen[b.evSlug].n++;
+      if (b.status === 'pending') seen[b.evSlug].pending++;
     });
-    return out.sort((a, b) => a.ts - b.ts);
+    return out;
   }
   /* One display name across the app: the same pf:<email> record Pick'em uses, so
      setting it here sets it there and vice versa. A share is the first time the
@@ -111004,20 +111035,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
   }
 
-  // Share the pending bets on one card.
+  // Share one card. While bets are live it's a slip of what's pending; once the
+  // card is done it becomes a results card — same sheet, results mode.
   function btShareCard(slug) {
     if (!window.GL_SHEET) return;
-    const c = btPendingCards().find(x => x.slug === slug); if (!c) return;
-    const bets = BT_BETS.filter(b => b.status === 'pending' && b.evSlug === slug).map(b => {
+    const c = btCards().find(x => x.slug === slug); if (!c) return;
+    const all = BT_BETS.filter(b => b.evSlug === slug);
+    const pend = all.filter(b => b.status === 'pending');
+    const results = !pend.length && all.length > 0;
+    const src = results ? all : pend;
+    const bets = src.map(b => {
       const names = btBetNames(b);
       return { pick: b.pick, match: b.match.split(' · ')[0], odds: (b.effOdds != null ? b.effOdds : b.odds),
-        stake: b.stake, names: names, slugs: names.map(n => nameToSlug(n)) };
+        stake: b.stake, status: b.status, profit: btProfit(b),
+        names: names, slugs: names.map(n => nameToSlug(n)) };
     });
+    const s = btStats(all);
     // Billed name incl. the main event — "UFC Fight Night" alone means nothing
     // on a shared image.
     btWithName(function (name) {
-      GL_SHEET.betCard({ name: name, eventName: c.ev ? (c.ev.full || c.ev.short) : c.label,
-        eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
+      GL_SHEET.betCard({ name: name, results: results,
+        eventName: c.ev ? (c.ev.full || c.ev.short) : c.label, eventDate: c.ev ? btEvDate(c.ev) : '',
+        bets: bets, record: s.w + '-' + s.l, roi: s.roi, units: s.units });
     });
   }
   // Share the record for whatever range/scope is on screen.
@@ -111077,7 +111116,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // share button — so a card three weeks out isn't piled in with tonight's.
     const pend = shown.filter(b => b.status === 'pending');
     const settled = shown.filter(b => b.status !== 'pending');
-    const cards = btPendingCards().filter(c => pend.some(b => b.evSlug === c.slug));
+    // Cards still live, then finished ones — newest first. A finished card's group
+    // IS the "previous event" you share results from; no separate picker needed.
+    const allCards = btCards(shown);
+    const cards = allCards.filter(c => c.pending > 0).sort((a, b) => a.ts - b.ts);
+    const doneCards = allCards.filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
     if (cards.length > 1) {
       // Use the dated label, not e.short — most cards are just "UFC Fight Night",
       // so without the date two chips read identically. Wraps rather than sharing
@@ -111099,9 +111142,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other pending</div></div>';
       h += loose.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     }
-    if (settled.length && btCardFilter === 'all') {
-      if (pend.length) h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Settled</div></div>';
-      h += settled.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    // Finished cards: each its own group with a Share results button.
+    doneCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
+      const rows = settled.filter(b => b.evSlug === c.slug);
+      if (!rows.length) return;
+      const st = btStats(rows);
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + '</div>' +
+        '<div class="bt-cardsum ' + (st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '') + '">' +
+        st.w + '-' + st.l + ' · ' + (st.units > 0 ? '+' : '') + btU(st.units) + 'u</div>' +
+        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share results</button></div>';
+      h += rows.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    });
+    // Settled bets with no card (self-reported).
+    const looseDone = settled.filter(b => !b.evSlug || !doneCards.some(c => c.slug === b.evSlug));
+    if (looseDone.length && btCardFilter === 'all') {
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other settled</div></div>';
+      h += looseDone.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     }
     if (!shown.length) h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.</div>';
     host.innerHTML = h;
