@@ -74,6 +74,18 @@
   button.btn.pri{background:var(--accent);color:#04120a;border-color:var(--accent)}
   button.btn:hover{border-color:var(--accent)}
   .load{color:var(--muted);padding:2rem 0;text-align:center}
+
+  /* attribute legend — a table, not a paragraph */
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:.1rem .9rem;margin:.85rem 0 0;padding-top:.7rem;border-top:1px solid var(--border)}
+  .lg-row{display:grid;grid-template-columns:104px 1fr;gap:.5rem;align-items:baseline;
+    padding:.2rem 0;font-size:.74rem}
+  .lg-row b{color:var(--text);font-weight:600}
+  .lg-row span{color:var(--muted)}
+  .tipbox{margin-top:.7rem;padding:.5rem .7rem;border-left:2px solid var(--accent);
+    background:var(--surface);border-radius:0 4px 4px 0;font-size:.74rem;
+    line-height:1.55;color:#c8c8cf}
+  .tipbox b{color:var(--text)}
   .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}
 </style>
 </head>
@@ -420,16 +432,25 @@ function creator(){
   f.innerHTML='<div class="pts'+(left<0?' over':'')+'" style="margin:.6rem 0">Points left: '+left+
     ' <span style="color:var(--muted);font-weight:400;font-size:.72rem">— higher levels cost more</span></div>';
   p.appendChild(f);
-  const hint=document.createElement('div'); hint.className='note';
-  hint.innerHTML='<b>Power</b> knockdowns · <b>Pace</b> volume · <b>Technique</b> accuracy · '+
-    '<b>Defense</b> not getting hit · <b>Wrestling</b> getting them to the ground · '+
-    '<b>Grappling</b> submissions · <b>Takedown def</b> staying upright.<br>'+
-    'A wrestler eats a striker with bad takedown defence and stalls against elite TDD. Build for the path you want.<br>'+
-    'No cardio or durability sliders — the model earns both from your career, not your build.';
-  p.appendChild(hint);
-  const note=document.createElement('div'); note.className='note';
-  note.textContent='No cardio slider — the sim has no cardio input. What it has is five-round experience, and you earn that by surviving deep water. Same as real life.';
-  p.appendChild(note);
+  // A legend, not a paragraph. This was one run-on clump of seven attributes,
+  // a tip, and TWO separate notes both explaining the cardio slider we don't
+  // have — unreadable, and the second note duplicated the first.
+  //
+  // Rendered FROM ATTRS rather than hardcoded, so the legend can never drift
+  // from the sheet above it. (The old version still said "Grappling takedowns +
+  // subs" after the wrestling split.)
+  const legend=document.createElement('div'); legend.className='legend';
+  for(const A of ATTRS){
+    const r=document.createElement('div'); r.className='lg-row';
+    const k=document.createElement('b'); k.textContent=A.label;
+    const v=document.createElement('span'); v.textContent=A.note;
+    r.appendChild(k); r.appendChild(v); legend.appendChild(r);
+  }
+  p.appendChild(legend);
+  const tip=document.createElement('div'); tip.className='tipbox';
+  tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
+    'bad takedown defence, and stalls against elite TDD.';
+  p.appendChild(tip);
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
   b.style.marginTop='.6rem';
   b.onclick=()=>{ G.started=true; render(); };
