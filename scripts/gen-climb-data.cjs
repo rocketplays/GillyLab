@@ -184,9 +184,34 @@ function main() {
     const styleOf = name => {
       const s = FIGHTER_STATS[name] || {};
       const g = (k, d) => { const v = numOf(s[k]); return v == null ? d : v; };
+      // CHIN, from the record rather than the stat sheet. The playtest asked for
+      // "a finisher with durability should have an advantage over someone with
+      // durability concerns" — but there is no durability stat anywhere in the
+      // data. There IS the thing durability actually means: how often does this
+      // man get knocked out? Count his KO losses. Frankie Edgar and a glass-jawed
+      // prospect can carry identical strDef and be completely different fights.
+      //
+      // Rate over LOSSES, not over all bouts: a fighter with 20 wins and 2 KO
+      // losses has been stopped in 100% of the fights he lost, which is the
+      // signal — losing by decision means you were beaten, losing by KO means you
+      // were hurt. Fewer than 3 losses is no sample, so default to average.
+      const h = FIGHT_HISTORY[name] || [];
+      const losses = h.filter(b => /^L/i.test(String(b.result || '')));
+      const koL = losses.filter(b => /ko|tko/i.test(String(b.method || '')) && !/sub/i.test(String(b.method || ''))).length;
+      const subL = losses.filter(b => /sub/i.test(String(b.method || ''))).length;
+      // SHRINK TOWARD THE MEAN. A raw rate says Grant Dawson's chin is 0.00 —
+      // stopped in 3 of 3 losses — which is true and is also three coin flips.
+      // Add K phantom losses at the division-average rate, so a man with 3 losses
+      // is pulled toward average and a man with 12 is trusted. This is the same
+      // move the sim makes with rate credibility, for the same reason: a small
+      // denominator produces confident nonsense.
+      const K = 3, PKO = 0.45, PSUB = 0.20;
+      const chin = 1 - (koL  + K*PKO ) / (losses.length + K);   // 1 = never stopped
+      const mat  = 1 - (subL + K*PSUB) / (losses.length + K);   // 1 = never tapped
       return { tdDef:g('tdDef',60), strDef:g('strDef',52), td:g('tdLanded',1.4),
                sub:g('subAvg',0.5), kd:g('kd',0.4), slpm:g('slpm',4.4),
-               sapm:g('sapm',4.0), tdAcc:g('tdAcc',35) };
+               sapm:g('sapm',4.0), tdAcc:g('tdAcc',35),
+               chin:Math.round(chin*100)/100, mat:Math.round(mat*100)/100 };
     };
 
     return {

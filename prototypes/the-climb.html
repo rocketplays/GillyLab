@@ -377,31 +377,76 @@ function myRating(a){
 //     high-guard defensive fighter.
 //   - Your takedown defence is worth everything against a wrestler and nothing
 //     against a kickboxer. A counter-pick, and it should read like one.
+// STYLE IS AN INTERACTION, NOT A SECOND QUALITY SCORE.
+//
+// The first version centred every term on 0.5 — "is your wrestling above the
+// midpoint" — and it inverted the whole feature. Measured: a pure wrestler at #8
+// got style -6.4, -5.0 and -8.2 against three men, one of whom he should maul.
+// His level-1 striking was penalised HERE, when myRating() had already charged
+// him for it. Style read as "how good are you overall", a second time, so a
+// specialist was taxed twice for specialising — the exact opposite of the point.
+//
+// Now every term is centred on YOUR OWN AVERAGE. A wrestler's wrestling sits
+// above his mean and reads as a strength; his striking sits below it and reads
+// as a hole. A perfectly balanced fighter nets ~0 however good he is, which is
+// right: being well-rounded is a quality, and quality is what the rating is for.
+// Style only answers "does what I'm good at hurt THIS man".
 function styleDelta(a, st){
   const n = v => (v||0)/ATTR_MAX;
+  let mean = 0; for(const A of ATTRS) mean += n(a[A.id]); mean /= ATTRS.length;
+  // signed: +ve = one of your strengths, -ve = one of your holes
+  const rel = id => Math.max(-1, Math.min(1, (n(a[id]) - mean) / 0.45));
   let d = 0;
-  // wrestling vs their takedown defence  (tdDef 40 -> 95 across the division)
-  const tddOpen = (95 - (st.tdDef||60)) / 55;              // 1 = wide open, 0 = Topuria
-  d += (n(a.wrestling) - 0.5) * tddOpen * 12;
-  // their wrestling vs your takedown defence
-  const theirTd = Math.min(1, (st.td||1.4) / 4);
-  d += (n(a.takedef) - 0.5) * theirTd * 11;
-  // your grappling: pays when the fight hits the mat — either they shoot, or you do
-  const mat = Math.max(theirTd, n(a.wrestling) * tddOpen);
-  d += (n(a.grappling) - 0.5) * mat * 10;
-  // striking vs their striking defence
-  const sdOpen = (66 - (st.strDef||52)) / 26;
-  d += ((n(a.power)+n(a.technique)+n(a.pace))/3 - 0.5) * sdOpen * 9;
-  // their output vs your chin + defence
-  const theirOut = Math.min(1, ((st.slpm||4.4)/7)*0.6 + ((st.kd||0.4)/1.5)*0.4);
-  d += ((n(a.chin)+n(a.strdef))/2 - 0.5) * theirOut * 10;
+
+  // 1. YOUR WRESTLING vs THEIR TAKEDOWN DEFENCE. tdDef runs ~40-95: a dominant
+  //    wrestler mauls a striker who can't stop it and gets nothing at all
+  //    against Aspinall's 95%. Openness is centred too, so an average-TDD man is
+  //    a neutral matchup rather than a quiet bonus.
+  const tddOpen = (95 - (st.tdDef||60)) / 55 - 0.5;
+  d += rel('wrestling') * tddOpen * 13;
+
+  // 2. THEIR WRESTLING vs YOUR TAKEDOWN DEFENCE. The mirror, and why elite TDD
+  //    is a counter-pick: everything against a grappler, nothing against a
+  //    kickboxer. Your TDD hole only hurts when the man opposite can find it.
+  const theirTd = Math.min(1, (st.td||1.4)/4) - 0.35;
+  d += rel('takedef') * theirTd * 13;
+
+  // 3. YOUR GRAPPLING, but only if the fight hits the mat — he shoots, or you put
+  //    him there. Submissions against a man who won't grapple and can't be taken
+  //    down are worth nothing, which is correct. st.mat (1 = never tapped) prices
+  //    what it's worth once you arrive.
+  const toMat = Math.max(Math.min(1,(st.td||1.4)/4), n(a.wrestling) * Math.max(0,(95-(st.tdDef||60))/55));
+  d += rel('grappling') * (toMat - 0.4) * 12 * (1.4 - (st.mat==null?0.8:st.mat));
+
+  // 4. YOUR STRIKING vs THEIR STRIKING DEFENCE.
+  const sdOpen = (66 - (st.strDef||52)) / 26 - 0.5;
+  d += ((rel('power')+rel('technique')+rel('pace'))/3) * sdOpen * 10;
+
+  // 5. YOUR POWER vs THEIR CHIN. "A finisher with durability should have an
+  //    advantage over someone with durability concerns." Chin is read off their
+  //    RECORD — how often they have actually been stopped — because there is no
+  //    durability stat in the data and the record is what durability means.
+  //    Dariush (0.24) and Hubbard (0.90) are different fights for a puncher, and
+  //    were identical ones to every model we tried before this.
+  const glass = 0.55 - (st.chin==null?0.55:st.chin);
+  d += rel('power') * glass * 20;
+
+  // 6. THEIR PACE vs YOUR CARDIO. Deliberately ONE-SIDED: it can only hurt. Great
+  //    cardio against a low-output opponent is not an edge, it is an irrelevance
+  //    — you don't win rounds by being fresh while nothing happens. Gassing
+  //    against a pressure fighter loses the fight. Keyed off ABSOLUTE cardio, not
+  //    rel(): a gas tank is a floor you have or don't, not a matter of emphasis.
+  const theirPace = Math.max(0, ((st.slpm||4.4) - 4.0) / 2.9);
+  d -= Math.max(0, 0.5 - n(a.cardio)) * theirPace * 18;
+
+  // 7. THEIR POP vs YOUR CHIN. The mirror of 5: a fragile fighter has a problem
+  //    against a puncher and none against a point-scorer.
+  const theirPop = Math.min(1, ((st.kd||0.4)/1.2)*0.65 + ((st.slpm||4.4)/6.5)*0.35) - 0.45;
+  d += rel('chin') * theirPop * 14;
+
   return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d));
 }
 
-// If this is ever asked for a fighter who isn't on the current ladder, something
-// upstream is wrong (a stale cache, a division switch that didn't reset). Say so
-// instead of quietly pricing the fight at 50/50 — that's how a total scoring
-// failure across ten divisions looked exactly like a plausible board.
 function oppByName(nm){
   const f = LADDER().find(x=>x.name===nm);
   if (!f && nm) console.warn('The Climb: "'+nm+'" is not on the '+DIV+' ladder — stale offer?');
@@ -445,6 +490,55 @@ const amer = p => { const o = p>=0.5 ? -Math.round(100*p/(1-p)) : Math.round(100
 // Now: a fresh roll each fight (keyed on fightNo + losses, so a loss re-rolls),
 // picked at random from each tier rather than deterministically.
 function pick(arr){ return arr.length ? arr[Math.floor(Math.random()*arr.length)] : null; }
+
+// STYLE-DIVERSE PICKING — the fix for the game's central failure.
+//
+// Measured: 'striker/safe' won the belt 16% of the time and 'striker/blind',
+// same build picking at RANDOM, also won 16%. Cherry-picking your matchup was
+// worth exactly nothing. The style triangle wasn't broken — the BOARD was.
+// pick() chose at random inside each rank band, so the three cards differed by
+// STRENGTH (one below you, one near, one above) and their styles were pot luck.
+// You can't pick a favourable matchup when all three men are strangers of
+// different sizes; the only readable question was "which is weakest", and that's
+// the same question for every build in the game.
+//
+// So: still one card per rank band — the risk/reward climb is real and stays —
+// but WITHIN a band, choose the man whose style is furthest from whoever is
+// already on the board. The trio is now deliberately a wrestler, a striker and
+// a grappler wherever the division can supply them, so your build has something
+// to actually answer.
+//
+// This invents nothing: every fighter offered is real, at a real rank, with his
+// real stats. It's matchmaking, which is a job a promotion really does.
+const STYLE_AXES = [
+  s => (s.tdDef||60)/95,            // can I take him down
+  s => Math.min(1,(s.td||1.4)/4),   // will he take ME down
+  s => (s.strDef||52)/66,           // can I hit him
+  s => Math.min(1,(s.slpm||4.4)/7), // how hard does he push
+  s => (s.chin==null?0.55:s.chin),  // can he be stopped
+  s => Math.min(1,(s.sub||0.5)/2.6) // will he tap me
+];
+const styleDist = (a,b) => {
+  if(!a||!b) return 0;
+  let t=0; for(const ax of STYLE_AXES) t += Math.abs(ax(a)-ax(b));
+  return t;
+};
+// Pick from `arr` the fighter least like everyone in `taken`. Ties and empty
+// boards fall back to random, so a shallow band never crashes or gets stuck
+// serving the same man every run.
+function pickDiverse(arr, taken){
+  const cands = arr.filter(f=>f && !taken.includes(f));
+  if(!cands.length) return null;
+  const others = taken.filter(Boolean);
+  if(!others.length) return pick(cands);
+  let best=null, bestD=-1;
+  // jitter so an identical board doesn't recur every single run
+  for(const f of cands){
+    const d = others.reduce((t,o)=>t+styleDist(f.style,o.style),0) + Math.random()*0.35;
+    if(d>bestD){ bestD=d; best=f; }
+  }
+  return best;
+}
 // Cache WHO you're offered — never the odds.
 //
 // First cut cached the whole offer object keyed on fight state, and the test
@@ -497,7 +591,8 @@ function buildOffers(){
     const s = unranked.slice().sort((a,b)=>winProb(b.name)-winProb(a.name));
     const src = G.losses > 0 ? s.slice(0, Math.max(3, Math.ceil(s.length/2))) : s;
     const t = Math.max(1, Math.floor(src.length/3));
-    pool.push(pick(src.slice(0,t)), pick(src.slice(t,t*2)), pick(src.slice(t*2)));
+    const bands=[src.slice(0,t), src.slice(t,t*2), src.slice(t*2)];
+    for(const band of bands) pool.push(pickDiverse(band, pool));
   } else {
     // Ranked phase: someone below, someone near, someone a few spots ABOVE.
     //
@@ -509,21 +604,37 @@ function buildOffers(){
     // Now: the step-up is capped to a few spots, and the champion is only
     // offered once you're #1 (or interim). That's what makes it a climb rather
     // than a coin flip. MAIN TUNING DIAL — widen STEP for a faster game.
-    const STEP = 3;
+    // BAND WIDTH IS THE STYLE DIAL. Measured at #8: the three cards came from
+    // #15, #7 and #5 — a 19.4 power spread, worth ~19 pts of win probability,
+    // against a style range of ~3. Rank outweighed style 6:1, so cherry-picking
+    // your matchup scored identically to picking at RANDOM (16% vs 16%). Making
+    // the board style-diverse didn't help; it just varied which stranger was
+    // strongest. You cannot pick a favourable matchup when the three men are
+    // different sizes — the only readable question is "who's weakest", and that's
+    // the same question for every build in the game.
+    //
+    // So the rungs get close together. STEP 3 -> 1 means the board is roughly
+    // one below / one level / one above, a power spread of ~5 rather than ~19,
+    // which puts style (up to +-11) in charge of the ORDER while rank still sets
+    // the pace of the climb. The risk/reward axis survives: the man above you
+    // still pays more and jumps you further.
+    const STEP = 1;
     // A LOSS STEPS YOU DOWN. You just got beaten — the matchmaker gives you
     // someone softer, not another contender. Widens the 'below' band so the
     // re-roll is a genuine breather rather than the same wall.
-    const SOFTEN = G.losses > 0 ? 3 : 0;
-    const below = ranked.filter(f=>f.rankNum>G.rank && f.rankNum<99);
+    const SOFTEN = G.losses > 0 ? 2 : 0;
+    // 'below' used to be EVERYONE beneath you — at #8 that's #9 through #15, and
+    // pickDiverse would happily serve #15, a man ~13 power below you. Cap it.
+    const BELOW = 3;
+    const below = ranked.filter(f=>f.rankNum>G.rank && f.rankNum<=G.rank+BELOW && f.rankNum<99);
     const near  = ranked.filter(f=>Math.abs(f.rankNum-G.rank)<=1 && f.rankNum!==G.rank);
     const up    = ranked.filter(f=>f.rankNum<G.rank && f.rankNum>=G.rank-STEP && f.rankNum>0.5);
-    const soft  = ranked.filter(f=>f.rankNum>G.rank+SOFTEN && f.rankNum<99);
+    const soft  = ranked.filter(f=>f.rankNum>G.rank+SOFTEN && f.rankNum<=G.rank+SOFTEN+BELOW && f.rankNum<99);
     const title = ranked.filter(f=>f.rankNum<=0.5);   // champ + interim
-    pool.push(
-      pick(SOFTEN ? (soft.length?soft:below) : below),
-      pick(near.length?near:up),
-      (G.rank<=1 ? pick(title) : null) || pick(up) || pick(below)
-    );
+    pool.push(pickDiverse(SOFTEN ? (soft.length?soft:below) : below, pool));
+    pool.push(pickDiverse(near.length?near:up, pool));
+    // The title shot isn't a style choice — it's THE fight. No diversity pick.
+    pool.push((G.rank<=1 ? pick(title) : null) || pickDiverse(up, pool) || pickDiverse(below, pool));
     // Fallbacks so the offer list is never empty at the top of the ladder.
     if(!pool.filter(Boolean).length) pool.push(...ranked.slice(0,3));
   }
