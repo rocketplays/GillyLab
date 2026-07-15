@@ -106924,9 +106924,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const SLUG_ALIASES = {
     'abdul-rakhman-yakhyaev': 'Abdulrakhman Yakhyaev',
     // Flyweight "Bulldog" — the API slugs him 'bruno-silva' while our DB uses
-    // his full name. (The middleweight "Blindado" is a different person and the
-    // API slugs him 'bruno-silva-blindado', so this alias can't collide.)
+    // his full name.
     'bruno-silva': 'Bruno Gustavo da Silva',
+    // Middleweight "Blindado" — a DIFFERENT man, whose DB name is "Bruno Silva".
+    // This entry is load-bearing, not decorative: resolve() tries the api slug
+    // first, and 'bruno-silva-blindado' matches no FIGHTERS row (his row is
+    // named "Bruno Silva", which slugs to 'bruno-silva'). Without a hit here it
+    // falls through to the name-derived slug 'bruno-silva' and lands on the
+    // FLYWEIGHT — i.e. the alias above would silently eat him.
+    // (An older comment claimed the two "can't collide" because the API slugs
+    // them differently. That was only true while the middleweight had no DB row
+    // at all. Giving him one is exactly what made it collide.)
+    'bruno-silva-blindado': 'Bruno Silva',
     // The API sometimes returns the longer slug for this featherweight.
     'jose-miguel-delgado': 'Jose Delgado',
     // Bobby Green legally changed his name to "King Green" (2024); some feeds
