@@ -519,6 +519,32 @@ async function handleBetsAdd(request, env, url) {
     // Self-reported: never verified, never CLV, user settles it.
     rec = { id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "manual", verified: false,
       market: "CUSTOM", pick, match, odds, stake, status: "pending", ts: now, createdAt: now, editable: true };
+  } else if (body.market === "PARLAY") {
+    // Every leg must resolve to a live bout on ONE event, and none may be decided.
+    // A parlay never earns CLV — there's no closing line for a combined price.
+    const legs = Array.isArray(body.legs) ? body.legs.slice(0, 12) : [];
+    if (legs.length < 2) return json({ error: "A parlay needs at least two legs." }, 400);
+    const out = [];
+    let evSlug = null, evStartsAt = null;
+    for (const l of legs) {
+      const hit = await btFindBout(env, url, String(l.fightId || ""));
+      if (!hit) return json({ error: "One of those fights isn't on an upcoming card." }, 400);
+      if (evSlug && hit.ev.slug !== evSlug) return json({ error: "Every leg has to be on the same event." }, 400);
+      evSlug = hit.ev.slug; evStartsAt = hit.ev.startsAt;
+      if (await btBoutDecided(env, url, hit)) return json({ error: "One of those fights has already finished.", locked: true }, 403);
+      const lo = parseInt(l.odds, 10);
+      if (!isFinite(lo) || lo === 0) return json({ error: "A leg is missing its odds." }, 400);
+      out.push({ fightId: hit.id, market: String(l.market || "ML").slice(0, 16),
+        params: l.params && typeof l.params === "object" ? l.params : {},
+        pick: String(l.pick || "").slice(0, 160), match: String(l.match || "").slice(0, 160), odds: lo });
+    }
+    rec = {
+      id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "tracked", verified: true,
+      market: "PARLAY", evSlug, legs: out,
+      pick: out.length + "-leg parlay", match: String(body.match || "").slice(0, 160),
+      priced: false, clvOk: false, noClv: "parlays don't count toward CLV",
+      odds, stake, ts: Date.parse(evStartsAt) || now, createdAt: now, editable: true,
+    };
   } else {
     const hit = await btFindBout(env, url, String(body.fightId || ""));
     if (!hit) return json({ error: "That fight isn't on an upcoming card." }, 400);

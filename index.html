@@ -1101,6 +1101,15 @@
     .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
     .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
     .bt-editrow { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+    .bt-legs { margin: 8px 0 2px; border-left: 2px solid var(--border); padding-left: 10px; }
+    .bt-leg { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; padding: 2px 0; color: #c9ccd3; }
+    .bt-leg-ico { flex: 0 0 12px; font-weight: 800; color: var(--muted); }
+    .bt-leg-p { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .bt-leg-o { color: var(--muted); font-weight: 700; }
+    .bt-leg-won .bt-leg-ico { color: var(--accent); }
+    .bt-leg-lost .bt-leg-ico { color: #ff6a5e; }
+    .bt-leg-lost .bt-leg-p { text-decoration: line-through; opacity: 0.6; }
+    .bt-leg-void .bt-leg-p { opacity: 0.5; font-style: italic; }
     /* W/L tile tooltip */
     .form-tile { cursor: default; position: relative; }
     .form-tile-tooltip {
@@ -105266,6 +105275,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       <div class="pl-card-head">
         <div class="pl-brand">Gilly<span>Lab</span></div>
         <div class="pl-card-meta">${escHtmlAttr(evLabel)} · ${escHtmlAttr(PARLAY.legs[0].booklabel)}</div>
+        ${share ? '' : '<button type="button" id="plLogBet" class="pl-shot" title="Preload this into your Bet &amp; CLV Tracker">Log this bet</button>'}
         ${share ? '' : '<button type="button" id="plShareOpen" class="pl-shot" title="Share or screenshot this slip">Share</button>'}
       </div>
       <div class="pl-card-legs">${legs}</div>
@@ -105780,6 +105790,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { e.preventDefault(); plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
+      // Hand the slip to the Bet & CLV Tracker's log form. Preload only — nothing
+      // is saved until the user confirms it there.
+      if (hit(e, '#plLogBet')) { e.preventDefault(); if (typeof btLogSlip === 'function') btLogSlip(PARLAY.legs); return; }
       if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plAnim = PARLAY.open ? 'body' : null; plRender(); }
     });
   }
@@ -110653,12 +110666,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all';
-  let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null;
+  let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null;
   const BT_RANGE_DAYS = { '7d': 7, '30d': 30, '6m': 182, '12m': 365, 'all': null };
 
   const btImpl = a => a < 0 ? (-a) / ((-a) + 100) : 100 / (a + 100);
   const btClvPts = (yours, close) => Math.round((btImpl(close) - btImpl(yours)) * 1000) / 10;
-  const btProfit = b => b.status === 'won' ? b.stake * (b.odds > 0 ? b.odds / 100 : 100 / -b.odds) : (b.status === 'lost' ? -b.stake : 0);
+  // Payout rides effOdds when set — a parlay with a voided leg pays at the odds
+  // of the surviving legs, exactly as a book would recompute it.
+  const btProfit = b => { const o = (b.effOdds != null ? b.effOdds : b.odds);
+    return b.status === 'won' ? b.stake * (o > 0 ? o / 100 : 100 / -o) : (b.status === 'lost' ? -b.stake : 0); };
+  const btAm2Dec = a => a > 0 ? (a / 100 + 1) : (100 / -a + 1);
+  const btDec2Am = d => d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1));
+  const btCombine = list => btDec2Am(list.reduce((p, o) => p * btAm2Dec(o), 1));
+  window.btCombine = btCombine;
   const btFmtO = a => (a == null ? '—' : (a > 0 ? '+' + a : '' + a));
   const btShort = n => { const p = String(n || '').trim().split(/\s+/); let i = p.length - 1; while (i > 0 && /^(jr|sr|ii|iii|iv|v)\.?$/i.test(p[i])) i--; return p[i] || n; };
   const btEsc = s => (typeof escHtmlAttr === 'function' ? escHtmlAttr(s) : String(s == null ? '' : s));
@@ -110786,10 +110806,37 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // recomputed from the result rather than stored (and so can't be forged by
   // writing a status back). Self-reported bets keep the status the user set.
   // Phase 3 moves this same derivation server-side for the results cron.
+  // Resolve one bout from a fightId, tolerating the pre-composite id format.
+  function btFindFight(fightId, evSlug) {
+    return btAllFights().find(x => x.id === fightId || (x.rawId === fightId && x.evSlug === evSlug));
+  }
+  // Grade a parlay leg by leg. All legs sit on ONE event (enforced at log time).
+  //  • a voided leg drops out and the price recomputes from the survivors
+  //  • the parlay is LOST the moment any surviving leg loses — it genuinely
+  //    cannot win from there, so there's nothing to wait for
+  //  • it's WON only once every surviving leg is in and won
+  // Parlays never carry CLV: there's no closing line for a combined price.
+  function btDeriveParlay(b) {
+    const legs = b.legs || [];
+    b.legStatuses = legs.map(l => {
+      const f = btFindFight(l.fightId, b.evSlug); if (!f) return 'pending';
+      const R = btFightResult(f); if (!R) return 'pending';
+      return btSettle({ market: l.market, params: l.params }, R, f.rounds);
+    });
+    const liveIdx = legs.map((l, i) => i).filter(i => b.legStatuses[i] !== 'void');
+    b.effOdds = liveIdx.length ? btCombine(liveIdx.map(i => legs[i].odds)) : null;
+    b.legsIn = liveIdx.filter(i => b.legStatuses[i] !== 'pending').length;
+    b.legsLive = liveIdx.length;
+    if (!liveIdx.length) { b.status = 'void'; return; }                                  // every leg voided
+    if (liveIdx.some(i => b.legStatuses[i] === 'lost')) { b.status = 'lost'; return; }   // dead on any loss
+    if (liveIdx.every(i => b.legStatuses[i] === 'won')) { b.status = 'won'; return; }
+    b.status = 'pending';
+  }
   function btDeriveAll() {
     BT_BETS.forEach(b => {
       if (b.kind !== 'tracked') return;
-      b.status = 'pending'; b.clv = null; b.closeOdds = null;
+      b.status = 'pending'; b.clv = null; b.closeOdds = null; b.effOdds = null;
+      if (b.market === 'PARLAY') { btDeriveParlay(b); return; }
       // Composite <event>|<bout> id. Falls back to the bare id scoped by event so
       // bets logged before the composite fix still resolve.
       const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
@@ -110949,12 +110996,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
     else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
     else if (b.noClv) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV · ' + btEsc(b.noClv) + '</span>';
+    else if (b.market === 'PARLAY') badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV · ' + (b.status === 'pending' ? (b.legsIn || 0) + ' of ' + (b.legsLive || (b.legs || []).length) + ' legs in' : 'parlay') + '</span>';
     else if (b.priced) badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · pending</span>';
     else badge = '<span class="bt-badge bt-b-none"><span class="bt-v">verified</span> · no CLV</span>';
     // "You" only earns its place once there's a closing line to contrast it with.
+    const reprice = (b.effOdds != null && b.effOdds !== b.odds);
     const line = (b.closeOdds != null
       ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
-      : '<b>' + btFmtO(b.odds) + '</b>') + ' · ' + b.stake + 'u';
+      : '<b>' + btFmtO(reprice ? b.effOdds : b.odds) + '</b>' + (reprice ? ' <span style="opacity:.7">(was ' + btFmtO(b.odds) + ', leg voided)</span>' : ''))
+      + ' · ' + b.stake + 'u';
+    // Parlay: show each leg and how many are in.
+    let legsHTML = '';
+    if (b.market === 'PARLAY' && b.legs) {
+      legsHTML = '<div class="bt-legs">' + b.legs.map((l, i) => {
+        const st = (b.legStatuses || [])[i] || 'pending';
+        const ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '–' : '·';
+        return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' +
+          '<span class="bt-leg-p">' + btEsc(l.pick) + '</span><span class="bt-leg-o">' + btFmtO(l.odds) + '</span></div>';
+      }).join('') + '</div>';
+    }
     // Editable only while pending AND before the segment locks — after that the
     // close is known, so letting someone change their price would fake CLV.
     // Bet ids are strings, so quote them into the handlers.
@@ -110978,7 +111038,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       }
     }
     return '<div class="bt-bet"><div class="bt-bet-top"><div><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
-      '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
+      legsHTML + '<div class="bt-mid"><div>' + line + '</div>' + badge + '</div>' + acts + '</div>';
   }
   function btEditOpen(id) { btEditId = id; btRenderHistory(); }
   function btEditCancel() { btEditId = null; btRenderHistory(); }
@@ -111054,7 +111114,99 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const s = +g('bt-ifr').value; return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' inside the distance', p: { side: s }, priced: false };
   }
 
+  /* Preload from the Odds & Projections slip. Loads the form only — nothing is
+     saved until the user hits Add bet. A single selection preloads the normal
+     tracked form; two or more preload a parlay confirm (same event, no CLV). */
+  // Map one Odds & Projections slip leg onto a tracker market.
+  // Careful: the slip's leg.side is 'f1'/'f2' where f1 is the ALPHABETICALLY-first
+  // last name (see manualSideFor) — that is NOT necessarily our bout's first
+  // fighter, so resolve the side by name rather than position.
+  function btLegToBet(leg) {
+    const key = x => [lastNameOf(x.f1).toLowerCase(), lastNameOf(x.f2).toLowerCase()].sort().join('|');
+    const f = btAllFights().find(x => key(x) === leg.fid);
+    if (!f) return null;
+    const l1 = lastNameOf(f.f1).toLowerCase(), l2 = lastNameOf(f.f2).toLowerCase();
+    const f1First = l1 === [l1, l2].sort()[0];
+    const side = leg.side === 'f1' ? (f1First ? 1 : 2) : (f1First ? 2 : 1);
+    const nm = side === 1 ? f.f1 : f.f2;
+    const base = { fightId: f.id, evSlug: f.evSlug, match: btShort(f.f1) + ' vs ' + btShort(f.f2), odds: Number(leg.odds) };
+    if (leg.mkt === 'ml') return Object.assign(base, { market: 'ML', params: { side: side }, pick: btShort(nm) + ' ML' });
+    if (leg.mkt === 'total') { const ou = /^o/i.test(leg.ou || '') ? 'O' : 'U';
+      return Object.assign(base, { market: 'TOTAL', params: { line: Number(leg.line), ou: ou }, pick: (ou === 'O' ? 'Over ' : 'Under ') + leg.line + ' rounds' }); }
+    if (leg.mkt === 'method') { const m = leg.method === 'ko' ? 'KO' : leg.method === 'sub' ? 'SUB' : 'DEC';
+      return Object.assign(base, { market: 'METHOD', params: { side: side, methodCat: m }, pick: btShort(nm) + ' by ' + BT_METH[m] }); }
+    if (leg.mkt === 'round')
+      return Object.assign(base, { market: 'ENDROUND', params: { side: side, meth: 'ANY', round: Number(leg.round) }, pick: btShort(nm) + ' to win in round ' + leg.round });
+    return null;
+  }
+  // Called from the parlay slip. Resolves every leg, enforces one event, and
+  // preloads the log form. Saves nothing.
+  function btLogSlip(legs) {
+    btLoadEvents().then(function () {
+      const out = [];
+      for (const l of (legs || [])) {
+        const b = btLegToBet(l);
+        if (!b) { alert("Couldn't match one of those picks to an upcoming fight."); return; }
+        out.push(b);
+      }
+      if (!out.length) return;
+      const slugs = out.map(o => o.evSlug).filter((v, i, a) => a.indexOf(v) === i);
+      if (slugs.length > 1) { alert('Every leg of a parlay has to be on the same event.'); return; }
+      const ev = (BT_EVENTS || []).find(e => e.slug === slugs[0]);
+      btLogFromOdds({ legs: out, evSlug: slugs[0], match: ev ? btEvLabel(ev) : '' });
+    });
+  }
+  window.btLogSlip = btLogSlip;
+
+  let btPre = null;
+  function btLogFromOdds(payload) {
+    btPre = payload || null;
+    navigate('bets');
+    // btRender() re-fetches, then btSetView('log') picks btPre up.
+    btView = 'log';
+    btRender();
+  }
+  window.btLogFromOdds = btLogFromOdds;
+
+  function btRenderPre(host) {
+    const p = btPre;
+    const combined = btCombine(p.legs.map(l => l.odds));
+    let h = '<div class="bt-panel"><h3>Log this parlay</h3>' +
+      '<div class="bt-note" style="margin-top:0">From your slip on Odds &amp; Projections. Nothing is saved until you add it.</div>' +
+      '<div class="bt-legs" style="margin:12px 0">' + p.legs.map(l =>
+        '<div class="bt-leg"><span class="bt-leg-ico">·</span><span class="bt-leg-p">' + btEsc(l.pick) + '</span><span class="bt-leg-o">' + btFmtO(l.odds) + '</span></div>').join('') + '</div>' +
+      '<div class="bt-row2"><div><label>Combined odds</label><input id="bt-p-odds" type="number" value="' + combined + '"></div>' +
+      '<div><label>Stake (units)</label><input id="bt-p-stake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+      '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> There\'s no closing line for a combined price. It\'s still <b style="color:var(--accent)">verified</b> — each leg grades off its own fight, the parlay settles once they\'re all in (or the moment one loses), and a voided leg drops out and re-prices the rest.</div>' +
+      '<button type="button" class="bt-btn" onclick="btSubmitParlay()">Add parlay</button>' +
+      '<button type="button" class="bt-btn" style="background:none;border:1px solid var(--border);color:var(--muted);margin-top:8px" onclick="btPreCancel()">Cancel</button></div>';
+    host.innerHTML = h;
+  }
+  function btPreCancel() { btPre = null; btRenderLog('card'); }
+  window.btPreCancel = btPreCancel;
+  function btSubmitParlay() {
+    const p = btPre; if (!p) return;
+    const odds = parseInt(document.getElementById('bt-p-odds').value, 10);
+    const stake = parseFloat(document.getElementById('bt-p-stake').value) || 1;
+    if (!isFinite(odds)) { alert('Enter the combined odds.'); return; }
+    btApi('/api/bets', { kind: 'tracked', market: 'PARLAY', legs: p.legs, match: p.match, odds: odds, stake: stake })
+      .then(function (r) {
+        if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that parlay.'); return; }
+        BT_BETS.push(r.j.bet); btPre = null; btDeriveAll(); btSetView('history');
+      });
+  }
+  window.btSubmitParlay = btSubmitParlay;
+
   function btRenderLog(kind) {
+    const host0 = document.getElementById('bt-log');
+    if (btPre && btPre.legs && btPre.legs.length > 1) { btRenderPre(host0); return; }
+    if (btPre && btPre.legs && btPre.legs.length === 1) {
+      // Single selection: drop into the normal tracked form, pre-selected.
+      const l = btPre.legs[0];
+      const f = btFindFight(l.fightId, btPre.evSlug);
+      if (f) { btEvent = (BT_EVENTS || []).find(e => e.slug === f.evSlug) || null; btFight = f; btMarket = l.market; btPreOdds = l.odds; }
+      btPre = null;
+    }
     btKind = kind || btKind;
     const host = document.getElementById('bt-log'); if (!host) return;
     let h = '<div class="bt-panel"><div class="bt-seg">' +
@@ -111080,7 +111232,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           h += '<label>Market</label><select id="bt-mkt" onchange="btSetMarket(this.value)">';
           Object.keys(BT_MARKETS).forEach(k => { h += '<option value="' + k + '"' + (btMarket === k ? ' selected' : '') + '>' + BT_MARKETS[k] + '</option>'; });
           h += '</select>' + btSelUI(f);
-          h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (priced && o ? o.o1 : '') + '" placeholder="-150"></div>' +
+          // A preloaded selection carries the price from the book you picked it at.
+          const preOdds = btPreOdds; btPreOdds = null;
+          h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (preOdds != null ? preOdds : (priced && o ? o.o1 : '')) + '" placeholder="-150"></div>' +
             '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="1" step="0.5" min="0.5"></div></div>';
           h += priced
             ? (btSegStarted(f)
