@@ -229,9 +229,9 @@ const ATTRS = [
   { id:'power',     label:'Power',        note:'ending it with one shot' },
   { id:'pace',      label:'Pace',         note:'volume and pressure' },
   { id:'technique', label:'Technique',    note:'accuracy and timing' },
-  { id:'strdef',    label:'Head movement',note:'not getting hit' },
+  { id:'strdef',    label:'Striking defense',note:'not getting hit' },
   { id:'chin',      label:'Durability',   note:'taking a shot' },
-  { id:'cardio',    label:'Cardio',       note:'still there in round 3' },
+  { id:'cardio',    label:'Cardio',       note:'ability to keep fighting late' },
   { id:'wrestling', label:'Wrestling',    note:'getting them to the ground' },
   { id:'grappling', label:'Grappling',    note:'submissions' },
   { id:'takedef',   label:'Takedown def', note:'staying upright' },
@@ -716,18 +716,18 @@ function creator(){
   }
   p.appendChild(legend);
   const tip=document.createElement('div'); tip.className='tipbox';
-  // THIS TEXT WAS WRONG AND SHIPPED. It used to read "leave no hole: the model
-  // punishes a zero harder than it rewards a ten. Get competent everywhere, then
-  // lean." That was measured off the old fantasy stat curves, where the top of
-  // every attribute was inert. With curves anchored to real fighters it reverses:
-  // committing beats spreading by ~9 points at a 24-point budget. Player-facing
-  // advice derived from a broken measurement is the worst kind of bug — it's a
-  // lie the player can't check.
+  // KEEP THIS SHORT AND KEEP IT TRUE. Two previous versions of this box shipped
+  // advice that was flatly wrong, both times because it was derived from a
+  // measurement taken on a broken foundation:
+  //   1. "leave no hole, get competent everywhere, then lean" — measured off the
+  //      fantasy stat curves, where the top of every attribute was inert.
+  //   2. "striking pays the same against everyone" — true of the SIM, which used
+  //      to referee. It doesn't any more; the style triangle is ours now, and
+  //      striking has a real matchup. The line outlived the thing it described.
+  // Player-facing advice is the worst place for a stale finding: it's a lie the
+  // player can't check. If a claim here isn't currently measurable, cut it.
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
-    'bad takedown defence, and stalls against elite TDD.<br>'+
-    'Commit. A ten beats two fives — the last level of anything is worth more than '+
-    'the first. But the ground game is where matchups actually turn: striking pays '+
-    'the same against everyone.';
+    'bad takedown defence, and stalls against elite TDD.';
   p.appendChild(tip);
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
   b.style.marginTop='.6rem';
