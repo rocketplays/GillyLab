@@ -393,7 +393,27 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // is what level 10 was defined to mean when the curves were anchored — instead
 // of a demigod. The ceiling is per-division and read off the ladder, so no
 // future budget tweak can recreate a 143-rated lightweight.
-const RATING_MIN  = 36;      // every slider at zero: worse than any gatekeeper
+// CALIBRATED AGAINST THE LADDER, NOT AGAINST ITSELF. This is the fix every other
+// fix today was standing in for.
+//
+//     THE LADDER            WHERE YOU WERE
+//     gatekeepers 44-54     debut (20 pts) = 62   <- above EVERY gatekeeper, day one
+//     #15         68.6      40 pts         = 79   <- above #15 after four wins
+//     #1          93.8      70 pts         = 102  <- above the #1 contender
+//     champion   100.7      85 pts         = 105
+//
+// You didn't climb the ladder, you leapfrogged it. Rating and power were two
+// different scales sharing an axis, and EVERY symptom today came out of that one
+// mismatch: heavy-favorite boards ("no reason to pick anyone over anyone else"),
+// the 20-1 run, the easiest-path exploit, rank lagging rating so the matchmaker
+// served nobodies. I kept treating those as separate problems and tuning a
+// different dial for each.
+//
+// Now: a debut fighter rates 55 — a live dog against a good gatekeeper, a slight
+// favorite against a poor one. A full ~70-point run rates 100, level with the
+// champion. The scale you're measured on is the scale you're climbing, so "near
+// your rank" finally means "near your level" and the board asks a real question.
+const RATING_MIN  = 30;      // debut (20 pts) lands ~55: a gatekeeper's peer, not his boss
 // CALIBRATED AGAINST THE RUN HARNESS, not arithmetic — and it is a KNIFE EDGE,
 // which is a design smell, not a tuning success. Measured bot championship rate:
 //     span 150 -> 0/8    175 -> 0/8    200 -> 0/8    215 -> 4/8
@@ -406,7 +426,7 @@ const RATING_MIN  = 36;      // every slider at zero: worse than any gatekeeper
 // The real fix is to damp the loop (rewards that taper as you climb, or
 // opponents that scale with you), not to hunt for a magic constant. Until then
 // this number is load-bearing and fragile: change it WITH the harness open.
-const RATING_SPAN = 170;     // fitted against the run harness with the cap in place, not by arithmetic
+const RATING_SPAN = 168;     // fitted so ~70 pts (a full run) reaches ~100 = champion level
 const CAP_OVER    = 5;       // a maxed fighter tops out this far above the champion
 const STYLE_MAX   = 11;      // biggest style swing, in points of win probability
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
