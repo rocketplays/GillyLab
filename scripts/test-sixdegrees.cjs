@@ -42,12 +42,15 @@ ok(selfLoop === 0, 'no fighter fights himself', 'loops=' + selfLoop);
 ok(asym === 0, 'adjacency is symmetric', 'asym=' + asym);
 ok(noEdge === 0, 'every adjacency has a bout behind it', 'missing=' + noEdge);
 
-const bfs = (from, to) => {
-  const prev = { [from]: -1 }, q = [from];
+const eraFrom = id => (DATA.eras.find(e => e.id === id) || { from: 0 }).from;
+const oppsIn = (i, from) => F[i].o.filter(o => F[o].l >= from);
+const bfs = (from_, to, era) => {
+  const cut = era === undefined ? 0 : era;
+  const prev = { [from_]: -1 }, q = [from_];
   while (q.length) {
     const c = q.shift();
     if (c === to) { const p = []; let x = to; while (x !== -1) { p.unshift(x); x = prev[x]; } return p; }
-    for (const n of F[c].o) if (!(n in prev)) { prev[n] = c; q.push(n); }
+    for (const n of oppsIn(c, cut)) if (!(n in prev)) { prev[n] = c; q.push(n); }
   }
   return null;
 };
@@ -61,28 +64,40 @@ ok(Object.keys(seen).length === F.length, 'board is one connected component',
 // ── 2. every puzzle is solvable and the stated par is the true one ─────────
 console.log('\n== puzzles ==');
 let unsolvable = 0, badPar = 0, badSol = 0, fakeLink = 0;
+let outOfEra = 0;
 for (const p of P) {
-  const real = bfs(p.a, p.b);
+  const cut = eraFrom(p.era);
+  const real = bfs(p.a, p.b, cut);          // par must hold on THIS era's pruned graph
   if (!real) { unsolvable++; continue; }
   if (real.length - 1 !== p.par) badPar++;
   if (!p.sol || p.sol.length - 1 !== p.par || p.sol[0] !== p.a || p.sol[p.sol.length - 1] !== p.b) badSol++;
   for (let k = 0; k < p.sol.length - 1; k++) {
     if (!F[p.sol[k]].o.includes(p.sol[k + 1])) fakeLink++;   // shipped solution must be real fights
   }
+  // A shipped solution routing through someone the board hides would be
+  // unfollowable — the player can never click that tile.
+  if (p.sol.some(i => F[i].l < cut)) outOfEra++;
 }
 ok(unsolvable === 0, 'every puzzle is reachable', 'unsolvable=' + unsolvable);
 ok(badPar === 0, 'stated par equals true shortest path', 'wrong=' + badPar);
 ok(badSol === 0, 'shipped solution matches par and endpoints', 'bad=' + badSol);
 ok(fakeLink === 0, 'every step in a shipped solution is a real bout', 'fake=' + fakeLink);
 ok(P.every(p => F[p.a].f >= 3 && F[p.b].f >= 3), 'both endpoints are 3+ time headliners');
+ok(outOfEra === 0, 'no solution routes through a fighter their era hides', 'bad=' + outOfEra);
+ok(P.every(p => F[p.a].l >= eraFrom(p.era) && F[p.b].l >= eraFrom(p.era)), 'endpoints live inside their own era');
+for (const e of DATA.eras) {
+  const mine = P.filter(p => p.era === e.id);
+  ok(mine.length >= 40, 'era "' + e.id + '" has a full puzzle set', mine.length + ' puzzles');
+}
 
 // The first build shipped 38/60 puzzles at par 4+ — its own hardest tier, only
 // ~39% solvable — and a playtester went 0-for. The mix is now load-bearing.
 const byPar = {};
-P.forEach(p => byPar[p.par] = (byPar[p.par] || 0) + 1);
+P.filter(p => p.era === 'modern').forEach(p => byPar[p.par] = (byPar[p.par] || 0) + 1);
 ok((byPar[2] || 0) >= 15, 'enough par-2 on-ramp puzzles', 'par2=' + (byPar[2] || 0));
-ok((byPar[2] || 0) + (byPar[3] || 0) >= P.length * 0.7, 'pool is mostly the tractable par 2-3 tier',
-  'par2+3=' + ((byPar[2] || 0) + (byPar[3] || 0)) + '/' + P.length);
+const nMod = P.filter(p => p.era === 'modern').length;
+ok((byPar[2] || 0) + (byPar[3] || 0) >= nMod * 0.7, 'pool is mostly the tractable par 2-3 tier',
+  'par2+3=' + ((byPar[2] || 0) + (byPar[3] || 0)) + '/' + nMod);
 ok(!P.some(p => p.par > 4), 'nothing above par 4 ships', 'max=' + Math.max(...P.map(p => p.par)));
 
 // Solve rate for a mechanical player who can see the dossier and plays the
@@ -90,11 +105,12 @@ ok(!P.some(p => p.par > 4), 'nothing above par 4 ships', 'max=' + Math.max(...P.
 const solveRate = pool => {
   let won = 0;
   for (const p of pool) {
-    const tOpp = new Set(F[p.b].o);
+    const cut = eraFrom(p.era);
+    const tOpp = new Set(oppsIn(p.b, cut));
     let cur = p.a, n = 0, seen = new Set([cur]), got = false;
     while (n < p.par + 3) {
-      if (F[cur].o.includes(p.b)) { got = true; break; }
-      const opts = F[cur].o.filter(o => !seen.has(o));
+      if (oppsIn(cur, cut).includes(p.b)) { got = true; break; }
+      const opts = oppsIn(cur, cut).filter(o => !seen.has(o));
       if (!opts.length) break;
       const br = opts.filter(o => tOpp.has(o));
       cur = (br.length ? br : opts).slice().sort((x, y) => F[y].f - F[x].f)[0];
@@ -105,7 +121,7 @@ const solveRate = pool => {
   return won / pool.length;
 };
 const r2 = solveRate(P.filter(p => p.par === 2));
-const rAll = solveRate(P);
+const rAll = solveRate(P.filter(p => p.era === 'modern'));
 ok(r2 === 1, 'every par-2 is solvable by the obvious strategy', Math.round(r2 * 100) + '%');
 ok(rAll >= 0.6, 'overall floor solve rate is playable', Math.round(rAll * 100) + '%');
 console.log('        floor solve rate (dossier visible, par+3): ' + Math.round(rAll * 100) + '% — was 18% blind');
@@ -157,11 +173,52 @@ const win = dom.window;
     doc.querySelectorAll('.opp').length + ' cards');
   ok(peek('puz').par === 2, 'opens on a par-2 on-ramp, not a puzzle you lose', 'par=' + peek('puz').par);
 
+  // ── era scoping ──────────────────────────────────────────────────────────
+  // The whole point is that a modern player never MEETS a 2009 fighter. If a
+  // single out-of-era name reaches the screen, the fix hasn't worked.
+  ok(peek('eraId') === 'modern', 'defaults to the modern board, not all-time');
+  const yearsOnScreen = () => {
+    const names = [...doc.querySelectorAll('.opp')].map(cardName)
+      .concat([...doc.querySelectorAll('.dos-list .chip span')].map(c => c.textContent.trim()));
+    return names.map(n => { const f = F.find(x => x.n === n); return f ? f.l : null; }).filter(Boolean);
+  };
+  {
+    const ys = yearsOnScreen();
+    const stale = ys.filter(y => y < 2018);
+    ok(stale.length === 0, 'every name on screen fought in 2018 or later',
+      stale.length ? stale.length + ' out-of-era (oldest ' + Math.min(...ys) + ')' : 'oldest=' + Math.min(...ys));
+    ok(ys.length > 0, 'and the board is not empty', ys.length + ' names');
+  }
+  // Pruning is a property of the BOARD, not of one arbitrary start — plenty of
+  // modern fighters have every opponent inside the window, so asserting on a
+  // single grid is a coin flip.
+  {
+    const totalAll = F.reduce((s, f) => s + f.o.length, 0);
+    const totalMod = F.filter(f => f.l >= 2018).reduce((s, f) => s + oppsIn(F.indexOf(f), 2018).length, 0);
+    ok(totalMod < totalAll * 0.75, 'the modern board is genuinely pruned',
+      totalMod + ' era-links vs ' + totalAll + ' all-time');
+    const hidden = F.filter(f => f.l < 2018).length;
+    ok(hidden > 500, 'and it hides a real chunk of the old guard', hidden + ' fighters hidden');
+  }
+  // Switching to all-time must bring the old guard back.
+  {
+    win.eval("setEra('all')");
+    const allP = P.filter(p => p.era === 'all' && p.par === 2)[0];
+    win.start(allP);
+    await new Promise(r => setTimeout(r, 20));
+    ok(peek('eraFrom') === 0, 'all-time era lifts the cut');
+    win.eval("setEra('modern')");
+    win.start(P.find(p => p.era === 'modern' && p.par === 2));
+    await new Promise(r => setTimeout(r, 20));
+  }
+
   // The dossier — without it a player is routing blind and solves 18%.
   const dossierNames = () => [...doc.querySelectorAll('.dos-list .chip span')].map(c => c.textContent.trim());
   ok(doc.querySelector('.dos'), 'target dossier is on the board');
   {
-    const want = new Set(F[peek('puz').b].o.map(i => F[i].n));
+    // era-filtered, not all-time: showing a 2009 opponent you can never click
+    // would be exactly the bug era scoping exists to kill.
+    const want = new Set(oppsIn(peek('puz').b, 2018).map(i => F[i].n));
     const got = dossierNames();
     ok(got.length === want.size, 'dossier lists all the target\'s opponents', got.length + '/' + want.size);
     ok(got.every(n => want.has(n)), 'and nothing that isn\'t one');

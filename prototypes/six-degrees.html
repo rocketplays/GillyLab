@@ -152,6 +152,30 @@ const $ = s => document.querySelector(s);
 let D = null, F = null, P = null;          // data, fighters, puzzles
 let puz = null, trail = [], visited = new Set();
 
+// ── era scoping ──────────────────────────────────────────────────────────────
+// "Still pretty hard, especially trying to figure out old-era fighters."
+//
+// Two guesses at why were both killed by measurement: the endpoints already skew
+// current (49/82 fought in 2023+), and the fame sort already surfaces recent
+// names (median last-fight year 2023 in the top 8 tiles). Ordering was never the
+// problem — PRESENCE was. An all-time board asks you to know 25 years of MMA no
+// matter how it's arranged. Cerrone's grid is 41 men spanning 2006-2024.
+//
+// So prune the board itself. Filter on a fighter's LAST year, which keeps long
+// careers (Jim Miller, 2008-2026) while dropping the men he beat in 2010 who
+// retired in 2012. Every tile is then inside your window.
+//
+// eraFrom gates EVERY read of the graph — the grid, the dossier, and the solver.
+// Getting that wrong would show a tile you can't legally click, or a par you
+// can't reach.
+let eraId = 'modern', eraFrom = 2018;
+const live = i => F[i].l >= eraFrom;
+const oppsOf = i => F[i].o.filter(live);
+function setEra(id){
+  const e = D.eras.find(x=>x.id===id) || D.eras[0];
+  eraId = e.id; eraFrom = e.from;
+}
+
 const eKey = (a,b) => a<b ? a+'-'+b : b+'-'+a;
 const edgeOf = (a,b) => D.edges[eKey(a,b)] || null;
 const initials = n => n.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
@@ -178,7 +202,7 @@ function bfs(from, to){
   while(q.length){
     const c = q.shift();
     if (c === to){ const p=[]; let x=to; while(x!==-1){p.unshift(x); x=prev[x];} return p; }
-    for (const n of F[c].o) if(!(n in prev)){ prev[n]=c; q.push(n); }
+    for (const n of oppsOf(c)) if(!(n in prev)){ prev[n]=c; q.push(n); }
   }
   return null;
 }
@@ -307,8 +331,8 @@ function render(){
   dh.querySelector('b').textContent=F[puz.b].n;
   dos.appendChild(dh);
   const dl=document.createElement('div'); dl.className='dos-list';
-  const curOpp = new Set(F[cur].o);
-  F[puz.b].o.slice().sort((x,y)=>F[y].f-F[x].f||F[x].n.localeCompare(F[y].n)).forEach(o=>{
+  const curOpp = new Set(oppsOf(cur));
+  oppsOf(puz.b).sort((x,y)=>F[y].f-F[x].f||F[x].n.localeCompare(F[y].n)).forEach(o=>{
     const c=document.createElement('div'); c.className='chip'+(curOpp.has(o)?' hot':'');
     c.appendChild(avatar(o));
     const s=document.createElement('span'); s.textContent=F[o].n; c.appendChild(s);
@@ -319,13 +343,13 @@ function render(){
 
   // ── opponents ──
   const h=document.createElement('div'); h.className='head';
-  const opps = F[cur].o.slice().sort((x,y)=> F[y].f-F[x].f || F[x].n.localeCompare(F[y].n));
+  const opps = oppsOf(cur).sort((x,y)=> F[y].f-F[x].f || F[x].n.localeCompare(F[y].n));
   h.innerHTML = '<b></b><span>'+opps.length+' opponents — pick one</span>';
   h.querySelector('b').textContent = 'Who has ' + F[cur].n + ' fought?';
   app.appendChild(h);
 
   const g=document.createElement('div'); g.className='grid';
-  const tOpp = new Set(F[puz.b].o);
+  const tOpp = new Set(oppsOf(puz.b));
   for(const o of opps){
     const b=document.createElement('button'); b.className='opp';
     const isTarget = o===puz.b;
@@ -412,19 +436,32 @@ function endBox(won){
 
 function controls(){
   const bar=document.createElement('div'); bar.className='bar';
+  const pool = () => P.filter(p=>p.era===eraId);
   const nx=document.createElement('button'); nx.className='btn pri'; nx.textContent='New puzzle';
-  nx.onclick=()=>start(P[(Math.random()*P.length)|0]);
+  nx.onclick=()=>{ const q=pool(); start(q[(Math.random()*q.length)|0]); };
   bar.appendChild(nx);
-  // Difficulty is a real dial, so let the player hold it while we learn what
-  // "fun" is: par 2 easy / par 3 the game / par 4 the Friday.
+
+  // Era selector. The single biggest difficulty lever there is — bigger than
+  // par, bigger than the budget. If you only started watching in 2018, an
+  // all-time board is unplayable no matter how it's tuned.
+  const er=document.createElement('select');
+  er.innerHTML=D.eras.map(e=>'<option value="'+e.id+'"'+(e.id===eraId?' selected':'')+'>'+e.label+'</option>').join('');
+  er.onchange=e=>{
+    setEra(e.target.value);
+    const q=pool().filter(p=>p.par===2);
+    start((q.length?q:pool())[0]);
+  };
+  bar.appendChild(er);
+
+  // Difficulty: par 2 easy / par 3 the game / par 4 the Friday.
   const dif=document.createElement('select');
   dif.innerHTML='<option value="">Difficulty…</option>'+
     [[2,'Easy (par 2)'],[3,'Medium (par 3)'],[4,'Hard (par 4)']]
       .map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');
   dif.onchange=e=>{
     const v=+e.target.value; if(!v) return;
-    const pool=P.filter(p=>p.par===v);
-    if(pool.length) start(pool[(Math.random()*pool.length)|0]);
+    const q=pool().filter(p=>p.par===v);
+    if(q.length) start(q[(Math.random()*q.length)|0]);
   };
   bar.appendChild(dif);
   const rs=document.createElement('button'); rs.className='btn'; rs.textContent='Restart';
@@ -445,10 +482,16 @@ function controls(){
 
 fetch('sixdegrees-data.json').then(r=>r.json()).then(d=>{
   D=d; F=d.fighters; P=d.puzzles;
+  // Default to the MODERN board, not all-time. If you only started watching
+  // recently, an all-time board is unplayable however it's tuned — and that's
+  // the default assumption for a free game meant to pull in casual traffic.
+  // All-time is there for the historians who want it.
+  setEra('modern');
   // Open on a par 2 — the on-ramp. par 2 is a pure visual intersection once the
   // dossier is up (100% solvable), so the first puzzle teaches the mechanic by
   // being winnable. Opening on par 3 taught nothing except that you lose.
-  start(P.find(p=>p.par===2) || P[0]);
+  const q = P.filter(p=>p.era===eraId);
+  start(q.find(p=>p.par===2) || q[0]);
 }).catch(e=>{
   $('#app').innerHTML='<div class="load">Could not load sixdegrees-data.json — '+e.message+
     '<br><br>If you opened this as a file://, your browser blocks local fetch.<br>'+
