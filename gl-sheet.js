@@ -837,6 +837,8 @@ const GL_SHEET = (function () {
      date range they're looking at, one for the pending bets on a single card.  */
   const BT_RED = '#ff6a5e';
   const initialsOf = n => String(n || '').trim().split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase();
+  // At most 2dp, no trailing zeros: 0.67 / 1.5 / 10
+  const uFmt = n => (Math.round(n * 100) / 100).toFixed(2).replace(/\.?0+$/, '');
   function btTile(ctx, x, y, w, h, label, val, col) {
     roundRect(ctx, x, y, w, h, 14); ctx.fillStyle = CARD; ctx.fill();
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
@@ -892,7 +894,11 @@ const GL_SHEET = (function () {
     await fontsReady();
     const logo = await loadBrandLogo();
     const bets = (data.bets || []).slice(0, 10);
-    const rowH = 116, listTop = 268;
+    const rowH = 116, listTop = 304;
+    // Total at risk and total return if every bet lands.
+    const risked = bets.reduce((s, b) => s + (Number(b.stake) || 0), 0);
+    const toWin = bets.reduce((s, b) => { const o = Number(b.odds) || 0;
+      return s + (Number(b.stake) || 0) * (o > 0 ? o / 100 : 100 / -o); }, 0);
     // Headshots: one for a fighter-specific pick, two (A vs B) when the bet is
     // about the fight rather than a fighter — a total, the distance, a round start.
     const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
@@ -906,7 +912,16 @@ const GL_SHEET = (function () {
     ctx.fillText(clip(ctx, pkPossessive(data.name) + ' card', W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
-    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();
+    // Own line rather than tacked onto the subtitle — a billed event name plus the
+    // date already fills that row, and clipping the stake would be worse than a
+    // second line. Numbers carry the weight; the return greens.
+    let rx = 64;
+    const seg = (t, font, col) => { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 244); rx += ctx.measureText(t).width; };
+    seg('Risking ', '400 25px ' + SANS, MUT);
+    seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
+    seg(' to win ', '400 25px ' + SANS, MUT);
+    seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 272); ctx.lineTo(W - 64, 272); ctx.stroke();
 
     let y = listTop;
     bets.forEach((b, i) => {
