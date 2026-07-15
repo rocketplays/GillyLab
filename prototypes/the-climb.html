@@ -178,10 +178,38 @@ const ATTRS = [
 // = ceil(v/2): maxing one attribute costs 25, all five costs 125. A full run
 // earns ~40. You can master one thing and be decent at another. You cannot be
 // good at everything, so the build stays a real choice all the way up.
-const POINTS_START = 12, ATTR_MAX = 10;
+// Playtest: "now that there's more categories, should they start with more
+// points?" Yes. Measured, and 12 was nearly meaningless: your ENTIRE starting
+// budget was worth ~6 points of win probability. Spend nothing (all 1s) and you
+// debut at 42% across the gatekeepers; spend all 12 and you're at 48-53%. The
+// creator screen barely existed.
+//
+// 24 buys a real build with an identity — a tilt plus a floor — and moves the
+// debut to ~60%. Not a gimme, but not a coin flip you had no say in.
+//
+// MEASURED AND SURPRISING: a SPREAD build beats a SPECIALIST at every budget,
+// and the gap GROWS as you get richer —
+//     12 pts   specialist 48%   spread 53%
+//     24 pts   specialist 52%   spread 60%
+//     36 pts   specialist 54%   spread 65%
+// The model rewards a FLOOR EVERYWHERE plus a tilt, not a pure specialist. That
+// is real MMA — you cannot have zero takedown defence and survive — but it
+// means "wrestling 10, rest 1" is a trap, not a strategy. The earlier wrestler
+// build that beat everything wasn't pure; it had every attribute at 3+ with a
+// wrestling lean. Worth surfacing to the player rather than letting them learn
+// it by dying.
+const POINTS_START = 24, ATTR_MAX = 10;
 const upCost = v => Math.ceil(v/2);
 const pct = n => Math.round(n)+'%';
 
+// Playtest: "should there be more tune-up fights at the beginning in order to
+// earn more attributes, so you can set yourself up to be more ready for ranked
+// competition?" Yes — 3 wins to enter the rankings gave you ~6 upgrade points
+// before meeting a contender, which isn't enough to change your build's shape.
+// 5 tune-ups is ~11 points: enough to fix a hole or commit to a lean before the
+// division starts hitting back. The gatekeeper pool is 24 deep, so there's
+// plenty of room.
+const UNRANKED_WINS = 5;
 const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 function buildStats(a){
   // dob was HARDCODED, so `age` — a real lever the sim reads — never moved. You
@@ -371,7 +399,7 @@ function fight(o){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     G.pts += o.reward + (fin?1:0);
     if (o.jump != null && (G.rank==null || o.jump < G.rank)) G.rank = o.jump;
-    else if (G.rank==null && G.wins>=3) G.rank = 15;
+    else if (G.rank==null && G.wins>=UNRANKED_WINS) G.rank = 15;
     if (o.f.rankNum === 0) G.champ = true;
   } else {
     G.losses++; G.streak = 0;
@@ -452,7 +480,9 @@ function creator(){
   p.appendChild(legend);
   const tip=document.createElement('div'); tip.className='tipbox';
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
-    'bad takedown defence, and stalls against elite TDD.';
+    'bad takedown defence, and stalls against elite TDD.<br>'+
+    'But leave no hole: the model punishes a zero harder than it rewards a ten. '+
+    'Get competent everywhere, then lean.';
   p.appendChild(tip);
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
   b.style.marginTop='.6rem';

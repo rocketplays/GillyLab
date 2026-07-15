@@ -18,7 +18,9 @@ const win=dom.window;
   ok(!/Could not load/.test(app()),'page booted');
   ok(typeof peek('S')==='object' && peek('S')!==null,'the REAL scorer is live in the browser');
   ok(/Create your fighter/.test(app()),'creator screen');
-  ok(doc.querySelectorAll('input[type=range]').length===5,'5 attribute sliders');
+  const nAt = peek('ATTRS.length');
+  ok(doc.querySelectorAll('input[type=range]').length===nAt,'one slider per attribute',
+    doc.querySelectorAll('input[type=range]').length+'/'+nAt);
   ok(!/Cardio/i.test(app()) || /no cardio input/i.test(app()),'no fake cardio slider');
 
   console.log('\n== the sim actually scores the run ==');
@@ -43,7 +45,12 @@ const win=dom.window;
   for(let i=0;i<8;i++){
     win.eval('newGame(); G.started=true;');
     // spread points, then play greedily-ish: always take the middle option
-    win.eval('for(const a of ATTRS) G.attrs[a.id]=4; G.pts=0;');
+    // Spend the REAL starting budget the way a sensible player would: raise
+    // everything evenly until it runs out. Was hardcoded to level 4 with pts=0,
+    // which silently ignored POINTS_START entirely.
+    win.eval('(function(){var moved=true; while(moved){ moved=false;'+
+             'for(const a of ATTRS){ var c=upCost(G.attrs[a.id]);'+
+             'if(G.pts>=c && G.attrs[a.id]<ATTR_MAX){ G.pts-=c; G.attrs[a.id]++; moved=true; } } }})()');
     let guard=0;
     while(guard++<40){
       const st=peek('({champ:G.champ,losses:G.losses})');
