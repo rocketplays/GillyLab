@@ -1,0 +1,261 @@
+================================================================================
+BET & CLV TRACKER — ROADMAP
+What's shipped, what Phase 3+ would be, and the known gaps.
+Last updated: 2026-07-14
+================================================================================
+
+--------------------------------------------------------------------------------
+0. THE ONE IDEA
+--------------------------------------------------------------------------------
+Turn a one-off answer ("did my bet win?") into an honest, accumulating record.
+Two things make it worth anything, and everything below protects them:
+
+  1. VERIFIED vs SELF-REPORTED. A bet on a fight we track, logged before the bout
+     starts, auto-grades from the result. Anything else is self-reported: the user
+     settles it and it NEVER touches the verified numbers.
+
+  2. CLV IS MONEYLINES ONLY, measured against a real closing line. Props move too
+     fast and vary too much book-to-book to have a close worth trusting. Props
+     still grade and count toward record/ROI/units — they just never claim CLV.
+
+The governing rule: THE CLIENT NEVER DECIDES ANYTHING THAT MATTERS. The server
+stamps createdAt / verified / clvOk, owns the lock, resolves bout identity, and
+re-checks the parlay correlation rule. If you add to this feature, keep that line.
+
+--------------------------------------------------------------------------------
+1. SHIPPED (Phase 1 + 2 + follow-ups)
+--------------------------------------------------------------------------------
+UI  — index.html, nav item "Bet & CLV Tracker" after Odds & Projections.
+      Page #page-bets; navigate('bets') calls btRender(). Two tabs: My bet
+      history / Log a bet. 720px centred column, 1.1rem gutters, 16px inputs
+      under 600px (iOS zoom guard).
+
+MARKETS (7 + parlay), all graded off winner / method / round / time:
+      ML          moneyline                     (PRICED -> earns CLV)
+      METHOD      winner x KO/SUB/DEC, winner may be "either fighter"
+      ENDROUND    winner x method x round, winner may be "either"
+      TOTAL       over/under X.5 rounds (resolves at the 2:30 mark)
+      ROUNDSTART  will/won't the fight start round N
+      DISTANCE    goes the distance yes/no
+      INSIDE      win inside the distance
+      PARLAY      legs[] on ONE event, leg-by-leg (see below)
+
+SETTLEMENT
+      No contest  -> VOIDS every market (stake back, excluded from record/ROI).
+      Draw        -> voids the MONEYLINE ONLY. Method + inside-the-distance lose
+                     (nobody won); totals, round-start, distance and "either
+                     fighter by decision" settle normally because those outcomes
+                     did happen. This falls out naturally: a draw has no winner,
+                     so winner-dependent markets lose on their own. Only the ML
+                     needs an explicit void.
+      Parlay      -> LOST the moment any surviving leg loses (it genuinely can't
+                     win from there). WON only once every surviving leg is in.
+                     A VOIDED leg drops out and the price RE-COMPUTES from the
+                     survivors (effOdds) — payout rides effOdds, not the price as
+                     placed. Never earns CLV.
+
+THE LOCK (anti-backdating)
+      A bet is `verified` only if the SERVER witnessed it created before the bout
+      was decided, checked against its own clock + the feed. Bout identity is
+      "<eventSlug>|<boutId>" — NEVER the bare id: ESPN's bout id is name-derived
+      ("espn-dricus-du-plessis-vs-kamaru-usman"), so a rematch repeats it and a
+      bare-id match would settle the rematch off the first fight.
+
+CLV ELIGIBILITY
+      Gated at SEGMENT START, not the bell. We snapshot each segment's closing
+      line 10 min before it begins, so once prelims/main card start that close is
+      locked: bets logged after still grade + count toward ROI/units, but carry
+      "no CLV - prelims already started". Server-decided (clvOk), not the client.
+
+STORAGE / API  — worker/index.js
+      KV: PICKS namespace, key bt:<email> -> [bet]. Deliberately reuses PICKS so
+      there's NO new binding to provision. Cap BT_MAX = 750 bets/user.
+      betsSession() = logged in AND subscribed (premium).
+        GET  /api/bets          list
+        POST /api/bets          log (tracked | manual | PARLAY)
+        POST /api/bets/settle   settle a SELF-REPORTED bet (refuses tracked)
+        POST /api/bets/edit     odds/stake only, pending + editable
+        POST /api/bets/delete   pending + editable
+      Server re-checks the parlay correlation rule (mirrors PL_PAIRABLE): within
+      one fight only ML + rounds O/U can combine; no duplicate markets on a fight.
+
+GRADING (today: client-side, in memory)
+      btDeriveAll() recomputes tracked status + CLV from FIGHT_HISTORY and
+      oddsHistoryPair on EVERY render. Never persisted, never sent to the server.
+      That's deliberate: an outcome is a fact about the fight, so recomputing it
+      means there is no endpoint anywhere that lets a client write "won" onto its
+      own bet. Only self-reported bets carry a stored status.
+
+CLOSING LINES  — scripts/capture-closing-odds.cjs + .github/workflows/
+      Captures ~10 min before each segment. Window [start-12m, start-2m]; cron is
+      */5 (NOT */15 — a 10-min window steps clean over a quarter-hourly tick;
+      verified zero ticks land inside). Writes data/odds-closing.json, which the
+      client overlays onto ODDS_HISTORY at load.
+
+SHARE  — GL_SHEET.betHistory + GL_SHEET.betCard (square 1080 cards)
+      betHistory: CLV hero + record/ROI/units/beat-the-close, labelled with the
+        range + scope on screen.
+      betCard: pending slip, OR results mode once every bet on the card settles
+        ("Share this card" -> "Share results"). Fighter avatars: one face when the
+        bet names a fighter, two (VS) when it's about the fight, none for parlays.
+      Display name is the SAME pf:<email> record Pick'em uses — set in either
+      place and both follow. Asks via Pick'em's own pkShowNameModal.
+
+--------------------------------------------------------------------------------
+2. PHASE 3 — SERVER-SIDE GRADING
+--------------------------------------------------------------------------------
+WHAT IT IS
+  Move the grading derivation out of the browser and into the results cron, so a
+  bet's outcome is known to the SERVER without anyone opening the app.
+
+BE HONEST ABOUT WHY: it changes nothing you can see today. The tracker already
+grades and displays correctly via client derivation. Phase 3 is infrastructure —
+build it when you want one of the things below, not before.
+
+WHAT IT UNLOCKS (none of which exist yet)
+  - "Your bet hit" notifications / a post-card recap email
+  - A bets leaderboard (verified-only)
+  - Server-side aggregates without loading the whole app
+  - Showing bets anywhere FIGHT_HISTORY isn't loaded (email, a lite page)
+
+WHAT IT TOUCHES
+  - Port btGradeWin() / btSettle() / btDeriveParlay() from index.html into the
+    Worker. These are pure functions of (bet, result, scheduledRounds) — the port
+    is mechanical. KEEP ONE COPY IF YOU CAN: consider generating the worker's copy
+    from index.html the way scripts/gen-gl-sheet.cjs does for GL_SHEET, so the two
+    can never drift. Two hand-maintained graders WILL diverge.
+  - Result source: data/pickem-results.json (already written by the results
+    workflow) + data/live-card.json for a card in progress. Both already readable
+    from the Worker via loadAssetJson().
+    NOTE: pickem-results.json bouts are keyed by FIGHTER NAMES within an event,
+    not bout ids. Matching by (eventSlug + names) is safe because it's scoped to
+    one event — a rematch is on a different event, so it can't collide. Do NOT
+    match names globally.
+  - CLV: read data/odds-closing.json (asset) for the segment close.
+  - The sweep: env.PICKS.list({ prefix: "bt:" }) over users, with a per-event
+    marker for idempotency — copy the pattern from the pick'em grade sweep
+    (gr:<slug>). Grade concurrently; a sequential loop of KV reads is what made
+    the pick'em sweep slow originally.
+
+THE DECISION TO MAKE FIRST (don't skip this)
+  Do you STORE graded results, or keep deriving?
+    - Deriving (today): a grading bug fix applies retroactively to all history.
+      No migration, no stale rows. But the server doesn't know outcomes.
+    - Storing: the server knows, so notifications/leaderboards work — but a
+      grading bug is frozen into everyone's record and needs a backfill to fix.
+  RECOMMENDED: keep client derivation as the DISPLAY source of truth, and have the
+  cron grade only to drive notifications/aggregates. Best of both, at the cost of
+  two consumers of one rule — which is exactly why the grader should be generated,
+  not forked.
+
+--------------------------------------------------------------------------------
+3. PHASE 4+ / BACKLOG (unordered — none of it is committed to)
+--------------------------------------------------------------------------------
+NOTIFICATIONS (needs Phase 3)
+  "Your bet on X hit", or a post-card recap. All the infra exists: RESEND_API_KEY,
+  sendEmail(), the hourly cron, EMAIL_REMINDERS_ENABLED, and the unsubscribe
+  route. Follow the pick'em reminder pattern, incl. shipping OFF behind a flag.
+
+BETS LEADERBOARD (needs Phase 3)
+  Verified bets ONLY. The moment a leaderboard exists, the incentive to game the
+  numbers appears — which is what the lock, the derived (never client-written)
+  status, and the self-reported wall were all built for. Do not let self-reported
+  bets near it.
+
+PROP CLV (the clean upgrade path)
+  Today props are "verified, no CLV" because we don't capture a prop close. If
+  capture-closing-odds.cjs is extended to snapshot prop lines near the bell, those
+  props gain a REAL close and can earn CLV: add the market to CLV_MARKETS in
+  index.html and nothing else changes. Caveats worth respecting: prop markets are
+  thin and single-book prices are heavily vigged, so de-vig + consensus them, and
+  consider reporting ML-CLV and prop-CLV as SEPARATE lines rather than one blended
+  number.
+
+BANKROLL / REAL MONEY
+  Let a user set a unit size and show $ alongside units. Keep it a tracker — no
+  advice, no bet placement (see the footer disclaimer).
+
+ONE SPORTSBOOK PER PARLAY
+  The odds-page slip enforces it; the tracker does not, because a bet record
+  doesn't store `book`. Add a book field first if you want the rule. Arguably you
+  shouldn't: the user is recording a wager they already placed, so it isn't the
+  tracker's business to police.
+
+OTHER IDEAS
+  - CSV export of the bet log.
+  - Trends: CLV over time, ROI by market type / by fighter / by book.
+  - Parlay CLV via the product of leg closes (only if every leg is a priced
+    market with a real close — probably never worth it).
+
+--------------------------------------------------------------------------------
+4. KNOWN GAPS / OPEN ITEMS  (read before trusting anything)
+--------------------------------------------------------------------------------
+[ ] THE SHARE SHEETS AND THE PRELOAD HAVE NEVER BEEN VERIFIED IN A BROWSER.
+    Canvas layout is measured, not seen. Sizes/collisions are arithmetic, not
+    observation. Three bugs in this feature were only findable by clicking
+    (keydown-vs-click on "Log this bet", the double-render race that emptied the
+    preload, a dead parlay-badge branch). Assume more.
+
+[ ] CLV reads "—" until a card actually runs. data/odds-closing.json does not
+    exist yet; the */5 capture has never fired. This is by design, not a bug.
+
+[ ] Corner-retirement edge case (ROUNDSTART). If a feed records a retirement on
+    the stool as "R3 0:00" instead of "R2 5:00", the rule would wrongly say round
+    3 started. Guard not implemented: if the method is a retirement/corner
+    stoppage AND endSec is 0, treat it as the previous round ending.
+
+[ ] btFightResult() matches FIGHT_HISTORY by opponent name within +/-4 days of the
+    event start. All 116 fighters on the current upcoming cards resolve, but a
+    late replacement or a name change could miss and the bet would silently never
+    grade. Worth a "pending too long" sanity check.
+
+[ ] Editing is odds/stake only, by design. Changing the bout/market/selection
+    would be a different bet placed at a different time — that stays delete +
+    re-log. Both are gated to pending AND before the segment locks, because once
+    the close is knowable, rewriting your price manufactures CLV.
+
+[ ] Manual (self-reported) bets never auto-grade. By design.
+
+[ ] There is a ~10 min residual window between the close snapshot and the segment
+    start where a bet still earns CLV against an already-captured close. Shrinking
+    30 -> 10 mostly closed it. To make it airtight you'd gate on the CAPTURE time
+    rather than segment start — but that blocks legitimate last-minute bets, so
+    it was left as-is deliberately.
+
+--------------------------------------------------------------------------------
+5. WHERE THINGS LIVE
+--------------------------------------------------------------------------------
+  (line numbers drift — grep the anchor string, it's the stable part)
+
+  index.html
+    ~1046   CSS          grep: "Bet & CLV Tracker ────"  (.bt-* / .form-tile)
+    ~3558   nav item     grep: id="tab-bets"
+    ~3839   page shell   grep: PAGE: BET & CLV TRACKER
+    ~7379   nav hook     grep: page === 'bets' && typeof btRender
+   ~101734  GL_SHEET     grep: const GL_SHEET = (function
+   ~102582  share sheets grep: async function drawBetHistory  (+ drawBetCard,
+                               btTile, initialsOf, uFmt just above it)
+   ~105370  slip button  grep: id="plLogBet"
+   ~105840  slip handler grep: hit(e, '#plLogBet')   <- CLICK listener, not keydown
+   ~110737  THE MODULE   grep: BET & CLV TRACKER  (phase 1
+                               (everything BT_* / bt*)
+  worker/index.js
+    ~421    loadAssetJson()
+    ~425    tracker block  grep: bet & clv tracker
+                           (btKey, betsSession, btFindBout, btBoutDecided,
+                            handleBetsList/Add/Settle/Edit/Delete)
+    ~1105   routes         grep: /api/bets
+  scripts/capture-closing-odds.cjs      closing-line capture (10 min window)
+  .github/workflows/capture-closing-odds.yml   */5 fight-day cron
+  scripts/gen-gl-sheet.cjs              regenerates gl-sheet.js from index.html
+                                        (RUN THIS after touching GL_SHEET)
+  prototypes/my-bets.html               the original clickable prototype
+
+--------------------------------------------------------------------------------
+6. IF YOU ONLY DO ONE THING NEXT
+--------------------------------------------------------------------------------
+Let a card run through it end to end before building anything else. The first
+real card is the first time grading fires, the first time a closing line exists,
+and the first time CLV shows a number. That will teach you more than another
+phase of building.
+================================================================================
