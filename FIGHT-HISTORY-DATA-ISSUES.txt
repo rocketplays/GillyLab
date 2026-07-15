@@ -14,7 +14,7 @@ FIGHT_HISTORY matches fighters by normalised name, and that silently welds two
 different people together whenever they share one.
 
 
-ISSUE 1 — the middleweight Bruno "Blindado" Silva has no record  [REAL, OPEN]
+ISSUE 1 — the middleweight Bruno "Blindado" Silva has no record  [FIXED 2026-07-15]
 ------------------------------------------------------------------------------
 There are two real fighters:
   Bruno "Bulldog" Gustavo da Silva   flyweight
@@ -37,12 +37,27 @@ Impact:
     short form, the app would print a fake common opponent. This is an accident,
     not a defence.
 
-Fix: add the middleweight as his own key, and make the ingest disambiguate.
-Needs a source decision — probably an explicit alias/identity map rather than
-more string heuristics.
+FIXED: the duplicate "Bruno Silva" key (which held the flyweight's record) was
+deleted and refilled with the real middleweight per the fill-fighter procedure —
+Wikipedia + ESPN + BFO. 36 bouts, derived record 23-13, matching Wikipedia.
+Roster row is now MW 23-13-0 (he is NOT in ACTIVE_ROSTER; released 2025-05-15).
+
+The five men whose records said the short form "Bruno Silva" but meant the
+FLYWEIGHT were repointed to "Bruno Gustavo da Silva": Khalid Taha, JP Buys,
+HyunSung Park, Victor Rodriguez, Casey Kenney. Without this the fix would have
+simply INVERTED the bug — Taha would show a middleweight on his record.
+
+STILL OPEN: two 2009 references to "Bruno Silva" are a THIRD fighter — Blindado
+did not turn pro until 2010, so neither can be his:
+    Tor Troeng        May 2, 2009    BOB: Battle of Botnia
+    Ildemar Alcantara Nov 20, 2009   IMC: Iron Man Championship 4
+They now resolve to Blindado, which is wrong. Six Degrees drops both (the
+reciprocity gate catches them — Blindado's record doesn't echo either). The app
+would only misfire if a second fighter also referenced a 2009 "Bruno Silva",
+which none currently does. Low risk, but they want their own key or a rename.
 
 
-ISSUE 2 — duplicate keys for one fighter  [REAL, OPEN]
+ISSUE 2 — duplicate keys for one fighter  [BRUNO FIXED, ALDO/ARAUJO OPEN]
 ------------------------------------------------------------------------------
 "Bruno Silva" and "Bruno Gustavo da Silva" are the SAME flyweight, stored twice:
   27 bouts each, 12 UFC each, 89% identical by date+result.
@@ -56,9 +71,14 @@ Two more duplicate pairs, accent-only, caught by normalised-name comparison:
   ["Jose Aldo", "José Aldo"]
 
 These are the same class as the RDA duplicates merged earlier in the project.
-The Aldo/Araujo pairs are trivially safe to merge. The Bruno pair is NOT — it's
-entangled with issue 1, since collapsing them still leaves the middleweight
-homeless and his fights mis-attributed. Fix issue 1 first.
+
+The Bruno pair is RESOLVED — see issue 1. Rather than merging the two keys, the
+"Bruno Silva" key was repurposed for the middleweight who had no record at all,
+which fixes both problems at once: the duplicate is gone AND Blindado exists.
+The two men now share ZERO opponents (they shared 24).
+
+Jose/José Aldo and Viviane Araujo/Araújo are STILL OPEN. Both are accent-only
+duplicates and trivially safe to merge — no third fighter is entangled.
 
 
 ISSUE 3 — 691 one-sided links  [MOSTLY BENIGN, WORTH AUDITING]

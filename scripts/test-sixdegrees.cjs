@@ -87,9 +87,20 @@ for (const p of P) {
 console.log('\n== name collisions ==');
 {
   const i = n => F.findIndex(f => f.n === n);
-  const allen = i('Brendan Allen'), john = i('Charles Johnson'), bs = i('Bruno Silva');
-  ok(!(allen >= 0 && bs >= 0 && F[allen].o.includes(bs)),
-    'Brendan Allen is NOT linked to the flyweight Bruno Silva');
+  const allen = i('Brendan Allen'), john = i('Charles Johnson');
+  const mw = i('Bruno Silva'), fly = i('Bruno Gustavo da Silva');
+  // "Bruno Silva" now IS the middleweight (the duplicate flyweight record under
+  // that key was deleted and Blindado filled in), so Allen SHOULD link to him —
+  // that bout is real. What must never happen is Allen touching the flyweight,
+  // or Johnson touching the middleweight.
+  ok(allen >= 0 && mw >= 0 && F[allen].o.includes(mw),
+    'Brendan Allen IS linked to the middleweight Bruno Silva (real bout)');
+  ok(!(allen >= 0 && fly >= 0 && F[allen].o.includes(fly)),
+    'Brendan Allen is NOT linked to the flyweight');
+  ok(!(john >= 0 && mw >= 0 && F[john].o.includes(mw)),
+    'Charles Johnson is NOT linked to the middleweight');
+  ok(john >= 0 && fly >= 0 && F[john].o.includes(fly),
+    'Charles Johnson IS linked to the flyweight (real bout)');
   if (allen >= 0 && john >= 0) {
     const shared = F[allen].o.filter(o => F[john].o.includes(o)).map(o => F[o].n);
     ok(shared.length === 0, 'Allen and Johnson share no fabricated opponent', shared.join(', '));
