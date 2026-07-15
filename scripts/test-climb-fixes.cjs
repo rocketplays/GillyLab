@@ -17,6 +17,19 @@ setTimeout(()=>{
   ok(rows.length===nAttr,'upgrade rows use their own grid class',rows.length+' rows vs '+nAttr+' attributes');
   ok(!doc.querySelector('.attr:not(.up) button'),'no upgrade button left in the 42px creator grid');
 
+  console.log('\n== 1b. you cannot drop an attribute below the free baseline ==');
+  // Playtest: "you're able to put a default attribute of 1 down to 0."
+  // costTo() charges nothing below ATTR_MIN, so 1 -> 0 refunded NOTHING: a free
+  // downgrade the UI invited. Every slider must floor at the baseline.
+  win.eval('newGame(); render();');
+  const mins=[...doc.querySelectorAll('.attr:not(.up) input[type=range]')].map(i=>+i.min);
+  const AMIN=peek('ATTR_MIN');
+  ok(mins.length>0 && mins.every(m=>m===AMIN),'every creator slider floors at ATTR_MIN',
+     'mins='+JSON.stringify(mins)+' ATTR_MIN='+AMIN);
+  // and the floor must genuinely be free — otherwise the baseline eats the budget
+  ok(peek('spent()')===0,'the baseline sheet costs nothing','spent='+peek('spent()'));
+  ok(peek('G.pts')===peek('POINTS_START'),'you start with the full budget');
+
   console.log('\n== 2. a finish ends the fight ==');
   let sawFin=false, badFin=0, sawDec=false, badDec=0;
   for(let i=0;i<60;i++){

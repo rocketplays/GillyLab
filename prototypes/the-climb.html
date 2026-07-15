@@ -12,19 +12,32 @@
   Everything else is tunable. Play three runs. If you find yourself thinking
   "one more, I'll build him differently" — it works.
 
-  THE ONE RULE: the fights are scored by the REAL simulator (climb-scorer.js is
-  scripts/sim-backtest/_scorer.cjs verbatim, browser-wrapped). No fake difficulty
-  curve, no rubber-banding. When Topuria beats you it's because the model that
-  prices real fights says he beats you.
+  WHAT'S REAL AND WHAT ISN'T — say it plainly, because the page used to claim
+  "every fight is scored by the real GillyLab simulator, no fake difficulty" and
+  that stopped being true the moment we took the wheel.
 
-  Measured before building any of this:
-    - build swing      ~31 pts   (terrible -> god-stats, vs Topuria)
-    - finishing style  ~ 8 pts   (same record, finishes vs decisions)
-    - record           ~ 6 pts   (0-0 -> 8-0 over a murderers' row)
-  So the BUILD dominates. Upgrade points are the game's lever, because the model
-  won't supply the risk/reward on its own — beating a contender is worth ~1pt
-  more than beating a can. That asymmetry is a design problem to tune, not a
-  model bug.
+    REAL      the fighters, their stats, their records, their rankings, and the
+              ladder's power ratings (rank-led, textured by the sim's own
+              round-robin opinion). Climbing this division is climbing the UFC.
+    OURS      who wins. The style triangle, the attribute weights, the cost and
+              value curves, the difficulty dials.
+
+  WHY THE SIM STOPPED REFEREEING. Measured across 2,600 possible three-man
+  offers: a striker, a wrestler and a grappler wanted the SAME opponent 92% of
+  the time. The sim is a power ladder, not a matchup engine — it was trained to
+  price real fights, and real-fight pricing is dominated by "who's better", with
+  style as a rounding error. A game whose whole loop is "pick your matchup"
+  cannot be built on that. Every hour spent tuning attributes on top of it was
+  rearranging furniture in a house with no floor.
+
+  So the sim does the thing it's genuinely great at and the game can't fake —
+  how good a fighter really is — and the game does the rest.
+
+  This exists to answer ONE question no amount of measuring can: is the run fun?
+  Play three runs. If you find yourself thinking "one more, I'll build him
+  differently" — it works. Everything else is tunable, and now actually tunable:
+  see THE DIFFICULTY DIALS in the script below.
+
 -->
 <style>
   :root{ --bg:#0a0a0b; --surface:#111114; --surface2:#18181d; --border:#2a2a32;
@@ -96,7 +109,7 @@
 <div class="wrap">
   <h1>The <span class="g">Climb</span></h1>
   <p class="sub">Build a fighter. Pick your fights. Two losses and you're cut.
-    Every fight is scored by the real GillyLab simulator — no fake difficulty.</p>
+    Real UFC lightweights, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the division…</div></div>
 </div>
 
@@ -106,104 +119,6 @@ const $ = s => document.querySelector(s);
 let D=null, S=null, ME='__YOU__';
 let G=null;   // game state
 
-// ── the attribute sheet ──────────────────────────────────────────────────────
-// Vague on the front, specific on the back — the player sees "Striking", the
-// model sees kd + slpm + strAcc + strDef + sapm. Every point MUST move a lever
-// the sim actually reads, or the slider is a lie. 9 settable levers, 4 sliders.
-//
-// Cardio is deliberately ABSENT: the sim has no cardio input. What it has is
-// bigFightExperience ("composure and cardio when a fight goes long") — EARNED by
-// surviving five-round fights, not bought. So you can't buy a gas tank here,
-// same as real life.
-// NO LEVER HAS TWO OWNERS. This started as "one attribute owns one lever", from
-// a real bug: Power wrote BOTH kd and slpm, and Technique wrote slpm AGAIN
-// (s.slpm = (s.slpm||2)+...). Two sliders fought over one stat and whichever ran
-// last won, so raising Technique silently changed your output volume and no
-// slider meant what it said.
-//
-// The rule survived, but the reason didn't. One-lever-per-slider was never the
-// point — it was a cheap way to guarantee two things: no lever written twice,
-// and value-per-point roughly equal across sliders. A slider can own five levers
-// safely as long as both still hold. Striking owns five and measures 1.46
-// win%/point against Grappling's 1.18. Every lever has exactly one owner:
-//
-//   Striking     -> kd, slpm, strAcc, strDef, sapm   everything on the feet
-//   Wrestling    -> tdLanded, tdAcc                  getting them to the ground
-//   Grappling    -> subAvg                           finishing them there
-//   Takedown def -> tdDef                            staying upright
-//
-// THE SHEET IS ASYMMETRIC ON PURPOSE — one dial for the whole standup game, three
-// for the ground. That looks lopsided and it is exactly right, because it mirrors
-// where the MODEL has opinions. Measured spread (best matchup minus worst, across
-// six opponents): striking 0.6, wrestling 2.7, takedown def 2.2. Standing, the
-// model prices output as a flat quantity that pays the same against everyone. On
-// the ground it knows a wrestler eats a bad-TDD striker and stalls against
-// Topuria. So granularity belongs where the choices are, and the standup game is
-// one honest question: how good are you on the feet? Splitting it into five
-// sliders was five ways to ask the same question.
-//
-// POWER, PACE AND TECHNIQUE ARE ONE SLIDER NOW, and the reason isn't tidiness.
-// Measured, the value of +5 levels in each, against six different opponents:
-//
-//                Topuria  Oliveira  Gamrot  Gaethje  Holloway   avg   SPREAD
-//     power          3.8       3.8     4.1      4.0       4.1   4.0      0.3
-//     pace           1.1       1.1     1.2      1.2       1.2   1.2      0.1
-//     technique      0.3       0.3     0.4      0.4       0.4   0.4      0.0
-//     wrestling      3.5       6.3     3.8      4.7       4.1   4.5      2.7
-//     takedef        2.0       2.3     3.1      0.9       1.0   1.9      2.2
-//
-// STRIKING DOES NOT CARE WHO YOU ARE FIGHTING. Power is worth 4.0 against
-// Topuria's 95% takedown defence and 4.0 against Gaethje — a spread of 0.3
-// across the whole division. Wrestling swings 3.5->6.3 by opponent; takedown
-// defence swings 0.9->3.1. So Power vs Pace was never a decision: Power is 3.3x
-// better than Pace at the same price, against everyone, always. It was one
-// choice with two decoys attached.
-//
-// That is a property of THE MODEL, not of MMA, and it's worth stating plainly:
-// trained on 4,518 real fights, it learned matchup structure on the grappling
-// axis and essentially none on the striking axis, where output is priced as a
-// flat quantity. The game inherits that. Build identity in The Climb lives on
-// the grappling axis because that's the only axis the model has opinions about.
-//
-// The merge is NOT a repeat of the Grappling bug below. FIVE levers on one
-// slider measures at 1.46 win% per point against Grappling's 1.18 — a 1.24x
-// edge, which is a lean, not a dominance. Grappling was 3x. The rule isn't "one
-// lever per slider" — it's "value per point must match", and one lever per
-// slider was only ever a convenient way to guarantee that.
-//
-// STRIKING DEFENCE WENT IN HERE TOO, and it's worth recording why the arithmetic
-// behaved differently. Offence alone was SUB-additive: kd+slpm+strAcc predicted
-// 5.6 and delivered 5.4, because the three levers overlap (volume and accuracy
-// are both "how much lands"). Adding strDef+sapm was EXACTLY additive: predicted
-// 1.08+0.38 = 1.46, measured 1.46. Hitting and not-getting-hit are independent
-// in the model, so they stack cleanly.
-//
-// The alternative was pricing Striking higher instead of merging. It doesn't
-// work: at 2 points a level its value/point drops to 0.73 and it goes from best
-// buy to worst. There is no integer price that expresses 1.24x. Pricing is too
-// coarse a tool at this granularity — see the note on upCost.
-//
-// WRESTLING AND GRAPPLING ARE SEPARATE. Playtest: "does it seem clear that one
-// category is worth more than another?" Measured: NO — the grappler beat every
-// build against every opponent, 65% even into Topuria's 95% takedown defence.
-//
-// The cause was an accounting bug in MY layer, not the model. A single
-// "Grappling" attribute moved THREE levers (tdLanded, tdAcc, subAvg) for the
-// same price Power paid for ONE (kd). It was 3x more point-efficient than
-// anything else, so a grappler cost 33 points where an equivalent striker cost
-// 52 — and the striker lost every matchup while paying more.
-//
-// The rock-paper-scissors was ALREADY THERE, just drowned out: the grappler
-// still ran 65% into elite takedown defence and 92% into poor. That 27-point
-// swing is the model reading the matchup correctly. Splitting wrestling from
-// submissions makes the price honest so that signal can actually surface.
-//
-// NO DURABILITY. Not an oversight — checked the model. simDurabilityBoost is
-// "when you lose, do you survive to the scorecards or get finished?", and it
-// hard-returns 0 below THREE LOSSES. The Climb cuts you at two. It is
-// structurally unreachable in this game, so a Durability slider would be a
-// button wired to nothing. Same family as cardio: the sim measures both as
-// consequences of a career, not as attributes you buy.
 // ── the attribute sheet ─────────────────────────────────────────────────────
 // NINE SLIDERS, and every one of them is a real choice again.
 //
@@ -223,8 +138,11 @@ let G=null;   // game state
 // certainly does. The two things every fan argues about after a fight — did he
 // gas, can he take a shot — were the exact two the model couldn't hear.
 //
-// Levels are 0..10 and mean what they say: 0 is the worst in the division, 5 is
-// about median, 10 is the best in the world at it.
+// Levels run ATTR_MIN..ATTR_MAX (1..10). Level 1 is the FREE BASELINE — every
+// fighter starts there in everything, and POINTS_START buys you up from it. It
+// is not level zero: a UFC fighter with literally no takedown defence isn't a
+// thing, and costTo() charges nothing below 1 anyway, so a 0 would be a free
+// downgrade. 5 is about median, 10 is the best in the world at it.
 const ATTRS = [
   { id:'power',     label:'Power',        note:'ending it with one shot' },
   { id:'pace',      label:'Pace',         note:'volume and pressure' },
@@ -291,7 +209,7 @@ const ATTRS = [
 //
 // So: 24 -> 14 to start. 14 is 35% of a maxed fighter, the same fraction 24 was
 // of the old 70-point ceiling — the creator screen is worth what it was worth.
-const POINTS_START = 14, ATTR_MAX = 10;
+const POINTS_START = 14, ATTR_MAX = 10, ATTR_MIN = 1;
 
 // FLAT COST — one point per level, always.
 //
@@ -658,13 +576,13 @@ function fight(o){
 
 // ── render ───────────────────────────────────────────────────────────────────
 function newGame(){
-  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,1])), pts:POINTS_START - ATTRS.length*0,
+  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), pts:POINTS_START,
         wins:0, losses:0, streak:0, rank:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0 };
   render();
 }
 // What the current sheet has cost, in points — NOT the sum of levels, now that
 // costs escalate. The creator and the in-run upgrade panel share this.
-const costTo = lvl => { let c=0; for(let v=1; v<lvl; v++) c+=upCost(v); return c; };
+const costTo = lvl => { let c=0; for(let v=ATTR_MIN; v<lvl; v++) c+=upCost(v); return c; };
 const spent = () => ATTRS.reduce((s,a)=>s+costTo(G.attrs[a.id]),0);
 
 function render(){
@@ -686,7 +604,13 @@ function creator(){
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr';
     const l=document.createElement('label'); l.textContent=A.label;
-    const i=document.createElement('input'); i.type='range'; i.min=0; i.max=ATTR_MAX; i.value=G.attrs[A.id];
+    // min=ATTR_MIN, not 0. Playtest: "you're able to put a default attribute of 1
+    // down to 0." Worse than it looks — costTo() sums upCost from v=1, so level 1
+    // and level 0 BOTH cost nothing. Dropping to 0 refunded no points; you simply
+    // got a worse fighter for free. A strictly-dominated move the UI invited you
+    // to make. Level 1 is the free baseline every fighter starts with, so it's
+    // the floor.
+    const i=document.createElement('input'); i.type='range'; i.min=ATTR_MIN; i.max=ATTR_MAX; i.value=G.attrs[A.id];
     i.oninput=e=>{ const v=+e.target.value; const old=G.attrs[A.id];
       G.attrs[A.id]=v;
       if (spent()>POINTS_START) { G.attrs[A.id]=old; e.target.value=old; return; }
