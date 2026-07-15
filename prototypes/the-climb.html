@@ -393,7 +393,7 @@ const RATING_MIN  = 36;      // every slider at zero: worse than any gatekeeper
 // The real fix is to damp the loop (rewards that taper as you climb, or
 // opponents that scale with you), not to hunt for a magic constant. Until then
 // this number is load-bearing and fragile: change it WITH the harness open.
-const RATING_SPAN = 130;     // how far a full sheet carries you BEFORE the cap bites
+const RATING_SPAN = 170;     // fitted against the run harness with the cap in place, not by arithmetic
 const CAP_OVER    = 5;       // a maxed fighter tops out this far above the champion
 const STYLE_MAX   = 11;      // biggest style swing, in points of win probability
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides

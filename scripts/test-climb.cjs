@@ -87,12 +87,17 @@ const win=dom.window;
   ok(lens.every(l=>l>0),'every run actually plays');
   // Reachability is STRUCTURAL, not a bot's win rate. Failing the build because
   // a bad strategy loses is testing the wrong thing.
-  // A REALISTIC end-of-run fighter, not a maxed one. Maxing all nine costs ~160
-  // points; a championship run earns ~44. The old test set every attribute to 7
-  // (~100 points) and then failed the build for being a 97% favourite — it was
-  // testing a fighter who cannot exist. Spend a real budget instead.
+  // A REALISTIC end-of-run fighter, not a maxed one — and the BUDGET HAS TO TRACK
+  // THE ECONOMY. This said 44 points, correct when wins paid 1-2 over ~15 fights.
+  // With reward = risk x altitude a title run now earns ~20 start + ~70 = ~90, so
+  // 44 was testing a challenger who can no longer exist, and it failed the build
+  // for a title fight it had rigged to be unwinnable.
+  //
+  // This number is load-bearing and will rot again the next time the economy
+  // moves. If it fights back a third time, make the test PLAY a run to the title
+  // rather than hardcode what a challenger looks like.
   win.eval('newGame(); G.started=true; G.rank=1; G.wins=10; G.streak=10; G.fightNo=10;'+
-           'G.pts=44; (function(){var O=["power","technique","wrestling","chin","cardio","takedef","grappling","pace","strdef"];'+
+           'G.pts=90; (function(){var O=["power","technique","wrestling","chin","cardio","takedef","grappling","pace","strdef"];'+
            'while(G.pts>0){var moved=false;'+
            'for(const id of O){var c=upCost(G.attrs[id]); if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;moved=true;break;}}'+
            'if(!moved)break;}})();');
