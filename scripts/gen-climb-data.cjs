@@ -35,9 +35,21 @@ function main() {
   const D = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'sim-backtest', '_sim-data.json'), 'utf8'));
   const { FIGHTERS, FIGHTER_STATS, FIGHT_HISTORY } = D;
 
-  // ---- the ladder: everyone in the division who has a record + stats ----
+  // ---- the ladder: recognisable, ACTIVE fighters only ----
+  // Playtest: "a name that keeps popping up is Sam Stout, I don't even know who
+  // that is and people won't care if it's against people they don't know."
+  // Sam Stout retired in 2016. The unranked pool was sorted by MOST UFC FIGHTS,
+  // which is a retired-journeyman detector — Cerrone, Guida, Stephens, Yves
+  // Edwards, Melvin Guillard all outrank anyone current on career volume.
+  // Fighting names nobody recognises makes the run mean nothing.
+  const lastYear = n => {
+    const ys = (FIGHT_HISTORY[n] || []).map(b => +((/(\d{4})/.exec(b.date || '') || [])[1] || 0));
+    return ys.length ? Math.max(...ys) : 0;
+  };
+  const THIS_YEAR = new Date().getFullYear();
+  const ACTIVE_SINCE = THIS_YEAR - 8;      // ~2018+: still recognisable to a current fan
   const inDiv = FIGHTERS.filter(f => f && f.division === DIV && FIGHTER_STATS[f.name] &&
-    (FIGHT_HISTORY[f.name] || []).length >= 3);
+    (FIGHT_HISTORY[f.name] || []).length >= 3 && lastYear(f.name) >= ACTIVE_SINCE);
 
   // Rank order: champion, then #1..#15, then the unranked pool.
   // The roster writes the champion as "#C" and the interim as "#IC" — NOT
@@ -59,11 +71,14 @@ function main() {
   const UNRANKED_POOL = 24;
   const sorted = inDiv.slice().sort((a, b) => rankNum(a) - rankNum(b));
   const ranked = sorted.filter(f => rankNum(f) < 99).slice(0, RANKED_MAX);
-  // Prefer unranked fighters with real UFC records — they're the gatekeepers a
-  // debutant actually meets, and recognisable names make the run feel real.
+  // Gatekeepers: rank by RECENT UFC activity, not career volume. A fighter with
+  // 6 UFC bouts since 2022 is a better gatekeeper than one with 25 who left in
+  // 2016 — the first is someone a fan watched, the second is trivia.
+  const recentUFC = n => (FIGHT_HISTORY[n] || []).filter(b =>
+    /UFC/i.test(b.org || '') && +((/(\d{4})/.exec(b.date || '') || [])[1] || 0) >= ACTIVE_SINCE).length;
   const unranked = sorted.filter(f => rankNum(f) === 99)
-    .map(f => ({ f, n: (FIGHT_HISTORY[f.name] || []).filter(b => /UFC/i.test(b.org || '')).length }))
-    .filter(x => x.n >= 3)
+    .map(f => ({ f, n: recentUFC(f.name) }))
+    .filter(x => x.n >= 2)
     .sort((a, b) => b.n - a.n)
     .slice(0, UNRANKED_POOL)
     .map(x => x.f);

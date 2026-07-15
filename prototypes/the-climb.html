@@ -173,14 +173,51 @@ const amer = p => { const o = p>=0.5 ? -Math.round(100*p/(1-p)) : Math.round(100
 // Three choices, escalating. Ranked opponents are worth more upgrade points —
 // the model only pays ~1pt more for beating a contender than a can, so the
 // RISK/REWARD HAS TO COME FROM HERE. This is the main tuning dial.
+// Offers are CACHED per fight and RANDOMISED within their tier.
+//
+// Playtest: "it should randomize, it seems to be picking the same matchups every
+// time" and "when you lose to a fighter, the matchups should randomize again
+// with a possible step down in competition after a loss, not only leave you with
+// the ones you chose."
+//
+// Both were the same cause: offers() was PURE — same state in, same three names
+// out — and it was recomputed on every render. So the board never changed, and
+// after a loss you stared at the same three men who just beat you.
+//
+// Now: a fresh roll each fight (keyed on fightNo + losses, so a loss re-rolls),
+// picked at random from each tier rather than deterministically.
+function pick(arr){ return arr.length ? arr[Math.floor(Math.random()*arr.length)] : null; }
+// Cache WHO you're offered — never the odds.
+//
+// First cut cached the whole offer object keyed on fight state, and the test
+// caught it instantly: maxing Power+Technique moved the win prob 54.6% -> 54.6%,
+// because upgrading doesn't change fightNo/wins/losses/rank so the stale cache
+// was served. The card would have lied about your odds the moment you spent a
+// point — the exact thing an upgrade screen exists to show.
+//
+// So: the three OPPONENTS are stable within a fight (they shouldn't re-roll
+// because you moved a slider), but their probabilities are recomputed on every
+// read against your current build.
+let _offerCache = null, _offerKey = '';
 function offers(){
+  const key = [G.fightNo||0, G.wins, G.losses, G.rank].join('|');
+  if (_offerKey !== key || !_offerCache) { _offerKey = key; _offerCache = buildOffers(); }
+  // re-price against the CURRENT build every time
+  return _offerCache.map(o => {
+    const p = winProb(o.f.name);
+    return { f:o.f, p, reward:Math.max(1, Math.min(3, Math.round((1-p)*5))), jump:o.jump };
+  });
+}
+function buildOffers(){
   const unranked = D.ladder.filter(f=>f.rankNum===99 && !G.beat.has(f.name));
   const ranked   = D.ladder.filter(f=>f.rankNum<99 && !G.beat.has(f.name)).sort((a,b)=>b.rankNum-a.rankNum);
   const pool = [];
   if (G.rank == null) {
-    // unranked phase: three gatekeepers of rising quality
+    // Unranked phase: three gatekeepers of rising difficulty, drawn at random
+    // from each third so the same faces don't reappear every run.
     const s = unranked.slice().sort((a,b)=>winProb(b.name)-winProb(a.name));
-    pool.push(s[0], s[Math.floor(s.length/2)], s[s.length-1]);
+    const t = Math.max(1, Math.floor(s.length/3));
+    pool.push(pick(s.slice(0,t)), pick(s.slice(t,t*2)), pick(s.slice(t*2)));
   } else {
     // Ranked phase: someone below, someone near, someone a few spots ABOVE.
     //
@@ -193,11 +230,20 @@ function offers(){
     // offered once you're #1 (or interim). That's what makes it a climb rather
     // than a coin flip. MAIN TUNING DIAL — widen STEP for a faster game.
     const STEP = 3;
+    // A LOSS STEPS YOU DOWN. You just got beaten — the matchmaker gives you
+    // someone softer, not another contender. Widens the 'below' band so the
+    // re-roll is a genuine breather rather than the same wall.
+    const SOFTEN = G.losses > 0 ? 3 : 0;
     const below = ranked.filter(f=>f.rankNum>G.rank && f.rankNum<99);
     const near  = ranked.filter(f=>Math.abs(f.rankNum-G.rank)<=1 && f.rankNum!==G.rank);
     const up    = ranked.filter(f=>f.rankNum<G.rank && f.rankNum>=G.rank-STEP && f.rankNum>0.5);
+    const soft  = ranked.filter(f=>f.rankNum>G.rank+SOFTEN && f.rankNum<99);
     const title = ranked.filter(f=>f.rankNum<=0.5);   // champ + interim
-    pool.push(below[0], near[0] || up[0], (G.rank<=1 ? title[0] : null) || up[up.length-1]);
+    pool.push(
+      pick(SOFTEN ? (soft.length?soft:below) : below),
+      pick(near.length?near:up),
+      (G.rank<=1 ? pick(title) : null) || pick(up) || pick(below)
+    );
     // Fallbacks so the offer list is never empty at the top of the ladder.
     if(!pool.filter(Boolean).length) pool.push(...ranked.slice(0,3));
   }
@@ -355,26 +401,18 @@ function resultBox(){
   return p;
 }
 
-// What is +1 in this category actually WORTH? Playtest: "it's not clear how
-// impactful each category is." So don't make them guess — ASK THE MODEL. Bump
-// the attribute, re-score the hardest fight on offer, show the delta. It's the
-// honest answer, it teaches what the sim cares about, and it makes the choice a
-// decision instead of a shrug.
-function marginal(attrId, oppName){
-  const before = winProb(oppName);
-  const old = G.attrs[attrId];
-  if (old >= ATTR_MAX) return null;
-  G.attrs[attrId] = old + 1;
-  const after = winProb(oppName);
-  G.attrs[attrId] = old;
-  return bo3(after) - bo3(before);
-}
-
+// Show the COST, not the % boost.
+//
+// I added a live "+1 (+1.8%)" marginal-value readout to answer an earlier note
+// that category impact was unclear. Playtest: "on the upgrades, it should just
+// say what it costs to upgrade, not the % boost you get." Right — the % turned
+// every upgrade into a solved arithmetic problem: read five numbers, take the
+// biggest, no judgement. Showing cost keeps the decision a judgement about the
+// fighter you want to be. The marginal calc is gone entirely (it also cost 5
+// extra sim calls per render).
 function upgrade(){
   const p=document.createElement('div'); p.className='panel';
-  const target = (offers()[1] || offers()[0] || {}).f;
-  p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')' +
-    (target ? ' — value of +1 vs '+target.name : '') + '</div>';
+  p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')</div>';
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr';
     const l=document.createElement('label'); l.textContent=A.label;
@@ -382,15 +420,14 @@ function upgrade(){
     bar.style.cssText='height:6px;background:var(--surface2);border-radius:3px;overflow:hidden';
     bar.innerHTML='<div style="height:100%;width:'+(G.attrs[A.id]/ATTR_MAX*100)+'%;background:var(--accent)"></div>';
     const btn=document.createElement('button'); btn.className='btn';
-    const mv = target ? marginal(A.id, target.name) : null;
-    btn.textContent = (mv==null) ? '+1' : ('+1  ('+(mv>=0?'+':'')+(mv*100).toFixed(1)+'%)');
-    btn.style.padding='.15rem .4rem'; btn.style.fontSize='.68rem'; btn.style.whiteSpace='nowrap';
-    if(mv!=null && mv>0.004) btn.style.borderColor='var(--accent)';
     const cost = upCost(G.attrs[A.id]);
-    btn.disabled = G.pts<cost || G.attrs[A.id]>=ATTR_MAX;
+    const maxed = G.attrs[A.id] >= ATTR_MAX;
+    btn.textContent = maxed ? 'MAX' : ('+1  ·  ' + cost + (cost>1?' pts':' pt'));
+    btn.style.padding='.15rem .5rem'; btn.style.fontSize='.68rem'; btn.style.whiteSpace='nowrap';
+    btn.disabled = G.pts<cost || maxed;
     if(btn.disabled) btn.style.opacity=.3;
-    if(!btn.disabled && cost>1) btn.textContent += '  −'+cost+'pt';
-    btn.onclick=()=>{ if(G.pts<cost||G.attrs[A.id]>=ATTR_MAX) return; G.attrs[A.id]++; G.pts-=cost; render(); };
+    else btn.style.borderColor='var(--accent)';
+    btn.onclick=()=>{ if(G.pts<cost||maxed) return; G.attrs[A.id]++; G.pts-=cost; render(); };
     row.appendChild(l); row.appendChild(bar); row.appendChild(btn);
     p.appendChild(row);
   }
