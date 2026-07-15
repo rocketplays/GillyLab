@@ -1119,6 +1119,7 @@
     .bt-stage .bt-leg:last-of-type { border-bottom: none; }
     .bt-stage .bt-leg-p { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; }
     .bt-leg-m { color: var(--muted); font-size: 0.68rem; white-space: nowrap; }
+    .bt-book { color: #c9ccd3; font-weight: 700; }
     .bt-leg-x { background: none; border: none; color: var(--muted); font-size: 1rem; line-height: 1; cursor: pointer; padding: 0 2px; }
     .bt-leg-x:hover { color: #ff6a5e; }
     .bt-empty { color: var(--muted); text-align: center; font-size: 0.84rem; padding: 2rem 0; line-height: 1.6; }
@@ -102728,7 +102729,7 @@ const GL_SHEET = (function () {
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
       ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, b.match || '', maxW), tx, cy + 26);
+      ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       ctx.textBaseline = 'alphabetic';
       y += rowH;
     });
@@ -110771,7 +110772,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all';
-  let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null;
+  let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
   let btLegs = [];
@@ -111071,7 +111072,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const bets = src.map(b => {
       const names = btBetNames(b);
       return { pick: b.pick, match: b.match.split(' · ')[0], odds: (b.effOdds != null ? b.effOdds : b.odds),
-        stake: b.stake, status: b.status, profit: btProfit(b),
+        stake: b.stake, status: b.status, profit: btProfit(b), book: b.book || '',
         names: names, slugs: names.map(n => nameToSlug(n)) };
     });
     const s = btStats(all);
@@ -111216,7 +111217,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       + ' · ' + b.stake + 'u'
       // What's still live: profit at risk, on the price that would actually pay
       // (effOdds, so a parlay with a voided leg quotes the re-priced return).
-      + (b.status === 'pending' ? ' <span style="opacity:.75">to win ' + btU(btToWin(b)) + 'u</span>' : '');
+      + (b.status === 'pending' ? ' <span style="opacity:.75">to win ' + btU(btToWin(b)) + 'u</span>' : '')
+      + (b.book ? ' · <span class="bt-book">' + btEsc(b.book) + '</span>' : '');
     // Parlay: show each leg and how many are in.
     let legsHTML = '';
     if (b.market === 'PARLAY' && b.legs) {
@@ -111246,6 +111248,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         acts += '<div class="bt-editrow"><div class="bt-row2">' +
           '<div><label>Your odds</label><input id="bt-e-odds" type="number" value="' + b.odds + '"></div>' +
           '<div><label>Stake (units)</label><input id="bt-e-stake" type="number" step="0.5" min="0.5" value="' + b.stake + '"></div></div>' +
+          '<label>Sportsbook (optional)</label><input id="bt-e-book" maxlength="40" placeholder="e.g. DraftKings" value="' + btEsc(b.book || '') + '">' +
           '<div class="bt-acts"><button class="win" ' + A('btEditSave') + '>Save</button><button onclick="btEditCancel()">Cancel</button></div></div>';
       }
     }
@@ -111259,10 +111262,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const odds = parseInt(document.getElementById('bt-e-odds').value, 10);
     const stake = parseFloat(document.getElementById('bt-e-stake').value);
     if (!isFinite(odds) || odds === 0) { alert('Enter the odds you got.'); return; }
-    btApi('/api/bets/edit', { id: id, odds: odds, stake: stake }).then(function (r) {
+    btApi('/api/bets/edit', { id: id, odds: odds, stake: stake,
+      book: (document.getElementById('bt-e-book') || {}).value || '' }).then(function (r) {
       if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not edit that bet.'); return; }
       const b = BT_BETS.find(x => x.id === id);
-      if (b && r.j.bet) { b.odds = r.j.bet.odds; b.stake = r.j.bet.stake; }
+      if (b && r.j.bet) { b.odds = r.j.bet.odds; b.stake = r.j.bet.stake; b.book = r.j.bet.book; }
       btEditId = null; btDeriveAll(); btRenderHistory();
     });
   }
@@ -111342,7 +111346,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const f1First = l1 === [l1, l2].sort()[0];
     const side = leg.side === 'f1' ? (f1First ? 1 : 2) : (f1First ? 2 : 1);
     const nm = side === 1 ? f.f1 : f.f2;
-    const base = { fightId: f.id, evSlug: f.evSlug, match: btShort(f.f1) + ' vs ' + btShort(f.f2), odds: Number(leg.odds) };
+    const base = { fightId: f.id, evSlug: f.evSlug, match: btShort(f.f1) + ' vs ' + btShort(f.f2), odds: Number(leg.odds), book: leg.booklabel || '' };
     if (leg.mkt === 'ml') return Object.assign(base, { market: 'ML', params: { side: side }, pick: btShort(nm) + ' ML' });
     if (leg.mkt === 'total') { const ou = /^o/i.test(leg.ou || '') ? 'O' : 'U';
       return Object.assign(base, { market: 'TOTAL', params: { line: Number(leg.line), ou: ou }, pick: (ou === 'O' ? 'Over ' : 'Under ') + leg.line + ' rounds' }); }
@@ -111428,6 +111432,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (ready) {
       h += '<div class="bt-row2"><div><label>Combined odds</label><input id="bt-p-odds" type="number" value="' + comb + '"></div>' +
         '<div><label>Stake (units)</label><input id="bt-p-stake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+        '<label>Sportsbook (optional)</label><input id="bt-p-book" placeholder="e.g. DraftKings" maxlength="40" value="' + btEsc(btLegs[0].book || '') + '">' +
         '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> There\'s no closing line for a combined price. It\'s still <b style="color:var(--accent)">verified</b> — each leg grades off its own fight, the parlay settles once they\'re all in (or the moment one loses), and a voided leg drops out and re-prices the rest.</div>' +
         '<button type="button" class="bt-btn" onclick="btSubmitParlay()">Add parlay</button>';
     } else {
@@ -111442,7 +111447,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const stake = parseFloat(document.getElementById('bt-p-stake').value) || 1;
     if (!isFinite(odds)) { alert('Enter the combined odds.'); return; }
     const ev = (BT_EVENTS || []).find(e => e.slug === btLegs[0].evSlug);
-    btApi('/api/bets', { kind: 'tracked', market: 'PARLAY', legs: btLegs, match: ev ? btEvLabel(ev) : '', odds: odds, stake: stake })
+    btApi('/api/bets', { kind: 'tracked', market: 'PARLAY', legs: btLegs, match: ev ? btEvLabel(ev) : '', odds: odds, stake: stake,
+      book: (document.getElementById('bt-p-book') || {}).value || '' })
       .then(function (r) {
         if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that parlay.'); return; }
         BT_BETS.push(r.j.bet); btLegs = []; btDeriveAll(); btSetView('history');
@@ -111457,7 +111463,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (legs.length > 1) btLegs = legs.slice();
       else if (legs.length === 1) {
         const l = legs[0], f = btFindFight(l.fightId, btPre.evSlug);
-        if (f) { btEvent = (BT_EVENTS || []).find(e => e.slug === f.evSlug) || null; btFight = f; btMarket = l.market; btPreOdds = l.odds; }
+        if (f) { btEvent = (BT_EVENTS || []).find(e => e.slug === f.evSlug) || null; btFight = f; btMarket = l.market; btPreOdds = l.odds; btPreBook = l.book || ''; }
       }
       btPre = null;
     }
@@ -111486,10 +111492,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           h += '<label>Market</label><select id="bt-mkt" onchange="btSetMarket(this.value)">';
           Object.keys(BT_MARKETS).forEach(k => { h += '<option value="' + k + '"' + (btMarket === k ? ' selected' : '') + '>' + BT_MARKETS[k] + '</option>'; });
           h += '</select>' + btSelUI(f);
-          // A preloaded selection carries the price from the book you picked it at.
+          // A preloaded selection carries the price AND the book you picked it at.
           const preOdds = btPreOdds; btPreOdds = null;
+          const preBook = btPreBook; btPreBook = null;
           h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (preOdds != null ? preOdds : (priced && o ? o.o1 : '')) + '" placeholder="-150"></div>' +
-            '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="1" step="0.5" min="0.5"></div></div>';
+            '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+            '<label>Sportsbook (optional)</label><input id="bt-book" placeholder="e.g. DraftKings" maxlength="40" value="' + btEsc(preBook || '') + '">';
           h += priced
             ? (btSegStarted(f)
               ? '<div class="bt-note lock"><b>Won\'t count toward CLV — ' + btNoClvWhy(f) + '.</b> We snapshot each segment\'s closing line ' + BT_CLOSE_LEAD_MIN + ' minutes before it begins, so that number is already locked in. This bet is still <b style="color:var(--accent)">verified</b> — auto-graded from the result, and it counts toward your record, ROI and units.</div>'
@@ -111510,6 +111518,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       h += '<label>Matchup / event</label><input id="bt-cmatch" placeholder="e.g. Silva vs Jones — PFL 7">' +
         '<label>Your pick + market</label><input id="bt-csel" placeholder="e.g. Silva inside the distance">' +
         '<div class="bt-row2"><div><label>Your odds</label><input id="bt-codds" type="number" placeholder="-150"></div><div><label>Stake (units)</label><input id="bt-cstake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+        '<label>Sportsbook (optional)</label><input id="bt-cbook" placeholder="e.g. DraftKings" maxlength="40">' +
         '<div class="bt-note">We don\'t track this fight, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, and it\'s excluded from verified CLV / ROI.</div>' +
         '<button type="button" class="bt-btn" onclick="btSubmitCustom()">Add bet</button>';
     }
@@ -111529,6 +111538,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       kind: 'tracked', fightId: f.id, market: btMarket, pick: p.pick,
       match: btShort(f.f1) + ' vs ' + btShort(f.f2) + ' · ' + f.ev.short,
       params: p.p, priced: p.priced, closeSide: p.closeSide, odds: odds, stake: stake,
+      book: (document.getElementById('bt-book') || {}).value || '',
     }).then(function (r) {
       if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
       BT_BETS.push(r.j.bet); btDeriveAll(); btSetView('history');
@@ -111538,7 +111548,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const m = document.getElementById('bt-cmatch').value.trim(), s = document.getElementById('bt-csel').value.trim();
     const odds = parseInt(document.getElementById('bt-codds').value, 10), stake = parseFloat(document.getElementById('bt-cstake').value) || 1;
     if (!m || !s || !isFinite(odds)) { alert('Fill in the matchup, your pick and the odds.'); return; }
-    btApi('/api/bets', { kind: 'manual', match: m, pick: s, odds: odds, stake: stake }).then(function (r) {
+    btApi('/api/bets', { kind: 'manual', match: m, pick: s, odds: odds, stake: stake,
+      book: (document.getElementById('bt-cbook') || {}).value || '' }).then(function (r) {
       if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
       BT_BETS.push(r.j.bet); btSetView('history');
     });

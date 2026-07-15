@@ -987,7 +987,7 @@ const GL_SHEET = (function () {
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
       ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, b.match || '', maxW), tx, cy + 26);
+      ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       ctx.textBaseline = 'alphabetic';
       y += rowH;
     });

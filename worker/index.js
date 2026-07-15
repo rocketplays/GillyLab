@@ -508,6 +508,8 @@ async function handleBetsAdd(request, env, url) {
   const odds = parseInt(body.odds, 10);
   const stake = Math.max(0.1, Math.min(1000, Number(body.stake) || 1));
   if (!isFinite(odds) || odds === 0) return json({ error: "Enter the odds you got." }, 400);
+  // Where they placed it. Free text, optional — a label only, nothing keys off it.
+  const book = String(body.book || "").slice(0, 40).trim();
   const now = Date.now();
   const list = await btGetBets(env, s.email);
   if (list.length >= BT_MAX) return json({ error: "Bet log is full." }, 400);
@@ -518,7 +520,7 @@ async function handleBetsAdd(request, env, url) {
     if (!match || !pick) return json({ error: "Fill in the matchup and your pick." }, 400);
     // Self-reported: never verified, never CLV, user settles it.
     rec = { id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "manual", verified: false,
-      market: "CUSTOM", pick, match, odds, stake, status: "pending", ts: now, createdAt: now, editable: true };
+      market: "CUSTOM", pick, match, odds, stake, book, status: "pending", ts: now, createdAt: now, editable: true };
   } else if (body.market === "PARLAY") {
     // Every leg must resolve to a live bout on ONE event, and none may be decided.
     // A parlay never earns CLV — there's no closing line for a combined price.
@@ -561,7 +563,7 @@ async function handleBetsAdd(request, env, url) {
       market: "PARLAY", evSlug, legs: out,
       pick: out.length + "-leg parlay", match: String(body.match || "").slice(0, 160),
       priced: false, clvOk: false, noClv: "parlays don't count toward CLV",
-      odds, stake, ts: Date.parse(evStartsAt) || now, createdAt: now, editable: true,
+      odds, stake, book, ts: Date.parse(evStartsAt) || now, createdAt: now, editable: true,
     };
   } else {
     const hit = await btFindBout(env, url, String(body.fightId || ""));
@@ -579,7 +581,7 @@ async function handleBetsAdd(request, env, url) {
       pick: String(body.pick || "").slice(0, 160), match: String(body.match || "").slice(0, 160),
       params: body.params && typeof body.params === "object" ? body.params : {},
       priced: !!body.priced, closeSide: body.closeSide === 2 ? 2 : 1,
-      clvOk, noClv, odds, stake, ts: Date.parse(hit.ev.startsAt) || now,
+      clvOk, noClv, odds, stake, book, ts: Date.parse(hit.ev.startsAt) || now,
       createdAt: now, editable: clvOk,
     };
   }
@@ -612,7 +614,7 @@ async function handleBetsSettle(request, env) {
 async function handleBetsEdit(request, env) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
-  const { id, odds, stake } = await readBody(request);
+  const { id, odds, stake, book } = await readBody(request);
   const list = await btGetBets(env, s.email);
   const b = list.find((x) => x.id === id);
   if (!b) return json({ error: "not found" }, 404);
@@ -622,6 +624,7 @@ async function handleBetsEdit(request, env) {
   if (!isFinite(o) || o === 0) return json({ error: "Enter the odds you got." }, 400);
   b.odds = o;
   b.stake = Math.max(0.1, Math.min(1000, Number(stake) || b.stake));
+  if (book !== undefined) b.book = String(book || "").slice(0, 40).trim();
   b.editedAt = Date.now();
   await btPutBets(env, s.email, list);
   return json({ ok: true, bet: b });
