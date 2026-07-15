@@ -100,9 +100,18 @@
   .opp .bt{font-size:.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .opp.target{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
   .opp.target .nm{color:var(--gold)}
+  /* Bridge = this fighter is on the target's opponent list, i.e. picking him
+     puts you one hop out. Surfaced, never hidden: hunting for the overlap by
+     eye across 40 names is a reading-comprehension chore, not the game. */
+  .opp.bridge{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .opp.bridge .nm{color:var(--accent)}
   .opp.seen{opacity:.4}
   .badge{font-size:.55rem;font-weight:700;letter-spacing:.06em;color:var(--gold);
-    border:1px solid var(--gold);border-radius:3px;padding:0 .25rem;margin-left:.3rem}
+    border:1px solid var(--gold);border-radius:3px;padding:0 .25rem;margin-left:.3rem;
+    white-space:nowrap}
+  .badge.br{color:var(--accent);border-color:var(--accent)}
+  .chip.hot{border-color:var(--accent);background:rgba(0,230,104,.1)}
+  .chip.hot span{color:var(--accent)}
 
   /* ── win ─────────────────────────────────────────────────────── */
   .win{background:var(--card);border:1px solid var(--accent);border-radius:8px;
@@ -133,8 +142,8 @@
 <div class="wrap">
   <h1>Six Degrees of the <span class="g">Octagon</span></h1>
   <p class="sub">Connect the two fighters by clicking who they fought — never type a name.
-    Every click costs a move, <em>including backing up</em>. There are no wrong picks, only
-    expensive ones.</p>
+    <b style="color:var(--accent)">Green</b> means they've fought your target, so you're one hop out.
+    Every click costs a move, <em>including backing up</em>.</p>
   <div id="app"><div class="load">Loading the board…</div></div>
 </div>
 
@@ -276,10 +285,14 @@ function render(){
   // tell what the tiles even were ("are they all the person's opponents?"), which
   // means the mechanic was never going to teach itself.
   const how=document.createElement('div'); how.className='how';
+  const tLast = esc(F[puz.b].n.split(/\s+/).pop());
   how.innerHTML = 'Every tile below is someone <b>'+esc(F[cur].n)+'</b> has actually fought. ' +
     'Click one and you <b>become</b> them — then you see who <i>they</i> fought. ' +
-    'Keep going until <b>'+esc(F[puz.b].n)+'</b> shows up in the grid (he\'ll have a gold ring).' +
-    '<br><span class="tip">Strategy: check '+esc(F[puz.b].n)+'\'s opponents below, then hunt for a name that\'s on both lists.</span>';
+    'Keep going until <b>'+esc(F[puz.b].n)+'</b> turns up.' +
+    '<br><span class="tip">Gold = that\'s '+esc(F[puz.b].n)+', click to win. ' +
+    'Green = they fought '+tLast+', so you\'re one hop out.</span>' +
+    '<br>No green on the board? Then you need to travel — look at who '+esc(F[puz.b].n)+
+    ' fights below and head for that division and era.';
   app.appendChild(how);
 
   // ── target dossier ──
@@ -294,8 +307,9 @@ function render(){
   dh.querySelector('b').textContent=F[puz.b].n;
   dos.appendChild(dh);
   const dl=document.createElement('div'); dl.className='dos-list';
+  const curOpp = new Set(F[cur].o);
   F[puz.b].o.slice().sort((x,y)=>F[y].f-F[x].f||F[x].n.localeCompare(F[y].n)).forEach(o=>{
-    const c=document.createElement('div'); c.className='chip';
+    const c=document.createElement('div'); c.className='chip'+(curOpp.has(o)?' hot':'');
     c.appendChild(avatar(o));
     const s=document.createElement('span'); s.textContent=F[o].n; c.appendChild(s);
     dl.appendChild(c);
@@ -311,14 +325,23 @@ function render(){
   app.appendChild(h);
 
   const g=document.createElement('div'); g.className='grid';
+  const tOpp = new Set(F[puz.b].o);
   for(const o of opps){
     const b=document.createElement('button'); b.className='opp';
-    if(o===puz.b) b.classList.add('target');
+    const isTarget = o===puz.b;
+    const isBridge = !isTarget && tOpp.has(o);
+    if(isTarget) b.classList.add('target');
+    if(isBridge) b.classList.add('bridge');
     if(visited.has(o)) b.classList.add('seen');
     b.appendChild(avatar(o));
     const m=document.createElement('div'); m.className='meta';
     const nm=document.createElement('div'); nm.className='nm'; nm.textContent=F[o].n;
-    if(o===puz.b){ const s=document.createElement('span'); s.className='badge'; s.textContent='TARGET'; nm.appendChild(s); }
+    if(isTarget){ const s=document.createElement('span'); s.className='badge'; s.textContent='TARGET'; nm.appendChild(s); }
+    else if(isBridge){
+      const s=document.createElement('span'); s.className='badge br';
+      s.textContent='FOUGHT '+F[puz.b].n.split(/\s+/).pop().toUpperCase();
+      nm.appendChild(s);
+    }
     const bt=document.createElement('div'); bt.className='bt'; bt.textContent=boutLabel(cur,o);
     m.appendChild(nm); m.appendChild(bt); b.appendChild(m);
     b.onclick=()=>move(o);

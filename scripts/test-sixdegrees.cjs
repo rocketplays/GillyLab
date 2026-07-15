@@ -147,6 +147,10 @@ const win = dom.window;
   // `let puz` / `let trail` are lexical top-level bindings — they never attach to
   // window, so reach them through the page's own scope.
   const peek = expr => win.eval(expr);
+  // Card names carry badge text ('TARGET', 'FOUGHT PRATES') inside .nm — strip
+  // it once, here, rather than in three places that drift apart.
+  const cardName = c => { const n = c.querySelector('.nm').cloneNode(true);
+    n.querySelectorAll('.badge').forEach(b => b.remove()); return n.textContent.trim(); };
 
   ok(!/Could not load/.test(app()), 'page booted against the data');
   ok(doc.querySelectorAll('.opp').length > 0, 'opponent grid rendered',
@@ -163,7 +167,31 @@ const win = dom.window;
     ok(got.every(n => want.has(n)), 'and nothing that isn\'t one');
   }
   ok(/Every tile below is someone/.test(app()), 'the mechanic is explained on the board');
-  ok(/hunt for a name that's on both lists/.test(app()), 'the strategy is stated, not left to be guessed');
+  ok(/you're one hop out/.test(app()), 'the green highlight is explained');
+
+  // The bridge highlight. Doing the set-intersection FOR the player was the
+  // whole point ("the game isn't reading comprehension"), so it has to be
+  // exactly right — a wrong highlight is worse than none at all.
+  {
+    const p = peek('puz');
+    const tOpp = new Set(F[p.b].o);
+    const cards = [...doc.querySelectorAll('.opp')];
+    const flagged = cards.filter(c => c.classList.contains('bridge')).map(cardName);
+    const shouldFlag = cards.map(cardName).filter(n => {
+      const i = F.findIndex(f => f.n === n);
+      return i !== p.b && tOpp.has(i);
+    });
+    ok(flagged.length === shouldFlag.length && flagged.every(n => shouldFlag.includes(n)),
+      'every bridge is highlighted, and only real bridges are',
+      'flagged=' + flagged.length + ' expected=' + shouldFlag.length);
+    ok(flagged.length > 0, 'the par-2 opener actually shows a green bridge', flagged.join(', '));
+    // the target itself is gold, never green — different meaning, different colour
+    const tgtCard = cards.find(c => c.classList.contains('target'));
+    ok(!tgtCard || !tgtCard.classList.contains('bridge'), 'target is gold, not green');
+    // clicking a green bridge must genuinely leave you one hop out
+    const bi = F.findIndex(f => f.n === flagged[0]);
+    ok(F[bi].o.includes(p.b), 'a green card really is one hop from the target');
+  }
 
   // Walk the optimal path by CLICKING the card whose name matches the next hop.
   const target = peek('puz');
@@ -172,7 +200,7 @@ const win = dom.window;
   for (let k = 1; k < solution.length; k++) {
     const wantName = F[solution[k]].n;
     const cards = [...doc.querySelectorAll('.opp')];
-    const card = cards.find(c => c.querySelector('.nm').textContent.replace('TARGET', '').trim() === wantName);
+    const card = cards.find(c => cardName(c) === wantName);
     if (!card) { ok(false, 'could click through to ' + wantName, 'card not in grid'); break; }
     card.dispatchEvent(new win.Event('click', { bubbles: true }));
     clicked++;
@@ -193,7 +221,7 @@ const win = dom.window;
   win.start(P.find(p => p.par >= 4) || P[0]);
   await new Promise(r => setTimeout(r, 20));
   const cur2 = peek("trail")[0];
-  const shown = [...doc.querySelectorAll('.opp')].map(c => c.querySelector('.nm').textContent.replace('TARGET', '').trim());
+  const shown = [...doc.querySelectorAll('.opp')].map(cardName);
   const legit = new Set(F[cur2].o.map(i => F[i].n));
   ok(shown.every(n => legit.has(n)), 'grid only offers real opponents',
     shown.filter(n => !legit.has(n)).slice(0, 3).join(', '));
@@ -211,7 +239,7 @@ const win = dom.window;
   // Burn every move on links that are NOT the target, and confirm we lose.
   let guard = 0;
   while (peek('spent') < budget && guard++ < 40) {
-    const cards = [...doc.querySelectorAll('.opp')].filter(c => !/TARGET/.test(c.querySelector('.nm').textContent));
+    const cards = [...doc.querySelectorAll('.opp')].filter(c => !c.classList.contains('target'));
     if (!cards.length) break;
     cards[0].dispatchEvent(new win.Event('click', { bubbles: true }));
   }
@@ -228,7 +256,7 @@ const win = dom.window;
   // Backing up costs a move — free undo would hand the budget back.
   win.start(p4);
   await new Promise(r => setTimeout(r, 20));
-  const first = [...doc.querySelectorAll('.opp')].find(c => !/TARGET/.test(c.querySelector('.nm').textContent));
+  const first = [...doc.querySelectorAll('.opp')].find(c => !c.classList.contains('target'));
   first.dispatchEvent(new win.Event('click', { bubbles: true }));
   ok(peek('spent') === 1, 'a forward click costs 1');
   win.eval('backTo(0)');
