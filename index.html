@@ -110738,7 +110738,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             evSlug: e.slug, evShort: e.title || 'UFC',
           };
         });
-        return { slug: e.slug, short: e.title || 'UFC', date: (e.startsAt || '').slice(0, 10), startsAt: e.startsAt, fights };
+        // title is the bare "UFC Fight Night"; espnName carries the billed name
+        // with the main event ("UFC Fight Night: Du Plessis vs. Usman").
+        return { slug: e.slug, short: e.title || 'UFC', full: e.espnName || e.title || 'UFC',
+          date: (e.startsAt || '').slice(0, 10), startsAt: e.startsAt, fights };
       }).filter(e => e.fights.length);
       BT_EVENTS.forEach(e => e.fights.forEach(f => { f.ev = e; }));
       return BT_EVENTS;
@@ -110916,7 +110919,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const c = btPendingCards().find(x => x.slug === slug); if (!c) return;
     const bets = BT_BETS.filter(b => b.status === 'pending' && b.evSlug === slug)
       .map(b => ({ pick: b.pick, match: b.match.split(' · ')[0], odds: b.odds, stake: b.stake }));
-    GL_SHEET.betCard({ title: 'My card', eventName: c.ev ? c.ev.short : c.label, eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
+    // Billed name incl. the main event — "UFC Fight Night" alone means nothing
+    // on a shared image.
+    GL_SHEET.betCard({ title: 'My card', eventName: c.ev ? (c.ev.full || c.ev.short) : c.label,
+      eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
   }
   // Share the record for whatever range/scope is on screen.
   function btShareHistory() {
