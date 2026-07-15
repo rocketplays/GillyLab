@@ -836,6 +836,7 @@ const GL_SHEET = (function () {
      Two square 1080 cards, sized for a feed: one for the user's record over the
      date range they're looking at, one for the pending bets on a single card.  */
   const BT_RED = '#ff6a5e';
+  const initialsOf = n => String(n || '').trim().split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase();
   function btTile(ctx, x, y, w, h, label, val, col) {
     roundRect(ctx, x, y, w, h, 14); ctx.fillStyle = CARD; ctx.fill();
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
@@ -891,7 +892,10 @@ const GL_SHEET = (function () {
     await fontsReady();
     const logo = await loadBrandLogo();
     const bets = (data.bets || []).slice(0, 10);
-    const rowH = 78, listTop = 268;
+    const rowH = 116, listTop = 268;
+    // Headshots: one for a fighter-specific pick, two (A vs B) when the bet is
+    // about the fight rather than a fighter — a total, the distance, a round start.
+    const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
     const CH = Math.max(1080, listTop + bets.length * rowH + 190);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
@@ -905,19 +909,39 @@ const GL_SHEET = (function () {
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();
 
     let y = listTop;
-    bets.forEach((b) => {
-      roundRect(ctx, 64, y, W - 128, rowH - 12, 12); ctx.fillStyle = CARD; ctx.fill();
-      ctx.textBaseline = 'alphabetic';
-      ctx.font = '800 30px ' + COND; ctx.fillStyle = TXT;
-      ctx.fillText(clip(ctx, b.pick || '', W - 128 - 240), 92, y + 32);
-      ctx.font = '400 21px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, b.match || '', W - 128 - 240), 92, y + 56);
-      ctx.textAlign = 'right';
-      ctx.font = '800 32px ' + COND; ctx.fillStyle = ACC;
-      ctx.fillText(b.odds > 0 ? '+' + b.odds : String(b.odds), W - 92, y + 34);
-      ctx.font = '400 20px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(b.stake + 'u', W - 92, y + 58);
+    bets.forEach((b, i) => {
+      const h = rowH - 12;
+      roundRect(ctx, 64, y, W - 128, h, 12); ctx.fillStyle = CARD; ctx.fill();
+      // Avatars, left. Two discs overlap slightly with a "vs" beneath them.
+      const pics = imgs[i] || [], names = (b.names || []);
+      const r = 34, cy = y + h / 2;
+      let tx = 96;
+      if (pics.length > 1) {
+        avatar(ctx, pics[0], 96 + r, cy - 6, r, initialsOf(names[0]), LINE);
+        avatar(ctx, pics[1], 96 + r * 2 + 18, cy - 6, r, initialsOf(names[1]), LINE);
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.font = '700 18px ' + COND; ctx.fillStyle = MUT;
+        ctx.fillText('VS', 96 + r + 9 + r / 2 + 4, cy + r + 4);
+        tx = 96 + r * 3 + 18 + 22;
+      } else if (pics.length === 1) {
+        avatar(ctx, pics[0], 96 + r, cy, r, initialsOf(names[0]), LINE);
+        tx = 96 + r * 2 + 22;
+      }
+      const right = W - 96;
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+      ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
+      const oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
+      ctx.fillText(oStr, right, cy - 12);
+      const oW = ctx.measureText(oStr).width;
+      ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(b.stake + 'u', right, cy + 22);
+      const maxW = right - tx - Math.max(oW, 60) - 28;
       ctx.textAlign = 'left';
+      ctx.font = '800 40px ' + COND; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 12);
+      ctx.font = '400 25px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(clip(ctx, b.match || '', maxW), tx, cy + 20);
+      ctx.textBaseline = 'alphabetic';
       y += rowH;
     });
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
