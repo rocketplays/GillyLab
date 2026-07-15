@@ -1105,6 +1105,9 @@
     #page-bets label { display: block; font-size: 0.72rem; color: var(--muted); margin: 9px 0 4px; text-transform: uppercase; letter-spacing: 0.05em; }
     #page-bets select, #page-bets input { width: 100%; font: inherit; font-size: 0.85rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text, #f4f5f7); border-radius: 7px; padding: 8px 10px; }
     #page-bets select:disabled { opacity: 0.45; }
+    /* iOS auto-zooms into any focused field under 16px, which yanks the whole
+       page around when you tap an odds box. Same guard .pl-stake uses. */
+    @media (max-width: 600px) { #page-bets select, #page-bets input { font-size: 16px; } }
     .bt-row2 { display: flex; gap: 8px; } .bt-row2 > div { flex: 1; }
     .bt-note { font-size: 0.72rem; color: var(--muted); margin-top: 10px; line-height: 1.5; }
     .bt-note.lock { color: #ffcf7a; }
