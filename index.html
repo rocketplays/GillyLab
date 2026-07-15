@@ -105799,6 +105799,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
       const bo = hit(e, '.pl-book-opt'); if (bo) { plSwitchBook(bo.dataset.book); return; }
+      // Hand the slip to the Bet & CLV Tracker's log form. Preload only — nothing
+      // is saved until the user confirms it there.
+      if (hit(e, '#plLogBet')) { if (typeof btLogSlip === 'function') btLogSlip(PARLAY.legs); return; }
       if (hit(e, '#plShareOpen')) { plShareOpen(); return; }
       if (hit(e, '#plSaveImg')) { plSaveImage(); return; }
       if (hit(e, '#plShareBtn')) { plShareSlip(); return; }
@@ -105846,9 +105849,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (e.key !== 'Enter' && e.key !== ' ') return;
       const cell = hit(e, '#odds-dynamic-content .pl-pick'); if (cell) { e.preventDefault(); plToggle(cell); return; }
       const x = hit(e, '.pl-leg-x'); if (x) { e.preventDefault(); PARLAY.legs.splice(Number(x.dataset.idx), 1); if (!PARLAY.legs.length) PARLAY.book = null; plRender(); return; }
-      // Hand the slip to the Bet & CLV Tracker's log form. Preload only — nothing
-      // is saved until the user confirms it there.
-      if (hit(e, '#plLogBet')) { e.preventDefault(); if (typeof btLogSlip === 'function') btLogSlip(PARLAY.legs); return; }
       if (hit(e, '#plBar')) { e.preventDefault(); PARLAY.open = !PARLAY.open; plAnim = PARLAY.open ? 'body' : null; plRender(); }
     });
   }
