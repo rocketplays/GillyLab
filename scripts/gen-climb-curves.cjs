@@ -12,7 +12,7 @@
  *
  * The whole curve sat off the end of the data. The sim was never trained on
  * those values, which is exactly why gains flattened past level 7: the model
- * was refusing to extrapolate, which is correct behaviour. It also meant the
+ * was refusing to extrapolate, which is correct behavior. It also meant the
  * top half of every attribute was inert, so spreading beat specialising --
  * arbitrage on my own bad mapping, not a fact about MMA.
  *

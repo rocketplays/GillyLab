@@ -257,7 +257,7 @@ async function espnBouts(espnId, cache) {
       if (!a) {
         // Cache miss (a late replacement the daily rebuild hasn't seen). Fetch the
         // name, but keep it in memory ONLY. Persisting a stub here would poison the
-        // shared cache: fetch-espn-events honours any entry with a fetchedAt for 30
+        // shared cache: fetch-espn-events honors any entry with a fetchedAt for 30
         // days, so this fighter would lose his flag, record and headshot until the
         // TTL expired. The next full rebuild fetches him properly.
         try {

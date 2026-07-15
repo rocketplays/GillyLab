@@ -97,7 +97,7 @@ function main() {
   // drops 13.3k edges to 8.1k and quietly deletes the sport's whole pre-Zuffa
   // memory.
   //
-  // Edge flavour is what makes a solved path a story rather than a receipt, so
+  // Edge flavor is what makes a solved path a story rather than a receipt, so
   // keep the bout that linked each pair (the earliest meeting) and its org.
   const adj = Object.create(null);
   const edgeInfo = Object.create(null);

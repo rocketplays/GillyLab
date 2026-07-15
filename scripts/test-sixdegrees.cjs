@@ -295,7 +295,7 @@ const win = dom.window;
       'every bridge is highlighted, and only real bridges are',
       'flagged=' + flagged.length + ' expected=' + shouldFlag.length);
     ok(flagged.length > 0, 'the par-2 opener actually shows a green bridge', flagged.join(', '));
-    // the target itself is gold, never green — different meaning, different colour
+    // the target itself is gold, never green — different meaning, different color
     const tgtCard = cards.find(c => c.classList.contains('target'));
     ok(!tgtCard || !tgtCard.classList.contains('bridge'), 'target is gold, not green');
     // clicking a green bridge must genuinely leave you one hop out
