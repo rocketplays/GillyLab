@@ -634,7 +634,7 @@ function creator(){
     // dash reads as apposition, so the name could be anything. "Lightweight ·
     // C Justin Gaethje" borrows the belt marker the rest of the game already
     // uses (#C on the ladder), so the label explains itself.
-    o.textContent=D.divisions[key].label+(champ?'  ·  C  '+champ.name:'  ·  vacant');
+    o.textContent=D.divisions[key].label+(champ?'  ·  C: '+champ.name:'  ·  vacant');
     sel.appendChild(o);
   }
   sel.onchange=e=>{ if(e.target.value===DIV) return; DIV=e.target.value; newGame(); };
