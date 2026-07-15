@@ -131,8 +131,8 @@ const win = dom.window;
     clicked++;
   }
   ok(clicked === solution.length - 1, 'clicked the full optimal chain', clicked + '/' + (solution.length - 1) + ' hops');
-  ok(/Connected in/.test(doc.body.textContent), 'win state fired');
-  ok(/Par — optimal chain/.test(doc.body.textContent), 'scored as par');
+  ok(/Connected in/.test(app()), 'win state fired');
+  ok(/par, optimal chain/.test(app()), 'scored as par');
 
   const share = doc.querySelector('.share');
   ok(share && /hops \(par \d\)/.test(share.textContent), 'share line rendered',
@@ -151,6 +151,42 @@ const win = dom.window;
   ok(shown.every(n => legit.has(n)), 'grid only offers real opponents',
     shown.filter(n => !legit.has(n)).slice(0, 3).join(', '));
   ok(shown.length === F[cur2].o.length, 'grid shows all of them', shown.length + '/' + F[cur2].o.length);
+
+  // ── 5. the budget: a game you cannot lose is not a game ───────────────────
+  console.log('\n== budget / fail state ==');
+  const p4 = P.find(x => x.par >= 3);
+  win.start(p4);
+  await new Promise(r => setTimeout(r, 20));
+  const budget = p4.par + 3;
+  ok(/Moves left/.test(app()), 'budget is surfaced to the player');
+  ok(peek('budgetOf(puz)') === budget, 'budget is par+3', 'got ' + peek('budgetOf(puz)'));
+
+  // Burn every move on links that are NOT the target, and confirm we lose.
+  let guard = 0;
+  while (peek('spent') < budget && guard++ < 40) {
+    const cards = [...doc.querySelectorAll('.opp')].filter(c => !/TARGET/.test(c.querySelector('.nm').textContent));
+    if (!cards.length) break;
+    cards[0].dispatchEvent(new win.Event('click', { bubbles: true }));
+  }
+  ok(peek('spent') === budget, 'moves actually run out', 'spent=' + peek('spent'));
+  ok(/Out of moves/.test(app()), 'loss state fires when the budget is gone');
+  ok(/The par line/.test(app()), 'the optimal chain is revealed on loss');
+  ok(doc.querySelectorAll('.opp').length === 0, 'grid is gone — no clicking on past a loss');
+
+  // A spent-out board must refuse further moves.
+  const before = JSON.stringify(peek('trail'));
+  win.eval('move(F[trail[trail.length-1]].o[0])');
+  ok(JSON.stringify(peek('trail')) === before, 'move() is refused once out of budget');
+
+  // Backing up costs a move — free undo would hand the budget back.
+  win.start(p4);
+  await new Promise(r => setTimeout(r, 20));
+  const first = [...doc.querySelectorAll('.opp')].find(c => !/TARGET/.test(c.querySelector('.nm').textContent));
+  first.dispatchEvent(new win.Event('click', { bubbles: true }));
+  ok(peek('spent') === 1, 'a forward click costs 1');
+  win.eval('backTo(0)');
+  ok(peek('spent') === 2, 'backing up costs 1 too', 'spent=' + peek('spent'));
+  ok(peek('trail').length === 1, 'and it does return you to the start');
 
   console.log('\n' + (fails ? '  ' + fails + ' CHECK(S) FAILED' : '  all checks passed'));
   process.exit(fails ? 1 : 0);

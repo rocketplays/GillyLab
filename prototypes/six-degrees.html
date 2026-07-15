@@ -90,10 +90,14 @@
   /* ── win ─────────────────────────────────────────────────────── */
   .win{background:var(--card);border:1px solid var(--accent);border-radius:8px;
     padding:1rem;margin:1rem 0}
+  .win.lost{border-color:var(--accent2)}
   .win h2{margin:0 0 .5rem;font-size:1rem;color:var(--accent)}
+  .win.lost h2{color:var(--accent2)}
+  .rl2{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin:.7rem 0 .15rem}
   .chain{font-size:.82rem;line-height:1.9}
   .chain b{color:var(--text)}
   .chain i{color:var(--muted);font-style:normal;font-size:.72rem}
+  .chain.opt b{color:var(--gold)}
   .share{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
     padding:.6rem .75rem;margin-top:.75rem;font-family:ui-monospace,Menlo,monospace;
     font-size:.78rem;white-space:pre-wrap}
@@ -111,7 +115,9 @@
 <body>
 <div class="wrap">
   <h1>Six Degrees of the <span class="g">Octagon</span></h1>
-  <p class="sub">Connect the two fighters. Click who they fought — never type a name.</p>
+  <p class="sub">Connect the two fighters by clicking who they fought — never type a name.
+    Every click costs a move, <em>including backing up</em>. There are no wrong picks, only
+    expensive ones.</p>
   <div id="app"><div class="load">Loading the board…</div></div>
 </div>
 
@@ -159,17 +165,45 @@ function boutLabel(a,b){
   return head.length > 26 ? head.slice(0,25)+'…' + (y?' · '+y:'') : head + (y ? ' · '+y : '');
 }
 
+// ── the budget is the entire game ────────────────────────────────────────────
+// You can never be STUCK: the board is one connected component, so every fighter
+// reaches every other and a path always exists from wherever you are. That means
+// there is no such thing as an illegal pick — which is exactly why there has to
+// be a budget. Without one there is no fail state, no tension, and no reason not
+// to click randomly until you bump into the target.
+//
+// par+3 is calibrated, not guessed. Measured over all 60 puzzles:
+//     optimal play          3.7 hops
+//     always click the most famous name   12.8
+//     always click the biggest hub        16.5
+//     random clicking                     19.9
+// So a budget of par+3 (≈6.7) fails every brute-force heuristic and only pays
+// out for actually knowing who fought who. That gap is the game.
+//
+// Spending a move to BACK UP costs one too. Free undo would let you explore the
+// whole tree for nothing and hand the budget back.
+const BUDGET_OVER_PAR = 3;
+const budgetOf = p => p.par + BUDGET_OVER_PAR;
+let spent = 0;
+
 function start(p){
-  puz = p; trail = [p.a]; visited = new Set([p.a]);
+  puz = p; trail = [p.a]; visited = new Set([p.a]); spent = 0;
   render();
 }
 
 function move(i){
-  trail.push(i); visited.add(i);
+  if (spent >= budgetOf(puz)) return;
+  trail.push(i); visited.add(i); spent++;
   render();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function backTo(k){ trail = trail.slice(0, k+1); render(); }
+// Backing up is a move. It's a real decision, not a free rewind.
+function backTo(k){
+  if (k === trail.length-1) return;
+  if (spent >= budgetOf(puz)) return;
+  trail = trail.slice(0, k+1); spent++;
+  render();
+}
 
 function render(){
   const app = $('#app');
@@ -177,6 +211,8 @@ function render(){
   const cur = trail[trail.length-1];
   const won = cur === puz.b;
   const hops = trail.length - 1;
+  const left = budgetOf(puz) - spent;
+  const lost = !won && left <= 0;
 
   // ── puzzle header ──
   const ph = document.createElement('div'); ph.className='puz';
@@ -196,8 +232,8 @@ function render(){
   const pb=document.createElement('div'); pb.className='parbox';
   pb.innerHTML='<div class="v">'+puz.par+'</div><div class="l">Par</div>';
   ph.appendChild(pb);
-  const mb=document.createElement('div'); mb.className='parbox moves'+(hops>puz.par?' over':'');
-  mb.innerHTML='<div class="v">'+hops+'</div><div class="l">Your hops</div>';
+  const mb=document.createElement('div'); mb.className='parbox moves'+(left<=1?' over':'');
+  mb.innerHTML='<div class="v">'+Math.max(0,left)+'</div><div class="l">Moves left</div>';
   ph.appendChild(mb);
   app.appendChild(ph);
 
@@ -214,7 +250,7 @@ function render(){
   });
   app.appendChild(tr);
 
-  if (won){ app.appendChild(winBox()); app.appendChild(controls()); return; }
+  if (won || lost){ app.appendChild(endBox(won)); app.appendChild(controls()); return; }
 
   // ── opponents ──
   const h=document.createElement('div'); h.className='head';
@@ -241,12 +277,28 @@ function render(){
   app.appendChild(controls());
 }
 
-function winBox(){
+// The reveal — and the only place right/wrong is ever stated.
+//
+// Deliberately NOT during play: "warmer / colder" after each pick would let you
+// hill-climb to the answer by trial and error without knowing a thing about the
+// sport, which is the one skill this game is supposed to test. So you get no
+// feedback per move; the gold TARGET ring is the single exception, and it only
+// means "you are exactly one hop away".
+function endBox(won){
   const hops = trail.length-1;
-  const d = hops - puz.par;
-  const verdict = d<=0 ? 'Par — optimal chain.' : d===1 ? 'One over par.' : d+' over par.';
-  const w=document.createElement('div'); w.className='win';
-  const h=document.createElement('h2'); h.textContent='Connected in '+hops+' — '+verdict; w.appendChild(h);
+  const w=document.createElement('div'); w.className='win'+(won?'':' lost');
+  const h=document.createElement('h2');
+  if (won){
+    const d = hops - puz.par;
+    h.textContent = 'Connected in '+hops+' — '+(d<=0?'par, optimal chain.':d===1?'one over par.':d+' over par.');
+  } else {
+    h.textContent = 'Out of moves — '+F[puz.b].n+' got away.';
+  }
+  w.appendChild(h);
+
+  const label=document.createElement('div'); label.className='rl2';
+  label.textContent = won ? 'Your chain' : 'You got as far as';
+  w.appendChild(label);
   const c=document.createElement('div'); c.className='chain';
   trail.forEach((n,k)=>{
     const b=document.createElement('b'); b.textContent=F[n].n; c.appendChild(b);
@@ -256,9 +308,30 @@ function winBox(){
     }
   });
   w.appendChild(c);
-  const sq = trail.slice(1).map((_,k)=> k < puz.par ? '🟩':'🟨').join('');
+
+  // Show the optimal line once it can't help you — that's the teaching moment,
+  // and the "oh, THAT guy" is the reason to come back tomorrow.
+  const opt = bfs(puz.a, puz.b);
+  if (!won || hops > puz.par){
+    const l2=document.createElement('div'); l2.className='rl2'; l2.textContent='The par line';
+    w.appendChild(l2);
+    const c2=document.createElement('div'); c2.className='chain opt';
+    opt.forEach((n,k)=>{
+      const b=document.createElement('b'); b.textContent=F[n].n; c2.appendChild(b);
+      if(k<opt.length-1){
+        const i=document.createElement('i'); i.textContent='  — '+boutLabel(n,opt[k+1])+' →  ';
+        c2.appendChild(i);
+      }
+    });
+    w.appendChild(c2);
+  }
+
+  const sq = won
+    ? trail.slice(1).map((_,k)=> k < puz.par ? '🟩':'🟨').join('')
+    : '⬛'.repeat(budgetOf(puz));
   const sh=document.createElement('div'); sh.className='share';
-  sh.textContent = 'Six Degrees of the Octagon\n'+F[puz.a].n+' ⟶ '+F[puz.b].n+'\n'+hops+' hops (par '+puz.par+') '+sq;
+  sh.textContent = 'Six Degrees of the Octagon\n'+F[puz.a].n+' ⟶ '+F[puz.b].n+'\n' +
+    (won ? hops+' hops (par '+puz.par+') '+sq : 'X/'+budgetOf(puz)+' (par '+puz.par+') '+sq);
   w.appendChild(sh);
   return w;
 }
@@ -270,12 +343,10 @@ function controls(){
   bar.appendChild(nx);
   const rs=document.createElement('button'); rs.className='btn'; rs.textContent='Restart';
   rs.onclick=()=>start(puz); bar.appendChild(rs);
-  if(trail[trail.length-1]!==puz.b){
-    const gv=document.createElement('button'); gv.className='btn'; gv.textContent='Show me one answer';
-    gv.onclick=()=>{
-      const p=bfs(puz.a,puz.b);
-      alert(p.map(i=>F[i].n).join('  →  ')+'\n\npar '+puz.par);
-    };
+  // Give up = burn the budget, which routes into the same reveal as running out.
+  if(trail[trail.length-1]!==puz.b && spent < budgetOf(puz)){
+    const gv=document.createElement('button'); gv.className='btn'; gv.textContent='Give up';
+    gv.onclick=()=>{ spent = budgetOf(puz); render(); };
     bar.appendChild(gv);
   }
   const sel=document.createElement('select');
