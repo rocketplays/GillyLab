@@ -154,7 +154,8 @@ export function carouselScript() {
       +'<div style="font-size:.6rem;color:'+M+';white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+match+'</div></div>'
       +'<div style="text-align:right"><div style="font-weight:800;font-size:.78rem;color:'+rescol+'">'+res+'</div>'
       +'<div style="font-size:.58rem;color:'+M+'">'+odds+'</div></div>'
-      +'<span style="flex:0 0 auto;font-size:.52rem;font-weight:700;border-radius:4px;padding:2px 5px;color:'+tagcol+';background:'+tagcol+'1a;white-space:nowrap">'+tag+'</span></div>';
+      +(tag ? '<span style="flex:0 0 auto;font-size:.52rem;font-weight:700;border-radius:4px;padding:2px 5px;color:'+tagcol+';background:'+tagcol+'1a;white-space:nowrap">'+tag+'</span>' : '')
+      +'</div>';
   }
   var bets='<div style="font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;margin-bottom:.45rem">My bet history</div>'
     +'<div style="font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:.1rem">Closing line value</div>'
@@ -163,8 +164,8 @@ export function carouselScript() {
     +'<div style="display:flex;gap:6px;margin-bottom:.55rem">'+btile('Record','24-16')+btile('ROI','+11.8%',A)+btile('Units','+9.2u',A)+btile('Pending','3')+'</div>'
     +osec('UFC 329 · settled')
     +btkrow('max-holloway','MH','Holloway ML','Holloway vs McGregor','-205 \\u00b7 5u','+2.44u',A,'CLV +2.4',A)
-    +btkrow('paddy-pimblett','PP','Pimblett by submission','Pimblett vs Saint-Denis','+700 \\u00b7 0.5u','+3.5u',A,'no CLV','#8a8f99')
-    +btkrow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','+0.91u',A,'no CLV','#8a8f99')
+    +btkrow('paddy-pimblett','PP','Pimblett by submission','Pimblett vs Saint-Denis','+700 \\u00b7 0.5u','+3.5u',A,'','')
+    +btkrow('adrian-yanez','AY','Yanez inside the distance','Yanez vs Garbrandt','-110 \\u00b7 1u','+0.91u',A,'','')
     +'<div style="font-size:.58rem;color:'+M+';margin-top:.45rem;line-height:1.5">Log a bet before the bell and it grades itself off the result. CLV is measured against the real closing line \\u2014 moneylines only.</div>';
 
   var lm='<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">'+ava('conor-mcgregor','CM',false,28)+'<div style="flex:1"><div style="font-weight:700;font-size:.88rem">McGregor vs Holloway</div><div style="font-size:10.5px;color:'+M+'">UFC 329 · moneyline movement (American odds)</div></div>'+ava('max-holloway','MH',false,28)+'</div>'
