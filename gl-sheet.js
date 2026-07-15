@@ -854,7 +854,8 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, data.title || 'My betting record', W - 128), 64, 158);
+    // pkPossessive falls back to "My" when there's no display name yet.
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' betting record', W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - 128), 64, 202);
 
@@ -898,7 +899,7 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, data.title || 'My card', W - 128), 64, 158);
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' card', W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();

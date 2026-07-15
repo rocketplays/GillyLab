@@ -102576,7 +102576,8 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, data.title || 'My betting record', W - 128), 64, 158);
+    // pkPossessive falls back to "My" when there's no display name yet.
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' betting record', W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - 128), 64, 202);
 
@@ -102620,7 +102621,7 @@ const GL_SHEET = (function () {
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, data.title || 'My card', W - 128), 64, 158);
+    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' card', W - 128), 64, 158);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
     ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 236); ctx.lineTo(W - 64, 236); ctx.stroke();
@@ -110398,6 +110399,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       };
       input.onkeydown = (e) => { if (e.key === 'Enter') ov.querySelector('#pkNameSave').click(); };
     }
+    // One display name across the app — the Bet & CLV Tracker's share sheets ask
+    // for it through this same modal, so a name set in either place is the same
+    // record (pf:<email> in KV) and the two can never drift apart.
+    window.pkShowNameModal = showNameModal;
 
     // (Leaderboard + history now live on their own pages — see the top-level
     // renderPickemLeaderboard / renderPickemHistory globals.)
@@ -110913,6 +110918,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     return out.sort((a, b) => a.ts - b.ts);
   }
+  /* One display name across the app: the same pf:<email> record Pick'em uses, so
+     setting it here sets it there and vice versa. A share is the first time the
+     tracker needs one, so that's where we ask — via Pick'em's own modal, not a
+     second one that could drift. */
+  let BT_NAME = null;
+  function btFetchName() {
+    return btApi('/api/pickem/name').then(function (r) {
+      BT_NAME = (r.status === 200 && r.j && r.j.name) ? r.j.name : null; return BT_NAME;
+    }).catch(function () { return null; });
+  }
+  function btWithName(then) {
+    if (BT_NAME) { then(BT_NAME); return; }
+    btFetchName().then(function (n) {
+      if (n) { then(n); return; }
+      if (typeof pkShowNameModal === 'function') {
+        // afterSave re-runs us, so the share continues once they've picked a name.
+        pkShowNameModal(function () { btFetchName().then(function (n2) { if (n2) then(n2); }); });
+      } else then(null);
+    });
+  }
+
   // Share the pending bets on one card.
   function btShareCard(slug) {
     if (!window.GL_SHEET) return;
@@ -110921,8 +110947,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       .map(b => ({ pick: b.pick, match: b.match.split(' · ')[0], odds: b.odds, stake: b.stake }));
     // Billed name incl. the main event — "UFC Fight Night" alone means nothing
     // on a shared image.
-    GL_SHEET.betCard({ title: 'My card', eventName: c.ev ? (c.ev.full || c.ev.short) : c.label,
-      eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
+    btWithName(function (name) {
+      GL_SHEET.betCard({ name: name, eventName: c.ev ? (c.ev.full || c.ev.short) : c.label,
+        eventDate: c.ev ? btEvDate(c.ev) : '', bets: bets });
+    });
   }
   // Share the record for whatever range/scope is on screen.
   function btShareHistory() {
@@ -110932,12 +110960,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const vs = btStats(verified);
     const s = btStats(btScope === 'verified' ? verified : scoped);
     const RL = { '7d': 'Last 7 days', '30d': 'Last 30 days', '6m': 'Last 6 months', '12m': 'Last 12 months', 'all': 'All time' };
-    GL_SHEET.betHistory({
-      title: 'My betting record',
-      rangeLabel: RL[btRange] + (btScope === 'verified' ? ' · verified' : ' · incl. self-reported'),
-      settled: s.w + s.l, record: s.w + '-' + s.l, roi: s.roi, units: s.units,
-      clv: vs.avgClv, clvSub: vs.clvN ? ('on ' + vs.clvN + ' moneyline' + (vs.clvN === 1 ? '' : 's')) : '',
-      beatTxt: vs.clvN ? (vs.beat + ' of ' + vs.clvN) : '—',
+    btWithName(function (name) {
+      GL_SHEET.betHistory({
+        name: name,
+        rangeLabel: RL[btRange] + (btScope === 'verified' ? ' · verified' : ' · incl. self-reported'),
+        settled: s.w + s.l, record: s.w + '-' + s.l, roi: s.roi, units: s.units,
+        clv: vs.avgClv, clvSub: vs.clvN ? ('on ' + vs.clvN + ' moneyline' + (vs.clvN === 1 ? '' : 's')) : '',
+        beatTxt: vs.clvN ? (vs.beat + ' of ' + vs.clvN) : '—',
+      });
     });
   }
   window.btShareCard = btShareCard; window.btShareHistory = btShareHistory;
