@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Six Degrees of the Octagon — GillyLab prototype</title>
+<!--
+  PROTOTYPE. Standalone: open it directly, no server needed (it fetches its data
+  file alongside it — if your browser blocks file:// fetch, run
+  `python3 -m http.server` from the repo root and open /prototypes/six-degrees.html).
+
+  The whole point of this build is to answer ONE question that no amount of
+  analysis can: is wandering the graph fun, or is it tedious? Play five puzzles.
+  If you find yourself saying "oh RIGHT, he fought him", it works.
+
+  Design notes, for the record:
+   - You never type. Every move is a click on a face. Recognition, not recall —
+     that was the fix for "having to type out older fighters is hard".
+   - Opponents are sorted by fame so recognisable names surface first; this is a
+     deliberate assist, not laziness.
+   - The target is always pinned top-right, and any opponent who IS the target
+     gets a gold ring, so you can never walk past the win.
+   - Every card shows the bout that made the link (event + year). That's the
+     payload — the path is a story, not a receipt.
+-->
+<style>
+  :root{
+    --bg:#0a0a0b; --surface:#111114; --surface2:#18181d; --border:#2a2a32;
+    --accent:#00e668; --accent2:#ff3d00; --gold:#ffc531;
+    --text:#f0f0f0; --muted:#666672; --card:#14141a;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;padding:1rem;}
+  .wrap{max-width:1000px;margin:0 auto}
+  h1{font-size:1.25rem;margin:0 0 .15rem;letter-spacing:-.02em}
+  h1 .g{color:var(--accent)}
+  .sub{color:var(--muted);font-size:.8rem;margin:0 0 1rem}
+
+  /* ── puzzle header ───────────────────────────────────────────── */
+  .puz{background:var(--card);border:1px solid var(--border);border-radius:8px;
+    padding:.85rem 1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+  .puz-main{display:flex;align-items:center;gap:.7rem;flex:1;min-width:260px}
+  .endp{display:flex;align-items:center;gap:.5rem}
+  .endp .nm{font-weight:600;font-size:.95rem;line-height:1.1}
+  .endp .rl{color:var(--muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em}
+  .arrow{color:var(--muted);font-size:1.1rem}
+  .parbox{text-align:right}
+  .parbox .v{font-size:1.35rem;font-weight:700;line-height:1}
+  .parbox .l{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em}
+  .moves .v{color:var(--accent)}
+  .moves.over .v{color:var(--accent2)}
+
+  /* ── avatars ─────────────────────────────────────────────────── */
+  .av{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--surface2);
+    border:1px solid var(--border);display:flex;align-items:center;justify-content:center;
+    font-size:.7rem;font-weight:700;color:var(--muted);flex:none;overflow:hidden}
+  .av.lg{width:54px;height:54px;font-size:.85rem}
+
+  /* ── trail ───────────────────────────────────────────────────── */
+  .trail{display:flex;align-items:center;gap:.3rem;flex-wrap:wrap;margin:1rem 0 .5rem;min-height:46px}
+  .tnode{display:flex;align-items:center;gap:.4rem;background:var(--surface);
+    border:1px solid var(--border);border-radius:99px;padding:.2rem .6rem .2rem .2rem;
+    cursor:pointer;transition:border-color .15s}
+  .tnode:hover{border-color:var(--accent)}
+  .tnode .av{width:26px;height:26px;font-size:.55rem}
+  .tnode span{font-size:.78rem;font-weight:500}
+  .tnode.cur{border-color:var(--accent);background:rgba(0,230,104,.07)}
+  .tsep{color:var(--muted);font-size:.7rem}
+
+  /* ── opponent grid ───────────────────────────────────────────── */
+  .head{display:flex;align-items:baseline;gap:.5rem;margin:1.1rem 0 .55rem}
+  .head b{font-size:.9rem}
+  .head span{color:var(--muted);font-size:.75rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:.5rem}
+  .opp{display:flex;align-items:center;gap:.55rem;background:var(--card);
+    border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer;
+    text-align:left;color:inherit;font:inherit;transition:border-color .15s,background .15s}
+  .opp:hover{border-color:var(--accent);background:var(--surface2)}
+  .opp .meta{min-width:0}
+  .opp .nm{font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .opp .bt{font-size:.65rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .opp.target{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+  .opp.target .nm{color:var(--gold)}
+  .opp.seen{opacity:.4}
+  .badge{font-size:.55rem;font-weight:700;letter-spacing:.06em;color:var(--gold);
+    border:1px solid var(--gold);border-radius:3px;padding:0 .25rem;margin-left:.3rem}
+
+  /* ── win ─────────────────────────────────────────────────────── */
+  .win{background:var(--card);border:1px solid var(--accent);border-radius:8px;
+    padding:1rem;margin:1rem 0}
+  .win h2{margin:0 0 .5rem;font-size:1rem;color:var(--accent)}
+  .chain{font-size:.82rem;line-height:1.9}
+  .chain b{color:var(--text)}
+  .chain i{color:var(--muted);font-style:normal;font-size:.72rem}
+  .share{background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+    padding:.6rem .75rem;margin-top:.75rem;font-family:ui-monospace,Menlo,monospace;
+    font-size:.78rem;white-space:pre-wrap}
+
+  .bar{display:flex;gap:.4rem;margin:.9rem 0;flex-wrap:wrap}
+  button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);
+    border-radius:6px;padding:.4rem .8rem;font-size:.78rem;cursor:pointer;font-weight:500}
+  button.btn:hover{border-color:var(--accent)}
+  button.btn.pri{background:var(--accent);color:#04120a;border-color:var(--accent);font-weight:700}
+  select{background:var(--surface2);border:1px solid var(--border);color:var(--text);
+    border-radius:6px;padding:.4rem .5rem;font-size:.78rem}
+  .load{color:var(--muted);padding:2rem 0;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Six Degrees of the <span class="g">Octagon</span></h1>
+  <p class="sub">Connect the two fighters. Click who they fought — never type a name.</p>
+  <div id="app"><div class="load">Loading the board…</div></div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let D = null, F = null, P = null;          // data, fighters, puzzles
+let puz = null, trail = [], visited = new Set();
+
+const eKey = (a,b) => a<b ? a+'-'+b : b+'-'+a;
+const edgeOf = (a,b) => D.edges[eKey(a,b)] || null;
+const initials = n => n.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
+const yearOf = d => { const m = /(\d{4})/.exec(d||''); return m ? m[1] : ''; };
+
+// Avatar: real photo when we have one (70% of the board), initials otherwise.
+function avatar(i, cls){
+  const f = F[i];
+  const el = document.createElement('div');
+  el.className = 'av ' + (cls||'');
+  el.textContent = initials(f.n);
+  const img = new Image();
+  img.onload = () => { el.textContent=''; img.style.cssText='width:100%;height:100%;object-fit:cover'; el.appendChild(img); };
+  img.onerror = () => {};   // keep initials
+  img.src = '../photos/' + f.s + '.jpg';
+  return el;
+}
+
+// Shortest remaining distance — used only for the reveal + par, never shown mid-play.
+function bfs(from, to){
+  const prev = {[from]: -1}, q = [from];
+  while(q.length){
+    const c = q.shift();
+    if (c === to){ const p=[]; let x=to; while(x!==-1){p.unshift(x); x=prev[x];} return p; }
+    for (const n of F[c].o) if(!(n in prev)){ prev[n]=c; q.push(n); }
+  }
+  return null;
+}
+
+function boutLabel(a,b){
+  const e = edgeOf(a,b);
+  if (!e) return '';
+  const ev = e[1] >= 0 ? D.pool[e[1]] : '';
+  const y  = yearOf(e[0]);
+  const org= e[4] >= 0 ? D.pool[e[4]] : '';
+  const head = ev || org || 'bout';
+  return head.length > 26 ? head.slice(0,25)+'…' + (y?' · '+y:'') : head + (y ? ' · '+y : '');
+}
+
+function start(p){
+  puz = p; trail = [p.a]; visited = new Set([p.a]);
+  render();
+}
+
+function move(i){
+  trail.push(i); visited.add(i);
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function backTo(k){ trail = trail.slice(0, k+1); render(); }
+
+function render(){
+  const app = $('#app');
+  app.innerHTML = '';
+  const cur = trail[trail.length-1];
+  const won = cur === puz.b;
+  const hops = trail.length - 1;
+
+  // ── puzzle header ──
+  const ph = document.createElement('div'); ph.className='puz';
+  const main = document.createElement('div'); main.className='puz-main';
+  const mk = (i,label) => {
+    const d=document.createElement('div'); d.className='endp';
+    d.appendChild(avatar(i,'lg'));
+    const t=document.createElement('div');
+    t.innerHTML = '<div class="rl">'+label+'</div><div class="nm"></div>';
+    t.querySelector('.nm').textContent = F[i].n;
+    d.appendChild(t); return d;
+  };
+  main.appendChild(mk(puz.a,'Start'));
+  const ar=document.createElement('div'); ar.className='arrow'; ar.textContent='⟶'; main.appendChild(ar);
+  main.appendChild(mk(puz.b,'Target'));
+  ph.appendChild(main);
+  const pb=document.createElement('div'); pb.className='parbox';
+  pb.innerHTML='<div class="v">'+puz.par+'</div><div class="l">Par</div>';
+  ph.appendChild(pb);
+  const mb=document.createElement('div'); mb.className='parbox moves'+(hops>puz.par?' over':'');
+  mb.innerHTML='<div class="v">'+hops+'</div><div class="l">Your hops</div>';
+  ph.appendChild(mb);
+  app.appendChild(ph);
+
+  // ── trail ──
+  const tr=document.createElement('div'); tr.className='trail';
+  trail.forEach((n,k)=>{
+    if(k) { const s=document.createElement('span'); s.className='tsep'; s.textContent='→'; tr.appendChild(s); }
+    const t=document.createElement('div'); t.className='tnode'+(k===trail.length-1?' cur':'');
+    t.appendChild(avatar(n));
+    const s=document.createElement('span'); s.textContent=F[n].n; t.appendChild(s);
+    t.title = 'Back to here';
+    t.onclick=()=>backTo(k);
+    tr.appendChild(t);
+  });
+  app.appendChild(tr);
+
+  if (won){ app.appendChild(winBox()); app.appendChild(controls()); return; }
+
+  // ── opponents ──
+  const h=document.createElement('div'); h.className='head';
+  const opps = F[cur].o.slice().sort((x,y)=> F[y].f-F[x].f || F[x].n.localeCompare(F[y].n));
+  h.innerHTML = '<b></b><span>'+opps.length+' opponents — pick one</span>';
+  h.querySelector('b').textContent = 'Who has ' + F[cur].n + ' fought?';
+  app.appendChild(h);
+
+  const g=document.createElement('div'); g.className='grid';
+  for(const o of opps){
+    const b=document.createElement('button'); b.className='opp';
+    if(o===puz.b) b.classList.add('target');
+    if(visited.has(o)) b.classList.add('seen');
+    b.appendChild(avatar(o));
+    const m=document.createElement('div'); m.className='meta';
+    const nm=document.createElement('div'); nm.className='nm'; nm.textContent=F[o].n;
+    if(o===puz.b){ const s=document.createElement('span'); s.className='badge'; s.textContent='TARGET'; nm.appendChild(s); }
+    const bt=document.createElement('div'); bt.className='bt'; bt.textContent=boutLabel(cur,o);
+    m.appendChild(nm); m.appendChild(bt); b.appendChild(m);
+    b.onclick=()=>move(o);
+    g.appendChild(b);
+  }
+  app.appendChild(g);
+  app.appendChild(controls());
+}
+
+function winBox(){
+  const hops = trail.length-1;
+  const d = hops - puz.par;
+  const verdict = d<=0 ? 'Par — optimal chain.' : d===1 ? 'One over par.' : d+' over par.';
+  const w=document.createElement('div'); w.className='win';
+  const h=document.createElement('h2'); h.textContent='Connected in '+hops+' — '+verdict; w.appendChild(h);
+  const c=document.createElement('div'); c.className='chain';
+  trail.forEach((n,k)=>{
+    const b=document.createElement('b'); b.textContent=F[n].n; c.appendChild(b);
+    if(k<trail.length-1){
+      const i=document.createElement('i'); i.textContent = '  — '+boutLabel(n,trail[k+1])+' →  ';
+      c.appendChild(i);
+    }
+  });
+  w.appendChild(c);
+  const sq = trail.slice(1).map((_,k)=> k < puz.par ? '🟩':'🟨').join('');
+  const sh=document.createElement('div'); sh.className='share';
+  sh.textContent = 'Six Degrees of the Octagon\n'+F[puz.a].n+' ⟶ '+F[puz.b].n+'\n'+hops+' hops (par '+puz.par+') '+sq;
+  w.appendChild(sh);
+  return w;
+}
+
+function controls(){
+  const bar=document.createElement('div'); bar.className='bar';
+  const nx=document.createElement('button'); nx.className='btn pri'; nx.textContent='New puzzle';
+  nx.onclick=()=>start(P[(Math.random()*P.length)|0]);
+  bar.appendChild(nx);
+  const rs=document.createElement('button'); rs.className='btn'; rs.textContent='Restart';
+  rs.onclick=()=>start(puz); bar.appendChild(rs);
+  if(trail[trail.length-1]!==puz.b){
+    const gv=document.createElement('button'); gv.className='btn'; gv.textContent='Show me one answer';
+    gv.onclick=()=>{
+      const p=bfs(puz.a,puz.b);
+      alert(p.map(i=>F[i].n).join('  →  ')+'\n\npar '+puz.par);
+    };
+    bar.appendChild(gv);
+  }
+  const sel=document.createElement('select');
+  sel.innerHTML='<option value="">Jump to a puzzle…</option>' +
+    P.map((p,i)=>'<option value="'+i+'">par '+p.par+' — '+F[p.a].n+' ⟶ '+F[p.b].n+'</option>').join('');
+  sel.onchange=e=>{ if(e.target.value!=='') start(P[+e.target.value]); };
+  bar.appendChild(sel);
+  return bar;
+}
+
+fetch('sixdegrees-data.json').then(r=>r.json()).then(d=>{
+  D=d; F=d.fighters; P=d.puzzles;
+  start(P.find(p=>p.par===3) || P[0]);
+}).catch(e=>{
+  $('#app').innerHTML='<div class="load">Could not load sixdegrees-data.json — '+e.message+
+    '<br><br>If you opened this as a file://, your browser blocks local fetch.<br>'+
+    'Run <b>python3 -m http.server</b> in the repo root, then open<br>'+
+    '<b>localhost:8000/prototypes/six-degrees.html</b></div>';
+});
+</script>
+</body>
+</html>
