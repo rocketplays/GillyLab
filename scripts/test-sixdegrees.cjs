@@ -117,6 +117,15 @@ console.log('\n== name collisions ==');
     }
   }
   ok(oneSided === 0, 'no one-sided edge survives onto the board', 'found=' + oneSided);
+
+  // Aliases are REAL fights and must survive. Anderson "Berinja" dos Santos is
+  // the canary: every one of his UFC bouts is one-sided (his opponents' records
+  // call him "Anderson dos Santos"), so a blanket one-sided drop erased his
+  // whole career. data/name-aliases.json is what keeps him.
+  const berinja = F.findIndex(f => f.n === 'Anderson Berinja');
+  ok(berinja >= 0 && F[berinja].o.length >= 5,
+    'alias-only careers survive (Anderson Berinja keeps his UFC run)',
+    berinja < 0 ? 'not on board' : F[berinja].o.length + ' opponents');
   ok(byName.size === F.length, 'no two board nodes share a normalised name',
     (F.length - byName.size) + ' collisions');
 }

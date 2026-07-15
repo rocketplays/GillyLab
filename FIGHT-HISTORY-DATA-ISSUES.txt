@@ -57,7 +57,7 @@ would only misfire if a second fighter also referenced a 2009 "Bruno Silva",
 which none currently does. Low risk, but they want their own key or a rename.
 
 
-ISSUE 2 — duplicate keys for one fighter  [BRUNO FIXED, ALDO/ARAUJO OPEN]
+ISSUE 2 — duplicate keys for one fighter  [FIXED 2026-07-15]
 ------------------------------------------------------------------------------
 "Bruno Silva" and "Bruno Gustavo da Silva" are the SAME flyweight, stored twice:
   27 bouts each, 12 UFC each, 89% identical by date+result.
@@ -77,11 +77,28 @@ The Bruno pair is RESOLVED — see issue 1. Rather than merging the two keys, th
 which fixes both problems at once: the duplicate is gone AND Blindado exists.
 The two men now share ZERO opponents (they shared 24).
 
-Jose/José Aldo and Viviane Araujo/Araújo are STILL OPEN. Both are accent-only
-duplicates and trivially safe to merge — no third fighter is entangled.
+Jose/José Aldo and Viviane Araujo/Araújo are now MERGED — but they were not the
+clean accent-duplicates they looked like. The unaccented keys were odds-only
+SHARDS: partial histories (17 bouts vs the canonical 42/22) with wrong event
+names — "Jose Aldo" dates the Munhoz fight to "UFC 278: Edwards vs. Usman 2", a
+2022 card, for a 2021 bout. But they held the ODDS the canonical records lacked
+entirely (10 each vs 0).
+
+So: odds lifted onto the canonical accented key, shard history discarded rather
+than merged (it was dirtier than what it would have merged into), unaccented key
+deleted. Both canonical records GAINED 10 closing lines. Nobody referenced the
+unaccented spellings as an opponent, so no repointing was needed.
+
+FIGHT_HISTORY now has ZERO normalised-name collisions between keys.
+
+Follow-up worth a look: 4 of Viviane's 10 odds entries are for opponents her
+canonical 22-bout history does not contain (Manon Fiorot, Taila Santos, Polyana
+Viana, Ji Yeon Kim). Those are real fights, so her canonical history is
+INCOMPLETE. The odds were kept (they're real closing lines); the missing bouts
+want a fill-fighter pass.
 
 
-ISSUE 3 — 691 one-sided links  [MOSTLY BENIGN, WORTH AUDITING]
+ISSUE 3 — one-sided links  [FIXED 2026-07-15 — auditor + alias map]
 ------------------------------------------------------------------------------
 A genuine bout is reciprocal: it appears in both corners' records. Across
 FIGHT_HISTORY:
@@ -95,14 +112,44 @@ One-sided links are a mix of:
                           bouts that none of his opponents' records echo.
                           These are real bouts under a wrong/alt name.
 
-Six Degrees now drops all 691 (the gate is cheap and a fake edge breaks a
-puzzle, while a missing edge just adds a hop). The app should NOT blanket-drop
-them — it would lose real history. Worth an audit to split (a) from (b) and
-build a proper alias map.
+FIXED. scripts/audit-name-links.cjs splits them, and the split is decisive:
+
+    reciprocal   25,535
+    one-sided       663
+      ALIAS         481   real fights — KEEP
+      COLLISION     180   fabricated links — DROP
+      AMBIGUOUS       2   need a human
+
+The trick is to stop asking about names, which is what caused all of this, and
+ask about DATES instead. For "A claims a bout vs X on date D": WAS X FIGHTING
+THAT DAY? If yes, X was there and A is simply written differently in X's record
+— alias, real fight. If X has no bout that day at all, then A fought a DIFFERENT
+man of the same name — collision, fabricated link.
+
+This catches aliases on EITHER side, which a name-based test cannot. My first
+draft asked "who records a bout against A on D?" and got Anderson "Berinja" dos
+Santos exactly backwards — it only ever saw opponent-side aliases, so every
+claimant-side alias was misfiled as a collision. Berinja's opponents all call
+him "Anderson dos Santos", so his ENTIRE UFC career (Ewell, Day, Johns,
+Narimani, Simón, Nurmagomedov, Henry) was being deleted as fake.
+
+Output: data/name-aliases.json, keyed "<claimant>|<date>|<written name>" ->
+{real, theyCallHim}. Keyed per-bout, not per-name, precisely because the same
+written name means different people in different records — that IS the bug.
+Collisions are deliberately NOT in the map: they need new identities (see issue
+1), not renames.
+
+Six Degrees consumes it: drops 172 collisions instead of 673 one-sided links,
+restoring 334 real edges. Regression-tested — Berinja on the board with his UFC
+run is the canary.
 
 Reproduce:
-    node -e '<reciprocity scan>'   # see scripts/gen-sixdegrees-data.cjs,
-                                   # the `agreed()` helper
+    node scripts/audit-name-links.cjs            # report
+    node scripts/audit-name-links.cjs --write    # regenerate the map
+
+STILL OPEN: the 180 collisions are real bugs. Each is a fighter with no record
+of his own whose name lands on someone else's key — the same shape as Bruno
+"Blindado". They need identities, via fill-fighter, one at a time.
 
 
 WHAT THE PROTOTYPE DOES ABOUT IT
@@ -110,6 +157,6 @@ WHAT THE PROTOTYPE DOES ABOUT IT
 scripts/gen-sixdegrees-data.cjs gates every edge on reciprocity: both corners
 must name each other, whenever both keep records. If the opponent has no record
 we can't check and we keep the edge (the ordinary case for regional opponents).
-Drops 673 links from the board. Regression-tested in scripts/test-sixdegrees.cjs
+Drops 172 collision links. Regression-tested in scripts/test-sixdegrees.cjs
 under "== name collisions ==", which asserts the specific Allen/Johnson case AND
 the general invariant that no one-sided edge survives.

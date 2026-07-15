@@ -13059,6 +13059,30 @@
  // closest to the bout being shown, so a rematch doesn't inherit the first fight's
  // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
+  "Viviane Araújo": [
+    { opponent: "Manon Fiorot", odds: 230 },
+    { opponent: "Alexa Grasso", odds: 215 },
+    { opponent: "Katlyn Chookagian", odds: 200 },
+    { opponent: "Taila Santos", odds: 275 },
+    { opponent: "Amanda Ribas", odds: -160 },
+    { opponent: "Andrea Lee", odds: -250 },
+    { opponent: "Roxanne Modafferi", odds: -300 },
+    { opponent: "Polyana Viana", odds: -450 },
+    { opponent: "Ji Yeon Kim", odds: -350 },
+    { opponent: "Montana De La Rosa", odds: 150 }
+  ],
+  "José Aldo": [
+    { opponent: "Merab Dvalishvili", odds: 130 },
+    { opponent: "Rob Font", odds: -115 },
+    { opponent: "Pedro Munhoz", odds: -225 },
+    { opponent: "Petr Yan", odds: 235 },
+    { opponent: "Marlon Vera", odds: -300 },
+    { opponent: "Alexander Volkanovski", odds: -165 },
+    { opponent: "Jeremy Stephens", odds: -350 },
+    { opponent: "Max Holloway", odds: 215 },
+    { opponent: "Frankie Edgar", odds: -500 },
+    { opponent: "Conor McGregor", odds: 500 }
+  ],
   "Zach Reese": [
     { opponent: "Ryan Gandra", odds: 113, date: "2026-07-11" }
   ],
@@ -16154,18 +16178,6 @@
     { opponent: "John Allan", odds: -193 },
     { opponent: "Khadis Ibragimov", odds: -161 }
   ],
-  "Viviane Araujo": [
-    { opponent: "Manon Fiorot", odds: 230 },
-    { opponent: "Alexa Grasso", odds: 215 },
-    { opponent: "Katlyn Chookagian", odds: 200 },
-    { opponent: "Taila Santos", odds: 275 },
-    { opponent: "Amanda Ribas", odds: -160 },
-    { opponent: "Andrea Lee", odds: -250 },
-    { opponent: "Roxanne Modafferi", odds: -300 },
-    { opponent: "Polyana Viana", odds: -450 },
-    { opponent: "Ji Yeon Kim", odds: -350 },
-    { opponent: "Montana De La Rosa", odds: 150 }
-  ],
   "Amanda Ribas": [
     { opponent: "Tabatha Ricci", odds: -185 },
     { opponent: "Mackenzie Dern", odds: -193 },
@@ -17335,18 +17347,6 @@
     { opponent: "Marlon Moraes", odds: -350 },
     { opponent: "TJ Dillashaw", odds: 500 },
     { opponent: "Demetrious Johnson", odds: 550 }
-  ],
-  "Jose Aldo": [
-    { opponent: "Merab Dvalishvili", odds: 130 },
-    { opponent: "Rob Font", odds: -115 },
-    { opponent: "Pedro Munhoz", odds: -225 },
-    { opponent: "Petr Yan", odds: 235 },
-    { opponent: "Marlon Vera", odds: -300 },
-    { opponent: "Alexander Volkanovski", odds: -165 },
-    { opponent: "Jeremy Stephens", odds: -350 },
-    { opponent: "Max Holloway", odds: 215 },
-    { opponent: "Frankie Edgar", odds: -500 },
-    { opponent: "Conor McGregor", odds: 500 }
   ],
   "Cody Garbrandt": [
     { opponent: "Adrian Yanez", odds: 334, date: "2026-07-11" },
@@ -27890,25 +27890,6 @@ const FIGHT_HISTORY = {
 
 
 
-  "Viviane Araujo": [
-    { date: "Jul 27, 2024", opponent: "Natalia Silva", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 304: Edwards vs. Muhammad 2" },
-    { date: "Oct 7, 2023", opponent: "Manon Fiorot", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Fiziev vs. Gamrot" },
-    { date: "Sep 17, 2022", opponent: "Alexa Grasso", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Sandhagen vs. Song" },
-    { date: "May 21, 2022", opponent: "Katlyn Chookagian", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holm vs. Vieira" },
-    { date: "Jan 15, 2022", opponent: "Taila Santos", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Kattar vs. Chikadze" },
-    { date: "May 15, 2021", opponent: "Katlyn Chookagian", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 262: Oliveira vs. Chandler" },
-    { date: "Mar 6, 2021", opponent: "Amanda Ribas", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Edwards vs. Muhammad" },
-    { date: "Nov 14, 2020", opponent: "Andrea Lee", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Felder vs. Dos Anjos" },
-    { date: "Feb 29, 2020", opponent: "Roxanne Modafferi", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Benavidez vs. Figueiredo" },
-    { date: "Sep 21, 2019", opponent: "Polyana Viana", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Rodriguez vs. Formiga" },
-    { date: "Mar 9, 2019", opponent: "Ji Yeon Kim", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Till vs. Masvidal" },
-    { date: "Nov 17, 2018", opponent: "Montana De La Rosa", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Magny vs. Ponzinibbio" },
-    { date: "Jul 28, 2018", opponent: "Priscila Cachoeira", result: "W", method: "TKO (Punches)", round: 3, time: "4:31", event: "UFC on Fox: Lee vs. Iaquinta 2 (debut)" },
-    { date: "May 18, 2018", opponent: "Mara Romero Borella", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 29" },
-    { date: "Sep 30, 2017", opponent: "Janaisa Morandin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 25" },
-    { date: "May 6, 2017", opponent: "Olga Rubin", result: "W", method: "TKO (Punches)", round: 2, time: "3:17", event: "Invicta FC 23" },
-    { date: "Mar 25, 2016", opponent: "Amber Brown", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Invicta FC 17 (debut)" }
-  ],
   "Amanda Ribas": [
     { date: "Jul 26, 2025", opponent: "Tabatha Ricci", result: "L", method: "TKO (Elbow and punches)", round: 2, time: "2:59", event: "UFC on ABC: Whittaker vs. de Ridder", org: "UFC" },
     { date: "Jan 11, 2025", opponent: "Mackenzie Dern", result: "L", method: "Submission (Armbar)", round: 3, time: "4:56", event: "UFC Fight Night: Dern vs. Ribas 2", org: "UFC" },
@@ -30461,25 +30442,6 @@ const FIGHT_HISTORY = {
 
 
 
-  "Jose Aldo": [
-    { date: "Apr 22, 2023", opponent: "Jonathan Martinez", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Holloway vs. Korean Zombie" },
-    { date: "Sep 10, 2022", opponent: "Merab Dvalishvili", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 278: Edwards vs. Usman 2" },
-    { date: "Apr 30, 2022", opponent: "Rob Font", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC Fight Night: Font vs. Aldo" },
-    { date: "Oct 9, 2021", opponent: "Pedro Munhoz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 278: Edwards vs. Usman 2" },
-    { date: "Jul 11, 2020", opponent: "Petr Yan", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 251: Usman vs. Masvidal (vacant BW Title)" },
-    { date: "Dec 14, 2019", opponent: "Marlon Vera", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 245: Usman vs. Covington" },
-    { date: "Jul 6, 2019", opponent: "Alexander Volkanovski", result: "L", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 237: Namajunas vs. Andrade (FW Title)" },
-    { date: "Nov 3, 2018", opponent: "Jeremy Stephens", result: "W", method: "KO (Punches)", round: 1, time: "1:23", event: "UFC 228: Woodley vs. Till" },
-    { date: "Dec 2, 2017", opponent: "Max Holloway", result: "L", method: "TKO (Punches)", round: 3, time: "4:05", event: "UFC 218: Holloway vs. Aldo 2 (FW Title)" },
-    { date: "Jun 3, 2017", opponent: "Frankie Edgar", result: "W", method: "KO (Punches)", round: 1, time: "1:06", event: "UFC 212: Aldo vs. Edgar (FW Title)" },
-    { date: "Jul 9, 2016", opponent: "Frankie Edgar", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 200: Tate vs. Nunes (interim FW Title)" },
-    { date: "Dec 12, 2015", opponent: "Conor McGregor", result: "L", method: "KO (Punch)", round: 1, time: "0:13", event: "UFC 194: Aldo vs. McGregor (FW Title)" },
-    { date: "May 9, 2015", opponent: "Chad Mendes", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 189: Mendes vs. McGregor (FW Title)" },
-    { date: "Oct 25, 2014", opponent: "Cub Swanson", result: "W", method: "TKO (Punches)", round: 2, time: "2:56", event: "UFC 179: Cormier vs. Jones 2" },
-    { date: "Feb 1, 2014", opponent: "Ricardo Lamas", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 169: Barao vs. Faber 2 (FW Title)" },
-    { date: "Aug 3, 2013", opponent: "Chan Sung Jung", result: "W", method: "TKO (Punches)", round: 4, time: "1:06", event: "UFC 163: Aldo vs. Jung (FW Title)" },
-    { date: "Jan 26, 2013", opponent: "Frankie Edgar", result: "W", method: "Decision (Unanimous)", round: 5, time: "5:00", event: "UFC 156: Aldo vs. Mendes (FW Title)" }
-  ],
   "Cody Garbrandt": [
     { date: "Jul 11, 2026", opponent: "Adrian Yanez", result: "L", method: "KO/TKO (Punches)", round: 1, time: "2:47", event: "UFC 329: McGregor vs. Holloway 2", org: "UFC" },
     { date: "Mar 7, 2026", opponent: "Xiao Long", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC 326", org: "UFC" },

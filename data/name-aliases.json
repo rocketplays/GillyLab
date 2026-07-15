@@ -1,0 +1,2411 @@
+{
+  "generatedAt": "2026-07-15T18:11:12.137Z",
+  "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
+  "aliases": {
+    "Matthieu Letho Duclos|Aug 27, 2024|Marco Tulio": {
+      "real": "Marco Tulio",
+      "theyCallHim": "Matthieu Duclos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Aug 7, 2021|Miles Johns": {
+      "real": "Miles Johns",
+      "theyCallHim": "Anderson dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Nov 28, 2020|Martin Day": {
+      "real": "Martin Day",
+      "theyCallHim": "Anderson Dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Jun 22, 2019|Andre Ewell": {
+      "real": "Andre Ewell",
+      "theyCallHim": "Anderson Dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Nov 17, 2018|Nad Narimani": {
+      "real": "Nad Narimani",
+      "theyCallHim": "Anderson Dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Feb 24, 2018|Victor Henry": {
+      "real": "Victor Henry",
+      "theyCallHim": "Anderson dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Apr 1, 2017|Said Nurmagomedov": {
+      "real": "Said Nurmagomedov",
+      "theyCallHim": "Anderson dos Santos",
+      "note": "alias"
+    },
+    "Anderson Berinja|Mar 4, 2016|Ricky Simon": {
+      "real": "Ricky Simon",
+      "theyCallHim": "Anderson dos Santos",
+      "note": "alias"
+    },
+    "Yizha|Jan 31, 2026|Kaan Ofli": {
+      "real": "Kaan Ofli",
+      "theyCallHim": "Zha Yi",
+      "note": "alias"
+    },
+    "Yizha|Sep 7, 2024|Gabriel Santos": {
+      "real": "Gabriel Santos",
+      "theyCallHim": "Zha Yi",
+      "note": "alias"
+    },
+    "Ty Miller|Apr 15, 2022|Eric Nolan": {
+      "real": "Eric Nolan",
+      "theyCallHim": "Ty Cole Miller",
+      "note": "alias"
+    },
+    "Alatengheili|Oct 14, 2023|Chris Gutierrez": {
+      "real": "Chris Gutierrez",
+      "theyCallHim": "Alateng Heili",
+      "note": "alias"
+    },
+    "Alatengheili|Mar 11, 2017|Kai Asakura": {
+      "real": "Kai Asakura",
+      "theyCallHim": "Alateng Heili",
+      "note": "alias"
+    },
+    "Alatengheili|Nov 30, 2013|Song Yadong": {
+      "real": "Song Yadong",
+      "theyCallHim": "Alateng Heili",
+      "note": "alias"
+    },
+    "Cam Rowston|Jan 31, 2026|Cody Brundage": {
+      "real": "Cody Brundage",
+      "theyCallHim": "Cameron Rowston",
+      "note": "alias"
+    },
+    "Cam Rowston|Aug 20, 2024|Torrez Finney": {
+      "real": "Torrez Finney",
+      "theyCallHim": "Cameron Rowston",
+      "note": "alias"
+    },
+    "Montse Rendon|Mar 14, 2026|Bia Mesquita": {
+      "real": "Bia Mesquita",
+      "theyCallHim": "Montserrat Rendón",
+      "note": "alias"
+    },
+    "Ateba Gautier|Jan 24, 2026|Andrey Pulyaev": {
+      "real": "Andrey Pulyaev",
+      "theyCallHim": "Ateba Abega Gautier",
+      "note": "alias"
+    },
+    "Baysangur Susurkaev|May 9, 2026|Baisangur Susurkaev": {
+      "real": "Baisangur Susurkaev",
+      "theyCallHim": "Djorden Santos",
+      "note": "alias"
+    },
+    "Baysangur Susurkaev|Oct 18, 2025|Danny Barlow": {
+      "real": "Danny Barlow",
+      "theyCallHim": "Djorden Santos",
+      "note": "alias"
+    },
+    "Baysangur Susurkaev|Mar 8, 2025|Ozzy Diaz": {
+      "real": "Ozzy Diaz",
+      "theyCallHim": "Djorden Santos",
+      "note": "alias"
+    },
+    "Baysangur Susurkaev|Sep 3, 2024|Will Currie": {
+      "real": "Will Currie",
+      "theyCallHim": "Djorden Santos",
+      "note": "alias"
+    },
+    "Bobby Green|Jul 11, 2026|Terrance McKinney": {
+      "real": "Terrance McKinney",
+      "theyCallHim": "King Green",
+      "note": "alias"
+    },
+    "Josiane Nunes|Nov 23, 2013|Taila Santos": {
+      "real": "Taila Santos",
+      "theyCallHim": "Josiane Nunes de Lima",
+      "note": "alias"
+    },
+    "Klaudia Sygula|Feb 7, 2026|Priscila Cachoeira": {
+      "real": "Priscila Cachoeira",
+      "theyCallHim": "Klaudia Syguła",
+      "note": "alias"
+    },
+    "Klaudia Sygula|Jun 21, 2025|Irina Alekseeva": {
+      "real": "Irina Alekseeva",
+      "theyCallHim": "Klaudia Syguła",
+      "note": "alias"
+    },
+    "Ian Machado Garry|Mar 4, 2023|Song Kenan": {
+      "real": "Song Kenan",
+      "theyCallHim": "Ian Garry",
+      "note": "alias"
+    },
+    "Renato Moicano|Jul 19, 2014|Ismael Bonfim": {
+      "real": "Ismael Bonfim",
+      "theyCallHim": "Renato Carneiro",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Oct 30, 2021|Glover Teixeira": {
+      "real": "Glover Teixeira",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Feb 15, 2020|Corey Anderson": {
+      "real": "Corey Anderson",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Jul 6, 2019|Luke Rockhold": {
+      "real": "Luke Rockhold",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Feb 23, 2019|Thiago Santos": {
+      "real": "Thiago Santos",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Mar 17, 2018|Jimi Manuwa": {
+      "real": "Jimi Manuwa",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Apr 8, 2017|Patrick Cummins": {
+      "real": "Patrick Cummins",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Sep 3, 2016|Alexander Gustafsson": {
+      "real": "Alexander Gustafsson",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Apr 10, 2016|Igor Pokrajac": {
+      "real": "Igor Pokrajac",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Sep 5, 2015|Corey Anderson": {
+      "real": "Corey Anderson",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Apr 11, 2015|Jimi Manuwa": {
+      "real": "Jimi Manuwa",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Oct 4, 2014|Ilir Latifi": {
+      "real": "Ilir Latifi",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Mar 16, 2013|Goran Reljić": {
+      "real": "Goran Reljic",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Sep 15, 2012|Houston Alexander": {
+      "real": "Houston Alexander",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Feb 25, 2012|Mario Miranda": {
+      "real": "Mario Miranda",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Nov 26, 2011|Rameau Thierry Sokoudjou": {
+      "real": "Rameau Thierry Sokoudjou",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Jan Błachowicz|Mar 19, 2011|Rameau Thierry Sokoudjou": {
+      "real": "Rameau Thierry Sokoudjou",
+      "theyCallHim": "Jan Blachowicz",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Mar 9, 2024|Maycee Barber": {
+      "real": "Maycee Barber",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Nov 21, 2020|Cynthia Calvillo": {
+      "real": "Cynthia Calvillo",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Jun 8, 2019|Joanne Wood": {
+      "real": "Joanne Wood",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Dec 8, 2018|Jessica Eye": {
+      "real": "Jessica Eye",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Jul 28, 2018|Alexis Davis": {
+      "real": "Alexis Davis",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Jan 27, 2018|Mara Romero Borella": {
+      "real": "Mara Romero Borella",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Nov 12, 2016|Liz Carmouche": {
+      "real": "Liz Carmouche",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Jul 13, 2016|Lauren Murphy": {
+      "real": "Lauren Murphy",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Katlyn Chookagian|Oct 31, 2015|Sijara Eubanks": {
+      "real": "Sijara Eubanks",
+      "theyCallHim": "Katlyn Cerminara",
+      "note": "alias"
+    },
+    "Joanne Wood|Aug 1, 2020|Jennifer Maia": {
+      "real": "Jennifer Maia",
+      "theyCallHim": "Joanne Calderwood",
+      "note": "alias"
+    },
+    "Joanne Wood|Sep 7, 2019|Andrea Lee": {
+      "real": "Andrea Lee",
+      "theyCallHim": "Joanne Calderwood",
+      "note": "alias"
+    },
+    "Joanne Wood|Jun 8, 2019|Katlyn Cerminara": {
+      "real": "Katlyn Cerminara",
+      "theyCallHim": "Joanne Calderwood",
+      "note": "alias"
+    },
+    "Joanne Wood|Sep 10, 2016|Jessica Andrade": {
+      "real": "Jéssica Andrade",
+      "theyCallHim": "Joanne Calderwood",
+      "note": "alias"
+    },
+    "Tecia Torres|Nov 8, 2025|Denise Gomes": {
+      "real": "Denise Gomes",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|May 17, 2025|Luana Pinheiro": {
+      "real": "Luana Pinheiro",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|May 11, 2024|Tabatha Ricci": {
+      "real": "Tabatha Ricci",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Jun 20, 2020|Brianna Fortino": {
+      "real": "Brianna Fortino",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Aug 10, 2019|Marina Rodriguez": {
+      "real": "Marina Rodriguez",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Jul 28, 2018|Joanna Jedrzejczyk": {
+      "real": "Joanna Jedrzejczyk",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Dec 2, 2017|Michelle Waterson-Gomez": {
+      "real": "Michelle Waterson-Gomez",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Jul 7, 2017|Juliana Lima": {
+      "real": "Juliana Lima",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Feb 4, 2017|Bec Rawlings": {
+      "real": "Bec Rawlings",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Dec 12, 2015|Jocelyn Jones-Lybarger": {
+      "real": "Jocelyn Jones-Lybarger",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Dec 12, 2014|Angela Magana": {
+      "real": "Angela Magana",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Dec 7, 2013|Felice Herrig": {
+      "real": "Felice Herrig",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Tecia Torres|Jan 5, 2013|Paige VanZant": {
+      "real": "Paige VanZant",
+      "theyCallHim": "Tecia Pennington",
+      "note": "alias"
+    },
+    "Yana Santos|Jul 10, 2021|Irene Aldana": {
+      "real": "Irene Aldana",
+      "theyCallHim": "Yana Kunitskaya",
+      "note": "alias"
+    },
+    "Yana Santos|Aug 8, 2020|Julija Stoliarenko": {
+      "real": "Julija Stoliarenko",
+      "theyCallHim": "Yana Kunitskaya",
+      "note": "alias"
+    },
+    "Yana Santos|Dec 7, 2019|Aspen Ladd": {
+      "real": "Aspen Ladd",
+      "theyCallHim": "Yana Kunitskaya",
+      "note": "alias"
+    },
+    "Aoriqileng|Sep 14, 2024|Raul Rosas Jr.": {
+      "real": "Raul Rosas Jr.",
+      "theyCallHim": "Aori Qileng",
+      "note": "alias"
+    },
+    "Aoriqileng|Feb 10, 2024|Daniel Marcos": {
+      "real": "Daniel Marcos",
+      "theyCallHim": "Aori Qileng",
+      "note": "alias"
+    },
+    "Aoriqileng|Jun 10, 2023|Aiemann Zahabi": {
+      "real": "Aiemann Zahabi",
+      "theyCallHim": "Aori Qileng",
+      "note": "alias"
+    },
+    "Aoriqileng|Nov 20, 2021|Cody Durden": {
+      "real": "Cody Durden",
+      "theyCallHim": "Aori Qileng",
+      "note": "alias"
+    },
+    "Aoriqileng|May 20, 2017|Kai Kara-France": {
+      "real": "Kai Kara-France",
+      "theyCallHim": "Aori Qileng",
+      "note": "alias"
+    },
+    "Sumudaerji|May 30, 2026|Alex Perez": {
+      "real": "Alex Perez",
+      "theyCallHim": "Su Mudaerji",
+      "note": "alias"
+    },
+    "Sumudaerji|Aug 23, 2025|Kevin Borjas": {
+      "real": "Kevin Borjas",
+      "theyCallHim": "Su Mudaerji",
+      "note": "alias"
+    },
+    "Sumudaerji|Oct 19, 2024|Charles Johnson": {
+      "real": "Charles Johnson",
+      "theyCallHim": "Su Mudaerji",
+      "note": "alias"
+    },
+    "Sumudaerji|Dec 9, 2023|Tim Elliott": {
+      "real": "Tim Elliott",
+      "theyCallHim": "Su Mudaerji",
+      "note": "alias"
+    },
+    "Sumudaerji|Jul 16, 2022|Matt Schnell": {
+      "real": "Matt Schnell",
+      "theyCallHim": "Su Mudaerji",
+      "note": "alias"
+    },
+    "Timmy Cuamba|Apr 26, 2025|Roberto Romero": {
+      "real": "Roberto Romero",
+      "theyCallHim": "Timothy Cuamba",
+      "note": "alias"
+    },
+    "Jesus Aguilar|Feb 4, 2023|Tatsuro Taira": {
+      "real": "Tatsuro Taira",
+      "theyCallHim": "Jesús Santos Aguilar",
+      "note": "alias"
+    },
+    "Jesus Aguilar|Sep 4, 2020|Édgar Cháirez": {
+      "real": "Edgar Chairez",
+      "theyCallHim": "Jesús Santos Aguilar",
+      "note": "alias"
+    },
+    "Jose Souza|Aug 30, 2022|Yusaku Kinoshita": {
+      "real": "Yusaku Kinoshita",
+      "theyCallHim": "Jose Henrique",
+      "note": "alias"
+    },
+    "Loopy Godinez|Sep 16, 2023|Elise Reed": {
+      "real": "Elise Reed",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Loopy Godinez|Aug 13, 2022|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Loopy Godinez|May 7, 2022|Ariane Carnelossi": {
+      "real": "Ariane Carnelossi",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Loopy Godinez|Nov 20, 2021|Loma Lookboonmee": {
+      "real": "Loma Lookboonmee",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Loopy Godinez|Oct 16, 2021|Luana Carolina": {
+      "real": "Luana Carolina",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Loopy Godinez|Oct 30, 2020|Vanessa Demopoulos": {
+      "real": "Vanessa Demopoulos",
+      "theyCallHim": "Lupita Godinez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Jun 29, 2024|Gillian Robertson": {
+      "real": "Gillian Robertson",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Sep 23, 2023|Marina Rodriguez": {
+      "real": "Marina Rodriguez",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Apr 8, 2023|Luana Pinheiro": {
+      "real": "Luana Pinheiro",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|May 8, 2021|Marina Rodriguez": {
+      "real": "Marina Rodriguez",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Oct 12, 2019|Joanna Jędrzejczyk": {
+      "real": "Joanna Jedrzejczyk",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Apr 14, 2018|Cortney Casey": {
+      "real": "Cortney Casey",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Dec 2, 2017|Tecia Torres": {
+      "real": "Tecia Torres",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Dec 17, 2016|Paige VanZant": {
+      "real": "Paige VanZant",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Jul 12, 2015|Angela Magaña": {
+      "real": "Angela Magana",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Michelle Waterson|Apr 5, 2013|Jessica Penne": {
+      "real": "Jessica Penne",
+      "theyCallHim": "Michelle Waterson-Gomez",
+      "note": "alias"
+    },
+    "Ariane Lipski|Jun 7, 2025|Wang Cong": {
+      "real": "Wang Cong",
+      "theyCallHim": "Ariane da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Nov 2, 2024|Jasmine Jasudavicius": {
+      "real": "Jasmine Jasudavicius",
+      "theyCallHim": "Ariane da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Sep 18, 2021|Mandy Böhm": {
+      "real": "Mandy Bohm",
+      "theyCallHim": "Ariane Lipski da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Nov 16, 2019|Isabela de Pádua": {
+      "real": "Isabela de Padua",
+      "theyCallHim": "Ariane Lipski da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Mar 3, 2018|Silvana Gómez Juárez": {
+      "real": "Silvana Gomez Juarez",
+      "theyCallHim": "Ariane Lipski da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Oct 1, 2016|Sheila Gaff": {
+      "real": "Sheila Gaff",
+      "theyCallHim": "Ariane Lipski da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski|Jun 1, 2014|Gisele Moreira": {
+      "real": "Gisele Moreira",
+      "theyCallHim": "Ariane Lipski da Silva",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Apr 11, 2026|Rodrigo Nascimento": {
+      "real": "Rodrigo Nascimento",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Mar 28, 2026|Jared Vanderaa": {
+      "real": "Jared Vanderaa",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Nov 2, 2024|Rodrigo Nascimento": {
+      "real": "Rodrigo Nascimento",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Jun 1, 2024|Jailton Almeida": {
+      "real": "Jailton Almeida",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Mar 11, 2023|Alexander Volkov": {
+      "real": "Alexander Volkov",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Aug 20, 2022|Marcin Tybura": {
+      "real": "Marcin Tybura",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Oct 9, 2021|Jared Vanderaa": {
+      "real": "Jared Vanderaa",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Alexandr Romanov|Nov 7, 2020|Marcos Rogério de Lima": {
+      "real": "Marcos Rogerio de Lima",
+      "theyCallHim": "Alexander Romanov",
+      "note": "alias"
+    },
+    "Diego Ferreira|Sep 13, 2025|Alexander Hernandez": {
+      "real": "Alexander Hernandez",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Jan 18, 2025|Grant Dawson": {
+      "real": "Grant Dawson",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|May 11, 2024|Mateusz Rębecki": {
+      "real": "Mateusz Rębecki",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|May 20, 2023|Michael Johnson": {
+      "real": "Michael Johnson",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Dec 18, 2021|Mateusz Gamrot": {
+      "real": "Mateusz Gamrot",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Feb 6, 2021|Beneil Dariush": {
+      "real": "Beneil Dariush",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Feb 18, 2018|Jared Gordon": {
+      "real": "Jared Gordon",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Apr 4, 2015|Dustin Poirier": {
+      "real": "Dustin Poirier",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Diego Ferreira|Oct 25, 2014|Beneil Dariush": {
+      "real": "Beneil Dariush",
+      "theyCallHim": "Carlos Diego Ferreira",
+      "note": "alias"
+    },
+    "Dooho Choi|Dec 7, 2024|Nate Landwehr": {
+      "real": "Nate Landwehr",
+      "theyCallHim": "Choi Doo-ho",
+      "note": "alias"
+    },
+    "Dooho Choi|Jul 20, 2024|Bill Algeo": {
+      "real": "Bill Algeo",
+      "theyCallHim": "Choi Doo-ho",
+      "note": "alias"
+    },
+    "Dooho Choi|Dec 21, 2019|Charles Jourdain": {
+      "real": "Charles Jourdain",
+      "theyCallHim": "Choi Doo-ho",
+      "note": "alias"
+    },
+    "Dooho Choi|Jan 14, 2018|Jeremy Stephens": {
+      "real": "Jeremy Stephens",
+      "theyCallHim": "Choi Doo-ho",
+      "note": "alias"
+    },
+    "Dooho Choi|Dec 10, 2016|Cub Swanson": {
+      "real": "Cub Swanson",
+      "theyCallHim": "Doo Ho Choi",
+      "note": "alias"
+    },
+    "Chepe Mariscal|Jan 17, 2020|Steve Garcia": {
+      "real": "Steve Garcia",
+      "theyCallHim": "Jose Mariscal",
+      "note": "alias"
+    },
+    "Chepe Mariscal|Jan 18, 2019|Youssef Zalal": {
+      "real": "Youssef Zalal",
+      "theyCallHim": "Jose Mariscal",
+      "note": "alias"
+    },
+    "Chepe Mariscal|Jun 17, 2017|Bryce Mitchell": {
+      "real": "Bryce Mitchell",
+      "theyCallHim": "Jose Mariscal",
+      "note": "alias"
+    },
+    "Gabe Green|May 17, 2025|Matheus Camilo": {
+      "real": "Matheus Camilo",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gabe Green|May 13, 2023|Bryan Battle": {
+      "real": "Bryan Battle",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gabe Green|May 30, 2020|Daniel Rodriguez": {
+      "real": "Daniel Rodriguez",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gabe Green|Jan 20, 2018|Chris Padilla": {
+      "real": "Chris Padilla",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gabe Green|Jun 17, 2017|Leon Shahbazyan": {
+      "real": "Leon Shahbazyan",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gabe Green|Jan 21, 2017|Jalin Turner": {
+      "real": "Jalin Turner",
+      "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "CJ Vergara|Mar 29, 2025|Édgar Cháirez": {
+      "real": "Edgar Chairez",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "CJ Vergara|Oct 12, 2024|Ramazan Temirov": {
+      "real": "Ramazan Temirov",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "CJ Vergara|Mar 9, 2024|Asu Almabayev": {
+      "real": "Asu Almabayev",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "CJ Vergara|Oct 15, 2022|Tatsuro Taira": {
+      "real": "Tatsuro Taira",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "CJ Vergara|Nov 6, 2021|Ode' Osbourne": {
+      "real": "Ode Osbourne",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "CJ Vergara|Jan 24, 2015|Jonathan Martinez": {
+      "real": "Jonathan Martinez",
+      "theyCallHim": "C.J. Vergara",
+      "note": "alias"
+    },
+    "Abus Magomedov|Oct 4, 2025|Joe Pyfer": {
+      "real": "Joe Pyfer",
+      "theyCallHim": "Abusupiyan Magomedov",
+      "note": "alias"
+    },
+    "Abus Magomedov|Apr 26, 2025|Michel Pereira": {
+      "real": "Michel Pereira",
+      "theyCallHim": "Abusupiyan Magomedov",
+      "note": "alias"
+    },
+    "Abus Magomedov|Oct 26, 2024|Brunno Ferreira": {
+      "real": "Brunno Ferreira",
+      "theyCallHim": "Abusupiyan Magomedov",
+      "note": "alias"
+    },
+    "Abus Magomedov|Nov 4, 2023|Caio Borralho": {
+      "real": "Caio Borralho",
+      "theyCallHim": "Abusupiyan Magomedov",
+      "note": "alias"
+    },
+    "Abus Magomedov|Jul 1, 2023|Sean Strickland": {
+      "real": "Sean Strickland",
+      "theyCallHim": "Abusupiyan Magomedov",
+      "note": "alias"
+    },
+    "Daria Zhelezniakova|Sep 28, 2024|Ailin Perez": {
+      "real": "Ailín Pérez",
+      "theyCallHim": "Darya Zheleznyakova",
+      "note": "alias"
+    },
+    "Daria Zhelezniakova|Mar 23, 2024|Montse Rendon": {
+      "real": "Montse Rendon",
+      "theyCallHim": "Darya Zheleznyakova",
+      "note": "alias"
+    },
+    "Karol Rosa|Sep 13, 2014|Jéssica Andrade": {
+      "real": "Jéssica Andrade",
+      "theyCallHim": "Larissa Pacheco",
+      "note": "alias"
+    },
+    "Brogan Walker|Jul 30, 2020|Erin Blanchfield": {
+      "real": "Erin Blanchfield",
+      "theyCallHim": "Brogan Walker-Sanchez",
+      "note": "alias"
+    },
+    "Brogan Walker|Jul 21, 2018|Miranda Maverick": {
+      "real": "Miranda Maverick",
+      "theyCallHim": "Brogan Walker-Sanchez",
+      "note": "alias"
+    },
+    "Daniel Lacerda|Apr 30, 2022|Francisco Figueiredo": {
+      "real": "Francisco Figueiredo",
+      "theyCallHim": "Daniel da Silva",
+      "note": "alias"
+    },
+    "Shara Magomedov|Jul 26, 2025|Marc-André Barriault": {
+      "real": "Marc-André Barriault",
+      "theyCallHim": "Sharabutdin Magomedov",
+      "note": "alias"
+    },
+    "Shara Magomedov|Feb 1, 2025|Michael Page": {
+      "real": "Michael Page",
+      "theyCallHim": "Sharabutdin Magomedov",
+      "note": "alias"
+    },
+    "Shara Magomedov|Oct 26, 2024|Armen Petrosyan": {
+      "real": "Armen Petrosyan",
+      "theyCallHim": "Sharabutdin Magomedov",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Jul 19, 2025|Ryan Spann": {
+      "real": "Ryan Spann",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Dec 7, 2024|Kennedy Nzechukwu": {
+      "real": "Kennedy Nzechukwu",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Jul 27, 2024|Mick Parkin": {
+      "real": "Mick Parkin",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Apr 6, 2024|Valter Walker": {
+      "real": "Valter Walker",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Aug 26, 2023|Waldo Cortes-Acosta": {
+      "real": "Waldo Cortes-Acosta",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Lukasz Brzeski|Aug 13, 2022|Martin Buday": {
+      "real": "Martin Buday",
+      "theyCallHim": "Łukasz Brzeski",
+      "note": "alias"
+    },
+    "Jakub Wiklacz|Feb 7, 2026|Muin Gafurov": {
+      "real": "Muin Gafurov",
+      "theyCallHim": "Jakub Wikłacz",
+      "note": "alias"
+    },
+    "Jakub Wiklacz|Oct 4, 2025|Patchy Mix": {
+      "real": "Patchy Mix",
+      "theyCallHim": "Jakub Wikłacz",
+      "note": "alias"
+    },
+    "Robert Ruchala|Sep 6, 2025|William Gomis": {
+      "real": "William Gomis",
+      "theyCallHim": "Robert Ruchała",
+      "note": "alias"
+    },
+    "Robert Ruchala|Oct 14, 2022|Damian Stasiak": {
+      "real": "Damian Stasiak",
+      "theyCallHim": "Robert Ruchała",
+      "note": "alias"
+    },
+    "Jose Delano|Jan 28, 2023|Gabriel Santos": {
+      "real": "Gabriel Santos",
+      "theyCallHim": "Jose Mauro Delano",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Jun 27, 2026|Abus Magomedov": {
+      "real": "Abus Magomedov",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Feb 7, 2026|Marc-André Barriault": {
+      "real": "Marc-André Barriault",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Aug 16, 2025|Gerald Meerschaert": {
+      "real": "Gerald Meerschaert",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Jun 1, 2024|Kevin Holland": {
+      "real": "Kevin Holland",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Mar 9, 2024|Michel Pereira": {
+      "real": "Michel Pereira",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Aug 26, 2023|Chidi Njokuani": {
+      "real": "Chidi Njokuani",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Apr 29, 2023|Caio Borralho": {
+      "real": "Caio Borralho",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Dec 17, 2022|Cody Brundage": {
+      "real": "Cody Brundage",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Mar 5, 2022|Dustin Jacoby": {
+      "real": "Dustin Jacoby",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Mar 27, 2021|Modestas Bukauskas": {
+      "real": "Modestas Bukauskas",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Michal Oleksiejczuk|Feb 23, 2020|Jimmy Crute": {
+      "real": "Jimmy Crute",
+      "theyCallHim": "Michał Oleksiejczuk",
+      "note": "alias"
+    },
+    "Phil Rowe|Jun 1, 2024|Jake Matthews": {
+      "real": "Jake Matthews",
+      "theyCallHim": "Philip Rowe",
+      "note": "alias"
+    },
+    "Phil Rowe|Jun 24, 2023|Neil Magny": {
+      "real": "Neil Magny",
+      "theyCallHim": "Philip Rowe",
+      "note": "alias"
+    },
+    "Phil Rowe|Dec 3, 2022|Niko Price": {
+      "real": "Niko Price",
+      "theyCallHim": "Philip Rowe",
+      "note": "alias"
+    },
+    "Phil Rowe|Feb 13, 2021|Gabe Green": {
+      "real": "Gabe Green",
+      "theyCallHim": "Philip Rowe",
+      "note": "alias"
+    },
+    "Phil Rowe|Aug 20, 2019|Leon Shahbazyan": {
+      "real": "Leon Shahbazyan",
+      "theyCallHim": "Philip Rowe",
+      "note": "alias"
+    },
+    "Rongzhu|Sep 7, 2024|Chris Padilla": {
+      "real": "Chris Padilla",
+      "theyCallHim": "Rong Zhu",
+      "note": "alias"
+    },
+    "Rongzhu|Feb 26, 2022|Ignacio Bahamondes": {
+      "real": "Ignacio Bahamondes",
+      "theyCallHim": "Rong Zhu",
+      "note": "alias"
+    },
+    "Rongzhu|Sep 25, 2020|Shayilan Nuerdanbieke": {
+      "real": "Shayilan Nuerdanbieke",
+      "theyCallHim": "Zhu Rong",
+      "note": "alias"
+    },
+    "Montserrat Ruiz|Nov 1, 2025|Alice Ardelean": {
+      "real": "Alice Ardelean",
+      "theyCallHim": "Montserrat Conejo Ruiz",
+      "note": "alias"
+    },
+    "Montserrat Ruiz|Mar 20, 2021|Cheyanne Vlismas": {
+      "real": "Cheyanne Vlismas",
+      "theyCallHim": "Montserrat Conejo Ruiz",
+      "note": "alias"
+    },
+    "Montserrat Ruiz|Dec 15, 2018|Danielle Taylor": {
+      "real": "Danielle Taylor",
+      "theyCallHim": "Montserrat Conejo Ruiz",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Oct 22, 2022|Manon Fiorot": {
+      "real": "Manon Fiorot",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|May 14, 2022|Amanda Ribas": {
+      "real": "Amanda Ribas",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Jan 15, 2022|Jennifer Maia": {
+      "real": "Jennifer Maia",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|May 15, 2021|Viviane Araújo": {
+      "real": "Viviane Araújo",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Oct 18, 2020|Jéssica Andrade": {
+      "real": "Jéssica Andrade",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|May 30, 2020|Antonina Shevchenko": {
+      "real": "Antonina Shevchenko",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Feb 8, 2020|Valentina Shevchenko": {
+      "real": "Valentina Shevchenko",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Nov 2, 2019|Jennifer Maia": {
+      "real": "Jennifer Maia",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Katlyn Cerminara|Apr 8, 2017|Irene Aldana": {
+      "real": "Irene Aldana",
+      "theyCallHim": "Katlyn Chookagian",
+      "note": "alias"
+    },
+    "Jun Yong Park|Oct 25, 2025|Ikram Aliskerov": {
+      "real": "Ikram Aliskerov",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|Oct 12, 2024|Brad Tavares": {
+      "real": "Brad Tavares",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|Dec 9, 2023|André Muniz": {
+      "real": "Andre Muniz",
+      "theyCallHim": "JunYong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|Jul 15, 2023|Albert Duraev": {
+      "real": "Albert Duraev",
+      "theyCallHim": "Junyong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|Feb 4, 2023|Denis Tiuliulin": {
+      "real": "Denis Tiuliulin",
+      "theyCallHim": "JunYong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|Oct 29, 2022|Joseph Holmes": {
+      "real": "Joseph Holmes",
+      "theyCallHim": "JunYong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|May 21, 2022|Eryk Anders": {
+      "real": "Eryk Anders",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|Oct 23, 2021|Gregory Rodrigues": {
+      "real": "Gregory Rodrigues",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|May 8, 2021|Tafon Nchukwi": {
+      "real": "Tafon Nchukwi",
+      "theyCallHim": "JunYong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|Oct 17, 2020|John Phillips": {
+      "real": "John Phillips",
+      "theyCallHim": "JunYong Park",
+      "note": "alias"
+    },
+    "Jun Yong Park|Dec 21, 2019|Marc-André Barriault": {
+      "real": "Marc-André Barriault",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|Aug 31, 2019|Anthony Hernandez": {
+      "real": "Anthony Hernandez",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Jun Yong Park|Aug 7, 2016|Shavkat Rakhmonov": {
+      "real": "Shavkat Rakhmonov",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Treston Vines|Oct 4, 2025|Ateba Gautier": {
+      "real": "Ateba Gautier",
+      "theyCallHim": "Tre'ston Vines",
+      "note": "alias"
+    },
+    "Treston Vines|Jul 14, 2023|Raheam Forest": {
+      "real": "Raheam Forest",
+      "theyCallHim": "Tre'ston Vines",
+      "note": "alias"
+    },
+    "Nina Nunes|Jun 8, 2019|Tatiana Suarez": {
+      "real": "Tatiana Suarez",
+      "theyCallHim": "Nina Ansaroff",
+      "note": "alias"
+    },
+    "Nina Nunes|Nov 11, 2017|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Nina Ansaroff",
+      "note": "alias"
+    },
+    "Nina Nunes|Dec 10, 2010|Carla Esparza": {
+      "real": "Carla Esparza",
+      "theyCallHim": "Nina Ansaroff",
+      "note": "alias"
+    },
+    "Maheshate|Nov 23, 2024|Nikolas Motta": {
+      "real": "Nikolas Motta",
+      "theyCallHim": "Maheshate Hayisaer",
+      "note": "alias"
+    },
+    "Maheshate|Dec 17, 2022|Rafa Garcia": {
+      "real": "Rafa Garcia",
+      "theyCallHim": "Hayisaer Maheshate",
+      "note": "alias"
+    },
+    "Maheshate|Jun 11, 2022|Steve Garcia": {
+      "real": "Steve Garcia",
+      "theyCallHim": "Maheshate Hayisaer",
+      "note": "alias"
+    },
+    "TJ Brown|Oct 14, 2023|Darren Elkins": {
+      "real": "Darren Elkins",
+      "theyCallHim": "T.J. Brown",
+      "note": "alias"
+    },
+    "TJ Brown|Apr 15, 2023|Bill Algeo": {
+      "real": "Bill Algeo",
+      "theyCallHim": "T.J. Brown",
+      "note": "alias"
+    },
+    "TJ Brown|Jun 25, 2022|Shayilan Nuerdanbieke": {
+      "real": "Shayilan Nuerdanbieke",
+      "theyCallHim": "T.J. Brown",
+      "note": "alias"
+    },
+    "TJ Brown|May 1, 2021|Kai Kamaka III": {
+      "real": "Kai Kamaka III",
+      "theyCallHim": "T.J. Brown",
+      "note": "alias"
+    },
+    "Seokhyeon Ko|Jun 21, 2025|Oban Elliott": {
+      "real": "Oban Elliott",
+      "theyCallHim": "Seok Hyeon Ko",
+      "note": "alias"
+    },
+    "Giga Chikadze|Jun 20, 2026|Vinicius Oliveira": {
+      "real": "Vinicius Oliveira",
+      "theyCallHim": "Andre Fili",
+      "note": "alias"
+    },
+    "Xiao Long|Oct 26, 2021|Cristian Quiñonez": {
+      "real": "Cristian Quinonez",
+      "theyCallHim": "Long Xiao",
+      "note": "alias"
+    },
+    "Carlos Leal|Feb 21, 2026|Chidi Njokuani": {
+      "real": "Chidi Njokuani",
+      "theyCallHim": "Carlos Leal Miranda",
+      "note": "alias"
+    },
+    "Carlos Leal|Jul 26, 2025|Muslim Salikhov": {
+      "real": "Muslim Salikhov",
+      "theyCallHim": "Carlos Leal Miranda",
+      "note": "alias"
+    },
+    "Muhammad Naimov|Jun 21, 2025|Bogdan Grad": {
+      "real": "Bogdan Grad",
+      "theyCallHim": "Muhammadjon Naimov",
+      "note": "alias"
+    },
+    "Ding Meng|Dec 18, 2021|Taiyilake Nueraji": {
+      "real": "Taiyilake Nueraji",
+      "theyCallHim": "Meng Ding",
+      "note": "alias"
+    },
+    "Zachary Reese|Jul 11, 2026|Ryan Gandra": {
+      "real": "Ryan Gandra",
+      "theyCallHim": "Zach Reese",
+      "note": "alias"
+    },
+    "JooSang Yoo|Oct 4, 2025|Daniel Santos": {
+      "real": "Daniel Santos",
+      "theyCallHim": "Yoo Joo-sang",
+      "note": "alias"
+    },
+    "HyunSung Park|Oct 18, 2025|Bruno Gustavo da Silva": {
+      "real": "Bruno Gustavo da Silva",
+      "theyCallHim": "Park Hyun-sung",
+      "note": "alias"
+    },
+    "HyunSung Park|Aug 2, 2025|Tatsuro Taira": {
+      "real": "Tatsuro Taira",
+      "theyCallHim": "Park Hyun-sung",
+      "note": "alias"
+    },
+    "José Henrique Souza|May 15, 2021|André Muniz": {
+      "real": "Andre Muniz",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Dec 12, 2020|Kevin Holland": {
+      "real": "Kevin Holland",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Nov 16, 2019|Jan Błachowicz": {
+      "real": "Jan Błachowicz",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Apr 27, 2019|Jack Hermansson": {
+      "real": "Jack Hermansson",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Nov 3, 2018|Chris Weidman": {
+      "real": "Chris Weidman",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|May 12, 2018|Kelvin Gastelum": {
+      "real": "Kelvin Gastelum",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Jan 27, 2018|Derek Brunson": {
+      "real": "Derek Brunson",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Apr 15, 2017|Robert Whittaker": {
+      "real": "Robert Whittaker",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Feb 11, 2017|Tim Boetsch": {
+      "real": "Tim Boetsch",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|May 14, 2016|Vitor Belfort": {
+      "real": "Vitor Belfort",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Dec 12, 2015|Yoel Romero": {
+      "real": "Yoel Romero",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Apr 18, 2015|Chris Camozzi": {
+      "real": "Chris Camozzi",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Sep 5, 2014|Gegard Mousasi": {
+      "real": "Gegard Mousasi",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Feb 15, 2014|Francis Carmont": {
+      "real": "Francis Carmont",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Sep 4, 2013|Yushin Okami": {
+      "real": "Yushin Okami",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|May 18, 2013|Chris Camozzi": {
+      "real": "Chris Camozzi",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Jan 12, 2013|Ed Herman": {
+      "real": "Ed Herman",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Aug 18, 2012|Derek Brunson": {
+      "real": "Derek Brunson",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Mar 3, 2012|Bristol Marunde": {
+      "real": "Bristol Marunde",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Sep 10, 2011|Luke Rockhold": {
+      "real": "Luke Rockhold",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Jan 29, 2011|Robbie Lawler": {
+      "real": "Robbie Lawler",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Aug 21, 2010|Tim Kennedy": {
+      "real": "Tim Kennedy",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Dec 19, 2009|Matt Lindland": {
+      "real": "Matt Lindland",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|May 26, 2009|Jason Miller": {
+      "real": "Jason Miller",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Jun 15, 2008|Jason Miller": {
+      "real": "Jason Miller",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "José Henrique Souza|Sep 13, 2003|Jorge Patino": {
+      "real": "Jorge Patino",
+      "theyCallHim": "Jacare Souza",
+      "note": "alias"
+    },
+    "Michael Aswell Jr.|Oct 11, 2025|Lucas Almeida": {
+      "real": "Lucas Almeida",
+      "theyCallHim": "Michael Aswell",
+      "note": "alias"
+    },
+    "Michael Aswell Jr.|May 31, 2025|Bolaji Oki": {
+      "real": "Bolaji Oki",
+      "theyCallHim": "Michael Aswell",
+      "note": "alias"
+    },
+    "Michael Aswell Jr.|Dec 15, 2024|Dorian Ramos": {
+      "real": "Dorian Ramos",
+      "theyCallHim": "Michael Aswell",
+      "note": "alias"
+    },
+    "Michael Aswell Jr.|Aug 27, 2024|Bogdan Grad": {
+      "real": "Bogdan Grad",
+      "theyCallHim": "Michael Aswell",
+      "note": "alias"
+    },
+    "Michael Aswell Jr.|Jun 25, 2023|Yadier Del Valle": {
+      "real": "Yadier del Valle",
+      "theyCallHim": "Michael Aswell",
+      "note": "alias"
+    },
+    "Mizuki|Oct 25, 2025|Jaqueline Amorim": {
+      "real": "Jaqueline Amorim",
+      "theyCallHim": "Mizuki Inoue",
+      "note": "alias"
+    },
+    "Mizuki|Nov 1, 2014|Karolina Kowalkiewicz": {
+      "real": "Karolina Kowalkiewicz",
+      "theyCallHim": "Mizuki Inoue",
+      "note": "alias"
+    },
+    "Mike Brown|Jan 22, 2011|Rani Yahya": {
+      "real": "Rani Yahya",
+      "theyCallHim": "Mike Thomas Brown",
+      "note": "alias"
+    },
+    "Dongi Yang|May 15, 2012|Brad Tavares": {
+      "real": "Brad Tavares",
+      "theyCallHim": "Yang Dong-yi",
+      "note": "alias"
+    },
+    "KJ Noons|Jun 18, 2011|Jorge Masvidal": {
+      "real": "Jorge Masvidal",
+      "theyCallHim": "K. J. Noons",
+      "note": "alias"
+    },
+    "Tae Hyun Bang|Nov 1, 2008|Jorge Masvidal": {
+      "real": "Jorge Masvidal",
+      "theyCallHim": "Bang Tae-hyun",
+      "note": "alias"
+    },
+    "Guangyou Ning|Nov 26, 2016|Marlon Vera": {
+      "real": "Marlon Vera",
+      "theyCallHim": "Ning Guangyou",
+      "note": "alias"
+    },
+    "Manvel Gamburyan|Sep 27, 2014|Cody Gibson": {
+      "real": "Cody Gibson",
+      "theyCallHim": "Manny Gamburyan",
+      "note": "alias"
+    },
+    "Manvel Gamburyan|Sep 30, 2010|José Aldo": {
+      "real": "José Aldo",
+      "theyCallHim": "Manny Gamburyan",
+      "note": "alias"
+    },
+    "Chanmi Jeon|Jun 10, 2017|JJ Aldrich": {
+      "real": "JJ Aldrich",
+      "theyCallHim": "Jeon Chan-mi",
+      "note": "alias"
+    },
+    "Maia Stevenson|Jun 4, 2016|Kanako Murata": {
+      "real": "Kanako Murata",
+      "theyCallHim": "Maia Kahaunaele-Stevenson",
+      "note": "alias"
+    },
+    "Bharat Kandare|Nov 25, 2017|Song Yadong": {
+      "real": "Song Yadong",
+      "theyCallHim": "Bharat Khandare",
+      "note": "alias"
+    },
+    "Hyun Gyu Lim|May 16, 2015|Neil Magny": {
+      "real": "Neil Magny",
+      "theyCallHim": "Lim Hyun-gyu",
+      "note": "alias"
+    },
+    "Dong Hyun Kim|Jun 17, 2017|Colby Covington": {
+      "real": "Colby Covington",
+      "theyCallHim": "Kim Dong-hyun",
+      "note": "alias"
+    },
+    "Henry Briones|Aug 5, 2017|Rani Yahya": {
+      "real": "Rani Yahya",
+      "theyCallHim": "Enrique Briones",
+      "note": "alias"
+    },
+    "BJ Penn|Jan 15, 2017|Yair Rodriguez": {
+      "real": "Yair Rodríguez",
+      "theyCallHim": "B.J. Penn",
+      "note": "alias"
+    },
+    "BJ Penn|Mar 26, 2005|Lyoto Machida": {
+      "real": "Lyoto Machida",
+      "theyCallHim": "B.J. Penn",
+      "note": "alias"
+    },
+    "Mayana Kellem|Aug 10, 2018|Mayra Bueno Silva": {
+      "real": "Mayra Bueno Silva",
+      "theyCallHim": "Mayana Souza",
+      "note": "alias"
+    },
+    "Jaimelene Nievera|Jun 26, 2018|Antonina Shevchenko": {
+      "real": "Antonina Shevchenko",
+      "theyCallHim": "Jaymee Nievara",
+      "note": "alias"
+    },
+    "Kelly Velasco|Mar 11, 2016|Aspen Ladd": {
+      "real": "Aspen Ladd",
+      "theyCallHim": "Kelly McGill",
+      "note": "alias"
+    },
+    "Alexandra Albu|Oct 26, 2019|Loma Lookboonmee": {
+      "real": "Loma Lookboonmee",
+      "theyCallHim": "Aleksandra Albu",
+      "note": "alias"
+    },
+    "Jin Soo Son|Jul 20, 2019|Mario Bautista": {
+      "real": "Mario Bautista",
+      "theyCallHim": "Son Jin-soo",
+      "note": "alias"
+    },
+    "Jin Soo Son|Sep 15, 2018|Petr Yan": {
+      "real": "Petr Yan",
+      "theyCallHim": "Son Jin-soo",
+      "note": "alias"
+    },
+    "Saparbeg Safarov|Mar 7, 2020|Rodolfo Vieira": {
+      "real": "Rodolfo Vieira",
+      "theyCallHim": "Saparbek Safarov",
+      "note": "alias"
+    },
+    "Joe Duffy|Jul 18, 2020|Joel Álvarez": {
+      "real": "Joel Alvarez",
+      "theyCallHim": "Joseph Duffy",
+      "note": "alias"
+    },
+    "Joe Duffy|Mar 16, 2019|Marc Diakiese": {
+      "real": "Marc Diakiese",
+      "theyCallHim": "Joseph Duffy",
+      "note": "alias"
+    },
+    "Joe Duffy|Jan 2, 2016|Dustin Poirier": {
+      "real": "Dustin Poirier",
+      "theyCallHim": "Joseph Duffy",
+      "note": "alias"
+    },
+    "Joe Duffy|Nov 27, 2010|Conor McGregor": {
+      "real": "Conor McGregor",
+      "theyCallHim": "Joseph Duffy",
+      "note": "alias"
+    },
+    "Jacare Souza|Dec 12, 2020|Kevin Holland": {
+      "real": "Kevin Holland",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "Jacare Souza|Apr 27, 2019|Jack Hermansson": {
+      "real": "Jack Hermansson",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "Jacare Souza|May 12, 2018|Kelvin Gastelum": {
+      "real": "Kelvin Gastelum",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "Jacare Souza|Apr 15, 2017|Robert Whittaker": {
+      "real": "Robert Whittaker",
+      "theyCallHim": "Ronaldo Souza",
+      "note": "alias"
+    },
+    "Livinha Souza|Mar 6, 2021|Amanda Lemos": {
+      "real": "Amanda Lemos",
+      "theyCallHim": "Lívia Renata Souza",
+      "note": "alias"
+    },
+    "Livinha Souza|May 7, 2016|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Lívia Renata Souza",
+      "note": "alias"
+    },
+    "Randa Markos|Dec 10, 2014|Rose Namajunas": {
+      "real": "Rose Namajunas",
+      "theyCallHim": "Carla Esparza",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Oct 22, 2022|Aljamain Sterling": {
+      "real": "Aljamain Sterling",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Jul 24, 2021|Cory Sandhagen": {
+      "real": "Cory Sandhagen",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Jan 19, 2019|Henry Cejudo": {
+      "real": "Henry Cejudo",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Aug 4, 2018|Cody Garbrandt": {
+      "real": "Cody Garbrandt",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Nov 4, 2017|Cody Garbrandt": {
+      "real": "Cody Garbrandt",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "TJ Dillashaw|Jan 17, 2016|Dominick Cruz": {
+      "real": "Dominick Cruz",
+      "theyCallHim": "T.J. Dillashaw",
+      "note": "alias"
+    },
+    "Mario Sousa|Sep 7, 2021|Chidi Njokuani": {
+      "real": "Chidi Njokuani",
+      "theyCallHim": "Mário Felipe de Sousa",
+      "note": "alias"
+    },
+    "Batgerel Danaa|Apr 22, 2023|Brady Hiestand": {
+      "real": "Brady Hiestand",
+      "theyCallHim": "Danaa Batgerel",
+      "note": "alias"
+    },
+    "Batgerel Danaa|Mar 26, 2022|Chris Gutierrez": {
+      "real": "Chris Gutierrez",
+      "theyCallHim": "Danaa Batgerel",
+      "note": "alias"
+    },
+    "Batgerel Danaa|Aug 31, 2019|Alatengheili": {
+      "real": "Alatengheili",
+      "theyCallHim": "Danaa Batgerel",
+      "note": "alias"
+    },
+    "Batgerel Danaa|Apr 27, 2013|Kai Kara-France": {
+      "real": "Kai Kara-France",
+      "theyCallHim": "Danaa Batgerel",
+      "note": "alias"
+    },
+    "Blood Diamond|Feb 12, 2022|Jeremiah Wells": {
+      "real": "Jeremiah Wells",
+      "theyCallHim": "Mike Mathetha",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Aug 26, 2023|Max Holloway": {
+      "real": "Max Holloway",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Apr 9, 2022|Alexander Volkanovski": {
+      "real": "Alexander Volkanovski",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Jun 19, 2021|Dan Ige": {
+      "real": "Dan Ige",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Oct 17, 2020|Brian Ortega": {
+      "real": "Brian Ortega",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Jun 22, 2019|Renato Moicano": {
+      "real": "Renato Moicano",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Nov 10, 2018|Yair Rodriguez": {
+      "real": "Yair Rodríguez",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|Aug 3, 2013|José Aldo": {
+      "real": "José Aldo",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Chan Sung Jung|May 15, 2012|Dustin Poirier": {
+      "real": "Dustin Poirier",
+      "theyCallHim": "Jung Chan-sung",
+      "note": "alias"
+    },
+    "Johnny Munoz|Jun 3, 2023|Daniel Santos": {
+      "real": "Daniel Santos",
+      "theyCallHim": "Johnny Muñoz Jr.",
+      "note": "alias"
+    },
+    "Mark O. Madsen|Nov 11, 2023|Jared Gordon": {
+      "real": "Jared Gordon",
+      "theyCallHim": "Mark Madsen",
+      "note": "alias"
+    },
+    "Mark O. Madsen|Nov 5, 2022|Grant Dawson": {
+      "real": "Grant Dawson",
+      "theyCallHim": "Mark Madsen",
+      "note": "alias"
+    },
+    "Rickson Zenidim|Oct 10, 2023|Andre Lima": {
+      "real": "Andre Lima",
+      "theyCallHim": "Rickson Thai Zenidim",
+      "note": "alias"
+    },
+    "Liang Na|Apr 24, 2021|Ariane Carnelossi": {
+      "real": "Ariane Carnelossi",
+      "theyCallHim": "Na Liang",
+      "note": "alias"
+    },
+    "Liang Na|Jul 21, 2018|Mariya Agapova": {
+      "real": "Mariya Agapova",
+      "theyCallHim": "Na Liang",
+      "note": "alias"
+    },
+    "Michelle Waterson-Gomez|Jul 16, 2022|Amanda Lemos": {
+      "real": "Amanda Lemos",
+      "theyCallHim": "Michelle Waterson",
+      "note": "alias"
+    },
+    "Michelle Waterson-Gomez|Sep 12, 2020|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Michelle Waterson",
+      "note": "alias"
+    },
+    "Michelle Waterson-Gomez|May 9, 2020|Carla Esparza": {
+      "real": "Carla Esparza",
+      "theyCallHim": "Michelle Waterson",
+      "note": "alias"
+    },
+    "Michelle Waterson-Gomez|Mar 30, 2019|Karolina Kowalkiewicz": {
+      "real": "Karolina Kowalkiewicz",
+      "theyCallHim": "Michelle Waterson",
+      "note": "alias"
+    },
+    "Michelle Waterson-Gomez|Apr 15, 2017|Rose Namajunas": {
+      "real": "Rose Namajunas",
+      "theyCallHim": "Michelle Waterson",
+      "note": "alias"
+    },
+    "AJ Dobson|Mar 23, 2024|Edmen Shahbazyan": {
+      "real": "Edmen Shahbazyan",
+      "theyCallHim": "A.J. Dobson",
+      "note": "alias"
+    },
+    "AJ Dobson|Oct 22, 2022|Armen Petrosyan": {
+      "real": "Armen Petrosyan",
+      "theyCallHim": "A.J. Dobson",
+      "note": "alias"
+    },
+    "Josh Culibao|Jul 22, 2023|Lerone Murphy": {
+      "real": "Lerone Murphy",
+      "theyCallHim": "Joshua Culibao",
+      "note": "alias"
+    },
+    "Josh Culibao|Feb 11, 2023|Melsik Baghdasaryan": {
+      "real": "Melsik Baghdasaryan",
+      "theyCallHim": "Joshua Culibao",
+      "note": "alias"
+    },
+    "Josh Culibao|May 22, 2021|Shayilan Nuerdanbieke": {
+      "real": "Shayilan Nuerdanbieke",
+      "theyCallHim": "Joshua Culibao",
+      "note": "alias"
+    },
+    "Josh Culibao|Oct 3, 2020|Charles Jourdain": {
+      "real": "Charles Jourdain",
+      "theyCallHim": "Joshua Culibao",
+      "note": "alias"
+    },
+    "Josh Culibao|Feb 22, 2020|Jalin Turner": {
+      "real": "Jalin Turner",
+      "theyCallHim": "Joshua Culibao",
+      "note": "alias"
+    },
+    "Nate Maness|Mar 16, 2018|Caio Machado": {
+      "real": "Caio Machado",
+      "theyCallHim": "Jamie Smyth",
+      "note": "alias"
+    },
+    "Kyung Ho Kang|Nov 11, 2023|John Castaneda": {
+      "real": "John Castaneda",
+      "theyCallHim": "Kang Kyung-ho",
+      "note": "alias"
+    },
+    "Kyung Ho Kang|Mar 2, 2013|Alex Caceres": {
+      "real": "Alex Caceres",
+      "theyCallHim": "Kang Kyung-ho",
+      "note": "alias"
+    },
+    "Brendon Marotte|Oct 14, 2023|Terrance McKinney": {
+      "real": "Terrance McKinney",
+      "theyCallHim": "Brendan Marotte",
+      "note": "alias"
+    },
+    "Phil Latu|Sep 10, 2024|Navajo Stirling": {
+      "real": "Navajo Stirling",
+      "theyCallHim": "Phillip Latu",
+      "note": "alias"
+    },
+    "Phil Latu|Jan 21, 2023|Alvin Hines": {
+      "real": "Alvin Hines",
+      "theyCallHim": "Phillip Latu",
+      "note": "alias"
+    },
+    "Da Woon Jung|Sep 9, 2023|Carlos Ulberg": {
+      "real": "Carlos Ulberg",
+      "theyCallHim": "Jung Da-un",
+      "note": "alias"
+    },
+    "Da Woon Jung|Feb 4, 2023|Devin Clark": {
+      "real": "Devin Clark",
+      "theyCallHim": "Jung Da-un",
+      "note": "alias"
+    },
+    "Da Woon Jung|Jul 16, 2022|Dustin Jacoby": {
+      "real": "Dustin Jacoby",
+      "theyCallHim": "Jung Da-un",
+      "note": "alias"
+    },
+    "Da Woon Jung|Nov 13, 2021|Kennedy Nzechukwu": {
+      "real": "Kennedy Nzechukwu",
+      "theyCallHim": "Jung Da-un",
+      "note": "alias"
+    },
+    "Ahmad Hassanzada|Aug 16, 2022|Nazim Sadykhov": {
+      "real": "Nazim Sadykhov",
+      "theyCallHim": "Ahmad Sohail Hassanzada",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Mar 15, 2025|Kevin Vallejos": {
+      "real": "Kevin Vallejos",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Jul 20, 2024|Steve Garcia": {
+      "real": "Steve Garcia",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Oct 23, 2021|Alex Caceres": {
+      "real": "Alex Caceres",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Jun 19, 2021|Julian Erosa": {
+      "real": "Julian Erosa",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Feb 6, 2021|Youssef Zalal": {
+      "real": "Youssef Zalal",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "SeungWoo Choi|Apr 20, 2019|Movsar Evloev": {
+      "real": "Movsar Evloev",
+      "theyCallHim": "Choi Seung-woo",
+      "note": "alias"
+    },
+    "JunYong Park|Oct 25, 2025|Ikram Aliskerov": {
+      "real": "Ikram Aliskerov",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|Jun 21, 2025|Ismail Naurdiev": {
+      "real": "Ismail Naurdiev",
+      "theyCallHim": "Jun Yong Park",
+      "note": "alias"
+    },
+    "JunYong Park|Oct 12, 2024|Brad Tavares": {
+      "real": "Brad Tavares",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|May 21, 2022|Eryk Anders": {
+      "real": "Eryk Anders",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|Oct 23, 2021|Gregory Rodrigues": {
+      "real": "Gregory Rodrigues",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|Dec 21, 2019|Marc-Andre Barriault": {
+      "real": "Marc-André Barriault",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|Aug 31, 2019|Anthony Hernandez": {
+      "real": "Anthony Hernandez",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "JunYong Park|Aug 7, 2016|Shavkat Rakhmonov": {
+      "real": "Shavkat Rakhmonov",
+      "theyCallHim": "Park Jun-yong",
+      "note": "alias"
+    },
+    "Rafael Cerqueira|Nov 22, 2025|Abdulrakhman Yakhyaev": {
+      "real": "Abdulrakhman Yakhyaev",
+      "theyCallHim": "Raffael Cerqueira",
+      "note": "alias"
+    },
+    "Rafael Cerqueira|Aug 9, 2025|Julius Walker": {
+      "real": "Julius Walker",
+      "theyCallHim": "Raffael Cerqueira",
+      "note": "alias"
+    },
+    "Rafael Cerqueira|Feb 22, 2025|Modestas Bukauskas": {
+      "real": "Modestas Bukauskas",
+      "theyCallHim": "Raffael Cerqueira",
+      "note": "alias"
+    },
+    "Rafael Cerqueira|Oct 26, 2024|Ibo Aslan": {
+      "real": "Ibo Aslan",
+      "theyCallHim": "Raffael Cerqueira",
+      "note": "alias"
+    },
+    "Tecia Pennington|Apr 9, 2022|Mackenzie Dern": {
+      "real": "Mackenzie Dern",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Aug 7, 2021|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Dec 12, 2020|Sam Hughes": {
+      "real": "Sam Hughes",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Mar 2, 2019|Zhang Weili": {
+      "real": "Zhang Weili",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Feb 24, 2018|Jessica Andrade": {
+      "real": "Jéssica Andrade",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Apr 16, 2016|Rose Namajunas": {
+      "real": "Rose Namajunas",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Jun 13, 2015|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Tecia Pennington|Jul 13, 2013|Rose Namajunas": {
+      "real": "Rose Namajunas",
+      "theyCallHim": "Tecia Torres",
+      "note": "alias"
+    },
+    "Jose Daniel Medina|Feb 28, 2026|Ryan Gandra": {
+      "real": "Ryan Gandra",
+      "theyCallHim": "Jose Medina",
+      "note": "alias"
+    },
+    "Jose Daniel Medina|Sep 13, 2025|Duško Todorović": {
+      "real": "Dusko Todorovic",
+      "theyCallHim": "José Medina",
+      "note": "alias"
+    },
+    "Jose Daniel Medina|Mar 29, 2025|Ateba Gautier": {
+      "real": "Ateba Gautier",
+      "theyCallHim": "José Medina",
+      "note": "alias"
+    },
+    "Jose Daniel Medina|Aug 24, 2024|Zachary Reese": {
+      "real": "Zachary Reese",
+      "theyCallHim": "José Medina",
+      "note": "alias"
+    },
+    "Montserrat Conejo Ruiz|Nov 4, 2023|Eduarda Moura": {
+      "real": "Eduarda Moura",
+      "theyCallHim": "Montserrat Ruiz",
+      "note": "alias"
+    },
+    "Montserrat Conejo Ruiz|Aug 12, 2023|Jaqueline Amorim": {
+      "real": "Jaqueline Amorim",
+      "theyCallHim": "Montserrat Ruiz",
+      "note": "alias"
+    },
+    "Montserrat Conejo Ruiz|Jul 17, 2021|Amanda Lemos": {
+      "real": "Amanda Lemos",
+      "theyCallHim": "Montserrat Ruiz",
+      "note": "alias"
+    },
+    "Viacheslav Borshchev|Mar 26, 2022|Marc Diakiese": {
+      "real": "Marc Diakiese",
+      "theyCallHim": "Viacheslav Borschev",
+      "note": "alias"
+    },
+    "Bernardo Sopaj|May 16, 2026|Timmy Cuamba": {
+      "real": "Timmy Cuamba",
+      "theyCallHim": "Benardo Sopaj",
+      "note": "alias"
+    },
+    "Bernardo Sopaj|Jan 18, 2025|Ricky Turcios": {
+      "real": "Ricky Turcios",
+      "theyCallHim": "Benardo Sopaj",
+      "note": "alias"
+    },
+    "Bernardo Sopaj|Mar 2, 2024|Vinicius Oliveira": {
+      "real": "Vinicius Oliveira",
+      "theyCallHim": "Benardo Sopaj",
+      "note": "alias"
+    },
+    "Jingnan Xiong|May 30, 2026|Angela Hill": {
+      "real": "Angela Hill",
+      "theyCallHim": "Xiong Jingnan",
+      "note": "alias"
+    },
+    "Jose Henrique|May 30, 2026|Ding Meng": {
+      "real": "Ding Meng",
+      "theyCallHim": "Jose Souza",
+      "note": "alias"
+    },
+    "Constantinos Philippou|Mar 2, 2012|Court McGee": {
+      "real": "Court McGee",
+      "theyCallHim": "Costas Philippou",
+      "note": "alias"
+    },
+    "Constantinos Philippou|Feb 4, 2011|Uriah Hall": {
+      "real": "Uriah Hall",
+      "theyCallHim": "Costas Philippou",
+      "note": "alias"
+    },
+    "Bradley Scott|Aug 5, 2017|Jack Hermansson": {
+      "real": "Jack Hermansson",
+      "theyCallHim": "Brad Scott",
+      "note": "alias"
+    },
+    "Bradley Scott|Feb 27, 2016|Krzysztof Jotko": {
+      "real": "Krzysztof Jotko",
+      "theyCallHim": "Brad Scott",
+      "note": "alias"
+    },
+    "Bradley Scott|Dec 14, 2012|Robert Whittaker": {
+      "real": "Robert Whittaker",
+      "theyCallHim": "Brad Scott",
+      "note": "alias"
+    },
+    "Rogerio Nogueira|May 11, 2019|Ryan Spann": {
+      "real": "Ryan Spann",
+      "theyCallHim": "Antônio Rogério Nogueira",
+      "note": "alias"
+    },
+    "Ji Yeon Kim|Jul 30, 2022|Joselyne Edwards": {
+      "real": "Joselyne Edwards",
+      "theyCallHim": "Kim Ji-yeon",
+      "note": "alias"
+    },
+    "Ji Yeon Kim|Feb 26, 2022|Priscila Cachoeira": {
+      "real": "Priscila Cachoeira",
+      "theyCallHim": "Kim Ji-yeon",
+      "note": "alias"
+    },
+    "Ji Yeon Kim|Sep 4, 2021|Molly McCann": {
+      "real": "Molly McCann",
+      "theyCallHim": "Kim Ji-yeon",
+      "note": "alias"
+    },
+    "Ji Yeon Kim|Aug 29, 2020|Alexa Grasso": {
+      "real": "Alexa Grasso",
+      "theyCallHim": "Kim Ji-yeon",
+      "note": "alias"
+    },
+    "Ji Yeon Kim|Jun 17, 2017|Lucie Pudilova": {
+      "real": "Lucie Pudilova",
+      "theyCallHim": "Kim Ji-yeon",
+      "note": "alias"
+    },
+    "Dan Argueta|Jun 4, 2022|Damon Jackson": {
+      "real": "Damon Jackson",
+      "theyCallHim": "Daniel Argueta",
+      "note": "alias"
+    },
+    "CB Dollaway|Dec 31, 2019|Jiří Procházka": {
+      "real": "Jiří Procházka",
+      "theyCallHim": "C. B. Dollaway",
+      "note": "alias"
+    },
+    "CB Dollaway|Dec 20, 2014|Lyoto Machida": {
+      "real": "Lyoto Machida",
+      "theyCallHim": "C. B. Dollaway",
+      "note": "alias"
+    },
+    "Sammy Morgan|Aug 15, 2008|Fabricio Camoes": {
+      "real": "Fabricio Camoes",
+      "theyCallHim": "Sam Morgan",
+      "note": "alias"
+    },
+    "Joshua Burkman|Feb 18, 2018|Alex Morono": {
+      "real": "Alex Morono",
+      "theyCallHim": "Josh Burkman",
+      "note": "alias"
+    },
+    "Joshua Burkman|Jul 29, 2017|Drew Dober": {
+      "real": "Drew Dober",
+      "theyCallHim": "Josh Burkman",
+      "note": "alias"
+    },
+    "Daron Cruickshank|Sep 11, 2010|Anthony Smith": {
+      "real": "Anthony Smith",
+      "theyCallHim": "Jesse Forbes",
+      "note": "alias"
+    },
+    "Bubba McDaniel|Aug 28, 2013|Brad Tavares": {
+      "real": "Brad Tavares",
+      "theyCallHim": "Robert McDaniel",
+      "note": "alias"
+    },
+    "Phil de Fries|Feb 15, 2012|Stipe Miocic": {
+      "real": "Stipe Miocic",
+      "theyCallHim": "Philip De Fries",
+      "note": "alias"
+    },
+    "Lukasz Sajewski|Feb 15, 2020|Ludovit Klein": {
+      "real": "Ludovit Klein",
+      "theyCallHim": "Łukasz Sajewski",
+      "note": "alias"
+    },
+    "Lukasz Sajewski|Oct 8, 2016|Marc Diakiese": {
+      "real": "Marc Diakiese",
+      "theyCallHim": "Łukasz Sajewski",
+      "note": "alias"
+    },
+    "Lukasz Sajewski|Jul 7, 2016|Gilbert Burns": {
+      "real": "Gilbert Burns",
+      "theyCallHim": "Łukasz Sajewski",
+      "note": "alias"
+    },
+    "Heather Clark|Nov 5, 2016|Alexa Grasso": {
+      "real": "Alexa Grasso",
+      "theyCallHim": "Heather Jo Clark",
+      "note": "alias"
+    },
+    "Heather Clark|May 8, 2016|Karolina Kowalkiewicz": {
+      "real": "Karolina Kowalkiewicz",
+      "theyCallHim": "Heather Jo Clark",
+      "note": "alias"
+    },
+    "Luiz Dutra Jr.|May 20, 2006|Fabricio Camoes": {
+      "real": "Fabricio Camoes",
+      "theyCallHim": "Luiz Jorge Dutra Jr.",
+      "note": "alias"
+    },
+    "Luiz Dutra Jr.|Dec 20, 2003|Fabricio Camoes": {
+      "real": "Fabricio Camoes",
+      "theyCallHim": "Luiz Jorge Dutra Jr.",
+      "note": "alias"
+    },
+    "Tiago Trator|Feb 5, 2011|Caio Bittencourt": {
+      "real": "Caio Bittencourt",
+      "theyCallHim": "Tiago dos Santos e Silva",
+      "note": "alias"
+    },
+    "Tiago Trator|Nov 6, 2010|Caio Bittencourt": {
+      "real": "Caio Bittencourt",
+      "theyCallHim": "Tiago dos Santos e Silva",
+      "note": "alias"
+    },
+    "Anying Wang|Aug 23, 2014|Colby Covington": {
+      "real": "Colby Covington",
+      "theyCallHim": "Wang Anying",
+      "note": "alias"
+    },
+    "Pawel Pawlak|Jul 18, 2015|Leon Edwards": {
+      "real": "Leon Edwards",
+      "theyCallHim": "Paweł Pawlak",
+      "note": "alias"
+    },
+    "Alberto Uda|Aug 20, 2016|Marvin Vettori": {
+      "real": "Marvin Vettori",
+      "theyCallHim": "Alberto Emiliano Pereira",
+      "note": "alias"
+    },
+    "Josh Stansbury|Jul 6, 2016|Khalil Rountree Jr.": {
+      "real": "Khalil Rountree Jr.",
+      "theyCallHim": "Andrew Sanchez",
+      "note": "alias"
+    },
+    "Antonio Carlos Jr.|Jan 23, 2021|Brad Tavares": {
+      "real": "Brad Tavares",
+      "theyCallHim": "Antônio Carlos Júnior",
+      "note": "alias"
+    },
+    "Antonio Carlos Jr.|Sep 14, 2019|Uriah Hall": {
+      "real": "Uriah Hall",
+      "theyCallHim": "Antônio Carlos Júnior",
+      "note": "alias"
+    },
+    "Antonio Carlos Jr.|May 18, 2014|Marcos Rogerio de Lima": {
+      "real": "Marcos Rogerio de Lima",
+      "theyCallHim": "Antônio Carlos Júnior",
+      "note": "alias"
+    },
+    "Jorge de Oliveira|Dec 15, 2013|Alex Oliveira": {
+      "real": "Alex Oliveira",
+      "theyCallHim": "Welton Doidao",
+      "note": "alias"
+    },
+    "Jose Quiñonez|Mar 7, 2020|Sean O'Malley": {
+      "real": "Sean O'Malley",
+      "theyCallHim": "José Alberto Quiñónez",
+      "note": "alias"
+    },
+    "Jose Quiñonez|Mar 16, 2019|Nathaniel Wood": {
+      "real": "Nathaniel Wood",
+      "theyCallHim": "José Alberto Quiñónez",
+      "note": "alias"
+    },
+    "Tim Johnson|May 1, 2025|Alexandr Romanov": {
+      "real": "Alexandr Romanov",
+      "theyCallHim": "Timothy Johnson",
+      "note": "alias"
+    },
+    "Tim Johnson|Nov 19, 2016|Alexander Volkov": {
+      "real": "Alexander Volkov",
+      "theyCallHim": "Timothy Johnson",
+      "note": "alias"
+    },
+    "Tim Johnson|Apr 10, 2016|Marcin Tybura": {
+      "real": "Marcin Tybura",
+      "theyCallHim": "Timothy Johnson",
+      "note": "alias"
+    },
+    "Wulijiburen|Feb 9, 2019|Jonathan Martinez": {
+      "real": "Jonathan Martinez",
+      "theyCallHim": "Wuliji Buren",
+      "note": "alias"
+    },
+    "Wulijiburen|Aug 4, 2018|Marlon Vera": {
+      "real": "Marlon Vera",
+      "theyCallHim": "Wuliji Buren",
+      "note": "alias"
+    },
+    "Khadzhi Bestaev|Sep 8, 2020|Phil Hawes": {
+      "real": "Phil Hawes",
+      "theyCallHim": "Khadzhimurat Bestaev",
+      "note": "alias"
+    },
+    "Khadzhi Bestaev|Jun 2, 2017|Alonzo Menifield": {
+      "real": "Alonzo Menifield",
+      "theyCallHim": "Khadzhimurat Bestaev",
+      "note": "alias"
+    },
+    "Polo Reyes|Feb 23, 2019|Damir Hadzovic": {
+      "real": "Damir Hadžović",
+      "theyCallHim": "Marco Polo Reyes",
+      "note": "alias"
+    },
+    "Polo Reyes|Jan 14, 2018|Matt Frevola": {
+      "real": "Matt Frevola",
+      "theyCallHim": "Marco Polo Reyes",
+      "note": "alias"
+    },
+    "Aleksei Kunchenko|Mar 14, 2020|Elizeu Zaleski dos Santos": {
+      "real": "Elizeu Zaleski dos Santos",
+      "theyCallHim": "Alexey Kunchenko",
+      "note": "alias"
+    },
+    "Aleksei Kunchenko|Aug 10, 2019|Gilbert Burns": {
+      "real": "Gilbert Burns",
+      "theyCallHim": "Alexey Kunchenko",
+      "note": "alias"
+    },
+    "Emil Meek|Feb 22, 2020|Jake Matthews": {
+      "real": "Jake Matthews",
+      "theyCallHim": "Emil Weber Meek",
+      "note": "alias"
+    },
+    "Emil Meek|Jan 14, 2018|Kamaru Usman": {
+      "real": "Kamaru Usman",
+      "theyCallHim": "Emil Weber Meek",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Jun 7, 2025|Wang Cong": {
+      "real": "Wang Cong",
+      "theyCallHim": "Ariane da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Nov 2, 2024|Jasmine Jasudavicius": {
+      "real": "Jasmine Jasudavicius",
+      "theyCallHim": "Ariane da Silva",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Apr 27, 2024|Karine Silva": {
+      "real": "Karine Silva",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Dec 16, 2023|Casey O'Neill": {
+      "real": "Casey O'Neill",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Jul 1, 2023|Melissa Gatto": {
+      "real": "Melissa Gatto",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Mar 11, 2023|JJ Aldrich": {
+      "real": "JJ Aldrich",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Aug 13, 2022|Priscila Cachoeira": {
+      "real": "Priscila Cachoeira",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Jun 5, 2021|Montana De La Rosa": {
+      "real": "Montana De La Rosa",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Nov 21, 2020|Antonina Shevchenko": {
+      "real": "Antonina Shevchenko",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Jul 18, 2020|Luana Carolina": {
+      "real": "Luana Carolina",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|Jun 22, 2019|Molly McCann": {
+      "real": "Molly McCann",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Ariane Lipski da Silva|May 27, 2017|Diana Belbita": {
+      "real": "Diana Belbita",
+      "theyCallHim": "Ariane Lipski",
+      "note": "alias"
+    },
+    "Khalid Murtazaliev|Nov 3, 2018|Alexandr Romanov": {
+      "real": "Alexandr Romanov",
+      "theyCallHim": "Sultan Murtazaliev",
+      "note": "alias"
+    },
+    "Will Santiago Jr.|May 10, 2019|Jared Gooden": {
+      "real": "Jared Gooden",
+      "theyCallHim": "Will Santiago",
+      "note": "alias"
+    },
+    "TJ Laramie|Apr 16, 2022|Pat Sabatini": {
+      "real": "Pat Sabatini",
+      "theyCallHim": "T.J. Laramie",
+      "note": "alias"
+    },
+    "TJ Laramie|Dec 8, 2017|Charles Jourdain": {
+      "real": "Charles Jourdain",
+      "theyCallHim": "T.J. Laramie",
+      "note": "alias"
+    },
+    "Yan Qihui|Oct 26, 2021|Karine Silva": {
+      "real": "Karine Silva",
+      "theyCallHim": "Qihui Yan",
+      "note": "alias"
+    },
+    "Eduardo Garagorri|May 13, 2023|Kevin Vallejos": {
+      "real": "Kevin Vallejos",
+      "theyCallHim": "Luiz Eduardo Garagorri",
+      "note": "alias"
+    },
+    "Eduardo Garagorri|Nov 7, 2020|Darren Elkins": {
+      "real": "Darren Elkins",
+      "theyCallHim": "Luiz Eduardo Garagorri",
+      "note": "alias"
+    },
+    "Micol DiSegni|Sep 29, 2018|Cory McKenna": {
+      "real": "Cory McKenna",
+      "theyCallHim": "Micol Di Segni",
+      "note": "alias"
+    },
+    "Mana Martinez|Mar 4, 2023|Cameron Saaiman": {
+      "real": "Cameron Saaiman",
+      "theyCallHim": "Leomana Martinez",
+      "note": "alias"
+    },
+    "Edivan Santos|Sep 28, 2021|Rizvan Kuniev": {
+      "real": "Rizvan Kuniev",
+      "theyCallHim": "Edivan Mineiro Santos",
+      "note": "alias"
+    },
+    "AJ Fletcher|Sep 23, 2023|Bryan Battle": {
+      "real": "Bryan Battle",
+      "theyCallHim": "A.J. Fletcher",
+      "note": "alias"
+    },
+    "AJ Fletcher|Feb 18, 2023|Themba Gorimbo": {
+      "real": "Themba Gorimbo",
+      "theyCallHim": "A.J. Fletcher",
+      "note": "alias"
+    },
+    "Lucasz Sudolski|Sep 28, 2021|Ihor Potieria": {
+      "real": "Ihor Potieria",
+      "theyCallHim": "Lukasz Sudolski",
+      "note": "alias"
+    },
+    "Qiulun|Jan 3, 2019|Ramazan Temirov": {
+      "real": "Ramazan Temirov",
+      "theyCallHim": "Jilunzhou Qiu",
+      "note": "alias"
+    },
+    "Vanilto Antunes|Oct 8, 2024|Islam Dulatov": {
+      "real": "Islam Dulatov",
+      "theyCallHim": "Vanilton Antunes",
+      "note": "alias"
+    },
+    "Val Woodburn|Feb 17, 2024|Oban Elliott": {
+      "real": "Oban Elliott",
+      "theyCallHim": "Valentine Woodburn",
+      "note": "alias"
+    },
+    "SeungGuk Choi|Jul 21, 2018|Steve Erceg": {
+      "real": "Steve Erceg",
+      "theyCallHim": "Choi Seung-guk",
+      "note": "alias"
+    },
+    "Viktoriia Dudakova|Jan 11, 2025|Fatima Kline": {
+      "real": "Fatima Kline",
+      "theyCallHim": "Victoria Dudakova",
+      "note": "alias"
+    },
+    "Viktoriia Dudakova|Aug 3, 2024|Sam Hughes": {
+      "real": "Sam Hughes",
+      "theyCallHim": "Victoria Dudakova",
+      "note": "alias"
+    },
+    "Baergeng Jieleyisi|Nov 23, 2024|SuYoung You": {
+      "real": "SuYoung You",
+      "theyCallHim": "Jieleyisi Baergeng",
+      "note": "alias"
+    },
+    "TJ O'Brien|Jul 27, 2013|Drew Dober": {
+      "real": "Drew Dober",
+      "theyCallHim": "T.J. O'Brien",
+      "note": "alias"
+    },
+    "Tom Gallicchio|May 20, 2011|Chris Curtis": {
+      "real": "Chris Curtis",
+      "theyCallHim": "Tom Gallichio",
+      "note": "alias"
+    },
+    "Mateo Vogel|Apr 2, 2021|Garrett Armfield": {
+      "real": "Garrett Armfield",
+      "theyCallHim": "Mateo Alejandro Vogel",
+      "note": "alias"
+    },
+    "Mateo Vogel|Feb 29, 2020|Serhiy Sidey": {
+      "real": "Serhiy Sidey",
+      "theyCallHim": "Mateo Alejandro Vogel",
+      "note": "alias"
+    }
+  }
+}

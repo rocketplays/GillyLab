@@ -122,10 +122,14 @@ function main() {
   // opponent has no record at all we can't check, and we keep it — that's the
   // ordinary case for regional opponents, not a collision.
   //
-  // 691 one-sided links exist across FIGHT_HISTORY. Some are aliases (same man,
-  // two spellings) rather than collisions, so this drops a few real edges too.
-  // That trade is right for a PUZZLE: a missing edge makes a path one hop
-  // longer, a fake edge makes the puzzle wrong.
+  // Of the ~663 one-sided links, only ~180 are collisions. The other ~481 are
+  // ALIASES — one man written two ways, so each record names the other
+  // differently — and those are REAL FIGHTS. Blanket-dropping them threw away
+  // 481 genuine edges, including Anderson "Berinja" dos Santos's entire UFC run.
+  //
+  // scripts/audit-name-links.cjs separates the two by date rather than by name
+  // (was the opponent fighting at all that day?) and writes
+  // data/name-aliases.json. Consult it: keep aliases, drop only collisions.
   const keyByNorm = Object.create(null);
   for (const key of Object.keys(FH)) keyByNorm[norm(key)] = key;
   const claims = Object.create(null);   // normA -> Set(normOpponent) straight from A's own record
@@ -134,9 +138,17 @@ function main() {
     claims[a] = claims[a] || new Set();
     for (const b of FH[key]) { const o = norm(b.opponent); if (o) claims[a].add(o); }
   }
-  const agreed = (a, o) => {
+  let ALIASES = {};
+  try {
+    ALIASES = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'name-aliases.json'), 'utf8')).aliases || {};
+  } catch (e) {
+    console.warn('  no data/name-aliases.json — falling back to dropping every one-sided link');
+  }
+  const aliasHit = (key, bout) => !!ALIASES[key + '|' + (bout.date || '') + '|' + (bout.opponent || '')];
+  const agreed = (a, o, key, bout) => {
     if (!keyByNorm[o]) return true;     // opponent keeps no record — nothing to contradict
-    return claims[o] && claims[o].has(a);
+    if (claims[o] && claims[o].has(a)) return true;                 // reciprocal
+    return aliasHit(key, bout);         // one-sided but date-verified as an alias -> real bout
   };
 
   let dropped = 0;
@@ -146,7 +158,7 @@ function main() {
     for (const b of FH[key]) {
       const o = norm(b.opponent);
       if (!o || !isUFC[o] || o === a) continue;
-      if (!agreed(a, o)) { dropped++; continue; }   // one-sided → unverifiable → not on the board
+      if (!agreed(a, o, key, b)) { dropped++; continue; }   // collision → fabricated link → not on the board
       (adj[a] = adj[a] || new Set()).add(o);
       (adj[o] = adj[o] || new Set()).add(a);
       const k = ek(a, o);
@@ -157,7 +169,7 @@ function main() {
       }
     }
   }
-  console.log('  reciprocity gate: dropped ' + dropped + ' one-sided links (name collisions + aliases)');
+  console.log('  reciprocity gate: dropped ' + dropped + ' collision links (aliases kept via name-aliases.json)');
 
   // ---- giant connected component ----
   const bfsAll = start => {
