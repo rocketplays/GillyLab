@@ -593,6 +593,45 @@ function roundP(pFight){
   for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(bo3(mid) < pFight) lo=mid; else hi=mid; }
   return (lo+hi)/2;
 }
+// ODDS ARE A BAND BEFORE THE FIGHT, A NUMBER AFTER IT.
+//
+// Playtest: "i lost a fight to chase hooper i was 91% to win, but later i went
+// on a 4 fight winning streak at 53%, 36%, 43%, 37%... it feels weird."
+//
+// Measured 6,000 fights binned by what the card said against what actually
+// happened: worst deviation 6.5pts, and that in the thinnest bin. The card was
+// telling the truth. Losing at 91% is a 1-in-11; that parlay is a 1-in-33. Both
+// landed in one run, which is unlucky and unremarkable.
+//
+// So there was no bug — and that is exactly the problem. A displayed "91%" is a
+// promise the player hears as "you win this one", and losing it reads as the
+// game lying rather than as the 1-in-11 it is. The numbers are right, so the
+// numbers aren't the fix. Precision is what invites the grievance: nobody feels
+// cheated by "heavy favourite".
+//
+// The number isn't hidden, it's DEFERRED. After the fight you're told exactly
+// what you were, which is when it reads as information instead of a promise —
+// and when you lose as a big favourite the game says so out loud rather than
+// letting you suspect it.
+function oddsBand(p){
+  if (p >= 0.82) return { t:'Heavy favourite', c:'var(--accent)' };
+  if (p >= 0.66) return { t:'Favourite',       c:'var(--accent)' };
+  if (p >= 0.54) return { t:'Slight edge',     c:'var(--text)'   };
+  if (p >= 0.46) return { t:"Pick 'em",        c:'var(--text)'   };
+  if (p >= 0.32) return { t:'Live dog',        c:'var(--gold)'   };
+  if (p >= 0.18) return { t:'Underdog',        c:'var(--accent2)'};
+  return              { t:'Big underdog',      c:'var(--accent2)'};
+}
+// What to say once it's over. Only editorialises when the result was genuinely
+// improbable — saying "that's variance" after a coin flip would be noise.
+function varianceNote(p, won){
+  if (!won && p >= 0.80)
+    return "You were a "+(p*100).toFixed(0)+"% favourite — a fighter that good still loses roughly 1 in "+
+           Math.round(1/(1-p))+". That's natural variance in MMA, not a bad build.";
+  if (won && p <= 0.35)
+    return "You were "+(p*100).toFixed(0)+"% — roughly 1 in "+Math.round(1/p)+". That one goes in the highlight reel.";
+  return null;
+}
 const amer = p => { const o = p>=0.5 ? -Math.round(100*p/(1-p)) : Math.round(100*(1-p)/p); return (o>0?'+':'')+o; };
 
 // ── opponent selection ───────────────────────────────────────────────────────
@@ -1055,10 +1094,18 @@ function resultBox(){
     (L.fin ? ' &nbsp;→&nbsp; <b style="color:var(--accent)">finished in R'+L.finRound+'</b>'
            : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
+  // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
+  // percentage reads as a promise, afterwards it reads as information.
+  const od=document.createElement('div'); od.className='note';
+  const vn=varianceNote(o.p, won);
+  od.innerHTML = 'You went in <b>'+(o.p*100).toFixed(0)+'%</b> to win ('+amer(o.p)+').'+
+    (vn ? ' <span style="color:'+(won?'var(--accent)':'var(--gold)')+'">'+vn+'</span>' : '');
+  p.appendChild(od);
   const n=document.createElement('div'); n.className='note';
-  n.textContent = 'The model gave you '+(o.p*100).toFixed(1)+'% per round ('+amer(o.p)+'), '+
-    (o.p*100).toFixed(1)+'% to win the fight.'+
-    (won ? '  +'+(o.reward+(fin?1:0))+' upgrade points.' : (G.losses<2?'  One life left.':''));
+  const left = CUT_AT - G.losses;
+  n.textContent = won
+    ? '+'+(o.reward+(fin?1:0))+' upgrade points.'
+    : (left===1 ? 'One loss left.' : left+' losses left.');
   p.appendChild(n);
   return p;
 }
@@ -1108,8 +1155,8 @@ function offerBox(){
     const b=document.createElement('button'); b.className='opp'+(o.p<0.4?' risky':'');
     const rk=o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
     b.innerHTML='<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div>'+
-      '<div class="odds">You: <b style="color:'+(o.p>=0.5?'var(--accent)':'var(--accent2)')+'">'+amer(o.p)+'</b> · '+(o.p*100).toFixed(0)+'% to win</div>'+
-      '<div class="note" style="margin:.15rem 0 0">'+(o.p*100).toFixed(0)+'% per round · best of 3</div>'+
+      '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
+
       '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
