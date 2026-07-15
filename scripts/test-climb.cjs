@@ -24,9 +24,13 @@ const win=dom.window;
   ok(peek('LADDER().length')>20,'the chosen division has a ladder');
   ok(peek('LADDER().some(f=>f.rankNum===0)'),'the division has a champion to chase');
   ok(/Create your fighter/.test(app()),'creator screen');
+  // The creator uses a -/+ stepper now, not sliders — same control as the
+  // upgrade panel. What matters is one row per attribute with a readable level.
   const nAt = peek('ATTRS.length');
-  ok(doc.querySelectorAll('input[type=range]').length===nAt,'one slider per attribute',
-    doc.querySelectorAll('input[type=range]').length+'/'+nAt);
+  ok(doc.querySelectorAll('.attr.up .pm').length===nAt,'one stepper per attribute',
+    doc.querySelectorAll('.attr.up .pm').length+'/'+nAt);
+  ok(doc.querySelectorAll('.lvlnum').length===nAt,'every attribute shows its level out of 10',
+    doc.querySelectorAll('.lvlnum').length+'/'+nAt);
   // WAS: 'no fake cardio slider' — asserted Cardio must NOT exist, because the
   // sim had no cardio input. That test encoded a limitation as a principle. The
   // sim no longer referees, so cardio and durability are real attributes now:

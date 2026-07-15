@@ -100,6 +100,21 @@
   .tipbox b{color:var(--text)}
   .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}
 
+  /* level readout: bar + "7/10", shared by the creator and the upgrade panel */
+  .lvlwrap{display:flex;align-items:center;gap:.5rem;min-width:0}
+  .lvlbar{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:40px}
+  .lvlfill{height:100%;background:var(--accent)}
+  .lvlnum{font-size:.72rem;color:var(--accent);font-variant-numeric:tabular-nums;
+    white-space:nowrap;min-width:34px;text-align:right}
+  .lvlnum i{color:var(--muted);font-style:normal;font-size:.62rem}
+
+  /* -/+ stepper */
+  .pm{display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+  .pmbtn{padding:.1rem 0;width:22px;height:22px;line-height:1;font-size:.85rem;
+    display:flex;align-items:center;justify-content:center}
+  .pmcost{font-size:.62rem;color:var(--muted);min-width:34px;text-align:center;
+    font-variant-numeric:tabular-nums}
+
   /* weight class picker — one row, not a wall of cards */
   .divpick{display:flex}
   .divsel{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);
@@ -848,35 +863,48 @@ function creator(){
   p.appendChild(hd);
   const left=POINTS_START-spent();
   for(const A of ATTRS){
-    const row=document.createElement('div'); row.className='attr';
+    // Buttons, not a slider. Playtest: "put the +/- buttons for attributes like
+    // it is on the other page." The creator and the upgrade panel were two
+    // different controls doing the same job, and the slider's floor bug (drag to
+    // 0 for a free downgrade) only existed because it was a slider.
+    const row=document.createElement('div'); row.className='attr up';
     const l=document.createElement('label'); l.textContent=A.label;
-    // min=ATTR_MIN, not 0. Playtest: "you're able to put a default attribute of 1
-    // down to 0." Worse than it looks — costTo() sums upCost from v=1, so level 1
-    // and level 0 BOTH cost nothing. Dropping to 0 refunded no points; you simply
-    // got a worse fighter for free. A strictly-dominated move the UI invited you
-    // to make. Level 1 is the free baseline every fighter starts with, so it's
-    // the floor.
-    const i=document.createElement('input'); i.type='range'; i.min=ATTR_MIN; i.max=ATTR_MAX; i.value=G.attrs[A.id];
-    i.oninput=e=>{ const v=+e.target.value; const old=G.attrs[A.id];
-      G.attrs[A.id]=v;
-      if (spent()>POINTS_START) { G.attrs[A.id]=old; e.target.value=old; return; }
-      G.pts = POINTS_START - spent();          // ONE wallet, not two
-      render(); };
-    const v=document.createElement('div'); v.className='v'; v.textContent=G.attrs[A.id];
-    row.appendChild(l); row.appendChild(i); row.appendChild(v);
+    const bar=document.createElement('div'); bar.className='lvlwrap';
+    bar.innerHTML='<div class="lvlbar"><div class="lvlfill" style="width:'+
+      ((G.attrs[A.id]-ATTR_MIN)/(ATTR_MAX-ATTR_MIN)*100)+'%"></div></div>'+
+      '<span class="lvlnum">'+G.attrs[A.id]+'<i>/'+ATTR_MAX+'</i></span>';
+    const grp=document.createElement('div'); grp.className='pm';
+    const cost = upCost(G.attrs[A.id]);
+    const canUp = G.attrs[A.id]<ATTR_MAX && left>=cost;
+    const canDn = G.attrs[A.id]>ATTR_MIN;
+
+    const dn=document.createElement('button'); dn.className='btn pmbtn'; dn.textContent='−';
+    dn.disabled=!canDn; if(!canDn) dn.style.opacity=.25;
+    dn.onclick=()=>{ if(G.attrs[A.id]<=ATTR_MIN) return;
+      G.attrs[A.id]--; G.pts = POINTS_START - spent(); render(); };
+
+    const up=document.createElement('button'); up.className='btn pmbtn'; up.textContent='+';
+    up.disabled=!canUp; if(!canUp) up.style.opacity=.25; else up.style.borderColor='var(--accent)';
+    up.onclick=()=>{ if(G.attrs[A.id]>=ATTR_MAX) return;
+      const c=upCost(G.attrs[A.id]); if(POINTS_START-spent()<c) return;
+      G.attrs[A.id]++; G.pts = POINTS_START - spent(); render(); };
+
+    const c=document.createElement('span'); c.className='pmcost';
+    c.textContent = G.attrs[A.id]>=ATTR_MAX ? 'MAX' : cost+(cost>1?' pts':' pt');
+
+    grp.appendChild(dn); grp.appendChild(c); grp.appendChild(up);
+    row.appendChild(l); row.appendChild(bar); row.appendChild(grp);
     p.appendChild(row);
   }
-  const f=document.createElement('div');
-  f.innerHTML='<div class="pts'+(left<0?' over':'')+'" style="margin:.6rem 0">Points left: '+left+
-    ' <span style="color:var(--muted);font-weight:400;font-size:.72rem">— higher levels cost more</span></div>';
-  p.appendChild(f);
-  // A legend, not a paragraph. This was one run-on clump of seven attributes,
-  // a tip, and TWO separate notes both explaining the cardio slider we don't
-  // have — unreadable, and the second note duplicated the first.
-  //
-  // Rendered FROM ATTRS rather than hardcoded, so the legend can never drift
-  // from the sheet above it. (The old version still said "Grappling takedowns +
-  // subs" after the wrestling split.)
+  const pts=document.createElement('div'); pts.className='pts'+(left<0?' over':'');
+  pts.style.marginTop='.5rem';
+  pts.innerHTML='Points left: <b style="color:'+(left>0?'var(--accent)':'var(--muted)')+'">'+left+'</b>';
+  p.appendChild(pts);
+
+  // The legend BUILD block sat between the two anchors I replaced and got eaten
+  // with them, leaving `p.appendChild(legend)` referencing a variable that no
+  // longer existed. creator() threw, the panel rendered zero rows, and the whole
+  // page went blank — caught by counting rows, not by reading the diff.
   const legend=document.createElement('div'); legend.className='legend';
   for(const A of ATTRS){
     const r=document.createElement('div'); r.className='lg-row';
@@ -955,9 +983,12 @@ function upgrade(){
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr up';
     const l=document.createElement('label'); l.textContent=A.label;
-    const bar=document.createElement('div');
-    bar.style.cssText='height:6px;background:var(--surface2);border-radius:3px;overflow:hidden';
-    bar.innerHTML='<div style="height:100%;width:'+(G.attrs[A.id]/ATTR_MAX*100)+'%;background:var(--accent)"></div>';
+    // Same level readout as the creator: a bar you can't read a number off is a
+    // mood, not information.
+    const bar=document.createElement('div'); bar.className='lvlwrap';
+    bar.innerHTML='<div class="lvlbar"><div class="lvlfill" style="width:'+
+      ((G.attrs[A.id]-ATTR_MIN)/(ATTR_MAX-ATTR_MIN)*100)+'%"></div></div>'+
+      '<span class="lvlnum">'+G.attrs[A.id]+'<i>/'+ATTR_MAX+'</i></span>';
     const btn=document.createElement('button'); btn.className='btn';
     const cost = upCost(G.attrs[A.id]);
     const maxed = G.attrs[A.id] >= ATTR_MAX;

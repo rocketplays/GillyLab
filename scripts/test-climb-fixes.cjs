@@ -22,11 +22,20 @@ setTimeout(()=>{
   // Playtest: "you're able to put a default attribute of 1 down to 0."
   // costTo() charges nothing below ATTR_MIN, so 1 -> 0 refunded NOTHING: a free
   // downgrade the UI invited. Every slider must floor at the baseline.
+  // The slider is gone, the FLOOR still matters. Drive the real minus button to
+  // the bottom and confirm it stops at the free baseline and refunds every point.
   win.eval('newGame(); render();');
-  const mins=[...doc.querySelectorAll('.attr:not(.up) input[type=range]')].map(i=>+i.min);
   const AMIN=peek('ATTR_MIN');
-  ok(mins.length>0 && mins.every(m=>m===AMIN),'every creator slider floors at ATTR_MIN',
-     'mins='+JSON.stringify(mins)+' ATTR_MIN='+AMIN);
+  const row0=()=>[...doc.querySelectorAll('.attr.up')][0];
+  const plus=()=>row0().querySelectorAll('.pmbtn')[1], minus=()=>row0().querySelectorAll('.pmbtn')[0];
+  for(let i=0;i<4;i++) plus().click();
+  const raised=peek('G.attrs[ATTRS[0].id]');
+  for(let i=0;i<12;i++) minus().click();
+  ok(raised>AMIN,'the + button actually raises the attribute','got '+raised);
+  ok(peek('G.attrs[ATTRS[0].id]')===AMIN,'the - button floors at ATTR_MIN, never below',
+     'landed on '+peek('G.attrs[ATTRS[0].id]')+' want '+AMIN);
+  ok(peek('G.pts')===peek('POINTS_START'),'stepping all the way back down refunds every point',
+     'pts='+peek('G.pts')+' want '+peek('POINTS_START'));
   // and the floor must genuinely be free — otherwise the baseline eats the budget
   ok(peek('spent()')===0,'the baseline sheet costs nothing','spent='+peek('spent()'));
   ok(peek('G.pts')===peek('POINTS_START'),'you start with the full budget');
