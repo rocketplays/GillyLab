@@ -42,8 +42,16 @@
  * so consumers can resolve a written name to a real identity instead of guessing.
  *
  * Usage:
- *   node scripts/audit-name-links.cjs           # report only
- *   node scripts/audit-name-links.cjs --write   # also write data/name-aliases.json
+ *   node scripts/audit-name-links.cjs             # report only
+ *   node scripts/audit-name-links.cjs --write     # also write data/name-aliases.json
+ *   node scripts/audit-name-links.cjs --check     # CI: fail only on NEW collisions
+ *   node scripts/audit-name-links.cjs --baseline  # re-bless the current collisions
+ *
+ * --check is the point of the whole thing. 180 collisions exist today; failing on
+ * all of them would cry wolf forever and get muted within a week. So we baseline
+ * the known ones and fail only on what's NEW — the Bruno that lands next month.
+ * Every bug in this family so far was found by a person playing the site months
+ * later. This is what makes the pipeline find the next one on day one instead.
  */
 'use strict';
 const fs = require('fs');
@@ -51,7 +59,14 @@ const path = require('path');
 
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'data', 'name-aliases.json');
+const BASELINE = path.join(ROOT, 'data', 'name-collisions-baseline.json');
 const WRITE = process.argv.includes('--write');
+const CHECK = process.argv.includes('--check');
+const BLESS = process.argv.includes('--baseline');
+
+// A collision's identity is the bout it fabricates, not the fighter — the same
+// name collides differently in different records, which is the entire bug.
+const cid = c => c.claimant + '|' + c.date + '|' + c.wrote;
 
 const norm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD')
   .replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
@@ -151,6 +166,40 @@ function main() {
       console.log('    ' + c.claimant + ' wrote "' + c.wrote + '" (' + c.date + ') -> ' + c.cands.join(' | '));
     }
     console.log('');
+  }
+
+  // ── baseline / CI gate ────────────────────────────────────────────────────
+  if (BLESS) {
+    fs.writeFileSync(BASELINE, JSON.stringify({
+      generatedAt: new Date().toISOString(),
+      note: 'Known collisions, deliberately tolerated. --check fails only on links NOT in here. Each entry is a real bug: a fighter with no record of his own whose name lands on someone else\'s key (the Bruno "Blindado" shape). Fix one via the fill-fighter skill, then re-run --baseline to drop it.',
+      known: collisions.map(cid).sort()
+    }, null, 2) + '\n');
+    console.log('  baselined ' + collisions.length + ' known collisions');
+  }
+
+  if (CHECK) {
+    let known = [];
+    try { known = JSON.parse(fs.readFileSync(BASELINE, 'utf8')).known || []; }
+    catch (e) { console.log('  no baseline yet — run --baseline first'); process.exitCode = 1; return { aliases, collisions, ambiguous }; }
+    const knownSet = new Set(known);
+    const fresh = collisions.filter(c => !knownSet.has(cid(c)));
+    const gone = known.filter(k => !collisions.some(c => cid(c) === k));
+
+    // Loud, and in GitHub's own annotation format so it lands on the run page.
+    for (const c of fresh) {
+      console.log('::warning title=New fighter-name collision::' + c.claimant +
+        ' claims a bout vs "' + c.wrote + '" (' + c.date + ', ' + c.org +
+        ') but that name resolves to ' + c.resolvesTo + ', who has no bout that day. ' +
+        'Two different fighters share this name. Give the missing one an identity (fill-fighter), then re-baseline.');
+    }
+    if (gone.length) console.log('  ' + gone.length + ' baselined collision(s) no longer present — re-run --baseline to tidy');
+    if (fresh.length) {
+      console.log('\n  FAIL: ' + fresh.length + ' NEW collision(s) since the baseline.');
+      process.exitCode = 1;
+    } else {
+      console.log('  OK: no new collisions (' + known.length + ' known, tolerated)');
+    }
   }
 
   if (WRITE) {

@@ -136,6 +136,31 @@ jobs:
       - name: Persist finished bouts into static fight history
         run: node scripts/append-card-history.cjs || true
 
+      # Two different fighters sharing one name silently weld into one identity —
+      # every consumer of FIGHT_HISTORY matches by name. That's how Brendan Allen
+      # ended up with a flyweight's Bruno Silva on his record for months, found by
+      # a user playing with the site rather than by anything here.
+      #
+      # append-card-history above is exactly where a new one enters: it writes
+      # fresh bouts keyed by whatever name the feed used. So audit right after it.
+      #
+      # 180 collisions are baselined and tolerated (data/name-collisions-baseline.json)
+      # — failing on those would cry wolf and get muted in a week. This fires only
+      # on a NEW one, and emits a ::warning:: so it lands on the run page.
+      #
+      # `|| true`: a data-quality finding must never block the odds update the site
+      # actually serves. The warning is the product, not the exit code. If these
+      # start firing often, that's the evidence for keying FIGHT_HISTORY by ESPN
+      # athlete ID instead of by name, which kills the whole bug class.
+      - name: Audit for new fighter-name collisions
+        run: node scripts/audit-name-links.cjs --check || true
+
+      # Aliases are the benign half (one man, two spellings) and they're REAL
+      # fights — the map keeps them out of the collision bucket. Regenerate so it
+      # tracks the history it describes.
+      - name: Refresh the name-alias map
+        run: node scripts/audit-name-links.cjs --write || true
+
       # Regenerate the public landing page's live data snapshot (featured
       # division rankings + latest roster changes) from the current repo state,
       # so the logged-out marketing page stays current. Self-guards: keeps the
@@ -206,7 +231,7 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"

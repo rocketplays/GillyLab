@@ -147,9 +147,65 @@ Reproduce:
     node scripts/audit-name-links.cjs            # report
     node scripts/audit-name-links.cjs --write    # regenerate the map
 
-STILL OPEN: the 180 collisions are real bugs. Each is a fighter with no record
-of his own whose name lands on someone else's key — the same shape as Bruno
-"Blindado". They need identities, via fill-fighter, one at a time.
+THE 180 COLLISIONS — triaged 2026-07-15
+    touching an ACTIVE roster fighter :  69   <- a user can actually see these
+    purely historical / regional      : 111   <- invisible; Six Degrees drops them
+    distinct names at issue           :  52
+
+Worst first (the next Bruno is at the top — an active, rising featherweight):
+    7x  "Jean Silva"        e.g. Jose Delano (Sep 27, 2019)
+    4x  "Michael Johnson"   e.g. Diego Sanchez (Jun 21, 2002)
+    3x  "Caio Machado"      e.g. Jamall Emmers (Apr 4, 2019)
+    2x  "Tony Johnson" / "Marcos Vinicius" / "Thiago Silva" / "Bia Mesquita" /
+        "Matt Brown" / "Aaron Phillips"
+
+Fix the handful that touch active fighters via fill-fighter (give the man with
+no record an identity). Ignore the 111 historical ones — invisible, and the
+reciprocity gate already drops them.
+
+Why this pressure never goes away: 33 fighters in the DB share the surname
+"Silva". 23 share "Santos", 16 "Oliveira", 15 each for "Johnson"/"Rodriguez"/
+"Smith". 73 surnames are shared by 4+ fighters.
+
+
+GUARD (added 2026-07-15)
+------------------------------------------------------------------------------
+    node scripts/audit-name-links.cjs --check      # fails on NEW collisions only
+    node scripts/audit-name-links.cjs --baseline   # re-bless after fixing one
+
+Wired into update-odds.yml right after append-card-history, which is exactly
+where a new collision enters (it writes fresh bouts keyed by whatever name the
+feed used). The 180 known ones are baselined in
+data/name-collisions-baseline.json — failing on those would cry wolf and get
+muted within a week, so --check fires ONLY on something new, as a ::warning::
+on the run page. Non-blocking: a data finding must never stop the odds the site
+serves.
+
+The baseline is deliberately NOT auto-committed. Blessing a collision is a human
+decision, not something a cron does quietly.
+
+Verified by injecting a real collision (Merab "fought" Jon Jones on a day Jones
+wasn't fighting): guard exits 1 and names it. Clean tree exits 0.
+
+
+THE PERMANENT FIX, NOT YET DONE
+------------------------------------------------------------------------------
+Names should not be identities. ESPN already issues stable athlete IDs (Bruno
+"Blindado" is 4333158; scripts/fighter-lookup.py surfaces them). Keying
+FIGHT_HISTORY by ID kills this entire bug class forever.
+
+It is a real migration — every consumer of FIGHT_HISTORY matches by name — and
+today's user-facing harm is close to zero, so it is NOT scheduled. Let the guard
+run. If it fires often, that is the evidence that justifies the project. If it
+fires twice a year, hand-fixing two names is cheaper. Decide with data rather
+than by feel; the whole reason this file exists is that we had none.
+
+A worked example of the hazard, from the day this was written: giving the
+middleweight a FIGHTERS row made him UNREACHABLE, because a SLUG_ALIASES entry
+mapping 'bruno-silva' -> the flyweight then shadowed every path to him,
+including his own slug. The old comment there said the two "can't collide" — true
+only while he had no row. Fixing one half of a name-keyed bug created the other
+half. That is the argument for IDs in one paragraph.
 
 
 WHAT THE PROTOTYPE DOES ABOUT IT
