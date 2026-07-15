@@ -13,13 +13,14 @@ setTimeout(()=>{
   console.log('\n== 1. the upgrade button fits its column ==');
   win.eval('newGame(); G.started=true; G.pts=20; render();');
   const rows=[...doc.querySelectorAll('.attr.up')];
-  ok(rows.length===5,'upgrade rows use their own grid class',rows.length+' found');
+  const nAttr = peek('ATTRS.length');
+  ok(rows.length===nAttr,'upgrade rows use their own grid class',rows.length+' rows vs '+nAttr+' attributes');
   ok(!doc.querySelector('.attr:not(.up) button'),'no upgrade button left in the 42px creator grid');
 
   console.log('\n== 2. a finish ends the fight ==');
   let sawFin=false, badFin=0, sawDec=false, badDec=0;
   for(let i=0;i<60;i++){
-    win.eval('newGame(); G.started=true; G.attrs.power=10; G.attrs.grappling=10;');
+    win.eval('newGame(); G.started=true; G.attrs.power=10; G.attrs.grappling=10; G.attrs.pace=10;');
     win.eval('(function(){ fight(offers()[0]); })()');
     const L=peek('G.log[0]');
     if(L.fin){ sawFin=true;

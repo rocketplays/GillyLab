@@ -100,12 +100,33 @@ let G=null;   // game state
 // bigFightExperience ("composure and cardio when a fight goes long") — EARNED by
 // surviving five-round fights, not bought. So you can't buy a gas tank here,
 // same as real life.
+// ONE ATTRIBUTE OWNS ONE LEVER. Playtest: "should we separate knockdowns +
+// volume into power and pace?" Yes — and it was worse than untidy. Power wrote
+// BOTH kd and slpm, and Technique wrote slpm AGAIN (s.slpm = (s.slpm||2)+...).
+// Two sliders fought over one stat, and whichever ran last won. Raising
+// Technique silently changed your output volume, so no slider meant what it
+// said. Now every lever has exactly one owner:
+//
+//   Power        -> kd          how often you drop people
+//   Pace         -> slpm        how much you throw
+//   Technique    -> strAcc      how much of it lands
+//   Defense      -> strDef, sapm   not getting hit
+//   Grappling    -> tdLanded, tdAcc, subAvg
+//   Takedown def -> tdDef
+//
+// NO DURABILITY. Not an oversight — checked the model. simDurabilityBoost is
+// "when you lose, do you survive to the scorecards or get finished?", and it
+// hard-returns 0 below THREE LOSSES. The Climb cuts you at two. It is
+// structurally unreachable in this game, so a Durability slider would be a
+// button wired to nothing. Same family as cardio: the sim measures both as
+// consequences of a career, not as attributes you buy.
 const ATTRS = [
-  { id:'power',    label:'Power',        note:'kd, slpm',           apply:(s,v)=>{ s.kd = 0.1+v*0.55; s.slpm = 2.0+v*0.9; } },
-  { id:'technique',label:'Technique',    note:'strAcc, slpm',       apply:(s,v)=>{ s.strAcc = pct(28+v*6); s.slpm = (s.slpm||2)+v*0.35; } },
-  { id:'defense',  label:'Defense',      note:'strDef, sapm',       apply:(s,v)=>{ s.strDef = pct(40+v*5.5); s.sapm = 6.0-v*0.45; } },
-  { id:'grappling',label:'Grappling',    note:'tdLanded, tdAcc, subAvg', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); s.subAvg = 0.05+v*0.35; } },
-  { id:'takedef',  label:'Takedown def', note:'tdDef',              apply:(s,v)=>{ s.tdDef = pct(35+v*6); } },
+  { id:'power',    label:'Power',        note:'knockdowns',     apply:(s,v)=>{ s.kd = 0.1+v*0.55; } },
+  { id:'pace',     label:'Pace',         note:'output volume',  apply:(s,v)=>{ s.slpm = 1.8+v*0.95; } },
+  { id:'technique',label:'Technique',    note:'accuracy',       apply:(s,v)=>{ s.strAcc = pct(28+v*6); } },
+  { id:'defense',  label:'Defense',      note:'not getting hit',apply:(s,v)=>{ s.strDef = pct(40+v*5.5); s.sapm = 6.0-v*0.45; } },
+  { id:'grappling',label:'Grappling',    note:'takedowns + subs', apply:(s,v)=>{ s.tdLanded = 0.2+v*0.75; s.tdAcc = pct(20+v*6); s.subAvg = 0.05+v*0.35; } },
+  { id:'takedef',  label:'Takedown def', note:'staying upright',apply:(s,v)=>{ s.tdDef = pct(35+v*6); } },
 ];
 // Playtest: "why do you get to pick attributes to build your fighter, then get
 // another +7 right off the bat?" — a straight BUG. The creator's sliders and
@@ -383,10 +404,10 @@ function creator(){
     ' <span style="color:var(--muted);font-weight:400;font-size:.72rem">— higher levels cost more</span></div>';
   p.appendChild(f);
   const hint=document.createElement('div'); hint.className='note';
-  hint.innerHTML='<b>Power</b> is knockdowns + volume · <b>Technique</b> is accuracy · '+
-    '<b>Defense</b> is not getting hit · <b>Grappling</b> is takedowns + subs · '+
-    '<b>Takedown def</b> is staying upright.<br>Once you turn pro, every +1 shows '+
-    'exactly what it\'s worth against your next opponent.';
+  hint.innerHTML='<b>Power</b> knockdowns · <b>Pace</b> output volume · <b>Technique</b> accuracy · '+
+    '<b>Defense</b> not getting hit · <b>Grappling</b> takedowns + subs · '+
+    '<b>Takedown def</b> staying upright.<br>'+
+    'No cardio or durability sliders — the model earns both from your career, not your build.';
   p.appendChild(hint);
   const note=document.createElement('div'); note.className='note';
   note.textContent='No cardio slider — the sim has no cardio input. What it has is five-round experience, and you earn that by surviving deep water. Same as real life.';
