@@ -538,6 +538,24 @@ async function handleBetsAdd(request, env, url) {
         params: l.params && typeof l.params === "object" ? l.params : {},
         pick: String(l.pick || "").slice(0, 160), match: String(l.match || "").slice(0, 160), odds: lo });
     }
+    // Mirror the parlay builder's correlation rule (PL_PAIRABLE in index.html):
+    // within ONE fight only the moneyline and the rounds O/U can be combined —
+    // method and round props overlap the moneyline and each other, so multiplying
+    // them can't price the overlap and no book would take it. The slip enforces
+    // this before handing legs over; re-check it here so the rule doesn't rest on
+    // the client being honest.
+    const PAIRABLE = { ML: 1, TOTAL: 1 };
+    const seenByFight = {};
+    for (const l of out) {
+      const prev = seenByFight[l.fightId] || [];
+      if (prev.length) {
+        if (!PAIRABLE[l.market] || prev.some((m) => !PAIRABLE[m]))
+          return json({ error: "On one fight, only a moneyline and a rounds O/U can be parlayed." }, 400);
+        if (prev.indexOf(l.market) !== -1)
+          return json({ error: "You already have that market on this fight." }, 400);
+      }
+      seenByFight[l.fightId] = prev.concat(l.market);
+    }
     rec = {
       id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "tracked", verified: true,
       market: "PARLAY", evSlug, legs: out,
