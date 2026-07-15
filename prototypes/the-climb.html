@@ -75,13 +75,16 @@
   button.btn:hover{border-color:var(--accent)}
   .load{color:var(--muted);padding:2rem 0;text-align:center}
 
-  /* attribute legend — a table, not a paragraph */
-  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
-    gap:.1rem .9rem;margin:.85rem 0 0;padding-top:.7rem;border-top:1px solid var(--border)}
-  .lg-row{display:grid;grid-template-columns:104px 1fr;gap:.5rem;align-items:baseline;
-    padding:.2rem 0;font-size:.74rem}
-  .lg-row b{color:var(--text);font-weight:600}
-  .lg-row span{color:var(--muted)}
+  /* Attribute legend — a table, not a paragraph.
+     Rows get a hairline rule and real vertical padding: seven label/value pairs
+     stacked with .2rem of space and no separator read as one grey clump, which
+     is what they were. The rule does the grouping so the eye doesn't have to. */
+  .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:0 1.6rem;margin:.9rem 0 0;padding-top:.75rem;border-top:1px solid var(--border)}
+  .lg-row{display:grid;grid-template-columns:108px 1fr;gap:.5rem;align-items:baseline;
+    padding:.42rem 0;font-size:.74rem;border-bottom:1px solid rgba(255,255,255,.045)}
+  .lg-row b{color:var(--text);font-weight:600;letter-spacing:-.01em}
+  .lg-row span{color:var(--muted);line-height:1.4}
   .tipbox{margin-top:.7rem;padding:.5rem .7rem;border-left:2px solid var(--accent);
     background:var(--surface);border-radius:0 4px 4px 0;font-size:.74rem;
     line-height:1.55;color:#c8c8cf}
