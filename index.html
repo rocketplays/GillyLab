@@ -101241,13 +101241,19 @@ function applyInjuryFlags() {
       if (row.dataset.injChecked) return;
       row.dataset.injChecked = '1';
       const cells = [].slice.call(row.querySelectorAll('.fighter-cell'));
-      const hasNews = cells.some(function (c) {
+      // Both corners first: the sets are keyed per bout, so a fighter's flag
+      // only counts against THIS row's opponent (see boutFlagKey).
+      const names = cells.map(function (c) {
         const nameEl = c.querySelector('.fighter-name');
-        const nm = nameEl ? (nameEl.textContent || '').trim() : '';
-        const entry = nm ? fighterNewsEntry(data, nm) : null;
-        const nn = typeof _newsNorm === 'function' ? _newsNorm(nm) : nm;
-        const isSN = _snSet && _snSet.has(nn);
-        const isMC = _mcSet && _mcSet.has(nn);
+        return nameEl ? (nameEl.textContent || '').trim() : '';
+      });
+      const hasNews = names.some(function (nm, i) {
+        if (!nm) return false;
+        const entry = fighterNewsEntry(data, nm);
+        const other = names[i === 0 ? 1 : 0] || '';
+        const key = (other && typeof boutFlagKey === 'function') ? boutFlagKey(nm, other) : null;
+        const isSN = key && _snSet && _snSet.has(key);
+        const isMC = key && _mcSet && _mcSet.has(key);
         return (entry && entry.hasInjuryNews) || isSN || isMC;
       });
       if (!hasNews) return;
@@ -101306,6 +101312,19 @@ let SHORT_NOTICE_SET = new Set();
 // from card-changes / fighter-overrides) — drives the "May change" tile even when
 // the news feed carries nothing.
 let MAY_CHANGE_SET = new Set();
+// Both sets are keyed PER BOUT, not per fighter: `<fighter>|<opponent>`.
+//
+// A fighter can be booked in two upcoming bouts at once — usually because he
+// took a short-notice fight and the feed hasn't dropped his original booking
+// yet. Bogdan Guskov stepped in against Ankalaev on Jul 25 while ESPN still
+// carried his Aug 1 Blachowicz bout, so he was legitimately shortNotice on one
+// and mayChange on the other. Keyed by bare name, whichever flag was seen first
+// bled onto both bouts and the dead Blachowicz fight showed "short notice".
+//
+// event.json already carries these flags per bout and gets it right; only this
+// index flattened them. Same lesson as the rematch guard: fighter identity
+// alone never identifies a bout.
+const boutFlagKey = (self, opp) => _newsNorm(self) + '|' + _newsNorm(opp);
 function buildUpcomingOpponentIndex(apiData) {
   UPCOMING_OPP = {};
   SHORT_NOTICE_SET = new Set();
@@ -101320,12 +101339,16 @@ function buildUpcomingOpponentIndex(apiData) {
     for (const b of ev.bouts || []) {
       if (b.isCancelled) continue;
       const fighters = (b.fighters || []);
-      fighters.forEach(f => {
-        if (!f || !f.fighterName) return;
-        if (f.shortNotice) SHORT_NOTICE_SET.add(_newsNorm(f.fighterName));
-        if (f.mayChange) MAY_CHANGE_SET.add(_newsNorm(f.fighterName));
-      });
       const fs = fighters.map(f => f.fighterName).filter(Boolean);
+      // Needs both corners to key the flag to this bout; a one-sided bout can't
+      // be identified, so its flags are dropped rather than leaked name-wide.
+      fighters.forEach(f => {
+        if (!f || !f.fighterName || fs.length < 2) return;
+        const other = fs.find(n => n !== f.fighterName);
+        if (!other) return;
+        if (f.shortNotice) SHORT_NOTICE_SET.add(boutFlagKey(f.fighterName, other));
+        if (f.mayChange) MAY_CHANGE_SET.add(boutFlagKey(f.fighterName, other));
+      });
       if (fs.length < 2) continue;
       const rec = { date: ev.startsAt || ev.eventDate || '', event: ev.title || ev.shortTitle || '' };
       UPCOMING_OPP[_newsNorm(fs[0])] = Object.assign({ opponent: fs[1] }, rec);
@@ -103018,9 +103041,9 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       // Ground-truth short-notice marker (from fighter-overrides) wins; fall back
       // to inferring the replacement from the news headlines.
       let snName = null;
-      if (typeof SHORT_NOTICE_SET !== 'undefined') {
-        if (SHORT_NOTICE_SET.has(_newsNorm(name))) snName = name;
-        else if (SHORT_NOTICE_SET.has(_newsNorm(opp))) snName = opp;
+      if (typeof SHORT_NOTICE_SET !== 'undefined' && typeof boutFlagKey === 'function') {
+        if (SHORT_NOTICE_SET.has(boutFlagKey(name, opp))) snName = name;
+        else if (SHORT_NOTICE_SET.has(boutFlagKey(opp, name))) snName = opp;
       }
       // Prefer a pending "may change" over a GUESSED short-notice. When Wikipedia
       // already knows a bout changed but ESPN hasn't synced the replacement yet,
@@ -103030,7 +103053,7 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       // WITHDRAWN fighter as the one stepping in, so skip it while may-change is set —
       // only a ground-truth marker (the replacement actually in the corner) shows
       // "short notice", i.e. once the two feeds agree on the lineup.
-      var _mcFlagged = (typeof MAY_CHANGE_SET !== 'undefined') && (MAY_CHANGE_SET.has(_newsNorm(name)) || MAY_CHANGE_SET.has(_newsNorm(opp)));
+      var _mcFlagged = (typeof MAY_CHANGE_SET !== 'undefined') && (MAY_CHANGE_SET.has(boutFlagKey(name, opp)) || MAY_CHANGE_SET.has(boutFlagKey(opp, name)));
       if (!snName && !_mcFlagged) snName = shortNoticeFighter();
       // If a replacement is confirmed (the current opponent IS the new fighter),
       // the change has already happened — show that, and suppress the pending
@@ -103046,8 +103069,8 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
         // "May change": prefer the definitive marker (a fighter whose opponent
         // withdrew with no replacement set yet), then fall back to the softer
         // "has recent injury/card news" signal from the news feed.
-        const mc = (typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(_newsNorm(name))) ? name
-                 : ((typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(_newsNorm(opp))) ? opp : null);
+        const mc = (typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(boutFlagKey(name, opp))) ? name
+                 : ((typeof MAY_CHANGE_SET !== 'undefined' && MAY_CHANGE_SET.has(boutFlagKey(opp, name))) ? opp : null);
         if (mc) {
           const mcEntry = mc === name ? aE : (mc === opp ? bE : null);
           const mcLink = (mcEntry && mcEntry.items && mcEntry.items.length) ? mc : newsFull;

@@ -57,6 +57,36 @@ function refersToPastEvent(title, eventNums) {
   return !found.some(f => eventNums.has(f.replace(/\D+/g, '')));
 }
 
+// A headline that never names the fighter is EVENT-level news that Google only
+// put in his feed because he's on the card. "UFC Abu Dhabi gets big shakeup
+// after headliner ruled out with injury" lands in the feed of every fighter on
+// that card — including Magomed Tuchalov, fighting 4th on the prelims. It says
+// nothing about HIS bout, so it must not flag his bout as injury news.
+//
+// Match the SURNAME, not any token: "Magomed" alone would tie Tuchalov to a
+// Magomed Ankalaev or Magomed Zaynukov story. Particles are folded back in so
+// "du Plessis" / "Saint-Denis" / "Dos Anjos" match as a unit rather than on a
+// bare, collision-prone last token.
+//
+// This only gates the injury FLAG — card-level articles still appear on the
+// fighter's News tab, where they're useful context rather than a claim about
+// his fight. Genuine card changes are covered independently by the ground-truth
+// shortNotice / mayChange markers from card-changes.json, so nothing that
+// actually moved loses its warning.
+const PARTICLE = /^(?:du|de|dos|das|da|del|della|van|von|der|la|le|al|el|st|saint|bin|ibn|mac|mc|o)$/;
+function namesFighter(title, name) {
+  const t = norm(title), n = norm(name);
+  if (!n) return false;
+  if (t.includes(n)) return true;                       // full name present
+  const toks = n.split(' ').filter(Boolean);
+  let last = toks[toks.length - 1];
+  if (!last || last.length < 3) return false;           // initials / junk — don't guess
+  const surname = (toks.length > 2 && PARTICLE.test(toks[toks.length - 2]))
+    ? toks.slice(-2).join(' ')
+    : last;
+  return new RegExp('\\b' + surname.replace(/\s+/g, '\\s+') + '\\b').test(t);
+}
+
 // Google News surfaces a fighter's static PROFILE / STATS pages (ESPN "MMA
 // Profile", CBS Sports player page, Sherdog fighter page, …) as if they were
 // articles. They pass the outlet whitelist but aren't news, so drop them: they
@@ -117,7 +147,8 @@ function curate(items, now, eventNums, name) {
     out.push({
       title: it.title, url: it.url, source: it.source,
       date: isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : null,
-      injury: INJURY_RE.test(it.title) && !refersToPastEvent(it.title, eventNums)
+      injury: INJURY_RE.test(it.title) && namesFighter(it.title, name) &&
+              !refersToPastEvent(it.title, eventNums)
     });
     if (out.length >= PER_FIGHTER) break;
   }
@@ -194,5 +225,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters, isProfilePage };
+module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters, isProfilePage, namesFighter };
 if (require.main === module) main();
