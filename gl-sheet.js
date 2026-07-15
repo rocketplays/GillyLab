@@ -894,7 +894,9 @@ const GL_SHEET = (function () {
     await fontsReady();
     const logo = await loadBrandLogo();
     const bets = (data.bets || []).slice(0, 10);
-    const rowH = 116, listTop = 304;
+    // 132 not 116: at 116 the pick's descenders ("Du Plessis by submission") ran
+    // into the matchup line's ascenders underneath it.
+    const rowH = 132, listTop = 318;
     // Total at risk and total return if every bet lands.
     const risked = bets.reduce((s, b) => s + (Number(b.stake) || 0), 0);
     const toWin = bets.reduce((s, b) => { const o = Number(b.odds) || 0;
@@ -910,30 +912,31 @@ const GL_SHEET = (function () {
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
     ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
     ctx.fillText(clip(ctx, pkPossessive(data.name) + (data.results ? ' results' : ' card'), W - 128), 64, 158);
-    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+    ctx.font = '400 32px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [data.eventName, data.eventDate, bets.length + ' bet' + (bets.length === 1 ? '' : 's')].filter(Boolean).join('   ·   '), W - 128), 64, 208);
     // Own line rather than tacked onto the subtitle — a billed event name plus the
     // date already fills that row, and clipping the stake would be worse than a
     // second line. Numbers carry the weight; the return greens.
     let rx = 64;
-    const seg = (t, font, col) => { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 244); rx += ctx.measureText(t).width; };
+    const seg = (t, font, col) => { ctx.font = font; ctx.fillStyle = col; ctx.fillText(t, rx, 258); rx += ctx.measureText(t).width; };
+    const SEG_L = '400 29px ' + SANS, SEG_N = '800 34px ' + COND;
     if (data.results) {
       // Settled card: the line that matters is how it went.
       const up = (data.units || 0) > 0, dn = (data.units || 0) < 0;
-      seg(data.record || '0-0', '800 28px ' + COND, TXT);
-      seg('   ·   ', '400 25px ' + SANS, MUT);
-      seg((up ? '+' : '') + uFmt(data.units || 0) + 'u', '800 28px ' + COND, up ? ACC : (dn ? BT_RED : TXT));
+      seg(data.record || '0-0', SEG_N, TXT);
+      seg('   ·   ', SEG_L, MUT);
+      seg((up ? '+' : '') + uFmt(data.units || 0) + 'u', SEG_N, up ? ACC : (dn ? BT_RED : TXT));
       if (data.roi != null) {
-        seg('   ·   ', '400 25px ' + SANS, MUT);
-        seg((data.roi > 0 ? '+' : '') + data.roi.toFixed(1) + '% ROI', '800 28px ' + COND, data.roi > 0 ? ACC : (data.roi < 0 ? BT_RED : TXT));
+        seg('   ·   ', SEG_L, MUT);
+        seg((data.roi > 0 ? '+' : '') + data.roi.toFixed(1) + '% ROI', SEG_N, data.roi > 0 ? ACC : (data.roi < 0 ? BT_RED : TXT));
       }
     } else {
-      seg('Risking ', '400 25px ' + SANS, MUT);
-      seg(uFmt(risked) + 'u', '800 28px ' + COND, TXT);
-      seg(' to win ', '400 25px ' + SANS, MUT);
-      seg(uFmt(toWin) + 'u', '800 28px ' + COND, ACC);
+      seg('Risking ', SEG_L, MUT);
+      seg(uFmt(risked) + 'u', SEG_N, TXT);
+      seg(' to win ', SEG_L, MUT);
+      seg(uFmt(toWin) + 'u', SEG_N, ACC);
     }
-    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 272); ctx.lineTo(W - 64, 272); ctx.stroke();
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(64, 286); ctx.lineTo(W - 64, 286); ctx.stroke();
 
     let y = listTop;
     bets.forEach((b, i) => {
@@ -941,16 +944,19 @@ const GL_SHEET = (function () {
       roundRect(ctx, 64, y, W - 128, h, 12); ctx.fillStyle = CARD; ctx.fill();
       // Avatars, left. Two discs overlap slightly with a "vs" beneath them.
       const pics = imgs[i] || [], names = (b.names || []);
-      const r = 34, cy = y + h / 2;
+      const cy = y + h / 2;
       let tx = 96;
       if (pics.length > 1) {
-        avatar(ctx, pics[0], 96 + r, cy - 6, r, initialsOf(names[0]), LINE);
-        avatar(ctx, pics[1], 96 + r * 2 + 18, cy - 6, r, initialsOf(names[1]), LINE);
+        // Two faces: smaller discs, or the pair eats the row and squeezes the pick.
+        const r = 28, c1 = 96 + r, c2 = 96 + r * 2 + 14;
+        avatar(ctx, pics[0], c1, cy - 10, r, initialsOf(names[0]), LINE);
+        avatar(ctx, pics[1], c2, cy - 10, r, initialsOf(names[1]), LINE);
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.font = '700 18px ' + COND; ctx.fillStyle = MUT;
-        ctx.fillText('VS', 96 + r + 9 + r / 2 + 4, cy + r + 4);
-        tx = 96 + r * 3 + 18 + 22;
+        ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT;
+        ctx.fillText('VS', (c1 + c2) / 2, cy + r + 12);
+        tx = c2 + r + 22;
       } else if (pics.length === 1) {
+        const r = 38;
         avatar(ctx, pics[0], 96 + r, cy, r, initialsOf(names[0]), LINE);
         tx = 96 + r * 2 + 22;
       }
@@ -958,29 +964,30 @@ const GL_SHEET = (function () {
       const oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
       ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
       let oW;
+      // Baselines 42px apart (was 32) so a descender can't reach the line below.
       if (data.results) {
         // Settled: lead with how it went, price demoted underneath.
         const won = b.status === 'won', lost = b.status === 'lost';
         const rStr = won ? '+' + uFmt(b.profit) + 'u' : lost ? uFmt(b.profit) + 'u' : (b.status === 'void' ? 'Void' : '—');
-        ctx.font = '800 44px ' + COND; ctx.fillStyle = won ? ACC : lost ? BT_RED : MUT;
-        ctx.fillText(rStr, right, cy - 12);
+        ctx.font = '800 46px ' + COND; ctx.fillStyle = won ? ACC : lost ? BT_RED : MUT;
+        ctx.fillText(rStr, right, cy - 16);
         oW = ctx.measureText(rStr).width;
-        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 22);
+        ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 26);
         oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u').width);
       } else {
-        ctx.font = '800 44px ' + COND; ctx.fillStyle = ACC;
-        ctx.fillText(oStr, right, cy - 12);
+        ctx.font = '800 46px ' + COND; ctx.fillStyle = ACC;
+        ctx.fillText(oStr, right, cy - 16);
         oW = ctx.measureText(oStr).width;
-        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(b.stake + 'u', right, cy + 22);
+        ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(b.stake + 'u', right, cy + 26);
       }
       const maxW = right - tx - Math.max(oW, 60) - 28;
       ctx.textAlign = 'left';
-      ctx.font = '800 40px ' + COND; ctx.fillStyle = TXT;
-      ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 12);
-      ctx.font = '400 25px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, b.match || '', maxW), tx, cy + 20);
+      ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
+      ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(clip(ctx, b.match || '', maxW), tx, cy + 26);
       ctx.textBaseline = 'alphabetic';
       y += rowH;
     });
