@@ -70,9 +70,26 @@
   .tsep{color:var(--muted);font-size:.7rem}
 
   /* ── opponent grid ───────────────────────────────────────────── */
-  .head{display:flex;align-items:baseline;gap:.5rem;margin:1.1rem 0 .55rem}
+  .head{display:flex;align-items:baseline;gap:.5rem;margin:1.1rem 0 .55rem;flex-wrap:wrap}
   .head b{font-size:.9rem}
   .head span{color:var(--muted);font-size:.75rem}
+
+  /* ── how to play ─────────────────────────────────────────────── */
+  .how{background:var(--surface);border:1px solid var(--border);border-left:2px solid var(--accent);
+    border-radius:6px;padding:.6rem .8rem;margin:.9rem 0;font-size:.78rem;line-height:1.6;color:#c8c8cf}
+  .how b{color:var(--text)}
+  .how .tip{color:var(--accent)}
+
+  /* ── target dossier ──────────────────────────────────────────── */
+  .dos{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+    padding:.7rem .8rem;margin:.9rem 0}
+  .dos-h{display:flex;align-items:center;gap:.4rem;font-size:.74rem;color:var(--muted);
+    text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem}
+  .dos-h b{color:var(--gold);text-transform:none;letter-spacing:0;font-size:.85rem}
+  .dos-list{display:flex;flex-wrap:wrap;gap:.3rem}
+  .chip{display:flex;align-items:center;gap:.35rem;background:var(--surface2);
+    border:1px solid var(--border);border-radius:99px;padding:.15rem .55rem .15rem .15rem;font-size:.72rem}
+  .chip .av{width:20px;height:20px;font-size:.45rem}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(178px,1fr));gap:.5rem}
   .opp{display:flex;align-items:center;gap:.55rem;background:var(--card);
     border:1px solid var(--border);border-radius:8px;padding:.5rem;cursor:pointer;
@@ -130,6 +147,8 @@ const eKey = (a,b) => a<b ? a+'-'+b : b+'-'+a;
 const edgeOf = (a,b) => D.edges[eKey(a,b)] || null;
 const initials = n => n.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();
 const yearOf = d => { const m = /(\d{4})/.exec(d||''); return m ? m[1] : ''; };
+// Fighter names carry apostrophes and the odd angle bracket — never innerHTML raw.
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 // Avatar: real photo when we have one (70% of the board), initials otherwise.
 function avatar(i, cls){
@@ -252,6 +271,38 @@ function render(){
 
   if (won || lost){ app.appendChild(endBox(won)); app.appendChild(controls()); return; }
 
+  // ── how to play ──
+  // Spelled out on the board, not in a modal nobody reads. A playtester couldn't
+  // tell what the tiles even were ("are they all the person's opponents?"), which
+  // means the mechanic was never going to teach itself.
+  const how=document.createElement('div'); how.className='how';
+  how.innerHTML = 'Every tile below is someone <b>'+esc(F[cur].n)+'</b> has actually fought. ' +
+    'Click one and you <b>become</b> them — then you see who <i>they</i> fought. ' +
+    'Keep going until <b>'+esc(F[puz.b].n)+'</b> shows up in the grid (he\'ll have a gold ring).' +
+    '<br><span class="tip">Strategy: check '+esc(F[puz.b].n)+'\'s opponents below, then hunt for a name that\'s on both lists.</span>';
+  app.appendChild(how);
+
+  // ── target dossier ──
+  // THE fix for "these are impossible". Recognition let you read the cards; it
+  // did nothing for ROUTING — knowing which of 25 names bends toward the target.
+  // That needs the target's opponents, and without them a mechanical player
+  // solved 18% of puzzles. With them, 52%. Deliberately NOT auto-highlighting
+  // the overlap: spotting the shared name yourself is the entire game.
+  const dos=document.createElement('div'); dos.className='dos';
+  const dh=document.createElement('div'); dh.className='dos-h';
+  dh.innerHTML='Your target <b></b> has fought:';
+  dh.querySelector('b').textContent=F[puz.b].n;
+  dos.appendChild(dh);
+  const dl=document.createElement('div'); dl.className='dos-list';
+  F[puz.b].o.slice().sort((x,y)=>F[y].f-F[x].f||F[x].n.localeCompare(F[y].n)).forEach(o=>{
+    const c=document.createElement('div'); c.className='chip';
+    c.appendChild(avatar(o));
+    const s=document.createElement('span'); s.textContent=F[o].n; c.appendChild(s);
+    dl.appendChild(c);
+  });
+  dos.appendChild(dl);
+  app.appendChild(dos);
+
   // ── opponents ──
   const h=document.createElement('div'); h.className='head';
   const opps = F[cur].o.slice().sort((x,y)=> F[y].f-F[x].f || F[x].n.localeCompare(F[y].n));
@@ -341,6 +392,18 @@ function controls(){
   const nx=document.createElement('button'); nx.className='btn pri'; nx.textContent='New puzzle';
   nx.onclick=()=>start(P[(Math.random()*P.length)|0]);
   bar.appendChild(nx);
+  // Difficulty is a real dial, so let the player hold it while we learn what
+  // "fun" is: par 2 easy / par 3 the game / par 4 the Friday.
+  const dif=document.createElement('select');
+  dif.innerHTML='<option value="">Difficulty…</option>'+
+    [[2,'Easy (par 2)'],[3,'Medium (par 3)'],[4,'Hard (par 4)']]
+      .map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');
+  dif.onchange=e=>{
+    const v=+e.target.value; if(!v) return;
+    const pool=P.filter(p=>p.par===v);
+    if(pool.length) start(pool[(Math.random()*pool.length)|0]);
+  };
+  bar.appendChild(dif);
   const rs=document.createElement('button'); rs.className='btn'; rs.textContent='Restart';
   rs.onclick=()=>start(puz); bar.appendChild(rs);
   // Give up = burn the budget, which routes into the same reveal as running out.
@@ -359,7 +422,10 @@ function controls(){
 
 fetch('sixdegrees-data.json').then(r=>r.json()).then(d=>{
   D=d; F=d.fighters; P=d.puzzles;
-  start(P.find(p=>p.par===3) || P[0]);
+  // Open on a par 2 — the on-ramp. par 2 is a pure visual intersection once the
+  // dossier is up (100% solvable), so the first puzzle teaches the mechanic by
+  // being winnable. Opening on par 3 taught nothing except that you lose.
+  start(P.find(p=>p.par===2) || P[0]);
 }).catch(e=>{
   $('#app').innerHTML='<div class="load">Could not load sixdegrees-data.json — '+e.message+
     '<br><br>If you opened this as a file://, your browser blocks local fetch.<br>'+

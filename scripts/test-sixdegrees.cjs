@@ -76,6 +76,40 @@ ok(badSol === 0, 'shipped solution matches par and endpoints', 'bad=' + badSol);
 ok(fakeLink === 0, 'every step in a shipped solution is a real bout', 'fake=' + fakeLink);
 ok(P.every(p => F[p.a].f >= 3 && F[p.b].f >= 3), 'both endpoints are 3+ time headliners');
 
+// The first build shipped 38/60 puzzles at par 4+ — its own hardest tier, only
+// ~39% solvable — and a playtester went 0-for. The mix is now load-bearing.
+const byPar = {};
+P.forEach(p => byPar[p.par] = (byPar[p.par] || 0) + 1);
+ok((byPar[2] || 0) >= 15, 'enough par-2 on-ramp puzzles', 'par2=' + (byPar[2] || 0));
+ok((byPar[2] || 0) + (byPar[3] || 0) >= P.length * 0.7, 'pool is mostly the tractable par 2-3 tier',
+  'par2+3=' + ((byPar[2] || 0) + (byPar[3] || 0)) + '/' + P.length);
+ok(!P.some(p => p.par > 4), 'nothing above par 4 ships', 'max=' + Math.max(...P.map(p => p.par)));
+
+// Solve rate for a mechanical player who can see the dossier and plays the
+// obvious bridge strategy. This is the FLOOR — a real fan does better.
+const solveRate = pool => {
+  let won = 0;
+  for (const p of pool) {
+    const tOpp = new Set(F[p.b].o);
+    let cur = p.a, n = 0, seen = new Set([cur]), got = false;
+    while (n < p.par + 3) {
+      if (F[cur].o.includes(p.b)) { got = true; break; }
+      const opts = F[cur].o.filter(o => !seen.has(o));
+      if (!opts.length) break;
+      const br = opts.filter(o => tOpp.has(o));
+      cur = (br.length ? br : opts).slice().sort((x, y) => F[y].f - F[x].f)[0];
+      seen.add(cur); n++;
+    }
+    if (got) won++;
+  }
+  return won / pool.length;
+};
+const r2 = solveRate(P.filter(p => p.par === 2));
+const rAll = solveRate(P);
+ok(r2 === 1, 'every par-2 is solvable by the obvious strategy', Math.round(r2 * 100) + '%');
+ok(rAll >= 0.6, 'overall floor solve rate is playable', Math.round(rAll * 100) + '%');
+console.log('        floor solve rate (dossier visible, par+3): ' + Math.round(rAll * 100) + '% — was 18% blind');
+
 // ── 3. photos actually resolve ──────────────────────────────────────────────
 console.log('\n== photos ==');
 const photos = new Set(fs.readdirSync(path.join(ROOT, 'photos'))
@@ -117,6 +151,19 @@ const win = dom.window;
   ok(!/Could not load/.test(app()), 'page booted against the data');
   ok(doc.querySelectorAll('.opp').length > 0, 'opponent grid rendered',
     doc.querySelectorAll('.opp').length + ' cards');
+  ok(peek('puz').par === 2, 'opens on a par-2 on-ramp, not a puzzle you lose', 'par=' + peek('puz').par);
+
+  // The dossier — without it a player is routing blind and solves 18%.
+  const dossierNames = () => [...doc.querySelectorAll('.dos-list .chip span')].map(c => c.textContent.trim());
+  ok(doc.querySelector('.dos'), 'target dossier is on the board');
+  {
+    const want = new Set(F[peek('puz').b].o.map(i => F[i].n));
+    const got = dossierNames();
+    ok(got.length === want.size, 'dossier lists all the target\'s opponents', got.length + '/' + want.size);
+    ok(got.every(n => want.has(n)), 'and nothing that isn\'t one');
+  }
+  ok(/Every tile below is someone/.test(app()), 'the mechanic is explained on the board');
+  ok(/hunt for a name that's on both lists/.test(app()), 'the strategy is stated, not left to be guessed');
 
   // Walk the optimal path by CLICKING the card whose name matches the next hop.
   const target = peek('puz');

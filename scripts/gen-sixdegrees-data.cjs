@@ -183,7 +183,22 @@ function main() {
   // deterministic shuffle so the board is reproducible across runs
   let seed = 20260715;
   const rnd = () => (seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff;
-  for (let tries = 0; tries < 400000 && puzzles.length < N_PUZZLES; tries++) {
+
+  // MIX, not "whatever falls out". Left to chance, random star pairs land on par
+  // 4-5 about 2/3 of the time — and par 4-5 is only ~39% solvable even when you
+  // can see the target's opponent list. Stocking the game with its own hardest
+  // tier made it unwinnable; the first build shipped 38 of 60 puzzles at par 4+
+  // and a playtester went 0-for.
+  //
+  // Measured solve rates for a mechanical player (target list visible, par+3):
+  //     par 2   100%      par 2-3   73%      par 4-5   39%
+  // So par 2 is the on-ramp, par 3 is the game, par 4 is the Friday. A fan who
+  // knows the era beats these numbers — they're the floor, not the ceiling.
+  const MIX = { 2: 20, 3: 25, 4: 15 };
+  const need = par => (MIX[par] || 0) - puzzles.filter(p => p.par === par).length;
+  const done = () => Object.keys(MIX).every(k => need(+k) <= 0);
+
+  for (let tries = 0; tries < 600000 && !done(); tries++) {
     const a = stars[(rnd() * stars.length) | 0], b = stars[(rnd() * stars.length) | 0];
     if (a === b) continue;
     const pk = a < b ? a + '-' + b : b + '-' + a;
@@ -191,7 +206,7 @@ function main() {
     const p = bfsPath(a, b);
     if (!p) continue;
     const par = p.length - 1;
-    if (par < 2 || par > 5) continue;          // 1 is trivial, 6+ is a slog
+    if (need(par) <= 0) continue;               // tier already full
     seenPair.add(pk);
     puzzles.push({ a, b, par, sol: p });        // sol = one optimal path, for the reveal
   }
