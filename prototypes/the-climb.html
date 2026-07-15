@@ -134,7 +134,7 @@
 <body>
 <div class="wrap">
   <h1>The <span class="g">Climb</span></h1>
-  <p class="sub">Build a fighter. Pick your fights. Two losses and you're cut.
+  <p class="sub">Build a fighter. Pick your fights. Win the belt — fast, and with a record worth having.
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
@@ -281,6 +281,26 @@ const pct = n => Math.round(n)+'%';
 // division starts hitting back. The gatekeeper pool is 24 deep, so there's
 // plenty of room.
 const UNRANKED_WINS = 5;
+
+// HOW MANY LOSSES ENDS THE RUN.
+//
+// Playtest reframed the whole game: "the challenge is really: how quickly can
+// you become a champion, and with what record? not can you become a champion in
+// 2 losses or less." That is a better game and it dissolves a problem rather
+// than tuning it.
+//
+// Two losses made survival the ONLY thing that mattered, which is what drove the
+// runaway: to survive 15 fights at 2 losses you must be a heavy favourite in all
+// of them, so the economy had to make you one, so the belt became a formality.
+// The cut rule and the god-stats were the same bug wearing two hats. It also
+// made the easiest-path bot the strongest strategy (32% vs 20% for bold), since
+// dodging is worth more than climbing when one bad night ends everything.
+//
+// With the rating bounded, wins are genuinely hard and a 2-loss cut would be
+// brutal. So losses become a COST, not a coin flip that deletes the run: they
+// cost you rank, time and a soft matchmaking step-down. The score is the record
+// you got there with.
+const CUT_AT = 5;
 const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // buildStats() and the CURVES table are GONE. They existed to translate sliders
 // into the nine stat levers the sim read (kd, slpm, strAcc...). Nothing reads
@@ -331,6 +351,35 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // points; a championship run earns ~14 + 2/win ~= 44. So a good end-of-run
 // fighter sits near t=0.5, and t=0.5 is what has to land at title level — not
 // t=1.0, which no one will ever see.
+// THE RATING IS BOUNDED BY THE DIVISION. This is the fix I named hours ago and
+// then spent the whole session not doing.
+//
+// Playtest: "i was able to go 20-1 in lightweight and win the belt, pretty
+// easily. once i started getting a lot of upgrades, i was pretty much -1000
+// against everyone." Measured, exactly right:
+//
+//     pts spent   your rating   vs Gaethje (100.7)
+//        20            70          5%   +1900
+//        50           105         59%    -144
+//        80           143         95%  -1900   <- a 20-fight run
+//
+// You don't beat the division, you OUTGROW it. 36 + t*200 runs to 236 while the
+// best lightweight alive rates 100.7. Nothing in the model said "you cannot
+// become twice Makhachev".
+//
+// And this is the loop I diagnosed in my own commit message and then ignored:
+// "winning pays points, points make you stronger, strength wins more... the real
+// fix is to damp the loop, not to hunt for a magic constant." I then hunted for
+// magic constants for hours. POINTS_START 24 -> 14 -> 20. RATING_SPAN 46 -> 124
+// -> 200 -> 150 -> 200. Rewards 1-3 -> 1-2 -> risk x altitude. Every one of
+// those moved WHERE THE LINE STARTS. Not one of them touched its SLOPE. That is
+// why the game kept flipping between coronation and massacre.
+//
+// Now: a maxed fighter asymptotes just above the division's champion. Level 10
+// across the board means "as good as anyone alive in this weight class" — which
+// is what level 10 was defined to mean when the curves were anchored — instead
+// of a demigod. The ceiling is per-division and read off the ladder, so no
+// future budget tweak can recreate a 143-rated lightweight.
 const RATING_MIN  = 36;      // every slider at zero: worse than any gatekeeper
 // CALIBRATED AGAINST THE RUN HARNESS, not arithmetic — and it is a KNIFE EDGE,
 // which is a design smell, not a tuning success. Measured bot championship rate:
@@ -344,7 +393,8 @@ const RATING_MIN  = 36;      // every slider at zero: worse than any gatekeeper
 // The real fix is to damp the loop (rewards that taper as you climb, or
 // opponents that scale with you), not to hunt for a magic constant. Until then
 // this number is load-bearing and fragile: change it WITH the harness open.
-const RATING_SPAN = 200;
+const RATING_SPAN = 130;     // how far a full sheet carries you BEFORE the cap bites
+const CAP_OVER    = 5;       // a maxed fighter tops out this far above the champion
 const STYLE_MAX   = 11;      // biggest style swing, in points of win probability
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
                              // more and your build decides less.
@@ -376,10 +426,24 @@ const WEIGHTS = {
   power:0.13, pace:0.10, technique:0.10, strdef:0.11, chin:0.11,
   cardio:0.10, wrestling:0.12, grappling:0.12, takedef:0.11
 };
+// The division's ceiling, read off the ladder rather than picked. In a soft
+// division the cap is lower — you cannot farm a weak weight class into a rating
+// that would flatten a strong one.
+function divCap(){
+  const champ = LADDER().find(f=>f.rankNum===0);
+  return (champ ? champ.power : 101) + CAP_OVER;
+}
 function myRating(a){
   let t=0;
   for(const A of ATTRS) t += (WEIGHTS[A.id]||0) * ATTR_CURVE(a[A.id]||0);
-  return RATING_MIN + t * RATING_SPAN;
+  const raw = RATING_MIN + t * RATING_SPAN;
+  const cap = divCap();
+  if (raw <= cap - 12) return raw;
+  // Soft landing rather than a wall: the last 12 points of headroom compress
+  // into a smooth approach, so late upgrades still DO something — they just
+  // can't take you past the best fighter in the world by 40 points.
+  const over = raw - (cap - 12);
+  return (cap - 12) + 12 * (1 - Math.exp(-over/12));
 }
 
 // THE STYLE TRIANGLE — the game's whole point, and the thing the sim couldn't do.
@@ -823,7 +887,7 @@ function render(){
   if (!G.started){ app.appendChild(creator()); return; }
   app.appendChild(hud());
   if (G.champ){ app.appendChild(endBox('CHAMPION. You did it.')); return; }
-  if (G.losses>=2){ app.appendChild(endBox('Cut. Two losses.')); return; }
+  if (G.losses>=CUT_AT){ app.appendChild(endBox('Cut. '+CUT_AT+' losses.')); return; }
   if (G.last) app.appendChild(resultBox());
   app.appendChild(upgrade());
   app.appendChild(offerBox());

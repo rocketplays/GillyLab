@@ -73,7 +73,7 @@ function playOne(strat){
     // CURRENT rank. Reading a field that doesn't exist returns undefined, which
     // would have quietly scored every run as identical.
     if(st.rank!=null && st.rank<peak) peak=st.rank;
-    if(st.champ||st.losses>=2) break;
+    if(st.champ||st.losses>=win.eval("CUT_AT")) break;
     win.eval('(function(){'+
       'if(G.pts>0){'+
         (order?'var O='+JSON.stringify(order)+';'+
@@ -84,7 +84,7 @@ function playOne(strat){
           'for(const a of ATTRS){var c=upCost(G.attrs[a.id]);'+
           'if(G.pts>=c&&G.attrs[a.id]<ATTR_MAX){G.pts-=c;G.attrs[a.id]++;moved=true;}}}')+
       '}'+
-      'var o=offers(); if(!o.length){G.losses=2;return;}'+
+      'var o=offers(); if(!o.length){G.losses=99;return;}'+
       'var s=o.slice().sort(function(a,b){return b.p-a.p});'+
       'var pick='+(pref==='easy'?'s[0]':pref==='hard'?'s[s.length-1]':
                    pref==='random'?'o[Math.floor(Math.random()*o.length)]':'s[Math.floor(s.length/2)]')+';'+

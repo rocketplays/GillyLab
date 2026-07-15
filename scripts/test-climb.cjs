@@ -69,7 +69,7 @@ const win=dom.window;
     let guard=0;
     while(guard++<40){
       const st=peek('({champ:G.champ,losses:G.losses})');
-      if(st.champ||st.losses>=2) break;
+      if(st.champ||st.losses>=peek("CUT_AT")) break;
       win.eval('(function(){var o=offers(); if(!o.length){G.losses=2;return;} '+
                'var pick=o.slice().sort(function(a,b){return b.p-a.p})[0]; if(G.pts>0){var a=ATTRS[Math.floor(Math.random()*ATTRS.length)];'+
                'while(G.pts>0&&G.attrs[a.id]<ATTR_MAX){G.attrs[a.id]++;G.pts--;}} fight(pick);})()');
