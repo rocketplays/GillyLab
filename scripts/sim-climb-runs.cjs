@@ -27,8 +27,9 @@ const ONLY=argS('--only',null);   // one strategy per process: a full sweep outr
 
 const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
-const SCORER=fs.readFileSync(R+'prototypes/climb-scorer.js','utf8');
-const dom=new JSDOM(HTML.replace('<script src="climb-scorer.js"></script>','<script>'+SCORER+'</script>'),
+// climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
+// wrapped scorer isn't shipped or loaded. The page needs no <script> injection.
+const dom=new JSDOM(HTML,
  {runScripts:'dangerously',pretendToBeVisual:true,beforeParse(w){w.fetch=()=>Promise.resolve({json:()=>Promise.resolve(DATA)});}});
 const win=dom.window;
 

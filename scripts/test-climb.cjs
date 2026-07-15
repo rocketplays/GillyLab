@@ -2,10 +2,11 @@ const fs=require('fs'), {JSDOM}=require('jsdom');
 const R='/sessions/lucid-compassionate-dijkstra/mnt/GillyLab/';
 const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
-const SCORER=fs.readFileSync(R+'prototypes/climb-scorer.js','utf8');
+// climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
+// wrapped scorer isn't shipped or loaded. The page needs no <script> injection.
 let fails=0; const ok=(c,l,x)=>{console.log('  '+(c?'PASS':'FAIL')+'  '+l+(x&&!c?'   '+x:''));if(!c)fails++;};
 
-const dom=new JSDOM(HTML.replace('<script src="climb-scorer.js"></script>','<script>'+SCORER+'</script>'),{
+const dom=new JSDOM(HTML,{
   runScripts:'dangerously', pretendToBeVisual:true,
   beforeParse(w){ w.fetch=()=>Promise.resolve({json:()=>Promise.resolve(DATA)}); }
 });
@@ -16,7 +17,12 @@ const win=dom.window;
   const peek=e=>win.eval(e);
   console.log('\n== boot ==');
   ok(!/Could not load/.test(app()),'page booted');
-  ok(typeof peek('S')==='object' && peek('S')!==null,'the REAL scorer is live in the browser');
+  // WAS: 'the REAL scorer is live in the browser'. It isn't, on purpose — the sim
+  // stopped refereeing and the 90KB browser copy is deleted. What must be live is
+  // the BOARD: real fighters, real ranks, real power ratings, every division.
+  ok(peek('D.order.length')>=10,'every division loaded','divisions='+peek('D.order.length'));
+  ok(peek('LADDER().length')>20,'the chosen division has a ladder');
+  ok(peek('LADDER().some(f=>f.rankNum===0)'),'the division has a champion to chase');
   ok(/Create your fighter/.test(app()),'creator screen');
   const nAt = peek('ATTRS.length');
   ok(doc.querySelectorAll('input[type=range]').length===nAt,'one slider per attribute',
