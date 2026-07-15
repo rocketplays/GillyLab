@@ -422,9 +422,30 @@ const ATTR_CURVE = v => Math.pow(Math.max(0,v)/ATTR_MAX, 1.6);
 // me measuring it afterwards and being surprised. THAT is what was impossible
 // before: every earlier balance pass was archaeology on a model that wouldn't
 // move. This is a design decision, written down, in one place, changeable.
+// THE TWO STYLES MUST BE WORTH THE SAME. Playtest: "becoming a striking
+// specialist weighs a lot more heavily than a grappling specialist."
+// Correct, and it was structural rather than subtle:
+//
+//     striking  power .13 + pace .10 + technique .10 + strdef .11 = 0.44
+//     ground    wrestling .12 + grappling .12 + takedef .11       = 0.35
+//
+// Striking is FOUR sliders and the ground is THREE, so a striker who maxes his
+// specialty owned 26% more of the rating than a grappler who maxed his. The per
+// slider numbers looked balanced; the per-STYLE totals never were, and the style
+// is what the player actually picks. I set these by eye and checked the wrong
+// axis.
+//
+// Now each style totals 0.39, chin+cardio the remaining 0.22. Maxing "the ground"
+// and maxing "the feet" buy exactly the same ceiling, and which one wins is
+// decided by the style triangle against the man in front of you — which is the
+// entire point of the feature.
 const WEIGHTS = {
-  power:0.13, pace:0.10, technique:0.10, strdef:0.11, chin:0.11,
-  cardio:0.10, wrestling:0.12, grappling:0.12, takedef:0.11
+  // the feet — 4 sliders, 0.39 together
+  power:0.11, pace:0.09, technique:0.09, strdef:0.10,
+  // the ground — 3 sliders, 0.39 together
+  wrestling:0.13, grappling:0.13, takedef:0.13,
+  // neither, and both — 0.22
+  chin:0.11, cardio:0.11
 };
 // The division's ceiling, read off the ladder rather than picked. In a soft
 // division the cap is lower — you cannot farm a weak weight class into a rating
@@ -836,6 +857,16 @@ function fight(o){
   // makes finBias NaN and every finish silently vanish.
   const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
   const fin = won && Math.random() < (0.25 + finBias*0.4);
+  // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
+  // never won by submission." He couldn't have: the result line read
+  // `fin ? ' by KO/TKO' : ' by decision'` — there was no submission ANYWHERE in
+  // the game. Every finish printed as a knockout regardless of build, so the
+  // whole grappling half of the sheet was invisible in its own results.
+  // Weighted by the two attributes that actually finish fights.
+  const koW  = (G.attrs.power||1);
+  const subW = (G.attrs.grappling||1) * 0.9;
+  const bySub = fin && Math.random() < subW/(koW+subW);
+  const method = !won ? null : !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
   // shows all 3 rounds as if it were a decision." The rounds array and the
   // finish roll were computed independently, so a first-round KO still printed
@@ -846,7 +877,7 @@ function fight(o){
     rounds = rounds.slice(0, finRound);
     roundsWon = rounds.filter(Boolean).length;
   }
-  G.log.push({ opp:o.f.name, won, fin, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
+  G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     G.pts += o.reward + (fin?1:0);
@@ -867,7 +898,7 @@ function fight(o){
   // So this makes ducking cost something, but it is not yet a hard run limit.
   // If runs still drag, the next dial is retiring at ~35.)
   G.fightNo = (G.fightNo||0) + 1;
-  G.last = { o, won, fin };
+  G.last = { o, won, fin, method };
   render();
 }
 
@@ -1012,10 +1043,10 @@ function hud(){
 }
 
 function resultBox(){
-  const {o,won,fin}=G.last;
+  const {o,won,fin,method}=G.last;
   const p=document.createElement('div'); p.className='panel';
   const b=document.createElement('div'); b.className='big '+(won?'win':'loss');
-  b.textContent = won ? ('def. '+o.f.name+(fin?' by KO/TKO':' by decision')) : ('lost to '+o.f.name);
+  b.textContent = won ? ('def. '+o.f.name+' by '+(method||'decision')) : ('lost to '+o.f.name);
   p.appendChild(b);
   const L=G.log[G.log.length-1];
   const rd=document.createElement('div'); rd.className='note';
@@ -1097,7 +1128,7 @@ function logBox(){
   G.log.slice().reverse().forEach(f=>{
     const d=document.createElement('div');
     d.innerHTML='<span class="'+(f.won?'w':'l')+'">'+(f.won?'W':'L')+'</span> '+
-      (f.won&&f.fin?'KO ':'   ')+' vs '+f.opp+' <span style="color:var(--muted)">('+(f.p*100).toFixed(0)+'%)</span>';
+      (f.won&&f.fin?(f.method==='submission'?'SUB':'KO '):'   ')+' vs '+f.opp+' <span style="color:var(--muted)">('+(f.p*100).toFixed(0)+'%)</span>';
     l.appendChild(d);
   });
   p.appendChild(l);
