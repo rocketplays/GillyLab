@@ -467,9 +467,32 @@ function winProb(oppName){
   return Math.max(0.05, Math.min(0.95, p));
 }
 const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-// P(win >= 2 of 3 rounds). The card shows THIS, not the per-round number —
-// showing 92% and then losing 8% of the time was the whole complaint.
+// bo3(x) = P(win >= 2 of 3 rounds) given a PER-ROUND probability x.
+//
+// THE UNITS BUG. winProb() used to return a per-round number, so the card showed
+// bo3(p) and fight() rolled three rounds at p. Correct. Then the scorer was
+// rewritten and winProb() started returning P(WIN THE FIGHT) — and neither
+// consumer was told. So a 75% fighter was displayed AND resolved at bo3(0.75) =
+// 84%, and at the 0.95 clamp at bo3(0.95) = 99.3%, which prints as -13,700.
+//
+// Playtest: "every matchup i was -1000 or higher, up to like -15,000... it
+// LOOKED easy, which is boring, but i also lost, which doesn't line up." Both
+// halves, one cause: the odds were inflated by a round->fight conversion applied
+// to a number that was already a fight probability. It looked like a walkover;
+// meanwhile 15 fights at a real ~90% still averages 1.4 losses and two gets you
+// cut, so you died anyway.
+//
+// Now the units are explicit and named. winProb() = P(fight). roundP() inverts
+// bo3 to get the per-round number the round-by-round display needs. The card
+// shows P(fight) straight.
 const bo3 = p => 3*p*p*(1-p) + p*p*p;
+// Inverse of bo3: given P(win the fight), what per-round probability produces it?
+// bo3 is monotone on [0,1], so bisect — closed form is a cubic and not worth it.
+function roundP(pFight){
+  let lo=0, hi=1;
+  for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(bo3(mid) < pFight) lo=mid; else hi=mid; }
+  return (lo+hi)/2;
+}
 const amer = p => { const o = p>=0.5 ? -Math.round(100*p/(1-p)) : Math.round(100*(1-p)/p); return (o>0?'+':'')+o; };
 
 // ── opponent selection ───────────────────────────────────────────────────────
@@ -691,7 +714,11 @@ function buildOffers(){
 //                     should mean something)
 // It also gives the run a story for free — "you won rounds 1 and 3".
 function fight(o){
-  let rounds = [0,1,2].map(()=>Math.random() < o.p);
+  // o.p is P(WIN THE FIGHT). Rounds must be rolled at the per-round rate that
+  // reproduces it — rolling three rounds AT o.p resolves the fight at bo3(o.p),
+  // i.e. materially easier than the card promised.
+  const pr = roundP(o.p);
+  let rounds = [0,1,2].map(()=>Math.random() < pr);
   let roundsWon = rounds.filter(Boolean).length;
   const won = roundsWon >= 2;
   // Finish chance scales with Power/Grappling — how you win matters (~8pts to
@@ -879,7 +906,7 @@ function resultBox(){
   p.appendChild(rd);
   const n=document.createElement('div'); n.className='note';
   n.textContent = 'The model gave you '+(o.p*100).toFixed(1)+'% per round ('+amer(o.p)+'), '+
-    (bo3(o.p)*100).toFixed(1)+'% to win the fight.'+
+    (o.p*100).toFixed(1)+'% to win the fight.'+
     (won ? '  +'+(o.reward+(fin?1:0))+' upgrade points.' : (G.losses<2?'  One life left.':''));
   p.appendChild(n);
   return p;
@@ -927,7 +954,7 @@ function offerBox(){
     const b=document.createElement('button'); b.className='opp'+(o.p<0.4?' risky':'');
     const rk=o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
     b.innerHTML='<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div>'+
-      '<div class="odds">You: <b style="color:'+(bo3(o.p)>=0.5?'var(--accent)':'var(--accent2)')+'">'+amer(bo3(o.p))+'</b> · '+(bo3(o.p)*100).toFixed(0)+'% to win</div>'+
+      '<div class="odds">You: <b style="color:'+(o.p>=0.5?'var(--accent)':'var(--accent2)')+'">'+amer(o.p)+'</b> · '+(o.p*100).toFixed(0)+'% to win</div>'+
       '<div class="note" style="margin:.15rem 0 0">'+(o.p*100).toFixed(0)+'% per round · best of 3</div>'+
       '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
     b.querySelector('.nm').textContent=o.f.name;

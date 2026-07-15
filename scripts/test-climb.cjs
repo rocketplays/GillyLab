@@ -95,7 +95,10 @@ const win=dom.window;
   const champOffer = peek('offers().filter(o=>o.f.rankNum===0)');
   ok(champOffer.length>0,'a #1 contender is offered the title shot');
   if(champOffer.length){
-    const pf = peek('bo3('+champOffer[0].p+')');
+    // o.p IS the fight probability now. bo3() here would re-apply a round->fight
+    // conversion to a number that has already had one — the exact bug that made
+    // the card read -13,700.
+    const pf = champOffer[0].p;
     ok(pf>0.15 && pf<0.95,'the title fight is a real fight, not a formality',
       (pf*100).toFixed(1)+'% to win');
   }
