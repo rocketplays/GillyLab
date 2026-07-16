@@ -1150,6 +1150,41 @@ function buildOffers(){
   // knocked you out stayed in the pool and came back 15% of the time. Getting
   // re-offered your conqueror reads exactly like "nothing changed".
   const fought = new Set(G.log.map(f=>f.opp));
+  // HOW MANY TIMES, not just whether. Every rematch path below asked `fought.has()`
+  // — a yes/no — so once the division was exhausted the board had no way to prefer
+  // a man you'd met once over a man you'd met nine times. pickDiverse then picks on
+  // style, which is deterministic for a fixed band, so it locked onto ONE opponent
+  // and served him forever. Measured on a 33-fight run: Sergei Pavlovich twenty
+  // times in a row, fights 15 through 33.
+  //
+  // A rematch is a career. Twenty rematches is a soft lock with a fighter's name on
+  // it, and it is the exact shape of the Walker bug the conqueror rule already
+  // fixed — the same mistake one level up, because "never the SAME man twice in a
+  // row" was fixed while "never the same man twenty times" was never asked.
+  const seen = new Map();
+  for (const f of G.log) seen.set(f.opp, (seen.get(f.opp)||0) + 1);
+  const timesFought = f => seen.get(f.name) || 0;
+  // A TRILOGY IS A CAREER. A TETRALOGY IS A BUG.
+  //
+  // Least-met cycling alone wasn't enough: at #1 the board can only draw from
+  // ranks 1-4 (inBand), so once you've beaten #2/#3/#4 there are exactly two or
+  // three legal men left and cycling them just alternates — measured, Pavlovich
+  // and Volkov eleven times each. The pool was the problem, not the order.
+  //
+  // So there's a hard ceiling. Three meetings is Ortiz-Griffin, Gaethje-Poirier,
+  // Ali-Frazier — the most any real rivalry gets. Past that the matchmaker isn't
+  // booking a rivalry, it's out of ideas, and the honest thing is to say so rather
+  // than serve the same face a fourth time.
+  const MAX_MEETINGS = 3;
+  const overFought = f => timesFought(f) >= MAX_MEETINGS;
+  // The least-met men in a list, and only them. Feed this to pickDiverse so the
+  // board cycles the division — everyone at 1 before anyone reaches 2 — instead of
+  // re-rolling the same face. Style still decides WHICH of the least-met you get.
+  const leastFought = (list) => {
+    if (!list.length) return list;
+    const min = Math.min(...list.map(timesFought));
+    return list.filter(f => timesFought(f) === min);
+  };
   // ...EXCEPT THE CHAMPION, WHO IS THE WIN CONDITION.
   //
   // This one line was four bugs. "Exclude everyone you've FOUGHT" is right for
@@ -1275,7 +1310,9 @@ function buildOffers(){
     const near = all.filter(f => G.rank==null ? true
                                               : Math.abs(f.rankNum - G.rank) <= 4);
     const src = near.length ? near : all;
-    for(let i=0;i<3;i++) pool.push(pickDiverse(src, pool));
+    // leastFought: this pool ignores `avail()` by design, so without it the same
+    // man wins every draw.
+    for(let i=0;i<3;i++) pool.push(pickDiverse(leastFought(src.filter(f=>!pool.includes(f) && !overFought(f))), pool));
   }
   // ALWAYS A CHOICE. Playtest: "sometimes it only gives you one option for a
   // matchup. there should always be 2+."
@@ -1324,10 +1361,14 @@ function buildOffers(){
     for (const pass of [0, 1]) {           // 0: someone new.  1: a rematch.
       for (const radius of [2,4,7,12,99]) {
         if (picked.length >= 3) break;
-        const band = LADDER().filter(f =>
+        let band = LADDER().filter(f =>
           !picked.includes(f) &&
           (pass === 0 ? !beaten(f) : !conqueror.has(f.name)) &&
           (G.rank == null ? f.rankNum === 99 : inBand(f, radius)));
+        // pass 1 IS the rematch pass, and it's where the twenty-in-a-row came from:
+        // it happily re-served whoever pickDiverse liked, however many times you'd
+        // already met him. Draw from the least-met men only.
+        if (pass === 1) band = leastFought(band.filter(f => !overFought(f)));
         while (picked.length < 3 && band.length) {
           const nxt = pickDiverse(band, picked);
           if (!nxt) break;
@@ -1349,6 +1390,9 @@ function buildOffers(){
         f.name !== (G.last && G.last.o && G.last.o.f.name));
       if (!any.length) any = LADDER().filter(f => !picked.includes(f) && tier(f) &&
         f.name !== (G.last && G.last.o && G.last.o.f.name));
+      // Least-met first here too — this is the deepest fallback, so it runs exactly
+      // when the division is most exhausted and the lock-on is most likely.
+      any = leastFought(any.filter(f => !overFought(f)));
       while (picked.length < 3 && any.length) {
         const nxt = pickDiverse(any, picked);
         if (!nxt) break;

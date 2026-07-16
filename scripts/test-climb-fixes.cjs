@@ -151,6 +151,46 @@ setTimeout(()=>{
   ok(repCards/nCards < 0.25,'most cards are still someone new',
      (repCards/nCards*100).toFixed(1)+'% of '+nCards+' cards were a rematch');
 
+  console.log('\n== 1c3. the ducker: nobody gets fought forever ==');
+  // THE REGIME NO OTHER TEST REACHES. Every bot in every harness takes the title
+  // when it's offered — correctly, since ducking it was itself a bug — so they all
+  // finish at ~13 fights and the matchmaker's exhausted state is never sampled.
+  // A player who DUCKS the belt runs 30+ fights, and there it was serving the same
+  // man twenty times in a row: measured, Sergei Pavlovich for fights 15-33.
+  //
+  // "Rematches never flood the board" was green the whole time, because a board
+  // holding one rematch looks identical whether it's his second meeting or his
+  // twentieth. The gate measured the board; the bug was in the SEQUENCE.
+  let worstMeetings=0, worstStreak=0, deadEnds=0, longRuns=0;
+  for(const dv of ['LHW','LW','HW']){
+    for(let r=0;r<4;r++){
+      win.eval('DIV="'+dv+'"; newGame(); G.started=true;'); win.eval(sp);
+      const seq=[]; let empty=false;
+      for(let g=0; g<40; g++){
+        const st=peek('({c:G.champ,l:G.losses})'); if(st.c||st.l>=peek('CUT_AT')) break;
+        if(peek('G.pts>0')) win.eval(sp);
+        if(!peek('offers().length')){ empty=true; break; }
+        seq.push(win.eval('(function(){var o=offers();'+
+          'var nt=o.filter(function(x){return x.f.rankNum!==0});'+   // duck the belt
+          'var s=(nt.length?nt:o);var pick=s[Math.floor(s.length/2)];fight(pick);return pick.f.name;})()'));
+      }
+      if(seq.length<12) continue;
+      longRuns++;
+      if(empty) deadEnds++;
+      const f={}; seq.forEach(n=>f[n]=(f[n]||0)+1);
+      worstMeetings=Math.max(worstMeetings, Math.max(...Object.values(f)));
+      let m=1,c=1; for(let i=1;i<seq.length;i++){ if(seq[i]===seq[i-1]){c++;m=Math.max(m,c);} else c=1; }
+      worstStreak=Math.max(worstStreak,m);
+    }
+  }
+  ok(longRuns>0,'the ducker actually produces long runs to test', longRuns+' runs of 12+ fights');
+  // A trilogy is a career; a tetralogy is the matchmaker out of ideas.
+  ok(worstMeetings<=3,'no opponent is ever fought more than 3 times',
+     'worst was '+worstMeetings+' meetings');
+  ok(worstStreak<=3,'no opponent is served back-to-back forever',
+     'worst streak was '+worstStreak+' in a row');
+  ok(deadEnds===0,'ducking the belt never dead-ends the run', deadEnds+'/'+longRuns+' runs hit an empty board');
+
   console.log('\n== 1d. opponents have faces ==');
   win.eval('DIV="LW"; newGame(); G.started=true; G.pts=40; render();');
   const avs=[...doc.querySelectorAll('.opp .av img')];
