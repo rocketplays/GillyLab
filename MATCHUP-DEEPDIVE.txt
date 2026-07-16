@@ -1,0 +1,135 @@
+Matchup Analytics deep dive — state of play
+================================================================================
+2026-07-16. Everything below is BUILT AND COMMITTED. The feature is finished and
+NOT DEPLOYED, which is why nobody can see it.
+
+START HERE
+--------------------------------------------------------------------------------
+    cd ~/Documents/GitHub/GillyLab
+    npm run deploy
+
+It exits 1 and has all session. Nobody has read the error yet — that is the one
+thing standing between ~20 commits of finished work and it being live. The build
+itself is clean, `wrangler --dry-run` bundles fine (278KB gzipped), all modules
+parse, wrangler runs (3.114.17), and the workerd/esbuild binaries are present.
+Prior: an expired or absent CLOUDFLARE_API_TOKEN. Paste the last 30 lines and it
+is probably a two-minute fix.
+
+
+WHAT THE FEATURE IS
+--------------------------------------------------------------------------------
+A "Matchup Analytics ⌄" dropdown on every upcoming bout, beside "Fight Info". It
+crosses one fighter's offence against the other's defence — the thing the existing
+Fight Info dropdown structurally cannot do, because it only ever reads a fighter's
+own numbers.
+
+It renders counts, and a two-sentence read generated from the data:
+
+    "Usman has 50 minutes of control time across those fights; Du Plessis has 16.
+     Usman is far harder to take down: 27 of 32 stopped, against 8 of 23."
+
+40 of 50 bouts get a read; 10 say nothing, which is correct — most fights are not
+lopsided, and a panel that always has a verdict will invent one.
+
+
+THE DATA, AND WHY IT'S IN THREE FILES
+--------------------------------------------------------------------------------
+    data/grid-names.json   2.2KB    eager     names + baselines; gates the button
+    data/fight-grid.json   245KB    on click  the 3x3 strike cross-tab
+    data/fight-stats.json  8MB      eager     UNCHANGED — not one byte added
+
+index.html eager-fetches fight-stats.json on every page load. The grid would add
+~2MB to that for a panel you have to click, so it lives apart and loads on press.
+The manifest exists because the BUTTON'S VISIBILITY is decided while rendering
+every bout — answering that from fight-grid.json would mean a 245KB fetch on page
+load to decide the visibility of a button most people never press.
+
+THE GRID IS THE POINT. ESPN serves head/body/leg BY distance/clinch/ground and the
+backfill was summing it into margins and throwing the cross-tab away. Measured
+across 63 card fighters:
+    head accuracy AT DISTANCE    mean 35.8%  sd 4.9
+    head accuracy ON THE GROUND  mean 70.2%  sd 8.2
+    corr(the two)                -0.04
+Zero correlation — unrelated skills. "Head 79%" reads identically for a boxer and
+a ground-and-pounder. Mackenzie Dern is +55 points better on the ground than at
+range; a kickboxer is +11. The margin reported one number for both.
+
+
+IT AUTO-POPULATES. NOBODY HAS TO DO ANYTHING.
+--------------------------------------------------------------------------------
+update-odds.yml already ran twice a day and already refreshed event.json. Two
+steps now ride it (after the overrides, so the card is final):
+    python3 scripts/fight-stats-parallel.py --card --needs-grid --workers 24
+    node scripts/split-fight-grid.cjs
+Bootstrap is done (112 fighters). Steady state measured: to process 0. A fighter
+announced tomorrow has his grid within 12 hours.
+
+
+TRAPS — ALL OF THESE WERE REAL BUGS TODAY
+--------------------------------------------------------------------------------
+  * THERE ARE TWO fightRow FUNCTIONS. renderHomeFightCard() draws the featured
+    card; renderCarousel() draws the upcoming cards. Patching one put the button on
+    one card and nowhere else, which reads as "the feature doesn't exist" — and did.
+    Every change to a fight row is two changes. This is worth actually fixing.
+  * NAME JOINS. Written wrong THREE times in one day: "Dricus Du Plessis" vs
+    "Dricus du Plessis", "Aleksandar Rakic" vs "Rakić". Every lookup must normalise
+    (NFD, strip diacritics, lowercase). A miss looks exactly like absent data.
+  * `" " in name` DROPS MONONYMS. Sumudaerji, Aoriqileng — 10+ fights each, silently
+    excluded. Read bouts[].fighters[].fighterName; don't hunt for keys called "name"
+    and then filter the junk.
+  * --only-missing CANNOT SEE THIS. Its predicate is "have we ever saved this
+    fighter" and every card fighter is already saved — without the grid. Use
+    --needs-grid, which asks the actual question and is self-clearing (no mark file).
+  * split-fight-grid.cjs MUST MERGE. fight-grid.json is the ONLY copy of the grid;
+    rebuilding it from scratch each run deletes everyone not in that batch.
+  * THE MANIFEST MUST BE WRITTEN ON NO-OP RUNS. Steady state IS a no-op run, so a
+    manifest that only regenerates when there's fresh data goes stale on exactly the
+    schedule it serves, and every button vanishes on the first quiet day.
+  * THE $FILES ALLOWLIST in update-odds.yml is explicit. A new data file that isn't
+    in it gets generated and never committed. Green job, starved feature.
+
+
+OPEN — REAL, MEASURED, NOT GUESSES
+--------------------------------------------------------------------------------
+ 1. NOBODY HAS SEEN THIS RENDER IN A BROWSER. The logic is verified against real
+    data and the markup against the build. Two renderers, a MutationObserver, a
+    lazy fetch and a CSS collapse is a lot of "should work".
+ 2. THE RANKING IN scripts/matchup-deepdive.cjs IS NOT SAFE TO SHOW. Its lanes have
+    prerequisites it doesn't model: ground-and-pound is gated behind a takedown,
+    head-at-range is gated behind nothing, and it ranks them as peers. Measured, it
+    told Du Plessis his best path was ground-and-pound against a man who stops 27 of
+    32 takedowns. The panel prints columns and prose, never the order. FIXING THIS
+    NEEDS A MEASUREMENT ACROSS A CARD, NOT A PLAUSIBLE RULE — I invented mechanisms
+    twice today and both were fiction.
+ 3. NO ROUND-BY-ROUND DATA EXISTS. Checked four ESPN endpoints: statistics/{n}
+    ignores the index, linescores are judges' scorecards, plays are 40 ceremonial
+    +takedown events with no fighter attribution, summary is empty. ufcstats.com has
+    it and is blocked. This is a scrape, not a view. Don't infer it from finishes and
+    call it measured.
+ 4. iCLOUD IS SYNCING THE REPO. ~/Documents is iCloud Drive; .git is 805MB. It forked
+    .git/index 22 times since June 11, including once mid-session today (88 bytes off
+    the live file), and bus-errored a commit. I deleted the junk; fsck is clean; no
+    damage. A half-finished clone sits at ~/dev/GillyLab (needs `npm approve-scripts`
+    for esbuild/workerd/sharp/fsevents, then `npm install`). NOT URGENT — a slow
+    bleed, not an emergency. The old folder works.
+ 5. THE-CLIMB-TUNING.txt IS FIVE COMMITS STALE AGAIN (STYLE_SCALE, the division
+    work, the free title shot, submission defence, the scout card). It is a file
+    whose own top section is about claims outliving their evidence.
+ 6. prototypes/ STILL SHIPS INTO public/ — the-climb.html and a ~900KB
+    sixdegrees-data.json go to every visitor. /theclimb is generated now; the
+    prototype copy is dead weight.
+
+
+THE LESSON WORTH CARRYING
+--------------------------------------------------------------------------------
+Three times today I invented a mechanism, found it plausible, wrote it down in past
+tense, and shipped it — the chin "bug" that did not exist (corr with career length
+= 0.059, i.e. nothing), the "legs are a narrow band" story behind the z-score change
+(head sd 8.1, leg sd 9.2 — the same), and "postinstalls are the deploy failure" (the
+binaries were there all along). Each sounded right. Each took one cheap measurement
+to kill. THE TELL IS ALWAYS THE SAME: the mechanism arrives BEFORE the measurement
+and explains the data a little too well.
+
+And the floor: N=500 for a cell, more for a difference. N=120 read one change as
+"46% -> 33%" when the truth was "46% -> 40%". It caught me four times in the session
+where I raised it.
