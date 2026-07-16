@@ -189,29 +189,30 @@ Fixed together:
     THEFT, not to flatten the risk gradient — flattening it deletes the safe option
     and the whole point of the choice.
 
-MEASURED AFTER, 30-40 runs per strategy (baseline -> now):
-    striker        3% -> 27%        striker/safe   0% -> 13%
-    wrestler      30% -> 33%        striker/bold   5% -> 17%
-    grappler      23% -> 57%        striker/blind     -> 20%
-    balanced          -> 33%        wrestler/safe     -> 30%
+MEASURED AFTER, N=120 per strategy (baseline -> now). READ THE N:
+    striker        3% -> 18%        striker/safe   0% -> 27%
+    wrestler      30% -> 33%        striker/bold   5% -> 13%
+    grappler      23% -> 37%        striker/blind     -> 21%
+    balanced          -> 30%
+Spread 13-37%, nothing at 0%, nothing running away. safe (27%) > blind (21%) —
+the playtest spec holds: "if you're a striker and you cherry pick favorable
+matchups, that should be an advantage, not the same as picking randomly."
 Runs 11-15 fights (was 13-34). Records ~8-4 to 10-4 — a champion's record, which
 is what the note asked for. check-climb-cap.cjs: 2.6% / 0.5% over cap (was 55%).
 All gates green. All 11 divisions play in 7-19 fights.
 
-STILL OPEN, and worth a look next:
-  * grappler 57% against striker/safe 13% is a 4x spread. Nothing is at 0% and
-    nothing is at 90%, so it clears the bar — but the ground still leads the feet
-    and the 1/9 weights say it shouldn't be the sheet doing it. Suspect the style
-    triangle now (it IS the residual fix (c) predicted), and measure it before
-    touching a dial.
-  * safe (13%) now scores BELOW blind (20%). The playtest spec is "cherry picking
-    favorable matchups should be an advantage, not the same as picking randomly" —
-    this is different from random, but in the wrong direction. Pay-per-rung makes
-    ducking slow, which is intended ("grinding should be slow and ugly"); whether
-    it should be actively WORSE than picking blind is a design call nobody has
-    made. Note the bot ducks by WIN PROBABILITY, which is not the same thing as
-    cherry-picking a favourable STYLE matchup — the spec may need a better bot
-    before it needs a better game.
+THE FIRST VERSION OF THIS TABLE WAS MEASURED AT N=30 AND TWO OF ITS CELLS WERE
+NOISE. It read grappler 57% and safe 13%, and I wrote two "still open" problems
+out of them:
+    "grappler 57% vs safe 13% is a 4x spread" ...... it is 37% vs 27%. 1.4x.
+    "safe now scores BELOW blind, spec violated" ... safe 27% > blind 21%. It holds.
+Both problems were imaginary. At N=30 and p~0.3 the standard error is ~8%, so
+those two cells were ~2 SE apart from the truth and told a completely coherent
+story about a game that doesn't exist. I had QUOTED this file's own warning —
+"THIN SAMPLES PRODUCE CONFIDENT NONSENSE, N=25 still carries +-9%" — in the same
+session, in a commit message, and then read a 57% off thirty runs anyway.
+N=120 (SE ~3.5%) is the floor for anything you intend to write down. It costs ten
+seconds per strategy. The wrong number costs a session.
   * RUNG_PAY is now THE dial for run length and title rate. Measured: 1.0 ->
     striker 27 / wrestler 33 / bold 17; 1.4 -> 37 / 57 / 30; 2.1 -> 65 / 90 / 68.
     It is monotonic and well-behaved, which the old constants never were.
@@ -255,6 +256,13 @@ MEASURING — the tools, and how they lied to me
     runs. At N=4 the same divisions read 25/50/25% across three settings — pure
     noise I nearly tuned against. N=25 still carries +-9%. (A single probe run
     this pass read 3-5 for a strategy whose true average is 16.6-3.4.)
+    AND IT GOT ME AGAIN, IN THE SAME SESSION, AFTER I QUOTED IT. I ran the final
+    sweep at N=30, read grappler 57% / safe 13%, and wrote two open problems out of
+    two cells that were noise — a 4x style spread that is really 1.4x, and a
+    "violated" playtest spec that is really satisfied. Knowing the rule is not the
+    same as having a floor. THE FLOOR IS N=120 (SE ~3.5%) FOR ANY NUMBER YOU WRITE
+    DOWN, and it costs ten seconds. Sweep wide at N=30 to find the shape; re-run at
+    N=120 before you believe it, and always before you commit it.
   * DON'T SAMPLE THE FUNCTION, SAMPLE THE GAME. "3,273 of 6,000 fights at the 95%
     clamp" was random budgets against random ranks — mismatches no run produces.
     Real runs: 0.5%. I raised that alarm and had to withdraw it. The `easy` bot

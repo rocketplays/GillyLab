@@ -78,6 +78,15 @@
   .hud div b{font-size:1.1rem}
   .log{font-size:.78rem;line-height:1.8}
   .log .w{color:var(--accent)} .log .l{color:var(--accent2)}
+  /* the method tag is a fixed-width column so the opponents' names line up —
+     'SUB'/'KO '/'DEC' are 3 chars but not 3 equal widths in a proportional font */
+  .log .mth{color:var(--muted);font-variant-numeric:tabular-nums;
+            font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;margin-right:.15rem}
+  .mtally{margin:.6rem 0 .2rem;font-size:.78rem}
+  .mtally .mrow{display:grid;grid-template-columns:1fr 2.2rem 2.2rem;gap:.3rem;line-height:1.7}
+  .mtally .mrow span:not(:first-child){text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+  .mtally .mhead span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:400}
+  .mtally .w{color:var(--accent)} .mtally .l{color:var(--accent2)} .mtally .z{color:var(--muted)}
   .big{font-size:1.05rem;font-weight:700;margin:.3rem 0}
   .big.win{color:var(--accent)} .big.loss{color:var(--accent2)}
   button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600}
@@ -1334,24 +1343,53 @@ function fight(o){
   // into power/pace/technique, and reading a dead key returns undefined, which
   // makes finBias NaN and every finish silently vanish.
   const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
-  const fin = won && Math.random() < (0.25 + finBias*0.4);
   // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
   // never won by submission." He couldn't have: the result line read
   // `fin ? ' by KO/TKO' : ' by decision'` — there was no submission ANYWHERE in
   // the game. Every finish printed as a knockout regardless of build, so the
   // whole grappling half of the sheet was invisible in its own results.
   // Weighted by the two attributes that actually finish fights.
-  const koW  = (G.attrs.power||1);
-  const subW = (G.attrs.grappling||1) * 0.9;
-  const bySub = fin && Math.random() < subW/(koW+subW);
-  const method = !won ? null : !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
+  //
+  // AND THE SAME COURTESY IN THE OTHER DIRECTION. `method` was `!won ? null : ...`
+  // — losing had no method at all, so the game could tell you exactly how you beat
+  // a man and had nothing to say about how he beat you. Half the results in a run
+  // were a blank. It reads as though the game stops paying attention the moment
+  // you lose, which is precisely the moment the player is paying most.
+  //
+  // How you GET finished follows what HE does, read off his REAL stats — the same
+  // rule as your side of it, pointed the other way. kd is knockdowns per 15min
+  // (median 0.27, max 3.54); sub is submission attempts per 15min (median 0.32,
+  // max 4.27). Both are long-tailed, so they saturate rather than scale: a man
+  // with 3.5 kd is terrifying, not 13x more terrifying than the median.
+  const S = o.f.style || {};
+  const kd = Math.max(0, S.kd || 0), sb = Math.max(0, S.sub || 0);
+  const threat = (kd + sb) / (kd + sb + 1.0);        // ~0.37 median, ~0.89 at the top
+  // YOUR CHIN BUYS YOU THE JUDGES. A maxed chin doesn't stop you losing — the
+  // result was decided by the rounds above, before any of this — it stops you
+  // getting STOPPED. This is deliberately cosmetic with respect to balance: method
+  // is chosen after `won`, so nothing here can move a win rate. It just means the
+  // 1/9 point you spent on chin is visible in your own record.
+  const chinGuard = 1 - (G.attrs.chin / ATTR_MAX) * 0.3;
+  const finW = won ? (0.25 + finBias * 0.4)          // you finish: 0.25 -> 0.65
+                   : (0.25 + threat  * 0.4) * chinGuard;  // he finishes: 0.35 -> 0.61, less your chin
+  const fin = Math.random() < finW && (won || kd + sb > 0);
+  // Weights for WHICH finish. Yours: power vs grappling. His: knockdowns vs subs.
+  const koW  = won ? (G.attrs.power||1)          : kd;
+  const subW = won ? (G.attrs.grappling||1) * 0.9 : sb;
+  const bySub = fin && (koW + subW > 0) && Math.random() < subW/(koW+subW);
+  const method = !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
   // shows all 3 rounds as if it were a decision." The rounds array and the
   // finish roll were computed independently, so a first-round KO still printed
   // R1 ✓ R2 ✓ R3 ✓. Truncate at the round it ended in — the first round you won.
+  //
+  // A LOSS TRUNCATES AT THE FIRST ROUND YOU **LOST**. `rounds.indexOf(true)` is
+  // the first round you WON, which is the right round for your finish and the
+  // wrong one for his: it would have printed "finished in R3" over a card reading
+  // R1 ✗ R2 ✗, i.e. stopped in a round you were winning, in a fight already over.
   let finRound = 0;
   if (fin) {
-    finRound = rounds.indexOf(true) + 1;          // you finish a round you were winning
+    finRound = rounds.indexOf(won) + 1;   // the first round its winner took
     rounds = rounds.slice(0, finRound);
     roundsWon = rounds.filter(Boolean).length;
   }
@@ -1566,13 +1604,17 @@ function resultBox(){
   const {o,won,fin,method}=G.last;
   const p=document.createElement('div'); p.className='panel';
   const b=document.createElement('div'); b.className='big '+(won?'win':'loss');
-  b.textContent = won ? ('def. '+o.f.name+' by '+(method||'decision')) : ('lost to '+o.f.name);
+  // Both directions name the method. "lost to Tom Aspinall" told you nothing about
+  // what happened; "lost to Tom Aspinall by KO/TKO" is the same sentence the win
+  // side has always got.
+  b.textContent = (won ? 'def. ' : 'lost to ') + o.f.name + ' by ' + (method||'decision');
   p.appendChild(b);
   const L=G.log[G.log.length-1];
   const rd=document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + L.rounds.map((w,i)=>
     '<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(i+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ') +
-    (L.fin ? ' &nbsp;→&nbsp; <b style="color:var(--accent)">finished in R'+L.finRound+'</b>'
+    (L.fin ? ' &nbsp;→&nbsp; <b style="color:'+(won?'var(--accent)':'var(--accent2)')+'">'+
+             (won?'finished in R':'stopped in R')+L.finRound+'</b>'
            : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
   // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
@@ -1649,6 +1691,19 @@ function offerBox(){
   return p;
 }
 
+// ONE DEFINITION of what a fight's method is called, because the record, the
+// result line and the end-of-run tally all have to agree. Older logs predate the
+// loss-method work and carry method:null on every loss — fall back rather than
+// print "null vs Tom Aspinall".
+const METHODS = ['KO/TKO','submission','decision'];
+const methodTag = f => f.method==='submission' ? 'SUB'
+                     : f.method==='KO/TKO'     ? 'KO '
+                     : 'DEC';
+function methodTally(won){
+  const t = {'KO/TKO':0,'submission':0,'decision':0};
+  for (const f of G.log) if (f.won===won) t[f.method || 'decision']++;
+  return t;
+}
 function logBox(){
   const p=document.createElement('div'); p.className='panel';
   p.innerHTML='<div class="rl">Your record</div>';
@@ -1656,8 +1711,14 @@ function logBox(){
   if(!G.log.length) l.innerHTML='<span style="color:var(--muted)">No fights yet.</span>';
   G.log.slice().reverse().forEach(f=>{
     const d=document.createElement('div');
+    // EVERY LINE NAMES ITS METHOD. This read `f.won&&f.fin ? (SUB|KO) : '   '` —
+    // three literal spaces. So a decision showed nothing, and a LOSS showed nothing
+    // whatever happened, because f.won gated the whole expression. Two thirds of a
+    // record was blank: "L     vs Tom Aspinall (41%)" is a result with the result
+    // taken out. The methods existed; the log just never asked about them.
     d.innerHTML='<span class="'+(f.won?'w':'l')+'">'+(f.won?'W':'L')+'</span> '+
-      (f.won&&f.fin?(f.method==='submission'?'SUB':'KO '):'   ')+' vs '+f.opp+' <span style="color:var(--muted)">('+(f.p*100).toFixed(0)+'%)</span>';
+      '<span class="mth">'+methodTag(f)+'</span> vs '+f.opp+
+      ' <span style="color:var(--muted)">('+(f.p*100).toFixed(0)+'%)</span>';
     l.appendChild(d);
   });
   p.appendChild(l);
@@ -1673,6 +1734,22 @@ function endBox(msg){
   n.textContent = 'Final: '+G.wins+'-'+G.losses+(G.rank!=null?', peaked at '+(G.rank===0?'champion':'#'+G.rank):', never ranked')+
     (best?'. Best win: '+best.opp+' at '+(best.p*100).toFixed(0)+'%.':'');
   p.appendChild(n);
+  // HOW THE RUN ACTUALLY WENT, not just how often. "9-4" and "9-4" are the same
+  // line for a man who knocked out nine people and one who out-pointed nine, and
+  // they are not the same career. The build already decides method — power buys
+  // knockouts, grappling buys taps, chin keeps you off the highlight reel — so
+  // this is where a build gets to describe itself in its own results.
+  if (G.log.length) {
+    const w = methodTally(true), l = methodTally(false);
+    const t = document.createElement('div'); t.className='mtally';
+    t.innerHTML = '<div class="rl">By method</div>' +
+      '<div class="mrow mhead"><span></span><span>W</span><span>L</span></div>' +
+      METHODS.map(m =>
+        '<div class="mrow"><span>'+(m==='KO/TKO'?'KO/TKO':m==='submission'?'Submission':'Decision')+'</span>'+
+        '<span class="'+(w[m]?'w':'z')+'">'+w[m]+'</span>'+
+        '<span class="'+(l[m]?'l':'z')+'">'+l[m]+'</span></div>').join('');
+    p.appendChild(t);
+  }
   p.appendChild(logBox());
   const b2=document.createElement('button'); b2.className='btn pri'; b2.textContent='New run';
   b2.onclick=newGame; p.appendChild(b2);
