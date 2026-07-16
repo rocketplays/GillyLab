@@ -879,7 +879,27 @@ const CAP_OVER    = 5;       // a maxed fighter tops out this far above the cham
 // roster. Heavyweight is full of strikers with ordinary takedown defence, so
 // amplifying the triangle amplifies the wrestler's systematic edge there too —
 // grappler sits above striker by ~7 points and that gap grew with this change.
+// STYLE_MAX IS A SAFETY RAIL, NOT A DIAL — DO NOT REACH FOR IT TO TUNE STYLE.
+// Measured over 5,256 build x opponent x division combinations: |styleDelta| has
+// a median of 3.5 and a p99 of 15.7, so a cap of 22 FIRES ON 0.13% OF MATCHUPS.
+// Dropping it to 16 would touch 0.84%. It cannot move the balance because it
+// almost never sees the ball. (It was 11 once, where it clamped often and did
+// behave like a dial — which is where the folklore that it's tunable comes from.)
+// Its real job is to stop one absurd stat line producing a 30-point swing.
 const STYLE_MAX   = 22;      // biggest style swing, in points of win probability
+
+// STYLE_SCALE IS THE DIAL. It multiplies every term before the clamp, so it moves
+// the whole distribution — the median matchup, not just the outliers.
+//
+// 1.0 = the style triangle at full voice. The reason to turn it DOWN is that a
+// division's style balance is really ONE MAN's stat line: every run must beat the
+// champion, and his styleDelta against your build is worth ~2x on the belt.
+// Measured at 1.0: LHW striker 46% vs wrestler 23%, because Carlos Ulberg has
+// elite takedown defence (86%) and a chin that has been cracked (0.41) — a
+// striker's dream. Tom Aspinall is the mirror (100% TDD, 3.3 KD/15) and HW
+// striker is 23%. Neither is a bug; both are the matchup engine working. The
+// question is only how loud one man's stat line should be.
+const STYLE_SCALE = 0.75;
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
                              // more and your build decides less.
 
@@ -1125,7 +1145,7 @@ function styleDelta(a, st){
   const theirPop = _pop(st) - _pop({ kd: DIVMEAN('kd', 0.4), slpm: DIVMEAN('slpm', 4.4) });
   d += rel('chin') * theirPop * 14;
 
-  return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d));
+  return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d * STYLE_SCALE));
 }
 
 function oppByName(nm){
