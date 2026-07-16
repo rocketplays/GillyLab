@@ -2172,23 +2172,112 @@
     .scouting-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
     .scouting-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
     .scouting-fight-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
-    /* Matchup Analytics — same 0fr/1fr collapse as the scouting panel above it, so
-       the two dropdowns on one row open and close identically. */
-    .deepdive-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
-    .deepdive-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
-    .deepdive-fight-panel > .dd-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
-    .dd-loading { color: var(--muted); font-size: 0.78rem; text-align: center; padding: 0.5rem 0; }
-    .dd-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.82rem; font-weight: 700; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-    .dd-head .dd-mid { font-size: 0.64rem; font-weight: 400; color: var(--muted); letter-spacing: 0.04em; }
-    .dd-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0.75rem 0 0.35rem; }
-    .dd-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.74rem; padding: 0.18rem 0; }
-    .dd-row .dd-k { color: var(--muted); font-size: 0.7rem; flex: 1; text-align: center; }
-    .dd-row .dd-v { font-variant-numeric: tabular-nums; min-width: 5.5rem; }
-    .dd-row .dd-v.r { text-align: right; }
-    .dd-row .dd-v i { color: var(--muted); font-style: normal; font-size: 0.66rem; }
-    .dd-note { color: var(--muted); font-size: 0.64rem; margin-top: 0.7rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
-    .fight-dd-bar { display: block; width: 100%; margin-top: 0.4rem; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font: inherit; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.35rem; cursor: pointer; }
-    .fight-dd-bar:hover { border-color: var(--accent); color: var(--text); }
+    /* ── MATCHUP HUB ─────────────────────────────────────────────────────────
+       The entry point lives INSIDE the Fight Info dropdown (between Tale of the
+       tape and Style), not as a second bar under the row — one row, one button.
+       It opens a modal rather than a third collapse, because the thing it shows
+       is a 3x3 cross-tab per fighter and that does not fit in a column. */
+    .fight-dd-bar { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; margin: 0.9rem 0; background: linear-gradient(180deg, rgba(0,230,104,0.09), rgba(0,230,104,0.03)); border: 1px solid rgba(0,230,104,0.35); border-radius: 8px; color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.6rem; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.12s; }
+    .fight-dd-bar:hover { background: linear-gradient(180deg, rgba(0,230,104,0.18), rgba(0,230,104,0.07)); border-color: var(--accent); }
+    .fight-dd-bar:active { transform: translateY(1px); }
+    .fight-dd-bar .dd-go { color: var(--accent); font-size: 1rem; line-height: 1; }
+
+    #mh-overlay { display: none; opacity: 0; transition: opacity 0.22s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.86); z-index: 9200; }
+    #mh-box { display: none; opacity: 0; transition: opacity 0.22s ease, transform 0.22s ease; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9201; width: min(1040px, 94vw); max-height: 88vh; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 24px 72px rgba(0,0,0,0.7); display: none; flex-direction: column; overflow: hidden; }
+    #mh-box.mh-on { display: flex; }
+
+    /* Header: the two men, and nothing else competing with them. */
+    .mh-hd { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.25rem 0.9rem; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, rgba(255,255,255,0.035), transparent); flex-shrink: 0; }
+    .mh-hd-f { display: flex; align-items: center; gap: 0.65rem; flex: 1; min-width: 0; cursor: pointer; }
+    .mh-hd-f.r { flex-direction: row-reverse; text-align: right; }
+    .mh-hd-f:hover .mh-hd-nm { color: var(--accent); }
+    .mh-hd-tx { min-width: 0; }
+    .mh-hd-nm { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1.32rem; letter-spacing: 0.02em; line-height: 1.1; color: var(--text); transition: color 0.15s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mh-hd-rc { font-size: 0.72rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
+    .mh-hd-mid { text-align: center; flex-shrink: 0; }
+    .mh-hd-vs { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.16em; color: var(--muted); }
+    .mh-hd-sub { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-top: 0.15rem; white-space: nowrap; }
+    .mh-x { margin-left: auto; align-self: center; background: none; border: none; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 0.1rem 0.45rem 0.25rem; border-radius: 4px; transition: color 0.15s, background 0.15s; }
+    .mh-x:hover { color: var(--text); background: rgba(255,255,255,0.07); }
+
+    .mh-tabs { display: flex; gap: 0; padding: 0 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .mh-tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 0.7rem 1rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+    .mh-tab:hover { color: var(--text); }
+    .mh-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .mh-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; flex: 1; min-height: 0; }
+    .mh-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 2.5rem 0; }
+
+    /* THE READ. It states disparities; it never recommends a path. Given room to
+       breathe because it is the one piece of prose in here. */
+    .mh-read { background: rgba(0,230,104,0.06); border-left: 2px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.8rem 1rem; font-size: 0.94rem; line-height: 1.55; color: var(--text); margin-bottom: 1.25rem; }
+    .mh-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 0.7rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
+    .mh-sec:first-child { margin-top: 0; }
+    .mh-sec span { text-transform: none; letter-spacing: 0.02em; font-family: 'Barlow', sans-serif; font-weight: 400; font-size: 0.7rem; color: var(--muted); opacity: 0.75; margin-left: 0.5rem; }
+
+    /* Comparison row: bars grow OUT from the centre label, so which side is
+       longer is the whole message and you get it without reading a number. */
+    .mh-cmp { margin-bottom: 0.85rem; }
+    .mh-cmp-lbl { text-align: center; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
+    .mh-cmp-b { display: flex; align-items: center; gap: 0.6rem; }
+    .mh-cmp-v { flex: 0 0 5.5rem; font-weight: 700; font-size: 0.92rem; font-variant-numeric: tabular-nums; color: var(--text); }
+    .mh-cmp-v.r { text-align: right; }
+    .mh-cmp-v i { display: block; font-style: normal; font-weight: 400; font-size: 0.66rem; color: var(--muted); margin-top: 0.05rem; }
+    .mh-bars { flex: 1; display: flex; align-items: center; gap: 3px; min-width: 0; }
+    .mh-bar { flex: 1; height: 8px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; display: flex; position: relative; }
+    .mh-bar.l { justify-content: flex-end; }
+    .mh-bar > span { display: block; height: 100%; background: rgba(255,255,255,0.2); transition: width 0.3s ease; }
+    .mh-bar > span.w { background: var(--accent); }
+    /* Neutral: rows where bigger isn't better (share of offence is a habit, not a
+       virtue). Both sides read the same; only the LENGTHS carry the comparison. */
+    .mh-bar > span.n { background: rgba(255,255,255,0.42); }
+    .mh-bar.l > span { border-radius: 3px 0 0 3px; }
+    .mh-bar.r > span { border-radius: 0 3px 3px 0; }
+    /* The roster norm, as a tick. Context without printing a z-score at anyone. */
+    .mh-bar u { position: absolute; top: -2px; bottom: -2px; width: 1px; background: rgba(255,255,255,0.5); text-decoration: none; }
+
+    /* THE GRID — the actual point of the feature. Head accuracy at range and on
+       the ground correlate at -0.04: unrelated skills that one margin number was
+       averaging into mush. Two 3x3s, side by side, shaded by accuracy. */
+    .mh-grids { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .mh-grid-t { font-size: 0.7rem; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 0.4rem; }
+    .mh-grid { display: grid; grid-template-columns: 3.4rem 1fr 1fr 1fr; gap: 2px; }
+    .mh-gh { font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 0.15rem; }
+    .mh-gr { font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; }
+    .mh-gc { border-radius: 4px; padding: 0.4rem 0.2rem; text-align: center; background: rgba(255,255,255,0.03); }
+    .mh-gc b { display: block; font-size: 0.86rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+    .mh-gc i { display: block; font-style: normal; font-size: 0.58rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
+    .mh-gc.thin b { color: var(--muted); font-weight: 400; }
+    .mh-gk { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
+    /* Diverging, because the question is "is he better than normal here", not "how
+       close to 100% is he" — nobody is close to 100% at head-at-range. */
+    .mh-gk-sw { display: inline-block; width: 3.4rem; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,149,0,0.38), rgba(255,255,255,0.05), rgba(0,230,104,0.5)); vertical-align: middle; margin: 0 0.35rem; }
+
+    .mh-note { color: var(--muted); font-size: 0.66rem; line-height: 1.5; margin-top: 1.4rem; padding-top: 0.7rem; border-top: 1px solid var(--border); }
+    .mh-empty { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 1.5rem 0; }
+
+    @media (max-width: 720px) {
+      #mh-box { width: 96vw; max-height: 92vh; }
+      .mh-grids { grid-template-columns: 1fr; gap: 1.25rem; }
+      .mh-cmp-v { flex: 0 0 4.2rem; font-size: 0.82rem; }
+      .mh-tabs { padding: 0 0.5rem; }
+      .mh-tab { padding: 0.7rem 0.7rem; font-size: 0.82rem; }
+      .mh-body { padding: 1rem 0.85rem 1.25rem; }
+      /* THE HEADER HAS TO WRAP, NOT SHRINK. At 390px the desktop row squeezed the
+         names to "Dri…" and "Ka…" and broke "23-3-0" across two lines — a header
+         that names neither fighter. So: the weight class drops to its own row and
+         gives its width back to the two men, VS goes (they're plainly opposed
+         without it), the avatars come down to 30px, and the names wrap instead of
+         truncating. A name on two lines is readable; "Ka…" is not. */
+      .mh-hd { flex-wrap: wrap; gap: 0.5rem; padding: 0.85rem 0.85rem 0.7rem; }
+      .mh-hd-f { flex: 1 1 0; gap: 0.45rem; }
+      .mh-hd-nm { font-size: 0.94rem; white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; line-height: 1.15; }
+      .mh-hd-rc { font-size: 0.64rem; white-space: nowrap; }
+      .mh-hd-av > div { width: 30px !important; height: 30px !important; font-size: 0.6rem !important; }
+      .mh-hd-mid { order: 3; flex-basis: 100%; }
+      .mh-hd-vs { display: none; }
+      .mh-hd-sub { margin-top: 0; }
+    }
 
     .sr-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
@@ -4034,6 +4123,25 @@
   </div>
   <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
 </footer>
+
+<!-- MATCHUP HUB — opened from the "Matchup Analytics" button inside a bout's
+     Fight Info dropdown. Its own overlay rather than the shared #modal-box: that
+     one is a 520px column and the hub is a 1040px tabbed panel, and closeModal()
+     has other callers. -->
+<div id="mh-overlay" onclick="closeMatchupHub()"></div>
+<div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">
+  <div class="mh-hd" id="mh-hd"></div>
+  <!-- The close button lives in the TAB BAR, not floated over the header: absolutely
+       positioned top-right it landed on top of the right-hand fighter's face, and
+       there is free space here. -->
+  <div class="mh-tabs" id="mh-tabs">
+    <button type="button" class="mh-tab on" data-mh-tab="overview" onclick="mhTab('overview')">Overview</button>
+    <button type="button" class="mh-tab" data-mh-tab="striking" onclick="mhTab('striking')">Striking</button>
+    <button type="button" class="mh-tab" data-mh-tab="grappling" onclick="mhTab('grappling')">Grappling</button>
+    <button type="button" class="mh-x" onclick="closeMatchupHub()" aria-label="Close">&times;</button>
+  </div>
+  <div class="mh-body" id="mh-body"></div>
+</div>
 
 <!-- MODAL OVERLAY -->
 <div id="modal-overlay" onclick="closeModal()" style="display:none;opacity:0;transition:opacity 0.25s ease;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:9000;"></div>
@@ -88367,15 +88475,20 @@ window.GRID_NAMES = window.GRID_NAMES || null;
 
 // REVEAL, DON'T RE-RENDER.
 //
-// The manifest is a fetch, so it usually lands AFTER the card is painted — the
-// button has to appear late whatever we do. The obvious move is "re-render the
-// card when it arrives", and I wrote exactly that against a renderCard() I had
-// invented; the real entry point is renderHomeFightCard(evt) and it needs the
-// event object, which this callback has no business knowing about.
+// The manifest is a fetch, so it can land after a button is painted. The obvious
+// move is "re-render when it arrives", and I wrote exactly that against a
+// renderCard() I had invented; the real entry point is renderHomeFightCard(evt)
+// and it needs the event object, which this callback has no business knowing about.
 //
-// So: fightRow always emits the button hidden, and this reveals the ones whose
-// fighters are in the manifest. No re-render, no reaching for state that isn't
+// So: renderScouting emits the button hidden and this reveals the ones whose
+// fighters are BOTH in the manifest. No re-render, no reaching for state that isn't
 // ours, and it is idempotent — safe to call on every paint and on every fetch.
+//
+// Since the button moved inside Fight Info this is close to belt-and-braces: the
+// panel is lazy, so by the time anything calls renderScouting the 1.8KB manifest
+// has all but certainly arrived. Kept because the cost is one querySelectorAll and
+// the failure it covers — a button that never appears for a visitor on a slow
+// connection — is invisible from here and unreportable from there.
 function glRevealDeepDives(){
   if (!window.GRID_NAMES) return;
   document.querySelectorAll('.fight-dd-bar[data-dd-f1]').forEach(btn => {
@@ -88445,7 +88558,31 @@ function _ddGrid(name){
   if (!rows) return null;
   const cells = Array.from({length:9}, () => [0,0]);
   const cellsD = Array.from({length:9}, () => [0,0]);
-  let n = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0;
+  // adv AND slams ARE NOT COLLECTED, AND THAT IS A MEASUREMENT, NOT AN OVERSIGHT.
+  //
+  // The grid file carries `adv` (advances to half guard/side/mount/back) and
+  // `slams` on every row, and they look like treasure: the only fields in this data
+  // that could say what a man DOES with a takedown once he has it, which control
+  // time cannot distinguish from lying in someone's guard. I wrote a whole
+  // "Positions gained" section on that reasoning before measuring it.
+  //
+  // Measured across all 621 card fighter-fights in the grid:
+  //     rows with the adv array present : 621  (100%)
+  //     rows with ANY advance > 0       :   4  (0.6%)
+  //     totals [halfguard, side, mount, back] : [2, 4, 0, 0]
+  //     rows with a slam                :   0  (total slams: 0)
+  // ESPN serves the keys and fills them with zeros. Six advances and no slams
+  // across 621 fights is not under-read data, it is an empty column — and a panel
+  // rendering "Mount 0 · Back 0" for everyone would be presenting that emptiness as
+  // a finding about the fighters.
+  //
+  // THE TELL WAS THE USUAL ONE: the mechanism ("control time can't tell mount from
+  // guard, and here's the fix") arrived before the measurement and explained the
+  // data a little too well. If you want this section, it needs a source that
+  // actually has the numbers; it is not sitting in this file waiting.
+  let n = 0;
+  let sn = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0, ctrlAg=0;
+  let kd=0, kdAg=0, sub=0, subAg=0, rev=0, revAg=0, sigL=0, sigA=0, sigLAg=0, sigAAg=0;
   const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
   for (const r of rows.slice(0,8)) {
     if (!r) continue;
@@ -88458,16 +88595,32 @@ function _ddGrid(name){
   // Takedowns/control come from FIGHT_STATS (the margins file) — they were never
   // part of the grid, and the deep dive needs them because they are usually the
   // story. Matched on the same normalised name.
+  //
+  // ITS EIGHT ARE NOT NECESSARILY THE GRID'S EIGHT. Two files, two backfills; a
+  // fighter can have grid rows for fights the stats file lacks and vice versa. So
+  // count them separately (sn) and label each tab with the N it actually used,
+  // rather than printing one "last 8" over numbers drawn from two different sets.
   const S = (window.FIGHT_STATS||{});
   if (!_ddStatsIndex) _ddStatsIndex = new Map(Object.keys(S).map(k => [_gridNorm(k), k]));
   const srows = S[_ddStatsIndex.get(_gridNorm(name))] || [];
   for (const f of srows.slice(0,8)) {
     if (!f || !f.f || !f.o) continue;
+    sn++;
     tdL += f.f.tdL||0; tdA += f.f.tdA||0;
     tdAgL += f.o.tdL||0; tdAgA += f.o.tdA||0;
-    ctrl += secs(f.f.ctrl);
+    ctrl += secs(f.f.ctrl); ctrlAg += secs(f.o.ctrl);
+    kd += f.f.kd||0; kdAg += f.o.kd||0;
+    sub += f.f.sub||0; subAg += f.o.sub||0;
+    rev += f.f.rev||0; revAg += f.o.rev||0;
+    sigL += f.f.sigL||0; sigA += f.f.sigA||0;
+    sigLAg += f.o.sigL||0; sigAAg += f.o.sigA||0;
   }
-  return n ? { cells, cellsD, fights:n, tdL, tdA, tdAgL, tdAgA, ctrl } : null;
+  // kd / sub / rev DID survive the same check, which is why they're here and adv
+  // isn't: across those 621 rows, kd is non-zero on 22.2%, sub on 22.4%, rev on
+  // 9.3%, and control time on 87.6%. Sparse, but real.
+  return n ? { cells, cellsD, fights:n, sFights:sn,
+               tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg,
+               kd, kdAg, sub, subAg, rev, revAg, sigL, sigA, sigLAg, sigAAg } : null;
 }
 let _ddIndex = null, _ddStatsIndex = null;
 
@@ -88489,43 +88642,447 @@ function _ddLast(s){
   return parts[i];
 }
 
-function renderDeepDive(el, n1, n2){
-  const A = _ddGrid(n1), B = _ddGrid(n2);
-  if (!A || !B) { el.innerHTML = '<div class="dd-loading">No breakdown available for this bout.</div>'; return; }
-  const GI = (p,t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
-  const pct = (l,a) => a ? Math.round(l/a*100) + '%' : '—';
-  const totAtt = G => G.cells.reduce((s,c)=>s+c[1],0);
-  const shr = (G,p,t) => { const tot = totAtt(G); return tot ? Math.round(G.cells[GI(p,t)][1]/tot*100)+'%' : '—'; };
-  const last = s => String(s||'').split(' ').pop();
-  const LANES = [['dist','head','Head at range'],['dist','body','Body at range'],
-                 ['dist','leg','Leg kicks'],['ground','head','Ground and pound']];
-  let h = '<div class="dd-head"><span>' + escHtmlAttr(last(n1)) + '</span>' +
-          '<span class="dd-mid">last ' + Math.min(A.fights,B.fights) + '–' + Math.max(A.fights,B.fights) + ' fights</span>' +
-          '<span>' + escHtmlAttr(last(n2)) + '</span></div>';
-  h += '<div class="dd-sec">Where he aims · landed / thrown</div>';
-  for (const [p,t,label] of LANES) {
-    const a = A.cells[GI(p,t)], b = B.cells[GI(p,t)];
-    h += '<div class="dd-row"><span class="dd-v">' + a[0] + '/' + a[1] + ' <i>' + shr(A,p,t) + '</i></span>' +
-         '<span class="dd-k">' + label + '</span>' +
-         '<span class="dd-v r">' + b[0] + '/' + b[1] + ' <i>' + shr(B,p,t) + '</i></span></div>';
-  }
-  h += '<div class="dd-sec">What lands on him · of strikes thrown his way</div>';
-  for (const [p,t,label] of LANES) {
-    const a = A.cellsD[GI(p,t)], b = B.cellsD[GI(p,t)];
-    h += '<div class="dd-row"><span class="dd-v">' + pct(a[0],a[1]) + '</span>' +
-         '<span class="dd-k">' + label + '</span>' +
-         '<span class="dd-v r">' + pct(b[0],b[1]) + '</span></div>';
-  }
-  h += '<div class="dd-sec">The grappling</div>';
-  const mins = s => Math.round(s/60) + 'm';
-  h += '<div class="dd-row"><span class="dd-v">' + A.tdL + '/' + A.tdA + '</span><span class="dd-k">Takedowns landed</span><span class="dd-v r">' + B.tdL + '/' + B.tdA + '</span></div>';
-  h += '<div class="dd-row"><span class="dd-v">' + (A.tdAgA - A.tdAgL) + '/' + A.tdAgA + '</span><span class="dd-k">Takedowns stopped</span><span class="dd-v r">' + (B.tdAgA - B.tdAgL) + '/' + B.tdAgA + '</span></div>';
-  h += '<div class="dd-row"><span class="dd-v">' + mins(A.ctrl) + '</span><span class="dd-k">Control time</span><span class="dd-v r">' + mins(B.ctrl) + '</span></div>';
-  const read = ddRead(A, B, n1, n2);
-  if (read) h += '<div class="dd-read">' + read + '</div>';
-  h += '<div class="dd-note">Last 8 fights each, from UFC box scores. Counts, not ratings.</div>';
-  el.innerHTML = h;
+// ── THE MATCHUP HUB ───────────────────────────────────────────────────────────
+//
+// WHY THIS IS A MODAL AND NOT A DROPDOWN. v1 hung a second full-width bar under
+// every bout and opened a collapse inside the card's column. Two problems, and the
+// second is the real one:
+//   * a stack of bars under a fight row reads as chrome, so the button was both
+//     in the way and easy to miss — a bad trade to make twice;
+//   * a 3x3 cross-tab PER FIGHTER does not fit in a column. So v1 didn't show it.
+//     It printed four of the nine cells as a flat list — which is precisely the
+//     averaged-into-mush that the grid was built to undo. The container was
+//     quietly deciding what the feature was allowed to say.
+// The entry point now lives inside Fight Info (one row, one button) and the panel
+// gets the width the data actually needs.
+//
+// EVERY RULE FROM v1 STILL HOLDS. These are not style preferences:
+//   * COUNTS, NOT RATINGS. "27 of 32" does everything "95th percentile" was for,
+//     and a fan can picture it.
+//   * z PICKS, IT NEVER PRINTS. Selection is z-scored against measured baselines
+//     because gaps aren't comparable across axes; the output is always counts.
+//   * NO RANKED BEST PATH. The lane ranking has a known hole — ground-and-pound is
+//     gated behind a takedown, head-at-range is gated behind nothing, and it ranks
+//     them as peers. It stays internal until it is measured, not guessed.
+//   * A FLOOR, ENFORCED IN THE RENDERER. Under 25 attempts a cell shows no
+//     percentage at all. 2 of 3 is not 67%, and shading it bright green would make
+//     the least real thing on screen the loudest.
+let _mhState = null;
+
+const _MH_GI = (p,t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
+const _MH_LANES = [['dist','head','Head at range'],['dist','body','Body at range'],
+                   ['dist','leg','Leg kicks'],['ground','head','Ground strikes']];
+const _MH_FLOOR = 25;
+const _mhPct = (l,a) => a ? Math.round(l/a*100) + '%' : '—';
+const _mhMins = s => Math.floor(s/60) + 'm ' + String(Math.round(s%60)).padStart(2,'0') + 's';
+const _mhN = (a,b) => a === b ? String(a) : (Math.min(a,b) + '–' + Math.max(a,b));
+
+// WHEN THE ACCENT IS ALLOWED TO FIRE.
+//
+// Green on this site means "this man is ahead here", so lighting a bar is a CLAIM
+// and it needs the same discipline as the prose does. The first render of this
+// panel painted Usman's 50% strike accuracy green against du Plessis's 49% — a
+// one-point gap on ~1200 attempts each, which is inside the noise by a factor of
+// two. That is the "won't be wrestled" overclaim again, wearing a colour instead of
+// a verb. Nothing is hidden by fixing it: the numbers print either way, only the
+// COLOUR is gated, so the reader still sees 49 and 50 and can make of them what he
+// likes.
+//
+// Neither test is tuned. A rate gets the two-proportion standard error; a count of
+// a rare event gets its Poisson equivalent. They are the standard test for the
+// shape of the number, not a threshold I picked and then justified.
+//   0 = call it level (both bars neutral)   1 = A leads   2 = B leads
+function _mhLeadProp(la, aa, lb, ab){
+  if (!aa || !ab) return 0;
+  const p1 = la/aa, p2 = lb/ab;
+  const se = Math.sqrt(p1*(1-p1)/aa + p2*(1-p2)/ab);
+  if (!(se > 0)) return p1 === p2 ? 0 : (p1 > p2 ? 1 : 2);
+  if (Math.abs(p1 - p2) < 2*se) return 0;
+  return p1 > p2 ? 1 : 2;
 }
+function _mhLeadCount(a, b){
+  // sd of a Poisson count is sqrt(count), so sd of the difference is sqrt(a+b).
+  // 2 knockdowns against 5 does not clear it, and shouldn't: over eight fights that
+  // is two men who both drop people sometimes.
+  if (Math.abs(a - b) < 2*Math.sqrt(a + b)) return 0;
+  return a > b ? 1 : 2;
+}
+function _mhLeadRatio(a, b, min){
+  // For magnitudes that aren't counts of trials and have no n to test against —
+  // control time in seconds. A stated, visible rule: one side has to be at least a
+  // quarter as much again. 50 minutes against 16 clears it; 50 against 45 doesn't.
+  const hi = Math.max(a, b), lo = Math.min(a, b);
+  if (!hi || hi < (min || 1.25) * Math.max(lo, 1e-9)) return 0;
+  return a > b ? 1 : 2;
+}
+
+// One comparison row: label centred, values outside, bars growing OUT from the
+// middle so the longer side is the message and you get it before you read a digit.
+// `lead` says who (if anyone) has earned the accent — see the tests above. Omit it
+// for rows where bigger isn't better: how a man distributes his offence is a habit,
+// not a virtue, and painting the bigger share green would be scoring it.
+function mhCmp(label, a, b, opts){
+  opts = opts || {};
+  const pc = v => Math.max(0, Math.min(100, Math.round((v || 0) * 100)));
+  let ac = 'n', bc = 'n';
+  if (opts.lead === 1) { ac = 'w'; bc = ''; }
+  else if (opts.lead === 2) { bc = 'w'; ac = ''; }
+  // The roster norm as a tick. Context without printing a z-score at anybody:
+  // 91% of leg kicks landing sounds alarming until you can see that 84% is normal.
+  const tick = side => opts.norm == null ? ''
+    : '<u style="' + (side === 'l' ? 'right:' : 'left:') + pc(opts.norm) + '%"></u>';
+  const val = (o, right) => '<div class="mh-cmp-v' + (right ? ' r' : '') + '">' + o.txt +
+    (o.sub ? '<i>' + o.sub + '</i>' : '') + '</div>';
+  return '<div class="mh-cmp"><div class="mh-cmp-lbl">' + label + '</div>' +
+    '<div class="mh-cmp-b">' + val(a, false) +
+      '<div class="mh-bars">' +
+        '<div class="mh-bar l"><span class="' + ac + '" style="width:' + pc(a.frac) + '%"></span>' + tick('l') + '</div>' +
+        '<div class="mh-bar r"><span class="' + bc + '" style="width:' + pc(b.frac) + '%"></span>' + tick('r') + '</div>' +
+      '</div>' + val(b, true) +
+    '</div></div>';
+}
+
+// PER-CELL BASELINES, MEASURED FROM THE GRID FILE ITSELF.
+//
+// THE ABSOLUTE RATE IS NOT THE STORY, AND SHADING BY IT PUT THE MUSH BACK. The
+// first version of this coloured each cell by its raw accuracy on a flat 0–100%
+// scale, and both fighters came out near-identical walls of green — because
+// head-at-range is ~35% for EVERYONE and leg kicks are ~82% for EVERYONE. The
+// palette was encoding WHICH TARGET THE CELL WAS, not one thing about the man in
+// it. Measured over the 109 fighters in the grid:
+//     dist.head    n=105  mean 35.3%  sd 6.6   (spread 16–52%)
+//     dist.leg     n= 57  mean 81.7%  sd 9.2   (spread 57–95%)
+//     ground.head  n= 55  mean 69.5%  sd 10.2  (spread 39–88%)
+// Between cells: 46 points. Within a cell, where the fighter actually lives: 7–10.
+// A flat scale spends its whole range on the former and leaves nothing for the
+// latter. So a cell is shaded against WHAT A TYPICAL FIGHTER ON THIS CARD DOES IN
+// THAT CELL, which is the only comparison that says anything about this man.
+//
+// (The premise re-checked on today's file, since it is the reason the feature
+// exists: corr(head-at-distance, head-on-ground) = -0.010 over the 55 fighters with
+// both. Unrelated skills, still.)
+//
+// Computed here rather than shipped in grid-names.json because the grid is already
+// in memory by the time the hub opens, this is exactly the population the footnote
+// claims, and a baseline that travels in a second file is a baseline that can go
+// stale against the one it describes.
+let _mhBase = null;
+function mhCellBase(){
+  if (_mhBase) return _mhBase;
+  const G = window.FIGHT_GRID || {};
+  const acc = Array.from({length:9}, () => []);
+  for (const k of Object.keys(G)) {
+    const s = Array.from({length:9}, () => [0,0]);
+    for (const r of (G[k]||[]).slice(0,8)) {
+      if (!r || !r.f || !r.f.g) continue;
+      for (let i=0;i<9;i++){ s[i][0] += r.f.g[i][0]; s[i][1] += r.f.g[i][1]; }
+    }
+    // The renderer's floor, applied to the norm too: a fighter joins a cell's
+    // baseline only if he has enough attempts there for his own rate to mean
+    // anything. Otherwise the norm is built out of the noise it exists to judge.
+    for (let i=0;i<9;i++) if (s[i][1] >= _MH_FLOOR) acc[i].push(s[i][0]/s[i][1]);
+  }
+  _mhBase = acc.map(v => {
+    if (v.length < 8) return null;     // too few fighters to call anything normal
+    const m = v.reduce((a,b) => a+b, 0) / v.length;
+    const sd = Math.sqrt(v.reduce((a,b) => a + (b-m)*(b-m), 0) / v.length);
+    return sd > 0 ? [m, sd, v.length] : null;
+  });
+  return _mhBase;
+}
+
+// THE GRID, ON SCREEN AT LAST. Dern is +55 points better on the ground than at
+// range; a kickboxer is +11; "head 79%" said the same thing for both, because the
+// backfill was summing the cross-tab into margins and throwing this away.
+function mhGrid(G, which){
+  const POS = [['dist','Distance'],['clinch','Clinch'],['ground','Ground']];
+  const base = mhCellBase();
+  let h = '<div class="mh-grid"><div></div>' +
+    ['Head','Body','Leg'].map(t => '<div class="mh-gh">' + t + '</div>').join('');
+  POS.forEach(([p, plabel]) => {
+    h += '<div class="mh-gr">' + plabel + '</div>';
+    ['head','body','leg'].forEach(t => {
+      const i = _MH_GI(p,t);
+      const c = G[which][i];
+      const thin = c[1] < _MH_FLOOR;
+      const r = c[1] ? c[0]/c[1] : 0;
+      const b = base[i];
+      let bg = 'rgba(255,255,255,0.03)';
+      if (!thin && b) {
+        // Capped at 2sd. Past that the colour stops meaning anything a reader can
+        // use and starts being a competition between the loudest two cells.
+        const t2 = Math.max(-1, Math.min(1, ((r - b[0]) / b[1]) / 2));
+        bg = t2 >= 0 ? 'rgba(0,230,104,' + (0.04 + 0.46*t2).toFixed(3) + ')'
+                     : 'rgba(255,149,0,' + (0.04 + 0.34*(-t2)).toFixed(3) + ')';
+      }
+      h += '<div class="mh-gc' + (thin ? ' thin' : '') + '" style="background:' + bg + '">' +
+        '<b>' + (thin ? '—' : Math.round(r*100) + '%') + '</b>' +
+        '<i>' + c[0] + '/' + c[1] + '</i></div>';
+    });
+  });
+  return h + '</div>';
+}
+
+function mhReadBlock(A, B, n1, n2, domain, quiet){
+  const read = ddRead(A, B, n1, n2, domain);
+  if (read) return '<div class="mh-read">' + read + '</div>';
+  // AN HONEST EMPTY STATE IS THE FEATURE, NOT A GAP. 10 of 50 bouts say nothing,
+  // which is correct — most fights are not lopsided, and a panel that always has a
+  // verdict will invent one.
+  return '<div class="mh-read" style="border-left-color:var(--border);background:rgba(255,255,255,0.025);color:var(--muted)">' +
+    quiet + '</div>';
+}
+
+function mhOverview(A, B, n1, n2){
+  let h = mhReadBlock(A, B, n1, n2, null,
+    'Nothing here separates these two by enough to be worth calling out — which is ordinary; most fights are close. The numbers are in the tabs.');
+
+  h += '<div class="mh-sec">Striking <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
+  // NO ACCENT ON VOLUME. There is no fight duration anywhere in this data, so
+  // "719 landed against 568" conflates a busier fighter with a man who spent longer
+  // in there — and landing more strikes is not itself better anyway. The counts are
+  // worth showing; the verdict isn't ours to give.
+  const mSig = Math.max(A.sigL, B.sigL, 1);
+  h += mhCmp('Significant strikes landed',
+    { txt: String(A.sigL), sub: 'of ' + A.sigA + ' thrown', frac: A.sigL/mSig },
+    { txt: String(B.sigL), sub: 'of ' + B.sigA + ' thrown', frac: B.sigL/mSig });
+  h += mhCmp('Strike accuracy',
+    { txt: _mhPct(A.sigL, A.sigA), sub: A.sigL + '/' + A.sigA, frac: A.sigA ? A.sigL/A.sigA : 0 },
+    { txt: _mhPct(B.sigL, B.sigA), sub: B.sigL + '/' + B.sigA, frac: B.sigA ? B.sigL/B.sigA : 0 },
+    { lead: _mhLeadProp(A.sigL, A.sigA, B.sigL, B.sigA) });
+  // Never accented. A long bar here is a man getting hit, so the accent would have
+  // to run backwards to keep green meaning one thing — and a reader who has to
+  // remember which rows are inverted is reading a puzzle, not a stat.
+  h += mhCmp('What lands on him',
+    { txt: _mhPct(A.sigLAg, A.sigAAg), sub: A.sigLAg + '/' + A.sigAAg, frac: A.sigAAg ? A.sigLAg/A.sigAAg : 0 },
+    { txt: _mhPct(B.sigLAg, B.sigAAg), sub: B.sigLAg + '/' + B.sigAAg, frac: B.sigAAg ? B.sigLAg/B.sigAAg : 0 });
+  if (A.kd || B.kd) {
+    const mK = Math.max(A.kd, B.kd, 1);
+    h += mhCmp('Knockdowns scored',
+      { txt: String(A.kd), sub: null, frac: A.kd/mK },
+      { txt: String(B.kd), sub: null, frac: B.kd/mK },
+      { lead: _mhLeadCount(A.kd, B.kd) });
+  }
+
+  h += '<div class="mh-sec">Grappling <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
+  h += mhCmp('Takedowns landed',
+    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate', frac: A.tdA ? A.tdL/A.tdA : 0 },
+    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate', frac: B.tdA ? B.tdL/B.tdA : 0 },
+    { lead: _mhLeadProp(A.tdL, A.tdA, B.tdL, B.tdA) });
+  const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
+  const base = window.GRID_BASE || {};
+  h += mhCmp('Takedowns stopped',
+    { txt: (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, sub: A.tdAgA ? _mhPct(A.tdAgA-A.tdAgL, A.tdAgA) : '—', frac: sA },
+    { txt: (B.tdAgA-B.tdAgL) + '/' + B.tdAgA, sub: B.tdAgA ? _mhPct(B.tdAgA-B.tdAgL, B.tdAgA) : '—', frac: sB },
+    { norm: base.tdStop ? base.tdStop[0] : null,
+      lead: _mhLeadProp(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA) });
+  const mC = Math.max(A.ctrl, B.ctrl, 1);
+  h += mhCmp('Control time',
+    { txt: _mhMins(A.ctrl), sub: null, frac: A.ctrl/mC },
+    { txt: _mhMins(B.ctrl), sub: null, frac: B.ctrl/mC },
+    { lead: _mhLeadRatio(A.ctrl, B.ctrl, 1.25) });
+
+  return h + mhNote(A, B);
+}
+
+function mhStriking(A, B, n1, n2){
+  let h = mhReadBlock(A, B, n1, n2, 'strike',
+    'No striking gap here is large enough to lead with. The grid below is the detail.');
+
+  h += '<div class="mh-sec">Where his offence goes <span>share of everything he throws</span></div>';
+  const tot = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
+  const tA = tot(A), tB = tot(B);
+  for (const [p,t,label] of _MH_LANES) {
+    const a = A.cells[_MH_GI(p,t)], b = B.cells[_MH_GI(p,t)];
+    // Scaled to the bigger of the two shares, not to 100% — at 8% of offence both
+    // leg-kick bars would be invisible slivers and the comparison would be lost.
+    const ra = a[1]/tA, rb = b[1]/tB, m = Math.max(ra, rb, 0.01);
+    h += mhCmp(label,
+      { txt: Math.round(ra*100) + '%', sub: a[1] + ' thrown', frac: ra/m },
+      { txt: Math.round(rb*100) + '%', sub: b[1] + ' thrown', frac: rb/m });
+  }
+
+  h += '<div class="mh-sec">How well it lands <span>accuracy by position and target · landed / thrown</span></div>';
+  h += '<div class="mh-grids">' +
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + '</div>' + mhGrid(A, 'cells') + '</div>' +
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + '</div>' + mhGrid(B, 'cells') + '</div></div>';
+  // The legend has to say what the colour is measured AGAINST, or the reader
+  // assumes it's the raw percentage and reads every cell wrong.
+  h += '<div class="mh-gk">Below card average<span class="mh-gk-sw"></span>Above ' +
+       '· shading is vs a typical fighter on this card, not vs 100% ' +
+       '· under ' + _MH_FLOOR + ' thrown shows no rate</div>';
+
+  h += '<div class="mh-sec">What lands on him <span>of what opponents throw at him there · tick is the roster norm</span></div>';
+  const base = window.GRID_BASE || {};
+  for (const [p,t,label] of _MH_LANES) {
+    const a = A.cellsD[_MH_GI(p,t)], b = B.cellsD[_MH_GI(p,t)];
+    if (a[1] < _MH_FLOOR && b[1] < _MH_FLOOR) continue;
+    const bb = base['allow.'+p+'.'+t];
+    h += mhCmp(label,
+      { txt: a[1] < _MH_FLOOR ? '—' : _mhPct(a[0],a[1]), sub: a[0] + '/' + a[1], frac: a[1] ? a[0]/a[1] : 0 },
+      { txt: b[1] < _MH_FLOOR ? '—' : _mhPct(b[0],b[1]), sub: b[0] + '/' + b[1], frac: b[1] ? b[0]/b[1] : 0 },
+      { norm: bb ? bb[0] : null });
+  }
+  return h + mhNote(A, B);
+}
+
+function mhGrappling(A, B, n1, n2){
+  let h = mhReadBlock(A, B, n1, n2, 'grap',
+    'Neither man separates from the other on the mat by enough to lead with.');
+
+  const base = window.GRID_BASE || {};
+  h += '<div class="mh-sec">Takedowns <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
+  h += mhCmp('Takedowns landed',
+    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate', frac: A.tdA ? A.tdL/A.tdA : 0 },
+    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate', frac: B.tdA ? B.tdL/B.tdA : 0 },
+    { lead: _mhLeadProp(A.tdL, A.tdA, B.tdL, B.tdA) });
+  const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
+  h += mhCmp('Takedowns stopped',
+    { txt: (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, sub: A.tdAgA ? _mhPct(A.tdAgA-A.tdAgL, A.tdAgA) : 'never shot on', frac: sA },
+    { txt: (B.tdAgA-B.tdAgL) + '/' + B.tdAgA, sub: B.tdAgA ? _mhPct(B.tdAgA-B.tdAgL, B.tdAgA) : 'never shot on', frac: sB },
+    { norm: base.tdStop ? base.tdStop[0] : null,
+      lead: _mhLeadProp(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA) });
+  const mC = Math.max(A.ctrl, B.ctrl, 1);
+  h += mhCmp('Control time',
+    { txt: _mhMins(A.ctrl), sub: null, frac: A.ctrl/mC },
+    { txt: _mhMins(B.ctrl), sub: null, frac: B.ctrl/mC },
+    { lead: _mhLeadRatio(A.ctrl, B.ctrl, 1.25) });
+  // Not accented: a long bar is time on your back. Same reason as "what lands on him".
+  const mCa = Math.max(A.ctrlAg, B.ctrlAg, 1);
+  h += mhCmp('Time spent under control',
+    { txt: _mhMins(A.ctrlAg), sub: null, frac: A.ctrlAg/mCa },
+    { txt: _mhMins(B.ctrlAg), sub: null, frac: B.ctrlAg/mCa });
+
+  // There is no "positions gained" section. See the measurement in _ddGrid: the
+  // advance and slam fields are 100% present and 99.4% zero, so it would have been
+  // a grid of noughts wearing the clothes of an insight.
+  //
+  // Both of these are SPARSE — sub attempts land on 22% of fighter-fights,
+  // reversals on 9% — so the row is dropped entirely when both men are at zero
+  // rather than printed as "0 vs 0", which reads as a measured tie between two
+  // fighters instead of the absence it is.
+  const ex = [
+    ['Submission attempts', A.sub, B.sub],
+    ['Reversals', A.rev, B.rev]
+  ].filter(r => r[1] || r[2]);
+  if (ex.length) {
+    h += '<div class="mh-sec">On the mat</div>';
+    for (const [lab, a, b] of ex) {
+      const m = Math.max(a, b, 1);
+      h += mhCmp(lab, { txt: String(a), sub: null, frac: a/m },
+                       { txt: String(b), sub: null, frac: b/m },
+                       { lead: _mhLeadCount(a, b) });
+    }
+  }
+  return h + mhNote(A, B);
+}
+
+function mhNote(A, B){
+  return '<div class="mh-note">Last ' + _mhN(A.fights, B.fights) +
+    ' UFC fights each, from official box scores. Counts, not ratings — no index, no percentile, ' +
+    'no projected winner. Where one man is unusually open or unusually hard to hit, the tick marks ' +
+    'what a typical fighter on this card does.</div>';
+}
+
+function mhRenderBody(){
+  const body = document.getElementById('mh-body');
+  if (!body || !_mhState) return;
+  const { A, B, n1, n2, tab } = _mhState;
+  if (!A || !B) { body.innerHTML = '<div class="mh-empty">No breakdown available for this bout.</div>'; return; }
+  try {
+    body.innerHTML = tab === 'striking' ? mhStriking(A, B, n1, n2)
+                   : tab === 'grappling' ? mhGrappling(A, B, n1, n2)
+                   : mhOverview(A, B, n1, n2);
+  } catch (e) {
+    body.innerHTML = '<div class="mh-empty">Couldn\'t render this breakdown.</div>';
+  }
+}
+
+function mhTab(t){
+  if (!_mhState) return;
+  _mhState.tab = t;
+  document.querySelectorAll('#mh-tabs .mh-tab').forEach(b => b.classList.toggle('on', b.dataset.mhTab === t));
+  mhRenderBody();
+  const body = document.getElementById('mh-body'); if (body) body.scrollTop = 0;
+}
+
+function mhRecord(n){
+  if (typeof FIGHTERS === 'undefined') return '';
+  const e = FIGHTERS.find(x => x.name === n) || FIGHTERS.find(x => _gridNorm(x.name) === _gridNorm(n));
+  return (e && e.record) || '';
+}
+
+function mhRenderHeader(){
+  const hd = document.getElementById('mh-hd');
+  if (!hd || !_mhState) return;
+  const { n1, n2, meta } = _mhState;
+  // The avatar is wrapped rather than styled directly: _fsAva() hard-codes 40px
+  // inline and is shared with the fight modal, so the wrapper is where this header
+  // gets to shrink it on a phone without reaching into someone else's component.
+  const side = (n, right) => '<div class="mh-hd-f' + (right ? ' r' : '') +
+    '" onclick="mhOpenFighter(\'' + escJsAttr(n) + '\')" role="button" tabindex="0">' +
+    '<span class="mh-hd-av">' + _fsAva(n) + '</span>' +
+    '<div class="mh-hd-tx"><div class="mh-hd-nm">' + escHtmlAttr(n) + '</div>' +
+    '<div class="mh-hd-rc">' + escHtmlAttr(mhRecord(n)) + '</div></div></div>';
+  const sub = [meta.wc, meta.rounds].filter(Boolean).join(' · ');
+  hd.innerHTML = side(n1, false) +
+    '<div class="mh-hd-mid"><div class="mh-hd-vs">VS</div>' +
+    (sub ? '<div class="mh-hd-sub">' + escHtmlAttr(sub) + '</div>' : '') + '</div>' +
+    side(n2, true);
+}
+
+function mhOpenFighter(n){
+  closeMatchupHub();
+  setTimeout(function(){ if (typeof openFighterByName === 'function') openFighterByName(n); }, 80);
+}
+
+function _mhKey(e){ if (e.key === 'Escape') closeMatchupHub(); }
+
+function openMatchupHub(n1, n2, meta){
+  const box = document.getElementById('mh-box'), ov = document.getElementById('mh-overlay');
+  if (!box || !ov) return;
+  _mhState = { n1, n2, A: null, B: null, tab: 'overview', meta: meta || {} };
+  mhRenderHeader();
+  document.querySelectorAll('#mh-tabs .mh-tab').forEach(b => b.classList.toggle('on', b.dataset.mhTab === 'overview'));
+  const body = document.getElementById('mh-body');
+  body.innerHTML = '<div class="mh-loading">Loading…</div>';
+  body.scrollTop = 0;
+  ov.style.display = 'block'; ov.style.opacity = '0';
+  box.classList.add('mh-on'); box.style.opacity = '0';
+  box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    ov.style.opacity = '1'; box.style.opacity = '1';
+    box.style.transform = 'translate(-50%,-50%)';
+  }); });
+  if (typeof lockPageScroll === 'function') lockPageScroll();
+  document.addEventListener('keydown', _mhKey);
+  // THE FETCH HAPPENS HERE, not on page load: ~245KB for a panel most visitors
+  // never open. Concurrent opens share one promise.
+  loadFightGrid().then(function(){
+    // Closed, or reopened on a different bout, while the fetch was in flight.
+    if (!_mhState || _mhState.n1 !== n1 || _mhState.n2 !== n2) return;
+    _mhState.A = _ddGrid(n1); _mhState.B = _ddGrid(n2);
+    mhRenderBody();
+  }).catch(function(){
+    if (body) body.innerHTML = '<div class="mh-empty">Couldn\'t load the breakdown.</div>';
+  });
+}
+
+function closeMatchupHub(){
+  const box = document.getElementById('mh-box'), ov = document.getElementById('mh-overlay');
+  if (!box || !ov || !box.classList.contains('mh-on')) return;
+  ov.style.opacity = '0';
+  box.style.opacity = '0';
+  box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+  setTimeout(function(){ ov.style.display = 'none'; box.classList.remove('mh-on'); }, 220);
+  _mhState = null;
+  if (typeof unlockPageScroll === 'function') unlockPageScroll();
+  document.removeEventListener('keydown', _mhKey);
+}
+window.openMatchupHub = openMatchupHub;
+window.closeMatchupHub = closeMatchupHub;
+window.mhTab = mhTab;
+window.mhOpenFighter = mhOpenFighter;
 
 // THE READ — the sentence that turns a table into an argument.
 //
@@ -88546,7 +89103,13 @@ function renderDeepDive(el, n1, n2){
 // enormous in the other), so the selection is z-scored against baselines measured at
 // build time. The output is always counts, because "95th percentile" means nothing
 // to someone watching a fight.
-function ddRead(A, B, n1, n2){
+//
+// `domain` ('strike' | 'grap' | null) lets the hub's Striking and Grappling tabs
+// each lead with their own strongest line while Overview takes the strongest of
+// all. It PARTITIONS THE EXISTING CANDIDATES AND NOTHING ELSE — no new claim, no
+// new threshold, no second engine that can drift from this one. Every sentence a
+// tab prints is one this function was already willing to print.
+function ddRead(A, B, n1, n2, domain){
   const base = window.GRID_BASE || {};
   const z = (k, v) => { const b = base[k]; return (b && b[1]) ? Math.abs(v - b[0]) / b[1] : 0; };
   const L1 = escHtmlAttr(_ddLast(n1)), L2 = escHtmlAttr(_ddLast(n2));
@@ -88569,7 +89132,7 @@ function ddRead(A, B, n1, n2){
       const hi = sA > sB, hiN = hi ? A : B, loN = hi ? B : A;
       const verb = gap >= sd * 2 ? ' is far harder to take down: '
                  : ' is harder to take down: ';
-      cands.push({ w: gap / sd,
+      cands.push({ dom: 'grap', w: gap / sd,
         t: (hi ? L1 : L2) + verb + (hiN.tdAgA - hiN.tdAgL) + ' of ' + hiN.tdAgA +
            ' stopped, against ' + (loN.tdAgA - loN.tdAgL) + ' of ' + loN.tdAgA +
            ' for ' + (hi ? L2 : L1) + '.' });
@@ -88579,7 +89142,7 @@ function ddRead(A, B, n1, n2){
   if (A.ctrl + B.ctrl > 300) {
     const hi = A.ctrl > B.ctrl ? A : B, lo = A.ctrl > B.ctrl ? B : A;
     const ratio = (lo.ctrl > 30) ? hi.ctrl / lo.ctrl : 9;
-    if (ratio >= 1.8) cands.push({ w: Math.min(ratio, 4),
+    if (ratio >= 1.8) cands.push({ dom: 'grap', w: Math.min(ratio, 4),
       t: (A.ctrl > B.ctrl ? L1 : L2) + ' has ' + Math.round(hi.ctrl / 60) +
          ' minutes of control time across those fights; ' + (A.ctrl > B.ctrl ? L2 : L1) +
          ' has ' + Math.round(lo.ctrl / 60) + '.' });
@@ -88617,16 +89180,20 @@ function ddRead(A, B, n1, n2){
                      (defender.tdAgL / Math.max(1, defender.tdAgA)) >= 0.30;
       if (!canGet) continue;
     }
-    cands.push({ w: Math.max(za, zb),
+    // Tagged 'strike' even for the ground lane: it is a statement about strikes
+    // landing, and it renders under "what lands on him" in the Striking tab. The
+    // takedown prerequisite above is what keeps it honest there, not the label.
+    cands.push({ dom: 'strike', w: Math.max(za, zb),
       t: (openIsA ? L1 : L2) + ' gets caught to ' + label + ' more than most: ' +
          Math.round((openIsA?ra:rb)*100) + '% of what comes at ' +
          (openIsA?L1:L2) + ' there lands, against a ' + Math.round(bb[0]*100) + '% norm.' });
   }
-  if (!cands.length) return '';
-  cands.sort((x,y) => y.w - x.w);
+  const pool = domain ? cands.filter(c => c.dom === domain) : cands;
+  if (!pool.length) return '';
+  pool.sort((x,y) => y.w - x.w);
   // Two sentences maximum. A third is a paragraph, and a paragraph is a table with
   // extra steps.
-  return cands.slice(0, 2).map(c => c.t).join(' ');
+  return pool.slice(0, 2).map(c => c.t).join(' ');
 }
 
 function fightStatsFor(name, date){
@@ -88953,35 +89520,6 @@ function populateFightHistory(name) {
   // Per-fight Scouting dropdown on the events page. Finds this row's scouting
   // panel (walking past any injury banner / details panel), lazy-renders the
   // matchup report on first open, and toggles it.
-  // Matchup Analytics dropdown. Same walk as toggleFightScouting: find this row's
-  // panel, skipping the scouting panel that sits between them.
-  function toggleFightDeepDive(btn) {
-    const row = btn.closest('.fight-row');
-    if (!row) return;
-    let el = row.nextElementSibling, panel = null;
-    while (el) {
-      if (el.classList && el.classList.contains('deepdive-fight-panel')) { panel = el; break; }
-      if (el.classList && el.classList.contains('fight-row')) break;
-      el = el.nextElementSibling;
-    }
-    if (!panel) return;
-    const isOpen = panel.classList.contains('open');
-    if (!isOpen && !panel.dataset.filled) {
-      const inner = panel.querySelector('.dd-inner');
-      inner.innerHTML = '<div class="dd-loading">Loading…</div>';
-      panel.dataset.filled = '1';
-      // THE FETCH HAPPENS HERE, not on page load: ~245KB for a panel most visitors
-      // never open. Concurrent opens share one promise.
-      loadFightGrid().then(() => {
-        try { renderDeepDive(inner, panel.dataset.f1, panel.dataset.f2); }
-        catch (e) { inner.innerHTML = '<div class="dd-loading">Couldn\'t load the breakdown.</div>'; }
-      });
-    }
-    panel.classList.toggle('open', !isOpen);
-    btn.classList.toggle('open', !isOpen);
-    btn.textContent = isOpen ? 'Matchup Analytics ⌄' : 'Matchup Analytics ⌃';
-  }
-
   function toggleFightScouting(btn) {
     const row = btn.closest('.fight-row');
     if (!row) return;
@@ -88995,7 +89533,7 @@ function populateFightHistory(name) {
     const isOpen = panel.classList.contains('open');
     if (!isOpen && !panel.dataset.filled) {
       const inner = panel.querySelector('.sr-inner');
-      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null, panel.dataset.wc || '');
+      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null, panel.dataset.wc || '', panel.dataset.rounds || '');
       panel.dataset.filled = '1';
       if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     }
@@ -103307,7 +103845,7 @@ const GL_SHEET = (function () {
 })();
 if (typeof window !== 'undefined') window.GL_SHEET = GL_SHEET;
 
-function renderScouting(host, name, opp, fightDate, weightClass) {
+function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
   if (!host || !name || !opp) return;
   host.innerHTML = '';
   const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
@@ -103405,6 +103943,36 @@ function renderScouting(host, name, opp, fightDate, weightClass) {
       });
       box.appendChild(row);
     })();
+  })();
+
+  // ── MATCHUP ANALYTICS — the way into the hub ────────────────────────────────
+  //
+  // Here, between the tale of the tape and Style, because this is the seam where
+  // a reader stops taking in who these men ARE and starts asking what they DO.
+  //
+  // HIDDEN UNTIL THE MANIFEST SAYS OTHERWISE. It's a MATCHUP, so it needs BOTH
+  // men's grids — one debutant and there's nothing to cross the other man
+  // against, even if his opponent has forty fights. A button that opens an empty
+  // panel is worse than no button ("if there's no stats to analyze, like on
+  // debutants, just hide the button"). Emitted hidden and revealed by
+  // glRevealDeepDives() rather than gated with an `if`: this runs on a click, so
+  // the 1.8KB manifest has almost certainly landed — but "almost certainly" is
+  // how the button vanishes for one visitor in a hundred with no way to explain
+  // it, and the observer already handles the late case for free.
+  (function () {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'fight-dd-bar';
+    btn.style.display = 'none';
+    btn.dataset.ddF1 = name;
+    btn.dataset.ddF2 = opp;
+    btn.innerHTML = 'Matchup Analytics <span class="dd-go">&rsaquo;</span>';
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      openMatchupHub(name, opp, { wc: weightClass || '', rounds: rounds || '' });
+    });
+    host.appendChild(btn);
+    if (typeof glRevealDeepDives === 'function') glRevealDeepDives();
   })();
 
   // Style, pace, path-to-victory + tale of the tape now live in the shared
@@ -104771,16 +105339,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
           (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
-          // HIDDEN BY DEFAULT, revealed by glRevealDeepDives() once the manifest
-          // lands and only when BOTH fighters have a strike grid. It's a matchup:
-          // one debutant and there is nothing to cross the other man against, so
-          // the button doesn't exist ("if there's no stats to analyze, just hide
-          // the button"). Emitting it hidden rather than conditionally is what
-          // lets a late-arriving manifest turn it on without a re-render.
-          (f.completed ? '' : '<button type="button" class="fight-dd-bar" style="display:none"' +
-            ' data-dd-f1="' + escHtmlAttr(f.f1) + '" data-dd-f2="' + escHtmlAttr(f.f2) + '"' +
-            ' onclick="event.stopPropagation();toggleFightDeepDive(this)">Matchup Analytics ⌄</button>') +
-        '</div>' + (f.completed ? fightDetailsPanelHTML(f) : scoutingFightPanelHTML(f) + deepDivePanelHTML(f));
+          // Matchup Analytics is NOT a bar out here any more. It lives inside the
+          // Fight Info dropdown (renderScouting, between Tale of the tape and
+          // Style) and opens the hub modal. Two stacked bars under every row read
+          // as chrome, and the second one was the feature nobody could find.
+        '</div>' + (f.completed ? fightDetailsPanelHTML(f) : scoutingFightPanelHTML(f));
       }
 
       function section(title, fights) {
@@ -105116,16 +105679,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // Empty, collapsible Scouting panel per fight — lazy-filled by toggleFightScouting.
-  // The deep-dive panel. Mirrors scoutingFightPanelHTML's collapse mechanics so the
-  // two dropdowns on a row behave identically; filled lazily on first open.
-  function deepDivePanelHTML(f) {
-    return '<div class="deepdive-fight-panel" data-f1="' + escHtmlAttr(f.f1) + '"' +
-           ' data-f2="' + escHtmlAttr(f.f2) + '"><div class="dd-inner"></div></div>';
-  }
-
+  // (There is no separate deep-dive panel any more: Matchup Analytics is a button
+  // inside THIS one and opens the hub modal.)
+  //
+  // data-wc READ f.wc, WHICH NOTHING HAS EVER SET. Both renderers carry the weight
+  // class on f.label ("Middleweight · 5 Rounds") and neither writes f.wc, so this
+  // attribute has been the empty string on every bout on the site and renderScouting
+  // has been taking a `weightClass` argument that is always ''. Nothing downstream
+  // printed it, so nothing looked broken — it surfaced only when the hub header
+  // asked for it. Derive it from the label, which is the field that actually exists.
   function scoutingFightPanelHTML(f) {
+    const lab = String(f.label || '');
+    const wc = f.wc || lab.split('·')[0].trim().replace(/ [35] Rounds$/, '');
+    const rds = lab.includes('5 Round') ? '5 rounds' : (lab ? '3 rounds' : '');
     return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') +
-      '" data-wc="' + escHtmlAttr(f.wc || '') + '"><div class="sr-inner"></div></div>';
+      '" data-wc="' + escHtmlAttr(wc) + '" data-rounds="' + escHtmlAttr(rds) +
+      '"><div class="sr-inner"></div></div>';
   }
 
   // Completed-fight retrospective: result recap, closing line (+ upset flag), and
@@ -107274,11 +107843,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         // Patching only renderHomeFightCard put the button on the featured card and
         // nowhere else, which reads as "the button doesn't exist". Two functions
         // emitting the same row is the bug; until they're one, every change here is
-        // two changes.
-        '<button type="button" class="fight-dd-bar" style="display:none"' +
-          ' data-dd-f1="' + escHtmlAttr(f.f1) + '" data-dd-f2="' + escHtmlAttr(f.f2) + '"' +
-          ' onclick="event.stopPropagation();toggleFightDeepDive(this)">Matchup Analytics ⌄</button>' +
-      '</div>' + scoutingFightPanelHTML(f) + deepDivePanelHTML(f);
+        // two changes. Moving Matchup Analytics INSIDE Fight Info bought one thing
+        // beyond the look: renderScouting is one function, so the entry point is
+        // now emitted once and this trap can't fire on it again.
+      '</div>' + scoutingFightPanelHTML(f);
     }
 
     function fightSection(title, fights) {

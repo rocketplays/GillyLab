@@ -1,35 +1,43 @@
-Matchup Analytics deep dive — state of play
+Matchup Analytics — state of play
 ================================================================================
-2026-07-16. Everything below is BUILT AND COMMITTED. The feature is finished and
-NOT DEPLOYED, which is why nobody can see it.
-
-START HERE
---------------------------------------------------------------------------------
-    cd ~/Documents/GitHub/GillyLab
-    npm run deploy
-
-It exits 1 and has all session. Nobody has read the error yet — that is the one
-thing standing between ~20 commits of finished work and it being live. The build
-itself is clean, `wrangler --dry-run` bundles fine (278KB gzipped), all modules
-parse, wrangler runs (3.114.17), and the workerd/esbuild binaries are present.
-Prior: an expired or absent CLOUDFLARE_API_TOKEN. Paste the last 30 lines and it
-is probably a two-minute fix.
-
+2026-07-16, second pass. The feature is deployed and was rebuilt today: it is now
+a MODAL HUB opened from inside Fight Info, not a dropdown under the bout. It has
+been seen in a browser, on desktop and on a phone, which it never had been before.
 
 WHAT THE FEATURE IS
 --------------------------------------------------------------------------------
-A "Matchup Analytics ⌄" dropdown on every upcoming bout, beside "Fight Info". It
-crosses one fighter's offence against the other's defence — the thing the existing
-Fight Info dropdown structurally cannot do, because it only ever reads a fighter's
-own numbers.
+A "Matchup Analytics ›" button INSIDE each bout's Fight Info dropdown, sitting
+between the tale of the tape and Style — the seam where a reader stops taking in
+who these men are and starts asking what they do. It opens a 1040px modal with
+three tabs: Overview, Striking, Grappling.
 
-It renders counts, and a two-sentence read generated from the data:
+It crosses one fighter's offence against the other's defence — the thing the Fight
+Info panel structurally cannot do, because it only ever reads a fighter's own
+numbers. It renders counts, and a two-sentence read generated from the data:
 
     "Usman has 50 minutes of control time across those fights; Du Plessis has 16.
      Usman is far harder to take down: 27 of 32 stopped, against 8 of 23."
 
 40 of 50 bouts get a read; 10 say nothing, which is correct — most fights are not
-lopsided, and a panel that always has a verdict will invent one.
+lopsided, and a panel that always has a verdict will invent one. ddRead() now
+takes a `domain` ('strike'|'grap'|null) so each tab leads with its own strongest
+line; it PARTITIONS THE EXISTING CANDIDATES and adds no new claim. Striking leads
+on 30 of 50, grappling on 32.
+
+
+WHY IT STOPPED BEING A DROPDOWN
+--------------------------------------------------------------------------------
+Two reasons, and the second is the real one.
+  * A second full-width bar under every row read as chrome. The button was both in
+    the way and easy to miss.
+  * A 3x3 cross-tab PER FIGHTER does not fit in a card column — so v1 didn't show
+    it. It printed four of the nine cells as a flat list, which is exactly the
+    averaged-into-mush the grid exists to undo. THE CONTAINER WAS QUIETLY DECIDING
+    WHAT THE FEATURE WAS ALLOWED TO SAY.
+
+Moving it inside Fight Info also killed the two-fightRow trap for this button:
+renderScouting() is ONE function, so the entry point is emitted once. The trap is
+still live for anything else on a fight row.
 
 
 THE DATA, AND WHY IT'S IN THREE FILES
@@ -65,12 +73,55 @@ Bootstrap is done (112 fighters). Steady state measured: to process 0. A fighter
 announced tomorrow has his grid within 12 hours.
 
 
-TRAPS — ALL OF THESE WERE REAL BUGS TODAY
+TWO THINGS THE PANEL SHADED OR COLOURED THAT IT HAD NOT EARNED
+--------------------------------------------------------------------------------
+Both were found by screenshotting the thing and looking at it. Neither would have
+been caught by any test that checks the numbers, because the NUMBERS WERE RIGHT.
+
+ 1. THE GRID WAS SHADED ON THE ABSOLUTE RATE, and every fighter came out the same
+    wall of green — because head-at-range is ~35% for EVERYONE and leg kicks are
+    ~82% for EVERYONE. The palette was encoding WHICH TARGET THE CELL WAS, not one
+    thing about the man in it. Measured over the 109 fighters in the grid:
+        dist.head    n=105  mean 35.3%  sd 6.6   (spread 16–52%)
+        dist.body    n= 77  mean 68.2%  sd 9.6
+        dist.leg     n= 57  mean 81.7%  sd 9.2   (spread 57–95%)
+        clinch.head  n= 32  mean 64.5%  sd 10.5
+        ground.head  n= 55  mean 69.5%  sd 10.2  (spread 39–88%)
+        clinch.leg / ground.body / ground.leg — too few fighters clear the floor
+    Between cells: 46 points. Within a cell, where the fighter lives: 7–10. A flat
+    scale spends its whole range on the former. Cells are now shaded against the
+    per-cell card norm (mhCellBase(), computed client-side from FIGHT_GRID), which
+    is the only comparison that says anything about this man. Diverging: orange
+    below the norm, green above, capped at 2sd.
+    (corr(head-at-distance, head-on-ground) re-checked on today's file: -0.010
+    over the 55 fighters with both. The premise holds.)
+
+ 2. GREEN IS A CLAIM AND IT WAS FIRING ON NOISE. The first render painted Usman's
+    50% strike accuracy green against Du Plessis's 49% — a one-point gap on ~1200
+    attempts, inside the noise by a factor of two. That is the "won't be wrestled"
+    overclaim wearing a colour instead of a verb. The accent is now gated:
+        rates            -> two-proportion standard error, gap >= 2se
+        counts of events -> Poisson, |a-b| >= 2*sqrt(a+b)
+        magnitudes       -> ratio >= 1.25 (control time; it has no n)
+        volume, share, "what lands on him", "time under control" -> NEVER accented
+    Neither test is tuned. Only the COLOUR is gated — the numbers print either way.
+    On Du Plessis/Usman exactly two bars now light: takedowns stopped and control
+    time, which are the two facts the prose read leads with. The colour and the
+    sentence agree because both answer to the same discipline.
+
+
+TRAPS — ALL OF THESE WERE REAL BUGS
 --------------------------------------------------------------------------------
   * THERE ARE TWO fightRow FUNCTIONS. renderHomeFightCard() draws the featured
     card; renderCarousel() draws the upcoming cards. Patching one put the button on
     one card and nowhere else, which reads as "the feature doesn't exist" — and did.
     Every change to a fight row is two changes. This is worth actually fixing.
+    (No longer bites Matchup Analytics — it lives in renderScouting now.)
+  * scoutingFightPanelHTML() READ f.wc, WHICH NOTHING HAS EVER SET. Both renderers
+    carry the weight class on f.label; neither writes f.wc. So data-wc has been ""
+    on every bout on the site and renderScouting's `weightClass` argument has always
+    been the empty string. Nothing printed it, so nothing looked broken — it
+    surfaced only when the hub header asked for it. Now derived from f.label.
   * NAME JOINS. Written wrong THREE times in one day: "Dricus Du Plessis" vs
     "Dricus du Plessis", "Aleksandar Rakic" vs "Rakić". Every lookup must normalise
     (NFD, strip diacritics, lowercase). A miss looks exactly like absent data.
@@ -89,11 +140,44 @@ TRAPS — ALL OF THESE WERE REAL BUGS TODAY
     in it gets generated and never committed. Green job, starved feature.
 
 
+DEAD END — DO NOT REBUILD THIS. `adv` AND `slams` ARE EMPTY.
+--------------------------------------------------------------------------------
+The grid file carries `adv` (advances to half guard/side/mount/back) and `slams` on
+every row, and they look like treasure: the only fields in this data that could say
+what a man DOES with a takedown once he has it, which control time cannot
+distinguish from lying in someone's guard. I wrote a whole "Positions gained"
+section on that reasoning. Then measured it, across all 621 card fighter-fights:
+
+    rows with the adv array present : 621  (100%)
+    rows with ANY advance > 0       :   4  (0.6%)
+    totals [halfguard, side, mount, back] : [2, 4, 0, 0]
+    rows with a slam                :   0  (total slams: 0)
+
+ESPN serves the keys and fills them with zeros. Six advances and no slams across
+621 fights is not under-read data, it is an empty column — and the section would
+have rendered "Mount 0 · Back 0" for everyone and presented that emptiness as a
+finding about the fighters. Both fields are no longer collected in _ddGrid().
+
+The tell was the usual one: THE MECHANISM ARRIVED BEFORE THE MEASUREMENT and
+explained the data a little too well. If you want this section it needs a source
+that actually has the numbers; it is not sitting in this file waiting.
+
+kd / sub / rev survived the same check and are shown: over those 621 rows kd is
+non-zero on 22.2%, sub on 22.4%, rev on 9.3%, control time on 87.6%. Sparse, but
+real. Rows where BOTH men are at zero are dropped rather than printed as "0 vs 0",
+which would read as a measured tie instead of the absence it is.
+
+
 OPEN — REAL, MEASURED, NOT GUESSES
 --------------------------------------------------------------------------------
- 1. NOBODY HAS SEEN THIS RENDER IN A BROWSER. The logic is verified against real
-    data and the markup against the build. Two renderers, a MutationObserver, a
-    lazy fetch and a CSS collapse is a lot of "should work".
+ 1. iCLOUD HAS EATEN 25 FILES AND git NOW FAILS ON THEM. This has gone from the
+    slow bleed described below to something that blocks work. `git status` dies
+    with "read error while indexing data/name-collisions-baseline.json: Resource
+    deadlock avoided" — that file and 24 others (data/odds.json, most of
+    data/photos/) are dataless iCloud placeholders: they have a size but no local
+    content, and reading them EDEADLKs. `git status -- <path>` still works, so
+    path-scoped commits go through, but a bare status/diff/commit does not.
+    This is item 4 below arriving. The fix is the move off ~/Documents.
  2. THE RANKING IN scripts/matchup-deepdive.cjs IS NOT SAFE TO SHOW. Its lanes have
     prerequisites it doesn't model: ground-and-pound is gated behind a takedown,
     head-at-range is gated behind nothing, and it ranks them as peers. Measured, it
@@ -110,8 +194,10 @@ OPEN — REAL, MEASURED, NOT GUESSES
     .git/index 22 times since June 11, including once mid-session today (88 bytes off
     the live file), and bus-errored a commit. I deleted the junk; fsck is clean; no
     damage. A half-finished clone sits at ~/dev/GillyLab (needs `npm approve-scripts`
-    for esbuild/workerd/sharp/fsevents, then `npm install`). NOT URGENT — a slow
-    bleed, not an emergency. The old folder works.
+    for esbuild/workerd/sharp/fsevents, then `npm install`).
+    NO LONGER "NOT URGENT" — see item 1. Fork #23 appeared and was deleted this
+    session, `git diff --stat` bus-errored again (core dumped), and 25 files have
+    now gone dataless. The old folder no longer entirely works.
  5. THE-CLIMB-TUNING.txt IS FIVE COMMITS STALE AGAIN (STYLE_SCALE, the division
     work, the free title shot, submission defence, the scout card). It is a file
     whose own top section is about claims outliving their evidence.
@@ -133,3 +219,12 @@ and explains the data a little too well.
 And the floor: N=500 for a cell, more for a difference. N=120 read one change as
 "46% -> 33%" when the truth was "46% -> 40%". It caught me four times in the session
 where I raised it.
+
+2026-07-16, second pass — it caught me twice more, and BOTH TIMES IN THE PALETTE
+rather than in the numbers. "Advances have been sitting in this file unread" and
+"shade the cells by accuracy" were each a mechanism that arrived before its
+measurement; one was an empty column, the other was colouring the axis instead of
+the fighter. Neither would have failed a test of the numbers, because the numbers
+were right in both. THE NEW TELL: a rendering decision is a claim too. Shading,
+accenting and ordering all assert something, and they get audited by screenshotting
+the thing and looking at it — which, until today, nobody had ever done.
