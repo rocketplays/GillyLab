@@ -771,20 +771,29 @@ function avatarHTML(f){
     'onerror="this.style.display=\'none\'"></div>';
 }
 
+// ONE BAND, TWO VOICES, ONE DEFINITION. `t` is what the tile says before the
+// fight; `was` is how the same verdict reads afterwards. They live on the same
+// line ON PURPOSE — the whole point of the post-fight line is that it echoes the
+// words the card used, so if these ever drift apart the feature is silently gone
+// and nothing throws. (rewardFor already taught this lesson the expensive way: the
+// same formula in two places, and I edited one.)
 function oddsBand(p){
-  if (p >= 0.82) return { t:'Heavy favorite', c:'var(--accent)' };
-  if (p >= 0.66) return { t:'Favorite',       c:'var(--accent)' };
-  if (p >= 0.54) return { t:'Slight edge',     c:'var(--text)'   };
-  if (p >= 0.46) return { t:"Pick 'em",        c:'var(--text)'   };
-  if (p >= 0.32) return { t:'Live dog',        c:'var(--gold)'   };
-  if (p >= 0.18) return { t:'Underdog',        c:'var(--accent2)'};
-  return              { t:'Big underdog',      c:'var(--accent2)'};
+  if (p >= 0.82) return { t:'Heavy favorite', c:'var(--accent)',  was:'You were a heavy favorite' };
+  if (p >= 0.66) return { t:'Favorite',       c:'var(--accent)',  was:'You were a favorite'       };
+  if (p >= 0.54) return { t:'Slight edge',    c:'var(--text)',    was:'You had a slight edge'     };
+  if (p >= 0.46) return { t:"Pick 'em",       c:'var(--text)',    was:"That was a pick 'em"       };
+  if (p >= 0.32) return { t:'Live dog',       c:'var(--gold)',    was:'You were a live dog'       };
+  if (p >= 0.18) return { t:'Underdog',       c:'var(--accent2)', was:'You were an underdog'      };
+  return              { t:'Big underdog',     c:'var(--accent2)', was:'You were a big underdog'   };
 }
 // What to say once it's over. Only editorialises when the result was genuinely
 // improbable — saying "that's variance" after a coin flip would be noise.
-// The line ABOVE this already states the number, so don't restate it — the first
-// draft read "You were 83% to win (-488). You were a 83% favorite...", which
-// stutters and gets the article wrong on top ("a 83%").
+//
+// DON'T RESTATE WHAT THE LINE ABOVE ALREADY SAID. That line now reads "You were a
+// heavy favorite -488", so this one must not say "heavy favorite" again — it talks
+// in 1-in-N instead, which is the one framing neither the band nor the moneyline
+// gives you. (An earlier draft read "You were 83% to win (-488). You were a 83%
+// favorite...", which stutters and gets the article wrong on top.)
 function varianceNote(p, won){
   if (!won && p >= 0.80)
     return "A favorite that big still loses roughly 1 in "+Math.round(1/(1-p))+
@@ -1570,7 +1579,8 @@ function resultBox(){
   // percentage reads as a promise, afterwards it reads as information.
   const od=document.createElement('div'); od.className='note';
   const vn=varianceNote(o.p, won);
-  od.innerHTML = 'You were <b>'+(o.p*100).toFixed(0)+'%</b> to win ('+amer(o.p)+').'+
+  const bd=oddsBand(o.p);
+  od.innerHTML = bd.was+' <b>'+amer(o.p)+'</b>.'+
     (vn ? ' <span style="color:'+(won?'var(--accent)':'var(--gold)')+'">'+vn+'</span>' : '');
   p.appendChild(od);
   const n=document.createElement('div'); n.className='note';
