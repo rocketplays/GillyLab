@@ -105,6 +105,24 @@ export const climbBack = () => `
   </style>
   <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
+// The "this is free, here's what Premium adds" box every other free page closes
+// its content with. Same shape and same words as /rankings, /roster and /matchup:
+// name the thing that's free, then say what Premium buys — never a bare pitch.
+//
+// CSS copied from .rs-cta / .mf-cta, which are identical to each other; .rk-cta is
+// the same minus font-size:.9rem, so the majority wins. Copied rather than shared
+// for the same reason as the nav: this page ships its own <style> block. NOTE the
+// specificity trap next door — do not add a color to any rule that could outrank
+// ".cl-cta a", or the link stops being green. That one already cost us once.
+export const climbCta = (subscribed) => `
+  <style>
+    .cl-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
+    .cl-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+  </style>
+  <div class="cl-cta">${subscribed
+    ? `<a href="/">Open GillyLab →</a> for every fighter's full analytics, the simulator and more.`
+    : `The Climb is free to play. <a href="/subscribe">Go Premium</a> for every fighter's full analytics, the simulator and more.`}</div>`;
+
 // The footer every other free page ends with. Exported for /theclimb, which is
 // generated from the prototype and has it injected at a marker.
 export const climbFooter = () => FREE_FOOTER;

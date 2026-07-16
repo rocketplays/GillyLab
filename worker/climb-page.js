@@ -1,6 +1,6 @@
 /* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
    Edit the prototype: it is what the whole test/sim harness reads. */
-export const climbPage = ({ head, nav, back, footer }) => `<!DOCTYPE html>
+export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -339,6 +339,11 @@ export const climbPage = ({ head, nav, back, footer }) => `<!DOCTYPE html>
     Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
+  <!-- CTA SLOT — the "this is free, here's what Premium adds" box every other free
+       page ends its content with. BENEATH the game and inside .wrap: it's the last
+       thing you read after a run, not chrome. Empty in the prototype, which has no
+       /subscribe to sell. -->
+  ` + (cta || "") + `
 </div>
 <!-- FOOTER SLOT — filled by scripts/gen-climb-page.cjs with the worker's
      FREE_FOOTER, the same one every other free page ends with. OUTSIDE .wrap on

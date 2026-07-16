@@ -15,11 +15,16 @@
  *
  * The prototype uses ABSOLUTE asset paths (/data/climb.json, /gl-sheet.js,
  * /photos/thumb/...) so the identical HTML works at /prototypes/the-climb.html
- * and at /theclimb with no path rewriting here. This script does exactly two
- * things: drop the prototype-only preamble, and fill the <!--FREE_NAV--> slot (the
- * page passes a back arrow; the tabs would be noise mid-run).
- * If it ever starts doing a third, that's the signal the page has outgrown being
- * a generated prototype and wants its own module.
+ * and at /theclimb with no path rewriting here. This script only ever does two
+ * kinds of thing: swap the prototype-only title, and fill the slots the worker
+ * passes in (see SLOTS below). Everything a browser needs to PLAY the game is in
+ * the prototype; everything that needs a session, a SITE_URL or a subscription
+ * comes through a slot.
+ *
+ * The slot list has grown from one to five. That is worth watching: if it keeps
+ * growing, the page has outgrown being a generated prototype and wants its own
+ * module — but every slot so far is site chrome the prototype genuinely cannot
+ * have (og tags, account nav, the Premium CTA, the legal footer), not game code.
  *
  * Run: node scripts/gen-climb-page.cjs   (CI runs it in update-odds.yml)
  */
@@ -70,12 +75,17 @@ html = html.replace(
 // comments and ${...} would be catastrophic — this is why it's mechanical.
 const esc = (s) => s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 
-// Three slots, in document order: <!--HEAD-->, <!--FREE_NAV-->, <!--FOOTER-->.
-// Split them off one at a time from the remainder, so the four chunks can only
-// reassemble in the order they appear in the file — and if any marker is out of
-// order the split returns undefined and we fail loudly rather than emit a page
-// with the footer in the <head>.
-const SLOTS = ["<!--HEAD-->", "<!--FREE_NAV-->", "<!--BACK-->", "<!--FOOTER-->"];
+// THE SLOTS, IN DOCUMENT ORDER. Split them off one at a time from the remainder,
+// so the chunks can only reassemble in the order they appear in the file — if a
+// marker is missing OR out of order the split returns undefined and we fail loudly
+// rather than emit a page with the footer in the <head>.
+//
+// Add a slot here and you must also add: the marker in the prototype, the param in
+// the climbPage signature below, and the value at the /theclimb route. Miss the
+// last one and the slot silently renders as "" — which is why every marker that
+// carries something a PLAYER wouldn't notice missing (og tags, the footer) gets an
+// explicit guard above.
+const SLOTS = ["<!--HEAD-->", "<!--FREE_NAV-->", "<!--BACK-->", "<!--CTA-->", "<!--FOOTER-->"];
 const chunks = [];
 let rest = html;
 for (const marker of SLOTS) {
@@ -92,8 +102,9 @@ chunks.push(rest);
 fs.writeFileSync(OUT,
   "/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.\n" +
   "   Edit the prototype: it is what the whole test/sim harness reads. */\n" +
-  "export const climbPage = ({ head, nav, back, footer }) => `" + esc(chunks[0]) + "` + (head || \"\") + `" +
+  "export const climbPage = ({ head, nav, back, cta, footer }) => `" + esc(chunks[0]) + "` + (head || \"\") + `" +
   esc(chunks[1]) + "` + (nav || \"\") + `" + esc(chunks[2]) + "` + (back || \"\") + `" +
-  esc(chunks[3]) + "` + (footer || \"\") + `" + esc(chunks[4]) + "`;\n");
+  esc(chunks[3]) + "` + (cta || \"\") + `" + esc(chunks[4]) + "` + (footer || \"\") + `" +
+  esc(chunks[5]) + "`;\n");
 
 console.log("worker/climb-page.js: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");
