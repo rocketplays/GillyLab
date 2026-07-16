@@ -88383,6 +88383,30 @@ function glRevealDeepDives(){
     btn.style.display = ok ? '' : 'none';
   });
 }
+
+// WATCH THE DOM RATHER THAN CHASE THE RENDERERS.
+//
+// The reveal has to run after the manifest lands AND after every paint, and those
+// happen in either order: the featured card, the carousel and the live-swap all
+// repaint independently and asynchronously. Calling glRevealDeepDives() from each
+// call site means finding every call site — and I already shipped this feature
+// having found ONE of the TWO fightRow functions, which is exactly how "the button
+// doesn't exist anywhere" happens.
+//
+// An observer needs no call sites and survives the renderer I haven't found yet.
+// Debounced because a full card repaint is many mutations, and the reveal is
+// idempotent so a spurious run costs nothing.
+(function(){
+  if (typeof MutationObserver !== 'function') return;
+  let t = null;
+  const kick = () => { clearTimeout(t); t = setTimeout(glRevealDeepDives, 30); };
+  const start = () => {
+    if (!document.body) return setTimeout(start, 50);
+    new MutationObserver(kick).observe(document.body, { childList: true, subtree: true });
+    kick();
+  };
+  start();
+})();
 function _gridNorm(s){
   return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')
     .toLowerCase().replace(/[^a-z ]/g,'').trim();
@@ -107245,7 +107269,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
         '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>' +
-      '</div>' + scoutingFightPanelHTML(f);
+        // THE SECOND RENDERER. renderCarousel has its OWN fightRow, and this is the
+        // one that draws the UPCOMING cards — i.e. most of the bouts on the page.
+        // Patching only renderHomeFightCard put the button on the featured card and
+        // nowhere else, which reads as "the button doesn't exist". Two functions
+        // emitting the same row is the bug; until they're one, every change here is
+        // two changes.
+        '<button type="button" class="fight-dd-bar" style="display:none"' +
+          ' data-dd-f1="' + escHtmlAttr(f.f1) + '" data-dd-f2="' + escHtmlAttr(f.f2) + '"' +
+          ' onclick="event.stopPropagation();toggleFightDeepDive(this)">Matchup Analytics ⌄</button>' +
+      '</div>' + scoutingFightPanelHTML(f) + deepDivePanelHTML(f);
     }
 
     function fightSection(title, fights) {
