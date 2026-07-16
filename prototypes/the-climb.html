@@ -82,6 +82,15 @@
      'SUB'/'KO '/'DEC' are 3 chars but not 3 equal widths in a proportional font */
   .log .mth{color:var(--muted);font-variant-numeric:tabular-nums;
             font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;margin-right:.15rem}
+  .log .ml{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.72rem}
+  /* the champion's mark. Gold, because gold is what the belt is in this palette. */
+  .cmark{display:inline-flex;align-items:center;justify-content:center;
+    width:1rem;height:1rem;border-radius:3px;font-size:.6rem;font-weight:800;
+    background:var(--gold);color:#1a1204;vertical-align:middle;line-height:1}
+  .cmark.im{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+  .recs{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:baseline;margin:.5rem 0 .1rem}
+  .recs span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}
+  .recs b{font-size:1.05rem}
   .mtally{margin:.6rem 0 .2rem;font-size:.78rem}
   .mtally .mrow{display:grid;grid-template-columns:1fr 2.2rem 2.2rem;gap:.3rem;line-height:1.7}
   .mtally .mrow span:not(:first-child){text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
@@ -111,12 +120,21 @@
   .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}
 
   /* opponent avatar. The initials sit UNDER the photo, so a 404 reveals them
-     rather than needing a JS fallback. */
+     rather than needing a JS fallback.
+     THE PHOTO MUST BE OPAQUE OR THE TRICK LEAKS. Every file in photos/thumb is a
+     cutout — PNG colortype 6, RGB+ALPHA — so the fighter is surrounded by
+     transparency, and "the initials sit UNDER the photo" meant they showed THROUGH
+     it: every opponent card had ghost letters floating around the man's head. The
+     layering was right and the assumption underneath it ("a photo is a rectangle
+     of pixels") was wrong. Giving the img its own opaque background fixes it in
+     one line and keeps the 404 path exactly as it was — on error the img hides
+     itself and the initials are revealed, as designed. */
   .av{position:relative;width:44px;height:44px;border-radius:50%;flex:0 0 44px;
     background:var(--surface2);border:1px solid var(--border);overflow:hidden}
   .av span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
     font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}
-  .av img{position:relative;width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+  .av img{position:relative;width:100%;height:100%;object-fit:cover;object-position:top center;
+    display:block;background:var(--surface2)}
   .opphd{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem}
   .oppwho{min-width:0}
   .opp .rec{margin:.1rem 0 0}
@@ -156,7 +174,13 @@
 <div class="wrap">
   <h1>The <span class="g">Climb</span></h1>
   <p class="tag">Can you become a UFC champion?</p>
-  <p class="sub">Build a fighter. Pick your fights. Win the belt.<br>
+  <!-- KEEP THIS TRUE. The tuning file lists the subtitle among the claims that
+       outlived what made them true, and it is the first thing a player reads: it
+       must describe the game that exists. "Start as a 10-0 prospect" is not
+       flavour — POINTS_START 42 buys a debut rated 74 against a #15 rated 62, and
+       the scoreboard now says 10-0. If any of those three move, this line moves. -->
+  <p class="sub">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>
+    Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
@@ -355,6 +379,23 @@ const UNRANKED_WINS = 1;
 // you got there with.
 const CUT_AT = 5;
 const START_AGE = 24, MONTHS_PER_FIGHT = 4;
+
+// THE REGIONAL RECORD YOU ARRIVE WITH. Playtest, and it's the premise the whole
+// economy was already built on: "a fighter doesn't actually start in the UFC at
+// 0-0 ever ... assume this fighter is coming in as a hyped up prospect with a
+// proven regional record." POINTS_START 42 has encoded that since the short
+// ladder went in — a debut rating of 74 IS a 10-0 prospect — but the scoreboard
+// still said 0-0, so the number the player read contradicted the fighter the game
+// had actually built. This is that premise, said out loud.
+//
+// DISPLAY ONLY, AND THAT IS LOAD-BEARING. G.wins and G.losses are the UFC record
+// and every rule in the game reads them: G.wins >= UNRANKED_WINS ranks you,
+// G.losses >= CUT_AT ends the run. Adding 10 to G.wins at the source would rank
+// you before your debut and is exactly the class of change that breaks four things
+// silently. The regional record is added at the point of PRINTING and nowhere else.
+const REGIONAL = { w: 10, l: 0 };
+const ufcRecord   = () => G.wins + '-' + G.losses;
+const totalRecord = () => (REGIONAL.w + G.wins) + '-' + (REGIONAL.l + G.losses);
 // buildStats() and the CURVES table are GONE. They existed to translate sliders
 // into the nine stat levers the sim read (kd, slpm, strAcc...). Nothing reads
 // them now — the game scores from attributes directly. Deleting them removes the
@@ -1441,6 +1482,10 @@ function fight(o){
     // real fighter and is the only reason another shot is worth anything.
     if (G.rank != null) G.rank = Math.min(15, G.rank + 1);
   }
+  // HIGH WATER MARK, recorded wherever rank last moved — win or loss. Rank is no
+  // longer monotonic, so the peak has to be remembered rather than read off the end.
+  if (G.champ) G.peak = 0;
+  else if (G.rank != null && (G.peak == null || G.rank < G.peak)) G.peak = G.rank;
   // EVERY FIGHT AGES YOU, win or lose. Playtest: "it took a long time to get to
   // the title. I went 18-1." Ducking was free — beating someone ranked BELOW you
   // moves you nowhere, so the safe path had no cost and the run never ended.
@@ -1458,8 +1503,16 @@ function fight(o){
 
 // ── render ───────────────────────────────────────────────────────────────────
 function newGame(){
+  // G.peak IS NEW, AND IT IS NOT DECORATION. endBox has always printed "peaked at
+  // #N" off G.rank, which was honest only while rank could not go DOWN — and it
+  // could not, until a loss started costing a rung. The moment that landed, the end
+  // screen began reporting the rank you were cut at as the rank you peaked at, and
+  // nothing threw, because "peaked at #12" is a perfectly plausible thing to read
+  // after a bad run. (sim-climb-runs.cjs has tracked its own peak since the day it
+  // was written, with a comment saying the game has no G.peakRank. It was right,
+  // and the game needed one the whole time.)
   G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), pts:POINTS_START,
-        wins:0, losses:0, streak:0, rank:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0 };
+        wins:0, losses:0, streak:0, rank:null, peak:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0 };
   render();
 }
 // What the current sheet has cost, in points — NOT the sum of levels, now that
@@ -1587,7 +1640,10 @@ function hud(){
   const p=document.createElement('div'); p.className='panel';
   const d=document.createElement('div'); d.className='hud';
   d.innerHTML =
-    '<div><span>Record</span><b>'+G.wins+'-'+G.losses+'</b></div>'+
+    // The HUD shows the PRO record — the one a broadcast would put under your name
+    // — with the UFC record beside it, because that's the one the belt cares about.
+    '<div><span>Record</span><b>'+totalRecord()+'</b>'+
+      '<span style="text-transform:none;letter-spacing:0;margin-top:.15rem">'+ufcRecord()+' UFC</span></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
 
@@ -1716,9 +1772,18 @@ function logBox(){
     // whatever happened, because f.won gated the whole expression. Two thirds of a
     // record was blank: "L     vs Tom Aspinall (41%)" is a result with the result
     // taken out. The methods existed; the log just never asked about them.
+    // THE BELT GETS A MARK, and the odds speak the same language as the card and
+    // the result line. The log was the last place still printing a bare percentage
+    // — the exact number the odds band exists to defer — so a record read "(19%)"
+    // for the fight the whole run was about. A moneyline says the same thing in
+    // the format the sport uses, and the gold C says WHICH fight it was without
+    // needing a legend. f.rank is the opponent's rankNum at the time, already in
+    // the log; 0 is champion, 0.5 interim.
+    const champMark = f.rank===0 ? ' <span class="cmark" title="Champion">C</span>'
+                    : f.rank===0.5 ? ' <span class="cmark im" title="Interim champion">C</span>' : '';
     d.innerHTML='<span class="'+(f.won?'w':'l')+'">'+(f.won?'W':'L')+'</span> '+
-      '<span class="mth">'+methodTag(f)+'</span> vs '+f.opp+
-      ' <span style="color:var(--muted)">('+(f.p*100).toFixed(0)+'%)</span>';
+      '<span class="mth">'+methodTag(f)+'</span> vs '+f.opp+champMark+
+      ' <span class="ml">'+amer(f.p)+'</span>';
     l.appendChild(d);
   });
   p.appendChild(l);
@@ -1729,10 +1794,22 @@ function endBox(msg){
   const p=document.createElement('div'); p.className='panel';
   const b=document.createElement('div'); b.className='big '+(G.champ?'win':'loss'); b.textContent=msg;
   p.appendChild(b);
+  // TWO RECORDS, because they answer two different questions. The PRO record is
+  // the one that goes under your name on a broadcast and includes the 10-0 you
+  // walked in with; the UFC record is the only one the belt ever cared about, and
+  // it's the one every rule in the game actually reads. Printing just the total
+  // would flatter a 1-4 run into 11-4; printing just the UFC record loses the
+  // premise the whole economy is built on.
+  const rec=document.createElement('div'); rec.className='recs';
+  rec.innerHTML =
+    '<div><span>Pro record</span><b>'+totalRecord()+'</b></div>'+
+    '<div><span>UFC record</span><b>'+ufcRecord()+'</b></div>'+
+    '<div><span>Peak</span><b>'+(G.champ?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>';
+  p.appendChild(rec);
   const n=document.createElement('div'); n.className='note';
   const best = G.log.filter(f=>f.won).sort((a,b)=>a.p-b.p)[0];
-  n.textContent = 'Final: '+G.wins+'-'+G.losses+(G.rank!=null?', peaked at '+(G.rank===0?'champion':'#'+G.rank):', never ranked')+
-    (best?'. Best win: '+best.opp+' at '+(best.p*100).toFixed(0)+'%.':'');
+  // The best win speaks moneyline now too — same reason as the log.
+  n.textContent = best ? 'Best win: '+best.opp+' at '+amer(best.p)+'.' : 'No wins.';
   p.appendChild(n);
   // HOW THE RUN ACTUALLY WENT, not just how often. "9-4" and "9-4" are the same
   // line for a man who knocked out nine people and one who out-pointed nine, and

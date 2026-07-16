@@ -69,9 +69,12 @@ function playOne(strat){
   for(;;){
     if(guard++>40) break;
     const st=win.eval('({champ:G.champ,losses:G.losses,rank:G.rank})');
-    // Track the peak ourselves — the game has no G.peakRank, it only carries the
-    // CURRENT rank. Reading a field that doesn't exist returns undefined, which
-    // would have quietly scored every run as identical.
+    // Track the peak ourselves — the game HAD no peak, it only carried the CURRENT
+    // rank. (It has G.peak now: the end screen was printing "peaked at #N" off the
+    // current rank, which was only ever honest while rank couldn't go down, and a
+    // loss costs a rung as of this pass. This harness was right for longer than the
+    // game was.) Kept independent anyway: a harness that reads the number it is
+    // checking cannot catch the game getting it wrong.
     if(st.rank!=null && st.rank<peak) peak=st.rank;
     if(st.champ||st.losses>=win.eval("CUT_AT")) break;
     win.eval('(function(){'+
