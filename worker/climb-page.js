@@ -58,6 +58,19 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
     --accent:#00e668; --accent2:#ff3d00; --gold:#ffc531; --text:#f0f0f0; --muted:#666672; --card:#14141a; }
   *{box-sizing:border-box}
 
+  /* THE RULE THAT MAKES EVERY OTHER PAGE'S NAV WORK, and the reason "GILLY" and
+     "Log out" went PURPLE here without it.
+     The browser ships its own a:link/a:visited colours. Those are declarations ON
+     THE ELEMENT, and a declaration on the element beats an INHERITED value however
+     specific the ancestor — so .pk-navlinks{color:var(--muted)} never reaches the
+     <a> inside it, and the UA's visited purple wins. Every other free page has
+     a{color:inherit} at the top of its <style>; this page, being a standalone
+     prototype with no links, never needed one until it grew a nav.
+     It is also why .pk-brand can safely have no colour of its own over there.
+     I copied those four pk-* rules "byte-for-byte" and they still broke, because a
+     rule's behaviour is the whole cascade it lands in, not the rule. */
+  a{color:inherit}
+
   /* MOBILE: DON'T ZOOM WHEN I'M TAPPING +.
      Two fast taps on the same spot is a DOUBLE-TAP, and a double-tap is the
      browser's built-in zoom gesture — so spending 42 points at any speed zooms the
