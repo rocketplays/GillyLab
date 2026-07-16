@@ -2206,13 +2206,45 @@ function fight(o){
   // choke, so it feeds both. A 10/10 wrestler-grappler now gets a real share of
   // ground-and-pound instead of reading as a pure sub artist, which is what the
   // archetype (Constrictor) already claims he is.
+  //
+  // SUBMISSION DEFENCE DID NOT EXIST. Playtest: "a 10/10 grappler gets submitted a
+  // lot; having very high grappling should protect against submission losses." Read
+  // the old code and there is nothing to argue with — the losing branch was \`: sb\`,
+  // the opponent's submission rate, full stop. YOUR ATTRIBUTES WERE NOT REFERENCED.
+  // A black belt and a man who has never touched a mat tapped at the same rate.
+  // Measured, all attrs pinned at 5, only grappling moving, ~600 losses each:
+  //     grappling  1 -> 17% of losses by submission
+  //     grappling  5 -> 15%
+  //     grappling 10 -> 19%
+  // Flat. Noise. Ten points of the defining ground attribute bought nothing.
+  //
+  // The asymmetry is the tell, and it was sitting in the comment above: "Yours:
+  // power vs grappling. His: knockdowns vs subs." The WIN branch reads your build
+  // and the LOSS branch reads only his. Offence was a matchup; defence was his stat
+  // sheet against a wall. Every other defensive axis in this function already got
+  // this right — chinMult gates whether you're finished at all — so submission was
+  // the one hole left, and it was the one the archetype system shouts about most.
+  //
+  // matDef: grappling leads, takedown defence supports. A submission needs the mat
+  // and the mat needs a takedown, so the man who won't go down is hard to tap for a
+  // second, different reason. 0.80 leaves a maxed grappler at ~0.2x — rarely tapped,
+  // never immune, because there is no such thing.
+  const matDef = lvl('grappling') * 0.75 + lvl('takedef') * 0.25;
+  const subDef = 1 - 0.80 * matDef;            // 1.0 at the floor, 0.20 maxed
   const koW  = won ? ((G.attrs.power||1)
                       + (G.attrs.wrestling||0) * 0.50
                       + (G.attrs.pace||0) * 0.60 * frail)
                    : kd;
   const subW = won ? ((G.attrs.grappling||1) * 0.9
                       + (G.attrs.wrestling||0) * 0.35)
-                   : sb;
+                   : sb * subDef;
+  // NOTE WHAT THIS DOES NOT DO. bySub is a SHARE — subW/(koW+subW) — so this cannot
+  // change how often you are finished, only how. loseFin (chin) owns that, and it
+  // is untouched. A maxed grappler who loses badly now gets knocked out instead of
+  // tapped, which is the right story: he didn't stop losing, he stopped losing THAT
+  // WAY. Method has been inert since the finish bonus came out of G.pts, and this
+  // keeps it inert — if a future change makes the belt rate move here, the bonus is
+  // back and something is wrong.
   const bySub = fin && (koW + subW > 0) && Math.random() < subW/(koW+subW);
   const method = !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
