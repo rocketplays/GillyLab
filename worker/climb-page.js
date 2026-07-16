@@ -650,35 +650,34 @@ function archetype(a){
 // archetypes debuted at 85 — same budget, 11 free rating.
 const POINTS_START = 42, ATTR_MAX = 10, ATTR_MIN = 1;
 
-// FLAT COST — one point per level, always.
+// MILD RISING COST — 1pt through level 3, 2pts through 7, 3pts at 8 and 9.
 //
-// Playtest nailed this: "the way it is now, you could spend as much as you want
-// maxing out something, but then you're just spending extra points for nothing,
-// when you could spend less points on other categories that do more anyway."
+// THIS COMMENT USED TO BE TITLED "FLAT COST — one point per level, always" and it
+// sat directly above a line that has not been flat for a long time. Everything
+// under that heading argued, at length and with measurements, for a pricing
+// scheme the code wasn't using. Four more of its claims were also false by the
+// time anyone re-read them: "maxing one = 18" (it's 17 — ATTR_MIN is 1, so nine
+// steps, not ten), "7 attributes x 10 levels = 70 points" (there are NINE
+// attributes and maxing all of them costs 153), "a full run earns ~45-50"
+// (measured over 200 runs: the run earns ~16 on top of the 42 start, landing at
+// 58, range 43-63), and "the attributes are worth wildly different amounts
+// (grappling 8.9 win% end to end, technique 0.7) — that's the real open problem",
+// which the equal-WEIGHTS fix SOLVED. Every slider is 1/9 now. The comment was
+// still calling it open.
 //
-// The old curve was cost = ceil(v/2), so 9->10 cost 5 points and 1->2 cost 1 —
-// while the stat mapping was linear, so both bought the same bump. Cost
-// escalated, value didn't. Spreading wasn't a strategy the model preferred; it
-// was arbitrage on my own pricing.
+// So: read the line, not the paragraph above it.
 //
-// FLAT SURVIVED THE RE-ANCHORING, and this was worth checking rather than
-// assuming. Anchoring the curves to real fighters made them CONVEX (k=1.6, from
-// the division's own skew), and convex value + flat cost normally means corner
-// solutions: max three things, leave the rest at zero. So rising cost looked
-// like it should come back as the counterweight. Measured at a 24-point budget:
-//
-//     FLAT   grappling 10, takedef 10, power 7, rest at 1   -> 51.7%
-//     RAMP   grappling 9,  takedef 4,          rest at 1    -> 44.4%
-//
-// Rising cost doesn't fix specialisation. It leaves you at the same corner, just
-// poorer. The corner isn't caused by the curve OR the price — it's caused by the
-// attributes being worth wildly different amounts (grappling 8.9 win% end to
-// end, technique 0.7). No pricing scheme rescues an attribute the sim barely
-// reads. That's the real open problem; see the note on technique below.
-//
-// Maxing everything still isn't possible: 7 attributes x 10 levels = 70 points,
-// and a full run earns ~45-50.
-const upCost = v => 1 + Math.floor(v/4);   // 0-3:1pt  4-7:2pts  8-9:3pts. Maxing one = 18.
+// WHAT IS ACTUALLY TRUE ABOUT THIS CURVE, measured 2026-07-16:
+// value per point DECLINES as you commit (L=2 0.0761, L=6 0.0631, L=10 0.0588),
+// so spreading beats specialising and 9->10 is the worst buy on the sheet. That
+// is backwards from what a build-a-fighter game wants, AND IT DOES NOT MATTER:
+// ATTR_MAX caps everyone, so the spread edge is +4.0 rating at the 42-pt debut
+// (59% vs 50% against a 74-power man) and +0.4 by the 100-pt title fight (96% vs
+// 96%). The distortion dies in the region the game leaves immediately. The game
+// agrees: at N=500 the mechanically-optimal \`balanced\` bot scores 20% — MID, behind
+// wrestler's 22%. If the curve mattered, balanced would run away with it.
+// Deliberately not fixed. See THE-CLIMB-TUNING.txt, "THE COST CURVE — CLOSED".
+const upCost = v => 1 + Math.floor(v/4);   // 1-3:1pt  4-7:2pts  8-9:3pts. Maxing one = 17.
 const pct = n => Math.round(n)+'%';
 
 // ONE GATEKEEPER FIGHT. Not five.
