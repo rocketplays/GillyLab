@@ -1228,15 +1228,26 @@ function champScout(st){
     .sort((a,b) => b.w - a.w); return ok[0]; };
   // HOLES ARE SCORED AGAINST THE CONTENDERS TOO, and the threshold is higher.
   //
-  // First attempt scored them with zEng (the full-ladder mean the engine centres
-  // on) and "has been stopped before" fired for 6 of the 11 champions. The cause
-  // is a data artefact worth writing down: \`chin\` is derived from the RECORD, so a
-  // gatekeeper with four fights and no stoppage losses reads 0.9, and 24 of those
-  // drag the ladder mean above every champion who has actually been in wars. The
-  // full-ladder mean says more about sample size than about jaws.
-  // (This means styleDelta's own chin centring is inflated the same way. Left
-  // alone deliberately — it's a real change and it wants its own measurement —
-  // but it is now written down instead of being rediscovered a third time.)
+  // First attempt scored them with zEng (the full-ladder mean) and "durability
+  // concerns" fired for 6 of the 11 champions. I explained that here as a
+  // sample-size artefact — "chin comes from the RECORD, so a gatekeeper with four
+  // fights and no stoppage losses reads 0.9, and 24 of those drag the mean up" —
+  // wrote it into a commit as a real bug, and had never measured it.
+  //
+  // IT IS FALSE. corr(career fights, chin) = 0.059 across all 438 fighters: no
+  // relationship. Only FOUR fighters have under ten fights and they average 0.542,
+  // BELOW the roster, not 0.9. The artefact I described does not exist.
+  //
+  // What's true is duller and not a bug: champions average 0.061 below their own
+  // ladder, because champions have fought elite competition and some of them have
+  // genuinely been stopped — Volkanovski 0.38, Ulberg 0.41, Gaethje 0.46 are
+  // facts, not noise. Priced out, that is worth 0.9 points of styleDelta to a
+  // maxed puncher at the title fight against a median |styleDelta| of 3.5. Real,
+  // small, and TRUE TO THE MEN. Nothing to fix.
+  //
+  // Contenders are still the right comparison class for a scouting report — "is he
+  // unusual among the men who could take his belt" is the question a scout asks —
+  // but that is a reporting choice, not a repair.
   const holeZ = (k, d) => { const r = rankStat(k, d);
     return r.sd < 1e-6 ? 0 : (g(k, d) - r.m) / r.sd; };
   const hole = pick([
