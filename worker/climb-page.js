@@ -1,6 +1,6 @@
 /* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
    Edit the prototype: it is what the whole test/sim harness reads. */
-export const climbPage = ({ nav }) => `<!DOCTYPE html>
+export const climbPage = ({ head, nav }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -15,6 +15,13 @@ export const climbPage = ({ nav }) => `<!DOCTYPE html>
      itself. Both are relative because this page is served from the repo root. -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="/gl-sheet.js?v=1" defer></script>
+<!-- HEAD SLOT — filled by scripts/gen-climb-page.cjs from the worker, empty here.
+     Carries the Open Graph tags (so a shared link previews) and, for logged-out
+     visitors, the CLIMB_LOCKED flag. Both have to come from the worker rather than
+     be baked in: ogTags() needs SITE_URL and is ONE definition shared with every
+     other page, and locked-ness is per-request. The prototype is opened directly
+     and is never locked, so this is empty there. -->
+` + (head || "") + `
 <!--
   PROTOTYPE. Deliberately ugly. Needs a local server (it fetches climb-data.json):
       python3 -m http.server        then  localhost:8000/prototypes/the-climb.html
@@ -2077,6 +2084,29 @@ function endBox(msg){
   return p;
 }
 
+// LOCKED = LOGGED OUT, AND IT IS NOT THE SAME AS BROKEN.
+//
+// The page is served to everyone so a shared link previews and Google can read it;
+// the LADDER is what's gated, because it carries the power ratings. So a logged-out
+// visitor gets real HTML and a real pitch, and the fetch below never happens —
+// without this it would fire, get redirected to /signup, receive HTML where it
+// wanted JSON, and land in the catch reporting "Could not load /data/climb.json"
+// with instructions to run python3. That's a page telling a prospective user the
+// site is broken at the exact moment it's asking them to sign up.
+if (window.CLIMB_LOCKED) {
+  const p=document.createElement('div'); p.className='panel';
+  p.innerHTML='<div class="big win">Create a free account to play</div>'+
+    '<div class="note">The Climb is free. You build a fighter, start as a 10-0 prospect, '+
+    'and try to win a real UFC belt against the real division — no card, no trial.</div>';
+  const a=document.createElement('a'); a.className='btn pri'; a.href='/signup?next=/theclimb';
+  a.textContent='Create a free account →';
+  a.style.cssText='display:inline-block;margin-top:.8rem;text-decoration:none';
+  p.appendChild(a);
+  const l=document.createElement('a'); l.href='/login?next=/theclimb'; l.textContent='or log in';
+  l.style.cssText='display:inline-block;margin:.8rem 0 0 .7rem;color:var(--muted);font-size:.78rem';
+  p.appendChild(l);
+  $('#app').innerHTML=''; $('#app').appendChild(p);
+} else
 fetch('/data/climb.json').then(r=>r.json()).then(d=>{
   // No createScorer any more. The 90KB browser-wrapped simulator and the 443KB
   // of FIGHTER_STATS/FIGHT_HISTORY it ate are gone: the game scores fights

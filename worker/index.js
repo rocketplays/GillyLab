@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, ogTags } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1144,27 +1144,6 @@ export default {
       if (path === "/contact") return html(contactPage());
       if (path === "/about") return html(aboutPage());
 
-      // ---- The Climb (FREE feature — same gate as Pick'em: any logged-in
-      // account, logged-out are sent to sign up and returned here) ----
-      //
-      // ACCOUNT-GATED ON PURPOSE, and the reason is the data, not the game. The
-      // Climb scores every fight in the browser, so it must ship the ladder — and
-      // the ladder carries the GillyLab power rating for all 438 fighters, which
-      // appears on no other free page and in no other public asset. Fully public
-      // would make the paywalled ratings a static JSON anyone can curl. A free
-      // account is the same bargain /pickem already strikes: costs the player
-      // nothing, keeps the numbers out of crawlers and casual scrapers, and feeds
-      // the funnel the free side exists for. It is NOT a lock — a logged-in user
-      // can still read the JSON — and it should not be mistaken for one.
-      if (path === "/theclimb") {
-        const s = await readSession(request, env);
-        if (!s) return redirect(env.SITE_URL + "/signup?next=/theclimb");
-        // A back arrow, not freeTabs. Mid-run, five links to leave are noise —
-        // see climbNav(). The Climb button still appears in freeTabs on every
-        // OTHER free page, which is how you get here.
-        return html(climbPage({ nav: climbNav() }), 200, { "Cache-Control": "private, no-store" });
-      }
-
       // ---- Pick'em (FREE feature — any logged-in account; logged-out are sent to
       // sign up and returned here) ----
       if (path === "/pickem") {
@@ -1187,6 +1166,42 @@ export default {
       // "create a free account" CTA). Same HTML for humans + crawlers (no cloaking).
       // Cache-Control differs only by login state so a logged-in nav isn't cached.
       const pubHeaders = (s) => s ? { "Cache-Control": "private, no-store" } : { "Cache-Control": "public, max-age=300" };
+
+      // ---- The Climb (FREE — the PAGE is public, the LADDER is gated) ----
+      //
+      // It lives here, with the other public content pages, and not up with
+      // /pickem, for two reasons that turned out to be the same reason.
+      //
+      // 1. IT MUST BE SHAREABLE. This used to redirect logged-out straight to
+      //    /signup, which quietly made the page un-previewable: iMessage, Slack and
+      //    Twitter fetch a link with no cookie, so the preview bot followed the 302
+      //    to /signup and previewed THAT — no og tags, no image, no title. Adding
+      //    og tags to this route would have fixed nothing while the redirect stood,
+      //    because nothing ever reached them. A game nobody can share is a game
+      //    nobody finds.
+      // 2. SERVING THE HTML COSTS NOTHING. What we're protecting is the power
+      //    ratings, and they are in /data/climb.json, which is still gated below.
+      //    This page is the game's code and its pitch; neither is secret. Logged-out
+      //    visitors get a real page and a signup CTA (window.CLIMB_LOCKED), which is
+      //    the same bargain the pages around it already strike — "readable +
+      //    indexable logged-OUT for SEO ... same HTML for humans + crawlers (no
+      //    cloaking)". This is now one of them, so it sits with them.
+      //
+      // (It also has to be BELOW pubHeaders: const is block-scoped and in the TDZ
+      // until its declaration, so calling it from the old position threw a
+      // ReferenceError on every single request.)
+      if (path === "/theclimb") {
+        const s = await readSession(request, env);
+        const head = ogTags(
+          "The Climb — Build a UFC Fighter and Win the Belt · GillyLab",
+          "Build a fighter, start as a 10-0 prospect entering the UFC, then pick your fights and climb the real rankings to a real belt. Free to play on GillyLab.",
+          "/theclimb"
+        ) + (s ? "" : "<script>window.CLIMB_LOCKED=1</script>");
+        // A back arrow, not freeTabs. Mid-run, five links to leave are noise — see
+        // climbNav(). The Climb button still appears in freeTabs on every OTHER
+        // free page, which is how you get here.
+        return html(climbPage({ head, nav: climbNav() }), 200, pubHeaders(s));
+      }
       if (path === "/rankings") {
         const s = await readSession(request, env);
         const [u, rk, ex, profileSlugs] = await Promise.all([

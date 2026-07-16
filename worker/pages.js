@@ -14,7 +14,11 @@ const CONTACT_EMAIL = "support@gillylab.com";   // shown in the footer + legal p
 
 // Open Graph / Twitter card tags for a public page, so shared links (iMessage,
 // Twitter, Facebook, Slack) get a rich preview with the brand og image.
-const ogTags = (title, desc, canonicalPath) => {
+// Exported for /theclimb, which is generated from prototypes/the-climb.html and has
+// its head injected at a marker — it must use THIS ogTags, not a copy, or the
+// Climb's link preview drifts from every other page's the first time og.png
+// changes.
+export const ogTags = (title, desc, canonicalPath) => {
   const t = String(title || "").replace(/"/g, "&quot;");
   const d = String(desc || "").replace(/"/g, "&quot;");
   const url = SITE_URL + canonicalPath;

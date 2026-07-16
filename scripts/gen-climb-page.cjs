@@ -37,6 +37,14 @@ if (!html.includes("<!--FREE_NAV-->")) {
   console.error("gen-climb-page: <!--FREE_NAV--> marker missing from the prototype — refusing to generate a page with no nav");
   process.exit(1);
 }
+// The head slot carries the og tags and the logged-out flag. Lose it and the page
+// still works perfectly for the person playing it — which is exactly why it needs
+// a guard: link previews and the signup gate would just quietly stop existing, and
+// nothing you'd notice while testing the game would tell you.
+if (!html.includes("<!--HEAD-->")) {
+  console.error("gen-climb-page: <!--HEAD--> marker missing from the prototype — refusing to ship a page with no og tags and no signup gate");
+  process.exit(1);
+}
 // Same guard for the mount point and the boot fetch: these are the two things
 // that make it a game rather than a document, and a silent miss ships a blank page.
 for (const needle of ['<div id="app">', "fetch('/data/climb.json')"]) {
@@ -58,11 +66,20 @@ html = html.replace(
 // comments and ${...} would be catastrophic — this is why it's mechanical.
 const esc = (s) => s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 
-const [head, tail] = html.split("<!--FREE_NAV-->");
+// Two slots, in document order: <!--HEAD--> then <!--FREE_NAV-->. Split on head
+// first, then split the remainder on nav, so the three chunks are guaranteed to
+// reassemble in the order they appear in the file.
+const [beforeHead, afterHead] = html.split("<!--HEAD-->");
+const [betweenSlots, afterNav] = afterHead.split("<!--FREE_NAV-->");
+if (afterNav === undefined) {
+  console.error("gen-climb-page: <!--FREE_NAV--> must come AFTER <!--HEAD--> in the prototype");
+  process.exit(1);
+}
 
 fs.writeFileSync(OUT,
   "/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.\n" +
   "   Edit the prototype: it is what the whole test/sim harness reads. */\n" +
-  "export const climbPage = ({ nav }) => `" + esc(head) + "` + (nav || \"\") + `" + esc(tail) + "`;\n");
+  "export const climbPage = ({ head, nav }) => `" + esc(beforeHead) + "` + (head || \"\") + `" +
+  esc(betweenSlots) + "` + (nav || \"\") + `" + esc(afterNav) + "`;\n");
 
 console.log("worker/climb-page.js: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");
