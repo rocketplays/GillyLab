@@ -171,13 +171,33 @@
   /* opponent cards */
   .opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem}
   .opp{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem;cursor:pointer;text-align:left;color:inherit;font:inherit}
-  .opp:hover{border-color:var(--accent)}
   .opp .nm{font-size:.92rem;font-weight:700}
   .opp .rk{font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em}
   .opp .rec{font-size:.72rem;color:var(--muted);margin:.2rem 0 .45rem}
   .opp .odds{font-size:.75rem}
   .opp .rw{font-size:.68rem;color:var(--accent);margin-top:.3rem}
   .opp.risky{border-color:rgba(255,61,0,.5)}
+
+  /* HOVER ONLY WHERE A CURSOR EXISTS.
+     Reported: "when clicking a fighter that's green because you're the favorite,
+     it stays green on the next round, which guides the eye to that one almost as a
+     suggestion." Exactly right, and it was the matchmaker appearing to have an
+     opinion — the one thing this board must never do.
+     A touch device has no cursor, so it FAKES one: it applies :hover on tap and
+     holds it until you tap somewhere else. render() then rebuilds the board, the
+     new card lands under the same finger, and the emulated hover re-applies to
+     whatever now occupies that spot. The green outline follows your last tap
+     around and reads as a recommendation.
+     @media (hover: hover) is the fix rather than deleting the rule: a mouse
+     genuinely IS over the thing it highlights, so desktop keeps the affordance and
+     touch never gets a state it has no way to leave. */
+  @media (hover: hover){
+    .opp:hover{border-color:var(--accent)}
+    button.btn:hover{border-color:var(--accent)}
+    .btn.restart:hover{color:var(--accent2);border-color:var(--accent2);background:transparent}
+    .divsel:hover{border-color:var(--accent)}
+    .pl-act:hover{background:var(--accent);color:#0e0f13}
+  }
 
   /* record + status */
   .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}
@@ -194,7 +214,6 @@
      inviting. margin-left:auto pins it to the far end of the HUD row. */
   .btn.restart{margin-left:auto;padding:.25rem .55rem;font-size:.68rem;font-weight:600;
     color:var(--muted);background:transparent;border-color:var(--border);align-self:center}
-  .btn.restart:hover{color:var(--accent2);border-color:var(--accent2);background:transparent}
   /* ...but in the creator's button row it sits beside "Turn pro", where
      margin-left:auto would fling it to the far edge away from its own label. */
   .panel > div > .btn.restart{margin-left:0}
@@ -227,7 +246,6 @@
   .pl-share-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.9rem}
   .pl-share-hint{text-align:center;margin-top:.6rem;font-size:.66rem;color:var(--text);line-height:1.5;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .75rem}
   .pl-act{background:rgba(0,230,104,.10);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}
-  .pl-act:hover{background:var(--accent);color:#0e0f13}
   .pl-act.primary{background:var(--accent);color:#0e0f13}
   .pl-act.ghost{background:transparent;border-color:var(--border);color:var(--muted)}
   .pl-act.busy{opacity:.5;pointer-events:none}
@@ -244,7 +262,6 @@
   .big.win{color:var(--accent)} .big.loss{color:var(--accent2)}
   button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600}
   button.btn.pri{background:var(--accent);color:#04120a;border-color:var(--accent)}
-  button.btn:hover{border-color:var(--accent)}
   .load{color:var(--muted);padding:2rem 0;text-align:center}
 
   /* Attribute legend — a table, not a paragraph.
@@ -308,7 +325,8 @@
                      linear-gradient(135deg,var(--muted) 50%,transparent 50%);
     background-position:calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
     background-size:5px 5px, 5px 5px; background-repeat:no-repeat}
-  .divsel:hover,.divsel:focus{border-color:var(--accent);outline:none}
+  .divsel:focus{border-color:var(--accent);outline:none}   /* :focus is real and
+     dismissable — only :hover is the emulated, sticky one. Gated above. */
   /* The dropdown list itself renders with the OS palette, not ours — without this
      it's black text on a white sheet in the middle of a dark page. */
   .divsel option{background:var(--surface2);color:var(--text)}
