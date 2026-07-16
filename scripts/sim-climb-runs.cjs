@@ -52,6 +52,20 @@ const STRATS={
   'striker/blind': {order:['power','technique','pace','strdef','chin','cardio','takedef','grappling','wrestling'], path:'random'},
   'wrestler/safe': {order:['wrestling','takedef','cardio','chin','grappling','power','technique','pace','strdef'], path:'easy'},
   'wrestler/blind':{order:['wrestling','takedef','cardio','chin','grappling','power','technique','pace','strdef'], path:'random'},
+  // THE SMART BOT. safe (easiest card) and blind (random) score IDENTICALLY —
+  // measured 26/26, then 14/15. That reads as "the matchup screen is decoration",
+  // but it isn't: it reads as "both of these bots are bad, in opposite directions".
+  // safe takes the soft card and climbs ONE rung; blind sometimes takes the man
+  // above and climbs THREE. More wins versus more progress, and because rewardFor
+  // pays LINEARLY in rungs, the two cancel almost exactly.
+  //
+  // So neither bot is playing the actual game, which is: which card buys the most
+  // PROGRESS per unit of loss-budget risk? This one maximises p x rungs. If it
+  // beats both, the strategy exists and the harness simply never looked for it. If
+  // it ties them too, the board really is three equivalent doors and the screen is
+  // decoration — and THAT is the thing worth fixing.
+  'striker/smart' : {order:['power','technique','pace','strdef','chin','cardio','takedef','grappling','wrestling'], path:'ev'},
+  'wrestler/smart': {order:['wrestling','takedef','cardio','chin','grappling','power','technique','pace','strdef'], path:'ev'},
 };
 
 function playOne(strat){
@@ -99,8 +113,13 @@ function playOne(strat){
       // game, and the tuning file's own warning is DON'T SAMPLE THE FUNCTION,
       // SAMPLE THE GAME. No player alive ducks the belt for thirty fights.
       'var title=o.filter(function(x){return x.f.rankNum===0})[0];'+
+      // 'ev' picks the card with the best expected PROGRESS: p x rungs. o.jump is
+      // the opponent's rank (99 = unranked), so rungs = how far this win moves you.
+      'var ev=function(x){var rg=(G.rank==null||x.jump>=99||x.jump>=G.rank)?1:Math.max(1,G.rank-x.jump);return x.p*rg;};'+
+      'var best=o.slice().sort(function(a,b){return ev(b)-ev(a)})[0];'+
       'var pick=title||'+(pref==='easy'?'s[0]':pref==='hard'?'s[s.length-1]':
-                   pref==='random'?'o[Math.floor(Math.random()*o.length)]':'s[Math.floor(s.length/2)]')+';'+
+                   pref==='random'?'o[Math.floor(Math.random()*o.length)]':
+                   pref==='ev'?'best':'s[Math.floor(s.length/2)]')+';'+
       'fight(pick);})()');
   }
   const r=win.eval('({champ:!!G.champ,wins:G.wins,losses:G.losses,rank:G.rank,'+

@@ -864,7 +864,26 @@ const RATING_MIN  = 30;      // the floor; a 42-pt debut lands ~74 (see POINTS_S
 // under the new weights would have quietly handed every run ~6 free rating.
 const RATING_SPAN = 150;     // re-fitted for WEIGHTS=1/9 so ~70 pts (a full run) reaches ~100
 const CAP_OVER    = 5;       // a maxed fighter tops out this far above the champion
-const STYLE_MAX   = 11;      // biggest style swing, in points of win probability
+// STYLE_MAX 11 -> 22. THE MATCHUP SCREEN WAS DECORATION AND THE FILE SAID SO ONCE
+// ALREADY: "Rank outweighed style 6:1, so cherry-picking your matchup scored
+// identically to picking at RANDOM (16% vs 16%)." Measured again on the current
+// board: rank 5.3 : 1 style. The old fix was STEP 3 -> 1 (narrow the bands so the
+// three men are the same size); the SHORT LADDER then needed STEP 3 back, the
+// power spread returned to 9.0, and rank retook the wheel. A regression undone by
+// a later fix, which is why it needs a dial of its own rather than a band width.
+//
+// Measured at N=300, cherry-picking (safe) vs picking blind:
+//     STYLE_MAX 11   safe 14%  blind 11%   a 3-point edge
+//     STYLE_MAX 22   safe 18%  blind 10%   an 8-point edge
+// Reading the board goes from marginal to nearly doubling your belt rate. That IS
+// the playtest spec: "if you cherry pick favorable matchups, that should be an
+// advantage, not the same as picking randomly."
+//
+// The cost is honest and worth writing down: style is not symmetric across the
+// roster. Heavyweight is full of strikers with ordinary takedown defence, so
+// amplifying the triangle amplifies the wrestler's systematic edge there too —
+// grappler sits above striker by ~7 points and that gap grew with this change.
+const STYLE_MAX   = 22;      // biggest style swing, in points of win probability
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
                              // more and your build decides less.
 
@@ -1326,7 +1345,19 @@ let _offerCache = null, _offerKey = '';
 //
 // RUNG_PAY is now THE dial for run length and title rate. Raise it and runs
 // shorten and the belt gets cheaper; lower it and the champion pulls away.
-const RUNG_PAY = 1.3;
+// RUNG_PAY 1.3 -> 0.95. Playtest: "41% is too high, it should be closer to the
+// other values, around ~20%." The premise is "can you become a UFC champion?" and
+// at 2-in-5 the answer was "usually". Now the best builds land at ~20 and the
+// spread is 13-21 rather than 18-41.
+//
+// This is THE dial for the belt rate and it is monotonic — measured at N=120:
+//     0.95 -> striker 13 / wrestler 21 / grappler 20
+//     1.30 -> striker 18 / wrestler 41 / grappler 37
+//     1.40 -> striker 30 / wrestler 33 / grappler 44
+// It is sensitive because the economy is a runaway loop (points -> rating -> wins
+// -> points), which is exactly why it must be the ONLY thing feeding G.pts. The
+// finish bonus was a second, hidden one; see fight().
+const RUNG_PAY = 0.95;
 // ONE DEFINITION. This lived inline in buildOffers() AND was recomputed in
 // offers() — two copies of the same formula, and I edited one. A reward that
 // silently disagrees with itself between the card and the payout is exactly the
