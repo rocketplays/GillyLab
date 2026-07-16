@@ -11,7 +11,41 @@ const GL_SHEET = (function () {
     return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (navigator.maxTouchPoints || 0) > 1);
   })();
 
-  const fontsReady = () => (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  // ASK FOR THE FONTS. document.fonts.ready only waits for loads ALREADY PENDING;
+  // it does not start any. And a webfont is only fetched when RENDERED DOM TEXT
+  // uses it — ctx.font does not trigger a fetch. So on a page whose own type is
+  // system-ui (every free page: -apple-system, BlinkMacSystemFont, ...), Barlow is
+  // referenced by nothing the browser paints, ready resolves instantly, and the
+  // canvas quietly draws in the default sans.
+  //
+  // Which is not a cosmetic difference: the fallback is not CONDENSED. Every width
+  // this file measures — clip(), the 104px verdict on the Climb card — is computed
+  // against a face ~35% wider than the one the layout was designed for, so text
+  // overruns the canvas and gets clipped at 1080. Reported as "on smaller phones
+  // the CHAMPION line is too wide and goes off the page"; it was every phone that
+  // hadn't loaded Barlow for some other reason, and the size of the phone was a
+  // coincidence of which ones had it cached.
+  //
+  // load() both starts the fetch and resolves when it's usable. Failures are
+  // swallowed: a sheet in the fallback face is worse than one in Barlow but far
+  // better than no sheet, and drawClimb now fits its headline either way.
+  const fontsReady = async () => {
+    if (!document.fonts) return;
+    // load() is the part that's new. Guarded separately from ready() so a browser
+    // with FontFaceSet but no load() still gets the old behaviour rather than
+    // silently skipping the wait it used to do.
+    if (document.fonts.load) {
+      try {
+        await Promise.all([
+          document.fonts.load('800 104px "Barlow Condensed"'),
+          document.fonts.load('700 24px "Barlow Condensed"'),
+          document.fonts.load('400 27px "Barlow"'),
+          document.fonts.load('500 26px "Barlow"'),
+        ]);
+      } catch (e) { /* offline, blocked, or no such family — draw in the fallback */ }
+    }
+    try { await document.fonts.ready; } catch (e) {}
+  };
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath();
     ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
@@ -1033,11 +1067,28 @@ const GL_SHEET = (function () {
 
     const win = !!d.champ, hero = win ? ACC : CLIMB_RED;
 
-    // THE VERDICT — the page's own `.big` line, at the size it deserves.
-    ctx.fillStyle = hero; ctx.font = '800 104px ' + COND;
-    ctx.fillText(d.verdict || '', 64, 190);
+    // THE VERDICT — the page's own .big line, at the size it deserves, in two
+    // colours: the word in the result's colour, the rest in white.
+    //
+    // MEASURED AND FITTED, NOT HARD-CODED AT 104px. Two things move its width and
+    // neither is under this function's control: WHAT it says ("CHAMPION. You did
+    // it." is half again as wide as "CUT. 5 losses.") and WHICH FACE it lands in
+    // (if Barlow Condensed hasn't loaded, the fallback sans is ~35% wider and the
+    // line runs off the 1080 canvas and gets clipped — which is the bug this was
+    // reported as). Shrink until it fits; a slightly smaller headline is nobody's
+    // problem, a headline missing its last three words is.
+    let vSize = 104;
+    const verdictW = () => {
+      ctx.font = '800 ' + vSize + 'px ' + COND;
+      return ctx.measureText(d.verdict || '').width +
+             ctx.measureText(' ' + (d.verdictSub || '')).width;
+    };
+    while (vSize > 52 && verdictW() > W - 128) vSize -= 2;
+    ctx.font = '800 ' + vSize + 'px ' + COND;
     const vw = ctx.measureText(d.verdict || '').width;
-    ctx.fillStyle = TXT; ctx.font = '800 104px ' + COND;
+    ctx.fillStyle = hero;
+    ctx.fillText(d.verdict || '', 64, 190);
+    ctx.fillStyle = TXT;
     ctx.fillText(' ' + (d.verdictSub || ''), 64 + vw, 190);
     // The archetype used to live HERE, as the second of four items in this muted
     // line — recorded but invisible, which is not what it's for. It's the one thing
