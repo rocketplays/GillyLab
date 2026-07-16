@@ -346,6 +346,28 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   /* The dropdown list itself renders with the OS palette, not ours — without this
      it's black text on a white sheet in the middle of a dark page. */
   .divsel option{background:var(--surface2);color:var(--text)}
+
+  /* THE SCOUTING REPORT. Collapsed to one line by default: the creator screen was
+     already reported as "a little tall" on mobile, and this sits above the thing
+     you came here to do. The READ is always visible; the numbers are opt-in. */
+  .scout{margin-top:.5rem;background:var(--surface);border:1px solid var(--border);
+    border-radius:8px;overflow:hidden}
+  .scout-hd{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;
+    cursor:pointer;user-select:none;background:none;border:0;width:100%;
+    color:inherit;font:inherit;text-align:left}
+  .scout-nm{font-size:.78rem;font-weight:700;white-space:nowrap}
+  .scout-c{color:var(--gold);font-weight:700}
+  .scout-rd{font-size:.72rem;color:var(--muted);flex:1;overflow:hidden;
+    text-overflow:ellipsis;white-space:nowrap}
+  .scout-ch{color:var(--muted);font-size:.6rem;transition:transform .15s}
+  .scout-ch.o{transform:rotate(180deg)}
+  .scout-bd{padding:0 .6rem .6rem;border-top:1px solid var(--border)}
+  .scout-arch{font-size:.68rem;color:var(--muted);text-transform:uppercase;
+    letter-spacing:.06em;margin:.5rem 0 .45rem}
+  .scout-row{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:.2rem}
+  .scout-row .v{font-weight:600}
+  .scout-bar{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:.45rem}
+  .scout-bar i{display:block;height:3px;border-radius:2px;background:var(--muted)}
 </style>
 </head>
 <body>
@@ -1075,15 +1097,203 @@ function myRating(a){
 // men around him, someone my power hurts?" A division of iron chins is not a
 // division where power is worthless — it's one where the few crackable jaws are
 // worth hunting.
+// Module-level ON PURPOSE: render() rebuilds #app from scratch, so anything scoped
+// inside it resets on every tap. The disclosure has to remember it's open.
+let scoutOpen = false;
+
 let _DM = {}, _DMdiv = null;
 function DIVMEAN(key, fallback){
-  if (_DMdiv !== DIV) { _DMdiv = DIV; _DM = {}; }
+  if (_DMdiv !== DIV) { _DMdiv = DIV; _DM = {}; _DS = {}; }
   if (_DM[key] != null) return _DM[key];
   const L = LADDER();                    // pure accessor, no side effects
   if (!L || !L.length) return fallback;
   let s = 0, n = 0;
   for (const f of L) { const v = f.style ? f.style[key] : null; if (v != null) { s += v; n++; } }
   return _DM[key] = n ? s / n : fallback;
+}
+// The division's SPREAD on a stat — how unusual "unusual" is around here. Only the
+// scouting report needs this; styleDelta centres on the mean and scales by hand,
+// because its coefficients are a design statement about what wins fights, not a
+// measurement of the roster.
+let _DS = {};
+function DIVSD(key, fallback){
+  if (_DMdiv !== DIV) { _DMdiv = DIV; _DM = {}; _DS = {}; }
+  if (_DS[key] != null) return _DS[key];
+  const L = LADDER();
+  if (!L || !L.length) return fallback;
+  const m = DIVMEAN(key, 0);
+  let s = 0, n = 0;
+  for (const f of L) { const v = f.style ? f.style[key] : null;
+    if (v != null) { s += (v - m) * (v - m); n++; } }
+  return _DS[key] = n > 1 ? Math.sqrt(s / n) : fallback;
+}
+
+// SCOUT THE CHAMPION AGAINST THE CONTENDERS, NOT AGAINST THE LADDER.
+//
+// The ladder is 16 ranked men and 24 gatekeepers, and a champion is unusual
+// against a gatekeeper on every axis that exists. Z-scoring him over the whole
+// pool therefore lit up EVERY stat: measured, "high volume" fired for 7 of the 11
+// champions, which is not a scouting report, it's boilerplate — and it crowded
+// Carlos Ulberg's cracked chin, the one thing worth knowing about him, off his own
+// line. The right comparison class for "is this champion unusual?" is the men who
+// are also contenders.
+// styleDelta keeps using the full-ladder DIVMEAN, and should: you actually fight
+// the gatekeepers, so they belong in the average that prices those fights.
+let _RM = {}, _RS = {}, _RMdiv = null;
+function rankStat(key, fallback){
+  if (_RMdiv !== DIV) { _RMdiv = DIV; _RM = {}; _RS = {}; }
+  if (_RM[key] != null) return { m: _RM[key], sd: _RS[key] };
+  const L = (LADDER() || []).filter(f => f.rankNum < 99 && f.rankNum !== 0);
+  if (L.length < 3) return { m: fallback, sd: 1 };
+  let s = 0, n = 0;
+  for (const f of L) { const v = f.style ? f.style[key] : null; if (v != null) { s += v; n++; } }
+  if (!n) return { m: fallback, sd: 1 };
+  const m = s / n;
+  let q = 0;
+  for (const f of L) { const v = f.style ? f.style[key] : null; if (v != null) q += (v - m) * (v - m); }
+  _RM[key] = m; _RS[key] = n > 1 ? Math.sqrt(q / n) : 1;
+  return { m: _RM[key], sd: _RS[key] };
+}
+
+// THE SCOUTING REPORT — what the champion is, never what you should do about it.
+//
+// Every run must beat exactly one man, so his stat line, not the division's
+// average, decides the division's style balance. Measured: Carlos Ulberg (86%
+// TDD, 0.41 chin) makes LHW a 40% belt for a striker and a 21% belt for a
+// wrestler; Tom Aspinall (100% TDD, 3.3 KD/15) inverts it at heavyweight. That
+// was invisible — the picker showed his NAME and nothing else, so the single
+// biggest determinant of a run was a thing you found out by losing to it.
+//
+// THE LINE THIS FUNCTION WILL NOT CROSS: it takes \`st\` and nothing else. It
+// cannot see G.attrs, and that is deliberate, not incidental. The moment a
+// scouting report reads your build it stops describing a fighter and starts
+// printing the answer — "you're +4.8 against him", "strikers are favoured here" —
+// and the 42-point decision solves itself. A scout describes the man; the read is
+// yours. Two players should be able to look at Ulberg and disagree: "he can be
+// hurt" invites a puncher, but 86% takedown defence is only a problem if you were
+// going to shoot, and a technician might just outbox him. That argument is the
+// game. \`strikers win here\` would end it.
+//
+// GRADED, AND GRADED AGAINST HIS OWN DIVISION. Two reasons. First, these are real
+// people: "won't be wrestled" is an overclaim about Carlos Ulberg, and "difficult
+// to wrestle" is simply true. Nothing here should say more than the stat sheet
+// can carry. Second, 86% takedown defence means something different at heavyweight
+// than at strawweight, and styleDelta already centres on the division — a report
+// centred anywhere else would be describing a different fight from the one the
+// game scores.
+function champScout(st){
+  if (!st) return null;
+  const mTdd = DIVMEAN('tdDef', 66), mChin = DIVMEAN('chin', 0.6),
+        mKd  = DIVMEAN('kd', 0.5),   mSlpm = DIVMEAN('slpm', 4.4),
+        mSub = DIVMEAN('sub', 0.5),  mTd   = DIVMEAN('td', 1.4),
+        mSd  = DIVMEAN('strDef', 53);
+  const g = (k, d) => { const v = st[k]; return v == null ? d : v; };
+  // Z-SCORES, NOT HAND-PICKED DENOMINATORS. The first version of this divided each
+  // stat by a constant I chose by eye (kd by ~0.6, tdDef by 18), which made the
+  // weights incomparable across axes: knockdowns have a small mean, so dividing by
+  // it inflated kd's weight ~2x against everything else. "Show the loudest three"
+  // then ranked my arbitrary denominators rather than the fighter. It printed
+  // "[Submission grappler]" for TOM ASPINALL — the most feared puncher in the
+  // sport — and dropped Carlos Ulberg's cracked chin, the single most
+  // decision-relevant fact about him, off his own scouting line.
+  // Dividing by the DIVISION'S OWN SPREAD makes every axis mean the same thing:
+  // "how unusual is he, among the men he fights".
+  // AGAINST THE CONTENDERS for "is he unusual", because a champion is unusual
+  // against a gatekeeper on every axis and z-scoring over the whole ladder made
+  // "high volume" fire for 7 of 11 champions.
+  const z = (k, d) => { const r = rankStat(k, d);
+    return r.sd < 1e-6 ? 0 : (g(k, d) - r.m) / r.sd; };
+  // ...but his HOLES are priced by the engine against the FULL ladder, because
+  // that is the mean styleDelta centres on. Keep the two straight: \`z\` answers
+  // "is this remarkable", \`zEng\` answers "will this actually move a fight".
+  const zEng = (k, d) => { const s = DIVSD(k, 1);
+    return s < 1e-6 ? 0 : (g(k, d) - DIVMEAN(k, d)) / s; };
+  const zTdd = z('tdDef', 66), zChin = z('chin', 0.6), zKd = z('kd', 0.5),
+        zTd  = z('td', 1.4),   zSub  = z('sub', 0.5),  zVol = z('slpm', 4.4),
+        zSd  = z('strDef', 53);
+  // A THREAT AND A HOLE — not "the two most unusual things".
+  //
+  // Ranking purely by |z| surfaces threats and buries holes, because a champion's
+  // holes are BY DEFINITION his least remarkable trait. Measured, that read gave
+  // Carlos Ulberg "high volume, real knockout power" and never mentioned the 0.41
+  // chin — which is the entire reason light heavyweight is a 40% belt for a
+  // puncher and a 21% belt for a wrestler. The one fact worth knowing lost a
+  // ranking contest to a stat that describes how busy he is.
+  //
+  // So the shape is fixed: his best weapon, then the way in, if there is one. That
+  // is what a scout actually tells a fighter, and it guarantees the strategic half
+  // of the report can never be crowded out by flavour. A champion with no hole
+  // gets told he has no hole — which is its own, quite loud, piece of information.
+  const pick = (arr, skip) => { const ok = arr.filter(x => x.w > 0.7 && x.s !== skip)
+    .sort((a,b) => b.w - a.w); return ok[0]; };
+  // HOLES ARE SCORED AGAINST THE CONTENDERS TOO, and the threshold is higher.
+  //
+  // First attempt scored them with zEng (the full-ladder mean the engine centres
+  // on) and "has been stopped before" fired for 6 of the 11 champions. The cause
+  // is a data artefact worth writing down: \`chin\` is derived from the RECORD, so a
+  // gatekeeper with four fights and no stoppage losses reads 0.9, and 24 of those
+  // drag the ladder mean above every champion who has actually been in wars. The
+  // full-ladder mean says more about sample size than about jaws.
+  // (This means styleDelta's own chin centring is inflated the same way. Left
+  // alone deliberately — it's a real change and it wants its own measurement —
+  // but it is now written down instead of being rediscovered a third time.)
+  const holeZ = (k, d) => { const r = rankStat(k, d);
+    return r.sd < 1e-6 ? 0 : (g(k, d) - r.m) / r.sd; };
+  const hole = pick([
+    { w: -holeZ('chin', 0.6),  s: 'durability concerns' },
+    { w: -holeZ('tdDef', 66),  s: 'can be taken down' },
+    { w: -holeZ('strDef', 53), s: 'hittable' },
+  ]);
+  // A LABEL, NOT A VERDICT. Derived from his own stats — archetype() reads player
+  // attributes on a 1-10 scale and cannot be pointed at a real fighter's stat
+  // sheet, so this is a separate, deliberately coarser thing. Driven by whichever
+  // trait is genuinely loudest rather than by the order I happened to write the
+  // branches in, which is what put Aspinall in the wrong bucket.
+  const cands = [[zKd,'kd'],[zTd,'td'],[zSub,'sub'],[zVol,'vol']];
+  cands.sort((a,b)=>b[0]-a[0]);
+  const [tz, tk] = cands[0];
+  const label = tz < 0.75                     ? 'Complete fighter'
+              : tk === 'kd'                   ? (zVol > 0.75 ? 'Knockout artist' : 'Puncher')
+              : tk === 'td'                   ? (zSub > 0.75 ? 'Submission grappler' : 'Wrestler')
+              : tk === 'sub'                  ? 'Grappler'
+              :                                 'Volume striker';
+  // The label and the threat are drawn from the same stats, so the loudest threat
+  // is usually just the label again: "Volume striker — High volume". Say the
+  // second thing instead; the label already said the first.
+  const SAYS = { 'Volume striker':'High volume', 'Knockout artist':'Real knockout power',
+                 'Puncher':'Real knockout power', 'Wrestler':'Looks for the takedown',
+                 'Grappler':'Submission threat', 'Submission grappler':'Submission threat' };
+  const threat = pick([
+    { w: zKd,  s: 'Real knockout power' },
+    { w: zSub, s: 'Submission threat' },
+    { w: zTd,  s: 'Looks for the takedown' },
+    { w: zTdd, s: 'Difficult to wrestle' },
+    { w: zVol, s: 'High volume' },
+    { w: zSd,  s: 'Hard to hit' },
+    { w: zChin,s: 'Hard to hurt' },
+  ], SAYS[label]);
+  const top = [];
+  if (threat) top.push(threat.s);
+  if (hole) top.push(hole.s);
+  if (!top.length) top.push('No obvious holes');
+  return {
+    label,
+    // NO PRONOUNS. The first version wrote "...but HE has been stopped before" and
+    // printed it under Valentina Shevchenko and Kayla Harrison. These are real
+    // people and three of the eleven divisions are women's; a hardcoded "he" is
+    // just wrong, and inferring gender from the division key is a trap waiting to
+    // happen (WW is Welterweight, WBW is Women's Bantamweight — the prefix does not
+    // mean what it looks like it means). Noun phrases sidestep it entirely and fit
+    // a phone better: "Real knockout power · durability concerns".
+    read: (s => s.charAt(0).toUpperCase() + s.slice(1))(top.join(' · ')),
+    rows: [
+      ['Takedown defence', Math.round(g('tdDef', 66)) + '%', Math.max(0, Math.min(1, g('tdDef', 66) / 100))],
+      ['Knockout power',   g('kd', 0.5).toFixed(1),          Math.max(0, Math.min(1, g('kd', 0.5) / 3.5))],
+      ['Durability',       g('chin', 0.6) < mChin - 0.08 ? 'Been stopped' : g('chin', 0.6) > mChin + 0.1 ? 'Rarely hurt' : 'Average',
+                                                            Math.max(0, Math.min(1, g('chin', 0.6)))],
+      ['Output',           g('slpm', 4.4).toFixed(1) + '/min', Math.max(0, Math.min(1, g('slpm', 4.4) / 9))],
+    ]
+  };
 }
 
 function styleDelta(a, st){
@@ -2139,6 +2349,46 @@ function creator(){
   sel.onchange=e=>{ if(e.target.value===DIV) return; DIV=e.target.value; newGame(); };
   dv.appendChild(sel);
   p.appendChild(dv);
+
+  // THE SCOUTING REPORT, under the picker — the only screen where it can change a
+  // decision, because it's the screen where you spend the 42 points.
+  const chF = D.divisions[DIV] && D.divisions[DIV].ladder.find(f=>f.rankNum===0);
+  const sc = chF && champScout(chF.style);
+  if (sc) {
+    const mk=(t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c;
+      if(txt!=null)e.textContent=txt; return e;};
+    const box=mk('div','scout');
+    const hd=mk('button','scout-hd'); hd.type='button';
+    hd.setAttribute('aria-expanded', scoutOpen?'true':'false');
+    // textContent, not innerHTML: every string here is a FIGHTER'S NAME off a data
+    // feed, and the rest of this file builds nodes rather than pasting markup.
+    const nm=mk('span','scout-nm');
+    nm.appendChild(mk('span','scout-c','C'));
+    nm.appendChild(document.createTextNode(' '+chF.name));
+    hd.appendChild(nm);
+    hd.appendChild(mk('span','scout-rd',sc.read));
+    hd.appendChild(mk('span','scout-ch'+(scoutOpen?' o':''),'▼'));
+    // render() rebuilds #app, so this rebuilds the creator. That is what every
+    // other control on this screen already does, and scoutOpen is module-level so
+    // it survives the rebuild — which is the whole reason it lives out there.
+    hd.onclick=()=>{ scoutOpen=!scoutOpen; render(); };
+    box.appendChild(hd);
+    if (scoutOpen) {
+      const bd=mk('div','scout-bd');
+      bd.appendChild(mk('div','scout-arch',sc.label));
+      for (const [k,v,frac] of sc.rows) {
+        const r=mk('div','scout-row');
+        const kk=mk('span',null,k); kk.style.color='var(--muted)';
+        r.appendChild(kk); r.appendChild(mk('span','v',v));
+        bd.appendChild(r);
+        const b=mk('div','scout-bar'); const i=mk('i');
+        i.style.width=Math.round(frac*100)+'%';
+        b.appendChild(i); bd.appendChild(b);
+      }
+      box.appendChild(bd);
+    }
+    p.appendChild(box);
+  }
 
   const hd=document.createElement('div'); hd.className='rl'; hd.style.marginTop='.85rem';
   hd.textContent='Create your fighter';
