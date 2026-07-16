@@ -1639,6 +1639,24 @@ let _offerCache = null, _offerKey = '';
 // It is sensitive because the economy is a runaway loop (points -> rating -> wins
 // -> points), which is exactly why it must be the ONLY thing feeding G.pts. The
 // finish bonus was a second, hidden one; see fight().
+//
+// THOSE THREE ROWS ARE HEAVYWEIGHT ONLY, AT N=120, AND THEY PREDATE THE FINISH
+// BONUS REMOVAL. Read them as a shape, not as numbers. And the sentence above
+// them — "THE dial for the belt rate" — is true in a way that misleads, so:
+//
+// RUNG_PAY IS NOT A UNIFORM SHIFT. IT DOES NOT COMPRESS THE SPREAD; IT WIDENS IT.
+// Measured across divisions at N=350 (SE ~2.5):
+//                      RUNG_PAY 0.95   0.75
+//     HW striker             31%        21%   (-10)
+//     WSW grappler           41%        37%   ( -4)
+// The gap between them goes 10 -> 16. Turning this down hits the HARD divisions
+// 2.5x harder than the soft ones, because in a soft division you reach the title
+// regardless of the economy and in a hard one the points ARE the climb. So it
+// cannot be used to pull a too-wide band back into range — reach for it to lower
+// the belt rate overall, never to tighten the spread. That job belongs to
+// DIV_SWING (see gen-climb-data.cjs), which moves every rung of one division.
+// Found by trying it: the free-title-shot rule cost +6 belt, the obvious fix was
+// RUNG_PAY 0.95 -> 0.85, and the obvious fix would have made the spread worse.
 const RUNG_PAY = 0.95;
 // ONE DEFINITION. This lived inline in buildOffers() AND was recomputed in
 // offers() — two copies of the same formula, and I edited one. A reward that
