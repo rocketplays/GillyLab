@@ -416,8 +416,16 @@ const ARCH_PAIR = Object.fromEntries(Object.entries({
   'power+technique':     'Sniper',
   'power+pace':          'Swarmer',
   'power+chin':          'Slugger',
-  'power+cardio':        'Pressure puncher',
-  'power+strdef':        'Counter puncher',
+  // NOT 'Pressure puncher' / 'Counter puncher'. Both were "X puncher" sitting
+  // beside an existing "X striker"/"X fighter" — Counter striker (strdef alone)
+  // and Pressure fighter (pace+cardio) — so the list had two pairs of names that
+  // differed by their second word and named unrelated builds. Third time that's
+  // been the actual complaint (Outfighter/Out-boxer, Chain grappler/Chain
+  // wrestler), which is a pattern, not a coincidence: naming a hybrid by
+  // compounding its neighbour's name reliably produces two names nobody can tell
+  // apart. Name the FIGHTER, not the formula.
+  'power+cardio':        'Juggernaut',
+  'power+strdef':        'Assassin',
   'power+grappling':     'Finisher',
   'power+takedef':       'Sprawl-and-brawl',
   'pace+cardio':         'Pressure fighter',
