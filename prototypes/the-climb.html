@@ -82,6 +82,15 @@
 
   /* record + status */
   .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}
+  /* Restart: quiet by default, and it only announces itself on hover. It is the
+     one control here that destroys something, so it should be findable and never
+     inviting. margin-left:auto pins it to the far end of the HUD row. */
+  .btn.restart{margin-left:auto;padding:.25rem .55rem;font-size:.68rem;font-weight:600;
+    color:var(--muted);background:transparent;border-color:var(--border);align-self:center}
+  .btn.restart:hover{color:var(--accent2);border-color:var(--accent2);background:transparent}
+  /* ...but in the creator's button row it sits beside "Turn pro", where
+     margin-left:auto would fling it to the far edge away from its own label. */
+  .panel > div > .btn.restart{margin-left:0}
   .hud div span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}
   .hud div b{font-size:1.1rem}
   .log{font-size:.78rem;line-height:1.8}
@@ -1662,11 +1671,42 @@ function creator(){
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
     'bad takedown defence, and stalls against elite TDD.';
   p.appendChild(tip);
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;gap:.5rem;align-items:center;margin-top:.6rem';
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
-  b.style.marginTop='.6rem';
   b.onclick=()=>{ G.started=true; render(); };
-  p.appendChild(b);
+  row.appendChild(b);
+  // Restart here clears the sheet back to a blank 42 points. It does NOT reset the
+  // division — that's the <select> above, which restarts on change anyway, and
+  // silently flipping a player's weight class out from under a button labelled
+  // "Restart" would be a surprise, not a reset.
+  row.appendChild(restartBtn(true));
+  p.appendChild(row);
   return p;
+}
+
+// RESTART — one definition, both screens, because they are the same intent
+// ("start this fighter over") and would otherwise drift into two behaviours.
+//
+// IT CONFIRMS ONLY WHEN THERE IS SOMETHING TO LOSE. On the creator you are
+// throwing away a few clicks of point-spending, and a dialog for that is nagging.
+// Mid-run you are throwing away a 9-2 record that took fifteen fights and cannot
+// be recovered — CUT_AT, the whole design, is built on losses being irreversible,
+// so a misclick that silently deletes the run would be the cruellest bug on the
+// page. Same button, and the difference is measured off G.log rather than off
+// which screen called it: the screen is a proxy for "has anything happened yet",
+// and G.log IS that fact.
+function restartBtn(small){
+  const b=document.createElement('button');
+  b.className='btn'+(small?' restart':'');
+  b.textContent='Restart';
+  b.title='Start over with a new fighter';
+  b.onclick=()=>{
+    if (G.log.length &&
+        !confirm('Restart?\n\nYour '+ufcRecord()+' run ends here and you build a new fighter. This cannot be undone.')) return;
+    newGame();
+  };
+  return b;
 }
 
 function hud(){
@@ -1686,6 +1726,11 @@ function hud(){
     // "Lives -3". Clamped at 0 as well: a dead fighter has none, not a negative
     // number of them.
     '<div><span>Losses left</span><b>'+Math.max(0, CUT_AT-G.losses)+'</b></div>';
+  // Last, and pushed to the far right by margin-left:auto — a destructive control
+  // does not belong next to the thing you came to read, and it should not be the
+  // first target your thumb finds. The HUD is the only chrome that persists across
+  // every in-run screen, so it's the one place a restart is always where you left it.
+  d.appendChild(restartBtn(true));
   p.appendChild(d); return p;
 }
 
