@@ -131,6 +131,69 @@ def card_names():
     return {n for n in out if n}
 
 
+def active_roster_names():
+    """index.html's ACTIVE_ROSTER, resolved to FIGHTERS names and normalised.
+
+    WHY THIS EXISTS: roster_names() returns every name in the FIGHTERS array —
+    3,101 of them, most retired. That is the right pool for "does this fighter
+    have a page" and the WRONG pool for "what does a typical fighter in this
+    division do", which is what the division medians need. populateFighterStats()
+    in index.html already made this exact call and says so out loud: "FIGHTERS
+    carries thousands of retired fighters who would skew the division median."
+    Same reasoning, same population. It also cuts the sweep from ~2,990 fighters
+    to ~510, which is the difference between a job you run and one you schedule.
+
+    Parsed from the ACTIVE_ROSTER literal, not inferred from `rank`: only 177
+    fighters carry a rank, and an unranked fighter is not a retired one.
+
+    TWO TRAPS, BOTH HIT ON THE FIRST WRITE OF THIS FUNCTION:
+
+    1. ACTIVE_ROSTER IS ONE LINE. It closes with `"];` with no newline before the
+       bracket, so a `\\[(.*?)\\n\\s*\\];` pattern does not stop at the end of the
+       array — it runs on into ROSTER_CHANGES and starts collecting week labels
+       and the literal string "Name" as if they were fighters. Harmless here only
+       because junk never matches a real roster name; still wrong, and the kind of
+       wrong that makes a count look plausible.
+
+    2. THE ROSTER USES DISPLAY NAMES; FIGHTERS USES DB NAMES. Folding accents is
+       not enough — "Jan Blachowicz" vs "Jan Błachowicz" survives NFD, but
+       "King Green" -> "Bobby Green" and "Patricio Freire" -> "Patrício Pitbull"
+       do not, and neither does "Thomas Gantt" -> "Tommy Gantt". Seven fighters,
+       a former light-heavyweight champion among them, silently dropped out of
+       their own division's baseline. index.html already solved this exact problem
+       (activeRosterDbSet: DBSET -> ALIASES -> DBNORM); this is the same resolution
+       in the same order. A miss here looks precisely like a fighter who has no
+       data, which is the bug this codebase keeps rewriting.
+    """
+    html = open(fsb.INDEX, encoding="utf-8").read()
+    m = re.search(r"const ACTIVE_ROSTER = \[(.*?)\];", html, re.S)
+    if not m:
+        return set()
+    raw = re.findall(r'"([^"]+)"', m.group(1))
+    aliases = {}
+    am = re.search(r"const ACTIVE_ROSTER_ALIASES\s*=\s*\{(.*?)\n\s*\};", html, re.S)
+    if am:
+        aliases = dict(re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', am.group(1)))
+    db = {_norm(n) for n in roster_names_raw(html)}
+    out = set()
+    for n in raw:
+        k = _norm(n)
+        if k in db:
+            out.add(k)
+            continue
+        t = aliases.get(n)
+        if t and _norm(t) in db:
+            out.add(_norm(t))
+    return {n for n in out if n}
+
+
+def roster_names_raw(html):
+    """FIGHTERS names, read from an already-loaded index.html (fsb.roster_names()
+    re-reads the 13MB file; this is called alongside the ACTIVE_ROSTER parse)."""
+    m = re.search(r"const FIGHTERS = \[(.*?)\n \];", html, re.S)
+    return re.findall(r'name:\s*"([^"]+)"', m.group(1) if m else html)
+
+
 def parallel_fighter(sid, namecache, bout_workers):
     """Same output as fsb.backfill_one but fetches a fighter's bouts concurrently
     (given a known id) so long-career fighters finish in seconds, not ~15s."""
@@ -234,7 +297,27 @@ def main():
                     help="restrict to fighters on an upcoming card (data/event.json). "
                          "The deep dive lives on the events page; the other ~2,980 "
                          "fighters in the roster are not on the critical path.")
+    # THE DIVISION-MEDIAN SWEEP.
+    #
+    # --card gets the grid onto the panel. --active gets the grid onto ENOUGH
+    # fighters to say what a number MEANS. Measured on the card-only grid (109
+    # fighters, 11 divisions): only 16 of 99 division x cell combos had the 8 peers
+    # a median needs, and the whole clinch row had none in any division. Worse, a
+    # "division median" drawn from card fighters is really "the median of whoever
+    # from that weight class is booked this weekend" — it moves week to week for
+    # reasons that have nothing to do with the fighter being shaded.
+    #
+    # ACTIVE_ROSTER, not roster_names(): retired fighters skew a division median,
+    # and 653 is a sweep you run once rather than 3,101.
+    ap.add_argument("--active", action="store_true",
+                    help="restrict to the ACTIVE_ROSTER (653 names in index.html). "
+                         "Use with --needs-grid for the one-off sweep that makes "
+                         "per-division baselines possible. Resumable: --needs-grid "
+                         "is self-clearing, so re-run until 'to process: 0'.")
     a = ap.parse_args()
+    if a.card and a.active:
+        ap.error("--card and --active both narrow the pool; pick one "
+                 "(--card = this weekend's bouts, --active = the sweep)")
 
     data = fsb.load_out()
     names = fsb.roster_names()
@@ -252,6 +335,18 @@ def main():
         pool = [n for n in names if _norm(n) in card]
         print("card fighters matched in roster: %d of %d names on upcoming cards"
               % (len(pool), len(card)))
+    elif a.active:
+        act = active_roster_names()
+        if not act:
+            # Fail loud. Silently falling through to all 3,101 would look like a
+            # working sweep, take twenty times as long, and quietly poison every
+            # division median with retired fighters — the failure mode this flag
+            # exists to prevent.
+            ap.error("--active: couldn't parse ACTIVE_ROSTER out of index.html. "
+                     "Refusing to fall back to all %d roster names." % len(names))
+        pool = [n for n in names if _norm(n) in act]
+        print("active roster matched: %d of %d ACTIVE_ROSTER names (%d retired/unlisted skipped)"
+              % (len(pool), len(act), len(names) - len(pool)))
 
     if refetch:
         marked = set(l.strip() for l in open(MARK)) if os.path.exists(MARK) else set()

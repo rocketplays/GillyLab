@@ -2231,6 +2231,11 @@
     /* Neutral: rows where bigger isn't better (share of offense is a habit, not a
        virtue). Both sides read the same; only the LENGTHS carry the comparison. */
     .mh-bar > span.n { background: rgba(255,255,255,0.42); }
+    /* Bad: worse than his own division's median, on a row where the number is a
+       beating (what lands on him). Only ever set by `grade`, never by `lead` — this
+       is a verdict about one man against his peers, not about the two of them. */
+    .mh-bar > span.b { background: #ff4040; }
+    .mh-grid-t .mh-div { font-weight: 400; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-left: 0.35rem; }
     .mh-bar.l > span { border-radius: 3px 0 0 3px; }
     .mh-bar.r > span { border-radius: 0 3px 3px 0; }
     /* The roster norm, as a tick. Context without printing a z-score at anyone. */
@@ -2250,8 +2255,9 @@
     .mh-gc.thin b { color: var(--muted); font-weight: 400; }
     .mh-gk { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
     /* Diverging, because the question is "is he better than normal here", not "how
-       close to 100% is he" — nobody is close to 100% at head-at-range. */
-    .mh-gk-sw { display: inline-block; width: 3.4rem; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,149,0,0.38), rgba(255,255,255,0.05), rgba(0,230,104,0.5)); vertical-align: middle; margin: 0 0.35rem; }
+       close to 100% is he" — nobody is close to 100% at head-at-range. Must track
+       the cell colours: they are red (#ff4040), so this cannot fade from orange. */
+    .mh-gk-sw { display: inline-block; width: 3.4rem; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,64,64,0.38), rgba(255,255,255,0.05), rgba(0,230,104,0.5)); vertical-align: middle; margin: 0 0.35rem; }
 
     .mh-empty { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 1.5rem 0; }
 
@@ -88461,14 +88467,21 @@ window.GRID_NAMES = window.GRID_NAMES || null;
   // button that opens an empty panel is the thing we were told to avoid.
   fetch('./data/grid-names.json').then(r => r.ok ? r.json() : null)
     .then(d => {
-      // {names:[...], base:{...}}. Tolerates the old bare-array shape: an
-      // in-flight deploy can serve a stale file to a fresh page, and the failure
-      // mode of getting this wrong is every button on the site silently vanishing.
+      // {names, base, divBase, divs}. Tolerates the old bare-array shape AND the
+      // older {names,base} shape: an in-flight deploy can serve a stale file to a
+      // fresh page, and the failure mode of getting this wrong is every button on
+      // the site silently vanishing. divBase/divs simply arrive empty against an
+      // old file, and the shading falls back to the card norm on its own.
       const list = Array.isArray(d) ? d : (d && d.names) || [];
       window.GRID_BASE = (d && d.base) || {};
+      window.GRID_DIVBASE = (d && d.divBase) || {};
+      window.GRID_DIVS = (d && d.divs) || {};
       window.GRID_NAMES = new Set(list.map(_gridNorm));
       glRevealDeepDives();
-    }).catch(() => { window.GRID_NAMES = new Set(); window.GRID_BASE = {}; });
+    }).catch(() => {
+      window.GRID_NAMES = new Set(); window.GRID_BASE = {};
+      window.GRID_DIVBASE = {}; window.GRID_DIVS = {};
+    });
 })();
 
 // REVEAL, DON'T RE-RENDER.
@@ -88705,6 +88718,32 @@ function _mhLeadCount(a, b){
   if (Math.abs(a - b) < 2*Math.sqrt(a + b)) return 0;
   return a > b ? 1 : 2;
 }
+// GRADING ONE MAN AGAINST HIS DIVISION — and the same discipline as _mhLeadProp,
+// because I got this wrong the same way twice in one feature.
+//
+// The first cut was `r < median ? 'good' : 'bad'`, which painted Usman RED for
+// allowing 31% at range against a welterweight median of 31%. Dead average, marked
+// down. Every fighter is on one side of a median, so a bare comparison colours the
+// entire card and says nothing — it's the "49% vs 50% is green" bug wearing the
+// other team's kit.
+//
+// A grade needs the gap to clear TWO bars, and they answer different questions:
+//   * >= one division spread  — is he actually unusual FOR HIS DIVISION? (the
+//     medians ship with a robust IQR-based spread precisely so this is askable)
+//   * >= 2 standard errors    — is his own rate real, or 25 attempts of noise?
+// Fail either and the row is neutral, which is the truthful answer for the many
+// fighters who are simply normal.
+//
+// `lowerIsBetter` for rows where the number is a beating.
+function _mhGrade(r, n, norm, lowerIsBetter){
+  if (!norm || !n) return null;
+  const gap = Math.abs(r - norm.med);
+  const se = Math.sqrt(Math.max(r * (1 - r), 0.01) / n);
+  if (gap < norm.spread || gap < 2 * se) return 'n';
+  const better = lowerIsBetter ? (r < norm.med) : (r > norm.med);
+  return better ? 'w' : 'b';
+}
+
 function _mhLeadRatio(a, b, min){
   // For magnitudes that aren't counts of trials and have no n to test against —
   // control time in seconds. A stated, visible rule: one side has to be at least a
@@ -88725,10 +88764,23 @@ function mhCmp(label, a, b, opts){
   let ac = 'n', bc = 'n';
   if (opts.lead === 1) { ac = 'w'; bc = ''; }
   else if (opts.lead === 2) { bc = 'w'; ac = ''; }
-  // The roster norm as a tick. Context without printing a z-score at anybody:
-  // 91% of leg kicks landing sounds alarming until you can see that 84% is normal.
-  const tick = side => opts.norm == null ? ''
-    : '<u style="' + (side === 'l' ? 'right:' : 'left:') + pc(opts.norm) + '%"></u>';
+  // GRADE OVERRIDES LEAD. `lead` compares the two fighters to each other; `grade`
+  // judges each against his own division and ignores the other man entirely. They
+  // are different questions and only one of them can own the colour, so a row asks
+  // for one or the other, never both.
+  if (opts.gradeL) ac = opts.gradeL;
+  if (opts.gradeR) bc = opts.gradeR;
+  // The norm as a tick. Context without printing a z-score at anybody: 91% of leg
+  // kicks landing sounds alarming until you can see that 84% is normal.
+  //
+  // PER SIDE, because the two men can be in different divisions (a fighter moving
+  // up, a catchweight) and each tick has to mark HIS peers. `norm` sets both.
+  const nL = opts.normL != null ? opts.normL : opts.norm;
+  const nR = opts.normR != null ? opts.normR : opts.norm;
+  const tick = side => {
+    const v = side === 'l' ? nL : nR;
+    return v == null ? '' : '<u style="' + (side === 'l' ? 'right:' : 'left:') + pc(v) + '%"></u>';
+  };
   const val = (o, right) => '<div class="mh-cmp-v' + (right ? ' r' : '') + '">' + o.txt +
     (o.sub ? '<i>' + o.sub + '</i>' : '') + '</div>';
   return '<div class="mh-cmp"><div class="mh-cmp-lbl">' + label + '</div>' +
@@ -88764,37 +88816,102 @@ function mhCmp(label, a, b, opts){
 // in memory by the time the hub opens, this is exactly the population the footnote
 // claims, and a baseline that travels in a second file is a baseline that can go
 // stale against the one it describes.
+// THE CARD-WIDE FALLBACK. Computed here from FIGHT_GRID, over whoever is on the
+// card, for all three metrics. This is what every cell used to shade against, and
+// it is now only reached when a fighter's DIVISION has too few peers to have a
+// median of its own (see mhNorm). Post-sweep that should be rare; pre-sweep it is
+// almost everything, which is why the legend names whichever one it used.
 let _mhBase = null;
-function mhCellBase(){
+function mhCardBase(){
   if (_mhBase) return _mhBase;
   const G = window.FIGHT_GRID || {};
   const acc = Array.from({length:9}, () => []);
+  const allow = Array.from({length:9}, () => []);
+  const aim = Array.from({length:9}, () => []);
   for (const k of Object.keys(G)) {
-    const s = Array.from({length:9}, () => [0,0]);
+    const off = Array.from({length:9}, () => [0,0]);
+    const def = Array.from({length:9}, () => [0,0]);
     for (const r of (G[k]||[]).slice(0,8)) {
-      if (!r || !r.f || !r.f.g) continue;
-      for (let i=0;i<9;i++){ s[i][0] += r.f.g[i][0]; s[i][1] += r.f.g[i][1]; }
+      if (!r) continue;
+      if (r.f && r.f.g) for (let i=0;i<9;i++){ off[i][0] += r.f.g[i][0]; off[i][1] += r.f.g[i][1]; }
+      if (r.o && r.o.g) for (let i=0;i<9;i++){ def[i][0] += r.o.g[i][0]; def[i][1] += r.o.g[i][1]; }
     }
+    const tot = off.reduce((s,c) => s+c[1], 0);
     // The renderer's floor, applied to the norm too: a fighter joins a cell's
     // baseline only if he has enough attempts there for his own rate to mean
     // anything. Otherwise the norm is built out of the noise it exists to judge.
-    for (let i=0;i<9;i++) if (s[i][1] >= _MH_FLOOR) acc[i].push(s[i][0]/s[i][1]);
+    for (let i=0;i<9;i++){
+      if (off[i][1] >= _MH_FLOOR) acc[i].push(off[i][0]/off[i][1]);
+      if (def[i][1] >= _MH_FLOOR) allow[i].push(def[i][0]/def[i][1]);
+      if (tot >= 150) aim[i].push(off[i][1]/tot);
+    }
   }
-  _mhBase = acc.map(v => {
+  const pack = v => {
     if (v.length < 8) return null;     // too few fighters to call anything normal
-    const m = v.reduce((a,b) => a+b, 0) / v.length;
-    const sd = Math.sqrt(v.reduce((a,b) => a + (b-m)*(b-m), 0) / v.length);
-    return sd > 0 ? [m, sd, v.length] : null;
-  });
+    const s = v.slice().sort((a,b) => a-b);
+    const q = p => { const x = (s.length-1)*p, lo = Math.floor(x), hi = Math.ceil(x);
+      return lo === hi ? s[lo] : s[lo] + (s[hi]-s[lo])*(x-lo); };
+    const med = s.length % 2 ? s[(s.length-1)/2] : (s[s.length/2-1] + s[s.length/2])/2;
+    // Median + IQR/1.349, matching split-fight-grid.cjs exactly so the two
+    // baselines are the same statistic and a cell doesn't visibly jump when a
+    // division crosses the peer floor and swaps from one to the other.
+    return [med, Math.max((q(0.75)-q(0.25))/1.349, 0.01), v.length];
+  };
+  _mhBase = { acc: acc.map(pack), allow: allow.map(pack), aim: aim.map(pack) };
   return _mhBase;
+}
+
+// A FIGHTER'S DIVISION. Shipped in the manifest so the browser doesn't scan
+// FIGHTERS (3,101 rows) on every panel open. Normalised lookup, because this is the
+// join that has been written wrong four times in this codebase.
+let _mhDivIdx = null;
+function mhDivOf(name){
+  const D = window.GRID_DIVS || {};
+  if (D[name]) return D[name];
+  if (!_mhDivIdx) _mhDivIdx = new Map(Object.keys(D).map(k => [_gridNorm(k), D[k]]));
+  return _mhDivIdx.get(_gridNorm(name)) || null;
+}
+
+// THE BASELINE FOR ONE FIGHTER, ONE METRIC, ONE CELL.
+//
+// DIVISION MEDIAN FIRST, because "34% at range" is a different fact for a
+// flyweight and a heavyweight, and because it's the comparison the fighter profile
+// bars have always made (statDivMedians). Falls back to the card norm only when the
+// man's division hasn't got 8 peers with data in that cell.
+//
+// BE CLEAR ABOUT WHAT THIS BUYS: measured across the 109-fighter card grid,
+// division accounts for only 12–19% of the variance in these rates — between-
+// division means spread 2.3–3.5 points while fighters WITHIN a division spread
+// 6.3–8.4. It is the right comparison and it is not a large one. The honest gain
+// is that a heavyweight stops being marked down for heavyweight output.
+//
+// Returns {med, spread, n, src} or null. `src` is carried so the legend can say
+// which baseline the reader is actually looking at, rather than claiming "division"
+// over a grid that's half card norm.
+function mhNorm(name, metric, i){
+  const DB = window.GRID_DIVBASE || {};
+  const d = mhDivOf(name);
+  const e = d && DB[d] && DB[d][metric] && DB[d][metric][i];
+  if (e) return { med: e[0], spread: e[1] || 0.01, n: e[2], src: 'div', div: d };
+  const c = mhCardBase()[metric];
+  const b = c && c[i];
+  return b ? { med: b[0], spread: b[1], n: b[2], src: 'card' } : null;
 }
 
 // THE GRID, ON SCREEN AT LAST. Dern is +55 points better on the ground than at
 // range; a kickboxer is +11; "head 79%" said the same thing for both, because the
 // backfill was summing the cross-tab into margins and throwing this away.
-function mhGrid(G, which){
+//
+// TAKES THE NAME, because the baseline is now HIS DIVISION'S. Each man is shaded
+// against his own peers — which for a normal bout is the same division for both,
+// and for a catchweight or a fighter moving up is correctly not.
+function mhGrid(G, which, name){
   const POS = [['dist','Distance'],['clinch','Clinch'],['ground','Ground']];
-  const base = mhCellBase();
+  const metric = which === 'cellsD' ? 'allow' : 'acc';
+  // Lower is better when the number is what LANDS ON HIM. Without this the man
+  // getting hit least in his division lights up red.
+  const invert = which === 'cellsD';
+  const srcs = new Set();
   let h = '<div class="mh-grid"><div></div>' +
     ['Head','Body','Leg'].map(t => '<div class="mh-gh">' + t + '</div>').join('');
   POS.forEach(([p, plabel]) => {
@@ -88804,21 +88921,47 @@ function mhGrid(G, which){
       const c = G[which][i];
       const thin = c[1] < _MH_FLOOR;
       const r = c[1] ? c[0]/c[1] : 0;
-      const b = base[i];
+      const b = thin ? null : mhNorm(name, metric, i);
       let bg = 'rgba(255,255,255,0.03)';
-      if (!thin && b) {
-        // Capped at 2sd. Past that the colour stops meaning anything a reader can
-        // use and starts being a competition between the loudest two cells.
-        const t2 = Math.max(-1, Math.min(1, ((r - b[0]) / b[1]) / 2));
-        bg = t2 >= 0 ? 'rgba(0,230,104,' + (0.04 + 0.46*t2).toFixed(3) + ')'
-                     : 'rgba(255,149,0,' + (0.04 + 0.34*(-t2)).toFixed(3) + ')';
+      if (b) {
+        srcs.add(b.src);
+        // Capped at 2 spreads. Past that the colour stops meaning anything a reader
+        // can use and starts being a competition between the loudest two cells.
+        let z = Math.max(-1, Math.min(1, ((r - b.med) / b.spread) / 2));
+        if (invert) z = -z;
+        bg = z >= 0 ? 'rgba(0,230,104,' + (0.04 + 0.46*z).toFixed(3) + ')'
+                    : 'rgba(255,64,64,' + (0.04 + 0.34*(-z)).toFixed(3) + ')';
       }
       h += '<div class="mh-gc' + (thin ? ' thin' : '') + '" style="background:' + bg + '">' +
         '<b>' + (thin ? '—' : Math.round(r*100) + '%') + '</b>' +
         '<i>' + c[0] + '/' + c[1] + '</i></div>';
     });
   });
-  return h + '</div>';
+  return { html: h + '</div>', srcs };
+}
+
+// The division a fighter is being judged against, next to his name over his grid.
+// Without it "better than average" is a claim with no stated population.
+const _MH_DIVNAME = { FLW:'Flyweight', BW:'Bantamweight', FW:'Featherweight', LW:'Lightweight',
+  WW:'Welterweight', MW:'Middleweight', LHW:'Light heavyweight', HW:'Heavyweight',
+  WSW:'W. Strawweight', WFLW:'W. Flyweight', WBW:'W. Bantamweight', WFW:'W. Featherweight' };
+function mhDivTag(name){
+  const d = mhDivOf(name);
+  const DB = window.GRID_DIVBASE || {};
+  // Only claim the division when the division is actually the baseline.
+  if (!d || !DB[d]) return '';
+  return ' <span class="mh-div">' + escHtmlAttr(_MH_DIVNAME[d] || d) + '</span>';
+}
+
+// Says which baseline the grid ACTUALLY used, rather than claiming "division" over
+// a grid that is half card norm. Pre-sweep most divisions are under the peer floor,
+// so this will read "card"; the sentence changes itself as the data fills in.
+function mhBaseLabel(srcs){
+  const div = srcs.has('div'), card = srcs.has('card');
+  if (div && card) return 'vs the median of each fighter\'s division, or of this card where a division has under 8 fighters with data';
+  if (div) return 'vs the median of each fighter\'s own division';
+  if (card) return 'vs the median fighter on this card — no division here has 8 peers with data yet';
+  return '';
 }
 
 function mhReadBlock(A, B, n1, n2, domain, quiet){
@@ -88873,43 +89016,79 @@ function mhStriking(A, B, n1, n2){
       { lead: _mhLeadCount(A.kd, B.kd) });
   }
 
-  h += '<div class="mh-sec">Where his offense goes <span>share of everything he throws · last ' + _mhN(A.fights, B.fights) + ' fights</span></div>';
+  // NO GREEN/RED ON THIS SECTION, AND IT IS THE ONE PLACE I'M NOT FOLLOWING THE
+  // PROFILE BARS. Every other row here has a direction: landing more is better,
+  // getting hit less is better. A SHARE HAS NO DIRECTION. Throwing 13% of your
+  // offense at legs against a 10% division median doesn't make you better than the
+  // man at 7% — it makes you a different fighter. Colouring it green would assert
+  // that head-hunting beats leg-kicking, which is not a thing this data knows.
+  // So: the division tick, so you can see he's unusual, and no verdict about it.
   const tot = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
   const tA = tot(A), tB = tot(B);
+  const aimSrc = new Set();
+  let aimRows = '';
   for (const [p,t,label] of _MH_LANES) {
-    const a = A.cells[_MH_GI(p,t)], b = B.cells[_MH_GI(p,t)];
+    const i = _MH_GI(p,t);
+    const a = A.cells[i], b = B.cells[i];
     // Scaled to the bigger of the two shares, not to 100% — at 8% of offense both
     // leg-kick bars would be invisible slivers and the comparison would be lost.
     const ra = a[1]/tA, rb = b[1]/tB, m = Math.max(ra, rb, 0.01);
+    const nA = mhNorm(n1, 'aim', i), nB = mhNorm(n2, 'aim', i);
+    if (nA) aimSrc.add(nA.src);
+    if (nB) aimSrc.add(nB.src);
     // Percentages only. The raw "186 thrown" was noise in a row whose entire point
     // is the share — and the grid directly below prints landed/thrown for every one
     // of these cells anyway.
-    h += mhCmp(label,
+    //
+    // The tick sits on each side's OWN division median, scaled the same way the
+    // bar is, so it lands where that fighter's typical peer would.
+    aimRows += mhCmp(label,
       { txt: Math.round(ra*100) + '%', sub: null, frac: ra/m },
-      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m });
+      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m },
+      { normL: nA ? nA.med/m : null, normR: nB ? nB.med/m : null });
   }
+  h += '<div class="mh-sec">Where his offense goes <span>share of everything he throws · last ' +
+       _mhN(A.fights, B.fights) + ' fights · tick is ' +
+       (aimSrc.has('div') && !aimSrc.has('card') ? 'his division\'s median' : 'the typical fighter') + '</span></div>';
+  h += aimRows;
 
+  const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
   h += '<div class="mh-sec">How well it lands <span>accuracy by position and target · landed / thrown</span></div>';
   h += '<div class="mh-grids">' +
-    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + '</div>' + mhGrid(A, 'cells') + '</div>' +
-    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + '</div>' + mhGrid(B, 'cells') + '</div></div>';
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + mhDivTag(n1) + '</div>' + gA.html + '</div>' +
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + mhDivTag(n2) + '</div>' + gB.html + '</div></div>';
   // The legend has to say what the colour is measured AGAINST, or the reader
   // assumes it's the raw percentage and reads every cell wrong.
-  h += '<div class="mh-gk">Below card average<span class="mh-gk-sw"></span>Above ' +
-       '· shading is vs a typical fighter on this card, not vs 100% ' +
-       '· under ' + _MH_FLOOR + ' thrown shows no rate</div>';
+  const gs = new Set([...gA.srcs, ...gB.srcs]);
+  h += '<div class="mh-gk">Worse<span class="mh-gk-sw"></span>Better · ' +
+       mhBaseLabel(gs) + ' · under ' + _MH_FLOOR + ' thrown shows no rate</div>';
 
-  h += '<div class="mh-sec">What lands on him <span>of what opponents throw at him there · tick is the roster norm</span></div>';
-  const base = window.GRID_BASE || {};
+  // WHAT LANDS ON HIM — the one section where the accent runs backwards, because
+  // the number is a beating. Below your division's median = green.
+  const dSrc = new Set();
+  let dRows = '';
   for (const [p,t,label] of _MH_LANES) {
-    const a = A.cellsD[_MH_GI(p,t)], b = B.cellsD[_MH_GI(p,t)];
+    const i = _MH_GI(p,t);
+    const a = A.cellsD[i], b = B.cellsD[i];
     if (a[1] < _MH_FLOOR && b[1] < _MH_FLOOR) continue;
-    const bb = base['allow.'+p+'.'+t];
-    h += mhCmp(label,
-      { txt: a[1] < _MH_FLOOR ? '—' : _mhPct(a[0],a[1]), sub: a[0] + '/' + a[1], frac: a[1] ? a[0]/a[1] : 0 },
-      { txt: b[1] < _MH_FLOOR ? '—' : _mhPct(b[0],b[1]), sub: b[0] + '/' + b[1], frac: b[1] ? b[0]/b[1] : 0 },
-      { norm: bb ? bb[0] : null });
+    const ra = a[1] ? a[0]/a[1] : 0, rb = b[1] ? b[0]/b[1] : 0;
+    const nA = a[1] >= _MH_FLOOR ? mhNorm(n1, 'allow', i) : null;
+    const nB = b[1] >= _MH_FLOOR ? mhNorm(n2, 'allow', i) : null;
+    if (nA) dSrc.add(nA.src);
+    if (nB) dSrc.add(nB.src);
+    dRows += mhCmp(label,
+      { txt: a[1] < _MH_FLOOR ? '—' : _mhPct(a[0],a[1]), sub: a[0] + '/' + a[1], frac: ra },
+      { txt: b[1] < _MH_FLOOR ? '—' : _mhPct(b[0],b[1]), sub: b[0] + '/' + b[1], frac: rb },
+      { normL: nA ? nA.med : null, normR: nB ? nB.med : null,
+        // Each man judged against his OWN division, independently — this is not a
+        // comparison between the two of them, it's two verdicts side by side.
+        // lowerIsBetter: getting hit less than your peers is the good end.
+        gradeL: _mhGrade(ra, a[1], nA, true),
+        gradeR: _mhGrade(rb, b[1], nB, true) });
   }
+  h += '<div class="mh-sec">What lands on him <span>of what opponents throw at him there · green is better than ' +
+       (dSrc.has('div') && !dSrc.has('card') ? 'his division' : 'the typical fighter') + ' · tick is that median</span></div>';
+  h += dRows;
   return h;
 }
 

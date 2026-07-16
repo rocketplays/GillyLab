@@ -151,12 +151,46 @@ jobs:
           python3 scripts/fight-stats-parallel.py --card --needs-grid --workers 24 --seconds 90 || true
           python3 scripts/fight-stats-parallel.py --card --needs-grid --workers 24 --seconds 90 || true
 
+      # THE DIVISION BASELINE, TOPPED UP A BIT AT A TIME.
+      #
+      # The card sweep above gets the grid onto the panel. This one gets it onto
+      # enough of the roster to say what a number MEANS: shading a cell "vs the
+      # division" needs ~8 peers in that division and cell, and measured on the
+      # card-only grid (109 fighters over 11 divisions) only 16 of 99 division x
+      # cell combos cleared it — the entire clinch row cleared in none of them.
+      #
+      # RUNS SECOND, WITH A SMALL BUDGET, AND THAT ORDER IS THE POINT. --card is the
+      # critical path: a fighter announced today needs his grid before anyone opens
+      # his bout. This is a baseline that improves slowly and degrades gracefully,
+      # so it gets the leftovers. If ESPN is slow the card still wins.
+      #
+      # --active, NOT bare --needs-grid: the bare pool is roster_names() = all 3,101
+      # FIGHTERS, ~2,450 of them retired. Retired fighters don't belong in a median
+      # of what a current fighter faces, and 643 is a queue that drains.
+      #
+      # Self-clearing like the card sweep, so this needs no bookkeeping: it chews
+      # through the backlog a slice per run and then does nothing for ever, except
+      # when the roster gains someone. Bootstrapping all ~515 at 60s a run would take
+      # weeks — run it locally in one go to fill it now:
+      #     python3 scripts/fight-stats-parallel.py --active --needs-grid \
+      #         --workers 24 --seconds 3600
+      - name: Top up strike grid for the active roster (division baselines)
+        run: python3 scripts/fight-stats-parallel.py --active --needs-grid --workers 24 --seconds 60 || true
+
       # Lift the grid OUT of data/fight-stats.json, which index.html eager-fetches on
       # every page load at ~8MB. The grid adds ~2MB to that for the sake of a panel
-      # you have to click. So it lives in data/fight-grid.json (~234KB, card-scoped
-      # by construction) and loads when the button is pressed. MUST run after the
-      # backfill or the fat file ships: build-site.sh rsyncs data/*.json wholesale.
-      # Idempotent — a second run finds nothing to lift.
+      # you have to click.
+      #
+      # Now writes THREE files: the master (data/fight-grid-all.json — every fighter
+      # swept, build-time only, never fetched), the shipped card subset
+      # (data/fight-grid.json, ~245KB, fetched on click) and the manifest+baselines
+      # (data/grid-names.json, ~6KB, eager). The master must not ship: after the
+      # roster sweep it is ~1.5MB, ~84% of it fighters who aren't on this card, and
+      # the panel would download all of it to show two men.
+      #
+      # MUST run after both backfills or the fat file ships: build-site.sh rsyncs
+      # data/*.json wholesale. Idempotent — a second run finds nothing to lift and
+      # still rewrites the manifest, which is deliberate (see the script).
       - name: Split the grid out of the eager payload
         run: node scripts/split-fight-grid.cjs || true
 
@@ -275,7 +309,15 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
+          # data/_fight-grid-all.json is the grid MASTER and MUST be committed even
+          # though nothing fetches it. split-fight-grid.cjs merges into it and
+          # derives the shipped card subset + the division medians from it, so if
+          # CI doesn't persist it, every run starts the grid over from whatever
+          # delta the backfill happened to fetch — green job, and the medians
+          # quietly rebuild themselves out of a handful of fighters.
+          # The `_` prefix is what keeps build-site.sh from serving 1.5MB nobody
+          # asked for; it does NOT exclude it from git, which is why it's here.
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/_fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
           git add $FILES
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"

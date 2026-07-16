@@ -56,11 +56,70 @@ renderScouting() is ONE function, so the entry point is emitted once. The trap i
 still live for anything else on a fight row.
 
 
-THE DATA, AND WHY IT'S IN THREE FILES
+DO THIS FIRST — THE ACTIVE-ROSTER SWEEP
 --------------------------------------------------------------------------------
-    data/grid-names.json   2.2KB    eager     names + baselines; gates the button
-    data/fight-grid.json   245KB    on click  the 3x3 strike cross-tab
-    data/fight-stats.json  8MB      eager     UNCHANGED — not one byte added
+    cd ~/Documents/GitHub/GillyLab
+    python3 scripts/fight-stats-parallel.py --active --needs-grid --workers 24 --seconds 3600
+    node scripts/split-fight-grid.cjs
+
+~515 fighters to fetch. RESUMABLE AND IDEMPOTENT — --needs-grid is self-clearing,
+so re-run until it prints "to process: 0". Nothing else in the session can do this:
+the sandbox has no route to ESPN (curl to site-api returns 000), so it has to run
+on the Mac.
+
+Until it runs the panel works and shades against the card norm, and says so in the
+legend. After it runs the same legend starts saying "division". Nothing breaks
+either way; the sentence changes itself.
+
+WHY IT'S NEEDED. Shading a cell "vs your division" needs ~8 peers in that division
+AND that cell. Measured on the card-only grid (109 fighters, 11 divisions):
+    division x cell combos with >= 8 peers:   16 of 99
+    the entire clinch row:                     0 divisions
+Worse, a "division median" drawn from card fighters is really "the median of
+whoever from that weight class is booked this weekend" — it moves week to week for
+reasons that have nothing to do with the fighter being shaded. Extrapolated to 643
+active fighters, dist.*, clinch.head/body and ground.head all clear the floor;
+clinch.leg / ground.body / ground.leg stay empty, but they are already empty at
+card level (0 fighters clear 25 attempts there), so they show "—" regardless.
+
+AND BE CLEAR WHAT IT BUYS, because it is not as much as it sounds. Division
+explains only 12–19% of the variance in these rates:
+    head at distance   between-division means spread 2.3 pts, within-division 6.3
+    what lands on him  between 3.1, within 6.5
+    leg at distance    between 3.5, within 8.4
+It is the right comparison and it is a small one. The honest gain is that a
+heavyweight stops being marked down for heavyweight output.
+
+
+THE DATA, AND WHY IT'S IN FOUR FILES
+--------------------------------------------------------------------------------
+    data/grid-names.json      6.4KB  eager     manifest + baselines + div medians
+    data/fight-grid.json      245KB  on click  the 3x3 cross-tab, CARD FIGHTERS ONLY
+    data/fight-grid-all.json  ~1.5MB never     MASTER — build-time only
+    data/fight-stats.json     8MB    eager     UNCHANGED — not one byte added
+
+THE MASTER IS THE SWEEP'S OUTPUT AND IT MUST NOT SHIP. 643 fighters is ~1.5MB and
+the panel would download all of it on every click to show two men — ~84% waste —
+while CI rewrote 1.5MB twice a day into a .git that is already 805MB. What the
+sweep is FOR is the medians, and the medians are 6KB. So: population in the master,
+conclusions in the manifest, and the wire stays thin.
+
+  * fight-grid-all.json is TRACKED (CI must persist it between runs; without it the
+    master rebuilds from whatever delta the backfill last fetched) but NOT SERVED
+    (excluded by name in build-site.sh).
+  * IT CANNOT USE THE data/_ PREFIX. That prefix does exclude it from public/ —
+    and .gitignore line 10 is `data/_*.json`, so it would also stop being tracked,
+    which is the exact disaster above. "Not shipped" and "not tracked" are the same
+    prefix in this repo and this file needs one without the other.
+  * grid-names.json now carries `divBase` ({div: {acc,allow,aim}} x 9 cells, each
+    [median, spread, n] or null) and `divs` (name -> division, so the browser
+    doesn't scan 3,101 FIGHTERS rows on every open).
+
+MEDIAN + IQR/1.349, NOT MEAN + SD. The median because these rates are right-skewed
+and a mean is dragged up by the few extremes — statDivMedians() already made this
+call for the profile bars and says so. The IQR because the spread has to match the
+centre: an sd is computed around the MEAN and inflated by the very outliers the
+median was chosen to ignore. Rescaled by 1.349 so it reads on the sd scale.
 
 index.html eager-fetches fight-stats.json on every page load. The grid would add
 ~2MB to that for a panel you have to click, so it lives apart and loads on press.
@@ -119,11 +178,25 @@ been caught by any test that checks the numbers, because the NUMBERS WERE RIGHT.
         rates            -> two-proportion standard error, gap >= 2se
         counts of events -> Poisson, |a-b| >= 2*sqrt(a+b)
         magnitudes       -> ratio >= 1.25 (control time; it has no n)
-        volume, share, "what lands on him", "time under control" -> NEVER accented
+        volume, share, "what lands on him", "time under control" -> NEVER by lead
     Neither test is tuned. Only the COLOUR is gated — the numbers print either way.
     On Du Plessis/Usman exactly two bars now light: takedowns stopped and control
     time, which are the two facts the prose read leads with. The colour and the
     sentence agree because both answer to the same discipline.
+
+ 3. AND THEN I WROTE THE SAME BUG AGAIN, IN THE SAME FEATURE, ONE LAYER OVER.
+    The division grade shipped as `rate < median ? green : red` — which painted
+    Usman RED for allowing 31% at range against a welterweight median of 31%. Dead
+    average, marked down. EVERY fighter is on one side of a median, so a bare
+    comparison colours the whole card and says nothing. _mhGrade() now needs the gap
+    to clear two bars that answer different questions:
+        >= one division spread  — is he unusual FOR HIS DIVISION?
+        >= 2 standard errors    — is his own rate real, or 25 attempts of noise?
+    Result across the card: 34 green, 26 red, 215 neutral (78%). The colour means
+    something when it appears, and "ordinary" is the truthful answer for most men.
+    THE LESSON THAT DIDN'T TAKE THE FIRST TIME: a threshold fixed on one code path
+    is not a principle until it's on all of them. lead and grade are the same claim
+    about different populations, and only one of them had been taught to shut up.
 
 
 TRAPS — ALL OF THESE WERE REAL BUGS
@@ -154,6 +227,18 @@ TRAPS — ALL OF THESE WERE REAL BUGS
     schedule it serves, and every button vanishes on the first quiet day.
   * THE $FILES ALLOWLIST in update-odds.yml is explicit. A new data file that isn't
     in it gets generated and never committed. Green job, starved feature.
+  * build-site.sh SHIPS data/*.json WHOLESALE (git ls-files minus a few patterns).
+    A build-time-only file is served to every visitor unless you exclude it BY NAME
+    — see fight-grid-all.json. This is the same bug prototypes/ has open below.
+  * roster_names() IS NOT THE ACTIVE ROSTER. It is every name in FIGHTERS: 3,101,
+    of which ~2,450 are retired. Use --active for anything that becomes a baseline.
+  * ACTIVE_ROSTER USES DISPLAY NAMES AND IS ON ONE LINE. Folding accents is not
+    enough — "King Green" -> "Bobby Green", "Patricio Freire" -> "Patrício Pitbull",
+    "Thomas Gantt" -> "Tommy Gantt" only resolve through ACTIVE_ROSTER_ALIASES; 7
+    fighters including a former champion silently vanish without it. And the array
+    closes with `"];` on ONE line, so a /\[(.*?)\n\s*\];/ pattern runs past the end
+    of it into ROSTER_CHANGES and starts collecting week labels as fighter names.
+    Both of these bit on the first write of active_roster_names(), in one function.
 
 
 DEAD END — DO NOT REBUILD THIS. `adv` AND `slams` ARE EMPTY.
