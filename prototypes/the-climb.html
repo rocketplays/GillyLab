@@ -1190,9 +1190,13 @@ function hud(){
     '<div><span>Record</span><b>'+G.wins+'-'+G.losses+'</b></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
-    '<div><span>Upgrade pts</span><b style="color:var(--accent)">'+G.pts+'</b></div>'+
+
     '<div><span>Age</span><b>'+(START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12))+'</b></div>'+
-    '<div><span>Lives</span><b>'+(2-G.losses)+'</b></div>';
+    // WAS (2 - G.losses): hardcoded when two losses ended a run, and left behind
+    // when CUT_AT became a constant and moved to 5 — so getting cut displayed
+    // "Lives -3". Clamped at 0 as well: a dead fighter has none, not a negative
+    // number of them.
+    '<div><span>Losses left</span><b>'+Math.max(0, CUT_AT-G.losses)+'</b></div>';
   p.appendChild(d); return p;
 }
 
