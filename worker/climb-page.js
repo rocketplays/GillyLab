@@ -2210,23 +2210,45 @@ function runSummary(){
   const wins = G.log.filter(f=>f.won);
   const fins = wins.filter(f=>f.fin).length;
   const best = wins.slice().sort((a,b)=>a.p-b.p)[0];
-  const w = methodTally(true);
+  const w = methodTally(true), l = methodTally(false);
   return {
     champ: !!G.champ,
-    headline: G.champ ? 'I won the belt' : 'My run',
+    // THE SHEET SAYS WHAT THE SCREEN SAYS. endBox() is the moment the run lands —
+    // one big coloured verdict, then the record — and the share image was telling a
+    // different story in a different voice ("My run", a FINISHED AS hero card). Two
+    // designs for one moment is how they drift. This is endBox's own headline,
+    // built by the same expression, so the picture can't say something the page
+    // didn't.
+    verdict: G.champ ? 'CHAMPION.' : 'CUT.',
+    verdictSub: G.champ ? 'You did it.' : CUT_AT+' losses.',
     division: (D && D.divisions && D.divisions[DIV] && D.divisions[DIV].label) || DIV,
     fights: G.log.length,
     age: START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12),
+    style: archetype(),
     pro: totalRecord(),
     ufc: ufcRecord(),
     peakLabel: G.champ ? 'CHAMPION' : G.peak==null ? 'UNRANKED' : '#'+G.peak,
-    peakSub:   G.champ ? 'undisputed' : G.peak==null ? 'never cracked the top 15'
-             : G.peak===1 ? 'number one contender' : 'in the division',
     shareRank: G.champ ? 'champion' : G.peak==null ? 'unranked'
              : 'the #'+G.peak+' contender',
-    bestWin: best ? best.opp.split(/\\s+/).slice(-1)[0] + ' ' + amer(best.p) : '',
+    bestWin: best ? 'Best win: '+best.opp+' at '+amer(best.p) : 'No wins',
     finishRate: wins.length ? Math.round(fins/wins.length*100)+'%' : '—',
-    byMethod: [ {label:'KO/TKO', n:w['KO/TKO']}, {label:'SUB', n:w.submission}, {label:'DEC', n:w.decision} ]
+    // W and L both, exactly like the end screen's tally — a run that got knocked
+    // out three times is not the run that got out-pointed three times.
+    byMethod: [
+      { label:'KO/TKO',     w:w['KO/TKO'],    l:l['KO/TKO'] },
+      { label:'Submission', w:w.submission,   l:l.submission },
+      { label:'Decision',   w:w.decision,     l:l.decision },
+    ],
+    // The fight list, newest first, in the end screen's own shape: W/L, method,
+    // rank, name, moneyline. This is the part people screenshot.
+    log: G.log.slice().reverse().map(f => ({
+      won: f.won,
+      method: methodTag(f).trim(),
+      rank: f.rank===0 ? 'C' : f.rank===0.5 ? 'C' : f.rank>=99 ? 'UR' : '#'+f.rank,
+      champ: f.rank<=0.5,
+      opp: f.opp,
+      ml: amer(f.p),
+    })),
   };
 }
 function endBox(msg){

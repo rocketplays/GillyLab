@@ -1008,57 +1008,103 @@ const GL_SHEET = (function () {
      generator's own header says as much ("Generated (not forked) so the two can
      never drift"). The prototype loads ../gl-sheet.js exactly like /pickem loads
      /gl-sheet.js.  */
+  // The Climb's end screen, as a card. It follows endBox() beat for beat — big
+  // coloured verdict, the three records, the best win, W/L by method, then the
+  // fight list — because that IS the design the player just reacted to. The first
+  // version invented its own layout (a "FINISHED AS" hero, a 2x2 tile grid, wins
+  // only) and told the same story in a different voice, which is how the picture
+  // ends up disagreeing with the page.
+  const CLIMB_RED = '#ff5a3d';
   async function drawClimb(d) {
     await fontsReady();
     const logo = await loadBrandLogo();
-    const CH = 1080;
+    // HEIGHT FOLLOWS THE RUN. A fixed 1350 looked right at nine fights and left a
+    // 210px hole under a five-fight run — and a five-fight run is a fighter who got
+    // CUT, which is exactly when the card shouldn't look like it lost its footing.
+    // Floor of 1080 so a two-fight disaster is still a card and not a strip.
+    const LIST_TOP = 756, ROW_H = 48, FOOT = 150;
+    const rows = (d.log || []).slice(0, 9);
+    const CH = Math.max(1080, LIST_TOP + rows.length * ROW_H + FOOT);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
     brand(ctx, 78, 'The Climb', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    ctx.fillText(clip(ctx, d.headline || 'My run', W - 128), 64, 158);
+
+    const win = !!d.champ, hero = win ? ACC : CLIMB_RED;
+
+    // THE VERDICT — the page's own `.big` line, at the size it deserves.
+    ctx.fillStyle = hero; ctx.font = '800 104px ' + COND;
+    ctx.fillText(d.verdict || '', 64, 190);
+    const vw = ctx.measureText(d.verdict || '').width;
+    ctx.fillStyle = TXT; ctx.font = '800 104px ' + COND;
+    ctx.fillText(' ' + (d.verdictSub || ''), 64 + vw, 190);
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(clip(ctx, [d.division, d.fights + ' fights', 'age ' + d.age].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+    ctx.fillText(clip(ctx, [d.division, d.style, d.fights + ' fights', 'age ' + d.age]
+      .filter(Boolean).join('   ·   '), W - 128), 64, 236);
 
-    // Hero: where you finished. That's the whole question the game asks.
-    roundRect(ctx, 64, 240, W - 128, 210, 16); ctx.fillStyle = CARD; ctx.fill();
+    // THE THREE RECORDS, in the end screen's order and wording.
+    roundRect(ctx, 64, 272, W - 128, 150, 16); ctx.fillStyle = CARD; ctx.fill();
+    const cols = [['PRO RECORD', d.pro, TXT], ['UFC RECORD', d.ufc, win ? ACC : TXT],
+                  ['PEAK', d.peakLabel, win ? AMB : TXT]];
+    cols.forEach(([lab, val, col], i) => {
+      const x = 96 + i * ((W - 192) / 3);
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText(lab, x, 326);
+      ctx.font = '800 58px ' + COND; ctx.fillStyle = col;
+      ctx.fillText(String(val || '—'), x, 390);
+    });
+
+    ctx.font = '400 26px ' + SANS; ctx.fillStyle = '#c9ccd3';
+    ctx.fillText(clip(ctx, d.bestWin || '', W - 128), 64, 466);
+
+    // BY METHOD — W and L, the same little table the end screen prints.
+    let y = 528;
     ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('FINISHED AS', 96, 296);
-    const isChamp = !!d.champ;
-    ctx.font = '800 108px ' + COND; ctx.fillStyle = isChamp ? AMB : TXT;
-    ctx.fillText(String(d.peakLabel || '—'), 96, 396);
-    ctx.font = '400 25px ' + SANS; ctx.fillStyle = '#c9ccd3'; ctx.textAlign = 'right';
-    ctx.fillText(d.peakSub || '', W - 96, 396);
+    ctx.fillText('BY METHOD', 64, y);
+    ctx.textAlign = 'right';
+    ctx.fillText('W', W - 150, y); ctx.fillText('L', W - 72, y);
     ctx.textAlign = 'left';
+    y += 16;
+    for (const m of (d.byMethod || [])) {
+      y += 46;
+      ctx.font = '400 27px ' + SANS; ctx.fillStyle = TXT; ctx.fillText(m.label, 64, y);
+      ctx.textAlign = 'right'; ctx.font = '700 30px ' + COND;
+      ctx.fillStyle = m.w ? ACC : MUT; ctx.fillText(String(m.w), W - 150, y);
+      ctx.fillStyle = m.l ? CLIMB_RED : MUT; ctx.fillText(String(m.l), W - 72, y);
+      ctx.textAlign = 'left';
+    }
 
-    const gw = (W - 128 - 20) / 2, gh = 140;
-    btTile(ctx, 64, 476, gw, gh, 'Pro record', d.pro || '—', TXT);
-    btTile(ctx, 64 + gw + 20, 476, gw, gh, 'UFC record', d.ufc || '—', isChamp ? ACC : TXT);
-    btTile(ctx, 64, 476 + gh + 20, gw, gh, 'Best win', d.bestWin || '—', d.bestWin ? ACC : MUT);
-    btTile(ctx, 64 + gw + 20, 476 + gh + 20, gw, gh, 'Finish rate', d.finishRate || '—', TXT);
-
-    // How the wins came. A build that knocks nine men out and one that outpoints
-    // nine share a record and share nothing else.
-    const by = d.byMethod || [];
-    if (by.length) {
-      ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
-      ctx.fillText('WINS BY METHOD', 64, 850);
-      let x = 64;
-      for (const m of by) {
-        ctx.font = '800 46px ' + COND; ctx.fillStyle = m.n ? TXT : MUT;
-        ctx.fillText(String(m.n), x, 916);
-        const nw = ctx.measureText(String(m.n)).width;
-        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(' ' + m.label, x + nw + 6, 916);
-        x += nw + 12 + ctx.measureText(' ' + m.label).width + 46;
+    // THE RECORD — the part people screenshot. Newest first, capped so the card
+    // stays readable; the count says what's missing rather than pretending.
+    y = LIST_TOP;
+    const hidden = (d.log || []).length - rows.length;
+    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('THE RUN' + (hidden ? '   (LAST ' + rows.length + ' OF ' + (d.log || []).length + ')' : ''), 64, y);
+    for (const f of rows) {
+      y += ROW_H;
+      roundRect(ctx, 64, y - 34, W - 128, 42, 8); ctx.fillStyle = '#16181d'; ctx.fill();
+      ctx.font = '800 26px ' + COND; ctx.fillStyle = f.won ? ACC : CLIMB_RED;
+      ctx.fillText(f.won ? 'W' : 'L', 84, y);
+      ctx.font = '400 22px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(f.method, 118, y);
+      // The champion's gold C, same mark the log uses.
+      const rx = 196;
+      if (f.champ) {
+        roundRect(ctx, rx, y - 22, 26, 26, 5); ctx.fillStyle = AMB; ctx.fill();
+        ctx.font = '800 18px ' + COND; ctx.fillStyle = '#1a1204';
+        ctx.textAlign = 'center'; ctx.fillText('C', rx + 13, y - 3); ctx.textAlign = 'left';
+      } else {
+        ctx.font = '400 22px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(f.rank, rx, y);
       }
+      ctx.font = '500 26px ' + SANS; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, f.opp, W - 128 - 240 - 130), 242, y);
+      ctx.textAlign = 'right'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+      ctx.fillText(f.ml, W - 88, y); ctx.textAlign = 'left';
     }
 
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
-    ctx.fillText('Real fighters, real rankings, real GillyLab power ratings', W / 2, CH - 96);
-    ctx.fillText('gillylab.com', W / 2, CH - 56);
+    ctx.fillText('Build a fighter. Climb the real rankings. Win the belt.', W / 2, CH - 96);
+    ctx.fillText('gillylab.com/theclimb', W / 2, CH - 56);
     ctx.textAlign = 'left';
     return cv;
   }
