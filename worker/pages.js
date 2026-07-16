@@ -65,14 +65,26 @@ const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BAC
 export const climbNav = (loggedIn, subscribed) => `
   <style>
     .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
-    .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--text)}
+    /* DO NOT PUT A COLOR ON the ".pk-navlinks a" rule. I did, and it turned the
+       Go Premium label from near-black to grey.
+         .pk-navlinks a  is (0,1,1) — a class AND an element
+         .pk-upg         is (0,1,0) — one class
+       so a color there BEATS the button's own and paints its text muted. The other
+       pages get the grey by INHERITANCE from .pk-navlinks, and inheritance loses to
+       any direct rule — which is exactly why .pk-upg's #04120a survives there and
+       died here. Same rules as every other free page now, and the reason they look
+       the way they do is load-bearing.
+
+       (I claimed this block was byte-for-byte and it wasn't: I'd added a color, a
+       :hover, and a .pk-upg:hover to "improve" it. The diff test I wrote compared
+       the DOM — href, logo, wordmark, link text — so it passed while the CSS was
+       wrong. Right answer, wrong axis, again.) */
+    .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
     .pk-brand .a{color:var(--accent)}
     .pk-brand img{height:24px;width:auto;display:block}
     .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
-    .pk-navlinks a{text-decoration:none;color:var(--muted)}
-    .pk-navlinks a:hover{color:var(--text)}
+    .pk-navlinks a{text-decoration:none}
     .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
-    .pk-upg:hover{color:#04120a;filter:brightness(1.06)}
   </style>
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
