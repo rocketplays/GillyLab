@@ -1323,7 +1323,7 @@ let _offerCache = null, _offerKey = '';
 //
 // RUNG_PAY is now THE dial for run length and title rate. Raise it and runs
 // shorten and the belt gets cheaper; lower it and the champion pulls away.
-const RUNG_PAY = 1.0;
+const RUNG_PAY = 1.3;
 // ONE DEFINITION. This lived inline in buildOffers() AND was recomputed in
 // offers() — two copies of the same formula, and I edited one. A reward that
 // silently disagrees with itself between the card and the payout is exactly the
@@ -1783,17 +1783,25 @@ function fight(o){
   // 0 against the best chin in the division, 1 against the worst.
   const frail = Math.max(0, Math.min(1, (0.85 - (S0.chin != null ? S0.chin : 0.66)) / 0.5));
   const FIN_W = { power: 1.00, grappling: 1.00, wrestling: 0.45, pace: 0.35 };
-  // NORMALISED BY (ATTR_MAX*2), THE SAME DIVISOR AS BEFORE, so the two primary
-  // avenues are untouched: a 10-power/1-grappling slugger still reads 0.55 and
-  // still finishes 47% of his wins, exactly as he did. Wrestling and pace only ever
-  // ADD. Clamped at 1 so the ceiling — a 65% finish rate — doesn't move either;
-  // this widens WHO can finish, it does not make finishes more common overall.
-  const finBias = Math.min(1, (
-      (G.attrs.power||0)     * FIN_W.power +
-      (G.attrs.grappling||0) * FIN_W.grappling +
-      (G.attrs.wrestling||0) * FIN_W.wrestling +
-      (G.attrs.pace||0)      * FIN_W.pace * frail
-    ) / (ATTR_MAX*2));
+  //  MAXING THE ONE THING YOU ARE IS A WHOLE JOB, NOT HALF OF ONE.
+  //
+  // This was `/ (ATTR_MAX*2)` — a divisor of 20 — which assumed you needed power
+  // AND grappling to be a finisher. So the man who maxed HIS avenue capped at 0.55
+  // and finished 47% of his wins, while a 1/1/1/1 with no finishing ability
+  // anywhere still finished 30%. Floor too high, ceiling too low, every build
+  // converging on "sometimes". Playtest: "finishing rates are low, especially if
+  // you max out your finishing stats" — right, and structurally so.
+  //
+  // Now: subtract the baseline every fighter has for free, then SATURATE. One maxed
+  // avenue gets you most of the way; maxing everything gets you the rest. Real MMA
+  // is the target — Ngannou, Aspinall and Adesanya finish 80-90% of their wins, and
+  // a man with no finishing ability at all should be a decision machine.
+  const finRaw = (G.attrs.power||0)     * FIN_W.power +
+                 (G.attrs.grappling||0) * FIN_W.grappling +
+                 (G.attrs.wrestling||0) * FIN_W.wrestling +
+                 (G.attrs.pace||0)      * FIN_W.pace * frail;
+  const FIN_BASE = ATTR_MIN * (FIN_W.power + FIN_W.grappling + FIN_W.wrestling);  // ~2.45, the free floor
+  const finBias = 1 - Math.exp(-Math.max(0, finRaw - FIN_BASE) / 6);
   // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
   // never won by submission." He couldn't have: the result line read
   // `fin ? ' by KO/TKO' : ' by decision'` — there was no submission ANYWHERE in
@@ -1820,9 +1828,43 @@ function fight(o){
   // getting STOPPED. This is deliberately cosmetic with respect to balance: method
   // is chosen after `won`, so nothing here can move a win rate. It just means the
   // 1/9 point you spent on chin is visible in your own record.
-  const chinGuard = 1 - (G.attrs.chin / ATTR_MAX) * 0.3;
-  const finW = won ? (0.25 + finBias * 0.4)          // you finish: 0.25 -> 0.65
-                   : (0.25 + threat  * 0.4) * chinGuard;  // he finishes: 0.35 -> 0.61, less your chin
+  // 0 at the floor, 1 at the cap — how much of the thing you actually bought.
+  const lvl = (id) => ((G.attrs[id] || ATTR_MIN) - ATTR_MIN) / (ATTR_MAX - ATTR_MIN);
+
+  // ROUND ONE OR BUST. Playtest: "if you have no cardio but high finishing stats,
+  // you should rarely — if ever — win a decision."
+  //
+  // Which is a sharper observation than it first looks, because it is CONDITIONAL.
+  // Whether you win is already settled by the rounds above; this only asks HOW. And
+  // a fighter with no gas tank who won cannot have won a decision — a decision means
+  // he was still there in round three. So low cardio doesn't make you win more, it
+  // makes the wins you DO get be early ones. It pushes P(finish | won) toward 1.
+  //
+  // It reads like a buff for skipping cardio and isn't: method is chosen after
+  // `won`, so it cannot move a win rate, and the style triangle already charges 13
+  // points of belt rate for the empty tank (glass cannon 25% vs complete 38%).
+  // SCALED BY finBias, and that correction matters. Pushing every gassed fighter
+  // toward a finish had a man with 1 power, 1 grappling, 1 wrestling and 1 pace
+  // finishing 74% of his wins — an empty tank does not hand you a way to end a
+  // fight you have no way to end. "Round one or bust" only applies to a fighter who
+  // owns a round one. Multiplying the push by finBias means no cardio sharpens the
+  // finisher you ARE and does nothing for the man who is nobody.
+  const gassed = 1 - lvl('cardio');            // 1 at the floor, 0 at a full tank
+  const winBase = 0.10 + finBias * 0.74;       // 0.10 for a man who cannot finish -> 0.84 maxed
+  const winFin = winBase + (1 - winBase) * gassed * 0.70 * finBias;
+
+  // AND YOU RARELY HEAR THE CARDS WITH NO CHIN EITHER. Playtest: "if you have zero
+  // durability, you should rarely make it to a dec." Same logic pointed the other
+  // way: when you lose, a man with nothing to absorb it gets stopped.
+  //
+  // This was `1 - (chin/10)*0.3` — a guard so weak it moved finish-against from 42%
+  // to 30% across the ENTIRE slider. Ten points bought a twelve-point swing in
+  // flavour and nothing else, which is why "0 durability and never finished once"
+  // was an ordinary evening rather than a bug.
+  const chinMult = 1.85 - 1.25 * lvl('chin');  // 1.85 at the floor, 0.60 maxed
+  const loseFin = Math.min(0.92, (0.22 + threat * 0.45) * chinMult);
+
+  const finW = won ? winFin : loseFin;
   const fin = Math.random() < finW && (won || kd + sb > 0);
   // Weights for WHICH finish. Yours: power vs grappling. His: knockdowns vs subs.
   // WHICH finish. Wrestling and pace both cash out mostly as TKO — ground-and-pound
@@ -1857,7 +1899,24 @@ function fight(o){
   G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
-    G.pts += o.reward + (fin?1:0);
+    // THE FINISH BONUS IS GONE, AND IT HAD TO GO.
+    //
+    // This was `o.reward + (fin?1:0)`: a point for finishing. Harmless flavour while
+    // every build finished at roughly the same rate — and a balance lever the moment
+    // that stopped being true. Widening the finish spread to 16%-88% turned +1 into
+    // +1.4 points a run for a Surgeon and +7.9 for a Sniper, and the economy's whole
+    // problem is a runaway loop: points -> rating -> wins -> points. Measured, it
+    // moved the grappler from 33% to 48% belt rate on a change that was supposed to
+    // be cosmetic.
+    //
+    // I said "method is chosen after `won`, so it cannot move a win rate" three
+    // times today and never checked it. It was true by accident, not by design:
+    // `fin` fed G.pts. The claim survived because nothing had ever made the finish
+    // rate vary enough to expose it.
+    //
+    // Now method is inert BY CONSTRUCTION — `fin` reaches the log and the result
+    // line and nothing else — which is what makes it safe to tune on feel.
+    G.pts += o.reward;
     // SUB-RANK ADVANCEMENT. Playtest, and it's the right design: "a rank below you
     // can advance you, just less than taking a harder fight."
     //
@@ -2167,7 +2226,7 @@ function resultBox(){
   const n=document.createElement('div'); n.className='note';
   const left = CUT_AT - G.losses;
   n.textContent = won
-    ? '+'+(o.reward+(fin?1:0))+' upgrade points.'
+    ? '+'+o.reward+' upgrade points.'
     : (left===1 ? 'One loss left.' : left+' losses left.');
   p.appendChild(n);
   return p;
