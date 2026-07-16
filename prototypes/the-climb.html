@@ -403,7 +403,11 @@ const ARCH_ONE = {
 // just quietly answers a slightly worse question. So the sort happens HERE, once,
 // and hand-written order stops being load-bearing.
 const ARCH_PAIR = Object.fromEntries(Object.entries({
-  'power+wrestling':     'Wrestle-boxer',
+  // Power + Wrestling and Technique + Wrestling both read "Wrestle-boxer" until
+  // now. They aren't the same fighter: one takes you down and hits you, the other
+  // takes you down and works. Splitting them costs nothing and removes a duplicate.
+  'power+wrestling':     'Ground-and-pound',
+  'technique+wrestling': 'Dirty boxer',
   'power+technique':     'Sniper',
   'power+pace':          'Swarmer',
   'power+chin':          'Slugger',
@@ -413,15 +417,14 @@ const ARCH_PAIR = Object.fromEntries(Object.entries({
   'power+takedef':       'Sprawl-and-brawl',
   'pace+cardio':         'Pressure fighter',
   'pace+technique':      'Point fighter',
-  'pace+strdef':         'Out-boxer',
+  'pace+strdef':         'Hit-and-run',
   'pace+chin':           'Brawler',
   'pace+wrestling':      'Smother wrestler',
   'pace+grappling':      'Scrambler',
   'pace+takedef':        'Kickboxer',
-  'technique+strdef':    'Outfighter',
+  'technique+strdef':    'Surgeon',
   'technique+cardio':    'Distance manager',
   'technique+chin':      'Craftsman',
-  'technique+wrestling': 'Wrestle-boxer',
   'technique+grappling': 'All-rounder',
   'technique+takedef':   'Kickboxer',
   'strdef+cardio':       'Marathon man',
