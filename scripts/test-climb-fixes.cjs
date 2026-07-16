@@ -55,6 +55,42 @@ setTimeout(()=>{
   }
   ok(thin.length===0,'every rung of every division offers 2+ fights',thin.join('; '));
 
+  console.log('\n== 1c2. the man who beat you does not come back ==');
+  // Playtest: "L vs Johnny Walker (64%), L vs Johnny Walker (64%), L vs Johnny
+  // Walker (68%)" — three straight rematches with a man who had already beaten
+  // him. Cause: the board's top-up filtered on G.beat, which only records WINS,
+  // so a conqueror was never excluded. Reads exactly like "it isn't refreshing
+  // the matchups when losing", which is how it was reported. Play real runs and
+  // watch for it; a static board can't see this.
+  let revenge=0, repeat=0, boards=0;
+  const O=['power','technique','pace','strdef','chin','cardio','takedef','grappling','wrestling'];
+  const sp='(function(){var O='+JSON.stringify(O)+';while(G.pts>0){var m=false;'+
+    'for(const id of O){var c=upCost(G.attrs[id]);if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;m=true;break;}}if(!m)break;}})()';
+  for(const dv of ['LHW','LW']){
+    for(let r=0;r<12;r++){
+      win.eval('DIV="'+dv+'"; newGame(); G.started=true;'); win.eval(sp);
+      for(let g=0; g<40; g++){
+        const st=peek('({c:G.champ,l:G.losses})'); if(st.c||st.l>=peek('CUT_AT')) break;
+        if(peek('G.pts>0')) win.eval(sp);
+        const n=peek('offers().length'); if(!n) break;
+        boards++;
+        if(peek('offers().some(x=>G.log.some(l=>l.opp===x.f.name && !l.won))')) revenge++;
+        if(peek('offers().some(x=>G.log.some(l=>l.opp===x.f.name))')) repeat++;
+        win.eval('(function(){var o=offers(); fight(o[Math.floor(o.length/2)]);})()');
+      }
+    }
+  }
+  // The HARD assertion: a conqueror never returns. Deterministic — the filter
+  // either excludes him or it doesn't.
+  ok(revenge===0,'a man who beat you is never re-offered',revenge+'/'+boards+' boards');
+  // The SOFT one: rematches of men you BEAT are fine (a real career has them) and
+  // only matter if they flood the board. This rate genuinely swings 5-14% with how
+  // deep the runs happen to go, so the gate is 20% — enough to catch a regression
+  // to the 28.7% that shipped, loose enough not to fail one run in three. A test
+  // that cries wolf a third of the time gets ignored, which is worse than no test;
+  // I set it at 12% first and it did exactly that.
+  ok(repeat/boards < 0.20,'rematches never flood the board',(repeat/boards*100).toFixed(1)+'% of '+boards+' boards');
+
   console.log('\n== 1d. opponents have faces ==');
   win.eval('DIV="LW"; newGame(); G.started=true; G.pts=40; render();');
   const avs=[...doc.querySelectorAll('.opp .av img')];

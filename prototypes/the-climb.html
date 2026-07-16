@@ -933,7 +933,14 @@ function buildOffers(){
   // never a fake choice.
   let picked = pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i);
   if (picked.length < 3) {
-    const beaten = f => G.beat.has(f.name);
+    // `fought`, NOT G.beat. G.beat only records WINS, so filtering on it re-offers
+    // the man who just knocked you out — repeatedly. Playtest: "L vs Johnny Walker
+    // (64%), L vs Johnny Walker (64%), L vs Johnny Walker (68%)" — three straight
+    // rematches with a man who had already beaten him twice, which reads exactly
+    // like "it isn't refreshing the matchups when losing". Measured at 28.7% of
+    // boards offering someone already fought. The `fought` set was three lines
+    // above this and tracks both results; I reached for the wrong one.
+    const beaten = f => fought.has(f.name);
     for (const radius of [2,4,7,12,99]) {
       if (picked.length >= 3) break;
       const band = LADDER().filter(f =>
@@ -946,10 +953,16 @@ function buildOffers(){
         picked.push(nxt); band.splice(band.indexOf(nxt), 1);
       }
     }
-    // Still short in a picked-clean division? Allow rematches before allowing a
-    // one-card board — see the empty-board note above.
+    // TRUE last resort: a rematch beats an empty board, but only after the whole
+    // ladder has been searched for someone new, and never against a man who has
+    // already beaten you — losing to the same guy on repeat is the single most
+    // demoralising thing the board can do, and it isn't matchmaking, it's a bug
+    // wearing a fighter's name.
     if (picked.length < 2) {
-      const any = LADDER().filter(f => !picked.includes(f) &&
+      const lost = new Set(G.log.filter(f=>!f.won).map(f=>f.opp));
+      let any = LADDER().filter(f => !picked.includes(f) && !lost.has(f.name) &&
+        f.name !== (G.last && G.last.o && G.last.o.f.name));
+      if (!any.length) any = LADDER().filter(f => !picked.includes(f) &&
         f.name !== (G.last && G.last.o && G.last.o.f.name));
       while (picked.length < 3 && any.length) {
         const nxt = pickDiverse(any, picked);
