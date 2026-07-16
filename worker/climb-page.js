@@ -1,6 +1,6 @@
 /* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
    Edit the prototype: it is what the whole test/sim harness reads. */
-export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
+export const climbPage = ({ head, nav, back, footer }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -130,7 +130,11 @@ export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
   /* Phone spacing. The desktop values are unchanged — this is the same layout
      with less air, not a different one. */
   @media (max-width:560px){
-    body{padding:.6rem}
+    /* .wrap, not body — the gutter moved there when the top bar went full-bleed.
+       Left on body this would have set padding on an element that no longer has
+       any, and the phone would have quietly kept the desktop 1rem. */
+    .wrap{padding:.6rem}
+    .pk-nav{padding:10px 12px}
     .panel{padding:.7rem;margin:.5rem 0}
     h1{font-size:1.15rem}
     .sub{font-size:.72rem;margin-bottom:.7rem}
@@ -141,8 +145,12 @@ export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
     .log{line-height:1.65}
     .tipbox{margin-top:.5rem}
   }
-  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:1rem}
-  .wrap{max-width:820px;margin:0 auto}
+  /* PADDING MOVED TO .wrap. The top bar and the footer both need to touch the
+     viewport edges — a sticky bar whose divider stops 1rem short on each side
+     reads as a floating box, not a rule. So body is flush and the reading column
+     carries its own gutter. */
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:0}
+  .wrap{max-width:820px;margin:0 auto;padding:1rem}
   h1{font-size:1.3rem;margin:0 0 .1rem;letter-spacing:-.02em}
   h1 .g{color:var(--accent)}
   .tag{font-size:.92rem;font-weight:600;color:var(--text);margin:.15rem 0 .5rem;letter-spacing:-.01em}
@@ -310,12 +318,16 @@ export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
 </style>
 </head>
 <body>
+<!-- TOP BAR SLOT — the brand + account links, filled by gen-climb-page.cjs.
+     OUTSIDE .wrap so its divider spans the viewport the way it does on every other
+     free page; inside, the rule would stop at the 820px column and read as a box.
+     Empty in the prototype, which has no /subscribe to link to. -->
+` + (nav || "") + `
 <div class="wrap">
-  <!-- NAV SLOT — filled by scripts/gen-climb-page.cjs, empty in the prototype.
-       ABOVE the headline on purpose: it holds a back arrow, and a back arrow that
-       appears below the title it's meant to precede reads as a footer. Empty here
-       because the prototype is opened directly and has no page to go back to. -->
-  ` + (nav || "") + `
+  <!-- BACK SLOT — inside the column, under the divider. The brand above goes to
+       /matchup; this goes to the page you were ACTUALLY on, which is a different
+       promise and the reason both exist. -->
+  ` + (back || "") + `
   <h1>The <span class="g">Climb</span></h1>
   <p class="tag">Can you become a UFC champion?</p>
   <!-- KEEP THIS TRUE. The tuning file lists the subtitle among the claims that

@@ -50,40 +50,48 @@ const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BAC
 // referrer is this site, else go home. That check is what stops "back" throwing a
 // player out to whatever Google page they arrived from, it's already solved
 // above, and a second implementation would just be a second thing to get wrong.
-// ONE ROW, BOTH JOBS: back on the left, the account links on the right.
+// THE TOP BAR — byte-for-byte the one every other free page opens with.
 //
-// Every other free page opens with <nav class="pk-nav"> — brand left,
-// freeNavLinks right. The Climb keeps the same right-hand side (it's the same
-// account, the same Go Premium, the same Log out, and freeNavLinks is the ONE
-// definition of what those say for a given login state) but swaps the brand for
-// the back arrow, because the brand's job there is "a way out of here" and the
-// arrow already does that, better, on the page you actually came from.
+// Markup and metrics copied from rankingsPage/rosterPage/matchupPage rather than
+// approximated, because "just like the other free pages" is the whole requirement:
+// same brand, same 24px logo, same sticky blur, same divider, same links. The
+// LINKS come from freeNavLinks(), so what they say for a given login state has one
+// definition and cannot drift from the rest of the site.
 //
-// One row rather than a nav bar plus a separate back link: we spent real effort
-// getting this page's height down, and two rows of chrome above a game that opens
-// with a nine-row creator would give it straight back.
+// The .pk-* CSS is duplicated here rather than imported because this page ships
+// its own <style> block and has no access to theirs. If those metrics ever change,
+// they change in two places — which is a real cost, and the alternative (a shared
+// stylesheet) is a bigger change than this page justifies today.
 export const climbNav = (loggedIn, subscribed) => `
   <style>
-    .climb-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 .5rem}
+    .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+    .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--text)}
+    .pk-brand .a{color:var(--accent)}
+    .pk-brand img{height:24px;width:auto;display:block}
+    .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+    .pk-navlinks a{text-decoration:none;color:var(--muted)}
+    .pk-navlinks a:hover{color:var(--text)}
+    .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+    .pk-upg:hover{color:#04120a;filter:brightness(1.06)}
+  </style>
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">${freeNavLinks(loggedIn, subscribed)}</div>
+  </nav>`;
+
+// The back arrow, under the divider and inside the reading column. The brand above
+// goes to /matchup; this goes to the page you were ACTUALLY on — a different
+// promise, which is why both exist. Kept out of the bar so the bar stays identical
+// to every other page's.
+export const climbBack = () => `
+  <style>
     .climb-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);
-      text-decoration:none;font-size:.78rem;transition:color .15s}
+      text-decoration:none;font-size:.78rem;margin:0 0 .5rem;transition:color .15s}
     .climb-back:hover{color:var(--text)}
     .climb-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
       stroke-linecap:round;stroke-linejoin:round}
-    /* Same metrics as .pk-navlinks / .pk-upg on the other free pages — copied
-       rather than imported because this page ships its own <style> block, but the
-       LINKS themselves come from freeNavLinks so their text can't drift. */
-    .climb-nav .links{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
-    .climb-nav .links a{text-decoration:none;color:var(--muted)}
-    .climb-nav .links a:hover{color:var(--text)}
-    .climb-nav .links a.pk-upg{color:#04120a;background:var(--accent);border-radius:8px;
-      padding:6px 11px;font-weight:800;font-size:.78rem}
-    .climb-nav .links a.pk-upg:hover{color:#04120a;filter:brightness(1.06)}
   </style>
-  <nav class="climb-nav">
-    <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
-    <div class="links">${freeNavLinks(loggedIn, subscribed)}</div>
-  </nav>`;
+  <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
 // The footer every other free page ends with. Exported for /theclimb, which is
 // generated from the prototype and has it injected at a marker.

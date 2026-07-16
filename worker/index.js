@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbFooter, ogTags } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbFooter, ogTags } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1202,13 +1202,14 @@ export default {
           "Build a fighter, start as a 10-0 prospect entering the UFC, then pick your fights and climb the real rankings to a real belt. Free to play on GillyLab.",
           "/theclimb"
         ) + (s ? "" : "<script>window.CLIMB_LOCKED=1</script>");
-        // Back arrow left, the standard account links right — see climbNav(). The
-        // freeTabs row stays off: mid-run, five links to leave are noise. The Climb
-        // button still appears in freeTabs on every OTHER free page, which is how
-        // you get here.
+        // The same top bar every other free page opens with — brand, divider,
+        // account links — plus a back arrow under it. The freeTabs row stays off:
+        // mid-run, five links to leave are noise, and the Climb button still
+        // appears in freeTabs on every OTHER free page, which is how you get here.
         return html(climbPage({
           head,
           nav: climbNav(!!s, !!u?.subscribed),
+          back: climbBack(),
           footer: climbFooter(),
         }), 200, pubHeaders(s));
       }

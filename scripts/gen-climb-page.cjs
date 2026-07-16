@@ -75,7 +75,7 @@ const esc = (s) => s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g
 // reassemble in the order they appear in the file — and if any marker is out of
 // order the split returns undefined and we fail loudly rather than emit a page
 // with the footer in the <head>.
-const SLOTS = ["<!--HEAD-->", "<!--FREE_NAV-->", "<!--FOOTER-->"];
+const SLOTS = ["<!--HEAD-->", "<!--FREE_NAV-->", "<!--BACK-->", "<!--FOOTER-->"];
 const chunks = [];
 let rest = html;
 for (const marker of SLOTS) {
@@ -92,8 +92,8 @@ chunks.push(rest);
 fs.writeFileSync(OUT,
   "/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.\n" +
   "   Edit the prototype: it is what the whole test/sim harness reads. */\n" +
-  "export const climbPage = ({ head, nav, footer }) => `" + esc(chunks[0]) + "` + (head || \"\") + `" +
-  esc(chunks[1]) + "` + (nav || \"\") + `" + esc(chunks[2]) + "` + (footer || \"\") + `" +
-  esc(chunks[3]) + "`;\n");
+  "export const climbPage = ({ head, nav, back, footer }) => `" + esc(chunks[0]) + "` + (head || \"\") + `" +
+  esc(chunks[1]) + "` + (nav || \"\") + `" + esc(chunks[2]) + "` + (back || \"\") + `" +
+  esc(chunks[3]) + "` + (footer || \"\") + `" + esc(chunks[4]) + "`;\n");
 
 console.log("worker/climb-page.js: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");
