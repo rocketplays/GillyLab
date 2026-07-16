@@ -34,8 +34,8 @@ for(const [label,pick] of [['favorite-hunter (easy)','s[0]'],['mid','s[Math.floo
     let guard=0;
     for(;;){
       if(guard++>40) break;
-      const st=win.eval('({champ:G.champ,losses:G.losses,rank:G.rank})');
-      if(st.champ||st.losses>=win.eval('CUT_AT')) break;
+      const st=win.eval('({champ:G.champ,losses:G.losses,rank:G.rank,out:!!G.outOfShots})');
+      if(st.champ||st.out||st.losses>=win.eval('CUT_AT')) break;
       win.eval('(function(){'+spend+'})()');
       const got=win.eval('(function(){var o=offers(); if(!o.length){G.losses=99;return "0";}'+
         'var s=o.slice().sort(function(a,b){return b.p-a.p});'+

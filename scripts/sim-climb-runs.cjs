@@ -82,7 +82,7 @@ function playOne(strat){
   let guard=0, peak=99;
   for(;;){
     if(guard++>40) break;
-    const st=win.eval('({champ:G.champ,losses:G.losses,rank:G.rank})');
+    const st=win.eval('({champ:G.champ,losses:G.losses,rank:G.rank,out:!!G.outOfShots})');
     // Track the peak ourselves — the game HAD no peak, it only carried the CURRENT
     // rank. (It has G.peak now: the end screen was printing "peaked at #N" off the
     // current rank, which was only ever honest while rank couldn't go down, and a
@@ -90,7 +90,10 @@ function playOne(strat){
     // game was.) Kept independent anyway: a harness that reads the number it is
     // checking cannot catch the game getting it wrong.
     if(st.rank!=null && st.rank<peak) peak=st.rank;
-    if(st.champ||st.losses>=win.eval("CUT_AT")) break;
+    // G.outOfShots ends a run WITHOUT G.losses reaching CUT_AT (second title loss).
+    // A bot that only watches the loss counter spins to the 40-fight guard and
+    // reports a run length that no player experiences — the harness lying again.
+    if(st.champ||st.out||st.losses>=win.eval("CUT_AT")) break;
     win.eval('(function(){'+
       'if(G.pts>0){'+
         (order?'var O='+JSON.stringify(order)+';'+

@@ -2261,7 +2261,39 @@ function fight(o){
     }
     if (o.f.rankNum === 0) G.champ = true;
   } else {
-    G.losses++; G.streak = 0;
+    // NOBODY GETS CUT FOR LOSING TO THE CHAMPION.
+    //
+    // Measured before building this: 21.3% of all runs ended CUT with the last
+    // fight being a title loss. One run in five finished by telling you the UFC
+    // released you for the crime of challenging for the belt, which is not a thing
+    // that has ever happened to anyone. The most common bad ending in the game was
+    // also its least believable.
+    //
+    // THE RULE: your first title loss is free. Your second ends the run — but as
+    // "you've run out of title shots", not "you're cut". Losses to CONTENDERS are
+    // untouched; CUT_AT still means what it always meant.
+    //
+    // WHY THE SECOND ONE ENDS IT REGARDLESS OF BUDGET, which is the load-bearing
+    // half: a free title loss plus a champion who returns after one win is exactly
+    // the shape of the bug this file already has a section about — "lose a title
+    // fight, stay #1, beat one gimme, get another shot: an unlimited supply of
+    // title fights at one fight apiece. Measured, a 90% belt rate. A free belt."
+    // A loss costing a rung defused that once. Handing the loss back would re-arm
+    // it. So the exemption is a ONE-SHOT, and the cap is a hard stop on the run
+    // rather than on the budget — a run that cannot end is the failure mode this
+    // whole game has been bitten by, and it is worth being blunt about preventing.
+    if (o.f.rankNum === 0) {
+      G.titleLosses = (G.titleLosses || 0) + 1;
+      if (G.titleLosses === 1) {
+        G.spared = true;          // the end screen never sees this; the fight card does
+      } else {
+        G.outOfShots = true;      // ends the run, and it is NOT a cut
+      }
+    }
+    // The first title loss costs a rung and a streak like any other — you did lose
+    // the fight — it just doesn't spend a life.
+    if (!(o.f.rankNum === 0 && G.titleLosses === 1)) G.losses++;
+    G.streak = 0;
     // A LOSS COSTS YOU A RUNG. The design said so all along and the code never did
     // it: CUT_AT's own comment reads "losses become a COST, not a coin flip that
     // deletes the run: they cost you rank, time and a soft matchmaking step-down."
@@ -2307,7 +2339,10 @@ function newGame(){
   // was written, with a comment saying the game has no G.peakRank. It was right,
   // and the game needed one the whole time.)
   G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), pts:POINTS_START,
-        wins:0, losses:0, streak:0, rank:null, peak:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0 };
+        wins:0, losses:0, streak:0, rank:null, peak:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0,
+        // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
+        // survives newGame() is a one-shot exemption you get once per browser tab.
+        titleLosses:0, spared:false, outOfShots:false };
   render();
 }
 // What the current sheet has cost, in points — NOT the sum of levels, now that
@@ -2326,6 +2361,12 @@ function render(){
   if (!G.started){ app.appendChild(creator()); return; }
   app.appendChild(hud());
   if (G.champ){ app.appendChild(endBox('CHAMPION. You did it.')); return; }
+  // OUT OF SHOTS IS NOT A CUT, and it is checked FIRST. If you take your second
+  // title fight on your fifth loss, both conditions are true at once and the run
+  // has to end with the honest one: you didn't get released, you ran out of cracks
+  // at the belt. Ordering is the whole fix — put this second and the 21% of runs
+  // this exists for would still print "Cut".
+  if (G.outOfShots){ app.appendChild(endBox('No shots left. The title is gone.')); return; }
   if (G.losses>=CUT_AT){ app.appendChild(endBox('Cut. '+CUT_AT+' losses.')); return; }
   if (G.last) app.appendChild(resultBox());
   app.appendChild(upgrade());
@@ -2571,6 +2612,20 @@ function resultBox(){
              (won?'finished in R':'stopped in R')+L.finRound+'</b>'
            : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
+  // THE SPARE, ANNOUNCED ONCE, ON THE CARD WHERE IT HAPPENED.
+  // Nothing clears G.spared — I wrote a comment here claiming the next fight did,
+  // which was false the moment I typed it. It's gated instead: resultBox only ever
+  // renders G.last, so this shows on the title loss itself and is gone the next
+  // fight because o.f.rankNum stops being 0. titleLosses===1 is belt-and-braces —
+  // on a SECOND title loss the run is over and render() returns the end screen
+  // before it reaches here, but I'd rather this be true by its own condition than
+  // by the ordering of a function two hundred lines away.
+  if (G.spared && G.titleLosses === 1 && !won && o.f.rankNum === 0) {
+    const sp=document.createElement('div'); sp.className='note';
+    sp.style.color='var(--gold)'; sp.style.marginTop='.4rem';
+    sp.textContent="The UFC isn't cutting you for losing a title fight. That one's free — but the next one ends the run.";
+    p.appendChild(sp);
+  }
   // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
   // percentage reads as a promise, afterwards it reads as information.
   const od=document.createElement('div'); od.className='note';

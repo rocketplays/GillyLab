@@ -81,7 +81,7 @@ setTimeout(()=>{
     for(let r=0;r<30;r++){
       win.eval('DIV="'+dv+'"; newGame(); G.started=true;'); win.eval(sp);
       for(let g=0; g<40; g++){
-        const st=peek('({c:G.champ,l:G.losses})'); if(st.c||st.l>=peek('CUT_AT')) break;
+        const st=peek('({c:G.champ,l:G.losses,out:!!G.outOfShots})'); if(st.c||st.out||st.l>=peek('CUT_AT')) break;
         if(peek('G.pts>0')) win.eval(sp);
         const n=peek('offers().length'); if(!n) break;
         boards++;

@@ -52,8 +52,8 @@ function play(div, O) {
   win.eval('DIV="' + div + '"; newGame(); G.started=true;');
   win.eval('(function(){' + spend(O) + '})()');
   for (let g = 0; g < 40; g++) {
-    const st = win.eval('({c:G.champ,l:G.losses})');
-    if (st.c || st.l >= win.eval('CUT_AT')) break;
+    const st = win.eval('({c:G.champ,l:G.losses,out:!!G.outOfShots})');
+    if (st.c || st.out || st.l >= win.eval('CUT_AT')) break;
     // EVERY BOT TAKES THE BELT WHEN OFFERED — the harness's oldest lesson. A bot
     // that ducks the title reports a number about itself, not about the game.
     const ok = win.eval('(function(){if(G.pts>0){' + spend(O) + '}' +
