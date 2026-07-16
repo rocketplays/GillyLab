@@ -1033,6 +1033,39 @@ function myRating(a){
 // as a hole. A perfectly balanced fighter nets ~0 however good he is, which is
 // right: being well-rounded is a quality, and quality is what the rating is for.
 // Style only answers "does what I'm good at hurt THIS man".
+// DIVMEAN — what "average" means IN THIS DIVISION.
+//
+// styleDelta's stated principle is "every term is centred on YOUR OWN AVERAGE",
+// and it applies that scrupulously to the PLAYER (see rel(), below) and not at
+// all to the OPPONENT, who is measured against hardcoded constants. Those
+// constants were fitted once, and they are only correct for one division:
+//
+//     glass = 0.55 - their chin      <- 0.55 is LIGHT HEAVYWEIGHT's mean chin
+//
+// Everyone else is more durable than that, so \`glass\` goes negative against the
+// whole ladder and A MAXED PUNCHER IS PENALISED FOR HAVING POWER — in ten
+// divisions out of eleven. Measured, the striker's mean styleDelta was negative
+// in ALL of them (-7.0 in BW, 0.0 in LHW) and the belt rate tracked it: LHW is
+// the one division where the constant was right, and the one where the striker
+// won 48% of the time. That is not a striker who is good at light heavyweight;
+// that is a constant that is right once.
+//
+// Centred on the division, term 5 nets ~0 across any ladder by construction, and
+// only says what it was always supposed to say: "is THIS man, relative to the
+// men around him, someone my power hurts?" A division of iron chins is not a
+// division where power is worthless — it's one where the few crackable jaws are
+// worth hunting.
+let _DM = {}, _DMdiv = null;
+function DIVMEAN(key, fallback){
+  if (_DMdiv !== DIV) { _DMdiv = DIV; _DM = {}; }
+  if (_DM[key] != null) return _DM[key];
+  const L = LADDER();                    // pure accessor, no side effects
+  if (!L || !L.length) return fallback;
+  let s = 0, n = 0;
+  for (const f of L) { const v = f.style ? f.style[key] : null; if (v != null) { s += v; n++; } }
+  return _DM[key] = n ? s / n : fallback;
+}
+
 function styleDelta(a, st){
   const n = v => (v||0)/ATTR_MAX;
   let mean = 0; for(const A of ATTRS) mean += n(a[A.id]); mean /= ATTRS.length;
@@ -1044,13 +1077,16 @@ function styleDelta(a, st){
   //    wrestler mauls a striker who can't stop it and gets nothing at all
   //    against Aspinall's 95%. Openness is centred too, so an average-TDD man is
   //    a neutral matchup rather than a quiet bonus.
-  const tddOpen = (95 - (st.tdDef||60)) / 55 - 0.5;
+  //    CENTRED ON THE DIVISION. The old constant was \`- 0.5\`, i.e. zero at
+  //    tdDef 67.5, which is a number about nothing.
+  const tddOpen = (DIVMEAN('tdDef', 67.5) - (st.tdDef||60)) / 55;
   d += rel('wrestling') * tddOpen * 13;
 
   // 2. THEIR WRESTLING vs YOUR TAKEDOWN DEFENCE. The mirror, and why elite TDD
   //    is a counter-pick: everything against a grappler, nothing against a
   //    kickboxer. Your TDD hole only hurts when the man opposite can find it.
-  const theirTd = Math.min(1, (st.td||1.4)/4) - 0.35;
+  //    CENTRED ON THE DIVISION.
+  const theirTd = Math.min(1, (st.td||1.4)/4) - Math.min(1, DIVMEAN('td', 1.4)/4);
   d += rel('takedef') * theirTd * 13;
 
   // 3. YOUR GRAPPLING, but only if the fight hits the mat — he shoots, or you put
@@ -1061,7 +1097,8 @@ function styleDelta(a, st){
   d += rel('grappling') * (toMat - 0.4) * 12 * (1.4 - (st.mat==null?0.8:st.mat));
 
   // 4. YOUR STRIKING vs THEIR STRIKING DEFENCE.
-  const sdOpen = (66 - (st.strDef||52)) / 26 - 0.5;
+  //    CENTRED ON THE DIVISION.
+  const sdOpen = (DIVMEAN('strDef', 53) - (st.strDef||52)) / 26;
   d += ((rel('power')+rel('technique')+rel('pace'))/3) * sdOpen * 10;
 
   // 5. YOUR POWER vs THEIR CHIN. "A finisher with durability should have an
@@ -1070,7 +1107,9 @@ function styleDelta(a, st){
   //    durability stat in the data and the record is what durability means.
   //    Dariush (0.24) and Hubbard (0.90) are different fights for a puncher, and
   //    were identical ones to every model we tried before this.
-  const glass = 0.55 - (st.chin==null?0.55:st.chin);
+  //    CENTRED ON THE DIVISION, not on 0.55. See DIVMEAN, above.
+  const _mc = DIVMEAN('chin', 0.55);
+  const glass = _mc - (st.chin==null?_mc:st.chin);
   d += rel('power') * glass * 20;
 
   // 6. THEIR PACE vs YOUR CARDIO. Deliberately ONE-SIDED: it can only hurt. Great
@@ -1083,7 +1122,10 @@ function styleDelta(a, st){
 
   // 7. THEIR POP vs YOUR CHIN. The mirror of 5: a fragile fighter has a problem
   //    against a puncher and none against a point-scorer.
-  const theirPop = Math.min(1, ((st.kd||0.4)/1.2)*0.65 + ((st.slpm||4.4)/6.5)*0.35) - 0.45;
+  //    CENTRED ON THE DIVISION. A low-KO division is not one where a chin is
+  //    free — it's one where the few real punchers are the fights you avoid.
+  const _pop = s => Math.min(1, ((s.kd==null?0.4:s.kd)/1.2)*0.65 + ((s.slpm==null?4.4:s.slpm)/6.5)*0.35);
+  const theirPop = _pop(st) - _pop({ kd: DIVMEAN('kd', 0.4), slpm: DIVMEAN('slpm', 4.4) });
   d += rel('chin') * theirPop * 14;
 
   return Math.max(-STYLE_MAX, Math.min(STYLE_MAX, d));

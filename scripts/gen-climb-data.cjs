@@ -167,17 +167,53 @@ function main() {
     //
     // Identical tier shape in every division, which is what should let one set
     // of difficulty dials cover all eleven.
-    // DIV_SWING: how much the division's talent moves every rung. +-6 means a
-    // welterweight champion rates 106 and a light-heavyweight champion 94 — the
-    // same climb, ~1.5 rungs harder or easier the whole way up. Big enough that
-    // picking a soft division is a real (and slightly cowardly) strategy; small
-    // enough that no division is a walkover.
-    const DIV_SWING = 6;
+    //
+    // DIV_SWING: how much the division's difficulty moves every rung. sAdj spans
+    // +-DIV_SWING/2, applied to every fighter on the ladder, so it is the same
+    // climb shifted bodily up or down.
+    //
+    // 6 WAS TOO WIDE AND ITS COMMENT WAS FICTION. It claimed "a welterweight
+    // champion rates 106 and a light-heavyweight champion 94" — measured, they
+    // rate 109 and 103, because the comment forgot the +-6 rrNorm term sitting
+    // next to it in the same expression. Six points of swing produced a belt rate
+    // spanning 9%-38% across the divisions: picking the soft one was worth 4x,
+    // which is a bigger lever than the entire build.
+    //
+    // 4 IS FITTED, NOT GUESSED. Belt% vs sAdj across all eleven divisions is
+    // close to linear at about -3.7 belt-points per point of power (intercept
+    // ~21). A 15-point spread — the 15%-30% target — therefore needs 15/3.7 =
+    // ~4.1 points of sAdj end to end. Hence 4, giving sAdj +-2 and a predicted
+    // ~14%-28%. The response compounds over a ~10-fight run, so it is exponential
+    // in sAdj and the linear fit only holds over a narrow band: DO NOT
+    // extrapolate this constant, re-fit it.
+    const DIV_SWING = 4;
     const sAdj = (strengthNorm(DIV) - 0.5) * DIV_SWING;
+    // RR_TEXTURE: how far the sim may move a fighter WITHIN his rank tier.
+    //
+    // This was 12 (i.e. +-6) and it was not texture, it was the loudest term in
+    // the expression. Ranked tiers are spaced 1.6 points apart (#1 86.0, #2 84.4,
+    // #3 82.8...), so +-6 lets the sim reorder FOUR RANKS IN EITHER DIRECTION —
+    // it doesn't separate fighters inside a tier, it shuffles the ladder and then
+    // the ladder gets described as "lumpy" (measured: rung spacing -9.0 to +9.7
+    // against a median of 1.8; I wrote that down as "honest" rather than reading
+    // it as this constant confessing).
+    //
+    // Worse, it applies to the CHAMPION, so each division's final boss floats
+    // +-6 depending on how his own division's round-robin happened to shake out —
+    // independent of, and 3x louder than, the DIV_SWING dial that is supposed to
+    // decide how hard that division is. Measured: WBW and WFLW are authored 0.00
+    // and 0.12 — all but identical — and their belts came out 36% and 18%,
+    // because their champions rated 101.2 and 104.5. The division dial was being
+    // shouted down by a normalisation artefact.
+    //
+    // 4 (+-2) is bigger than the 1.6 tier gap, so the sim can still say "this #7
+    // is really a #5" — a one-to-two rung opinion — and cannot say "this #12 is
+    // the best contender in the division".
+    const RR_TEXTURE = 4;
     const powerOf = f => {
       const r = rankNum(f);
       const tier = r === 0 ? 100 : r <= 0.5 ? 92 : r <= 15 ? 86 - (r - 1) * 1.6 : 48;
-      return Math.round((tier + sAdj + (rrNorm(f.name) - 0.5) * 12) * 10) / 10;
+      return Math.round((tier + sAdj + (rrNorm(f.name) - 0.5) * RR_TEXTURE) * 10) / 10;
     };
     // STYLE: read off their REAL stats, so the invented triangle bites on
     // something true.
@@ -234,26 +270,61 @@ function main() {
     return false;
   }
 
-  // ---- DIVISION STRENGTH: not every belt is worth the same climb ----
+  // ---- DIVISION DIFFICULTY: not every belt is worth the same climb ----
   //
-  // Playtest: "in talent-heavy divisions it should be harder to climb the ranks;
-  // thinner divisions with less talent (like heavyweight) should make the rise
-  // quicker." Right idea, and the example is wrong — measured, HEAVYWEIGHT IS
-  // NOT WEAK. Average sim power score of each division's ranked 15:
+  // THIS WAS MEASURED AND IS NOW AUTHORED, AND THAT IS A REVERSAL. The old block
+  // is worth stating before replacing, because it was RIGHT about its own number
+  // and wrong about what the number meant.
   //
-  //     WW 4.97   LW 4.80   FW 4.38   HW 4.28   MW 4.18   BW 4.06
-  //     FLW 3.72  WSW 3.53  WFLW 3.39  WBW 3.26  LHW 3.19
+  // It read: "Playtest: in talent-heavy divisions it should be harder to climb;
+  // thinner divisions (like heavyweight) should make the rise quicker. Right
+  // idea, and the example is wrong — measured, HEAVYWEIGHT IS NOT WEAK." It then
+  // averaged the SIM POWER SCORE of each division's ranked 15 (WW 4.97, LW 4.80,
+  // FW 4.38, HW 4.28 ... LHW 3.19), fed that to DIV_SWING, and overruled the
+  // playtester.
   //
-  // Depth predicts talent well (r=0.89 across the 11), but heavyweight breaks
-  // the trend: shallow (177 actives) yet the 4th-strongest top 15, because its
-  // ranked fighters are stat monsters even though there's little behind them.
-  // The genuinely soft climbs are LIGHT HEAVYWEIGHT and the women's divisions.
+  // Its own next sentence is the refutation: "Depth predicts talent well (r=0.89),
+  // BUT HEAVYWEIGHT BREAKS THE TREND: shallow (177 actives) yet the 4th-strongest
+  // top 15, because its ranked fighters are stat monsters even though there's
+  // little behind them." That is the block telling you, in writing, that its
+  // metric measures TOP-15 STAT QUALITY and the design wants DEPTH — and then
+  // shipping the metric anyway and calling the playtester's example wrong.
   //
-  // So strength is measured, not assumed. Welterweight's belt is the hardest in
-  // the game and light heavyweight's is the softest, because that's what the
-  // fighters say — not because anyone decided it.
+  // Measured downstream, that choice is what the game did: belt rate correlates
+  // -0.86 with top-15 quality. It faithfully delivered the wrong quantity.
+  //
+  // WHY NOT JUST SWITCH TO DEPTH? Because it doesn't get there either. Active
+  // fighters per division: LW 298, WW 296, FW 278, BW 257, MW 240, HW 177,
+  // LHW 158, FLW 143, WSW 123, WFLW 84, WBW 66. Depth correlates r=0.80 with the
+  // design intent vs quality's 0.67 — better, and still wrong about FLYWEIGHT,
+  // which is thinner than heavyweight on any roster count and is nonetheless a
+  // brutal climb. No roster statistic knows that, because "flyweight is stacked"
+  // is a fact about the fighters in it, not about how many there are.
+  //
+  // So: the ORDER is a design decision, stated once, here, in the open. The
+  // measured data still does the job it is actually good at — separating
+  // fighters INSIDE a division (rrNorm, below). What it never knew was which
+  // belts are supposed to be hard.
+  //
+  // 1.00 = the hardest climb in the game, 0.00 = the softest.
+  const DIV_DIFFICULTY = {
+    WW  : 1.00,   // the deepest division in the sport, and the data agrees (4.97)
+    LW  : 0.92,   // 298 actives, murderers' row from #15 up
+    FLW : 0.84,   // THE ONE THE DATA CANNOT SEE: small roster, no easy nights
+    BW  : 0.80,
+    FW  : 0.76,
+    MW  : 0.55,   // "maybe even middleweight" — mid, deliberately
+    HW  : 0.22,   // stat monsters at the top, little behind them: a quick rise
+    WSW : 0.20,
+    WFLW: 0.12,
+    LHW : 0.10,   // the softest men's belt, which the data got right
+    WBW : 0.00,
+  };
+  const strengthNorm = DIV => DIV_DIFFICULTY[DIV] == null ? 0.5 : DIV_DIFFICULTY[DIV];
+  // Kept so `node scripts/gen-climb-data.cjs --audit` can still print what the
+  // fighters say, and so the next person can see the two disagree on purpose.
   const strengthOf = {};
-  {
+  if (process.argv.includes('--audit')) {
     const sc = createScorer(FIGHTER_STATS, FIGHT_HISTORY, FIGHTERS);
     sc.setNow(Date.now()); sc.setRankBadge(null);
     for (const DIV of ORDER) {
@@ -266,12 +337,11 @@ function main() {
       }).filter(v => v != null);
       strengthOf[DIV] = ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : null;
     }
+    console.log('AUTHORED difficulty vs what the fighters say (top-15 sim power):');
+    for (const DIV of ORDER)
+      console.log('  ' + DIV.padEnd(6) + 'authored ' + DIV_DIFFICULTY[DIV].toFixed(2) +
+        '   top15 ' + (strengthOf[DIV] == null ? '—' : strengthOf[DIV].toFixed(2)));
   }
-  const sv = Object.values(strengthOf).filter(v => v != null);
-  const sLo = Math.min(...sv), sHi = Math.max(...sv);
-  // 0 = softest division in the game, 1 = hardest.
-  const strengthNorm = DIV => (strengthOf[DIV] == null || sHi <= sLo) ? 0.5
-    : (strengthOf[DIV] - sLo) / (sHi - sLo);
 
   const divisions = {};
   const skipped = [];
