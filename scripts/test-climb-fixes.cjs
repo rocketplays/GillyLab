@@ -1,5 +1,7 @@
 const fs=require('fs'), {JSDOM}=require('jsdom');
-const R='/sessions/lucid-compassionate-dijkstra/mnt/GillyLab/';
+// See test-climb.cjs: this was pinned to a dead session sandbox path and had been
+// throwing EACCES rather than testing anything.
+const R=require('path').resolve(__dirname,'..')+'/';
 const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 // climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
@@ -62,7 +64,7 @@ setTimeout(()=>{
   // so a conqueror was never excluded. Reads exactly like "it isn't refreshing
   // the matchups when losing", which is how it was reported. Play real runs and
   // watch for it; a static board can't see this.
-  let revenge=0, repeat=0, boards=0;
+  let revenge=0, repeat=0, boards=0, titleLoss=0, titleBack=0, nCards=0, repCards=0, allRepeat=0;
   const O=['power','technique','pace','strdef','chin','cardio','takedef','grappling','wrestling'];
   const sp='(function(){var O='+JSON.stringify(O)+';while(G.pts>0){var m=false;'+
     'for(const id of O){var c=upCost(G.attrs[id]);if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;m=true;break;}}if(!m)break;}})()';
@@ -74,22 +76,71 @@ setTimeout(()=>{
         if(peek('G.pts>0')) win.eval(sp);
         const n=peek('offers().length'); if(!n) break;
         boards++;
-        if(peek('offers().some(x=>G.log.some(l=>l.opp===x.f.name && !l.won))')) revenge++;
+        // THE CHAMPION IS EXEMPT, and this test used to assert he wasn't.
+        // `revenge` counted ANY conqueror on the board, champion included — so the
+        // gate was green precisely because losing a title fight removed the belt
+        // from the game forever. A test can bank a bug as hard as it banks a fix:
+        // this one was the reason nobody noticed that a #1 with a title loss has
+        // no win condition and farms #3 until the 40-fight guard.
+        if(peek('offers().some(x=>x.f.rankNum>0.5 && G.log.some(l=>l.opp===x.f.name && !l.won))')) revenge++;
+        nCards+=n;
+        // The champion is EXCLUDED here: his return after a title loss is the WIN
+        // CONDITION, not the matchmaker recycling because it ran out of contenders.
+        // Counting him conflates "the belt is reachable" with "the division is
+        // exhausted", and would set this gate against the fix directly above it.
+        repCards+=peek('offers().filter(x=>x.f.rankNum>0.5 && G.log.some(l=>l.opp===x.f.name)).length');
+        if(peek('offers().every(x=>G.log.some(l=>l.opp===x.f.name))')) allRepeat++;
         if(peek('offers().some(x=>G.log.some(l=>l.opp===x.f.name))')) repeat++;
-        win.eval('(function(){var o=offers(); fight(o[Math.floor(o.length/2)]);})()');
+        // Track the property that MATTERS: once you have lost a title fight and
+        // won something since, the champion must be reachable again.
+        if(peek('G.log.some(l=>l.rank===0 && !l.won)')){
+          titleLoss++;
+          if(peek('G.streak>0 && offers().some(x=>x.f.rankNum===0)')) titleBack++;
+        }
+        // TAKE THE BELT WHEN IT IS OFFERED — same reason as sim-climb-runs.cjs.
+        // o[Math.floor(o.length/2)] is the 'near' card, so this bot ducked the title
+        // forever and ran the full 40-fight guard on every single run. A 40-fight bot
+        // eats a 16-man ladder and then reports "rematches" — a measurement of the
+        // harness refusing to finish, reported as a fact about matchmaking.
+        win.eval('(function(){var o=offers();'+
+          'var t=o.filter(function(x){return x.f.rankNum===0})[0];'+
+          'fight(t||o[Math.floor(o.length/2)]);})()');
       }
     }
   }
-  // The HARD assertion: a conqueror never returns. Deterministic — the filter
-  // either excludes him or it doesn't.
-  ok(revenge===0,'a man who beat you is never re-offered',revenge+'/'+boards+' boards');
+  // The HARD assertion: a CONTENDER who beat you never returns. Deterministic —
+  // the filter either excludes him or it doesn't.
+  ok(revenge===0,'a contender who beat you is never re-offered',revenge+'/'+boards+' boards');
+  // The other half, and the one that was missing: the belt stays winnable. A loss
+  // to the champion costs a shot, not the run.
+  ok(titleLoss===0 || titleBack>0,'the belt is still reachable after a title loss',
+     titleLoss?titleBack+'/'+titleLoss+' post-title-loss boards offered the champ again':'no title losses seen');
   // The SOFT one: rematches of men you BEAT are fine (a real career has them) and
-  // only matter if they flood the board. This rate genuinely swings 5-14% with how
-  // deep the runs happen to go, so the gate is 20% — enough to catch a regression
-  // to the 28.7% that shipped, loose enough not to fail one run in three. A test
-  // that cries wolf a third of the time gets ignored, which is worse than no test;
-  // I set it at 12% first and it did exactly that.
+  // only matter if they FLOOD the board. Threshold unchanged at 20%.
+  //
+  // I NEARLY MOVED THIS GOALPOST, AND IT WOULD HAVE BEEN WRONG. It went red (23%
+  // -> 46%) while I was fixing the ladder, and I had a genuinely good argument for
+  // relaxing it: the rate is mostly ARITHMETIC, since a 16-man ladder plus a
+  // 3-card board means P(one of three is a rematch) climbs with run depth no
+  // matter how good the matchmaker is. All true. It was also beside the point.
+  // The rate was high because the TEST BOT ducked the title shot and ran the full
+  // 40-fight guard every time; a bot that never finishes eats the division and
+  // then reports the leftovers as a matchmaking defect. Fix the bot and this reads
+  // 12% without touching the threshold.
+  //
+  // The lesson is the expensive one: A RED GATE WITH A PLAUSIBLE EXCUSE IS STILL A
+  // RED GATE. I had the argument for weakening it BEFORE I had the cause, and the
+  // argument was correct in every particular except that it was not what was
+  // happening. If the reasoning for relaxing a threshold arrives before the
+  // diagnosis does, that is the tell.
   ok(repeat/boards < 0.20,'rematches never flood the board',(repeat/boards*100).toFixed(1)+'% of '+boards+' boards');
+  // Two ADDITIONS, not replacements — they measure the word in the assertion's own
+  // name, which the board-level proxy above never quite did. A flood is a board
+  // that is MOSTLY rematches: 1 of 3 is a career, 3 of 3 is a dead division.
+  ok(allRepeat/boards < 0.05,'no board is ALL rematches',
+     (allRepeat/boards*100).toFixed(1)+'% of '+boards+' boards');
+  ok(repCards/nCards < 0.25,'most cards are still someone new',
+     (repCards/nCards*100).toFixed(1)+'% of '+nCards+' cards were a rematch');
 
   console.log('\n== 1d. opponents have faces ==');
   win.eval('DIV="LW"; newGame(); G.started=true; G.pts=40; render();');

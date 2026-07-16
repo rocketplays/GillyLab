@@ -1,5 +1,9 @@
 const fs=require('fs'), {JSDOM}=require('jsdom');
-const R='/sessions/lucid-compassionate-dijkstra/mnt/GillyLab/';
+// Was hardcoded to a previous session's sandbox path, which stopped existing the
+// moment that session ended — so this gate threw EACCES instead of running, and
+// a test that cannot run is a test that cannot fail. Resolve from __dirname like
+// sim-climb-runs.cjs and smoke-climb-divisions.cjs already do.
+const R=require('path').resolve(__dirname,'..')+'/';
 const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 // climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-

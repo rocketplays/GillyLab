@@ -1,7 +1,18 @@
 The Climb — tuning state, and the one piece left
 ================================================================================
-2026-07-15. Everything below is MEASURED, not guessed. Read the arithmetic first;
-it's the thing four separate tuning attempts kept rediscovering the hard way.
+2026-07-15, second pass. Everything below is MEASURED, not guessed. Read the
+arithmetic first; it's the thing five separate tuning attempts kept rediscovering
+the hard way.
+
+The previous pass's headline lesson was right and it paid off again immediately:
+MAKE IT DO THE ARITHMETIC BEFORE IT TOUCHES A DIAL. Doing the division first
+turned "fix (c): wrestling's edge needs damping" — a dial — into "the ground buys
+the same rating for 17 fewer points" — a structural bug that no dial would have
+fixed. Same afternoon, one division, four fifths of a 10x gap.
+
+Tools now include scripts/climb-arithmetic.cjs (ladder shape, what a budget buys,
+the loss budget) and scripts/check-climb-cap.cjs (does MAX_FAVORITE actually bite,
+measured in play). Run the first one BEFORE forming a theory.
 
 
 THE ARITHMETIC — write this on the wall
@@ -12,87 +23,214 @@ THE ARITHMETIC — write this on the wall
 Playtest: "losing 5 times at an average moderate favorite isn't wrong, but losing
 5 times at 80% FEELS wrong." Correct, and it is a CONTRADICTION, not a tuning
 miss. You cannot have "no heavy favorites" AND "a 15-win climb on a 5-loss
-budget". Measured, 15 wins:
+budget". Verified against a Monte Carlo this pass, 15 wins, CUT_AT 5:
 
     avg 76% -> 4.7 expected losses -> survive 51%   <- feels wrong
-    avg 69% -> 6.7 expected losses -> survive ~15%  <- feels right, unwinnable
-    avg 65% -> 8.1 expected losses -> survive ~7%
+    avg 69% -> 6.7 expected losses -> survive 25%
+    avg 65% -> 8.1 expected losses -> survive 15%
+    8 wins @ 68% -> 3.8 losses -> survive 67%       <- the short ladder
 
-Capping the board at 76% on the 18-fight ladder sent every strategy to 0%. The
-cap is RIGHT; the ladder was too long to survive it. THE LADDER MUST BE SHORT.
-~8 fights: 8 wins at 68% costs 3.8 losses against a budget of 5, you win the belt
-at 8-3 (a champion's record), and no card needs to be above ~75%.
-
-Anything that doesn't shorten the climb is rearranging deck chairs. I spent four
-attempts on POINTS_START / RATING_SPAN / CUT_AT / STEP before doing this division.
+CORRECTION to the last pass's table: it read 69% -> ~15% and 65% -> ~7%. Those
+are wrong — they're the right numbers against the wrong row. The closed form and
+a 400k-trial Monte Carlo agree to 0.1% (see the survive() note in
+climb-arithmetic.cjs). The 76% -> 51% row, which is the load-bearing one, was
+right, so the CONCLUSION stands: THE LADDER MUST BE SHORT. But a table nobody
+re-derived carried two wrong cells into a second session, and they were the two
+cells being used to argue "unwinnable".
 
 
 BANKED AND WORKING — do not re-litigate
 --------------------------------------------------------------------------------
-  * RATING TRACKS THE LADDER. RATING_MIN 30 / SPAN 168 / cap at champion+5.
-    Debut ~55 (a gatekeeper's peer), a full ~70-pt run ~100 (champion level).
-    Before this, rating and power were two scales sharing an axis and the player
-    LEAPFROGGED the division — that one mismatch caused the heavy-favorite
-    boards, the 20-1 runs, the easiest-path exploit AND rank "lagging" rating.
+  * RATING TRACKS THE LADDER. RATING_MIN 30 / SPAN 150 / cap at champion+5.
+    (SPAN was 168; re-fitted this pass because equal WEIGHTS changed what a point
+    is worth. Same job — "~70 pts reaches ~100" — different number.)
   * ODDS ARE CALIBRATED. 6,000 fights binned: worst gap 6.5pts. The card tells
     the truth. Verify with the calibration snippet before ever blaming the dice —
     and read G.log[G.log.length-1], NOT G.log[0] (see MEASURING, below).
-  * STYLE DECIDES THE BOARD 57% of the time (was 8% under the sim, 0% mid-fix).
-    Style is centred on YOUR OWN AVERAGE, not 0.5 — centring on 0.5 double-counts
-    quality and taxes specialists twice.
+  * STYLE DECIDES THE BOARD. Style is centred on YOUR OWN AVERAGE, not 0.5 —
+    centring on 0.5 double-counts quality and taxes specialists twice.
+  * EVERY SLIDER IS WORTH 1/9. See "the styles were never equal", below. This
+    REPLACES the old "feet 0.39 / ground 0.39" entry, which was measured on the
+    wrong axis and was the real cause of fix (c).
   * Odds shown as a BAND before the fight, the number after it, with a variance
     note only when the result was genuinely improbable.
   * Submissions exist. Method follows the build (grappler: 42% SUB / 5% KO).
-  * The two styles are worth the same: feet 0.39, ground 0.39.
   * The conqueror never returns; every rung offers 2+ fights; 11 divisions play
     clean; ranks come from data/rankings.json; payload 443KB -> 19KB.
+  * A ranked man is never offered a gatekeeper. (New this pass; see below.)
 
 
-THE ONE PIECE LEFT — short ladder. Four parts, they only work TOGETHER
+DONE THIS PASS — the short ladder, and what it cost
 --------------------------------------------------------------------------------
-Playtest's design, and it's right: "a fighter doesn't actually start in the UFC
-at 0-0 ever either... assume this fighter is coming in as a hyped up prospect
-with a proven regional record" + "a rank below you can advance you, just less
-than taking a harder fight."
+ 1. UNRANKED_WINS 5 -> 1. One gatekeeper fight, deliberately a gift.
+ 2. POINTS_START 20 -> 42. The trap, and the reason 1 works: the ladder jumps
+    gatekeeper 46.9 -> #15 62.2, a 15.3-point CLIFF the tune-up phase was
+    secretly bridging with points. Debut now rates 74 = a ~74% favorite over #15.
+    Parts 1 and 2 are ONE change; either alone is worse than neither.
+ 3. STEP 1 -> 3. Multi-rung jumps: beating a man takes HIS rank.
+ 4. Sub-rank advancement (beat anyone at/below you, advance one rung) +
+    MAX_FAVORITE 0.78.
+ c. THE STYLES WERE NEVER EQUAL — and this, not the style triangle, was fix (c).
+    0.39/0.39 balances what each style is worth WHEN MAXED. It does not balance
+    what each style COSTS, and players spend points:
+        feet   0.39 over FOUR sliders  -> 4 x 17 = 68 pts to own it
+        ground 0.39 over THREE sliders -> 3 x 17 = 51 pts to own it
+    Same ceiling, 17 fewer points. Measured best rating per budget, the ground led
+    by +4.7 at 20 pts, +12.7 at 42, +15.5 at 50 — and 50 pts is where a
+    championship run lives. At SCALE 26 that made a same-budget grappler an 80%
+    favorite over a same-budget striker before the triangle said a word.
+    Now every slider is 1/9: a point buys the same rating wherever it goes, style
+    totals differ BY CONSTRUCTION (feet 4/9, ground 3/9) because the feet cost
+    four sliders, and every archetype debuts on the same number.
+    The bitter part: the weights this replaced (striking 0.44 / ground 0.35) were
+    already near the 4:3 ratio that prices the styles equally. The playtest
+    complaint that triggered the 0.39/0.39 change — "becoming a striking
+    specialist weighs a lot more heavily" — was TRUE and was NOT a bug: maxing the
+    feet weighed 26% more because it cost 33% more. The fix inverted a non-bug
+    into a real one, and wrote "I set these by eye and checked the wrong axis" in
+    the comment while doing it.
+ a. FIXED. jump was null for unranked men, so a RANKED player beating one never
+    moved. Now unranked carries jump=99 and sub-rank advancement handles it.
+ b. FIXED, BUT NOT THE WAY THE NOTE SAID, AND NOT WHERE THE NOTE LOOKED. The
+    proposed fix — "draw from the whole ladder" — does not work at all: a man you
+    beat ten fights ago is a BIGGER gift now, because you have gained points since.
+    The exhausted avail() pool was never the reason the cap lapsed. The reason was
+    that a lost title fight deleted the win condition and the run never ended; see
+    "THE RUN THAT COULDN'T END", below. Cap now measures 2.6% / 0.5% over.
 
- 1. UNRANKED_WINS = 1. One gatekeeper fight. The old 3 became EIGHT fights in a
-    real run (every loss forces another) at 51%->84%, and produced 3 of that
-    run's 5 losses. The worst place in the game to lose.
+MEASURED at the short ladder alone, 40 runs per strategy — SUPERSEDED by the
+numbers under "THE RUN THAT COULDN'T END", which are the ones that count:
+    striker        3% -> 28%        striker/safe   0% -> 48%
+    wrestler      30% -> 38%        striker/bold   5% -> 28%
+    grappler      23% -> 38%        striker/blind     -> 38%
+No strategy at 0%. Nothing running away. The 10x style gap is 1.4x. safe > blind >
+bold is the playtest spec ("cherry-picking should be an advantage, not the same as
+picking randomly") and it finally holds. The treadmill is dead.
 
- 2. POINTS_START ~42, NOT 20. This is the trap. The ladder jumps 48 (gatekeeper)
-    -> 64 (#15), a 16-point CLIFF that the 3-fight tune-up was secretly bridging.
-    One gatekeeper fight earns ~3 points, so a 20-point debut arrives at #15
-    rated ~58 and gets fed to men 6-10 points above it. 42 lands the debut at ~78
-    — which IS the hyped-prospect premise. Parts 1 and 2 are one change.
+ALSO FIXED, both found by running things:
+  * test-climb.cjs and test-climb-fixes.cjs had a PREVIOUS SESSION'S SANDBOX PATH
+    hardcoded (/sessions/lucid-.../). They threw EACCES instead of running and had
+    been dead for at least a session. A test that cannot run is a test that cannot
+    fail — and one of them was gating a bug I then shipped. Both now resolve from
+    __dirname like the sim scripts always did.
+  * A ranked man could be offered a GATEKEEPER. `src = near.length ? near : all`
+    fell back to the whole ladder, unranked pool included, so a #1 contender got
+    served 46-power tune-up fighters at 95%. That was most of the #1 treadmill.
+  * The sim's `easy` bot never took the title shot: offered on 28 of 41 boards,
+    taken 0 times, parking at #1 to farm 95% cards for a 39-2 record and no belt.
+    That scored 'safe' at 0% — a number about the HARNESS reading exactly like a
+    number about the game. `path` says which fight you take while CLIMBING; it was
+    never a claim that you don't want the belt. All bots now take the title.
 
- 3. STEP = 3. Multi-rung jumps: beating a man takes HIS rank, so a bigger step is
-    a bigger jump. 15 rungs at 1/win is what made the climb 18 fights.
 
- 4. Sub-rank advancement + MAX_FAVORITE ~0.78.
-    grind  15 wins @78% -> 4.2 losses -> ~50% -> champion at 15-4
-    bold    5 wins @50% -> 5.0 losses -> ~50% -> champion at  5-2
-    Equally LIKELY; wildly different in what you're left holding. Grinding should
-    be slow and ugly, not impossible. The score is the record.
+THE RUN THAT COULDN'T END — one bug, four symptoms, none of them where I looked
+--------------------------------------------------------------------------------
+FIXED. Writing down the hunt, because the hunt is the lesson.
 
-MEASURED at 1+2+3+4: striker 20%, wrestler 70%, grappler 60%, safe 0%, bold 5%.
-Runs 11 fights. The treadmill died. THREE THINGS THEN BROKE — fix these first:
+Three things were failing and I treated them as three problems:
+    MAX_FAVORITE lapsed        55% of ranked fights over the 0.78 cap
+    rematches flooded          23-46% of boards vs a 20% gate
+    the #1 treadmill lived     39-2 records, no belt, 40-fight guard
+I patched two of them. Both patches were reasonable, both were measured, and both
+were treating symptoms of a bug in a line I never suspected:
 
-  a) BEATING AN UNRANKED MAN RETURNS o.jump = null, so the "advance one rung"
-     branch never fires for gatekeeper wins. The favorite-hunter keeps winning
-     soft fights and NEVER MOVES -> records of 39-1 with no belt, hitting the
-     40-fight guard. Sub-rank advancement must handle the unranked case.
-  b) MAX_FAVORITE CAN'T BITE LATE. It swaps in a harder man from avail(), but
-     avail() excludes everyone you've FOUGHT — so by fight 20 there's nobody to
-     swap in and the cap silently stops working (46% of the favorite-hunter's
-     fights were still >80%). Draw from the whole ladder, or keep runs short
-     enough that exhaustion never happens.
-  c) WRESTLER 70% vs STRIKER 20%. The style triangle feasts on a division full of
-     strikers with ordinary takedown defence. Wrestling's edge needs damping, or
-     the board needs to offer the wrestler more elite-TDD opponents.
+    const avail = f => !G.beat.has(f.name) && !fought.has(f.name);
+
+"Exclude everyone you've FOUGHT" is right for contenders and catastrophic for the
+belt. LOSE ONE TITLE FIGHT AND THE CHAMPION LEAVES THE POOL FOREVER. `title` is
+then empty, the #1 board is three men you already beat (measured: `4@72 1@71
+3@93`, no champion anywhere on it), and the run has NO WIN CONDITION. It cannot
+end, so it runs to the guard; you keep earning, drift to rating 110 against an
+85-power division, and then every card is a gift, the cap has nobody legal to swap
+in, and a 20-fight run eats a 16-man ladder and reports rematches.
+
+All four symptoms, one line. THE TELL WAS THE RUN LENGTH ALL ALONG — a game whose
+runs won't end is a game whose win condition is unreachable, and I spent an hour
+tuning the things downstream of that instead of asking why nobody was finishing.
+WHEN A RUN WON'T END, CHECK THE WIN CONDITION BEFORE YOU TUNE ANYTHING ELSE.
+
+And the gate BANKED the bug: `revenge===0` counted any conqueror on the board,
+champion included, so the assertion was green BECAUSE the belt had been deleted
+from the game. A test can bank a bug exactly as hard as it banks a fix.
+
+Fixed together:
+  * The champion is exempt from `fought`. A title loss costs a SHOT, not the run:
+    you must win a fight to earn another crack at him, which keeps the Walker
+    instant-rematch loop dead (that fix was about being handed your conqueror
+    IMMEDIATELY — it was never a rule that the belt should be unreachable).
+  * A LOSS COSTS A RUNG. CUT_AT's own comment has always said losses "cost you
+    rank, time and a soft matchmaking step-down" — only the last two were ever
+    implemented. Without it, a #1 who lost a title fight stayed #1, beat one gimme
+    and got another shot: unlimited title fights at one fight apiece, measured at a
+    90% belt rate. A free belt.
+  * PAY FOR PROGRESS, NOT POSTURE (rewardFor). `altitude` paid for WHERE YOU ARE,
+    so a gimme at #3 paid 2.1x and the identical gimme at #12 paid 1.35x, for the
+    same one rung of progress. Its own comment called it: "climbing compounds: the
+    higher you get the faster you grow" — the runaway loop, written down as a
+    feature. A win now pays RUNG_PAY per rung it actually moves you, so grind (1
+    rung x 15) and bold (3 rungs x 5) arrive at the same level and the gap you
+    start with is the gap you keep.
+  * The radius top-up widened SYMMETRICALLY over radii reaching 99, so an
+    exhausted top of the ladder got topped up from #13 — rating 108.9 vs power
+    67.1 at 95%. It now widens upward only, never past 3 rungs beneath you (the
+    same weakness cap the 'below' band always had), and prefers a near-rank
+    rematch over a stranger ten rungs down.
+  * MAX_FAVORITE 0.78 -> 0.85, because 0.78 IS A CONTRADICTION — the same shape as
+    the one at the top of this file, one level up. The board is below/near/up BY
+    DESIGN; a 0.78 cap allows a 14.3-point gap; the debut is +11.9 over its own
+    rung (the hyped-prospect premise) and the below card is ~3 rungs weaker again
+    = +17.3 = 82%. The below card is over a 0.78 cap ON TURN ONE, by construction.
+    Parts 2 and 4 of the last pass cannot both hold. The cap's job is to kill
+    THEFT, not to flatten the risk gradient — flattening it deletes the safe option
+    and the whole point of the choice.
+
+MEASURED AFTER, 30-40 runs per strategy (baseline -> now):
+    striker        3% -> 27%        striker/safe   0% -> 13%
+    wrestler      30% -> 33%        striker/bold   5% -> 17%
+    grappler      23% -> 57%        striker/blind     -> 20%
+    balanced          -> 33%        wrestler/safe     -> 30%
+Runs 11-15 fights (was 13-34). Records ~8-4 to 10-4 — a champion's record, which
+is what the note asked for. check-climb-cap.cjs: 2.6% / 0.5% over cap (was 55%).
+All gates green. All 11 divisions play in 7-19 fights.
+
+STILL OPEN, and worth a look next:
+  * grappler 57% against striker/safe 13% is a 4x spread. Nothing is at 0% and
+    nothing is at 90%, so it clears the bar — but the ground still leads the feet
+    and the 1/9 weights say it shouldn't be the sheet doing it. Suspect the style
+    triangle now (it IS the residual fix (c) predicted), and measure it before
+    touching a dial.
+  * safe (13%) now scores BELOW blind (20%). The playtest spec is "cherry picking
+    favorable matchups should be an advantage, not the same as picking randomly" —
+    this is different from random, but in the wrong direction. Pay-per-rung makes
+    ducking slow, which is intended ("grinding should be slow and ugly"); whether
+    it should be actively WORSE than picking blind is a design call nobody has
+    made. Note the bot ducks by WIN PROBABILITY, which is not the same thing as
+    cherry-picking a favourable STYLE matchup — the spec may need a better bot
+    before it needs a better game.
+  * RUNG_PAY is now THE dial for run length and title rate. Measured: 1.0 ->
+    striker 27 / wrestler 33 / bold 17; 1.4 -> 37 / 57 / 30; 2.1 -> 65 / 90 / 68.
+    It is monotonic and well-behaved, which the old constants never were.
+
+
+AND ONE OPEN QUESTION, recorded not fixed
+--------------------------------------------------------------------------------
+COMMITTING IS NOT REWARDED, despite the upCost comment claiming it is. Measured
+cumulative value per point, one slider from 1 to level L:
+    L=2  0.0761   L=4  0.0769   L=6  0.0631   L=8  0.0636   L=10  0.0588
+Efficiency DECLINES. 9->10 is the worst buy on the sheet (0.0517/pt); 3->4 is the
+best (0.0852/pt). Spreading strictly beats committing, so "value slightly outruns
+cost at the top, so committing is rewarded — a 10 is worth reaching" is false. It
+was asserted, never measured, and sat in the file reading as evidence.
+Also: maxing one attribute costs 17, not 18 (ATTR_MIN is 1 — nine steps, not ten),
+so "three is impossible" is no longer true at a 42-pt start.
+Left alone deliberately: it's a real design change, it wants its own measurement,
+and the priority-order bots all commit anyway so it didn't block the ladder.
 
 
 MEASURING — the tools, and how they lied to me
 --------------------------------------------------------------------------------
+    scripts/climb-arithmetic.cjs       ladder shape, budgets, loss budget. FIRST.
+    scripts/check-climb-cap.cjs        does MAX_FAVORITE bite, measured in play
     scripts/sim-climb-runs.cjs         full careers per strategy (--only X)
     scripts/smoke-climb-divisions.cjs  all 11 divisions, is any belt free
     scripts/test-climb.cjs / -fixes    behaviour gates
@@ -101,20 +239,58 @@ MEASURING — the tools, and how they lied to me
     column, the Walker rematch loop, the one-option board at #15 — was invisible
     to anything that didn't PLAY. Sample every rung of every division; bugs live
     at the edges (#15 and #1), and tests that check the middle miss them.
+  * A TEST THAT CANNOT RUN CANNOT FAIL. Two gates were pinned to a dead sandbox
+    path and threw EACCES for a whole session. Nobody noticed, because a suite
+    that errors and a suite that passes both end with you moving on. RUN THE
+    GATES ON THE BASELINE FIRST — if they don't pass there, they aren't gates.
   * G.log IS APPEND-ONLY. Reading G.log[0] in a multi-fight run reports the FIRST
     fight forever. It produced a beautiful, plausible, entirely wrong calibration
     table showing a 51-point failure that did not exist.
   * THIN SAMPLES PRODUCE CONFIDENT NONSENSE. "LHW is a free belt" came from THREE
     runs. At N=4 the same divisions read 25/50/25% across three settings — pure
-    noise I nearly tuned against. N=25 still carries +-9%.
+    noise I nearly tuned against. N=25 still carries +-9%. (A single probe run
+    this pass read 3-5 for a strategy whose true average is 16.6-3.4.)
   * DON'T SAMPLE THE FUNCTION, SAMPLE THE GAME. "3,273 of 6,000 fights at the 95%
     clamp" was random budgets against random ranks — mismatches no run produces.
-    Real runs: 0.5%. I raised that alarm and had to withdraw it.
-  * A CLAIM OUTLIVES THE THING THAT MADE IT TRUE. Five times today: two tip-box
+    Real runs: 0.5%. I raised that alarm and had to withdraw it. The `easy` bot
+    ducking the title for 28 boards is the same error wearing a bot's clothes.
+  * A CLAIM OUTLIVES THE THING THAT MADE IT TRUE. Seven times now: two tip-box
     lines, the page subtitle, a test asserting the scorer we deleted, "X% per
-    round" after the units changed, "Lives" hardcoded to 2 after CUT_AT hit 5.
-    When you remove a thing, grep for the assertions ABOUT it.
+    round" after the units changed, "Lives" hardcoded to 2 after CUT_AT hit 5, the
+    RATING_SPAN knife-edge block (measured in a regime that no longer existed,
+    sitting above a constant it did not describe and arguing for a third value),
+    and the upCost "committing is rewarded" claim. I added one MYSELF this pass —
+    wrote "42 lands the debut at 74 (striker)" from a measurement taken before I
+    changed the weights, and it was wrong by the time the edit landed.
+    When you remove a thing, grep for the assertions ABOUT it. When you change a
+    number, re-read every comment that quotes one.
   * WHEN A FUNCTION CHANGES WHAT ITS RETURN VALUE MEANS, nothing throws and every
     caller quietly lies. winProb() went per-round -> per-fight and the bo3 bug
-    shipped -13,700 odds. Same shape: offers() cache without DIV, oppByName
-    returning a 0.5 fallback.
+    shipped -13,700 odds. jump went `null` -> `99` for unranked men this pass; the
+    branch that reads it had to change in the same commit or every gatekeeper win
+    would have silently jumped the player to rank 99.
+  * A RED GATE WITH A PLAUSIBLE EXCUSE IS STILL A RED GATE. The rematch gate went
+    red and I built a good case for relaxing it: the rate is mostly arithmetic (16
+    men, 3-card boards, deep runs), the old 20% only ever held because the board
+    could pad from 24 fresh gatekeepers, a proxy that tracks run depth will punish
+    you eventually. Every word true. Also beside the point — it was red because the
+    TEST BOT ducked the title and ran the 40-fight guard every time. Fix the bot,
+    it reads 12%, threshold untouched. I HAD THE ARGUMENT FOR MOVING THE GOALPOST
+    BEFORE I HAD THE DIAGNOSIS, and that ordering is the tell. (The new card-level
+    assertions are still worth having — they measure the word in the gate's own
+    name — but they went in ALONGSIDE the 20%, not instead of it.)
+  * THE HARNESS IS PART OF THE GAME, AND IT WAS LYING IN THREE PLACES. Every bot
+    in every script ducked the title shot: sim-climb-runs' `easy` (offered on 28 of
+    41 boards, taken 0 times), test-climb-fixes' middle-card bot, and the smoke
+    test's bad bot. Each produced a confident number ABOUT THE GAME that was really
+    a number about a bot refusing to win: 'safe' at 0%, a 46% rematch rate, 35-fight
+    average runs. If a bot never finishes, everything it measures is about a state
+    no player reaches.
+  * WHEN A RUN WON'T END, CHECK THE WIN CONDITION FIRST. Four symptoms, an hour of
+    tuning, and all of it downstream of "the champion is no longer in the pool."
+    Run length was the tell from the first measurement and I read it as a balance
+    problem for an hour.
+  * SORT BEFORE YOU RELY ON AN ORDER. My own cap did `scored.filter(...)` then
+    `.pop()` to "keep the hardest" — but scored is in BOARD order, so pop() kept
+    whichever card was listed last. The comment said hardest, the code said last,
+    nothing threw, and the favorite-hunter took the gift every time.

@@ -253,7 +253,28 @@ const ATTRS = [
 //
 // So: 24 -> 14 to start. 14 is 35% of a maxed fighter, the same fraction 24 was
 // of the old 70-point ceiling — the creator screen is worth what it was worth.
-const POINTS_START = 20, ATTR_MAX = 10, ATTR_MIN = 1;
+// POINTS_START 42, AND THIS IS PART OF THE SHORT LADDER — not a separate dial.
+//
+// Read the cliff off the real board (scripts/climb-arithmetic.cjs):
+//     gatekeeper 46.9  ->  #15 62.2   = a 15.3-point step
+// A 20-point debut rates 53. It enters the rankings NINE points below the man it
+// meets, and one gatekeeper win pays ~3 points, so no realistic number of tune-up
+// fights bridges 15.3. The old 5-win unranked phase was secretly a points ramp
+// wearing a matchmaking costume — that's why cutting it to 1 only works if the
+// points arrive some other way. Parts 1 and 2 are ONE change; either alone is
+// worse than neither.
+//
+// 42 lands the debut at 74 — a ~74% favorite over #15, and a live dog against
+// anyone above #12. That IS the hyped-prospect premise: "a fighter doesn't
+// actually start in the UFC at 0-0 ever ... assume this fighter is coming in as a
+// hyped up prospect with a proven regional record." You arrive able to beat the
+// bottom of the division and nobody above it.
+//
+// 74 for ANY build, not just a striker: WEIGHTS are 1/9 each now, so a point buys
+// the same rating wherever it goes and every archetype debuts on the same number.
+// Under the old 0.39/0.39 weights this line read "74 (striker)" and the ground
+// archetypes debuted at 85 — same budget, 11 free rating.
+const POINTS_START = 42, ATTR_MAX = 10, ATTR_MIN = 1;
 
 // FLAT COST — one point per level, always.
 //
@@ -286,14 +307,24 @@ const POINTS_START = 20, ATTR_MAX = 10, ATTR_MIN = 1;
 const upCost = v => 1 + Math.floor(v/4);   // 0-3:1pt  4-7:2pts  8-9:3pts. Maxing one = 18.
 const pct = n => Math.round(n)+'%';
 
-// Playtest: "should there be more tune-up fights at the beginning in order to
-// earn more attributes, so you can set yourself up to be more ready for ranked
-// competition?" Yes — 3 wins to enter the rankings gave you ~6 upgrade points
-// before meeting a contender, which isn't enough to change your build's shape.
-// 5 tune-ups is ~11 points: enough to fix a hole or commit to a lean before the
-// division starts hitting back. The gatekeeper pool is 24 deep, so there's
-// plenty of room.
-const UNRANKED_WINS = 5;
+// ONE GATEKEEPER FIGHT. Not five.
+//
+// The playtest ask was real — "should there be more tune-up fights at the
+// beginning in order to earn more attributes?" — but the answer of 5 tune-ups
+// solved it with the WRONG CURRENCY. What he wanted was points before the
+// division hits back; what 5 tune-ups charge for those points is fights, and
+// fights cost losses.
+//
+// The arithmetic: every unranked LOSS forces another unranked win, so a 5-win
+// requirement is 5 fights only if you never lose. Measured, the old 3-win rule
+// already ran EIGHT fights in a real run at 51%->84%, and produced 3 of that
+// run's 5 losses. It is the worst place in the game to spend the loss budget:
+// you are burning a 5-loss allowance on men who cannot advance you a single rung.
+//
+// So the points now arrive at the creator screen (POINTS_START 42) where they
+// cost nothing, and the gatekeeper is one fight — a proof, not a ramp. Parts 1
+// and 2 are one change.
+const UNRANKED_WINS = 1;
 
 // HOW MANY LOSSES ENDS THE RUN.
 //
@@ -409,24 +440,38 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // served nobodies. I kept treating those as separate problems and tuning a
 // different dial for each.
 //
-// Now: a debut fighter rates 55 — a live dog against a good gatekeeper, a slight
-// favorite against a poor one. A full ~70-point run rates 100, level with the
-// champion. The scale you're measured on is the scale you're climbing, so "near
-// your rank" finally means "near your level" and the board asks a real question.
-const RATING_MIN  = 30;      // debut (20 pts) lands ~55: a gatekeeper's peer, not his boss
-// CALIBRATED AGAINST THE RUN HARNESS, not arithmetic — and it is a KNIFE EDGE,
-// which is a design smell, not a tuning success. Measured bot championship rate:
-//     span 150 -> 0/8    175 -> 0/8    200 -> 0/8    215 -> 4/8
-// Nothing, nothing, nothing, then half. That cliff is a RUNAWAY LOOP: winning
-// pays points, points make you stronger, strength wins more. Below the cliff the
-// loop never ignites and nobody reaches the belt; above it, it ignites every
-// time and everybody does. There is no smooth middle to tune toward, so 200 is
-// not a good value — it's a value on the safe side of a cliff.
+// Now: the scale you're measured on is the scale you're climbing, so "near your
+// rank" finally means "near your level" and the board asks a real question. A
+// full ~70-point run rates 100, level with the champion.
 //
-// The real fix is to damp the loop (rewards that taper as you climb, or
-// opponents that scale with you), not to hunt for a magic constant. Until then
-// this number is load-bearing and fragile: change it WITH the harness open.
-const RATING_SPAN = 168;     // fitted so ~70 pts (a full run) reaches ~100 = champion level
+// The DEBUT moved with POINTS_START. It is no longer 20 points / rating 55: the
+// hyped prospect starts at 42 and rates 74, which is a ~74% favorite over #15 and
+// a live dog against anyone above #12. RATING_MIN is still the floor a 0-point
+// fighter would sit at, and nobody is ever there.
+const RATING_MIN  = 30;      // the floor; a 42-pt debut lands ~74 (see POINTS_START)
+// HISTORICAL, AND NO LONGER TRUE — kept because the reasoning is still a warning.
+// This block used to read: "a KNIFE EDGE ... span 150 -> 0/8, 175 -> 0/8,
+// 200 -> 0/8, 215 -> 4/8. Nothing, nothing, nothing, then half." Those numbers
+// were measured BEFORE the rating was calibrated against the ladder, when rating
+// and power were two scales sharing an axis — which is why the span had to reach
+// 215 to do anything at all, and why it then did everything at once. The block
+// outlived its regime: it sat directly above a constant of 168 that it does not
+// describe and could not justify, arguing that 200 was the safe value. A comment
+// that survives the thing it measured is worse than no comment, because it reads
+// as evidence. (The tuning file lists this failure mode; this was an instance of
+// it sitting in the file the whole time.)
+//
+// The runaway-loop concern was real and MAY STILL BE — winning pays points,
+// points make you stronger, strength wins more. It just isn't what these numbers
+// show. Re-measure before quoting a cliff.
+//
+// 168 -> 150: A RE-FIT, NOT A TUNE. The span's job is fixed — "~70 pts (a full
+// run) reaches ~100, level with the champion" — and equalising WEIGHTS to 1/9
+// changed what a point is worth, so the same job needs a different number.
+// Measured against the real ladder at 70 pts: span 168 -> 106.5 (champion level
+// on the nose, i.e. a full run IS the champion), span 150 -> 100.8. Leaving 168
+// under the new weights would have quietly handed every run ~6 free rating.
+const RATING_SPAN = 150;     // re-fitted for WEIGHTS=1/9 so ~70 pts (a full run) reaches ~100
 const CAP_OVER    = 5;       // a maxed fighter tops out this far above the champion
 const STYLE_MAX   = 11;      // biggest style swing, in points of win probability
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
@@ -443,11 +488,28 @@ const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder dec
 // The trap both times was that the MODEL owned value and I owned price, so I
 // could only ever push one lever and watch the other refuse to move.
 //
-// Now: value grows as v^1.6, cost grows as 1+floor(v/4). Value slightly outruns
-// cost at the top, so committing is rewarded — a 10 is worth reaching — while
-// the escalating price keeps you from having three of them. Maxing ONE attribute
-// costs 18 of the ~44 points a championship run earns. Two is most of your
-// career. Three is impossible. That's the shape we wanted all along.
+// Now: value grows as v^1.6, cost grows as 1+floor(v/4).
+//
+// THE NEXT SENTENCE USED TO SAY "value slightly outruns cost at the top, so
+// committing is rewarded — a 10 is worth reaching". MEASURED, IT IS FALSE, and it
+// is false in the direction that matters. Cumulative value per point, taking one
+// slider from 1 to level L:
+//     L=2  0.0761   L=4  0.0769   L=6  0.0631   L=8  0.0636   L=10  0.0588
+// Efficiency DECLINES. The 9->10 step is the worst buy on the sheet (0.0517/pt)
+// and 3->4 is the best (0.0852/pt). Spreading strictly beats committing, and the
+// "commit and be rewarded" shape the design wants is not in these two curves —
+// it was asserted, not measured, and the assertion sat here reading as evidence.
+//
+// NOT FIXED THIS PASS, deliberately: the fix is a real design change (taper the
+// cost, steepen the value, or cap the spread) and it wants its own measurement
+// against the harness rather than being bolted onto a ladder change. It is also
+// SMALLER than it looks, because the priority-order bots all commit anyway and
+// the ladder still moved without it. Left as the honest next question.
+//
+// Also: maxing one attribute costs 17, not 18 — ATTR_MIN is 1, so it's nine
+// steps, not ten. Three maxed attributes cost 51 of a ~44-point earn plus a
+// 42-point start, so "three is impossible" is no longer true either; see the
+// note in THE-CLIMB-TUNING.txt.
 const ATTR_CURVE = v => Math.pow(Math.max(0,v)/ATTR_MAX, 1.6);
 
 // Your rating. Weights are the GAME'S opinion of what wins fights — not the
@@ -468,17 +530,55 @@ const ATTR_CURVE = v => Math.pow(Math.max(0,v)/ATTR_MAX, 1.6);
 // is what the player actually picks. I set these by eye and checked the wrong
 // axis.
 //
-// Now each style totals 0.39, chin+cardio the remaining 0.22. Maxing "the ground"
-// and maxing "the feet" buy exactly the same ceiling, and which one wins is
-// decided by the style triangle against the man in front of you — which is the
-// entire point of the feature.
+// Each style then totalled 0.39, chin+cardio the remaining 0.22, so maxing "the
+// ground" and maxing "the feet" bought exactly the same ceiling.
+//
+// ...and that answer is measured on the WRONG AXIS — the same mistake as the
+// paragraph above it, one level up. "I set these by eye and checked the wrong
+// axis" was written about the 0.44/0.35 weights BY the change that replaced them,
+// and the replacement did it again: it checked the ceiling instead of the price.
+// Read on.
+//
+// EQUAL STYLE TOTALS MADE THE GROUND 25% CHEAPER. The 0.39/0.39 split balances
+// what each style is worth WHEN MAXED. It does not balance what each style COSTS,
+// and the player spends points, not weights:
+//
+//     feet    0.39 spread over FOUR sliders  -> 4 x 17 = 68 pts to own it
+//     ground  0.39 spread over THREE sliders -> 3 x 17 = 51 pts to own it
+//
+// Same ceiling, 17 fewer points. Every slider costs the same to raise, so
+// concentrating a style's weight into fewer sliders is a straight discount. The
+// styles are equal only at a budget nobody has: measured best rating per budget,
+// the ground leads by +4.7 at 20 pts, +12.7 at 42, +15.5 at 50 — and 50 is where
+// a championship run lives. At SCALE 26 that last one makes a same-budget
+// grappler an 80% FAVORITE over a same-budget striker before the triangle says a
+// word. That is fix (c), and it is not the style triangle: measured, flattening
+// these weights moves striker 3%->8% and wrestler 30%->20%, closing four fifths
+// of a 10x gap. The triangle is the residual, and it is small.
+//
+// The weights this replaced (striking 0.44, ground 0.35) were near the 4:3 ratio
+// that makes points buy equally in both styles. The playtest complaint —
+// "becoming a striking specialist weighs a lot more heavily than a grappling
+// specialist" — was TRUE and was not a bug: maxing the feet weighed 26% more
+// because it cost 33% more. Flattening the totals to 0.39/0.39 answered it by
+// inverting it. I checked "is each style worth the same?" when the question the
+// player asks is "does each point buy the same?"
+//
+// EVERY SLIDER IS WORTH 1/9. That is the only assignment where a point buys the
+// same rating wherever it goes, because every point costs the same wherever it
+// goes. Style totals now differ by construction — feet 4/9, ground 3/9 — and
+// that asymmetry is CORRECT: the feet are four sliders and cost four sliders'
+// worth. Rating measures how far you have climbed; the style triangle decides who
+// beats whom. Those are separate jobs and this is what stops the rating doing
+// both.
+const W1 = 1/9;
 const WEIGHTS = {
-  // the feet — 4 sliders, 0.39 together
-  power:0.11, pace:0.09, technique:0.09, strdef:0.10,
-  // the ground — 3 sliders, 0.39 together
-  wrestling:0.13, grappling:0.13, takedef:0.13,
-  // neither, and both — 0.22
-  chin:0.11, cardio:0.11
+  // the feet — 4 sliders, 4/9 together, because they cost 4 sliders to buy
+  power:W1, pace:W1, technique:W1, strdef:W1,
+  // the ground — 3 sliders, 3/9 together, at the same price per point
+  wrestling:W1, grappling:W1, takedef:W1,
+  // neither, and both
+  chin:W1, cardio:W1
 };
 // The division's ceiling, read off the ladder rather than picked. In a soft
 // division the cap is lower — you cannot farm a weak weight class into a rating
@@ -790,23 +890,59 @@ let _offerCache = null, _offerKey = '';
 //   RISK      a coin flip pays ~2.6x what a gimme pays. The file header still
 //             says "the model won't supply the risk/reward on its own" — true,
 //             so the game supplies it here.
-//   ALTITUDE  contenders pay double gatekeepers, so climbing compounds: the
-//             higher you get the faster you grow, and a run accelerates instead
-//             of grinding.
 //
+// ALTITUDE IS GONE, AND IT WAS THE RUNAWAY LOOP. It read:
+//
+//     ALTITUDE  contenders pay double gatekeepers, so climbing compounds: the
+//               higher you get the faster you grow, and a run accelerates
+//               instead of grinding.
+//
+// That is the runaway loop RATING_SPAN's comment begged someone to damp, written
+// down as a feature. It paid for WHERE YOU ARE rather than HOW FAR YOU MOVED, so
+// beating a gimme at #3 paid 2.1x while beating the same gimme at #12 paid 1.35x
+// — for identical progress of one rung. Measured, that is the whole open problem:
+//
+//     the ranked ladder rises   #15 62.2 -> #1 87.4  = 1.8 rating per rung
+//     the player rises          ~2.7 pts/win         = 2.2 rating per rung
+//
+// You outclimb the division you are climbing, so the gap to your own rung WIDENS
+// as you go: +11.9 at #15, +16.6 at #12, +18.2 at #3. Every fight sits at 81-83%,
+// permanently above MAX_FAVORITE, and no swap can fix it because every legal
+// opponent is 17 points beneath you. One number caused the cap to lapse (55% of
+// ranked fights over 0.78), the rematch flood (a 20-fight run exhausts a 16-man
+// ladder), and the #1 treadmill.
+//
+// PAY FOR PROGRESS, NOT FOR POSTURE. A win is worth what it MOVED you:
+//
+//     grind  1 rung/win  x 15 wins  -> +25 rating  } both arrive at the top of
+//     bold   3 rungs/win x  5 wins  -> +25 rating  } the ladder at the SAME level
+//
+// which is exactly the #15 -> #1 span, so the gap you start with (+11.9 = a 74%
+// favorite, the hyped-prospect premise) is the gap you keep. The board stays
+// under the cap by construction rather than by a constant hunting for it. The two
+// paths cost wildly different things — 15-4 versus 5-2 — and that difference is
+// the score, which is the design: "how quickly can you become a champion, and
+// with what record?"
+//
+// RUNG_PAY is now THE dial for run length and title rate. Raise it and runs
+// shorten and the belt gets cheaper; lower it and the champion pulls away.
+const RUNG_PAY = 1.0;
 // ONE DEFINITION. This lived inline in buildOffers() AND was recomputed in
 // offers() — two copies of the same formula, and I edited one. A reward that
 // silently disagrees with itself between the card and the payout is exactly the
 // class of bug that has cost this prototype the most today.
 function rewardFor(f, p){
-  const risk = 1 + Math.max(0, 1 - p) * 3.2;              // 1.0 gimme -> ~2.6 coin flip
+  // How far this win actually moves you. Sub-rank and gatekeeper wins advance one
+  // rung (see fight()), so they pay one rung — no more, and never nothing.
   const r = f.rankNum;
-  const altitude = r >= 99 ? 1.0                           // unranked gatekeeper
-                 : r > 10  ? 1.35                          // edge of the rankings
-                 : r > 5   ? 1.7                           // real contender
-                 : r > 0.5 ? 2.1                           // top 5
-                 : 2.5;                                    // champion / interim
-  return Math.max(1, Math.round(risk * altitude));
+  const rungs = (G.rank == null || r >= 99 || r >= G.rank) ? 1
+              : Math.max(1, G.rank - r);
+  // Risk still pays, but it MODULATES the rung price rather than multiplying it:
+  // risk and rungs both rise with the man above you, so multiplying them raw
+  // double-counts the same choice and pays a 3-rung upset ~6x a gimme instead of
+  // ~3x. 0.8x for a lock, 1.2x for a coin flip.
+  const risk = 0.8 + Math.max(0, 1 - p) * 0.8;
+  return Math.max(1, Math.round(rungs * RUNG_PAY * risk));
 }
 
 function offers(){
@@ -834,7 +970,30 @@ function buildOffers(){
   // knocked you out stayed in the pool and came back 15% of the time. Getting
   // re-offered your conqueror reads exactly like "nothing changed".
   const fought = new Set(G.log.map(f=>f.opp));
-  const avail = f => !G.beat.has(f.name) && !fought.has(f.name);
+  // ...EXCEPT THE CHAMPION, WHO IS THE WIN CONDITION.
+  //
+  // This one line was four bugs. "Exclude everyone you've FOUGHT" is right for
+  // contenders and catastrophic for the belt: lose ONE title fight and the
+  // champion left the pool FOREVER, so `title` was empty, so the #1 board became
+  // three contenders you had already beaten and the run could never end. Measured,
+  // that is the entire remaining mess in one place — a #1 with a title loss farmed
+  // #3 for twenty fights (board: `4@72 1@71 3@93`, no champion anywhere on it),
+  // drifted to rating 110 against an 85-power division, and so:
+  //   - every card became a gift            -> MAX_FAVORITE lapsed (51% over cap)
+  //   - with nobody legal left to swap in   -> the cap could not fix it
+  //   - a 20-fight run ate a 16-man ladder  -> rematches flooded 41% of boards
+  // I chased all three as separate problems and patched two of them. They were one
+  // bug, and it was not in any of the code I was reading. THE RUN THAT WON'T END IS
+  // A RUN WITH NO WIN CONDITION LEFT — check that the win condition is reachable
+  // before tuning anything downstream of it.
+  //
+  // A LOSS TO THE CHAMPION COSTS A SHOT, NOT THE RUN. You must win a fight to earn
+  // another crack at him — which is real, and keeps the Walker instant-rematch loop
+  // dead (that fix was about being handed your conqueror again IMMEDIATELY; it was
+  // never a rule that the belt should become unreachable).
+  const isChamp = f => f.rankNum <= 0.5;
+  const avail = f => !G.beat.has(f.name) &&
+    (isChamp(f) ? (!fought.has(f.name) || G.streak > 0) : !fought.has(f.name));
   const unranked = LADDER().filter(f=>f.rankNum===99 && avail(f));
   const ranked   = LADDER().filter(f=>f.rankNum<99 && avail(f)).sort((a,b)=>b.rankNum-a.rankNum);
   const pool = [];
@@ -876,7 +1035,21 @@ function buildOffers(){
     // which puts style (up to +-11) in charge of the ORDER while rank still sets
     // the pace of the climb. The risk/reward axis survives: the man above you
     // still pays more and jumps you further.
-    const STEP = 1;
+    // STEP 1 -> 3. THE LADDER MUST BE SHORT, and this is the dial that shortens it.
+    //
+    // Beating a man TAKES HIS RANK, so the step-up band is the size of the jump.
+    // At STEP 1 the only fight that advances you is #n-1, so 15 rungs cost 15
+    // wins minimum — and 15 wins on a 5-loss budget forces you to be a ~76%
+    // favorite in every one of them, which is the exact fight that feels like
+    // theft to lose. At STEP 3 the same ladder is ~5-6 rungs: 8 wins at 68% costs
+    // 3.8 expected losses against a budget of 5, and you take the belt at 8-3.
+    //
+    // This COSTS the thing STEP 1 bought — the note below is still true, rank
+    // still outweighs style within a wide band, and the board gets less readable.
+    // That trade is the point: an unreadable board you can survive beats a
+    // readable one that is arithmetically unwinnable. Style gets its authority
+    // back from equal-weight sliders (see WEIGHTS) rather than from narrow bands.
+    const STEP = 3;
     // A LOSS STEPS YOU DOWN. You just got beaten — the matchmaker gives you
     // someone softer, not another contender. Widens the 'below' band so the
     // re-roll is a genuine breather rather than the same wall.
@@ -911,9 +1084,16 @@ function buildOffers(){
   // like a bug, because it is one. So: if the board would be empty, re-offer from
   // the whole ladder ignoring who you've already beaten.
   if(!pool.filter(Boolean).length){
-    const all = LADDER().filter(f => f.name !== (G.last && G.last.o && G.last.o.f.name));
-    const near = all.filter(f => G.rank==null ? f.rankNum===99
-                                              : Math.abs(f.rankNum - G.rank) <= 4 && f.rankNum < 99);
+    // A RANKED MAN IS NEVER OFFERED A GATEKEEPER. `src = near.length ? near : all`
+    // fell back to the WHOLE ladder, unranked pool included — so a #1 contender
+    // who had cleared everyone within 4 rungs got served men from the 46-power
+    // gatekeeper pool at 95%. Measured, that is most of the #1 treadmill: the
+    // favorite-hunter parked at #1 and farmed tune-up fighters for 30 wins. The
+    // unranked pool is the ON-RAMP; once you're in the rankings it does not exist.
+    const all = LADDER().filter(f => f.name !== (G.last && G.last.o && G.last.o.f.name)
+                                  && (G.rank == null ? f.rankNum === 99 : f.rankNum < 99));
+    const near = all.filter(f => G.rank==null ? true
+                                              : Math.abs(f.rankNum - G.rank) <= 4);
     const src = near.length ? near : all;
     for(let i=0;i<3;i++) pool.push(pickDiverse(src, pool));
   }
@@ -941,16 +1121,38 @@ function buildOffers(){
     // boards offering someone already fought. The `fought` set was three lines
     // above this and tracks both results; I reached for the wrong one.
     const beaten = f => fought.has(f.name);
-    for (const radius of [2,4,7,12,99]) {
-      if (picked.length >= 3) break;
-      const band = LADDER().filter(f =>
-        !picked.includes(f) && !beaten(f) &&
-        (G.rank == null ? f.rankNum === 99
-                        : (f.rankNum < 99 && Math.abs(f.rankNum - G.rank) <= radius && f.rankNum > 0.5)));
-      while (picked.length < 3 && band.length) {
-        const nxt = pickDiverse(band, picked);
-        if (!nxt) break;
-        picked.push(nxt); band.splice(band.indexOf(nxt), 1);
+    // WIDEN UPWARD, NEVER DOWNWARD, AND TAKE THE REMATCH OVER THE STRANGER.
+    //
+    // Two bugs lived in one line. `Math.abs(f.rankNum - G.rank) <= radius` widens
+    // SYMMETRICALLY over radii that reach 99, so once the top of the ladder was
+    // exhausted a #1 contender got topped up from #13 — measured, rating 108.9
+    // against power 67.1 at 95%, on repeat, which is the #1 treadmill's last
+    // hiding place. MAX_FAVORITE could not catch it: by then nobody legal was left
+    // to swap in, so the cap silently passed the gift through. The 'below' band
+    // already caps weakness at 3 rungs on the main path; the top-up was quietly
+    // exempt from the rule it was topping up.
+    //
+    // And it preferred a FRESH man ten rungs down over a REMATCH one rung up,
+    // which is backwards twice over: the whole file's position is that "beating a
+    // man twice is a real career", while being handed #13 while ranked #1 is not
+    // a fight at all. So: bound the weakness first, then prefer new faces WITHIN
+    // that bound, and only then rematch — never against a man who beat you.
+    const FLOOR = 3;                       // same weakness cap as the 'below' band
+    const conqueror = new Set(G.log.filter(x => !x.won).map(x => x.opp));
+    const inBand = (f, radius) => f.rankNum < 99 && f.rankNum > 0.5 &&
+      f.rankNum >= G.rank - radius && f.rankNum <= G.rank + FLOOR;
+    for (const pass of [0, 1]) {           // 0: someone new.  1: a rematch.
+      for (const radius of [2,4,7,12,99]) {
+        if (picked.length >= 3) break;
+        const band = LADDER().filter(f =>
+          !picked.includes(f) &&
+          (pass === 0 ? !beaten(f) : !conqueror.has(f.name)) &&
+          (G.rank == null ? f.rankNum === 99 : inBand(f, radius)));
+        while (picked.length < 3 && band.length) {
+          const nxt = pickDiverse(band, picked);
+          if (!nxt) break;
+          picked.push(nxt); band.splice(band.indexOf(nxt), 1);
+        }
       }
     }
     // TRUE last resort: a rematch beats an empty board, but only after the whole
@@ -959,10 +1161,13 @@ function buildOffers(){
     // demoralising thing the board can do, and it isn't matchmaking, it's a bug
     // wearing a fighter's name.
     if (picked.length < 2) {
+      // Same rule as the fallback above: the unranked pool is the on-ramp, not a
+      // reserve tank for a contender's board.
+      const tier = f => G.rank == null ? f.rankNum === 99 : f.rankNum < 99;
       const lost = new Set(G.log.filter(f=>!f.won).map(f=>f.opp));
-      let any = LADDER().filter(f => !picked.includes(f) && !lost.has(f.name) &&
+      let any = LADDER().filter(f => !picked.includes(f) && !lost.has(f.name) && tier(f) &&
         f.name !== (G.last && G.last.o && G.last.o.f.name));
-      if (!any.length) any = LADDER().filter(f => !picked.includes(f) &&
+      if (!any.length) any = LADDER().filter(f => !picked.includes(f) && tier(f) &&
         f.name !== (G.last && G.last.o && G.last.o.f.name));
       while (picked.length < 3 && any.length) {
         const nxt = pickDiverse(any, picked);
@@ -971,10 +1176,120 @@ function buildOffers(){
       }
     }
   }
+  // NO FIGHT ON THE BOARD IS A GIFT. Cap the easiest card at MAX_FAVORITE.
+  //
+  // The 15-wins-on-a-5-loss-budget arithmetic forces you to be a ~76% favorite in
+  // every fight, and the playtest read that back exactly: "losing 5 times at an
+  // average moderate favorite isn't wrong, but losing 5 times at 80% FEELS wrong."
+  // Both halves are right, which makes it a contradiction rather than a tuning
+  // miss — you cannot have "no heavy favorites" AND a long ladder. The short
+  // ladder (STEP 3 + UNRANKED_WINS 1) is what BUYS this cap: at ~6 rungs the cap
+  // is affordable, and on the 18-fight version it sent every strategy to 0%.
+  //
+  // FIX (b) — WHY THIS DRAWS FROM LADDER(), NOT avail(). The obvious swap-in is
+  // "replace the gift with a harder man from the offer pool", but the pool comes
+  // from avail(), which excludes everyone you have already FOUGHT. By fight 20 a
+  // run has eaten three or four rungs and there is nobody left to swap in, so the
+  // cap silently stops working exactly where it matters most — measured, 46% of
+  // the favorite-hunter's fights were still >80%. A cap that quietly lapses is
+  // worse than no cap: the board keeps promising a ceiling it isn't enforcing.
+  // So this replaces the card from the WHOLE ladder, rematches included. Fighting
+  // a man twice is a real career; being handed a 90% gift is not a fight.
+  // MAX_FAVORITE KILLS THEFT, NOT THE RISK GRADIENT. 0.85, and 0.78 is a
+  // CONTRADICTION rather than a tuning miss — which is the tuning file's own
+  // central lesson, one level up from where it was written.
+  //
+  // The board is below / near / up BY DESIGN: "a rank below you can advance you,
+  // just less than taking a harder fight." So the three cards are a gradient, and
+  // the arithmetic of that gradient is fixed:
+  //     a 0.78 cap allows a gap of at most 14.3 rating points
+  //     the debut is +11.9 over its OWN rung (=74%, the hyped-prospect premise)
+  //     the BELOW card is ~3 rungs weaker again = +17.3 = 82%
+  // The below card is over a 0.78 cap ON TURN ONE, by construction, before any
+  // drift. To get it under, you must debut a 69% favorite over #15 — which is not
+  // a hyped prospect, it's part 2 undone. Parts 2 and 4 of the note cannot both
+  // hold: "42 lands the debut at ~78" and "no card above ~75%" are the same shape
+  // of contradiction as "no heavy favorites" + "a 15-win climb on a 5-loss
+  // budget", and it got solved the same way both times — by measuring instead of
+  // hunting for the constant.
+  //
+  // So the cap's job is not to flatten the gradient (that would delete the safe
+  // option and the whole point of the choice). Its job is to kill THEFT: the 95%
+  // gatekeeper farm, the outgrown-division treadmill, the man served because the
+  // matchmaker ran out of ideas. The designed gradient runs ~66% (up) / ~74%
+  // (near) / ~82% (below); 0.85 sits just above it and catches everything that
+  // isn't a fight.
+  //
+  // RANKED BOARDS ONLY. At POINTS_START 42 the debut rates ~74 against a
+  // gatekeeper pool averaging 46.9 — every gatekeeper card is ~99%, so an
+  // unconditional cap would replace the whole tune-up board with RANKED men and
+  // quietly delete UNRANKED_WINS. The one gatekeeper fight is SUPPOSED to be a
+  // gift; that's the hyped-prospect premise, and it's one fight, not a treadmill.
+  const MAX_FAVORITE = 0.85;
+  if (G.rank != null && picked.length) {
+    const scored = picked.map(f => ({ f, p: winProb(f.name) }));
+    // SORTED, hardest first. This was `scored.filter(...)` then `soft.pop()` to
+    // "keep the hardest" — but `scored` is in BOARD order, not odds order, so pop()
+    // kept whichever card happened to be listed last. The comment said hardest;
+    // the code said last; nothing threw. Sort before you rely on an order.
+    const soft = scored.filter(x => x.p > MAX_FAVORITE).sort((a,b) => a.p - b.p);
+    // Only ever REPLACE gifts, never erase the board: if EVERY card is over the
+    // cap you have outgrown this rung, and the honest answer is to leave the
+    // hardest of them standing rather than hand back an empty screen. Playtest:
+    // "there should always be 2+."
+    if (soft.length === scored.length) soft.shift();   // keep the hardest = lowest p
+    // THE CONQUEROR STILL NEVER RETURNS. Drawing from the whole LADDER() is what
+    // makes the cap bite late (fix b) — but "the whole ladder" includes the man
+    // who knocked you out, and this swap quietly re-offered him: measured, it put
+    // a conqueror back on 74 of 436 boards and flooded 60% of them with rematches,
+    // failing the two gates that bank the "man who beat you never comes back" fix.
+    // Ignoring `fought` is the POINT of this pool; ignoring `lost` was a bug I
+    // added on top of it. A rematch with a man you BEAT is a career. A rematch
+    // with the man who beat you, served because the matchmaker ran out of ideas,
+    // is the most demoralising thing the board can do.
+    const conquerors = new Set(G.log.filter(x => !x.won).map(x => x.opp));
+    for (const s of soft) {
+      const legal = LADDER()
+        .filter(f => !picked.includes(f) && f.rankNum > 0.5 && f.rankNum < 99 &&
+                     !conquerors.has(f.name) && winProb(f.name) <= MAX_FAVORITE)
+        // the least-bad legal card: closest to the cap from below, so the swap
+        // tightens the board rather than skipping you three rungs up the ladder.
+        .sort((a,b) => winProb(b.name) - winProb(a.name));
+      // A NEW MAN, OR NO SWAP AT ALL. The tuning note's fix (b) proposed drawing
+      // from the WHOLE ladder — rematches included — so the cap could still find a
+      // hard opponent once avail() was exhausted. Measured, that does two bad
+      // things and no good one:
+      //   - it re-offers men you have already beaten on every capped board (57% of
+      //     boards, breaking the banked "rematches never flood" gate; 31% even
+      //     when new men are preferred first), and
+      //   - IT DOESN'T EVEN WORK. A man you beat 10 fights ago is a BIGGER gift
+      //     now than he was then, because you have gained ~40 points since. The
+      //     exhausted pool was never the reason the cap lapses.
+      // The real reason is in THE-CLIMB-TUNING.txt: a long run outgrows the
+      // division outright (85 pts -> rating 108.6 vs a 107.1 champion), so below
+      // #1 there is NO legal opponent to swap in, rematch or not. A cap cannot
+      // conjure an opponent who doesn't exist. So this swaps in a new man when the
+      // division still has one and otherwise leaves the board alone.
+      const harder = legal.find(f => !fought.has(f.name));
+      if (harder) picked[picked.indexOf(s.f)] = harder;
+    }
+  }
   return picked.map(f=>{
     const p = winProb(f.name);
     const reward = rewardFor(f, p);
-    const jump = f.rankNum<99 ? f.rankNum : null;
+    // FIX (a) — AN UNRANKED MAN MUST STILL CARRY A JUMP.
+    //
+    // `jump` used to be `f.rankNum<99 ? f.rankNum : null`, i.e. null for every
+    // gatekeeper. fight() then reads `if (o.jump != null)` to advance you, so a
+    // RANKED player who beats an unranked man moves nowhere — and the board keeps
+    // offering gatekeepers as the soft option. The favorite-hunter found this and
+    // farmed it: records of 39-1 with no belt, running out the 40-fight guard.
+    // The bug is invisible while unranked (the UNRANKED_WINS branch covers you)
+    // and only bites once you're ranked, which is why it survived this long.
+    //
+    // An unranked man is, by definition, BELOW you. Sub-rank advancement is what
+    // he pays: one rung, the same as any other man beneath your rank.
+    const jump = f.rankNum < 99 ? f.rankNum : 99;
     return { f, p, reward, jump };
   });
 }
@@ -1035,11 +1350,49 @@ function fight(o){
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     G.pts += o.reward + (fin?1:0);
-    if (o.jump != null && (G.rank==null || o.jump < G.rank)) G.rank = o.jump;
-    else if (G.rank==null && G.wins>=UNRANKED_WINS) G.rank = 15;
+    // SUB-RANK ADVANCEMENT. Playtest, and it's the right design: "a rank below you
+    // can advance you, just less than taking a harder fight."
+    //
+    // Before this, beating a man at or below your rank moved you NOWHERE, so the
+    // board had one honest answer — always take the man above — and the "safe"
+    // card was a trap that cost you a loss-budget roll for nothing. Now every win
+    // advances; how FAR is the choice:
+    //     beat a man ABOVE you  -> you take his rank (a jump of up to STEP)
+    //     beat a man BELOW you  -> one rung, every time
+    // Measured, that keeps two strategies alive at once and they cost different
+    // things:
+    //     grind  15 wins @78% -> 4.2 expected losses -> ~50% -> champion at 15-4
+    //     bold    5 wins @50% -> 5.0 expected losses -> ~50% -> champion at  5-2
+    // Equally LIKELY, wildly different in what you're left holding. Grinding
+    // should be slow and ugly, not impossible. The score is the record.
+    if (G.rank == null) {
+      // A ranked man still pays his rank on debut — the last-resort board can
+      // serve one, and beating #12 from nowhere should not deposit you at #15.
+      if (o.jump < 99) G.rank = o.jump;
+      // Otherwise the gatekeeper proves you belong; he does not rank you above #15.
+      else if (G.wins >= UNRANKED_WINS) G.rank = 15;
+    } else if (o.jump < G.rank) {
+      G.rank = o.jump;               // you beat a better man: you ARE his rank now
+    } else {
+      G.rank = Math.max(1, G.rank - 1);   // at or below you: one rung, never past #1
+    }
     if (o.f.rankNum === 0) G.champ = true;
   } else {
     G.losses++; G.streak = 0;
+    // A LOSS COSTS YOU A RUNG. The design said so all along and the code never did
+    // it: CUT_AT's own comment reads "losses become a COST, not a coin flip that
+    // deletes the run: they cost you rank, time and a soft matchmaking step-down."
+    // Only the last two were ever implemented. Rank was untouched, so a loss cost
+    // you a slot in the budget and nothing else.
+    //
+    // It went unnoticed until the belt became reachable again, and then it was
+    // glaring: lose a title fight, stay #1, beat one gimme (sub-rank advancement
+    // keeps you at #1), get another shot — an unlimited supply of title fights at
+    // one fight apiece. Measured, that was a 90% belt rate for the wrestler. A free
+    // belt. Now the #1 contender who loses drops to #2 and has to climb back
+    // through men he may already have beaten, which is what a title loss costs a
+    // real fighter and is the only reason another shot is worth anything.
+    if (G.rank != null) G.rank = Math.min(15, G.rank + 1);
   }
   // EVERY FIGHT AGES YOU, win or lose. Playtest: "it took a long time to get to
   // the title. I went 18-1." Ducking was free — beating someone ranked BELOW you

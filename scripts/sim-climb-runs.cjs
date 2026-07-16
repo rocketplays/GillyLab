@@ -86,7 +86,17 @@ function playOne(strat){
       '}'+
       'var o=offers(); if(!o.length){G.losses=99;return;}'+
       'var s=o.slice().sort(function(a,b){return b.p-a.p});'+
-      'var pick='+(pref==='easy'?'s[0]':pref==='hard'?'s[s.length-1]':
+      // EVERY STRATEGY TAKES THE BELT WHEN IT IS OFFERED. `path` describes which
+      // fight you take while CLIMBING; it is not a claim about whether you want to
+      // be champion. Without this line, 'easy' sorts the title shot to the bottom
+      // of the board every time and declines it forever: measured, a title fight
+      // offered on 28 of 41 boards and taken 0 times, parking the bot at #1 to
+      // farm 95% cards for a 39-2 record and no belt. That scored the strategy at
+      // 0% — a number about the HARNESS that reads exactly like a number about the
+      // game, and the tuning file's own warning is DON'T SAMPLE THE FUNCTION,
+      // SAMPLE THE GAME. No player alive ducks the belt for thirty fights.
+      'var title=o.filter(function(x){return x.f.rankNum===0})[0];'+
+      'var pick=title||'+(pref==='easy'?'s[0]':pref==='hard'?'s[s.length-1]':
                    pref==='random'?'o[Math.floor(Math.random()*o.length)]':'s[Math.floor(s.length/2)]')+';'+
       'fight(pick);})()');
   }
