@@ -88353,11 +88353,16 @@ window.GRID_NAMES = window.GRID_NAMES || null;
   // rendering every bout, long before anyone clicks. If it hasn't landed yet the
   // gate returns false and no button renders — a missing button is a non-event; a
   // button that opens an empty panel is the thing we were told to avoid.
-  fetch('./data/grid-names.json').then(r => r.ok ? r.json() : [])
-    .then(list => {
-      window.GRID_NAMES = new Set((list || []).map(_gridNorm));
+  fetch('./data/grid-names.json').then(r => r.ok ? r.json() : null)
+    .then(d => {
+      // {names:[...], base:{...}}. Tolerates the old bare-array shape: an
+      // in-flight deploy can serve a stale file to a fresh page, and the failure
+      // mode of getting this wrong is every button on the site silently vanishing.
+      const list = Array.isArray(d) ? d : (d && d.names) || [];
+      window.GRID_BASE = (d && d.base) || {};
+      window.GRID_NAMES = new Set(list.map(_gridNorm));
       glRevealDeepDives();
-    }).catch(() => { window.GRID_NAMES = new Set(); });
+    }).catch(() => { window.GRID_NAMES = new Set(); window.GRID_BASE = {}; });
 })();
 
 // REVEAL, DON'T RE-RENDER.
@@ -88442,6 +88447,24 @@ function _ddGrid(name){
 }
 let _ddIndex = null, _ddStatsIndex = null;
 
+// Surname for prose. `split(' ').pop()` printed "Jr. has 0 minutes of control" for
+// Levi Rodrigues Jr. — suffixes are not surnames. Mononyms (Sumudaerji, Aoriqileng)
+// are their own answer and must survive too, which a naive split already handles but
+// is worth saying out loud given this codebase has dropped them once already.
+const _DD_SUFFIX = /^(jr|sr|ii|iii|iv|jr\.|sr\.)$/i;
+// Particles belong to the surname. "Du Plessis" -> "Plessis" is not a shortening,
+// it's a different man's name — no commentator has ever said "Plessis". Same for
+// Van Heerden, De Ridder, Dos Anjos.
+const _DD_PARTICLE = /^(du|de|del|della|der|den|van|von|dos|da|das|di|la|le|st|st\.)$/i;
+function _ddLast(s){
+  const parts = String(s || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '';
+  let i = parts.length - 1;
+  while (i > 0 && _DD_SUFFIX.test(parts[i])) i--;          // Levi Rodrigues Jr. -> Rodrigues
+  if (i > 0 && _DD_PARTICLE.test(parts[i - 1])) return parts[i - 1] + ' ' + parts[i];
+  return parts[i];
+}
+
 function renderDeepDive(el, n1, n2){
   const A = _ddGrid(n1), B = _ddGrid(n2);
   if (!A || !B) { el.innerHTML = '<div class="dd-loading">No breakdown available for this bout.</div>'; return; }
@@ -88474,8 +88497,112 @@ function renderDeepDive(el, n1, n2){
   h += '<div class="dd-row"><span class="dd-v">' + A.tdL + '/' + A.tdA + '</span><span class="dd-k">Takedowns landed</span><span class="dd-v r">' + B.tdL + '/' + B.tdA + '</span></div>';
   h += '<div class="dd-row"><span class="dd-v">' + (A.tdAgA - A.tdAgL) + '/' + A.tdAgA + '</span><span class="dd-k">Takedowns stopped</span><span class="dd-v r">' + (B.tdAgA - B.tdAgL) + '/' + B.tdAgA + '</span></div>';
   h += '<div class="dd-row"><span class="dd-v">' + mins(A.ctrl) + '</span><span class="dd-k">Control time</span><span class="dd-v r">' + mins(B.ctrl) + '</span></div>';
+  const read = ddRead(A, B, n1, n2);
+  if (read) h += '<div class="dd-read">' + read + '</div>';
   h += '<div class="dd-note">Last 8 fights each, from UFC box scores. Counts, not ratings.</div>';
   el.innerHTML = h;
+}
+
+// THE READ — the sentence that turns a table into an argument.
+//
+// IT STATES DISPARITIES, IT DOES NOT RECOMMEND PATHS. That distinction is the whole
+// design, and it is what lets this ship while the ranking cannot.
+//   "Usman has stopped 27 of 32 takedowns; Du Plessis 8 of 23."   <- a fact
+//   "Usman's best path is wrestling."                             <- a claim
+// The second needs the model to know that ground-and-pound is gated behind a
+// takedown and head-at-range is gated behind nothing. It doesn't. So it would
+// happily advise a man to ground-and-pound someone he cannot take down — measured,
+// on the first real bout this ran against. Until that's solved with a measurement
+// rather than a guess, the panel reports what IS and lets the reader draw the line.
+// A fan who reads "8 of 23 vs 27 of 32" has already worked out where the fight goes.
+//
+// z ONLY PICKS, IT NEVER PRINTS. Choosing which of six disparities to lead with
+// requires comparing gaps across axes with different spreads (takedown defence
+// sd ~19 points, head accuracy sd ~8 — the same 20-point gap is ordinary in one and
+// enormous in the other), so the selection is z-scored against baselines measured at
+// build time. The output is always counts, because "95th percentile" means nothing
+// to someone watching a fight.
+function ddRead(A, B, n1, n2){
+  const base = window.GRID_BASE || {};
+  const z = (k, v) => { const b = base[k]; return (b && b[1]) ? Math.abs(v - b[0]) / b[1] : 0; };
+  const L1 = escHtmlAttr(_ddLast(n1)), L2 = escHtmlAttr(_ddLast(n2));
+  const GI = (p,t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
+  const cands = [];
+
+  // Takedown defence — usually the story, and the one axis where the spread is wide
+  // enough that a gap is almost always meaningful.
+  // GRADED, WITH A FLOOR. The first version said "is far harder to take down" for
+  // Cannonier at 16 of 23 (70%) against Duncan's 19 of 30 (63%) — a seven-point
+  // gap — and for McMillen at 83% vs 78%. No threshold, so the phrase fired on
+  // noise, which is the "won't be wrestled" overclaim in a new costume: language
+  // that outruns what the numbers can carry. A gap has to be real AND large before
+  // it gets a strong verb, and the verb scales with the gap.
+  if (A.tdAgA >= 8 && B.tdAgA >= 8) {
+    const sA = (A.tdAgA - A.tdAgL) / A.tdAgA, sB = (B.tdAgA - B.tdAgL) / B.tdAgA;
+    const gap = Math.abs(sA - sB);
+    const sd = (base.tdStop && base.tdStop[1]) || 0.196;
+    if (gap >= sd) {                    // at least one full roster sd apart
+      const hi = sA > sB, hiN = hi ? A : B, loN = hi ? B : A;
+      const verb = gap >= sd * 2 ? ' is far harder to take down: '
+                 : ' is harder to take down: ';
+      cands.push({ w: gap / sd,
+        t: (hi ? L1 : L2) + verb + (hiN.tdAgA - hiN.tdAgL) + ' of ' + hiN.tdAgA +
+           ' stopped, against ' + (loN.tdAgA - loN.tdAgL) + ' of ' + loN.tdAgA +
+           ' for ' + (hi ? L2 : L1) + '.' });
+    }
+  }
+  // Control time — the other half of the same story, in minutes a fan can feel.
+  if (A.ctrl + B.ctrl > 300) {
+    const hi = A.ctrl > B.ctrl ? A : B, lo = A.ctrl > B.ctrl ? B : A;
+    const ratio = (lo.ctrl > 30) ? hi.ctrl / lo.ctrl : 9;
+    if (ratio >= 1.8) cands.push({ w: Math.min(ratio, 4),
+      t: (A.ctrl > B.ctrl ? L1 : L2) + ' has ' + Math.round(hi.ctrl / 60) +
+         ' minutes of control time across those fights; ' + (A.ctrl > B.ctrl ? L2 : L1) +
+         ' has ' + Math.round(lo.ctrl / 60) + '.' });
+  }
+  // A striking lane where one man is unusually open.
+  const LANES = [['dist','head','the head at range'],['dist','body','the body'],
+                 ['dist','leg','leg kicks'],['ground','head','ground strikes']];
+  for (const [p,t,label] of LANES) {
+    const a = A.cellsD[GI(p,t)], b = B.cellsD[GI(p,t)];
+    if (a[1] < 25 || b[1] < 25) continue;
+    const ra = a[0]/a[1], rb = b[0]/b[1];
+    const za = z('allow.'+p+'.'+t, ra), zb = z('allow.'+p+'.'+t, rb);
+    const bb = base['allow.'+p+'.'+t];
+    if (!bb || Math.max(za, zb) < 1.1) continue;
+    const openIsA = ra > rb;
+    // THE PREREQUISITE, AND I THOUGHT I HAD SIDESTEPPED IT.
+    //
+    // The plan was: state disparities, never recommend paths, and the gating problem
+    // goes away. It doesn't. "Usman gets caught to ground strikes more than most" is
+    // a disparity by grammar and a path by implication — it is only worth saying to
+    // a man who can put him on the ground, and Du Plessis stops 8 of 23. Printed as
+    // written, it invites exactly the plan that cannot happen. A fact whose
+    // relevance depends on an unstated condition is not a safer kind of claim; it
+    // is the same claim with the condition hidden.
+    //
+    // So the ground lane requires the OTHER man to actually get there: he must land
+    // takedowns at a rate the defender doesn't stop. The striking lanes need no such
+    // gate — everyone can throw at range, which is precisely the asymmetry the
+    // ranking in matchup-deepdive.cjs still doesn't model.
+    if (p === 'ground') {
+      const attacker = openIsA ? B : A;          // the man who'd need the takedown
+      const defender = openIsA ? A : B;
+      const canGet = attacker.tdA >= 4 && defender.tdAgA >= 4 &&
+                     (attacker.tdL / Math.max(1, attacker.tdA)) >= 0.25 &&
+                     (defender.tdAgL / Math.max(1, defender.tdAgA)) >= 0.30;
+      if (!canGet) continue;
+    }
+    cands.push({ w: Math.max(za, zb),
+      t: (openIsA ? L1 : L2) + ' gets caught to ' + label + ' more than most: ' +
+         Math.round((openIsA?ra:rb)*100) + '% of what comes at ' +
+         (openIsA?L1:L2) + ' there lands, against a ' + Math.round(bb[0]*100) + '% norm.' });
+  }
+  if (!cands.length) return '';
+  cands.sort((x,y) => y.w - x.w);
+  // Two sentences maximum. A third is a paragraph, and a paragraph is a table with
+  // extra steps.
+  return cands.slice(0, 2).map(c => c.t).join(' ');
 }
 
 function fightStatsFor(name, date){

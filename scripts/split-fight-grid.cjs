@@ -84,7 +84,65 @@ function main() {
   // would vanish on the first quiet day. Cheap, idempotent, always correct.
   const names = Object.keys(grid).filter(n =>
     (grid[n] || []).some(r => r && r.f && r.f.g));
-  if (!DRY) fs.writeFileSync(NAMES, JSON.stringify(names));
+
+  // THE BASELINE RIDES WITH THE MANIFEST.
+  //
+  // The panel's prose has to pick WHICH disparity to lead with, and "biggest gap"
+  // is meaningless across axes measured on different scales — takedown defence
+  // varies wildly across fighters (sd ~19 points) while head accuracy barely moves
+  // (sd ~8). A 20-point gap is ordinary in one and enormous in the other. Comparing
+  // them needs each axis's own spread.
+  //
+  // I already got this wrong once in this feature by dividing each stat by a
+  // constant I picked by eye, which made the weights incomparable and ranked my own
+  // denominators instead of the fighters. So the spreads are MEASURED here, over
+  // every fighter in the grid, and shipped — a few hundred bytes — rather than
+  // re-derived by hand in the browser.
+  const LANES = [['dist','head'],['dist','body'],['dist','leg'],['ground','head']];
+  const GI = (p, t) => ['dist','clinch','ground'].indexOf(p) * 3 + ['head','body','leg'].indexOf(t);
+  const cols = {};
+  const push = (k, v) => { if (isFinite(v)) (cols[k] = cols[k] || []).push(v); };
+  for (const n of names) {
+    const rows = (grid[n] || []).filter(Boolean).slice(0, 8);
+    const off = Array.from({ length: 9 }, () => [0, 0]);
+    const def = Array.from({ length: 9 }, () => [0, 0]);
+    for (const r of rows) {
+      if (r.f && r.f.g) for (let i = 0; i < 9; i++) { off[i][0] += r.f.g[i][0]; off[i][1] += r.f.g[i][1]; }
+      if (r.o && r.o.g) for (let i = 0; i < 9; i++) { def[i][0] += r.o.g[i][0]; def[i][1] += r.o.g[i][1]; }
+    }
+    const tot = off.reduce((s, c) => s + c[1], 0);
+    if (tot < 150) continue;
+    for (const [p, t] of LANES) {
+      const i = GI(p, t);
+      push('aim.' + p + '.' + t, off[i][1] / tot);
+      if (def[i][1] >= 25) push('allow.' + p + '.' + t, def[i][0] / def[i][1]);
+    }
+  }
+  // Takedowns and control live in fight-stats.json, not the grid — they were never
+  // part of the cross-tab and the panel needs them because they are usually the
+  // story of the fight. Baseline them from the same source the panel reads.
+  for (const n of names) {
+    const rows = (D[n] || []).slice(0, 8);
+    if (rows.length < 3) continue;
+    let tdA = 0, agL = 0, agA = 0, ctrl = 0;
+    for (const f of rows) {
+      if (!f || !f.f || !f.o) continue;
+      tdA += f.f.tdA || 0; agL += f.o.tdL || 0; agA += f.o.tdA || 0;
+      const m = /^(\d+):(\d+)$/.exec(String(f.f.ctrl || ''));
+      if (m) ctrl += +m[1] * 60 + +m[2];
+    }
+    push('tdRate', tdA / rows.length);
+    if (agA >= 4) push('tdStop', (agA - agL) / agA);
+    push('ctrlPer', ctrl / rows.length);
+  }
+
+  const base = {};
+  for (const [k, v] of Object.entries(cols)) {
+    const m = v.reduce((a, b) => a + b, 0) / v.length;
+    const sd = Math.sqrt(v.reduce((s, x) => s + (x - m) * (x - m), 0) / v.length);
+    base[k] = [+m.toFixed(4), +(sd || 0.01).toFixed(4), v.length];
+  }
+  if (!DRY) fs.writeFileSync(NAMES, JSON.stringify({ names, base }));
 
   if (!lifted) {
     // NOT AN ERROR: nothing new to lift. Either the backfill hasn't run since the
