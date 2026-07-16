@@ -25,6 +25,60 @@ const ROOT = path.resolve(__dirname, '..');
 
 const STATS = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/fight-stats.json'), 'utf8'));
 
+// THE GRID lives in its own file — fight-stats.json is eager-fetched by every
+// visitor at ~8MB and must not carry 2MB for a panel you have to click. Card-
+// scoped by construction (only card fighters get backfilled), ~245KB, kept fresh
+// by update-odds.yml twice a day. Absent = the fighter hasn't been backfilled, and
+// the button hides; it is not an error.
+let GRID = {};
+try { GRID = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/fight-grid.json'), 'utf8')); }
+catch (e) { GRID = {}; }
+
+// Row-major, matching pack(): [distance, clinch, ground] x [head, body, leg].
+const GI = (pos, tgt) => ['dist', 'clinch', 'ground'].indexOf(pos) * 3 + ['head', 'body', 'leg'].indexOf(tgt);
+
+// MEASURED, AND THE REASON THESE ARE SEPARATE LANES AT ALL:
+//   head accuracy AT DISTANCE    mean 35.8%  sd 4.9
+//   head accuracy ON THE GROUND  mean 70.2%  sd 8.2
+//   corr(the two) = -0.04       across 63 card fighters
+// Zero correlation. Punching a man in the face standing up and punching a man in
+// the face while sitting on him are unrelated skills, and `head 79%` averages them
+// into one number that describes neither. Mackenzie Dern is +55 points better on
+// the ground than at range; a kickboxer is +11. The old margin reported one figure
+// for both. That is the entire case for this file reading the grid.
+// side 'f' = what he threw (offence). side 'o' = what was thrown AT him (defence).
+// The split keeps both, which is what makes "where can I hit this man, and from
+// where" answerable at all — the defensive half is the part nothing in the app
+// has ever read.
+function gridFor(name, side, limit) {
+  // NORMALISED, like every other lookup in this file, because I have now written
+  // this bug three times in one session: once reporting 9% of a card as "no stats"
+  // (it was du Plessis vs Du Plessis and Rakić vs Rakic), once dropping every
+  // mononym from the backfill queue, and once here — where a raw `GRID[name]` with
+  // a slug-derived "dricus du plessis" missed a fighter who WAS backfilled and
+  // silently fell back to the margins. Same shape every time: two names for one
+  // man, and the miss looks exactly like absent data.
+  const rows = GRID[GRID_INDEX.get(norm(name))];
+  if (!rows) return null;
+  const cells = Array.from({ length: 9 }, () => ({ landed: 0, att: 0 }));
+  let n = 0;
+  for (const r of rows.slice(0, limit || 8)) {
+    const g = r && r[side] && r[side].g;
+    if (!g) continue;
+    n++;
+    for (let i = 0; i < 9; i++) { cells[i].landed += g[i][0]; cells[i].att += g[i][1]; }
+  }
+  return n ? { cells, fights: n } : null;
+}
+const gShare = (G, pos, tgt) => {
+  const tot = G.cells.reduce((s, c) => s + c.att, 0);
+  return tot ? G.cells[GI(pos, tgt)].att / tot : 0;
+};
+const gAcc = (G, pos, tgt) => {
+  const c = G.cells[GI(pos, tgt)];
+  return c.att ? c.landed / c.att : 0;
+};
+
 // NAME NORMALISATION IS NOT OPTIONAL. A naive join drops Dricus du Plessis (the
 // card says "Du", the stats say "du") and Aleksandar Rakić (the ć). I measured
 // coverage without this and reported 9% of a card as "no stats", including a
@@ -33,9 +87,24 @@ const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
   .toLowerCase().replace(/[^a-z ]/g, '').trim();
 const INDEX = new Map(Object.keys(STATS).map(k => [norm(k), k]));
 const lookup = name => { const k = INDEX.get(norm(name)); return k ? STATS[k] : null; };
+const GRID_INDEX = new Map(Object.keys(GRID).map(k => [norm(k), k]));
 
 const ZONES = ['head', 'body', 'leg'];
 const POS = ['dist', 'clinch', 'ground'];
+
+// THE LANES THE GRID BUYS, and deliberately not all nine cells.
+// Nine lanes on a 4-fight median sample is how you get a confident ranking of
+// noise — clinch-leg and ground-leg are near-zero for almost everyone, and a lane
+// nobody uses can still win a z-score contest by being weird. These four are the
+// ones with real volume and real spread across the roster.
+const GRID_LANES = [
+  ['dist', 'head'],    // boxing/kickboxing at range
+  ['dist', 'body'],
+  ['dist', 'leg'],
+  ['ground', 'head'],  // ground and pound — uncorrelated (-0.04) with dist-head
+];
+const LANE_LABEL = { 'dist.head': 'head at range', 'dist.body': 'body at range',
+                     'dist.leg': 'leg kicks', 'ground.head': 'ground and pound' };
 
 // Aggregate a fighter's fights into offence (what he threw) and defence (what was
 // thrown at him). `n` rides along on every number, because a rate without its
@@ -113,6 +182,23 @@ function leagueDist() {
     push('tdRate', p.tdA / p.fights);
     if (p.tdAgainstA >= 4) push('tdDefAllow', p.tdAgainstL / p.tdAgainstA);
     push('ctrl', p.ctrlSec / p.fights);
+    // GRID LANES. Only fighters who have been backfilled contribute, so this
+    // distribution is built from the card, not the league — which is correct for
+    // the question ("is he unusual among the men who fight here") and worth being
+    // explicit about, because it is NOT the same population as the margin
+    // distributions above it. Two baselines in one file is a drift risk; they are
+    // kept apart on purpose and neither is used to judge the other.
+    const go = gridFor(name, 'f', 8), gd = gridFor(name, 'o', 8);
+    if (go && go.fights >= 3) {
+      for (const [pos, tgt] of GRID_LANES) {
+        if (go.cells[GI(pos, tgt)].att >= 25) push('gShare.' + pos + '.' + tgt, gShare(go, pos, tgt));
+      }
+    }
+    if (gd && gd.fights >= 3) {
+      for (const [pos, tgt] of GRID_LANES) {
+        if (gd.cells[GI(pos, tgt)].att >= 25) push('gAllow.' + pos + '.' + tgt, gAcc(gd, pos, tgt));
+      }
+    }
   }
   const out = {};
   for (const [k, v] of Object.entries(cols)) {
@@ -143,20 +229,64 @@ function leagueDist() {
 // distribution-free and is the right answer; it needs its own pass, and any UI
 // built on this must not print the raw number as if +9.3 and +1.9 sit on one
 // ruler. Rank the paths; don't quantify the gap between them.
-function edges(A, B, L) {
+// KNOWN AND UNFIXED: THE LANES HAVE PREREQUISITES AND THIS MODEL DOES NOT KNOW IT.
+//
+// Measured on the first real bout it ran: Du Plessis's top-ranked path came out as
+// GROUND AND POUND, +1.2 — built almost entirely from vuln +2.0 (Usman absorbs 93%
+// of ground head strikes against a 71% league) while Du Plessis's own intent there
+// is NEGATIVE (-0.8, he barely does it). And his takedown path is -0.4, because
+// Usman is taken down on 16% of attempts. So the ranking is advising a man to
+// ground-and-pound an opponent he cannot get to the ground.
+//
+// Ground-and-pound is GATED by a takedown. Head-at-range is gated by nothing. The
+// cross treats them as peers, sums intent+vuln for each, and sorts — which is
+// coherent only for lanes you can enter at will.
+//
+// NOT FIXED HERE ON PURPOSE. The obvious move is to scale the ground lane by the
+// takedown edge, and I have twice today invented a plausible mechanism, shipped it,
+// and found the justification was fiction (the "chin bug" that did not exist; the
+// "legs are a narrow band" story behind the z-score change). A gating rule is a
+// design decision that wants its own measurement across a card, not a same-day
+// guess with a confident comment. Until then: the UI must NOT print this ranking
+// as advice. The raw columns are honest; the order is a hypothesis.
+function edges(A, B, L, aName, bName) {
   const z = (key, x) => { const d = L[key]; return d ? (x - d.m) / d.sd : 0; };
   const out = [];
-  for (const k of ZONES) {
-    const intent = z('offShare.' + k, share(A.off, k));
-    const vuln = z('defAllow.' + k, acc(B.def, k));
-    out.push({
-      path: k, kind: 'strike',
-      aShare: share(A.off, k), aAcc: acc(A.off, k), bAllows: acc(B.def, k),
-      lgShare: L['offShare.' + k].m, lgAllows: L['defAllow.' + k].m,
-      intent, vuln, edge: intent + vuln,
-      n: A.off[k].att, m: B.def[k].att,
-      thin: A.off[k].att < 60 || B.def[k].att < 40,
-    });
+  // GRID LANES when both fighters have been backfilled; MARGINS otherwise. The
+  // grid is card-scoped, so a fighter from an old fight (or a --card run that
+  // hasn't reached him) has none — and a deep dive that silently reports margins
+  // as if they were lanes would be the worst of both. Say which one you used.
+  const AG = gridFor(aName, 'f', 8), BG = gridFor(bName, 'o', 8);
+  const useGrid = !!(AG && BG);
+  if (useGrid) {
+    for (const [pos, tgt] of GRID_LANES) {
+      const key = pos + '.' + tgt;
+      const dS = L['gShare.' + key], dA = L['gAllow.' + key];
+      if (!dS || !dA) continue;
+      const aSh = gShare(AG, pos, tgt), bAl = gAcc(BG, pos, tgt);
+      const intent = (aSh - dS.m) / dS.sd, vuln = (bAl - dA.m) / dA.sd;
+      out.push({
+        path: LANE_LABEL[key], kind: 'strike',
+        aShare: aSh, aAcc: gAcc(AG, pos, tgt), bAllows: bAl,
+        lgShare: dS.m, lgAllows: dA.m,
+        intent, vuln, edge: intent + vuln,
+        n: AG.cells[GI(pos, tgt)].att, m: BG.cells[GI(pos, tgt)].att,
+        thin: AG.cells[GI(pos, tgt)].att < 40 || BG.cells[GI(pos, tgt)].att < 25,
+      });
+    }
+  } else {
+    for (const k of ZONES) {
+      const intent = z('offShare.' + k, share(A.off, k));
+      const vuln = z('defAllow.' + k, acc(B.def, k));
+      out.push({
+        path: k + ' (margin)', kind: 'strike',
+        aShare: share(A.off, k), aAcc: acc(A.off, k), bAllows: acc(B.def, k),
+        lgShare: L['offShare.' + k].m, lgAllows: L['defAllow.' + k].m,
+        intent, vuln, edge: intent + vuln,
+        n: A.off[k].att, m: B.def[k].att,
+        thin: A.off[k].att < 60 || B.def[k].att < 40,
+      });
+    }
   }
   // Takedowns: intent is how often he shoots, vulnerability is how often the other
   // man goes down when shot on.
@@ -230,15 +360,17 @@ function main() {
     (26 / sdTd).toFixed(1) + ' sd on takedowns.');
   console.log('      THAT is the pair that needs z, and the old metric never ranked it at all.');
 
-  for (const [att, dfd, name] of [[A, B, a], [B, A, b]]) {
-    console.log('\n  THE CROSS — every path ' + name.split(' ').pop() + ' has, one unit (z)');
-    for (const e of edges(att, dfd, L)) {
-      const desc = e.kind === 'grapple'
+  for (const [att, dfd, name, oname] of [[A, B, a, b], [B, A, b, a]]) {
+    const usingGrid = !!(gridFor(name, 'f', 8) && gridFor(oname, 'o', 8));
+    console.log('\n  THE CROSS — every path ' + name.split(' ').pop() + ' has, one unit (z)' +
+      (usingGrid ? '   [GRID lanes]' : '   [margins — one or both not backfilled]'));
+    for (const e of edges(att, dfd, L, name, oname)) {
+      const desc = e.kind === "grapple"
         ? 'shoots ' + (att.tdA / Math.max(1, att.fights)).toFixed(1) + '/fight @ ' + pct(e.aAcc) +
           '   opp taken down ' + pct(e.bAllows) + ' (lg ' + pct(e.lgAllows) + ')'
         : 'aims ' + pct(e.aShare).padStart(4) + ' (lg ' + pct(e.lgShare) + ')   ' +
           'opp allows ' + pct(e.bAllows).padStart(4) + ' (lg ' + pct(e.lgAllows) + ')';
-      console.log('    ' + e.path.padEnd(9) + desc.padEnd(52) +
+      console.log('    ' + e.path.padEnd(18) + desc.padEnd(50) +
         'intent ' + (e.intent >= 0 ? '+' : '') + e.intent.toFixed(1) +
         '  vuln ' + (e.vuln >= 0 ? '+' : '') + e.vuln.toFixed(1) +
         '  = ' + (e.edge >= 0 ? '+' : '') + e.edge.toFixed(1) +
