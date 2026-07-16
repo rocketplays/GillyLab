@@ -6,12 +6,28 @@ been seen in a browser, on desktop and on a phone, which it never had been befor
 
 WHAT THE FEATURE IS
 --------------------------------------------------------------------------------
-A "Matchup Analytics ›" button INSIDE each bout's Fight Info dropdown, sitting
-between the tale of the tape and Style — the seam where a reader stops taking in
-who these men are and starts asking what they do. It opens a 1040px modal with
-three tabs: Overview, Striking, Grappling.
+A "Matchup Analytics Deep Dive ›" button INSIDE each bout's Fight Info dropdown,
+sitting between the tale of the tape and Style — the seam where a reader stops
+taking in who these men are and starts asking what they do. It opens a 1040px
+modal with TWO tabs: Striking (lands here) and Grappling.
 
-It crosses one fighter's offence against the other's defence — the thing the Fight
+THERE IS NO OVERVIEW TAB AND NO FOOTER. Both were built, both were cut same-day.
+  * Overview's grappling half was a byte-for-byte duplicate of the Grappling tab.
+    Its striking half was the AGGREGATE of the very cross-tab the Striking tab
+    breaks out cell by cell — a landing tab whose job was to average away the thing
+    the next tab shows you properly. Exactly ONE number on it existed nowhere else:
+    knockdowns, which aren't in the grid. That plus the two headline totals are now
+    "The totals" on Striking. The overall what-lands-on-him did NOT move: that tab
+    already carries it lane by lane, which is strictly more informative.
+    Striking now lands, and when the striking is level it points at Grappling —
+    10 of the 50 renderable bouts on the card are that case.
+  * The footer carried provenance ("last N UFC fights each, from official box
+    scores") and the tick's meaning. Both moved onto the section headers that own
+    them, which is also where the N is HONEST: the totals count FIGHT_STATS fights
+    and the grid counts FIGHT_GRID fights, and one footer had to pick one and be
+    wrong about the other.
+
+It crosses one fighter's offense against the other's defense — the thing the Fight
 Info panel structurally cannot do, because it only ever reads a fighter's own
 numbers. It renders counts, and a two-sentence read generated from the data:
 
@@ -199,7 +215,7 @@ OPEN — REAL, MEASURED, NOT GUESSES
     session, `git diff --stat` bus-errored again (core dumped), and 25 files have
     now gone dataless. The old folder no longer entirely works.
  5. THE-CLIMB-TUNING.txt IS FIVE COMMITS STALE AGAIN (STYLE_SCALE, the division
-    work, the free title shot, submission defence, the scout card). It is a file
+    work, the free title shot, submission defense, the scout card). It is a file
     whose own top section is about claims outliving their evidence.
  6. prototypes/ STILL SHIPS INTO public/ — the-climb.html and a ~900KB
     sixdegrees-data.json go to every visitor. /theclimb is generated now; the
