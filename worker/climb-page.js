@@ -1,6 +1,6 @@
 /* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
    Edit the prototype: it is what the whole test/sim harness reads. */
-export const climbPage = ({ freeNav }) => `<!DOCTYPE html>
+export const climbPage = ({ nav }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -203,6 +203,11 @@ export const climbPage = ({ freeNav }) => `<!DOCTYPE html>
 </head>
 <body>
 <div class="wrap">
+  <!-- NAV SLOT — filled by scripts/gen-climb-page.cjs, empty in the prototype.
+       ABOVE the headline on purpose: it holds a back arrow, and a back arrow that
+       appears below the title it's meant to precede reads as a footer. Empty here
+       because the prototype is opened directly and has no page to go back to. -->
+  ` + (nav || "") + `
   <h1>The <span class="g">Climb</span></h1>
   <p class="tag">Can you become a UFC champion?</p>
   <!-- KEEP THIS TRUE. The tuning file lists the subtitle among the claims that
@@ -213,7 +218,6 @@ export const climbPage = ({ freeNav }) => `<!DOCTYPE html>
   <p class="sub">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>
     Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
-  ` + (freeNav || "") + `
   <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
 

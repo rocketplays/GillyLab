@@ -16,7 +16,8 @@
  * The prototype uses ABSOLUTE asset paths (/data/climb.json, /gl-sheet.js,
  * /photos/thumb/...) so the identical HTML works at /prototypes/the-climb.html
  * and at /theclimb with no path rewriting here. This script does exactly two
- * things: drop the prototype-only preamble, and fill the <!--FREE_NAV--> slot.
+ * things: drop the prototype-only preamble, and fill the <!--FREE_NAV--> slot (the
+ * page passes a back arrow; the tabs would be noise mid-run).
  * If it ever starts doing a third, that's the signal the page has outgrown being
  * a generated prototype and wants its own module.
  *
@@ -62,6 +63,6 @@ const [head, tail] = html.split("<!--FREE_NAV-->");
 fs.writeFileSync(OUT,
   "/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.\n" +
   "   Edit the prototype: it is what the whole test/sim harness reads. */\n" +
-  "export const climbPage = ({ freeNav }) => `" + esc(head) + "` + (freeNav || \"\") + `" + esc(tail) + "`;\n");
+  "export const climbPage = ({ nav }) => `" + esc(head) + "` + (nav || \"\") + `" + esc(tail) + "`;\n");
 
 console.log("worker/climb-page.js: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");

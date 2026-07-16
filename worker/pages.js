@@ -30,6 +30,32 @@ const BACK_JS = "event.preventDefault();if(document.referrer&&document.referrer.
 // Back-to-landing arrow, top-left (used on the signup + login pages).
 const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
 
+// THE CLIMB'S NAV — a back arrow, not the free tabs.
+//
+// The tabs are right on every other free page: you're browsing, and they're how
+// you move between sections. On /theclimb you aren't browsing, you're three
+// fights into a run — so five ways to leave are noise competing with the only
+// thing on the page that matters. One quiet way out is the whole requirement.
+//
+// IN FLOW, NOT FIXED. .back-link is position:fixed top-left everywhere else,
+// which works on signup/login because their top-left is empty. The Climb's isn't
+// — the headline lives there — so a fixed arrow would sit on top of the word
+// "Climb". Same component and same look, laid out where this page has room.
+//
+// The behaviour is BACK_JS verbatim, not a copy of it: go back only if the
+// referrer is this site, else go home. That check is what stops "back" throwing a
+// player out to whatever Google page they arrived from, it's already solved
+// above, and a second implementation would just be a second thing to get wrong.
+export const climbNav = () => `
+  <style>
+    .climb-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);
+      text-decoration:none;font-size:.78rem;margin:0 0 .5rem;transition:color .15s}
+    .climb-back:hover{color:var(--text)}
+    .climb-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
+      stroke-linecap:round;stroke-linejoin:round}
+  </style>
+  <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
+
 // Fighter-name → profile slug (mirrors scripts/gen-landing-data.cjs nameToSlug so
 // links line up with the /fighter/<slug> pages). Only ever LINK when the slug is
 // known to exist (checked against the fighter-lite slug set) so clicks never 404.
@@ -182,10 +208,7 @@ const signupBanner = `<div style="display:flex;align-items:center;justify-conten
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
 // page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
-// Exported because /theclimb is generated from prototypes/the-climb.html and has
-// its nav injected at a marker — it must use THIS function, not a copy of it, or
-// the free nav becomes two navs that disagree the first time a tab is added.
-export function freeTabs(active) {
+function freeTabs(active) {
   const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
   return `
   <style>
@@ -206,7 +229,11 @@ export function freeTabs(active) {
   </style>
   <nav class="ftabs">${row.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>
   <div class="fplay">
-    ${active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb →</a>`}
+    ${/* A GUARD, not live behaviour: /theclimb renders climbNav() (a back arrow),
+          not these tabs, so today this branch never fires and the Climb button is
+          always drawn. Kept so that if the tabs ever come back to that page it
+          can't link to itself — but don't read it as evidence they're there. */
+      active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb →</a>`}
     ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}
   </div>`;
 }

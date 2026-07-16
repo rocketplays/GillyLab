@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, freeTabs } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1159,7 +1159,10 @@ export default {
       if (path === "/theclimb") {
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/signup?next=/theclimb");
-        return html(climbPage({ freeNav: freeTabs("/theclimb") }), 200, { "Cache-Control": "private, no-store" });
+        // A back arrow, not freeTabs. Mid-run, five links to leave are noise —
+        // see climbNav(). The Climb button still appears in freeTabs on every
+        // OTHER free page, which is how you get here.
+        return html(climbPage({ nav: climbNav() }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // ---- Pick'em (FREE feature — any logged-in account; logged-out are sent to
