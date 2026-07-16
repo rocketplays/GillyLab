@@ -1,0 +1,120 @@
+The Climb — tuning state, and the one piece left
+================================================================================
+2026-07-15. Everything below is MEASURED, not guessed. Read the arithmetic first;
+it's the thing four separate tuning attempts kept rediscovering the hard way.
+
+
+THE ARITHMETIC — write this on the wall
+--------------------------------------------------------------------------------
+    15 wins ÷ 5 losses  ⟹  you must be a ~76% favorite in every fight
+    76%                 ⟹  the exact fight that feels like theft to lose
+
+Playtest: "losing 5 times at an average moderate favorite isn't wrong, but losing
+5 times at 80% FEELS wrong." Correct, and it is a CONTRADICTION, not a tuning
+miss. You cannot have "no heavy favorites" AND "a 15-win climb on a 5-loss
+budget". Measured, 15 wins:
+
+    avg 76% -> 4.7 expected losses -> survive 51%   <- feels wrong
+    avg 69% -> 6.7 expected losses -> survive ~15%  <- feels right, unwinnable
+    avg 65% -> 8.1 expected losses -> survive ~7%
+
+Capping the board at 76% on the 18-fight ladder sent every strategy to 0%. The
+cap is RIGHT; the ladder was too long to survive it. THE LADDER MUST BE SHORT.
+~8 fights: 8 wins at 68% costs 3.8 losses against a budget of 5, you win the belt
+at 8-3 (a champion's record), and no card needs to be above ~75%.
+
+Anything that doesn't shorten the climb is rearranging deck chairs. I spent four
+attempts on POINTS_START / RATING_SPAN / CUT_AT / STEP before doing this division.
+
+
+BANKED AND WORKING — do not re-litigate
+--------------------------------------------------------------------------------
+  * RATING TRACKS THE LADDER. RATING_MIN 30 / SPAN 168 / cap at champion+5.
+    Debut ~55 (a gatekeeper's peer), a full ~70-pt run ~100 (champion level).
+    Before this, rating and power were two scales sharing an axis and the player
+    LEAPFROGGED the division — that one mismatch caused the heavy-favorite
+    boards, the 20-1 runs, the easiest-path exploit AND rank "lagging" rating.
+  * ODDS ARE CALIBRATED. 6,000 fights binned: worst gap 6.5pts. The card tells
+    the truth. Verify with the calibration snippet before ever blaming the dice —
+    and read G.log[G.log.length-1], NOT G.log[0] (see MEASURING, below).
+  * STYLE DECIDES THE BOARD 57% of the time (was 8% under the sim, 0% mid-fix).
+    Style is centred on YOUR OWN AVERAGE, not 0.5 — centring on 0.5 double-counts
+    quality and taxes specialists twice.
+  * Odds shown as a BAND before the fight, the number after it, with a variance
+    note only when the result was genuinely improbable.
+  * Submissions exist. Method follows the build (grappler: 42% SUB / 5% KO).
+  * The two styles are worth the same: feet 0.39, ground 0.39.
+  * The conqueror never returns; every rung offers 2+ fights; 11 divisions play
+    clean; ranks come from data/rankings.json; payload 443KB -> 19KB.
+
+
+THE ONE PIECE LEFT — short ladder. Four parts, they only work TOGETHER
+--------------------------------------------------------------------------------
+Playtest's design, and it's right: "a fighter doesn't actually start in the UFC
+at 0-0 ever either... assume this fighter is coming in as a hyped up prospect
+with a proven regional record" + "a rank below you can advance you, just less
+than taking a harder fight."
+
+ 1. UNRANKED_WINS = 1. One gatekeeper fight. The old 3 became EIGHT fights in a
+    real run (every loss forces another) at 51%->84%, and produced 3 of that
+    run's 5 losses. The worst place in the game to lose.
+
+ 2. POINTS_START ~42, NOT 20. This is the trap. The ladder jumps 48 (gatekeeper)
+    -> 64 (#15), a 16-point CLIFF that the 3-fight tune-up was secretly bridging.
+    One gatekeeper fight earns ~3 points, so a 20-point debut arrives at #15
+    rated ~58 and gets fed to men 6-10 points above it. 42 lands the debut at ~78
+    — which IS the hyped-prospect premise. Parts 1 and 2 are one change.
+
+ 3. STEP = 3. Multi-rung jumps: beating a man takes HIS rank, so a bigger step is
+    a bigger jump. 15 rungs at 1/win is what made the climb 18 fights.
+
+ 4. Sub-rank advancement + MAX_FAVORITE ~0.78.
+    grind  15 wins @78% -> 4.2 losses -> ~50% -> champion at 15-4
+    bold    5 wins @50% -> 5.0 losses -> ~50% -> champion at  5-2
+    Equally LIKELY; wildly different in what you're left holding. Grinding should
+    be slow and ugly, not impossible. The score is the record.
+
+MEASURED at 1+2+3+4: striker 20%, wrestler 70%, grappler 60%, safe 0%, bold 5%.
+Runs 11 fights. The treadmill died. THREE THINGS THEN BROKE — fix these first:
+
+  a) BEATING AN UNRANKED MAN RETURNS o.jump = null, so the "advance one rung"
+     branch never fires for gatekeeper wins. The favorite-hunter keeps winning
+     soft fights and NEVER MOVES -> records of 39-1 with no belt, hitting the
+     40-fight guard. Sub-rank advancement must handle the unranked case.
+  b) MAX_FAVORITE CAN'T BITE LATE. It swaps in a harder man from avail(), but
+     avail() excludes everyone you've FOUGHT — so by fight 20 there's nobody to
+     swap in and the cap silently stops working (46% of the favorite-hunter's
+     fights were still >80%). Draw from the whole ladder, or keep runs short
+     enough that exhaustion never happens.
+  c) WRESTLER 70% vs STRIKER 20%. The style triangle feasts on a division full of
+     strikers with ordinary takedown defence. Wrestling's edge needs damping, or
+     the board needs to offer the wrestler more elite-TDD opponents.
+
+
+MEASURING — the tools, and how they lied to me
+--------------------------------------------------------------------------------
+    scripts/sim-climb-runs.cjs         full careers per strategy (--only X)
+    scripts/smoke-climb-divisions.cjs  all 11 divisions, is any belt free
+    scripts/test-climb.cjs / -fixes    behaviour gates
+
+  * A STATIC BOARD SEES NOTHING. Every bug that reached a player — the 50.0%
+    column, the Walker rematch loop, the one-option board at #15 — was invisible
+    to anything that didn't PLAY. Sample every rung of every division; bugs live
+    at the edges (#15 and #1), and tests that check the middle miss them.
+  * G.log IS APPEND-ONLY. Reading G.log[0] in a multi-fight run reports the FIRST
+    fight forever. It produced a beautiful, plausible, entirely wrong calibration
+    table showing a 51-point failure that did not exist.
+  * THIN SAMPLES PRODUCE CONFIDENT NONSENSE. "LHW is a free belt" came from THREE
+    runs. At N=4 the same divisions read 25/50/25% across three settings — pure
+    noise I nearly tuned against. N=25 still carries +-9%.
+  * DON'T SAMPLE THE FUNCTION, SAMPLE THE GAME. "3,273 of 6,000 fights at the 95%
+    clamp" was random budgets against random ranks — mismatches no run produces.
+    Real runs: 0.5%. I raised that alarm and had to withdraw it.
+  * A CLAIM OUTLIVES THE THING THAT MADE IT TRUE. Five times today: two tip-box
+    lines, the page subtitle, a test asserting the scorer we deleted, "X% per
+    round" after the units changed, "Lives" hardcoded to 2 after CUT_AT hit 5.
+    When you remove a thing, grep for the assertions ABOUT it.
+  * WHEN A FUNCTION CHANGES WHAT ITS RETURN VALUE MEANS, nothing throws and every
+    caller quietly lies. winProb() went per-round -> per-fight and the bo3 bug
+    shipped -13,700 odds. Same shape: offers() cache without DIV, oppByName
+    returning a 0.5 fallback.
