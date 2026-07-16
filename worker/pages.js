@@ -50,15 +50,44 @@ const backLink = `<a class="back-link" href="#" aria-label="Back" onclick="${BAC
 // referrer is this site, else go home. That check is what stops "back" throwing a
 // player out to whatever Google page they arrived from, it's already solved
 // above, and a second implementation would just be a second thing to get wrong.
-export const climbNav = () => `
+// ONE ROW, BOTH JOBS: back on the left, the account links on the right.
+//
+// Every other free page opens with <nav class="pk-nav"> — brand left,
+// freeNavLinks right. The Climb keeps the same right-hand side (it's the same
+// account, the same Go Premium, the same Log out, and freeNavLinks is the ONE
+// definition of what those say for a given login state) but swaps the brand for
+// the back arrow, because the brand's job there is "a way out of here" and the
+// arrow already does that, better, on the page you actually came from.
+//
+// One row rather than a nav bar plus a separate back link: we spent real effort
+// getting this page's height down, and two rows of chrome above a game that opens
+// with a nine-row creator would give it straight back.
+export const climbNav = (loggedIn, subscribed) => `
   <style>
+    .climb-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 .5rem}
     .climb-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);
-      text-decoration:none;font-size:.78rem;margin:0 0 .5rem;transition:color .15s}
+      text-decoration:none;font-size:.78rem;transition:color .15s}
     .climb-back:hover{color:var(--text)}
     .climb-back svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;
       stroke-linecap:round;stroke-linejoin:round}
+    /* Same metrics as .pk-navlinks / .pk-upg on the other free pages — copied
+       rather than imported because this page ships its own <style> block, but the
+       LINKS themselves come from freeNavLinks so their text can't drift. */
+    .climb-nav .links{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+    .climb-nav .links a{text-decoration:none;color:var(--muted)}
+    .climb-nav .links a:hover{color:var(--text)}
+    .climb-nav .links a.pk-upg{color:#04120a;background:var(--accent);border-radius:8px;
+      padding:6px 11px;font-weight:800;font-size:.78rem}
+    .climb-nav .links a.pk-upg:hover{color:#04120a;filter:brightness(1.06)}
   </style>
-  <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>`;
+  <nav class="climb-nav">
+    <a class="climb-back" href="#" aria-label="Back" onclick="${BACK_JS}"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg><span>Back</span></a>
+    <div class="links">${freeNavLinks(loggedIn, subscribed)}</div>
+  </nav>`;
+
+// The footer every other free page ends with. Exported for /theclimb, which is
+// generated from the prototype and has it injected at a marker.
+export const climbFooter = () => FREE_FOOTER;
 
 // Fighter-name → profile slug (mirrors scripts/gen-landing-data.cjs nameToSlug so
 // links line up with the /fighter/<slug> pages). Only ever LINK when the slug is

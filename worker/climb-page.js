@@ -1,6 +1,6 @@
 /* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
    Edit the prototype: it is what the whole test/sim harness reads. */
-export const climbPage = ({ head, nav }) => `<!DOCTYPE html>
+export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -316,6 +316,12 @@ export const climbPage = ({ head, nav }) => `<!DOCTYPE html>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
+<!-- FOOTER SLOT — filled by scripts/gen-climb-page.cjs with the worker's
+     FREE_FOOTER, the same one every other free page ends with. OUTSIDE .wrap on
+     purpose: the footer's rule and copyright span the page, they aren't part of
+     the 820px reading column. Empty in the prototype, which is opened directly
+     and has no /about or /terms to link to. -->
+` + (footer || "") + `
 
 <script>
 const $ = s => document.querySelector(s);

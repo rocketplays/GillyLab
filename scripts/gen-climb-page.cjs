@@ -45,6 +45,10 @@ if (!html.includes("<!--HEAD-->")) {
   console.error("gen-climb-page: <!--HEAD--> marker missing from the prototype — refusing to ship a page with no og tags and no signup gate");
   process.exit(1);
 }
+if (!html.includes("<!--FOOTER-->")) {
+  console.error("gen-climb-page: <!--FOOTER--> marker missing from the prototype — refusing to ship a page with no footer (About/Terms/Privacy/Contact are not optional)");
+  process.exit(1);
+}
 // Same guard for the mount point and the boot fetch: these are the two things
 // that make it a game rather than a document, and a silent miss ships a blank page.
 for (const needle of ['<div id="app">', "fetch('/data/climb.json')"]) {
@@ -66,20 +70,30 @@ html = html.replace(
 // comments and ${...} would be catastrophic — this is why it's mechanical.
 const esc = (s) => s.replace(/\\/g, "\\\\").replace(/`/g, "\\`").replace(/\$\{/g, "\\${");
 
-// Two slots, in document order: <!--HEAD--> then <!--FREE_NAV-->. Split on head
-// first, then split the remainder on nav, so the three chunks are guaranteed to
-// reassemble in the order they appear in the file.
-const [beforeHead, afterHead] = html.split("<!--HEAD-->");
-const [betweenSlots, afterNav] = afterHead.split("<!--FREE_NAV-->");
-if (afterNav === undefined) {
-  console.error("gen-climb-page: <!--FREE_NAV--> must come AFTER <!--HEAD--> in the prototype");
-  process.exit(1);
+// Three slots, in document order: <!--HEAD-->, <!--FREE_NAV-->, <!--FOOTER-->.
+// Split them off one at a time from the remainder, so the four chunks can only
+// reassemble in the order they appear in the file — and if any marker is out of
+// order the split returns undefined and we fail loudly rather than emit a page
+// with the footer in the <head>.
+const SLOTS = ["<!--HEAD-->", "<!--FREE_NAV-->", "<!--FOOTER-->"];
+const chunks = [];
+let rest = html;
+for (const marker of SLOTS) {
+  const [before, after] = rest.split(marker);
+  if (after === undefined) {
+    console.error("gen-climb-page: " + marker + " is missing or out of order (expected " + SLOTS.join(" then ") + ")");
+    process.exit(1);
+  }
+  chunks.push(before);
+  rest = after;
 }
+chunks.push(rest);
 
 fs.writeFileSync(OUT,
   "/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.\n" +
   "   Edit the prototype: it is what the whole test/sim harness reads. */\n" +
-  "export const climbPage = ({ head, nav }) => `" + esc(beforeHead) + "` + (head || \"\") + `" +
-  esc(betweenSlots) + "` + (nav || \"\") + `" + esc(afterNav) + "`;\n");
+  "export const climbPage = ({ head, nav, footer }) => `" + esc(chunks[0]) + "` + (head || \"\") + `" +
+  esc(chunks[1]) + "` + (nav || \"\") + `" + esc(chunks[2]) + "` + (footer || \"\") + `" +
+  esc(chunks[3]) + "`;\n");
 
 console.log("worker/climb-page.js: " + fs.statSync(OUT).size + " bytes from " + html.length + " bytes of prototype");

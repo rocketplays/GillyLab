@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, ogTags } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbFooter, ogTags } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1192,15 +1192,25 @@ export default {
       // ReferenceError on every single request.)
       if (path === "/theclimb") {
         const s = await readSession(request, env);
+        // The nav's right-hand side depends on whether you're SUBSCRIBED, not just
+        // logged in — "Go Premium" vs "Open app". Every other free page reads the
+        // user for exactly this; without it a paying subscriber gets sold the thing
+        // he already bought.
+        const u = s ? await getUser(env, s.email) : null;
         const head = ogTags(
           "The Climb — Build a UFC Fighter and Win the Belt · GillyLab",
           "Build a fighter, start as a 10-0 prospect entering the UFC, then pick your fights and climb the real rankings to a real belt. Free to play on GillyLab.",
           "/theclimb"
         ) + (s ? "" : "<script>window.CLIMB_LOCKED=1</script>");
-        // A back arrow, not freeTabs. Mid-run, five links to leave are noise — see
-        // climbNav(). The Climb button still appears in freeTabs on every OTHER
-        // free page, which is how you get here.
-        return html(climbPage({ head, nav: climbNav() }), 200, pubHeaders(s));
+        // Back arrow left, the standard account links right — see climbNav(). The
+        // freeTabs row stays off: mid-run, five links to leave are noise. The Climb
+        // button still appears in freeTabs on every OTHER free page, which is how
+        // you get here.
+        return html(climbPage({
+          head,
+          nav: climbNav(!!s, !!u?.subscribed),
+          footer: climbFooter(),
+        }), 200, pubHeaders(s));
       }
       if (path === "/rankings") {
         const s = await readSession(request, env);
