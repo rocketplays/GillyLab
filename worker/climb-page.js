@@ -80,7 +80,19 @@ export const climbPage = ({ head, nav, footer }) => `<!DOCTYPE html>
      Every tappable thing on this page is a <button> (the opponent cards included),
      plus the division <select> and the back link, so the list below is exhaustive
      rather than a blanket * rule. */
-  button, select, a{touch-action:manipulation}
+  /* ON THE BODY, NOT ON THE BUTTONS. Scoping it to \`button, select, a\` was wrong
+     and the zoom survived: touch-action only governs the gesture when the tap
+     LANDS on that element, and this page rebuilds #app on every single click. So
+     the second tap of a fast double lands on a brand-new node, or in the 8px gap
+     between two 22px buttons, and hits a container with touch-action:auto — at
+     which point the double-tap belongs to the ancestor and zooms.
+
+     The effective touch-action is the intersection down the ancestor chain, so
+     putting \`manipulation\` on <body> covers the whole subtree no matter what the
+     tap lands on or what re-rendered underneath it. \`manipulation\` is exactly
+     "auto minus double-tap-zoom": panning and PINCH-ZOOM both survive, which is
+     the accessibility line we're not crossing (see the viewport note above). */
+  html, body{touch-action:manipulation}
 
   /* iOS ZOOMS ANY FORM CONTROL UNDER 16px WHEN IT GAINS FOCUS. That's a separate
      gesture from the double-tap above and it has a separate cause: Safari decides
@@ -1932,7 +1944,7 @@ function creator(){
   // THE SHEET, SAID OUT LOUD — right under the sliders, updating as you spend, so
   // the creator answers "who am I building" and not just "what did I buy".
   const arch=document.createElement('div'); arch.className='archline';
-  arch.innerHTML='<span>Fighting style</span><b>'+archetype()+'</b>';
+  arch.innerHTML='<span>Archetype</span><b>'+archetype()+'</b>';
   p.appendChild(arch);
   const pts=document.createElement('div'); pts.className='pts'+(left<0?' over':'');
   pts.style.marginTop='.5rem';
@@ -2026,7 +2038,7 @@ function hud(){
     // Mid-run it belongs in the HUD, because upgrade points change it: spend four
     // on wrestling and a Knockout artist becomes Ground-and-pound, and you should
     // see that happen rather than have to infer it from nine bars.
-    '<div><span>Style</span><b class="archv">'+archetype()+'</b></div>'+
+    '<div><span>Archetype</span><b class="archv">'+archetype()+'</b></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
 

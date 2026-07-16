@@ -1022,7 +1022,7 @@ const GL_SHEET = (function () {
     // 210px hole under a five-fight run — and a five-fight run is a fighter who got
     // CUT, which is exactly when the card shouldn't look like it lost its footing.
     // Floor of 1080 so a two-fight disaster is still a card and not a strip.
-    const LIST_TOP = 756, ROW_H = 48, FOOT = 150;
+    const LIST_TOP = 828, ROW_H = 48, FOOT = 150;
     const rows = (d.log || []).slice(0, 9);
     const CH = Math.max(1080, LIST_TOP + rows.length * ROW_H + FOOT);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
@@ -1039,26 +1039,40 @@ const GL_SHEET = (function () {
     const vw = ctx.measureText(d.verdict || '').width;
     ctx.fillStyle = TXT; ctx.font = '800 104px ' + COND;
     ctx.fillText(' ' + (d.verdictSub || ''), 64 + vw, 190);
+    // The archetype used to live HERE, as the second of four items in this muted
+    // line — recorded but invisible, which is not what it's for. It's the one thing
+    // on the card that says who you built rather than what happened to him, so it
+    // gets its own titled row below. This line is context: where, how long, how old.
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(clip(ctx, [d.division, d.style, d.fights + ' fights', 'age ' + d.age]
+    ctx.fillText(clip(ctx, [d.division, d.fights + ' fights', 'age ' + d.age]
       .filter(Boolean).join('   ·   '), W - 128), 64, 236);
 
+    // ARCHETYPE — titled, gold, its own row. Gold because that's the colour the
+    // game already gives it in the HUD and the creator; a share card that recolours
+    // the thing it's showing off is a third design nobody asked for.
+    roundRect(ctx, 64, 272, W - 128, 76, 12); ctx.fillStyle = CARD; ctx.fill();
+    ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('ARCHETYPE', 96, 318);
+    ctx.textAlign = 'right'; ctx.font = '800 40px ' + COND; ctx.fillStyle = AMB;
+    ctx.fillText(clip(ctx, d.style || '—', W - 300), W - 96, 320);
+    ctx.textAlign = 'left';
+
     // THE THREE RECORDS, in the end screen's order and wording.
-    roundRect(ctx, 64, 272, W - 128, 150, 16); ctx.fillStyle = CARD; ctx.fill();
+    roundRect(ctx, 64, 364, W - 128, 150, 16); ctx.fillStyle = CARD; ctx.fill();
     const cols = [['PRO RECORD', d.pro, TXT], ['UFC RECORD', d.ufc, win ? ACC : TXT],
                   ['PEAK', d.peakLabel, win ? AMB : TXT]];
     cols.forEach(([lab, val, col], i) => {
       const x = 96 + i * ((W - 192) / 3);
-      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText(lab, x, 326);
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText(lab, x, 418);
       ctx.font = '800 58px ' + COND; ctx.fillStyle = col;
-      ctx.fillText(String(val || '—'), x, 390);
+      ctx.fillText(String(val || '—'), x, 482);
     });
 
     ctx.font = '400 26px ' + SANS; ctx.fillStyle = '#c9ccd3';
-    ctx.fillText(clip(ctx, d.bestWin || '', W - 128), 64, 466);
+    ctx.fillText(clip(ctx, d.bestWin || '', W - 128), 64, 558);
 
     // BY METHOD — W and L, the same little table the end screen prints.
-    let y = 528;
+    let y = 620;
     ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('BY METHOD', 64, y);
     ctx.textAlign = 'right';
