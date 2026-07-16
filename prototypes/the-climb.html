@@ -162,7 +162,7 @@
   /* record + status */
   .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}
   /* The archetype is a name, not a number — the HUD's 1.1rem is sized for "10-0"
-     and "Chain grappler" at that size wraps the row on a phone. */
+     and "Submission threat" at that size wraps the row on a phone. */
   .hud b.archv{font-size:.82rem;font-weight:700;color:var(--gold)}
   .archline{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;
     margin-top:.6rem;padding:.4rem .55rem;background:var(--surface2);
@@ -392,16 +392,18 @@ const ARCH_ONE = {
 };
 // The pairs worth naming. Not all 36 — only the ones the sport already has a word
 // for, because an invented name is worse than an honest hyphen. Anything not here
-// falls through to "X-Y" (see below), which reads fine: "Wrestler-Grinder".
+// falls back to the PRIMARY name, never an invented one — see archetype().
+//
 // KEYS ARE NORMALISED, because half of them were wrong the moment I typed them.
 // The lookup builds its key with .sort(), so 'power+pace' is unreachable — the
 // sorted form is 'pace+power'. Written by hand, 18 of these 36 were dead on
 // arrival and silently fell through to the primary name: pace+cardio read "Volume
-// striker" instead of "Pressure fighter", wrestling+grappling read "BJJ
-// specialist" instead of "Chain grappler". A lookup table whose keys are built by
+// striker" instead of "Pressure fighter". A lookup table whose keys are built by
 // one rule and read by another is a table half-present, and nothing throws — it
 // just quietly answers a slightly worse question. So the sort happens HERE, once,
-// and hand-written order stops being load-bearing.
+// and hand-written order stops being load-bearing. It also means a DUPLICATE key
+// silently wins, so check for those when you edit (the list below is 36 distinct
+// pairs; if the table ever holds fewer, two entries collided).
 const ARCH_PAIR = Object.fromEntries(Object.entries({
   // Power + Wrestling and Technique + Wrestling both read "Wrestle-boxer" until
   // now. They aren't the same fighter: one takes you down and hits you, the other
@@ -437,11 +439,16 @@ const ARCH_PAIR = Object.fromEntries(Object.entries({
   'chin+grappling':      'Mauler',
   'chin+takedef':        'Gatekeeper',
   'cardio+wrestling':    'Chain wrestler',
-  'cardio+grappling':    'Submission grinder',
+  'cardio+grappling':    'Python',
   'cardio+takedef':      'Stick-and-move',
-  'wrestling+grappling': 'Chain grappler',
+  // NOT 'Chain grappler', which sat four rows from 'Chain wrestler' (cardio +
+  // wrestling): two different builds whose names differed by one word. Same
+  // confusion as Outfighter/Out-boxer, same fix.
+  'wrestling+grappling': 'Constrictor',
   'wrestling+takedef':   'Mat general',
-  'grappling+takedef':   'Guard player',
+  // NOT 'Guard player'. High takedown defence means he is NOT on his back — the
+  // old name described the opposite of the build it was attached to.
+  'grappling+takedef':   'Submission threat',
 }).map(([k, v]) => [k.split('+').sort().join('+'), v]));
 // HOW MUCH AN ATTRIBUTE DEFINES A FIGHTER. Not how much it's WORTH — WEIGHTS
 // already prices that at 1/9 each, deliberately, and this must not second-guess it.
@@ -2000,7 +2007,7 @@ function hud(){
     '<div><span>Record</span><b>'+totalRecord()+'</b>'+
       '<span style="text-transform:none;letter-spacing:0;margin-top:.15rem">'+ufcRecord()+' UFC</span></div>'+
     // Mid-run it belongs in the HUD, because upgrade points change it: spend four
-    // on wrestling and a Knockout artist becomes a Wrestle-boxer, and you should
+    // on wrestling and a Knockout artist becomes Ground-and-pound, and you should
     // see that happen rather than have to infer it from nine bars.
     '<div><span>Style</span><b class="archv">'+archetype()+'</b></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
