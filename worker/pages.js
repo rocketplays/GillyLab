@@ -182,7 +182,10 @@ const signupBanner = `<div style="display:flex;align-items:center;justify-conten
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
 // page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
-function freeTabs(active) {
+// Exported because /theclimb is generated from prototypes/the-climb.html and has
+// its nav injected at a marker — it must use THIS function, not a copy of it, or
+// the free nav becomes two navs that disagree the first time a tab is added.
+export function freeTabs(active) {
   const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
   return `
   <style>
@@ -190,11 +193,22 @@ function freeTabs(active) {
     .ftabs a{flex:1 1 auto;text-align:center;min-width:92px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease,color .13s ease}
     .ftabs a:hover{border-color:var(--accent);background:var(--surface2)}
     .ftabs a.active{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
-    .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:800;font-size:.95rem;letter-spacing:.01em;color:#04120a;background:var(--accent);border:none;border-radius:11px;padding:.8rem;margin:0 0 1.2rem;transition:filter .13s ease}
+    .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:800;font-size:.95rem;letter-spacing:.01em;color:#04120a;background:var(--accent);border:none;border-radius:11px;padding:.8rem;margin:0;transition:filter .13s ease}
     .ftab-pick:hover{filter:brightness(1.06)}
+    /* The two free games share a row and split it. flex:1 1 0 (not 1 1 auto) makes
+       them exactly half each regardless of label length — "The Climb →" is shorter
+       than "Play Pick'em →" and auto would give Pick'em the bigger half. When one
+       is hidden (you're already on that page) the survivor takes the full width on
+       its own, which is what the single button did before there were two. */
+    .fplay{display:flex;gap:8px;margin:0 0 1.2rem}
+    .fplay .ftab-pick{flex:1 1 0;min-width:0}
+    @media(max-width:380px){ .fplay .ftab-pick{font-size:.86rem;padding:.8rem .4rem} }
   </style>
   <nav class="ftabs">${row.map(([h, l]) => `<a href="${h}"${h === active ? ' class="active"' : ""}>${l}</a>`).join("")}</nav>
-  ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}`;
+  <div class="fplay">
+    ${active === "/theclimb" ? "" : `<a class="ftab-pick" href="/theclimb">The Climb →</a>`}
+    ${active === "/pickem" ? "" : `<a class="ftab-pick" href="/pickem">Play Pick'em →</a>`}
+  </div>`;
 }
 
 export const landingPage = () => `<!doctype html><html lang="en"><head>

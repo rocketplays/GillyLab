@@ -2,7 +2,7 @@ const fs=require('fs'), {JSDOM}=require('jsdom');
 // See test-climb.cjs: this was pinned to a dead session sandbox path and had been
 // throwing EACCES rather than testing anything.
 const R=require('path').resolve(__dirname,'..')+'/';
-const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
+const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 // climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
 // wrapped scorer isn't shipped or loaded. The page needs no <script> injection.
@@ -68,8 +68,17 @@ setTimeout(()=>{
   const O=['power','technique','pace','strdef','chin','cardio','takedef','grappling','wrestling'];
   const sp='(function(){var O='+JSON.stringify(O)+';while(G.pts>0){var m=false;'+
     'for(const id of O){var c=upCost(G.attrs[id]);if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;m=true;break;}}if(!m)break;}})()';
+  // 12 -> 30 runs a division. NOT a threshold change — the 20% line is untouched.
+  // At 12 the estimate was noisy enough to cross it on its own: measured, the same
+  // unchanged code read 12.4%, 20.4%, and PASS six times running. A gate that flakes
+  // one run in seven is the thing this file's own comment warns about ("a test that
+  // cries wolf gets ignored, which is worse than no test") and it fails in the worst
+  // possible way — it teaches you to shrug at a red gate, which is exactly when a
+  // real regression walks past. More samples tightens the estimate around its true
+  // ~13%, which moves it FURTHER from the line in SE terms. Strictly stricter, and
+  // it costs about a second.
   for(const dv of ['LHW','LW']){
-    for(let r=0;r<12;r++){
+    for(let r=0;r<30;r++){
       win.eval('DIV="'+dv+'"; newGame(); G.started=true;'); win.eval(sp);
       for(let g=0; g<40; g++){
         const st=peek('({c:G.champ,l:G.losses})'); if(st.c||st.l>=peek('CUT_AT')) break;

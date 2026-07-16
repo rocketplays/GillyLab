@@ -13,7 +13,7 @@ const fs=require('fs'),path=require('path'),{JSDOM}=require('jsdom');
 const R=path.resolve(__dirname,'..')+'/';
 const args=process.argv.slice(2);
 const RUNS=(()=>{const i=args.indexOf('--runs');return i>=0?+args[i+1]:40;})();
-const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
+const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 const dom=new JSDOM(HTML,{runScripts:'dangerously',pretendToBeVisual:true,
   beforeParse(w){w.fetch=()=>Promise.resolve({json:()=>Promise.resolve(DATA)});}});

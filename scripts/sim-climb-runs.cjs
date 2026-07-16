@@ -25,7 +25,7 @@ const RUNS=argV('--runs',60);
 const argS=(f,d)=>{const i=args.indexOf(f);return i>=0?args[i+1]:d;};
 const ONLY=argS('--only',null);   // one strategy per process: a full sweep outruns most timeouts
 
-const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
+const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 // climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
 // wrapped scorer isn't shipped or loaded. The page needs no <script> injection.

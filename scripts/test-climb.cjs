@@ -4,7 +4,7 @@ const fs=require('fs'), {JSDOM}=require('jsdom');
 // a test that cannot run is a test that cannot fail. Resolve from __dirname like
 // sim-climb-runs.cjs and smoke-climb-divisions.cjs already do.
 const R=require('path').resolve(__dirname,'..')+'/';
-const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
+const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
 const HTML=fs.readFileSync(R+'prototypes/the-climb.html','utf8');
 // climb-scorer.js is GONE — the sim no longer referees, so the 90KB browser-
 // wrapped scorer isn't shipped or loaded. The page needs no <script> injection.

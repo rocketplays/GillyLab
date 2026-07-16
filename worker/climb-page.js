@@ -1,9 +1,12 @@
-<!DOCTYPE html>
+/* AUTO-GENERATED from prototypes/the-climb.html by scripts/gen-climb-page.cjs — do not edit by hand.
+   Edit the prototype: it is what the whole test/sim harness reads. */
+export const climbPage = ({ freeNav }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Climb — GillyLab prototype</title>
+<title>The Climb — build a fighter, win the UFC belt | GillyLab</title>
+<meta name="description" content="Build a UFC fighter, start as a 10-0 prospect, pick your fights and climb the real rankings to the belt. Free on GillyLab.">
 <!-- The share sheet is the app's, not a copy of it. gen-gl-sheet.cjs generates
      gl-sheet.js out of index.html so standalone pages can render a sheet that is
      byte-identical to the app's; /pickem already loads it exactly this way. Barlow
@@ -210,7 +213,7 @@
   <p class="sub">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>
     Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
-  <!--FREE_NAV-->
+  ` + (freeNav || "") + `
   <div id="app"><div class="load">Loading the divisions…</div></div>
 </div>
 
@@ -835,9 +838,9 @@ function roundP(pFight){
 const SLUG_LETTERS = { 'ł':'l','Ł':'l','đ':'d','Đ':'d','ø':'o','Ø':'o','æ':'ae','Æ':'ae','œ':'oe','Œ':'oe','ß':'ss','ı':'i','İ':'i' };
 function nameToSlug(name){
   return String(name||'').toLowerCase()
-    .replace(/\s+(jr\.?|sr\.?|i{1,3}|iv|v)\s*$/i, '')
+    .replace(/\\s+(jr\\.?|sr\\.?|i{1,3}|iv|v)\\s*$/i, '')
     .replace(/[łŁđĐøØæÆœŒßıİ]/g, ch => SLUG_LETTERS[ch] || ch)
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFD').replace(/[\\u0300-\\u036f]/g, '')
     .replace(/['’]/g, '')
     .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
@@ -847,11 +850,11 @@ function nameToSlug(name){
 function avatarHTML(f){
   return '<div class="av"><span>'+(f.initials||'?')+'</span>'+
     '<img src="/photos/thumb/'+nameToSlug(f.name)+'.png" alt="" loading="lazy" '+
-    'onerror="this.style.display=\'none\'"></div>';
+    'onerror="this.style.display=\\'none\\'"></div>';
 }
 
-// ONE BAND, TWO VOICES, ONE DEFINITION. `t` is what the tile says before the
-// fight; `was` is how the same verdict reads afterwards. They live on the same
+// ONE BAND, TWO VOICES, ONE DEFINITION. \`t\` is what the tile says before the
+// fight; \`was\` is how the same verdict reads afterwards. They live on the same
 // line ON PURPOSE — the whole point of the post-fight line is that it echoes the
 // words the card used, so if these ever drift apart the feature is silently gone
 // and nothing throws. (rewardFor already taught this lesson the expensive way: the
@@ -934,7 +937,7 @@ const styleDist = (a,b) => {
   let t=0; for(const ax of STYLE_AXES) t += Math.abs(ax(a)-ax(b));
   return t;
 };
-// Pick from `arr` the fighter least like everyone in `taken`. Ties and empty
+// Pick from \`arr\` the fighter least like everyone in \`taken\`. Ties and empty
 // boards fall back to random, so a shallow band never crashes or gets stuck
 // serving the same man every run.
 function pickDiverse(arr, taken){
@@ -1037,8 +1040,8 @@ function offers(){
   // DIV IS IN THE KEY. It wasn't, and the failure was silent and total: switch
   // weight class at fight 0 and the key ("0|0|0|null") was unchanged, so you got
   // HEAVYWEIGHT'S three fighters handed back from cache. They aren't in the new
-  // division's ladder, so oppByName() returned null and winProb()'s `if(!o)
-  // return 0.5` fallback made every fight in ten of eleven divisions an exact
+  // division's ladder, so oppByName() returned null and winProb()'s \`if(!o)
+  // return 0.5\` fallback made every fight in ten of eleven divisions an exact
   // coin flip. Nothing threw. The tell was a column of 50.0% — a fallback
   // constant wearing a plausible number's clothes.
   const key = [DIV, G.fightNo||0, G.wins, G.losses, G.rank].join('|');
@@ -1062,10 +1065,10 @@ function buildOffers(){
   //
   // This one line was four bugs. "Exclude everyone you've FOUGHT" is right for
   // contenders and catastrophic for the belt: lose ONE title fight and the
-  // champion left the pool FOREVER, so `title` was empty, so the #1 board became
+  // champion left the pool FOREVER, so \`title\` was empty, so the #1 board became
   // three contenders you had already beaten and the run could never end. Measured,
   // that is the entire remaining mess in one place — a #1 with a title loss farmed
-  // #3 for twenty fights (board: `4@72 1@71 3@93`, no champion anywhere on it),
+  // #3 for twenty fights (board: \`4@72 1@71 3@93\`, no champion anywhere on it),
   // drifted to rating 110 against an 85-power division, and so:
   //   - every card became a gift            -> MAX_FAVORITE lapsed (51% over cap)
   //   - with nobody legal left to swap in   -> the cap could not fix it
@@ -1161,7 +1164,7 @@ function buildOffers(){
   // LAST RESORT: A REMATCH BEATS AN EMPTY BOARD.
   //
   // avail() hides everyone you've already beaten, and the fallback above was
-  // built from `ranked` — which is ALREADY filtered by avail(), so when the pool
+  // built from \`ranked\` — which is ALREADY filtered by avail(), so when the pool
   // ran dry the fallback was empty too. Measured over 25 runs a division: LHW x2,
   // BW x1, WBW x1 came back with NO FIGHTS and the run simply stopped. Narrowing
   // the bands (STEP 3->1) caused it: a 15-fight run exhausts three or four rungs
@@ -1172,7 +1175,7 @@ function buildOffers(){
   // like a bug, because it is one. So: if the board would be empty, re-offer from
   // the whole ladder ignoring who you've already beaten.
   if(!pool.filter(Boolean).length){
-    // A RANKED MAN IS NEVER OFFERED A GATEKEEPER. `src = near.length ? near : all`
+    // A RANKED MAN IS NEVER OFFERED A GATEKEEPER. \`src = near.length ? near : all\`
     // fell back to the WHOLE ladder, unranked pool included — so a #1 contender
     // who had cleared everyone within 4 rungs got served men from the 46-power
     // gatekeeper pool at 95%. Measured, that is most of the #1 treadmill: the
@@ -1201,17 +1204,17 @@ function buildOffers(){
   // never a fake choice.
   let picked = pool.filter(Boolean).filter((f,i,a)=>a.indexOf(f)===i);
   if (picked.length < 3) {
-    // `fought`, NOT G.beat. G.beat only records WINS, so filtering on it re-offers
+    // \`fought\`, NOT G.beat. G.beat only records WINS, so filtering on it re-offers
     // the man who just knocked you out — repeatedly. Playtest: "L vs Johnny Walker
     // (64%), L vs Johnny Walker (64%), L vs Johnny Walker (68%)" — three straight
     // rematches with a man who had already beaten him twice, which reads exactly
     // like "it isn't refreshing the matchups when losing". Measured at 28.7% of
-    // boards offering someone already fought. The `fought` set was three lines
+    // boards offering someone already fought. The \`fought\` set was three lines
     // above this and tracks both results; I reached for the wrong one.
     const beaten = f => fought.has(f.name);
     // WIDEN UPWARD, NEVER DOWNWARD, AND TAKE THE REMATCH OVER THE STRANGER.
     //
-    // Two bugs lived in one line. `Math.abs(f.rankNum - G.rank) <= radius` widens
+    // Two bugs lived in one line. \`Math.abs(f.rankNum - G.rank) <= radius\` widens
     // SYMMETRICALLY over radii that reach 99, so once the top of the ladder was
     // exhausted a #1 contender got topped up from #13 — measured, rating 108.9
     // against power 67.1 at 95%, on repeat, which is the #1 treadmill's last
@@ -1316,8 +1319,8 @@ function buildOffers(){
   const MAX_FAVORITE = 0.85;
   if (G.rank != null && picked.length) {
     const scored = picked.map(f => ({ f, p: winProb(f.name) }));
-    // SORTED, hardest first. This was `scored.filter(...)` then `soft.pop()` to
-    // "keep the hardest" — but `scored` is in BOARD order, not odds order, so pop()
+    // SORTED, hardest first. This was \`scored.filter(...)\` then \`soft.pop()\` to
+    // "keep the hardest" — but \`scored\` is in BOARD order, not odds order, so pop()
     // kept whichever card happened to be listed last. The comment said hardest;
     // the code said last; nothing threw. Sort before you rely on an order.
     const soft = scored.filter(x => x.p > MAX_FAVORITE).sort((a,b) => a.p - b.p);
@@ -1331,7 +1334,7 @@ function buildOffers(){
     // who knocked you out, and this swap quietly re-offered him: measured, it put
     // a conqueror back on 74 of 436 boards and flooded 60% of them with rematches,
     // failing the two gates that bank the "man who beat you never comes back" fix.
-    // Ignoring `fought` is the POINT of this pool; ignoring `lost` was a bug I
+    // Ignoring \`fought\` is the POINT of this pool; ignoring \`lost\` was a bug I
     // added on top of it. A rematch with a man you BEAT is a career. A rematch
     // with the man who beat you, served because the matchmaker ran out of ideas,
     // is the most demoralising thing the board can do.
@@ -1367,8 +1370,8 @@ function buildOffers(){
     const reward = rewardFor(f, p);
     // FIX (a) — AN UNRANKED MAN MUST STILL CARRY A JUMP.
     //
-    // `jump` used to be `f.rankNum<99 ? f.rankNum : null`, i.e. null for every
-    // gatekeeper. fight() then reads `if (o.jump != null)` to advance you, so a
+    // \`jump\` used to be \`f.rankNum<99 ? f.rankNum : null\`, i.e. null for every
+    // gatekeeper. fight() then reads \`if (o.jump != null)\` to advance you, so a
     // RANKED player who beats an unranked man moves nowhere — and the board keeps
     // offering gatekeepers as the soft option. The favorite-hunter found this and
     // farmed it: records of 39-1 with no belt, running out the 40-fight guard.
@@ -1415,12 +1418,12 @@ function fight(o){
   const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
   // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
   // never won by submission." He couldn't have: the result line read
-  // `fin ? ' by KO/TKO' : ' by decision'` — there was no submission ANYWHERE in
+  // \`fin ? ' by KO/TKO' : ' by decision'\` — there was no submission ANYWHERE in
   // the game. Every finish printed as a knockout regardless of build, so the
   // whole grappling half of the sheet was invisible in its own results.
   // Weighted by the two attributes that actually finish fights.
   //
-  // AND THE SAME COURTESY IN THE OTHER DIRECTION. `method` was `!won ? null : ...`
+  // AND THE SAME COURTESY IN THE OTHER DIRECTION. \`method\` was \`!won ? null : ...\`
   // — losing had no method at all, so the game could tell you exactly how you beat
   // a man and had nothing to say about how he beat you. Half the results in a run
   // were a blank. It reads as though the game stops paying attention the moment
@@ -1437,7 +1440,7 @@ function fight(o){
   // YOUR CHIN BUYS YOU THE JUDGES. A maxed chin doesn't stop you losing — the
   // result was decided by the rounds above, before any of this — it stops you
   // getting STOPPED. This is deliberately cosmetic with respect to balance: method
-  // is chosen after `won`, so nothing here can move a win rate. It just means the
+  // is chosen after \`won\`, so nothing here can move a win rate. It just means the
   // 1/9 point you spent on chin is visible in your own record.
   const chinGuard = 1 - (G.attrs.chin / ATTR_MAX) * 0.3;
   const finW = won ? (0.25 + finBias * 0.4)          // you finish: 0.25 -> 0.65
@@ -1453,7 +1456,7 @@ function fight(o){
   // finish roll were computed independently, so a first-round KO still printed
   // R1 ✓ R2 ✓ R3 ✓. Truncate at the round it ended in — the first round you won.
   //
-  // A LOSS TRUNCATES AT THE FIRST ROUND YOU **LOST**. `rounds.indexOf(true)` is
+  // A LOSS TRUNCATES AT THE FIRST ROUND YOU **LOST**. \`rounds.indexOf(true)\` is
   // the first round you WON, which is the right round for your finish and the
   // wrong one for his: it would have printed "finished in R3" over a card reading
   // R1 ✗ R2 ✗, i.e. stopped in a round you were winning, in a fight already over.
@@ -1520,7 +1523,7 @@ function fight(o){
   // moves you nowhere, so the safe path had no cost and the run never ended.
   //
   // Now the clock is the cost. ~4 months a fight, so an 18-fight run takes you
-  // from 24 to 30. The sim reads `age` and applies its real age curve, so this
+  // from 24 to 30. The sim reads \`age\` and applies its real age curve, so this
   // isn't an invented penalty — it's the model. (Honest caveat: measured, that
   // curve is WEAK for a fighter with a big record — 27 to 38 only cost 1.4pts.
   // So this makes ducking cost something, but it is not yet a hard run limit.
@@ -1633,7 +1636,7 @@ function creator(){
   p.appendChild(pts);
 
   // The legend BUILD block sat between the two anchors I replaced and got eaten
-  // with them, leaving `p.appendChild(legend)` referencing a variable that no
+  // with them, leaving \`p.appendChild(legend)\` referencing a variable that no
   // longer existed. creator() threw, the panel rendered zero rows, and the whole
   // page went blank — caught by counting rows, not by reading the diff.
   const legend=document.createElement('div'); legend.className='legend';
@@ -1796,7 +1799,7 @@ function logBox(){
   if(!G.log.length) l.innerHTML='<span style="color:var(--muted)">No fights yet.</span>';
   G.log.slice().reverse().forEach(f=>{
     const d=document.createElement('div');
-    // EVERY LINE NAMES ITS METHOD. This read `f.won&&f.fin ? (SUB|KO) : '   '` —
+    // EVERY LINE NAMES ITS METHOD. This read \`f.won&&f.fin ? (SUB|KO) : '   '\` —
     // three literal spaces. So a decision showed nothing, and a LOSS showed nothing
     // whatever happened, because f.won gated the whole expression. Two thirds of a
     // record was blank: "L     vs Tom Aspinall (41%)" is a result with the result
@@ -1843,7 +1846,7 @@ function runSummary(){
              : G.peak===1 ? 'number one contender' : 'in the division',
     shareRank: G.champ ? 'champion' : G.peak==null ? 'unranked'
              : 'the #'+G.peak+' contender',
-    bestWin: best ? best.opp.split(/\s+/).slice(-1)[0] + ' ' + amer(best.p) : '',
+    bestWin: best ? best.opp.split(/\\s+/).slice(-1)[0] + ' ' + amer(best.p) : '',
     finishRate: wins.length ? Math.round(fins/wins.length*100)+'%' : '—',
     byMethod: [ {label:'KO/TKO', n:w['KO/TKO']}, {label:'SUB', n:w.submission}, {label:'DEC', n:w.decision} ]
   };
@@ -1889,7 +1892,7 @@ function endBox(msg){
   const row=document.createElement('div'); row.style.cssText='display:flex;gap:.5rem;flex-wrap:wrap';
   const b2=document.createElement('button'); b2.className='btn pri'; b2.textContent='New run';
   b2.onclick=newGame; row.appendChild(b2);
-  // SHARE. GL_SHEET is loaded `defer` from /gl-sheet.js, so on a cold page it may
+  // SHARE. GL_SHEET is loaded \`defer\` from /gl-sheet.js, so on a cold page it may
   // not exist yet — and it CANNOT exist when this file is opened over file:// or
   // run headless in the test harness. Degrade by hiding the button rather than
   // throwing: an end screen that crashes because a share renderer is missing would
@@ -1922,3 +1925,4 @@ fetch('/data/climb.json').then(r=>r.json()).then(d=>{
 </script>
 </body>
 </html>
+`;

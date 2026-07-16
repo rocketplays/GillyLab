@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* The Climb — board generator. Every division, in one lean file.
  *
- * Emits prototypes/climb-data.json: for each weight class, the ladder the player
+ * Emits data/climb.json: for each weight class, the ladder the player
  * climbs — name, rank, record, a POWER rating, and a STYLE profile. That's all.
  *
  * WHAT THIS FILE USED TO DO, AND WHY IT DOESN'T ANY MORE.
@@ -288,7 +288,7 @@ function main() {
     order: Object.keys(divisions),
     divisions
   };
-  const OUT = path.join(ROOT, 'prototypes', 'climb-data.json');
+  const OUT = path.join(ROOT, 'data', 'climb.json');
   fs.mkdirSync(path.dirname(OUT), { recursive: true });
   fs.writeFileSync(OUT, JSON.stringify(out));
 
@@ -299,7 +299,7 @@ function main() {
 
   const kb = n => Math.round(n / 1024);
   const gz = kb(require('zlib').gzipSync(fs.readFileSync(OUT)).length);
-  console.log('climb-data.json: ' + Object.keys(divisions).length + ' divisions, ' +
+  console.log('climb.json: ' + Object.keys(divisions).length + ' divisions, ' +
     Object.values(divisions).reduce((t, d) => t + d.ladder.length, 0) + ' fighters · ' +
     kb(fs.statSync(OUT).size) + ' KB (' + gz + ' KB gzipped)');
   if (skipped.length) console.log('  skipped (no champion or too thin): ' + skipped.join(', '));

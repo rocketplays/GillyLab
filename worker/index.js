@@ -17,7 +17,11 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, freeTabs } from "./pages.js";
+// Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
+// prototype is the source of truth because it's what the whole sim/test harness
+// reads. See the header of that script.
+import { climbPage } from "./climb-page.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
 import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
@@ -1140,6 +1144,24 @@ export default {
       if (path === "/contact") return html(contactPage());
       if (path === "/about") return html(aboutPage());
 
+      // ---- The Climb (FREE feature — same gate as Pick'em: any logged-in
+      // account, logged-out are sent to sign up and returned here) ----
+      //
+      // ACCOUNT-GATED ON PURPOSE, and the reason is the data, not the game. The
+      // Climb scores every fight in the browser, so it must ship the ladder — and
+      // the ladder carries the GillyLab power rating for all 438 fighters, which
+      // appears on no other free page and in no other public asset. Fully public
+      // would make the paywalled ratings a static JSON anyone can curl. A free
+      // account is the same bargain /pickem already strikes: costs the player
+      // nothing, keeps the numbers out of crawlers and casual scrapers, and feeds
+      // the funnel the free side exists for. It is NOT a lock — a logged-in user
+      // can still read the JSON — and it should not be mistaken for one.
+      if (path === "/theclimb") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/theclimb");
+        return html(climbPage({ freeNav: freeTabs("/theclimb") }), 200, { "Cache-Control": "private, no-store" });
+      }
+
       // ---- Pick'em (FREE feature — any logged-in account; logged-out are sent to
       // sign up and returned here) ----
       if (path === "/pickem") {
@@ -1235,6 +1257,21 @@ export default {
         const a = await env.ASSETS.fetch(request);
         if (a.status === 200) { const r = new Response(a.body, a); r.headers.set("Cache-Control", "public, max-age=86400"); return r; }
         return a;
+      }
+
+      // The Climb's ladder — any logged-in account, subscribed or not, because
+      // /theclimb is free. This sits ABOVE the subscriber gate below and BELOW the
+      // public-asset block above, which is exactly the bargain: not public (it
+      // carries the power ratings), not paywalled (the game is free).
+      // no-store for the same reason /data/* is no-store for subscribers: it isn't
+      // a marketing asset and shouldn't sit in a shared cache.
+      if (path === "/data/climb.json") {
+        const s = await readSession(request, env);
+        if (!s) return redirect(env.SITE_URL + "/signup?next=/theclimb");
+        const a = await env.ASSETS.fetch(request);
+        const r = new Response(a.body, a);
+        r.headers.set("Cache-Control", "private, no-store");
+        return r;
       }
 
       // ---- everything else is GATED: the app, its data + photos ----

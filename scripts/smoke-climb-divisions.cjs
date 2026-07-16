@@ -17,7 +17,7 @@
  */
 const fs=require('fs'), path=require('path'), {JSDOM}=require('jsdom');
 const R=path.resolve(__dirname,'..')+'/';
-const DATA=JSON.parse(fs.readFileSync(R+'prototypes/climb-data.json','utf8'));
+const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
 const N=+process.argv[2]||4;
 let warns=0;
 const dom=new JSDOM(fs.readFileSync(R+'prototypes/the-climb.html','utf8'),{runScripts:'dangerously',pretendToBeVisual:true,

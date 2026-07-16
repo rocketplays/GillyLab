@@ -174,6 +174,16 @@ jobs:
       - name: Regenerate share-sheet renderer
         run: node scripts/gen-gl-sheet.cjs || true
 
+      # Regenerate worker/climb-page.js (the /theclimb game) from
+      # prototypes/the-climb.html. Same rule as the share sheet: generated, never
+      # forked. The prototype is the source of truth because the entire sim/test
+      # harness reads it — fork it and the suite would keep testing a file nobody
+      # plays. NOT `|| true`: this generator exits non-zero only when the prototype
+      # has lost its nav marker or its mount point, which would ship a blank or
+      # unnavigable page. That is worth failing the run over.
+      - name: Regenerate The Climb page
+        run: node scripts/gen-climb-page.cjs
+
       # Regenerate carousel-data.js (the landing feature carousel) from worker/pages.js
       # so the /subscribe page's carousel stays identical to the landing page's.
       - name: Regenerate subscribe carousel
@@ -256,6 +266,7 @@ jobs:
           node scripts/append-card-history.cjs || true
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
+          node scripts/gen-climb-page.cjs
           node scripts/gen-carousel.cjs || true
           node scripts/gen-pickem-model.cjs || true
           node scripts/gen-pickem-card.cjs || true
