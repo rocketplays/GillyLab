@@ -55,8 +55,13 @@ BANKED AND WORKING — do not re-litigate
   * Odds shown as a BAND before the fight, the number after it, with a variance
     note only when the result was genuinely improbable.
   * Submissions exist. Method follows the build (grappler: 42% SUB / 5% KO).
-  * The conqueror never returns; every rung offers 2+ fights; 11 divisions play
-    clean; ranks come from data/rankings.json; payload 443KB -> 19KB.
+  * A CONTENDER who beat you never returns — the CHAMPION does, after you win one
+    fight. Stating it precisely because the imprecise version ("the conqueror never
+    returns") was true of the code, banked in a gate, and quietly meant the belt
+    was unwinnable after a single title loss. See "THE RUN THAT COULDN'T END".
+  * A loss costs a rung. (The design always said so; the code didn't until now.)
+  * Every rung offers 2+ fights; 11 divisions play clean; ranks come from
+    data/rankings.json; payload 443KB -> 19KB.
   * A ranked man is never offered a gatekeeper. (New this pass; see below.)
 
 
