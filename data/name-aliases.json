@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T18:11:12.137Z",
+  "generatedAt": "2026-07-16T13:30:12.463Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "Matthieu Letho Duclos|Aug 27, 2024|Marco Tulio": {
