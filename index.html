@@ -102743,6 +102743,72 @@ const GL_SHEET = (function () {
     return cv;
   }
 
+  /* ── The Climb ───────────────────────────────────────────────────────────
+     A finished run: the two records, where you peaked, and how the fights
+     actually ended. Square, because it's a scoreboard, not a bracket.
+
+     It lives HERE rather than in prototypes/the-climb.html for the reason this
+     whole file exists: index.html is the single source of truth for GL_SHEET, and
+     gen-gl-sheet.cjs generates the copy that standalone pages load. A share sheet
+     forked into the prototype would drift from the app's within a week — the
+     generator's own header says as much ("Generated (not forked) so the two can
+     never drift"). The prototype loads ../gl-sheet.js exactly like /pickem loads
+     /gl-sheet.js.  */
+  async function drawClimb(d) {
+    await fontsReady();
+    const logo = await loadBrandLogo();
+    const CH = 1080;
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 78, 'The Climb', logo);
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
+    ctx.fillText(clip(ctx, d.headline || 'My run', W - 128), 64, 158);
+    ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(clip(ctx, [d.division, d.fights + ' fights', 'age ' + d.age].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+
+    // Hero: where you finished. That's the whole question the game asks.
+    roundRect(ctx, 64, 240, W - 128, 210, 16); ctx.fillStyle = CARD; ctx.fill();
+    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
+    ctx.fillText('FINISHED AS', 96, 296);
+    const isChamp = !!d.champ;
+    ctx.font = '800 108px ' + COND; ctx.fillStyle = isChamp ? AMB : TXT;
+    ctx.fillText(String(d.peakLabel || '—'), 96, 396);
+    ctx.font = '400 25px ' + SANS; ctx.fillStyle = '#c9ccd3'; ctx.textAlign = 'right';
+    ctx.fillText(d.peakSub || '', W - 96, 396);
+    ctx.textAlign = 'left';
+
+    const gw = (W - 128 - 20) / 2, gh = 140;
+    btTile(ctx, 64, 476, gw, gh, 'Pro record', d.pro || '—', TXT);
+    btTile(ctx, 64 + gw + 20, 476, gw, gh, 'UFC record', d.ufc || '—', isChamp ? ACC : TXT);
+    btTile(ctx, 64, 476 + gh + 20, gw, gh, 'Best win', d.bestWin || '—', d.bestWin ? ACC : MUT);
+    btTile(ctx, 64 + gw + 20, 476 + gh + 20, gw, gh, 'Finish rate', d.finishRate || '—', TXT);
+
+    // How the wins came. A build that knocks nine men out and one that outpoints
+    // nine share a record and share nothing else.
+    const by = d.byMethod || [];
+    if (by.length) {
+      ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
+      ctx.fillText('WINS BY METHOD', 64, 850);
+      let x = 64;
+      for (const m of by) {
+        ctx.font = '800 46px ' + COND; ctx.fillStyle = m.n ? TXT : MUT;
+        ctx.fillText(String(m.n), x, 916);
+        const nw = ctx.measureText(String(m.n)).width;
+        ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(' ' + m.label, x + nw + 6, 916);
+        x += nw + 12 + ctx.measureText(' ' + m.label).width + 46;
+      }
+    }
+
+    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('Real fighters, real rankings, real GillyLab power ratings', W / 2, CH - 96);
+    ctx.fillText('gillylab.com', W / 2, CH - 56);
+    ctx.textAlign = 'left';
+    return cv;
+  }
+
   return {
     // Square card of the user's tracked record over the selected date range.
     betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-bet-record.png',
@@ -102762,6 +102828,11 @@ const GL_SHEET = (function () {
     pickem: (data) => open(() => drawPickem(data || {}),
       'gillylab-picks.png',
       'My picks for ' + ((data && data.eventName) || 'the card') + ' — make yours on gillylab.com'),
+    // Square card of a finished Climb run.
+    climb: (data) => open(() => drawClimb(data || {}),
+      'gillylab-the-climb.png',
+      'I went ' + ((data && data.ufc) || '0-0') + ' on The Climb and finished as ' +
+        ((data && data.shareRank) || 'unranked') + ' — gillylab.com'),
     close: close
   };
 })();

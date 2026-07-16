@@ -4,6 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Climb — GillyLab prototype</title>
+<!-- The share sheet is the app's, not a copy of it. gen-gl-sheet.cjs generates
+     gl-sheet.js out of index.html so standalone pages can render a sheet that is
+     byte-identical to the app's; /pickem already loads it exactly this way. Barlow
+     is required — GL_SHEET draws in it and awaits document.fonts.ready, so without
+     the link the sheet renders in a fallback face and looks like a knock-off of
+     itself. Both are relative because this page is served from the repo root. -->
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="../gl-sheet.js?v=1" defer></script>
 <!--
   PROTOTYPE. Deliberately ugly. Needs a local server (it fetches climb-data.json):
       python3 -m http.server        then  localhost:8000/prototypes/the-climb.html
@@ -88,6 +96,26 @@
     width:1rem;height:1rem;border-radius:3px;font-size:.6rem;font-weight:800;
     background:var(--gold);color:#1a1204;vertical-align:middle;line-height:1}
   .cmark.im{background:transparent;color:var(--gold);border:1px solid var(--gold)}
+  /* the rank shares the champion's slot, so it gets the champion's metrics —
+     right-aligned and fixed-width, or the names shear left and right by a digit */
+  .log .rk{display:inline-block;min-width:1.7rem;text-align:right;color:var(--muted);
+    font-size:.72rem;font-variant-numeric:tabular-nums}
+  .log .rk.ur{font-size:.62rem;letter-spacing:.03em}
+  .log .cmark{min-width:1rem;margin-left:.7rem}
+  /* Share-sheet overlay. Lifted verbatim from the /pickem page (worker/pages.js)
+     rather than reinvented — GL_SHEET builds its markup against these exact class
+     names, so they are part of its contract, not styling choices we get to make. */
+  .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}
+  .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}
+  .pl-share-inner{width:100%;max-width:460px}
+  .pl-share-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.9rem}
+  .pl-share-hint{text-align:center;margin-top:.6rem;font-size:.66rem;color:var(--text);line-height:1.5;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .75rem}
+  .pl-act{background:rgba(0,230,104,.10);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}
+  .pl-act:hover{background:var(--accent);color:#0e0f13}
+  .pl-act.primary{background:var(--accent);color:#0e0f13}
+  .pl-act.ghost{background:transparent;border-color:var(--border);color:var(--muted)}
+  .pl-act.busy{opacity:.5;pointer-events:none}
+  .gl-sheet-preview img{width:100%;border-radius:10px;display:block;border:1px solid var(--border)}
   .recs{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:baseline;margin:.5rem 0 .1rem}
   .recs span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}
   .recs b{font-size:1.05rem}
@@ -1772,17 +1800,19 @@ function logBox(){
     // whatever happened, because f.won gated the whole expression. Two thirds of a
     // record was blank: "L     vs Tom Aspinall (41%)" is a result with the result
     // taken out. The methods existed; the log just never asked about them.
-    // THE BELT GETS A MARK, and the odds speak the same language as the card and
-    // the result line. The log was the last place still printing a bare percentage
-    // — the exact number the odds band exists to defer — so a record read "(19%)"
-    // for the fight the whole run was about. A moneyline says the same thing in
-    // the format the sport uses, and the gold C says WHICH fight it was without
-    // needing a legend. f.rank is the opponent's rankNum at the time, already in
-    // the log; 0 is champion, 0.5 interim.
-    const champMark = f.rank===0 ? ' <span class="cmark" title="Champion">C</span>'
-                    : f.rank===0.5 ? ' <span class="cmark im" title="Interim champion">C</span>' : '';
+    // WHO HE WAS, IN ONE SLOT. The rank sits where a rankings table puts it —
+    // before the name — and the champion's gold C occupies the same slot, because
+    // "C" IS his ranking. A record of "W KO vs Sergei Pavlovich" doesn't say
+    // whether that was a contender or a gatekeeper, which is most of what a record
+    // means; "#3 Sergei Pavlovich" does. f.rank is the opponent's rankNum AT THE
+    // TIME, already in the log — 0 champion, 0.5 interim, 99 unranked — so this
+    // reads the standing he actually had when you fought him, not his standing now.
+    const rk = f.rank===0   ? '<span class="cmark" title="Champion">C</span>'
+             : f.rank===0.5 ? '<span class="cmark im" title="Interim champion">C</span>'
+             : f.rank>=99   ? '<span class="rk ur" title="Unranked">UR</span>'
+             :                '<span class="rk">#'+f.rank+'</span>';
     d.innerHTML='<span class="'+(f.won?'w':'l')+'">'+(f.won?'W':'L')+'</span> '+
-      '<span class="mth">'+methodTag(f)+'</span> vs '+f.opp+champMark+
+      '<span class="mth">'+methodTag(f)+'</span> vs '+rk+' '+f.opp+
       ' <span class="ml">'+amer(f.p)+'</span>';
     l.appendChild(d);
   });
@@ -1790,6 +1820,33 @@ function logBox(){
   return p;
 }
 
+// ONE DESCRIPTION OF THE RUN, for the sheet and the share text both. The rank the
+// sheet prints and the rank the tweet claims must be the same rank, so they are
+// the same string, built once. (peakLabel is for a scoreboard — "CHAMPION", "#3";
+// shareRank has to survive inside a sentence — "champion", "the #3 contender".)
+function runSummary(){
+  const wins = G.log.filter(f=>f.won);
+  const fins = wins.filter(f=>f.fin).length;
+  const best = wins.slice().sort((a,b)=>a.p-b.p)[0];
+  const w = methodTally(true);
+  return {
+    champ: !!G.champ,
+    headline: G.champ ? 'I won the belt' : 'My run',
+    division: (D && D.divisions && D.divisions[DIV] && D.divisions[DIV].label) || DIV,
+    fights: G.log.length,
+    age: START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12),
+    pro: totalRecord(),
+    ufc: ufcRecord(),
+    peakLabel: G.champ ? 'CHAMPION' : G.peak==null ? 'UNRANKED' : '#'+G.peak,
+    peakSub:   G.champ ? 'undisputed' : G.peak==null ? 'never cracked the top 15'
+             : G.peak===1 ? 'number one contender' : 'in the division',
+    shareRank: G.champ ? 'champion' : G.peak==null ? 'unranked'
+             : 'the #'+G.peak+' contender',
+    bestWin: best ? best.opp.split(/\s+/).slice(-1)[0] + ' ' + amer(best.p) : '',
+    finishRate: wins.length ? Math.round(fins/wins.length*100)+'%' : '—',
+    byMethod: [ {label:'KO/TKO', n:w['KO/TKO']}, {label:'SUB', n:w.submission}, {label:'DEC', n:w.decision} ]
+  };
+}
 function endBox(msg){
   const p=document.createElement('div'); p.className='panel';
   const b=document.createElement('div'); b.className='big '+(G.champ?'win':'loss'); b.textContent=msg;
@@ -1828,8 +1885,23 @@ function endBox(msg){
     p.appendChild(t);
   }
   p.appendChild(logBox());
+  const row=document.createElement('div'); row.style.cssText='display:flex;gap:.5rem;flex-wrap:wrap';
   const b2=document.createElement('button'); b2.className='btn pri'; b2.textContent='New run';
-  b2.onclick=newGame; p.appendChild(b2);
+  b2.onclick=newGame; row.appendChild(b2);
+  // SHARE. GL_SHEET is loaded `defer` from ../gl-sheet.js, so on a cold page it may
+  // not exist yet — and it CANNOT exist when this file is opened over file:// or
+  // run headless in the test harness. Degrade by hiding the button rather than
+  // throwing: an end screen that crashes because a share renderer is missing would
+  // be a worse bug than having no share button.
+  if (window.GL_SHEET && window.GL_SHEET.climb) {
+    const b3=document.createElement('button'); b3.className='btn'; b3.textContent='Share this run';
+    // navigator.share() needs transient activation, so GL_SHEET.open must be called
+    // straight out of the click — no awaiting anything first. It does its own
+    // rendering behind a busy state.
+    b3.onclick=()=>window.GL_SHEET.climb(runSummary());
+    row.appendChild(b3);
+  }
+  p.appendChild(row);
   return p;
 }
 
