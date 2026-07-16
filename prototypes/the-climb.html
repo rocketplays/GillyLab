@@ -1759,13 +1759,41 @@ function fight(o){
   let rounds = [0,1,2].map(()=>Math.random() < pr);
   let roundsWon = rounds.filter(Boolean).length;
   const won = roundsWon >= 2;
-  // Finish chance scales with Power/Grappling — how you win matters (~8pts to
-  // the model), so the build should drive it.
-  // How you finish follows what you built: knockouts from Power, taps from
-  // Grappling. G.attrs.striking no longer exists — that slider was split back
-  // into power/pace/technique, and reading a dead key returns undefined, which
-  // makes finBias NaN and every finish silently vanish.
-  const finBias = (G.attrs.power + G.attrs.grappling) / (ATTR_MAX*2);
+  // FOUR WAYS TO END A FIGHT, NOT TWO.
+  //
+  // This read (power + grappling) / 20, so WRESTLING CONTRIBUTED NOTHING. Playtest:
+  // "I made a 10/10 wrestler and grappler and won by submission 3 times and
+  // decision 8" — half his sheet was invisible to the finish. There was no
+  // ground-and-pound in the game: wrestling took you there and then stopped
+  // mattering. Same for pace: you could not wear anyone out.
+  //
+  // The weights are the playtest's own reading and they are deliberately unequal:
+  //   power 1.00      a 10 here is a real knockout artist
+  //   grappling 1.00  a 10 here is a real submission threat
+  //   wrestling 0.45  ground-and-pound is a real finish, but it is not a right hand
+  //   pace 0.35       volume finishes people — but only SOME people, see below
+  //
+  // PACE IS THE MATCHUP ONE. "Pace isn't the same finishing ability as power, but
+  // if you put a pace on someone with bad cardio and durability, you can finish
+  // them." Exactly — so pace's weight scales with how fragile THIS man is, read off
+  // his real chin (0.24 to 0.93 across the roster, median 0.66). Volume against
+  // granite is a decision; volume against glass is a third-round TKO. It is the
+  // only finishing avenue that depends on who you're in there with.
+  const S0 = o.f.style || {};
+  // 0 against the best chin in the division, 1 against the worst.
+  const frail = Math.max(0, Math.min(1, (0.85 - (S0.chin != null ? S0.chin : 0.66)) / 0.5));
+  const FIN_W = { power: 1.00, grappling: 1.00, wrestling: 0.45, pace: 0.35 };
+  // NORMALISED BY (ATTR_MAX*2), THE SAME DIVISOR AS BEFORE, so the two primary
+  // avenues are untouched: a 10-power/1-grappling slugger still reads 0.55 and
+  // still finishes 47% of his wins, exactly as he did. Wrestling and pace only ever
+  // ADD. Clamped at 1 so the ceiling — a 65% finish rate — doesn't move either;
+  // this widens WHO can finish, it does not make finishes more common overall.
+  const finBias = Math.min(1, (
+      (G.attrs.power||0)     * FIN_W.power +
+      (G.attrs.grappling||0) * FIN_W.grappling +
+      (G.attrs.wrestling||0) * FIN_W.wrestling +
+      (G.attrs.pace||0)      * FIN_W.pace * frail
+    ) / (ATTR_MAX*2));
   // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
   // never won by submission." He couldn't have: the result line read
   // `fin ? ' by KO/TKO' : ' by decision'` — there was no submission ANYWHERE in
@@ -1797,8 +1825,18 @@ function fight(o){
                    : (0.25 + threat  * 0.4) * chinGuard;  // he finishes: 0.35 -> 0.61, less your chin
   const fin = Math.random() < finW && (won || kd + sb > 0);
   // Weights for WHICH finish. Yours: power vs grappling. His: knockdowns vs subs.
-  const koW  = won ? (G.attrs.power||1)          : kd;
-  const subW = won ? (G.attrs.grappling||1) * 0.9 : sb;
+  // WHICH finish. Wrestling and pace both cash out mostly as TKO — ground-and-pound
+  // and accumulation are stoppages, not taps — but wrestling also sets up the
+  // choke, so it feeds both. A 10/10 wrestler-grappler now gets a real share of
+  // ground-and-pound instead of reading as a pure sub artist, which is what the
+  // archetype (Constrictor) already claims he is.
+  const koW  = won ? ((G.attrs.power||1)
+                      + (G.attrs.wrestling||0) * 0.50
+                      + (G.attrs.pace||0) * 0.60 * frail)
+                   : kd;
+  const subW = won ? ((G.attrs.grappling||1) * 0.9
+                      + (G.attrs.wrestling||0) * 0.35)
+                   : sb;
   const bySub = fin && (koW + subW > 0) && Math.random() < subW/(koW+subW);
   const method = !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
   // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
