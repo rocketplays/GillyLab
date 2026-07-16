@@ -42,8 +42,46 @@ def _atomic_dump(data):
     os.replace(tmp, OUT)
 MANIFEST = os.path.join(HERE, "espn-import-output", "_manifest.csv")
 
-def _has_grid(rows):
-    """Does this fighter's saved data carry the strike grid pack() now emits?"""
+_GRID_CACHE = {}
+
+def grid_index():
+    """Fighters who already have the strike grid.
+
+    READS data/fight-grid.json, NOT fight-stats.json, AND THAT IS THE WHOLE POINT.
+    The pipeline is: backfill writes `g` INTO fight-stats.json, then
+    split-fight-grid.cjs LIFTS IT BACK OUT (because fight-stats.json is eager-
+    fetched by every visitor and must not carry 2MB for an optional panel). So by
+    the time the next run asks "who has the grid?", fight-stats.json has no `g` in
+    it — by design.
+
+    Checking fight-stats.json therefore reports EVERY fighter as missing, forever.
+    Caught by simulating one newly-announced fighter and watching the queue read
+    112 instead of 1: CI would have re-fetched the whole card twice a day and the
+    commit message would have said "steady state is the delta only". The split is
+    what makes the eager payload safe AND what erases the evidence the predicate
+    was reading — two correct pieces whose seam is a bug.
+    """
+    if not _GRID_CACHE:
+        p = os.path.join(HERE, "..", "data", "fight-grid.json")
+        try:
+            g = json.load(open(p))
+        except Exception:
+            g = {}
+        _GRID_CACHE["names"] = {n for n, rows in g.items()
+                                if any(((r or {}).get("f") or {}).get("g") for r in (rows or []))}
+    return _GRID_CACHE["names"]
+
+
+def _has_grid(name, rows):
+    """True if the grid exists for this fighter, in EITHER place.
+
+    fight-grid.json is the post-split home; fight-stats.json is where it lands
+    pre-split. Both count, so the predicate is correct whether or not the split has
+    run yet — which matters because CI runs backfill then split, and a human
+    debugging locally may well run them out of order.
+    """
+    if name in grid_index():
+        return True
     return any(((b or {}).get("f") or {}).get("g") for b in (rows or []))
 
 
@@ -66,22 +104,31 @@ def card_names():
     bout the events page renders, and event.json currently carries 18 events out
     to September. The Contender Series cards with 0 bouts today will have fighters
     when ESPN announces them — this reads whatever is there at the time, which is
-    what makes the whole thing auto-populate rather than need a human."""
+    what makes the whole thing auto-populate rather than need a human.
+
+    READS bouts[].fighters[].fighterName EXPLICITLY, not a recursive hunt for any
+    key called "name". The first version walked the whole object grabbing every
+    `name`, which also collects venues and broadcasters, so it needed a junk filter
+    — and the filter I reached for was `" " in name`. That silently dropped every
+    MONONYM on the card: Sumudaerji (11 bouts of stats) and Aoriqileng (10) both
+    vanished, and their fights would simply never have got a button. Single-name
+    fighters are not an edge case in this sport.
+    A heuristic to clean up an imprecise read is two bugs: the imprecise read, and
+    the heuristic. The field has a name; use it."""
     p = os.path.join(HERE, "..", "data", "event.json")
     if not os.path.exists(p): return set()
-    ev = json.load(open(p))
+    try:
+        ev = json.load(open(p))
+    except Exception:
+        return set()
     out = set()
-    def walk(o):
-        if isinstance(o, dict):
-            for k, v in o.items():
-                if k in ("name", "fighter1", "fighter2") and isinstance(v, str):
-                    out.add(_norm(v))
-                else:
-                    walk(v)
-        elif isinstance(o, list):
-            for v in o: walk(v)
-    walk(ev)
-    return {n for n in out if n and " " in n}
+    for e in (ev.get("data") or []):
+        for b in (e.get("bouts") or []):
+            for f in (b.get("fighters") or []):
+                nm = f.get("fighterName")
+                if isinstance(nm, str) and nm.strip():
+                    out.add(_norm(nm))
+    return {n for n in out if n}
 
 
 def parallel_fighter(sid, namecache, bout_workers):
@@ -214,7 +261,16 @@ def main():
         # fighter with the grid is no longer missing it, so a re-run picks up
         # exactly what failed last time and nothing else. --refetch-min needs a
         # mark file because "has >= N bouts" is still true after you refetch it.
-        todo = [n for n in pool if n in data and not _has_grid(data[n])]
+        # `data[n]` non-empty is load-bearing, not a tidy-up. A fighter saved with
+        # ZERO bouts has no ESPN box scores to have a grid FROM — five of them sit
+        # on the current cards (debutants). Without this they are permanently
+        # missing the grid, so every run re-queues them, re-fetches them, gets
+        # nothing, and reports "saved 0 bouts" forever. A self-clearing predicate
+        # that can never clear is just a loop with good manners.
+        # These are also exactly the fighters whose button must hide: no stats, no
+        # panel. The queue and the UI agree by construction rather than by two
+        # separate rules that can drift.
+        todo = [n for n in pool if data.get(n) and not _has_grid(n, data[n])]
     else:
         todo = pool if a.all else [n for n in pool if n not in data]
     print("roster: %d | already saved: %d | to process: %d%s"

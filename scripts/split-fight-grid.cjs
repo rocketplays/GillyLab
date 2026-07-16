@@ -31,7 +31,23 @@ const LIFT = ['g', 'tdAcc', 'slams', 'adv'];
 
 function main() {
   const D = JSON.parse(fs.readFileSync(SRC, 'utf8'));
-  const grid = {};
+
+  // MERGE, NEVER OVERWRITE — this file is the ONLY copy of the grid.
+  //
+  // The backfill writes `g` into fight-stats.json and this script lifts it out, so
+  // after a split fight-stats.json holds no grid at all: fight-grid.json IS the
+  // data. Building `grid` from scratch each run therefore doesn't "regenerate" it,
+  // it DELETES every fighter who wasn't in this run's batch — and since the
+  // backfill only ever fetches the delta, that is almost everyone.
+  //
+  // Caught by simulating a newly-announced fighter: one 24-fighter batch left
+  // fight-grid.json holding 24 fighters instead of 115. Each CI run would have
+  // quietly thrown away the last one's work, the queue would refill every night,
+  // and the job would have stayed green throughout.
+  let grid = {};
+  try { grid = JSON.parse(fs.readFileSync(OUT, 'utf8')); } catch (e) { grid = {}; }
+  const had = Object.keys(grid).length;
+
   let lifted = 0, fights = 0, withGrid = 0;
 
   for (const name of Object.keys(D)) {
@@ -51,6 +67,9 @@ function main() {
       if (any) { withGrid++; rows.push({ date: f.date, opponent: f.opponent, ...row }); }
       else rows.push(null);
     }
+    // Only replace a fighter's entry when THIS run actually lifted something for
+    // him. `rows.some(Boolean)` alone would write an all-null array for every
+    // fighter in the 3,096-row file, i.e. wipe the grid with placeholders.
     if (rows.some(Boolean)) grid[name] = rows;
   }
 
@@ -75,6 +94,7 @@ function main() {
   const kb = n => (n / 1024).toFixed(0) + 'KB';
   console.log('fight-stats.json  ' + kb(before) + ' -> ' + kb(fs.statSync(SRC).size) + '   (eager: must not grow)');
   console.log('fight-grid.json   ' + kb(fs.statSync(OUT).size) + '   (lazy: deep dive only)');
-  console.log('grid present on ' + withGrid + '/' + fights + ' fights');
+  console.log('grid present on ' + withGrid + '/' + fights + ' fights this batch');
+  console.log('fighters in grid  ' + had + ' -> ' + Object.keys(grid).length + '   (merged, never overwritten)');
 }
 main();
