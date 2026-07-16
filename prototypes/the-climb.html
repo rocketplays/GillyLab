@@ -161,6 +161,14 @@
 
   /* record + status */
   .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}
+  /* The archetype is a name, not a number — the HUD's 1.1rem is sized for "10-0"
+     and "Chain grappler" at that size wraps the row on a phone. */
+  .hud b.archv{font-size:.82rem;font-weight:700;color:var(--gold)}
+  .archline{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;
+    margin-top:.6rem;padding:.4rem .55rem;background:var(--surface2);
+    border:1px solid var(--border);border-radius:6px}
+  .archline span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em}
+  .archline b{color:var(--gold);font-size:.88rem}
   /* Restart: quiet by default, and it only announces itself on hover. It is the
      one control here that destroys something, so it should be findable and never
      inviting. margin-left:auto pins it to the far end of the HUD row. */
@@ -352,6 +360,131 @@ const ATTRS = [
   { id:'grappling', label:'Grappling',    note:'submissions' },
   { id:'takedef',   label:'Takedown def', note:'staying upright' },
 ];
+
+// WHAT KIND OF FIGHTER DID I JUST BUILD? — the sheet, said out loud.
+//
+// Nine numbers don't tell you who you are. A player spends 42 points and gets a
+// bar chart; "Knockout artist" is the same information in the language the sport
+// uses, and it turns the creator from arithmetic into a decision about a person.
+//
+// PURELY DERIVED, AND DELIBERATELY SO. This reads G.attrs and returns a string.
+// It feeds nothing — not winProb, not the board, not rewardFor. The whole file's
+// history is constants that quietly became load-bearing; a label that could move a
+// win rate would be the same trap wearing a nicer name. If this function were
+// deleted the game would play identically, and that is the point.
+//
+// CENTRED ON YOUR OWN AVERAGE, not on an absolute. That's the rule the style
+// triangle already banks ("Style is centred on YOUR OWN AVERAGE, not 0.5 —
+// centring on 0.5 double-counts quality and taxes specialists twice"), and it's
+// the only version that works here too: a maxed 10/10/10 fighter has no lean, he's
+// just good, while a 4/4/1 fighter at level 4 IS a striker. An archetype is about
+// SHAPE, and shape is what's above your own mean.
+const ARCH_ONE = {
+  power:     'Knockout artist',
+  pace:      'Volume striker',
+  technique: 'Technician',
+  strdef:    'Counter striker',
+  chin:      'Brawler',
+  cardio:    'Grinder',
+  wrestling: 'Wrestler',
+  grappling: 'BJJ specialist',
+  takedef:   'Sprawl-and-brawl',
+};
+// The pairs worth naming. Not all 36 — only the ones the sport already has a word
+// for, because an invented name is worse than an honest hyphen. Anything not here
+// falls through to "X-Y" (see below), which reads fine: "Wrestler-Grinder".
+// KEYS ARE NORMALISED, because half of them were wrong the moment I typed them.
+// The lookup builds its key with .sort(), so 'power+pace' is unreachable — the
+// sorted form is 'pace+power'. Written by hand, 18 of these 36 were dead on
+// arrival and silently fell through to the primary name: pace+cardio read "Volume
+// striker" instead of "Pressure fighter", wrestling+grappling read "BJJ
+// specialist" instead of "Chain grappler". A lookup table whose keys are built by
+// one rule and read by another is a table half-present, and nothing throws — it
+// just quietly answers a slightly worse question. So the sort happens HERE, once,
+// and hand-written order stops being load-bearing.
+const ARCH_PAIR = Object.fromEntries(Object.entries({
+  'power+wrestling':     'Wrestle-boxer',
+  'power+technique':     'Sniper',
+  'power+pace':          'Swarmer',
+  'power+chin':          'Slugger',
+  'power+cardio':        'Pressure puncher',
+  'power+strdef':        'Counter puncher',
+  'power+grappling':     'Finisher',
+  'power+takedef':       'Sprawl-and-brawl',
+  'pace+cardio':         'Pressure fighter',
+  'pace+technique':      'Point fighter',
+  'pace+strdef':         'Out-boxer',
+  'pace+chin':           'Brawler',
+  'pace+wrestling':      'Smother wrestler',
+  'pace+grappling':      'Scrambler',
+  'pace+takedef':        'Kickboxer',
+  'technique+strdef':    'Outfighter',
+  'technique+cardio':    'Distance manager',
+  'technique+chin':      'Craftsman',
+  'technique+wrestling': 'Wrestle-boxer',
+  'technique+grappling': 'All-rounder',
+  'technique+takedef':   'Kickboxer',
+  'strdef+cardio':       'Marathon man',
+  'strdef+chin':         'Wall',
+  'strdef+wrestling':    'Mat general',
+  'strdef+grappling':    'All-rounder',
+  'strdef+takedef':      'Untouchable',
+  'chin+cardio':         'Iron man',
+  'chin+wrestling':      'Grinder',
+  'chin+grappling':      'Mauler',
+  'chin+takedef':        'Gatekeeper',
+  'cardio+wrestling':    'Chain wrestler',
+  'cardio+grappling':    'Submission grinder',
+  'cardio+takedef':      'Stick-and-move',
+  'wrestling+grappling': 'Chain grappler',
+  'wrestling+takedef':   'Mat general',
+  'grappling+takedef':   'Guard player',
+}).map(([k, v]) => [k.split('+').sort().join('+'), v]));
+// HOW MUCH AN ATTRIBUTE DEFINES A FIGHTER. Not how much it's WORTH — WEIGHTS
+// already prices that at 1/9 each, deliberately, and this must not second-guess it.
+// This is about language: nobody is called anything for having a chin. You are
+// named for what you DO to someone (power, pace, technique, wrestling, grappling)
+// and only described by what you RESIST with (chin, cardio, defence).
+//
+// It exists because of a real bug, not a hunch. The wrestler and grappler builds
+// both max FIVE attributes — chin, cardio, wrestling, grappling, takedef — so every
+// lean tied at +4 and the sort picked two of the five arbitrarily. Both read
+// "Brawler-grinder": a grappler named after his chin, by tie-break order. Same
+// shape as the MAX_FAVORITE pop() bug — relying on an order I never established.
+const ARCH_SALIENCE = {
+  power:1.00, grappling:1.00, wrestling:0.98, pace:0.92, technique:0.90,
+  strdef:0.70, takedef:0.62, cardio:0.60, chin:0.50,
+};
+function archetype(a){
+  a = a || G.attrs;
+  const lv = ATTRS.map(A => ({ id:A.id, v:a[A.id]||0 }));
+  const mean = lv.reduce((s,x)=>s+x.v,0) / lv.length;
+  const spread = Math.max(...lv.map(x=>x.v)) - Math.min(...lv.map(x=>x.v));
+  // A FLAT SHEET HAS NO ARCHETYPE, and saying so is more honest than picking the
+  // biggest of nine equal numbers. Two ways to be flat and they are different
+  // fighters: nothing spent yet, or spent evenly on purpose.
+  if (spread < 2) return mean <= ATTR_MIN + 0.5 ? 'Prospect' : 'Well-rounded';
+  // SALIENCE BREAKS TIES; IT DOES NOT SCALE THE LEAN. Multiplying the lean BY
+  // salience — my first attempt — fixed the tie bug and quietly created a worse
+  // one: it inflated the gap between two equally-high attributes of different
+  // salience, so pace 10 + cardio 10 (identical leans!) read as a 2.2 gap and
+  // stopped pairing. "Pressure fighter" became "Volume striker" because cardio is
+  // a less nameable attribute, which is not the same fact at all. The lean is how
+  // MUCH you leaned; salience is only which of two equal leans names the fighter.
+  // Two questions, two places.
+  const lean = lv.map(x => ({ ...x, d: x.v - mean }))
+                 .sort((x,y) => (y.d - x.d) || (ARCH_SALIENCE[y.id] - ARCH_SALIENCE[x.id]));
+  const top = lean[0], second = lean[1];
+  // One lean, or two? Two only when the second is genuinely comparable — otherwise
+  // every build reads as a hybrid and the word stops meaning anything.
+  const paired = second.d > 0 && (top.d - second.d) < 1.2;
+  if (!paired) return ARCH_ONE[top.id];
+  // Every pair of the nine is named above, so this lookup is total — but fall back
+  // to the primary rather than hyphenate. The first draft built names by splicing
+  // words together and produced "Wrestler-bjj" and "Knockout artist-volume": an
+  // invented name is worse than a plain true one.
+  return ARCH_PAIR[[top.id, second.id].sort().join('+')] || ARCH_ONE[top.id];
+}
 
 // Playtest: "why do you get to pick attributes to build your fighter, then get
 // another +7 right off the bat?" — a straight BUG. The creator's sliders and
@@ -1769,6 +1902,11 @@ function creator(){
     row.appendChild(l); row.appendChild(bar); row.appendChild(grp);
     p.appendChild(row);
   }
+  // THE SHEET, SAID OUT LOUD — right under the sliders, updating as you spend, so
+  // the creator answers "who am I building" and not just "what did I buy".
+  const arch=document.createElement('div'); arch.className='archline';
+  arch.innerHTML='<span>Fighting style</span><b>'+archetype()+'</b>';
+  p.appendChild(arch);
   const pts=document.createElement('div'); pts.className='pts'+(left<0?' over':'');
   pts.style.marginTop='.5rem';
   pts.innerHTML='Points left: <b style="color:'+(left>0?'var(--accent)':'var(--muted)')+'">'+left+'</b>';
@@ -1858,6 +1996,10 @@ function hud(){
     // — with the UFC record beside it, because that's the one the belt cares about.
     '<div><span>Record</span><b>'+totalRecord()+'</b>'+
       '<span style="text-transform:none;letter-spacing:0;margin-top:.15rem">'+ufcRecord()+' UFC</span></div>'+
+    // Mid-run it belongs in the HUD, because upgrade points change it: spend four
+    // on wrestling and a Knockout artist becomes a Wrestle-boxer, and you should
+    // see that happen rather than have to infer it from nine bars.
+    '<div><span>Style</span><b class="archv">'+archetype()+'</b></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
 
