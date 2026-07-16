@@ -80,6 +80,45 @@
      division once. 16px is the exact threshold, and it only needs to apply where
      there's a touch pointer, so the desktop design is unchanged. */
   @media (pointer: coarse){ .divsel{font-size:16px} }
+
+  /* ── HEIGHT ─────────────────────────────────────────────────────────────
+     A phone shows ~650px. Every block below the fold is a scroll between you
+     and the fight you're picking, so the rule is: show what this screen is FOR,
+     and put everything else one tap away. Nothing here deletes information. */
+
+  /* The pitch, hidden once you're playing. ~90px back on every in-run screen. */
+  body.playing .tag, body.playing .sub{display:none}
+  body.playing h1{font-size:1.1rem;margin-bottom:.4rem}
+
+  /* Collapsibles. summary::marker is a ▸ that ignores colour in most engines, so
+     it's replaced with our own caret that inherits currentColor and rotates. */
+  details.panel > summary, details.legwrap > summary{cursor:pointer;list-style:none;
+    display:flex;align-items:center;gap:.4rem;user-select:none}
+  details.panel > summary::-webkit-details-marker,
+  details.legwrap > summary::-webkit-details-marker{display:none}
+  details.panel > summary::before, details.legwrap > summary::before{
+    content:'';width:0;height:0;border-left:4px solid currentColor;
+    border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;
+    transition:transform .15s;flex:0 0 auto;opacity:.6}
+  details.panel[open] > summary::before, details.legwrap[open] > summary::before{transform:rotate(90deg)}
+  details.legwrap{margin-top:.8rem}
+  details.legwrap > summary{margin-bottom:.4rem}
+  .hint{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}
+
+  /* Phone spacing. The desktop values are unchanged — this is the same layout
+     with less air, not a different one. */
+  @media (max-width:560px){
+    body{padding:.6rem}
+    .panel{padding:.7rem;margin:.5rem 0}
+    h1{font-size:1.15rem}
+    .sub{font-size:.72rem;margin-bottom:.7rem}
+    .tag{margin-bottom:.35rem}
+    .attr{margin:.2rem 0}
+    .legend{gap:.3rem .8rem}
+    .opp{padding:.55rem}
+    .log{line-height:1.65}
+    .tipbox{margin-top:.5rem}
+  }
   body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:1rem}
   .wrap{max-width:820px;margin:0 auto}
   h1{font-size:1.3rem;margin:0 0 .1rem;letter-spacing:-.02em}
@@ -1597,6 +1636,12 @@ const spent = () => ATTRS.reduce((s,a)=>s+costTo(G.attrs[a.id]),0);
 
 function render(){
   const app = $('#app'); app.innerHTML='';
+  // THE PITCH IS FOR PEOPLE WHO HAVEN'T STARTED. Once you're in a run, the tagline
+  // and the three-line subtitle are ~90px of marketing copy you've already read,
+  // reprinted above every single screen — on a phone that's most of the space
+  // above the fold, spent telling a player who is 8-3 what the game is. The h1
+  // stays: it's the title, not the pitch.
+  document.body.classList.toggle('playing', !!G.started);
   if (!G.started){ app.appendChild(creator()); return; }
   app.appendChild(hud());
   if (G.champ){ app.appendChild(endBox('CHAMPION. You did it.')); return; }
@@ -1682,6 +1727,17 @@ function creator(){
   // with them, leaving `p.appendChild(legend)` referencing a variable that no
   // longer existed. creator() threw, the panel rendered zero rows, and the whole
   // page went blank — caught by counting rows, not by reading the diff.
+  // NINE ROWS OF REFERENCE, AS TALL AS THE THING IT EXPLAINS. Every attribute's
+  // note, printed under a creator that already has nine rows — so the screen you
+  // came to use was half glossary. It's read once and it's the definition of
+  // reference material, so: a <details>, shut on a phone and open on a desktop
+  // where the height is free. Not deleted — a first-timer needs to know what
+  // Durability does, and the sheet is meaningless without it.
+  const lgw=document.createElement('details'); lgw.className='legwrap';
+  lgw.open = !(win_coarse());
+  const lgs=document.createElement('summary'); lgs.className='rl';
+  lgs.textContent='What the attributes do';
+  lgw.appendChild(lgs);
   const legend=document.createElement('div'); legend.className='legend';
   for(const A of ATTRS){
     const r=document.createElement('div'); r.className='lg-row';
@@ -1689,7 +1745,8 @@ function creator(){
     const v=document.createElement('span'); v.textContent=A.note;
     r.appendChild(k); r.appendChild(v); legend.appendChild(r);
   }
-  p.appendChild(legend);
+  lgw.appendChild(legend);
+  p.appendChild(lgw);
   const tip=document.createElement('div'); tip.className='tipbox';
   // KEEP THIS SHORT AND KEEP IT TRUE. Two previous versions of this box shipped
   // advice that was flatly wrong, both times because it was derived from a
@@ -1811,8 +1868,22 @@ function resultBox(){
 // fighter you want to be. The marginal calc is gone entirely (it also cost 5
 // extra sim calls per render).
 function upgrade(){
-  const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">Spend upgrade points ('+G.pts+')</div>';
+  // NINE ROWS OF STEPPERS YOU CANNOT USE. This panel always drew every attribute,
+  // and mid-run G.pts is usually 0 — you spend the moment you're paid — so the
+  // tallest block on the phone was nine disabled controls sitting between the
+  // result you wanted to read and the fights you came to pick.
+  //
+  // A <details> rather than a delete: your build is the only place the sheet is
+  // visible mid-run, so hiding it outright would cost real information. Open when
+  // there's something to spend (the panel is then the point of the screen), shut
+  // when there isn't (it's reference, one tap away).
+  const p=document.createElement('details'); p.className='panel upg';
+  p.open = G.pts>0;
+  const sm=document.createElement('summary'); sm.className='rl';
+  sm.innerHTML = G.pts>0
+    ? 'Spend upgrade points (<b style="color:var(--accent)">'+G.pts+'</b>)'
+    : 'Your fighter <span class="hint">— no points to spend</span>';
+  p.appendChild(sm);
   for(const A of ATTRS){
     const row=document.createElement('div'); row.className='attr up';
     const l=document.createElement('label'); l.textContent=A.label;
@@ -1858,6 +1929,12 @@ function offerBox(){
   return p;
 }
 
+// Is this a touch device? Used to decide what starts collapsed — height is scarce
+// on a phone and free on a desktop. matchMedia, not a width guess: a narrow
+// desktop window has a mouse and plenty of screen, and would be wrong on both.
+// Guarded because jsdom has no matchMedia and the whole page would throw.
+const win_coarse = () => !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+
 // ONE DEFINITION of what a fight's method is called, because the record, the
 // result line and the end-of-run tally all have to agree. Older logs predate the
 // loss-method work and carry method:null on every loss — fall back rather than
@@ -1871,12 +1948,20 @@ function methodTally(won){
   for (const f of G.log) if (f.won===won) t[f.method || 'decision']++;
   return t;
 }
-function logBox(){
+function logBox(full){
+  // THE LOG GROWS FOREVER AND SITS UNDER EVERY SCREEN. A 15-fight run is 15 rows
+  // you scroll past to get anywhere, and the only ones you're reading are the last
+  // few. Cap it in-run; the END screen passes full=true, because that's the moment
+  // the whole record IS the thing you came to look at.
+  const CAP = 5;
+  const rows = G.log.slice().reverse();
+  const shown = full ? rows : rows.slice(0, CAP);
+  const hidden = rows.length - shown.length;
   const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">Your record</div>';
+  p.innerHTML='<div class="rl">Your record'+(hidden?' <span class="hint">— last '+CAP+' of '+rows.length+'</span>':'')+'</div>';
   const l=document.createElement('div'); l.className='log';
   if(!G.log.length) l.innerHTML='<span style="color:var(--muted)">No fights yet.</span>';
-  G.log.slice().reverse().forEach(f=>{
+  shown.forEach(f=>{
     const d=document.createElement('div');
     // EVERY LINE NAMES ITS METHOD. This read `f.won&&f.fin ? (SUB|KO) : '   '` —
     // three literal spaces. So a decision showed nothing, and a LOSS showed nothing
@@ -1967,7 +2052,8 @@ function endBox(msg){
         '<span class="'+(l[m]?'l':'z')+'">'+l[m]+'</span></div>').join('');
     p.appendChild(t);
   }
-  p.appendChild(logBox());
+  // full=true: the run is over and the record is the whole point of this screen.
+  p.appendChild(logBox(true));
   const row=document.createElement('div'); row.style.cssText='display:flex;gap:.5rem;flex-wrap:wrap';
   const b2=document.createElement('button'); b2.className='btn pri'; b2.textContent='New run';
   b2.onclick=newGame; row.appendChild(b2);
