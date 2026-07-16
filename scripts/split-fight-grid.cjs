@@ -25,6 +25,7 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'data', 'fight-stats.json');
 const OUT = path.join(ROOT, 'data', 'fight-grid.json');
+const NAMES = path.join(ROOT, 'data', 'grid-names.json');
 const DRY = process.argv.includes('--dry');
 
 const LIFT = ['g', 'tdAcc', 'slams', 'adv'];
@@ -73,17 +74,24 @@ function main() {
     if (rows.some(Boolean)) grid[name] = rows;
   }
 
+  // THE MANIFEST IS WRITTEN EVERY RUN, INCLUDING NO-OP RUNS, AND THAT MATTERS.
+  //
+  // It is derived from the whole grid, not from this batch, so it must not sit
+  // behind the `!lifted` early-return below. The steady state IS a no-op run —
+  // update-odds.yml fires twice a day and usually nobody new was announced — so a
+  // manifest that only regenerates when there's fresh data would go stale on the
+  // exact schedule it is supposed to serve, and every deep-dive button on the site
+  // would vanish on the first quiet day. Cheap, idempotent, always correct.
+  const names = Object.keys(grid).filter(n =>
+    (grid[n] || []).some(r => r && r.f && r.f.g));
+  if (!DRY) fs.writeFileSync(NAMES, JSON.stringify(names));
+
   if (!lifted) {
-    // NOT AN ERROR, AND WORTH SAYING PLAINLY: the grid only exists in records
-    // written AFTER the pack() change. Every row currently on disk predates it,
-    // so this is a no-op until the backfill is re-run.
-    console.log('no `g` fields found in ' + path.basename(SRC) + ' — nothing to lift.');
-    console.log('The grid only exists in records fetched since the pack() change.');
-    console.log('Re-run the backfill first:');
-    console.log('  python3 scripts/fight-stats-parallel.py --workers 32');
-    console.log('NOTE: do NOT use --only-missing. Every fighter is already "present"');
-    console.log('and would be skipped — they are present WITHOUT the grid, which is');
-    console.log('exactly the case that flag cannot see. This needs a full re-fetch.');
+    // NOT AN ERROR: nothing new to lift. Either the backfill hasn't run since the
+    // pack() change, or — far more likely in steady state — nobody new was
+    // announced and every card fighter already has his grid.
+    console.log('nothing to lift (' + names.length + ' fighters already in the grid).');
+    console.log('manifest rewritten: ' + path.basename(NAMES) + ' (' + names.length + ' names)');
     return;
   }
 
@@ -91,10 +99,12 @@ function main() {
   if (DRY) { console.log('--dry: would lift ' + lifted + ' field groups from ' + withGrid + '/' + fights + ' fights'); return; }
   fs.writeFileSync(SRC, JSON.stringify(D));
   fs.writeFileSync(OUT, JSON.stringify(grid));
+
   const kb = n => (n / 1024).toFixed(0) + 'KB';
   console.log('fight-stats.json  ' + kb(before) + ' -> ' + kb(fs.statSync(SRC).size) + '   (eager: must not grow)');
   console.log('fight-grid.json   ' + kb(fs.statSync(OUT).size) + '   (lazy: deep dive only)');
   console.log('grid present on ' + withGrid + '/' + fights + ' fights this batch');
+  console.log('grid-names.json   ' + kb(fs.statSync(NAMES).size) + '   (eager: gates the button)');
   console.log('fighters in grid  ' + had + ' -> ' + Object.keys(grid).length + '   (merged, never overwritten)');
 }
 main();

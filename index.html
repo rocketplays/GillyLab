@@ -2172,6 +2172,24 @@
     .scouting-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
     .scouting-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
     .scouting-fight-panel > .sr-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
+    /* Matchup Analytics — same 0fr/1fr collapse as the scouting panel above it, so
+       the two dropdowns on one row open and close identically. */
+    .deepdive-fight-panel { max-width: var(--cmax); margin: -0.75rem auto 0; display: grid; grid-template-rows: 0fr; opacity: 0; overflow: hidden; transition: grid-template-rows 0.3s ease, opacity 0.22s ease, margin-bottom 0.3s ease; }
+    .deepdive-fight-panel.open { margin-bottom: 0.75rem; grid-template-rows: 1fr; opacity: 1; }
+    .deepdive-fight-panel > .dd-inner { min-height: 0; overflow: hidden; padding: 1rem 1.25rem; background: var(--card); border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
+    .dd-loading { color: var(--muted); font-size: 0.78rem; text-align: center; padding: 0.5rem 0; }
+    .dd-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.82rem; font-weight: 700; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .dd-head .dd-mid { font-size: 0.64rem; font-weight: 400; color: var(--muted); letter-spacing: 0.04em; }
+    .dd-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0.75rem 0 0.35rem; }
+    .dd-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.74rem; padding: 0.18rem 0; }
+    .dd-row .dd-k { color: var(--muted); font-size: 0.7rem; flex: 1; text-align: center; }
+    .dd-row .dd-v { font-variant-numeric: tabular-nums; min-width: 5.5rem; }
+    .dd-row .dd-v.r { text-align: right; }
+    .dd-row .dd-v i { color: var(--muted); font-style: normal; font-size: 0.66rem; }
+    .dd-note { color: var(--muted); font-size: 0.64rem; margin-top: 0.7rem; padding-top: 0.5rem; border-top: 1px solid var(--border); }
+    .fight-dd-bar { display: block; width: 100%; margin-top: 0.4rem; background: none; border: 1px solid var(--border); border-radius: 4px; color: var(--muted); font: inherit; font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.35rem; cursor: pointer; }
+    .fight-dd-bar:hover { border-color: var(--accent); color: var(--text); }
+
     .sr-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sr-chip { flex: 1 1 140px; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; }
@@ -88300,6 +88318,166 @@ window.FIGHT_STATS = window.FIGHT_STATS || {};
 })();
 function _fsEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function _fsParse(s){ var t = Date.parse(s); return isNaN(t) ? null : t; }
+// ── MATCHUP DEEP DIVE: the strike GRID (data/fight-grid.json) ──────────────────
+//
+// LAZY, and that is the whole point of it being a separate file. fight-stats.json
+// is fetched by every visitor on load at ~8MB; the grid would add ~2MB for a panel
+// you have to click. So it lives apart (~245KB, card-scoped) and is fetched the
+// first time someone actually opens a deep dive. Kept fresh by update-odds.yml.
+window.FIGHT_GRID = window.FIGHT_GRID || null;
+let _gridPromise = null;
+function loadFightGrid(){
+  if (window.FIGHT_GRID) return Promise.resolve(window.FIGHT_GRID);
+  if (_gridPromise) return _gridPromise;          // concurrent opens share one fetch
+  _gridPromise = fetch('./data/fight-grid.json')
+    .then(r => r.ok ? r.json() : {})
+    .catch(() => ({}))
+    .then(d => { window.FIGHT_GRID = d || {}; _gridPromise = null; return window.FIGHT_GRID; });
+  return _gridPromise;
+}
+
+// THE GATE. Playtest: "if there's no stats to analyze, like on debutants, just hide
+// the button." A deep dive that opens an empty panel is worse than no button.
+//
+// It is a MATCHUP, so it needs BOTH men — one debutant kills the panel even if his
+// opponent has forty fights, because there is nothing to cross him against.
+//
+// Answered from a MANIFEST, not the grid file, so the button can be decided at
+// render time without a 245KB fetch on every page view. The manifest is the list of
+// names in the grid; the backfill and this gate therefore agree by construction —
+// a fighter with no bouts is skipped by --needs-grid AND hidden here, from one fact
+// rather than two rules that can drift.
+window.GRID_NAMES = window.GRID_NAMES || null;
+(function(){
+  // 1.8KB. Fetched on load because the button's visibility is decided while
+  // rendering every bout, long before anyone clicks. If it hasn't landed yet the
+  // gate returns false and no button renders — a missing button is a non-event; a
+  // button that opens an empty panel is the thing we were told to avoid.
+  fetch('./data/grid-names.json').then(r => r.ok ? r.json() : [])
+    .then(list => {
+      window.GRID_NAMES = new Set((list || []).map(_gridNorm));
+      glRevealDeepDives();
+    }).catch(() => { window.GRID_NAMES = new Set(); });
+})();
+
+// REVEAL, DON'T RE-RENDER.
+//
+// The manifest is a fetch, so it usually lands AFTER the card is painted — the
+// button has to appear late whatever we do. The obvious move is "re-render the
+// card when it arrives", and I wrote exactly that against a renderCard() I had
+// invented; the real entry point is renderHomeFightCard(evt) and it needs the
+// event object, which this callback has no business knowing about.
+//
+// So: fightRow always emits the button hidden, and this reveals the ones whose
+// fighters are in the manifest. No re-render, no reaching for state that isn't
+// ours, and it is idempotent — safe to call on every paint and on every fetch.
+function glRevealDeepDives(){
+  if (!window.GRID_NAMES) return;
+  document.querySelectorAll('.fight-dd-bar[data-dd-f1]').forEach(btn => {
+    const ok = glDeepDiveAvailable(btn.dataset.ddF1, btn.dataset.ddF2);
+    btn.style.display = ok ? '' : 'none';
+  });
+}
+function _gridNorm(s){
+  return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')
+    .toLowerCase().replace(/[^a-z ]/g,'').trim();
+}
+function glHasGrid(name){
+  // NORMALISED. The card says "Dricus Du Plessis", the data says "Dricus du
+  // Plessis"; the card says "Aleksandar Rakic", the data says "Aleksandar Rakić".
+  // A raw join hides the button for a champion and looks exactly like missing data.
+  // This exact bug has been written three times in this codebase already.
+  if (!window.GRID_NAMES) return false;
+  return window.GRID_NAMES.has(_gridNorm(name));
+}
+function glDeepDiveAvailable(f1, f2){ return glHasGrid(f1) && glHasGrid(f2); }
+
+// RENDER THE DEEP DIVE.
+//
+// COLUMNS AND COUNTS, NOT A SCORE. Two decisions worth stating, because both were
+// argued and both went against the obvious thing:
+//
+// 1. NO PERCENTILES, NO INDEX, NO z ON SCREEN. Playtest: "I don't love the idea of
+//    using 'x percentile'... even if it seems like good data, it doesn't really
+//    mean anything to the typical user." Right. "27 of 32" does everything "95th
+//    percentile" was trying to do and a fan can picture it. Context only where the
+//    bare fact is meaningless without it — 91% of leg kicks landing sounds alarming
+//    until you know 81% is normal; "27 of 32" needs nothing.
+//
+// 2. NO RANKED "BEST PATH". The engine ranks lanes and the ranking has a known
+//    hole: ground-and-pound is gated behind a takedown and the model doesn't know
+//    it, so it will cheerfully tell a man to ground-and-pound someone he cannot
+//    take down. Until that's measured rather than guessed, the order stays
+//    internal. The columns are facts; the order is a hypothesis.
+function _ddGrid(name){
+  const G = window.FIGHT_GRID || {};
+  if (!_ddIndex) _ddIndex = new Map(Object.keys(G).map(k => [_gridNorm(k), k]));
+  const rows = G[_ddIndex.get(_gridNorm(name))];
+  if (!rows) return null;
+  const cells = Array.from({length:9}, () => [0,0]);
+  const cellsD = Array.from({length:9}, () => [0,0]);
+  let n = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0;
+  const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
+  for (const r of rows.slice(0,8)) {
+    if (!r) continue;
+    const gf = r.f && r.f.g, go = r.o && r.o.g;
+    if (!gf) continue;
+    n++;
+    for (let i=0;i<9;i++){ cells[i][0]+=gf[i][0]; cells[i][1]+=gf[i][1];
+      if (go){ cellsD[i][0]+=go[i][0]; cellsD[i][1]+=go[i][1]; } }
+  }
+  // Takedowns/control come from FIGHT_STATS (the margins file) — they were never
+  // part of the grid, and the deep dive needs them because they are usually the
+  // story. Matched on the same normalised name.
+  const S = (window.FIGHT_STATS||{});
+  if (!_ddStatsIndex) _ddStatsIndex = new Map(Object.keys(S).map(k => [_gridNorm(k), k]));
+  const srows = S[_ddStatsIndex.get(_gridNorm(name))] || [];
+  for (const f of srows.slice(0,8)) {
+    if (!f || !f.f || !f.o) continue;
+    tdL += f.f.tdL||0; tdA += f.f.tdA||0;
+    tdAgL += f.o.tdL||0; tdAgA += f.o.tdA||0;
+    ctrl += secs(f.f.ctrl);
+  }
+  return n ? { cells, cellsD, fights:n, tdL, tdA, tdAgL, tdAgA, ctrl } : null;
+}
+let _ddIndex = null, _ddStatsIndex = null;
+
+function renderDeepDive(el, n1, n2){
+  const A = _ddGrid(n1), B = _ddGrid(n2);
+  if (!A || !B) { el.innerHTML = '<div class="dd-loading">No breakdown available for this bout.</div>'; return; }
+  const GI = (p,t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
+  const pct = (l,a) => a ? Math.round(l/a*100) + '%' : '—';
+  const totAtt = G => G.cells.reduce((s,c)=>s+c[1],0);
+  const shr = (G,p,t) => { const tot = totAtt(G); return tot ? Math.round(G.cells[GI(p,t)][1]/tot*100)+'%' : '—'; };
+  const last = s => String(s||'').split(' ').pop();
+  const LANES = [['dist','head','Head at range'],['dist','body','Body at range'],
+                 ['dist','leg','Leg kicks'],['ground','head','Ground and pound']];
+  let h = '<div class="dd-head"><span>' + escHtmlAttr(last(n1)) + '</span>' +
+          '<span class="dd-mid">last ' + Math.min(A.fights,B.fights) + '–' + Math.max(A.fights,B.fights) + ' fights</span>' +
+          '<span>' + escHtmlAttr(last(n2)) + '</span></div>';
+  h += '<div class="dd-sec">Where he aims · landed / thrown</div>';
+  for (const [p,t,label] of LANES) {
+    const a = A.cells[GI(p,t)], b = B.cells[GI(p,t)];
+    h += '<div class="dd-row"><span class="dd-v">' + a[0] + '/' + a[1] + ' <i>' + shr(A,p,t) + '</i></span>' +
+         '<span class="dd-k">' + label + '</span>' +
+         '<span class="dd-v r">' + b[0] + '/' + b[1] + ' <i>' + shr(B,p,t) + '</i></span></div>';
+  }
+  h += '<div class="dd-sec">What lands on him · of strikes thrown his way</div>';
+  for (const [p,t,label] of LANES) {
+    const a = A.cellsD[GI(p,t)], b = B.cellsD[GI(p,t)];
+    h += '<div class="dd-row"><span class="dd-v">' + pct(a[0],a[1]) + '</span>' +
+         '<span class="dd-k">' + label + '</span>' +
+         '<span class="dd-v r">' + pct(b[0],b[1]) + '</span></div>';
+  }
+  h += '<div class="dd-sec">The grappling</div>';
+  const mins = s => Math.round(s/60) + 'm';
+  h += '<div class="dd-row"><span class="dd-v">' + A.tdL + '/' + A.tdA + '</span><span class="dd-k">Takedowns landed</span><span class="dd-v r">' + B.tdL + '/' + B.tdA + '</span></div>';
+  h += '<div class="dd-row"><span class="dd-v">' + (A.tdAgA - A.tdAgL) + '/' + A.tdAgA + '</span><span class="dd-k">Takedowns stopped</span><span class="dd-v r">' + (B.tdAgA - B.tdAgL) + '/' + B.tdAgA + '</span></div>';
+  h += '<div class="dd-row"><span class="dd-v">' + mins(A.ctrl) + '</span><span class="dd-k">Control time</span><span class="dd-v r">' + mins(B.ctrl) + '</span></div>';
+  h += '<div class="dd-note">Last 8 fights each, from UFC box scores. Counts, not ratings.</div>';
+  el.innerHTML = h;
+}
+
 function fightStatsFor(name, date){
   var arr = (window.FIGHT_STATS && window.FIGHT_STATS[name]) || null;
   if (!arr || !arr.length) return null;
@@ -88624,6 +88802,35 @@ function populateFightHistory(name) {
   // Per-fight Scouting dropdown on the events page. Finds this row's scouting
   // panel (walking past any injury banner / details panel), lazy-renders the
   // matchup report on first open, and toggles it.
+  // Matchup Analytics dropdown. Same walk as toggleFightScouting: find this row's
+  // panel, skipping the scouting panel that sits between them.
+  function toggleFightDeepDive(btn) {
+    const row = btn.closest('.fight-row');
+    if (!row) return;
+    let el = row.nextElementSibling, panel = null;
+    while (el) {
+      if (el.classList && el.classList.contains('deepdive-fight-panel')) { panel = el; break; }
+      if (el.classList && el.classList.contains('fight-row')) break;
+      el = el.nextElementSibling;
+    }
+    if (!panel) return;
+    const isOpen = panel.classList.contains('open');
+    if (!isOpen && !panel.dataset.filled) {
+      const inner = panel.querySelector('.dd-inner');
+      inner.innerHTML = '<div class="dd-loading">Loading…</div>';
+      panel.dataset.filled = '1';
+      // THE FETCH HAPPENS HERE, not on page load: ~245KB for a panel most visitors
+      // never open. Concurrent opens share one promise.
+      loadFightGrid().then(() => {
+        try { renderDeepDive(inner, panel.dataset.f1, panel.dataset.f2); }
+        catch (e) { inner.innerHTML = '<div class="dd-loading">Couldn\'t load the breakdown.</div>'; }
+      });
+    }
+    panel.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
+    btn.textContent = isOpen ? 'Matchup Analytics ⌄' : 'Matchup Analytics ⌃';
+  }
+
   function toggleFightScouting(btn) {
     const row = btn.closest('.fight-row');
     if (!row) return;
@@ -104413,7 +104620,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
           (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
-        '</div>' + (f.completed ? fightDetailsPanelHTML(f) : scoutingFightPanelHTML(f));
+          // HIDDEN BY DEFAULT, revealed by glRevealDeepDives() once the manifest
+          // lands and only when BOTH fighters have a strike grid. It's a matchup:
+          // one debutant and there is nothing to cross the other man against, so
+          // the button doesn't exist ("if there's no stats to analyze, just hide
+          // the button"). Emitting it hidden rather than conditionally is what
+          // lets a late-arriving manifest turn it on without a re-render.
+          (f.completed ? '' : '<button type="button" class="fight-dd-bar" style="display:none"' +
+            ' data-dd-f1="' + escHtmlAttr(f.f1) + '" data-dd-f2="' + escHtmlAttr(f.f2) + '"' +
+            ' onclick="event.stopPropagation();toggleFightDeepDive(this)">Matchup Analytics ⌄</button>') +
+        '</div>' + (f.completed ? fightDetailsPanelHTML(f) : scoutingFightPanelHTML(f) + deepDivePanelHTML(f));
       }
 
       function section(title, fights) {
@@ -104749,6 +104965,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // Empty, collapsible Scouting panel per fight — lazy-filled by toggleFightScouting.
+  // The deep-dive panel. Mirrors scoutingFightPanelHTML's collapse mechanics so the
+  // two dropdowns on a row behave identically; filled lazily on first open.
+  function deepDivePanelHTML(f) {
+    return '<div class="deepdive-fight-panel" data-f1="' + escHtmlAttr(f.f1) + '"' +
+           ' data-f2="' + escHtmlAttr(f.f2) + '"><div class="dd-inner"></div></div>';
+  }
+
   function scoutingFightPanelHTML(f) {
     return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') +
       '" data-wc="' + escHtmlAttr(f.wc || '') + '"><div class="sr-inner"></div></div>';
