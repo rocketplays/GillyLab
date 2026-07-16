@@ -108,7 +108,27 @@ def _n(stats, key):
 
 
 def pack(stats):
-    """ESPN's 43-field 'general' category -> compact record for the site."""
+    """ESPN's 43-field 'general' category -> compact record for the site.
+
+    THE MARGINS THROW AWAY THE INTERESTING PART. ESPN serves a full 3x3 cross-tab —
+    head/body/leg BY distance/clinch/ground — and this function has always summed it
+    twice, once across positions to get `head` and once across targets to get
+    `dist`, then kept only the two margins and discarded the grid. The grid is
+    strictly richer: both margins are derivable from it, and it is not derivable
+    from them.
+
+    That matters because the margins cannot tell two different fighters apart.
+    "Head 79%" reads identically for a boxer and a ground-and-pounder. In one real
+    fight the same man went 12 of 23 to the head AT DISTANCE and 24 of 27 to the
+    head ON THE GROUND — those are two completely different skills wearing one
+    number, and the current schema shows the one.
+
+    `g` is the grid, row-major [distance, clinch, ground] x [head, body, leg], each
+    cell [landed, attempted]. The margins stay for backward compatibility:
+    index.html reads .head[] / .clinch[] / .ground[] today and this file is
+    eager-fetched by every visitor, so nothing about the shipped payload changes.
+    split-fight-grid.cjs lifts `g` out into a separate lazy file.
+    """
     head = _n(stats, "sigDistanceHeadStrikesLanded") + _n(stats, "sigClinchHeadStrikesLanded") + _n(stats, "sigGroundHeadStrikesLanded")
     headA = _n(stats, "sigDistanceHeadStrikesAttempted") + _n(stats, "sigClinchHeadStrikesAttempted") + _n(stats, "sigGroundHeadStrikesAttempted")
     body = _n(stats, "sigDistanceBodyStrikesLanded") + _n(stats, "sigClinchBodyStrikesLanded") + _n(stats, "sigGroundBodyStrikesLanded")
@@ -122,6 +142,12 @@ def pack(stats):
     ground = _n(stats, "sigGroundHeadStrikesLanded") + _n(stats, "sigGroundBodyStrikesLanded") + _n(stats, "sigGroundLegStrikesLanded")
     groundA = _n(stats, "sigGroundHeadStrikesAttempted") + _n(stats, "sigGroundBodyStrikesAttempted") + _n(stats, "sigGroundLegStrikesAttempted")
     ctrl = stats.get("timeInControl") or "0:00"
+    # The grid, row-major: distance/clinch/ground x head/body/leg, each [L, A].
+    cell = lambda pos, tgt: [
+        _n(stats, "sig%s%sStrikesLanded" % (pos, tgt)),
+        _n(stats, "sig%s%sStrikesAttempted" % (pos, tgt)),
+    ]
+    grid = [cell(p, t) for p in ("Distance", "Clinch", "Ground") for t in ("Head", "Body", "Leg")]
     return {
         "kd": _n(stats, "knockDowns"),
         "sigL": _n(stats, "sigStrikesLanded"), "sigA": _n(stats, "sigStrikesAttempted"),
@@ -130,6 +156,14 @@ def pack(stats):
         "sub": _n(stats, "submissions"), "rev": _n(stats, "reversals"), "ctrl": ctrl,
         "head": [head, headA], "body": [body, bodyA], "leg": [leg, legA],
         "dist": [dist, distA], "clinch": [clinch, clinchA], "ground": [ground, groundA],
+        # NEW — the grid, and the grappling detail the margins never had room for.
+        # `adv` is advances to half guard / side / mount / back: the difference
+        # between a man who takes you down and a man who then goes somewhere.
+        "g": grid,
+        "tdAcc": round(float(stats.get("takedownAccuracy") or 0), 3),
+        "slams": _n(stats, "takedownsSlams"),
+        "adv": [_n(stats, "advanceToHalfGuard"), _n(stats, "advanceToSide"),
+                _n(stats, "advanceToMount"), _n(stats, "advanceToBack")],
     }
 
 
