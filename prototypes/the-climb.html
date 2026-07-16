@@ -47,6 +47,39 @@
   :root{ --bg:#0a0a0b; --surface:#111114; --surface2:#18181d; --border:#2a2a32;
     --accent:#00e668; --accent2:#ff3d00; --gold:#ffc531; --text:#f0f0f0; --muted:#666672; --card:#14141a; }
   *{box-sizing:border-box}
+
+  /* MOBILE: DON'T ZOOM WHEN I'M TAPPING +.
+     Two fast taps on the same spot is a DOUBLE-TAP, and a double-tap is the
+     browser's built-in zoom gesture — so spending 42 points at any speed zooms the
+     page. It isn't the button's fault and it isn't fixable in JS: the gesture is
+     resolved by the compositor before any click fires.
+
+     touch-action:manipulation tells the browser this element has no double-tap
+     gesture, so it can dispatch the tap immediately. Pinch-to-zoom and scrolling
+     are untouched — they are page gestures, not element ones.
+
+     WHAT WE ARE *NOT* DOING, deliberately: user-scalable=no / maximum-scale=1 in
+     the viewport. It's the usual answer and it's wrong twice over.
+       1. It disables pinch-zoom for everyone, permanently. That's an accessibility
+          regression (WCAG 1.4.4 wants 200%), on a page whose smallest text is
+          0.62rem — about 10px. The people most likely to pinch are the ones who
+          most need to.
+       2. IT WOULDN'T EVEN WORK. iOS Safari has ignored user-scalable=no since
+          iOS 10. So on the device this was reported from it fixes nothing, and
+          the only thing it achieves is breaking zoom on Android.
+     Every tappable thing on this page is a <button> (the opponent cards included),
+     plus the division <select> and the back link, so the list below is exhaustive
+     rather than a blanket * rule. */
+  button, select, a{touch-action:manipulation}
+
+  /* iOS ZOOMS ANY FORM CONTROL UNDER 16px WHEN IT GAINS FOCUS. That's a separate
+     gesture from the double-tap above and it has a separate cause: Safari decides
+     the control is too small to read and helpfully scales the whole viewport, then
+     leaves you zoomed in. .divsel is .82rem (~13px), so tapping the weight class
+     picker zooms every iPhone — a bug nobody reported yet because you pick a
+     division once. 16px is the exact threshold, and it only needs to apply where
+     there's a touch pointer, so the desktop design is unchanged. */
+  @media (pointer: coarse){ .divsel{font-size:16px} }
   body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:1rem}
   .wrap{max-width:820px;margin:0 auto}
   h1{font-size:1.3rem;margin:0 0 .1rem;letter-spacing:-.02em}
