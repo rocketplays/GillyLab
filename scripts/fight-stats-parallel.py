@@ -42,6 +42,48 @@ def _atomic_dump(data):
     os.replace(tmp, OUT)
 MANIFEST = os.path.join(HERE, "espn-import-output", "_manifest.csv")
 
+def _has_grid(rows):
+    """Does this fighter's saved data carry the strike grid pack() now emits?"""
+    return any(((b or {}).get("f") or {}).get("g") for b in (rows or []))
+
+
+def _norm(s):
+    """Fold accents and case. NOT optional: the card says 'Dricus Du Plessis' and
+    the stats say 'Dricus du Plessis'; the card says 'Aleksandar Rakic' and the
+    stats say 'Aleksandar Rakić'. A raw-string join drops a champion and reports
+    it as 'no stats available', which is a bug about the matcher wearing the
+    costume of a bug about the data."""
+    import unicodedata
+    s = unicodedata.normalize("NFD", str(s or ""))
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    return re.sub(r"[^a-z ]", "", s.lower()).strip()
+
+
+def card_names():
+    """Every fighter on every card in data/event.json, normalised.
+
+    ALL the events, not just the featured one: the deep dive button goes on every
+    bout the events page renders, and event.json currently carries 18 events out
+    to September. The Contender Series cards with 0 bouts today will have fighters
+    when ESPN announces them — this reads whatever is there at the time, which is
+    what makes the whole thing auto-populate rather than need a human."""
+    p = os.path.join(HERE, "..", "data", "event.json")
+    if not os.path.exists(p): return set()
+    ev = json.load(open(p))
+    out = set()
+    def walk(o):
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k in ("name", "fighter1", "fighter2") and isinstance(v, str):
+                    out.add(_norm(v))
+                else:
+                    walk(v)
+        elif isinstance(o, list):
+            for v in o: walk(v)
+    walk(ev)
+    return {n for n in out if n and " " in n}
+
+
 def parallel_fighter(sid, namecache, bout_workers):
     """Same output as fsb.backfill_one but fetches a fighter's bouts concurrently
     (given a known id) so long-career fighters finish in seconds, not ~15s."""
@@ -129,6 +171,22 @@ def main():
     ap.add_argument("--refetch-min", type=int, default=0,
                     help="re-fetch fighters that already have >= N saved bouts (catches page-1 "
                          "truncation on long-career fighters); overwrites only on a non-empty result")
+    # --- the deep dive's two flags ---
+    #
+    # WHY --only-missing (the default) CANNOT DO THIS JOB. Its predicate is
+    # `n not in data` — "have we ever saved this fighter?" — and every fighter on
+    # every card is already saved. They are saved WITHOUT the strike grid, which is
+    # precisely the case that predicate cannot see. Asking "does the fighter exist"
+    # when you mean "does the fighter have the field" is the same class of mistake
+    # as joining on a raw name and silently dropping Dricus du Plessis.
+    ap.add_argument("--needs-grid", action="store_true",
+                    help="fetch fighters whose saved bouts have no `g` (strike grid). "
+                         "Self-clearing: once a fighter has the grid he drops out of todo, "
+                         "so no mark file, and re-running is idempotent.")
+    ap.add_argument("--card", action="store_true",
+                    help="restrict to fighters on an upcoming card (data/event.json). "
+                         "The deep dive lives on the events page; the other ~2,980 "
+                         "fighters in the roster are not on the critical path.")
     a = ap.parse_args()
 
     data = fsb.load_out()
@@ -141,13 +199,27 @@ def main():
 
     MARK = os.path.join(HERE, "espn-import-output", "_refetched.txt")
     refetch = a.refetch_min > 0
+    pool = names
+    if a.card:
+        card = card_names()
+        pool = [n for n in names if _norm(n) in card]
+        print("card fighters matched in roster: %d of %d names on upcoming cards"
+              % (len(pool), len(card)))
+
     if refetch:
         marked = set(l.strip() for l in open(MARK)) if os.path.exists(MARK) else set()
-        todo = [n for n in names if len(data.get(n, [])) >= a.refetch_min and n not in marked]
+        todo = [n for n in pool if len(data.get(n, [])) >= a.refetch_min and n not in marked]
+    elif a.needs_grid:
+        # No mark file on purpose: the predicate is its own progress tracker. A
+        # fighter with the grid is no longer missing it, so a re-run picks up
+        # exactly what failed last time and nothing else. --refetch-min needs a
+        # mark file because "has >= N bouts" is still true after you refetch it.
+        todo = [n for n in pool if n in data and not _has_grid(data[n])]
     else:
-        todo = names if a.all else [n for n in names if n not in data]
+        todo = pool if a.all else [n for n in pool if n not in data]
     print("roster: %d | already saved: %d | to process: %d%s"
-          % (len(names), len(data), len(todo), " (refetch)" if refetch else ""))
+          % (len(pool), len(data), len(todo),
+             " (refetch)" if refetch else " (needs-grid)" if a.needs_grid else ""))
     if not todo: return
 
     deadline = time.time() + a.seconds
