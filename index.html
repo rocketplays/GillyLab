@@ -2228,7 +2228,7 @@
     .mh-bar.l { justify-content: flex-end; }
     .mh-bar > span { display: block; height: 100%; background: rgba(255,255,255,0.2); transition: width 0.3s ease; }
     .mh-bar > span.w { background: var(--accent); }
-    /* Neutral: rows where bigger isn't better (share of offence is a habit, not a
+    /* Neutral: rows where bigger isn't better (share of offense is a habit, not a
        virtue). Both sides read the same; only the LENGTHS carry the comparison. */
     .mh-bar > span.n { background: rgba(255,255,255,0.42); }
     .mh-bar.l > span { border-radius: 3px 0 0 3px; }
@@ -2253,7 +2253,6 @@
        close to 100% is he" — nobody is close to 100% at head-at-range. */
     .mh-gk-sw { display: inline-block; width: 3.4rem; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,149,0,0.38), rgba(255,255,255,0.05), rgba(0,230,104,0.5)); vertical-align: middle; margin: 0 0.35rem; }
 
-    .mh-note { color: var(--muted); font-size: 0.66rem; line-height: 1.5; margin-top: 1.4rem; padding-top: 0.7rem; border-top: 1px solid var(--border); }
     .mh-empty { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 1.5rem 0; }
 
     @media (max-width: 720px) {
@@ -4135,8 +4134,7 @@
        positioned top-right it landed on top of the right-hand fighter's face, and
        there is free space here. -->
   <div class="mh-tabs" id="mh-tabs">
-    <button type="button" class="mh-tab on" data-mh-tab="overview" onclick="mhTab('overview')">Overview</button>
-    <button type="button" class="mh-tab" data-mh-tab="striking" onclick="mhTab('striking')">Striking</button>
+    <button type="button" class="mh-tab on" data-mh-tab="striking" onclick="mhTab('striking')">Striking</button>
     <button type="button" class="mh-tab" data-mh-tab="grappling" onclick="mhTab('grappling')">Grappling</button>
     <button type="button" class="mh-x" onclick="closeMatchupHub()" aria-label="Close">&times;</button>
   </div>
@@ -88719,7 +88717,7 @@ function _mhLeadRatio(a, b, min){
 // One comparison row: label centred, values outside, bars growing OUT from the
 // middle so the longer side is the message and you get it before you read a digit.
 // `lead` says who (if anyone) has earned the accent — see the tests above. Omit it
-// for rows where bigger isn't better: how a man distributes his offence is a habit,
+// for rows where bigger isn't better: how a man distributes his offense is a habit,
 // not a virtue, and painting the bigger share green would be scoring it.
 function mhCmp(label, a, b, opts){
   opts = opts || {};
@@ -88833,11 +88831,28 @@ function mhReadBlock(A, B, n1, n2, domain, quiet){
     quiet + '</div>';
 }
 
-function mhOverview(A, B, n1, n2){
-  let h = mhReadBlock(A, B, n1, n2, null,
-    'Nothing here separates these two by enough to be worth calling out — which is ordinary; most fights are close. The numbers are in the tabs.');
+// THERE IS NO OVERVIEW TAB, AND REMOVING IT COST ALMOST NOTHING.
+//
+// Its grappling half was a byte-for-byte duplicate of the Grappling tab. Its
+// striking half — strikes landed, strike accuracy, what-lands-on-him — was the
+// AGGREGATE of the very cross-tab the Striking tab breaks out cell by cell, i.e.
+// the summed-into-one-number view this whole feature exists to replace. A landing
+// tab whose job was to average away the thing the next tab shows you properly.
+//
+// Only ONE number on it was not available anywhere else: knockdowns, which aren't
+// in the grid at all. That and the two headline totals moved here, into "The
+// totals". The overall what-lands-on-him did NOT come with them: this tab already
+// carries it lane by lane, which is strictly more informative.
+function mhStriking(A, B, n1, n2){
+  // With Overview gone this is the landing tab, so when the striking is level the
+  // empty state has to point at where the fight actually is — otherwise the first
+  // thing a reader sees on a lopsided grappling matchup is "nothing to say here".
+  const grapRead = ddRead(A, B, n1, n2, 'grap');
+  let h = mhReadBlock(A, B, n1, n2, 'strike',
+    'No striking gap here is large enough to lead with — the grid below is the detail.' +
+    (grapRead ? ' What separates these two is on the mat; see Grappling.' : ''));
 
-  h += '<div class="mh-sec">Striking <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
+  h += '<div class="mh-sec">The totals <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
   // NO ACCENT ON VOLUME. There is no fight duration anywhere in this data, so
   // "719 landed against 568" conflates a busier fighter with a man who spent longer
   // in there — and landing more strikes is not itself better anyway. The counts are
@@ -88850,12 +88865,6 @@ function mhOverview(A, B, n1, n2){
     { txt: _mhPct(A.sigL, A.sigA), sub: A.sigL + '/' + A.sigA, frac: A.sigA ? A.sigL/A.sigA : 0 },
     { txt: _mhPct(B.sigL, B.sigA), sub: B.sigL + '/' + B.sigA, frac: B.sigA ? B.sigL/B.sigA : 0 },
     { lead: _mhLeadProp(A.sigL, A.sigA, B.sigL, B.sigA) });
-  // Never accented. A long bar here is a man getting hit, so the accent would have
-  // to run backwards to keep green meaning one thing — and a reader who has to
-  // remember which rows are inverted is reading a puzzle, not a stat.
-  h += mhCmp('What lands on him',
-    { txt: _mhPct(A.sigLAg, A.sigAAg), sub: A.sigLAg + '/' + A.sigAAg, frac: A.sigAAg ? A.sigLAg/A.sigAAg : 0 },
-    { txt: _mhPct(B.sigLAg, B.sigAAg), sub: B.sigLAg + '/' + B.sigAAg, frac: B.sigAAg ? B.sigLAg/B.sigAAg : 0 });
   if (A.kd || B.kd) {
     const mK = Math.max(A.kd, B.kd, 1);
     h += mhCmp('Knockdowns scored',
@@ -88864,42 +88873,20 @@ function mhOverview(A, B, n1, n2){
       { lead: _mhLeadCount(A.kd, B.kd) });
   }
 
-  h += '<div class="mh-sec">Grappling <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
-  h += mhCmp('Takedowns landed',
-    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate', frac: A.tdA ? A.tdL/A.tdA : 0 },
-    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate', frac: B.tdA ? B.tdL/B.tdA : 0 },
-    { lead: _mhLeadProp(A.tdL, A.tdA, B.tdL, B.tdA) });
-  const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
-  const base = window.GRID_BASE || {};
-  h += mhCmp('Takedowns stopped',
-    { txt: (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, sub: A.tdAgA ? _mhPct(A.tdAgA-A.tdAgL, A.tdAgA) : '—', frac: sA },
-    { txt: (B.tdAgA-B.tdAgL) + '/' + B.tdAgA, sub: B.tdAgA ? _mhPct(B.tdAgA-B.tdAgL, B.tdAgA) : '—', frac: sB },
-    { norm: base.tdStop ? base.tdStop[0] : null,
-      lead: _mhLeadProp(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA) });
-  const mC = Math.max(A.ctrl, B.ctrl, 1);
-  h += mhCmp('Control time',
-    { txt: _mhMins(A.ctrl), sub: null, frac: A.ctrl/mC },
-    { txt: _mhMins(B.ctrl), sub: null, frac: B.ctrl/mC },
-    { lead: _mhLeadRatio(A.ctrl, B.ctrl, 1.25) });
-
-  return h + mhNote(A, B);
-}
-
-function mhStriking(A, B, n1, n2){
-  let h = mhReadBlock(A, B, n1, n2, 'strike',
-    'No striking gap here is large enough to lead with. The grid below is the detail.');
-
-  h += '<div class="mh-sec">Where his offence goes <span>share of everything he throws</span></div>';
+  h += '<div class="mh-sec">Where his offense goes <span>share of everything he throws · last ' + _mhN(A.fights, B.fights) + ' fights</span></div>';
   const tot = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
   const tA = tot(A), tB = tot(B);
   for (const [p,t,label] of _MH_LANES) {
     const a = A.cells[_MH_GI(p,t)], b = B.cells[_MH_GI(p,t)];
-    // Scaled to the bigger of the two shares, not to 100% — at 8% of offence both
+    // Scaled to the bigger of the two shares, not to 100% — at 8% of offense both
     // leg-kick bars would be invisible slivers and the comparison would be lost.
     const ra = a[1]/tA, rb = b[1]/tB, m = Math.max(ra, rb, 0.01);
+    // Percentages only. The raw "186 thrown" was noise in a row whose entire point
+    // is the share — and the grid directly below prints landed/thrown for every one
+    // of these cells anyway.
     h += mhCmp(label,
-      { txt: Math.round(ra*100) + '%', sub: a[1] + ' thrown', frac: ra/m },
-      { txt: Math.round(rb*100) + '%', sub: b[1] + ' thrown', frac: rb/m });
+      { txt: Math.round(ra*100) + '%', sub: null, frac: ra/m },
+      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m });
   }
 
   h += '<div class="mh-sec">How well it lands <span>accuracy by position and target · landed / thrown</span></div>';
@@ -88923,7 +88910,7 @@ function mhStriking(A, B, n1, n2){
       { txt: b[1] < _MH_FLOOR ? '—' : _mhPct(b[0],b[1]), sub: b[0] + '/' + b[1], frac: b[1] ? b[0]/b[1] : 0 },
       { norm: bb ? bb[0] : null });
   }
-  return h + mhNote(A, B);
+  return h;
 }
 
 function mhGrappling(A, B, n1, n2){
@@ -88974,15 +88961,13 @@ function mhGrappling(A, B, n1, n2){
                        { lead: _mhLeadCount(a, b) });
     }
   }
-  return h + mhNote(A, B);
+  return h;
 }
-
-function mhNote(A, B){
-  return '<div class="mh-note">Last ' + _mhN(A.fights, B.fights) +
-    ' UFC fights each, from official box scores. Counts, not ratings — no index, no percentile, ' +
-    'no projected winner. Where one man is unusually open or unusually hard to hit, the tick marks ' +
-    'what a typical fighter on this card does.</div>';
-}
+// There is no footer. It carried the provenance ("last N UFC fights each, from
+// official box scores") and the tick's meaning, both of which now live on the
+// section headers that actually own them — which is also where the N is honest,
+// since the striking totals count FIGHT_STATS fights and the grid counts
+// FIGHT_GRID fights, and one footer had to pick one and be wrong about the other.
 
 function mhRenderBody(){
   const body = document.getElementById('mh-body');
@@ -88990,9 +88975,8 @@ function mhRenderBody(){
   const { A, B, n1, n2, tab } = _mhState;
   if (!A || !B) { body.innerHTML = '<div class="mh-empty">No breakdown available for this bout.</div>'; return; }
   try {
-    body.innerHTML = tab === 'striking' ? mhStriking(A, B, n1, n2)
-                   : tab === 'grappling' ? mhGrappling(A, B, n1, n2)
-                   : mhOverview(A, B, n1, n2);
+    body.innerHTML = tab === 'grappling' ? mhGrappling(A, B, n1, n2)
+                                         : mhStriking(A, B, n1, n2);
   } catch (e) {
     body.innerHTML = '<div class="mh-empty">Couldn\'t render this breakdown.</div>';
   }
@@ -89041,9 +89025,9 @@ function _mhKey(e){ if (e.key === 'Escape') closeMatchupHub(); }
 function openMatchupHub(n1, n2, meta){
   const box = document.getElementById('mh-box'), ov = document.getElementById('mh-overlay');
   if (!box || !ov) return;
-  _mhState = { n1, n2, A: null, B: null, tab: 'overview', meta: meta || {} };
+  _mhState = { n1, n2, A: null, B: null, tab: 'striking', meta: meta || {} };
   mhRenderHeader();
-  document.querySelectorAll('#mh-tabs .mh-tab').forEach(b => b.classList.toggle('on', b.dataset.mhTab === 'overview'));
+  document.querySelectorAll('#mh-tabs .mh-tab').forEach(b => b.classList.toggle('on', b.dataset.mhTab === 'striking'));
   const body = document.getElementById('mh-body');
   body.innerHTML = '<div class="mh-loading">Loading…</div>';
   body.scrollTop = 0;
@@ -89098,7 +89082,7 @@ window.mhOpenFighter = mhOpenFighter;
 // A fan who reads "8 of 23 vs 27 of 32" has already worked out where the fight goes.
 //
 // z ONLY PICKS, IT NEVER PRINTS. Choosing which of six disparities to lead with
-// requires comparing gaps across axes with different spreads (takedown defence
+// requires comparing gaps across axes with different spreads (takedown defense
 // sd ~19 points, head accuracy sd ~8 — the same 20-point gap is ordinary in one and
 // enormous in the other), so the selection is z-scored against baselines measured at
 // build time. The output is always counts, because "95th percentile" means nothing
@@ -89116,7 +89100,7 @@ function ddRead(A, B, n1, n2, domain){
   const GI = (p,t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
   const cands = [];
 
-  // Takedown defence — usually the story, and the one axis where the spread is wide
+  // Takedown defense — usually the story, and the one axis where the spread is wide
   // enough that a gap is almost always meaningful.
   // GRADED, WITH A FLOOR. The first version said "is far harder to take down" for
   // Cannonier at 16 of 23 (70%) against Duncan's 19 of 30 (63%) — a seven-point
@@ -92988,7 +92972,7 @@ const ACCOLADES = {
   ],
   "Thiago Moises": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu under Paulo Streckert", detail: null },
-    { icon: "🏆", title: "RFA Lightweight Champion", detail: "two successful title defences (def. Jamall Emmers & Zach Freeman)" },
+    { icon: "🏆", title: "RFA Lightweight Champion", detail: "two successful title defenses (def. Jamall Emmers & Zach Freeman)" },
     { icon: "⭐", title: "UFC Performance of the Night (1×)", detail: "vs. Christos Giagos" },
     { icon: "⭐", title: "UFC Fight of the Night (1×)", detail: "vs. Benoît Saint-Denis" }
   ],
@@ -93018,7 +93002,7 @@ const ACCOLADES = {
   ],
   "Jai Herbert": [
     { icon: "🥋", title: "Brown belt in Brazilian Jiu-Jitsu under Tom Caughey", detail: null },
-    { icon: "🏆", title: "Cage Warriors Lightweight Champion", detail: "one successful title defence (def. Cain Carrizosa)" },
+    { icon: "🏆", title: "Cage Warriors Lightweight Champion", detail: "one successful title defense (def. Cain Carrizosa)" },
     { icon: "🏆", title: "Cage Warriors Academy South East Lightweight Champion", detail: null },
     { icon: "🥊", title: "Muay Thai stylist", detail: null }
   ],
@@ -93462,7 +93446,7 @@ const ACCOLADES = {
   "Tanner Boser": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥊", title: "Black belt in Shitō-ryū Karate", detail: null },
-    { icon: "🏆", title: "2× Unified MMA Heavyweight Champion", detail: "three successful title defences" },
+    { icon: "🏆", title: "2× Unified MMA Heavyweight Champion", detail: "three successful title defenses" },
     { icon: "⭐", title: "UFC Performance of the Night (1×)", detail: "vs. Raphael Pessoa" }
   ],
   "Rodrigo Nascimento": [
@@ -103966,7 +103950,7 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
     btn.style.display = 'none';
     btn.dataset.ddF1 = name;
     btn.dataset.ddF2 = opp;
-    btn.innerHTML = 'Matchup Analytics <span class="dd-go">&rsaquo;</span>';
+    btn.innerHTML = 'Matchup Analytics Deep Dive <span class="dd-go">&rsaquo;</span>';
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       openMatchupHub(name, opp, { wc: weightClass || '', rounds: rounds || '' });
