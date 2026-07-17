@@ -2183,7 +2183,7 @@
     .fight-dd-bar .dd-go { color: var(--accent); font-size: 1rem; line-height: 1; }
 
     #mh-overlay { display: none; opacity: 0; transition: opacity 0.22s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.86); z-index: 9200; }
-    #mh-box { display: none; opacity: 0; transition: opacity 0.22s ease, transform 0.22s ease; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9201; width: min(1040px, 94vw); max-height: 88vh; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 24px 72px rgba(0,0,0,0.7); display: none; flex-direction: column; overflow: hidden; }
+    #mh-box { --mh-rail: 3.4rem; display: none; opacity: 0; transition: opacity 0.22s ease, transform 0.22s ease; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9201; width: min(1040px, 94vw); max-height: 88vh; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 24px 72px rgba(0,0,0,0.7); display: none; flex-direction: column; overflow: hidden; }
     #mh-box.mh-on { display: flex; }
 
     /* Header: the two men, and nothing else competing with them. */
@@ -2252,7 +2252,10 @@
        averaging into mush. Two 3x3s, side by side, shaded by accuracy. */
     .mh-grids { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
     .mh-grid-t { font-size: 0.7rem; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 0.4rem; }
-    .mh-grid { display: grid; grid-template-columns: 3.4rem 1fr 1fr 1fr; gap: 2px; }
+    /* --mh-rail is the row-label column (DISTANCE / CLINCH / GROUND). It is a
+       variable because TWO rules need to agree about it — the grid that creates it
+       and the legend that has to step over it. See .mh-gk. */
+    .mh-grid { display: grid; grid-template-columns: var(--mh-rail) 1fr 1fr 1fr; gap: 2px; }
     .mh-gh { font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); text-align: center; padding-bottom: 0.15rem; }
     .mh-gr { font-size: 0.58rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; }
     .mh-gc { border-radius: 4px; padding: 0.4rem 0.2rem; text-align: center; background: rgba(255,255,255,0.03); }
@@ -2280,7 +2283,17 @@
        caption pushed "Better" onto its own line, orphaned from the gradient it
        labels — the label ended up further from its scale than the sentence below
        it. So: scale on line one, nowrap; what it's measured against on line two. */
-    .mh-gk { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
+    /* CENTRED ON THE TILES, NOT ON THE CONTAINER — and those are 28px apart.
+       align-items:center was already centring this perfectly inside .mh-gk, which is
+       why it looked right and measured right: legend centre 720, container centre
+       720, offset 0. But the legend explains the TILES, and the tiles do not start
+       where the container does — every grid opens with a --mh-rail label column, so
+       the tile field runs 277..1219 and centres on 748. The legend sat 28px to its
+       left, pointing slightly past the thing it describes.
+       Stepping over one rail's width lands it on the tiles at both breakpoints: two
+       grids side by side on desktop and one stacked on a phone both put exactly one
+       rail to the left of the first tile. */
+    .mh-gk { padding-left: calc(var(--mh-rail) + 2px); display: flex; flex-direction: column; align-items: center; gap: 0.25rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
     .mh-gk-row { display: inline-flex; align-items: center; white-space: nowrap; }
     .mh-gk-sub { opacity: 0.8; }
     /* Diverging, because the question is "is he better than normal here", not "how
