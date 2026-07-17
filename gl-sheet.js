@@ -1199,9 +1199,21 @@ const GL_SHEET = (function () {
   }
 
   /* ── MATCHUP HUB SHEETS: striking + grappling ────────────────────────────
-     One condensed card per tab of the deep dive. 1080x1350 — Instagram's 4:5
-     feed maximum, the same shape drawMatchup's 'portrait' uses, because these
-     are feed cards and not stories.
+     One card per tab of the deep dive, at 1080x1920 — the story cut, the same
+     shape drawMatchup uses by DEFAULT and for the same reason it gives there:
+     it is the only one that can carry the analysis at a size worth reading.
+
+     THEY WERE 1350 AND EVERYTHING WAS TOO SMALL. 4:5 is the feed maximum and it
+     is the right shape for a card with three sections; these have four, and the
+     striking one has to hold two 3x3 cross-tabs whose cells carry two numbers
+     each. At 1350 the type was shrunk until it fitted, which is the wrong end of
+     the trade — the cells were 62px with 17px sample counts. Going to 1920 buys
+     570px, which is what pays for the bigger type AND the defensive section.
+     Height is the cheap axis: a story scrolls, a feed crop does not.
+
+     GRAPPLING STAYS AT 1350. Six rows and a blurb compose well at 4:5, and the
+     in-between heights are a trap: Instagram crops a feed post to 4:5, so a 1600
+     card would silently lose its bottom row. 1350 or 1920, nothing between.
 
      EVERY OUTSIDE DEPENDENCY IS typeof-GUARDED, and that is not defensive
      habit — gen-gl-sheet.cjs slices this module out and serves it as
@@ -1234,20 +1246,30 @@ const GL_SHEET = (function () {
   // the middle so the longer side is the message before you read a digit. `accA`/
   // `accB` light the accent, and are passed in already gated — the card never
   // decides on its own that a gap is real.
-  function sgBar(ctx, label, txtA, txtB, subA, subB, fracA, fracB, y, accA, accB) {
-    ctx.textAlign = 'center'; ctx.font = '400 21px ' + SANS; ctx.fillStyle = MUT;
+  // `S` — a scale on the vertical rhythm and the type. 1 is the original, which is
+  // what the GRAPPLING card uses and must keep: it was signed off as-is, and the one
+  // time I scaled it up the six rows ran past the footer and printed "REVERSALS"
+  // through "gillylab.com". The striking card is 1920 and passes 1.3.
+  //
+  // A scale rather than two copies of this function, because two copies of a layout
+  // is two layouts, and they drift. Width does NOT scale — the canvas is 1080 either
+  // way, so only the rhythm and the type have anywhere to go.
+  function sgBar(ctx, label, txtA, txtB, subA, subB, fracA, fracB, y, accA, accB, S) {
+    S = S || 1;
+    const px = (n) => Math.round(n * S);
+    ctx.textAlign = 'center'; ctx.font = '400 ' + px(21) + 'px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(String(label).toUpperCase(), W / 2, y);
-    const vy = y + 40;
-    ctx.textAlign = 'left';  ctx.font = '700 36px ' + COND; ctx.fillStyle = accA ? ACC : TXT;
+    const vy = y + px(40);
+    ctx.textAlign = 'left';  ctx.font = '700 ' + px(36) + 'px ' + COND; ctx.fillStyle = accA ? ACC : TXT;
     ctx.fillText(txtA, 64, vy);
     ctx.textAlign = 'right'; ctx.fillStyle = accB ? ACC : TXT;
     ctx.fillText(txtB, W - 64, vy);
     if (subA || subB) {
-      ctx.font = '400 20px ' + SANS; ctx.fillStyle = FOOT;
-      ctx.textAlign = 'left';  if (subA) ctx.fillText(subA, 64, vy + 26);
-      ctx.textAlign = 'right'; if (subB) ctx.fillText(subB, W - 64, vy + 26);
+      ctx.font = '400 ' + px(20) + 'px ' + SANS; ctx.fillStyle = FOOT;
+      ctx.textAlign = 'left';  if (subA) ctx.fillText(subA, 64, vy + px(26));
+      ctx.textAlign = 'right'; if (subB) ctx.fillText(subB, W - 64, vy + px(26));
     }
-    const gap = 18, half = 268, bh = 12, by = y + 16;
+    const gap = 18, half = 268, bh = px(12), by = y + px(16);
     const lx = W / 2 - gap - half, rx = W / 2 + gap;
     roundRect(ctx, lx, by, half, bh, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     roundRect(ctx, rx, by, half, bh, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
@@ -1262,22 +1284,43 @@ const GL_SHEET = (function () {
     if (wb) { roundRect(ctx, rx, by, wb, bh, 6);
               ctx.fillStyle = accB ? ACC : 'rgba(255,255,255,0.34)'; ctx.fill(); }
     ctx.textAlign = 'left';
-    return y + (subA || subB ? 74 : 62);
+    return y + (subA || subB ? 96 : 80);
+  }
+  // sectionTitle() is drawMatchup's, sized for its sheet. Same `S` as sgBar so the
+  // headings grow with the rows they head — a 29px heading over 48px numbers reads
+  // as a caption, not a section.
+  function sgTitle(ctx, t, y, S) {
+    S = S || 1;
+    ctx.strokeStyle = LINE; ctx.lineWidth = 1;
+    const ly = y - Math.round(40.5 * S) - 0.5;
+    ctx.beginPath(); ctx.moveTo(64, ly); ctx.lineTo(W - 64, ly); ctx.stroke();
+    ctx.font = '700 ' + Math.round(29 * S) + 'px ' + SANS; ctx.fillStyle = TXT;
+    ctx.fillText(String(t).toUpperCase(), 64, y);
+    return y + Math.round(30 * S);
   }
 
   // The 3x3 cross-tab, shaded against the fighter's own division exactly as the
   // modal shades it — same mhNorm, same floor, same capped z. It is the one thing
   // on the striking tab that no other view in the product shows, so a striking
   // card without it would be a card of the parts that aren't the point.
-  function sgGrid(ctx, G, name, x, y, w) {
-    const cw = w / 3, rh = 62;
+  // `showLabels` — the DIST/CLIN/GRND rail down the left.
+  //
+  // ONLY THE LEFT GRID GETS IT, and not to save ink: at 420px wide the right grid's
+  // rail was right-aligned into x-12, which put "DIST" straight through the LEFT
+  // grid's LEG column — the label sat against Magny's 71% like a caption for it.
+  // The two grids share the same rows by construction, so one rail labels both; the
+  // second was always redundant, and redundant furniture is what collided.
+  function sgGrid(ctx, G, name, x, y, w, showLabels) {
+    const cw = w / 3, rh = 84;
     ctx.textAlign = 'center';
-    ctx.font = '700 21px ' + SANS; ctx.fillStyle = MUT;
+    ctx.font = '700 25px ' + SANS; ctx.fillStyle = MUT;
     ['HEAD','BODY','LEG'].forEach((t, i) => ctx.fillText(t, x + cw * i + cw / 2, y));
-    let yy = y + 14;
+    let yy = y + 16;
     [['dist','DIST'],['clinch','CLIN'],['ground','GRND']].forEach(([p, plabel]) => {
-      ctx.textAlign = 'right'; ctx.font = '700 19px ' + SANS; ctx.fillStyle = FOOT;
-      ctx.fillText(plabel, x - 12, yy + rh / 2 + 6);
+      if (showLabels) {
+        ctx.textAlign = 'right'; ctx.font = '700 22px ' + SANS; ctx.fillStyle = FOOT;
+        ctx.fillText(plabel, x - 14, yy + rh / 2 + 7);
+      }
       ['head','body','leg'].forEach((t, ci) => {
         const i = _sgGI(p, t), c = G.cells[i];
         const n = c[1], thin = n < SG_FLOOR, r = n ? c[0] / n : 0;
@@ -1288,16 +1331,16 @@ const GL_SHEET = (function () {
           bg = z >= 0 ? 'rgba(0,230,104,' + (0.06 + 0.44 * z).toFixed(3) + ')'
                       : 'rgba(255,64,64,' + (0.06 + 0.34 * (-z)).toFixed(3) + ')';
         }
-        const cx = x + cw * ci + 3, cy = yy + 3, cwid = cw - 6, chh = rh - 6;
-        roundRect(ctx, cx, cy, cwid, chh, 7); ctx.fillStyle = bg; ctx.fill();
+        const cx = x + cw * ci + 4, cy = yy + 4, cwid = cw - 8, chh = rh - 8;
+        roundRect(ctx, cx, cy, cwid, chh, 9); ctx.fillStyle = bg; ctx.fill();
         if (thin) { ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 1; ctx.stroke(); }
         ctx.textAlign = 'center';
         // An empty cell says nothing rather than "0%", which would read as a
         // measured zero instead of the absence it is. Same rule as the modal.
-        ctx.font = '700 26px ' + COND; ctx.fillStyle = n ? TXT : FOOT;
-        ctx.fillText(n ? Math.round(r * 100) + '%' : '·', cx + cwid / 2, cy + 26);
-        ctx.font = '400 17px ' + SANS; ctx.fillStyle = FOOT;
-        ctx.fillText(n ? c[0] + '/' + n : '—', cx + cwid / 2, cy + 46);
+        ctx.font = '700 38px ' + COND; ctx.fillStyle = n ? TXT : FOOT;
+        ctx.fillText(n ? Math.round(r * 100) + '%' : '·', cx + cwid / 2, cy + 38);
+        ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT;
+        ctx.fillText(n ? c[0] + '/' + n : '—', cx + cwid / 2, cy + 65);
       });
       yy += rh;
     });
@@ -1306,61 +1349,110 @@ const GL_SHEET = (function () {
   }
 
   // Shared top: brand, date, avatars, names, records. Returns the y to build from.
-  async function sgHead(nameA, nameB, info, kicker) {
+  //
+  // HEIGHT IS PER SHEET, and the two differ on purpose. Grappling is six rows and
+  // reads well at the 4:5 feed maximum; striking has to carry two 3x3 cross-tabs
+  // AND the defensive lanes, which do not fit there at a size worth reading. The
+  // in-between sizes are the trap: Instagram crops a feed post to 4:5, so a 1600
+  // card would lose its bottom. 1350 or 1920, nothing else.
+  async function sgHead(nameA, nameB, info, kicker, CH, R) {
     await fontsReady();
     const a = meta(nameA), b = meta(nameB);
     const [imgA, imgB, logo] = await Promise.all([loadImg(a.slug), loadImg(b.slug), loadBrandLogo()]);
-    const CH = 1350;
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
-    brand(ctx, 82, kicker, logo);
+    brand(ctx, 84, kicker, logo);
     const sub = [(info && info.weightClass) || '', (info && info.date) || ''].filter(Boolean).join(' · ');
-    if (sub) { ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(sub, 64, 118); }
+    if (sub) { ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(sub, 64, 122); }
     // showForm=false: the win/loss chips are a fact about the career, and these two
-    // cards are about one department of one fight. Also buys ~30px of the budget.
-    const y = versusBlock(ctx, a, b, imgA, imgB, 150, 44, NEU_A, NEU_B, false);
+    // cards are about one department of one fight.
+    const y = versusBlock(ctx, a, b, imgA, imgB, 158, R || 46, NEU_A, NEU_B, false);
     return { cv, ctx, CH, y };
   }
 
   async function drawStriking(nameA, nameB, info) {
     const A = _sgGrid(nameA), B = _sgGrid(nameB);
     if (!A || !B) throw new Error('No striking breakdown available for this bout.');
-    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC');
-    let y = y0 + 6;
-    const read = _sgRead(A, B, nameA, nameB, 'strike');
-    if (read) y = sgRead(ctx, read, y);
+    // S=1.3 — this card has 1920 to spend and four sections to fill, so the type can
+    // go where the grappling card's could not.
+    const S = 1.3;
+    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC', 1920, 54);
+    let y = y0 + 10;
+
+    // NO READ BLOCK ON THIS CARD. It is the one thing here that also appears, word
+    // for word, at the top of the panel the reader just came from — and it cost
+    // ~140px of a budget that the grids and the defensive lanes both wanted. The
+    // sections below ARE the read, in the form a card is good at. The grappling
+    // card keeps its blurb: it has the room, and its numbers are less self-evident.
 
     // WHERE THE FIGHT HAPPENS — share of everything they throw. No accent: a share
     // has no direction (see the modal). Scaled to the larger of the two so a 5%
     // clinch bar isn't an invisible sliver.
-    y = sectionTitle(ctx, 'Where the fight happens', y + 40) + 16;
+    y = sgTitle(ctx, 'Where the fight happens', y + Math.round(44*S), S) + Math.round(14*S);
     const tot = (G) => G.cells.reduce((s, c) => s + c[1], 0) || 1;
     const tA = tot(A), tB = tot(B);
     [[0, 'At range'], [1, 'In the clinch'], [2, 'On the ground']].forEach(([g, lab]) => {
       const ra = (A.cells[g*3][1] + A.cells[g*3+1][1] + A.cells[g*3+2][1]) / tA;
       const rb = (B.cells[g*3][1] + B.cells[g*3+1][1] + B.cells[g*3+2][1]) / tB;
       const m = Math.max(ra, rb, 0.01);
-      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra/m, rb/m, y, false, false);
+      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra/m, rb/m, y, false, false, S);
     });
 
     // HOW WELL IT LANDS — the cross-tab, per fighter, shaded against his division.
-    y = sectionTitle(ctx, 'How well it lands', y + 30) + 30;
-    const gw = 400;
-    ctx.textAlign = 'center'; ctx.font = '700 26px ' + COND; ctx.fillStyle = TXT;
+    y = sgTitle(ctx, 'How well it lands', y + Math.round(48*S), S) + Math.round(30*S);
+    const gw = 420;
+    ctx.textAlign = 'center'; ctx.font = '700 32px ' + COND; ctx.fillStyle = TXT;
     const lastA = (typeof _ddLast === 'function') ? _ddLast(nameA) : nameA;
     const lastB = (typeof _ddLast === 'function') ? _ddLast(nameB) : nameB;
-    ctx.fillText(clip(ctx, String(lastA).toUpperCase(), gw), 104 + gw/2, y);
-    ctx.fillText(clip(ctx, String(lastB).toUpperCase(), gw), W - 104 - gw/2, y);
+    ctx.fillText(clip(ctx, String(lastA).toUpperCase(), gw), 108 + gw/2, y);
+    ctx.fillText(clip(ctx, String(lastB).toUpperCase(), gw), W - 84 - gw/2, y);
     ctx.textAlign = 'left';
-    const gy = y + 30;
-    sgGrid(ctx, A, nameA, 104, gy, gw);
-    const gEnd = sgGrid(ctx, B, nameB, W - 104 - gw, gy, gw);
-    y = gEnd + 34;
-    ctx.textAlign = 'center'; ctx.font = '400 21px ' + SANS; ctx.fillStyle = FOOT;
+    const gy = y + 36;
+    sgGrid(ctx, A, nameA, 108, gy, gw, true);          // the rail labels both grids
+    const gEnd = sgGrid(ctx, B, nameB, W - 84 - gw, gy, gw, false);
+    y = gEnd + 40;
+    ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = FOOT;
     ctx.fillText('accuracy by position and target · shaded vs the division median', W / 2, y);
     ctx.textAlign = 'left';
+
+    // WHAT LANDS ON THEM — the striking tab's fourth section, and the reason this
+    // card is 1920 rather than 1350. GRADED, NOT COMPARED, and the accent runs
+    // BACKWARDS because the number is a beating: below your own division's median is
+    // the good end. Two verdicts side by side, not a contest — the same rule as the
+    // modal. Getting it the other way up would paint the best defender on the card
+    // red, which is how the very first cut of this grid behaved.
+    const LANES = [['dist','head','Head at range'],['dist','body','Body at range'],
+                   ['dist','leg','Leg kicks'],['ground','head','Ground strikes']];
+    const rows = [];
+    for (const [p, t, lab] of LANES) {
+      const i = _sgGI(p, t), ca = A.cellsD[i], cb = B.cellsD[i];
+      if (ca[1] < SG_FLOOR && cb[1] < SG_FLOOR) continue;   // nothing measured either side
+      rows.push([lab, i, ca, cb]);
+    }
+    if (rows.length) {
+      // The heading is drawn INSIDE the room check, not before it. The 1350 version
+      // printed "WHAT LANDS ON THEM" over empty canvas because the budget was
+      // computed after the title was already on the page.
+      const need = Math.round(92*S) + Math.round(74*S);                       // title + one row, the minimum worth printing
+      if (CH - 100 - y >= need) {
+        y = sgTitle(ctx, 'What lands on them', y + Math.round(50*S), S) + Math.round(14*S);
+        const room = Math.floor((CH - 100 - y) / Math.round(74*S));
+        for (const [lab, i, ca, cb] of rows.slice(0, Math.max(0, room))) {
+          const ra = ca[1] ? ca[0]/ca[1] : 0, rb = cb[1] ? cb[0]/cb[1] : 0;
+          const nA = ca[1] >= SG_FLOOR ? _sgNorm(nameA, 'allow', i) : null;
+          const nB = cb[1] >= SG_FLOOR ? _sgNorm(nameB, 'allow', i) : null;
+          const gA = (typeof _mhGrade === 'function') ? _mhGrade(ra, ca[1], nA, true) : null;
+          const gB = (typeof _mhGrade === 'function') ? _mhGrade(rb, cb[1], nB, true) : null;
+          y = sgBar(ctx, lab,
+            ca[1] < SG_FLOOR ? '—' : Math.round(ra*100) + '%',
+            cb[1] < SG_FLOOR ? '—' : Math.round(rb*100) + '%',
+            ca[0] + '/' + ca[1], cb[0] + '/' + cb[1],
+            ra, rb, y, gA === 'w', gB === 'w', S);
+        }
+      }
+    }
 
     // THERE IS NO "WHAT LANDS ON THEM" ON THIS CARD, AND IT IS NOT AN OVERSIGHT.
     // I added it, because the card LOOKED about a quarter empty. Measured, on a
@@ -1381,10 +1473,23 @@ const GL_SHEET = (function () {
   async function drawGrappling(nameA, nameB, info) {
     const A = _sgGrid(nameA), B = _sgGrid(nameB);
     if (!A || !B) throw new Error('No grappling breakdown available for this bout.');
-    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC');
-    let y = y0 + 6;
-    const read = _sgRead(A, B, nameA, nameB, 'grap');
-    if (read) y = sgRead(ctx, read, y);
+    // STAYS AT 1350, AND THE SCALE IS ARITHMETIC, NOT TASTE.
+    //
+    // Dropping the blurb frees ~124px, and that plus the 34px of slack it already
+    // had is the entire budget for bigger type. Traced against a footer at 1310:
+    //     S=1.30  content ends 1368   overflows by 98
+    //     S=1.20  content ends 1309   overflows by 39
+    //     S=1.15  content ends 1275   overflows by 5
+    //     S=1.10  content ends 1241   fits, 29px spare
+    // So 1.10. I had shipped 1.30 by eye and it printed "REVERSALS" straight through
+    // "gillylab.com · not betting advice" with the last row hanging off the canvas —
+    // which is what a layout does when nobody counts.
+    const S = 1.1;
+    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC', 1350, 46);
+    let y = y0 + 8;
+    // No read block: it is the one thing on this card that also sits, word for word,
+    // at the top of the panel the reader just came from, and it was the ~124px the
+    // numbers wanted. Same call as the striking card.
 
     // Per 15 minutes, not per fight — the same exposure the modal and the profile
     // page use. A card that said "per fight" would disagree with both.
@@ -1397,50 +1502,50 @@ const GL_SHEET = (function () {
     const LP = lead(typeof _mhLeadProp === 'function' ? _mhLeadProp : null);
     const LR = lead(typeof _mhLeadRatio === 'function' ? _mhLeadRatio : null);
 
-    y = sectionTitle(ctx, 'Takedowns', y + 40) + 16;
+    y = sgTitle(ctx, 'Takedowns', y + Math.round(44*S), S) + Math.round(14*S);
     const tdLead = LP(A.tdL, A.tdA, B.tdL, B.tdA);
     y = sgBar(ctx, 'Takedowns landed',
       A.tdL + '/' + A.tdA, B.tdL + '/' + B.tdA,
       (A.tdA ? Math.round(A.tdL/A.tdA*100) + '% · ' : '') + (A.tdL/eA).toFixed(1) + unit,
       (B.tdA ? Math.round(B.tdL/B.tdA*100) + '% · ' : '') + (B.tdL/eB).toFixed(1) + unit,
-      A.tdA ? A.tdL/A.tdA : 0, B.tdA ? B.tdL/B.tdA : 0, y, tdLead === 1, tdLead === 2);
+      A.tdA ? A.tdL/A.tdA : 0, B.tdA ? B.tdL/B.tdA : 0, y, tdLead === 1, tdLead === 2, S);
     const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
     const stLead = LP(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA);
     y = sgBar(ctx, 'Takedowns stopped',
       (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, (B.tdAgA-B.tdAgL) + '/' + B.tdAgA,
       A.tdAgA ? Math.round(sA*100) + '%' : 'never shot on',
       B.tdAgA ? Math.round(sB*100) + '%' : 'never shot on',
-      sA, sB, y, stLead === 1, stLead === 2);
+      sA, sB, y, stLead === 1, stLead === 2, S);
 
-    // +52, NOT +30. sectionTitle draws its hairline at y-40.5, and an sgBar that
-    // carries subs paints them at prevY+66 and returns prevY+74 — so +30 put the
-    // rule at prevY+63.5, straight through the "55%" underneath it. Anything
-    // following a subbed row needs > +46.5 to clear the descenders.
-    y = sectionTitle(ctx, 'Control', y + 52) + 16;
+    // +70, and the reason is the same one that made it +52 at the old size:
+    // sgTitle draws its hairline at y-48.5, and an sgBar carrying subs paints them
+    // at prevY+82. Too small a gap and the rule goes straight through the "55%"
+    // under Takedowns stopped, which is exactly what shipped at +30.
+    y = sgTitle(ctx, 'Control', y + Math.round(58*S), S) + Math.round(14*S);
     const cA = A.ctrl / eA, cB = B.ctrl / eB, mC = Math.max(cA, cB, 1);
     const cLead = LR(cA, cB, 1.25);
     y = sgBar(ctx, 'Control time', mins(A.ctrl), mins(B.ctrl),
       mins(cA) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
       mins(cB) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
-      cA/mC, cB/mC, y, cLead === 1, cLead === 2);
+      cA/mC, cB/mC, y, cLead === 1, cLead === 2, S);
     const kA = A.ctrlAg / eA, kB = B.ctrlAg / eB, mK = Math.max(kA, kB, 1);
     // Not accented: a long bar here is time on your back.
     y = sgBar(ctx, 'Time spent under control', mins(A.ctrlAg), mins(B.ctrlAg),
       mins(kA) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
       mins(kB) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
-      kA/mK, kB/mK, y, false, false);
+      kA/mK, kB/mK, y, false, false, S);
 
     // Sparse — dropped entirely when both are zero rather than printed as 0 vs 0,
     // which reads as a measured tie instead of the absence it is.
     const ex = [['Submission attempts', A.sub, B.sub], ['Reversals', A.rev, B.rev]].filter(r => r[1] || r[2]);
     if (ex.length) {
-      y = sectionTitle(ctx, 'On the mat', y + 52) + 16;   // clears the subs above — see Control
+      y = sgTitle(ctx, 'On the mat', y + Math.round(58*S), S) + Math.round(14*S);   // clears the subs above — see Control
       for (const [lab, va, vb] of ex) {
         const ra = va/eA, rb = vb/eB, m = Math.max(ra, rb, 0.01);
         const l = (typeof _mhLeadRate === 'function') ? _mhLeadRate(va, eA, vb, eB) : 0;
         y = sgBar(ctx, lab, String(va), String(vb),
           'in ' + A.sFights + ' fights', 'in ' + B.sFights + ' fights',
-          ra/m, rb/m, y, l === 1, l === 2);
+          ra/m, rb/m, y, l === 1, l === 2, S);
       }
     }
     footer(ctx, CH);
