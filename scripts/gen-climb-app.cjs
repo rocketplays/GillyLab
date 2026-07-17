@@ -165,11 +165,33 @@ function scopeCSS(css) {
   return out;
 }
 
+// UNDO THE HOST PAGE'S RESET BEFORE THE GAME'S OWN RULES RUN.
+//
+// Scoping stops the game leaking OUT. This is the other direction, which is easy to
+// forget because nothing looks broken until you compare: index.html opens with
+// `* { margin:0; padding:0; box-sizing:border-box }`, the prototype's `*` sets only
+// box-sizing. So anything the game leaves to the browser renders differently in the app
+// than on /theclimb — MEASURED: the division <select>, the game's primary control and a
+// deliberately native one, loses its UA padding and renders squeezed. (h1 and both <p>s
+// are safe: the prototype sets every side explicitly. The select was the only casualty.)
+//
+// `revert` returns these to the USER-AGENT value — i.e. exactly the baseline /theclimb
+// gets — rather than to some number guessed per browser. It goes FIRST, and every game
+// rule that sets a margin or padding is either `#climb-host <sel>` (1,0,1) or later in
+// source order at equal specificity, so the game still wins everywhere it has an opinion.
+// This holds against ANY reset the app grows later, which a select-specific patch would not.
+const UNRESET = HOST + ', ' + HOST + ' * { margin: revert; padding: revert; }\n';
+
 const cleanCSS = stripComments(styles[0]);
-const scoped = scopeCSS(cleanCSS);
+const scopedRules = scopeCSS(cleanCSS);
+const scoped = UNRESET + scopedRules;
 // The transform has to have actually done something, and must not have eaten rules.
+// Counted on scopedRules, NOT on `scoped` — UNRESET legitimately adds one rule, and
+// folding it in would let the guard drift by exactly the amount it is meant to catch.
 const braces = (s) => (s.match(/\{/g) || []).length;
-if (braces(scoped) !== braces(cleanCSS)) throw new Error('the CSS transform changed the rule count: ' + braces(cleanCSS) + ' -> ' + braces(scoped));
+if (braces(scopedRules) !== braces(cleanCSS)) throw new Error('the CSS transform changed the rule count: ' + braces(cleanCSS) + ' -> ' + braces(scopedRules));
+// The un-reset is worthless if a game rule precedes it.
+if (!scoped.startsWith(HOST + ', ' + HOST + ' * {')) throw new Error('the un-reset rule is not first — the host page\'s reset would beat it');
 if (scoped.includes(':root')) throw new Error(':root survived scoping — the game would repaint the app');
 
 // EVERY selector must be anchored to the host — not just a list of classes I thought of.

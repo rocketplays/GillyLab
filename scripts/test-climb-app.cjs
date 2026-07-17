@@ -146,6 +146,14 @@ check('no game rule matches anything outside the host', leaked.length === 0,
 check('body.playing is the only outside touch, and it is harmless',
   !/\.playing/.test(APP.css) || /body\.playing #climb-host/.test(APP.css));
 
+// The other direction: the host page's reset must not reach IN. index.html opens with
+// `* { margin:0; padding:0 }`; the game leaves its division <select> to the browser, so
+// without this the app's copy renders that control squeezed and /theclimb does not.
+// Only the ordering is asserted here — `revert` resolves against a UA stylesheet, which
+// jsdom does not have, so whether it LOOKS right is a browser question, not this file's.
+check('the game is immune to the app\'s CSS reset', APP.css.startsWith('#climb-host, #climb-host * { margin: revert; padding: revert; }'),
+  '(un-reset present and first, so every game rule still overrides it)');
+
 console.log('\nclimb-app.js — generated bundle\n');
 ok.forEach((s) => console.log('  ok    ' + s));
 fail.forEach((s) => console.log('  FAIL  ' + s));
