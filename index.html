@@ -89705,6 +89705,8 @@ function ddRead(A, B, n1, n2, domain){
   // eighteen and the eighties all take "an".
   const aan = n => (n === 8 || n === 11 || n === 18 || (n >= 80 && n <= 89)) ? 'an' : 'a';
   const vs = n => ', vs ' + aan(n) + ' ' + n + '% norm.';
+  // The same clause without the full stop, for predicates that get joined.
+  const vsn = n => ', vs ' + aan(n) + ' ' + n + '% norm';
 
   // ONE PHRASE PER LANE, NOT ONE TEMPLATE FOR ALL OF THEM. A generic sentence has to
   // fit every hole it can be dropped into, and the result was "throws unusually much
@@ -89829,9 +89831,21 @@ function ddRead(A, B, n1, n2, domain){
       // "Kline aims unusually often at ground strikes: 13% of everything HE throws".
       // Naming them is also just clearer when two people are being compared.
       const d = DEF[i];
-      cands.push({ dom: 'strike', w: Math.abs(z),
-        t: LM + ' ' + (z > 0 ? d.hi : d.lo) + ': ' + (z > 0 ? '' : 'only ') +
-           pc + '% of ' + d.what + ' aimed at ' + LM + ' land' + vs(np) });
+      // "CONCEDES", SO THE NAME ONLY HAS TO APPEAR ONCE.
+      //
+      // This read "Makhachev protects the body well: only 45% of body shots aimed at
+      // Makhachev land, vs a 64% norm" — the surname twice in one sentence, and a
+      // third time in the sentence beside it. The repetition was doing real work:
+      // "45% of body shots land" is ambiguous between what he lands and what lands
+      // ON him, and "aimed at <name>" was how the two were told apart. `concedes`
+      // carries that distinction in the verb, so the subject can be stated once and
+      // then shared — which is what lets two findings become one sentence.
+      //
+      // Not a pronoun, for the reason the pronouns came out in the first place: 13%
+      // of this card is women, and "aimed at him" is wrong for eight of them.
+      cands.push({ dom: 'strike', w: Math.abs(z), who: LM, lane: i, kind: 'def',
+        pred: (z > 0 ? d.hi : d.lo) + ' (concedes ' + (z > 0 ? '' : 'only ') +
+              pc + '% on ' + d.what + vsn(np) + ')' });
     }
   }
 
@@ -89857,8 +89871,11 @@ function ddRead(A, B, n1, n2, domain){
       }
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
       const o = OFF[i];
+      // `lands` against the defensive `concedes` — the verb says which side of the
+      // exchange this is, so neither needs the name to disambiguate it.
       cands.push({ dom: 'strike', w: Math.abs(z) * 0.9,   // slightly behind defense at equal z
-        t: LM + ' ' + (z > 0 ? o.hi : o.lo) + ': ' + pc + '% of ' + o.what + ' land' + vs(np) });
+        who: LM, lane: i, kind: 'off',
+        pred: (z > 0 ? o.hi : o.lo) + ' (lands ' + pc + '% of ' + o.what + vsn(np) + ')' });
     }
   }
 
@@ -89893,7 +89910,8 @@ function ddRead(A, B, n1, n2, domain){
       // happen" is a striking number, but "it happens on the mat" is a fact about
       // the grappling, and it belongs next to control time.
       cands.push({ dom: g === 2 ? 'grap' : 'strike', w: Math.abs(z) * 0.75,
-        t: LM + ' ' + (z > 0 ? POS[g].hi : POS[g].lo) + ': ' + pc + '% of total output' + vs(np) });
+        who: LM, lane: 'pos' + g, kind: 'pos',
+        pred: (z > 0 ? POS[g].hi : POS[g].lo) + ' (' + pc + '% of total output' + vsn(np) + ')' });
     }
   }
   for (const [t, tname] of [[0,'head'],[1,'body'],[2,'legs']]) {
@@ -89906,10 +89924,13 @@ function ddRead(A, B, n1, n2, domain){
       const z = zs(r, norm);
       if (Math.abs(z) < 1.4) continue;
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
-      // "At range" leads the sentence because the denominator is distance offense,
-      // not total — the same number the "What they throw at range" section shows.
+      // "at range" stays in the predicate because the denominator is distance
+      // offense, not total — the same number the "What they throw at range" section
+      // shows. It used to lead the sentence ("At range, X goes to…"), which made
+      // this the one candidate that couldn't share a subject with any other.
       cands.push({ dom: 'strike', w: Math.abs(z) * 0.7,
-        t: 'At range, ' + LM + ' goes to the ' + tname + ' ' + pc + '% of the time' + vs(np) });
+        who: LM, lane: 'aim' + t, kind: 'aim',
+        pred: 'goes to the ' + tname + ' at range ' + pc + '% of the time (' + vsn(np).replace(/^, /, '') + ')' });
     }
   }
 
@@ -89966,9 +89987,67 @@ function ddRead(A, B, n1, n2, domain){
   const pool = domain ? cands.filter(c => c.dom === domain) : cands;
   if (!pool.length) return '';
   pool.sort((x,y) => y.w - x.w);
-  // Two sentences maximum. A third is a paragraph, and a paragraph is a table with
+  // Two findings maximum. A third is a paragraph, and a paragraph is a table with
   // extra steps.
-  return pool.slice(0, 2).map(c => c.t).join(' ');
+  return _ddJoin(pool.slice(0, 2));
+}
+
+// TWO FINDINGS, ONE THOUGHT.
+//
+// The read used to be two finished sentences bolted together with a space, and it
+// showed:
+//   "Makhachev protects the body well: only 45% of body shots aimed at Makhachev
+//    land, vs a 64% norm. Makhachev is accurate to the body: 82% of body shots
+//    land, vs a 67% norm."
+// Three mentions of one surname, two identical "vs an N% norm" tails, and no
+// connective — the two halves of one idea filed as separate paragraphs. Reported
+// as "robotic and repetitive", which it was: the structure said these facts have
+// nothing to do with each other, and they were about the same man and the same
+// body shots.
+//
+// Measured over the card: of 68 two-finding reads, 42 name the SAME fighter twice
+// and 26 name two different men. So the subject is shared more often than not, and
+// the join is worth doing properly rather than special-casing the one bout that
+// prompted it.
+//
+//   same man  -> state him once, join the predicates with "and"
+//   two men   -> "while", which is a contrast and reads as comparison, not as a list
+//
+// Candidates with a bare `t` (the grappling comparisons — "X is far harder to take
+// down: 44 of 49 stopped, against 8 of 23 for Y") are ALREADY one cohesive
+// two-fighter sentence and have no single subject to share. They fall through to
+// the old behaviour, which is correct for them.
+function _ddJoin(top){
+  const say = c => c.t || (c.who + ' ' + c.pred + '.');
+  if (!top.length) return '';
+  if (top.length === 1) return say(top[0]);
+  const [a, b] = top;
+  if (a.who && b.who && a.pred && b.pred) {
+    if (a.who === b.who) return a.who + ' ' + a.pred + ', and ' + b.pred + '.';
+    // "WHILE" IS A CONTRAST, SO IT HAS TO BE EARNED. Measured over the card, 3 of
+    // 21 two-man reads put the SAME finding on both men — "Wells throws more
+    // ground-and-pound than most, while Orolbai throws more ground-and-pound than
+    // most" — where the conjunction promises an opposition and the sentence then
+    // delivers an agreement. That is the same species as the rest of this file's
+    // history: language outrunning what the numbers say. When both men land the
+    // same phrase it is "and", and the two figures sit side by side where a reader
+    // can compare them, which is the actual finding.
+    // The predicate is repeated in full rather than elided to "and so is McMillen
+    // (49%)". Two reasons, and the second is the load-bearing one:
+    //   * the elision needs the auxiliary to agree with the verb — "so IS accurate",
+    //     "so DOES throw" — and the phrases here start with is/throws/protects/goes/
+    //     lands/gets/stays, so it is a conjugation table waiting to print "and so is
+    //     Orolbai throws more ground-and-pound";
+    //   * the audits match on the full phrase. Eliding it would leave the second
+    //     claim of every one of these reads UNCHECKED, silently — which is exactly
+    //     how three of the checks in this suite went green while testing nothing.
+    // The repetition is also the finding: both men are accurate at range, and the
+    // two figures sit side by side where a reader can compare them.
+    const phrase = (p) => p.split(' (')[0];
+    const conj = phrase(a.pred) === phrase(b.pred) ? ', and ' : ', while ';
+    return a.who + ' ' + a.pred + conj + b.who + ' ' + b.pred + '.';
+  }
+  return say(a) + ' ' + say(b);
 }
 
 function fightStatsFor(name, date){
