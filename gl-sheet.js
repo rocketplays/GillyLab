@@ -1335,11 +1335,27 @@ const GL_SHEET = (function () {
         roundRect(ctx, cx, cy, cwid, chh, 9); ctx.fillStyle = bg; ctx.fill();
         if (thin) { ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 1; ctx.stroke(); }
         ctx.textAlign = 'center';
+        // TEXT ON A TILE IS NOT TEXT ON THE BACKGROUND, AND THE PALETTE HAS TO KNOW.
+        //
+        // The sample line was FOOT (#6f727a) — a mid grey chosen against the near
+        // black canvas, and unreadable the moment the tile behind it goes bright
+        // green. That is the SAME bug the modal was reported for ("her ground
+        // accuracy shows 86%, but the total strikes are totally unreadable"), and
+        // the modal already fixed it: .mh-gc b is #fff and .mh-gc i is
+        // rgba(255,255,255,0.72). I built this grid and reached for the canvas
+        // greys instead of copying the answer sitting in the CSS.
+        //
+        // White with alpha survives both ends of the scale — the tile ranges from
+        // 6% to 50% green and 6% to 40% red, and nothing in that range is light
+        // enough to fight white. A fixed grey only ever works on one background.
+        //
         // An empty cell says nothing rather than "0%", which would read as a
         // measured zero instead of the absence it is. Same rule as the modal.
-        ctx.font = '700 38px ' + COND; ctx.fillStyle = n ? TXT : FOOT;
+        ctx.font = '700 38px ' + COND;
+        ctx.fillStyle = !n ? FOOT : (thin ? 'rgba(255,255,255,0.60)' : '#fff');
         ctx.fillText(n ? Math.round(r * 100) + '%' : '·', cx + cwid / 2, cy + 38);
-        ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT;
+        ctx.font = '400 23px ' + SANS;
+        ctx.fillStyle = thin ? MUT : 'rgba(255,255,255,0.72)';
         ctx.fillText(n ? c[0] + '/' + n : '—', cx + cwid / 2, cy + 65);
       });
       yy += rh;
@@ -1435,20 +1451,28 @@ const GL_SHEET = (function () {
       // The heading is drawn INSIDE the room check, not before it. The 1350 version
       // printed "WHAT LANDS ON THEM" over empty canvas because the budget was
       // computed after the title was already on the page.
-      const need = Math.round(92*S) + Math.round(74*S);                       // title + one row, the minimum worth printing
+      // 62*S, not 74*S — these rows carry no subs any more, so they are the short
+      // kind. Budgeting with the tall figure would have hidden a row that fits.
+      const need = Math.round(92*S) + Math.round(62*S);                       // title + one row, the minimum worth printing
       if (CH - 100 - y >= need) {
         y = sgTitle(ctx, 'What lands on them', y + Math.round(50*S), S) + Math.round(14*S);
-        const room = Math.floor((CH - 100 - y) / Math.round(74*S));
+        const room = Math.floor((CH - 100 - y) / Math.round(62*S));
         for (const [lab, i, ca, cb] of rows.slice(0, Math.max(0, room))) {
           const ra = ca[1] ? ca[0]/ca[1] : 0, rb = cb[1] ? cb[0]/cb[1] : 0;
           const nA = ca[1] >= SG_FLOOR ? _sgNorm(nameA, 'allow', i) : null;
           const nB = cb[1] >= SG_FLOOR ? _sgNorm(nameB, 'allow', i) : null;
           const gA = (typeof _mhGrade === 'function') ? _mhGrade(ra, ca[1], nA, true) : null;
           const gB = (typeof _mhGrade === 'function') ? _mhGrade(rb, cb[1], nB, true) : null;
+          // PERCENTAGES ONLY. The landed/thrown counts came off: this section is
+          // four rows of one comparison, and "372/1214" under a 31% was answering a
+          // question nobody asks of a share sheet. The grid above still carries its
+          // samples, where the floor makes them load-bearing — here they were
+          // furniture. Dropping them also shortens the row from 96px to 81px, which
+          // is why all four lanes now fit.
           y = sgBar(ctx, lab,
             ca[1] < SG_FLOOR ? '—' : Math.round(ra*100) + '%',
             cb[1] < SG_FLOOR ? '—' : Math.round(rb*100) + '%',
-            ca[0] + '/' + ca[1], cb[0] + '/' + cb[1],
+            null, null,
             ra, rb, y, gA === 'w', gB === 'w', S);
         }
       }
