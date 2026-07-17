@@ -89063,29 +89063,32 @@ function mhStriking(A, B, n1, n2){
   const tA = tot(A), tB = tot(B);
   const dA = distTot(A), dB = distTot(B);
 
+  // NO DIVISION TICK ON THESE TWO SECTIONS. Everywhere else the tick answers "is
+  // this good?", which needs a yardstick. Here the question is "what does this
+  // fighter do?" — and there is no better or worse about it. A leg-kicker is not
+  // failing to be a head-hunter, and marking where the median welterweight sits
+  // implies he is. The read still calls out a genuinely unusual habit; the bars
+  // just describe the two men.
+  //
   // Scaled to the bigger of the two shares, not to 100% — at 5% of offense both
   // clinch bars would be invisible slivers and the comparison would be lost.
-  const shareRow = (label, ra, rb, nA, nB) => {
+  const shareRow = (label, ra, rb) => {
     const m = Math.max(ra, rb, 0.01);
     return mhCmp(label,
       { txt: Math.round(ra*100) + '%', sub: null, frac: ra/m },
-      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m },
-      // The tick sits on each side's OWN division median, scaled the same way the
-      // bar is, so it lands where that fighter's typical peer would.
-      { normL: nA ? nA.med/m : null, normR: nB ? nB.med/m : null });
+      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m });
   };
 
   h += '<div class="mh-sec">Where the fight happens <span>share of everything they throw</span></div>';
   for (const [g, label] of [[0,'At range'],[1,'In the clinch'],[2,'On the ground']]) {
     const ra = (A.cells[g*3][1]+A.cells[g*3+1][1]+A.cells[g*3+2][1]) / tA;
     const rb = (B.cells[g*3][1]+B.cells[g*3+1][1]+B.cells[g*3+2][1]) / tB;
-    h += shareRow(label, ra, rb, mhNorm(n1,'pos',g), mhNorm(n2,'pos',g));
+    h += shareRow(label, ra, rb);
   }
 
   h += '<div class="mh-sec">What they throw at range <span>share of what they throw standing</span></div>';
   for (const [t, label] of [[0,'Head'],[1,'Body'],[2,'Legs']]) {
-    h += shareRow(label, A.cells[t][1]/dA, B.cells[t][1]/dB,
-                  mhNorm(n1,'aimD',t), mhNorm(n2,'aimD',t));
+    h += shareRow(label, A.cells[t][1]/dA, B.cells[t][1]/dB);
   }
   // KNOCKDOWNS RIDE ALONG HERE. They are the one striking number that isn't in the
   // grid at all, so they have nowhere else to live. Dropped entirely when neither
@@ -89345,6 +89348,37 @@ function ddRead(A, B, n1, n2, domain){
   // to hit is its own sentence, not a mislabelled version of the opposite one.
   const zs = (v, norm) => (norm && norm.spread) ? (v - norm.med) / norm.spread : 0;
 
+  // "against a 88% norm" and "a 8% norm" were both shipping. Eight, eleven,
+  // eighteen and the eighties all take "an".
+  const aan = n => (n === 8 || n === 11 || n === 18 || (n >= 80 && n <= 89)) ? 'an' : 'a';
+  const vs = n => ', vs ' + aan(n) + ' ' + n + '% norm.';
+
+  // ONE PHRASE PER LANE, NOT ONE TEMPLATE FOR ALL OF THEM. A generic sentence has to
+  // fit every hole it can be dropped into, and the result was "throws unusually much
+  // on the ground" — grammatical mush that a fan would never say. These are the
+  // words the sport actually uses, so each lane gets its own.
+  //
+  // The `lo` side is factual, never a sneer: "less accurate to the body" and not
+  // "misses the body". 54% of body shots landing is below par, not a failure, and
+  // the panel doesn't get to editorialise past what the number carries.
+  const DEF = {                                             // what LANDS ON him
+    0: { hi: 'is open at range',           lo: 'is hard to hit at range',        what: 'head strikes' },
+    1: { hi: 'is open to the body',        lo: 'protects the body well',         what: 'body shots' },
+    2: { hi: 'is open to leg kicks',       lo: 'rarely gets caught by leg kicks', what: 'leg kicks' },
+    6: { hi: 'takes damage on the mat',    lo: 'stays clean on the mat',         what: 'ground strikes' },
+  };
+  const OFF = {                                             // what HE lands
+    0: { hi: 'is accurate at range',       lo: 'is less accurate at range',      what: 'head strikes' },
+    1: { hi: 'is accurate to the body',    lo: 'is less accurate to the body',   what: 'body shots' },
+    2: { hi: 'lands leg kicks cleanly',    lo: 'is less accurate with leg kicks', what: 'leg kicks' },
+    6: { hi: 'is accurate on the mat',     lo: 'is less accurate on the mat',    what: 'ground strikes' },
+  };
+  const POS = {
+    0: { hi: 'keeps it standing',          lo: 'is rarely at range' },
+    1: { hi: 'is a clinch fighter',        lo: 'avoids the clinch' },
+    2: { hi: 'has heavy ground-and-pound', lo: 'does little on the mat' },
+  };
+
   // Takedown defense — usually the story, and the one axis where the spread is wide
   // enough that a gap is almost always meaningful.
   // GRADED, WITH A FLOOR. The first version said "is far harder to take down" for
@@ -89420,17 +89454,14 @@ function ddRead(A, B, n1, n2, domain){
         if (!canGet) continue;
       }
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
-      // NO PRONOUNS. 13% of the fighters on this card are women, and the original
-      // sentences avoided "he" entirely — I reintroduced it and printed "Kline aims
-      // unusually often at ground strikes: 13% of everything HE throws". Naming the
-      // man (or woman) is also just clearer when two people are being compared.
-      //
-      // "gets caught ... less than most" rather than "is hard to hit to X": the
-      // symmetric phrasing is grammatical for every label, and "is hard to hit to
-      // leg kicks" is not.
+      // NO PRONOUNS ANYWHERE. 13% of the fighters on this card are women, and the
+      // original sentences avoided "he" entirely — I reintroduced it and printed
+      // "Kline aims unusually often at ground strikes: 13% of everything HE throws".
+      // Naming them is also just clearer when two people are being compared.
+      const d = DEF[i];
       cands.push({ dom: 'strike', w: Math.abs(z),
-        t: LM + ' gets caught to ' + label + (z > 0 ? ' more than most: ' : ' less than most: only ') +
-           pc + '% of what comes at ' + LM + ' there lands, against a ' + np + '% norm.' });
+        t: LM + ' ' + (z > 0 ? d.hi : d.lo) + ': ' + (z > 0 ? '' : 'only ') +
+           pc + '% of ' + d.what + ' aimed at ' + LM + ' land' + vs(np) });
     }
   }
 
@@ -89455,9 +89486,9 @@ function ddRead(A, B, n1, n2, domain){
         if (!canGet) continue;
       }
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
+      const o = OFF[i];
       cands.push({ dom: 'strike', w: Math.abs(z) * 0.9,   // slightly behind defense at equal z
-        t: LM + ' lands ' + label + (z > 0 ? ' unusually well: ' : ' less than most: ') +
-           pc + '% of what ' + LM + ' throws there lands, against a ' + np + '% norm.' });
+        t: LM + ' ' + (z > 0 ? o.hi : o.lo) + ': ' + pc + '% of ' + o.what + ' land' + vs(np) });
     }
   }
 
@@ -89478,8 +89509,7 @@ function ddRead(A, B, n1, n2, domain){
   //               tab says it. Clinch work in particular appears nowhere else.
   //   TARGETING — what he throws once he's at range. The actual choice.
   const totOf = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
-  const POSW = [[0,'at range','strike'], [1,'in the clinch','strike'], [2,'on the ground','grap']];
-  for (const [g, where, dom] of POSW) {
+  for (const g of [0, 1, 2]) {
     for (const [me, LM, nm] of [[A,L1,n1],[B,L2,n2]]) {
       const tot = totOf(me);
       if (tot < 150) continue;
@@ -89489,13 +89519,14 @@ function ddRead(A, B, n1, n2, domain){
       const z = zs(r, norm);
       if (Math.abs(z) < 1.4) continue;
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
-      cands.push({ dom, w: Math.abs(z) * 0.75,
-        t: LM + ' throws ' + (z > 0 ? 'unusually much' : 'unusually little') + ' ' + where +
-           ': ' + pc + '% of everything ' + LM + ' throws, against a ' + np + '% norm.' });
+      // Ground position is tagged 'grap', not 'strike': "where does the striking
+      // happen" is a striking number, but "it happens on the mat" is a fact about
+      // the grappling, and it belongs next to control time.
+      cands.push({ dom: g === 2 ? 'grap' : 'strike', w: Math.abs(z) * 0.75,
+        t: LM + ' ' + (z > 0 ? POS[g].hi : POS[g].lo) + ': ' + pc + '% of total output' + vs(np) });
     }
   }
-  const TGT = [[0,'head'],[1,'body'],[2,'legs']];
-  for (const [t, tname] of TGT) {
+  for (const [t, tname] of [[0,'head'],[1,'body'],[2,'legs']]) {
     for (const [me, LM, nm] of [[A,L1,n1],[B,L2,n2]]) {
       const dt = me.cells[0][1] + me.cells[1][1] + me.cells[2][1];
       if (dt < 100) continue;               // enough range volume to have a habit at all
@@ -89505,10 +89536,10 @@ function ddRead(A, B, n1, n2, domain){
       const z = zs(r, norm);
       if (Math.abs(z) < 1.4) continue;
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
-      // The denominator is in the sentence, because it is NOT the one the "where
-      // the offense goes" section uses and the two numbers will differ on screen.
+      // "At range" leads the sentence because the denominator is distance offense,
+      // not total — the same number the "What they throw at range" section shows.
       cands.push({ dom: 'strike', w: Math.abs(z) * 0.7,
-        t: 'At range, ' + LM + ' goes to the ' + tname + ' ' + pc + '% of the time, against a ' + np + '% norm.' });
+        t: 'At range, ' + LM + ' goes to the ' + tname + ' ' + pc + '% of the time' + vs(np) });
     }
   }
 
