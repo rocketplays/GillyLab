@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -852,7 +852,10 @@ function emailShell(bodyHtml, unsubHref) {
 </body></html>`;
 }
 function lockEmailHtml(env, card, unsubHref, ctaUrl) {
-  const when = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  // eventWhen, not card.date: card.date is a UTC calendar day and a Saturday-night
+  // US card is already Sunday in UTC, so this email told people their picks locked
+  // on "Sunday, Jul 19" for a card that runs Saturday the 18th. See pages.js.
+  const when = eventWhen(card);
   const btn = ctaUrl || (env.SITE_URL + "/pickem");
   return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">Your picks lock soon</h1>
     <p style="margin:0 0 18px;color:#4a4d55"><strong style="color:#15151a">${escHtml(card.name)}</strong>${when ? " · " + escHtml(when) : ""} is almost here — and you haven't locked in your Pick'em yet. Call the winner, method and round for each bout before the prelims start.</p>
@@ -877,7 +880,7 @@ function recapEmailHtml(env, ev, score, unsubHref, ctaUrl, sellHtml) {
 }
 function missedEmailHtml(env, gradedEv, nextCard, unsubHref, ctaUrl) {
   const btn = ctaUrl || (env.SITE_URL + "/pickem");
-  const nextWhen = (nextCard && nextCard.date) ? new Date(nextCard.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const nextWhen = eventWhen(nextCard);   // same UTC-day bug as the lock email — see pages.js
   const nextLine = (nextCard && nextCard.name && nextCard.slug !== gradedEv.slug)
     ? `<strong style="color:#15151a">${escHtml(nextCard.name)}</strong> is up next${nextWhen ? " · " + escHtml(nextWhen) : ""}.`
     : "There's another card coming up soon.";

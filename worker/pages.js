@@ -279,6 +279,47 @@ const signupBanner = `<div style="display:flex;align-items:center;justify-conten
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
 // page's tab is highlighted via active. Pass the current path (e.g. "/pickem").
+// THE EVENT DAY, IN THE TIMEZONE THE EVENT HAPPENS IN.
+//
+// card.date is `(ev.startsAt || "").slice(0, 10)` — the first ten characters of a
+// UTC timestamp. A UFC card starts Saturday evening in the US, which is already
+// SUNDAY in UTC, so that string is a day ahead of the event for every card the site
+// covers. The current one: startsAt 2026-07-19T00:00:00Z, prelims
+// 2026-07-18T21:00:00Z = Saturday 5:00 PM ET. `date` says 2026-07-19.
+//
+// Then `new Date(card.date + "T00:00:00")` has no Z, so it parses as LOCAL — which
+// in a Cloudflare Worker is UTC — and toLocaleDateString with no timeZone formats in
+// UTC too. Two wrongs that agree, which is why it looked deliberate:
+//     new Date("2026-07-19T00:00:00").toLocaleDateString(...)  ->  "Sunday, Jul 19"
+//
+// So: anchor on prelimsAt, the real instant the card starts, and format in
+// America/New_York. The fallback re-times a bare date to 18:00Z, which lands on the
+// correct US day for any evening card. This is the fix matchupPage already carries;
+// it is exported now because FIVE places need it — both reminder emails, the pick'em
+// page server-side and client-side, and the matchup page — and five copies of a
+// timezone rule is five chances to fix four of them.
+// NO card.date FALLBACK, AND THAT IS DELIBERATE. matchupPage's version falls back to
+// `card.date + "T18:00:00Z"`, which is 2pm ET ON THE UTC DAY — so it renders the same
+// wrong day the bug is about, every time. It is also unreachable: loadUpcomingCard
+// sets `date` from `startsAt.slice(0,10)` and `prelimsAt` from
+// `prelimsStartsAt || startsAt`, so a date implies a timestamp (checked: 0 of 37
+// events in event.json + event-recent.json have one without the other).
+//
+// A bare calendar day CANNOT be converted to the right ET date — an 8pm ET card and a
+// 2pm ET card on the same UTC day need opposite shifts, and the day alone doesn't say
+// which. So with no timestamp this returns "" and every caller omits the date, which
+// the templates already handle (`${when ? " · " + when : ""}`). On an email that says
+// "your picks lock soon", no date beats a wrong one.
+export function eventWhen(card, opts) {
+  const ts = card && card.prelimsAt;
+  if (!ts) return "";
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-US", Object.assign(
+    { weekday: "long", month: "short", day: "numeric", timeZone: "America/New_York" },
+    opts || {}));
+}
+
 function freeTabs(active) {
   const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
   return `
@@ -1167,7 +1208,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   const resultsMap = {};
   if (card && card.bouts) card.bouts.forEach((b) => { if (b.res) resultsMap[b.id] = b.res; });
   const nBouts = (card && card.bouts && card.bouts.length) || 0;
-  const when = card && card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }) : "";
+  const when = eventWhen(card);   // NOT card.date — that is the UTC day. See eventWhen.
   const lockNote = card ? (card.locked ? "Picks are locked — this card has started." : "Lock your picks before the prelims begin.") : "";
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -1662,7 +1703,13 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
           picks.push({winner:p.winner,loser:loser,winnerSlug:awSlug||null,method:base.method,round:base.round,confidence:base.confidence,label:"",isMain:false,actualWinner:aw,actualLoser:al,resultMethod:res.voided?null:res.method,resultRound:res.voided?null:res.round,points:g.points,winnerHit:!!g.winnerHit,methodHit:!!g.methodHit,roundHit:!!g.roundHit,voided:!!g.voided});
         }else{base.points=potential(p);picks.push(base);}
       });
-      var d="";try{if(PK_EVT&&PK_EVT.date)d=new Date(PK_EVT.date+"T00:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"});}catch(e){}
+      // Anchor on prelimsAt and force America/New_York — PK_EVT.date is the UTC
+      // calendar day, a day ahead for every US-evening card, and this one runs in the
+      // READER's timezone so it was wrong on the share sheet in every one of them.
+      // Mirrors eventWhen() server-side; kept inline because this is a string of
+      // browser JS, not a module. If eventWhen changes, change this.
+      var d="";try{var _ts=(PK_EVT&&(PK_EVT.prelimsAt||(PK_EVT.date?PK_EVT.date+"T18:00:00Z":null)))||null;
+        if(_ts)d=new Date(_ts).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"});}catch(e){}
       return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:graded,picks:picks,totalPoints:picks.reduce(function(t,p){return t+(p.points||0);},0)};
     }
     if(shareBtn)shareBtn.addEventListener("click",function(){
@@ -2076,8 +2123,10 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   // card.date is a UTC calendar date, which for US-evening cards is a day ahead of
   // the real (Eastern-time) event date. Anchor on the actual prelims timestamp and
   // format it in America/New_York so the day is correct (fall back to card.date).
-  const evTs = card && (card.prelimsAt || (card.date ? card.date + "T18:00:00Z" : null));
-  const when = evTs ? new Date(evTs).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric", timeZone: "America/New_York" }) : "";
+  // Was inline here and nowhere else, which is exactly why the reminder emails said
+  // "Sunday, Jul 19" for a Saturday card — the fix existed and only this page had it.
+  // Shared now, so the next consumer inherits the rule instead of the bug.
+  const when = eventWhen(card, { month: "long", year: "numeric" });
   // Card-specific SEO: lead with the FULL main-event names + the city ("UFC
   // <City>") so the page ranks for "<fighter> vs <fighter>" and "UFC <city>"
   // rather than the generic path. Falls back gracefully when no card is posted.
