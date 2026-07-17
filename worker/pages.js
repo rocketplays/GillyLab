@@ -287,8 +287,21 @@ function freeTabs(active) {
     .ftabs a{flex:1 1 auto;text-align:center;min-width:92px;text-decoration:none;font-weight:700;font-size:.82rem;color:var(--text);background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.55rem .7rem;transition:border-color .13s ease,background .13s ease,color .13s ease}
     .ftabs a:hover{border-color:var(--accent);background:var(--surface2)}
     .ftabs a.active{border-color:var(--accent);color:var(--accent);background:var(--surface2)}
-    .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:800;font-size:.95rem;letter-spacing:.01em;color:#04120a;background:var(--accent);border:none;border-radius:11px;padding:.8rem;margin:0;transition:filter .13s ease}
-    .ftab-pick:hover{filter:brightness(1.06)}
+    /* The app's "Matchup Analytics Deep Dive" treatment: a green-TINTED panel with a
+       green edge, not a slab of #00e668 with near-black text on it. Two of these sit
+       side by side under the tabs on four free pages and were the loudest thing on
+       each — louder than the rankings they sit above.
+
+       COLOUR ONLY, AND THAT IS A DECISION. .fight-dd-bar is also 'Barlow Condensed',
+       uppercase, .14em tracked, and none of that is copied: of the four pages that
+       render this strip only /pickem loads Barlow — rankings, roster and matchup have
+       no font link at all — so the condensed face would land on one page and a ~35%
+       wider fallback on the other three, with the tracking and the uppercase
+       magnifying the difference. It would also disagree with the .ftabs tabs directly
+       above it, which use the page's own system type. Importing a webfont to restyle
+       two buttons is the wrong trade on pages whose whole point is loading fast. */
+    .ftab-pick{display:block;text-align:center;text-decoration:none;font-weight:700;font-size:.95rem;letter-spacing:.01em;color:var(--text);background:linear-gradient(180deg,rgba(0,230,104,0.09),rgba(0,230,104,0.03));border:1px solid rgba(0,230,104,0.35);border-radius:8px;padding:.8rem;margin:0;transition:background .15s ease,border-color .15s ease}
+    .ftab-pick:hover{background:linear-gradient(180deg,rgba(0,230,104,0.18),rgba(0,230,104,0.07));border-color:var(--accent)}
     /* The two free games share a row and split it. flex:1 1 0 (not 1 1 auto) makes
        them exactly half each regardless of label length — "The Climb →" is shorter
        than "Play Pick'em →" and auto would give Pick'em the bigger half. When one
@@ -1162,7 +1175,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
-<script src="/gl-sheet.js?v=114999b8" defer></script>
+<script src="/gl-sheet.js?v=5ace0219" defer></script>
 <style>
   .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}
   .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}
