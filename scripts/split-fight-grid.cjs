@@ -254,11 +254,32 @@ function main() {
   // MIGRATION: before the master existed, fight-grid.json WAS the master. Seed from
   // it when the master is absent, or the first run after this change silently starts
   // the grid over from whatever tiny batch it happens to be holding.
+  // "DOESN'T EXIST" AND "CAN'T BE READ" ARE NOT THE SAME THING, AND CONFLATING THEM
+  // DESTROYS THE MASTER.
+  //
+  // The old code caught ANY error here and fell back to the 109-fighter card file,
+  // then wrote that back as the master: 618 fighters -> 109, division medians
+  // 63/99 -> 16/99, and it printed "master absent — seeded from fight-grid.json",
+  // which reads like a normal day.
+  //
+  // That is not hypothetical. This repo lives on iCloud Drive, and the master is
+  // the PERFECT eviction target: 1.4MB, never fetched by the browser, touched only
+  // by this script twice a day. Cold by design — that IS the architecture. When
+  // "Optimize Mac Storage" offloads it, the file still exists with its full size
+  // and reading it throws errno -35 from any process that can't trigger iCloud's
+  // download (i.e. every Claude/Cowork sandbox). One run and 500 fighters of
+  // scraping are gone, silently, green.
+  //
+  // So: ENOENT is the only tolerable failure. It means a genuine first run, and
+  // seeding from fight-grid.json is right. ANYTHING ELSE — offloaded, truncated,
+  // corrupt — must THROW and take CI red with it. Refusing to run costs a re-run;
+  // guessing costs the sweep.
   let grid = {};
-  try { grid = JSON.parse(fs.readFileSync(MASTER, 'utf8')); }
-  catch (e) {
-    try { grid = JSON.parse(fs.readFileSync(OUT, 'utf8')); console.log('master absent — seeded from fight-grid.json (' + Object.keys(grid).length + ' fighters)'); }
-    catch (e2) { grid = {}; }
+  if (fs.existsSync(MASTER)) {
+    grid = JSON.parse(fs.readFileSync(MASTER, 'utf8'));      // deliberately unguarded
+  } else if (fs.existsSync(OUT)) {
+    grid = JSON.parse(fs.readFileSync(OUT, 'utf8'));
+    console.log('master absent — seeded from fight-grid.json (' + Object.keys(grid).length + ' fighters)');
   }
   const had = Object.keys(grid).length;
 

@@ -5,8 +5,51 @@ practice and it does produce visible junk. It has ALSO been completely harmless 
 months, and this file exists mostly to stop the next session over-reacting to it
 the way I did.
 
-VERDICT: NOT URGENT. Real, ongoing, low-severity, recoverable. Move the repo out of
-~/Documents whenever it's convenient and you're not mid-task. Never under pressure.
+DECISION: WE ARE LEAVING iCLOUD ON. Not moving the repo, not turning off "Optimize
+Mac Storage" (that would download the owner's whole iCloud Drive to fix a papercut).
+The offloading stays. Two rules make that safe, and they are the point of this file:
+
+    RULE 1 — NOBODY DELETES A DATALESS FILE. Not the owner, not any agent. They
+             look like empty junk. They are real files. See below.
+    RULE 2 — CODE MUST NOT CONFUSE "absent" WITH "unreadable". This is the one that
+             actually bites, because it needs no human to make a mistake. See
+             "THE REAL HAZARD" below — it was live until 2026-07-16.
+
+VERDICT ON MOVING: NOT URGENT. Real, ongoing, low-severity, recoverable. Move the
+repo out of ~/Documents if it ever becomes convenient. Never under pressure.
+
+
+THE REAL HAZARD — IT ISN'T DELETION, IT'S ERROR HANDLING
+--------------------------------------------------------------------------------
+"Just don't delete them" is necessary and NOT sufficient. The dangerous path needs
+nobody to delete anything:
+
+    data/fight-grid-all.json is the PERFECT eviction target — 1.4MB, never fetched
+    by the browser, touched only by split-fight-grid.cjs twice a day. Cold by
+    design; that IS the architecture. Optimize Mac Storage offloads it. The file
+    still EXISTS at full size. Reading it throws errno -35 from any process that
+    can't trigger iCloud's download — i.e. every Claude/Cowork sandbox.
+
+    split-fight-grid.cjs used to do:
+        try { grid = JSON.parse(readFileSync(MASTER)) }
+        catch { grid = JSON.parse(readFileSync(OUT))          // the 109-fighter card file
+                console.log('master absent — seeded from fight-grid.json') }
+    ...and then WRITE that back as the master. 618 fighters -> 109. Division medians
+    63/99 -> 16/99. Log line reads like a normal day. Verified by simulation, not
+    guessed: the old code carried on with 109 and said so cheerfully.
+
+    grid_index() in fight-stats-parallel.py had the same shape
+    (`except Exception: continue`) and would silently re-queue ~500 fighters for a
+    re-scrape ESPN had already given us. Green job, wasted hours.
+
+BOTH ARE FIXED (2026-07-16): ENOENT is the only tolerable failure — that means a
+genuine first run. Anything else (offloaded, truncated, corrupt) now THROWS and
+takes the run down with it. Refusing to run costs a re-run; guessing costs the
+sweep. Simulated with chmod 000: exit 1, master untouched at 618.
+
+IF YOU ADD ANY NEW READ OF A LARGE, RARELY-TOUCHED FILE, DO THE SAME. A bare
+`try/catch -> default` around a file read in this repo is a data-loss bug wearing a
+robustness costume.
 
 READ THIS BEFORE YOU "CLEAN UP" ANYTHING
 --------------------------------------------------------------------------------

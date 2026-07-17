@@ -74,15 +74,26 @@ def grid_index():
     So: THE MASTER FIRST, the shipped subset as a fallback (it is all that exists on
     a checkout that predates the master, and seeding order matters more than speed
     here). Union, not either/or — a fighter counts if he is in either.
+
+    THIRD TIME'S THE CHARM ON THE ERROR HANDLING, TOO. `except Exception: continue`
+    treats "the file isn't there" and "the file is there but I can't read it" as the
+    same thing. They aren't. This repo lives on iCloud Drive and fight-grid-all.json
+    is the perfect eviction target — 1.4MB, never fetched by the browser, touched by
+    a build script twice a day. Offloaded, it still exists at full size and reading
+    it raises errno 35 from any process that can't trigger iCloud's download. The
+    old code would shrug, see 109 fighters instead of 618, and re-queue ~500 men for
+    a re-scrape ESPN already gave us. Green job, wasted hours, and nobody the wiser.
+
+    Missing is fine (first run). Unreadable is NOT — let it raise.
     """
     if not _GRID_CACHE:
         names = set()
         d = os.path.join(HERE, "..", "data")
         for fn in ("fight-grid-all.json", "fight-grid.json"):
-            try:
-                g = json.load(open(os.path.join(d, fn)))
-            except Exception:
-                continue
+            p = os.path.join(d, fn)
+            if not os.path.exists(p):
+                continue                      # genuinely absent: fine
+            g = json.load(open(p))            # present but unreadable: raise, loudly
             names |= {n for n, rows in g.items()
                       if any(((r or {}).get("f") or {}).get("g") for r in (rows or []))}
         _GRID_CACHE["names"] = names
