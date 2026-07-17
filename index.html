@@ -88557,9 +88557,51 @@ function glRevealDeepDives(){
   };
   start();
 })();
-function _gridNorm(s){
+// FOLDING ACCENTS IS NOT ENOUGH. A MIDDLE NAME IS NOT AN ACCENT.
+//
+// This normaliser handled "Rakic"/"Rakić" and "Du Plessis"/"du Plessis" and was
+// declared done. Then Jose Delgado vs Austin Bashi shipped with no button, because
+// ESPN's card calls him "Jose Miguel Delgado" while FIGHTERS calls him "Jose
+// Delgado". NFD does nothing for that; the strings simply differ. Fifth time this
+// join has broken, and the first four all got the same "normalise harder" answer,
+// which cannot work — no amount of character folding turns one name into another.
+//
+// The repo already had the answer sitting in ACTIVE_ROSTER_ALIASES: ten pairs a
+// HUMAN asserted are the same person ("Jose Miguel Delgado" -> "Jose Delgado",
+// "King Green" -> "Bobby Green", "Patricio Freire" -> "Patrício Pitbull"). Nothing
+// in the grid path consulted it.
+//
+// It resolves HERE, inside the normaliser, and that placement is the whole point:
+// _gridNorm is used on BOTH sides of every lookup in this feature — it builds
+// GRID_NAMES, _ddIndex, _ddStatsIndex and _mhDivIdx, and it normalises the card
+// name being looked up. Alias in one place and every one of those joins agrees by
+// construction, instead of seven call sites each remembering to do it.
+//
+// CURATED, NEVER FUZZY. The tempting fix is matching on token overlap — "Jose
+// Delgado" ⊂ "Jose Miguel Delgado". That is exactly what the ESPN import manifest
+// exists to PREVENT: fight-stats-parallel.py's own docs warn about "wrong-athlete
+// fallbacks", and a token match would cheerfully hand "Jose Souza" another Souza's
+// career. A human asserting two names is one man is evidence. A substring is not.
+let _gridAliasMap = null;
+function _gridAliases(){
+  if (_gridAliasMap) return _gridAliasMap;
+  _gridAliasMap = new Map();
+  try {
+    if (typeof ACTIVE_ROSTER_ALIASES !== 'undefined') {
+      for (const k of Object.keys(ACTIVE_ROSTER_ALIASES)) {
+        _gridAliasMap.set(_gridNormRaw(k), _gridNormRaw(ACTIVE_ROSTER_ALIASES[k]));
+      }
+    }
+  } catch (e) { /* alias table absent: fall back to plain normalisation */ }
+  return _gridAliasMap;
+}
+function _gridNormRaw(s){
   return String(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'')
     .toLowerCase().replace(/[^a-z ]/g,'').trim();
+}
+function _gridNorm(s){
+  const n = _gridNormRaw(s);
+  return _gridAliases().get(n) || n;
 }
 function glHasGrid(name){
   // NORMALISED. The card says "Dricus Du Plessis", the data says "Dricus du

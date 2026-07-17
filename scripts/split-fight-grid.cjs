@@ -67,8 +67,34 @@ const LANES = [['dist', 'head'], ['dist', 'body'], ['dist', 'leg'], ['ground', '
 // Same fold as _gridNorm() in index.html and _norm() in the python. Written a
 // fourth time here, and the fourth time it is still not optional: the card says
 // "Dricus Du Plessis", the data says "Dricus du Plessis".
-const norm = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
+const normRaw = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '')
   .toLowerCase().replace(/[^a-z ]/g, '').trim();
+
+// THE THIRD PLACE THIS JOIN LIVES, AND THE ONE I MISSED FIRST TIME.
+//
+// The shipped grid is `card ∩ master`, so this norm decides whether a fighter's
+// panel exists. ESPN's card says "Jose Miguel Delgado"; the master is keyed "Jose
+// Delgado". Fold accents all day, they still don't match — so he sat IN the master,
+// fetched and lifted, and still wasn't shipped. Fixing the browser lookup and the
+// scraper's id resolution had left this in the middle, quietly dropping him.
+//
+// ACTIVE_ROSTER_ALIASES is human-curated (see readIndex). Loaded lazily because
+// this file's norm() is used before main() reads index.html.
+let _aliasMap = null;
+function aliasMap() {
+  if (_aliasMap) return _aliasMap;
+  _aliasMap = new Map();
+  try {
+    const html = fs.readFileSync(INDEX, 'utf8');
+    const al = /const ACTIVE_ROSTER_ALIASES\s*=\s*\{([\s\S]*?)\n\s*\};/.exec(html);
+    if (al) {
+      const re = /"([^"]+)"\s*:\s*"([^"]+)"/g; let m;
+      while ((m = re.exec(al[1]))) _aliasMap.set(normRaw(m[1]), normRaw(m[2]));
+    }
+  } catch (e) { /* no table: plain normalisation, same as before */ }
+  return _aliasMap;
+}
+const norm = s => { const n = normRaw(s); return aliasMap().get(n) || n; };
 
 function readIndex() {
   const html = fs.readFileSync(INDEX, 'utf8');

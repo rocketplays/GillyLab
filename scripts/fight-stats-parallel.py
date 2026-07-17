@@ -300,6 +300,37 @@ def build_idmap():
                 slug2id[r["slug"]] = r["espn_id"]
     return idmap, slug2id
 
+
+def alias_names(db_name, html=None):
+    """Other names the SAME fighter is known by, per index.html's curated table.
+
+    BOTH CACHES ABOVE ARE KEYED BY ESPN'S NAME, and the pool is keyed by ours. When
+    they disagree the fighter becomes unfetchable: get_id() misses on both the name
+    and the slug, returns None, and he silently never gets a grid. Measured
+    2026-07-16, that is exactly why Jose Delgado vs Austin Bashi had no matchup
+    panel -- his ESPN id (5223435, status ok, 5 fights, coverage 1.0) was sitting in
+    the cache the whole time under "Jose Miguel Delgado". The sweep reported
+    "processed 6, saved 0 bouts" every run and looked like a normal no-op.
+
+    ACTIVE_ROSTER_ALIASES maps ESPN/display name -> our DB name. get_id() needs the
+    reverse, so this inverts it: given "Jose Delgado", return ["Jose Miguel Delgado"].
+
+    CURATED ONLY. No fuzzy matching, no token overlap, no "Jose Delgado is a subset
+    of Jose Miguel Delgado". This module's whole reason for reading a manifest
+    instead of searching ESPN by name is to avoid wrong-athlete fallbacks -- a
+    heuristic would hand "Jose Souza" some other Souza's career and never say so.
+    A human asserting two names are one man is evidence; a substring is not.
+    """
+    if html is None:
+        html = open(fsb.INDEX, encoding="utf-8").read()
+    m = re.search(r"const ACTIVE_ROSTER_ALIASES\s*=\s*\{(.*?)\n\s*\};", html, re.S)
+    if not m:
+        return []
+    rev = {}
+    for k, v in re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', m.group(1)):
+        rev.setdefault(_norm(v), []).append(k)
+    return rev.get(_norm(db_name), [])
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=12)
@@ -351,9 +382,20 @@ def main():
     names = fsb.roster_names()
     fh = fsb.parse_fight_history()
     idmap, slug2id = build_idmap()
+    _alias_html = open(fsb.INDEX, encoding="utf-8").read()   # read once, not per fighter
     def get_id(nm):
         if nm in idmap: return idmap[nm]
-        return slug2id.get(imp.name_to_slug(nm))
+        sid = slug2id.get(imp.name_to_slug(nm))
+        if sid: return sid
+        # THE CACHES ARE KEYED BY ESPN'S NAME; the pool is keyed by ours. When they
+        # disagree, both lookups above miss and the fighter is unfetchable for ever
+        # -- silently, because returning None looks the same as "no such athlete".
+        # See alias_names(): curated pairs only, never a heuristic.
+        for alt in alias_names(nm, _alias_html):
+            if alt in idmap: return idmap[alt]
+            sid = slug2id.get(imp.name_to_slug(alt))
+            if sid: return sid
+        return None
 
     MARK = os.path.join(HERE, "espn-import-output", "_refetched.txt")
     refetch = a.refetch_min > 0
