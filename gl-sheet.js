@@ -810,23 +810,43 @@ const GL_SHEET = (function () {
       el.disabled = !!on; el.classList.toggle('busy', !!on);
     });
   }
+  // shareText === null MEANS "THERE IS NOTHING TO SHARE", AND THAT IS THE SWITCH.
+  //
+  // A Share button sends the image plus a gillylab.com LINK. That link is the whole
+  // point on the FREE sheets — /pickem and /theclimb are public pages, and a picks
+  // card landing in a group chat with a link is how someone new arrives. It is
+  // pointless on the PAYWALLED sheets: nobody can open a matchup breakdown they
+  // can't reach, so "Share" there offers a link to a locked door.
+  //
+  // So this is not a blanket removal, and it must not become one. gl-sheet.js is
+  // generated from this exact module by gen-gl-sheet.cjs and served to the free
+  // pages — deleting the button outright would take it off /pickem and /theclimb
+  // too, which is the opposite of what anyone wants. The caller decides, by whether
+  // it has a share line worth sending.
   async function open(drawFn, filename, shareText) {
+    const canShare = !!shareText;
     let ov = document.getElementById('glSheet');
     if (!ov) {
       ov = document.createElement('div'); ov.id = 'glSheet'; ov.className = 'pl-share';
       ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Share sheet');
       document.body.appendChild(ov);
     }
+    // The hint has to match the buttons actually on screen — a line explaining a
+    // Share button that isn't there is how copy goes stale (see the audits that
+    // passed for weeks against phrasing nobody printed any more).
+    const hint = canShare
+      ? (IOS ? 'Save photo → tap Save Image to add it to Photos. Share sends the sheet with a link.'
+             : 'Save photo downloads the image. Share sends the sheet with a link.')
+      : (IOS ? 'Save photo → tap Save Image to add it to Photos.'
+             : 'Save photo downloads the image.');
     ov.innerHTML = `<div class="pl-share-inner gl-sheet-inner">
       <div class="gl-sheet-preview"><img id="glSheetImg" alt="Shareable sheet"></div>
       <div class="pl-share-actions">
         <button type="button" id="glSheetSave" class="pl-act primary">Save photo</button>
-        <button type="button" id="glSheetShare" class="pl-act">Share</button>
+        ${canShare ? '<button type="button" id="glSheetShare" class="pl-act">Share</button>' : ''}
         <button type="button" id="glSheetClose" class="pl-act ghost">Close</button>
       </div>
-      <div class="pl-share-hint">${IOS
-        ? 'Save photo → tap Save Image to add it to Photos. Share sends the sheet with a link.'
-        : 'Save photo downloads the image. Share sends the sheet with a link.'}</div>
+      <div class="pl-share-hint">${hint}</div>
     </div>`;
     ov.classList.add('open');
     if (typeof lockPageScroll === 'function') lockPageScroll();
@@ -853,7 +873,11 @@ const GL_SHEET = (function () {
       if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
       download(asset.blob, filename);
     });
-    ov.querySelector('#glSheetShare').addEventListener('click', () => {
+    // Absent on the paywalled sheets — see canShare above. Save photo still routes
+    // through navigator.share({files}) on iOS, because that IS how iOS saves to
+    // Photos; it sends no text and no URL, so it is not a share in this sense.
+    const shareBtn = canShare && ov.querySelector('#glSheetShare');
+    if (shareBtn) shareBtn.addEventListener('click', () => {
       if (!asset) return;
       const url = 'https://gillylab.com';
       if (canShareFiles(asset.file)) {
@@ -1181,14 +1205,19 @@ const GL_SHEET = (function () {
     // Square card of the pending bets on one upcoming event.
     betCard: (data) => open(() => drawBetCard(data || {}), 'gillylab-my-card.png',
       'My card on gillylab.com'),
+    // SAVE PHOTO ONLY — null shareText, which drops the Share button (see open()).
+    // Both of these live behind the paywall, so a shared link points at a door the
+    // recipient cannot open; the image is the whole gift. The FREE sheets below
+    // (pickem, climb) keep their share line on purpose — that link is how a picks
+    // card in a group chat brings someone in.
     // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
         (fmt === 'portrait' ? '-feed' : '') + '.png',
-      a + ' vs ' + b + ' — matchup breakdown from gillylab.com'),
+      null),
     sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
       'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
-      a + ' vs ' + b + ' — ' + result.n.toLocaleString() + ' simulations on gillylab.com'),
+      null),
     // Square card of the user's pick'em selections for the featured event.
     pickem: (data) => open(() => drawPickem(data || {}),
       'gillylab-picks.png',

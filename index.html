@@ -104185,23 +104185,43 @@ const GL_SHEET = (function () {
       el.disabled = !!on; el.classList.toggle('busy', !!on);
     });
   }
+  // shareText === null MEANS "THERE IS NOTHING TO SHARE", AND THAT IS THE SWITCH.
+  //
+  // A Share button sends the image plus a gillylab.com LINK. That link is the whole
+  // point on the FREE sheets — /pickem and /theclimb are public pages, and a picks
+  // card landing in a group chat with a link is how someone new arrives. It is
+  // pointless on the PAYWALLED sheets: nobody can open a matchup breakdown they
+  // can't reach, so "Share" there offers a link to a locked door.
+  //
+  // So this is not a blanket removal, and it must not become one. gl-sheet.js is
+  // generated from this exact module by gen-gl-sheet.cjs and served to the free
+  // pages — deleting the button outright would take it off /pickem and /theclimb
+  // too, which is the opposite of what anyone wants. The caller decides, by whether
+  // it has a share line worth sending.
   async function open(drawFn, filename, shareText) {
+    const canShare = !!shareText;
     let ov = document.getElementById('glSheet');
     if (!ov) {
       ov = document.createElement('div'); ov.id = 'glSheet'; ov.className = 'pl-share';
       ov.setAttribute('role', 'dialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-label', 'Share sheet');
       document.body.appendChild(ov);
     }
+    // The hint has to match the buttons actually on screen — a line explaining a
+    // Share button that isn't there is how copy goes stale (see the audits that
+    // passed for weeks against phrasing nobody printed any more).
+    const hint = canShare
+      ? (IOS ? 'Save photo → tap Save Image to add it to Photos. Share sends the sheet with a link.'
+             : 'Save photo downloads the image. Share sends the sheet with a link.')
+      : (IOS ? 'Save photo → tap Save Image to add it to Photos.'
+             : 'Save photo downloads the image.');
     ov.innerHTML = `<div class="pl-share-inner gl-sheet-inner">
       <div class="gl-sheet-preview"><img id="glSheetImg" alt="Shareable sheet"></div>
       <div class="pl-share-actions">
         <button type="button" id="glSheetSave" class="pl-act primary">Save photo</button>
-        <button type="button" id="glSheetShare" class="pl-act">Share</button>
+        ${canShare ? '<button type="button" id="glSheetShare" class="pl-act">Share</button>' : ''}
         <button type="button" id="glSheetClose" class="pl-act ghost">Close</button>
       </div>
-      <div class="pl-share-hint">${IOS
-        ? 'Save photo → tap Save Image to add it to Photos. Share sends the sheet with a link.'
-        : 'Save photo downloads the image. Share sends the sheet with a link.'}</div>
+      <div class="pl-share-hint">${hint}</div>
     </div>`;
     ov.classList.add('open');
     if (typeof lockPageScroll === 'function') lockPageScroll();
@@ -104228,7 +104248,11 @@ const GL_SHEET = (function () {
       if (IOS && canShareFiles(asset.file)) { navigator.share({ files: [asset.file] }).catch(() => {}); return; }
       download(asset.blob, filename);
     });
-    ov.querySelector('#glSheetShare').addEventListener('click', () => {
+    // Absent on the paywalled sheets — see canShare above. Save photo still routes
+    // through navigator.share({files}) on iOS, because that IS how iOS saves to
+    // Photos; it sends no text and no URL, so it is not a share in this sense.
+    const shareBtn = canShare && ov.querySelector('#glSheetShare');
+    if (shareBtn) shareBtn.addEventListener('click', () => {
       if (!asset) return;
       const url = 'https://gillylab.com';
       if (canShareFiles(asset.file)) {
@@ -104556,14 +104580,19 @@ const GL_SHEET = (function () {
     // Square card of the pending bets on one upcoming event.
     betCard: (data) => open(() => drawBetCard(data || {}), 'gillylab-my-card.png',
       'My card on gillylab.com'),
+    // SAVE PHOTO ONLY — null shareText, which drops the Share button (see open()).
+    // Both of these live behind the paywall, so a shared link points at a door the
+    // recipient cannot open; the image is the whole gift. The FREE sheets below
+    // (pickem, climb) keep their share line on purpose — that link is how a picks
+    // card in a group chat brings someone in.
     // Full 1080x1920 by default. Pass 'portrait' for the lighter 4:5 feed cut.
     matchup: (a, b, info, fmt) => open(() => drawMatchup(a, b, info || {}, fmt),
       'gillylab-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() +
         (fmt === 'portrait' ? '-feed' : '') + '.png',
-      a + ' vs ' + b + ' — matchup breakdown from gillylab.com'),
+      null),
     sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
       'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
-      a + ' vs ' + b + ' — ' + result.n.toLocaleString() + ' simulations on gillylab.com'),
+      null),
     // Square card of the user's pick'em selections for the featured event.
     pickem: (data) => open(() => drawPickem(data || {}),
       'gillylab-picks.png',
@@ -107423,7 +107452,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // reflowed the row on every tap — the busy state was the jumpiest thing here.
   // Dim and pulse in place instead; the width never changes.
   function plSetShareBusy(busy) {
-    ['plSaveImg', 'plShareBtn'].forEach(id => {
+    // plShareBtn is gone; Save photo is the only action the render gates.
+    ['plSaveImg'].forEach(id => {
       const b = document.getElementById(id);
       if (!b) return;
       b.disabled = !!busy;
@@ -107446,14 +107476,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // "Save Image" lands in Photos. Android/desktop: a real download (Android files
   // it under Downloads, which Photos shows as a device folder).
   //
-  // On iOS the two buttons therefore both open a sheet, and the only way to tell
-  // them apart is the payload — iOS builds the sheet from what it is handed and
-  // ignores `title` completely. So:
-  //   Save  -> the image ALONE. A file-only sheet puts Save Image / Add to Photos
-  //            in the first action row, with no text to scroll past.
-  //   Share -> image + the odds text + the link. iOS renders a text preview above
-  //            the thumbnail and messaging apps attach the caption with the card.
-  // Passing `title` to a file share bought us nothing and made the two identical.
+  // SAVE PHOTO STILL CALLS navigator.share() ON iOS, AND THAT IS NOT A SHARE.
+  // It hands over the image ALONE — no text, no URL — because a file-only sheet is
+  // the only route a web page has to Photos, and it puts Save Image / Add to Photos
+  // in the first action row with nothing to scroll past. Don't "clean this up" as a
+  // leftover of the Share button: it is how saving works.
+  //
+  // (plShareSlip is gone. It sent image + odds text + a gillylab.com link, which is
+  // pointless for a paywalled slip — the recipient gets a link to a locked door.
+  // plShareText survives because plCopyText still uses it.)
   function plSaveImage() {
     if (!PARLAY.legs.length) return;
     const asset = plShareAsset;
@@ -107463,26 +107494,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return;
     }
     plDownload(asset.blob);
-  }
-  function plShareSlip() {
-    if (!PARLAY.legs.length) return;
-    const text = plShareText();
-    const asset = plShareAsset;
-    const url = 'https://gillylab.com';
-    if (asset && plCanShareFiles(asset.file)) {
-      // Not every implementation accepts `url` together with `files`; the ones
-      // that don't reject the whole call, which would silently share nothing.
-      // Ask first, and drop the url rather than the card.
-      const withUrl = { files: [asset.file], text: text, url: url, title: 'GillyLab parlay' };
-      const payload = (navigator.canShare && navigator.canShare(withUrl))
-        ? withUrl
-        : { files: [asset.file], text: text, title: 'GillyLab parlay' };
-      navigator.share(payload).catch(() => {});
-    } else if (navigator.share) {
-      navigator.share({ text: text, url: url, title: 'GillyLab parlay' }).catch(() => {});
-    } else {
-      plCopyText();   // no share sheet — put the text on the clipboard instead
-    }
   }
   function plShareOpen() {
     if (!PARLAY.legs.length) return;
@@ -107496,12 +107507,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       ${plCardHTML({ share: true })}
       <div class="pl-share-actions">
         <button type="button" id="plSaveImg" class="pl-act primary">Save photo</button>
-        <button type="button" id="plShareBtn" class="pl-act">Share slip</button>
         <button type="button" id="plShareClose" class="pl-act ghost">Close</button>
       </div>
       <div class="pl-share-hint">${PL_IOS
-        ? 'Save photo → tap Save Image to add it to Photos. Share slip sends the card with the odds and a link.'
-        : 'Save photo downloads the image. Share slip sends the card with the odds and a link.'}</div>
+        ? 'Save photo → tap Save Image to add it to Photos.'
+        : 'Save photo downloads the image.'}</div>
     </div>`;
     ov.classList.add('open');
     plPrepShareAsset();   // render the PNG now so the buttons keep user activation
@@ -107712,7 +107722,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if (hit(e, '#plLogBet')) { if (typeof btLogSlip === 'function') btLogSlip(PARLAY.legs); return; }
       if (hit(e, '#plShareOpen')) { plShareOpen(); return; }
       if (hit(e, '#plSaveImg')) { plSaveImage(); return; }
-      if (hit(e, '#plShareBtn')) { plShareSlip(); return; }
+      // (#plShareBtn is gone — the slip is paywalled, so a shared link points at a
+      // door the recipient can't open. Save photo is the whole feature now.)
       // Close on the Close button or a click on the backdrop itself.
       if (hit(e, '#plShareClose') || (e.target && e.target.id === 'plShare')) { plShareClose(); return; }
       if (hit(e, '#plClear') || hit(e, '#plSwipeClear')) { plClearAll(); return; }
