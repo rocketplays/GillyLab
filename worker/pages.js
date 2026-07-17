@@ -2103,15 +2103,20 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const tape = taleHTML(mf, t);
     // Storylines sit at the very bottom of the dropdown (after finish/durability
     // and common opponents), mirroring the in-app Fight Info order.
-    // ddBtn LAST, INSIDE .mf-panel — the Fight Info dropdown, under everything it
-    // summarises, exactly where the app puts it (renderScouting appends it at the very
-    // end for the same reason).
+    // ddBtn AFTER THE TAPE, BEFORE STYLE — the app's order, measured off the app's own
+    // DOM rather than assumed:
+    //     .sr-common "Tale of the tape"
+    //     >>> DEEP DIVE BUTTON
+    //     .sr-common "Style" / "Finish & durability" / "Common opponents" / "Storylines"
+    // renderScouting appends the button to `host` before the shared breakdown adds
+    // style/pace/path, so it lands there. I had it last here, which put it under
+    // Storylines — the same panel, a different reading order.
     //
-    // AND ONLY HERE. It first went on taleHTML's return, which looked right — that is
-    // where the tale of the tape ends — and taleHTML is rendered by nonMainPanel too,
-    // so all 12 bouts got a deep-dive button for a panel that only holds the main
-    // event. Caught by counting: 12 buttons, 12 cards, 1 main.
-    return `<div class="mf-panel" hidden>${tape}${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}${ddBtn}</div>`;
+    // AND ONLY IN THIS FUNCTION. It first went on taleHTML's return, which looked
+    // right — that is where the tape ends — but nonMainPanel renders taleHTML too, so
+    // all 12 bouts got a deep-dive button for a panel that only holds the main event.
+    // Caught by counting: 12 buttons, 12 cards, 1 main.
+    return `<div class="mf-panel" hidden>${tape}${ddBtn}${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}</div>`;
   };
 
   // Moneyline color: the favorite (smaller American number, e.g. -247 < +200)

@@ -78,13 +78,32 @@ const a = html.indexOf(JS_START), b = html.indexOf(JS_END);
 if (a < 0 || b < 0 || b < a) throw new Error('hub JS markers not found in index.html — did _ddGrid/fightStatsFor move?');
 const hubJS = html.slice(a, b);
 
-// The hub's stylesheet, #mh-overlay .. .mh-empty. The free page has none of this.
+// The hub's stylesheet: #mh-overlay .. the END of its @media block.
+//
+// IT USED TO STOP AT .mh-empty, AND THE RESPONSIVE RULES ARE RIGHT AFTER IT. The free
+// page therefore shipped the hub with no breakpoint at all: .mh-grids never collapsed
+// to one column, #mh-box never widened to 96vw, the header never wrapped. Measured at
+// 430px: the free modal was 404px wide and scrolled 2px sideways, while the app's was
+// 413 and didn't — because the app's `@media (max-width: 720px)` was firing and the
+// free page had never been given it. Reported as "it doesn't all quite fit ... you can
+// scroll left/right a bit", which is exactly what a missing breakpoint looks like.
+//
+// So the slice runs to the close of that block. Balance the braces rather than hunt
+// for a marker: the last rule in it is a comment-heavy header override that anyone
+// might reorder, and a slice keyed to whichever selector happens to be last is a slice
+// that silently truncates the day someone moves one.
 const CSS_START = '#mh-overlay {';
-const CSS_END = '.mh-empty {';
 const ca = html.indexOf(CSS_START);
-const ce = html.indexOf('}', html.indexOf(CSS_END));
-if (ca < 0 || ce < 0 || ce < ca) throw new Error('hub CSS markers not found in index.html');
-let hubCSS = html.slice(ca, ce + 1);
+if (ca < 0) throw new Error('hub CSS start marker not found in index.html');
+const mq = html.indexOf('@media (max-width: 720px)', ca);
+if (mq < 0) throw new Error("the hub's @media (max-width: 720px) block not found — the free modal would ship with no breakpoint");
+let depth = 0, ce = -1;
+for (let i = mq; i < html.length; i++) {
+  if (html[i] === '{') depth++;
+  else if (html[i] === '}') { depth--; if (depth === 0) { ce = i; break; } }
+}
+if (ce < 0) throw new Error("the hub's @media block never closes — refusing to guess where it ends");
+const hubCSS = html.slice(ca, ce + 1);
 // .gl-sheet-btn styles the sheet buttons, which the free page does not render.
 // Everything else in the block is load-bearing.
 
