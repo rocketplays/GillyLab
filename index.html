@@ -2253,7 +2253,13 @@
     .mh-gc b { display: block; font-size: 0.86rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
     .mh-gc i { display: block; font-style: normal; font-size: 0.58rem; color: var(--muted); font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
     .mh-gc.thin b { color: var(--muted); font-weight: 400; }
-    .mh-gk { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
+    /* TWO STACKED LINES, and the top one must not wrap. As one long flex row the
+       caption pushed "Better" onto its own line, orphaned from the gradient it
+       labels — the label ended up further from its scale than the sentence below
+       it. So: scale on line one, nowrap; what it's measured against on line two. */
+    .mh-gk { display: flex; flex-direction: column; align-items: center; gap: 0.25rem; margin-top: 0.6rem; font-size: 0.6rem; color: var(--muted); text-align: center; }
+    .mh-gk-row { display: inline-flex; align-items: center; white-space: nowrap; }
+    .mh-gk-sub { opacity: 0.8; }
     /* Diverging, because the question is "is he better than normal here", not "how
        close to 100% is he" — nobody is close to 100% at head-at-range. Must track
        the cell colours: they are red (#ff4040), so this cannot fade from orange. */
@@ -88593,7 +88599,7 @@ function _ddGrid(name){
   // actually has the numbers; it is not sitting in this file waiting.
   let n = 0;
   let sn = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0, ctrlAg=0;
-  let kd=0, kdAg=0, sub=0, subAg=0, rev=0, revAg=0, sigL=0, sigA=0, sigLAg=0, sigAAg=0;
+  let kd=0, sub=0, rev=0;
   const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
   for (const r of rows.slice(0,8)) {
     if (!r) continue;
@@ -88620,18 +88626,21 @@ function _ddGrid(name){
     tdL += f.f.tdL||0; tdA += f.f.tdA||0;
     tdAgL += f.o.tdL||0; tdAgA += f.o.tdA||0;
     ctrl += secs(f.f.ctrl); ctrlAg += secs(f.o.ctrl);
-    kd += f.f.kd||0; kdAg += f.o.kd||0;
-    sub += f.f.sub||0; subAg += f.o.sub||0;
-    rev += f.f.rev||0; revAg += f.o.rev||0;
-    sigL += f.f.sigL||0; sigA += f.f.sigA||0;
-    sigLAg += f.o.sigL||0; sigAAg += f.o.sigA||0;
+    kd += f.f.kd||0;
+    sub += f.f.sub||0;
+    rev += f.f.rev||0;
   }
   // kd / sub / rev DID survive the same check, which is why they're here and adv
   // isn't: across those 621 rows, kd is non-zero on 22.2%, sub on 22.4%, rev on
   // 9.3%, and control time on 87.6%. Sparse, but real.
+  //
+  // sigL/sigA/sigLAg/sigAAg ARE GONE, and their absence is the point. They were the
+  // "significant strikes landed / accuracy" totals — which are just the grid's nine
+  // cells added back up, i.e. the averaging this whole feature exists to undo, shown
+  // directly above the grid that undoes it. Removed with the section that carried
+  // them. kdAg/subAg/revAg were speculative and nothing ever read them.
   return n ? { cells, cellsD, fights:n, sFights:sn,
-               tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg,
-               kd, kdAg, sub, subAg, rev, revAg, sigL, sigA, sigLAg, sigAAg } : null;
+               tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg, kd, sub, rev } : null;
 }
 let _ddIndex = null, _ddStatsIndex = null;
 
@@ -88958,20 +88967,35 @@ function mhDivTag(name){
 // so this will read "card"; the sentence changes itself as the data fills in.
 function mhBaseLabel(srcs){
   const div = srcs.has('div'), card = srcs.has('card');
-  if (div && card) return 'vs the median of each fighter\'s division, or of this card where a division has under 8 fighters with data';
-  if (div) return 'vs the median of each fighter\'s own division';
-  if (card) return 'vs the median fighter on this card — no division here has 8 peers with data yet';
+  // Short, because it sits under the gradient. It still has to distinguish the
+  // three cases: claiming "division" over a grid that is actually half card norm
+  // would be a caption that lies, and the fallback is exactly the situation nobody
+  // would think to check.
+  if (div && card) return 'vs the division median (card median where a division is thin)';
+  if (div) return 'vs the division median';
+  if (card) return 'vs the card median — no division here has enough fighters yet';
   return '';
 }
 
-function mhReadBlock(A, B, n1, n2, domain, quiet){
+// THE READ, OR AN HONEST ADMISSION THAT THERE ISN'T ONE.
+//
+// The empty state is the feature, not a gap: 10 of 50 bouts have nothing to lead
+// with on either tab, which is correct — most fights are not lopsided, and a panel
+// that always has a verdict will invent one.
+//
+// ONE FUNCTION FOR BOTH TABS so the two can't drift apart. Each tab asks about its
+// own domain, and when its domain is quiet it checks THE OTHER ONE before shrugging
+// — a reader who lands on Striking in a fight that's decided on the mat should be
+// pointed at the mat, not told there's nothing here.
+function mhReadBlock(A, B, n1, n2, domain){
   const read = ddRead(A, B, n1, n2, domain);
   if (read) return '<div class="mh-read">' + read + '</div>';
-  // AN HONEST EMPTY STATE IS THE FEATURE, NOT A GAP. 10 of 50 bouts say nothing,
-  // which is correct — most fights are not lopsided, and a panel that always has a
-  // verdict will invent one.
+  const other = domain === 'strike' ? 'grap' : 'strike';
+  const otherName = domain === 'strike' ? 'Grappling' : 'Striking';
+  const elsewhere = ddRead(A, B, n1, n2, other);
+  const txt = 'No clear edge on paper' + (elsewhere ? '; see ' + otherName + '.' : '.');
   return '<div class="mh-read" style="border-left-color:var(--border);background:rgba(255,255,255,0.025);color:var(--muted)">' +
-    quiet + '</div>';
+    txt + '</div>';
 }
 
 // THERE IS NO OVERVIEW TAB, AND REMOVING IT COST ALMOST NOTHING.
@@ -88983,38 +89007,14 @@ function mhReadBlock(A, B, n1, n2, domain, quiet){
 // tab whose job was to average away the thing the next tab shows you properly.
 //
 // Only ONE number on it was not available anywhere else: knockdowns, which aren't
-// in the grid at all. That and the two headline totals moved here, into "The
-// totals". The overall what-lands-on-him did NOT come with them: this tab already
-// carries it lane by lane, which is strictly more informative.
+// in the grid at all. It now sits at the foot of "Where his offense goes". The two
+// headline totals it also carried — strikes landed, strike accuracy — are gone
+// outright: both are just the grid's nine cells added back up, which is the
+// averaging this feature exists to undo, and the grid is directly below them.
 function mhStriking(A, B, n1, n2){
   // With Overview gone this is the landing tab, so when the striking is level the
-  // empty state has to point at where the fight actually is — otherwise the first
-  // thing a reader sees on a lopsided grappling matchup is "nothing to say here".
-  const grapRead = ddRead(A, B, n1, n2, 'grap');
-  let h = mhReadBlock(A, B, n1, n2, 'strike',
-    'No striking gap here is large enough to lead with — the grid below is the detail.' +
-    (grapRead ? ' What separates these two is on the mat; see Grappling.' : ''));
-
-  h += '<div class="mh-sec">The totals <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
-  // NO ACCENT ON VOLUME. There is no fight duration anywhere in this data, so
-  // "719 landed against 568" conflates a busier fighter with a man who spent longer
-  // in there — and landing more strikes is not itself better anyway. The counts are
-  // worth showing; the verdict isn't ours to give.
-  const mSig = Math.max(A.sigL, B.sigL, 1);
-  h += mhCmp('Significant strikes landed',
-    { txt: String(A.sigL), sub: 'of ' + A.sigA + ' thrown', frac: A.sigL/mSig },
-    { txt: String(B.sigL), sub: 'of ' + B.sigA + ' thrown', frac: B.sigL/mSig });
-  h += mhCmp('Strike accuracy',
-    { txt: _mhPct(A.sigL, A.sigA), sub: A.sigL + '/' + A.sigA, frac: A.sigA ? A.sigL/A.sigA : 0 },
-    { txt: _mhPct(B.sigL, B.sigA), sub: B.sigL + '/' + B.sigA, frac: B.sigA ? B.sigL/B.sigA : 0 },
-    { lead: _mhLeadProp(A.sigL, A.sigA, B.sigL, B.sigA) });
-  if (A.kd || B.kd) {
-    const mK = Math.max(A.kd, B.kd, 1);
-    h += mhCmp('Knockdowns scored',
-      { txt: String(A.kd), sub: null, frac: A.kd/mK },
-      { txt: String(B.kd), sub: null, frac: B.kd/mK },
-      { lead: _mhLeadCount(A.kd, B.kd) });
-  }
+  // read points at the mat instead of shrugging — see mhReadBlock.
+  let h = mhReadBlock(A, B, n1, n2, 'strike');
 
   // NO GREEN/RED ON THIS SECTION, AND IT IS THE ONE PLACE I'M NOT FOLLOWING THE
   // PROFILE BARS. Every other row here has a direction: landing more is better,
@@ -89025,7 +89025,6 @@ function mhStriking(A, B, n1, n2){
   // So: the division tick, so you can see he's unusual, and no verdict about it.
   const tot = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
   const tA = tot(A), tB = tot(B);
-  const aimSrc = new Set();
   let aimRows = '';
   for (const [p,t,label] of _MH_LANES) {
     const i = _MH_GI(p,t);
@@ -89034,8 +89033,6 @@ function mhStriking(A, B, n1, n2){
     // leg-kick bars would be invisible slivers and the comparison would be lost.
     const ra = a[1]/tA, rb = b[1]/tB, m = Math.max(ra, rb, 0.01);
     const nA = mhNorm(n1, 'aim', i), nB = mhNorm(n2, 'aim', i);
-    if (nA) aimSrc.add(nA.src);
-    if (nB) aimSrc.add(nB.src);
     // Percentages only. The raw "186 thrown" was noise in a row whose entire point
     // is the share — and the grid directly below prints landed/thrown for every one
     // of these cells anyway.
@@ -89047,9 +89044,19 @@ function mhStriking(A, B, n1, n2){
       { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m },
       { normL: nA ? nA.med/m : null, normR: nB ? nB.med/m : null });
   }
-  h += '<div class="mh-sec">Where his offense goes <span>share of everything he throws · last ' +
-       _mhN(A.fights, B.fights) + ' fights · tick is ' +
-       (aimSrc.has('div') && !aimSrc.has('card') ? 'his division\'s median' : 'the typical fighter') + '</span></div>';
+  // KNOCKDOWNS RIDE ALONG HERE. They are the one striking number that isn't in the
+  // grid at all, so they have nowhere else to live — and they belong under "where
+  // his offense goes" more than anywhere: it's what the offense actually did.
+  // Dropped entirely when neither man has one, rather than printed as 0 vs 0, which
+  // reads as a measured tie instead of the absence it is.
+  if (A.kd || B.kd) {
+    const mK = Math.max(A.kd, B.kd, 1);
+    aimRows += mhCmp('Knockdowns scored',
+      { txt: String(A.kd), sub: null, frac: A.kd/mK },
+      { txt: String(B.kd), sub: null, frac: B.kd/mK },
+      { lead: _mhLeadCount(A.kd, B.kd) });
+  }
+  h += '<div class="mh-sec">Where his offense goes <span>share of everything he throws</span></div>';
   h += aimRows;
 
   const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
@@ -89057,11 +89064,12 @@ function mhStriking(A, B, n1, n2){
   h += '<div class="mh-grids">' +
     '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + mhDivTag(n1) + '</div>' + gA.html + '</div>' +
     '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + mhDivTag(n2) + '</div>' + gB.html + '</div></div>';
-  // The legend has to say what the colour is measured AGAINST, or the reader
-  // assumes it's the raw percentage and reads every cell wrong.
+  // Two lines: the scale, then what it's measured AGAINST. That second line is not
+  // decoration — without it a reader takes the colour for the raw percentage and
+  // misreads every cell, since nobody is near 100% at head-at-range.
   const gs = new Set([...gA.srcs, ...gB.srcs]);
-  h += '<div class="mh-gk">Worse<span class="mh-gk-sw"></span>Better · ' +
-       mhBaseLabel(gs) + ' · under ' + _MH_FLOOR + ' thrown shows no rate</div>';
+  h += '<div class="mh-gk"><span class="mh-gk-row">Worse<span class="mh-gk-sw"></span>Better</span>' +
+       '<span class="mh-gk-sub">' + mhBaseLabel(gs) + '</span></div>';
 
   // WHAT LANDS ON HIM — the one section where the accent runs backwards, because
   // the number is a beating. Below your division's median = green.
@@ -89086,8 +89094,7 @@ function mhStriking(A, B, n1, n2){
         gradeL: _mhGrade(ra, a[1], nA, true),
         gradeR: _mhGrade(rb, b[1], nB, true) });
   }
-  h += '<div class="mh-sec">What lands on him <span>of what opponents throw at him there · green is better than ' +
-       (dSrc.has('div') && !dSrc.has('card') ? 'his division' : 'the typical fighter') + ' · tick is that median</span></div>';
+  h += '<div class="mh-sec">What lands on him <span>how often strikes land vs the division median</span></div>';
   h += dRows;
   return h;
 }
