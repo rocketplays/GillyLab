@@ -1198,6 +1198,255 @@ const GL_SHEET = (function () {
     return cv;
   }
 
+  /* ── MATCHUP HUB SHEETS: striking + grappling ────────────────────────────
+     One condensed card per tab of the deep dive. 1080x1350 — Instagram's 4:5
+     feed maximum, the same shape drawMatchup's 'portrait' uses, because these
+     are feed cards and not stories.
+
+     EVERY OUTSIDE DEPENDENCY IS typeof-GUARDED, and that is not defensive
+     habit — gen-gl-sheet.cjs slices this module out and serves it as
+     gl-sheet.js to the FREE pages (/pickem, /theclimb), where _ddGrid, mhNorm
+     and FIGHT_GRID do not exist. drawMatchup already does this with
+     renderMatchupBreakdown. An unguarded reference here would throw on a page
+     that has nothing to do with this feature.  */
+  const _sgGrid  = (n) => (typeof _ddGrid === 'function') ? _ddGrid(n) : null;
+  const _sgRead  = (A, B, n1, n2, d) => (typeof ddRead === 'function') ? ddRead(A, B, n1, n2, d) : '';
+  const _sgNorm  = (n, m, i) => (typeof mhNorm === 'function') ? mhNorm(n, m, i) : null;
+  const _sgGI    = (p, t) => ['dist','clinch','ground'].indexOf(p)*3 + ['head','body','leg'].indexOf(t);
+  const SG_FLOOR = 25;   // mirrors _MH_FLOOR: under 25 thrown, a cell has no rate worth shading
+
+  // The read, in the same green-tinted block the modal uses, so the card and the
+  // panel it came from are recognisably the same thing.
+  function sgRead(ctx, text, y) {
+    const x = 64, w = W - 128;
+    ctx.font = '400 27px ' + SANS;
+    const lines = wrap(ctx, text, w - 44).slice(0, 3);
+    const h = 34 + lines.length * 36;
+    roundRect(ctx, x, y, w, h, 12);
+    ctx.fillStyle = hexA(ACC, 0.07); ctx.fill();
+    ctx.strokeStyle = hexA(ACC, 0.22); ctx.lineWidth = 1; ctx.stroke();
+    ctx.fillStyle = TXT; ctx.font = '400 27px ' + SANS;
+    lines.forEach((ln, i) => ctx.fillText(ln, x + 22, y + 40 + i * 36));
+    return y + h + 18;
+  }
+
+  // The hub's signature row: label centred, values outside, bars growing OUT from
+  // the middle so the longer side is the message before you read a digit. `accA`/
+  // `accB` light the accent, and are passed in already gated — the card never
+  // decides on its own that a gap is real.
+  function sgBar(ctx, label, txtA, txtB, subA, subB, fracA, fracB, y, accA, accB) {
+    ctx.textAlign = 'center'; ctx.font = '400 21px ' + SANS; ctx.fillStyle = MUT;
+    ctx.fillText(String(label).toUpperCase(), W / 2, y);
+    const vy = y + 40;
+    ctx.textAlign = 'left';  ctx.font = '700 36px ' + COND; ctx.fillStyle = accA ? ACC : TXT;
+    ctx.fillText(txtA, 64, vy);
+    ctx.textAlign = 'right'; ctx.fillStyle = accB ? ACC : TXT;
+    ctx.fillText(txtB, W - 64, vy);
+    if (subA || subB) {
+      ctx.font = '400 20px ' + SANS; ctx.fillStyle = FOOT;
+      ctx.textAlign = 'left';  if (subA) ctx.fillText(subA, 64, vy + 26);
+      ctx.textAlign = 'right'; if (subB) ctx.fillText(subB, W - 64, vy + 26);
+    }
+    const gap = 18, half = 268, bh = 12, by = y + 16;
+    const lx = W / 2 - gap - half, rx = W / 2 + gap;
+    roundRect(ctx, lx, by, half, bh, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    roundRect(ctx, rx, by, half, bh, 6); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
+    // A TRUE ZERO DRAWS NOTHING. The floor was Math.max(4, …), which gave Brahimaj's
+    // 0 reversals a 4px nub — a bar, however small, says "some". The floor exists so
+    // a small-but-real value stays visible; it must not manufacture one.
+    const barW = (f) => { const v = Math.max(0, Math.min(1, f)); return v > 0 ? Math.max(4, half * v) : 0; };
+    const wa = barW(fracA), wb = barW(fracB);
+    // Left bar grows leftward from the centre; right bar grows rightward.
+    if (wa) { roundRect(ctx, lx + half - wa, by, wa, bh, 6);
+              ctx.fillStyle = accA ? ACC : 'rgba(255,255,255,0.34)'; ctx.fill(); }
+    if (wb) { roundRect(ctx, rx, by, wb, bh, 6);
+              ctx.fillStyle = accB ? ACC : 'rgba(255,255,255,0.34)'; ctx.fill(); }
+    ctx.textAlign = 'left';
+    return y + (subA || subB ? 74 : 62);
+  }
+
+  // The 3x3 cross-tab, shaded against the fighter's own division exactly as the
+  // modal shades it — same mhNorm, same floor, same capped z. It is the one thing
+  // on the striking tab that no other view in the product shows, so a striking
+  // card without it would be a card of the parts that aren't the point.
+  function sgGrid(ctx, G, name, x, y, w) {
+    const cw = w / 3, rh = 62;
+    ctx.textAlign = 'center';
+    ctx.font = '700 21px ' + SANS; ctx.fillStyle = MUT;
+    ['HEAD','BODY','LEG'].forEach((t, i) => ctx.fillText(t, x + cw * i + cw / 2, y));
+    let yy = y + 14;
+    [['dist','DIST'],['clinch','CLIN'],['ground','GRND']].forEach(([p, plabel]) => {
+      ctx.textAlign = 'right'; ctx.font = '700 19px ' + SANS; ctx.fillStyle = FOOT;
+      ctx.fillText(plabel, x - 12, yy + rh / 2 + 6);
+      ['head','body','leg'].forEach((t, ci) => {
+        const i = _sgGI(p, t), c = G.cells[i];
+        const n = c[1], thin = n < SG_FLOOR, r = n ? c[0] / n : 0;
+        const b = thin ? null : _sgNorm(name, 'acc', i);
+        let bg = 'rgba(255,255,255,0.03)';
+        if (b && b.spread) {
+          const z = Math.max(-1, Math.min(1, ((r - b.med) / b.spread) / 2));
+          bg = z >= 0 ? 'rgba(0,230,104,' + (0.06 + 0.44 * z).toFixed(3) + ')'
+                      : 'rgba(255,64,64,' + (0.06 + 0.34 * (-z)).toFixed(3) + ')';
+        }
+        const cx = x + cw * ci + 3, cy = yy + 3, cwid = cw - 6, chh = rh - 6;
+        roundRect(ctx, cx, cy, cwid, chh, 7); ctx.fillStyle = bg; ctx.fill();
+        if (thin) { ctx.strokeStyle = 'rgba(255,255,255,0.16)'; ctx.lineWidth = 1; ctx.stroke(); }
+        ctx.textAlign = 'center';
+        // An empty cell says nothing rather than "0%", which would read as a
+        // measured zero instead of the absence it is. Same rule as the modal.
+        ctx.font = '700 26px ' + COND; ctx.fillStyle = n ? TXT : FOOT;
+        ctx.fillText(n ? Math.round(r * 100) + '%' : '·', cx + cwid / 2, cy + 26);
+        ctx.font = '400 17px ' + SANS; ctx.fillStyle = FOOT;
+        ctx.fillText(n ? c[0] + '/' + n : '—', cx + cwid / 2, cy + 46);
+      });
+      yy += rh;
+    });
+    ctx.textAlign = 'left';
+    return yy;
+  }
+
+  // Shared top: brand, date, avatars, names, records. Returns the y to build from.
+  async function sgHead(nameA, nameB, info, kicker) {
+    await fontsReady();
+    const a = meta(nameA), b = meta(nameB);
+    const [imgA, imgB, logo] = await Promise.all([loadImg(a.slug), loadImg(b.slug), loadBrandLogo()]);
+    const CH = 1350;
+    const cv = document.createElement('canvas');
+    cv.width = W; cv.height = CH;
+    const ctx = cv.getContext('2d');
+    ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
+    brand(ctx, 82, kicker, logo);
+    const sub = [(info && info.weightClass) || '', (info && info.date) || ''].filter(Boolean).join(' · ');
+    if (sub) { ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(sub, 64, 118); }
+    // showForm=false: the win/loss chips are a fact about the career, and these two
+    // cards are about one department of one fight. Also buys ~30px of the budget.
+    const y = versusBlock(ctx, a, b, imgA, imgB, 150, 44, NEU_A, NEU_B, false);
+    return { cv, ctx, CH, y };
+  }
+
+  async function drawStriking(nameA, nameB, info) {
+    const A = _sgGrid(nameA), B = _sgGrid(nameB);
+    if (!A || !B) throw new Error('No striking breakdown available for this bout.');
+    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC');
+    let y = y0 + 6;
+    const read = _sgRead(A, B, nameA, nameB, 'strike');
+    if (read) y = sgRead(ctx, read, y);
+
+    // WHERE THE FIGHT HAPPENS — share of everything they throw. No accent: a share
+    // has no direction (see the modal). Scaled to the larger of the two so a 5%
+    // clinch bar isn't an invisible sliver.
+    y = sectionTitle(ctx, 'Where the fight happens', y + 40) + 16;
+    const tot = (G) => G.cells.reduce((s, c) => s + c[1], 0) || 1;
+    const tA = tot(A), tB = tot(B);
+    [[0, 'At range'], [1, 'In the clinch'], [2, 'On the ground']].forEach(([g, lab]) => {
+      const ra = (A.cells[g*3][1] + A.cells[g*3+1][1] + A.cells[g*3+2][1]) / tA;
+      const rb = (B.cells[g*3][1] + B.cells[g*3+1][1] + B.cells[g*3+2][1]) / tB;
+      const m = Math.max(ra, rb, 0.01);
+      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra/m, rb/m, y, false, false);
+    });
+
+    // HOW WELL IT LANDS — the cross-tab, per fighter, shaded against his division.
+    y = sectionTitle(ctx, 'How well it lands', y + 30) + 30;
+    const gw = 400;
+    ctx.textAlign = 'center'; ctx.font = '700 26px ' + COND; ctx.fillStyle = TXT;
+    const lastA = (typeof _ddLast === 'function') ? _ddLast(nameA) : nameA;
+    const lastB = (typeof _ddLast === 'function') ? _ddLast(nameB) : nameB;
+    ctx.fillText(clip(ctx, String(lastA).toUpperCase(), gw), 104 + gw/2, y);
+    ctx.fillText(clip(ctx, String(lastB).toUpperCase(), gw), W - 104 - gw/2, y);
+    ctx.textAlign = 'left';
+    const gy = y + 30;
+    sgGrid(ctx, A, nameA, 104, gy, gw);
+    const gEnd = sgGrid(ctx, B, nameB, W - 104 - gw, gy, gw);
+    y = gEnd + 34;
+    ctx.textAlign = 'center'; ctx.font = '400 21px ' + SANS; ctx.fillStyle = FOOT;
+    ctx.fillText('accuracy by position and target · shaded vs the division median', W / 2, y);
+    ctx.textAlign = 'left';
+
+    // THERE IS NO "WHAT LANDS ON THEM" ON THIS CARD, AND IT IS NOT AN OVERSIGHT.
+    // I added it, because the card LOOKED about a quarter empty. Measured, on a
+    // 1350 canvas: content ends at y=1142 and the footer sits at 1310, so the real
+    // slack is 116px. A section title costs 92 and one row costs 62 — 154 minimum.
+    // It does not fit, and the version that "fitted" printed the heading with zero
+    // rows under it, because the row budget evaluated to 0 AFTER the title was
+    // already drawn.
+    //
+    // 116px above a footer is padding, not a hole. The eyeball said 25% empty off a
+    // scaled preview; the arithmetic said 8.6%. If this card ever must carry the
+    // defensive lanes, the honest way is the 1080x1920 story cut — not shrinking the
+    // grid, which is the one thing on the striking tab no other view shows.
+    footer(ctx, CH);
+    return cv;
+  }
+
+  async function drawGrappling(nameA, nameB, info) {
+    const A = _sgGrid(nameA), B = _sgGrid(nameB);
+    if (!A || !B) throw new Error('No grappling breakdown available for this bout.');
+    const { cv, ctx, CH, y: y0 } = await sgHead(nameA, nameB, info, (info && info.event) || 'UFC');
+    let y = y0 + 6;
+    const read = _sgRead(A, B, nameA, nameB, 'grap');
+    if (read) y = sgRead(ctx, read, y);
+
+    // Per 15 minutes, not per fight — the same exposure the modal and the profile
+    // page use. A card that said "per fight" would disagree with both.
+    const exp = (G) => (G.cage > 0 ? G.cage / 900 : (G.sFights || 1));
+    const per15 = A.cage > 0 && B.cage > 0;
+    const eA = per15 ? A.cage / 900 : (A.sFights || 1), eB = per15 ? B.cage / 900 : (B.sFights || 1);
+    const unit = per15 ? '/15min' : '/fight';
+    const mins = (s) => Math.floor(s/60) + 'm ' + String(Math.round(s%60)).padStart(2,'0') + 's';
+    const lead = (fn) => (typeof fn === 'function') ? fn : () => 0;
+    const LP = lead(typeof _mhLeadProp === 'function' ? _mhLeadProp : null);
+    const LR = lead(typeof _mhLeadRatio === 'function' ? _mhLeadRatio : null);
+
+    y = sectionTitle(ctx, 'Takedowns', y + 40) + 16;
+    const tdLead = LP(A.tdL, A.tdA, B.tdL, B.tdA);
+    y = sgBar(ctx, 'Takedowns landed',
+      A.tdL + '/' + A.tdA, B.tdL + '/' + B.tdA,
+      (A.tdA ? Math.round(A.tdL/A.tdA*100) + '% · ' : '') + (A.tdL/eA).toFixed(1) + unit,
+      (B.tdA ? Math.round(B.tdL/B.tdA*100) + '% · ' : '') + (B.tdL/eB).toFixed(1) + unit,
+      A.tdA ? A.tdL/A.tdA : 0, B.tdA ? B.tdL/B.tdA : 0, y, tdLead === 1, tdLead === 2);
+    const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
+    const stLead = LP(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA);
+    y = sgBar(ctx, 'Takedowns stopped',
+      (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, (B.tdAgA-B.tdAgL) + '/' + B.tdAgA,
+      A.tdAgA ? Math.round(sA*100) + '%' : 'never shot on',
+      B.tdAgA ? Math.round(sB*100) + '%' : 'never shot on',
+      sA, sB, y, stLead === 1, stLead === 2);
+
+    // +52, NOT +30. sectionTitle draws its hairline at y-40.5, and an sgBar that
+    // carries subs paints them at prevY+66 and returns prevY+74 — so +30 put the
+    // rule at prevY+63.5, straight through the "55%" underneath it. Anything
+    // following a subbed row needs > +46.5 to clear the descenders.
+    y = sectionTitle(ctx, 'Control', y + 52) + 16;
+    const cA = A.ctrl / eA, cB = B.ctrl / eB, mC = Math.max(cA, cB, 1);
+    const cLead = LR(cA, cB, 1.25);
+    y = sgBar(ctx, 'Control time', mins(A.ctrl), mins(B.ctrl),
+      mins(cA) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
+      mins(cB) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
+      cA/mC, cB/mC, y, cLead === 1, cLead === 2);
+    const kA = A.ctrlAg / eA, kB = B.ctrlAg / eB, mK = Math.max(kA, kB, 1);
+    // Not accented: a long bar here is time on your back.
+    y = sgBar(ctx, 'Time spent under control', mins(A.ctrlAg), mins(B.ctrlAg),
+      mins(kA) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
+      mins(kB) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
+      kA/mK, kB/mK, y, false, false);
+
+    // Sparse — dropped entirely when both are zero rather than printed as 0 vs 0,
+    // which reads as a measured tie instead of the absence it is.
+    const ex = [['Submission attempts', A.sub, B.sub], ['Reversals', A.rev, B.rev]].filter(r => r[1] || r[2]);
+    if (ex.length) {
+      y = sectionTitle(ctx, 'On the mat', y + 52) + 16;   // clears the subs above — see Control
+      for (const [lab, va, vb] of ex) {
+        const ra = va/eA, rb = vb/eB, m = Math.max(ra, rb, 0.01);
+        const l = (typeof _mhLeadRate === 'function') ? _mhLeadRate(va, eA, vb, eB) : 0;
+        y = sgBar(ctx, lab, String(va), String(vb),
+          'in ' + A.sFights + ' fights', 'in ' + B.sFights + ' fights',
+          ra/m, rb/m, y, l === 1, l === 2);
+      }
+    }
+    footer(ctx, CH);
+    return cv;
+  }
+
   return {
     // Square card of the user's tracked record over the selected date range.
     betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-bet-record.png',
@@ -1217,6 +1466,14 @@ const GL_SHEET = (function () {
       null),
     sim: (a, b, result, rounds) => open(() => drawSim(a, b, result, rounds),
       'gillylab-sim-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
+      null),
+    // One condensed 4:5 card per matchup-hub tab. Paywalled, so null shareText —
+    // Save photo only, same as matchup and sim.
+    striking: (a, b, info) => open(() => drawStriking(a, b, info || {}),
+      'gillylab-striking-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
+      null),
+    grappling: (a, b, info) => open(() => drawGrappling(a, b, info || {}),
+      'gillylab-grappling-' + a.replace(/\s+/g, '-').toLowerCase() + '-vs-' + b.replace(/\s+/g, '-').toLowerCase() + '.png',
       null),
     // Square card of the user's pick'em selections for the featured event.
     pickem: (data) => open(() => drawPickem(data || {}),
