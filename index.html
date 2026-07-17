@@ -2258,9 +2258,17 @@
        every shade the ramp can produce. */
     .mh-gc b { display: block; font-size: 0.86rem; font-weight: 700; font-variant-numeric: tabular-nums; color: #fff; }
     .mh-gc i { display: block; font-style: normal; font-size: 0.58rem; color: rgba(255,255,255,0.72); font-variant-numeric: tabular-nums; margin-top: 0.1rem; }
-    /* The floor cells carry no colour, so they can go back to being quiet. */
-    .mh-gc.thin b { color: var(--muted); font-weight: 400; }
+    /* THIN = real data, too little to rate. It still shows its rate and its sample,
+       because 16 of 17 is worth seeing — but DASHED and uncoloured, so it can never
+       be mistaken for a graded cell. Shading it would make the least reliable number
+       on the grid the loudest one. */
+    .mh-gc.thin { border: 1px dashed rgba(255,255,255,0.22); background: rgba(255,255,255,0.02) !important; padding: calc(0.4rem - 1px) calc(0.2rem - 1px); }
+    .mh-gc.thin b { color: rgba(255,255,255,0.6); font-weight: 400; }
     .mh-gc.thin i { color: var(--muted); }
+    /* EMPTY = nothing thrown there at all. Not the same as "too few", and it used to
+       render identically. Nothing to read, so it recedes entirely. */
+    .mh-gc.empty { border: none; background: rgba(255,255,255,0.02) !important; padding: 0.4rem 0.2rem; }
+    .mh-gc.empty b, .mh-gc.empty i { color: rgba(255,255,255,0.18); font-weight: 400; }
     /* TWO STACKED LINES, and the top one must not wrap. As one long flex row the
        caption pushed "Better" onto its own line, orphaned from the gradient it
        labels — the label ended up further from its scale than the sentence below
@@ -2272,6 +2280,8 @@
        close to 100% is he" — nobody is close to 100% at head-at-range. Must track
        the cell colours: they are red (#ff4040), so this cannot fade from orange. */
     .mh-gk-sw { display: inline-block; width: 3.4rem; height: 7px; border-radius: 3px; background: linear-gradient(90deg, rgba(255,64,64,0.38), rgba(255,255,255,0.05), rgba(0,230,104,0.5)); vertical-align: middle; margin: 0 0.35rem; }
+    /* Mirrors .mh-gc.thin exactly, so the key looks like the thing it explains. */
+    .mh-gk-thin { display: inline-block; width: 0.85rem; height: 0.85rem; border-radius: 3px; border: 1px dashed rgba(255,255,255,0.22); background: rgba(255,255,255,0.02); vertical-align: middle; margin: 0 0.35rem 0 1.1rem; }
 
     .mh-empty { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 1.5rem 0; }
 
@@ -88939,8 +88949,21 @@ function mhGrid(G, which, name){
     ['head','body','leg'].forEach(t => {
       const i = _MH_GI(p,t);
       const c = G[which][i];
-      const thin = c[1] < _MH_FLOOR;
-      const r = c[1] ? c[0]/c[1] : 0;
+      // THREE STATES, NOT TWO. "—" used to cover both "nothing happened here" and
+      // "something happened but not enough to rate", and 639 of 981 card cells are
+      // below the floor — 254 genuinely empty, 385 with real but small samples, 164
+      // of those in the 10–24 range. Rendering 16/17 identically to 0/0 throws away
+      // the difference between no evidence and a little evidence.
+      //
+      // NOT shaded anyway, which was the other option: a 2/2 cell would come out
+      // maximally green and be the loudest thing on the grid while being the least
+      // real. The floor exists precisely to stop that. So the thin-but-present cells
+      // get their OWN treatment — dashed, uncoloured, sample shown — and the legend
+      // says what dashed means.
+      const n = c[1];
+      const empty = n === 0;
+      const thin = n < _MH_FLOOR;
+      const r = n ? c[0]/n : 0;
       const b = thin ? null : mhNorm(name, metric, i);
       let bg = 'rgba(255,255,255,0.03)';
       if (b) {
@@ -88952,9 +88975,11 @@ function mhGrid(G, which, name){
         bg = z >= 0 ? 'rgba(0,230,104,' + (0.04 + 0.46*z).toFixed(3) + ')'
                     : 'rgba(255,64,64,' + (0.04 + 0.34*(-z)).toFixed(3) + ')';
       }
-      h += '<div class="mh-gc' + (thin ? ' thin' : '') + '" style="background:' + bg + '">' +
-        '<b>' + (thin ? '—' : Math.round(r*100) + '%') + '</b>' +
-        '<i>' + c[0] + '/' + c[1] + '</i></div>';
+      const cls = empty ? ' empty' : (thin ? ' thin' : '');
+      h += '<div class="mh-gc' + cls + '" style="background:' + bg + '">' +
+        '<b>' + (thin ? (empty ? '·' : Math.round(r*100) + '%') : Math.round(r*100) + '%') + '</b>' +
+        '<i>' + (empty ? '—' : c[0] + '/' + n) + '</i></div>';
+      if (thin && !empty) srcs.add('thin');
     });
   });
   return { html: h + '</div>', srcs };
@@ -89110,9 +89135,13 @@ function mhStriking(A, B, n1, n2){
   // Two lines: the scale, then what it's measured AGAINST. That second line is not
   // decoration — without it a reader takes the colour for the raw percentage and
   // misreads every cell, since nobody is near 100% at head-at-range.
+  // The dashed key only appears when a dashed cell is actually on screen — a legend
+  // explaining something you can't see is just more words. mhGrid tags 'thin' into
+  // srcs when it renders one.
   const gs = new Set([...gA.srcs, ...gB.srcs]);
-  h += '<div class="mh-gk"><span class="mh-gk-row">Worse<span class="mh-gk-sw"></span>Better</span>' +
-       '<span class="mh-gk-sub">' + mhBaseLabel(gs) + '</span></div>';
+  h += '<div class="mh-gk"><span class="mh-gk-row">Worse<span class="mh-gk-sw"></span>Better' +
+       (gs.has('thin') ? '<span class="mh-gk-thin"></span>under ' + _MH_FLOOR + ' thrown, too few to rate' : '') +
+       '</span><span class="mh-gk-sub">' + mhBaseLabel(gs) + '</span></div>';
 
   // WHAT LANDS ON HIM — the one section where the accent runs backwards, because
   // the number is a beating. Below your division's median = green.
