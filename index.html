@@ -2205,6 +2205,19 @@
     .mh-tab:hover { color: var(--text); }
     .mh-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
 
+    /* Pick'em / The Climb switch — the same underline language as .mh-tab above, but
+       centred, because this one sits on a page rather than in a modal's header rail.
+       Its own class rather than reusing .mh-tab: those are sized for the modal and a
+       change there should not silently move a page-level control. */
+    .pc-tabs { display: flex; justify-content: center; gap: 0; border-bottom: 1px solid var(--border); margin: 0 0 1.4rem; }
+    .pc-tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 0.75rem 1.5rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+    .pc-tab:hover { color: var(--text); }
+    .pc-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+    /* The game is a full-bleed column on its own page; inside the app it sits in the
+       page's content width, so drop its top padding and let .page own the spacing. */
+    #climb-host { display: block; }
+    #pc-view-climb[hidden] { display: none; }
+
     .mh-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; flex: 1; min-height: 0; }
     .mh-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 2.5rem 0; }
 
@@ -3730,7 +3743,7 @@
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds &amp; Projections</li>
         <li role="menuitem" id="tab-bets"                   onclick="navigate('bets');        closeNavDropdown()">Bet &amp; CLV Tracker</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
-        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
+        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em / The Climb</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
         <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
       </ul>
@@ -4034,13 +4047,30 @@
      PAGE: PICK'EM
 ══════════════════════════════════════ -->
 <div class="page" id="page-pickem">
-  <div class="page-header">
-    <div class="page-header-label" id="pickem-event-label">Loading…</div>
-    <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
+  <!-- The switch sits ABOVE the header because the two halves bring their own: Pick'em
+       has "Make Your Picks", and the game's slice carries its own <h1>The Climb</h1> and
+       the subtitle that explains the rules. Only one header shows at a time. -->
+  <div class="pc-tabs" id="pc-tabs" role="tablist" aria-label="Pick'em or The Climb">
+    <button type="button" class="pc-tab on" id="pc-tab-pickem" role="tab" aria-selected="true"  onclick="pcSwitch('pickem')">Pick'em</button>
+    <button type="button" class="pc-tab"    id="pc-tab-climb"  role="tab" aria-selected="false" onclick="pcSwitch('climb')">The Climb</button>
   </div>
-  <div class="divider"></div>
-  <div style="text-align:center;margin:0 0 0.9rem;"><button type="button" onclick="openModal('pkScoring')" style="background:none;border:none;color:var(--accent);font:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">How scoring works &rarr;</button></div>
-  <div id="pickem-content"></div>
+
+  <div id="pc-view-pickem">
+    <div class="page-header">
+      <div class="page-header-label" id="pickem-event-label">Loading…</div>
+      <div class="page-header-title">Make Your <span class="accent">Picks</span></div>
+    </div>
+    <div class="divider"></div>
+    <div style="text-align:center;margin:0 0 0.9rem;"><button type="button" onclick="openModal('pkScoring')" style="background:none;border:none;color:var(--accent);font:inherit;font-size:0.82rem;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">How scoring works &rarr;</button></div>
+    <div id="pickem-content"></div>
+  </div>
+
+  <!-- The Climb mounts here, ONCE, the first time the tab is clicked. #climb-host is the
+       id every selector in climb-app.js is scoped under (scripts/gen-climb-app.cjs) —
+       renaming it silently unstyles the whole game, so it is asserted at boot. -->
+  <div id="pc-view-climb" hidden>
+    <div id="climb-host"></div>
+  </div>
 </div>
 
 
@@ -7569,7 +7599,17 @@
  if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
  if (page === 'bets' && typeof btRender === 'function') btRender();
  // One-time "how scoring works" explainer, the first time a user opens Pick'em.
- if (page === 'pickem') { try { if (!localStorage.getItem('glPkScoringSeen')) { localStorage.setItem('glPkScoringSeen', '1'); if (typeof openModal === 'function') setTimeout(function(){ openModal('pkScoring'); }, 280); } } catch (e) {} }
+ // The flag is burned WHEN THE MODAL ACTUALLY OPENS, not when we decide to open it.
+ // Marking it seen up-front spends the user's single showing on a modal they may never
+ // see: the page now has a Climb half, and landing there (via the toggle or /#climb)
+ // used to pop the Pick'em explainer over the game 280ms later AND consume the flag —
+ // so it would never appear again on the page it belongs to. Re-check the view on fire.
+ if (page === 'pickem') { try { if (!localStorage.getItem('glPkScoringSeen') && typeof openModal === 'function') setTimeout(function(){
+   var vc = document.getElementById('pc-view-climb');
+   if (vc && !vc.hidden) return;                       // they're on The Climb — not now, and not spent
+   try { localStorage.setItem('glPkScoringSeen', '1'); } catch (e) {}
+   openModal('pkScoring');
+ }, 280); } catch (e) {} }
  // Restore the scroll position for the page being shown (non-fighter pages
  // only — the fighter profile always opens at the top, handled by openFighter).
  if (page !== 'fighter') window.scrollTo(0, pageScroll[targetId] || 0);
@@ -113004,6 +113044,79 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function renderPickemPage(evt) { try { PICKEM.init(evt); } catch (e) { console.error('[GillyLab] pickem render error:', e); } }
 
 
+  /* ══════════════════════════════════════════════════════════════════════════
+     PICK'EM / THE CLIMB — the page-level switch, and the app's ONLY lazy load.
+     ══════════════════════════════════════════════════════════════════════════
+     The Climb is not reproduced here. It is generated into climb-app.js from
+     prototypes/the-climb.html by scripts/gen-climb-app.cjs, because the prototype is
+     what the test suite measures (sim-climb-runs, test-climb, smoke-climb-divisions,
+     check-climb-cap, climb-arithmetic all JSDOM it). A hand-copy in this file would
+     drift away from the tuning the tests certify, silently, and THE-CLIMB-TUNING.txt
+     would become a claim about a file nobody plays. Fix the game in the prototype.
+
+     WHY LAZY, AND WHY IT ACTUALLY IS: this file is ~13MB and every visitor fetches all
+     of it on every page load — CLAUDE.md #3 is explicit that the eager payload does not
+     grow. climb-app.js is 167KB and the roster it fetches (/data/climb.json) is another
+     104KB. Both are pulled the first time someone clicks The Climb and never before, so
+     a subscriber who only plays Pick'em pays nothing for this feature. Inlining the game
+     would have added ~270KB to the payload of every page view on the site.
+  ────────────────────────────────────────────────────────────────────────── */
+  var _climbState = 'idle';   // idle → loading → ready | failed
+
+  function pcSwitch(view) {
+    var climb = (view === 'climb');
+    var tp = document.getElementById('pc-tab-pickem'), tc = document.getElementById('pc-tab-climb');
+    var vp = document.getElementById('pc-view-pickem'), vc = document.getElementById('pc-view-climb');
+    if (!tp || !tc || !vp || !vc) return;
+    tp.classList.toggle('on', !climb); tp.setAttribute('aria-selected', String(!climb));
+    tc.classList.toggle('on', climb);  tc.setAttribute('aria-selected', String(climb));
+    vp.hidden = climb;
+    vc.hidden = !climb;
+    if (climb) loadClimb();
+    // The game hangs .playing on <body> — its one reach outside its own subtree, kept
+    // rather than rewritten so the prototype stays the thing under test. Nothing in this
+    // file styles .playing (measured: zero rules), but leaving it set while the user is
+    // back on Pick'em is a lie about the app's state, so it comes off on the way out.
+    if (!climb) document.body.classList.remove('playing');
+  }
+
+  function loadClimb() {
+    if (_climbState === 'loading' || _climbState === 'ready') return;
+    _climbState = 'loading';
+    var host = document.getElementById('climb-host');
+    if (!host) { _climbState = 'failed'; return; }
+    host.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:3rem 0;">Loading The Climb…</div>';
+
+    var s = document.createElement('script');
+    s.src = '/climb-app.js';
+    s.async = true;
+    s.onload = function () {
+      // The bundle only defines window.CLIMB_APP; nothing has run yet.
+      var A = window.CLIMB_APP;
+      if (!A || typeof A.boot !== 'function') { climbFailed('climb-app.js loaded but did not define CLIMB_APP'); return; }
+      try {
+        var st = document.createElement('style');
+        st.id = 'climb-app-css';
+        st.textContent = A.css;   // every selector scoped under #climb-host by the generator
+        document.head.appendChild(st);
+        host.innerHTML = A.html;
+        A.boot();                 // mounts, fetches /data/climb.json, renders
+        _climbState = 'ready';
+      } catch (e) { climbFailed(e && e.message); }
+    };
+    // A failed CDN/deploy must say so, not sit on a spinner forever.
+    s.onerror = function () { climbFailed('could not fetch /climb-app.js'); };
+    document.head.appendChild(s);
+  }
+
+  function climbFailed(why) {
+    _climbState = 'failed';
+    console.error('[GillyLab] The Climb failed to load:', why);
+    var host = document.getElementById('climb-host');
+    if (host) host.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:3rem 0;">The Climb couldn\'t load. <button type="button" onclick="_climbState=\'idle\';loadClimb()" style="background:none;border:none;color:var(--accent);font:inherit;font-weight:700;cursor:pointer;text-decoration:underline;padding:0;">Try again</button></div>';
+  }
+
+
 
   async function initDynamicPages() {
     let evt = null;
@@ -113040,11 +113153,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       initSimFighterPickers();
       handleOddsPage(evt);
       renderPickemPage(evt);
-      // Deep-link: an email/CTA can open the app straight on Pick'em via /#pickem.
+      // Deep-link: an email/CTA can open the app straight on Pick'em via /#pickem, or on
+      // The Climb via /#climb (same page, other half of the toggle — this is what the
+      // free pages' "Play The Climb" button points at for subscribers).
       // Runs once, then clears the hash so re-renders/refresh don't re-hijack nav.
-      if (location.hash === '#pickem' && !window._pkDeepLinked) {
+      if ((location.hash === '#pickem' || location.hash === '#climb') && !window._pkDeepLinked) {
         window._pkDeepLinked = true;
-        try { navigate('pickem'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
+        var wantClimb = location.hash === '#climb';
+        try { navigate('pickem'); if (wantClimb && typeof pcSwitch === 'function') pcSwitch('climb'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
       }
       if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
