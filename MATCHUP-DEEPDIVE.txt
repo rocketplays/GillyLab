@@ -351,3 +351,90 @@ the fighter. Neither would have failed a test of the numbers, because the number
 were right in both. THE NEW TELL: a rendering decision is a claim too. Shading,
 accenting and ordering all assert something, and they get audited by screenshotting
 the thing and looking at it — which, until today, nobody had ever done.
+
+================================================================================
+THE WINDOW: WHY IT IS THE WHOLE UFC RECORD, AND WHAT THAT COST
+================================================================================
+2026-07-16, third pass. The panel used each fighter's LAST 8 FIGHTS. Nobody had
+measured the 8; it was a recency instinct. Measured, it was not a recency window at
+all:
+
+  * "last 8" spans 0-7 YEARS depending on how often a man fights (median 3). It
+    sliced each fighter's SCHEDULE, not a period of time. Perez's last 8 already
+    reached back to 2020.
+  * it truncated 47 of 110 card fighters (43%), median 4 takedowns hidden, 22 of
+    those 47 hiding 5 or more. Perez showed 4 of his 15. Magny showed 6 of his 58.
+  * it bought nothing for it. Graded (shaded) grid cells: 35% at last-8, 38% at
+    last-12, 40% on the full record; empty cells 26% -> 23%. The median card fighter
+    has 7 UFC fights, so for most of the roster the window did nothing whatsoever
+    except cap the veterans.
+
+THE PRICE, AND IT IS REAL. The last-8 capped everyone at 8, which bounded how far
+apart two men's EXPOSURE could be. A career does not. Over the 89 card fighters with
+3+ UFC fights:
+
+    corr(UFC fights, career takedowns landed) :  0.496
+    corr(UFC fights, career knockdowns)       :  0.602
+    corr(UFC fights, career control time)     :  0.484
+    corr(UFC fights, strike ACCURACY)         : -0.025
+
+A quarter to a third of the variance in every career COUNT is just "has fought
+longer". RATES ARE IMMUNE, because a rate divides the exposure back out. This is the
+same disease as shading the grid on absolute rates (the palette encoded which cell
+you were looking at, not the man in it) and as share-of-total-offense (half of "he
+head-hunts" was "he stays standing"). It keeps arriving in new clothes.
+
+SO: every count is compared PER FIGHT. _mhLeadCount (raw-count Poisson) is gone —
+it assumed equal exposure, which was roughly true at 8 and is false by 12x over
+careers. _mhLeadRate is the standard two-sample Poisson RATE test, se =
+sqrt(a/na^2 + b/nb^2), same 2-se bar as _mhLeadProp.
+
+NOT A VETERAN FILTER, which is what it looks like it wants. A cutoff needs someone
+to pick N, is wrong on both sides of it, and suppresses real high-volume wrestlers.
+Dividing by exposure needs no threshold and no special case.
+
+MEASURED, both tests run independently over every count comparison on the card:
+  agree                              : 72
+  OLD fired, new refuses (seniority) : 20
+  NEW fires, old missed it           :  2
+  OPPOSITE VERDICTS                  :  0
+
+The 20 include the case that started this:
+    Magny 58 TD in 36 fights (1.61/f) vs Brahimaj 10 in 9 (1.11/f)
+      old: "Magny has landed 58 takedowns to Brahimaj's 10."  new: level. Correct.
+    Barboza 11 TD in 31 (0.35/f) vs Ribovics 2 in 8 (0.25/f)
+      old called EDSON BARBOZA a wrestler. He is a career kickboxer.
+
+AND THE 2 ARE THE BETTER ARGUMENT — the confound cuts BOTH ways:
+    Magny 8 submission attempts in 36 fights vs Brahimaj 8 in 9
+      IDENTICAL TOTALS. The count test saw a tie. Per fight it is 0.22 vs 0.89 —
+      Brahimaj hunts subs four times as often. Career length had ERASED a real
+      difference by coincidence. A veteran filter would have deleted this finding.
+
+Aggregate tell, after: corr(leader's extra FIGHTS, leader's extra RATE) across the
+46 cited comparisons = -0.018. The sentences are about the fighters again.
+
+THE TOTALS STILL PRINT. A fan knows what 58 takedowns means and "1.6/fight" is the
+unfamiliar number; it is the COMPARISON that has to be per-fight, not the display.
+Bars and accents run off the rate, the headline stays the total, the sub carries
+whichever of "1.6/fight" or "in 36 fights" the row can support.
+
+TRAPS, ALL LIVE:
+  * agg() in split-fight-grid.cjs and _ddGrid() in index.html MUST use the same
+    window. These aggregates become the division medians the panel grades against.
+    Summing a career on one side and 8 fights on the other compares two different
+    quantities and calls it a verdict.
+  * _mhLeadRatio (control time) has NO exposure term — seconds are not a count of
+    events, so Poisson does not apply. Callers MUST divide by fights first. Pass it
+    career seconds and every veteran becomes a controller.
+  * sFights, not fights, for anything from FIGHT_STATS. Two files, two backfills;
+    the grid's fight count is not the stats file's.
+  * "0.0 per fight" is a LIE for 1 reversal in 31 fights. _mhPer prints "<0.1".
+    Rounding is only wrong in the direction that claims an absence.
+
+AND THE AUDITS ROTTED WHILE NOBODY LOOKED. Three checks were green because they had
+stopped testing: audit-reads' regex still matched the ORIGINAL phrasing (0 claims
+audited, reported as a clean pass), src-check called mhDivTag() which was deleted
+with the weight-class tag, and its grade table split on "What lands on him" after
+the header became "What lands on them" — printing an empty table for weeks. A check
+keyed to display copy MUST assert it found something, or it decays into decoration.

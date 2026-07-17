@@ -171,11 +171,29 @@ const robustSd = v => {
   return iqr / 1.349;
 };
 
-// Aggregate a fighter's last 8 grid fights into 9 offensive + 9 defensive cells.
+// Aggregate a fighter's WHOLE UFC record into 9 offensive + 9 defensive cells.
+//
+// IT WAS THE LAST 8, AND THE 8 WAS NEVER MEASURED — it was a recency instinct that
+// turned out not to be a recency window at all. Measured over the card:
+//   * "last 8" spans 0–7 years depending on how often a man fights (median 3). It
+//     is not a consistent slice of time, it is a slice of whatever each fighter's
+//     schedule happened to be.
+//   * it truncated 47 of 110 card fighters (43%), hiding a median of 4 takedowns
+//     and, for Magny, 52 of 58.
+//   * it cost coverage rather than buying precision: graded grid cells ran 37% at
+//     last-8, 40% at last-12, 42% on the full record. The median card fighter has
+//     7 UFC fights, so for most of the roster the window was doing nothing at all
+//     except capping the veterans.
+//
+// THIS MUST STAY IDENTICAL TO index.html's _ddGrid. These aggregates become the
+// division medians that _mhGrade and ddRead judge a fighter against; if this side
+// summed a career and that side summed 8 fights, every fighter with a long record
+// would be marked against a yardstick built from a different quantity than his own
+// number. The two loops are the same statistic or the comparison is meaningless.
 function agg(rows) {
   const off = Array.from({ length: 9 }, () => [0, 0]);
   const def = Array.from({ length: 9 }, () => [0, 0]);
-  for (const r of (rows || []).filter(Boolean).slice(0, 8)) {
+  for (const r of (rows || []).filter(Boolean)) {
     if (r.f && r.f.g) for (let i = 0; i < 9; i++) { off[i][0] += r.f.g[i][0]; off[i][1] += r.f.g[i][1]; }
     if (r.o && r.o.g) for (let i = 0; i < 9; i++) { def[i][0] += r.o.g[i][0]; def[i][1] += r.o.g[i][1]; }
   }
@@ -424,8 +442,13 @@ function main() {
   // Takedowns and control live in fight-stats.json, not the grid — they were never
   // part of the cross-tab and the panel needs them because they are usually the
   // story of the fight. Baseline them from the same source the panel reads.
+  // Full record here too, same as agg() — and note both of these were ALREADY
+  // per-fight (divided by rows.length), which is why they survive the window change
+  // unharmed. That is not a coincidence, it is the rule: a baseline that divides by
+  // exposure doesn't care how long the exposure was. The panel-side counts that
+  // DIDN'T divide are the ones that needed fixing.
   for (const n of allNames) {
-    const rows = (D[n] || []).slice(0, 8);
+    const rows = (D[n] || []).filter(Boolean);
     if (rows.length < 3) continue;
     let tdA = 0, agL = 0, agA = 0, ctrl = 0;
     for (const f of rows) {

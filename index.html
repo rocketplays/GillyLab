@@ -88663,7 +88663,30 @@ function _ddGrid(name){
   let sn = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0, ctrlAg=0;
   let kd=0, sub=0, rev=0;
   const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
-  for (const r of rows.slice(0,8)) {
+  // THE WHOLE UFC RECORD, NOT THE LAST 8 — and the 8 was never measured.
+  //
+  // It read as a recency window and wasn't one. Measured over this card: "last 8"
+  // spans 0–7 YEARS depending on how often a man fights (median 3), so it sliced
+  // each fighter's schedule rather than a period of time. It truncated 47 of 110
+  // card fighters (43%), hiding a median of 4 takedowns — Perez showed 4 of his 15,
+  // Magny 6 of his 58 — and it bought nothing for it: graded grid cells ran 37% at
+  // last-8, 40% at last-12, 42% on the full record. The median card fighter has 7
+  // UFC fights, so for most of the roster the window only ever capped the veterans.
+  //
+  // WHAT THIS BREAKS, AND IT IS NOT NOTHING: the last-8 capped everyone at 8, which
+  // bounded how far apart two men's exposure could be. A career doesn't. Measured
+  // over the 89 card fighters with 3+ UFC fights:
+  //     corr(UFC fights, career takedowns landed) :  0.496
+  //     corr(UFC fights, career knockdowns)       :  0.602
+  //     corr(UFC fights, career control time)     :  0.484
+  //     corr(UFC fights, strike ACCURACY)         : -0.025
+  // A quarter to a third of the variance in every career COUNT is just "has fought
+  // longer". Rates are untouched, because a rate divides the exposure back out.
+  // So every count in this panel is divided by `sFights`/`fights` before it is
+  // compared or shaded — see _mhLeadRate. The totals still PRINT, because a fan
+  // knows what 58 takedowns means and "1.6/fight" is the unfamiliar one; it is the
+  // COMPARISON that has to be per-fight, not the display.
+  for (const r of rows) {
     if (!r) continue;
     const gf = r.f && r.f.g, go = r.o && r.o.g;
     if (!gf) continue;
@@ -88675,14 +88698,15 @@ function _ddGrid(name){
   // part of the grid, and the deep dive needs them because they are usually the
   // story. Matched on the same normalised name.
   //
-  // ITS EIGHT ARE NOT NECESSARILY THE GRID'S EIGHT. Two files, two backfills; a
+  // ITS RECORD IS NOT NECESSARILY THE GRID'S RECORD. Two files, two backfills; a
   // fighter can have grid rows for fights the stats file lacks and vice versa. So
-  // count them separately (sn) and label each tab with the N it actually used,
-  // rather than printing one "last 8" over numbers drawn from two different sets.
+  // count them separately — `sn` is the exposure every stats-derived count gets
+  // divided by, and using `n` (the grid's fight count) for it would be dividing a
+  // number by a denominator drawn from a different set of fights.
   const S = (window.FIGHT_STATS||{});
   if (!_ddStatsIndex) _ddStatsIndex = new Map(Object.keys(S).map(k => [_gridNorm(k), k]));
   const srows = S[_ddStatsIndex.get(_gridNorm(name))] || [];
-  for (const f of srows.slice(0,8)) {
+  for (const f of srows) {
     if (!f || !f.f || !f.o) continue;
     sn++;
     tdL += f.f.tdL||0; tdA += f.f.tdA||0;
@@ -88757,10 +88781,42 @@ const _MH_LANES = [['dist','head','Head at range'],['dist','body','Body at range
 const _MH_FLOOR = 25;
 const _mhPct = (l,a) => a ? Math.round(l/a*100) + '%' : '—';
 const _mhMins = s => Math.floor(s/60) + 'm ' + String(Math.round(s%60)).padStart(2,'0') + 's';
+// A count divided by the fights it happened in — the form every count on this panel
+// is COMPARED in, even where the total is what gets printed. Two decimals would be
+// false precision on 4 knockdowns; one is enough to separate 1.6 from 0.7.
+const _mhRate = (v, n) => n ? v/n : 0;
+// "<0.1", NOT "0.0". Barboza has one reversal in 31 fights; at one decimal that is
+// "0.0 per fight", which states he has never done a thing he has done. The rounding
+// is only wrong in the one direction that matters — toward claiming an absence — so
+// anything real but sub-0.05 says so rather than rounding itself out of existence.
+const _mhPer = (v, n) => {
+  if (!n) return '';
+  const r = v/n;
+  if (v > 0 && r < 0.05) return '<0.1 per fight';
+  return r.toFixed(1) + ' per fight';
+};
+// Same number, for the one sub that already carries accuracy and has no room left —
+// "38% accurate · 1.6 per fight" wrapped "per fight" onto its own line under the bar.
+const _mhPerShort = (v, n) => {
+  if (!n) return '';
+  const r = v/n;
+  return (v > 0 && r < 0.05) ? '<0.1/fight' : r.toFixed(1) + '/fight';
+};
+// For the SPARSE counts — knockdowns land on 22% of fighter-fights, submissions 22%,
+// reversals 9%. A per-fight rate on numbers that small is mostly rounding, and the
+// headline already prints the count, so the sub carries the exposure instead: "8"
+// over "in 36 fights" and "8" over "in 9 fights" is the whole point made without a
+// decimal, and it shows the reader the 36-vs-9 that the totals were hiding.
+const _mhIn = n => n ? 'in ' + n + ' fight' + (n === 1 ? '' : 's') : '';
+// Control time in a sub, where "0m 38s per fight" wastes its loudest characters on a
+// zero. Under a minute, just say the seconds.
+const _mhShort = s => s < 60 ? Math.round(s) + 's' : _mhMins(s);
 // (_mhN, which rendered "last 8" / "last 7–8 fights", went with the last caption
-// that used one. The panel no longer states its window anywhere on screen: every
-// number in it is the last 8 fights, and saying so four times was noise. If a
-// caption ever needs it back it was `a === b ? a : min–max`.)
+// that used one — and then the window it described went too. The panel states no
+// window because there is no longer a window: every number in it is the fighter's
+// whole UFC record. What a caption WOULD have to say now is each man's fight count,
+// and that is exactly the fact the per-fight subs already carry on the rows where it
+// changes the reading, next to the number it modifies rather than four screens away.)
 
 // WHEN THE ACCENT IS ALLOWED TO FIRE.
 //
@@ -88785,12 +88841,48 @@ function _mhLeadProp(la, aa, lb, ab){
   if (Math.abs(p1 - p2) < 2*se) return 0;
   return p1 > p2 ? 1 : 2;
 }
-function _mhLeadCount(a, b){
-  // sd of a Poisson count is sqrt(count), so sd of the difference is sqrt(a+b).
-  // 2 knockdowns against 5 does not clear it, and shouldn't: over eight fights that
-  // is two men who both drop people sometimes.
-  if (Math.abs(a - b) < 2*Math.sqrt(a + b)) return 0;
-  return a > b ? 1 : 2;
+// _mhLeadCount IS GONE, AND IT HAD TO GO THE MOMENT THE WINDOW OPENED TO A CAREER.
+//
+// It was `|a - b| < 2*sqrt(a + b)` — the Poisson test on two RAW COUNTS. That test
+// assumes both counts were gathered over the same exposure. Under the last-8 that
+// was roughly true, because 8 was a ceiling for everybody. Over a whole career it
+// is false by a factor of twelve: Magny has 36 UFC fights, a debutant has 3.
+//
+//     Magny 58 takedowns vs a 3-fight opponent's 2
+//       old:  |58 - 2| = 56  vs  2*sqrt(60) = 15.5   -> FIRES, emphatically
+//       and what it fired on was: Magny has been in the UFC for eleven years.
+//
+// Measured over the 89 card fighters with 3+ fights, corr(fights, career takedowns)
+// is 0.496, knockdowns 0.602, control time 0.484. A test on raw career counts is
+// substantially a test of who is older, dressed up as a test of who is better —
+// the same shape as shading the grid on absolute rates, where the palette encoded
+// which cell you were looking at rather than the man in it.
+//
+// THE FIX IS NOT A VETERAN FILTER. A cutoff ("ignore counts for anyone over N
+// fights") would need me to pick N, would still be wrong on either side of it, and
+// would suppress real information about genuinely high-volume wrestlers. Dividing
+// by exposure needs no threshold and no special case: 58 over 36 is 1.6 a fight,
+// which is the true and rather ordinary fact about Magny, and it arrives without
+// anyone deciding when a career becomes long.
+//
+// So: the standard two-sample Poisson RATE test. Each man's rate is count/fights;
+// the variance of a Poisson count is the count itself, so the variance of the rate
+// is a/na^2, and the se of the difference is sqrt(a/na^2 + b/nb^2). Same 2-se bar
+// as _mhLeadProp, for the same reason, and it is the textbook test for the shape of
+// this number rather than one I tuned until the output looked right.
+//
+// It self-corrects on thin records, which is the part a count test cannot do:
+//     Magny 58/36 = 1.61  vs  2/3 = 0.67
+//       diff 0.94, se = sqrt(58/1296 + 2/9) = 0.517, 2se = 1.03  -> LEVEL. Correct:
+//       three fights cannot establish that a man doesn't wrestle.
+//   0 = level   1 = A leads   2 = B leads
+function _mhLeadRate(a, na, b, nb){
+  if (!na || !nb) return 0;
+  const ra = a/na, rb = b/nb;
+  const se = Math.sqrt(a/(na*na) + b/(nb*nb));
+  if (!(se > 0)) return ra === rb ? 0 : (ra > rb ? 1 : 2);
+  if (Math.abs(ra - rb) < 2*se) return 0;
+  return ra > rb ? 1 : 2;
 }
 // GRADING ONE MAN AGAINST HIS DIVISION — and the same discipline as _mhLeadProp,
 // because I got this wrong the same way twice in one feature.
@@ -88822,6 +88914,12 @@ function _mhLeadRatio(a, b, min){
   // For magnitudes that aren't counts of trials and have no n to test against —
   // control time in seconds. A stated, visible rule: one side has to be at least a
   // quarter as much again. 50 minutes against 16 clears it; 50 against 45 doesn't.
+  //
+  // PASS IT PER-FIGHT SECONDS, NOT CAREER SECONDS. This test has no exposure term
+  // at all — it cannot tell 50 minutes over 8 fights from 50 minutes over 30 — so
+  // on career totals it would report every veteran as a controller. Poisson doesn't
+  // apply here (seconds aren't a count of events), so exposure has to be divided
+  // out by the CALLER before the ratio is taken. Both call sites do.
   const hi = Math.max(a, b), lo = Math.min(a, b);
   if (!hi || hi < (min || 1.25) * Math.max(lo, 1e-9)) return 0;
   return a > b ? 1 : 2;
@@ -88905,7 +89003,10 @@ function mhCardBase(){
   for (const k of Object.keys(G)) {
     const off = Array.from({length:9}, () => [0,0]);
     const def = Array.from({length:9}, () => [0,0]);
-    for (const r of (G[k]||[]).slice(0,8)) {
+    // Full record, matching _ddGrid and split-fight-grid.cjs. A fallback norm built
+    // from 8-fight samples, judging fighters measured over whole careers, would be
+    // the same statistic computed two ways and compared as if it were one.
+    for (const r of (G[k]||[])) {
       if (!r) continue;
       if (r.f && r.f.g) for (let i=0;i<9;i++){ off[i][0] += r.f.g[i][0]; off[i][1] += r.f.g[i][1]; }
       if (r.o && r.o.g) for (let i=0;i<9;i++){ def[i][0] += r.o.g[i][0]; def[i][1] += r.o.g[i][1]; }
@@ -89039,7 +89140,7 @@ function mhGrid(G, which, name){
 // middleweight tonight.
 //
 // The baseline itself is unchanged and still each man's OWN division, which is the
-// defensible choice: Usman's last 8 fights happened at welterweight, so his numbers
+// defensible choice: Usman's UFC record happened at welterweight, so his numbers
 // ARE welterweight numbers and welterweight peers are the apples-to-apples
 // comparison. Judging them against middleweight norms would compare his welterweight
 // output to a division he has never fought in.
@@ -89166,12 +89267,18 @@ function mhStriking(A, B, n1, n2){
   // grid at all, so they have nowhere else to live. Dropped entirely when neither
   // man has one, rather than printed as 0 vs 0, which reads as a measured tie
   // instead of the absence it is.
+  //
+  // THE TOTAL IS THE HEADLINE, THE RATE IS THE COMPARISON. Over a full career the
+  // count alone is a career-length reading (corr 0.602 with fights fought), so the
+  // BAR and the accent run off knockdowns-per-fight while the number a fan actually
+  // recognises still prints. Both are true; only one of them is a fair comparison.
   if (A.kd || B.kd) {
-    const mK = Math.max(A.kd, B.kd, 1);
+    const rA = _mhRate(A.kd, A.sFights), rB = _mhRate(B.kd, B.sFights);
+    const mK = Math.max(rA, rB, 0.01);
     h += mhCmp('Knockdowns scored',
-      { txt: String(A.kd), sub: null, frac: A.kd/mK },
-      { txt: String(B.kd), sub: null, frac: B.kd/mK },
-      { lead: _mhLeadCount(A.kd, B.kd) });
+      { txt: String(A.kd), sub: _mhIn(A.sFights), frac: rA/mK },
+      { txt: String(B.kd), sub: _mhIn(B.sFights), frac: rB/mK },
+      { lead: _mhLeadRate(A.kd, A.sFights, B.kd, B.sFights) });
   }
 
   const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
@@ -89224,26 +89331,45 @@ function mhGrappling(A, B, n1, n2){
 
   const base = window.GRID_BASE || {};
   h += '<div class="mh-sec">Takedowns</div>';
+  // THIS ROW SURVIVED THE WINDOW CHANGE UNTOUCHED, AND THAT IS THE WHOLE LESSON.
+  // Its bar was always tdL/tdA — a rate, with the exposure already divided out —
+  // so opening it from 8 fights to a career changes the precision and not the
+  // meaning. corr(fights, accuracy) = -0.025. Every row that needed fixing today
+  // is a row that was dividing by nothing.
+  //
+  // Volume is still worth seeing, so it rides in the sub: 15 of 33 at 45% is a
+  // different fighter from 15 of 33 spread over twice as long.
   h += mhCmp('Takedowns landed',
-    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate', frac: A.tdA ? A.tdL/A.tdA : 0 },
-    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate', frac: B.tdA ? B.tdL/B.tdA : 0 },
+    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate · ' + _mhPerShort(A.tdL, A.sFights), frac: A.tdA ? A.tdL/A.tdA : 0 },
+    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate · ' + _mhPerShort(B.tdL, B.sFights), frac: B.tdA ? B.tdL/B.tdA : 0 },
     { lead: _mhLeadProp(A.tdL, A.tdA, B.tdL, B.tdA) });
+  // Takedowns landed keeps "per fight" rather than "in N fights": it is the one count
+  // here that is never sparse enough to round away, and volume is the half of a
+  // wrestler that accuracy alone misses — 4.2 a fight and 0.4 a fight are different
+  // men at identical accuracy.
   const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
   h += mhCmp('Takedowns stopped',
     { txt: (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, sub: A.tdAgA ? _mhPct(A.tdAgA-A.tdAgL, A.tdAgA) : 'never shot on', frac: sA },
     { txt: (B.tdAgA-B.tdAgL) + '/' + B.tdAgA, sub: B.tdAgA ? _mhPct(B.tdAgA-B.tdAgL, B.tdAgA) : 'never shot on', frac: sB },
     { norm: base.tdStop ? base.tdStop[0] : null,
       lead: _mhLeadProp(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA) });
-  const mC = Math.max(A.ctrl, B.ctrl, 1);
+  // CONTROL TIME IS THE ROW THE CAREER WINDOW HURT MOST, because it is a raw
+  // accumulator with no denominator anywhere in it (corr 0.484 with fights fought).
+  // On career totals the bar would simply rank the two men by seniority. The total
+  // prints — 50 minutes is a fact a fan can feel — and the bar is per fight, which
+  // is the only version of it that compares two different careers.
+  const cA = _mhRate(A.ctrl, A.sFights), cB = _mhRate(B.ctrl, B.sFights);
+  const mC = Math.max(cA, cB, 1);
   h += mhCmp('Control time',
-    { txt: _mhMins(A.ctrl), sub: null, frac: A.ctrl/mC },
-    { txt: _mhMins(B.ctrl), sub: null, frac: B.ctrl/mC },
-    { lead: _mhLeadRatio(A.ctrl, B.ctrl, 1.25) });
+    { txt: _mhMins(A.ctrl), sub: _mhShort(cA) + ' per fight', frac: cA/mC },
+    { txt: _mhMins(B.ctrl), sub: _mhShort(cB) + ' per fight', frac: cB/mC },
+    { lead: _mhLeadRatio(cA, cB, 1.25) });
   // Not accented: a long bar is time on your back. Same reason as "what lands on him".
-  const mCa = Math.max(A.ctrlAg, B.ctrlAg, 1);
+  const caA = _mhRate(A.ctrlAg, A.sFights), caB = _mhRate(B.ctrlAg, B.sFights);
+  const mCa = Math.max(caA, caB, 1);
   h += mhCmp('Time spent under control',
-    { txt: _mhMins(A.ctrlAg), sub: null, frac: A.ctrlAg/mCa },
-    { txt: _mhMins(B.ctrlAg), sub: null, frac: B.ctrlAg/mCa });
+    { txt: _mhMins(A.ctrlAg), sub: _mhShort(caA) + ' per fight', frac: caA/mCa },
+    { txt: _mhMins(B.ctrlAg), sub: _mhShort(caB) + ' per fight', frac: caB/mCa });
 
   // There is no "positions gained" section. See the measurement in _ddGrid: the
   // advance and slam fields are 100% present and 99.4% zero, so it would have been
@@ -89260,10 +89386,12 @@ function mhGrappling(A, B, n1, n2){
   if (ex.length) {
     h += '<div class="mh-sec">On the mat</div>';
     for (const [lab, a, b] of ex) {
-      const m = Math.max(a, b, 1);
-      h += mhCmp(lab, { txt: String(a), sub: null, frac: a/m },
-                       { txt: String(b), sub: null, frac: b/m },
-                       { lead: _mhLeadCount(a, b) });
+      // Per fight for the bar and the accent, same as every other count here.
+      const ra = _mhRate(a, A.sFights), rb = _mhRate(b, B.sFights);
+      const m = Math.max(ra, rb, 0.01);
+      h += mhCmp(lab, { txt: String(a), sub: _mhIn(A.sFights), frac: ra/m },
+                       { txt: String(b), sub: _mhIn(B.sFights), frac: rb/m },
+                       { lead: _mhLeadRate(a, A.sFights, b, B.sFights) });
     }
   }
   return h;
@@ -89488,15 +89616,21 @@ function ddRead(A, B, n1, n2, domain){
     }
   }
   // Control time — the other half of the same story, in minutes a fan can feel.
-  if (A.ctrl + B.ctrl > 300) {
-    const hi = A.ctrl > B.ctrl ? A : B, lo = A.ctrl > B.ctrl ? B : A;
-    const ratio = (lo.ctrl > 30) ? hi.ctrl / lo.ctrl : 9;
+  //
+  // PER FIGHT, ALL THE WAY THROUGH. This was career seconds against career seconds,
+  // which over a full record ranks by seniority: a journeyman with 30 fights beats a
+  // dominant wrestler with 6 on the total while being nowhere near him per fight.
+  // Control time has no trials to Poisson-test, so the exposure has to be divided
+  // out by hand — the gate, the ratio that sets the weight, and the printed minutes
+  // are now all the per-fight number.
+  const kA = _mhRate(A.ctrl, A.sFights), kB = _mhRate(B.ctrl, B.sFights);
+  if (kA + kB > 60) {                       // a minute a fight between them, or there's no story
+    const aHi = kA > kB;
+    const hi = aHi ? kA : kB, lo = aHi ? kB : kA;
+    const ratio = (lo > 15) ? hi / lo : 9;  // near-zero on one side: lopsided by definition
     if (ratio >= 1.8) cands.push({ dom: 'grap', w: Math.min(ratio, 4),
-      // "across those fights" — WHICH fights? The panel no longer states its window
-      // anywhere, so the phrase referred to nothing. Every number here is the last 8.
-      t: (A.ctrl > B.ctrl ? L1 : L2) + ' has ' + Math.round(hi.ctrl / 60) +
-         ' minutes of control time; ' + (A.ctrl > B.ctrl ? L2 : L1) +
-         ' has ' + Math.round(lo.ctrl / 60) + '.' });
+      t: (aHi ? L1 : L2) + ' averages ' + _mhMins(hi) + ' of control a fight; ' +
+         (aHi ? L2 : L1) + ' ' + _mhMins(lo) + '.' });
   }
   // DEFENSE — a lane where a man is unusually open, OR unusually hard to hit.
   //
@@ -89632,20 +89766,42 @@ function ddRead(A, B, n1, n2, domain){
   // GRAPPLING, beyond takedown defense and control time — both of which are already
   // above, and both of which go quiet on two strikers. Counts only, gated by the
   // same Poisson test the bars use, so the sentence and the colour agree.
-  if (_mhLeadCount(A.tdL, B.tdL) && (A.tdL >= 5 || B.tdL >= 5)) {
-    const hi = A.tdL > B.tdL, hiN = hi ? A : B, loN = hi ? B : A;
+  // THESE THREE SAID "58 TAKEDOWNS TO 2" AND MEANT "36 FIGHTS TO 3".
+  //
+  // Each was a raw career total run through a raw-count Poisson test, i.e. the
+  // confound twice: once in the gate that decided the sentence was worth printing,
+  // once in the sentence itself. The gate is now _mhLeadRate, which divides by the
+  // fights each total was accumulated over, and the PROSE STATES THE RATE — because
+  // a read that clears an exposure-adjusted test and then prints the unadjusted
+  // number is citing the evidence it didn't use.
+  //
+  // "Magny lands 1.6 takedowns a fight" is also just the truer sentence about him:
+  // a long career in which he occasionally wrestles. "Magny has landed 58 takedowns"
+  // describes a specialist who does not exist.
+  //
+  // The minimum-count floors stay. They aren't significance — _mhLeadRate handles
+  // that — they stop the panel leading with a lopsided rate built on two events.
+  const per = (v, n) => (n ? v/n : 0).toFixed(1);
+  if (_mhLeadRate(A.tdL, A.sFights, B.tdL, B.sFights) && (A.tdL >= 5 || B.tdL >= 5)) {
+    const hi = _mhRate(A.tdL, A.sFights) > _mhRate(B.tdL, B.sFights);
+    const hiN = hi ? A : B, loN = hi ? B : A;
     cands.push({ dom: 'grap', w: 1.3,
-      t: (hi ? L1 : L2) + ' has landed ' + hiN.tdL + ' takedowns to ' + (hi ? L2 : L1) + "'s " + loN.tdL + '.' });
+      t: (hi ? L1 : L2) + ' lands ' + per(hiN.tdL, hiN.sFights) + ' takedowns a fight to ' +
+         (hi ? L2 : L1) + "'s " + per(loN.tdL, loN.sFights) + '.' });
   }
-  if (_mhLeadCount(A.sub, B.sub) && (A.sub >= 3 || B.sub >= 3)) {
-    const hi = A.sub > B.sub, hiN = hi ? A : B, loN = hi ? B : A;
+  if (_mhLeadRate(A.sub, A.sFights, B.sub, B.sFights) && (A.sub >= 3 || B.sub >= 3)) {
+    const hi = _mhRate(A.sub, A.sFights) > _mhRate(B.sub, B.sFights);
+    const hiN = hi ? A : B, loN = hi ? B : A;
     cands.push({ dom: 'grap', w: 1.2,
-      t: (hi ? L1 : L2) + ' has gone for ' + hiN.sub + ' submissions to ' + (hi ? L2 : L1) + "'s " + loN.sub + '.' });
+      t: (hi ? L1 : L2) + ' hunts for submissions more often: ' + per(hiN.sub, hiN.sFights) +
+         ' attempts a fight to ' + (hi ? L2 : L1) + "'s " + per(loN.sub, loN.sFights) + '.' });
   }
-  if (_mhLeadCount(A.kd, B.kd) && (A.kd >= 3 || B.kd >= 3)) {
-    const hi = A.kd > B.kd, hiN = hi ? A : B, loN = hi ? B : A;
+  if (_mhLeadRate(A.kd, A.sFights, B.kd, B.sFights) && (A.kd >= 3 || B.kd >= 3)) {
+    const hi = _mhRate(A.kd, A.sFights) > _mhRate(B.kd, B.sFights);
+    const hiN = hi ? A : B, loN = hi ? B : A;
     cands.push({ dom: 'strike', w: 1.35,
-      t: (hi ? L1 : L2) + ' has scored ' + hiN.kd + ' knockdowns to ' + (hi ? L2 : L1) + "'s " + loN.kd + '.' });
+      t: (hi ? L1 : L2) + ' drops people more often: ' + per(hiN.kd, hiN.sFights) +
+         ' knockdowns a fight to ' + (hi ? L2 : L1) + "'s " + per(loN.kd, loN.sFights) + '.' });
   }
 
   const pool = domain ? cands.filter(c => c.dom === domain) : cands;
