@@ -438,3 +438,67 @@ audited, reported as a clean pass), src-check called mhDivTag() which was delete
 with the weight-class tag, and its grade table split on "What lands on him" after
 the header became "What lands on them" — printing an empty table for weeks. A check
 keyed to display copy MUST assert it found something, or it decays into decoration.
+
+================================================================================
+THE EXPOSURE IS CAGE TIME, NOT FIGHTS — the same lesson, one layer down
+================================================================================
+2026-07-16, fourth pass, and a USER found this one, not the suite.
+
+  "on alex perez, it says 0.9 takedowns per fight on the matchup sheet, but over
+   2 per 15 min on his profile. is that just because not all his fights are 15
+   mins, so it's an extrapolated value?"
+
+Yes. And he was describing a bug, not asking for reassurance:
+    Perez: 15 takedowns, 104 minutes of cage time over 15 UFC bouts
+           -> 6.9 minutes per fight, not 15
+           -> 0.94 per FIGHT  ==  2.16 per 15 MIN  ==  the profile's 2.07
+Two true numbers, two denominators, nothing on screen saying which. The panel
+looked like it contradicted the rest of the site.
+
+THE PER-FIGHT FIX WAS HALF A FIX. Dividing counts by FIGHTS killed the career-length
+confound and left the DURATION confound standing, because fights are not the same
+length. Measured over 83 card fighters (avg fight length 4.0 to 18.1 minutes):
+    corr(takedowns per FIGHT , avg fight length) : 0.297
+    corr(takedowns per 15 MIN, avg fight length) : 0.014
+Worst case is Valter Walker: 1.80 per fight, 5.74 per 15 min. He finishes inside
+five minutes, so per-fight hid an elite wrestler behind his own finishing rate —
+the mirror of Magny, whose length made him look like a wrestler he isn't. Same
+disease, opposite sign.
+
+PER 15 MINUTES IS ALSO WHAT THE REST OF THE SITE SPEAKS. FIGHTER_STATS.tdLanded,
+kd and subAvg are all per-15. Measured after the change, panel vs profile across
+110 card fighters: median |diff| 0.00, p90 0.01, 106/110 within 0.25. The four
+outliers (Tsuruya, Sola, Vologdin, Petersen) are all 2-7 fight fighters where
+fight-stats.json holds fewer UFC rows than recompute-card-stats.py used — a
+backfill coverage gap that predates this and is visible in the numbers.
+
+TRAPS, ALL LIVE:
+  * NO `org === 'UFC'` FILTER on FIGHT_HISTORY. `org` is OPTIONAL and simply absent
+    for some fighters — Ko, Aliev and Satybaldiev have it on not one row, while
+    their `event` reads "UFC Fight Night" in plain text. Filtering on it deleted
+    every fight they have. Coverage 95.3% -> 99.8% by removing one clause. ABSENT
+    IS NOT NEGATIVE (CLAUDE.md #2), for the fourth time in this feature.
+  * Name+date is already unique — nobody fights twice in a day, and every row in
+    fight-stats.json IS a UFC bout — so the filter bought nothing it cost.
+  * +-36h on the date match, same as fightStatsFor(). The feeds disagree by a day
+    across timezones: Tsuruya's May 29 stats row is his May 30 history row.
+  * A row with no duration is dropped from BOTH the count and the clock. Counting
+    it against a clock that never ran inflates the rate silently. No estimating the
+    missing length either — that is inventing data to protect a total. Measured cost
+    of the strictness: 2 rows of 927, one takedown (Valentin 1 -> 0).
+  * THE FALLBACK IS PER BOUT, NOT PER FIGHTER. If either man cannot be timed the
+    whole bout reverts to per-fight for both. Comparing one man's per-fight rate to
+    the other's per-15 and printing a winner is worse than the coarse unit. Never
+    fires on the current card (0 of 120 lack durations); it exists so a
+    FIGHT_HISTORY gap degrades to coarse rather than to nonsense.
+  * _ddHistRows is the SIXTH name-join site in this codebase. Five of the first
+    five were written wrong. It goes through _gridNorm, which resolves the aliases.
+
+AND THE HARNESSES NEEDED WIRING OR THEY'D HAVE LIED AGAIN. _ddHistRows reads the
+FIGHT_HISTORY global; the vm contexts didn't define it, so every duration lookup
+would miss, cage would be 0 for everyone, the panel would fall back to per-fight
+for every bout, and the whole suite would go green while testing the code path this
+change exists to replace. verify/hist.cjs now extracts it and THROWS if it can't —
+loudly, because that failure is invisible. career.cjs and oldnew.cjs were also still
+scoring the per-FIGHT version and were repointed; career.cjs now reports a rule that
+matches zero sentences as DEAD rather than as passing.

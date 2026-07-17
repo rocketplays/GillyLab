@@ -88661,7 +88661,7 @@ function _ddGrid(name){
   // actually has the numbers; it is not sitting in this file waiting.
   let n = 0;
   let sn = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0, ctrlAg=0;
-  let kd=0, sub=0, rev=0;
+  let kd=0, sub=0, rev=0, cage=0;
   const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
   // THE WHOLE UFC RECORD, NOT THE LAST 8 — and the 8 was never measured.
   //
@@ -88706,9 +88706,34 @@ function _ddGrid(name){
   const S = (window.FIGHT_STATS||{});
   if (!_ddStatsIndex) _ddStatsIndex = new Map(Object.keys(S).map(k => [_gridNorm(k), k]));
   const srows = S[_ddStatsIndex.get(_gridNorm(name))] || [];
+  // THE EXPOSURE IS CAGE TIME, NOT FIGHTS — the second half of the same lesson.
+  //
+  // The first pass divided counts by FIGHTS, which killed the career-length confound
+  // and left a duration one, because fights are not the same length. Measured over
+  // 83 card fighters, average fight length runs 4.0 to 18.1 minutes:
+  //     corr(takedowns per FIGHT , avg fight length) : 0.297
+  //     corr(takedowns per 15 MIN, avg fight length) : 0.014
+  // Valter Walker reads 1.80 per fight and 5.74 per 15 min — he finishes in under
+  // five minutes, so per-fight was hiding an elite wrestler behind his own finishing
+  // rate. Alex Perez averages 6.9 minutes a fight, so his 0.94/fight IS his profile's
+  // 2.07 per 15 min; the panel and the profile were stating the same fact in two
+  // units and looked like they disagreed. A user caught that, not this file.
+  //
+  // Per 15 minutes is also what FIGHTER_STATS.tdLanded already uses everywhere else
+  // on the site, so this is the number the rest of the product speaks in.
+  const hist = _ddHistRows(name);
   for (const f of srows) {
     if (!f || !f.f || !f.o) continue;
-    sn++;
+    // NUMERATOR AND DENOMINATOR OVER THE SAME FIGHTS, ALWAYS. A row we cannot time
+    // is dropped from BOTH the count and the clock rather than counted against a
+    // clock that never ran — that would inflate the rate silently, which is the
+    // failure mode that does not announce itself. No estimation either: guessing the
+    // missing fight's length is inventing data to protect a total.
+    // MEASURED COST of that strictness across the card: 2 rows of 927, 1 takedown
+    // (Robert Valentin 1 -> 0). Perez keeps all 15; his one untimed bout had none.
+    const dur = _ddRowSecs(hist, f.date);
+    if (dur == null) continue;
+    sn++; cage += dur;
     tdL += f.f.tdL||0; tdA += f.f.tdA||0;
     tdAgL += f.o.tdL||0; tdAgA += f.o.tdA||0;
     ctrl += secs(f.f.ctrl); ctrlAg += secs(f.o.ctrl);
@@ -88725,10 +88750,55 @@ function _ddGrid(name){
   // cells added back up, i.e. the averaging this whole feature exists to undo, shown
   // directly above the grid that undoes it. Removed with the section that carried
   // them. kdAg/subAg/revAg were speculative and nothing ever read them.
-  return n ? { cells, cellsD, fights:n, sFights:sn,
+  // `cage` — total seconds fought across the fights `sn` counts. Every count above
+  // is divided by it (in 15-minute units) before it is compared or shaded.
+  return n ? { cells, cellsD, fights:n, sFights:sn, cage,
                tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg, kd, sub, rev } : null;
 }
-let _ddIndex = null, _ddStatsIndex = null;
+let _ddIndex = null, _ddStatsIndex = null, _ddHistIdx = null;
+
+// FIGHT_HISTORY, reached the same way everything else reaches a fighter: through
+// _gridNorm, which resolves the alias table. This is the SIXTH join site in this
+// codebase and the name join has been written wrong at five of them.
+function _ddHistRows(name){
+  const H = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY) || {};
+  if (!_ddHistIdx) _ddHistIdx = new Map(Object.keys(H).map(k => [_gridNorm(k), k]));
+  const k = _ddHistIdx.get(_gridNorm(name));
+  return k ? (H[k] || []) : [];
+}
+// How long one bout lasted: full rounds before it, plus the clock when it ended.
+function _ddFightLen(r){
+  const m = /^(\d+):(\d+)$/.exec(String((r && r.time) || ''));
+  if (!m || !r.round) return null;
+  return (r.round - 1) * 300 + (+m[1]*60 + +m[2]);
+}
+// The duration of the bout a FIGHT_STATS row describes, matched by date.
+//
+// NO `org === 'UFC'` FILTER, AND THAT FILTER COST 7 FIGHTERS AND 4.5% OF ROWS.
+// `org` is OPTIONAL in FIGHT_HISTORY and simply absent for some fighters — Seokhyeon
+// Ko, Nurullo Aliev and Uran Satybaldiev have no `org` on a single row, while their
+// `event` reads "UFC Fight Night" in plain text. Filtering on it silently deleted
+// every fight they have: absent read as negative, which is this repo's oldest bug
+// wearing yet another hat (see CLAUDE.md #2). Coverage went 95.3% -> 99.8% by
+// removing one clause.
+//
+// The filter also bought nothing. Name+date is already unique — nobody fights twice
+// in a day — and every row in fight-stats.json IS a UFC bout, so the only history
+// row that can share its date is the same fight.
+//
+// The +-36h window matches fightStatsFor(): the two feeds disagree by a day across
+// timezones for the same bout.
+function _ddRowSecs(hist, date){
+  if (!date || !hist.length) return null;
+  for (const r of hist) if (r.date === date) return _ddFightLen(r);
+  const t = Date.parse(date);
+  if (isNaN(t)) return null;
+  for (const r of hist) {
+    const rt = Date.parse(r.date);
+    if (!isNaN(rt) && Math.abs(rt - t) <= 36*3600*1000) return _ddFightLen(r);
+  }
+  return null;
+}
 
 // Surname for prose. `split(' ').pop()` printed "Jr. has 0 minutes of control" for
 // Levi Rodrigues Jr. — suffixes are not surnames. Mononyms (Sumudaerji, Aoriqileng)
@@ -88784,29 +88854,47 @@ const _mhMins = s => Math.floor(s/60) + 'm ' + String(Math.round(s%60)).padStart
 // A count divided by the fights it happened in — the form every count on this panel
 // is COMPARED in, even where the total is what gets printed. Two decimals would be
 // false precision on 4 knockdowns; one is enough to separate 1.6 from 0.7.
+// EXPOSURE, IN 15-MINUTE UNITS. `cage` is total seconds fought; a 3-round fight is
+// 900 of them. Every count is compared per this, never per fight and never raw.
+//
+// FALLS BACK TO FIGHTS, AND THE FALLBACK IS PER BOUT, NOT PER FIGHTER. If either man
+// has no timed fights the WHOLE bout reverts to per-fight for both, because the one
+// thing worse than a per-fight rate is comparing one man's per-fight rate against the
+// other's per-15-min and printing the winner. Measured on the current card the
+// fallback never fires (0 of 120 fighters lack durations); it exists so that a
+// FIGHT_HISTORY gap degrades to a coarser unit rather than to nonsense.
+const _MH_ROUND = 900;
+const _mhExp = G => (G && G.cage > 0) ? G.cage/_MH_ROUND : 0;
+const _mhPer15Bout = (A, B) => _mhExp(A) > 0 && _mhExp(B) > 0;
+// The exposure a bout actually uses, for both the display and the test.
+const _mhExpOf = (G, per15) => per15 ? _mhExp(G) : (G.sFights || 0);
+const _mhUnit = per15 => per15 ? 'per 15 min' : 'per fight';
 const _mhRate = (v, n) => n ? v/n : 0;
 // "<0.1", NOT "0.0". Barboza has one reversal in 31 fights; at one decimal that is
 // "0.0 per fight", which states he has never done a thing he has done. The rounding
 // is only wrong in the one direction that matters — toward claiming an absence — so
 // anything real but sub-0.05 says so rather than rounding itself out of existence.
-const _mhPer = (v, n) => {
-  if (!n) return '';
-  const r = v/n;
-  if (v > 0 && r < 0.05) return '<0.1 per fight';
-  return r.toFixed(1) + ' per fight';
+const _mhPer = (v, e, per15) => {
+  if (!e) return '';
+  const r = v/e;
+  if (v > 0 && r < 0.05) return '<0.1 ' + _mhUnit(per15);
+  return r.toFixed(1) + ' ' + _mhUnit(per15);
 };
 // Same number, for the one sub that already carries accuracy and has no room left —
-// "38% accurate · 1.6 per fight" wrapped "per fight" onto its own line under the bar.
-const _mhPerShort = (v, n) => {
-  if (!n) return '';
-  const r = v/n;
-  return (v > 0 && r < 0.05) ? '<0.1/fight' : r.toFixed(1) + '/fight';
+// "45% accurate · 2.1 per 15 min" wrapped onto its own line under the bar.
+const _mhPerShort = (v, e, per15) => {
+  if (!e) return '';
+  const r = v/e;
+  const u = per15 ? '/15min' : '/fight';
+  return (v > 0 && r < 0.05) ? '<0.1' + u : r.toFixed(1) + u;
 };
 // For the SPARSE counts — knockdowns land on 22% of fighter-fights, submissions 22%,
-// reversals 9%. A per-fight rate on numbers that small is mostly rounding, and the
-// headline already prints the count, so the sub carries the exposure instead: "8"
-// over "in 36 fights" and "8" over "in 9 fights" is the whole point made without a
-// decimal, and it shows the reader the 36-vs-9 that the totals were hiding.
+// reversals 9%. A rate on numbers that small is mostly rounding, and the headline
+// already prints the count, so the sub carries the EXPOSURE instead: "8" over "in 36
+// fights" against "8" over "in 9 fights" makes the point without a decimal, and it
+// shows the reader the 36-vs-9 that the totals were hiding. Still fights, not
+// minutes: "in 82 minutes" is not a thing anyone pictures, and the bar beside it is
+// already per-15-min, which is where the fairness lives.
 const _mhIn = n => n ? 'in ' + n + ' fight' + (n === 1 ? '' : 's') : '';
 // Control time in a sub, where "0m 38s per fight" wastes its loudest characters on a
 // zero. Under a minute, just say the seconds.
@@ -88865,16 +88953,23 @@ function _mhLeadProp(la, aa, lb, ab){
 // which is the true and rather ordinary fact about Magny, and it arrives without
 // anyone deciding when a career becomes long.
 //
-// So: the standard two-sample Poisson RATE test. Each man's rate is count/fights;
+// So: the standard two-sample Poisson RATE test. Each man's rate is count/exposure;
 // the variance of a Poisson count is the count itself, so the variance of the rate
 // is a/na^2, and the se of the difference is sqrt(a/na^2 + b/nb^2). Same 2-se bar
 // as _mhLeadProp, for the same reason, and it is the textbook test for the shape of
 // this number rather than one I tuned until the output looked right.
 //
+// `na`/`nb` ARE EXPOSURE IN 15-MINUTE UNITS, NOT FIGHT COUNTS. The first cut passed
+// fights, which fixed the career-length confound and left the duration one behind:
+// fights are not the same length (4.0 to 18.1 minutes across this card), so a
+// per-fight rate still partly measures how long a man's fights last — corr 0.297,
+// against 0.014 per 15 min. Both callers get their exposure from _mhExpOf so the
+// unit can never differ between the two sides of one comparison.
+//
 // It self-corrects on thin records, which is the part a count test cannot do:
-//     Magny 58/36 = 1.61  vs  2/3 = 0.67
-//       diff 0.94, se = sqrt(58/1296 + 2/9) = 0.517, 2se = 1.03  -> LEVEL. Correct:
-//       three fights cannot establish that a man doesn't wrestle.
+//     Magny 58 TD over 36 fights vs an opponent's 2 over 3
+//       the gap does not clear 2se -> LEVEL. Correct: three fights cannot establish
+//       that a man doesn't wrestle.
 //   0 = level   1 = A leads   2 = B leads
 function _mhLeadRate(a, na, b, nb){
   if (!na || !nb) return 0;
@@ -89273,12 +89368,14 @@ function mhStriking(A, B, n1, n2){
   // BAR and the accent run off knockdowns-per-fight while the number a fan actually
   // recognises still prints. Both are true; only one of them is a fair comparison.
   if (A.kd || B.kd) {
-    const rA = _mhRate(A.kd, A.sFights), rB = _mhRate(B.kd, B.sFights);
+    const p15 = _mhPer15Bout(A, B);
+    const eA = _mhExpOf(A, p15), eB = _mhExpOf(B, p15);
+    const rA = _mhRate(A.kd, eA), rB = _mhRate(B.kd, eB);
     const mK = Math.max(rA, rB, 0.01);
     h += mhCmp('Knockdowns scored',
       { txt: String(A.kd), sub: _mhIn(A.sFights), frac: rA/mK },
       { txt: String(B.kd), sub: _mhIn(B.sFights), frac: rB/mK },
-      { lead: _mhLeadRate(A.kd, A.sFights, B.kd, B.sFights) });
+      { lead: _mhLeadRate(A.kd, eA, B.kd, eB) });
   }
 
   const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
@@ -89330,6 +89427,10 @@ function mhGrappling(A, B, n1, n2){
     'Neither man separates from the other on the mat by enough to lead with.');
 
   const base = window.GRID_BASE || {};
+  // One decision for the whole tab: can both men be timed? Everything below shares
+  // it, so no two rows can silently speak different units.
+  const p15 = _mhPer15Bout(A, B);
+  const eA = _mhExpOf(A, p15), eB = _mhExpOf(B, p15);
   h += '<div class="mh-sec">Takedowns</div>';
   // THIS ROW SURVIVED THE WINDOW CHANGE UNTOUCHED, AND THAT IS THE WHOLE LESSON.
   // Its bar was always tdL/tdA — a rate, with the exposure already divided out —
@@ -89340,13 +89441,14 @@ function mhGrappling(A, B, n1, n2){
   // Volume is still worth seeing, so it rides in the sub: 15 of 33 at 45% is a
   // different fighter from 15 of 33 spread over twice as long.
   h += mhCmp('Takedowns landed',
-    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate · ' + _mhPerShort(A.tdL, A.sFights), frac: A.tdA ? A.tdL/A.tdA : 0 },
-    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate · ' + _mhPerShort(B.tdL, B.sFights), frac: B.tdA ? B.tdL/B.tdA : 0 },
+    { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate · ' + _mhPerShort(A.tdL, eA, p15), frac: A.tdA ? A.tdL/A.tdA : 0 },
+    { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate · ' + _mhPerShort(B.tdL, eB, p15), frac: B.tdA ? B.tdL/B.tdA : 0 },
     { lead: _mhLeadProp(A.tdL, A.tdA, B.tdL, B.tdA) });
-  // Takedowns landed keeps "per fight" rather than "in N fights": it is the one count
+  // Takedowns landed carries a RATE rather than "in N fights": it is the one count
   // here that is never sparse enough to round away, and volume is the half of a
-  // wrestler that accuracy alone misses — 4.2 a fight and 0.4 a fight are different
-  // men at identical accuracy.
+  // wrestler that accuracy alone misses — 5.7 per 15 and 0.4 per 15 are different
+  // men at identical accuracy. This sub is also the number that has to match the
+  // fighter's own profile page (FIGHTER_STATS.tdLanded), which is per 15 minutes.
   const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
   h += mhCmp('Takedowns stopped',
     { txt: (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, sub: A.tdAgA ? _mhPct(A.tdAgA-A.tdAgL, A.tdAgA) : 'never shot on', frac: sA },
@@ -89358,18 +89460,18 @@ function mhGrappling(A, B, n1, n2){
   // On career totals the bar would simply rank the two men by seniority. The total
   // prints — 50 minutes is a fact a fan can feel — and the bar is per fight, which
   // is the only version of it that compares two different careers.
-  const cA = _mhRate(A.ctrl, A.sFights), cB = _mhRate(B.ctrl, B.sFights);
+  const cA = _mhRate(A.ctrl, eA), cB = _mhRate(B.ctrl, eB);
   const mC = Math.max(cA, cB, 1);
   h += mhCmp('Control time',
-    { txt: _mhMins(A.ctrl), sub: _mhShort(cA) + ' per fight', frac: cA/mC },
-    { txt: _mhMins(B.ctrl), sub: _mhShort(cB) + ' per fight', frac: cB/mC },
+    { txt: _mhMins(A.ctrl), sub: _mhShort(cA) + ' ' + _mhUnit(p15), frac: cA/mC },
+    { txt: _mhMins(B.ctrl), sub: _mhShort(cB) + ' ' + _mhUnit(p15), frac: cB/mC },
     { lead: _mhLeadRatio(cA, cB, 1.25) });
   // Not accented: a long bar is time on your back. Same reason as "what lands on him".
-  const caA = _mhRate(A.ctrlAg, A.sFights), caB = _mhRate(B.ctrlAg, B.sFights);
+  const caA = _mhRate(A.ctrlAg, eA), caB = _mhRate(B.ctrlAg, eB);
   const mCa = Math.max(caA, caB, 1);
   h += mhCmp('Time spent under control',
-    { txt: _mhMins(A.ctrlAg), sub: _mhShort(caA) + ' per fight', frac: caA/mCa },
-    { txt: _mhMins(B.ctrlAg), sub: _mhShort(caB) + ' per fight', frac: caB/mCa });
+    { txt: _mhMins(A.ctrlAg), sub: _mhShort(caA) + ' ' + _mhUnit(p15), frac: caA/mCa },
+    { txt: _mhMins(B.ctrlAg), sub: _mhShort(caB) + ' ' + _mhUnit(p15), frac: caB/mCa });
 
   // There is no "positions gained" section. See the measurement in _ddGrid: the
   // advance and slam fields are 100% present and 99.4% zero, so it would have been
@@ -89386,12 +89488,12 @@ function mhGrappling(A, B, n1, n2){
   if (ex.length) {
     h += '<div class="mh-sec">On the mat</div>';
     for (const [lab, a, b] of ex) {
-      // Per fight for the bar and the accent, same as every other count here.
-      const ra = _mhRate(a, A.sFights), rb = _mhRate(b, B.sFights);
+      // Per 15 min for the bar and the accent, same as every other count here.
+      const ra = _mhRate(a, eA), rb = _mhRate(b, eB);
       const m = Math.max(ra, rb, 0.01);
       h += mhCmp(lab, { txt: String(a), sub: _mhIn(A.sFights), frac: ra/m },
                        { txt: String(b), sub: _mhIn(B.sFights), frac: rb/m },
-                       { lead: _mhLeadRate(a, A.sFights, b, B.sFights) });
+                       { lead: _mhLeadRate(a, eA, b, eB) });
     }
   }
   return h;
@@ -89623,13 +89725,14 @@ function ddRead(A, B, n1, n2, domain){
   // Control time has no trials to Poisson-test, so the exposure has to be divided
   // out by hand — the gate, the ratio that sets the weight, and the printed minutes
   // are now all the per-fight number.
-  const kA = _mhRate(A.ctrl, A.sFights), kB = _mhRate(B.ctrl, B.sFights);
-  if (kA + kB > 60) {                       // a minute a fight between them, or there's no story
+  const kA = _mhRate(A.ctrl, _mhExpOf(A, _mhPer15Bout(A,B))),
+        kB = _mhRate(B.ctrl, _mhExpOf(B, _mhPer15Bout(A,B)));
+  if (kA + kB > 60) {                       // a minute of the clock between them, or there's no story
     const aHi = kA > kB;
     const hi = aHi ? kA : kB, lo = aHi ? kB : kA;
     const ratio = (lo > 15) ? hi / lo : 9;  // near-zero on one side: lopsided by definition
     if (ratio >= 1.8) cands.push({ dom: 'grap', w: Math.min(ratio, 4),
-      t: (aHi ? L1 : L2) + ' averages ' + _mhMins(hi) + ' of control a fight; ' +
+      t: (aHi ? L1 : L2) + ' controls ' + _mhMins(hi) + ' of every 15 minutes; ' +
          (aHi ? L2 : L1) + ' ' + _mhMins(lo) + '.' });
   }
   // DEFENSE — a lane where a man is unusually open, OR unusually hard to hit.
@@ -89781,27 +89884,36 @@ function ddRead(A, B, n1, n2, domain){
   //
   // The minimum-count floors stay. They aren't significance — _mhLeadRate handles
   // that — they stop the panel leading with a lopsided rate built on two events.
-  const per = (v, n) => (n ? v/n : 0).toFixed(1);
-  if (_mhLeadRate(A.tdL, A.sFights, B.tdL, B.sFights) && (A.tdL >= 5 || B.tdL >= 5)) {
-    const hi = _mhRate(A.tdL, A.sFights) > _mhRate(B.tdL, B.sFights);
-    const hiN = hi ? A : B, loN = hi ? B : A;
+  //
+  // THE UNIT IS PER 15 MINUTES, which is what the fighter's own profile page says.
+  // These sentences used to be per FIGHT, and a reader who opened Perez's profile
+  // right after reading this panel saw 2.07 in one place and 0.9 in the other for
+  // the same man — two true numbers that looked like a contradiction, because a
+  // fight is not 15 minutes and Perez's average 6.9.
+  const rp15 = _mhPer15Bout(A, B);
+  const xA = _mhExpOf(A, rp15), xB = _mhExpOf(B, rp15);
+  const per = (v, e) => (e ? v/e : 0).toFixed(1);
+  const clock = rp15 ? ' per 15 minutes' : ' a fight';
+  if (_mhLeadRate(A.tdL, xA, B.tdL, xB) && (A.tdL >= 5 || B.tdL >= 5)) {
+    const aHi = _mhRate(A.tdL, xA) > _mhRate(B.tdL, xB);
+    const hiN = aHi ? A : B, loN = aHi ? B : A, hiE = aHi ? xA : xB, loE = aHi ? xB : xA;
     cands.push({ dom: 'grap', w: 1.3,
-      t: (hi ? L1 : L2) + ' lands ' + per(hiN.tdL, hiN.sFights) + ' takedowns a fight to ' +
-         (hi ? L2 : L1) + "'s " + per(loN.tdL, loN.sFights) + '.' });
+      t: (aHi ? L1 : L2) + ' lands ' + per(hiN.tdL, hiE) + ' takedowns' + clock + ' to ' +
+         (aHi ? L2 : L1) + "'s " + per(loN.tdL, loE) + '.' });
   }
-  if (_mhLeadRate(A.sub, A.sFights, B.sub, B.sFights) && (A.sub >= 3 || B.sub >= 3)) {
-    const hi = _mhRate(A.sub, A.sFights) > _mhRate(B.sub, B.sFights);
-    const hiN = hi ? A : B, loN = hi ? B : A;
+  if (_mhLeadRate(A.sub, xA, B.sub, xB) && (A.sub >= 3 || B.sub >= 3)) {
+    const aHi = _mhRate(A.sub, xA) > _mhRate(B.sub, xB);
+    const hiN = aHi ? A : B, loN = aHi ? B : A, hiE = aHi ? xA : xB, loE = aHi ? xB : xA;
     cands.push({ dom: 'grap', w: 1.2,
-      t: (hi ? L1 : L2) + ' hunts for submissions more often: ' + per(hiN.sub, hiN.sFights) +
-         ' attempts a fight to ' + (hi ? L2 : L1) + "'s " + per(loN.sub, loN.sFights) + '.' });
+      t: (aHi ? L1 : L2) + ' hunts for submissions more often: ' + per(hiN.sub, hiE) +
+         ' attempts' + clock + ' to ' + (aHi ? L2 : L1) + "'s " + per(loN.sub, loE) + '.' });
   }
-  if (_mhLeadRate(A.kd, A.sFights, B.kd, B.sFights) && (A.kd >= 3 || B.kd >= 3)) {
-    const hi = _mhRate(A.kd, A.sFights) > _mhRate(B.kd, B.sFights);
-    const hiN = hi ? A : B, loN = hi ? B : A;
+  if (_mhLeadRate(A.kd, xA, B.kd, xB) && (A.kd >= 3 || B.kd >= 3)) {
+    const aHi = _mhRate(A.kd, xA) > _mhRate(B.kd, xB);
+    const hiN = aHi ? A : B, loN = aHi ? B : A, hiE = aHi ? xA : xB, loE = aHi ? xB : xA;
     cands.push({ dom: 'strike', w: 1.35,
-      t: (hi ? L1 : L2) + ' drops people more often: ' + per(hiN.kd, hiN.sFights) +
-         ' knockdowns a fight to ' + (hi ? L2 : L1) + "'s " + per(loN.kd, loN.sFights) + '.' });
+      t: (aHi ? L1 : L2) + ' drops people more often: ' + per(hiN.kd, hiE) +
+         ' knockdowns' + clock + ' to ' + (aHi ? L2 : L1) + "'s " + per(loN.kd, loE) + '.' });
   }
 
   const pool = domain ? cands.filter(c => c.dom === domain) : cands;
