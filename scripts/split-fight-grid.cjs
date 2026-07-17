@@ -211,8 +211,32 @@ function divisionBase(grid, div, active) {
   return out;
 }
 
+// THE EAGER FILE MUST LEAVE HERE COMPACT, LIFT OR NO LIFT.
+//
+// fight-stats-backfill.py writes it with json.dump(..., indent=0), which puts every
+// element on its own line: 7909KB of data becomes 9970KB on disk. Pure newlines —
+// measured, the parsed content is byte-identical and re-serialises to 7908KB. That
+// is +2.1MB (26%) on a file EVERY VISITOR EAGER-FETCHES, and 1.4 million lines of
+// churn per commit into a .git that is already 805MB.
+//
+// This script always fixed it by accident, because rewriting SRC compactly is a
+// side effect of the lift. But the lift's early-return on a no-op run skips that
+// write — so the bloat survives exactly when nothing was fetched, which IS steady
+// state. Any python run followed by a quiet split shipped the fat file.
+//
+// So the normalisation is explicit and unconditional now, and writes ONLY when the
+// bytes would actually change: an already-compact file produces no write and no git
+// diff, so a no-op run stays a no-op.
+function writeSrcCompact(D, raw) {
+  const out = JSON.stringify(D);
+  if (out === raw) return false;
+  fs.writeFileSync(SRC, out);
+  return true;
+}
+
 function main() {
-  const D = JSON.parse(fs.readFileSync(SRC, 'utf8'));
+  const rawSrc = fs.readFileSync(SRC, 'utf8');
+  const D = JSON.parse(rawSrc);
 
   // MERGE, NEVER OVERWRITE — the master is the ONLY copy of the grid.
   //
@@ -356,8 +380,17 @@ function main() {
     // rewritten above, and that MATTERS: it is derived from the whole grid, not
     // this batch, so a manifest that only regenerated on fresh data would go stale
     // on the exact schedule it serves and every button would vanish on a quiet day.
-    if (!DRY) { fs.writeFileSync(MASTER, JSON.stringify(grid)); fs.writeFileSync(OUT, JSON.stringify(ship)); }
+    let renorm = false;
+    if (!DRY) {
+      fs.writeFileSync(MASTER, JSON.stringify(grid));
+      fs.writeFileSync(OUT, JSON.stringify(ship));
+      // Even here — ESPECIALLY here. A no-op lift after a python run is exactly the
+      // case that used to leave the eager payload 2.1MB fat.
+      renorm = writeSrcCompact(D, rawSrc);
+    }
     console.log((DRY ? '--dry: ' : '') + 'nothing to lift (' + allNames.length + ' fighters in the master).');
+    if (renorm) console.log('fight-stats.json  ' + kb(rawSrc.length) + ' -> ' + kb(fs.statSync(SRC).size) +
+      '   (re-compacted: python wrote it with indent=0)');
     // Size from the string we built, not statSync — in --dry that file was never
     // written and stat would report the OLD one, which is a dry run reporting a
     // number from the thing it is meant to be predicting.
@@ -374,7 +407,7 @@ function main() {
     console.log('--dry: ' + Object.keys(divBase).length + ' divisions, ' + covered + '/' + divCells + ' accuracy cells have a median');
     return;
   }
-  fs.writeFileSync(SRC, JSON.stringify(D));
+  writeSrcCompact(D, rawSrc);
   fs.writeFileSync(MASTER, JSON.stringify(grid));
   fs.writeFileSync(OUT, JSON.stringify(ship));
 
