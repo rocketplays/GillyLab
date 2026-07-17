@@ -89042,44 +89042,62 @@ function mhStriking(A, B, n1, n2){
   // man at 7% — it makes you a different fighter. Colouring it green would assert
   // that head-hunting beats leg-kicking, which is not a thing this data knows.
   // So: the division tick, so you can see he's unusual, and no verdict about it.
+  // ONE SECTION BECAME TWO, BECAUSE IT WAS MIXING TWO QUESTIONS.
+  //
+  // It used to list "head at range / body at range / leg kicks / ground strikes" as
+  // shares of TOTAL offense — which puts a POSITION fact (ground strikes: you throw
+  // them because you're on the ground) in a list with POSITION x TARGET facts, and
+  // makes every one of them move when a fighter's grappling changes. Measured over
+  // 524 fighters, head-share-of-total correlates 0.703 with share-of-offense-at-
+  // range: most of "he head-hunts" was "he stays standing".
+  //
+  // Split, both are clean and neither moves the other:
+  //   WHERE THE FIGHT HAPPENS — at range / clinch / ground, share of total.
+  //   WHAT THEY THROW AT RANGE — head / body / legs, share of DISTANCE offense.
+  //                              corr with distance-share: 0.059. A real choice.
+  // It also makes the section agree with the read, which cites exactly these two
+  // denominators. Before, the read said Duncan goes to the legs 28% of the time
+  // while this section said 23%, on the same screen, both correct.
   const tot = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
+  const distTot = G => (G.cells[0][1] + G.cells[1][1] + G.cells[2][1]) || 1;
   const tA = tot(A), tB = tot(B);
-  let aimRows = '';
-  for (const [p,t,label] of _MH_LANES) {
-    const i = _MH_GI(p,t);
-    const a = A.cells[i], b = B.cells[i];
-    // Scaled to the bigger of the two shares, not to 100% — at 8% of offense both
-    // leg-kick bars would be invisible slivers and the comparison would be lost.
-    const ra = a[1]/tA, rb = b[1]/tB, m = Math.max(ra, rb, 0.01);
-    const nA = mhNorm(n1, 'aim', i), nB = mhNorm(n2, 'aim', i);
-    // Percentages only. The raw "186 thrown" was noise in a row whose entire point
-    // is the share — and the grid directly below prints landed/thrown for every one
-    // of these cells anyway.
-    //
-    // The tick sits on each side's OWN division median, scaled the same way the
-    // bar is, so it lands where that fighter's typical peer would.
-    aimRows += mhCmp(label,
+  const dA = distTot(A), dB = distTot(B);
+
+  // Scaled to the bigger of the two shares, not to 100% — at 5% of offense both
+  // clinch bars would be invisible slivers and the comparison would be lost.
+  const shareRow = (label, ra, rb, nA, nB) => {
+    const m = Math.max(ra, rb, 0.01);
+    return mhCmp(label,
       { txt: Math.round(ra*100) + '%', sub: null, frac: ra/m },
       { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m },
+      // The tick sits on each side's OWN division median, scaled the same way the
+      // bar is, so it lands where that fighter's typical peer would.
       { normL: nA ? nA.med/m : null, normR: nB ? nB.med/m : null });
+  };
+
+  h += '<div class="mh-sec">Where the fight happens <span>share of everything they throw</span></div>';
+  for (const [g, label] of [[0,'At range'],[1,'In the clinch'],[2,'On the ground']]) {
+    const ra = (A.cells[g*3][1]+A.cells[g*3+1][1]+A.cells[g*3+2][1]) / tA;
+    const rb = (B.cells[g*3][1]+B.cells[g*3+1][1]+B.cells[g*3+2][1]) / tB;
+    h += shareRow(label, ra, rb, mhNorm(n1,'pos',g), mhNorm(n2,'pos',g));
+  }
+
+  h += '<div class="mh-sec">What they throw at range <span>share of what they throw standing</span></div>';
+  for (const [t, label] of [[0,'Head'],[1,'Body'],[2,'Legs']]) {
+    h += shareRow(label, A.cells[t][1]/dA, B.cells[t][1]/dB,
+                  mhNorm(n1,'aimD',t), mhNorm(n2,'aimD',t));
   }
   // KNOCKDOWNS RIDE ALONG HERE. They are the one striking number that isn't in the
-  // grid at all, so they have nowhere else to live — and they belong under "where
-  // his offense goes" more than anywhere: it's what the offense actually did.
-  // Dropped entirely when neither man has one, rather than printed as 0 vs 0, which
-  // reads as a measured tie instead of the absence it is.
+  // grid at all, so they have nowhere else to live. Dropped entirely when neither
+  // man has one, rather than printed as 0 vs 0, which reads as a measured tie
+  // instead of the absence it is.
   if (A.kd || B.kd) {
     const mK = Math.max(A.kd, B.kd, 1);
-    aimRows += mhCmp('Knockdowns scored',
+    h += mhCmp('Knockdowns scored',
       { txt: String(A.kd), sub: null, frac: A.kd/mK },
       { txt: String(B.kd), sub: null, frac: B.kd/mK },
       { lead: _mhLeadCount(A.kd, B.kd) });
   }
-  // "his"/"he" -> neutral. Same bug as the reads, one layer up: 13% of the fighters
-  // on this card are women, and this header sat over Dern vs Robertson saying "his".
-  // The section covers BOTH fighters anyway, so the plural is also just more accurate.
-  h += '<div class="mh-sec">Where the offense goes <span>share of everything they throw</span></div>';
-  h += aimRows;
 
   const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
   h += '<div class="mh-sec">How well it lands <span>accuracy by position and target · landed / thrown</span></div>';
@@ -89443,25 +89461,54 @@ function ddRead(A, B, n1, n2, domain){
     }
   }
 
-  // STYLE — where a man's offense goes, when it's unusual for his division. No
-  // direction, no verdict: a leg-kicker isn't better than a head-hunter, he's a
-  // different problem. Worth saying precisely because it tells you what the fight
-  // will LOOK like when nothing else separates them.
+  // STYLE, IN THE TWO PIECES IT ACTUALLY HAS. This replaced an "aims unusually
+  // often at X" candidate built on share-of-TOTAL-offense, which produced
+  // "Kline aims unusually often at ground strikes: 13% of everything she throws".
+  // Nobody AIMS at ground strikes — you throw them because you are on the ground.
+  // It was a grappling fact wearing a targeting costume, and the Grappling tab
+  // already says it properly with control time and takedowns.
+  //
+  // The distance lanes had the same disease, better disguised. Measured over 524
+  // swept fighters: corr(head-share-of-TOTAL, share of offense at range) = 0.703.
+  // Half of "he head-hunts" was really "he stays standing". Using distance offense
+  // as the denominator drops that to 0.059 — a targeting choice, independent of how
+  // often he's standing.
+  //
+  //   POSITION  — where the fight happens. Real, and nothing else on the Striking
+  //               tab says it. Clinch work in particular appears nowhere else.
+  //   TARGETING — what he throws once he's at range. The actual choice.
   const totOf = G => G.cells.reduce((s,c) => s + c[1], 0) || 1;
-  for (const [p,t,label] of LANES) {
-    const i = GI(p,t);
+  const POSW = [[0,'at range','strike'], [1,'in the clinch','strike'], [2,'on the ground','grap']];
+  for (const [g, where, dom] of POSW) {
     for (const [me, LM, nm] of [[A,L1,n1],[B,L2,n2]]) {
       const tot = totOf(me);
       if (tot < 150) continue;
-      const r = me.cells[i][1] / tot;
-      const norm = mhNorm(nm, 'aim', i);
+      const r = (me.cells[g*3][1] + me.cells[g*3+1][1] + me.cells[g*3+2][1]) / tot;
+      const norm = mhNorm(nm, 'pos', g);
       if (!norm) continue;
       const z = zs(r, norm);
-      if (Math.abs(z) < 1.4) continue;      // strictest: this is the least decisive thing we say
+      if (Math.abs(z) < 1.4) continue;
       const pc = Math.round(r*100), np = Math.round(norm.med*100);
-      cands.push({ dom: 'strike', w: Math.abs(z) * 0.7,
-        t: LM + ' aims ' + (z > 0 ? 'unusually often' : 'unusually rarely') + ' at ' + label +
+      cands.push({ dom, w: Math.abs(z) * 0.75,
+        t: LM + ' throws ' + (z > 0 ? 'unusually much' : 'unusually little') + ' ' + where +
            ': ' + pc + '% of everything ' + LM + ' throws, against a ' + np + '% norm.' });
+    }
+  }
+  const TGT = [[0,'head'],[1,'body'],[2,'legs']];
+  for (const [t, tname] of TGT) {
+    for (const [me, LM, nm] of [[A,L1,n1],[B,L2,n2]]) {
+      const dt = me.cells[0][1] + me.cells[1][1] + me.cells[2][1];
+      if (dt < 100) continue;               // enough range volume to have a habit at all
+      const r = me.cells[t][1] / dt;
+      const norm = mhNorm(nm, 'aimD', t);
+      if (!norm) continue;
+      const z = zs(r, norm);
+      if (Math.abs(z) < 1.4) continue;
+      const pc = Math.round(r*100), np = Math.round(norm.med*100);
+      // The denominator is in the sentence, because it is NOT the one the "where
+      // the offense goes" section uses and the two numbers will differ on screen.
+      cands.push({ dom: 'strike', w: Math.abs(z) * 0.7,
+        t: 'At range, ' + LM + ' goes to the ' + tname + ' ' + pc + '% of the time, against a ' + np + '% norm.' });
     }
   }
 

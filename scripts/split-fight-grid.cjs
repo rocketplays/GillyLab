@@ -185,6 +185,12 @@ function divisionBase(grid, div, active) {
     (byDiv[d] = byDiv[d] || []).push(agg(grid[name]));
   }
   const out = {};
+  // [median, spread, n], or null under the peer floor. The spread can legitimately
+  // be 0 when a division's middle half all land on the same rate; floor it so the
+  // browser never divides by it.
+  const pack = v => v.length >= PEER_FLOOR
+    ? [+median(v).toFixed(4), +Math.max(robustSd(v), 0.01).toFixed(4), v.length]
+    : null;
   for (const [d, fighters] of Object.entries(byDiv)) {
     const acc = [], allow = [], aim = [];
     for (let i = 0; i < 9; i++) {
@@ -198,15 +204,47 @@ function divisionBase(grid, div, active) {
         // this section survives the peer floor in more divisions than the others.
         if (tot >= 150) m.push(f.off[i][1] / tot);
       }
-      // [median, spread, n]. The spread can legitimately be 0 when a division's
-      // middle half all land on the same rate; floor it so the browser never
-      // divides by it.
-      const pack = v => v.length >= PEER_FLOOR
-        ? [+median(v).toFixed(4), +Math.max(robustSd(v), 0.01).toFixed(4), v.length]
-        : null;
       acc.push(pack(a)); allow.push(pack(b)); aim.push(pack(m));
     }
-    if (acc.some(Boolean) || allow.some(Boolean) || aim.some(Boolean)) out[d] = { acc, allow, aim };
+
+    // TWO THINGS `aim` WAS MIXING, NOW SEPARATED — because a share of TOTAL offense
+    // is not a targeting choice, and the prose was reporting it as one.
+    //
+    // Measured over the 524 swept fighters with enough volume:
+    //     corr(head-share-of-TOTAL, share of offense at range)  =  0.703
+    //     corr(head-share-of-TOTAL, share of offense on ground) = -0.576
+    // So "he aims at the head unusually often" is about HALF just "he stays
+    // standing". And the ground version isn't merely confounded, it's incoherent:
+    // nobody AIMS at ground strikes, you throw them because you are on the ground.
+    // That is a grappling fact, and the Grappling tab already states it properly
+    // with control time and takedowns.
+    //
+    //     corr(head-share-of-DISTANCE, share at range) = 0.059
+    // THAT is a targeting choice: what he does once he is standing, independent of
+    // how often he is standing. Hence two separate baselines:
+    //     pos  = where the fight happens  [dist, clinch, ground] / total
+    //     aimD = what he throws at range  [head, body, leg] / distance offense
+    const pos = [], aimD = [];
+    for (let g = 0; g < 3; g++) {                        // 0 dist, 1 clinch, 2 ground
+      const v = [];
+      for (const f of fighters) {
+        const tot = f.off.reduce((s, c) => s + c[1], 0);
+        if (tot < 150) continue;
+        v.push((f.off[g*3][1] + f.off[g*3+1][1] + f.off[g*3+2][1]) / tot);
+      }
+      pos.push(pack(v));
+    }
+    for (let t = 0; t < 3; t++) {                        // 0 head, 1 body, 2 leg
+      const v = [];
+      for (const f of fighters) {
+        const dt = f.off[0][1] + f.off[1][1] + f.off[2][1];
+        if (dt < 100) continue;                          // enough range volume to have a habit
+        v.push(f.off[t][1] / dt);
+      }
+      aimD.push(pack(v));
+    }
+
+    if (acc.some(Boolean) || allow.some(Boolean) || aim.some(Boolean)) out[d] = { acc, allow, aim, pos, aimD };
   }
   return out;
 }
