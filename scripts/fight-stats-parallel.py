@@ -47,7 +47,7 @@ _GRID_CACHE = {}
 def grid_index():
     """Fighters who already have the strike grid.
 
-    READS data/fight-grid.json, NOT fight-stats.json, AND THAT IS THE WHOLE POINT.
+    READS THE GRID FILES, NOT fight-stats.json, AND THAT IS THE WHOLE POINT.
     The pipeline is: backfill writes `g` INTO fight-stats.json, then
     split-fight-grid.cjs LIFTS IT BACK OUT (because fight-stats.json is eager-
     fetched by every visitor and must not carry 2MB for an optional panel). So by
@@ -60,15 +60,32 @@ def grid_index():
     commit message would have said "steady state is the delta only". The split is
     what makes the eager payload safe AND what erases the evidence the predicate
     was reading — two correct pieces whose seam is a bug.
+
+    AND THEN THE SAME SEAM MOVED AND BROKE IT AGAIN. fight-grid.json used to BE the
+    master — every fighter ever lifted — so reading it answered the question. The
+    division-median work made it the CARD SUBSET and put the master in
+    fight-grid-all.json, at which point this predicate could only see ~109 fighters
+    and reported all ~500 swept roster fighters as missing. Observed live: the queue
+    went UP, 340 -> 447, immediately after a split. Left alone the sweep never
+    terminates and CI refetches the same men twice a day, green throughout — the
+    exact failure the paragraph above is about, reintroduced by moving the evidence
+    rather than by reading the wrong file.
+
+    So: THE MASTER FIRST, the shipped subset as a fallback (it is all that exists on
+    a checkout that predates the master, and seeding order matters more than speed
+    here). Union, not either/or — a fighter counts if he is in either.
     """
     if not _GRID_CACHE:
-        p = os.path.join(HERE, "..", "data", "fight-grid.json")
-        try:
-            g = json.load(open(p))
-        except Exception:
-            g = {}
-        _GRID_CACHE["names"] = {n for n, rows in g.items()
-                                if any(((r or {}).get("f") or {}).get("g") for r in (rows or []))}
+        names = set()
+        d = os.path.join(HERE, "..", "data")
+        for fn in ("fight-grid-all.json", "fight-grid.json"):
+            try:
+                g = json.load(open(os.path.join(d, fn)))
+            except Exception:
+                continue
+            names |= {n for n, rows in g.items()
+                      if any(((r or {}).get("f") or {}).get("g") for r in (rows or []))}
+        _GRID_CACHE["names"] = names
     return _GRID_CACHE["names"]
 
 

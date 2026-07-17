@@ -56,31 +56,46 @@ renderScouting() is ONE function, so the entry point is emitted once. The trap i
 still live for anything else on a fight row.
 
 
-DO THIS FIRST — THE ACTIVE-ROSTER SWEEP
+THE ACTIVE-ROSTER SWEEP — DONE, 2026-07-16
 --------------------------------------------------------------------------------
-    cd ~/Documents/GitHub/GillyLab
-    python3 scripts/fight-stats-parallel.py --active --needs-grid --workers 24 --seconds 3600
+    python3 scripts/fight-stats-parallel.py --active --needs-grid --workers 32 --seconds 35
     node scripts/split-fight-grid.cjs
 
-~515 fighters to fetch. RESUMABLE AND IDEMPOTENT — --needs-grid is self-clearing,
-so re-run until it prints "to process: 0". Nothing else in the session can do this:
-the sandbox has no route to ESPN (curl to site-api returns 000), so it has to run
-on the Mac.
+RESUMABLE AND IDEMPOTENT — --needs-grid is self-clearing, so re-run until it says
+"to process: 0". It ran in ~10 chunks of 35s; ~40-80 fighters a chunk. Result:
 
-Until it runs the panel works and shades against the card norm, and says so in the
-legend. After it runs the same legend starts saying "division". Nothing breaks
-either way; the sentence changes itself.
+    master fight-grid-all.json    109 -> 618 fighters   (1436KB, never fetched)
+    fight-grid.json               239KB, still card-scoped, unchanged
+    fight-stats.json              7909KB — same as before the sweep. Not one byte.
+    grid-names.json               2.2KB -> 9.1KB (eager)
+    divisions with a baseline     6 -> 11 (all of them)
+    accuracy cells with a median  16/99 -> 63/99   allow 59/99   aim 99/99
 
-WHY IT'S NEEDED. Shading a cell "vs your division" needs ~8 peers in that division
-AND that cell. Measured on the card-only grid (109 fighters, 11 divisions):
+Six stragglers remain "to process" for ever: they are on ACTIVE_ROSTER, have stats,
+and ESPN has no grid for them. Not a bug, don't chase it.
+
+DON'T REPEAT MY MISTAKE ABOUT THE NETWORK. I claimed twice, in a commit message and
+in this file, that the sandbox had no route to ESPN and the sweep had to run on the
+Mac. FALSE. I curled site-api.espn.com, got 000, and generalised one host to the
+whole domain. The scraper uses sports.core.api.espn.com (CORE/ATHL in
+fight-stats-backfill.py) and site.api.espn.com — both answer 200. Test the host the
+code actually calls before concluding the network is the problem.
+
+BACKGROUNDING DOESN'T SURVIVE, chunking does. setsid/nohup processes are killed at
+the boundary of each tool call; `pgrep -f fight-stats-parallel` reports them alive
+because it matches the checking command's OWN command line. Use ps aux | grep '[f]'
+or check the output file's mtime.
+
+WHY IT WAS NEEDED. Shading a cell "vs your division" needs ~8 peers in that
+division AND that cell. Measured on the card-only grid (109 fighters, 11 divisions):
     division x cell combos with >= 8 peers:   16 of 99
     the entire clinch row:                     0 divisions
 Worse, a "division median" drawn from card fighters is really "the median of
 whoever from that weight class is booked this weekend" — it moves week to week for
-reasons that have nothing to do with the fighter being shaded. Extrapolated to 643
-active fighters, dist.*, clinch.head/body and ground.head all clear the floor;
-clinch.leg / ground.body / ground.leg stay empty, but they are already empty at
-card level (0 fighters clear 25 attempts there), so they show "—" regardless.
+reasons that have nothing to do with the fighter being shaded. Post-sweep, clinch
+.head/body cleared in 9 and 7 divisions respectively; clinch.leg / ground.body /
+ground.leg are still empty and always will be, because nobody throws 25 leg kicks
+from the clinch. Those show "—", which is correct.
 
 AND BE CLEAR WHAT IT BUYS, because it is not as much as it sounds. Division
 explains only 12–19% of the variance in these rates:
@@ -232,6 +247,16 @@ TRAPS — ALL OF THESE WERE REAL BUGS
     — see fight-grid-all.json. This is the same bug prototypes/ has open below.
   * roster_names() IS NOT THE ACTIVE ROSTER. It is every name in FIGHTERS: 3,101,
     of which ~2,450 are retired. Use --active for anything that becomes a baseline.
+  * grid_index() IS THE SELF-CLEARING PREDICATE AND IT READS THE GRID FILES. It has
+    now broken TWICE, the same way, for two different reasons — read its docstring
+    before touching anything that decides where the grid lives. First time: someone
+    pointed it at fight-stats.json, which the split empties by design, so every
+    fighter looked missing for ever. Second time (me): fight-grid.json used to BE
+    the master, the division work made it the CARD SUBSET, and the predicate could
+    suddenly only see 109 of ~500 swept fighters. Observed live — the queue went UP,
+    340 -> 447, straight after a split. Left alone the sweep never terminates and CI
+    refetches the same men twice a day, green throughout. It now reads the master
+    first and unions the shipped subset. IF YOU MOVE THE GRID AGAIN, MOVE THIS TOO.
   * ACTIVE_ROSTER USES DISPLAY NAMES AND IS ON ONE LINE. Folding accents is not
     enough — "King Green" -> "Bobby Green", "Patricio Freire" -> "Patrício Pitbull",
     "Thomas Gantt" -> "Tommy Gantt" only resolve through ACTIVE_ROSTER_ALIASES; 7
