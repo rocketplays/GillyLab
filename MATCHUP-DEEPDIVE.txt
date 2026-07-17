@@ -16,9 +16,11 @@ THERE IS NO OVERVIEW TAB AND NO FOOTER. Both were built, both were cut same-day.
     Its striking half was the AGGREGATE of the very cross-tab the Striking tab
     breaks out cell by cell — a landing tab whose job was to average away the thing
     the next tab shows you properly. Exactly ONE number on it existed nowhere else:
-    knockdowns, which aren't in the grid. That plus the two headline totals are now
-    "The totals" on Striking. The overall what-lands-on-him did NOT move: that tab
-    already carries it lane by lane, which is strictly more informative.
+    knockdowns, which aren't in the grid. Knockdowns now sit at the foot of "Where
+    his offense goes". Strikes landed and strike accuracy are GONE OUTRIGHT — both
+    are just the grid's nine cells added back up, i.e. the averaging this feature
+    exists to undo, printed directly above the grid that undoes it. (A short-lived
+    "The totals" section carried them for one commit before that landed.)
     Striking now lands, and when the striking is level it points at Grappling —
     10 of the 50 renderable bouts on the card are that case.
   * The footer carried provenance ("last N UFC fights each, from official box
@@ -108,15 +110,15 @@ heavyweight stops being marked down for heavyweight output.
 
 THE DATA, AND WHY IT'S IN FOUR FILES
 --------------------------------------------------------------------------------
-    data/grid-names.json      6.4KB  eager     manifest + baselines + div medians
-    data/fight-grid.json      245KB  on click  the 3x3 cross-tab, CARD FIGHTERS ONLY
-    data/fight-grid-all.json  ~1.5MB never     MASTER — build-time only
-    data/fight-stats.json     8MB    eager     UNCHANGED — not one byte added
+    data/grid-names.json      9.1KB  eager     manifest + baselines + div medians
+    data/fight-grid.json      239KB  on click  the 3x3 cross-tab, CARD FIGHTERS ONLY
+    data/fight-grid-all.json  1436KB never     MASTER — build-time only
+    data/fight-stats.json     7909KB eager     UNCHANGED — not one byte added
 
-THE MASTER IS THE SWEEP'S OUTPUT AND IT MUST NOT SHIP. 643 fighters is ~1.5MB and
+THE MASTER IS THE SWEEP'S OUTPUT AND IT MUST NOT SHIP. 618 fighters is ~1.4MB and
 the panel would download all of it on every click to show two men — ~84% waste —
-while CI rewrote 1.5MB twice a day into a .git that is already 805MB. What the
-sweep is FOR is the medians, and the medians are 6KB. So: population in the master,
+while CI rewrote 1.4MB twice a day into a .git that is already 825MB. What the
+sweep is FOR is the medians, and the medians are 9KB. So: population in the master,
 conclusions in the manifest, and the wire stays thin.
 
   * fight-grid-all.json is TRACKED (CI must persist it between runs; without it the
@@ -296,38 +298,33 @@ which would read as a measured tie instead of the absence it is.
 
 OPEN — REAL, MEASURED, NOT GUESSES
 --------------------------------------------------------------------------------
- 1. iCLOUD HAS EATEN 25 FILES AND git NOW FAILS ON THEM. This has gone from the
-    slow bleed described below to something that blocks work. `git status` dies
-    with "read error while indexing data/name-collisions-baseline.json: Resource
-    deadlock avoided" — that file and 24 others (data/odds.json, most of
-    data/photos/) are dataless iCloud placeholders: they have a size but no local
-    content, and reading them EDEADLKs. `git status -- <path>` still works, so
-    path-scoped commits go through, but a bare status/diff/commit does not.
-    This is item 4 below arriving. The fix is the move off ~/Documents.
- 2. THE RANKING IN scripts/matchup-deepdive.cjs IS NOT SAFE TO SHOW. Its lanes have
+ 1. THE RANKING IN scripts/matchup-deepdive.cjs IS NOT SAFE TO SHOW. Its lanes have
     prerequisites it doesn't model: ground-and-pound is gated behind a takedown,
     head-at-range is gated behind nothing, and it ranks them as peers. Measured, it
     told Du Plessis his best path was ground-and-pound against a man who stops 27 of
     32 takedowns. The panel prints columns and prose, never the order. FIXING THIS
     NEEDS A MEASUREMENT ACROSS A CARD, NOT A PLAUSIBLE RULE — I invented mechanisms
     twice today and both were fiction.
- 3. NO ROUND-BY-ROUND DATA EXISTS. Checked four ESPN endpoints: statistics/{n}
+ 2. NO ROUND-BY-ROUND DATA EXISTS. Checked four ESPN endpoints: statistics/{n}
     ignores the index, linescores are judges' scorecards, plays are 40 ceremonial
     +takedown events with no fighter attribution, summary is empty. ufcstats.com has
     it and is blocked. This is a scrape, not a view. Don't infer it from finishes and
     call it measured.
- 4. iCLOUD IS SYNCING THE REPO. ~/Documents is iCloud Drive; .git is 805MB. It forked
-    .git/index 22 times since June 11, including once mid-session today (88 bytes off
-    the live file), and bus-errored a commit. I deleted the junk; fsck is clean; no
-    damage. A half-finished clone sits at ~/dev/GillyLab (needs `npm approve-scripts`
-    for esbuild/workerd/sharp/fsevents, then `npm install`).
-    NO LONGER "NOT URGENT" — see item 1. Fork #23 appeared and was deleted this
-    session, `git diff --stat` bus-errored again (core dumped), and 25 files have
-    now gone dataless. The old folder no longer entirely works.
- 5. THE-CLIMB-TUNING.txt IS FIVE COMMITS STALE AGAIN (STYLE_SCALE, the division
+ 3. iCLOUD IS SYNCING THE REPO. ~/Documents is iCloud Drive; .git is 825MB. It forked
+    .git/index ~22 times between June 11 and July 16, and bus-errored a commit. Junk
+    deleted each time; fsck clean; nothing ever lost. STILL NOT URGENT — a slow
+    bleed, not an emergency. The old folder works. See ICLOUD-MIGRATION.txt for the
+    measurements and the move, and READ IT BEFORE DELETING ANYTHING: the dataless
+    placeholders are real files, not junk.
+    2026-07-16: I escalated this item to "urgent, blocks work" on the strength of
+    `git status` failing IN MY SANDBOX, which cannot trigger iCloud's download and
+    so EDEADLKs on any offloaded file. That is the sandbox, not the repo. On the Mac
+    the same reads download transparently, which is why months of use never hit it.
+    The original "not urgent" call was right and I should not have overridden it.
+ 4. THE-CLIMB-TUNING.txt IS FIVE COMMITS STALE AGAIN (STYLE_SCALE, the division
     work, the free title shot, submission defense, the scout card). It is a file
     whose own top section is about claims outliving their evidence.
- 6. prototypes/ STILL SHIPS INTO public/ — the-climb.html and a ~900KB
+ 5. prototypes/ STILL SHIPS INTO public/ — the-climb.html and a ~900KB
     sixdegrees-data.json go to every visitor. /theclimb is generated now; the
     prototype copy is dead weight.
 

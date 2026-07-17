@@ -1,0 +1,129 @@
+iCloud and this repo — what's real, and what to do (spoiler: not much)
+================================================================================
+2026-07-16. ~/Documents is iCloud Drive, so this repo is synced. That is known-bad
+practice and it does produce visible junk. It has ALSO been completely harmless for
+months, and this file exists mostly to stop the next session over-reacting to it
+the way I did.
+
+VERDICT: NOT URGENT. Real, ongoing, low-severity, recoverable. Move the repo out of
+~/Documents whenever it's convenient and you're not mid-task. Never under pressure.
+
+READ THIS BEFORE YOU "CLEAN UP" ANYTHING
+--------------------------------------------------------------------------------
+There are TWO different artefacts and they look alike. One is safe to delete. The
+other is your data.
+
+  CONFLICT COPIES — "index 3.html", "public/photos 3/", "gl-sheet 2.js"
+      Full DUPLICATES iCloud makes when it sees a conflict. Caused by SYNCING.
+      Measured 2026-07-16: 1,120 of them. 1,119 were inside public/, which
+      build-site.sh deletes and rebuilds every run (`rm -rf public`), so they are
+      disposable by construction and get wiped on the next build anyway. The only
+      one that ever lived outside public/ was "index 3.html" — a 13MB copy of the
+      main source file — and it is gone.
+      SAFE TO DELETE:  rm -rf public && npm run build
+
+  DATALESS PLACEHOLDERS — data/odds.json, photos/*.jpg, and ~58 others
+      NOT junk. NOT empty. These are your REAL files with the contents offloaded to
+      iCloud by "Optimize Mac Storage", leaving a stub that downloads transparently
+      the moment anything reads it. They report a size and hold no local bytes.
+      *** DO NOT DELETE THESE. It deletes real data, and syncs the deletion up. ***
+      They are the thing that looks most like tidy-up-able junk, which is precisely
+      why this warning is in capitals.
+
+WHY IT LOOKS BROKEN FROM A CLAUDE SESSION BUT ISN'T
+--------------------------------------------------------------------------------
+On macOS, reading a dataless file silently triggers the download. It just works —
+which is why months of normal use never hit a problem.
+
+A Cowork/Claude sandbox mounts this folder from a Linux VM that CANNOT trigger that
+download, so the same read returns EDEADLK: "Resource deadlock avoided". That is an
+artefact of the sandbox, NOT damage to the repo.
+
+I got this wrong on 2026-07-16. `git status` failed for me, `git diff` bus-errored,
+the dataless count went 25 -> 60 during the session, and I reported all of it as
+"iCloud has eaten your files, this now blocks work" and promoted it to open item 1.
+It was my environment failing, not the repo. The session before me had it right:
+"NOT URGENT — a slow bleed, not an emergency. The old folder works." I overrode a
+calibrated judgement with an unmeasured one and put the owner through an hour of
+worry over it. Don't repeat that. If git misbehaves from a sandbox, check whether
+the same command works in Terminal on the Mac before concluding anything.
+
+WHY YOUR DATA IS SAFE — THREE INDEPENDENT LAYERS
+--------------------------------------------------------------------------------
+  1. Git objects are immutable and content-addressed. Once written they are never
+     modified, so iCloud cannot produce a conflicting version of one. The 619MB of
+     packed history is not at risk from sync.
+  2. .git/index IS mutable and DOES get forked — that's the ".git/index 23" junk,
+     ~22 of them between June 11 and July 16. But the index is a rebuildable cache:
+     `rm .git/index && git reset` and it's back. It holds no history.
+  3. Commits are pushed to GitHub, and CI clones fresh — the twice-daily job has
+     never seen any of this and cannot be affected by it.
+  Measured 2026-07-16 after ~2 months of this: `git fsck` clean, 1,931 reflog
+  entries intact, every commit present on origin. Nothing has ever been lost.
+
+THE CHEAP FIX (does most of the good, costs nothing)
+--------------------------------------------------------------------------------
+System Settings -> Apple ID -> iCloud -> turn OFF "Optimize Mac Storage".
+Stops the eviction, so no more dataless placeholders and Claude sessions stop
+tripping over them. Does NOT stop conflict copies (those come from syncing, which
+continues) — but those only land in public/, so nobody cares.
+Caveat: it downloads EVERYTHING in your iCloud Drive, not just this repo. Check
+free disk first.
+
+THE REAL FIX, WHEN CONVENIENT — MOVE IT, DON'T RE-CLONE
+--------------------------------------------------------------------------------
+    # 1. Materialise first, or you move empty stubs. Reading triggers the download.
+    brctl download ~/Documents/GitHub/GillyLab
+    find ~/Documents/GitHub/GillyLab -type f -print0 | xargs -0 -P8 -n64 cat >/dev/null 2>&1
+
+    # 2. ~/dev/GillyLab already exists (a half-finished clone). Clear it first.
+    rm -rf ~/dev/GillyLab && mkdir -p ~/dev
+    mv ~/Documents/GitHub/GillyLab ~/dev/GillyLab
+
+    # 3. Reclaim the loose objects, confirm health.
+    cd ~/dev/GillyLab && rm -f .git/index2 && rm -rf _to_delete
+    git gc --prune=now
+    git status                      # the real test
+    git fsck --connectivity-only    # only "dangling" lines = fine
+
+Then re-point Cowork at ~/dev/GillyLab and deploy from the new path.
+
+NOT `git clone`, AND THAT DECISION WAS MEASURED:
+    loose objects   1,371   204 MB   <- junk; git gc reclaims it in place
+    packed         17,603   619 MB   <- REAL history; a clone re-downloads all of it
+index.html is 13MB, so every commit stores another compressed copy — the 619MB is
+history, not fork garbage, and a clone lands at the same size. The clone's only
+real effect is that it does NOT bring untracked files, i.e. it costs you the ESPN
+id cache for no benefit. `mv` keeps everything and needs no npm install.
+
+WHAT A CLONE WOULD HAVE LEFT BEHIND (why `mv` wins)
+--------------------------------------------------------------------------------
+    scripts/espn-import-output/   27MB, 4,646 files   ESPN id cache
+    Gilly Lab/                    2.6MB
+    node_modules/                 292MB    (regenerable)
+    public/                       build output (regenerable)
+
+The id cache is read by fight-stats-parallel.py to skip ESPN's name-search and
+"avoid wrong-athlete fallbacks" — losing it risks silently attaching the wrong
+career to a name. Measured, it is 99% redundant with ONE 157KB file:
+    name->id from the 4,646 .json files       2,264
+    slug->id from _manifest.csv ALONE         3,096
+    of the .json ids, also in the manifest    2,241 / 2,264
+    ids existing ONLY in the .json files         23
+    .json files already dead placeholders         56
+So if it ever must be rebuilt elsewhere, copy _manifest.csv and you keep 3,096 of
+3,119 ids. `mv` keeps all of them and the question never arises.
+
+.dev.vars does not exist here — no secrets to carry.
+
+ONE UNRELATED HAZARD, WHILE YOU'RE IN HERE
+--------------------------------------------------------------------------------
+fight-stats-backfill.py writes with `json.dump(data, open(OUT, "w"))`. That is NOT
+atomic: open(...,"w") truncates immediately, so killing it mid-write leaves
+data/fight-stats.json truncated — 8MB that every visitor eager-fetches. It survived
+~10 interrupted runs on 2026-07-16, but that is luck, not design. Fix is
+write-to-temp + os.replace(). Nothing to do with iCloud; just adjacent to it.
+
+CAVEAT: the macOS-specific commands above (brctl, find -flags) were written from a
+Linux VM and are NOT tested on the Mac. The verification steps are the part to
+trust — they check the outcome rather than assuming the command worked.
