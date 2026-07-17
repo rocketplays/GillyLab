@@ -2210,7 +2210,9 @@
 
     /* THE READ. It states disparities; it never recommends a path. Given room to
        breathe because it is the one piece of prose in here. */
-    .mh-read { background: rgba(0,230,104,0.06); border-left: 2px solid var(--accent); border-radius: 0 6px 6px 0; padding: 0.8rem 1rem; font-size: 0.94rem; line-height: 1.55; color: var(--text); margin-bottom: 1.25rem; }
+    /* No accent rule down the left edge. The radius goes back to all four corners:
+       0 6px 6px 0 only existed so the square side could sit flush against it. */
+    .mh-read { background: rgba(0,230,104,0.06); border-radius: 6px; padding: 0.8rem 1rem; font-size: 0.94rem; line-height: 1.55; color: var(--text); margin-bottom: 1.25rem; }
     .mh-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 0.7rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
     .mh-sec:first-child { margin-top: 0; }
     .mh-sec span { text-transform: none; letter-spacing: 0.02em; font-family: 'Barlow', sans-serif; font-weight: 400; font-size: 0.7rem; color: var(--muted); opacity: 0.75; margin-left: 0.5rem; }
@@ -89038,7 +89040,10 @@ function mhReadBlock(A, B, n1, n2, domain){
   const otherName = domain === 'strike' ? 'Grappling' : 'Striking';
   const elsewhere = ddRead(A, B, n1, n2, other);
   const txt = 'No clear edge on paper' + (elsewhere ? '; see ' + otherName + '.' : '.');
-  return '<div class="mh-read" style="border-left-color:var(--border);background:rgba(255,255,255,0.025);color:var(--muted)">' +
+  // The empty state still drops the green tint — with no read, there is nothing to
+  // highlight. (It used to also recolour the left border; that border is gone, so
+  // the override went with it rather than sitting here doing nothing.)
+  return '<div class="mh-read" style="background:rgba(255,255,255,0.025);color:var(--muted)">' +
     txt + '</div>';
 }
 
