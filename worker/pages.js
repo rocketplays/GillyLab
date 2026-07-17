@@ -2055,6 +2055,27 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   // on this week's main event. Same reason glDeepDiveAvailable() hides it in the app.
   const free = matchupFree || null;
   const ddFresh = !!(free && free.striking && free.grappling && card && free.slug === card.slug);
+  // The bout the payload describes, for the modal header. The slug check above proves
+  // it is THIS card; this proves it is this card's MAIN EVENT, which is a different
+  // question — boutOrder can be reshuffled by a withdrawal after the panel was
+  // rendered, and a header naming two men the panel isn't about is worse than no
+  // header. Fall back to names-only rather than to the wrong photos.
+  // The app's modal header: avatar, name, record — and the weight class + rounds under
+  // the VS. _fsAva() hard-codes 40px and an accent ring inline and is shared with the
+  // fight modal, so it is reproduced here rather than imported: this page has no
+  // FIGHTERS array, no nameToSlug, and none of the app's JS. Same markup, same photo
+  // path (/photos/thumb/<slug>.png — what the fight rows already use), same fallback
+  // to initials when a fighter has no photo or it 404s.
+  const HUB_AV = "width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid var(--accent);flex-shrink:0;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.78rem;color:#fff";
+  const hubSide = (nm, slug, rec, right) => `<div class="mh-hd-f${right ? " r" : ""}">` +
+    `<span class="mh-hd-av">${slug
+      ? `<div style="${HUB_AV}"><img src="/photos/thumb/${esc(slug)}.png" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;object-position:top center" onerror="this.parentNode.textContent='${esc(initials(nm))}'"></div>`
+      : `<div style="${HUB_AV}">${esc(initials(nm))}</div>`}</span>` +
+    `<div class="mh-hd-tx"><div class="mh-hd-nm">${esc(nm)}</div>` +
+    `${rec ? `<div class="mh-hd-rc">${esc(rec)}</div>` : ""}</div></div>`;
+  const ddFight = ddFresh
+    ? (card.fights || []).find((x) => x.main && x.f1 === free.n1 && x.f2 === free.n2) || null
+    : null;
   const ddBtn = ddFresh
     ? `<button type="button" class="mf-dd-bar" onclick="mfHub()">Matchup Analytics Deep Dive <span class="mf-dd-go">&rsaquo;</span></button>`
     : "";
@@ -2390,15 +2411,18 @@ ${eventLd}
     /* --mh-rail: the grid's row-label column. The legend steps over it to centre on
        the tiles — see index.html. It is scoped to #mh-box there too. */
     #mh-box{--mh-rail:3.4rem}
-    .mh-hd-nm{font-size:1rem;font-weight:800;color:var(--text)}
-    .mh-hd-vs{font-size:.7rem;font-weight:700;color:var(--muted);letter-spacing:.1em}
+    /* .mh-hd/.mh-hd-f/.mh-hd-av/.mh-hd-nm/.mh-hd-rc/.mh-hd-mid/.mh-hd-vs/.mh-hd-sub
+       all come through in free.css — the slice starts at #mh-overlay (2185) and the
+       header rules sit at 2190-2199. Nothing to restate here. */
   </style>
   <div id="mh-overlay" onclick="if(event.target===this)mfHubClose()"></div>
   <div id="mh-box" role="dialog" aria-modal="true" aria-label="Matchup analytics">
     <div class="mh-hd">
-      <div class="mh-hd-f"><div class="mh-hd-tx"><div class="mh-hd-nm">${esc(free.n1)}</div></div></div>
-      <div class="mh-hd-mid"><div class="mh-hd-vs">VS</div></div>
-      <div class="mh-hd-f r"><div class="mh-hd-tx"><div class="mh-hd-nm">${esc(free.n2)}</div></div></div>
+      ${hubSide(free.n1, ddFight && ddFight.s1, ddFight && ddFight.rec1, false)}
+      <div class="mh-hd-mid"><div class="mh-hd-vs">VS</div>${
+        ddFight && [ddFight.weight, ddFight.rounds ? ddFight.rounds + " RDS" : ""].filter(Boolean).length
+          ? `<div class="mh-hd-sub">${esc([ddFight.weight, ddFight.rounds ? ddFight.rounds + " RDS" : ""].filter(Boolean).join(" \u00b7 "))}</div>` : ""}</div>
+      ${hubSide(free.n2, ddFight && ddFight.s2, ddFight && ddFight.rec2, true)}
     </div>
     <div class="mh-tabs" id="mh-tabs">
       <button type="button" class="mh-tab on" data-mh-tab="striking" onclick="mfHubTab('striking')">Striking</button>
