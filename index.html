@@ -89365,7 +89365,9 @@ function ddRead(A, B, n1, n2, domain){
     0: { hi: 'is open at range',           lo: 'is hard to hit at range',        what: 'head strikes' },
     1: { hi: 'is open to the body',        lo: 'protects the body well',         what: 'body shots' },
     2: { hi: 'is open to leg kicks',       lo: 'rarely gets caught by leg kicks', what: 'leg kicks' },
-    6: { hi: 'takes damage on the mat',    lo: 'stays clean on the mat',         what: 'ground strikes' },
+    // "takes damage on the mat" was the old wording and it overreached: the grid
+    // counts strikes that LAND, not damage. A landed strike is not a hurt fighter.
+    6: { hi: 'gets hit on the mat',        lo: 'stays clean on the mat',         what: 'ground strikes' },
   };
   const OFF = {                                             // what HE lands
     0: { hi: 'is accurate at range',       lo: 'is less accurate at range',      what: 'head strikes' },
@@ -89373,10 +89375,18 @@ function ddRead(A, B, n1, n2, domain){
     2: { hi: 'lands leg kicks cleanly',    lo: 'is less accurate with leg kicks', what: 'leg kicks' },
     6: { hi: 'is accurate on the mat',     lo: 'is less accurate on the mat',    what: 'ground strikes' },
   };
+  // COMPARATIVE, NOT AN IDENTITY. "Hooper is a clinch fighter" turns 14% of his
+  // output into a label for the whole man — a noun the number cannot support, and
+  // it reads as though the panel has decided that's all he does. These say more
+  // than most, which is exactly and only what was measured.
+  //
+  // AND NOT "spends more TIME in the clinch" either, tempting as that phrasing is:
+  // the grid counts STRIKES THROWN, not seconds. A fighter can spend a round in the
+  // clinch and throw nothing there. Say what was counted.
   const POS = {
-    0: { hi: 'keeps it standing',          lo: 'is rarely at range' },
-    1: { hi: 'is a clinch fighter',        lo: 'avoids the clinch' },
-    2: { hi: 'has heavy ground-and-pound', lo: 'does little on the mat' },
+    0: { hi: 'throws more at range than most',         lo: 'throws less at range than most' },
+    1: { hi: 'throws more in the clinch than most',    lo: 'throws less in the clinch than most' },
+    2: { hi: 'throws more ground-and-pound than most', lo: 'throws less ground-and-pound than most' },
   };
 
   // Takedown defense — usually the story, and the one axis where the spread is wide
