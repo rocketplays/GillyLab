@@ -89363,14 +89363,30 @@ function mhStriking(A, B, n1, n2){
   // implies he is. The read still calls out a genuinely unusual habit; the bars
   // just describe the two men.
   //
-  // Scaled to the bigger of the two shares, not to 100% — at 5% of offense both
-  // clinch bars would be invisible slivers and the comparison would be lost.
-  const shareRow = (label, ra, rb) => {
-    const m = Math.max(ra, rb, 0.01);
-    return mhCmp(label,
-      { txt: Math.round(ra*100) + '%', sub: null, frac: ra/m },
-      { txt: Math.round(rb*100) + '%', sub: null, frac: rb/m });
-  };
+  // THE BAR IS THE PERCENTAGE. 11% FILLS 11%.
+  //
+  // This used to scale to the bigger of the two shares — frac = ra / max(ra, rb) —
+  // so whoever led a row got a FULL bar whatever the number beside it said. Usman
+  // throws 11% of his offense in the clinch and 18% on the ground, and both bars ran
+  // the whole track. Reported as confusing, and it is worse than confusing: the bar
+  // was answering "who does this more?" while the number next to it answered "how
+  // much?", and nothing on screen said they were different questions. Meanwhile
+  // "What lands on them" two sections below has always drawn frac = the rate itself.
+  // Two bar languages in one tab, no way to tell them apart.
+  //
+  // THE DEFENCE WAS "at 5% of offense both clinch bars would be invisible slivers",
+  // AND IT DOESN'T SURVIVE A RULER: at 5% the bar draws 20px on desktop (400px
+  // track) and 6px on a phone. Not invisible — small, which is the truth. The cure
+  // was drawing 11% as 400px, a 36x exaggeration to avoid a 20px one.
+  //
+  // Absolute also makes the three rows comparable to EACH OTHER, which is the point
+  // of the section: they are shares of one fighter's output and they sum to 100, so
+  // at range 74% / clinch 11% / ground 14% now looks like what it is. Normalising
+  // each row on its own made the clinch row as loud as the range row, i.e. it hid
+  // the finding.
+  const shareRow = (label, ra, rb) => mhCmp(label,
+    { txt: Math.round(ra*100) + '%', sub: null, frac: ra },
+    { txt: Math.round(rb*100) + '%', sub: null, frac: rb });
 
   h += '<div class="mh-sec">Where the fight happens <span>share of everything they throw</span></div>';
   for (const [g, label] of [[0,'At range'],[1,'In the clinch'],[2,'On the ground']]) {
@@ -104913,16 +104929,20 @@ const GL_SHEET = (function () {
     // card keeps its blurb: it has the room, and its numbers are less self-evident.
 
     // WHERE THE FIGHT HAPPENS — share of everything they throw. No accent: a share
-    // has no direction (see the modal). Scaled to the larger of the two so a 5%
-    // clinch bar isn't an invisible sliver.
+    // has no direction (see the modal).
+    //
+    // THE BAR IS THE PERCENTAGE, same as the modal. This scaled to the larger of the
+    // two, so an 11% clinch share drew a full-width bar — the bar answering "who
+    // does this more?" beside a number answering "how much?". Absolute keeps the
+    // three rows comparable to each other, which is the section's whole point: they
+    // are shares of one man's output and they sum to 100.
     y = sgTitle(ctx, 'Where the fight happens', y + Math.round(44*S), S) + Math.round(14*S);
     const tot = (G) => G.cells.reduce((s, c) => s + c[1], 0) || 1;
     const tA = tot(A), tB = tot(B);
     [[0, 'At range'], [1, 'In the clinch'], [2, 'On the ground']].forEach(([g, lab]) => {
       const ra = (A.cells[g*3][1] + A.cells[g*3+1][1] + A.cells[g*3+2][1]) / tA;
       const rb = (B.cells[g*3][1] + B.cells[g*3+1][1] + B.cells[g*3+2][1]) / tB;
-      const m = Math.max(ra, rb, 0.01);
-      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra/m, rb/m, y, false, false, S);
+      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra, rb, y, false, false, S);
     });
 
     // HOW WELL IT LANDS — the cross-tab, per fighter, shaded against his division.

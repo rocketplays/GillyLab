@@ -1404,16 +1404,20 @@ const GL_SHEET = (function () {
     // card keeps its blurb: it has the room, and its numbers are less self-evident.
 
     // WHERE THE FIGHT HAPPENS — share of everything they throw. No accent: a share
-    // has no direction (see the modal). Scaled to the larger of the two so a 5%
-    // clinch bar isn't an invisible sliver.
+    // has no direction (see the modal).
+    //
+    // THE BAR IS THE PERCENTAGE, same as the modal. This scaled to the larger of the
+    // two, so an 11% clinch share drew a full-width bar — the bar answering "who
+    // does this more?" beside a number answering "how much?". Absolute keeps the
+    // three rows comparable to each other, which is the section's whole point: they
+    // are shares of one man's output and they sum to 100.
     y = sgTitle(ctx, 'Where the fight happens', y + Math.round(44*S), S) + Math.round(14*S);
     const tot = (G) => G.cells.reduce((s, c) => s + c[1], 0) || 1;
     const tA = tot(A), tB = tot(B);
     [[0, 'At range'], [1, 'In the clinch'], [2, 'On the ground']].forEach(([g, lab]) => {
       const ra = (A.cells[g*3][1] + A.cells[g*3+1][1] + A.cells[g*3+2][1]) / tA;
       const rb = (B.cells[g*3][1] + B.cells[g*3+1][1] + B.cells[g*3+2][1]) / tB;
-      const m = Math.max(ra, rb, 0.01);
-      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra/m, rb/m, y, false, false, S);
+      y = sgBar(ctx, lab, Math.round(ra*100) + '%', Math.round(rb*100) + '%', null, null, ra, rb, y, false, false, S);
     });
 
     // HOW WELL IT LANDS — the cross-tab, per fighter, shaded against his division.
