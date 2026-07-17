@@ -2235,7 +2235,6 @@
        beating (what lands on him). Only ever set by `grade`, never by `lead` — this
        is a verdict about one man against his peers, not about the two of them. */
     .mh-bar > span.b { background: #ff4040; }
-    .mh-grid-t .mh-div { font-weight: 400; font-size: 0.6rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-left: 0.35rem; }
     .mh-bar.l > span { border-radius: 3px 0 0 3px; }
     .mh-bar.r > span { border-radius: 0 3px 3px 0; }
     /* The roster norm, as a tick. Context without printing a z-score at anyone. */
@@ -88695,7 +88694,10 @@ const _MH_LANES = [['dist','head','Head at range'],['dist','body','Body at range
 const _MH_FLOOR = 25;
 const _mhPct = (l,a) => a ? Math.round(l/a*100) + '%' : '—';
 const _mhMins = s => Math.floor(s/60) + 'm ' + String(Math.round(s%60)).padStart(2,'0') + 's';
-const _mhN = (a,b) => a === b ? String(a) : (Math.min(a,b) + '–' + Math.max(a,b));
+// (_mhN, which rendered "last 8" / "last 7–8 fights", went with the last caption
+// that used one. The panel no longer states its window anywhere on screen: every
+// number in it is the last 8 fights, and saying so four times was noise. If a
+// caption ever needs it back it was `a === b ? a : min–max`.)
 
 // WHEN THE ACCENT IS ALLOWED TO FIRE.
 //
@@ -88949,18 +88951,26 @@ function mhGrid(G, which, name){
   return { html: h + '</div>', srcs };
 }
 
-// The division a fighter is being judged against, next to his name over his grid.
-// Without it "better than average" is a claim with no stated population.
-const _MH_DIVNAME = { FLW:'Flyweight', BW:'Bantamweight', FW:'Featherweight', LW:'Lightweight',
-  WW:'Welterweight', MW:'Middleweight', LHW:'Light heavyweight', HW:'Heavyweight',
-  WSW:'W. Strawweight', WFLW:'W. Flyweight', WBW:'W. Bantamweight', WFW:'W. Featherweight' };
-function mhDivTag(name){
-  const d = mhDivOf(name);
-  const DB = window.GRID_DIVBASE || {};
-  // Only claim the division when the division is actually the baseline.
-  if (!d || !DB[d]) return '';
-  return ' <span class="mh-div">' + escHtmlAttr(_MH_DIVNAME[d] || d) + '</span>';
-}
+// NO WEIGHT-CLASS TAG OVER THE GRIDS.
+//
+// It used to print each fighter's roster division beside his name. Measured, that
+// was redundant on 47 of the 50 bouts with a button — both men are in the same
+// division — and on the other 3 it did more harm than good: it told a reader
+// looking at a middleweight bout that Usman is a WELTERWEIGHT, which is true of his
+// roster row and misleading about the fight in front of him. He is fighting at
+// middleweight tonight.
+//
+// The baseline itself is unchanged and still each man's OWN division, which is the
+// defensible choice: Usman's last 8 fights happened at welterweight, so his numbers
+// ARE welterweight numbers and welterweight peers are the apples-to-apples
+// comparison. Judging them against middleweight norms would compare his welterweight
+// output to a division he has never fought in.
+//
+// THE COST, STATED: on those 3 bouts the two grids are shaded against different
+// yardsticks with nothing on screen saying so. It is the honest baseline and the
+// invisible one. If that trade ever looks wrong, the fix is to shade both men
+// against the BOUT's weight class (already available as _mhState.meta.wc), not to
+// put the tag back.
 
 // Says which baseline the grid ACTUALLY used, rather than claiming "division" over
 // a grid that is half card norm. Pre-sweep most divisions are under the peer floor,
@@ -89062,8 +89072,8 @@ function mhStriking(A, B, n1, n2){
   const gA = mhGrid(A, 'cells', n1), gB = mhGrid(B, 'cells', n2);
   h += '<div class="mh-sec">How well it lands <span>accuracy by position and target · landed / thrown</span></div>';
   h += '<div class="mh-grids">' +
-    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + mhDivTag(n1) + '</div>' + gA.html + '</div>' +
-    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + mhDivTag(n2) + '</div>' + gB.html + '</div></div>';
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n1)) + '</div>' + gA.html + '</div>' +
+    '<div><div class="mh-grid-t">' + escHtmlAttr(_ddLast(n2)) + '</div>' + gB.html + '</div></div>';
   // Two lines: the scale, then what it's measured AGAINST. That second line is not
   // decoration — without it a reader takes the colour for the raw percentage and
   // misreads every cell, since nobody is near 100% at head-at-range.
@@ -89104,7 +89114,7 @@ function mhGrappling(A, B, n1, n2){
     'Neither man separates from the other on the mat by enough to lead with.');
 
   const base = window.GRID_BASE || {};
-  h += '<div class="mh-sec">Takedowns <span>last ' + _mhN(A.sFights, B.sFights) + ' fights</span></div>';
+  h += '<div class="mh-sec">Takedowns</div>';
   h += mhCmp('Takedowns landed',
     { txt: A.tdL + '/' + A.tdA, sub: _mhPct(A.tdL, A.tdA) + ' accurate', frac: A.tdA ? A.tdL/A.tdA : 0 },
     { txt: B.tdL + '/' + B.tdA, sub: _mhPct(B.tdL, B.tdA) + ' accurate', frac: B.tdA ? B.tdL/B.tdA : 0 },
