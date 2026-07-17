@@ -928,6 +928,26 @@ const STYLE_SCALE = 0.75;
 const SCALE       = 26;      // rating gap for ~3:1 odds. Lower = the ladder decides
                              // more and your build decides less.
 
+// CARDIO IN A FIVE-ROUND TITLE FIGHT. Multiplies the one-sided cardio-vs-pace
+// penalty (styleDelta term 6) when the belt is on the line.
+//
+// THIS IS THE MOST TARGETED DIAL IN THE FILE AND THAT IS WHY IT IS SMALL. It fires
+// on ONE fight per run — and it is the fight the whole run is for, so a point here
+// is worth more than a point anywhere else (see STYLE_SCALE: the champion's matchup
+// is worth ~2x on the belt). It is also ONE-SIDED: it can only hurt, and the builds
+// it hurts are the ones the sim already has at the bottom.
+//
+//   MEASURED at baseline (40 careers/strategy), cardio by build:
+//     striker/smart  13% belt, cardio 1.4      <- already the floor
+//     striker/bold   25% belt, cardio 1.1
+//     wrestler/smart 53% belt, cardio 9.8      <- already the ceiling
+//   The harness's bar is "no strategy at 0% and none running away with it", so a
+//   cardio tax at the title fight pushes on both guardrails at once. The naive
+//   scale is 25/15 = 1.67 (the fight is 66% longer); 1.35 is deliberately under it
+//   because gassing is not linear in minutes and because this term already had a
+//   x18 coefficient. See the sim table in THE-CLIMB-TUNING.txt for what 1.35 cost.
+const TITLE_CARDIO = 1.35;
+
 // LEVELS COST MORE AND MEAN MORE. Both curves are ours now, and that is the only
 // reason this finally works. It failed twice before, each time because only ONE
 // side was controllable:
@@ -1307,7 +1327,8 @@ function champScout(st){
   };
 }
 
-function styleDelta(a, st){
+// \`title\` = five-round fight. Only the cardio term reads it; see term 6.
+function styleDelta(a, st, title){
   const n = v => (v||0)/ATTR_MAX;
   let mean = 0; for(const A of ATTRS) mean += n(a[A.id]); mean /= ATTRS.length;
   // signed: +ve = one of your strengths, -ve = one of your holes
@@ -1358,8 +1379,17 @@ function styleDelta(a, st){
   //    — you don't win rounds by being fresh while nothing happens. Gassing
   //    against a pressure fighter loses the fight. Keyed off ABSOLUTE cardio, not
   //    rel(): a gas tank is a floor you have or don't, not a matter of emphasis.
+  //    AND IT BITES HARDER OVER FIVE ROUNDS. A title fight is 25 minutes, not 15,
+  //    and the championship rounds are exactly where a gas tank stops being an
+  //    abstraction. This is the one term that gets a title multiplier, because it
+  //    is the only one whose real-world mechanism is a function of TIME: your chin,
+  //    your power and your wrestling do not change because the fight is longer.
+  //
+  //    TITLE_CARDIO is deliberately below the naive 25/15 = 1.67. Gassing is not
+  //    linear in minutes, and this term is a one-sided penalty on a build the game
+  //    already punishes — see the sim note at TITLE_CARDIO's definition.
   const theirPace = Math.max(0, ((st.slpm||4.4) - 4.0) / 2.9);
-  d -= Math.max(0, 0.5 - n(a.cardio)) * theirPace * 18;
+  d -= Math.max(0, 0.5 - n(a.cardio)) * theirPace * 18 * (title ? TITLE_CARDIO : 1);
 
   // 7. THEIR POP vs YOUR CHIN. The mirror of 5: a fragile fighter has a problem
   //    against a puncher and none against a point-scorer.
@@ -1386,7 +1416,11 @@ function winProb(oppName){
   const o = oppByName(oppName); if(!o) return 0.5;
   const gap = myRating(G.attrs) - o.power;
   let p = 1/(1+Math.pow(10, -gap/SCALE));
-  p += styleDelta(G.attrs, o.style||{})/100;
+  // isChamp(o) -> the belt is on the line -> five rounds -> cardio weighs more.
+  // The card shows this: the number you see already has the title weighting in it,
+  // so a low-cardio build is told the championship rounds are a problem BEFORE it
+  // accepts the fight, not after it loses one.
+  p += styleDelta(G.attrs, o.style||{}, isChamp(o))/100;
   // Momentum: a real climb rewards form. Small, so it flavors rather than rules.
   p += Math.min(0.04, (G.streak||0)*0.008);
   return Math.max(0.05, Math.min(0.95, p));
@@ -1411,11 +1445,31 @@ const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',y
 // bo3 to get the per-round number the round-by-round display needs. The card
 // shows P(fight) straight.
 const bo3 = p => 3*p*p*(1-p) + p*p*p;
-// Inverse of bo3: given P(win the fight), what per-round probability produces it?
-// bo3 is monotone on [0,1], so bisect — closed form is a cubic and not worth it.
-function roundP(pFight){
+// bo5(x) = P(win >= 3 of 5). Title fights are five rounds. C(5,3)p^3q^2 +
+// C(5,4)p^4q + p^5.
+const bo5 = p => { const q = 1-p; return 10*p*p*p*q*q + 5*p*p*p*p*q + p*p*p*p*p; };
+// A TITLE FIGHT IS FIVE ROUNDS, AND THAT MUST NOT MOVE THE ODDS BY ITSELF.
+//
+// The naive change is to roll five rounds instead of three at the same per-round
+// number. That is a silent balance change: a longer series converts a per-round
+// edge into a bigger fight edge, so every title fight would quietly drift toward
+// the favourite and the belt rate — which the tuning file calls THE dial — would
+// move without anyone touching it. At a 0.60 per-round rate, bo3 = 0.648 and
+// bo5 = 0.683; the card would say one thing and the fight would do another. That
+// is the units bug above, wearing a round count.
+//
+// So the ROUND COUNT is presentation and granularity only: invert bo5 instead of
+// bo3 and P(win the fight) is still exactly o.p, which is what the card printed.
+// Five rounds changes the STORY (you can now be down 2-0 and still win), not the
+// result distribution. The cardio weighting below is where the odds are meant to
+// move, deliberately and visibly.
+const isChamp = f => !!f && f.rankNum <= 0.5;   // champ + interim = the belt is on the line
+const boN = (p, n) => n === 5 ? bo5(p) : bo3(p);
+// Inverse of boN: given P(win the fight), what per-round probability produces it?
+// Monotone on [0,1], so bisect — closed form is a cubic (or quintic) and not worth it.
+function roundP(pFight, n){
   let lo=0, hi=1;
-  for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(bo3(mid) < pFight) lo=mid; else hi=mid; }
+  for(let i=0;i<40;i++){ const mid=(lo+hi)/2; if(boN(mid, n||3) < pFight) lo=mid; else hi=mid; }
   return (lo+hi)/2;
 }
 // ODDS ARE A BAND BEFORE THE FIGHT, A NUMBER AFTER IT.
@@ -1757,7 +1811,8 @@ function buildOffers(){
   // another crack at him — which is real, and keeps the Walker instant-rematch loop
   // dead (that fix was about being handed your conqueror again IMMEDIATELY; it was
   // never a rule that the belt should become unreachable).
-  const isChamp = f => f.rankNum <= 0.5;
+  // (isChamp is module-level now — fight() needs the same predicate to decide five
+  // rounds, and two copies of "what is a title fight" is exactly how they drift.)
   const avail = f => !G.beat.has(f.name) &&
     (isChamp(f) ? (!fought.has(f.name) || G.streak > 0) : !fought.has(f.name));
   const unranked = LADDER().filter(f=>f.rankNum===99 && avail(f));
@@ -2089,10 +2144,15 @@ function fight(o){
   // o.p is P(WIN THE FIGHT). Rounds must be rolled at the per-round rate that
   // reproduces it — rolling three rounds AT o.p resolves the fight at bo3(o.p),
   // i.e. materially easier than the card promised.
-  const pr = roundP(o.p);
-  let rounds = [0,1,2].map(()=>Math.random() < pr);
+  //
+  // FIVE ROUNDS FOR THE BELT. roundP inverts bo5 for a title fight, so P(win) is
+  // still exactly o.p — the extra two rounds add story, not odds. See boN.
+  const nRounds = isChamp(o.f) ? 5 : 3;
+  const needed  = (nRounds + 1) / 2;          // 2 of 3, 3 of 5
+  const pr = roundP(o.p, nRounds);
+  let rounds = Array.from({length:nRounds}, ()=>Math.random() < pr);
   let roundsWon = rounds.filter(Boolean).length;
-  const won = roundsWon >= 2;
+  const won = roundsWon >= needed;
   // FOUR WAYS TO END A FIGHT, NOT TWO.
   //
   // This read (power + grappling) / 20, so WRESTLING CONTRIBUTED NOTHING. Playtest:

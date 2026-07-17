@@ -430,3 +430,62 @@ MEASURING — the tools, and how they lied to me
     `.pop()` to "keep the hardest" — but scored is in BOARD order, so pop() kept
     whichever card was listed last. The comment said hardest, the code said last,
     nothing threw, and the favorite-hunter took the gift every time.
+
+================================================================================
+FIVE ROUNDS FOR THE BELT, AND TITLE_CARDIO
+================================================================================
+2026-07-16. Title fights now go five rounds, and cardio weighs more in them.
+
+THE ROUND COUNT MUST NOT MOVE THE ODDS BY ITSELF. The naive change is to roll five
+rounds instead of three at the same per-round number, and it is a silent balance
+change: a longer series converts a per-round edge into a bigger FIGHT edge, so the
+belt — the one fight the whole run is for — quietly drifts to the favourite.
+Measured, rolling 5 rounds at the 3-round rate:
+    card 50% -> resolves 50.0%   (+0.0)
+    card 60% -> resolves 62.4%   (+2.4)
+    card 75% -> resolves 80.0%   (+5.0)
+    card 90% -> resolves 94.5%   (+4.5)
+That is the units bug of 2026-07 wearing a round count. So roundP() now takes N and
+inverts bo5 for a title fight: P(win) is still EXACTLY o.p, the number the card
+printed. Verified at 8 card values, 0 mismatches. Five rounds changes the STORY —
+you can be down 2-0 and still win — not the result distribution.
+
+isChamp is module-level now. fight() and offers() need the same answer to "is the
+belt on the line", and two copies of that predicate is how they drift.
+
+TITLE_CARDIO = 1.35 IS THE ONLY TERM THAT GETS A TITLE MULTIPLIER, because it is
+the only one whose real mechanism is a function of TIME. Your chin, your power and
+your wrestling do not change because the fight is longer; your gas tank does.
+
+DO NOT MEASURE THIS WITH sim-climb-runs. It cannot see an effect this size. At
+n=40/strategy it returned:
+    striker +18, striker/blind -25, wrestler/smart -18, wrestler/safe +10
+which is incoherent — strikers are the low-cardio builds and should all move ONE
+way. se at a ~30% belt rate and n=40 is ~7pts, so ±14 at 2 sigma; every one of
+those swings is noise. Resolving a 1-point effect needs n~500+.
+
+MEASURE IT DETERMINISTICALLY INSTEAD — the question isn't random. P(win) vs each
+division's real champion, TITLE_CARDIO 1.00 -> 1.35:
+    striker  cardio 1.4   mean -0.98 pts   worst -2.60   best 0.00
+    striker  cardio 3.4   mean -0.43 pts   worst -1.15   best 0.00
+    wrestler cardio 9.7   mean +0.00 pts   worst  0.00   best 0.00
+
+It only bites where BOTH conditions hold, which is the one-sided design working:
+  * the wrestler is untouched at ANY multiplier — cardio 9.7/10 = 0.97, and the
+    term is max(0, 0.5 - cardio), so it never engages. Raising TITLE_CARDIO cannot
+    help a wrestler; it can only hurt a gasser.
+  * it is ZERO against a low-output champion — Shevchenko (slpm 3.04) and Dern
+    (3.47) are under the 4.0 pace floor, so theirPace = 0. A champion who doesn't
+    press you cannot drain you. Correct, and worth knowing before someone "fixes"
+    the zeros.
+  * the worst case is Joshua Van at FLW (slpm 8.43): a glass-cannon striker goes
+    18.14% -> 15.54% for the belt. Real, and the right fighter to be punished by.
+
+WHY 1.35 AND NOT THE NAIVE 1.67. 25/15 = 1.67 is the honest scale for "the fight is
+66% longer" and there is a live argument that the true figure is HIGHER, since
+gassing is super-linear in minutes. 1.35 is the conservative pick because this dial
+fires on ONE fight per run and it is the fight the run is for (see STYLE_SCALE: the
+champion's matchup is worth ~2x on the belt), and because it is one-sided against
+builds the sim already has at the bottom (striker/smart 13% belt at baseline). If
+it should bite harder, 1.67 roughly doubles the numbers above — but check the
+striker floor doesn't hit 0%, which is the harness's stated failure condition.
