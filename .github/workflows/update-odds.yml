@@ -309,16 +309,43 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          # data/_fight-grid-all.json is the grid MASTER and MUST be committed even
+          # data/fight-grid-all.json is the grid MASTER and MUST be committed even
           # though nothing fetches it. split-fight-grid.cjs merges into it and
           # derives the shipped card subset + the division medians from it, so if
           # CI doesn't persist it, every run starts the grid over from whatever
           # delta the backfill happened to fetch — green job, and the medians
           # quietly rebuild themselves out of a handful of fighters.
-          # The `_` prefix is what keeps build-site.sh from serving 1.5MB nobody
-          # asked for; it does NOT exclude it from git, which is why it's here.
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/_fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
-          git add $FILES
+          #
+          # NO UNDERSCORE. It was briefly named data/_fight-grid-all.json, because
+          # build-site.sh excludes ^data/_ from public/ and that looked like the
+          # hook. It isn't: .gitignore line 10 is `data/_*.json`, so the prefix also
+          # makes it untracked, which is the disaster above. The file was renamed
+          # back — and this list was NOT, so `git add` got a path that cannot exist:
+          #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
+          # git exits 128, the whole odds job dies, twice a day. It is excluded from
+          # public/ BY NAME in build-site.sh instead. If you rename it, change both.
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js worker/landing-data.js worker/carousel-data.js worker/pickem-model.js worker/scorecard-data.js"
+          # ONE BAD PATH IN $FILES USED TO KILL THE WHOLE ODDS JOB.
+          # `git add` on a path that doesn't exist is a fatal:
+          #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
+          # git exits 128, the step dies, the odds don't update, and the site goes
+          # stale — over one typo in a hand-maintained list of 31 paths that nothing
+          # validated. Exactly that happened on 2026-07-16 and it ran twice a day.
+          #
+          # So: add only what exists, and shout about the rest. The odds job is what
+          # the whole site runs on; it must not die because one optional data file
+          # is misnamed. But a silently-uncommitted file is the "green job, starved
+          # feature" failure the deep-dive doc warns about — so the warning uses
+          # ::warning:: and surfaces on the run summary, not just in the log where
+          # nobody reads it.
+          MISSING=""; EXISTING=""
+          for f in $FILES; do
+            if [ -e "$f" ]; then EXISTING="$EXISTING $f"; else MISSING="$MISSING $f"; fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::warning title=\$FILES lists paths that do not exist::$MISSING — these will NOT be committed. Fix \$FILES or the generator that should have written them."
+          fi
+          git add $EXISTING
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "chore: update UFC odds $(date -u '+%Y-%m-%d %H:%M UTC')"
           if git push; then exit 0; fi
@@ -353,7 +380,18 @@ jobs:
           node scripts/log-predictions.cjs || true
           node scripts/grade-predictions.cjs || true
           node scripts/gen-scorecard-data.cjs || true
-          git add $FILES
+          # Same guard as the first commit path — see the long note there. This one
+          # is easy to miss: there are TWO `git add $FILES` sites in this file, the
+          # normal one and this reconcile one, and fixing only the first leaves the
+          # job dying on exactly the runs where a push race already made it fragile.
+          MISSING=""; EXISTING=""
+          for f in $FILES; do
+            if [ -e "$f" ]; then EXISTING="$EXISTING $f"; else MISSING="$MISSING $f"; fi
+          done
+          if [ -n "$MISSING" ]; then
+            echo "::warning title=\$FILES lists paths that do not exist (reconcile)::$MISSING — these will NOT be committed."
+          fi
+          git add $EXISTING
           git diff --staged --quiet && echo "No changes after reconcile" && exit 0
           git commit -m "chore: update UFC odds (reconciled) $(date -u '+%Y-%m-%d %H:%M UTC')"
           git push
