@@ -2213,7 +2213,12 @@
     /* No accent rule down the left edge. The radius goes back to all four corners:
        0 6px 6px 0 only existed so the square side could sit flush against it. */
     .mh-read { background: rgba(0,230,104,0.06); border-radius: 6px; padding: 0.8rem 1rem; font-size: 0.94rem; line-height: 1.55; color: var(--text); margin-bottom: 1.25rem; }
-    .mh-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 1.4rem 0 0.7rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
+    /* WHITE, not muted. These are the panel's structure — six of them carry the
+       whole reading order across both tabs — and at --muted (#666672) they sat
+       quieter than the numbers they introduce, so the eye had nothing to land on
+       when scrolling. The grey subtitle beside each one keeps its own colour below,
+       which is what preserves the hierarchy: title reads first, caption second. */
+    .mh-sec { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text); margin: 1.4rem 0 0.7rem; padding-bottom: 0.35rem; border-bottom: 1px solid var(--border); }
     .mh-sec:first-child { margin-top: 0; }
     .mh-sec span { text-transform: none; letter-spacing: 0.02em; font-family: 'Barlow', sans-serif; font-weight: 400; font-size: 0.7rem; color: var(--muted); opacity: 0.75; margin-left: 0.5rem; }
 
