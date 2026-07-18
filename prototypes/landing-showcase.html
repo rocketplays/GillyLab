@@ -132,7 +132,16 @@
   .fx-bt.free{color:var(--accent)}
   .fx-bt.prem{color:#ffcf7a}
   .fx-bn{font-size:12px;color:var(--muted);white-space:nowrap}
-  .fx-bl{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+  /* Each rule fades AWAY from the title — solid where it meets the words, gone at the
+     margin. That direction is the whole effect: it reads as the heading anchoring a line
+     that trails off, not as a line with a label parked on it.
+     Desktop: the left rule is hidden and the arrangement is label · badge · note · ————,
+     which is what it has always been. The explicit orders below are what let the same
+     markup become ———— · label · badge · ———— over the note on a phone. */
+  .fx-bl{flex:1;height:1px}
+  .fx-bl.l{display:none;background:linear-gradient(90deg,transparent,var(--border))}
+  .fx-bl.r{background:linear-gradient(90deg,var(--border),transparent)}
+  .fx-bt{order:1} .fx-btag{order:2} .fx-bn{order:3} .fx-bl.r{order:4}
 
   /* 2-up from 720px, not 1000px. A 760px tablet was getting one column when two fit
      comfortably (~350px each, and the payloads reflow down to about there).
@@ -653,8 +662,12 @@
        is display:none — leaving a left-aligned label pointing at nothing, in a column whose
        hero above it is centred. Centre it and the page has one axis instead of two. */
     .fx-band{flex-wrap:wrap;justify-content:center;text-align:center;gap:9px;margin:0 0 12px}
-    .fx-bn{flex:0 0 100%;order:3;white-space:normal;line-height:1.4}
-    .fx-bl{display:none}
+    /* ———— label · badge ———— on line one, the promise on line two. The rules come back
+       (they were display:none) now that there are two of them and the heading is centred:
+       symmetrical, they frame it instead of pointing off one edge at nothing. */
+    .fx-bl.l{display:block;order:0}
+    .fx-bl.r{order:3}
+    .fx-bn{flex:0 0 100%;order:4;white-space:normal;line-height:1.4}
   }
   @media (max-width:560px){
     .fx-h{font-size:29px}
@@ -3550,9 +3563,15 @@ var LD={
     // PREMIUM ONLY. A "FREE" badge next to a heading that says "Free" is the word twice —
     // and it made the badge look like a label rather than a gate. The badge exists to mark
     // what costs money; the absence of one is what free looks like.
-    d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span>'
+    // Two rules, one either side, each fading AWAY from the title. DOM order is
+    // left-rule, label, badge, right-rule, note — and every piece carries an explicit
+    // flex order (see the CSS), because desktop wants "label badge note ————" while mobile
+    // wants "———— label badge ————" over the note. Same markup, two arrangements.
+    d.innerHTML='<span class="fx-bl l"></span>'
+      +'<span class="fx-bt '+tierCls+'">'+label+'</span>'
       +(tierCls==='prem' ? '<span class="fx-btag prem">PREMIUM</span>' : '')
-      +'<span class="fx-bn">'+note+'</span><span class="fx-bl"></span>';
+      +'<span class="fx-bl r"></span>'
+      +'<span class="fx-bn">'+note+'</span>';
     return d;
   }
 
