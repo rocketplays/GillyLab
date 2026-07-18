@@ -7,9 +7,10 @@ import landingData from "./landing-data.js";
 // The main event's deep-dive panel, pre-rendered from index.html's own hub code by
 // scripts/gen-matchup-free.cjs. Generated, never forked — see that script's header.
 import matchupFree from "./matchup-free.js";
-// The landing feature carousel (CSS + markup + slide script), generated from the
-// landing page so /subscribe can show the identical carousel. See scripts/gen-carousel.cjs.
-import { carouselCSS, carouselMarkup, carouselScript } from "./carousel-data.js";
+// The landing page's PREMIUM feature groups (cards + tap-to-expand), generated from the
+// landing grid so /subscribe shows the exact same previews scoped to premium. Emitted by
+// scripts/gen-showcase-proto.cjs alongside worker/landing-grid.js.
+import { featuresCSS, featuresMarkup, featuresScript } from "./subscribe-features.js";
 
 const PRICE_LABEL = "$9.99 / month";   // display only — real price lives in Stripe
 const SITE_URL = "https://gillylab.com";        // for absolute OG/canonical URLs
@@ -1347,16 +1348,16 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   </div>
   <div class="sub-cx">
     <style>
-      .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:620px}
-      .sub-cx-head{text-align:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-      ${carouselCSS}
+      .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:960px}
+      .sub-cx-head{text-align:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+      ${featuresCSS}
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
     <div class="sub-cx-head">See everything Premium unlocks</div>
-    ${carouselMarkup}
+    ${featuresMarkup}
   </div>
   ${FREE_FOOTER}
-  ${carouselScript()}`, `
+  ${featuresScript()}`, `
   document.getElementById("go").addEventListener("click",function(){
     var b=document.getElementById("go"); var m=document.getElementById("m");
     m.className="msg"; m.textContent="Redirecting to secure checkout…"; b.disabled=true;

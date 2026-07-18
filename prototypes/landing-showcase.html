@@ -3722,14 +3722,21 @@ var LD={
   }
   function paint(){
     tiers.innerHTML='';
-    GROUPS.forEach(function(g){
+    // /subscribe embeds this same grid with window.__FX_PREMIUM_ONLY=true and renders only
+    // the premium groups — the free tier is not a selling point on the checkout page. On
+    // the landing (flag unset) all four groups render as before.
+    var groups = window.__FX_PREMIUM_ONLY ? GROUPS.filter(function(g){ return g.tier==='prem'; }) : GROUPS;
+    groups.forEach(function(g){
       var list=slides.filter(function(s){ return s.g===g.k; });
       if(!list.length) return;                      // a group with no slides draws nothing
       tiers.appendChild(tier(g,list));
     });
-    // Every slide must land in a group, or it silently vanishes from the page.
-    var placed=GROUPS.reduce(function(n,g){ return n+slides.filter(function(s){return s.g===g.k;}).length; },0);
-    if(placed!==slides.length) console.warn('[showcase] '+(slides.length-placed)+' slide(s) have no group and are not rendered');
+    // Every slide must land in a group, or it silently vanishes from the page. (Skip the
+    // check in premium-only mode, where the free slides are deliberately not placed.)
+    if(!window.__FX_PREMIUM_ONLY){
+      var placed=GROUPS.reduce(function(n,g){ return n+slides.filter(function(s){return s.g===g.k;}).length; },0);
+      if(placed!==slides.length) console.warn('[showcase] '+(slides.length-placed)+' slide(s) have no group and are not rendered');
+    }
     fitWide();
   }
 
@@ -3782,6 +3789,11 @@ var LD={
     if(e.key==='ArrowRight') open((cur+1)%slides.length);
   });
 
+  paint();
+
+  /* SUBSCRIBE-STRIP-START — everything to SUBSCRIBE-STRIP-END is page-only and is removed
+     when this same grid is emitted as the /subscribe premium-features module (no full-page
+     navigation to fade there, and no test hook). Keep paint() ABOVE this marker. */
   // Fade the page out before an internal navigation, and clear the fade on bfcache restore
   // (Back would otherwise land on a page stuck at opacity 0). Same transition every other
   // page uses. The slide-expand controls are <button>/<div>, not <a href="/">, so opening a
@@ -3800,9 +3812,8 @@ var LD={
     setTimeout(function(){window.location=href;},150);
   });
   window.addEventListener('pageshow',function(){document.body.classList.remove('gl-leaving');});
-
-  paint();
   window.SHOWCASE_PROTO={slides:slides,free:free.length,prem:prem.length};  // for the test
+  /* SUBSCRIBE-STRIP-END */
 })();
 </script>
 </body></html>

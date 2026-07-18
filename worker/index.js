@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -27,9 +27,10 @@ import { climbPage } from "./climb-page.js";
 // scripts/gen-showcase-proto.cjs from this same pages.js, so the feature previews are the
 // real slide payloads and cannot drift from the product. CI regenerates it every run.
 //
-// landingPage() in pages.js is the OLD carousel page. It is no longer served, but it is
-// still the source scripts/gen-carousel.cjs slices to build /subscribe's carousel — so it
-// stays until /subscribe gets its own source. Do not delete it. See LANDING-SHIP.txt.
+// landingPage() in pages.js is the OLD carousel page. It is no longer served, but DO NOT
+// DELETE IT: gen-showcase-proto.cjs slices its slide payloads, nav, footer and CSS to build
+// BOTH this grid and worker/subscribe-features.js (the /subscribe premium cards). It is the
+// single source of truth for the feature previews — it just isn't a route anymore.
 import { landingGridPage } from "./landing-grid.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
