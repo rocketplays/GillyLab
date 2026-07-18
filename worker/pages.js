@@ -1350,6 +1350,16 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <style>
       .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:960px}
       .sub-cx-head{text-align:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+      /* Under 720px the premium groups become horizontal swipe rows with 86vw cards. Those
+         cards are sized to the VIEWPORT, but here the section sits inside the shell .wrap
+         (1.25rem padding, and capped at 440px on tablets) — so an 86vw card ends up wider
+         than its container and the next-card peek that says "swipe me" disappears. Full-bleed
+         the section to the viewport edges on mobile (standard width:100vw + centering
+         margins) so the row gets the exact width the landing gives it, regardless of .wrap's
+         cap; the .fx-wrap keeps its own 22px so cards still clear the frame rail. */
+      @media (max-width:720px){
+        .sub-cx{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+      }
       ${featuresCSS}
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
