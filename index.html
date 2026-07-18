@@ -4357,6 +4357,7 @@
  { name: "JeongYeong Lee", division: "FW", rank: "NR", record: "11-3-0", initials: "JYL", country: "South Korea" },
  { name: "Morgan Charriere", division: "FW", rank: "NR", record: "21-12-1", initials: "MCR", country: "France" },
  { name: "Ezra Elliott", division: "FW", rank: "NR", record: "7-0-0", initials: "EEL", country: "USA" },
+ { name: "Damien Anderson", division: "FW", rank: "NR", record: "5-0-0", initials: "DAN", country: "USA" },
  // ─── LIGHTWEIGHT ───
  { name: "Ilia Topuria", division: "LW", rank: "#1", record: "17-0-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
@@ -7845,6 +7846,7 @@
 
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Damien Anderson": { ht:"5'7\"", dob:"1997-01-04", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Simple Man Martial Arts" },
   "Ezra Elliott": { ht:"5'10\"", dob:"2000-05-18", reach:"71.5\"", stance:"Southpaw", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:7, gym:"MMA Lab" },
   "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
   "Ce Liu": { ht:"6'5\"", dob:"1996-09-04", reach:"78\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tangshan Buntai Riding Fight Club" },
@@ -13294,6 +13296,12 @@
  // closest to the bout being shown, so a rematch doesn't inherit the first fight's
  // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
+  "Damien Anderson": [
+    { opponent: "Alejandro Gutierrez", odds: -2000 },
+    { opponent: "Gabriel Wanderley", odds: -250 },
+    { opponent: "Emmanuel Calhoune", odds: -3333 },
+    { opponent: "Marcelo Reyes", odds: -800 }
+  ],
   "Ezra Elliott": [
     { opponent: "Jose Vasquez-Lopez", odds: -800 }
   ],
@@ -22339,6 +22347,13 @@
 };
 
 const FIGHT_HISTORY = {
+  "Damien Anderson": [
+    { date: "Feb 6, 2026", opponent: "Alejandro Gutierrez", result: "W", method: "Submission (Kneebar)", round: 1, time: "1:52", event: "CFFC 150: Zhumagul vs. Morrison", org: "CFFC" },
+    { date: "Nov 3, 2024", opponent: "Gabriel Wanderley", result: "W", method: "Submission (Inverted Heel Hook)", round: 2, time: "1:43", event: "Fury FC 98: Khera vs. Dixon", org: "Fury FC" },
+    { date: "Aug 2, 2024", opponent: "Emmanuel Calhoune", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:05", event: "Fury FC 95: Lingo vs. Teague", org: "Fury FC" },
+    { date: "Jun 16, 2024", opponent: "Marcelo Reyes", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "3:54", event: "Fury FC 92: Paac vs. Piccininni", org: "Fury FC" },
+    { date: "Nov 5, 2023", opponent: "Joe Ray Vaiza III", result: "W", method: "TKO (Punches and Knees)", round: 1, time: "2:09", event: "Fury FC Challenger Series 9", org: "Fury FC" }
+  ],
   "Ezra Elliott": [
     { date: "May 2, 2026", opponent: "Ashton Caniglia", result: "W", method: "TKO (Punches)", round: 1, time: "2:44", event: "RUF MMA 68: Cinco De Mayo Fight Night", org: "RUF" },
     { date: "Nov 1, 2025", opponent: "De'Aundre Tipton", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:30", event: "RUF MMA 65: Dia Delos Muertos", org: "RUF" },
@@ -90544,6 +90559,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Damien Anderson": [
+    { icon: "🏅", title: "Undefeated at 5–0, all wins by finish — four submissions (two rear-naked chokes, a heel hook, a kneebar) and a TKO", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — a leg-lock-heavy grappler out of Simple Man Martial Arts in Austin, Texas", detail: null }
+  ],
   "Ezra Elliott": [
     { icon: "🏅", title: "Undefeated at 7–0 with every win by first-round finish — five submissions and two TKOs", detail: null },
     { icon: "🥋", title: "BJJ purple belt out of The MMA Lab (under John Crouch) and ADCC Phoenix Open grappling champion", detail: null },
