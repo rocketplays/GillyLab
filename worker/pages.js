@@ -151,8 +151,38 @@ function profileSlugFor(name, slugSet, ...extra) {
   return "";
 }
 
+// ── Aurora background + top/bottom fade, copied from the landing page ──────────────
+// The same look the marketing landing page ships: three soft fixed radial glows behind
+// everything, then an opaque wash that returns the first 100px and last 260px of the
+// viewport to solid #0a0a0b so the atmosphere fades into a clean edge at top and bottom.
+//
+// Landing lifts its content to z-index:1 above z-index:0 layers. Here the layers sit at
+// z-index:-1 behind a TRANSPARENT body instead, with the hero glow moved to the html
+// canvas — same paint order (glow < aurora < edge < content), but nothing downstream has
+// to be re-stacked, so this drops cleanly into any page's <style>/<body> untouched.
+//
+// Values are the shipped landing numbers, measured not guessed: aurora peaks 0.081 /
+// 0.063 / 0.072 (the .09/.07/.08 baseline x the 0.90 the owner dialled on a phone). Do
+// NOT re-derive them from the stale "75%"/".068" comment in gen-showcase-proto.cjs.
+// NO backticks or ${} live in this string — it is spliced into 84KB template literals and
+// a single stray backtick closes one (see LANDING-SHIP.txt / CLAUDE.md).
+const AURORA_CSS = `
+  html{background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}
+  body{background:transparent}
+  #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    --a1:0.081;--a2:0.063;--a3:0.072;--aur:1;
+    background:
+    radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),
+    radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),
+    radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
+  #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}`;
+// The two layer divs. First children of <body>, before any content.
+const AURORA_DIVS = `<div id="bgfx"></div><div id="bgedge"></div>`;
+
 const shell = (title, body, extraJs = "", footer = false, seo = null) => `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>${title}</title>
 ${seo ? `<meta name="description" content="${String(seo.desc || "").replace(/"/g, "&quot;")}">
 <link rel="canonical" href="${SITE_URL}${seo.path}">
@@ -204,7 +234,8 @@ ${ogTags(title, seo.desc, seo.path)}` : ""}
   .back-link svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
   .logout-link{position:fixed;top:1.1rem;right:1.1rem;color:var(--muted);text-decoration:none;font-size:.85rem;z-index:10;transition:color .15s}
   .logout-link:hover{color:#fff}
-</style></head><body><div class="wrap">${body}</div>${footer ? FREE_FOOTER : ""}
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}<div class="wrap">${body}</div>${footer ? FREE_FOOTER : ""}
 <script>
 function post(url, data){return fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)}).then(r=>r.json());}
 function wire(formId, url, msgId, okMsg){
@@ -2885,7 +2916,8 @@ export const notePage = (title, msg) => shell(title, `
 // is the page most likely to answer someone's search. Defaults keep /terms and /privacy
 // byte-identical to what they were.
 const legalShell = (title, updated, bodyHtml, opts = {}) => `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>${title} — GillyLab</title>
 ${opts.canonical ? `<link rel="canonical" href="${SITE_URL}${opts.canonical}">` : `<meta name="robots" content="noindex">`}
 ${opts.desc ? `<meta name="description" content="${opts.desc}">` : ``}
@@ -2908,7 +2940,8 @@ ${opts.desc ? `<meta name="description" content="${opts.desc}">` : ``}
   ul{padding-left:1.2rem;margin:.4rem 0} li{margin:.25rem 0}
   a{color:#00e668}
 ${opts.css || ``}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <div class="doc">
     <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
     <div class="brand">GILLY<span class="a">LAB</span></div>
@@ -3054,7 +3087,8 @@ const MANDRELL_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOgAAADoCAY
 
 // ── About us (public, own readable shell — mirrors the legal pages) ───────────
 export const aboutPage = () => `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>About GillyLab — UFC Analytics Built by Bettors</title>
 <meta name="description" content="Built by bettors, for bettors — one place to do all of your UFC research: deep fighter analytics, a fight simulator, live odds, matchup breakdowns and more.">
 <link rel="canonical" href="${SITE_URL}/about">
@@ -3087,7 +3121,8 @@ ${ogTags("About GillyLab — UFC Analytics Built by Bettors", "Built by bettors,
   p{color:rgba(255,255,255,.74);font-size:.98rem}
   .divider{height:1px;background:rgba(255,255,255,.09);margin:2.2rem 0}
   a{color:#00e668}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <div class="doc">
     <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
     <div class="brand">GILLY<span class="a">LAB</span></div>
