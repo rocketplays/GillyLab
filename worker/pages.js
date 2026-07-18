@@ -1152,29 +1152,35 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     });
   };
 
+  // Rankings and the roster are one idea — 'the data keeps up' — so they are one card.
+  // The payload stacks the two existing previews rather than inventing a third: same
+  // bytes, same data, one row instead of two.
+  var rankRoster = (rank && roster)
+    ? rank + '<div style="height:1px;background:var(--border);margin:.85rem 0"></div>' + roster
+    : (rank || roster);
+
   var slides=[
-    {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the fight ends.',h:sim},
-    {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
-    {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
+    {t:'Fight simulator',d:'Any matchup through the tuned model — winner, method and round.',h:sim},
+    {t:'Box scores for every bout',d:'Strikes, takedowns and control for every UFC fight ever.',h:box},
+    {t:'Career accolades',d:'Titles, belt ranks, records and fight-night awards.',h:acc},
     // PREMIUM, but the main event's is genuinely free on every card \u2014 the /matchup page
     // serves the real thing to logged-out visitors (worker/matchup-free.js). Saying only
     // "PREMIUM" undersells the free tier and, worse, is not true.
-    {t:'Matchup analytics deep dive',d:'Striking: where the fight happens, what each man throws at range, what lands on him \u2014 every strike split by target and position. Grappling: takedowns, control time and submission threat. Both shaded against the division. Free for the main event of every card.',h:mhx},
-    {t:'Style, pace & path to victory',d:'Where each fighter sits on the striker\u2013grappler spectrum, the pace they imply, how each one wins, and the storylines behind the bout. Free for the main event of every card.',h:style},
-    {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
-    {t:'Bet & CLV tracker',d:'Log a bet before the bell and it grades itself off the result — record, ROI, units, and your closing-line value.',h:bets},
-    {t:'Line movement',d:'Watch a bout’s odds move day by day, from open to now, across the whole market.',h:lm},
-    {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
-    {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
-    {t:'One-click tape study',d:'Every fight in a fighter\\u2019s history links straight to the film.',h:tape},
+    {t:'Matchup analytics deep dive',d:'Every strike by target and position, plus grappling — shaded against the division. Main event free.',h:mhx},
+    {t:'Style, pace & path to victory',d:'Striker or grappler, the pace they imply, how each one wins. Main event free.',h:style},
+    {t:'Live odds & props',d:'Moneyline, round totals and props, book by book.',h:odds},
+    {t:'Bet & CLV tracker',d:'Log a bet; it grades itself. Record, ROI, units, closing-line value.',h:bets},
+    {t:'Line movement',d:'Every bout\'s odds, day by day, from open to now.',h:lm},
+    {t:'Parlay builder',d:'Build a slip, then re-price it at every other book.',h:parlay},
+    {t:'Odds & line history',d:'Every fighter\'s closing lines, bout by bout.',h:ohist},
+    {t:'One-click tape study',d:'Every fight links straight to the film.',h:tape},
     // FREE ORDER IS DELIBERATE: the two things you can DO without an account come first
     // (The Climb, then Pick'em), then what you can read. The free tier's job is to get a
     // stranger playing, not to lead with a stats table.
-    {t:'The Climb',d:'Build a fighter, start as a 10-0 prospect, and work your way up the real rankings to the belt — against real fighters and real GillyLab power ratings. Free, no account needed.',h:climb,f:1},
-    {t:'Pick\\u2019em predictions',d:'Call every fight on the card, lock in before the prelims, then climb the live leaderboard — free.',h:pickem,f:1},
-    {t:'Detailed fighter statistics',d:'Career striking and grappling stats for every fighter — free on every lite profile. Plus a full main event breakdown and analytics deep dive on every main event.',h:analytics,f:1},
-    {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank,f:1},
-    {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster,f:1}
+    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. No account needed.',h:climb,f:1},
+    {t:'Pick\\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1},
+    {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1},
+    {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1},
   ].filter(function(s){return s.h;});   // a null payload drops its slide rather than rendering an empty stage
 
   var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');

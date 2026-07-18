@@ -289,7 +289,18 @@ ${footCSS}
   .fx-trust{color:var(--muted);font-size:12px;margin-top:13px}
   @media (max-width:560px){ .fx-h{font-size:36px} }
 
-  .fx-filter{display:inline-flex;gap:3px;margin-top:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:4px}
+  /* STICKY — the chips ride with you through the grid.
+     They used to scroll away with the hero, so for five screens you had no idea which
+     tier you were in or how much was left. Pinned, they answer three things at once:
+     where am I (the active chip, which spy() was already computing and had nowhere to
+     show), how much is left (the counts), and how do I get out (tap Premium, skip the
+     Free block). Costs ~46px of a 844px phone — about 5% — and buys orientation through
+     the longest part of the page.
+     The blur/background is not decoration: cards scroll UNDER this, and without an opaque
+     backing the counts sit on top of a moving preview and become unreadable. */
+  .fx-filter{position:sticky;top:0;z-index:30;display:flex;justify-content:center;gap:3px;margin:0 -22px 18px;padding:9px 22px;background:rgba(10,10,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+  .fx-filter.stuck{border-bottom-color:var(--border)}
+  @media (max-width:560px){ .fx-filter{margin:0 -13px 14px;padding:8px 13px} }
   .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
   .fx-fb:hover{color:#f4f5f7}
   .fx-fb.on{background:var(--accent);color:#0a0a0b}
@@ -297,7 +308,10 @@ ${footCSS}
 
   /* Tier band — the thing the carousel could never say, because its tag changed every
      7 seconds: here's the line, and here's which side each feature is on. */
-  .fx-band{display:flex;align-items:center;gap:13px;margin:34px 0 16px}
+  /* scroll-margin-top clears the sticky bar. Without it, tapping a chip scrolls the band
+     to y=0 — directly underneath the bar that's pinned there — so the thing you asked to
+     see is the one thing hidden. */
+  .fx-band{display:flex;align-items:center;gap:13px;margin:34px 0 16px;scroll-margin-top:58px}
   .fx-band:first-of-type{margin-top:26px}
   .fx-bt{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
   .fx-bt.free{color:var(--accent)}
@@ -782,8 +796,13 @@ ${navMarkup}
       <a class="fx-btn ghost" href="/login">Log in</a>
     </div>
     <p class="fx-trust">${HERO_TRUST.replace('{PRICE}', PRICE_LABEL)}</p>
-    <div class="fx-filter" id="flt" role="tablist"></div>
   </div>
+  <!-- OUTSIDE .fx-top ON PURPOSE. position:sticky only sticks within its PARENT's box, so
+       while these chips lived in the hero they would unstick the instant the hero scrolled
+       away — which is exactly when they become useful. As a direct child of .fx-wrap they
+       stay pinned for the whole length of the grid. This is the kind of thing that looks
+       right in a mockup and does nothing on the real page. -->
+  <div class="fx-filter" id="flt" role="tablist"></div>
   <div id="tiers"></div>
 </div>
 
@@ -842,8 +861,14 @@ ${slideJS}
   function spy(){
     var f=document.getElementById('band-free'), p=document.getElementById('band-prem');
     if(!f||!p) return;
-    var onPrem = p.getBoundingClientRect().top <= 120;
+    // The chip bar is sticky now, so a band is "current" once it passes UNDER the bar —
+    // not at an arbitrary 120px. Measure the bar rather than hardcoding its height: it is
+    // 46px on a desktop and 42 on a phone, and a constant would be wrong on one of them.
+    var onPrem = p.getBoundingClientRect().top <= flt.offsetHeight + 8;
     Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
+    // A hairline only once it's actually pinned — a border floating mid-hero looks like a
+    // stray rule. getBoundingClientRect().top hits 0 exactly when sticky engages.
+    flt.classList.toggle('stuck', flt.getBoundingClientRect().top <= 0.5);
   }
   window.addEventListener('scroll', spy, {passive:true});
 

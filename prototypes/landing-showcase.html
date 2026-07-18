@@ -99,7 +99,18 @@
   .fx-trust{color:var(--muted);font-size:12px;margin-top:13px}
   @media (max-width:560px){ .fx-h{font-size:36px} }
 
-  .fx-filter{display:inline-flex;gap:3px;margin-top:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:4px}
+  /* STICKY — the chips ride with you through the grid.
+     They used to scroll away with the hero, so for five screens you had no idea which
+     tier you were in or how much was left. Pinned, they answer three things at once:
+     where am I (the active chip, which spy() was already computing and had nowhere to
+     show), how much is left (the counts), and how do I get out (tap Premium, skip the
+     Free block). Costs ~46px of a 844px phone — about 5% — and buys orientation through
+     the longest part of the page.
+     The blur/background is not decoration: cards scroll UNDER this, and without an opaque
+     backing the counts sit on top of a moving preview and become unreadable. */
+  .fx-filter{position:sticky;top:0;z-index:30;display:flex;justify-content:center;gap:3px;margin:0 -22px 18px;padding:9px 22px;background:rgba(10,10,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
+  .fx-filter.stuck{border-bottom-color:var(--border)}
+  @media (max-width:560px){ .fx-filter{margin:0 -13px 14px;padding:8px 13px} }
   .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
   .fx-fb:hover{color:#f4f5f7}
   .fx-fb.on{background:var(--accent);color:#0a0a0b}
@@ -107,7 +118,10 @@
 
   /* Tier band — the thing the carousel could never say, because its tag changed every
      7 seconds: here's the line, and here's which side each feature is on. */
-  .fx-band{display:flex;align-items:center;gap:13px;margin:34px 0 16px}
+  /* scroll-margin-top clears the sticky bar. Without it, tapping a chip scrolls the band
+     to y=0 — directly underneath the bar that's pinned there — so the thing you asked to
+     see is the one thing hidden. */
+  .fx-band{display:flex;align-items:center;gap:13px;margin:34px 0 16px;scroll-margin-top:58px}
   .fx-band:first-of-type{margin-top:26px}
   .fx-bt{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
   .fx-bt.free{color:var(--accent)}
@@ -807,8 +821,13 @@
       <a class="fx-btn ghost" href="/login">Log in</a>
     </div>
     <p class="fx-trust">Free to start, no card required — play The Climb and Pick’em. Premium is $9.99 / month, cancel anytime.</p>
-    <div class="fx-filter" id="flt" role="tablist"></div>
   </div>
+  <!-- OUTSIDE .fx-top ON PURPOSE. position:sticky only sticks within its PARENT's box, so
+       while these chips lived in the hero they would unstick the instant the hero scrolled
+       away — which is exactly when they become useful. As a direct child of .fx-wrap they
+       stay pinned for the whole length of the grid. This is the kind of thing that looks
+       right in a mockup and does nothing on the real page. -->
+  <div class="fx-filter" id="flt" role="tablist"></div>
   <div id="tiers"></div>
 </div>
 
@@ -3379,29 +3398,35 @@ var LD={
     });
   };
 
+  // Rankings and the roster are one idea — 'the data keeps up' — so they are one card.
+  // The payload stacks the two existing previews rather than inventing a third: same
+  // bytes, same data, one row instead of two.
+  var rankRoster = (rank && roster)
+    ? rank + '<div style="height:1px;background:var(--border);margin:.85rem 0"></div>' + roster
+    : (rank || roster);
+
   var slides=[
-    {t:'Fight simulator',d:'Run any matchup through the tuned model — win probability plus how the fight ends.',h:sim},
-    {t:'Box scores for every bout',d:'Full head-to-head box score — strikes, takedowns, control — for every UFC fight ever.',h:box},
-    {t:'Career accolades',d:'Titles, belt ranks, records, and fight-night awards for every fighter.',h:acc},
+    {t:'Fight simulator',d:'Any matchup through the tuned model — winner, method and round.',h:sim},
+    {t:'Box scores for every bout',d:'Strikes, takedowns and control for every UFC fight ever.',h:box},
+    {t:'Career accolades',d:'Titles, belt ranks, records and fight-night awards.',h:acc},
     // PREMIUM, but the main event's is genuinely free on every card \u2014 the /matchup page
     // serves the real thing to logged-out visitors (worker/matchup-free.js). Saying only
     // "PREMIUM" undersells the free tier and, worse, is not true.
-    {t:'Matchup analytics deep dive',d:'Striking: where the fight happens, what each man throws at range, what lands on him \u2014 every strike split by target and position. Grappling: takedowns, control time and submission threat. Both shaded against the division. Free for the main event of every card.',h:mhx},
-    {t:'Style, pace & path to victory',d:'Where each fighter sits on the striker\u2013grappler spectrum, the pace they imply, how each one wins, and the storylines behind the bout. Free for the main event of every card.',h:style},
-    {t:'Live odds & props',d:'Moneyline and round totals by book, plus method-of-victory and round props for each fighter.',h:odds},
-    {t:'Bet & CLV tracker',d:'Log a bet before the bell and it grades itself off the result — record, ROI, units, and your closing-line value.',h:bets},
-    {t:'Line movement',d:'Watch a bout’s odds move day by day, from open to now, across the whole market.',h:lm},
-    {t:'Parlay builder',d:'Build a slip across any market, then re-price the identical slip at every other book.',h:parlay},
-    {t:'Odds & line history',d:'Every fighter’s closing lines, bout by bout — favorites and underdogs at a glance.',h:ohist},
-    {t:'One-click tape study',d:'Every fight in a fighter\u2019s history links straight to the film.',h:tape},
+    {t:'Matchup analytics deep dive',d:'Every strike by target and position, plus grappling — shaded against the division. Main event free.',h:mhx},
+    {t:'Style, pace & path to victory',d:'Striker or grappler, the pace they imply, how each one wins. Main event free.',h:style},
+    {t:'Live odds & props',d:'Moneyline, round totals and props, book by book.',h:odds},
+    {t:'Bet & CLV tracker',d:'Log a bet; it grades itself. Record, ROI, units, closing-line value.',h:bets},
+    {t:'Line movement',d:'Every bout\'s odds, day by day, from open to now.',h:lm},
+    {t:'Parlay builder',d:'Build a slip, then re-price it at every other book.',h:parlay},
+    {t:'Odds & line history',d:'Every fighter\'s closing lines, bout by bout.',h:ohist},
+    {t:'One-click tape study',d:'Every fight links straight to the film.',h:tape},
     // FREE ORDER IS DELIBERATE: the two things you can DO without an account come first
     // (The Climb, then Pick'em), then what you can read. The free tier's job is to get a
     // stranger playing, not to lead with a stats table.
-    {t:'The Climb',d:'Build a fighter, start as a 10-0 prospect, and work your way up the real rankings to the belt — against real fighters and real GillyLab power ratings. Free, no account needed.',h:climb,f:1},
-    {t:'Pick\u2019em predictions',d:'Call every fight on the card, lock in before the prelims, then climb the live leaderboard — free.',h:pickem,f:1},
-    {t:'Detailed fighter statistics',d:'Career striking and grappling stats for every fighter — free on every lite profile. Plus a full main event breakdown and analytics deep dive on every main event.',h:analytics,f:1},
-    {t:'Always-current rankings',d:'Official UFC division rankings, synced and updated after every event.',h:rank,f:1},
-    {t:'Active roster tracker',d:'Signings and releases — the roster kept current, week by week.',h:roster,f:1}
+    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. No account needed.',h:climb,f:1},
+    {t:'Pick\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1},
+    {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1},
+    {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1},
   ].filter(function(s){return s.h;});
 
   // ── the grid ───────────────────────────────────────────────────────────────
@@ -3443,8 +3468,14 @@ var LD={
   function spy(){
     var f=document.getElementById('band-free'), p=document.getElementById('band-prem');
     if(!f||!p) return;
-    var onPrem = p.getBoundingClientRect().top <= 120;
+    // The chip bar is sticky now, so a band is "current" once it passes UNDER the bar —
+    // not at an arbitrary 120px. Measure the bar rather than hardcoding its height: it is
+    // 46px on a desktop and 42 on a phone, and a constant would be wrong on one of them.
+    var onPrem = p.getBoundingClientRect().top <= flt.offsetHeight + 8;
     Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
+    // A hairline only once it's actually pinned — a border floating mid-hero looks like a
+    // stray rule. getBoundingClientRect().top hits 0 exactly when sticky engages.
+    flt.classList.toggle('stuck', flt.getBoundingClientRect().top <= 0.5);
   }
   window.addEventListener('scroll', spy, {passive:true});
 
