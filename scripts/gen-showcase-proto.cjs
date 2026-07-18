@@ -380,6 +380,20 @@ ${footCSS}
      shortened instead (see the frame height below). */
   .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;grid-auto-flow:dense}
 
+  /* DESKTOP: Free | Premium as two side-by-side columns, each a single vertical stack
+     of cards under its heading. This is the settled landing layout — the free/premium
+     split reads as two blocks side by side, not one grid the eye has to sort by pill.
+     paint() adds .fx-cols to #tiers ONLY when both tiers render on a wide screen, i.e.
+     the landing page. /subscribe is premium-only — one tier — so it never gets the class
+     and keeps the width-filling multi-column grid below. Mobile never gets it either:
+     paint() sets the class off under 721px, where the swipe rows take over.
+     Premium is the taller column by design (more features) — the free column simply ends. */
+  @media (min-width:721px){
+    #tiers.fx-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
+    #tiers.fx-cols .fx-tier{min-width:0}          /* let a grid column shrink below content */
+    #tiers.fx-cols .fx-grid{grid-template-columns:1fr}   /* one card per row within a column */
+  }
+
   .fx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s cubic-bezier(.2,.7,.3,1),border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
   .fx-card:hover{transform:translateY(-4px);border-color:rgba(0,230,104,.4);box-shadow:0 14px 38px rgba(0,0,0,.5)}
   .fx-card.prem:hover{border-color:rgba(255,207,122,.4)}
@@ -1167,6 +1181,9 @@ ${slideJS}
       if(!list.length) return;                        // a group with no slides draws nothing
       tiers.appendChild(tier(g,list));
     });
+    // TWO SIDE-BY-SIDE COLUMNS only on the landing desktop, where both Free and Premium
+    // render. /subscribe (premium-only, one tier) and every mobile width keep the grid.
+    tiers.className = (isWideLayout() && defs.length===2) ? 'fx-cols' : '';
     fitWide();
   }
   // Re-render when the viewport crosses the mobile/desktop line so the grouping flips with
