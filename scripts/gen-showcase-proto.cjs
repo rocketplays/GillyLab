@@ -263,7 +263,11 @@ ${footCSS}
 
   /* Section head + the tier filter. The filter is the navigation the carousel's dots
      pretended to be: 14 unlabelled dots are not a way to find anything. */
-  .fx-top{text-align:center;margin:30px 0 26px}
+  /* margin-top 58, not 30. The cap has to sit BETWEEN the nav (ends 70px) and the eyebrow,
+     and at 30px that gap was 30px wide — no line fits in there without appearing to touch
+     one of them. Nudging --cy could never fix it; the gap was the problem. At 58 the
+     eyebrow starts at 128 and the cap has ~26px of clearance either side. */
+  .fx-top{text-align:center;margin:58px 0 26px}
   .fx-eyebrow{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);background:rgba(0,230,104,.1);border:1px solid rgba(0,230,104,.25);border-radius:100px;padding:5px 13px;margin-bottom:16px}
   .fx-h{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:700;line-height:1.02;letter-spacing:.004em}
   .fx-sub{color:rgba(255,255,255,.62);font-size:15px;margin-top:13px;max-width:545px;margin-left:auto;margin-right:auto;line-height:1.6}
@@ -426,19 +430,25 @@ ${matchupFree.css || ''}
      bright aurora, it's a green fill. Exactly the same fixed-px mistake as the 1500px
      octagon, made twice in one page. Everything atmospheric here is relative now, and
      the alpha drops again on small screens where three blooms share far less area. */
-  /* AURORA — fixed, atmosphere only. */
+  /* AURORA — fixed, atmosphere only.
+     I CUT THIS TWICE AND THE CUTS MULTIPLIED. The green wash was caused by SIZE: 900px
+     blooms are 231% of a phone's width, so you saw the flat core, not the falloff.
+     Switching to 60vw fixed that outright. Halving the alpha underneath (.085 -> .045)
+     was me treating a symptom I had already cured — area x0.07 AND alpha x0.53 on a
+     phone, which is how "too green" became "black again" in one step. The alpha stays put
+     now; only the size is responsive, because only the size was ever wrong.
+     Calibrated against the hero glow the page already ships: #12251b over #0a0a0b is
+     ~12% accent green, so ~.09 for the brightest bloom sits just under the atmosphere
+     you already accepted.
+     --aur is a live multiplier for the slider — this is the number I have been worst at
+     guessing, so it gets a knob rather than another round of adjectives. */
   html.bg-frame #bgfx{opacity:1;
-    --a1:.085; --a2:.065; --a3:.075;
+    --a1:.09; --a2:.07; --a3:.08; --aur:1;
     background:
-    radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,var(--a1)) 0%,transparent 62%),
-    radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,var(--a2)) 0%,transparent 62%),
-    radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,var(--a3)) 0%,transparent 62%)}
-
-  /* On a phone the three blooms overlap in a fraction of the area, so the same alpha
-     stacks to roughly double the wash. Halve it. */
-  @media (max-width:700px){
-    html.bg-frame #bgfx{--a1:.045; --a2:.032; --a3:.038}
-  }
+    radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),
+    radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),
+    radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
+  html[style*="--gl-aur"] #bgfx{--aur:var(--gl-aur) !important}
 
   /* THE FRAME — absolute, so the cap belongs to the page and not to the screen.
      --cy:96px CLEARS THE NAV. nav.lpnav is padding:22px 0 around a 26px logo = 70px tall,
@@ -507,13 +517,22 @@ ${matchupFree.css || ''}
   #bgpick button:hover{color:#fff}
   #bgpick button.on{background:var(--accent);color:#0a0a0b}
 
-  #cypick{position:fixed;left:14px;bottom:60px;z-index:70;display:flex;align-items:center;gap:9px;background:rgba(10,10,11,.92);border:1px solid var(--border);border-radius:999px;padding:7px 13px;backdrop-filter:blur(6px)}
-  #cypick[hidden]{display:none}
-  #cypick b{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-  #cypick input[type=range]{width:190px;accent-color:var(--accent)}
-  #cypick span{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--accent);width:46px;text-align:right}
+  #cypick,#aurpick{position:fixed;left:14px;z-index:70;display:flex;align-items:center;gap:9px;background:rgba(10,10,11,.92);border:1px solid var(--border);border-radius:999px;padding:7px 13px;backdrop-filter:blur(6px)}
+  #cypick{bottom:60px}
+  #aurpick{bottom:106px}
+  #cypick[hidden],#aurpick[hidden]{display:none}
+  #cypick b,#aurpick b{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  #cypick input[type=range],#aurpick input[type=range]{width:190px;accent-color:var(--accent)}
+  #cypick span,#aurpick span{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;color:var(--accent);width:46px;text-align:right}
   #cypick button{background:none;border:0;color:var(--muted);font-size:11px;text-decoration:underline;cursor:pointer;padding:0 2px}
   #cypick button:hover{color:#fff}
+  /* On a phone the controls have to be usable with a thumb and must not cover the page. */
+  @media (max-width:560px){
+    #bgpick{left:8px;bottom:8px;right:8px;justify-content:center;flex-wrap:wrap}
+    #cypick{left:8px;right:8px;bottom:54px}
+    #aurpick{left:8px;right:8px;bottom:100px}
+    #cypick input[type=range],#aurpick input[type=range]{flex:1;width:auto}
+  }
 
   @media (max-width:720px){ .fx-grid{grid-template-columns:1fr;gap:14px} }
   @media (max-width:560px){
@@ -538,14 +557,16 @@ ${componentCSS}
 // Built twice from one builder: once with the debug switcher for local eyeballing, once
 // without for /landingpagetest. A separate "clean copy" would be a fork, and the phone
 // build is the one that decides whether this ships — it must be the same page.
-const page = (debug) => `<!doctype html>
+// TWO flags, not one. They were conflated — debug also meant "indexable" — so asking for
+// a preview WITH controls silently asked for one without noindex. Separate concerns.
+const page = (debug, noindex) => `<!doctype html>
 <!-- class="bg-frame" so the page LOADS as the chosen design rather than loading flat and
      flipping once JS runs. The picker's "on" chip must agree with this or the control
      lies about what you're looking at. -->
 <html lang="en" class="bg-frame"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>GillyLab — feature grid (${debug ? 'prototype' : 'preview'})</title>
-${debug ? '' : '<meta name="robots" content="noindex,nofollow">'}
+<title>GillyLab — feature grid (${noindex ? 'preview' : 'prototype'})</title>
+${noindex ? '<meta name="robots" content="noindex,nofollow">' : ''}
 <!-- AUTO-GENERATED by scripts/gen-showcase-proto.cjs from worker/pages.js.
      DO NOT EDIT. This is a layout prototype: the previews below are the REAL slide
      payloads, sliced from the live landing page, so what you're judging is the
@@ -575,11 +596,29 @@ ${debug ? `
   <span id="cyv">96px</span>
   <button type="button" id="cyreset">reset</button>
 </div>
+
+<div id="aurpick">
+  <b>Aurora</b>
+  <input type="range" id="aur" min="0" max="250" step="5" value="100">
+  <span id="aurv">100%</span>
+</div>
 <script>
 (function(){
   var pick=document.getElementById('bgpick');
   var cyBox=document.getElementById('cypick'), cy=document.getElementById('cy'),
       cyv=document.getElementById('cyv'), cyreset=document.getElementById('cyreset');
+  var aurBox=document.getElementById('aurpick'), aur=document.getElementById('aur'), aurv=document.getElementById('aurv');
+
+  // The aurora multiplier. Same reasoning as the top edge: I have now been wrong about
+  // this number in both directions — too green, then invisible — so it stops being my
+  // number. 100% is the calibrated default (~.09 peak, just under the hero glow's ~12%).
+  function setAur(v){
+    document.documentElement.style.setProperty('--gl-aur', (v/100).toFixed(2));
+    aur.value=v; aurv.textContent=v+'%';
+    try{ localStorage.setItem('glBgAur', v); }catch(_){}
+  }
+  aur.addEventListener('input',function(){ setAur(+aur.value); });
+  (function(){ var s=null; try{ s=localStorage.getItem('glBgAur'); }catch(_){} setAur(s!=null?+s:100); })();
   // The default --cy each frame variant ships with, so "reset" means something and the
   // slider starts where the variant actually is rather than at an arbitrary number.
   // 60px: chosen on a real screen, halfway between the top of the page and the eyebrow.
@@ -599,6 +638,7 @@ ${debug ? `
   function syncCyBox(mode, useSaved){
     var isFrame = /^bg-frame/.test(mode||'');
     cyBox.hidden = !isFrame;
+    aurBox.hidden = !isFrame;
     if(!isFrame){ document.documentElement.style.removeProperty('--gl-cy'); return; }
     var saved=null;
     if(useSaved){ try{ saved=localStorage.getItem('glBgCy'); }catch(_){} }
@@ -790,15 +830,28 @@ ${slideJS}
 </script>
 </body></html>`;
 
-const html = page(true);
-const preview = page(false);
+const html = page(true, false);          // local file: controls, indexable is moot
+// THE PHONE BUILD KEEPS THE CONTROLS, and that is a deliberate reversal.
+//
+// I stripped them so /landingpagetest would look like the real thing. But the phone is
+// where these numbers are being judged, and the last three rounds have all been the same
+// shape: I pick a value from arithmetic, it's wrong on a real screen, you describe it in
+// words, I pick another one. --cy went -70 -> 60 -> 48 -> 96; the aurora went too green
+// -> invisible. Every one of those was me guessing at something you could have dialled in
+// four seconds.
+//
+// So the preview ships the sliders. It is noindex and it is temporary — nobody reaches it
+// who wasn't sent the URL — and when the design ships into landingPage(), page(false) is
+// what gets used and the controls never see production.
+const preview = page(true, true);        // /landingpagetest: controls AND noindex
 
-// Guard the split: the phone build must be the SAME page minus the debug chrome. If the
-// switcher ever leaks into the served route, the first person to see it is a visitor.
-if (/id="bgpick"|id="cypick"|glBgFx/.test(preview)) throw new Error('the debug switcher leaked into the /landingpagetest build');
 if (!/noindex/.test(preview)) throw new Error('the preview route must be noindex — it is a duplicate of the landing page');
 if (!/id="bgfx"/.test(preview) || !/bg-frame/.test(preview)) throw new Error('the preview lost the frame background');
-if (Math.abs(preview.length - html.length) > 4500) throw new Error('preview and prototype differ by more than the debug chrome (' + (html.length - preview.length) + 'b) — something else was dropped');
+// The controls must be present here AND provably strippable, so shipping is one flag.
+if (!/id="bgpick"|id="cypick"|id="aurpick"/.test(preview)) throw new Error('the preview lost its controls — the point is to dial these on a phone');
+const shipped = page(false, false);      // what production would get: no controls at all
+if (/id="bgpick"|id="cypick"|id="aurpick"|glBgFx/.test(shipped)) throw new Error('page(false) still emits debug chrome — the production build would ship the sliders');
+if (Math.abs(shipped.length - html.length) > 6000) throw new Error('the debug chrome accounts for ' + (html.length - shipped.length) + 'b — something other than the controls differs');
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, html);
