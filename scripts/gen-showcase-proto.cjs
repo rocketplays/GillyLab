@@ -1302,12 +1302,26 @@ fs.writeFileSync(OUT_WORKER,
 // featuresCSS: the fx-* grid/card/band/lightbox rules + the hub slide's own CSS + the
 // faithful in-app component styles. NOT the page chrome (html/body/nav/footer/aurora) —
 // /subscribe brings its own via shell().
+// The fx-* CSS is SPLIT by the page chrome: base grid/card/band/lightbox rules, then the
+// aurora/frame/debug-slider block (which must NOT come along — its #bgfx{opacity:0} gated on
+// html.bg-frame would blank /subscribe's own aurora), then the MOBILE swipe-row section that
+// turns each group into a horizontal scroll-snap row (the "peek"). Take both feature ranges,
+// skip the chrome between them, then append the in-app component styles.
 const FX_START = '.fx-h .a{color:var(--accent)}';
-const FX_END = '/* ── BACKGROUND TREATMENTS';
-if (css.indexOf(FX_START) < 0 || css.indexOf(FX_END) < 0) throw new Error('subscribe module: fx-* CSS slice markers moved — check gen-showcase-proto css');
-const featuresCSS = css.slice(css.indexOf(FX_START), css.indexOf(FX_END)).trimEnd() + '\n' + componentCSS;
+const FX_CHROME = '/* ── BACKGROUND TREATMENTS';                       // chrome begins — exclude from here
+const FX_MOBILE = '/* ── MOBILE: EACH GROUP BECOMES A SWIPE ROW';      // feature CSS resumes
+const FX_MOBILE_END = '/* Faithful in-app component styles */';        // componentCSS begins
+for (const mk of [FX_START, FX_CHROME, FX_MOBILE, FX_MOBILE_END]) {
+  if (css.indexOf(mk) < 0) throw new Error('subscribe module: fx-* CSS slice marker moved: ' + mk);
+}
+const featuresCSS =
+  css.slice(css.indexOf(FX_START), css.indexOf(FX_CHROME)).trimEnd() + '\n' +
+  css.slice(css.indexOf(FX_MOBILE), css.indexOf(FX_MOBILE_END)).trimEnd() + '\n' +
+  componentCSS;
 if (/\$\{/.test(featuresCSS)) throw new Error('subscribe module: an unresolved ${…} survived into featuresCSS');
 if (!/\.fx-card\{/.test(featuresCSS) || !/\.fx-lb\{/.test(featuresCSS)) throw new Error('subscribe module: featuresCSS lost the cards or the lightbox');
+if (!/scroll-snap-type:x mandatory/.test(featuresCSS)) throw new Error('subscribe module: featuresCSS lost the mobile swipe-row (horizontal scroll)');
+if (/#bgframe\{|html\.bg-frame/.test(featuresCSS)) throw new Error('subscribe module: featuresCSS picked up the aurora/frame chrome — it would blank the page aurora');
 
 // featuresMarkup: the grid mount + the lightbox. Same ids the script wires (#tiers/#lb/#lbin).
 const featuresMarkup = '<div class="fx-wrap"><div id="tiers"></div></div>\n<div class="fx-lb" id="lb"><div class="fx-lbin" id="lbin"></div></div>';
