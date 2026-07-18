@@ -43,7 +43,7 @@ const DIVLABEL = () => (D && DIV && D.divisions[DIV]) ? D.divisions[DIV].label :
 //
 // Levels run ATTR_MIN..ATTR_MAX (1..10). Level 1 is the FREE BASELINE — every
 // fighter starts there in everything, and POINTS_START buys you up from it. It
-// is not level zero: a UFC fighter with literally no takedown defence isn't a
+// is not level zero: a UFC fighter with literally no takedown defense isn't a
 // thing, and costTo() charges nothing below 1 anyway, so a 0 would be a free
 // downgrade. 5 is about median, 10 is the best in the world at it.
 const ATTRS = [
@@ -151,7 +151,7 @@ const ARCH_PAIR = Object.fromEntries(Object.entries({
   // confusion as Outfighter/Out-boxer, same fix.
   'wrestling+grappling': 'Constrictor',
   'wrestling+takedef':   'Mat general',
-  // NOT 'Guard player'. High takedown defence means he is NOT on his back — the
+  // NOT 'Guard player'. High takedown defense means he is NOT on his back — the
   // old name described the opposite of the build it was attached to.
   'grappling+takedef':   'Submission threat',
 }).map(([k, v]) => [k.split('+').sort().join('+'), v]));
@@ -159,7 +159,7 @@ const ARCH_PAIR = Object.fromEntries(Object.entries({
 // already prices that at 1/9 each, deliberately, and this must not second-guess it.
 // This is about language: nobody is called anything for having a chin. You are
 // named for what you DO to someone (power, pace, technique, wrestling, grappling)
-// and only described by what you RESIST with (chin, cardio, defence).
+// and only described by what you RESIST with (chin, cardio, defense).
 //
 // It exists because of a real bug, not a hunch. The wrestler and grappler builds
 // both max FIVE attributes — chin, cardio, wrestling, grappling, takedef — so every
@@ -507,7 +507,7 @@ const CAP_OVER    = 5;       // a maxed fighter tops out this far above the cham
 // advantage, not the same as picking randomly."
 //
 // The cost is honest and worth writing down: style is not symmetric across the
-// roster. Heavyweight is full of strikers with ordinary takedown defence, so
+// roster. Heavyweight is full of strikers with ordinary takedown defense, so
 // amplifying the triangle amplifies the wrestler's systematic edge there too —
 // grappler sits above striker by ~7 points and that gap grew with this change.
 // STYLE_MAX IS A SAFETY RAIL, NOT A DIAL — DO NOT REACH FOR IT TO TUNE STYLE.
@@ -526,7 +526,7 @@ const STYLE_MAX   = 22;      // biggest style swing, in points of win probabilit
 // division's style balance is really ONE MAN's stat line: every run must beat the
 // champion, and his styleDelta against your build is worth ~2x on the belt.
 // Measured at 1.0: LHW striker 46% vs wrestler 23%, because Carlos Ulberg has
-// elite takedown defence (86%) and a chin that has been cracked (0.41) — a
+// elite takedown defense (86%) and a chin that has been cracked (0.41) — a
 // striker's dream. Tom Aspinall is the mirror (100% TDD, 3.3 KD/15) and HW
 // striker is 23%. Neither is a bug; both are the matchup engine working. The
 // question is only how loud one man's stat line should be.
@@ -679,13 +679,13 @@ function myRating(a){
 
 // THE STYLE TRIANGLE — the game's whole point, and the thing the sim couldn't do.
 // Read against the opponent's REAL stats, so the invention bites on something true.
-//   - Your wrestling is worth a lot against a man with bad takedown defence,
+//   - Your wrestling is worth a lot against a man with bad takedown defense,
 //     and close to nothing against Topuria's 95%.
 //   - Your submissions punish whoever ends up on the mat — the wrestler who
 //     shoots on you, or the man you put down yourself.
 //   - Your striking pays against someone who gets hit, and stalls against a
 //     high-guard defensive fighter.
-//   - Your takedown defence is worth everything against a wrestler and nothing
+//   - Your takedown defense is worth everything against a wrestler and nothing
 //     against a kickboxer. A counter-pick, and it should read like one.
 // STYLE IS AN INTERACTION, NOT A SECOND QUALITY SCORE.
 //
@@ -796,14 +796,14 @@ function rankStat(key, fallback){
 // printing the answer — "you're +4.8 against him", "strikers are favoured here" —
 // and the 42-point decision solves itself. A scout describes the man; the read is
 // yours. Two players should be able to look at Ulberg and disagree: "he can be
-// hurt" invites a puncher, but 86% takedown defence is only a problem if you were
+// hurt" invites a puncher, but 86% takedown defense is only a problem if you were
 // going to shoot, and a technician might just outbox him. That argument is the
 // game. `strikers win here` would end it.
 //
 // GRADED, AND GRADED AGAINST HIS OWN DIVISION. Two reasons. First, these are real
 // people: "won't be wrestled" is an overclaim about Carlos Ulberg, and "difficult
 // to wrestle" is simply true. Nothing here should say more than the stat sheet
-// can carry. Second, 86% takedown defence means something different at heavyweight
+// can carry. Second, 86% takedown defense means something different at heavyweight
 // than at strawweight, and styleDelta already centres on the division — a report
 // centred anywhere else would be describing a different fight from the one the
 // game scores.
@@ -924,7 +924,7 @@ function champScout(st){
     // a phone better: "Real knockout power · durability concerns".
     read: (s => s.charAt(0).toUpperCase() + s.slice(1))(top.join(' · ')),
     rows: [
-      ['Takedown defence', Math.round(g('tdDef', 66)) + '%', Math.max(0, Math.min(1, g('tdDef', 66) / 100))],
+      ['Takedown defense', Math.round(g('tdDef', 66)) + '%', Math.max(0, Math.min(1, g('tdDef', 66) / 100))],
       ['Knockout power',   g('kd', 0.5).toFixed(1),          Math.max(0, Math.min(1, g('kd', 0.5) / 3.5))],
       ['Durability',       g('chin', 0.6) < mChin - 0.08 ? 'Been stopped' : g('chin', 0.6) > mChin + 0.1 ? 'Rarely hurt' : 'Average',
                                                             Math.max(0, Math.min(1, g('chin', 0.6)))],
@@ -941,7 +941,7 @@ function styleDelta(a, st, title){
   const rel = id => Math.max(-1, Math.min(1, (n(a[id]) - mean) / 0.45));
   let d = 0;
 
-  // 1. YOUR WRESTLING vs THEIR TAKEDOWN DEFENCE. tdDef runs ~40-95: a dominant
+  // 1. YOUR WRESTLING vs THEIR TAKEDOWN DEFENSE. tdDef runs ~40-95: a dominant
   //    wrestler mauls a striker who can't stop it and gets nothing at all
   //    against Aspinall's 95%. Openness is centred too, so an average-TDD man is
   //    a neutral matchup rather than a quiet bonus.
@@ -950,7 +950,7 @@ function styleDelta(a, st, title){
   const tddOpen = (DIVMEAN('tdDef', 67.5) - (st.tdDef||60)) / 55;
   d += rel('wrestling') * tddOpen * 13;
 
-  // 2. THEIR WRESTLING vs YOUR TAKEDOWN DEFENCE. The mirror, and why elite TDD
+  // 2. THEIR WRESTLING vs YOUR TAKEDOWN DEFENSE. The mirror, and why elite TDD
   //    is a counter-pick: everything against a grappler, nothing against a
   //    kickboxer. Your TDD hole only hurts when the man opposite can find it.
   //    CENTRED ON THE DIVISION.
@@ -964,7 +964,7 @@ function styleDelta(a, st, title){
   const toMat = Math.max(Math.min(1,(st.td||1.4)/4), n(a.wrestling) * Math.max(0,(95-(st.tdDef||60))/55));
   d += rel('grappling') * (toMat - 0.4) * 12 * (1.4 - (st.mat==null?0.8:st.mat));
 
-  // 4. YOUR STRIKING vs THEIR STRIKING DEFENCE.
+  // 4. YOUR STRIKING vs THEIR STRIKING DEFENSE.
   //    CENTRED ON THE DIVISION.
   const sdOpen = (DIVMEAN('strDef', 53) - (st.strDef||52)) / 26;
   d += ((rel('power')+rel('technique')+rel('pace'))/3) * sdOpen * 10;
@@ -1873,7 +1873,7 @@ function fight(o){
   // ground-and-pound instead of reading as a pure sub artist, which is what the
   // archetype (Constrictor) already claims he is.
   //
-  // SUBMISSION DEFENCE DID NOT EXIST. Playtest: "a 10/10 grappler gets submitted a
+  // SUBMISSION DEFENSE DID NOT EXIST. Playtest: "a 10/10 grappler gets submitted a
   // lot; having very high grappling should protect against submission losses." Read
   // the old code and there is nothing to argue with — the losing branch was `: sb`,
   // the opponent's submission rate, full stop. YOUR ATTRIBUTES WERE NOT REFERENCED.
@@ -1886,12 +1886,12 @@ function fight(o){
   //
   // The asymmetry is the tell, and it was sitting in the comment above: "Yours:
   // power vs grappling. His: knockdowns vs subs." The WIN branch reads your build
-  // and the LOSS branch reads only his. Offence was a matchup; defence was his stat
+  // and the LOSS branch reads only his. Offence was a matchup; defense was his stat
   // sheet against a wall. Every other defensive axis in this function already got
   // this right — chinMult gates whether you're finished at all — so submission was
   // the one hole left, and it was the one the archetype system shouts about most.
   //
-  // matDef: grappling leads, takedown defence supports. A submission needs the mat
+  // matDef: grappling leads, takedown defense supports. A submission needs the mat
   // and the mat needs a takedown, so the man who won't go down is hard to tap for a
   // second, different reason. 0.80 leaves a maxed grappler at ~0.2x — rarely tapped,
   // never immune, because there is no such thing.
@@ -2242,7 +2242,7 @@ function creator(){
   // Player-facing advice is the worst place for a stale finding: it's a lie the
   // player can't check. If a claim here isn't currently measurable, cut it.
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
-    'bad takedown defence, and stalls against elite TDD.';
+    'bad takedown defense, and stalls against elite TDD.';
   p.appendChild(tip);
   const row=document.createElement('div');
   row.style.cssText='display:flex;gap:.5rem;align-items:center;margin-top:.6rem';
