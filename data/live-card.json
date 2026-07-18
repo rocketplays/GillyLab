@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-18T21:53:51.495Z",
+ "generatedAt": "2026-07-18T22:25:14.172Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2998,6 +2998,194 @@
       ]
      },
      "capturedAt": "2026-07-18T21:53:51.370Z"
+    }
+   ]
+  },
+  "Alden Coria": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Stewart Nicoll",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Stewart Nicoll",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 127,
+      "totL": 60,
+      "totA": 144,
+      "tdL": 3,
+      "tdA": 5,
+      "sub": 4,
+      "rev": 0,
+      "ctrl": "2:17",
+      "head": [
+       35,
+       118
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       42,
+       125
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 90,
+      "totL": 32,
+      "totA": 94,
+      "tdL": 5,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:17",
+      "head": [
+       20,
+       77
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       28,
+       90
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-18T22:25:14.043Z"
+    }
+   ]
+  },
+  "Stewart Nicoll": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Alden Coria",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Alden Coria",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 90,
+      "totL": 32,
+      "totA": 94,
+      "tdL": 5,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "4:17",
+      "head": [
+       20,
+       77
+      ],
+      "body": [
+       4,
+       7
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       28,
+       90
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 127,
+      "totL": 60,
+      "totA": 144,
+      "tdL": 3,
+      "tdA": 5,
+      "sub": 4,
+      "rev": 0,
+      "ctrl": "2:17",
+      "head": [
+       35,
+       118
+      ],
+      "body": [
+       8,
+       8
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       42,
+       125
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-18T22:25:14.043Z"
     }
    ]
   }
