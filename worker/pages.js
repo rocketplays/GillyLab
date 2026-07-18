@@ -1423,7 +1423,8 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   const when = eventWhen(card);   // NOT card.date — that is the UTC day. See eventWhen.
   const lockNote = card ? (card.locked ? "Picks are locked — this card has started." : "Lock your picks before the prelims begin.") : "";
   return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>Pick'em — GillyLab</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -1609,7 +1610,8 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-how li::marker{color:var(--accent);font-weight:800}
   .pk-how b{color:var(--text)}
   .pk-how-tip{font-size:.78rem;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .75rem;line-height:1.45;margin-bottom:1.1rem}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
@@ -1993,7 +1995,8 @@ export const rankingsPage = ({ subscribed, loggedIn, rankings, extra, profileSlu
   const KSLUG = {}; const _EX = extra || {};
   ((rankings && rankings.data) || []).forEach((e) => { const nm = (_EX[e.fighterSlug] && _EX[e.fighterSlug].name) || e.fighterName; const s = profileSlugFor(nm, profileSlugs); if (s && e.fighterSlug) KSLUG[e.fighterSlug] = s; });
   const rk = rankingsSSR(rankings, extra, KSLUG); return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>UFC Rankings — Every Division · GillyLab</title>
 <meta name="description" content="Current UFC rankings for every division, updated after each event — champions and top contenders with records, photos and country flags.">
 <link rel="canonical" href="${SITE_URL}/rankings">
@@ -2045,7 +2048,8 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .rk-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .rk-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center}
   .rk-cta a{color:var(--accent);text-decoration:none;font-weight:700}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
@@ -2120,7 +2124,8 @@ export const rosterPage = ({ subscribed, loggedIn, roster, profileSlugs }) => {
   const R = (roster && roster.fighters) || [];
   const RSLUG = {}; R.forEach((n) => { const s = profileSlugFor(n, profileSlugs); if (s) RSLUG[n] = s; });
   const rs = rosterSSR(roster, RSLUG); return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>UFC Active Roster & Weekly Roster Moves · GillyLab</title>
 <meta name="description" content="Every fighter on the current UFC roster, plus the week's signings and releases — kept up to date, division by division.">
 <link rel="canonical" href="${SITE_URL}/roster">
@@ -2162,7 +2167,8 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
   .rs-empty{color:var(--muted);text-align:center;padding:2rem 0}
   .rs-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .rs-cta a{color:var(--accent);text-decoration:none;font-weight:700}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
@@ -2420,7 +2426,8 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   )).replace(/</g, "\\u003c")}</script>` : "";
 
   return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>${seoTitle}</title>
 <meta name="description" content="${seoDesc}">
 <link rel="canonical" href="${SITE_URL}/matchup">
@@ -2538,7 +2545,8 @@ ${eventLd}
   .mp-val.good{color:var(--accent)}.mp-val.bad{color:#c76a54}
   .mp-foot{margin-top:1.3rem;padding-top:1rem;border-top:1px solid var(--border);text-align:center;font-size:.84rem;color:var(--muted);line-height:1.5}
   .mp-foot a{color:var(--accent);text-decoration:none;font-weight:700}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
@@ -2750,7 +2758,8 @@ export const fighterLitePage = ({ fighter, loggedIn, subscribed }) => {
   const ldScript = `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`;
 
   return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>${esc(seoTitle)}</title>
 <meta name="description" content="${esc(seoDesc)}">
 <link rel="canonical" href="${SITE_URL}/fighter/${esc(f.slug)}">
@@ -2826,7 +2835,8 @@ ${ldScript}
   .fp-lock-id{font-size:.7rem;color:var(--muted);margin-top:.2rem;line-height:1.35}
   .fp-lock-btn{display:block;text-align:center;background:var(--accent);color:#04120a;font-weight:800;font-size:.86rem;text-decoration:none;border-radius:9px;padding:.65rem .7rem}
   @media (max-width:420px){.fp-lock-grid{grid-template-columns:1fr}}
-</style></head><body>
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
     <div class="pk-navlinks">
@@ -3250,7 +3260,8 @@ export const scorecardPage = (data) => {
     </div>`;
 
   return `<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>Model Scorecard — GillyLab (internal)</title>
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55)}
@@ -3279,7 +3290,8 @@ export const scorecardPage = (data) => {
   .empty h2{margin:.2rem 0 .6rem}
   .note{margin-top:1.6rem;font-size:.8rem;color:var(--muted);border-left:2px solid var(--line);padding-left:.8rem}
   a{color:var(--accent);text-decoration:none}
-</style></head><body><div class="wrap">
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}<div class="wrap">
   <div class="top">
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <span class="tag">Internal · not public</span>

@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- Tints the mobile browser's own UI (Android Chrome's status bar /
        toolbar, iOS Safari's address-bar area) to match the page's dark
        background. That status-bar strip (time/wifi/signal/battery) is
        browser chrome, not page content, so it can't be styled with normal
        CSS -- theme-color is the supported way to make it match instead of
        defaulting to white. -->
-  <meta name="theme-color" content="#0a0a0b" />
+  <meta name="theme-color" content="#12251b" />
   <title>GillyLab — UFC Analytics</title>
   <!-- Absolute, not ./ — the app renders under several routes and a relative icon
        resolves differently on each. These four are on the Worker's public
@@ -63,7 +63,13 @@
        briefly reveals whatever is "behind" the document, governed by
        <html>'s own background -- shows the same dark color instead of
        defaulting to white right above the sticky header. */
-    html { overflow-x: hidden; background: var(--bg); }
+    html { overflow-x: hidden; background: var(--bg) radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%); }
+    /* Aurora background + top/bottom fade — matches the landing/app pages. Two fixed layers
+       at z-index:-1 behind everything: #bgfx the green aurora blooms, #bgedge the edge fade
+       back to solid so the atmosphere doesn't tint the phone status/URL bars. body is
+       transparent here already, so the glow on html shows through. */
+    #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:1;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
+    #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
 
     body {
       background: var(--bg);
@@ -3707,6 +3713,7 @@
 </style>
 </head>
 <body>
+<div id="bgfx"></div><div id="bgedge"></div>
 
 <!-- SEARCH OVERLAY -->
 <div class="search-overlay" id="searchOverlay">

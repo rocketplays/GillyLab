@@ -4,7 +4,8 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
 <title>The Climb — build a fighter, win the UFC belt | GillyLab</title>
 <meta name="description" content="Build a UFC fighter, start as a 10-0 prospect, pick your fights and climb the real rankings to the belt. Free on GillyLab.">
 <!-- The share sheet is the app's, not a copy of it. gen-gl-sheet.cjs generates
@@ -368,9 +369,17 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   .scout-row .v{font-weight:600}
   .scout-bar{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:.45rem}
   .scout-bar i{display:block;height:3px;border-radius:2px;background:var(--muted)}
+  /* Aurora background + top/bottom fade — matches the landing/app pages. Green glow on a
+     solid html canvas (so phone insets stay dark), transparent body, two fixed layers at
+     z-index:-1 behind the content: #bgfx the aurora, #bgedge the edge fade. */
+  html{background:#0a0a0b radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}
+  body{background:transparent}
+  #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:1;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
+  #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}
 </style>
 </head>
 <body>
+<div id="bgfx"></div><div id="bgedge"></div>
 <!-- TOP BAR SLOT — the brand + account links, filled by gen-climb-page.cjs.
      OUTSIDE .wrap so its divider spans the viewport the way it does on every other
      free page; inside, the rule would stop at the 820px column and read as a box.
