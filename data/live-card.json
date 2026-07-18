@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-12T03:58:49.336Z",
+ "generatedAt": "2026-07-18T21:21:08.523Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -2622,6 +2622,194 @@
       ]
      },
      "capturedAt": "2026-07-12T03:46:20.683Z"
+    }
+   ]
+  },
+  "Anna Melisano": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Dione Barbosa",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "4:04",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Dione Barbosa",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 9,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       4
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 4,
+      "totL": 20,
+      "totA": 27,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "3:20",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       2
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-18T21:21:08.396Z"
+    }
+   ]
+  },
+  "Dione Barbosa": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Anna Melisano",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "4:04",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Anna Melisano",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 4,
+      "totL": 20,
+      "totA": 27,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "3:20",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       2
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 9,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       4
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-18T21:21:08.396Z"
     }
    ]
   }
