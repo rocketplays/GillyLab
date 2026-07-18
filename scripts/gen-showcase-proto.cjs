@@ -36,7 +36,7 @@ const ROOT = path.resolve(__dirname, '..');
 const SRC = path.join(ROOT, 'worker', 'pages.js');
 const DATA = path.join(ROOT, 'worker', 'landing-data.js');
 const OUT = path.join(ROOT, 'prototypes', 'landing-showcase.html');
-// The same page, emitted as a Worker module so it can be served at /landingpagetest —
+// The same page, emitted as a Worker module so it can be served at "/" — it is the
 // a real URL on a real phone, which is the only way to judge this before it replaces /.
 //
 // It needs a ROUTE and cannot just be the file above: wrangler.toml sets
@@ -44,7 +44,7 @@ const OUT = path.join(ROOT, 'prototypes', 'landing-showcase.html');
 // subscribed session (bar the PUBLIC_LANDING_ASSETS allowlist). prototypes/ is copied
 // into public/ by build-site.sh but is NOT reachable logged-out — I claimed otherwise
 // earlier having read build-site.sh and not wrangler.toml.
-const OUT_WORKER = path.join(ROOT, 'worker', 'landing-test.js');
+const OUT_WORKER = path.join(ROOT, 'worker', 'landing-grid.js');
 
 // ── the hero ─────────────────────────────────────────────────────────────────
 // Copy, not code — pulled out here because it's the line most likely to be rewritten
@@ -179,11 +179,26 @@ if (rewritten !== photoRefs) throw new Error('rewrote ' + rewritten + ' of ' + p
 
 // ── the real component CSS ───────────────────────────────────────────────────
 // Same blocks gen-carousel.cjs takes: without these the previews are unstyled divs.
-const componentCSS = [
+let componentCSS = [
   between('  /* Faithful in-app component styles */', '  @media (max-width:760px){', false).trimEnd(),
   between('  /* Featured-fighter slide', '  /* Free vs Premium plans */', false).trimEnd(),
   '  .fsx-val.bad{color:#c76a54}',
 ].join('\n');
+
+// THE STRAY-${} GUARD ONLY EVER COVERED slideJS, NEVER THE CSS — so this block carried
+// pages.js line 558 across VERBATIM:
+//     ${matchupFree && matchupFree.css ? matchupFree.css : ''}
+// In pages.js that resolves at render. Sliced into a static page it is just text, and it
+// sat in the stylesheet at ~offset 63043 where a selector should be. Trap #2: CSS has no
+// syntax errors, it has recovery — the parser drops it and the rule after it, silently.
+// It never mattered while this was a prototype nobody indexed. It matters now that this
+// block IS the landing page. matchupFree.css is already interpolated further up (the
+// ${matchupFree.css || ''} line in the css template), so the correct resolution here is
+// to drop the duplicate rather than resolve it twice.
+const STRAY = "${matchupFree && matchupFree.css ? matchupFree.css : ''}";
+if (!componentCSS.includes(STRAY)) throw new Error('the matchupFree.css interpolation is no longer in the component CSS slice — this rewrite is dead, check pages.js line ~558');
+componentCSS = componentCSS.split(STRAY).join('');
+if (/\$\{/.test(componentCSS)) throw new Error('an unresolved ${…} survived into the component CSS: ' + /\$\{[^}]{0,60}/.exec(componentCSS)[0]);
 
 const rootVars = between('  :root{--accent:#00e668;--accent2:#ff3d00;', '}', true);
 
@@ -770,7 +785,7 @@ ${componentCSS}
 `;
 
 // Built twice from one builder: once with the debug switcher for local eyeballing, once
-// without for /landingpagetest. A separate "clean copy" would be a fork, and the phone
+// without for "/". A separate "clean copy" would be a fork, and the phone
 // build is the one that decides whether this ships — it must be the same page.
 // TWO flags, not one. They were conflated — debug also meant "indexable" — so asking for
 // a preview WITH controls silently asked for one without noindex. Separate concerns.
@@ -964,10 +979,10 @@ ${navMarkup}
   ${siteFooter}
 </div>
 
-<div class="fx-note">
+${debug ? `<div class="fx-note">
   <b>Prototype.</b> The previews are sliced live out of <b>worker/pages.js</b> — same payloads the carousel renders today, and the nav and footer are the real ones.
   What changed is only the layout: no auto-advance, no dots, nothing hidden behind a click. Compare against the carousel on the live landing page.
-</div>
+</div>` : ''}
 
 <div class="fx-lb" id="lb"><div class="fx-lbin" id="lbin"></div></div>
 
@@ -1143,21 +1158,16 @@ ${slideJS}
 </body></html>`;
 
 const html = page(true, false);          // local file: controls, indexable is moot
-// THE PHONE BUILD KEEPS THE CONTROLS, and that is a deliberate reversal.
+
+// PRODUCTION. This is what "/" serves: no debug controls, and INDEXABLE — it is the
+// landing page now, not a preview of one. The sliders and the noindex were scaffolding
+// for choosing numbers, and the numbers are chosen (frame 86px, aurora 90%).
 //
-// I stripped them so /landingpagetest would look like the real thing. But the phone is
-// where these numbers are being judged, and the last three rounds have all been the same
-// shape: I pick a value from arithmetic, it's wrong on a real screen, you describe it in
-// words, I pick another one. --cy went -70 -> 60 -> 48 -> 96; the aurora went too green
-// -> invisible. Every one of those was me guessing at something you could have dialled in
-// four seconds.
-//
-// So the preview ships the sliders. It is noindex and it is temporary — nobody reaches it
-// who wasn't sent the URL — and when the design ships into landingPage(), page(false) is
-// what gets used and the controls never see production.
-// PRODUCTION. This is what "/" serves now: no debug controls, and indexable — it is the
-// landing page, not a preview of one. The sliders and the noindex were scaffolding for
-// choosing the numbers; the numbers are chosen (frame 86px, aurora 90%).
+// This half-landed once before. On 2026-07-17 20:25 this line flipped to page(false,
+// false) while the assertions below still asserted noindex and sliders, so the generator
+// threw on every run, the workflow's `|| true` swallowed it, and worker/landing-grid.js
+// stayed frozen while CI went green. The assertions are inverted with it this time.
+// prototypes/landing-showcase.html still carries the sliders for a re-check on a phone.
 const preview = page(false, false);
 
 // STRAY */ IN THE CSS = EVERY RULE AFTER IT IS DROPPED.
@@ -1176,12 +1186,21 @@ const preview = page(false, false);
   if (stray) throw new Error('prose found outside a comment in the CSS — it will be dropped along with the next rule: "' + stray[0].trim().slice(0, 60) + '"');
 }
 
-if (!/noindex/.test(preview)) throw new Error('the preview route must be noindex — it is a duplicate of the landing page');
-if (!/id="bgfx"/.test(preview) || !/bg-frame/.test(preview)) throw new Error('the preview lost the frame background');
-// The controls must be present here AND provably strippable, so shipping is one flag.
-if (!/id="bgpick"|id="cypick"|id="aurpick"/.test(preview)) throw new Error('the preview lost its controls — the point is to dial these on a phone');
-const shipped = page(false, false);      // what production would get: no controls at all
-if (/id="bgpick"|id="cypick"|id="aurpick"|glBgFx/.test(shipped)) throw new Error('page(false) still emits debug chrome — the production build would ship the sliders');
+// These assert what "/" must be. They used to assert the opposite — noindex, sliders
+// present — because this file only ever built a preview. They are inverted together with
+// the page(false, false) above; splitting those two edits is exactly what broke this file
+// for two hours on 2026-07-17.
+if (/noindex/.test(preview)) throw new Error('"/" must NOT be noindex — this is the landing page, not a preview of one');
+if (!/id="bgfx"/.test(preview) || !/bg-frame/.test(preview)) throw new Error('the landing page lost the frame background');
+if (/id="bgpick"|id="cypick"|id="aurpick"|glBgFx/.test(preview)) throw new Error('"/" still emits debug chrome — the landing page would ship the sliders');
+// The MARKUP, not the class name: /fx-note/ also matches the .fx-note{} rule left in the
+// stylesheet, which is dead but harmless. Asserting on the rule made this throw on a page
+// that had already dropped the banner.
+if (/<div class="fx-note">/.test(preview)) throw new Error('"/" still carries the prototype banner — it names worker/pages.js at visitors');
+// The local prototype is the one that must KEEP the controls: it is where a number gets
+// re-dialled on a phone, and it is the only reason this file still emits two builds.
+if (!/id="bgpick"|id="cypick"|id="aurpick"/.test(html)) throw new Error('the local prototype lost its controls — the point is to dial these on a phone');
+const shipped = preview;
 // 8000, up from 6000: the phone toggle (button + its script + the collapse CSS) legitimately
 // added ~600b of debug chrome. The guard is here to catch page CONTENT diverging between the
 // preview and the shipped build — not to freeze the size of the toolbox. Raised deliberately
@@ -1196,11 +1215,11 @@ fs.writeFileSync(OUT, html);
 // worker/pages.js today. JSON.stringify cannot make that mistake.
 fs.writeFileSync(OUT_WORKER,
   '// AUTO-GENERATED by scripts/gen-showcase-proto.cjs — do not edit by hand.\n' +
-  '// The candidate landing page, served at /landingpagetest so it can be judged on a real\n' +
-  '// phone before it replaces /. Same builder as prototypes/landing-showcase.html, minus\n' +
-  '// the debug switcher. TEMPORARY: when the design ships into landingPage(), delete this\n' +
-  '// file, its route in worker/index.js, and the generator step in the workflow.\n' +
-  'export const landingTestPage = () => ' + JSON.stringify(preview) + ';\n');
+  '// THE LANDING PAGE. Served at "/" to logged-out visitors. Generated from worker/pages.js\n' +
+  '// so the feature previews are the real slide payloads and cannot drift from the product.\n' +
+  '// Same builder as prototypes/landing-showcase.html, minus the debug sliders.\n' +
+  '// Regenerated by CI every run. Do not edit by hand.\n' +
+  'export const landingGridPage = () => ' + JSON.stringify(preview) + ';\n');
 
 console.log('prototypes/landing-showcase.html  ' + (html.length / 1024).toFixed(0) + 'KB' +
   '  (slide code ' + (slideJS.length / 1024).toFixed(0) + 'KB sliced from pages.js · component css ' + (componentCSS.length / 1024).toFixed(0) + 'KB)');

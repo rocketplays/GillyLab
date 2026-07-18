@@ -4,6 +4,189 @@ Written 2026-07-18 at the end of the session that built it. Read this before tou
 worker/pages.js. Everything below was measured, not assumed; where a number appears, it
 was checked on a real device by the owner.
 
+  !! UPDATED 2026-07-18 (second session). READ THIS BLOCK FIRST — parts of the
+  !! document below are now WRONG, and one of them was wrong when it was written.
+
+
+CORRECTIONS TO THIS DOCUMENT
+----------------------------
+1. "It is live at /landingpagetest ... CI regenerates it every run" — WAS FALSE AS
+   WRITTEN. The commit that added this file (951963ab) also flipped line ~1161 of
+   gen-showcase-proto.cjs to `page(false, false)` — step 1 of THE ONE-LINE ALTERNATIVE
+   at the bottom — without updating the two assertions below it, which still asserted the
+   preview was noindex and carried the sliders. So the generator threw on EVERY run from
+   20:25 onward. The workflow ran it as `|| true`, swallowed the throw, went green, and
+   worker/landing-test.js stayed frozen at the 20:17 build. The preview was not tracking
+   the card; it was a stale artifact. That is this document's own trap #5, live, in the
+   file that documents it. FIXED — and then deliberately re-applied: /landingpagetest
+   is gone and page(false, false) IS the shipped landing page. See SHIPPED, below.
+
+2. The 46-check suite CANNOT RUN. scripts/test-showcase-proto.cjs requires jsdom, which
+   is not in package.json and not in node_modules. CI's `npm install` will not fetch an
+   undeclared dep. If it passed for you, jsdom is global on the Mac and nowhere else.
+   "VERIFY BEFORE YOU PUSH" lists it as a gate. It is not one.
+
+3. "CTAs: Start free / Go Premium / Log in" is listed under THE DESIGN, SETTLED — "picked
+   by the owner looking at a real phone". It was not. The generator's own comment (~line
+   943) says Go Premium replaced Compare plans because #plans did not exist in the
+   PROTOTYPE'S SLICE and the button did nothing. That is a mechanical fix to a dead link,
+   not a judgement. It happens to be what the owner confirmed on 2026-07-18 — but do not
+   cite this doc as evidence a phone was involved.
+
+4. FIXED — see TWO REAL BUGS, below. The stray-${} guard only covered slideJS (generator
+   line ~161), never the CSS. As a result the literal string
+       ${matchupFree && matchupFree.css ? matchupFree.css : ''}
+   was sitting in the stylesheet at offset ~63043, carried in as raw text by the
+   ${componentCSS} slice (it is pages.js line 558, sliced verbatim). Trap #2: the
+   parser drops it and probably the rule after it. NOTE: matchupFree.css itself IS present
+   and correct — it resolves separately at generator line ~450. I first claimed the hub
+   slide was missing 14KB of CSS. That was wrong; I had mangled my own search string in a
+   shell quote. The bug is the stray literal, not a missing payload. Measure, then assert.
+   Stripped in the slice now, with a guard that throws if the pattern moves.
+
+
+SHIPPED 2026-07-18. THE GRID IS LIVE AT "/".
+--------------------------------------------
+Taken via THE ONE-LINE ALTERNATIVE at the bottom of this document, not the full merge.
+The owner's words: "all we need to do is remove the current landing page, take
+/landingpagetest and put it as the new landing page." That is exactly what this is — and
+it ships the EXACT BYTES that were approved on a phone, which no reconstruction can claim.
+
+  worker/landing-test.js  ->  worker/landing-grid.js     (landingTestPage -> landingGridPage)
+  worker/index.js         ->  `if (!s) return html(landingGridPage());` on "/"
+                              /landingpagetest route + import deleted
+  generator               ->  emits page(false, false): indexable, no sliders, no banner
+  workflow                ->  step renamed, $FILES updated (3 refs), still regenerates
+                              every run so the card/rankings/roster stay current
+
+  .plans is GONE from the live page — it was never in the prototype. It still exists in
+  landingPage() (662-731), which is no longer served. /subscribe keeps its own feature
+  list, so the detail is not lost from the site.
+  Hero CTAs: Start free / Go Premium / Log in.
+
+WHAT IS STILL DEAD WEIGHT (the known cost of this route, and it is fine)
+  landingPage() in pages.js — 130KB rendered, no longer served, but scripts/gen-carousel.cjs
+  still slices it to build /subscribe's carousel. DO NOT DELETE IT until /subscribe has its
+  own source. The freeze recipe below is the cheap way to finish that whenever you want to.
+  Nothing is broken while it sits there; the Worker just carries a page nobody sees.
+
+
+STEP 2 IS SOLVED — DO NOT REWIRE gen-carousel, RETIRE IT
+--------------------------------------------------------
+"The one that will hurt" has a cheap answer, and it was measured this session:
+
+  - /subscribe (pages.js 1284) is a 620px column inside shell(). The grid is a full-page
+    design with three fixed background layers. Pointing /subscribe at the grid is a bad
+    structural fit. Take the OTHER branch: give it its own explicit source.
+  - `node scripts/gen-carousel.cjs` against the CURRENT pages.js produces a
+    carousel-data.js BYTE-IDENTICAL to the committed one. Verified. So the committed file
+    is already exactly what /subscribe needs.
+  - carousel-data.js imports landingData and matchupFree ITSELF. Freezing it does NOT
+    freeze its data — the card, the names and the payloads still resolve at render. It
+    only stops tracking landingPage()'s markup, which is the markup being deleted.
+
+  So: freeze worker/carousel-data.js as a hand-owned source file (rewrite its
+  AUTO-GENERATED header), delete scripts/gen-carousel.cjs, drop its workflow step, and
+  drop worker/carousel-data.js from $FILES. The END CAROUSEL SCRIPT sentinel in pages.js
+  (line 1207) then has no reader and goes with the carousel driver.
+  Verified already: carousel-data.js parses as a module and contains no foreign exports.
+
+
+THE SPLICE HAZARD THAT WILL BITE THE NEXT SESSION
+-------------------------------------------------
+The authored grid CSS in the generator runs from `.fx-h .a{` (line 278) to the end of the
+css template (770). DO NOT PASTE THAT RANGE INTO pages.js. It is 56KB because it contains
+two interpolations that are already present in pages.js:
+
+    line 450   ${matchupFree.css || ''}      <- pages.js resolves this itself at line 558
+    line 769   ${componentCSS}               <- pages.js already HAS this at 505-576
+
+Pasting the range duplicates ~14KB of matchup CSS and the whole component block. The
+authored region you actually want is 278-449 plus 451-768, with BOTH interpolations left
+behind for pages.js to resolve.
+
+And the block carries 4 backticks — inside a CSS comment at block-line 243,
+"Only ever set by `grade`, never by `lead`". Harmless in a .cjs file. Trap #1 the instant
+it lands in an 84KB template literal. Escape them or change the quotes.
+
+Other deltas between the oracle (/landingpagetest render, 190,631 chars) and what the
+merged landingPage() must emit:
+  - NO .fx-note banner. It is dev text naming worker/pages.js and it is NOT gated on
+    `debug` — the generator's "production" build emits it. It must not ship.
+  - photo/logo paths go back to RELATIVE. The generator rewrites 2 photo refs and 1 logo
+    ref to https://gillylab.com/ for file:// only; the Worker serves them relative.
+  - NO window.SHOWCASE_PROTO. It exists only for test-showcase-proto.cjs, which is being
+    deleted.
+  - body keeps `animation:lpin`. The generator strips it (its keyframe isn't sliced); the
+    real page has the keyframe at line 402 and the lp-out click handler at 1220-1228.
+    Those are the page-transition system, orthogonal to carousel->grid. KEEP them — 399-404
+    sit outside every deletion region. Dropping them would be removing a feature nobody
+    asked to remove. (See the last section of this document.)
+
+CSS deletion regions in landingPage(), measured:
+    429 `.hero{`      -> 475 `.hero-cta{`            hero copy. STOP AT 475.
+    480 `.showcase{`  -> 495 `.foot{text-align`      carousel chrome.
+    577 `/* Free vs Premium plans */` -> 613 `</style>`   plans.
+  .hero-cta and .big (475-479) MUST SURVIVE — the footer CTA reuses them. The generator
+  hit this too and re-includes them in footCSS (line 251-253). `.trust` (497) becomes dead
+  once the hero goes; harmless, left alone.
+
+Body restructure: pages.js wraps EVERYTHING in one `<div class="lp">` (614 -> 751). The
+design needs it SPLIT — `.lp` around the nav, `.fx-wrap` (max-width 1140) around
+hero+#tiers, `.lp` again around the two footers. Script: keep `var LD=` -> 1184
+`].filter(...)`, delete the driver 1186-1206 and the sentinel 1207-1218, keep 1220-1228.
+
+
+WHAT THIS SESSION CHANGED
+-------------------------
+  scripts/gen-showcase-proto.cjs   emits the PRODUCTION page (indexable, no sliders, no
+                                   banner); assertions inverted to describe "/" rather
+                                   than a preview; two real bugs fixed (see below).
+  worker/landing-grid.js           NEW (was landing-test.js) — the page served at "/".
+  worker/index.js                  "/" serves landingGridPage(); test route + import gone.
+  .github/workflows/update-odds.yml   $FILES + step renamed; and both `|| true` swallows on
+                                   the landing generator replaced — continue-on-error on
+                                   the step, a ::warning:: annotation in the reconcile
+                                   path. The odds sweep still cannot be blocked by the
+                                   landing page, but a throw is now VISIBLE.
+                                   THAT SWALLOW IS THE DEFECT THAT HID EVERYTHING ABOVE.
+
+  worker/pages.js         NEVER EDITED — verified byte-identical to session start.
+  worker/carousel-data.js NEVER EDITED — verified byte-identical. /subscribe provably safe.
+
+
+TWO REAL BUGS FIXED ON THE WAY OUT
+----------------------------------
+Both were invisible while this was a prototype nobody indexed. Both would have shipped.
+
+  * THE PROTOTYPE BANNER WAS NOT GATED ON `debug`. <div class="fx-note"> — "Prototype. The
+    previews are sliced live out of worker/pages.js" — was emitted by the "production"
+    build too, and would have gone to visitors naming a source file at them. Now gated,
+    with an assertion that "/" cannot carry it. (First version of that assertion tested
+    /fx-note/, which also matches the harmless .fx-note{} CSS rule, so it threw on a page
+    that had already dropped the banner. Assert on the markup, not the class name.)
+
+  * THE STRAY ${} IN THE STYLESHEET. The guard at line ~161 only ever covered slideJS, so
+    ${componentCSS} carried pages.js line 558 across verbatim:
+        ${matchupFree && matchupFree.css ? matchupFree.css : ''}
+    That sat in the CSS where a selector should be — trap #2, parser drops it and the rule
+    after it, silently. Now stripped in the slice (matchupFree.css is already interpolated
+    separately further up), with a guard that throws if the pattern ever moves.
+
+VERIFIED, BY RENDERING RATHER THAN GREPPING
+  check-worker-parses 10/10 · generator runs clean · workflow YAML parses
+  landingGridPage()  190,190 chars · indexable · no sliders · no banner · no stray ${}
+                     · #mh-overlay present exactly once · grid #tiers present
+  subscribePage()    119,110 chars · carousel intact · no unresolved ${}
+  landingPage()      130,237 chars · unserved · still feeds gen-carousel
+
+NOT DONE, AND NOT NEEDED FOR THIS SHIP: the full merge into landingPage() (steps 1-4).
+The splice map above is kept for whenever /subscribe gets its own source and landingPage()
+can finally go. There is no rush; nothing is broken while it sits there.
+
+  !! END OF THE 2026-07-18 UPDATE. Everything below is the original document, except
+  !! where the corrections above contradict it.
+
 
 WHAT EXISTS RIGHT NOW
 ---------------------

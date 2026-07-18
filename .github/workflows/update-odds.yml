@@ -291,16 +291,29 @@ jobs:
         run: node scripts/gen-carousel.cjs || true
 
       # TEMPORARY — the candidate landing page (feature grid instead of the carousel),
-      # served at /landingpagetest for review on a real device. Regenerated every run so
+      # served at "/" to logged-out visitors. Regenerated every run so
       # the preview keeps showing the CURRENT card's main event rather than freezing on
       # whichever one it was built against; the slide it feeds gates itself on
       # matchupFree.slug === landingData.card.slug and would drop out if this went stale.
       #
       # DELETE THIS STEP when the design ships into landingPage() (or is rejected), along
-      # with worker/landing-test.js, its import + route in worker/index.js, and this
+      # with worker/landing-grid.js, its import + route in worker/index.js, and this
       # path in $FILES below.
-      - name: Regenerate the landing page preview
-        run: node scripts/gen-showcase-proto.cjs || true
+      # `|| true` HERE COST TWO HOURS AND HID A BROKEN BUILD. On 2026-07-17 the generator
+      # started throwing on every run (an edit flipped the preview to page(false, false)
+      # while the assertions still asserted noindex). This swallowed it, the step went
+      # green, and worker/landing-grid.js stayed frozen at the 20:17 build — so the comment
+      # above, which promises the preview tracks the CURRENT card, was quietly false. That
+      # is trap #5 in LANDING-SHIP.txt: a generator that throws leaves a stale artifact and
+      # everything downstream passes on it.
+      #
+      # continue-on-error, NOT `|| true`: this workflow's real job is the odds sweep, and a
+      # landing-page preview must never block that. But the step now goes RED in the run
+      # summary instead of lying about having worked. Non-blocking and honest are not the
+      # same thing as non-blocking and silent.
+      - name: Regenerate the landing page
+        continue-on-error: true
+        run: node scripts/gen-showcase-proto.cjs
 
       # Compact server-only model-win-% map (from the paywalled predictions log) that
       # the Worker uses in the results-recap email to show FREE players the model's
@@ -369,7 +382,7 @@ jobs:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
           # git exits 128, the whole odds job dies, twice a day. It is excluded from
           # public/ BY NAME in build-site.sh instead. If you rename it, change both.
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/carousel-data.js worker/landing-test.js worker/pickem-model.js worker/scorecard-data.js"
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/carousel-data.js worker/landing-grid.js worker/pickem-model.js worker/scorecard-data.js"
           # ONE BAD PATH IN $FILES USED TO KILL THE WHOLE ODDS JOB.
           # `git add` on a path that doesn't exist is a fatal:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
@@ -417,7 +430,12 @@ jobs:
           node scripts/gen-climb-page.cjs
           node scripts/gen-climb-app.cjs
           node scripts/gen-carousel.cjs || true
-          node scripts/gen-showcase-proto.cjs || true   # temporary: /landingpagetest preview
+          # Same swallow as the step above, in the reconcile path. This one is inside a
+          # `run: |` block so it can't use continue-on-error — a ::warning:: annotation is
+          # the equivalent: the sweep still finishes, but a throw shows up in the summary
+          # instead of vanishing. A silent `|| true` is what froze this artifact for hours.
+          node scripts/gen-showcase-proto.cjs \
+            || echo "::warning file=scripts/gen-showcase-proto.cjs::generator FAILED — the landing page at / is now STALE, not regenerated"
           node scripts/gen-pickem-model.cjs || true
           node scripts/gen-pickem-card.cjs || true
           node scripts/gen-rankings-extra.cjs || true
