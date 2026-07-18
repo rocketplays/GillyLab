@@ -1,9 +1,142 @@
-// AUTO-GENERATED from worker/pages.js by scripts/gen-carousel.cjs — do not edit by hand.
-// The landing page carousel, shared with /subscribe so the two stay identical.
-import landingData from "./landing-data.js";
-import matchupFree from "./matchup-free.js";
+/**
+ * landing-legacy-backup.js — A FROZEN COPY OF THE CAROUSEL LANDING PAGE.
+ *
+ * Taken 2026-07-18, immediately before the landing page's feature section was replaced
+ * with the free/premium grid. This is the page exactly as it shipped: the 14-slide
+ * auto-advancing carousel, the old <h1> and its 79-word hero paragraph.
+ *
+ * WHY IT LIVES IN worker/ AND NOT prototypes/: build-site.sh copies every git-tracked
+ * file into public/ EXCEPT a named list, and worker/ is on that list while prototypes/
+ * is NOT — prototypes/the-climb.html and four others are served publicly right now. A
+ * backup in prototypes/ would be a public URL. It is also never imported, so esbuild
+ * never bundles it: it costs the Worker nothing.
+ *
+ * TO RESTORE: copy the export below over the landingPage export in worker/pages.js,
+ * then re-run `node scripts/gen-carousel.cjs` so /subscribe matches again.
+ *
+ * Git has this too — it is c9139c7e:worker/pages.js plus the slide additions of the
+ * same day. This file exists because 'it's in git somewhere' is a worse answer at 2am
+ * than a file with the word BACKUP in the name.
+ *
+ * DO NOT EDIT. It is a snapshot; editing it makes it a lie.
+ */
 
-export const carouselCSS = `.bc{font-family:'Barlow Condensed',sans-serif}
+// The imports the export below depends on, for reference when restoring:
+//   import landingData from "./landing-data.js";
+//   import matchupFree from "./matchup-free.js";
+//   PRICE_LABEL, SITE_URL and the shared helpers all live in pages.js.
+
+export const legacy_landingPage = () => `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GillyLab — The Ultimate UFC Analytics Database</title>
+<meta name="description" content="Deep analytics for every UFC fighter, a fight simulator that predicts winner and method, per-fight box scores, career accolades, matchup analysis of style, pace and path to victory, live odds and props, a bet tracker that grades itself and measures your closing-line value, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, tape study, rankings, and weekly roster updates.">
+<link rel="canonical" href="${SITE_URL}/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="GillyLab">
+<meta property="og:title" content="GillyLab — The Ultimate UFC Analytics Database">
+<meta property="og:description" content="Deep analytics for every UFC fighter, a fight simulator that predicts winner and method, per-fight box scores, career accolades, matchup analysis of style, pace and path to victory, live odds and props, a bet tracker that grades itself and measures your closing-line value, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, tape study, rankings, and weekly roster updates.">
+<meta property="og:url" content="${SITE_URL}/">
+<meta property="og:image" content="${SITE_URL}/og.png?v=2">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="GillyLab — The Ultimate UFC Analytics Database">
+<meta name="twitter:description" content="Every UFC fighter and bout: deep analytics, a fight simulator, box scores, career accolades, matchup analysis, live odds, line movement, a parlay builder, tape study, rankings, and more.">
+<meta name="twitter:image" content="${SITE_URL}/og.png?v=2">
+<link rel="icon" href="/favicon.ico?v=7" sizes="any">
+<link rel="icon" href="/favicon.svg?v=7" type="image/svg+xml">
+<link rel="icon" href="/favicon-96.png?v=7" type="image/png" sizes="96x96">
+<link rel="icon" href="/favicon-48.png?v=7" type="image/png" sizes="48x48">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=7">
+<meta name="theme-color" content="#0a0a0b">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"${SITE_URL}/#org","name":"GillyLab","url":"${SITE_URL}/","logo":"${SITE_URL}/gl-logo.png","description":"The ultimate UFC analytics database — deep fighter stats, a fight simulator, live odds, matchup breakdowns, rankings and more."},{"@type":"WebSite","@id":"${SITE_URL}/#website","name":"GillyLab","url":"${SITE_URL}/","publisher":{"@id":"${SITE_URL}/#org"}}]}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{--accent:#00e668;--accent2:#ff3d00;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#666672;--surface2:#18181d}
+  *{box-sizing:border-box}
+  html{background:var(--bg);scroll-behavior:smooth}
+  body{margin:0;background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%);color:#fff;
+       font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
+       opacity:1;transition:opacity .15s ease;animation:lpin .3s ease backwards}
+  @keyframes lpin{from{opacity:0}to{opacity:1}}
+  body.lp-out{opacity:0}
+  @media (prefers-reduced-motion: reduce){body{animation:none}body.lp-out{transition:none}}
+  a{text-decoration:none;color:inherit}
+  .bc{font-family:'Barlow Condensed',sans-serif}
+  .lp{max-width:1200px;margin:0 auto;padding:0 24px}
+  nav.lpnav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .brand{font-weight:900;letter-spacing:.15em;font-size:16px;display:inline-flex;align-items:center;gap:8px}
+  .brand .a{color:var(--accent)}
+  .brand-logo{height:26px;width:auto;display:block}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .btn-primary{font-size:14px;font-weight:800;color:#04120a;background:var(--accent);border-radius:10px;padding:10px 16px;display:inline-block}
+  .btn-primary:hover{background:#12f277}
+  .btn-ghost{font-size:14px;color:rgba(255,255,255,.75);padding:9px 12px;border-radius:10px}
+  .btn-ghost:hover{color:#fff}
+  /* Top-right nav dropdown menu (replaces the plain Log in link) */
+  .nav-menu{position:relative}
+  .nav-menu-btn{display:inline-flex;align-items:center;justify-content:center;padding:9px;border-radius:11px;background:transparent;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:border-color .15s,background-color .15s}
+  .nav-menu-btn:hover{border-color:#00e668;background:rgba(0,230,104,.09)}
+  .nav-menu-icon{display:block;stroke:rgba(255,255,255,.85);stroke-width:2.2;stroke-linecap:round;transition:stroke .15s}
+  .nav-menu-btn:hover .nav-menu-icon{stroke:#fff}
+  .nav-menu.open .nav-menu-btn{border-color:#00e668;background:rgba(0,230,104,.09)}
+  .nav-menu.open .nav-menu-icon{stroke:#00e668}
+  .nav-menu-list{position:absolute;right:0;top:calc(100% + 8px);min-width:176px;background:#141416;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;display:flex;flex-direction:column;z-index:60;box-shadow:0 14px 34px rgba(0,0,0,.5);opacity:0;visibility:hidden;transform:translateY(-6px);pointer-events:none;transition:opacity .15s ease,transform .15s ease,visibility .15s ease}
+  .nav-menu.open .nav-menu-list{opacity:1;visibility:visible;transform:translateY(0);pointer-events:auto}
+  .nav-menu-list a{display:block;padding:9px 12px;border-radius:8px;font-size:14px;color:rgba(255,255,255,.82);text-decoration:none;white-space:nowrap}
+  .nav-menu-list a:hover{background:rgba(0,230,104,.12);color:#00e668}
+  .hero{text-align:center;max-width:700px;margin:14px auto 0;padding-top:8px}
+  .badge{display:inline-block;font-size:11px;letter-spacing:.08em;color:var(--accent);background:rgba(0,230,104,.1);border:1px solid rgba(0,230,104,.25);border-radius:100px;padding:6px 14px;margin-bottom:18px}
+  h1.hh{font-size:46px;line-height:1.05;font-weight:850;letter-spacing:-.015em;margin:0}
+  h1.hh .a{color:var(--accent)}
+  .sub{color:rgba(255,255,255,.62);font-size:16px;max-width:530px;margin:16px auto 0}
+  .stats{display:flex;gap:36px;justify-content:center;margin:26px 0 6px}
+  .stat .n{font-size:26px;font-weight:850;color:var(--accent)}
+  .stat .l{font-size:12px;color:rgba(255,255,255,.5)}
+  /* Hero matchup: the real next main event, not three round numbers. Server-rendered
+     from landing-data.js, so it is correct the instant the page is served. */
+  /* Eyebrow. Unlabelled, the card reads as decoration rather than a live example.
+     Rendered only when there is a real card to label. */
+  .mu-kick{display:flex;align-items:center;justify-content:center;gap:9px;margin:34px 0 11px;
+           font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.44);font-weight:700}
+  .mu-kick::before,.mu-kick::after{content:"";height:1px;width:36px;background:rgba(255,255,255,.13)}
+  .mu-live{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px rgba(0,230,104,.16)}
+  .mu{max-width:560px;margin:0 auto 4px;border:1px solid rgba(255,255,255,.10);border-radius:14px;
+      background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.01));padding:16px 18px 14px;text-align:left}
+  .mu-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .mu-ev{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);font-weight:800}
+  .mu-when{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+  .mu-row{display:flex;align-items:center;gap:12px}
+  .mu-f{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+  .mu-f.r{flex-direction:row-reverse;text-align:right}
+  /* ring colour is set inline, from the same colourOf() the style dots use */
+  .mu-av{width:44px;height:44px;border-radius:50%;flex:0 0 44px;object-fit:cover;background:#1b1e25;
+         border:2px solid rgba(255,255,255,.14);display:grid;place-items:center;font-size:13px;font-weight:800;color:rgba(255,255,255,.5)}
+  .mu-nm{font-size:15px;font-weight:750;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mu-rec{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+  .mu-vs{font-size:12px;font-weight:800;color:rgba(255,255,255,.35);letter-spacing:.08em;flex:0 0 auto}
+  .mu-odds{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:12px;
+           padding-top:11px;border-top:1px solid rgba(255,255,255,.08)}
+  .mu-o{font-size:17px;font-weight:800;font-variant-numeric:tabular-nums}
+  .mu-o.fav{color:var(--accent)}
+  .mu-o.dog{color:rgba(255,255,255,.72)}
+  .mu-olbl{font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.38);text-align:center;flex:1}
+  .mu-style{margin-top:13px}
+  .mu-bar{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.09);margin:16px 0 6px}
+  .mu-dot{position:absolute;top:50%;width:12px;height:12px;border-radius:50%;transform:translate(-50%,-50%);border:2px solid #0b0c10}
+  .mu-tick{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.32)}
+  .mu-foot{margin-top:12px;font-size:11px;color:rgba(255,255,255,.42);text-align:center}
+  .mu-foot b{color:rgba(255,255,255,.72);font-weight:700}
+  @media(max-width:560px){
+    .mu{margin-left:12px;margin-right:12px;padding:14px 14px 12px}
+    .mu-nm{font-size:13.5px}.mu-av{width:38px;height:38px;flex-basis:38px}
+  }
+  .hero-cta{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;align-items:center}
+  .big{font-size:15px;font-weight:800;color:#04120a;background:var(--accent);border-radius:11px;padding:13px 22px;display:inline-block}
+  .big:hover{background:#12f277}
+  .big.ghost{background:transparent;color:#fff;border:1px solid var(--border)}
+  .big.ghost:hover{border-color:#fff;background:transparent}
   .showcase{max-width:620px;margin:44px auto 0}
   .sc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
   .sc-title{font-size:14px;font-weight:700}
@@ -19,6 +152,26 @@ export const carouselCSS = `.bc{font-family:'Barlow Condensed',sans-serif}
   .sc-dots{display:flex;gap:7px;justify-content:center;margin-top:14px}
   .sc-dot{width:7px;height:7px;border-radius:50%;cursor:pointer;background:rgba(255,255,255,.22)}
   .sc-desc{text-align:left;color:rgba(255,255,255,.55);font-size:13px;margin:2px 0 13px;max-width:560px;min-height:2.4em}
+  .foot{text-align:center;margin:52px auto 0}
+  .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
+  .trust{color:rgba(255,255,255,.42);font-size:12.5px;margin:16px auto 0;max-width:540px;line-height:1.5}
+  .faq{max-width:720px;margin:60px auto 0}
+  .faq-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .faq-list{display:flex;flex-direction:column;gap:10px}
+  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;font-size:14px;font-weight:800;color:#fff}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary:hover{color:var(--accent)}
+  .faq-chev{color:var(--muted);font-size:20px;line-height:1;transition:transform .2s;flex:0 0 auto}
+  .faq-item[open] .faq-chev{transform:rotate(90deg);color:var(--accent)}
+  .faq-item p{margin:0;padding:0 18px 16px;font-size:13px;color:rgba(255,255,255,.62);line-height:1.6}
+  .site-footer{max-width:1040px;margin:44px auto 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
+  .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px}
+  .foot-brand .a{color:var(--accent)}
+  .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .foot-links a{color:rgba(255,255,255,.6);font-size:13px}
+  .foot-links a:hover{color:#fff}
+  .foot-copy{color:rgba(255,255,255,.32);font-size:11.5px;line-height:1.6;max-width:900px;margin:0 auto}
   /* Faithful in-app component styles */
   .statc{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.85rem .9rem}
   .statc-l{font-size:.56rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:.35rem}
@@ -33,6 +186,15 @@ export const carouselCSS = `.bc{font-family:'Barlow Condensed',sans-serif}
   .rmu{color:#22c55e;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
   .rmd{color:#ef4444;background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.25)}
   .rtag{font-family:'Barlow Condensed',sans-serif;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:#ffb340;border:1px solid rgba(255,179,64,.35);padding:.08rem .35rem;border-radius:2px}
+  @media (max-width:760px){
+    h1.hh{font-size:34px}
+    .stats{gap:24px}
+    .hero-cta{gap:8px}
+    .hero-cta .big{padding:11px 13px;font-size:13.5px}
+  }
+  @media (max-width:400px){
+    .hero-cta .big{padding:10px 10px;font-size:12.5px}
+  }
   /* Featured-fighter slide — mirrors the profile's grouped median bars. */
   .fsx-bio{display:flex;flex-wrap:wrap;gap:1.1rem;padding:.8rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
   .fsx-bio-k{font-size:.56rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
@@ -64,9 +226,79 @@ export const carouselCSS = `.bc{font-family:'Barlow Condensed',sans-serif}
      every one inside the .mh-/#mh- namespace, no :root, nothing that can touch the hero,
      the plans table or the carousel chrome. */
   ${matchupFree && matchupFree.css ? matchupFree.css : ''}
-  .fsx-val.bad{color:#c76a54}`;
 
-export const carouselMarkup = `<section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
+  /* Free vs Premium plans */
+  .plans{max-width:780px;margin:0 auto;padding:8px 20px}
+  .plans-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .plans-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .plan{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:24px 22px;display:flex;flex-direction:column}
+  .plan.featured{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+  .plan-eyebrow{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .plan-name{font-weight:800;font-size:1.05rem;letter-spacing:.02em}
+  .plan-tag{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.25);border-radius:999px;padding:2px 8px;vertical-align:middle}
+  .plan-price{font-size:1.9rem;font-weight:900;margin:10px 0 2px}
+  .plan-price small{font-size:.8rem;font-weight:600;color:var(--muted)}
+  .plan-sub{color:var(--muted);font-size:.85rem;margin:0 0 14px}
+  .plan-feats{list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:9px}
+  .plan-feats li{position:relative;padding-left:24px;font-size:.9rem;line-height:1.35;color:#d7d7db}
+  .plan-feats li::before{content:"✓";position:absolute;left:0;top:0;color:var(--accent);font-weight:800}
+  .plan-feats li.off{color:var(--muted)}
+  .plan-feats li.off::before{content:"—";color:var(--muted)}
+  .plan .big{margin-top:auto;text-align:center}
+  .plans-note{text-align:center;color:var(--muted);font-size:.8rem;margin-top:14px}
+  /* Mobile: swap the two stacked cards for a single side-by-side comparison table */
+  .plans-table{display:none;max-width:520px;margin:0 auto}
+  .ptbl{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+  .ptbl th,.ptbl td{padding:9px 4px;border-top:1px solid rgba(255,255,255,.08)}
+  .ptbl thead th{border-top:0;padding-bottom:12px;vertical-align:bottom}
+  .ptbl .pf{text-align:left;width:54%;padding-left:0;color:#d7d7db}
+  .ptbl .pc{text-align:center;width:23%}
+  .ptbl .prem{background:rgba(0,230,104,.06)}
+  .ptbl .yes{color:var(--accent);font-weight:800}
+  .ptbl .no{color:#4a4a52}
+  .ptbl .pt-name{font-weight:800;font-size:14px}
+  .ptbl .pt-name.a{color:var(--accent)}
+  .ptbl .pt-price{font-size:11px;color:var(--muted);font-weight:600}
+  .plans-cta{display:flex;gap:10px;margin-top:16px}
+  .plans-cta .big{flex:1;padding:12px 8px;text-align:center}
+  @media(max-width:640px){.plans-grid{display:none}.plans-table{display:block}}
+  .fsx-val.bad{color:#c76a54}
+</style></head><body>
+<div class="lp">
+  <nav class="lpnav">
+    <div class="brand"><img src="gl-logo.png?v=8" alt="" class="brand-logo"/><span class="brand-word">GILLY<span class="a">LAB</span></span></div>
+    <div class="nav-cta">
+      <div class="nav-menu" id="navMenu">
+        <button type="button" class="nav-menu-btn" id="navMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="Menu" onclick="glToggleNavMenu(event)"><svg class="nav-menu-icon" viewBox="0 0 24 24" width="28" height="28" fill="none" aria-hidden="true"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
+        <div class="nav-menu-list" role="menu">
+          <a role="menuitem" href="/login">Log In</a>
+          <a role="menuitem" href="/signup">Start free</a>
+          <a role="menuitem" href="/signup?next=/subscribe">Go Premium</a>
+          <a role="menuitem" href="/about">About Us</a>
+          <a role="menuitem" href="/contact">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <script>
+    window.glToggleNavMenu=function(e){e.stopPropagation();var m=document.getElementById('navMenu');var b=document.getElementById('navMenuBtn');var open=m.classList.toggle('open');if(b)b.setAttribute('aria-expanded',open?'true':'false');};
+    document.addEventListener('click',function(e){var m=document.getElementById('navMenu');if(m&&!m.contains(e.target))m.classList.remove('open');});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape'){var m=document.getElementById('navMenu');if(m)m.classList.remove('open');}});
+  </script>
+
+  <header class="hero">
+    <div class="badge">EVERY STAT · EVERY MATCHUP · EVERY EDGE</div>
+    <h1 class="hh">The Ultimate <span class="a">UFC</span><br>Analytics Database</h1>
+    <p class="sub">Deep analytics for every fighter, a fight simulator that predicts winner and method, a box score for every UFC bout in history, career accolades, matchup analysis that reads each fighter’s style, pace and path to victory, live odds and props, a bet tracker that grades itself and measures your closing-line value, line-movement tracking, a parlay builder that re-prices your slip at every book, closing-line history, one-click tape study, always-current rankings, and weekly roster updates — all in one place.</p>
+    <div class="hero-cta">
+      <a class="big" href="/signup">Start free →</a>
+      <a class="big ghost" href="#plans">Compare plans</a>
+      <a class="big ghost" href="/login">Log in</a>
+    </div>
+    <p class="trust">Free to start, no card required — play Pick'em and climb the leaderboard. Upgrade for the full database and tools. Works on any device.</p>
+  </header>
+
+  <section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">
     <div class="sc-head">
       <div class="sc-titlewrap"><span class="sc-title" id="fl" aria-live="polite">Fight simulator</span><span class="sc-tag prem" id="ft">PREMIUM</span></div>
       <div class="sc-nav">
@@ -77,10 +309,114 @@ export const carouselMarkup = `<section class="showcase" role="group" aria-label
     <p class="sc-desc" id="fd"></p>
     <div class="sc-stage"><div id="stg"></div></div>
     <div class="sc-dots" id="dt" role="tablist" aria-label="Choose a feature"></div>
-  </section>`;
+  </section>
 
-export function carouselScript() {
-  return `<script>
+  <section class="plans" id="plans">
+    <div class="plans-title">TWO WAYS IN</div>
+    <div class="plans-grid">
+      <div class="plan">
+        <div><span class="plan-name">Free</span></div>
+        <div class="plan-price">$0<small> / forever</small></div>
+        <p class="plan-sub">Create an account and play every fight week.</p>
+        <ul class="plan-feats">
+          <li>Pick'em — predict every card</li>
+          <li>Live leaderboard &amp; your pick history</li>
+          <li>Division rankings, current active roster and weekly roster changes</li>
+          <li>Main event breakdown and analysis</li>
+          <li class="off">Full analysis and breakdown of every other bout on the card and future cards</li>
+          <li class="off">Full fighter database &amp; profiles</li>
+          <li class="off">Fight simulator &amp; any-matchup builder</li>
+          <li class="off">Live odds, props &amp; parlay tools</li>
+          <li class="off">Bet &amp; CLV tracker</li>
+        </ul>
+        <a class="big ghost" href="/signup">Start free →</a>
+      </div>
+      <div class="plan featured">
+        <div class="plan-eyebrow">Built for bettors, analysts &amp; hardcore fans</div>
+        <div><span class="plan-name">Premium</span><span class="plan-tag">FULL ACCESS</span></div>
+        <div class="plan-price">${PRICE_LABEL}</div>
+        <p class="plan-sub">Everything in Free, plus the whole database and every tool.</p>
+        <ul class="plan-feats">
+          <li>Every fighter &amp; every bout — full analytics</li>
+          <li>Fight simulator: winner, method &amp; round</li>
+          <li>Build &amp; simulate any matchup you want</li>
+          <li>Matchup analysis — style, pace &amp; path to victory</li>
+          <li>Auto scouting reports &amp; fighter injury news</li>
+          <li>Live odds, props &amp; the parlay builder</li>
+          <li>Bet &amp; CLV tracker — grade your bets, track ROI</li>
+          <li>Closing-line history &amp; line movement</li>
+          <li>Tape study, accolades &amp; full box scores</li>
+        </ul>
+        <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
+      </div>
+    </div>
+    <div class="plans-table">
+      <table class="ptbl">
+        <thead>
+          <tr>
+            <th class="pf"></th>
+            <th class="pc"><div class="pt-name">Free</div><div class="pt-price">$0</div></th>
+            <th class="pc prem"><div class="pt-name a">Premium</div><div class="pt-price">${PRICE_LABEL.split(' ')[0]}/mo</div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="pf">Pick'em predictions</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Leaderboard &amp; pick history</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Rankings, roster &amp; weekly changes</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Main-event breakdown &amp; analysis</td><td class="pc yes">✓</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Every other bout, this &amp; future cards</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Full fighter database &amp; profiles</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Fight simulator — any matchup</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Matchup analysis: style, pace &amp; path</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Scouting reports &amp; injury news</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Odds, props &amp; parlay builder</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Closing-line &amp; movement history</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+          <tr><td class="pf">Tape study, accolades &amp; box scores</td><td class="pc no">—</td><td class="pc prem yes">✓</td></tr>
+        </tbody>
+      </table>
+      <div class="plans-cta">
+        <a class="big ghost" href="/signup">Start free</a>
+        <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
+      </div>
+    </div>
+    <p class="plans-note">Start free, upgrade whenever — cancel Premium anytime.</p>
+  </section>
+
+  <section class="faq">
+    <div class="faq-title">FREQUENTLY ASKED</div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, the bet &amp; CLV tracker, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>Is there a free version?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. A free account lets you play Pick'em, climb the live leaderboard, keep your pick history, and browse division rankings and the active roster — no card required. Premium (${PRICE_LABEL}) unlocks the full fighter database, the simulator, matchup analytics, the odds and parlay tools, the bet &amp; CLV tracker, and everything else.</p></div></details>
+      <details class="faq-item"><summary>What is the matchup analysis?<span class="faq-chev">›</span></summary><div class="faq-body"><p>For any two fighters, GillyLab places each on a striker–grappler spectrum, projects the pace (significant strikes thrown per minute), and writes each fighter’s path to victory from their own statistical edges. It runs on every upcoming bout, and on any matchup you build yourself.</p></div></details>
+      <details class="faq-item"><summary>What does the parlay builder do?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Build a slip from any market — moneylines, round totals, method of victory, round props — then see the identical slip priced at every book that offers all of its legs, so you can take the best number. It flags same-game correlation, because a moneyline and a method prop on one fight are not independent.</p></div></details>
+      <details class="faq-item"><summary>What is the bet &amp; CLV tracker?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Log a bet before the bell — moneyline, method, rounds, round props, or a parlay — and it grades itself off the result, then tracks your record, ROI and units. It also measures your <em>closing-line value</em>: whether the price you took beat where the market closed, which is the clearest signal of whether you're actually betting well rather than just running hot. CLV covers moneylines only, measured against the closing line we capture ten minutes before each segment; props still grade and count toward your record, but their prices move too fast and vary too much between books to have a close worth measuring against. You can log bets on fights we don't track too — those are tagged self-reported and kept out of the verified numbers.</p></div></details>
+      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
+      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
+      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
+      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><div class="faq-body"><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div></details>
+      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><div class="faq-body"><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div></details>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <div class="hero-cta">
+      <a class="big ghost" href="/signup">Start free →</a>
+      <a class="big" href="/signup?next=/subscribe">Go Premium →</a>
+    </div>
+    <div class="fine">Free to start · Premium ${PRICE_LABEL}, cancel anytime · Secure checkout by Stripe</div>
+  </footer>
+
+  <footer class="site-footer">
+    <div class="foot-brand">GILLY<span class="a">LAB</span></div>
+    <nav class="foot-links">
+      <a href="/terms">Terms of Service</a>
+      <a href="/privacy">Privacy Policy</a>
+    </nav>
+    <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
+  </footer>
+</div>
+
+<script>
 (function(){
   var LD=${JSON.stringify(landingData)};
   var A="#00e668",M="var(--muted)",L="rgba(255,255,255,.09)",BG="#0a0a0b";
@@ -527,6 +863,38 @@ export function carouselScript() {
   if('IntersectionObserver' in window){
     new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){reset();}else{clearInterval(timer);}});},{threshold:.2}).observe(document.querySelector('.showcase'));
   }
+
+  // Smooth fade + height on the FAQ accordions (native <details> otherwise snaps
+  // open/closed). Falls back to the native instant toggle if JS or motion is off.
+  var RMf=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.faq-item'),function(d){
+    if(RMf)return;
+    var sum=d.querySelector('summary'),body=d.querySelector('.faq-body');if(!sum||!body)return;
+    body.style.overflow='hidden';body.style.transition='height .28s ease, opacity .28s ease';
+    if(!d.open){body.style.height='0';body.style.opacity='0';}
+    var busy=false;
+    sum.addEventListener('click',function(e){
+      e.preventDefault();if(busy)return;busy=true;
+      if(d.open){
+        body.style.height=body.scrollHeight+'px';
+        requestAnimationFrame(function(){body.style.height='0';body.style.opacity='0';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;d.open=false;body.removeEventListener('transitionend',h);busy=false;});
+      }else{
+        d.open=true;body.style.height='0';body.style.opacity='0';
+        requestAnimationFrame(function(){body.style.height=body.scrollHeight+'px';body.style.opacity='1';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;body.style.height='auto';body.removeEventListener('transitionend',h);busy=false;});
+      }
+    });
+  });
+
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="/"]');
+    if(!a)return;var href=a.getAttribute('href');
+    if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;
+    e.preventDefault();document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);
+  });
+  // Reset the fade-out when the page is restored (esp. from the back/forward cache),
+  // otherwise Back lands on a page still faded to opacity 0 — a blank screen.
+  window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});
 })();
-</script>`;
-}
+</script></body></html>`;

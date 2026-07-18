@@ -44,9 +44,15 @@ const css = [
 
 // Build the output file as a plain string so the ${…} inside `script` is written
 // verbatim (it must resolve inside carousel-data.js, not here).
+// The extracted script carries `${JSON.stringify(...)}` interpolations that resolve when
+// carousel-data.js re-wraps it in a template literal — so every name they reference must
+// be imported HERE too, not just in pages.js. matchupFree feeds the matchup-hub slide;
+// without this import /subscribe throws a ReferenceError at render and loses the whole
+// carousel, while the landing page it was copied from stays perfectly fine.
 const header = "// AUTO-GENERATED from worker/pages.js by scripts/gen-carousel.cjs — do not edit by hand.\n" +
   '// The landing page carousel, shared with /subscribe so the two stay identical.\n' +
-  'import landingData from "./landing-data.js";\n\n';
+  'import landingData from "./landing-data.js";\n' +
+  'import matchupFree from "./matchup-free.js";\n\n';
 
 const out = header +
   "export const carouselCSS = `" + css + "`;\n\n" +
