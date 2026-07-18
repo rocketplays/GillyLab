@@ -298,9 +298,17 @@ ${footCSS}
      the longest part of the page.
      The blur/background is not decoration: cards scroll UNDER this, and without an opaque
      backing the counts sit on top of a moving preview and become unreadable. */
-  .fx-filter{position:sticky;top:0;z-index:30;display:flex;justify-content:center;gap:3px;margin:0 -22px 18px;padding:9px 22px;background:rgba(10,10,11,.86);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .2s}
-  .fx-filter.stuck{border-bottom-color:var(--border)}
-  @media (max-width:560px){ .fx-filter{margin:0 -13px 14px;padding:8px 13px} }
+  /* THE PILL STAYS A PILL. It was a bordered, rounded segmented control and it read as one
+     — that shape is the affordance. Making the whole bar full-bleed took the container
+     away, so it stopped looking like something you press and started looking like a page
+     header; and at margin:0 -22px it ran edge to edge and straight through the frame rails.
+     Two elements instead of one: an invisible sticky wrapper that spans the column and
+     does the pinning, and the original pill inside it, centred and untouched.
+     pointer-events:none on the wrapper matters — it stretches the full width, so without
+     it the strip would swallow taps meant for the cards passing underneath. */
+  .fx-fltwrap{position:sticky;top:10px;z-index:30;display:flex;justify-content:center;margin:0 0 18px;pointer-events:none}
+  .fx-filter{display:inline-flex;gap:3px;background:rgba(10,10,11,.92);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:999px;padding:4px;pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,.45)}
+  @media (max-width:560px){ .fx-fltwrap{top:8px;margin-bottom:14px} }
   .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
   .fx-fb:hover{color:#f4f5f7}
   .fx-fb.on{background:var(--accent);color:#0a0a0b}
@@ -802,7 +810,7 @@ ${navMarkup}
        away — which is exactly when they become useful. As a direct child of .fx-wrap they
        stay pinned for the whole length of the grid. This is the kind of thing that looks
        right in a mockup and does nothing on the real page. -->
-  <div class="fx-filter" id="flt" role="tablist"></div>
+  <div class="fx-fltwrap"><div class="fx-filter" id="flt" role="tablist"></div></div>
   <div id="tiers"></div>
 </div>
 
@@ -864,11 +872,12 @@ ${slideJS}
     // The chip bar is sticky now, so a band is "current" once it passes UNDER the bar —
     // not at an arbitrary 120px. Measure the bar rather than hardcoding its height: it is
     // 46px on a desktop and 42 on a phone, and a constant would be wrong on one of them.
-    var onPrem = p.getBoundingClientRect().top <= flt.offsetHeight + 8;
+    // Measure the pill where it actually IS, rather than guessing: the sticky wrapper sits
+    // 10px down (8 on a phone) and the pill is ~40px tall, so a hardcoded number would be
+    // wrong on one of them and wrong again the moment the padding changes.
+    var bar = flt.getBoundingClientRect();
+    var onPrem = p.getBoundingClientRect().top <= bar.bottom + 8;
     Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
-    // A hairline only once it's actually pinned — a border floating mid-hero looks like a
-    // stray rule. getBoundingClientRect().top hits 0 exactly when sticky engages.
-    flt.classList.toggle('stuck', flt.getBoundingClientRect().top <= 0.5);
   }
   window.addEventListener('scroll', spy, {passive:true});
 
