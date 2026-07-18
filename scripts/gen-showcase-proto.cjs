@@ -788,6 +788,18 @@ ${matchupFree.css || ''}
   }
 
 ${componentCSS}
+
+  /* SAFE-AREA SEE-THROUGH (2026-07-18). Overrides the sliced body/html rules above, last so
+     they win the cascade. The glow was on BODY, which paints an OPAQUE background across the
+     whole viewport — so the status-bar and URL-bar safe areas showed that body background
+     (black at the bottom, where the glow bottoms out at var(--bg)) instead of the page. That
+     is the black band the owner saw fade to the next page's colour on navigate. Moving the
+     glow to HTML and making body transparent is exactly what the auth/public pages do: the
+     safe areas now show the background colour and the content behind the bars, edge-to-edge.
+     The solid var(--bg) COLOUR stays on html (shorthand colour + image) so the true insets
+     and overscroll are dark, never white. */
+  html{background:var(--bg) radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%)}
+  body{background:transparent}
 `;
 
 // Built twice from one builder: once with the debug switcher for local eyeballing, once
