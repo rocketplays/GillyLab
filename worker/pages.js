@@ -88,7 +88,7 @@ export const climbNav = (loggedIn, subscribed) => `
     .pk-brand img{height:24px;width:auto;display:block}
     .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
     .pk-navlinks a{text-decoration:none}
-    .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+    .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   </style>
   <nav class="pk-nav">
     <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
@@ -220,8 +220,11 @@ ${ogTags(title, seo.desc, seo.path)}` : ""}
   input,textarea{width:100%;padding:.7rem .8rem;background:#0e0e10;border:1px solid var(--line);border-radius:9px;color:#fff;font-size:1rem;font-family:inherit}
   textarea{resize:vertical;min-height:120px}
   input:focus,textarea:focus{outline:none;border-color:var(--accent)}
-  button,.btn{display:inline-block;width:100%;text-align:center;margin-top:1.1rem;padding:.8rem 1rem;border:0;border-radius:10px;
-       background:var(--accent);color:#04120a;font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none}
+  /* Primary buttons take the events-page deep-dive / "Start free" look: a green-tinted
+     panel with a green border, not a solid bright-green fill. */
+  button,.btn{display:inline-block;width:100%;text-align:center;margin-top:1.1rem;padding:.8rem 1rem;border:1px solid rgba(0,230,104,.35);border-radius:10px;
+       background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;font-weight:800;font-size:1rem;cursor:pointer;text-decoration:none;transition:background .15s,border-color .15s}
+  button:hover,.btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .btn.ghost{background:transparent;color:#fff;border:1px solid var(--line);font-weight:600}
   .row{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.6rem}
   .row .btn{width:auto;padding:.8rem 1.5rem}
@@ -1473,7 +1476,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-brand img{height:24px;width:auto;display:block}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
-  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   .pk-head h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .pk-sub{color:var(--muted);font-size:.9rem;margin:0}
@@ -1489,7 +1492,8 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-name-prompt p{color:var(--muted);font-size:.85rem;margin:0 0 .7rem}
   .pk-name-row{display:flex;gap:8px}
   .pk-name-row input{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:9px;color:var(--text);padding:.6rem .7rem;font:inherit;font-size:16px}
-  .pk-btn{background:var(--accent);color:#04120a;border:none;border-radius:9px;padding:.6rem 1rem;font:inherit;font-weight:800;cursor:pointer}
+  .pk-btn{background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border:1px solid rgba(0,230,104,.35);border-radius:9px;padding:.6rem 1rem;font:inherit;font-weight:800;cursor:pointer;transition:background .15s,border-color .15s}
+  .pk-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .pk-btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
   .pk-bar-actions{display:flex;gap:8px;align-items:center}
   .pk-msg{font-size:.82rem;margin-top:.5rem;min-height:1em}
@@ -2029,7 +2033,7 @@ ${ogTags("UFC Rankings — Every Division · GillyLab", "Current UFC rankings fo
   .pk-brand img{height:24px;width:auto;display:block}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
-  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .rk-sub{color:var(--muted);font-size:.85rem;margin:0}
@@ -2158,7 +2162,7 @@ ${ogTags("UFC Active Roster & Weekly Roster Moves · GillyLab", "Every fighter o
   .pk-brand img{height:24px;width:auto;display:block}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
-  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .rs-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.3rem}
@@ -2461,7 +2465,7 @@ ${eventLd}
   .pk-brand img{height:24px;width:auto;display:block}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
-  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
   .mf-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
@@ -2526,7 +2530,8 @@ ${eventLd}
   .mf-lock-ico{font-size:.95rem;line-height:1.3;flex:0 0 auto;opacity:.85}
   .mf-lock-t{font-size:.78rem;font-weight:700;color:var(--text);line-height:1.35}
   .mf-lock-sub{font-size:.72rem;color:var(--muted);margin-top:.15rem;line-height:1.4}
-  .mf-lock-btn{display:block;text-align:center;margin-top:.75rem;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;text-decoration:none;border-radius:8px;padding:.55rem .7rem}
+  .mf-lock-btn{display:block;text-align:center;margin-top:.75rem;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border:1px solid rgba(0,230,104,.35);font-weight:800;font-size:.8rem;text-decoration:none;border-radius:8px;padding:.55rem .7rem;transition:background .15s,border-color .15s}
+  .mf-lock-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}
   /* fighter stat popup */
@@ -2795,7 +2800,7 @@ ${ldScript}
   .pk-brand img{height:24px;width:auto;display:block}
   .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
   .pk-navlinks a{text-decoration:none}
-  .pk-upg{color:#04120a;background:var(--accent);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
   main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
   .fp-back{display:inline-flex;align-items:center;gap:.3rem;color:var(--muted);text-decoration:none;font-size:.85rem;margin:0 0 .85rem;transition:color .12s}
   .fp-back:hover{color:var(--text)}
@@ -2844,7 +2849,8 @@ ${ldScript}
   .fp-lock-i{border:1px solid var(--border);border-radius:9px;padding:.6rem .65rem;background:rgba(255,255,255,.015)}
   .fp-lock-it{font-size:.8rem;font-weight:700;line-height:1.25}
   .fp-lock-id{font-size:.7rem;color:var(--muted);margin-top:.2rem;line-height:1.35}
-  .fp-lock-btn{display:block;text-align:center;background:var(--accent);color:#04120a;font-weight:800;font-size:.86rem;text-decoration:none;border-radius:9px;padding:.65rem .7rem}
+  .fp-lock-btn{display:block;text-align:center;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border:1px solid rgba(0,230,104,.35);font-weight:800;font-size:.86rem;text-decoration:none;border-radius:9px;padding:.65rem .7rem;transition:background .15s,border-color .15s}
+  .fp-lock-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   @media (max-width:420px){.fp-lock-grid{grid-template-columns:1fr}}
 ${AURORA_CSS}
 </style></head><body>${AURORA_DIVS}

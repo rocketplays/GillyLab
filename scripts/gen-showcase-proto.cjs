@@ -265,7 +265,9 @@ const PRICE_LABEL = (() => {
 const footCTA = between('<footer class="foot">', '</footer>', true)
   .replace(/\$\{PRICE_LABEL\}/g, PRICE_LABEL)
   // Give the footer "Start free" the same events-page look as the hero one (see .fx-cta-free).
-  .replace('<a class="big ghost" href="/signup">Start free →</a>', '<a class="big ghost fx-cta-free" href="/signup">Start free →</a>');
+  .replace('<a class="big ghost" href="/signup">Start free →</a>', '<a class="big ghost fx-cta-free" href="/signup">Start free →</a>')
+  // Footer "Go Premium" was a solid-green .big; make it ghost to match the hero one.
+  .replace('<a class="big" href="/signup?next=/subscribe">Go Premium →</a>', '<a class="big ghost" href="/signup?next=/subscribe">Go Premium →</a>');
 const siteFooter = between('<footer class="site-footer">', '</footer>', true);
 const footCSS = between('  .foot{text-align:center', '  .trust{', false).trimEnd() + '\n' +
   between('  .site-footer{', '  /* Faithful in-app component styles */', false).trimEnd() +

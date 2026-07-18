@@ -278,7 +278,8 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   .big{font-size:1.05rem;font-weight:700;margin:.3rem 0}
   .big.win{color:var(--accent)} .big.loss{color:var(--accent2)}
   button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600}
-  button.btn.pri{background:var(--accent);color:#04120a;border-color:var(--accent)}
+  button.btn.pri{background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border-color:rgba(0,230,104,.35)}
+  button.btn.pri:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .load{color:var(--muted);padding:2rem 0;text-align:center}
 
   /* Attribute legend — a table, not a paragraph.
