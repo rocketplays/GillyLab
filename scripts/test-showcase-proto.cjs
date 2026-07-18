@@ -174,9 +174,13 @@ check('mobile rows stay inside the frame rails', !!mobileGrid && !/margin\s*:/.t
 // quarter of a swipe. The signal moved to the group headings, which is where the reader
 // is deciding anything. One badge per group, not per card.
 check('the redundant tier chips are gone', doc.querySelectorAll('.fx-fb').length === 0);
+// Only the paid groups get a badge. "Free [FREE]" said the word twice and made the badge
+// read as a label; it's a gate. No badge IS the free signal.
 const tags = [...doc.querySelectorAll('.fx-btag')].map((t) => t.textContent);
-check('every group heading carries its tier badge', tags.join(' ') === 'FREE PREMIUM PREMIUM PREMIUM',
-  '(' + tags.join(' · ') + ')');
+check('only the premium groups are badged', tags.join(' ') === 'PREMIUM PREMIUM PREMIUM',
+  '(' + tags.length + ' badges: ' + tags.join(' · ') + ')');
+check('the free group carries no badge',
+  !doc.querySelector('#band-free') || !doc.querySelector('#band-free .fx-btag'));
 check('the cards no longer repeat the group\'s tier', doc.querySelectorAll('.fx-card .fx-pill').length === 0,
   '(15 pills saying what the heading above already said)');
 check('the lightbox keeps its pill — no group heading in view there',

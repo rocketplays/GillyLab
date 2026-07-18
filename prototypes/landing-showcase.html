@@ -489,7 +489,7 @@
        screen. Baked in rather than left as a multiplier, so the shipped CSS carries the
        chosen number and not a knob set to three-quarters. Peak green ~.068 against the
        hero glow's measured ~.123. */
-    --a1:0.068; --a2:0.053; --a3:0.06; --aur:1;
+    --a1:0.081; --a2:0.063; --a3:0.072; --aur:1;
     background:
     radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),
     radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),
@@ -635,6 +635,17 @@
     .fx-card.wide{flex:0 0 86vw; grid-column:auto}
     /* Air between groups, tight within: grouping is spacing, not lines. */
     .fx-tier + .fx-tier{margin-top:34px}
+
+    /* THE HEADING WRAPS TO TWO LINES ON A PHONE.
+       It was one flex row — label, badge, note, gradient rule — with white-space:nowrap on
+       the note. Measured on a 390px screen: label ~110 + badge ~80 + note ~200 + 39px of
+       gaps = ~419px in 364px of room, and nowrap means the note cannot fold, so it just
+       leaves the screen. Adding the badge is what tipped it; the note was already close.
+       So: name and badge on line one, the promise on its own line beneath, and drop the
+       gradient rule — it is decoration and there is no width to spend on it. */
+    .fx-band{flex-wrap:wrap;gap:9px;margin:0 0 12px}
+    .fx-bn{flex:0 0 100%;order:3;white-space:normal;line-height:1.4}
+    .fx-bl{display:none}
   }
   @media (max-width:560px){
     .fx-h{font-size:29px}
@@ -3525,8 +3536,11 @@ var LD={
   // that carry the meaning. The peek already says there is more.
   function band(key, label, tierCls, n, note){
     var d=document.createElement('div'); d.className='fx-band'; d.id='band-'+key;
+    // PREMIUM ONLY. A "FREE" badge next to a heading that says "Free" is the word twice —
+    // and it made the badge look like a label rather than a gate. The badge exists to mark
+    // what costs money; the absence of one is what free looks like.
     d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span>'
-      +'<span class="fx-btag '+tierCls+'">'+(tierCls==='free'?'FREE':'PREMIUM')+'</span>'
+      +(tierCls==='prem' ? '<span class="fx-btag prem">PREMIUM</span>' : '')
       +'<span class="fx-bn">'+note+'</span><span class="fx-bl"></span>';
     return d;
   }

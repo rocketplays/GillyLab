@@ -71,7 +71,7 @@ const HERO_TRUST = 'Free to start, no card required — play The Climb and Pick�
 // the 86 in the stylesheet was decoration. Two sources of truth for one number is how you
 // get a control that lies and a value that isn't used. Derive the control from the value.
 const FRAME_CY = 86;    // px from the top of the page to the octagon's flat cap
-const AURORA = 0.75;    // multiplier on the .09/.07/.08 bloom baseline
+const AURORA = 0.90;    // multiplier on the .09/.07/.08 bloom baseline
 const AURA = (base) => (base * AURORA).toFixed(3).replace(/0+$/, '');
 
 // ENOENT is the only tolerable read failure (CLAUDE.md #2). An offloaded file must
@@ -668,6 +668,17 @@ ${matchupFree.css || ''}
     .fx-card.wide{flex:0 0 86vw; grid-column:auto}
     /* Air between groups, tight within: grouping is spacing, not lines. */
     .fx-tier + .fx-tier{margin-top:34px}
+
+    /* THE HEADING WRAPS TO TWO LINES ON A PHONE.
+       It was one flex row — label, badge, note, gradient rule — with white-space:nowrap on
+       the note. Measured on a 390px screen: label ~110 + badge ~80 + note ~200 + 39px of
+       gaps = ~419px in 364px of room, and nowrap means the note cannot fold, so it just
+       leaves the screen. Adding the badge is what tipped it; the note was already close.
+       So: name and badge on line one, the promise on its own line beneath, and drop the
+       gradient rule — it is decoration and there is no width to spend on it. */
+    .fx-band{flex-wrap:wrap;gap:9px;margin:0 0 12px}
+    .fx-bn{flex:0 0 100%;order:3;white-space:normal;line-height:1.4}
+    .fx-bl{display:none}
   }
   @media (max-width:560px){
     .fx-h{font-size:29px}
@@ -918,8 +929,11 @@ ${slideJS}
   // that carry the meaning. The peek already says there is more.
   function band(key, label, tierCls, n, note){
     var d=document.createElement('div'); d.className='fx-band'; d.id='band-'+key;
+    // PREMIUM ONLY. A "FREE" badge next to a heading that says "Free" is the word twice —
+    // and it made the badge look like a label rather than a gate. The badge exists to mark
+    // what costs money; the absence of one is what free looks like.
     d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span>'
-      +'<span class="fx-btag '+tierCls+'">'+(tierCls==='free'?'FREE':'PREMIUM')+'</span>'
+      +(tierCls==='prem' ? '<span class="fx-btag prem">PREMIUM</span>' : '')
       +'<span class="fx-bn">'+note+'</span><span class="fx-bl"></span>';
     return d;
   }
