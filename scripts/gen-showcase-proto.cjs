@@ -64,6 +64,16 @@ const HERO_HOOK = 'Know the fight before it starts.';
 // bottom of the same page disagreeing with the top of it.
 const HERO_TRUST = 'Free to start, no card required — play The Climb and call the card in Pick’em. Premium is {PRICE}, cancel anytime.';
 
+// ── the two numbers you dialled in on a real phone ───────────────────────────
+// ONE CONSTANT EACH, used by the CSS *and* the slider. They were separate values and
+// they drifted the moment I changed one: the CSS said --cy:86px while the slider's
+// default said 96 and applied it with !important on load, so the page rendered at 96 and
+// the 86 in the stylesheet was decoration. Two sources of truth for one number is how you
+// get a control that lies and a value that isn't used. Derive the control from the value.
+const FRAME_CY = 86;    // px from the top of the page to the octagon's flat cap
+const AURORA = 0.75;    // multiplier on the .09/.07/.08 bloom baseline
+const AURA = (base) => (base * AURORA).toFixed(3).replace(/0+$/, '');
+
 // ENOENT is the only tolerable read failure (CLAUDE.md #2). An offloaded file must
 // throw, never fall back — a default here would silently prototype an empty page.
 function read(p) {
@@ -335,7 +345,17 @@ ${footCSS}
   /* Expand = detail on demand. Nothing is HIDDEN behind it — the preview is already
      on the card; this is just the full-size read. That's the difference between this
      and an accordion. */
-  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;display:none;overflow-y:auto;padding:40px 18px}
+  /* SCROLL LOCK, iOS-shaped.
+     body{overflow:hidden} does not hold on iOS Safari — it never has — so the page kept
+     scrolling behind the expanded card. The usual fix is body{position:fixed;top:-scrollY},
+     but that would be a bug here: #bgframe is absolutely positioned against BODY, so
+     making body fixed collapses its containing block to the viewport and the rails would
+     snap from full-document height to one screen, mid-interaction.
+     So: lock the ROOT instead (which modern iOS does respect), and give the lightbox
+     overscroll-behavior:contain so its own scroll doesn't chain out to the page behind it.
+     body is left completely alone, and #bgframe never notices. */
+  html.fx-locked{overflow:hidden}
+  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
   .fx-lb.on{display:block}
   .fx-lbin{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fxIn .22s cubic-bezier(.2,.7,.3,1)}
   @keyframes fxIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
@@ -443,7 +463,11 @@ ${matchupFree.css || ''}
      --aur is a live multiplier for the slider — this is the number I have been worst at
      guessing, so it gets a knob rather than another round of adjectives. */
   html.bg-frame #bgfx{opacity:1;
-    --a1:.09; --a2:.07; --a3:.08; --aur:1;
+    /* .068/.053/.060 = the .09/.07/.08 baseline dialled to the 75% you picked on a real
+       screen. Baked in rather than left as a multiplier, so the shipped CSS carries the
+       chosen number and not a knob set to three-quarters. Peak green ~.068 against the
+       hero glow's measured ~.123. */
+    --a1:${AURA(.09)}; --a2:${AURA(.07)}; --a3:${AURA(.08)}; --aur:1;
     background:
     radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),
     radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),
@@ -451,10 +475,14 @@ ${matchupFree.css || ''}
   html[style*="--gl-aur"] #bgfx{--aur:var(--gl-aur) !important}
 
   /* THE FRAME — absolute, so the cap belongs to the page and not to the screen.
-     --cy:96px CLEARS THE NAV. nav.lpnav is padding:22px 0 around a 26px logo = 70px tall,
-     so 48px put the cap level with the wordmark and it read as a line through the logo.
-     (48 was my mistake to accept: you said "lower" and the number for lower is BIGGER —
-     --cy is distance from the top. I should have said so instead of typing 48.)
+     --cy CLEARS THE NAV, and its value is FRAME_CY at the top of this file — do not quote
+     a number here. A comment naming a specific px value is a second source of truth that
+     nobody updates: this one said 96 for a while after the constant became 86, which is
+     exactly the drift the constant was introduced to stop.
+     nav.lpnav is padding:22px 0 around a 26px logo = 70px tall, so 48px put the cap level
+     with the wordmark and it read as a line through the logo. (48 was my mistake to
+     accept: "lower" needs a BIGGER number — --cy is distance from the top — and I should
+     have said so instead of typing it.)
 
      vector-effect:non-scaling-stroke IS THE THICKNESS FIX. The stroke used to scale with
      the SVG box: at 98vw the scale factor is 1.48 on a desktop but 0.38 on a phone, so a
@@ -463,13 +491,30 @@ ${matchupFree.css || ''}
      SCREEN pixels and identical everywhere. The cap is drawn heavier than the shoulders
      because it's the shortest line and reads lightest. */
   html.bg-frame #bgframe{opacity:1;
-    --cw:98vw; --cy:96px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
+    --cw:98vw; --cy:${FRAME_CY}px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
     background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 293' preserveAspectRatio='none'%3E%3Cpath d='M293 0 H707' fill='none' stroke='%2300e668' stroke-opacity='0.42' stroke-width='2.6' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M293 0 L0 293 M707 0 L1000 293' fill='none' stroke='%2300e668' stroke-opacity='0.36' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 50% var(--cy)/var(--cw) var(--sh),
     /* the rails: 2px, and they now run the DOCUMENT's height, not the viewport's — so
        they settle to a steady .11 rather than fading out inside the first screen. */
     linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% - var(--cw)/2) var(--rail)/2px 100%,
     linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% + var(--cw)/2) var(--rail)/2px 100%}
+
+  /* THE SHOULDER DROP IS A FIXED 370px ON PHONES, NOT A RATIO — and this is the "what
+     about the smaller iPhone" fix.
+     --sh = 0.293 x --cw is the true octagon angle. It holds up at 1482px wide, where the
+     shoulders land at y=520 and the hero ends around 400. On a phone --cw collapses to
+     ~380px, so --sh collapses with it to ~112 — and the shoulders land at ~198px, which is
+     INSIDE the headline (169..229). MEASURED on every iPhone from the 320px SE to the
+     440px 16 Pro Max: all seven end inside or on the title, yours included. The geometry
+     that works wide does not survive narrow, and it fails WORSE the smaller the phone.
+     A fixed 370px drop lands the shoulders at y=456 on every one of them — below the
+     whole hero, regardless of width. The angle steepens as the screen narrows (14° from
+     vertical on an SE, 19° on a Pro Max) which is what you want anyway: on a narrow screen
+     the frame should read as rails, not as a cage. preserveAspectRatio='none' means the
+     SVG simply stretches, so this costs nothing. */
+  @media (max-width:720px){
+    html.bg-frame #bgframe{--sh:370px}
+  }
 
   /* FRAME CLOSED — the same frame, dropped so its flat top edge lands ABOVE the eyebrow
      instead of above the fold. Identical geometry; only --cy moves (-70px -> 88px), which
@@ -592,8 +637,8 @@ ${debug ? `
 
 <div id="cypick">
   <b>Top edge</b>
-  <input type="range" id="cy" min="-40" max="200" step="2" value="96">
-  <span id="cyv">96px</span>
+  <input type="range" id="cy" min="-40" max="200" step="2" value="${FRAME_CY}">
+  <span id="cyv">${FRAME_CY}px</span>
   <button type="button" id="cyreset">reset</button>
 </div>
 
@@ -623,7 +668,7 @@ ${debug ? `
   // slider starts where the variant actually is rather than at an arbitrary number.
   // 60px: chosen on a real screen, halfway between the top of the page and the eyebrow.
   // The slider stays so it can be re-checked, but this is the number.
-  var DEF={"bg-frame":96};
+  var DEF={"bg-frame":${FRAME_CY}};
 
   function setCy(v){
     document.documentElement.style.setProperty('--gl-cy', v+'px');
@@ -654,7 +699,10 @@ ${debug ? `
   pick.addEventListener('click',function(e){
     var b=e.target.closest('button[data-bg]'); if(!b) return;
     var mode=b.getAttribute('data-bg');
-    document.documentElement.className=mode;
+    // toggle, NOT className=mode. The scroll lock is also a class on <html>, and an
+    // assignment here would silently wipe it — open a card, tap the background switcher,
+    // and the page starts scrolling behind the overlay again.
+    document.documentElement.classList.toggle('bg-frame', mode==='bg-frame');
     Array.prototype.forEach.call(pick.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});
     try{ localStorage.setItem('glBgFx', mode); localStorage.removeItem('glBgCy'); }catch(_){}
     syncCyBox(mode, false);
@@ -669,10 +717,11 @@ ${debug ? `
   // every judgement made with it is against the wrong value.
   var savedFx=null, savedCy=null;
   try{ savedFx=localStorage.getItem('glBgFx'); savedCy=localStorage.getItem('glBgCy'); }catch(_){}
-  var mode = savedFx!=null ? savedFx : document.documentElement.className;
+  // read the CLASS, not className — the root may legitimately carry others.
+  var mode = savedFx!=null ? savedFx : (document.documentElement.classList.contains('bg-frame') ? 'bg-frame' : '');
   var b = pick.querySelector('button[data-bg="'+mode+'"]');
   if(!b){ mode='bg-frame'; b=pick.querySelector('button[data-bg="bg-frame"]'); }
-  document.documentElement.className=mode;
+  document.documentElement.classList.toggle('bg-frame', mode==='bg-frame');
   Array.prototype.forEach.call(pick.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b);});
   syncCyBox(mode, true);
 })();
@@ -810,12 +859,12 @@ ${slideJS}
       + '<button class="fx-x" type="button" aria-label="Close">×</button></div>'
       + '<div class="fx-lbstage">'+s.h+'</div>'
       + '<div class="fx-nav"><button class="fx-nb" type="button" id="pv">‹ Prev</button><button class="fx-nb" type="button" id="nx">Next ›</button></div>';
-    lb.classList.add('on'); document.body.style.overflow='hidden';
+    lb.classList.add('on'); document.documentElement.classList.add('fx-locked');
     lbin.querySelector('.fx-x').onclick=close;
     document.getElementById('pv').onclick=function(e){e.stopPropagation();open((cur-1+slides.length)%slides.length);};
     document.getElementById('nx').onclick=function(e){e.stopPropagation();open((cur+1)%slides.length);};
   }
-  function close(){ lb.classList.remove('on'); document.body.style.overflow=''; }
+  function close(){ lb.classList.remove('on'); document.documentElement.classList.remove('fx-locked'); }
   lb.onclick=function(e){ if(e.target===lb) close(); };
   document.addEventListener('keydown',function(e){
     if(!lb.classList.contains('on')) return;
