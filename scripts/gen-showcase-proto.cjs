@@ -441,8 +441,12 @@ ${footCSS}
      overscroll-behavior:contain so its own scroll doesn't chain out to the page behind it.
      body is left completely alone, and #bgframe never notices. */
   html.fx-locked{overflow:hidden}
-  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
-  .fx-lb.on{display:block}
+  /* opacity+visibility, NOT display:none/block, so the expand fades BOTH ways. display
+     can't transition, so the old version popped open and popped shut; visibility can, and
+     it still removes the overlay from hit-testing when hidden. The inner keeps its fxIn
+     slide, re-triggered in open() so it replays on every expand, not just the first. */
+  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
+  .fx-lb.on{opacity:1;visibility:visible}
   .fx-lbin{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fxIn .22s cubic-bezier(.2,.7,.3,1)}
   /* Expanded, the hub gets the width the real modal gets — min(1040px,94vw), lifted from
      index.html. 640px is what made it wrap on expand: I was showing a 1040px component in
@@ -805,7 +809,14 @@ ${componentCSS}
      The solid var(--bg) COLOUR stays on html (shorthand colour + image) so the true insets
      and overscroll are dark, never white. */
   html{background:var(--bg) radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%)}
-  body{background:transparent}
+  /* PAGE-TRANSITION FADE (2026-07-18). The grid page lost this when it replaced the
+     carousel — the carousel's fade handler lived past the END CAROUSEL SCRIPT sentinel, so
+     the slice never carried it, and clicking a link navigated with a hard cut while every
+     other page on the site fades. Same shape as the app pages: fade IN on load via an
+     animation, fade OUT on navigate via a class + transition (the JS adds .gl-leaving). */
+  body{background:transparent;animation:glFadeIn .28s ease both;transition:opacity .16s ease}
+  body.gl-leaving{opacity:0}
+  @keyframes glFadeIn{from{opacity:0}to{opacity:1}}
 `;
 
 // Built twice from one builder: once with the debug switcher for local eyeballing, once
@@ -1161,6 +1172,10 @@ ${slideJS}
       + '<div class="fx-lbstage">'+s.h+'</div>'
       + '<div class="fx-nav"><button class="fx-nb" type="button" id="pv">‹ Prev</button><button class="fx-nb" type="button" id="nx">Next ›</button></div>';
     lb.classList.toggle('wide', isWide(s));   // the hub expands to the modal's own width
+    // Restart the inner slide-in. With the overlay now toggled by visibility (not display),
+    // fxIn no longer replays on its own each open, so kick it by hand: clear it, force a
+    // reflow, restore it.
+    lbin.style.animation='none'; void lbin.offsetWidth; lbin.style.animation='';
     lb.classList.add('on'); document.documentElement.classList.add('fx-locked');
     lbin.querySelector('.fx-x').onclick=close;
     document.getElementById('pv').onclick=function(e){e.stopPropagation();open((cur-1+slides.length)%slides.length);};
@@ -1174,6 +1189,19 @@ ${slideJS}
     if(e.key==='ArrowLeft') open((cur-1+slides.length)%slides.length);
     if(e.key==='ArrowRight') open((cur+1)%slides.length);
   });
+
+  // Fade the page out before an internal navigation, and clear the fade on bfcache restore
+  // (Back would otherwise land on a page stuck at opacity 0). Same transition every other
+  // page uses. The slide-expand controls are <button>/<div>, not <a href="/">, so opening a
+  // slide never triggers this — only real navigations do.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="/"]');
+    if(!a||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
+    var href=a.getAttribute('href'); if(!href||href.charAt(0)!=='/') return;
+    e.preventDefault(); document.body.classList.add('gl-leaving');
+    setTimeout(function(){window.location=href;},150);
+  });
+  window.addEventListener('pageshow',function(){document.body.classList.remove('gl-leaving');});
 
   paint();
   window.SHOWCASE_PROTO={slides:slides,free:free.length,prem:prem.length};  // for the test

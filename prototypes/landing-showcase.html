@@ -251,8 +251,12 @@
      overscroll-behavior:contain so its own scroll doesn't chain out to the page behind it.
      body is left completely alone, and #bgframe never notices. */
   html.fx-locked{overflow:hidden}
-  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
-  .fx-lb.on{display:block}
+  /* opacity+visibility, NOT display:none/block, so the expand fades BOTH ways. display
+     can't transition, so the old version popped open and popped shut; visibility can, and
+     it still removes the overlay from hit-testing when hidden. The inner keeps its fxIn
+     slide, re-triggered in open() so it replays on every expand, not just the first. */
+  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
+  .fx-lb.on{opacity:1;visibility:visible}
   .fx-lbin{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fxIn .22s cubic-bezier(.2,.7,.3,1)}
   /* Expanded, the hub gets the width the real modal gets — min(1040px,94vw), lifted from
      index.html. 640px is what made it wrap on expand: I was showing a 1040px component in
@@ -445,7 +449,13 @@
      to the top of the DOCUMENT and scrolls away, leaving only the two rails running down
      past the features. Previously everything was fixed, so the cap rode down the page with
      you and was still framing the title when you were four screens into the grid. */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s}
+  /* z-index:-1, not 0 (2026-07-18). This is a position:FIXED full-viewport layer. At
+     z-index:0 iOS treated it as chrome ABOVE the floating URL bar and painted the bottom
+     safe area solid black instead of letting the page show through — the exact black band
+     the owner reported, and the one structural difference from the auth/public pages, whose
+     #bgfx is already -1. Negative z-index reads as background the bar composites through.
+     Still below the content either way, so nothing above it changes. */
+  #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .25s}
 
   /* #bgedge — PAINT the page's top and bottom back to #0a0a0b, don't mask a layer.
      iOS paints the status bar and the URL bar flat. theme-color only ASKS the browser to
@@ -470,7 +480,13 @@
      earlier: 260px up, so by the visible bottom (~60px above the box's edge) it is already
      ~77% of the way to var(--bg). Longer fade, softer landing, and the top's 100px is
      untouched. */
-  #bgedge{position:fixed;inset:0;z-index:0;pointer-events:none;
+  /* z-index:-1, LOWERED ON PURPOSE (2026-07-18). At z-index:0 this wash painted ABOVE the
+     non-positioned content and masked the top 100px / bottom 260px to #0a0a0b — the clean
+     black edges. The owner wanted the OPPOSITE: content visible through the status bar and
+     the URL bar, edge-to-edge, the same see-through look the auth/public pages have. Behind
+     the content it no longer masks; it only keeps the aurora off the extreme edges. The
+     solid html{background:var(--bg)} still keeps the true insets / overscroll dark. */
+  #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the
@@ -811,6 +827,25 @@
      gen-showcase-proto.cjs, which scales it down bodily rather than squeezing it). */
   .mh-slide{--mh-rail:3.4rem}
   .fsx-val.bad{color:#c76a54}
+
+  /* SAFE-AREA SEE-THROUGH (2026-07-18). Overrides the sliced body/html rules above, last so
+     they win the cascade. The glow was on BODY, which paints an OPAQUE background across the
+     whole viewport — so the status-bar and URL-bar safe areas showed that body background
+     (black at the bottom, where the glow bottoms out at var(--bg)) instead of the page. That
+     is the black band the owner saw fade to the next page's colour on navigate. Moving the
+     glow to HTML and making body transparent is exactly what the auth/public pages do: the
+     safe areas now show the background colour and the content behind the bars, edge-to-edge.
+     The solid var(--bg) COLOUR stays on html (shorthand colour + image) so the true insets
+     and overscroll are dark, never white. */
+  html{background:var(--bg) radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%)}
+  /* PAGE-TRANSITION FADE (2026-07-18). The grid page lost this when it replaced the
+     carousel — the carousel's fade handler lived past the END CAROUSEL SCRIPT sentinel, so
+     the slice never carried it, and clicking a link navigated with a hard cut while every
+     other page on the site fades. Same shape as the app pages: fade IN on load via an
+     animation, fade OUT on navigate via a class + transition (the JS adds .gl-leaving). */
+  body{background:transparent;animation:glFadeIn .28s ease both;transition:opacity .16s ease}
+  body.gl-leaving{opacity:0}
+  @keyframes glFadeIn{from{opacity:0}to{opacity:1}}
 </style>
 </head><body>
 
@@ -3729,6 +3764,10 @@ var LD={
       + '<div class="fx-lbstage">'+s.h+'</div>'
       + '<div class="fx-nav"><button class="fx-nb" type="button" id="pv">‹ Prev</button><button class="fx-nb" type="button" id="nx">Next ›</button></div>';
     lb.classList.toggle('wide', isWide(s));   // the hub expands to the modal's own width
+    // Restart the inner slide-in. With the overlay now toggled by visibility (not display),
+    // fxIn no longer replays on its own each open, so kick it by hand: clear it, force a
+    // reflow, restore it.
+    lbin.style.animation='none'; void lbin.offsetWidth; lbin.style.animation='';
     lb.classList.add('on'); document.documentElement.classList.add('fx-locked');
     lbin.querySelector('.fx-x').onclick=close;
     document.getElementById('pv').onclick=function(e){e.stopPropagation();open((cur-1+slides.length)%slides.length);};
@@ -3742,6 +3781,19 @@ var LD={
     if(e.key==='ArrowLeft') open((cur-1+slides.length)%slides.length);
     if(e.key==='ArrowRight') open((cur+1)%slides.length);
   });
+
+  // Fade the page out before an internal navigation, and clear the fade on bfcache restore
+  // (Back would otherwise land on a page stuck at opacity 0). Same transition every other
+  // page uses. The slide-expand controls are <button>/<div>, not <a href="/">, so opening a
+  // slide never triggers this — only real navigations do.
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href^="/"]');
+    if(!a||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
+    var href=a.getAttribute('href'); if(!href||href.charAt(0)!=='/') return;
+    e.preventDefault(); document.body.classList.add('gl-leaving');
+    setTimeout(function(){window.location=href;},150);
+  });
+  window.addEventListener('pageshow',function(){document.body.classList.remove('gl-leaving');});
 
   paint();
   window.SHOWCASE_PROTO={slides:slides,free:free.length,prem:prem.length};  // for the test
