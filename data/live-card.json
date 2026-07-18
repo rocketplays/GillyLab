@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-18T23:14:15.673Z",
+ "generatedAt": "2026-07-18T23:46:51.792Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -3562,6 +3562,194 @@
       ]
      },
      "capturedAt": "2026-07-18T23:14:15.549Z"
+    }
+   ]
+  },
+  "Jean-Paul Lebosnoyani": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Seokhyeon Ko",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Seokhyeon Ko",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 152,
+      "totL": 67,
+      "totA": 168,
+      "tdL": 3,
+      "tdA": 4,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "2:09",
+      "head": [
+       35,
+       125
+      ],
+      "body": [
+       10,
+       19
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       41,
+       132
+      ],
+      "clinch": [
+       11,
+       20
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 168,
+      "totL": 80,
+      "totA": 186,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:47",
+      "head": [
+       55,
+       153
+      ],
+      "body": [
+       7,
+       11
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       61,
+       163
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-07-18T23:46:51.664Z"
+    }
+   ]
+  },
+  "Seokhyeon Ko": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jean-Paul Lebosnoyani",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jean-Paul Lebosnoyani",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 168,
+      "totL": 80,
+      "totA": 186,
+      "tdL": 0,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:47",
+      "head": [
+       55,
+       153
+      ],
+      "body": [
+       7,
+       11
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       61,
+       163
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 52,
+      "sigA": 152,
+      "totL": 67,
+      "totA": 168,
+      "tdL": 3,
+      "tdA": 4,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "2:09",
+      "head": [
+       35,
+       125
+      ],
+      "body": [
+       10,
+       19
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       41,
+       132
+      ],
+      "clinch": [
+       11,
+       20
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-18T23:46:51.664Z"
     }
    ]
   }
