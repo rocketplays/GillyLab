@@ -460,7 +460,16 @@
      the first and last 100px of the viewport end up #0a0a0b. z-index 0 keeps it beneath the
      content (z-index 1+), and fixed means the clean edge follows the screen at any scroll
      position. */
-  #bgedge{position:fixed;inset:0;z-index:0;pointer-events:none;
+     dvh, NOT inset:0 — and this is why the bottom stayed green while the top blended.
+     A position:fixed element on iOS is sized to the LARGE viewport: the one you get with
+     the URL bar hidden. With inset:0 this element's bottom edge therefore sits UNDER the
+     URL bar, so its bottom fade plays out in ~100px you cannot see, and the visible bottom
+     of the screen lands where the wash is still transparent. The top has no bar above it,
+     so the top always worked — the asymmetry was the clue.
+     100dvh is the DYNAMIC viewport height: it tracks the bar showing and hiding, so the
+     element's bottom edge is the bottom edge you can actually see. 100vh first as a
+     fallback for anything that doesn't know dvh. */
+  #bgedge{position:fixed;top:0;left:0;right:0;height:100vh;height:100dvh;z-index:0;pointer-events:none;
     background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 100px),var(--bg) 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the
