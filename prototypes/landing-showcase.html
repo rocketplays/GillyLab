@@ -158,7 +158,27 @@
      So this card alone gets the original treatment: render at the true 1040px and scale
      the whole thing down to fit. That is right HERE and wrong everywhere else, which is
      why it is one class and not a global. */
+  /* THE HUB CARD SPANS THE WHOLE ROW, so it gets ~1096px and renders at ~1:1 instead of
+     the half-size thumbnail it was at 520px. It is also the headline premium feature, so
+     a full-width card is the right hierarchy anyway — this is one of those rare cases
+     where the layout fix and the design answer are the same thing. */
+  .fx-card.wide{grid-column:1 / -1}
   .fx-card.wide .fx-scaler{width:1040px;transform-origin:top left;padding:14px 16px}
+  .fx-card.wide .fx-frame{height:360px}
+
+  /* BELOW 720px, DO NOT SCALE IT — LET IT REFLOW.
+     matchup-free.css has its own phone block: .mh-grids collapses to one column, the
+     header wraps instead of shrinking, the tabs and body tighten. That is how the real
+     modal survives a 390px screen, and it keys on VIEWPORT width — which is also why the
+     desktop card needed scaling in the first place: at a 1512px viewport the payload uses
+     its desktop layout no matter how narrow the box around it is.
+     So under 720px the media query is already doing the work; scaling on top of it would
+     shrink an already-correct layout to 35%. Hand it the card's width and get out of the
+     way — exactly what the modal does. */
+  @media (max-width:720px){
+    .fx-card.wide .fx-scaler{width:auto;transform:none !important;padding:12px 13px}
+    .fx-card.wide .fx-frame{height:172px}
+  }
   .fx-fade{position:absolute;left:0;right:0;bottom:0;height:96px;background:linear-gradient(180deg,rgba(13,13,16,0),rgba(13,13,16,.82) 46%,#0d0d10);pointer-events:none}
   .fx-expand{position:absolute;right:11px;bottom:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);background:rgba(20,20,26,.9);border:1px solid var(--border);border-radius:7px;padding:5px 9px;pointer-events:none;transition:color .15s,border-color .15s}
   .fx-card:hover .fx-expand{color:var(--accent);border-color:rgba(0,230,104,.45)}
@@ -3484,7 +3504,13 @@ var LD={
       // like the payload failing rather than the measurement being early. Leave it alone
       // and let the resize handler catch it once there IS a width.
       if(!f.clientWidth) return;
-      sc.style.transform = 'scale(' + (f.clientWidth/1040) + ')';
+      // Under 720px the payload's own media query has already reflowed it — the CSS above
+      // clears the width and the transform, and scaling here would undo that.
+      if(window.innerWidth <= 720){ sc.style.transform=''; return; }
+      // Never scale UP past 1:1. Full-width the frame is ~1096px against a 1040px payload,
+      // and 1.05 would blur it for no reason — the point is to stop shrinking it, not to
+      // start stretching it.
+      sc.style.transform = 'scale(' + Math.min(1, f.clientWidth/1040) + ')';
     });
   }
   window.addEventListener('resize', fitWide);
