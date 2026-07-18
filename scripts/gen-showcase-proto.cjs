@@ -263,7 +263,9 @@ const PRICE_LABEL = (() => {
   return m[1];
 })();
 const footCTA = between('<footer class="foot">', '</footer>', true)
-  .replace(/\$\{PRICE_LABEL\}/g, PRICE_LABEL);
+  .replace(/\$\{PRICE_LABEL\}/g, PRICE_LABEL)
+  // Give the footer "Start free" the same events-page look as the hero one (see .fx-cta-free).
+  .replace('<a class="big ghost" href="/signup">Start free →</a>', '<a class="big ghost fx-cta-free" href="/signup">Start free →</a>');
 const siteFooter = between('<footer class="site-footer">', '</footer>', true);
 const footCSS = between('  .foot{text-align:center', '  .trust{', false).trimEnd() + '\n' +
   between('  .site-footer{', '  /* Faithful in-app component styles */', false).trimEnd() +
@@ -313,6 +315,12 @@ ${footCSS}
   .fx-btn:hover{background:#12f277}
   .fx-btn.ghost{background:transparent;color:rgba(255,255,255,.8);border:1px solid rgba(255,255,255,.16)}
   .fx-btn.ghost:hover{color:#fff;border-color:rgba(255,255,255,.34);background:rgba(255,255,255,.04)}
+  /* "Start free" gets the events-page deep-dive / Climb·Pick'em look — a green-tinted panel
+     with a green border instead of a solid fill (.ftab-pick in pages.js). Applied to both
+     the hero button (.fx-btn) and the footer one (.big.ghost); the two-class selectors
+     out-specify each base rule so it wins without !important. */
+  .fx-btn.fx-cta-free, .big.ghost.fx-cta-free{background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);color:#f4f5f7}
+  .fx-btn.fx-cta-free:hover, .big.ghost.fx-cta-free:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .fx-trust{color:var(--muted);font-size:12px;margin-top:13px}
   @media (max-width:560px){ .fx-h{font-size:36px} }
 
@@ -999,7 +1007,7 @@ ${navMarkup}
          somewhere real (/signup?next=/subscribe — the same target the footer CTA uses,
          so the two agree). -->
     <div class="fx-cta">
-      <a class="fx-btn" href="/signup">Start free →</a>
+      <a class="fx-btn fx-cta-free" href="/signup">Start free →</a>
       <a class="fx-btn ghost" href="/signup?next=/subscribe">Go Premium →</a>
       <a class="fx-btn ghost" href="/login">Log in</a>
     </div>
