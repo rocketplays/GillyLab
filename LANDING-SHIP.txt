@@ -1,0 +1,164 @@
+SHIPPING THE NEW LANDING PAGE — what's done, what's left, and what will bite you
+================================================================================
+Written 2026-07-18 at the end of the session that built it. Read this before touching
+worker/pages.js. Everything below was measured, not assumed; where a number appears, it
+was checked on a real device by the owner.
+
+
+WHAT EXISTS RIGHT NOW
+---------------------
+The design is FINISHED and APPROVED. It is live at /landingpagetest (noindex, logged-out
+reachable) and it is not a mockup — every feature preview is the real slide payload,
+sliced out of worker/pages.js at build time, so it shows the product and cannot drift
+from it. CI regenerates it every run, so the main-event deep dive / rankings / roster are
+always the current card.
+
+  scripts/gen-showcase-proto.cjs   the generator. Slices the slide payloads, the nav, the
+                                   footers and the CSS out of landingPage(), then builds
+                                   the grid around them. Emits TWO files:
+  prototypes/landing-showcase.html   local file, WITH debug sliders
+  worker/landing-test.js             the Worker module, no sliders, exports landingTestPage()
+  scripts/test-showcase-proto.cjs  46 checks over the generated page
+  worker/landing-legacy-backup.js  frozen byte-identical copy of the CAROUSEL page, with
+                                   restore instructions in its header. NOT imported, NOT
+                                   served, costs the Worker nothing.
+
+The route is worker/index.js: `if (path === "/landingpagetest") return html(landingTestPage());`
+sitting with /about and /terms, i.e. outside the session gate.
+
+
+THE DESIGN, SETTLED
+-------------------
+Do not re-derive these. Each one was picked by the owner looking at a real phone after I
+picked a wrong one from arithmetic.
+
+  frame --cy        86px      (FRAME_CY in the generator; feeds CSS *and* slider)
+  aurora            90%       (AURORA = 0.90; bakes .081/.063/.072 from .09/.07/.08)
+  hero              eyebrow "Every stat · Every matchup · Every edge"
+                    h1 "The Ultimate UFC Analytics Database"
+                    hook "Know the fight before it starts."
+                    CTAs: Start free / Go Premium / Log in
+  groups, in order  Free                     · play, predict and dig in — free forever
+                    Before the fight         · where the research begins        [PREMIUM]
+                    Betting tools            · become a smarter, more efficient bettor [PREMIUM]
+                    Complete fighter history · every fighter, every bout        [PREMIUM]
+  tier badge        on the group HEADING, premium only. No badge = free. No per-card pills
+                    (15 pills repeating their own heading), no Free/Premium jump chips
+                    (Free is one row; the chip saved a quarter of a swipe).
+  desktop           2-up grid from 720px, previews 290px, hub card spans the full row
+  mobile            each group is a horizontal snap ROW. 86vw cards -> ~14% of the next
+                    card peeks. THE PEEK IS THE ENTIRE AFFORDANCE. Do not "tidy" it to
+                    100vw; a row that ends flush at the screen edge looks like it ends and
+                    nobody swipes it. ~2.9 screens vs 5.7 stacked.
+
+
+WHAT'S LEFT — FOUR THINGS, AND THEY MUST LAND TOGETHER
+------------------------------------------------------
+1. Move the grid into landingPage() in worker/pages.js.
+   Replace the hero (badge/h1/sub/hero-cta/trust) and the whole <section class="showcase">
+   + its carousel driver. Add the ~5KB of .fx-* CSS, the three background layers
+   (#bgfx aurora / #bgframe octagon+rails / #bgedge the edge wash), the theme-color meta
+   and viewport-fit=cover. All of it is in gen-showcase-proto.cjs already — it is a move,
+   not a rewrite.
+
+2. REWIRE gen-carousel.cjs IN THE SAME COMMIT. This is the one that will hurt.
+   It slices landingPage()'s showcase markup + CSS + slide script for /subscribe. The
+   moment / stops having a carousel, that slice either throws or silently emits garbage.
+   It already did exactly this today when the FAQ moved: carousel-data.js came out
+   containing `export const signupPage` and /subscribe would not have built. Either point
+   /subscribe at the grid too, or give it its own explicit source.
+
+3. Delete the test page: worker/landing-test.js, its import + route in worker/index.js,
+   the "Regenerate the landing page preview" step in .github/workflows/update-odds.yml
+   (both the normal path AND the reconcile path near the bottom), and worker/landing-test.js
+   from $FILES (also two places).
+
+4. Decide what gen-showcase-proto.cjs becomes. Once the design lives in pages.js it either
+   goes away or turns into a preview of the real thing. prototypes/landing-showcase.html
+   goes with it.
+
+Do NOT delete landingPage() until step 2 is done — gen-carousel still eats it.
+
+
+THE TRAPS. ALL OF THESE HAPPENED TODAY.
+---------------------------------------
+* BACKTICKS IN COMMENTS. landingPage() is one 84KB template literal. A backtick in a
+  comment CLOSES it and the rest of the file parses as code. This broke pages.js SEVEN
+  times in one session, four of those in comments warning about it. `node --check` does
+  NOT catch it — it assumes CommonJS and exits 0. The check that does:
+      node scripts/check-worker-parses.cjs        <- runs in CI before the deploy
+  It names the offending line and quotes it. Use it after every edit to pages.js.
+
+* CSS AND HTML FAIL SILENTLY TOO. A stray */ makes the CSS parser drop every rule after
+  it (this is why the debug panels once rendered as text at the top of the page). An
+  unbalanced <!-- publishes your prose. Neither throws. gen-showcase-proto.cjs now refuses
+  to emit if CSS comments are unbalanced or prose sits where a selector should be.
+
+* MARKERS THAT ARE ALSO CODE MOVE WITH THE CODE. gen-carousel used the FAQ's first comment
+  as its end marker; when the FAQ moved to /faq the marker went with it and the slice ate
+  three other pages. pages.js now carries an inert sentinel:
+      /* ===== END CAROUSEL SCRIPT ===== */
+  Do not delete it. Do not let it drift from the end of the script.
+
+* indexOf FINDS THE WRONG PAGE. pages.js holds every page; landingPage starts ~26k chars
+  in. A plain indexOf finds some OTHER page's copy of shared markup — `.brand{` appears 5
+  times, `<footer class="site-footer">` twice with DIFFERENT link lists. gen-showcase-proto
+  anchors every slice from the landingPage offset. Do the same.
+
+* A GENERATOR THAT THROWS LEAVES A STALE ARTIFACT, AND THE TESTS PASS ON IT. Twice today
+  the generator errored and the suite reported 46/46 against the previous build. If you
+  change the generator, read its output line, not just the test summary.
+
+* jsdom LIES ABOUT CSS. It silently drops what it cannot parse — min(), linear-gradient,
+  calc(). It told me #mh-box had no width when the file says width:min(1040px,94vw), and
+  that .fx-bl had no background. "Could not parse CSS stylesheet" on stderr means it is
+  discarding declarations. For CSS facts, grep the raw text or use a real browser.
+
+* THE HUB SLIDE IS SPECIAL. The matchup payload is authored for the modal's real 1040px and
+  CANNOT reflow (four fixed grid tracks). It needs `.mh-slide{--mh-rail:3.4rem}` or the
+  tiles stack in one column — --mh-rail lives on #mh-box, which the slide can't render
+  because that id would exist three times. It also gates itself on
+  matchupFree.slug === landingData.card.slug so a stale file can't advertise a finished
+  fight. Keep both.
+
+
+VERIFY BEFORE YOU PUSH
+----------------------
+    node scripts/check-worker-parses.cjs     # must be 10 of 10. Catches the backtick bug.
+    node scripts/test-showcase-proto.cjs     # 46 checks (delete with the prototype)
+    node scripts/gen-carousel.cjs            # must not emit another page's exports
+    node --input-type=module --check < worker/carousel-data.js
+
+And render the thing rather than grepping for it — three times today a check passed or
+failed on its own grammar rather than on reality:
+    node -e 'import("./worker/pages.js").then(m => console.log(m.landingPage().length))'
+
+
+IF IT GOES WRONG
+----------------
+worker/landing-legacy-backup.js is the carousel page, byte-identical, with restore steps in
+its header. Copy the export over landingPage(), re-run gen-carousel.cjs, push. Git has it
+too but a file with BACKUP in the name is a better answer at 2am.
+
+
+THE ONE-LINE ALTERNATIVE, IF YOU WANT IT LIVE TODAY
+---------------------------------------------------
+Point / at the generated page instead of merging:
+  - gen-showcase-proto.cjs: emit page(false, false) — no debug chrome, no noindex
+  - worker/index.js: `if (!s) return html(landingGridPage());` in the "/" route
+  - drop the /landingpagetest route
+This ships the approved page with zero risk to /subscribe, because landingPage() stays
+put and keeps feeding gen-carousel. The cost: landingPage() is dead weight in the bundle
+(~84KB) and /subscribe still shows a carousel of the same features the front page now
+shows as a grid. It is a real ship, not a hack — but steps 1-4 above are still the finish.
+
+
+ONE HONEST NOTE ON PROCESS
+--------------------------
+Nearly every visual call in this design was made by the owner looking at a phone, after I
+proposed a wrong one from arithmetic: the octagon size, the aurora twice in opposite
+directions, the stroke width, the frame height, the safe-area bands. The measurements I
+CAN make are reliable (page heights, alphas, geometry, what a slice contains). The
+judgements are not mine. When his eyes and my arithmetic disagree, the arithmetic is
+describing a different problem than the one on screen — I broke an approved design once
+today by "fixing" a defect he had never reported. Don't do that.

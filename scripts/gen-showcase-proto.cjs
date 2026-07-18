@@ -1155,7 +1155,10 @@ const html = page(true, false);          // local file: controls, indexable is m
 // So the preview ships the sliders. It is noindex and it is temporary — nobody reaches it
 // who wasn't sent the URL — and when the design ships into landingPage(), page(false) is
 // what gets used and the controls never see production.
-const preview = page(true, true);        // /landingpagetest: controls AND noindex
+// PRODUCTION. This is what "/" serves now: no debug controls, and indexable — it is the
+// landing page, not a preview of one. The sliders and the noindex were scaffolding for
+// choosing the numbers; the numbers are chosen (frame 86px, aurora 90%).
+const preview = page(false, false);
 
 // STRAY */ IN THE CSS = EVERY RULE AFTER IT IS DROPPED.
 // Editing inside a long comment, I left the original's closing */ in place and wrote on
