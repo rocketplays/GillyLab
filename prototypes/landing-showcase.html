@@ -172,26 +172,31 @@
   .fx-bl.r{background:linear-gradient(90deg,var(--border),transparent)}
   .fx-bt{order:1} .fx-btag{order:2} .fx-bn{order:3} .fx-bl.r{order:4}
 
-  /* TWO COLUMNS ON DESKTOP. minmax(460px) means the grid fits two cards across inside
-     the 1140px .fx-wrap and drops to one below ~940px — so a wide screen shows the settled
-     2-up block, a narrow desktop shows a single readable column, and the phone (handled in
-     the max-width:720px block below) turns each group into a swipe row instead.
-     BELOW 720px IS NOT THIS GRID: two columns on a 390px phone gives cards 174px wide, and
-     these payloads are authored for ~580px — they'd collapse into rubble, so the phone gets
-     the swipe row, not a squeeze. The stacked Free / Premium blocks and the sticky pill that
-     jumps between them are the landing's settled layout; the pill is desktop-only (its
-     band-free / band-prem targets only exist when the two flat tiers render). */
-  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:20px;grid-auto-flow:dense}
+  /* EVERY GROUP IS A HORIZONTAL ROW — on desktop as well as on a phone. The row scrolls: you
+     swipe it on touch, and on a desktop the per-row arrow buttons (built in the script) page
+     through it. Same card basis for every card, the matchup hub included — no card spans the
+     row now. The fixed basis is what leaves the next card peeking past the edge, the
+     affordance that says "there's more, keep going." Card width is overridden to 86vw on the
+     phone in the max-width:720px block below. */
+  .fx-grid{
+    display:flex; gap:20px;
+    overflow-x:auto; overscroll-behavior-x:contain;
+    scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
+    scrollbar-width:none; padding:0 0 4px;
+  }
+  .fx-grid::-webkit-scrollbar{display:none}
+  .fx-card{flex:0 0 clamp(320px,32vw,432px); scroll-snap-align:start}
 
-  /* The Free/Premium jump pill. Sticks below the hero once you scroll past it, and each chip
-     scrolls to its tier band; the scroll-spy keeps the lit chip matching what you're looking
-     at. Hidden under 720px, where the four group headings do the navigating instead. */
-  .fx-filter{display:inline-flex;gap:3px;margin-top:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:4px}
-  .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
-  .fx-fb:hover{color:#f4f5f7}
-  .fx-fb.on{background:var(--accent);color:#0a0a0b}
-  .fx-fb .n{opacity:.6;font-size:11px;margin-left:5px}
-  @media (max-width:720px){ .fx-filter{display:none} }
+  /* Per-row scroll arrows. Desktop only, and only shown (the script toggles .show) when the
+     row actually overflows — a group of three that already fits gets none. They sit over the
+     card band, centred on the preview, and disable at each end of the scroll. */
+  .fx-rowwrap{position:relative}
+  .fx-arrow{position:absolute;top:calc(50% + 22px);transform:translateY(-50%);z-index:4;width:42px;height:42px;border-radius:999px;display:none;align-items:center;justify-content:center;background:rgba(18,18,22,.86);border:1px solid var(--border);color:#f4f5f7;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(5px);transition:background .15s,opacity .15s,border-color .15s}
+  .fx-arrow:hover{background:rgba(38,38,46,.96);border-color:rgba(255,255,255,.28)}
+  .fx-arrow.prev{left:-8px}
+  .fx-arrow.next{right:-8px}
+  .fx-arrow:disabled{opacity:.28;cursor:default}
+  @media (min-width:721px){ .fx-arrow.show{display:flex} }
 
   .fx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s cubic-bezier(.2,.7,.3,1),border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
   .fx-card:hover{transform:translateY(-4px);border-color:rgba(0,230,104,.4);box-shadow:0 14px 38px rgba(0,0,0,.5)}
@@ -226,13 +231,12 @@
      So this card alone gets the original treatment: render at the true 1040px and scale
      the whole thing down to fit. That is right HERE and wrong everywhere else, which is
      why it is one class and not a global. */
-  /* THE HUB CARD SPANS THE WHOLE ROW, so it gets ~1096px and renders at ~1:1 instead of
-     the half-size thumbnail it was at 520px. It is also the headline premium feature, so
-     a full-width card is the right hierarchy anyway — this is one of those rare cases
-     where the layout fix and the design answer are the same thing. */
-  .fx-card.wide{grid-column:1 / -1}
+  /* THE HUB IS A NORMAL-WIDTH CARD NOW — same basis as its neighbours in the row, no span.
+     It still can't reflow (fixed 1040px tracks), so it renders at 1040 and the script scales
+     it down to the card's width; it keeps the same frame height as every other card so it
+     sits the same size on the shelf. Just a smaller, faithful thumbnail — tap to expand for
+     the full 1040px read. */
   .fx-card.wide .fx-scaler{width:1040px;transform-origin:top left;padding:14px 16px}
-  .fx-card.wide .fx-frame{height:360px}
 
   /* BELOW 720px, DO NOT SCALE IT — LET IT REFLOW.
      matchup-free.css has its own phone block: .mh-grids collapses to one column, the
@@ -719,7 +723,8 @@
      THE PEEK IS THE AFFORDANCE, and it is the whole ballgame. 86vw + gap leaves ~14% of
      the next card showing. A row that ends flush at the screen edge looks like it ends,
      and nobody swipes it. Do not "tidy" this to 100vw.
-     Desktop keeps the grid: rows are the answer to a small screen, not a better idea. */
+     Desktop now uses these same rows too — same chunks, paged by the arrow buttons above
+     instead of a swipe. This block just retunes the card width and gaps for a phone. */
   @media (max-width:720px){
     .fx-grid{
       display:flex; grid-template-columns:none;
@@ -1027,10 +1032,6 @@
       <a class="fx-btn ghost" href="/login">Log in</a>
     </div>
     <p class="fx-trust">Free to start, no card required — play The Climb and Pick’em. Premium is $9.99 / month, cancel anytime.</p>
-    <!-- Free / Premium jump pill. Centred here in the hero because .fx-top is text-align
-         centre; the script fills it and wires each chip to scroll to its tier band. Desktop
-         only (CSS hides it under 720px); empty on /subscribe because that slice has no hero. -->
-    <div class="fx-filter" id="flt" role="tablist"></div>
   </div>
   <div id="tiers"></div>
 </div>
@@ -3636,43 +3637,13 @@ var LD={
   // ── the grid ───────────────────────────────────────────────────────────────
   // Everything above this line is the landing page's own code, untouched. Only the
   // rendering below is new: the carousel's driver (dots, 7s timer, swipe) is gone.
-  var tiers = document.getElementById('tiers'), flt = document.getElementById('flt');
+  var tiers = document.getElementById('tiers');
   var lb = document.getElementById('lb'), lbin = document.getElementById('lbin');
   var cur = 0;
+  var rows = [];   // one arrow-updater per group row, refreshed on scroll/resize
 
   var free = slides.filter(function(s){ return s.f; });
   var prem = slides.filter(function(s){ return !s.f; });
-
-  // FREE / PREMIUM ARE JUMP LINKS, NOT FILTERS. Both blocks always render; the two chips
-  // scroll to them. Nothing is hidden behind a click — the previews ARE the pitch, and a
-  // stranger won't click to see your pitch. The count on each chip answers "what do I get
-  // for nothing?" at a glance. Desktop only: #flt lives in the landing hero (not in the
-  // /subscribe slice), and its band-free / band-prem targets only exist when the two flat
-  // tiers render — on a phone the four group headings do the navigating, and the pill is
-  // display:none. Guarded so the /subscribe embed (no #flt) doesn't throw.
-  if(flt){
-    [['free','Free',free.length],['prem','Premium',prem.length]].forEach(function(o){
-      var b=document.createElement('button');
-      b.className='fx-fb'; b.type='button';
-      b.innerHTML=o[1]+'<span class="n">'+o[2]+'</span>';
-      b.onclick=function(){
-        var band=document.getElementById('band-'+o[0]);
-        if(band) band.scrollIntoView({behavior:'smooth',block:'start'});
-      };
-      flt.appendChild(b);
-    });
-  }
-  // Keep the lit chip matching whatever band is in view, so the control reports position
-  // instead of just firing and forgetting. No-ops when the bands aren't on the page.
-  function spy(){
-    if(!flt) return;
-    var f=document.getElementById('band-free'), p=document.getElementById('band-prem');
-    if(!f||!p) return;
-    var onPrem = p.getBoundingClientRect().top <= 120;
-    Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
-  }
-  window.addEventListener('scroll', spy, {passive:true});
-
 
   // The hub payload is the only one authored to a fixed width (the modal's 1040px) — it
   // has to be scaled rather than squeezed. Detected from the markup, not from the title,
@@ -3740,48 +3711,65 @@ var LD={
     {k:'num',  label:'Complete fighter history',   note:'every fighter, every bout', tier:'prem'}
   ];
 
+  function arrow(kind){
+    var b=document.createElement('button');
+    b.className='fx-arrow '+kind; b.type='button';
+    b.setAttribute('aria-label', kind==='prev' ? 'Scroll left' : 'Scroll right');
+    b.innerHTML = kind==='prev' ? '‹' : '›';
+    return b;
+  }
+
   function tier(g,list){
     var sec=document.createElement('section');
     sec.className='fx-tier'; sec.setAttribute('data-tier',g.tier);
     sec.appendChild(band(g.k, g.label, g.tier, list.length, g.note));
-    sec.appendChild(grid(list));
+
+    // Each group is a horizontal scroller wrapped with two arrows. On a phone the arrows are
+    // hidden (CSS) and you swipe the row; on a desktop the arrows page it one card at a time.
+    var gr=grid(list);
+    var wrap=document.createElement('div'); wrap.className='fx-rowwrap';
+    var prev=arrow('prev'), next=arrow('next');
+    wrap.appendChild(prev); wrap.appendChild(gr); wrap.appendChild(next);
+    sec.appendChild(wrap);
+
+    function step(){ var c=gr.querySelector('.fx-card'); return (c ? c.getBoundingClientRect().width : gr.clientWidth*0.8) + 20; }
+    prev.onclick=function(){ gr.scrollBy({left:-step(), behavior:'smooth'}); };
+    next.onclick=function(){ gr.scrollBy({left: step(), behavior:'smooth'}); };
+    // Show the arrows only when the row overflows, and disable whichever end you've hit.
+    function upd(){
+      var max=gr.scrollWidth - gr.clientWidth - 1;
+      var over=max>4;
+      prev.classList.toggle('show', over);
+      next.classList.toggle('show', over);
+      prev.disabled = gr.scrollLeft <= 2;
+      next.disabled = gr.scrollLeft >= max-2;
+    }
+    gr.addEventListener('scroll', upd, {passive:true});
+    rows.push(upd);
     return sec;
   }
-  // DESKTOP collapses the four named groups to two flat lists — Free and Premium. The
-  // chunking exists so a phone isn't one long 15-card scroll; on a wide screen it does the
-  // opposite of helping — a 3-card group that happens to hold the full-width hub card leaves
-  // its other two cards marooned in half-empty rows. A single Premium grid packs the hub in
-  // among eleven cards instead. The four named SWIPE groups stay on mobile.
-  var TIERS2=[
-    {k:'free', label:'Free',    note:'play, predict and dig in — free forever', tier:'free', sel:function(s){ return s.f; }},
-    {k:'prem', label:'Premium', note:'the whole database and every tool',        tier:'prem', sel:function(s){ return !s.f; }}
-  ];
-  function isWideLayout(){ return window.matchMedia('(min-width:721px)').matches; }
 
   function paint(){
-    tiers.innerHTML='';
-    // Desktop: Free / Premium (flat). Mobile: the four named groups, matched by slide.g.
-    var defs = isWideLayout()
-      ? TIERS2.slice()
-      : GROUPS.map(function(g){ return {k:g.k,label:g.label,note:g.note,tier:g.tier,sel:function(s){ return s.g===g.k; }}; });
-    // /subscribe embeds this with window.__FX_PREMIUM_ONLY=true — drop the free tier there
-    // (on desktop that leaves one Premium list; on mobile the three premium swipe groups).
+    tiers.innerHTML=''; rows=[];
+    // The four named groups, matched to each slide by slide.g — the SAME chunks on desktop
+    // and mobile now; only how you move through a row differs (arrows vs swipe).
+    var defs = GROUPS.map(function(g){ return {k:g.k,label:g.label,note:g.note,tier:g.tier,sel:function(s){ return s.g===g.k; }}; });
+    // /subscribe embeds this with window.__FX_PREMIUM_ONLY=true — drop the free group there,
+    // leaving the three premium chunks.
     if(window.__FX_PREMIUM_ONLY) defs = defs.filter(function(g){ return g.tier==='prem'; });
     defs.forEach(function(g){
       var list=slides.filter(g.sel);
       if(!list.length) return;                        // a group with no slides draws nothing
       tiers.appendChild(tier(g,list));
     });
-    spy();
     fitWide();
+    updRows();
   }
-  // Re-render when the viewport crosses the mobile/desktop line so the grouping flips with
-  // the layout (two flat lists <-> four swipe groups) instead of freezing at load width.
-  var _wasWide = isWideLayout();
-  window.addEventListener('resize', function(){
-    var w = isWideLayout();
-    if(w!==_wasWide){ _wasWide=w; paint(); }
-  });
+  function updRows(){ rows.forEach(function(f){ f(); }); }
+  // The layout is fluid, so which rows overflow (and how far the hub scales) changes with the
+  // width — recompute both on resize. No re-paint needed: the chunks are the same at every
+  // width, only the arrows-vs-swipe affordance differs, and that is pure CSS.
+  window.addEventListener('resize', updRows);
 
   // Scale the 1040px hub preview down to whatever its card ended up being. Measured per
   // card because the grid is fluid — there is no single correct constant, which is the
