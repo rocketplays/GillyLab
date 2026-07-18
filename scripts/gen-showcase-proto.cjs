@@ -463,7 +463,20 @@ ${matchupFree.css || ''}
      to the top of the DOCUMENT and scrolls away, leaving only the two rails running down
      past the features. Previously everything was fixed, so the cap rode down the page with
      you and was still framing the title when you were four screens into the grid. */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s}
+  /* THE AURORA FADES OUT AT THE VIEWPORT'S TOP AND BOTTOM EDGES.
+     iOS paints the status bar and the URL bar in a flat colour. We can ASK it to match us
+     with theme-color, and it may or may not oblige — but we can't make it, and one colour
+     can never match two differently-lit edges anyway. So stop negotiating: make the page's
+     own top and bottom #0a0a0b, which is what those bars already are. The seam disappears
+     because there is nothing left to mismatch.
+     100px is roughly a status bar plus a little air. The blooms live at 28%/58%/90% of the
+     viewport and #bgfx is fixed, so this mask travels with the screen — the edges stay
+     clean at every scroll position, not just at the top of the page.
+     The middle keeps the full 90% aurora. This costs the effect only where you cannot see
+     it anyway, because a browser bar is sitting there. */
+  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 100px,#000 calc(100% - 100px),transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 100px,#000 calc(100% - 100px),transparent 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the
      viewport and the rails would stop one screen down. */
@@ -646,12 +659,24 @@ ${matchupFree.css || ''}
   #cypick button{background:none;border:0;color:var(--muted);font-size:11px;text-decoration:underline;cursor:pointer;padding:0 2px}
   #cypick button:hover{color:#fff}
   /* On a phone the controls have to be usable with a thumb and must not cover the page. */
+  /* The controls sit ON the page on a phone — your screenshot has the Aurora and Top edge
+     sliders lying across The Climb's preview, which is the card you're trying to judge.
+     Collapsed behind a tap: one small handle, and the panel only exists while you're
+     actually dialling something. */
   @media (max-width:560px){
     #bgpick{left:8px;bottom:8px;right:8px;justify-content:center;flex-wrap:wrap}
     #cypick{left:8px;right:8px;bottom:54px}
     #aurpick{left:8px;right:8px;bottom:100px}
     #cypick input[type=range],#aurpick input[type=range]{flex:1;width:auto}
+    html:not(.fx-tools) #bgpick,
+    html:not(.fx-tools) #cypick,
+    html:not(.fx-tools) #aurpick{display:none}
+    #fxtoggle{position:fixed;right:10px;bottom:10px;z-index:80;width:38px;height:38px;border-radius:50%;
+      background:rgba(10,10,11,.9);border:1px solid var(--border);color:var(--muted);
+      font-size:15px;line-height:1;cursor:pointer;backdrop-filter:blur(8px)}
+    html.fx-tools #fxtoggle{background:var(--accent);color:#0a0a0b;border-color:var(--accent)}
   }
+  @media (min-width:561px){ #fxtoggle{display:none} }
 
   /* ── MOBILE: EACH GROUP BECOMES A SWIPE ROW ──────────────────────────────────
      Fifteen cards stacked is ~5 screens of identical rectangles — a texture the eye stops
@@ -771,6 +796,21 @@ ${noindex ? '<meta name="robots" content="noindex,nofollow">' : ''}
 
 <div id="bgfx"></div>
 <div id="bgframe"></div>
+${debug ? `
+<!-- Phone-only: the sliders are hidden until you tap this. On a 390px screen they lie
+     across the cards they exist to help you judge. -->
+<button type="button" id="fxtoggle" aria-label="Toggle design controls">⚙</button>
+<script>
+(function(){
+  var t=document.getElementById('fxtoggle'); if(!t) return;
+  try{ if(localStorage.getItem('glTools')==='1') document.documentElement.classList.add('fx-tools'); }catch(_){}
+  t.addEventListener('click',function(){
+    var on=document.documentElement.classList.toggle('fx-tools');
+    try{ localStorage.setItem('glTools', on?'1':'0'); }catch(_){}
+  });
+})();
+</script>
+` : ''}
 ${debug ? `
 <!-- Prototype-only: flip the page background between the candidates. Not part of the
      design — a way to answer "is flat black a problem, and which fix is least bad"
@@ -1107,7 +1147,11 @@ if (!/id="bgfx"/.test(preview) || !/bg-frame/.test(preview)) throw new Error('th
 if (!/id="bgpick"|id="cypick"|id="aurpick"/.test(preview)) throw new Error('the preview lost its controls — the point is to dial these on a phone');
 const shipped = page(false, false);      // what production would get: no controls at all
 if (/id="bgpick"|id="cypick"|id="aurpick"|glBgFx/.test(shipped)) throw new Error('page(false) still emits debug chrome — the production build would ship the sliders');
-if (Math.abs(shipped.length - html.length) > 6000) throw new Error('the debug chrome accounts for ' + (html.length - shipped.length) + 'b — something other than the controls differs');
+// 8000, up from 6000: the phone toggle (button + its script + the collapse CSS) legitimately
+// added ~600b of debug chrome. The guard is here to catch page CONTENT diverging between the
+// preview and the shipped build — not to freeze the size of the toolbox. Raised deliberately
+// after checking the delta was the toggle and nothing else.
+if (Math.abs(shipped.length - html.length) > 8000) throw new Error('the debug chrome accounts for ' + (html.length - shipped.length) + 'b — something other than the controls differs');
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, html);
