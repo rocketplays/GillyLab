@@ -64,6 +64,23 @@ export const carouselCSS = `.bc{font-family:'Barlow Condensed',sans-serif}
      every one inside the .mh-/#mh- namespace, no :root, nothing that can touch the hero,
      the plans table or the carousel chrome. */
   ${matchupFree && matchupFree.css ? matchupFree.css : ''}
+
+  /* THE HUB SLIDE NEEDS WHAT THE MODAL BOX GIVES IT, and it is not that box.
+     The stylesheet above hangs the modal's layout off the mh-box ID, which the slide does
+     not render — an id can only exist once and this payload lives in the carousel stage,
+     in a grid card and in the lightbox at the same time. So the slide inherited none of
+     it, and the one that matters is --mh-rail:
+         .mh-grid { grid-template-columns: var(--mh-rail) 1fr 1fr 1fr }
+     An undefined var makes that whole declaration invalid at computed-value time, so
+     grid-template-columns falls back to none, every cell becomes its own row, and the
+     colour-coded tiles stack in a single column instead of forming the 3x3. That is the
+     "it's broken, it stacks" — not styling, one missing custom property.
+     THE PAYLOAD IS AUTHORED FOR width:min(1040px,94vw) — the modal's real width, from
+     index.html — and it does NOT reflow: the grid has four fixed tracks. Anything
+     narrower wraps the labels and squashes the tiles, which is why it looked nothing like
+     the real modal at 520px. Consumers must give it ~1040px (see .fx-card.wide in
+     gen-showcase-proto.cjs, which scales it down bodily rather than squeezing it). */
+  .mh-slide{--mh-rail:3.4rem}
   .fsx-val.bad{color:#c76a54}`;
 
 export const carouselMarkup = `<section class="showcase" role="group" aria-label="Feature previews" aria-roledescription="carousel">

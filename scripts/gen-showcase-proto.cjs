@@ -62,7 +62,7 @@ const HERO_HOOK = 'Know the fight before it starts.';
 // here. The footer's fine print already reads from that const, and a hand-written
 // "$9.99" in the hero would keep saying $9.99 on the day the price changes — with the
 // bottom of the same page disagreeing with the top of it.
-const HERO_TRUST = 'Free to start, no card required — play The Climb and call the card in Pick’em. Premium is {PRICE}, cancel anytime.';
+const HERO_TRUST = 'Free to start, no card required — play The Climb and Pick’em. Premium is {PRICE}, cancel anytime.';
 
 // ── the two numbers you dialled in on a real phone ───────────────────────────
 // ONE CONSTANT EACH, used by the CSS *and* the slider. They were separate values and
@@ -337,6 +337,18 @@ ${footCSS}
      readable at any width, no scaling, and one less thing to keep in sync. */
   .fx-frame{position:relative;height:290px;overflow:hidden;background:#0d0d10;border-top:1px solid var(--border);margin-top:auto}
   .fx-scaler{padding:16px 18px}
+
+  /* THE ONE PAYLOAD THAT DOES NOT REFLOW.
+     I removed transform:scale() from every card because the slide payloads are flex/grid
+     and reflow happily — measured: no hardcoded width over 100px. The matchup hub is the
+     exception and it is not a small one: it is authored for the modal's real
+     width:min(1040px,94vw), and .mh-grid has four fixed tracks
+     (var(--mh-rail) 1fr 1fr 1fr). It cannot reflow. Handed 520px it wraps every label and
+     squashes the tiles into rubble — which is what "it's broken" looked like.
+     So this card alone gets the original treatment: render at the true 1040px and scale
+     the whole thing down to fit. That is right HERE and wrong everywhere else, which is
+     why it is one class and not a global. */
+  .fx-card.wide .fx-scaler{width:1040px;transform-origin:top left;padding:14px 16px}
   .fx-fade{position:absolute;left:0;right:0;bottom:0;height:96px;background:linear-gradient(180deg,rgba(13,13,16,0),rgba(13,13,16,.82) 46%,#0d0d10);pointer-events:none}
   .fx-expand{position:absolute;right:11px;bottom:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);background:rgba(20,20,26,.9);border:1px solid var(--border);border-radius:7px;padding:5px 9px;pointer-events:none;transition:color .15s,border-color .15s}
   .fx-card:hover .fx-expand{color:var(--accent);border-color:rgba(0,230,104,.45)}
@@ -358,6 +370,10 @@ ${footCSS}
   .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;display:none;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
   .fx-lb.on{display:block}
   .fx-lbin{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fxIn .22s cubic-bezier(.2,.7,.3,1)}
+  /* Expanded, the hub gets the width the real modal gets — min(1040px,94vw), lifted from
+     index.html. 640px is what made it wrap on expand: I was showing a 1040px component in
+     a 640px box and reading the result as a bug in the component. */
+  .fx-lb.wide .fx-lbin{max-width:min(1040px,94vw)}
   @keyframes fxIn{from{opacity:0;transform:translateY(10px) scale(.99)}to{opacity:1;transform:none}}
   .fx-lbh{padding:16px 18px 13px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--border)}
   .fx-lbstage{background:#0d0d10;padding:20px}
@@ -499,22 +515,21 @@ ${matchupFree.css || ''}
     linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% - var(--cw)/2) var(--rail)/2px 100%,
     linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% + var(--cw)/2) var(--rail)/2px 100%}
 
-  /* THE SHOULDER DROP IS A FIXED 370px ON PHONES, NOT A RATIO — and this is the "what
-     about the smaller iPhone" fix.
-     --sh = 0.293 x --cw is the true octagon angle. It holds up at 1482px wide, where the
-     shoulders land at y=520 and the hero ends around 400. On a phone --cw collapses to
-     ~380px, so --sh collapses with it to ~112 — and the shoulders land at ~198px, which is
-     INSIDE the headline (169..229). MEASURED on every iPhone from the 320px SE to the
-     440px 16 Pro Max: all seven end inside or on the title, yours included. The geometry
-     that works wide does not survive narrow, and it fails WORSE the smaller the phone.
-     A fixed 370px drop lands the shoulders at y=456 on every one of them — below the
-     whole hero, regardless of width. The angle steepens as the screen narrows (14° from
-     vertical on an SE, 19° on a Pro Max) which is what you want anyway: on a narrow screen
-     the frame should read as rails, not as a cage. preserveAspectRatio='none' means the
-     SVG simply stretches, so this costs nothing. */
-  @media (max-width:720px){
-    html.bg-frame #bgframe{--sh:370px}
-  }
+  /* NO PHONE OVERRIDE ON --sh. THE OCTAGON ANGLE IS THE DESIGN.
+     There was a max-width:720px media query here setting --sh to 370px. My reasoning: --sh is
+     0.293 x --cw, so on a phone the shoulders are only ~112px long and finish at y~198,
+     right at the headline — and I "fixed" it to a fixed 370px drop so they'd clear the
+     whole hero on every device.
+     It was measured, it was internally consistent, and it was wrong, because the thing it
+     fixed was never reported. 86px was approved WITH the 0.293 angle. Tripling the drop
+     drags the diagonals down across the title, the hook, the buttons and the chips —
+     which is exactly what "it goes through a ton of things" means.
+     THE LESSON, AND IT IS THE SESSION'S LESSON: an approved value is a measurement. My
+     arithmetic said the shoulders landed badly; the person looking at it said it looked
+     good. When those disagree, the arithmetic is describing a different problem than the
+     one on screen. Do not renovate something that has already been signed off because a
+     calculation is unhappy about it. If the shoulders genuinely read wrong on a small
+     phone, that is a separate report, and it comes from eyes, not from me. */
 
   /* FRAME CLOSED — the same frame, dropped so its flat top edge lands ABOVE the eyebrow
      instead of above the fold. Identical geometry; only --cy moves (-70px -> 88px), which
@@ -812,10 +827,15 @@ ${slideJS}
   }
   window.addEventListener('scroll', spy, {passive:true});
 
+  // The hub payload is the only one authored to a fixed width (the modal's 1040px) — it
+  // has to be scaled rather than squeezed. Detected from the markup, not from the title,
+  // so renaming the slide can't quietly break it.
+  function isWide(s){ return /class="mh-slide"/.test(s.h); }
+
   function card(s){
     var i = slides.indexOf(s);
     var el = document.createElement('div');
-    el.className = 'fx-card' + (s.f ? '' : ' prem');
+    el.className = 'fx-card' + (s.f ? '' : ' prem') + (isWide(s) ? ' wide' : '');
     el.innerHTML =
       '<div class="fx-ch"><div><div class="fx-ct">'+s.t+'</div><div class="fx-cd">'+s.d+'</div></div>'
       + '<span class="fx-pill '+(s.f?'free':'prem')+'">'+(s.f?'FREE':'PREMIUM')+'</span></div>'
@@ -849,7 +869,24 @@ ${slideJS}
     tiers.appendChild(tier('free','Free',free,'no card required'));
     tiers.appendChild(tier('prem','Premium',prem,'the full database and every tool'));
     spy();
+    fitWide();
   }
+
+  // Scale the 1040px hub preview down to whatever its card ended up being. Measured per
+  // card because the grid is fluid — there is no single correct constant, which is the
+  // same reason the first blanket transform:scale() had to go.
+  function fitWide(){
+    Array.prototype.forEach.call(document.querySelectorAll('.fx-card.wide .fx-frame'), function(f){
+      var sc=f.querySelector('.fx-scaler'); if(!sc) return;
+      // Never write scale(0). If the frame has no width yet — measured before layout, or
+      // in a hidden container — a zero scale renders the card blank, which looks exactly
+      // like the payload failing rather than the measurement being early. Leave it alone
+      // and let the resize handler catch it once there IS a width.
+      if(!f.clientWidth) return;
+      sc.style.transform = 'scale(' + (f.clientWidth/1040) + ')';
+    });
+  }
+  window.addEventListener('resize', fitWide);
 
   function open(i){
     cur=i; var s=slides[i];
@@ -859,6 +896,7 @@ ${slideJS}
       + '<button class="fx-x" type="button" aria-label="Close">×</button></div>'
       + '<div class="fx-lbstage">'+s.h+'</div>'
       + '<div class="fx-nav"><button class="fx-nb" type="button" id="pv">‹ Prev</button><button class="fx-nb" type="button" id="nx">Next ›</button></div>';
+    lb.classList.toggle('wide', isWide(s));   // the hub expands to the modal's own width
     lb.classList.add('on'); document.documentElement.classList.add('fx-locked');
     lbin.querySelector('.fx-x').onclick=close;
     document.getElementById('pv').onclick=function(e){e.stopPropagation();open((cur-1+slides.length)%slides.length);};

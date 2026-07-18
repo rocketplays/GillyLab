@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen } from "./pages.js";
+import { landingPage, loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1153,6 +1153,7 @@ export default {
       if (path === "/privacy") return html(privacyPage());
       if (path === "/contact") return html(contactPage());
       if (path === "/about") return html(aboutPage());
+      if (path === "/faq") return html(faqPage());
       // TEMPORARY preview of the candidate landing page — see the import above.
       // Sits with the public marketing routes on purpose: it has to be reachable
       // logged-out on a phone, which is the whole point of it. It is noindex, so it

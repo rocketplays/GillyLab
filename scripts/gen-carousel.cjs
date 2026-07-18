@@ -28,9 +28,23 @@ function between(startMarker, endMarker, includeEnd) {
 // ── markup: the <section class="showcase"> … </section> block ──
 const markup = between('<section class="showcase"', "</section>", true).trim();
 
-// ── slide-building script: from `var LD=…` up to (not incl.) the FAQ code ──
-const jsBody = between("var LD=${JSON.stringify(landingData)};",
-  "// Smooth fade + height on the FAQ accordions", false).trim();
+// ── slide-building script: from `var LD=…` up to the END CAROUSEL SCRIPT sentinel ──
+//
+// The end marker used to be "// Smooth fade + height on the FAQ accordions" — the first
+// line of the FAQ accordion code, which merely happened to follow the slide script. When
+// the FAQ moved to /faq that comment moved with it, so indexOf found it further down the
+// file and this sliced landingPage's script PLUS signupPage, termsPage and everything
+// between into carousel-data.js. No throw — the marker still existed, in the wrong page.
+// The output was a syntax error and /subscribe would have failed to build.
+//
+// The sentinel in pages.js is inert: it is not code, so it cannot be moved by moving
+// code, and it can only ever mean "the carousel script ends here".
+const END = "/* ===== END CAROUSEL SCRIPT ===== */";
+const marks = (idx.match(new RegExp(END.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
+if (marks !== 1) throw new Error("expected exactly 1 END CAROUSEL SCRIPT sentinel in pages.js, found " + marks + " — the slice would be ambiguous");
+const jsBody = between("var LD=${JSON.stringify(landingData)};", END, false).trim();
+// A slice that reaches an `export` has run past the page it was slicing.
+if (/\bexport const \w+Page\b/.test(jsBody)) throw new Error("the carousel script slice swallowed another page's export — the end marker is in the wrong place");
 const script = "<script>\n(function(){\n  " + jsBody + "\n})();\n</script>";
 
 // ── CSS: the showcase chrome + faithful in-app component styles + fighter slide ──

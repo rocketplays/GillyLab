@@ -52,8 +52,55 @@ for (const f of files) {
     execFileSync(process.execPath, ['--input-type=module', '--check'], { input: src, stdio: ['pipe', 'pipe', 'pipe'] });
   } catch (e) {
     const msg = String(e.stderr || e.message).split('\n').find((l) => /SyntaxError/.test(l)) || 'failed to parse';
-    bad.push([f, msg.trim()]);
+    const where = String(e.stderr || '').match(/^\[stdin\]:(\d+)/m);
+    const hint = diagnose(src, f, where ? +where[1] : 0);
+    bad.push([f, msg.trim() + (where ? '  (line ' + where[1] + ')' : '') + (hint ? '\n' + hint : '')]);
   }
+}
+
+// WHERE the break is, not just that there is one.
+//
+// "SyntaxError: Unexpected token 'var'" at line 1186 of a 3,000-line file, with no
+// context, is a 10-minute hunt. Five times today the cause was identical: a backtick
+// inside a COMMENT inside a template literal, which closes the literal and makes the rest
+// of the file parse as code. Four of those five were in comments I was writing to warn
+// about the other ones. If a mistake recurs that reliably, the answer is not resolving to
+// be careful — it is making the tool name it.
+// ANCHOR THE HINT TO THE ERROR LINE, or it points at innocent code.
+// The first version listed every backtick-in-a-comment in the file. Most are harmless —
+// a comment outside any template literal can say whatever it likes — so it fingered
+// pages.js:145 and :287 (both fine) and missed the actual culprit further down. A
+// diagnostic that names the wrong line is worse than no diagnostic: it sends you to
+// rewrite working code. Node tells us where the parse died; the cause is the LAST
+// offending comment before that point.
+function diagnose(src, file, errLine) {
+  if (!errLine) return null;
+  const lines = src.split('\n');
+  // TRACK BLOCK COMMENTS, don't pattern-match a line prefix.
+  // The first version only recognised lines beginning with // or /* or *. Most block
+  // comments in this repo are indented prose whose continuation lines start with a plain
+  // word — so it walked straight past the actual culprit and fingered two innocent lines
+  // instead. It found `#mh-box` in nothing and blamed line 314. A detector that only sees
+  // the comments that look like comments is the same shape as the bug it hunts.
+  const hits = [];
+  let inBlock = false;
+  for (let i = 0; i < Math.min(errLine, lines.length); i++) {
+    const l = lines[i];
+    const opens = l.lastIndexOf('/*'), closes = l.lastIndexOf('*/');
+    const isLine = /^\s*\/\//.test(l);
+    const inside = inBlock || isLine || (opens >= 0 && closes < opens);
+    if (inside) {
+      const ticks = (l.match(/(?<!\\)`/g) || []).length;
+      if (ticks) hits.push([i + 1, l.trim().slice(0, 76), ticks]);
+    }
+    if (opens >= 0 && closes < opens) inBlock = true;
+    else if (closes >= 0 && closes > opens) inBlock = false;
+  }
+  if (!hits.length) return null;
+  const near = hits.slice(-3).reverse();   // closest to the break, working backwards
+  return '  likely cause — backtick(s) in a comment CLOSE an enclosing template literal.\n' +
+    '  the last such comment(s) before the break:\n' +
+    near.map(([n, t, c]) => '     ' + file + ':' + n + '  (' + c + ' backtick' + (c > 1 ? 's' : '') + ')  ' + t).join('\n');
 }
 
 console.log('\nworker/ — ES module parse check\n');

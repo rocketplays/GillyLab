@@ -495,16 +495,6 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   .foot{text-align:center;margin:52px auto 0}
   .foot .fine{font-size:12px;color:rgba(255,255,255,.45);margin-top:14px}
   .trust{color:rgba(255,255,255,.42);font-size:12.5px;margin:16px auto 0;max-width:540px;line-height:1.5}
-  .faq{max-width:720px;margin:60px auto 0}
-  .faq-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
-  .faq-list{display:flex;flex-direction:column;gap:10px}
-  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
-  .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;font-size:14px;font-weight:800;color:#fff}
-  .faq-item summary::-webkit-details-marker{display:none}
-  .faq-item summary:hover{color:var(--accent)}
-  .faq-chev{color:var(--muted);font-size:20px;line-height:1;transition:transform .2s;flex:0 0 auto}
-  .faq-item[open] .faq-chev{transform:rotate(90deg);color:var(--accent)}
-  .faq-item p{margin:0;padding:0 18px 16px;font-size:13px;color:rgba(255,255,255,.62);line-height:1.6}
   .site-footer{max-width:1040px;margin:44px auto 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
   .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px}
   .foot-brand .a{color:var(--accent)}
@@ -567,6 +557,23 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
      the plans table or the carousel chrome. */
   ${matchupFree && matchupFree.css ? matchupFree.css : ''}
 
+  /* THE HUB SLIDE NEEDS WHAT THE MODAL BOX GIVES IT, and it is not that box.
+     The stylesheet above hangs the modal's layout off the mh-box ID, which the slide does
+     not render — an id can only exist once and this payload lives in the carousel stage,
+     in a grid card and in the lightbox at the same time. So the slide inherited none of
+     it, and the one that matters is --mh-rail:
+         .mh-grid { grid-template-columns: var(--mh-rail) 1fr 1fr 1fr }
+     An undefined var makes that whole declaration invalid at computed-value time, so
+     grid-template-columns falls back to none, every cell becomes its own row, and the
+     colour-coded tiles stack in a single column instead of forming the 3x3. That is the
+     "it's broken, it stacks" — not styling, one missing custom property.
+     THE PAYLOAD IS AUTHORED FOR width:min(1040px,94vw) — the modal's real width, from
+     index.html — and it does NOT reflow: the grid has four fixed tracks. Anything
+     narrower wraps the labels and squashes the tiles, which is why it looked nothing like
+     the real modal at 520px. Consumers must give it ~1040px (see .fx-card.wide in
+     gen-showcase-proto.cjs, which scales it down bodily rather than squeezing it). */
+  .mh-slide{--mh-rail:3.4rem}
+
   /* Free vs Premium plans */
   .plans{max-width:780px;margin:0 auto;padding:8px 20px}
   .plans-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
@@ -616,6 +623,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
           <a role="menuitem" href="/signup?next=/subscribe">Go Premium</a>
           <a role="menuitem" href="/about">About Us</a>
           <a role="menuitem" href="/contact">Contact Us</a>
+          <a role="menuitem" href="/faq">FAQ</a>
         </div>
       </div>
     </div>
@@ -722,21 +730,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     <p class="plans-note">Start free, upgrade whenever — cancel Premium anytime.</p>
   </section>
 
-  <section class="faq">
-    <div class="faq-title">FREQUENTLY ASKED</div>
-    <div class="faq-list">
-      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, the bet &amp; CLV tracker, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
-      <details class="faq-item"><summary>Is there a free version?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. A free account lets you play Pick'em, climb the live leaderboard, keep your pick history, and browse division rankings and the active roster — no card required. Premium (${PRICE_LABEL}) unlocks the full fighter database, the simulator, matchup analytics, the odds and parlay tools, the bet &amp; CLV tracker, and everything else.</p></div></details>
-      <details class="faq-item"><summary>What is the matchup analysis?<span class="faq-chev">›</span></summary><div class="faq-body"><p>For any two fighters, GillyLab places each on a striker–grappler spectrum, projects the pace (significant strikes thrown per minute), and writes each fighter’s path to victory from their own statistical edges. It runs on every upcoming bout, and on any matchup you build yourself.</p></div></details>
-      <details class="faq-item"><summary>What does the parlay builder do?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Build a slip from any market — moneylines, round totals, method of victory, round props — then see the identical slip priced at every book that offers all of its legs, so you can take the best number. It flags same-game correlation, because a moneyline and a method prop on one fight are not independent.</p></div></details>
-      <details class="faq-item"><summary>What is the bet &amp; CLV tracker?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Log a bet before the bell — moneyline, method, rounds, round props, or a parlay — and it grades itself off the result, then tracks your record, ROI and units. It also measures your <em>closing-line value</em>: whether the price you took beat where the market closed, which is the clearest signal of whether you're actually betting well rather than just running hot. CLV covers moneylines only, measured against the closing line we capture ten minutes before each segment; props still grade and count toward your record, but their prices move too fast and vary too much between books to have a close worth measuring against. You can log bets on fights we don't track too — those are tagged self-reported and kept out of the verified numbers.</p></div></details>
-      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
-      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
-      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
-      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><div class="faq-body"><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div></details>
-      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><div class="faq-body"><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div></details>
-    </div>
-  </section>
+  
 
   <footer class="foot">
     <div class="hero-cta">
@@ -1204,28 +1198,18 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){reset();}else{clearInterval(timer);}});},{threshold:.2}).observe(document.querySelector('.showcase'));
   }
 
-  // Smooth fade + height on the FAQ accordions (native <details> otherwise snaps
-  // open/closed). Falls back to the native instant toggle if JS or motion is off.
-  var RMf=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  Array.prototype.forEach.call(document.querySelectorAll('.faq-item'),function(d){
-    if(RMf)return;
-    var sum=d.querySelector('summary'),body=d.querySelector('.faq-body');if(!sum||!body)return;
-    body.style.overflow='hidden';body.style.transition='height .28s ease, opacity .28s ease';
-    if(!d.open){body.style.height='0';body.style.opacity='0';}
-    var busy=false;
-    sum.addEventListener('click',function(e){
-      e.preventDefault();if(busy)return;busy=true;
-      if(d.open){
-        body.style.height=body.scrollHeight+'px';
-        requestAnimationFrame(function(){body.style.height='0';body.style.opacity='0';});
-        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;d.open=false;body.removeEventListener('transitionend',h);busy=false;});
-      }else{
-        d.open=true;body.style.height='0';body.style.opacity='0';
-        requestAnimationFrame(function(){body.style.height=body.scrollHeight+'px';body.style.opacity='1';});
-        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;body.style.height='auto';body.removeEventListener('transitionend',h);busy=false;});
-      }
-    });
-  });
+  /* ===== END CAROUSEL SCRIPT ===== */
+  /* ^ A SENTINEL, and it exists only to be one. scripts/gen-carousel.cjs slices this
+     page's slide script from the LD declaration to here. Its end marker used to be the comment
+     that started the FAQ accordion code — an incidental string that happened to sit in
+     the right place. When the FAQ moved to /faq that comment went WITH it, so between()
+     searched forward, found it in faqPage, and sliced landingPage's script plus
+     signupPage, termsPage and everything between them into carousel-data.js. It did not
+     throw: the marker still existed, just in the wrong page. carousel-data.js became a
+     syntax error and /subscribe would have died on deploy.
+     A marker that is also real code will follow that code around. This line is inert, so
+     it can only mean "the carousel script ends here". Do not delete it; do not let it
+     drift from the end of the script. */
 
   document.addEventListener('click',function(e){
     var a=e.target.closest&&e.target.closest('a[href^="/"]');
@@ -2890,10 +2874,15 @@ export const notePage = (title, msg) => shell(title, `
   </div>`);
 
 // ── Legal pages (readable long-form; own shell, not the compact auth one) ─────
-const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"><head>
+// opts = { index, desc, css } — added for the FAQ page, which shares this chrome but is
+// NOT a legal page: noindex is right for /terms and /privacy and wrong for an FAQ, which
+// is the page most likely to answer someone's search. Defaults keep /terms and /privacy
+// byte-identical to what they were.
+const legalShell = (title, updated, bodyHtml, opts = {}) => `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title} — GillyLab</title>
-<meta name="robots" content="noindex">
+${opts.canonical ? `<link rel="canonical" href="${SITE_URL}${opts.canonical}">` : `<meta name="robots" content="noindex">`}
+${opts.desc ? `<meta name="description" content="${opts.desc}">` : ``}
 <link rel="icon" href="/favicon.svg?v=6" type="image/svg+xml"><link rel="icon" href="/favicon.ico?v=6" sizes="any">
 <style>
   *{box-sizing:border-box} html{background:#0a0a0b}
@@ -2912,6 +2901,7 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
   p,li{color:rgba(255,255,255,.72);font-size:.95rem}
   ul{padding-left:1.2rem;margin:.4rem 0} li{margin:.25rem 0}
   a{color:#00e668}
+${opts.css || ``}
 </style></head><body>
   <div class="doc">
     <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
@@ -2923,7 +2913,85 @@ const legalShell = (title, updated, bodyHtml) => `<!doctype html><html lang="en"
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
   </div>
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
+${opts.js ? `<script>${opts.js}</script>` : ``}
 </body></html>`;
+
+// ── /faq ─────────────────────────────────────────────────────────────────────
+// Moved off the landing page, unchanged. The markup, the CSS and the accordion JS are
+// the same bytes that were at the bottom of / — cnt() and PRICE_LABEL are top-level here
+// so the copy still fills itself in from landingData, and the answers cannot drift from
+// the ones that shipped.
+//
+// INDEXABLE, unlike /terms and /privacy which share this shell: an FAQ is the page most
+// likely to answer somebody's search, and noindex would throw that away. legalShell got
+// an opts bag for exactly this; the legal pages pass nothing and are byte-identical.
+//
+// The link-fade handler stayed on the landing page — it is site navigation, not FAQ
+// behaviour, and legalShell already ships its own copy.
+const FAQ_CSS = `
+  .faq{max-width:720px;margin:60px auto 0}
+  .faq-title{text-align:center;font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:20px}
+  .faq-list{display:flex;flex-direction:column;gap:10px}
+  .faq-item{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .faq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px 18px;font-size:14px;font-weight:800;color:#fff}
+  .faq-item summary::-webkit-details-marker{display:none}
+  .faq-item summary:hover{color:var(--accent)}
+  .faq-chev{color:var(--muted);font-size:20px;line-height:1;transition:transform .2s;flex:0 0 auto}
+  .faq-item[open] .faq-chev{transform:rotate(90deg);color:var(--accent)}
+  .faq-item p{margin:0;padding:0 18px 16px;font-size:13px;color:rgba(255,255,255,.62);line-height:1.6}
+  .faq{margin:2.2rem auto 0}
+  .faq-body{color:rgba(255,255,255,.72)}
+`;
+
+const FAQ_JS = `
+  // Smooth fade + height on the FAQ accordions (native <details> otherwise snaps
+  // open/closed). Falls back to the native instant toggle if JS or motion is off.
+  var RMf=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  Array.prototype.forEach.call(document.querySelectorAll('.faq-item'),function(d){
+    if(RMf)return;
+    var sum=d.querySelector('summary'),body=d.querySelector('.faq-body');if(!sum||!body)return;
+    body.style.overflow='hidden';body.style.transition='height .28s ease, opacity .28s ease';
+    if(!d.open){body.style.height='0';body.style.opacity='0';}
+    var busy=false;
+    sum.addEventListener('click',function(e){
+      e.preventDefault();if(busy)return;busy=true;
+      if(d.open){
+        body.style.height=body.scrollHeight+'px';
+        requestAnimationFrame(function(){body.style.height='0';body.style.opacity='0';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;d.open=false;body.removeEventListener('transitionend',h);busy=false;});
+      }else{
+        d.open=true;body.style.height='0';body.style.opacity='0';
+        requestAnimationFrame(function(){body.style.height=body.scrollHeight+'px';body.style.opacity='1';});
+        body.addEventListener('transitionend',function h(ev){if(ev.propertyName!=='height')return;body.style.height='auto';body.removeEventListener('transitionend',h);busy=false;});
+      }
+    });
+  });
+`;
+
+export const faqPage = () => legalShell("FAQ", "", `
+    <h1>Frequently asked</h1>
+    <p class="lede">What GillyLab is, what's free, and how the numbers work.</p>
+<section class="faq">
+    <div class="faq-title">FREQUENTLY ASKED</div>
+    <div class="faq-list">
+      <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, the bet &amp; CLV tracker, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
+      <details class="faq-item"><summary>Is there a free version?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. A free account lets you play Pick'em, climb the live leaderboard, keep your pick history, and browse division rankings and the active roster — no card required. Premium (${PRICE_LABEL}) unlocks the full fighter database, the simulator, matchup analytics, the odds and parlay tools, the bet &amp; CLV tracker, and everything else.</p></div></details>
+      <details class="faq-item"><summary>What is the matchup analysis?<span class="faq-chev">›</span></summary><div class="faq-body"><p>For any two fighters, GillyLab places each on a striker–grappler spectrum, projects the pace (significant strikes thrown per minute), and writes each fighter’s path to victory from their own statistical edges. It runs on every upcoming bout, and on any matchup you build yourself.</p></div></details>
+      <details class="faq-item"><summary>What does the parlay builder do?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Build a slip from any market — moneylines, round totals, method of victory, round props — then see the identical slip priced at every book that offers all of its legs, so you can take the best number. It flags same-game correlation, because a moneyline and a method prop on one fight are not independent.</p></div></details>
+      <details class="faq-item"><summary>What is the bet &amp; CLV tracker?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Log a bet before the bell — moneyline, method, rounds, round props, or a parlay — and it grades itself off the result, then tracks your record, ROI and units. It also measures your <em>closing-line value</em>: whether the price you took beat where the market closed, which is the clearest signal of whether you're actually betting well rather than just running hot. CLV covers moneylines only, measured against the closing line we capture ten minutes before each segment; props still grade and count toward your record, but their prices move too fast and vary too much between books to have a close worth measuring against. You can log bets on fights we don't track too — those are tagged self-reported and kept out of the verified numbers.</p></div></details>
+      <details class="faq-item"><summary>How current is the data?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Odds refresh twice daily; rankings and the active roster sync regularly; results and box scores are updated after every event.</p></div></details>
+      <details class="faq-item"><summary>Which promotions does it cover?<span class="faq-chev">›</span></summary><div class="faq-body"><p>GillyLab is focused on the UFC — every fighter past and present, including their full pre-UFC records.</p></div></details>
+      <details class="faq-item"><summary>Can I cancel anytime?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. Manage or cancel your subscription in one click from your account — no contracts and no cancellation fees.</p></div></details>
+      <details class="faq-item"><summary>How does billing work?<span class="faq-chev">›</span></summary><div class="faq-body"><p>${PRICE_LABEL} via Stripe. Payments are handled entirely by Stripe — we never see or store your card details.</p></div></details>
+      <details class="faq-item"><summary>Is this betting advice?<span class="faq-chev">›</span></summary><div class="faq-body"><p>No. GillyLab is data and analytics for research and entertainment. It isn't financial or betting advice — always wager responsibly.</p></div></details>
+    </div>
+  </section>
+`, {
+  canonical: "/faq",
+  desc: "What's included, what's free, how the matchup analysis and CLV tracker work, and how billing works — the GillyLab FAQ.",
+  css: FAQ_CSS,
+  js: FAQ_JS,
+});
 
 export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
   <p>These Terms of Service ("Terms") govern your access to and use of GillyLab (the "Service"). By creating an account or using the Service, you agree to these Terms.</p>

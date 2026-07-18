@@ -116,6 +116,17 @@ if (mhBox) {
   tabs[0].dispatchEvent(new window.Event('click', { bubbles: true })); // restore
 }
 
+// The hub payload is authored for the modal's 1040px and CANNOT reflow: .mh-grid has four
+// fixed tracks, and --mh-rail lives on #mh-box which the slide doesn't render. Without it
+// grid-template-columns is invalid, the grid collapses to one column, and the tiles stack.
+check('the hub slide supplies --mh-rail (or the tiles stack)', /\.mh-slide\{--mh-rail:3\.4rem\}/.test(html));
+check('the hub card renders at the modal\'s real width and scales', /\.fx-card\.wide \.fx-scaler\{width:1040px/.test(html));
+check('expanding the hub gets the modal\'s width, not 640px', /\.fx-lb\.wide \.fx-lbin\{max-width:min\(1040px,94vw\)\}/.test(html));
+const wideCards = [...doc.querySelectorAll('.fx-card.wide')];
+check('exactly one card is wide, and it is the hub', wideCards.length === 1 && /Matchup analytics/.test(wideCards[0].textContent),
+  '(' + wideCards.map((c) => c.querySelector('.fx-ct').textContent).join(', ') + ')');
+check('the hub\'s 3x3 grid is present', !!doc.querySelector('.fx-card .mh-grid'));
+
 // The Climb must show the game's full sheet, not a trimmed sample of it.
 const climbSlide = P.slides.find((s) => s.t === 'The Climb');
 const climbCats = climbSlide ? (climbSlide.h.match(/width:92px/g) || []).length : 0;
