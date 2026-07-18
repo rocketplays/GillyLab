@@ -389,8 +389,8 @@ ${footCSS}
      row actually overflows — a group of three that already fits gets none. They sit over the
      card band, centred on the preview, and disable at each end of the scroll. */
   .fx-rowwrap{position:relative}
-  .fx-arrow{position:absolute;top:calc(50% + 22px);transform:translateY(-50%);z-index:4;width:42px;height:42px;border-radius:999px;display:none;align-items:center;justify-content:center;background:rgba(18,18,22,.86);border:1px solid var(--border);color:#f4f5f7;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(5px);transition:background .15s,opacity .15s,border-color .15s}
-  .fx-arrow:hover{background:rgba(38,38,46,.96);border-color:rgba(255,255,255,.28)}
+  .fx-arrow{position:absolute;top:calc(50% + 22px);transform:translateY(-50%);z-index:4;width:42px;height:42px;border-radius:999px;display:none;align-items:center;justify-content:center;background:rgba(18,18,22,.86);border:1px solid rgba(0,230,104,.55);color:#f4f5f7;font-size:20px;line-height:1;cursor:pointer;backdrop-filter:blur(5px);transition:background .15s,opacity .15s,border-color .15s}
+  .fx-arrow:hover{background:rgba(0,230,104,.12);border-color:var(--accent)}
   .fx-arrow.prev{left:-8px}
   .fx-arrow.next{right:-8px}
   .fx-arrow:disabled{opacity:.28;cursor:default}
