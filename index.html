@@ -72,7 +72,11 @@
     #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
 
     body {
-      background: var(--bg);
+      /* transparent, NOT var(--bg): body is opaque-by-default's understudy here, and an
+         opaque body sits on top of the fixed #bgfx/#bgedge aurora layers (z-index:-1) and
+         hides them completely. The dark base now comes from html (var(--bg) + the glow);
+         body stays clear so the aurora and glow show through behind the content. */
+      background: transparent;
       color: var(--text);
       font-family: 'Barlow', sans-serif;
       font-weight: 400;
