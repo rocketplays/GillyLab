@@ -463,20 +463,23 @@ ${matchupFree.css || ''}
      to the top of the DOCUMENT and scrolls away, leaving only the two rails running down
      past the features. Previously everything was fixed, so the cap rode down the page with
      you and was still framing the title when you were four screens into the grid. */
-  /* THE AURORA FADES OUT AT THE VIEWPORT'S TOP AND BOTTOM EDGES.
-     iOS paints the status bar and the URL bar in a flat colour. We can ASK it to match us
-     with theme-color, and it may or may not oblige — but we can't make it, and one colour
-     can never match two differently-lit edges anyway. So stop negotiating: make the page's
-     own top and bottom #0a0a0b, which is what those bars already are. The seam disappears
-     because there is nothing left to mismatch.
-     100px is roughly a status bar plus a little air. The blooms live at 28%/58%/90% of the
-     viewport and #bgfx is fixed, so this mask travels with the screen — the edges stay
-     clean at every scroll position, not just at the top of the page.
-     The middle keeps the full 90% aurora. This costs the effect only where you cannot see
-     it anyway, because a browser bar is sitting there. */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s;
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 100px,#000 calc(100% - 100px),transparent 100%);
-    mask-image:linear-gradient(180deg,transparent 0,#000 100px,#000 calc(100% - 100px),transparent 100%)}
+  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s}
+
+  /* #bgedge — PAINT the page's top and bottom back to #0a0a0b, don't mask a layer.
+     iOS paints the status bar and the URL bar flat. theme-color only ASKS the browser to
+     match us, and one colour cannot match two differently-lit edges anyway — so the page
+     matches THEM instead, and the seam has nothing left to mismatch.
+     My first attempt masked #bgfx, and it failed for a reason worth keeping: there are
+     THREE things tinting these edges — the aurora on #bgfx, the frame's rails on #bgframe,
+     and body's own radial hero glow, which is sliced from the live page and paints ~#0e1612
+     at y=0. A mask only ever covers the layer you put it on. I masked the layer I built and
+     forgot the one I sliced, so the top stayed green.
+     An opaque wash sitting ABOVE all three cannot make that mistake: whatever is under it,
+     the first and last 100px of the viewport end up #0a0a0b. z-index 0 keeps it beneath the
+     content (z-index 1+), and fixed means the clean edge follows the screen at any scroll
+     position. */
+  #bgedge{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 100px),var(--bg) 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the
      viewport and the rails would stop one screen down. */
@@ -796,6 +799,9 @@ ${noindex ? '<meta name="robots" content="noindex,nofollow">' : ''}
 
 <div id="bgfx"></div>
 <div id="bgframe"></div>
+<!-- LAST of the three background layers, so it paints over all of them — the aurora, the
+     frame's rails, and body's own hero glow. Same z-index; DOM order decides. -->
+<div id="bgedge"></div>
 ${debug ? `
 <!-- Phone-only: the sliders are hidden until you tap this. On a 390px screen they lie
      across the cards they exist to help you judge. -->
