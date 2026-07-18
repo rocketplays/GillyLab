@@ -38,6 +38,18 @@ const { window } = dom;
 const doc = window.document;
 
 const P = window.SHOWCASE_PROTO;
+// NO COMMENT PROSE RENDERING AS TEXT.
+// I closed an HTML comment early and the paragraph after it — plus a stray "-->" — printed
+// at the top of the live page. HTML has no syntax errors: an unbalanced comment doesn't
+// throw, it just publishes your notes. Count the delimiters, and check nothing outside the
+// <head> looks like a comment marker that escaped.
+const opens = (html.match(/<!--/g) || []).length;
+const closes = (html.match(/-->/g) || []).length;
+check('HTML comments are balanced', opens === closes, '(' + opens + ' <!--  vs  ' + closes + ' -->)');
+const bodyText = (html.split('<body>')[1] || '');
+check('no comment marker leaked into the body', !/-->/.test(bodyText.replace(/<!--[\s\S]*?-->/g, '')),
+  '(a stray --> means a comment closed early and its prose is now on the page)');
+
 check('the prototype script ran without throwing', !!P);
 if (!P) { console.log('\n  FAIL  the prototype script did not run — nothing else can be checked\n'); process.exit(1); }
 
