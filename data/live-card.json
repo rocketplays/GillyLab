@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-18T22:25:14.172Z",
+ "generatedAt": "2026-07-18T22:57:47.888Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -3186,6 +3186,194 @@
       ]
      },
      "capturedAt": "2026-07-18T22:25:14.043Z"
+    }
+   ]
+  },
+  "Ezra Elliott": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Damien Anderson",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Damien Anderson",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 21,
+      "totA": 29,
+      "tdL": 12,
+      "tdA": 18,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "11:01",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 20,
+      "totL": 23,
+      "totA": 37,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:47",
+      "head": [
+       5,
+       16
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       2
+      ],
+      "dist": [
+       2,
+       8
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       8
+      ]
+     },
+     "capturedAt": "2026-07-18T22:57:47.761Z"
+    }
+   ]
+  },
+  "Damien Anderson": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Ezra Elliott",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Ezra Elliott",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 20,
+      "totL": 23,
+      "totA": 37,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:47",
+      "head": [
+       5,
+       16
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       2
+      ],
+      "dist": [
+       2,
+       8
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       2,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 21,
+      "totA": 29,
+      "tdL": 12,
+      "tdA": 18,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "11:01",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       6
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "capturedAt": "2026-07-18T22:57:47.761Z"
     }
    ]
   }
