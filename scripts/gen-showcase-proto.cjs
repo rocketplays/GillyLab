@@ -636,7 +636,35 @@ ${matchupFree.css || ''}
     #cypick input[type=range],#aurpick input[type=range]{flex:1;width:auto}
   }
 
-  @media (max-width:720px){ .fx-grid{grid-template-columns:1fr;gap:14px} }
+  /* ── MOBILE: EACH GROUP BECOMES A SWIPE ROW ──────────────────────────────────
+     Fifteen cards stacked is ~5 screens of identical rectangles — a texture the eye stops
+     reading around the fourth. Four named rows is ~2.4 screens, and the page's argument
+     becomes the TAXONOMY rather than the cards: scroll twice and you know this thing does
+     free play, pre-fight analysis, historical numbers and betting tools, whether or not
+     you swipe a single row.
+     This is NOT the carousel we removed. That was one row of sixteen with fifteen hidden
+     and no structure. Four rows of ~4 keep every heading and count on screen, so the row
+     is honest about what it's concealing — which vertical depth never is: card 12 of a
+     stack doesn't announce itself, it just never gets reached.
+     THE PEEK IS THE AFFORDANCE, and it is the whole ballgame. 86vw + gap leaves ~14% of
+     the next card showing. A row that ends flush at the screen edge looks like it ends,
+     and nobody swipes it. Do not "tidy" this to 100vw.
+     Desktop keeps the grid: rows are the answer to a small screen, not a better idea. */
+  @media (max-width:720px){
+    .fx-grid{
+      display:flex; grid-template-columns:none;
+      overflow-x:auto; overscroll-behavior-x:contain;
+      scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
+      gap:12px; margin:0 -13px; padding:0 13px 2px;
+      scrollbar-width:none;
+    }
+    .fx-grid::-webkit-scrollbar{display:none}
+    .fx-card{flex:0 0 86vw; scroll-snap-align:start}
+    /* the hub reflows via matchup-free.css's own phone rules, so it needs no special width */
+    .fx-card.wide{flex:0 0 86vw; grid-column:auto}
+    /* Air between groups, tight within: grouping is spacing, not lines. */
+    .fx-tier + .fx-tier{margin-top:34px}
+  }
   @media (max-width:560px){
     .fx-h{font-size:29px}
     /* 290 -> 172. One column of 16 cards was ~6,900px of page — 8 screens on a phone
@@ -853,12 +881,15 @@ ${slideJS}
   // So both blocks always render and these two scroll to them. Two chips, nothing
   // hidden, and the count still answers "what do I get for nothing?" at a glance.
   // If you'd rather they genuinely filter, it is the paint() call below and one line.
-  [['free','Free',free.length],['prem','Premium',prem.length]].forEach(function(o){
+  // Premium jumps to 'band-pre' — its FIRST group — because 'band-prem' stopped existing
+  // when the two tiers became four groups. The target is explicit rather than derived
+  // from the chip's key, so renaming a group can't quietly turn this into a dead button.
+  [['free','Free',free.length,'band-free'],['prem','Premium',prem.length,'band-pre']].forEach(function(o){
     var b=document.createElement('button');
     b.className='fx-fb'; b.type='button';
     b.innerHTML=o[1]+'<span class="n">'+o[2]+'</span>';
     b.onclick=function(){
-      var band=document.getElementById('band-'+o[0]);
+      var band=document.getElementById(o[3]);
       if(band) band.scrollIntoView({behavior:'smooth',block:'start'});
     };
     flt.appendChild(b);
@@ -867,7 +898,7 @@ ${slideJS}
   // Keep the chip matching whatever band you're actually looking at, so the control
   // reports position rather than just firing and forgetting.
   function spy(){
-    var f=document.getElementById('band-free'), p=document.getElementById('band-prem');
+    var f=document.getElementById('band-free'), p=document.getElementById('band-pre');
     if(!f||!p) return;
     // The chip bar is sticky now, so a band is "current" once it passes UNDER the bar —
     // not at an arbitrary 120px. Measure the bar rather than hardcoding its height: it is
@@ -899,9 +930,12 @@ ${slideJS}
     return el;
   }
 
-  function band(label, cls, n, note){
-    var d=document.createElement('div'); d.className='fx-band'; d.id='band-'+cls;
-    d.innerHTML='<span class="fx-bt '+cls+'">'+label+'</span><span class="fx-bn">'+n+' features · '+note+'</span><span class="fx-bl"></span>';
+  // The count is in the heading on purpose: on mobile these become swipe rows, so a
+  // visitor who never swipes still needs to know the depth. "The numbers · 4" tells you
+  // the shape of what you haven't seen — which a vertical stack never does.
+  function band(key, label, tierCls, n, note){
+    var d=document.createElement('div'); d.className='fx-band'; d.id='band-'+key;
+    d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span><span class="fx-bn">'+n+' · '+note+'</span><span class="fx-bl"></span>';
     return d;
   }
 
@@ -911,17 +945,36 @@ ${slideJS}
     return g;
   }
 
-  function tier(key,label,list,note){
+  // FOUR NAMED GROUPS INSTEAD OF TWO TIERS.
+  // Fifteen cards arriving as one undifferentiated run is a texture, not a list — the eye
+  // stops reading around the fourth. Chunked, every group is under that threshold, and the
+  // page says something the flat stack never could: the product has AREAS. A visitor who
+  // scrolls two screens and swipes nothing still learns what this thing is.
+  // The group lives on the slide (g:) in pages.js, because it is a fact about the feature.
+  var GROUPS=[
+    {k:'free', label:'Free',             note:'no card required', tier:'free'},
+    {k:'pre',  label:'Before the fight',  note:'know it before it starts', tier:'prem'},
+    {k:'num',  label:'The numbers',       note:'every fighter, every bout', tier:'prem'},
+    {k:'bet',  label:'Betting tools',     note:'price it, track it, grade it', tier:'prem'}
+  ];
+
+  function tier(g,list){
     var sec=document.createElement('section');
-    sec.className='fx-tier'; sec.setAttribute('data-tier',key);
-    sec.appendChild(band(label,key,list.length,note));
+    sec.className='fx-tier'; sec.setAttribute('data-tier',g.tier);
+    sec.appendChild(band(g.k, g.label, g.tier, list.length, g.note));
     sec.appendChild(grid(list));
     return sec;
   }
   function paint(){
     tiers.innerHTML='';
-    tiers.appendChild(tier('free','Free',free,'no card required'));
-    tiers.appendChild(tier('prem','Premium',prem,'the full database and every tool'));
+    GROUPS.forEach(function(g){
+      var list=slides.filter(function(s){ return s.g===g.k; });
+      if(!list.length) return;                      // a group with no slides draws nothing
+      tiers.appendChild(tier(g,list));
+    });
+    // Every slide must land in a group, or it silently vanishes from the page.
+    var placed=GROUPS.reduce(function(n,g){ return n+slides.filter(function(s){return s.g===g.k;}).length; },0);
+    if(placed!==slides.length) console.warn('[showcase] '+(slides.length-placed)+' slide(s) have no group and are not rendered');
     spy();
     fitWide();
   }

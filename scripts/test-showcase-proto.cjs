@@ -45,7 +45,10 @@ check('every live slide survives the slice', P.slides.length === liveSlides.leng
   '(' + P.slides.length + ' rendered vs ' + liveSlides.length + ' defined in pages.js)');
 
 // The tier split is the entire point of the redesign — it must match the f:1 flags.
-const liveFree = (pages.match(/h:\w+,f:1\}/g) || []).length;
+// The f:1 flag is followed by g:'…' now, so an anchored `}` matches nothing. Count the
+// flag itself rather than its punctuation — the old regex reported 0 free slides against
+// a page rendering 4, which is a test failing on its own grammar, not on the code.
+const liveFree = (pages.match(/,f:1,g:'/g) || []).length;
 check('the free/premium split matches the f:1 flags', P.free === liveFree,
   '(' + P.free + ' free / ' + P.prem + ' premium; pages.js flags ' + liveFree + ' as free)');
 
@@ -136,17 +139,27 @@ check('the Climb slide offers three fights with the game\'s own odds labels', cl
   '(' + climbLabels.join(' · ') + ')');
 
 // Both tier bands present in the default view.
-check('both tier bands render', doc.querySelectorAll('.fx-band').length === 2);
+// Four groups now, not two tiers: Free / Before the fight / The numbers / Betting tools.
+const bandIds = [...doc.querySelectorAll('.fx-band')].map((b) => b.id);
+check('all four group bands render', bandIds.length === 4, '(' + bandIds.join(', ') + ')');
+check('every group heading carries its count',
+  [...doc.querySelectorAll('.fx-bn')].every((n) => /^\d+ · /.test(n.textContent)),
+  '(a non-swiper still learns the depth of each row)');
 
 // Two chips — Free and Premium — that jump to the bands. No "All", because there are no
 // other modes: both blocks are ALWAYS rendered. A filter with no "All" would have to
 // default to hiding one tier, which is the accordion this layout exists to replace.
 check('the tier nav is two chips, Free and Premium', doc.querySelectorAll('.fx-fb').length === 2,
   '(' + [...doc.querySelectorAll('.fx-fb')].map((b) => b.textContent).join(', ') + ')');
-check('both tiers stay on the page — nothing is hidden behind a chip',
-  doc.querySelectorAll('#band-free').length === 1 && doc.querySelectorAll('#band-prem').length === 1 &&
+check('every slide lands in a group — none silently dropped',
   doc.querySelectorAll('.fx-card').length === P.slides.length,
-  '(all ' + doc.querySelectorAll('.fx-card').length + ' cards rendered at once)');
+  '(' + doc.querySelectorAll('.fx-card').length + '/' + P.slides.length + ' rendered)');
+check('the Premium chip targets a band that exists',
+  !!doc.getElementById('band-pre') && !!doc.getElementById('band-free'),
+  '(band-prem stopped existing when two tiers became four groups)');
+check('mobile turns each group into a snap row with a peek',
+  /\.fx-card\{flex:0 0 86vw; scroll-snap-align:start\}/.test(html) && /scroll-snap-type:x mandatory/.test(html),
+  '(86vw leaves ~14% of the next card showing — that peek is the only thing that says swipe)');
 
 // The background is the page's, not a flat fill I invented. The live landing carries a
 // green radial glow behind the hero; the prototype hand-wrote background:var(--bg) and
