@@ -358,8 +358,26 @@ ${matchupFree.css || ''}
      Deliberately NOT included: any visible pattern with a motif. The field down there is
      carrying dense green/gold analytics; a texture with a shape in it competes with the
      numbers, which is the one thing this page cannot afford. */
+  /* TWO LAYERS, and the split is the point.
+     #bgfx is FIXED and carries the aurora only — atmosphere should stay put as you scroll.
+     #bgframe is ABSOLUTE and carries the octagon cap + the rails, so the cap is anchored
+     to the top of the DOCUMENT and scrolls away, leaving only the two rails running down
+     past the features. Previously everything was fixed, so the cap rode down the page with
+     you and was still framing the title when you were four screens into the grid. */
   #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s}
-  .lp,.fx-wrap,.fx-note{position:relative;z-index:1}
+  #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
+  /* the containing block for #bgframe — without this, absolute resolves against the
+     viewport and the rails would stop one screen down. */
+  body{position:relative}
+
+  /* .lp ABOVE .fx-wrap, and this is not cosmetic.
+     Both used to be z-index:1. Equal z-index means DOM order decides, .fx-wrap comes
+     later, so the grid painted over the whole nav — and the dropdown's z-index:60 could
+     not save it, because 60 only competes INSIDE .lp's stacking context. The menu was
+     opening behind the page. That was caused by this very rule, which I added to keep the
+     background behind the content and didn't think through. */
+  .lp{position:relative;z-index:20}
+  .fx-wrap,.fx-note{position:relative;z-index:1}
 
   /* CALIBRATION NOTE, because round one was invisible and that was measurable, not
      subjective. Your hero glow is #12251b over #0a0a0b — a delta of (8,27,16), i.e. about
@@ -408,13 +426,10 @@ ${matchupFree.css || ''}
      bright aurora, it's a green fill. Exactly the same fixed-px mistake as the 1500px
      octagon, made twice in one page. Everything atmospheric here is relative now, and
      the alpha drops again on small screens where three blooms share far less area. */
+  /* AURORA — fixed, atmosphere only. */
   html.bg-frame #bgfx{opacity:1;
-    --cw:98vw; --cy:48px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
     --a1:.085; --a2:.065; --a3:.075;
     background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 293' preserveAspectRatio='none'%3E%3Cpath d='M293 0 H707 M293 0 L0 293 M707 0 L1000 293' fill='none' stroke='%2300e668' stroke-opacity='0.30' stroke-width='1.1'/%3E%3C/svg%3E") no-repeat 50% var(--cy)/var(--cw) var(--sh),
-    linear-gradient(rgba(0,230,104,.30) 0%,rgba(0,230,104,.10) 45%,rgba(0,230,104,0) 100%) no-repeat calc(50% - var(--cw)/2) var(--rail)/1px 100%,
-    linear-gradient(rgba(0,230,104,.30) 0%,rgba(0,230,104,.10) 45%,rgba(0,230,104,0) 100%) no-repeat calc(50% + var(--cw)/2) var(--rail)/1px 100%,
     radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,var(--a1)) 0%,transparent 62%),
     radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,var(--a2)) 0%,transparent 62%),
     radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,var(--a3)) 0%,transparent 62%)}
@@ -424,6 +439,27 @@ ${matchupFree.css || ''}
   @media (max-width:700px){
     html.bg-frame #bgfx{--a1:.045; --a2:.032; --a3:.038}
   }
+
+  /* THE FRAME — absolute, so the cap belongs to the page and not to the screen.
+     --cy:96px CLEARS THE NAV. nav.lpnav is padding:22px 0 around a 26px logo = 70px tall,
+     so 48px put the cap level with the wordmark and it read as a line through the logo.
+     (48 was my mistake to accept: you said "lower" and the number for lower is BIGGER —
+     --cy is distance from the top. I should have said so instead of typing 48.)
+
+     vector-effect:non-scaling-stroke IS THE THICKNESS FIX. The stroke used to scale with
+     the SVG box: at 98vw the scale factor is 1.48 on a desktop but 0.38 on a phone, so a
+     stroke-width of 1.1 landed at 1.63px on your laptop and 0.42px on your phone — not
+     thin, sub-pixel, antialiased into a ghost. Non-scaling-stroke means the width is in
+     SCREEN pixels and identical everywhere. The cap is drawn heavier than the shoulders
+     because it's the shortest line and reads lightest. */
+  html.bg-frame #bgframe{opacity:1;
+    --cw:98vw; --cy:96px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
+    background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 293' preserveAspectRatio='none'%3E%3Cpath d='M293 0 H707' fill='none' stroke='%2300e668' stroke-opacity='0.42' stroke-width='2.6' vector-effect='non-scaling-stroke'/%3E%3Cpath d='M293 0 L0 293 M707 0 L1000 293' fill='none' stroke='%2300e668' stroke-opacity='0.36' stroke-width='2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") no-repeat 50% var(--cy)/var(--cw) var(--sh),
+    /* the rails: 2px, and they now run the DOCUMENT's height, not the viewport's — so
+       they settle to a steady .11 rather than fading out inside the first screen. */
+    linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% - var(--cw)/2) var(--rail)/2px 100%,
+    linear-gradient(rgba(0,230,104,.36) 0%,rgba(0,230,104,.14) 22%,rgba(0,230,104,.11) 100%) no-repeat calc(50% + var(--cw)/2) var(--rail)/2px 100%}
 
   /* FRAME CLOSED — the same frame, dropped so its flat top edge lands ABOVE the eyebrow
      instead of above the fold. Identical geometry; only --cy moves (-70px -> 88px), which
@@ -442,7 +478,7 @@ ${matchupFree.css || ''}
      We are three rounds into tuning one number by me guessing a value, you looking, and
      both of us describing pixels in adjectives. I cannot see this page; you can. So the
      number becomes yours. --gl-cy wins wherever it is set. */
-  html[style*="--gl-cy"] #bgfx{--cy:var(--gl-cy) !important}
+  html[style*="--gl-cy"] #bgframe{--cy:var(--gl-cy) !important}
 
 
   /* FRAME TIGHT — the same idea pulled in to a column, so the rails hug the grid instead
@@ -521,6 +557,7 @@ ${debug ? '' : '<meta name="robots" content="noindex,nofollow">'}
 </head><body>
 
 <div id="bgfx"></div>
+<div id="bgframe"></div>
 ${debug ? `
 <!-- Prototype-only: flip the page background between the candidates. Not part of the
      design — a way to answer "is flat black a problem, and which fix is least bad"
@@ -534,8 +571,8 @@ ${debug ? `
 
 <div id="cypick">
   <b>Top edge</b>
-  <input type="range" id="cy" min="-140" max="150" step="2" value="48">
-  <span id="cyv">48px</span>
+  <input type="range" id="cy" min="-40" max="200" step="2" value="96">
+  <span id="cyv">96px</span>
   <button type="button" id="cyreset">reset</button>
 </div>
 <script>
@@ -547,7 +584,7 @@ ${debug ? `
   // slider starts where the variant actually is rather than at an arbitrary number.
   // 60px: chosen on a real screen, halfway between the top of the page and the eyebrow.
   // The slider stays so it can be re-checked, but this is the number.
-  var DEF={"bg-frame":48};
+  var DEF={"bg-frame":96};
 
   function setCy(v){
     document.documentElement.style.setProperty('--gl-cy', v+'px');
