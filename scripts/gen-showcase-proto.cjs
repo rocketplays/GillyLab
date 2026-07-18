@@ -478,7 +478,13 @@ ${matchupFree.css || ''}
      to the top of the DOCUMENT and scrolls away, leaving only the two rails running down
      past the features. Previously everything was fixed, so the cap rode down the page with
      you and was still framing the title when you were four screens into the grid. */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .25s}
+  /* z-index:-1, not 0 (2026-07-18). This is a position:FIXED full-viewport layer. At
+     z-index:0 iOS treated it as chrome ABOVE the floating URL bar and painted the bottom
+     safe area solid black instead of letting the page show through — the exact black band
+     the owner reported, and the one structural difference from the auth/public pages, whose
+     #bgfx is already -1. Negative z-index reads as background the bar composites through.
+     Still below the content either way, so nothing above it changes. */
+  #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .25s}
 
   /* #bgedge — PAINT the page's top and bottom back to #0a0a0b, don't mask a layer.
      iOS paints the status bar and the URL bar flat. theme-color only ASKS the browser to
