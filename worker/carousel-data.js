@@ -507,27 +507,27 @@ export function carouselScript() {
     : (rank || roster);
 
   var slides=[
-    {t:'Fight simulator',d:'Any matchup through the tuned model — winner, method and round.',h:sim},
-    {t:'Box scores for every bout',d:'Strikes, takedowns and control for every UFC fight ever.',h:box},
-    {t:'Career accolades',d:'Titles, belt ranks, records and fight-night awards.',h:acc},
+    {t:'Fight simulator',d:'Any matchup through the tuned model — winner, method and round.',h:sim,g:'pre'},
+    {t:'Box scores for every bout',d:'Strikes, takedowns and control for every UFC fight ever.',h:box,g:'num'},
+    {t:'Career accolades',d:'Titles, belt ranks, records and fight-night awards.',h:acc,g:'num'},
     // PREMIUM, but the main event's is genuinely free on every card \u2014 the /matchup page
     // serves the real thing to logged-out visitors (worker/matchup-free.js). Saying only
     // "PREMIUM" undersells the free tier and, worse, is not true.
-    {t:'Matchup analytics deep dive',d:'Every strike by target and position, plus grappling — shaded against the division. Main event free.',h:mhx},
-    {t:'Style, pace & path to victory',d:'Striker or grappler, the pace they imply, how each one wins. Main event free.',h:style},
-    {t:'Live odds & props',d:'Moneyline, round totals and props, book by book.',h:odds},
-    {t:'Bet & CLV tracker',d:'Log a bet; it grades itself. Record, ROI, units, closing-line value.',h:bets},
-    {t:'Line movement',d:'Every bout\'s odds, day by day, from open to now.',h:lm},
-    {t:'Parlay builder',d:'Build a slip, then re-price it at every other book.',h:parlay},
-    {t:'Odds & line history',d:'Every fighter\'s closing lines, bout by bout.',h:ohist},
-    {t:'One-click tape study',d:'Every fight links straight to the film.',h:tape},
+    {t:'Matchup analytics deep dive',d:'Every strike by target and position, plus grappling — shaded against the division. Main event free.',h:mhx,g:'pre'},
+    {t:'Style, pace & path to victory',d:'Striker or grappler, the pace they imply, how each one wins. Main event free.',h:style,g:'pre'},
+    {t:'Live odds & props',d:'Moneyline, round totals and props, book by book.',h:odds,g:'bet'},
+    {t:'Bet & CLV tracker',d:'Log a bet; it grades itself. Record, ROI, units, closing-line value.',h:bets,g:'bet'},
+    {t:'Line movement',d:'Every bout\'s odds, day by day, from open to now.',h:lm,g:'bet'},
+    {t:'Parlay builder',d:'Build a slip, then re-price it at every other book.',h:parlay,g:'bet'},
+    {t:'Odds & line history',d:'Every fighter\'s closing lines, bout by bout.',h:ohist,g:'bet'},
+    {t:'One-click tape study',d:'Every fight links straight to the film.',h:tape,g:'num'},
     // FREE ORDER IS DELIBERATE: the two things you can DO without an account come first
     // (The Climb, then Pick'em), then what you can read. The free tier's job is to get a
     // stranger playing, not to lead with a stats table.
-    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. No account needed.',h:climb,f:1},
-    {t:'Pick\\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1},
-    {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1},
-    {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1},
+    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. No account needed.',h:climb,f:1,g:'free'},
+    {t:'Pick\\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1,g:'free'},
+    {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1,g:'free'},
+    {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1,g:'free'},
   ].filter(function(s){return s.h;});   // a null payload drops its slide rather than rendering an empty stage
 
   var i=0,stg=document.getElementById('stg'),dt=document.getElementById('dt');

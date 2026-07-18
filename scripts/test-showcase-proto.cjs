@@ -142,15 +142,45 @@ check('the Climb slide offers three fights with the game\'s own odds labels', cl
 // Four groups now, not two tiers: Free / Before the fight / The numbers / Betting tools.
 const bandIds = [...doc.querySelectorAll('.fx-band')].map((b) => b.id);
 check('all four group bands render', bandIds.length === 4, '(' + bandIds.join(', ') + ')');
-check('every group heading carries its count',
-  [...doc.querySelectorAll('.fx-bn')].every((n) => /^\d+ · /.test(n.textContent)),
-  '(a non-swiper still learns the depth of each row)');
+// Headings name a category; they do not count one. The counts were my idea and lost to
+// someone looking at the page — "Free 4" reads as a quantity where a label was wanted.
+check('group headings carry no counts',
+  [...doc.querySelectorAll('.fx-bn')].every((n) => !/^\d+\s*·/.test(n.textContent)) &&
+  [...doc.querySelectorAll('.fx-fb')].every((b) => !/\d/.test(b.textContent)),
+  '(' + [...doc.querySelectorAll('.fx-fb')].map((b) => b.textContent).join(' | ') + ')');
+
+// The order is a story: free stuff, then research, then the betting tools that research
+// feeds, then the archive underneath it all. Asserted because a reorder is one line and
+// silently reverting it would look like nothing happened.
+check('groups run Free → Before the fight → Betting tools → Complete fighter history',
+  [...doc.querySelectorAll('.fx-bt')].map((b) => b.textContent).join(' | ') ===
+  'Free | Before the fight | Betting tools | Complete fighter history',
+  '(' + [...doc.querySelectorAll('.fx-bt')].map((b) => b.textContent).join(' | ') + ')');
+
+// The rows must clip inside the frame rails, not under them.
+// STRIP COMMENTS FIRST. The rule's own comment explains the bug by quoting the very
+// string this searches for, so the check found "margin:0 -13px" in the prose describing
+// its removal and reported the bug as still present. Third time today a check has read a
+// comment as code — grep does not know what a comment is, and this file is full of them.
+const cssOnly = html.replace(/\/\*[\s\S]*?\*\//g, '');
+const mobileGrid = /@media \(max-width:720px\)\{[\s\S]*?\.fx-grid\{([^}]*)\}/.exec(cssOnly);
+check('mobile rows stay inside the frame rails', !!mobileGrid && !/margin\s*:/.test(mobileGrid[1]),
+  '(no negative margin — a full-bleed row let swiped cards slide under the rail at 1vw)');
 
 // Two chips — Free and Premium — that jump to the bands. No "All", because there are no
 // other modes: both blocks are ALWAYS rendered. A filter with no "All" would have to
 // default to hiding one tier, which is the accordion this layout exists to replace.
-check('the tier nav is two chips, Free and Premium', doc.querySelectorAll('.fx-fb').length === 2,
-  '(' + [...doc.querySelectorAll('.fx-fb')].map((b) => b.textContent).join(', ') + ')');
+// The tier chips are gone: Free is one row now, so a "skip to Premium" control saved a
+// quarter of a swipe. The signal moved to the group headings, which is where the reader
+// is deciding anything. One badge per group, not per card.
+check('the redundant tier chips are gone', doc.querySelectorAll('.fx-fb').length === 0);
+const tags = [...doc.querySelectorAll('.fx-btag')].map((t) => t.textContent);
+check('every group heading carries its tier badge', tags.join(' ') === 'FREE PREMIUM PREMIUM PREMIUM',
+  '(' + tags.join(' · ') + ')');
+check('the cards no longer repeat the group\'s tier', doc.querySelectorAll('.fx-card .fx-pill').length === 0,
+  '(15 pills saying what the heading above already said)');
+check('the lightbox keeps its pill — no group heading in view there',
+  /class="fx-pill /.test(html), '(the tier is genuinely unstated once expanded)');
 check('every slide lands in a group — none silently dropped',
   doc.querySelectorAll('.fx-card').length === P.slides.length,
   '(' + doc.querySelectorAll('.fx-card').length + '/' + P.slides.length + ' rendered)');

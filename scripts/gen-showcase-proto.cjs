@@ -298,17 +298,14 @@ ${footCSS}
      the longest part of the page.
      The blur/background is not decoration: cards scroll UNDER this, and without an opaque
      backing the counts sit on top of a moving preview and become unreadable. */
-  /* THE PILL STAYS A PILL. It was a bordered, rounded segmented control and it read as one
-     — that shape is the affordance. Making the whole bar full-bleed took the container
-     away, so it stopped looking like something you press and started looking like a page
-     header; and at margin:0 -22px it ran edge to edge and straight through the frame rails.
-     Two elements instead of one: an invisible sticky wrapper that spans the column and
-     does the pinning, and the original pill inside it, centred and untouched.
-     pointer-events:none on the wrapper matters — it stretches the full width, so without
-     it the strip would swallow taps meant for the cards passing underneath. */
-  .fx-fltwrap{position:sticky;top:10px;z-index:30;display:flex;justify-content:center;margin:0 0 18px;pointer-events:none}
-  .fx-filter{display:inline-flex;gap:3px;background:rgba(10,10,11,.92);backdrop-filter:blur(10px);border:1px solid var(--border);border-radius:999px;padding:4px;pointer-events:auto;box-shadow:0 8px 24px rgba(0,0,0,.45)}
-  @media (max-width:560px){ .fx-fltwrap{top:8px;margin-bottom:14px} }
+  /* The heading's tier badge. One per group instead of one per card: the signifier sits
+     where the decision is — "this whole section is Premium" — not stapled to fifteen
+     cards that all say the same thing. Green FREE, gold PREMIUM, the palette's existing
+     two meanings and no new ones. */
+  .fx-btag{font-size:9px;font-weight:800;letter-spacing:.09em;padding:3px 8px;border-radius:999px;white-space:nowrap;flex:0 0 auto}
+  .fx-btag.free{color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.3)}
+  .fx-btag.prem{color:#ffcf7a;background:rgba(255,207,122,.10);border:1px solid rgba(255,207,122,.3)}
+
   .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
   .fx-fb:hover{color:#f4f5f7}
   .fx-fb.on{background:var(--accent);color:#0a0a0b}
@@ -655,7 +652,14 @@ ${matchupFree.css || ''}
       display:flex; grid-template-columns:none;
       overflow-x:auto; overscroll-behavior-x:contain;
       scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
-      gap:12px; margin:0 -13px; padding:0 13px 2px;
+      /* NOT full-bleed. margin:0 -13px let the row clip at the screen edge, so a swiped
+         card slid straight under the frame rail sitting at 1vw. An overflow container
+         clips at its PADDING box, so the negative margin was handing cards the last 13px
+         either side — exactly where the rails live. Kept inside .fx-wrap's padding, cards
+         now vanish at 13px, clear of the rail, on both sides. The peek is unaffected: the
+         row is 364px of a 390px screen and the card is 86vw, so ~29px of the next one
+         still shows. */
+      gap:12px; padding:0 0 2px;
       scrollbar-width:none;
     }
     .fx-grid::-webkit-scrollbar{display:none}
@@ -838,7 +842,6 @@ ${navMarkup}
        away — which is exactly when they become useful. As a direct child of .fx-wrap they
        stay pinned for the whole length of the grid. This is the kind of thing that looks
        right in a mockup and does nothing on the real page. -->
-  <div class="fx-fltwrap"><div class="fx-filter" id="flt" role="tablist"></div></div>
   <div id="tiers"></div>
 </div>
 
@@ -881,36 +884,12 @@ ${slideJS}
   // So both blocks always render and these two scroll to them. Two chips, nothing
   // hidden, and the count still answers "what do I get for nothing?" at a glance.
   // If you'd rather they genuinely filter, it is the paint() call below and one line.
-  // Premium jumps to 'band-pre' — its FIRST group — because 'band-prem' stopped existing
-  // when the two tiers became four groups. The target is explicit rather than derived
-  // from the chip's key, so renaming a group can't quietly turn this into a dead button.
-  [['free','Free',free.length,'band-free'],['prem','Premium',prem.length,'band-pre']].forEach(function(o){
-    var b=document.createElement('button');
-    b.className='fx-fb'; b.type='button';
-    b.innerHTML=o[1]+'<span class="n">'+o[2]+'</span>';
-    b.onclick=function(){
-      var band=document.getElementById(o[3]);
-      if(band) band.scrollIntoView({behavior:'smooth',block:'start'});
-    };
-    flt.appendChild(b);
-  });
+  // NO TIER CHIPS. They were a sticky Free/Premium jump-bar, and chunking made them
+  // pointless: Free is now ONE row, so "skip to Premium" skips ~230px. A control that
+  // saves you a quarter of a swipe is chrome pretending to be navigation. The four group
+  // headings already say where you are, which is what the chips were really for.
+  // The tier signal moved to the headings — see band() — where the decision actually is.
 
-  // Keep the chip matching whatever band you're actually looking at, so the control
-  // reports position rather than just firing and forgetting.
-  function spy(){
-    var f=document.getElementById('band-free'), p=document.getElementById('band-pre');
-    if(!f||!p) return;
-    // The chip bar is sticky now, so a band is "current" once it passes UNDER the bar —
-    // not at an arbitrary 120px. Measure the bar rather than hardcoding its height: it is
-    // 46px on a desktop and 42 on a phone, and a constant would be wrong on one of them.
-    // Measure the pill where it actually IS, rather than guessing: the sticky wrapper sits
-    // 10px down (8 on a phone) and the pill is ~40px tall, so a hardcoded number would be
-    // wrong on one of them and wrong again the moment the padding changes.
-    var bar = flt.getBoundingClientRect();
-    var onPrem = p.getBoundingClientRect().top <= bar.bottom + 8;
-    Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
-  }
-  window.addEventListener('scroll', spy, {passive:true});
 
   // The hub payload is the only one authored to a fixed width (the modal's 1040px) — it
   // has to be scaled rather than squeezed. Detected from the markup, not from the title,
@@ -922,20 +901,26 @@ ${slideJS}
     var el = document.createElement('div');
     el.className = 'fx-card' + (s.f ? '' : ' prem') + (isWide(s) ? ' wide' : '');
     el.innerHTML =
-      '<div class="fx-ch"><div><div class="fx-ct">'+s.t+'</div><div class="fx-cd">'+s.d+'</div></div>'
-      + '<span class="fx-pill '+(s.f?'free':'prem')+'">'+(s.f?'FREE':'PREMIUM')+'</span></div>'
+      // No pill on the card: every card in a group shares its tier, so the heading above
+      // already said it. Fifteen pills repeating the group's own label is noise on the
+      // one view that cannot afford any. The lightbox keeps its pill — expanded, the
+      // group heading is off-screen and the tier is genuinely unstated.
+      '<div class="fx-ch"><div><div class="fx-ct">'+s.t+'</div><div class="fx-cd">'+s.d+'</div></div></div>'
       + '<div class="fx-frame"><div class="fx-scaler">'+s.h+'</div>'
       + '<div class="fx-fade"></div><div class="fx-expand">Expand ↗</div></div>';
     el.onclick = function(){ open(i); };
     return el;
   }
 
-  // The count is in the heading on purpose: on mobile these become swipe rows, so a
-  // visitor who never swipes still needs to know the depth. "The numbers · 4" tells you
-  // the shape of what you haven't seen — which a vertical stack never does.
+  // NO COUNTS. I put them in so a non-swiper would know each row's depth — a reasonable
+  // argument that lost to someone actually looking at it: "Free 4" reads as a quantity
+  // when the heading's job is to name a category, and the number competes with the words
+  // that carry the meaning. The peek already says there is more.
   function band(key, label, tierCls, n, note){
     var d=document.createElement('div'); d.className='fx-band'; d.id='band-'+key;
-    d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span><span class="fx-bn">'+n+' · '+note+'</span><span class="fx-bl"></span>';
+    d.innerHTML='<span class="fx-bt '+tierCls+'">'+label+'</span>'
+      +'<span class="fx-btag '+tierCls+'">'+(tierCls==='free'?'FREE':'PREMIUM')+'</span>'
+      +'<span class="fx-bn">'+note+'</span><span class="fx-bl"></span>';
     return d;
   }
 
@@ -952,10 +937,15 @@ ${slideJS}
   // scrolls two screens and swipes nothing still learns what this thing is.
   // The group lives on the slide (g:) in pages.js, because it is a fact about the feature.
   var GROUPS=[
-    {k:'free', label:'Free',             note:'no card required', tier:'free'},
-    {k:'pre',  label:'Before the fight',  note:'know it before it starts', tier:'prem'},
-    {k:'num',  label:'The numbers',       note:'every fighter, every bout', tier:'prem'},
-    {k:'bet',  label:'Betting tools',     note:'price it, track it, grade it', tier:'prem'}
+    // "no card required" removed an objection nobody had raised yet. The other three
+    // headings promise something; this one apologised. It also buried the free tier's
+    // actual advantage: it is not a trial. Play covers The Climb, predict covers Pick'em,
+    // dig in covers the stats and the rankings — and "forever" is the word doing the real
+    // work, because every other free tier a visitor has met was a countdown.
+    {k:'free', label:'Free',                      note:'play, predict and dig in — free forever', tier:'free'},
+    {k:'pre',  label:'Before the fight',           note:'where the research begins', tier:'prem'},
+    {k:'bet',  label:'Betting tools',              note:'become a smarter, more efficient bettor', tier:'prem'},
+    {k:'num',  label:'Complete fighter history',   note:'every fighter, every bout', tier:'prem'}
   ];
 
   function tier(g,list){
@@ -975,7 +965,6 @@ ${slideJS}
     // Every slide must land in a group, or it silently vanishes from the page.
     var placed=GROUPS.reduce(function(n,g){ return n+slides.filter(function(s){return s.g===g.k;}).length; },0);
     if(placed!==slides.length) console.warn('[showcase] '+(slides.length-placed)+' slide(s) have no group and are not rendered');
-    spy();
     fitWide();
   }
 
