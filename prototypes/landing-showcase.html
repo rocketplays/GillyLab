@@ -459,7 +459,7 @@
      An opaque wash sitting ABOVE all three cannot make that mistake: whatever is under it,
      the first and last 100px of the viewport end up #0a0a0b. z-index 0 keeps it beneath the
      content (z-index 1+), and fixed means the clean edge follows the screen at any scroll
-     position. */
+     position.
      inset:0, AND IT STAYS THAT WAY. I swapped this to height:100dvh to chase the bottom
      edge and it broke the top — which had been perfect. Reverted. The rule I keep having
      to relearn: do not touch the half that works to fix the half that doesn't.

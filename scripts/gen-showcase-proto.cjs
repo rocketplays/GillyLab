@@ -477,7 +477,7 @@ ${matchupFree.css || ''}
      An opaque wash sitting ABOVE all three cannot make that mistake: whatever is under it,
      the first and last 100px of the viewport end up #0a0a0b. z-index 0 keeps it beneath the
      content (z-index 1+), and fixed means the clean edge follows the screen at any scroll
-     position. */
+     position.
      inset:0, AND IT STAYS THAT WAY. I swapped this to height:100dvh to chase the bottom
      edge and it broke the top — which had been perfect. Reverted. The rule I keep having
      to relearn: do not touch the half that works to fix the half that doesn't.
@@ -1156,6 +1156,22 @@ const html = page(true, false);          // local file: controls, indexable is m
 // who wasn't sent the URL — and when the design ships into landingPage(), page(false) is
 // what gets used and the controls never see production.
 const preview = page(true, true);        // /landingpagetest: controls AND noindex
+
+// STRAY */ IN THE CSS = EVERY RULE AFTER IT IS DROPPED.
+// Editing inside a long comment, I left the original's closing */ in place and wrote on
+// past it — so my prose became CSS and ended with a second, orphaned */. The parser choked
+// and silently binned the rules that followed, which is why the debug panels lost
+// position:fixed and rendered as text at the top of the page. CSS has no syntax errors, it
+// has recovery: it drops what it can't read and says nothing. Three rounds went to this.
+{
+  const css = html.slice(html.indexOf('<style>'), html.indexOf('</style>'));
+  const opens = (css.match(/\/\*/g) || []).length;
+  const closes = (css.match(/\*\//g) || []).length;
+  if (opens !== closes) throw new Error('unbalanced CSS comments: ' + opens + ' /* vs ' + closes + ' */ — a stray */ silently drops every rule after it');
+  // and nothing that looks like prose sitting where a selector should be
+  const stray = /\n\s{4,}[A-Z][a-z]+[^{};*\n]{20,}\n/.exec(css.replace(/\/\*[\s\S]*?\*\//g, ''));
+  if (stray) throw new Error('prose found outside a comment in the CSS — it will be dropped along with the next rule: "' + stray[0].trim().slice(0, 60) + '"');
+}
 
 if (!/noindex/.test(preview)) throw new Error('the preview route must be noindex — it is a duplicate of the landing page');
 if (!/id="bgfx"/.test(preview) || !/bg-frame/.test(preview)) throw new Error('the preview lost the frame background');
