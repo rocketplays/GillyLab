@@ -180,7 +180,7 @@
      rubble. Side-by-side genuinely is better, right up until the previews stop being
      readable, at which point it's worse than the carousel. The phone gets the scroll
      shortened instead (see the frame height below). */
-  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;grid-auto-flow:dense}
 
   .fx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s cubic-bezier(.2,.7,.3,1),border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
   .fx-card:hover{transform:translateY(-4px);border-color:rgba(0,230,104,.4);box-shadow:0 14px 38px rgba(0,0,0,.5)}
@@ -3726,25 +3726,40 @@ var LD={
     sec.appendChild(grid(list));
     return sec;
   }
+  // DESKTOP collapses the four named groups to two flat lists — Free and Premium. The
+  // chunking exists so a phone isn't one long 15-card scroll; on a wide screen it does the
+  // opposite of helping — a 3-card group that happens to hold the full-width hub card leaves
+  // its other two cards marooned in half-empty rows. A single Premium grid packs the hub in
+  // among eleven cards instead. The four named SWIPE groups stay on mobile.
+  var TIERS2=[
+    {k:'free', label:'Free',    note:'play, predict and dig in — free forever', tier:'free', sel:function(s){ return s.f; }},
+    {k:'prem', label:'Premium', note:'the whole database and every tool',        tier:'prem', sel:function(s){ return !s.f; }}
+  ];
+  function isWideLayout(){ return window.matchMedia('(min-width:721px)').matches; }
+
   function paint(){
     tiers.innerHTML='';
-    // /subscribe embeds this same grid with window.__FX_PREMIUM_ONLY=true and renders only
-    // the premium groups — the free tier is not a selling point on the checkout page. On
-    // the landing (flag unset) all four groups render as before.
-    var groups = window.__FX_PREMIUM_ONLY ? GROUPS.filter(function(g){ return g.tier==='prem'; }) : GROUPS;
-    groups.forEach(function(g){
-      var list=slides.filter(function(s){ return s.g===g.k; });
-      if(!list.length) return;                      // a group with no slides draws nothing
+    // Desktop: Free / Premium (flat). Mobile: the four named groups, matched by slide.g.
+    var defs = isWideLayout()
+      ? TIERS2.slice()
+      : GROUPS.map(function(g){ return {k:g.k,label:g.label,note:g.note,tier:g.tier,sel:function(s){ return s.g===g.k; }}; });
+    // /subscribe embeds this with window.__FX_PREMIUM_ONLY=true — drop the free tier there
+    // (on desktop that leaves one Premium list; on mobile the three premium swipe groups).
+    if(window.__FX_PREMIUM_ONLY) defs = defs.filter(function(g){ return g.tier==='prem'; });
+    defs.forEach(function(g){
+      var list=slides.filter(g.sel);
+      if(!list.length) return;                        // a group with no slides draws nothing
       tiers.appendChild(tier(g,list));
     });
-    // Every slide must land in a group, or it silently vanishes from the page. (Skip the
-    // check in premium-only mode, where the free slides are deliberately not placed.)
-    if(!window.__FX_PREMIUM_ONLY){
-      var placed=GROUPS.reduce(function(n,g){ return n+slides.filter(function(s){return s.g===g.k;}).length; },0);
-      if(placed!==slides.length) console.warn('[showcase] '+(slides.length-placed)+' slide(s) have no group and are not rendered');
-    }
     fitWide();
   }
+  // Re-render when the viewport crosses the mobile/desktop line so the grouping flips with
+  // the layout (two flat lists <-> four swipe groups) instead of freezing at load width.
+  var _wasWide = isWideLayout();
+  window.addEventListener('resize', function(){
+    var w = isWideLayout();
+    if(w!==_wasWide){ _wasWide=w; paint(); }
+  });
 
   // Scale the 1040px hub preview down to whatever its card ended up being. Measured per
   // card because the grid is fluid — there is no single correct constant, which is the
