@@ -193,6 +193,15 @@ const bodyRule = between('  body{margin:0;background:radial-gradient(', '}', fal
   .replace(/^\s*body\{/, '')
   .replace(/;?\s*animation:lpin[^;}]*/, '');
 
+// AND THE html RULE, which I forgot, and which is why the phone showed white bands.
+// The live page carries `html{background:var(--bg);scroll-behavior:smooth}`. I sliced
+// body{} and stopped, so the ROOT element went unpainted here. body's background does
+// propagate to the canvas — which is why this looked fine on a desktop — but rubber-band
+// past the top or bottom on iOS and you are looking at the root, and my fixed #bgfx layer
+// stops dead at the viewport edge. Hence white. Slice both; assume neither.
+const htmlRule = between('  html{', '}', true);
+if (!/background/.test(htmlRule)) throw new Error('the html{} slice has no background — the page would overscroll to white');
+
 // The real nav — logo left, hamburger right — sliced rather than mocked, so the header
 // above the grid is the page's actual chrome and not my impression of it. The logo is a
 // relative <img src="gl-logo.png">, which resolves on the site and not from file://, so
@@ -240,6 +249,7 @@ if (/\$\{/.test(footCTA + siteFooter)) throw new Error('an unresolved ${…} sur
 const css = `
 ${rootVars}
   *{margin:0;padding:0;box-sizing:border-box}
+  ${htmlRule}
   body{${bodyRule};padding:0 0 90px}
   a{text-decoration:none;color:inherit}
   .bc{font-family:'Barlow Condensed',sans-serif}
@@ -281,7 +291,15 @@ ${footCSS}
   .fx-bn{font-size:12px;color:var(--muted);white-space:nowrap}
   .fx-bl{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 
-  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:20px}
+  /* 2-up from 720px, not 1000px. A 760px tablet was getting one column when two fit
+     comfortably (~350px each, and the payloads reflow down to about there).
+     BELOW 720px IT STAYS ONE COLUMN, and that is not laziness: two columns on a 390px
+     phone gives cards 174px wide, and these payloads are authored for ~580px. They would
+     not reflow into that, they'd collapse — bars, labels and avatar rows stacking into
+     rubble. Side-by-side genuinely is better, right up until the previews stop being
+     readable, at which point it's worse than the carousel. The phone gets the scroll
+     shortened instead (see the frame height below). */
+  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
 
   .fx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s cubic-bezier(.2,.7,.3,1),border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
   .fx-card:hover{transform:translateY(-4px);border-color:rgba(0,230,104,.4);box-shadow:0 14px 38px rgba(0,0,0,.5)}
@@ -383,15 +401,29 @@ ${matchupFree.css || ''}
      the eyebrow: the flat cap reads, the diagonals frame the title, and the rails run off
      the bottom. Landed by dragging the slider on a real screen, which is the only
      instrument that could settle it — I picked -70 by maths and it was wrong. */
+  /* THE AURORA IS SIZED IN vw NOW, AND THAT IS THE WHOLE FIX FOR "IT JUST LOOKS GREEN".
+     It was 900/1000/1100px — fixed. On a 1512 desktop a 900px bloom is 60% of the width
+     and reads as a bloom. On a 390px phone it is 231% of the width: you never see the
+     falloff, only the flat core, edge to edge, three of them overlapping. That isn't a
+     bright aurora, it's a green fill. Exactly the same fixed-px mistake as the 1500px
+     octagon, made twice in one page. Everything atmospheric here is relative now, and
+     the alpha drops again on small screens where three blooms share far less area. */
   html.bg-frame #bgfx{opacity:1;
-    --cw:98vw; --cy:60px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
+    --cw:98vw; --cy:48px; --sh:calc(var(--cw) * 0.293); --rail:calc(var(--cy) + var(--sh));
+    --a1:.085; --a2:.065; --a3:.075;
     background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 293' preserveAspectRatio='none'%3E%3Cpath d='M293 0 H707 M293 0 L0 293 M707 0 L1000 293' fill='none' stroke='%2300e668' stroke-opacity='0.30' stroke-width='1.1'/%3E%3C/svg%3E") no-repeat 50% var(--cy)/var(--cw) var(--sh),
     linear-gradient(rgba(0,230,104,.30) 0%,rgba(0,230,104,.10) 45%,rgba(0,230,104,0) 100%) no-repeat calc(50% - var(--cw)/2) var(--rail)/1px 100%,
     linear-gradient(rgba(0,230,104,.30) 0%,rgba(0,230,104,.10) 45%,rgba(0,230,104,0) 100%) no-repeat calc(50% + var(--cw)/2) var(--rail)/1px 100%,
-    radial-gradient(900px 700px at 12% 28%,rgba(0,230,104,.085) 0%,transparent 62%),
-    radial-gradient(1000px 800px at 88% 58%,rgba(50,120,255,.065) 0%,transparent 62%),
-    radial-gradient(1100px 700px at 45% 90%,rgba(0,230,104,.075) 0%,transparent 62%)}
+    radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,var(--a1)) 0%,transparent 62%),
+    radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,var(--a2)) 0%,transparent 62%),
+    radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,var(--a3)) 0%,transparent 62%)}
+
+  /* On a phone the three blooms overlap in a fraction of the area, so the same alpha
+     stacks to roughly double the wash. Halve it. */
+  @media (max-width:700px){
+    html.bg-frame #bgfx{--a1:.045; --a2:.032; --a3:.038}
+  }
 
   /* FRAME CLOSED — the same frame, dropped so its flat top edge lands ABOVE the eyebrow
      instead of above the fold. Identical geometry; only --cy moves (-70px -> 88px), which
@@ -447,11 +479,21 @@ ${matchupFree.css || ''}
   #cypick button{background:none;border:0;color:var(--muted);font-size:11px;text-decoration:underline;cursor:pointer;padding:0 2px}
   #cypick button:hover{color:#fff}
 
-  @media (max-width:1000px){ .fx-grid{grid-template-columns:1fr} }
+  @media (max-width:720px){ .fx-grid{grid-template-columns:1fr;gap:14px} }
   @media (max-width:560px){
     .fx-h{font-size:29px}
-    .fx-frame{height:250px}
-    .fx-wrap{padding:0 14px}
+    /* 290 -> 172. One column of 16 cards was ~6,900px of page — 8 screens on a phone
+       against 4 on a desktop, which is the whole "worse on mobile" complaint. The preview
+       still shows (it is the argument; it does not get hidden), it just peeks instead of
+       playing in full, and the fade does more of the work. Takes the page to ~5 screens.
+       Tapping still opens the full-size read. */
+    .fx-frame{height:172px}
+    .fx-fade{height:66px}
+    .fx-scaler{padding:12px 13px}
+    .fx-ch{padding:12px 13px 10px}
+    .fx-cd{font-size:12px}
+    .fx-wrap{padding:0 13px}
+    .fx-band{margin:26px 0 12px}
   }
 
 ${componentCSS}
@@ -492,8 +534,8 @@ ${debug ? `
 
 <div id="cypick">
   <b>Top edge</b>
-  <input type="range" id="cy" min="-140" max="150" step="2" value="60">
-  <span id="cyv">60px</span>
+  <input type="range" id="cy" min="-140" max="150" step="2" value="48">
+  <span id="cyv">48px</span>
   <button type="button" id="cyreset">reset</button>
 </div>
 <script>
@@ -505,7 +547,7 @@ ${debug ? `
   // slider starts where the variant actually is rather than at an arbitrary number.
   // 60px: chosen on a real screen, halfway between the top of the page and the eyebrow.
   // The slider stays so it can be re-checked, but this is the number.
-  var DEF={'bg-frame':60};
+  var DEF={"bg-frame":48};
 
   function setCy(v){
     document.documentElement.style.setProperty('--gl-cy', v+'px');
