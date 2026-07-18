@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-18T22:57:47.888Z",
+ "generatedAt": "2026-07-18T23:14:15.673Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -3374,6 +3374,194 @@
       ]
      },
      "capturedAt": "2026-07-18T22:57:47.761Z"
+    }
+   ]
+  },
+  "Levi Rodrigues Jr.": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Felipe Franco",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "1:40",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Felipe Franco",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 32,
+      "totL": 26,
+      "totA": 52,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       27
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       11,
+       32
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 56,
+      "totL": 52,
+      "totA": 72,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:51",
+      "head": [
+       38,
+       55
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       12,
+       20
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       27,
+       36
+      ]
+     },
+     "capturedAt": "2026-07-18T23:14:15.549Z"
+    }
+   ]
+  },
+  "Felipe Franco": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Levi Rodrigues Jr.",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "1:40",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Levi Rodrigues Jr.",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 56,
+      "totL": 52,
+      "totA": 72,
+      "tdL": 3,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:51",
+      "head": [
+       38,
+       55
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       12,
+       20
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       27,
+       36
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 32,
+      "totL": 26,
+      "totA": 52,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       27
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       11,
+       32
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-18T23:14:15.549Z"
     }
    ]
   }
