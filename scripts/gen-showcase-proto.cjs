@@ -386,7 +386,10 @@ ${footCSS}
      way — exactly what the modal does. */
   @media (max-width:720px){
     .fx-card.wide .fx-scaler{width:auto;transform:none !important;padding:12px 13px}
-    .fx-card.wide .fx-frame{height:172px}
+    /* The hub keeps a taller frame than its neighbours here too: it reflows into a header,
+       tabs and two stacked grids, and 172px showed the header and nothing else — a preview
+       of a modal that never previewed the modal. Same stale 15-card tax as the rule above. */
+    .fx-card.wide .fx-frame{height:330px}
   }
   .fx-fade{position:absolute;left:0;right:0;bottom:0;height:96px;background:linear-gradient(180deg,rgba(13,13,16,0),rgba(13,13,16,.82) 46%,#0d0d10);pointer-events:none}
   .fx-expand{position:absolute;right:11px;bottom:10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);background:rgba(20,20,26,.9);border:1px solid var(--border);border-radius:7px;padding:5px 9px;pointer-events:none;transition:color .15s,border-color .15s}
@@ -676,19 +679,27 @@ ${matchupFree.css || ''}
        leaves the screen. Adding the badge is what tipped it; the note was already close.
        So: name and badge on line one, the promise on its own line beneath, and drop the
        gradient rule — it is decoration and there is no width to spend on it. */
-    .fx-band{flex-wrap:wrap;gap:9px;margin:0 0 12px}
+    /* CENTRED, because the thing that justified the left edge is gone.
+       On desktop the heading is a row: label, badge, note, then a gradient rule running to
+       the right margin — the rule is what makes left-alignment read as deliberate, an
+       anchor with a line trailing off it. On a phone there's no width for the rule, so it
+       is display:none — leaving a left-aligned label pointing at nothing, in a column whose
+       hero above it is centred. Centre it and the page has one axis instead of two. */
+    .fx-band{flex-wrap:wrap;justify-content:center;text-align:center;gap:9px;margin:0 0 12px}
     .fx-bn{flex:0 0 100%;order:3;white-space:normal;line-height:1.4}
     .fx-bl{display:none}
   }
   @media (max-width:560px){
     .fx-h{font-size:29px}
-    /* 290 -> 172. One column of 16 cards was ~6,900px of page — 8 screens on a phone
-       against 4 on a desktop, which is the whole "worse on mobile" complaint. The preview
-       still shows (it is the argument; it does not get hidden), it just peeks instead of
-       playing in full, and the fade does more of the work. Takes the page to ~5 screens.
-       Tapping still opens the full-size read. */
-    .fx-frame{height:172px}
-    .fx-fade{height:66px}
+    /* NO HEIGHT OVERRIDE — the phone gets the same 290px preview as the desktop.
+       It was 172px, and that was a tax on a layout that no longer exists: when this was
+       one column of 15 cards, every pixel of preview height was paid FIFTEEN times, and
+       172 vs 290 was the difference between 5.7 and 7.8 screens. In rows only four
+       previews are in the vertical budget — the other eleven cost nothing, they're
+       sideways — so the same change is 2.4 vs 2.9 screens. Six-tenths of a screen for a
+       preview you can actually read, on the element that is the entire reason anyone taps.
+       One less thing diverging from desktop, too. */
+    .fx-fade{height:80px}
     .fx-scaler{padding:12px 13px}
     .fx-ch{padding:12px 13px 10px}
     .fx-cd{font-size:12px}
