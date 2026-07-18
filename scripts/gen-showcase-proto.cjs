@@ -478,17 +478,18 @@ ${matchupFree.css || ''}
      the first and last 100px of the viewport end up #0a0a0b. z-index 0 keeps it beneath the
      content (z-index 1+), and fixed means the clean edge follows the screen at any scroll
      position. */
-     dvh, NOT inset:0 — and this is why the bottom stayed green while the top blended.
-     A position:fixed element on iOS is sized to the LARGE viewport: the one you get with
-     the URL bar hidden. With inset:0 this element's bottom edge therefore sits UNDER the
-     URL bar, so its bottom fade plays out in ~100px you cannot see, and the visible bottom
-     of the screen lands where the wash is still transparent. The top has no bar above it,
-     so the top always worked — the asymmetry was the clue.
-     100dvh is the DYNAMIC viewport height: it tracks the bar showing and hiding, so the
-     element's bottom edge is the bottom edge you can actually see. 100vh first as a
-     fallback for anything that doesn't know dvh. */
-  #bgedge{position:fixed;top:0;left:0;right:0;height:100vh;height:100dvh;z-index:0;pointer-events:none;
-    background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 100px),var(--bg) 100%)}
+     inset:0, AND IT STAYS THAT WAY. I swapped this to height:100dvh to chase the bottom
+     edge and it broke the top — which had been perfect. Reverted. The rule I keep having
+     to relearn: do not touch the half that works to fix the half that doesn't.
+     THE BOTTOM IS FIXED BY THE GRADIENT, NOT THE BOX. A position:fixed element on iOS is
+     sized to the LARGE viewport (URL-bar-hidden), so this element's bottom edge sits under
+     the URL bar and a 100px bottom fade plays out where you cannot see it. Rather than
+     resize the box — which is what cost me the top — the bottom fade simply starts much
+     earlier: 260px up, so by the visible bottom (~60px above the box's edge) it is already
+     ~77% of the way to var(--bg). Longer fade, softer landing, and the top's 100px is
+     untouched. */
+  #bgedge{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the
      viewport and the rails would stop one screen down. */
