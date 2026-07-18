@@ -172,29 +172,26 @@
   .fx-bl.r{background:linear-gradient(90deg,var(--border),transparent)}
   .fx-bt{order:1} .fx-btag{order:2} .fx-bn{order:3} .fx-bl.r{order:4}
 
-  /* 2-up from 720px, not 1000px. A 760px tablet was getting one column when two fit
-     comfortably (~350px each, and the payloads reflow down to about there).
-     BELOW 720px IT STAYS ONE COLUMN, and that is not laziness: two columns on a 390px
-     phone gives cards 174px wide, and these payloads are authored for ~580px. They would
-     not reflow into that, they'd collapse — bars, labels and avatar rows stacking into
-     rubble. Side-by-side genuinely is better, right up until the previews stop being
-     readable, at which point it's worse than the carousel. The phone gets the scroll
-     shortened instead (see the frame height below). */
-  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;grid-auto-flow:dense}
+  /* TWO COLUMNS ON DESKTOP. minmax(460px) means the grid fits two cards across inside
+     the 1140px .fx-wrap and drops to one below ~940px — so a wide screen shows the settled
+     2-up block, a narrow desktop shows a single readable column, and the phone (handled in
+     the max-width:720px block below) turns each group into a swipe row instead.
+     BELOW 720px IS NOT THIS GRID: two columns on a 390px phone gives cards 174px wide, and
+     these payloads are authored for ~580px — they'd collapse into rubble, so the phone gets
+     the swipe row, not a squeeze. The stacked Free / Premium blocks and the sticky pill that
+     jumps between them are the landing's settled layout; the pill is desktop-only (its
+     band-free / band-prem targets only exist when the two flat tiers render). */
+  .fx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:20px;grid-auto-flow:dense}
 
-  /* DESKTOP: Free | Premium as two side-by-side columns, each a single vertical stack
-     of cards under its heading. This is the settled landing layout — the free/premium
-     split reads as two blocks side by side, not one grid the eye has to sort by pill.
-     paint() adds .fx-cols to #tiers ONLY when both tiers render on a wide screen, i.e.
-     the landing page. /subscribe is premium-only — one tier — so it never gets the class
-     and keeps the width-filling multi-column grid below. Mobile never gets it either:
-     paint() sets the class off under 721px, where the swipe rows take over.
-     Premium is the taller column by design (more features) — the free column simply ends. */
-  @media (min-width:721px){
-    #tiers.fx-cols{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:start}
-    #tiers.fx-cols .fx-tier{min-width:0}          /* let a grid column shrink below content */
-    #tiers.fx-cols .fx-grid{grid-template-columns:1fr}   /* one card per row within a column */
-  }
+  /* The Free/Premium jump pill. Sticks below the hero once you scroll past it, and each chip
+     scrolls to its tier band; the scroll-spy keeps the lit chip matching what you're looking
+     at. Hidden under 720px, where the four group headings do the navigating instead. */
+  .fx-filter{display:inline-flex;gap:3px;margin-top:20px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:999px;padding:4px}
+  .fx-fb{background:none;border:0;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;padding:7px 17px;border-radius:999px;cursor:pointer;transition:color .15s,background .15s}
+  .fx-fb:hover{color:#f4f5f7}
+  .fx-fb.on{background:var(--accent);color:#0a0a0b}
+  .fx-fb .n{opacity:.6;font-size:11px;margin-left:5px}
+  @media (max-width:720px){ .fx-filter{display:none} }
 
   .fx-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:zoom-in;transition:transform .2s cubic-bezier(.2,.7,.3,1),border-color .2s,box-shadow .2s;display:flex;flex-direction:column}
   .fx-card:hover{transform:translateY(-4px);border-color:rgba(0,230,104,.4);box-shadow:0 14px 38px rgba(0,0,0,.5)}
@@ -1030,12 +1027,11 @@
       <a class="fx-btn ghost" href="/login">Log in</a>
     </div>
     <p class="fx-trust">Free to start, no card required — play The Climb and Pick’em. Premium is $9.99 / month, cancel anytime.</p>
+    <!-- Free / Premium jump pill. Centred here in the hero because .fx-top is text-align
+         centre; the script fills it and wires each chip to scroll to its tier band. Desktop
+         only (CSS hides it under 720px); empty on /subscribe because that slice has no hero. -->
+    <div class="fx-filter" id="flt" role="tablist"></div>
   </div>
-  <!-- OUTSIDE .fx-top ON PURPOSE. position:sticky only sticks within its PARENT's box, so
-       while these chips lived in the hero they would unstick the instant the hero scrolled
-       away — which is exactly when they become useful. As a direct child of .fx-wrap they
-       stay pinned for the whole length of the grid. This is the kind of thing that looks
-       right in a mockup and does nothing on the real page. -->
   <div id="tiers"></div>
 </div>
 
@@ -3647,24 +3643,35 @@ var LD={
   var free = slides.filter(function(s){ return s.f; });
   var prem = slides.filter(function(s){ return !s.f; });
 
-  // FREE / PREMIUM ARE JUMP LINKS, NOT FILTERS — and that is the whole reason the "All"
-  // chip could go.
-  //
-  // Dropping "All" from a three-way filter forces a default, and the only available
-  // default hides one tier: land on Free and 11 of 16 features are behind a click; land
-  // on Premium and the free tier is invisible to the person you most want to convert.
-  // That is the accordion this layout exists to replace, wearing a different hat — the
-  // argument was never "fewer clicks", it was that the previews ARE the pitch and a
-  // stranger will not click to see your pitch.
-  //
-  // So both blocks always render and these two scroll to them. Two chips, nothing
-  // hidden, and the count still answers "what do I get for nothing?" at a glance.
-  // If you'd rather they genuinely filter, it is the paint() call below and one line.
-  // NO TIER CHIPS. They were a sticky Free/Premium jump-bar, and chunking made them
-  // pointless: Free is now ONE row, so "skip to Premium" skips ~230px. A control that
-  // saves you a quarter of a swipe is chrome pretending to be navigation. The four group
-  // headings already say where you are, which is what the chips were really for.
-  // The tier signal moved to the headings — see band() — where the decision actually is.
+  // FREE / PREMIUM ARE JUMP LINKS, NOT FILTERS. Both blocks always render; the two chips
+  // scroll to them. Nothing is hidden behind a click — the previews ARE the pitch, and a
+  // stranger won't click to see your pitch. The count on each chip answers "what do I get
+  // for nothing?" at a glance. Desktop only: #flt lives in the landing hero (not in the
+  // /subscribe slice), and its band-free / band-prem targets only exist when the two flat
+  // tiers render — on a phone the four group headings do the navigating, and the pill is
+  // display:none. Guarded so the /subscribe embed (no #flt) doesn't throw.
+  if(flt){
+    [['free','Free',free.length],['prem','Premium',prem.length]].forEach(function(o){
+      var b=document.createElement('button');
+      b.className='fx-fb'; b.type='button';
+      b.innerHTML=o[1]+'<span class="n">'+o[2]+'</span>';
+      b.onclick=function(){
+        var band=document.getElementById('band-'+o[0]);
+        if(band) band.scrollIntoView({behavior:'smooth',block:'start'});
+      };
+      flt.appendChild(b);
+    });
+  }
+  // Keep the lit chip matching whatever band is in view, so the control reports position
+  // instead of just firing and forgetting. No-ops when the bands aren't on the page.
+  function spy(){
+    if(!flt) return;
+    var f=document.getElementById('band-free'), p=document.getElementById('band-prem');
+    if(!f||!p) return;
+    var onPrem = p.getBoundingClientRect().top <= 120;
+    Array.prototype.forEach.call(flt.children,function(c,i){ c.classList.toggle('on', i===(onPrem?1:0)); });
+  }
+  window.addEventListener('scroll', spy, {passive:true});
 
 
   // The hub payload is the only one authored to a fixed width (the modal's 1040px) — it
@@ -3765,9 +3772,7 @@ var LD={
       if(!list.length) return;                        // a group with no slides draws nothing
       tiers.appendChild(tier(g,list));
     });
-    // TWO SIDE-BY-SIDE COLUMNS only on the landing desktop, where both Free and Premium
-    // render. /subscribe (premium-only, one tier) and every mobile width keep the grid.
-    tiers.className = (isWideLayout() && defs.length===2) ? 'fx-cols' : '';
+    spy();
     fitWide();
   }
   // Re-render when the viewport crosses the mobile/desktop line so the grouping flips with
