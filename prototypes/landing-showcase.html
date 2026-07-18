@@ -17,9 +17,24 @@
   :root{--accent:#00e668;--accent2:#ff3d00;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#666672;--surface2:#18181d}
   *{margin:0;padding:0;box-sizing:border-box}
     html{background:var(--bg);scroll-behavior:smooth}
+  /* NO RUBBER-BAND. Painting the root fixed the WHITE bands — it stopped you seeing an
+     unpainted canvas — but it never stopped you seeing the canvas, and the canvas is flat
+     #0a0a0b while the page above it no longer is: the hero glow tints the top, the aurora
+     bloom tints the bottom, and #bgfx is position:fixed so it dies at the viewport edge.
+     Overscroll therefore revealed bare black against a green-tinted page. Same gap, new
+     colour.
+     Painting the root with the gradient can't work either — body's background only
+     propagates to the canvas while html has none, and the aurora is a separate fixed
+     layer regardless. So: don't let the page bounce. No overscroll, nothing to reveal. */
+  html{overscroll-behavior-y:none}
+  /* overscroll-behavior lives INSIDE this rule, not in a body{} of its own above it: a
+     second body rule would be the FIRST body{} in the file, and the checks that assert
+     this page uses the real sliced background and font stack read the first one they find.
+     They failed on correct CSS. Two rules for one element is how you get a test reading
+     the wrong half of a cascade. */
   body{margin:0;background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,var(--bg) 52%);color:#fff;
        font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;
-       opacity:1;transition:opacity .15s ease;padding:0 0 90px}
+       opacity:1;transition:opacity .15s ease;padding:0 0 90px;overscroll-behavior-y:none}
   a{text-decoration:none;color:inherit}
   .bc{font-family:'Barlow Condensed',sans-serif}
 

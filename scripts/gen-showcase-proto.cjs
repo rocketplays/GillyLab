@@ -260,7 +260,22 @@ const css = `
 ${rootVars}
   *{margin:0;padding:0;box-sizing:border-box}
   ${htmlRule}
-  body{${bodyRule};padding:0 0 90px}
+  /* NO RUBBER-BAND. Painting the root fixed the WHITE bands — it stopped you seeing an
+     unpainted canvas — but it never stopped you seeing the canvas, and the canvas is flat
+     #0a0a0b while the page above it no longer is: the hero glow tints the top, the aurora
+     bloom tints the bottom, and #bgfx is position:fixed so it dies at the viewport edge.
+     Overscroll therefore revealed bare black against a green-tinted page. Same gap, new
+     colour.
+     Painting the root with the gradient can't work either — body's background only
+     propagates to the canvas while html has none, and the aurora is a separate fixed
+     layer regardless. So: don't let the page bounce. No overscroll, nothing to reveal. */
+  html{overscroll-behavior-y:none}
+  /* overscroll-behavior lives INSIDE this rule, not in a body{} of its own above it: a
+     second body rule would be the FIRST body{} in the file, and the checks that assert
+     this page uses the real sliced background and font stack read the first one they find.
+     They failed on correct CSS. Two rules for one element is how you get a test reading
+     the wrong half of a cascade. */
+  body{${bodyRule};padding:0 0 90px;overscroll-behavior-y:none}
   a{text-decoration:none;color:inherit}
   .bc{font-family:'Barlow Condensed',sans-serif}
 
