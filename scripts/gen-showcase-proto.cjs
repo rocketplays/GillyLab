@@ -503,7 +503,13 @@ ${matchupFree.css || ''}
      earlier: 260px up, so by the visible bottom (~60px above the box's edge) it is already
      ~77% of the way to var(--bg). Longer fade, softer landing, and the top's 100px is
      untouched. */
-  #bgedge{position:fixed;inset:0;z-index:0;pointer-events:none;
+  /* z-index:-1, LOWERED ON PURPOSE (2026-07-18). At z-index:0 this wash painted ABOVE the
+     non-positioned content and masked the top 100px / bottom 260px to #0a0a0b — the clean
+     black edges. The owner wanted the OPPOSITE: content visible through the status bar and
+     the URL bar, edge-to-edge, the same see-through look the auth/public pages have. Behind
+     the content it no longer masks; it only keeps the aurora off the extreme edges. The
+     solid html{background:var(--bg)} still keeps the true insets / overscroll dark. */
+  #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
   #bgframe{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;pointer-events:none;opacity:0}
   /* the containing block for #bgframe — without this, absolute resolves against the

@@ -176,29 +176,21 @@ const AURORA_CSS = `
      explicitly beside it. Shorthand "<colour> <image>" sets both in one declaration. */
   html{background:#0a0a0b radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}
   body{background:transparent}
-  /* STACKING IS THE WHOLE TRICK, and z-index:-1 got it backwards the first time.
-     Landing puts #bgedge at z-index:0 with its content NON-positioned, so the wash paints
-     ABOVE the content (a positioned z:0 box paints over in-flow blocks) and MASKS it in the
-     top 100px / bottom 260px — which is why landing shows solid black behind the status bar
-     and the URL bar instead of page text bleeding through. At z-index:-1 the wash sat
-     BEHIND the content and masked nothing, so text showed through both safe areas.
-       #bgfx  z-index:0  — aurora, above the flat content like landing (alpha ~.08, reads as
-                           atmosphere, pointer-events:none so it never eats a tap).
-       #bgedge z-index:1  — the mask, above the aurora AND the content. 1 not 0 so it also
-                           clears the shell's content wrapper while it runs its opacity load
-                           animation (that briefly makes it a z:0 stacking context).
-     Fixed page chrome stays ABOVE the mask: shell's back/logout are z-index:10; the legal
-     and about pages' in-flow .back is lifted to z-index:2 just below, so the wash can never
-     fade the one control every page needs. */
-  #bgfx{position:fixed;inset:0;z-index:0;pointer-events:none;
+  /* z-index:-1 keeps BOTH layers behind the content, on purpose. The content is not
+     masked at the top/bottom, so it stays visible through the translucent status bar and
+     the floating URL bar — the see-through, edge-to-edge look. (The edge wash still fades
+     the AURORA back to #0a0a0b at the extremes so the atmosphere doesn't tint the phone
+     chrome; the solid html colour above keeps the true insets / overscroll dark, never
+     white.) An earlier version lifted the wash ABOVE the content to mask those bands — the
+     opposite of what was wanted; do not re-raise these without meaning to. */
+  #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;
     --a1:0.081;--a2:0.063;--a3:0.072;--aur:1;
     background:
     radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),
     radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),
     radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
-  #bgedge{position:fixed;inset:0;z-index:1;pointer-events:none;
-    background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}
-  .back{position:relative;z-index:2}`;
+  #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}`;
 // The two layer divs. First children of <body>, before any content.
 const AURORA_DIVS = `<div id="bgfx"></div><div id="bgedge"></div>`;
 
