@@ -3790,7 +3790,13 @@ var LD={
     var a=e.target.closest&&e.target.closest('a[href^="/"]');
     if(!a||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return;
     var href=a.getAttribute('href'); if(!href||href.charAt(0)!=='/') return;
-    e.preventDefault(); document.body.classList.add('gl-leaving');
+    e.preventDefault();
+    // Drop the fade-IN animation first. glFadeIn runs with fill-mode:both, so after it
+    // finishes it HOLDS opacity:1 — and a held animation value overrides a normal class
+    // rule in the cascade, so body.gl-leaving{opacity:0} would do nothing and the page
+    // would cut instead of fade. Clearing the animation lets the opacity transition run.
+    document.body.style.animation='none';
+    document.body.classList.add('gl-leaving');
     setTimeout(function(){window.location=href;},150);
   });
   window.addEventListener('pageshow',function(){document.body.classList.remove('gl-leaving');});
