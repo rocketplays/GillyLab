@@ -167,7 +167,14 @@ function profileSlugFor(name, slugSet, ...extra) {
 // NO backticks or ${} live in this string — it is spliced into 84KB template literals and
 // a single stray backtick closes one (see LANDING-SHIP.txt / CLAUDE.md).
 const AURORA_CSS = `
-  html{background:radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}
+  /* SOLID COLOUR FIRST, then the glow image on top of it. iOS fills the status bar, the
+     home-indicator inset and the overscroll rubber-band with the background-COLOUR, never
+     the image — so an image-only html (a bare gradient) leaves that colour transparent and
+     the phone paints those bands WHITE. The landing page dodges this by keeping html a
+     solid var(--bg) and putting the glow on body; the z-index:-1 layering here needs body
+     transparent, so the glow rides on html instead and the solid #0a0a0b must be stated
+     explicitly beside it. Shorthand "<colour> <image>" sets both in one declaration. */
+  html{background:#0a0a0b radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}
   body{background:transparent}
   #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;
     --a1:0.081;--a2:0.063;--a3:0.072;--aur:1;
