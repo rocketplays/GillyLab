@@ -113401,7 +113401,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     INSIDE:    'Win inside the distance',
   };
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
-  let BT_EVENTS = null, BT_ODDS = null;
+  let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all';
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
@@ -113494,6 +113494,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btResultFor = f => btFightResult(f);
   const btLocked = f => !!btResultFor(f);
 
+  // The FINALIZED results archive (data/pickem-results.json), loaded once. This is the
+  // permanent record; FIGHT_HISTORY only carries a just-finished bout while
+  // data/live-card.json still points at that card, so the moment it rotates to the next
+  // event those rows vanish until the permanent importer folds them in — which is what
+  // silently reverted already-graded bets back to "pending" the day after a card.
+  function btLoadResults() {
+    if (BT_RESULTS) return Promise.resolve(BT_RESULTS);
+    return fetch('./data/pickem-results.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(j => { BT_RESULTS = (j && Array.isArray(j.events)) ? j.events : []; return BT_RESULTS; })
+      .catch(() => { BT_RESULTS = []; return BT_RESULTS; });
+  }
+  // Same shape btFightResult returns, rebuilt from the archive. No bout end-time is
+  // recorded there, so endSec falls back to 300 (a full round) exactly as the history
+  // path does when a row carries no time — only TOTAL-market grading is sensitive to it.
+  function btResultFromArchive(f) {
+    const ln = s => String(s || '').trim().split(/\s+/).pop().toLowerCase();
+    for (const ev of (BT_RESULTS || [])) {
+      if (f.evSlug && ev.slug && ev.slug !== f.evSlug) continue;
+      for (const b of (ev.bouts || [])) {
+        const paired = (ln(b.f1) === ln(f.f1) && ln(b.f2) === ln(f.f2))
+                    || (ln(b.f1) === ln(f.f2) && ln(b.f2) === ln(f.f1));
+        if (!paired) continue;
+        const m = String(b.method || '');
+        const isNC = /no contest|\bnc\b/i.test(m);
+        const isDraw = /^draw/i.test(m) || (!!b.voided && !isNC);
+        let cat = 'DEC';
+        if (/sub/i.test(m)) cat = 'SUB';
+        else if (/dec/i.test(m)) cat = 'DEC';
+        else if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) cat = 'KO';
+        const decided = !b.voided && !!b.winner && !isDraw && !isNC;
+        return {
+          win: decided ? (ln(b.winner) === ln(f.f1) ? 1 : 2) : null,
+          methodCat: cat, round: Number(b.round) || 1, endSec: 300,
+          isDraw: isDraw, isNC: isNC, date: ev.date || '',
+        };
+      }
+    }
+    return null;
+  }
   // ── result lookup, bound to the bout (opponent + this event's date), so a
   // rematch is never graded off an earlier meeting.
   function btFightResult(f) {
@@ -113508,7 +113548,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const rt = Date.parse(r.date);
       return !isFinite(evTs) || !isFinite(rt) || Math.abs(rt - evTs) < 4 * 864e5;   // same event window
     });
-    if (!row) return null;
+    if (!row) return btResultFromArchive(f);   // history rotated away -> permanent archive
     const m = String(row.method || '');
     const isNC = /no contest|\bnc\b/i.test(m) || row.result === 'NC';
     const isDraw = row.result === 'D' || /^draw/i.test(m);
@@ -113749,7 +113789,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   window.btShareCard = btShareCard; window.btShareHistory = btShareHistory;
 
   function btRender() {
-    Promise.all([btLoadEvents(), btFetchBets()]).then(function () {
+    Promise.all([btLoadEvents(), btFetchBets(), btLoadResults()]).then(function () {
       if (typeof loadOddsDataOnce === 'function') loadOddsDataOnce().then(function (o) { BT_ODDS = o; });
       btDeriveAll();
       btSetView(btView);
