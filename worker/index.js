@@ -628,8 +628,20 @@ async function handleBetsAdd(request, env, url) {
 async function handleBetsSettle(request, env) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
-  const { id, status } = await readBody(request);
-  if (["won", "lost", "push", "void"].indexOf(status) === -1) return json({ error: "bad status" }, 400);
+  const body = await readBody(request);
+  const id = body.id;
+  // Normalize common spellings so a client/label mismatch grades instead of erroring
+  // (win->won, loss/lose->lost, tie->push, draw/nc->void, …). If it's still unrecognized,
+  // put the ACTUAL value in the error so the popup names what was wrong — this endpoint
+  // was returning a bare "bad status", which told us nothing about the offending value.
+  const STATUS_ALIAS = {
+    won: "won", win: "won", w: "won",
+    lost: "lost", loss: "lost", lose: "lost", l: "lost",
+    push: "push", p: "push", tie: "push",
+    void: "void", voided: "void", nc: "void", "no contest": "void", draw: "void", d: "void",
+  };
+  const status = STATUS_ALIAS[String(body.status == null ? "" : body.status).trim().toLowerCase()] || null;
+  if (!status) return json({ error: 'bad status: "' + String(body.status).slice(0, 40) + '"' }, 400);
   const list = await btGetBets(env, s.email);
   const b = list.find((x) => x.id === id);
   if (!b) return json({ error: "not found" }, 404);
