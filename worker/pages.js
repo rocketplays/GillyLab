@@ -324,21 +324,34 @@ function currentLanding() {
 // The app/landing footer (brand + About/Terms/Privacy/Contact + disclaimer), shared
 // across every standalone free page. Styles are scoped inline so each page can drop
 // it in without touching its own <style> block. Uses the free pages' theme vars.
-const FREE_FOOTER = `
+// Every colour carries a FALLBACK, because this footer is no longer only used on
+// pages built by shell(). legalShell() (Terms/Privacy/FAQ) and aboutPage() are
+// standalone documents that define no :root variables at all — dropped in there
+// unchanged, `var(--border)` resolves to nothing, so the top rule vanishes and the
+// brand green goes flat. The fallbacks are shell()'s own values.
+const FOOT_LINKS = [
+  ["/about", "About Us"],
+  ["/terms", "Terms of Service"],
+  ["/privacy", "Privacy Policy"],
+  ["/contact", "Contact"],
+];
+// omitHref drops one link — a page shouldn't advertise itself (About Us on /about).
+const freeFooter = (omitHref) => `
   <style>
-    .site-footer{margin:3rem 0 0;padding:26px 24px 48px;border-top:1px solid var(--border);text-align:center}
-    .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px;color:var(--text)}
-    .foot-brand .a{color:var(--accent)}
+    .site-footer{margin:3rem 0 0;padding:26px 24px 48px;border-top:1px solid var(--border,rgba(255,255,255,.09));text-align:center}
+    .foot-brand{font-weight:900;letter-spacing:.15em;font-size:14px;margin-bottom:12px;color:var(--text,#f4f5f7)}
+    .foot-brand .a{color:var(--accent,#00e668)}
     .foot-links{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
-    .foot-links a{color:var(--muted);font-size:13px;text-decoration:none}
-    .foot-links a:hover{color:var(--text)}
-    .foot-copy{color:var(--muted);opacity:.7;font-size:11.5px;line-height:1.6;max-width:900px;margin:0 auto}
+    .foot-links a{color:var(--muted,rgba(255,255,255,.55));font-size:13px;text-decoration:none}
+    .foot-links a:hover{color:var(--text,#f4f5f7)}
+    .foot-copy{color:var(--muted,rgba(255,255,255,.55));opacity:.7;font-size:11.5px;line-height:1.6;max-width:900px;margin:0 auto}
   </style>
   <footer class="site-footer">
     <div class="foot-brand">GILLY<span class="a">LAB</span></div>
-    <div class="foot-links"><a href="/about">About Us</a><a href="/terms">Terms of Service</a><a href="/privacy">Privacy Policy</a><a href="/contact">Contact</a></div>
+    <div class="foot-links">${FOOT_LINKS.filter(([h]) => h !== omitHref).map(([h, t]) => `<a href="${h}">${t}</a>`).join("")}</div>
     <div class="foot-copy">© 2026 GillyLab. Not affiliated with, endorsed by, or sponsored by the Ultimate Fighting Championship or Zuffa, LLC. All fighter names, marks, and event names are the property of their respective owners. Data is provided for informational and entertainment purposes only.</div>
   </footer>`;
+const FREE_FOOTER = freeFooter();
 
 // The public content pages (rankings/roster/matchup) are readable logged-OUT for
 // SEO. Logged-out visitors get "Log in / Sign up" (no "Log out") and a sign-up CTA;
@@ -3258,7 +3271,7 @@ export const contactPage = () => shell("Contact GillyLab", `
       <div id="m" class="msg"></div>
     </form>
     <div class="alt muted"><a href="#" onclick="${BACK_JS}">Back</a></div>
-  </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`, false, { desc: "Questions, feedback or an issue with GillyLab? Send us a message and we'll get back to you.", path: "/contact" });
+  </div>`, `wire("f","/api/contact","m","Thanks — your message is on its way. We'll reply to the email you provided.");`, true, { desc: "Questions, feedback or an issue with GillyLab? Send us a message and we'll get back to you.", path: "/contact" });
 
 export const notePage = (title, msg) => shell(title, `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
@@ -3309,6 +3322,7 @@ ${AURORA_CSS}
     <h2>Contact</h2>
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
   </div>
+  ${opts.footer ? freeFooter(opts.footerOmit) : ""}
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
 ${opts.js ? `<script>${opts.js}</script>` : ``}
 </body></html>`;
@@ -3385,6 +3399,7 @@ export const faqPage = () => legalShell("FAQ", "", `
   desc: "What's included, what's free, how the matchup analysis and CLV tracker work, and how billing works — the GillyLab FAQ.",
   css: FAQ_CSS,
   js: FAQ_JS,
+  footer: true,
 });
 
 export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
@@ -3505,6 +3520,7 @@ ${AURORA_CSS}
     <p>As UFC bettors ourselves, we found it tedious — and sometimes downright difficult — to track down everything we needed to do our research. Stats, analytics, previous fight tape, historical results, accolades and belt ranks, odds: it all seemed to be scattered across a dozen corners of the internet.</p>
     <p>So we saw a gap in the market — a place to do all of your UFC research in one spot, plus tools built to help you become a smarter, more efficient bettor. That's why we built GillyLab.</p>
   </div>
+  ${freeFooter("/about")}
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
 </body></html>`;
 
