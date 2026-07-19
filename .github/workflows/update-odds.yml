@@ -123,8 +123,14 @@ jobs:
       # are handled elsewhere.
       # Runs BEFORE the landing/profile regen so the lite profiles pick up the
       # fresh stats. Non-fatal.
+      # NOT `|| true`. This step used to end in it, and that is precisely how it went
+      # unnoticed that the script died on its first call (a missing, gitignored
+      # manifest) on EVERY run since it was added — green job, zero stats patched.
+      # Per-fighter ESPN wobbles are already caught inside the script and reported in
+      # its summary line, so a non-zero exit here means something structural is wrong
+      # and should stop the job rather than be swallowed.
       - name: Recompute post-card fighter stats
-        run: python3 scripts/recompute-card-stats.py --recent || true
+        run: python3 -u scripts/recompute-card-stats.py --recent
 
       # ── MATCHUP DEEP DIVE DATA ──────────────────────────────────────────────
       # Keeps the strike GRID (head/body/leg x distance/clinch/ground) populated for

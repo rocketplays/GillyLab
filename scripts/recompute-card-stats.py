@@ -24,7 +24,7 @@ Flags: --dry-run (print the diff, don't write), --within-days N, --bout-workers 
 
 Run daily from the odds workflow AFTER the ESPN results fetch.
 """
-import argparse, importlib.util, json, os, re, sys, time, urllib.request
+import argparse, csv, importlib.util, json, os, re, sys, time, urllib.request
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -61,6 +61,60 @@ def load_aliases():
 
 ALIASES = load_aliases()
 
+ESPN_ATHLETES = os.path.join(ROOT, "data", "espn-athletes.json")
+IMPORT_MANIFEST = os.path.join(HERE, "espn-import-output", "_manifest.csv")
+
+
+def card_idmap():
+    """(slug -> ESPN id, normalised-name -> ESPN id) for resolving fighters.
+
+    Sourced from data/espn-athletes.json — the athlete cache fetch-espn-events.cjs
+    fills as it walks the event feed. Every fighter on any card the feed knows about
+    is in it BY CONSTRUCTION, because the entry is written while that fighter's own
+    bout is parsed; and unlike the import corpus, it is COMMITTED. Measured
+    2026-07-19: 24/24 of both the finished and the upcoming card resolved by slug.
+
+    This replaces rv.build_idmap(), which could not work from either side:
+      * scripts/espn-import-output/ is gitignored with zero files tracked, so on a CI
+        runner it does not exist. rv.build_idmap() opens its _manifest.csv WITHOUT a
+        guard, so the call raised FileNotFoundError and killed this script before it
+        looked at a single fighter — silently, because the workflow step ended in
+        `|| true`. That is why the daily job never once patched a stat.
+      * On a Mac it fails the other way: those 4,646 files sit in iCloud, so globbing
+        and json.load-ing every one blocks on a download apiece and the script looks
+        frozen (observed stuck on an unrelated retired fighter's file).
+
+    Match order is slug first (the feed and the cache both carry ESPN's own slug, so
+    aliases like king-green resolve without help), then name_to_slug-normalised name,
+    which folds away accents and middle names — Jan Błachowicz -> jan-blachowicz,
+    Jose Miguel Delgado -> jose-miguel-delgado. espn_find_id() remains the last
+    resort for anyone genuinely new.
+
+    The manifest is still read WHEN PRESENT — one small file, no directory glob — so
+    a local run keeps any extra ids it holds. It is never required.
+    """
+    slug2id, norm2id = {}, {}
+    try:
+        athletes = (json.load(open(ESPN_ATHLETES, encoding="utf-8")) or {}).get("athletes") or {}
+    except Exception as e:
+        athletes = {}
+        print("  ! %s unreadable (%s) — falling back to ESPN search" % (os.path.basename(ESPN_ATHLETES), e))
+    for eid, a in athletes.items():
+        if not str(eid).isdigit() or not isinstance(a, dict):
+            continue
+        if a.get("slug"):
+            slug2id.setdefault(a["slug"], str(eid))
+        if a.get("name"):
+            norm2id.setdefault(rv.imp.name_to_slug(a["name"]), str(eid))
+    try:
+        with open(IMPORT_MANIFEST, encoding="utf-8") as fh:
+            for r in csv.DictReader(fh):
+                if str(r.get("espn_id", "")).isdigit() and r.get("slug"):
+                    slug2id.setdefault(r["slug"], r["espn_id"])
+    except Exception:
+        pass   # local-only supplement; absent on CI by design
+    return slug2id, norm2id
+
 
 def espn_find_id(name):
     """Fallback id resolution via ESPN search (for fighters not in the idmap)."""
@@ -86,7 +140,7 @@ def db_name_map():
     for m in re.finditer(r'\{ name: "([^"]+)", division:', h):
         nm = m.group(1)
         slug2name[rv.imp.name_to_slug(nm)] = nm
-    stats_keys = set(re.findall(r'"([^"]+)": \{ ht:', h))
+    stats_keys = set(re.findall(r'"([^"]+)":\s*\{\s*ht:', h))   # tolerate spacing — see apply_stats
     return slug2name, stats_keys
 
 
@@ -144,7 +198,12 @@ def pick_fighters(args, slug2name):
 def apply_stats(name, st, h):
     """Patch only the 9 changed box-score fields for `name` in index.html text `h`.
     Returns (new_h, [ (field, old, new) ]) or (h, []) if nothing changed / not found."""
-    m = re.search(r'("%s": \{)([^}]*)(\})' % re.escape(name), h)
+    # ":\s*\{" — NOT ": \{". index.html is hand-edited, and 3 of its ~3,105 entries
+    # are written '"Name":{ ht:' with no space after the colon (Christian Leroy Duncan,
+    # Bruno Gustavo da Silva, Adrián Luna Martinetti). Hardcoding the space made those
+    # three report "no FIGHTER_STATS entry" — a false negative indistinguishable from a
+    # genuine debut, so they silently never got a stat update.
+    m = re.search(r'("%s":\s*\{)([^}]*)(\})' % re.escape(name), h)
     if not m:
         return h, None  # no FIGHTER_STATS entry (e.g. debut with none yet)
     inner = m.group(2); changes = []
@@ -195,7 +254,7 @@ def main():
     args = ap.parse_args()
 
     slug2name, stats_keys = db_name_map()
-    idmap, slug2id = rv.build_idmap()
+    slug2id, norm2id = card_idmap()
     fighters = pick_fighters(args, slug2name)
     if not fighters:
         print("no fighters selected (no fresh completed card within %g days)." % args.within_days)
@@ -205,7 +264,13 @@ def main():
     h = open(INDEX, encoding="utf-8").read()
     updated = fields = noid = nostats = unchanged = 0
     for dbn, slug, feed in fighters:
-        sid = slug2id.get(slug) or idmap.get(dbn) or espn_find_id(feed) or espn_find_id(dbn)
+        # Slug first (feed and cache share ESPN's slug), then the accent/middle-name
+        # -insensitive normalised name, then the network search as a last resort.
+        sid = (slug2id.get(slug)
+               or norm2id.get(slug)
+               or norm2id.get(rv.imp.name_to_slug(dbn))
+               or norm2id.get(rv.imp.name_to_slug(feed))
+               or espn_find_id(feed) or espn_find_id(dbn))
         if not sid:
             print("  %-26s  (no ESPN id — skipped)" % dbn); noid += 1; continue
         try:
