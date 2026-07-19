@@ -378,7 +378,152 @@
         "pts": 0.0077,
         "leaned": true
       }
+    },
+    {
+      "fightId": "felipe franco|levi rodrigues",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T01:19:37.125Z",
+      "a": {
+        "feed": "Levi Rodrigues",
+        "db": "Levi Rodrigues Jr."
+      },
+      "b": {
+        "feed": "Felipe Franco",
+        "db": "Felipe Franco"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6324,
+      "modelClose": 0.6324,
+      "marketOpen": 0.6279,
+      "marketClose": 0.5711,
+      "leanA": 0.0045,
+      "nSnapshots": 21,
+      "clv": {
+        "toward": false,
+        "pts": -0.0568,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "alberto montes|tommy mcmillen",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T01:19:37.126Z",
+      "a": {
+        "feed": "Tommy McMillen",
+        "db": "Tommy McMillen"
+      },
+      "b": {
+        "feed": "Alberto Montes",
+        "db": "Alberto Montes"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4351,
+      "modelClose": 0.4351,
+      "marketOpen": 0.438,
+      "marketClose": 0.6038,
+      "leanA": -0.0029,
+      "nSnapshots": 21,
+      "clv": {
+        "toward": false,
+        "pts": -0.1658,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "alden coria|stewart nicoll",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T01:19:37.126Z",
+      "a": {
+        "feed": "Alden Coria",
+        "db": "Alden Coria"
+      },
+      "b": {
+        "feed": "Stewart Nicoll",
+        "db": "Stewart Nicoll"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6469,
+      "modelClose": 0.6469,
+      "marketOpen": 0.8757,
+      "marketClose": 0.88,
+      "leanA": -0.2288,
+      "nSnapshots": 21,
+      "clv": {
+        "toward": false,
+        "pts": -0.0043,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "anna melisano|dione barbosa",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T01:19:37.128Z",
+      "a": {
+        "feed": "Anna Melisano",
+        "db": "Anna Melisano"
+      },
+      "b": {
+        "feed": "Dione Barbosa",
+        "db": "Dione Barbosa"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4295,
+      "modelClose": 0.4295,
+      "marketOpen": 0.2133,
+      "marketClose": 0.1729,
+      "leanA": 0.2162,
+      "nSnapshots": 9,
+      "clv": {
+        "toward": false,
+        "pts": -0.0404,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "alvin hines|rj harris",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T01:19:37.128Z",
+      "a": {
+        "feed": "RJ Harris",
+        "db": "RJ Harris"
+      },
+      "b": {
+        "feed": "Alvin Hines",
+        "db": "Alvin Hines"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5922,
+      "modelClose": 0.5922,
+      "marketOpen": 0.4392,
+      "marketClose": 0.4783,
+      "leanA": 0.153,
+      "nSnapshots": 9,
+      "clv": {
+        "toward": true,
+        "pts": 0.0391,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-07-18T13:01:39.929Z"
+  "generatedAt": "2026-07-19T01:19:37.139Z"
 }
