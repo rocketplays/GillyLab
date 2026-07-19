@@ -1085,8 +1085,17 @@
     .bt-tile-v { font-size: 1.25rem; font-weight: 800; margin-top: 3px; }
     .bt-pos { color: var(--accent); } .bt-neg { color: #ff6a5e; }
     .bt-toggle, .bt-ranges { display: flex; gap: 6px; margin-bottom: 0.85rem; }
-    /* Active / Past bets split — settled bets file away instead of burying live ones. */
-    .bt-tabs { margin-top: 0.2rem; }
+    /* Active / Past bets. Deliberately NOT reusing .bt-tabs (the page tabs, which
+       carry a divider line and a -1px margin to sit on it) or .bt-ranges (the
+       7D/30D filters) — borrowing both made this row collide with the divider
+       below and read as another filter row. It's a segmented switch for WHICH
+       bets you're looking at; the range chips above still filter whichever tab
+       is open, plus the CLV hero and the stat tiles. */
+    .bt-subtabs { display: flex; gap: 8px; margin: 1.3rem 0 1rem; }
+    .bt-subtabs div { flex: 1; text-align: center; padding: 9px 0; border-radius: 9px;
+      font-weight: 800; font-size: 0.82rem; cursor: pointer; color: var(--muted);
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border); }
+    .bt-subtabs div.on { color: #04120a; background: var(--accent); border-color: var(--accent); }
     .bt-toggle div { flex: 1; text-align: center; padding: 7px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.78rem; cursor: pointer; }
     .bt-toggle div.on { background: var(--accent); color: #04120a; font-weight: 800; }
     .bt-ranges div { flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.72rem; cursor: pointer; }
@@ -113553,8 +113562,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // ── card data: every upcoming event we list, from the same feed the app uses
   function btLoadEvents() {
     if (BT_EVENTS) return Promise.resolve(BT_EVENTS);
-    return fetch('./data/event.json').then(r => r.ok ? r.json() : null).then(feed => {
-      const evs = (feed && feed.data) || [];
+    const grab = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
+    return Promise.all([grab('./data/event.json'), grab('./data/event-recent.json')]).then(feeds => {
+      const feed = feeds[0], recent = feeds[1];
+      // MERGE the recent-events feed, don't just read event.json. A tracked bet resolves
+      // its fight through BT_EVENTS, and event.json only ever holds UPCOMING cards: when a
+      // card finishes the upstream feed DELETES it outright rather than marking it
+      // completed (measured 2026-07-19). So the 60d "keep completed cards" rule below
+      // never fired — there was no card left to keep — and every bet on last night's card
+      // silently fell back to "pending" the moment the feed refreshed. event-recent.json
+      // is where finished cards live on, with results. event.json wins on overlap so a
+      // live card is always read from the fresher feed.
+      const bySlug = new Map();
+      ((recent && recent.data) || []).forEach(e => { if (e && e.slug) bySlug.set(e.slug, e); });
+      ((feed && feed.data) || []).forEach(e => { if (e && e.slug) bySlug.set(e.slug, e); });
+      const evs = Array.from(bySlug.values());
       // Keep upcoming/live cards always, and RECENTLY completed cards (60d) too: a tracked
       // bet grades by resolving its fight through BT_EVENTS, so dropping a card the moment
       // it flips to "completed" stranded every bet on it at "pending" — even though the
@@ -113809,7 +113831,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btSetScope(s) { btScope = s; btRenderHistory(); }
   function btSetRange(r) { btRange = r; btRenderHistory(); }
   function btSetCard(c) { btCardFilter = c; btRenderHistory(); }
-  function btSetTab(t) { btTab = t; btRenderHistory(); }
+  // Clear the card filter when switching tabs: the card chips are drawn from the
+  // ACTIVE tab's live cards only, so a filter set there would survive into Past
+  // bets, match none of the finished cards, and show an empty tab with no visible
+  // control to undo it.
+  function btSetTab(t) { btTab = t; btCardFilter = 'all'; btRenderHistory(); }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
   window.btSetTab = btSetTab;
 
@@ -113940,7 +113966,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Settled bets file under "Past bets" so a growing history never buries what's still
     // live — the same split My history uses for pick'em. They stay graded and browsable,
     // grouped by card with their Share results button intact.
-    h += '<div class="bt-ranges bt-tabs"><div class="' + (btTab === 'active' ? 'on' : '') + '" onclick="btSetTab(\'active\')">Active (' + pend.length + ')</div>' +
+    // Counts come from `shown`, which is already range- and scope-filtered, so the
+    // chips above visibly drive both tabs.
+    h += '<div class="bt-subtabs"><div class="' + (btTab === 'active' ? 'on' : '') + '" onclick="btSetTab(\'active\')">Active (' + pend.length + ')</div>' +
       '<div class="' + (btTab === 'past' ? 'on' : '') + '" onclick="btSetTab(\'past\')">Past bets (' + settled.length + ')</div></div>';
     if (btTab === 'active') {
     if (cards.length > 1) {

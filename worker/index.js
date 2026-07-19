@@ -376,7 +376,15 @@ async function loadFocusEvent(env, url) {
     if (!r.ok) return null;
     feed = await r.json();
   } catch { return null; }
-  const events = Array.isArray(feed && feed.data) ? feed.data : [];
+  const events = (Array.isArray(feed && feed.data) ? feed.data : []).slice();
+  // Fold in the held card. event.json holds UPCOMING cards only — a finished card is
+  // DELETED from it, not marked completed — so once the feed refreshed there was no
+  // card left here with results at all, and this returned null: /matchup stopped
+  // folding results into its fight-info dropdowns and kept showing the tale of the
+  // tape. loadHeldCard applies the 34h window, so this only ever adds a card the rest
+  // of the site is still featuring.
+  const held = await loadHeldCard(env, url, Date.now());
+  if (held && !events.some(e => e && e.slug === held.slug)) events.push(held);
   // Only a card that actually has results can be the focus, so we don't need a
   // start-time filter (a future card has no decided bouts). This also sidesteps the
   // prelims-vs-main-card start-time ambiguity.
