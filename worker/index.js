@@ -374,6 +374,25 @@ async function loadFocusEvent(env, url) {
     bouts: pick.bouts, decided: pick.bouts.length, total,
   };
 }
+// Public live-results feed for the FREE pages. The in-progress card's decided bouts,
+// distilled to {f1,f2,winner,method,round,voided} straight from the same focus-card
+// grader the leaderboard uses — so /matchup can fold each result into its fight-info
+// dropdown and /pickem can grade the picks card live, without either page re-parsing
+// the ESPN feed. No auth: it's the same public event data every visitor already sees.
+// no-store so a poll always gets the freshest card, never an edge-cached snapshot.
+async function handleLiveResults(env, url) {
+  const noStore = { "Cache-Control": "no-store" };
+  const focus = await loadFocusEvent(env, url);
+  if (!focus) return json({ slug: null, live: false, final: false, decided: 0, total: 0, bouts: [] }, 200, noStore);
+  const final = focus.total > 0 && focus.decided >= focus.total;
+  // mb = the method bucketed into the pick vocabulary (KO/TKO | Submission | Decision),
+  // so /pickem can grade method hits; the raw `method` stays for /matchup's display.
+  const bouts = focus.bouts.map((b) => ({ ...b, mb: methodBucket(b.method) }));
+  return json({
+    slug: focus.slug, name: focus.name, date: focus.date,
+    live: focus.live, final, decided: focus.decided, total: focus.total, bouts,
+  }, 200, noStore);
+}
 // The next upcoming card to PICK — the soonest event that hasn't finished, with its
 // bouts (main event first). Powers the standalone /pickem page. Returns a compact
 // shape: names + slugs (for photos) + card position + rounds, and the prelims lock.
@@ -1135,6 +1154,7 @@ export default {
       if (path === "/api/pickem/history") return handlePickemHistory(request, env, url);
       if (path === "/api/pickem/leaderboard") return handlePickemLeaderboard(request, env, url);
       if (path === "/api/pickem/player") return handlePickemPlayer(request, env, url);
+      if (path === "/api/live-results") return handleLiveResults(env, url);
 
       // ---- public pages ----
       // Auth-entry pages: if already logged in, skip them and go to the app

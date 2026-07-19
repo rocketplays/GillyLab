@@ -1538,6 +1538,19 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-bout-foot{display:flex;align-items:center;justify-content:space-between;margin-top:.75rem;gap:.5rem}
   .pk-pts{font-size:.72rem;color:var(--muted)}
   .pk-pts strong{color:var(--accent);font-weight:700}
+  /* Live-scored bout states + running-score banner (client-driven; see pkRenderResult). */
+  .pk-bout.pk-graded .pk-fighter{cursor:default}
+  .pk-fighter.pk-won{border-color:rgba(0,230,104,.55)!important;box-shadow:inset 0 0 0 1px rgba(0,230,104,.35)}
+  .pk-fighter.pk-lost{opacity:.5}
+  .pk-pts .pk-res-line{display:block;color:#f4f5f7;font-weight:600}
+  .pk-pts .pk-res-you{display:block;margin-top:2px;color:var(--muted)}
+  .pk-res-pts{display:inline-block;margin-top:3px;font-weight:800}
+  .pk-res-pts.pos{color:var(--accent)} .pk-res-pts.neg{color:#ff6b57} .pk-res-pts.zero{color:var(--muted)}
+  .pk-mk-ok{color:var(--accent);font-weight:800} .pk-mk-x{color:#ff6b57;font-weight:800}
+  .pk-live{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .7rem;margin:0 0 .9rem;padding:.6rem .85rem;background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.28);border-radius:10px}
+  .pk-live-pts{font-size:1.05rem;font-weight:800}
+  .pk-live-pts.pos{color:var(--accent)} .pk-live-pts.neg{color:#ff6b57}
+  .pk-live-sub{color:var(--muted);font-size:.72rem}
   .pk-clear{background:none;border:none;color:var(--muted);font:inherit;font-size:.7rem;cursor:pointer;text-decoration:underline;padding:0}
   .pk-clear:hover{color:#ff6a5e}
   .pk-submitbar{position:sticky;bottom:10px;margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 6px 22px rgba(0,0,0,.4)}
@@ -1819,8 +1832,44 @@ ${AURORA_CSS}
     // PK_SUBMITTED: picks are saved on the server. PK_DIRTY: changed since that save.
     // The submit button stays "Picks submitted ✓" until you actually change something.
     var PK_SUBMITTED=false,PK_DIRTY=false;
+    // A decided bout renders as a result (winner, your pick ✓/✗, points) instead of the
+    // pick controls — fed by PK_RESULTS, which the live poller fills as fights finish
+    // (and which the server pre-seeds when the page loads after a card).
+    function pkRenderResult(el,id){
+      var res=PK_RESULTS[id],p=PICKS[id];
+      var f1=el.dataset.f1,f2=el.dataset.f2;
+      var winner=res.winner||null, loser=winner?(pkNameEq(winner,f1)?f2:f1):null;
+      el.querySelectorAll(".pk-fighter").forEach(function(b){
+        var isWin=winner&&pkNameEq(b.dataset.pick,winner);
+        b.classList.toggle("pk-won",!!isWin);
+        b.classList.toggle("pk-lost",!!(winner&&!isWin&&!res.voided));
+        b.classList.toggle("sel",!!(p&&p.winner&&b.dataset.pick===p.winner));
+        b.disabled=true;
+      });
+      var det=el.querySelector(".pk-detail");if(det)det.classList.add("hidden");
+      var clr=el.querySelector(".pk-clear");if(clr)clr.style.display="none";
+      el.classList.remove("done","warn","pk-hit","pk-miss","pk-void");el.classList.add("pk-graded");
+      var pts=el.querySelector(".pk-pts");if(!pts)return;
+      var resultTxt=res.voided?(/(no\\s*contest|nc)/i.test(res.method||"")?"No Contest":"Draw")
+        :(winner?(winner+" def. "+loser+(res.method?" \\u00b7 "+res.method+(res.method!=="Decision"&&res.round?" R"+res.round:""):"")):"Result");
+      if(!p||!p.winner){
+        el.classList.add(res.voided?"pk-void":"pk-miss");
+        pts.innerHTML='<span class="pk-res-line">'+pkEscH(resultTxt)+'</span><span class="pk-res-you">No pick made</span>';
+        return;
+      }
+      var g=gradedPick(p,res);
+      el.classList.add(res.voided?"pk-void":(g.winnerHit?"pk-hit":"pk-miss"));
+      var mark=res.voided?"":(g.winnerHit?'<span class="pk-mk-ok">✓</span>':'<span class="pk-mk-x">✗</span>');
+      var detail=res.voided?"bout voided":(g.winnerHit?("Winner"+(g.methodHit?" + method":"")+(g.roundHit?" + round":"")):"Wrong winner");
+      var cls=g.points>0?"pos":(g.points<0?"neg":"zero");
+      pts.innerHTML='<span class="pk-res-line">'+pkEscH(resultTxt)+'</span>'
+        +'<span class="pk-res-you">'+mark+' You picked '+pkEscH(p.winner)+' \\u00b7 '+detail+'</span>'
+        +'<span class="pk-res-pts '+cls+'">'+(g.points>0?"+":"")+g.points+'</span>';
+    }
     function updateBout(id){
-      var el=boutEl(id);if(!el)return;var p=PICKS[id]||{};
+      var el=boutEl(id);if(!el)return;
+      if(PK_RESULTS[id]){return pkRenderResult(el,id);}
+      var p=PICKS[id]||{};
       el.querySelectorAll(".pk-fighter").forEach(function(b){b.classList.toggle("sel",!!p.winner&&b.dataset.pick===p.winner);});
       var det=el.querySelector(".pk-detail");if(det)det.classList.toggle("hidden",!p.winner);
       el.querySelectorAll("[data-method]").forEach(function(b){b.classList.toggle("sel",p.method===b.dataset.method);});
@@ -1961,6 +2010,55 @@ ${AURORA_CSS}
         renderAll();
       }).catch(function(){});
     }
+    // ── LIVE SCORING ─────────────────────────────────────────────────────────
+    // Your running score across decided bouts, shown in a banner atop the card and
+    // refreshed live. Reuses gradedPick so it agrees with the leaderboard exactly.
+    function pkTotalScored(){
+      var total=0,decided=0;
+      BOUT_IDS.forEach(function(id){ if(!PK_RESULTS[id])return; decided++; var p=PICKS[id]; if(p&&p.winner){ total+=gradedPick(p,PK_RESULTS[id]).points; } });
+      return {total:total,decided:decided,n:BOUT_IDS.length};
+    }
+    function updateLiveScore(d){
+      var panel=document.getElementById("panel-picks");if(!panel)return;
+      var s=pkTotalScored(),bn=document.getElementById("pkLive");
+      if(!s.decided){if(bn&&bn.parentNode)bn.parentNode.removeChild(bn);return;}
+      if(!bn){bn=document.createElement("div");bn.id="pkLive";bn.className="pk-live";panel.insertBefore(bn,panel.firstChild);}
+      var badge=(d&&d.final)?'<span class="pk-final-badge">Final</span>':'<span class="pk-live-badge">● LIVE</span>';
+      bn.innerHTML=badge+'<span class="pk-live-pts '+(s.total>=0?"pos":"neg")+'">'+(s.total>0?"+":"")+s.total+' pts</span>'
+        +'<span class="pk-live-sub">'+s.decided+' of '+s.n+' fights scored</span>';
+    }
+    // Poll the same focus-card feed the leaderboard grades off, fold each finished bout
+    // into PK_RESULTS, and re-render. One fetch on load (fills a card that just ended);
+    // a 60s loop only inside the live window; stops when the card is final.
+    (function(){
+      var SLUG=PK_EVT&&PK_EVT.slug;if(!SLUG)return;
+      var PRELIMS=Date.parse((PK_EVT&&(PK_EVT.prelimsAt||PK_EVT.date))||"");
+      var SUF={jr:1,sr:1,ii:1,iii:1,iv:1,v:1};
+      function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().split(/\\s+/).filter(function(t){return t&&!SUF[t];}).join("");}
+      function eqName(a,b){var na=norm(a),nb=norm(b);if(!na||!nb)return false;if(na===nb)return true;return na.length>=6&&nb.length>=6&&(na.indexOf(nb)===0||nb.indexOf(na)===0);}
+      function boutByNames(f1,f2){return Array.prototype.find.call(document.querySelectorAll(".pk-bout"),function(el){return (eqName(el.dataset.f1,f1)&&eqName(el.dataset.f2,f2))||(eqName(el.dataset.f1,f2)&&eqName(el.dataset.f2,f1));});}
+      function apply(d){
+        if(d&&d.slug&&d.slug!==SLUG)return true;                 // feed moved to another card
+        if(!d||!d.bouts)return !!(d&&d.final);
+        var changed=false;
+        d.bouts.forEach(function(r){
+          var el=boutByNames(r.f1,r.f2);if(!el)return;var id=el.dataset.bout;
+          var res={winner:r.winner||null,method:r.mb||r.method||"",round:r.round||null,voided:!!r.voided};
+          var cur=PK_RESULTS[id];
+          if(!cur||cur.winner!==res.winner||cur.method!==res.method||String(cur.round)!==String(res.round)||cur.voided!==res.voided){PK_RESULTS[id]=res;changed=true;}
+        });
+        if(d.final&&!PK_FINAL){PK_FINAL=true;changed=true;}
+        if(changed)renderAll();
+        updateLiveScore(d);
+        return !!d.final;
+      }
+      var timer=null,done=false;
+      function stop(){if(timer){clearInterval(timer);timer=null;}}
+      function poll(){fetch("/api/live-results",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(d){if(apply(d)){done=true;stop();}}).catch(function(){});}
+      function inWindow(){if(!isFinite(PRELIMS))return false;var now=Date.now();return now>=PRELIMS-1800000&&now<=PRELIMS+43200000;}
+      poll();
+      if(inWindow()){timer=setInterval(function(){if(!document.hidden)poll();},60000);document.addEventListener("visibilitychange",function(){if(!document.hidden&&!done)poll();});}
+    })();
     // Display-name save
     var nameSave=document.getElementById("pkNameSave");
     if(nameSave){nameSave.addEventListener("click",function(){
@@ -2384,7 +2482,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b class="${c2}">${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
     const sideL = sA ? `<a class="mf-side mf-link" href="/fighter/${esc(sA)}">${innerL}</a>` : `<div class="mf-side">${innerL}</div>`;
     const sideR = sB ? `<a class="mf-side right mf-link" href="/fighter/${esc(sB)}">${innerR}</a>` : `<div class="mf-side right">${innerR}</div>`;
-    return `<div class="mf-card${f.main ? " main" : ""}">
+    return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}">
       <div class="mf-row">
         ${sideL}
         <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
@@ -2493,6 +2591,14 @@ ${eventLd}
   .mf-rds{font-size:.58rem;color:var(--muted)}
   .mf-info{margin-top:.2rem;background:none;border:none;color:var(--accent);font:inherit;font-size:.62rem;font-weight:700;cursor:pointer;white-space:nowrap}
   .mf-panel{border-top:1px solid var(--border);padding:.5rem 1rem 1.1rem;background:rgba(255,255,255,.015)}
+  /* Live result, folded into the top of a bout's Fight Info panel by the poller once
+     the fight is decided. Just who won, how and when — no box score. */
+  .mf-result{display:flex;flex-wrap:wrap;align-items:baseline;gap:.35rem .5rem;margin:.55rem 0 .3rem;padding:.5rem .65rem;background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.28);border-radius:8px;font-size:.82rem;line-height:1.35}
+  .mf-res-tag{font-size:.58rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.3);border-radius:4px;padding:2px 6px}
+  .mf-res-meth{color:var(--muted)}
+  .mf-res-void{color:#ffcf7a;font-weight:700}
+  /* "FINAL" chip on the card's centre column so a decided bout is obvious without expanding. */
+  .mf-final{margin-top:.25rem;font-size:.55rem;font-weight:800;letter-spacing:.08em;color:#0a0a0b;background:var(--accent);border-radius:4px;padding:2px 6px}
   .mf-panel[hidden]{display:none}
   .sr-common{margin-top:.9rem}
   .sr-common .sr-cmp-row:last-child{border-bottom:none}
@@ -2626,6 +2732,59 @@ ${AURORA_CSS}
         }else{hideTip();activeTile=null;}
       },true);
       document.addEventListener("scroll",function(){hideTip();activeTile=null;},true);
+    })();
+    // ── LIVE RESULTS ─────────────────────────────────────────────────────────
+    // As the card runs, fold each finished bout's result into its Fight Info panel.
+    // Polls /api/live-results (the same focus-card grader the leaderboard uses), matches
+    // bouts to cards by fighter name, and drops in "Winner def. Loser · method · round"
+    // — no box score, no history. Stops when the card is final or the feed moves to
+    // another event; pauses on a hidden tab. One fetch on load fills results if the card
+    // just finished, before the twice-daily rebuild catches up.
+    (function(){
+      var CARD_SLUG=${JSON.stringify(card ? (card.slug || null) : null)};
+      if(!CARD_SLUG)return;
+      var PRELIMS=Date.parse(${JSON.stringify(card ? (card.prelimsAt || card.date || "") : "")});
+      var SUF={jr:1,sr:1,ii:1,iii:1,iv:1,v:1};
+      function norm(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/[^a-z0-9]+/g," ").trim().split(/\\s+/).filter(function(t){return t&&!SUF[t];}).join("");}
+      function eqName(a,b){var na=norm(a),nb=norm(b);if(!na||!nb)return false;if(na===nb)return true;return na.length>=6&&nb.length>=6&&(na.indexOf(nb)===0||nb.indexOf(na)===0);}
+      function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+      function findCard(f1,f2){
+        var cards=document.querySelectorAll(".mf-card[data-f1]");
+        for(var i=0;i<cards.length;i++){var c=cards[i],a=c.getAttribute("data-f1"),b=c.getAttribute("data-f2");
+          if((eqName(a,f1)&&eqName(b,f2))||(eqName(a,f2)&&eqName(b,f1)))return c;}
+        return null;
+      }
+      function line(r){
+        if(r.voided)return '<span class="mf-res-void">'+(/(no\\s*contest|^\\s*nc\\b)/i.test(r.method||"")?"No Contest":"Draw")+'</span>';
+        if(!r.winner)return "";
+        var loser=eqName(r.winner,r.f1)?r.f2:r.f1;
+        var meth=r.method?esc(r.method)+(r.method!=="Decision"&&r.round?" \\u00b7 R"+esc(r.round):""):"";
+        return '<strong>'+esc(r.winner)+'</strong> def. '+esc(loser)+(meth?' <span class="mf-res-meth">'+meth+'</span>':'');
+      }
+      function apply(d){
+        if(d&&d.slug&&d.slug!==CARD_SLUG)return true;      // feed moved to a different card
+        if(!d||!d.bouts||!d.bouts.length)return !!(d&&d.final);
+        d.bouts.forEach(function(r){
+          var el=findCard(r.f1,r.f2);if(!el)return;
+          var panel=el.querySelector(".mf-panel");if(!panel)return;
+          var html=line(r);if(!html)return;
+          var box=panel.querySelector(".mf-result");
+          if(!box){box=document.createElement("div");box.className="mf-result";panel.insertBefore(box,panel.firstChild);}
+          box.innerHTML='<span class="mf-res-tag">Result</span>'+html;
+          if(!el.querySelector(".mf-final")){var ctr=el.querySelector(".mf-center");if(ctr){var chip=document.createElement("span");chip.className="mf-final";chip.textContent="FINAL";ctr.appendChild(chip);}}
+        });
+        return !!d.final;
+      }
+      var timer=null,done=false;
+      function stop(){if(timer){clearInterval(timer);timer=null;}}
+      function poll(){
+        fetch("/api/live-results",{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(d){
+          if(apply(d)){done=true;stop();}
+        }).catch(function(){});
+      }
+      function inWindow(){if(!isFinite(PRELIMS))return false;var now=Date.now();return now>=PRELIMS-1800000&&now<=PRELIMS+43200000;}
+      poll();
+      if(inWindow()){timer=setInterval(function(){if(!document.hidden)poll();},60000);document.addEventListener("visibilitychange",function(){if(!document.hidden&&!done)poll();});}
     })();
   </script>
   ${ddFresh ? `
