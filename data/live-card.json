@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T01:41:33.346Z",
+ "generatedAt": "2026-07-19T02:30:20.806Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -4502,6 +4502,194 @@
       ]
      },
      "capturedAt": "2026-07-19T01:41:33.218Z"
+    }
+   ]
+  },
+  "Jared Cannonier": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Christian Leroy Duncan",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Christian Leroy Duncan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 46,
+      "totL": 36,
+      "totA": 69,
+      "tdL": 5,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:12",
+      "head": [
+       7,
+       36
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       6,
+       33
+      ],
+      "clinch": [
+       8,
+       12
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 68,
+      "sigA": 117,
+      "totL": 94,
+      "totA": 148,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:16",
+      "head": [
+       37,
+       85
+      ],
+      "body": [
+       17,
+       18
+      ],
+      "leg": [
+       14,
+       14
+      ],
+      "dist": [
+       43,
+       82
+      ],
+      "clinch": [
+       25,
+       34
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-19T02:30:20.677Z"
+    }
+   ]
+  },
+  "Christian Leroy Duncan": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jared Cannonier",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jared Cannonier",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 68,
+      "sigA": 117,
+      "totL": 94,
+      "totA": 148,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "2:16",
+      "head": [
+       37,
+       85
+      ],
+      "body": [
+       17,
+       18
+      ],
+      "leg": [
+       14,
+       14
+      ],
+      "dist": [
+       43,
+       82
+      ],
+      "clinch": [
+       25,
+       34
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 46,
+      "totL": 36,
+      "totA": 69,
+      "tdL": 5,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "6:12",
+      "head": [
+       7,
+       36
+      ],
+      "body": [
+       6,
+       8
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       6,
+       33
+      ],
+      "clinch": [
+       8,
+       12
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-19T02:30:20.677Z"
     }
    ]
   }
