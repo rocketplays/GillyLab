@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T00:09:32.739Z",
+ "generatedAt": "2026-07-19T00:52:11.933Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -3938,6 +3938,194 @@
       ]
      },
      "capturedAt": "2026-07-19T00:03:19.264Z"
+    }
+   ]
+  },
+  "Tommy McMillen": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Alberto Montes",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "3:29",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Alberto Montes",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 252,
+      "sigA": 513,
+      "totL": 255,
+      "totA": 517,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       185,
+       429
+      ],
+      "body": [
+       52,
+       65
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       234,
+       484
+      ],
+      "clinch": [
+       11,
+       19
+      ],
+      "ground": [
+       7,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 147,
+      "totL": 56,
+      "totA": 147,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       48,
+       134
+      ],
+      "body": [
+       4,
+       8
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       56,
+       147
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-19T00:52:11.805Z"
+    }
+   ]
+  },
+  "Alberto Montes": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Tommy McMillen",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "3:29",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Tommy McMillen",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 147,
+      "totL": 56,
+      "totA": 147,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       48,
+       134
+      ],
+      "body": [
+       4,
+       8
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       56,
+       147
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 252,
+      "sigA": 513,
+      "totL": 255,
+      "totA": 517,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:57",
+      "head": [
+       185,
+       429
+      ],
+      "body": [
+       52,
+       65
+      ],
+      "leg": [
+       15,
+       19
+      ],
+      "dist": [
+       234,
+       484
+      ],
+      "clinch": [
+       11,
+       19
+      ],
+      "ground": [
+       7,
+       10
+      ]
+     },
+     "capturedAt": "2026-07-19T00:52:11.805Z"
     }
    ]
   }
