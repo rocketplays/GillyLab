@@ -27,32 +27,31 @@ const FEATURED_DIVISION = 'Welterweight'; // its champion is the featured-analyt
 const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
 // ── finished-card hold ───────────────────────────────────────────────────────
-// A card keeps the featured slot for 34h after its main-card start, so the free
-// /matchup page and the landing card still show last night's fights (with
-// results) all through Sunday and only roll over on Monday. Must stay in step
-// with index.html's CARD_HOLD_MS and worker/index.js's.
+// A card keeps the featured slot for 34h after its main-card start, so /matchup and
+// the landing slide still show last night's fights (with results) through Sunday and
+// only roll over on Monday.
 //
-// This cannot be expressed as a window over event.json: when a card ends the
-// upstream feed DELETES it from that file rather than marking it completed
-// (measured 2026-07-19 — the Jul 18 card was gone while every remaining entry
-// read "scheduled"), so there is no event left to hold. The finished card comes
-// from data/event-recent.json instead, which keeps completed cards with results.
+// This file bakes BOTH cards — the next one as `card`/`matchup`, the most recently
+// finished one as `held` — and does NOT decide between them. The Worker picks per
+// request (see currentLanding() in worker/pages.js). That split is deliberate: this
+// script runs twice a day, so any window evaluated HERE would flip whenever the build
+// happened to land, drifting hours out of step with the app and /pickem, which both
+// decide on the live clock.
 //
-// NOTE this is evaluated at BUILD time, so the flip lands on the first build
-// after the 34h mark rather than exactly on it — with a twice-daily build that
-// still puts the rollover on Monday.
-const CARD_HOLD_MS = 34 * 3600 * 1000;
+// The finished card has to come from data/event-recent.json: when a card ends the
+// upstream feed DELETES it from event.json rather than marking it completed (measured
+// 2026-07-19 — the Jul 18 card was gone while every remaining entry read "scheduled").
 
 function heldBoutSettled(b) {
   return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
     String(b.status || '').toLowerCase() === 'completed'));
 }
 
-// The most recent completed card still inside its hold window, or null.
-// Per CLAUDE.md: a genuinely ABSENT file (first run / file not shipped) means
-// "no hold" and is fine, but an offloaded or corrupt one must THROW rather than
-// silently degrade to "no hold" and quietly ship the wrong card.
-function heldEvent() {
+// The most recently finished card, or null. No time window — the Worker applies it.
+// Per CLAUDE.md: a genuinely ABSENT file (first run / file not shipped) means "no
+// held card" and is fine, but an offloaded or corrupt one must THROW rather than
+// silently degrade and quietly ship a landing file with the hold missing.
+function lastFinishedEvent() {
   let recent;
   try {
     recent = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event-recent.json'), 'utf8'));
@@ -63,10 +62,9 @@ function heldEvent() {
   const now = Date.now();
   const t = (e) => Date.parse((e && (e.startsAt || e.eventDate)) || 0) || 0;
   return (((recent && recent.data) || [])
-    // Only a fully settled card may hold — never a half-synced one.
+    // Only a fully settled card qualifies — never a half-synced one.
     .filter((e) => e && (e.bouts || []).length && e.status === 'completed'
-      && e.bouts.every(heldBoutSettled)
-      && t(e) > 0 && t(e) <= now && t(e) + CARD_HOLD_MS >= now)
+      && e.bouts.every(heldBoutSettled) && t(e) > 0 && t(e) <= now)
     .sort((a, b) => t(b) - t(a))[0]) || null;
 }
 
@@ -629,12 +627,12 @@ function buildStyleDemo(recMap) {
   return { a, b };
 }
 
-function buildMatchup(recMap) {
+function buildMatchup(recMap, evOverride) {
   let feed;
   try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8')); } catch (e) { return null; }
   const events = (feed && feed.data) || [];
-  // Hold last night's card for 34h so /matchup still shows it — see heldEvent().
-  const ev = heldEvent() || events.find((e) => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length);
+  // evOverride builds the HELD (already finished) card; without it, the next one.
+  const ev = evOverride || events.find((e) => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length);
   if (!ev) return null;
   // matchNumber 1 / cardPosition 1 is the main event; fall back to the first bout
   const bout = ev.bouts.find((x) => x && x.cardPosition === 1 && !x.isCancelled) || ev.bouts.find((x) => x && !x.isCancelled);
@@ -887,10 +885,10 @@ function fighterProfileCard(name, recMap, ranks) {
     bars: groups.some((g) => g.rows.some((r) => r.bar)),
   };
 }
-function buildCard(recMap) {
+function buildCard(recMap, evOverride) {
   let feed; try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "event.json"), "utf8")); } catch (e) { return null; }
-  // Last night's card outranks next week's for 34h — see heldEvent().
-  const ev = heldEvent()
+  // evOverride builds the HELD (already finished) card; without it, the next one.
+  const ev = evOverride
     || ((feed && feed.data) || []).find((e) => e && e.status !== "completed" && Array.isArray(e.bouts) && e.bouts.length);
   if (!ev) return null;
   const ranks = rankMap();
@@ -995,7 +993,18 @@ function main() {
     styleDemo && styleDemo.a.slug, styleDemo && styleDemo.b.slug, ...rankings.rows.map(r => r.slug)].filter(Boolean))];
 
   const card = buildCard(recMap);
-  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, matchup, parlay, styleDemo, counts, photos, card };
+  // The most recently finished card, baked alongside the upcoming one. The Worker
+  // serves this instead for 34h after its start (currentLanding() in pages.js), so
+  // /matchup and the landing slide roll over on the clock — in step with the app and
+  // /pickem — rather than whenever this build happens to run.
+  const heldEv = lastFinishedEvent();
+  const held = heldEv ? {
+    startsAt: heldEv.startsAt || heldEv.eventDate || null,
+    card: buildCard(recMap, heldEv),
+    matchup: buildMatchup(recMap, heldEv),
+  } : null;
+  if (held) console.log('landing-data.js: held card ' + (held.card && held.card.slug) + ' (starts ' + held.startsAt + ')');
+  const out = { generatedAt: new Date().toISOString(), rankings, roster, featured, oddsHistory, matchup, parlay, styleDemo, counts, photos, card, held };
   fs.writeFileSync(OUT,
     '// AUTO-GENERATED by scripts/gen-landing-data.cjs — do not edit by hand.\n' +
     'export default ' + JSON.stringify(out, null, 2) + ';\n');

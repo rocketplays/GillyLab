@@ -300,6 +300,27 @@ function cnt(key, fallback) {
   return C && C[key] ? Number(C[key]).toLocaleString('en-US') : fallback;
 }
 
+// How long a finished card keeps the featured slot after its main-card start. A
+// Saturday ~8pm ET card holds all of Sunday and hands off Monday morning. Shared by
+// the Worker's card pickers; index.html keeps its own copy because it is a standalone
+// static file, and the two must be changed together.
+export const CARD_HOLD_MS = 34 * 3600 * 1000;
+
+// landing-data.js bakes BOTH the next card and the most recently finished one
+// (`held`). Deciding between them is a function of the CLOCK, so it happens here, per
+// request — not in the generator, which only runs twice a day and would therefore flip
+// /matchup whenever a build landed, drifting hours out of step with the app and
+// /pickem. Returns landingData unchanged once the hold has expired.
+function currentLanding() {
+  const h = landingData && landingData.held;
+  const t = h && h.startsAt ? Date.parse(h.startsAt) : NaN;
+  if (!h || !isFinite(t) || t + CARD_HOLD_MS < Date.now()) return landingData;
+  return Object.assign({}, landingData, {
+    card: h.card || landingData.card,
+    matchup: h.matchup || landingData.matchup,
+  });
+}
+
 // The app/landing footer (brand + About/Terms/Privacy/Contact + disclaimer), shared
 // across every standalone free page. Styles are scoped inline so each page can drop
 // it in without touching its own <style> block. Uses the free pages' theme vars.
@@ -801,7 +822,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
 <script>
 (function(){
-  var LD=${JSON.stringify(landingData)};
+  var LD=${JSON.stringify(currentLanding())};
   var A="#00e668",M="var(--muted)",L="rgba(255,255,255,.09)",BG="#0a0a0b";
   // Real database thumbnails (served publicly via the Worker's LANDING_PHOTOS
   // allow-list); initials render if an image is ever unavailable.
@@ -2390,7 +2411,7 @@ ${AURORA_CSS}
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
 export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const card = (landingData && landingData.card) || null;
+  const card = (currentLanding() || {}).card || null;   // held card wins for 34h
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
   // it (that produced the "++220" double plus on underdogs).
   const fmtO = (o) => (o == null || o === "" ? "—" : String(o));
