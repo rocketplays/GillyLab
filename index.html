@@ -103576,7 +103576,20 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           // and 38 times counting its variants. It's the commonest case, so it deserves
           // the most detail, not the least: give the opponent's actual TDD and this
           // fighter's own entry rate, which differ on every card.
-          else if (oKnown && other.tdDef != null) line += ' — ' + oN + ' turns away ' + other.tdDef + '% of shots, so it takes volume: he lands ' + self.tdLanded + ' takedowns/15 and has to keep shooting.';
+          else if (oKnown && other.tdDef != null) {
+            // "keep shooting" is only advice if he actually shoots. A grappling lean
+            // can come from submissions rather than wrestling — Uran Satybaldiev leans
+            // grappler off a 1.69 sub rate with ZERO takedowns landed, and telling him
+            // his path is takedown volume contradicts his own tape. Split the two.
+            const td = self.tdLanded;
+            if (td != null && td >= 1) {
+              line += ' — ' + oN + ' turns away ' + other.tdDef + '% of shots, so it takes volume: he lands ' +
+                      td + ' takedown' + (td === 1 ? '' : 's') + '/15 and has to keep shooting.';
+            } else {
+              line += ' — ' + oN + ' turns away ' + other.tdDef + '% of shots and the entries aren\'t there on tape (' +
+                      (td == null ? 'no takedown data' : td + '/15') + '), so the mat work has to come from scrambles and submissions.';
+            }
+          }
           else line += ' and impose top control.';
           if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
           if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
