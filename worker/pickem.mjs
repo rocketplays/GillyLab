@@ -95,6 +95,9 @@ export function gradeCard(record, resultsBouts) {
     method: r.method && /KO|Sub|Dec/i.test(r.method) && (r.method === 'KO/TKO' || r.method === 'Submission' || r.method === 'Decision') ? r.method : methodBucket(r.method),
     round: r.round != null ? Number(r.round) : null,
     voided: !!r.voided,
+    // Closing moneylines (aligned to f1/f2) when the caller attached them — used to
+    // classify underdog picks off the true close rather than the pick-time snapshot.
+    o1: r.o1 != null ? Number(r.o1) : null, o2: r.o2 != null ? Number(r.o2) : null,
   }));
   // Match a pick to its result by fighter names (order-independent, name-tolerant),
   // rather than a strict normalized-full-name key — so a display-name change between
@@ -113,10 +116,19 @@ export function gradeCard(record, resultsBouts) {
   const correct = bouts.filter(b => b.winnerHit).length;
   // Underdog record: of the decided bouts where the user backed a clear underdog,
   // how many came in.
+  // An "underdog pick" is one where the fighter you backed was the betting underdog. Prefer
+  // the actual CLOSING line (positive moneyline = dog) when the caller attached it — it's the
+  // ground truth, and it fixes picks whose pick-time snapshot had no odds (wPts defaulted to a
+  // neutral 10, below the threshold, so a real dog silently didn't count). Fall back to the
+  // snapshot wPts > 10 when there's no closing line for the bout.
   let dogPicks = 0, dogCorrect = 0;
   bouts.forEach(b => {
     if (!b.result || b.voided) return;
-    if (Number(b.wPts) > UNDERDOG_WPTS) { dogPicks++; if (b.winnerHit) dogCorrect++; }
+    const r = b.result;
+    const line = (typeof r.o1 === 'number' && typeof r.o2 === 'number')
+      ? (namesMatch(b.winner, r.f1) ? r.o1 : r.o2) : null;
+    const isDog = (line != null) ? line > 0 : (Number(b.wPts) > UNDERDOG_WPTS);
+    if (isDog) { dogPicks++; if (b.winnerHit) dogCorrect++; }
   });
   return { bouts, total, decided, correct, dogPicks, dogCorrect, boutCount: bouts.length };
 }

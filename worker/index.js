@@ -34,7 +34,7 @@ import { climbPage } from "./climb-page.js";
 import { landingGridPage } from "./landing-grid.js";
 import landingData from "./landing-data.js";
 import scorecardData from "./scorecard-data.js";
-import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName } from "./pickem.mjs";
+import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName, namesMatch } from "./pickem.mjs";
 import { pickemModel } from "./pickem-model.js";
 
 const COOKIE = "gl_session";
@@ -318,6 +318,28 @@ async function loadResults(env, url) {
     const j = await r.json();
     return j && Array.isArray(j.events) ? j : { events: [] };
   } catch { return { events: [] }; }
+}
+// The captured closing moneylines (data/odds-closing.json) — used to classify underdog
+// picks off the true close, so a fighter whose pick-time line was missing (wPts defaulted
+// to neutral) still counts as a dog when they actually closed a dog.
+async function loadClosingOdds(env, url) {
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/odds-closing.json", url)));
+    if (!r.ok) return [];
+    const j = await r.json();
+    return Array.isArray(j && j.fights) ? j.fights : [];
+  } catch { return []; }
+}
+// Attach each result bout's closing moneylines (aligned to that bout's f1/f2 order) from the
+// closing feed, so gradeCard's underdog check has the real line. Name-tolerant match.
+function withClosingOdds(bouts, closingFights) {
+  if (!closingFights || !closingFights.length) return bouts || [];
+  return (bouts || []).map((b) => {
+    const cf = closingFights.find((c) =>
+      (namesMatch(c.f1, b.f1) && namesMatch(c.f2, b.f2)) || (namesMatch(c.f1, b.f2) && namesMatch(c.f2, b.f1)));
+    if (!cf || cf.o1 == null || cf.o2 == null) return b;
+    return namesMatch(cf.f1, b.f1) ? { ...b, o1: cf.o1, o2: cf.o2 } : { ...b, o1: cf.o2, o2: cf.o1 };
+  });
 }
 // Turn one ESPN bout into a gradeable result, or null if it isn't decided yet.
 // A bout is decided when a fighter has a `win` outcome (winnerFighterSlug can be
@@ -702,6 +724,8 @@ async function currentBoard(env, url, myName) {
   if (!focus) return { scope: "current", event: null, live: false, rows: [], me: null };
   const prefix = "pk:" + focus.slug + ":";
   const keys = await listAllKeys(env, prefix);
+  const closing = await loadClosingOdds(env, url);
+  const bouts = withClosingOdds(focus.bouts, closing);
   // Grade every entry concurrently — a sequential loop of KV reads is what made this
   // slow (and occasionally time out) once a few dozen people had entered.
   const graded = await Promise.all(keys.map(async (key) => {
@@ -710,7 +734,7 @@ async function currentBoard(env, url, myName) {
     const email = key.slice(prefix.length);
     const name = (await getDisplayName(env, email)) || rec.name;
     if (!name) return null;
-    const card = gradeCard(rec, focus.bouts);
+    const card = gradeCard(rec, bouts);
     return { name, points: card.total, correct: card.correct, played: focus.decided };
   }));
   const rows = graded.filter(Boolean);
@@ -735,8 +759,10 @@ async function listAllKeys(env, prefix) {
 // Grade-logic version. The gr:<slug> marker stores this; bump it whenever the grading
 // rules change to force a one-time re-grade sweep of every finalized event, so cached
 // agg totals pick up the new logic. "3" = tolerant name matching (Bobby/King Green)
-// + underdog threshold lowered to any dog (wPts > 10).
-const GRADE_VERSION = "3";
+// + underdog threshold lowered to any dog (wPts > 10). "4" = underdog classified off the
+// captured CLOSING line when available, so a pick whose pick-time odds were missing (wPts
+// stuck at a neutral 10) still counts as a dog — re-grades every finalized card once.
+const GRADE_VERSION = "4";
 // Grade every final event whose marker doesn't match GRADE_VERSION and fold each
 // user's total into their agg record. Returns finalized slugs, newest first.
 async function ensureGraded(env, url) {
@@ -748,12 +774,14 @@ async function ensureGraded(env, url) {
   // and a sequential per-event get was adding latency there.
   const marks = await Promise.all(valid.map(ev => env.PICKS.get("gr:" + ev.slug)));
   const todo = valid.filter((_, i) => marks[i] !== GRADE_VERSION);
+  const closing = todo.length ? await loadClosingOdds(env, url) : [];
   for (const ev of todo) {
     const prefix = "pk:" + ev.slug + ":";
+    const bouts = withClosingOdds(ev.bouts, closing);
     for (const key of await listAllKeys(env, prefix)) {
       const rec = await pkGet(env, key);
       if (!rec) continue;
-      const card = gradeCard(rec, ev.bouts);
+      const card = gradeCard(rec, bouts);
       const email = key.slice(prefix.length);
       const ag = (await pkGet(env, "ag:" + email)) || { name: rec.name, byEvent: {} };
       ag.name = (await getDisplayName(env, email)) || rec.name || ag.name;
@@ -788,7 +816,8 @@ async function handlePickemHistory(request, env, url) {
     if (!rec) return json({ error: "no picks for that event" }, 404);
     const results = await loadResults(env, url);
     const ev = (results.events || []).find(e => e.slug === slug);
-    const card = ev ? gradeCard(rec, ev.bouts) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
+    const closing = await loadClosingOdds(env, url);
+    const card = ev ? gradeCard(rec, withClosingOdds(ev.bouts, closing)) : { bouts: rec.picks.map(p => ({ ...p, pending: true, points: 0 })), total: 0, correct: 0 };
     return json({ slug, event: rec.eventName, date: rec.eventDate, graded: !!ev, total: card.total, correct: card.correct, boutCount: card.boutCount, bouts: card.bouts });
   }
   const { ordered, aggs } = await pickemBoardData(env, url);
