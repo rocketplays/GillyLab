@@ -2503,7 +2503,10 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     // right — that is where the tape ends — but nonMainPanel renders taleHTML too, so
     // all 12 bouts got a deep-dive button for a panel that only holds the main event.
     // Caught by counting: 12 buttons, 12 cards, 1 main.
-    return `<div class="mf-panel" hidden>${tape}${ddBtn}${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}</div>`;
+    // The tale (.mf-tape) and the whole scouting breakdown (.mf-prefight) are pre-fight
+    // reading — the poller hides both once the bout is decided, leaving the result and the
+    // deep-dive button (the main event's premium CTA, like the locked teaser on other bouts).
+    return `<div class="mf-panel" hidden>${tape}${ddBtn}<div class="mf-prefight">${style}${paceBox}${pathBox}${finishBox}${commonBox}${storyBox}</div></div>`;
   };
 
   // Moneyline color: the favorite (smaller American number, e.g. -247 < +200)
@@ -2809,9 +2812,9 @@ ${AURORA_CSS}
           var box=panel.querySelector(".mf-result");
           if(!box){box=document.createElement("div");box.className="mf-result";panel.insertBefore(box,panel.firstChild);}
           box.innerHTML='<span class="mf-res-tag">Result</span>'+html;
-          // Once the fight's decided, the tale of the tape is a pre-fight comparison that
-          // no longer matters — hide it like the in-app events page does.
-          Array.prototype.forEach.call(panel.querySelectorAll(".mf-tape"),function(t){t.style.display="none";});
+          // Once the fight's decided, the pre-fight reading no longer matters — hide the
+          // tale of the tape AND the main event's full scouting breakdown, like the app does.
+          Array.prototype.forEach.call(panel.querySelectorAll(".mf-tape, .mf-prefight"),function(t){t.style.display="none";});
           if(!el.querySelector(".mf-final")){var ctr=el.querySelector(".mf-center");if(ctr){var chip=document.createElement("span");chip.className="mf-final";chip.textContent="FINAL";ctr.appendChild(chip);}}
         });
         return !!d.final;
