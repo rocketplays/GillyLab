@@ -1988,7 +1988,11 @@ ${AURORA_CSS}
     function gradedPick(p,res){
       if(res.voided)return{points:0,voided:true,winnerHit:false,methodHit:false,roundHit:false};
       if(!pkNameEq(p.winner,res.winner))return{points:-(CONF_PENALTY[p.confidence]||0),winnerHit:false,methodHit:false,roundHit:false,voided:false};
-      var pt=partsFor(p.boutId,p.side,p.method,p.round);
+      // Grade off the SUBMIT-TIME snapshot (wPts/mPts/rPts stored with the pick), exactly
+      // like the server's gradeCard — the scoring table moves with the odds after you lock
+      // in, so recomputing from the current table would disagree with the leaderboard.
+      // Fall back to the live table only for an un-submitted local pick (no snapshot).
+      var pt=(p.wPts!=null)?{wPts:p.wPts,mPts:p.mPts||0,rPts:p.rPts||0}:partsFor(p.boutId,p.side,p.method,p.round);
       var methodHit=!!p.method&&p.method===res.method;
       var roundHit=res.method!=="Decision"&&p.round!=null&&(+p.round===+res.round);
       var earned=pt.wPts+(methodHit?pt.mPts:0)+(roundHit?pt.rPts:0);
@@ -2034,7 +2038,7 @@ ${AURORA_CSS}
           r.record.picks.forEach(function(sp){
             var el=Array.prototype.find.call(document.querySelectorAll(".pk-bout"),function(b){return (pkNameEq(b.dataset.f1,sp.f1)&&pkNameEq(b.dataset.f2,sp.f2))||(pkNameEq(b.dataset.f1,sp.f2)&&pkNameEq(b.dataset.f2,sp.f1));});
             if(!el)return;var id=el.dataset.bout;
-            PICKS[id]={boutId:id,winner:sp.winner,side:sideOf(el,sp.winner),method:sp.method,round:sp.round||null,confidence:sp.confidence};
+            PICKS[id]={boutId:id,winner:sp.winner,side:sideOf(el,sp.winner),method:sp.method,round:sp.round||null,confidence:sp.confidence,wPts:sp.wPts,mPts:sp.mPts,rPts:sp.rPts};
           });
           persist();PK_SUBMITTED=true;PK_DIRTY=false;revealShare();
         }
