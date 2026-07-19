@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T02:30:20.806Z",
+ "generatedAt": "2026-07-19T03:17:58.934Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -4690,6 +4690,194 @@
       ]
      },
      "capturedAt": "2026-07-19T02:30:20.677Z"
+    }
+   ]
+  },
+  "Dricus Du Plessis": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Kamaru Usman",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Kamaru Usman",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 136,
+      "sigA": 273,
+      "totL": 139,
+      "totA": 278,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       102,
+       230
+      ],
+      "body": [
+       24,
+       30
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       132,
+       267
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 92,
+      "sigA": 234,
+      "totL": 99,
+      "totA": 244,
+      "tdL": 0,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       49,
+       170
+      ],
+      "body": [
+       37,
+       58
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       88,
+       230
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-19T03:17:58.824Z"
+    }
+   ]
+  },
+  "Kamaru Usman": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Dricus Du Plessis",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Dricus Du Plessis",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 92,
+      "sigA": 234,
+      "totL": 99,
+      "totA": 244,
+      "tdL": 0,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:24",
+      "head": [
+       49,
+       170
+      ],
+      "body": [
+       37,
+       58
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       88,
+       230
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 136,
+      "sigA": 273,
+      "totL": 139,
+      "totA": 278,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       102,
+       230
+      ],
+      "body": [
+       24,
+       30
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       132,
+       267
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-07-19T03:17:58.824Z"
     }
    ]
   }
