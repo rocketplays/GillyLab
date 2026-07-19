@@ -116,7 +116,17 @@ function between(startMarker, endMarker, includeEnd) {
 // the previews, and none of the carousel driver (dots, 7s timer, swipe) that this
 // prototype exists to replace.
 const SLIDES_END = '].filter(function(s){return s.h;});';
-let slideJS = between('var LD=${JSON.stringify(landingData)};', SLIDES_END, true);
+// The marker has to be the WHOLE `var LD=${…};` statement, because the slice starts at
+// it and anything left over would ship an unresolved ${…} into the prototype (the guard
+// below catches that). But the expression inside is not stable: it was
+// JSON.stringify(landingData), and became JSON.stringify(currentLanding()) when the
+// finished-card hold moved the choice of card to request time — which broke this
+// generator with "start marker not found". So find the statement by SHAPE and use
+// whatever it currently says as the literal marker.
+const LD_RE = /var LD=\$\{JSON\.stringify\([^;]*\)\};/;
+const LD_MARK = (LD_RE.exec(idx.slice(LP)) || [])[0];
+if (!LD_MARK) throw new Error('the `var LD=${JSON.stringify(…)};` statement is gone from landingPage — the slide payload can no longer be located');
+let slideJS = between(LD_MARK, SLIDES_END, true);
 
 // This block lives inside a template literal in pages.js, so what the browser actually
 // receives is the UN-escaped text: `\\u2713` is delivered as `✓`, `\\'` as `\'`.
@@ -130,7 +140,8 @@ slideJS = slideJS.replace(/\\(\\|`|\$\{)/g, '$1');
 const dataSrc = read(DATA);
 const landingData = dataSrc.slice(dataSrc.indexOf('{'), dataSrc.lastIndexOf('}') + 1);
 JSON.parse(landingData); // fail loudly here rather than in the browser
-slideJS = slideJS.replace('var LD=${JSON.stringify(landingData)};', 'var LD=' + landingData + ';');
+// LD_MARK, not a hardcoded copy of the statement — same reason it's derived above.
+slideJS = slideJS.replace(LD_MARK, 'var LD=' + landingData + ';');
 
 // The matchup-hub slide bakes in the real rendered main event from worker/matchup-free.js.
 const mfSrc = read(path.join(ROOT, 'worker', 'matchup-free.js'));

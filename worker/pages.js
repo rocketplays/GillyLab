@@ -1247,7 +1247,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
     // FREE ORDER IS DELIBERATE: the two things you can DO without an account come first
     // (The Climb, then Pick'em), then what you can read. The free tier's job is to get a
     // stranger playing, not to lead with a stats table.
-    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. No account needed.',h:climb,f:1,g:'free'},
+    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. Can you become a UFC champion?',h:climb,f:1,g:'free'},
     {t:'Pick\\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1,g:'free'},
     {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1,g:'free'},
     {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1,g:'free'},
@@ -3304,7 +3304,7 @@ ${AURORA_CSS}
     <a class="back" href="#" onclick="${BACK_JS}">← Back</a>
     <div class="brand">GILLY<span class="a">LAB</span></div>
     <h1>${title}</h1>
-    <div class="updated">Last updated: ${updated}</div>
+    ${updated ? `<div class="updated">Last updated: ${updated}</div>` : ""}
     ${bodyHtml}
     <h2>Contact</h2>
     <p>Questions? Email <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
@@ -3366,10 +3366,7 @@ const FAQ_JS = `
 `;
 
 export const faqPage = () => legalShell("FAQ", "", `
-    <h1>Frequently asked</h1>
-    <p class="lede">What GillyLab is, what's free, and how the numbers work.</p>
 <section class="faq">
-    <div class="faq-title">FREQUENTLY ASKED</div>
     <div class="faq-list">
       <details class="faq-item"><summary>What's included?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Every UFC fighter (${cnt('fighters', '3,000+')}) and bout (${cnt('bouts', '18,000+')}): full career analytics, the fight simulator, per-fight box scores, career accolades, matchup analysis — each fighter’s style, pace and path to victory — live odds and props, the bet &amp; CLV tracker, line-movement history, the parlay builder, closing-line history, ${cnt('videos', 'thousands of')} tape links, division rankings, and weekly roster updates.</p></div></details>
       <details class="faq-item"><summary>Is there a free version?<span class="faq-chev">›</span></summary><div class="faq-body"><p>Yes. A free account lets you play Pick'em, climb the live leaderboard, keep your pick history, and browse division rankings and the active roster — no card required. Premium (${PRICE_LABEL}) unlocks the full fighter database, the simulator, matchup analytics, the odds and parlay tools, the bet &amp; CLV tracker, and everything else.</p></div></details>
