@@ -8,14 +8,15 @@ name: Capture closing odds
 # A cheap tick self-gates via ESPN's prelimsStartsAt / startsAt; only the ticks
 # inside a capture window do any work, and idempotency makes repeats no-ops.
 #
-# The cron ticks */5, not */15: the capture window is [start-12m, start-2m], only
-# 10 minutes wide, so a quarter-hourly tick would step clean over it. That's ~3x
-# the (tiny, gate-only) fight-day runs — the cost of a closing line taken nearer
-# the bell.
+# The cron ticks */3: the capture window is [start-20m, start-2m] (18 min), and GitHub
+# Actions' scheduled runs are routinely delayed several minutes (sometimes skipped), so
+# a sparse cron gets stepped over — that's how a section's closing lines went missing.
+# */3 gives ~6 shots at the window, robust to a long Actions delay; the ticks are tiny
+# (gate-only) except the handful actually inside a window.
 on:
   schedule:
-    - cron: '*/5 6-23 * * 6'    # Saturday, UTC — covers 10-min-before for early intl. + US cards
-    - cron: '*/5 0-9 * * 0'     # Sunday morning UTC — tail of a US Saturday card
+    - cron: '*/3 6-23 * * 6'    # Saturday, UTC — covers the window for early intl. + US cards
+    - cron: '*/3 0-9 * * 0'     # Sunday morning UTC — tail of a US Saturday card
   workflow_dispatch:
     inputs:
       force_slug:  { description: 'Force an event slug (manual capture)', required: false }

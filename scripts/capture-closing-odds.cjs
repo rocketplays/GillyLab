@@ -24,15 +24,15 @@ const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
 const CLOSING_PATH = path.join(ROOT, 'data', 'odds-closing.json');
 const ODDS_SRC = process.env.ODDS_SRC || path.join(ROOT, 'data', 'odds.json');
 
-// Fire ~10 min out: capture on the first cron tick inside [start-12m, start-2m];
-// idempotency (a fight already recorded) makes later ticks in the window no-ops.
-// The first tick inside wins, so the capture skews to the EARLY edge — which is
-// why the window opens at 12m, not 10m, to land nearer 10 than 2.
-// This window is only 10 min wide, so the workflow ticks */5 (a */15 cron would
-// step straight over it). If every tick in the window is dropped or delayed past
-// start-2m we simply capture nothing for that section: those bets keep grading,
-// they just carry no closing line and so earn no CLV.
-const WIN_EARLY_MS = 12 * 60 * 1000;
+// Capture in the window [start-20m, start-2m]. Every tick inside re-captures and the
+// LATEST one wins (see the store logic below) — so the recorded line is the freshest
+// one before the bell, and it no longer matters WHICH tick lands, only that one does.
+// That's the reliability fix: GitHub Actions' scheduled crons are routinely delayed
+// (and sometimes skipped) by several minutes, so the old 10-min window on a */5 cron
+// got stepped over — that's how a whole section's prelims closing lines went missing.
+// An 18-min window on a */3 cron gives ~6 shots, robust to a long Actions delay, and
+// still captures nothing (bets keep grading, no CLV) only if EVERY tick is lost.
+const WIN_EARLY_MS = 20 * 60 * 1000;
 const WIN_LATE_MS  = 2 * 60 * 1000;
 
 const loadJson = (p, fb) => { try { return JSON.parse(fs.readFileSync(p, 'utf8')); } catch { return fb; } };
@@ -126,9 +126,10 @@ function main() {
     const rec = { slug: ev.slug, date, section: phase, f1, f2, o1, o2, capturedAt: new Date().toISOString() };
     const existing = store.fights.find(x => x.slug === ev.slug && pairKey(x.f1, x.f2) === key);
     if (existing) {
-      // Idempotent: a fight already captured this card is left alone, unless a manual
-      // --force re-run wants to overwrite it with a fresher line.
-      if (force) { Object.assign(existing, rec); updated++; }
+      // LATEST wins: a later tick in the window is a fresher, closer-to-bell line, so
+      // overwrite — but only when the price actually moved (or on a manual --force),
+      // so an unchanged re-capture is a no-op and the workflow skips the commit/deploy.
+      if (force || existing.o1 !== o1 || existing.o2 !== o2) { Object.assign(existing, rec); updated++; }
     } else {
       store.fights.push(rec); added++;
     }

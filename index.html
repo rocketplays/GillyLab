@@ -88580,6 +88580,11 @@ window.FIGHT_STATS = window.FIGHT_STATS || {};
     if (window.__currentFighter) { try { populateFightHistory(window.__currentFighter); } catch(e){} }
   }).catch(()=>{});
 })();
+// Merge the auto-captured closing lines into ODDS_HISTORY independently of the large
+// fight-stats fetch above — a slow or failed fight-stats.json must never keep closing
+// odds (and the CLV that reads them) from landing. Idempotent (dedupe by opponent+date),
+// so the re-merge inside that callback stays a no-op.
+if (typeof glMergeClosingOdds === 'function') { glMergeClosingOdds().catch(function(){}); }
 function _fsEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function _fsParse(s){ var t = Date.parse(s); return isNaN(t) ? null : t; }
 // ── MATCHUP DEEP DIVE: the strike GRID (data/fight-grid.json) ──────────────────
