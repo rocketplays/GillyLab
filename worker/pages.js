@@ -2663,8 +2663,20 @@ ${eventLd}
   .mf-res-tag{font-size:.58rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent);background:rgba(0,230,104,.12);border:1px solid rgba(0,230,104,.3);border-radius:4px;padding:2px 6px}
   .mf-res-meth{color:var(--muted)}
   .mf-res-void{color:#ffcf7a;font-weight:700}
-  /* "FINAL" chip on the card's centre column so a decided bout is obvious without expanding. */
-  .mf-final{margin-top:.25rem;font-size:.55rem;font-weight:800;letter-spacing:.08em;color:#0a0a0b;background:var(--accent);border-radius:4px;padding:2px 6px}
+  /* A decided bout reads as finished on the ROW itself, without opening Fight Info:
+     a WIN/LOSS tile under each fighter's name and the method down the middle. Same
+     treatment as the in-app events page (glResultTag / .gl-result-method), rendered
+     in this page's own type — system-ui, not Barlow Condensed — for the same reason
+     .mf-dd-bar is: copy the colour, not the face. */
+  .mf-restag{display:inline-block;margin-top:.14rem;font-weight:800;font-size:.56rem;letter-spacing:.06em;padding:.05rem .32rem;border-radius:4px;line-height:1.25}
+  .mf-restag.win{color:#04140a;background:var(--accent)}
+  .mf-restag.loss{color:#ff6a4d;border:1px solid rgba(255,61,0,.5)}
+  .mf-restag.flat{color:var(--muted);border:1px solid var(--border)}
+  /* VS becomes FINAL in place, so the centre column keeps its height and the row
+     doesn't jump when a result lands mid-poll. */
+  .mf-vs.final{color:var(--accent)}
+  .mf-meth{font-size:.6rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--accent);line-height:1.2}
+  .mf-mtime{font-size:.62rem;font-weight:600;letter-spacing:.05em;color:var(--accent);line-height:1.2;white-space:nowrap}
   .mf-panel[hidden]{display:none}
   .sr-common{margin-top:.9rem}
   .sr-common .sr-cmp-row:last-child{border-bottom:none}
@@ -2827,6 +2839,58 @@ ${AURORA_CSS}
         var meth=r.method?esc(r.method)+(r.method!=="Decision"&&r.round?" \\u00b7 R"+esc(r.round):""):"";
         return '<strong>'+esc(r.winner)+'</strong> def. '+esc(loser)+(meth?' <span class="mf-res-meth">'+meth+'</span>':'');
       }
+      // Method, shortened for the narrow centre column — mirrors the app's glAbbrMethod
+      // so the two surfaces read identically ("U-DEC", "SUB", "KO/TKO").
+      function abbrMeth(m){
+        var u=String(m||"").toUpperCase();
+        if(u.indexOf("UNANIM")>=0)return "U-DEC";
+        if(u.indexOf("SPLIT")>=0)return "S-DEC";
+        if(u.indexOf("MAJOR")>=0)return "M-DEC";
+        if(u.indexOf("DEC")>=0)return "DEC";
+        if(u.indexOf("SUBMISSION")>=0||u.indexOf("SUB")===0||u.indexOf("TAP")>=0)return "SUB";
+        if(u.indexOf("KO/TKO")>=0)return "KO/TKO";
+        if(u.indexOf("TKO")>=0)return "TKO";
+        if(u.indexOf("KO")>=0)return "KO";
+        if(u.indexOf("DISQUAL")>=0||u==="DQ")return "DQ";
+        if(u.indexOf("NO CONTEST")>=0||u==="NC")return "NC";
+        return String(m||"").trim();
+      }
+      // [class, label] for one fighter's tile, or null if the bout isn't decided.
+      function tagFor(r,name){
+        if(r.voided)return /(no\\s*contest|^\\s*nc\\b)/i.test(r.method||"")?["flat","NC"]:["flat","DRAW"];
+        if(!r.winner)return null;
+        return eqName(r.winner,name)?["win","WIN"]:["loss","LOSS"];
+      }
+      // Stamp the row itself: WIN/LOSS under each name, VS -> FINAL, method + round
+      // down the middle. Guarded by data-mfres so the 60s poll doesn't stack tiles.
+      function decorate(el,r){
+        if(el.getAttribute("data-mfres")==="1")return;
+        el.setAttribute("data-mfres","1");
+        var sides=el.querySelectorAll(".mf-side");
+        var names=[el.getAttribute("data-f1"),el.getAttribute("data-f2")];
+        for(var i=0;i<sides.length&&i<2;i++){
+          var t=tagFor(r,names[i]);if(!t)continue;
+          var nm=sides[i].querySelector(".mf-name");if(!nm)continue;
+          var sp=document.createElement("span");
+          sp.className="mf-restag "+t[0];sp.textContent=t[1];
+          nm.parentNode.insertBefore(sp,nm.nextSibling);
+        }
+        var ctr=el.querySelector(".mf-center");if(!ctr)return;
+        var vs=ctr.querySelector(".mf-vs");
+        if(vs){vs.textContent="FINAL";vs.className="mf-vs final";}
+        // The rounds line ("3 RDS") is spent once the fight is over — reuse the slot
+        // for the method, and add the finishing round under it when there is one.
+        var rds=ctr.querySelector(".mf-rds");
+        var meth=abbrMeth(r.method);
+        if(rds&&meth){
+          rds.className="mf-meth";rds.textContent=meth;
+          if(!r.voided&&r.round&&!/dec/i.test(r.method||"")){
+            var rt=document.createElement("div");
+            rt.className="mf-mtime";rt.textContent="R"+r.round;
+            rds.parentNode.insertBefore(rt,rds.nextSibling);
+          }
+        }
+      }
       function apply(d){
         if(d&&d.slug&&d.slug!==CARD_SLUG)return true;      // feed moved to a different card
         if(!d||!d.bouts||!d.bouts.length)return !!(d&&d.final);
@@ -2840,7 +2904,7 @@ ${AURORA_CSS}
           // Once the fight's decided, the pre-fight reading no longer matters — hide the
           // tale of the tape AND the main event's full scouting breakdown, like the app does.
           Array.prototype.forEach.call(panel.querySelectorAll(".mf-tape, .mf-prefight"),function(t){t.style.display="none";});
-          if(!el.querySelector(".mf-final")){var ctr=el.querySelector(".mf-center");if(ctr){var chip=document.createElement("span");chip.className="mf-final";chip.textContent="FINAL";ctr.appendChild(chip);}}
+          decorate(el,r);   // WIN/LOSS tiles + FINAL + method, on the row itself
         });
         return !!d.final;
       }
