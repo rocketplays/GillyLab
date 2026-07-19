@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbBack, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1374,13 +1374,14 @@ export default {
           "/theclimb"
         ) + (s ? "" : "<script>window.CLIMB_LOCKED=1</script>");
         // The same top bar every other free page opens with — brand, divider,
-        // account links — plus a back arrow under it. The freeTabs row stays off:
-        // mid-run, five links to leave are noise, and the Climb button still
-        // appears in freeTabs on every OTHER free page, which is how you get here.
+        // account links — and now the same tab row under it too, in the slot the
+        // back arrow used to occupy (the template calls it `back`; it's really
+        // "whatever sits between the nav and the game"). With /theclimb active its
+        // own button drops out, leaving the four other free destinations.
         return html(climbPage({
           head,
           nav: climbNav(!!s, !!u?.subscribed),
-          back: climbBack(),
+          back: climbTabs(),
           cta: climbCta(!!u?.subscribed),
           footer: climbFooter(),
         }), 200, pubHeaders(s));

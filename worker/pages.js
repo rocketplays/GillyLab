@@ -131,6 +131,14 @@ export const climbCta = (subscribed) => `
 // generated from the prototype and has it injected at a marker.
 export const climbFooter = () => FREE_FOOTER;
 
+// The same tab row every other free page opens with, with /theclimb active — so its
+// own button drops out and you get This Week's Card / Rankings / Active Roster /
+// Play Pick'em. Replaces the lone back arrow: a single "Back" only helps whoever
+// arrived from another page, whereas these are the four places anyone might want to
+// go next. freeTabs' /theclimb branch already existed for this and was, until now,
+// unreachable.
+export const climbTabs = () => freeTabs("/theclimb");
+
 // Fighter-name → profile slug (mirrors scripts/gen-landing-data.cjs nameToSlug so
 // links line up with the /fighter/<slug> pages). Only ever LINK when the slug is
 // known to exist (checked against the fighter-lite slug set) so clicks never 404.
