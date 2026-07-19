@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T01:27:05.067Z",
+ "generatedAt": "2026-07-19T01:41:33.346Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -4314,6 +4314,194 @@
       ]
      },
      "capturedAt": "2026-07-19T01:27:04.939Z"
+    }
+   ]
+  },
+  "Chase Hooper": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Mitch Ramirez",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "2:15",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Mitch Ramirez",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 7,
+      "totL": 4,
+      "totA": 8,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:27",
+      "head": [
+       2,
+       6
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-19T01:41:33.218Z"
+    }
+   ]
+  },
+  "Mitch Ramirez": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Chase Hooper",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "2:15",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Chase Hooper",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 7,
+      "totL": 4,
+      "totA": 8,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:27",
+      "head": [
+       2,
+       6
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-19T01:41:33.218Z"
     }
    ]
   }
