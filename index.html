@@ -113780,11 +113780,47 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (liveIdx.every(i => b.legStatuses[i] === 'won')) { b.status = 'won'; return; }
     b.status = 'pending';
   }
+  // ── permanent grades ────────────────────────────────────────────────────────
+  // A settled tracked bet is graded ONCE and then frozen server-side. Everything a
+  // bet grades from is finite: BT_EVENTS drops completed cards after 60 days,
+  // event-recent.json keeps ~20 cards and pickem-results.json ~20 events. So
+  // re-deriving an old bet on every load eventually resolves nothing, falls through
+  // `if (!f) return`, and leaves it sitting at "pending" — a settled record silently
+  // rotting months later. Snapshotting the outcome is the same trick pick'em uses
+  // when it locks wPts at submit: decide once, while the data is there, then keep it.
+  const BT_GRADE_SENT = {};
+  function btApplyGrade(b) {
+    const g = b.graded;
+    b.status = g.status;
+    b.clv = g.clv == null ? null : g.clv;
+    b.closeOdds = g.closeOdds == null ? null : g.closeOdds;
+    b.effOdds = g.effOdds == null ? null : g.effOdds;
+    if (g.legStatuses) { b.legStatuses = g.legStatuses; b.legsIn = g.legsIn; b.legsLive = g.legsLive; }
+  }
+  // Freeze a just-settled bet. Write-once on the server, and guarded here so a
+  // re-render can't fire the same POST twice.
+  function btFreezeGrade(b) {
+    if (!b || b.kind !== 'tracked' || !b.id) return;
+    if (b.graded && b.graded.status) return;
+    if (['won', 'lost', 'push', 'void'].indexOf(b.status) === -1) return;
+    if (BT_GRADE_SENT[b.id]) return;
+    BT_GRADE_SENT[b.id] = 1;
+    const payload = { id: b.id, status: b.status, clv: b.clv, closeOdds: b.closeOdds, effOdds: b.effOdds };
+    if (b.market === 'PARLAY') { payload.legStatuses = b.legStatuses; payload.legsIn = b.legsIn; payload.legsLive = b.legsLive; }
+    btApi('/api/bets/grade', payload).then(function (r) {
+      if (r.status === 200) b.graded = { status: b.status, clv: b.clv, closeOdds: b.closeOdds, effOdds: b.effOdds,
+        legStatuses: payload.legStatuses || null, legsIn: payload.legsIn, legsLive: payload.legsLive };
+      else BT_GRADE_SENT[b.id] = 0;   // transient failure — try again next load
+    }).catch(function () { BT_GRADE_SENT[b.id] = 0; });
+  }
   function btDeriveAll() {
     BT_BETS.forEach(b => {
       if (b.kind !== 'tracked') return;
+      // A stored grade is final and needs no feed at all — this is what makes a
+      // settled bet survive after its card ages out of every result source.
+      if (b.graded && b.graded.status) { btApplyGrade(b); return; }
       b.status = 'pending'; b.clv = null; b.closeOdds = null; b.effOdds = null;
-      if (b.market === 'PARLAY') { btDeriveParlay(b); return; }
+      if (b.market === 'PARLAY') { btDeriveParlay(b); btFreezeGrade(b); return; }
       // Composite <event>|<bout> id. Falls back to the bare id scoped by event so
       // bets logged before the composite fix still resolve.
       const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
@@ -113795,6 +113831,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
         if (pair) { const c = b.closeSide === 2 ? pair.o2 : pair.o1; if (c != null) { b.closeOdds = c; b.clv = btClvPts(b.odds, c); } }
       }
+      // CLV is resolved above, so freeze last — the snapshot has to carry it.
+      btFreezeGrade(b);
     });
   }
   window.btDeriveAll = btDeriveAll;

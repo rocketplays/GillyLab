@@ -702,6 +702,37 @@ async function handleBetsAdd(request, env, url) {
 
 // Settle a SELF-REPORTED bet. Tracked bets are graded from the result and can
 // never be settled by hand — that's what keeps the verified numbers honest.
+// Freeze a tracked bet's auto-graded outcome, permanently. The client grades (only
+// it has FIGHT_HISTORY, the odds history and the per-market rules) and posts the
+// result here the first time a bet settles; from then on it never needs re-deriving.
+// WRITE-ONCE by design: a stored grade is never overwritten, so a later run that
+// can't resolve the fight — because the card has aged out of every result feed —
+// cannot quietly downgrade a settled bet back to pending.
+async function handleBetsGrade(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const body = await readBody(request);
+  const status = String(body.status == null ? "" : body.status).trim().toLowerCase();
+  if (["won", "lost", "push", "void"].indexOf(status) === -1) {
+    return json({ error: 'bad status: "' + String(body.status).slice(0, 40) + '"' }, 400);
+  }
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === body.id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.kind !== "tracked") return json({ error: "only tracked bets grade automatically" }, 403);
+  if (b.graded && b.graded.status) return json({ ok: true, already: true });
+  const num = (v) => (typeof v === "number" && isFinite(v) ? v : null);
+  b.graded = {
+    status,
+    clv: num(body.clv), closeOdds: num(body.closeOdds), effOdds: num(body.effOdds),
+    legStatuses: Array.isArray(body.legStatuses) ? body.legStatuses.slice(0, 24).map((x) => String(x).slice(0, 12)) : null,
+    legsIn: num(body.legsIn), legsLive: num(body.legsLive),
+    at: Date.now(),
+  };
+  await btPutBets(env, s.email, list);
+  return json({ ok: true });
+}
+
 async function handleBetsSettle(request, env) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
@@ -1240,6 +1271,7 @@ export default {
       if (path === "/api/bets" && request.method === "GET") return handleBetsList(request, env);
       if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
       if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
+      if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
       if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env);
       if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env);
 
@@ -1266,7 +1298,17 @@ export default {
         if (path === "/signup") return html(signupPage(next));
         return html(forgotPasswordPage());
       }
-      if (path === "/subscribe") return html(subscribePage(url.searchParams.get("canceled")));
+      // Already subscribed? Don't render a checkout page they can pay through twice —
+      // send them into the app, the same destination logging in would give them.
+      // (/api/checkout enforces this server-side too; this is just the polite door.)
+      if (path === "/subscribe") {
+        const s = await readSession(request, env);
+        if (s) {
+          const u = await getUser(env, s.email);
+          if (u && u.subscribed) return redirect(env.SITE_URL + authDest(null, true));
+        }
+        return html(subscribePage(url.searchParams.get("canceled")));
+      }
       if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
       if (path === "/terms") return html(termsPage());
       if (path === "/privacy") return html(privacyPage());
@@ -1522,6 +1564,10 @@ async function handleCheckout(request, env) {
     return json({ error: "Checkout isn't configured yet — please try again shortly." }, 503);
   }
   const u = await getUser(env, e);
+  // Never start a second subscription for someone who already has one. /subscribe
+  // redirects subscribers away, but that's a UI courtesy — this is the actual guard,
+  // since the endpoint is reachable directly and a double charge isn't undoable.
+  if (u && u.subscribed) return json({ error: "You're already subscribed.", redirect: env.SITE_URL + "/" }, 409);
   try {
     const checkoutUrl = await createCheckout(env, e, u?.stripeCustomerId);
     if (!checkoutUrl) return json({ error: "Couldn't start checkout — please try again." }, 502);

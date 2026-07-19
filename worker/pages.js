@@ -1680,7 +1680,9 @@ ${AURORA_CSS}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
-    <p class="pk-foot">Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.</p>
+    <p class="pk-foot">${subscribed
+      ? `<a href="/">Open GillyLab →</a> for the full database, simulator and analytics.`
+      : `Free to play · <a href="/subscribe">Go Premium</a> for the full database, simulator and analytics.`}</p>
   </main>
   ${nBouts ? `<div class="pk-modal" id="pkScoreModal" hidden>
     <div class="pk-modal-card">
