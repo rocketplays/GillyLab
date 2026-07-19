@@ -11,7 +11,7 @@ Re-invoke until "remaining: 0" (uses only-missing style resume via the JSON).
 
   python3 scripts/fight-stats-parallel.py --workers 32 --seconds 38
 """
-import os, re, csv, json, glob, time, argparse, importlib.util, threading, urllib.request
+import os, re, csv, json, glob, time, datetime, argparse, importlib.util, threading, urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +43,78 @@ def _atomic_dump(data):
 MANIFEST = os.path.join(HERE, "espn-import-output", "_manifest.csv")
 
 _GRID_CACHE = {}
+_LASTFIGHT_CACHE = {}
+
+
+def _pdate(s):
+    """'Mar 21, 2026' -> datetime, or None."""
+    try:
+        return datetime.datetime.strptime(str(s or "").strip(), "%b %d, %Y")
+    except Exception:
+        return None
+
+
+def last_completed_fights():
+    """name -> date of their newest COMPLETED bout, from index.html's FIGHT_HISTORY.
+
+    FIGHT_HISTORY is kept current by the workflow's "Persist finished bouts into
+    static fight history" step, so it knows about a fight the moment the card ends —
+    which is what lets us tell a stale grid from a current one WITHOUT re-fetching
+    every fighter from ESPN just to find out.
+
+    Scheduled bouts are excluded: they carry method "Upcoming" and an empty result,
+    and counting them would mark every fighter with an announced fight as stale and
+    re-queue the whole card twice a day — the exact runaway the grid_index() docstring
+    is about.
+    """
+    if not _LASTFIGHT_CACHE:
+        out = {}
+        try:
+            html = open(fsb.INDEX, encoding="utf-8").read()
+        except OSError:
+            _LASTFIGHT_CACHE["map"] = out
+            return out
+        start = html.find("const FIGHT_HISTORY")
+        if start >= 0:
+            block = html[start:]
+            marks = [(m.group(1), m.end()) for m in re.finditer(r'"([^"]+)":\s*\[', block)]
+            for i, (name, pos) in enumerate(marks):
+                end = marks[i + 1][1] if i + 1 < len(marks) else min(len(block), pos + 20000)
+                best = None
+                for row in re.findall(r"\{[^{}]*\}", block[pos:end]):
+                    if "Upcoming" in row:
+                        continue
+                    res = re.search(r'result:\s*"([^"]*)"', row)
+                    if not res or res.group(1) in ("", "-", "–"):
+                        continue
+                    dt = _pdate((re.search(r'date:\s*"([^"]+)"', row) or [None, ""])[1])
+                    if dt and (best is None or dt > best):
+                        best = dt
+                if best and (name not in out or best > out[name]):
+                    out[name] = best
+        _LASTFIGHT_CACHE["map"] = out
+    return _LASTFIGHT_CACHE["map"]
+
+
+def _grid_stale(name):
+    """True when the fighter HAS a grid but it predates his most recent fight.
+
+    Without this, --needs-grid is presence-only: a fighter's grid is built the first
+    time he is announced for a card and then never rebuilt, so every fight after that
+    is missing from the matchup deep dive, permanently and silently. Measured
+    2026-07-19: 102 of the 103 fighters in the served grid were current only because
+    the corpus is young enough that their grids postdate their last fight; Jovan Leka,
+    who fought after his was built, was 179 days behind.
+
+    The 2-day slack absorbs date-labelling differences between the grid's ESPN dates
+    and FIGHT_HISTORY's event dates (a US Saturday card is often the 29th in one and
+    the 30th in the other) — without it, a third of the card looks stale every week.
+    """
+    g = grid_latest().get(name)
+    if not g:
+        return False                       # no grid at all — _has_grid already says so
+    h = last_completed_fights().get(name)
+    return bool(h and (h - g).days > 2)
 
 def grid_index():
     """Fighters who already have the strike grid.
@@ -87,17 +159,33 @@ def grid_index():
     Missing is fine (first run). Unreadable is NOT — let it raise.
     """
     if not _GRID_CACHE:
-        names = set()
+        names = set(); latest = {}
         d = os.path.join(HERE, "..", "data")
         for fn in ("fight-grid-all.json", "fight-grid.json"):
             p = os.path.join(d, fn)
             if not os.path.exists(p):
                 continue                      # genuinely absent: fine
             g = json.load(open(p))            # present but unreadable: raise, loudly
-            names |= {n for n, rows in g.items()
-                      if any(((r or {}).get("f") or {}).get("g") for r in (rows or []))}
+            for n, rows in g.items():
+                gr = [r for r in (rows or []) if ((r or {}).get("f") or {}).get("g")]
+                if not gr:
+                    continue
+                names.add(n)
+                # Newest bout the stored grid actually covers — this is what makes
+                # staleness detectable at all (see _grid_stale).
+                for r in gr:
+                    dt = _pdate(r.get("date"))
+                    if dt and (n not in latest or dt > latest[n]):
+                        latest[n] = dt
         _GRID_CACHE["names"] = names
+        _GRID_CACHE["latest"] = latest
     return _GRID_CACHE["names"]
+
+
+def grid_latest():
+    """name -> newest bout date covered by the stored grid."""
+    grid_index()
+    return _GRID_CACHE.get("latest") or {}
 
 
 def _has_grid(name, rows):
@@ -435,7 +523,10 @@ def main():
         # These are also exactly the fighters whose button must hide: no stats, no
         # panel. The queue and the UI agree by construction rather than by two
         # separate rules that can drift.
-        todo = [n for n in pool if data.get(n) and not _has_grid(n, data[n])]
+        # ...OR whose grid is behind their latest fight. Presence alone was the bug:
+        # a grid built when a fighter was first announced was never rebuilt, so the
+        # deep dive silently froze at that date for the rest of his career.
+        todo = [n for n in pool if data.get(n) and (not _has_grid(n, data[n]) or _grid_stale(n))]
     else:
         todo = pool if a.all else [n for n in pool if n not in data]
     print("roster: %d | already saved: %d | to process: %d%s"
