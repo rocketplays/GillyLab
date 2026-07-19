@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-18T23:46:51.792Z",
+ "generatedAt": "2026-07-19T00:03:19.394Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -3750,6 +3750,194 @@
       ]
      },
      "capturedAt": "2026-07-18T23:46:51.664Z"
+    }
+   ]
+  },
+  "Austin Bashi": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jose Miguel Delgado",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Jose Miguel Delgado",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 92,
+      "totL": 62,
+      "totA": 111,
+      "tdL": 3,
+      "tdA": 14,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "3:11",
+      "head": [
+       35,
+       80
+      ],
+      "body": [
+       5,
+       8
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       37,
+       84
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 39,
+      "sigA": 80,
+      "totL": 60,
+      "totA": 101,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:54",
+      "head": [
+       29,
+       66
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       30,
+       68
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-07-19T00:03:19.264Z"
+    }
+   ]
+  },
+  "Jose Miguel Delgado": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Austin Bashi",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Austin Bashi",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 39,
+      "sigA": 80,
+      "totL": 60,
+      "totA": 101,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:54",
+      "head": [
+       29,
+       66
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       30,
+       68
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 92,
+      "totL": 62,
+      "totA": 111,
+      "tdL": 3,
+      "tdA": 14,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "3:11",
+      "head": [
+       35,
+       80
+      ],
+      "body": [
+       5,
+       8
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       37,
+       84
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-07-19T00:03:19.264Z"
     }
    ]
   }
