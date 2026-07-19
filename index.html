@@ -113438,7 +113438,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (BT_EVENTS) return Promise.resolve(BT_EVENTS);
     return fetch('./data/event.json').then(r => r.ok ? r.json() : null).then(feed => {
       const evs = (feed && feed.data) || [];
-      BT_EVENTS = evs.filter(e => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length).map(e => {
+      // Keep upcoming/live cards always, and RECENTLY completed cards (60d) too: a tracked
+      // bet grades by resolving its fight through BT_EVENTS, so dropping a card the moment
+      // it flips to "completed" stranded every bet on it at "pending" — even though the
+      // result is right there in FIGHT_HISTORY. The log picker only lists events that still
+      // have an un-resulted fight (btLocked), so a finished card never shows up there; this
+      // wider set feeds grading and the settled-card labels only.
+      const BT_DONE_CUTOFF = Date.now() - 60 * 864e5;
+      BT_EVENTS = evs.filter(e => e && Array.isArray(e.bouts) && e.bouts.length
+          && (e.status !== 'completed' || (Date.parse(e.startsAt) || 0) >= BT_DONE_CUTOFF)).map(e => {
         const mainAt = e.startsAt || null, prelimsAt = e.prelimsStartsAt || e.startsAt || null;
         const fights = (e.bouts || []).filter(b => b && !b.isCancelled && (b.fighters || []).length === 2).map(b => {
           const sec = String(b.cardSection || '').toLowerCase();
