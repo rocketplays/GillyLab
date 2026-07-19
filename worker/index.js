@@ -415,6 +415,40 @@ async function handleLiveResults(env, url) {
     live: focus.live, final, decided: focus.decided, total: focus.total, bouts,
   }, 200, noStore);
 }
+// How long a finished card keeps the featured/pickable slot after its main-card
+// start. 34h holds a Saturday-night card through all of Sunday — so viewers can come
+// back, read results and share them — then hands off Monday morning. Must stay in
+// step with index.html's CARD_HOLD_MS.
+const CARD_HOLD_MS = 34 * 3600 * 1000;
+
+// A bout is settled once the feed carries a result (draws/NCs have no winner slug).
+function heldBoutSettled(b) {
+  return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
+    String(b.status || "").toLowerCase() === "completed"));
+}
+
+// The most recently completed card still inside its hold window, read from
+// data/event-recent.json (the workflow's past-events fetch, which keeps finished
+// cards WITH results after event.json has dropped them). Returns null when there
+// is no such card, or when the file is missing/unreadable — in which case callers
+// fall back to the next scheduled card, i.e. the pre-hold behaviour.
+async function loadHeldCard(env, url, now) {
+  let recent;
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL("/data/event-recent.json", url)));
+    if (!r.ok) return null;
+    recent = await r.json();
+  } catch { return null; }
+  const t = (e) => Date.parse((e && (e.startsAt || e.eventDate)) || 0) || 0;
+  return (Array.isArray(recent && recent.data) ? recent.data : [])
+    // Only a fully settled card may hold: a half-synced copy must never displace
+    // the live feed mid-card.
+    .filter((e) => e && (e.bouts || []).length && e.status === "completed"
+      && e.bouts.every(heldBoutSettled)
+      && t(e) > 0 && t(e) <= now && t(e) + CARD_HOLD_MS >= now)
+    .sort((a, b) => t(b) - t(a))[0] || null;
+}
+
 // The next upcoming card to PICK — the soonest event that hasn't finished, with its
 // bouts (main event first). Powers the standalone /pickem page. Returns a compact
 // shape: names + slugs (for photos) + card position + rounds, and the prelims lock.
@@ -425,6 +459,15 @@ async function loadUpcomingCard(env, url) {
     if (!r.ok) return null;
     feed = await r.json();
   } catch { return null; }
+  const now = Date.now();
+  // A finished card holds this slot for 34h after its main-card start, matching the
+  // app's CARD_HOLD_MS — so /pickem keeps showing last night's scored picks through
+  // Sunday and hands off Monday morning, in step with every other surface.
+  //
+  // The hold has to come from event-recent.json, NOT from a wider window here: once a
+  // card is over the upstream feed removes it from event.json outright rather than
+  // marking it completed, so there is nothing left for a window to keep.
+  const held = await loadHeldCard(env, url, now);
   // Select the SAME card the app's pickFeaturedRawEvent keeps featured, so /pickem never
   // jumps to the next event before the rest of the app does. Drop finished (completed)
   // cards, and keep a card current for 10h after its main-card start (CARD_RUNTIME_MS —
@@ -433,10 +476,9 @@ async function loadUpcomingCard(env, url) {
   const CARD_RUNTIME_MS = 10 * 3600 * 1000;
   const events = (Array.isArray(feed && feed.data) ? feed.data : [])
     .filter(ev => ev && (ev.bouts || []).length && ev.status !== "completed");
-  if (!events.length) return null;
-  const now = Date.now();
+  if (!events.length && !held) return null;
   const byStart = events.slice().sort((a, b) => (Date.parse(a.startsAt || 0) || 0) - (Date.parse(b.startsAt || 0) || 0));
-  const ev = byStart.find(e => (Date.parse(e.startsAt || 0) || 0) + CARD_RUNTIME_MS >= now) || byStart[byStart.length - 1];
+  const ev = held || byStart.find(e => (Date.parse(e.startsAt || 0) || 0) + CARD_RUNTIME_MS >= now) || byStart[byStart.length - 1];
   const bouts = (ev.bouts || [])
     .filter(b => b && !b.isCancelled && (b.fighters || []).length === 2)
     .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))

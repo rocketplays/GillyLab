@@ -1623,6 +1623,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-hist-ev-name{font-weight:800;font-size:1.4rem;color:var(--text)}
   .pk-hist-ev-total{font-weight:800;font-size:1.4rem}
   .pk-hist-bouts{display:flex;flex-direction:column;gap:.4rem}
+  .pk-hist-share{margin-top:.9rem;width:100%}
   .pk-hist-bout{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:9px;border:1px solid var(--border);background:var(--card)}
   .pk-hist-bout-main{flex:1;min-width:0}
   .pk-hist-bout-pick{font-weight:600;font-size:.88rem}
@@ -1795,15 +1796,39 @@ ${AURORA_CSS}
         host.innerHTML=head+'<div class="pk-hist-list">'+rows+'</div>';
       });
     }
+    // The last card opened in My history, so Share results can rebuild that card's graded
+    // sheet without re-fetching. A finished card scrolls out of the picks view once the app
+    // moves to the next event, so this is the only way back to its results image.
+    var PK_HIST_EV=null;
+    function pkShareHistory(){
+      var res=PK_HIST_EV;if(!res||!Array.isArray(res.bouts))return;
+      var picks=res.bouts.filter(function(b){return b&&b.winner&&!b.pending;}).map(function(b){
+        var loser=pkNameEq(b.winner,b.f1)?b.f2:b.f1;
+        var r=b.result||null,voided=!!b.voided;
+        var aw=(r&&!voided)?r.winner:null;
+        var al=aw?(pkNameEq(aw,b.f1)?b.f2:b.f1):null;
+        return{winner:b.winner,loser:loser,winnerSlug:null,method:b.method||null,
+          round:(b.method&&b.method!=="Decision")?(b.round||null):null,
+          confidence:b.confidence||"Med",label:"",isMain:false,
+          actualWinner:aw,actualLoser:al,
+          resultMethod:(r&&!voided)?r.method:null,resultRound:(r&&!voided)?r.round:null,
+          points:b.points||0,winnerHit:!!b.winnerHit,methodHit:!!b.methodHit,roundHit:!!b.roundHit,voided:voided};
+      });
+      if(!picks.length){alert("No graded picks to share for that card.");return;}
+      var d="";try{if(res.date)d=new Date(res.date).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"});}catch(e){}
+      var data={name:PK_NAME||null,eventName:res.event||"UFC Card",eventDate:d,graded:true,picks:picks,totalPoints:res.total||0};
+      if(window.GL_SHEET&&GL_SHEET.pickem){GL_SHEET.pickem(data);}else{alert("Share sheet still loading — try again in a moment.");}
+    }
     function pkRenderHistoryEvent(slug){
       var host=document.getElementById("hist-body");if(!host)return;host.innerHTML='<div class="pk-board-empty">Loading…</div>';
       pkGet("/api/pickem/history?event="+encodeURIComponent(slug)).then(function(res){
         var back='<button type="button" class="pk-hist-back" data-histall>← All cards</button>';
         if(res.status!==200){host.innerHTML=back+'<div class="pk-hist-empty">Couldn\\u2019t load that card.</div>';return;}
+        PK_HIST_EV=res;
         var bouts=res.bouts||[];
         var rows=bouts.map(function(b){var tag="pending",label="Pending";if(b.voided){tag="void";label="No contest — void";}else if(b.pending){tag="pending";label="Pending";}else if(b.winnerHit){tag="hit";label="Winner"+(b.methodHit?" + method":"")+(b.roundHit?" + round":"");}else{tag="miss";label="Wrong winner";}var pts=b.points||0;var sub=(b.method||"—")+(b.round?" · R"+b.round:"")+" · "+(b.confidence||"")+" conf · "+label;return '<div class="pk-hist-bout '+tag+'"><div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">'+pkEscH(b.winner||"")+'</div><div class="pk-hist-bout-detail">'+pkEscH(sub)+'</div></div><div class="pk-hist-bout-pts '+(pts>0?"pos":pts<0?"neg":"zero")+'">'+(pts>0?"+":"")+pts+'</div></div>';}).join("");
         var total=res.total||0;
-        host.innerHTML=back+'<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">'+pkEscH(res.event||slug)+'</div><div class="pk-hist-ev-total '+(total>=0?"pos":"neg")+'">'+(total>0?"+":"")+total+' pts</div></div>'+(res.graded?"":'<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>')+'<div class="pk-hist-bouts">'+rows+'</div>';
+        host.innerHTML=back+'<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">'+pkEscH(res.event||slug)+'</div><div class="pk-hist-ev-total '+(total>=0?"pos":"neg")+'">'+(total>0?"+":"")+total+' pts</div></div>'+(res.graded?"":'<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>')+'<div class="pk-hist-bouts">'+rows+'</div>'+(bouts.some(function(b){return b&&b.winner&&!b.pending;})?'<button type="button" class="pk-btn ghost pk-hist-share" data-histshare>Share results</button>':'');
       });
     }
     // subnav open (loads content) + back (returns to picks)
@@ -1812,7 +1837,7 @@ ${AURORA_CSS}
     var lbPanel=document.getElementById("panel-leaderboard");
     if(lbPanel)lbPanel.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;if(t.dataset.scope)pkRenderLeaderboard(t.dataset.scope);else if(t.dataset.player)pkRenderPlayer(t.dataset.player);else if(t.hasAttribute("data-lbback"))pkRenderLeaderboard();});
     var histPanel=document.getElementById("panel-history");
-    if(histPanel)histPanel.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;if(t.dataset.event)pkRenderHistoryEvent(t.dataset.event);else if(t.hasAttribute("data-histall"))pkRenderHistory();});
+    if(histPanel)histPanel.addEventListener("click",function(e){var t=e.target.closest("button");if(!t)return;if(t.hasAttribute("data-histshare"))pkShareHistory();else if(t.dataset.event)pkRenderHistoryEvent(t.dataset.event);else if(t.hasAttribute("data-histall"))pkRenderHistory();});
     // ── pick engine ──────────────────────────────────────────────────────────
     // Mirrors the in-app scoring: winnerBase (wPts) + methodBonus (mPts) +
     // roundBonus (rPts) from the embedded per-card table, × confidence multiplier.

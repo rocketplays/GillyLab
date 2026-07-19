@@ -1085,6 +1085,8 @@
     .bt-tile-v { font-size: 1.25rem; font-weight: 800; margin-top: 3px; }
     .bt-pos { color: var(--accent); } .bt-neg { color: #ff6a5e; }
     .bt-toggle, .bt-ranges { display: flex; gap: 6px; margin-bottom: 0.85rem; }
+    /* Active / Past bets split — settled bets file away instead of burying live ones. */
+    .bt-tabs { margin-top: 0.2rem; }
     .bt-toggle div { flex: 1; text-align: center; padding: 7px; border-radius: 8px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.78rem; cursor: pointer; }
     .bt-toggle div.on { background: var(--accent); color: #04120a; font-weight: 800; }
     .bt-ranges div { flex: 1; text-align: center; padding: 6px 0; border-radius: 7px; background: rgba(255,255,255,0.05); color: var(--muted); font-weight: 700; font-size: 0.72rem; cursor: pointer; }
@@ -3703,6 +3705,9 @@
       .pk-hist-arrow { color: var(--muted); font-size: 1.2rem; flex: 0 0 auto; }
       .pk-hist-empty { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
       .pk-hist-back { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; padding: 0.2rem 0; margin-bottom: 0.7rem; }
+      /* Share results for a past card, under its graded bouts in My history. */
+      .pk-hist-share { display: block; width: 100%; margin-top: 0.9rem; background: linear-gradient(180deg, rgba(0,230,104,.09), rgba(0,230,104,.03)); border: 1px solid rgba(0,230,104,.35); border-radius: 8px; color: var(--text); font-family: inherit; font-weight: 700; font-size: 0.82rem; padding: 0.6rem; cursor: pointer; }
+      .pk-hist-share:hover { background: linear-gradient(180deg, rgba(0,230,104,.18), rgba(0,230,104,.07)); border-color: var(--accent); }
       .pk-hist-ev-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.7rem; margin-bottom: 0.7rem; }
       .pk-hist-ev-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--text); }
       .pk-hist-ev-total { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; }
@@ -7716,6 +7721,7 @@
    const res = await pkFetch('/api/pickem/history');
    if (res.status === 401) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">Log in to see your pick\'em history.</div>'; return; }
    if (res.status !== 200) { host.innerHTML = pkBackBtn() + '<div class="pk-hist-empty">History unavailable right now.</div>'; return; }
+   PK_HIST_NAME = res.name || PK_HIST_NAME;   // display name for the shared results sheet
    const evs = res.events || [];
    const head = pkStatsHead(res);
    if (!evs.length) { host.innerHTML = pkBackBtn() + head + '<div class="pk-hist-empty">No graded cards yet. Make your picks on the Pick\'em page — they\'ll be scored here after the event.</div>'; return; }
@@ -7729,6 +7735,40 @@
    }).join('');
    host.innerHTML = pkBackBtn() + head + '<div class="pk-hist-list">' + rows + '</div>';
  }
+ // The last card opened in My history, so Share results can rebuild that card's graded
+ // sheet. Once the app rolls over to the next event a finished card leaves the picks
+ // view entirely, so this is the only route back to its results image.
+ let PK_HIST_EV = null, PK_HIST_NAME = null;
+ function sharePickemHistory() {
+   const res = PK_HIST_EV;
+   if (!res || !Array.isArray(res.bouts)) return;
+   const nn = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '');
+   const eq = (a, b) => !!a && !!b && nn(a) === nn(b);
+   const slugOf = nm => (typeof nameToSlug === 'function' && nm) ? nameToSlug(nm) : null;
+   const picks = res.bouts.filter(b => b && b.winner && !b.pending).map(b => {
+     const loser = eq(b.winner, b.f1) ? b.f2 : b.f1;
+     const r = b.result || null, voided = !!b.voided;
+     const aw = (r && !voided) ? r.winner : null;
+     const al = aw ? (eq(aw, b.f1) ? b.f2 : b.f1) : null;
+     return {
+       winner: b.winner, loser, winnerSlug: slugOf(aw || b.winner),
+       method: b.method || null,
+       round: (b.method && b.method !== 'Decision') ? (b.round || null) : null,
+       confidence: b.confidence || 'Med', label: '', isMain: false,
+       actualWinner: aw, actualLoser: al,
+       resultMethod: (r && !voided) ? r.method : null,
+       resultRound: (r && !voided) ? r.round : null,
+       points: b.points || 0, winnerHit: !!b.winnerHit, methodHit: !!b.methodHit,
+       roundHit: !!b.roundHit, voided,
+     };
+   });
+   if (!picks.length) return;
+   let d = '';
+   try { if (res.date) d = new Date(res.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York' }); } catch (e) {}
+   const data = { name: PK_HIST_NAME || null, eventName: res.event || 'UFC Card', eventDate: d,
+                  graded: true, picks, totalPoints: res.total || 0 };
+   if (typeof GL_SHEET !== 'undefined' && GL_SHEET.pickem) GL_SHEET.pickem(data);
+ }
  async function renderPickemHistoryEvent(slug) {
    const host = document.getElementById('pickem-history-content');
    if (!host) return;
@@ -7736,6 +7776,7 @@
    const res = await pkFetch('/api/pickem/history?event=' + encodeURIComponent(slug));
    const back = '<button type="button" class="pk-hist-back" onclick="renderPickemHistory()">← All cards</button>';
    if (res.status !== 200) { host.innerHTML = back + '<div class="pk-hist-empty">Couldn\'t load that card.</div>'; return; }
+   PK_HIST_EV = res;
    const bouts = res.bouts || [];
    const rows = bouts.map(b => {
      let tag = 'pending', label = 'Pending';
@@ -7755,7 +7796,9 @@
      '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + pkEsc(res.event || slug) + '</div>' +
      '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
      (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 0.6rem;">Not fully graded yet — results still coming in.</div>') +
-     '<div class="pk-hist-bouts">' + rows + '</div>';
+     '<div class="pk-hist-bouts">' + rows + '</div>' +
+     (bouts.some(b => b && b.winner && !b.pending)
+       ? '<button type="button" class="pk-hist-share" onclick="sharePickemHistory()">Share results</button>' : '');
  }
 
  let PK_LB_SCOPE = 'current';
@@ -109189,7 +109232,64 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return (rawEvt && (rawEvt.prelimsStartsAt || rawEvt.startsAt)) || null;
   }
 
+  // ── finished-card hold ──────────────────────────────────────────────────────
+  // A card stays featured for 34h after its main-card start, so someone coming
+  // back on Sunday still lands on last night's results — and can open the share
+  // sheet — instead of having to hunt for it in the past-events dropdown. A
+  // Saturday ~8pm ET card holds all of Sunday and hands off Monday morning.
+  //
+  // This CANNOT be done by widening the window below. When a card finishes, the
+  // upstream feed does not mark it completed — it DROPS it from event.json
+  // entirely (measured 2026-07-19: the Jul 18 card was gone ~13h after the main
+  // event, and all 19 remaining entries were "scheduled"). There is no event
+  // object left for a window to hold. The finished card is instead recovered
+  // from data/event-recent.json, the workflow's real past-events fetch, which
+  // keeps the last ~20 completed cards with full results (winnerFighterSlug,
+  // resultRound, method, per-fighter outcome) in the same shape parseApiEvent
+  // already handles for the past-events dropdown.
+  const CARD_HOLD_MS = 34 * 3600 * 1000;
+  let GL_HOLD_RAW = null, GL_HOLD_LOADED = false;
+
+  // A bout counts as settled once the feed has a result on it (a draw/NC has no
+  // winnerFighterSlug, hence the status/method fallbacks).
+  function glBoutSettled(b) {
+    return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
+      String(b.status || '').toLowerCase() === 'completed'));
+  }
+
+  function glPickHoldEvent(recentFeed) {
+    const now = Date.now();
+    return (((recentFeed && recentFeed.data) || [])
+      // Only a FULLY settled card may hold the slot. event-recent.json can pick a
+      // card up while it's still being synced, and a half-resulted copy taking
+      // over from the live event.json feed would blank out results mid-card.
+      .filter(e => e && (e.bouts || []).length && e.status === 'completed'
+        && e.bouts.every(glBoutSettled))
+      .map(e => ({ e: e, t: Date.parse(e.startsAt || e.eventDate || 0) || 0 }))
+      .filter(x => x.t > 0 && x.t <= now && x.t + CARD_HOLD_MS >= now)
+      .sort((a, b) => b.t - a.t)[0] || {}).e || null;
+  }
+
+  // Resolves to the held card or null. A missing/unreadable event-recent.json
+  // just means "no hold" — we fall back to the upcoming card, i.e. exactly the
+  // behaviour before this existed. That's the safe direction: it can only ever
+  // show a card that is genuinely next, never stale data.
+  function glLoadHoldEvent() {
+    if (GL_HOLD_LOADED) return Promise.resolve(GL_HOLD_RAW);
+    return fetch('./data/event-recent.json')
+      .then(r => r.ok ? r.json() : null)
+      .then(j => { GL_HOLD_RAW = glPickHoldEvent(j); GL_HOLD_LOADED = true; return GL_HOLD_RAW; })
+      .catch(() => { GL_HOLD_LOADED = true; return null; });
+  }
+
+  // True when the featured slot is showing a held (already finished) card.
+  function glIsHolding(raw) { return !!(GL_HOLD_RAW && raw === GL_HOLD_RAW); }
+
   function pickFeaturedRawEvent(apiData) {
+    // A finished card inside its hold window outranks the next scheduled one.
+    // Re-checked against the clock on every call so a long-open tab rolls over
+    // on its own rather than holding the card forever.
+    if (GL_HOLD_RAW && (Date.parse(GL_HOLD_RAW.startsAt || 0) || 0) + CARD_HOLD_MS >= Date.now()) return GL_HOLD_RAW;
     const events = (apiData.data || []).slice()
       // Drop phantom/wrong-year cards: the feed sometimes returns real PAST
       // events stamped with a future date (e.g. "UFC 317" — actually Jun 2025 —
@@ -112233,7 +112333,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       const opt0 = document.createElement('option');
       opt0.value = '__featured__';
-      opt0.textContent = 'Upcoming — ' + evtName(featuredRaw || {});
+      // While a finished card is holding the featured slot, "Upcoming" is a lie.
+      opt0.textContent = (glIsHolding(featuredRaw) ? 'Latest results — ' : 'Upcoming — ') + evtName(featuredRaw || {});
       sel.appendChild(opt0);
       list.forEach((e, i) => {
         const o = document.createElement('option');
@@ -112318,7 +112419,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // on every poll, which would restart the card's swap animation every minute.
   const GL_LIVE_POLL_MS = 60000;
   const GL_LIVE_LEAD_IN_MS = 30 * 60 * 1000;
-  const GL_LIVE_WINDOW_MS = 10 * 3600 * 1000;   // matches pickFeaturedRawEvent's CARD_RUNTIME_MS
+  // How long to keep POLLING for results — deliberately NOT the 34h CARD_HOLD_MS.
+  // A held card is already final, so extending this would just re-fetch a 9.8MB
+  // feed every minute for a day to learn nothing. Polling stops; the card stays.
+  const GL_LIVE_WINDOW_MS = 10 * 3600 * 1000;   // matches CARD_RUNTIME_MS, the fallback window
 
   function glInLiveWindow(rawEvt, now) {
     if (!rawEvt) return false;
@@ -113212,6 +113316,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         apiData = await resp.json();
         if (apiData.data && apiData.data.length) {
           await rankingsLookupReady;
+          await glLoadHoldEvent();   // last night's card may still hold the featured slot
           featuredRaw = pickFeaturedRawEvent(apiData);
           evt = parseApiEvent(featuredRaw);
           window.FEATURED_EVENT_STATE = glCardState(featuredRaw);
@@ -113402,7 +113507,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   };
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
-  let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all';
+  let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
@@ -113704,7 +113809,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btSetScope(s) { btScope = s; btRenderHistory(); }
   function btSetRange(r) { btRange = r; btRenderHistory(); }
   function btSetCard(c) { btCardFilter = c; btRenderHistory(); }
+  function btSetTab(t) { btTab = t; btRenderHistory(); }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
+  window.btSetTab = btSetTab;
 
   // Every card we hold tracked bets on, pending or settled. Bets on a card three
   // weeks out shouldn't sit in the same pile as tonight's — and once a card is
@@ -113830,6 +113937,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const allCards = btCards(shown);
     const cards = allCards.filter(c => c.pending > 0).sort((a, b) => a.ts - b.ts);
     const doneCards = allCards.filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
+    // Settled bets file under "Past bets" so a growing history never buries what's still
+    // live — the same split My history uses for pick'em. They stay graded and browsable,
+    // grouped by card with their Share results button intact.
+    h += '<div class="bt-ranges bt-tabs"><div class="' + (btTab === 'active' ? 'on' : '') + '" onclick="btSetTab(\'active\')">Active (' + pend.length + ')</div>' +
+      '<div class="' + (btTab === 'past' ? 'on' : '') + '" onclick="btSetTab(\'past\')">Past bets (' + settled.length + ')</div></div>';
+    if (btTab === 'active') {
     if (cards.length > 1) {
       // Use the dated label, not e.short — most cards are just "UFC Fight Night",
       // so without the date two chips read identically. Wraps rather than sharing
@@ -113851,6 +113964,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other pending</div></div>';
       h += loose.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     }
+    if (!pend.length && shown.length) h += '<div class="bt-empty">No open bets — your settled ones are under <b>Past bets</b>.</div>';
+    }
+    if (btTab === 'past') {
     // Finished cards: each its own group with a Share results button.
     doneCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
       const rows = settled.filter(b => b.evSlug === c.slug);
@@ -113867,6 +113983,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (looseDone.length && btCardFilter === 'all') {
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other settled</div></div>';
       h += looseDone.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
+    }
+    if (!settled.length && shown.length) h += '<div class="bt-empty">Nothing settled in this range yet.</div>';
     }
     if (!shown.length) h += '<div class="bt-empty">No bets logged' + (btRange === 'all' ? ' yet' : ' in this range') + '.</div>';
     host.innerHTML = h;

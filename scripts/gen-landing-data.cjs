@@ -26,6 +26,50 @@ const FEATURED_DIVISION = 'Welterweight'; // its champion is the featured-analyt
 
 const idx = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
+// ── finished-card hold ───────────────────────────────────────────────────────
+// A card keeps the featured slot for 34h after its main-card start, so the free
+// /matchup page and the landing card still show last night's fights (with
+// results) all through Sunday and only roll over on Monday. Must stay in step
+// with index.html's CARD_HOLD_MS and worker/index.js's.
+//
+// This cannot be expressed as a window over event.json: when a card ends the
+// upstream feed DELETES it from that file rather than marking it completed
+// (measured 2026-07-19 — the Jul 18 card was gone while every remaining entry
+// read "scheduled"), so there is no event left to hold. The finished card comes
+// from data/event-recent.json instead, which keeps completed cards with results.
+//
+// NOTE this is evaluated at BUILD time, so the flip lands on the first build
+// after the 34h mark rather than exactly on it — with a twice-daily build that
+// still puts the rollover on Monday.
+const CARD_HOLD_MS = 34 * 3600 * 1000;
+
+function heldBoutSettled(b) {
+  return !!(b && (b.isCancelled || b.winnerFighterSlug || b.method ||
+    String(b.status || '').toLowerCase() === 'completed'));
+}
+
+// The most recent completed card still inside its hold window, or null.
+// Per CLAUDE.md: a genuinely ABSENT file (first run / file not shipped) means
+// "no hold" and is fine, but an offloaded or corrupt one must THROW rather than
+// silently degrade to "no hold" and quietly ship the wrong card.
+function heldEvent() {
+  let recent;
+  try {
+    recent = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event-recent.json'), 'utf8'));
+  } catch (e) {
+    if (e.code === 'ENOENT') return null;
+    throw e;
+  }
+  const now = Date.now();
+  const t = (e) => Date.parse((e && (e.startsAt || e.eventDate)) || 0) || 0;
+  return (((recent && recent.data) || [])
+    // Only a fully settled card may hold — never a half-synced one.
+    .filter((e) => e && (e.bouts || []).length && e.status === 'completed'
+      && e.bouts.every(heldBoutSettled)
+      && t(e) > 0 && t(e) <= now && t(e) + CARD_HOLD_MS >= now)
+    .sort((a, b) => t(b) - t(a))[0]) || null;
+}
+
 // name -> "W-L-D" record, from the FIGHTERS roster array in index.html
 function recordMap() {
   const m = {}, re = /\{ name: "([^"]+)", division: "[^"]*", rank: "[^"]*", record: "([^"]*)"/g;
@@ -589,7 +633,8 @@ function buildMatchup(recMap) {
   let feed;
   try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'event.json'), 'utf8')); } catch (e) { return null; }
   const events = (feed && feed.data) || [];
-  const ev = events.find((e) => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length);
+  // Hold last night's card for 34h so /matchup still shows it — see heldEvent().
+  const ev = heldEvent() || events.find((e) => e && e.status !== 'completed' && Array.isArray(e.bouts) && e.bouts.length);
   if (!ev) return null;
   // matchNumber 1 / cardPosition 1 is the main event; fall back to the first bout
   const bout = ev.bouts.find((x) => x && x.cardPosition === 1 && !x.isCancelled) || ev.bouts.find((x) => x && !x.isCancelled);
@@ -844,7 +889,9 @@ function fighterProfileCard(name, recMap, ranks) {
 }
 function buildCard(recMap) {
   let feed; try { feed = JSON.parse(fs.readFileSync(path.join(ROOT, "data", "event.json"), "utf8")); } catch (e) { return null; }
-  const ev = ((feed && feed.data) || []).find((e) => e && e.status !== "completed" && Array.isArray(e.bouts) && e.bouts.length);
+  // Last night's card outranks next week's for 34h — see heldEvent().
+  const ev = heldEvent()
+    || ((feed && feed.data) || []).find((e) => e && e.status !== "completed" && Array.isArray(e.bouts) && e.bouts.length);
   if (!ev) return null;
   const ranks = rankMap();
   const bouts = ev.bouts.filter((b) => b && !b.isCancelled && (b.fighters || []).length === 2).sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
