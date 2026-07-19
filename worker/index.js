@@ -425,13 +425,18 @@ async function loadUpcomingCard(env, url) {
     if (!r.ok) return null;
     feed = await r.json();
   } catch { return null; }
-  const events = (Array.isArray(feed && feed.data) ? feed.data : []).filter(ev => ev && (ev.bouts || []).length);
+  // Select the SAME card the app's pickFeaturedRawEvent keeps featured, so /pickem never
+  // jumps to the next event before the rest of the app does. Drop finished (completed)
+  // cards, and keep a card current for 10h after its main-card start (CARD_RUNTIME_MS —
+  // a long night plus the immediate aftermath) before handing off to the next one. The
+  // old 6h-from-start grace is what moved /pickem on ~4h early.
+  const CARD_RUNTIME_MS = 10 * 3600 * 1000;
+  const events = (Array.isArray(feed && feed.data) ? feed.data : [])
+    .filter(ev => ev && (ev.bouts || []).length && ev.status !== "completed");
   if (!events.length) return null;
   const now = Date.now();
   const byStart = events.slice().sort((a, b) => (Date.parse(a.startsAt || 0) || 0) - (Date.parse(b.startsAt || 0) || 0));
-  // The soonest card still in the future (6h grace so a live card stays selected),
-  // else the earliest listed.
-  const ev = byStart.find(e => (Date.parse(e.startsAt || 0) || 0) >= now - 6 * 3600 * 1000) || byStart[0];
+  const ev = byStart.find(e => (Date.parse(e.startsAt || 0) || 0) + CARD_RUNTIME_MS >= now) || byStart[byStart.length - 1];
   const bouts = (ev.bouts || [])
     .filter(b => b && !b.isCancelled && (b.fighters || []).length === 2)
     .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0))
