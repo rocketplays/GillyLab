@@ -50,6 +50,30 @@ const INJURY_RE = /\binjur(?:y|ed|ies)\b|\bwithdraw|pull(?:ed|s)?\s+out\b|\bforc
 // currently tracking, treat it as historical. A headline that names no event at
 // all ("...detrimental injury forced him off McGregor's return card") is
 // unaffected, and one naming both a past and an upcoming card still flags.
+// A fighter TALKING ABOUT an injury is not a fight in doubt. "Alex Perez Details
+// Brutal Low Blow Injury Before UFC Shanghai" is a pre-fight interview in which he
+// recounts something that happened in his LAST fight — but it names him, says
+// "Injury", and names an event we ARE tracking (Shanghai is his upcoming card), so
+// every existing guard passes it and his bout got an injury warning.
+//
+// refersToPastEvent can't catch it: that only reads NUMBERED events ("UFC 303"), and
+// city-named cards carry no number.
+//
+// The tell is the verb. Status news says what CHANGED — "steps in", "withdraws",
+// "out of the main event". Retrospectives say what someone SAID — "details",
+// "recalls", "reveals". So: suppress the flag when the headline is a recounting AND
+// carries no status language. The second half is what keeps "Coach details injury
+// that forced him out of UFC 303" flagged; without it this guard would swallow real
+// withdrawals that happen to be reported as a quote.
+const RETRO_RE = /\b(?:details?|detailed|recalls?|recalled|reveals?|revealed|explains?|explained|opens? up|opened up|reflects?|reflected|looks? back|looked back|discusses|discussed|talks? about|talked about|remembers?|remembered|breaks? down|admits?|admitted)\b/i;
+// "forc\w*[^.]{0,15}out" rather than "forced out": the object usually sits between
+// them ("forced HIM out"), which an adjacent-words pattern misses — that leak let
+// "Coach details injury that forced him out of UFC 303" through as a retrospective.
+const STATUS_RE = /\bwithdraw|pull(?:ed|s)?\s+out\b|\bforc\w*[^.]{0,15}\bout\b|\bout of\s+(?:the\s+)?(?:fight|card|bout|event|main event|co-main|ufc\b)|off the card\b|steps? in\b|replacement|short.?notice\b|\bruled out\b|\bout\b[^.]{0,25}\b(?:injur|main event|card)\b|miss(?:es|ed)?\s+weight\b|hospitaliz/i;
+function isRetrospective(title) {
+  return RETRO_RE.test(String(title || '')) && !STATUS_RE.test(String(title || ''));
+}
+
 function refersToPastEvent(title, eventNums) {
   if (!eventNums || !eventNums.size) return false;
   const found = String(title || '').match(/\bUFC\s+\d{2,4}\b/gi) || [];
@@ -148,7 +172,7 @@ function curate(items, now, eventNums, name) {
       title: it.title, url: it.url, source: it.source,
       date: isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : null,
       injury: INJURY_RE.test(it.title) && namesFighter(it.title, name) &&
-              !refersToPastEvent(it.title, eventNums)
+              !refersToPastEvent(it.title, eventNums) && !isRetrospective(it.title)
     });
     if (out.length >= PER_FIGHTER) break;
   }
@@ -225,5 +249,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, upcomingCardFighters, isProfilePage, namesFighter };
+module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, isRetrospective, upcomingCardFighters, isProfilePage, namesFighter };
 if (require.main === module) main();
