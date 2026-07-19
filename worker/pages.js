@@ -1675,7 +1675,7 @@ ${AURORA_CSS}
       ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p><button type="button" class="pk-howlink" id="pkHowBtn">How scoring works →</button>` : ""}
       ${bouts}
       ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-progress"><div class="pk-progress-fill" id="pkProgFill"></div></div><div class="pk-bar-row"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-next" id="pkNext" hidden>Next ↓</button><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div></div>` : ""}
-      ${nBouts && (card && card.locked) ? `<div class="pk-submitbar pk-scorebar" id="pkScoreBar" hidden><div class="pk-bar-row"><div class="pk-bar-info" id="pkScoreBarInfo"></div></div></div>` : ""}
+      ${nBouts && (card && card.locked) ? `<div class="pk-submitbar pk-scorebar" id="pkScoreBar" hidden><div class="pk-bar-row"><div class="pk-bar-info" id="pkScoreBarInfo"></div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShareResults">Share results</button></div></div></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
     <div class="pk-panel" id="panel-history" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="hist-body"><p class="pk-empty">Loading your history…</p></div></div>
@@ -1974,7 +1974,17 @@ ${AURORA_CSS}
     // Grade one pick against its result — mirrors the server/app scoring so the shared
     // image's ticks + points match the leaderboard.
     var CONF_PENALTY={High:10,Med:5,Low:0};
-    function pkNameEq(a,b){var nn=function(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/\\b(jr|sr|iv|iii|ii|v)\\b/g,"").replace(/[^a-z0-9]+/g,"");};var na=nn(a),nb=nn(b);if(!na||!nb)return false;if(na===nb)return true;return na.length>=5&&nb.length>=5&&(na.indexOf(nb)===0||nb.indexOf(na)===0);}
+    function pkNameEq(a,b){
+      var nn=function(s){return String(s||"").toLowerCase().normalize("NFD").replace(/[\\u0300-\\u036f]/g,"").replace(/\\b(jr|sr|iv|iii|ii|v)\\b/g," ").replace(/[^a-z0-9 ]+/g," ").replace(/\\s+/g," ").trim();};
+      var na=nn(a),nb=nn(b);if(!na||!nb)return false;
+      var ca=na.replace(/ /g,""),cb=nb.replace(/ /g,"");
+      if(ca===cb)return true;
+      if(ca.length>=5&&cb.length>=5&&(ca.indexOf(cb)===0||cb.indexOf(ca)===0))return true;
+      // First + last name match — bridges a dropped/added middle name ("Jose Delgado"
+      // vs "Jose Miguel Delgado") that prefix matching can't.
+      var ta=na.split(" "),tb=nb.split(" ");
+      return ta.length>=2&&tb.length>=2&&ta[0]===tb[0]&&ta[ta.length-1]===tb[tb.length-1];
+    }
     function gradedPick(p,res){
       if(res.voided)return{points:0,voided:true,winnerHit:false,methodHit:false,roundHit:false};
       if(!pkNameEq(p.winner,res.winner))return{points:-(CONF_PENALTY[p.confidence]||0),winnerHit:false,methodHit:false,roundHit:false,voided:false};
@@ -1985,7 +1995,7 @@ ${AURORA_CSS}
       return{points:Math.round(earned*(CONF_MULT[p.confidence]||1.5)),winnerHit:true,methodHit:methodHit,roundHit:roundHit,voided:false};
     }
     function pkSharePayload(){
-      var graded=!!PK_FINAL;var picks=[];
+      var graded=!!PK_FINAL||Object.keys(PK_RESULTS).length>0;var picks=[];
       BOUT_IDS.forEach(function(id){var p=PICKS[id];if(!isComplete(p))return;var el=boutEl(id);if(!el)return;
         var loser=p.winner===el.dataset.f1?el.dataset.f2:el.dataset.f1;
         var mySlug=p.side==="f1"?el.dataset.s1:el.dataset.s2;
@@ -2007,10 +2017,15 @@ ${AURORA_CSS}
         if(_ts)d=new Date(_ts).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"});}catch(e){}
       return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:graded,picks:picks,totalPoints:picks.reduce(function(t,p){return t+(p.points||0);},0)};
     }
-    if(shareBtn)shareBtn.addEventListener("click",function(){
+    function pkDoShare(){
       var data=pkSharePayload();if(!data.picks.length){alert("Make at least one complete pick to share.");return;}
       if(window.GL_SHEET&&GL_SHEET.pickem){GL_SHEET.pickem(data);}else{alert("Share sheet still loading — try again in a moment.");}
-    });
+    }
+    if(shareBtn)shareBtn.addEventListener("click",pkDoShare);
+    // The submit bar (with its Share button) is gone once the card locks, so wire the
+    // Share results button in the locked-state score bar to the same sheet.
+    var pkShareResultsBtn=document.getElementById("pkShareResults");
+    if(pkShareResultsBtn)pkShareResultsBtn.addEventListener("click",pkDoShare);
     // Restore any picks already saved on the server (and reflect submitted/lock state).
     renderAll();
     if(PK_EVT&&PK_EVT.slug){
