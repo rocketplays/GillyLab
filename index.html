@@ -103548,7 +103548,18 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           // with each fighter's own separation instead.
           const mine = edge(self, other, GRAPPLING_AXES);
           const theirs = edge(other, self, GRAPPLING_AXES);
-          const tdc = (self.tdDef != null && other.tdDef != null) ? ' (neither stuffs much — ' + self.tdDef + '% / ' + other.tdDef + '% TDD)' : '';
+          // "neither stuffs much" was UNCONDITIONAL here, and this branch only needs
+          // ONE man under 68 to fire (symMat above requires BOTH over it). So an
+          // elite defender got told he doesn't stuff takedowns as long as his
+          // opponent didn't: Thomas Petersen, 88% TDD, read "neither stuffs much —
+          // 88% / 0% TDD" against Valter Walker. Say what the numbers actually show —
+          // and when they're lopsided, that asymmetry IS the read, not a caveat.
+          let tdc = '';
+          if (self.tdDef != null && other.tdDef != null) {
+            if (self.tdDef < 68 && other.tdDef < 68) tdc = ' (neither stuffs much — ' + self.tdDef + '% / ' + other.tdDef + '% TDD)';
+            else if (self.tdDef >= 68) tdc = ' (but the entries run one way — he stuffs ' + self.tdDef + '% to ' + oN + "'s " + other.tdDef + '%)';
+            else tdc = ' (though ' + oN + ' stuffs ' + other.tdDef + '% to his ' + self.tdDef + '%)';
+          }
           line = 'Both want it on the mat' + tdc + ' — ';
           if (mine) line += 'his edge is the ' + mine.phrase + '.';
           else if (theirs) line += 'the grappling margin favours ' + oN + ' (' + theirs.phrase + '), so he has to win the scrambles rather than the entries.';
@@ -103559,6 +103570,13 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           line = 'Get it to the mat';
           if (oKnown && other.tdDef != null && other.tdDef >= 68) line += " — but " + oN + "'s " + other.tdDef + '% takedown defense is the problem, so shots must come off the cage or in scrambles.';
           else if (oKnown && other.tdDef != null && other.tdDef <= 55) line += ' — ' + oN + ' is takedown-vulnerable (' + other.tdDef + '% TDD), so get it down early and often.';
+          // The mid-range (56–67% TDD) used to fall through to a bare "and impose top
+          // control" carrying no numbers at all — measured across 275 bouts, that exact
+          // sentence was the single most repeated line on the site, identical 10 times
+          // and 38 times counting its variants. It's the commonest case, so it deserves
+          // the most detail, not the least: give the opponent's actual TDD and this
+          // fighter's own entry rate, which differ on every card.
+          else if (oKnown && other.tdDef != null) line += ' — ' + oN + ' turns away ' + other.tdDef + '% of shots, so it takes volume: he lands ' + self.tdLanded + ' takedowns/15 and has to keep shooting.';
           else line += ' and impose top control.';
           if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
           if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
