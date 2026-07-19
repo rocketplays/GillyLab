@@ -1644,7 +1644,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-hist-ev-name{font-weight:800;font-size:1.4rem;color:var(--text)}
   .pk-hist-ev-total{font-weight:800;font-size:1.4rem}
   .pk-hist-bouts{display:flex;flex-direction:column;gap:.4rem}
-  .pk-hist-share{margin-top:.9rem;width:100%}
+  .pk-hist-share{margin:.1rem 0 .8rem;width:100%}   /* sits above the bout list */
   .pk-hist-bout{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:9px;border:1px solid var(--border);background:var(--card)}
   .pk-hist-bout-main{flex:1;min-width:0}
   .pk-hist-bout-pick{font-weight:600;font-size:.88rem}
@@ -1851,7 +1851,9 @@ ${AURORA_CSS}
         var bouts=res.bouts||[];
         var rows=bouts.map(function(b){var tag="pending",label="Pending";if(b.voided){tag="void";label="No contest — void";}else if(b.pending){tag="pending";label="Pending";}else if(b.winnerHit){tag="hit";label="Winner"+(b.methodHit?" + method":"")+(b.roundHit?" + round":"");}else{tag="miss";label="Wrong winner";}var pts=b.points||0;var sub=(b.method||"—")+(b.round?" · R"+b.round:"")+" · "+(b.confidence||"")+" conf · "+label;return '<div class="pk-hist-bout '+tag+'"><div class="pk-hist-bout-main"><div class="pk-hist-bout-pick">'+pkEscH(b.winner||"")+'</div><div class="pk-hist-bout-detail">'+pkEscH(sub)+'</div></div><div class="pk-hist-bout-pts '+(pts>0?"pos":pts<0?"neg":"zero")+'">'+(pts>0?"+":"")+pts+'</div></div>';}).join("");
         var total=res.total||0;
-        host.innerHTML=back+'<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">'+pkEscH(res.event||slug)+'</div><div class="pk-hist-ev-total '+(total>=0?"pos":"neg")+'">'+(total>0?"+":"")+total+' pts</div></div>'+(res.graded?"":'<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>')+'<div class="pk-hist-bouts">'+rows+'</div>'+(bouts.some(function(b){return b&&b.winner&&!b.pending;})?'<button type="button" class="pk-btn ghost pk-hist-share" data-histshare>Share results</button>':'');
+        // Share ABOVE the bouts — on a 12-fight card it was a full scroll down.
+        var share=bouts.some(function(b){return b&&b.winner&&!b.pending;})?'<button type="button" class="pk-btn ghost pk-hist-share" data-histshare>Share results</button>':'';
+        host.innerHTML=back+'<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">'+pkEscH(res.event||slug)+'</div><div class="pk-hist-ev-total '+(total>=0?"pos":"neg")+'">'+(total>0?"+":"")+total+' pts</div></div>'+(res.graded?"":'<div class="pk-note pk-locked" style="margin:0 0 .6rem">Not fully graded yet — results still coming in.</div>')+share+'<div class="pk-hist-bouts">'+rows+'</div>';
       });
     }
     // subnav open (loads content) + back (returns to picks)

@@ -3715,7 +3715,8 @@
       .pk-hist-empty { padding: 2.5rem 1.5rem; text-align: center; color: var(--muted); font-size: 0.88rem; line-height: 1.5; }
       .pk-hist-back { background: none; border: none; color: var(--accent); font-size: 0.85rem; font-weight: 600; cursor: pointer; font-family: inherit; padding: 0.2rem 0; margin-bottom: 0.7rem; }
       /* Share results for a past card, under its graded bouts in My history. */
-      .pk-hist-share { display: block; width: 100%; margin-top: 0.9rem; background: linear-gradient(180deg, rgba(0,230,104,.09), rgba(0,230,104,.03)); border: 1px solid rgba(0,230,104,.35); border-radius: 8px; color: var(--text); font-family: inherit; font-weight: 700; font-size: 0.82rem; padding: 0.6rem; cursor: pointer; }
+      /* Above the bout list, so margin runs downward into it. */
+      .pk-hist-share { display: block; width: 100%; margin: 0.1rem 0 0.8rem; background: linear-gradient(180deg, rgba(0,230,104,.09), rgba(0,230,104,.03)); border: 1px solid rgba(0,230,104,.35); border-radius: 8px; color: var(--text); font-family: inherit; font-weight: 700; font-size: 0.82rem; padding: 0.6rem; cursor: pointer; }
       .pk-hist-share:hover { background: linear-gradient(180deg, rgba(0,230,104,.18), rgba(0,230,104,.07)); border-color: var(--accent); }
       .pk-hist-ev-head { display: flex; align-items: baseline; justify-content: space-between; gap: 0.7rem; margin-bottom: 0.7rem; }
       .pk-hist-ev-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 800; font-size: 1.4rem; color: var(--text); }
@@ -7801,13 +7802,17 @@
        '<div class="pk-hist-bout-pts ' + (pts > 0 ? 'pos' : pts < 0 ? 'neg' : 'zero') + '">' + (pts > 0 ? '+' : '') + pts + '</div></div>';
    }).join('');
    const total = res.total || 0;
+   // Share sits ABOVE the bouts: on a 12-fight card the button was a full scroll
+   // below the header, so the thing you opened the card to do was the last thing
+   // you could see.
+   const share = bouts.some(b => b && b.winner && !b.pending)
+     ? '<button type="button" class="pk-hist-share" onclick="sharePickemHistory()">Share results</button>' : '';
    host.innerHTML = back +
      '<div class="pk-hist-ev-head"><div class="pk-hist-ev-name">' + pkEsc(res.event || slug) + '</div>' +
      '<div class="pk-hist-ev-total ' + (total >= 0 ? 'pos' : 'neg') + '">' + (total > 0 ? '+' : '') + total + ' pts</div></div>' +
      (res.graded ? '' : '<div class="pk-note pk-locked" style="margin:0 0 0.6rem;">Not fully graded yet — results still coming in.</div>') +
-     '<div class="pk-hist-bouts">' + rows + '</div>' +
-     (bouts.some(b => b && b.winner && !b.pending)
-       ? '<button type="button" class="pk-hist-share" onclick="sharePickemHistory()">Share results</button>' : '');
+     share +
+     '<div class="pk-hist-bouts">' + rows + '</div>';
  }
 
  let PK_LB_SCOPE = 'current';
