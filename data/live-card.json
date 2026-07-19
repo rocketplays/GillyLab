@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T00:52:11.933Z",
+ "generatedAt": "2026-07-19T01:27:05.067Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -4126,6 +4126,194 @@
       ]
      },
      "capturedAt": "2026-07-19T00:52:11.805Z"
+    }
+   ]
+  },
+  "Tabatha Ricci": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Fatima Kline",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Fatima Kline",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 102,
+      "totL": 26,
+      "totA": 108,
+      "tdL": 1,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:30",
+      "head": [
+       18,
+       89
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       22,
+       99
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 164,
+      "totL": 86,
+      "totA": 195,
+      "tdL": 7,
+      "tdA": 9,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "5:00",
+      "head": [
+       41,
+       130
+      ],
+      "body": [
+       20,
+       28
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       56,
+       151
+      ],
+      "clinch": [
+       9,
+       12
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-19T01:27:04.939Z"
+    }
+   ]
+  },
+  "Fatima Kline": {
+   "history": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Tabatha Ricci",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Du Plessis vs. Usman",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 18, 2026",
+     "opponent": "Tabatha Ricci",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 164,
+      "totL": 86,
+      "totA": 195,
+      "tdL": 7,
+      "tdA": 9,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "5:00",
+      "head": [
+       41,
+       130
+      ],
+      "body": [
+       20,
+       28
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       56,
+       151
+      ],
+      "clinch": [
+       9,
+       12
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 102,
+      "totL": 26,
+      "totA": 108,
+      "tdL": 1,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:30",
+      "head": [
+       18,
+       89
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       1,
+       4
+      ],
+      "dist": [
+       22,
+       99
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-19T01:27:04.939Z"
     }
    ]
   }
