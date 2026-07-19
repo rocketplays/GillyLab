@@ -523,7 +523,123 @@
         "pts": 0.0391,
         "leaned": true
       }
+    },
+    {
+      "fightId": "dricus du plessis|kamaru usman",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T13:06:12.912Z",
+      "a": {
+        "feed": "Dricus Du Plessis",
+        "db": "Dricus du Plessis"
+      },
+      "b": {
+        "feed": "Kamaru Usman",
+        "db": "Kamaru Usman"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 5,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.5151,
+      "modelClose": 0.5151,
+      "marketOpen": 0.696,
+      "marketClose": 0.6548,
+      "leanA": -0.1809,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": true,
+        "pts": 0.0412,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "fatima kline|tabatha ricci",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T13:06:12.917Z",
+      "a": {
+        "feed": "Tabatha Ricci",
+        "db": "Tabatha Ricci"
+      },
+      "b": {
+        "feed": "Fatima Kline",
+        "db": "Fatima Kline"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5164,
+      "modelClose": 0.5164,
+      "marketOpen": 0.2381,
+      "marketClose": 0.2042,
+      "leanA": 0.2783,
+      "nSnapshots": 21,
+      "clv": {
+        "toward": false,
+        "pts": -0.0339,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "chase hooper|mitch ramirez",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T13:06:12.917Z",
+      "a": {
+        "feed": "Chase Hooper",
+        "db": "Chase Hooper"
+      },
+      "b": {
+        "feed": "Mitch Ramirez",
+        "db": "Mitch Ramirez"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.7434,
+      "modelClose": 0.7434,
+      "marketOpen": 0.7241,
+      "marketClose": 0.7524,
+      "leanA": 0.0193,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": true,
+        "pts": 0.0283,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "christian leroy duncan|jared cannonier",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-07-19T13:06:12.917Z",
+      "a": {
+        "feed": "Jared Cannonier",
+        "db": "Jared Cannonier"
+      },
+      "b": {
+        "feed": "Christian Leroy Duncan",
+        "db": "Christian Leroy Duncan"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4464,
+      "modelClose": 0.4465,
+      "marketOpen": 0.2759,
+      "marketClose": 0.2694,
+      "leanA": 0.1705,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": false,
+        "pts": -0.0065,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-07-19T01:19:37.139Z"
+  "generatedAt": "2026-07-19T13:06:12.931Z"
 }

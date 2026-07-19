@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-19T01:19:01.699Z",
+  "generatedAt": "2026-07-19T13:02:20.460Z",
   "recencyDays": 30,
   "fighters": {
     "magomed ankalaev": {
@@ -94,19 +94,6 @@
           "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxONmhLM2pNUlFvMkNMM0VhVUhJdER3M1F1eHZYVFRCMkdpNzhRRjgwY05JNUIwNG90MkJsNzUzRmZkWGdRNWthOTZQUGNGV2xGVWhRbjNIZmdZQUN0V1VmRk1CMld5TFFKZVNGTnpZYzRyQ0s0cXdpZTNqVTg3ZkdIc3ZrMjZsVHUzUmFaamVvNGNkVS1vQTA2OERCcEVrYWh0M21iWHdTNk9hTUZqSmNuYUpsVdIBuAFBVV95cUxOeDByeEhwalJHdmxsMC0yMWp3N2xMSXhGUWlDaUxCdFE2Vk9GRnV1czBoczVxMjVBRndjaDlOX1pHRTllbjMzeFc3T2dNSXNXWl9GWnNfTmtNZ09QOXdNMVQxR3RHX28wOEM1QkpxbnZDOE9pN2lhYnF2UXBRSXByNUVrV0RySUxUYUhIZ0FGXzZzM0Rvd3A4bHEyeExaNmVPQU1iMlhmaUItQkc0aHpFcUt4TjRJb3g3?oc=5",
           "source": "Sherdog",
           "date": "2026-07-17",
-          "injury": false
-        }
-      ]
-    },
-    "islam dulatov": {
-      "name": "Islam Dulatov",
-      "hasInjuryNews": false,
-      "items": [
-        {
-          "title": "Islam Dulatov Post-Fight Interview | UFC 318 - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE1rX3l3cHpvZUtNTERST0MybHZKZl9ONG9FSFRfdDhlSmdIT3haeGpFa1VRWUg0SmtXVEZIVWgxZVVHd3otNGc0?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-15",
           "injury": false
         }
       ]
@@ -291,9 +278,16 @@
       "hasInjuryNews": true,
       "items": [
         {
-          "title": "Rising prospect steps in against former champion in new UFC Belgrade co-main event - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOeVZfRUtFQkVqbGNLX1VNR252bldldzBQaXREMlpLNkVLcmdjNmdjbER3UnVDSlNfVUZEUHl0RWZ1ZzNSRFlrZkhIRVMwSjVieXJBa3VBUkFxQW5JVU9RUDd2M3VqQzdoUGR3YktWRTVsZldBeUtJY3A0R0pDQTNsN2tKWlNiZ1BjWjRoR2xwSlNQeFY2d0dkVDc4UmJLZ0x1QkxDU1NKNHpRX29fckZ3VmVxV0JESlBRS18taE5tdzZrVVQ5MWJkVQ?oc=5",
-          "source": "MMA Fighting",
+          "title": "Navajo Stirling steps in to face Jan Blachowicz at UFC Fight Night 283 - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxNMFlMSFowb2Nhdm1uQ01rTFBSVU5KQlNPYkxEdGI2OGx6bGdnY3ZXZlNvTk9XcG53SUhndnBVRlowRjl1TnQ5R3ZGTUtpMHoydXdWY3V2cjRyemVMcXkyd0pXekFMUkhRYlMyLWMtTzJyZjkzMFU2NFEwWWpud2gtOWVZMDl0OTZ3MjljR1V3TjRhdVp4TUZOdE5VQTZoTTVoYzBBUVhmbFg4VVkwTmViZXFMM2ZHOWREa3FOalZFa2NOYUdXU0hLUnBKQmxXSzNnWEhFbTJla1hKaWlxSVRwczRWdk9DYzZOd1VEb2Z5aFJ1Q1FZbEt5M0FRMzUzZFFraFE?oc=5",
+          "source": "MMA Junkie",
+          "date": "2026-07-17",
+          "injury": true
+        },
+        {
+          "title": "Jan Blachowicz draws undefeated replacement foe for UFC Belgrade card - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxORnJTMFI0UlVFbm9BOU5FWnpCT051U0cxdEFqUlZYZG1PZ1lFNmwySE05bWRaRWNSMHZRUmJYWU1ud0ZPbkZNNkZ3SS1fekFObExmSmhFbnREYUQ4VmZTWDA4SXhRSDg3Z0dvRHVzZzVKbTJRUXNsN0pQLThTVXk1aWtMbDhJbkthVWluellCSHBLYTBzdUlBTTN5Z1l2b0N4c21aS0RlTmZSR2hLcmRz0gG0AUFVX3lxTFB5T2M5ZkhUc2p3ZDdEV2JPWFNtdUR4dVJhR05VcEcyTVVFQmVBTFNvanNueXNDdmt4YTRTVGZhQW16UzNmei1fcWNkWlJGb1laV3B1MzlyanpTNXlYaUdiMkVQdmhoVU8wU05Ed01FOHJvQ1lZMkZSaHJqQ05ZN0ZwU09JYnloNnlqWW9hY0hWQWR2NzBkWlFsdWFhOEZJcF9aYTZpRmtoclMxek1DLWR2WHRjZA?oc=5",
+          "source": "Sherdog",
           "date": "2026-07-17",
           "injury": false
         },
@@ -305,31 +299,24 @@
           "injury": false
         },
         {
-          "title": "Navajo Stirling steps in to face Jan Blachowicz at UFC Fight Night 283 - MMA Junkie",
-          "url": "https://news.google.com/rss/articles/CBMiggJBVV95cUxNMFlMSFowb2Nhdm1uQ01rTFBSVU5KQlNPYkxEdGI2OGx6bGdnY3ZXZlNvTk9XcG53SUhndnBVRlowRjl1TnQ5R3ZGTUtpMHoydXdWY3V2cjRyemVMcXkyd0pXekFMUkhRYlMyLWMtTzJyZjkzMFU2NFEwWWpud2gtOWVZMDl0OTZ3MjljR1V3TjRhdVp4TUZOdE5VQTZoTTVoYzBBUVhmbFg4VVkwTmViZXFMM2ZHOWREa3FOalZFa2NOYUdXU0hLUnBKQmxXSzNnWEhFbTJla1hKaWlxSVRwczRWdk9DYzZOd1VEb2Z5aFJ1Q1FZbEt5M0FRMzUzZFFraFE?oc=5",
+          "title": "UFC 323: Dvalishvili vs Yan 2 | UFC - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE5KcTlHdTZ2aWtLRGFJNU9LODF2RXJsYU1HRndWTEYxSkFCTTg3dkZVUEpWbFA1VEVpZFBhYTNldE96ZnZSUlozbA?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-10",
+          "injury": false
+        },
+        {
+          "title": "Jan Blachowicz on Jamahal Hill's physique: 'Did you see how fat he is?' - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPREpmbE5MUXFESDk4WGR2MjRnNVBSNTJEWUQ3Z2lJWUZCb3dqNU5PUHhhMWxKYmNhOHVPRHVYQ2VaaFNfY2RsUFlDWTFtZmVvdUFVVHZ3U0RSUmlhRW5QRm9ZU043blBNM3NtWVpvNWoybEpsZUIxbVNJZ2RESDlyd09YMXFXNlpEMFZxYXZob1hrT0JXTHNYMVA0ZkxrU2JHLXFWTXZYcnpzZ0k?oc=5",
           "source": "MMA Junkie",
-          "date": "2026-07-17",
-          "injury": true
-        },
-        {
-          "title": "Alex Pereira’s former LHW rival scolds him for recent Herb Dean criticism - BJPenn.com",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNSzVvVnhXblhvSHNFX3lmYUJLZzJuWFBFbTZQM2VzdWlJZzZJMEZXdFFKLU1PN3h3SkVBZzhBTFEtZkphUlBzQmlwYWdnakVtWUg2aUN1YkkwbW81T0IwY3FnSDhkUy1YNWFENlg3aWtHRUYzTEZVVzRYMk92M3ZHbG9GUkJmS3k3dEFNc29TcmJaWm5manc?oc=5",
-          "source": "BJPenn.com",
-          "date": "2026-07-17",
-          "injury": false
-        },
-        {
-          "title": "Jan Blachowicz draws undefeated replacement foe for UFC Belgrade card - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxORnJTMFI0UlVFbm9BOU5FWnpCT051U0cxdEFqUlZYZG1PZ1lFNmwySE05bWRaRWNSMHZRUmJYWU1ud0ZPbkZNNkZ3SS1fekFObExmSmhFbnREYUQ4VmZTWDA4SXhRSDg3Z0dvRHVzZzVKbTJRUXNsN0pQLThTVXk1aWtMbDhJbkthVWluellCSHBLYTBzdUlBTTN5Z1l2b0N4c21aS0RlTmZSR2hLcmRz0gG0AUFVX3lxTFB5T2M5ZkhUc2p3ZDdEV2JPWFNtdUR4dVJhR05VcEcyTVVFQmVBTFNvanNueXNDdmt4YTRTVGZhQW16UzNmei1fcWNkWlJGb1laV3B1MzlyanpTNXlYaUdiMkVQdmhoVU8wU05Ed01FOHJvQ1lZMkZSaHJqQ05ZN0ZwU09JYnloNnlqWW9hY0hWQWR2NzBkWlFsdWFhOEZJcF9aYTZpRmtoclMxek1DLWR2WHRjZA?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-17",
-          "injury": false
-        },
-        {
-          "title": "Jan Blachowicz on Jamahal Hill's physique: 'Did you see how fat he is?' - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOOWJZblZ5MVdEdnYzRzNveGN6eE1hajREVkw0OGxDNVJtNmp6Q3lSRHdpbDlPTldVenZXS3ZXTkdnZzJKaWVEU2FPTTNhWlVROHJtLXM0bThWemJFRmphZ3NkcVZmVlM0czNoZm1QZFlKODlid01uSkJvWFh5SVhPbTR5U2Rza3pLdW9fWjhtNA?oc=5",
-          "source": "Yahoo Sports",
           "date": "2026-07-15",
+          "injury": false
+        },
+        {
+          "title": "Rising prospect steps in against former champion in new UFC Belgrade co-main event - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOeVZfRUtFQkVqbGNLX1VNR252bldldzBQaXREMlpLNkVLcmdjNmdjbER3UnVDSlNfVUZEUHl0RWZ1ZzNSRFlrZkhIRVMwSjVieXJBa3VBUkFxQW5JVU9RUDd2M3VqQzdoUGR3YktWRTVsZldBeUtJY3A0R0pDQTNsN2tKWlNiZ1BjWjRoR2xwSlNQeFY2d0dkVDc4UmJLZ0x1QkxDU1NKNHpRX29fckZ3VmVxV0JESlBRS18taE5tdzZrVVQ5MWJkVQ?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-17",
           "injury": false
         }
       ]
@@ -344,13 +331,6 @@
           "source": "MMA Junkie",
           "date": "2026-07-17",
           "injury": true
-        },
-        {
-          "title": "Navajo Stirling | City Kickboxing’s Next Threat - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNMVRoa1U4eW1mM0Jya202N1AzMV9KVVNUcHI5WUhYY3haVW5qaGlhNmlleUVXVlZpUlB2NjFlUjgtMFRlM1MzR3pndmtUY1pLalZkNkM1VjZMb1NwUkxQRkkwTGtTQmRpV1MtWXBCWkpERUs1NFphV05yWUdoS05wWGpUb3o2dkk3ZXc?oc=5",
-          "source": "UFC.com",
-          "date": "2026-06-19",
-          "injury": false
         },
         {
           "title": "UFC Vegas 119 video: Navajo Stirling pounds out Ion Cutelaba - Yahoo Sports",
@@ -374,9 +354,16 @@
           "injury": false
         },
         {
-          "title": "Navajo Stirling Finishes Ion Cutelaba In Round 2 | UFC Fight Night: Kape vs Horiguchi - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTE0xU2VWUlNJWEcwQkwtNkhqaWxVSG8ybzlMRldWWlozMGRSOWFXbEluMWNxWU1CemNPQ2U3SGdhNEJKeXBUOFdZ?oc=5",
+          "title": "Horiguchi - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE9TblpGR1NCcUE2dDhTSmJxOWdrN09QZkZfcTNSUk9WaEVEUXZqbG56UTE3UGlZVVVtdjExVk1pX1h5SGE0aTJhMnQ5M1VjZXROSnBlQzdsSU9QU0VDNVdIcjFULW0?oc=5",
           "source": "UFC.com",
+          "date": "2026-06-20",
+          "injury": false
+        },
+        {
+          "title": "Rising UFC contender Najavo Stirling eyes fight vs. fellow kickboxer - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxQclZfWTh5dDJqYU03UVFBTXVCbWRWdnZPRERJNHhGSUE0NHdYNUxyem50YXZOOGdLeXBVcE11ckZRejdVSms2aVBNbzJhZS1EUUhjQlpVLTEwb3V6YUV3b054Y2U0N2FXZ21wSmtXLVVoc3U1b2RaZVBvRGJJZUlrajJ4X1BHbndZYnB5RGtza0JMcXBOZWdMbHZHdmtFQ2J5Q0JSenl4U1NVMnBwREViMVo2a2pxOFBIVmd3WHA3LVgzQzhvR1BudDdzVWxjdWZFSnpYQ0puT2sydTgteVo0ZkRrYzNCdlh5U1Nfa2lHQ0ZVR2V6VWc?oc=5",
+          "source": "MMA Junkie",
           "date": "2026-06-21",
           "injury": false
         }
@@ -391,13 +378,6 @@
           "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOX0dvX2FiSk9BVVh4MGdOV2xjNHlqczB2LWlBS1RlV0p1SzIzV1lsaFlFUEhhd2RBQWtfTEhmWE56T0ZYUDZZVnRjZDVZXzVVYlV2eS1JRWpTYWtQLVoyalBiOTFxRGgyQjZHTVNFS2ZWWWRFaDNnU21xT0c2U2Fhak4zbXY4ZDlKcHJFWUpMdjl0UXQzTjNHLUJ2ck9DZF9zTzZadHJEZERyVXRrRl8wM3lR?oc=5",
           "source": "MMA Fighting",
           "date": "2026-07-02",
-          "injury": false
-        },
-        {
-          "title": "UFC Unfiltered | Austin Bashi, Mateusz Gamrot, UFC 329 picks - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiR0FVX3lxTFBpYWxqaThtcXhwY2QwdW1mUXNrbG9OS3R4enlzTjlzZXh1Q3c5SFBNRmdmeThCSWdOckQtV1RMN0dKRDBQRmZr?oc=5",
-          "source": "UFC.com",
-          "date": "2026-07-07",
           "injury": false
         },
         {
@@ -426,6 +406,13 @@
           "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxPWEVsb2hjLW9oMkpBeHpHaGp1eVZkQXVyR1dNODFQRko5NmNkVGpXbnFpdk5RVXRPYVM2Szg1S2RFazBHWVhLaGF4ZnlkUWdrZHNNa3lmX3dNOVhIcEdPcWpUb2xHUk1ORzV4UXVqOTM3Z1N3cmZqcWFrMmZCdTV6ei0wc012M1BUSVZ3aTA4bVdoaXR3VVJ6dEI3U2c2TEZlTjF6dDJvTHNneC1MZ2NQd1d2Vm1wTmJiSm4zS2R3?oc=5",
           "source": "MMA Junkie",
           "date": "2026-07-02",
+          "injury": false
+        },
+        {
+          "title": "UFC Books Surging Bonus Machine for Massive UFC Main Event Fight in August - Sports Illustrated",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxORE0yZmhmeE8yVTVPbGY4SUVTNnBxR3Q3NXdMOUxPVHY5R3Z6TFJFenlOWXdCOXI4YWwwRWZsYWxNWDQyV1prdFJ6ZjNlZjNtbnpkRTV4Yzd5eUMyZDIyQ01LenlDZjVZSV9udGJ2Wk1HV1Y4OER5enU1ZkM4aklZZ0FlU1ZOTkdBMjlBUkZvNzZkQ3RHRkxMY29TNjdQamhvR0x5N0NkWHFvenhYZDVXWVZqaEhfZm5kT0ZGbXRn?oc=5",
+          "source": "Sports Illustrated",
+          "date": "2026-07-03",
           "injury": false
         }
       ]
@@ -463,16 +450,16 @@
           "injury": false
         },
         {
-          "title": "UFC Fight Night 284 - Gamrot vs. Salkilld - Sherdog",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQVDdUSWZjdFFhTVpqTEtCVUxQYklpVGR0d0JHc1JKMDhXb09RMXZ1YmlHY3VidEtpSFJ4SGFEb3N4ZWx3T0syRloyV0djMFJRYXpZR2t6TkRGSHlHV3J6LUVnWUI2YmJKa2pCdUZDR25GY0wzT3RPQ0VscG9Hdkd4Q0Vn?oc=5",
-          "source": "Sherdog",
-          "date": "2026-07-02",
-          "injury": false
-        },
-        {
           "title": "UFC Books Surging Bonus Machine for Massive UFC Main Event Fight in August - Sports Illustrated",
           "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxORE0yZmhmeE8yVTVPbGY4SUVTNnBxR3Q3NXdMOUxPVHY5R3Z6TFJFenlOWXdCOXI4YWwwRWZsYWxNWDQyV1prdFJ6ZjNlZjNtbnpkRTV4Yzd5eUMyZDIyQ01LenlDZjVZSV9udGJ2Wk1HV1Y4OER5enU1ZkM4aklZZ0FlU1ZOTkdBMjlBUkZvNzZkQ3RHRkxMY29TNjdQamhvR0x5N0NkWHFvenhYZDVXWVZqaEhfZm5kT0ZGbXRn?oc=5",
           "source": "Sports Illustrated",
+          "date": "2026-07-03",
+          "injury": false
+        },
+        {
+          "title": "‘Here to take over’: Aussie cult hero lands biggest fight of his career… and first UFC main event - Fox Sports",
+          "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxNVmc1eUV0TWgtaHc0WHY2XzJuVDRzd2NYOVV1ejdIWlA0eWdQdUFCN1plMDZDU2hJS2MtclFzaW5FYWFVV2RyUzE3RHpRX2RKX1Y1NzFUR013TlltQnpjSV9DVnNiUmFSbmpIelhPYTR4SmRfZVJ1VDZ0TVhIcHZvQkdMUFo1alNZTXBvc2VnbUQ4SnB0OGdnbEZyUUFxbl9oTmdEY2taVU4xYXJBOE1mazMxWXBNU3lYRHhNSGp0ZUVsNGRCWTRtcGtYcFV5bUVRbEd0dXhENGQzSnFIMlZCT2dLb3hLbjJDTlR0eWYwWHhEd3dHNkpPX2NjUl9KbnJvdW1V0gGDAkFVX3lxTE1WZzV5RXRNaC1odzRYdjZfMm5UNHN3Y1g5VXV6N0haUDR5Z1B1QUI3WmUwNkNTaElLYy1yUXNpbkVhYVVXZHJTMTdEelFfZEpfVjU3MVRHTXdOWW1CemNJX0NWc2JSYVJuakh6WE9hNHhKZF9lUnVUNnRNWEhwdm9CR0xQWjVqU1lNcG9zZWdtRDhKcHQ4Z2dsRnJRQXFuX2hOZ0Rja1pVTjFhckE4TWZrMzFZcE1TeVhEeE1IanRlRWw0ZEJZNG1wa1hwVXltRVFsR3R1eEQ0ZDNKcUgyVkJPZ0tveEtuMkNOVHR5ZjBYeER3d0c2Sk9fY2NSX0pucm91bVU?oc=5",
+          "source": "Fox Sports",
           "date": "2026-07-03",
           "injury": false
         }
@@ -538,9 +525,16 @@
           "injury": false
         },
         {
-          "title": "Charles Oliveira on what makes Machado Garry dangerous for Makhachev - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNNlVRNi1lN2JTRGhfNW1GZTl4Wk9kWlVpR21oWXZEOVdMR2tJQUw1UnI2T0NpVUVCUUtaTFRrcG5mY2ZNNDMyM1RCQ2RSY1h2Q1RJNExURkM0ckpSdDVreERFMWpURVp4TF9QUmt3X0FybzZOWHpBRUlpOHRqTlFxbl85NnlKNk5LWkxFRzd3?oc=5",
+          "title": "Khabib Nurmagomedov: Machado Garry is ‘Difficult’ for Makhachev - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQSVdDT1hfemF0WFpzX3RHVnI4b2hrZFc1WkVIWk9wWmdQb0k3WnFhbnVDUHJCa1NJQWwzTnhDOER3dTBndGlVUWo3ZklIcVU4cVdnUmdkUnBPejdJX0NJLVRpMVUwWm8xd3Q2RXp3d283WEdYZEs4Tmo4bFJnSVoxZEFKNHA3aGhnNzhsM2REQktHTnM2elFz?oc=5",
           "source": "Yahoo Sports",
+          "date": "2026-07-15",
+          "injury": false
+        },
+        {
+          "title": "Charles Oliveira on what makes Machado Garry dangerous for Makhachev - MMA Junkie",
+          "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxNRDlZQWZ4ZlpDRDZlOTdJbDZLVnhuZWxkRDRpUnlIUHlNU3pCQzJEYURDNUUxNW9LZnp5eW1qazZ6VFRidzQ4Y3FMN2hHeTV3T01IZkFUV193cXpZeUExUWJJM2FmU0tRTXVzVnREQUxhNEJKSXgtR3BxUTVVcXV0dTdVbnNDeHdTdW11QTlySWllMGR4cl8waElRTGFBUnMtRnA2bS1YVXJBQzZmNG10UkhEMzA2WGlfVWdoN3BaTWtsYnR1ZFBMZ0dUTzQxa25wQkc2NlN1Y3ZpOUx6SzZldGYzNGd4UVI1elZ3c0w3Z1dtTXY5MnRvZ3pLSElXWll5?oc=5",
+          "source": "MMA Junkie",
           "date": "2026-07-18",
           "injury": false
         },
@@ -552,13 +546,6 @@
           "injury": false
         },
         {
-          "title": "Charles Oliveira explains how teammate Ian Machado Garry can beat Islam Makhachev at UFC 330 - Bloody Elbow",
-          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNN0FBR0k0RS0zWU5Fc3BCLUczTldWTW1KY2tJanl0emZOWEt0RU9DSFZpLWxhUUVSaGJZV21FMko4SFBQMGVJWVNrSmhPcjhpYkxqejZWaTFhYjdna1JsTnprWWRfMUVxM1pqdGxJRGpLZXdyNXpJWW80a1F4QlJkWFo5NDNVRUgwV3Brb1VmVUdpNmRGVkxaTnF0ek9SclloNGN0clJYZEtFRE9oLURHT194WjY3LXB6YUdfc2N3OXR6WVJ1MDJn?oc=5",
-          "source": "Bloody Elbow",
-          "date": "2026-07-17",
-          "injury": false
-        },
-        {
           "title": "Ian Machado Garry predicts when and how he finishes Islam Makhachev at UFC 330 - MMA Fighting",
           "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQc082UjNKaE1IVE4wdWZHTG1pQ21XNHlTakVCRVhKNEYzUlk1eWZ4dEtfRG5ZZ182VThNRkNLLWQ0WFNJUEVEWDJDYjBuU3ljN2pTUGFwWkVRV0tGSGIxd3E5LTNFc0pVWjZfa0h0MWhIeXdiTnNhUTZtaEdWSm9Ra3FUU0R1RXgxVWYwRDlabW13cWsyM0luYXBlQW5xRUtDU2dYY21pWnNnU2E4eWUyZGtEMEZrRlRK?oc=5",
           "source": "MMA Fighting",
@@ -566,10 +553,10 @@
           "injury": false
         },
         {
-          "title": "2026 UFC event schedule: Dricus du Plessis vs. Kamaru Usman, Islam Makhachev vs. Ian Machado Garry on tap - CBS Sports",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNSVh0WWN4LVJzSm92amNRTDl4VjQ1Tnl3S2JaUXpsV0pMeE5Ocy1NdFBkcV9PcFpjYkIzZWI1Wk1aQlBOU3ZweWxvY3NFblNNaERNZVZaNVI1S2VGdDNfeTZqSXkwU2VkX1NxcGFPejRTWnpkNXRhQlR1dGdZcnloLUlidTlFT1Z6eExUU0JtRWFkNnVCVklpRQ?oc=5",
-          "source": "CBS Sports",
-          "date": "2026-07-14",
+          "title": "Charles Oliveira explains how teammate Ian Machado Garry can beat Islam Makhachev at UFC 330 - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxNN0FBR0k0RS0zWU5Fc3BCLUczTldWTW1KY2tJanl0emZOWEt0RU9DSFZpLWxhUUVSaGJZV21FMko4SFBQMGVJWVNrSmhPcjhpYkxqejZWaTFhYjdna1JsTnprWWRfMUVxM1pqdGxJRGpLZXdyNXpJWW80a1F4QlJkWFo5NDNVRUgwV3Brb1VmVUdpNmRGVkxaTnF0ek9SclloNGN0clJYZEtFRE9oLURHT194WjY3LXB6YUdfc2N3OXR6WVJ1MDJn?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-17",
           "injury": false
         }
       ]
@@ -641,6 +628,13 @@
           "injury": false
         },
         {
+          "title": "Tabatha Ricci hopes to leave UFC Oklahoma City unscathed to volunteer for backup role at UFC 330 - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxNYm5JY3hsaTFtNS1wR1hENFdkbGNMdFZ6Vk1sOVFGX0RZeTEzZ1FFUjdRa1UwLVhxM2NwOTNhNUpfcnJocGVpa25YVlR6VGFDSHZGTkZaZ0h6TUVtRm83ZjBfRUROckdCR2Y4cjlMeG5XRUxCdU5mSUctYkE1YzRjcldpTDI5eDdwNDlOYl9tWXQweVlrRWZwSzBocEE2VF9tR0VOOE1nUWsxRzhuTUVrVjRBYUlZTDlBZGxwbVVjcTRjdzZmbVFSdTBYTzl4YzV1?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-18",
+          "injury": false
+        },
+        {
           "title": "Mackenzie Dern reveals how Gillian Robertson beat out Weili Zhang for UFC 330 title shot - Bloody Elbow",
           "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQbDFQT3FNV3ctY1VWRmt5YUFiM2YyVmFhdlBnRXI3MXRqaDlIZ1ByazBXZFlCOGE4dGd1SlNtMXdPbGE2Zm40MV9NMnRLT1lrSUZnUlFiX1VqbThIaWtlTk5yanNtYW5BZHl2UDFSNUZMR0FzYnh2TUpRY0tQR0VZZV9vSFAyVTBiamhwc05JamxwZ3BPT0Z2MTF2Mmowc1hWY1dnc0ljdXZ5eXpabGJKWjhSb2NNYTJPRWZGam5iS3BrQQ?oc=5",
           "source": "Bloody Elbow",
@@ -659,13 +653,6 @@
           "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNa2hRRzl4RGo1T0dVb2p2ckVUQndyMFNPVnREZmNrWFRJUjY1Um04YUdSNTUtSVhkdUlVQWp2UGlmOXMyLTlqWGhzRjZ3ZGM0YWRmOU5VejlfSWNQQTJYSE94aDlZalRaY0JaTjhKTV9qNW1rT3FnRUFfeW1MZjdPcUlUaEZ1Nk42YTVLRjViY0tyclpCNllGaDI1ZjJvektwZEpLa0hnOE9teWx5VnBpUVZqekdzQ09EODZjN0UzbW9mbjJYU2c3SWtZTjA1V1k?oc=5",
           "source": "Bloody Elbow",
           "date": "2026-06-30",
-          "injury": false
-        },
-        {
-          "title": "Gillian Robertson hopes to solidify herself vs. 'legend' Zhang Weili after UFC 330 - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNRi1IS0VFWDRZcjJYblM3VGV6akpwTTM5ZmRYckp6X3Q3M05YUkVid09CQjMycWdhQ04zWEZ3R2Y1WlpHMEtJNGdCVVZpcFAta3pXbi0xV3RhaVNrcEVjb1U0akFVLWJLZnd1SVduakowTk1tRTBqdHczWDhpOFRPOUlPSzVkSmgtY0Q3UU5HbWdaZVE?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-07-02",
           "injury": false
         }
       ]
@@ -773,6 +760,13 @@
           "source": "MMA Junkie",
           "date": "2026-07-01",
           "injury": false
+        },
+        {
+          "title": "UFC 330 adds two fights featuring Jalin Turner and 170lb record holder to Makhachev vs. Garry card - Bloody Elbow",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxNZGR6T3JlZDlIbnlvcjFXMmtSOC15V0REQ2d0NGhpdF9EOFpLdXRtOElxNzBsdGVvOC1SY0ZhbU1TT0szZUJmRGpFdHJCcHV2UW5GaFZjRGZHOUh6dng4WVQxdDMxV1BHRE14bjQzVEx3YjlsaFlPYTlXVFFfNHNXVEFKQnZHZUNFWG5sTG5GY1RHVnRTRzJuRUF3c2NJYmVKVHNWQXpObk1vR1pISDNqMGUxMzZxcEJ3SVRUV3hKc3NXSEJKVnZIRWVEQ3FZdw?oc=5",
+          "source": "Bloody Elbow",
+          "date": "2026-07-02",
+          "injury": false
         }
       ]
     },
@@ -801,17 +795,17 @@
           "injury": false
         },
         {
+          "title": "Anthony Hernandez vs. Gregory Rodriguez headlines UFC Sacramento on Aug. 22 - Yahoo Sports",
+          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPaUxLU19LdFQweDlrRUxWMHlUTnl4d1BYWUduVHFlRHNDRjNycjBZUERldGhjbGt4b3lUYjBtUnk0MEw5MDJBWldMRHpJMFZqdk95ZG9rV1RVQ2hxbTVTc3BPajk1ZDNvNmYydkFYYm0wbkZOOHpkaXhkdmV2aG5GUVVfTWZqYnJEYXRTMnBsZHQ?oc=5",
+          "source": "Yahoo Sports",
+          "date": "2026-06-25",
+          "injury": false
+        },
+        {
           "title": "Anthony Hernandez trains with Sean Strickland ahead of UFC Sacramento - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNRHZxRkhnUVU0d2VPb2wwMlRhWkpzUlMxTTJhbVJmcWM3OEtHSkJSV3BuT3Fmb01PbWNsVTJjQnY1dHFTX1Rkd1ZPWEsxSFlFeFRoYUF2Rk54aFRkRmlPMEtwTlAyOUtVOU9Qb2xtNnlHVEEwRklEd3RSaDhRN3kwZmxzSmVHMzFORHhBaFhjLUJuTV9JM0x2QWJITWk4WkxzQkVvTmM0UHZmRDlIWkRjUUxXajY0RmprUnc2dmhPNW9wQ1gxUWc?oc=5",
           "source": "MMA Junkie",
           "date": "2026-06-29",
-          "injury": false
-        },
-        {
-          "title": "Anthony Hernandez vs. Gregory Rodriguez headlines UFC Sacramento on Aug. 22 - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQZVUya19pelFvY0Qxb0dBbUpmeGI3YlBkT3RUN2VUNWszMWNfc3NLXzVzWTBtajlPVXJNVWMzOGNXOTJfd09jY1VhY29Ya0dwRWtBLUN3Y3piX3R5dHNxQld4MVlKbG1peEdodkFBa2ZKZE9icl9MZHNDcURzQ2U2c3V0NUNwbl96VnNtRFRmRkI1ak9JQ1lLdGtqTERKY1lYNG1fRXFRMHdUNzU2R21zNS1lQzczclBMalczU1dZenNmMlJ6WW55Zw?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-06-25",
           "injury": false
         },
         {
@@ -822,16 +816,16 @@
           "injury": false
         },
         {
-          "title": "Anthony Hernandez trains with Sean Strickland ahead of UFC Sacramento - Yahoo Sports",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQNHJSaVVpNnRwdEY5NlBETmxqTDA1bXY1Q2RvOWs2UFNhN0dEcXlQYUpjM0p1MkhpZmVlZXoxczFaYWVnWVVlTU1WTE1sazVnRmF5Zk1jX3Q2aFNTbnJleTRKa3p1a1V0anc1QnZwTGpuY1hhZXFBOHljVzlOYjFtZVhDVHdLVzBucEtobnZybFNCM0E?oc=5",
-          "source": "Yahoo Sports",
-          "date": "2026-06-29",
-          "injury": false
-        },
-        {
           "title": "UFC Fight Night: Hernandez vs. Rodrigues Live Fight Coverage - ESPN",
           "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE8xQnJBUC1YSjE1QkVQUzR6bXBkUmpkd2RPdURNYksyVGFNd3E2WTFfOXpCVkpJeVFGaF9DNVdSNV91SV9wVEJWVFFJRU9LOG41bVFndnVVdWo1UElPbE92V1l4QkJvekM1NW5xUks3Zw?oc=5",
           "source": "ESPN",
+          "date": "2026-06-27",
+          "injury": false
+        },
+        {
+          "title": "Hernandez - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTFBIZlVreGFCSWlYaWI2SGhRUUtuMlM2UjVNam9VdDBCS3FOZ3htTTh6TjZETzE0bmJxVWptTlhPVTR3NjFzejZ0MXc4WG9Cc05Tc3RHZlBpMnE0Vk9XTHhBQlYya2pKZWc?oc=5",
+          "source": "UFC.com",
           "date": "2026-06-27",
           "injury": false
         }
@@ -842,17 +836,10 @@
       "hasInjuryNews": false,
       "items": [
         {
-          "title": "UFC Sacramento headlined by Anthony Hernandez vs Gregory Rodrigues - MyMMANews",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNVWZVRTFDNEE2SFNhdk93TDBYdzYzSUZqZE50SkE1S1FXYTljNVZ2SXNvdG1jbUppUVo1Ui1PRVBCcjg3VEpGVHBmdWtsUHE1WWJzTThKWUd5UnhOaVVVTDRsYmNqNG5pNHZpV2RMT2lTQ1dSTmpsN01OVlJxUkZsNF93bjh0QjFUblkwbE1WTXhxTzg?oc=5",
-          "source": "MyMMANews",
-          "date": "2026-07-17",
-          "injury": false
-        },
-        {
-          "title": "Anthony Hernandez vs. Gregory Rodriguez headlines UFC Sacramento on Aug. 22 - MMA Mania",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQZVUya19pelFvY0Qxb0dBbUpmeGI3YlBkT3RUN2VUNWszMWNfc3NLXzVzWTBtajlPVXJNVWMzOGNXOTJfd09jY1VhY29Ya0dwRWtBLUN3Y3piX3R5dHNxQld4MVlKbG1peEdodkFBa2ZKZE9icl9MZHNDcURzQ2U2c3V0NUNwbl96VnNtRFRmRkI1ak9JQ1lLdGtqTERKY1lYNG1fRXFRMHdUNzU2R21zNS1lQzczclBMalczU1dZenNmMlJ6WW55Zw?oc=5",
-          "source": "MMA Mania",
-          "date": "2026-06-25",
+          "title": "PIVOTAL MIDDLEWEIGHT BOUT BETWEEN ANTHONY HERNANDEZ AND GREGORY RODRIGUES HEADLINES UFC RETURN TO SACRAMENTO - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPeU9jdDVkOFNMMFd1dmVqZmxMc1ZCcHRISS1QeHdVVmRuUjdlRDZuNS1neHg2ZG4yMGd6RnNCaGJtT2hnVlF0YVNmdnJ5VFVtV1dNV2VIZGZyc1dhS1BvWWFBQjdJSDU0RU9ncVF5Ry1VaTI5X1poUVRPNGdENm95aTFvcUdLd1hDTU5kakVyZVlScUNaZlpORDd4aWRMNHZlMjQ3YVdYbnpYMC1HaHlBaVJ4aWFsa3JxdElr?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-07",
           "injury": false
         },
         {
@@ -860,6 +847,13 @@
           "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPaXZYckdEd1ptcWFfUFdyVW9IMTFVY2tjQ0U0SS1mWnRibDBRbzVMWmcxR05BRnlIWmFqbUgwRVhQUXBhbFRtUDZBX3BMV3pjdWJZeWNLV1oyMlVEWktKQnlpX3hqSURSbjEwM0RGODFHdDRqWWgtVkRWSktZY0NaT0I5OW90NEdwLThMQWpYdHZhMUZvZDhmWGhzZ3hzdUJjV0JHYWdaeEV0RFlfRW9uazN4U3FGR29EbmZ3?oc=5",
           "source": "MMA Fighting",
           "date": "2026-06-26",
+          "injury": false
+        },
+        {
+          "title": "Anthony Hernandez vs. Gregory Rodriguez headlines UFC Sacramento on Aug. 22 - MMA Mania",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQZVUya19pelFvY0Qxb0dBbUpmeGI3YlBkT3RUN2VUNWszMWNfc3NLXzVzWTBtajlPVXJNVWMzOGNXOTJfd09jY1VhY29Ya0dwRWtBLUN3Y3piX3R5dHNxQld4MVlKbG1peEdodkFBa2ZKZE9icl9MZHNDcURzQ2U2c3V0NUNwbl96VnNtRFRmRkI1ak9JQ1lLdGtqTERKY1lYNG1fRXFRMHdUNzU2R21zNS1lQzczclBMalczU1dZenNmMlJ6WW55Zw?oc=5",
+          "source": "MMA Mania",
+          "date": "2026-06-25",
           "injury": false
         },
         {
@@ -904,17 +898,17 @@
           "injury": false
         },
         {
-          "title": "Reinier de Ridder makes light heavyweight return against Roman Dolidze at UFC Sacramento - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQQlg0NUs3ekJma093WTVGUUxGb3BLNmdzLWtSajdLRDRHdndyeEVWTFgwUUlZdzh6elo5a0ZiTm9vU3VDQW5zNXVkblRaM2JnWTU0NEZLWWt3Z1c3MHBjRHdySkpfb1o3WWloUVpKRXkwOHBtdEFxN2NLUXBfTThrNlU1cU5nNlpmSVhzWWdidnJDQkVYMmRfMnQ3c1dLOEhFZGFWR1JiU21HbGR2ZUhNNXFQNFdfZF9FS09fUHpwdlZBb1RtZHllWFc3VWhfVnlTTlFKbWpB?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-07-05",
-          "injury": false
-        },
-        {
           "title": "Reinier de Ridder vs. Roman Dolidze in the works for UFC Sacramento in August - Yahoo Sports",
           "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxPeHh2c0JvWXNPZFluNjNXcEt0allsbTRoVGpCNGp3QUV1NHlXUlFEb1czQXJIUUtYQzd5cEpVXzVHT0lidWpBTDRleTNYazFnZkhIQWUwSFVsc1pZVWpJWnkwS3hwemF3eUpuLWJwOHE5U1YyeXJuejcyc0d2dk5vUDhUeFplUE0?oc=5",
           "source": "Yahoo Sports",
           "date": "2026-07-03",
+          "injury": false
+        },
+        {
+          "title": "Reinier de Ridder makes light heavyweight return against Roman Dolidze at UFC Sacramento - MMA Fighting",
+          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxQQlg0NUs3ekJma093WTVGUUxGb3BLNmdzLWtSajdLRDRHdndyeEVWTFgwUUlZdzh6elo5a0ZiTm9vU3VDQW5zNXVkblRaM2JnWTU0NEZLWWt3Z1c3MHBjRHdySkpfb1o3WWloUVpKRXkwOHBtdEFxN2NLUXBfTThrNlU1cU5nNlpmSVhzWWdidnJDQkVYMmRfMnQ3c1dLOEhFZGFWR1JiU21HbGR2ZUhNNXFQNFdfZF9FS09fUHpwdlZBb1RtZHllWFc3VWhfVnlTTlFKbWpB?oc=5",
+          "source": "MMA Fighting",
+          "date": "2026-07-05",
           "injury": false
         },
         {
@@ -979,6 +973,13 @@
       "hasInjuryNews": false,
       "items": [
         {
+          "title": "UFC RETURNS TO SHANGHAI WITH A PIVOTAL BANTAMWEIGHT CLASH BETWEEN #3 UMAR NURMAGOMEDOV AND #5 SONG YADONG - UFC.com",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQcWtoWEtQX0xZVXJmNTlBSFdVNE1ZUFNkX0dGZXpqY2RFeEthMVNBWHd0RnloMEktRmdLRXl2RUgzTUNDWGs3VW9DSG1nMmVqMGJ3SkNNOHVEVzRkNzI2OTV4VndnbWdlM3ljR2lZOG1oaGpaR0U2TTlmOXFESW55d2FfUFJtQVhNR3NxbkJQMmFXTHNXNklCUUJMSE5xblJFOU5HZDNNcHhrLVJ4UDhTTzJZRndPQmV6Z0E?oc=5",
+          "source": "UFC.com",
+          "date": "2026-07-08",
+          "injury": false
+        },
+        {
           "title": "UFC Shanghai: Umar Nurmagomedov vs. Song Yadong odds, what to know - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOSkNhd2RSaXpHRVRrVVVjMnd5SWlIcGFVZlVNamdZYmxIbWdxcVJDQmVLY3RjQnIxRHBxNWlQSGFXakZNWEJ6M3JkU1ppcDJFOVF0Wmd6UFpjY0c0aWNzcG5Ib05pXzFkMDJ6RV9oLW83N2dxX054ckFwMV8xVEtsMkZ6TmRrVHhBa01sUHdNRTZaYWstdFpLc09PYnlMYWZOeS1fc1pXa1Nna2o3NlhGTVJHT0RMTWFuZ0tzVzBmNWJLS05JQmVNOElHdWxSUmlj?oc=5",
           "source": "MMA Junkie",
@@ -986,9 +987,9 @@
           "injury": false
         },
         {
-          "title": "UFC RETURNS TO SHANGHAI WITH A PIVOTAL BANTAMWEIGHT CLASH BETWEEN #3 UMAR NURMAGOMEDOV AND #5 SONG YADONG - UFC.com",
-          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQcWtoWEtQX0xZVXJmNTlBSFdVNE1ZUFNkX0dGZXpqY2RFeEthMVNBWHd0RnloMEktRmdLRXl2RUgzTUNDWGs3VW9DSG1nMmVqMGJ3SkNNOHVEVzRkNzI2OTV4VndnbWdlM3ljR2lZOG1oaGpaR0U2TTlmOXFESW55d2FfUFJtQVhNR3NxbkJQMmFXTHNXNklCUUJMSE5xblJFOU5HZDNNcHhrLVJ4UDhTTzJZRndPQmV6Z0E?oc=5",
-          "source": "UFC.com",
+          "title": "UFC Fight Night: Nurmagomedov vs. Song Live Fight Coverage - ESPN",
+          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE93Y3Q4UzJ2WkxqZ2MtdzAyc2k0dWV0TnNIQXRrR0F3MkpKejVBcVNxcTZIdmFDajVjcTdrTjdpS1ZSM1R1Tm5xaU04S3ZveW1vaUdQYUhDV3h2b21tcTV0MGltdC1rOFZ1TkJkMUtTSQ?oc=5",
+          "source": "ESPN",
           "date": "2026-07-08",
           "injury": false
         },
@@ -997,13 +998,6 @@
           "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPZ1JJUXF4MEFXcm1NR1JacUFmZFhEcGJqLUg4cXVBajRwZTJQLVp5Qjc4RGgtOHdxVWtSWFM1My1Wd2FYV0luNTZpSHNqT3dwQkVENXBIdGpWc2E0VUZPblVTTzQ4bExlTkF0YjBaUDRLeWFydmNaVUJkLVpmS1BocDVLNUFCS1Q0dV9PM0l5bE1xcWFlTFEtZWJR?oc=5",
           "source": "MMA Fighting",
           "date": "2026-07-02",
-          "injury": false
-        },
-        {
-          "title": "UFC Fight Night: Nurmagomedov vs. Song Live Fight Coverage - ESPN",
-          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE93Y3Q4UzJ2WkxqZ2MtdzAyc2k0dWV0TnNIQXRrR0F3MkpKejVBcVNxcTZIdmFDajVjcTdrTjdpS1ZSM1R1Tm5xaU04S3ZveW1vaUdQYUhDV3h2b21tcTV0MGltdC1rOFZ1TkJkMUtTSQ?oc=5",
-          "source": "ESPN",
-          "date": "2026-07-08",
           "injury": false
         },
         {
@@ -1063,7 +1057,7 @@
         },
         {
           "title": "Paddy Pimblett makes a big jump in lightweight rankings - ESPN",
-          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNOHo3LW4wRHYtUEdOVTZzQ084MG5HcWJzSHpGbDFVdHBKeDQ2dVVCM3dUX1RtSEQtc3RXVzZzLURfUHUwREdnUUlaYXBEd0VLSG9ueWNEWFpCNkd1MHFhU1Vpc0p0RkszN2RyNUQ3Ul9DMC0yZEI2R08zZ3BuajBKLTBhMER0MHMxbXBBMWdaM3V6S25Jd3Z0eE9JT1g1UGZYRkE?oc=5",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNZkFSdVpma0FJMlVwQ3JCZm1LX3F0dDlIMjRkeFMwWGlpZi0zRGZaUXU5Y0x6YU02SDZLVktEd1ZHMEdYdWdDXzdVZmFhT18wa0lqREJFSTloZ1NhSmw0aFE2Q1ZqZnhUMXZBWTB6RDA0VzJRd0d2THczWjBjT2VuRVFtQTZ6TFlRT29FOWYwTThwM2FZNmk5YlZhWHZ0RlE?oc=5",
           "source": "ESPN",
           "date": "2026-07-14",
           "injury": false
@@ -1176,13 +1170,6 @@
           "injury": false
         },
         {
-          "title": "UFC Vegas 119 weigh-in results: 1 fighter misses weight by 3 pounds - MMA Fighting",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOb3ZURlRHQVQwWUNPX3k5MXFJdmtEVEJ5Wl9mMlZCWkp2WGxaOUg3Z0d5V3ZodVFOazVhczBLVWpUVUxjc2o4TmZaQWY3N1o3bFVncWN2eGctdV9Yb2pCd1BDeVRLTFhzdmM4VURPaVcxUmJQcWFHdDBMdmY0VkEzZTZoQnZHT1lwYWNqQmJ2TWRKd0dXODVxN3F4NlJoUUFDQXJPLWZESWI?oc=5",
-          "source": "MMA Fighting",
-          "date": "2026-06-19",
-          "injury": false
-        },
-        {
           "title": "Kevin Borjas working on his UFC rewrite after major upset of Lima - MMA Junkie",
           "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxNVWFRdjU4eVphY3JONUx1aG50UHBqVFBTNGR2WUlmYTRqcWlKQnhBRlFLYWFnbXVkSEpLQnhoMWtGYkZRUTNCYjZ1QmkyYzh1LVpqQ3FhNktfRW5OaWQyVzNoNTNCMG1MWUUzcnhUMmxzd3Q4bTFWcHJRdzE4Wlo3b2hJN1ZnMXFHdWdYR1FfUzdMcTdhQzBRZEdvRXlwVjFnTUVzZHJLcnB5MTRONXVDcEZWa245YnFDVF9iQUdxQTBWNDBUdjJqVFBJNnpvcTdMQ0J2RjNQbEhwLVdib1E?oc=5",
           "source": "MMA Junkie",
@@ -1194,6 +1181,13 @@
           "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNVXNqS1ZvZXV3S0NyMGJRVm9CMDRNd2k3Z0V6UmtsWDYyTHlBMzhzY0lscWFzWC1XQWFLRU1ZSHFuYm15Y01ycGNCSTRDNTk0YXZXS1EwZ0tNMEcyWmExS1N3OU1LRTVKX1ZKQUdmbjlxQlFkV0VyWmE0RWxLUHZRdEZZQTFyNFVSd05EUWZva3BiVll4SHZ6SGJNUmE?oc=5",
           "source": "UFC.com",
           "date": "2026-06-21",
+          "injury": false
+        },
+        {
+          "title": "UFC Shanghai reportedly adds flyweight bout for return to China - Sherdog",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPSVN1MGJNN1UzeXFzMmF0VDBEMlh0UGV2ZlN4cG9pNTU4RUZxMUxFMFU5OGFBUjZjWDdWbEpLbTFaeEdMa0ZhQ2xOQVRZMjhGQlJ0QXVXT1dsdTlibWFPV1JXQ21iVEttNTl0dlhza2VGYThKSk5CbGhzSlVGNk12M1BxTjFZQnZQRjBaTWoyTlJmZGFyX19tRDdFM1hpc3A4MGs3eEU3UdIBrAFBVV95cUxQb3N1T1o3QUJGZEtCVVd1U0hNUER0NjJsenRJeFBCQXBnbG5peEJSbGZ6Wk12V3NMTDRKQ015RW0yOFlocUxiUFZQQ3Y2ZnZFM0JWYWtHV3Qwa3R6a1Fra3RIWjdwU0JCVDVzd3BHRUNRb1duVkFwSng0WGJhMmhsVTJqNkkzMktFT3U5UXhNdGk3aGFMU3BncHZKZVpldGtSWm9oX0dEaEhVSmto?oc=5",
+          "source": "Sherdog",
+          "date": "2026-07-07",
           "injury": false
         },
         {
@@ -1255,13 +1249,6 @@
           "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNMEtfc1FQak9fNDBENFdZY1pQMTV5dDZtWE9QNFRILW5vbzBPOWIzWDk4Nlg5eHJyWURwOWxfWnRubUd3ZGVZU2VUN01fbHowUzlfdWY3WE1UYV9JTnlvVlJFUVg0OURRd1QzenVRTDZvQ2VYODMzVUVLejU2UW16aDk2SnE?oc=5",
           "source": "Sherdog",
           "date": "2026-07-02",
-          "injury": false
-        },
-        {
-          "title": "Fighter who shockingly collapsed during weigh-in among three athletes cut from UFC - talkSPORT",
-          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPQVRWS2ZjTTk3MzdBa3QzZmREbUxfNTJsVzJLb3BwMXA4cWpXMXAzUVh1cnZKOG81ZG1wS25saDRnM2tuQ2l0YngwWG1UNll4YWtBTjVjcU1VV1lIZ0JNd0pPRkt1cTQwVXRDTEQtNzNhMHBzSm1ZM1ZrdGp1OHZIWVFMUml1aHlhZjNFNUxWZmp0UUkyRzgxTnVPWUU4Y2s?oc=5",
-          "source": "talkSPORT",
-          "date": "2026-06-19",
           "injury": false
         }
       ]

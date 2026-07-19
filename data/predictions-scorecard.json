@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-19T01:19:37.135Z",
-  "nGraded": 18,
+  "generatedAt": "2026-07-19T13:06:12.926Z",
+  "nGraded": 22,
   "note": "Internal proof-of-concept. Pre-upgrade CLV uses self-snapshotted close (approximate).",
   "calibration": [
     {
@@ -11,15 +11,15 @@
     },
     {
       "band": "40-50%",
-      "n": 5,
-      "predicted": 0.4438,
-      "actual": 0.4
+      "n": 6,
+      "predicted": 0.4442,
+      "actual": 0.3333
     },
     {
       "band": "50-60%",
-      "n": 6,
-      "predicted": 0.5471,
-      "actual": 0.6667
+      "n": 8,
+      "predicted": 0.5393,
+      "actual": 0.625
     },
     {
       "band": "60-70%",
@@ -29,31 +29,31 @@
     },
     {
       "band": "70-80%",
-      "n": 1,
-      "predicted": 0.7125,
+      "n": 2,
+      "predicted": 0.728,
       "actual": 1
     }
   ],
   "accuracy": {
-    "model": 0.6111,
-    "marketClose": 0.6667
+    "model": 0.6364,
+    "marketClose": 0.7273
   },
   "brier": {
-    "modelOpen": 0.2383,
-    "marketClose": 0.1732
+    "modelOpen": 0.2298,
+    "marketClose": 0.1551
   },
   "logloss": {
-    "modelOpen": 0.6698,
-    "marketClose": 0.5164
+    "modelOpen": 0.6515,
+    "marketClose": 0.4793
   },
   "clv": {
-    "nWithMovement": 18,
-    "hitRate": 0.5556,
-    "avgMovePts": -0.0091,
+    "nWithMovement": 22,
+    "hitRate": 0.5455,
+    "avgMovePts": -0.0061,
     "leanedOnly": {
-      "n": 16,
-      "hitRate": 0.625,
-      "avgMovePts": 0.0037
+      "n": 19,
+      "hitRate": 0.5789,
+      "avgMovePts": 0.0032
     }
   }
 }
