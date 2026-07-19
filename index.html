@@ -113540,7 +113540,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // practice: method / inside-the-distance lose (nobody won), while totals,
   // round-start, distance and "either fighter by decision" all still happened, so
   // they settle normally. Those fall out of btGradeWin because a draw has no winner.
-  function btSettle(b, R, tr) {
+  // NOT named btSettle: window.btSettle is the settle-API caller (btSettleBet), and at
+  // this global scope that assignment clobbers a same-named function — so a bet grader
+  // called `btSettle` would silently become the API call, POST {id:betObject,
+  // status:resultObject} ("bad status: [object Object]"), and leave the bet ungraded.
+  // Keep this internal grader's name distinct from the exposed one.
+  function btGradeStatus(b, R, tr) {
     if (R.isNC) return 'void';
     if (R.isDraw && b.market === 'ML') return 'void';
     return btGradeWin(b, R, tr) ? 'won' : 'lost';
@@ -113585,7 +113590,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     b.legStatuses = legs.map(l => {
       const f = btFindFight(l.fightId, b.evSlug); if (!f) return 'pending';
       const R = btFightResult(f); if (!R) return 'pending';
-      return btSettle({ market: l.market, params: l.params }, R, f.rounds);
+      return btGradeStatus({ market: l.market, params: l.params }, R, f.rounds);
     });
     const liveIdx = legs.map((l, i) => i).filter(i => b.legStatuses[i] !== 'void');
     b.effOdds = liveIdx.length ? btCombine(liveIdx.map(i => legs[i].odds)) : null;
@@ -113606,7 +113611,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
       if (!f) return;
       const R = btFightResult(f); if (!R) return;
-      b.status = btSettle(b, R, f.rounds);
+      b.status = btGradeStatus(b, R, f.rounds);
       if (b.priced && b.clvOk !== false) {
         const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
         if (pair) { const c = b.closeSide === 2 ? pair.o2 : pair.o1; if (c != null) { b.closeOdds = c; b.clv = btClvPts(b.odds, c); } }
