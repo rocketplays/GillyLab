@@ -109304,6 +109304,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Re-checked against the clock on every call so a long-open tab rolls over
     // on its own rather than holding the card forever.
     if (GL_HOLD_RAW && (Date.parse(GL_HOLD_RAW.startsAt || 0) || 0) + CARD_HOLD_MS >= Date.now()) return GL_HOLD_RAW;
+    return pickNextRawEvent(apiData);
+  }
+
+  // The next card by the CLOCK ALONE — the hold does not apply. This is the same
+  // event the carousel lists first (it shows everything starting after the featured
+  // card), which is what the odds/projections page keys off: once a card is over its
+  // lines are dead, and the-odds-api already carries the next card's, so waiting out
+  // the full 34h hold would leave that page empty for a day and a half. Everything
+  // else keeps holding — this is the one surface that deliberately runs ahead.
+  function pickNextRawEvent(apiData) {
     const events = (apiData.data || []).slice()
       // Drop phantom/wrong-year cards: the feed sometimes returns real PAST
       // events stamped with a future date (e.g. "UFC 317" — actually Jun 2025 —
@@ -113350,9 +113360,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       glStartLiveRefresh(featuredRaw);   // no-op unless a card is live right now
       if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 100);
       if (apiData && apiData.data && apiData.data.length) setupPrevEventsDropdown(apiData, featuredRaw);
-      renderProjectionsPage(evt);
+      // Odds + projections run on the NEXT card, not the held one. `oddsEvt` is the
+      // first event on the carousel, and handleOddsPage matches the odds feed against
+      // THIS event's booked pairings (buildBoutPairings/isScheduledBout) — so the page
+      // still can't surface a non-UFC or hypothetical bout just because the feed lists
+      // one. Once the hold expires the two selections converge and it mirrors the
+      // featured card as before.
+      const oddsRaw = (apiData && apiData.data && apiData.data.length) ? pickNextRawEvent(apiData) : null;
+      const oddsEvt = oddsRaw ? (parseApiEvent(oddsRaw) || evt) : evt;
+      renderProjectionsPage(oddsEvt);
       initSimFighterPickers();
-      handleOddsPage(evt);
+      handleOddsPage(oddsEvt);
       renderPickemPage(evt);
       // Deep-link: an email/CTA can open the app straight on Pick'em via /#pickem, or on
       // The Climb via /#climb (same page, other half of the toggle — this is what the
