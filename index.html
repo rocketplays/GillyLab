@@ -13294,6 +13294,35 @@
       { opponent: "Blanca Medina", url: "https://ufcfightpass.com/video/757939", event: "Fury FC 101 · Feb 2025", section: null },
       { opponent: "Ana Martinez", url: "https://ufcfightpass.com/video/695542", event: "Fury FC 96 · Sep 2024", section: null },
     ],
+  // Opponent names below deliberately follow FIGHT_HISTORY, not the video titles:
+  // findTapeStudyUrl() matches on opponent, so "Alejandro Gutierrez" (Fight Pass
+  // titles him "Hondo"), "Joe Ray Vaiza III" ("Ray Vaiza") and "Jose Vasquez-Lopez"
+  // ("Jose Vasquez") have to use the DB spelling or the history rows get no link.
+  "Ezra Elliott": [
+    { opponent: "Ashton Caniglia", url: "https://www.youtube.com/watch?v=RTgT7510vEI", event: "RUF MMA 68 · May 2026", section: "Pre-UFC" },
+    { opponent: "De'Aundre Tipton", url: "https://www.youtube.com/watch?v=x7NcvYnMK3g", event: "RUF MMA 65 · Nov 2025", section: null },
+    { opponent: "Darian Padgett", url: "https://www.youtube.com/watch?v=N_tst5I1mig", event: "RUF MMA 63 · Jun 2025", section: null },
+  ],
+  "Damien Anderson": [
+    { opponent: "Alejandro Gutierrez", url: "https://ufcfightpass.com/video/969246", event: "CFFC 150 · Feb 2026", section: "Pre-UFC" },
+    { opponent: "Gabriel Wanderley", url: "https://ufcfightpass.com/video/717465", event: "Fury FC 98 · Nov 2024", section: null },
+    { opponent: "Emmanuel Calhoune", url: "https://ufcfightpass.com/video/673895", event: "Fury FC 95 · Aug 2024", section: null },
+    { opponent: "Marcelo Reyes", url: "https://ufcfightpass.com/video/650997", event: "Fury FC 92 · Jun 2024", section: null },
+    { opponent: "Joe Ray Vaiza III", url: "https://ufcfightpass.com/video/542584", event: "Fury FC Challenger Series 9 · Nov 2023", section: null },
+  ],
+  "Bogdan Guskov": [
+    { opponent: "Jan Błachowicz", url: "https://ufcfightpass.com/video/893894", event: "UFC 323 · Dec 2025", section: "UFC" },
+    { opponent: "Nikita Krylov", url: "https://ufcfightpass.com/video/835705", event: "UFC on ABC · Jul 2025", section: null },
+    { opponent: "Billy Elekana", url: "https://ufcfightpass.com/video/744044", event: "UFC 311 · Jan 2025", section: null },
+    { opponent: "Ryan Spann", url: "https://ufcfightpass.com/video/616192", event: "UFC on ESPN · Apr 2024", section: null },
+    { opponent: "Zac Pauga", url: "https://ufcfightpass.com/video/582836", event: "UFC Fight Night · Feb 2024", section: null },
+    { opponent: "Volkan Oezdemir", url: "https://ufcfightpass.com/video/516443", event: "UFC Fight Night · Sep 2023", section: null },
+    { opponent: "Vadim Litvin", url: "https://www.youtube.com/watch?v=h0hKYszsJT8", event: "Muradov Professional League 1 · Oct 2021", section: "Pre-UFC" },
+    { opponent: "Sergey Kalinin", url: "https://www.youtube.com/watch?v=id0n19WXA3g", event: "RCC Intro 4 · May 2019", section: null },
+    { opponent: "Ilya Gunenko", url: "https://youtu.be/TeJLuU3L9WE", event: "Fight Nights Global 69 · Jun 2017", section: null },
+    { opponent: "Arkadiy Lisin", url: "https://ufcfightpass.com/video/46778", event: "Tech-KREP FC: Prime Selection 10 · Aug 2016", section: null },
+    { opponent: "Abdulkhalik Magomedov", url: "https://ufcfightpass.com/video/45619", event: "Tech-KREP FC: Prime Selection 9 · Jul 2016", section: null },
+  ],
  };
  function populateTapeStudy(name) {
  const tbody = document.getElementById('ft-tbody');
