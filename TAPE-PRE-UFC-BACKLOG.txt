@@ -78,11 +78,41 @@ Every fighter's playlist was checked against their UFC rows in FIGHT_HISTORY:
   Jalin Turner        2      Ramiz Brahimaj     2      + 1 each for Garry,
   Robertson, Blanchfield, Stoltzfus, Ribovics, Wells, Orolbai, Luque, Gore
 
-Complete: Makhachev 18/18, Dern 16/16, Barboza 31/31, Magny 36/36, Abdul-Malik 5/5.
+Complete: Makhachev 18/18, Dern 16/16.
 
-Careful reading a "1": for several of these the missing bout is the UFC 330 fight
-itself, which is on the card but has obviously not been filmed. Check the date
-before hunting for a video that cannot exist.
+I first wrote here that "several of these are the UFC 330 fight itself, which has
+not been filmed". WRONG — checked it on 2026-07-20 and the UFC 330 bouts are not
+in FIGHT_HISTORY at all, so they never counted as gaps. All 24 already happened.
+What they actually are:
+
+  14  fought since Jan 2025. I called this "playlist lag" and assumed they would
+      appear on their own. Half right at best: searching Turner vs Barboza (Dec 6
+      2025, absent from BOTH men's playlists) found video 893830 immediately —
+      "Jalin Turner vs Edson Barboza UFC 323", 6m45s. The video was there all
+      along. So the playlists are CURATED AND INCOMPLETE, not merely behind. Do
+      not wait for these; search them.
+
+      That said, several recent PPV-headline bouts genuinely are not there under
+      any phrasing tried: Garry vs Belal Muhammad, Robertson vs Lemos, Blanchfield
+      vs Taila Santos, Neal vs Mike Perry, Luque vs Woodley, Brahimaj vs Griffin.
+
+   6  CONTENDER SERIES bouts carrying org "UFC" in our data. WORKED 2026-07-20:
+      searched each as "<Fighter> vs <Opponent>" and placed three —
+        Jasudavicius vs Julia Polastri  282265   DWCS 39, Sep 2021
+        Turner vs Max Mustaki            64840   DWCS 12, Jul 2018
+        Neal vs Chase Waldon             58285   DWCS 3,  Jul 2017
+      Three not on Fight Pass under any phrasing tried: Stoltzfus vs Joe Pyfer,
+      Ribovics vs Thomas Paull, Njokuani vs Mario Felipe de Sousa.
+
+      THE STANDING LESSON: a fighter's UFC playlist ALWAYS omits their Contender
+      Series bout. Never treat the playlist as complete — diff it against their
+      UFC rows and search each gap. This is now documented at the top of
+      place-tape-links.cjs so it does not have to be rediscovered.
+
+   5  genuine older omissions: Blanchfield vs Taila Santos (2023), Neal vs Mike
+      Perry (UFC 245), Luque vs Woodley (UFC 260), Brahimaj vs Max Griffin (2020),
+      and Gore's TUF 29 semifinal — that last one is probably inside a TUF season
+      playlist, not a standalone fight video.
 
 
 "KAUÊ FERNANDES" NAME MISMATCH — RAISED, THEN MEASURED, AND IT IS A NON-ISSUE
@@ -123,7 +153,17 @@ CAVEATS — read before treating a blank as "no footage"
      Mackenzie Dern". Matching on an exact name misses those. Dern was reported as
      having no playlist for exactly this reason.
 
-  3. SOME VIDEOS NEED A SEPARATE PURCHASE even on an active subscription — recent
-     numbered-event fights showed a PURCHASE badge and redirected to /purchase.
-     That does not make the link wrong, only unwatchable on this account, so do not
-     delete a link because it will not play.
+  3. A /video/ LINK THAT REDIRECTS TO /purchase IS NOT A BROKEN LINK. I first read
+     this as "some premium videos need an extra purchase". Wrong on both counts.
+     Measured 2026-07-20: FOUR videos spanning 2012 to 2025, including a regional
+     Cage Warriors bout, ALL redirected to /purchase?from=%2Fvideo%2F<id> in a
+     signed-in browser. A 2012 regional fight is not premium content, so it is not
+     per-video entitlement — the account was registered but had no active
+     subscription on it. Fight Pass separates the two states: a registered account
+     browses playlists and search fine (which is why every harvest in this file
+     worked), but plays nothing.
+
+     So: never judge a link by whether it plays. Judge it by the OG metadata on
+     ufcfightpass.com/video/<bare-id>, which is public and names the fighters and
+     the date. And expect site visitors without a subscription to hit this wall on
+     every Fight Pass link we publish — that is inherent to the source, not a bug.

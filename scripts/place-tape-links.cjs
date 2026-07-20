@@ -28,6 +28,21 @@
  * left out. A missing link costs a re-run; a wrong link is a lie on the page that
  * nobody will catch, because a plausible-looking video plays.
  *
+ * THE PER-FIGHTER PLAYLIST IS NOT THE WHOLE JOB — ALWAYS ALSO SEARCH DWCS
+ * A fighter's "all of X's UFC fights" playlist excludes their Contender Series
+ * bout, every time, even though FIGHT_HISTORY tags that bout org "UFC". Harvest
+ * the playlist alone and you will be short by exactly one fight for anyone who
+ * came up through DWCS, with nothing to indicate it. So after harvesting, diff
+ * the result against the fighter's UFC rows and search Fight Pass for each gap as
+ *     "<Fighter> vs <Opponent>"
+ * which is the phrasing that ranks the individual bout first. Same applies to TUF
+ * bouts, which live inside season playlists rather than as standalone videos.
+ *
+ * SEARCH HARD-CAPS AT 20 RESULTS AND DOES NOT PAGINATE. Scrolling adds nothing.
+ * So "not in the results" means "not in the top 20 for that phrasing", NOT "does
+ * not exist" — try the opponent's name alone as a second phrasing before
+ * concluding a video is absent.
+ *
  * WHAT IT WILL NOT CATCH
  * A link that points at the wrong fight but whose name resolves cleanly. The
  * duplicate-URL report at the end is the cheap net for that — it is how
