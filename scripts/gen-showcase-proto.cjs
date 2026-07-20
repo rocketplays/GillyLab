@@ -791,6 +791,16 @@ ${matchupFree.css || ''}
          still shows. */
       gap:12px; padding:0 0 2px;
       scrollbar-width:none;
+      /* SIZE EACH CARD TO ITS OWN CONTENT. A flex row defaults to align-items:stretch,
+         so every card grew to match the TALLEST one in its group — and .fx-frame's
+         margin-top:auto then dumped the whole difference into a single gap directly
+         under the description. Two things made it big: descriptions run one to three
+         lines, and .fx-card.wide's frame is 330px here against everyone else's 290px,
+         so every card sharing a row with the hub inherited 40px of dead space before
+         the text variance was even counted. That is the empty band under the premium
+         slides. Stretching buys nothing on a phone anyway — the row shows one 86vw
+         card at a time, so there is no neighbour to line the frames up with. */
+      align-items:flex-start;
     }
     .fx-grid::-webkit-scrollbar{display:none}
     .fx-card{flex:0 0 86vw; scroll-snap-align:start}

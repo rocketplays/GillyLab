@@ -739,6 +739,16 @@
          still shows. */
       gap:12px; padding:0 0 2px;
       scrollbar-width:none;
+      /* SIZE EACH CARD TO ITS OWN CONTENT. A flex row defaults to align-items:stretch,
+         so every card grew to match the TALLEST one in its group — and .fx-frame's
+         margin-top:auto then dumped the whole difference into a single gap directly
+         under the description. Two things made it big: descriptions run one to three
+         lines, and .fx-card.wide's frame is 330px here against everyone else's 290px,
+         so every card sharing a row with the hub inherited 40px of dead space before
+         the text variance was even counted. That is the empty band under the premium
+         slides. Stretching buys nothing on a phone anyway — the row shows one 86vw
+         card at a time, so there is no neighbour to line the frames up with. */
+      align-items:flex-start;
     }
     .fx-grid::-webkit-scrollbar{display:none}
     .fx-card{flex:0 0 86vw; scroll-snap-align:start}
@@ -1064,7 +1074,7 @@
 <script>
 (function(){
 var LD={
-  "generatedAt": "2026-07-19T16:56:07.611Z",
+  "generatedAt": "2026-07-20T13:57:07.099Z",
   "rankings": {
     "division": "Bantamweight",
     "rows": [
@@ -1339,9 +1349,9 @@ var LD={
       "sapm": 3.4
     },
     "odds": {
-      "a": "-535",
-      "b": "+387",
-      "books": 6,
+      "a": "-544",
+      "b": "+391",
+      "books": 7,
       "favA": true,
       "favB": false
     }
@@ -1349,33 +1359,33 @@ var LD={
   "parlay": {
     "event": "UFC Fight Night",
     "kind": "moneyline",
-    "book": "Consensus · 6 books",
+    "book": "Consensus · 5 books",
     "legs": [
       {
         "pick": "Magomed Ankalaev",
         "slug": "magomed-ankalaev",
         "opponent": "Bogdan Guskov",
         "label": "to win",
-        "odds": "-535"
+        "odds": "-544"
       },
       {
         "pick": "Steve Erceg",
         "slug": "steve-erceg",
         "opponent": "Ramazan Temirov",
         "label": "to win",
-        "odds": "-120"
+        "odds": "-118"
       },
       {
         "pick": "Islam Dulatov",
         "slug": "islam-dulatov",
         "opponent": "Wellington Turman",
         "label": "to win",
-        "odds": "-735"
+        "odds": "-814"
       }
     ],
-    "combined": "+147",
+    "combined": "+146",
     "stake": 100,
-    "payout": 247
+    "payout": 246
   },
   "styleDemo": {
     "a": {
@@ -1439,9 +1449,9 @@ var LD={
         "rank2": "#10",
         "weight": "Light Heavyweight",
         "rounds": 5,
-        "o1": "-535",
-        "o2": "+387",
-        "books": 6,
+        "o1": "-544",
+        "o2": "+391",
+        "books": 7,
         "title": false,
         "section": "Main Card",
         "pos": "Main Card 1",
@@ -1454,8 +1464,8 @@ var LD={
             "stance": "Orthodox",
             "gym": "Gorets Fight Club",
             "layoff": {
-              "txt": "9 mo",
-              "mo": 9,
+              "txt": "10 mo",
+              "mo": 10,
               "long": false
             },
             "l5": [
@@ -1558,9 +1568,9 @@ var LD={
         "rank2": "NR",
         "weight": "Flyweight",
         "rounds": 3,
-        "o1": "-120",
-        "o2": "-102",
-        "books": 6,
+        "o1": "-118",
+        "o2": "-103",
+        "books": 5,
         "title": false,
         "section": "Main Card",
         "pos": "Main Card 2",
@@ -1677,8 +1687,8 @@ var LD={
         "rank2": "NR",
         "weight": "Welterweight",
         "rounds": 3,
-        "o1": "-735",
-        "o2": "+505",
+        "o1": "-814",
+        "o2": "+545",
         "books": 7,
         "title": false,
         "section": "Main Card",
@@ -1796,8 +1806,8 @@ var LD={
         "rank2": "NR",
         "weight": "Lightweight",
         "rounds": 3,
-        "o1": "-389",
-        "o2": "+297",
+        "o1": "-372",
+        "o2": "+288",
         "books": 6,
         "title": false,
         "section": "Main Card",
@@ -1915,8 +1925,8 @@ var LD={
         "rank2": "#9",
         "weight": "Heavyweight",
         "rounds": 3,
-        "o1": "-269",
-        "o2": "+216",
+        "o1": "-276",
+        "o2": "+221",
         "books": 7,
         "title": false,
         "section": "Main Card",
@@ -2024,125 +2034,6 @@ var LD={
         }
       },
       {
-        "f1": "Valter Walker",
-        "f2": "Thomas Petersen",
-        "s1": "valter-walker",
-        "s2": "thomas-petersen",
-        "rec1": "15-1-0",
-        "rec2": "11-4-0",
-        "rank1": "#14",
-        "rank2": "NR",
-        "weight": "Heavyweight",
-        "rounds": 3,
-        "o1": "-201",
-        "o2": "+165",
-        "books": 7,
-        "title": false,
-        "section": "Prelims",
-        "pos": "Prelims 1",
-        "main": false,
-        "tape": {
-          "a": {
-            "ht": "6'6\"",
-            "reach": "78.5\"",
-            "age": 28,
-            "stance": "Orthodox",
-            "gym": "GOR MMA",
-            "layoff": {
-              "txt": "9 mo",
-              "mo": 9,
-              "long": false
-            },
-            "l5": [
-              {
-                "r": "W",
-                "opp": "Louie Sutherland",
-                "method": "Submission (Heel hook)",
-                "round": "1",
-                "time": "1:24"
-              },
-              {
-                "r": "W",
-                "opp": "Kennedy Nzechukwu",
-                "method": "Submission (Inverted heel hook)",
-                "round": "1",
-                "time": "0:54"
-              },
-              {
-                "r": "W",
-                "opp": "Don'Tale Mayes",
-                "method": "Submission (Heel hook)",
-                "round": "1",
-                "time": "1:17"
-              },
-              {
-                "r": "W",
-                "opp": "Junior Tafa",
-                "method": "Submission (Heel hook)",
-                "round": "1",
-                "time": "4:56"
-              },
-              {
-                "r": "L",
-                "opp": "Łukasz Brzeski",
-                "method": "Decision (Unanimous)",
-                "round": "3",
-                "time": "5:00"
-              }
-            ]
-          },
-          "b": {
-            "ht": "6'1\"",
-            "reach": "74\"",
-            "age": 31,
-            "stance": "Southpaw",
-            "gym": "The Striking Institute",
-            "layoff": {
-              "txt": "3 mo",
-              "mo": 3,
-              "long": false
-            },
-            "l5": [
-              {
-                "r": "W",
-                "opp": "Guilherme Pat",
-                "method": "Decision (Majority)",
-                "round": "3",
-                "time": "5:00"
-              },
-              {
-                "r": "L",
-                "opp": "Vitor Petrino",
-                "method": "KO (Punches)",
-                "round": "3",
-                "time": "0:26"
-              },
-              {
-                "r": "W",
-                "opp": "Don'Tale Mayes",
-                "method": "Decision (Unanimous)",
-                "round": "3",
-                "time": "5:00"
-              },
-              {
-                "r": "L",
-                "opp": "Shamil Gaziev",
-                "method": "TKO (Punch)",
-                "round": "1",
-                "time": "3:12"
-              },
-              {
-                "r": "W",
-                "opp": "Mohammed Usman",
-                "method": "Decision (Unanimous)",
-                "round": "3",
-                "time": "5:00"
-              }
-            ]
-          }
-        }
-      },
-      {
         "f1": "Abubakar Vagaev",
         "f2": "Saygid Izagakhmaev",
         "s1": "",
@@ -2157,8 +2048,8 @@ var LD={
         "o2": null,
         "books": 0,
         "title": false,
-        "section": "Prelims",
-        "pos": "Prelims 2",
+        "section": "Main Card",
+        "pos": "Main Card 6",
         "main": false,
         "tape": {
           "a": {
@@ -2262,6 +2153,125 @@ var LD={
         }
       },
       {
+        "f1": "Valter Walker",
+        "f2": "Thomas Petersen",
+        "s1": "valter-walker",
+        "s2": "thomas-petersen",
+        "rec1": "15-1-0",
+        "rec2": "11-4-0",
+        "rank1": "#14",
+        "rank2": "NR",
+        "weight": "Heavyweight",
+        "rounds": 3,
+        "o1": "-196",
+        "o2": "+161",
+        "books": 7,
+        "title": false,
+        "section": "Prelims",
+        "pos": "Prelims 1",
+        "main": false,
+        "tape": {
+          "a": {
+            "ht": "6'6\"",
+            "reach": "78.5\"",
+            "age": 28,
+            "stance": "Orthodox",
+            "gym": "GOR MMA",
+            "layoff": {
+              "txt": "9 mo",
+              "mo": 9,
+              "long": false
+            },
+            "l5": [
+              {
+                "r": "W",
+                "opp": "Louie Sutherland",
+                "method": "Submission (Heel hook)",
+                "round": "1",
+                "time": "1:24"
+              },
+              {
+                "r": "W",
+                "opp": "Kennedy Nzechukwu",
+                "method": "Submission (Inverted heel hook)",
+                "round": "1",
+                "time": "0:54"
+              },
+              {
+                "r": "W",
+                "opp": "Don'Tale Mayes",
+                "method": "Submission (Heel hook)",
+                "round": "1",
+                "time": "1:17"
+              },
+              {
+                "r": "W",
+                "opp": "Junior Tafa",
+                "method": "Submission (Heel hook)",
+                "round": "1",
+                "time": "4:56"
+              },
+              {
+                "r": "L",
+                "opp": "Łukasz Brzeski",
+                "method": "Decision (Unanimous)",
+                "round": "3",
+                "time": "5:00"
+              }
+            ]
+          },
+          "b": {
+            "ht": "6'1\"",
+            "reach": "74\"",
+            "age": 31,
+            "stance": "Southpaw",
+            "gym": "The Striking Institute",
+            "layoff": {
+              "txt": "4 mo",
+              "mo": 4,
+              "long": false
+            },
+            "l5": [
+              {
+                "r": "W",
+                "opp": "Guilherme Pat",
+                "method": "Decision (Majority)",
+                "round": "3",
+                "time": "5:00"
+              },
+              {
+                "r": "L",
+                "opp": "Vitor Petrino",
+                "method": "KO (Punches)",
+                "round": "3",
+                "time": "0:26"
+              },
+              {
+                "r": "W",
+                "opp": "Don'Tale Mayes",
+                "method": "Decision (Unanimous)",
+                "round": "3",
+                "time": "5:00"
+              },
+              {
+                "r": "L",
+                "opp": "Shamil Gaziev",
+                "method": "TKO (Punch)",
+                "round": "1",
+                "time": "3:12"
+              },
+              {
+                "r": "W",
+                "opp": "Mohammed Usman",
+                "method": "Decision (Unanimous)",
+                "round": "3",
+                "time": "5:00"
+              }
+            ]
+          }
+        }
+      },
+      {
         "f1": "Uran Satybaldiev",
         "f2": "Dustin Jacoby",
         "s1": "uran-satybaldiev",
@@ -2277,7 +2287,7 @@ var LD={
         "books": 0,
         "title": false,
         "section": "Prelims",
-        "pos": "Prelims 3",
+        "pos": "Prelims 2",
         "main": false,
         "tape": {
           "a": {
@@ -2391,12 +2401,12 @@ var LD={
         "rank2": "NR",
         "weight": "Welterweight",
         "rounds": 3,
-        "o1": "+316",
-        "o2": "-419",
+        "o1": "+310",
+        "o2": "-412",
         "books": 7,
         "title": false,
         "section": "Prelims",
-        "pos": "Prelims 4",
+        "pos": "Prelims 3",
         "main": false,
         "tape": {
           "a": {
@@ -2510,12 +2520,12 @@ var LD={
         "rank2": "NR",
         "weight": "Lightweight",
         "rounds": 3,
-        "o1": "+155",
-        "o2": "-187",
+        "o1": "+157",
+        "o2": "-190",
         "books": 7,
         "title": false,
         "section": "Prelims",
-        "pos": "Prelims 5",
+        "pos": "Prelims 4",
         "main": false,
         "tape": {
           "a": {
@@ -2629,12 +2639,12 @@ var LD={
         "rank2": "NR",
         "weight": "Light Heavyweight",
         "rounds": 3,
-        "o1": "-671",
-        "o2": "+471",
+        "o1": "-701",
+        "o2": "+480",
         "books": 7,
         "title": false,
         "section": "Prelims",
-        "pos": "Prelims 6",
+        "pos": "Prelims 5",
         "main": false,
         "tape": {
           "a": {
@@ -2693,8 +2703,8 @@ var LD={
             "stance": "Orthodox",
             "gym": "Brazilian TKO",
             "layoff": {
-              "txt": "3 mo",
-              "mo": 3,
+              "txt": "4 mo",
+              "mo": 4,
               "long": false
             },
             "l5": [
@@ -2748,12 +2758,12 @@ var LD={
         "rank2": "NR",
         "weight": "Lightweight",
         "rounds": 3,
-        "o1": "-156",
-        "o2": "+130",
+        "o1": "-179",
+        "o2": "+148",
         "books": 7,
         "title": false,
         "section": "Prelims",
-        "pos": "Prelims 7",
+        "pos": "Prelims 6",
         "main": false,
         "tape": {
           "a": {
@@ -2865,8 +2875,8 @@ var LD={
         "stance": "Orthodox",
         "gym": "Gorets Fight Club",
         "layoff": {
-          "txt": "9 mo",
-          "mo": 9,
+          "txt": "10 mo",
+          "mo": 10,
           "long": false
         },
         "l5": [
