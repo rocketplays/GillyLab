@@ -5,6 +5,11 @@
  *
  *     node scripts/place-tape-links.cjs links.txt            # report only
  *     node scripts/place-tape-links.cjs links.txt --write    # apply + verify
+ *     node scripts/place-tape-links.cjs --gaps <event-slug>  # PASS 2 checklist
+ *
+ * A sweep is NOT DONE until --gaps prints nothing it can still find. Run it after
+ * every --write; it lists the UFC bouts on that card with no video yet and the
+ * exact search phrasing to use for each.
  *
  * Input is the format the links get collected in by hand, one record per line
  * (or several run together on one line — both work):
@@ -55,6 +60,30 @@
  *     vs "Karine Silva" surname-matched the "Mayra Bueno Silva" video — a
  *     different fight, already placed. That would have written a confidently
  *     wrong link. Require first AND last name in the title.
+ *
+ * ── REMATCHES: THE SCRIPT WILL NOT GUESS, AND NEITHER SHOULD YOU ───────────
+ * When a fighter met an opponent N times and the input supplies fewer than N
+ * links, WHICH meeting a video belongs to is not derivable from ordering. The
+ * script used to assume "Nth mention = Nth-most-recent meeting" and that put
+ * three confidently wrong links on live profiles before it was caught:
+ *
+ *   video/437012  is "Rodrigues vs Ferreira UFC 283, Jan 21 2023"   -> filed on
+ *                 their Mar 2026 rematch
+ *   Z6lRqRBFxi0   is "Gamrot vs Norman Parke 1 | KSW 53" — a free fight of the
+ *                 FIRST meeting released before KSW 53, i.e. KSW 39, May 2017
+ *                 -> filed on KSW 40, Oct 2017
+ *   aimp8cHDyVw   is "JUNGLE FIGHT 85" = Jan 2016 -> filed on JF 88, Jun 2016
+ *
+ * None of them looked wrong. The event label the script writes is exactly what
+ * findTapeStudyUrl matches a history row on, so a mislabelled row does not fail
+ * to link — it links to the wrong fight, silently.
+ *
+ * Now the script REFUSES these and asks you to pin the meeting:
+ *     – Fighter vs Opponent @2023          (year)
+ *     – Fighter vs Opponent @2016-01       (year-month, for two meetings in one year)
+ * Get the real date from the video itself, both of which work logged out:
+ *     Fight Pass  ufcfightpass.com/video/<bare-id>       -> og:description has it
+ *     YouTube     youtube.com/oembed?url=<url>&format=json -> title names the event
  *
  * WHAT IT WILL NOT CATCH
  * A link that points at the wrong fight but whose name resolves cleanly. The
@@ -145,6 +174,13 @@ const ALIAS = {
   'Ramiz Brahimaj|Michael Gillmore': 'Micheal Gillmore',
   'Ian Machado Garry|Lawrence Tracey': 'Lawrence Jordan Tracey',
   'Ian Machado Garry|Matt Figlak': 'Mateusz Figlak',
+
+  // Aug 22 2026 card. The Korean names are surname-first in the DB and given-name
+  // first on Fight Pass, which no normaliser can bridge — they need spelling out.
+  'Anthony Hernandez|Jun Young Park': 'Park Jun-yong',
+  'Gregory Rodrigues|Junyong Park': 'Park Jun-yong',
+  'Kennedy Nzechukwu|Da-un Jung': 'Jung Da-un',
+  'Elise Reed|Loopy Godinez': 'Lupita Godinez',      // "Loopy" is her nickname
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
@@ -286,18 +322,61 @@ function resolve({ order, byFighter }, FH, TS) {
     // Nth mention of an opponent is the Nth-most-recent meeting. This covers both
     // the numbered form ("Sergey Spivak 2" then "Sergey Spivak") and the plain one
     // — Błachowicz has two unnumbered "Corey Anderson" rows, five years apart.
+    // How many links did the input supply per opponent? Needed to spot the
+    // one-video-two-meetings case before it silently picks the wrong meeting.
+    const supplied = new Map();
+    for (const { opp } of byFighter.get(gk)) {
+      const b = opp.replace(/\s*@\d{4}\s*$/, '').replace(/\s+\d+$/, '');
+      supplied.set(loose(b), (supplied.get(loose(b)) || 0) + 1);
+    }
+
     const nth = new Map();
     for (const { opp, url } of byFighter.get(gk)) {
-      const bare = opp.replace(/\s+\d+$/, '');
+      // "Opponent @2023" or, when two meetings fall in the SAME year (Lemos met
+      // Mayra Cantuária twice in 2016), "Opponent @2016-01".
+      const pm = /@(\d{4})(?:-(\d{2}))?\s*$/.exec(opp) || [];
+      const pin = pm[1], pinMonth = pm[2];
+      const bare = opp.replace(/\s*@\d{4}(?:-\d{2})?\s*$/, '').replace(/\s+\d+$/, '');
       const tag = key + '|' + bare;
       if (DROP[tag]) { problems.push(['DROPPED', key, bare + ' — ' + DROP[tag]]); continue; }
       const dbName = ALIAS[tag] || bare;
       const cands = hist.map((r, i) => ({ r, i })).filter((x) => loose(x.r.opponent) === loose(dbName));
       if (!cands.length) { problems.push(['NO BOUT', key, opp + '  ->? ' + (suggest(hist, bare) || '(nothing close)')]); continue; }
-      const n = nth.get(dbName) || 0;
-      nth.set(dbName, n + 1);
-      if (!cands[n]) { problems.push(['EXTRA', key, opp + ' — more links than meetings']); continue; }
-      rows.push({ i: cands[n].i, opponent: cands[n].r.opponent, url, hist: cands[n].r });
+
+      // AMBIGUOUS REMATCH. They met more times than we have links for, so which
+      // meeting this video belongs to is NOT derivable from ordering — and the
+      // event label we write from the chosen row is what findTapeStudyUrl matches
+      // on, so guessing here puts a confidently wrong link on the profile. It did:
+      // video/437012 is "Rodrigues vs Ferreira UFC 283, January 21 2023" and got
+      // filed against their March 2026 rematch. Pin it with "Opponent @YYYY" after
+      // reading the year off ufcfightpass.com/video/<id> (public, no login).
+      if (!pin && cands.length > 1 && (supplied.get(loose(bare)) || 0) < cands.length) {
+        problems.push(['AMBIGUOUS', key, bare + ' — ' + (supplied.get(loose(bare)) || 0) +
+          ' link(s) for ' + cands.length + ' meetings (' + cands.map((x) => x.r.date).join(' / ') +
+          '). Check ' + url + ' and pin the year: "' + bare + ' @YYYY"']);
+        continue;
+      }
+
+      let chosen;
+      if (pin) {
+        const MON = { Jan: '01', Feb: '02', Mar: '03', Apr: '04', May: '05', Jun: '06',
+          Jul: '07', Aug: '08', Sep: '09', Oct: '10', Nov: '11', Dec: '12' };
+        const matches = cands.filter((x) => {
+          const d = String(x.r.date);
+          if (!d.includes(pin)) return false;
+          if (!pinMonth) return true;
+          return MON[(d.match(/^([A-Z][a-z]{2})/) || [])[1]] === pinMonth;
+        });
+        if (!matches.length) { problems.push(['BAD PIN', key, bare + ' @' + pin + (pinMonth ? '-' + pinMonth : '') + ' — no meeting then']); continue; }
+        if (matches.length > 1) { problems.push(['BAD PIN', key, bare + ' @' + pin + ' matches ' + matches.length + ' meetings (' + matches.map((x) => x.r.date).join(' / ') + ') — add the month, "@YYYY-MM"']); continue; }
+        chosen = matches[0];
+      } else {
+        const n = nth.get(dbName) || 0;
+        nth.set(dbName, n + 1);
+        if (!cands[n]) { problems.push(['EXTRA', key, opp + ' — more links than meetings']); continue; }
+        chosen = cands[n];
+      }
+      rows.push({ i: chosen.i, opponent: chosen.r.opponent, url, hist: chosen.r });
     }
     rows.sort((a, b) => a.i - b.i);   // newest-first, same order as FIGHT_HISTORY
 
@@ -394,12 +473,60 @@ function verify(html, keys) {
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * PASS 2. Lists every org=="UFC" bout on a card that has no video yet, using the
+ * app's own findTapeStudyUrl so it agrees with what a reader actually sees.
+ * DWCS bouts are called out because a fighter's playlist never contains theirs.
+ */
+function gapsFor(slug) {
+  const h = readIndex();
+  const ctx = vm.createContext({});
+  vm.runInContext(
+    objectSource(h, 'const TAPE_STUDY = {').src + ';\n' +
+    objectSource(h, 'const FIGHT_HISTORY = {').src + ';\n' +
+    functionSource(h, 'function normalizeFighterNameForMatch(') + '\n' +
+    functionSource(h, 'function findTapeStudyUrl(') + '\n' +
+    'globalThis.TS = TAPE_STUDY; globalThis.FH = FIGHT_HISTORY; globalThis.F = findTapeStudyUrl;', ctx);
+
+  const feed = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/event.json'), 'utf8'));
+  const ev = (feed.data || []).find((e) => e.slug === slug);
+  if (!ev) throw new Error('no such event in data/event.json: ' + slug);
+
+  const names = [];
+  for (const b of ev.bouts || []) for (const f of b.fighters || []) {
+    const n = ctx.FH[f.fighterName] ? f.fighterName
+      : String(f.fighterName).normalize('NFD').replace(/[̀-ͯ]/g, '');
+    if (!names.includes(n)) names.push(n);
+  }
+
+  let total = 0, dwcs = 0;
+  console.log('%s — pass 2 checklist\n', slug);
+  for (const n of names) {
+    const miss = (ctx.FH[n] || []).filter((r) => String(r.org || '') === 'UFC' && !ctx.F(n, r.opponent, r.date));
+    if (!miss.length) continue;
+    console.log('  ' + n);
+    for (const r of miss) {
+      total++;
+      const isD = /contender|dwcs/i.test(r.event || '');
+      if (isD) dwcs++;
+      console.log('      search: "' + n + ' vs ' + r.opponent + '"   (' + r.date + ')' + (isD ? '   [DWCS]' : ''));
+    }
+  }
+  console.log('\n%d bout(s) with no video, %d of them DWCS.', total, dwcs);
+  if (!total) console.log('Card is complete.');
+  else console.log('Fall back to the opponent name alone if the first phrasing misses; ' +
+    'results cap at 20 and do not paginate, so one miss is not proof of absence.');
+}
+
 function main() {
   const args = process.argv.slice(2);
   const write = args.includes('--write');
+  const gi = args.indexOf('--gaps');
+  if (gi >= 0) return gapsFor(args[gi + 1]);
   const doc = args.find((a) => !a.startsWith('--'));
   if (!doc) {
     console.error('usage: node scripts/place-tape-links.cjs <links.txt> [--write]');
+    console.error('       node scripts/place-tape-links.cjs --gaps <event-slug>');
     process.exit(2);
   }
 

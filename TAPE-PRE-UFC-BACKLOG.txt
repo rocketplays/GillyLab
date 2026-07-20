@@ -70,7 +70,21 @@ Worst: anyone whose promotions column reads "unlisted" only — that is a region
 circuit with no Fight Pass presence, so it is a YouTube hunt, by hand.
 
 
-THE RULE, NOW THAT IT HAS BEEN TESTED: HARVEST IS TWO PASSES
+THE SWEEP PROCEDURE — RUN ALL OF IT, EVERY CARD, NO EXCEPTIONS
+
+  1. For each fighter: search their name with the PLAYLIST filter on, take the
+     playlist whose title is their name (or "<Some Title>: <Name>" — champions get
+     a prefix), harvest it.
+  2. node scripts/place-tape-links.cjs <links.txt>          # report
+  3. node scripts/place-tape-links.cjs <links.txt> --write  # apply + verify
+  4. node scripts/place-tape-links.cjs --gaps <event-slug>  # PASS 2 — MANDATORY
+  5. Search every line pass 2 prints. Place what you find. Re-run step 4.
+
+STEP 4 IS NOT OPTIONAL AND THE SWEEP IS NOT FINISHED WITHOUT IT.
+Measured over two cards: the playlists alone left 25 and 25 bouts unlinked; pass 2
+recovered 6 and 6, EVERY ONE of which was already in the library. Playlists are
+curated and incomplete, and DWCS bouts are never in them — on the Aug 22 card all
+six recoveries were Contender Series fights.
 
   PASS 1  the fighter's playlist
   PASS 2  diff against their org=="UFC" rows and SEARCH EACH GAP INDIVIDUALLY
@@ -91,6 +105,35 @@ before calling a video absent.
 MATCH ON THE FULL OPPONENT NAME, NEVER THE SURNAME. Searching Jasudavicius vs
 "Karine Silva" surname-matched the "Mayra Bueno Silva" video — wrong fight, and
 one already placed. Surname matching does not fail loudly, it fails plausibly.
+
+REMATCHES: PIN THEM, NEVER ORDER THEM. If a fighter met an opponent twice and only
+one video exists, the script REFUSES to place it until you pin the meeting —
+"Opponent @2023", or "Opponent @2016-01" when both meetings fall in one year. It
+refuses because the old ordering assumption put three wrong links on live profiles
+(Rodrigues/Ferreira, Gamrot/Parke, Lemos/Cantuária). Read the true date off the
+video: ufcfightpass.com/video/<bare-id> or youtube.com/oembed — both work logged
+out. Beware titles like "Gamrot vs Norman Parke 1 | KSW 53": that is the FIRST
+meeting released as a promo for KSW 53, not the KSW 53 fight.
+
+
+AUG 22 2026 (Hernandez vs Rodrigues) — swept 2026-07-20
+  Pass 1: 99 links from 14 playlists. Jeisla Chaves and Wes Schultz have no
+          per-fighter playlist at all — too new.
+  Pass 2: recovered 6, ALL Contender Series —
+            Rodrigues vs Jordan Williams     165714
+            Nzechukwu vs Dennis Bryant        64307
+            Nzechukwu vs Anton Berzin         58574
+            Chaves vs Sofia Montenegro       861910
+            Schultz vs Mario Mingaj          870359
+            Schultz vs Mansur Abdul-Malik    676507  (was already in Abdul-Malik's)
+  105 links placed. 19 bouts still without video; re-run --gaps to see them.
+
+  Alumni playlists found on this card, for the pre-UFC pass:
+    Anthony Hernandez   LFA Alumni            29453   1 video
+    Gregory Rodrigues   LFA Alumni            29362   2 videos
+    Reinier de Ridder   UAE Warriors Alumni   28278   1 video
+    Jackson McVey       LFA Alumni            31445   1 video
+    Kody Steele         Fury FC Alumni         9029   6 videos
 
 
 UFC BOUTS STILL WITHOUT A VIDEO
