@@ -8,11 +8,19 @@ on:
     paths:
       - 'scripts/**'
       - 'worker/**'
+      # index.html holds the scouting copy that test-scouting-lines.cjs guards, so a
+      # change to path() has to run these tests — without this the one test that
+      # checks that code would never fire on the commit that broke it. Safe despite
+      # the note above about cron commits: those are pushed with GITHUB_TOKEN, and
+      # GitHub does not trigger workflows from GITHUB_TOKEN pushes (same mechanism
+      # deploy.yml relies on to avoid double-deploying).
+      - 'index.html'
       - '.github/workflows/test.yml'
   pull_request:
     paths:
       - 'scripts/**'
       - 'worker/**'
+      - 'index.html'
   workflow_dispatch:
 
 jobs:
@@ -29,6 +37,7 @@ jobs:
           node -c scripts/fetch-espn-events.cjs
           node -c scripts/fetch-fighter-news.cjs
           node -c scripts/emit-pickem-results.cjs
+          node -c scripts/scouting-lines.cjs
 
       - name: Run unit tests
         run: |
@@ -36,3 +45,10 @@ jobs:
           node scripts/test-fighter-news.cjs
           node scripts/test-espn-bouts.cjs
           node scripts/test-pickem.mjs
+
+      # Generates every path-to-victory line from the real fighter stats and checks
+      # each claim against the numbers behind it. Also fails if a rule stops matching
+      # anything (reworded copy silently disarming a check) or if any of its ten
+      # planted bugs slips through.
+      - name: Vet the scouting lines
+        run: node scripts/test-scouting-lines.cjs
