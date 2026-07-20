@@ -26,15 +26,18 @@ ALUMNI PLAYLISTS FOUND (UFC 330 fighters)
 
   Islam Makhachev        ProFC Alumni: Islam Makhachev            id 28275   2 videos
   Mackenzie Dern         LFA Alumni: Mackenzie Dern               id 28147   2 videos
-  Ian Machado Garry      Cage Warriors Alumni: Ian Machado Garry  id ?       6 videos
+  Ian Machado Garry      Cage Warriors Alumni: Ian Machado Garry  id 30517   6 videos  DONE
   Jasmine Jasudavicius   Cage Fury Alumni: Jasmine Jasudavicius   id 28594   3 videos
   Mansur Abdul-Malik     LFA Alumni: Mansur Abdul-Malik           id 29459   1 video
   Myktybek Orolbai       LFA Alumni: Myktybek Orolbai             id 33805   3 videos
   Chidi Njokuani         LFA Alumni: Chidi Njokuani               id 29949   7 videos
   Ramiz Brahimaj         LFA Alumni: Ramiz Brahimaj               id 31149   4 videos
 
-Garry's id was seen in a search result but not captured before the page changed.
-Re-run step 1-4 on "Ian Machado Garry" to get it.
+Garry's is already placed: 6 of his 7 Cage Warriors bouts are now in TAPE_STUDY
+under a "Pre-UFC" section header, which is what the rest of this list should end
+up looking like. Note his block had to be rewritten with the UFC and Cage Warriors
+links together in ONE input file — place-tape-links.cjs replaces a fighter's whole
+block, so feeding it only the alumni links would have dropped the 10 UFC ones.
 
 
 PRE-UFC BOUTS PER FIGHTER (from FIGHT_HISTORY, org != UFC)
@@ -82,17 +85,28 @@ itself, which is on the card but has obviously not been filmed. Check the date
 before hunting for a video that cannot exist.
 
 
-NAME MISMATCH FOUND WHILE DOING THIS — worth a look independent of tape
+"KAUÊ FERNANDES" NAME MISMATCH — RAISED, THEN MEASURED, AND IT IS A NON-ISSUE
 
   data/event.json calls him       "Kauê Fernandes"   (with circumflex)
   FIGHT_HISTORY / FIGHTER_STATS   "Kaue Fernandes"   (without)
 
-There is no NAME_ALIASES entry bridging the two. normalizeFighterNameForMatch()
-strips diacritics so anything routed through it is fine, but any direct key lookup
-(FIGHTER_STATS[name], FIGHT_HISTORY[name]) using the feed's spelling misses. This
-is the same shape as the "stephen erceg" / "ramazonbek temirov" problems, and he
-is on the UFC 330 card, so it is worth checking the odds and matchup pages for him
-before fight week.
+I flagged this as a probable bug of the "stephen erceg" kind and was wrong. Ran it
+through the real resolver before adding an alias:
+
+  feed row: "Kauê Fernandes"  slug "kaue-fernandes"  ->  resolves to "Kaue Fernandes"
+
+resolveCanonicalFighterName() tries SLUGS FIRST, and the feed supplies
+fighterSlug "kaue-fernandes", so it matches the FIGHTERS roster on the first key
+and never reaches NAME_ALIASES. Independently, nameToSlug() already normalises the
+circumflex away (NFD + combining-mark strip), so the name path resolves too.
+
+No alias was added: it could never fire, and a dead entry in that table invites
+the next person to assume the diacritic case is handled BY the alias rather than
+by the slug, which is the wrong mental model to leave behind.
+
+The general lesson for this file: a spelling difference between the feed and the
+DB is only a bug if the lookup path actually uses the raw name. Check the resolver
+before writing the alias.
 
 
 CAVEATS — read before treating a blank as "no footage"

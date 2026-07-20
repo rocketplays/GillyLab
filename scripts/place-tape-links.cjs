@@ -115,6 +115,8 @@ const ALIAS = {
   'Neil Magny|Phil Rowe': 'Philip Rowe',
   'Neil Magny|Hyun Gyu Lim': 'Lim Hyun-gyu',               // Korean name order
   'Ramiz Brahimaj|Michael Gillmore': 'Micheal Gillmore',
+  'Ian Machado Garry|Lawrence Tracey': 'Lawrence Jordan Tracey',
+  'Ian Machado Garry|Matt Figlak': 'Mateusz Figlak',
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
