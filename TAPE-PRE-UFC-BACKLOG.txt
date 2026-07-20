@@ -70,6 +70,29 @@ Worst: anyone whose promotions column reads "unlisted" only — that is a region
 circuit with no Fight Pass presence, so it is a YouTube hunt, by hand.
 
 
+THE RULE, NOW THAT IT HAS BEEN TESTED: HARVEST IS TWO PASSES
+
+  PASS 1  the fighter's playlist
+  PASS 2  diff against their org=="UFC" rows and SEARCH EACH GAP INDIVIDUALLY
+
+Pass 2 recovered 6 of the 24 gaps the playlists left on this card:
+
+  Turner / Barboza (Dec 2025)        893830   missing from BOTH their playlists
+  Njokuani vs Jake Matthews          829123
+  Luque vs Joel Alvarez              869127
+  Jasudavicius vs Julia Polastri     282265   DWCS
+  Turner vs Max Mustaki               64840   DWCS
+  Neal vs Chase Waldon                58285   DWCS
+
+Query as "<Fighter> vs <Opponent>" — that ranks the bout first; the opponent's
+name alone does not. Results cap at 20 with no pagination, so try both phrasings
+before calling a video absent.
+
+MATCH ON THE FULL OPPONENT NAME, NEVER THE SURNAME. Searching Jasudavicius vs
+"Karine Silva" surname-matched the "Mayra Bueno Silva" video — wrong fight, and
+one already placed. Surname matching does not fail loudly, it fails plausibly.
+
+
 UFC BOUTS STILL WITHOUT A VIDEO
 
 Every fighter's playlist was checked against their UFC rows in FIGHT_HISTORY:

@@ -28,20 +28,33 @@
  * left out. A missing link costs a re-run; a wrong link is a lie on the page that
  * nobody will catch, because a plausible-looking video plays.
  *
- * THE PER-FIGHTER PLAYLIST IS NOT THE WHOLE JOB — ALWAYS ALSO SEARCH DWCS
- * A fighter's "all of X's UFC fights" playlist excludes their Contender Series
- * bout, every time, even though FIGHT_HISTORY tags that bout org "UFC". Harvest
- * the playlist alone and you will be short by exactly one fight for anyone who
- * came up through DWCS, with nothing to indicate it. So after harvesting, diff
- * the result against the fighter's UFC rows and search Fight Pass for each gap as
- *     "<Fighter> vs <Opponent>"
- * which is the phrasing that ranks the individual bout first. Same applies to TUF
- * bouts, which live inside season playlists rather than as standalone videos.
+ * ── THE HARVEST IS TWO PASSES, NOT ONE. THIS IS THE RULE. ───────────────────
  *
- * SEARCH HARD-CAPS AT 20 RESULTS AND DOES NOT PAGINATE. Scrolling adds nothing.
- * So "not in the results" means "not in the top 20 for that phrasing", NOT "does
- * not exist" — try the opponent's name alone as a second phrasing before
- * concluding a video is absent.
+ * PASS 1  the fighter's playlist ("all of X's UFC fights"). Fast, clean, ordered.
+ * PASS 2  diff what you got against their org=="UFC" rows in FIGHT_HISTORY, and
+ *         search Fight Pass for every gap individually.
+ *
+ * Pass 2 is not optional and not a tidy-up. Measured on the UFC 330 card: the 19
+ * playlists left 24 UFC bouts unlinked, and targeted search recovered 6 of them,
+ * including fights that were in the library the whole time. The playlists are
+ * CURATED AND INCOMPLETE — they are not merely lagging, so waiting does nothing.
+ * Two structural blind spots guaranteed to need pass 2:
+ *
+ *   - CONTENDER SERIES. A fighter's UFC playlist NEVER contains their DWCS bout,
+ *     though FIGHT_HISTORY tags it org "UFC". Anyone who came up through DWCS is
+ *     short exactly one fight, silently.
+ *   - TUF bouts, which live inside season playlists, not as standalone videos.
+ *
+ * SEARCH MECHANICS, learned the hard way:
+ *   - "<Fighter> vs <Opponent>" ranks the individual bout first. The opponent's
+ *     name alone does not. Use the first form, fall back to the second.
+ *   - Results HARD-CAP AT 20 and do not paginate; scrolling adds nothing. So a
+ *     miss means "not in the top 20 for that phrasing", NOT "does not exist".
+ *     Try both phrasings before concluding a video is absent.
+ *   - MATCH ON THE OPPONENT'S FULL NAME, NEVER THE SURNAME. Searching Jasudavicius
+ *     vs "Karine Silva" surname-matched the "Mayra Bueno Silva" video — a
+ *     different fight, already placed. That would have written a confidently
+ *     wrong link. Require first AND last name in the title.
  *
  * WHAT IT WILL NOT CATCH
  * A link that points at the wrong fight but whose name resolves cleanly. The
