@@ -102,6 +102,19 @@ const ALIAS = {
   'Eric McConico|Baysangur Susurkaev': 'Baisangur Susurkaev',
   'Bruno Lopes|Mikheil Sanzhiniani': 'Mikheil Sazhiniani',
   'Bruno Lopes|Matias Javier': 'Matias Genes',           // Matías Javier Genes
+
+  // UFC 330 batch, harvested from Fight Pass playlists. Note the two married-name
+  // cases: Fight Pass titles the video with the name she fought under at the time,
+  // the DB carries the current one. Both confirmed on date.
+  'Ian Machado Garry|Gabe Green': 'Gabriel Green',
+  'Jalin Turner|Josh Culibao': 'Joshua Culibao',
+  'Mackenzie Dern|Nina Ansaroff': 'Nina Nunes',            // married name
+  'Mackenzie Dern|Amanda Bobby Cooper': 'Amanda Cooper',
+  'Gillian Robertson|Veronica Macedo': 'Veronica Hardy',   // married name
+  'Chidi Njokuani|Carlos Leal': 'Carlos Leal Miranda',
+  'Neil Magny|Phil Rowe': 'Philip Rowe',
+  'Neil Magny|Hyun Gyu Lim': 'Lim Hyun-gyu',               // Korean name order
+  'Ramiz Brahimaj|Michael Gillmore': 'Micheal Gillmore',
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same

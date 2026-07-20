@@ -1,0 +1,115 @@
+PRE-UFC TAPE ON FIGHT PASS — WHO HAS IT, AND WHERE
+Generated 2026-07-20 while sourcing UFC 330. First pass, not exhaustive; read the
+caveats at the bottom before trusting a "none".
+
+WHY THIS FILE EXISTS
+The per-fighter Fight Pass playlists ("Watch all of X's UFC fights here!") are
+UFC-only by design. Everything placed in TAPE_STUDY for UFC 330 came from those,
+so every pre-UFC bout on this card is still unlinked. Fight Pass does carry a lot
+of that footage, but under a different naming scheme:
+
+    <Promotion> Alumni: <Fighter>          e.g. "LFA Alumni: Chidi Njokuani"
+
+Those are separate playlists with their own ids. They are the trail to follow.
+
+HOW TO FIND THEM
+  1. ufcfightpass.com/search, signed in
+  2. Open Filter -> tick PLAYLIST (this matters: results paginate at 20 and a
+     playlist can otherwise sit below the fold behind podcasts and full cards)
+  3. Type the fighter's name; wait ~4s for the grid to settle
+  4. The playlist id is in the DOM, not in an href:
+         data-testid="card-container-PLAYLIST#28147"
+  5. Open /playlist/<id>; the video tiles there ARE real <a href="/video/<id>">
+
+
+ALUMNI PLAYLISTS FOUND (UFC 330 fighters)
+
+  Islam Makhachev        ProFC Alumni: Islam Makhachev            id 28275   2 videos
+  Mackenzie Dern         LFA Alumni: Mackenzie Dern               id 28147   2 videos
+  Ian Machado Garry      Cage Warriors Alumni: Ian Machado Garry  id ?       6 videos
+  Jasmine Jasudavicius   Cage Fury Alumni: Jasmine Jasudavicius   id 28594   3 videos
+  Mansur Abdul-Malik     LFA Alumni: Mansur Abdul-Malik           id 29459   1 video
+  Myktybek Orolbai       LFA Alumni: Myktybek Orolbai             id 33805   3 videos
+  Chidi Njokuani         LFA Alumni: Chidi Njokuani               id 29949   7 videos
+  Ramiz Brahimaj         LFA Alumni: Ramiz Brahimaj               id 31149   4 videos
+
+Garry's id was seen in a search result but not captured before the page changed.
+Re-run step 1-4 on "Ian Machado Garry" to get it.
+
+
+PRE-UFC BOUTS PER FIGHTER (from FIGHT_HISTORY, org != UFC)
+
+  fighter                pre-UFC   promotions on record
+  Chidi Njokuani            27     LFA, Bellator, + unlisted regionals
+  Myktybek Orolbai          13     LFA, ACA, + unlisted
+  Dustin Stoltzfus          13     GMC, WLMMA, Fair FC, AOC
+  Vicente Luque             13     Shooto, + unlisted
+  Islam Makhachev           11     M-1 Global, ProFC, Tsumada FC
+  Jeremiah Wells            11     unlisted
+  Esteban Ribovics          10     unlisted
+  Neil Magny                10     unlisted
+  Ramiz Brahimaj            10     LFA, + unlisted
+  Jalin Turner               9     Bellator, WSOF, + unlisted
+  Geoff Neal                 9     LFA, + unlisted
+  Ian Machado Garry          7     Cage Warriors
+  Erin Blanchfield           7     Invicta FC, + unlisted
+  Edson Barboza              7     unlisted
+  Gillian Robertson          6     unlisted
+  Jasmine Jasudavicius       6     unlisted
+  Mansur Abdul-Malik         6     DWCS, LFA, + unlisted
+  Mackenzie Dern             5     Invicta FC, LFA
+  Tresean Gore               3     unlisted
+  Kaue Fernandes             -     see the name note below
+
+Best return per unit of effort: Njokuani (27 bouts, 7 already sitting in an LFA
+alumni playlist), Orolbai and Brahimaj (LFA playlists exist), Makhachev (ProFC).
+Worst: anyone whose promotions column reads "unlisted" only — that is a regional
+circuit with no Fight Pass presence, so it is a YouTube hunt, by hand.
+
+
+UFC BOUTS STILL WITHOUT A VIDEO
+
+Every fighter's playlist was checked against their UFC rows in FIGHT_HISTORY:
+
+  Geoff Neal          3      Chidi Njokuani     3      Jasmine Jasudavicius  2
+  Jalin Turner        2      Ramiz Brahimaj     2      + 1 each for Garry,
+  Robertson, Blanchfield, Stoltzfus, Ribovics, Wells, Orolbai, Luque, Gore
+
+Complete: Makhachev 18/18, Dern 16/16, Barboza 31/31, Magny 36/36, Abdul-Malik 5/5.
+
+Careful reading a "1": for several of these the missing bout is the UFC 330 fight
+itself, which is on the card but has obviously not been filmed. Check the date
+before hunting for a video that cannot exist.
+
+
+NAME MISMATCH FOUND WHILE DOING THIS — worth a look independent of tape
+
+  data/event.json calls him       "Kauê Fernandes"   (with circumflex)
+  FIGHT_HISTORY / FIGHTER_STATS   "Kaue Fernandes"   (without)
+
+There is no NAME_ALIASES entry bridging the two. normalizeFighterNameForMatch()
+strips diacritics so anything routed through it is fine, but any direct key lookup
+(FIGHTER_STATS[name], FIGHT_HISTORY[name]) using the feed's spelling misses. This
+is the same shape as the "stephen erceg" / "ramazonbek temirov" problems, and he
+is on the UFC 330 card, so it is worth checking the odds and matchup pages for him
+before fight week.
+
+
+CAVEATS — read before treating a blank as "no footage"
+
+  1. THE ALUMNI SWEEP IS NOT COMPLETE. Several of these lookups ran with a 2.6s
+     settle and without the PLAYLIST filter. That combination has already produced
+     three false "none"s in one sitting: Barboza, Luque and Magny all appeared to
+     have no playlist at all, and all three do — the cards were simply below the
+     20-result fold. A blank in the alumni table above means "not found on a first
+     pass", NOT "does not exist". Re-check with the filter on and a 4s+ wait.
+
+  2. THE PLAYLIST TITLE IS NOT ALWAYS THE FIGHTER'S NAME. Champions get a prefix:
+     "UFC Welterweight Champ: Islam Makhachev", "UFC Womens Strawweight Champion:
+     Mackenzie Dern". Matching on an exact name misses those. Dern was reported as
+     having no playlist for exactly this reason.
+
+  3. SOME VIDEOS NEED A SEPARATE PURCHASE even on an active subscription — recent
+     numbered-event fights showed a PURCHASE badge and redirected to /purchase.
+     That does not make the link wrong, only unwatchable on this account, so do not
+     delete a link because it will not play.
