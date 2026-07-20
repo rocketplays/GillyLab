@@ -739,17 +739,18 @@
          still shows. */
       gap:12px; padding:0 0 2px;
       scrollbar-width:none;
-      /* SIZE EACH CARD TO ITS OWN CONTENT. A flex row defaults to align-items:stretch,
-         so every card grew to match the TALLEST one in its group — and .fx-frame's
-         margin-top:auto then dumped the whole difference into a single gap directly
-         under the description. Two things made it big: descriptions run one to three
-         lines, and .fx-card.wide's frame is 330px here against everyone else's 290px,
-         so every card sharing a row with the hub inherited 40px of dead space before
-         the text variance was even counted. That is the empty band under the premium
-         slides. Stretching buys nothing on a phone anyway — the row shows one 86vw
-         card at a time, so there is no neighbour to line the frames up with. */
-      align-items:flex-start;
     }
+    /* UNIFORM CARDS, AND THE PREVIEW EATS THE DIFFERENCE.
+       The row stretches every card to match the tallest in its group (descriptions run
+       one to three lines, and .fx-card.wide's frame is 330px against everyone else's
+       290px). That slack has to go somewhere. It used to go ABOVE the frame, because
+       .fx-frame is pinned down with margin-top:auto — one dead band directly under the
+       description, worst on the premium rows. Letting the FRAME grow instead keeps every
+       card the same height and spends the slack on more preview, which is the one part
+       of the card that can absorb it: it is a scaled-down screenshot behind a fade, so
+       showing a little more or less of it reads as intentional cropping rather than as
+       a hole in the layout. */
+    .fx-card > .fx-frame{margin-top:0; flex:1 1 auto}
     .fx-grid::-webkit-scrollbar{display:none}
     .fx-card{flex:0 0 86vw; scroll-snap-align:start}
     /* the hub reflows via matchup-free.css's own phone rules, so it needs no special width */
