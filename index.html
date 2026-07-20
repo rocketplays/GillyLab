@@ -103489,7 +103489,10 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       const notes = []; let line = '';
       if (striker(la)) {
         if (oKnown && lb <= 48) {
-          if (self.tdDef != null && self.tdDef >= 70) line = 'Keep it standing — his ' + self.tdDef + '% takedown defense should stall ' + oN + "'s entries — and win at range.";
+          // One dash, not two. "Keep it standing — his 100% TDD should stall X's entries
+          // — and win at range" split the instruction across two asides and read as an
+          // afterthought; the colon makes the defense the REASON he can stay standing.
+          if (self.tdDef != null && self.tdDef >= 70) line = 'Keep it standing: his ' + self.tdDef + '% takedown defense should stall ' + oN + "'s entries, so the fight is won at range.";
           else if (self.tdDef != null && self.tdDef <= 55) line = "Win early on the feet, but he's takedown-vulnerable (" + self.tdDef + '% TDD) and must stay off the cage.';
           else line = 'Win the striking at range and make ' + oN + ' pay for shooting.';
           if (power) notes.push('carries real knockout power');
@@ -103512,7 +103515,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
             const mine = edge(self, other, STRIKING_AXES);
             const theirs = edge(other, self, STRIKING_AXES);
             if (mine) s += '; the margin is his ' + mine.phrase;
-            else if (theirs) s += ', and the margin belongs to ' + oN + ' (' + theirs.phrase + ') — he has to blunt that early';
+            else if (theirs) s += ', and the margin belongs to ' + oN + ': ' + theirs.phrase + ', which he has to blunt early';
             else s += ' and nothing on tape separates them; whoever lands clean first dictates it';
           } else if (outEdge) {
             s += 'he has the edge in output' + nums + ', so his path is volume and pace over the rounds';
@@ -103554,17 +103557,31 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           // opponent didn't: Thomas Petersen, 88% TDD, read "neither stuffs much —
           // 88% / 0% TDD" against Valter Walker. Say what the numbers actually show —
           // and when they're lopsided, that asymmetry IS the read, not a caveat.
+          // A COMMA, NOT A PARENTHETICAL, and no "stuffs N% to N%" — that construction
+          // ("Petersen stuffs 88% to his 0%") reads like a scoreline rather than a
+          // sentence. And SUPPRESS it entirely when the edge phrase below is already
+          // about takedown defense, or the line states the same gap twice with the same
+          // numbers: "(he stuffs 88% to Walker's 0%) — his edge is the better takedown
+          // defense (88% vs 0%)".
+          // Only the phrase that actually gets PRINTED counts. Testing both dropped the
+          // context from Walker's card just because Petersen's edge happened to be TDD —
+          // his own line never mentioned it, so the 88%-vs-0% gap vanished from the side
+          // that most needed to know about it.
+          const shownPhrase = (mine && mine.phrase) || (theirs && theirs.phrase) || '';
+          const edgeIsTdd = /takedown defense/.test(shownPhrase);
           let tdc = '';
-          if (self.tdDef != null && other.tdDef != null) {
-            if (self.tdDef < 68 && other.tdDef < 68) tdc = ' (neither stuffs much — ' + self.tdDef + '% / ' + other.tdDef + '% TDD)';
-            else if (self.tdDef >= 68) tdc = ' (but the entries run one way — he stuffs ' + self.tdDef + '% to ' + oN + "'s " + other.tdDef + '%)';
-            else tdc = ' (though ' + oN + ' stuffs ' + other.tdDef + '% to his ' + self.tdDef + '%)';
+          if (self.tdDef != null && other.tdDef != null && !edgeIsTdd) {
+            if (self.tdDef < 68 && other.tdDef < 68) tdc = ', and neither stuffs much (' + self.tdDef + '% and ' + other.tdDef + '% TDD)';
+            else if (self.tdDef >= 68) tdc = ', and he is harder to hold down (' + self.tdDef + '% TDD to ' + other.tdDef + '%)';
+            else tdc = ', and ' + oN + ' is harder to hold down (' + other.tdDef + '% TDD to ' + self.tdDef + '%)';
           }
           line = 'Both want it on the mat' + tdc + ' — ';
           if (mine) line += 'his edge is the ' + mine.phrase + '.';
-          else if (theirs) line += 'the grappling margin favours ' + oN + ' (' + theirs.phrase + '), so he has to win the scrambles rather than the entries.';
+          // No parens around theirs.phrase: it carries its own, and the nesting read as
+          // "favours Izagakhmaev (finishing instinct (73% of wins inside the distance vs 21%))".
+          else if (theirs) line += oN + ' owns the grappling margin: ' + theirs.phrase + ', so he has to win the scrambles rather than the entries.';
           else line += 'the takedown battle is even; the first meaningful entry likely decides each round.';
-          if (self.subAvg >= 0.8 && !/submission/.test(line)) notes.push('live submission threat (' + self.subAvg + '/15)');
+          if (self.subAvg >= 0.8 && !/submission/.test(line)) notes.push('live submission threat at ' + self.subAvg + ' per 15min');
           if (self.finRate != null && self.finRate >= 80 && !/finishing/.test(line)) notes.push(self.finRate + '% of wins are finishes');
         } else {
           line = 'Get it to the mat';
@@ -103591,7 +103608,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
             }
           }
           else line += ' and impose top control.';
-          if (self.subAvg >= 0.8) notes.push('live submission threat (' + self.subAvg + '/15)');
+          if (self.subAvg >= 0.8) notes.push('live submission threat at ' + self.subAvg + ' per 15min');
           if (self.finRate != null && self.finRate >= 80) notes.push(self.finRate + '% of wins are finishes');
         }
       } else {
@@ -103605,7 +103622,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           const mine = edge(self, other);
           const theirs = edge(other, self);
           if (mine) line = 'Comfortable everywhere — his edge is the ' + mine.phrase + '; drag ' + oN + ' into it.';
-          else if (theirs) line = 'Comfortable everywhere, but ' + oN + ' owns the one clear margin (' + theirs.phrase + ') — take that away and this is a coin flip.';
+          else if (theirs) line = 'Comfortable everywhere, but ' + oN + ' owns the one clear margin: ' + theirs.phrase + '. Take that away and this is a coin flip.';
           else line = 'Comfortable in both areas — no glaring edge on paper, so it comes down to who imposes their game first.';
         }
         if (power && !/finishing threat/.test(line)) notes.push('finishing ability in both areas');
