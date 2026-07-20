@@ -103464,21 +103464,43 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     const STRIKING_AXES = ['kd', 'strAcc', 'strDef', 'sapm', 'output', 'finRate'];
     const GRAPPLING_AXES = ['tdLanded', 'subAvg', 'tdDef', 'finRate', 'kd', 'sapm'];
     const ALL_AXES = Object.keys(EDGE_AXES);
-    const edge = (self, other, prefer) => {
+    // `banned` lets a caller re-pick while excluding axes already spoken for — see
+    // FINISH_AXES below. `key` comes back on the result so callers can tell WHICH
+    // axis won without parsing the prose.
+    const edge = (self, other, prefer, banned) => {
       if (!self || !other) return null;
+      const ban = banned || [];
       const pick = (keys) => {
         let best = null;
         for (const k of keys) {
+          if (ban.indexOf(k) !== -1) continue;
           const ax = EDGE_AXES[k];
           const g = ax.gap(self, other);
           if (g == null || g < ax.min) continue;
           const w = g / ax.min;
-          if (!best || w > best.w) best = { w: w, label: ax.label, phrase: ax.phrase(self, other) };
+          if (!best || w > best.w) best = { w: w, key: k, label: ax.label, phrase: ax.phrase(self, other) };
         }
         return best;
       };
       return pick(prefer || ALL_AXES) || (prefer ? pick(ALL_AXES) : null);
-    };
+    }
+
+    // Knockdowns and finish rate are the same story told twice: both say "he ends
+    // fights". Ankalaev's card read "the margin is his heavier hands (0.48 vs 0
+    // knockdowns/15)" while Guskov's read "the margin is his finishing instinct
+    // (100% of wins inside the distance)" — two fighters each told they're the
+    // finisher, which cannot both be the separating factor.
+    const FINISH_AXES = ['kd', 'finRate'];
+    // Give the family to whoever owns it more strongly and make the other man re-pick.
+    // Deterministic and SYMMETRIC: path() runs once per fighter with the arguments
+    // swapped, and both runs compute the same (mine, theirs) pair, so both agree on
+    // who keeps it. The key comparison only breaks exact ties.
+    const dedupeFinish = (mine, theirs, self, other, prefer) => {
+      if (!mine || !theirs) return mine;
+      if (FINISH_AXES.indexOf(mine.key) === -1 || FINISH_AXES.indexOf(theirs.key) === -1) return mine;
+      const yields = mine.w < theirs.w || (mine.w === theirs.w && mine.key > theirs.key);
+      return yields ? (edge(self, other, prefer, FINISH_AXES) || mine) : mine;
+    };;
 
     const path = (self, other, otherN, female) => {
       if (!self) return 'Thin UFC data (short-notice / limited tape) — style and path read is provisional.';
@@ -103512,8 +103534,8 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
             // accuracy", differing only in the swapped numbers. Name the margin
             // that actually belongs to THIS fighter.
             s += 'output is even' + nums;
-            const mine = edge(self, other, STRIKING_AXES);
             const theirs = edge(other, self, STRIKING_AXES);
+            const mine = dedupeFinish(edge(self, other, STRIKING_AXES), theirs, self, other, STRIKING_AXES);
             if (mine) s += '; the margin is his ' + mine.phrase;
             else if (theirs) s += ', and the margin belongs to ' + oN + ': ' + theirs.phrase + ', which he has to blunt early';
             else s += ' and nothing on tape separates them; whoever lands clean first dictates it';
@@ -103549,8 +103571,8 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           // for symMat. Saying "X is takedown-vulnerable, get it down early" on
           // BOTH cards is true and useless — it's the same sentence twice. Lead
           // with each fighter's own separation instead.
-          const mine = edge(self, other, GRAPPLING_AXES);
           const theirs = edge(other, self, GRAPPLING_AXES);
+          const mine = dedupeFinish(edge(self, other, GRAPPLING_AXES), theirs, self, other, GRAPPLING_AXES);
           // "neither stuffs much" was UNCONDITIONAL here, and this branch only needs
           // ONE man under 68 to fire (symMat above requires BOTH over it). So an
           // elite defender got told he doesn't stuff takedowns as long as his
@@ -103619,8 +103641,8 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
         else {
           // This generic line was firing on 8 of 124 cards. Before conceding that
           // nothing separates them, look for the widest real gap on any axis.
-          const mine = edge(self, other);
           const theirs = edge(other, self);
+          const mine = dedupeFinish(edge(self, other), theirs, self, other, null);
           if (mine) line = 'Comfortable everywhere — his edge is the ' + mine.phrase + '; drag ' + oN + ' into it.';
           else if (theirs) line = 'Comfortable everywhere, but ' + oN + ' owns the one clear margin: ' + theirs.phrase + '. Take that away and this is a coin flip.';
           else line = 'Comfortable in both areas — no glaring edge on paper, so it comes down to who imposes their game first.';
