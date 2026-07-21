@@ -128,9 +128,27 @@ Write a temp file, one line per bout (add " @YYYY" before "(" for rematches):
 Then:
   node scripts/place-tape-links.cjs /tmp/that-file.txt --write
   node scripts/fix-tape-sections.cjs --write
-The placer REPLACES a fighter's whole block, so a temp file with only new bouts
-is fine — it merges with existing rows by video id. It will REFUSE to write if
-any row doesn't resolve or a rematch lacks a pin. Trust its refusal.
+*** CRITICAL — THE PLACER DOES NOT MERGE. IT REPLACES. ***
+The placer OVERWRITES a fighter's ENTIRE TAPE_STUDY block with exactly the rows
+in your temp file. It does NOT merge with existing rows — the old docstring
+claim "merges with existing rows by video id" is FALSE and cost a near-miss:
+on 2026-07-21 feeding it only the new pre-UFC bouts silently DELETED every
+fighter's existing UFC-fight tape (Petrino 10->2, Nzechukwu 16->3, Gaziev
+12->1, ~56 rows gone). The pre-UFC gap check does NOT catch this because it
+ignores UFC bouts. So the temp file for a fighter MUST list ALL their bouts
+(existing links + new), not just the new ones.
+
+SAFE WORKFLOW when adding to a fighter who already has links:
+  1. Dump their current rows first:
+       node -e 'const fs=require("fs"),vm=require("vm");const h=fs.readFileSync("index.html","utf8");function bal(m){const i=h.indexOf(m);let d=0,k=h.indexOf("{",i);for(;k<h.length;k++){if(h[k]=="{")d++;else if(h[k]=="}"){d--;if(!d)break;}}return h.slice(i,k+1)+";";}const c=vm.createContext({});vm.runInContext(bal("const TAPE_STUDY = {")+"globalThis.TS=TAPE_STUDY;",c);for(const r of (c.TS[process.argv[1]]||[]))console.log("- "+process.argv[1]+" vs "+r.opponent+" ("+r.url+")");' "Vitor Petrino"
+  2. Append your new bouts to that list (pin rematches @YYYY-MM).
+  3. Then place. ALWAYS confirm the "placed" count >= the "already" count in the
+     report — if placed < already, you are about to DELETE rows. Stop.
+  4. After --write, diff against the previous commit to prove nothing was lost:
+       git show HEAD:index.html  (or HEAD~1 if already committed) and compare urls.
+
+It will REFUSE to write if any row doesn't resolve or a rematch lacks a pin.
+Trust its refusal.
 
 Do NOT run mutating git from the sandbox (leaves a .git/index.lock). Commit in
 Terminal. If a sandbox read fails with errno -35 / "Resource deadlock avoided",
