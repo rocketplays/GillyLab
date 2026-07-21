@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-july-25-2026",
-  "generatedAt": "2026-07-20T13:57:25.637Z",
+  "generatedAt": "2026-07-21T01:19:25.200Z",
   "slugs": [
     "magomed-ankalaev",
     "bogdan-guskov",
@@ -16,8 +16,8 @@
     "saygid-izagakhmaev",
     "valter-walker",
     "thomas-petersen",
-    "uran-satybaldiev",
     "dustin-jacoby",
+    "muhammad-said",
     "santiago-ponzinibbio",
     "sam-patterson",
     "ismael-bonfim",
@@ -25,7 +25,9 @@
     "magomed-tuchalov",
     "brendson-ribeiro",
     "nurullo-aliev",
-    "mike-davis"
+    "mike-davis",
+    "cody-gibson",
+    "abdul-hussein"
   ],
   "bouts": [
     {
@@ -35,8 +37,8 @@
       "ps1": "magomed-ankalaev",
       "ps2": "bogdan-guskov",
       "wPts": {
-        "f1": 7.159957318262662,
-        "f2": 19.388486416176622
+        "f1": 7.156682166806922,
+        "f2": 19.42539750941598
       },
       "mPts": {
         "f1": {
@@ -65,8 +67,8 @@
       "ps1": "steve-erceg",
       "ps2": "ramazan-temirov",
       "wPts": {
-        "f1": 9.78280946992885,
-        "f2": 10.229284753084016
+        "f1": 9.840590008943247,
+        "f2": 10.165829996042405
       },
       "mPts": {
         "f1": {
@@ -93,8 +95,8 @@
       "ps1": "islam-dulatov",
       "ps2": "wellington-turman",
       "wPts": {
-        "f1": 6.887792153649627,
-        "f2": 23.413725889243583
+        "f1": 6.862524400083149,
+        "f2": 23.922292886279628
       },
       "mPts": {
         "f1": {
@@ -121,8 +123,8 @@
       "ps1": "magomed-zaynukov",
       "ps2": "damian-rzepecki",
       "wPts": {
-        "f1": 7.503874307839398,
-        "f2": 16.41023109172365
+        "f1": 7.621374115278558,
+        "f2": 15.680567407105972
       },
       "mPts": {
         "f1": {
@@ -149,8 +151,8 @@
       "ps1": "rizvan-kuniev",
       "ps2": "tyrell-fortune",
       "wPts": {
-        "f1": 7.883657820390288,
-        "f2": 14.374717088364397
+        "f1": 7.815245406487591,
+        "f2": 14.679747304456487
       },
       "mPts": {
         "f1": {
@@ -205,8 +207,8 @@
       "ps1": "valter-walker",
       "ps2": "thomas-petersen",
       "wPts": {
-        "f1": 8.47074555875045,
-        "f2": 12.435413934370224
+        "f1": 8.552782692415999,
+        "f2": 12.233471846864699
       },
       "mPts": {
         "f1": {
@@ -227,25 +229,25 @@
       }
     },
     {
-      "id": "espn-uran-satybaldiev-vs-dustin-jacoby",
-      "f1": "Uran Satybaldiev",
-      "f2": "Dustin Jacoby",
-      "ps1": "uran-satybaldiev",
-      "ps2": "dustin-jacoby",
+      "id": "espn-dustin-jacoby-vs-muhammad-said",
+      "f1": "Dustin Jacoby",
+      "f2": "Muhammad Said",
+      "ps1": "dustin-jacoby",
+      "ps2": "muhammad-said",
       "wPts": {
         "f1": 10,
         "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 4,
-          "Submission": 6,
-          "Decision": 5
+          "KO/TKO": 3,
+          "Submission": 7,
+          "Decision": 6
         },
         "f2": {
-          "KO/TKO": 4,
-          "Submission": 7,
-          "Decision": 4
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 5
         }
       },
       "rPts": {
@@ -261,8 +263,8 @@
       "ps1": "santiago-ponzinibbio",
       "ps2": "sam-patterson",
       "wPts": {
-        "f1": 17.081239946690708,
-        "f2": 7.409757818853054
+        "f1": 17.144813692181412,
+        "f2": 7.401443117944586
       },
       "mPts": {
         "f1": {
@@ -289,8 +291,8 @@
       "ps1": "ismael-bonfim",
       "ps2": "axel-sola",
       "wPts": {
-        "f1": 12.2853205974019,
-        "f2": 8.531221423287157
+        "f1": 12.36225491709121,
+        "f2": 8.499869718015454
       },
       "mPts": {
         "f1": {
@@ -317,8 +319,8 @@
       "ps1": "magomed-tuchalov",
       "ps2": "brendson-ribeiro",
       "wPts": {
-        "f1": 6.980891849073847,
-        "f2": 21.776655965856833
+        "f1": 6.944034769426287,
+        "f2": 22.38440476707483
       },
       "mPts": {
         "f1": {
@@ -345,8 +347,8 @@
       "ps1": "nurullo-aliev",
       "ps2": "mike-davis",
       "wPts": {
-        "f1": 8.660837078846415,
-        "f2": 11.985879758783613
+        "f1": 8.459577036772734,
+        "f2": 12.463913303109015
       },
       "mPts": {
         "f1": {
@@ -357,6 +359,34 @@
         "f2": {
           "KO/TKO": 4,
           "Submission": 6,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-cody-gibson-vs-abdul-hussein",
+      "f1": "Cody Gibson",
+      "f2": "Abdul Hussein",
+      "ps1": "cody-gibson",
+      "ps2": "abdul-hussein",
+      "wPts": {
+        "f1": 17.87175785677897,
+        "f2": 7.312870346728447
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 6,
+          "Submission": 5,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 4,
           "Decision": 6
         }
       },
