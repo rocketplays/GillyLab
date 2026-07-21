@@ -14940,11 +14940,8 @@
  const tr = document.createElement('tr');
  tr.style.cssText = `border-bottom:1px solid rgba(255,255,255,0.06);${rowIndex % 2 === 1 ? 'background:rgba(255,255,255,0.02);' : ''}`;
  const watchCell = f.url
- ? `<a href="${f.url}" target="_blank" rel="noopener noreferrer"
- style="display:inline-flex;align-items:center;gap:0.35rem;padding:0.35rem 0.85rem;background:rgba(255,0,0,0.15);border:1px solid rgba(255,60,60,0.35);border-radius:0.4rem;color:#ff4444;font-size:0.78rem;font-weight:600;text-decoration:none;"
- onmouseover="this.style.background='rgba(255,0,0,0.28)'"
- onmouseout="this.style.background='rgba(255,0,0,0.15)'">▶ Watch</a>`
- : `<span style="font-size:0.75rem;color:rgba(255,255,255,0.25);font-style:italic;">No footage available</span>`;
+ ? `<a class="tape-watch-link" href="${f.url}" target="_blank" rel="noopener noreferrer">▶ Watch</a>`
+ : `<span class="tape-watch-placeholder">No footage available</span>`;
  tr.innerHTML = `
  <td style="padding:0.65rem 0.75rem;">
  <div style="font-weight:600;color:#fff;">${f.opponent}</div>
