@@ -18,13 +18,20 @@ Reject and do not record: reupload channels, and anything that smells of a video
    https://www.youtube.com/watch?v=hJUBJ9tda1w
    "UFC's MACKENZIE DERN vs FEMALE BODYBUILDER | LFA MMA | Full Fight"
    Channel: LFA Fights (@lfafights) — official, so the footage is real.
-   The problem: she has TWO unlinked LFA bouts and the title names neither —
-       Mandy Polk     LFA 24, Oct 13 2017
-       Katherine Roy  LFA  6, Mar 10 2017
-   Watch ten seconds of it, then place with the year pinned:
-       - Mackenzie Dern vs Mandy Polk @2017-10 (<url>)
-       - Mackenzie Dern vs Katherine Roy @2017-03 (<url>)
-   Both meetings are 2017, so it needs the MONTH form of the pin, not just @2017.
+   She has two LFA bouts and the title names neither: Mandy Polk (LFA 24, Oct
+   2017) and Katherine Roy (LFA 6, Mar 2017).
+   DOWNGRADED TO OPTIONAL: both bouts are now linked from Fight Pass, so nothing
+   is missing. Worth identifying only to swap one to a FREE link, which is better
+   for the reader. Both are 2017, so it needs the MONTH pin — "@2017-10" for
+   Polk, "@2017-03" for Roy.
+
+
+2. RESOLVED, no action needed — Erin Blanchfield vs Kay Hansen, Invicta FC 32.
+   Was flagged because the Invicta upload "RUTHLESS Prospects Fight to Solidify
+   Their Names | Invicta FC 32" names no fighters. Fight Pass turned out to carry
+   the bout labelled properly (video/64960) and it is placed. Kept here only to
+   record that an ambiguous title is often answered by checking the other source
+   rather than by watching.
 
 
 ── REJECTED, recorded so nobody re-finds them ───────────────────────────────
@@ -57,3 +64,49 @@ Reject and do not record: reupload channels, and anything that smells of a video
   Note the UFC Fight Pass YouTube channel is a FREE mirror of some of the same
   regional content that sits behind the Fight Pass paywall. Prefer it: the
   reader does not need a subscription.
+
+
+── HOW TO SEARCH, AND ONE THING THAT DOES NOT WORK ──────────────────────────
+
+YOUTUBE'S OWN CHANNEL SEARCH IS NOT EXHAUSTIVE. Do not rely on it. Searching
+    youtube.com/@BellatorMMA/search?query=Njokuani
+returns TWO videos and stops — scrolling adds nothing — yet BellatorMMA also
+hosts his Kato and Koreshkov fights, which a general web search found on that
+same channel. The channel-scoped harvest that worked so well on Fight Pass and
+Paramount+ does NOT transfer here.
+
+What works instead, per bout:
+    WebSearch restricted to youtube.com, query "<Fighter> vs <Opponent> <event>"
+    then oembed the result and check author_name.
+It is one search plus one verification per fight. Slow, but it is the only
+method that actually finds things.
+
+YIELD from YouTube alone, measured on UFC 330: about 14 of 180 pre-UFC bouts.
+  HAVE CHANNELS, worth searching: Bellator, LFA (also carries RFA and Legacy FC),
+      Invicta FC, Cage Fury, Cage Titans, Shooto Brazil.
+  NO USABLE FOOTAGE: WLMMA (Germany, 8 Stoltzfus bouts), Xtreme Knockout (6 Neal
+      bouts), PA Cage Fight, CES MMA, and most one-off regional cards.
+
+
+── THE BIGGEST MISS I MADE, AND THE FIX ─────────────────────────────────────
+
+I spent a long time on YouTube before checking the obvious thing: FIGHT PASS
+ITSELF CARRIES THE REGIONAL PROMOTIONS. Invicta, Cage Fury, LFA, RFA, Legacy FC
+and Shooto Brazil are all Fight Pass libraries. I had been running Fight Pass
+searches all session but only ever reading the UFC results out of them.
+
+    Plain fighter search on ufcfightpass.com/search returns their PRE-UFC bouts
+    too. "Jeremiah Wells" returns his CFFC 44 / 56 / 68 / 78 fights directly.
+
+That one realisation took UFC 330 from 166 unlinked to 138, more than the entire
+YouTube effort. DO THIS FIRST on any future card; treat YouTube as the
+free-link upgrade pass afterwards, not the primary source.
+
+Also worth knowing: the curated "<Promotion> Alumni: <Fighter>" playlists are a
+SUBSET of what the search returns. Use both.
+
+OTHER PLATFORMS, TESTED AND NOT USEFUL:
+  TrillerTV   — searched "Njokuani": no results. Bellator's catalogue is not
+                there. It does carry KSW and some regionals.
+  Facebook    — promotions post EVENT-LEVEL free prelim streams ("CFFC 78 Free
+                Facebook Fights"), not per-bout videos. Not usable for linking.

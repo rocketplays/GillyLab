@@ -198,6 +198,10 @@ const ALIAS = {
   'JJ Aldrich|Chan-Mi Jeon': 'Jeon Chan-mi',        // surname-first in the DB
   'Chidi Njokuani|Thiago Jambo': 'Thiago Gonçalves',  // Bellator titles him by nickname
   'Mackenzie Dern|Montana Stewart': 'Montana De La Rosa',  // former name, LFA titles
+  'Chidi Njokuani|Jonathan Harris': 'Jon Harris',
+  'Chidi Njokuani|Cristian Torres': 'Cristhian Torres',
+  'Myktybek Orolbai|Jalen Fuller': 'Jalin Fuller',
+  'Jeremiah Wells|Manny Walo': 'Emmanuel Walo',
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
