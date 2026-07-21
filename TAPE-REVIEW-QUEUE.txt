@@ -384,6 +384,33 @@ so the next card does not re-walk the dead ones.
   is 5 fights and all 5 are linked. Every "gaps by fighter" report will keep
   putting her at the top until those rows are separated out or tagged.
 
+═══ THE PROCEDURE. FOLLOW THIS EXACTLY, ONE FIGHTER AT A TIME. ═════════════
+Arrived at by repeatedly getting it wrong. Working in bulk across fighters
+loses bouts every time, because the moment one query hits I stop looking.
+
+FOR EACH FIGHTER, FINISH THEM BEFORE MOVING ON:
+  1. PROMOTION SWEEP. Identify the promotions in their pre-UFC record, find
+     each channel, harvest what it has.
+  2. THEN SEARCH EVERY REMAINING BOUT INDIVIDUALLY, bare "<Fighter> vs
+     <Opponent>", no qualifiers. Do not stop when one hits.
+  3. FOR ANY STILL MISSING, retry with the EVENT NUMBER instead of the name:
+     "GKO 4 Anthony Hernandez", "<Promotion> <n> <Fighter>".
+  4. oembed-verify EVERY id before placing. No exceptions.
+  5. Only then move to the next fighter.
+
+STEP 3 IS NOT OPTIONAL AND I NEARLY SKIPPED IT. On Hernandez, bare-name
+searches for Preston Snook and Kenny Ento both returned nothing but his UFC
+career. The query "GKO4 OR GKO 4 OR GKO3 Anthony Hernandez" returned BOTH
+immediately:
+     "GKO 4 - Anthony Hernandez vs. Preston Snook!"   @GlobalKnockout
+     "Anthony FLUFFY Hernandez @ GKO 3"               MMA Video Productions
+The second names only ONE fighter, so no name-pair query could ever match it.
+Event-number search is what finds those.
+
+ALSO: the promotion's own /videos tab is not a reliable inventory.
+@GlobalKnockout's tab exposes 3 videos; the channel demonstrably hosts at
+least four Hernandez bouts. Search, do not browse.
+
 ── PASS 14: EVERY UFC 330 BOUT, BARE "X VS Y", ONE AT A TIME ───────────────
 The full due-diligence sweep. ~40 more queries. 7 placed, every one
 oembed-CONFIRMED PLAYABLE before it went in (see pass 13 for why that step is
