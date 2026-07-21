@@ -47,6 +47,12 @@ Reject and do not record: reupload channels, and anything that smells of a video
                footage, real channel, but that bout is NOT in her FIGHT_HISTORY.
                Either our record is short a fight or it is someone else. Left
                alone rather than guessing.
+  R0ZfRCwmb6s  "XKO 35 Geoffrey Neal vs Vaughn Govia" — Xtreme Knockout's own
+               channel, so the footage is real, but Neal has NO Govia bout in
+               FIGHT_HISTORY (his XKO rows are 34, 19, 17). Same shape as the
+               Jasudavicius one: probably a gap in OUR record rather than a bad
+               video. Worth checking against Sherdog/Tapology — if it is real,
+               add the bout to FIGHT_HISTORY first, then the link.
 
 
 ── SOURCES THAT PROVED TRUSTWORTHY, for the next pass ───────────────────────
@@ -84,8 +90,15 @@ method that actually finds things.
 YIELD from YouTube alone, measured on UFC 330: about 14 of 180 pre-UFC bouts.
   HAVE CHANNELS, worth searching: Bellator, LFA (also carries RFA and Legacy FC),
       Invicta FC, Cage Fury, Cage Titans, Shooto Brazil.
-  NO USABLE FOOTAGE: WLMMA (Germany, 8 Stoltzfus bouts), Xtreme Knockout (6 Neal
-      bouts), PA Cage Fight, CES MMA, and most one-off regional cards.
+  I WROTE THIS LIST WRONG THE FIRST TIME. I had "WLMMA (Germany) and Xtreme
+  Knockout — no usable footage" here, on the strength of one search each. Both
+  run their OWN YouTube channels:
+      Xtreme Knockout  @XtremeKnockout   — "XKO 34 Kevin Holland vs Geoff Neal"
+      We Love MMA      channel/UCSGtArCD1lW2FcxP-P3kYrA  (German, @welovemma
+                       does NOT resolve — use the channel-id URL)
+  Do not conclude a regional promotion has no footage from a fighter-name search
+  alone. Search the EVENT NAME too; small promotions title by event and often
+  post years of back catalogue.
 
 
 ── THE BIGGEST MISS I MADE, AND THE FIX ─────────────────────────────────────
