@@ -1,0 +1,143 @@
+TAPE SOURCING — THE PROCEDURE
+=============================
+How to find free YouTube links for a fighter's PRE-UFC bouts. Follow this
+exactly, ONE FIGHTER AT A TIME. Working in bulk across fighters loses bouts,
+because the moment one query hits you stop looking. Do not do that.
+
+Companion files:
+  TAPE-REVIEW-QUEUE.txt   — the long history, every trap, why each rule exists.
+  scripts/place-tape-links.cjs   — places links (see FORMAT below).
+  scripts/fix-tape-sections.cjs  — repairs Pre-UFC / UFC section headers.
+  scripts/check-tape-links.py    — sweeps all YouTube links for dead ones.
+
+
+PER-FIGHTER LOOP  (finish a fighter completely before the next one)
+------------------------------------------------------------------
+0. LIST THE GAPS. Get the fighter's unlinked pre-UFC bouts and the promotion +
+   event + date of each (see "GET THE GAP LIST" below).
+
+1. PROMOTION SWEEP. For each promotion in that list, find its YouTube channel
+   and see what it has. NOTE: a channel's /videos tab is NOT a full inventory
+   (@GlobalKnockout shows 3 videos but hosts 4+ bouts). Search the channel, do
+   not just browse it. Channel-scoped search (/@handle/search?query=) is also
+   truncated/unreliable — treat it as a hint, not proof of absence.
+
+2. EVERY REMAINING BOUT, BARE "<Fighter> vs <Opponent>", one at a time, no
+   qualifiers. Do NOT stop when one hits. Do not lead with the promotion, the
+   year, or the words "full fight" — those SUPPRESS the regional result and
+   surface the fighter's UFC career instead.
+
+3. FOR ANY STILL MISSING, retry with the EVENT NUMBER instead of the opponent:
+   "GKO 4 Anthony Hernandez", "WWFC 10 Spivak", "LFA 108 Rodrigues".
+   THIS STEP IS MANDATORY. It finds two things a name-pair query never can:
+     a. uploads titled with only ONE fighter ("Anthony FLUFFY Hernandez @ GKO 3")
+     b. uploads the plain search buried under the UFC-era noise (LFA 108).
+
+4. NATIVE-LANGUAGE / ALT-SPELLING PASS for anyone non-Anglophone. Look up the
+   fighter's name in their own script and search THAT, and translate the
+   promotion too:
+     Chinese   Aoriqileng 傲日其楞 · Song Yadong 宋亚东 · Sumudaerji 苏木达尔基
+     Japanese  Kai Asakura 朝倉海 · Rei Tsuruya 鶴屋怜 · Kyoji Horiguchi 堀口恭司
+     Korean    Seokhyeon Ko 고석현
+     Russian   Ислам Махачев · Мыктыбек Оролбай · use for ProFC/M-1/ACA/WWFC
+     Portuguese "luta completa", the fighter's Portuguese nickname
+     PROMOTION TRANSLATION MATTERS: WLF's MMA arm is 武林笼中对, NOT the
+     kickboxing show 武林风. Searching the wrong one returns nothing.
+
+5. VERIFY EVERY ID BEFORE PLACING. No exceptions. Run oembed:
+     curl -s "https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=<ID>&format=json"
+   JSON back = playable, and it gives you the real title + channel.
+   ANY failure (Forbidden / 404 / 401 / 403) = DEAD or private = DO NOT PLACE.
+   (Proven twice: every oembed failure this project was an unplayable video.
+   "Forbidden" is NOT "embedding disabled but fine" — that assumption put 4
+   dead links live.)
+
+6. PLACE (see FORMAT), then run fix-tape-sections.cjs --write.
+
+7. Only now move to the next fighter.
+
+
+TRAPS THAT HAVE CAUSED WRONG LINKS
+----------------------------------
+- REMATCHES. Many fighters met an opponent twice (once regional, once UFC).
+  The placer REFUSES an unpinned rematch — add a year pin: "@2018". Examples
+  hit: Hernandez vs Brendan Allen (LFA 2018 + UFC), Petrino vs Bellato
+  (Max Fight 2019 + DWCS 2022 — the DWCS video is NOT the pre-UFC bout),
+  Karine Silva vs Dione Barbosa, Makhachev vs Storley.
+- NAME-COLLISION SUBSTITUTION. The search engine swaps in a famous name:
+  "Neil Magny vs Nate Pratt" -> Carlos PRATES; "Barboza vs Lee King" -> Kevin
+  LEE. CONFIRM the returned title contains the opponent you asked for.
+- WRONG NAMES IN OUR OWN DATA. Match on EVENT + DATE, not spelling, and flag
+  the row for a FIGHT_HISTORY fix. Confirmed wrong: "Markus Prödl" is actually
+  Marcus Plodeck; "Simone da Silva" (Karine Silva, SFT 21) is Simone Duarte;
+  "Christina Adcock" (Jasudavicius, BTC 8) is Christina Ricker.
+- SECONDARY CHANNELS ARE FINE (the standard is real footage, not simulation).
+  A pre-UFC regional bout CANNOT be an EA-game sim — the games only ship UFC
+  rosters. Reject only "UFC 4/5 AI Simulation", "Gameplay", "CPU vs CPU", and
+  titles that name only one fighter with no event. Judge the TITLE, not the
+  channel. Cageside GoPro on a personal channel counts.
+
+
+CHANNELS THAT HAVE PAID OFF (check first for the matching region)
+----------------------------------------------------------------
+  ONE Championship  @ONEChampionship   — full fights, "X vs. Y | Full Fight"
+  RIZIN             @RIZIN_FF           — bilingual titles w/ event number
+  Bellator          @BellatorMMA        — the "Archive", per-bout
+  PFL               @PFLMMA             — owns the WSOF back catalogue
+  ROAD FC           @roadfc             — hangul+romaji titles
+  WWFC              @worldwfc           — Ukraine/E.Europe: Spivac, Dolidze
+  Superior FC       @FCSuperior         — German regional, de Ridder era
+  M-1 Global        @M1Global   (NOT @M1GlobalWorld — that's an aggregator!)
+  SFT Combat, XKO, GMC, BTC, NFC, WFC, MMA Futures (=FAC), Jungle Fight TV,
+  LFA Fights, DEEP @deep2001MMA, AFC @afc78, Global Knock-Out, Team Eagle -
+  Dagestan Clan (fan channel w/ Makhachev's numbered pre-UFC run).
+  UFC FIGHT PASS's own YouTube channel posts whole LFA cards FREE.
+  MEASURABLY EMPTY, don't burn time: WLF W.A.R.S./E.P.I.C. archive; Tachi
+  Palace (the "official" playlist is a compilation channel, not the promotion).
+
+
+GET THE GAP LIST  (run from repo root)
+--------------------------------------
+node -e '
+const fs=require("fs"),vm=require("vm");const h=fs.readFileSync("index.html","utf8");
+function bal(m){const i=h.indexOf(m);let d=0,k=h.indexOf("{",i);for(;k<h.length;k++){if(h[k]==="{")d++;else if(h[k]==="}"){d--;if(!d)break;}}return h.slice(i,k+1)+";";}
+function fn(s){const i=h.indexOf(s);let d=0,k=h.indexOf("{",i);for(;k<h.length;k++){if(h[k]==="{")d++;else if(h[k]==="}"){d--;if(!d)break;}}return h.slice(i,k+1);}
+const c=vm.createContext({});
+vm.runInContext(bal("const TAPE_STUDY = {")+bal("const FIGHT_HISTORY = {")+fn("function normalizeFighterNameForMatch(")+fn("function findTapeStudyUrl(")+"\nglobalThis.FH=FIGHT_HISTORY;globalThis.F=findTapeStudyUrl;",c);
+const UFCISH=/^UFC\b|^Noche UFC|^VeChain UFC|^UFC on |Dana White|^DWCS|^Contender Series|Road to UFC|Ultimate Fighter/i;
+const NAME=process.argv[1];
+for(const r of (c.FH[NAME]||[])){const e=String(r.event||"");
+ if(UFCISH.test(e)||!r.date||r.date=="undefined")continue;
+ if(!c.F(NAME,r.opponent,r.date)) console.log("  "+r.opponent.padEnd(26)+e+"   "+r.date);}
+' "Vitor Petrino"
+  (NOTE: DWCS/Contender rows are excluded by design — they are not "pre-UFC".)
+
+
+PLACE  (FORMAT)
+---------------
+Write a temp file, one line per bout (add " @YYYY" before "(" for rematches):
+  - Vitor Petrino vs Rodolfo Bellato @2019 (https://www.youtube.com/watch?v=<ID>)
+Then:
+  node scripts/place-tape-links.cjs /tmp/that-file.txt --write
+  node scripts/fix-tape-sections.cjs --write
+The placer REPLACES a fighter's whole block, so a temp file with only new bouts
+is fine — it merges with existing rows by video id. It will REFUSE to write if
+any row doesn't resolve or a rematch lacks a pin. Trust its refusal.
+
+Do NOT run mutating git from the sandbox (leaves a .git/index.lock). Commit in
+Terminal. If a sandbox read fails with errno -35 / "Resource deadlock avoided",
+that is iCloud offload, NOT damage — the file is fine on the Mac; `cat` it there
+once to rehydrate, or just retry.
+
+
+WHERE THINGS STAND — UFC FIGHT NIGHT AUG 22 2026 (Hernandez vs Rodrigues)
+------------------------------------------------------------------------
+Started 6% linked, now ~47/120. DONE & EXHAUSTED (searched every way):
+  Anthony Hernandez 4/6 · Gregory Rodrigues 4/11 · Roman Dolidze 4/6 ·
+  Reinier de Ridder 18/19 · Serghei Spivac 4/9
+RESUME AT: Vitor Petrino (6 gaps, unstarted). Then Gauge Young, Wes Schultz,
+then the untouched block — Jeisla Chaves, Jackson McVey, Shanelle Dyer, Kody
+Steele (debutants, 6 each — highest expected hit rate on the card), plus
+Kennedy Nzechukwu, Elise Reed, Carli Judice, Shamil Gaziev.
+Two FIGHT_HISTORY name fixes still pending (see TRAPS): Marcus Plodeck,
+Simone Duarte, Christina Ricker.
