@@ -70,6 +70,88 @@ Worst: anyone whose promotions column reads "unlisted" only — that is a region
 circuit with no Fight Pass presence, so it is a YouTube hunt, by hand.
 
 
+════════════════════════════════════════════════════════════════════════════
+FIGHT PASS STOPPED GETTING NEW UFC FIGHTS IN JANUARY 2026. USE PARAMOUNT+.
+════════════════════════════════════════════════════════════════════════════
+Measured 2026-07-20 across all 259 TAPE_STUDY fighters — links per month by host,
+for org=="UFC" bouts:
+
+  month     FightPass  Paramount+   no link
+  2025-12       15          0          5
+  2026-01        2          7          3     <- Paramount+ takes over streaming
+  2026-02        2         28          8
+  2026-03        5         29          9
+  2026-04        5         18          5
+  2026-05        0          5         30
+  2026-06        0          2         51
+  2026-07        0          0         47
+
+Fight Pass runs 15-33 new fights a month through Dec 2025 and hits ZERO from May
+2026. This is NOT cataloguing lag — I claimed earlier that recent gaps "should
+appear on their own" and that was wrong; they never will. The residual 2-5/month
+in early 2026 is DWCS and regional, which Fight Pass still carries.
+
+Every Paramount+ link we hold (94, of which 92 are 2026 events) was hand-sourced.
+That is exactly why May-Jul 2026 looks catastrophic: nobody has sourced it yet.
+
+THE PARAMOUNT+ HARVEST — SOLVED, AND IT IS ONE PAGE FOR A WHOLE SEASON
+
+  1. /shows/ufc-fight-night/ , signed in. Scroll to the "Fight Selector" section.
+  2. Season dropdown picks the year (2006 through 2026 are listed).
+  3. Click "Show More Fight Selector" REPEATEDLY. Each click adds ~30 fights;
+     Season 2026 reached 206 individual bouts and was still going.
+  4. Harvest a[href*="/shows/video/"] — these ARE real anchors, unlike Fight Pass
+     search. Title format: "A vs. B (Event - Main/Prelims)".
+
+  Each click is slow enough that a long loop trips the 45s CDP timeout. Run it in
+  bursts of 6-8 clicks and re-check the count; the count survives between calls.
+
+  DO THE MATCHING INSIDE THE PAGE. 206 titles is ~29KB, too big to ship out of
+  the browser. Send the gap list IN, match there, return only the hits — the
+  payload each way is then trivial.
+
+  A CORRECTION TO WHAT I FIRST WROTE HERE: I claimed a fight page links the rest
+  of its own card, so one page = one card. WRONG. That rail is "latest episodes"
+  and shows the NEWEST card no matter which fight page you open — a Feb 2026
+  fight page still lists the July card. The Fight Selector is the real index.
+
+  Public metadata still works signed out (title, description with the date,
+  ld+json @type TVEpisode), so links stay verifiable the same way Fight Pass ones
+  are.
+
+TWO SHOWS, NOT ONE — you need both:
+  /shows/ufc-fight-night/   Fight Nights. Selector is by SEASON (2006-2026).
+                            Season 2026 = 206 individual bouts, the full year.
+  /shows/ufc/               NUMBERED EVENTS. Selector is by EVENT (UFC 329,
+                            328, 327 ...), ~12-13 bouts each.
+  A fight page tells you which it belongs to: the show hub it links in the nav,
+  and ld+json partOfSeries.
+
+SEASON 2025 IS EMPTY — five token fights only. Expected: 2025 was still ESPN.
+So Paramount+ is a 2026-onward source and nothing else. Do not go looking for
+older material there.
+
+No fighter search on Paramount+, so the unit is the SEASON/EVENT, not the
+fighter. That is fine — one harvest covers every fighter at once, which is
+strictly better than Fight Pass's per-fighter playlists.
+
+RESULT, 2026-07-20: filled 40 of the 74 UFC gaps across the five swept cards.
+Sep 5 went to ZERO. Independent check that the matcher works: it picked
+NVF2kXimGlQIA9wM2SRvizdAIpPO2nZJ for Neal vs Medić, the exact id hand-sourced in
+document (3) months earlier.
+
+  card                gaps before  after
+  ufc-330                  18       13
+  august-22                19        7
+  august-29                16        6
+  september-05              5        0
+  september-12             16        8
+
+What is left is almost entirely PRE-2026 — the Fight Pass era, already searched
+clean under both phrasings. Those are genuinely not catalogued anywhere we can
+reach, not a gap in method.
+
+
 THE SWEEP PROCEDURE — RUN ALL OF IT, EVERY CARD, NO EXCEPTIONS
 
   1. For each fighter: search their name with the PLAYLIST filter on, take the
@@ -127,6 +209,41 @@ AUG 22 2026 (Hernandez vs Rodrigues) — swept 2026-07-20
             Schultz vs Mario Mingaj          870359
             Schultz vs Mansur Abdul-Malik    676507  (was already in Abdul-Malik's)
   105 links placed. 19 bouts still without video; re-run --gaps to see them.
+
+AUG 29 / SEP 5 / SEP 12 2026 — swept 2026-07-20
+  27 fighters, 374 links placed. Remaining: 19 / 6 / 20 bouts.
+
+  A METHOD MISTAKE WORTH NOT REPEATING: I ran pass 1 as a plain name search
+  instead of the playlist, because the PLAYLIST filter was being awkward. Search
+  caps at 20 and is relevance-ranked, so it quietly returned partial careers —
+  Gastelum 20 of 24, Blaydes 16 of 18, Tim Elliott 15 of 21 — and pass 2 then
+  reported 79 "missing" bouts that were not missing at all. Re-running pass 1
+  properly from the playlists closed 40 of them at once. The filter DOES work;
+  you have to click the label text "PLAYLIST", not the checkbox square.
+
+  Eight rematch pins were needed here, all resolved from video metadata. One more
+  would-be wrong link caught: video/39849 is Blaydes vs Ngannou APRIL 2016, and
+  ordering would have filed it on their 2018 rematch.
+
+  Alumni playlists: Ryan Spann LFA 29955 (4), Curtis Blaydes LFA 29671 (1),
+  Alexa Grasso Invicta FC 30808 (4).
+
+  A SECOND TRAP FROM THE SAME MISTAKE: --write REPLACES a fighter's whole block.
+  Re-running pass 1 from the playlists therefore DELETED rows the earlier search
+  had found and the playlist lacked — Blaydes lost Abdurakhimov and Justin Willis.
+  Never re-place a fighter from one source alone. Merge the sources by video id
+  first (playlist wins on conflicts) and place the union. Doing that recovered
+  Blaydes 16+18 -> 21, Gastelum 20+24 -> 24, Elliott 15+21 -> 21.
+
+  Also: video/453082 came out of a name search and returns NO metadata at all —
+  a dead id. The union surfaced it as "more links than meetings" for Spann vs
+  Nogueira, and the real video is 96082. Two sources disagreeing is a free check;
+  one source alone would have written the dead link.
+
+  KOREAN AND CHINESE NAMES ARE SURNAME-FIRST IN THE DB and given-name-first on
+  Fight Pass. Four aliases this batch: Ji Yeon Kim -> Kim Ji-yeon, Chan-Mi Jeon ->
+  Jeon Chan-mi, Jun Young Park -> Park Jun-yong, Da-un Jung -> Jung Da-un. No
+  normaliser bridges these; they have to be written down.
 
   Alumni playlists found on this card, for the pre-UFC pass:
     Anthony Hernandez   LFA Alumni            29453   1 video
