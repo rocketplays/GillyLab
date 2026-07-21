@@ -118,6 +118,150 @@ free-link upgrade pass afterwards, not the primary source.
 Also worth knowing: the curated "<Promotion> Alumni: <Fighter>" playlists are a
 SUBSET of what the search returns. Use both.
 
+PASS 3 (2026-07-20), the "search the promotion, not the fighter" pass. 10 more
+bouts placed. What the yield actually looked like, per source:
+
+  WORKED — the promotion runs its own channel and titles by bout:
+      Samurai Fight House  @samuraifighthouseLIVE  (Argentina) — Ribovics
+      XMMA TV              UC4sz2mRjTCRVARI_8RSDpkw — Abdul-Malik
+      NFC Fight Night      @nfcfighting — Tresean Gore
+      Island Fights        @IslandFights — Robertson (HIGHLIGHTS, not full fight;
+                           placed anyway, it is the rights holder and the bout is
+                           named. Downgrade if a full version turns up.)
+      BRAVE Combat Fed.    @bravemmaf — Gaziev
+      MMA Series           @mma_series (Russian/Belarusian) — Gaziev ×2
+
+  DEAD ENDS, measured, do not redo:
+      Jalin Turner   — KOTC / Tachi Palace era. Nothing, either source, and
+                       re-checked per-bout by name in pass 4. Genuinely absent.
+      Vicente Luque  — Shooto Brasil 2009-2012. The channel exists but only
+                       posts recent cards (136/137). Back catalogue is not up.
+      Ribovics       — SFH posts FULL SHOWS for most events, per-bout for few.
+                       A full-show link is not a bout link; not placed.
+
+  ── PASS 4: THE OR'd-QUERY MISTAKE ──────────────────────────────────────────
+  Pass 3's "dead end" list was partly wrong, and the cause is worth recording.
+  I searched `"Luque" Lisboa OR "Yuri Moura" OR "Alfredo Souza"` — three bouts
+  crammed into one query — and for Magny I searched no opponent name at all,
+  just "regional MMA 2011". Both returned the fighter's UFC career and I read
+  that as absence. This file already said the method is ONE SEARCH PER BOUT.
+  I did not follow it. Re-running it properly, one opponent per query, found
+  three things in ten minutes:
+
+      Neil Magny vs Nolan Norwood      — I had called Magny a total dead end
+      Gillian Robertson vs Calvillo    — Global Knock-Out's own channel
+      Abdul-Malik vs Saint-Gelais      — free copy of a bout I had paywalled
+
+  An OR'd query is not N searches. YouTube ranks on the whole string and the
+  famous name dominates it. If a query names more than one bout, it has tested
+  no bout.
+
+  TWO MORE SOURCE TYPES THIS SURFACED, neither of which is a promotion:
+      THE FIGHTER'S OWN CHANNEL. @88amagny has Magny vs Norwood and nothing
+      else, split RD1 / RD2 / winner as three uploads. Placed RD1 — partial,
+      but real. Checked @luquevicente and @EstebanRibovicsUFC the same way:
+      both are vlog channels, no old fights. Cheap to check, occasionally pays.
+      THE UFC FIGHT PASS YOUTUBE CHANNEL carries LFA cards in full and free —
+      "LFA 176: Mansur Abdul-Malik vs Allan Saint-Gelais | February 9, 2024".
+      Always check it before settling for a ufcfightpass.com/video link.
+
+  ONE TRAP WORTH KNOWING: oembed returns literal "Forbidden" for videos with
+  embedding disabled or removed. That is NOT a rate limit and NOT a verdict on
+  the channel — four of the Gaziev/Stošić results did it while other ids
+  resolved fine in the same second. Treat it as "cannot verify", not "bad".
+  Gaziev vs Stošić (Brave CF 69): the only resolvable copies are MMA Savez
+  Srbije and Real Fight Balkans — neither is the rights holder. Left unplaced.
+
+  ALSO: search-result titles lie. The Dailidko video's search title said
+  "BRAVE CF 81"; oembed said "BRAVE CF 65", which is what our record has.
+  Always take the title from oembed, never from the search snippet.
+
+FIGHT PASS SEARCH IS NOW EXHAUSTED for the UFC 330 card. All 19 fighters have
+been through it. The last nine (Turner, Gore, Gaziev, Ribovics, Robertson,
+Abdul-Malik, Luque, Magny, Machado Garry) returned 163 videos and only 3 new
+pre-UFC bouts among them.
+
+── PASS 5: THE MAJOR PROMOTIONS ────────────────────────────────────────────
+Stopped working fighter-by-fighter and went at the promotions with the most
+gaps. 31 bouts placed. The two that paid are the two that title formulaically:
+
+  BellatorMMA  @BellatorMMA  — "Full Fight | X vs. Y - Bellator NNN"
+       Michael Page 8, Amosov 7, Buckley 1, Fortune 1. The channel is now
+       branded "the Bellator MMA Archive" and the back catalogue is up. Some
+       bouts also appear on @PFL MMA (they bought Bellator) and as "NO COMMS"
+       alternate cuts — same fight, either is fine.
+  RIZIN FIGHTING FEDERATION  @RIZIN_FF  — "Full Fight | 朝倉海 vs. 元谷友貴 /
+       Kai Asakura vs. Yuki Motoya - RIZIN.42". Bilingual title, event number
+       on the end, so a query naming the fighter and the event number lands it
+       almost every time. Asakura 12, Horiguchi 2. This is the single highest
+       hit-rate source found so far — nearly every gap searched was there.
+
+  PLAYLISTS ARE A TRAP HERE. Both channels have "Full Fights" playlists and
+  both are recent-only — Bellator 289-292 (2022-23), RIZIN 2024-2026. Our gaps
+  are older than that. I enumerated the RIZIN one (101 videos) and it contained
+  ZERO of the Asakura bouts that per-bout search then found immediately. The
+  playlist looks like the efficient route and is the worse one.
+
+  DEAD, checked properly and not worth another pass:
+      WLF (W.A.R.S. / E.P.I.C.)  — 43 gaps across Aoriqileng, Sumudaerji, Song
+          Yadong, Temirov. No official channel carries the MMA back catalogue;
+          what is on YouTube is Wu Lin Feng KICKBOXING plus regional franchise
+          channels (Toronto, Canada). Biggest single block still unfilled.
+      Tachi Palace  — 27 gaps. There IS a "Tachi Palace Fights" playlist and it
+          is owned by "MMA on the couch", a compilation channel. Not the rights
+          holder, so nothing from it is placeable. Do not be fooled by the name.
+      Chidi Njokuani, Levan Chokheli, Aaron Pico, Hyder Amil, Ozzy Diaz,
+          Christian Rodriguez — searched per bout in Bellator, none uploaded.
+      Jalin Turner's two Bellator bouts (192, 170) — not uploaded either.
+
+  ALSO CONFIRMED AGAIN, third time now: YouTube's channel-scoped search
+  (/@Channel/search?query=) returns 2-6 results and stops. Worse, navigating to
+  it drops the query string and silently gives you the channel's default video
+  list, which looks like a real result set. Per-bout WebSearch is the method.
+
+── PASS 6: SEARCH THE NATIVE-SCRIPT NAME ───────────────────────────────────
+THE SINGLE HIGHEST-LEVERAGE TRICK FOUND SO FAR. Asian promotions title their
+uploads in their own script. A romanised query does not match those titles at
+all, so every earlier pass reported "no footage" for fights that were sitting
+in public on the promotion's own channel.
+
+Look the fighter's native name up first, then search THAT:
+
+    Aoriqileng     傲日其楞      Sumudaerji   苏木达尔基
+    Song Yadong    宋亚东        Yan Xiaonan  闫晓楠
+    Kai Asakura    朝倉海        Kyoji Horiguchi 堀口恭司
+    Rei Tsuruya    鶴屋怜        Seokhyeon Ko 고석현
+
+Also translate the PROMOTION. This is what unlocked WLF: its MMA arm is
+武林笼中对 ("Wulin cage bouts"), NOT 武林风, which is the kickboxing show. I had
+searched only the kickboxing name and concluded WLF had no MMA catalogue.
+
+  CHANNELS CONFIRMED, all rights holders:
+      ROAD FIGHTING CHAMPIONSHIP  @roadfc — bilingual hangul+romaji titles,
+          "XIAOMI ROAD FC 034 Yan Xiaonan(얜샤오난) VS Fujino Emi(후지노 에미)".
+          Deep archive, back to at least ROAD FC 023. Best of the three.
+      DEEP チャンネル  @deep2001MMA — "DEEP 100 IMPACT 鶴屋怜VS竜己"
+      AFC엔젤스파이팅 챔피언십  @afc78 — "[AFC16] 웰터급 챔피언 결정전 고석현 VS 안재영"
+
+  ONE NAMING TRAP: fighters are billed by RING NAME in native-language titles.
+  Tsuruya's DEEP 100 opponent is 竜己 ("Tatsuki"); our record says Tatsuki
+  Okano. Same bout — matched on event + date, not on the name. Check the date
+  before rejecting a title whose opponent name looks wrong.
+  A SECOND ONE: ROAD FC runs a numbered main card and a YOUNG GUNS card on the
+  same night. "ROAD FC YOUNG GUNS 32" IS "ROAD FC 037", 11 Mar 2017. Verify the
+  date rather than assuming the number mismatch means a different fight.
+
+  STILL DEAD even in native script: WLF's 2016-2019 W.A.R.S./E.P.I.C. archive.
+  The 武林笼中对 playlist that exists is all recent YFU-era cards. Aoriqileng
+  (30), Song Yadong (17), Sumudaerji (16) remain the biggest untouched block.
+
+  A WRONG LINK THIS PASS CAUGHT, worth noting because it was already live:
+  Seokhyeon Ko's AFC 17 row (vs Yun Jae Jung) held the AFC 16 video. Both are
+  welterweight title fights five months apart, so the title looked right. The
+  placer's "URLs covering more than one bout" warning is what surfaced it —
+  that warning fires on legitimate prelim blocks too, so it is tempting to
+  wave through. Read it every time.
+
 OTHER PLATFORMS, TESTED AND NOT USEFUL:
   TrillerTV   — searched "Njokuani": no results. Bellator's catalogue is not
                 there. It does carry KSW and some regionals.
