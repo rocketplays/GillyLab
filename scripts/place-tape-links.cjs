@@ -35,7 +35,13 @@
  *
  * ── THE HARVEST IS TWO PASSES, NOT ONE. THIS IS THE RULE. ───────────────────
  *
- * PASS 1  the fighter's playlist ("all of X's UFC fights"). Fast, clean, ordered.
+ * PASS 1  the fighter's PLAYLIST. Do not substitute a plain name search for this.
+ *         Search results hard-cap at 20 and are relevance-ranked, so for anyone
+ *         with a long career the search silently returns a partial career and the
+ *         gaps look like absences. Measured: name-search gave Gastelum 20 of 24,
+ *         Blaydes 16 of 18, Tim Elliott 15 of 21; their playlists had all of them.
+ *         Getting to the playlist needs the PLAYLIST filter on /search — and the
+ *         filter only takes if you click the LABEL TEXT, not the checkbox box.
  * PASS 2  diff what you got against their org=="UFC" rows in FIGHT_HISTORY, and
  *         search Fight Pass for every gap individually.
  *
@@ -181,6 +187,15 @@ const ALIAS = {
   'Gregory Rodrigues|Junyong Park': 'Park Jun-yong',
   'Kennedy Nzechukwu|Da-un Jung': 'Jung Da-un',
   'Elise Reed|Loopy Godinez': 'Lupita Godinez',      // "Loopy" is her nickname
+
+  // Aug 29 / Sep 5 / Sep 12 2026 cards
+  'Michael Page|Shara Magomedov': 'Sharabutdin Magomedov',
+  'Regina Tarin|Luisa Cifuentes': 'Luisa Fernanda Cifuentes',
+  'Regina Tarin|Citalli Alcantar': 'Citlalli Alcantar',
+  'Song Yadong|Bharat Kandare': 'Bharat Khandare',
+  'Denise Gomes|Rayanne Amanda': 'Rayanne dos Santos',
+  'Alexa Grasso|Ji Yeon Kim': 'Kim Ji-yeon',        // surname-first in the DB
+  'JJ Aldrich|Chan-Mi Jeon': 'Jeon Chan-mi',        // surname-first in the DB
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
