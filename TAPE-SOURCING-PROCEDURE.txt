@@ -150,6 +150,33 @@ SAFE WORKFLOW when adding to a fighter who already has links:
 It will REFUSE to write if any row doesn't resolve or a rematch lacks a pin.
 Trust its refusal.
 
+PAYWALLED / UFC FIGHT PASS (the website, ufcfightpass.com — needs login in the
+browser). Store the link the same way as any other: - Fighter vs Opp
+(https://ufcfightpass.com/video/<id>). To harvest, on /search set the input via
+JS (React-controlled: use the native value setter + dispatch 'input'), then read
+the /video/<id> by CLICKING the result tile — the tiles have NO href, they
+navigate in-JS, so the URL only appears after the click. Three regimes, learned
+Aug 2026:
+  1. FULL-EVENT promotions (LFA, Fury FC): search the EVENT ("LFA 140",
+     "Fury FC 73") — the event VOD is the FIRST tile. Reliable. Got LFA
+     140/131/157/150, Fury FC 56/73.
+  2. Low-UFC-profile fighters (few UFC bouts): search "<Fighter> vs <Opp>" —
+     the exact per-bout tile is first. Got Steele vs Whitehead (Fury 81
+     video/500314), Dyer vs Kazak (Ares 18 video/567109).
+  3. HIGH-UFC-profile fighters (Reed, Petrino, Nzechukwu): search is swamped by
+     their UFC library and caps at 20, so the pre-UFC regional bout NEVER
+     surfaces — no phrasing fixes it, and CFFC/UAE Warriors have no event VOD.
+     These need the FIGHT PROMOTIONS -> promotion -> event page browse instead.
+     Not yet done: Reed CFFC 83/91/97 + Bellator 231, Petrino UAE Warriors 22.
+  NOT on Fight Pass at all: FAC (=MMA Futures PPV mmafutures.live), and the
+  Brazilian/regional promos (Future FC, AFT, Max Fight, GFC, King Fight, Dome
+  Of War, MMA Series, Belarusian FC). LFA catalog on FP starts after ~LFA 40
+  (Nzechukwu's LFA 40 2018 bout has no event VOD).
+FP video IDs placed Aug 2026 (paywalled): Schultz-Knutson LFA140=387955,
+Schultz-Salim LFA131=354306, McVey-Krenzel LFA157=469191, McVey-Paulsen
+LFA150=434395, Steele-Gengler Fury56=292000, Steele-Kilmer Fury73=439666,
+Steele-Whitehead Fury81=500314, Dyer-Kazak Ares18=567109.
+
 Do NOT run mutating git from the sandbox (leaves a .git/index.lock). Commit in
 Terminal. If a sandbox read fails with errno -35 / "Resource deadlock avoided",
 that is iCloud offload, NOT damage — the file is fine on the Mac; `cat` it there
