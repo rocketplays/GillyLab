@@ -8,8 +8,17 @@ Place: the channel is the rights-holder (promotion or UFC Fight Pass) AND the
        title names both fighters, so the bout is unambiguous.
 Flag:  right channel, but the title does not identify WHICH fight it is — the
        channel earns trust, the title does not identify the bout.
-Reject and do not record: reupload channels, and anything that smells of a video
-       game ("UFC 4", "AI Simulation", "CPU vs CPU", "Gameplay").
+Reject and do not record: anything that smells of a video game ("UFC 4",
+       "AI Simulation", "CPU vs CPU", "Gameplay").
+
+SIMULATION RISK IS ESSENTIALLY ZERO FOR PRE-UFC REGIONAL BOUTS, and this
+should relax how suspicious you are of an obscure channel. EA's games only
+ship UFC rosters, so a bout between two fighters who never reached the UFC
+cannot be simmed — there is no one to sim it with. The AI-simulation rejects
+recorded below are all UFC-era matchups (Moreno/Formiga, Jasudavicius/Silva)
+for exactly that reason. For a 2012 regional fight, an obscure uploader is
+just an obscure uploader. Judge the TITLE (does it identify the bout?), not
+the channel.
 
 
 ── FLAGGED ──────────────────────────────────────────────────────────────────
@@ -220,10 +229,14 @@ bouts placed. What the yield actually looked like, per source:
       "LFA 176: Mansur Abdul-Malik vs Allan Saint-Gelais | February 9, 2024".
       Always check it before settling for a ufcfightpass.com/video link.
 
-  ONE TRAP WORTH KNOWING: oembed returns literal "Forbidden" for videos with
-  embedding disabled or removed. That is NOT a rate limit and NOT a verdict on
-  the channel — four of the Gaziev/Stošić results did it while other ids
-  resolved fine in the same second. Treat it as "cannot verify", not "bad".
+  ONE TRAP WORTH KNOWING: oembed returns literal "Forbidden" for some videos
+  while others resolve fine in the same second, so it is not a rate limit.
+  *** I FIRST WROTE HERE THAT THIS WAS NOT A VERDICT ON THE VIDEO. THAT WAS
+  WRONG AND IT PUT FOUR UNPLAYABLE LINKS ON THE SITE. *** On 2026-07-21 four
+  Stoltzfus links that returned Forbidden were opened by hand: every one was
+  on a channel that had gone PRIVATE, so the video does not play at all.
+  CORRECT RULE: if oembed will not confirm a video, the link is UNVERIFIED —
+  do not place it. See scripts/check-tape-links.py.
   Gaziev vs Stošić (Brave CF 69): the only resolvable copies are MMA Savez
   Srbije and Real Fight Balkans — neither is the rights holder. Left unplaced.
 
@@ -371,7 +384,98 @@ so the next card does not re-walk the dead ones.
   is 5 fights and all 5 are linked. Every "gaps by fighter" report will keep
   putting her at the top until those rows are separated out or tagged.
 
-── PASS 8: THE PER-BOUT TAIL. STOP HERE. ───────────────────────────────────
+── PASS 14: EVERY UFC 330 BOUT, BARE "X VS Y", ONE AT A TIME ───────────────
+The full due-diligence sweep. ~40 more queries. 7 placed, every one
+oembed-CONFIRMED PLAYABLE before it went in (see pass 13 for why that step is
+now mandatory). Card went 39% -> 43% linked.
+
+  PLACED
+    Makhachev  ×5  Ibragimov, Kormilkin, M.Grigoryan, Khuchua, Egoyan
+    Luque      ×1  Thiago Santos — his FIRST pre-UFC link, was on zero
+    Ribovics   ×1  Maximiliano Ortiz
+    Turner     ×1  Andrew Lagdaan
+
+  THE BIG UNLOCK: @teameagle-dagestanclan3498 ("Team Eagle - Dagestan Clan")
+  is a FAN channel that has Makhachev's entire pre-UFC run, numbered in
+  sequence, with event and exact date in every title:
+      "5th fight ProFC - Union Nation Cup Final: Islam Makhachev vs Vladimir
+       Egoyan - 02/07/11"
+  Found by bare name search, then its "Islam Makhachev all fights" playlist
+  (PLRFsf-Wr38nIpFcyfk8-v3ARwbn4Cwu9v) gave the rest in one page. Only fights
+  1, 4 and 6 are absent, which is exactly his 3 remaining gaps.
+  LESSON: for a fighter with a devoted national following, look for a FAN
+  COMPILATION CHANNEL, not just the promotions. One channel covered 5 bouts
+  across 4 different promotions (M-1, ProFC, Lion's Fights, Tsumada).
+
+  Luque vs Thiago Santos survives because BOTH men later reached the UFC —
+  that is what makes an old regional bout worth uploading. Worth using as a
+  heuristic: gaps where the OPPONENT also became notable are likelier to exist.
+
+  Turner vs Lagdaan is cageside GoPro footage on a personal channel
+  ("harveycast"), not a broadcast. Exactly the amateur-recording case that
+  counts, and it would have been rejected under the old rights-holder rule.
+
+  TWO NAME-COLLISION TRAPS caught this pass, both would have been silent
+  errors — the search engine "helpfully" substitutes a famous name:
+      "Neil Magny vs Nate Pratt"  -> returns Carlos PRATES (UFC 2024).
+      "Edson Barboza vs Lee King" -> returns Kevin LEE (UFC 2018).
+  Neither is the regional bout. ALWAYS confirm the returned title contains the
+  opponent you actually asked for before placing.
+
+── PASS 13: 32 DEAD LINKS WERE ALREADY LIVE ON THE SITE ────────────────────
+Prompted by the owner catching four links I had placed that did not play.
+Swept all 669 YouTube links in TAPE_STUDY with oembed. 32 returned HTTP 404 —
+video deleted or channel deleted. They were stripped; those bouts are gaps
+again, which is the honest state. A dead link is WORSE than no link: the row
+looks covered, so the bout stops appearing on gap reports and never gets
+re-sourced, and the reader gets an error page.
+
+Almost all of them predate this session and cluster hard:
+    Magomedrasul Gasanov 10, Abubakar Vagaev 11 — Russian regional (ACA,
+    WFCA, Fight Nights). Whole channels appear to have gone down at once.
+    Plus Ankalaev 2, Almabayev 2, Yakhyaev 2, Kuniev, Patterson, Klein,
+    Ruziboev.
+
+NOT stripped, needs a human to open them — 401/403 can be age or region
+restriction that still plays when signed in:
+    UgxHo1BJrdE  Aaron Pico vs Lerone Murphy          401
+    ljvhzWuNwMA  Khamzat Chimaev vs Ikram Aliskerov   403
+    JJvEC3gWHYo  Nursulton Ruziboev vs Ibrahim Mané   403
+
+RUN scripts/check-tape-links.py PERIODICALLY. Regional uploads rot fast, and
+the secondary-channel links placed in pass 9 are the likeliest to go next.
+
+── PASS 12: PLAIN "FIGHTER VS FIGHTER". THIS BEATS EVERYTHING ABOVE. ───────
+CORRECTION TO PASS 8, WHICH SAID "DO NOT RE-RUN THIS TAIL". That was wrong.
+Pass 8 searched per-bout but kept adding qualifiers — promotion name, event
+number, "full fight", the year. Stripping ALL of that and searching the bare
+string "<Fighter> vs <Opponent>" found four bouts in ~20 queries, in
+promotions this file had already recorded as measurably empty:
+
+    Jasudavicius vs Brigid Chase   yFG-wh_2Qeg  @TheWFCFights (World FC's own)
+    Gaziev vs Denis Gvozdev        AZfccqIm_ug  @BFCCOMPANY
+    Gaziev vs Vladislav Kozlovskiy IV9Wm-D-nqc  @BFCCOMPANY
+    Orolbai vs Khalid Satuev       2CiGufarmt8  ACA Young Eagles 15
+
+WHY THE QUALIFIERS HURT. BFC titles their uploads "№ 8 DENIS GVOZDEV vs SHAMIL
+GAZIEV BFC 63" — the bout NUMBER leads, the promotion is a bare acronym, and
+there is no "full fight" anywhere. Every earlier query I built ("Belarusian FC
+Gaziev", "Belarus Fighting Championship полный бой", "BFC MMA Гвоздев") fought
+against that title instead of matching it. The bare two-name query matches the
+only part of the title that is stable across every promotion on earth: the two
+fighters' names.
+
+RULE GOING FORWARD: search "<Fighter> vs <Opponent>" and NOTHING ELSE first.
+Add qualifiers only if that returns nothing. Do not lead with the promotion,
+the event number, the year, or the words "full fight".
+
+WHY THE YIELD IS STILL LOW ON THIS CARD, and why that is not a verdict on the
+method: UFC 330 is stacked with long-tenured veterans, so a bare name query is
+outranked by a decade of UFC content for that fighter. The method should work
+far better on cards full of debutants, where the regional bout IS the fighter's
+main search footprint. Test that before concluding anything from this card.
+
+── PASS 8: THE PER-BOUT TAIL (superseded by pass 12 — see above) ────────────
 Ground through the individual bouts one query each. 20 searches, ONE placement
 (Karine Silva vs Maryna Moroz, XFCi7, @OfficialXFCmma). That is a 5% hit rate
 against 25% in pass 7 and ~50% in the promotion passes before it.
