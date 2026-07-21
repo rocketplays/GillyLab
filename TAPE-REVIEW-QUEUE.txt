@@ -436,11 +436,19 @@ Almost all of them predate this session and cluster hard:
     Plus Ankalaev 2, Almabayev 2, Yakhyaev 2, Kuniev, Patterson, Klein,
     Ruziboev.
 
-NOT stripped, needs a human to open them — 401/403 can be age or region
-restriction that still plays when signed in:
+I left three 401/403s in place on the theory that those are age or region
+restrictions that still play when signed in. THE OWNER OPENED ALL THREE AND
+ALL THREE WERE DEAD. Stripped 2026-07-21.
     UgxHo1BJrdE  Aaron Pico vs Lerone Murphy          401
     ljvhzWuNwMA  Khamzat Chimaev vs Ikram Aliskerov   403
     JJvEC3gWHYo  Nursulton Ruziboev vs Ibrahim Mané   403
+
+SO: 35 of 35 oembed failures were dead videos. 404 AND 401 AND 403 — the status
+code did not distinguish anything. This is the SECOND time I have argued that
+an oembed failure might still be a playable video, and the second time that was
+wrong. Stop making the argument.
+TREAT ANY OEMBED FAILURE AS DEAD. check-tape-links.py still reports 401/403
+separately so a human can spot-check, but the default should be to strip.
 
 RUN scripts/check-tape-links.py PERIODICALLY. Regional uploads rot fast, and
 the secondary-channel links placed in pass 9 are the likeliest to go next.
