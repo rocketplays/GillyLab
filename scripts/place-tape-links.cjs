@@ -395,14 +395,29 @@ function resolve({ order, byFighter }, FH, TS) {
     }
     rows.sort((a, b) => a.i - b.i);   // newest-first, same order as FIGHT_HISTORY
 
-    // Section headers sit on the first row of a block and are null thereafter.
-    let seenUFC = false, seenPre = false;
+    // Section headers sit on the first row of each block and are null thereafter.
+    //
+    // This used to emit "UFC" on the first UFC row and "Pre-UFC" on the first
+    // non-UFC row and nothing else, which assumes a career is one UFC block above
+    // one pre-UFC block. 523 fighters are not that shape — they go UFC, elsewhere,
+    // UFC again — and the "Pre-UFC" header was then inherited by an entire earlier
+    // UFC stint. Neil Magny's 2013-15 run and Nikita Krylov's 2013-16 run both
+    // rendered under "Pre-UFC". Emit a header at EVERY transition instead.
+    //
+    // And classify on the EVENT NAME, not org: 957 FIGHT_HISTORY rows sit on an
+    // unmistakably UFC event with org "DWCS" or blank. DWCS / Road to UFC / TUF
+    // prelim rounds are deliberately not UFC — they are the route in — but a TUF
+    // *Finale* is. See scripts/fix-tape-sections.cjs, which repairs existing rows.
+    const PROPER_UFC = /^UFC\b|^Noche UFC|^VeChain UFC|^UFC on |Ultimate Fighter[^·]*Finale/i;
+    const NOT_UFC_ROUTE = /Contender Series|^DWCS|Road to UFC|Ultimate Fighter(?![^·]*Finale)/i;
+    let prevUFC = null;
     for (const row of rows) {
-      const isUFC = String(row.hist.org || '') === 'UFC';
-      row.section = null;
-      if (isUFC && !seenUFC) { row.section = 'UFC'; seenUFC = true; }
-      else if (!isUFC && !seenPre) { row.section = 'Pre-UFC'; seenPre = true; }
       row.event = eventLabel(row.hist);
+      const e = row.event;
+      const isUFC = NOT_UFC_ROUTE.test(e) ? false
+        : (PROPER_UFC.test(e) || String(row.hist.org || '') === 'UFC');
+      row.section = (prevUFC === null || isUFC !== prevUFC) ? (isUFC ? 'UFC' : 'Pre-UFC') : null;
+      prevUFC = isUFC;
     }
     out.push({ key, gk, rows, existing: TS[key] ? TS[key].length : 0, hist });
   }
