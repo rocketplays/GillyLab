@@ -196,6 +196,8 @@ const ALIAS = {
   'Denise Gomes|Rayanne Amanda': 'Rayanne dos Santos',
   'Alexa Grasso|Ji Yeon Kim': 'Kim Ji-yeon',        // surname-first in the DB
   'JJ Aldrich|Chan-Mi Jeon': 'Jeon Chan-mi',        // surname-first in the DB
+  'Chidi Njokuani|Thiago Jambo': 'Thiago Gonçalves',  // Bellator titles him by nickname
+  'Mackenzie Dern|Montana Stewart': 'Montana De La Rosa',  // former name, LFA titles
 };
 
 // Rows deliberately not placed, with the reason. Kept so a re-run of the same
