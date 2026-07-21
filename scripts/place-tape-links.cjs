@@ -508,6 +508,15 @@ function verify(html, keys) {
  * app's own findTapeStudyUrl so it agrees with what a reader actually sees.
  * DWCS bouts are called out because a fighter's playlist never contains theirs.
  */
+// UFC-ness by EVENT NAME. Counting org=="UFC" under-reports: org is blank or
+// "DWCS" on 957 genuinely-UFC FIGHT_HISTORY rows, so seven real gaps on the five
+// swept cards were invisible to this check until it stopped trusting org — one of
+// them (Judice vs Miller, Feb 2026) had a video sitting in the harvest already.
+const GAP_PROPER_UFC = /^UFC\b|^Noche UFC|^VeChain UFC|^UFC on |Ultimate Fighter[^:]*Finale/i;
+const GAP_ROUTE_IN = /Dana White'?s Contender|^DWCS|^Contender Series|Road to UFC|Ultimate Fighter(?!.*Finale)/i;
+const gapIsUFC = (r) => GAP_ROUTE_IN.test(String(r.event || ''))
+  ? 'route' : (GAP_PROPER_UFC.test(String(r.event || '')) || String(r.org || '') === 'UFC') ? 'ufc' : 'no';
+
 function gapsFor(slug) {
   const h = readIndex();
   const ctx = vm.createContext({});
@@ -532,17 +541,17 @@ function gapsFor(slug) {
   let total = 0, dwcs = 0;
   console.log('%s — pass 2 checklist\n', slug);
   for (const n of names) {
-    const miss = (ctx.FH[n] || []).filter((r) => String(r.org || '') === 'UFC' && !ctx.F(n, r.opponent, r.date));
+    const miss = (ctx.FH[n] || []).filter((r) => gapIsUFC(r) !== 'no' && !ctx.F(n, r.opponent, r.date));
     if (!miss.length) continue;
     console.log('  ' + n);
     for (const r of miss) {
       total++;
-      const isD = /contender|dwcs/i.test(r.event || '');
+      const isD = gapIsUFC(r) === 'route';
       if (isD) dwcs++;
-      console.log('      search: "' + n + ' vs ' + r.opponent + '"   (' + r.date + ')' + (isD ? '   [DWCS]' : ''));
+      console.log('      search: "' + n + ' vs ' + r.opponent + '"   (' + r.date + ')' + (isD ? '   [DWCS/TUF]' : ''));
     }
   }
-  console.log('\n%d bout(s) with no video, %d of them DWCS.', total, dwcs);
+  console.log('\n%d bout(s) with no video, %d of them DWCS/TUF/Road-to-UFC.', total, dwcs);
   if (!total) console.log('Card is complete.');
   else console.log('Fall back to the opponent name alone if the first phrasing misses; ' +
     'results cap at 20 and do not paginate, so one miss is not proof of absence.');
