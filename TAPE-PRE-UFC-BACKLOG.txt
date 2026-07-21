@@ -152,6 +152,35 @@ clean under both phrasings. Those are genuinely not catalogued anywhere we can
 reach, not a gap in method.
 
 
+DO NOT TRY TO FILL UFC-PROPER GAPS FROM YOUTUBE. TESTED 2026-07-20, IT FAILS.
+
+The UFC monetises its library, so full UFC bouts only exist where someone paid:
+Fight Pass to end-2025, Paramount+ from 2026. On YouTube you get three things and
+all three are traps:
+
+  1. REUPLOADS ON JUNK CHANNELS. Searched Luque vs Woodley (UFC 260). Three hits
+     titled "FULL FIGHT", all perfect title matches, channels:
+       "kierra sheard official"  (handle @HieuBui-dw5rv — a gospel singer's name)
+       "VAASMMA"
+       "Dung Vic"               (@dungvic7034)
+     These get taken down. A link that rots is worse than no link.
+  2. VIDEO GAME SIMULATIONS, indistinguishable by title. Moreno vs Formiga's top
+     results were "UFC 3 Gameplay" and "UFC 4 AI Simulation (CPU vs CPU)". Only
+     the parenthetical betrays them and many uploaders leave it off.
+  3. HIGHLIGHTS, BREAKDOWNS, INTERVIEWS, SHORTS. Checked the official UFC channel
+     for DWCS and Road to UFC — the two categories the UFC DOES release free —
+     and got pressers and reaction videos, no full bouts.
+
+ALWAYS oEmbed-CHECK THE CHANNEL, never just the title:
+    youtube.com/oembed?url=<url>&format=json   ->  author_name is the channel
+
+YOUTUBE IS STILL THE RIGHT SOURCE FOR PRE-UFC. Different situation entirely: the
+regional promotions post their OWN footage on their OWN channels — LFA, KSW, Cage
+Warriors, Fury FC, RCC, Jungle Fight, SFT. That is what the hand-sourced document
+used and why those links are sound. Judge a YouTube link by whether the channel
+is the rights-holder.
+
+
 THE SWEEP PROCEDURE — RUN ALL OF IT, EVERY CARD, NO EXCEPTIONS
 
   1. For each fighter: search their name with the PLAYLIST filter on, take the
