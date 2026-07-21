@@ -34,6 +34,61 @@ Reject and do not record: reupload channels, and anything that smells of a video
    rather than by watching.
 
 
+── PASS 9: SECONDARY CHANNELS. THE BAR WAS SET TOO HIGH. ───────────────────
+Everything above rejected non-rights-holder uploads on principle. That was MY
+rule, stricter than the one actually asked for, which is: real footage of the
+real bout, no fakes or video-game simulations. Reuploads of genuine footage
+qualify. Relaxing it recovered 3 bouts that were sitting there the whole time:
+
+    Makhachev vs Ivica Trušček   p4E5ksy6WSI  Team Eagle - Dagestan Clan
+        "11th fight M-1 Challenge 51: Islam Makhachev vs Ivica Truscek - 07/09/14"
+    Njokuani vs Alan Jouban      r5Y7z9exi1g  MrMMA House
+        "Alan Jouban vs. Chidi Njokuani - May 06, 2011"  (= TPF 9)
+    Gaziev vs Darko Stošić       bO9eIr-zkUk  MMA Savez Srbije (Serbian federation)
+
+THE TEST THAT REPLACES "IS IT THE RIGHTS HOLDER":
+  ACCEPT if the title names BOTH fighters AND the event or an exact date, so
+      the bout is identifiable, and the channel is not a gaming channel.
+  REJECT still: "UFC 4 / UFC 5 AI Simulation", "Gameplay", "CPU vs CPU", and
+      anything where the title names only one fighter (unidentifiable bout).
+  DOWNRANK, do not reject: channels with junk names. "Just Dance 2020" hosts a
+      real Makhachev fight — a recycled account, not a fake video. I still
+      preferred Team Eagle for that bout because its title carries the event
+      number and date.
+  KNOWN COST: secondary uploads get taken down far more often than promotion
+      uploads. These three are likelier to rot. Worth a periodic link check.
+
+  Tried permissively and STILL nothing: Luque's whole Brazilian run (12) and
+  Barboza's Ring of Combat / Renaissance era (6) — the two fighters on this
+  card with ZERO pre-UFC tape. Also Robertson's 2016 regionals, Njokuani vs
+  Thatch. For these the footage does not appear to exist online in any form.
+
+── PASS 10: THE FIGHT PASS PARTNER-REGIONAL LEAD. MEASURED, AND IT IS DEAD. ─
+Hypothesis: CES MMA became a UFC FIGHT PASS promotion in 2019, so Wells's CES
+49/50/52 might be in the Fight Pass library even though YouTube has nothing.
+Same idea for other partner regionals. Zero placements. Here is the measurement,
+because the hypothesis was reasonable and someone will have it again:
+
+  FIGHT PASS CARRIES THE PARTNER PROMOTIONS ONLY FROM THE PARTNERSHIP FORWARD.
+  It does NOT hold their back catalogues.
+      CES MMA        — lowest present: CES 55 (Wells vs Vinicius de Jesus,
+                       already placed). Wells's gaps are CES 49/50/52, 2018,
+                       BEFORE the deal. Absent.
+      Shooto Brazil  — library is 132 and 138 era only. Kaue Fernandes needs
+                       47/56/68/79/86/97 and Luque needs 18. All absent.
+  So "promotion X is on Fight Pass" does not imply "X's old fights are on Fight
+  Pass". Check the lowest event number present before assuming coverage.
+
+  Searched, no hits: Wells, Brahimaj, Neal, Kaue Fernandes, Luque, Karine Silva,
+  Njokuani — 7 fighters, ~130 result rows, nothing matching a gap.
+
+  ONE NEAR-MISS THAT WOULD HAVE BEEN A WRONG LINK: the matcher flagged
+  "Karine Silva vs Dione Barbosa UFC 319". She fought Barbosa TWICE — Katana
+  Fight 9 (May 2019, the gap) and UFC 319 (the rematch). Name-matching alone
+  would have filed the UFC video on the regional bout. This is the fourth
+  rematch trap this session; the lesson keeps being the same: match on event
+  and date, never on opponent name alone.
+
 ── REJECTED, recorded so nobody re-finds them ───────────────────────────────
 
   uu0a79lPL0k  "Luque vs Woodley UFC 260 FULL FIGHT"  — channel "kierra sheard
@@ -261,6 +316,125 @@ searched only the kickboxing name and concluded WLF had no MMA catalogue.
   placer's "URLs covering more than one bout" warning is what surfaced it —
   that warning fires on legitimate prelim blocks too, so it is tempting to
   wave through. Read it every time.
+
+── PASS 7: UFC 330, EVERY FIGHTER, EVERY OBSCURE PROMOTION ─────────────────
+Card went from 24% to 32% pre-UFC linked (159 of 234 bouts still unlinked).
+14 placed. Hit rate was about one in four promotions — worth recording which,
+so the next card does not re-walk the dead ones.
+
+  PAID OFF (rights-holder channels, all verified by oembed):
+      M-1 Global        @M1Global        Makhachev ×3 (Junio, Ivlev, Barnaoui)
+      SFT Combat        @SFTCombat / @SFTCombatUSA   Karine Silva ×2
+      Xtreme Knockout   @XtremeKnockout  Brahimaj ×2
+      NFC Fight Night   @nfcfighting     Gore ×1
+      GMC               @GMCMMAChampionship   Stoltzfus ×1
+      BTC Fight         @BTCFight        Jasudavicius ×1
+      PFL MMA           @PFLMMA          Turner vs Steans — PFL owns the WSOF
+                        back catalogue, so WSOF-era bouts live on the PFL
+                        channel, not under a WSOF name. Same trick as Bellator.
+      Invicta FC        @InvictaFighting — runs a "Fight of the Week" strand
+                        that carries CES MMA bouts. A promotion channel but not
+                        the bout's own promotion; placed, flagged here.
+
+  SEARCHED PROPERLY, GENUINELY NOT THERE:
+      Belarusian FC (Gaziev ×3)      — BFC channel exists, no back catalogue
+      WEF / Sulukta FC (Orolbai)     — Kyrgyz circuit, nothing in Cyrillic either
+      Ring of Combat (Barboza ×2)    — no channel
+      Cage Fury (Blanchfield ×2)     — channel posts "Full Fight Replay" but
+                                       only recent cards; her 2018-19 bouts absent
+      RFA, Ring of Fire, KOTC, MMA Xplosion (Njokuani)
+      Jungle Fight, Shooto Brazil pre-2015 (Luque, Kaue Fernandes)
+      Fusion FC, United Fighting Series, Hualsur FC (Ribovics)
+      Hoosier Fight Club, Combat USA, C3 Fights (Magny)
+      We Love MMA (Stoltzfus ×5)     — zero search results, even in German
+      Alabama Fighting Championship, Shogun Fights, Cage Warriors 101
+
+  ANOTHER FAKE-OFFICIAL CHANNEL, worse than the Tachi one because the handle
+  is the promotion's name: @M1GlobalWorld ("MMA Global World") is NOT M-1. Its
+  own About says "a channel about mixed martial arts, boxing and even medieval
+  fencing... the best videos from everything". An aggregator. The real one is
+  @M1Global. READ THE ABOUT TEXT, not the handle.
+
+  TWO WRONG OPPONENT NAMES IN OUR OWN DATA, both surfaced by native/regional
+  titles disagreeing with FIGHT_HISTORY. In both cases the event + date + our
+  fighter were unique, so the bout is certain and the link is placed; it is the
+  NAME that is wrong and should be corrected in FIGHT_HISTORY:
+      Karine Silva, SFT 21, 29 Feb 2020 — we say "Simone da Silva",
+          SFT bills "Simone 'Mulher Gato' Duarte"
+      Jasmine Jasudavicius, BTC 8, 30 Nov 2019 — we say "Christina Adcock",
+          BTC bills "Christina Ricker"
+  Worth a wider audit: if two regional promotions disagree with us in a sample
+  this small, there are probably more.
+
+  MACKENZIE DERN'S 21 REMAINING ARE STILL NOT BOUTS. They are IBJJF/ADCC
+  grappling competitions sitting in FIGHT_HISTORY. Her real pre-UFC MMA record
+  is 5 fights and all 5 are linked. Every "gaps by fighter" report will keep
+  putting her at the top until those rows are separated out or tagged.
+
+── PASS 8: THE PER-BOUT TAIL. STOP HERE. ───────────────────────────────────
+Ground through the individual bouts one query each. 20 searches, ONE placement
+(Karine Silva vs Maryna Moroz, XFCi7, @OfficialXFCmma). That is a 5% hit rate
+against 25% in pass 7 and ~50% in the promotion passes before it.
+
+The tail is genuinely empty, and the reason is structural, not a search-skill
+problem: a promotion either uploaded its back catalogue or it did not. Once the
+promotions that DID have been harvested, the rest is small US and Brazilian
+regional shows from 2009-2017 that never had a YouTube presence at all. More
+per-bout searching will not change that. DO NOT RE-RUN THIS TAIL.
+
+  Confirmed empty this pass, one query each, do not redo: Aspera FC (6),
+  We Love MMA (6), Shooto Brazil pre-110 (5), Tachi Palace (4), the six
+  Bellator stragglers, Hoosier Fight Club, Combat USA, Next Level Fight Club,
+  CES 50/52, PA Cage Fight, Shogun Fights, Invicta 30, Cage Warriors 101,
+  KOTC, California Fight League, United Fighting Series, Hualsur, Tsumada FC,
+  Siberian FC, Lion's Fights, AMC Fight Nights 104, Ring of Combat,
+  Renaissance MMA, Alabama FC, Genesis Combat Sports.
+
+  THE ONE UNEXPLORED LEAD LEFT: CES MMA became a UFC FIGHT PASS promotion in
+  2019, so Wells's CES 49/50/52 bouts are plausibly in the Fight Pass library
+  even though YouTube has nothing. Same logic may cover other Fight Pass
+  partner regionals. Worth one Fight Pass search, not another YouTube pass.
+
+  Njokuani's Bellator four are worth ONE retry only if Bellator keeps
+  uploading — 15 of his promotion-mates' bouts were there, these four were not,
+  which reads like an incomplete upload rather than a rights problem.
+
+WHERE UFC 330 FINISHED: 138 real MMA bouts unlinked of 234 (41% linked), plus
+21 Dern grappling rows that are not bouts and should be excluded from every
+future count. Those 21 are the ONLY rows in FIGHT_HISTORY with no date — that
+is the cheapest available filter for separating them.
+
+── PASS 11: OFF YOUTUBE ENTIRELY. NOTHING. ─────────────────────────────────
+Every search before this was restricted to youtube.com. Opened it up. Zero
+placements. What each source actually is, so nobody re-tests them:
+
+  Tapology      RECORD SOURCE, NOT A VIDEO SOURCE. Search snippets claim
+                "fight videos available" — they do not. Loaded a bout page in
+                the browser (Karine Silva vs Bruna Rosso, Aspera FC 25): the
+                only outbound links are MMA news articles. No embeds, no
+                player. Same for Sherdog. Use them to verify RECORDS, never to
+                find tape.
+  TrillerTV     Fighter pages are full record listings, no video for old
+                regional bouts. Carries KSW and some current regionals only.
+  Dailymotion   Has MMA, but it is French-language Bellator/UFC recap clips
+                ("Les clefs du combat"), not per-bout regional footage.
+  Rumble, Odysee, Vimeo, Bilibili   nothing for any gap.
+  Facebook      only UFC-era promo clips for these fighters, as before.
+  VK            CANNOT BE SEARCHED — the search tool refuses the domain
+                outright ("not accessible to our user agent"). This is the one
+                genuine blind spot for the Russian/Central Asian gaps
+                (Makhachev's ProFC and Tsumada, Gaziev's Belarusian FC,
+                Orolbai's WEF). If those exist anywhere it is plausibly VK, and
+                I have no way to check from here. A human could.
+
+UNEXPECTED WIN FROM THIS PASS — OUR DATA GOT VERIFIED. TrillerTV's Luque record
+independently confirms all three bouts a Google summary had garbled:
+    Marcos Antonio Santana  Jungle Fight 27   Apr 21 2011   (loss, decision)
+    Rodrigo Medeiros        Shooto Brazil 18  Sep 17 2010   (DRAW)
+    Felipe Portela          Capital Fight 2   Jun 05 2010   (loss, submission)
+FIGHT_HISTORY matches exactly. Note the search SUMMARY had swapped the events
+between these bouts — a reminder that the prose summary on a search result is
+LLM-generated and is not evidence. Read the source page.
 
 OTHER PLATFORMS, TESTED AND NOT USEFUL:
   TrillerTV   — searched "Njokuani": no results. Bellator's catalogue is not
