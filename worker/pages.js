@@ -1602,12 +1602,12 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
   .pk-live-sub{color:var(--muted);font-size:.72rem}
   .pk-clear{background:none;border:none;color:var(--muted);font:inherit;font-size:.7rem;cursor:pointer;text-decoration:underline;padding:0}
   .pk-clear:hover{color:#ff6a5e}
-  .pk-submitbar{position:sticky;bottom:10px;margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;box-shadow:0 6px 22px rgba(0,0,0,.4)}
+  /* In flow at the bottom, not pinned — position:sticky here held a strip of the
+     viewport for the whole session, which on a phone is a real slice of the card. */
+  .pk-submitbar{margin-top:1.1rem;display:flex;flex-direction:column;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem}
   .pk-bar-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
   .pk-progress{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
   .pk-progress-fill{height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .28s ease}
-  .pk-next{background:transparent;border:1px solid var(--border);color:var(--text);border-radius:9px;padding:.6rem .8rem;font:inherit;font-weight:700;font-size:.82rem;cursor:pointer;white-space:nowrap}
-  .pk-next:hover{border-color:var(--accent);color:var(--accent)}
   .pk-bar-info{font-size:.82rem;color:var(--muted)}
   .pk-bar-info b{color:var(--text);font-weight:700}
   .pk-submitbar .pk-btn:disabled{opacity:.45;cursor:default}
@@ -1717,7 +1717,7 @@ ${AURORA_CSS}
     <div class="pk-panel" id="panel-picks" data-locked="${card && card.locked ? "1" : ""}">
       ${nBouts ? `<p class="pk-intro">Choose the <strong>winner</strong>, <strong>method</strong> and <strong>round</strong> for each bout, then set your <strong>confidence</strong>. Higher confidence is worth more points if you're right — and costs more if you're wrong. Your picks save on this device.</p><button type="button" class="pk-howlink" id="pkHowBtn">How scoring works →</button>` : ""}
       ${bouts}
-      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-progress"><div class="pk-progress-fill" id="pkProgFill"></div></div><div class="pk-bar-row"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-next" id="pkNext" hidden>Next ↓</button><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div></div>` : ""}
+      ${nBouts && !(card && card.locked) ? `<div class="pk-submitbar" id="pkBar"><div class="pk-progress"><div class="pk-progress-fill" id="pkProgFill"></div></div><div class="pk-bar-row"><div class="pk-bar-info"><b id="pkBarCount">0/${nBouts}</b> picks · <b id="pkBarStake">+0</b> possible</div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShare" hidden>Share picks</button><button type="button" class="pk-btn" id="pkSubmit" disabled>Submit picks</button></div></div></div>` : ""}
       ${nBouts && (card && card.locked) ? `<div class="pk-submitbar pk-scorebar" id="pkScoreBar" hidden><div class="pk-bar-row"><div class="pk-bar-info" id="pkScoreBarInfo"></div><div class="pk-bar-actions"><button type="button" class="pk-btn ghost" id="pkShareResults">Share results</button></div></div></div>` : ""}
     </div>
     <div class="pk-panel" id="panel-leaderboard" hidden><button type="button" class="pk-back" data-back>← Back to picks</button><div id="lb-body"><p class="pk-empty">Loading leaderboard…</p></div></div>
@@ -1988,7 +1988,6 @@ ${AURORA_CSS}
       document.getElementById("pkBarCount").textContent=done+"/"+total;
       document.getElementById("pkBarStake").textContent="+"+stake;
       var fill=document.getElementById("pkProgFill");if(fill)fill.style.width=(total?Math.round(done/total*100):0)+"%";
-      var nx=document.getElementById("pkNext");if(nx)nx.hidden=(done>=total);
       var sb=document.getElementById("pkSubmit");
       if(sb&&sb.textContent.indexOf("Submitting")<0){
         sb.classList.remove("pk-done");
@@ -1997,9 +1996,6 @@ ${AURORA_CSS}
         else{sb.textContent=PK_SUBMITTED?"Update picks":"Submit picks";sb.disabled=done<total;}
       }
     }
-    function firstIncompleteEl(){for(var i=0;i<BOUT_IDS.length;i++){if(!isComplete(PICKS[BOUT_IDS[i]]))return boutEl(BOUT_IDS[i]);}return null;}
-    var pkNextBtn=document.getElementById("pkNext");
-    if(pkNextBtn)pkNextBtn.addEventListener("click",function(){var el=firstIncompleteEl();if(el)el.scrollIntoView({behavior:"smooth",block:"start"});});
     function renderAll(){BOUT_IDS.forEach(updateBout);updateBar();updateLiveScore();}
     var picksPanel=document.getElementById("panel-picks");
     if(picksPanel&&!PK_LOCKED){
