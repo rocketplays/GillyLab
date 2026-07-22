@@ -547,7 +547,10 @@ async function loadAssetJson(env, url, p) {
    derived from the fight result and is never written by the client, so nobody
    can mark their own bets won.
 ──────────────────────────────────────────────────────────────────────────── */
-const BT_MAX = 750;              // per-user cap; KV values are 25MB, this is nowhere near
+// Per-user cap. KV values are 25MB and a bet row is ~300B, so 5000 is ~1.5MB —
+// still nowhere near the ceiling. 750 was a REAL limit for a long-running tracker:
+// ~40 cards a year at a few bets each is 2-4 years before "Bet log is full."
+const BT_MAX = 5000;
 const BT_CLOSE_LEAD_MIN = 10;    // we snapshot each segment's close 10 min before it starts
 const btKey = (email) => "bt:" + email;
 // Premium feature: the page itself is behind the paywall, but verify here too.
@@ -558,7 +561,19 @@ async function betsSession(request, env) {
   return (u && u.subscribed) ? { email: s.email } : null;
 }
 const btGetBets = async (env, email) => { const v = await env.PICKS.get(btKey(email)); return v ? JSON.parse(v) : []; };
-const btPutBets = (env, email, list) => env.PICKS.put(btKey(email), JSON.stringify(list.slice(-BT_MAX)));
+// This used to be `list.slice(-BT_MAX)`: it kept the NEWEST and silently dropped the
+// OLDEST, on every write — settle, grade, edit and delete included, not just add. The
+// add path gates at BT_MAX so it never actually fired, which quietly made that one gate
+// load-bearing for data safety. Anything that ever bypassed it (a bulk import, a
+// migration, someone lowering BT_MAX) would have eaten the settled record this tracker
+// exists to preserve, with no error anywhere. Refuse instead: a failed write is a bug
+// report, a silent truncation is lost history.
+const btPutBets = (env, email, list) => {
+  if (list.length > BT_MAX) {
+    throw new Error("bet log over cap (" + list.length + " > " + BT_MAX + ") — refusing to truncate");
+  }
+  return env.PICKS.put(btKey(email), JSON.stringify(list));
+};
 
 // Find a bout in the upcoming feed by its bout id — the same identity the client
 // bets against, so a rematch can never be confused with the earlier fight.
