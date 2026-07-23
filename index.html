@@ -32864,7 +32864,10 @@
  const tabBtn = document.getElementById('ftab-tape-btn');
  if (!tbody) return;
  tbody.innerHTML = '';
- const fights = TAPE_STUDY[name];
+ const fights = (TAPE_STUDY[name] || []).slice().sort((a, b) => {
+ const my = r => { const m = String(r && r.event).match(/([A-Z][a-z]{2})\s+(\d{4})/); const mo = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 }; return m ? (+m[2]) * 100 + (mo[m[1]] || 0) : 0; };
+ return my(b) - my(a);
+ });
  if (!fights || fights.length === 0) {
  wrap.style.display = 'none';
  empty.style.display = '';
