@@ -101,6 +101,34 @@ run('ESPN caught up (replacement now on the feed)', AHEAD,
   [],                                    // Barbosa no longer may-change
   ['Dione Barbosa', 'Veronica Hardy']);
 
+// Verbatim from the UFC Fight Night: Ankalaev vs. Guskov page. The descriptor
+// between "replaced by" and the name is "undefeated promotional newcomer" — one
+// adjective longer than the enumerated list used to allow. That single word made
+// the replacement invisible, so the paragraph fell through to the withdrawal
+// branch and flagged BOTH fighters "may change" on a bout that was already
+// settled. Keep this case verbatim: it is the exact prose that broke it.
+const JACOBY = `
+== Background ==
+A light heavyweight bout between [[Dustin Jacoby]] and former [[Legacy Fighting Alliance#LFA Light Heavyweight Championship|LFA Light Heavyweight Champion]] Uran Satybaldiev was scheduled for the event.<ref/> However, Satybaldiev withdrew for undisclosed reasons and was replaced by undefeated promotional newcomer Muhammad Said.<ref name="Said"/>
+`;
+run('adjective-laden replacement descriptor ("undefeated promotional newcomer")', JACOBY,
+  ['Dustin Jacoby', 'Muhammad Said'],
+  ['Muhammad Said'],   // short-notice: he stepped in
+  [],                  // may-change: NOT Jacoby — the replacement is already booked
+  ['Dustin Jacoby']);
+
+// A capitalised word after "replaced by" is another fighter's NAME, so the
+// descriptor run must not bridge across it onto the wrong person.
+const BRIDGE = `
+== Background ==
+[[Veronica Hardy]] and Dione Barbosa were expected to meet.<ref/> However, Hardy withdrew and was replaced by Anna Melisano, who now faces Dione Barbosa.<ref/>
+`;
+run('descriptor run does not bridge across a capitalised name', BRIDGE,
+  ['Anna Melisano', 'Dione Barbosa'],
+  ['Anna Melisano'],   // matched by her own "replaced by <F>" position, not via Barbosa
+  [],
+  ['Dione Barbosa', 'Veronica Hardy']);
+
 // Negative: a card with no replacements at all — nothing should be flagged.
 const CLEAN = `
 == Background ==

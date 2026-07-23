@@ -82,8 +82,22 @@ function sentenceBounds(text, a, b) {
 function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
   const before = sentence.slice(0, linkStartInSentence);
   const after = sentence.slice(linkEndInSentence);
-  // "...(was) replaced by/with [newcomer] <F>"  |  "...as the replacement, <F>"
-  if (/\breplaced (?:by|with)\s+(?:(?:the |a )?(?:promotional )?newcomer\s+|(?:a |the )?short.?notice replacement\s+)?$/i.test(before)) return true;
+  // "...(was) replaced by/with <descriptors> <F>"  |  "...as the replacement, <F>"
+  // The descriptor run between "replaced by" and the name is open-ended prose:
+  // "promotional newcomer", "undefeated promotional newcomer", "a short-notice
+  // replacement". Enumerating the variants was a losing game — the single word
+  // "undefeated" was enough to drop Muhammad Said out of shortNotice, which sent
+  // the paragraph down the withdrawal branch and flagged BOTH him and Jacoby as
+  // "may change" on a bout that was already settled. Accept any short run of
+  // LOWERCASE words instead.
+  //
+  // Case is the load-bearing part, so this test deliberately has no /i: a
+  // capitalised word is another person's NAME and must not be bridged across
+  // ("replaced by Anna Melisano, who now faces <F>" must stay false). Punctuation
+  // breaks the run for the same reason, and the 4-word cap stops it reaching
+  // across a clause into an unrelated fighter.
+  const rb = /\breplaced (?:by|with)\s+([^.]*)$/i.exec(before);
+  if (rb && /^(?:[a-z][a-z0-9'’-]*\s+){0,4}$/.test(rb[1])) return true;
   if (/(?:short.?notice|late)\s+replacement[^.]{0,20}$/i.test(before)) return true;
   // "<F> stepped in / steps in ..."  |  "<F> replaced ..."  |  "<F> was booked/tabbed/added as ... replacement"
   if (/^\s*(?:,?\s*(?:who|and)\s+)?(?:(?:has|had|since)\s+)*stepp(?:ed|ing|s)?\s+in\b/i.test(after)) return true;
