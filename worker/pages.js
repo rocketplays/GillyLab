@@ -213,7 +213,12 @@ ${ogTags(title, seo.desc, seo.path)}` : ""}
 <style>
   :root{--accent:#00e668;--bg:#0a0a0b;--card:#141416;--line:rgba(255,255,255,.09);--border:rgba(255,255,255,.09);--muted:rgba(255,255,255,.55);--text:#f4f5f7}
   *{box-sizing:border-box}
-  html{background:var(--bg)}   /* dark behind the body so tall screens / iOS overscroll never show white */
+  /* text-size-adjust:100% disables mobile Blink/WebKit "font boosting" (Text Autosizing),
+     which was inflating the /subscribe expand-modal's text on phones — title, stat bars and
+     labels all rendered ~1.2x too big, so the description and "METHOD OF VICTORY" wrapped and
+     the layout looked squished. The standalone landing page never triggered it; the shell did.
+     100% (not none) is the safe value and is inherited by the whole document. */
+  html{background:var(--bg);-webkit-text-size-adjust:100%;text-size-adjust:100%}   /* dark behind the body so tall screens / iOS overscroll never show white */
   body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#15201a 0%,var(--bg) 55%);color:#fff;
        font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;min-height:100vh;min-height:100dvh}
   .wrap{max-width:440px;margin:0 auto;padding:2.5rem 1.25rem 4rem}
