@@ -23,6 +23,12 @@ vm.runInContext('var '+slice(H,'TAPE_STUDY = {'),ctx);
 const ni=H.indexOf('function normalizeFighterNameForMatch');vm.runInContext(H.slice(ni,H.indexOf('\n  }',ni)+4),ctx);
 const fri=H.indexOf('function findTapeStudyUrl');vm.runInContext(H.slice(fri,H.indexOf('\n  }',fri)+4),ctx);
 const FH=ctx.FIGHT_HISTORY,TS=ctx.TAPE_STUDY,resolve=ctx.findTapeStudyUrl,nrm=ctx.normalizeFighterNameForMatch;
+// Overlay just-finished cards the same way the browser does (data/live-card.json),
+// so bouts baked as method:"Upcoming" appear completed to the passes below. Never
+// written to disk — this only patches the in-memory FH the sweep reasons over.
+const {overlayLiveCard}=require('./lib-live-overlay.cjs');
+const overlaid=overlayLiveCard(FH,nrm,ROOT);
+if(overlaid)console.log('live-card overlay: patched '+overlaid+' FIGHT_HISTORY rows in memory');
 const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
 const monY=s=>{const m=String(s).match(/([A-Z][a-z]{2})\s+(\d{4})/);return m?m[1]+' '+m[2]:null;};
 const dMonY=d=>{const m=String(d).match(/([A-Z][a-z]{2})\s+\d+,\s*(\d{4})/);return m?m[1]+' '+m[2]:null;};
