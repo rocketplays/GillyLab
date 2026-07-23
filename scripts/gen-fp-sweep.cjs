@@ -91,7 +91,7 @@ const BROWSER = `/* UFC Fight Pass sweep — paste into the ufcfightpass.com tab
       return;
     }
     const seen=new Set(),lines=[];
-    for(const c of cards){const t=c.title||'';const i=t.toLowerCase().indexOf(' vs ');if(i<0)continue;const a=t.slice(0,i),b=t.slice(i+4);
+    for(const c of cards){const t=c.title||'';const vm=t.match(/^(.*?)\\s+vs\\.?\\s+(.*)$/i);if(!vm)continue;const a=vm[1],b=vm[2];
       const fA=sideHas(a,f),fB=sideHas(b,f);if(fA===fB)continue;const opS=fA?b:a,fS=fA?a:b;
       for(const opp of GAPS[f]){if(sideHas(opS,opp)&&!sideHas(fS,opp)){if(!seen.has(c.id)){seen.add(c.id);lines.push(c.id+' | '+t);}break;}}
     }

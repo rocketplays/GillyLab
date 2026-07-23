@@ -30,7 +30,7 @@ const cards=JSON.parse(fs.readFileSync(resultsPath,'utf8'));
 const norm=s=>(s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/-/g,' ').replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ').trim();
 const toks=s=>norm(s).split(' ').filter(Boolean);
 function sideHas(side,name){const st=toks(side),nt=toks(name);if(!nt.length)return false;const sur=nt[nt.length-1],fir=nt[0];if(!st.includes(sur))return false;if(nt.length===1)return true;return st.some(t=>t===fir||(fir.length>=4&&t.startsWith(fir.slice(0,4)))||(t.length>=4&&fir.startsWith(t.slice(0,4))));}
-function splitVs(t){const i=t.toLowerCase().indexOf(' vs ');return i<0?null:[t.slice(0,i),t.slice(i+4)];}
+function splitVs(t){const m=String(t).match(/^(.*?)\s+vs\.?\s+(.*)$/i);return m?[m[1],m[2]]:null;}
 function eventLabel(r){const name=String(r.event||r.org||'').split(':')[0].trim();const my=/([A-Z][a-z]{2})\s+\d+,\s*(\d{4})/.exec(String(r.date||''));return name+(my?' · '+my[1]+' '+my[2]:'');}
 const esc=s=>String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"');
 
