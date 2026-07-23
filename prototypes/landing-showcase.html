@@ -5736,12 +5736,12 @@ var LD={
     {t:'Parlay builder',d:'Build a slip, then re-price it at every other book.',h:parlay,g:'bet'},
     {t:'Odds & line history',d:'Every fighter\'s closing lines, bout by bout.',h:ohist,g:'bet'},
     {t:'One-click tape study',d:'Every fight links straight to the film.',h:tape,g:'num'},
-    // FREE ORDER IS DELIBERATE: the two things you can DO without an account come first
-    // (The Climb, then Pick'em), then what you can read. The free tier's job is to get a
-    // stranger playing, not to lead with a stats table.
-    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. Can you become a UFC champion?',h:climb,f:1,g:'free'},
-    {t:'Pick\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1,g:'free'},
+    // FREE ORDER IS DELIBERATE: lead with the detailed fighter statistics (the core of the
+    // product), then the two things you can DO without an account — Pick'em, then The Climb —
+    // and finish with what you can read (rankings & roster).
     {t:'Detailed fighter statistics',d:'Career striking and grappling for every fighter — free on every profile.',h:analytics,f:1,g:'free'},
+    {t:'Pick\u2019em predictions',d:'Call the card, lock in before the prelims, climb the leaderboard.',h:pickem,f:1,g:'free'},
+    {t:'The Climb',d:'Build a fighter, climb the real rankings, win the belt. Can you become a UFC champion?',h:climb,f:1,g:'free'},
     {t:'Rankings & roster',d:'Official division rankings, plus every signing and release, week by week.',h:rankRoster,f:1,g:'free'},
   ].filter(function(s){return s.h;});
 
