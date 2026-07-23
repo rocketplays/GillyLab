@@ -33028,10 +33028,22 @@
  const tabBtn = document.getElementById('ftab-tape-btn');
  if (!tbody) return;
  tbody.innerHTML = '';
- const fights = (TAPE_STUDY[name] || []).slice().sort((a, b) => {
- const my = r => { const m = String(r && r.event).match(/([A-Z][a-z]{2})\s+(\d{4})/); const mo = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 }; return m ? (+m[2]) * 100 + (mo[m[1]] || 0) : 0; };
- return my(b) - my(a);
- });
+ const __raw = (TAPE_STUDY[name] || []);
+ const __my = r => { const m = String(r && r.event).match(/([A-Z][a-z]{2})\s+(\d{4})/); const mo = { Jan:1, Feb:2, Mar:3, Apr:4, May:5, Jun:6, Jul:7, Aug:8, Sep:9, Oct:10, Nov:11, Dec:12 }; return m ? (+m[2]) * 100 + (mo[m[1]] || 0) : 0; };
+ // The stored `section` field marks only the first fight of a group. Forward-
+ // propagate it so every fight knows its group — this way fights added ahead of
+ // the marker in the array (e.g. newly-ingested recent bouts) still group under
+ // the right header instead of floating above it. Then sort newest-first within
+ // each group and order groups by their newest fight.
+ const __firstSec = (__raw.find(r => r && r.section) || {}).section || null;
+ let __cur = __firstSec;
+ const __tagged = __raw.map(r => { if (r && r.section) __cur = r.section; return { f: r, sec: (r && r.section) ? r.section : __cur }; });
+ const __order = []; const __groups = {};
+ __tagged.forEach(t => { const k = t.sec || ''; if (!__groups[k]) { __groups[k] = []; __order.push(k); } __groups[k].push(t.f); });
+ __order.forEach(k => __groups[k].sort((a, b) => __my(b) - __my(a)));
+ __order.sort((a, b) => __my(__groups[b][0]) - __my(__groups[a][0]));
+ const fights = [];
+ __order.forEach(k => { __groups[k].forEach((f, i) => fights.push(Object.assign({}, f, { _header: i === 0 ? (k || null) : null }))); });
  if (!fights || fights.length === 0) {
  wrap.style.display = 'none';
  empty.style.display = '';
@@ -33057,9 +33069,9 @@
  let rowIndex = 0;
  fights.forEach((f) => {
  // Section header row
- if (f.section) {
+ if (f._header) {
  const th = document.createElement('tr');
- th.innerHTML = `<td colspan="2" style="padding:0.55rem 0.75rem 0.35rem;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);border-top:${rowIndex > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none'};border-bottom:none;">${f.section}</td>`;
+ th.innerHTML = `<td colspan="2" style="padding:0.55rem 0.75rem 0.35rem;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.35);border-top:${rowIndex > 0 ? '1px solid rgba(255,255,255,0.08)' : 'none'};border-bottom:none;">${f._header}</td>`;
  tbody.appendChild(th);
  }
  const tr = document.createElement('tr');
