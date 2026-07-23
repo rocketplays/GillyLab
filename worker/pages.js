@@ -1382,7 +1382,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
        outside this and keeps its own wider 620. -->
   <div class="center" style="max-width:440px;margin:1.25rem auto 0">
     <h1 style="font-size:1.4rem">${canceled ? "Checkout canceled" : "Go Premium"}</h1>
-    <p class="muted">Everything in your free Pick'em account, plus the whole database and every tool:</p>
+    <p class="muted">Everything in your free account, plus the whole database and every tool:</p>
     <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
       ${["Every fighter &amp; every bout — full analytics","Fight simulator: winner, method &amp; round","Build &amp; simulate any matchup you want","Matchup analysis — style, pace &amp; path to victory","Auto scouting reports &amp; fighter injury news","Live odds, props &amp; the parlay builder","Bet &amp; CLV tracker — grade your bets, track ROI","Closing-line history &amp; line movement","Tape study, accolades &amp; full box scores"].map(f => `<li style="position:relative;padding-left:1.5rem;font-size:.88rem;line-height:1.35"><span style="position:absolute;left:0;color:var(--accent);font-weight:800">✓</span>${f}</li>`).join("")}
     </ul>

@@ -1077,6 +1077,13 @@ ${slideJS}
   // rendering below is new: the carousel's driver (dots, 7s timer, swipe) is gone.
   var tiers = document.getElementById('tiers');
   var lb = document.getElementById('lb'), lbin = document.getElementById('lbin');
+  // The lightbox is position:fixed, but on /subscribe it renders inside .wrap, which runs a
+  // transform-animation (glPageIn) — a transformed/animated ancestor becomes the containing
+  // block for fixed descendants, so the overlay anchors to the TOP OF .wrap instead of the
+  // viewport and opens off-screen when the page is scrolled. Reparent it to <body> so it
+  // escapes any such ancestor and always covers the viewport. Harmless on the landing page,
+  // where lb is already effectively top-level.
+  if (lb && lb.parentNode !== document.body) document.body.appendChild(lb);
   var cur = 0;
   var rows = [];   // one arrow-updater per group row, refreshed on scroll/resize
 
