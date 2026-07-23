@@ -485,7 +485,12 @@ ${footCSS}
      can't transition, so the old version popped open and popped shut; visibility can, and
      it still removes the overlay from hit-testing when hidden. The inner keeps its fxIn
      slide, re-triggered in open() so it replays on every expand, not just the first. */
-  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px}
+  /* text-size-adjust:100% on the modal itself, not just the page: on /subscribe the shell
+     wraps this in .sub-cx, and mobile Blink was font-boosting the modal's text ~1.2x (title,
+     stat bars and labels all too big, so the description and headings wrapped and it looked
+     squished). The standalone landing page never triggered it. Pinning it here keeps the two
+     modals byte-identical regardless of the page around them. */
+  .fx-lb{position:fixed;inset:0;background:rgba(6,6,8,.86);backdrop-filter:blur(3px);z-index:80;opacity:0;visibility:hidden;transition:opacity .22s ease,visibility .22s ease;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:40px 18px;-webkit-text-size-adjust:100%;text-size-adjust:100%}
   .fx-lb.on{opacity:1;visibility:visible}
   .fx-lbin{max-width:640px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;animation:fxIn .22s cubic-bezier(.2,.7,.3,1)}
   /* Expanded, the hub gets the width the real modal gets — min(1040px,94vw), lifted from
