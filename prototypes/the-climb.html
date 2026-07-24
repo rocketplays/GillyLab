@@ -225,6 +225,19 @@
   .bout-ct .rr{font-size:.55rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .bout-opt.risk .bout-ct .rr{color:var(--accent2)}
 
+  /* ── SIGNATURE PICKER ─────────────────────────────────────────────────────── */
+  .siggrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+  .sigcard{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.55rem .65rem;text-align:left;cursor:pointer;font-family:inherit;color:var(--text)}
+  .sigcard:hover{border-color:var(--muted)}
+  .sigcard.on{border-color:var(--accent);background:rgba(0,230,104,.07)}
+  .sgh{font-weight:700;font-size:.82rem;margin-bottom:.25rem;color:var(--gold)}
+  .sigcard.on .sgh{color:var(--accent)}
+  .sge{font-size:.72rem;line-height:1.4;color:var(--text)}
+  .sgf{font-size:.68rem;line-height:1.35;color:var(--muted);margin-top:.3rem}
+  .sgf b{color:var(--accent2)}
+  .sigv{font-size:.78rem}
+  @media(max-width:560px){ .siggrid{grid-template-columns:1fr} }
+
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
      A statement fight, set apart from the safe ladder in gold. */
   .co-rl{color:var(--gold);margin-top:.85rem}
@@ -2306,10 +2319,52 @@ function buildOffers(){
 // finishing ability and his fragility/danger; deriveFinish decides HOW it ends. Every
 // number here is verbatim from the old fight() body — the equivalence is guarded by
 // test-climb's belt/finish rates, which read the prototype.
+// ── SIGNATURE ABILITIES ───────────────────────────────────────────────────────
+// One defining edge per fighter, each a strength paired with a wrinkle so it reshapes
+// how you fight without simply making you stronger. Every effect is gated on G.sig, so
+// a fighter with no signature — and every bot and test — plays exactly as before. The
+// hooks live in the shared resolvers (boutFinishCtx / boutRolls / applyPunch), the
+// in-fight moments (advanceBout / boutChoose) and the read (commitPlan / corners).
+const SIGS = [
+  { id:'killer',  name:'Killer Instinct', icon:'ti-bolt',
+    line:"When you hurt a man, you put him away. Few survive once you've got them going.",
+    flaw:"You overreach — swing for the finish and miss, and you'll pay for it." },
+  { id:'chin',    name:'Iron Chin', icon:'ti-shield-half',
+    line:"You don't get put away. You can eat a bomb, and trade back when you're hurt.",
+    flaw:"A grinder, not a killer — the highlight finishes just aren't in you." },
+  { id:'scram',   name:'Scrambler', icon:'ti-arrows-shuffle',
+    line:"Nobody keeps you down. You slip takedowns and escape submissions at will.",
+    flaw:"Slick off your back, but you do little damage from the top." },
+  { id:'dog',     name:'Dog in Him', icon:'ti-flame',
+    line:"You rise to the harder fight — most dangerous when you're supposed to lose.",
+    flaw:"You coast against lesser men, and let fights get closer than they should." },
+  { id:'general', name:'Ring General', icon:'ti-eye',
+    line:"You read a fight cold. Your corner always sees it clearly and a sharp plan cuts deeper.",
+    flaw:"You out-point people — you rarely take anyone out." },
+  { id:'power',   name:'Walk-Off Power', icon:'ti-hammer',
+    line:"One shot ends it. You carry a puncher's chance into every round, win or lose.",
+    flaw:"All or nothing — your own chin is there to be found." },
+];
+const SIG = id => SIGS.find(s=>s.id===id) || null;
+const DOG_PULL = 0.20;   // Dog in Him: how hard the odds pull toward even
+const PUNCH    = 0.10;   // Walk-Off: a puncher's chance, both ways, applied at the end
+// WALK-OFF POWER, applied once the winner is known so it works on BOTH paths. Two-way
+// on purpose: a losing night can end in a walk-off KO, but that suspect chin means a
+// winning one can too. Net win-rate-neutral, just a lot more knockouts.
+function applyPunch(o, R){
+  if (G.sig !== 'power') return R;
+  const ko = { fin:true, method:'KO/TKO', rounds:R.rounds, roundsWon:R.roundsWon, finRound: R.rounds.length||1 };
+  if (!R.won && Math.random() < PUNCH) return Object.assign({}, ko, { won:true });
+  if ( R.won && Math.random() < PUNCH) return Object.assign({}, ko, { won:false });
+  return R;
+}
+
 function boutRolls(o){
   const nRounds = isChamp(o.f) ? 5 : 3;
   const needed  = (nRounds + 1) / 2;          // 2 of 3, 3 of 5
-  const pr = roundP(o.p, nRounds);
+  let p = o.p;
+  if (G.sig === 'dog') p = p + (0.5 - p) * DOG_PULL;   // better dog, worse frontrunner
+  const pr = roundP(p, nRounds);
   const rounds = Array.from({length:nRounds}, ()=>Math.random() < pr);
   const roundsWon = rounds.filter(Boolean).length;
   return { nRounds, needed, pr, rounds, roundsWon, won: roundsWon >= needed };
@@ -2331,8 +2386,14 @@ function boutFinishCtx(o){
   const chinMult = 1.85 - 1.25 * lvl('chin');
   const loseFin = Math.min(0.92, (0.22 + threat * 0.45) * chinMult);
   const matDef = lvl('grappling') * 0.75 + lvl('takedef') * 0.25;
-  const subDef = 1 - 0.80 * matDef;
-  return { frail, finBias, kd, sb, threat, winFin, loseFin, subDef };
+  let subDef = 1 - 0.80 * matDef, wF = winFin, lF = loseFin, fB = finBias;
+  const sg = G.sig;
+  if (sg === 'chin')    { lF *= 0.55; wF *= 0.85; }              // eats bombs; finishes less
+  else if (sg === 'scram')   { subDef *= 0.45; }                // very hard to submit
+  else if (sg === 'general') { wF *= 0.80; fB *= 0.85; }        // out-points, rarely finishes
+  else if (sg === 'power')   { lF = Math.min(0.95, lF * 1.25); }// suspect chin
+  else if (sg === 'killer')  { wF = wF + (1 - wF) * 0.20; }     // finishes a touch more overall
+  return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef };
 }
 function finishMethod(o, ctx, won){
   const koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
@@ -2363,7 +2424,7 @@ function fight(o){
   const f = deriveFinish(o, ctx, rounds, roundsWon, won);
   rounds = f.rounds; roundsWon = f.roundsWon;
   const fin = f.fin, method = f.method, finRound = f.finRound;
-  applyResult(o, { won, fin, method, rounds, roundsWon, finRound });
+  applyResult(o, applyPunch(o, { won, fin, method, rounds, roundsWon, finRound }));
 }
 
 // THE BOOKKEEPING — everything after the result is known: the log, the win/loss
@@ -2520,7 +2581,7 @@ function advanceBout(){
     else   B.myDmg  = Math.min(1, B.myDmg  + 0.26 + B.ctx.threat*0.28);
     // A finish OPPORTUNITY — you've hurt him, and you have the tools to end it.
     if (r && !B.usedHurt && B.hisDmg > 0.55 &&
-        Math.random() < clampv(B.ctx.finBias*0.48 + B.ctx.frail*0.20, 0, 0.5)){
+        Math.random() < clampv((B.ctx.finBias*0.48 + B.ctx.frail*0.20) * (G.sig==='killer'?1.4:1), 0, 0.58)){
       B.usedHurt = true; B.moment = { type:'hurt' }; break;
     }
     // TROUBLE — he's hurt you, and he's dangerous.
@@ -2541,7 +2602,7 @@ function boutFinalize(){
     const won = rw >= B.base.needed;
     R = Object.assign({ won }, deriveFinish(o, B.ctx, B.rounds.slice(), rw, won));
   }
-  applyResult(o, R);   // clears G.bout and renders the result
+  applyResult(o, applyPunch(o, R));   // clears G.bout and renders the result
 }
 // AGGRESSION IS VARIANCE, NOT FREE WIN%. The gamble is keyed on whether you were
 // GOING to win anyway (the pre-rolled outcome from here): if you're ahead, landing it
@@ -2560,14 +2621,17 @@ function boutChoose(kind){
       if (j >= 0) { B.base.rounds[j] = false; return true; }
       for (let k=B.rounds.length-1;k>=0;k--) if (B.rounds[k]) { B.rounds[k]=false; return true; } return false; };
   if (kind === 'bank' || kind === 'weather') { advanceBout(); return; }   // safe = the fight stands
-  const winning = noopWon();
-  const pLand = kind === 'swarm' ? clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9) : 0.5;
+  const winning = noopWon(), sg = G.sig;
+  let pLand = kind === 'swarm' ? clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9) : 0.5;
+  if (sg === 'killer' && kind === 'swarm') pLand = Math.min(0.95, pLand + 0.15);  // finisher lands it
+  const backfire = AGG_BACKFIRE * (sg === 'killer' ? 1.3 : (sg === 'scram' || sg === 'chin') ? 0.5 : 1);
+  const stopAgainst = sg === 'chin' ? 0.22 : (sg === 'scram' ? 0.35 : 0.5);       // iron chin / scrambler survive
   if (winning) {
     if (Math.random() < pLand) { finish(true); }                 // a highlight — still your win
-    else if (Math.random() < AGG_BACKFIRE) { if (flipLoss() && Math.random() < 0.5) finish(false); }
+    else if (Math.random() < backfire) { if (flipLoss() && Math.random() < stopAgainst) finish(false); }
   } else {
     if (Math.random() < pLand * AGG_STEAL) { finish(true); }     // steal it outright
-    else if (Math.random() < 0.5) { finish(false); }             // or get stopped
+    else if (Math.random() < stopAgainst) { finish(false); }     // or get stopped
   }
   if (B.override) { boutFinalize(); return; }
   advanceBout();
@@ -2599,7 +2663,7 @@ function boutBox(){
   const rd = document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + B.rounds.map((w,idx)=>'<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(idx+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ');
   p.appendChild(rd);
-  const iq = G.attrs.fightiq || ATTR_MIN;
+  const iq = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq || ATTR_MIN);
   const beat = document.createElement('div'); beat.className = 'bout-beat ' + (m.type==='hurt'?'good':'bad');
   const readout = document.createElement('div'); readout.className = 'bout-iq';
   const opts = document.createElement('div'); opts.className = 'plan-opts'; opts.style.marginTop='.6rem';
@@ -2653,7 +2717,7 @@ function newGame(){
         // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
-        hype:0, bout:null,
+        hype:0, bout:null, sig:null,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2865,6 +2929,32 @@ function creator(){
   tip.innerHTML='<b>Build for the path you want.</b> A wrestler dominates a striker with '+
     'bad takedown defense, and stalls against elite TDD.';
   p.appendChild(tip);
+  // SIGNATURE PICKER — one defining edge, chosen at build time. No Tabler icons in
+  // the prototype, so the cards are text; the effects live in the resolvers (see SIGS).
+  const sgw=document.createElement('div'); sgw.className='sigwrap';
+  const sgl=document.createElement('div'); sgl.className='rl'; sgl.style.marginTop='.9rem';
+  sgl.textContent='Signature — one defining edge'; sgw.appendChild(sgl);
+  const sgg=document.createElement('div'); sgg.className='siggrid';
+  const sigCard=(s)=>{
+    const c=document.createElement('button');
+    c.className='sigcard'+(((s?s.id:null)===(G.sig||null))?' on':'');
+    if(s){
+      c.innerHTML='<div class="sgh"></div><div class="sge"></div><div class="sgf"><b>Wrinkle </b><span></span></div>';
+      c.querySelector('.sgh').textContent=s.name;
+      c.querySelector('.sge').textContent=s.line;
+      c.querySelector('.sgf span').textContent=s.flaw;
+      c.onclick=()=>{ G.sig=s.id; render(); };
+    } else {
+      c.innerHTML='<div class="sgh"></div><div class="sge"></div>';
+      c.querySelector('.sgh').textContent='No signature';
+      c.querySelector('.sge').textContent='A pure all-rounder — no edge, and no flaw.';
+      c.onclick=()=>{ G.sig=null; render(); };
+    }
+    return c;
+  };
+  sgg.appendChild(sigCard(null));
+  SIGS.forEach(s=>sgg.appendChild(sigCard(s)));
+  sgw.appendChild(sgg); p.appendChild(sgw);
   const row=document.createElement('div');
   row.style.cssText='display:flex;gap:.5rem;align-items:center;margin-top:.6rem';
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
@@ -2915,6 +3005,7 @@ function hud(){
     // on wrestling and a Knockout artist becomes Ground-and-pound, and you should
     // see that happen rather than have to infer it from nine bars.
     '<div><span>Archetype</span><b class="archv">'+archetype()+'</b></div>'+
+    (G.sig ? '<div><span>Signature</span><b class="sigv">'+(SIG(G.sig)?SIG(G.sig).name:'')+'</b></div>' : '')+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
     // HYPE — three pips, gold as they fill, "ready" once you can call your shot. Only
@@ -3402,7 +3493,7 @@ function commitPlan(o, plan){
   const execW = plan.where.filter(x=>x.exec);
   const wMean = avg(execW.length ? execW : plan.where);
   const rMean = avg(plan.read);
-  let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE;  // win% pts, +good / -bad
+  let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE * (G.sig==='general'?1.3:1);  // win% pts, +good / -bad
   delta = clampv(delta, -22, 15);               // see PLAN_SCALE — a margin, not a miracle
   // The read moves the fight and the deferred odds line reflects it: o.p now carries
   // the plan. `swing` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
@@ -3494,7 +3585,7 @@ function planBox(){
   const execWhere = plan.where.filter(w=>w.exec);
   const bestW = (execWhere.length?execWhere:plan.where).slice().sort((a,b)=>b.edge-a.edge)[0];
   const corner=document.createElement('div'); corner.className='corner';
-  corner.textContent=cornerLine(G.attrs.fightiq||ATTR_MIN, bestW.short||bestW.label.toLowerCase(), plan.coach);
+  corner.textContent=cornerLine(G.sig==='general'?ATTR_MAX:(G.attrs.fightiq||ATTR_MIN), bestW.short||bestW.label.toLowerCase(), plan.coach);
   wrap.appendChild(corner);
 
   const act=document.createElement('div'); act.className='plan-act';
