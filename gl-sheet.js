@@ -905,46 +905,118 @@ const GL_SHEET = (function () {
     ctx.font = '800 54px ' + COND; ctx.fillStyle = col || TXT;
     ctx.fillText(String(val), x + 26, y + 106);
   }
+  // The "capper card" — a shareable, verified stat line built to be posted. Name +
+  // ✓ Verified badge headline, CLV hero, the four numbers, then (when present) the
+  // leaderboard rank, a signature beat, and last-5 form. Sections are optional, so the
+  // canvas height is computed from what's actually shown to keep it clean.
   async function drawBetHistory(data) {
     await fontsReady();
     const logo = await loadBrandLogo();
-    const CH = 1080;
+    const M = 64;
+    const hasRank = !!(data.rank && data.rank.text);
+    const hasSig  = !!(data.signature && data.signature.pick);
+    const hasForm = !!(data.form && data.form.results && data.form.results.length);
+    let CH = 250;
+    CH += hasRank ? 72 : 6;
+    CH += 240;                 // hero CLV
+    CH += 320;                 // 2×2 tiles
+    if (hasSig)  CH += 132;
+    if (hasForm) CH += 116;
+    CH += 150;                 // footer band
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
     brand(ctx, 78, 'Bet & CLV Tracker', logo);
     ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-    ctx.fillStyle = TXT; ctx.font = '800 60px ' + COND;
-    // pkPossessive falls back to "My" when there's no display name yet.
-    ctx.fillText(clip(ctx, pkPossessive(data.name) + ' betting record', W - 128), 64, 158);
+
+    // Name headline — the star of a capper card — with room reserved for the badge.
+    ctx.fillStyle = TXT; ctx.font = '800 72px ' + COND;
+    const nm = clip(ctx, data.name || 'My record', W - M * 2 - (data.verified ? 230 : 0));
+    ctx.fillText(nm, M, 172);
+    const nameW = ctx.measureText(nm).width;
+    // ✓ VERIFIED badge — the authenticity mark that makes this worth sharing over a
+    // fakeable screenshot. Check is drawn by hand so it renders regardless of font.
+    if (data.verified) {
+      ctx.font = '800 24px ' + COND;
+      const label = 'VERIFIED', bh = 48, by = 128;
+      const bw = 44 + ctx.measureText(label).width + 22, bx = M + nameW + 24;
+      roundRect(ctx, bx, by, bw, bh, bh / 2); ctx.fillStyle = 'rgba(0,230,104,0.13)'; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0,230,104,0.5)'; roundRect(ctx, bx, by, bw, bh, bh / 2); ctx.stroke();
+      const cx = bx + 24, cyy = by + bh / 2;
+      ctx.strokeStyle = ACC; ctx.lineWidth = 4; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(cx - 8, cyy); ctx.lineTo(cx - 2, cyy + 7); ctx.lineTo(cx + 9, cyy - 8); ctx.stroke();
+      ctx.fillStyle = ACC; ctx.textBaseline = 'middle'; ctx.fillText(label, bx + 42, cyy + 2); ctx.textBaseline = 'alphabetic';
+    }
     ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-    ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - 128), 64, 202);
+    ctx.fillText(clip(ctx, [data.rangeLabel, data.settled + ' settled'].filter(Boolean).join('   ·   '), W - M * 2), M, 216);
+
+    let y = 250;
+    // Leaderboard rank ribbon.
+    if (hasRank) {
+      const rh = 46; roundRect(ctx, M, y, W - M * 2, rh, 10); ctx.fillStyle = 'rgba(255,207,122,0.10)'; ctx.fill();
+      ctx.font = '700 24px ' + COND; ctx.fillStyle = AMB; ctx.textBaseline = 'middle';
+      ctx.fillText(clip(ctx, String(data.rank.text).toUpperCase(), W - M * 2 - 44), M + 22, y + rh / 2 + 1);
+      ctx.textBaseline = 'alphabetic'; y += 72;
+    } else { y += 6; }
 
     // Hero: CLV is the headline the whole product is about.
-    roundRect(ctx, 64, 240, W - 128, 210, 16); ctx.fillStyle = CARD; ctx.fill();
-    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('CLOSING LINE VALUE', 96, 296);
+    roundRect(ctx, M, y, W - M * 2, 210, 16); ctx.fillStyle = CARD; ctx.fill();
+    ctx.font = '700 24px ' + COND; ctx.fillStyle = MUT; ctx.fillText('CLOSING LINE VALUE', M + 32, y + 56);
     const clvNull = data.clv == null;
     ctx.font = '800 108px ' + COND; ctx.fillStyle = clvNull ? MUT : (data.clv > 0 ? ACC : BT_RED);
     const clvTxt = clvNull ? '—' : (data.clv > 0 ? '+' : '') + Number(data.clv).toFixed(1);
-    ctx.fillText(clvTxt, 96, 396);
-    if (!clvNull) {
-      const cw = ctx.measureText(clvTxt).width;
-      ctx.font = '700 30px ' + COND; ctx.fillStyle = MUT; ctx.fillText('pts', 96 + cw + 12, 396);
-    }
+    ctx.fillText(clvTxt, M + 32, y + 156);
+    if (!clvNull) { const cw = ctx.measureText(clvTxt).width; ctx.font = '700 30px ' + COND; ctx.fillStyle = MUT; ctx.fillText('pts', M + 32 + cw + 12, y + 156); }
     ctx.font = '400 25px ' + SANS; ctx.fillStyle = '#c9ccd3'; ctx.textAlign = 'right';
-    ctx.fillText(data.clvSub || '', W - 96, 396);
-    ctx.textAlign = 'left';
+    ctx.fillText(data.clvSub || '', W - M - 32, y + 156); ctx.textAlign = 'left';
+    y += 240;
 
-    const gw = (W - 128 - 20) / 2, gh = 140;
-    btTile(ctx, 64, 476, gw, gh, 'Record', data.record || '0-0', TXT);
-    btTile(ctx, 64 + gw + 20, 476, gw, gh, 'ROI', data.roi == null ? '—' : (data.roi > 0 ? '+' : '') + Number(data.roi).toFixed(1) + '%', data.roi == null ? TXT : (data.roi > 0 ? ACC : BT_RED));
-    btTile(ctx, 64, 476 + gh + 20, gw, gh, 'Units', (data.units > 0 ? '+' : '') + Number(data.units || 0).toFixed(1) + 'u', data.units > 0 ? ACC : (data.units < 0 ? BT_RED : TXT));
-    btTile(ctx, 64 + gw + 20, 476 + gh + 20, gw, gh, 'Beat the close', data.beatTxt || '—', TXT);
+    // The four numbers.
+    const gw = (W - M * 2 - 20) / 2, gh = 140;
+    btTile(ctx, M, y, gw, gh, 'Record', data.record || '0-0', TXT);
+    btTile(ctx, M + gw + 20, y, gw, gh, 'ROI', data.roi == null ? '—' : (data.roi > 0 ? '+' : '') + Number(data.roi).toFixed(1) + '%', data.roi == null ? TXT : (data.roi > 0 ? ACC : BT_RED));
+    btTile(ctx, M, y + gh + 20, gw, gh, 'Units', (data.units > 0 ? '+' : '') + Number(data.units || 0).toFixed(1) + 'u', data.units > 0 ? ACC : (data.units < 0 ? BT_RED : TXT));
+    btTile(ctx, M + gw + 20, y + gh + 20, gw, gh, 'Beat the close', data.beatTxt || '—', TXT);
+    y += 320;
 
-    ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
-    ctx.fillText('CLV measured against the closing line · moneylines only', W / 2, CH - 96);
-    ctx.fillText('gillylab.com', W / 2, CH - 56);
+    // Signature beat — the flex.
+    if (hasSig) {
+      const sh = 108; roundRect(ctx, M, y, W - M * 2, sh, 14); ctx.fillStyle = CARD; ctx.fill();
+      roundRect(ctx, M, y, 6, sh, 3); ctx.fillStyle = ACC; ctx.fill();
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText('BEST BEAT', M + 30, y + 42);
+      ctx.font = '800 34px ' + COND; ctx.fillStyle = TXT;
+      ctx.fillText(clip(ctx, data.signature.pick, W - M * 2 - 260), M + 30, y + 82);
+      ctx.textAlign = 'right';
+      ctx.font = '800 42px ' + COND; ctx.fillStyle = ACC;
+      ctx.fillText((data.signature.units > 0 ? '+' : '') + Number(data.signature.units).toFixed(1) + 'u', W - M - 30, y + 58);
+      if (data.signature.clv != null) { ctx.font = '400 24px ' + SANS; ctx.fillStyle = MUT; ctx.fillText('CLV ' + (data.signature.clv > 0 ? '+' : '') + Number(data.signature.clv).toFixed(1), W - M - 30, y + 92); }
+      ctx.textAlign = 'left'; y += 132;
+    }
+
+    // Last-N form dots.
+    if (hasForm) {
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.textBaseline = 'middle';
+      ctx.fillText('LAST ' + data.form.results.length, M, y + 26);
+      let dx = M + 132; const dr = 15;
+      data.form.results.forEach((r) => {
+        ctx.beginPath(); ctx.arc(dx + dr, y + 26, dr, 0, 2 * Math.PI);
+        ctx.fillStyle = r === 'W' ? ACC : (r === 'L' ? BT_RED : MUT); ctx.fill();
+        dx += dr * 2 + 12;
+      });
+      if (data.form.units != null) {
+        ctx.textAlign = 'right'; ctx.font = '800 30px ' + COND;
+        const up = data.form.units > 0;
+        ctx.fillStyle = up ? ACC : (data.form.units < 0 ? BT_RED : TXT);
+        ctx.fillText((up ? '+' : '') + Number(data.form.units).toFixed(1) + 'u last ' + data.form.results.length, W - M, y + 26);
+        ctx.textAlign = 'left';
+      }
+      ctx.textBaseline = 'alphabetic'; y += 116;
+    }
+
+    // Branded footer — the point: this is verified, not a screenshot.
+    ctx.font = '400 24px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
+    ctx.fillText('Verified & auto-graded · CLV measured against the closing line', W / 2, CH - 90);
+    ctx.font = '700 30px ' + COND; ctx.fillStyle = MUT; ctx.fillText('gillylab.com', W / 2, CH - 46);
     ctx.textAlign = 'left';
     return cv;
   }
@@ -1582,8 +1654,8 @@ const GL_SHEET = (function () {
 
   return {
     // Square card of the user's tracked record over the selected date range.
-    betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-bet-record.png',
-      'My betting record on gillylab.com'),
+    betHistory: (data) => open(() => drawBetHistory(data || {}), 'gillylab-capper-card.png',
+      'My verified betting record on gillylab.com'),
     // Square card of the pending bets on one upcoming event.
     betCard: (data) => open(() => drawBetCard(data || {}), 'gillylab-my-card.png',
       'My card on gillylab.com'),
