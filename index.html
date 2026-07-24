@@ -126242,15 +126242,18 @@ const GL_SHEET = (function () {
         ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       } else {
-        const lg = legImgs[i] || [], colW = (W - 128) / 2;
+        const lg = legImgs[i] || [], divX = W / 2, legsTop = y + PHEAD_H, prows = Math.ceil(b.legs.length / 2);
+        // A slim centre divider anchors the two columns so the right-hand legs don't float.
+        ctx.strokeStyle = LINE; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(divX, legsTop - 2); ctx.lineTo(divX, legsTop + prows * PLEG_ROW - 8); ctx.stroke();
         b.legs.forEach((l, j) => {
-          const cellX = 96 + (j % 2) * colW;
-          const lcy = y + PHEAD_H + Math.floor(j / 2) * PLEG_ROW + PLEG_ROW / 2 - 3;
-          const r = 17, ax = cellX + r;
+          const col = j % 2, cellX = col === 0 ? 96 : (divX + 30);
+          const lcy = legsTop + Math.floor(j / 2) * PLEG_ROW + PLEG_ROW / 2 - 3;
+          const r = 17, ax = cellX + r, tx2 = ax + r + 16;
           avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
           ctx.font = '700 28px ' + COND; ctx.fillStyle = '#c9ccd3';
-          ctx.fillText(clip(ctx, l.pick || '', colW - (r * 2 + 18) - 24), ax + r + 16, lcy);
+          ctx.fillText(clip(ctx, l.pick || '', (col === 0 ? divX - 22 : W - 96) - tx2), tx2, lcy);
         });
       }
       ctx.textBaseline = 'alphabetic';
