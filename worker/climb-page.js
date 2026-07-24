@@ -213,6 +213,21 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
     border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.5}
   .plan-act{display:flex;gap:.5rem;align-items:center;margin-top:.85rem}
 
+  /* ── IN-FIGHT MOMENTS ─────────────────────────────────────────────────────── */
+  .bout-bars{display:flex;gap:12px;margin:.5rem 0 .3rem}
+  .bout-bar{flex:1}
+  .bout-bl{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-bottom:3px}
+  .bout-tr{height:7px;border-radius:4px;background:var(--surface2);overflow:hidden;border:1px solid var(--border)}
+  .bout-tr span{display:block;height:100%}
+  .bout-beat{margin-top:.7rem;background:var(--surface2);border-radius:8px;padding:.5rem .7rem;font-size:.86rem;font-weight:700}
+  .bout-beat.good{color:var(--gold);border:1px solid var(--gold)}
+  .bout-beat.bad{color:var(--accent2);border:1px solid var(--accent2)}
+  .bout-iq{font-size:.73rem;color:var(--muted);font-style:italic;margin:.4rem 2px .1rem}
+  .bout-opt{flex:1 1 100%;text-align:left}
+  .bout-ct{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.82rem;margin-bottom:.25rem}
+  .bout-ct .rr{font-size:.55rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  .bout-opt.risk .bout-ct .rr{color:var(--accent2)}
+
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
      A statement fight, set apart from the safe ladder in gold. */
   .co-rl{color:var(--gold);margin-top:.85rem}
@@ -2287,6 +2302,56 @@ function buildOffers(){
 //     30% -> 21.6%   (underdog runs get HARDER, correctly: beating a contender
 //                     should mean something)
 // It also gives the run a story for free — "you won rounds 1 and 3".
+// ── RESOLVING A FIGHT — ONE MODEL, TWO PATHS ──────────────────────────────────
+// These four are the whole fight math, pulled out of fight() so the instant path
+// (bots, tests) and the played-out path (in-fight moments) resolve identically.
+// boutRolls decides the ROUNDS at the per-round rate; boutFinishCtx reads your
+// finishing ability and his fragility/danger; deriveFinish decides HOW it ends. Every
+// number here is verbatim from the old fight() body — the equivalence is guarded by
+// test-climb's belt/finish rates, which read the prototype.
+function boutRolls(o){
+  const nRounds = isChamp(o.f) ? 5 : 3;
+  const needed  = (nRounds + 1) / 2;          // 2 of 3, 3 of 5
+  const pr = roundP(o.p, nRounds);
+  const rounds = Array.from({length:nRounds}, ()=>Math.random() < pr);
+  const roundsWon = rounds.filter(Boolean).length;
+  return { nRounds, needed, pr, rounds, roundsWon, won: roundsWon >= needed };
+}
+function boutFinishCtx(o){
+  const S = o.f.style || {};
+  const frail = Math.max(0, Math.min(1, (0.85 - (S.chin != null ? S.chin : 0.66)) / 0.5));
+  const FIN_W = { power: 1.00, grappling: 1.00, wrestling: 0.45, pace: 0.35 };
+  const finRaw = (G.attrs.power||0)*FIN_W.power + (G.attrs.grappling||0)*FIN_W.grappling +
+                 (G.attrs.wrestling||0)*FIN_W.wrestling + (G.attrs.pace||0)*FIN_W.pace*frail;
+  const FIN_BASE = ATTR_MIN * (FIN_W.power + FIN_W.grappling + FIN_W.wrestling);
+  const finBias = 1 - Math.exp(-Math.max(0, finRaw - FIN_BASE) / 6);
+  const kd = Math.max(0, S.kd || 0), sb = Math.max(0, S.sub || 0);
+  const threat = (kd + sb) / (kd + sb + 1.0);
+  const lvl = (id) => ((G.attrs[id] || ATTR_MIN) - ATTR_MIN) / (ATTR_MAX - ATTR_MIN);
+  const gassed = 1 - lvl('cardio');
+  const winBase = 0.10 + finBias * 0.74;
+  const winFin = winBase + (1 - winBase) * gassed * 0.70 * finBias;
+  const chinMult = 1.85 - 1.25 * lvl('chin');
+  const loseFin = Math.min(0.92, (0.22 + threat * 0.45) * chinMult);
+  const matDef = lvl('grappling') * 0.75 + lvl('takedef') * 0.25;
+  const subDef = 1 - 0.80 * matDef;
+  return { frail, finBias, kd, sb, threat, winFin, loseFin, subDef };
+}
+function finishMethod(o, ctx, won){
+  const koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
+  const subW = won ? ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35) : ctx.sb * ctx.subDef;
+  const bySub = (koW + subW > 0) && Math.random() < subW/(koW+subW);
+  return bySub ? 'submission' : 'KO/TKO';
+}
+function deriveFinish(o, ctx, rounds, roundsWon, won){
+  const finW = won ? ctx.winFin : ctx.loseFin;
+  const fin = Math.random() < finW && (won || ctx.kd + ctx.sb > 0);
+  const method = !fin ? 'decision' : finishMethod(o, ctx, won);
+  let finRound = 0, rr = rounds, rw = roundsWon;
+  if (fin) { finRound = rounds.indexOf(won) + 1; rr = rounds.slice(0, finRound); rw = rr.filter(Boolean).length; }
+  return { fin, method, finRound, rounds: rr, roundsWon: rw };
+}
+
 function fight(o){
   // o.p is P(WIN THE FIGHT). Rounds must be rolled at the per-round rate that
   // reproduces it — rolling three rounds AT o.p resolves the fight at bo3(o.p),
@@ -2294,181 +2359,22 @@ function fight(o){
   //
   // FIVE ROUNDS FOR THE BELT. roundP inverts bo5 for a title fight, so P(win) is
   // still exactly o.p — the extra two rounds add story, not odds. See boN.
-  const nRounds = isChamp(o.f) ? 5 : 3;
-  const needed  = (nRounds + 1) / 2;          // 2 of 3, 3 of 5
-  const pr = roundP(o.p, nRounds);
-  let rounds = Array.from({length:nRounds}, ()=>Math.random() < pr);
-  let roundsWon = rounds.filter(Boolean).length;
-  const won = roundsWon >= needed;
-  // FOUR WAYS TO END A FIGHT, NOT TWO.
-  //
-  // This read (power + grappling) / 20, so WRESTLING CONTRIBUTED NOTHING. Playtest:
-  // "I made a 10/10 wrestler and grappler and won by submission 3 times and
-  // decision 8" — half his sheet was invisible to the finish. There was no
-  // ground-and-pound in the game: wrestling took you there and then stopped
-  // mattering. Same for pace: you could not wear anyone out.
-  //
-  // The weights are the playtest's own reading and they are deliberately unequal:
-  //   power 1.00      a 10 here is a real knockout artist
-  //   grappling 1.00  a 10 here is a real submission threat
-  //   wrestling 0.45  ground-and-pound is a real finish, but it is not a right hand
-  //   pace 0.35       volume finishes people — but only SOME people, see below
-  //
-  // PACE IS THE MATCHUP ONE. "Pace isn't the same finishing ability as power, but
-  // if you put a pace on someone with bad cardio and durability, you can finish
-  // them." Exactly — so pace's weight scales with how fragile THIS man is, read off
-  // his real chin (0.24 to 0.93 across the roster, median 0.66). Volume against
-  // granite is a decision; volume against glass is a third-round TKO. It is the
-  // only finishing avenue that depends on who you're in there with.
-  const S0 = o.f.style || {};
-  // 0 against the best chin in the division, 1 against the worst.
-  const frail = Math.max(0, Math.min(1, (0.85 - (S0.chin != null ? S0.chin : 0.66)) / 0.5));
-  const FIN_W = { power: 1.00, grappling: 1.00, wrestling: 0.45, pace: 0.35 };
-  //  MAXING THE ONE THING YOU ARE IS A WHOLE JOB, NOT HALF OF ONE.
-  //
-  // This was \`/ (ATTR_MAX*2)\` — a divisor of 20 — which assumed you needed power
-  // AND grappling to be a finisher. So the man who maxed HIS avenue capped at 0.55
-  // and finished 47% of his wins, while a 1/1/1/1 with no finishing ability
-  // anywhere still finished 30%. Floor too high, ceiling too low, every build
-  // converging on "sometimes". Playtest: "finishing rates are low, especially if
-  // you max out your finishing stats" — right, and structurally so.
-  //
-  // Now: subtract the baseline every fighter has for free, then SATURATE. One maxed
-  // avenue gets you most of the way; maxing everything gets you the rest. Real MMA
-  // is the target — Ngannou, Aspinall and Adesanya finish 80-90% of their wins, and
-  // a man with no finishing ability at all should be a decision machine.
-  const finRaw = (G.attrs.power||0)     * FIN_W.power +
-                 (G.attrs.grappling||0) * FIN_W.grappling +
-                 (G.attrs.wrestling||0) * FIN_W.wrestling +
-                 (G.attrs.pace||0)      * FIN_W.pace * frail;
-  const FIN_BASE = ATTR_MIN * (FIN_W.power + FIN_W.grappling + FIN_W.wrestling);  // ~2.45, the free floor
-  const finBias = 1 - Math.exp(-Math.max(0, finRaw - FIN_BASE) / 6);
-  // HOW you finish follows what you BUILT. Playtest: "I maxed out grappling and
-  // never won by submission." He couldn't have: the result line read
-  // \`fin ? ' by KO/TKO' : ' by decision'\` — there was no submission ANYWHERE in
-  // the game. Every finish printed as a knockout regardless of build, so the
-  // whole grappling half of the sheet was invisible in its own results.
-  // Weighted by the two attributes that actually finish fights.
-  //
-  // AND THE SAME COURTESY IN THE OTHER DIRECTION. \`method\` was \`!won ? null : ...\`
-  // — losing had no method at all, so the game could tell you exactly how you beat
-  // a man and had nothing to say about how he beat you. Half the results in a run
-  // were a blank. It reads as though the game stops paying attention the moment
-  // you lose, which is precisely the moment the player is paying most.
-  //
-  // How you GET finished follows what HE does, read off his REAL stats — the same
-  // rule as your side of it, pointed the other way. kd is knockdowns per 15min
-  // (median 0.27, max 3.54); sub is submission attempts per 15min (median 0.32,
-  // max 4.27). Both are long-tailed, so they saturate rather than scale: a man
-  // with 3.5 kd is terrifying, not 13x more terrifying than the median.
-  const S = o.f.style || {};
-  const kd = Math.max(0, S.kd || 0), sb = Math.max(0, S.sub || 0);
-  const threat = (kd + sb) / (kd + sb + 1.0);        // ~0.37 median, ~0.89 at the top
-  // YOUR CHIN BUYS YOU THE JUDGES. A maxed chin doesn't stop you losing — the
-  // result was decided by the rounds above, before any of this — it stops you
-  // getting STOPPED. This is deliberately cosmetic with respect to balance: method
-  // is chosen after \`won\`, so nothing here can move a win rate. It just means the
-  // 1/9 point you spent on chin is visible in your own record.
-  // 0 at the floor, 1 at the cap — how much of the thing you actually bought.
-  const lvl = (id) => ((G.attrs[id] || ATTR_MIN) - ATTR_MIN) / (ATTR_MAX - ATTR_MIN);
+  const b = boutRolls(o);
+  let rounds = b.rounds, roundsWon = b.roundsWon;
+  const won = b.won;
+  const ctx = boutFinishCtx(o);
+  const f = deriveFinish(o, ctx, rounds, roundsWon, won);
+  rounds = f.rounds; roundsWon = f.roundsWon;
+  const fin = f.fin, method = f.method, finRound = f.finRound;
+  applyResult(o, { won, fin, method, rounds, roundsWon, finRound });
+}
 
-  // ROUND ONE OR BUST. Playtest: "if you have no cardio but high finishing stats,
-  // you should rarely — if ever — win a decision."
-  //
-  // Which is a sharper observation than it first looks, because it is CONDITIONAL.
-  // Whether you win is already settled by the rounds above; this only asks HOW. And
-  // a fighter with no gas tank who won cannot have won a decision — a decision means
-  // he was still there in round three. So low cardio doesn't make you win more, it
-  // makes the wins you DO get be early ones. It pushes P(finish | won) toward 1.
-  //
-  // It reads like a buff for skipping cardio and isn't: method is chosen after
-  // \`won\`, so it cannot move a win rate, and the style triangle already charges 13
-  // points of belt rate for the empty tank (glass cannon 25% vs complete 38%).
-  // SCALED BY finBias, and that correction matters. Pushing every gassed fighter
-  // toward a finish had a man with 1 power, 1 grappling, 1 wrestling and 1 pace
-  // finishing 74% of his wins — an empty tank does not hand you a way to end a
-  // fight you have no way to end. "Round one or bust" only applies to a fighter who
-  // owns a round one. Multiplying the push by finBias means no cardio sharpens the
-  // finisher you ARE and does nothing for the man who is nobody.
-  const gassed = 1 - lvl('cardio');            // 1 at the floor, 0 at a full tank
-  const winBase = 0.10 + finBias * 0.74;       // 0.10 for a man who cannot finish -> 0.84 maxed
-  const winFin = winBase + (1 - winBase) * gassed * 0.70 * finBias;
-
-  // AND YOU RARELY HEAR THE CARDS WITH NO CHIN EITHER. Playtest: "if you have zero
-  // durability, you should rarely make it to a dec." Same logic pointed the other
-  // way: when you lose, a man with nothing to absorb it gets stopped.
-  //
-  // This was \`1 - (chin/10)*0.3\` — a guard so weak it moved finish-against from 42%
-  // to 30% across the ENTIRE slider. Ten points bought a twelve-point swing in
-  // flavour and nothing else, which is why "0 durability and never finished once"
-  // was an ordinary evening rather than a bug.
-  const chinMult = 1.85 - 1.25 * lvl('chin');  // 1.85 at the floor, 0.60 maxed
-  const loseFin = Math.min(0.92, (0.22 + threat * 0.45) * chinMult);
-
-  const finW = won ? winFin : loseFin;
-  const fin = Math.random() < finW && (won || kd + sb > 0);
-  // Weights for WHICH finish. Yours: power vs grappling. His: knockdowns vs subs.
-  // WHICH finish. Wrestling and pace both cash out mostly as TKO — ground-and-pound
-  // and accumulation are stoppages, not taps — but wrestling also sets up the
-  // choke, so it feeds both. A 10/10 wrestler-grappler now gets a real share of
-  // ground-and-pound instead of reading as a pure sub artist, which is what the
-  // archetype (Constrictor) already claims he is.
-  //
-  // SUBMISSION DEFENSE DID NOT EXIST. Playtest: "a 10/10 grappler gets submitted a
-  // lot; having very high grappling should protect against submission losses." Read
-  // the old code and there is nothing to argue with — the losing branch was \`: sb\`,
-  // the opponent's submission rate, full stop. YOUR ATTRIBUTES WERE NOT REFERENCED.
-  // A black belt and a man who has never touched a mat tapped at the same rate.
-  // Measured, all attrs pinned at 5, only grappling moving, ~600 losses each:
-  //     grappling  1 -> 17% of losses by submission
-  //     grappling  5 -> 15%
-  //     grappling 10 -> 19%
-  // Flat. Noise. Ten points of the defining ground attribute bought nothing.
-  //
-  // The asymmetry is the tell, and it was sitting in the comment above: "Yours:
-  // power vs grappling. His: knockdowns vs subs." The WIN branch reads your build
-  // and the LOSS branch reads only his. Offence was a matchup; defense was his stat
-  // sheet against a wall. Every other defensive axis in this function already got
-  // this right — chinMult gates whether you're finished at all — so submission was
-  // the one hole left, and it was the one the archetype system shouts about most.
-  //
-  // matDef: grappling leads, takedown defense supports. A submission needs the mat
-  // and the mat needs a takedown, so the man who won't go down is hard to tap for a
-  // second, different reason. 0.80 leaves a maxed grappler at ~0.2x — rarely tapped,
-  // never immune, because there is no such thing.
-  const matDef = lvl('grappling') * 0.75 + lvl('takedef') * 0.25;
-  const subDef = 1 - 0.80 * matDef;            // 1.0 at the floor, 0.20 maxed
-  const koW  = won ? ((G.attrs.power||1)
-                      + (G.attrs.wrestling||0) * 0.50
-                      + (G.attrs.pace||0) * 0.60 * frail)
-                   : kd;
-  const subW = won ? ((G.attrs.grappling||1) * 0.9
-                      + (G.attrs.wrestling||0) * 0.35)
-                   : sb * subDef;
-  // NOTE WHAT THIS DOES NOT DO. bySub is a SHARE — subW/(koW+subW) — so this cannot
-  // change how often you are finished, only how. loseFin (chin) owns that, and it
-  // is untouched. A maxed grappler who loses badly now gets knocked out instead of
-  // tapped, which is the right story: he didn't stop losing, he stopped losing THAT
-  // WAY. Method has been inert since the finish bonus came out of G.pts, and this
-  // keeps it inert — if a future change makes the belt rate move here, the bonus is
-  // back and something is wrong.
-  const bySub = fin && (koW + subW > 0) && Math.random() < subW/(koW+subW);
-  const method = !fin ? 'decision' : (bySub ? 'submission' : 'KO/TKO');
-  // A FINISH ENDS THE FIGHT. Playtest: "when beating someone by finish, it still
-  // shows all 3 rounds as if it were a decision." The rounds array and the
-  // finish roll were computed independently, so a first-round KO still printed
-  // R1 ✓ R2 ✓ R3 ✓. Truncate at the round it ended in — the first round you won.
-  //
-  // A LOSS TRUNCATES AT THE FIRST ROUND YOU **LOST**. \`rounds.indexOf(true)\` is
-  // the first round you WON, which is the right round for your finish and the
-  // wrong one for his: it would have printed "finished in R3" over a card reading
-  // R1 ✗ R2 ✗, i.e. stopped in a round you were winning, in a fight already over.
-  let finRound = 0;
-  if (fin) {
-    finRound = rounds.indexOf(won) + 1;   // the first round its winner took
-    rounds = rounds.slice(0, finRound);
-    roundsWon = rounds.filter(Boolean).length;
-  }
+// THE BOOKKEEPING — everything after the result is known: the log, the win/loss
+// branches, rank, hype, the clock. Extracted so the instant path (fight) and the
+// played-out path (an in-fight-moments bout) share ONE copy of the rank/hype/cut
+// rules rather than two that could drift apart.
+function applyResult(o, R){
+  const { won, fin, method, rounds, roundsWon, finRound } = R;
   G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
@@ -2590,8 +2496,150 @@ function fight(o){
   // If runs still drag, the next dial is retiring at ~35.)
   G.fightNo = (G.fightNo||0) + 1;
   G.last = { o, won, fin, method };
+  G.bout = null;
   render();
 }
+
+// ── IN-FIGHT MOMENTS ──────────────────────────────────────────────────────────
+// A fight is no longer resolved in one hidden instant. The ROUNDS and the finish are
+// still decided by the same model (boutRolls/deriveFinish), so the odds you were
+// shown are the odds you get and the instant path is untouched — but the fight is now
+// PLAYED OUT, and at up to two live junctures (you've hurt him, or you're in trouble)
+// it pauses for a two-sided gamble. The SAFE choice changes nothing: the pre-rolled
+// result stands exactly as fight() would have resolved it, which is what keeps the
+// belt tuning intact. Only aggression can move the night — a swarm that lands ends it
+// early, a swarm that misses can cost you a round, firing back while hurt can steal a
+// round or get you stopped. Read it against your build and the scoreboard.
+function startBout(o){
+  G.bout = { o, base: boutRolls(o), ctx: boutFinishCtx(o), i:0, rounds:[],
+             hisDmg:0, myDmg:0, moment:null, usedHurt:false, usedTrouble:false, override:null };
+  advanceBout();
+}
+function advanceBout(){
+  const B = G.bout;
+  while (B.i < B.base.rounds.length && !B.moment && !B.override){
+    const r = B.base.rounds[B.i]; B.rounds.push(r); B.i++;
+    if (r) B.hisDmg = Math.min(1, B.hisDmg + 0.30 + B.ctx.finBias*0.16 + B.ctx.frail*0.10);
+    else   B.myDmg  = Math.min(1, B.myDmg  + 0.26 + B.ctx.threat*0.28);
+    // A finish OPPORTUNITY — you've hurt him, and you have the tools to end it.
+    if (r && !B.usedHurt && B.hisDmg > 0.55 &&
+        Math.random() < clampv(B.ctx.finBias*0.48 + B.ctx.frail*0.20, 0, 0.5)){
+      B.usedHurt = true; B.moment = { type:'hurt' }; break;
+    }
+    // TROUBLE — he's hurt you, and he's dangerous.
+    if (!r && !B.usedTrouble && B.myDmg > 0.55 &&
+        Math.random() < clampv(B.ctx.threat*0.60, 0, 0.45)){
+      B.usedTrouble = true; B.moment = { type:'trouble' }; break;
+    }
+  }
+  if (B.moment){ render(); return; }
+  boutFinalize();
+}
+function boutFinalize(){
+  const B = G.bout, o = B.o;
+  let R;
+  if (B.override){ R = B.override; }
+  else {
+    const rw = B.rounds.filter(Boolean).length;
+    const won = rw >= B.base.needed;
+    R = Object.assign({ won }, deriveFinish(o, B.ctx, B.rounds.slice(), rw, won));
+  }
+  applyResult(o, R);   // clears G.bout and renders the result
+}
+// AGGRESSION IS VARIANCE, NOT FREE WIN%. The gamble is keyed on whether you were
+// GOING to win anyway (the pre-rolled outcome from here): if you're ahead, landing it
+// is a highlight finish that changes the METHOD, not the winner, and missing risks
+// getting caught and dropping the fight; if you're behind, it's a chance to STEAL a
+// win, balanced against getting stopped. Tuned (see the sim) so ALWAYS-swarming is
+// win-rate-neutral — the edge comes from reading WHEN to, not from mashing it.
+const AGG_BACKFIRE = 0.60;   // ahead + miss -> you get caught and lose
+const AGG_STEAL    = 0.50;   // behind + land -> you steal the win
+function boutChoose(kind){
+  const B = G.bout, o = B.o, m = B.moment; if(!m) return; B.moment = null;
+  const noopWon = () => B.rounds.concat(B.base.rounds.slice(B.i)).filter(Boolean).length >= B.base.needed;
+  const finish = (won) => { B.override = { won, fin:true, finRound:B.i,
+      method: finishMethod(o, B.ctx, won), rounds: B.rounds.slice(), roundsWon: B.rounds.filter(Boolean).length }; };
+  const flipLoss = () => { const j = B.base.rounds.indexOf(true, B.i);
+      if (j >= 0) { B.base.rounds[j] = false; return true; }
+      for (let k=B.rounds.length-1;k>=0;k--) if (B.rounds[k]) { B.rounds[k]=false; return true; } return false; };
+  if (kind === 'bank' || kind === 'weather') { advanceBout(); return; }   // safe = the fight stands
+  const winning = noopWon();
+  const pLand = kind === 'swarm' ? clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9) : 0.5;
+  if (winning) {
+    if (Math.random() < pLand) { finish(true); }                 // a highlight — still your win
+    else if (Math.random() < AGG_BACKFIRE) { if (flipLoss() && Math.random() < 0.5) finish(false); }
+  } else {
+    if (Math.random() < pLand * AGG_STEAL) { finish(true); }     // steal it outright
+    else if (Math.random() < 0.5) { finish(false); }             // or get stopped
+  }
+  if (B.override) { boutFinalize(); return; }
+  advanceBout();
+}
+
+// The moment screen — condition read off accumulated damage, the beat, and two
+// choices whose pros/cons are honest. The Fight IQ readout is as sharp as your IQ.
+function boutBox(){
+  const B = G.bout, o = B.o, m = B.moment, last = o.f.name.split(' ').pop();
+  const p = document.createElement('div'); p.className = 'panel bout';
+  const rl = document.createElement('div'); rl.className = 'rl';
+  rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
+  rl.querySelector('b').textContent = o.f.name; p.appendChild(rl);
+  const bars = document.createElement('div'); bars.className = 'bout-bars';
+  const cond = (d) => d>0.55 ? 'hurt' : d>0.3 ? 'worn' : 'fresh';
+  const bar = (label, frac, color, tag, danger) => {
+    const c = document.createElement('div'); c.className='bout-bar';
+    const l = document.createElement('div'); l.className='bout-bl';
+    const a=document.createElement('span'); a.textContent=label;
+    const s=document.createElement('span'); s.textContent=tag; if(danger) s.style.color='var(--accent2)';
+    l.appendChild(a); l.appendChild(s);
+    const tr=document.createElement('div'); tr.className='bout-tr'; const i=document.createElement('span');
+    i.style.width=Math.round(Math.max(0,Math.min(1,frac))*100)+'%'; i.style.background=color; tr.appendChild(i);
+    c.appendChild(l); c.appendChild(tr); return c;
+  };
+  bars.appendChild(bar('You', 1-B.myDmg, 'var(--accent)', cond(B.myDmg), B.myDmg>0.55));
+  bars.appendChild(bar(last, 1-B.hisDmg, 'var(--accent2)', B.hisDmg>0.55?'rocked':cond(B.hisDmg), false));
+  p.appendChild(bars);
+  const rd = document.createElement('div'); rd.className='note';
+  rd.innerHTML = 'Rounds: ' + B.rounds.map((w,idx)=>'<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(idx+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ');
+  p.appendChild(rd);
+  const iq = G.attrs.fightiq || ATTR_MIN;
+  const beat = document.createElement('div'); beat.className = 'bout-beat ' + (m.type==='hurt'?'good':'bad');
+  const readout = document.createElement('div'); readout.className = 'bout-iq';
+  const opts = document.createElement('div'); opts.className = 'plan-opts'; opts.style.marginTop='.6rem';
+  const choice = (label, risk, kind, pro, con) => {
+    const b=document.createElement('button'); b.className='plan-opt bout-opt'+(risk?' risk':'');
+    b.innerHTML='<div class="bout-ct"><span>'+label+'</span><span class="rr">'+(risk?'High risk':'Low risk')+'</span></div>'+
+      '<div class="pc-line pro"><span class="mk">+</span><span>'+pro+'</span></div>'+
+      '<div class="pc-line con"><span class="mk">−</span><span>'+con+'</span></div>';
+    b.onclick=()=>boutChoose(kind); return b;
+  };
+  if (m.type === 'hurt'){
+    beat.textContent = 'You rocked ' + last + " — he's hurt.";
+    readout.textContent = iq>=8 ? "Your corner reads it: he's badly hurt and fading — this is the moment."
+                       : iq>=4 ? 'He looks hurt — there might be a finish here.'
+                       : 'He looks a little rocked.';
+    opts.appendChild(choice('Swarm for the finish', true, 'swarm',
+      "Your best shot at ending it now, while he's rocked.",
+      'If he survives he ties you up and steals the round — and a desperation takedown is live.'));
+    opts.appendChild(choice('Stay composed', false, 'bank',
+      'Bank a clean round and stay fresh for later.',
+      'You let a dangerous, hurt man recover.'));
+  } else {
+    beat.textContent = last + " has you hurt — you're in trouble.";
+    readout.textContent = iq>=8 ? "Your corner: you're rocked but clear-headed — he's loading up on you."
+                       : iq>=4 ? "You're hurt — careful now."
+                       : 'You got caught clean.';
+    opts.appendChild(choice('Fire back', true, 'fire',
+      'A chance to steal the round — or turn the whole fight.',
+      "Trading while you're hurt, you're far more likely to get finished."));
+    opts.appendChild(choice('Weather it, survive', false, 'weather',
+      'Clinch up, cover, and get out of the round.',
+      'You concede the round to stay in the fight.'));
+  }
+  p.appendChild(beat); p.appendChild(readout); p.appendChild(opts);
+  return p;
+}
+
 
 // ── render ───────────────────────────────────────────────────────────────────
 function newGame(){
@@ -2608,7 +2656,7 @@ function newGame(){
         // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
-        hype:0,
+        hype:0, bout:null,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2658,6 +2706,8 @@ function render(){
   // the fight you're about to have, and nothing else — the offer list, the upgrade
   // panel and the log would all just be noise you have to scroll past to commit.
   if (G.pending){ app.appendChild(planBox()); return; }
+  // A FIGHT IN PROGRESS pauses here at each in-fight moment; nothing else renders.
+  if (G.bout && G.bout.moment){ app.appendChild(boutBox()); return; }
   if (G.last) app.appendChild(resultBox());
   app.appendChild(upgrade());
   app.appendChild(offerBox());
@@ -3363,7 +3413,7 @@ function commitPlan(o, plan){
   o.p = clampv(base + delta/100, 0.05, 0.95);
   o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
   G.pending = null;
-  fight(o);
+  startBout(o);
 }
 
 function planBox(){
