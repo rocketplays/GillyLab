@@ -1162,6 +1162,9 @@
     .bt-leg-ico { flex: 0 0 12px; font-weight: 800; color: var(--muted); }
     .bt-leg-p { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .bt-leg-o { color: var(--muted); font-weight: 700; }
+    .bt-leg-av { width: 20px; height: 20px; border-radius: 50%; overflow: hidden; background: #1b1e25; border: 1px solid rgba(255,255,255,0.12); flex: 0 0 auto; display: flex; align-items: center; justify-content: center; font-size: 0.5rem; font-weight: 700; color: var(--muted); }
+    .bt-leg-av img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .bt-leg-lost .bt-leg-av { opacity: 0.55; }
     .bt-leg-won .bt-leg-ico { color: var(--accent); }
     .bt-leg-lost .bt-leg-ico { color: #ff6a5e; }
     .bt-leg-lost .bt-leg-p { text-decoration: line-through; opacity: 0.6; }
@@ -126145,9 +126148,10 @@ const GL_SHEET = (function () {
     const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
     // Parlay legs get their own small avatars, preloaded alongside the main ones.
     const legImgs = await Promise.all(bets.map(b => Promise.all((b.legs || []).map(l => loadImg(l.slug)))));
-    // Rows are variable height now: a parlay expands to list its legs beneath a header.
-    const PLEG_H = 48, PHEAD_H = 88;
-    const cardH = bets.map(b => (b.legs && b.legs.length) ? (PHEAD_H + b.legs.length * PLEG_H + 12) : (rowH - 12));
+    // Rows are variable height: a parlay expands to list its legs in a 2-up grid below the
+    // header, so a multi-leg parlay stays compact (ceil(n/2) rows).
+    const PLEG_ROW = 46, PHEAD_H = 84;
+    const cardH = bets.map(b => (b.legs && b.legs.length) ? (PHEAD_H + Math.ceil(b.legs.length / 2) * PLEG_ROW + 14) : (rowH - 12));
     const CH = Math.max(1080, listTop + cardH.reduce((s, h) => s + h + 12, 0) + 130);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
@@ -126232,23 +126236,21 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'left';
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
-      ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-      ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
-      // Parlay legs: a smaller, indented subset under the header — small avatar + pick + price.
-      if (isParlay) {
-        const lg = legImgs[i] || [];
-        let ly = y + PHEAD_H;
-        ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(96, ly - 6); ctx.lineTo(W - 96, ly - 6); ctx.stroke();
+      // A normal bet keeps its match/book subtitle. A parlay drops the event line and the
+      // per-leg odds, and lays the legs out 2-up (small avatar + pick) to stay compact.
+      if (!isParlay) {
+        ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+        ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
+      } else {
+        const lg = legImgs[i] || [], colW = (W - 128) / 2;
         b.legs.forEach((l, j) => {
-          const r = 17, ax = 96 + r, lcy = ly + PLEG_H / 2 - 3;
+          const cellX = 96 + (j % 2) * colW;
+          const lcy = y + PHEAD_H + Math.floor(j / 2) * PLEG_ROW + PLEG_ROW / 2 - 3;
+          const r = 17, ax = cellX + r;
           avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
-          ctx.textBaseline = 'middle';
-          const lo = (l.odds != null && l.odds !== '') ? (l.odds > 0 ? '+' + l.odds : String(l.odds)) : '';
-          ctx.textAlign = 'right'; ctx.font = '400 25px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(lo, right, lcy);
-          const low = lo ? ctx.measureText(lo).width + 22 : 0;
-          ctx.textAlign = 'left'; ctx.font = '700 29px ' + COND; ctx.fillStyle = '#c9ccd3';
-          ctx.fillText(clip(ctx, l.pick || '', right - (ax + r + 18) - low), ax + r + 18, lcy);
-          ly += PLEG_H;
+          ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.font = '700 28px ' + COND; ctx.fillStyle = '#c9ccd3';
+          ctx.fillText(clip(ctx, l.pick || '', colW - (r * 2 + 18) - 24), ax + r + 16, lcy);
         });
       }
       ctx.textBaseline = 'alphabetic';
@@ -135313,6 +135315,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return '<div class="bt-av"><img src="./photos/thumb/' + btEsc(nameToSlug(name)) + '.png" alt="" loading="lazy"' +
       ' onerror="this.parentNode.textContent=\'' + ini + '\'"></div>';
   }
+  // Mini version for parlay legs in the bet history.
+  function btLegAvHTML(name) {
+    const ini = btEsc(String(name || '').trim().split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase());
+    return '<div class="bt-leg-av"><img src="./photos/thumb/' + btEsc(nameToSlug(name)) + '.png" alt="" loading="lazy"' +
+      ' onerror="this.parentNode.textContent=\'' + ini + '\'"></div>';
+  }
   function btAvsHTML(names) {
     if (!names.length) return '';
     if (names.length === 1) return '<div class="bt-avs">' + btAvHTML(names[0]) + '</div>';
@@ -135793,7 +135801,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       legsHTML = '<div class="bt-legs">' + b.legs.map((l, i) => {
         const st = (b.legStatuses || [])[i] || 'pending';
         const ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '–' : '·';
-        return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' +
+        // Mini avatar of the leg's picked fighter, resolved the same way the row avatars are.
+        const ln = btBetNames({ market: l.market, fightId: l.fightId, evSlug: b.evSlug, params: l.params });
+        const av = ln.length ? btLegAvHTML(ln[0]) : '';
+        return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' + av +
           '<span class="bt-leg-p">' + btEsc(l.pick) + '</span><span class="bt-leg-o">' + btFmtO(l.odds) + '</span></div>';
       }).join('') + '</div>';
     }
