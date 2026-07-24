@@ -134909,6 +134909,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     METHOD:    'Method (how the fight ends)',
     DISTANCE:  'Fight goes the distance?',
     INSIDE:    'Win inside the distance',
+    DBLMETH:   'Win by two methods (double chance)',
     ROUNDSTART:'Will the fight start a round?',
     ENDROUND:  'Fight ends in a round',
     WINRDS:    'Winner in a group of rounds',
@@ -135137,6 +135138,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Win by a specific method inside a group of rounds (a decision never qualifies).
     if (b.market === 'METHRDS')
       return R.win === P.side && R.methodCat === P.methodCat && (P.rounds || []).indexOf(R.round) !== -1;
+    // Double chance: the named fighter wins by either of two methods (KO/TKO-or-
+    // decision, or submission-or-decision).
+    if (b.market === 'DBLMETH')
+      return R.win === P.side && (P.methods || []).indexOf(R.methodCat) !== -1;
     return false;
   }
   // No contest voids everything. A draw voids ONLY the moneyline — standard book
@@ -135632,6 +135637,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btMarket === 'ROUNDSTART') { let o = ''; for (let i = 2; i <= f.rounds; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return '<div class="bt-row2"><div><label>Round</label><select id="bt-rsr">' + o + '</select></div><div><label>Will it start?</label><select id="bt-rsyn"><option value="Y">Will start</option><option value="N">Won\'t start</option></select></div></div>'; }
     if (btMarket === 'DISTANCE') return '<label>Does the fight reach a decision?</label><select id="bt-dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>';
     if (btMarket === 'INSIDE') return '<label>Who wins inside the distance (KO or sub)?</label><select id="bt-ifr"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select>';
+    if (btMarket === 'DBLMETH') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-dcf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select></div>' +
+      '<div><label>By</label><select id="bt-dcm"><option value="KO">KO/TKO or decision</option><option value="SUB">Submission or decision</option></select></div></div>';
     return '';
   }
   function btBuildPick(f) {
@@ -135649,6 +135656,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' to win — ' + grp.lab.toLowerCase(), p: { side: s, rounds: grp.rounds, dec: grp.dec }, priced: false }; }
     if (btMarket === 'METHRDS') { const s = +g('bt-mrf').value, m = g('bt-mrm').value, grp = btMethGroups(f.rounds)[+g('bt-mrg').value];
       return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' by ' + (m === 'KO' ? 'KO/TKO' : 'submission') + ' — ' + grp.lab.toLowerCase(), p: { side: s, methodCat: m, rounds: grp.rounds }, priced: false }; }
+    if (btMarket === 'DBLMETH') { const s = +g('bt-dcf').value, fm = g('bt-dcm').value;
+      return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' by ' + (fm === 'KO' ? 'KO/TKO or decision' : 'submission or decision'), p: { side: s, methods: [fm, 'DEC'] }, priced: false }; }
     const s = +g('bt-ifr').value; return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' inside the distance', p: { side: s }, priced: false };
   }
 
