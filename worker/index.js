@@ -747,6 +747,102 @@ async function handleBetsGrade(request, env) {
   return json({ ok: true });
 }
 
+// ── bet leaderboard + public player profile (subscriber-visible, mirrors pick'em) ──
+// The Worker can't grade bets itself — that needs FIGHT_HISTORY + the per-market rules,
+// which live in the app — so these read the FROZEN grade each bet carries once it has
+// settled (the snapshot the tracker writes via /api/bets/grade). A bet whose owner
+// hasn't opened their history since it settled simply isn't frozen yet and doesn't
+// count. VERIFIED ONLY: self-reported (manual) bets never touch the board.
+const btRound1 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 10) / 10;
+function btOutcome(b) {
+  if (!b || b.kind !== "tracked") return null;
+  const g = b.graded;
+  if (!g || ["won", "lost", "push", "void"].indexOf(g.status) === -1) return null;
+  const odds = (typeof g.effOdds === "number" ? g.effOdds : b.odds);
+  const stake = typeof b.stake === "number" ? b.stake : 0;
+  const profit = g.status === "won" ? stake * (odds > 0 ? odds / 100 : 100 / -odds)
+    : g.status === "lost" ? -stake : 0;
+  return { status: g.status, clv: (typeof g.clv === "number" ? g.clv : null), stake, profit };
+}
+// Same aggregation the client's btStats does, off the frozen grades.
+function btUserStats(bets) {
+  const st = (bets || []).map(btOutcome).filter(Boolean);
+  if (!st.length) return null;
+  const w = st.filter((o) => o.status === "won").length;
+  const l = st.filter((o) => o.status === "lost").length;
+  const staked = st.filter((o) => o.status !== "push" && o.status !== "void").reduce((s, o) => s + o.stake, 0);
+  const units = st.reduce((s, o) => s + o.profit, 0);
+  const clvs = st.filter((o) => o.clv != null);
+  return {
+    n: st.length, w, l,
+    roi: staked ? (units / staked * 100) : null,
+    units,
+    avgClv: clvs.length ? clvs.reduce((s, o) => s + o.clv, 0) / clvs.length : null,
+    clvN: clvs.length,
+  };
+}
+
+async function handleBetsLeaderboard(request, env, url) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const tab = { clv: "clv", roi: "roi", units: "units" }[url.searchParams.get("tab")] || "units";
+  const keys = await listAllKeys(env, "bt:");
+  const rows = [];
+  await Promise.all(keys.map(async (k) => {
+    const email = k.slice(3);                           // strip "bt:"
+    const name = await getDisplayName(env, email);
+    if (!name) return;                                  // no display name -> off the board
+    const stats = btUserStats(await btGetBets(env, email));
+    if (!stats) return;                                 // no settled verified bets
+    rows.push({
+      name, w: stats.w, l: stats.l, n: stats.n,
+      clv: btRound1(stats.avgClv), clvN: stats.clvN,
+      roi: btRound1(stats.roi), units: btRound1(stats.units),
+    });
+  }));
+  const ranked = rows.filter((r) => r[tab] != null).sort((a, b) => b[tab] - a[tab]);
+  ranked.forEach((r, i) => { r.rank = i + 1; });
+  const myName = await getDisplayName(env, s.email);
+  const me = myName ? (ranked.find((r) => r.name === myName) || null) : null;
+  return json({ tab, rows: ranked.slice(0, 100), me });
+}
+
+// Public (subscriber) profile: one player's verified settled bets, by display name.
+async function handleBetsPlayer(request, env, url) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const name = (url.searchParams.get("name") || "").trim();
+  if (!name) return json({ error: "missing name" }, 400);
+  const email = await env.PICKS.get("nm:" + name.toLowerCase());
+  if (!email) return json({ error: "not found" }, 404);
+  const bets = await btGetBets(env, email);
+  const stats = btUserStats(bets);
+  const settled = (bets || [])
+    .filter((b) => b.kind === "tracked" && b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1)
+    .sort((a, b) => (b.ts || b.createdAt || 0) - (a.ts || a.createdAt || 0))
+    .slice(0, 200)
+    .map((b) => {
+      const o = btOutcome(b);
+      return {
+        pick: b.pick || "", match: b.match || "", market: b.market || "",
+        odds: (b.graded && typeof b.graded.effOdds === "number") ? b.graded.effOdds : b.odds,
+        stake: b.stake, status: b.graded.status,
+        profit: btRound1(o ? o.profit : 0),
+        clv: (b.graded && typeof b.graded.clv === "number") ? btRound1(b.graded.clv) : null,
+        ts: b.ts || b.createdAt || 0,
+      };
+    });
+  return json({
+    name,
+    stats: stats ? {
+      w: stats.w, l: stats.l, n: stats.n,
+      roi: btRound1(stats.roi), units: btRound1(stats.units),
+      avgClv: btRound1(stats.avgClv), clvN: stats.clvN,
+    } : null,
+    bets: settled,
+  });
+}
+
 async function handleBetsSettle(request, env) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
@@ -1286,6 +1382,8 @@ export default {
       if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
       if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
       if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
+      if (path === "/api/bets/leaderboard") return handleBetsLeaderboard(request, env, url);
+      if (path === "/api/bets/player") return handleBetsPlayer(request, env, url);
       if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env);
       if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env);
 

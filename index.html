@@ -4069,9 +4069,12 @@
   <div class="bt-tabs">
     <div id="bt-tab-history" class="active" onclick="btSetView('history')">My bet history</div>
     <div id="bt-tab-log" onclick="btSetView('log')">Log a bet</div>
+    <div id="bt-tab-board" onclick="btSetView('board')">Leaderboard</div>
   </div>
   <div id="bt-history"></div>
   <div id="bt-log" style="display:none"></div>
+  <div id="bt-board" style="display:none"></div>
+  <div id="bt-player" style="display:none"></div>
   <div class="sim-disclaimer">A personal record-keeping tool only. GillyLab doesn't accept wagers, handle money, or offer betting advice.</div>
 </div>
 
@@ -134918,6 +134921,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
+  let btBoardTab = 'clv', btPlayerName = '';   // leaderboard metric tab + open profile
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
@@ -135286,13 +135290,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // ── views ────────────────────────────────────────────────────────────────
   function btSetView(v) {
     btView = v;
-    document.getElementById('bt-history').style.display = v === 'history' ? 'block' : 'none';
-    document.getElementById('bt-log').style.display = v === 'log' ? 'block' : 'none';
+    const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? 'block' : 'none'; };
+    show('bt-history', v === 'history'); show('bt-log', v === 'log');
+    show('bt-board', v === 'board'); show('bt-player', v === 'player');
     document.getElementById('bt-tab-history').classList.toggle('active', v === 'history');
     document.getElementById('bt-tab-log').classList.toggle('active', v === 'log');
+    const tb = document.getElementById('bt-tab-board'); if (tb) tb.classList.toggle('active', v === 'board' || v === 'player');
     // Leaving the tab abandons a half-built parlay — keeping it staged invisibly
     // would silently attach the next bet you log to it.
     if (v === 'log') { btEvent = null; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
+    else if (v === 'board') { btLegs = []; btRenderBoard(); }
+    else if (v === 'player') { btLegs = []; btRenderPlayer(btPlayerName); }
     else { btLegs = []; btRenderHistory(); }
   }
   function btSetScope(s) { btScope = s; btRenderHistory(); }
@@ -135305,6 +135313,79 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btSetTab(t) { btTab = t; btCardFilter = 'all'; btRenderHistory(); }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
   window.btSetTab = btSetTab;
+
+  // ── leaderboard + public player profiles (mirrors the pick'em board) ─────────
+  // Reuses the pick'em board's CSS classes so the two look identical. Three metric
+  // tabs — CLV, ROI, Units — each ranking every player with a display name and at
+  // least one settled verified bet. A row opens that player's read-only bet history.
+  const btEscJs = s => String(s == null ? '' : s).replace(/[\\'"]/g, '\\$&');
+  function btSetBoardTab(t) { btBoardTab = t; btRenderBoard(); }
+  async function btRenderBoard() {
+    const host = document.getElementById('bt-board'); if (!host) return;
+    const tab = (id, label) => '<button type="button" class="pk-tab' + (btBoardTab === id ? ' sel' : '') + '" onclick="btSetBoardTab(\'' + id + '\')">' + label + '</button>';
+    const blurb = btBoardTab === 'clv' ? 'Average closing-line value across settled moneylines.'
+      : btBoardTab === 'roi' ? 'Profit as a percentage of everything staked.' : 'Net profit, in units.';
+    host.innerHTML = '<div class="pk-tabs">' + tab('clv', 'CLV') + tab('roi', 'ROI') + tab('units', 'Units') + '</div>' +
+      '<div class="bt-foot" style="margin:.2rem 0 1rem">Verified, auto-graded bets only. ' + blurb + '</div>' +
+      '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty">Loading…</div></div>';
+    const at = btBoardTab;
+    const r = await btApi('/api/bets/leaderboard?tab=' + at);
+    if (btView !== 'board' || btBoardTab !== at) return;   // navigated or switched tab mid-fetch
+    const list = document.getElementById('bt-board-list'); if (!list) return;
+    if (r.status === 401) { list.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
+    if (r.status !== 200 || !r.j || !Array.isArray(r.j.rows)) { list.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
+    const rows = r.j.rows, me = r.j.me, meName = me && me.name;
+    if (!rows.length) { list.innerHTML = '<div class="pk-board-empty">No ranked bettors yet — settle some verified bets to get on the board.</div>'; return; }
+    const fmt = row => btBoardTab === 'clv' ? ((row.clv > 0 ? '+' : '') + row.clv.toFixed(1) + ' pts')
+      : btBoardTab === 'roi' ? ((row.roi > 0 ? '+' : '') + row.roi.toFixed(1) + '%')
+      : ((row.units > 0 ? '+' : '') + row.units.toFixed(1) + 'u');
+    const col = row => { const v = row[btBoardTab]; return v > 0 ? 'var(--accent)' : v < 0 ? '#ff6b6b' : ''; };
+    const rowHTML = (row, isMe) => '<button type="button" class="pk-board-row' + (isMe ? ' me' : '') + '" onclick="btOpenPlayer(\'' + btEscJs(row.name) + '\')">' +
+      '<span class="pk-board-rank">' + row.rank + '</span>' +
+      '<span class="pk-board-name">' + btEsc(row.name) + (isMe ? ' <span class="pk-you">you</span>' : '') +
+      ' <span style="opacity:.5;font-weight:600">' + row.w + '-' + row.l + '</span></span>' +
+      '<span class="pk-board-pts" style="color:' + col(row) + '">' + fmt(row) + '</span><span class="pk-board-chev">›</span></button>';
+    let out = rows.map(row => rowHTML(row, meName && row.name === meName)).join('');
+    if (me && !rows.some(row => row.name === meName)) out += '<div class="pk-board-sep">···</div>' + rowHTML(me, true);
+    list.innerHTML = out;
+  }
+  function btOpenPlayer(name) { btPlayerName = name; btSetView('player'); }
+  async function btRenderPlayer(name) {
+    const host = document.getElementById('bt-player'); if (!host) return;
+    const back = '<button type="button" class="pk-hist-back" onclick="btSetView(\'board\')">← Back to leaderboard</button>';
+    host.innerHTML = back + '<div class="pk-board-empty">Loading…</div>';
+    const r = await btApi('/api/bets/player?name=' + encodeURIComponent(name));
+    if (btView !== 'player') return;
+    if (r.status === 404) { host.innerHTML = back + '<div class="pk-board-empty">Player not found.</div>'; return; }
+    if (r.status !== 200 || !r.j) { host.innerHTML = back + '<div class="pk-board-empty">Profile unavailable right now.</div>'; return; }
+    const st = r.j.stats, bets = r.j.bets || [];
+    let h = back + '<div style="font-weight:800;font-size:1.15rem;margin:.5rem 0 .8rem">' + btEsc(r.j.name || name) + '</div>';
+    if (st) {
+      const clvTxt = st.avgClv == null ? '—' : (st.avgClv > 0 ? '+' : '') + st.avgClv.toFixed(1);
+      h += '<div class="bt-grid">' +
+        '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + st.w + '-' + st.l + '</div></div>' +
+        '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (st.roi > 0 ? 'bt-pos' : st.roi < 0 ? 'bt-neg' : '') + '">' + (st.roi == null ? '—' : (st.roi > 0 ? '+' : '') + st.roi.toFixed(1) + '%') + '</div></div>' +
+        '<div class="bt-tile"><div class="bt-tile-t">Units</div><div class="bt-tile-v ' + (st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '') + '">' + (st.units > 0 ? '+' : '') + st.units.toFixed(1) + 'u</div></div>' +
+        '<div class="bt-tile"><div class="bt-tile-t">Avg CLV</div><div class="bt-tile-v ' + (st.avgClv < 0 ? 'bt-neg' : '') + '">' + clvTxt + '</div></div>' +
+        '</div>';
+    }
+    h += bets.length ? bets.map(btPlayerBetHTML).join('') : '<div class="bt-empty">No settled bets yet.</div>';
+    host.innerHTML = h;
+  }
+  function btPlayerBetHTML(b) {
+    const badge = b.status === 'won' ? '<span class="bt-pos" style="font-weight:800">Won</span>'
+      : b.status === 'lost' ? '<span class="bt-neg" style="font-weight:800">Lost</span>'
+      : '<span style="opacity:.6;font-weight:800">' + (b.status === 'push' ? 'Push' : 'Void') + '</span>';
+    const prof = (b.profit > 0 ? '+' : '') + (b.profit == null ? '0' : b.profit.toFixed(2)) + 'u';
+    const clv = b.clv == null ? '' : ' · CLV ' + (b.clv > 0 ? '+' : '') + b.clv.toFixed(1);
+    return '<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.08)">' +
+      '<div style="flex:1;min-width:0"><div style="font-weight:700">' + btEsc(b.pick) + '</div>' +
+      '<div style="font-size:.82rem;color:#8a8d95;margin-top:.15rem">' + btEsc(b.match) + ' · ' + btFmtO(b.odds) + clv + '</div></div>' +
+      '<div style="text-align:right;flex:0 0 auto">' + badge +
+      '<div class="' + (b.profit > 0 ? 'bt-pos' : b.profit < 0 ? 'bt-neg' : '') + '" style="font-weight:800;font-size:.9rem">' + prof + '</div></div></div>';
+  }
+  window.btSetBoardTab = btSetBoardTab; window.btOpenPlayer = btOpenPlayer;
+  window.btRenderBoard = btRenderBoard; window.btRenderPlayer = btRenderPlayer;
 
   // Every card we hold tracked bets on, pending or settled. Bets on a card three
   // weeks out shouldn't sit in the same pile as tonight's — and once a card is
