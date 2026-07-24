@@ -1036,10 +1036,10 @@ const GL_SHEET = (function () {
     const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
     // Parlay legs get their own small avatars, preloaded alongside the main ones.
     const legImgs = await Promise.all(bets.map(b => Promise.all((b.legs || []).map(l => loadImg(l.slug)))));
-    // Rows are variable height: a parlay expands to list its legs in a 2-up grid below the
-    // header, so a multi-leg parlay stays compact (ceil(n/2) rows).
-    const PLEG_ROW = 46, PHEAD_H = 84;
-    const cardH = bets.map(b => (b.legs && b.legs.length) ? (PHEAD_H + Math.ceil(b.legs.length / 2) * PLEG_ROW + 14) : (rowH - 12));
+    // Rows are variable height: a parlay expands to list its legs vertically below the
+    // header, on tight rows so it doesn't run long.
+    const PLEG_ROW = 40, PHEAD_H = 84;
+    const cardH = bets.map(b => (b.legs && b.legs.length) ? (PHEAD_H + b.legs.length * PLEG_ROW + 14) : (rowH - 12));
     const CH = Math.max(1080, listTop + cardH.reduce((s, h) => s + h + 12, 0) + 130);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
@@ -1130,18 +1130,14 @@ const GL_SHEET = (function () {
         ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       } else {
-        const lg = legImgs[i] || [], divX = W / 2, legsTop = y + PHEAD_H, prows = Math.ceil(b.legs.length / 2);
-        // A slim centre divider anchors the two columns so the right-hand legs don't float.
-        ctx.strokeStyle = LINE; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(divX, legsTop - 2); ctx.lineTo(divX, legsTop + prows * PLEG_ROW - 8); ctx.stroke();
+        const lg = legImgs[i] || [], legsTop = y + PHEAD_H;
         b.legs.forEach((l, j) => {
-          const col = j % 2, cellX = col === 0 ? 96 : (divX + 30);
-          const lcy = legsTop + Math.floor(j / 2) * PLEG_ROW + PLEG_ROW / 2 - 3;
-          const r = 17, ax = cellX + r, tx2 = ax + r + 16;
+          const lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
+          const r = 15, ax = 96 + r, tx2 = ax + r + 14;
           avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-          ctx.font = '700 28px ' + COND; ctx.fillStyle = '#c9ccd3';
-          ctx.fillText(clip(ctx, l.pick || '', (col === 0 ? divX - 22 : W - 96) - tx2), tx2, lcy);
+          ctx.font = '700 27px ' + COND; ctx.fillStyle = '#c9ccd3';
+          ctx.fillText(clip(ctx, l.pick || '', (W - 96) - tx2), tx2, lcy);
         });
       }
       ctx.textBaseline = 'alphabetic';
