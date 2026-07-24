@@ -54,5 +54,29 @@ check('dropped the CBS profile', !titles.some((t) => /John Garza - CBS Sports/.t
 check('dropped the non-whitelisted outlet', !titles.some((t) => /sketchy blog/.test(t)));
 check('exactly 1 item survives', out.length === 1, 'got ' + out.length);
 
+// Injury flag: a headline can NAME the fighter yet be about a DIFFERENT bout on his
+// card ("<headliner>'s UFC NNN undercard loses fight ... due to injury"). Those must
+// NOT flag him; genuine "<fighter> out/withdraws/ruled out" news still must.
+console.log('\n== injury flag: card-level vs fighter ==');
+function inj(name, title) {
+  const o = curate([{ title, url: 'u', source: 'MMA Fighting', date: '2026-07-23' }],
+                   Date.parse('2026-07-24'), new Set(['330']), name);
+  return o.length ? !!o[0].injury : null;   // null = dropped (unexpected here)
+}
+// false positives to squash
+check('undercard-loses-fight does NOT flag headliner',
+  inj('Islam Makhachev', "Islam Makhachev's UFC 330 undercard loses fight featuring top 5 contender due to injury") === false);
+check('card loses contender bout does NOT flag headliner',
+  inj('Islam Makhachev', 'UFC 330: Islam Makhachev vs. Ian Machado Garry loses flyweight contender bout after injury') === false);
+// genuine changes to HIS bout must still flag
+check('"ruled out with injury" DOES flag',
+  inj('Islam Makhachev', 'Islam Makhachev ruled out of UFC 330 with injury') === true);
+check('"withdraws due to injury" DOES flag',
+  inj('Ian Machado Garry', 'Ian Machado Garry withdraws from UFC 330 due to injury') === true);
+check('card loses main event (headliner withdraws) still flags',
+  inj('Islam Makhachev', 'UFC 330 loses main event as Islam Makhachev withdraws with injury') === true);
+check('prelim fighter own injury still flags',
+  inj('Joe Pyfer', 'UFC 330 prelim fighter Joe Pyfer out of the fight with injury') === true);
+
 console.log('\n' + (fail ? '  ' + fail + ' FAILURE(S)' : '  all checks passed'));
 process.exit(fail ? 1 : 0);

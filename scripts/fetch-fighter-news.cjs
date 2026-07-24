@@ -111,6 +111,28 @@ function namesFighter(title, name) {
   return new RegExp('\\b' + surname.replace(/\s+/g, '\\s+') + '\\b').test(t);
 }
 
+// A headline can NAME the fighter yet be about a DIFFERENT bout on his card. The one
+// that started this: "Islam Makhachev's UFC 330 UNDERCARD loses fight featuring top-5
+// contender due to injury" — Makhachev is only the card's headline; the injury is
+// another fighter's. namesFighter() can't tell (his name is right there), so also drop
+// the injury flag when the CARD (or a card SECTION) is what LOSES a fight/bout. This is
+// deliberately narrow — it needs the "card … loses … fight/bout" shape, so genuine
+// "<fighter> out/withdraws/ruled out" news is untouched, and real card moves are still
+// covered independently by the shortNotice / mayChange ground truth from card-changes.
+const CARD_CTX_RE = /\b(?:card|event|ppv|ufc\s*\d+)\b/i;
+const CARD_LOSES_RE = /\blos(?:e|es|t)\b\s+(?:\w+\s+){0,3}?(?:fights?|bouts?|matchups?|contests?|contenders?)\b/i;
+function aboutOtherBout(title) {
+  const t = String(title || '');
+  // "<headliner>'s … UNDERCARD/PRELIMS loses …" — an explicitly other card section.
+  if (/\b(?:undercard|prelims?|preliminary)\b/i.test(t) && /\blos(?:e|es|t)\b/i.test(t)) return true;
+  // "<card / event / UFC NNN> … loses … fight/bout/contender" — the CARD sheds a bout,
+  // which is a DIFFERENT bout, not "<fighter> out/withdraws". Two separate checks (not one
+  // span) so "vs." punctuation between the card name and "loses" doesn't break the match.
+  // Requires a card-context SUBJECT for "loses", so "<fighter> could lose his title fight"
+  // is untouched.
+  return CARD_CTX_RE.test(t) && CARD_LOSES_RE.test(t);
+}
+
 // Google News surfaces a fighter's static PROFILE / STATS pages (ESPN "MMA
 // Profile", CBS Sports player page, Sherdog fighter page, …) as if they were
 // articles. They pass the outlet whitelist but aren't news, so drop them: they
@@ -172,7 +194,8 @@ function curate(items, now, eventNums, name) {
       title: it.title, url: it.url, source: it.source,
       date: isFinite(ts) ? new Date(ts).toISOString().slice(0, 10) : null,
       injury: INJURY_RE.test(it.title) && namesFighter(it.title, name) &&
-              !refersToPastEvent(it.title, eventNums) && !isRetrospective(it.title)
+              !refersToPastEvent(it.title, eventNums) && !isRetrospective(it.title) &&
+              !aboutOtherBout(it.title)
     });
     if (out.length >= PER_FIGHTER) break;
   }
@@ -249,5 +272,5 @@ async function main() {
   console.log(`fighter-news.json: ${ok}/${fighters.length} fighters with news · ${kept} items · ${injuries} injury-flagged`);
 }
 
-module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, isRetrospective, upcomingCardFighters, isProfilePage, namesFighter };
+module.exports = { parseItems, curate, norm, OUTLET_OK, INJURY_RE, refersToPastEvent, isRetrospective, upcomingCardFighters, isProfilePage, namesFighter, aboutOtherBout };
 if (require.main === module) main();
