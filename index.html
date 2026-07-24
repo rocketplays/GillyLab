@@ -134921,7 +134921,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
-  let btBoardTab = 'clv', btPlayerName = '';   // leaderboard metric tab + open profile
+  let btBoardTab = 'units', btPlayerName = '';   // leaderboard metric tab + open profile
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
@@ -135325,7 +135325,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const tab = (id, label) => '<button type="button" class="pk-tab' + (btBoardTab === id ? ' sel' : '') + '" onclick="btSetBoardTab(\'' + id + '\')">' + label + '</button>';
     const blurb = btBoardTab === 'clv' ? 'Average closing-line value across settled moneylines.'
       : btBoardTab === 'roi' ? 'Profit as a percentage of everything staked.' : 'Net profit, in units.';
-    host.innerHTML = '<div class="pk-tabs">' + tab('clv', 'CLV') + tab('roi', 'ROI') + tab('units', 'Units') + '</div>' +
+    host.innerHTML = '<div class="pk-tabs">' + tab('units', 'Units') + tab('roi', 'ROI') + tab('clv', 'CLV') + '</div>' +
       '<div class="bt-foot" style="margin:.2rem 0 1rem">Verified, auto-graded bets only. ' + blurb + '</div>' +
       '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty">Loading…</div></div>';
     const at = btBoardTab;
