@@ -2126,9 +2126,20 @@ function boutFinalize(){
   let R;
   if (B.override){ R = B.override; }
   else {
-    const rw = B.rounds.filter(Boolean).length;
+    // The player WATCHED these rounds happen, so a finish can't be retro-fitted to an
+    // earlier round the way the instant path truncates it (playtest: banked after
+    // winning R1-R2, then "KO in R1"). Keep the rounds as shown and land any finish in
+    // the FINAL round — and only when that round went the winner's way, so "KO in R3"
+    // always sits on a round R3 the winner actually took. Otherwise it's the decision
+    // the scorecard already says it is. Win rate is unchanged (finish is method-only).
+    const rounds = B.rounds.slice();
+    const rw = rounds.filter(Boolean).length;
     const won = rw >= B.base.needed;
-    R = Object.assign({ won }, deriveFinish(o, B.ctx, B.rounds.slice(), rw, won));
+    const df = deriveFinish(o, B.ctx, rounds, rw, won);
+    if (df.fin && rounds.length && rounds[rounds.length - 1] === won)
+      R = { won, fin:true, method:df.method, finRound:rounds.length, rounds, roundsWon:rw };
+    else
+      R = { won, fin:false, method:'decision', finRound:0, rounds, roundsWon:rw };
   }
   applyResult(o, applyPunch(o, R));   // clears G.bout and renders the result
 }
