@@ -135358,7 +135358,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btView !== 'player') return;
     if (r.status === 404) { host.innerHTML = back + '<div class="pk-board-empty">Player not found.</div>'; return; }
     if (r.status !== 200 || !r.j) { host.innerHTML = back + '<div class="pk-board-empty">Profile unavailable right now.</div>'; return; }
-    const st = r.j.stats, bets = r.j.bets || [];
+    const st = r.j.stats, bets = r.j.bets || [], pending = r.j.pending || [];
     let h = back + '<div style="font-weight:800;font-size:1.15rem;margin:.5rem 0 .8rem">' + btEsc(r.j.name || name) + '</div>';
     if (st) {
       const clvTxt = st.avgClv == null ? '—' : (st.avgClv > 0 ? '+' : '') + st.avgClv.toFixed(1);
@@ -135369,8 +135369,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<div class="bt-tile"><div class="bt-tile-t">Avg CLV</div><div class="bt-tile-v ' + (st.avgClv < 0 ? 'bt-neg' : '') + '">' + clvTxt + '</div></div>' +
         '</div>';
     }
-    h += bets.length ? bets.map(btPlayerBetHTML).join('') : '<div class="bt-empty">No settled bets yet.</div>';
+    // Open (pending) bets sit ABOVE settled ones, so a viewer sees what they're on now.
+    if (pending.length) {
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Open bets (' + pending.length + ')</div></div>';
+      h += pending.map(btPlayerPendingHTML).join('');
+    }
+    if (bets.length) {
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Settled</div></div>';
+      h += bets.map(btPlayerBetHTML).join('');
+    } else if (!pending.length) {
+      h += '<div class="bt-empty">No bets yet.</div>';
+    }
     host.innerHTML = h;
+  }
+  function btPlayerPendingHTML(b) {
+    const stake = (b.stake == null ? '' : ' · ' + btU(b.stake) + 'u');
+    return '<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.08)">' +
+      '<div style="flex:1;min-width:0"><div style="font-weight:700">' + btEsc(b.pick) + '</div>' +
+      '<div style="font-size:.82rem;color:#8a8d95;margin-top:.15rem">' + btEsc(b.match) + ' · ' + btFmtO(b.odds) + stake + '</div></div>' +
+      '<span style="flex:0 0 auto;opacity:.6;font-weight:800;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase">Open</span></div>';
   }
   function btPlayerBetHTML(b) {
     const badge = b.status === 'won' ? '<span class="bt-pos" style="font-weight:800">Won</span>'

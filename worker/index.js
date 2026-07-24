@@ -817,9 +817,11 @@ async function handleBetsPlayer(request, env, url) {
   if (!email) return json({ error: "not found" }, 404);
   const bets = await btGetBets(env, email);
   const stats = btUserStats(bets);
+  const isSettled = (b) => b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1;
+  const byNewest = (a, b) => (b.ts || b.createdAt || 0) - (a.ts || a.createdAt || 0);
   const settled = (bets || [])
-    .filter((b) => b.kind === "tracked" && b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1)
-    .sort((a, b) => (b.ts || b.createdAt || 0) - (a.ts || a.createdAt || 0))
+    .filter((b) => b.kind === "tracked" && isSettled(b))
+    .sort(byNewest)
     .slice(0, 200)
     .map((b) => {
       const o = btOutcome(b);
@@ -832,6 +834,16 @@ async function handleBetsPlayer(request, env, url) {
         ts: b.ts || b.createdAt || 0,
       };
     });
+  // Open bets: tracked bets not yet settled (or settled but not yet frozen). Lets a
+  // viewer see what this player is currently on. No result/CLV yet, so just the pick.
+  const pending = (bets || [])
+    .filter((b) => b.kind === "tracked" && !isSettled(b))
+    .sort(byNewest)
+    .slice(0, 100)
+    .map((b) => ({
+      pick: b.pick || "", match: b.match || "", market: b.market || "",
+      odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0,
+    }));
   return json({
     name,
     stats: stats ? {
@@ -840,6 +852,7 @@ async function handleBetsPlayer(request, env, url) {
       avgClv: btRound1(stats.avgClv), clvN: stats.clvN,
     } : null,
     bets: settled,
+    pending,
   });
 }
 
