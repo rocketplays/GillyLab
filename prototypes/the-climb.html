@@ -1358,17 +1358,46 @@ function champScout(st){
   const cands = [[zKd,'kd'],[zTd,'td'],[zSub,'sub'],[zVol,'vol']];
   cands.sort((a,b)=>b[0]-a[0]);
   const [tz, tk] = cands[0];
-  const label = tz < 0.75                     ? 'Complete fighter'
-              : tk === 'kd'                   ? (zVol > 0.75 ? 'Knockout artist' : 'Puncher')
-              : tk === 'td'                   ? (zSub > 0.75 ? 'Submission grappler' : 'Wrestler')
-              : tk === 'sub'                  ? 'Grappler'
-              :                                 'Volume striker';
-  // The label and the threat are drawn from the same stats, so the loudest threat
-  // is usually just the label again: "Volume striker — High volume". Say the
-  // second thing instead; the label already said the first.
-  const SAYS = { 'Volume striker':'High volume', 'Knockout artist':'Real knockout power',
-                 'Puncher':'Real knockout power', 'Wrestler':'Looks for the takedown',
-                 'Grappler':'Submission threat', 'Submission grappler':'Submission threat' };
+  // A SPECIFIC ARCHETYPE, NOT A BUCKET. Playtest: "pavlovich is just 'Puncher', he
+  // should be 'power puncher' or something more specific." The label is display-only
+  // (it feeds no scorer), so it can afford to be evocative — and the z-scores already
+  // carry the nuance the old five buckets threw away. The loudest trait sets the
+  // family; a SECOND loud trait makes it specific. Measured on heavyweight: Aspinall
+  // is loud everywhere (a complete finisher -> Knockout artist), Pavlovich is loud
+  // ONLY in power (-> Power puncher), Hokit pairs power with output (-> Volume
+  // puncher), Valter Walker takes you down and taps you (-> Submission wrestler).
+  // `skip` is the one threat-line the label already implies, so it isn't said twice.
+  let label, skip;
+  if (tz < 0.75) {                                   // nothing loud — name what he RESISTS with
+    label = zSd  > 0.75 ? 'Slick technician'
+          : zChin > 0.9  ? 'Durable veteran'
+          : zTdd  > 0.9  ? 'Hard to take down'
+          :                'Well-rounded';
+    skip  = zSd  > 0.75 ? 'Hard to hit'
+          : zChin > 0.9  ? 'Hard to hurt'
+          : zTdd  > 0.9  ? 'Difficult to wrestle' : null;
+  } else if (tk === 'kd') {                          // power is loudest
+    label = zVol  > 0.6  ? 'Pressure knockout artist'
+          : (zSub > 0.75 || zTdd > 0.9) ? 'Knockout artist'   // loud beyond power = complete finisher
+          : zChin > 0.6  ? 'Come-forward slugger'
+          :                'Power puncher';                    // one-shot power, nothing else loud
+    skip  = 'Real knockout power';
+  } else if (tk === 'td') {                          // takedowns loudest
+    label = zSub > 0.6  ? 'Submission wrestler'
+          : zKd  > 0.6  ? 'Ground-and-pound wrestler'
+          : zTdd > 0.75 ? 'Dominant wrestler'
+          :               'Grinding wrestler';
+    skip  = 'Looks for the takedown';
+  } else if (tk === 'sub') {                         // submissions loudest
+    label = zTd > 0.75 ? 'Submission wrestler' : 'Submission ace';
+    skip  = 'Submission threat';
+  } else {                                           // volume loudest
+    label = zSd   > 0.6 ? 'Slick volume striker'
+          : zKd   > 0.6 ? 'Volume puncher'
+          : zChin > 0.6 ? 'Pressure fighter'
+          :               'Volume striker';
+    skip  = 'High volume';
+  }
   const threat = pick([
     { w: zKd,  s: 'Real knockout power' },
     { w: zSub, s: 'Submission threat' },
@@ -1377,7 +1406,7 @@ function champScout(st){
     { w: zVol, s: 'High volume' },
     { w: zSd,  s: 'Hard to hit' },
     { w: zChin,s: 'Hard to hurt' },
-  ], SAYS[label]);
+  ], skip);
   const top = [];
   if (threat) top.push(threat.s);
   if (hole) top.push(hole.s);
