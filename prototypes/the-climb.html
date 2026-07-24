@@ -2582,7 +2582,7 @@ function boutBox(){
   rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
   rl.querySelector('b').textContent = o.f.name; p.appendChild(rl);
   const bars = document.createElement('div'); bars.className = 'bout-bars';
-  const cond = (d) => d>0.55 ? 'hurt' : d>0.3 ? 'worn' : 'fresh';
+  const cond = (d) => d>0.55 ? 'hurt' : d>0.3 ? 'banged up' : 'fresh';
   const bar = (label, frac, color, tag, danger) => {
     const c = document.createElement('div'); c.className='bout-bar';
     const l = document.createElement('div'); l.className='bout-bl';
