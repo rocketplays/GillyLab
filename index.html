@@ -134905,14 +134905,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_CLOSE_LEAD_MIN = 10;
   const BT_MARKETS = {
     ML:        'Moneyline (winner)',
+    TOTAL:     'Total rounds (over / under)',
     METHOD:    'Method (how the fight ends)',
+    DISTANCE:  'Fight goes the distance?',
+    INSIDE:    'Win inside the distance',
+    ROUNDSTART:'Will the fight start a round?',
     ENDROUND:  'Fight ends in a round',
     WINRDS:    'Winner in a group of rounds',
     METHRDS:   'Win by KO/TKO or submission in a group of rounds',
-    TOTAL:     'Total rounds (over / under)',
-    ROUNDSTART:'Will the fight start a round?',
-    DISTANCE:  'Fight goes the distance?',
-    INSIDE:    'Win inside the distance',
   };
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
