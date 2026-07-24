@@ -976,14 +976,14 @@ const GL_SHEET = (function () {
     btTile(ctx, M, y, gw, gh, 'Record', data.record || '0-0', TXT);
     btTile(ctx, M + gw + 20, y, gw, gh, 'ROI', data.roi == null ? '—' : (data.roi > 0 ? '+' : '') + Number(data.roi).toFixed(1) + '%', data.roi == null ? TXT : (data.roi > 0 ? ACC : BT_RED));
     btTile(ctx, M, y + gh + 20, gw, gh, 'Units', (data.units > 0 ? '+' : '') + Number(data.units || 0).toFixed(1) + 'u', data.units > 0 ? ACC : (data.units < 0 ? BT_RED : TXT));
-    btTile(ctx, M + gw + 20, y + gh + 20, gw, gh, 'Beat the close', data.beatTxt || '—', TXT);
+    btTile(ctx, M + gw + 20, y + gh + 20, gw, gh, 'Beat the closing line', data.beatTxt || '—', TXT);
     y += 320;
 
     // Signature beat — the flex.
     if (hasSig) {
       const sh = 108; roundRect(ctx, M, y, W - M * 2, sh, 14); ctx.fillStyle = CARD; ctx.fill();
       roundRect(ctx, M, y, 6, sh, 3); ctx.fillStyle = ACC; ctx.fill();
-      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText('BEST BEAT', M + 30, y + 42);
+      ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT; ctx.fillText('BIGGEST WIN', M + 30, y + 42);
       ctx.font = '800 34px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, data.signature.pick, W - M * 2 - 260), M + 30, y + 82);
       ctx.textAlign = 'right';
@@ -1034,7 +1034,12 @@ const GL_SHEET = (function () {
     // Headshots: one for a fighter-specific pick, two (A vs B) when the bet is
     // about the fight rather than a fighter — a total, the distance, a round start.
     const imgs = await Promise.all(bets.map(b => Promise.all((b.slugs || []).slice(0, 2).map(s => loadImg(s)))));
-    const CH = Math.max(1080, listTop + bets.length * rowH + 190);
+    // Parlay legs get their own small avatars, preloaded alongside the main ones.
+    const legImgs = await Promise.all(bets.map(b => Promise.all((b.legs || []).map(l => loadImg(l.slug)))));
+    // Rows are variable height now: a parlay expands to list its legs beneath a header.
+    const PLEG_H = 48, PHEAD_H = 88;
+    const cardH = bets.map(b => (b.legs && b.legs.length) ? (PHEAD_H + b.legs.length * PLEG_H + 12) : (rowH - 12));
+    const CH = Math.max(1080, listTop + cardH.reduce((s, h) => s + h + 12, 0) + 130);
     const cv = document.createElement('canvas'); cv.width = W; cv.height = CH;
     const ctx = cv.getContext('2d');
     ctx.fillStyle = BG; ctx.fillRect(0, 0, W, CH);
@@ -1070,13 +1075,15 @@ const GL_SHEET = (function () {
 
     let y = listTop;
     bets.forEach((b, i) => {
-      const h = rowH - 12;
+      const isParlay = !!(b.legs && b.legs.length);
+      const h = cardH[i];
       roundRect(ctx, 64, y, W - 128, h, 12); ctx.fillStyle = CARD; ctx.fill();
-      // Avatars, left. Two discs overlap slightly with a "vs" beneath them.
+      // Avatars, left. Two discs overlap slightly with a "vs" beneath them. A parlay has
+      // no single face — its header skips the avatar and lists its legs below instead.
       const pics = imgs[i] || [], names = (b.names || []);
-      const cy = y + h / 2;
+      const cy = isParlay ? (y + 44) : (y + h / 2);       // header-row center
       let tx = 96;
-      if (pics.length > 1) {
+      if (!isParlay && pics.length > 1) {
         // Two faces: smaller discs, or the pair eats the row and squeezes the pick.
         const r = 28, c1 = 96 + r, c2 = 96 + r * 2 + 14;
         avatar(ctx, pics[0], c1, cy - 10, r, initialsOf(names[0]), LINE);
@@ -1085,7 +1092,7 @@ const GL_SHEET = (function () {
         ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT;
         ctx.fillText('VS', (c1 + c2) / 2, cy + r + 12);
         tx = c2 + r + 22;
-      } else if (pics.length === 1) {
+      } else if (!isParlay && pics.length === 1) {
         const r = 38;
         avatar(ctx, pics[0], 96 + r, cy, r, initialsOf(names[0]), LINE);
         tx = 96 + r * 2 + 22;
@@ -1118,8 +1125,25 @@ const GL_SHEET = (function () {
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
       ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
       ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
+      // Parlay legs: a smaller, indented subset under the header — small avatar + pick + price.
+      if (isParlay) {
+        const lg = legImgs[i] || [];
+        let ly = y + PHEAD_H;
+        ctx.strokeStyle = LINE; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(96, ly - 6); ctx.lineTo(W - 96, ly - 6); ctx.stroke();
+        b.legs.forEach((l, j) => {
+          const r = 17, ax = 96 + r, lcy = ly + PLEG_H / 2 - 3;
+          avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
+          ctx.textBaseline = 'middle';
+          const lo = (l.odds != null && l.odds !== '') ? (l.odds > 0 ? '+' + l.odds : String(l.odds)) : '';
+          ctx.textAlign = 'right'; ctx.font = '400 25px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(lo, right, lcy);
+          const low = lo ? ctx.measureText(lo).width + 22 : 0;
+          ctx.textAlign = 'left'; ctx.font = '700 29px ' + COND; ctx.fillStyle = '#c9ccd3';
+          ctx.fillText(clip(ctx, l.pick || '', right - (ax + r + 18) - low), ax + r + 18, lcy);
+          ly += PLEG_H;
+        });
+      }
       ctx.textBaseline = 'alphabetic';
-      y += rowH;
+      y += h + 12;
     });
     ctx.font = '400 23px ' + SANS; ctx.fillStyle = FOOT; ctx.textAlign = 'center';
     ctx.fillText('Tracked on gillylab.com', W / 2, CH - 60);
