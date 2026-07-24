@@ -16,8 +16,11 @@ setTimeout(()=>{
   console.log('\n== 1. the upgrade button fits its column ==');
   win.eval('newGame(); G.started=true; G.pts=20; render();');
   const rows=[...doc.querySelectorAll('.attr.up')];
-  const nAttr = peek('ATTRS.length');
-  ok(rows.length===nAttr,'upgrade rows use their own grid class',rows.length+' rows vs '+nAttr+' attributes');
+  // UI_ATTRS, not ATTRS: the upgrade panel spends points on Fight IQ too (a build
+  // stat kept out of the combat set so it feeds no win probability), so it draws
+  // one more row than there are combat attributes.
+  const nAttr = peek('UI_ATTRS.length');
+  ok(rows.length===nAttr,'upgrade rows use their own grid class',rows.length+' rows vs '+nAttr+' build stats');
   ok(!doc.querySelector('.attr:not(.up) button'),'no upgrade button left in the 42px creator grid');
 
   console.log('\n== 1b. you cannot drop an attribute below the free baseline ==');

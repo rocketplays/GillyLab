@@ -29,11 +29,17 @@ const win=dom.window;
   ok(peek('LADDER().some(f=>f.rankNum===0)'),'the division has a champion to chase');
   ok(/Create your fighter/.test(app()),'creator screen');
   // The creator uses a -/+ stepper now, not sliders — same control as the
-  // upgrade panel. What matters is one row per attribute with a readable level.
-  const nAt = peek('ATTRS.length');
-  ok(doc.querySelectorAll('.attr.up .pm').length===nAt,'one stepper per attribute',
+  // upgrade panel. What matters is one row per BUILD stat with a readable level.
+  // UI_ATTRS, not ATTRS: Fight IQ is a build stat you spend the same points on, so
+  // it gets a stepper too — but it is deliberately kept OUT of ATTRS so it feeds no
+  // combat math (styleDelta/myRating/archetype all iterate ATTRS). The screen shows
+  // one more row than the sim scores, and that gap is the feature.
+  const nAt = peek('UI_ATTRS.length');
+  ok(peek('ATTRS.length')===nAt-1,'Fight IQ is a build stat outside the combat set',
+    'ATTRS='+peek('ATTRS.length')+' UI_ATTRS='+nAt);
+  ok(doc.querySelectorAll('.attr.up .pm').length===nAt,'one stepper per build stat',
     doc.querySelectorAll('.attr.up .pm').length+'/'+nAt);
-  ok(doc.querySelectorAll('.lvlnum').length===nAt,'every attribute shows its level out of 10',
+  ok(doc.querySelectorAll('.lvlnum').length===nAt,'every build stat shows its level out of 10',
     doc.querySelectorAll('.lvlnum').length+'/'+nAt);
   // WAS: 'no fake cardio slider' — asserted Cardio must NOT exist, because the
   // sim had no cardio input. That test encoded a limitation as a principle. The

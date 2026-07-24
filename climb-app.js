@@ -5,7 +5,7 @@
 (function () {
   if (typeof window === "undefined") return;
   window.CLIMB_APP = {
-    css: "#climb-host, #climb-host * { margin: revert; padding: revert; }\n\n  #climb-host{ --bg:#0a0a0b; --surface:#111114; --surface2:#18181d; --border:#2a2a32;\n    --accent:#00e668; --accent2:#ff3d00; --gold:#ffc531; --text:#f0f0f0; --muted:#666672; --card:#14141a; }\n  #climb-host *{box-sizing:border-box}\n\n  \n  #climb-host a{color:inherit}\n\n  \n  \n  #climb-host, #climb-host{touch-action:manipulation}\n\n  \n  @media (pointer: coarse){ #climb-host .divsel{font-size:16px} }\n\n  \n\n  \n  body.playing #climb-host .tag, body.playing #climb-host .sub{display:none}\n  body.playing #climb-host h1{font-size:1.1rem;margin-bottom:.4rem}\n\n  \n  #climb-host details.panel > summary, #climb-host details.legwrap > summary{cursor:pointer;list-style:none;\n    display:flex;align-items:center;gap:.4rem;user-select:none}\n  #climb-host details.panel > summary::-webkit-details-marker, #climb-host details.legwrap > summary::-webkit-details-marker{display:none}\n  #climb-host details.panel > summary::before, #climb-host details.legwrap > summary::before{\n    content:'';width:0;height:0;border-left:4px solid currentColor;\n    border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;\n    transition:transform .15s;flex:0 0 auto;opacity:.6}\n  #climb-host details.panel[open] > summary::before, #climb-host details.legwrap[open] > summary::before{transform:rotate(90deg)}\n  #climb-host details.legwrap{margin-top:.8rem}\n  #climb-host details.legwrap > summary{margin-bottom:.4rem}\n  #climb-host .hint{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}\n\n  \n  @media (max-width:560px){\n    \n    #climb-host .wrap{padding:.6rem}\n    #climb-host .pk-nav{padding:10px 12px}\n    #climb-host .panel{padding:.7rem;margin:.5rem 0}\n    #climb-host h1{font-size:1.15rem}\n    #climb-host .sub{font-size:.72rem;margin-bottom:.7rem}\n    #climb-host .tag{margin-bottom:.35rem}\n    #climb-host .attr{margin:.2rem 0}\n    #climb-host .legend{gap:.3rem .8rem}\n    #climb-host .opp{padding:.55rem}\n    #climb-host .log{line-height:1.65}\n    #climb-host .tipbox{margin-top:.5rem}\n  }\n  \n  #climb-host{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:0}\n  #climb-host .wrap{max-width:820px;margin:0 auto;padding:1rem}\n  #climb-host h1{font-size:1.3rem;margin:0 0 .1rem;letter-spacing:-.02em}\n  #climb-host h1 .g{color:var(--accent)}\n  #climb-host .tag{font-size:.92rem;font-weight:600;color:var(--text);margin:.15rem 0 .5rem;letter-spacing:-.01em}\n  #climb-host .sub{color:var(--muted);font-size:.78rem;margin:0 0 1rem;line-height:1.5}\n  #climb-host .panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.9rem;margin:.7rem 0}\n  #climb-host .rl{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}\n\n  \n  #climb-host .attr{display:grid;grid-template-columns:120px 1fr 42px;gap:.6rem;align-items:center;margin:.35rem 0}\n  \n  #climb-host .attr.up{grid-template-columns:120px 1fr auto}\n  #climb-host .attr.up button{min-width:74px}\n  #climb-host .attr label{font-size:.8rem}\n  #climb-host .attr .v{font-size:.8rem;color:var(--accent);text-align:right;font-variant-numeric:tabular-nums}\n  #climb-host input[type=range]{width:100%;accent-color:var(--accent)}\n  #climb-host .pts{font-size:.9rem;font-weight:700}\n  #climb-host .pts.over{color:var(--accent2)}\n\n  \n  #climb-host .opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem}\n  #climb-host .opp{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem;cursor:pointer;text-align:left;color:inherit;font:inherit}\n  #climb-host .opp .nm{font-size:.92rem;font-weight:700}\n  #climb-host .opp .rk{font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em}\n  #climb-host .opp .rec{font-size:.72rem;color:var(--muted);margin:.2rem 0 .45rem}\n  #climb-host .opp .odds{font-size:.75rem}\n  #climb-host .opp .rw{font-size:.68rem;color:var(--accent);margin-top:.3rem}\n  #climb-host .opp.risky{border-color:rgba(255,61,0,.5)}\n\n  \n  @media (hover: hover){\n    #climb-host .opp:hover{border-color:var(--accent)}\n    #climb-host button.btn:hover{border-color:var(--accent)}\n    #climb-host .btn.restart:hover{color:var(--accent2);border-color:var(--accent2);background:transparent}\n    #climb-host .divsel:hover{border-color:var(--accent)}\n    #climb-host .pl-act:hover{background:var(--accent);color:#0e0f13}\n  }\n\n  \n  #climb-host .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}\n  \n  #climb-host .hud b.archv{font-size:.82rem;font-weight:700;color:var(--gold)}\n  #climb-host .archline{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;\n    margin-top:.6rem;padding:.4rem .55rem;background:var(--surface2);\n    border:1px solid var(--border);border-radius:6px}\n  #climb-host .archline span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em}\n  #climb-host .archline b{color:var(--gold);font-size:.88rem}\n  \n  #climb-host .btn.restart{margin-left:auto;padding:.25rem .55rem;font-size:.68rem;font-weight:600;\n    color:var(--muted);background:transparent;border-color:var(--border);align-self:center}\n  \n  #climb-host .panel > div > .btn.restart{margin-left:0}\n  #climb-host .hud div span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}\n  #climb-host .hud div b{font-size:1.1rem}\n  #climb-host .log{font-size:.78rem;line-height:1.8}\n  #climb-host .log .w{color:var(--accent)} #climb-host .log .l{color:var(--accent2)}\n  \n  #climb-host .log .mth{color:var(--muted);font-variant-numeric:tabular-nums;\n            font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;margin-right:.15rem}\n  #climb-host .log .ml{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.72rem}\n  \n  #climb-host .cmark{display:inline-flex;align-items:center;justify-content:center;\n    width:1rem;height:1rem;border-radius:3px;font-size:.6rem;font-weight:800;\n    background:var(--gold);color:#1a1204;vertical-align:middle;line-height:1}\n  #climb-host .cmark.im{background:transparent;color:var(--gold);border:1px solid var(--gold)}\n  \n  #climb-host .log .rk{display:inline-block;min-width:1.7rem;text-align:right;color:var(--muted);\n    font-size:.72rem;font-variant-numeric:tabular-nums}\n  #climb-host .log .rk.ur{font-size:.62rem;letter-spacing:.03em}\n  #climb-host .log .cmark{min-width:1rem;margin-left:.7rem}\n  \n  #climb-host .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}\n  #climb-host .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}\n  #climb-host .pl-share-inner{width:100%;max-width:460px}\n  #climb-host .pl-share-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.9rem}\n  #climb-host .pl-share-hint{text-align:center;margin-top:.6rem;font-size:.66rem;color:var(--text);line-height:1.5;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .75rem}\n  #climb-host .pl-act{background:rgba(0,230,104,.10);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}\n  #climb-host .pl-act.primary{background:var(--accent);color:#0e0f13}\n  #climb-host .pl-act.ghost{background:transparent;border-color:var(--border);color:var(--muted)}\n  #climb-host .pl-act.busy{opacity:.5;pointer-events:none}\n  #climb-host .gl-sheet-preview img{width:100%;border-radius:10px;display:block;border:1px solid var(--border)}\n  #climb-host .recs{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:baseline;margin:.5rem 0 .1rem}\n  #climb-host .recs span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}\n  #climb-host .recs b{font-size:1.05rem}\n  #climb-host .mtally{margin:.6rem 0 .2rem;font-size:.78rem}\n  #climb-host .mtally .mrow{display:grid;grid-template-columns:1fr 2.2rem 2.2rem;gap:.3rem;line-height:1.7}\n  #climb-host .mtally .mrow span:not(:first-child){text-align:right;font-weight:600;font-variant-numeric:tabular-nums}\n  #climb-host .mtally .mhead span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:400}\n  #climb-host .mtally .w{color:var(--accent)} #climb-host .mtally .l{color:var(--accent2)} #climb-host .mtally .z{color:var(--muted)}\n  #climb-host .big{font-size:1.05rem;font-weight:700;margin:.3rem 0}\n  #climb-host .big.win{color:var(--accent)} #climb-host .big.loss{color:var(--accent2)}\n  #climb-host button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600}\n  #climb-host button.btn.pri{background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border-color:rgba(0,230,104,.35)}\n  #climb-host button.btn.pri:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}\n  #climb-host .load{color:var(--muted);padding:2rem 0;text-align:center}\n\n  \n  #climb-host .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));\n    gap:0 1.6rem;margin:.9rem 0 0;padding-top:.75rem;border-top:1px solid var(--border)}\n  #climb-host .lg-row{display:grid;grid-template-columns:108px 1fr;gap:.5rem;align-items:baseline;\n    padding:.42rem 0;font-size:.74rem;border-bottom:1px solid rgba(255,255,255,.045)}\n  #climb-host .lg-row b{color:var(--text);font-weight:600;letter-spacing:-.01em}\n  #climb-host .lg-row span{color:var(--muted);line-height:1.4}\n  #climb-host .tipbox{margin-top:.7rem;padding:.5rem .7rem;border-left:2px solid var(--accent);\n    background:var(--surface);border-radius:0 4px 4px 0;font-size:.74rem;\n    line-height:1.55;color:#c8c8cf}\n  #climb-host .tipbox b{color:var(--text)}\n  #climb-host .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}\n\n  \n  #climb-host .av{position:relative;width:44px;height:44px;border-radius:50%;flex:0 0 44px;\n    background:var(--surface2);border:1px solid var(--border);overflow:hidden}\n  #climb-host .av span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\n    font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}\n  #climb-host .av img{position:relative;width:100%;height:100%;object-fit:cover;object-position:top center;\n    display:block;background:var(--surface2)}\n  #climb-host .opphd{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem}\n  #climb-host .oppwho{min-width:0}\n  #climb-host .opp .rec{margin:.1rem 0 0}\n\n  \n  #climb-host .lvlwrap{display:flex;align-items:center;gap:.5rem;min-width:0}\n  #climb-host .lvlbar{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:40px}\n  #climb-host .lvlfill{height:100%;background:var(--accent)}\n  #climb-host .lvlnum{font-size:.72rem;color:var(--accent);font-variant-numeric:tabular-nums;\n    white-space:nowrap;min-width:34px;text-align:right}\n  #climb-host .lvlnum i{color:var(--muted);font-style:normal;font-size:.62rem}\n\n  \n  #climb-host .pm{display:flex;align-items:center;gap:.3rem;white-space:nowrap}\n  #climb-host .pmbtn{padding:.1rem 0;width:22px;height:22px;line-height:1;font-size:.85rem;\n    display:flex;align-items:center;justify-content:center}\n  #climb-host .pmcost{font-size:.62rem;color:var(--muted);min-width:34px;text-align:center;\n    font-variant-numeric:tabular-nums}\n\n  \n  #climb-host .divpick{display:flex}\n  #climb-host .divsel{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);\n    border-radius:6px;padding:.45rem .6rem;font-size:.82rem;font-weight:600;font-family:inherit;\n    cursor:pointer;appearance:none;\n    \n    background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),\n                     linear-gradient(135deg,var(--muted) 50%,transparent 50%);\n    background-position:calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);\n    background-size:5px 5px, 5px 5px; background-repeat:no-repeat}\n  #climb-host .divsel:focus{border-color:var(--accent);outline:none}   \n  \n  #climb-host .divsel option{background:var(--surface2);color:var(--text)}\n\n  \n  #climb-host .scout{margin-top:.5rem;background:var(--surface);border:1px solid var(--border);\n    border-radius:8px;overflow:hidden}\n  #climb-host .scout-hd{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;\n    cursor:pointer;user-select:none;background:none;border:0;width:100%;\n    color:inherit;font:inherit;text-align:left}\n  #climb-host .scout-nm{font-size:.78rem;font-weight:700;white-space:nowrap}\n  #climb-host .scout-c{color:var(--gold);font-weight:700}\n  #climb-host .scout-rd{font-size:.72rem;color:var(--muted);flex:1;overflow:hidden;\n    text-overflow:ellipsis;white-space:nowrap}\n  #climb-host .scout-ch{color:var(--muted);font-size:.6rem;transition:transform .15s}\n  #climb-host .scout-ch.o{transform:rotate(180deg)}\n  #climb-host .scout-bd{padding:0 .6rem .6rem;border-top:1px solid var(--border)}\n  #climb-host .scout-arch{font-size:.68rem;color:var(--muted);text-transform:uppercase;\n    letter-spacing:.06em;margin:.5rem 0 .45rem}\n  #climb-host .scout-row{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:.2rem}\n  #climb-host .scout-row .v{font-weight:600}\n  #climb-host .scout-bar{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:.45rem}\n  #climb-host .scout-bar i{display:block;height:3px;border-radius:2px;background:var(--muted)}\n  \n  #climb-host{background:#0a0a0b radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}\n  #climb-host{background:transparent}\n  #climb-host #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:1;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}\n  #climb-host #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}\n",
+    css: "#climb-host, #climb-host * { margin: revert; padding: revert; }\n\n  #climb-host{ --bg:#0a0a0b; --surface:#111114; --surface2:#18181d; --border:#2a2a32;\n    --accent:#00e668; --accent2:#ff3d00; --gold:#ffc531; --text:#f0f0f0; --muted:#666672; --card:#14141a; }\n  #climb-host *{box-sizing:border-box}\n\n  \n  #climb-host a{color:inherit}\n\n  \n  \n  #climb-host, #climb-host{touch-action:manipulation}\n\n  \n  @media (pointer: coarse){ #climb-host .divsel{font-size:16px} }\n\n  \n\n  \n  body.playing #climb-host .tag, body.playing #climb-host .sub{display:none}\n  body.playing #climb-host h1{font-size:1.1rem;margin-bottom:.4rem}\n\n  \n  #climb-host details.panel > summary, #climb-host details.legwrap > summary{cursor:pointer;list-style:none;\n    display:flex;align-items:center;gap:.4rem;user-select:none}\n  #climb-host details.panel > summary::-webkit-details-marker, #climb-host details.legwrap > summary::-webkit-details-marker{display:none}\n  #climb-host details.panel > summary::before, #climb-host details.legwrap > summary::before{\n    content:'';width:0;height:0;border-left:4px solid currentColor;\n    border-top:3.5px solid transparent;border-bottom:3.5px solid transparent;\n    transition:transform .15s;flex:0 0 auto;opacity:.6}\n  #climb-host details.panel[open] > summary::before, #climb-host details.legwrap[open] > summary::before{transform:rotate(90deg)}\n  #climb-host details.legwrap{margin-top:.8rem}\n  #climb-host details.legwrap > summary{margin-bottom:.4rem}\n  #climb-host .hint{color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0}\n\n  \n  @media (max-width:560px){\n    \n    #climb-host .wrap{padding:.6rem}\n    #climb-host .pk-nav{padding:10px 12px}\n    #climb-host .panel{padding:.7rem;margin:.5rem 0}\n    #climb-host h1{font-size:1.15rem}\n    #climb-host .sub{font-size:.72rem;margin-bottom:.7rem}\n    #climb-host .tag{margin-bottom:.35rem}\n    #climb-host .attr{margin:.2rem 0}\n    #climb-host .legend{gap:.3rem .8rem}\n    #climb-host .opp{padding:.55rem}\n    #climb-host .log{line-height:1.65}\n    #climb-host .tipbox{margin-top:.5rem}\n  }\n  \n  #climb-host{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:0}\n  #climb-host .wrap{max-width:820px;margin:0 auto;padding:1rem}\n  #climb-host h1{font-size:1.3rem;margin:0 0 .1rem;letter-spacing:-.02em}\n  #climb-host h1 .g{color:var(--accent)}\n  #climb-host .tag{font-size:.92rem;font-weight:600;color:var(--text);margin:.15rem 0 .5rem;letter-spacing:-.01em}\n  #climb-host .sub{color:var(--muted);font-size:.78rem;margin:0 0 1rem;line-height:1.5}\n  #climb-host .panel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.9rem;margin:.7rem 0}\n  #climb-host .rl{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem}\n\n  \n  #climb-host .attr{display:grid;grid-template-columns:120px 1fr 42px;gap:.6rem;align-items:center;margin:.35rem 0}\n  \n  #climb-host .attr.up{grid-template-columns:120px 1fr auto}\n  #climb-host .attr.up button{min-width:74px}\n  #climb-host .attr label{font-size:.8rem}\n  #climb-host .attr .v{font-size:.8rem;color:var(--accent);text-align:right;font-variant-numeric:tabular-nums}\n  #climb-host input[type=range]{width:100%;accent-color:var(--accent)}\n  #climb-host .pts{font-size:.9rem;font-weight:700}\n  #climb-host .pts.over{color:var(--accent2)}\n\n  \n  #climb-host .plan .plan-hd{display:flex;align-items:center;gap:.55rem;margin-bottom:.3rem}\n  #climb-host .plan .plan-hd .oppwho .nm{font-weight:700;font-size:.98rem;line-height:1.2}\n  #climb-host .plan .plan-hd .oppwho .rk{font-size:.58rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}\n  #climb-host .plan .plan-hd .oppwho .rec{font-size:.72rem;color:var(--muted)}\n  #climb-host .plan-scout{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.55rem .7rem;margin:.35rem 0 .2rem}\n  #climb-host .plan-scout .scout-arch{font-size:.78rem;font-weight:700;color:var(--gold)}\n  #climb-host .plan-scout .scout-row{display:flex;justify-content:space-between;font-size:.72rem;margin-top:.35rem}\n  #climb-host .plan-scout .scout-row .v{color:var(--text);font-variant-numeric:tabular-nums}\n  #climb-host .plan-scout .scout-bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:.15rem;overflow:hidden}\n  #climb-host .plan-scout .scout-bar i{display:block;height:100%;background:var(--muted)}\n  #climb-host .plan-lab{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.08em;margin:.8rem 0 .4rem}\n  #climb-host .plan-opts{display:flex;flex-wrap:wrap;gap:.4rem}\n  #climb-host .plan-opt{background:var(--surface2);border:1px solid var(--border);border-radius:7px;\n    padding:.45rem .7rem;font-size:.8rem;color:var(--text);cursor:pointer;font-family:inherit}\n  #climb-host .plan-opt:hover{border-color:var(--muted)}\n  #climb-host .plan-opt.on{border-color:var(--accent);background:rgba(0,230,104,.09);color:var(--accent)}\n  #climb-host .pc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.5rem .65rem;margin-top:.5rem}\n  #climb-host .pc-line{display:flex;gap:.45rem;align-items:flex-start;font-size:.78rem;line-height:1.5;margin:.2rem 0}\n  #climb-host .pc-line .mk{flex:0 0 auto;width:.85rem;text-align:center;font-weight:700}\n  #climb-host .pc-line.pro .mk{color:var(--accent)}\n  #climb-host .pc-line.con .mk{color:var(--accent2)}\n  #climb-host .corner{display:flex;gap:.5rem;align-items:flex-start;margin-top:.85rem;padding-top:.7rem;\n    border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.5}\n  #climb-host .plan-act{display:flex;gap:.5rem;align-items:center;margin-top:.85rem}\n\n  \n  #climb-host .co-rl{color:var(--gold);margin-top:.85rem}\n  #climb-host .opp.callout{border:1.5px solid var(--gold);background:#161009;position:relative;width:100%;text-align:left}\n  #climb-host .opp.callout .rk{color:var(--gold)}\n  #climb-host .co-tag{position:absolute;top:0;right:0;background:var(--gold);color:#1a1206;font-size:.52rem;\n    font-weight:700;letter-spacing:.05em;padding:2px 8px;border-bottom-left-radius:7px}\n  #climb-host .co-rr{display:flex;flex-direction:column;gap:2px;margin-top:.5rem;font-size:.66rem;line-height:1.45}\n  #climb-host .co-rr .up{color:var(--accent)}\n  #climb-host .co-rr .dn{color:var(--accent2)}\n  \n  #climb-host .hypv{display:inline-flex;align-items:center;gap:3px}\n  #climb-host .hp{width:12px;height:6px;border-radius:3px;background:var(--border);display:inline-block}\n  #climb-host .hp.on{background:var(--gold)}\n  #climb-host .hype-rdy{color:var(--gold);font-size:.55rem;text-transform:uppercase;letter-spacing:.05em;margin-left:4px;font-weight:700}\n\n  \n  #climb-host .opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem}\n  #climb-host .opp{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.7rem;cursor:pointer;text-align:left;color:inherit;font:inherit}\n  #climb-host .opp .nm{font-size:.92rem;font-weight:700}\n  #climb-host .opp .rk{font-size:.65rem;color:var(--gold);text-transform:uppercase;letter-spacing:.06em}\n  #climb-host .opp .rec{font-size:.72rem;color:var(--muted);margin:.2rem 0 .45rem}\n  #climb-host .opp .odds{font-size:.75rem}\n  #climb-host .opp .rw{font-size:.68rem;color:var(--accent);margin-top:.3rem}\n  #climb-host .opp.risky{border-color:rgba(255,61,0,.5)}\n\n  \n  @media (hover: hover){\n    #climb-host .opp:hover{border-color:var(--accent)}\n    #climb-host button.btn:hover{border-color:var(--accent)}\n    #climb-host .btn.restart:hover{color:var(--accent2);border-color:var(--accent2);background:transparent}\n    #climb-host .divsel:hover{border-color:var(--accent)}\n    #climb-host .pl-act:hover{background:var(--accent);color:#0e0f13}\n  }\n\n  \n  #climb-host .hud{display:flex;gap:1.2rem;flex-wrap:wrap;align-items:baseline}\n  \n  #climb-host .hud b.archv{font-size:.82rem;font-weight:700;color:var(--gold)}\n  #climb-host .archline{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;\n    margin-top:.6rem;padding:.4rem .55rem;background:var(--surface2);\n    border:1px solid var(--border);border-radius:6px}\n  #climb-host .archline span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em}\n  #climb-host .archline b{color:var(--gold);font-size:.88rem}\n  \n  #climb-host .btn.restart{margin-left:auto;padding:.25rem .55rem;font-size:.68rem;font-weight:600;\n    color:var(--muted);background:transparent;border-color:var(--border);align-self:center}\n  \n  #climb-host .panel > div > .btn.restart{margin-left:0}\n  #climb-host .hud div span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}\n  #climb-host .hud div b{font-size:1.1rem}\n  #climb-host .log{font-size:.78rem;line-height:1.8}\n  #climb-host .log .w{color:var(--accent)} #climb-host .log .l{color:var(--accent2)}\n  \n  #climb-host .log .mth{color:var(--muted);font-variant-numeric:tabular-nums;\n            font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.72rem;margin-right:.15rem}\n  #climb-host .log .ml{color:var(--muted);font-variant-numeric:tabular-nums;font-size:.72rem}\n  \n  #climb-host .cmark{display:inline-flex;align-items:center;justify-content:center;\n    width:1rem;height:1rem;border-radius:3px;font-size:.6rem;font-weight:800;\n    background:var(--gold);color:#1a1204;vertical-align:middle;line-height:1}\n  #climb-host .cmark.im{background:transparent;color:var(--gold);border:1px solid var(--gold)}\n  \n  #climb-host .log .rk{display:inline-block;min-width:1.7rem;text-align:right;color:var(--muted);\n    font-size:.72rem;font-variant-numeric:tabular-nums}\n  #climb-host .log .rk.ur{font-size:.62rem;letter-spacing:.03em}\n  #climb-host .log .cmark{min-width:1rem;margin-left:.7rem}\n  \n  #climb-host .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}\n  #climb-host .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}\n  #climb-host .pl-share-inner{width:100%;max-width:460px}\n  #climb-host .pl-share-actions{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:.9rem}\n  #climb-host .pl-share-hint{text-align:center;margin-top:.6rem;font-size:.66rem;color:var(--text);line-height:1.5;background:var(--card);border:1px solid var(--border);border-radius:6px;padding:.6rem .75rem}\n  #climb-host .pl-act{background:rgba(0,230,104,.10);border:1px solid var(--accent);color:var(--accent);font-family:inherit;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;padding:.6rem 1.25rem;border-radius:6px;cursor:pointer;transition:background .15s,color .15s}\n  #climb-host .pl-act.primary{background:var(--accent);color:#0e0f13}\n  #climb-host .pl-act.ghost{background:transparent;border-color:var(--border);color:var(--muted)}\n  #climb-host .pl-act.busy{opacity:.5;pointer-events:none}\n  #climb-host .gl-sheet-preview img{width:100%;border-radius:10px;display:block;border:1px solid var(--border)}\n  #climb-host .recs{display:flex;gap:1.4rem;flex-wrap:wrap;align-items:baseline;margin:.5rem 0 .1rem}\n  #climb-host .recs span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;display:block}\n  #climb-host .recs b{font-size:1.05rem}\n  #climb-host .mtally{margin:.6rem 0 .2rem;font-size:.78rem}\n  #climb-host .mtally .mrow{display:grid;grid-template-columns:1fr 2.2rem 2.2rem;gap:.3rem;line-height:1.7}\n  #climb-host .mtally .mrow span:not(:first-child){text-align:right;font-weight:600;font-variant-numeric:tabular-nums}\n  #climb-host .mtally .mhead span{color:var(--muted);font-size:.62rem;text-transform:uppercase;letter-spacing:.07em;font-weight:400}\n  #climb-host .mtally .w{color:var(--accent)} #climb-host .mtally .l{color:var(--accent2)} #climb-host .mtally .z{color:var(--muted)}\n  #climb-host .big{font-size:1.05rem;font-weight:700;margin:.3rem 0}\n  #climb-host .big.win{color:var(--accent)} #climb-host .big.loss{color:var(--accent2)}\n  #climb-host button.btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.45rem .9rem;font-size:.8rem;cursor:pointer;font-weight:600}\n  #climb-host button.btn.pri{background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border-color:rgba(0,230,104,.35)}\n  #climb-host button.btn.pri:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}\n  #climb-host .load{color:var(--muted);padding:2rem 0;text-align:center}\n\n  \n  #climb-host .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));\n    gap:0 1.6rem;margin:.9rem 0 0;padding-top:.75rem;border-top:1px solid var(--border)}\n  #climb-host .lg-row{display:grid;grid-template-columns:108px 1fr;gap:.5rem;align-items:baseline;\n    padding:.42rem 0;font-size:.74rem;border-bottom:1px solid rgba(255,255,255,.045)}\n  #climb-host .lg-row b{color:var(--text);font-weight:600;letter-spacing:-.01em}\n  #climb-host .lg-row span{color:var(--muted);line-height:1.4}\n  #climb-host .tipbox{margin-top:.7rem;padding:.5rem .7rem;border-left:2px solid var(--accent);\n    background:var(--surface);border-radius:0 4px 4px 0;font-size:.74rem;\n    line-height:1.55;color:#c8c8cf}\n  #climb-host .tipbox b{color:var(--text)}\n  #climb-host .note{color:var(--muted);font-size:.72rem;line-height:1.5;margin-top:.4rem}\n\n  \n  #climb-host .av{position:relative;width:44px;height:44px;border-radius:50%;flex:0 0 44px;\n    background:var(--surface2);border:1px solid var(--border);overflow:hidden}\n  #climb-host .av span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;\n    font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.02em}\n  #climb-host .av img{position:relative;width:100%;height:100%;object-fit:cover;object-position:top center;\n    display:block;background:var(--surface2)}\n  #climb-host .opphd{display:flex;align-items:center;gap:.55rem;margin-bottom:.45rem}\n  #climb-host .oppwho{min-width:0}\n  #climb-host .opp .rec{margin:.1rem 0 0}\n\n  \n  #climb-host .lvlwrap{display:flex;align-items:center;gap:.5rem;min-width:0}\n  #climb-host .lvlbar{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:40px}\n  #climb-host .lvlfill{height:100%;background:var(--accent)}\n  #climb-host .lvlnum{font-size:.72rem;color:var(--accent);font-variant-numeric:tabular-nums;\n    white-space:nowrap;min-width:34px;text-align:right}\n  #climb-host .lvlnum i{color:var(--muted);font-style:normal;font-size:.62rem}\n\n  \n  #climb-host .pm{display:flex;align-items:center;gap:.3rem;white-space:nowrap}\n  #climb-host .pmbtn{padding:.1rem 0;width:22px;height:22px;line-height:1;font-size:.85rem;\n    display:flex;align-items:center;justify-content:center}\n  #climb-host .pmcost{font-size:.62rem;color:var(--muted);min-width:34px;text-align:center;\n    font-variant-numeric:tabular-nums}\n\n  \n  #climb-host .divpick{display:flex}\n  #climb-host .divsel{width:100%;background:var(--surface2);color:var(--text);border:1px solid var(--border);\n    border-radius:6px;padding:.45rem .6rem;font-size:.82rem;font-weight:600;font-family:inherit;\n    cursor:pointer;appearance:none;\n    \n    background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),\n                     linear-gradient(135deg,var(--muted) 50%,transparent 50%);\n    background-position:calc(100% - 15px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);\n    background-size:5px 5px, 5px 5px; background-repeat:no-repeat}\n  #climb-host .divsel:focus{border-color:var(--accent);outline:none}   \n  \n  #climb-host .divsel option{background:var(--surface2);color:var(--text)}\n\n  \n  #climb-host .scout{margin-top:.5rem;background:var(--surface);border:1px solid var(--border);\n    border-radius:8px;overflow:hidden}\n  #climb-host .scout-hd{display:flex;align-items:center;gap:.5rem;padding:.5rem .6rem;\n    cursor:pointer;user-select:none;background:none;border:0;width:100%;\n    color:inherit;font:inherit;text-align:left}\n  #climb-host .scout-nm{font-size:.78rem;font-weight:700;white-space:nowrap}\n  #climb-host .scout-c{color:var(--gold);font-weight:700}\n  #climb-host .scout-rd{font-size:.72rem;color:var(--muted);flex:1;overflow:hidden;\n    text-overflow:ellipsis;white-space:nowrap}\n  #climb-host .scout-ch{color:var(--muted);font-size:.6rem;transition:transform .15s}\n  #climb-host .scout-ch.o{transform:rotate(180deg)}\n  #climb-host .scout-bd{padding:0 .6rem .6rem;border-top:1px solid var(--border)}\n  #climb-host .scout-arch{font-size:.68rem;color:var(--muted);text-transform:uppercase;\n    letter-spacing:.06em;margin:.5rem 0 .45rem}\n  #climb-host .scout-row{display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:.2rem}\n  #climb-host .scout-row .v{font-weight:600}\n  #climb-host .scout-bar{height:3px;background:var(--surface2);border-radius:2px;margin-bottom:.45rem}\n  #climb-host .scout-bar i{display:block;height:3px;border-radius:2px;background:var(--muted)}\n  \n  #climb-host{background:#0a0a0b radial-gradient(1100px 520px at 50% -6%,#12251b 0%,#0a0a0b 52%)}\n  #climb-host{background:transparent}\n  #climb-host #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:1;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}\n  #climb-host #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,#0a0a0b 0,transparent 100px,transparent calc(100% - 260px),#0a0a0b 100%)}\n",
     html: "<div class=\"wrap\">\n  \n  \n  <h1>The <span class=\"g\">Climb</span></h1>\n  <p class=\"tag\">Can you become a UFC champion?</p>\n  \n  <p class=\"sub\">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>\n    Pick your fights, climb the rankings, win the belt.<br>\n    Real UFC fighters, real rankings, real GillyLab power ratings.</p>\n  <div id=\"app\"><div class=\"load\">Loading the divisions…</div></div>\n  \n  \n</div>",
     // Nothing runs until the app calls this — the game ends with newGame(), which
     // needs its markup mounted first. Wrapping the script in a function also keeps
@@ -57,6 +57,30 @@ const ATTRS = [
   { id:'grappling', label:'Grappling',    note:'submissions' },
   { id:'takedef',   label:'Takedown def', note:'staying upright' },
 ];
+
+// FIGHT IQ IS NOT A COMBAT ATTRIBUTE, AND THAT SEPARATION IS THE WHOLE DESIGN.
+//
+// It buys nothing in the cage: styleDelta, myRating and archetype all iterate
+// ATTRS (the nine above), so a point in Fight IQ moves no win probability, no
+// rating and no archetype. It is deliberately kept OUT of ATTRS for exactly that
+// reason — the moment it fed the scorer it would be "spend points, win more",
+// which is the one thing it must never be.
+//
+// What it buys is INFORMATION. Before a fight you draw up a game plan against the
+// opponent's REAL stats, and every plan carries a hidden edge (see planFor). Fight
+// IQ is how clearly you can SEE those edges: a high-IQ fighter's scouting spells
+// out the full read and the corner names the phase that actually wins the fight; a
+// low-IQ fighter gets the gist and a corner that just says "go get him". You still
+// have to weigh the pros and cons and eat the risk yourself — a sharp read of a bad
+// matchup is still a bad matchup. So it is a genuine build lever (points here are
+// points NOT in power or wrestling) that makes you a better DECISION-MAKER, never a
+// better fighter. It lives in G.attrs.fightiq so the creator/upgrade steppers can
+// reuse the exact same row code, and nowhere that reads ATTRS can ever see it.
+const FIGHT_IQ = { id:'fightiq', label:'Fight IQ',
+  note:'reading the matchup — sharper scouting and a corner that knows' };
+// The build-screen list: the nine that fight, plus the one that reads the fight.
+// UI ONLY. Every balance path stays on ATTRS.
+const UI_ATTRS = ATTRS.concat([FIGHT_IQ]);
 
 // WHAT KIND OF FIGHTER DID I JUST BUILD? — the sheet, said out loud.
 //
@@ -1710,6 +1734,46 @@ function buildOffers(){
       if (harder) picked[picked.indexOf(s.f)] = harder;
     }
   }
+  // FINAL PROXIMITY GUARD — a ranked board is men near your rank, full stop.
+  //
+  // Playtest: "i beat the #2 guy, then the 3 matchups were #12, 13 and 14, then a
+  // title shot." Reproduced immediately — measured, a #2 was offered #15/#14/#10. It
+  // is the top of the ladder outgrowing its own division (the tuning note two blocks
+  // up spells this out: past #1 there is no legal near-rank man left, so every
+  // fallback reaches DOWN to whoever is unfought — which is the bottom of the
+  // rankings). A #2 fighting #14 isn't a climb, it's a step off the ladder.
+  //
+  // So one honest last pass: any slot holding a man more than PROX rungs below you is
+  // swapped for the nearest legal alternative — the closest contender by rank,
+  // rematches allowed (a rivalry is a career, and rematching #3 beats fighting #14),
+  // never a man who beat you, never a gatekeeper, and the champion only if you're #1.
+  // It swaps only when a genuinely closer man exists, so it can never empty the board
+  // — it just refuses to send a title contender to fight the back of the division.
+  if (G.rank != null) {
+    // PROX 6, NOT 3, AND THAT GAP IS DELIBERATE. The main bands already keep the
+    // board within ~3 rungs; this guard exists only to catch the EGREGIOUS reach the
+    // fallbacks make when the division is exhausted near you — the measured #2-offered-
+    // #12/#13/#14. Swapping every 4-rung step-down instead would push near-rank
+    // REMATCHES onto the board often enough to break the 20% "rematches never flood"
+    // gate (measured: 21.9% at PROX 4). Six catches the nonsense a player notices and
+    // leaves the mild step-downs — a #2 seeing a #7 — alone, where a rematch would be
+    // a worse fix than the thing it fixes.
+    const PROX = 6;
+    const conq = new Set(G.log.filter(x => !x.won).map(x => x.opp));
+    for (let i = 0; i < picked.length; i++) {
+      const f = picked[i];
+      if (!f || f.rankNum >= 99 || f.rankNum <= G.rank + PROX) continue;   // absent, unranked, or already close
+      const gap = f.rankNum - G.rank;
+      const alt = LADDER().filter(g =>
+        g.rankNum < 99 && !picked.includes(g) && !conq.has(g.name) && !overFought(g) &&
+        (g.rankNum <= 0.5 ? G.rank <= 1 : true) &&              // the belt is a #1-only fight
+        Math.abs(g.rankNum - G.rank) < gap                     // strictly closer than the man we're replacing
+      // prefer a man you HAVEN'T fought (adds no rematch), then the closest by rank.
+      ).sort((a, b) => (seen.has(a.name)?1:0) - (seen.has(b.name)?1:0)
+                    || Math.abs(a.rankNum - G.rank) - Math.abs(b.rankNum - G.rank));
+      if (alt.length) picked[i] = alt[0];
+    }
+  }
   return picked.map(f=>{
     const p = winProb(f.name);
     const reward = rewardFor(f, p);
@@ -1931,6 +1995,10 @@ function fight(o){
   G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
+    // HYPE. A normal win banks a pip (cap 3). A CALLOUT win spends the meter you
+    // cashed to make the fight — the reward for a statement fight is the rank leap
+    // itself (sub-rank advancement below vaults you to his rank), not more hype.
+    G.hype = o.callout ? 0 : Math.min(3, (G.hype||0) + 1);
     // THE FINISH BONUS IS GONE, AND IT HAD TO GO.
     //
     // This was `o.reward + (fin?1:0)`: a point for finishing. Harmless flavour while
@@ -2010,6 +2078,10 @@ function fight(o){
     // the fight — it just doesn't spend a life.
     if (!(o.f.rankNum === 0 && G.titleLosses === 1)) G.losses++;
     G.streak = 0;
+    // ANY loss breaks your momentum and resets the callout meter — which is the whole
+    // downside of calling your shot and missing: you spent three wins of hype, dropped
+    // a rung like any loss, and you're building it back from zero.
+    G.hype = 0;
     // A LOSS COSTS YOU A RUNG. The design said so all along and the code never did
     // it: CUT_AT's own comment reads "losses become a COST, not a coin flip that
     // deletes the run: they cost you rank, time and a soft matchmaking step-down."
@@ -2054,8 +2126,12 @@ function newGame(){
   // after a bad run. (sim-climb-runs.cjs has tracked its own peak since the day it
   // was written, with a comment saying the game has no G.peakRank. It was right,
   // and the game needed one the whole time.)
-  G = { attrs:Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), pts:POINTS_START,
+  G = { attrs:Object.assign(Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), {fightiq:ATTR_MIN}), pts:POINTS_START,
         wins:0, losses:0, streak:0, rank:null, peak:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0,
+        // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
+        // and reset by any loss, so a statement fight is a thing you earn on a run and
+        // gamble away, not a button you can mash. See calloutOffer / fight().
+        hype:0,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2064,7 +2140,18 @@ function newGame(){
 // What the current sheet has cost, in points — NOT the sum of levels, now that
 // costs escalate. The creator and the in-run upgrade panel share this.
 const costTo = lvl => { let c=0; for(let v=ATTR_MIN; v<lvl; v++) c+=upCost(v); return c; };
-const spent = () => ATTRS.reduce((s,a)=>s+costTo(G.attrs[a.id]),0);
+// FIGHT IQ IS FLAT — 1 point per level, always, unlike the combat attributes whose
+// last point costs more than their first. Playtest: "fight iq upgrades should be 1
+// point each, not get more expensive as they go up." It's cheap and linear on
+// purpose: it isn't a stat you specialise INTO, it's how much of the read you want,
+// and a rising cost would push players to leave it at 1 the same way it does the
+// combat sliders — which is exactly the wrong incentive for the one stat that makes
+// the game plan legible.
+const upCostOf = (id, v) => id === 'fightiq' ? 1 : upCost(v);
+const costToOf = (id, lvl) => id === 'fightiq' ? (lvl - ATTR_MIN) : costTo(lvl);
+// Fight IQ spends from the SAME wallet — a point in it is a point not in the cage,
+// which is what makes investing in reads a real trade rather than a free upgrade.
+const spent = () => ATTRS.reduce((s,a)=>s+costTo(G.attrs[a.id]),0) + costToOf('fightiq', G.attrs.fightiq||ATTR_MIN);
 
 function render(){
   const app = $('#app'); app.innerHTML='';
@@ -2076,14 +2163,24 @@ function render(){
   document.body.classList.toggle('playing', !!G.started);
   if (!G.started){ app.appendChild(creator()); return; }
   app.appendChild(hud());
-  if (G.champ){ app.appendChild(endBox('CHAMPION. You did it.')); return; }
+  // THE RUN ENDS ON A FIGHT, SO SHOW IT. Playtest: "when winning the belt or getting
+  // cut, it doesn't show the results from your choices at the end." The terminal
+  // screens jumped straight to the run summary and skipped resultBox — so the
+  // belt-winning or run-ending fight, and the game plan you took into it, vanished.
+  // Render that last fight above the summary on every ending.
+  const endFight = () => { if (G.last) app.appendChild(resultBox()); };
+  if (G.champ){ endFight(); app.appendChild(endBox('CHAMPION. You did it.')); return; }
   // OUT OF SHOTS IS NOT A CUT, and it is checked FIRST. If you take your second
   // title fight on your fifth loss, both conditions are true at once and the run
   // has to end with the honest one: you didn't get released, you ran out of cracks
   // at the belt. Ordering is the whole fix — put this second and the 21% of runs
   // this exists for would still print "Cut".
-  if (G.outOfShots){ app.appendChild(endBox('No shots left. The title is gone.')); return; }
-  if (G.losses>=CUT_AT){ app.appendChild(endBox('Cut. '+CUT_AT+' losses.')); return; }
+  if (G.outOfShots){ endFight(); app.appendChild(endBox('No shots left. The title is gone.')); return; }
+  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox('Cut. '+CUT_AT+' losses.')); return; }
+  // DRAWING UP A PLAN IS A FOCUS MODE. You've picked the man; now the screen is
+  // the fight you're about to have, and nothing else — the offer list, the upgrade
+  // panel and the log would all just be noise you have to scroll past to commit.
+  if (G.pending){ app.appendChild(planBox()); return; }
   if (G.last) app.appendChild(resultBox());
   app.appendChild(upgrade());
   app.appendChild(offerBox());
@@ -2162,7 +2259,7 @@ function creator(){
   hd.textContent='Create your fighter';
   p.appendChild(hd);
   const left=POINTS_START-spent();
-  for(const A of ATTRS){
+  for(const A of UI_ATTRS){
     // Buttons, not a slider. Playtest: "put the +/- buttons for attributes like
     // it is on the other page." The creator and the upgrade panel were two
     // different controls doing the same job, and the slider's floor bug (drag to
@@ -2174,7 +2271,7 @@ function creator(){
       ((G.attrs[A.id]-ATTR_MIN)/(ATTR_MAX-ATTR_MIN)*100)+'%"></div></div>'+
       '<span class="lvlnum">'+G.attrs[A.id]+'<i>/'+ATTR_MAX+'</i></span>';
     const grp=document.createElement('div'); grp.className='pm';
-    const cost = upCost(G.attrs[A.id]);
+    const cost = upCostOf(A.id, G.attrs[A.id]);
     const canUp = G.attrs[A.id]<ATTR_MAX && left>=cost;
     const canDn = G.attrs[A.id]>ATTR_MIN;
 
@@ -2186,7 +2283,7 @@ function creator(){
     const up=document.createElement('button'); up.className='btn pmbtn'; up.textContent='+';
     up.disabled=!canUp; if(!canUp) up.style.opacity=.25; else up.style.borderColor='var(--accent)';
     up.onclick=()=>{ if(G.attrs[A.id]>=ATTR_MAX) return;
-      const c=upCost(G.attrs[A.id]); if(POINTS_START-spent()<c) return;
+      const c=upCostOf(A.id, G.attrs[A.id]); if(POINTS_START-spent()<c) return;
       G.attrs[A.id]++; G.pts = POINTS_START - spent(); render(); };
 
     const c=document.createElement('span'); c.className='pmcost';
@@ -2222,7 +2319,7 @@ function creator(){
   lgs.textContent='What the attributes do';
   lgw.appendChild(lgs);
   const legend=document.createElement('div'); legend.className='legend';
-  for(const A of ATTRS){
+  for(const A of UI_ATTRS){
     const r=document.createElement('div'); r.className='lg-row';
     const k=document.createElement('b'); k.textContent=A.label;
     const v=document.createElement('span'); v.textContent=A.note;
@@ -2296,6 +2393,13 @@ function hud(){
     '<div><span>Archetype</span><b class="archv">'+archetype()+'</b></div>'+
     '<div><span>Rank</span><b>'+(G.rank==null?'Unranked':(G.rank===0?'CHAMP':'#'+G.rank))+'</b></div>'+
     '<div><span>Streak</span><b>'+G.streak+'</b></div>'+
+    // HYPE — three pips, gold as they fill, "ready" once you can call your shot. Only
+    // shown once you're ranked, since a callout needs a rung to leap from.
+    (G.rank!=null
+      ? '<div><span>Hype</span><b class="hypv">'+
+          [0,1,2].map(i=>'<i class="hp'+((G.hype||0)>i?' on':'')+'"></i>').join('')+
+          ((G.hype||0)>=3?'<span class="hype-rdy">ready</span>':'')+'</b></div>'
+      : '')+
 
     '<div><span>Age</span><b>'+(START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12))+'</b></div>'+
     // WAS (2 - G.losses): hardcoded when two losses ended a run, and left behind
@@ -2350,6 +2454,36 @@ function resultBox(){
   od.innerHTML = bd.was+' <b>'+amer(o.p)+'</b>.'+
     (vn ? ' <span style="color:'+(won?'var(--accent)':'var(--gold)')+'">'+vn+'</span>' : '');
   p.appendChild(od);
+  // WHAT WAS THE READ WORTH? Deferred like the odds line — the edge was hidden
+  // going in, so this is where it becomes information rather than a promise, and it
+  // is the answer to "how much did my choices actually matter": the fight's base
+  // odds, then the number your game plan moved it to. The verdict is on the READ,
+  // not the result — a good plan can still lose and a bad one still win, and showing
+  // the swing separately from the W/L is the whole point of decoupling the two.
+  if (o.plan){
+    const b=Math.round(o.plan.base*100), pl=Math.round(o.plan.planned*100), d=o.plan.swing;
+    const col = d>=3 ? 'var(--accent)' : d<=-3 ? 'var(--accent2)' : 'var(--muted)';
+    const verdict = d>=3 ? 'Your read tilted the fight your way.'
+                  : d<=-3 ? 'You played right into his strengths.'
+                  : 'A wash — the read barely moved it either way.';
+    const pn=document.createElement('div'); pn.className='note';
+    pn.innerHTML='Game plan — <b>'+o.plan.where+'</b> · <b>'+o.plan.read+'</b>: '+
+      'took the fight from <b>'+b+'%</b> to <b style="color:'+col+'">'+pl+'%</b> '+
+      '<span style="color:'+col+'">('+(d>0?'+':'')+d+')</span>. '+
+      '<span style="color:var(--muted)">'+verdict+'</span>';
+    p.appendChild(pn);
+  }
+  // THE CALLOUT PAYOFF, said out loud — the whole point of the gamble is the moment
+  // it lands or doesn't.
+  if (o.callout){
+    const cn=document.createElement('div'); cn.className='note';
+    cn.style.color = won ? 'var(--gold)' : 'var(--muted)';
+    cn.style.marginTop='.3rem';
+    cn.textContent = won
+      ? 'Statement made. You called out '+o.f.name+' and vaulted the rankings.'
+      : "The gamble didn't land — your hype's spent. Build it back and go again.";
+    p.appendChild(cn);
+  }
   const n=document.createElement('div'); n.className='note';
   const left = CUT_AT - G.losses;
   n.textContent = won
@@ -2385,7 +2519,7 @@ function upgrade(){
     ? 'Spend upgrade points (<b style="color:var(--accent)">'+G.pts+'</b>)'
     : 'Your fighter <span class="hint">— no points to spend</span>';
   p.appendChild(sm);
-  for(const A of ATTRS){
+  for(const A of UI_ATTRS){
     const row=document.createElement('div'); row.className='attr up';
     const l=document.createElement('label'); l.textContent=A.label;
     // Same level readout as the creator: a bar you can't read a number off is a
@@ -2395,7 +2529,7 @@ function upgrade(){
       ((G.attrs[A.id]-ATTR_MIN)/(ATTR_MAX-ATTR_MIN)*100)+'%"></div></div>'+
       '<span class="lvlnum">'+G.attrs[A.id]+'<i>/'+ATTR_MAX+'</i></span>';
     const btn=document.createElement('button'); btn.className='btn';
-    const cost = upCost(G.attrs[A.id]);
+    const cost = upCostOf(A.id, G.attrs[A.id]);
     const maxed = G.attrs[A.id] >= ATTR_MAX;
     btn.textContent = maxed ? 'MAX' : ('+1  ·  ' + cost + (cost>1?' pts':' pt'));
     btn.style.padding='.15rem .5rem'; btn.style.fontSize='.68rem'; btn.style.whiteSpace='nowrap';
@@ -2407,6 +2541,42 @@ function upgrade(){
     p.appendChild(row);
   }
   return p;
+}
+
+// ── THE CALLOUT ───────────────────────────────────────────────────────────────
+// "The risk/reward of playing it safe or calling out a much higher matchup." The
+// three cards are the ladder — one rung at a time, safe, small pay. The callout is
+// the gamble: once your HYPE meter is full (three wins), you can skip the queue and
+// challenge a contender 5-8 rungs above you. Win and sub-rank advancement vaults you
+// straight to his rank for a big points haul; lose and it's an ordinary loss (a rung,
+// a life) with your hype spent for nothing. It reuses every existing system — winProb
+// prices you as the underdog you are, rewardFor already pays by the size of the leap,
+// and it runs through the same game-plan screen, which is exactly where a sharp read
+// turns a +260 dog into a live one.
+//
+// CONTENDERS ONLY, NEVER THE BELT. The champion is a #1 fight earned by climbing;
+// letting a #5 fluke-KO the champ off a callout would hand out belts the economy
+// never priced. The callout tops out at #1 — the statement is "I belong up here",
+// and the title stays its own separate night.
+function calloutTarget(){
+  if (G.rank == null || (G.hype||0) < 3) return null;
+  const lo = G.rank - 5;                 // the CLOSEST man you can call out (5 rungs up)
+  if (lo < 1) return null;               // near the top — climb the last rungs honestly
+  const hi = Math.max(1, G.rank - 8);    // the highest-ranked you can reach
+  const conq = new Set(G.log.filter(x => !x.won).map(x => x.opp));
+  const band = LADDER().filter(f => f.rankNum >= hi && f.rankNum <= lo &&
+                                    f.rankNum >= 1 && f.rankNum < 99 && !conq.has(f.name));
+  if (!band.length) return null;
+  // Prefer a man you haven't beaten (a real statement), and rotate the target across
+  // fights so the board offers a fresh name rather than the same fixture every time.
+  const fresh = band.filter(f => !G.beat.has(f.name));
+  const pool = (fresh.length ? fresh : band).slice().sort((a,b)=>a.rankNum-b.rankNum);
+  return pool[(G.fightNo||0) % pool.length];
+}
+function calloutOffer(){
+  const f = calloutTarget(); if (!f) return null;
+  const p = winProb(f.name);
+  return { f, p, reward: rewardFor(f, p), jump: f.rankNum, callout:true };
 }
 
 function offerBox(){
@@ -2423,11 +2593,391 @@ function offerBox(){
       '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
-    b.onclick=()=>fight(o);
+    // WHO you fight is still chosen here (and the difficulty band is honest — that's
+    // the risk/reward of the pick). HOW you fight is the next screen. So this no
+    // longer resolves the fight; it opens the game plan against this man.
+    b.onclick=()=>beginPlan(o);
     g.appendChild(b);
   }
   p.appendChild(g);
+
+  // THE CALLOUT — a fourth, bigger option, set apart, only when your hype is full and
+  // there's a contender far enough above to make it a statement.
+  const co = calloutOffer();
+  if (co){
+    const lbl=document.createElement('div'); lbl.className='rl co-rl'; lbl.textContent='Or call your shot';
+    p.appendChild(lbl);
+    const c=document.createElement('button'); c.className='opp callout';
+    const rk='#'+co.f.rankNum;
+    c.innerHTML='<div class="co-tag">STATEMENT FIGHT</div>'+
+      '<div class="opphd">'+avatarHTML(co.f)+'<div class="oppwho">'+
+        '<div class="rk">Call out '+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
+      '<div class="odds"><b style="color:'+oddsBand(co.p).c+'">'+oddsBand(co.p).t+'</b></div>'+
+      '<div class="co-rr"><span class="up">Win → vault to '+rk+' · +'+co.reward+' upgrade pts</span>'+
+        '<span class="dn">Lose → drop a rung · your hype resets</span></div>';
+    c.querySelector('.nm').textContent=co.f.name;
+    c.querySelector('.rec').textContent=co.f.record;
+    c.onclick=()=>beginPlan(co);
+    p.appendChild(c);
+  }
   return p;
+}
+
+// ── THE GAME PLAN ─────────────────────────────────────────────────────────────
+// The single luck-based roll the fight used to be — accept a man, get a W or an L
+// off one number — becomes a decision: read his real weaknesses, choose WHERE you
+// want the fight and WHAT you're hunting, and live with the trade-offs. Each choice
+// carries a hidden edge computed off the opponent's REAL stats (planFor), and it
+// moves the odds — but it is never SHOWN, because "which option is the favorite's"
+// can't be the tell or there's no choice left to make. You weigh honest pros and
+// cons and commit; whether you read it right is answered by the fight, then by the
+// post-fight line. Fight IQ decides how much of the read you actually get to see.
+const clampv = (v,a,b) => Math.max(a, Math.min(b, v));
+
+// HOW MUCH A READ IS WORTH — the dial for this whole layer.
+//
+// Playtest: "it made the run more in-depth and interesting ... it isn't clear how
+// much the choices affected the outcome." Two fixes, and this is the first: the raw
+// edges out of planFor are small (a few points), so a good read barely showed up
+// in the result. PLAN_SCALE multiplies them into something a player can feel. The
+// second fix is that the swing is now SHOWN after the fight (see resultBox) — the
+// edge stays hidden going in, so the decision survives, but the moment it's over
+// you're told exactly what your read was worth.
+//
+// BOUNDED ON PURPOSE. Capped at +18 / -22 points of win probability so a sharp read
+// makes a dog live and a favorite beatable, and a bad one genuinely hurts — but it
+// can never turn a real mismatch into a coin flip. The fighter you built still
+// decides most of the night; the plan decides the margin. The cap is asymmetric
+// because fighting INTO a man's strength should cost more than avoiding it saves.
+const PLAN_SCALE = 1.5;
+
+// The half-drawn plan lives on G.pending so newGame() clears it (a plan pinned to a
+// dead opponent is a bug) and so it survives render()'s teardown, like scoutOpen.
+function beginPlan(o){ G.pending = { o, where:null, read:null }; render(); }
+function cancelPlan(){ G.pending = null; render(); }
+
+// planFor(o) — the whole read, computed once off YOUR sheet and HIS real stats.
+// Returns { clarity, where:[opt...], read:[opt...] }; each opt is
+// { id, label, edge (win% points, HIDDEN), pros:[{w,t}], cons:[{w,t}] }. Every
+// pro/con line is gated by the matchup and weighted by how much it matters, so the
+// lines Fight IQ reveals first are the decisive ones.
+function planFor(o){
+  const st = o.f.style || {};
+  const n  = id => (G.attrs[id]||ATTR_MIN)/ATTR_MAX;          // 0.1 .. 1.0
+  // YOU, aggregated the way a corner would describe you.
+  const yStrike = (n('power')+n('technique')+n('pace'))/3;
+  const yPow=n('power'), yTech=n('technique'), yWr=n('wrestling'), yGrap=n('grappling');
+  const yTakeDef=n('takedef'), yStrDef=n('strdef'), yCardio=n('cardio'), yChin=n('chin');
+  const ySubDef = n('grappling')*0.75 + n('takedef')*0.25;
+  // CAN YOU EVEN RUN THIS PLAN? Playtest: "i was a pure striker, no wrestling or
+  // grappling, and Fight IQ at 5 told me to take it to the mat. that just doesn't
+  // make sense." Right — a fighter with no ground game can't drag anyone down, so a
+  // mat-based plan should score badly for him no matter how weak the opponent's
+  // takedown defense is, and the corner should never point him there. noGround is
+  // how little ground game you have (0 for a real wrestler/grappler, up to ~0.35 for
+  // a pure striker); it taxes the grappling and clinch plans directly.
+  const noGround = Math.max(0, 0.45 - (yWr+yGrap)/2);
+  // HIM, read off real stats and centred on the division — "hittable" means
+  // "hittable for THIS weight class", the discipline styleDelta already uses.
+  const oStrDef = st.strDef!=null ? st.strDef : 53;
+  const oOpen    = clampv((DIVMEAN('strDef',53) - oStrDef)/26, -1, 1);   // + = easy to hit
+  const oTddOpen = clampv((DIVMEAN('tdDef',66) - (st.tdDef!=null?st.tdDef:60))/40, -1, 1); // + = takedown-able
+  const oTdThr   = clampv((st.td!=null?st.td:1.4)/4, 0, 1);              // his takedown offense
+  const oSubThr  = clampv((st.sub!=null?st.sub:0.4)/2, 0, 1);            // his submission offense
+  const oSubVuln = clampv(1.4 - (st.mat!=null?st.mat:0.8), 0, 1.2);      // how tappable HE is
+  const oChinV   = clampv((DIVMEAN('chin',0.6) - (st.chin!=null?st.chin:0.6))/0.4, -1, 1); // + = fragile
+  const oPace    = clampv(((st.slpm!=null?st.slpm:4.4) - 4.0)/2.9, 0, 1.2);
+  const oPop     = clampv((st.kd!=null?st.kd:0.4)/1.2, 0, 1.2);          // his knockout pop
+  const grappler = oSubThr > 0.32 || oTdThr > 0.45;
+  const striker  = oOpen < -0.10 && oPace > 0.45;
+
+  const P = (w,t)=>({w,t});
+  // Threshold 1.0, not 0.4: a line only shows if the matchup actually makes it TRUE
+  // for you. It's what stops a pure striker reading "your grappling can finish it" on
+  // the mat plan — that pro is weighted by your grappling, so at 1/10 it never clears
+  // the bar, and the striker sees only the honest cons of a plan he can't run.
+  const opt = (id,label,edge,pros,cons)=>({ id, label, edge,
+    pros: pros.filter(x=>x.w>1.0).sort((a,b)=>b.w-a.w),
+    cons: cons.filter(x=>x.w>1.0).sort((a,b)=>b.w-a.w) });
+
+  // ---- WHERE DO YOU WANT THE FIGHT ----
+  const eStrike =
+      9*yStrike*Math.max(0,oOpen)
+    + 7*yPow*Math.max(0,oChinV)
+    + 5*(grappler?1:0)*(0.35+0.65*yTakeDef)
+    - 8*Math.max(0,-oOpen)*(1-yStrike)
+    - 7*oTdThr*(1-yTakeDef);
+  const wStrike = opt('strike','Strike at range', eStrike, [
+    P(9*yStrike*Math.max(0,oOpen),         'His guard leaks — your hands are live at range.'),
+    P(7*yPow*Math.max(0,oChinV),           "His chin's cracked before, and your power can find it."),
+    P(6*(grappler?1:0)*yTakeDef,           'Keeps it off the mat, away from his best work.'),
+  ], [
+    P(8*Math.max(0,-oOpen)*(1-yStrike),    "He's the sharper striker — this is his gym, not yours."),
+    P(7*oTdThr*(1-yTakeDef),               'He can change levels on you any time he wants.'),
+    P(3.5*(oPace>0.6?1:0)*Math.max(0,0.5-yCardio),'He throws in volume, and long exchanges will cost you gas.'),
+  ]);
+  const eGrapple =
+      10*yWr*Math.max(0,oTddOpen)
+    + 8*yGrap*oSubVuln*(0.5+0.5*yWr)
+    + 4*(striker?1:0)
+    - 14*oSubThr*(1-ySubDef)
+    - 7*Math.max(0,-oTddOpen)
+    - 16*noGround;                    // you can't grapple if you can't wrestle it there
+  const wGrapple = opt('grapple','Take it to the mat', eGrapple, [
+    P(10*yWr*Math.max(0,oTddOpen),         'His takedown defense is soft — you can put him down at will.'),
+    P(8*yGrap*oSubVuln,                    'He gives up his back under pressure, and your grappling can finish it.'),
+    P(4.5*(striker?1:0)*yWr,               'Ground a striker and you take away everything he does.'),
+  ], [
+    P(14*oSubThr*(1-ySubDef),              "He's a submission ace — on the mat, you're in his world."),
+    P(7*Math.max(0,-oTddOpen),             'He stuffs shots — you could spend all night chasing takedowns.'),
+    P(4*(1-yWr)*(1-yGrap),                 "It's not your game — you'd be fighting where you're weakest."),
+  ]);
+  const eClinch =
+      4*(striker?1:0)
+    + 3*oPace*yCardio
+    + 1.8*(yWr+yGrap)
+    - 5*oTdThr*(1-yTakeDef)
+    - 8*noGround
+    - 2;
+  const wClinch = opt('clinch','Clinch and grind', eClinch, [
+    P(4.5*(striker?1:0),                   'Ties up a rangy striker and smothers his offense.'),
+    P(3.5*oPace*yCardio,                   'Leans on a high-output man and drains his tank.'),
+    P(3*(yWr+yGrap)/2,                     'Plays to your grappling without committing to a shot.'),
+  ], [
+    P(5*oTdThr*(1-yTakeDef),               'The clinch is exactly where he hunts the level change.'),
+    P(2.2,                                 'Grinding rounds are close ones — you leave it to the judges.'),
+  ]);
+
+  // ---- KEY READ ----
+  const eEarly =
+      6*Math.max(0,oChinV)
+    + 4*(oPace<0.5?1:0)*yStrike
+    - 7*Math.max(0,0.5-yCardio)*Math.max(0.4,oPace)
+    - 3*(isChamp(o.f)?1:0)*Math.max(0,0.5-yCardio);
+  const rEarly = opt('early','Pressure early', eEarly, [
+    P(6*Math.max(0,oChinV),                'He can be hurt early, before he settles in.'),
+    P(4*(oPace<0.5?1:0)*yStrike,           'He starts slow — jump on him before he warms up.'),
+  ], [
+    P(7*Math.max(0,0.5-yCardio)*oPace,     'Trading hard early with a busy man empties your tank.'),
+    P(3.5*(isChamp(o.f)?1:0)*Math.max(0,0.5-yCardio),'Five hard rounds punish a fast start.'),
+  ]);
+  const eDeep =
+      7*oPace*yCardio
+    + 3*yCardio
+    - 7*Math.max(0,0.55-yChin)*oPop
+    - 3*(oChinV>0.4?1:0);
+  const rDeep = opt('deep','Take him deep', eDeep, [
+    P(7*oPace*yCardio,                     'He fades late — drag a fast starter into deep water.'),
+    P(3.5*yCardio,                         'Your gas tank owns the championship rounds.'),
+  ], [
+    P(7*Math.max(0,0.55-yChin)*oPop,       'Handing early rounds to a puncher, with your chin, is a gamble.'),
+    P(3*(oChinV>0.4?1:0),                  "He's there to be finished early — waiting throws it away."),
+  ]);
+  const eCounter =
+      4*yStrDef
+    + 3*Math.max(0,oOpen)*yTech
+    - 5*(grappler?1:0)*(1-yTakeDef)
+    - 3*oPace;
+  const rCounter = opt('counter','Sit and counter', eCounter, [
+    P(4.5*yStrDef,                         'Low-risk — make him lead and punish the entries.'),
+    P(3.5*Math.max(0,oOpen)*yTech,         "He's hittable — pick him apart as he comes in."),
+  ], [
+    P(5*(grappler?1:0)*(1-yTakeDef),       'Sitting back lets a grappler pick when to shoot.'),
+    P(3.5*oPace,                           'A volume fighter out-works a counter-puncher on the cards.'),
+  ]);
+
+  // FIGHT IQ -> how much of the read you get. 0.25 at IQ 1, 1.0 at IQ 10. It gates
+  // how many pro/con lines show and how sure the corner is — never the edges
+  // themselves, which are always fully in play whether you can see them or not.
+  const clarity = 0.25 + 0.75*(((G.attrs.fightiq||ATTR_MIN)-ATTR_MIN)/(ATTR_MAX-ATTR_MIN));
+  // A natural phrase for the corner, and whether YOU can actually implement the plan.
+  // The corner only ever steers toward a phase you can run: everyone can strike, but
+  // "keep it on the mat" needs the wrestling to get it there, so a pure striker is
+  // never told to grapple even against a takedown-vulnerable man.
+  wStrike.short='on the feet';   wStrike.exec=true;
+  wGrapple.short='on the mat';   wGrapple.exec = (yWr>=0.4 || yGrap>=0.55);
+  wClinch.short='in the clinch'; wClinch.exec = (yWr>=0.3 || (yWr+yGrap)>=0.55);
+  // THE OPPONENT, IN A CORNER'S WORDS — and this is what makes the advice matchup-
+  // dependent instead of a stock speech. Playtest: "it gives the same advice every
+  // time, it should be matchup dependent." The corner used to lead with your phase
+  // (for a striker, always "on the feet"), so every fight sounded the same. Now it
+  // classifies THE MAN IN FRONT OF YOU by his dominant danger and speaks to it: a
+  // read on him, the counter to run (tuned to YOUR tools), and the one trap he
+  // punishes. A wrestler, a puncher and a volume fighter now get three different
+  // speeches — as they should. Priority order, most decisive threat first.
+  let cRead, cCounter, cTrap;
+  if (oSubThr>0.4 || oTdThr>0.5) {                              // grappler / wrestler
+    cRead    = "He'll look to drag this to the mat";
+    cCounter = yTakeDef>=0.5 ? "make him pay every time he shoots" : "keep circling and stay off the fence";
+    cTrap    = "do not get planted on your back";
+  } else if (oPop>0.6) {                                        // puncher
+    cRead    = "He's got real pop in his hands";
+    cCounter = "be first, then get off the center-line";
+    cTrap    = yChin<0.55 ? "one clean shot could end your night" : "don't stand and trade with him";
+  } else if (oPace>0.6) {                                       // volume / pressure
+    cRead    = "He wants to drown you in volume";
+    cCounter = yCardio>=0.5 ? "weather it early and take his air away late" : "cut the cage off and make him reset";
+    cTrap    = "don't get pulled into his pace";
+  } else if (oOpen<-0.15) {                                     // elusive / defensive
+    cRead    = "He's slick — hard to pin down";
+    cCounter = "stay patient and dig to the body";
+    cTrap    = "don't get careless reaching for him";
+  } else if (oChinV>0.25) {                                     // hittable / fragile
+    cRead    = "His chin has cracked before";
+    cCounter = "sit down on your shots and hunt it";
+    cTrap    = "don't get reckless chasing the finish";
+  } else {                                                      // complete / rounded
+    cRead    = "He's a well-rounded veteran";
+    cCounter = "win the small exchanges and out-work him";
+    cTrap    = "don't give him a clean look at anything";
+  }
+  return { clarity, coach:{read:cRead, counter:cCounter, trap:cTrap},
+           where:[wStrike,wGrapple,wClinch], read:[rEarly,rDeep,rCounter] };
+}
+
+// The corner's steer scales with Fight IQ, and it points at a PHASE, never a
+// result. A sure corner still leaves you the read choice and every con to weigh —
+// a sharp call on a bad matchup is still a bad matchup. It also refuses to fake
+// confidence when nothing is good.
+// The corner is the always-present payoff of Fight IQ, and it's driven by two axes:
+// WHAT it knows scales with the opponent (coach.read/counter/trap, matchup-specific),
+// and HOW MUCH it tells you scales with your Fight IQ level (1-10, every level a
+// visible step — playtest: "it should shift every upgrade"). Each tier adds a
+// concrete increment rather than rewording the last: a blank, the read on him, your
+// phase, the counter, conviction, the why, the read with detail, then the one trap he
+// punishes — information accumulating. Because read/counter/trap come from the man in
+// front of you, a wrestler and a puncher get different speeches at every level.
+function cornerLine(iq, s, coach){
+  const ot = coach.read, cnt = coach.counter, tr = coach.trap;
+  const C  = t => 'Your corner: “'+t+'”';
+  const cap = t => t.charAt(0).toUpperCase()+t.slice(1);
+  switch (Math.max(1, Math.min(10, iq|0))) {
+    case 1:  return C("Your fight to read in there. Trust your gut and don't hesitate.");
+    case 2:  return C(ot+". Feel him out early before you commit.");
+    case 3:  return C(ot+". I'd keep it "+s+" and adjust from there.");
+    case 4:  return C("Keep it "+s+". "+cap(cnt)+".");
+    case 5:  return C("Keep it "+s+", "+cnt+", and make him fight your fight.");
+    case 6:  return C(ot+". Keep it "+s+", "+cnt+".");
+    case 7:  return C(ot+". Keep it "+s+", "+cnt+" — that's the game plan.");
+    case 8:  return C("Keep it "+s+", "+cnt+" — do that and it's your night.");
+    case 9:  return C("Keep it "+s+", "+cnt+". And watch it: "+tr+".");
+    default: return C(ot+". Keep it "+s+", "+cnt+", and whatever happens, "+tr+". Clear as day.");
+  }
+}
+
+function commitPlan(o, plan){
+  const w = plan.where.find(x=>x.id===G.pending.where);
+  const r = plan.read.find(x=>x.id===G.pending.read);
+  const base = o.p;                              // the fight before you read it
+  let delta = (w.edge + r.edge) * PLAN_SCALE;    // win% points, + good read / - bad
+  delta = clampv(delta, -22, 18);                // see PLAN_SCALE — a margin, not a miracle
+  // The read moves the fight and the deferred odds line reflects it: o.p now
+  // carries the plan, so "you were a favorite -180" afterwards is the truth of the
+  // fight you actually chose to have. `swing` is the ACTUAL applied points AFTER the
+  // 5%/95% clamp — if you were already a 95% favorite, a great read adds nothing and
+  // the post-fight line honestly says so, rather than claiming a +12 that never landed.
+  o.p = clampv(base + delta/100, 0.05, 0.95);
+  o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
+  G.pending = null;
+  fight(o);
+}
+
+function planBox(){
+  const o = G.pending.o;
+  const plan = planFor(o);
+  const wrap = document.createElement('div'); wrap.className='panel plan';
+  wrap.appendChild((()=>{const e=document.createElement('div'); e.className='rl'; e.textContent='Draw up your game plan'; return e;})());
+
+  // WHO you're in there with.
+  const hd=document.createElement('div'); hd.className='plan-hd';
+  hd.innerHTML=avatarHTML(o.f)+'<div class="oppwho"><div class="rk"></div><div class="nm"></div><div class="rec"></div></div>';
+  const rk = o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
+  hd.querySelector('.rk').textContent=rk;
+  hd.querySelector('.nm').textContent=o.f.name;
+  hd.querySelector('.rec').textContent=o.f.record;
+  wrap.appendChild(hd);
+
+  // The scouting report — real stats, the same champScout the creator uses.
+  const sc = champScout(o.f.style);
+  if (sc){
+    const s=document.createElement('div'); s.className='plan-scout';
+    const lab=document.createElement('div'); lab.className='scout-arch'; lab.textContent=sc.label; s.appendChild(lab);
+    const rd=document.createElement('div'); rd.className='note'; rd.style.marginTop='.15rem'; rd.textContent=sc.read; s.appendChild(rd);
+    for (const [k,v,frac] of sc.rows){
+      const r=document.createElement('div'); r.className='scout-row';
+      const kk=document.createElement('span'); kk.textContent=k; kk.style.color='var(--muted)';
+      const vv=document.createElement('span'); vv.className='v'; vv.textContent=v;
+      r.appendChild(kk); r.appendChild(vv); s.appendChild(r);
+      const b=document.createElement('div'); b.className='scout-bar'; const i=document.createElement('i');
+      i.style.width=Math.round(frac*100)+'%'; b.appendChild(i); s.appendChild(b);
+    }
+    wrap.appendChild(s);
+  }
+
+  // Pros/cons for the selected option, as many lines as Fight IQ lets you see.
+  const pcFor = (option)=>{
+    const box=document.createElement('div'); box.className='pc';
+    const show=(arr,cls)=>{
+      if(!arr.length) return;
+      const mk = cls==='pro' ? '+' : '−';
+      const cnt = Math.max(1, Math.round(plan.clarity*arr.length));
+      arr.slice(0,cnt).forEach(x=>{
+        const l=document.createElement('div'); l.className='pc-line '+cls;
+        const m=document.createElement('span'); m.className='mk'; m.textContent=mk;
+        const t=document.createElement('span'); t.textContent=x.t;
+        l.appendChild(m); l.appendChild(t); box.appendChild(l);
+      });
+    };
+    show(option.pros,'pro'); show(option.cons,'con');
+    if(!option.pros.length && !option.cons.length){
+      const l=document.createElement('div'); l.className='pc-line'; l.style.color='var(--muted)';
+      l.textContent="Not much either way here — it's a wash against this guy."; box.appendChild(l);
+    }
+    return box;
+  };
+
+  const group = (labelText, arr, kind)=>{
+    const g=document.createElement('div');
+    const lab=document.createElement('div'); lab.className='plan-lab'; lab.textContent=labelText; g.appendChild(lab);
+    const opts=document.createElement('div'); opts.className='plan-opts';
+    const sel=G.pending[kind];
+    arr.forEach(op=>{
+      const b=document.createElement('button'); b.className='plan-opt'+(sel===op.id?' on':'');
+      b.textContent=op.label;
+      b.onclick=()=>{ G.pending[kind]=op.id; render(); };
+      opts.appendChild(b);
+    });
+    g.appendChild(opts);
+    const selOpt=arr.find(x=>x.id===sel);
+    if(selOpt) g.appendChild(pcFor(selOpt));
+    return g;
+  };
+
+  wrap.appendChild(group('Where do you want the fight?', plan.where, 'where'));
+  wrap.appendChild(group('Key read', plan.read, 'read'));
+
+  // The corner — a steer, not a verdict, only as sharp as your Fight IQ, and only
+  // ever toward a phase you can actually fight in. Best-edge WHERE among the plans
+  // this fighter can run (so a pure striker is never told to grapple), plus the
+  // best-edge READ and the matchup's trap, which higher Fight IQ unlocks in turn.
+  const execWhere = plan.where.filter(w=>w.exec);
+  const bestW = (execWhere.length?execWhere:plan.where).slice().sort((a,b)=>b.edge-a.edge)[0];
+  const corner=document.createElement('div'); corner.className='corner';
+  corner.textContent=cornerLine(G.attrs.fightiq||ATTR_MIN, bestW.short||bestW.label.toLowerCase(), plan.coach);
+  wrap.appendChild(corner);
+
+  const act=document.createElement('div'); act.className='plan-act';
+  const ready = !!(G.pending.where && G.pending.read);
+  const lock=document.createElement('button'); lock.className='btn pri'; lock.textContent='Lock in game plan →';
+  lock.disabled=!ready; if(!ready) lock.style.opacity=.4;
+  lock.onclick=()=>{ if(!ready) return; commitPlan(o, plan); };
+  const back=document.createElement('button'); back.className='btn'; back.textContent='← Back'; back.onclick=cancelPlan;
+  act.appendChild(lock); act.appendChild(back); wrap.appendChild(act);
+  if(!ready){
+    const h=document.createElement('div'); h.className='note'; h.style.marginTop='.4rem';
+    h.textContent='Choose where you want the fight and your key read.'; wrap.appendChild(h);
+  }
+  return wrap;
 }
 
 // Is this a touch device? Used to decide what starts collapsed — height is scarce
