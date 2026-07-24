@@ -225,18 +225,20 @@
   .bout-ct .rr{font-size:.55rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .bout-opt.risk .bout-ct .rr{color:var(--accent2)}
 
-  /* ── SIGNATURE PICKER ─────────────────────────────────────────────────────── */
-  .siggrid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
-  .sigcard{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.55rem .65rem;text-align:left;cursor:pointer;font-family:inherit;color:var(--text)}
+  /* ── SIGNATURE PICKER — compact cards + a detail strip (stays 2-up on mobile) */
+  .siggrid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+  .sigcard{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.4rem .55rem;text-align:left;cursor:pointer;font-family:inherit;color:var(--text)}
   .sigcard:hover{border-color:var(--muted)}
   .sigcard.on{border-color:var(--accent);background:rgba(0,230,104,.07)}
-  .sgh{font-weight:700;font-size:.82rem;margin-bottom:.25rem;color:var(--gold)}
+  .sgh{font-weight:700;font-size:.78rem;color:var(--gold)}
   .sigcard.on .sgh{color:var(--accent)}
-  .sge{font-size:.72rem;line-height:1.4;color:var(--text)}
-  .sgf{font-size:.68rem;line-height:1.35;color:var(--muted);margin-top:.3rem}
-  .sgf b{color:var(--accent2)}
+  .sgs{font-size:.66rem;line-height:1.3;color:var(--muted);margin-top:.12rem}
+  .sigdetail{margin-top:.5rem;font-size:.72rem;line-height:1.45;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.5rem .65rem}
+  .sigdetail .sge{display:block}
+  .sigdetail .sgf{display:block;margin-top:.25rem;color:var(--muted);font-size:.68rem}
+  .sigdetail .sgf b{color:var(--accent2)}
+  .sigdetail.muted{color:var(--muted)}
   .sigv{font-size:.78rem}
-  @media(max-width:560px){ .siggrid{grid-template-columns:1fr} }
 
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
      A statement fight, set apart from the safe ladder in gold. */
@@ -2332,22 +2334,22 @@ function buildOffers(){
 // hooks live in the shared resolvers (boutFinishCtx / boutRolls / applyPunch), the
 // in-fight moments (advanceBout / boutChoose) and the read (commitPlan / corners).
 const SIGS = [
-  { id:'killer',  name:'Killer Instinct', icon:'ti-bolt',
+  { id:'killer',  name:'Killer Instinct', icon:'ti-bolt', short:"Finishes hurt men — but overreaches.",
     line:"When you hurt a man, you put him away. Few survive once you've got them going.",
     flaw:"You overreach — swing for the finish and miss, and you'll pay for it." },
-  { id:'chin',    name:'Iron Chin', icon:'ti-shield-half',
+  { id:'chin',    name:'Iron Chin', icon:'ti-shield-half', short:"Can't be put away — rarely finishes.",
     line:"You don't get put away. You can eat a bomb, and trade back when you're hurt.",
     flaw:"A grinder, not a killer — the highlight finishes just aren't in you." },
-  { id:'scram',   name:'Scrambler', icon:'ti-arrows-shuffle',
+  { id:'scram',   name:'Scrambler', icon:'ti-arrows-shuffle', short:"Escapes the mat — light on top.",
     line:"Nobody keeps you down. You slip takedowns and escape submissions at will.",
     flaw:"Slick off your back, but you do little damage from the top." },
-  { id:'dog',     name:'Dog in Him', icon:'ti-flame',
+  { id:'dog',     name:'Dog in Him', icon:'ti-flame', short:"Rises to hard fights — coasts otherwise.",
     line:"You rise to the harder fight — most dangerous when you're supposed to lose.",
     flaw:"You coast against lesser men, and let fights get closer than they should." },
-  { id:'general', name:'Ring General', icon:'ti-eye',
-    line:"You read a fight cold. Your corner always sees it clearly and a sharp plan cuts deeper.",
+  { id:'general', name:'Ring General', icon:'ti-eye', short:"Out-thinks everyone — rarely finishes.",
+    line:"You out-think everyone in there. Your corner always has the read, and a sharp game plan cuts deeper.",
     flaw:"You out-point people — you rarely take anyone out." },
-  { id:'power',   name:'Walk-Off Power', icon:'ti-hammer',
+  { id:'power',   name:'Walk-Off Power', icon:'ti-hammer', short:"One-shot KO threat — suspect chin.",
     line:"One shot ends it. You carry a puncher's chance into every round, win or lose.",
     flaw:"All or nothing — your own chin is there to be found." },
 ];
@@ -2956,23 +2958,28 @@ function creator(){
   const sigCard=(s)=>{
     const c=document.createElement('button');
     c.className='sigcard'+(((s?s.id:null)===(G.sig||null))?' on':'');
-    if(s){
-      c.innerHTML='<div class="sgh"></div><div class="sge"></div><div class="sgf"><b>Wrinkle </b><span></span></div>';
-      c.querySelector('.sgh').textContent=s.name;
-      c.querySelector('.sge').textContent=s.line;
-      c.querySelector('.sgf span').textContent=s.flaw;
-      c.onclick=()=>{ G.sig=s.id; render(); };
-    } else {
-      c.innerHTML='<div class="sgh"></div><div class="sge"></div>';
-      c.querySelector('.sgh').textContent='No signature';
-      c.querySelector('.sge').textContent='A pure all-rounder — no edge, and no flaw.';
-      c.onclick=()=>{ G.sig=null; render(); };
-    }
+    const h=document.createElement('div'); h.className='sgh'; h.textContent = s ? s.name : 'No signature';
+    const e=document.createElement('div'); e.className='sgs'; e.textContent = s ? s.short : 'A pure all-rounder.';
+    c.appendChild(h); c.appendChild(e);
+    c.onclick=()=>{ G.sig = s ? s.id : null; render(); };
     return c;
   };
   sgg.appendChild(sigCard(null));
   SIGS.forEach(s=>sgg.appendChild(sigCard(s)));
-  sgw.appendChild(sgg); p.appendChild(sgw);
+  sgw.appendChild(sgg);
+  // The full edge + wrinkle for the SELECTED signature, so the cards stay compact
+  // (a 2-up grid instead of a long stack that scrolls forever on a phone).
+  const curSig = SIG(G.sig);
+  const sgd=document.createElement('div'); sgd.className='sigdetail';
+  if (curSig){
+    sgd.innerHTML='<span class="sge"></span><span class="sgf"><b>Wrinkle </b><span></span></span>';
+    sgd.querySelector('.sge').textContent=curSig.line;
+    sgd.querySelector('.sgf span').textContent=curSig.flaw;
+  } else {
+    sgd.classList.add('muted');
+    sgd.textContent='No signature — a pure all-rounder, no edge and no flaw.';
+  }
+  sgw.appendChild(sgd); p.appendChild(sgw);
   const row=document.createElement('div');
   row.style.cssText='display:flex;gap:.5rem;align-items:center;margin-top:.6rem';
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
