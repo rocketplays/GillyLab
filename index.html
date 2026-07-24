@@ -3776,7 +3776,8 @@
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds &amp; Projections</li>
         <li role="menuitem" id="tab-bets"                   onclick="navigate('bets');        closeNavDropdown()">Bet &amp; CLV Tracker</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
-        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em / The Climb</li>
+        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
+        <li role="menuitem" id="tab-theclimb"                onclick="navigate('theclimb');    closeNavDropdown()">The Climb</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
         <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
       </ul>
@@ -4086,7 +4087,10 @@
   <!-- The switch sits ABOVE the header because the two halves bring their own: Pick'em
        has "Make Your Picks", and the game's slice carries its own <h1>The Climb</h1> and
        the subtitle that explains the rules. Only one header shows at a time. -->
-  <div class="pc-tabs" id="pc-tabs" role="tablist" aria-label="Pick'em or The Climb">
+  <!-- The Pick'em / Climb switch now lives in the nav (each half has its own entry). The
+       buttons stay in the DOM but hidden: pcSwitch() drives its toggle through them, and
+       navigate() calls pcSwitch based on which nav entry was picked. -->
+  <div class="pc-tabs" id="pc-tabs" role="tablist" aria-label="Pick'em or The Climb" style="display:none">
     <button type="button" class="pc-tab on" id="pc-tab-pickem" role="tab" aria-selected="true"  onclick="pcSwitch('pickem')">Pick'em</button>
     <button type="button" class="pc-tab"    id="pc-tab-climb"  role="tab" aria-selected="false" onclick="pcSwitch('climb')">The Climb</button>
   </div>
@@ -7612,7 +7616,10 @@
  renderActiveRoster();
 
  function navigate(page) {
- const targetId = (page === 'fighter') ? 'page-fighter' : ('page-' + page);
+ // The Climb shares the Pick'em page container — its own nav entry just opens that
+ // page straight to the Climb half. Everything else maps page -> #page-<page>.
+ const climbRoute = (page === 'theclimb');
+ const targetId = (page === 'fighter') ? 'page-fighter' : ('page-' + (climbRoute ? 'pickem' : page));
  const targetPage = document.getElementById(targetId);
  if (!targetPage) return;
  const activePage = document.querySelector('.page.active');
@@ -7634,6 +7641,8 @@
  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.classList.remove('page-leaving'); });
  document.querySelectorAll('.nav-tabs li, .nav-dropdown-menu li').forEach(t => t.classList.remove('active'));
  targetPage.classList.add('active');
+ // Pick'em and The Climb share #page-pickem; the nav entry chooses which half shows.
+ if ((page === 'pickem' || climbRoute) && typeof pcSwitch === 'function') pcSwitch(climbRoute ? 'climb' : 'pickem');
  if (typeof applyInjuryFlags === 'function') setTimeout(applyInjuryFlags, 0);
  if (page === 'bets' && typeof btRender === 'function') btRender();
  // One-time "how scoring works" explainer, the first time a user opens Pick'em.
@@ -134757,7 +134766,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       if ((location.hash === '#pickem' || location.hash === '#climb') && !window._pkDeepLinked) {
         window._pkDeepLinked = true;
         var wantClimb = location.hash === '#climb';
-        try { navigate('pickem'); if (wantClimb && typeof pcSwitch === 'function') pcSwitch('climb'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
+        try { navigate(wantClimb ? 'theclimb' : 'pickem'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
       }
       if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
