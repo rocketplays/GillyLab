@@ -786,14 +786,21 @@ async function handleBetsLeaderboard(request, env, url) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
   const tab = { clv: "clv", roi: "roi", units: "units" }[url.searchParams.get("tab")] || "units";
+  // Time filter on bet placement time (b.ts), matching the history range chips.
+  const BT_RANGE_DAYS = { "7d": 7, "30d": 30, "6m": 182, "12m": 365, all: null };
+  const rangeKey = url.searchParams.get("range") || "all";
+  const days = BT_RANGE_DAYS[rangeKey];
+  const cutoff = (typeof days === "number" && days > 0) ? Date.now() - days * 864e5 : 0;
   const keys = await listAllKeys(env, "bt:");
   const rows = [];
   await Promise.all(keys.map(async (k) => {
     const email = k.slice(3);                           // strip "bt:"
     const name = await getDisplayName(env, email);
     if (!name) return;                                  // no display name -> off the board
-    const stats = btUserStats(await btGetBets(env, email));
-    if (!stats) return;                                 // no settled verified bets
+    let bets = await btGetBets(env, email);
+    if (cutoff) bets = bets.filter((b) => (b.ts || b.createdAt || 0) >= cutoff);
+    const stats = btUserStats(bets);
+    if (!stats) return;                                 // no settled verified bets in range
     rows.push({
       name, w: stats.w, l: stats.l, n: stats.n,
       clv: btRound1(stats.avgClv), clvN: stats.clvN,
@@ -804,7 +811,7 @@ async function handleBetsLeaderboard(request, env, url) {
   ranked.forEach((r, i) => { r.rank = i + 1; });
   const myName = await getDisplayName(env, s.email);
   const me = myName ? (ranked.find((r) => r.name === myName) || null) : null;
-  return json({ tab, rows: ranked.slice(0, 100), me });
+  return json({ tab, range: rangeKey, rows: ranked.slice(0, 100), me });
 }
 
 // Public (subscriber) profile: one player's verified settled bets, by display name.

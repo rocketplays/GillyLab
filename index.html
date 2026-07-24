@@ -134921,7 +134921,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
-  let btBoardTab = 'units', btPlayerName = '';   // leaderboard metric tab + open profile
+  let btBoardTab = 'units', btBoardRange = 'all', btPlayerName = '';   // leaderboard metric tab + range + open profile
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
@@ -135320,29 +135320,38 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // least one settled verified bet. A row opens that player's read-only bet history.
   const btEscJs = s => String(s == null ? '' : s).replace(/[\\'"]/g, '\\$&');
   function btSetBoardTab(t) { btBoardTab = t; btRenderBoard(); }
+  function btSetBoardRange(r) { btBoardRange = r; btRenderBoard(); }
+  // Gold / silver / bronze crown for the top three, else nothing.
+  const btCrown = rank => {
+    const c = rank === 1 ? '#ffd23f' : rank === 2 ? '#c8ccd4' : rank === 3 ? '#cd7f32' : null;
+    if (!c) return '';
+    return '<svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" style="vertical-align:-2px;margin-right:4px;flex:0 0 auto" fill="' + c + '"><path d="M2 20L4 8l4.5 4L12 5l3.5 7L20 8l2 12z"/></svg>';
+  };
   async function btRenderBoard() {
     const host = document.getElementById('bt-board'); if (!host) return;
     const tab = (id, label) => '<button type="button" class="pk-tab' + (btBoardTab === id ? ' sel' : '') + '" onclick="btSetBoardTab(\'' + id + '\')">' + label + '</button>';
+    const rng = (k, lbl) => '<div class="' + (btBoardRange === k ? 'on' : '') + '" onclick="btSetBoardRange(\'' + k + '\')">' + lbl + '</div>';
     const blurb = btBoardTab === 'clv' ? 'Average closing-line value across settled moneylines.'
       : btBoardTab === 'roi' ? 'Profit as a percentage of everything staked.' : 'Net profit, in units.';
     host.innerHTML = '<div class="pk-tabs">' + tab('units', 'Units') + tab('roi', 'ROI') + tab('clv', 'CLV') + '</div>' +
+      '<div class="bt-ranges">' + rng('all', 'All time') + rng('7d', '7D') + rng('30d', '30D') + rng('6m', '6M') + rng('12m', '1Y') + '</div>' +
       '<div class="bt-foot" style="margin:.2rem 0 1rem">Verified, auto-graded bets only. ' + blurb + '</div>' +
       '<div class="pk-board-list" id="bt-board-list"><div class="pk-board-empty">Loading…</div></div>';
-    const at = btBoardTab;
-    const r = await btApi('/api/bets/leaderboard?tab=' + at);
-    if (btView !== 'board' || btBoardTab !== at) return;   // navigated or switched tab mid-fetch
+    const at = btBoardTab, ar = btBoardRange;
+    const r = await btApi('/api/bets/leaderboard?tab=' + at + '&range=' + ar);
+    if (btView !== 'board' || btBoardTab !== at || btBoardRange !== ar) return;   // navigated / switched tab or range mid-fetch
     const list = document.getElementById('bt-board-list'); if (!list) return;
     if (r.status === 401) { list.innerHTML = '<div class="pk-board-empty">Log in to see the leaderboard.</div>'; return; }
     if (r.status !== 200 || !r.j || !Array.isArray(r.j.rows)) { list.innerHTML = '<div class="pk-board-empty">Leaderboard unavailable right now.</div>'; return; }
     const rows = r.j.rows, me = r.j.me, meName = me && me.name;
-    if (!rows.length) { list.innerHTML = '<div class="pk-board-empty">No ranked bettors yet — settle some verified bets to get on the board.</div>'; return; }
+    if (!rows.length) { list.innerHTML = '<div class="pk-board-empty">No ranked bettors in this range yet.</div>'; return; }
     const fmt = row => btBoardTab === 'clv' ? ((row.clv > 0 ? '+' : '') + row.clv.toFixed(1) + ' pts')
       : btBoardTab === 'roi' ? ((row.roi > 0 ? '+' : '') + row.roi.toFixed(1) + '%')
       : ((row.units > 0 ? '+' : '') + row.units.toFixed(1) + 'u');
     const col = row => { const v = row[btBoardTab]; return v > 0 ? 'var(--accent)' : v < 0 ? '#ff6b6b' : ''; };
     const rowHTML = (row, isMe) => '<button type="button" class="pk-board-row' + (isMe ? ' me' : '') + '" onclick="btOpenPlayer(\'' + btEscJs(row.name) + '\')">' +
       '<span class="pk-board-rank">' + row.rank + '</span>' +
-      '<span class="pk-board-name">' + btEsc(row.name) + (isMe ? ' <span class="pk-you">you</span>' : '') +
+      '<span class="pk-board-name">' + btCrown(row.rank) + btEsc(row.name) + (isMe ? ' <span class="pk-you">you</span>' : '') +
       ' <span style="opacity:.5;font-weight:600">' + row.w + '-' + row.l + '</span></span>' +
       '<span class="pk-board-pts" style="color:' + col(row) + '">' + fmt(row) + '</span><span class="pk-board-chev">›</span></button>';
     let out = rows.map(row => rowHTML(row, meName && row.name === meName)).join('');
@@ -135401,7 +135410,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '<div style="text-align:right;flex:0 0 auto">' + badge +
       '<div class="' + (b.profit > 0 ? 'bt-pos' : b.profit < 0 ? 'bt-neg' : '') + '" style="font-weight:800;font-size:.9rem">' + prof + '</div></div></div>';
   }
-  window.btSetBoardTab = btSetBoardTab; window.btOpenPlayer = btOpenPlayer;
+  window.btSetBoardTab = btSetBoardTab; window.btSetBoardRange = btSetBoardRange; window.btOpenPlayer = btOpenPlayer;
   window.btRenderBoard = btRenderBoard; window.btRenderPlayer = btRenderPlayer;
 
   // Every card we hold tracked bets on, pending or settled. Bets on a card three
