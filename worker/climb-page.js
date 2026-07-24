@@ -251,11 +251,17 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   .co-rr{display:flex;flex-direction:column;gap:2px;margin-top:.5rem;font-size:.66rem;line-height:1.45}
   .co-rr .up{color:var(--accent)}
   .co-rr .dn{color:var(--accent2)}
-  /* hype pips in the HUD */
+  /* hype meter in the HUD */
   .hypv{display:inline-flex;align-items:center;gap:3px}
   .hp{width:12px;height:6px;border-radius:3px;background:var(--border);display:inline-block}
   .hp.on{background:var(--gold)}
   .hype-rdy{color:var(--gold);font-size:.55rem;text-transform:uppercase;letter-spacing:.05em;margin-left:4px;font-weight:700}
+  /* rivalry card — the callout's angry twin */
+  .rv-rl{color:var(--accent2);margin-top:.85rem}
+  .opp.rival{border:1.5px solid var(--accent2);background:#160a09;position:relative;width:100%;text-align:left}
+  .opp.rival .rk{color:var(--accent2)}
+  .co-tag.rival{background:var(--accent2);color:#fff}
+  .co-rr .rvup{color:var(--accent)}
 
   /* opponent cards */
   .opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.6rem}
@@ -2443,6 +2449,7 @@ function applyResult(o, R){
     // cashed to make the fight — the reward for a statement fight is the rank leap
     // itself (sub-rank advancement below vaults you to his rank), not more hype.
     G.hype = o.callout ? 0 : Math.min(3, (G.hype||0) + 1);
+    if (o.rival){ (G.avenged || (G.avenged = new Set())).add(o.f.name); G.hype = Math.min(3, (G.hype||0) + 1); }
     // THE FINISH BONUS IS GONE, AND IT HAD TO GO.
     //
     // This was \`o.reward + (fin?1:0)\`: a point for finishing. Harmless flavour while
@@ -2720,7 +2727,7 @@ function newGame(){
         // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
-        hype:0, bout:null, sig:null,
+        hype:0, bout:null, sig:null, avenged:new Set(),
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -3102,6 +3109,12 @@ function resultBox(){
       : "The gamble didn't land — your hype's spent. Build it back and go again.";
     p.appendChild(cn);
   }
+  if (o.rival){
+    const rn=document.createElement('div'); rn.className='note'; rn.style.marginTop='.3rem';
+    rn.style.color = won ? 'var(--gold)' : 'var(--muted)';
+    rn.textContent = won ? 'You settled the score with '+o.f.name+'.' : o.f.name+' still owns you.';
+    p.appendChild(rn);
+  }
   const n=document.createElement('div'); n.className='note';
   const left = CUT_AT - G.losses;
   n.textContent = won
@@ -3159,6 +3172,30 @@ function upgrade(){
     p.appendChild(row);
   }
   return p;
+}
+
+// ── RIVALRIES ─────────────────────────────────────────────────────────────────
+// The matchmaker already remembers who beat you (and deliberately HIDES them, so you
+// never get forced into a demoralising rematch). A rivalry flips that into an opt-in:
+// the man who handed you a loss resurfaces as a RIVAL card you can choose or duck.
+// Beat him and you settle it — sub-rank advancement leapfrogs you to his rank, you
+// bank a hype pip, and G.avenged retires the grudge so he stops appearing. Lose again
+// and it's an ordinary loss that deepens the record. A third meeting is a trilogy.
+// It distorts nothing: your conqueror is almost always a few rungs away already.
+function rivalOffer(){
+  if (G.rank == null) return null;
+  const avenged = G.avenged || new Set();
+  for (let i = G.log.length - 1; i >= 0; i--){
+    const Lx = G.log[i];
+    if (Lx.won || avenged.has(Lx.opp)) continue;      // only men who BEAT you, not yet avenged
+    const f = LADDER().find(x => x.name === Lx.opp && x.rankNum < 99);
+    if (!f) continue;                                 // must still be on the ladder
+    const w = G.log.filter(x => x.opp === f.name && x.won).length;
+    const l = G.log.filter(x => x.opp === f.name && !x.won).length;
+    return { f, p: winProb(f.name), reward: rewardFor(f, winProb(f.name)), jump: f.rankNum,
+             rival:true, histW:w, histL:l, trilogy:(w+l) >= 2, lossHow:Lx.method, lossRank:Lx.rank };
+  }
+  return null;
 }
 
 // ── THE CALLOUT ───────────────────────────────────────────────────────────────
@@ -3236,6 +3273,29 @@ function offerBox(){
     c.querySelector('.nm').textContent=co.f.name;
     c.querySelector('.rec').textContent=co.f.record;
     c.onclick=()=>beginPlan(co);
+    p.appendChild(c);
+  }
+
+  // THE RIVAL — the man who beat you, offered back on your terms.
+  const rv = rivalOffer();
+  if (rv){
+    const lbl=document.createElement('div'); lbl.className='rl rv-rl';
+    lbl.textContent = rv.trilogy ? 'The trilogy' : 'Unfinished business'; p.appendChild(lbl);
+    const c=document.createElement('button'); c.className='opp rival';
+    const rk = rv.f.rankNum===0 ? 'CHAMP' : '#'+rv.f.rankNum;
+    const rec = rv.histW+'\\u2013'+rv.histL;
+    const how = rv.lossHow==='KO/TKO' ? 'knocked you out' : rv.lossHow==='submission' ? 'submitted you' : 'took a decision';
+    const at  = (rv.lossRank!=null && rv.lossRank<99) ? ' at #'+(rv.lossRank===0?'C':rv.lossRank) : '';
+    const hist = rv.trilogy ? "You're "+rec+" against him — this one settles it."
+                            : 'He '+how+at+" — you're "+rec+' against him.';
+    c.innerHTML='<div class="co-tag rival">'+(rv.trilogy?'TRILOGY':'RIVAL')+'</div>'+
+      '<div class="opphd">'+avatarHTML(rv.f)+'<div class="oppwho"><div class="rk">Settle it \\u00b7 '+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
+      '<div class="odds"><b style="color:'+oddsBand(rv.p).c+'">'+oddsBand(rv.p).t+'</b></div>'+
+      '<div class="co-rr"><span class="up rvup">Win \\u2192 settle it, take his rank, and build hype</span>'+
+        '<span class="dn">Lose \\u2192 he owns you, '+rv.histW+'\\u2013'+(rv.histL+1)+'</span></div>';
+    c.querySelector('.nm').textContent=rv.f.name;
+    c.querySelector('.rec').textContent=hist;
+    c.onclick=()=>beginPlan(rv);
     p.appendChild(c);
   }
   return p;
