@@ -748,15 +748,139 @@ async function handleBetsGrade(request, env) {
 }
 
 // ── bet leaderboard + public player profile (subscriber-visible, mirrors pick'em) ──
-// The Worker can't grade bets itself — that needs FIGHT_HISTORY + the per-market rules,
-// which live in the app — so these read the FROZEN grade each bet carries once it has
-// settled (the snapshot the tracker writes via /api/bets/grade). A bet whose owner
-// hasn't opened their history since it settled simply isn't frozen yet and doesn't
-// count. VERIFIED ONLY: self-reported (manual) bets never touch the board.
+// GRADE ON READ. The board and profiles grade every un-frozen bet here, from the same
+// result + closing-odds feeds pick'em uses, so they reflect results the moment they land
+// — no waiting for the bet's owner to open the tracker and freeze it. A bet that IS
+// already frozen wins (its stored grade is authoritative). This path NEVER writes: it's
+// display only, so a grading slip can't corrupt a stored record the way a bad freeze
+// would — the owner's own client still writes the permanent grade via /api/bets/grade.
+// VERIFIED ONLY: self-reported (manual) bets never touch the board.
 const btRound1 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 10) / 10;
-function btOutcome(b) {
+const btLastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+function btMethodCat(m) {
+  m = String(m || "");
+  if (/sub/i.test(m)) return "SUB";
+  if (/dec/i.test(m)) return "DEC";
+  if (/ko|tko|knockout|stoppage|doctor|retire/i.test(m)) return "KO";
+  return "DEC";
+}
+// "F1 vs F2 · Event" -> ["F1", "F2"] (short/last names, in the bet's side order).
+function btMatchNames(match) {
+  const head = String(match || "").split("·")[0].trim();
+  const parts = head.split(/\s+vs\.?\s+/i);
+  return parts.length === 2 && parts[0] && parts[1] ? [parts[0].trim(), parts[1].trim()] : null;
+}
+// Resolve a bout result relative to (a,b) = the bet's f1/f2, from the combined result
+// events (finalized archive + live/recent event feeds). Last-name pairing, scoped to the
+// event — the same match the app's archive path uses. null while still pending.
+function btResolveResult(events, evSlug, a, b) {
+  const la = btLastName(a), lb = btLastName(b);
+  for (const ev of (events || [])) {
+    if (evSlug && ev.slug && ev.slug !== evSlug) continue;
+    for (const bt of (ev.bouts || [])) {
+      const p1 = btLastName(bt.f1), p2 = btLastName(bt.f2);
+      const straight = p1 === la && p2 === lb, crossed = p1 === lb && p2 === la;
+      if (!straight && !crossed) continue;
+      const m = String(bt.method || "");
+      const isNC = /no contest|\bnc\b/i.test(m);
+      const isDraw = /^draw/i.test(m) || (!!bt.voided && !isNC);
+      let win = null;
+      if (!bt.voided && bt.winner && !isDraw && !isNC) {
+        const lw = btLastName(bt.winner);
+        win = lw === la ? 1 : lw === lb ? 2 : null;
+      }
+      return { win, methodCat: btMethodCat(m), round: Number(bt.round) || 1, endSec: 300, isDraw, isNC };
+    }
+  }
+  return null;
+}
+// The bet's closing moneyline for `side` (1/2), from odds-closing.json.
+function btCloseFor(closing, a, b, side) {
+  const la = btLastName(a), lb = btLastName(b);
+  for (const c of (closing || [])) {
+    if (c.o1 == null || c.o2 == null) continue;
+    const p1 = btLastName(c.f1), p2 = btLastName(c.f2);
+    if (p1 === la && p2 === lb) return side === 2 ? c.o2 : c.o1;
+    if (p1 === lb && p2 === la) return side === 2 ? c.o1 : c.o2;
+  }
+  return null;
+}
+const btImplied = (o) => o < 0 ? (-o) / ((-o) + 100) : 100 / (o + 100);
+const btClvPts = (yours, close) => Math.round((btImplied(close) - btImplied(yours)) * 1000) / 10;
+const btAm2Dec = (o) => o > 0 ? (o / 100 + 1) : (100 / -o + 1);
+const btDec2Am = (d) => d >= 2 ? Math.round((d - 1) * 100) : -Math.round(100 / (d - 1));
+const btCombineOdds = (list) => btDec2Am(list.reduce((p, o) => p * btAm2Dec(o), 1));
+// Per-market win rule, ported verbatim from the app's btGradeWin. tr is read only in the
+// decision branch, where a decision's ending round IS the scheduled rounds — so callers
+// pass R.round for tr and no scheduled-rounds lookup is needed.
+function btGradeWin(market, P, R, tr) {
+  P = P || {};
+  if (market === "ML") return R.win === P.side;
+  if (market === "METHOD") return (P.side === "any" || R.win === P.side) && R.methodCat === P.methodCat;
+  if (market === "ENDROUND") { const fin = R.methodCat !== "DEC" && R.round === P.round; const methOK = !P.meth || P.meth === "ANY" || R.methodCat === P.meth; return fin && methOK && (P.side === "any" || R.win === P.side); }
+  if (market === "TOTAL") { const sec = R.methodCat === "DEC" ? tr * 300 : ((R.round - 1) * 300 + R.endSec); const over = sec > (Math.floor(P.line) * 300 + 150); return P.ou === "O" ? over : !over; }
+  if (market === "ROUNDSTART") { const s = R.methodCat === "DEC" ? (P.round <= tr) : (P.round <= R.round); return P.yn === "Y" ? s : !s; }
+  if (market === "DISTANCE") { const went = R.methodCat === "DEC"; return P.yn === "Y" ? went : !went; }
+  if (market === "INSIDE") return R.win === P.side && R.methodCat !== "DEC";
+  if (market === "WINRDS") { if (R.win !== P.side) return false; return R.methodCat === "DEC" ? !!P.dec : (P.rounds || []).indexOf(R.round) !== -1; }
+  if (market === "METHRDS") return R.win === P.side && R.methodCat === P.methodCat && (P.rounds || []).indexOf(R.round) !== -1;
+  if (market === "DBLMETH") return R.win === P.side && (P.methods || []).indexOf(R.methodCat) !== -1;
+  return false;
+}
+function btGradeStatus(market, P, R) {
+  if (R.isNC) return "void";
+  if (R.isDraw && market === "ML") return "void";
+  return btGradeWin(market, P, R, R.round) ? "won" : "lost";
+}
+function btGradeParlay(b, events) {
+  const legs = b.legs || [];
+  const legStatuses = legs.map((l) => {
+    const nm = btMatchNames(l.match);
+    if (!nm) return "pending";
+    const R = btResolveResult(events, b.evSlug, nm[0], nm[1]);
+    return R ? btGradeStatus(l.market, l.params || {}, R) : "pending";
+  });
+  const liveIdx = legs.map((l, i) => i).filter((i) => legStatuses[i] !== "void");
+  const effOdds = liveIdx.length ? btCombineOdds(liveIdx.map((i) => legs[i].odds)) : null;
+  if (!liveIdx.length) return { status: "void", clv: null, effOdds: null };
+  if (liveIdx.some((i) => legStatuses[i] === "lost")) return { status: "lost", clv: null, effOdds };
+  if (liveIdx.every((i) => legStatuses[i] === "won")) return { status: "won", clv: null, effOdds };
+  return null;   // still pending
+}
+// The frozen grade if present, else graded live from the feeds. null while still pending.
+function btEffectiveGrade(b, events, closing) {
+  if (b && b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1) return b.graded;
   if (!b || b.kind !== "tracked") return null;
-  const g = b.graded;
+  if (b.market === "PARLAY") return btGradeParlay(b, events);
+  const nm = btMatchNames(b.match);
+  if (!nm) return null;
+  const R = btResolveResult(events, b.evSlug, nm[0], nm[1]);
+  if (!R) return null;
+  const status = btGradeStatus(b.market, b.params || {}, R);
+  let clv = null;
+  if (b.priced && b.clvOk !== false && b.closeSide) {
+    const close = btCloseFor(closing, nm[0], nm[1], b.closeSide);
+    if (close != null) clv = btClvPts(b.odds, close);
+  }
+  return { status, clv, effOdds: null };
+}
+// Combined result set: finalized archive (pickem-results) + live/recent event feeds, so
+// a bet reflects mid-card and not only once the archive is emitted at card end.
+async function btLoadResultEvents(env, url) {
+  const out = [];
+  const res = await loadResults(env, url);
+  for (const ev of (res.events || [])) out.push({ slug: ev.slug, bouts: ev.bouts || [] });
+  for (const p of ["/data/event.json", "/data/event-recent.json"]) {
+    const feed = await loadAssetJson(env, url, p);
+    for (const ev of ((feed && feed.data) || [])) {
+      const bouts = (ev.bouts || []).map(boutToResult).filter(Boolean);
+      if (bouts.length) out.push({ slug: ev.slug, bouts });
+    }
+  }
+  return out;
+}
+function btOutcome(b, events, closing) {
+  const g = btEffectiveGrade(b, events, closing);
   if (!g || ["won", "lost", "push", "void"].indexOf(g.status) === -1) return null;
   const odds = (typeof g.effOdds === "number" ? g.effOdds : b.odds);
   const stake = typeof b.stake === "number" ? b.stake : 0;
@@ -764,9 +888,9 @@ function btOutcome(b) {
     : g.status === "lost" ? -stake : 0;
   return { status: g.status, clv: (typeof g.clv === "number" ? g.clv : null), stake, profit };
 }
-// Same aggregation the client's btStats does, off the frozen grades.
-function btUserStats(bets) {
-  const st = (bets || []).map(btOutcome).filter(Boolean);
+// Same aggregation the client's btStats does, off the effective (frozen-or-live) grades.
+function btUserStats(bets, events, closing) {
+  const st = (bets || []).map((b) => btOutcome(b, events, closing)).filter(Boolean);
   if (!st.length) return null;
   const w = st.filter((o) => o.status === "won").length;
   const l = st.filter((o) => o.status === "lost").length;
@@ -791,7 +915,10 @@ async function handleBetsLeaderboard(request, env, url) {
   const rangeKey = url.searchParams.get("range") || "all";
   const days = BT_RANGE_DAYS[rangeKey];
   const cutoff = (typeof days === "number" && days > 0) ? Date.now() - days * 864e5 : 0;
-  const keys = await listAllKeys(env, "bt:");
+  // Load the result + closing-odds feeds once, then grade every user's bets on read.
+  const [events, closing, keys] = await Promise.all([
+    btLoadResultEvents(env, url), loadClosingOdds(env, url), listAllKeys(env, "bt:"),
+  ]);
   const rows = [];
   await Promise.all(keys.map(async (k) => {
     const email = k.slice(3);                           // strip "bt:"
@@ -799,7 +926,7 @@ async function handleBetsLeaderboard(request, env, url) {
     if (!name) return;                                  // no display name -> off the board
     let bets = await btGetBets(env, email);
     if (cutoff) bets = bets.filter((b) => (b.ts || b.createdAt || 0) >= cutoff);
-    const stats = btUserStats(bets);
+    const stats = btUserStats(bets, events, closing);
     if (!stats) return;                                 // no settled verified bets in range
     rows.push({
       name, w: stats.w, l: stats.l, n: stats.n,
@@ -823,38 +950,39 @@ async function handleBetsPlayer(request, env, url) {
   const email = await env.PICKS.get("nm:" + name.toLowerCase());
   if (!email) return json({ error: "not found" }, 404);
   const bets = await btGetBets(env, email);
-  const stats = btUserStats(bets);
-  const isSettled = (b) => b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1;
+  const [events, closing] = await Promise.all([btLoadResultEvents(env, url), loadClosingOdds(env, url)]);
+  const stats = btUserStats(bets, events, closing);
+  // Grade each bet on read: a settled (frozen-or-live) grade puts it in the settled
+  // list; anything still unresolved is an open bet.
+  const grade = (b) => btEffectiveGrade(b, events, closing);
+  const isSettled = (b) => { const g = grade(b); return !!g && ["won", "lost", "push", "void"].indexOf(g.status) !== -1; };
   const byNewest = (a, b) => (b.ts || b.createdAt || 0) - (a.ts || a.createdAt || 0);
+  const common = (b) => ({
+    pick: b.pick || "", match: b.match || "", market: b.market || "",
+    fightId: b.fightId || null, evSlug: b.evSlug || null,
+    side: (b.params && b.params.side != null) ? b.params.side : null,
+  });
   const settled = (bets || [])
     .filter((b) => b.kind === "tracked" && isSettled(b))
     .sort(byNewest)
     .slice(0, 200)
     .map((b) => {
-      const o = btOutcome(b);
-      return {
-        pick: b.pick || "", match: b.match || "", market: b.market || "",
-        fightId: b.fightId || null, evSlug: b.evSlug || null,
-        side: (b.params && b.params.side != null) ? b.params.side : null,
-        odds: (b.graded && typeof b.graded.effOdds === "number") ? b.graded.effOdds : b.odds,
-        stake: b.stake, status: b.graded.status,
+      const g = grade(b), o = btOutcome(b, events, closing);
+      return Object.assign(common(b), {
+        odds: (g && typeof g.effOdds === "number") ? g.effOdds : b.odds,
+        stake: b.stake, status: g.status,
         profit: btRound1(o ? o.profit : 0),
-        clv: (b.graded && typeof b.graded.clv === "number") ? btRound1(b.graded.clv) : null,
+        clv: (g && typeof g.clv === "number") ? btRound1(g.clv) : null,
         ts: b.ts || b.createdAt || 0,
-      };
+      });
     });
-  // Open bets: tracked bets not yet settled (or settled but not yet frozen). Lets a
-  // viewer see what this player is currently on. No result/CLV yet, so just the pick.
+  // Open bets: tracked bets not yet settled. Lets a viewer see what this player is
+  // currently on. No result/CLV yet, so just the pick.
   const pending = (bets || [])
     .filter((b) => b.kind === "tracked" && !isSettled(b))
     .sort(byNewest)
     .slice(0, 100)
-    .map((b) => ({
-      pick: b.pick || "", match: b.match || "", market: b.market || "",
-      fightId: b.fightId || null, evSlug: b.evSlug || null,
-      side: (b.params && b.params.side != null) ? b.params.side : null,
-      odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0,
-    }));
+    .map((b) => Object.assign(common(b), { odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0 }));
   return json({
     name,
     stats: stats ? {
