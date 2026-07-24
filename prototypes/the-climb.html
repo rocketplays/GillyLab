@@ -3110,20 +3110,21 @@ const clampv = (v,a,b) => Math.max(a, Math.min(b, v));
 
 // HOW MUCH A READ IS WORTH — the dial for this whole layer.
 //
-// Playtest: "it made the run more in-depth and interesting ... it isn't clear how
-// much the choices affected the outcome." Two fixes, and this is the first: the raw
-// edges out of planFor are small (a few points), so a good read barely showed up
-// in the result. PLAN_SCALE multiplies them into something a player can feel. The
-// second fix is that the swing is now SHOWN after the fight (see resultBox) — the
-// edge stays hidden going in, so the decision survives, but the moment it's over
-// you're told exactly what your read was worth.
+// The plan delta is RECENTRED before this scale hits it (see commitPlan): each axis
+// is measured against the average of the options you're choosing among, so the mean
+// plan is ~zero and the choice is purely relative — pick well and gain, pick lazily
+// and lose. Playtest measured the old absolute edges and they were nearly pure
+// upside: best plan +5 to +12, worst reasonable plan only -1 to -3. "The consequences
+// for a bad plan should be higher; it mostly goes one way." Centring fixes the skew;
+// this scale sets how loud the (now two-sided) choice is.
 //
-// BOUNDED ON PURPOSE. Capped at +18 / -22 points of win probability so a sharp read
-// makes a dog live and a favorite beatable, and a bad one genuinely hurts — but it
-// can never turn a real mismatch into a coin flip. The fighter you built still
-// decides most of the night; the plan decides the margin. The cap is asymmetric
-// because fighting INTO a man's strength should cost more than avoiding it saves.
-const PLAN_SCALE = 1.5;
+// 2.7, MEASURED. On the centred spread it puts a versatile fighter's best/worst plan
+// at roughly +12 / -12, a one-phase specialist (whose only lever is the read) at a
+// smaller +6 / -6 — correctly, a fighter with fewer tactical options has a smaller
+// plan decision — and a plan you can't even run at the -22 floor. Capped +15 / -22:
+// a bad read now genuinely costs, and running a plan you have no business in is the
+// worst thing you can do to yourself, which is exactly right.
+const PLAN_SCALE = 2.7;
 
 // The half-drawn plan lives on G.pending so newGame() clears it (a plan pinned to a
 // dead opponent is a bug) and so it survives render()'s teardown, like scoutOpen.
@@ -3343,13 +3344,19 @@ function commitPlan(o, plan){
   const w = plan.where.find(x=>x.id===G.pending.where);
   const r = plan.read.find(x=>x.id===G.pending.read);
   const base = o.p;                              // the fight before you read it
-  let delta = (w.edge + r.edge) * PLAN_SCALE;    // win% points, + good read / - bad
-  delta = clampv(delta, -22, 18);                // see PLAN_SCALE — a margin, not a miracle
-  // The read moves the fight and the deferred odds line reflects it: o.p now
-  // carries the plan, so "you were a favorite -180" afterwards is the truth of the
-  // fight you actually chose to have. `swing` is the ACTUAL applied points AFTER the
-  // 5%/95% clamp — if you were already a 95% favorite, a great read adds nothing and
-  // the post-fight line honestly says so, rather than claiming a +12 that never landed.
+  // RECENTRE — the plan is a relative CHOICE, not a bonus. Each axis is centred on the
+  // average of the options you're choosing among (executable WHERE, all READs), so the
+  // best pick gains, the worst loses, and a lazy pick nets ~zero. A plan you can't even
+  // run — a striker choosing the mat — sits far below the mean and is punished hardest.
+  const avg = a => a.reduce((s,x)=>s+x.edge,0)/a.length;
+  const execW = plan.where.filter(x=>x.exec);
+  const wMean = avg(execW.length ? execW : plan.where);
+  const rMean = avg(plan.read);
+  let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE;  // win% pts, +good / -bad
+  delta = clampv(delta, -22, 15);               // see PLAN_SCALE — a margin, not a miracle
+  // The read moves the fight and the deferred odds line reflects it: o.p now carries
+  // the plan. `swing` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
+  // already a 95% favorite a great read adds nothing and the post-fight line says so.
   o.p = clampv(base + delta/100, 0.05, 0.95);
   o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
   G.pending = null;
