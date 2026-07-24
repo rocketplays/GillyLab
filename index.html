@@ -135392,23 +135392,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     host.innerHTML = h;
   }
   function btPlayerPendingHTML(b) {
-    const stake = (b.stake == null ? '' : ' · ' + btU(b.stake) + 'u');
-    return '<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.08)">' +
-      '<div style="flex:1;min-width:0"><div style="font-weight:700">' + btEsc(b.pick) + '</div>' +
-      '<div style="font-size:.82rem;color:#8a8d95;margin-top:.15rem">' + btEsc(b.match) + ' · ' + btFmtO(b.odds) + stake + '</div></div>' +
-      '<span style="flex:0 0 auto;opacity:.6;font-weight:800;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase">Open</span></div>';
+    const res = '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span>';
+    return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
+      '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
+      '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div></div></div>';
   }
+  // Resolve the bet's fighter(s) from the shared card data (same as the owner's own
+  // history), so the profile shows the same avatars. Old bets whose card has aged out
+  // of BT_EVENTS just render without one, exactly like the main history.
+  const btProfileNames = b => btBetNames({ market: b.market, fightId: b.fightId, evSlug: b.evSlug, params: { side: b.side } });
   function btPlayerBetHTML(b) {
-    const badge = b.status === 'won' ? '<span class="bt-pos" style="font-weight:800">Won</span>'
-      : b.status === 'lost' ? '<span class="bt-neg" style="font-weight:800">Lost</span>'
-      : '<span style="opacity:.6;font-weight:800">' + (b.status === 'push' ? 'Push' : 'Void') + '</span>';
-    const prof = (b.profit > 0 ? '+' : '') + (b.profit == null ? '0' : b.profit.toFixed(2)) + 'u';
-    const clv = b.clv == null ? '' : ' · CLV ' + (b.clv > 0 ? '+' : '') + b.clv.toFixed(1);
-    return '<div style="display:flex;align-items:flex-start;gap:.6rem;padding:.7rem 0;border-bottom:1px solid rgba(255,255,255,.08)">' +
-      '<div style="flex:1;min-width:0"><div style="font-weight:700">' + btEsc(b.pick) + '</div>' +
-      '<div style="font-size:.82rem;color:#8a8d95;margin-top:.15rem">' + btEsc(b.match) + ' · ' + btFmtO(b.odds) + clv + '</div></div>' +
-      '<div style="text-align:right;flex:0 0 auto">' + badge +
-      '<div class="' + (b.profit > 0 ? 'bt-pos' : b.profit < 0 ? 'bt-neg' : '') + '" style="font-weight:800;font-size:.9rem">' + prof + '</div></div></div>';
+    let res;
+    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won ' + (b.profit > 0 ? '+' : '') + (b.profit == null ? '0' : b.profit.toFixed(1)) + 'u</span>';
+    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + (b.profit == null ? '0' : b.profit.toFixed(1)) + 'u</span>';
+    else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void</span>';
+    else res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
+    const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
+    return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
+      '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
+      '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   window.btSetBoardTab = btSetBoardTab; window.btSetBoardRange = btSetBoardRange; window.btOpenPlayer = btOpenPlayer;
   window.btRenderBoard = btRenderBoard; window.btRenderPlayer = btRenderPlayer;

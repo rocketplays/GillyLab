@@ -834,6 +834,8 @@ async function handleBetsPlayer(request, env, url) {
       const o = btOutcome(b);
       return {
         pick: b.pick || "", match: b.match || "", market: b.market || "",
+        fightId: b.fightId || null, evSlug: b.evSlug || null,
+        side: (b.params && b.params.side != null) ? b.params.side : null,
         odds: (b.graded && typeof b.graded.effOdds === "number") ? b.graded.effOdds : b.odds,
         stake: b.stake, status: b.graded.status,
         profit: btRound1(o ? o.profit : 0),
@@ -849,6 +851,8 @@ async function handleBetsPlayer(request, env, url) {
     .slice(0, 100)
     .map((b) => ({
       pick: b.pick || "", match: b.match || "", market: b.market || "",
+      fightId: b.fightId || null, evSlug: b.evSlug || null,
+      side: (b.params && b.params.side != null) ? b.params.side : null,
       odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0,
     }));
   return json({
