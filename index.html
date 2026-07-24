@@ -134907,6 +134907,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     ML:        'Moneyline (winner)',
     METHOD:    'Method (how the fight ends)',
     ENDROUND:  'Fight ends in a round',
+    WINRDS:    'Winner in a group of rounds',
+    METHRDS:   'Win by KO/TKO or submission in a group of rounds',
     TOTAL:     'Total rounds (over / under)',
     ROUNDSTART:'Will the fight start a round?',
     DISTANCE:  'Fight goes the distance?',
@@ -135126,6 +135128,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     if (b.market === 'DISTANCE') { const went = R.methodCat === 'DEC'; return P.yn === 'Y' ? went : !went; }
     if (b.market === 'INSIDE') return R.win === P.side && R.methodCat !== 'DEC';
+    // Winner in a group of rounds: the named fighter wins AND the fight ends in the
+    // group — a finish in one of P.rounds, or a decision when the group includes it.
+    if (b.market === 'WINRDS') {
+      if (R.win !== P.side) return false;
+      return R.methodCat === 'DEC' ? !!P.dec : (P.rounds || []).indexOf(R.round) !== -1;
+    }
+    // Win by a specific method inside a group of rounds (a decision never qualifies).
+    if (b.market === 'METHRDS')
+      return R.win === P.side && R.methodCat === P.methodCat && (P.rounds || []).indexOf(R.round) !== -1;
     return false;
   }
   // No contest voids everything. A draw voids ONLY the moneyline — standard book
@@ -135588,6 +135599,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!f || !BT_ODDS || typeof findFightOdds !== 'function') return null;
     return findFightOdds(f.f1, f.f2, BT_ODDS);
   }
+  // Round-group props (the FanDuel-style buckets). Derived from the fight's round
+  // count so a 3- and a 5-rounder get the right groups, and the round list is stored
+  // in the bet's params so grading stays self-contained (no need to know f.rounds).
+  //  • WINRDS: fighter wins with the fight ending in this group; the last group also
+  //    covers a decision (dec:true).
+  //  • METHRDS: fighter wins by the chosen method (KO/TKO or submission) inside the
+  //    group — a decision never counts, so no dec flag.
+  const btWinGroups = n => n >= 5
+    ? [{ lab: 'Rounds 1–3', rounds: [1, 2, 3], dec: false }, { lab: 'Rounds 4–5 or decision', rounds: [4, 5], dec: true }]
+    : [{ lab: 'Round 1 or 2', rounds: [1, 2], dec: false }, { lab: 'Round 3 or decision', rounds: [3], dec: true }];
+  const btMethGroups = n => n >= 5
+    ? [{ lab: 'Rounds 1–3', rounds: [1, 2, 3] }, { lab: 'Rounds 2–4', rounds: [2, 3, 4] }, { lab: 'Rounds 3–5', rounds: [3, 4, 5] }]
+    : [{ lab: 'Round 1–2', rounds: [1, 2] }, { lab: 'Round 2–3', rounds: [2, 3] }];
   function btSelUI(f) {
     const rds = n => { let o = ''; for (let i = 1; i <= n; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return o; };
     if (btMarket === 'ML') {
@@ -135597,6 +135621,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btMarket === 'METHOD') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mfr"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select></div><div><label>Method</label><select id="bt-mmeth"><option value="KO">KO/TKO</option><option value="SUB">Submission</option><option value="DEC">Decision</option></select></div></div>';
     if (btMarket === 'ENDROUND') return '<label>Winner</label><select id="bt-erf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select>' +
       '<div class="bt-row2"><div><label>Method</label><select id="bt-erm"><option value="ANY">Any finish</option><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div><div><label>Ends in</label><select id="bt-err">' + rds(f.rounds) + '</select></div></div>';
+    if (btMarket === 'WINRDS') { const gs = btWinGroups(f.rounds);
+      return '<label>Winner</label><select id="bt-wrf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select>' +
+        '<label>Wins in</label><select id="bt-wrg">' + gs.map((g, i) => '<option value="' + i + '">' + g.lab + '</option>').join('') + '</select>'; }
+    if (btMarket === 'METHRDS') { const gs = btMethGroups(f.rounds);
+      return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mrf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select></div>' +
+        '<div><label>Method</label><select id="bt-mrm"><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div></div>' +
+        '<label>In</label><select id="bt-mrg">' + gs.map((g, i) => '<option value="' + i + '">' + g.lab + '</option>').join('') + '</select>'; }
     if (btMarket === 'TOTAL') { let o = ''; for (let i = 1; i < f.rounds; i++) o += '<option value="' + i + '.5">' + i + '.5 rounds</option>'; return '<div class="bt-row2"><div><label>Line</label><select id="bt-tline">' + o + '</select></div><div><label>Over / Under</label><select id="bt-tou"><option value="O">Over</option><option value="U">Under</option></select></div></div>'; }
     if (btMarket === 'ROUNDSTART') { let o = ''; for (let i = 2; i <= f.rounds; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return '<div class="bt-row2"><div><label>Round</label><select id="bt-rsr">' + o + '</select></div><div><label>Will it start?</label><select id="bt-rsyn"><option value="Y">Will start</option><option value="N">Won\'t start</option></select></div></div>'; }
     if (btMarket === 'DISTANCE') return '<label>Does the fight reach a decision?</label><select id="bt-dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>';
@@ -135614,6 +135645,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btMarket === 'TOTAL') { const L = parseFloat(g('bt-tline').value), ou = g('bt-tou').value; return { pick: (ou === 'O' ? 'Over ' : 'Under ') + L + ' rounds', p: { line: L, ou: ou }, priced: false }; }
     if (btMarket === 'ROUNDSTART') { const n = +g('bt-rsr').value, yn = g('bt-rsyn').value; return { pick: 'Fight ' + (yn === 'Y' ? 'starts' : 'does NOT start') + ' round ' + n, p: { round: n, yn: yn }, priced: false }; }
     if (btMarket === 'DISTANCE') { const yn = g('bt-dyn').value; return { pick: yn === 'Y' ? 'Goes the distance' : 'Does NOT go the distance', p: { yn: yn }, priced: false }; }
+    if (btMarket === 'WINRDS') { const s = +g('bt-wrf').value, grp = btWinGroups(f.rounds)[+g('bt-wrg').value];
+      return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' to win — ' + grp.lab.toLowerCase(), p: { side: s, rounds: grp.rounds, dec: grp.dec }, priced: false }; }
+    if (btMarket === 'METHRDS') { const s = +g('bt-mrf').value, m = g('bt-mrm').value, grp = btMethGroups(f.rounds)[+g('bt-mrg').value];
+      return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' by ' + (m === 'KO' ? 'KO/TKO' : 'submission') + ' — ' + grp.lab.toLowerCase(), p: { side: s, methodCat: m, rounds: grp.rounds }, priced: false }; }
     const s = +g('bt-ifr').value; return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' inside the distance', p: { side: s }, priced: false };
   }
 
