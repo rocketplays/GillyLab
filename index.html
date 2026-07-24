@@ -2243,6 +2243,11 @@
        page's content width, so drop its top padding and let .page own the spacing. */
     #climb-host { display: block; }
     #pc-view-climb[hidden] { display: none; }
+    /* Crossfade the two halves when the nav swaps them in place — Pick'em and The Climb
+       share one page container, so the page-to-page tab transition never fires between
+       them. These mirror it: the outgoing half fades/lifts out, the incoming fades in. */
+    .pc-view-leaving { opacity: 0; transform: translateY(-8px); transition: opacity 0.2s ease, transform 0.2s ease; }
+    .pc-view-entering { animation: fadeIn 0.2s ease; }
 
     .mh-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; flex: 1; min-height: 0; }
     .mh-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 2.5rem 0; }
@@ -7687,6 +7692,23 @@
  // restarts automatically whenever an element flips from display:none
  // to displayed), so together they read as one quick "fade out, fade
  // in" transition rather than two unrelated effects.
+ // Pick'em and The Climb share #page-pickem, so the page-to-page crossfade above never
+ // fires between them. Crossfade the two inner halves instead, mirroring the transition.
+ if (activePage === targetPage && (page === 'pickem' || climbRoute) && targetPage.id === 'page-pickem') {
+ const vcv = document.getElementById('pc-view-climb');
+ const showingClimb = !!(vcv && !vcv.hidden);
+ if (showingClimb === !!climbRoute) { applySwitch(); return; }        // that half is already up
+ const outEl = document.getElementById('pc-view-' + (showingClimb ? 'climb' : 'pickem'));
+ if (outEl) outEl.classList.add('pc-view-leaving');
+ pageTransitionTimer = setTimeout(() => {
+ pageTransitionTimer = null;
+ applySwitch();                                                       // pcSwitch swaps which half shows
+ const inEl = document.getElementById('pc-view-' + (climbRoute ? 'climb' : 'pickem'));
+ if (inEl) { inEl.classList.add('pc-view-entering'); setTimeout(() => inEl.classList.remove('pc-view-entering'), 240); }
+ if (outEl) outEl.classList.remove('pc-view-leaving');
+ }, 170);
+ return;
+ }
  if (activePage && activePage !== targetPage) {
  activePage.classList.add('page-leaving');
  pageTransitionTimer = setTimeout(() => { pageTransitionTimer = null; applySwitch(); }, 170);
