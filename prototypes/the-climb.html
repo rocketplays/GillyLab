@@ -238,6 +238,9 @@
   .sigdetail .sgf{display:block;margin-top:.25rem;color:var(--muted);font-size:.68rem}
   .sigdetail .sgf b{color:var(--accent2)}
   .sigdetail.muted{color:var(--muted)}
+  .sigcard.locked{opacity:.5;cursor:not-allowed}
+  .sigcard.locked .sgh{color:var(--muted)}
+  .sigcard.locked .sgs{color:var(--gold)}
   .sigv{font-size:.78rem}
 
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
@@ -2360,6 +2363,18 @@ const SIGS = [
     flaw:"Little power standing; if you can't get him down, you can't finish him." },
 ];
 const SIG = id => SIGS.find(s=>s.id===id) || null;
+// EACH SIGNATURE NEEDS THE TOOL FOR IT. You can't be a Submission Ace with no
+// grappling, or a Killer with no power — the ability sharpens a real strength, it does
+// not invent one, and it's the synergy that makes it matter (a 10-grappling Submission
+// Ace is Oliveira; a 6 is dangerous; a 1 is nonsense). So each is gated behind a floor
+// in its attribute; below it the card is locked with the requirement shown. Mid-run
+// the floor is always met — you can only RAISE stats after turning pro — so the
+// resolvers never need to re-check it; this is enforced entirely on the build screen.
+const SIG_REQ = { killer:['power',6], chin:['chin',6], scram:['takedef',6],
+                  dog:['cardio',6], general:['fightiq',6], subace:['grappling',6] };
+const sigMet = id => { const r=SIG_REQ[id]; return !r || (G.attrs[r[0]]||ATTR_MIN) >= r[1]; };
+const sigReqLabel = id => { const r=SIG_REQ[id]; if(!r) return '';
+  const a = UI_ATTRS.find(x=>x.id===r[0]); return 'Needs '+(a?a.label:r[0])+' '+r[1]+'+'; };
 const DOG_PULL = 0.20;   // Dog in Him: how hard the odds pull toward even
 const SUB_CHANCE = 0.10;  // Submission Ace: a threat from any position, both ways
 // SUBMISSION ACE, applied once the winner is known so it works on BOTH paths. Two-way,
@@ -2973,13 +2988,17 @@ function creator(){
   const sgl=document.createElement('div'); sgl.className='rl'; sgl.style.marginTop='.9rem';
   sgl.textContent='Signature — one defining edge'; sgw.appendChild(sgl);
   const sgg=document.createElement('div'); sgg.className='siggrid';
+  if (G.sig && !sigMet(G.sig)) G.sig = null;   // you dropped the stat below the ability's floor
   const sigCard=(s)=>{
+    const locked = s && !sigMet(s.id);
     const c=document.createElement('button');
-    c.className='sigcard'+(((s?s.id:null)===(G.sig||null))?' on':'');
+    c.className='sigcard'+(((s?s.id:null)===(G.sig||null))?' on':'')+(locked?' locked':'');
     const h=document.createElement('div'); h.className='sgh'; h.textContent = s ? s.name : 'No signature';
-    const e=document.createElement('div'); e.className='sgs'; e.textContent = s ? s.short : 'A pure all-rounder.';
+    const e=document.createElement('div'); e.className='sgs';
+    e.textContent = !s ? 'A pure all-rounder.' : locked ? sigReqLabel(s.id) : s.short;
     c.appendChild(h); c.appendChild(e);
-    c.onclick=()=>{ G.sig = s ? s.id : null; render(); };
+    if (locked) { c.disabled = true; }
+    else { c.onclick=()=>{ G.sig = s ? s.id : null; render(); }; }
     return c;
   };
   sgg.appendChild(sigCard(null));
