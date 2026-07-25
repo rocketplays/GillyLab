@@ -1216,14 +1216,23 @@ const GL_SHEET = (function () {
     ctx.fillText(clip(ctx, [d.division, d.fights + ' fights', 'age ' + d.age]
       .filter(Boolean).join('   ·   '), W - 128), 64, 236);
 
-    // ARCHETYPE — titled, gold, its own row. Gold because that's the colour the
-    // game already gives it in the HUD and the creator; a share card that recolours
-    // the thing it's showing off is a third design nobody asked for.
+    // STYLE and SIGNATURE — titled apart, gold, sharing one row. They were merged under a
+    // single "ARCHETYPE" label ("Knockout artist · Submission Ace") which read as one thing
+    // and left it unclear which name was the build and which was the ability (playtest). Now
+    // the style (how you fight, from your stats) is labelled on the left and the signature
+    // (the edge you picked) on the right, each with its own heading.
     roundRect(ctx, 64, 272, W - 128, 76, 12); ctx.fillStyle = CARD; ctx.fill();
-    ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
-    ctx.fillText('ARCHETYPE', 96, 318);
-    ctx.textAlign = 'right'; ctx.font = '800 40px ' + COND; ctx.fillStyle = AMB;
-    ctx.fillText(clip(ctx, (d.style || '—') + (d.signature ? '  ·  ' + d.signature : ''), W - 300), W - 96, 320);
+    const _hasSig = !!d.signature;
+    ctx.textAlign = 'left';
+    ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT; ctx.fillText('FIGHTING STYLE', 96, 304);
+    ctx.font = '800 34px ' + COND; ctx.fillStyle = AMB;
+    ctx.fillText(clip(ctx, d.style || '—', _hasSig ? (W/2 - 150) : (W - 220)), 96, 338);
+    if (_hasSig) {
+      ctx.textAlign = 'right';
+      ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT; ctx.fillText('SIGNATURE', W - 96, 304);
+      ctx.font = '800 34px ' + COND; ctx.fillStyle = AMB;
+      ctx.fillText(clip(ctx, d.signature, W/2 - 150), W - 96, 338);
+    }
     ctx.textAlign = 'left';
 
     // THE THREE RECORDS, in the end screen's order and wording.

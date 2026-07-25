@@ -4250,9 +4250,19 @@ function endBox(msg){
     '<div><span>Pro record</span><b>'+totalRecord()+'</b></div>'+
     '<div><span>UFC record</span><b>'+ufcRecord()+'</b></div>'+
     '<div><span>Peak</span><b>'+(G.peak===0?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>'+
-    (SIG(G.sig)?'<div><span>Signature</span><b>'+SIG(G.sig).name+'</b></div>':'')+
+    '<div><span>Fighting style</span><b>'+archetype()+'</b></div>'+
+    (SIG(G.sig)?'<div><span>Signature move</span><b>'+SIG(G.sig).name+'</b></div>':'')+
     ((G.defenses||0)?'<div><span>Title defenses</span><b>'+G.defenses+'</b></div>':'');
   p.appendChild(rec);
+  // WHAT THOSE TWO NAMES MEAN, said plainly — the archetype is read off the build, the
+  // signature is the edge you picked, and neither was self-explaining on the card (playtest).
+  {
+    const _s = SIG(G.sig);
+    const wm = document.createElement('div'); wm.className='note'; wm.style.cssText='margin-top:.3rem;color:var(--muted)';
+    wm.innerHTML = '<b>Fighting style</b> is how your build fights, read from your stats'
+      + (_s ? '. <b>'+_s.name+'</b> — '+_s.short : '') + '';
+    p.appendChild(wm);
+  }
   // PERSONAL BESTS — folded in once per run, with any records just beaten called out.
   if (!G.bestsSaved){ G._bests = updateBests(); G.bestsSaved = true; }
   const _br = G._bests || { nu:[] };
