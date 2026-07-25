@@ -386,8 +386,14 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // you before your debut and is exactly the class of change that breaks four things
 // silently. The regional record is added at the point of PRINTING and nowhere else.
 const REGIONAL = { w: 10, l: 0 };
-const ufcRecord   = () => G.wins + '-' + G.losses;
-const totalRecord = () => (REGIONAL.w + G.wins) + '-' + (REGIONAL.l + G.losses);
+// A LOSS ON THE RECORD vs A LIFE SPENT. G.losses is the LIFE budget (the cut), and a
+// spared first title loss deliberately doesn't spend one. But the record must still
+// COUNT it — you did lose the fight, and it shows in the log (playtest: went 16-1, the
+// loss showed in the history but the record read 16-0). So the record counts losses
+// from the log; G.losses stays the life counter, untouched, so the cut is unchanged.
+const lossCount   = () => G.log.reduce((n,f)=>n+(f.won?0:1),0);
+const ufcRecord   = () => G.wins + '-' + lossCount();
+const totalRecord = () => (REGIONAL.w + G.wins) + '-' + (REGIONAL.l + lossCount());
 // buildStats() and the CURVES table are GONE. They existed to translate sliders
 // into the nine stat levers the sim read (kd, slpm, strAcc...). Nothing reads
 // them now — the game scores from attributes directly. Deleting them removes the
@@ -1854,7 +1860,7 @@ function buildOffers(){
 // in-fight moments (advanceBout / boutChoose) and the read (commitPlan / corners).
 const SIGS = [
   { id:'killer',  name:'Killer Instinct', icon:'ti-bolt', short:"Finishes hurt men — but overreaches.",
-    line:"When you hurt a man, you put him away. Few survive once you've got them going.",
+    line:"When you rock a man, you finish him. Few survive once you've got them hurt.",
     flaw:"You overreach — swing for the finish and miss, and you'll pay for it." },
   { id:'chin',    name:'Iron Chin', icon:'ti-shield-half', short:"Can't be put away — rarely finishes.",
     line:"You don't get put away. You can eat a bomb, and trade back when you're hurt.",
@@ -2646,7 +2652,10 @@ function resultBox(){
   if (o.rival){
     const rn=document.createElement('div'); rn.className='note'; rn.style.marginTop='.3rem';
     rn.style.color = won ? 'var(--gold)' : 'var(--muted)';
-    rn.textContent = won ? 'You settled the score with '+o.f.name+'.' : o.f.name+' still owns you.';
+    const tookRank = (won && G.rank === o.f.rankNum && o.f.rankNum < 99);
+    rn.textContent = won
+      ? 'You settled the score with '+o.f.name+'.'+(tookRank ? ' His #'+o.f.rankNum+' spot is yours,' : ' Grudge retired,')+' and your hype is up.'
+      : o.f.name+' still owns you.';
     p.appendChild(rn);
   }
   const n=document.createElement('div'); n.className='note';
