@@ -1229,7 +1229,7 @@ const GL_SHEET = (function () {
     ctx.fillText(clip(ctx, d.style || '—', _hasSig ? (W/2 - 150) : (W - 220)), 96, 338);
     if (_hasSig) {
       ctx.textAlign = 'right';
-      ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT; ctx.fillText('SIGNATURE', W - 96, 304);
+      ctx.font = '700 20px ' + COND; ctx.fillStyle = MUT; ctx.fillText('SIGNATURE ABILITY', W - 96, 304);
       ctx.font = '800 34px ' + COND; ctx.fillStyle = AMB;
       ctx.fillText(clip(ctx, d.signature, W/2 - 150), W - 96, 338);
     }
