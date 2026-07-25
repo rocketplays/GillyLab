@@ -1958,10 +1958,27 @@ function offers(){
   const key = [DIV, G.fightNo||0, G.wins, G.losses, G.rank].join('|');
   if (_offerKey !== key || !_offerCache) { _offerKey = key; _offerCache = buildOffers(); }
   // re-price against the CURRENT build every time
-  return _offerCache.map(o => {
+  let list = _offerCache.map(o => {
     const p = winProb(o.f.name);
     return { f:o.f, p, reward:rewardFor(o.f, p), jump:o.jump };
   });
+  // THE TITLE SHOT — the belt is HELD by someone (dynamic). Once you're the #1 contender
+  // and coming off a win, you get your crack at whoever holds it: the division's champion,
+  // or the man who took it off you. Injected here so it's ALWAYS reachable — the reason
+  // the belt could never be won back was that the static rank-0 champ, once beaten, left
+  // the pool for good. You must be on a win to earn the shot (a title loss costs a shot,
+  // not the run), which keeps the old instant-rematch loop dead.
+  if (!G.beltHolder) G.beltHolder = (LADDER().find(f=>f.rankNum===0) || {}).name || null;
+  if (G.rank === 1 && G.streak > 0 && G.beltHolder) {
+    const holder = LADDER().find(f => f.name === G.beltHolder);
+    if (holder) {
+      const p = winProb(holder.name);
+      list = list.filter(o => o.f.name !== holder.name);   // no duplicate contender card
+      list.unshift({ f: holder, p, reward: rewardFor({rankNum:0}, p), jump: 0, titleFight: true });
+      list = list.slice(0, 3);
+    }
+  }
+  return list;
 }
 function buildOffers(){
   // Exclude everyone you've FOUGHT, not just everyone you've BEATEN.
@@ -2645,7 +2662,15 @@ function applyResult(o, R){
       } else {
         G.rank = Math.max(1, G.rank - 1);   // at or below you: one rung, never past #1
       }
-      if (o.f.rankNum === 0) { G.champ = true; G.beltFight = G.beltFight || G.log.length; }   // you just won the belt
+      if (o.titleFight) {   // you beat the man holding the belt — it's yours
+        G.champ = true; G.beltFight = G.beltFight || G.log.length;
+        // FIRST TITLE RESETS THE STRIKE COUNT. A title shot you lost BEFORE you ever
+        // won the belt shouldn't combine with a later belt loss to end the run — the
+        // "two belt losses and the era's over" clock starts when your reign starts.
+        // (Reclaims don't reset — wasChamp stays true — so the loop can't be farmed.)
+        if (!G.wasChamp) G.titleLosses = 0;
+        G.beltHolder = null;   // you hold it now
+      }
     }
   } else {
     // NOBODY GETS CUT FOR LOSING TO THE CHAMPION.
@@ -2678,15 +2703,20 @@ function applyResult(o, R){
     // legacy padded through lives, not through skill.) A lost defense used to check
     // only `rankNum === 0`, which is the CONTENDER's rank on a defense, never 0 — so
     // this rule silently never fired for the exact fights it was meant to govern.
-    const beltOnTheLine = o.titleFight || o.f.rankNum === 0;
+    // THE BELT ON THE LINE — a lost CHALLENGE (you weren't champ, o.titleFight) or a
+    // lost DEFENSE (you were champ, o.titleFight). Both are belt losses; two ends the
+    // run — "the era's over", not a cut. o.titleFight is the one true signal now: a lost
+    // defense's opponent is a CONTENDER, so the old `rankNum === 0` check never fired for
+    // the exact fights it governed.
+    const beltOnTheLine = !!o.titleFight;
     if (beltOnTheLine) {
       G.titleLosses = (G.titleLosses || 0) + 1;
       if (G.titleLosses >= 2) G.outOfShots = true;   // the second belt loss ends the run
-      else if (o.f.rankNum === 0) G.spared = true;   // a first lost CHALLENGE is still free
+      else if (!G.champ) G.spared = true;            // a first lost CHALLENGE is still free
     }
     // The first lost CHALLENGE doesn't spend a life (nobody's cut for daring to
-    // challenge); a lost DEFENSE costs a life like any other loss, exactly as before.
-    if (!(o.f.rankNum === 0 && G.titleLosses === 1)) G.losses++;
+    // challenge); a lost DEFENSE costs a life like any other loss.
+    if (!(beltOnTheLine && !G.champ && G.titleLosses === 1)) G.losses++;
     G.streak = 0;
     // ANY loss breaks your momentum and resets the callout meter — which is the whole
     // downside of calling your shot and missing: you spent three wins of hype, dropped
@@ -2696,7 +2726,7 @@ function applyResult(o, R){
     // (the drop-a-rung below takes 0 -> 1), with the belt back on the line via the
     // ladder champion. An ordinary loss — a life, a rung to reclaim — the reign is
     // over but the run isn't.
-    if (G.champ) { G.champ = false; G.wasChamp = true; }
+    if (G.champ) { G.champ = false; G.wasChamp = true; G.beltHolder = o.f.name; }   // the belt goes to the man who beat you
     // A LOSS COSTS YOU A RUNG. The design said so all along and the code never did
     // it: CUT_AT's own comment reads "losses become a COST, not a coin flip that
     // deletes the run: they cost you rank, time and a soft matchmaking step-down."
@@ -2923,7 +2953,15 @@ function newGame(){
         defenses:0, retired:false, wasChamp:false, beltFight:null, bestsSaved:false,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
-        titleLosses:0, spared:false, outOfShots:false };
+        titleLosses:0, spared:false, outOfShots:false,
+        // WHO HOLDS THE BELT — a NAME, tracked dynamically, because the belt changes
+        // hands. It starts on the division's champion; when you win it, it's null (you
+        // hold it); when you drop a defense, it moves to the man who beat you, and THAT
+        // is who you challenge to win it back. Bound to a static rank-0 slot before, the
+        // belt vanished the moment it left that slot (playtest: "lost it, never got it
+        // back — Aspinall never came up again, Pavlovich didn't have it either").
+        beltHolder:null };
+  G.beltHolder = (LADDER().find(f=>f.rankNum===0) || {}).name || null;
   render();
 }
 // What the current sheet has cost, in points — NOT the sum of levels, now that
@@ -3270,10 +3308,12 @@ function resultBox(){
   // on a SECOND title loss the run is over and render() returns the end screen
   // before it reaches here, but I'd rather this be true by its own condition than
   // by the ordering of a function two hundred lines away.
-  if (G.spared && G.titleLosses === 1 && !won && o.f.rankNum === 0) {
+  if (G.titleLosses === 1 && !won && o.titleFight) {
     const sp=document.createElement('div'); sp.className='note';
     sp.style.color='var(--gold)'; sp.style.marginTop='.4rem';
-    sp.textContent="The UFC isn't cutting you for losing a title fight. That one's free — but the next one ends the run.";
+    sp.textContent = o.defense
+      ? "You lost the belt — but not the run. Win it back, or drop one more title fight and the era's over."
+      : "The UFC isn't cutting you for challenging for the belt. That one's free — but the next title loss ends the run.";
     p.appendChild(sp);
   }
   // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
@@ -3470,11 +3510,14 @@ function offerBox(){
   const list=offers();
   for(const o of list){
     const b=document.createElement('button'); b.className='opp'+(o.p<0.4?' risky':'');
-    const rk=o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
+    // A title shot (challenging the belt holder) reads CHAMPION even if the man wearing
+    // the belt is ranked #2 — he holds it, that's what matters.
+    const titleShot = o.titleFight && !o.defense;
+    const rk = titleShot ? 'CHAMPION' : (o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum));
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
+      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
     // WHO you fight is still chosen here (and the difficulty band is honest — that's
@@ -3862,7 +3905,7 @@ function planBox(){
   // WHO you're in there with.
   const hd=document.createElement('div'); hd.className='plan-hd';
   hd.innerHTML=avatarHTML(o.f)+'<div class="oppwho"><div class="rk"></div><div class="nm"></div><div class="rec"></div></div>';
-  const rk = o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum);
+  const rk = (o.titleFight && !o.defense) ? 'CHAMPION' : (o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum));
   hd.querySelector('.rk').textContent=rk;
   hd.querySelector('.nm').textContent=o.f.name;
   hd.querySelector('.rec').textContent=o.f.record;
