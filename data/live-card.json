@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T15:14:59.048Z",
+ "generatedAt": "2026-07-25T15:45:43.495Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -5818,6 +5818,382 @@
       ]
      },
      "capturedAt": "2026-07-25T15:12:46.218Z"
+    }
+   ]
+  },
+  "Dustin Jacoby": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Muhammad Said",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "4:49",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Muhammad Said",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 93,
+      "totL": 34,
+      "totA": 93,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       45
+      ],
+      "body": [
+       3,
+       11
+      ],
+      "leg": [
+       23,
+       37
+      ],
+      "dist": [
+       34,
+       93
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 60,
+      "sigA": 133,
+      "totL": 60,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       41,
+       105
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       10,
+       12
+      ],
+      "dist": [
+       52,
+       121
+      ],
+      "clinch": [
+       4,
+       7
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "capturedAt": "2026-07-25T15:45:43.321Z"
+    }
+   ]
+  },
+  "Muhammad Said": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Dustin Jacoby",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 2,
+     "time": "4:49",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Dustin Jacoby",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 60,
+      "sigA": 133,
+      "totL": 60,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       41,
+       105
+      ],
+      "body": [
+       9,
+       16
+      ],
+      "leg": [
+       10,
+       12
+      ],
+      "dist": [
+       52,
+       121
+      ],
+      "clinch": [
+       4,
+       7
+      ],
+      "ground": [
+       4,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 93,
+      "totL": 34,
+      "totA": 93,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       45
+      ],
+      "body": [
+       3,
+       11
+      ],
+      "leg": [
+       23,
+       37
+      ],
+      "dist": [
+       34,
+       93
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T15:45:43.321Z"
+    }
+   ]
+  },
+  "Valter Walker": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Thomas Petersen",
+     "result": "W",
+     "method": "Submission",
+     "round": 1,
+     "time": "3:37",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Thomas Petersen",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 7,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:42",
+      "head": [
+       1,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T15:45:43.364Z"
+    }
+   ]
+  },
+  "Thomas Petersen": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Valter Walker",
+     "result": "L",
+     "method": "Submission",
+     "round": 1,
+     "time": "3:37",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Valter Walker",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 7,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:42",
+      "head": [
+       1,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 3,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T15:45:43.364Z"
     }
    ]
   }
