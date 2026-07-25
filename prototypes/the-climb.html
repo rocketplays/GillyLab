@@ -212,7 +212,7 @@
   .pc-line.pro .mk{color:var(--accent)}
   .pc-line.con .mk{color:var(--accent2)}
   .corner{display:flex;gap:.5rem;align-items:flex-start;margin-top:.85rem;padding-top:.7rem;
-    border-top:1px solid var(--border);font-size:.78rem;color:var(--muted);font-style:italic;line-height:1.5}
+    border-top:1px solid var(--border);font-size:.78rem;color:var(--text);font-style:italic;line-height:1.5}
   .plan-act{display:flex;gap:.5rem;align-items:center;margin-top:.85rem}
 
   /* ── IN-FIGHT MOMENTS ─────────────────────────────────────────────────────── */
@@ -3707,7 +3707,10 @@ function planFor(o){
   // FIGHT IQ -> how much of the read you get. 0.25 at IQ 1, 1.0 at IQ 10. It gates
   // how many pro/con lines show and how sure the corner is — never the edges
   // themselves, which are always fully in play whether you can see them or not.
-  const clarity = 0.25 + 0.75*(((G.attrs.fightiq||ATTR_MIN)-ATTR_MIN)/(ATTR_MAX-ATTR_MIN));
+  // Starts near ZERO so the bottom of the ladder shows no named pros/cons at all — the
+  // read is deducible from the scouting tape but never handed to you, and you're meant to
+  // be unsure of the exact best path. Climbs to 1.0 (the whole breakdown) as Fight IQ maxes.
+  const clarity = 0.12 + 0.88*(((G.attrs.fightiq||ATTR_MIN)-ATTR_MIN)/(ATTR_MAX-ATTR_MIN));
   // A natural phrase for the corner, and whether YOU can actually implement the plan.
   // The corner only ever steers toward a phase you can run: everyone can strike, but
   // "keep it on the mat" needs the wrestling to get it there, so a pure striker is
@@ -3875,21 +3878,29 @@ function planBox(){
   // Pros/cons for the selected option, as many lines as Fight IQ lets you see.
   const pcFor = (option)=>{
     const box=document.createElement('div'); box.className='pc';
+    let shown = 0;
     const show=(arr,cls)=>{
       if(!arr.length) return;
       const mk = cls==='pro' ? '+' : '−';
-      const cnt = Math.max(1, Math.round(plan.clarity*arr.length));
+      // NO FLOOR — at low Fight IQ this rounds to zero and the breakdown stays hidden, so
+      // the read is DEDUCIBLE (the scouting stats above are all there) but never spelled
+      // out. You're meant to be unsure of the exact best path; buying Fight IQ is what turns
+      // the raw tape into named pros and cons. Skill is reading it before you can afford to.
+      const cnt = Math.round(plan.clarity*arr.length);
       arr.slice(0,cnt).forEach(x=>{
         const l=document.createElement('div'); l.className='pc-line '+cls;
         const m=document.createElement('span'); m.className='mk'; m.textContent=mk;
         const t=document.createElement('span'); t.textContent=x.t;
-        l.appendChild(m); l.appendChild(t); box.appendChild(l);
+        l.appendChild(m); l.appendChild(t); box.appendChild(l); shown++;
       });
     };
     show(option.pros,'pro'); show(option.cons,'con');
     if(!option.pros.length && !option.cons.length){
       const l=document.createElement('div'); l.className='pc-line'; l.style.color='var(--muted)';
       l.textContent="Not much either way here — it's a wash against this guy."; box.appendChild(l);
+    } else if(shown===0){
+      const l=document.createElement('div'); l.className='pc-line'; l.style.color='var(--muted)';
+      l.textContent="Your corner can't call it — read him off the tape yourself."; box.appendChild(l);
     }
     return box;
   };
