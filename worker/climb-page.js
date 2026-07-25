@@ -872,7 +872,15 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // you fade" arc needs. 0 through 32, +5%/yr, capped at 40%.
 function ageDecline(){
   const age = START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12);
-  return Math.max(0, Math.min(0.40, (age - 32) * 0.05));
+  const ageC = Math.max(0, (age - 32) * 0.04);   // the calendar — slow, late
+  // HARD MILES, and the hardest are championship rounds. Decline tracks the TITLE
+  // fights on your record — the belt-WINNING fight is free, but every DEFENSE after
+  // wears you ~10% — so the CLIMB barely feels it while a long REIGN fades hard: a
+  // champion is dominant early and fraying late. A truly extreme grind frays too.
+  const titleFights = (G.log||[]).filter(f => f.rounds && f.rounds.length === 5).length;
+  const reignWear = Math.max(0, titleFights - 1) * 0.10;
+  const grind = Math.max(0, (G.log||[]).length - 22) * 0.025;
+  return Math.min(0.55, ageC + reignWear + grind);
 }
 
 // THE REGIONAL RECORD YOU ARRIVE WITH. Playtest, and it's the premise the whole
@@ -1591,7 +1599,7 @@ function winProb(oppName){
   p += styleDelta(G.attrs, o.style||{}, isChamp(o))/100;
   // Momentum: a real climb rewards form. Small, so it flavors rather than rules.
   p += Math.min(0.04, (G.streak||0)*0.008);
-  p -= ageDecline() * 0.6;   // the legs and the timing go first
+  p -= ageDecline() * 0.9;   // the legs and the timing go first
   return Math.max(0.05, Math.min(0.95, p));
 }
 const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
@@ -1919,14 +1927,13 @@ function champDefenders(){
   const top = LADDER().filter(f => f.rankNum >= 1 && f.rankNum < 99 && f.name !== last)
     .sort((a,b)=>a.rankNum-b.rankNum).slice(0,3);
   return top.map(f => {
-    // A champion is a favorite, never a lock — the contenders are the best in the world,
-    // so a defense caps at a 3:1 favorite (you still drop one in four). THE CAP is what
-    // keeps it hard: no matter how many points you pour in, a defense stays 75%, so the
-    // reign can't run away. That means a small +1 a defense is safe — it keeps the run
-    // progressing and gives a cushion for reclaiming the belt if you drop it, without
-    // ever making a title fight easier. Playtest: zero points "feels like the game
-    // doesn't progress"; +1 with the cap is the fix.
-    const p = Math.min(0.75, winProb(f.name));
+    // A champion dominates EARLY and fades LATE — that's the wear-and-age decline
+    // (see ageDecline), not a flat cap. A fresh champ can blow out his first defenses;
+    // by the fourth or fifth, the hard miles of championship rounds have caught up and
+    // a hungry contender is a real threat. The soft 0.90 only kills pure formalities.
+    // A defense pays +1 — the cap on difficulty is the decline, so points can't run the
+    // reign away, and the +1 gives a cushion for reclaiming the belt if you drop it.
+    const p = Math.min(0.80, winProb(f.name));
     return { f, p, reward: 1, jump: 0, titleFight:true, defense:true };
   });
 }
@@ -3405,6 +3412,14 @@ function calloutOffer(){
 function offerBox(){
   const p=document.createElement('div'); p.className='panel';
   p.innerHTML='<div class="rl">'+(G.champ?'Defend your title':'Pick your next fight')+'</div>';
+  // WORN DOWN — when the decline is real, say so, so the retire-or-push decision has
+  // the feel it should: you can sense yourself slipping.
+  if (ageDecline() > 0.12){
+    const wn=document.createElement('div'); wn.className='champ-note';
+    wn.style.cssText='border-color:var(--accent2);color:var(--accent2)';
+    wn.innerHTML='<b>The miles are showing.</b> The tank and the chin aren\\'t what they were — every fight from here is tougher than the last.';
+    p.appendChild(wn);
+  }
   if (G.champ){
     const ch=document.createElement('div'); ch.className='champ-note';
     const _t=legacyTier();
