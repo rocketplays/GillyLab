@@ -2863,12 +2863,19 @@ function upgrade(){
 // bank a hype pip, and G.avenged retires the grudge so he stops appearing. Lose again
 // and it's an ordinary loss that deepens the record. A third meeting is a trilogy.
 // It distorts nothing: your conqueror is almost always a few rungs away already.
+// A rivalry has to marinate — a real one is a loss, a rebuild, THEN the rematch, not
+// a do-over handed to you the very next night. So a fresh loss stays hidden for a few
+// fights (the man who beat you moves on, you get back on track), and only then does he
+// resurface as a RIVAL card. An OLDER unavenged loss is already past this window, so
+// the loop below naturally offers the grudge that's had time to build.
+const RIVAL_COOLDOWN = 3;
 function rivalOffer(){
   if (G.rank == null) return null;
   const avenged = G.avenged || new Set();
   for (let i = G.log.length - 1; i >= 0; i--){
     const Lx = G.log[i];
     if (Lx.won || avenged.has(Lx.opp)) continue;      // only men who BEAT you, not yet avenged
+    if (G.log.length - 1 - i < RIVAL_COOLDOWN) continue;  // too soon — let it build first
     const f = LADDER().find(x => x.name === Lx.opp && x.rankNum < 99);
     if (!f) continue;                                 // must still be on the ladder
     const w = G.log.filter(x => x.opp === f.name && x.won).length;
