@@ -1917,12 +1917,14 @@ function champDefenders(){
     .sort((a,b)=>a.rankNum-b.rankNum).slice(0,3);
   return top.map(f => {
     // A champion is a favorite, never a lock — the contenders are the best in the world,
-    // so a defense caps at a 3:1 favorite (you still drop one in four). And there are NO
-    // upgrade points up here: you defend with the fighter you built, so the reign can't
-    // run away into someone nobody can touch. Playtest: "it gets very easy once you get
-    // there — you keep upgrading and you're just way better than everyone."
+    // so a defense caps at a 3:1 favorite (you still drop one in four). THE CAP is what
+    // keeps it hard: no matter how many points you pour in, a defense stays 75%, so the
+    // reign can't run away. That means a small +1 a defense is safe — it keeps the run
+    // progressing and gives a cushion for reclaiming the belt if you drop it, without
+    // ever making a title fight easier. Playtest: zero points "feels like the game
+    // doesn't progress"; +1 with the cap is the fix.
     const p = Math.min(0.75, winProb(f.name));
-    return { f, p, reward: 0, jump: 0, titleFight:true, defense:true };
+    return { f, p, reward: 1, jump: 0, titleFight:true, defense:true };
   });
 }
 function offers(){
@@ -3414,7 +3416,7 @@ function offerBox(){
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-      '<div class="rw">'+(o.defense ? 'Defend the belt' : '+'+o.reward+' upgrade pts if you win')+'</div>';
+      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
     // WHO you fight is still chosen here (and the difficulty band is honest — that's
