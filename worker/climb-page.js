@@ -864,7 +864,7 @@ const UNRANKED_WINS = 1;
 // cost you rank, time and a soft matchmaking step-down. The score is the record
 // you got there with.
 const CUT_AT = 5;
-const START_AGE = 24, MONTHS_PER_FIGHT = 4;
+const START_AGE = 24, MONTHS_PER_FIGHT = 7;
 // AGE CATCHES EVERYONE. ~4 months a fight, so a long run drifts a fighter into his
 // thirties — and past ~32 the tank and the chin start to go. A modest, LATE decline:
 // win the belt young and you never feel it, but grind a run into your late thirties and
@@ -872,7 +872,7 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 4;
 // you fade" arc needs. 0 through 32, +5%/yr, capped at 40%.
 function ageDecline(){
   const age = START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12);
-  const ageC = Math.max(0, (age - 32) * 0.04);   // the calendar — slow, late
+  const ageC = Math.max(0, (age - 36) * 0.04);   // the calendar — bites only a genuinely old fighter
   // HARD MILES, and the hardest are championship rounds. Decline tracks the TITLE
   // fights on your record — the belt-WINNING fight is free, but every DEFENSE after
   // wears you ~10% — so the CLIMB barely feels it while a long REIGN fades hard: a
