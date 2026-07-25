@@ -201,6 +201,11 @@
     padding:.45rem .7rem;font-size:.8rem;color:var(--text);cursor:pointer;font-family:inherit}
   .plan-opt:hover{border-color:var(--muted)}
   .plan-opt.on{border-color:var(--accent);background:rgba(0,230,104,.09);color:var(--accent)}
+  /* corner's pick — a high-Fight-IQ steer, marked so the optimal plan is unmistakable */
+  .plan-opt.pick{border-color:var(--gold)}
+  .plan-opt.pick.on{border-color:var(--accent)}
+  .plan-opt .pick-tag{display:block;font-size:.6rem;text-transform:uppercase;letter-spacing:.05em;
+    color:var(--gold);font-weight:700;margin-top:.15rem}
   .pc{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:.5rem .65rem;margin-top:.5rem}
   .pc-line{display:flex;gap:.45rem;align-items:flex-start;font-size:.78rem;line-height:1.5;margin:.2rem 0}
   .pc-line .mk{flex:0 0 auto;width:.85rem;text-align:center;font-weight:700}
@@ -3710,6 +3715,13 @@ function planFor(o){
   wStrike.short='on the feet';   wStrike.exec=true;
   wGrapple.short='on the mat';   wGrapple.exec = (yWr>=0.4 || yGrap>=0.55);
   wClinch.short='in the clinch'; wClinch.exec = (yWr>=0.3 || (yWr+yGrap)>=0.55);
+  // A corner-ready phrase for each READ too, so a high-IQ corner can name the best one
+  // — not just the best WHERE. Without these the read axis got only generic matchup
+  // colour that mapped to none of the three buttons (playtest: "even at 10/10 the corner
+  // doesn't make clear what to choose"), so half the plan was unguided at every level.
+  rEarly.short   = 'press the pace early';
+  rDeep.short    = 'take him into deep water';
+  rCounter.short = 'sit back and counter';
   // THE OPPONENT, IN A CORNER'S WORDS — and this is what makes the advice matchup-
   // dependent instead of a stock speech. Playtest: "it gives the same advice every
   // time, it should be matchup dependent." The corner used to lead with your phase
@@ -3760,21 +3772,26 @@ function planFor(o){
 // phase, the counter, conviction, the why, the read with detail, then the one trap he
 // punishes — information accumulating. Because read/counter/trap come from the man in
 // front of you, a wrestler and a puncher get different speeches at every level.
-function cornerLine(iq, s, coach){
-  const ot = coach.read, cnt = coach.counter, tr = coach.trap;
+// s = best WHERE short, rd = best READ short, both the actual highest-edge picks. The
+// corner names the WHERE from tier 3 and adds the READ from tier 4 up, so by high Fight
+// IQ it points at BOTH buttons you should press (and the plan panel marks them too). Low
+// tiers stay murky on purpose — Fight IQ is the dial from "your fight to read" to "clear
+// as day", and it's paid for in the combat points you didn't spend.
+function cornerLine(iq, s, rd, coach){
+  const ot = coach.read, tr = coach.trap;
   const C  = t => 'Your corner: “'+t+'”';
   const cap = t => t.charAt(0).toUpperCase()+t.slice(1);
   switch (Math.max(1, Math.min(10, iq|0))) {
     case 1:  return C("Your fight to read in there. Trust your gut and don't hesitate.");
     case 2:  return C(ot+". Feel him out early before you commit.");
     case 3:  return C(ot+". I'd keep it "+s+" and adjust from there.");
-    case 4:  return C("Keep it "+s+". "+cap(cnt)+".");
-    case 5:  return C("Keep it "+s+", "+cnt+", and fight your fight.");
-    case 6:  return C(ot+". Keep it "+s+", "+cnt+".");
-    case 7:  return C(ot+". Keep it "+s+", "+cnt+" — that's the game plan.");
-    case 8:  return C("Keep it "+s+", "+cnt+" — do that and it's your night.");
-    case 9:  return C("Keep it "+s+", "+cnt+". And watch it: "+tr+".");
-    default: return C(ot+". Keep it "+s+", "+cnt+", and whatever happens, "+tr+". Clear as day.");
+    case 4:  return C("Keep it "+s+". "+cap(rd)+".");
+    case 5:  return C("Keep it "+s+", "+rd+", and fight your fight.");
+    case 6:  return C(ot+". Keep it "+s+", "+rd+".");
+    case 7:  return C(ot+". Keep it "+s+", "+rd+" — that's the game plan.");
+    case 8:  return C("Keep it "+s+", "+rd+" — do that and it's your night.");
+    case 9:  return C("Keep it "+s+", "+rd+". And watch it: "+tr+".");
+    default: return C(ot+". Keep it "+s+", "+rd+", and whatever happens, "+tr+". Clear as day.");
   }
 }
 
@@ -3863,14 +3880,26 @@ function planBox(){
     return box;
   };
 
-  const group = (labelText, arr, kind)=>{
+  // THE CORNER'S ACTUAL PICKS — highest-edge WHERE you can run, highest-edge READ.
+  // At high Fight IQ (>=8) they're marked right on the buttons so the optimal plan is
+  // unmistakable — that's what your Fight IQ points bought, paid for in the combat
+  // levels you skipped. Below that you read the pros and cons and back your own gut.
+  const effIQ = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq||ATTR_MIN);
+  const execWhere = plan.where.filter(w=>w.exec);
+  const bestW = (execWhere.length?execWhere:plan.where).slice().sort((a,b)=>b.edge-a.edge)[0];
+  const bestR = plan.read.slice().sort((a,b)=>b.edge-a.edge)[0];
+  const showPick = effIQ >= 8;
+
+  const group = (labelText, arr, kind, pickId)=>{
     const g=document.createElement('div');
     const lab=document.createElement('div'); lab.className='plan-lab'; lab.textContent=labelText; g.appendChild(lab);
     const opts=document.createElement('div'); opts.className='plan-opts';
     const sel=G.pending[kind];
     arr.forEach(op=>{
-      const b=document.createElement('button'); b.className='plan-opt'+(sel===op.id?' on':'');
-      b.textContent=op.label;
+      const isPick = showPick && op.id===pickId;
+      const b=document.createElement('button'); b.className='plan-opt'+(sel===op.id?' on':'')+(isPick?' pick':'');
+      const t=document.createElement('span'); t.textContent=op.label; b.appendChild(t);
+      if(isPick){ const tag=document.createElement('span'); tag.className='pick-tag'; tag.textContent="corner's pick"; b.appendChild(tag); }
       b.onclick=()=>{ G.pending[kind]=op.id; render(); };
       opts.appendChild(b);
     });
@@ -3880,17 +3909,15 @@ function planBox(){
     return g;
   };
 
-  wrap.appendChild(group('Where do you want the fight?', plan.where, 'where'));
-  wrap.appendChild(group('Key read', plan.read, 'read'));
+  wrap.appendChild(group('Where do you want the fight?', plan.where, 'where', bestW.id));
+  wrap.appendChild(group('Key read', plan.read, 'read', bestR.id));
 
-  // The corner — a steer, not a verdict, only as sharp as your Fight IQ, and only
-  // ever toward a phase you can actually fight in. Best-edge WHERE among the plans
-  // this fighter can run (so a pure striker is never told to grapple), plus the
-  // best-edge READ and the matchup's trap, which higher Fight IQ unlocks in turn.
-  const execWhere = plan.where.filter(w=>w.exec);
-  const bestW = (execWhere.length?execWhere:plan.where).slice().sort((a,b)=>b.edge-a.edge)[0];
+  // The corner — a steer, not a verdict, only as sharp as your Fight IQ, and only ever
+  // toward a phase you can actually fight in. It names the best-edge WHERE (never one a
+  // pure striker can't run) AND the best-edge READ, each unlocked in turn as Fight IQ
+  // rises, plus the matchup's trap at the top — the same two picks marked on the buttons.
   const corner=document.createElement('div'); corner.className='corner';
-  corner.textContent=cornerLine(G.sig==='general'?ATTR_MAX:(G.attrs.fightiq||ATTR_MIN), bestW.short||bestW.label.toLowerCase(), plan.coach);
+  corner.textContent=cornerLine(effIQ, bestW.short||bestW.label.toLowerCase(), bestR.short||bestR.label.toLowerCase(), plan.coach);
   wrap.appendChild(corner);
 
   const act=document.createElement('div'); act.className='plan-act';
