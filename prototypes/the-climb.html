@@ -1647,6 +1647,14 @@ const bo5 = p => { const q = 1-p; return 10*p*p*p*q*q + 5*p*p*p*p*q + p*p*p*p*p;
 // result distribution. The cardio weighting below is where the odds are meant to
 // move, deliberately and visibly.
 const isChamp = f => !!f && f.rankNum <= 0.5;   // champ + interim = the belt is on the line
+// WHO HOLDS THE BELT is dynamic (G.beltHolder). The CHAMPION badge must be read off THAT,
+// not the static rank-0 slot: once the belt changes hands, the old champion still sits at
+// rank 0 in the ladder and would wrongly read "CHAMP" everywhere he appears (playtest: beat
+// the flyweight champ, lost the belt on to someone else, and the ex-champ kept showing as
+// CHAMP as a repeating rival). holdsBelt is the truth; rankBadge is the label to show.
+const holdsBelt = f => !!f && !!G.beltHolder && f.name === G.beltHolder;
+const rankBadge = f => !f ? '' : holdsBelt(f) ? 'CHAMPION'
+  : f.rankNum >= 99 ? 'Unranked' : f.rankNum <= 0.5 ? 'Ex-champ' : '#'+f.rankNum;
 const boN = (p, n) => n === 5 ? bo5(p) : bo3(p);
 // Inverse of boN: given P(win the fight), what per-round probability produces it?
 // Monotone on [0,1], so bisect — closed form is a cubic (or quintic) and not worth it.
@@ -3420,8 +3428,9 @@ function resultBox(){
     const rn=document.createElement('div'); rn.className='note'; rn.style.marginTop='.3rem';
     rn.style.color = won ? 'var(--gold)' : 'var(--muted)';
     const tookRank = (won && G.rank === o.f.rankNum && o.f.rankNum < 99);
+    // A rival is never the current belt-holder (that's a title shot), so beating one
+    // settles the grudge and takes his rung — it does NOT hand you the belt.
     rn.textContent = !won ? o.f.name+' still owns you.'
-      : o.f.rankNum <= 0.5 ? 'You settled the score with '+o.f.name+' — and the belt is yours. Grudge retired.'
       : 'You settled the score with '+o.f.name+'.'+(tookRank ? ' His #'+o.f.rankNum+' spot is yours,' : ' Grudge retired,')+' and your hype is up.';
     p.appendChild(rn);
   }
@@ -3501,14 +3510,22 @@ const RIVAL_COOLDOWN = 3;
 function rivalOffer(){
   if (G.rank == null) return null;
   const avenged = G.avenged || new Set();
+  const beatenSince = new Set();   // men you've beaten as we scan back — the grudge is settled
   for (let i = G.log.length - 1; i >= 0; i--){
     const Lx = G.log[i];
-    if (Lx.won || avenged.has(Lx.opp)) continue;      // only men who BEAT you, not yet avenged
+    // A WIN over him, more recent than any older loss, retires the grudge — INCLUDING the
+    // win that took his belt. Before, only a rival-CARD win set G.avenged, so beating the
+    // champion for the title left him an "unavenged loss" and he kept coming back as a
+    // rival (playtest: beat the champ, then fought him three more times as "the champ").
+    if (Lx.won) { beatenSince.add(Lx.opp); continue; }
+    if (avenged.has(Lx.opp) || beatenSince.has(Lx.opp)) continue;
+    if (Lx.opp === G.beltHolder) continue;            // he holds the belt now — that's a TITLE SHOT, not a grudge
     if (G.log.length - 1 - i < RIVAL_COOLDOWN) continue;  // too soon — let it build first
     const f = LADDER().find(x => x.name === Lx.opp && x.rankNum < 99);
     if (!f) continue;                                 // must still be on the ladder
     const w = G.log.filter(x => x.opp === f.name && x.won).length;
     const l = G.log.filter(x => x.opp === f.name && !x.won).length;
+    if (w + l >= 3) continue;                         // TRILOGY IS THE CAP — no fourth meeting (playtest: 4 in a row)
     return { f, p: winProb(f.name), reward: rewardFor(f, winProb(f.name)), jump: f.rankNum,
              rival:true, histW:w, histL:l, trilogy:(w+l) >= 2, lossHow:Lx.method, lossRank:Lx.rank };
   }
@@ -3575,7 +3592,7 @@ function offerBox(){
     // A title shot (challenging the belt holder) reads CHAMPION even if the man wearing
     // the belt is ranked #2 — he holds it, that's what matters.
     const titleShot = o.titleFight && !o.defense;
-    const rk = titleShot ? 'CHAMPION' : (o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum));
+    const rk = titleShot ? 'CHAMPION' : rankBadge(o.f);
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
@@ -3616,7 +3633,7 @@ function offerBox(){
     const lbl=document.createElement('div'); lbl.className='rl rv-rl';
     lbl.textContent = rv.trilogy ? 'The trilogy' : 'Unfinished business'; p.appendChild(lbl);
     const c=document.createElement('button'); c.className='opp rival';
-    const rk = rv.f.rankNum===0 ? 'CHAMP' : '#'+rv.f.rankNum;
+    const rk = holdsBelt(rv.f) ? 'CHAMP' : rv.f.rankNum<=0.5 ? 'Ex-champ' : '#'+rv.f.rankNum;
     const rec = rv.histW+'\u2013'+rv.histL;
     const how = rv.lossHow==='KO/TKO' ? 'knocked you out' : rv.lossHow==='submission' ? 'submitted you' : 'took a decision';
     const at  = (rv.lossRank!=null && rv.lossRank<99) ? ' at #'+(rv.lossRank===0?'C':rv.lossRank) : '';
@@ -3969,7 +3986,7 @@ function planBox(){
   // WHO you're in there with.
   const hd=document.createElement('div'); hd.className='plan-hd';
   hd.innerHTML=avatarHTML(o.f)+'<div class="oppwho"><div class="rk"></div><div class="nm"></div><div class="rec"></div></div>';
-  const rk = (o.titleFight && !o.defense) ? 'CHAMPION' : (o.f.rankNum===99?'Unranked':(o.f.rankNum===0?'CHAMPION':'#'+o.f.rankNum));
+  const rk = (o.titleFight && !o.defense) ? 'CHAMPION' : rankBadge(o.f);
   hd.querySelector('.rk').textContent=rk;
   hd.querySelector('.nm').textContent=o.f.name;
   hd.querySelector('.rec').textContent=o.f.record;
