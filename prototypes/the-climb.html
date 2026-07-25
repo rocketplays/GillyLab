@@ -2482,8 +2482,17 @@ function applyPunch(o, R){
   const r = o.p / Math.max(0.05, 1 - o.p);
   if (!R.won && Math.random() < Math.min(0.5, SUB_CHANCE * r))   // you catch one from behind
     return { won:true, fin:true, method:'submission', rounds:R.rounds, roundsWon:R.roundsWon, finRound: R.rounds.length||1 };
-  if ( R.won && Math.random() < SUB_CHANCE)                       // swept hunting the finish
-    return { won:false, fin:false, method:'decision', rounds:R.rounds, roundsWon:R.roundsWon, finRound: 0 };
+  if ( R.won && Math.random() < SUB_CHANCE){                      // swept hunting the finish
+    // A DECISION LOSS NEEDS A LOSING CARD. Passing R.rounds through unchanged left the
+    // winning scorecard on a fight this just flipped to a loss — playtest: "lost by
+    // decision but all three rounds show a green check." Flip rounds from the back until
+    // you're a round short, so the card reads like the close decision you actually
+    // dropped (e.g. 3-0 -> 1-2) instead of contradicting the verdict.
+    const rounds = R.rounds.slice(); let rw = rounds.filter(Boolean).length;
+    const needed = (rounds.length + 1) / 2;
+    for (let i = rounds.length - 1; i >= 0 && rw >= needed; i--) if (rounds[i]){ rounds[i] = false; rw--; }
+    return { won:false, fin:false, method:'decision', rounds, roundsWon:rw, finRound: 0 };
+  }
   return R;
 }
 
