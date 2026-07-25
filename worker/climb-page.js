@@ -2723,9 +2723,13 @@ function applyResult(o, R){
       if (G.titleLosses >= 2) G.outOfShots = true;   // the second belt loss ends the run
       else if (!G.champ) G.spared = true;            // a first lost CHALLENGE is still free
     }
-    // The first lost CHALLENGE doesn't spend a life (nobody's cut for daring to
-    // challenge); a lost DEFENSE costs a life like any other loss.
-    if (!(beltOnTheLine && !G.champ && G.titleLosses === 1)) G.losses++;
+    // BELT LOSSES DON'T SPEND A CUT LIFE. G.losses is the CUT budget only — five losses
+    // to CONTENDERS and the UFC releases you. A title loss (challenge OR defense) is
+    // governed by the two-strike rule above, not this budget. Counting a defense here let
+    // a belt loss quietly be your fifth "life" and END the run while the card was saying
+    // "you lost the belt but not the run — win it back" (playtest: exactly that). The
+    // DISPLAYED record still counts every loss — lossCount() reads the log, not this.
+    if (!beltOnTheLine) G.losses++;
     G.streak = 0;
     // ANY loss breaks your momentum and resets the callout meter — which is the whole
     // downside of calling your shot and missing: you spent three wins of hype, dropped
