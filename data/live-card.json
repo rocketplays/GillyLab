@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-19T03:17:58.934Z",
+ "generatedAt": "2026-07-25T13:36:13.723Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -4878,6 +4878,194 @@
       ]
      },
      "capturedAt": "2026-07-19T03:17:58.824Z"
+    }
+   ]
+  },
+  "Cody Gibson": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Abdul Hussein",
+     "result": "L",
+     "method": "Submission (Arm Triangle)",
+     "round": 3,
+     "time": "3:07",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Abdul Hussein",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 81,
+      "totL": 53,
+      "totA": 94,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       25,
+       28
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       22,
+       55
+      ],
+      "clinch": [
+       21,
+       25
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 65,
+      "sigA": 99,
+      "totL": 91,
+      "totA": 133,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 3,
+      "rev": 2,
+      "ctrl": "7:47",
+      "head": [
+       58,
+       91
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       38,
+       63
+      ],
+      "clinch": [
+       11,
+       12
+      ],
+      "ground": [
+       16,
+       24
+      ]
+     },
+     "capturedAt": "2026-07-25T13:36:13.595Z"
+    }
+   ]
+  },
+  "Abdul Hussein": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Cody Gibson",
+     "result": "W",
+     "method": "Submission (Arm Triangle)",
+     "round": 3,
+     "time": "3:07",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Cody Gibson",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 65,
+      "sigA": 99,
+      "totL": 91,
+      "totA": 133,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 3,
+      "rev": 2,
+      "ctrl": "7:47",
+      "head": [
+       58,
+       91
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       38,
+       63
+      ],
+      "clinch": [
+       11,
+       12
+      ],
+      "ground": [
+       16,
+       24
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 81,
+      "totL": 53,
+      "totA": 94,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "1:16",
+      "head": [
+       13,
+       47
+      ],
+      "body": [
+       25,
+       28
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       22,
+       55
+      ],
+      "clinch": [
+       21,
+       25
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-25T13:36:13.595Z"
     }
    ]
   }
