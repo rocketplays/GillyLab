@@ -3012,8 +3012,13 @@ function render(){
   // has to end with the honest one: you didn't get released, you ran out of cracks
   // at the belt. Ordering is the whole fix — put this second and the 21% of runs
   // this exists for would still print "Cut".
-  if (G.outOfShots){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? 'You lose the belt for the last time — and there’s no way back to it. The reign is over.' : 'No shots left. The title stays out of reach.')); return; }
-  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? "After that loss, you call it a career as a former champion." : 'Cut. '+CUT_AT+' losses.')); return; }
+  // A former champion's ending names his LEGACY, not just the loss — the screen must
+  // agree with the share card (which reads THE GOAT / CHAMPION), so a 5-defense reign
+  // never ends on a bare "no belt".
+  const legacyTail = () => { const t=legacyTier(), d=G.defenses||0;
+    return d ? ' You leave '+(t&&t.goat?'as the GOAT':'a champion')+' — '+d+' title defense'+(d===1?'':'s')+'.' : ' You leave a former champion.'; };
+  if (G.outOfShots){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? 'You lose the belt for the last time. The reign is over.'+legacyTail() : 'No shots left. The title stays out of reach.')); return; }
+  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? 'After that loss, you call it a career.'+legacyTail() : 'Cut. '+CUT_AT+' losses.')); return; }
   // DRAWING UP A PLAN IS A FOCUS MODE. You've picked the man; now the screen is
   // the fight you're about to have, and nothing else — the offer list, the upgrade
   // panel and the log would all just be noise you have to scroll past to commit.
@@ -4130,13 +4135,19 @@ function runSummary(){
     // designs for one moment is how they drift. This is endBox's own headline,
     // built by the same expression, so the picture can't say something the page
     // didn't.
-    verdict: G.champ ? (legacyTier() && legacyTier().goat ? 'THE GOAT.' : 'CHAMPION.')
+    // LEGACY OUTRANKS THE ENDING. A champion — current OR former — keeps his legacy on
+    // the card no matter HOW the run ended: losing your last belt fight (outOfShots) or
+    // getting cut later doesn't turn a 5-defense GOAT into "NO BELT. Out of title shots"
+    // (playtest: 18-6, 5 defenses, retired at GOAT, card said No belt). Only a fighter
+    // who NEVER won it reads out-of-shots or cut. So wasChamp is checked BEFORE outOfShots.
+    verdict: (G.champ || G.wasChamp) ? (legacyTier() && legacyTier().goat ? 'THE GOAT.' : 'CHAMPION.')
            : G.outOfShots ? 'NO BELT.'
-           : G.wasChamp ? 'RETIRED.'
            : 'CUT.',
-    verdictSub: G.champ ? ((G.defenses||0) ? (G.defenses+' title defense'+(G.defenses===1?'':'s')+'.') : 'You did it.')
+    verdictSub: (G.champ || G.wasChamp)
+                ? ((G.defenses||0) ? (G.defenses+' title defense'+(G.defenses===1?'':'s')+'.')
+                                   : (G.wasChamp ? 'Former champion.' : 'You did it.'))
               : G.outOfShots ? 'Out of title shots.'
-              : (G.wasChamp ? 'Former champion.' : CUT_AT+' losses.'),
+              : CUT_AT+' losses.',
     signature: SIG(G.sig) ? SIG(G.sig).name : null,
     defenses: G.defenses || 0,
     wasChamp: !!G.wasChamp,
