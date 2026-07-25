@@ -1493,7 +1493,7 @@ export const pickemPage = ({ card, score, email, name, subscribed }) => {
 <meta name="robots" content="noindex">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet"/>
-<script src="/gl-sheet.js?v=1d3a810e" defer></script>
+<script src="/gl-sheet.js?v=fdb93b20" defer></script>
 <style>
   .pl-share{position:fixed;inset:0;z-index:80;display:flex;align-items:center;justify-content:center;padding:1.25rem;background:rgba(0,0,0,.72);overflow-y:auto;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .18s ease,visibility .18s}
   .pl-share.open{visibility:visible;opacity:1;pointer-events:auto}

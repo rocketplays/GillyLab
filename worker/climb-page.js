@@ -15,7 +15,7 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
      the link the sheet renders in a fallback face and looks like a knock-off of
      itself. Both are relative because this page is served from the repo root. -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="/gl-sheet.js?v=1d3a810e" defer></script>
+<script src="/gl-sheet.js?v=fdb93b20" defer></script>
 <!-- HEAD SLOT — filled by scripts/gen-climb-page.cjs from the worker, empty here.
      Carries the Open Graph tags (so a shared link previews) and, for logged-out
      visitors, the CLIMB_LOCKED flag. Both have to come from the worker rather than
@@ -3871,8 +3871,13 @@ function runSummary(){
     // designs for one moment is how they drift. This is endBox's own headline,
     // built by the same expression, so the picture can't say something the page
     // didn't.
-    verdict: G.champ ? 'CHAMPION.' : 'CUT.',
-    verdictSub: G.champ ? 'You did it.' : CUT_AT+' losses.',
+    verdict: G.champ ? 'CHAMPION.' : (G.outOfShots ? 'NO BELT.' : 'CUT.'),
+    verdictSub: G.champ ? ((G.defenses||0) ? (G.defenses+' title defense'+(G.defenses===1?'':'s')+'.') : 'You did it.')
+              : G.outOfShots ? 'Out of title shots.'
+              : (G.wasChamp ? 'Former champion.' : CUT_AT+' losses.'),
+    signature: SIG(G.sig) ? SIG(G.sig).name : null,
+    defenses: G.defenses || 0,
+    wasChamp: !!G.wasChamp,
     division: (D && D.divisions && D.divisions[DIV] && D.divisions[DIV].label) || DIV,
     fights: G.log.length,
     age: START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12),
@@ -3917,7 +3922,9 @@ function endBox(msg){
   rec.innerHTML =
     '<div><span>Pro record</span><b>'+totalRecord()+'</b></div>'+
     '<div><span>UFC record</span><b>'+ufcRecord()+'</b></div>'+
-    '<div><span>Peak</span><b>'+(G.champ?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>';
+    '<div><span>Peak</span><b>'+(G.champ?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>'+
+    (SIG(G.sig)?'<div><span>Signature</span><b>'+SIG(G.sig).name+'</b></div>':'')+
+    ((G.defenses||0)?'<div><span>Title defenses</span><b>'+G.defenses+'</b></div>':'');
   p.appendChild(rec);
   const n=document.createElement('div'); n.className='note';
   const best = G.log.filter(f=>f.won).sort((a,b)=>a.p-b.p)[0];

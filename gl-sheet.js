@@ -1223,7 +1223,7 @@ const GL_SHEET = (function () {
     ctx.font = '700 22px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('ARCHETYPE', 96, 318);
     ctx.textAlign = 'right'; ctx.font = '800 40px ' + COND; ctx.fillStyle = AMB;
-    ctx.fillText(clip(ctx, d.style || '—', W - 300), W - 96, 320);
+    ctx.fillText(clip(ctx, (d.style || '—') + (d.signature ? '  ·  ' + d.signature : ''), W - 300), W - 96, 320);
     ctx.textAlign = 'left';
 
     // THE THREE RECORDS, in the end screen's order and wording.
