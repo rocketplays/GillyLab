@@ -3810,8 +3810,22 @@ function commitPlan(o, plan){
   const execW = plan.where.filter(x=>x.exec);
   const wMean = avg(execW.length ? execW : plan.where);
   const rMean = avg(plan.read);
-  let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE * (G.sig==='general'?1.3:1);  // win% pts, +good / -bad
-  delta = clampv(delta, -22, 15);               // see PLAN_SCALE — a margin, not a miracle
+  // FIGHT IQ EXECUTES THE READ, it doesn't just SHOW it — AND its ceiling rises. Measured:
+  // with plan power flat, Fight IQ only revealed the best plan (a low-IQ striker who picked
+  // "strike" by common sense got the identical swing), so maxing it cost ~13 win% of combat
+  // levels and returned almost nothing. Two IQ-scaled dials fix that: the read EXECUTES
+  // harder in a sharp mind (iqMult 0.8 -> 1.3), and its CEILING lifts (+15 -> +24), so a
+  // high-IQ fighter can out-think a CLOSE fight the way a bounded plan never could.
+  //
+  // Deliberately NOT full parity. Maxing IQ still trails a gifted athlete by ~5 win% —
+  // because it should: at the highest level the more skilled, more athletic fighter beats
+  // the cerebral one who skipped the gym. IQ closes most of the gap and adds the clarity;
+  // the last few points are the athleticism you traded away. (Ring General reads at 10.)
+  const iq = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq||ATTR_MIN);
+  const iqF = (iq - ATTR_MIN)/(ATTR_MAX - ATTR_MIN);        // 0 at IQ1 -> 1 at IQ10
+  const iqMult = 0.8 + iqF * 0.5;                            // execution sharpens: 0.8 -> 1.3
+  let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE * iqMult;  // win% pts, +good / -bad
+  delta = clampv(delta, -22, 15 + iqF * 9);                 // and the ceiling rises: +15 -> +24
   if (o.titleFight) delta *= 0.5;               // against the best in the world, less to out-scheme
   // The read moves the fight and the deferred odds line reflects it: o.p now carries
   // the plan. \`swing\` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
