@@ -3214,7 +3214,10 @@ function planFor(o){
   // Starts near ZERO so the bottom of the ladder shows no named pros/cons at all — the
   // read is deducible from the scouting tape but never handed to you, and you're meant to
   // be unsure of the exact best path. Climbs to 1.0 (the whole breakdown) as Fight IQ maxes.
-  const clarity = 0.12 + 0.88*(((G.attrs.fightiq||ATTR_MIN)-ATTR_MIN)/(ATTR_MAX-ATTR_MIN));
+  // A Ring General always SEES it fully ("the corner always has the read"); its Fight IQ
+  // level feeds plan POWER instead (see commitPlan), so sight is maxed here regardless.
+  const sightIQ = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq||ATTR_MIN);
+  const clarity = 0.12 + 0.88*((sightIQ-ATTR_MIN)/(ATTR_MAX-ATTR_MIN));
   // A natural phrase for the corner, and whether YOU can actually implement the plan.
   // The corner only ever steers toward a phase you can run: everyone can strike, but
   // "keep it on the mat" needs the wrestling to get it there, so a pure striker is
@@ -3314,22 +3317,29 @@ function commitPlan(o, plan){
   const execW = plan.where.filter(x=>x.exec);
   const wMean = avg(execW.length ? execW : plan.where);
   const rMean = avg(plan.read);
-  // FIGHT IQ EXECUTES THE READ, it doesn't just SHOW it — AND its ceiling rises. Measured:
-  // with plan power flat, Fight IQ only revealed the best plan (a low-IQ striker who picked
-  // "strike" by common sense got the identical swing), so maxing it cost ~13 win% of combat
-  // levels and returned almost nothing. Two IQ-scaled dials fix that: the read EXECUTES
-  // harder in a sharp mind (iqMult 0.8 -> 1.3), and its CEILING lifts (+15 -> +24), so a
-  // high-IQ fighter can out-think a CLOSE fight the way a bounded plan never could.
+  // FIGHT IQ EXECUTES THE READ, it doesn't just SHOW it — and its ceiling rises with it.
+  // Measured: with plan power flat, Fight IQ only REVEALED the best plan (a low-IQ striker
+  // who picked "strike" by common sense got the identical swing), so it cost ~13 win% of
+  // combat levels and returned almost nothing. Two IQ-scaled dials fix that: the read
+  // EXECUTES harder in a sharp mind (iqMult), and its CEILING lifts, so a high-IQ fighter
+  // can out-think a CLOSE fight the way a bounded plan never could.
   //
-  // Deliberately NOT full parity. Maxing IQ still trails a gifted athlete by ~5 win% —
-  // because it should: at the highest level the more skilled, more athletic fighter beats
-  // the cerebral one who skipped the gym. IQ closes most of the gap and adds the clarity;
-  // the last few points are the athleticism you traded away. (Ring General reads at 10.)
-  const iq = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq||ATTR_MIN);
-  const iqF = (iq - ATTR_MIN)/(ATTR_MAX - ATTR_MIN);        // 0 at IQ1 -> 1 at IQ10
-  const iqMult = 0.8 + iqF * 0.5;                            // execution sharpens: 0.8 -> 1.3
+  // Deliberately NOT full parity, even for a Ring General: maxing the read still trails a
+  // gifted athlete by a few win%, because at the top the more athletic fighter beats the
+  // cerebral one who skipped the gym. IQ closes most of the gap and adds the clarity.
+  //
+  // RING GENERAL SPLITS SIGHT FROM POWER. It always SEES the plan (full clarity + marks —
+  // "the corner always has the read", handled in planFor), and its read CUTS DEEPER per
+  // Fight IQ level: a steeper execution + ceiling slope than a normal fighter. So Ring
+  // General is never wasted — its value GROWS with your Fight IQ (measured ~+3 win% at IQ 6,
+  // ~+5 at IQ 10 over no signature), which is exactly the "10 Fight IQ + Ring General should
+  // pay off" the playtest asked for. It still sits a hair UNDER a gifted athlete, because
+  // combat outscores plan per point — leaning combat stays the min-max, here as everywhere.
+  const isGen = G.sig === 'general';
+  const iqF = ((G.attrs.fightiq||ATTR_MIN) - ATTR_MIN)/(ATTR_MAX - ATTR_MIN);   // 0 at IQ1 -> 1 at IQ10
+  const iqMult = 0.8 + iqF * (isGen ? 0.7 : 0.5);           // a General's read executes harder per level
   let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE * iqMult;  // win% pts, +good / -bad
-  delta = clampv(delta, -22, 15 + iqF * 9);                 // and the ceiling rises: +15 -> +24
+  delta = clampv(delta, -22, 15 + iqF * (isGen ? 12 : 9));  // and its ceiling climbs faster (o.p still capped 0.85/0.88)
   if (o.titleFight) delta *= 0.5;               // against the best in the world, less to out-scheme
   // The read moves the fight and the deferred odds line reflects it: o.p now carries
   // the plan. `swing` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
