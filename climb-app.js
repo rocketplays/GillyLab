@@ -383,7 +383,7 @@ function ageDecline(){
   // fights on your record — the belt-WINNING fight is free, but every DEFENSE after
   // wears you ~10% — so the CLIMB barely feels it while a long REIGN fades hard: a
   // champion is dominant early and fraying late. A truly extreme grind frays too.
-  const titleFights = (G.log||[]).filter(f => f.rounds && f.rounds.length === 5).length;
+  const titleFights = (G.log||[]).filter(f => f.titleFight).length;
   const reignWear = Math.max(0, titleFights - 1) * 0.10;
   const grind = Math.max(0, (G.log||[]).length - 22) * 0.025;
   return Math.min(0.55, ageC + reignWear + grind);
@@ -2069,7 +2069,15 @@ function fight(o){
 // rules rather than two that could drift apart.
 function applyResult(o, R){
   const { won, fin, method, rounds, roundsWon, finRound } = R;
-  G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound });
+  // titleFight is stored EXPLICITLY, not inferred from rounds.length===5. A title
+  // fight that ends in a FINISH has a short round array, so the old inference counted
+  // only title DECISIONS toward championship wear — and a strong build finishes its
+  // challengers, so a dominant champion accrued almost no wear and his defenses never
+  // got harder (measured: offered p pinned at 0.80 through seven straight defenses).
+  // The belt is on the line when you're defending (o.titleFight) or challenging the
+  // champion (rankNum 0); both are the five-round fights the reign wears you down with.
+  G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound,
+               titleFight: !!o.titleFight || o.f.rankNum === 0 });
   if (won){
     G.wins++; G.streak++; G.beat.add(o.f.name);
     // HYPE. A normal win banks a pip (cap 3). A CALLOUT win spends the meter you
@@ -2149,16 +2157,23 @@ function applyResult(o, R){
     // it. So the exemption is a ONE-SHOT, and the cap is a hard stop on the run
     // rather than on the budget — a run that cannot end is the failure mode this
     // whole game has been bitten by, and it is worth being blunt about preventing.
-    if (o.f.rankNum === 0) {
+    // THE BELT ON THE LINE — a lost CHALLENGE (o.f IS the champion) or a lost DEFENSE
+    // (you're the champion, o.titleFight). Both are belt losses, and TWO in a career
+    // ends the run — "the era's over", not a cut. This is what caps the reclaim loop:
+    // a champion who drops a defense gets ONE shot to win it back; lose the belt a
+    // second time and there is no third reign to grind. (Playtest: a maxed champ could
+    // drop the belt, climb straight back, and pad defenses on the 5-loss budget — the
+    // legacy padded through lives, not through skill.) A lost defense used to check
+    // only `rankNum === 0`, which is the CONTENDER's rank on a defense, never 0 — so
+    // this rule silently never fired for the exact fights it was meant to govern.
+    const beltOnTheLine = o.titleFight || o.f.rankNum === 0;
+    if (beltOnTheLine) {
       G.titleLosses = (G.titleLosses || 0) + 1;
-      if (G.titleLosses === 1) {
-        G.spared = true;          // the end screen never sees this; the fight card does
-      } else {
-        G.outOfShots = true;      // ends the run, and it is NOT a cut
-      }
+      if (G.titleLosses >= 2) G.outOfShots = true;   // the second belt loss ends the run
+      else if (o.f.rankNum === 0) G.spared = true;   // a first lost CHALLENGE is still free
     }
-    // The first title loss costs a rung and a streak like any other — you did lose
-    // the fight — it just doesn't spend a life.
+    // The first lost CHALLENGE doesn't spend a life (nobody's cut for daring to
+    // challenge); a lost DEFENSE costs a life like any other loss, exactly as before.
     if (!(o.f.rankNum === 0 && G.titleLosses === 1)) G.losses++;
     G.streak = 0;
     // ANY loss breaks your momentum and resets the callout meter — which is the whole
@@ -2437,7 +2452,7 @@ function render(){
   // has to end with the honest one: you didn't get released, you ran out of cracks
   // at the belt. Ordering is the whole fix — put this second and the 21% of runs
   // this exists for would still print "Cut".
-  if (G.outOfShots){ endFight(); app.appendChild(endBox('No shots left. The title is gone.')); return; }
+  if (G.outOfShots){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? 'You lose the belt for the last time — and there’s no way back to it. The reign is over.' : 'No shots left. The title stays out of reach.')); return; }
   if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? "After that loss, you call it a career as a former champion." : 'Cut. '+CUT_AT+' losses.')); return; }
   // DRAWING UP A PLAN IS A FOCUS MODE. You've picked the man; now the screen is
   // the fight you're about to have, and nothing else — the offer list, the upgrade
