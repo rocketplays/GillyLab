@@ -186,8 +186,17 @@ function main() {
     // ~14%-28%. The response compounds over a ~10-fight run, so it is exponential
     // in sAdj and the linear fit only holds over a narrow band: DO NOT
     // extrapolate this constant, re-fit it.
-    const DIV_SWING = 4;
-    const sAdj = (strengthNorm(DIV) - 0.5) * DIV_SWING;
+    // DIV_OFFSET — the division's rating shift, in POWER POINTS, CALIBRATED against
+    // measured championship difficulty rather than authored from a 0-1 guess. This
+    // replaces (strengthNorm-0.5)*DIV_SWING, which could only shift by RATING and so
+    // was blind to STYLE: bantamweight's ladder rates normally but its fighters carry
+    // 70 takedown defense and 0.69 chins across the board — no weakness to exploit —
+    // so it played as a 5% belt while heavyweight's hittable, takedown-able ladder
+    // played as an 80% belt at the SAME authored difficulty. A rating dial can't see
+    // that; a calibrated offset can. Positive = harder (ratings up), negative = easier.
+    // Fit so a balanced build wins every belt in a ~35-50% band. Re-measure with
+    // scripts/sim-div-bal after any ladder/stat resync; the numbers drift with the data.
+    const sAdj = DIV_OFFSET[DIV] != null ? DIV_OFFSET[DIV] : 0;
     // RR_TEXTURE: how far the sim may move a fighter WITHIN his rank tier.
     //
     // This was 12 (i.e. +-6) and it was not texture, it was the loudest term in
@@ -213,7 +222,15 @@ function main() {
     const powerOf = f => {
       const r = rankNum(f);
       const tier = r === 0 ? 100 : r <= 0.5 ? 92 : r <= 15 ? 86 - (r - 1) * 1.6 : 48;
-      return Math.round((tier + sAdj + (rrNorm(f.name) - 0.5) * RR_TEXTURE) * 10) / 10;
+      // THE CHAMPION CARRIES NO ROUND-ROBIN TEXTURE. RR_TEXTURE separates fighters
+      // WITHIN a tier — useful for the fifteen contenders — but on the belt it was a
+      // ±2 coin flip on top of the ±2 DIV_SWING dial, so how hard a title was depended
+      // as much on his own division's bracket luck as on the authored difficulty. That
+      // is exactly why a mid-authored division could play as the softest belt in the
+      // game. The champion's rating is now the division's difficulty, full stop; the
+      // contenders keep their texture so the climb still has lumps.
+      const texture = r === 0 ? 0 : (rrNorm(f.name) - 0.5) * RR_TEXTURE;
+      return Math.round((tier + sAdj + texture) * 10) / 10;
     };
     // STYLE: read off their REAL stats, so the invented triangle bites on
     // something true.
@@ -321,6 +338,24 @@ function main() {
     WBW : 0.00,
   };
   const strengthNorm = DIV => DIV_DIFFICULTY[DIV] == null ? 0.5 : DIV_DIFFICULTY[DIV];
+  // CALIBRATED RATING OFFSET (power points), fit against measured balanced-build belt
+  // rates so every division lands in a ~35-50% band. See the note at sAdj: this is the
+  // dial that can compensate for STYLE-driven difficulty, which the authored 0-1 map
+  // above (kept only for the cosmetic talent bar) cannot. Seeded from a measured pass;
+  // positive makes a division harder, negative easier.
+  const DIV_OFFSET = {
+    HW:  1.7,   // hittable, takedown-able ladder — was an 80% walkover, pulled UP
+    LHW:-1.25,
+    MW:  2.2,
+    WW:  0.95,
+    LW:  0.15,
+    FW: -0.35,
+    BW: -1.6,   // 70 tdDef + 0.69 chins across the board — a 5% belt, pulled DOWN hard
+    FLW: 1.55,
+    WBW:-0.8,
+    WFLW:-1.0,
+    WSW:-0.7
+  };
   // Kept so `node scripts/gen-climb-data.cjs --audit` can still print what the
   // fighters say, and so the next person can see the two disagree on purpose.
   const strengthOf = {};
