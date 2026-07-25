@@ -872,7 +872,7 @@ const START_AGE = 24, MONTHS_PER_FIGHT = 7;
 // you fade" arc needs. 0 through 32, +5%/yr, capped at 40%.
 function ageDecline(){
   const age = START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12);
-  const ageC = Math.max(0, (age - 36) * 0.04);   // the calendar — bites only a genuinely old fighter
+  const ageC = Math.max(0, (age - 32) * 0.04);   // the calendar — now that the number climbs, this actually fires
   // HARD MILES, and the hardest are championship rounds. Decline tracks the TITLE
   // fights on your record — the belt-WINNING fight is free, but every DEFENSE after
   // wears you ~10% — so the CLIMB barely feels it while a long REIGN fades hard: a
