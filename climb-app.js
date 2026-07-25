@@ -2405,7 +2405,7 @@ function render(){
   // at the belt. Ordering is the whole fix — put this second and the 21% of runs
   // this exists for would still print "Cut".
   if (G.outOfShots){ endFight(); app.appendChild(endBox('No shots left. The title is gone.')); return; }
-  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? "After that loss, you call it a career — a former champion, not a cut." : 'Cut. '+CUT_AT+' losses.')); return; }
+  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? "After that loss, you call it a career as a former champion." : 'Cut. '+CUT_AT+' losses.')); return; }
   // DRAWING UP A PLAN IS A FOCUS MODE. You've picked the man; now the screen is
   // the fight you're about to have, and nothing else — the offer list, the upgrade
   // panel and the log would all just be noise you have to scroll past to commit.
