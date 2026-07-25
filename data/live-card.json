@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T14:58:14.199Z",
+ "generatedAt": "2026-07-25T15:12:46.349Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -5630,6 +5630,194 @@
       ]
      },
      "capturedAt": "2026-07-25T14:58:14.070Z"
+    }
+   ]
+  },
+  "Santiago Ponzinibbio": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Sam Patterson",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:06",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Sam Patterson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 105,
+      "totL": 16,
+      "totA": 105,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       95
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       2,
+       4
+      ],
+      "dist": [
+       16,
+       104
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 69,
+      "sigA": 146,
+      "totL": 69,
+      "totA": 146,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       60,
+       133
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       64,
+       139
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-07-25T15:12:46.217Z"
+    }
+   ]
+  },
+  "Sam Patterson": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Santiago Ponzinibbio",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:06",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Santiago Ponzinibbio",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 69,
+      "sigA": 146,
+      "totL": 69,
+      "totA": 146,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       60,
+       133
+      ],
+      "body": [
+       8,
+       11
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       64,
+       139
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 105,
+      "totL": 16,
+      "totA": 105,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       95
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       2,
+       4
+      ],
+      "dist": [
+       16,
+       104
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-25T15:12:46.218Z"
     }
    ]
   }
