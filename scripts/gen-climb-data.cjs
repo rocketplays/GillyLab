@@ -350,7 +350,9 @@ function main() {
     WW:  0.95,
     LW:  0.15,
     FW: -0.35,
-    BW: -1.6,   // 70 tdDef + 0.69 chins across the board — a 5% belt, pulled DOWN hard
+    BW: -0.9,   // 70 tdDef + 0.69 chins: brutal on finishers, kind to grinders. Only
+                // PARTLY compensated — full compensation handed grapplers a 52% cakewalk.
+                // It stays a defensive division you need the right style for.
     FLW: 1.55,
     WBW:-0.8,
     WFLW:-1.0,
