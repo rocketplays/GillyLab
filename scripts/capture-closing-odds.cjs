@@ -107,40 +107,58 @@ function main() {
   const store = loadJson(CLOSING_PATH, null) || { generatedAt: null, fights: [] };
   if (!Array.isArray(store.fights)) store.fights = [];
 
-  const bouts = (ev.bouts || []).filter(b => phase === 'maincard' ? isMainCard(b) : !isMainCard(b));
-  let added = 0, updated = 0; const unmatched = [];
+  // One section's bouts -> closing lines. `section` is the label stored ('prelims' /
+  // 'maincard'); the existing-record lookup is by slug+pair (section-independent), so a
+  // later, fresher capture of the same fight OVERWRITES an earlier one — that's what lets
+  // the main-card window refresh the prelims-time fallback below.
+  function captureSection(bouts, section) {
+    let added = 0, updated = 0; const unmatched = [];
+    bouts.forEach(b => {
+      const fr = b.fighters || [];
+      if (fr.length !== 2) return;
+      const f1 = fr[0].fighterName, f2 = fr[1].fighterName;
+      if (!f1 || !f2 || b.isCancelled) return;
+      const key = pairKey(f1, f2);
+      const fight = findFight(f1, f2, odds);
+      if (!fight) { unmatched.push(f1 + ' vs ' + f2 + ' (not in feed)'); return; }
+      const c = consensus(fight);
+      const homeIsF1 = fighterMatch(fight.home_team, f1);
+      const o1 = homeIsF1 ? c.home : c.away;
+      const o2 = homeIsF1 ? c.away : c.home;
+      if (o1 == null || o2 == null) { unmatched.push(f1 + ' vs ' + f2 + ' (no price)'); return; }
+      const rec = { slug: ev.slug, date, section, f1, f2, o1, o2, capturedAt: new Date().toISOString() };
+      const existing = store.fights.find(x => x.slug === ev.slug && pairKey(x.f1, x.f2) === key);
+      if (existing) {
+        if (force || existing.o1 !== o1 || existing.o2 !== o2) { Object.assign(existing, rec); updated++; }
+      } else {
+        store.fights.push(rec); added++;
+      }
+    });
+    return { added, updated, unmatched };
+  }
 
-  bouts.forEach(b => {
-    const fr = b.fighters || [];
-    if (fr.length !== 2) return;
-    const f1 = fr[0].fighterName, f2 = fr[1].fighterName;
-    if (!f1 || !f2 || b.isCancelled) return;
-    const key = pairKey(f1, f2);
-    const fight = findFight(f1, f2, odds);
-    if (!fight) { unmatched.push(f1 + ' vs ' + f2 + ' (not in feed)'); return; }
-    const c = consensus(fight);
-    const homeIsF1 = fighterMatch(fight.home_team, f1);
-    const o1 = homeIsF1 ? c.home : c.away;
-    const o2 = homeIsF1 ? c.away : c.home;
-    if (o1 == null || o2 == null) { unmatched.push(f1 + ' vs ' + f2 + ' (no price)'); return; }
-    const rec = { slug: ev.slug, date, section: phase, f1, f2, o1, o2, capturedAt: new Date().toISOString() };
-    const existing = store.fights.find(x => x.slug === ev.slug && pairKey(x.f1, x.f2) === key);
-    if (existing) {
-      // LATEST wins: a later tick in the window is a fresher, closer-to-bell line, so
-      // overwrite — but only when the price actually moved (or on a manual --force),
-      // so an unchanged re-capture is a no-op and the workflow skips the commit/deploy.
-      if (force || existing.o1 !== o1 || existing.o2 !== o2) { Object.assign(existing, rec); updated++; }
-    } else {
-      store.fights.push(rec); added++;
-    }
-  });
+  const prelimBouts = (ev.bouts || []).filter(b => !isMainCard(b));
+  const mainBouts   = (ev.bouts || []).filter(b =>  isMainCard(b));
+  let r;
+  if (phase === 'maincard') {
+    r = captureSection(mainBouts, 'maincard');
+  } else {
+    r = captureSection(prelimBouts, 'prelims');
+    // FALLBACK: snapshot the main card NOW, at the prelims window, so a MISSED main-card
+    // window (GitHub Actions skipped/delayed the whole slot — how this section's lines went
+    // missing in the first place) degrades to a slightly-early main-card line instead of
+    // NOTHING. When the main-card window does fire, it OVERWRITES this with the true closing
+    // line (LATEST wins). Same odds feed already in hand — no extra fetch.
+    const rm = captureSection(mainBouts, 'maincard');
+    r.added += rm.added; r.updated += rm.updated; r.unmatched = r.unmatched.concat(rm.unmatched);
+  }
 
-  if (added || updated) {
+  if (r.added || r.updated) {
     store.generatedAt = new Date().toISOString();
     fs.writeFileSync(CLOSING_PATH, JSON.stringify(store, null, 1) + '\n');
   }
-  console.log(`[closing] ${ev.slug} ${phase}: +${added} added, ${updated} updated, ${unmatched.length} unmatched`
-    + (unmatched.length ? ' — ' + unmatched.join('; ') : ''));
+  console.log(`[closing] ${ev.slug} ${phase}: +${r.added} added, ${r.updated} updated, ${r.unmatched.length} unmatched`
+    + (r.unmatched.length ? ' — ' + r.unmatched.join('; ') : ''));
 }
 
 main();
