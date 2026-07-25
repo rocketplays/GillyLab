@@ -60,24 +60,24 @@ const ATTRS = [
 
 // FIGHT IQ IS NOT A COMBAT ATTRIBUTE, AND THAT SEPARATION IS THE WHOLE DESIGN.
 //
-// It buys nothing in the cage: styleDelta, myRating and archetype all iterate
-// ATTRS (the nine above), so a point in Fight IQ moves no win probability, no
-// rating and no archetype. It is deliberately kept OUT of ATTRS for exactly that
-// reason — the moment it fed the scorer it would be "spend points, win more",
-// which is the one thing it must never be.
+// It is not a COMBAT stat: styleDelta, myRating and archetype all iterate ATTRS (the
+// nine above), so a point in Fight IQ moves no base rating and no archetype — it can
+// never be "spend points, win more" through raw fighting ability, which is why it is
+// deliberately kept OUT of ATTRS. What it moves instead is your GAME PLAN.
 //
-// What it buys is INFORMATION. Before a fight you draw up a game plan against the
-// opponent's REAL stats, and every plan carries a hidden edge (see planFor). Fight
-// IQ is how clearly you can SEE those edges: a high-IQ fighter's scouting spells
-// out the full read and the corner names the phase that actually wins the fight; a
-// low-IQ fighter gets the gist and a corner that just says "go get him". You still
-// have to weigh the pros and cons and eat the risk yourself — a sharp read of a bad
-// matchup is still a bad matchup. So it is a genuine build lever (points here are
-// points NOT in power or wrestling) that makes you a better DECISION-MAKER, never a
-// better fighter. It lives in G.attrs.fightiq so the creator/upgrade steppers can
-// reuse the exact same row code, and nowhere that reads ATTRS can ever see it.
+// Before a fight you draw up a plan against the opponent's REAL stats, and every plan
+// carries a hidden edge (see planFor). Fight IQ does two things to that read: it lets
+// you SEE the edges (a high-IQ fighter's scouting spells out the full read and the
+// corner names the phase that wins the fight; a low-IQ fighter gets the gist and a
+// corner that just says "go get him"), AND it sharpens how hard the read LANDS (the
+// plan's execution and ceiling scale with Fight IQ in commitPlan). So it does move win
+// probability — but only through the plan you draw up, never through your chin or your
+// hands. It is a genuine build lever: points here are points NOT in power or wrestling,
+// and measured, maxing it still trails a gifted athlete — the read closes most of the
+// gap, the last few points are the gym time you traded. Lives in G.attrs.fightiq so the
+// creator/upgrade steppers reuse the exact same row code; nowhere that reads ATTRS sees it.
 const FIGHT_IQ = { id:'fightiq', label:'Fight IQ',
-  note:'reading the matchup — sharper scouting and a corner that knows' };
+  note:'reading the matchup — sharper scouting, a corner that names the play, and a game plan that bites harder' };
 // The build-screen list: the nine that fight, plus the one that reads the fight.
 // UI ONLY. Every balance path stays on ATTRS.
 const UI_ATTRS = ATTRS.concat([FIGHT_IQ]);
