@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T15:47:59.066Z",
+ "generatedAt": "2026-07-25T16:51:14.450Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -6194,6 +6194,194 @@
       ]
      },
      "capturedAt": "2026-07-25T15:45:43.364Z"
+    }
+   ]
+  },
+  "Abubakar Vagaev": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Saygid Izagakhmaev",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Saygid Izagakhmaev",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 70,
+      "totL": 91,
+      "totA": 138,
+      "tdL": 4,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:46",
+      "head": [
+       16,
+       52
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       18,
+       59
+      ],
+      "clinch": [
+       7,
+       9
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 83,
+      "totL": 73,
+      "totA": 124,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "2:46",
+      "head": [
+       16,
+       63
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       10,
+       11
+      ],
+      "dist": [
+       23,
+       69
+      ],
+      "clinch": [
+       8,
+       11
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-07-25T16:51:14.320Z"
+    }
+   ]
+  },
+  "Saygid Izagakhmaev": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Abubakar Vagaev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Abubakar Vagaev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 83,
+      "totL": 73,
+      "totA": 124,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "2:46",
+      "head": [
+       16,
+       63
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       10,
+       11
+      ],
+      "dist": [
+       23,
+       69
+      ],
+      "clinch": [
+       8,
+       11
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 27,
+      "sigA": 70,
+      "totL": 91,
+      "totA": 138,
+      "tdL": 4,
+      "tdA": 10,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:46",
+      "head": [
+       16,
+       52
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       18,
+       59
+      ],
+      "clinch": [
+       7,
+       9
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-07-25T16:51:14.320Z"
     }
    ]
   }
