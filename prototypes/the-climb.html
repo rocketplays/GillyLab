@@ -3784,14 +3784,14 @@ function cornerLine(iq, s, rd, coach){
   switch (Math.max(1, Math.min(10, iq|0))) {
     case 1:  return C("Your fight to read in there. Trust your gut and don't hesitate.");
     case 2:  return C(ot+". Feel him out early before you commit.");
-    case 3:  return C(ot+". I'd keep it "+s+" and adjust from there.");
-    case 4:  return C("Keep it "+s+". "+cap(rd)+".");
-    case 5:  return C("Keep it "+s+", "+rd+", and fight your fight.");
-    case 6:  return C(ot+". Keep it "+s+", "+rd+".");
-    case 7:  return C(ot+". Keep it "+s+", "+rd+" — that's the game plan.");
-    case 8:  return C("Keep it "+s+", "+rd+" — do that and it's your night.");
-    case 9:  return C("Keep it "+s+", "+rd+". And watch it: "+tr+".");
-    default: return C(ot+". Keep it "+s+", "+rd+", and whatever happens, "+tr+". Clear as day.");
+    case 3:  return C(ot+". I'd lean toward keeping it "+s+".");                 // where HINT
+    case 4:  return C("Keep it "+s+". The rest you'll read as it comes.");        // where NAMED, read open
+    case 5:  return C(ot+". Keep it "+s+" — that part's clear.");                 // where FIRM + his style
+    case 6:  return C("Keep it "+s+". "+cap(rd)+".");                             // read NAMED
+    case 7:  return C(ot+". Keep it "+s+", "+rd+".");                             // both + his style
+    case 8:  return C("Keep it "+s+", "+rd+" — that's the game plan.");           // + WHERE marked
+    case 9:  return C("Keep it "+s+", "+rd+". And watch it: "+tr+".");            // + the trap
+    default: return C(ot+". Keep it "+s+", "+rd+", and whatever happens, "+tr+". Clear as day.");  // + READ marked
   }
 }
 
@@ -3880,23 +3880,24 @@ function planBox(){
     return box;
   };
 
-  // THE CORNER'S ACTUAL PICKS — highest-edge WHERE you can run, highest-edge READ.
-  // At high Fight IQ (>=8) they're marked right on the buttons so the optimal plan is
-  // unmistakable — that's what your Fight IQ points bought, paid for in the combat
-  // levels you skipped. Below that you read the pros and cons and back your own gut.
+  // THE CORNER'S ACTUAL PICKS — highest-edge WHERE you can run, highest-edge READ. The
+  // reveal STAGES with Fight IQ, a rung at a time (playtest: "8 told me exactly what to
+  // do — each rung should be slightly more"): the corner hints the where (3), names it
+  // (4-5), names the read (6-7), then the trap (9). The button MARKS trail the prose so
+  // certainty on both axes is the TOP-rung payoff, not a mid-IQ cliff — the WHERE lights
+  // up at 8, the READ only at 10. Below that you weigh the pros and cons yourself.
   const effIQ = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq||ATTR_MIN);
   const execWhere = plan.where.filter(w=>w.exec);
   const bestW = (execWhere.length?execWhere:plan.where).slice().sort((a,b)=>b.edge-a.edge)[0];
   const bestR = plan.read.slice().sort((a,b)=>b.edge-a.edge)[0];
-  const showPick = effIQ >= 8;
 
-  const group = (labelText, arr, kind, pickId)=>{
+  const group = (labelText, arr, kind, pickId, marked)=>{
     const g=document.createElement('div');
     const lab=document.createElement('div'); lab.className='plan-lab'; lab.textContent=labelText; g.appendChild(lab);
     const opts=document.createElement('div'); opts.className='plan-opts';
     const sel=G.pending[kind];
     arr.forEach(op=>{
-      const isPick = showPick && op.id===pickId;
+      const isPick = marked && op.id===pickId;
       const b=document.createElement('button'); b.className='plan-opt'+(sel===op.id?' on':'')+(isPick?' pick':'');
       const t=document.createElement('span'); t.textContent=op.label; b.appendChild(t);
       if(isPick){ const tag=document.createElement('span'); tag.className='pick-tag'; tag.textContent="corner's pick"; b.appendChild(tag); }
@@ -3909,8 +3910,8 @@ function planBox(){
     return g;
   };
 
-  wrap.appendChild(group('Where do you want the fight?', plan.where, 'where', bestW.id));
-  wrap.appendChild(group('Key read', plan.read, 'read', bestR.id));
+  wrap.appendChild(group('Where do you want the fight?', plan.where, 'where', bestW.id, effIQ>=8));
+  wrap.appendChild(group('Key read', plan.read, 'read', bestR.id, effIQ>=10));
 
   // The corner — a steer, not a verdict, only as sharp as your Fight IQ, and only ever
   // toward a phase you can actually fight in. It names the best-edge WHERE (never one a
