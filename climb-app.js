@@ -2006,8 +2006,14 @@ function applyPunch(o, R){
   // bigger a favorite you are, the rarer but larger each steal — which keeps the net
   // win rate flat while still throwing a submission scramble into any fight.
   const r = o.p / Math.max(0.05, 1 - o.p);
-  if (!R.won && Math.random() < Math.min(0.5, SUB_CHANCE * r))   // you catch one from behind
-    return { won:true, fin:true, method:'submission', rounds:R.rounds, roundsWon:R.roundsWon, finRound: R.rounds.length||1 };
+  if (!R.won && Math.random() < Math.min(0.5, SUB_CHANCE * r)) { // you catch one from behind
+    // THE FINISH ROUND IS YOURS. You tapped him in it, so mark the last round won — else
+    // the card showed "finished in R3" next to a LOST R3, and a losing scorecard on a
+    // win (playtest: "won but I lost the rounds"). Now it reads e.g. 0-0-1, finished R3.
+    const rounds = (R.rounds && R.rounds.length ? R.rounds.slice() : [true]);
+    rounds[rounds.length - 1] = true;
+    return { won:true, fin:true, method:'submission', rounds, roundsWon: rounds.filter(Boolean).length, finRound: rounds.length };
+  }
   if ( R.won && Math.random() < SUB_CHANCE){                      // swept hunting the finish
     // A DECISION LOSS NEEDS A LOSING CARD. Passing R.rounds through unchanged left the
     // winning scorecard on a fight this just flipped to a loss — playtest: "lost by
@@ -3067,7 +3073,7 @@ function offerBox(){
     c.innerHTML='<div class="co-tag rival">'+(rv.trilogy?'TRILOGY':'RIVAL')+'</div>'+
       '<div class="opphd">'+avatarHTML(rv.f)+'<div class="oppwho"><div class="rk">Settle it \u00b7 '+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(rv.p).c+'">'+oddsBand(rv.p).t+'</b></div>'+
-      '<div class="co-rr"><span class="up rvup">Win \u2192 settle it, take his rank, and build hype</span>'+
+      '<div class="co-rr"><span class="up rvup">Win \u2192 settle it, take his rank, +'+rv.reward+' upgrade pts</span>'+
         '<span class="dn">Lose \u2192 he owns you, '+rv.histW+'\u2013'+(rv.histL+1)+'</span></div>';
     c.querySelector('.nm').textContent=rv.f.name;
     c.querySelector('.rec').textContent=hist;
@@ -3640,8 +3646,10 @@ function runSummary(){
     style: archetype(),
     pro: totalRecord(),
     ufc: ufcRecord(),
-    peakLabel: G.champ ? 'CHAMPION' : G.peak==null ? 'UNRANKED' : '#'+G.peak,
-    shareRank: G.champ ? 'champion' : G.peak==null ? 'unranked'
+    // PEAK checks G.peak===0, not G.champ — a FORMER champion who lost the belt is no
+    // longer G.champ, but his peak was the belt, and the card must read CHAMPION, not #0.
+    peakLabel: G.peak===0 ? 'CHAMPION' : G.peak==null ? 'UNRANKED' : '#'+G.peak,
+    shareRank: G.peak===0 ? 'champion' : G.peak==null ? 'unranked'
              : 'the #'+G.peak+' contender',
     bestWin: best ? 'Best win: '+best.opp+' at '+amer(best.p) : 'No wins',
     finishRate: wins.length ? Math.round(fins/wins.length*100)+'%' : '—',
@@ -3678,7 +3686,7 @@ function endBox(msg){
   rec.innerHTML =
     '<div><span>Pro record</span><b>'+totalRecord()+'</b></div>'+
     '<div><span>UFC record</span><b>'+ufcRecord()+'</b></div>'+
-    '<div><span>Peak</span><b>'+(G.champ?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>'+
+    '<div><span>Peak</span><b>'+(G.peak===0?'CHAMPION':G.peak==null?'Unranked':'#'+G.peak)+'</b></div>'+
     (SIG(G.sig)?'<div><span>Signature</span><b>'+SIG(G.sig).name+'</b></div>':'')+
     ((G.defenses||0)?'<div><span>Title defenses</span><b>'+G.defenses+'</b></div>':'');
   p.appendChild(rec);
