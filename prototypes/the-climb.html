@@ -246,6 +246,8 @@
   .su-line{font-size:.82rem;line-height:1.5;margin-top:.3rem;color:var(--text)}
   .su-flaw{font-size:.72rem;color:var(--muted);margin-top:.35rem}
   .su-act{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap}
+  .champ-note{background:#1a1206;border:1px solid var(--gold);border-radius:8px;padding:.5rem .7rem;font-size:.78rem;color:var(--gold);margin-bottom:.5rem;line-height:1.5}
+  .btn.retire{margin-top:.7rem;border-color:var(--gold);color:var(--gold)}
   .sigv{font-size:.78rem}
 
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
@@ -1884,7 +1886,20 @@ function rewardFor(f, p){
   return Math.max(1, Math.round(rungs * RUNG_PAY * risk));
 }
 
+// ── TITLE DEFENSES ────────────────────────────────────────────────────────────
+// Winning the belt no longer ends the run. As champion you defend it against the top
+// contenders (5-round title fights); each win grows your legacy. It reuses the whole
+// pipeline — plan, moments, signature — the only differences are who's offered and
+// that a win banks a defense instead of moving your rank.
+function champDefenders(){
+  const last = G.last && G.last.o && G.last.o.f.name;
+  const top = LADDER().filter(f => f.rankNum >= 1 && f.rankNum < 99 && f.name !== last)
+    .sort((a,b)=>a.rankNum-b.rankNum).slice(0,3);
+  return top.map(f => { const p = winProb(f.name);
+    return { f, p, reward: rewardFor(f,p), jump: 0, titleFight:true, defense:true }; });
+}
 function offers(){
+  if (G.champ) return champDefenders();
   // DIV IS IN THE KEY. It wasn't, and the failure was silent and total: switch
   // weight class at fight 0 and the key ("0|0|0|null") was unchanged, so you got
   // HEAVYWEIGHT'S three fighters handed back from cache. They aren't in the new
@@ -2430,7 +2445,7 @@ function applyPunch(o, R){
 }
 
 function boutRolls(o){
-  const nRounds = isChamp(o.f) ? 5 : 3;
+  const nRounds = (isChamp(o.f) || o.titleFight) ? 5 : 3;
   const needed  = (nRounds + 1) / 2;          // 2 of 3, 3 of 5
   let p = o.p;
   if (G.sig === 'dog') p = p + (0.5 - p) * DOG_PULL;   // better dog, worse frontrunner
@@ -2549,18 +2564,23 @@ function applyResult(o, R){
     //     bold    5 wins @50% -> 5.0 expected losses -> ~50% -> champion at  5-2
     // Equally LIKELY, wildly different in what you're left holding. Grinding
     // should be slow and ugly, not impossible. The score is the record.
-    if (G.rank == null) {
-      // A ranked man still pays his rank on debut — the last-resort board can
-      // serve one, and beating #12 from nowhere should not deposit you at #15.
-      if (o.jump < 99) G.rank = o.jump;
-      // Otherwise the gatekeeper proves you belong; he does not rank you above #15.
-      else if (G.wins >= UNRANKED_WINS) G.rank = 15;
-    } else if (o.jump < G.rank) {
-      G.rank = o.jump;               // you beat a better man: you ARE his rank now
+    if (G.champ) {
+      // A SUCCESSFUL TITLE DEFENSE — you keep the belt, the legacy grows, rank unmoved.
+      G.defenses = (G.defenses || 0) + 1;
     } else {
-      G.rank = Math.max(1, G.rank - 1);   // at or below you: one rung, never past #1
+      if (G.rank == null) {
+        // A ranked man still pays his rank on debut — the last-resort board can
+        // serve one, and beating #12 from nowhere should not deposit you at #15.
+        if (o.jump < 99) G.rank = o.jump;
+        // Otherwise the gatekeeper proves you belong; he does not rank you above #15.
+        else if (G.wins >= UNRANKED_WINS) G.rank = 15;
+      } else if (o.jump < G.rank) {
+        G.rank = o.jump;               // you beat a better man: you ARE his rank now
+      } else {
+        G.rank = Math.max(1, G.rank - 1);   // at or below you: one rung, never past #1
+      }
+      if (o.f.rankNum === 0) G.champ = true;   // you just won the belt
     }
-    if (o.f.rankNum === 0) G.champ = true;
   } else {
     // NOBODY GETS CUT FOR LOSING TO THE CHAMPION.
     //
@@ -2599,6 +2619,11 @@ function applyResult(o, R){
     // downside of calling your shot and missing: you spent three wins of hype, dropped
     // a rung like any loss, and you're building it back from zero.
     G.hype = 0;
+    // LOSING THE BELT. A champion who drops a title defense loses it and falls to #1
+    // (the drop-a-rung below takes 0 -> 1), with the belt back on the line via the
+    // ladder champion. An ordinary loss — a life, a rung to reclaim — the reign is
+    // over but the run isn't.
+    if (G.champ) { G.champ = false; G.wasChamp = true; }
     // A LOSS COSTS YOU A RUNG. The design said so all along and the code never did
     // it: CUT_AT's own comment reads "losses become a COST, not a coin flip that
     // deletes the run: they cost you rank, time and a soft matchmaking step-down."
@@ -2805,6 +2830,7 @@ function newGame(){
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
         hype:0, bout:null, sig:null, avenged:new Set(), sigOffered:new Set(), sigUnlockPrompt:null,
+        defenses:0, retired:false, wasChamp:false,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2842,7 +2868,7 @@ function render(){
   // belt-winning or run-ending fight, and the game plan you took into it, vanished.
   // Render that last fight above the summary on every ending.
   const endFight = () => { if (G.last) app.appendChild(resultBox()); };
-  if (G.champ){ endFight(); app.appendChild(endBox('CHAMPION. You did it.')); return; }
+  if (G.retired){ endFight(); app.appendChild(endBox('RETIRED on top — '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'.')); return; }
   // OUT OF SHOTS IS NOT A CUT, and it is checked FIRST. If you take your second
   // title fight on your fifth loss, both conditions are true at once and the run
   // has to end with the honest one: you didn't get released, you ran out of cracks
@@ -3326,7 +3352,12 @@ function calloutOffer(){
 
 function offerBox(){
   const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">Pick your next fight</div>';
+  p.innerHTML='<div class="rl">'+(G.champ?'Defend your title':'Pick your next fight')+'</div>';
+  if (G.champ){
+    const ch=document.createElement('div'); ch.className='champ-note';
+    ch.innerHTML='<b>You hold the belt.</b> '+(G.defenses?('Defended '+G.defenses+' time'+(G.defenses===1?'':'s')+'. '):'')+'Take a challenger, or retire on top.';
+    p.appendChild(ch);
+  }
   const g=document.createElement('div'); g.className='opps';
   const list=offers();
   for(const o of list){
@@ -3366,8 +3397,8 @@ function offerBox(){
     p.appendChild(c);
   }
 
-  // THE RIVAL — the man who beat you, offered back on your terms.
-  const rv = rivalOffer();
+  // THE RIVAL — the man who beat you, offered back on your terms (never as champion).
+  const rv = G.champ ? null : rivalOffer();
   if (rv){
     const lbl=document.createElement('div'); lbl.className='rl rv-rl';
     lbl.textContent = rv.trilogy ? 'The trilogy' : 'Unfinished business'; p.appendChild(lbl);
@@ -3387,6 +3418,12 @@ function offerBox(){
     c.querySelector('.rec').textContent=hist;
     c.onclick=()=>beginPlan(rv);
     p.appendChild(c);
+  }
+  if (G.champ){
+    const rb=document.createElement('button'); rb.className='btn retire';
+    rb.textContent='Retire as champion';
+    rb.onclick=()=>{ if(confirm('Retire as champion?\n\nYou walk away on top with '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'. This ends the run.')){ G.retired=true; render(); } };
+    p.appendChild(rb);
   }
   return p;
 }
