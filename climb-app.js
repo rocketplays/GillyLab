@@ -2088,7 +2088,7 @@ function applyResult(o, R){
       } else {
         G.rank = Math.max(1, G.rank - 1);   // at or below you: one rung, never past #1
       }
-      if (o.f.rankNum === 0) G.champ = true;   // you just won the belt
+      if (o.f.rankNum === 0) { G.champ = true; G.beltFight = G.beltFight || G.log.length; }   // you just won the belt
     }
   } else {
     // NOBODY GETS CUT FOR LOSING TO THE CHAMPION.
@@ -2339,7 +2339,7 @@ function newGame(){
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
         hype:0, bout:null, sig:null, avenged:new Set(), sigOffered:new Set(), sigUnlockPrompt:null,
-        defenses:0, retired:false, wasChamp:false,
+        defenses:0, retired:false, wasChamp:false, beltFight:null, bestsSaved:false,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2425,6 +2425,8 @@ function creator(){
   sel.onchange=e=>{ if(e.target.value===DIV) return; DIV=e.target.value; newGame(); };
   dv.appendChild(sel);
   p.appendChild(dv);
+  const _cbl = bestsLine();
+  if (_cbl){ const bb=document.createElement('div'); bb.className='note'; bb.style.cssText='color:var(--gold);margin:.3rem 0 .2rem;font-size:.72rem'; bb.textContent='Your bests — '+_cbl; p.appendChild(bb); }
 
   // THE SCOUTING REPORT, under the picker — the only screen where it can change a
   // decision, because it's the screen where you spend the 42 points.
@@ -3364,6 +3366,37 @@ function logBox(full){
 // sheet prints and the rank the tweet claims must be the same rank, so they are
 // the same string, built once. (peakLabel is for a scoreboard — "CHAMPION", "#3";
 // shareRank has to survive inside a sentence — "champion", "the #3 contender".)
+// ── PERSONAL BESTS ACROSS RUNS ────────────────────────────────────────────────
+// Persisted to localStorage so the climb has a memory: your fastest belt, best run,
+// most title defenses and how many divisions you've held. Every access is guarded —
+// on file:// or in a headless test localStorage may be missing, and a bragging-rights
+// feature must never be the thing that throws.
+const BESTS_KEY = 'gl_climb_bests_v1';
+function loadBests(){
+  try { const s = localStorage.getItem(BESTS_KEY);
+    if (s) return Object.assign({fastestBelt:null,mostWins:0,mostDefenses:0,belts:{}}, JSON.parse(s)); } catch(e){}
+  return {fastestBelt:null,mostWins:0,mostDefenses:0,belts:{}};
+}
+function saveBests(b){ try { localStorage.setItem(BESTS_KEY, JSON.stringify(b)); } catch(e){} }
+// Fold the finished run into the saved bests; returns any records it just beat.
+function updateBests(){
+  const b = loadBests(), nu = [], wonBelt = G.champ || G.wasChamp;
+  if (wonBelt && G.beltFight && (b.fastestBelt == null || G.beltFight < b.fastestBelt)) { b.fastestBelt = G.beltFight; nu.push('fastest belt'); }
+  if (G.wins > (b.mostWins||0)) { b.mostWins = G.wins; nu.push('most wins'); }
+  if ((G.defenses||0) > (b.mostDefenses||0)) { b.mostDefenses = G.defenses; nu.push('most title defenses'); }
+  if (wonBelt) { b.belts = b.belts || {}; b.belts[DIV] = (b.belts[DIV]||0) + 1; }
+  saveBests(b);
+  return { b, nu };
+}
+function bestsLine(){
+  const b = loadBests(), parts = [];
+  if (b.fastestBelt) parts.push('Fastest belt: '+b.fastestBelt+' fight'+(b.fastestBelt===1?'':'s'));
+  if (b.mostDefenses) parts.push('Most defenses: '+b.mostDefenses);
+  const divs = b.belts ? Object.keys(b.belts).length : 0;
+  if (divs) parts.push('Champion in '+divs+' division'+(divs===1?'':'s'));
+  if (b.mostWins) parts.push('Best run: '+b.mostWins+' wins');
+  return parts.join('   ·   ');
+}
 function runSummary(){
   const wins = G.log.filter(f=>f.won);
   const fins = wins.filter(f=>f.fin).length;
@@ -3432,6 +3465,11 @@ function endBox(msg){
     (SIG(G.sig)?'<div><span>Signature</span><b>'+SIG(G.sig).name+'</b></div>':'')+
     ((G.defenses||0)?'<div><span>Title defenses</span><b>'+G.defenses+'</b></div>':'');
   p.appendChild(rec);
+  // PERSONAL BESTS — folded in once per run, with any records just beaten called out.
+  if (!G.bestsSaved){ G._bests = updateBests(); G.bestsSaved = true; }
+  const _br = G._bests || { nu:[] };
+  if (_br.nu && _br.nu.length){ const nb=document.createElement('div'); nb.className='note'; nb.style.cssText='color:var(--gold);margin-top:.4rem;font-weight:700'; nb.textContent='New personal best — '+_br.nu.join(', ')+'!'; p.appendChild(nb); }
+  const _bl=bestsLine(); if(_bl){ const bd=document.createElement('div'); bd.className='note'; bd.style.marginTop='.3rem'; bd.textContent='Career bests: '+_bl; p.appendChild(bd); }
   const n=document.createElement('div'); n.className='note';
   const best = G.log.filter(f=>f.won).sort((a,b)=>a.p-b.p)[0];
   // The best win speaks moneyline now too — same reason as the log.
