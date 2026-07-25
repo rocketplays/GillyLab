@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T18:13:13.184Z",
+ "generatedAt": "2026-07-25T19:03:06.399Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -6946,6 +6946,194 @@
       ]
      },
      "capturedAt": "2026-07-25T18:13:13.055Z"
+    }
+   ]
+  },
+  "Magomed Ankalaev": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Bogdan Guskov",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 5,
+     "time": "2:41",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Bogdan Guskov",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 113,
+      "totL": 156,
+      "totA": 235,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "8:26",
+      "head": [
+       19,
+       63
+      ],
+      "body": [
+       26,
+       39
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       44,
+       98
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       6,
+       11
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 63,
+      "totL": 45,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       21
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       34,
+       38
+      ],
+      "dist": [
+       39,
+       63
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T19:03:06.269Z"
+    }
+   ]
+  },
+  "Bogdan Guskov": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Magomed Ankalaev",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 5,
+     "time": "2:41",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Magomed Ankalaev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 63,
+      "totL": 45,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       21
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       34,
+       38
+      ],
+      "dist": [
+       39,
+       63
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 113,
+      "totL": 156,
+      "totA": 235,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "8:26",
+      "head": [
+       19,
+       63
+      ],
+      "body": [
+       26,
+       39
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       44,
+       98
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       6,
+       11
+      ]
+     },
+     "capturedAt": "2026-07-25T19:03:06.269Z"
     }
    ]
   }
