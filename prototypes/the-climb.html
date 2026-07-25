@@ -862,6 +862,15 @@ const UNRANKED_WINS = 1;
 // you got there with.
 const CUT_AT = 5;
 const START_AGE = 24, MONTHS_PER_FIGHT = 4;
+// AGE CATCHES EVERYONE. ~4 months a fight, so a long run drifts a fighter into his
+// thirties — and past ~32 the tank and the chin start to go. A modest, LATE decline:
+// win the belt young and you never feel it, but grind a run into your late thirties and
+// you lose a real slice of your cardio and durability. It is the clock the "win before
+// you fade" arc needs. 0 through 32, +5%/yr, capped at 40%.
+function ageDecline(){
+  const age = START_AGE + Math.floor(((G.fightNo||0)*MONTHS_PER_FIGHT)/12);
+  return Math.max(0, Math.min(0.40, (age - 32) * 0.05));
+}
 
 // THE REGIONAL RECORD YOU ARRIVE WITH. Playtest, and it's the premise the whole
 // economy was already built on: "a fighter doesn't actually start in the UFC at
@@ -1579,6 +1588,7 @@ function winProb(oppName){
   p += styleDelta(G.attrs, o.style||{}, isChamp(o))/100;
   // Momentum: a real climb rewards form. Small, so it flavors rather than rules.
   p += Math.min(0.04, (G.streak||0)*0.008);
+  p -= ageDecline() * 0.6;   // the legs and the timing go first
   return Math.max(0.05, Math.min(0.95, p));
 }
 const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
@@ -1891,6 +1901,16 @@ function rewardFor(f, p){
 // contenders (5-round title fights); each win grows your legacy. It reuses the whole
 // pipeline — plan, moments, signature — the only differences are who's offered and
 // that a win banks a defense instead of moving your rank.
+// LEGACY TIER — champion, dominant champion, or the GOAT, by title defenses. It's the
+// milestone that turns "retire" into "retire as the GOAT", and it reads off the reign
+// you actually built rather than a participation trophy.
+function legacyTier(){
+  const d = G.defenses || 0;
+  if (d >= 5) return { name:'GOAT', goat:true };
+  if (d >= 3) return { name:'Dominant champion', goat:false };
+  if (G.champ || G.wasChamp) return { name:'Champion', goat:false };
+  return null;
+}
 function champDefenders(){
   const last = G.last && G.last.o && G.last.o.f.name;
   const top = LADDER().filter(f => f.rankNum >= 1 && f.rankNum < 99 && f.name !== last)
@@ -2465,10 +2485,11 @@ function boutFinishCtx(o){
   const kd = Math.max(0, S.kd || 0), sb = Math.max(0, S.sub || 0);
   const threat = (kd + sb) / (kd + sb + 1.0);
   const lvl = (id) => ((G.attrs[id] || ATTR_MIN) - ATTR_MIN) / (ATTR_MAX - ATTR_MIN);
-  const gassed = 1 - lvl('cardio');
+  const ageMul = 1 - ageDecline();
+  const gassed = 1 - lvl('cardio') * ageMul;   // you gas sooner in the back half of a career
   const winBase = 0.10 + finBias * 0.74;
   const winFin = winBase + (1 - winBase) * gassed * 0.70 * finBias;
-  const chinMult = 1.85 - 1.25 * lvl('chin');
+  const chinMult = 1.85 - 1.25 * lvl('chin') * ageMul;  // a fading chin gets stopped more
   const loseFin = Math.min(0.92, (0.22 + threat * 0.45) * chinMult);
   const matDef = lvl('grappling') * 0.75 + lvl('takedef') * 0.25;
   let subDef = 1 - 0.80 * matDef, wF = winFin, lF = loseFin, fB = finBias;
@@ -2868,14 +2889,14 @@ function render(){
   // belt-winning or run-ending fight, and the game plan you took into it, vanished.
   // Render that last fight above the summary on every ending.
   const endFight = () => { if (G.last) app.appendChild(resultBox()); };
-  if (G.retired){ endFight(); app.appendChild(endBox('RETIRED on top — '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'.')); return; }
+  if (G.retired){ endFight(); const _rt=legacyTier(); app.appendChild(endBox(_rt&&_rt.goat ? 'RETIRED as the GOAT — '+(G.defenses||0)+' title defenses.' : 'RETIRED on top — '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'.')); return; }
   // OUT OF SHOTS IS NOT A CUT, and it is checked FIRST. If you take your second
   // title fight on your fifth loss, both conditions are true at once and the run
   // has to end with the honest one: you didn't get released, you ran out of cracks
   // at the belt. Ordering is the whole fix — put this second and the 21% of runs
   // this exists for would still print "Cut".
   if (G.outOfShots){ endFight(); app.appendChild(endBox('No shots left. The title is gone.')); return; }
-  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox('Cut. '+CUT_AT+' losses.')); return; }
+  if (G.losses>=CUT_AT){ endFight(); app.appendChild(endBox((G.wasChamp||G.champ) ? "After that loss, you call it a career — a former champion, not a cut." : 'Cut. '+CUT_AT+' losses.')); return; }
   // DRAWING UP A PLAN IS A FOCUS MODE. You've picked the man; now the screen is
   // the fight you're about to have, and nothing else — the offer list, the upgrade
   // panel and the log would all just be noise you have to scroll past to commit.
@@ -3357,7 +3378,8 @@ function offerBox(){
   p.innerHTML='<div class="rl">'+(G.champ?'Defend your title':'Pick your next fight')+'</div>';
   if (G.champ){
     const ch=document.createElement('div'); ch.className='champ-note';
-    ch.innerHTML='<b>You hold the belt.</b> '+(G.defenses?('Defended '+G.defenses+' time'+(G.defenses===1?'':'s')+'. '):'')+'Take a challenger, or retire on top.';
+    const _t=legacyTier();
+    ch.innerHTML='<b>You hold the belt.</b> '+(G.defenses?('Defended '+G.defenses+' time'+(G.defenses===1?'':'s')+(_t&&_t.name!=='Champion'?' \u2014 <b style="color:var(--gold)">'+_t.name+(_t.goat?' status':'')+'</b>':'')+'. '):'')+'Take a challenger, or retire on top.';
     p.appendChild(ch);
   }
   const g=document.createElement('div'); g.className='opps';
@@ -3422,9 +3444,10 @@ function offerBox(){
     p.appendChild(c);
   }
   if (G.champ){
+    const _rt=legacyTier();
     const rb=document.createElement('button'); rb.className='btn retire';
-    rb.textContent='Retire as champion';
-    rb.onclick=()=>{ if(confirm('Retire as champion?\n\nYou walk away on top with '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'. This ends the run.')){ G.retired=true; render(); } };
+    rb.textContent = _rt && _rt.goat ? 'Retire as the GOAT' : 'Retire as champion';
+    rb.onclick=()=>{ if(confirm((_rt&&_rt.goat?'Retire as the GOAT?':'Retire as champion?')+'\n\nYou walk away on top with '+(G.defenses||0)+' title defense'+((G.defenses||0)===1?'':'s')+'. This ends the run.')){ G.retired=true; render(); } };
     p.appendChild(rb);
   }
   return p;
@@ -3901,7 +3924,10 @@ function runSummary(){
     // designs for one moment is how they drift. This is endBox's own headline,
     // built by the same expression, so the picture can't say something the page
     // didn't.
-    verdict: G.champ ? 'CHAMPION.' : (G.outOfShots ? 'NO BELT.' : 'CUT.'),
+    verdict: G.champ ? (legacyTier() && legacyTier().goat ? 'THE GOAT.' : 'CHAMPION.')
+           : G.outOfShots ? 'NO BELT.'
+           : G.wasChamp ? 'RETIRED.'
+           : 'CUT.',
     verdictSub: G.champ ? ((G.defenses||0) ? (G.defenses+' title defense'+(G.defenses===1?'':'s')+'.') : 'You did it.')
               : G.outOfShots ? 'Out of title shots.'
               : (G.wasChamp ? 'Former champion.' : CUT_AT+' losses.'),
