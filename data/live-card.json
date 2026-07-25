@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T17:07:46.913Z",
+ "generatedAt": "2026-07-25T17:56:38.064Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -6570,6 +6570,194 @@
       ]
      },
      "capturedAt": "2026-07-25T17:07:46.783Z"
+    }
+   ]
+  },
+  "Magomed Zaynukov": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Damian Rzepecki",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Damian Rzepecki",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 131,
+      "totL": 109,
+      "totA": 167,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:54",
+      "head": [
+       46,
+       93
+      ],
+      "body": [
+       8,
+       15
+      ],
+      "leg": [
+       20,
+       23
+      ],
+      "dist": [
+       53,
+       107
+      ],
+      "clinch": [
+       21,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 62,
+      "totL": 32,
+      "totA": 80,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:02",
+      "head": [
+       6,
+       46
+      ],
+      "body": [
+       4,
+       8
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       15,
+       60
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T17:56:37.936Z"
+    }
+   ]
+  },
+  "Damian Rzepecki": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Magomed Zaynukov",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Magomed Zaynukov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 16,
+      "sigA": 62,
+      "totL": 32,
+      "totA": 80,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:02",
+      "head": [
+       6,
+       46
+      ],
+      "body": [
+       4,
+       8
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       15,
+       60
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 131,
+      "totL": 109,
+      "totA": 167,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:54",
+      "head": [
+       46,
+       93
+      ],
+      "body": [
+       8,
+       15
+      ],
+      "leg": [
+       20,
+       23
+      ],
+      "dist": [
+       53,
+       107
+      ],
+      "clinch": [
+       21,
+       24
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T17:56:37.936Z"
     }
    ]
   }
