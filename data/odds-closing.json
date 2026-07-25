@@ -1,18 +1,196 @@
 {
- "generatedAt": "2026-07-19T00:50:00.000Z",
+ "generatedAt": "2026-07-25T12:50:30.968Z",
  "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes.",
  "fights": [
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "main", "f1": "Dricus Du Plessis", "f2": "Kamaru Usman", "o1": -205, "o2": 170, "capturedAt": "2026-07-19T00:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "main", "f1": "Jared Cannonier", "f2": "Christian Leroy Duncan", "o1": 310, "o2": -395, "capturedAt": "2026-07-19T00:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "main", "f1": "Chase Hooper", "f2": "Mitch Ramirez", "o1": -375, "o2": 295, "capturedAt": "2026-07-19T00:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "main", "f1": "Tabatha Ricci", "f2": "Fatima Kline", "o1": 360, "o2": -470, "capturedAt": "2026-07-19T00:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "main", "f1": "Tommy McMillen", "f2": "Alberto Montes", "o1": -175, "o2": 145, "capturedAt": "2026-07-19T00:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Austin Bashi", "f2": "Jose Miguel Delgado", "o1": -125, "o2": 105, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Jean-Paul Lebosnoyani", "f2": "SeokHyeon Ko", "o1": 150, "o2": -180, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Levi Rodrigues", "f2": "Felipe Franco", "o1": -142, "o2": 120, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Alden Coria", "f2": "Stewart Nicoll", "o1": -1050, "o2": 675, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "RJ Harris", "f2": "Alvin Hines", "o1": 100, "o2": -120, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Anna Melisano", "f2": "Dione Barbosa", "o1": 455, "o2": -625, "capturedAt": "2026-07-18T20:50:00.000Z" },
-  { "slug": "ufc-fight-night-july-18-2026", "date": "2026-07-18", "section": "prelims", "f1": "Ezra Elliott", "f2": "Damien Anderson", "o1": 110, "o2": -130, "capturedAt": "2026-07-18T20:50:00.000Z" }
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "main",
+   "f1": "Dricus Du Plessis",
+   "f2": "Kamaru Usman",
+   "o1": -205,
+   "o2": 170,
+   "capturedAt": "2026-07-19T00:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "main",
+   "f1": "Jared Cannonier",
+   "f2": "Christian Leroy Duncan",
+   "o1": 310,
+   "o2": -395,
+   "capturedAt": "2026-07-19T00:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "main",
+   "f1": "Chase Hooper",
+   "f2": "Mitch Ramirez",
+   "o1": -375,
+   "o2": 295,
+   "capturedAt": "2026-07-19T00:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "main",
+   "f1": "Tabatha Ricci",
+   "f2": "Fatima Kline",
+   "o1": 360,
+   "o2": -470,
+   "capturedAt": "2026-07-19T00:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "main",
+   "f1": "Tommy McMillen",
+   "f2": "Alberto Montes",
+   "o1": -175,
+   "o2": 145,
+   "capturedAt": "2026-07-19T00:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Austin Bashi",
+   "f2": "Jose Miguel Delgado",
+   "o1": -125,
+   "o2": 105,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Jean-Paul Lebosnoyani",
+   "f2": "SeokHyeon Ko",
+   "o1": 150,
+   "o2": -180,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Levi Rodrigues",
+   "f2": "Felipe Franco",
+   "o1": -142,
+   "o2": 120,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Alden Coria",
+   "f2": "Stewart Nicoll",
+   "o1": -1050,
+   "o2": 675,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "RJ Harris",
+   "f2": "Alvin Hines",
+   "o1": 100,
+   "o2": -120,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Anna Melisano",
+   "f2": "Dione Barbosa",
+   "o1": 455,
+   "o2": -625,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-18-2026",
+   "date": "2026-07-18",
+   "section": "prelims",
+   "f1": "Ezra Elliott",
+   "f2": "Damien Anderson",
+   "o1": 110,
+   "o2": -130,
+   "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Valter Walker",
+   "f2": "Thomas Petersen",
+   "o1": -180,
+   "o2": 151,
+   "capturedAt": "2026-07-25T12:50:30.966Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Dustin Jacoby",
+   "f2": "Muhammad Said",
+   "o1": -180,
+   "o2": 150,
+   "capturedAt": "2026-07-25T12:50:30.966Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Santiago Ponzinibbio",
+   "f2": "Sam Patterson",
+   "o1": 392,
+   "o2": -531,
+   "capturedAt": "2026-07-25T12:50:30.967Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Ismael Bonfim",
+   "f2": "Axel Sola",
+   "o1": 163,
+   "o2": -195,
+   "capturedAt": "2026-07-25T12:50:30.967Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Magomed Tuchalov",
+   "f2": "Brendson Ribeiro",
+   "o1": -925,
+   "o2": 599,
+   "capturedAt": "2026-07-25T12:50:30.967Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Nurullo Aliev",
+   "f2": "Mike Davis",
+   "o1": -230,
+   "o2": 189,
+   "capturedAt": "2026-07-25T12:50:30.967Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "prelims",
+   "f1": "Cody Gibson",
+   "f2": "Abdul Hussein",
+   "o1": 455,
+   "o2": -634,
+   "capturedAt": "2026-07-25T12:50:30.967Z"
+  }
  ]
 }
