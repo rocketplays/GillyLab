@@ -2288,7 +2288,7 @@ function applyResult(o, R){
 // round or get you stopped. Read it against your build and the scoreboard.
 function startBout(o){
   G.bout = { o, base: boutRolls(o), ctx: boutFinishCtx(o), i:0, rounds:[],
-             hisDmg:0, myDmg:0, moment:null, usedHurt:false, usedTrouble:false, override:null };
+             hisDmg:0, myDmg:0, moment:null, usedHurt:false, usedTrouble:false, override:null, moments:[] };
   advanceBout();
 }
 function advanceBout(){
@@ -2331,6 +2331,7 @@ function boutFinalize(){
     else
       R = { won, fin:false, method:'decision', finRound:0, rounds, roundsWon:rw };
   }
+  o.moments = B.moments || [];        // carry the in-fight calls onto the result screen
   applyResult(o, applyPunch(o, R));   // clears G.bout and renders the result
 }
 // AGGRESSION IS VARIANCE, NOT FREE WIN%. The gamble is keyed on whether you were
@@ -2349,18 +2350,34 @@ function boutChoose(kind){
   const flipLoss = () => { const j = B.base.rounds.indexOf(true, B.i);
       if (j >= 0) { B.base.rounds[j] = false; return true; }
       for (let k=B.rounds.length-1;k>=0;k--) if (B.rounds[k]) { B.rounds[k]=false; return true; } return false; };
-  if (kind === 'bank' || kind === 'weather') { advanceBout(); return; }   // safe = the fight stands
+  // RECORD THE CALL AND HOW IT LANDED, so the result screen can tell you whether the
+  // risk paid off — the same transparency the game plan gets. rec(text, good): good=true
+  // it paid off, false it cost you, null a wash.
+  const hurt = m.type === 'hurt';
+  const rec = (text, good) => (B.moments || (B.moments=[])).push({ text, good });
+  if (kind === 'bank' || kind === 'weather') {                 // safe = the fight stands
+    rec(hurt ? 'Had him hurt — you kept it disciplined and banked the round.'
+             : 'In deep water — you weathered it rather than gamble.', null);
+    advanceBout(); return;
+  }
   const winning = noopWon(), sg = G.sig;
   let pLand = kind === 'swarm' ? clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9) : 0.5;
   if (sg === 'killer' && kind === 'swarm') pLand = Math.min(0.95, pLand + 0.15);  // finisher lands it
   const backfire = AGG_BACKFIRE * (sg === 'killer' ? 1.3 : (sg === 'scram' || sg === 'chin') ? 0.5 : 1);
   const stopAgainst = sg === 'chin' ? 0.22 : (sg === 'scram' ? 0.35 : 0.5);       // iron chin / scrambler survive
   if (winning) {
-    if (Math.random() < pLand) { finish(true); }                 // a highlight — still your win
-    else if (Math.random() < backfire) { if (flipLoss() && Math.random() < stopAgainst) finish(false); }
+    if (Math.random() < pLand) { finish(true); rec('You swarmed — and got the finish. It paid off.', true); }
+    else if (Math.random() < backfire) {
+      const flipped = flipLoss();
+      if (flipped) {
+        if (Math.random() < stopAgainst) { finish(false); rec('You overreached — swung for the finish, got caught, and lost it.', false); }
+        else rec('You overreached and dropped the round — but survived.', false);
+      } else rec('You swung for the finish and missed — no harm done.', null);
+    } else rec('You went for the finish; he covered up. No harm.', null);
   } else {
-    if (Math.random() < pLand * AGG_STEAL) { finish(true); }     // steal it outright
-    else if (Math.random() < stopAgainst) { finish(false); }     // or get stopped
+    if (Math.random() < pLand * AGG_STEAL) { finish(true); rec('You fired back — and stole the fight. It paid off.', true); }
+    else if (Math.random() < stopAgainst) { finish(false); rec('You fired back, got caught, and got stopped.', false); }
+    else rec('You fired back and weathered it — no change.', null);
   }
   if (B.override) { boutFinalize(); return; }
   advanceBout();
@@ -2862,6 +2879,16 @@ function resultBox(){
       '<span style="color:var(--muted)">'+verdict+'</span>';
     p.appendChild(pn);
   }
+  // THE IN-FIGHT CALLS, said out loud — did risking it (or playing it safe) pay off? Same
+  // idea as the game-plan line: the moment junctures you steered are worth seeing resolve.
+  if (o.moments && o.moments.length){
+    for (const mo of o.moments){
+      const mc = mo.good===true ? 'var(--accent)' : mo.good===false ? 'var(--accent2)' : 'var(--muted)';
+      const mn=document.createElement('div'); mn.className='note';
+      mn.innerHTML='In the fight — <span style="color:'+mc+'">'+mo.text+'</span>';
+      p.appendChild(mn);
+    }
+  }
   // THE CALLOUT PAYOFF, said out loud — the whole point of the gamble is the moment
   // it lands or doesn't.
   if (o.callout){
@@ -3036,7 +3063,7 @@ function offerBox(){
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
+      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours · +'+o.reward+' upgrade pts</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
     // WHO you fight is still chosen here (and the difficulty band is honest — that's
@@ -3403,13 +3430,15 @@ function commitPlan(o, plan){
   // the plan. `swing` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
   // already a 95% favorite a great read adds nothing and the post-fight line says so.
   o.p = clampv(base + delta/100, 0.05, 0.95);
-  // THE READ CAN'T MAKE A FAVORITE A LOCK. Re-cap the post-plan odds at the board's own
-  // ceiling — 0.85 for a contender fight, 0.88 for a title defense (matching the champ-
-  // defense cap, so planning a defense never makes it HARDER than not planning) — so a
-  // great plan matters most in a CLOSE fight and can never stack a dominant one back into
-  // a formality. Title fights already halve the plan's delta (above), so a defense can't
-  // be schemed past the fade. This was the leak once (playtest: 18-0, 5 def).
-  o.p = Math.min(o.p, o.titleFight ? 0.88 : 0.85);
+  // THE READ CAN'T MAKE A FAVORITE A LOCK, but it must never DRAG A FAVORITE DOWN either.
+  // Re-cap the post-plan odds at the board's own ceiling — 0.85 contender, 0.88 title —
+  // so a great plan can't stack a close fight into a formality. But if you were ALREADY
+  // above that ceiling (a big favorite on an early card, or a soft title shot), the cap
+  // is max(base, ceiling), so a GOOD plan holds you at your base instead of showing a
+  // phantom deduction (playtest: right game plan as a big favorite, still read as a
+  // minus). A bad plan can still cost you — it just resolves below base, not below the cap.
+  const cap = o.titleFight ? 0.88 : 0.85;
+  o.p = Math.min(o.p, Math.max(base, cap));
   o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
   G.pending = null;
   startBout(o);
