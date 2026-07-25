@@ -2569,9 +2569,17 @@ function boutFinishCtx(o){
   return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef };
 }
 function finishMethod(o, ctx, won){
-  if (won && G.sig === 'subace') return 'submission';   // an ace taps them, every time
-  const koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
-  const subW = won ? ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35) : ctx.sb * ctx.subDef;
+  let koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
+  let subW = won ? ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35) : ctx.sb * ctx.subDef;
+  // Submission Ace hunts the TAP: his wrestling becomes submissions, not ground-and-pound,
+  // and the sub weight is boosted — so he no longer taps 100% of the time (playtest: 9 subs,
+  // 0 KOs on a build with real power). Real STANDING power still cracks a chin, so a
+  // well-rounded ace keeps the occasional KO (~1 in 4) while a pure grappler almost never
+  // does. Method-only — never touches the win rate.
+  if (won && G.sig === 'subace') {
+    koW  = (G.attrs.power||1) + (G.attrs.pace||0)*0.40*ctx.frail;
+    subW = ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.60) * 1.8;
+  }
   const bySub = (koW + subW > 0) && Math.random() < subW/(koW+subW);
   return bySub ? 'submission' : 'KO/TKO';
 }
@@ -2864,19 +2872,24 @@ function boutChoose(kind){
   if (sg === 'killer' && kind === 'swarm') pLand = Math.min(0.95, pLand + 0.15);  // finisher lands it
   const backfire = AGG_BACKFIRE * (sg === 'killer' ? 1.3 : (sg === 'scram' || sg === 'chin') ? 0.5 : 1);
   const stopAgainst = sg === 'chin' ? 0.22 : (sg === 'scram' ? 0.35 : 0.5);       // iron chin / scrambler survive
+  // The VERB follows the moment (you had him hurt -> swarmed; you were in trouble -> fired
+  // back), NOT the scoreline. Keying it off \`winning\` was the bug: a hurt-and-swarm that
+  // stole a fight you were losing read "you fired back" (playtest), and two different
+  // moments could print the identical line.
+  const verb = hurt ? 'You swarmed' : 'You fired back';
   if (winning) {
-    if (Math.random() < pLand) { finish(true); rec('You swarmed — and got the finish. It paid off.', true); }
+    if (Math.random() < pLand) { finish(true); rec(verb+' — and got the finish. It paid off.', true); }
     else if (Math.random() < backfire) {
       const flipped = flipLoss();
       if (flipped) {
-        if (Math.random() < stopAgainst) { finish(false); rec('You overreached — swung for the finish, got caught, and lost it.', false); }
-        else rec('You overreached and dropped the round — but survived.', false);
-      } else rec('You swung for the finish and missed — no harm done.', null);
-    } else rec('You went for the finish; he covered up. No harm.', null);
+        if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and lost it.', false); }
+        else rec(verb+', dropped the round — but survived.', false);
+      } else rec(verb+' and missed — no harm done.', null);
+    } else rec(verb+'; he covered up. No harm.', null);
   } else {
-    if (Math.random() < pLand * AGG_STEAL) { finish(true); rec('You fired back — and stole the fight. It paid off.', true); }
-    else if (Math.random() < stopAgainst) { finish(false); rec('You fired back, got caught, and got stopped.', false); }
-    else rec('You fired back and weathered it — no change.', null);
+    if (Math.random() < pLand * AGG_STEAL) { finish(true); rec(verb+' — and stole the fight. It paid off.', true); }
+    else if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and got stopped.', false); }
+    else rec(verb+' — and nothing came of it. No change.', null);
   }
   if (B.override) { boutFinalize(); return; }
   advanceBout();
@@ -3309,7 +3322,14 @@ function hud(){
     // when CUT_AT became a constant and moved to 5 — so getting cut displayed
     // "Lives -3". Clamped at 0 as well: a dead fighter has none, not a negative
     // number of them.
-    '<div><span>Losses left</span><b>'+Math.max(0, CUT_AT-G.losses)+'</b></div>';
+    // WHICH CLOCK IS ACTUALLY RUNNING. A contender is cut on his 5th loss (G.losses). But
+    // once you're a champion or former champion, the run ends on your SECOND belt loss —
+    // and belt losses don't touch the cut budget, so showing "1 loss left" there was a lie
+    // the moment a belt loss ended the run (playtest). Show the belt clock for anyone in
+    // championship territory, the cut budget for everyone else.
+    ((G.champ || G.wasChamp)
+      ? '<div><span>Title losses left</span><b>'+Math.max(0, 2-(G.titleLosses||0))+'</b></div>'
+      : '<div><span>Losses left</span><b>'+Math.max(0, CUT_AT-G.losses)+'</b></div>');
   // Last, and pushed to the far right by margin-left:auto — a destructive control
   // does not belong next to the thing you came to read, and it should not be the
   // first target your thumb finds. The HUD is the only chrome that persists across
