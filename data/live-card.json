@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T13:36:13.723Z",
+ "generatedAt": "2026-07-25T14:08:57.509Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -5066,6 +5066,194 @@
       ]
      },
      "capturedAt": "2026-07-25T13:36:13.595Z"
+    }
+   ]
+  },
+  "Nurullo Aliev": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Mike Davis",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Mike Davis",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 81,
+      "totA": 106,
+      "tdL": 8,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "12:25",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       17
+      ],
+      "clinch": [
+       1,
+       4
+      ],
+      "ground": [
+       8,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 37,
+      "totL": 55,
+      "totA": 71,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       9,
+       23
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       9,
+       23
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       11,
+       11
+      ]
+     },
+     "capturedAt": "2026-07-25T14:08:57.382Z"
+    }
+   ]
+  },
+  "Mike Davis": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Nurullo Aliev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Nurullo Aliev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 22,
+      "sigA": 37,
+      "totL": 55,
+      "totA": 71,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "0:36",
+      "head": [
+       9,
+       23
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       9,
+       23
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       11,
+       11
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 81,
+      "totA": 106,
+      "tdL": 8,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "12:25",
+      "head": [
+       12,
+       30
+      ],
+      "body": [
+       1,
+       4
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       17
+      ],
+      "clinch": [
+       1,
+       4
+      ],
+      "ground": [
+       8,
+       13
+      ]
+     },
+     "capturedAt": "2026-07-25T14:08:57.382Z"
     }
    ]
   }
