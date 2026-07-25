@@ -2777,6 +2777,11 @@ function boutChoose(kind){
 // choices whose pros/cons are honest. The Fight IQ readout is as sharp as your IQ.
 function boutBox(){
   const B = G.bout, o = B.o, m = B.moment, last = o.f.name.split(' ').pop();
+  // STRIKER vs GRAPPLER FRAMING — read off the same weights the sim uses to pick the
+  // finish, so the beats, the choices AND the condition read all speak your language.
+  const _koW = (G.attrs.power||1) + (G.attrs.wrestling||0)*0.5 + (G.attrs.pace||0)*0.6;
+  const _subW = (G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35;
+  const grappler = _subW > _koW;
   const p = document.createElement('div'); p.className = 'panel bout';
   const rl = document.createElement('div'); rl.className = 'rl';
   rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
@@ -2794,7 +2799,7 @@ function boutBox(){
     c.appendChild(l); c.appendChild(tr); return c;
   };
   bars.appendChild(bar('You', 1-B.myDmg, 'var(--accent)', cond(B.myDmg), B.myDmg>0.55));
-  bars.appendChild(bar(last, 1-B.hisDmg, 'var(--accent2)', B.hisDmg>0.55?'rocked':cond(B.hisDmg), false));
+  bars.appendChild(bar(last, 1-B.hisDmg, 'var(--accent2)', B.hisDmg>0.55?(grappler?'in trouble':'rocked'):cond(B.hisDmg), false));
   p.appendChild(bars);
   const rd = document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + B.rounds.map((w,idx)=>'<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(idx+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ');
@@ -2811,26 +2816,38 @@ function boutBox(){
     b.onclick=()=>boutChoose(kind); return b;
   };
   if (m.type === 'hurt'){
-    beat.textContent = 'You rocked ' + last + " — he's hurt.";
-    readout.textContent = iq>=8 ? "Your corner reads it: he's badly hurt and fading — this is the moment."
-                       : iq>=4 ? 'He looks hurt — there might be a finish here.'
-                       : 'He looks a little rocked.';
-    opts.appendChild(choice('Swarm for the finish', true, 'swarm',
-      "Your best shot at ending it now, while he's rocked.",
-      'If he survives he ties you up and steals the round — and a desperation takedown is live.'));
-    opts.appendChild(choice('Stay composed', false, 'bank',
-      'Bank a clean round and stay fresh for later.',
-      'You let a dangerous, hurt man recover.'));
+    beat.textContent = grappler ? "You've got " + last + " in deep trouble on the ground."
+                                : 'You rocked ' + last + " — he's hurt.";
+    readout.textContent = grappler
+      ? (iq>=8 ? "Your corner: the position's locked and he's fading — the tap is right there."
+       : iq>=4 ? "You've got him hurt — there's a finish here."
+       : "You've got a dominant position.")
+      : (iq>=8 ? "Your corner reads it: he's badly hurt and fading — this is the moment."
+       : iq>=4 ? 'He looks hurt — there might be a finish here.'
+       : 'He looks a little rocked.');
+    opts.appendChild(choice(grappler?'Squeeze for the finish':'Swarm for the finish', true, 'swarm',
+      grappler ? "Your best shot at the tap, while you've got him locked up."
+               : "Your best shot at ending it now, while he's rocked.",
+      grappler ? 'Let him scramble free and he\\'s back in it — and you\\'ve spent yourself.'
+               : 'If he survives he ties you up and steals the round — and a desperation takedown is live.'));
+    opts.appendChild(choice(grappler?'Hold the position':'Stay composed', false, 'bank',
+      grappler ? 'Keep control, bank the round, stay fresh.' : 'Bank a clean round and stay fresh for later.',
+      grappler ? 'You let a hurt, dangerous man work back to his feet.' : 'You let a dangerous, hurt man recover.'));
   } else {
-    beat.textContent = last + " has you hurt — you're in trouble.";
-    readout.textContent = iq>=8 ? "Your corner: you're rocked but clear-headed — he's loading up on you."
-                       : iq>=4 ? "You're hurt — careful now."
-                       : 'You got caught clean.';
-    opts.appendChild(choice('Fire back', true, 'fire',
-      'A chance to steal the round — or turn the whole fight.',
-      "Trading while you're hurt, you're far more likely to get finished."));
-    opts.appendChild(choice('Weather it, survive', false, 'weather',
-      'Clinch up, cover, and get out of the round.',
+    beat.textContent = grappler ? last + " has turned it around — you're in a bad spot."
+                                : last + " has you hurt — you're in trouble.";
+    readout.textContent = grappler
+      ? (iq>=8 ? "Your corner: you're stuck underneath but composed — work your escape."
+       : iq>=4 ? "Bad position — stay calm and work out." : "He's on top of you.")
+      : (iq>=8 ? "Your corner: you're rocked but clear-headed — he's loading up on you."
+       : iq>=4 ? "You're hurt — careful now." : 'You got caught clean.');
+    opts.appendChild(choice(grappler?'Scramble out':'Fire back', true, 'fire',
+      grappler ? 'Explode out and reverse it — steal the round, or better.'
+               : 'A chance to steal the round — or turn the whole fight.',
+      grappler ? "Scramble wrong and he takes your back and sinks it in."
+               : "Trading while you're hurt, you're far more likely to get finished."));
+    opts.appendChild(choice(grappler?'Ride it out':'Weather it, survive', false, 'weather',
+      grappler ? 'Defend, tie him up, and get through the round.' : 'Clinch up, cover, and get out of the round.',
       'You concede the round to stay in the fight.'));
   }
   p.appendChild(beat); p.appendChild(readout); p.appendChild(opts);
@@ -3591,6 +3608,7 @@ function planFor(o){
   const rEarly = opt('early','Pressure early', eEarly, [
     P(6*Math.max(0,oChinV),                'He can be hurt early, before he settles in.'),
     P(4*(oPace<0.5?1:0)*yStrike,           'He starts slow — jump on him before he warms up.'),
+    P(6*yWr*Math.max(0,oTddOpen),          "Shoot early, before he's warmed up to defend the takedown."),
   ], [
     P(7*Math.max(0,0.5-yCardio)*oPace,     'Trading hard early with a busy man empties your tank.'),
     P(3.5*(isChamp(o.f)?1:0)*Math.max(0,0.5-yCardio),'Five hard rounds punish a fast start.'),
@@ -3603,6 +3621,7 @@ function planFor(o){
   const rDeep = opt('deep','Take him deep', eDeep, [
     P(7*oPace*yCardio,                     'He fades late — drag a fast starter into deep water.'),
     P(3.5*yCardio,                         'Your gas tank owns the championship rounds.'),
+    P(5*((yWr+yGrap)/2)*yCardio,           'Grind him on the mat — top control drains a gas tank fast.'),
   ], [
     P(7*Math.max(0,0.55-yChin)*oPop,       'With your chin, giving a puncher the early rounds is a gamble.'),
     P(3*(oChinV>0.4?1:0),                  "He's there to be finished early — waiting throws it away."),
@@ -3615,6 +3634,7 @@ function planFor(o){
   const rCounter = opt('counter','Sit and counter', eCounter, [
     P(4.5*yStrDef,                         'Low-risk — make him lead and punish the entries.'),
     P(3.5*Math.max(0,oOpen)*yTech,         "He's hittable — pick him apart as he comes in."),
+    P(4.5*yTakeDef*(oTdThr>0.35?1:0),      'Let him shoot first — stuff it, and take over in the scramble.'),
   ], [
     P(5*(grappler?1:0)*(1-yTakeDef),       'Sitting back lets a grappler pick when to shoot.'),
     P(3.5*oPace,                           'A volume fighter out-works a counter-puncher on the cards.'),
