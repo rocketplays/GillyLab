@@ -872,10 +872,14 @@ function ageDecline(){
   const ageC = Math.max(0, (age - 32) * 0.04);   // the calendar — now that the number climbs, this actually fires
   // HARD MILES, and the hardest are championship rounds. Decline tracks the TITLE
   // fights on your record — the belt-WINNING fight is free, but every DEFENSE after
-  // wears you ~10% — so the CLIMB barely feels it while a long REIGN fades hard: a
-  // champion is dominant early and fraying late. A truly extreme grind frays too.
+  // wears you ~3% — so the CLIMB doesn't feel it while a REIGN fades GENTLY: a champion
+  // is dominant early and slips late, but a great one can still string defenses together.
+  // 3% (not the old 10%) is deliberate: at 10% a maxed champ's five-defense survival was
+  // ~17%, which dragged GOAT down to ~4% once the climb itself was made fair. GOAT should
+  // scale WITH the division — ~8% in the hardest, ~15% in the softest — and that comes
+  // from a gentler fade plus the division's own belt rate, not from a brutal reign.
   const titleFights = (G.log||[]).filter(f => f.titleFight).length;
-  const reignWear = Math.max(0, titleFights - 1) * 0.10;
+  const reignWear = Math.max(0, titleFights - 1) * 0.03;
   const grind = Math.max(0, (G.log||[]).length - 22) * 0.025;
   return Math.min(0.55, ageC + reignWear + grind);
 }
@@ -1926,11 +1930,14 @@ function champDefenders(){
   return top.map(f => {
     // A champion dominates EARLY and fades LATE — that's the wear-and-age decline
     // (see ageDecline), not a flat cap. A fresh champ can blow out his first defenses;
-    // by the fourth or fifth, the hard miles of championship rounds have caught up and
-    // a hungry contender is a real threat. The soft 0.90 only kills pure formalities.
-    // A defense pays +1 — the cap on difficulty is the decline, so points can't run the
-    // reign away, and the +1 gives a cushion for reclaiming the belt if you drop it.
-    const p = Math.min(0.80, winProb(f.name));
+    // by the fifth or sixth, the hard miles of championship rounds have caught up and
+    // a hungry contender is a real threat. The 0.88 cap sits just above the regular
+    // ceiling (MAX_FAVORITE 0.85) on purpose: a FRESH champion picking the softest of
+    // the top three IS more dominant than a contender fight, and that early cushion is
+    // what lets a great reign string defenses together and reach GOAT (~15% in the
+    // softest divisions). The real cap on difficulty is still the decline; a defense
+    // pays +1 as a cushion for reclaiming the belt if you drop it.
+    const p = Math.min(0.88, winProb(f.name));
     return { f, p, reward: 1, jump: 0, titleFight:true, defense:true };
   });
 }
@@ -3782,11 +3789,12 @@ function commitPlan(o, plan){
   // already a 95% favorite a great read adds nothing and the post-fight line says so.
   o.p = clampv(base + delta/100, 0.05, 0.95);
   // THE READ CAN'T MAKE A FAVORITE A LOCK. Re-cap the post-plan odds at the board's own
-  // ceiling (a title defense stays under a declined cap), so a great plan matters most in
-  // a CLOSE fight and can never stack a dominant one — or a fading champion's defense —
-  // back into a formality. This was the leak: the plan bypassed the defense decline
-  // entirely (playtest: 18-0 with 5 defenses).
-  o.p = Math.min(o.p, o.titleFight ? 0.78 : 0.85);
+  // ceiling — 0.85 for a contender fight, 0.88 for a title defense (matching the champ-
+  // defense cap, so planning a defense never makes it HARDER than not planning) — so a
+  // great plan matters most in a CLOSE fight and can never stack a dominant one back into
+  // a formality. Title fights already halve the plan's delta (above), so a defense can't
+  // be schemed past the fade. This was the leak once (playtest: 18-0, 5 def).
+  o.p = Math.min(o.p, o.titleFight ? 0.88 : 0.85);
   o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
   G.pending = null;
   startBout(o);
