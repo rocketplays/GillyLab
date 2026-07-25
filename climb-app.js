@@ -3263,10 +3263,17 @@ function commitPlan(o, plan){
   const rMean = avg(plan.read);
   let delta = ((w.edge - wMean) + (r.edge - rMean)) * PLAN_SCALE * (G.sig==='general'?1.3:1);  // win% pts, +good / -bad
   delta = clampv(delta, -22, 15);               // see PLAN_SCALE — a margin, not a miracle
+  if (o.titleFight) delta *= 0.5;               // against the best in the world, less to out-scheme
   // The read moves the fight and the deferred odds line reflects it: o.p now carries
   // the plan. `swing` is the ACTUAL applied points AFTER the 5%/95% clamp — if you were
   // already a 95% favorite a great read adds nothing and the post-fight line says so.
   o.p = clampv(base + delta/100, 0.05, 0.95);
+  // THE READ CAN'T MAKE A FAVORITE A LOCK. Re-cap the post-plan odds at the board's own
+  // ceiling (a title defense stays under a declined cap), so a great plan matters most in
+  // a CLOSE fight and can never stack a dominant one — or a fading champion's defense —
+  // back into a formality. This was the leak: the plan bypassed the defense decline
+  // entirely (playtest: 18-0 with 5 defenses).
+  o.p = Math.min(o.p, o.titleFight ? 0.78 : 0.85);
   o.plan = { where:w.label, read:r.label, base, planned:o.p, swing:Math.round((o.p-base)*100) };
   G.pending = null;
   startBout(o);
