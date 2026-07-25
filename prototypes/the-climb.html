@@ -241,6 +241,11 @@
   .sigcard.locked{opacity:.5;cursor:not-allowed}
   .sigcard.locked .sgh{color:var(--muted)}
   .sigcard.locked .sgs{color:var(--gold)}
+  .panel.sigunlock{border-color:var(--gold)}
+  .su-name{font-weight:700;font-size:1rem;color:var(--gold)}
+  .su-line{font-size:.82rem;line-height:1.5;margin-top:.3rem;color:var(--text)}
+  .su-flaw{font-size:.72rem;color:var(--muted);margin-top:.35rem}
+  .su-act{display:flex;gap:.5rem;margin-top:.7rem;flex-wrap:wrap}
   .sigv{font-size:.78rem}
 
   /* ── THE CALLOUT ─────────────────────────────────────────────────────────────
@@ -2375,6 +2380,35 @@ const SIG_REQ = { killer:['power',6], chin:['chin',6], scram:['takedef',6],
 const sigMet = id => { const r=SIG_REQ[id]; return !r || (G.attrs[r[0]]||ATTR_MIN) >= r[1]; };
 const sigReqLabel = id => { const r=SIG_REQ[id]; if(!r) return '';
   const a = UI_ATTRS.find(x=>x.id===r[0]); return 'Needs '+(a?a.label:r[0])+' '+r[1]+'+'; };
+// Mid-run, spending upgrade points can raise you across a signature's floor. When it
+// does, offer the switch ONCE — G.sigOffered remembers everything already unlocked
+// (seeded at "turn pro" with whatever you built into), so a declined offer never nags.
+function checkSigUnlock(){
+  if (!G.sigOffered) G.sigOffered = new Set();
+  for (const s of SIGS){
+    if (sigMet(s.id) && !G.sigOffered.has(s.id)){
+      G.sigOffered.add(s.id);
+      if (s.id !== G.sig) G.sigUnlockPrompt = s.id;   // a genuinely new option — offer it
+    }
+  }
+}
+function sigUnlockBox(){
+  const s = SIG(G.sigUnlockPrompt), cur = SIG(G.sig);
+  const p=document.createElement('div'); p.className='panel sigunlock';
+  const rl=document.createElement('div'); rl.className='rl'; rl.style.color='var(--gold)';
+  rl.textContent='New signature unlocked'; p.appendChild(rl);
+  const nm=document.createElement('div'); nm.className='su-name'; nm.textContent=s.name; p.appendChild(nm);
+  const ln=document.createElement('div'); ln.className='su-line'; ln.textContent=s.line; p.appendChild(ln);
+  const fl=document.createElement('div'); fl.className='su-flaw'; fl.textContent='Wrinkle: '+s.flaw; p.appendChild(fl);
+  const act=document.createElement('div'); act.className='su-act';
+  const sw=document.createElement('button'); sw.className='btn pri'; sw.textContent='Switch to '+s.name;
+  sw.onclick=()=>{ G.sig=s.id; G.sigUnlockPrompt=null; render(); };
+  const keep=document.createElement('button'); keep.className='btn';
+  keep.textContent = cur ? 'Keep '+cur.name : 'Stay without one';
+  keep.onclick=()=>{ G.sigUnlockPrompt=null; render(); };
+  act.appendChild(sw); act.appendChild(keep); p.appendChild(act);
+  return p;
+}
 const DOG_PULL = 0.20;   // Dog in Him: how hard the odds pull toward even
 const SUB_CHANCE = 0.10;  // Submission Ace: a threat from any position, both ways
 // SUBMISSION ACE, applied once the winner is known so it works on BOTH paths. Two-way,
@@ -2770,7 +2804,7 @@ function newGame(){
         // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
         // and reset by any loss, so a statement fight is a thing you earn on a run and
         // gamble away, not a button you can mash. See calloutOffer / fight().
-        hype:0, bout:null, sig:null, avenged:new Set(),
+        hype:0, bout:null, sig:null, avenged:new Set(), sigOffered:new Set(), sigUnlockPrompt:null,
         // titleLosses/spared/outOfShots MUST reset here. A one-shot exemption that
         // survives newGame() is a one-shot exemption you get once per browser tab.
         titleLosses:0, spared:false, outOfShots:false };
@@ -2823,6 +2857,7 @@ function render(){
   // A FIGHT IN PROGRESS pauses here at each in-fight moment; nothing else renders.
   if (G.bout && G.bout.moment){ app.appendChild(boutBox()); return; }
   if (G.last) app.appendChild(resultBox());
+  if (G.sigUnlockPrompt) app.appendChild(sigUnlockBox());
   app.appendChild(upgrade());
   app.appendChild(offerBox());
   app.appendChild(logBox());
@@ -3020,7 +3055,7 @@ function creator(){
   const row=document.createElement('div');
   row.style.cssText='display:flex;gap:.5rem;align-items:center;margin-top:.6rem';
   const b=document.createElement('button'); b.className='btn pri'; b.textContent='Turn pro →';
-  b.onclick=()=>{ G.started=true; render(); };
+  b.onclick=()=>{ G.started=true; G.sigOffered=new Set(SIGS.filter(s=>sigMet(s.id)).map(s=>s.id)); render(); };
   row.appendChild(b);
   // Restart here clears the sheet back to a blank 42 points. It does NOT reset the
   // division — that's the <select> above, which restarts on change anyway, and
@@ -3222,7 +3257,7 @@ function upgrade(){
     btn.disabled = G.pts<cost || maxed;
     if(btn.disabled) btn.style.opacity=.3;
     else btn.style.borderColor='var(--accent)';
-    btn.onclick=()=>{ if(G.pts<cost||maxed) return; G.attrs[A.id]++; G.pts-=cost; render(); };
+    btn.onclick=()=>{ if(G.pts<cost||maxed) return; G.attrs[A.id]++; G.pts-=cost; checkSigUnlock(); render(); };
     row.appendChild(l); row.appendChild(bar); row.appendChild(btn);
     p.appendChild(row);
   }
