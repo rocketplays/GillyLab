@@ -2358,21 +2358,28 @@ const SIGS = [
   { id:'general', name:'Ring General', icon:'ti-eye', short:"Out-thinks everyone — rarely finishes.",
     line:"You out-think everyone in there. Your corner always has the read, and a sharp game plan cuts deeper.",
     flaw:"You out-point people — you rarely take anyone out." },
-  { id:'power',   name:'Walk-Off Power', icon:'ti-hammer', short:"One-shot KO threat — suspect chin.",
-    line:"One shot ends it. You carry a puncher's chance into every round, win or lose.",
-    flaw:"All or nothing — your own chin is there to be found." },
+  { id:'subace',  name:'Submission Ace', icon:'ti-target', short:"Taps anyone — but needs the mat.",
+    line:"A submission from any position — get the fight to the ground and it's only a matter of time.",
+    flaw:"Little power standing; if you can't get him down, you can't finish him." },
 ];
 const SIG = id => SIGS.find(s=>s.id===id) || null;
 const DOG_PULL = 0.20;   // Dog in Him: how hard the odds pull toward even
-const PUNCH    = 0.10;   // Walk-Off: a puncher's chance, both ways, applied at the end
-// WALK-OFF POWER, applied once the winner is known so it works on BOTH paths. Two-way
-// on purpose: a losing night can end in a walk-off KO, but that suspect chin means a
-// winning one can too. Net win-rate-neutral, just a lot more knockouts.
+const SUB_CHANCE = 0.10;  // Submission Ace: a threat from any position, both ways
+// SUBMISSION ACE, applied once the winner is known so it works on BOTH paths. Two-way,
+// so it's win-rate-neutral: catch a sub from a losing position (a win out of nowhere),
+// but hunt too hard from on top and you get swept and drop the decision. Either way,
+// a live submission threat in every scramble.
 function applyPunch(o, R){
-  if (G.sig !== 'power') return R;
-  const ko = { fin:true, method:'KO/TKO', rounds:R.rounds, roundsWon:R.roundsWon, finRound: R.rounds.length||1 };
-  if (!R.won && Math.random() < PUNCH) return Object.assign({}, ko, { won:true });
-  if ( R.won && Math.random() < PUNCH) return Object.assign({}, ko, { won:false });
+  if (G.sig !== 'subace') return R;
+  // Mean-preserving: a symmetric flip would quietly tax favorites (more wins to lose
+  // than losses to steal), so the "catch from behind" is scaled by your odds — the
+  // bigger a favorite you are, the rarer but larger each steal — which keeps the net
+  // win rate flat while still throwing a submission scramble into any fight.
+  const r = o.p / Math.max(0.05, 1 - o.p);
+  if (!R.won && Math.random() < Math.min(0.5, SUB_CHANCE * r))   // you catch one from behind
+    return { won:true, fin:true, method:'submission', rounds:R.rounds, roundsWon:R.roundsWon, finRound: R.rounds.length||1 };
+  if ( R.won && Math.random() < SUB_CHANCE)                       // swept hunting the finish
+    return { won:false, fin:false, method:'decision', rounds:R.rounds, roundsWon:R.roundsWon, finRound: 0 };
   return R;
 }
 
@@ -2408,11 +2415,16 @@ function boutFinishCtx(o){
   if (sg === 'chin')    { lF *= 0.55; wF *= 0.85; }              // eats bombs; finishes less
   else if (sg === 'scram')   { subDef *= 0.45; }                // very hard to submit
   else if (sg === 'general') { wF *= 0.80; fB *= 0.85; }        // out-points, rarely finishes
-  else if (sg === 'power')   { lF = Math.min(0.95, lF * 1.25); }// suspect chin
+  else if (sg === 'subace')  {                                 // finishing machine on the mat, nothing if he sprawls
+      const tdd = (o.f.style && o.f.style.tdDef != null) ? o.f.style.tdDef : 66;
+      const gettable = Math.max(0, Math.min(1, (92 - tdd) / 45));
+      wF = wF + (1 - wF) * 0.30 * gettable;
+    }
   else if (sg === 'killer')  { wF = wF + (1 - wF) * 0.20; }     // finishes a touch more overall
   return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef };
 }
 function finishMethod(o, ctx, won){
+  if (won && G.sig === 'subace') return 'submission';   // an ace taps them, every time
   const koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
   const subW = won ? ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35) : ctx.sb * ctx.subDef;
   const bySub = (koW + subW > 0) && Math.random() < subW/(koW+subW);
