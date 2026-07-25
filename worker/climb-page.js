@@ -1918,8 +1918,15 @@ function champDefenders(){
   const last = G.last && G.last.o && G.last.o.f.name;
   const top = LADDER().filter(f => f.rankNum >= 1 && f.rankNum < 99 && f.name !== last)
     .sort((a,b)=>a.rankNum-b.rankNum).slice(0,3);
-  return top.map(f => { const p = winProb(f.name);
-    return { f, p, reward: rewardFor(f,p), jump: 0, titleFight:true, defense:true }; });
+  return top.map(f => {
+    // A champion is a favorite, never a lock — the contenders are the best in the world,
+    // so a defense caps at a 3:1 favorite (you still drop one in four). And there are NO
+    // upgrade points up here: you defend with the fighter you built, so the reign can't
+    // run away into someone nobody can touch. Playtest: "it gets very easy once you get
+    // there — you keep upgrading and you're just way better than everyone."
+    const p = Math.min(0.75, winProb(f.name));
+    return { f, p, reward: 0, jump: 0, titleFight:true, defense:true };
+  });
 }
 function offers(){
   if (G.champ) return champDefenders();
@@ -3269,9 +3276,9 @@ function resultBox(){
     const rn=document.createElement('div'); rn.className='note'; rn.style.marginTop='.3rem';
     rn.style.color = won ? 'var(--gold)' : 'var(--muted)';
     const tookRank = (won && G.rank === o.f.rankNum && o.f.rankNum < 99);
-    rn.textContent = won
-      ? 'You settled the score with '+o.f.name+'.'+(tookRank ? ' His #'+o.f.rankNum+' spot is yours,' : ' Grudge retired,')+' and your hype is up.'
-      : o.f.name+' still owns you.';
+    rn.textContent = !won ? o.f.name+' still owns you.'
+      : o.f.rankNum <= 0.5 ? 'You settled the score with '+o.f.name+' — and the belt is yours. Grudge retired.'
+      : 'You settled the score with '+o.f.name+'.'+(tookRank ? ' His #'+o.f.rankNum+' spot is yours,' : ' Grudge retired,')+' and your hype is up.';
     p.appendChild(rn);
   }
   const n=document.createElement('div'); n.className='note';
@@ -3410,7 +3417,7 @@ function offerBox(){
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-      '<div class="rw">+'+o.reward+' upgrade pts if you win</div>';
+      '<div class="rw">'+(o.defense ? 'Defend the belt' : '+'+o.reward+' upgrade pts if you win')+'</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
     // WHO you fight is still chosen here (and the difficulty band is honest — that's
