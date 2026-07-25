@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T16:51:14.450Z",
+ "generatedAt": "2026-07-25T17:07:46.913Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -6382,6 +6382,194 @@
       ]
      },
      "capturedAt": "2026-07-25T16:51:14.320Z"
+    }
+   ]
+  },
+  "Rizvan Kuniev": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Tyrell Fortune",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 3,
+     "time": "1:12",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Tyrell Fortune",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 66,
+      "sigA": 120,
+      "totL": 68,
+      "totA": 122,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:21",
+      "head": [
+       46,
+       94
+      ],
+      "body": [
+       20,
+       26
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       35,
+       75
+      ],
+      "clinch": [
+       30,
+       44
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 43,
+      "totL": 29,
+      "totA": 52,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       33
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       10,
+       30
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T17:07:46.783Z"
+    }
+   ]
+  },
+  "Tyrell Fortune": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Rizvan Kuniev",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 3,
+     "time": "1:12",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Rizvan Kuniev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 20,
+      "sigA": 43,
+      "totL": 29,
+      "totA": 52,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       12,
+       33
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       10,
+       30
+      ],
+      "clinch": [
+       10,
+       13
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 66,
+      "sigA": 120,
+      "totL": 68,
+      "totA": 122,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:21",
+      "head": [
+       46,
+       94
+      ],
+      "body": [
+       20,
+       26
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       35,
+       75
+      ],
+      "clinch": [
+       30,
+       44
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-07-25T17:07:46.783Z"
     }
    ]
   }
