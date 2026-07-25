@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-07-25T17:56:38.064Z",
+ "generatedAt": "2026-07-25T18:13:13.184Z",
  "fighters": {
   "Alessandro Costa": {
    "history": [
@@ -6758,6 +6758,194 @@
       ]
      },
      "capturedAt": "2026-07-25T17:56:37.936Z"
+    }
+   ]
+  },
+  "Steve Erceg": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Ramazan Temirov",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:21",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Ramazan Temirov",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 42,
+      "totL": 11,
+      "totA": 42,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       9,
+       37
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       41
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 27,
+      "sigA": 61,
+      "totL": 32,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       25,
+       56
+      ],
+      "body": [
+       1,
+       4
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       25,
+       59
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-07-25T18:13:13.055Z"
+    }
+   ]
+  },
+  "Ramazan Temirov": {
+   "history": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Steve Erceg",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:21",
+     "event": "UFC Fight Night: Ankalaev vs. Guskov",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Jul 25, 2026",
+     "opponent": "Steve Erceg",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 27,
+      "sigA": 61,
+      "totL": 32,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       25,
+       56
+      ],
+      "body": [
+       1,
+       4
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       25,
+       59
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 42,
+      "totL": 11,
+      "totA": 42,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       9,
+       37
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       41
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-07-25T18:13:13.055Z"
     }
    ]
   }
