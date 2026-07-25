@@ -1958,6 +1958,9 @@ const SIGS = [
   { id:'subace',  name:'Submission Ace', icon:'ti-target', short:"Taps anyone — but needs the mat.",
     line:"A submission from any position — get the fight to the ground and it's only a matter of time.",
     flaw:"Little power standing — if you can't get him down, you can't finish him." },
+  { id:'gnp',     name:'Ground & Pound', icon:'ti-hammer', short:"Mauls from the top — no sub game.",
+    line:"You maul from the top. Get him down and the ground strikes come in waves until the ref steps in.",
+    flaw:"No submission threat — if you can't get him to the mat, it goes to the cards." },
 ];
 const SIG = id => SIGS.find(s=>s.id===id) || null;
 // EACH SIGNATURE NEEDS THE TOOL FOR IT. You can't be a Submission Ace with no
@@ -1968,7 +1971,7 @@ const SIG = id => SIGS.find(s=>s.id===id) || null;
 // the floor is always met — you can only RAISE stats after turning pro — so the
 // resolvers never need to re-check it; this is enforced entirely on the build screen.
 const SIG_REQ = { killer:['power',6], chin:['chin',6], scram:['takedef',6],
-                  dog:['cardio',6], general:['fightiq',6], subace:['grappling',6] };
+                  dog:['cardio',6], general:['fightiq',6], subace:['grappling',6], gnp:['wrestling',6] };
 const sigMet = id => { const r=SIG_REQ[id]; return !r || (G.attrs[r[0]]||ATTR_MIN) >= r[1]; };
 const sigReqLabel = id => { const r=SIG_REQ[id]; if(!r) return '';
   const a = UI_ATTRS.find(x=>x.id===r[0]); return 'Needs '+(a?a.label:r[0])+' '+r[1]+'+'; };
@@ -2074,6 +2077,11 @@ function boutFinishCtx(o){
       const gettable = Math.max(0, Math.min(1, (92 - tdd) / 45));
       wF = wF + (1 - wF) * 0.30 * gettable;
     }
+  else if (sg === 'gnp')     {                                 // pounds out the takedown-able; stalls vs a sprawl
+      const tdd = (o.f.style && o.f.style.tdDef != null) ? o.f.style.tdDef : 66;
+      const gettable = Math.max(0, Math.min(1, (92 - tdd) / 45));
+      wF = wF + (1 - wF) * 0.30 * gettable;
+    }
   else if (sg === 'killer')  { wF = wF + (1 - wF) * 0.20; }     // finishes a touch more overall
   return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef };
 }
@@ -2088,6 +2096,15 @@ function finishMethod(o, ctx, won){
   if (won && G.sig === 'subace') {
     koW  = (G.attrs.power||1) + (G.attrs.pace||0)*0.40*ctx.frail;
     subW = ((G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.60) * 1.8;
+  }
+  // Ground & Pound is the exact MIRROR of the ace. The ace keeps his natural standing
+  // power (the odd KO) and boosts the tap; G&P keeps his natural grappling (the odd sub)
+  // and boosts the ground STRIKES. So wrestling drives a boosted TKO from the top, while a
+  // high-grappling wrestler still threatens the occasional submission — a pure wrestler
+  // almost never does. Method-only, win-rate untouched.
+  if (won && G.sig === 'gnp') {
+    koW  = ((G.attrs.power||1)*0.5 + (G.attrs.wrestling||0)*1.2 + (G.attrs.pace||0)*0.4*ctx.frail) * 1.6;
+    subW = (G.attrs.grappling||1) * 0.9;
   }
   const bySub = (koW + subW > 0) && Math.random() < subW/(koW+subW);
   return bySub ? 'submission' : 'KO/TKO';
@@ -2371,9 +2388,13 @@ function boutChoose(kind){
   // it paid off, false it cost you, null a wash.
   const hurt = m.type === 'hurt';
   const rec = (text, good) => (B.moments || (B.moments=[])).push({ text, good });
-  if (kind === 'bank' || kind === 'weather') {                 // safe = the fight stands
-    rec(hurt ? 'Had him hurt — you kept it disciplined and banked the round.'
-             : 'In deep water — you weathered it rather than gamble.', null);
+  if (kind === 'bank' || kind === 'weather') {                 // safe = you decline the gamble; the fight resolves as it was going
+    // Describe the CHOICE, not the outcome. "Banked the round" / "weathered it" claimed a
+    // result the fight might not deliver — the natural finish still lands whether you
+    // gambled or not (playtest: played safe, still won/lost by submission, note said you
+    // banked/weathered it). Passing on the SWARM is true regardless of how the fight ends.
+    rec(hurt ? 'Had him hurt — you passed on the swarm and let it play out.'
+             : 'In trouble — you covered up rather than fire back.', null);
     advanceBout(); return;
   }
   const winning = noopWon(), sg = G.sig;
