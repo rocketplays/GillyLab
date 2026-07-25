@@ -2355,7 +2355,7 @@ const SIGS = [
     line:"When you rock a man, you finish him. Few survive once you've got them hurt.",
     flaw:"You overreach — swing for the finish and miss, and you'll pay for it." },
   { id:'chin',    name:'Iron Chin', icon:'ti-shield-half', short:"Can't be put away — rarely finishes.",
-    line:"You don't get put away. You can eat a bomb, and trade back when you're hurt.",
+    line:"You don't get put away. You can eat a bomb and keep trading when you're hurt.",
     flaw:"A grinder, not a killer — the highlight finishes just aren't in you." },
   { id:'scram',   name:'Scrambler', icon:'ti-arrows-shuffle', short:"Escapes the mat — light on top.",
     line:"Nobody keeps you down. You slip takedowns and escape submissions at will.",
@@ -2368,7 +2368,7 @@ const SIGS = [
     flaw:"You out-point people — you rarely take anyone out." },
   { id:'subace',  name:'Submission Ace', icon:'ti-target', short:"Taps anyone — but needs the mat.",
     line:"A submission from any position — get the fight to the ground and it's only a matter of time.",
-    flaw:"Little power standing; if you can't get him down, you can't finish him." },
+    flaw:"Little power standing — if you can't get him down, you can't finish him." },
 ];
 const SIG = id => SIGS.find(s=>s.id===id) || null;
 // EACH SIGNATURE NEEDS THE TOOL FOR IT. You can't be a Submission Ace with no
@@ -3542,7 +3542,7 @@ function planFor(o){
     P(7*oPace*yCardio,                     'He fades late — drag a fast starter into deep water.'),
     P(3.5*yCardio,                         'Your gas tank owns the championship rounds.'),
   ], [
-    P(7*Math.max(0,0.55-yChin)*oPop,       'Handing early rounds to a puncher, with your chin, is a gamble.'),
+    P(7*Math.max(0,0.55-yChin)*oPop,       'With your chin, giving a puncher the early rounds is a gamble.'),
     P(3*(oChinV>0.4?1:0),                  "He's there to be finished early — waiting throws it away."),
   ]);
   const eCounter =
@@ -3579,7 +3579,7 @@ function planFor(o){
   // speeches — as they should. Priority order, most decisive threat first.
   let cRead, cCounter, cTrap;
   if (oSubThr>0.4 || oTdThr>0.5) {                              // grappler / wrestler
-    cRead    = "He'll look to drag this to the mat";
+    cRead    = "He'll look to drag it to the mat";
     cCounter = yTakeDef>=0.5 ? "make him pay every time he shoots" : "keep circling and stay off the fence";
     cTrap    = "do not get planted on your back";
   } else if (oPop>0.6) {                                        // puncher
@@ -3628,7 +3628,7 @@ function cornerLine(iq, s, coach){
     case 2:  return C(ot+". Feel him out early before you commit.");
     case 3:  return C(ot+". I'd keep it "+s+" and adjust from there.");
     case 4:  return C("Keep it "+s+". "+cap(cnt)+".");
-    case 5:  return C("Keep it "+s+", "+cnt+", and make him fight your fight.");
+    case 5:  return C("Keep it "+s+", "+cnt+", and fight your fight.");
     case 6:  return C(ot+". Keep it "+s+", "+cnt+".");
     case 7:  return C(ot+". Keep it "+s+", "+cnt+" — that's the game plan.");
     case 8:  return C("Keep it "+s+", "+cnt+" — do that and it's your night.");
