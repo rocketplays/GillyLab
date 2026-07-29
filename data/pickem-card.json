@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-august-01-2026",
-  "generatedAt": "2026-07-29T01:20:43.411Z",
+  "generatedAt": "2026-07-29T13:55:47.673Z",
   "slugs": [
     "uros-medic",
     "daniel-rodriguez",
@@ -12,6 +12,8 @@
     "robert-valentin",
     "vlasto-cepo",
     "gilbert-urbina",
+    "milos-janicic",
+    "noah-gugnon",
     "ludovit-klein",
     "tofiq-musayev",
     "oban-elliott",
@@ -21,7 +23,13 @@
     "mateusz-rebecki",
     "kyle-prepolec",
     "nina-milosevic",
-    "hailey-cowan"
+    "hailey-cowan",
+    "borislav-nikolic",
+    "mark-vologdin",
+    "jovan-leka",
+    "alexander-poppeck",
+    "marina-spasic",
+    "stephanie-luciano"
   ],
   "bouts": [
     {
@@ -31,8 +39,8 @@
       "ps1": "uros-medic",
       "ps2": "daniel-rodriguez",
       "wPts": {
-        "f1": 7.457597467952639,
-        "f2": 16.729442757594857
+        "f1": 7.4611175904775,
+        "f2": 16.704458639331957
       },
       "mPts": {
         "f1": {
@@ -89,8 +97,8 @@
       "ps1": "aleksandar-rakic",
       "ps2": "marcin-tybura",
       "wPts": {
-        "f1": 7.557925134415391,
-        "f2": 16.06111586379808
+        "f1": 7.582477021653771,
+        "f2": 15.910300098308651
       },
       "mPts": {
         "f1": {
@@ -117,8 +125,8 @@
       "ps1": "dusko-todorovic",
       "ps2": "robert-valentin",
       "wPts": {
-        "f1": 11.66969663962633,
-        "f2": 8.812366068922021
+        "f1": 11.66086173157715,
+        "f2": 8.8168397336329
       },
       "mPts": {
         "f1": {
@@ -167,6 +175,34 @@
       }
     },
     {
+      "id": "espn-milos-janicic-vs-noah-gugnon",
+      "f1": "Milos Janicic",
+      "f2": "Noah Gugnon",
+      "ps1": "milos-janicic",
+      "ps2": "noah-gugnon",
+      "wPts": {
+        "f1": 10.070269567840725,
+        "f2": 9.930909496746775
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 7
+        },
+        "f2": {
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
       "id": "espn-ludovit-klein-vs-tofiq-musayev",
       "f1": "Ludovit Klein",
       "f2": "Tofiq Musayev",
@@ -201,8 +237,8 @@
       "ps1": "oban-elliott",
       "ps2": "michael-oliveira",
       "wPts": {
-        "f1": 15.923662186938422,
-        "f2": 7.580271046830996
+        "f1": 15.85889988401108,
+        "f2": 7.591019575000654
       },
       "mPts": {
         "f1": {
@@ -257,8 +293,8 @@
       "ps1": "mateusz-rebecki",
       "ps2": "kyle-prepolec",
       "wPts": {
-        "f1": 7.166826068061075,
-        "f2": 19.311756998920263
+        "f1": 7.161746115165552,
+        "f2": 19.368415630477507
       },
       "mPts": {
         "f1": {
@@ -285,8 +321,8 @@
       "ps1": "nina-milosevic",
       "ps2": "hailey-cowan",
       "wPts": {
-        "f1": 7.354765148351231,
-        "f2": 17.516111052981994
+        "f1": 7.349419871942365,
+        "f2": 17.560261390380944
       },
       "mPts": {
         "f1": {
@@ -298,6 +334,90 @@
           "KO/TKO": 6,
           "Submission": 5,
           "Decision": 4
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-borislav-nikolic-vs-mark-vologdin",
+      "f1": "Borislav Nikolic",
+      "f2": "Mark Vologdin",
+      "ps1": "borislav-nikolic",
+      "ps2": "mark-vologdin",
+      "wPts": {
+        "f1": 8.61247169884885,
+        "f2": 12.09425488144831
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 6,
+          "Submission": 6,
+          "Decision": 3
+        },
+        "f2": {
+          "KO/TKO": 4,
+          "Submission": 5,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-jovan-leka-vs-alexander-poppeck",
+      "f1": "Jovan Leka",
+      "f2": "Alexander Poppeck",
+      "ps1": "jovan-leka",
+      "ps2": "alexander-poppeck",
+      "wPts": {
+        "f1": 8.281275309385629,
+        "f2": 12.955395558486863
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
+          "Submission": 5,
+          "Decision": 6
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 7,
+          "Decision": 3
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-marina-spasic-vs-stephanie-luciano",
+      "f1": "Marina Spasić",
+      "f2": "Stephanie Luciano",
+      "ps1": "marina-spasic",
+      "ps2": "stephanie-luciano",
+      "wPts": {
+        "f1": 14.949888544978037,
+        "f2": 7.758587799647039
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
+          "Submission": 7,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 6,
+          "Submission": 6,
+          "Decision": 3
         }
       },
       "rPts": {
