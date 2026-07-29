@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-august-01-2026",
-  "generatedAt": "2026-07-28T13:52:19.867Z",
+  "generatedAt": "2026-07-29T01:20:43.411Z",
   "slugs": [
     "uros-medic",
     "daniel-rodriguez",
@@ -16,16 +16,12 @@
     "tofiq-musayev",
     "oban-elliott",
     "michael-oliveira",
-    "mark-vologdin",
-    "josias-musasa",
     "dennis-buzukja",
     "bogdan-grad",
     "mateusz-rebecki",
     "kyle-prepolec",
     "nina-milosevic",
-    "hailey-cowan",
-    "jovan-leka",
-    "max-gimenis"
+    "hailey-cowan"
   ],
   "bouts": [
     {
@@ -35,8 +31,8 @@
       "ps1": "uros-medic",
       "ps2": "daniel-rodriguez",
       "wPts": {
-        "f1": 7.460868958614665,
-        "f2": 16.706219395450372
+        "f1": 7.457597467952639,
+        "f2": 16.729442757594857
       },
       "mPts": {
         "f1": {
@@ -65,8 +61,8 @@
       "ps1": "jan-blachowicz",
       "ps2": "navajo-stirling",
       "wPts": {
-        "f1": 15.33659881787438,
-        "f2": 7.683253716443483
+        "f1": 15.543720511705219,
+        "f2": 7.645449953185439
       },
       "mPts": {
         "f1": {
@@ -93,8 +89,8 @@
       "ps1": "aleksandar-rakic",
       "ps2": "marcin-tybura",
       "wPts": {
-        "f1": 7.569373614735001,
-        "f2": 15.990212782288873
+        "f1": 7.557925134415391,
+        "f2": 16.06111586379808
       },
       "mPts": {
         "f1": {
@@ -121,8 +117,8 @@
       "ps1": "dusko-todorovic",
       "ps2": "robert-valentin",
       "wPts": {
-        "f1": 11.693568447536355,
-        "f2": 8.800346683698704
+        "f1": 11.66969663962633,
+        "f2": 8.812366068922021
       },
       "mPts": {
         "f1": {
@@ -149,8 +145,8 @@
       "ps1": "vlasto-cepo",
       "ps2": "gilbert-urbina",
       "wPts": {
-        "f1": 7.613894293113246,
-        "f2": 15.723899022363582
+        "f1": 7.587347813912144,
+        "f2": 15.880926034961412
       },
       "mPts": {
         "f1": {
@@ -177,8 +173,8 @@
       "ps1": "ludovit-klein",
       "ps2": "tofiq-musayev",
       "wPts": {
-        "f1": 8.088753578709662,
-        "f2": 13.577083585998281
+        "f1": 8.111963080467977,
+        "f2": 13.496312894229574
       },
       "mPts": {
         "f1": {
@@ -205,8 +201,8 @@
       "ps1": "oban-elliott",
       "ps2": "michael-oliveira",
       "wPts": {
-        "f1": 15.916304277450891,
-        "f2": 7.581485029996301
+        "f1": 15.923662186938422,
+        "f2": 7.580271046830996
       },
       "mPts": {
         "f1": {
@@ -227,42 +223,14 @@
       }
     },
     {
-      "id": "espn-mark-vologdin-vs-josias-musasa",
-      "f1": "Mark Vologdin",
-      "f2": "Josias Musasa",
-      "ps1": "mark-vologdin",
-      "ps2": "josias-musasa",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 5,
-          "Submission": 4,
-          "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 4,
-          "Submission": 7,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
       "id": "espn-dennis-buzukja-vs-bogdan-grad",
       "f1": "Dennis Buzukja",
       "f2": "Bogdan Grad",
       "ps1": "dennis-buzukja",
       "ps2": "bogdan-grad",
       "wPts": {
-        "f1": 12.546606288639374,
-        "f2": 8.427716761471553
+        "f1": 12.612753836442735,
+        "f2": 8.4028005014326
       },
       "mPts": {
         "f1": {
@@ -289,8 +257,8 @@
       "ps1": "mateusz-rebecki",
       "ps2": "kyle-prepolec",
       "wPts": {
-        "f1": 7.184269775491796,
-        "f2": 19.120944780501205
+        "f1": 7.166826068061075,
+        "f2": 19.311756998920263
       },
       "mPts": {
         "f1": {
@@ -330,34 +298,6 @@
           "KO/TKO": 6,
           "Submission": 5,
           "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-jovan-leka-vs-max-gimenis",
-      "f1": "Jovan Leka",
-      "f2": "Max Gimenis",
-      "ps1": "jovan-leka",
-      "ps2": "max-gimenis",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 2,
-          "Submission": 6,
-          "Decision": 7
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 5
         }
       },
       "rPts": {
