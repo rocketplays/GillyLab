@@ -4910,7 +4910,7 @@
  { name: "Marc-André Barriault", division: "MW", rank: "NR", record: "17-11-0", initials: "MAB3", country: "Canada" },
  { name: "Kelvin Gastelum", division: "MW", rank: "NR", record: "20-11-0", initials: "KGS", country: "USA" },
  { name: "Abus Magomedov", division: "MW", rank: "NR", record: "29-7-1", initials: "ABM2", country: "Russia" },
- { name: "Robert Valentin", division: "MW", rank: "NR", record: "10-6-0", initials: "RVN", country: "Switzerland" },
+ { name: "Robert Valentin", division: "MW", rank: "NR", record: "11-6-0", initials: "RVN", country: "Switzerland" },
  { name: "Punahele Soriano", division: "WW", rank: "NR", record: "13-4-0", initials: "PUS", country: "USA" },
  { name: "Chris Curtis", division: "WW", rank: "NR", record: "32-13-0", initials: "CCT", country: "USA" },
  { name: "Deron Winn", division: "MW", rank: "NR", record: "7-3-0", initials: "DWN", country: "USA" },
@@ -34336,7 +34336,7 @@
     { opponent: "Richard Longhimo", url: "https://www.youtube.com/watch?v=GkE1kVy35j0", event: "Vendetta 3 · Mar 2012", section: null }
   ],
   "Robert Valentin": [
-    { opponent: "Julien Leblanc", url: "https://www.paramountplus.com/shows/video/ALVE01KNMQWYENEVPA3T4EF0NDZ0QG/", event: "UFC Fight Night · Jun 2026", section: "UFC" },
+    { opponent: "Julien Leblanc", url: "https://www.paramountplus.com/shows/video/ALVE01KNMQWYENEVPA3T4EF0NDZ0QG/", event: "UFC Fight Night · Apr 2026", section: "UFC" },
     { opponent: "Ateba Gautier", url: "https://ufcfightpass.com/video/832875", event: "UFC 318 · Jul 2025", section: null },
     { opponent: "Torrez Finney", url: "https://ufcfightpass.com/video/782571", event: "UFC on ESPN · Apr 2025", section: null },
     { opponent: "Ryan Loder", url: "https://ufcfightpass.com/video/680131", event: "UFC on ESPN · Aug 2024", section: null },
@@ -62967,7 +62967,7 @@ const FIGHT_HISTORY = {
     { date: "Sep 29, 2014", opponent: "Wanderley Freitas", result: "W", method: "Submission (Arm-triangle choke)", round: 1, time: "2:00", event: "Rio Preto Show Fight" }
   ],
   "Robert Valentin": [
-    { date: "Jun 27, 2026", opponent: "Julien Leblanc", result: "–", method: "Upcoming", round: 0, time: "–", event: "UFC Fight Night: Fiziev vs. Torres", org: "UFC" },
+    { date: "Apr 18, 2026", opponent: "Julien Leblanc", result: "W", method: "Submission (Rear-naked choke)", round: 1, time: "2:22", event: "UFC Fight Night: Burns vs. Malott", org: "UFC" },
     { date: "Jul 19, 2025", opponent: "Ateba Gautier", result: "L", method: "TKO (Punches)", round: 1, time: "1:10", event: "UFC 318: Holloway vs. Poirier 3", org: "UFC" },
     { date: "Apr 5, 2025", opponent: "Torrez Finney", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UFC on ESPN: Emmett vs. Murphy", org: "UFC" },
     { date: "Aug 24, 2024", opponent: "Ryan Loder", result: "L", method: "TKO (Elbows)", round: 2, time: "1:49", event: "UFC on ESPN: Cannonier vs. Borralho (TUF 32 Finale)", org: "UFC" },
@@ -110996,6 +110996,32 @@ function mhStriking(A, B, n1, n2){
   // read points at the mat instead of shrugging — see mhReadBlock.
   let h = mhReadBlock(A, B, n1, n2, 'strike');
 
+  // SIGNIFICANT STRIKES, LANDED AND ABSORBED — the one pair of numbers every other
+  // section on this tab breaks apart by position and target. Opens the tab the same
+  // way "Takedowns landed" opens the grappling one: accuracy leads the bar (a raw
+  // volume number says nothing about whether it connects), the per-15 rate rides in
+  // the sub, same _mhPerShort/_mhExpOf/_mhRate machinery as every other count here.
+  // That's the point of doing it this way rather than printing the fighter's static
+  // profile SLpM/SApM — those never move with the All/Wins/Losses filter, and this
+  // does, because it's summed from the same cells/cellsD the rest of the tab reads.
+  const p15h = _mhPer15Bout(A, B);
+  const eAh = _mhExpOf(A, p15h), eBh = _mhExpOf(B, p15h);
+  const sumCell = (G, key, i) => G[key].reduce((s, c) => s + c[i], 0);
+  const lA = sumCell(A, 'cells', 0), aA = sumCell(A, 'cells', 1);
+  const lB = sumCell(B, 'cells', 0), aB = sumCell(B, 'cells', 1);
+  const dlA = sumCell(A, 'cellsD', 0), daA = sumCell(A, 'cellsD', 1);
+  const dlB = sumCell(B, 'cellsD', 0), daB = sumCell(B, 'cellsD', 1);
+  h += '<div class="mh-sec">Significant strikes</div>';
+  h += mhCmp('Landed',
+    { txt: lA + '/' + aA, sub: _mhPct(lA, aA) + ' accurate · ' + _mhPerShort(lA, eAh, p15h), frac: aA ? lA/aA : 0 },
+    { txt: lB + '/' + aB, sub: _mhPct(lB, aB) + ' accurate · ' + _mhPerShort(lB, eBh, p15h), frac: aB ? lB/aB : 0 },
+    { lead: _mhLeadProp(lA, aA, lB, aB) });
+  // Not accented — a long bar here is strikes eaten, same convention as "Time spent
+  // under control" on the grappling tab: this section describes, it doesn't grade.
+  h += mhCmp('Absorbed',
+    { txt: dlA + '/' + daA, sub: _mhPct(dlA, daA) + ' accurate · ' + _mhPerShort(dlA, eAh, p15h), frac: daA ? dlA/daA : 0 },
+    { txt: dlB + '/' + daB, sub: _mhPct(dlB, daB) + ' accurate · ' + _mhPerShort(dlB, eBh, p15h), frac: daB ? dlB/daB : 0 });
+
   // NO GREEN/RED ON THIS SECTION, AND IT IS THE ONE PLACE I'M NOT FOLLOWING THE
   // PROFILE BARS. Every other row here has a direction: landing more is better,
   // getting hit less is better. A SHARE HAS NO DIRECTION. Throwing 13% of your
@@ -111244,13 +111270,17 @@ function mhRenderBody(){
   // fix: the other man's numbers are real and worth showing, so render normally
   // and just label which side is empty and why, rather than blocking the panel.
   if (A.noData && B.noData) {
-    body.innerHTML = '<div class="mh-empty">Neither fighter has any ' + rf + ' on record.</div>';
+    body.innerHTML = '<div class="mh-empty">Neither fighter has any UFC ' + rf + ' on record.</div>';
     return;
   }
   let note = '';
   if (A.noData || B.noData) {
     const emptyName = A.noData ? n1 : n2, shownName = A.noData ? n2 : n1;
-    note = '<div class="mh-filter-note">' + escHtmlAttr(emptyName) + ' has no ' + rf +
+    // "UFC" is load-bearing here, not decoration: a fighter can easily have real
+    // wins/losses from the regional circuit that never touch this stat set, and
+    // "has no wins on record" reads as a claim about their whole career, not the
+    // UFC-only window this grid actually tracks.
+    note = '<div class="mh-filter-note">' + escHtmlAttr(emptyName) + ' has no UFC ' + rf +
       ' on record — showing ' + escHtmlAttr(shownName) + '\'s numbers only.</div>';
   }
   try {

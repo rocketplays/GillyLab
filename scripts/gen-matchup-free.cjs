@@ -196,13 +196,15 @@ if (!ctx.glDeepDiveAvailable(n1, n2)) {
     if (!A || !B) throw new Error('_ddGrid returned null for filter=' + filter + ' (' + n1 + ' vs ' + n2 + ')');
     const rf = filter === 'win' ? 'wins' : filter === 'loss' ? 'losses' : null;
     if (A.noData && B.noData) {
-      const empty = '<div class="mh-empty">Neither fighter has any ' + rf + ' on record.</div>';
+      const empty = '<div class="mh-empty">Neither fighter has any UFC ' + rf + ' on record.</div>';
       return { striking: empty, grappling: empty };
     }
     let note = '';
     if (A.noData || B.noData) {
       const emptyName = A.noData ? n1 : n2, shownName = A.noData ? n2 : n1;
-      note = '<div class="mh-filter-note">' + ctx.escHtmlAttr(emptyName) + ' has no ' + rf +
+      // "UFC" is load-bearing — mirrors mhRenderBody's wording in index.html. A
+      // fighter can have real regional wins/losses this grid never sees.
+      note = '<div class="mh-filter-note">' + ctx.escHtmlAttr(emptyName) + ' has no UFC ' + rf +
         ' on record — showing ' + ctx.escHtmlAttr(shownName) + '\'s numbers only.</div>';
     }
     return { striking: note + ctx.mhStriking(A, B, n1, n2), grappling: note + ctx.mhGrappling(A, B, n1, n2) };
