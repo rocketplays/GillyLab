@@ -148,11 +148,18 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
                                     payoutInfo, createdAt, referralCount, activeCount,
                                     lifetimeRevenueCents, lifetimeCommissionCents,
                                     bonusesPaidCents, paidOutCents, customTierPct,
-                                    termsAcceptedAt, termsAcceptedVersion }
+                                    termsAcceptedAt, termsAcceptedVersion, w9SubmittedAt }
      promo:<CODE UPPERCASED>  -> token          (fast promo-code -> partner lookup)
      referral:<email>         -> { partnerToken, promoCode, since, active }
      ledger:<token>:<ts>_<id> -> { invoiceId, email, amountCents, pct, commissionCents,
                                     kind: "first" | "recurring" | "bonus", date }
+     w9:<token>               -> { filename, contentType, size, uploadedAt, dataBase64 }
+                                   Kept separate from partner:<token> so the (possibly
+                                   multi-MB) base64 blob doesn't ride along on every
+                                   listPartners() read — only w9SubmittedAt does that.
+                                   Founder-only download at /admin/partners/w9/<token>.
+                                   Deliberately NOT deleted when a partner is removed —
+                                   see /admin/partners/remove's own comment.
    `token` is a randHex(24) — the partner's dashboard URL IS the credential (same
    trust model as a magic-sign-in link), matching the "under 15 partners, hand them a
    link" scale this was built for.
@@ -167,7 +174,7 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
 // A partner whose termsAcceptedVersion doesn't match gets the terms page again
 // on their next dashboard visit, same as someone who's never accepted at all —
 // see the /partner/<token> gate below.
-const PARTNER_TERMS_VERSION = "2026-07-31";
+const PARTNER_TERMS_VERSION = "2026-07-31-w9";
 const partnerByToken = async (env, token) => { const v = await env.PARTNERS.get("partner:" + token); return v ? JSON.parse(v) : null; };
 const putPartner = async (env, p) => env.PARTNERS.put("partner:" + p.token, JSON.stringify(p));
 // Two lookup directions, deliberately separate keys: `promo:<CODE>` is matched by
@@ -239,6 +246,27 @@ async function recordPartnerInvoice(env, email, amountCents, isFirst, invoiceId)
   }
   await putPartner(env, partner);
   await addLedgerEntry(env, partner.token, { invoiceId, email, amountCents, pct, commissionCents, kind: isFirst ? "first" : "recurring", date: Date.now() });
+}
+
+/* ───────────────────────────── binary <-> base64 (W-9 uploads) ─────────────────
+ * KV values are strings, so an uploaded file gets base64-encoded before storage.
+ * Chunked to avoid String.fromCharCode.apply blowing the call stack on a multi-MB
+ * file — the naive one-liner works fine for small buffers but throws on larger
+ * ones in some runtimes. */
+function arrayBufferToBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+function base64ToArrayBuffer(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
 }
 
 /* ─────────────────────────────────── Stripe ────────────────────────────────── */
@@ -1932,6 +1960,33 @@ export default {
         if (String(body.agree || "") !== "1") return reRender("Please check the box confirming you've read and agree before continuing.");
         if (!["Venmo", "PayPal", "CashApp"].includes(payoutMethod)) return reRender("Please choose a payout method.");
         if (!payoutUsername) return reRender("Please enter your username for that payment method.");
+        // A real File object only shows up here on an actual multipart upload —
+        // an empty/unselected <input type=file> comes through as a zero-size File
+        // (or is simply absent), never as a plain string, so this check is safe
+        // even though readBody() doesn't distinguish file fields from text ones.
+        const w9File = body.w9File;
+        const hasNewW9 = w9File && typeof w9File === "object" && typeof w9File.arrayBuffer === "function" && w9File.size > 0;
+        if (!partner.w9SubmittedAt && !hasNewW9) return reRender("Please upload a completed W-9 (or W-8BEN if you're not a US person) — required before your first payout.");
+        if (hasNewW9) {
+          const MAX_W9_BYTES = 8 * 1024 * 1024; // generous for a 1-2 page scan/PDF
+          if (w9File.size > MAX_W9_BYTES) return reRender("That file is too large (max 8MB) — try a lower-resolution scan or re-export the PDF.");
+          const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif", "image/webp"];
+          if (w9File.type && !allowedTypes.includes(w9File.type)) return reRender("Please upload a PDF or a photo/scan (PDF, JPG, PNG, HEIC).");
+          // Kept in its own KV key rather than on the partner record itself —
+          // listPartners() reads every partner:<token> value on every admin page
+          // load, and there's no reason to drag a multi-MB base64 blob along for
+          // that every time. partner.w9SubmittedAt (below) is the cheap flag the
+          // admin list actually reads.
+          const buf = await w9File.arrayBuffer();
+          await env.PARTNERS.put("w9:" + token, JSON.stringify({
+            filename: String(w9File.name || "w9").slice(0, 200),
+            contentType: w9File.type || "application/octet-stream",
+            size: w9File.size,
+            uploadedAt: Date.now(),
+            dataBase64: arrayBufferToBase64(buf),
+          }));
+          partner.w9SubmittedAt = Date.now();
+        }
         partner.termsAcceptedAt = Date.now();
         partner.termsAcceptedVersion = PARTNER_TERMS_VERSION;
         partner.payoutInfo = { method: payoutMethod, username: payoutUsername };
@@ -2025,6 +2080,26 @@ export default {
         // than assuming grantPartnerComp() silently succeeded.
         for (const p of partners) { const u = await getUser(env, p.email); p.compActive = !!(u && u.partnerComp); }
         return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added"), removed: url.searchParams.get("removed") }), 200, { "Cache-Control": "private, no-store" });
+      }
+      // Founder-only download of an uploaded W-9/W-8BEN. Keyed by partner token,
+      // not partner email/name, and not linked from anywhere except the admin
+      // table row it belongs to. Survives partner deletion on purpose (see
+      // /admin/partners/remove) — a payout already made means a 1099 may still
+      // be owed for that tax year even after they're no longer an active partner.
+      const w9Match = path.match(/^\/admin\/partners\/w9\/([^/]+)$/);
+      if (w9Match && request.method === "GET") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const raw = await env.PARTNERS.get("w9:" + decodeURIComponent(w9Match[1]));
+        if (!raw) return new Response("Not found", { status: 404 });
+        const rec = JSON.parse(raw);
+        return new Response(base64ToArrayBuffer(rec.dataBase64), {
+          status: 200,
+          headers: {
+            "Content-Type": rec.contentType || "application/octet-stream",
+            "Content-Disposition": 'attachment; filename="' + String(rec.filename || "w9").replace(/["\r\n]/g, "") + '"',
+            "Cache-Control": "private, no-store",
+          },
+        });
       }
       if (path === "/admin/partners/add" && request.method === "POST") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");

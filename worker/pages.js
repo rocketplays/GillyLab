@@ -3995,6 +3995,7 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
   // version bumped after they'd already set a method) rather than a first visit.
   const payoutMethod = (partner.payoutInfo && partner.payoutInfo.method) || "";
   const payoutUsername = (partner.payoutInfo && partner.payoutInfo.username) || "";
+  const hasW9 = !!partner.w9SubmittedAt;
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0b">
@@ -4051,7 +4052,7 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
       <p>You earn 50% commission on a referred customer's first paid invoice, and recurring commission on every renewal after that: 20% up to 50 lifetime referrals, 25% from 50–149, 30% from 150–299, and a custom rate above 300 (negotiated individually). You also earn a $25 bonus for every 10 paid referrals. Rates apply to invoices as they're paid — see your dashboard for a running ledger.</p>
 
       <h2>3. Payment</h2>
-      <p>Commissions are tracked automatically as your dashboard's running balance. Your available balance is paid out by the 15th of the following month, to the payment method and username you provide below.</p>
+      <p>Commissions are tracked automatically as your dashboard's running balance. Your available balance is paid out by the 15th of the following month, to the payment method and handle you provide below. If you're a US person, a completed IRS Form W-9 is required before your first payout (Form W-8BEN instead if you're not a US person — contact us directly for that one); we're required to collect this for tax reporting once payments to you cross IRS thresholds. Upload it below to complete your acceptance.</p>
 
       <h2>4. Attribution</h2>
       <p>Commission is only earned on subscriptions attributed to your code or link at checkout. Attribution is not retroactive and isn't transferable between partners. If a referred customer's subscription is refunded or its payment is charged back, the associated commission may be deducted from your balance.</p>
@@ -4074,7 +4075,7 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
       <h2>10. Governing Law</h2>
       <p>These terms are governed by the laws of the State of Arizona, without regard to conflict-of-law rules.</p>
     </div>
-    <form method="POST" action="/partner/${esc(partner.token)}/accept">
+    <form method="POST" action="/partner/${esc(partner.token)}/accept" enctype="multipart/form-data">
       <input type="hidden" name="version" value="${esc(termsVersion)}">
       <div class="pt-payout">
         <div class="pt-payout-lbl">Preferred payout method</div>
@@ -4085,6 +4086,13 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
           <input type="text" name="payoutHandle" value="${esc(payoutUsername)}" placeholder="@yourhandle" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore required>
         </label>
         <p class="pt-payout-note">This is saved to your account so we can send payouts without asking separately — update it any time by re-submitting this page (reach out and we can reset your acceptance if you need to change it later).</p>
+      </div>
+      <div class="pt-payout">
+        <div class="pt-payout-lbl">Tax form</div>
+        <label class="pt-payout-user">${hasW9 ? "We already have a W-9 on file for you — upload a new one only if something's changed." : "Upload your completed W-9 (PDF or a clear photo/scan)"}
+          <input type="file" name="w9File" accept="application/pdf,image/*" ${hasW9 ? "" : "required"}>
+        </label>
+        <p class="pt-payout-note">Blank IRS Form W-9: <a href="https://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" rel="noopener">irs.gov/pub/irs-pdf/fw9.pdf</a>. Stored privately — only accessible to GillyLab for tax reporting, never shared or shown publicly.</p>
       </div>
       <label class="pt-agree"><input type="checkbox" name="agree" value="1" required> I have read and agree to the Partner Program Terms above.</label>
       <button type="submit" class="pt-btn">Agree &amp; continue to my dashboard</button>
@@ -4210,10 +4218,18 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     const payout = p.payoutInfo && p.payoutInfo.method
       ? `${esc(p.payoutInfo.method)} <span class="pa-sub">${esc(p.payoutInfo.username || "")}</span>`
       : `<span class="pa-sub">${p.termsAcceptedAt ? "not set" : "terms not accepted yet"}</span>`;
+    const termsCell = p.termsAcceptedAt
+      ? `<span class="pa-comp-on">${esc(new Date(p.termsAcceptedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</span>`
+      : `<span class="pa-comp-off">Not yet</span>`;
+    const w9Cell = p.w9SubmittedAt
+      ? `<a href="/admin/partners/w9/${esc(p.token)}" target="_blank" rel="noopener">Download</a><div class="pa-sub">${esc(new Date(p.w9SubmittedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</div>`
+      : `<span class="pa-comp-off">Not received</span>`;
     return `<tr>
       <td>${esc(p.name)}<div class="pa-sub">${esc(p.email || "")}</div></td>
       <td>${esc(p.promoCode)}</td>
       <td>${p.compActive ? '<span class="pa-comp-on">Active</span>' : '<span class="pa-comp-off">Not active</span>'}</td>
+      <td>${termsCell}</td>
+      <td>${w9Cell}</td>
       <td>${payout}</td>
       <td>${p.referralCount || 0} <span class="pa-sub">(${p.activeCount || 0} active)</span></td>
       <td>${esc(money(p.lifetimeRevenueCents))}</td>
@@ -4283,7 +4299,7 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
     ${removed ? `<div class="pa-ok">Removed “${esc(removed)}” — their link and dashboard no longer work. Referral/ledger history was kept.</div>` : ""}
   </div>
-  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Free premium</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Free premium</th><th>Terms accepted</th><th>W-9</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
 </body></html>`;
 };
 
