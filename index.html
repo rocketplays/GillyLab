@@ -138,6 +138,18 @@
          on mobile (measured ~50% of frames missing the 60fps budget
          while scrolling under throttled CPU). */
       background: rgb(10,10,11);
+      /* iPhones with a notch/Dynamic Island (installed as a home-screen
+         PWA, or any browser chrome that lets content draw under the status
+         bar) report a nonzero safe-area-inset-top. Sticky's box starts at
+         the very top of the scroll container (top:0), so without this the
+         header's own background stops short of the status bar and page
+         content scrolling past is visible in that gap. Padding the header
+         itself (rather than adding a separate spacer) keeps the solid
+         background covering the whole notch area while sticky's built-in
+         scroll tracking still works unchanged. viewport-fit=cover (set on
+         the <meta name=viewport> tag) is required for env() here to
+         resolve to anything other than 0. */
+      padding-top: env(safe-area-inset-top);
     }
 
     /* Row 1: Search bar */
