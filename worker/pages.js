@@ -2890,7 +2890,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   const pastDropdownHTML = pastOptions
     ? `<div class="mf-past-top">
         <label for="mfPastSelect" class="mf-past-label">View past event</label>
-        <select id="mfPastSelect" class="mf-past-select" onchange="if(this.value)location.href='/matchup?event='+this.value;else location.href='/matchup';">
+        <select id="mfPastSelect" class="mf-past-select" onchange="mfNav(this.value?'/matchup?event='+this.value:'/matchup')">
           <option value="">${isOtherEvent ? "&larr; Back to this week&rsquo;s card" : "Upcoming &mdash; " + esc(card ? card.event : "Next Card")}</option>${pastOptions}
         </select>
       </div>`
@@ -3120,6 +3120,10 @@ ${AURORA_CSS}
   <script>
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
+    // Same fade the <a> click handler above gives every link — for navigations
+    // that don't go through an <a> (the past-events <select>'s onchange), so
+    // picking a past event doesn't hard-jump while every link on the page fades.
+    window.mfNav=function(h){document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);};
     (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
     // Fighter search — debounced against /api/fighter-search (server does the
     // filtering; 3,100+ fighters never ships to the client for this). Result
