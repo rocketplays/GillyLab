@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -147,7 +147,8 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
      partner:<token>          -> { token, name, email, promoCode, promotionCodeId,
                                     payoutInfo, createdAt, referralCount, activeCount,
                                     lifetimeRevenueCents, lifetimeCommissionCents,
-                                    bonusesPaidCents, paidOutCents, customTierPct }
+                                    bonusesPaidCents, paidOutCents, customTierPct,
+                                    termsAcceptedAt, termsAcceptedVersion }
      promo:<CODE UPPERCASED>  -> token          (fast promo-code -> partner lookup)
      referral:<email>         -> { partnerToken, promoCode, since, active }
      ledger:<token>:<ts>_<id> -> { invoiceId, email, amountCents, pct, commissionCents,
@@ -155,6 +156,12 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
    `token` is a randHex(24) — the partner's dashboard URL IS the credential (same
    trust model as a magic-sign-in link), matching the "under 15 partners, hand them a
    link" scale this was built for. */
+// Bump this (a plain string, doesn't need a particular format — a date is just
+// convenient and self-documenting) whenever the terms text materially changes.
+// A partner whose termsAcceptedVersion doesn't match gets the terms page again
+// on their next dashboard visit, same as someone who's never accepted at all —
+// see the /partner/<token> gate below.
+const PARTNER_TERMS_VERSION = "2026-07-31";
 const partnerByToken = async (env, token) => { const v = await env.PARTNERS.get("partner:" + token); return v ? JSON.parse(v) : null; };
 const putPartner = async (env, p) => env.PARTNERS.put("partner:" + p.token, JSON.stringify(p));
 // Two lookup directions, deliberately separate keys: `promo:<CODE>` is matched by
@@ -1857,10 +1864,31 @@ export default {
       // partner login system; see the KV shape comment above partnerByToken).
       // private, no-store: this carries another person's referral emails/earnings,
       // not something to sit in a shared/browser cache.
+      const partnerAcceptMatch = request.method === "POST" && path.match(/^\/partner\/([^/]+)\/accept$/);
+      if (partnerAcceptMatch) {
+        const token = decodeURIComponent(partnerAcceptMatch[1]);
+        const partner = token && await partnerByToken(env, token);
+        if (!partner) return html('<!doctype html><meta charset="utf-8"><title>Not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Not found</h1><p style="color:#8a8f99">Check the link you were given.</p></div></body>', 404);
+        const body = await readBody(request).catch(() => ({}));
+        if (String(body.agree || "") !== "1") {
+          return html(partnerTermsPage({ partner, termsVersion: PARTNER_TERMS_VERSION, error: "Please check the box confirming you've read and agree before continuing." }), 200, { "Cache-Control": "private, no-store" });
+        }
+        partner.termsAcceptedAt = Date.now();
+        partner.termsAcceptedVersion = PARTNER_TERMS_VERSION;
+        await putPartner(env, partner);
+        return redirect(env.SITE_URL + "/partner/" + encodeURIComponent(token));
+      }
+
       if (path.startsWith("/partner/")) {
         const token = decodeURIComponent(path.slice("/partner/".length)).replace(/\/+$/, "");
         const partner = token && await partnerByToken(env, token);
         if (!partner) return html('<!doctype html><meta charset="utf-8"><title>Not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Dashboard not found</h1><p style="color:#8a8f99">Check the link you were given.</p></div></body>', 404);
+        // Gate on terms acceptance before the real dashboard — see PARTNER_TERMS_VERSION
+        // and the /accept handler above. Unaccepted (or accepted against a now-stale
+        // version) both fall through to the terms page rather than the ledger/earnings.
+        if (!partner.termsAcceptedAt || partner.termsAcceptedVersion !== PARTNER_TERMS_VERSION) {
+          return html(partnerTermsPage({ partner, termsVersion: PARTNER_TERMS_VERSION }), 200, { "Cache-Control": "private, no-store" });
+        }
         const ledger = await listLedger(env, token);
         return html(partnerDashboardPage({ partner, ledger }), 200, { "Cache-Control": "private, no-store" });
       }

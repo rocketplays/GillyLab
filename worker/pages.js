@@ -3982,6 +3982,93 @@ function maskEmail(e) {
   return (name.length <= 2 ? name[0] || "" : name.slice(0, 2)) + "***" + domain;
 }
 
+/* ── Partner Program Terms (click-to-accept, gates the dashboard) ──────────────
+ * A new partner's token resolves here (worker/index.js's /partner/<token> handler)
+ * until partner.termsAcceptedAt is set and matches PARTNER_TERMS_VERSION — see that
+ * constant's own comment for why it's date-stamped. Plain HTML form POST (no JS),
+ * same pattern as /admin/partners/add: the accept handler redirects back to
+ * /partner/<token>, which will then resolve to the real dashboard.
+ */
+export const partnerTermsPage = ({ partner, termsVersion, error }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>Partner Program Terms — GillyLab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--accent)}
+  .pk-nav{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--text)}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  main{max-width:680px;margin:0 auto;padding:24px 18px 60px}
+  h1{font-size:1.4rem;margin:.2rem 0 .3rem;font-weight:800}
+  .pt-sub{color:var(--muted);font-size:.88rem;margin:0 0 1.5rem;line-height:1.5}
+  .pt-doc{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.3rem 1.4rem;font-size:.86rem;line-height:1.65;max-height:52vh;overflow-y:auto}
+  .pt-doc h2{font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:1.3rem 0 .4rem}
+  .pt-doc h2:first-child{margin-top:0}
+  .pt-doc p{margin:.5rem 0}
+  .pt-doc ul{margin:.5rem 0;padding-left:1.2rem}
+  .pt-doc li{margin:.3rem 0}
+  .pt-err{background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.3);color:#ff9a9a;border-radius:8px;padding:.7rem .9rem;font-size:.85rem;margin:0 0 1.2rem}
+  .pt-agree{display:flex;align-items:flex-start;gap:.6rem;margin:1.3rem 0;font-size:.85rem;color:var(--text)}
+  .pt-agree input{margin-top:.2rem;flex:0 0 auto}
+  .pt-btn{width:100%;text-align:center;font:inherit;font-weight:800;font-size:.92rem;border-radius:9px;padding:.8rem;cursor:pointer;border:1px solid rgba(0,230,104,.35);background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7}
+  .pt-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
+  .pt-note{color:var(--muted);font-size:.76rem;margin-top:1rem;line-height:1.5}
+</style></head><body>
+  <nav class="pk-nav"><a class="pk-brand" href="/"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a></nav>
+  <main>
+    <h1>Welcome, ${esc(partner.name)}</h1>
+    <p class="pt-sub">Before your partner dashboard unlocks, please read and accept the terms below. This only takes a minute, and you won't need to do it again unless the terms change.</p>
+    ${error ? `<div class="pt-err">${esc(error)}</div>` : ""}
+    <div class="pt-doc">
+      <h2>1. The Program</h2>
+      <p>GillyLab LLC, an Arizona limited liability company ("GillyLab," "we," "us"), operates a referral partner program. You ("Partner," "you") are given a unique promo code and referral link. A customer who subscribes through your link or code receives 20% off their first month automatically.</p>
+
+      <h2>2. Commission</h2>
+      <p>You earn 50% commission on a referred customer's first paid invoice, and recurring commission on every renewal after that: 20% up to 50 lifetime referrals, 25% from 50–149, 30% from 150–299, and a custom rate above 300 (negotiated individually). You also earn a $25 bonus for every 10 paid referrals. Rates apply to invoices as they're paid — see your dashboard for a running ledger.</p>
+
+      <h2>3. Payment</h2>
+      <p>Commissions are tracked automatically as your dashboard's running balance. Payouts are made manually — by the payment method we agree on (e.g. Venmo, PayPal, or bank transfer) — with no fixed schedule; reach out any time to request a payout of your available balance.</p>
+
+      <h2>4. Attribution</h2>
+      <p>Commission is only earned on subscriptions attributed to your code or link at checkout. Attribution is not retroactive and isn't transferable between partners. If a referred customer's subscription is refunded or its payment is charged back, the associated commission may be deducted from your balance.</p>
+
+      <h2>5. Independent Contractor</h2>
+      <p>You participate as an independent contractor, not as an employee, agent, or joint venturer of GillyLab. You're responsible for your own taxes on any commission earned; nothing here entitles you to benefits of any kind.</p>
+
+      <h2>6. Conduct</h2>
+      <p>You agree not to misrepresent GillyLab, use spam or deceptive advertising, or bid on GillyLab's own brand terms in paid search without our written permission. You may describe yourself as a GillyLab partner but not as an employee or official spokesperson.</p>
+
+      <h2>7. Term &amp; Termination</h2>
+      <p>Either party may end this arrangement at any time, for any reason, by written notice (email is fine). On termination, your promo code may be deactivated for new signups; commission already earned on referrals made before termination is still owed and payable per Section 3.</p>
+
+      <h2>8. Changes</h2>
+      <p>We may update these terms or the commission structure going forward, with reasonable notice; changes won't retroactively reduce commission already earned. Continuing to use your link after a change means you accept the update, or we'll ask you to re-accept here as we did today.</p>
+
+      <h2>9. No Guarantee</h2>
+      <p>There's no guaranteed minimum in referrals, earnings, or program duration. Your dashboard access token is personal to you — please don't share it.</p>
+
+      <h2>10. Governing Law</h2>
+      <p>These terms are governed by the laws of the State of Arizona, without regard to conflict-of-law rules.</p>
+    </div>
+    <form method="POST" action="/partner/${esc(partner.token)}/accept">
+      <input type="hidden" name="version" value="${esc(termsVersion)}">
+      <label class="pt-agree"><input type="checkbox" name="agree" value="1" required> I have read and agree to the Partner Program Terms above.</label>
+      <button type="submit" class="pt-btn">Agree &amp; continue to my dashboard</button>
+    </form>
+    <p class="pt-note">Questions about any of this before you agree? Reply to whoever sent you this link, or reach out to GillyLab directly — happy to talk it through.</p>
+  </main>
+</body></html>`;
+};
+
 /* ── Affiliate/partner dashboard (magic-link token, no login) ──────────────────
  * Terms are marketing/partner_program.png: 50% commission on a referral's first
  * month, tiered recurring commission after that (20% / 25% at 50 referrals / 30%
