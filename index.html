@@ -1206,9 +1206,16 @@
        UI that doesn't grow taller as more cards finish. Width/border/background
        inherited from the page-wide "#page-bets select" rule; this only adds the
        spacing the chip row gets from its own margin-bottom. */
-    .bt-card-select {
+    /* #page-bets select {background:...} is an ID-selector rule, which outranks
+       a plain .bt-card-select class rule — the `background` shorthand there
+       resets background-image to none and silently wins the cascade, so this
+       has to be qualified with #page-bets select.bt-card-select to actually
+       beat it (learned the hard way: the arrow below rendered as invisible
+       until this was scoped to match/exceed that rule's specificity). */
+    #page-bets select.bt-card-select {
       margin-bottom: 0.85rem; font-weight: 700;
       -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-color: rgba(255,255,255,0.05);
       background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'><path d='M1 1l4 4 4-4' fill='none' stroke='%2300e668' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
       background-repeat: no-repeat; background-position: right 0.9rem center;
       padding-right: 2.2rem;
