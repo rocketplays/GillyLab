@@ -77,6 +77,18 @@ check('card loses main event (headliner withdraws) still flags',
   inj('Islam Makhachev', 'UFC 330 loses main event as Islam Makhachev withdraws with injury') === true);
 check('prelim fighter own injury still flags',
   inj('Joe Pyfer', 'UFC 330 prelim fighter Joe Pyfer out of the fight with injury') === true);
+// Real bug: "<card> suffers blow as fighter withdraws" is the same "card loses a
+// bout" shape as CARD_LOSES_RE, just a different verb — Geoff Neal's withdrawal
+// got wrongly attached to the card's marquee bout (Makhachev/Garry) because the
+// headline named their fight purely as the card's SEO identifier.
+check('"card suffers blow as fighter withdraws" does NOT flag the named marquee bout',
+  inj('Islam Makhachev', 'UFC 330 suffers blow as fighter withdraws weeks out from Islam Makhachev vs Ian Machado Garry card') === false);
+check('"card suffers blow as fighter withdraws" does NOT flag the other marquee fighter either',
+  inj('Ian Machado Garry', 'UFC 330 suffers blow as fighter withdraws weeks out from Islam Makhachev vs Ian Machado Garry card') === false);
+// but a headline that NAMES who withdrew is real, fighter-specific news and must
+// still flag that fighter, even in the same "suffers blow" phrasing
+check('"suffers blow as <named fighter> withdraws" still flags the named fighter',
+  inj('Geoff Neal', 'UFC 330 suffers blow as Geoff Neal withdraws weeks out from card') === true);
 
 console.log('\n' + (fail ? '  ' + fail + ' FAILURE(S)' : '  all checks passed'));
 process.exit(fail ? 1 : 0);

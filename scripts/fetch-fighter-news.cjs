@@ -121,6 +121,17 @@ function namesFighter(title, name) {
 // covered independently by the shortNotice / mayChange ground truth from card-changes.
 const CARD_CTX_RE = /\b(?:card|event|ppv|ufc\s*\d+)\b/i;
 const CARD_LOSES_RE = /\blos(?:e|es|t)\b\s+(?:\w+\s+){0,3}?(?:fights?|bouts?|matchups?|contests?|contenders?)\b/i;
+// "<CARD> suffers (a/big/major/huge) blow as (a) fighter withdraws/pulls out/is
+// out/ruled out …" — the same "card loses a bout" shape as CARD_LOSES_RE, just a
+// different verb template. Found via "UFC 330 suffers blow as fighter withdraws
+// weeks out from Islam Makhachev vs Ian Machado Garry card", which named the
+// card's marquee bout (Makhachev/Garry) purely as the card's SEO identifier and
+// wrongly flagged both of them for an injury that was actually Geoff Neal's.
+// GENERIC_FIGHTER_RE deliberately requires the word "fighter", not a name — a
+// headline that names WHO withdrew ("Geoff Neal withdraws") is real news about
+// that specific person and must still pass through.
+const CARD_BLOW_RE = /\bsuffers?\s+(?:a\s+|big\s+|major\s+|huge\s+)?blow\b/i;
+const GENERIC_FIGHTER_RE = /\bfighter\s+(?:withdraws?|pulls?\s+out|is\s+out|ruled\s+out)\b/i;
 function aboutOtherBout(title) {
   const t = String(title || '');
   // "<headliner>'s … UNDERCARD/PRELIMS loses …" — an explicitly other card section.
@@ -130,7 +141,10 @@ function aboutOtherBout(title) {
   // span) so "vs." punctuation between the card name and "loses" doesn't break the match.
   // Requires a card-context SUBJECT for "loses", so "<fighter> could lose his title fight"
   // is untouched.
-  return CARD_CTX_RE.test(t) && CARD_LOSES_RE.test(t);
+  if (CARD_CTX_RE.test(t) && CARD_LOSES_RE.test(t)) return true;
+  // "<card> suffers blow as (a/the) fighter withdraws …" — same shape, "blow" verb
+  // instead of "loses", and the withdrawing party is a generic "fighter", not named.
+  return CARD_CTX_RE.test(t) && CARD_BLOW_RE.test(t) && GENERIC_FIGHTER_RE.test(t);
 }
 
 // Google News surfaces a fighter's static PROFILE / STATS pages (ESPN "MMA
