@@ -47,23 +47,24 @@
        Pinch-to-zoom on the rest of the page is unaffected. */
     button, a, input, select, textarea, label, [role="button"], summary { touch-action: manipulation; }
 
-    /* `overflow-x: hidden` was only ever set on <body>, not <html>. On
-       mobile, <html> is the element that actually scrolls the page — if
-       any descendant overflows horizontally (see #fh-table-wrap below),
-       <body>'s own overflow:hidden clips nothing useful and <html> still
-       stretches to the overflowing content's width. The browser then has
-       to fit that wider-than-device-width layout viewport on screen,
-       which is exactly what reads as the page being "zoomed in" (you
-       have to scroll/pinch to see the edges, and zooming back out leaves
-       the properly-sized header/hero looking too narrow for the inflated
-       canvas). Hiding overflow on <html> too keeps the layout viewport
-       pinned to device-width regardless of what overflows inside it.
+    /* `overflow-x: hidden` used to live here too (not just on <body>, see the
+       removed-rule note below), to stop #fh-table-wrap/#ft-table-wrap/
+       #fo-table-wrap and .fighter-tabs (wide tables/tab rows) from stretching
+       <html> wider than the device and reading as the page being "zoomed in".
+       Removed: all four of those now carry their own local `overflow-x: auto`
+       (see #fh-table-wrap etc. and .fighter-tabs below), which contains the
+       same overflow without touching <html>'s own overflow property — and
+       explicit overflow on <html> turns out to be exactly what was breaking
+       .site-header's position:sticky under the iOS status bar/notch (matchup,
+       which never sets overflow-x on <html>, never shows the gap; index.html,
+       which did, does). If a future wide element needs propping up, give IT a
+       local overflow-x:auto the same way — not <html> again.
        background is set here too (matching body's) so that iOS Safari's
        elastic overscroll/rubber-band bounce at the top of the page -- which
        briefly reveals whatever is "behind" the document, governed by
        <html>'s own background -- shows the same dark color instead of
        defaulting to white right above the sticky header. */
-    html { overflow-x: hidden; background: var(--bg) radial-gradient(1100px 520px at 50% -6%,#0e1712 0%,var(--bg) 52%); }
+    html { background: var(--bg) radial-gradient(1100px 520px at 50% -6%,#0e1712 0%,var(--bg) 52%); }
     /* Aurora background + top/bottom fade — matches the landing/app pages, but DIALED DOWN
        here on purpose. The blooms and the top-glow are the same recipe the other pages use;
        behind the app's dense panels the full-strength version read as loud, so this copy runs
@@ -96,9 +97,10 @@
          nearest scrolling ancestor, which resolved to body's
          never-actually-scrolling box instead of <html>'s real scrollport,
          so the header just scrolled away with the page instead of
-         sticking. Removing this redundant rule fixes that while <html>'s
-         overflow-x:hidden still does the actual horizontal-overflow
-         clipping job.  */
+         sticking. Removing this redundant rule fixed that. <html> no
+         longer carries overflow-x:hidden either (see its rule above) --
+         the individual wide elements that needed it now clip themselves
+         locally instead.  */
     }
 
     /* ── NOISE OVERLAY ── */
