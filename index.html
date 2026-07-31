@@ -2269,7 +2269,7 @@
     .pc-view-leaving { opacity: 0; transform: translateY(-8px); transition: opacity 0.2s ease, transform 0.2s ease; }
     .pc-view-entering { animation: fadeIn 0.2s ease; }
 
-    .mh-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; flex: 1; min-height: 0; }
+    .mh-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; flex: 1; min-height: 0; }
     .mh-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 2.5rem 0; }
 
     /* THE READ. It states disparities; it never recommends a path. Given room to
@@ -4165,7 +4165,7 @@
   <div class="divider"></div>
   <div class="bt-tabs">
     <div id="bt-tab-history" class="active" onclick="btSetView('history')">My bet history</div>
-    <div id="bt-tab-log" onclick="btSetView('log')">Log a bet</div>
+    <div id="bt-tab-log" onclick="btFromOdds=false;btSetView('log')">Log a bet</div>
     <div id="bt-tab-board" onclick="btSetView('board')">Leaderboard</div>
   </div>
   <div id="bt-history"></div>
@@ -110322,6 +110322,17 @@ function _ddGrid(name, resultFilter){
   let n = 0;
   let sn = 0, tdL=0, tdA=0, tdAgL=0, tdAgA=0, ctrl=0, ctrlAg=0;
   let kd=0, sub=0, rev=0, cage=0;
+  // gridCage/gridSFights are the grid's OWN exposure — cage/sn above are FIGHT_STATS'
+  // exposure, over the srows loop below, and the two loops read DIFFERENT rows for
+  // the same fighter (see the comment at srows: grid coverage and stats coverage are
+  // two separate backfills that disagree at the edges). A rate built from cells (grid)
+  // divided by cage (stats) is a numerator and denominator from different fight sets —
+  // exactly the mistake the comment on `sn` warns against for takedowns, just made
+  // fresh for strikes. This was caught live: a fighter with more grid coverage than
+  // stats coverage was reading 80-100+ significant strikes per 15 minutes, which is
+  // not a real striking rate for anyone. Tracked the same way srows tracks cage: only
+  // rows with a resolvable duration count toward it, numerator and clock together.
+  let gridCage = 0, gridSFights = 0;
   const secs = t => { const m = /^(\d+):(\d+)$/.exec(String(t||'')); return m ? +m[1]*60 + +m[2] : 0; };
   // THE WHOLE UFC RECORD, NOT THE LAST 8 — and the 8 was never measured.
   //
@@ -110354,6 +110365,10 @@ function _ddGrid(name, resultFilter){
     n++;
     for (let i=0;i<9;i++){ cells[i][0]+=gf[i][0]; cells[i][1]+=gf[i][1];
       if (go){ cellsD[i][0]+=go[i][0]; cellsD[i][1]+=go[i][1]; } }
+    // Same duration join _ddRowSecs uses for srows, just scoped to grid rows so the
+    // strike totals above and the clock below are always the same set of fights.
+    const gdur = _ddRowSecs(hist, r.date);
+    if (gdur != null) { gridCage += gdur; gridSFights++; }
   }
   // Takedowns/control come from FIGHT_STATS (the margins file) — they were never
   // part of the grid, and the deep dive needs them because they are usually the
@@ -110414,7 +110429,7 @@ function _ddGrid(name, resultFilter){
   // them. kdAg/subAg/revAg were speculative and nothing ever read them.
   // `cage` — total seconds fought across the fights `sn` counts. Every count above
   // is divided by it (in 15-minute units) before it is compared or shaded.
-  if (n) return { cells, cellsD, fights:n, sFights:sn, cage,
+  if (n) return { cells, cellsD, fights:n, sFights:sn, cage, gridCage, gridSFights,
                    tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg, kd, sub, rev };
   // n===0 has two different causes and they must not be conflated. If wantResult
   // is set, this fighter simply has none of the filtered result (an undefeated
@@ -110427,7 +110442,7 @@ function _ddGrid(name, resultFilter){
   // If wantResult is NOT set, this is the pre-existing case — no usable grid data
   // for this fighter at all — and null is correct: mhRenderBody blocks the whole
   // panel exactly as it always has for a fighter the grid doesn't cover.
-  if (wantResult) return { cells, cellsD, fights:0, sFights:0, cage:0,
+  if (wantResult) return { cells, cellsD, fights:0, sFights:0, cage:0, gridCage:0, gridSFights:0,
                             tdL:0, tdA:0, tdAgL:0, tdAgA:0, ctrl:0, ctrlAg:0, kd:0, sub:0, rev:0, noData:true };
   return null;
 }
@@ -110999,13 +111014,31 @@ function mhStriking(A, B, n1, n2){
   // SIGNIFICANT STRIKES, LANDED AND ABSORBED — the one pair of numbers every other
   // section on this tab breaks apart by position and target. Opens the tab the same
   // way "Takedowns landed" opens the grappling one: accuracy leads the bar (a raw
-  // volume number says nothing about whether it connects), the per-15 rate rides in
-  // the sub, same _mhPerShort/_mhExpOf/_mhRate machinery as every other count here.
+  // volume number says nothing about whether it connects), a rate rides in the sub.
   // That's the point of doing it this way rather than printing the fighter's static
   // profile SLpM/SApM — those never move with the All/Wins/Losses filter, and this
   // does, because it's summed from the same cells/cellsD the rest of the tab reads.
-  const p15h = _mhPer15Bout(A, B);
-  const eAh = _mhExpOf(A, p15h), eBh = _mhExpOf(B, p15h);
+  //
+  // PER MINUTE, NOT PER 15 — every other rate on this panel (takedowns, control,
+  // knockdowns) is per-15-min because those are rare events and a small number reads
+  // oddly at 1-minute scale. Strikes are the opposite: they are the one count on this
+  // whole panel that's naturally frequent, and per-15 stretches that into numbers like
+  // "83.8/15min" that look broken next to "2.1/15min" for takedowns two sections down
+  // — even though the arithmetic is correct (83.8/15 = 5.59, which is this exact
+  // fighter's own profile SLpM). Per-minute is also the number a UFC fan already
+  // knows as SLpM/SApM, so the sub reads as familiar instead of alarming.
+  //
+  // Exposure comes from `gridCage`, NOT `cage`/`_mhExpOf` — those read the FIGHT_STATS
+  // loop a few hundred lines up, a different set of rows than `cells` below (grid
+  // coverage and stats coverage are two independent backfills — see the comment on
+  // gridCage in _ddGrid). Numerator and clock have to be the same fights.
+  const mExp = G => (G && G.gridCage > 0) ? G.gridCage / 60 : 0;
+  const perMinOK = mExp(A) > 0 && mExp(B) > 0;
+  const mA = perMinOK ? mExp(A) : 0, mB = perMinOK ? mExp(B) : 0;
+  const perMinStr = (v, m, fights) => {
+    if (m) { const r = v / m; return (v > 0 && r < 0.05 ? '<0.1' : r.toFixed(1)) + '/min'; }
+    return fights ? (v / fights).toFixed(1) + '/fight' : '';
+  };
   const sumCell = (G, key, i) => G[key].reduce((s, c) => s + c[i], 0);
   const lA = sumCell(A, 'cells', 0), aA = sumCell(A, 'cells', 1);
   const lB = sumCell(B, 'cells', 0), aB = sumCell(B, 'cells', 1);
@@ -111013,14 +111046,14 @@ function mhStriking(A, B, n1, n2){
   const dlB = sumCell(B, 'cellsD', 0), daB = sumCell(B, 'cellsD', 1);
   h += '<div class="mh-sec">Significant strikes</div>';
   h += mhCmp('Landed',
-    { txt: lA + '/' + aA, sub: _mhPct(lA, aA) + ' accurate · ' + _mhPerShort(lA, eAh, p15h), frac: aA ? lA/aA : 0 },
-    { txt: lB + '/' + aB, sub: _mhPct(lB, aB) + ' accurate · ' + _mhPerShort(lB, eBh, p15h), frac: aB ? lB/aB : 0 },
+    { txt: lA + '/' + aA, sub: _mhPct(lA, aA) + ' accurate · ' + perMinStr(lA, mA, A.fights), frac: aA ? lA/aA : 0 },
+    { txt: lB + '/' + aB, sub: _mhPct(lB, aB) + ' accurate · ' + perMinStr(lB, mB, B.fights), frac: aB ? lB/aB : 0 },
     { lead: _mhLeadProp(lA, aA, lB, aB) });
   // Not accented — a long bar here is strikes eaten, same convention as "Time spent
   // under control" on the grappling tab: this section describes, it doesn't grade.
   h += mhCmp('Absorbed',
-    { txt: dlA + '/' + daA, sub: _mhPct(dlA, daA) + ' accurate · ' + _mhPerShort(dlA, eAh, p15h), frac: daA ? dlA/daA : 0 },
-    { txt: dlB + '/' + daB, sub: _mhPct(dlB, daB) + ' accurate · ' + _mhPerShort(dlB, eBh, p15h), frac: daB ? dlB/daB : 0 });
+    { txt: dlA + '/' + daA, sub: _mhPct(dlA, daA) + ' accurate · ' + perMinStr(dlA, mA, A.fights), frac: daA ? dlA/daA : 0 },
+    { txt: dlB + '/' + daB, sub: _mhPct(dlB, daB) + ' accurate · ' + perMinStr(dlB, mB, B.fights), frac: daB ? dlB/daB : 0 });
 
   // NO GREEN/RED ON THIS SECTION, AND IT IS THE ONE PLACE I'M NOT FOLLOWING THE
   // PROFILE BARS. Every other row here has a direction: landing more is better,
@@ -135357,6 +135390,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
   let btBoardTab = 'units', btBoardRange = 'all', btPlayerName = '';   // leaderboard metric tab + range + open profile
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
+  // Set only by btLogFromOdds (the parlay slip's "Log this bet"), cleared by
+  // clicking the "Log a bet" tab directly — the one thing that tells btRenderLog
+  // whether "back" means "back to Odds & Projections" or just isn't shown at all.
+  let btFromOdds = false;
   // Legs staged for a parlay — built here leg by leg, or handed over whole from
   // the Odds & Projections slip. One staging area, either way.
   let btLegs = [];
@@ -136256,7 +136293,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // fighter, so resolve the side by name rather than position.
   function btLegToBet(leg) {
     const key = x => [lastNameOf(x.f1).toLowerCase(), lastNameOf(x.f2).toLowerCase()].sort().join('|');
-    const f = btAllFights().find(x => key(x) === leg.fid);
+    let f = btAllFights().find(x => key(x) === leg.fid);
+    // FALLBACK: leg.fid comes from The Odds API's home_team/away_team (via
+    // plFightId/pairKey); btAllFights() comes from ESPN via event.json. The two
+    // feeds don't always agree on a fighter's spelling — the exact case
+    // namesLikelyMatch exists for elsewhere on this page ("Asu Almabayev" vs
+    // "Asu Almabaev", a missing letter) — so an EXACT string match on last names
+    // alone silently drops any fight where the two feeds diverge, which reads as
+    // "couldn't match one of those picks" for a fight that's very much on the
+    // card. Retry with the same small-edit-distance tolerance namesLikelyMatch
+    // uses, just on the two last-name tokens leg.fid actually carries (it was
+    // already reduced to last names when it was built, so that's all there is
+    // to compare against here).
+    if (!f) {
+      const toks = String(leg.fid || '').split('|');
+      if (toks.length === 2) {
+        const close = (a, b) => a === b || levenshteinDist(a, b) <= (Math.max(a.length, b.length) >= 7 ? 2 : 1);
+        f = btAllFights().find(x => {
+          const la = lastNameOf(x.f1).toLowerCase(), lb = lastNameOf(x.f2).toLowerCase();
+          return (close(toks[0], la) && close(toks[1], lb)) || (close(toks[0], lb) && close(toks[1], la));
+        }) || null;
+      }
+    }
     if (!f) return null;
     const l1 = lastNameOf(f.f1).toLowerCase(), l2 = lastNameOf(f.f2).toLowerCase();
     const f1First = l1 === [l1, l2].sort()[0];
@@ -136300,6 +136358,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // btPre. The form came up empty. One render, one consumer.
     btPre = payload || null;
     btView = 'log';
+    btFromOdds = true;
     navigate('bets');
   }
   window.btLogFromOdds = btLogFromOdds;
@@ -136385,7 +136444,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     btKind = kind || btKind;
     const host = document.getElementById('bt-log'); if (!host) return;
-    let h = btStageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
+    // Only shown for the handoff from the Odds & Projections slip's "Log this
+    // bet" — the direct "Log a bet" tab click clears btFromOdds, since there's
+    // nowhere meaningful to send that back to.
+    let h = (btFromOdds ? '<div class="back-btn" onclick="btFromOdds=false;navigate(\'odds\')">← Back to Odds &amp; Projections</div>' : '') +
+      btStageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
       '<div class="' + (btKind === 'card' ? 'on' : '') + '" onclick="btSetKind(\'card\')">Upcoming fights</div>' +
       '<div class="' + (btKind === 'custom' ? 'on' : '') + '" onclick="btSetKind(\'custom\')">Custom bet</div></div>';
     if (btKind === 'card') {

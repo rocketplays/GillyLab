@@ -3049,13 +3049,39 @@ ${AURORA_CSS}
       document.querySelectorAll("#mh-filter .mh-filter-btn").forEach(function(b){b.classList.toggle("on",b.dataset.mhFilter===f);});
       mfHubShowPane();
     };
+    // iOS Safari does not honour body { overflow: hidden } for touch scrolling —
+    // a swipe that starts anywhere on the page, including on the modal itself,
+    // still drags the page underneath, which is exactly "gets stuck and tries
+    // to scroll the whole page" rather than the panel. Plain overflow:hidden
+    // only blocks JS-driven/mouse-wheel scroll, not touch. The fix is the same
+    // one index.html's lockPageScroll/unlockPageScroll already use: pin the body
+    // with position:fixed and restore the exact scroll offset on close, which
+    // iOS actually respects. NO BACKTICKS HERE — this whole file is a template
+    // literal in the Worker; see the warning further up this file.
+    var mfScrollY = 0;
+    function mfLockScroll(){
+      mfScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+      document.body.style.position = "fixed";
+      document.body.style.top = (-mfScrollY) + "px";
+      document.body.style.width = "100%";
+      document.body.style.overflow = "hidden";
+      document.documentElement.style.overflow = "hidden";
+    }
+    function mfUnlockScroll(){
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.width = "";
+      document.body.style.overflow = "";
+      document.documentElement.style.overflow = "";
+      window.scrollTo(0, mfScrollY);
+    }
     window.mfHub=function(){
       var ov=document.getElementById("mh-overlay"),bx=document.getElementById("mh-box");
       if(!ov||!bx)return;
       ov.style.display="block"; bx.classList.add("mh-on");
       requestAnimationFrame(function(){requestAnimationFrame(function(){
         ov.style.opacity="1"; bx.style.opacity="1"; bx.style.transform="translate(-50%,-50%)";});});
-      document.body.style.overflow="hidden";
+      mfLockScroll();
       // Reset to the default pane every open — a stale "Losses" filter from the
       // last bout viewed must not silently carry over to this one.
       mfHubState={tab:"striking",filter:"all"};
@@ -3068,7 +3094,7 @@ ${AURORA_CSS}
       if(!ov||!bx)return;
       ov.style.opacity="0"; bx.style.opacity="0"; bx.style.transform="translate(-50%,-50%) translateY(8px)";
       setTimeout(function(){ov.style.display="none";bx.classList.remove("mh-on");},220);
-      document.body.style.overflow="";
+      mfUnlockScroll();
     };
     document.addEventListener("keydown",function(e){if(e.key==="Escape")mfHubClose();});
   </script>` : ""}
