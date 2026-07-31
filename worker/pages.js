@@ -368,7 +368,12 @@ function freeNavLinks(loggedIn, subscribed) {
   if (!loggedIn) return `<a href="/login">Log in</a><a class="pk-upg" href="/signup">Sign up free</a>`;
   return `${subscribed ? `<a href="/">Open app</a>` : `<a class="pk-upg" href="/subscribe">Go Premium</a>`}${subscribed ? `<a href="/account">Account</a>` : `<a href="/api/logout">Log out</a>`}`;
 }
-const signupBanner = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:12px;padding:.8rem 1rem;margin:0 0 1.1rem;color:var(--text)"><span style="font-size:.85rem;line-height:1.4">Create a <strong>free account</strong> to play Pick'em and make your picks, or <a href="/subscribe" style="color:var(--accent);font-weight:700;text-decoration:none">Go Premium</a> for the full fighter database and tools.</span><a href="/signup" style="flex:0 0 auto;background:var(--accent);color:#04120a;font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;white-space:nowrap;text-decoration:none">Sign up free &rarr;</a></div>`;
+// The "Sign up free" pill: same tinted-gradient/outline treatment as .pk-upg,
+// .mf-lock-btn and .fp-lock-btn (the site's standard premium-CTA button look),
+// not the old flat solid-fill button it used to be. Inline (this banner has no
+// page-scoped stylesheet of its own), so the hover state lives with it too.
+const signupBanner = `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:12px;padding:.8rem 1rem;margin:0 0 1.1rem;color:var(--text)"><span style="font-size:.85rem;line-height:1.4">Create a <strong>free account</strong> to play Pick'em and make your picks, or <a href="/subscribe" style="color:var(--accent);font-weight:700;text-decoration:none">Go Premium</a> for the full fighter database and tools.</span><a href="/signup" class="gl-signup-btn" style="flex:0 0 auto;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border:1px solid rgba(0,230,104,.35);font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;white-space:nowrap;text-decoration:none;transition:background .15s,border-color .15s">Sign up free &rarr;</a></div>
+<style>.gl-signup-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}</style>`;
 
 // Shared sub-nav across every free page so users can always move between the free
 // sections (and back to the /matchup home). Styles are scoped inline; the current
@@ -3317,7 +3322,7 @@ export const forgotPasswordPage = () => shell("Reset your password — GillyLab"
       <div id="m" class="msg"></div>
     </form>
     <div class="alt muted"><a href="/login">Back to log in</a></div>
-  </div>`, `wire("f","/api/reset/start","m","If an account exists for that email, a reset link is on its way — check your inbox.");`);
+  </div>`, `wire("f","/api/reset/start","m","If an account exists for that email, a reset link is on its way — check your inbox (and your junk/spam folder, just in case).");`);
 
 export const resetPasswordPage = (token) => shell("Set a new password — GillyLab", `
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>

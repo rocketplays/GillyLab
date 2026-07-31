@@ -128944,9 +128944,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         el.classList.remove('fight-ml-pending', 'gl-ml-fav', 'gl-ml-dog');
         // Favorite = the smaller American number (e.g. -247 < +200).
         if (price != null && other != null && price !== other) el.classList.add(price < other ? 'gl-ml-fav' : 'gl-ml-dog');
+        // Plain text, not fmtOdds() — fmtOdds wraps in .odds-value.fav/.dog,
+        // which the Odds & Projections page pins to var(--text) (white) on
+        // purpose. That would override the green/red just set above via
+        // .gl-ml-fav/.gl-ml-dog on this element.
         el.innerHTML = (price === null || price === undefined)
           ? '<span style="color:var(--muted);font-size:0.78rem;">N/A</span>'
-          : fmtOdds(price);
+          : (price > 0 ? '+' + price : '' + price);
       });
     });
   }
