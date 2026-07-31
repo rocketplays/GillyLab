@@ -2855,7 +2855,6 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
         <div class="mf-ev-slide-sub">${esc([when2, evCard.location].filter(Boolean).join(" · "))}</div>
       </div>
       ${buildBody(evCard)}
-      <a class="mf-ev-slide-link" href="/matchup?event=${esc(evCard.slug)}">Make this the page's featured card &rarr;</a>
     </div>`;
   };
   const carouselHTML = carouselRaws.length
@@ -2864,7 +2863,8 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
         <button type="button" class="mf-car-btn" id="mfCarPrev" aria-label="Previous event">&lsaquo;</button>
         <div class="mf-carousel-full" id="mfCarouselFull">${carouselRaws.map(carouselSlide).join("")}</div>
         <button type="button" class="mf-car-btn" id="mfCarNext" aria-label="Next event">&rsaquo;</button>
-      </div>`
+      </div>
+      ${carouselRaws.length > 1 ? `<div class="mf-car-dots" id="mfCarDots">${carouselRaws.map((_, i) => `<button type="button" class="mf-car-dot${i === 0 ? " active" : ""}" data-i="${i}" aria-label="Go to event ${i + 1}"></button>`).join("")}</div>` : ""}`
     : "";
 
   // ── Past-events dropdown — a native <select> (no custom listbox anywhere else
@@ -3033,18 +3033,24 @@ ${eventLd}
   .mf-ev-slide-hdr{background:var(--card);border:1px solid var(--border);border-radius:10px 10px 0 0;padding:.7rem .9rem;margin-top:.2rem}
   .mf-ev-slide-name{font-weight:800;font-size:.95rem}
   .mf-ev-slide-sub{color:var(--muted);font-size:.76rem;margin-top:.15rem}
-  .mf-ev-slide-link{display:block;text-align:center;color:var(--accent);text-decoration:none;font-weight:700;font-size:.78rem;padding:.6rem;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px}
+  .mf-ev-slide-hdr{border-radius:10px}
   .mf-car-btn{flex:0 0 auto;width:32px;height:32px;margin-top:1.6rem;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1.1rem;line-height:1;cursor:pointer;transition:border-color .13s ease}
   .mf-car-btn:hover{border-color:var(--accent);color:var(--accent)}
   .mf-car-btn:disabled{opacity:.35;cursor:default}
   @media (max-width:520px){.mf-car-btn{display:none}}
-  /* Past-results dropdown — a real <select>, styled minimally rather than
-     reimplemented as a custom listbox (nothing else in this codebase has one).
-     Sits up top, next to the header, like index.html's "View past event". */
+  /* Carousel dots — same idea as index.html's #carousel-dots: one per event,
+     current one green and slightly larger, click to jump straight to it. */
+  .mf-car-dots{display:flex;gap:.5rem;align-items:center;justify-content:center;margin:.6rem 0 0}
+  .mf-car-dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:var(--border);transition:background .15s ease,transform .15s ease}
+  .mf-car-dot.active{background:var(--accent);transform:scale(1.3)}
+  /* Past-results dropdown — a real <select> with the same custom green chevron
+     index.html's .gl-prev-select uses (appearance:none + an inline SVG arrow),
+     rather than the browser's default one. Sits up top, next to the header,
+     like index.html's "View past event". */
   .mf-past-top{margin:0 0 1rem}
   .mf-past-label{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .35rem}
-  .mf-past-select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.85rem;padding:.65rem .8rem;box-sizing:border-box}
-  .mf-past-select:focus{outline:none;border-color:var(--accent)}
+  .mf-past-select{-webkit-appearance:none;-moz-appearance:none;appearance:none;width:100%;background-color:var(--card);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'><path d='M1 1l4 4 4-4' fill='none' stroke='%2300e668' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");background-repeat:no-repeat;background-position:right .9rem center;border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.85rem;padding:.65rem 2.2rem .65rem .8rem;box-sizing:border-box;cursor:pointer}
+  .mf-past-select:hover,.mf-past-select:focus{outline:none;border-color:var(--accent)}
   /* fighter stat popup */
   .mp-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
   .mp-overlay[hidden]{display:none}
@@ -3091,10 +3097,10 @@ ${AURORA_CSS}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}${isPastView ? ` · <span style="color:var(--accent);font-weight:700">Final</span>` : ""}</p>
     <div id="mfFeaturedBody">${body}</div>
+    ${carouselHTML}
     ${isOtherEvent
       ? `<div class="mf-cta">${isPastView ? "Results shown are the winner, method and round only." : "This event hasn't been fully profiled yet."} <a href="/matchup">See this week's full breakdown →</a></div>`
       : `<div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>`}
-    ${carouselHTML}
   </main>
   ${FREE_FOOTER}
   <script>
@@ -3137,15 +3143,30 @@ ${AURORA_CSS}
       document.addEventListener("click",function(e){if(e.target!==input&&!box.contains(e.target))hide();});
       input.addEventListener("keydown",function(e){if(e.key==="Escape")hide();});
     })();
-    // Carousel prev/next — scrolls by exactly one slide width. Touch/trackpad
-    // swipe already works via CSS scroll-snap; these buttons are the desktop
-    // affordance index.html's carousel arrows serve too.
+    // Carousel prev/next + dots — scrolls by exactly one slide width. Touch/
+    // trackpad swipe already works via CSS scroll-snap; the buttons are the
+    // desktop affordance, and the dots (index.html's #carousel-dots) show
+    // position and jump straight to any event, not just the adjacent one.
     (function(){
-      var track=document.getElementById("mfCarouselFull"),prev=document.getElementById("mfCarPrev"),next=document.getElementById("mfCarNext");
+      var track=document.getElementById("mfCarouselFull"),prev=document.getElementById("mfCarPrev"),next=document.getElementById("mfCarNext"),dotsWrap=document.getElementById("mfCarDots");
       if(!track||!prev||!next)return;
+      var dots=dotsWrap?Array.prototype.slice.call(dotsWrap.querySelectorAll(".mf-car-dot")):[];
+      function currentIndex(){return Math.round(track.scrollLeft/Math.max(1,track.clientWidth));}
+      function updateDots(){
+        if(!dots.length)return;
+        var i=currentIndex();
+        dots.forEach(function(d,di){d.classList.toggle("active",di===i);});
+      }
       function go(dir){track.scrollBy({left:dir*track.clientWidth,behavior:"smooth"});}
+      function goTo(i){track.scrollTo({left:i*track.clientWidth,behavior:"smooth"});}
       prev.addEventListener("click",function(){go(-1);});
       next.addEventListener("click",function(){go(1);});
+      dots.forEach(function(d){d.addEventListener("click",function(){goTo(parseInt(d.dataset.i,10)||0);});});
+      var scrollTimer=null;
+      track.addEventListener("scroll",function(){
+        if(scrollTimer)clearTimeout(scrollTimer);
+        scrollTimer=setTimeout(updateDots,80);
+      });
     })();
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
