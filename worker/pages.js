@@ -4199,7 +4199,7 @@ export const partnerDashboardPage = ({ partner, ledger }) => {
  * only" decision: it's a running tally of what's been paid so "balance owed"
  * on each partner's own dashboard stays accurate).
  */
-export const partnerAdminPage = ({ partners, error, added }) => {
+export const partnerAdminPage = ({ partners, error, added, removed }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const money = (cents) => "$" + ((cents || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const rows = (partners || []).map((p) => {
@@ -4222,6 +4222,12 @@ export const partnerAdminPage = ({ partners, error, added }) => {
           <input type="hidden" name="token" value="${esc(p.token)}">
           <input type="number" name="amount" step="0.01" min="0" placeholder="$ paid" required>
           <button type="submit">Log payout</button>
+        </form>
+      </td>
+      <td>
+        <form method="POST" action="/admin/partners/remove" class="pa-delform" onsubmit="return confirm(${esc(JSON.stringify(`Remove ${p.name} (${p.promoCode})? Their link stops working immediately. Referral/ledger history is kept — this can't be undone from here.`))});">
+          <input type="hidden" name="token" value="${esc(p.token)}">
+          <button type="submit" class="pa-delbtn">Delete</button>
         </form>
       </td>
     </tr>`;
@@ -4253,6 +4259,9 @@ export const partnerAdminPage = ({ partners, error, added }) => {
   .pa-payform input{width:80px;background:#0e0e10;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.3rem .4rem}
   .pa-payform button{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem}
   .pa-payform button:hover{border-color:var(--accent);color:var(--accent)}
+  .pa-delform{display:flex}
+  .pa-delbtn{background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.35);color:#ff9a9a;border-radius:6px;padding:.3rem .55rem;cursor:pointer;font-size:.72rem;font-weight:700}
+  .pa-delbtn:hover{background:rgba(255,90,90,.14);border-color:#ff6a5e;color:#fff}
 </style></head><body>
   <h1>Partners</h1>
   <div class="pa-card">
@@ -4266,8 +4275,9 @@ export const partnerAdminPage = ({ partners, error, added }) => {
     </form>
     ${error ? `<div class="pa-err">${esc(error)}</div>` : ""}
     ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
+    ${removed ? `<div class="pa-ok">Removed “${esc(removed)}” — their link and dashboard no longer work. Referral/ledger history was kept.</div>` : ""}
   </div>
-  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
 </body></html>`;
 };
 

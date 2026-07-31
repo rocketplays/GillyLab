@@ -1969,7 +1969,7 @@ export default {
       if (path === "/admin/partners") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         const partners = await listPartners(env);
-        return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added") }), 200, { "Cache-Control": "private, no-store" });
+        return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added"), removed: url.searchParams.get("removed") }), 200, { "Cache-Control": "private, no-store" });
       }
       if (path === "/admin/partners/add" && request.method === "POST") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
@@ -2007,6 +2007,24 @@ export default {
           if (partner) { partner.paidOutCents = (partner.paidOutCents || 0) + amountCents; await putPartner(env, partner); }
         }
         return redirect(env.SITE_URL + "/admin/partners");
+      }
+      if (path === "/admin/partners/remove" && request.method === "POST") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const body = await readBody(request).catch(() => ({}));
+        const token = String(body.token || "");
+        const partner = token && await partnerByToken(env, token);
+        if (!partner) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent("Partner not found — already removed?"));
+        // Deactivate, don't wipe: removes the partner record and both promo-code
+        // lookups (their ?ref= link stops auto-applying/attributing, and their
+        // /partner/<token> dashboard 404s immediately), but leaves ledger:<token>:*
+        // and referral:<email> entries alone — past commission history and who
+        // referred whom stay intact for your records, just orphaned from a live
+        // partner. No confirmation step server-side; the admin page's delete
+        // button has a JS confirm() before it even submits.
+        await env.PARTNERS.delete("partner:" + token);
+        await env.PARTNERS.delete("promo:" + partner.promoCode);
+        if (partner.promotionCodeId) await env.PARTNERS.delete("promoId:" + partner.promotionCodeId);
+        return redirect(env.SITE_URL + "/admin/partners?removed=" + encodeURIComponent(partner.name));
       }
 
       if (path === "/" || path === "/index.html") {
