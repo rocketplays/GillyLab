@@ -3991,6 +3991,10 @@ function maskEmail(e) {
  */
 export const partnerTermsPage = ({ partner, termsVersion, error }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Re-pre-fill from an existing payoutInfo if this is a re-acceptance (terms
+  // version bumped after they'd already set a method) rather than a first visit.
+  const payoutMethod = (partner.payoutInfo && partner.payoutInfo.method) || "";
+  const payoutUsername = (partner.payoutInfo && partner.payoutInfo.username) || "";
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0b">
@@ -4017,6 +4021,14 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
   .pt-doc ul{margin:.5rem 0;padding-left:1.2rem}
   .pt-doc li{margin:.3rem 0}
   .pt-err{background:rgba(255,90,90,.08);border:1px solid rgba(255,90,90,.3);color:#ff9a9a;border-radius:8px;padding:.7rem .9rem;font-size:.85rem;margin:0 0 1.2rem}
+  .pt-payout{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.1rem 1.2rem;margin-top:1.3rem}
+  .pt-payout-lbl{font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:.7rem}
+  .pt-payout-opts{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.9rem}
+  .pt-radio{display:flex;align-items:center;gap:.4rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer}
+  .pt-payout-user{display:block;font-size:.78rem;color:var(--muted);margin-bottom:.3rem}
+  .pt-payout-user input{display:block;width:100%;margin-top:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font:inherit;font-size:.92rem;padding:.6rem .7rem}
+  .pt-payout-user input:focus{outline:none;border-color:var(--accent)}
+  .pt-payout-note{color:var(--muted);font-size:.74rem;margin:.8rem 0 0;line-height:1.5}
   .pt-agree{display:flex;align-items:flex-start;gap:.6rem;margin:1.3rem 0;font-size:.85rem;color:var(--text)}
   .pt-agree input{margin-top:.2rem;flex:0 0 auto}
   .pt-btn{width:100%;text-align:center;font:inherit;font-weight:800;font-size:.92rem;border-radius:9px;padding:.8rem;cursor:pointer;border:1px solid rgba(0,230,104,.35);background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7}
@@ -4036,7 +4048,7 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
       <p>You earn 50% commission on a referred customer's first paid invoice, and recurring commission on every renewal after that: 20% up to 50 lifetime referrals, 25% from 50–149, 30% from 150–299, and a custom rate above 300 (negotiated individually). You also earn a $25 bonus for every 10 paid referrals. Rates apply to invoices as they're paid — see your dashboard for a running ledger.</p>
 
       <h2>3. Payment</h2>
-      <p>Commissions are tracked automatically as your dashboard's running balance. Payouts are made manually — by the payment method we agree on (e.g. Venmo, PayPal, or bank transfer) — with no fixed schedule; reach out any time to request a payout of your available balance.</p>
+      <p>Commissions are tracked automatically as your dashboard's running balance. Your available balance is paid out by the 15th of the following month, to the payment method and username you provide below.</p>
 
       <h2>4. Attribution</h2>
       <p>Commission is only earned on subscriptions attributed to your code or link at checkout. Attribution is not retroactive and isn't transferable between partners. If a referred customer's subscription is refunded or its payment is charged back, the associated commission may be deducted from your balance.</p>
@@ -4061,6 +4073,16 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
     </div>
     <form method="POST" action="/partner/${esc(partner.token)}/accept">
       <input type="hidden" name="version" value="${esc(termsVersion)}">
+      <div class="pt-payout">
+        <div class="pt-payout-lbl">Preferred payout method</div>
+        <div class="pt-payout-opts">
+          ${["Venmo", "PayPal", "CashApp"].map((m) => `<label class="pt-radio"><input type="radio" name="payoutMethod" value="${m}" ${payoutMethod === m ? "checked" : ""} required> ${m}</label>`).join("")}
+        </div>
+        <label class="pt-payout-user">Your username on that platform
+          <input type="text" name="payoutUsername" value="${esc(payoutUsername)}" placeholder="@yourusername" required>
+        </label>
+        <p class="pt-payout-note">This is saved to your account so we can send payouts without asking separately — update it any time by re-submitting this page (reach out and we can reset your acceptance if you need to change it later).</p>
+      </div>
       <label class="pt-agree"><input type="checkbox" name="agree" value="1" required> I have read and agree to the Partner Program Terms above.</label>
       <button type="submit" class="pt-btn">Agree &amp; continue to my dashboard</button>
     </form>
@@ -4182,9 +4204,13 @@ export const partnerAdminPage = ({ partners, error, added }) => {
   const money = (cents) => "$" + ((cents || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const rows = (partners || []).map((p) => {
     const owed = Math.max(0, (p.lifetimeCommissionCents || 0) - (p.paidOutCents || 0));
+    const payout = p.payoutInfo && p.payoutInfo.method
+      ? `${esc(p.payoutInfo.method)} <span class="pa-sub">${esc(p.payoutInfo.username || "")}</span>`
+      : `<span class="pa-sub">${p.termsAcceptedAt ? "not set" : "terms not accepted yet"}</span>`;
     return `<tr>
       <td>${esc(p.name)}<div class="pa-sub">${esc(p.email || "")}</div></td>
       <td>${esc(p.promoCode)}</td>
+      <td>${payout}</td>
       <td>${p.referralCount || 0} <span class="pa-sub">(${p.activeCount || 0} active)</span></td>
       <td>${esc(money(p.lifetimeRevenueCents))}</td>
       <td>${esc(money(p.lifetimeCommissionCents))}</td>
@@ -4241,7 +4267,7 @@ export const partnerAdminPage = ({ partners, error, added }) => {
     ${error ? `<div class="pa-err">${esc(error)}</div>` : ""}
     ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
   </div>
-  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
 </body></html>`;
 };
 

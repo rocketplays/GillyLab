@@ -1870,11 +1870,20 @@ export default {
         const partner = token && await partnerByToken(env, token);
         if (!partner) return html('<!doctype html><meta charset="utf-8"><title>Not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Not found</h1><p style="color:#8a8f99">Check the link you were given.</p></div></body>', 404);
         const body = await readBody(request).catch(() => ({}));
-        if (String(body.agree || "") !== "1") {
-          return html(partnerTermsPage({ partner, termsVersion: PARTNER_TERMS_VERSION, error: "Please check the box confirming you've read and agree before continuing." }), 200, { "Cache-Control": "private, no-store" });
-        }
+        const payoutMethod = String(body.payoutMethod || "").trim();
+        const payoutUsername = String(body.payoutUsername || "").trim();
+        // Re-render with whatever they'd already picked/typed (not saved — just
+        // carried through the error response) rather than resetting the form.
+        const reRender = (msg) => html(
+          partnerTermsPage({ partner: { ...partner, payoutInfo: { method: payoutMethod, username: payoutUsername } }, termsVersion: PARTNER_TERMS_VERSION, error: msg }),
+          200, { "Cache-Control": "private, no-store" }
+        );
+        if (String(body.agree || "") !== "1") return reRender("Please check the box confirming you've read and agree before continuing.");
+        if (!["Venmo", "PayPal", "CashApp"].includes(payoutMethod)) return reRender("Please choose a payout method.");
+        if (!payoutUsername) return reRender("Please enter your username for that payment method.");
         partner.termsAcceptedAt = Date.now();
         partner.termsAcceptedVersion = PARTNER_TERMS_VERSION;
+        partner.payoutInfo = { method: payoutMethod, username: payoutUsername };
         await putPartner(env, partner);
         return redirect(env.SITE_URL + "/partner/" + encodeURIComponent(token));
       }
