@@ -150,6 +150,20 @@
          the <meta name=viewport> tag) is required for env() here to
          resolve to anything other than 0. */
       padding-top: env(safe-area-inset-top);
+      /* Forces the header onto its own GPU compositor layer, independent of
+         the rest of the page. Without this, iOS Safari composites the
+         sticky header together with whatever's scrolling beneath it each
+         frame — and this page's background is expensive to repaint (the
+         radial-gradient on <html>, #bgfx/#bgedge, the noise overlay; see
+         the jank note above). Under that load the compositor can drop a
+         header repaint for a frame during fast scroll, and for that one
+         frame the content that should be hidden behind the header is
+         visible above/through it. translateZ(0) has no visual effect (0
+         distance) but is the standard trigger for "promote to its own
+         layer," so the header's paint no longer depends on the rest of the
+         page finishing its own repaint in time. */
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
     }
 
     /* Row 1: Search bar */
