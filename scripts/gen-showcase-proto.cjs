@@ -68,6 +68,17 @@ const HERO_HOOK = 'Know the fight before it starts.';
 // bottom of the same page disagreeing with the top of it.
 const HERO_TRUST = 'Free to start, no card required — play The Climb and Pick’em. Premium is {PRICE}, cancel anytime.';
 
+// ── link-preview copy (iMessage/Slack/Twitter unfurl of gillylab.com) ────────
+// This page is served at "/" (see worker/index.js), so its <title> and OG tags
+// are what a shared gillylab.com link actually shows — not index.html's, which
+// is gated behind a subscribed session and never what a logged-out share hits.
+// Before this existed, the page had no OG tags at all and no title override, so
+// the unfurl fell back to the raw <title>, which said "feature grid (prototype)"
+// — internal naming for this file, never meant to be reader-facing copy.
+const SITE_URL = 'https://gillylab.com';
+const OG_TITLE = 'GillyLab - The Ultimate UFC Analytics Database';
+const OG_DESC = 'Matchup analytics, a fight simulator, live odds and props, bet tracking, and career accolades for every UFC card. Know the fight before it starts.';
+
 // ── the two numbers you dialled in on a real phone ───────────────────────────
 // ONE CONSTANT EACH, used by the CSS *and* the slider. They were separate values and
 // they drifted the moment I changed one: the CSS said --cy:86px while the slider's
@@ -883,8 +894,8 @@ const page = (debug, noindex) => `<!doctype html>
 <html lang="en" class="bg-frame"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>GillyLab — feature grid (${noindex ? 'preview' : 'prototype'})</title>
-${noindex ? '<meta name="robots" content="noindex,nofollow">' : ''}
+<title>${noindex ? 'GillyLab — feature grid (preview)' : OG_TITLE}</title>
+${noindex ? '<meta name="robots" content="noindex,nofollow">' : `<meta property="og:type" content="website"><meta property="og:site_name" content="GillyLab"><meta property="og:title" content="${OG_TITLE}"><meta property="og:description" content="${OG_DESC}"><meta property="og:url" content="${SITE_URL}/"><meta property="og:image" content="${SITE_URL}/og.png?v=2"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${OG_TITLE}"><meta name="twitter:description" content="${OG_DESC}"><meta name="twitter:image" content="${SITE_URL}/og.png?v=2">`}
 <!-- THE BLACK BANDS ARE THE BROWSER'S CHROME, NOT THE PAGE.
      iOS Safari paints the status bar (time/signal/battery) and the URL bar with
      theme-color. The live landing page sets #0a0a0b and gets away with it because that

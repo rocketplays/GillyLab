@@ -72,6 +72,16 @@ grid on absolute rates (encoded the axis, not the fighter). **The tell is always
 same: the mechanism arrives before the measurement and explains the data a little too
 well.** One cheap measurement killed each.
 
+## 5. Standing exception: git process lock files
+
+Approved 2026-07-30. Claude may delete stray git process lock files without
+asking first — specifically `.git/index.lock` and `.git/refs/**/*.lock` — but
+only after confirming no git process is actually running (check for a live
+`git` process; don't just assume a stuck lock). These are not "dataless"
+iCloud stubs and are unrelated to rule 1. This does not extend to any other
+file, including package-manager lockfiles (`package-lock.json`, etc.) — those
+still require asking.
+
 ## Where the detail lives
 
 - `ICLOUD-MIGRATION.txt` — the iCloud situation, measured. Verdict: not urgent.
