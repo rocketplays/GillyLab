@@ -67,7 +67,19 @@
        briefly reveals whatever is "behind" the document, governed by
        <html>'s own background -- shows the same dark color instead of
        defaulting to white right above the sticky header. */
-    html { background: var(--bg) radial-gradient(1100px 520px at 50% -6%,#0e1712 0%,var(--bg) 52%); }
+    /* DIAGNOSTIC: html's radial-gradient glow disabled (flat var(--bg) instead), and
+       #bgfx/#bgedge below are display:none. This is temporary, to isolate whether
+       these fixed, continuously-composited decorative layers are what's causing the
+       "scrolled-past content briefly visible above the header" bug on iOS -- this
+       page's own comments already measured ~50% dropped frames during scroll from a
+       DIFFERENT cause (backdrop-filter, since removed), so a heavy paint/composite
+       budget on this page is a known, real problem, not a hunch. If turning these off
+       fixes the peek, put them back in a cheaper form (e.g. a static image instead of
+       a live gradient/filter) instead of leaving them off — this is a test, not a
+       decision to cut the aurora look. If it does NOT fix the peek, revert this block
+       immediately (git revert / restore the two lines below it) and look elsewhere;
+       don't leave the site flat while chasing something else. */
+    html { background: var(--bg); }
     /* Aurora background + top/bottom fade — matches the landing/app pages, but DIALED DOWN
        here on purpose. The blooms and the top-glow are the same recipe the other pages use;
        behind the app's dense panels the full-strength version read as loud, so this copy runs
@@ -76,8 +88,8 @@
        AURORA_CSS in worker/pages.js keeps the original strength. Two fixed layers at
        z-index:-1: #bgfx the green aurora blooms, #bgedge the edge fade back to solid so the
        atmosphere doesn't tint the phone status/URL bars. body is transparent so it shows. */
-    #bgfx{position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:0.5;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
-    #bgedge{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
+    #bgfx{display:none;position:fixed;inset:0;z-index:-1;pointer-events:none;--a1:0.081;--a2:0.063;--a3:0.072;--aur:0.5;background:radial-gradient(60vw 48vh at 12% 28%,rgba(0,230,104,calc(var(--a1) * var(--aur))) 0%,transparent 62%),radial-gradient(66vw 55vh at 88% 58%,rgba(50,120,255,calc(var(--a2) * var(--aur))) 0%,transparent 62%),radial-gradient(72vw 48vh at 45% 90%,rgba(0,230,104,calc(var(--a3) * var(--aur))) 0%,transparent 62%)}
+    #bgedge{display:none;position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,var(--bg) 0,transparent 100px,transparent calc(100% - 260px),var(--bg) 100%)}
 
     body {
       /* transparent, NOT var(--bg): body is opaque-by-default's understudy here, and an
@@ -106,8 +118,16 @@
          locally instead.  */
     }
 
-    /* ── NOISE OVERLAY ── */
+    /* ── NOISE OVERLAY ──
+       DIAGNOSTIC: display:none added below. This is a live SVG feTurbulence filter,
+       full-viewport, position:fixed, at the highest z-index on the page (above the
+       header) — exactly the profile of element most likely to force per-frame
+       recomposition on iOS Safari and show a stale/lagging frame during scroll. Same
+       temporary-test rules as the aurora layers above: if disabling this fixes the
+       header peek, replace it with a cheap static tiled PNG instead of a live filter
+       rather than leaving it off permanently; if it doesn't fix the peek, revert. */
     body::before {
+      display: none;
       content: '';
       position: fixed;
       inset: 0;
