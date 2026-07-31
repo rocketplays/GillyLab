@@ -4019,6 +4019,30 @@
   }
   setHeaderHeightVar();
   window.addEventListener('resize', setHeaderHeightVar);
+
+  // Mirror of the nav-tab/label half of navigate() (see its "Sync dropdown
+  // button label" step), run synchronously right here instead of waiting for
+  // the real navigate(savedPage) call in initDynamicPages() — that one fires
+  // only after the events API fetch resolves, so on a refresh into another
+  // tab the dropdown pill showed "Events" (tab-home's hardcoded default) for
+  // a moment first. This runs the instant the header markup above is parsed,
+  // before the rest of this file (and any paint of it) happens, using the
+  // data-boot-page value the bootstrap script at the top of <body> already
+  // read from sessionStorage. Purely cosmetic/idempotent: navigate(savedPage)
+  // still runs later and does the exact same tab/label sync for real.
+  try {
+    var bootPage = document.documentElement.getAttribute('data-boot-page');
+    if (bootPage) {
+      var bootTab = document.getElementById('tab-' + bootPage);
+      if (bootTab) {
+        var homeTab = document.getElementById('tab-home');
+        if (homeTab) homeTab.classList.remove('active');
+        bootTab.classList.add('active');
+        var bootLabel = document.getElementById('nav-dropdown-label');
+        if (bootLabel) bootLabel.textContent = bootTab.textContent.trim();
+      }
+    }
+  } catch (e) {}
 </script>
 
 <!-- ══════════════════════════════════════
