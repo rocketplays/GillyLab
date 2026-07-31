@@ -1381,7 +1381,7 @@ export const loginPage = (next) => {
   </div>`, `wire("f","/api/login","m"); wire("mf","/api/magic/start","mm");`, true);
 };
 
-export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
+export const subscribePage = (canceled, ref) => shell("Subscribe — GillyLab", `
   ${backLink}
   <a class="logout-link" href="/api/logout">Log out</a>
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
@@ -1395,6 +1395,7 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
     <ul style="list-style:none;padding:0;margin:1rem 0 1.1rem;text-align:left;display:flex;flex-direction:column;gap:.5rem">
       ${["Every fighter &amp; every bout — full analytics","Fight simulator: winner, method &amp; round","Build &amp; simulate any matchup you want","Matchup analysis — style, pace &amp; path to victory","Auto scouting reports &amp; fighter injury news","Live odds, props &amp; the parlay builder","Bet &amp; CLV tracker — grade your bets, track ROI","Closing-line history &amp; line movement","Tape study, accolades &amp; full box scores"].map(f => `<li style="position:relative;padding-left:1.5rem;font-size:.88rem;line-height:1.35"><span style="position:absolute;left:0;color:var(--accent);font-weight:800">✓</span>${f}</li>`).join("")}
     </ul>
+    ${ref ? `<p style="background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);border-radius:8px;padding:.55rem .8rem;font-size:.82rem;color:var(--accent);font-weight:700;margin:0 0 .8rem">20% off your first month — referral discount applied at checkout</p>` : ""}
     <p class="price" style="font-size:1.2rem;margin:.6rem 0">${PRICE_LABEL}</p>
     <button id="go">Go Premium →</button>
     <p class="muted" style="font-size:.8rem;margin:.55rem 0 0">Secure checkout by Stripe · cancel anytime</p>
@@ -1433,7 +1434,8 @@ export const subscribePage = (canceled) => shell("Subscribe — GillyLab", `
   document.getElementById("go").addEventListener("click",function(){
     var b=document.getElementById("go"); var m=document.getElementById("m");
     m.className="msg"; m.textContent="Redirecting to secure checkout…"; b.disabled=true;
-    post("/api/checkout",{}).then(function(r){
+    var ref=new URLSearchParams(location.search).get("ref");
+    post("/api/checkout",ref?{ref:ref}:{}).then(function(r){
       if(r&&r.redirect){window.location=r.redirect;return;}
       m.className="msg err"; m.textContent=(r&&r.error)||"Couldn't start checkout — please try again."; b.disabled=false;
     }).catch(function(){
@@ -3969,6 +3971,192 @@ ${AURORA_CSS}
   ${freeFooter("/about")}
 <script>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="/"]');if(!a)return;var href=a.getAttribute('href');if(!href||a.target==='_blank'||e.metaKey||e.ctrlKey||e.shiftKey||e.button)return;e.preventDefault();document.body.style.animation='none';document.body.classList.add('lp-out');setTimeout(function(){window.location=href;},150);});window.addEventListener('pageshow',function(){document.body.classList.remove('lp-out');document.body.style.animation='';});</script>
 </body></html>`;
+
+// Partial-mask an email for a partner's own ledger view — enough to recognize
+// a referral without handing out a clean list of email addresses.
+function maskEmail(e) {
+  const s = String(e || "");
+  const at = s.indexOf("@");
+  if (at < 1) return s;
+  const name = s.slice(0, at), domain = s.slice(at);
+  return (name.length <= 2 ? name[0] || "" : name.slice(0, 2)) + "***" + domain;
+}
+
+/* ── Affiliate/partner dashboard (magic-link token, no login) ──────────────────
+ * Terms are marketing/partner_program.png: 50% commission on a referral's first
+ * month, tiered recurring commission after that (20% / 25% at 50 referrals / 30%
+ * at 150 / custom past 300), $25 per 10 paid referrals. All of it is computed
+ * by the Stripe webhook as invoices come in (recordPartnerInvoice, worker/index.js)
+ * and just READ here — the dashboard never calls Stripe itself, so it loads fast
+ * and can't be knocked over by a partner refreshing it a lot.
+ * The token in the URL IS the credential, same trust model as a password-reset
+ * link — there's no partner login/signup system, by design, for the handful of
+ * partners this was built for.
+ */
+export const partnerDashboardPage = ({ partner, ledger }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const money = (cents) => "$" + ((cents || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const p = partner;
+  const refCount = p.referralCount || 0;
+  const tierPct = refCount >= 300 ? (p.customTierPct || 20) : refCount >= 150 ? 30 : refCount >= 50 ? 25 : 20;
+  const nextTier = refCount >= 300 ? null : refCount >= 150 ? { at: 300, label: "a custom rate" } : refCount >= 50 ? { at: 150, label: "30% recurring" } : { at: 50, label: "25% recurring" };
+  const owedCents = Math.max(0, (p.lifetimeCommissionCents || 0) - (p.paidOutCents || 0));
+  const refLink = SITE_URL + "/subscribe?ref=" + encodeURIComponent(p.promoCode);
+
+  const stat = (label, val, accent) => `<div class="pd-stat"><div class="pd-stat-lbl">${label}</div><div class="pd-stat-val${accent ? " accent" : ""}">${val}</div></div>`;
+  const kindLabel = (k) => k === "bonus" ? "Referral bonus" : k === "first" ? "First month" : "Recurring";
+  const rows = (ledger || []).map((l) => `<tr>
+      <td>${esc(new Date(l.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</td>
+      <td>${esc(maskEmail(l.email))}</td>
+      <td>${esc(kindLabel(l.kind))}</td>
+      <td>${l.amountCents ? esc(money(l.amountCents)) : "—"}</td>
+      <td>${l.pct != null ? l.pct + "%" : "—"}</td>
+      <td class="pd-commission">${esc(money(l.commissionCents))}</td>
+    </tr>`).join("");
+
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>Partner Dashboard — GillyLab</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border)}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  main{max-width:920px;margin:0 auto;padding:24px 18px 60px}
+  h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .pd-sub{color:var(--muted);font-size:.9rem;margin:0 0 1.4rem}
+  .pd-link{display:flex;align-items:center;gap:.6rem;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin:0 0 1.6rem;flex-wrap:wrap}
+  .pd-link code{flex:1;min-width:0;color:var(--accent);font-size:.88rem;overflow-x:auto;white-space:nowrap}
+  .pd-copy{flex:0 0 auto;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));color:#f4f5f7;border:1px solid rgba(0,230,104,.35);font-weight:800;font-size:.8rem;border-radius:8px;padding:.5rem .8rem;cursor:pointer}
+  .pd-copy:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
+  .pd-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.7rem;margin:0 0 1.6rem}
+  .pd-stat{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.85rem .9rem}
+  .pd-stat-lbl{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+  .pd-stat-val{font-size:1.35rem;font-weight:800;margin-top:.2rem}
+  .pd-stat-val.accent{color:var(--accent)}
+  .pd-tier{background:rgba(0,230,104,.06);border:1px solid rgba(0,230,104,.25);border-radius:10px;padding:.85rem 1rem;font-size:.85rem;margin:0 0 1.6rem;line-height:1.5}
+  .pd-tier b{color:var(--accent)}
+  table{width:100%;border-collapse:collapse;font-size:.82rem}
+  th{text-align:left;color:var(--muted);font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:.5rem .6rem;border-bottom:1px solid var(--border)}
+  td{padding:.6rem;border-bottom:1px solid var(--border)}
+  .pd-commission{color:var(--accent);font-weight:700}
+  .pd-empty{color:var(--muted);text-align:center;padding:2rem 0;font-size:.88rem}
+  .pd-note{color:var(--muted);font-size:.78rem;margin-top:1.4rem;line-height:1.5}
+  @media (max-width:520px){table{display:block;overflow-x:auto;white-space:nowrap}}
+</style></head><body>
+  <nav class="pk-nav"><a class="pk-brand" href="/"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a></nav>
+  <main>
+    <h1>${esc(p.name)}&rsquo;s Partner Dashboard</h1>
+    <p class="pd-sub">Your referral link and earnings — this updates automatically as referrals subscribe and renew.</p>
+    <div class="pd-link"><code id="pdLink">${esc(refLink)}</code><button type="button" class="pd-copy" id="pdCopyBtn">Copy link</button></div>
+    <div class="pd-stats">
+      ${stat("Total referrals", refCount)}
+      ${stat("Active referrals", p.activeCount || 0, true)}
+      ${stat("Revenue generated", esc(money(p.lifetimeRevenueCents)))}
+      ${stat("Lifetime commission", esc(money(p.lifetimeCommissionCents)), true)}
+      ${stat("Paid out", esc(money(p.paidOutCents)))}
+      ${stat("Balance owed", esc(money(owedCents)), true)}
+    </div>
+    <div class="pd-tier">Your current recurring commission rate is <b>${tierPct}%</b>, plus 50% on every referral's first month and a $25 bonus for every 10 paid referrals.${nextTier ? ` ${Math.max(0, nextTier.at - refCount)} more referral${Math.max(0, nextTier.at - refCount) === 1 ? "" : "s"} gets you to <b>${esc(nextTier.label)}</b>.` : " You're at the top tier — reach out any time to talk about a custom structure as you keep growing."}</div>
+    ${rows ? `<table><thead><tr><th>Date</th><th>Referral</th><th>Type</th><th>Payment</th><th>Rate</th><th>Your cut</th></tr></thead><tbody>${rows}</tbody></table>` : `<div class="pd-empty">No referrals yet — share your link above to get started.</div>`}
+    <p class="pd-note">Promo code: <strong style="color:var(--text)">${esc(p.promoCode)}</strong> — anyone who checks out through your link above gets 20% off their first month automatically. Payouts aren't sent automatically from this page; reach out with any questions about timing.</p>
+  </main>
+  <script>
+    document.getElementById("pdCopyBtn").addEventListener("click", function(){
+      var btn=this, txt=document.getElementById("pdLink").textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){
+        btn.textContent="Copied!"; setTimeout(function(){btn.textContent="Copy link";},1500);
+      }).catch(function(){
+        var r=document.createRange(); r.selectNode(document.getElementById("pdLink"));
+        window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+      });
+    });
+  </script>
+</body></html>`;
+};
+
+/* ── Founder-only partner admin (/admin/partners) ───────────────────────────────
+ * Add a partner (you create the Promotion Code in the Stripe dashboard by hand
+ * first — this just registers it), see everyone's stats at a glance, and record
+ * a payout you've already sent (this does NOT move money — see the "calculate
+ * only" decision: it's a running tally of what's been paid so "balance owed"
+ * on each partner's own dashboard stays accurate).
+ */
+export const partnerAdminPage = ({ partners, error, added }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const money = (cents) => "$" + ((cents || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const rows = (partners || []).map((p) => {
+    const owed = Math.max(0, (p.lifetimeCommissionCents || 0) - (p.paidOutCents || 0));
+    return `<tr>
+      <td>${esc(p.name)}<div class="pa-sub">${esc(p.email || "")}</div></td>
+      <td>${esc(p.promoCode)}</td>
+      <td>${p.referralCount || 0} <span class="pa-sub">(${p.activeCount || 0} active)</span></td>
+      <td>${esc(money(p.lifetimeRevenueCents))}</td>
+      <td>${esc(money(p.lifetimeCommissionCents))}</td>
+      <td>${esc(money(p.paidOutCents))}</td>
+      <td class="${owed > 0 ? "pa-owed" : ""}">${esc(money(owed))}</td>
+      <td><a href="/partner/${esc(p.token)}" target="_blank" rel="noopener">Dashboard →</a></td>
+      <td>
+        <form method="POST" action="/admin/partners/pay" class="pa-payform">
+          <input type="hidden" name="token" value="${esc(p.token)}">
+          <input type="number" name="amount" step="0.01" min="0" placeholder="$ paid" required>
+          <button type="submit">Log payout</button>
+        </form>
+      </td>
+    </tr>`;
+  }).join("");
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0b">
+<title>Partners — Admin</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:1.6rem 1.4rem 4rem}
+  h1{font-size:1.3rem;margin:0 0 1.2rem}
+  .pa-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;margin:0 0 1.6rem;max-width:640px}
+  .pa-card h2{font-size:.95rem;margin:0 0 .8rem}
+  .pa-card label{display:block;font-size:.75rem;color:var(--muted);margin:.6rem 0 .25rem;font-weight:700}
+  .pa-card input{width:100%;background:#0e0e10;border:1px solid var(--border);border-radius:8px;color:var(--text);font:inherit;padding:.55rem .7rem;box-sizing:border-box}
+  .pa-card button{margin-top:1rem;background:linear-gradient(180deg,rgba(0,230,104,.14),rgba(0,230,104,.05));border:1px solid rgba(0,230,104,.4);color:var(--text);font-weight:800;border-radius:8px;padding:.6rem 1rem;cursor:pointer}
+  .pa-err{color:#ff6a5e;font-size:.85rem;margin-top:.6rem}
+  .pa-ok{color:var(--accent);font-size:.85rem;margin-top:.6rem;word-break:break-all}
+  table{border-collapse:collapse;width:100%;font-size:.82rem}
+  th{text-align:left;color:var(--muted);font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:.5rem .6rem;border-bottom:1px solid var(--border);white-space:nowrap}
+  td{padding:.55rem .6rem;border-bottom:1px solid var(--border);white-space:nowrap}
+  .pa-sub{color:var(--muted);font-size:.72rem}
+  .pa-owed{color:#ffcf7a;font-weight:700}
+  a{color:var(--accent);text-decoration:none;font-weight:700}
+  .pa-payform{display:flex;gap:.4rem}
+  .pa-payform input{width:80px;background:#0e0e10;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:.3rem .4rem}
+  .pa-payform button{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.3rem .5rem;cursor:pointer;font-size:.72rem}
+  .pa-payform button:hover{border-color:var(--accent);color:var(--accent)}
+</style></head><body>
+  <h1>Partners</h1>
+  <div class="pa-card">
+    <h2>Add a partner</h2>
+    <form method="POST" action="/admin/partners/add">
+      <label>Name</label><input name="name" required>
+      <label>Email</label><input name="email" type="email" required>
+      <label>Stripe promo code (create it in the Stripe dashboard first — Product catalog &rarr; Coupons/Promotion codes)</label>
+      <input name="promoCode" required placeholder="e.g. JOHN20">
+      <button type="submit">Add partner</button>
+    </form>
+    ${error ? `<div class="pa-err">${esc(error)}</div>` : ""}
+    ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
+  </div>
+  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+</body></html>`;
+};
 
 /* ── Internal model scorecard (founder-gated /scorecard) ───────────────────────
  * Renders the embedded worker/scorecard-data.js (CLV + calibration) so we never

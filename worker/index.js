@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -137,6 +137,97 @@ const putUser = async (env, email, obj) => env.USERS.put("u:" + normEmail(email)
 const emailForCustomer = async (env, custId) => env.USERS.get("cust:" + custId);
 const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custId, normEmail(email));
 
+/* ─────────────────────────────── partners / affiliates (KV) ─────────────────────────
+   Terms are the ones in marketing/partner_program.png: 20% off the referred customer's
+   first month, 50% commission to the partner on that same first invoice, 20% recurring
+   commission on every renewal after that (25% at 50 referrals, 30% at 150, custom past
+   300 — negotiated by hand, stored per-partner as customTierPct).
+
+   Key shapes, all in the PARTNERS KV namespace:
+     partner:<token>          -> { token, name, email, promoCode, promotionCodeId,
+                                    payoutInfo, createdAt, referralCount, activeCount,
+                                    lifetimeRevenueCents, lifetimeCommissionCents,
+                                    bonusesPaidCents, paidOutCents, customTierPct }
+     promo:<CODE UPPERCASED>  -> token          (fast promo-code -> partner lookup)
+     referral:<email>         -> { partnerToken, promoCode, since, active }
+     ledger:<token>:<ts>_<id> -> { invoiceId, email, amountCents, pct, commissionCents,
+                                    kind: "first" | "recurring" | "bonus", date }
+   `token` is a randHex(24) — the partner's dashboard URL IS the credential (same
+   trust model as a magic-sign-in link), matching the "under 15 partners, hand them a
+   link" scale this was built for. */
+const partnerByToken = async (env, token) => { const v = await env.PARTNERS.get("partner:" + token); return v ? JSON.parse(v) : null; };
+const putPartner = async (env, p) => env.PARTNERS.put("partner:" + p.token, JSON.stringify(p));
+// Two lookup directions, deliberately separate keys: `promo:<CODE>` is matched by
+// the human-readable code (the ?ref= trackable link, and the /admin/partners form),
+// `promoId:<promo_xxx>` is matched by Stripe's promotion_code object ID (what's
+// actually present on a paid invoice's discount — see resolveInvoicePromoId).
+// Both point at the same partner token; both get written when a partner is added.
+const partnerTokenForPromo = async (env, code) => env.PARTNERS.get("promo:" + String(code || "").trim().toUpperCase());
+const partnerTokenForPromoId = async (env, id) => env.PARTNERS.get("promoId:" + id);
+const getReferral = async (env, email) => { const v = await env.PARTNERS.get("referral:" + normEmail(email)); return v ? JSON.parse(v) : null; };
+const putReferral = async (env, email, obj) => env.PARTNERS.put("referral:" + normEmail(email), JSON.stringify(obj));
+// Recurring-commission tier by lifetime referral count. The 50% FIRST-month rate is
+// flat regardless of tier — the graphic only ever tiers "recurring".
+function tierPctFor(partner, referralCount) {
+  if (referralCount >= 300) return partner.customTierPct || 20;
+  if (referralCount >= 150) return 30;
+  if (referralCount >= 50) return 25;
+  return 20;
+}
+async function addLedgerEntry(env, token, entry) {
+  const key = "ledger:" + token + ":" + Date.now() + "_" + (entry.invoiceId || randHex(4));
+  await env.PARTNERS.put(key, JSON.stringify(entry));
+}
+// Most-recent-first, capped — a dashboard/admin table, not a full export.
+async function listLedger(env, token, limit = 200) {
+  const out = []; let cursor;
+  do {
+    const page = await env.PARTNERS.list({ prefix: "ledger:" + token + ":", cursor });
+    for (const k of page.keys) { const v = await env.PARTNERS.get(k.name); if (v) out.push(JSON.parse(v)); }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor && out.length < 2000);   // safety valve, not expected to matter at this scale
+  out.sort((a, b) => (b.date || 0) - (a.date || 0));
+  return out.slice(0, limit);
+}
+async function listPartners(env) {
+  const out = []; let cursor;
+  do {
+    const page = await env.PARTNERS.list({ prefix: "partner:", cursor });
+    for (const k of page.keys) { const v = await env.PARTNERS.get(k.name); if (v) out.push(JSON.parse(v)); }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  return out.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+// Attribution + commission bookkeeping for one paid invoice, called from the Stripe
+// webhook. `isFirst` = this invoice's billing_reason is subscription_create (Stripe
+// fires this on the VERY FIRST invoice of a subscription — reliable, not inferred).
+async function recordPartnerInvoice(env, email, amountCents, isFirst, invoiceId) {
+  const ref = await getReferral(env, email);
+  if (!ref || !ref.partnerToken) return;   // not a referred customer — nothing to do
+  const partner = await partnerByToken(env, ref.partnerToken);
+  if (!partner) return;   // promo/referral pointed at a partner that no longer exists
+  const pct = isFirst ? 50 : tierPctFor(partner, partner.referralCount || 0);
+  const commissionCents = Math.round(amountCents * pct / 100);
+  partner.lifetimeRevenueCents = (partner.lifetimeRevenueCents || 0) + amountCents;
+  partner.lifetimeCommissionCents = (partner.lifetimeCommissionCents || 0) + commissionCents;
+  if (isFirst) {
+    const before = partner.referralCount || 0;
+    partner.referralCount = before + 1;
+    partner.activeCount = (partner.activeCount || 0) + 1;
+    // $25 bonus per 10 paid referrals — crossing a multiple of 10, not "referral #10,
+    // #20 exactly", so it still fires correctly if two checkouts land in one webhook
+    // burst (Math.floor comparison handles any jump, not just +1).
+    const crossed = Math.floor(partner.referralCount / 10) - Math.floor(before / 10);
+    if (crossed > 0) {
+      const bonusCents = crossed * 2500;
+      partner.lifetimeCommissionCents += bonusCents;
+      await addLedgerEntry(env, partner.token, { invoiceId: invoiceId + ":bonus", email, amountCents: 0, pct: null, commissionCents: bonusCents, kind: "bonus", date: Date.now() });
+    }
+  }
+  await putPartner(env, partner);
+  await addLedgerEntry(env, partner.token, { invoiceId, email, amountCents, pct, commissionCents, kind: isFirst ? "first" : "recurring", date: Date.now() });
+}
+
 /* ─────────────────────────────────── Stripe ────────────────────────────────── */
 function formEncode(obj, prefix = "", out = []) {
   for (const [k, v] of Object.entries(obj)) {
@@ -156,15 +247,22 @@ async function stripe(env, path, method = "GET", body = null) {
   if (!res.ok) throw new Error("stripe " + path + ": " + (data.error?.message || res.status));
   return data;
 }
-async function createCheckout(env, email, customerId) {
+// promotionCodeId: a resolved Stripe promotion_code ID ("promo_...") from a
+// partner's trackable ?ref= link (see resolvePromoIdForRef / handleCheckout).
+// When present it's pre-applied and allow_promotion_codes is dropped — Stripe
+// rejects a session that sets both. A visitor who typed a DIFFERENT partner's
+// code by hand instead of using their link still gets the discount either way;
+// they just don't get pre-filled into a field they'd have needed to find.
+async function createCheckout(env, email, customerId, promotionCodeId) {
   const params = {
     mode: "subscription",
     "line_items": { "0": { price: env.STRIPE_PRICE_ID, quantity: 1 } },
     success_url: env.SITE_URL + "/api/checkout/success?session_id={CHECKOUT_SESSION_ID}",
     cancel_url: env.SITE_URL + "/subscribe?canceled=1",
-    allow_promotion_codes: "true",
     client_reference_id: normEmail(email),
   };
+  if (promotionCodeId) params.discounts = { "0": { promotion_code: promotionCodeId } };
+  else params.allow_promotion_codes = "true";
   if (customerId) params.customer = customerId; else params.customer_email = normEmail(email);
   const s = await stripe(env, "checkout/sessions", "POST", params);
   return s.url;
@@ -1593,11 +1691,17 @@ export default {
       // (/api/checkout enforces this server-side too; this is just the polite door.)
       if (path === "/subscribe") {
         const s = await readSession(request, env);
+        const ref = /^[A-Za-z0-9_-]{1,40}$/.test(url.searchParams.get("ref") || "") ? url.searchParams.get("ref") : null;
         if (s) {
           const u = await getUser(env, s.email);
           if (u && u.subscribed) return redirect(env.SITE_URL + authDest(null, true));
+        } else if (ref) {
+          // A partner's referral link, clicked by someone with no account yet — send
+          // them through signup first (same `next` mechanism /login and /signup already
+          // use everywhere else) so they land back here, logged in, ref still attached.
+          return redirect(env.SITE_URL + "/signup?next=" + encodeURIComponent("/subscribe?ref=" + ref));
         }
-        return html(subscribePage(url.searchParams.get("canceled")));
+        return html(subscribePage(url.searchParams.get("canceled"), ref));
       }
       if (path === "/reset") return html(resetPasswordPage(url.searchParams.get("token") || ""));
       if (path === "/terms") return html(termsPage());
@@ -1749,6 +1853,18 @@ export default {
         return html(fighterLitePage({ fighter, subscribed: !!u?.subscribed, loggedIn: !!s }), 200, pubHeaders(s));
       }
 
+      // Partner/affiliate dashboard — the token in the URL is the credential (no
+      // partner login system; see the KV shape comment above partnerByToken).
+      // private, no-store: this carries another person's referral emails/earnings,
+      // not something to sit in a shared/browser cache.
+      if (path.startsWith("/partner/")) {
+        const token = decodeURIComponent(path.slice("/partner/".length)).replace(/\/+$/, "");
+        const partner = token && await partnerByToken(env, token);
+        if (!partner) return html('<!doctype html><meta charset="utf-8"><title>Not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Dashboard not found</h1><p style="color:#8a8f99">Check the link you were given.</p></div></body>', 404);
+        const ledger = await listLedger(env, token);
+        return html(partnerDashboardPage({ partner, ledger }), 200, { "Cache-Control": "private, no-store" });
+      }
+
       // ---- account page (must be logged in) ----
       if (path === "/account") {
         const s = await readSession(request, env);
@@ -1808,6 +1924,52 @@ export default {
       if (path === "/scorecard") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         return html(scorecardPage(scorecardData), 200, { "Cache-Control": "private, no-store" });
+      }
+
+      // Internal, founder-only: add/view partners and log payouts. Plain HTML
+      // forms (no JS), so the POST handlers redirect back here rather than
+      // returning JSON — nothing is intercepting the submit client-side.
+      if (path === "/admin/partners") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const partners = await listPartners(env);
+        return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added") }), 200, { "Cache-Control": "private, no-store" });
+      }
+      if (path === "/admin/partners/add" && request.method === "POST") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const body = await readBody(request).catch(() => ({}));
+        const name = String(body.name || "").trim();
+        const email = normEmail(body.email);
+        const code = String(body.promoCode || "").trim();
+        if (!name || !email || !code) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent("Name, email and promo code are all required."));
+        try {
+          // The promo code has to already exist in Stripe — this looks it up by
+          // its human code (what you typed when creating it in the dashboard) to
+          // get the ID the webhook actually sees on a paid invoice's discount.
+          const found = await stripe(env, "promotion_codes?code=" + encodeURIComponent(code) + "&limit=1", "GET");
+          const pc = found.data && found.data[0];
+          if (!pc) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent(`No active Stripe promotion code "${code}" found — create it in the Stripe dashboard first (Product catalog → Coupons → create a coupon, then a promotion code for it), then add the partner here.`));
+          const existing = await partnerTokenForPromo(env, code);
+          if (existing) return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent(`"${code}" is already registered to another partner.`));
+          const token = randHex(24);
+          const partner = { token, name, email, promoCode: code.toUpperCase(), promotionCodeId: pc.id, createdAt: Date.now(), referralCount: 0, activeCount: 0, lifetimeRevenueCents: 0, lifetimeCommissionCents: 0, paidOutCents: 0 };
+          await putPartner(env, partner);
+          await env.PARTNERS.put("promo:" + partner.promoCode, token);
+          await env.PARTNERS.put("promoId:" + pc.id, token);
+          return redirect(env.SITE_URL + "/admin/partners?added=" + encodeURIComponent(token));
+        } catch (err) {
+          return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent("Couldn't add partner: " + String((err && err.message) || err)));
+        }
+      }
+      if (path === "/admin/partners/pay" && request.method === "POST") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const body = await readBody(request).catch(() => ({}));
+        const token = String(body.token || "");
+        const amountCents = Math.round(parseFloat(body.amount || "0") * 100);
+        if (token && amountCents > 0) {
+          const partner = await partnerByToken(env, token);
+          if (partner) { partner.paidOutCents = (partner.paidOutCents || 0) + amountCents; await putPartner(env, partner); }
+        }
+        return redirect(env.SITE_URL + "/admin/partners");
       }
 
       if (path === "/" || path === "/index.html") {
@@ -1891,8 +2053,13 @@ async function handleCheckout(request, env) {
   // redirects subscribers away, but that's a UI courtesy — this is the actual guard,
   // since the endpoint is reachable directly and a double charge isn't undoable.
   if (u && u.subscribed) return json({ error: "You're already subscribed.", redirect: env.SITE_URL + "/" }, 409);
+  // A partner's ?ref=<promoCode> link, threaded through by subscribePage. Resolved to
+  // Stripe's promotion_code ID here (not trusted from the client as an ID directly —
+  // body.ref is just the human code, same string a visitor could've typed by hand).
+  let promotionCodeId = null;
+  if (body.ref) { const token = await partnerTokenForPromo(env, body.ref); if (token) { const p = await partnerByToken(env, token); promotionCodeId = p?.promotionCodeId || null; } }
   try {
-    const checkoutUrl = await createCheckout(env, e, u?.stripeCustomerId);
+    const checkoutUrl = await createCheckout(env, e, u?.stripeCustomerId, promotionCodeId);
     if (!checkoutUrl) return json({ error: "Couldn't start checkout — please try again." }, 502);
     return json({ ok: true, redirect: checkoutUrl });
   } catch (err) {
@@ -1980,6 +2147,24 @@ async function handleResetComplete(request, env) {
   return json({ ok: true, redirect: env.SITE_URL + authDest(null, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 
+// The promotion-code ID ("promo_...") behind a paid invoice's discount, or null.
+// Both `discount` (legacy singular) and `discounts` (current array) exist across
+// Stripe API versions — check what the webhook payload already carries first
+// (cheap), and only re-fetch the invoice if neither is populated. Either shape's
+// promotion_code is already just the ID string, not a reference needing further
+// expansion — that ID is exactly the promoId:<id> lookup key partners are
+// registered under (see recordPartnerInvoice/the /admin/partners handler).
+async function resolveInvoicePromoId(env, obj) {
+  const fromSingular = obj.discount && obj.discount.promotion_code;
+  if (fromSingular) return fromSingular;
+  const fromArray = Array.isArray(obj.discounts) && obj.discounts[0] && typeof obj.discounts[0] === "object" ? obj.discounts[0].promotion_code : null;
+  if (fromArray) return fromArray;
+  try {
+    const full = await stripe(env, `invoices/${obj.id}?expand[]=discount&expand[]=discounts`, "GET");
+    return (full.discount && full.discount.promotion_code) || (Array.isArray(full.discounts) && full.discounts[0] && full.discounts[0].promotion_code) || null;
+  } catch (e) { return null; }
+}
+
 async function handleWebhook(request, env) {
   const payload = await request.text();
   const sig = request.headers.get("Stripe-Signature");
@@ -2003,6 +2188,45 @@ async function handleWebhook(request, env) {
       case "customer.subscription.deleted": {
         const email = await emailForCustomer(env, obj.customer);
         if (email) await markSubscribed(env, email, obj.customer, false, { subStatus: "canceled" });
+        // A referred customer who cancels stops counting toward "active
+        // referrals" on their partner's dashboard — the lifetime revenue/
+        // commission already earned stays on the books, this just stops the
+        // count from claiming a churned customer is still active.
+        if (email) {
+          const ref = await getReferral(env, email);
+          if (ref && ref.active) {
+            ref.active = false;
+            await putReferral(env, email, ref);
+            const partner = await partnerByToken(env, ref.partnerToken);
+            if (partner) { partner.activeCount = Math.max(0, (partner.activeCount || 0) - 1); await putPartner(env, partner); }
+          }
+        }
+        break;
+      }
+      // Fires for every paid invoice — the subscription's first charge AND every
+      // renewal. This is where BOTH referral attribution (first invoice only,
+      // keyed off billing_reason so it can't misfire on a later renewal) and
+      // every commission ledger entry (first-month 50% and every recurring %
+      // after it) get recorded. Not split across checkout.session.completed —
+      // one event type for the whole partner pipeline is one less place for the
+      // two to drift out of sync.
+      case "invoice.paid": {
+        const email = obj.customer_email || await emailForCustomer(env, obj.customer);
+        if (!email) break;
+        const isFirst = obj.billing_reason === "subscription_create";
+        if (isFirst) {
+          // Attribute ONLY if this customer isn't already referred (first-touch,
+          // permanent for the life of the subscription — the standard affiliate
+          // rule, and it means a partner can't lose credit if the customer later
+          // resubscribes without the code).
+          const already = await getReferral(env, email);
+          if (!already) {
+            const promoId = await resolveInvoicePromoId(env, obj);
+            const token = promoId && await partnerTokenForPromoId(env, promoId);
+            if (token) await putReferral(env, email, { partnerToken: token, promoId, since: Date.now(), active: true });
+          }
+        }
+        await recordPartnerInvoice(env, email, obj.amount_paid || 0, isFirst, obj.id);
         break;
       }
     }

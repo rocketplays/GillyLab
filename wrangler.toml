@@ -49,6 +49,14 @@ binding = "PICKS"      # pick'em: display names, per-event picks, graded aggrega
 # Create it once and paste the id here:  wrangler kv namespace create PICKS
 id = "c5a25c12d945410c9e52c2777cdbd116"
 
+[[kv_namespaces]]
+binding = "PARTNERS"   # affiliate program: partner records, promo-code -> partner
+                        # lookups, referral attribution, commission ledger entries.
+                        # See PAYWALL-SETUP.md / worker/index.js's partner-* helpers
+                        # for the key shapes (partner:, promo:, referral:, ledger:).
+# Create it once and paste the id here:  wrangler kv namespace create PARTNERS
+id = "1ca9e2dcc7af4aa8b11da249d981ddc4"
+
 # Secrets to set (NOT here — run these once, values never touch git):
 #   wrangler secret put STRIPE_SECRET_KEY       # sk_live_... (or sk_test_...)
 #   wrangler secret put STRIPE_WEBHOOK_SECRET    # whsec_...
