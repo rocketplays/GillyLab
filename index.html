@@ -54,11 +54,14 @@
        Removed: all four of those now carry their own local `overflow-x: auto`
        (see #fh-table-wrap etc. and .fighter-tabs below), which contains the
        same overflow without touching <html>'s own overflow property — and
-       explicit overflow on <html> turns out to be exactly what was breaking
-       .site-header's position:sticky under the iOS status bar/notch (matchup,
-       which never sets overflow-x on <html>, never shows the gap; index.html,
-       which did, does). If a future wide element needs propping up, give IT a
-       local overflow-x:auto the same way — not <html> again.
+       explicit overflow on <html> was ALSO suspected (at the time) of being
+       part of what broke .site-header's then-position:sticky under the iOS
+       status bar/notch — that turned out not to be the actual fix (see
+       .site-header's own rule for how this saga ended: back to
+       position:fixed), but the overflow-x removal is kept regardless since
+       it's still correct/harmless on its own. If a future wide element
+       needs propping up, give IT a local overflow-x:auto the same way —
+       not <html> again.
        background is set here too (matching body's) so that iOS Safari's
        elastic overscroll/rubber-band bounce at the top of the page -- which
        briefly reveals whatever is "behind" the document, governed by
@@ -116,32 +119,40 @@
 
     /* ── HEADER: TWO ROWS ── */
     .site-header {
-      /* position:sticky, not fixed. Mobile browsers (iOS Safari and some
-         Android Chrome builds) animate the address bar hiding/showing as
-         you scroll, and a position:fixed element is positioned against
-         the layout viewport rather than the visual one during that
-         animation — for a frame or two the header can lag behind, leaving
-         a thin gap at the very top of the screen through which content
-         you've already scrolled past is briefly visible underneath it.
-         Sticky elements are laid out in normal flow and tracked against
-         the scrolling ancestor's content box, which mobile browsers keep
-         glued to the visual viewport correctly through that animation, so
-         the gap doesn't appear. Visually identical to fixed once scrolled
-         past the header's own height. (.page's old `padding-top: 98px`
-         compensation for the fixed header's height has been removed since
-         sticky already occupies that space in normal flow.) */
-      position: sticky;
-      /* top: -1px, not top: 0 — a well-known iOS Safari bug: a sticky
-         element whose resting position is already flush with the top of
-         the scrollport (top:0) doesn't reliably get its "stuck" state
-         re-evaluated on every scroll tick, especially while Safari's own
-         address bar is animating away. That's what showed as a strip of
-         already-scrolled content sitting above the header instead of
-         being covered by it. Offsetting by a subpixel forces Safari to
-         keep treating this as "not naturally at rest" and recompute it on
-         every frame instead of latching a stale position. 1px is visually
-         nothing (header still reads as flush with the top). */
-      top: -1px;
+      /* BACK TO position:fixed. HISTORY, so nobody flips this again without
+         reading it first:
+           1. Originally fixed. Bug: a strip of already-scrolled content
+              showed above the header during scroll (mobile Safari's
+              address-bar collapse animation).
+           2. Switched to sticky (top:0) on the theory that sticky tracks
+              the visual viewport correctly through that animation and
+              fixed doesn't. "Verified via Playwright" at a 390x844
+              viewport — but Playwright's mobile emulation only changes
+              viewport SIZE, it does not run Safari's real address-bar
+              hide/show animation. That verification could only have
+              caught the OLDER "sticky doesn't stick at all" bug (a stray
+              overflow-x:hidden on body), not this one — it never actually
+              exercised the thing it was meant to prove.
+           3. The exact same "content shows above the header" symptom came
+              back on a real device, on a completely fresh page load (no
+              modal, no in-app tab switch — ruled both out explicitly).
+              Tried four sticky-specific mitigations in place (safe-area
+              padding, GPU-layer promotion, top:-1px, removing html's
+              overflow-x) — none fixed it. transform:translateZ(0) in
+              particular is a KNOWN way to make this worse on WebKit
+              (composited layer position can lag a frame behind sticky's
+              recalculated position) — don't re-add it to a sticky header.
+         Conclusion: sticky's supposed advantage here was never actually
+         verified on-device, and empirically isn't holding up. Fixed
+         has one known cosmetic cost (a possible frame or two of lag
+         during the address-bar animation) — smaller and rarer than the
+         bug it replaces. .page gets its padding-top compensation back,
+         computed by JS (see setHeaderHeightVar() near the top of the
+         main script) rather than hardcoded, so it can't drift out of
+         sync with the header's real height — including safe-area-inset-top
+         below, which is part of that measured height. */
+      position: fixed;
+      top: 0; left: 0; right: 0;
       z-index: 100;
       /* Solid background instead of a blurred-translucent one — at 0.96
          opacity the blur was barely visible anyway, and backdrop-filter
@@ -152,29 +163,17 @@
       background: rgb(10,10,11);
       /* iPhones with a notch/Dynamic Island (installed as a home-screen
          PWA, or any browser chrome that lets content draw under the status
-         bar) report a nonzero safe-area-inset-top. Sticky's box starts at
-         the very top of the scroll container, so without this the
-         header's own background stops short of the status bar and page
-         content scrolling past is visible in that gap. Padding the header
+         bar) report a nonzero safe-area-inset-top. Padding the header
          itself (rather than adding a separate spacer) keeps the solid
-         background covering the whole notch area while sticky's built-in
-         scroll tracking still works unchanged. viewport-fit=cover (set on
-         the <meta name=viewport> tag) is required for env() here to
+         background covering the whole notch area. viewport-fit=cover (set
+         on the <meta name=viewport> tag) is required for env() here to
          resolve to anything other than 0 — and it IS 0 in a plain Safari
          tab (no home-screen install), so this rule is a no-op there; it's
-         kept for whoever adds the site to their home screen later. */
+         kept for whoever adds the site to their home screen later. Because
+         .page's padding-top is measured off this element's real
+         offsetHeight (see setHeaderHeightVar()), a nonzero inset here
+         still lines up correctly with no separate calc() needed. */
       padding-top: env(safe-area-inset-top);
-      /* NOTE: previously also had transform: translateZ(0) here to force
-         GPU-layer promotion, on the theory that this page's expensive
-         background (the <html> radial-gradient, #bgfx/#bgedge, the noise
-         overlay) was causing the compositor to drop a header repaint
-         during fast scroll. Removed — it didn't fix the bug, and forcing
-         a *sticky* element onto its own compositor layer is itself a
-         known source of exactly this class of glitch on WebKit (the
-         layer's composited position can lag one frame behind the
-         recalculated sticky position). Don't re-add it without testing;
-         if this page's background repaint cost needs addressing, do it to
-         #bgfx/#bgedge/html directly, not by promoting the header. */
     }
 
     /* Row 1: Search bar */
@@ -408,10 +407,15 @@
     /* ── PAGES ── */
     .page {
       display: none;
-      /* No padding-top here: .site-header is position:sticky and sits
-         directly before every .page in the DOM, so it already occupies
-         its own height in normal flow — adding padding here on top of
-         that would double-count the header's height as blank space. */
+      /* .site-header is position:fixed (removed from flow), so every page
+         needs its own top padding to avoid sitting underneath it. The
+         value comes from --header-h, a custom property set by JS (see
+         setHeaderHeightVar() in <body>, right after .site-header) that
+         measures the header's REAL offsetHeight — including safe-area
+         padding when present — instead of a hardcoded guess that can
+         silently go stale the next time the header's contents change.
+         98px is only the pre-JS fallback for the very first paint. */
+      padding-top: var(--header-h, 98px);
       min-height: 100vh;
       animation: fadeIn 0.42s ease;
     }
@@ -3935,6 +3939,27 @@
     </div>
   </nav>
 </div>
+
+<script>
+  // .site-header is position:fixed (see its CSS rule for why), so every
+  // .page needs top padding equal to the header's real rendered height —
+  // otherwise page content starts underneath it. Measuring offsetHeight
+  // instead of hardcoding a pixel number means this can't drift out of
+  // sync the next time the header's own contents/padding change (it
+  // already includes env(safe-area-inset-top) automatically, since that's
+  // baked into the header's actual box). Runs synchronously here, before
+  // any .page markup is parsed/painted, so there's no visible jump on
+  // first load; also re-runs on resize/orientation change, since Safari's
+  // own UI chrome (and therefore the safe-area inset) can change size
+  // independent of any user action on the page itself.
+  function setHeaderHeightVar() {
+    var h = document.querySelector('.site-header');
+    if (!h) return;
+    document.documentElement.style.setProperty('--header-h', h.offsetHeight + 'px');
+  }
+  setHeaderHeightVar();
+  window.addEventListener('resize', setHeaderHeightVar);
+</script>
 
 <!-- ══════════════════════════════════════
      PAGE: HOME
