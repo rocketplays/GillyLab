@@ -1554,19 +1554,24 @@
       letter-spacing: 0.05em;
     }
 
-    /* Generic fallbacks (used outside book rows) */
-    .odds-value.fav  { color: #4cff8a; }
-    .odds-value.dog  { color: var(--accent2); }
-    .odds-value.pick { color: var(--accent); }
+    /* Generic fallbacks (used outside book rows). Was #4cff8a/accent2/accent
+       (green/red/green) — flattened to the standard body text color so odds
+       read as data, not a favorite/dog signal encoded in color. */
+    .odds-value.fav  { color: var(--text); }
+    .odds-value.dog  { color: var(--text); }
+    .odds-value.pick { color: var(--text); }
 
-    /* Per-book row coloring: all odds in that row match the book brand */
-    tr.row-dk   .odds-value { color: #1a9e3a; }
-    tr.row-fd   .odds-value { color: #1493ff; }
-    tr.row-mgm  .odds-value { color: #c9960a; }
-    tr.row-cae  .odds-value { color: #7cb87c; }
-    tr.row-pm   .odds-value { color: #a78bfa; }
-    tr.row-fan  .odds-value { color: #e84040; }
-    tr.row-b365 .odds-value { color: #f97316; }
+    /* Per-book row coloring used to tint every odds VALUE to match the book's
+       brand color (DK green, FD blue, etc). Book identity still shows via
+       .book-name/.book-dk and friends below — this just stopped the odds
+       numbers themselves from being multicolored. */
+    tr.row-dk   .odds-value,
+    tr.row-fd   .odds-value,
+    tr.row-mgm  .odds-value,
+    tr.row-cae  .odds-value,
+    tr.row-pm   .odds-value,
+    tr.row-fan  .odds-value,
+    tr.row-b365 .odds-value { color: var(--text); }
 
     .book-name {
       font-size: 0.78rem;
@@ -2234,6 +2239,18 @@
     .mh-tab:hover { color: var(--text); }
     .mh-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
 
+    /* Result filter — All / Wins / Losses. Sits BELOW the Striking/Grappling tabs,
+       not inside either one, because it's one piece of state that both tabs share:
+       switching from Striking to Grappling mid-filter keeps whatever's selected,
+       same as the fighters themselves don't change. Pills, not underlined tabs
+       like .mh-tab above, so it doesn't read as a third top-level section — it's
+       a modifier on the two real tabs, not a peer of them. */
+    .mh-filter { display: flex; align-items: center; gap: 0.4rem; padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .mh-filter-lbl { font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-right: 0.2rem; }
+    .mh-filter-btn { background: none; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.28rem 0.7rem; cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s; }
+    .mh-filter-btn:hover { color: var(--text); border-color: var(--text); }
+    .mh-filter-btn.on { color: #04140a; background: var(--accent); border-color: var(--accent); }
+
     /* Pick'em / The Climb switch — the same underline language as .mh-tab above, but
        centred, because this one sits on a page rather than in a modal's header rail.
        Its own class rather than reusing .mh-tab: those are sized for the modal and a
@@ -2358,6 +2375,8 @@
       .mh-cmp-v { flex: 0 0 4.2rem; font-size: 0.82rem; }
       .mh-tabs { padding: 0 0.5rem; }
       .mh-tab { padding: 0.7rem 0.7rem; font-size: 0.82rem; }
+      .mh-filter { padding: 0.55rem 0.85rem; }
+      .mh-filter-btn { padding: 0.24rem 0.6rem; font-size: 0.68rem; }
       .mh-body { padding: 1rem 0.85rem 1.25rem; }
       /* THE HEADER HAS TO WRAP, NOT SHRINK. At 390px the desktop row squeezed the
          names to "Dri…" and "Ka…" and broke "23-3-0" across two lines — a header
@@ -3221,7 +3240,7 @@
     }
 
     .odds-value.pm-pct {
-      color: #a78bfa;
+      color: var(--text);
       font-weight: 700;
       letter-spacing: 0.03em;
     }
@@ -3442,6 +3461,68 @@
       }
       .event-header.freedom-card::before { content: none; }
 
+      /* ── DWCS (Dana White's Contender Series) Special Card ──
+         Same structure as .numbered-card (gold), swapped to blue so a DWCS
+         card reads as its own thing — a tryout show, not a numbered PPV —
+         at a glance in both the featured slot and the carousel. */
+      .dwcs-card {
+        position:relative; overflow:hidden;
+        background: linear-gradient(160deg, rgba(59,130,246,0.16) 0%, rgba(10,10,11,0) 45%, rgba(10,10,11,0) 60%, rgba(59,130,246,0.10) 100%) !important;
+        border-top: 3px solid transparent !important;
+        border-image: linear-gradient(90deg, #3b82f6 0%, #dbeafe 50%, #3b82f6 100%) 1 !important;
+      }
+      .dwcs-card .event-name {
+        background: linear-gradient(90deg, #3b82f6 0%, #dbeafe 45%, #3b82f6 100%);
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        background-clip: text; filter: drop-shadow(0 0 14px rgba(59,130,246,0.45));
+        letter-spacing:0.03em;
+      }
+      .dwcs-card .event-details { color:rgba(255,255,255,0.7) !important; }
+      .dwcs-card .event-header {
+        border-bottom: 1px solid rgba(59,130,246,0.25) !important;
+        padding-bottom:1rem;
+        align-items: flex-start;
+      }
+      .dwcs-card .event-countdown {
+        background: none !important;
+        border: none !important;
+      }
+      .dwcs-card .countdown-time { color:#dbeafe !important; text-shadow: 0 0 12px rgba(59,130,246,0.85); }
+      .dwcs-card .section-title { color:#dbeafe !important; letter-spacing:0.15em; }
+      .dwcs-card .section-line { background: linear-gradient(90deg, #3b82f6, rgba(219,234,254,0.5), #3b82f6) !important; height:2px !important; }
+      .dwcs-card .fight-row {
+        border:1px solid rgba(59,130,246,0.18) !important;
+        border-radius:6px; margin-bottom:0.3rem;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .dwcs-card .fight-row:hover { border-color:rgba(59,130,246,0.4) !important; background:rgba(59,130,246,0.06) !important; }
+      .dwcs-card .fight-details-panel, .dwcs-card .scouting-fight-panel { margin-top: -0.3rem !important; }
+      .dwcs-card .fight-vs {
+        background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+        color:#fff !important; font-weight:900 !important;
+        border:1px solid rgba(219,234,254,0.4) !important;
+      }
+      .dwcs-card .fighter-avatar {
+        border: 2px solid transparent !important;
+        background:
+          linear-gradient(var(--surface2), var(--surface2)) padding-box,
+          linear-gradient(135deg, #3b82f6 0%, #dbeafe 50%, #3b82f6 100%) border-box !important;
+      }
+      .dwcs-card .fighter-cell:hover .fighter-name {
+        color: #3b82f6 !important;
+      }
+      /* Lighter blue accent for the featured/top event-header, same treatment
+         as .event-header.numbered-card/.freedom-card above. */
+      .event-header.dwcs-card {
+        position:static; overflow:visible;
+        background: transparent !important;
+        border-top: none !important;
+        border-image: none !important;
+        border-bottom: 1px solid rgba(59,130,246,0.3) !important;
+        padding-bottom: 1rem;
+      }
+      .event-header.dwcs-card::before { content: none; }
+
       /* On mobile, .fight-card-section's top padding collapses to 0 (see the
          .fight-card-section override in the 768px media query above), so the
          "MAIN CARD" title now sits hard against .event-header's bottom
@@ -3458,8 +3539,10 @@
         .event-header,
         .freedom-card .event-header,
         .numbered-card .event-header,
+        .dwcs-card .event-header,
         .event-header.freedom-card,
-        .event-header.numbered-card {
+        .event-header.numbered-card,
+        .event-header.dwcs-card {
           border-bottom: none !important;
         }
       }
@@ -3784,10 +3867,10 @@
         <li role="menuitem" id="tab-odds"                   onclick="navigate('odds');        closeNavDropdown()">Odds &amp; Projections</li>
         <li role="menuitem" id="tab-bets"                   onclick="navigate('bets');        closeNavDropdown()">Bet &amp; CLV Tracker</li>
         <li role="menuitem" id="tab-tape-study"              onclick="navigate('tape-study');  closeNavDropdown()">Tape Study</li>
-        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
-        <li role="menuitem" id="tab-theclimb"                onclick="navigate('theclimb');    closeNavDropdown()">The Climb</li>
         <li role="menuitem" id="tab-rankings"               onclick="navigate('rankings');    closeNavDropdown()">Rankings</li>
         <li role="menuitem" id="tab-active-roster"           onclick="navigate('active-roster'); closeNavDropdown()">Active Roster</li>
+        <li role="menuitem" id="tab-pickem"                  onclick="navigate('pickem');      closeNavDropdown()">Pick'em</li>
+        <li role="menuitem" id="tab-theclimb"                onclick="navigate('theclimb');    closeNavDropdown()">The Climb</li>
       </ul>
     </div>
 
@@ -4273,6 +4356,12 @@
     <button type="button" class="mh-tab" data-mh-tab="grappling" onclick="mhTab('grappling')">Grappling</button>
     <button type="button" class="mh-x" onclick="closeMatchupHub()" aria-label="Close">&times;</button>
   </div>
+  <div class="mh-filter" id="mh-filter">
+    <span class="mh-filter-lbl">Fights</span>
+    <button type="button" class="mh-filter-btn on" data-mh-filter="all" onclick="mhFilter('all')">All</button>
+    <button type="button" class="mh-filter-btn" data-mh-filter="win" onclick="mhFilter('win')">Wins</button>
+    <button type="button" class="mh-filter-btn" data-mh-filter="loss" onclick="mhFilter('loss')">Losses</button>
+  </div>
   <div class="mh-body" id="mh-body"></div>
 </div>
 
@@ -4294,14 +4383,14 @@
  { name: "Joshua Van", division: "FLW", rank: "#C", record: "17-2-0", initials: "JV", country: "Myanmar" },
  { name: "Alexandre Pantoja", division: "FLW", rank: "#1", record: "30-6-0", initials: "APT", country: "Brazil" },
  { name: "Tatsuro Taira", division: "FLW", rank: "#3", record: "18-2-0", initials: "TT", country: "Japan" },
- { name: "Brandon Royval", division: "FLW", rank: "#4", record: "18-8-0", initials: "BR", country: "USA" },
+ { name: "Brandon Royval", division: "FLW", rank: "#4", record: "18-9-0", initials: "BR", country: "USA" },
  { name: "Kyoji Horiguchi", division: "FLW", rank: "#5", record: "36-6-0", initials: "KH", country: "Japan" },
  { name: "Brandon Moreno", division: "FLW", rank: "#9", record: "23-10-2", initials: "BMO", country: "Mexico" },
  { name: "Amir Albazi", division: "FLW", rank: "#8", record: "17-3-0", initials: "AA", country: "Iraq" },
  { name: "Asu Almabayev", division: "FLW", rank: "#7", record: "24-3-0", initials: "ASU", country: "Kazakhstan" },
  { name: "Tim Elliott", division: "FLW", rank: "#12", record: "21-14-1", initials: "TE", country: "USA" },
  { name: "Alex Perez", division: "FLW", rank: "#11", record: "26-10-0", initials: "APR", country: "USA" },
- { name: "Steve Erceg", division: "FLW", rank: "#10", record: "14-4-0", initials: "SE", country: "Australia" },
+ { name: "Steve Erceg", division: "FLW", rank: "#10", record: "14-5-0", initials: "SE", country: "Australia" },
  { name: "Tagir Ulanbekov", division: "FLW", rank: "#13", record: "17-3-0", initials: "TU", country: "Russia" },
  { name: "Charles Johnson", division: "FLW", rank: "#14", record: "19-9-0", initials: "CJ", country: "USA" },
  { name: "Bruno Gustavo da Silva", division: "FLW", rank: "NR", record: "15-9-2", initials: "BGS", country: "Brazil" },
@@ -4310,9 +4399,9 @@
  { name: "Clayton Carpenter", division: "FLW", rank: "NR", record: "8-3-0", initials: "CC", country: "USA" },
  { name: "Jose Ochoa", division: "FLW", rank: "NR", record: "9-2-0", initials: "JO", country: "Peru" }, // 1 NC
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "17-11-0", initials: "MSC", country: "USA" }, // 1 NC
- { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-10-1", initials: "CDU", country: "USA" },
+ { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-11-1", initials: "CDU", country: "USA" },
  { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "13-7-0", initials: "DLA", country: "Brazil" }, // 1 NC
- { name: "Ramazan Temirov", division: "FLW", rank: "NR", record: "19-3-0", initials: "RTE", country: "Uzbekistan" },
+ { name: "Ramazan Temirov", division: "FLW", rank: "NR", record: "20-3-0", initials: "RTE", country: "Uzbekistan" },
  { name: "Victor Altamirano", division: "FLW", rank: "NR", record: "12-5-0", initials: "VAL", country: "Mexico" },
  { name: "Ode Osbourne", division: "FLW", rank: "NR", record: "13-9-0", initials: "OO", country: "Jamaica" },
  // ─── BANTAMWEIGHT ───
@@ -4321,12 +4410,12 @@
  { name: "Vince Morales", division: "BW", rank: "NR", record: "16-11-0", initials: "VM", country: "USA" },
  { name: "Merab Dvalishvili", division: "BW", rank: "#1", record: "21-5-0", initials: "MD", country: "Georgia" },
  { name: "Umar Nurmagomedov", division: "BW", rank: "#3", record: "20-1-0", initials: "UN", country: "Russia" },
- { name: "Sean O'Malley", division: "BW", rank: "#2", record: "19-3-0", initials: "SOM", country: "USA" },
- { name: "Cory Sandhagen", division: "BW", rank: "#4", record: "18-6-0", initials: "CS", country: "USA" },
+ { name: "Sean O'Malley", division: "BW", rank: "#2", record: "20-3-0", initials: "SOM", country: "USA" },
+ { name: "Cory Sandhagen", division: "BW", rank: "#4", record: "18-7-0", initials: "CS", country: "USA" },
  { name: "Song Yadong", division: "BW", rank: "#5", record: "23-9-1", initials: "SY", country: "China" },
- { name: "Aiemann Zahabi", division: "BW", rank: "#6", record: "14-2-0", initials: "AZ", country: "Canada" },
+ { name: "Aiemann Zahabi", division: "BW", rank: "#6", record: "14-3-0", initials: "AZ", country: "Canada" },
  { name: "Deiveson Figueiredo", division: "BW", rank: "#9", record: "25-7-1", initials: "DF", country: "Brazil" },
- { name: "Mario Bautista", division: "BW", rank: "#7", record: "17-3-0", initials: "MBT", country: "USA" },
+ { name: "Mario Bautista", division: "BW", rank: "#7", record: "18-3-0", initials: "MBT", country: "USA" },
  { name: "Marlon Vera", division: "BW", rank: "#10", record: "23-12-1", initials: "MVE", country: "Ecuador" },
  { name: "Marvin Vettori", division: "MW", rank: "NR", record: "19-10-1", initials: "MVT", country: "Italy" },
  { name: "David Martínez", division: "BW", rank: "#8", record: "14-1-0", initials: "DM", country: "Mexico" },
@@ -4344,7 +4433,7 @@
  { name: "Jonathan Martinez", division: "BW", rank: "NR", record: "19-6-0", initials: "JMT", country: "USA" },
  { name: "Javid Basharat", division: "BW", rank: "NR", record: "15-2-0", initials: "JBH", country: "Afghanistan" }, // 1 NC
  { name: "Chris Gutierrez", division: "BW", rank: "NR", record: "22-7-2", initials: "CG", country: "USA" },
- { name: "Farid Basharat", division: "BW", rank: "#15", record: "15-0-0", initials: "FB", country: "Afghanistan" },
+ { name: "Farid Basharat", division: "BW", rank: "#15", record: "16-0-0", initials: "FB", country: "Afghanistan" },
  { name: "Said Nurmagomedov", division: "BW", rank: "NR", record: "18-5-0", initials: "SN", country: "Russia" },
  { name: "Angel Pacheco", division: "BW", rank: "NR", record: "7-4-0", initials: "ANP", country: "USA" },
  { name: "Miles Johns", division: "BW", rank: "NR", record: "15-5-0", initials: "MIJ", country: "USA" }, // 1 NC
@@ -4352,20 +4441,20 @@
  { name: "Carlos Vera", division: "BW", rank: "NR", record: "12-4-0", initials: "CRV", country: "Ecuador" },
  { name: "Chad Anheliger", division: "BW", rank: "NR", record: "13-8-0", initials: "CAH", country: "Canada" },
  { name: "ChangHo Lee", division: "BW", rank: "NR", record: "11-2-0", initials: "CHL", country: "South Korea" },
- { name: "Cody Gibson", division: "BW", rank: "NR", record: "22-12-0", initials: "CGI", country: "USA" },
+ { name: "Cody Gibson", division: "BW", rank: "NR", record: "22-13-0", initials: "CGI", country: "USA" },
  { name: "Cristian Quinonez", division: "BW", rank: "NR", record: "19-5-0", initials: "CQ", country: "Mexico" },
  { name: "Garrett Armfield", division: "BW", rank: "NR", record: "10-5-0", initials: "GA", country: "USA" },
  // ─── FEATHERWEIGHT ───
  { name: "Alexander Volkanovski", division: "FW", rank: "#C", record: "28-4-0", initials: "AVK", country: "Australia" },
  { name: "Movsar Evloev", division: "FW", rank: "#1", record: "20-0-0", initials: "ME", country: "Russia" },
  { name: "Danny Silva", division: "FW", rank: "NR", record: "11-2-0", initials: "DSI", country: "USA" },
- { name: "Diego Lopes", division: "FW", rank: "#2", record: "27-8-0", initials: "DLO", country: "Brazil" },
+ { name: "Diego Lopes", division: "FW", rank: "#2", record: "28-8-0", initials: "DLO", country: "Brazil" },
  { name: "Lerone Murphy", division: "FW", rank: "#3", record: "17-1-1", initials: "LM", country: "UK" },
  { name: "Yair Rodríguez", division: "FW", rank: "#5", record: "20-5-0", initials: "YR", country: "Mexico" },
  { name: "Jean Silva", division: "FW", rank: "#6", record: "17-3-0", initials: "JSI", country: "Brazil" },
  { name: "Arnold Allen", division: "FW", rank: "#7", record: "21-4-0", initials: "AAL", country: "UK" },
  { name: "Youssef Zalal", division: "FW", rank: "#8", record: "18-6-1", initials: "YZ", country: "Morocco" },
- { name: "Steve Garcia", division: "FW", rank: "#10", record: "19-5-0", initials: "SG", country: "USA" },
+ { name: "Steve Garcia", division: "FW", rank: "#10", record: "19-6-0", initials: "SG", country: "USA" },
  { name: "Brian Ortega", division: "FW", rank: "#11", record: "16-5-0", initials: "BO", country: "USA" },
  { name: "Josh Emmett", division: "FW", rank: "NR", record: "19-7-0", initials: "JEM", country: "USA" },
  { name: "Patrício Pitbull", division: "FW", rank: "#15", record: "37-9-0", initials: "PPI", country: "Brazil" },
@@ -4374,7 +4463,7 @@
  { name: "Kevin Vallejos", division: "FW", rank: "#9", record: "18-1-0", initials: "KV", country: "Argentina" },
  { name: "David Onama", division: "FW", rank: "#14", record: "14-3-0", initials: "DON", country: "Uganda" },
  { name: "Roberto Romero", division: "FW", rank: "NR", record: "8-5-1", initials: "RRO", country: "Mexico" },
- { name: "Conor McGregor", division: "WW", rank: "NR", record: "22-6-0", initials: "CM", country: "Ireland" },
+ { name: "Conor McGregor", division: "WW", rank: "NR", record: "22-7-0", initials: "CM", country: "Ireland" },
  { name: "Sodiq Yusuff", division: "FW", rank: "NR", record: "13-5-0", initials: "SYU", country: "Nigeria" },
  { name: "Pat Sabatini", division: "FW", rank: "NR", record: "22-5-0", initials: "PSA", country: "USA" },
  { name: "William Gomis", division: "FW", rank: "NR", record: "15-4-0", initials: "WG", country: "France" },
@@ -4392,37 +4481,37 @@
  { name: "Ramon Taveras", division: "FW", rank: "NR", record: "10-4-0", initials: "RTA", country: "USA" },
  { name: "JeongYeong Lee", division: "FW", rank: "NR", record: "11-3-0", initials: "JYL", country: "South Korea" },
  { name: "Morgan Charriere", division: "FW", rank: "NR", record: "21-12-1", initials: "MCR", country: "France" },
- { name: "Ezra Elliott", division: "FW", rank: "NR", record: "7-0-0", initials: "EEL", country: "USA" },
- { name: "Damien Anderson", division: "FW", rank: "NR", record: "5-0-0", initials: "DAN", country: "USA" },
+ { name: "Ezra Elliott", division: "FW", rank: "NR", record: "8-0-0", initials: "EEL", country: "USA" },
+ { name: "Damien Anderson", division: "FW", rank: "NR", record: "5-1-0", initials: "DAN", country: "USA" },
  // ─── LIGHTWEIGHT ───
- { name: "Ilia Topuria", division: "LW", rank: "#1", record: "17-0-0", initials: "IT", country: "Georgia" },
+ { name: "Ilia Topuria", division: "LW", rank: "#1", record: "17-1-0", initials: "IT", country: "Georgia" },
  { name: "Kody Steele", division: "LW", rank: "NR", record: "8-1-0", initials: "KS", country: "USA" },
  { name: "Dom Mar Fan", division: "LW", rank: "NR", record: "9-3-0", initials: "DMF", country: "Australia" },
- { name: "Justin Gaethje", division: "LW", rank: "#C", record: "27-5-0", initials: "JG", country: "USA" },
+ { name: "Justin Gaethje", division: "LW", rank: "#C", record: "28-5-0", initials: "JG", country: "USA" },
  { name: "Arman Tsarukyan", division: "LW", rank: "#2", record: "23-3-0", initials: "AT", country: "Armenia" },
  { name: "Charles Oliveira", division: "LW", rank: "#3", record: "37-11-0", initials: "CO", country: "Brazil" },
- { name: "Max Holloway", division: "LW", rank: "#4", record: "27-9-0", initials: "MH", country: "USA" },
- { name: "Benoît Saint Denis", division: "LW", rank: "#5", record: "17-3-0", initials: "BSD", country: "France" },
- { name: "Paddy Pimblett", division: "LW", rank: "#6", record: "23-4-0", initials: "PP", country: "UK" },
+ { name: "Max Holloway", division: "LW", rank: "#4", record: "28-9-0", initials: "MH", country: "USA" },
+ { name: "Benoît Saint Denis", division: "LW", rank: "#5", record: "17-4-0", initials: "BSD", country: "France" },
+ { name: "Paddy Pimblett", division: "LW", rank: "#6", record: "24-4-0", initials: "PP", country: "UK" },
  { name: "Mateusz Gamrot", division: "LW", rank: "#8", record: "26-4-0", initials: "MG", country: "Poland" },
  { name: "Matt Frevola", division: "LW", rank: "NR", record: "11-6-1", initials: "MFR", country: "USA" },
  { name: "Dan Hooker", division: "LW", rank: "#9", record: "24-14-0", initials: "DH", country: "New Zealand" },
- { name: "Mauricio Ruffy", division: "LW", rank: "#7", record: "13-2-0", initials: "MRU", country: "Brazil" },
+ { name: "Mauricio Ruffy", division: "LW", rank: "#7", record: "14-2-0", initials: "MRU", country: "Brazil" },
  { name: "Renato Moicano", division: "LW", rank: "#10", record: "21-7-1", initials: "RM", country: "Brazil" },
  { name: "Rafael Fiziev", division: "LW", rank: "#10", record: "14-5-0", initials: "RFI", country: "Azerbaijan" },
  { name: "Beneil Dariush", division: "LW", rank: "#14", record: "23-8-1", initials: "BD", country: "Iran" },
- { name: "Michael Chandler", division: "LW", rank: "NR", record: "23-10-0", initials: "MCH", country: "USA" },
- { name: "Manuel Torres", division: "LW", rank: "#15", record: "17-4-0", initials: "MTO", country: "Mexico" },
+ { name: "Michael Chandler", division: "LW", rank: "NR", record: "23-11-0", initials: "MCH", country: "USA" },
+ { name: "Manuel Torres", division: "LW", rank: "#15", record: "18-4-0", initials: "MTO", country: "Mexico" },
  { name: "Farès Ziam", division: "LW", rank: "NR", record: "18-5-0", initials: "FZ", country: "France" },
  { name: "Dustin Poirier", division: "LW", rank: "NR", record: "30-10-0", initials: "DP", country: "USA" },
- { name: "Tony Ferguson", division: "LW", rank: "NR", record: "26-11-0", initials: "TF", country: "USA" },
- { name: "Bobby Green", division: "LW", rank: "NR", record: "35-17-1", initials: "BG", country: "USA" }, // legally changed name to "King Green" in 2024; UFC.com still canonicalizes to the "bobby-green" slug
+ { name: "Tony Ferguson", division: "LW", rank: "NR", record: "28-11-0", initials: "TF", country: "USA" },
+ { name: "Bobby Green", division: "LW", rank: "NR", record: "36-17-1", initials: "BG", country: "USA" }, // legally changed name to "King Green" in 2024; UFC.com still canonicalizes to the "bobby-green" slug
  { name: "Jim Miller", division: "LW", rank: "NR", record: "39-19-0", initials: "JIM", country: "USA" },
  { name: "Grant Dawson", division: "LW", rank: "NR", record: "24-3-1", initials: "GD", country: "USA" },
  { name: "Jared Gordon", division: "LW", rank: "NR", record: "21-9-0", initials: "JGO", country: "USA" },
  { name: "Jeremy Stephens", division: "LW", rank: "NR", record: "29-23-0", initials: "JST", country: "USA" }, // MMA record (1 NC); BKFC bouts not counted
  { name: "Tofiq Musayev", division: "LW", rank: "NR", record: "23-6-0", initials: "TM", country: "Azerbaijan" },
- { name: "Terrance McKinney", division: "LW", rank: "NR", record: "18-8-0", initials: "TMK", country: "USA" },
+ { name: "Terrance McKinney", division: "LW", rank: "NR", record: "18-9-0", initials: "TMK", country: "USA" },
  { name: "Ludovit Klein", division: "LW", rank: "NR", record: "24-5-1", initials: "LKL", country: "Slovakia" },
  { name: "Esteban Ribovics", division: "LW", rank: "NR", record: "15-3-0", initials: "ERI", country: "Argentina" },
  { name: "Charlie Campbell", division: "LW", rank: "NR", record: "9-3-0", initials: "CHC", country: "USA" },
@@ -4436,7 +4525,7 @@
  { name: "Belal Muhammad", division: "WW", rank: "#7", record: "24-6-0", initials: "BEL", country: "USA" },
  { name: "Carlos Prates", division: "WW", rank: "#2", record: "24-7-0", initials: "CPR", country: "Brazil" },
  { name: "Sean Brady", division: "WW", rank: "#6", record: "19-2-0", initials: "SBR", country: "USA" },
- { name: "Kamaru Usman", division: "WW", rank: "#9", record: "21-4-0", initials: "KU", country: "Nigeria" },
+ { name: "Kamaru Usman", division: "WW", rank: "#9", record: "21-5-0", initials: "KU", country: "Nigeria" },
  { name: "Leon Edwards", division: "WW", rank: "#8", record: "22-6-0", initials: "LE", country: "UK" },
  { name: "Joaquin Buckley", division: "WW", rank: "#10", record: "21-8-0", initials: "JBU", country: "USA" },
  { name: "Gabriel Bonfim", division: "WW", rank: "#5", record: "20-1-0", initials: "GBO", country: "Brazil" },
@@ -4450,11 +4539,11 @@
  { name: "Neil Magny", division: "WW", rank: "NR", record: "31-15-0", initials: "NM", country: "USA" },
  { name: "Kevin Holland", division: "WW", rank: "NR", record: "29-15-0", initials: "KHO", country: "USA" },
  { name: "Joel Alvarez", division: "WW", rank: "NR", record: "23-4-0", initials: "JAV", country: "Spain" },
- { name: "Yaroslav Amosov", division: "WW", rank: "#11", record: "30-1-0", initials: "YA", country: "Ukraine" },
+ { name: "Yaroslav Amosov", division: "WW", rank: "#11", record: "31-1-0", initials: "YA", country: "Ukraine" },
  { name: "Jeremiah Wells", division: "WW", rank: "NR", record: "13-4-1", initials: "JWE", country: "USA" },
  { name: "Court McGee", division: "WW", rank: "NR", record: "23-14-0", initials: "CMC", country: "USA" },
  { name: "Daniel Frunza", division: "WW", rank: "NR", record: "9-4-0", initials: "DAF", country: "Romania" },
- { name: "Jean-Paul Lebosnoyani", division: "WW", rank: "NR", record: "10-2-0", initials: "JPL", country: "USA" },
+ { name: "Jean-Paul Lebosnoyani", division: "WW", rank: "NR", record: "11-2-0", initials: "JPL", country: "USA" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
@@ -4466,8 +4555,8 @@
  { name: "Anthony Hernandez", division: "MW", rank: "#6", record: "15-3-0", initials: "AHE", country: "USA" },
  { name: "Caio Borralho", division: "MW", rank: "#5", record: "18-2-0", initials: "CB", country: "Brazil" },
  { name: "Reinier de Ridder", division: "MW", rank: "#8", record: "21-4-0", initials: "RDR", country: "Netherlands" },
- { name: "Robert Whittaker", division: "MW", rank: "#10", record: "26-9-0", initials: "RW", country: "Australia" },
- { name: "Jared Cannonier", division: "MW", rank: "#11", record: "18-9-0", initials: "JCA2", country: "USA" },
+ { name: "Robert Whittaker", division: "MW", rank: "#10", record: "27-9-0", initials: "RW", country: "Australia" },
+ { name: "Jared Cannonier", division: "MW", rank: "#11", record: "18-10-0", initials: "JCA2", country: "USA" },
  { name: "Roman Dolidze", division: "MW", rank: "#14", record: "15-5-0", initials: "RD", country: "Georgia" },
  { name: "Paulo Costa", division: "LHW", rank: "#7", record: "16-4-0", initials: "PC", country: "Brazil" },
  { name: "Gregory Rodrigues", division: "MW", rank: "#12", record: "19-6-0", initials: "GRO", country: "Brazil" },
@@ -4478,7 +4567,7 @@
   { name: "Julien Leblanc", division: "MW", rank: "NR", record: "10-3-0", initials: "JLB", country: "Canada" },
  { name: "Djorden Santos", division: "MW", rank: "NR", record: "11-3-0", initials: "DJS", country: "Brazil" },
  { name: "Marco Tulio", division: "MW", rank: "NR", record: "14-3-0", initials: "MT", country: "Brazil" },
- { name: "Brad Tavares", division: "MW", rank: "NR", record: "21-12-0", initials: "BTV", country: "USA" },
+ { name: "Brad Tavares", division: "MW", rank: "NR", record: "24-12-0", initials: "BTV", country: "USA" },
  { name: "Edmen Shahbazyan", division: "MW", rank: "NR", record: "16-6-0", initials: "ESH", country: "USA" },
  { name: "Donte Johnson", division: "MW", rank: "NR", record: "8-0-0", initials: "DJO", country: "USA" },
  { name: "Gerald Meerschaert", division: "MW", rank: "NR", record: "37-22-0", initials: "GM", country: "USA" },
@@ -4489,20 +4578,20 @@
  { name: "Ismail Naurdiev", division: "MW", rank: "NR", record: "25-8-0", initials: "IN", country: "Austria" },
  { name: "Nick Klein", division: "MW", rank: "NR", record: "6-3-0", initials: "NKL", country: "USA" },
  // ─── LIGHT HEAVYWEIGHT ───
- { name: "Alex Pereira", division: "LHW", rank: "#3", record: "13-3-0", initials: "ALEX", country: "Brazil" },
- { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "20-2-1", initials: "MA", country: "Russia" },
+ { name: "Alex Pereira", division: "LHW", rank: "#3", record: "13-4-0", initials: "ALEX", country: "Brazil" },
+ { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "21-2-1", initials: "MA", country: "Russia" },
  { name: "Jiří Procházka", division: "LHW", rank: "#2", record: "32-6-1", initials: "JP2", country: "Czech Republic" },
  { name: "Carlos Ulberg", division: "LHW", rank: "#C", record: "14-1-0", initials: "CUL", country: "New Zealand" },
  { name: "Khalil Rountree Jr.", division: "LHW", rank: "#5", record: "14-7-0", initials: "KRJ", country: "USA" },
  { name: "Jan Błachowicz", division: "LHW", rank: "#4", record: "29-11-2", initials: "JBL", country: "Poland" },
  { name: "Jamahal Hill", division: "LHW", rank: "#6", record: "12-4-0", initials: "JHI", country: "USA" },
  { name: "Volkan Oezdemir", division: "LHW", rank: "#9", record: "21-8-0", initials: "VOE", country: "Switzerland" },
- { name: "Bogdan Guskov", division: "LHW", rank: "#10", record: "18-3-1", initials: "BGU", country: "Uzbekistan" },
+ { name: "Bogdan Guskov", division: "LHW", rank: "#10", record: "18-4-1", initials: "BGU", country: "Uzbekistan" },
  { name: "Dominick Reyes", division: "LHW", rank: "#11", record: "16-5-0", initials: "DRE", country: "USA" },
  { name: "Aleksandar Rakić", division: "LHW", rank: "#14", record: "14-6-0", initials: "ARK", country: "Serbia" },
- { name: "Nikita Krylov", division: "LHW", rank: "#12", record: "31-11-0", initials: "NK", country: "Russia" },
+ { name: "Nikita Krylov", division: "LHW", rank: "#12", record: "31-12-0", initials: "NK", country: "Russia" },
  { name: "Johnny Walker", division: "LHW", rank: "#13", record: "22-10-1", initials: "JWA", country: "Brazil" },
- { name: "Dustin Jacoby", division: "LHW", rank: "NR", record: "22-9-1", initials: "DJA", country: "USA" },
+ { name: "Dustin Jacoby", division: "LHW", rank: "NR", record: "22-10-1", initials: "DJA", country: "USA" },
  { name: "Zhang Mingyang", division: "LHW", rank: "NR", record: "19-8-0", initials: "ZMY", country: "China" },
  { name: "Ovince Saint Preux", division: "LHW", rank: "NR", record: "31-18-0", initials: "OSP", country: "USA" },
  { name: "Ion Cutelaba", division: "LHW", rank: "NR", record: "20-12-1", initials: "ICU", country: "Moldova" },
@@ -4510,19 +4599,19 @@
  { name: "Navajo Stirling", division: "LHW", rank: "NR", record: "10-0-0", initials: "NST", country: "New Zealand" },
  { name: "Ibo Aslan", division: "LHW", rank: "NR", record: "14-4-0", initials: "IBO", country: "Turkey" },
  // ─── HEAVYWEIGHT ───
- { name: "Ciryl Gane", division: "HW", rank: "#1", record: "13-2-0", initials: "CGN", country: "France" },
+ { name: "Ciryl Gane", division: "HW", rank: "#1", record: "14-2-0", initials: "CGN", country: "France" },
  { name: "Alexander Volkov", division: "HW", rank: "#2", record: "40-11-0", initials: "AVL", country: "Russia" },
  { name: "Sergei Pavlovich", division: "HW", rank: "#3", record: "21-3-0", initials: "SP", country: "Russia" },
  { name: "Curtis Blaydes", division: "HW", rank: "#7", record: "19-6-0", initials: "CBL", country: "USA" },
  { name: "Serghei Spivac", division: "HW", rank: "#6", record: "18-6-0", initials: "SSP", country: "Moldova" },
  { name: "Fedor Emelianenko", division: "HW", rank: "NR", record: "40-7-0", initials: "FEM", country: "Russia" },
- { name: "Rizvan Kuniev", division: "HW", rank: "#8", record: "13-3-1", initials: "RKU", country: "Russia" },
+ { name: "Rizvan Kuniev", division: "HW", rank: "#8", record: "14-3-1", initials: "RKU", country: "Russia" },
  { name: "Derrick Lewis", division: "HW", rank: "#11", record: "29-14-0", initials: "DLE", country: "USA" },
  { name: "Marcin Tybura", division: "HW", rank: "#12", record: "27-11-0", initials: "MTY", country: "Poland" },
  { name: "Ante Delija", division: "HW", rank: "#10", record: "26-8-0", initials: "ADL", country: "Croatia" },
  { name: "Tallison Teixeira", division: "HW", rank: "NR", record: "9-2-0", initials: "TTX", country: "Brazil" },
  { name: "Shamil Gaziev", division: "HW", rank: "NR", record: "14-3-0", initials: "SGZ", country: "Russia" },
- { name: "Valter Walker", division: "HW", rank: "#14", record: "15-1-0", initials: "VWA", country: "Brazil" },
+ { name: "Valter Walker", division: "HW", rank: "#14", record: "16-1-0", initials: "VWA", country: "Brazil" },
  { name: "Vitor Petrino", division: "HW", rank: "NR", record: "14-2-0", initials: "VP", country: "Brazil" },
  { name: "Jon Jones", division: "HW", rank: "NR", record: "28-1-0", initials: "JJ", country: "USA" },
  { name: "Francis Ngannou", division: "HW", rank: "NR", record: "19-3-0", initials: "FN", country: "Cameroon" },
@@ -4538,11 +4627,11 @@
  { name: "Yan Xiaonan", division: "WSW", rank: "#4", record: "19-5-0", initials: "YX", country: "China" },
  { name: "Amanda Lemos", division: "WSW", rank: "#7", record: "15-6-1", initials: "ALM", country: "Brazil" },
  { name: "Loopy Godinez", division: "WSW", rank: "#6", record: "14-6-0", initials: "LGO", country: "Mexico" },
- { name: "Tabatha Ricci", division: "WSW", rank: "#8", record: "12-4-0", initials: "TRI", country: "Brazil" },
+ { name: "Tabatha Ricci", division: "WSW", rank: "#8", record: "12-5-0", initials: "TRI", country: "Brazil" },
  { name: "Gillian Robertson", division: "WSW", rank: "#5", record: "17-8-0", initials: "GIL", country: "Canada" },
  { name: "Jéssica Andrade", division: "WSW", rank: "#9", record: "26-15-0", initials: "JAN", country: "Brazil" },
  { name: "Amanda Ribas", division: "WSW", rank: "#10", record: "13-7-0", initials: "ARI", country: "Brazil" },
- { name: "Fatima Kline", division: "WSW", rank: "#11", record: "9-1-0", initials: "FKL", country: "USA" },
+ { name: "Fatima Kline", division: "WSW", rank: "#11", record: "10-1-0", initials: "FKL", country: "USA" },
  { name: "Denise Gomes", division: "WSW", rank: "#13", record: "12-3-0", initials: "DG", country: "Brazil" },
  { name: "Angela Hill", division: "WSW", rank: "#12", record: "19-16-0", initials: "ANH", country: "USA" },
  // ─── WOMEN'S FLYWEIGHT ───
@@ -4554,18 +4643,18 @@
  { name: "Maycee Barber", division: "WFLW", rank: "#6", record: "15-3-0", initials: "MAB", country: "USA" },
  { name: "Jasmine Jasudavicius", division: "WFLW", rank: "#7", record: "15-4-0", initials: "JJA", country: "Canada" },
  { name: "Rose Namajunas", division: "WFLW", rank: "#5", record: "14-8-0", initials: "RN", country: "USA" },
- { name: "Tracy Cortez", division: "WFLW", rank: "#8", record: "12-3-0", initials: "TCO", country: "USA" },
+ { name: "Tracy Cortez", division: "WFLW", rank: "#8", record: "12-4-0", initials: "TCO", country: "USA" },
  { name: "Karine Silva", division: "WFLW", rank: "#10", record: "19-7-0", initials: "KSI", country: "Brazil" },
  { name: "Miranda Maverick", division: "WFLW", rank: "#9", record: "15-6-0", initials: "MMV", country: "USA" },
- { name: "Wang Cong", division: "WFLW", rank: "#12", record: "9-1-0", initials: "WCO", country: "China" },
+ { name: "Wang Cong", division: "WFLW", rank: "#12", record: "10-1-0", initials: "WCO", country: "China" },
  { name: "Casey O'Neill", division: "WFLW", rank: "#11", record: "11-2-0", initials: "CON", country: "Australia" },
  { name: "Ce Liu", division: "LHW", rank: "NR", record: "3-1-0", initials: "CL", country: "China" },
  { name: "Delphine Benouaich", division: "WSW", rank: "NR", record: "7-2-0", initials: "DB", country: "France" },
- { name: "John Garza", division: "BW", rank: "NR", record: "6-1-0", initials: "JG", country: "USA" },
+ { name: "John Garza", division: "BW", rank: "NR", record: "6-2-0", initials: "JG", country: "USA" },
  { name: "Matthieu Letho Duclos", division: "MW", rank: "NR", record: "9-3-0", initials: "MD", country: "France" },
- { name: "RJ Harris", division: "HW", rank: "NR", record: "5-0-0", initials: "RH", country: "USA" },
- { name: "Anna Melisano", division: "WSW", rank: "NR", record: "6-1-0", initials: "AM", country: "USA" },
- { name: "Muhammad Said", division: "LHW", rank: "NR", record: "9-0-0", initials: "MS", country: "Russia" },
+ { name: "RJ Harris", division: "HW", rank: "NR", record: "6-0-0", initials: "RH", country: "USA" },
+ { name: "Anna Melisano", division: "WSW", rank: "NR", record: "6-2-0", initials: "AM", country: "USA" },
+ { name: "Muhammad Said", division: "LHW", rank: "NR", record: "10-0-0", initials: "MS", country: "Russia" },
  { name: "Eduarda Moura", division: "WFLW", rank: "#13", record: "12-2-0", initials: "EMO", country: "Brazil" },
  { name: "JJ Aldrich", division: "WFLW", rank: "#14", record: "15-7-0", initials: "JJA2", country: "USA" },
  { name: "Jennifer Maia", division: "WFLW", rank: "NR", record: "23-10-1", initials: "JMA", country: "Brazil" },
@@ -4602,7 +4691,7 @@
  { name: "Anshul Jubli", division: "LW", rank: "NR", record: "7-2-0", initials: "AJ", country: "India" },
  { name: "Drew Dober", division: "LW", rank: "NR", record: "29-15-0", initials: "DDO", country: "USA" },
  { name: "Kyle Prepolec", division: "LW", rank: "NR", record: "18-10-0", initials: "KPR", country: "Canada" },
- { name: "Nurullo Aliev", division: "LW", rank: "NR", record: "11-0-0", initials: "NAL", country: "Tajikistan" },
+ { name: "Nurullo Aliev", division: "LW", rank: "NR", record: "12-0-0", initials: "NAL", country: "Tajikistan" },
  { name: "Chris Padilla", division: "LW", rank: "NR", record: "17-6-1", initials: "CPA", country: "USA" },
  { name: "MarQuel Mederos", division: "LW", rank: "NR", record: "11-1-1", initials: "MQM", country: "USA" },
  { name: "Diego Ferreira", division: "LW", rank: "NR", record: "19-7-0", initials: "DFE", country: "Brazil" },
@@ -4613,7 +4702,7 @@
  { name: "Nikolas Motta", division: "LW", rank: "NR", record: "15-6-0", initials: "NMO", country: "Brazil" },
  { name: "Evan Elder", division: "LW", rank: "NR", record: "10-2-0", initials: "EE", country: "USA" },
  { name: "Rongzhu", division: "LW", rank: "NR", record: "27-6-0", initials: "RON", country: "China" },
- { name: "Michael Johnson", division: "LW", rank: "NR", record: "24-20-0", initials: "MJO", country: "USA" },
+ { name: "Michael Johnson", division: "LW", rank: "NR", record: "27-20-0", initials: "MJO", country: "USA" },
  { name: "Ottman Azaitar", division: "LW", rank: "NR", record: "13-3-0", initials: "OAZ", country: "Germany" },
  { name: "Joaquim Silva", division: "LW", rank: "NR", record: "14-6-0", initials: "JSL", country: "Brazil" },
  { name: "Edson Barboza", division: "LW", rank: "NR", record: "24-14-0", initials: "EDB", country: "Brazil" },
@@ -4623,16 +4712,16 @@
  { name: "Kaue Fernandes", division: "LW", rank: "NR", record: "11-2-0", initials: "KFE", country: "Brazil" },
  { name: "Ignacio Bahamondes", division: "LW", rank: "NR", record: "17-7-0", initials: "IBA", country: "Chile" },
  { name: "Thiago Moises", division: "LW", rank: "NR", record: "19-10-0", initials: "TMO", country: "Brazil" },
- { name: "Mike Davis", division: "LW", rank: "NR", record: "12-3-0", initials: "MDA", country: "USA" },
+ { name: "Mike Davis", division: "LW", rank: "NR", record: "12-4-0", initials: "MDA", country: "USA" },
  { name: "Mickey Gall", division: "WW", rank: "NR", record: "7-7-0", initials: "MGA", country: "USA" },
  { name: "Tom Nolan", division: "LW", rank: "#13", record: "11-1-0", initials: "TNO", country: "Australia" },
- { name: "Ismael Bonfim", division: "LW", rank: "NR", record: "20-6-0", initials: "IBF", country: "Brazil" },
- { name: "Chase Hooper", division: "LW", rank: "NR", record: "16-5-1", initials: "CHO", country: "USA" },
- { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-3-0", initials: "MRA", country: "USA" },
+ { name: "Ismael Bonfim", division: "LW", rank: "NR", record: "20-7-0", initials: "IBF", country: "Brazil" },
+ { name: "Chase Hooper", division: "LW", rank: "NR", record: "17-5-1", initials: "CHO", country: "USA" },
+ { name: "Mitch Ramirez", division: "LW", rank: "NR", record: "8-4-0", initials: "MRA", country: "USA" },
  { name: "Jai Herbert", division: "LW", rank: "NR", record: "14-6-1", initials: "JHE", country: "UK" },
  { name: "Manoel Sousa", division: "LW", rank: "NR", record: "14-1-0", initials: "MNS", country: "Brazil" },
  { name: "Bolaji Oki", division: "LW", rank: "NR", record: "10-4-0", initials: "BOK", country: "Belgium" },
- { name: "Axel Sola", division: "LW", rank: "NR", record: "11-1-1", initials: "ASO", country: "France" },
+ { name: "Axel Sola", division: "LW", rank: "NR", record: "12-1-1", initials: "ASO", country: "France" },
  { name: "Alex Reyes", division: "LW", rank: "NR", record: "13-5-0", initials: "ARE", country: "USA" },
  { name: "Gabe Green", division: "LW", rank: "NR", record: "12-5-0", initials: "GG", country: "USA" },
  // ─── WELTERWEIGHT (extended) ───
@@ -4655,9 +4744,9 @@
  { name: "Jack Hermansson", division: "WW", rank: "NR", record: "24-10-0", initials: "JHM", country: "Norway" },
  { name: "Daniil Donchenko", division: "WW", rank: "NR", record: "15-2-0", initials: "DDN", country: "Ukraine" },
  { name: "Carlos Leal", division: "WW", rank: "NR", record: "23-7-0", initials: "CLE", country: "Brazil" },
- { name: "Sam Patterson", division: "WW", rank: "NR", record: "14-3-1", initials: "SPA", country: "UK" },
+ { name: "Sam Patterson", division: "WW", rank: "NR", record: "15-3-1", initials: "SPA", country: "UK" },
  { name: "Jacobe Smith", division: "WW", rank: "NR", record: "12-0-0", initials: "JSM", country: "USA" },
- { name: "Saygid Izagakhmaev", division: "WW", rank: "NR", record: "22-3-0", initials: "SIZ", country: "Russia" },
+ { name: "Saygid Izagakhmaev", division: "WW", rank: "NR", record: "22-4-0", initials: "SIZ", country: "Russia" },
  { name: "Theodor Berggren", division: "WW", rank: "NR", record: "8-4-0", initials: "TBG", country: "Sweden" },
  { name: "Leon Shahbazyan", division: "WW", rank: "NR", record: "12-5-0", initials: "LSH", country: "USA" },
  { name: "Levan Chokheli", division: "WW", rank: "NR", record: "15-3-0", initials: "LCH", country: "Georgia" },
@@ -4670,7 +4759,7 @@
  // ─── LIGHT HEAVYWEIGHT (extended) ───
  { name: "Devin Clark", division: "LHW", rank: "NR", record: "14-10-0", initials: "DCL2", country: "USA" },
  { name: "Lyoto Machida", division: "LHW", rank: "NR", record: "26-12-0", initials: "LMA", country: "Brazil" },
- { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-10-0", initials: "BRI", country: "Brazil" },
+ { name: "Brendson Ribeiro", division: "LHW", rank: "NR", record: "17-11-0", initials: "BRI", country: "Brazil" },
  { name: "Tuco Tokkos", division: "LHW", rank: "NR", record: "11-6-0", initials: "TTK", country: "England" },
  { name: "Ivan Erslan", division: "LHW", rank: "NR", record: "15-6-0", initials: "IER", country: "Croatia" },
  { name: "Rodolfo Bellato", division: "LHW", rank: "NR", record: "13-3-1", initials: "RBE", country: "Brazil" },
@@ -4683,10 +4772,10 @@
  { name: "Billy Elekana", division: "LHW", rank: "NR", record: "10-2-0", initials: "BEK", country: "USA" },
  { name: "Julius Walker", division: "LHW", rank: "NR", record: "7-3-0", initials: "JUW", country: "USA" },
  { name: "Kevin Christian", division: "LHW", rank: "NR", record: "9-4-0", initials: "KCH2", country: "Brazil" },
- { name: "Magomed Tuchalov", division: "LHW", rank: "NR", record: "6-0-0", initials: "MTU", country: "Russia" },
+ { name: "Magomed Tuchalov", division: "LHW", rank: "NR", record: "7-0-0", initials: "MTU", country: "Russia" },
  // ─── HEAVYWEIGHT (extended) ───
  { name: "Tai Tuivasa", division: "HW", rank: "NR", record: "15-10-0", initials: "TTU", country: "Australia" },
- { name: "Marcos Rogerio de Lima", division: "HW", rank: "NR", record: "23-11-1", initials: "MRL", country: "Brazil" },
+ { name: "Marcos Rogerio de Lima", division: "HW", rank: "NR", record: "25-11-1", initials: "MRL", country: "Brazil" },
  { name: "Chris Daukaus", division: "HW", rank: "NR", record: "12-8-0", initials: "CDK", country: "USA" },
  { name: "Junior Tafa", division: "LHW", rank: "NR", record: "7-6-0", initials: "JTA", country: "Australia" },
  { name: "Justin Tafa", division: "HW", rank: "NR", record: "7-5-0", initials: "JTF", country: "Australia" },
@@ -4698,7 +4787,7 @@
  { name: "Mario Pinto", division: "HW", rank: "NR", record: "12-0-0", initials: "MPT", country: "Portugal" },
  { name: "Louie Sutherland", division: "HW", rank: "NR", record: "11-5-0", initials: "LSU", country: "England" },
  { name: "Steven Asplund", division: "HW", rank: "NR", record: "7-2-0", initials: "SAS", country: "USA" },
- { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-4-0", initials: "TPE", country: "US" },
+ { name: "Thomas Petersen", division: "HW", rank: "NR", record: "11-5-0", initials: "TPE", country: "US" },
  { name: "Sean Sharaf", division: "HW", rank: "NR", record: "4-2-0", initials: "SSH", country: "USA" },
  { name: "Denzel Freeman", division: "HW", rank: "NR", record: "7-2-0", initials: "DFR", country: "USA" },
  // ─── FEATHERWEIGHT (extended) ───
@@ -4722,14 +4811,14 @@
  { name: "Zhu Kangjie", division: "FW", rank: "NR", record: "21-5-0", initials: "ZKJ", country: "China" }, // 1 NC
  { name: "Rodrigo Vera", division: "FW", rank: "NR", record: "22-1-1", initials: "RVE", country: "Peru" },
  { name: "Lerryan Douglas", division: "FW", rank: "NR", record: "14-5-0", initials: "LDO", country: "Brazil" },
- { name: "Kai Kamaka III", division: "FW", rank: "NR", record: "18-7-1", initials: "KK3", country: "USA" },
- { name: "Tommy McMillen", division: "FW", rank: "NR", record: "10-0-0", initials: "TMC", country: "USA" },
- { name: "Austin Bashi", division: "FW", rank: "NR", record: "14-1-0", initials: "ABS", country: "USA" },
- { name: "Jose Delgado", division: "FW", rank: "NR", record: "11-2-0", initials: "JDG", country: "USA" },
+ { name: "Kai Kamaka III", division: "FW", rank: "NR", record: "18-8-1", initials: "KK3", country: "USA" },
+ { name: "Tommy McMillen", division: "FW", rank: "NR", record: "11-0-0", initials: "TMC", country: "USA" },
+ { name: "Austin Bashi", division: "FW", rank: "NR", record: "14-2-0", initials: "ABS", country: "USA" },
+ { name: "Jose Delgado", division: "FW", rank: "NR", record: "12-2-0", initials: "JDG", country: "USA" },
  { name: "Murtazali Magomedov", division: "FW", rank: "NR", record: "11-0-0", initials: "MMG", country: "Kyrgyzstan" },
  { name: "Mandel Nallo", division: "LW", rank: "NR", record: "14-4-0", initials: "MNL", country: "Canada" },
  { name: "Marwan Rahiki", division: "FW", rank: "NR", record: "9-0-0", initials: "MRH", country: "Morocco" },
- { name: "Alberto Montes", division: "FW", rank: "NR", record: "12-1-0", initials: "AMO", country: "Venezuela" },
+ { name: "Alberto Montes", division: "FW", rank: "NR", record: "12-2-0", initials: "AMO", country: "Venezuela" },
  { name: "Michael Aswell Jr.", division: "FW", rank: "NR", record: "11-5-0", initials: "MAJ", country: "USA" },
     { name: "Andre Fili", division: "FW", rank: "NR", record: "25-14-0", initials: "AFI", country: "USA" },
  // ─── BANTAMWEIGHT (extended) ───
@@ -4741,7 +4830,7 @@
  { name: "John Castaneda", division: "BW", rank: "NR", record: "21-8-1", initials: "JCA4", country: "USA" },
  { name: "Mark Vologdin", division: "BW", rank: "NR", record: "12-4-2", initials: "MVL", country: "Russia" },
  { name: "Mark Choinski", division: "LW", rank: "NR", record: "8-1-0", initials: "MCH", country: "USA" },
- { name: "Adrian Yanez", division: "BW", rank: "NR", record: "17-6-1", initials: "AYA", country: "USA" }, { name: "Cody Chovancek", division: "BW", rank: "NR", record: "9-0-0", initials: "CCH", country: "Canada" },
+ { name: "Adrian Yanez", division: "BW", rank: "NR", record: "18-6-1", initials: "AYA", country: "USA" }, { name: "Cody Chovancek", division: "BW", rank: "NR", record: "9-0-0", initials: "CCH", country: "Canada" },
  { name: "Louis Lee Scott", division: "BW", rank: "NR", record: "10-0-0", initials: "LLS", country: "England" },
  { name: "Adrián Luna Martinetti", division: "BW", rank: "NR", record: "17-2-0", initials: "ALM2", country: "Ecuador" },
  { name: "Juan Diaz", division: "BW", rank: "NR", record: "16-1-1", initials: "JDI", country: "Peru" },
@@ -4762,7 +4851,7 @@
  { name: "Louis Jourdain", division: "BW", rank: "NR", record: "9-3-0", initials: "LJO", country: "Canada" },
  { name: "Elijah Smith", division: "BW", rank: "NR", record: "10-1-0", initials: "ELS", country: "USA" },
  { name: "SuYoung You", division: "BW", rank: "NR", record: "16-4-0", initials: "SYY", country: "South Korea" },
- { name: "Cody Garbrandt", division: "BW", rank: "NR", record: "15-7-0", initials: "COG", country: "USA" },
+ { name: "Cody Garbrandt", division: "BW", rank: "NR", record: "15-8-0", initials: "COG", country: "USA" },
  { name: "Daniel Marcos", division: "BW", rank: "NR", record: "18-1-0", initials: "DMR", country: "Peru" },
  { name: "Jean Matsumoto", division: "BW", rank: "NR", record: "18-2-0", initials: "JMT2", country: "Brazil" },
  { name: "Davey Grant", division: "BW", rank: "NR", record: "18-8-0", initials: "DGR", country: "UK" },
@@ -4776,18 +4865,18 @@
  { name: "Cameron Smotherman", division: "BW", rank: "NR", record: "12-7-0", initials: "CSM", country: "USA" },
  { name: "Malcolm Wellmaker", division: "BW", rank: "NR", record: "10-2-0", initials: "MWE", country: "USA" },
  { name: "Gaston Bolanos", division: "BW", rank: "NR", record: "9-5-0", initials: "GBO", country: "Peru" },
- { name: "Abdul Hussein", division: "BW", rank: "NR", record: "15-2-0", initials: "AHU", country: "Finland" },
+ { name: "Abdul Hussein", division: "BW", rank: "NR", record: "16-2-0", initials: "AHU", country: "Finland" },
  { name: "Alatengheili", division: "BW", rank: "NR", record: "17-10-2", initials: "AHL", country: "China" },
  { name: "Aleksandre Topuria", division: "BW", rank: "NR", record: "7-1-0", initials: "ATO", country: "Georgia" },
  // ─── FLYWEIGHT (full remaining roster) ───
  { name: "Kai Kara-France", division: "FLW", rank: "NR", record: "25-12-0", initials: "KKF", country: "New Zealand" },
- { name: "Lone'er Kavanagh", division: "FLW", rank: "#6", record: "10-1-0", initials: "LKV", country: "UK" },
+ { name: "Lone'er Kavanagh", division: "FLW", rank: "#6", record: "10-2-0", initials: "LKV", country: "UK" },
  { name: "Allan Nascimento", division: "FLW", rank: "NR", record: "22-7-0", initials: "ANS", country: "Brazil" },
  { name: "Rafael Estevam", division: "BW", rank: "NR", record: "14-1-0", initials: "RES", country: "Brazil" },
  { name: "Andre Lima", division: "FLW", rank: "NR", record: "11-1-0", initials: "AND", country: "Brazil" },
  { name: "Rei Tsuruya", division: "FLW", rank: "NR", record: "11-1-0", initials: "RTS", country: "Japan" },
- { name: "Alden Coria", division: "FLW", rank: "NR", record: "12-3-0", initials: "ACO", country: "USA" },
- { name: "Stewart Nicoll", division: "FLW", rank: "NR", record: "8-3-0", initials: "SNI", country: "Australia" },
+ { name: "Alden Coria", division: "FLW", rank: "NR", record: "13-3-0", initials: "ACO", country: "USA" },
+ { name: "Stewart Nicoll", division: "FLW", rank: "NR", record: "8-4-0", initials: "SNI", country: "Australia" },
  { name: "Imanol Rodriguez", division: "FLW", rank: "NR", record: "7-0-0", initials: "IRO", country: "Mexico" },
  { name: "Nyamjargal Tumendemberel", division: "FLW", rank: "NR", record: "10-1-0", initials: "NYT", country: "Mongolia" },
  { name: "Terrance Saeteurn", division: "FLW", rank: "NR", record: "8-2-0", initials: "TSA", country: "USA" },
@@ -4795,7 +4884,7 @@
  { name: "Alibi Idiris", division: "FLW", rank: "NR", record: "11-1-0", initials: "AID", country: "Kazakhstan" },
  { name: "Edgar Chairez", division: "FLW", rank: "#15", record: "14-6-1", initials: "ECH", country: "Mexico" },
  { name: "DongHun Choi", division: "FLW", rank: "NR", record: "9-0-0", initials: "DHC2", country: "South Korea" },
- { name: "Alessandro Costa", division: "FLW", rank: "NR", record: "16-5-0", initials: "ALC", country: "Brazil" },
+ { name: "Alessandro Costa", division: "FLW", rank: "NR", record: "17-5-0", initials: "ALC", country: "Brazil" },
  { name: "HyunSung Park", division: "FLW", rank: "NR", record: "10-2-0", initials: "HSP", country: "South Korea" },
  { name: "Jafel Filho", division: "FLW", rank: "NR", record: "17-5-0", initials: "JAF", country: "Brazil" },
  { name: "Mitch Raposo", division: "FLW", rank: "NR", record: "11-3-0", initials: "MRP", country: "USA" },
@@ -4820,11 +4909,11 @@
  { name: "Punahele Soriano", division: "WW", rank: "NR", record: "13-4-0", initials: "PUS", country: "USA" },
  { name: "Chris Curtis", division: "WW", rank: "NR", record: "32-13-0", initials: "CCT", country: "USA" },
  { name: "Deron Winn", division: "MW", rank: "NR", record: "7-3-0", initials: "DWN", country: "USA" },
- { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-3-0", initials: "ZRE2", country: "USA" },
+ { name: "Zachary Reese", division: "MW", rank: "NR", record: "10-4-0", initials: "ZRE2", country: "USA" },
  { name: "Eric McConico", division: "MW", rank: "NR", record: "11-4-1", initials: "EMC2", country: "USA" },
  { name: "Jackson McVey", division: "MW", rank: "NR", record: "7-2-0", initials: "JMV", country: "USA" },
  { name: "Antonio Trocoli", division: "MW", rank: "NR", record: "12-7-0", initials: "ATR2", country: "Brazil" },
- { name: "Ryan Gandra", division: "MW", rank: "NR", record: "9-1-0", initials: "RGA", country: "Brazil" },
+ { name: "Ryan Gandra", division: "MW", rank: "NR", record: "10-1-0", initials: "RGA", country: "Brazil" },
  { name: "Aliaskhab Khizriev", division: "MW", rank: "NR", record: "14-0-0", initials: "AKH", country: "Russia" },
  // ─── WELTERWEIGHT (remaining) ───
  { name: "Alex Morono", division: "WW", rank: "NR", record: "24-13-0", initials: "AMR", country: "USA" },
@@ -4842,7 +4931,7 @@
  { name: "Wellington Turman", division: "WW", rank: "NR", record: "18-8-0", initials: "WTU", country: "Brazil" },
  { name: "Ty Miller", division: "WW", rank: "NR", record: "7-0-0", initials: "TMI", country: "USA" },
  { name: "Victor Martinez", division: "LW", rank: "NR", record: "13-7-0", initials: "VMA", country: "USA" },
- { name: "Damian Rzepecki", division: "LW", rank: "NR", record: "10-0-0", initials: "DRZ", country: "Poland" },
+ { name: "Damian Rzepecki", division: "LW", rank: "NR", record: "10-1-0", initials: "DRZ", country: "Poland" },
  { name: "Anderson Berinja", division: "BW", rank: "NR", record: "25-14-0", initials: "ABR", country: "Brazil" },
  // ─── LIGHT HEAVYWEIGHT (remaining) ───
  { name: "Paul Craig", division: "LHW", rank: "NR", record: "17-10-1", initials: "PCR", country: "UK" },
@@ -4892,7 +4981,7 @@
  { name: "Ravena Oliveira", division: "WSW", rank: "NR", record: "7-4-1", initials: "ROV", country: "Brazil" },
  { name: "Kanako Murata", division: "WSW", rank: "NR", record: "13-3-0", initials: "KMU2", country: "Japan" },
  { name: "Nina Nunes", division: "WSW", rank: "NR", record: "14-7-0", initials: "NNU", country: "Brazil" },
- { name: "Carla Esparza", division: "WSW", rank: "NR", record: "20-8-0", initials: "CES", country: "USA" },
+ { name: "Carla Esparza", division: "WSW", rank: "NR", record: "22-8-0", initials: "CES", country: "USA" },
  { name: "Michelle Waterson", division: "WSW", rank: "NR", record: "18-13-0", initials: "MWT", country: "USA" },
  { name: "Josefine Knutsson", division: "WSW", rank: "NR", record: "8-2-0", initials: "JKN", country: "Sweden" },
  { name: "Erin Blanchfield", division: "WFLW", rank: "#4", record: "14-2-0", initials: "EBL2", country: "USA" },
@@ -4908,7 +4997,7 @@
  { name: "Ariane Lipski", division: "WFLW", rank: "NR", record: "18-12-0", initials: "ALI2", country: "Brazil" },
  { name: "Priscila Cachoeira", division: "WBW", rank: "NR", record: "13-9-0", initials: "PCA2", country: "Brazil" },
  { name: "Vanessa Demopoulos", division: "WSW", rank: "NR", record: "11-8-0", initials: "VDM", country: "USA" },
- { name: "Brogan Walker", division: "WFLW", rank: "NR", record: "8-5-0", initials: "BWK", country: "USA" },
+ { name: "Brogan Walker", division: "WFLW", rank: "NR", record: "9-5-0", initials: "BWK", country: "USA" },
  { name: "Juliana Miller", division: "WFLW", rank: "NR", record: "5-4-0", initials: "JMI", country: "USA" },
  { name: "Lucie Pudilova", division: "WFLW", rank: "NR", record: "17-12-0", initials: "LPD", country: "Czech Republic" },
  { name: "Jeisla Chaves", division: "WFLW", rank: "NR", record: "8-0-0", initials: "JCV", country: "Brazil" },
@@ -4938,22 +5027,22 @@
  { name: "Marlon Moraes", division: "BW", rank: "NR", record: "23-13-1", initials: "MMO", country: "Brazil" },
  { name: "Dan Ige", division: "FW", rank: "NR", record: "19-11-0", initials: "DIG", country: "USA" },
  { name: "Calvin Kattar", division: "FW", rank: "NR", record: "23-10-0", initials: "CKT", country: "USA" },
- { name: "Alex Caceres", division: "FW", rank: "NR", record: "21-15-0", initials: "ACR", country: "USA" },
+ { name: "Alex Caceres", division: "FW", rank: "NR", record: "23-15-0", initials: "ACR", country: "USA" },
  { name: "Jamall Emmers", division: "FW", rank: "NR", record: "22-8-0", initials: "JEM", country: "USA" },
  { name: "Jonathan Pearce", division: "FW", rank: "NR", record: "14-7-0", initials: "JPR", country: "UK" },
- { name: "Luke Riley", division: "FW", rank: "NR", record: "13-0-0", initials: "LRI", country: "UK" },
+ { name: "Luke Riley", division: "FW", rank: "NR", record: "14-0-0", initials: "LRI", country: "UK" },
  { name: "Maheshate", division: "LW", rank: "NR", record: "10-5-0", initials: "MHT", country: "China" },
  { name: "Daniel Zellhuber", division: "LW", rank: "NR", record: "15-4-0", initials: "DZL", country: "Mexico" },
  { name: "Khaos Williams", division: "WW", rank: "NR", record: "16-5-0", initials: "KWL", country: "USA" },
  { name: "Jared Gooden", division: "WW", rank: "NR", record: "23-12-0", initials: "JGD", country: "USA" },
  { name: "Ricky Glenn", division: "WW", rank: "NR", record: "22-9-2", initials: "RGL", country: "USA" },
- { name: "Bo Nickal", division: "MW", rank: "#15", record: "8-1-0", initials: "BNI", country: "USA" },
+ { name: "Bo Nickal", division: "MW", rank: "#15", record: "9-1-0", initials: "BNI", country: "USA" },
  { name: "Andre Petroski", division: "MW", rank: "NR", record: "13-7-0", initials: "APT2", country: "USA" },
- { name: "Uriah Hall", division: "MW", rank: "NR", record: "18-11-0", initials: "UHL", country: "Jamaica" },
+ { name: "Uriah Hall", division: "MW", rank: "NR", record: "21-11-0", initials: "UHL", country: "Jamaica" },
  { name: "Phil Hawes", division: "MW", rank: "NR", record: "12-9-0", initials: "PHW", country: "USA" },
  { name: "Armen Petrosyan", division: "MW", rank: "NR", record: "10-7-0", initials: "APT3", country: "Armenia" },
  { name: "Rodolfo Vieira", division: "MW", rank: "NR", record: "11-5-0", initials: "RVI", country: "Brazil" },
- { name: "Christian Leroy Duncan", division: "MW", rank: "#13", record: "14-2-0", initials: "CLD2", country: "UK" },
+ { name: "Christian Leroy Duncan", division: "MW", rank: "#13", record: "15-2-0", initials: "CLD2", country: "UK" },
  { name: "Ikram Aliskerov", division: "MW", rank: "#15", record: "18-2-0", initials: "IAL", country: "Russia" },
  { name: "Shara Magomedov", division: "MW", rank: "NR", record: "17-1-0", initials: "SMG2", country: "Russia" },
  { name: "Bryan Battle", division: "WW", rank: "NR", record: "12-3-0", initials: "BBT", country: "USA" },
@@ -4981,22 +5070,22 @@
  { name: "Montana De La Rosa", division: "WFLW", rank: "NR", record: "13-9-1", initials: "MDR", country: "USA" },
  // ── Active roster additions (verified May 2026) ──
  // Heavyweight
- { name: "Gable Steveson", division: "HW", rank: "NR", record: "3-0-0", initials: "GST", country: "USA" },
- { name: "Elisha Ellison", division: "HW", rank: "NR", record: "5-2-0", initials: "EEL", country: "USA" },
+ { name: "Gable Steveson", division: "HW", rank: "NR", record: "4-0-0", initials: "GST", country: "USA" },
+ { name: "Elisha Ellison", division: "HW", rank: "NR", record: "5-3-0", initials: "EEL", country: "USA" },
  { name: "Max Gimenis", division: "HW", rank: "NR", record: "6-2-0", initials: "MGM", country: "Brazil" },
  { name: "Jovan Leka", division: "HW", rank: "NR", record: "13-2-0", initials: "JL", country: "Serbia" },
- { name: "Felipe Franco", division: "HW", rank: "NR", record: "10-2-0", initials: "FFR", country: "Brazil" },
- { name: "Levi Rodrigues Jr.", division: "LHW", rank: "NR", record: "5-0-0", initials: "LRJ", country: "Brazil" },
- { name: "Tyrell Fortune", division: "HW", rank: "#9", record: "18-3-0", initials: "TFO", country: "USA" },
+ { name: "Felipe Franco", division: "HW", rank: "NR", record: "11-2-0", initials: "FFR", country: "Brazil" },
+ { name: "Levi Rodrigues Jr.", division: "LHW", rank: "NR", record: "5-1-0", initials: "LRJ", country: "Brazil" },
+ { name: "Tyrell Fortune", division: "HW", rank: "#9", record: "18-4-0", initials: "TFO", country: "USA" },
  { name: "Gökhan Saricam", division: "HW", rank: "NR", record: "12-2-0", initials: "GSR", country: "Turkey" },
  { name: "Allen Frye Jr.", division: "HW", rank: "NR", record: "6-1-0", initials: "AFY", country: "USA" },
- { name: "Alvin Hines", division: "HW", rank: "NR", record: "7-1-0", initials: "AHN", country: "USA" },
+ { name: "Alvin Hines", division: "HW", rank: "NR", record: "7-2-0", initials: "AHN", country: "USA" },
  // Lightweight
- { name: "Magomed Zaynukov", division: "LW", rank: "NR", record: "8-0-0", initials: "MZN", country: "Russia" },
+ { name: "Magomed Zaynukov", division: "LW", rank: "NR", record: "9-0-0", initials: "MZN", country: "Russia" },
  // Welterweight
  { name: "Ramiro Jimenez", division: "FW", rank: "NR", record: "11-0-0", initials: "RJM", country: "Mexico" },
  { name: "Christopher Alvidrez", division: "WW", rank: "NR", record: "7-1-0", initials: "CAL", country: "USA" },
- { name: "Abubakar Vagaev", division: "WW", rank: "NR", record: "24-4-0", initials: "AVG", country: "Russia" },
+ { name: "Abubakar Vagaev", division: "WW", rank: "NR", record: "25-4-0", initials: "AVG", country: "Russia" },
  { name: "Josiah Harrell", division: "WW", rank: "NR", record: "11-1-0", initials: "JHR2", country: "USA" },
  // Featherweight
  { name: "Melsik Baghdasaryan", division: "FW", rank: "NR", record: "8-4-0", initials: "MBG", country: "Armenia" },
@@ -5048,7 +5137,7 @@
  { name: "Damian Pinas", division: "MW", rank: "NR", record: "9-1-0", initials: "DPI", country: "Suriname" },
  { name: "Cesar Almeida", division: "MW", rank: "NR", record: "7-2-0", initials: "CA", country: "Brazil" },
  { name: "Cezary Oleksiejczuk", division: "MW", rank: "NR", record: "17-3-0", initials: "CO", country: "Poland" },
- { name: "Nursulton Ruziboev", division: "MW", rank: "NR", record: "37-9-2", initials: "NR", country: "Uzbekistan" },
+ { name: "Nursulton Ruziboev", division: "MW", rank: "NR", record: "39-9-2", initials: "NR", country: "Uzbekistan" },
  { name: "Vlasto Cepo", division: "MW", rank: "NR", record: "14-3-0", initials: "VCE", country: "Serbia" },
  { name: "Gilbert Urbina", division: "WW", rank: "NR", record: "7-4-0", initials: "GU", country: "USA" },
  { name: "Mantas Kondratavicius", division: "MW", rank: "NR", record: "9-1-0", initials: "MKO", country: "Lithuania" },
@@ -5056,10 +5145,10 @@
  { name: "Mansur Abdul-Malik", division: "MW", rank: "NR", record: "9-1-1", initials: "MAB", country: "USA" },
  { name: "Cam Rowston", division: "MW", rank: "NR", record: "15-3-0", initials: "CR", country: "Australia" },
  { name: "Robert Bryczek", division: "MW", rank: "NR", record: "18-7-0", initials: "RB", country: "Poland" },
- { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "31-9-0", initials: "SP", country: "Argentina" },
+ { name: "Santiago Ponzinibbio", division: "WW", rank: "NR", record: "31-10-0", initials: "SP", country: "Argentina" },
  { name: "Georges St-Pierre", division: "WW", rank: "NR", record: "26-2-0", initials: "GSP", country: "Canada" },
  { name: "Andreas Gustafsson", division: "WW", rank: "NR", record: "12-3-0", initials: "AG", country: "Sweden" },
- { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "13-2-0", initials: "SK", country: "South Korea" },
+ { name: "Seokhyeon Ko", division: "WW", rank: "NR", record: "13-3-0", initials: "SK", country: "South Korea" },
  { name: "Charles Radtke", division: "WW", rank: "NR", record: "12-5-0", initials: "CR", country: "USA" },
  { name: "Oban Elliott", division: "WW", rank: "NR", record: "12-4-0", initials: "OE", country: "Wales" },
  { name: "Michael Oliveira", division: "WW", rank: "NR", record: "9-0-0", initials: "MOL", country: "Brazil" },
@@ -5093,7 +5182,7 @@
  { name: "Xiao Long", division: "BW", rank: "NR", record: "27-11-0", initials: "XL", country: "China" },
  { name: "CJ Vergara", division: "FLW", rank: "NR", record: "12-7-1", initials: "CJV", country: "USA" },
  { name: "Alonzo Menifield", division: "LHW", rank: "#15", record: "18-6-1", initials: "AM", country: "USA" },
- { name: "Kyle Daukaus", division: "MW", rank: "NR", record: "17-4-0", initials: "KD", country: "USA" },
+ { name: "Kyle Daukaus", division: "MW", rank: "NR", record: "17-5-0", initials: "KD", country: "USA" },
  { name: "Kennedy Nzechukwu", division: "HW", rank: "NR", record: "14-6-1", initials: "KN", country: "Nigeria" },
  { name: "Jhonata Diniz", division: "HW", rank: "NR", record: "9-2-0", initials: "JD", country: "Brazil" },
  { name: "Marcus Buchecha", division: "HW", rank: "NR", record: "5-3-1", initials: "MB", country: "Brazil" },
@@ -5103,7 +5192,7 @@
  { name: "Jaqueline Amorim", division: "WSW", rank: "NR", record: "11-2-0", initials: "JA", country: "Brazil" },
  { name: "Marina Spasic", division: "WSW", rank: "NR", record: "6-1-0", initials: "MSP", country: "Serbia" },
  { name: "Carli Judice", division: "WFLW", rank: "NR", record: "6-2-0", initials: "CJ", country: "USA" },
- { name: "Dione Barbosa", division: "WFLW", rank: "NR", record: "9-4-0", initials: "DB", country: "Brazil" },
+ { name: "Dione Barbosa", division: "WFLW", rank: "NR", record: "10-4-0", initials: "DB", country: "Brazil" },
  { name: "Jamey-Lyn Horth", division: "WFLW", rank: "NR", record: "9-3-0", initials: "JLH", country: "Canada" },
  { name: "Veronica Hardy", division: "WFLW", rank: "NR", record: "10-5-1", initials: "VH", country: "Venezuela" },
  { name: "Tereza Bleda", division: "WFLW", rank: "NR", record: "7-2-0", initials: "TB", country: "Czech Republic" },
@@ -5943,7 +6032,7 @@
  { name: "Anton Turkalj", division: "LHW", rank: "NR", record: "8-4-0", initials: "AT", country: "Sweden" },
  { name: "Jamie Pickett", division: "MW", rank: "NR", record: "13-11-0", initials: "JP", country: "USA" },
  { name: "Bryan Barberena", division: "WW", rank: "NR", record: "18-12-0", initials: "BB", country: "USA" },
- { name: "Maryna Moroz", division: "WFLW", rank: "NR", record: "11-6-0", initials: "MM", country: "Ukraine" },
+ { name: "Maryna Moroz", division: "WFLW", rank: "NR", record: "11-11-0", initials: "MM", country: "Ukraine" },
  { name: "Gabriel Benitez", division: "FW", rank: "NR", record: "23-13-0", initials: "GB", country: "Mexico" },
  { name: "Christos Giagos", division: "LW", rank: "NR", record: "20-12-0", initials: "CG", country: "USA" },
  { name: "Fernie Garcia", division: "BW", rank: "NR", record: "10-5-0", initials: "FG", country: "USA" },
@@ -6156,8 +6245,8 @@
  { name: "Rafaello Oliveira", division: "LW", rank: "NR", record: "17-8-0", initials: "RO", country: "" },
  { name: "Fabricio Camoes", division: "LW", rank: "NR", record: "14-9-1", initials: "FC", country: "" },
  { name: "Phil Harris", division: "FLW", rank: "NR", record: "22-12-0", initials: "PH", country: "" },
- { name: "Jamie Varner", division: "LW", rank: "NR", record: "21-11-1", initials: "JV", country: "" },
- { name: "Yves Edwards", division: "LW", rank: "NR", record: "42-22-1", initials: "YE", country: "" },
+ { name: "Jamie Varner", division: "LW", rank: "NR", record: "21-11-3", initials: "JV", country: "" },
+ { name: "Yves Edwards", division: "LW", rank: "NR", record: "43-22-2", initials: "YE", country: "" },
  { name: "Chris Leben", division: "MW", rank: "NR", record: "22-12-0", initials: "CL", country: "USA" },
  { name: "Tony Sims", division: "LW", rank: "NR", record: "12-4-0", initials: "TS", country: "USA" },
  { name: "Wang Guan", division: "FW", rank: "NR", record: "22-1-1", initials: "WG", country: "China" },
@@ -6175,7 +6264,7 @@
  { name: "Daniel Pineda", division: "FW", rank: "NR", record: "28-17-0", initials: "DP", country: "USA" },
  { name: "Dan Argueta", division: "BW", rank: "NR", record: "9-3-0", initials: "DA", country: "USA" },
  { name: "Chris Lytle", division: "WW", rank: "NR", record: "31-18-5", initials: "CL", country: "" },
- { name: "Felipe Arantes", division: "BW", rank: "NR", record: "18-10-1", initials: "FA", country: "" },
+ { name: "Felipe Arantes", division: "BW", rank: "NR", record: "18-10-3", initials: "FA", country: "" },
  { name: "James Irvin", division: "LHW", rank: "NR", record: "17-9-1", initials: "JI", country: "" },
  { name: "Tito Ortiz", division: "LHW", rank: "NR", record: "21-12-1", initials: "TO", country: "USA" },
  { name: "Carmelo Marrero", division: "?", rank: "NR", record: "5-4-0", initials: "CM", country: "" },
@@ -110187,11 +110276,20 @@ function glDeepDiveAvailable(f1, f2){ return glHasGrid(f1) && glHasGrid(f2); }
 //    it, so it will cheerfully tell a man to ground-and-pound someone he cannot
 //    take down. Until that's measured rather than guessed, the order stays
 //    internal. The columns are facts; the order is a hypothesis.
-function _ddGrid(name){
+// resultFilter: null/'all' (default) | 'win' | 'loss' — restricts every count and
+// every grid cell below to fights matching that result, so "how does he perform in
+// his wins vs his losses" is the SAME aggregation this function already does, just
+// over a subset of rows. Joined against FIGHT_HISTORY by date, same match logic as
+// _ddRowSecs (exact date, then +-36h) — see _ddRowResult. Moved the _ddHistRows
+// call up here from further down (it used to run only for the FIGHT_STATS loop)
+// so the FIGHT_GRID loop can filter by the same result lookup.
+function _ddGrid(name, resultFilter){
   const G = window.FIGHT_GRID || {};
   if (!_ddIndex) _ddIndex = new Map(Object.keys(G).map(k => [_gridNorm(k), k]));
   const rows = G[_ddIndex.get(_gridNorm(name))];
   if (!rows) return null;
+  const hist = _ddHistRows(name);
+  const wantResult = resultFilter === 'win' ? 'W' : resultFilter === 'loss' ? 'L' : null;
   const cells = Array.from({length:9}, () => [0,0]);
   const cellsD = Array.from({length:9}, () => [0,0]);
   // adv AND slams ARE NOT COLLECTED, AND THAT IS A MEASUREMENT, NOT AN OVERSIGHT.
@@ -110245,6 +110343,7 @@ function _ddGrid(name){
   // COMPARISON that has to be per-fight, not the display.
   for (const r of rows) {
     if (!r) continue;
+    if (wantResult && _ddRowResult(hist, r.date) !== wantResult) continue;
     const gf = r.f && r.f.g, go = r.o && r.o.g;
     if (!gf) continue;
     n++;
@@ -110278,9 +110377,10 @@ function _ddGrid(name){
   //
   // Per 15 minutes is also what FIGHTER_STATS.tdLanded already uses everywhere else
   // on the site, so this is the number the rest of the product speaks in.
-  const hist = _ddHistRows(name);
+  // (hist is computed once, up near the FIGHT_GRID loop — same variable, same join.)
   for (const f of srows) {
     if (!f || !f.f || !f.o) continue;
+    if (wantResult && _ddRowResult(hist, f.date) !== wantResult) continue;
     // NUMERATOR AND DENOMINATOR OVER THE SAME FIGHTS, ALWAYS. A row we cannot time
     // is dropped from BOTH the count and the clock rather than counted against a
     // clock that never ran — that would inflate the rate silently, which is the
@@ -110353,6 +110453,23 @@ function _ddRowSecs(hist, date){
   for (const r of hist) {
     const rt = Date.parse(r.date);
     if (!isNaN(rt) && Math.abs(rt - t) <= 36*3600*1000) return _ddFightLen(r);
+  }
+  return null;
+}
+// Same join as _ddRowSecs (exact date, then +-36h — the two feeds disagree by a
+// day across timezones for the same bout), returning FIGHT_HISTORY's result
+// ("W"/"L"/"D"/"NC") instead of the fight's length. Used by _ddGrid's Wins/Losses
+// filter. A draw or no-contest matches neither 'win' nor 'loss' — only an actual
+// win counts as a win — so those rows still show under "All" but drop out of both
+// filtered views, same as they should.
+function _ddRowResult(hist, date){
+  if (!date || !hist.length) return null;
+  for (const r of hist) if (r.date === date) return r.result || null;
+  const t = Date.parse(date);
+  if (isNaN(t)) return null;
+  for (const r of hist) {
+    const rt = Date.parse(r.date);
+    if (!isNaN(rt) && Math.abs(rt - t) <= 36*3600*1000) return r.result || null;
   }
   return null;
 }
@@ -111092,8 +111209,17 @@ function mhGrappling(A, B, n1, n2){
 function mhRenderBody(){
   const body = document.getElementById('mh-body');
   if (!body || !_mhState) return;
-  const { A, B, n1, n2, tab } = _mhState;
-  if (!A || !B) { body.innerHTML = '<div class="mh-empty">No breakdown available for this bout.</div>'; return; }
+  const { A, B, n1, n2, tab, resultFilter } = _mhState;
+  if (!A || !B) {
+    // Filter-aware empty state: a fighter with no losses on record (or a debut
+    // with no fights at all under the grid's coverage) shouldn't read as a
+    // broken panel — name whichever side actually has nothing under this filter.
+    const rf = resultFilter && resultFilter !== 'all' ? resultFilter : null;
+    const msg = !rf ? 'No breakdown available for this bout.'
+      : 'No ' + (rf === 'win' ? 'wins' : 'losses') + ' on record for ' + escHtmlAttr(!A ? n1 : n2) + '.';
+    body.innerHTML = '<div class="mh-empty">' + msg + '</div>';
+    return;
+  }
   try {
     body.innerHTML = tab === 'grappling' ? mhGrappling(A, B, n1, n2)
                                          : mhStriking(A, B, n1, n2);
@@ -111133,6 +111259,26 @@ function mhTab(t){
   const body = document.getElementById('mh-body'); if (body) body.scrollTop = 0;
 }
 
+// All / Wins / Losses. Lives beside mhTab rather than inside it: the filter is
+// shared state across BOTH tabs (see the .mh-filter CSS comment), so switching it
+// re-derives A/B from the grid data already in memory — no refetch, it's the same
+// ~245KB payload from loadFightGrid(), just re-aggregated over a subset of rows.
+// If the grid hasn't loaded yet (still "Loading…"), _mhState.A/B are still null;
+// the loadFightGrid().then() callback in openMatchupHub reads _mhState.resultFilter
+// at that point, so a filter click during the initial load still takes effect
+// once the fetch resolves — nothing here needs to guard against that race.
+function mhFilter(f){
+  if (!_mhState || _mhState.resultFilter === f) return;
+  _mhState.resultFilter = f;
+  document.querySelectorAll('#mh-filter .mh-filter-btn').forEach(b => b.classList.toggle('on', b.dataset.mhFilter === f));
+  if (_mhState.A || _mhState.B) {
+    _mhState.A = _ddGrid(_mhState.n1, f);
+    _mhState.B = _ddGrid(_mhState.n2, f);
+  }
+  mhRenderBody();
+  const body = document.getElementById('mh-body'); if (body) body.scrollTop = 0;
+}
+
 function mhRecord(n){
   if (typeof FIGHTERS === 'undefined') return '';
   const e = FIGHTERS.find(x => x.name === n) || FIGHTERS.find(x => _gridNorm(x.name) === _gridNorm(n));
@@ -111168,9 +111314,12 @@ function _mhKey(e){ if (e.key === 'Escape') closeMatchupHub(); }
 function openMatchupHub(n1, n2, meta){
   const box = document.getElementById('mh-box'), ov = document.getElementById('mh-overlay');
   if (!box || !ov) return;
-  _mhState = { n1, n2, A: null, B: null, tab: 'striking', meta: meta || {} };
+  _mhState = { n1, n2, A: null, B: null, tab: 'striking', meta: meta || {}, resultFilter: 'all' };
   mhRenderHeader();
   document.querySelectorAll('#mh-tabs .mh-tab').forEach(b => b.classList.toggle('on', b.dataset.mhTab === 'striking'));
+  // Reset the filter pills too — reopening on a different bout with the last
+  // bout's "Losses" still selected would silently apply someone else's filter.
+  document.querySelectorAll('#mh-filter .mh-filter-btn').forEach(b => b.classList.toggle('on', b.dataset.mhFilter === 'all'));
   const body = document.getElementById('mh-body');
   body.innerHTML = '<div class="mh-loading">Loading…</div>';
   body.scrollTop = 0;
@@ -111188,7 +111337,7 @@ function openMatchupHub(n1, n2, meta){
   loadFightGrid().then(function(){
     // Closed, or reopened on a different bout, while the fetch was in flight.
     if (!_mhState || _mhState.n1 !== n1 || _mhState.n2 !== n2) return;
-    _mhState.A = _ddGrid(n1); _mhState.B = _ddGrid(n2);
+    _mhState.A = _ddGrid(n1, _mhState.resultFilter); _mhState.B = _ddGrid(n2, _mhState.resultFilter);
     mhRenderBody();
   }).catch(function(){
     if (body) body.innerHTML = '<div class="mh-empty">Couldn\'t load the breakdown.</div>';
@@ -111209,6 +111358,7 @@ function closeMatchupHub(){
 window.openMatchupHub = openMatchupHub;
 window.closeMatchupHub = closeMatchupHub;
 window.mhTab = mhTab;
+window.mhFilter = mhFilter;
 window.mhOpenFighter = mhOpenFighter;
 
 // THE READ — the sentence that turns a table into an argument.
@@ -128282,20 +128432,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // events become the headline, mirroring their carousel treatment:
     //  - "UFC Freedom 250" -> red/white/blue .freedom-card with flag badge
     //  - Numbered PPVs ("UFC 329", "UFC 330", ...) -> gold .numbered-card
+    //  - DWCS (Dana White's Contender Series) -> blue .dwcs-card
     const isFreedom = (evt.name || '').toLowerCase().includes('freedom') || (evt.slug || '').toLowerCase().includes('freedom');
     const isNumbered = !isFreedom && /^UFC\s+\d+\b/i.test((evt.name || '').trim());
-    const specialClass = isFreedom ? 'freedom-card' : (isNumbered ? 'numbered-card' : '');
+    const isDWCS = !isFreedom && !isNumbered && isDWCSRaw(evt);
+    const specialClass = isFreedom ? 'freedom-card' : (isNumbered ? 'numbered-card' : (isDWCS ? 'dwcs-card' : ''));
     const headerEl = document.querySelector('#page-home > .event-header');
     if (headerEl) {
       headerEl.classList.toggle('freedom-card', isFreedom);
       headerEl.classList.toggle('numbered-card', isNumbered);
+      headerEl.classList.toggle('dwcs-card', isDWCS);
     }
 
     const nameEl    = document.getElementById('home-event-name');
     const detailsEl = document.getElementById('home-event-details');
     if (nameEl) {
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
+      // DWCS: evt.name is always the generic "UFC Fight Night" bucket (see
+      // isRoadToUFCRaw for why) — show the real billed name from espnName
+      // instead, or the card would say "Fight Night" for a Contender Series.
       if (flagSVG || evt.name.startsWith('\u{1F1FA}')) nameEl.innerHTML = flagSVG + evt.name;
+      else if (isDWCS) nameEl.textContent = evt.espnName || evt.name;
       else if (!isNumbered) nameEl.innerHTML = highlightFightNight(evt.name);
       else nameEl.textContent = evt.name;
     }
@@ -130770,6 +130927,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     return {
       name:    rawEvt.title || rawEvt.shortTitle || 'UFC Event',
+      // The billed name ("Dana White's Contender Series: Season 10, Week 1"),
+      // not the generic "UFC Fight Night" bucket `name` collapses to — needed
+      // so renderHomeFightCard can tell a DWCS card apart from a regular one
+      // without needing the raw event alongside evt. See isRoadToUFCRaw.
+      espnName: rawEvt.espnName || null,
       details: [dateFormatted, venue].filter(Boolean).join(' · '),
       date:    dateStr,
       slug:    rawEvt.slug || dateStr,
@@ -130838,6 +131000,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // True when the featured slot is showing a held (already finished) card.
   function glIsHolding(raw) { return !!(GL_HOLD_RAW && raw === GL_HOLD_RAW); }
 
+  // The one shared "is this a Road to UFC card" check, used everywhere we need to
+  // keep Road to UFC out of the featured slot / carousel / tape study / past-events
+  // list. DWCS (Dana White's Contender Series) is deliberately NOT matched here —
+  // it should flow through exactly like a Fight Night once ESPN publishes its bouts.
+  //
+  // Every prior copy of this regex tested it against `evt.name` / `e.title` /
+  // `e.shortTitle`, which are ALWAYS either "UFC ###" or the generic bucket string
+  // "UFC Fight Night" (see eventTitleFor in fetch-espn-bouts.cjs — it collapses
+  // every unnumbered event to that one string, mirroring the old Cito feed's
+  // shape). So the exclusion never actually matched a Road to UFC card by name; it
+  // only ever "worked" because Road to UFC cards also tend to have zero announced
+  // bouts far out and got dropped by the has-fights guard instead. The billed name
+  // ("Road to UFC Season 4: Semifinals") only survives in `espnName` — match that.
+  function isRoadToUFCRaw(rawEvt) {
+    const name = (rawEvt && (rawEvt.espnName || rawEvt.title || rawEvt.shortTitle || rawEvt.name)) || '';
+    return /road\s+to\s+(the\s+)?ufc/i.test(name);
+  }
+
+  // Same idea, for the DWCS blue special-card treatment (see .dwcs-card CSS).
+  // Also matches against espnName first for the same reason isRoadToUFCRaw
+  // does — `title`/`shortTitle`/`name` never carry the billed name.
+  function isDWCSRaw(rawEvt) {
+    const name = (rawEvt && (rawEvt.espnName || rawEvt.title || rawEvt.shortTitle || rawEvt.name)) || '';
+    return /contender\s+series|dana\s+white/i.test(name);
+  }
+
   function pickFeaturedRawEvent(apiData) {
     // A finished card inside its hold window outranks the next scheduled one.
     // Re-checked against the clock on every call so a long-open tab rolls over
@@ -130861,6 +131049,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // are never valid featured/next events. (Past results live in the
       // prev-events dropdown, which filters for completed separately.)
       .filter(e => e && e.status !== 'completed')
+      // Road to UFC never becomes the featured card — see isRoadToUFCRaw. DWCS
+      // is left through: it should become featured like any other event once
+      // it's the next thing on the clock with a published card.
+      .filter(e => !isRoadToUFCRaw(e))
       .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
     // Keep a card featured until it has actually finished, not until the calendar
     // day flips. startsAt is the MAIN CARD time (~9pm ET on a Saturday), so
@@ -130870,7 +131062,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // immediate aftermath before the card drops to the past-events dropdown.
     const CARD_RUNTIME_MS = 10 * 3600 * 1000;
     const now = Date.now();
-    return events.find(e => Date.parse(e.startsAt) + CARD_RUNTIME_MS >= now) || events[events.length - 1];
+    // Same "must have a published card" guard as the carousel/tape study (see
+    // renderCarousel) — without it, an event ESPN has created but not yet
+    // published bouts for (DWCS is the common case: it's on the calendar
+    // ~2 months out, but matchups don't land until about a week before) could
+    // become the featured event with an empty fight list instead of the next
+    // event that actually has one. Falls back to the unfiltered list if
+    // literally nothing upcoming has a card yet, so the page still shows the
+    // next event rather than nothing.
+    const withBouts = events.filter(e => (e.bouts || []).length);
+    const pool = withBouts.length ? withBouts : events;
+    return pool.find(e => Date.parse(e.startsAt) + CARD_RUNTIME_MS >= now) || pool[pool.length - 1];
   }
 
   function buildEvtFromAPI(apiData) {
@@ -130991,9 +131193,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       // Skip "Road to UFC" cards — a contender-tournament show, not a UFC
       // main roster event. It doesn't belong in the upcoming-events
-      // carousel alongside numbered/Fight Night events. API titles vary
-      // ("Road to UFC", "Road to the UFC"), so match loosely.
-      if (/road\s+to\s+(the\s+)?ufc/i.test(evt.name || '')) continue;
+      // carousel alongside numbered/Fight Night events. DWCS (Dana White's
+      // Contender Series) is allowed through — see isRoadToUFCRaw for why this
+      // has to match against the raw event's espnName, not evt.name.
+      if (isRoadToUFCRaw(raw)) continue;
 
       eventsForCarousel.push({ id: evt.slug, date: evt.date });
 
@@ -131011,9 +131214,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Matches "UFC" + number only (e.g. "UFC 329"), so themed numbered
       // events like "UFC Freedom 250" fall through to their own special style.
       const isNumbered = !isFreedom && /^UFC\s+\d+\b/i.test((evt.name || '').trim());
-      const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : ''));
+      // DWCS gets its own blue treatment — checked against the raw event's
+      // espnName, not evt.name, which is always the generic "UFC Fight Night"
+      // bucket for anything unnumbered (see isRoadToUFCRaw).
+      const isDWCS = !isFreedom && !isNumbered && isDWCSRaw(raw);
+      const cardClass = 'carousel-card' + (isFreedom ? ' freedom-card' : (isNumbered ? ' numbered-card' : (isDWCS ? ' dwcs-card' : '')));
       const flagSVG = isFreedom ? freedomFlagSVG() : '';
-      const nameHTML = (isFreedom || isNumbered) ? evt.name : highlightFightNight(evt.name);
+      // DWCS: show the real billed name (espnName) instead of the generic
+      // "UFC Fight Night" evt.name would otherwise render.
+      const nameHTML = isDWCS ? (evt.espnName || raw.espnName || evt.name)
+        : (isFreedom || isNumbered) ? evt.name : highlightFightNight(evt.name);
       cards.push('<div class="' + cardClass + '" style="min-width:100%;padding:0 2rem;box-sizing:border-box;">' +
         '<div style="max-width:var(--cmax);margin:0 auto;">' +
           '<div class="event-header">' +
@@ -131639,9 +131849,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       // Same per-event guards as the homepage carousel (renderCarousel):
       // hide events with no announced fights yet, and always hide
-      // "Road to UFC" / "Road to the UFC" contender-tournament cards.
+      // "Road to UFC" / "Road to the UFC" contender-tournament cards. DWCS is
+      // allowed through — see isRoadToUFCRaw.
       if (!(evt.fights || []).length) return '';
-      if (/road\s+to\s+(the\s+)?ufc/i.test(evt.name || '')) return '';
+      if (isRoadToUFCRaw(raw)) return '';
 
       const eventId = 'tape-evt-' + evtIdx;
 
@@ -133866,7 +134077,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // the wall clock when there's no featured event. Also drop "Road to UFC".
     const nowMs = (featuredRaw && featuredRaw.startsAt) ? new Date(featuredRaw.startsAt).getTime() : Date.now();
     const isPast = e => { const t = startMs(e); return t > 0 && t < nowMs; };
-    const isRoadToUFC = e => /road to (the )?ufc/i.test(evtName(e));
+    const isRoadToUFC = e => isRoadToUFCRaw(e);
 
     let pool = (apiData.data || []).filter(e => e.status === 'completed' && (e.bouts || []).length);
     let recentStamp = null; // when data/event-recent.json was last refreshed

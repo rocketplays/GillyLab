@@ -1256,6 +1256,12 @@ const pickemLink = (env, subscribed) => env.SITE_URL + (subscribed ? "/#pickem" 
 // attribute (honoured even by clients that drop CSS backgrounds). color-scheme hints
 // keep dark-mode clients from re-inverting our already-dark palette.
 function emailShell(bodyHtml, unsubHref) {
+  // unsubHref is omitted for transactional/security mail (magic link, password
+  // reset) — those aren't something you'd unsubscribe from, so the footer drops
+  // the link rather than render href="undefined".
+  const footerLine = unsubHref
+    ? `You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#6b7280;text-decoration:underline">Unsubscribe</a>`
+    : `You're getting this because you have a GillyLab account.`;
   return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><meta name="supported-color-schemes" content="light"></head>
 <body style="margin:0;padding:0;width:100%;background-color:#f2f3f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f2f3f5" style="background-color:#f2f3f5;width:100%;margin:0;padding:0">
@@ -1264,7 +1270,7 @@ function emailShell(bodyHtml, unsubHref) {
         <tr><td bgcolor="#ffffff" style="background-color:#ffffff;padding:22px 26px 6px;border:1px solid #e4e6ea;border-bottom:0;border-radius:14px 14px 0 0"><div style="font-weight:900;letter-spacing:.14em;font-size:15px;color:#15151a">GILLY<span style="color:#00b551">LAB</span></div></td></tr>
         <tr><td bgcolor="#ffffff" style="background-color:#ffffff;padding:8px 26px 26px;color:#15151a;font-size:15px;line-height:1.55;border:1px solid #e4e6ea;border-top:0;border-radius:0 0 14px 14px">${bodyHtml}</td></tr>
       </table>
-      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td align="center" bgcolor="#f2f3f5" style="background-color:#f2f3f5;color:#8a8f99;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">You're getting this because you have a GillyLab account. <a href="${unsubHref}" style="color:#6b7280;text-decoration:underline">Unsubscribe</a></td></tr></table>
+      <table role="presentation" width="480" cellpadding="0" cellspacing="0" border="0" style="width:480px;max-width:100%"><tr><td align="center" bgcolor="#f2f3f5" style="background-color:#f2f3f5;color:#8a8f99;font-size:11px;line-height:1.5;padding:14px 8px;text-align:center">${footerLine}</td></tr></table>
     </td></tr>
   </table>
 </body></html>`;
@@ -1305,6 +1311,26 @@ function missedEmailHtml(env, gradedEv, nextCard, unsubHref, ctaUrl) {
   return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">You missed ${escHtml(gradedEv.name)}</h1>
     <p style="margin:0 0 18px;color:#4a4d55">The card's in the books and the leaderboard's settled — you sat this one out. ${nextLine} Call the winner, method and round for each bout, lock in before the prelims, and climb the leaderboard — it's free.</p>
     <a href="${btn}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Make your picks &rarr;</a>`, unsubHref);
+}
+
+// Sign-in and password-reset mail used to be a bare "<p>click this link</p>" with
+// no emailShell — the one pair of emails every user is guaranteed to see (you can't
+// get in without them) looked nothing like the Pick'em mail next to it in the same
+// inbox. Same shell, same button, no unsubHref (see emailShell) since these are
+// account-access mail, not something to unsubscribe from.
+function magicLinkEmailHtml(link) {
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">Sign in to GillyLab</h1>
+    <p style="margin:0 0 18px;color:#4a4d55">Click below to sign in. This link is valid for 15 minutes and works once.</p>
+    <a href="${link}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Sign in &rarr;</a>
+    <p style="margin:20px 0 0;color:#8a8f99;font-size:12px;line-height:1.5">If the button doesn't work, paste this link into your browser:<br><a href="${link}" style="color:#6b7280;word-break:break-all">${link}</a></p>
+    <p style="margin:14px 0 0;color:#8a8f99;font-size:12px">Didn't request this? You can safely ignore this email.</p>`);
+}
+function resetEmailHtml(link) {
+  return emailShell(`<h1 style="margin:0 0 10px;font-size:20px;font-weight:800;color:#15151a">Reset your password</h1>
+    <p style="margin:0 0 18px;color:#4a4d55">Click below to set a new password for your GillyLab account. This link is valid for 15 minutes and works once.</p>
+    <a href="${link}" style="display:inline-block;background:#00e668;color:#04120a;font-weight:800;font-size:15px;text-decoration:none;padding:12px 22px;border-radius:10px">Reset password &rarr;</a>
+    <p style="margin:20px 0 0;color:#8a8f99;font-size:12px;line-height:1.5">If the button doesn't work, paste this link into your browser:<br><a href="${link}" style="color:#6b7280;word-break:break-all">${link}</a></p>
+    <p style="margin:14px 0 0;color:#8a8f99;font-size:12px">Didn't request this? Your password won't change — you can safely ignore this email.</p>`);
 }
 
 // Every account email (USERS keys are "u:<email>"; "cust:" link keys are skipped).
@@ -1901,8 +1927,7 @@ async function handleResetStart(request, env) {
     const token = randHex(32);
     await env.MAGIC.put("r:" + token, e, { expirationTtl: 900 }); // 15 min
     const link = `${env.SITE_URL}/reset?token=${token}`;
-    await sendEmail(env, e, "Reset your GillyLab password",
-      `<p>Click to set a new password for GillyLab:</p><p><a href="${link}">${link}</a></p><p>This link expires in 15 minutes. If you didn't request it, ignore this email.</p>`);
+    await sendEmail(env, e, "Reset your GillyLab password", resetEmailHtml(link));
   }
   return json({ ok: true });
 }
@@ -1963,8 +1988,7 @@ async function handleMagicStart(request, env) {
     const token = randHex(32);
     await env.MAGIC.put("m:" + token, e, { expirationTtl: 900 }); // 15 min
     const link = `${env.SITE_URL}/api/magic/verify?token=${token}`;
-    await sendEmail(env, e, "Your GillyLab sign-in link",
-      `<p>Click to sign in to GillyLab:</p><p><a href="${link}">${link}</a></p><p>This link expires in 15 minutes. If you didn't request it, ignore this email.</p>`);
+    await sendEmail(env, e, "Your GillyLab sign-in link", magicLinkEmailHtml(link));
   }
   return json({ ok: true });
 }

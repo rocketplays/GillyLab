@@ -228,6 +228,22 @@ jobs:
       - name: Persist finished bouts into static fight history
         run: node scripts/append-card-history.cjs || true
 
+      # FIGHTERS[].record is a separate cached summary string, NOT derived at
+      # read time — append-card-history above only touches FIGHT_HISTORY (the
+      # per-fight log). Nothing recomputed the summary automatically, so it
+      # silently drifted from FIGHT_HISTORY: found 2026-07-30 when Ilia Topuria
+      # still showed 17-0 in The Climb weeks after his loss to Gaethje, and the
+      # same drift was live on 100 fighters. Must run AFTER append-card-history
+      # (needs the new bout in FIGHT_HISTORY first) and BEFORE extract-sim.cjs
+      # (which snapshots FIGHTERS/FIGHT_HISTORY for The Climb — see below) so
+      # every downstream consumer of the cached record field gets the fix, not
+      # just the ones that derive it fresh from FIGHT_HISTORY on their own
+      # (gen-landing-data, data/fighter-lite.json already did — this is for
+      # everything that doesn't). Non-fatal, same reasoning as the step above:
+      # a data-quality fix must never block the odds update the site runs on.
+      - name: Resync fighter records from fight history
+        run: python3 gillylab_update_records.py || true
+
       # Two different fighters sharing one name silently weld into one identity —
       # every consumer of FIGHT_HISTORY matches by name. That's how Brendan Allen
       # ended up with a flyweight's Bruno Silva on his record for months, found by
@@ -353,6 +369,18 @@ jobs:
           node scripts/sim-backtest/extract-sim.cjs || true
           node scripts/log-predictions.cjs || true
 
+      # data/climb.json (The Climb's ladder — name/rank/record/power/style per
+      # fighter) was never wired into this pipeline at all before 2026-07-30;
+      # someone had to remember to run gen-climb-data.cjs by hand, and it went
+      # 5+ days stale. Must run AFTER extract-sim.cjs just above, which is what
+      # refreshes scripts/sim-backtest/_sim-data.json (gitignored, rebuilt every
+      # run) from index.html's current FIGHTERS/FIGHT_HISTORY — including
+      # whatever the record resync step upstream just fixed. Non-fatal: a stale
+      # Climb board is a real bug, but not one that should block the odds the
+      # rest of the site depends on.
+      - name: Regenerate The Climb board data
+        run: node scripts/gen-climb-data.cjs || true
+
       # Grade any now-decided fights against the banked snapshots and recompute
       # the internal CLV + calibration scorecard. Uses the freshly fetched
       # event/event-recent results. Non-fatal.
@@ -388,7 +416,7 @@ jobs:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
           # git exits 128, the whole odds job dies, twice a day. It is excluded from
           # public/ BY NAME in build-site.sh instead. If you rename it, change both.
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/landing-grid.js worker/subscribe-features.js worker/pickem-model.js worker/scorecard-data.js"
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json data/climb.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/landing-grid.js worker/subscribe-features.js worker/pickem-model.js worker/scorecard-data.js"
           # ONE BAD PATH IN $FILES USED TO KILL THE WHOLE ODDS JOB.
           # `git add` on a path that doesn't exist is a fatal:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
@@ -431,6 +459,7 @@ jobs:
           node scripts/apply-missing-bout-overrides.cjs || true
           python3 scripts/recompute-card-stats.py --recent || true
           node scripts/append-card-history.cjs || true
+          python3 gillylab_update_records.py || true
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-climb-page.cjs
@@ -447,6 +476,7 @@ jobs:
           node scripts/gen-roster.cjs || true
           node scripts/fetch-fighter-news.cjs || true
           node scripts/sim-backtest/extract-sim.cjs || true
+          node scripts/gen-climb-data.cjs || true
           node scripts/log-predictions.cjs || true
           node scripts/grade-predictions.cjs || true
           node scripts/gen-scorecard-data.cjs || true
