@@ -1209,9 +1209,9 @@
     .bt-card-select {
       margin-bottom: 0.85rem; font-weight: 700;
       -webkit-appearance: none; -moz-appearance: none; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2300e668' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 12px center; background-size: 11px 7px;
-      padding-right: 32px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7' viewBox='0 0 10 7'><path d='M1 1l4 4 4-4' fill='none' stroke='%2300e668' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+      background-repeat: no-repeat; background-position: right 0.9rem center;
+      padding-right: 2.2rem;
     }
     .bt-cardhdr { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0 0.6rem; }
     .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -136203,7 +136203,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Active branch above) in one line regardless of how many cards accumulate.
     if (doneCards.length > 1) {
       h += '<select class="bt-card-select" onchange="btSetCard(this.value)"><option value="all"' + (btCardFilter === 'all' ? ' selected' : '') + '>All cards</option>' +
-        doneCards.map(c => '<option value="' + btEsc(c.slug) + '"' + (btCardFilter === c.slug ? ' selected' : '') + '>' + btEsc(c.label) + ' (' + c.n + ')</option>').join('') + '</select>';
+        doneCards.map(c => '<option value="' + btEsc(c.slug) + '"' + (btCardFilter === c.slug ? ' selected' : '') + '>' + btEsc(c.label) + ' (' + c.n + ' bet' + (c.n === 1 ? '' : 's') + ')</option>').join('') + '</select>';
     }
     // Finished cards: each its own group with a Share results button.
     doneCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
