@@ -1206,7 +1206,13 @@
        UI that doesn't grow taller as more cards finish. Width/border/background
        inherited from the page-wide "#page-bets select" rule; this only adds the
        spacing the chip row gets from its own margin-bottom. */
-    .bt-card-select { margin-bottom: 0.85rem; font-weight: 700; }
+    .bt-card-select {
+      margin-bottom: 0.85rem; font-weight: 700;
+      -webkit-appearance: none; -moz-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2300e668' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 12px center; background-size: 11px 7px;
+      padding-right: 32px;
+    }
     .bt-cardhdr { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0 0.6rem; }
     .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bt-cardsum { font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
@@ -135886,8 +135892,20 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Clear the card filter when switching tabs: the card chips are drawn from the
   // ACTIVE tab's live cards only, so a filter set there would survive into Past
   // bets, match none of the finished cards, and show an empty tab with no visible
-  // control to undo it.
-  function btSetTab(t) { btTab = t; btCardFilter = 'all'; btRenderHistory(); }
+  // control to undo it. Past bets defaults to the most recent finished card
+  // rather than "All cards" — with enough history "All" makes for a very long
+  // scroll, and the most recent card is what you almost always want right after
+  // an event wraps. "All cards" is still one tap away in the dropdown.
+  function btSetTab(t) {
+    btTab = t;
+    if (t === 'past') {
+      const done = btCards(BT_BETS).filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
+      btCardFilter = done.length ? done[0].slug : 'all';
+    } else {
+      btCardFilter = 'all';
+    }
+    btRenderHistory();
+  }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
   window.btSetTab = btSetTab;
 
