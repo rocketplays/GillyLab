@@ -131,7 +131,17 @@
          compensation for the fixed header's height has been removed since
          sticky already occupies that space in normal flow.) */
       position: sticky;
-      top: 0;
+      /* top: -1px, not top: 0 — a well-known iOS Safari bug: a sticky
+         element whose resting position is already flush with the top of
+         the scrollport (top:0) doesn't reliably get its "stuck" state
+         re-evaluated on every scroll tick, especially while Safari's own
+         address bar is animating away. That's what showed as a strip of
+         already-scrolled content sitting above the header instead of
+         being covered by it. Offsetting by a subpixel forces Safari to
+         keep treating this as "not naturally at rest" and recompute it on
+         every frame instead of latching a stale position. 1px is visually
+         nothing (header still reads as flush with the top). */
+      top: -1px;
       z-index: 100;
       /* Solid background instead of a blurred-translucent one — at 0.96
          opacity the blur was barely visible anyway, and backdrop-filter
@@ -143,29 +153,28 @@
       /* iPhones with a notch/Dynamic Island (installed as a home-screen
          PWA, or any browser chrome that lets content draw under the status
          bar) report a nonzero safe-area-inset-top. Sticky's box starts at
-         the very top of the scroll container (top:0), so without this the
+         the very top of the scroll container, so without this the
          header's own background stops short of the status bar and page
          content scrolling past is visible in that gap. Padding the header
          itself (rather than adding a separate spacer) keeps the solid
          background covering the whole notch area while sticky's built-in
          scroll tracking still works unchanged. viewport-fit=cover (set on
          the <meta name=viewport> tag) is required for env() here to
-         resolve to anything other than 0. */
+         resolve to anything other than 0 — and it IS 0 in a plain Safari
+         tab (no home-screen install), so this rule is a no-op there; it's
+         kept for whoever adds the site to their home screen later. */
       padding-top: env(safe-area-inset-top);
-      /* Forces the header onto its own GPU compositor layer, independent of
-         the rest of the page. Without this, iOS Safari composites the
-         sticky header together with whatever's scrolling beneath it each
-         frame — and this page's background is expensive to repaint (the
-         radial-gradient on <html>, #bgfx/#bgedge, the noise overlay; see
-         the jank note above). Under that load the compositor can drop a
-         header repaint for a frame during fast scroll, and for that one
-         frame the content that should be hidden behind the header is
-         visible above/through it. translateZ(0) has no visual effect (0
-         distance) but is the standard trigger for "promote to its own
-         layer," so the header's paint no longer depends on the rest of the
-         page finishing its own repaint in time. */
-      transform: translateZ(0);
-      -webkit-transform: translateZ(0);
+      /* NOTE: previously also had transform: translateZ(0) here to force
+         GPU-layer promotion, on the theory that this page's expensive
+         background (the <html> radial-gradient, #bgfx/#bgedge, the noise
+         overlay) was causing the compositor to drop a header repaint
+         during fast scroll. Removed — it didn't fix the bug, and forcing
+         a *sticky* element onto its own compositor layer is itself a
+         known source of exactly this class of glitch on WebKit (the
+         layer's composited position can lag one frame behind the
+         recalculated sticky position). Don't re-add it without testing;
+         if this page's background repaint cost needs addressing, do it to
+         #bgfx/#bgedge/html directly, not by promoting the header. */
     }
 
     /* Row 1: Search bar */
