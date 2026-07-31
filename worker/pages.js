@@ -2444,10 +2444,79 @@ ${AURORA_CSS}
   </script>
 </body></html>`; };
 
+// Converts a raw ESPN-shaped event (from data/event.json or data/event-recent.json)
+// into the same { event, slug, date, prelimsAt, city, location, main, fights[] } shape
+// currentLanding().card already carries, so rowHTML/body-assembly below can render EITHER
+// without a fork. Deliberately never sets `.main` (the precomputed style/pace/path/story
+// deep-tape object) — that only exists for the site's actual current main event, built by
+// the twice-daily generator off the full stats corpus, which this Worker doesn't have. Every
+// bout here (main event included) therefore gets the free tale-of-tape + locked-teaser
+// treatment, never the full breakdown — that stays exclusive to the real featured card.
+// `physBySlug` (fighter-lite.json's per-fighter `phys`) is what makes even THAT much
+// possible: it's the same shape `.tape` already uses (age/ht/reach/stance/layoff/l5), so a
+// genuine physical comparison works for any bout, not just the ones the generator covered.
+function eventToCard(raw, physBySlug, isPast) {
+  const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
+  const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
+  const bouts = (raw.bouts || [])
+    .filter((b) => !b.isCancelled && Array.isArray(b.fighters) && b.fighters.length >= 2)
+    .slice()
+    .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
+  const fights = bouts.map((b, i) => {
+    const [fa, fb] = b.fighters;
+    const slugA = fa.fighterSlug || (fa.profile && fa.profile.slug) || "";
+    const slugB = fb.fighterSlug || (fb.profile && fb.profile.slug) || "";
+    const physA = physBySlug && physBySlug[slugA];
+    const physB = physBySlug && physBySlug[slugB];
+    const f = {
+      f1: fa.fighterName || (fa.profile && fa.profile.name) || "",
+      f2: fb.fighterName || (fb.profile && fb.profile.name) || "",
+      s1: slugA, s2: slugB,
+      rank1: fa.rankText || null, rank2: fb.rankText || null,
+      rec1: stripRec(fa.profile && fa.profile.record && fa.profile.record.text),
+      rec2: stripRec(fb.profile && fb.profile.record && fb.profile.record.text),
+      o1: b.odds && b.odds.red != null ? b.odds.red : null,
+      o2: b.odds && b.odds.blue != null ? b.odds.blue : null,
+      weight: stripBout(b.weightClass),
+      rounds: b.numberOfRounds || 3,
+      main: i === 0,
+      section: b.cardSection || "Main Card",
+      tape: (physA && physB) ? { a: physA, b: physB } : null,
+    };
+    if (isPast) {
+      const winnerSlug = b.winnerFighterSlug || null;
+      const winnerFighter = winnerSlug ? b.fighters.find((x) => x.fighterSlug === winnerSlug) : null;
+      const method = [b.method, b.methodDetails].filter(Boolean).join(" — ");
+      if (winnerFighter) {
+        f.result = { winner: winnerFighter.fighterName, method, round: b.resultRound || null, time: b.resultTime || null, voided: false };
+      } else if (/draw|no\s*contest/i.test(b.method || "")) {
+        f.result = { voided: true, draw: /draw/i.test(b.method || ""), method, round: b.resultRound || null };
+      }
+    }
+    return f;
+  });
+  return {
+    event: raw.espnName || raw.title || raw.shortTitle || "UFC Event",
+    slug: raw.slug || raw.id || "",
+    date: (raw.startsAt || "").slice(0, 10),
+    prelimsAt: raw.prelimsStartsAt || raw.startsAt || null,
+    city: raw.city || "",
+    location: raw.locationText || [raw.venue, raw.city].filter(Boolean).join(", "),
+    main: null,
+    fights,
+  };
+}
+
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
+export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overridePhysBySlug = null, overrideIsPast = false }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const card = (currentLanding() || {}).card || null;   // held card wins for 34h
+  const currentCard = (currentLanding() || {}).card || null;   // held card wins for 34h
+  // A carousel/past-dropdown pick that turns out to BE the site's actual current card
+  // (same slug) falls through to currentCard as-is, so it keeps its precomputed deep
+  // dive instead of losing it to a rebuilt-from-raw copy that only has the free tape.
+  const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
+  const card = isOtherEvent ? eventToCard(overrideRaw, overridePhysBySlug, overrideIsPast) : currentCard;
+  const isPastView = isOtherEvent && overrideIsPast;
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
   // it (that produced the "++220" double plus on underdogs).
   const fmtO = (o) => (o == null || o === "" ? "—" : String(o));
@@ -2600,6 +2669,36 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   // Moneyline color: the favorite (smaller American number, e.g. -247 < +200)
   // greens, the underdog reds. Left white when either price is missing or even.
   const mlNum = (v) => { const m = /([+-]?\d+(?:\.\d+)?)/.exec(String(v == null ? "" : v)); return m ? parseFloat(m[0]) : null; };
+  // Past-event result rendering — a static, server-rendered version of the SAME
+  // markup the live-results poller below builds client-side for the current card
+  // (decorate()/line()/abbrMeth()). A past card already knows its result at
+  // render time, so there's nothing to poll for.
+  const SUF_NAME = { jr: 1, sr: 1, ii: 1, iii: 1, iv: 1, v: 1 };
+  const normName = (s) => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim().split(/\s+/).filter((t) => t && !SUF_NAME[t]).join("");
+  const eqName = (a, b) => { const na = normName(a), nb = normName(b); if (!na || !nb) return false; if (na === nb) return true; return na.length >= 6 && nb.length >= 6 && (na.indexOf(nb) === 0 || nb.indexOf(na) === 0); };
+  const abbrMeth = (m) => {
+    const u = String(m || "").toUpperCase();
+    if (u.indexOf("UNANIM") >= 0) return "U-DEC";
+    if (u.indexOf("SPLIT") >= 0) return "S-DEC";
+    if (u.indexOf("MAJOR") >= 0) return "M-DEC";
+    if (u.indexOf("DEC") >= 0) return "DEC";
+    if (u.indexOf("SUBMISSION") >= 0 || u.indexOf("SUB") === 0 || u.indexOf("TAP") >= 0) return "SUB";
+    if (u.indexOf("KO/TKO") >= 0) return "KO/TKO";
+    if (u.indexOf("TKO") >= 0) return "TKO";
+    if (u.indexOf("KO") >= 0) return "KO";
+    if (u.indexOf("DISQUAL") >= 0 || u === "DQ") return "DQ";
+    if (u.indexOf("NO CONTEST") >= 0 || u === "NC") return "NC";
+    return String(m || "").trim();
+  };
+  const resultLine = (f, r) => {
+    if (r.voided) return `<span class="mf-res-void">${r.draw ? "Draw" : "No Contest"}</span>`;
+    if (!r.winner) return "";
+    const loser = eqName(r.winner, f.f1) ? f.f2 : f.f1;
+    // /dec/i, not an exact "Decision" match — our `method` string is "Decision — Unanimous"
+    // (method + methodDetails joined), never the bare word the live feed's field is.
+    const meth = r.method ? esc(r.method) + (!/dec/i.test(r.method) && r.round ? ` · R${esc(r.round)}` : "") : "";
+    return `<strong>${esc(r.winner)}</strong> def. ${esc(loser)}${meth ? ` <span class="mf-res-meth">${meth}</span>` : ""}`;
+  };
   const rowHTML = (f) => {
     const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
     const sA = profileSlugFor(f.f1, profileSlugs, f.s1);
@@ -2607,18 +2706,35 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     const o1n = mlNum(f.o1), o2n = mlNum(f.o2);
     let c1 = "", c2 = "";
     if (o1n != null && o2n != null && o1n !== o2n) { c1 = o1n < o2n ? "fav" : "dog"; c2 = o1n < o2n ? "dog" : "fav"; }
-    const innerL = `${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div><div class="mf-rec">${esc(f.rec1)} · <b class="${c1}">${fmtO(f.o1)}</b></div></div>`;
-    const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div><div class="mf-rec"><b class="${c2}">${fmtO(f.o2)}</b> · ${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
+    const res = f.result || null;
+    const tagFor = (name) => {
+      if (!res) return "";
+      if (res.voided) return `<span class="mf-restag flat">${res.draw ? "DRAW" : "NC"}</span>`;
+      if (!res.winner) return "";
+      return `<span class="mf-restag ${eqName(res.winner, name) ? "win" : "loss"}">${eqName(res.winner, name) ? "WIN" : "LOSS"}</span>`;
+    };
+    // Restag sits as a SIBLING right after .mf-name, not nested inside it — matches
+    // the DOM the live-results poller builds (decorate(): insertBefore(sp, nm.nextSibling)),
+    // so a past result and a freshly-decided live one render identically.
+    const innerL = `${av(f.s1, initials(f.f1))}<div class="mf-meta">${rk(f.rank1)}<div class="mf-name">${esc(f.f1)}</div>${tagFor(f.f1)}<div class="mf-rec">${esc(f.rec1)}${res ? "" : ` · <b class="${c1}">${fmtO(f.o1)}</b>`}</div></div>`;
+    const innerR = `<div class="mf-meta">${rk(f.rank2)}<div class="mf-name">${esc(f.f2)}</div>${tagFor(f.f2)}<div class="mf-rec">${res ? "" : `<b class="${c2}">${fmtO(f.o2)}</b> · `}${esc(f.rec2)}</div></div>${av(f.s2, initials(f.f2))}`;
     const sideL = sA ? `<a class="mf-side mf-link" href="/fighter/${esc(sA)}">${innerL}</a>` : `<div class="mf-side">${innerL}</div>`;
     const sideR = sB ? `<a class="mf-side right mf-link" href="/fighter/${esc(sB)}">${innerR}</a>` : `<div class="mf-side right">${innerR}</div>`;
+    const centerTop = res ? `<div class="mf-vs final">FINAL</div>` : `<div class="mf-vs">VS</div>`;
+    const centerBottom = res
+      ? `<div class="mf-meth">${esc(abbrMeth(res.method))}</div>${(!res.voided && res.round && !/dec/i.test(res.method || "")) ? `<div class="mf-mtime">R${esc(res.round)}</div>` : ""}`
+      : `<div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>`;
+    const panel = res
+      ? `<div class="mf-panel" hidden><div class="mf-result"><span class="mf-res-tag">Result</span>${resultLine(f, res)}</div></div>`
+      : ((f.main && card.main) ? breakdownHTML(f, card.main) : nonMainPanel(f));
     return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}">
       <div class="mf-row">
         ${sideL}
-        <div class="mf-center"><div class="mf-vs">VS</div><div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div><button type="button" class="mf-info" onclick="mfToggle(this)">Fight Info ⌄</button></div>
+        <div class="mf-center">${centerTop}${centerBottom}<button type="button" class="mf-info" onclick="mfToggle(this)">${res ? "Result" : "Fight Info"} ⌄</button></div>
         ${sideR}
       </div>
-      ${f.main && (sA || sB) ? `<div class="mf-taphint"><span class="tapword">Tap</span> any fighter for their lite profile</div>` : ""}
-      ${f.main ? breakdownHTML(f, card && card.main) : nonMainPanel(f)}
+      ${(!res && f.main && (sA || sB)) ? `<div class="mf-taphint"><span class="tapword">Tap</span> any fighter for their lite profile</div>` : ""}
+      ${panel}
     </div>`;
   };
 
@@ -2666,6 +2782,49 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
     card.location ? { location: { "@type": "Place", name: card.location.split(",")[0].trim(), address: card.location } } : {},
     (card.fights && card.fights.length) ? { performer: card.fights.flatMap((f) => [{ "@type": "Person", name: f.f1 }, { "@type": "Person", name: f.f2 }]) } : {}
   )).replace(/</g, "\\u003c")}</script>` : "";
+
+  // ── Upcoming-events carousel — the free-page equivalent of the app's events
+  // carousel. Cards link to /matchup?event=<slug>, a real navigation (not a
+  // client fetch), so it's crawlable and works with JS off. Odds are usually
+  // still "—" for anything past the featured card: data/event.json is the raw
+  // schedule feed, not the live odds feed, so only the currently-held/next card
+  // (which the generator merges odds into) shows real prices.
+  const evMainNames = (raw) => {
+    const bouts = (raw.bouts || []).slice().sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
+    const m = bouts[0];
+    if (!m || !m.fighters || m.fighters.length < 2) return "";
+    const nm = (x) => (x.fighterName || (x.profile && x.profile.name) || "").trim();
+    return [nm(m.fighters[0]), nm(m.fighters[1])].filter(Boolean).join(" vs ");
+  };
+  const carouselCard = (raw) => {
+    const active = card && raw.slug === card.slug;
+    const dateStr = esc(eventWhen({ prelimsAt: raw.prelimsStartsAt || raw.startsAt }, { weekday: undefined, month: "short", day: "numeric" }) || "TBA");
+    return `<a class="mf-ev-card${active ? " active" : ""}" href="/matchup?event=${esc(raw.slug)}">
+      <div class="mf-ev-date">${dateStr}</div>
+      <div class="mf-ev-name">${esc(raw.shortTitle || raw.title || "UFC Event")}</div>
+      <div class="mf-ev-main">${esc(evMainNames(raw))}</div>
+      <div class="mf-ev-loc">${esc(raw.city || "")}</div>
+    </a>`;
+  };
+  const carouselHTML = upcomingEvents.length
+    ? `<div class="mf-sechdr" style="margin-top:0">Upcoming Events</div><div class="mf-carousel" id="mfCarousel">${upcomingEvents.slice(0, 16).map(carouselCard).join("")}</div>`
+    : "";
+
+  // ── Past-events dropdown — a native <select> (no custom listbox anywhere else
+  // in this codebase to match, and a real <select> works without JS). Picking one
+  // navigates to /matchup?event=<slug>, which eventToCard()+isPastView render as a
+  // results card instead of an upcoming one.
+  const pastOptions = pastEvents.slice(0, 24).map((raw) => {
+    const d = eventWhen({ prelimsAt: raw.startsAt }, { weekday: undefined, month: "short", day: "numeric", year: "numeric" }) || "";
+    const label = [raw.shortTitle || raw.title || "UFC Event", d].filter(Boolean).join(" — ");
+    return `<option value="${esc(raw.slug)}"${isPastView && card.slug === raw.slug ? " selected" : ""}>${esc(label)}</option>`;
+  }).join("");
+  const pastDropdownHTML = pastEvents.length
+    ? `<div class="mf-past"><label for="mfPastSelect" class="mf-sechdr" style="margin:1.4rem 0 .5rem">Past Results</label>
+      <select id="mfPastSelect" class="mf-past-select" onchange="if(this.value)location.href='/matchup?event='+this.value">
+        <option value="">Pick a past event…</option>${pastOptions}
+      </select></div>`
+    : "";
 
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -2781,6 +2940,37 @@ ${eventLd}
   .mf-lock-btn:hover{background:linear-gradient(180deg,rgba(0,230,104,.18),rgba(0,230,104,.07));border-color:var(--accent)}
   .mf-cta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.1rem;margin-top:1.6rem;text-align:center;font-size:.9rem}
   .mf-cta a{color:var(--accent);text-decoration:none;font-weight:700}
+  /* Fighter search — a real lookup against /api/fighter-search (server-filtered
+     fighter-lite.json), not a client-embedded name list; 3,100+ fighters is too
+     much to ship in every page load just for a search box. */
+  .mf-search{position:relative;margin:0 0 1.1rem}
+  .mf-search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.88rem;padding:.7rem .9rem;box-sizing:border-box;transition:border-color .13s ease}
+  .mf-search-input:focus{outline:none;border-color:var(--accent)}
+  .mf-search-results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:10px;max-height:320px;overflow-y:auto;z-index:6;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .mf-search-item{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .9rem;text-decoration:none;color:var(--text);font-size:.85rem;border-bottom:1px solid var(--border)}
+  .mf-search-item:last-child{border-bottom:none}
+  .mf-search-item:hover,.mf-search-item:focus{background:var(--surface2)}
+  .mf-search-item .mfs-name{font-weight:700}
+  .mf-search-item .mfs-meta{color:var(--muted);font-size:.75rem;white-space:nowrap}
+  .mf-search-empty{padding:.7rem .9rem;color:var(--muted);font-size:.82rem}
+  /* Upcoming-events carousel — horizontally scrollable, snap-per-card, same
+     tinted-card language as .mf-card rather than a full carousel widget. */
+  .mf-carousel{display:flex;gap:.6rem;overflow-x:auto;scroll-snap-type:x proximity;padding:.2rem .1rem .7rem;margin:0 0 .3rem;-webkit-overflow-scrolling:touch}
+  .mf-carousel::-webkit-scrollbar{height:6px}
+  .mf-carousel::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  .mf-ev-card{flex:0 0 auto;scroll-snap-align:start;width:150px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.65rem .7rem;text-decoration:none;color:var(--text);transition:border-color .13s ease,background .13s ease}
+  .mf-ev-card:hover{border-color:var(--accent);background:var(--surface2)}
+  .mf-ev-card.active{border-color:rgba(0,230,104,.45);background:rgba(0,230,104,.06)}
+  .mf-ev-date{font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+  .mf-ev-name{font-size:.78rem;font-weight:700;margin-top:.15rem;line-height:1.25}
+  .mf-ev-main{font-size:.7rem;color:var(--muted);margin-top:.3rem;line-height:1.3}
+  .mf-ev-loc{font-size:.66rem;color:var(--muted);margin-top:.25rem}
+  .mf-backlink{display:inline-block;color:var(--accent);text-decoration:none;font-weight:700;font-size:.82rem;margin:0 0 .8rem}
+  /* Past-results dropdown — a real <select>, styled minimally rather than
+     reimplemented as a custom listbox (nothing else in this codebase has one). */
+  .mf-past{margin-top:1.6rem}
+  .mf-past-select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.85rem;padding:.65rem .8rem;box-sizing:border-box}
+  .mf-past-select:focus{outline:none;border-color:var(--accent)}
   /* fighter stat popup */
   .mp-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center}
   .mp-overlay[hidden]{display:none}
@@ -2819,16 +3009,61 @@ ${AURORA_CSS}
   <main>
     ${freeTabs("/matchup")}
     ${loggedIn ? "" : signupBanner}
+    <div class="mf-search">
+      <input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off" aria-label="Search fighters">
+      <div id="mfSearchResults" class="mf-search-results" hidden></div>
+    </div>
+    ${carouselHTML}
+    ${isOtherEvent ? `<a href="/matchup" class="mf-backlink">&larr; Back to this week's card</a>` : ""}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
-    <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}</p>
+    <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}${isPastView ? ` · <span style="color:var(--accent);font-weight:700">Final</span>` : ""}</p>
     ${body}
-    <div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>
+    ${isOtherEvent
+      ? `<div class="mf-cta">${isPastView ? "Results shown are the winner, method and round only." : "This event hasn't been fully profiled yet."} <a href="/matchup">See this week's full breakdown →</a></div>`
+      : `<div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>`}
+    ${pastDropdownHTML}
   </main>
   ${FREE_FOOTER}
   <script>
     document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;var h=a.getAttribute("href");if(!h||h.charAt(0)!=="/"||a.target==="_blank"||e.metaKey||e.ctrlKey||e.shiftKey)return;e.preventDefault();document.body.classList.add("leaving");setTimeout(function(){window.location=h;},130);});
     window.addEventListener("pageshow",function(){document.body.classList.remove("leaving");});
     (function(){if(window.matchMedia&&window.matchMedia("(hover:hover) and (pointer:fine)").matches){Array.prototype.forEach.call(document.querySelectorAll(".tapword"),function(el){el.textContent="Click";});}})();
+    // Fighter search — debounced against /api/fighter-search (server does the
+    // filtering; 3,100+ fighters never ships to the client for this). Result
+    // links are plain <a href="/fighter/..">, so the page-fade handler above
+    // already picks them up — nothing extra needed for the click itself.
+    (function(){
+      var input=document.getElementById("mfSearchInput"),box=document.getElementById("mfSearchResults");
+      if(!input||!box)return;
+      function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
+      var t=null,ctl=null,seq=0;
+      function hide(){box.hidden=true;box.innerHTML="";}
+      function show(html){box.innerHTML=html;box.hidden=false;}
+      function render(list){
+        if(!list.length){show('<div class="mf-search-empty">No fighters found</div>');return;}
+        show(list.map(function(f){
+          return '<a class="mf-search-item" href="/fighter/'+esc(f.slug)+'"><span class="mfs-name">'+esc(f.name)+'</span><span class="mfs-meta">'+esc([f.division,f.record].filter(Boolean).join(" · "))+'</span></a>';
+        }).join(""));
+      }
+      function search(q){
+        var my=++seq;
+        if(ctl)ctl.abort();
+        ctl=new AbortController();
+        fetch("/api/fighter-search?q="+encodeURIComponent(q),{signal:ctl.signal}).then(function(r){return r.ok?r.json():{results:[]};}).then(function(d){
+          if(my!==seq)return;
+          render((d&&d.results)||[]);
+        }).catch(function(){});
+      }
+      input.addEventListener("input",function(){
+        var q=input.value.trim();
+        if(t)clearTimeout(t);
+        if(q.length<2){hide();return;}
+        t=setTimeout(function(){search(q);},220);
+      });
+      input.addEventListener("focus",function(){if(input.value.trim().length>=2&&box.innerHTML)box.hidden=false;});
+      document.addEventListener("click",function(e){if(e.target!==input&&!box.contains(e.target))hide();});
+      input.addEventListener("keydown",function(e){if(e.key==="Escape")hide();});
+    })();
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
       var card=btn.closest(".mf-card");var p=card&&card.querySelector(".mf-panel");if(!p)return;
@@ -2882,6 +3117,10 @@ ${AURORA_CSS}
     // another event; pauses on a hidden tab. One fetch on load fills results if the card
     // just finished, before the twice-daily rebuild catches up.
     (function(){
+      // Only the site's real current card gets live-polled — a carousel/past pick
+      // (isOtherEvent) already knows its result server-side (past) or hasn't been
+      // built by the generator yet (future), so there's nothing this feed would match.
+      if(${JSON.stringify(isOtherEvent)})return;
       var CARD_SLUG=${JSON.stringify(card ? (card.slug || null) : null)};
       if(!CARD_SLUG)return;
       var PRELIMS=Date.parse(${JSON.stringify(card ? (card.prelimsAt || card.date || "") : "")});

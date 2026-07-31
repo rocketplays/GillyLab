@@ -1698,11 +1698,52 @@ export default {
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);
-        const [u, profileSlugs] = await Promise.all([
+        const wantSlug = (url.searchParams.get("event") || "").trim().toLowerCase();
+        const [u, profileSlugs, upcomingRaw, pastRaw] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadProfileSlugs(env, url),
+          loadAssetJson(env, url, "/data/event.json"),
+          loadAssetJson(env, url, "/data/event-recent.json"),
         ]);
-        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs }), 200, pubHeaders(s));
+        const upcomingEvents = ((upcomingRaw && upcomingRaw.data) || []).slice().sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
+        const pastEvents = ((pastRaw && pastRaw.data) || []).slice().sort((a, b) => Date.parse(b.startsAt || 0) - Date.parse(a.startsAt || 0));
+        let overrideRaw = null, overridePhysBySlug = null, overrideIsPast = false;
+        if (wantSlug) {
+          overrideRaw = upcomingEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null;
+          if (!overrideRaw) { overrideRaw = pastEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null; overrideIsPast = !!overrideRaw; }
+          if (overrideRaw) {
+            // The free "tale of the tape" for a non-featured event has to be built
+            // from fighter-lite.json's per-fighter `phys` at request time — nothing
+            // precomputes it for events the twice-daily generator doesn't cover.
+            const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+            if (lite && lite.bySlug) {
+              overridePhysBySlug = {};
+              for (const b of (overrideRaw.bouts || [])) for (const f of (b.fighters || [])) {
+                const slug = f.fighterSlug || (f.profile && f.profile.slug);
+                const fl = slug && lite.bySlug[slug];
+                if (fl && fl.phys) overridePhysBySlug[slug] = fl.phys;
+              }
+            }
+          }
+        }
+        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs, upcomingEvents, pastEvents, overrideRaw, overridePhysBySlug, overrideIsPast }), 200, pubHeaders(s));
+      }
+      // Fighter search for /matchup's search bar — server-filtered so the client
+      // never has to download fighter-lite.json's 3,100+ entries just to type a name.
+      if (path === "/api/fighter-search" && request.method === "GET") {
+        const q = (url.searchParams.get("q") || "").trim().toLowerCase();
+        if (q.length < 2) return json({ results: [] });
+        const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
+        const bySlug = (lite && lite.bySlug) || {};
+        const results = [];
+        for (const slug in bySlug) {
+          const f = bySlug[slug];
+          if (f && f.name && f.name.toLowerCase().includes(q)) {
+            results.push({ name: f.name, slug: f.slug || slug, record: f.record || "", division: f.division || "" });
+            if (results.length >= 12) break;
+          }
+        }
+        return json({ results });
       }
       // Lite fighter profiles (unlinked from the funnel; discoverable via sitemap).
       if (path.startsWith("/fighter/")) {
