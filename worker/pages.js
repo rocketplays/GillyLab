@@ -2452,10 +2452,12 @@ ${AURORA_CSS}
 // the twice-daily generator off the full stats corpus, which this Worker doesn't have. Every
 // bout here (main event included) therefore gets the free tale-of-tape + locked-teaser
 // treatment, never the full breakdown — that stays exclusive to the real featured card.
-// `physBySlug` (fighter-lite.json's per-fighter `phys`) is what makes even THAT much
-// possible: it's the same shape `.tape` already uses (age/ht/reach/stance/layoff/l5), so a
-// genuine physical comparison works for any bout, not just the ones the generator covered.
-function eventToCard(raw, physBySlug, isPast) {
+// `liteBySlug` (fighter-lite.json's bySlug, per-fighter `.phys`) is what makes even
+// THAT much possible: it's the same shape `.tape` already uses (age/ht/reach/stance/
+// layoff/l5), so a genuine physical comparison works for any bout, not just the ones
+// the generator covered. One map, reused for every event this page touches — the
+// route loads it once, not per event.
+function eventToCard(raw, liteBySlug, isPast) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
   const bouts = (raw.bouts || [])
@@ -2466,8 +2468,8 @@ function eventToCard(raw, physBySlug, isPast) {
     const [fa, fb] = b.fighters;
     const slugA = fa.fighterSlug || (fa.profile && fa.profile.slug) || "";
     const slugB = fb.fighterSlug || (fb.profile && fb.profile.slug) || "";
-    const physA = physBySlug && physBySlug[slugA];
-    const physB = physBySlug && physBySlug[slugB];
+    const physA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].phys;
+    const physB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].phys;
     const f = {
       f1: fa.fighterName || (fa.profile && fa.profile.name) || "",
       f2: fb.fighterName || (fb.profile && fb.profile.name) || "",
@@ -2507,15 +2509,33 @@ function eventToCard(raw, physBySlug, isPast) {
   };
 }
 
+// Same "is this a Road to UFC card" check as index.html's isRoadToUFCRaw — matched
+// against espnName first because title/shortTitle/name collapse every unnumbered
+// event to the generic "UFC Fight Night" bucket (see that function's comment for
+// why). Kept in lockstep with the in-app version rather than re-derived.
+function isRoadToUFCRaw(raw) {
+  const name = (raw && (raw.espnName || raw.title || raw.shortTitle || raw.name)) || "";
+  return /road\s+to\s+(the\s+)?ufc/i.test(name);
+}
+// A card ESPN has created but not yet published bouts for — DWCS is the common
+// case (on the calendar ~2 months out, matchups land about a week before). Same
+// guard index.html's carousel/pickNextRawEvent use, which is what actually hides
+// DWCS specifically: it isn't matched by name anywhere, it just has zero bouts
+// until fight week.
+const hasBouts = (raw) => !!(raw && raw.bouts && raw.bouts.length);
+// A past event only belongs in the results dropdown once it actually has a
+// decided bout — mirrors index.html's hasResults() in setupPrevEventsDropdown.
+const hasResults = (raw) => !!(raw && (raw.bouts || []).some((b) => b.winnerFighterSlug || (b.fighters || []).some((f) => String(f.outcome || "").toLowerCase() === "win")));
+
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overridePhysBySlug = null, overrideIsPast = false }) => {
+export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overrideIsPast = false, fighterLiteBySlug = {} }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const currentCard = (currentLanding() || {}).card || null;   // held card wins for 34h
   // A carousel/past-dropdown pick that turns out to BE the site's actual current card
   // (same slug) falls through to currentCard as-is, so it keeps its precomputed deep
   // dive instead of losing it to a rebuilt-from-raw copy that only has the free tape.
   const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
-  const card = isOtherEvent ? eventToCard(overrideRaw, overridePhysBySlug, overrideIsPast) : currentCard;
+  const card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast) : currentCard;
   const isPastView = isOtherEvent && overrideIsPast;
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
   // it (that produced the "++220" double plus on underdogs).
@@ -2699,7 +2719,13 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const meth = r.method ? esc(r.method) + (!/dec/i.test(r.method) && r.round ? ` · R${esc(r.round)}` : "") : "";
     return `<strong>${esc(r.winner)}</strong> def. ${esc(loser)}${meth ? ` <span class="mf-res-meth">${meth}</span>` : ""}`;
   };
-  const rowHTML = (f) => {
+  // `ownerCard` defaults to the page's main `card` for backward compat, but MUST be
+  // passed explicitly whenever rowHTML renders bouts belonging to a DIFFERENT event
+  // (the carousel below renders several events' fights while `card` still points at
+  // whichever one is featured up top) — otherwise a carousel bout's "main" flag would
+  // pull breakdownHTML's deep-tape data from the wrong event entirely.
+  const rowHTML = (f, ownerCard) => {
+    ownerCard = ownerCard || card;
     const rk = (r) => (r && r !== "NR") ? `<div class="mf-rank">${esc(r)}</div>` : "";
     const sA = profileSlugFor(f.f1, profileSlugs, f.s1);
     const sB = profileSlugFor(f.f2, profileSlugs, f.s2);
@@ -2726,7 +2752,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
       : `<div class="mf-wt">${esc(f.weight)}</div><div class="mf-rds">${f.rounds} RDS</div>`;
     const panel = res
       ? `<div class="mf-panel" hidden><div class="mf-result"><span class="mf-res-tag">Result</span>${resultLine(f, res)}</div></div>`
-      : ((f.main && card.main) ? breakdownHTML(f, card.main) : nonMainPanel(f));
+      : ((f.main && ownerCard.main) ? breakdownHTML(f, ownerCard.main) : nonMainPanel(f));
     return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}">
       <div class="mf-row">
         ${sideL}
@@ -2739,13 +2765,16 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   };
 
   // Group fights by card section (Main Card / Prelims / …), main event first.
-  let body = `<p class="mf-empty">No upcoming card is posted yet — check back on fight week.</p>`;
-  if (card && card.fights && card.fights.length) {
+  // Factored out so the full-card carousel below can build any OTHER event's fight
+  // list with the exact same section grouping/order, not a re-derived copy of it.
+  const buildBody = (c) => {
+    if (!c || !c.fights || !c.fights.length) return `<p class="mf-empty">No upcoming card is posted yet — check back on fight week.</p>`;
     const secOrder = ["Main Card", "Prelims", "Early Prelims", "Preliminary Card"];
-    const bySec = {}; card.fights.forEach((f) => { (bySec[f.section || "Main Card"] = bySec[f.section || "Main Card"] || []).push(f); });
+    const bySec = {}; c.fights.forEach((f) => { (bySec[f.section || "Main Card"] = bySec[f.section || "Main Card"] || []).push(f); });
     const secs = Object.keys(bySec).sort((a, b) => (secOrder.indexOf(a) + 1 || 99) - (secOrder.indexOf(b) + 1 || 99));
-    body = secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map(rowHTML).join("")).join("");
-  }
+    return secs.map((s) => `<div class="mf-sechdr">${esc(s)}</div>` + bySec[s].map((f) => rowHTML(f, c)).join("")).join("");
+  };
+  const body = buildBody(card);
   // card.date is a UTC calendar date, which for US-evening cards is a day ahead of
   // the real (Eastern-time) event date. Anchor on the actual prelims timestamp and
   // format it in America/New_York so the day is correct (fall back to card.date).
@@ -2783,47 +2812,82 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     (card.fights && card.fights.length) ? { performer: card.fights.flatMap((f) => [{ "@type": "Person", name: f.f1 }, { "@type": "Person", name: f.f2 }]) } : {}
   )).replace(/</g, "\\u003c")}</script>` : "";
 
-  // ── Upcoming-events carousel — the free-page equivalent of the app's events
-  // carousel. Cards link to /matchup?event=<slug>, a real navigation (not a
-  // client fetch), so it's crawlable and works with JS off. Odds are usually
-  // still "—" for anything past the featured card: data/event.json is the raw
-  // schedule feed, not the live odds feed, so only the currently-held/next card
-  // (which the generator merges odds into) shows real prices.
-  const evMainNames = (raw) => {
-    const bouts = (raw.bouts || []).slice().sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
-    const m = bouts[0];
-    if (!m || !m.fighters || m.fighters.length < 2) return "";
-    const nm = (x) => (x.fighterName || (x.profile && x.profile.name) || "").trim();
-    return [nm(m.fighters[0]), nm(m.fighters[1])].filter(Boolean).join(" vs ");
+  // ── Upcoming-events carousel — the free-page equivalent of index.html's
+  // #carousel-track: FULL fight cards (header + Main Card/Prelims sections,
+  // every bout), one event per full-width slide, not a name-only teaser. Reuses
+  // buildBody()/rowHTML() so a carousel slide and the featured card above are
+  // built by the exact same code — no second, drifting renderer.
+  //
+  // Same exclusions index.html's renderCarousel/pickNextRawEvent apply:
+  //   - only events strictly AFTER the featured card (it's already shown above)
+  //   - hasBouts(): drops events ESPN has created but not yet published a card
+  //     for — this is what actually hides DWCS until fight week arrives; DWCS
+  //     is never excluded by name, only by having zero bouts
+  //   - isRoadToUFCRaw(): Road to UFC is a contender tournament, not the UFC
+  //     main roster, and doesn't belong in this list at all
+  //
+  // Capped at 6 full events (not all ~19 in the feed) — each slide is a
+  // complete fight-card render with per-bout tale-of-tape, so the page weight
+  // scales with this number. index.html can afford to render all of them
+  // because it's client-side and incremental; this is server-rendered HTML
+  // shipped on every request.
+  // Excluded by SLUG, not just by time: the raw feed's `startsAt` is the main-card
+  // bell, but currentCard.prelimsAt (from landingData) is the prelims bell — the
+  // same event compares as "later" against its own timestamp under a naive time-only
+  // filter, which is exactly how the featured card ended up duplicated as the
+  // carousel's own first "active" slide. The slug check is what actually keeps it
+  // out; the time filter after it is just belt-and-suspenders for anything with an
+  // earlier start that isn't the featured card itself.
+  const featuredTime = currentCard && currentCard.prelimsAt ? Date.parse(currentCard.prelimsAt) : (currentCard && currentCard.date ? Date.parse(currentCard.date) : NaN);
+  const carouselRaws = upcomingEvents
+    .filter(hasBouts)
+    .filter((raw) => !isRoadToUFCRaw(raw))
+    .filter((raw) => !currentCard || raw.slug !== currentCard.slug)
+    .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
+    .slice(0, 6);
+  const carouselSlide = (raw) => {
+    const evCard = eventToCard(raw, fighterLiteBySlug, false);
+    const active = card && evCard.slug === card.slug;
+    const when2 = eventWhen(evCard, { weekday: undefined, month: "short", day: "numeric" });
+    return `<div class="mf-ev-slide${active ? " active" : ""}" data-slug="${esc(evCard.slug)}">
+      <div class="mf-ev-slide-hdr">
+        <div class="mf-ev-slide-name">${esc(evCard.event)}</div>
+        <div class="mf-ev-slide-sub">${esc([when2, evCard.location].filter(Boolean).join(" · "))}</div>
+      </div>
+      ${buildBody(evCard)}
+      <a class="mf-ev-slide-link" href="/matchup?event=${esc(evCard.slug)}">Make this the page's featured card &rarr;</a>
+    </div>`;
   };
-  const carouselCard = (raw) => {
-    const active = card && raw.slug === card.slug;
-    const dateStr = esc(eventWhen({ prelimsAt: raw.prelimsStartsAt || raw.startsAt }, { weekday: undefined, month: "short", day: "numeric" }) || "TBA");
-    return `<a class="mf-ev-card${active ? " active" : ""}" href="/matchup?event=${esc(raw.slug)}">
-      <div class="mf-ev-date">${dateStr}</div>
-      <div class="mf-ev-name">${esc(raw.shortTitle || raw.title || "UFC Event")}</div>
-      <div class="mf-ev-main">${esc(evMainNames(raw))}</div>
-      <div class="mf-ev-loc">${esc(raw.city || "")}</div>
-    </a>`;
-  };
-  const carouselHTML = upcomingEvents.length
-    ? `<div class="mf-sechdr" style="margin-top:0">Upcoming Events</div><div class="mf-carousel" id="mfCarousel">${upcomingEvents.slice(0, 16).map(carouselCard).join("")}</div>`
+  const carouselHTML = carouselRaws.length
+    ? `<div class="mf-sechdr" style="margin-top:1.8rem">Upcoming Events</div>
+      <div class="mf-carousel-nav">
+        <button type="button" class="mf-car-btn" id="mfCarPrev" aria-label="Previous event">&lsaquo;</button>
+        <div class="mf-carousel-full" id="mfCarouselFull">${carouselRaws.map(carouselSlide).join("")}</div>
+        <button type="button" class="mf-car-btn" id="mfCarNext" aria-label="Next event">&rsaquo;</button>
+      </div>`
     : "";
 
   // ── Past-events dropdown — a native <select> (no custom listbox anywhere else
-  // in this codebase to match, and a real <select> works without JS). Picking one
+  // in this codebase to match, and a real <select> works without JS). Sits up top
+  // next to the header, like index.html's "View past event" selector. Picking one
   // navigates to /matchup?event=<slug>, which eventToCard()+isPastView render as a
-  // results card instead of an upcoming one.
-  const pastOptions = pastEvents.slice(0, 24).map((raw) => {
-    const d = eventWhen({ prelimsAt: raw.startsAt }, { weekday: undefined, month: "short", day: "numeric", year: "numeric" }) || "";
-    const label = [raw.shortTitle || raw.title || "UFC Event", d].filter(Boolean).join(" — ");
-    return `<option value="${esc(raw.slug)}"${isPastView && card.slug === raw.slug ? " selected" : ""}>${esc(label)}</option>`;
-  }).join("");
-  const pastDropdownHTML = pastEvents.length
-    ? `<div class="mf-past"><label for="mfPastSelect" class="mf-sechdr" style="margin:1.4rem 0 .5rem">Past Results</label>
-      <select id="mfPastSelect" class="mf-past-select" onchange="if(this.value)location.href='/matchup?event='+this.value">
-        <option value="">Pick a past event…</option>${pastOptions}
-      </select></div>`
+  // results card instead of an upcoming one. Same filters as index.html's
+  // setupPrevEventsDropdown: has bouts, has an actual decided result, not Road to UFC.
+  const pastOptions = pastEvents
+    .filter(hasBouts).filter(hasResults).filter((raw) => !isRoadToUFCRaw(raw))
+    .slice(0, 24)
+    .map((raw) => {
+      const d = eventWhen({ prelimsAt: raw.startsAt }, { weekday: undefined, month: "short", day: "numeric", year: "numeric" }) || "";
+      const label = [raw.shortTitle || raw.title || "UFC Event", d].filter(Boolean).join(" — ");
+      return `<option value="${esc(raw.slug)}"${isPastView && card.slug === raw.slug ? " selected" : ""}>${esc(label)}</option>`;
+    }).join("");
+  const pastDropdownHTML = pastOptions
+    ? `<div class="mf-past-top">
+        <label for="mfPastSelect" class="mf-past-label">View past event</label>
+        <select id="mfPastSelect" class="mf-past-select" onchange="if(this.value)location.href='/matchup?event='+this.value;else location.href='/matchup';">
+          <option value="">${isOtherEvent ? "&larr; Back to this week&rsquo;s card" : "Upcoming &mdash; " + esc(card ? card.event : "Next Card")}</option>${pastOptions}
+        </select>
+      </div>`
     : "";
 
   return `<!doctype html><html lang="en"><head>
@@ -2944,7 +3008,11 @@ ${eventLd}
      fighter-lite.json), not a client-embedded name list; 3,100+ fighters is too
      much to ship in every page load just for a search box. */
   .mf-search{position:relative;margin:0 0 1.1rem}
-  .mf-search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.88rem;padding:.7rem .9rem;box-sizing:border-box;transition:border-color .13s ease}
+  /* font-size MUST be >=16px — iOS Safari auto-zooms the page on focus for any
+     input under that, which is the "zooms in and lags until you zoom back out"
+     bug. .88rem against this page's 15px base was ~13px. 16px flat, not rem, so
+     it can't get pulled back under 16 by a page-level base-size change later. */
+  .mf-search-input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:16px;padding:.7rem .9rem;box-sizing:border-box;transition:border-color .13s ease}
   .mf-search-input:focus{outline:none;border-color:var(--accent)}
   .mf-search-results{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--card);border:1px solid var(--border);border-radius:10px;max-height:320px;overflow-y:auto;z-index:6;box-shadow:0 8px 24px rgba(0,0,0,.4)}
   .mf-search-item{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .9rem;text-decoration:none;color:var(--text);font-size:.85rem;border-bottom:1px solid var(--border)}
@@ -2953,22 +3021,28 @@ ${eventLd}
   .mf-search-item .mfs-name{font-weight:700}
   .mf-search-item .mfs-meta{color:var(--muted);font-size:.75rem;white-space:nowrap}
   .mf-search-empty{padding:.7rem .9rem;color:var(--muted);font-size:.82rem}
-  /* Upcoming-events carousel — horizontally scrollable, snap-per-card, same
-     tinted-card language as .mf-card rather than a full carousel widget. */
-  .mf-carousel{display:flex;gap:.6rem;overflow-x:auto;scroll-snap-type:x proximity;padding:.2rem .1rem .7rem;margin:0 0 .3rem;-webkit-overflow-scrolling:touch}
-  .mf-carousel::-webkit-scrollbar{height:6px}
-  .mf-carousel::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-  .mf-ev-card{flex:0 0 auto;scroll-snap-align:start;width:150px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:.65rem .7rem;text-decoration:none;color:var(--text);transition:border-color .13s ease,background .13s ease}
-  .mf-ev-card:hover{border-color:var(--accent);background:var(--surface2)}
-  .mf-ev-card.active{border-color:rgba(0,230,104,.45);background:rgba(0,230,104,.06)}
-  .mf-ev-date{font-size:.62rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
-  .mf-ev-name{font-size:.78rem;font-weight:700;margin-top:.15rem;line-height:1.25}
-  .mf-ev-main{font-size:.7rem;color:var(--muted);margin-top:.3rem;line-height:1.3}
-  .mf-ev-loc{font-size:.66rem;color:var(--muted);margin-top:.25rem}
-  .mf-backlink{display:inline-block;color:var(--accent);text-decoration:none;font-weight:700;font-size:.82rem;margin:0 0 .8rem}
+  /* Upcoming-events carousel — full fight cards, one per full-width slide,
+     scroll-snapped like index.html's #carousel-track (min-width:100% slides).
+     Prev/next buttons flank it for desktop/no-touch; snap makes swipe work
+     on its own for touch, same as the app. */
+  .mf-carousel-nav{display:flex;align-items:flex-start;gap:.4rem}
+  .mf-carousel-full{flex:1;min-width:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .mf-carousel-full::-webkit-scrollbar{display:none}
+  .mf-ev-slide{flex:0 0 100%;scroll-snap-align:start;min-width:0;padding:0 .1rem}
+  .mf-ev-slide.active .mf-ev-slide-hdr{border-color:rgba(0,230,104,.45)}
+  .mf-ev-slide-hdr{background:var(--card);border:1px solid var(--border);border-radius:10px 10px 0 0;padding:.7rem .9rem;margin-top:.2rem}
+  .mf-ev-slide-name{font-weight:800;font-size:.95rem}
+  .mf-ev-slide-sub{color:var(--muted);font-size:.76rem;margin-top:.15rem}
+  .mf-ev-slide-link{display:block;text-align:center;color:var(--accent);text-decoration:none;font-weight:700;font-size:.78rem;padding:.6rem;background:var(--card);border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px}
+  .mf-car-btn{flex:0 0 auto;width:32px;height:32px;margin-top:1.6rem;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1.1rem;line-height:1;cursor:pointer;transition:border-color .13s ease}
+  .mf-car-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .mf-car-btn:disabled{opacity:.35;cursor:default}
+  @media (max-width:520px){.mf-car-btn{display:none}}
   /* Past-results dropdown — a real <select>, styled minimally rather than
-     reimplemented as a custom listbox (nothing else in this codebase has one). */
-  .mf-past{margin-top:1.6rem}
+     reimplemented as a custom listbox (nothing else in this codebase has one).
+     Sits up top, next to the header, like index.html's "View past event". */
+  .mf-past-top{margin:0 0 1rem}
+  .mf-past-label{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 .35rem}
   .mf-past-select{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;font-size:.85rem;padding:.65rem .8rem;box-sizing:border-box}
   .mf-past-select:focus{outline:none;border-color:var(--accent)}
   /* fighter stat popup */
@@ -3013,15 +3087,14 @@ ${AURORA_CSS}
       <input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off" aria-label="Search fighters">
       <div id="mfSearchResults" class="mf-search-results" hidden></div>
     </div>
-    ${carouselHTML}
-    ${isOtherEvent ? `<a href="/matchup" class="mf-backlink">&larr; Back to this week's card</a>` : ""}
+    ${pastDropdownHTML}
     <h1>${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}${isPastView ? ` · <span style="color:var(--accent);font-weight:700">Final</span>` : ""}</p>
-    ${body}
+    <div id="mfFeaturedBody">${body}</div>
     ${isOtherEvent
       ? `<div class="mf-cta">${isPastView ? "Results shown are the winner, method and round only." : "This event hasn't been fully profiled yet."} <a href="/matchup">See this week's full breakdown →</a></div>`
       : `<div class="mf-cta">${subscribed ? `<a href="/">Open GillyLab →</a> for this breakdown on every bout, plus the simulator.` : `You're seeing the main event free. <a href="/subscribe">Go Premium</a> for this on every bout, the fight simulator, odds tools and more.`}</div>`}
-    ${pastDropdownHTML}
+    ${carouselHTML}
   </main>
   ${FREE_FOOTER}
   <script>
@@ -3063,6 +3136,16 @@ ${AURORA_CSS}
       input.addEventListener("focus",function(){if(input.value.trim().length>=2&&box.innerHTML)box.hidden=false;});
       document.addEventListener("click",function(e){if(e.target!==input&&!box.contains(e.target))hide();});
       input.addEventListener("keydown",function(e){if(e.key==="Escape")hide();});
+    })();
+    // Carousel prev/next — scrolls by exactly one slide width. Touch/trackpad
+    // swipe already works via CSS scroll-snap; these buttons are the desktop
+    // affordance index.html's carousel arrows serve too.
+    (function(){
+      var track=document.getElementById("mfCarouselFull"),prev=document.getElementById("mfCarPrev"),next=document.getElementById("mfCarNext");
+      if(!track||!prev||!next)return;
+      function go(dir){track.scrollBy({left:dir*track.clientWidth,behavior:"smooth"});}
+      prev.addEventListener("click",function(){go(-1);});
+      next.addEventListener("click",function(){go(1);});
     })();
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
@@ -3129,7 +3212,11 @@ ${AURORA_CSS}
       function eqName(a,b){var na=norm(a),nb=norm(b);if(!na||!nb)return false;if(na===nb)return true;return na.length>=6&&nb.length>=6&&(na.indexOf(nb)===0||nb.indexOf(na)===0);}
       function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];});}
       function findCard(f1,f2){
-        var cards=document.querySelectorAll(".mf-card[data-f1]");
+        // Scoped to the featured card only — #mfCarouselFull holds OTHER events'
+        // .mf-card rows too, and a name collision there would decorate the wrong
+        // bout with the current card's live result.
+        var scope=document.getElementById("mfFeaturedBody")||document;
+        var cards=scope.querySelectorAll(".mf-card[data-f1]");
         for(var i=0;i<cards.length;i++){var c=cards[i],a=c.getAttribute("data-f1"),b=c.getAttribute("data-f2");
           if((eqName(a,f1)&&eqName(b,f2))||(eqName(a,f2)&&eqName(b,f1)))return c;}
         return null;

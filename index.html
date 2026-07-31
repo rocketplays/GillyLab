@@ -840,10 +840,12 @@
       letter-spacing: 0.06em;
       margin-top: 0.15rem;
     }
-    /* Moneyline chip next to the record: favorite greens, underdog reds. */
+    /* Moneyline chip next to the record. Was favorite-greens/underdog-reds;
+       reverted back to plain white — fav/dog classes are still added (other
+       code reads them), just no longer colored. */
     .fighter-record .gl-ml { font-weight: 700; }
-    .fighter-record .gl-ml-fav { color: var(--accent); }
-    .fighter-record .gl-ml-dog { color: #ff6a5e; }
+    .fighter-record .gl-ml-fav { color: var(--text); }
+    .fighter-record .gl-ml-dog { color: var(--text); }
 
     .fighter-rank {
       font-size: 0.7rem;
@@ -7772,6 +7774,11 @@
  if (labelEl) labelEl.textContent = tab.textContent.trim();
  }
  }
+ // Remember the tab so a refresh reopens here instead of resetting to Events.
+ // sessionStorage, not localStorage — a brand-new tab/visit should still land
+ // on Events; only a reload of THIS tab should restore. Skip 'fighter': it's
+ // not a nav tab and there's no fighter identity to restore on load.
+ if (page !== 'fighter') { try { sessionStorage.setItem('glLastPage', page); } catch (e) {} }
  // "Back to Events" persists across the whole simulator visit, including
  // dipping into a fighter profile and returning. Clear it only when the user
  // navigates somewhere else entirely (not the fighter profile, not the
@@ -135231,6 +135238,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         window._pkDeepLinked = true;
         var wantClimb = location.hash === '#climb';
         try { navigate(wantClimb ? 'theclimb' : 'pickem'); history.replaceState(null, document.title, location.pathname + location.search); } catch (e) {}
+      } else {
+        // Reopen whatever tab the user had up before a refresh (see navigate()'s
+        // glLastPage write). An explicit #pickem/#climb deep link above wins over
+        // this — someone following a link should land where the link says, not
+        // wherever they last happened to be.
+        try {
+          var savedPage = sessionStorage.getItem('glLastPage');
+          if (savedPage && savedPage !== 'home') navigate(savedPage);
+        } catch (e) {}
       }
       if (apiData && apiData.data && apiData.data.length) renderTapeStudyPage(apiData);
     } catch(e) {
