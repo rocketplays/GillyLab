@@ -2368,6 +2368,11 @@
     .mh-gk-thin { display: inline-block; width: 0.85rem; height: 0.85rem; border-radius: 3px; border: 1px dashed rgba(255,255,255,0.22); background: rgba(255,255,255,0.02); vertical-align: middle; margin: 0 0.35rem 0 1.1rem; }
 
     .mh-empty { color: var(--muted); font-size: 0.8rem; text-align: center; padding: 1.5rem 0; }
+    /* Sits ABOVE a still-rendered breakdown (unlike .mh-empty, which replaces it) —
+       one side of the Wins/Losses filter has no fights, but the other man's
+       numbers are real and still shown below this. Muted, not accented: it's a
+       caveat about the filter, not a finding about the fighter. */
+    .mh-filter-note { color: var(--muted); font-size: 0.78rem; line-height: 1.4; background: rgba(255,255,255,0.04); border: 1px solid var(--border); border-radius: 6px; padding: 0.6rem 0.85rem; margin-bottom: 1.1rem; }
 
     @media (max-width: 720px) {
       #mh-box { width: 96vw; max-height: 92vh; }
@@ -110409,8 +110414,22 @@ function _ddGrid(name, resultFilter){
   // them. kdAg/subAg/revAg were speculative and nothing ever read them.
   // `cage` — total seconds fought across the fights `sn` counts. Every count above
   // is divided by it (in 15-minute units) before it is compared or shaded.
-  return n ? { cells, cellsD, fights:n, sFights:sn, cage,
-               tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg, kd, sub, rev } : null;
+  if (n) return { cells, cellsD, fights:n, sFights:sn, cage,
+                   tdL, tdA, tdAgL, tdAgA, ctrl, ctrlAg, kd, sub, rev };
+  // n===0 has two different causes and they must not be conflated. If wantResult
+  // is set, this fighter simply has none of the filtered result (an undefeated
+  // man under "Losses") — that's real information, not missing data, and the
+  // OTHER fighter's numbers are still worth showing. Return an all-zero stub
+  // (noData:true) rather than null so mhStriking/mhGrappling keep rendering; every
+  // comparison helper here already treats zero exposure as "no assertion"
+  // (_mhLeadRate/_mhGrade both return 0/null on n=0, _mhRate returns 0), so a
+  // zeroed side draws empty bars and stays silent rather than claiming anything.
+  // If wantResult is NOT set, this is the pre-existing case — no usable grid data
+  // for this fighter at all — and null is correct: mhRenderBody blocks the whole
+  // panel exactly as it always has for a fighter the grid doesn't cover.
+  if (wantResult) return { cells, cellsD, fights:0, sFights:0, cage:0,
+                            tdL:0, tdA:0, tdAgL:0, tdAgA:0, ctrl:0, ctrlAg:0, kd:0, sub:0, rev:0, noData:true };
+  return null;
 }
 let _ddIndex = null, _ddStatsIndex = null, _ddHistIdx = null;
 
@@ -111210,19 +111229,33 @@ function mhRenderBody(){
   const body = document.getElementById('mh-body');
   if (!body || !_mhState) return;
   const { A, B, n1, n2, tab, resultFilter } = _mhState;
+  // NULL means "no grid data for this fighter at all" — unrelated to the filter,
+  // the pre-existing case where the grid simply doesn't cover him. That still
+  // blocks the whole panel; there's nothing to fall back to.
   if (!A || !B) {
-    // Filter-aware empty state: a fighter with no losses on record (or a debut
-    // with no fights at all under the grid's coverage) shouldn't read as a
-    // broken panel — name whichever side actually has nothing under this filter.
-    const rf = resultFilter && resultFilter !== 'all' ? resultFilter : null;
-    const msg = !rf ? 'No breakdown available for this bout.'
-      : 'No ' + (rf === 'win' ? 'wins' : 'losses') + ' on record for ' + escHtmlAttr(!A ? n1 : n2) + '.';
-    body.innerHTML = '<div class="mh-empty">' + msg + '</div>';
+    body.innerHTML = '<div class="mh-empty">No breakdown available for this bout.</div>';
     return;
   }
+  const rf = resultFilter === 'win' ? 'wins' : resultFilter === 'loss' ? 'losses' : null;
+  // noData (see _ddGrid) means the grid HAS this fighter, just zero rows match
+  // the filter — e.g. an undefeated man under "Losses". If BOTH sides are empty
+  // there's nothing to compare (every bar would read 0 vs 0), so say that
+  // plainly. If only ONE side is empty, that's exactly the case a user asked to
+  // fix: the other man's numbers are real and worth showing, so render normally
+  // and just label which side is empty and why, rather than blocking the panel.
+  if (A.noData && B.noData) {
+    body.innerHTML = '<div class="mh-empty">Neither fighter has any ' + rf + ' on record.</div>';
+    return;
+  }
+  let note = '';
+  if (A.noData || B.noData) {
+    const emptyName = A.noData ? n1 : n2, shownName = A.noData ? n2 : n1;
+    note = '<div class="mh-filter-note">' + escHtmlAttr(emptyName) + ' has no ' + rf +
+      ' on record — showing ' + escHtmlAttr(shownName) + '\'s numbers only.</div>';
+  }
   try {
-    body.innerHTML = tab === 'grappling' ? mhGrappling(A, B, n1, n2)
-                                         : mhStriking(A, B, n1, n2);
+    body.innerHTML = note + (tab === 'grappling' ? mhGrappling(A, B, n1, n2)
+                                                  : mhStriking(A, B, n1, n2));
   } catch (e) {
     body.innerHTML = '<div class="mh-empty">Couldn\'t render this breakdown.</div>';
   }

@@ -1175,8 +1175,12 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   // are regenerated in the same CI run from the same card, so they agree; the mhSame
   // check below ASSERTS that rather than trusting it. If they ever diverge the header is
   // dropped instead of printing the wrong two men over the right analysis.
-  var mhx=${JSON.stringify((matchupFree && matchupFree.striking) || '')};
-  var mhGr=${JSON.stringify((matchupFree && matchupFree.grappling) || '')};
+  // This slide is a marketing teaser (carousel/grid/lightbox), not the full modal —
+  // it shows the unfiltered "all fights" variant only. matchupFree.striking/grappling
+  // are { all, win, loss } objects; the filter pills live on /matchup's actual modal,
+  // not here.
+  var mhx=${JSON.stringify((matchupFree && matchupFree.striking && matchupFree.striking.all) || '')};
+  var mhGr=${JSON.stringify((matchupFree && matchupFree.grappling && matchupFree.grappling.all) || '')};
   var mhN1=${JSON.stringify((matchupFree && matchupFree.n1) || '')};
   var mhN2=${JSON.stringify((matchupFree && matchupFree.n2) || '')};
   var mhSlug=${JSON.stringify((matchupFree && matchupFree.slug) || '')};
@@ -2495,7 +2499,11 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs }) => {
   // markup — a stale matchup-free.json from last week's card must not hang a button
   // on this week's main event. Same reason glDeepDiveAvailable() hides it in the app.
   const free = matchupFree || null;
-  const ddFresh = !!(free && free.striking && free.grappling && card && free.slug === card.slug);
+  // free.striking/free.grappling are now { all, win, loss } objects (gen-matchup-free.cjs
+  // always emits the object shape, even for the "no grid yet" case, where all three
+  // strings are "" — so the truthiness check has to look at .all specifically, not the
+  // object itself, which would otherwise be truthy no matter what it contains.
+  const ddFresh = !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
   // The bout the payload describes, for the modal header. The slug check above proves
   // it is THIS card; this proves it is this card's MAIN EVENT, which is a different
   // question — boutOrder can be reshuffled by a withdrawal after the panel was
@@ -3004,17 +3012,42 @@ ${AURORA_CSS}
       <button type="button" class="mh-tab" data-mh-tab="grappling" onclick="mfHubTab('grappling')">Grappling</button>
       <button type="button" class="mh-x" onclick="mfHubClose()" aria-label="Close">&times;</button>
     </div>
+    <div class="mh-filter" id="mh-filter">
+      <span class="mh-filter-lbl">Fights</span>
+      <button type="button" class="mh-filter-btn on" data-mh-filter="all" onclick="mfHubFilter('all')">All</button>
+      <button type="button" class="mh-filter-btn" data-mh-filter="win" onclick="mfHubFilter('win')">Wins</button>
+      <button type="button" class="mh-filter-btn" data-mh-filter="loss" onclick="mfHubFilter('loss')">Losses</button>
+    </div>
     <div class="mh-body" id="mh-body">
-      <div data-mh-pane="striking">${free.striking}</div>
-      <div data-mh-pane="grappling" style="display:none">${free.grappling}</div>
+      <div data-mh-pane="striking-all">${free.striking.all}</div>
+      <div data-mh-pane="striking-win" style="display:none">${free.striking.win}</div>
+      <div data-mh-pane="striking-loss" style="display:none">${free.striking.loss}</div>
+      <div data-mh-pane="grappling-all" style="display:none">${free.grappling.all}</div>
+      <div data-mh-pane="grappling-win" style="display:none">${free.grappling.win}</div>
+      <div data-mh-pane="grappling-loss" style="display:none">${free.grappling.loss}</div>
     </div>
   </div>
   <script>
-    // Show/hide, not render — both panes are already in the DOM.
-    window.mfHubTab=function(t){
-      document.querySelectorAll("#mh-tabs .mh-tab").forEach(function(b){b.classList.toggle("on",b.dataset.mhTab===t);});
-      document.querySelectorAll("[data-mh-pane]").forEach(function(p){p.style.display=(p.dataset.mhPane===t)?"":"none";});
+    // Show/hide, not render — all six panes (2 tabs x 3 filters) are already in
+    // the DOM, pre-baked at build time by gen-matchup-free.cjs. Same trick the
+    // app uses at runtime (mhFilter/_ddGrid), just with the three variants
+    // computed once on CI instead of client-side, so this page still ships with
+    // no fetch and no client computation.
+    var mfHubState={tab:"striking",filter:"all"};
+    function mfHubShowPane(){
+      var key=mfHubState.tab+"-"+mfHubState.filter;
+      document.querySelectorAll("[data-mh-pane]").forEach(function(p){p.style.display=(p.dataset.mhPane===key)?"":"none";});
       var b=document.getElementById("mh-body"); if(b)b.scrollTop=0;
+    }
+    window.mfHubTab=function(t){
+      mfHubState.tab=t;
+      document.querySelectorAll("#mh-tabs .mh-tab").forEach(function(b){b.classList.toggle("on",b.dataset.mhTab===t);});
+      mfHubShowPane();
+    };
+    window.mfHubFilter=function(f){
+      mfHubState.filter=f;
+      document.querySelectorAll("#mh-filter .mh-filter-btn").forEach(function(b){b.classList.toggle("on",b.dataset.mhFilter===f);});
+      mfHubShowPane();
     };
     window.mfHub=function(){
       var ov=document.getElementById("mh-overlay"),bx=document.getElementById("mh-box");
@@ -3023,7 +3056,12 @@ ${AURORA_CSS}
       requestAnimationFrame(function(){requestAnimationFrame(function(){
         ov.style.opacity="1"; bx.style.opacity="1"; bx.style.transform="translate(-50%,-50%)";});});
       document.body.style.overflow="hidden";
-      mfHubTab("striking");
+      // Reset to the default pane every open — a stale "Losses" filter from the
+      // last bout viewed must not silently carry over to this one.
+      mfHubState={tab:"striking",filter:"all"};
+      document.querySelectorAll("#mh-tabs .mh-tab").forEach(function(b){b.classList.toggle("on",b.dataset.mhTab==="striking");});
+      document.querySelectorAll("#mh-filter .mh-filter-btn").forEach(function(b){b.classList.toggle("on",b.dataset.mhFilter==="all");});
+      mfHubShowPane();
     };
     window.mfHubClose=function(){
       var ov=document.getElementById("mh-overlay"),bx=document.getElementById("mh-box");

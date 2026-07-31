@@ -157,12 +157,16 @@ slideJS = slideJS.replace(LD_MARK, 'var LD=' + landingData + ';');
 // The matchup-hub slide bakes in the real rendered main event from worker/matchup-free.js.
 const mfSrc = read(path.join(ROOT, 'worker', 'matchup-free.js'));
 const matchupFree = JSON.parse(mfSrc.slice(mfSrc.indexOf('{'), mfSrc.lastIndexOf('}') + 1));
-slideJS = slideJS.replace('var mhx=${JSON.stringify((matchupFree && matchupFree.striking) || \'\')};',
-  'var mhx=' + JSON.stringify(matchupFree.striking || '') + ';');
+// matchupFree.striking/grappling are { all, win, loss } objects (added when the app's
+// modal got a Wins/Losses filter — see MATCHUP-DEEPDIVE.txt). This marketing slide is a
+// teaser, not the full modal, so it only ever shows the unfiltered "all" variant — same
+// as pages.js's own carousel/grid/lightbox slide.
+slideJS = slideJS.replace('var mhx=${JSON.stringify((matchupFree && matchupFree.striking && matchupFree.striking.all) || \'\')};',
+  'var mhx=' + JSON.stringify((matchupFree.striking && matchupFree.striking.all) || '') + ';');
 // The grappling tab — takedowns, control, submission threat. The slide is a real tabbed
 // modal, not just its striking half.
-slideJS = slideJS.replace('var mhGr=${JSON.stringify((matchupFree && matchupFree.grappling) || \'\')};',
-  'var mhGr=' + JSON.stringify(matchupFree.grappling || '') + ';');
+slideJS = slideJS.replace('var mhGr=${JSON.stringify((matchupFree && matchupFree.grappling && matchupFree.grappling.all) || \'\')};',
+  'var mhGr=' + JSON.stringify((matchupFree.grappling && matchupFree.grappling.all) || '') + ';');
 // The hub slide rebuilds the .mh-hd header (with the avatars) from these two names,
 // cross-checked against LD.matchup so it can't print the wrong men over the right read.
 slideJS = slideJS.replace('var mhN1=${JSON.stringify((matchupFree && matchupFree.n1) || \'\')};',
@@ -171,8 +175,8 @@ slideJS = slideJS.replace('var mhN2=${JSON.stringify((matchupFree && matchupFree
   'var mhN2=' + JSON.stringify(matchupFree.n2 || '') + ';');
 slideJS = slideJS.replace('var mhSlug=${JSON.stringify((matchupFree && matchupFree.slug) || \'\')};',
   'var mhSlug=' + JSON.stringify(matchupFree.slug || '') + ';');
-if (!matchupFree.striking) throw new Error('matchup-free.js has no striking payload — the matchup slide would silently vanish');
-if (!matchupFree.grappling) throw new Error('matchup-free.js has no grappling payload — the slide would advertise half the feature');
+if (!matchupFree.striking || !matchupFree.striking.all) throw new Error('matchup-free.js has no striking payload — the matchup slide would silently vanish');
+if (!matchupFree.grappling || !matchupFree.grappling.all) throw new Error('matchup-free.js has no grappling payload — the slide would advertise half the feature');
 // The slide gates itself on matchupFree.slug === landingData.card.slug. If they disagree
 // HERE, the prototype would silently generate without its headline premium card and I'd
 // spend an hour wondering where it went — so say so loudly at build time instead.
