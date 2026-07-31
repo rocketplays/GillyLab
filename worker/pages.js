@@ -4210,6 +4210,7 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     return `<tr>
       <td>${esc(p.name)}<div class="pa-sub">${esc(p.email || "")}</div></td>
       <td>${esc(p.promoCode)}</td>
+      <td>${p.compActive ? '<span class="pa-comp-on">Active</span>' : '<span class="pa-comp-off">Not active</span>'}</td>
       <td>${payout}</td>
       <td>${p.referralCount || 0} <span class="pa-sub">(${p.activeCount || 0} active)</span></td>
       <td>${esc(money(p.lifetimeRevenueCents))}</td>
@@ -4262,6 +4263,8 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
   .pa-delform{display:flex}
   .pa-delbtn{background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.35);color:#ff9a9a;border-radius:6px;padding:.3rem .55rem;cursor:pointer;font-size:.72rem;font-weight:700}
   .pa-delbtn:hover{background:rgba(255,90,90,.14);border-color:#ff6a5e;color:#fff}
+  .pa-comp-on{color:var(--accent);font-weight:700;font-size:.8rem}
+  .pa-comp-off{color:var(--muted);font-size:.8rem}
 </style></head><body>
   <h1>Partners</h1>
   <div class="pa-card">
@@ -4277,7 +4280,7 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
     ${removed ? `<div class="pa-ok">Removed “${esc(removed)}” — their link and dashboard no longer work. Referral/ledger history was kept.</div>` : ""}
   </div>
-  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Free premium</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
 </body></html>`;
 };
 

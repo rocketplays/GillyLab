@@ -155,7 +155,13 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
                                     kind: "first" | "recurring" | "bonus", date }
    `token` is a randHex(24) — the partner's dashboard URL IS the credential (same
    trust model as a magic-sign-in link), matching the "under 15 partners, hand them a
-   link" scale this was built for. */
+   link" scale this was built for.
+
+   Active partners also get free premium on the GillyLab account matching
+   partner.email — granted by grantPartnerComp() when added here, pulled by
+   revokePartnerComp() when removed. That lives on the USER record (USERS KV,
+   not this namespace) as u.partnerComp; see markSubscribed()'s comment for how
+   it's kept from getting clobbered by an unrelated Stripe webhook event. */
 // Bump this (a plain string, doesn't need a particular format — a date is just
 // convenient and self-documenting) whenever the terms text materially changes.
 // A partner whose termsAcceptedVersion doesn't match gets the terms page again
@@ -277,11 +283,53 @@ async function createCheckout(env, email, customerId, promotionCodeId) {
 async function markSubscribed(env, email, customerId, subscribed, extra = {}) {
   const e = normEmail(email);
   const u = (await getUser(env, e)) || { email: e, createdAt: Date.now() };
-  u.subscribed = !!subscribed;
+  // partnerComp overrides whatever Stripe is reporting: Stripe only knows about
+  // a REAL subscription this email may separately have/had, and has no idea the
+  // person is also comped for being an active partner (see grantPartnerComp /
+  // revokePartnerComp near the partner-admin routes). Without this, a comped
+  // partner who happens to also cancel a real subscription of their own would
+  // get silently un-comped by this exact webhook path. Revoking the comp itself
+  // only ever happens in revokePartnerComp, never here.
+  u.subscribed = u.partnerComp ? true : !!subscribed;
   if (customerId) { u.stripeCustomerId = customerId; await linkCustomer(env, customerId, e); }
   Object.assign(u, extra);
   await putUser(env, e, u);
   return u;
+}
+// Partner free-premium comp — granted on /admin/partners/add, revoked on
+// /admin/partners/remove. Kept as a separate boolean from `subscribed` (rather
+// than just flipping `subscribed` directly) specifically so markSubscribed
+// above can tell "comped" apart from "genuinely paying" and never clobber one
+// with the other.
+async function grantPartnerComp(env, email) {
+  const e = normEmail(email);
+  const u = (await getUser(env, e)) || { email: e, createdAt: Date.now() };
+  u.partnerComp = true;
+  u.subscribed = true;
+  await putUser(env, e, u);
+}
+async function revokePartnerComp(env, email) {
+  const e = normEmail(email);
+  const u = await getUser(env, e);
+  if (!u) return;
+  u.partnerComp = false;
+  // Don't just flip subscribed to false — re-derive it from Stripe's own truth
+  // so a partner who's ALSO a genuine paying customer keeps their real access;
+  // only the free comp goes away. No stripeCustomerId on file means they never
+  // had a real subscription tied to this email, so false is correct outright.
+  let realSub = false;
+  if (u.stripeCustomerId) {
+    try {
+      const found = await stripe(env, "subscriptions?customer=" + encodeURIComponent(u.stripeCustomerId) + "&status=active&limit=1", "GET");
+      realSub = !!(found.data && found.data.length);
+    } catch (err) {
+      // Stripe hiccup — leave subscribed as it was rather than guess wrong and
+      // cut off someone who may genuinely be paying.
+      realSub = u.subscribed;
+    }
+  }
+  u.subscribed = realSub;
+  await putUser(env, e, u);
 }
 async function verifyStripeSig(payload, header, secret) {
   // header: t=timestamp,v1=signature (HMAC-SHA256 of `${t}.${payload}`)
@@ -1969,6 +2017,10 @@ export default {
       if (path === "/admin/partners") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         const partners = await listPartners(env);
+        // Cheap at this scale (a handful of partners) — one USERS lookup each,
+        // just so the page can show whether the comp actually landed rather
+        // than assuming grantPartnerComp() silently succeeded.
+        for (const p of partners) { const u = await getUser(env, p.email); p.compActive = !!(u && u.partnerComp); }
         return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added"), removed: url.searchParams.get("removed") }), 200, { "Cache-Control": "private, no-store" });
       }
       if (path === "/admin/partners/add" && request.method === "POST") {
@@ -1992,6 +2044,9 @@ export default {
           await putPartner(env, partner);
           await env.PARTNERS.put("promo:" + partner.promoCode, token);
           await env.PARTNERS.put("promoId:" + pc.id, token);
+          // Free premium while they're an active partner — see grantPartnerComp's
+          // own comment for how this stays separate from a real paid subscription.
+          await grantPartnerComp(env, email);
           return redirect(env.SITE_URL + "/admin/partners?added=" + encodeURIComponent(token));
         } catch (err) {
           return redirect(env.SITE_URL + "/admin/partners?error=" + encodeURIComponent("Couldn't add partner: " + String((err && err.message) || err)));
@@ -2024,6 +2079,9 @@ export default {
         await env.PARTNERS.delete("partner:" + token);
         await env.PARTNERS.delete("promo:" + partner.promoCode);
         if (partner.promotionCodeId) await env.PARTNERS.delete("promoId:" + partner.promotionCodeId);
+        // Pull their free premium too — see revokePartnerComp's own comment for
+        // why this re-checks Stripe rather than just flipping subscribed to false.
+        await revokePartnerComp(env, partner.email);
         return redirect(env.SITE_URL + "/admin/partners?removed=" + encodeURIComponent(partner.name));
       }
 
