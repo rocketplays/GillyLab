@@ -428,6 +428,24 @@
 
     .page.active { display: block; }
 
+    /* Paired with the data-boot-page bootstrap script at the top of <body>:
+       on a refresh, show the previously-open tab (and hide Home) from first
+       paint, instead of waiting for navigate(savedPage) to run once the
+       events fetch resolves. Once that JS runs it sets the real .active
+       classes and these rules become moot (targetPage already matches). */
+    html[data-boot-page]:not([data-boot-page="home"]) #page-home { display: none; }
+    html[data-boot-page="projections"] #page-projections { display: block; }
+    html[data-boot-page="odds"] #page-odds { display: block; }
+    html[data-boot-page="bets"] #page-bets { display: block; }
+    html[data-boot-page="tape-study"] #page-tape-study { display: block; }
+    html[data-boot-page="rankings"] #page-rankings { display: block; }
+    html[data-boot-page="active-roster"] #page-active-roster { display: block; }
+    html[data-boot-page="pickem"] #page-pickem,
+    html[data-boot-page="theclimb"] #page-pickem { display: block; }
+    html[data-boot-page="pickem-leaderboard"] #page-pickem-leaderboard { display: block; }
+    html[data-boot-page="pickem-history"] #page-pickem-history { display: block; }
+    html[data-boot-page="pickem-player"] #page-pickem-player { display: block; }
+
     /* Brief exit fade applied to the outgoing page by navigate() right
        before it swaps .active to the new page — turns what would
        otherwise be an instant display:none hard-cut into a quick
@@ -3903,6 +3921,23 @@
 </style>
 </head>
 <body>
+<script>
+  // Refreshing used to flash the Home page (and its "Loading upcoming card…"
+  // placeholders) for a moment before snapping to whatever tab you'd actually
+  // been on — navigate(savedPage) down in initDynamicPages() doesn't run until
+  // AFTER the events API fetch resolves, and this file is large enough that
+  // the browser paints #page-home (hardcoded class="active" below) well before
+  // that. Setting data-boot-page here, before any .page div is parsed, lets a
+  // plain CSS rule (see html[data-boot-page] near .page.active) hide Home and
+  // show the right page from the very first paint — no JS-timing race, no
+  // flash. navigate(savedPage) still runs later to do everything else it
+  // always did (scroll restore, tab highlight, Pick'em/Climb sub-view, etc.);
+  // this only fixes what's on screen before that point.
+  try {
+    var bp = sessionStorage.getItem('glLastPage');
+    if (bp && bp !== 'home' && bp !== 'fighter') document.documentElement.setAttribute('data-boot-page', bp);
+  } catch (e) {}
+</script>
 <div id="bgfx"></div><div id="bgedge"></div>
 
 <!-- SEARCH OVERLAY -->
