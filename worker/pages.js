@@ -2857,14 +2857,20 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
       ${buildBody(evCard)}
     </div>`;
   };
+  // Layout matches index.html's #upcoming-carousel exactly: label + divider +
+  // prev/next arrows on one header row, THEN the dots (above the track, not
+  // below it), THEN the track itself.
   const carouselHTML = carouselRaws.length
-    ? `<div class="mf-sechdr" style="margin-top:1.8rem">Upcoming Events</div>
-      <div class="mf-carousel-nav">
-        <button type="button" class="mf-car-btn" id="mfCarPrev" aria-label="Previous event">&lsaquo;</button>
-        <div class="mf-carousel-full" id="mfCarouselFull">${carouselRaws.map(carouselSlide).join("")}</div>
-        <button type="button" class="mf-car-btn" id="mfCarNext" aria-label="Next event">&rsaquo;</button>
+    ? `<div class="mf-car-hdr">
+        <div class="mf-car-hdr-label">Upcoming Events</div>
+        <div class="mf-car-hdr-line"></div>
+        <div class="mf-car-hdr-btns">
+          <button type="button" class="mf-car-btn" id="mfCarPrev" aria-label="Previous event">&lsaquo;</button>
+          <button type="button" class="mf-car-btn" id="mfCarNext" aria-label="Next event">&rsaquo;</button>
+        </div>
       </div>
-      ${carouselRaws.length > 1 ? `<div class="mf-car-dots" id="mfCarDots">${carouselRaws.map((_, i) => `<button type="button" class="mf-car-dot${i === 0 ? " active" : ""}" data-i="${i}" aria-label="Go to event ${i + 1}"></button>`).join("")}</div>` : ""}`
+      ${carouselRaws.length > 1 ? `<div class="mf-car-dots" id="mfCarDots">${carouselRaws.map((_, i) => `<button type="button" class="mf-car-dot${i === 0 ? " active" : ""}" data-i="${i}" aria-label="Go to event ${i + 1}"></button>`).join("")}</div>` : ""}
+      <div class="mf-carousel-full" id="mfCarouselFull">${carouselRaws.map(carouselSlide).join("")}</div>`
     : "";
 
   // ── Past-events dropdown — a native <select> (no custom listbox anywhere else
@@ -3023,10 +3029,15 @@ ${eventLd}
   .mf-search-empty{padding:.7rem .9rem;color:var(--muted);font-size:.82rem}
   /* Upcoming-events carousel — full fight cards, one per full-width slide,
      scroll-snapped like index.html's #carousel-track (min-width:100% slides).
-     Prev/next buttons flank it for desktop/no-touch; snap makes swipe work
-     on its own for touch, same as the app. */
-  .mf-carousel-nav{display:flex;align-items:flex-start;gap:.4rem}
-  .mf-carousel-full{flex:1;min-width:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+     Header row (label + divider + arrows), then dots, then the track — same
+     order and same button look (square, accent border, accent text) as
+     index.html's #upcoming-carousel, not the round grey buttons this used to
+     have flanking the track itself. */
+  .mf-car-hdr{display:flex;align-items:center;gap:1rem;margin:1.8rem 0 0}
+  .mf-car-hdr-label{font-family:inherit;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:800;white-space:nowrap}
+  .mf-car-hdr-line{flex:1;height:1px;background:var(--border)}
+  .mf-car-hdr-btns{display:flex;gap:.5rem;align-items:center}
+  .mf-carousel-full{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .mf-carousel-full::-webkit-scrollbar{display:none}
   .mf-ev-slide{flex:0 0 100%;scroll-snap-align:start;min-width:0;padding:0 .1rem}
   .mf-ev-slide.active .mf-ev-slide-hdr{border-color:rgba(0,230,104,.45)}
@@ -3034,13 +3045,16 @@ ${eventLd}
   .mf-ev-slide-name{font-weight:800;font-size:.95rem}
   .mf-ev-slide-sub{color:var(--muted);font-size:.76rem;margin-top:.15rem}
   .mf-ev-slide-hdr{border-radius:10px}
-  .mf-car-btn{flex:0 0 auto;width:32px;height:32px;margin-top:1.6rem;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:1.1rem;line-height:1;cursor:pointer;transition:border-color .13s ease}
-  .mf-car-btn:hover{border-color:var(--accent);color:var(--accent)}
+  /* Same square/accent-border treatment as index.html's carouselPrev/Next
+     buttons (30px, border-radius:4px, accent border+text, tinted-green hover)
+     — not round/grey like a generic pager control. */
+  .mf-car-btn{width:30px;height:30px;border-radius:4px;background:var(--card);border:1px solid var(--accent);color:var(--accent);font-size:.9rem;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background-color .15s ease}
+  .mf-car-btn:hover{background:rgba(0,230,104,.12)}
   .mf-car-btn:disabled{opacity:.35;cursor:default}
-  @media (max-width:520px){.mf-car-btn{display:none}}
   /* Carousel dots — same idea as index.html's #carousel-dots: one per event,
-     current one green and slightly larger, click to jump straight to it. */
-  .mf-car-dots{display:flex;gap:.5rem;align-items:center;justify-content:center;margin:.6rem 0 0}
+     current one green and slightly larger, click to jump straight to it. Sits
+     ABOVE the track (between the header row and the cards), same as the app. */
+  .mf-car-dots{display:flex;gap:.5rem;align-items:center;margin:.7rem 0 .6rem}
   .mf-car-dot{width:8px;height:8px;border-radius:50%;border:none;padding:0;cursor:pointer;background:var(--border);transition:background .15s ease,transform .15s ease}
   .mf-car-dot.active{background:var(--accent);transform:scale(1.3)}
   /* Past-results dropdown — a real <select> with the same custom green chevron
