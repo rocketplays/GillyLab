@@ -4158,6 +4158,7 @@
      CLV is moneylines only, measured against the segment closing line.
 ══════════════════════════════════════ -->
 <div class="page" id="page-bets">
+  <div class="back-btn" id="bt-back-btn" onclick="btFromOdds=false;navigate('odds')" style="display:none;">← Back to Odds &amp; Projections</div>
   <div class="page-header">
     <div class="page-header-title">Bet &amp; CLV <span class="accent">Tracker</span></div>
     <div class="bt-blurb">Input your bets to track CLV, ROI, units and record.</div>
@@ -135770,6 +135771,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const show = (id, on) => { const el = document.getElementById(id); if (el) el.style.display = on ? 'block' : 'none'; };
     show('bt-history', v === 'history'); show('bt-log', v === 'log');
     show('bt-board', v === 'board'); show('bt-player', v === 'player');
+    // Top-left, above the page title — same slot/convention as fighter-back-btn
+    // and sim-back-btn. Only up for the handoff from Odds & Projections' "Log
+    // this bet"; the direct "Log a bet" tab click clears btFromOdds first.
+    const backBtn = document.getElementById('bt-back-btn');
+    if (backBtn) backBtn.style.display = (v === 'log' && btFromOdds) ? 'inline-flex' : 'none';
     document.getElementById('bt-tab-history').classList.toggle('active', v === 'history');
     document.getElementById('bt-tab-log').classList.toggle('active', v === 'log');
     const tb = document.getElementById('bt-tab-board'); if (tb) tb.classList.toggle('active', v === 'board' || v === 'player');
@@ -136444,11 +136450,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     }
     btKind = kind || btKind;
     const host = document.getElementById('bt-log'); if (!host) return;
-    // Only shown for the handoff from the Odds & Projections slip's "Log this
-    // bet" — the direct "Log a bet" tab click clears btFromOdds, since there's
-    // nowhere meaningful to send that back to.
-    let h = (btFromOdds ? '<div class="back-btn" onclick="btFromOdds=false;navigate(\'odds\')">← Back to Odds &amp; Projections</div>' : '') +
-      btStageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
+    let h = btStageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
       '<div class="' + (btKind === 'card' ? 'on' : '') + '" onclick="btSetKind(\'card\')">Upcoming fights</div>' +
       '<div class="' + (btKind === 'custom' ? 'on' : '') + '" onclick="btSetKind(\'custom\')">Custom bet</div></div>';
     if (btKind === 'card') {
