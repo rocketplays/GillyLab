@@ -4213,44 +4213,58 @@ export const partnerDashboardPage = ({ partner, ledger }) => {
 export const partnerAdminPage = ({ partners, error, added, removed }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const money = (cents) => "$" + ((cents || 0) / 100).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  // One card per partner instead of one row of a wide table — a 13-column table
+  // never fits any real viewport (mobile OR desktop) without horizontal scroll.
+  // Stat pairs wrap naturally via CSS grid at any width; nothing here depends
+  // on a fixed number of columns fitting side by side.
+  const stat = (label, val, cls) => `<div class="pa-stat"><div class="pa-stat-lbl">${label}</div><div class="pa-stat-val${cls ? " " + cls : ""}">${val}</div></div>`;
   const rows = (partners || []).map((p) => {
     const owed = Math.max(0, (p.lifetimeCommissionCents || 0) - (p.paidOutCents || 0));
     const payout = p.payoutInfo && p.payoutInfo.method
-      ? `${esc(p.payoutInfo.method)} <span class="pa-sub">${esc(p.payoutInfo.username || "")}</span>`
-      : `<span class="pa-sub">${p.termsAcceptedAt ? "not set" : "terms not accepted yet"}</span>`;
-    const termsCell = p.termsAcceptedAt
-      ? `<span class="pa-comp-on">${esc(new Date(p.termsAcceptedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</span>`
-      : `<span class="pa-comp-off">Not yet</span>`;
-    const w9Cell = p.w9SubmittedAt
-      ? `<a href="/admin/partners/w9/${esc(p.token)}" target="_blank" rel="noopener">Download</a><div class="pa-sub">${esc(new Date(p.w9SubmittedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</div>`
-      : `<span class="pa-comp-off">Not received</span>`;
-    return `<tr>
-      <td>${esc(p.name)}<div class="pa-sub">${esc(p.email || "")}</div></td>
-      <td>${esc(p.promoCode)}</td>
-      <td>${p.compActive ? '<span class="pa-comp-on">Active</span>' : '<span class="pa-comp-off">Not active</span>'}</td>
-      <td>${termsCell}</td>
-      <td>${w9Cell}</td>
-      <td>${payout}</td>
-      <td>${p.referralCount || 0} <span class="pa-sub">(${p.activeCount || 0} active)</span></td>
-      <td>${esc(money(p.lifetimeRevenueCents))}</td>
-      <td>${esc(money(p.lifetimeCommissionCents))}</td>
-      <td>${esc(money(p.paidOutCents))}</td>
-      <td class="${owed > 0 ? "pa-owed" : ""}">${esc(money(owed))}</td>
-      <td><a href="/partner/${esc(p.token)}" target="_blank" rel="noopener">Dashboard →</a></td>
-      <td>
+      ? `${esc(p.payoutInfo.method)} — ${esc(p.payoutInfo.username || "")}`
+      : (p.termsAcceptedAt ? "not set" : "terms not accepted yet");
+    const termsLine = p.termsAcceptedAt
+      ? `<span class="pa-comp-on">Accepted ${esc(new Date(p.termsAcceptedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</span>`
+      : `<span class="pa-comp-off">Terms not accepted yet</span>`;
+    const w9Line = p.w9SubmittedAt
+      ? `<a href="/admin/partners/w9/${esc(p.token)}" target="_blank" rel="noopener">W-9 on file (${esc(new Date(p.w9SubmittedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}) — Download</a>`
+      : `<span class="pa-comp-off">No W-9 on file</span>`;
+    return `<div class="pa-card partner-card">
+      <div class="pa-pcard-hdr">
+        <div>
+          <div class="pa-pcard-name">${esc(p.name)}</div>
+          <div class="pa-sub">${esc(p.email || "")}</div>
+        </div>
+        <div class="pa-pcard-hdr-right">
+          <span class="pa-code">${esc(p.promoCode)}</span>
+          <a href="/partner/${esc(p.token)}" target="_blank" rel="noopener">Dashboard →</a>
+        </div>
+      </div>
+      <div class="pa-pcard-status">
+        <span>Free premium: ${p.compActive ? '<span class="pa-comp-on">Active</span>' : '<span class="pa-comp-off">Not active</span>'}</span>
+        <span>${termsLine}</span>
+        <span>${w9Line}</span>
+        <span>Payout: ${esc(payout)}</span>
+      </div>
+      <div class="pa-stats">
+        ${stat("Referrals", (p.referralCount || 0) + ` <span class="pa-sub">(${p.activeCount || 0} active)</span>`)}
+        ${stat("Revenue", esc(money(p.lifetimeRevenueCents)))}
+        ${stat("Commission", esc(money(p.lifetimeCommissionCents)))}
+        ${stat("Paid out", esc(money(p.paidOutCents)))}
+        ${stat("Owed", esc(money(owed)), owed > 0 ? "pa-owed" : "")}
+      </div>
+      <div class="pa-pcard-actions">
         <form method="POST" action="/admin/partners/pay" class="pa-payform">
           <input type="hidden" name="token" value="${esc(p.token)}">
           <input type="number" name="amount" step="0.01" min="0" placeholder="$ paid" required>
           <button type="submit">Log payout</button>
         </form>
-      </td>
-      <td>
         <form method="POST" action="/admin/partners/remove" class="pa-delform" onsubmit="return confirm(${esc(JSON.stringify(`Remove ${p.name} (${p.promoCode})? Their link stops working immediately. Referral/ledger history is kept — this can't be undone from here.`))});">
           <input type="hidden" name="token" value="${esc(p.token)}">
           <button type="submit" class="pa-delbtn">Delete</button>
         </form>
-      </td>
-    </tr>`;
+      </div>
+    </div>`;
   }).join("");
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -4269,9 +4283,21 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
   .pa-card button{margin-top:1rem;background:linear-gradient(180deg,rgba(0,230,104,.14),rgba(0,230,104,.05));border:1px solid rgba(0,230,104,.4);color:var(--text);font-weight:800;border-radius:8px;padding:.6rem 1rem;cursor:pointer}
   .pa-err{color:#ff6a5e;font-size:.85rem;margin-top:.6rem}
   .pa-ok{color:var(--accent);font-size:.85rem;margin-top:.6rem;word-break:break-all}
-  table{border-collapse:collapse;width:100%;font-size:.82rem}
-  th{text-align:left;color:var(--muted);font-weight:700;font-size:.68rem;letter-spacing:.05em;text-transform:uppercase;padding:.5rem .6rem;border-bottom:1px solid var(--border);white-space:nowrap}
-  td{padding:.55rem .6rem;border-bottom:1px solid var(--border);white-space:nowrap}
+  /* One card per partner instead of a wide table — see the "rows" comment in
+     partnerAdminPage for why. Every piece here wraps/stacks on its own, so
+     nothing forces horizontal scrolling at any viewport width. */
+  .pa-cards{display:flex;flex-direction:column;gap:1rem;max-width:900px}
+  .partner-card{max-width:none}
+  .pa-pcard-hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem}
+  .pa-pcard-name{font-size:1.05rem;font-weight:800}
+  .pa-pcard-hdr-right{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+  .pa-code{background:rgba(0,230,104,.08);border:1px solid rgba(0,230,104,.3);color:var(--accent);font-weight:700;font-size:.75rem;border-radius:6px;padding:.2rem .55rem;white-space:nowrap}
+  .pa-pcard-status{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;font-size:.78rem;color:var(--text);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.7rem 0;margin-bottom:.9rem}
+  .pa-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem;margin-bottom:.9rem}
+  .pa-stat{background:#0e0e10;border:1px solid var(--border);border-radius:8px;padding:.55rem .7rem}
+  .pa-stat-lbl{font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .pa-stat-val{font-size:1rem;font-weight:800;margin-top:.15rem}
+  .pa-pcard-actions{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}
   .pa-sub{color:var(--muted);font-size:.72rem}
   .pa-owed{color:#ffcf7a;font-weight:700}
   a{color:var(--accent);text-decoration:none;font-weight:700}
@@ -4299,7 +4325,7 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     ${added ? `<div class="pa-ok">Added — dashboard link: ${SITE_URL}/partner/${esc(added)}</div>` : ""}
     ${removed ? `<div class="pa-ok">Removed “${esc(removed)}” — their link and dashboard no longer work. Referral/ledger history was kept.</div>` : ""}
   </div>
-  ${(partners || []).length ? `<table><thead><tr><th>Partner</th><th>Code</th><th>Free premium</th><th>Terms accepted</th><th>W-9</th><th>Payout to</th><th>Referrals</th><th>Revenue</th><th>Commission</th><th>Paid out</th><th>Owed</th><th></th><th>Log a payout</th><th></th></tr></thead><tbody>${rows}</tbody></table>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
+  ${(partners || []).length ? `<div class="pa-cards">${rows}</div>` : `<p style="color:var(--muted)">No partners yet — add one above.</p>`}
 </body></html>`;
 };
 
