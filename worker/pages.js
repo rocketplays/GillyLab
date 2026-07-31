@@ -4026,7 +4026,10 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
   .pt-payout-opts{display:flex;gap:1.2rem;flex-wrap:wrap;margin-bottom:.9rem}
   .pt-radio{display:flex;align-items:center;gap:.4rem;font-size:.88rem;font-weight:600;color:var(--text);cursor:pointer}
   .pt-payout-user{display:block;font-size:.78rem;color:var(--muted);margin-bottom:.3rem}
-  .pt-payout-user input{display:block;width:100%;margin-top:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font:inherit;font-size:.92rem;padding:.6rem .7rem}
+  /* 16px, not 16px's usual .92rem-ish equivalent — iOS Safari auto-zooms into
+     any focused input under 16px, which yanks the whole page around. Same
+     guard .pl-stake and #page-bets input use in the main app. */
+  .pt-payout-user input{display:block;width:100%;margin-top:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:7px;color:var(--text);font:inherit;font-size:16px;padding:.6rem .7rem}
   .pt-payout-user input:focus{outline:none;border-color:var(--accent)}
   .pt-payout-note{color:var(--muted);font-size:.74rem;margin:.8rem 0 0;line-height:1.5}
   .pt-agree{display:flex;align-items:flex-start;gap:.6rem;margin:1.3rem 0;font-size:.85rem;color:var(--text)}
@@ -4078,8 +4081,8 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
         <div class="pt-payout-opts">
           ${["Venmo", "PayPal", "CashApp"].map((m) => `<label class="pt-radio"><input type="radio" name="payoutMethod" value="${m}" ${payoutMethod === m ? "checked" : ""} required> ${m}</label>`).join("")}
         </div>
-        <label class="pt-payout-user">Your username on that platform
-          <input type="text" name="payoutUsername" value="${esc(payoutUsername)}" placeholder="@yourusername" required>
+        <label class="pt-payout-user">Your handle on that platform
+          <input type="text" name="payoutHandle" value="${esc(payoutUsername)}" placeholder="@yourhandle" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-bwignore required>
         </label>
         <p class="pt-payout-note">This is saved to your account so we can send payouts without asking separately — update it any time by re-submitting this page (reach out and we can reset your acceptance if you need to change it later).</p>
       </div>

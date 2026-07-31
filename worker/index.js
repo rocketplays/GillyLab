@@ -1919,7 +1919,10 @@ export default {
         if (!partner) return html('<!doctype html><meta charset="utf-8"><title>Not found · GillyLab</title><meta name="viewport" content="width=device-width, initial-scale=1"><body style="margin:0;background:#0a0a0b;color:#f4f5f7;font:15px/1.5 -apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,Helvetica,Arial,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center"><div><h1 style="font-size:1.3rem;margin:0 0 .5rem">Not found</h1><p style="color:#8a8f99">Check the link you were given.</p></div></body>', 404);
         const body = await readBody(request).catch(() => ({}));
         const payoutMethod = String(body.payoutMethod || "").trim();
-        const payoutUsername = String(body.payoutUsername || "").trim();
+        // Form field is name="payoutHandle" (not "...Username") specifically to
+        // avoid tripping browser password-manager autofill heuristics, which key
+        // heavily off the literal substring "username" in a field's name/id.
+        const payoutUsername = String(body.payoutHandle || "").trim();
         // Re-render with whatever they'd already picked/typed (not saved — just
         // carried through the error response) rather than resetting the form.
         const reRender = (msg) => html(
