@@ -127019,12 +127019,6 @@ const GL_SHEET = (function () {
       const oStr = b.odds > 0 ? '+' + b.odds : String(b.odds);
       ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
       let oW;
-      // A parlay has no match/event line to hang its book off of (that's dropped —
-      // see below), so its book rides the right-side stake/price line instead, same
-      // as it would sit "to the right" on a straight bet's line. Previously it got
-      // its own left-aligned line directly under "N-leg parlay" with nothing else on
-      // it, which just read as cramped.
-      const bookSuffix = (isParlay && b.book) ? '  ·  ' + b.book : '';
       // Baselines 42px apart (was 32) so a descender can't reach the line below.
       if (data.results) {
         // Settled: lead with how it went, price demoted underneath.
@@ -127034,23 +127028,21 @@ const GL_SHEET = (function () {
         ctx.fillText(rStr, right, cy - 16);
         oW = ctx.measureText(rStr).width;
         ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(oStr + ' · ' + b.stake + 'u' + bookSuffix, right, cy + 26);
-        oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u' + bookSuffix).width);
+        ctx.fillText(oStr + ' · ' + b.stake + 'u', right, cy + 26);
+        oW = Math.max(oW, ctx.measureText(oStr + ' · ' + b.stake + 'u').width);
       } else {
         ctx.font = '800 46px ' + COND; ctx.fillStyle = ACC;
         ctx.fillText(oStr, right, cy - 16);
         oW = ctx.measureText(oStr).width;
         ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT;
-        ctx.fillText(b.stake + 'u' + bookSuffix, right, cy + 26);
+        ctx.fillText(b.stake + 'u', right, cy + 26);
       }
       const maxW = right - tx - Math.max(oW, 60) - 28;
       ctx.textAlign = 'left';
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
       // A normal bet keeps its match/book subtitle. A parlay drops the event line
-      // and the per-leg odds (its book already rode the right-side stake line
-      // above, next to bookSuffix), and lays the legs out 2-up (small avatar +
-      // pick) to stay compact.
+      // and lays the legs out 2-up (small avatar + pick) to stay compact instead.
       if (!isParlay) {
         ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
@@ -127064,6 +127056,16 @@ const GL_SHEET = (function () {
           ctx.font = '700 27px ' + COND; ctx.fillStyle = '#c9ccd3';
           ctx.fillText(clip(ctx, l.pick || '', (W - 96) - tx2), tx2, lcy);
         });
+        // Book sits to the RIGHT of the legs, vertically centered across the whole
+        // legs block (not on its own cramped line under the title, not tacked onto
+        // the stake line) — same "· Book" look a straight bet's subtitle line ends
+        // on, just positioned opposite the legs instead of after a match name.
+        if (b.book) {
+          const legsCenterY = legsTop + (b.legs.length * PLEG_ROW) / 2 - 2;
+          ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
+          ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+          ctx.fillText(clip(ctx, '· ' + b.book, (W - 96) - 96), right, legsCenterY);
+        }
       }
       ctx.textBaseline = 'alphabetic';
       y += h + 12;
