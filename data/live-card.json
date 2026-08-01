@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T18:15:55.417Z",
+ "generatedAt": "2026-08-01T18:48:35.950Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -6578,6 +6578,194 @@
       ]
      },
      "capturedAt": "2026-08-01T18:15:55.282Z"
+    }
+   ]
+  },
+  "Aleksandar Rakic": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Marcin Tybura",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Marcin Tybura",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 136,
+      "totL": 83,
+      "totA": 149,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       28,
+       84
+      ],
+      "body": [
+       27,
+       34
+      ],
+      "leg": [
+       16,
+       18
+      ],
+      "dist": [
+       66,
+       131
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 129,
+      "totL": 37,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       18,
+       94
+      ],
+      "body": [
+       8,
+       27
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       29,
+       123
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T18:48:35.817Z"
+    }
+   ]
+  },
+  "Marcin Tybura": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Aleksandar Rakic",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Aleksandar Rakic",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 129,
+      "totL": 37,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       18,
+       94
+      ],
+      "body": [
+       8,
+       27
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       29,
+       123
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 71,
+      "sigA": 136,
+      "totL": 83,
+      "totA": 149,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       28,
+       84
+      ],
+      "body": [
+       27,
+       34
+      ],
+      "leg": [
+       16,
+       18
+      ],
+      "dist": [
+       66,
+       131
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T18:48:35.817Z"
     }
    ]
   }
