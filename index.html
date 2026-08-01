@@ -1144,6 +1144,8 @@
     .bt-tabs div.active { color: var(--accent); border-bottom-color: var(--accent); }
     .bt-hero { background: var(--surface2, #14141a); border: 1px solid rgba(0,230,104,0.35); border-radius: 12px; padding: 14px 16px; margin-bottom: 0.9rem; }
     .bt-hero-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+    .bt-info-btn { display: inline-flex; align-items: center; justify-content: center; background: none; border: none; color: var(--muted); font-size: 0.95rem; line-height: 1; padding: 0; margin-left: 2px; cursor: pointer; vertical-align: middle; }
+    .bt-info-btn:hover { color: var(--accent); }
     .bt-hero-row { display: flex; align-items: baseline; gap: 10px; }
     .bt-big { font-size: 1.5rem; font-weight: 800; color: var(--accent); line-height: 1.15; white-space: nowrap; }
     .bt-big span { font-size: 0.7rem; font-weight: 700; color: var(--muted); margin-left: 3px; }
@@ -135853,6 +135855,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   
   // ── FOOTER MODALS ────────────────────────────────────────────────────────
   const MODAL_CONTENT = {
+    clvExplainer: {
+      title: 'How CLV is calculated',
+      body: `<p style="line-height:1.5;">CLV compares your price to the closing price in <strong style="color:var(--text);">win probability</strong>, not raw odds — American odds don't move in a straight line, so &minus;2 cents means something very different at +140 than it does at &minus;400.</p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">The formula</p>
+             <p style="line-height:1.5;">Turn each price into an implied win probability:</p>
+             <p style="margin:0.5rem 0;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;">
+               odds &lt; 0 &nbsp;&rarr;&nbsp; &minus;odds / (&minus;odds + 100)<br>
+               odds &gt; 0 &nbsp;&rarr;&nbsp; 100 / (odds + 100)
+             </p>
+             <p style="line-height:1.5;">Then CLV is just the difference, in percentage points:</p>
+             <p style="margin:0.5rem 0;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;">
+               CLV = (win% at close &minus; win% at your price) &times; 10
+             </p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">Worked example</p>
+             <p style="line-height:1.5;">You bet <strong style="color:var(--text);">+140</strong> (41.67% implied), it closed <strong style="color:var(--text);">+138</strong> (42.02% implied).</p>
+             <p style="line-height:1.5;">42.02 &minus; 41.67 = 0.35 points of win probability &rarr; <strong style="color:var(--accent);">CLV +0.4</strong>.</p>
+             <p style="margin-top:1rem;font-size:0.85rem;color:rgba(255,255,255,0.55);">Positive means the market moved toward your side after you bet it — you got a better number than everyone betting at the close. It doesn't guarantee the bet wins; it's a measure of the price, not the outcome.</p>`
+    },
     pkScoring: {
       title: 'How scoring works',
       body: `<ol style="margin:0;padding-left:1.15rem;display:flex;flex-direction:column;gap:0.55rem;">
@@ -136778,10 +136798,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const s = btStats(shown);
     const rangeBtn = (k, lbl) => '<div class="' + (btRange === k ? 'on' : '') + '" onclick="btSetRange(\'' + k + '\')">' + lbl + '</div>';
     const clvTxt = vs.avgClv == null ? '—' : (vs.avgClv > 0 ? '+' : '') + vs.avgClv.toFixed(1) + '<span>pts</span>';
-    let h = '<div class="bt-hero"><div class="bt-hero-lbl">Verified closing line value</div><div class="bt-hero-row">' +
-      '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '" title="1 point = 1% more implied win probability than the closing price gave.">' + clvTxt + '</div>' +
+    let h = '<div class="bt-hero"><div class="bt-hero-lbl">Verified closing line value ' +
+      '<button type="button" class="bt-info-btn" onclick="openModal(&quot;clvExplainer&quot;)" aria-label="How is CLV calculated?" title="How is CLV calculated?">&#9432;</button></div>' +
+      '<div class="bt-hero-row">' +
+      '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '">' + clvTxt + '</div>' +
       '<div class="bt-hero-sub">' + (vs.clvN ? 'beat the close on <b style="color:var(--text)">' + vs.beat + ' of ' + vs.clvN + '</b> moneylines' : 'no graded moneylines in this range') + '</div></div>' +
-      '<div class="bt-foot">CLV = implied win probability at your price vs. the close, in points — not a raw odds difference. Average per bet, not a total. <b style="color:#c9ccd3">Moneylines only</b> (props move too fast for a trustworthy close) — props are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
+      '<div class="bt-foot"><b style="color:#c9ccd3">Moneylines only</b> (props move too fast for a trustworthy close) — props are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
     h += '<div class="bt-grid">' +
       '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + s.w + '-' + s.l + '</div></div>' +
       '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (s.roi > 0 ? 'bt-pos' : s.roi < 0 ? 'bt-neg' : '') + '">' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + s.roi.toFixed(1) + '%') + '</div></div>' +
