@@ -210,7 +210,6 @@ const DROP = {
   'Jan Błachowicz|Volkan Oezdemir':
     'they never fought; the URL is the Ankalaev video pasted a second time',
   'Dennis Buzukja|Christian': 'first name only, nothing in his history matches',
-  'Marina Spasic|Samara Santos': 'no Samara Santos in her history',
   'Quillan Salkilld|Anshul Jubli':
     'video/683983 is titled "Salkilld vs Gauge Young DWCS, September 3 2024" — the ' +
     'Gauge Young link pasted twice. Jubli was Feb 8 2025.',
