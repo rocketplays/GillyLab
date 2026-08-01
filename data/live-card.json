@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T17:26:43.511Z",
+ "generatedAt": "2026-08-01T17:43:13.898Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-08-01T17:26:43.376Z"
+    }
+   ]
+  },
+  "Vlasto Čepo": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Gilbert Urbina",
+     "result": "L",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "1:01",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Gilbert Urbina",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 24,
+      "totL": 7,
+      "totA": 24,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       22
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       7,
+       24
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 48,
+      "totL": 36,
+      "totA": 54,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       27,
+       45
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       26
+      ]
+     },
+     "capturedAt": "2026-08-01T17:43:13.764Z"
+    }
+   ]
+  },
+  "Gilbert Urbina": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Vlasto Čepo",
+     "result": "W",
+     "method": "KO/TKO (Elbows)",
+     "round": 1,
+     "time": "1:01",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Vlasto Čepo",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 30,
+      "sigA": 48,
+      "totL": 36,
+      "totA": 54,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       27,
+       45
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       26
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 24,
+      "totL": 7,
+      "totA": 24,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       22
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       7,
+       24
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T17:43:13.764Z"
     }
    ]
   }
