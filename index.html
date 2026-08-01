@@ -136354,6 +136354,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // rotting months later. Snapshotting the outcome is the same trick pick'em uses
   // when it locks wPts at submit: decide once, while the data is there, then keep it.
   const BT_GRADE_SENT = {};
+  const BT_CLV_SENT = {};
   function btApplyGrade(b) {
     const g = b.graded;
     b.status = g.status;
@@ -136378,12 +136379,43 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       else BT_GRADE_SENT[b.id] = 0;   // transient failure — try again next load
     }).catch(function () { BT_GRADE_SENT[b.id] = 0; });
   }
+  // A frozen bet is graded WON/LOST forever the instant the fight is decided —
+  // often within seconds of the result posting, which can easily be BEFORE the
+  // closing-line capture for that fight's segment has actually landed (its own
+  // ~10-20-min-pre-fight window, a separate workflow, a separate timing entirely).
+  // Freezing with clv still null at that moment used to be permanent: this bet
+  // would never count toward CLV again even once the real closing line showed up
+  // in ODDS_HISTORY minutes later. Status/effOdds freeze is still permanent (the
+  // FIGHT's outcome can't change) — CLV alone gets one more shot per page load
+  // until it's actually filled in, independent of whether the bet froze already.
+  function btBackfillClv(b) {
+    if (!b || b.kind !== 'tracked' || b.market === 'PARLAY') return;   // no CLV for parlays, by design
+    if (b.clv != null) return;                    // already have it
+    if (!b.priced || b.clvOk === false) return;    // never eligible for one
+    if (BT_CLV_SENT[b.id]) return;                 // one attempt per load; retried on the next
+    const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
+    if (!f) return;                                // aged out of the feed — can't resolve the fight at all
+    const R = btFightResult(f); if (!R) return;
+    const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
+    if (!pair) return;                             // closing line still hasn't shown up in ODDS_HISTORY yet
+    const c = b.closeSide === 2 ? pair.o2 : pair.o1;
+    if (c == null) return;
+    BT_CLV_SENT[b.id] = 1;
+    const clv = btClvPts(b.odds, c);
+    btApi('/api/bets/backfill-clv', { id: b.id, clv: clv, closeOdds: c }).then(function (r) {
+      if (r.status === 200) {
+        b.clv = clv; b.closeOdds = c;
+        if (b.graded) { b.graded.clv = clv; b.graded.closeOdds = c; }
+      } else { BT_CLV_SENT[b.id] = 0; }             // transient failure — try again next load
+    }).catch(function () { BT_CLV_SENT[b.id] = 0; });
+  }
   function btDeriveAll() {
     BT_BETS.forEach(b => {
       if (b.kind !== 'tracked') return;
       // A stored grade is final and needs no feed at all — this is what makes a
       // settled bet survive after its card ages out of every result source.
-      if (b.graded && b.graded.status) { btApplyGrade(b); return; }
+      // CLV specifically isn't "final" the same way — see btBackfillClv above.
+      if (b.graded && b.graded.status) { btApplyGrade(b); btBackfillClv(b); return; }
       b.status = 'pending'; b.clv = null; b.closeOdds = null; b.effOdds = null;
       if (b.market === 'PARLAY') { btDeriveParlay(b); btFreezeGrade(b); return; }
       // Composite <event>|<bout> id. Falls back to the bare id scoped by event so

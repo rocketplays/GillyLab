@@ -944,6 +944,39 @@ async function handleBetsGrade(request, env) {
   return json({ ok: true });
 }
 
+// A frozen tracked bet's WIN/LOSS is permanent the instant the fight is decided —
+// but the closing line for that fight's segment is captured on its own separate
+// ~10-20-min-pre-fight schedule, a different workflow entirely, and can easily
+// still be missing at that exact moment (the fight resolves in seconds; the
+// closing capture is minutes-to-hours earlier and has its own failure modes —
+// see capture-closing-odds.yml's catch-up sweep). Freezing WITH clv:null used to
+// be permanent too, via handleBetsGrade's write-once guard — so a bet frozen a
+// little too early could never count toward CLV again even after the real
+// closing line showed up in ODDS_HISTORY minutes later. This is the narrow fix:
+// fill in ONLY clv/closeOdds on an ALREADY-frozen bet, and only when they're
+// currently null — never touches status/effOdds/legStatuses (the fight outcome,
+// which is genuinely immutable), and never overwrites a real value that's
+// already there. The client's btBackfillClv() calls this once per bet per page
+// load until it succeeds.
+async function handleBetsBackfillClv(request, env) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  const { id, clv, closeOdds } = await readBody(request);
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.kind !== "tracked" || b.market === "PARLAY") return json({ error: "not eligible for CLV" }, 400);
+  if (!b.graded || !b.graded.status) return json({ error: "bet isn't graded yet" }, 400);
+  if (b.graded.clv != null) return json({ ok: true, already: true });
+  const num = (v) => (typeof v === "number" && isFinite(v) ? v : null);
+  const c = num(clv);
+  if (c == null) return json({ error: "no closing line available yet" }, 400);
+  b.graded.clv = c;
+  b.graded.closeOdds = num(closeOdds);
+  await btPutBets(env, s.email, list);
+  return json({ ok: true });
+}
+
 // ── bet leaderboard + public player profile (subscriber-visible, mirrors pick'em) ──
 // GRADE ON READ. The board and profiles grade every un-frozen bet here, from the same
 // result + closing-odds feeds pick'em uses, so they reflect results the moment they land
@@ -1872,6 +1905,7 @@ export default {
       if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
       if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
       if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
+      if (path === "/api/bets/backfill-clv" && request.method === "POST") return handleBetsBackfillClv(request, env);
       if (path === "/api/bets/leaderboard") return handleBetsLeaderboard(request, env, url);
       if (path === "/api/bets/player") return handleBetsPlayer(request, env, url);
       if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env, url);
