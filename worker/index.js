@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1871,7 +1871,7 @@ export default {
       if (path === "/sitemap.xml") {
         // Note: /terms + /privacy are intentionally noindex (boilerplate), so they're
         // omitted here — a noindex URL in the sitemap trips a Search Console warning.
-        const urls = ["/", "/matchup", "/rankings", "/roster", "/about", "/contact"];
+        const urls = ["/", "/matchup", "/rankings", "/roster", "/fighters", "/about", "/contact"];
         // Enumerate every published lite fighter profile so crawlers can find the
         // (deliberately unlinked) /fighter/<slug> pages.
         const lite = await loadAssetJson(env, url, "/data/fighter-lite.json");
@@ -2048,6 +2048,18 @@ export default {
           loadProfileSlugs(env, url),
         ]);
         return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s, roster: ro, profileSlugs }), 200, pubHeaders(s));
+      }
+      // All-time A-Z fighter directory — exists specifically to give every
+      // /fighter/<slug> lite profile (not just the ~650 active-roster ones /roster
+      // links) a real crawlable inbound link, instead of being reachable only via
+      // sitemap.xml. See the "unlinked from the funnel" comment on /fighter/ below.
+      if (path === "/fighters") {
+        const s = await readSession(request, env);
+        const [u, lite] = await Promise.all([
+          s ? getUser(env, s.email) : null,
+          loadAssetJson(env, url, "/data/fighter-lite.json"),
+        ]);
+        return html(fightersDirectoryPage({ lite: (lite && lite.bySlug) || {}, loggedIn: !!s, subscribed: !!u?.subscribed }), 200, pubHeaders(s));
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);

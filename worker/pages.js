@@ -339,6 +339,7 @@ function currentLanding() {
 // brand green goes flat. The fallbacks are shell()'s own values.
 const FOOT_LINKS = [
   ["/about", "About Us"],
+  ["/fighters", "All Fighters"],
   ["/terms", "Terms of Service"],
   ["/privacy", "Privacy Policy"],
   ["/contact", "Contact"],
@@ -420,7 +421,7 @@ export function eventWhen(card, opts) {
 }
 
 function freeTabs(active) {
-  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
+  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"], ["/fighters", "All Fighters"]];
   return `
   <style>
     .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 .6rem}
@@ -2446,6 +2447,80 @@ ${AURORA_CSS}
   </script>
 </body></html>`; };
 
+// ── Free /fighters page (all-time A-Z directory, logged-out readable) ──────────────
+// /roster only links the ~650 CURRENTLY ACTIVE fighters, so every retired/inactive
+// entry in fighter-lite.json (the bulk of the ~3,100 /fighter/<slug> pages) had no
+// crawlable link pointing to it anywhere on the site — discoverable only via
+// sitemap.xml, which search engines treat as a weak signal on its own. This page
+// links every one of them (fully server-rendered, no JS required to see the links)
+// and is itself linked from the site-wide footer, giving every fighter page a real
+// path in from the homepage instead of being an orphan.
+export const fightersDirectoryPage = ({ lite, loggedIn, subscribed }) => {
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const entries = Object.keys(lite || {})
+    .map((slug) => ({ slug, name: (lite[slug] && lite[slug].name) || slug }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+  const groups = {};
+  entries.forEach((e) => {
+    const L = /[A-Z]/i.test(e.name.charAt(0)) ? e.name.charAt(0).toUpperCase() : "#";
+    (groups[L] = groups[L] || []).push(e);
+  });
+  const letters = Object.keys(groups).sort((a, b) => (a === "#" ? 1 : a.localeCompare(b)) - (b === "#" ? 1 : 0) || a.localeCompare(b));
+  const jump = letters.map((L) => `<a href="#l-${L}" class="fd-jump">${L}</a>`).join("");
+  const sections = letters.map((L) => `<section id="l-${L}"><h2>${L}</h2><div class="fd-grid">${groups[L].map((e) => `<a href="/fighter/${esc(e.slug)}">${esc(e.name)}</a>`).join("")}</div></section>`).join("");
+  const title = "All UFC Fighters A-Z Directory · GillyLab";
+  const desc = `Browse every fighter in the GillyLab database — ${entries.length.toLocaleString()} current and former UFC athletes, A to Z.`;
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12251b">
+<title>${title}</title>
+<meta name="description" content="${esc(desc)}">
+<link rel="canonical" href="${SITE_URL}/fighters">
+${ogTags(title, desc, "/fighters")}
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  html{background:var(--bg)}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  .pk-nav{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+  .pk-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none}
+  .pk-brand .a{color:var(--accent)}
+  .pk-brand img{height:24px;width:auto;display:block}
+  .pk-navlinks{display:flex;align-items:center;gap:14px;font-size:.82rem;color:var(--muted)}
+  .pk-navlinks a{text-decoration:none}
+  .pk-upg{color:#f4f5f7;background:linear-gradient(180deg,rgba(0,230,104,.09),rgba(0,230,104,.03));border:1px solid rgba(0,230,104,.35);border-radius:8px;padding:6px 11px;font-weight:800;font-size:.78rem}
+  main{max-width:1040px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:1.5rem;margin:.2rem 0 .1rem;font-weight:800}
+  .fd-sub{color:var(--muted);font-size:.85rem;margin:0 0 1.2rem}
+  .fd-jumpbar{display:flex;flex-wrap:wrap;gap:.3rem;margin:0 0 1.6rem;position:sticky;top:57px;background:var(--bg);padding:8px 0;z-index:4}
+  .fd-jump{background:var(--surface2);color:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:.3rem .55rem;font-size:.78rem;font-weight:700;text-decoration:none;line-height:1}
+  .fd-jump:hover{color:#fff;border-color:rgba(255,255,255,.25)}
+  section{margin-bottom:1.6rem}
+  section h2{font-size:.95rem;font-weight:800;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:.4rem;margin:0 0 .7rem}
+  .fd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:0 1.25rem}
+  .fd-grid a{display:block;padding:.35rem 0;font-size:.9rem;color:#fff;border-bottom:1px solid rgba(255,255,255,.06);text-decoration:none}
+  .fd-grid a:hover{color:var(--accent)}
+${AURORA_CSS}
+</style></head><body>${AURORA_DIVS}
+  <nav class="pk-nav">
+    <a class="pk-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""/><span>GILLY<span class="a">LAB</span></span></a>
+    <div class="pk-navlinks">
+      ${freeNavLinks(loggedIn, subscribed)}
+    </div>
+  </nav>
+  <main>
+    ${freeTabs("/fighters")}
+    <h1>All Fighters</h1>
+    <p class="fd-sub">${entries.length.toLocaleString()} current and former UFC fighters in the GillyLab database. Tap any name for their free profile.</p>
+    <nav class="fd-jumpbar">${jump}</nav>
+    ${sections}
+  </main>
+  ${FREE_FOOTER}
+</body></html>`;
+};
+
 // Converts a raw ESPN-shaped event (from data/event.json or data/event-recent.json)
 // into the same { event, slug, date, prelimsAt, city, location, main, fights[] } shape
 // currentLanding().card already carries, so rowHTML/body-assembly below can render EITHER
@@ -2924,15 +2999,30 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
 
   // schema.org Event structured data for the upcoming card (name, date, venue,
   // competitors) so it can surface as a rich event result.
+  // Plain-text (unescaped) description for JSON-LD — seoDesc above is HTML-escaped
+  // for the <meta> tag, which would leak literal "&amp;"-style entities into the
+  // structured data instead of the real characters.
+  const evDescPlain = card
+    ? (mainF ? mainF.f1 + " vs " + mainF.f2 + " headlines " : "") + card.event + (card.city ? " (UFC " + card.city + ")" : "") + " \u2014 full fight card, live odds and the tale of the tape for every bout, free on GillyLab."
+    : "";
+  const evStartVal = card && (card.prelimsAt || card.date);
+  // No real end time is tracked; UFC PPV/Fight Night broadcasts typically run
+  // ~5 hours prelims-to-final-horn, so this is a reasonable estimate rather than
+  // an exact value — good enough to satisfy the (optional) endDate field.
+  const evStartMs = evStartVal ? Date.parse(evStartVal) : NaN;
+  const evEndVal = !isNaN(evStartMs) ? new Date(evStartMs + 5 * 60 * 60 * 1000).toISOString() : null;
   const eventLd = card ? `<script type="application/ld+json">${JSON.stringify(Object.assign({
     "@context": "https://schema.org", "@type": "Event",
     name: card.event + (mainF ? ": " + mainF.f1 + " vs " + mainF.f2 : ""),
+    description: evDescPlain,
     eventStatus: "https://schema.org/EventScheduled",
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     url: SITE_URL + "/matchup",
     image: SITE_URL + "/og.png",
+    organizer: { "@type": "Organization", name: "UFC", url: "https://www.ufc.com" },
   },
-    (card.prelimsAt || card.date) ? { startDate: card.prelimsAt || card.date } : {},
+    evStartVal ? { startDate: evStartVal } : {},
+    evEndVal ? { endDate: evEndVal } : {},
     card.location ? { location: { "@type": "Place", name: card.location.split(",")[0].trim(), address: card.location } } : {},
     (card.fights && card.fights.length) ? { performer: card.fights.flatMap((f) => [{ "@type": "Person", name: f.f1 }, { "@type": "Person", name: f.f2 }]) } : {}
   )).replace(/</g, "\\u003c")}</script>` : "";
