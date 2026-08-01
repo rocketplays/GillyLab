@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T18:48:35.950Z",
+ "generatedAt": "2026-08-01T19:04:54.792Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-08-01T18:48:35.817Z"
+    }
+   ]
+  },
+  "Jan Blachowicz": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Navajo Stirling",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:04",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Navajo Stirling",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 8,
+      "totL": 8,
+      "totA": 12,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 49,
+      "totL": 38,
+      "totA": 50,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:04",
+      "head": [
+       25,
+       34
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       15,
+       26
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       23
+      ]
+     },
+     "capturedAt": "2026-08-01T19:04:54.658Z"
+    }
+   ]
+  },
+  "Navajo Stirling": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Jan Blachowicz",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:04",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Jan Blachowicz",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 37,
+      "sigA": 49,
+      "totL": 38,
+      "totA": 50,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:04",
+      "head": [
+       25,
+       34
+      ],
+      "body": [
+       3,
+       4
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       15,
+       26
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       22,
+       23
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 4,
+      "sigA": 8,
+      "totL": 8,
+      "totA": 12,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       3,
+       7
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-01T19:04:54.658Z"
     }
    ]
   }
