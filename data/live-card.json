@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T14:25:58.506Z",
+ "generatedAt": "2026-08-01T14:42:27.929Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -4698,6 +4698,194 @@
       ]
      },
      "capturedAt": "2026-08-01T14:25:58.370Z"
+    }
+   ]
+  },
+  "Jovan Leka": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Alexander Poppeck",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "2:22",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Alexander Poppeck",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 10,
+      "sigA": 16,
+      "totL": 10,
+      "totA": 16,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       13
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 8,
+      "sigA": 18,
+      "totL": 8,
+      "totA": 18,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       12
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       8,
+       18
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T14:42:27.795Z"
+    }
+   ]
+  },
+  "Alexander Poppeck": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Jovan Leka",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "2:22",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Jovan Leka",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 8,
+      "sigA": 18,
+      "totL": 8,
+      "totA": 18,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       2,
+       12
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       8,
+       18
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 10,
+      "sigA": 16,
+      "totL": 10,
+      "totA": 16,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       13
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "capturedAt": "2026-08-01T14:42:27.795Z"
     }
    ]
   }
