@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T15:19:35.358Z",
+ "generatedAt": "2026-08-01T15:48:08.889Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -5262,6 +5262,194 @@
       ]
      },
      "capturedAt": "2026-08-01T15:15:14.295Z"
+    }
+   ]
+  },
+  "Dennis Buzukja": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Bogdan Grad",
+     "result": "W",
+     "method": "Submission (Arm Triangle)",
+     "round": 2,
+     "time": "4:33",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Bogdan Grad",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 89,
+      "totL": 68,
+      "totA": 111,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       35,
+       75
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       44,
+       87
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 74,
+      "totL": 67,
+      "totA": 100,
+      "tdL": 4,
+      "tdA": 12,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "4:24",
+      "head": [
+       32,
+       59
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       24,
+       51
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "capturedAt": "2026-08-01T15:48:08.757Z"
+    }
+   ]
+  },
+  "Bogdan Grad": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Dennis Buzukja",
+     "result": "L",
+     "method": "Submission (Arm Triangle)",
+     "round": 2,
+     "time": "4:33",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Dennis Buzukja",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 74,
+      "totL": 67,
+      "totA": 100,
+      "tdL": 4,
+      "tdA": 12,
+      "sub": 2,
+      "rev": 0,
+      "ctrl": "4:24",
+      "head": [
+       32,
+       59
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       24,
+       51
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 89,
+      "totL": 68,
+      "totA": 111,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       35,
+       75
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       2,
+       3
+      ],
+      "dist": [
+       44,
+       87
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T15:48:08.757Z"
     }
    ]
   }
