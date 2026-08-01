@@ -7334,7 +7334,7 @@
  { name: "Kenneth Bergh", division: "LHW", rank: "NR", record: "9-1-1", initials: "KB", country: "" },
  { name: "Jordan Espinosa", division: "FLW", rank: "NR", record: "15-10-1", initials: "JE", country: "USA" },
  { name: "Galore Bofando", division: "WW", rank: "NR", record: "6-3-0", initials: "GB", country: "England" },
- { name: "Alexander Poppeck", division: "LHW", rank: "NR", record: "11-4-0", initials: "AP", country: "Germany" },
+ { name: "Alexander Poppeck", division: "LHW", rank: "NR", record: "21-5-0", initials: "AP", country: "Germany" },
  { name: "Jacob Silva", division: "FLW", rank: "NR", record: "11-11-0", initials: "JS", country: "USA" },
  { name: "Tyson Pedro", division: "LHW", rank: "NR", record: "10-6-0", initials: "TP", country: "Australia" },
  { name: "Viviane Pereira", division: "WSW", rank: "NR", record: "15-3-0", initials: "VP", country: "Brazil" },
@@ -11128,7 +11128,7 @@
   "Kenneth Bergh": { ht:"6'2\"", dob:"1989-06-26", reach:'76"', stance:"Orthodox", slpm:4.56, strAcc:"76%", sapm:null, strDef:null, kd:null, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"100%", streak:0, gym:"Frontline Academy" },
   "Jordan Espinosa": { ht:"5'6\"", dob:"1989-11-08", reach:'69"', stance:"Orthodox", slpm:4.22, strAcc:"53%", sapm:2.94, strDef:"57%", kd:0.75, tdLanded:0.75, tdAcc:"29%", tdDef:"71%", subAvg:0.19, finRate:"60%", streak:0, gym:"Luttrell-Yee MMA" },
   "Galore Bofando": { ht:"5'11\"", dob:"1982-05-22", reach:'72"', stance:"Switch", slpm:3.63, strAcc:"45%", sapm:3.63, strDef:"55%", kd:2.37, tdLanded:2.37, tdAcc:"100%", tdDef:"50%", subAvg:0.0, finRate:"67%", streak:1, gym:"" },
-  "Alexander Poppeck": { ht:"6'2\"", dob:"1992-04-06", reach:null, stance:"Orthodox", slpm:4.01, strAcc:"58%", sapm:9.81, strDef:"33%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"64%", streak:0, gym:"Munich MMA" },
+  "Alexander Poppeck": { ht:"6'2\"", dob:"1992-04-06", reach:'75"', stance:"Orthodox", slpm:4.01, strAcc:"58%", sapm:9.81, strDef:"33%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"67%", streak:5, gym:"Munich Top Team" },
   "Jacob Silva": { ht:"5'5\"", dob:"1988-02-23", reach:'67"', stance:"Orthodox", slpm:4.17, strAcc:"45%", sapm:4.92, strDef:"57%", kd:0.0, tdLanded:1.51, tdAcc:"100%", tdDef:"67%", subAvg:0.0, finRate:"91%", streak:1, gym:"Metro Fight Club" },
   "Tyson Pedro": { ht:"6'3\"", dob:"1991-09-17", reach:'79"', stance:"Orthodox", slpm:2.9, strAcc:"59%", sapm:2.39, strDef:"56%", kd:0.95, tdLanded:0.76, tdAcc:"31%", tdDef:"50%", subAvg:0.76, finRate:"100%", streak:0, gym:"City Kickboxing" },
   "Viviane Pereira": { ht:"5'0\"", dob:"1993-08-28", reach:'63"', stance:"Orthodox", slpm:2.7, strAcc:"30%", sapm:4.48, strDef:"58%", kd:0.0, tdLanded:0.25, tdAcc:"100%", tdDef:"29%", subAvg:0.25, finRate:"47%", streak:2, gym:"Dragon Kombat" },
@@ -35100,6 +35100,20 @@
  // closest to the bout being shown, so a rematch doesn't inherit the first fight's
  // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
+  "Alexander Poppeck": [
+    { opponent: "Tomasz Narkun", odds: -139 },
+    { opponent: "Jesus Samuel Chavarria", odds: -800 },
+    { opponent: "David Hosek", odds: -900 },
+    { opponent: "Pavol Langer", odds: -450, date: "2025-05-17" },
+    { opponent: "Mateusz Strzelczyk", odds: -500 },
+    { opponent: "Jeremy Kimball", odds: -200 },
+    { opponent: "Pavol Langer", odds: -275, date: "2023-06-17" },
+    { opponent: "Martin Zawada", odds: -260 },
+    { opponent: "Nermin Hajdarpasic", odds: -225 },
+    { opponent: "Taylor Johnson", odds: 160 },
+    { opponent: "Jamahal Hill", odds: 245 },
+    { opponent: "Rob Wilkinson", odds: 165 }
+  ],
   "Damien Anderson": [
     { opponent: "Alejandro Gutierrez", odds: -2000 },
     { opponent: "Gabriel Wanderley", odds: -250 },
@@ -104520,21 +104534,33 @@ const FIGHT_HISTORY = {
     { date: "Feb 6, 2010", opponent: "Jerome Carol", result: "L", method: "DQ (Illegal Kick)", round: 2, time: "1:27", event: "UCMMA 10: Resurrection" },
   ],
   "Alexander Poppeck": [
+    { date: "Apr 11, 2026", opponent: "Tomasz Narkun", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 86: Materla vs. Jungwirth" },
+    { date: "Jan 31, 2026", opponent: "Jesus Samuel Chavarria", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:30", event: "Oktagon 83: Samsonidse vs. Machaev" },
+    { date: "Nov 22, 2025", opponent: "David Hosek", result: "W", method: "TKO (Elbows)", round: 2, time: "2:25", event: "Oktagon 80: Legierski vs. Korkmaz" },
+    { date: "May 17, 2025", opponent: "Pavol Langer", result: "W", method: "KO (Punch)", round: 1, time: "1:15", event: "Oktagon 71: Poppeck vs. Langer" },
+    { date: "Dec 7, 2024", opponent: "Mateusz Strzelczyk", result: "NC", method: "No Contest (Illegal Knee)", round: 1, time: "2:28", event: "Oktagon 64: Moeil vs. Todev 2" },
+    { date: "Mar 23, 2024", opponent: "Jeremy Kimball", result: "W", method: "TKO (Punches)", round: 1, time: "3:30", event: "Oktagon 55: Jungwirth vs. Pukac 2" },
+    { date: "Jun 17, 2023", opponent: "Pavol Langer", result: "L", method: "Decision (Split)", round: 5, time: "5:00", event: "Oktagon 44: Oberhausen (interim LHW title)" },
+    { date: "Feb 11, 2023", opponent: "Martin Zawada", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon 39: Jungwirth vs. Oliveira" },
+    { date: "Oct 15, 2022", opponent: "Nermin Hajdarpasic", result: "W", method: "TKO (Punches)", round: 1, time: "1:53", event: "Oktagon 36: Eckerlin vs. Oliveira" },
+    { date: "Jul 2, 2022", opponent: "Koray Cengiz", result: "W", method: "TKO (Punches)", round: 1, time: "4:21", event: "USC: Ultimate Sparta Championship 2 (won USC LHW title)" },
+    { date: "Apr 9, 2022", opponent: "Kornel Zapadka", result: "W", method: "TKO (Punches)", round: 1, time: "1:20", event: "WLMMA: We Love MMA 56" },
     { date: "Feb 18, 2022", opponent: "Taylor Johnson", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "PFL Challenger Series: Week 1" },
-    { date: "May 23, 2021", opponent: "Felix Polianidis", result: "W", method: "KO/TKO", round: 1, time: "1:55", event: "NFT Gym: National Fighting Championship 3" },
+    { date: "May 23, 2021", opponent: "Felix Polianidis", result: "W", method: "TKO (Punches)", round: 1, time: "1:55", event: "NFT Gym: National Fighting Championship 3" },
     { date: "Sep 26, 2020", opponent: "Csaba Hocz", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Oktagon MMA 16: Rysavy vs. Paradeiser" },
-    { date: "Oct 26, 2019", opponent: "Francisco De Souza", result: "W", method: "KO/TKO", round: 1, time: "1:44", event: "Aggrelin 29: Cage Fight Salzburg" },
-    { date: "Jul 23, 2019", opponent: "Jamahal Hill", result: "L", method: "KO/TKO", round: 2, time: "4:29", event: "Dana White's Contender Series: Season 3, Week 5", org: "UFC" },
+    { date: "Oct 26, 2019", opponent: "Francisco De Souza", result: "W", method: "TKO (Punches)", round: 1, time: "1:44", event: "Aggrelin 29: Cage Fight Salzburg" },
+    { date: "Jul 23, 2019", opponent: "Jamahal Hill", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:29", event: "Dana White's Contender Series: Season 3, Week 5", org: "UFC" },
     { date: "Dec 21, 2018", opponent: "Nills van Noord", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Titan FC 51: The Battle of Kazakhstan" },
-    { date: "Oct 21, 2017", opponent: "Duško Todorović", result: "L", method: "Submission (Rear Naked Choke)", round: 2, time: "4:52", event: "FFC 30: Linz" },
+    { date: "Oct 21, 2017", opponent: "Duško Todorović", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:52", event: "FFC 30: Linz" },
     { date: "Apr 1, 2017", opponent: "Fitim Ukelli", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Liechtensteiner Fight Night: Fight Night 2017" },
-    { date: "Oct 1, 2016", opponent: "Rob Wilkinson", result: "L", method: "Submission (Rear Naked Choke)", round: 1, time: "3:51", event: "Euro FC 1: The New Era" },
+    { date: "Oct 1, 2016", opponent: "Rob Wilkinson", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:51", event: "Euro FC 1: The New Era" },
     { date: "Aug 14, 2016", opponent: "Alexander Takacs", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Innferno FC: Innferno Fighting Championship 2" },
-    { date: "Apr 16, 2016", opponent: "Vincent Heloise", result: "W", method: "TKO", round: 1, time: "3:21", event: "Liechtensteiner Fight Night: Fight Night 2016" },
-    { date: "Dec 13, 2015", opponent: "Csaba Horvath", result: "W", method: "TKO", round: 1, time: "1:44", event: "Aggrelin 9: Cage Fight Bavaria" },
-    { date: "Sep 6, 2015", opponent: "Sami Heyoun", result: "W", method: "TKO", round: 2, time: "5:00", event: "Aggrelin 8: Backstage Brawl 2" },
-    { date: "Apr 12, 2015", opponent: "Johannes Baier", result: "W", method: "TKO", round: 1, time: "2:25", event: "Aggrelin 7: Backstage Brawl" },
-    { date: "Sep 7, 2014", opponent: "Per Ahrens", result: "W", method: "TKO", round: 2, time: "2:50", event: "Aggrelin 6: Cage Fight Bavaria" },
+    { date: "Apr 16, 2016", opponent: "Vincent Heloise", result: "W", method: "TKO (Punches)", round: 1, time: "3:21", event: "Liechtensteiner Fight Night: Fight Night 2016" },
+    { date: "Dec 13, 2015", opponent: "Csaba Horvath", result: "W", method: "TKO (Punches)", round: 1, time: "1:44", event: "Aggrelin 9: Cage Fight Bavaria" },
+    { date: "Sep 6, 2015", opponent: "Sami Heyoun", result: "W", method: "TKO (Retirement)", round: 2, time: "5:00", event: "Aggrelin 8: Backstage Brawl 2" },
+    { date: "Apr 12, 2015", opponent: "Johannes Baier", result: "W", method: "TKO (Punches)", round: 1, time: "2:25", event: "Aggrelin 7: Backstage Brawl" },
+    { date: "Sep 7, 2014", opponent: "Per Ahrens", result: "W", method: "TKO (Punches)", round: 2, time: "2:50", event: "Aggrelin 6: Cage Fight Bavaria" },
+    { date: "Nov 2, 2013", opponent: "Andreas Muehlbayer", result: "W", method: "Disqualification", round: 1, time: "0:00", event: "Elite Boxing Germany: Elite Fight Night" },
   ],
   "Jacob Silva": [
     { date: "Aug 17, 2025", opponent: "Paris Moran", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Fury Fighting Championship 107" },
@@ -112650,6 +112676,11 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Alexander Poppeck": [
+    { icon: "🏆", title: "USC (Ultimate Sparta Championship) Light Heavyweight Champion — won the title with a first-round TKO of Koray Cengiz in Jul 2022", detail: null },
+    { icon: "🏆", title: "AFSO International MMA Middleweight Champion, 2017", detail: null },
+    { icon: "🥊", title: "German regional/Oktagon veteran who made his UFC roster debut in 2026 off a five-fight win streak", detail: null }
+  ],
   "Damien Anderson": [
     { icon: "🏅", title: "Undefeated at 5–0, all wins by finish — four submissions (two rear-naked chokes, a heel hook, a kneebar) and a TKO", detail: null },
     { icon: "🥋", title: "Brazilian Jiu-Jitsu black belt — a leg-lock-heavy grappler out of Simple Man Martial Arts in Austin, Texas", detail: null }
