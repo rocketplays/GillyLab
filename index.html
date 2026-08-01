@@ -136627,10 +136627,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + (b.profit == null ? '0' : btU(b.profit)) + 'u</span>';
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void</span>';
     else res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
-    const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '" title="Implied win probability vs. the closing line, in points.">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
+    const oddsLine = b.closeOdds != null
+      ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
+      : '<b>' + btFmtO(b.odds) + '</b>';
+    const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
-      btLegsHTML(b) + '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
+      btLegsHTML(b) + '<div class="bt-mid"><div>' + oddsLine + ' · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   window.btSetBoardTab = btSetBoardTab; window.btSetBoardRange = btSetBoardRange; window.btOpenPlayer = btOpenPlayer;
   window.btRenderBoard = btRenderBoard; window.btRenderPlayer = btRenderPlayer;
@@ -136884,7 +136887,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
     else if (b.status === 'pending') badge = '<span class="bt-badge bt-b-none">' + V + ' · ' +
       (b.market === 'PARLAY' && b.legsLive ? (b.legsIn || 0) + ' of ' + b.legsLive + ' legs in' : 'pending') + '</span>';
-    else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '" title="Implied win probability vs. the closing line, in points.">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
+    else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
     // A moneyline that missed its close still explains itself — it's the one market
     // that could have earned CLV. Everything else just reads "verified": the log
     // form warns before you place it and the hero footnote says it again, so
