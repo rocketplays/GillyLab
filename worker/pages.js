@@ -2459,7 +2459,44 @@ ${AURORA_CSS}
 // layoff/l5), so a genuine physical comparison works for any bout, not just the ones
 // the generator covered. One map, reused for every event this page touches — the
 // route loads it once, not per event.
-function eventToCard(raw, liteBySlug, isPast) {
+// Consensus moneyline for one bout, averaged (in probability space — American
+// odds don't average meaningfully) across every book The Odds API feed carries.
+// Ports scripts/gen-landing-data.cjs's consensusOdds() for this Worker: bout
+// objects here never carry a usable `.odds.red/.odds.blue` (ESPN's own feed
+// leaves that pair null for literally every bout — ESPN doesn't price fights),
+// so any card built via eventToCard() that read straight off `b.odds` showed
+// no odds on any bout, ever. oddsData is the raw parsed data/odds.json array,
+// The Odds API's shape (home_team/away_team + per-book h2h outcomes).
+function pagesConsensusOdds(oddsData, nameA, nameB) {
+  if (!Array.isArray(oddsData) || !oddsData.length) return null;
+  const ln = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+  const ev = oddsData.find((e) => e && e.home_team && e.away_team &&
+    ((ln(e.home_team) === ln(nameA) && ln(e.away_team) === ln(nameB)) ||
+     (ln(e.home_team) === ln(nameB) && ln(e.away_team) === ln(nameA))));
+  if (!ev || !Array.isArray(ev.bookmakers)) return null;
+  const toProb = (o) => (o < 0 ? -o / (-o + 100) : 100 / (o + 100));
+  const toAmerican = (p) => (!(p > 0) || !(p < 1)) ? null : (p >= 0.5 ? Math.round(-100 * p / (1 - p)) : Math.round(100 * (1 - p) / p));
+  const qa = [], qb = [];
+  ev.bookmakers.forEach((bk) => {
+    const mkt = (bk.markets || []).find((m) => m.key === "h2h");
+    if (!mkt || !Array.isArray(mkt.outcomes)) return;
+    const pa = (mkt.outcomes.find((o) => ln(o.name) === ln(nameA)) || {}).price;
+    const pb = (mkt.outcomes.find((o) => ln(o.name) === ln(nameB)) || {}).price;
+    if (pa == null || pb == null) return;
+    qa.push(toProb(pa)); qb.push(toProb(pb));
+  });
+  if (!qa.length) return null;
+  const mean = (xs) => xs.reduce((t, v) => t + v, 0) / xs.length;
+  // Pre-formatted with the "+" prefix on a positive number — matches the shape
+  // scripts/gen-landing-data.cjs's own consensusOdds already hands currentCard
+  // (its fmtOdds does the same), since fmtO() below just stringifies whatever
+  // it's given rather than re-signing it.
+  const fmtOdds = (a) => (a == null ? null : (a > 0 ? "+" : "") + a);
+  return { a: fmtOdds(toAmerican(mean(qa))), b: fmtOdds(toAmerican(mean(qb))), books: qa.length };
+}
+// isPast is accepted for call-site/back-compat but no longer changes anything
+// here — see the result-computation comment below for why.
+function eventToCard(raw, liteBySlug, isPast, oddsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
   const bouts = (raw.bouts || [])
@@ -2479,15 +2516,23 @@ function eventToCard(raw, liteBySlug, isPast) {
       rank1: fa.rankText || null, rank2: fb.rankText || null,
       rec1: stripRec(fa.profile && fa.profile.record && fa.profile.record.text),
       rec2: stripRec(fb.profile && fb.profile.record && fb.profile.record.text),
-      o1: b.odds && b.odds.red != null ? b.odds.red : null,
-      o2: b.odds && b.odds.blue != null ? b.odds.blue : null,
+      o1: null, o2: null,
       weight: stripBout(b.weightClass),
       rounds: b.numberOfRounds || 3,
       main: i === 0,
       section: b.cardSection || "Main Card",
       tape: (physA && physB) ? { a: physA, b: physB } : null,
     };
-    if (isPast) {
+    const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
+    if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }
+    // Decided from the bout data itself (a winner, or a draw/NC), not gated on
+    // the whole EVENT being "past" — that gate meant a bout that had already
+    // concluded still showed its pre-fight odds for as long as the surrounding
+    // event was still categorized "current" rather than "past" (exactly the
+    // live-card case: bouts finish one at a time hours before the event itself
+    // is over). isPast is still accepted for the caller's own bookkeeping but no
+    // longer required for a genuinely decided bout to show its result.
+    {
       const winnerSlug = b.winnerFighterSlug || null;
       const winnerFighter = winnerSlug ? b.fighters.find((x) => x.fighterSlug === winnerSlug) : null;
       const method = [b.method, b.methodDetails].filter(Boolean).join(" — ");
@@ -2530,15 +2575,66 @@ const hasBouts = (raw) => !!(raw && raw.bouts && raw.bouts.length);
 const hasResults = (raw) => !!(raw && (raw.bouts || []).some((b) => b.winnerFighterSlug || (b.fighters || []).some((f) => String(f.outcome || "").toLowerCase() === "win")));
 
 // ── Public /matchup page (readable logged-out for SEO; the upcoming card + main-event breakdown) ──
-export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overrideIsPast = false, fighterLiteBySlug = {} }) => {
+export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents = [], pastEvents = [], overrideRaw = null, overrideIsPast = false, fighterLiteBySlug = {}, oddsData = [] }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const currentCard = (currentLanding() || {}).card || null;   // held card wins for 34h
   // A carousel/past-dropdown pick that turns out to BE the site's actual current card
   // (same slug) falls through to currentCard as-is, so it keeps its precomputed deep
   // dive instead of losing it to a rebuilt-from-raw copy that only has the free tape.
   const isOtherEvent = !!(overrideRaw && (!currentCard || overrideRaw.slug !== currentCard.slug));
-  const card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast) : currentCard;
+  let card = isOtherEvent ? eventToCard(overrideRaw, fighterLiteBySlug, overrideIsPast, oddsData) : currentCard;
   const isPastView = isOtherEvent && overrideIsPast;
+  // currentCard is baked by the twice-daily landing-data generator and carries
+  // NO live result info — the live-results poller (~every 2min during a card)
+  // only touches data/event.json, never worker/landing-data.js. Without this,
+  // a fighter's odds never disappeared once his fight actually posted a result,
+  // for as long as the card held the featured slot (up to CARD_HOLD_MS after).
+  // Merged in at request time instead, matched by name against the SAME live
+  // upcomingEvents feed already fetched for the carousel below — no extra
+  // request. Deliberately NOT a full eventToCard() rebuild of currentCard: that
+  // would also throw away its precomputed (and expensive) paywalled deep dive
+  // — see the isOtherEvent comment above.
+  //
+  // currentCard IS `landingData.card`/`.held.card` — a module-level object that
+  // a Worker isolate keeps alive and reuses across many requests, not a fresh
+  // copy per request. Mutating its fights in place would leak this request's
+  // merge onto every other visitor the isolate later serves, and — because the
+  // merge below skips a bout that already has `.result` — any wrong match
+  // would stick permanently instead of getting a chance to correct itself on
+  // the next request. Clone before touching anything.
+  if (card && !isOtherEvent) {
+    card = Object.assign({}, card, { fights: (card.fights || []).map((f) => Object.assign({}, f)) });
+    const liveRaw = (upcomingEvents || []).find((e) => e && e.slug === card.slug);
+    const lastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+    if (liveRaw) (card.fights || []).forEach((f) => {
+      if (f.result) return;
+      const lb = (liveRaw.bouts || []).find((b) => {
+        const names = (b.fighters || []).map((x) => lastName(x.fighterName));
+        return names.length === 2 && names.includes(lastName(f.f1)) && names.includes(lastName(f.f2));
+      });
+      if (!lb) return;
+      const winnerSlug = lb.winnerFighterSlug || null;
+      const winnerFighter = winnerSlug ? (lb.fighters || []).find((x) => x.fighterSlug === winnerSlug) : null;
+      const method = [lb.method, lb.methodDetails].filter(Boolean).join(" — ");
+      if (winnerFighter) {
+        f.result = { winner: winnerFighter.fighterName, method, round: lb.resultRound || null, time: lb.resultTime || null, voided: false };
+      } else if (/draw|no\s*contest/i.test(lb.method || "")) {
+        f.result = { voided: true, draw: /draw/i.test(lb.method || ""), method, round: lb.resultRound || null };
+      }
+    });
+    // Same staleness problem for odds: data/odds.json is fetched fresh on every
+    // /matchup request, but currentCard's o1/o2 are whatever consensusOdds saw
+    // at the last twice-daily generation — a book posting a line since then
+    // (common for undercard bouts, which price later than the main event)
+    // stayed "—" until the next regen. Only backfills bouts still missing a
+    // price; never overwrites the snapshot's own numbers with a possibly
+    // different consensus for a bout that already had one.
+    (card.fights || []).forEach((f) => {
+      if (f.o1 != null && f.o2 != null) return;
+      const consensus = pagesConsensusOdds(oddsData, f.f1, f.f2);
+      if (consensus) { f.o1 = consensus.a; f.o2 = consensus.b; }
+    });
+  }
   // consensusOdds already returns a signed string ("+220" / "-273") — don't re-sign
   // it (that produced the "++220" double plus on underdogs).
   const fmtO = (o) => (o == null || o === "" ? "—" : String(o));
@@ -2848,7 +2944,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
     .slice(0, 6);
   const carouselSlide = (raw) => {
-    const evCard = eventToCard(raw, fighterLiteBySlug, false);
+    const evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
     const active = card && evCard.slug === card.slug;
     const when2 = eventWhen(evCard, { weekday: undefined, month: "short", day: "numeric" });
     return `<div class="mf-ev-slide${active ? " active" : ""}" data-slug="${esc(evCard.slug)}">

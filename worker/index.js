@@ -1958,22 +1958,24 @@ export default {
         // fighter-lite.json is loaded on EVERY /matchup request now, not just when
         // ?event= is present — the full-card carousel builds each upcoming event's
         // free tale-of-tape (from `.phys`) too, not only the one being featured.
-        const [u, profileSlugs, upcomingRaw, pastRaw, lite] = await Promise.all([
+        const [u, profileSlugs, upcomingRaw, pastRaw, lite, oddsRaw] = await Promise.all([
           s ? getUser(env, s.email) : null,
           loadProfileSlugs(env, url),
           loadAssetJson(env, url, "/data/event.json"),
           loadAssetJson(env, url, "/data/event-recent.json"),
           loadAssetJson(env, url, "/data/fighter-lite.json"),
+          loadAssetJson(env, url, "/data/odds.json"),
         ]);
         const upcomingEvents = ((upcomingRaw && upcomingRaw.data) || []).slice().sort((a, b) => Date.parse(a.startsAt || 0) - Date.parse(b.startsAt || 0));
         const pastEvents = ((pastRaw && pastRaw.data) || []).slice().sort((a, b) => Date.parse(b.startsAt || 0) - Date.parse(a.startsAt || 0));
         const fighterLiteBySlug = (lite && lite.bySlug) || {};
+        const oddsData = Array.isArray(oddsRaw) ? oddsRaw : [];
         let overrideRaw = null, overrideIsPast = false;
         if (wantSlug) {
           overrideRaw = upcomingEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null;
           if (!overrideRaw) { overrideRaw = pastEvents.find((e) => (e.slug || "").toLowerCase() === wantSlug) || null; overrideIsPast = !!overrideRaw; }
         }
-        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs, upcomingEvents, pastEvents, overrideRaw, overrideIsPast, fighterLiteBySlug }), 200, pubHeaders(s));
+        return html(matchupPage({ subscribed: !!u?.subscribed, loggedIn: !!s, profileSlugs, upcomingEvents, pastEvents, overrideRaw, overrideIsPast, fighterLiteBySlug, oddsData }), 200, pubHeaders(s));
       }
       // Fighter search for /matchup's search bar — server-filtered so the client
       // never has to download fighter-lite.json's 3,100+ entries just to type a name.
