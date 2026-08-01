@@ -1125,11 +1125,16 @@ const GL_SHEET = (function () {
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
       // A normal bet keeps its match/book subtitle. A parlay drops the event line and the
-      // per-leg odds, and lays the legs out 2-up (small avatar + pick) to stay compact.
+      // per-leg odds (still keeps the book — it's one sportsbook for the whole slip), and
+      // lays the legs out 2-up (small avatar + pick) to stay compact.
       if (!isParlay) {
         ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       } else {
+        if (b.book) {
+          ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+          ctx.fillText(clip(ctx, b.book, maxW), tx, cy + 26);
+        }
         const lg = legImgs[i] || [], legsTop = y + PHEAD_H;
         b.legs.forEach((l, j) => {
           const lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
