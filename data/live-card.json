@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T16:04:28.113Z",
+ "generatedAt": "2026-08-01T16:20:56.450Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -5450,6 +5450,194 @@
       ]
      },
      "capturedAt": "2026-08-01T15:48:08.757Z"
+    }
+   ]
+  },
+  "Borislav Nikolic": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Mark Vologdin",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Mark Vologdin",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 57,
+      "sigA": 147,
+      "totL": 87,
+      "totA": 189,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "4:05",
+      "head": [
+       51,
+       136
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       41,
+       123
+      ],
+      "clinch": [
+       3,
+       8
+      ],
+      "ground": [
+       13,
+       16
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 42,
+      "sigA": 102,
+      "totL": 43,
+      "totA": 103,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       26,
+       78
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       36,
+       87
+      ],
+      "clinch": [
+       6,
+       14
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-01T16:20:56.316Z"
+    }
+   ]
+  },
+  "Mark Vologdin": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Borislav Nikolic",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Borislav Nikolic",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 42,
+      "sigA": 102,
+      "totL": 43,
+      "totA": 103,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       26,
+       78
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       9,
+       11
+      ],
+      "dist": [
+       36,
+       87
+      ],
+      "clinch": [
+       6,
+       14
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 57,
+      "sigA": 147,
+      "totL": 87,
+      "totA": 189,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 2,
+      "rev": 1,
+      "ctrl": "4:05",
+      "head": [
+       51,
+       136
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       41,
+       123
+      ],
+      "clinch": [
+       3,
+       8
+      ],
+      "ground": [
+       13,
+       16
+      ]
+     },
+     "capturedAt": "2026-08-01T16:20:56.316Z"
     }
    ]
   }
