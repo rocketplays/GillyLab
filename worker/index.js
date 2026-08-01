@@ -765,15 +765,26 @@ const btPutBets = (env, email, list) => {
 // bets against, so a rematch can never be confused with the earlier fight.
 // NOTE: ESPN's bout id is name-derived ("espn-<f1>-vs-<f2>"), so it repeats for a
 // rematch. The identity is therefore "<eventSlug>|<boutId>", never the bare id.
-async function btFindBout(env, url, fightId) {
+// evSlug is optional but should always be passed when the caller has it (every
+// caller does): a bet logged before the composite "<eventSlug>|<boutId>" id
+// existed only carries the bare ESPN id, which repeats across a rematch — the
+// client's own btFindFight() falls back to a rawId+evSlug match for exactly
+// this reason (see its comment). Without the same fallback here, btEditLocked
+// silently failed to resolve any leg logged in that old bare-id format: it read
+// as "aged out of the feed, can't recheck" and never locked, letting someone
+// edit or delete a bet (or a parlay with such a leg) whose fight had already
+// started or even finished.
+async function btFindBout(env, url, fightId, evSlug) {
   const feed = await loadAssetJson(env, url, "/data/event.json");
   const evs = (feed && feed.data) || [];
   for (const e of evs) {
     if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
     for (const b of e.bouts) {
       if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
-      const id = e.slug + "|" + (b.id || b.boutOrder);
-      if (id !== fightId) continue;
+      const rawId = b.id || String(b.boutOrder);
+      const id = e.slug + "|" + rawId;
+      const isLegacyMatch = evSlug && e.slug === evSlug && rawId === fightId;
+      if (id !== fightId && !isLegacyMatch) continue;
       const sec = String(b.cardSection || "").toLowerCase();
       const isMain = sec.indexOf("main") !== -1 && sec.indexOf("prelim") === -1;
       return {
@@ -1260,9 +1271,14 @@ async function handleBetsSettle(request, env) {
 async function btEditLocked(env, url, b) {
   if (b.kind !== "tracked") return false;
   const now = Date.now();
-  const legFightIds = b.market === "PARLAY" ? (b.legs || []).map((l) => l.fightId) : [b.fightId];
-  for (const fid of legFightIds) {
-    const hit = await btFindBout(env, url, String(fid || ""));
+  // Carry each leg's OWN evSlug alongside its fightId — btFindBout needs it to
+  // resolve a pre-composite-id leg (see its comment). A parlay leg always has
+  // its own evSlug; a single bet uses the bet's.
+  const legs = b.market === "PARLAY"
+    ? (b.legs || []).map((l) => ({ fid: l.fightId, evSlug: l.evSlug || b.evSlug }))
+    : [{ fid: b.fightId, evSlug: b.evSlug }];
+  for (const { fid, evSlug } of legs) {
+    const hit = await btFindBout(env, url, String(fid || ""), evSlug);
     if (!hit) continue;   // aged out of the feed — can't re-check this leg, don't block on it
     const segAt = Date.parse(hit.segAt);
     if (isFinite(segAt) && now >= segAt) return true;
