@@ -1340,9 +1340,16 @@ async function handleAdminFixBetSide(request, env) {
   if (b.kind !== "tracked" || b.market === "PARLAY") {
     return json({ error: "this only fixes a single tracked bet's side, not a parlay or a self-reported bet" }, 400);
   }
-  const before = { pick: b.pick, side: b.params && b.params.side };
+  const before = { pick: b.pick, side: b.params && b.params.side, graded: b.graded || null };
   b.params = Object.assign({}, b.params, { side: sd });
   if (typeof pick === "string" && pick.trim()) b.pick = pick.trim().slice(0, 160);
+  // The bet's outcome was frozen server-side under the WRONG side (write-once by
+  // design — see handleBetsGrade — so it would otherwise never re-derive). Flipping
+  // the side without clearing this leaves the client short-circuiting straight to
+  // the stale frozen grade (btDeriveAll: "if (b.graded && b.graded.status) { ...
+  // return; }") and still showing the old result forever. Delete it so the next
+  // load re-grades from scratch against the corrected side, and re-freezes on its own.
+  delete b.graded;
   b.fixedAt = Date.now();
   await btPutBets(env, s.email, list);
   return json({ ok: true, before, bet: b });
