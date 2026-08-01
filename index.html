@@ -136792,8 +136792,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       h += '<select class="bt-card-select" onchange="btSetCard(this.value)"><option value="all"' + (btCardFilter === 'all' ? ' selected' : '') + '>All cards</option>' +
         pastCards.map(c => '<option value="' + btEsc(c.slug) + '"' + (btCardFilter === c.slug ? ' selected' : '') + '>' + btEsc(c.label) + (c.pending > 0 ? ' · live' : '') + ' (' + (c.n - c.pending) + ' bet' + ((c.n - c.pending) === 1 ? '' : 's') + ')</option>').join('') + '</select>';
     }
-    // Finished cards get a "Share results" button; a card still live (some legs
-    // still pending) gets "Share so far" instead, since it isn't final yet.
+    // A finished card gets a "Share results" button. A card still live (some legs
+    // still pending) gets no share button at all — the card isn't final yet, and
+    // a mid-card share invited someone to post a result that could still flip.
+    // The button reappears on its own once the last bet on the card settles.
     pastCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
       const rows = settled.filter(b => b.evSlug === c.slug);
       if (!rows.length) return;
@@ -136801,7 +136803,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + (c.pending > 0 ? ' <span class="bt-live-tag">live</span>' : '') + '</div>' +
         '<div class="bt-cardsum ' + (st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '') + '">' +
         st.w + '-' + st.l + ' · ' + (st.units > 0 ? '+' : '') + btU(st.units) + 'u</div>' +
-        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share ' + (c.pending > 0 ? 'so far' : 'results') + '</button></div>';
+        (c.pending > 0 ? '' : '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share results</button>') + '</div>';
       h += rows.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     });
     // Settled bets with no card (self-reported).
