@@ -2987,7 +2987,7 @@ ${eventLd}
   .mf-panel[hidden]{display:none}
   .sr-common{margin-top:.9rem}
   .sr-common .sr-cmp-row:last-child{border-bottom:none}
-  .sr-common-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+  .sr-common-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem;text-align:center}
   .sr-cmp-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
   /* Tale of the tape / Finish & durability: category label in the middle, each
      fighter's stat centered on the outside — mirrors index.html's Fight Info
