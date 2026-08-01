@@ -136030,6 +136030,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   const btImpl = a => a < 0 ? (-a) / ((-a) + 100) : 100 / (a + 100);
   const btClvPts = (yours, close) => Math.round((btImpl(close) - btImpl(yours)) * 1000) / 10;
+  // The win-probability behind a price, as a percent string — shown next to the odds
+  // themselves so CLV isn't just an asserted number. +140 -> +138 looking like it
+  // "should" be a big move is exactly the kind of thing that stops making sense
+  // once you see it's actually 41.7% -> 42.0%: a small, real probability shift that a
+  // 2-cent move in american odds doesn't visually suggest at that price level.
+  // 2dp, not 1 — at 1dp, 41.7% -> 42.0% visibly subtracts to 0.3 while the CLV
+  // badge (computed from the un-rounded values) says +0.4, which is its own
+  // confusing mismatch. 2dp (41.67% -> 42.02%) actually subtracts to the number
+  // shown.
+  const btImplPct = a => (a == null ? null : (btImpl(a) * 100).toFixed(2) + '%');
   // Payout rides effOdds when set — a parlay with a voided leg pays at the odds
   // of the surviving legs, exactly as a book would recompute it.
   const btProfit = b => { const o = (b.effOdds != null ? b.effOdds : b.odds);
@@ -136628,7 +136638,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void</span>';
     else res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
     const oddsLine = b.closeOdds != null
-      ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
+      ? 'You <b>' + btFmtO(b.odds) + '</b> <span style="opacity:.65">(' + btImplPct(b.odds) + ')</span> → close <b>' + btFmtO(b.closeOdds) + '</b> <span style="opacity:.65">(' + btImplPct(b.closeOdds) + ')</span>'
       : '<b>' + btFmtO(b.odds) + '</b>';
     const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
@@ -136771,7 +136781,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     let h = '<div class="bt-hero"><div class="bt-hero-lbl">Verified closing line value</div><div class="bt-hero-row">' +
       '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '" title="1 point = 1% more implied win probability than the closing price gave.">' + clvTxt + '</div>' +
       '<div class="bt-hero-sub">' + (vs.clvN ? 'beat the close on <b style="color:var(--text)">' + vs.beat + ' of ' + vs.clvN + '</b> moneylines' : 'no graded moneylines in this range') + '</div></div>' +
-      '<div class="bt-foot">CLV = implied win probability at your price vs. the close, in points — not a raw odds difference. Average per bet, not a total. <b style="color:#c9ccd3">Moneylines only</b> (props move too fast for a trustworthy close), but props still count toward record, ROI and units.</div></div>';
+      '<div class="bt-foot">CLV = implied win probability at your price vs. the close, in points — not a raw odds difference. Average per bet, not a total. <b style="color:#c9ccd3">Moneylines only</b> (props move too fast for a trustworthy close) — props are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
     h += '<div class="bt-grid">' +
       '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + s.w + '-' + s.l + '</div></div>' +
       '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (s.roi > 0 ? 'bt-pos' : s.roi < 0 ? 'bt-neg' : '') + '">' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + s.roi.toFixed(1) + '%') + '</div></div>' +
@@ -136896,9 +136906,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.priced && b.noClv) badge = '<span class="bt-badge bt-b-none">' + V + ' · no CLV · ' + btEsc(b.noClv) + '</span>';
     else badge = '<span class="bt-badge bt-b-none">' + V + '</span>';
     // "You" only earns its place once there's a closing line to contrast it with.
+    // Win probability in parens next to each price is what actually makes the CLV
+    // number checkable — see btImplPct above.
     const reprice = (b.effOdds != null && b.effOdds !== b.odds);
     const line = (b.closeOdds != null
-      ? 'You <b>' + btFmtO(b.odds) + '</b> → close <b>' + btFmtO(b.closeOdds) + '</b>'
+      ? 'You <b>' + btFmtO(b.odds) + '</b> <span style="opacity:.65">(' + btImplPct(b.odds) + ')</span> → close <b>' + btFmtO(b.closeOdds) + '</b> <span style="opacity:.65">(' + btImplPct(b.closeOdds) + ')</span>'
       : '<b>' + btFmtO(reprice ? b.effOdds : b.odds) + '</b>' + (reprice ? ' <span style="opacity:.7">(was ' + btFmtO(b.odds) + ', leg voided)</span>' : ''))
       + ' · ' + b.stake + 'u'
       // What's still live: profit at risk, on the price that would actually pay
