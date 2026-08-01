@@ -1243,9 +1243,13 @@
       padding-right: 2.2rem;
     }
     .bt-cardhdr { display: flex; align-items: center; gap: 10px; margin: 1.2rem 0 0.6rem; }
-    .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .bt-cardsum { font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
-    .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
+    .bt-cardhdr-t { flex: 1 1 auto; min-width: 0; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* Pushed to the far right of the row on its own — previously only the share
+       button had margin-left:auto, so on a live card (no share button) the
+       record/units sat crammed right up against the title with just the row's
+       10px gap instead of sitting cleanly at the edge. */
+    .bt-cardsum { flex: 0 0 auto; margin-left: auto; font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
+    .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
     .bt-live-tag { display: inline-block; color: #ff6a5e; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; vertical-align: middle; }
     .bt-card-tally { font-size: 0.72rem; color: var(--muted); margin: -0.3rem 0 0.6rem; }
     .bt-card-tally b { font-weight: 800; }
