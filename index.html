@@ -1246,6 +1246,7 @@
     .bt-cardhdr-t { font-size: 0.7rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .bt-cardsum { font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
     .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
+    .bt-live-tag { display: inline-block; color: #ff6a5e; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; vertical-align: middle; }
     .bt-editrow { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     .bt-legs { margin: 8px 0 2px; border-left: 2px solid var(--border); padding-left: 10px; }
     .bt-leg { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; padding: 2px 0; color: #c9ccd3; }
@@ -136236,6 +136237,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return '<div class="bt-leg-av"><img src="./photos/thumb/' + btEsc(nameToSlug(name)) + '.png" alt="" loading="lazy"' +
       ' onerror="this.parentNode.textContent=\'' + ini + '\'"></div>';
   }
+  // Shared by the owner's own history (btBetHTML) and a public profile
+  // (btPlayerBetHTML / btPlayerPendingHTML) — a parlay is otherwise just its
+  // combined pick line with no way to see what's actually in it.
+  function btLegsHTML(b) {
+    if (b.market !== 'PARLAY' || !b.legs || !b.legs.length) return '';
+    return '<div class="bt-legs">' + b.legs.map((l, i) => {
+      const st = (b.legStatuses || [])[i] || 'pending';
+      const ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '–' : '·';
+      // Mini avatar of the leg's picked fighter, resolved the same way the row avatars are.
+      const ln = btBetNames({ market: l.market, fightId: l.fightId, evSlug: b.evSlug, params: l.params });
+      const av = ln.length ? btLegAvHTML(ln[0]) : '';
+      return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' + av +
+        '<span class="bt-leg-p">' + btEsc(l.pick) + '</span><span class="bt-leg-o">' + btFmtO(l.odds) + '</span></div>';
+    }).join('') + '</div>';
+  }
   function btAvsHTML(names) {
     if (!names.length) return '';
     if (names.length === 1) return '<div class="bt-avs">' + btAvHTML(names[0]) + '</div>';
@@ -136364,15 +136380,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Clear the card filter when switching tabs: the card chips are drawn from the
   // ACTIVE tab's live cards only, so a filter set there would survive into Past
   // bets, match none of the finished cards, and show an empty tab with no visible
-  // control to undo it. Past bets defaults to the most recent finished card
-  // rather than "All cards" — with enough history "All" makes for a very long
-  // scroll, and the most recent card is what you almost always want right after
-  // an event wraps. "All cards" is still one tap away in the dropdown.
+  // control to undo it. Past bets defaults to whichever card is most relevant
+  // right now: a still-live card with at least one graded bet wins first — that's
+  // exactly the case where bets used to scatter into "Other settled" while the
+  // broadcast was still going, the hardest time to be hunting for them. Only once
+  // nothing is live does it fall back to the most recent finished card. "All
+  // cards" is still one tap away in the dropdown.
   function btSetTab(t) {
     btTab = t;
     if (t === 'past') {
-      const done = btCards(BT_BETS).filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
-      btCardFilter = done.length ? done[0].slug : 'all';
+      const withSettled = btCards(BT_BETS).filter(c => c.n - c.pending > 0);
+      const live = withSettled.filter(c => c.pending > 0).sort((a, b) => b.ts - a.ts);
+      const done = withSettled.filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
+      btCardFilter = live.length ? live[0].slug : (done.length ? done[0].slug : 'all');
     } else {
       btCardFilter = 'all';
     }
@@ -136460,9 +136480,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   function btPlayerPendingHTML(b) {
     const res = '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span>';
+    const badge = (b.market === 'PARLAY' && b.legsLive)
+      ? '<span class="bt-badge bt-b-none">' + (b.legsIn || 0) + ' of ' + b.legsLive + ' legs in</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
-      '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div></div></div>';
+      btLegsHTML(b) + '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   // Resolve the bet's fighter(s) from the shared card data (same as the owner's own
   // history), so the profile shows the same avatars. Old bets whose card has aged out
@@ -136477,7 +136499,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
-      '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
+      btLegsHTML(b) + '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
   }
   window.btSetBoardTab = btSetBoardTab; window.btSetBoardRange = btSetBoardRange; window.btOpenPlayer = btOpenPlayer;
   window.btRenderBoard = btRenderBoard; window.btRenderPlayer = btRenderPlayer;
@@ -136636,6 +136658,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const allCards = btCards(shown);
     const cards = allCards.filter(c => c.pending > 0).sort((a, b) => a.ts - b.ts);
     const doneCards = allCards.filter(c => !c.pending).sort((a, b) => b.ts - a.ts);
+    // Past bets groups by card whenever a card has ANY settled bet, not just once
+    // every bet on it is graded — otherwise a card mid-broadcast (some legs still
+    // pending) has its already-graded bets fall out of every card group and pile
+    // into "Other settled" alongside genuinely card-less self-reported bets, right
+    // when you're most likely to be checking on them live. Still-live cards sort
+    // first (most likely to be what you're looking for right now), then finished
+    // cards newest first.
+    const pastCards = allCards.filter(c => c.n - c.pending > 0)
+      .sort((a, b) => (b.pending > 0 ? 1 : 0) - (a.pending > 0 ? 1 : 0) || b.ts - a.ts);
     // Settled bets file under "Past bets" so a growing history never buries what's still
     // live — the same split My history uses for pick'em. They stay graded and browsable,
     // grouped by card with their Share results button intact.
@@ -136673,23 +136704,24 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // of chips wrapping across several lines. A dropdown holds the same filter
     // state (btCardFilter / btSetCard(), already wired for both tabs — see the
     // Active branch above) in one line regardless of how many cards accumulate.
-    if (doneCards.length > 1) {
+    if (pastCards.length > 1) {
       h += '<select class="bt-card-select" onchange="btSetCard(this.value)"><option value="all"' + (btCardFilter === 'all' ? ' selected' : '') + '>All cards</option>' +
-        doneCards.map(c => '<option value="' + btEsc(c.slug) + '"' + (btCardFilter === c.slug ? ' selected' : '') + '>' + btEsc(c.label) + ' (' + c.n + ' bet' + (c.n === 1 ? '' : 's') + ')</option>').join('') + '</select>';
+        pastCards.map(c => '<option value="' + btEsc(c.slug) + '"' + (btCardFilter === c.slug ? ' selected' : '') + '>' + btEsc(c.label) + (c.pending > 0 ? ' · live' : '') + ' (' + (c.n - c.pending) + ' bet' + ((c.n - c.pending) === 1 ? '' : 's') + ')</option>').join('') + '</select>';
     }
-    // Finished cards: each its own group with a Share results button.
-    doneCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
+    // Finished cards get a "Share results" button; a card still live (some legs
+    // still pending) gets "Share so far" instead, since it isn't final yet.
+    pastCards.filter(c => btCardFilter === 'all' || btCardFilter === c.slug).forEach(c => {
       const rows = settled.filter(b => b.evSlug === c.slug);
       if (!rows.length) return;
       const st = btStats(rows);
-      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + '</div>' +
+      h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + (c.pending > 0 ? ' <span class="bt-live-tag">live</span>' : '') + '</div>' +
         '<div class="bt-cardsum ' + (st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '') + '">' +
         st.w + '-' + st.l + ' · ' + (st.units > 0 ? '+' : '') + btU(st.units) + 'u</div>' +
-        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share results</button></div>';
+        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share ' + (c.pending > 0 ? 'so far' : 'results') + '</button></div>';
       h += rows.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
     });
     // Settled bets with no card (self-reported).
-    const looseDone = settled.filter(b => !b.evSlug || !doneCards.some(c => c.slug === b.evSlug));
+    const looseDone = settled.filter(b => !b.evSlug || !pastCards.some(c => c.slug === b.evSlug));
     if (looseDone.length && btCardFilter === 'all') {
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">Other settled</div></div>';
       h += looseDone.sort((a, b) => b.ts - a.ts).map(btBetHTML).join('');
@@ -136737,18 +136769,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       + (b.status === 'pending' ? ' <span style="opacity:.75">to win ' + btU(btToWin(b)) + 'u</span>' : '')
       + (b.book ? ' · <span class="bt-book">' + btEsc(b.book) + '</span>' : '');
     // Parlay: show each leg and how many are in.
-    let legsHTML = '';
-    if (b.market === 'PARLAY' && b.legs) {
-      legsHTML = '<div class="bt-legs">' + b.legs.map((l, i) => {
-        const st = (b.legStatuses || [])[i] || 'pending';
-        const ico = st === 'won' ? '✓' : st === 'lost' ? '✗' : st === 'void' ? '–' : '·';
-        // Mini avatar of the leg's picked fighter, resolved the same way the row avatars are.
-        const ln = btBetNames({ market: l.market, fightId: l.fightId, evSlug: b.evSlug, params: l.params });
-        const av = ln.length ? btLegAvHTML(ln[0]) : '';
-        return '<div class="bt-leg bt-leg-' + st + '"><span class="bt-leg-ico">' + ico + '</span>' + av +
-          '<span class="bt-leg-p">' + btEsc(l.pick) + '</span><span class="bt-leg-o">' + btFmtO(l.odds) + '</span></div>';
-      }).join('') + '</div>';
-    }
+    const legsHTML = btLegsHTML(b);
     // Editable only while pending AND before the segment locks — after that the
     // close is known, so letting someone change their price would fake CLV.
     // Bet ids are strings, so quote them into the handlers.

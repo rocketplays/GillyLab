@@ -1023,10 +1023,13 @@ function btGradeParlay(b, events) {
   });
   const liveIdx = legs.map((l, i) => i).filter((i) => legStatuses[i] !== "void");
   const effOdds = liveIdx.length ? btCombineOdds(liveIdx.map((i) => legs[i].odds)) : null;
-  if (!liveIdx.length) return { status: "void", clv: null, effOdds: null };
-  if (liveIdx.some((i) => legStatuses[i] === "lost")) return { status: "lost", clv: null, effOdds };
-  if (liveIdx.every((i) => legStatuses[i] === "won")) return { status: "won", clv: null, effOdds };
-  return null;   // still pending
+  const legsIn = liveIdx.filter((i) => legStatuses[i] !== "pending").length;
+  const legsLive = liveIdx.length;
+  const base = { legStatuses, legsIn, legsLive };
+  if (!liveIdx.length) return Object.assign({ status: "void", clv: null, effOdds: null }, base);
+  if (liveIdx.some((i) => legStatuses[i] === "lost")) return Object.assign({ status: "lost", clv: null, effOdds }, base);
+  if (liveIdx.every((i) => legStatuses[i] === "won")) return Object.assign({ status: "won", clv: null, effOdds }, base);
+  return Object.assign({ status: "pending", clv: null, effOdds }, base);
 }
 // The frozen grade if present, else graded live from the feeds. null while still pending.
 function btEffectiveGrade(b, events, closing) {
@@ -1142,6 +1145,11 @@ async function handleBetsPlayer(request, env, url) {
     pick: b.pick || "", match: b.match || "", market: b.market || "",
     fightId: b.fightId || null, evSlug: b.evSlug || null,
     side: (b.params && b.params.side != null) ? b.params.side : null,
+    // Parlay legs — same shape btLegAvHTML/legsHTML expect on the owner's own
+    // history, so the profile view (btPlayerBetHTML/btPlayerPendingHTML) can
+    // render each leg instead of just the combined pick line.
+    legs: b.market === "PARLAY" ? (b.legs || null) : null,
+    book: b.book || null,
   });
   const settled = (bets || [])
     .filter((b) => b.kind === "tracked" && isSettled(b))
@@ -1154,6 +1162,7 @@ async function handleBetsPlayer(request, env, url) {
         stake: b.stake, status: g.status,
         profit: btRound1(o ? o.profit : 0),
         clv: (g && typeof g.clv === "number") ? btRound1(g.clv) : null,
+        legStatuses: (g && g.legStatuses) || null,
         ts: b.ts || b.createdAt || 0,
       });
     });
@@ -1163,7 +1172,14 @@ async function handleBetsPlayer(request, env, url) {
     .filter((b) => b.kind === "tracked" && !isSettled(b))
     .sort(byNewest)
     .slice(0, 100)
-    .map((b) => Object.assign(common(b), { odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0 }));
+    .map((b) => {
+      const g = b.market === "PARLAY" ? grade(b) : null;
+      return Object.assign(common(b), {
+        odds: b.odds, stake: b.stake, ts: b.ts || b.createdAt || 0,
+        legStatuses: (g && g.legStatuses) || null,
+        legsIn: (g && g.legsIn) || 0, legsLive: (g && g.legsLive) || (b.legs || []).length,
+      });
+    });
   return json({
     name,
     stats: stats ? {
