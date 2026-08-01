@@ -857,7 +857,11 @@
     }
 
     .fighter-cell.right {
-      flex-direction: row-reverse;
+      /* No flex-direction: row-reverse — the DOM already puts the name/record
+         block before the avatar on this side (mirroring the left cell's avatar-
+         first order), so a plain row keeps the avatar as the LAST flex item,
+         landing it at the outer right edge instead of next to "VS". Reversing
+         here put it back on the inner side, which is what this fixes. */
       text-align: right;
     }
 
