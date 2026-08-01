@@ -136292,7 +136292,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return btGradeStatus({ market: l.market, params: l.params }, R, f.rounds);
     });
     const liveIdx = legs.map((l, i) => i).filter(i => b.legStatuses[i] !== 'void');
-    b.effOdds = liveIdx.length ? btCombine(liveIdx.map(i => legs[i].odds)) : null;
+    // Only reprice off the individual legs when one has ACTUALLY voided out — the
+    // combined price you were quoted (b.odds) already bakes in the book's own vig
+    // and rounding, which this naive re-multiply of the raw leg prices doesn't.
+    // Setting effOdds unconditionally meant ANY rounding gap between the two —
+    // completely normal, since a book's real parlay price is never exactly the
+    // product of its leg prices — showed up as "(was X, leg voided)" on a parlay
+    // where every leg was still very much alive. See the (b.effOdds != null ?
+    // b.effOdds : b.odds) fallback used everywhere else (btProfit, btToWin, the
+    // bet-row price line): effOdds staying null here means all of those correctly
+    // keep using your real quoted price until a leg genuinely voids.
+    const anyVoided = liveIdx.length !== legs.length;
+    b.effOdds = anyVoided ? (liveIdx.length ? btCombine(liveIdx.map(i => legs[i].odds)) : null) : null;
     b.legsIn = liveIdx.filter(i => b.legStatuses[i] !== 'pending').length;
     b.legsLive = liveIdx.length;
     if (!liveIdx.length) { b.status = 'void'; return; }                                  // every leg voided

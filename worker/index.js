@@ -1022,7 +1022,13 @@ function btGradeParlay(b, events) {
     return R ? btGradeStatus(l.market, l.params || {}, R) : "pending";
   });
   const liveIdx = legs.map((l, i) => i).filter((i) => legStatuses[i] !== "void");
-  const effOdds = liveIdx.length ? btCombineOdds(liveIdx.map((i) => legs[i].odds)) : null;
+  // Mirrors the client's btDeriveParlay: only reprice off the raw legs once one has
+  // ACTUALLY voided. Otherwise this naive recombination almost never matches the
+  // user's real quoted price (books apply their own vig/rounding to a parlay, not
+  // a pure multiply of the leg prices), which made every ordinary parlay look like
+  // it had a voided leg on someone's public profile.
+  const anyVoided = liveIdx.length !== legs.length;
+  const effOdds = anyVoided ? (liveIdx.length ? btCombineOdds(liveIdx.map((i) => legs[i].odds)) : null) : null;
   const legsIn = liveIdx.filter((i) => legStatuses[i] !== "pending").length;
   const legsLive = liveIdx.length;
   const base = { legStatuses, legsIn, legsLive };
