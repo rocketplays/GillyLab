@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-07-31T19:30:00.000Z",
- "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section.",
+ "generatedAt": "2026-08-01T13:06:00.000Z",
+ "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) \u2014 the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp \u2014 matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) \u2014 the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live \u2014 genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time.",
  "fights": [
   {
    "slug": "ufc-fight-night-july-18-2026",
@@ -241,6 +241,146 @@
    "o1": 455,
    "o2": -634,
    "capturedAt": "2026-07-25T12:50:30.967Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Ludovit Klein",
+   "f2": "Tofiq Musayev",
+   "o1": -263,
+   "o2": 214,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Oban Elliott",
+   "f2": "Michael Oliveira",
+   "o1": 296,
+   "o2": -376,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Borislav Nikolic",
+   "f2": "Mark Vologdin",
+   "o1": -206,
+   "o2": 172,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Dennis Buzukja",
+   "f2": "Bogdan Grad",
+   "o1": 166,
+   "o2": -200,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Mateusz R\u0119becki",
+   "f2": "Kyle Prepolec",
+   "o1": -719,
+   "o2": 504,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Nina Milo\u0161evi\u0107",
+   "f2": "Hailey Cowan",
+   "o1": -536,
+   "o2": 393,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Jovan Leka",
+   "f2": "Alexander Poppeck",
+   "o1": -294,
+   "o2": 237,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "prelims",
+   "f1": "Marina Spasi\u0107",
+   "f2": "Stephanie Luciano",
+   "o1": 266,
+   "o2": -332,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Uro\u0161 Medi\u0107",
+   "f2": "Daniel Rodriguez",
+   "o1": -395,
+   "o2": 308,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Jan Blachowicz",
+   "f2": "Navajo Stirling",
+   "o1": 260,
+   "o2": -325,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Aleksandar Rakic",
+   "f2": "Marcin Tybura",
+   "o1": -394,
+   "o2": 307,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Du\u0161ko Todorovi\u0107",
+   "f2": "Robert Valentin",
+   "o1": 138,
+   "o2": -164,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Vlasto \u010cepo",
+   "f2": "Gilbert Urbina",
+   "o1": -350,
+   "o2": 276,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-01-2026",
+   "date": "2026-08-01",
+   "section": "maincard",
+   "f1": "Milos Janicic",
+   "f2": "Noah Gugnon",
+   "o1": -110,
+   "o2": -110,
+   "capturedAt": "2026-08-01T13:06:00.000Z"
   }
  ]
 }

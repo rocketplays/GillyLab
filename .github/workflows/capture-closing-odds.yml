@@ -17,6 +17,13 @@ on:
   schedule:
     - cron: '*/3 6-23 * * 6'    # Saturday, UTC — covers the window for early intl. + US cards
     - cron: '*/3 0-9 * * 0'     # Sunday morning UTC — tail of a US Saturday card
+    # Catch-up sweep, once a week: 2026-08-01's card got ZERO captures from the
+    # ticks above (not even the prelims one that's supposed to be the reliable
+    # half) and nobody noticed until CLV silently had nothing to grade against —
+    # this is the safety net. Self-gated inside the script (2h-36h post-start,
+    # add-only, never touches a record a real in-window capture already made),
+    # so it's a no-op most weeks and only ever fills a genuine total miss.
+    - cron: '0 12 * * 0'        # Sunday noon UTC
   workflow_dispatch:
     inputs:
       force_slug:  { description: 'Force an event slug (manual capture)', required: false }
@@ -29,6 +36,10 @@ concurrency:
 
 jobs:
   capture:
+    # Skip the catch-up tick here — it's handled by the catchup job below. Not
+    # required for correctness (this job's own --check gate would just report
+    # capture=false at noon Sunday), just avoids a pointless odds-api fetch.
+    if: github.event.schedule != '0 12 * * 0'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -87,5 +98,44 @@ jobs:
             git fetch origin main
             git rebase --autostash origin/main || { git rebase --abort; git reset --hard origin/main; git add data/odds-closing.json; git commit -m "closing odds (redo): $(date -u '+%Y-%m-%d %H:%M UTC')" || true; }
             git push || echo "::warning::push failed; next tick will retry"
+          fi
+          npm ci && npm run deploy || echo "::warning::deploy failed; a later deploy will publish it"
+
+  # Weekly safety net — see the cron comment above. Uses whatever data/odds.json is
+  # already committed (refreshed twice daily by update-odds.yml) rather than fetching
+  # fresh: catch-up doesn't need the freshest possible line, just SOMETHING instead of
+  # a card's CLV silently having nothing to grade against, and skipping its own fetch
+  # means a broken/exhausted ODDS_API_KEY (a plausible reason the ticks above went
+  # completely silent one week) doesn't also take this down.
+  catchup:
+    if: github.event.schedule == '0 12 * * 0' || (github.event_name == 'workflow_dispatch' && github.event.inputs.force_phase == 'catchup')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Catch-up sweep for any card with zero closing-line captures
+        run: node scripts/capture-closing-odds.cjs --catchup
+
+      - name: Commit + deploy if changed
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/odds-closing.json
+          if git diff --staged --quiet; then echo "nothing to catch up"; exit 0; fi
+          git commit -m "closing odds catchup: $(date -u '+%Y-%m-%d %H:%M UTC')"
+          if ! git push; then
+            git fetch origin main
+            git rebase --autostash origin/main || { git rebase --abort; git reset --hard origin/main; git add data/odds-closing.json; git commit -m "closing odds catchup (redo): $(date -u '+%Y-%m-%d %H:%M UTC')" || true; }
+            git push || echo "::warning::push failed; next week's catchup will retry"
           fi
           npm ci && npm run deploy || echo "::warning::deploy failed; a later deploy will publish it"

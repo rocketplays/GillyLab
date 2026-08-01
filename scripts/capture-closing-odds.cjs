@@ -77,13 +77,92 @@ function pickTarget(events, now) {
   return null;
 }
 
+// Catch-up window: an event whose main card started between 2h and 36h ago is
+// "over enough" that a live in-window capture would have already happened if it
+// was going to, but recent enough that data/odds.json (refreshed twice daily by
+// update-odds.yml) still very likely carries its pre-fight lines — the-odds-api
+// doesn't pull a fight's market the instant it starts, and this repo's own history
+// backs that up (2026-08-01's odds.json still listed all 14 of that day's bouts
+// hours after the card ended). Below 2h, the timed capture still has shots left
+// at its real window and shouldn't be preempted by an approximate one; above 36h,
+// odds.json has almost certainly rolled the event's markets off by then anyway.
+const CATCHUP_MIN_MS = 2 * 60 * 60 * 1000;
+const CATCHUP_MAX_MS = 36 * 60 * 60 * 1000;
+
 function main() {
   const argv = process.argv.slice(2);
   const check = argv.includes('--check');
   const force = argv.includes('--force');
+  const catchup = argv.includes('--catchup');
   const doc = loadJson(EVENT_PATH, null);
   const events = (doc && Array.isArray(doc.data)) ? doc.data : [];
   const now = Date.now();
+
+  const store = loadJson(CLOSING_PATH, null) || { generatedAt: null, fights: [] };
+  if (!Array.isArray(store.fights)) store.fights = [];
+
+  // One section's bouts -> closing lines. `section` is the label stored ('prelims' /
+  // 'maincard'); the existing-record lookup is by slug+pair (section-independent), so a
+  // later, fresher capture of the same fight OVERWRITES an earlier one — that's what lets
+  // the main-card window refresh the prelims-time fallback below. `allowOverwrite: false`
+  // (catch-up mode only) instead ADDS ONLY what's genuinely missing and never touches an
+  // existing record — a real precise in-window capture always wins over an approximate
+  // late one, even if the catch-up job runs after it.
+  function captureSection(ev, odds, date, bouts, section, allowOverwrite) {
+    let added = 0, updated = 0; const unmatched = [];
+    bouts.forEach(b => {
+      const fr = b.fighters || [];
+      if (fr.length !== 2) return;
+      const f1 = fr[0].fighterName, f2 = fr[1].fighterName;
+      if (!f1 || !f2 || b.isCancelled) return;
+      const key = pairKey(f1, f2);
+      const existing = store.fights.find(x => x.slug === ev.slug && pairKey(x.f1, x.f2) === key);
+      if (existing && !allowOverwrite) return;   // catch-up: never touch a record that's already there
+      const fight = findFight(f1, f2, odds);
+      if (!fight) { unmatched.push(f1 + ' vs ' + f2 + ' (not in feed)'); return; }
+      const c = consensus(fight);
+      const homeIsF1 = fighterMatch(fight.home_team, f1);
+      const o1 = homeIsF1 ? c.home : c.away;
+      const o2 = homeIsF1 ? c.away : c.home;
+      if (o1 == null || o2 == null) { unmatched.push(f1 + ' vs ' + f2 + ' (no price)'); return; }
+      const rec = { slug: ev.slug, date, section, f1, f2, o1, o2, capturedAt: new Date().toISOString() };
+      if (existing) {
+        if (force || existing.o1 !== o1 || existing.o2 !== o2) { Object.assign(existing, rec); updated++; }
+      } else {
+        store.fights.push(rec); added++;
+      }
+    });
+    return { added, updated, unmatched };
+  }
+
+  if (catchup) {
+    const odds = loadJson(ODDS_SRC, []);
+    if (!Array.isArray(odds) || !odds.length) { console.log('[closing] catchup: no odds source at ' + ODDS_SRC); return; }
+    let anyChange = false;
+    events.forEach(ev => {
+      const startedAgo = now - (Date.parse(ev.startsAt || ev.prelimsStartsAt || '') || NaN);
+      if (!isFinite(startedAgo) || startedAgo < CATCHUP_MIN_MS || startedAgo > CATCHUP_MAX_MS) return;
+      const prelimBouts = (ev.bouts || []).filter(b => !isMainCard(b));
+      const mainBouts   = (ev.bouts || []).filter(b =>  isMainCard(b));
+      if (!prelimBouts.length && !mainBouts.length) return;
+      const date = easternDateStr(ev.startsAt || ev.prelimsStartsAt);
+      const rp = captureSection(ev, odds, date, prelimBouts, 'prelims', false);
+      const rm = captureSection(ev, odds, date, mainBouts, 'maincard', false);
+      const added = rp.added + rm.added;
+      if (added) anyChange = true;
+      if (added || rp.unmatched.length || rm.unmatched.length) {
+        console.log(`[closing] CATCHUP ${ev.slug}: +${added} added (prelims ${rp.added}, maincard ${rm.added})`
+          + ([...rp.unmatched, ...rm.unmatched].length ? ' — unmatched: ' + [...rp.unmatched, ...rm.unmatched].join('; ') : ''));
+      }
+    });
+    if (anyChange) {
+      store.generatedAt = new Date().toISOString();
+      fs.writeFileSync(CLOSING_PATH, JSON.stringify(store, null, 1) + '\n');
+    } else {
+      console.log('[closing] catchup: nothing missing in the 2h-36h window');
+    }
+    return;
+  }
 
   let target = null;
   if (force) {
@@ -104,52 +183,20 @@ function main() {
 
   const { ev, phase } = target;
   const date = easternDateStr(ev.startsAt || ev.prelimsStartsAt);
-  const store = loadJson(CLOSING_PATH, null) || { generatedAt: null, fights: [] };
-  if (!Array.isArray(store.fights)) store.fights = [];
-
-  // One section's bouts -> closing lines. `section` is the label stored ('prelims' /
-  // 'maincard'); the existing-record lookup is by slug+pair (section-independent), so a
-  // later, fresher capture of the same fight OVERWRITES an earlier one — that's what lets
-  // the main-card window refresh the prelims-time fallback below.
-  function captureSection(bouts, section) {
-    let added = 0, updated = 0; const unmatched = [];
-    bouts.forEach(b => {
-      const fr = b.fighters || [];
-      if (fr.length !== 2) return;
-      const f1 = fr[0].fighterName, f2 = fr[1].fighterName;
-      if (!f1 || !f2 || b.isCancelled) return;
-      const key = pairKey(f1, f2);
-      const fight = findFight(f1, f2, odds);
-      if (!fight) { unmatched.push(f1 + ' vs ' + f2 + ' (not in feed)'); return; }
-      const c = consensus(fight);
-      const homeIsF1 = fighterMatch(fight.home_team, f1);
-      const o1 = homeIsF1 ? c.home : c.away;
-      const o2 = homeIsF1 ? c.away : c.home;
-      if (o1 == null || o2 == null) { unmatched.push(f1 + ' vs ' + f2 + ' (no price)'); return; }
-      const rec = { slug: ev.slug, date, section, f1, f2, o1, o2, capturedAt: new Date().toISOString() };
-      const existing = store.fights.find(x => x.slug === ev.slug && pairKey(x.f1, x.f2) === key);
-      if (existing) {
-        if (force || existing.o1 !== o1 || existing.o2 !== o2) { Object.assign(existing, rec); updated++; }
-      } else {
-        store.fights.push(rec); added++;
-      }
-    });
-    return { added, updated, unmatched };
-  }
 
   const prelimBouts = (ev.bouts || []).filter(b => !isMainCard(b));
   const mainBouts   = (ev.bouts || []).filter(b =>  isMainCard(b));
   let r;
   if (phase === 'maincard') {
-    r = captureSection(mainBouts, 'maincard');
+    r = captureSection(ev, odds, date, mainBouts, 'maincard', true);
   } else {
-    r = captureSection(prelimBouts, 'prelims');
+    r = captureSection(ev, odds, date, prelimBouts, 'prelims', true);
     // FALLBACK: snapshot the main card NOW, at the prelims window, so a MISSED main-card
     // window (GitHub Actions skipped/delayed the whole slot — how this section's lines went
     // missing in the first place) degrades to a slightly-early main-card line instead of
     // NOTHING. When the main-card window does fire, it OVERWRITES this with the true closing
     // line (LATEST wins). Same odds feed already in hand — no extra fetch.
-    const rm = captureSection(mainBouts, 'maincard');
+    const rm = captureSection(ev, odds, date, mainBouts, 'maincard', true);
     r.added += rm.added; r.updated += rm.updated; r.unmatched = r.unmatched.concat(rm.unmatched);
   }
 
