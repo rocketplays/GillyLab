@@ -135858,13 +135858,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     clvExplainer: {
       title: 'How CLV is calculated',
       body: `<p style="line-height:1.5;">CLV compares your price to the closing price in <strong style="color:var(--text);">win probability</strong>, not raw odds — American odds don't move in a straight line, so &minus;2 cents means something very different at +140 than it does at &minus;400.</p>
-             <p style="margin-top:1rem;color:var(--text);font-weight:600;">The formula</p>
-             <p style="line-height:1.5;">Turn each price into an implied win probability:</p>
-             <p style="margin:0.5rem 0;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;">
-               odds &lt; 0 &nbsp;&rarr;&nbsp; &minus;odds / (&minus;odds + 100)<br>
-               odds &gt; 0 &nbsp;&rarr;&nbsp; 100 / (odds + 100)
-             </p>
-             <p style="line-height:1.5;">Then CLV is just the difference, in percentage points:</p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">What "implied win probability" means</p>
+             <p style="line-height:1.5;">Every price is really just the market's odds of that side winning, dressed up as American odds. Some reference points:</p>
+             <table style="width:100%;margin:0.5rem 0;border-collapse:collapse;font-size:0.85rem;">
+               <tr style="color:rgba(255,255,255,0.5);"><td style="padding:0.25rem 0.5rem 0.25rem 0;">Price</td><td style="padding:0.25rem 0;">Implied win %</td></tr>
+               <tr><td style="padding:0.25rem 0.5rem 0.25rem 0;color:var(--text);">&minus;300</td><td style="padding:0.25rem 0;color:var(--text);">75%</td></tr>
+               <tr><td style="padding:0.25rem 0.5rem 0.25rem 0;color:var(--text);">&minus;150</td><td style="padding:0.25rem 0;color:var(--text);">60%</td></tr>
+               <tr><td style="padding:0.25rem 0.5rem 0.25rem 0;color:var(--text);">+100</td><td style="padding:0.25rem 0;color:var(--text);">50%</td></tr>
+               <tr><td style="padding:0.25rem 0.5rem 0.25rem 0;color:var(--text);">+150</td><td style="padding:0.25rem 0;color:var(--text);">40%</td></tr>
+               <tr><td style="padding:0.25rem 0.5rem 0.25rem 0;color:var(--text);">+300</td><td style="padding:0.25rem 0;color:var(--text);">25%</td></tr>
+             </table>
+             <p style="line-height:1.5;">A shorter price (closer to even odds) always implies a higher win probability than a longer one — that's the whole conversion. CLV just does that conversion for your price and the closing price, then compares the two:</p>
              <p style="margin:0.5rem 0;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;">
                CLV = (win% at close &minus; win% at your price) &times; 10
              </p>
