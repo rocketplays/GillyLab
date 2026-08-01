@@ -2649,7 +2649,12 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const pace = t.pace || {};
     const hiA = pace.a != null && (pace.b == null || pace.a >= pace.b), hiB = pace.b != null && (pace.a == null || pace.b > pace.a);
     const pv = (v, hi) => `<div class="sr-cmp-val" style="font-weight:${hi ? 800 : 600}${hi ? ";color:var(--accent)" : ""}">${v == null ? "—" : esc(disp(v))}</div>`;
-    const paceBox = `<div class="sr-common-title" style="margin-top:.9rem">Pace</div>${head}<div class="sr-cmp-row"><div class="sr-cmp-lbl">sig. strikes thrown / min</div>${pv(pace.a, hiA)}${pv(pace.b, hiB)}</div></div>`;
+    // sr-pace-row keeps Pace out of the app's label-in-the-middle reorder (see the
+    // CSS) — mirrors index.html, where Pace was excluded on request while Tale of
+    // the tape and Finish & durability got the new layout. Reuses `head` (shared
+    // with Finish & durability below) but tags this copy so only Pace is excluded.
+    const paceHead = head.replace('class="sr-cmp-row sr-cmp-head"', 'class="sr-cmp-row sr-cmp-head sr-pace-row"');
+    const paceBox = `<div class="sr-common-title" style="margin-top:.9rem">Pace</div>${paceHead}<div class="sr-cmp-row sr-pace-row"><div class="sr-cmp-lbl">sig. strikes thrown / min</div>${pv(pace.a, hiA)}${pv(pace.b, hiB)}</div></div>`;
     // Path to victory
     const pathCard = (nm, p, green) => p ? `<div class="sr-path" style="background:${green ? "rgba(0,230,104,.07)" : "rgba(255,207,122,.06)"};border:1px solid ${green ? "rgba(0,230,104,.25)" : "rgba(255,207,122,.22)"}"><div class="sr-path-name" style="color:${green ? GREEN : AMBER}">${esc(surname(nm))}</div><div style="opacity:.9">${esc(p)}</div></div>` : "";
     const pathBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Path to victory</div>${pathCard(mf.f1, t.path && t.path.a, true)}${pathCard(mf.f2, t.path && t.path.b, false)}</div>`;
@@ -2935,7 +2940,12 @@ ${eventLd}
   a.mf-side.mf-link{text-decoration:none;color:inherit;cursor:pointer;border-radius:8px;transition:opacity .12s}
   a.mf-side.mf-link:hover .mf-name{color:var(--accent)}
   a.mf-side.mf-link:active{opacity:.7}
-  .mf-side.right{flex-direction:row-reverse;text-align:right}
+  /* No flex-direction: row-reverse — the DOM already puts the meta block (rank/
+     name/record) before the avatar on this side (mirroring the left side's
+     avatar-first order), so a plain row keeps the avatar as the LAST flex item,
+     landing it at the card's outer right edge instead of next to VS. Mirrors the
+     same fix on the events page (.fighter-cell.right). */
+  .mf-side.right{text-align:right}
   .mf-av{width:44px;height:44px;border-radius:50%;overflow:hidden;background:#1b1e25;border:2px solid rgba(255,255,255,.14);flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;color:var(--muted)}
   .mf-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
   .mf-meta{min-width:0;flex:1}
@@ -2943,8 +2953,11 @@ ${eventLd}
   .mf-name{font-weight:700;font-size:.9rem;line-height:1.15}
   .mf-rec{font-size:.72rem;color:var(--muted)}
   .mf-rec b{color:var(--text)}
-  .mf-rec b.fav{color:var(--accent)}
-  .mf-rec b.dog{color:#ff6a5e}
+  /* Plain white for both, matching the events page (.gl-ml-fav/.gl-ml-dog in
+     index.html do the same override) — the fav/dog classes stay on the element
+     (rowHTML still computes them) but no longer color the odds green/red. */
+  .mf-rec b.fav{color:var(--text)}
+  .mf-rec b.dog{color:var(--text)}
   .mf-center{flex:0 0 78px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.15rem}
   .mf-vs{font-weight:800;font-size:.75rem;color:var(--muted);letter-spacing:.08em}
   .mf-wt{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;line-height:1.2}
@@ -2976,6 +2989,16 @@ ${eventLd}
   .sr-common .sr-cmp-row:last-child{border-bottom:none}
   .sr-common-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
   .sr-cmp-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+  /* Tale of the tape / Finish & durability: category label in the middle, each
+     fighter's stat centered on the outside — mirrors index.html's Fight Info
+     dropdown. Pace (.sr-pace-row) is excluded on request and stays label-first,
+     left-aligned. justify-content (not text-align) centers .sr-cmp-val, since
+     it's a flex container and text-align alone won't move a shrink-to-fit flex
+     item; text-align still handles the plain-div header names and the label. */
+  .sr-cmp-row:not(.sr-pace-row){grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,1fr)}
+  .sr-cmp-row:not(.sr-pace-row)>:nth-child(1){order:2;text-align:center}
+  .sr-cmp-row:not(.sr-pace-row)>:nth-child(2){order:1;justify-content:center;text-align:center}
+  .sr-cmp-row:not(.sr-pace-row)>:nth-child(3){order:3;justify-content:center;text-align:center}
   .sr-cmp-head{color:var(--muted);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
   .sr-cmp-lbl{color:var(--muted)}
   .sr-cmp-val{color:var(--text);font-weight:600;display:flex;align-items:center}
