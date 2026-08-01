@@ -129113,9 +129113,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         function ava(photo, ini, name) {
           if (!photo) return '<div class="fighter-avatar">' + ini + '</div>';
           const fallback = name ? './photos/thumb/' + nameToSlug(name) + '.png' : '';
+          // Setting this.parentNode.innerHTML replaces the parent's children — which
+          // detaches `this` (the img itself, a child of that parent) from the document.
+          // Reading this.parentNode again on the very next statement then returns null,
+          // since a removed node's parentNode is null — "Cannot set properties of null
+          // (setting 'style')". Grab the parent into a var FIRST, then mutate that.
           const onerr = (fallback && fallback !== photo)
-            ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';}'
-            : 'this.parentNode.innerHTML=\'' + ini + '\';this.parentNode.style=\'\';';
+            ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{var p=this.parentNode;p.innerHTML=\'' + ini + '\';p.style=\'\';}'
+            : 'var p=this.parentNode;p.innerHTML=\'' + ini + '\';p.style=\'\';';
           return '<div class="fighter-avatar has-photo" style="border:2px solid var(--accent);padding:0;overflow:hidden;">' +
             '<img src="' + photo + '" alt="' + ini + '" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;" onerror="' + onerr + '">' +
           '</div>';
@@ -132449,9 +132454,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function tapeAvatarHTML(photo, ini, name) {
     if (!photo) return '<div class="tape-fighter-avatar">' + (ini || '') + '</div>';
     const fallback = name ? './photos/thumb/' + nameToSlug(name) + '.png' : '';
+    // Same fix as fightRow's ava(): grab this.parentNode into a var before mutating
+    // it, since setting its innerHTML detaches `this` (a child of it), making a
+    // second read of this.parentNode null.
     const onerr = (fallback && fallback !== photo)
-      ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{this.parentNode.innerHTML=\'' + (ini || '') + '\';this.parentNode.style=\'\';}'
-      : 'this.parentNode.innerHTML=\'' + (ini || '') + '\';this.parentNode.style=\'\';';
+      ? 'if(this.src!==\'' + fallback + '\'){this.src=\'' + fallback + '\';}else{var p=this.parentNode;p.innerHTML=\'' + (ini || '') + '\';p.style=\'\';}'
+      : 'var p=this.parentNode;p.innerHTML=\'' + (ini || '') + '\';p.style=\'\';';
     return '<div class="tape-fighter-avatar has-photo" style="border:1px solid var(--accent);padding:0;overflow:hidden;">' +
       '<img src="' + photo + '" alt="' + (ini || '') + '" style="width:100%;height:100%;object-fit:cover;object-position:top center;border-radius:50%;" onerror="' + onerr + '">' +
     '</div>';
