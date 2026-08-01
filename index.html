@@ -2527,23 +2527,23 @@
     .sr-cmp-val.hi { color: #ffcf7a; }
     .sr-cmp-val.sr-form { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
     .sr-cmp-val.sr-form .form-tile { flex: 0 0 auto; }
-    /* Fight Info dropdown (events page): Tale of the tape / Finish & durability
-       read better with the category label in the middle and each fighter's stat
-       centered on the outside, like an actual tale-of-the-tape, rather than
-       label-first with left-aligned values. Scoped to the two panels that make up
-       that dropdown — the pre-fight scouting panel and the completed-fight recap
-       panel — so the separate Matchup Analytics Deep Dive modal and the
-       simulator's breakdown (same .sr-cmp-row markup, different context) keep the
-       original order. Pace (:not(.sr-pace-row)) is excluded on request — it stays
-       label-first, left-aligned, like before. */
-    .scouting-fight-panel .sr-cmp-row:not(.sr-pace-row), .fight-details-panel .sr-cmp-row {
+    /* Fight Info dropdown (events page): Tale of the tape / Style / Pace / Finish
+       & durability read better with the category label in the middle and each
+       fighter's stat centered on the outside, like an actual tale-of-the-tape,
+       rather than label-first with left-aligned values. Scoped to the two panels
+       that make up that dropdown — the pre-fight scouting panel and the
+       completed-fight recap panel — so the separate Matchup Analytics Deep Dive
+       modal and the simulator's breakdown (same .sr-cmp-row markup, different
+       context) keep the original order. Pace was excluded on an earlier request
+       but is now back in with the rest. */
+    .scouting-fight-panel .sr-cmp-row, .fight-details-panel .sr-cmp-row {
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1fr);
     }
-    .scouting-fight-panel .sr-cmp-row:not(.sr-pace-row) > :nth-child(1),
+    .scouting-fight-panel .sr-cmp-row > :nth-child(1),
     .fight-details-panel .sr-cmp-row > :nth-child(1) { order: 2; text-align: center; }
-    .scouting-fight-panel .sr-cmp-row:not(.sr-pace-row) > :nth-child(2),
+    .scouting-fight-panel .sr-cmp-row > :nth-child(2),
     .fight-details-panel .sr-cmp-row > :nth-child(2) { order: 1; justify-content: center; text-align: center; }
-    .scouting-fight-panel .sr-cmp-row:not(.sr-pace-row) > :nth-child(3),
+    .scouting-fight-panel .sr-cmp-row > :nth-child(3),
     .fight-details-panel .sr-cmp-row > :nth-child(3) { order: 3; justify-content: center; text-align: center; }
     @media (max-width: 600px) {
       .sr-cmp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); font-size: 0.74rem; }
@@ -125505,15 +125505,12 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     OUT.paceA = oA; OUT.paceB = oB;   // sig. strikes thrown / min — the app's pace row
     const paceTitle = document.createElement('div'); paceTitle.className = 'sr-common-title'; paceTitle.style.marginTop = '0.9rem'; paceTitle.textContent = 'Pace';
     box.appendChild(paceTitle);
-    // sr-pace-row keeps Pace out of the Fight Info dropdown's label-in-the-middle
-    // reorder (see the CSS) — asked for specifically, unlike Tale of the tape and
-    // Finish & durability, which stayed reordered.
-    const paceHead = document.createElement('div'); paceHead.className = 'sr-cmp-row sr-cmp-head sr-pace-row';
+    const paceHead = document.createElement('div'); paceHead.className = 'sr-cmp-row sr-cmp-head';
     paceHead.innerHTML = '<div></div>';
     const phA = document.createElement('div'); phA.textContent = short(name);
     const phB = document.createElement('div'); phB.textContent = short(opp);
     paceHead.appendChild(phA); paceHead.appendChild(phB); box.appendChild(paceHead);
-    const paceRow = document.createElement('div'); paceRow.className = 'sr-cmp-row sr-pace-row';
+    const paceRow = document.createElement('div'); paceRow.className = 'sr-cmp-row';
     const pl = document.createElement('div'); pl.className = 'sr-cmp-lbl'; pl.textContent = 'sig. strikes thrown / min';
     paceRow.appendChild(pl);
     const hiA = oA != null && (oB == null || oA >= oB), hiB = oB != null && (oA == null || oB > oA);

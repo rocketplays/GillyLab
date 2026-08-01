@@ -2649,12 +2649,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const pace = t.pace || {};
     const hiA = pace.a != null && (pace.b == null || pace.a >= pace.b), hiB = pace.b != null && (pace.a == null || pace.b > pace.a);
     const pv = (v, hi) => `<div class="sr-cmp-val" style="font-weight:${hi ? 800 : 600}${hi ? ";color:var(--accent)" : ""}">${v == null ? "—" : esc(disp(v))}</div>`;
-    // sr-pace-row keeps Pace out of the app's label-in-the-middle reorder (see the
-    // CSS) — mirrors index.html, where Pace was excluded on request while Tale of
-    // the tape and Finish & durability got the new layout. Reuses `head` (shared
-    // with Finish & durability below) but tags this copy so only Pace is excluded.
-    const paceHead = head.replace('class="sr-cmp-row sr-cmp-head"', 'class="sr-cmp-row sr-cmp-head sr-pace-row"');
-    const paceBox = `<div class="sr-common-title" style="margin-top:.9rem">Pace</div>${paceHead}<div class="sr-cmp-row sr-pace-row"><div class="sr-cmp-lbl">sig. strikes thrown / min</div>${pv(pace.a, hiA)}${pv(pace.b, hiB)}</div></div>`;
+    const paceBox = `<div class="sr-common-title" style="margin-top:.9rem">Pace</div>${head}<div class="sr-cmp-row"><div class="sr-cmp-lbl">sig. strikes thrown / min</div>${pv(pace.a, hiA)}${pv(pace.b, hiB)}</div></div>`;
     // Path to victory
     const pathCard = (nm, p, green) => p ? `<div class="sr-path" style="background:${green ? "rgba(0,230,104,.07)" : "rgba(255,207,122,.06)"};border:1px solid ${green ? "rgba(0,230,104,.25)" : "rgba(255,207,122,.22)"}"><div class="sr-path-name" style="color:${green ? GREEN : AMBER}">${esc(surname(nm))}</div><div style="opacity:.9">${esc(p)}</div></div>` : "";
     const pathBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Path to victory</div>${pathCard(mf.f1, t.path && t.path.a, true)}${pathCard(mf.f2, t.path && t.path.b, false)}</div>`;
@@ -2989,16 +2984,16 @@ ${eventLd}
   .sr-common .sr-cmp-row:last-child{border-bottom:none}
   .sr-common-title{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:.5rem;text-align:center}
   .sr-cmp-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.35rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
-  /* Tale of the tape / Finish & durability: category label in the middle, each
-     fighter's stat centered on the outside — mirrors index.html's Fight Info
-     dropdown. Pace (.sr-pace-row) is excluded on request and stays label-first,
-     left-aligned. justify-content (not text-align) centers .sr-cmp-val, since
+  /* Tale of the tape / Style / Pace / Finish & durability: category label in the
+     middle, each fighter's stat centered on the outside — mirrors index.html's
+     Fight Info dropdown (Pace was excluded on an earlier request, now back in
+     with the rest). justify-content (not text-align) centers .sr-cmp-val, since
      it's a flex container and text-align alone won't move a shrink-to-fit flex
      item; text-align still handles the plain-div header names and the label. */
-  .sr-cmp-row:not(.sr-pace-row){grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,1fr)}
-  .sr-cmp-row:not(.sr-pace-row)>:nth-child(1){order:2;text-align:center}
-  .sr-cmp-row:not(.sr-pace-row)>:nth-child(2){order:1;justify-content:center;text-align:center}
-  .sr-cmp-row:not(.sr-pace-row)>:nth-child(3){order:3;justify-content:center;text-align:center}
+  .sr-cmp-row{grid-template-columns:minmax(0,1fr) minmax(0,.85fr) minmax(0,1fr)}
+  .sr-cmp-row>:nth-child(1){order:2;text-align:center}
+  .sr-cmp-row>:nth-child(2){order:1;justify-content:center;text-align:center}
+  .sr-cmp-row>:nth-child(3){order:3;justify-content:center;text-align:center}
   .sr-cmp-head{color:var(--muted);font-weight:700;font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--border)}
   .sr-cmp-lbl{color:var(--muted)}
   .sr-cmp-val{color:var(--text);font-weight:600;display:flex;align-items:center}
