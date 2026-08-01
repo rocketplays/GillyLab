@@ -135979,6 +135979,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // distance"), and the winner silently reverts to fighter 1 with nothing on
   // screen suggesting it changed. Reset whenever a new fight is chosen.
   let btLastSide = null;
+  // Same problem, different fields: the stake and sportsbook you'd already typed
+  // in also used to vanish on a market switch, because btRenderLog rebuilds the
+  // whole form from scratch and plain <input> values aren't state — only what's
+  // captured into a JS variable survives the rebuild. Captured just before each
+  // re-render (see btSetMarket) and reset alongside btLastSide on a new fight.
+  let btLastStake = null, btLastBook = null;
   // Set only by btLogFromOdds (the parlay slip's "Log this bet"), cleared by
   // clicking the "Log a bet" tab directly — the one thing that tells btRenderLog
   // whether "back" means "back to Odds & Projections" or just isn't shown at all.
@@ -136882,12 +136888,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   let btKind = 'card';
   function btSetKind(k) { btKind = k; btRenderLog(k); }
   function btPickEvent(i) { btEvent = i === '' ? null : BT_EVENTS[+i]; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
-  function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btLastSide = null; btRenderLog('card'); }
+  function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btLastSide = null; btLastStake = null; btLastBook = null; btRenderLog('card'); }
   // Called by every market's Winner <select> onchange, so a later market switch
   // can restore this exact choice instead of silently defaulting back to fighter 1.
   function btSetSide(v) { btLastSide = (+v === 2) ? 2 : 1; }
   window.btSetSide = btSetSide;
-  function btSetMarket(m) { btMarket = m; btRenderLog('card'); }
+  function btSetMarket(m) {
+    // Grab whatever's already typed before the rebuild wipes it — see btLastStake.
+    const stakeEl = document.getElementById('bt-stake'), bookEl = document.getElementById('bt-book');
+    if (stakeEl && stakeEl.value !== '') btLastStake = parseFloat(stakeEl.value);
+    if (bookEl && bookEl.value !== '') btLastBook = bookEl.value;
+    btMarket = m; btRenderLog('card');
+  }
   function btMlPrefill() { const s = +document.getElementById('bt-mlwin').value; const o = btOddsFor(btFight); if (o) document.getElementById('bt-odds').value = s === 1 ? o.o1 : o.o2; }
   window.btSetKind = btSetKind; window.btPickEvent = btPickEvent; window.btPickFight = btPickFight;
   window.btSetMarket = btSetMarket; window.btMlPrefill = btMlPrefill;
@@ -137145,9 +137157,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           h += '</select>' + btSelUI(f);
           // A preloaded selection carries the price AND the book you picked it at.
           const preOdds = btPreOdds; btPreOdds = null;
-          const preBook = btPreBook; btPreBook = null;
-          h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (preOdds != null ? preOdds : (priced && o ? o.o1 : '')) + '" placeholder="-150"></div>' +
-            '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
+          const preBook = btPreBook != null ? btPreBook : btLastBook; btPreBook = null;
+          // Auto-filled real odds have to track whichever fighter is ACTUALLY
+          // pre-selected as winner (btLastSide) — this used to always grab o.o1
+          // regardless, which was invisible while the Winner select also always
+          // defaulted to fighter 1, but would now silently show the wrong
+          // fighter's price the moment the Winner select restores a fighter-2 pick.
+          const mlOdds = (priced && o) ? (btLastSide === 2 ? o.o2 : o.o1) : '';
+          h += '<div class="bt-row2"><div><label>Your odds</label><input id="bt-odds" type="number" value="' + (preOdds != null ? preOdds : mlOdds) + '" placeholder="-150"></div>' +
+            '<div><label>Stake (units)</label><input id="bt-stake" type="number" value="' + (btLastStake != null ? btLastStake : 1) + '" step="0.5" min="0.5"></div></div>' +
             '<label>Sportsbook (optional)</label><input id="bt-book" placeholder="e.g. DraftKings" maxlength="40" value="' + btEsc(preBook || '') + '">';
           h += priced
             ? (btSegStarted(f)
