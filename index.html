@@ -7868,6 +7868,19 @@
  renderActiveRoster();
 
  function navigate(page) {
+ // Kill the boot-time data-boot-page override the first time real navigation
+ // happens. That attribute's only job is hiding the flash of Home before this
+ // function's first run (see the bootstrap <script> near data-boot-page); once
+ // .active classes are about to be set for real, a stale attribute value left
+ // over from a page-refresh landing (e.g. data-boot-page="rankings") keeps
+ // forcing #page-home { display:none } via the html[data-boot-page]:not(...)
+ // CSS rule — even after .page.active correctly moves onto #page-home — because
+ // an ID selector out-specifies .page.active. That permanently hid the Events/
+ // Home page for the rest of the session after refreshing anywhere else and
+ // then navigating back to it: the nav tab highlighted, but #page-home stayed
+ // display:none underneath. Clearing the attribute here removes the override
+ // for good, letting .page.active fully govern visibility from this point on.
+ if (document.documentElement.hasAttribute('data-boot-page')) document.documentElement.removeAttribute('data-boot-page');
  // The Climb shares the Pick'em page container — its own nav entry just opens that
  // page straight to the Climb half. Everything else maps page -> #page-<page>.
  const climbRoute = (page === 'theclimb');
