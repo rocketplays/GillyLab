@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-07-25T12:50:30.968Z",
- "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes.",
+ "generatedAt": "2026-07-31T19:30:00.000Z",
+ "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section.",
  "fights": [
   {
    "slug": "ufc-fight-night-july-18-2026",
@@ -121,6 +121,56 @@
    "o1": 110,
    "o2": -130,
    "capturedAt": "2026-07-18T20:50:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "maincard",
+   "f1": "Magomed Ankalaev",
+   "f2": "Bogdan Guskov",
+   "o1": -550,
+   "o2": 410,
+   "capturedAt": "2026-07-25T14:10:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "maincard",
+   "f1": "Steve Erceg",
+   "f2": "Ramazan Temirov",
+   "o1": -110,
+   "o2": -110,
+   "capturedAt": "2026-07-25T14:10:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "maincard",
+   "f1": "Magomed Zaynukov",
+   "f2": "Damian Rzepecki",
+   "o1": -298,
+   "o2": 240,
+   "capturedAt": "2026-07-25T14:10:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "maincard",
+   "f1": "Rizvan Kuniev",
+   "f2": "Tyrell Fortune",
+   "o1": -340,
+   "o2": 270,
+   "capturedAt": "2026-07-25T14:10:00.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-july-25-2026",
+   "date": "2026-07-25",
+   "section": "maincard",
+   "f1": "Abubakar Vagaev",
+   "f2": "Saygid Izagakhmaev",
+   "o1": -250,
+   "o2": 205,
+   "capturedAt": "2026-07-25T14:10:00.000Z"
   },
   {
    "slug": "ufc-fight-night-july-25-2026",
