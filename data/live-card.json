@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T16:37:27.804Z",
+ "generatedAt": "2026-08-01T16:53:47.137Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -5826,6 +5826,194 @@
       ]
      },
      "capturedAt": "2026-08-01T16:37:27.673Z"
+    }
+   ]
+  },
+  "Ludovit Klein": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Tofiq Musayev",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "0:53",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Tofiq Musayev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 88,
+      "totL": 31,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       16,
+       64
+      ],
+      "body": [
+       9,
+       19
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       29,
+       87
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 136,
+      "totL": 72,
+      "totA": 142,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:02",
+      "head": [
+       49,
+       111
+      ],
+      "body": [
+       7,
+       12
+      ],
+      "leg": [
+       11,
+       13
+      ],
+      "dist": [
+       54,
+       121
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       12,
+       14
+      ]
+     },
+     "capturedAt": "2026-08-01T16:53:47.004Z"
+    }
+   ]
+  },
+  "Tofiq Musayev": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Ludovit Klein",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "0:53",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Ludovit Klein",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 136,
+      "totL": 72,
+      "totA": 142,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:02",
+      "head": [
+       49,
+       111
+      ],
+      "body": [
+       7,
+       12
+      ],
+      "leg": [
+       11,
+       13
+      ],
+      "dist": [
+       54,
+       121
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       12,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 88,
+      "totL": 31,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       16,
+       64
+      ],
+      "body": [
+       9,
+       19
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       29,
+       87
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T16:53:47.004Z"
     }
    ]
   }
