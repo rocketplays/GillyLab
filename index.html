@@ -135857,7 +135857,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const MODAL_CONTENT = {
     clvExplainer: {
       title: 'How CLV is calculated',
-      body: `<p style="line-height:1.5;">CLV compares your price to the closing price in <strong style="color:var(--text);">win probability</strong>, not raw odds — American odds don't move in a straight line, so &minus;2 cents means something very different at +140 than it does at &minus;400.</p>
+      body: `<p style="line-height:1.5;">CLV compares your price to the closing price in <strong style="color:var(--text);">implied win probability</strong>, not raw odds — American odds don't move in a straight line, so &minus;2 cents means something very different at +140 than it does at &minus;400.</p>
              <p style="margin-top:1rem;color:var(--text);font-weight:600;">What "implied win probability" means</p>
              <p style="line-height:1.5;">Every price is really just the market's odds of that side winning, dressed up as American odds. Some reference points:</p>
              <table style="width:100%;margin:0.5rem 0;border-collapse:collapse;font-size:0.85rem;">
@@ -135870,7 +135870,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
              </table>
              <p style="line-height:1.5;">A shorter price (closer to even odds) always implies a higher win probability than a longer one — that's the whole conversion. CLV just does that conversion for your price and the closing price, then compares the two:</p>
              <p style="margin:0.5rem 0;padding:0.7rem 0.9rem;background:rgba(255,255,255,0.04);border-radius:6px;border:1px solid rgba(255,255,255,0.08);font-family:monospace;font-size:0.85rem;">
-               CLV = (win% at close &minus; win% at your price) &times; 10
+               CLV = win% at close &minus; win% at your price
              </p>
              <p style="margin-top:1rem;color:var(--text);font-weight:600;">Worked example</p>
              <p style="line-height:1.5;">You bet <strong style="color:var(--text);">+170</strong> (37.04% implied), it closed <strong style="color:var(--text);">+120</strong> (45.45% implied).</p>
