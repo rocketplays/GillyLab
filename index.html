@@ -135873,8 +135873,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
                CLV = (win% at close &minus; win% at your price) &times; 10
              </p>
              <p style="margin-top:1rem;color:var(--text);font-weight:600;">Worked example</p>
-             <p style="line-height:1.5;">You bet <strong style="color:var(--text);">+140</strong> (41.67% implied), it closed <strong style="color:var(--text);">+138</strong> (42.02% implied).</p>
-             <p style="line-height:1.5;">42.02 &minus; 41.67 = 0.35 points of win probability &rarr; <strong style="color:var(--accent);">CLV +0.4</strong>.</p>
+             <p style="line-height:1.5;">You bet <strong style="color:var(--text);">+170</strong> (37.04% implied), it closed <strong style="color:var(--text);">+120</strong> (45.45% implied).</p>
+             <p style="line-height:1.5;">45.45 &minus; 37.04 = 8.41 points of win probability &rarr; <strong style="color:var(--accent);">CLV +8.4</strong>.</p>
              <p style="margin-top:1rem;font-size:0.85rem;color:rgba(255,255,255,0.55);">Positive means the market moved toward your side after you bet it — you got a better number than everyone betting at the close. It doesn't guarantee the bet wins; it's a measure of the price, not the outcome.</p>`
     },
     pkScoring: {
@@ -136807,7 +136807,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '<div class="bt-hero-row">' +
       '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '">' + clvTxt + '</div>' +
       '<div class="bt-hero-sub">' + (vs.clvN ? 'beat the close on <b style="color:var(--text)">' + vs.beat + ' of ' + vs.clvN + '</b> moneylines' : 'no graded moneylines in this range') + '</div></div>' +
-      '<div class="bt-foot"><b style="color:#c9ccd3">Moneylines only</b> (props move too fast for a trustworthy close) — props are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
+      '<div class="bt-foot"><b style="color:#c9ccd3">Moneylines only</b> (props move too fast and vary too much between books for a trustworthy close) — props are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
     h += '<div class="bt-grid">' +
       '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + s.w + '-' + s.l + '</div></div>' +
       '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (s.roi > 0 ? 'bt-pos' : s.roi < 0 ? 'bt-neg' : '') + '">' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + s.roi.toFixed(1) + '%') + '</div></div>' +
