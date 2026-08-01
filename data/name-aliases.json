@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-01T01:25:58.750Z",
+  "generatedAt": "2026-08-01T13:06:09.675Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "Matthieu Letho Duclos|Aug 27, 2024|Marco Tulio": {
@@ -440,6 +440,16 @@
     "Jose Souza|Aug 30, 2022|Yusaku Kinoshita": {
       "real": "Yusaku Kinoshita",
       "theyCallHim": "Jose Henrique",
+      "note": "alias"
+    },
+    "Henrique da Silva Lopes|Aug 23, 2019|Hugo Cunha": {
+      "real": "Hugo Cunha",
+      "theyCallHim": "Henrique Silva Lopes",
+      "note": "alias"
+    },
+    "Henrique da Silva Lopes|Jun 25, 2016|Johnny Walker": {
+      "real": "Johnny Walker",
+      "theyCallHim": "Henrique Silva Lopes",
       "note": "alias"
     },
     "Loopy Godinez|Sep 16, 2023|Elise Reed": {
