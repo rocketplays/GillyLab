@@ -136549,7 +136549,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const host = document.getElementById('bt-board'); if (!host) return;
     const tab = (id, label) => '<button type="button" class="pk-tab' + (btBoardTab === id ? ' sel' : '') + '" onclick="btSetBoardTab(\'' + id + '\')">' + label + '</button>';
     const rng = (k, lbl) => '<div class="' + (btBoardRange === k ? 'on' : '') + '" onclick="btSetBoardRange(\'' + k + '\')">' + lbl + '</div>';
-    const blurb = btBoardTab === 'clv' ? 'Average closing-line value across settled moneylines.'
+    const blurb = btBoardTab === 'clv' ? 'Average edge on settled moneylines, in points of implied win probability vs. the closing line.'
       : btBoardTab === 'roi' ? 'Profit as a percentage of everything staked.' : 'Net profit, in units.';
     host.innerHTML = '<div class="pk-tabs">' + tab('units', 'Units') + tab('roi', 'ROI') + tab('clv', 'CLV') + '</div>' +
       '<div class="bt-ranges">' + rng('all', 'All time') + rng('7d', '7D') + rng('30d', '30D') + rng('6m', '6M') + rng('12m', '1Y') + '</div>' +
@@ -136627,7 +136627,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + (b.profit == null ? '0' : btU(b.profit)) + 'u</span>';
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void</span>';
     else res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
-    const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
+    const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '" title="Points of implied win probability better (or worse) than the closing line — not a raw odds difference.">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
     return '<div class="bt-bet"><div class="bt-bet-top">' + btAvsHTML(btProfileNames(b)) +
       '<div class="bt-bet-txt"><div class="bt-nm">' + btEsc(b.pick) + '</div><div class="bt-mk">' + btEsc(b.match) + '</div></div>' + res + '</div>' +
       btLegsHTML(b) + '<div class="bt-mid"><div><b>' + btFmtO(b.odds) + '</b> · ' + btU(b.stake) + 'u</div>' + badge + '</div></div>';
@@ -136766,9 +136766,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const rangeBtn = (k, lbl) => '<div class="' + (btRange === k ? 'on' : '') + '" onclick="btSetRange(\'' + k + '\')">' + lbl + '</div>';
     const clvTxt = vs.avgClv == null ? '—' : (vs.avgClv > 0 ? '+' : '') + vs.avgClv.toFixed(1) + '<span>pts</span>';
     let h = '<div class="bt-hero"><div class="bt-hero-lbl">Verified closing line value</div><div class="bt-hero-row">' +
-      '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '">' + clvTxt + '</div>' +
+      '<div class="bt-big ' + (vs.avgClv < 0 ? 'neg' : '') + '" title="A CLV point is one percentage point of implied win probability. +1.0 pt means the line moved 1 point of implied probability in your favor between when you bet and when it closed — a rough, book-agnostic way to say you got a better number than the market settled on, regardless of whether the odds themselves went up or down.">' + clvTxt + '</div>' +
       '<div class="bt-hero-sub">' + (vs.clvN ? 'beat the close on <b style="color:var(--text)">' + vs.beat + ' of ' + vs.clvN + '</b> moneylines' : 'no graded moneylines in this range') + '</div></div>' +
-      '<div class="bt-foot">CLV counts <b style="color:#c9ccd3">moneylines only</b> — props move too fast and vary too much between books to have a closing line worth trusting. Prop bets are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
+      '<div class="bt-foot">CLV points measure movement in <b style="color:#c9ccd3">implied win probability</b>, not raw odds — a favorite that tightens from &minus;110 to &minus;130 moved less than an underdog that drifts from +150 to +200, even though the second number swings wider. Positive means you got a better price than the market eventually agreed on; the average above is per bet, not a running total. CLV counts <b style="color:#c9ccd3">moneylines only</b> — props move too fast and vary too much between books to have a closing line worth trusting. Prop bets are still <b style="color:#c9ccd3">verified</b> and auto-graded, and count toward record, ROI and units.</div></div>';
     h += '<div class="bt-grid">' +
       '<div class="bt-tile"><div class="bt-tile-t">Record</div><div class="bt-tile-v">' + s.w + '-' + s.l + '</div></div>' +
       '<div class="bt-tile"><div class="bt-tile-t">ROI</div><div class="bt-tile-v ' + (s.roi > 0 ? 'bt-pos' : s.roi < 0 ? 'bt-neg' : '') + '">' + (s.roi == null ? '—' : (s.roi > 0 ? '+' : '') + s.roi.toFixed(1) + '%') + '</div></div>' +
@@ -136884,7 +136884,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!b.verified) badge = '<span class="bt-badge bt-b-self">self-reported</span>';
     else if (b.status === 'pending') badge = '<span class="bt-badge bt-b-none">' + V + ' · ' +
       (b.market === 'PARLAY' && b.legsLive ? (b.legsIn || 0) + ' of ' + b.legsLive + ' legs in' : 'pending') + '</span>';
-    else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
+    else if (b.clv != null) badge = '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '" title="Points of implied win probability better (or worse) than the closing line — not a raw odds difference.">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>';
     // A moneyline that missed its close still explains itself — it's the one market
     // that could have earned CLV. Everything else just reads "verified": the log
     // form warns before you place it and the hero footnote says it again, so
