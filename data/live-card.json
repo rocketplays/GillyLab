@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T14:42:27.929Z",
+ "generatedAt": "2026-08-01T14:58:55.355Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -4886,6 +4886,194 @@
       ]
      },
      "capturedAt": "2026-08-01T14:42:27.795Z"
+    }
+   ]
+  },
+  "Nina Milošević": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Hailey Cowan",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "3:41",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Hailey Cowan",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 21,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       14,
+       29
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       16,
+       30
+      ],
+      "clinch": [
+       5,
+       9
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 48,
+      "totL": 13,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       36
+      ],
+      "body": [
+       5,
+       11
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       45
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T14:58:55.217Z"
+    }
+   ]
+  },
+  "Hailey Cowan": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Nina Milošević",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "3:41",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Nina Milošević",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 48,
+      "totL": 13,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       7,
+       36
+      ],
+      "body": [
+       5,
+       11
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       12,
+       45
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 21,
+      "totA": 39,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       14,
+       29
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       16,
+       30
+      ],
+      "clinch": [
+       5,
+       9
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T14:58:55.217Z"
     }
    ]
   }
