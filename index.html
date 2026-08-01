@@ -2508,7 +2508,7 @@
     /* Fight Info dropdown only: section titles (Tale of the tape, Style, Pace,
        Finish & durability, Common opponents) centered to match the centered
        stat rows below them — left-aligned read oddly once the rows centered. */
-    .scouting-fight-panel .sr-common-title, .fight-details-panel .sr-common-title { text-align: center; }
+    .scouting-fight-panel .sr-common-title, .fight-details-panel .sr-common-title, #simBreakdown .sr-common-title { text-align: center; }
     /* Past-fight retrospective panel */
     .pf-result { text-align: center; padding: 0.1rem 0 0.5rem; font-size: 0.9rem; color: var(--muted); }
     .pf-result .pf-win { color: var(--accent); font-weight: 800; }
@@ -2518,10 +2518,11 @@
     .sr-co-name { color: var(--muted); }
     .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
     .sr-co-name.sr-co-link:hover { color: var(--accent); }
-    /* Fight Info dropdown only: Common opponents and Storylines centered to match
-       the rest of the panel now reading center-aligned. */
-    .scouting-fight-panel .sr-common-row, .fight-details-panel .sr-common-row,
-    .scouting-fight-panel .sr-story-line, .fight-details-panel .sr-story-line { text-align: center; }
+    /* Common opponents and Storylines centered to match the rest of the panel
+       now reading center-aligned — Fight Info dropdown and the simulator's
+       printout both. */
+    .scouting-fight-panel .sr-common-row, .fight-details-panel .sr-common-row, #simBreakdown .sr-common-row,
+    .scouting-fight-panel .sr-story-line, .fight-details-panel .sr-story-line, #simBreakdown .sr-story-line { text-align: center; }
     .sr-cmp-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-cmp-head { color: var(--muted); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
     .sr-cmp-lbl { color: var(--muted); }
@@ -2531,24 +2532,28 @@
     .sr-cmp-val.hi { color: #ffcf7a; }
     .sr-cmp-val.sr-form { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
     .sr-cmp-val.sr-form .form-tile { flex: 0 0 auto; }
-    /* Fight Info dropdown (events page): Tale of the tape / Style / Pace / Finish
-       & durability read better with the category label in the middle and each
-       fighter's stat centered on the outside, like an actual tale-of-the-tape,
-       rather than label-first with left-aligned values. Scoped to the two panels
-       that make up that dropdown — the pre-fight scouting panel and the
-       completed-fight recap panel — so the separate Matchup Analytics Deep Dive
-       modal and the simulator's breakdown (same .sr-cmp-row markup, different
-       context) keep the original order. Pace was excluded on an earlier request
-       but is now back in with the rest. */
-    .scouting-fight-panel .sr-cmp-row, .fight-details-panel .sr-cmp-row {
+    /* Tale of the tape / Head-to-head / Style / Pace / Finish & durability read
+       better with the category label in the middle and each fighter's stat
+       centered on the outside, like an actual tale-of-the-tape, rather than
+       label-first with left-aligned values. Scoped to the Fight Info dropdown's
+       two panels (pre-fight scouting, completed-fight recap) and the simulator's
+       #simBreakdown printout — so the separate Matchup Analytics Deep Dive modal
+       (same .sr-cmp-row markup, different context) is the only place that keeps
+       the original order. Pace was excluded on an earlier request but is now
+       back in with the rest, and the simulator printout got this treatment (and
+       its own Deep Dive button) after previously being left out entirely. */
+    .scouting-fight-panel .sr-cmp-row, .fight-details-panel .sr-cmp-row, #simBreakdown .sr-cmp-row {
       grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr) minmax(0, 1fr);
     }
     .scouting-fight-panel .sr-cmp-row > :nth-child(1),
-    .fight-details-panel .sr-cmp-row > :nth-child(1) { order: 2; text-align: center; }
+    .fight-details-panel .sr-cmp-row > :nth-child(1),
+    #simBreakdown .sr-cmp-row > :nth-child(1) { order: 2; text-align: center; }
     .scouting-fight-panel .sr-cmp-row > :nth-child(2),
-    .fight-details-panel .sr-cmp-row > :nth-child(2) { order: 1; justify-content: center; text-align: center; }
+    .fight-details-panel .sr-cmp-row > :nth-child(2),
+    #simBreakdown .sr-cmp-row > :nth-child(2) { order: 1; justify-content: center; text-align: center; }
     .scouting-fight-panel .sr-cmp-row > :nth-child(3),
-    .fight-details-panel .sr-cmp-row > :nth-child(3) { order: 3; justify-content: center; text-align: center; }
+    .fight-details-panel .sr-cmp-row > :nth-child(3),
+    #simBreakdown .sr-cmp-row > :nth-child(3) { order: 3; justify-content: center; text-align: center; }
     @media (max-width: 600px) {
       .sr-cmp-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr); font-size: 0.74rem; }
       .sr-cmp-val.sr-form { gap: 3px; }
@@ -134462,6 +134467,36 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // Sits above the deep-dive breakdown, not buried beneath it.
       const bd = box.querySelector('#simBreakdown');
       if (bd) box.insertBefore(sb, bd.previousElementSibling || bd); else box.appendChild(sb);
+    }
+    {
+      // Matchup Analytics Deep Dive button — the Fight Info dropdown has had this
+      // since renderScouting grew it; the simulator's printout never did. Appended
+      // to #simBreakdown BEFORE renderMatchupBreakdown runs below, so the Head-to-
+      // head table (taleOfTape:true) ends up above it via its own insertBefore
+      // (host.firstChild), and Style/Pace/Path to victory/Storylines land below —
+      // same "after the tape, before Style" placement the app already uses
+      // elsewhere. No real fight date (this is a hypothetical matchup, not a
+      // scheduled bout), so meta.date stays blank; weight class comes from
+      // fighter A's own roster division, the same source the simulator's own
+      // warning/error messages use.
+      const _bd = document.getElementById('simBreakdown');
+      if (_bd) {
+        const rosterA = simGetFighterRoster(nameA);
+        const wcLabel = rosterA ? simDivisionLabel(rosterA.division) : '';
+        const dd = document.createElement('button');
+        dd.type = 'button';
+        dd.className = 'fight-dd-bar';
+        dd.style.display = 'none';
+        dd.dataset.ddF1 = nameA;
+        dd.dataset.ddF2 = nameB;
+        dd.innerHTML = 'Matchup Analytics Deep Dive <span class="dd-go">&rsaquo;</span>';
+        dd.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openMatchupHub(nameA, nameB, { wc: wcLabel, rounds: simSelectedRounds + ' rounds', date: '' });
+        });
+        _bd.appendChild(dd);
+        if (typeof glRevealDeepDives === 'function') glRevealDeepDives();
+      }
     }
     { const _bd = document.getElementById('simBreakdown'); if (_bd && typeof renderMatchupBreakdown === 'function') renderMatchupBreakdown(_bd, nameA, nameB, { taleOfTape: true }); }
   }
