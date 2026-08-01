@@ -2518,6 +2518,10 @@
     .sr-co-name { color: var(--muted); }
     .sr-co-name.sr-co-link { cursor: pointer; transition: color 0.15s; }
     .sr-co-name.sr-co-link:hover { color: var(--accent); }
+    /* Fight Info dropdown only: Common opponents and Storylines centered to match
+       the rest of the panel now reading center-aligned. */
+    .scouting-fight-panel .sr-common-row, .fight-details-panel .sr-common-row,
+    .scouting-fight-panel .sr-story-line, .fight-details-panel .sr-story-line { text-align: center; }
     .sr-cmp-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr); gap: 0.5rem; align-items: center; padding: 0.35rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.78rem; }
     .sr-cmp-head { color: var(--muted); font-weight: 700; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.04em; border-bottom: 1px solid var(--border); }
     .sr-cmp-lbl { color: var(--muted); }
@@ -125805,7 +125809,10 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       const t3 = document.createElement('div'); t3.className = 'sr-common-title'; t3.style.marginTop = '0.9rem'; t3.textContent = 'Storylines'; box3.appendChild(t3);
       const add = (nm, color, arr) => {
         arr.forEach(txt => {
-          const row = document.createElement('div'); row.style.cssText = 'font-size:0.74rem;line-height:1.5;padding:3px 0;color:var(--text);';
+          // sr-story-line lets the Fight Info dropdown's CSS center these rows
+          // without touching the simulator's breakdown, which reuses this same
+          // renderMatchupBreakdown() code and keeps its original left alignment.
+          const row = document.createElement('div'); row.className = 'sr-story-line'; row.style.cssText = 'font-size:0.74rem;line-height:1.5;padding:3px 0;color:var(--text);';
           const tag = document.createElement('span'); tag.style.cssText = 'color:' + color + ';font-weight:700;margin-right:6px;'; tag.textContent = short(nm);
           row.appendChild(tag); row.appendChild(document.createTextNode(txt)); box3.appendChild(row);
         });

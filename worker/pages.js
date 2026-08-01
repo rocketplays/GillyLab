@@ -2655,7 +2655,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const pathBox = `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Path to victory</div>${pathCard(mf.f1, t.path && t.path.a, true)}${pathCard(mf.f2, t.path && t.path.b, false)}</div>`;
     // Storylines (only if any)
     const st = t.story || { a: [], b: [] };
-    const stLine = (nm, col, arr) => (arr || []).map((x) => `<div style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
+    const stLine = (nm, col, arr) => (arr || []).map((x) => `<div class="sr-story-line" style="font-size:.74rem;line-height:1.5;padding:3px 0"><span style="color:${col};font-weight:700;margin-right:6px">${esc(surname(nm))}</span>${esc(x)}</div>`).join("");
     const storyBox = ((st.a && st.a.length) || (st.b && st.b.length))
       ? `<div class="sr-common"><div class="sr-common-title" style="margin-top:.9rem">Storylines</div>${stLine(mf.f1, "var(--accent)", st.a)}${stLine(mf.f2, AMBER, st.b)}</div>` : "";
     // Finish & durability (main event only) — win finish rate, methods, times finished.
@@ -3005,8 +3005,10 @@ ${eventLd}
   .form-tile-tooltip{position:fixed;z-index:9999;background:#1a1a2e;border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:.45rem .65rem;pointer-events:none;white-space:nowrap;font-size:.76rem;color:#e8e8f0;box-shadow:0 4px 18px rgba(0,0,0,.55);line-height:1.5;display:none}
   .form-tile-tooltip.visible{display:block}
   .form-tile-tooltip strong{font-weight:800}
-  .sr-common-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem}
+  .sr-common-row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:.5rem;align-items:center;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:.78rem;text-align:center}
   .sr-common-row:last-child{border-bottom:none}
+  /* Common opponents and Storylines centered to match the rest of the panel. */
+  .sr-story-line{text-align:center}
   .sr-co-name{color:var(--muted)}
   .sr-co-res{font-weight:600;color:var(--text)}
   .sr-co-res.w{color:var(--accent)}
