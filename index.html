@@ -135971,6 +135971,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   let btView = 'history', btScope = 'verified', btRange = 'all', btCardFilter = 'all', btTab = 'active';
   let btBoardTab = 'units', btBoardRange = 'all', btPlayerName = '';   // leaderboard metric tab + range + open profile
   let btEvent = null, btFight = null, btMarket = 'ML', btEditId = null, btPreOdds = null, btPreBook = null;
+  // The winner side (1/2) the user last explicitly picked for THIS fight, carried
+  // across market switches. Every market's own Winner <select> used to always
+  // default back to option 1 on render — harmless if you pick a market first and
+  // the winner once, but switch FROM a market where you'd already picked fighter 2
+  // TO one where you assume that choice still holds (e.g. ML -> "wins inside the
+  // distance"), and the winner silently reverts to fighter 1 with nothing on
+  // screen suggesting it changed. Reset whenever a new fight is chosen.
+  let btLastSide = null;
   // Set only by btLogFromOdds (the parlay slip's "Log this bet"), cleared by
   // clicking the "Log a bet" tab directly — the one thing that tells btRenderLog
   // whether "back" means "back to Odds & Projections" or just isn't shown at all.
@@ -136874,7 +136882,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   let btKind = 'card';
   function btSetKind(k) { btKind = k; btRenderLog(k); }
   function btPickEvent(i) { btEvent = i === '' ? null : BT_EVENTS[+i]; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
-  function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btRenderLog('card'); }
+  function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btLastSide = null; btRenderLog('card'); }
+  // Called by every market's Winner <select> onchange, so a later market switch
+  // can restore this exact choice instead of silently defaulting back to fighter 1.
+  function btSetSide(v) { btLastSide = (+v === 2) ? 2 : 1; }
+  window.btSetSide = btSetSide;
   function btSetMarket(m) { btMarket = m; btRenderLog('card'); }
   function btMlPrefill() { const s = +document.getElementById('bt-mlwin').value; const o = btOddsFor(btFight); if (o) document.getElementById('bt-odds').value = s === 1 ? o.o1 : o.o2; }
   window.btSetKind = btSetKind; window.btPickEvent = btPickEvent; window.btPickFight = btPickFight;
@@ -136899,24 +136911,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     : [{ lab: 'Round 1–2', rounds: [1, 2] }, { lab: 'Round 2–3', rounds: [2, 3] }];
   function btSelUI(f) {
     const rds = n => { let o = ''; for (let i = 1; i <= n; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return o; };
+    // Carries the last winner you picked (in ANY market, on this fight) forward
+    // into whichever market's Winner select is being built now — see btLastSide.
+    const sel1 = btLastSide === 2 ? '' : ' selected', sel2 = btLastSide === 2 ? ' selected' : '';
     if (btMarket === 'ML') {
       const o = btOddsFor(f);
-      return '<label>Winner</label><select id="bt-mlwin" onchange="btMlPrefill()"><option value="1">' + btEsc(f.f1) + (o ? ' (' + btFmtO(o.o1) + ')' : '') + '</option><option value="2">' + btEsc(f.f2) + (o ? ' (' + btFmtO(o.o2) + ')' : '') + '</option></select>';
+      return '<label>Winner</label><select id="bt-mlwin" onchange="btSetSide(this.value);btMlPrefill()"><option value="1"' + sel1 + '>' + btEsc(f.f1) + (o ? ' (' + btFmtO(o.o1) + ')' : '') + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + (o ? ' (' + btFmtO(o.o2) + ')' : '') + '</option></select>';
     }
-    if (btMarket === 'METHOD') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mfr"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select></div><div><label>Method</label><select id="bt-mmeth"><option value="KO">KO/TKO</option><option value="SUB">Submission</option><option value="DEC">Decision</option></select></div></div>';
-    if (btMarket === 'ENDROUND') return '<label>Winner</label><select id="bt-erf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select>' +
+    if (btMarket === 'METHOD') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mfr" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select></div><div><label>Method</label><select id="bt-mmeth"><option value="KO">KO/TKO</option><option value="SUB">Submission</option><option value="DEC">Decision</option></select></div></div>';
+    if (btMarket === 'ENDROUND') return '<label>Winner</label><select id="bt-erf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option><option value="any">Either fighter</option></select>' +
       '<div class="bt-row2"><div><label>Method</label><select id="bt-erm"><option value="ANY">Any finish</option><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div><div><label>Ends in</label><select id="bt-err">' + rds(f.rounds) + '</select></div></div>';
     if (btMarket === 'WINRDS') { const gs = btWinGroups(f.rounds);
-      return '<label>Winner</label><select id="bt-wrf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select>' +
+      return '<label>Winner</label><select id="bt-wrf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option></select>' +
         '<label>Wins in</label><select id="bt-wrg">' + gs.map((g, i) => '<option value="' + i + '">' + g.lab + '</option>').join('') + '</select>'; }
     if (btMarket === 'METHRDS') { const gs = btMethGroups(f.rounds);
-      return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mrf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select></div>' +
+      return '<div class="bt-row2"><div><label>Winner</label><select id="bt-mrf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option></select></div>' +
         '<div><label>Method</label><select id="bt-mrm"><option value="KO">KO/TKO</option><option value="SUB">Submission</option></select></div></div>' +
         '<label>In</label><select id="bt-mrg">' + gs.map((g, i) => '<option value="' + i + '">' + g.lab + '</option>').join('') + '</select>'; }
     if (btMarket === 'TOTAL') { let o = ''; for (let i = 1; i < f.rounds; i++) o += '<option value="' + i + '.5">' + i + '.5 rounds</option>'; return '<div class="bt-row2"><div><label>Line</label><select id="bt-tline">' + o + '</select></div><div><label>Over / Under</label><select id="bt-tou"><option value="O">Over</option><option value="U">Under</option></select></div></div>'; }
     if (btMarket === 'ROUNDSTART') { let o = ''; for (let i = 2; i <= f.rounds; i++) o += '<option value="' + i + '">Round ' + i + '</option>'; return '<div class="bt-row2"><div><label>Round</label><select id="bt-rsr">' + o + '</select></div><div><label>Will it start?</label><select id="bt-rsyn"><option value="Y">Will start</option><option value="N">Won\'t start</option></select></div></div>'; }
     if (btMarket === 'DISTANCE') return '<label>Does the fight reach a decision?</label><select id="bt-dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>';
-    if (btMarket === 'DBLMETH') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-dcf"><option value="1">' + btEsc(f.f1) + '</option><option value="2">' + btEsc(f.f2) + '</option></select></div>' +
+    if (btMarket === 'DBLMETH') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-dcf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option></select></div>' +
       '<div><label>By</label><select id="bt-dcm"><option value="KO">KO/TKO or decision</option><option value="SUB">Submission or decision</option><option value="KOSUB">KO/TKO or submission</option></select></div></div>';
     return '';
   }
