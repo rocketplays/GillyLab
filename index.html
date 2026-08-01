@@ -1247,6 +1247,9 @@
     .bt-cardsum { font-size: 0.72rem; font-weight: 800; color: var(--muted); white-space: nowrap; }
     .bt-cardhdr .bt-cardshare { margin-top: 0; width: auto; flex: 0 0 auto; margin-left: auto; padding: 0.35rem 0.6rem; font-size: 0.58rem; }
     .bt-live-tag { display: inline-block; color: #ff6a5e; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; vertical-align: middle; }
+    .bt-card-tally { font-size: 0.72rem; color: var(--muted); margin: -0.3rem 0 0.6rem; }
+    .bt-card-tally b { font-weight: 800; }
+    .bt-card-tally .sep { opacity: 0.5; margin: 0 0.45em; }
     .bt-editrow { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
     .bt-legs { margin: 8px 0 2px; border-left: 2px solid var(--border); padding-left: 10px; }
     .bt-leg { display: flex; align-items: center; gap: 8px; font-size: 0.76rem; padding: 2px 0; color: #c9ccd3; }
@@ -135009,6 +135012,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
       try { buildUpcomingOpponentIndex(data); } catch (e) { /* non-fatal */ }
       await glMergeLiveCard();                                  // new results -> new history + box score
+      // The just-merged results are exactly what bet grading reads (FIGHT_HISTORY),
+      // so a bet that just settled — and the card's running units tally — should
+      // update right here rather than waiting for a manual reload.
+      try { if (typeof window.btLiveRefresh === 'function') window.btLiveRefresh(); } catch (e) { /* non-fatal */ }
       window.FEATURED_EVENT_STATE = glCardState(raw);
       updateCountdown();                                       // TONIGHT -> LIVE -> FINAL
       glSwapFightCard(() => renderHomeFightCard(parseApiEvent(raw)));
@@ -136352,6 +136359,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       voided: st.filter(b => b.status === 'void').length,
     };
   }
+  // Running tally under a still-live card's header, in the Active tab: what's
+  // already graded on it (won/lost so far, net units) plus what's still on the
+  // table (total staked, and what it pays if every remaining bet hits). Recomputed
+  // on every render off the same `shown` list the rest of the tab uses, so it
+  // moves the moment a bet grades — no separate polling of its own; see
+  // btLiveRefresh, which re-renders this tab as new results land mid-card.
+  function btCardTallyHTML(c, shown) {
+    const rows = shown.filter(b => b.evSlug === c.slug);
+    const doneRows = rows.filter(b => b.status !== 'pending');
+    const liveRows = rows.filter(b => b.status === 'pending');
+    const bits = [];
+    if (doneRows.length) {
+      const st = btStats(doneRows);
+      const cls = st.units > 0 ? 'bt-pos' : st.units < 0 ? 'bt-neg' : '';
+      bits.push(st.w + '-' + st.l + ' so far · <b class="' + cls + '">' + (st.units > 0 ? '+' : '') + btU(st.units) + 'u</b>');
+    }
+    if (liveRows.length) {
+      const risked = liveRows.reduce((s, b) => s + b.stake, 0);
+      const toWin = liveRows.reduce((s, b) => s + btToWin(b), 0);
+      bits.push(btU(risked) + 'u still live · to win <b class="bt-pos">+' + btU(toWin) + 'u</b>');
+    }
+    if (!bits.length) return '';
+    return '<div class="bt-card-tally">' + bits.join('<span class="sep">·</span>') + '</div>';
+  }
 
   // ── views ────────────────────────────────────────────────────────────────
   function btSetView(v) {
@@ -136400,6 +136431,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   window.btSetView = btSetView; window.btSetScope = btSetScope; window.btSetRange = btSetRange; window.btSetCard = btSetCard;
   window.btSetTab = btSetTab;
+  // Called by the app's existing live-card poller (glStartLiveRefresh) once new
+  // results have merged into FIGHT_HISTORY mid-card. Re-derives every bet's grade
+  // and repaints — but only while the tracker's history view is actually open, so
+  // it doesn't do wasted work (or steal focus) while someone's on another tab.
+  window.btLiveRefresh = function () {
+    if (btView !== 'history') return;
+    btDeriveAll();
+    btRenderHistory();
+  };
 
   // ── leaderboard + public player profiles (mirrors the pick'em board) ─────────
   // Reuses the pick'em board's CSS classes so the two look identical. Three metric
@@ -136687,7 +136727,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const rows = pend.filter(b => b.evSlug === c.slug);
       if (!rows.length) return;
       h += '<div class="bt-cardhdr"><div class="bt-cardhdr-t">' + btEsc(c.label) + '</div>' +
-        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share this card</button></div>';
+        '<button type="button" class="gl-sheet-btn bt-cardshare" onclick="btShareCard(\'' + btEsc(c.slug) + '\')">↓ Share this card</button></div>' +
+        btCardTallyHTML(c, shown);
       h += rows.sort((a, b) => b.createdAt - a.createdAt).map(btBetHTML).join('');
     });
     // Pending self-reported bets have no card to group under.
