@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T16:20:56.450Z",
+ "generatedAt": "2026-08-01T16:37:27.804Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -5638,6 +5638,194 @@
       ]
      },
      "capturedAt": "2026-08-01T16:20:56.316Z"
+    }
+   ]
+  },
+  "Oban Elliott": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Michael Oliveira",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:49",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Michael Oliveira",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 14,
+      "sigA": 25,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:15",
+      "head": [
+       13,
+       23
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       10,
+       14
+      ]
+     },
+     "capturedAt": "2026-08-01T16:37:27.673Z"
+    }
+   ]
+  },
+  "Michael Oliveira": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Oban Elliott",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "1:49",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Oban Elliott",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 14,
+      "sigA": 25,
+      "totL": 18,
+      "totA": 29,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:15",
+      "head": [
+       13,
+       23
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       4,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       10,
+       14
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       8
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T16:37:27.673Z"
     }
    ]
   }
