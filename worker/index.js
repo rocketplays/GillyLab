@@ -541,9 +541,14 @@ function boutToResult(b) {
   if (!f1 || !f2) return null;
   const win = (b.winnerFighterSlug && fs.find(f => f.fighterSlug === b.winnerFighterSlug)) ||
               fs.find(f => f.outcome === "win");
-  if (win) return { f1, f2, winner: win.fighterName, method: b.method || "", round: b.resultRound || null, voided: false };
+  // resultTime ("4:49") comes straight from ESPN via scripts/fetch-espn-live.cjs
+  // (see its header comment) but was getting dropped here — btResolveResult had
+  // no time to parse and fell back to assuming every finish ran the full round,
+  // which mis-grades a TOTAL (over/under rounds) bet whose line falls in the
+  // second half of the round the fight actually ended in.
+  if (win) return { f1, f2, winner: win.fighterName, method: b.method || "", round: b.resultRound || null, time: b.resultTime || null, voided: false };
   const drawNC = /draw|no\s*contest|^\s*nc\s*$/i.test(b.method || "") || fs.every(f => f.outcome === "draw");
-  if (drawNC) return { f1, f2, winner: null, method: b.method || "", round: b.resultRound || null, voided: true };
+  if (drawNC) return { f1, f2, winner: null, method: b.method || "", round: b.resultRound || null, time: b.resultTime || null, voided: true };
   return null;   // still pending
 }
 // Read the live ESPN feed from the bundle and return the "focus" card — the one in
@@ -970,7 +975,15 @@ function btResolveResult(events, evSlug, a, b) {
         const lw = btLastName(bt.winner);
         win = lw === la ? 1 : lw === lb ? 2 : null;
       }
-      return { win, methodCat: btMethodCat(m), round: Number(bt.round) || 1, endSec: 300, isDraw, isNC };
+      // Mirrors the client's btFightResult: use the actual finish time when this
+      // bout carries one (bt.time, "M:SS" — now passed through by boutToResult),
+      // and only fall back to assuming a full round when it doesn't (the archive
+      // path, pickem-results.json, doesn't record one). Getting this wrong only
+      // matters for a TOTAL (over/under rounds) bet whose line sits in the second
+      // half of the round the fight actually ended in.
+      const tm = /(\d+):(\d+)/.exec(String(bt.time || ""));
+      const endSec = tm ? (+tm[1] * 60 + +tm[2]) : 300;
+      return { win, methodCat: btMethodCat(m), round: Number(bt.round) || 1, endSec, isDraw, isNC };
     }
   }
   return null;
@@ -1224,12 +1237,40 @@ async function handleBetsSettle(request, env) {
   return json({ ok: true });
 }
 
+// `editable` is a SNAPSHOT taken once at log time (clvOk for a single, always
+// true for a parlay) — it never gets re-checked against the clock. That let
+// either endpoint below rewrite or erase a bet at ANY time before it's fully
+// decided, including well after its segment actually started: log a single
+// early (editable:true), then edit the odds/stake — or delete it outright —
+// after watching it go live, which is exactly the CLV-laundering / bad-bet-
+// erasing the comments below describe as prevented. A parlay was worse: only
+// the OVERALL status has to still read "pending" (every leg won, or none
+// decided yet), so a 2-leg parlay with leg 1 already WON could still have its
+// stake bumped up right before leg 2 goes off — de-risked, then sized up.
+// Re-derives the real lock from the current feeds instead of trusting the
+// stored flag: locked once ANY constituent fight's segment has started OR has
+// itself been individually decided (even if the parlay as a whole hasn't).
+// Manual (self-reported) bets have no real close to protect and are exempt.
+async function btEditLocked(env, url, b) {
+  if (b.kind !== "tracked") return false;
+  const now = Date.now();
+  const legFightIds = b.market === "PARLAY" ? (b.legs || []).map((l) => l.fightId) : [b.fightId];
+  for (const fid of legFightIds) {
+    const hit = await btFindBout(env, url, String(fid || ""));
+    if (!hit) continue;   // aged out of the feed — can't re-check this leg, don't block on it
+    const segAt = Date.parse(hit.segAt);
+    if (isFinite(segAt) && now >= segAt) return true;
+    if (await btBoutDecided(env, url, hit)) return true;
+  }
+  return false;
+}
+
 // Edit the price / stake while still pending and before the segment locks. Same
 // gate as delete, and for the same reason: once the close is knowable, letting
 // someone rewrite the price they "got" would manufacture CLV out of thin air.
 // Only odds and stake are editable — never the bout, market or selection (that
 // would be a different bet, logged at a different time).
-async function handleBetsEdit(request, env) {
+async function handleBetsEdit(request, env, url) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
   const { id, odds, stake, book } = await readBody(request);
@@ -1238,6 +1279,7 @@ async function handleBetsEdit(request, env) {
   if (!b) return json({ error: "not found" }, 404);
   if (b.editable === false) return json({ error: "This bet is locked in." }, 403);
   if (b.status && b.status !== "pending") return json({ error: "That bet has already settled." }, 403);
+  if (await btEditLocked(env, url, b)) return json({ error: "That segment has already started — this bet is locked in." }, 403);
   const o = parseInt(odds, 10);
   if (!isFinite(o) || o === 0) return json({ error: "Enter the odds you got." }, 400);
   b.odds = o;
@@ -1250,7 +1292,7 @@ async function handleBetsEdit(request, env) {
 
 // Delete while still pending and before the segment locks. After that the close
 // is knowable, so removing a losing CLV bet would launder the number.
-async function handleBetsDelete(request, env) {
+async function handleBetsDelete(request, env, url) {
   const s = await betsSession(request, env);
   if (!s) return json({ error: "unauthorized" }, 401);
   const { id } = await readBody(request);
@@ -1258,6 +1300,11 @@ async function handleBetsDelete(request, env) {
   const b = list.find((x) => x.id === id);
   if (!b) return json({ error: "not found" }, 404);
   if (b.editable === false) return json({ error: "This bet is locked in." }, 403);
+  // Deliberately no b.status check here (unlike edit) — a self-reported bet
+  // could always be deleted after being marked won/lost, and that's unchanged.
+  // A TRACKED bet that's already decided is still caught: its segment
+  // necessarily started for it to have a result, so btEditLocked catches it.
+  if (await btEditLocked(env, url, b)) return json({ error: "That segment has already started — this bet is locked in." }, 403);
   await btPutBets(env, s.email, list.filter((x) => x.id !== id));
   return json({ ok: true });
 }
@@ -1765,8 +1812,8 @@ export default {
       if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
       if (path === "/api/bets/leaderboard") return handleBetsLeaderboard(request, env, url);
       if (path === "/api/bets/player") return handleBetsPlayer(request, env, url);
-      if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env);
-      if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env);
+      if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env, url);
+      if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env, url);
 
       if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);
       if (path === "/api/pickem/name" && request.method === "POST") return handlePickemSetName(request, env);
