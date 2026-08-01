@@ -2469,7 +2469,13 @@ ${AURORA_CSS}
 // The Odds API's shape (home_team/away_team + per-book h2h outcomes).
 function pagesConsensusOdds(oddsData, nameA, nameB) {
   if (!Array.isArray(oddsData) || !oddsData.length) return null;
-  const ln = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
+  // Strip accents before lowercasing — ESPN's fighterName carries them ("Uroš
+  // Medić"), while The Odds API's home_team/away_team is plain ASCII ("Uros
+  // Medic"). Without this, "medić" never equals "medic" and the fight silently
+  // gets no consensus price at all (reported: the Medic vs. Rodriguez main event
+  // showing no odds). Same normalization index.html already applies elsewhere
+  // when matching names across these two data sources.
+  const ln = (s) => String(s || "").trim().normalize("NFD").replace(/[̀-ͯ]/g, "").split(/\s+/).pop().toLowerCase();
   const ev = oddsData.find((e) => e && e.home_team && e.away_team &&
     ((ln(e.home_team) === ln(nameA) && ln(e.away_team) === ln(nameB)) ||
      (ln(e.home_team) === ln(nameB) && ln(e.away_team) === ln(nameA))));
@@ -2851,7 +2857,14 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const panel = res
       ? `<div class="mf-panel" hidden><div class="mf-result"><span class="mf-res-tag">Result</span>${resultLine(f, res)}</div></div>`
       : ((f.main && ownerCard.main) ? breakdownHTML(f, ownerCard.main) : nonMainPanel(f));
-    return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}">
+    // data-mfres="1" when this row is ALREADY rendered with its result (either the
+    // twice-daily snapshot already had it, or the request-time live-result merge
+    // above just added it) — decorate()'s live-results poller checks this exact
+    // attribute before stamping a WIN/LOSS tag onto a row, specifically so it never
+    // double-stamps a row someone else already decided. Without it, every completed
+    // fight got its result rendered once here AND a second time by the poller a few
+    // seconds later, showing "WIN" (or "LOSS") twice next to the same name.
+    return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}"${res ? ' data-mfres="1"' : ""}>
       <div class="mf-row">
         ${sideL}
         <div class="mf-center">${centerTop}${centerBottom}<button type="button" class="mf-info" onclick="mfToggle(this)">${res ? "Result" : "Fight Info"} ⌄</button></div>
