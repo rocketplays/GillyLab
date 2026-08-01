@@ -2976,7 +2976,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const when2 = eventWhen(evCard, { weekday: undefined, month: "short", day: "numeric" });
     const slideSpecial = mfSpecialClass(evCard.event);
     return `<div class="mf-ev-slide${active ? " active" : ""}" data-slug="${esc(evCard.slug)}">
-      <div class="mf-ev-slide-hdr">
+      <div class="mf-ev-slide-hdr${slideSpecial ? " " + slideSpecial : ""}">
         <div class="mf-ev-slide-name${slideSpecial ? " " + slideSpecial : ""}">${esc(evCard.event)}</div>
         <div class="mf-ev-slide-sub">${esc([when2, evCard.location].filter(Boolean).join(" · "))}</div>
       </div>
@@ -3193,8 +3193,12 @@ ${eventLd}
   .mf-carousel-full{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
   .mf-carousel-full::-webkit-scrollbar{display:none}
   .mf-ev-slide{flex:0 0 100%;scroll-snap-align:start;min-width:0;padding:0 .1rem}
-  .mf-ev-slide.active .mf-ev-slide-hdr{border-color:rgba(0,230,104,.45)}
-  .mf-ev-slide-hdr{background:var(--card);border:1px solid var(--border);border-radius:10px 10px 0 0;padding:.7rem .9rem;margin-top:.2rem}
+  /* Every slide's title box gets a colored perimeter now, not just the active
+     one — green by default, gold for a numbered PPV, blue for DWCS (same
+     mf-numbered/mf-dwcs classes the featured card and its main-event box use). */
+  .mf-ev-slide-hdr{background:var(--card);border:1px solid rgba(0,230,104,.45);border-radius:10px 10px 0 0;padding:.7rem .9rem;margin-top:.2rem}
+  .mf-ev-slide-hdr.mf-numbered{border-color:rgba(212,175,55,.55)}
+  .mf-ev-slide-hdr.mf-dwcs{border-color:rgba(59,130,246,.55)}
   .mf-ev-slide-name{font-weight:800;font-size:.95rem}
   .mf-ev-slide-sub{color:var(--muted);font-size:.76rem;margin-top:.15rem}
   .mf-ev-slide-hdr{border-radius:10px}
