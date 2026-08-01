@@ -136557,8 +136557,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btProfileNames = b => btBetNames({ market: b.market, fightId: b.fightId, evSlug: b.evSlug, params: { side: b.side } });
   function btPlayerBetHTML(b) {
     let res;
-    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won ' + (b.profit > 0 ? '+' : '') + (b.profit == null ? '0' : b.profit.toFixed(1)) + 'u</span>';
-    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + (b.profit == null ? '0' : b.profit.toFixed(1)) + 'u</span>';
+    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won ' + (b.profit > 0 ? '+' : '') + (b.profit == null ? '0' : btU(b.profit)) + 'u</span>';
+    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + (b.profit == null ? '0' : btU(b.profit)) + 'u</span>';
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void</span>';
     else res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
     const badge = b.clv != null ? '<span class="bt-badge ' + (b.clv > 0 ? 'bt-b-clv' : 'bt-b-neg') + '">CLV ' + (b.clv > 0 ? '+' : '') + b.clv + '</span>' : '';
@@ -136800,8 +136800,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function btBetHTML(b) {
     let res;
-    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won +' + btProfit(b).toFixed(1) + 'u</span>';
-    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + btProfit(b).toFixed(1) + 'u</span>';
+    if (b.status === 'won') res = '<span class="bt-res bt-pos">Won +' + btU(btProfit(b)) + 'u</span>';
+    else if (b.status === 'lost') res = '<span class="bt-res bt-neg">Lost ' + btU(btProfit(b)) + 'u</span>';
     else if (b.status === 'void') res = '<span class="bt-res" style="color:var(--muted)">Void · stake back</span>';
     else if (b.status === 'push') res = '<span class="bt-res" style="color:var(--muted)">Push</span>';
     else res = '<span class="bt-res" style="color:#ffcf7a;font-size:0.8rem">Open</span>';

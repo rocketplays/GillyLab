@@ -942,6 +942,12 @@ async function handleBetsGrade(request, env) {
 // would — the owner's own client still writes the permanent grade via /api/bets/grade.
 // VERIFIED ONLY: self-reported (manual) bets never touch the board.
 const btRound1 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 10) / 10;
+// A per-bet profit rounded to 1dp reads wrong the moment the stake itself isn't
+// a whole tenth of a unit — a 0.25u loss showed as "-0.3u", a 0.75u loss as
+// "-0.8u" (both real reports). Aggregates (ROI/CLV points/summed units) are
+// still fine at 1dp since those are sums across many bets, not one exact
+// number a person just typed in; only the per-bet profit needs the finer grain.
+const btRound2 = (x) => (x == null || !isFinite(x)) ? null : Math.round(x * 100) / 100;
 const btLastName = (s) => String(s || "").trim().split(/\s+/).pop().toLowerCase();
 function btMethodCat(m) {
   m = String(m || "");
@@ -1179,7 +1185,7 @@ async function handleBetsPlayer(request, env, url) {
       return Object.assign(common(b), {
         odds: (g && typeof g.effOdds === "number") ? g.effOdds : b.odds,
         stake: b.stake, status: g.status,
-        profit: btRound1(o ? o.profit : 0),
+        profit: btRound2(o ? o.profit : 0),
         clv: (g && typeof g.clv === "number") ? btRound1(g.clv) : null,
         legStatuses: (g && g.legStatuses) || null,
         ts: b.ts || b.createdAt || 0,
@@ -1307,6 +1313,39 @@ async function handleBetsDelete(request, env, url) {
   if (await btEditLocked(env, url, b)) return json({ error: "That segment has already started — this bet is locked in." }, 403);
   await btPutBets(env, s.email, list.filter((x) => x.id !== id));
   return json({ ok: true });
+}
+
+// FOUNDER-ONLY, one-time hand fix. The winner-select-reset bug (fixed the same
+// day this shipped) let a single-fighter bet silently record the WRONG side if
+// the Market dropdown was switched after already picking a winner — the pick
+// text and params.side agreed with each other, just both wrong. A bet like
+// that is otherwise stuck forever once its fight is decided: the normal edit
+// endpoint only ever touches odds/stake (never the selection, by design — "that
+// would be a different bet"), and btEditLocked correctly refuses to edit OR
+// delete a bet whose fight has already been decided, which this one now is.
+// Scoped narrowly on purpose — flips a single/METHOD-family bet's side and
+// rewrites its pick text to match, nothing else, and only for the caller's own
+// bets (email comes from THEIR session, never the request body) — this is a
+// scalpel for the one bug class above, not a general "edit anything" backdoor.
+async function handleAdminFixBetSide(request, env) {
+  const s = await betsSession(request, env);
+  if (!s || !FOUNDER_EMAILS.has(s.email)) return json({ error: "unauthorized" }, 401);
+  const { id, side, pick } = await readBody(request);
+  if (!id) return json({ error: "missing id" }, 400);
+  const sd = side === 2 ? 2 : side === 1 ? 1 : null;
+  if (sd == null) return json({ error: "side must be 1 or 2" }, 400);
+  const list = await btGetBets(env, s.email);
+  const b = list.find((x) => x.id === id);
+  if (!b) return json({ error: "not found" }, 404);
+  if (b.kind !== "tracked" || b.market === "PARLAY") {
+    return json({ error: "this only fixes a single tracked bet's side, not a parlay or a self-reported bet" }, 400);
+  }
+  const before = { pick: b.pick, side: b.params && b.params.side };
+  b.params = Object.assign({}, b.params, { side: sd });
+  if (typeof pick === "string" && pick.trim()) b.pick = pick.trim().slice(0, 160);
+  b.fixedAt = Date.now();
+  await btPutBets(env, s.email, list);
+  return json({ ok: true, before, bet: b });
 }
 // Set of slugs that have a published lite profile — used to link fighter names on
 // the public pages ONLY when a /fighter/<slug> page actually exists (never 404).
@@ -1814,6 +1853,7 @@ export default {
       if (path === "/api/bets/player") return handleBetsPlayer(request, env, url);
       if (path === "/api/bets/edit" && request.method === "POST") return handleBetsEdit(request, env, url);
       if (path === "/api/bets/delete" && request.method === "POST") return handleBetsDelete(request, env, url);
+      if (path === "/api/admin/bets/fix-side" && request.method === "POST") return handleAdminFixBetSide(request, env);
 
       if (path === "/api/pickem/name" && request.method === "GET") return handlePickemGetName(request, env);
       if (path === "/api/pickem/name" && request.method === "POST") return handlePickemSetName(request, env);
