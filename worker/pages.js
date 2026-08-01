@@ -2570,6 +2570,19 @@ function isRoadToUFCRaw(raw) {
   const name = (raw && (raw.espnName || raw.title || raw.shortTitle || raw.name)) || "";
   return /road\s+to\s+(the\s+)?ufc/i.test(name);
 }
+// Lightweight version of index.html's numbered-card/dwcs-card special styling for
+// this free page — just a title color + (on the main-event box) a border color,
+// not the full gradient/star-overlay treatment the paywalled app gets. Takes the
+// already-built card's `.event` string directly (eventToCard/gen-landing-data.cjs
+// both set it from the same raw.espnName/title/shortTitle chain isNumbered/isDWCS
+// check against elsewhere), so it works for the featured card, any past/override
+// card, and every carousel slide's own event without needing the raw object too.
+function mfSpecialClass(eventName) {
+  const name = (eventName || "").trim();
+  if (/^UFC\s+\d+\b/i.test(name)) return "mf-numbered";
+  if (/contender\s+series|dana\s+white/i.test(name)) return "mf-dwcs";
+  return "";
+}
 // A card ESPN has created but not yet published bouts for — DWCS is the common
 // case (on the calendar ~2 months out, matchups land about a week before). Same
 // guard index.html's carousel/pickNextRawEvent use, which is what actually hides
@@ -2864,7 +2877,8 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     // double-stamps a row someone else already decided. Without it, every completed
     // fight got its result rendered once here AND a second time by the poller a few
     // seconds later, showing "WIN" (or "LOSS") twice next to the same name.
-    return `<div class="mf-card${f.main ? " main" : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}"${res ? ' data-mfres="1"' : ""}>
+    const mainSpecial = f.main ? mfSpecialClass(ownerCard && ownerCard.event) : "";
+    return `<div class="mf-card${f.main ? " main" : ""}${mainSpecial ? " " + mainSpecial : ""}" data-f1="${esc(f.f1)}" data-f2="${esc(f.f2)}"${res ? ' data-mfres="1"' : ""}>
       <div class="mf-row">
         ${sideL}
         <div class="mf-center">${centerTop}${centerBottom}<button type="button" class="mf-info" onclick="mfToggle(this)">${res ? "Result" : "Fight Info"} ⌄</button></div>
@@ -2960,9 +2974,10 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     const evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
     const active = card && evCard.slug === card.slug;
     const when2 = eventWhen(evCard, { weekday: undefined, month: "short", day: "numeric" });
+    const slideSpecial = mfSpecialClass(evCard.event);
     return `<div class="mf-ev-slide${active ? " active" : ""}" data-slug="${esc(evCard.slug)}">
       <div class="mf-ev-slide-hdr">
-        <div class="mf-ev-slide-name">${esc(evCard.event)}</div>
+        <div class="mf-ev-slide-name${slideSpecial ? " " + slideSpecial : ""}">${esc(evCard.event)}</div>
         <div class="mf-ev-slide-sub">${esc([when2, evCard.location].filter(Boolean).join(" · "))}</div>
       </div>
       ${buildBody(evCard)}
@@ -3039,6 +3054,13 @@ ${eventLd}
   .mf-sechdr{font-size:.7rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:1.4rem 0 .7rem}
   .mf-card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:.7rem;overflow:hidden}
   .mf-card.main{border-color:rgba(0,230,104,.45)}
+  /* Numbered PPVs ("UFC 329", ...) get gold, DWCS gets blue — same two colors
+     index.html's .numbered-card/.dwcs-card use, just a title tint + a main-event
+     border swap here rather than the full gradient/star-overlay treatment. */
+  h1.mf-numbered, .mf-ev-slide-name.mf-numbered{color:#d4af37}
+  h1.mf-dwcs, .mf-ev-slide-name.mf-dwcs{color:#3b82f6}
+  .mf-card.main.mf-numbered{border-color:rgba(212,175,55,.55)}
+  .mf-card.main.mf-dwcs{border-color:rgba(59,130,246,.55)}
   .mf-row{display:flex;align-items:center;gap:.4rem;padding:.7rem .6rem}
   .mf-side{display:flex;align-items:center;gap:.5rem;flex:1;min-width:0}
   a.mf-side.mf-link{text-decoration:none;color:inherit;cursor:pointer;border-radius:8px;transition:opacity .12s}
@@ -3239,7 +3261,7 @@ ${AURORA_CSS}
       <div id="mfSearchResults" class="mf-search-results" hidden></div>
     </div>
     ${pastDropdownHTML}
-    <h1>${card ? esc(card.event) : "Next Card"}</h1>
+    <h1 class="${card ? mfSpecialClass(card.event) : ""}">${card ? esc(card.event) : "Next Card"}</h1>
     <p class="mf-sub">${[when, card && card.location].filter(Boolean).map(esc).join(" · ") || "Upcoming card"}${isPastView ? ` · <span style="color:var(--accent);font-weight:700">Final</span>` : ""}</p>
     <div id="mfFeaturedBody">${body}</div>
     ${carouselHTML}
