@@ -87,6 +87,21 @@
       },
       "reason": "Khalil Rountree Jr. withdrew from the UFC Fight Night main event vs. Magomed Ankalaev; Bogdan Guskov stepped in on short notice — Wikipedia already retitled the card 'Ankalaev vs. Guskov'. The ESPN feed still lists Rountree as of this writing, so swap the blue corner to Guskov and mark him the short-notice replacement (which also suppresses the mis-fired 'Rountree stepped in on short notice' / bout-may-change flags).",
       "addedOn": "2026-07-14"
+    },
+    {
+      "eventSlug": "ufc-fight-night-august-08-2026",
+      "eventStartsAt": "2026-08-08T21:00:00.000Z",
+      "matchFighterName": "Henrique da Silva Lopes",
+      "replacement": {
+        "fighterSlug": "jose-montanha",
+        "fighterName": "Jose Montanha",
+        "country": "Brazil",
+        "flag": "🇧🇷",
+        "nickname": "Montanha",
+        "recordText": "6-1-0 (W-L-D)"
+      },
+      "reason": "Not a short-notice swap — an upstream ESPN data error. ESPN's feed has the Aug 8 heavyweight bout vs. Louie Sutherland attributed to Henrique da Silva Lopes (5-2-0, a different, already-UFC-rostered Brazilian heavyweight — Jungle Fight/WOC background), whose profile also carries the nickname \"Montanha\" in ESPN's data. The actual opponent is Jose Montanha (Jose Luiz \"Montanha\", 6-1-0, Curitiba, Parana) — confirmed via Sherdog's fighter page (which lists this exact bout under his 'Upcoming Fights'), Tapology, and MMA news coverage of his original Diniz booking collapsing and Sutherland stepping in. The two fighters just happen to share the nickname 'Montanha', and ESPN's feed appears to have merged them.",
+      "addedOn": "2026-07-31"
     }
   ]
 }
