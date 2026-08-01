@@ -127713,12 +127713,13 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
     // Moneyline moved out to sit next to each fighter's record on the card itself
     // (see mlRecHTML); the Tale of the tape now leads with age.
     if (ageA != null || ageB != null) {
-      const hi = (ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6) ? 'hi' : '';
-      cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), hi, hi);
+      const bigGap = ageA != null && ageB != null && Math.abs(ageA - ageB) >= 6;
+      const olderA = bigGap && ageA > ageB, olderB = bigGap && ageB > ageA;
+      cmpRow(box, 'Age', ageA == null ? '—' : (ageA + diffTxt(ageA, ageB, '')), ageB == null ? '—' : (ageB + diffTxt(ageB, ageA, '')), olderA ? 'l' : '', olderB ? 'l' : '');
     }
     if (aHt != null || bHt != null) cmpRow(box, 'Height', aHt == null ? '—' : fmtHt(aHt) + diffTxt(aHt, bHt, '"'), bHt == null ? '—' : fmtHt(bHt) + diffTxt(bHt, aHt, '"'));
     if (aR != null || bR != null) cmpRow(box, 'Reach', aR == null ? '—' : (aR + '"' + diffTxt(aR, bR, '"')), bR == null ? '—' : (bR + '"' + diffTxt(bR, aR, '"')));
-    if (aS || bS) { const clash = aS && bS && aS !== bS; cmpRow(box, 'Stance', aS || '—', bS || '—', clash ? 'hi' : '', clash ? 'hi' : ''); }
+    if (aS || bS) cmpRow(box, 'Stance', aS || '—', bS || '—');
     if (moA != null || moB != null) {
       const fmtMo = m => m == null ? '—' : (m >= 12 ? (Math.floor(m / 12) + 'y ' + (m % 12) + 'm') : (m + ' mo'));
       cmpRow(box, 'Layoff', fmtMo(moA), fmtMo(moB), (moA != null && moA >= 12) ? 'l' : '', (moB != null && moB >= 12) ? 'l' : '');
