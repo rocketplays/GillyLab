@@ -125316,7 +125316,10 @@ function applyInjuryFlags() {
       // Both corners first: the sets are keyed per bout, so a fighter's flag
       // only counts against THIS row's opponent (see boutFlagKey).
       const names = cells.map(function (c) {
-        const nameEl = c.querySelector('.fighter-name');
+        // Same nested-result-badge gotcha as loadHomePagePhotos(): a completed
+        // fight's .fighter-name has a sibling .gl-res-tag span (WIN/LOSS) with no
+        // whitespace between them, so plain textContent glues them into one word.
+        const nameEl = c.querySelector('.fighter-name .gl-name-txt') || c.querySelector('.fighter-name');
         return nameEl ? (nameEl.textContent || '').trim() : '';
       });
       const hasNews = names.some(function (nm, i) {
@@ -128666,7 +128669,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function loadHomePagePhotos() {
     document.querySelectorAll('.fight-row .fighter-cell').forEach(cell => {
-      const nameEl   = cell.querySelector('.fighter-name');
+      // Completed fights nest a result badge ('<span class="gl-res-tag">WIN</span>')
+      // right inside .fighter-name, next to the name span, with no whitespace between
+      // them — reading .fighter-name's own textContent picks up both and produces
+      // "Mark VologdinLOSS" instead of "Mark Vologdin", which nameToSlug() then turns
+      // into a slug ("mark-vologdinloss") that never matches a real photo file, 404s,
+      // and silently falls back to initials. Prefer the inner .gl-name-txt span, which
+      // holds only the name, when it exists.
+      const nameEl   = cell.querySelector('.fighter-name .gl-name-txt') || cell.querySelector('.fighter-name');
       const avatarEl = cell.querySelector('.fighter-avatar');
       if (!nameEl || !avatarEl) return;
       const name     = nameEl.textContent.trim();
