@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-01T16:55:59.259Z",
+ "generatedAt": "2026-08-01T17:26:43.511Z",
  "fighters": {
   "Anna Melisano": {
    "history": [
@@ -6014,6 +6014,194 @@
       ]
      },
      "capturedAt": "2026-08-01T16:53:47.004Z"
+    }
+   ]
+  },
+  "Milos Janicic": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Noah Gugnon",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "1:21",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Noah Gugnon",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 19,
+      "totL": 7,
+      "totA": 20,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       18
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       18
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       1,
+       7
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       5,
+       9
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-01T17:26:43.376Z"
+    }
+   ]
+  },
+  "Noah Gugnon": {
+   "history": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Milos Janicic",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "1:21",
+     "event": "UFC Fight Night: Medić vs. Rodriguez",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 1, 2026",
+     "opponent": "Milos Janicic",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 5,
+      "sigA": 11,
+      "totL": 6,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:40",
+      "head": [
+       1,
+       7
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       4,
+       4
+      ],
+      "dist": [
+       5,
+       9
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 19,
+      "totL": 7,
+      "totA": 20,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       18
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       18
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-01T17:26:43.376Z"
     }
    ]
   }
