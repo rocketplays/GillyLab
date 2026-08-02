@@ -6207,7 +6207,7 @@
  { name: "Eli Aronov", division: "MW", rank: "NR", record: "6-1-0", initials: "EA", country: "Israel" },
  { name: "Tafon Nchukwi", division: "LHW", rank: "NR", record: "6-4-0", initials: "TN", country: "Cameroon" },
  { name: "Paulo Renato Jr.", division: "HW", rank: "NR", record: "12-3-0", initials: "PJ", country: "Brazil" },
- { name: "Kaik Brito", division: "LW", rank: "NR", record: "16-5-0", initials: "KB", country: "Brazil" },
+ { name: "Kaik Brito", division: "WW", rank: "NR", record: "19-6-0", initials: "KB", country: "Brazil" },
  { name: "Namo Fazil", division: "WW", rank: "NR", record: "10-1-0", initials: "NAF", country: "USA" },
  { name: "JP Buys", division: "FLW", rank: "NR", record: "9-6-0", initials: "JB", country: "South Africa" },
  { name: "Isis Verbeek", division: "WSW", rank: "NR", record: "5-2-0", initials: "IV", country: "Netherlands" },
@@ -10019,7 +10019,7 @@
   "Eli Aronov": { ht:"5'10\"", dob:"1996-06-06", reach:'72"', stance:"Orthodox", slpm:8.92, strAcc:"69%", sapm:6.49, strDef:"38%", kd:0.0, tdLanded:12.16, tdAcc:"100%", tdDef:null, subAvg:0.0, finRate:"67%", streak:0, gym:"Xtreme Couture" },
   "Tafon Nchukwi": { ht:"6'0\"", dob:"1994-10-14", reach:'77"', stance:"Orthodox", slpm:5.57, strAcc:"53%", sapm:4.11, strDef:"54%", kd:0.38, tdLanded:0.76, tdAcc:"57%", tdDef:"65%", subAvg:0.0, finRate:"67%", streak:0, gym:"Team Lloyd Irvin" },
   "Paulo Renato Jr.": { ht:"6'0\"", dob:"1994-01-25", reach:'73"', stance:"Orthodox", slpm:4.89, strAcc:"45%", sapm:5.18, strDef:"57%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"100%", subAvg:0.0, finRate:"83%", streak:0, gym:"Infinity Fight Team" },
-  "Kaik Brito": { ht:"5'11\"", dob:"1997-03-26", reach:'72.5"', stance:"Orthodox", slpm:2.8, strAcc:"38%", sapm:3.87, strDef:"55%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"56%", subAvg:2.0, finRate:"100%", streak:0, gym:"Black Thai Team" },
+  "Kaik Brito": { ht:"5'11\"", dob:"1997-03-26", reach:'72.5"', stance:"Orthodox", slpm:2.8, strAcc:"38%", sapm:3.87, strDef:"55%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"56%", subAvg:2.0, finRate:"100%", streak:2, gym:"Black Thai Team" },
   "Namo Fazil": { ht:"6'0\"", dob:"1996-10-29", reach:'68"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:null, streak:7, gym:"Tiger Muay Thai" },
   "JP Buys": { ht:"5'5\"", dob:"1996-04-30", reach:'67"', stance:"Orthodox", slpm:1.88, strAcc:"40%", sapm:3.02, strDef:"40%", kd:0.0, tdLanded:1.55, tdAcc:"25%", tdDef:"25%", subAvg:2.32, finRate:"89%", streak:0, gym:"Xtreme Couture" },
   "Isis Verbeek": { ht:"5'4\"", dob:"1995-01-12", reach:'64"', stance:"Orthodox", slpm:3.13, strAcc:"44%", sapm:3.53, strDef:"54%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"67%", subAvg:0.0, finRate:"40%", streak:0, gym:"Team Bigi Boy" },
@@ -35548,6 +35548,17 @@
   "Namo Fazil": [
     { opponent: "Jake Babian", odds: -275 },
     { opponent: "Mohammad Alaqraa", odds: 215 }
+  ],
+  "Kaik Brito": [
+    { opponent: "Ronald Paradeiser", odds: 240 },
+    { opponent: "Joilton Lutterbach", odds: 125 },
+    { opponent: "Ion Surdu", odds: -163 },
+    { opponent: "Oban Elliott", odds: -180 },
+    { opponent: "David Kozma", odds: 205 },
+    { opponent: "Andrej Kalasnik", odds: -300 },
+    { opponent: "Petr Knize", odds: -110 },
+    { opponent: "Robert Bryczek", odds: 200 },
+    { opponent: "Pavel Gordeev", odds: 333 }
   ],
   "Cam Rowston": [
     { opponent: "Robert Bryczek", odds: -190 },
@@ -77736,6 +77747,10 @@ const FIGHT_HISTORY = {
     { date: "Dec 8, 2013", opponent: "Jose Francisco da Silva", result: "W", method: "TKO", round: 1, time: "1:55", event: "DPFS - Dom Pedrito Fight Show" },
   ],
   "Kaik Brito": [
+    { date: "Feb 14, 2026", opponent: "Ronald Paradeiser", result: "W", method: "TKO (Spinning Backfist)", round: 3, time: "1:18", event: "Oktagon 84", org: "Oktagon" },
+    { date: "Jun 28, 2025", opponent: "Joilton Lutterbach", result: "W", method: "KO (Knee and Punches)", round: 1, time: "1:43", event: "Oktagon 73: Eckerlin vs. Pukac", org: "Oktagon" },
+    { date: "Dec 7, 2024", opponent: "Ion Surdu", result: "L", method: "KO (Head Kick)", round: 1, time: "2:34", event: "Oktagon 64: Moeil vs. Todev 2", org: "Oktagon" },
+    { date: "Dec 3, 2023", opponent: "Dalton Ribeiro", result: "W", method: "KO (Elbows and Punches)", round: 1, time: "1:45", event: "United Fighting Series: UFS 02" },
     { date: "Aug 22, 2023", opponent: "Oban Elliott", result: "L", method: "Decision (Majority)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 7, Week 3", org: "UFC" },
     { date: "Dec 3, 2022", opponent: "David Kozma", result: "W", method: "TKO", round: 3, time: "4:12", event: "Oktagon MMA: Oktagon 37" },
     { date: "Mar 26, 2022", opponent: "Andrej Kalasnik", result: "W", method: "KO/TKO", round: 1, time: "1:09", event: "Oktagon MMA - Oktagon Prime 5" },
@@ -114566,6 +114581,11 @@ const ACCOLADES = {
     { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 18, 2026 vs. Kaik Brito)", detail: null },
     { icon: "🌍", title: "Beat ONE Championship veteran Jae Woong Yoon by decision (ONE Friday Fights 49, Jan 2024) — regional circuit spans Iraq, Lebanon, the UAE, and Thailand", detail: null },
     { icon: "🥋", title: "10-1 pro record, 7-fight win streak, trains out of Tiger Muay Thai", detail: null }
+  ],
+  "Kaik Brito": [
+    { icon: "🎯", title: "Second DWCS bid (Aug 18, 2026 vs. Namo Fazil) after a majority-decision loss to Oban Elliott on Season 7, Week 3 (Aug 2023)", detail: null },
+    { icon: "🏆", title: "Vacated the Oktagon welterweight title — won via a spinning-backfist TKO of Ronald Paradeiser (Oktagon 84, Feb 2026) — to chase this second DWCS shot instead of defending it", detail: null },
+    { icon: "🥊", title: "16 of 19 pro wins by KO/TKO", detail: null }
   ],
   "Alden Coria": [
     { icon: "🥋", title: "Brazilian Jiu-Jitsu purple belt (per ufc.com Q&A)", detail: null },
