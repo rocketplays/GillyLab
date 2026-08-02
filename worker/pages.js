@@ -329,6 +329,16 @@ function currentLanding() {
   });
 }
 
+// Same hold check as currentLanding(), but as a boolean — needed wherever a page
+// has to know WHETHER the "current" card is actually a just-finished one being
+// held in the slot (e.g. to swap an "Upcoming" label for "Latest results"),
+// rather than just wanting the card itself. Mirrors index.html's glIsHolding().
+function isHoldingFinishedCard() {
+  const h = landingData && landingData.held;
+  const t = h && h.startsAt ? Date.parse(h.startsAt) : NaN;
+  return !!(h && isFinite(t) && t + CARD_HOLD_MS >= Date.now());
+}
+
 // The app/landing footer (brand + About/Terms/Privacy/Contact + disclaimer), shared
 // across every standalone free page. Styles are scoped inline so each page can drop
 // it in without touching its own <style> block. Uses the free pages' theme vars.
@@ -420,8 +430,10 @@ export function eventWhen(card, opts) {
     opts || {}));
 }
 
-function freeTabs(active) {
-  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"], ["/fighters", "All Fighters"]];
+function freeTabs(active, opts) {
+  const hideAllFighters = !!(opts && opts.hideAllFighters);
+  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]]
+    .concat(hideAllFighters ? [] : [["/fighters", "All Fighters"]]);
   return `
   <style>
     .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 .6rem}
@@ -3041,11 +3053,15 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   //   - isRoadToUFCRaw(): Road to UFC is a contender tournament, not the UFC
   //     main roster, and doesn't belong in this list at all
   //
-  // Capped at 6 full events (not all ~19 in the feed) — each slide is a
+  // Capped at 12 full events (not all ~19 in the feed) — each slide is a
   // complete fight-card render with per-bout tale-of-tape, so the page weight
-  // scales with this number. index.html can afford to render all of them
-  // because it's client-side and incremental; this is server-rendered HTML
-  // shipped on every request.
+  // scales with this number. index.html doesn't cap at all (client-side,
+  // incremental), which is why it was showing more events than this page —
+  // 6 was cutting the list off mid-way through the actually-announced cards
+  // (e.g. stopping at Nurmagomedov/Song) rather than at the end of the feed.
+  // 12 is generous headroom above the number of events that typically have
+  // a published card (hasBouts already filters out the rest) while still
+  // bounding the per-request render cost.
   // Excluded by SLUG, not just by time: the raw feed's `startsAt` is the main-card
   // bell, but currentCard.prelimsAt (from landingData) is the prelims bell — the
   // same event compares as "later" against its own timestamp under a naive time-only
@@ -3059,7 +3075,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     .filter((raw) => !isRoadToUFCRaw(raw))
     .filter((raw) => !currentCard || raw.slug !== currentCard.slug)
     .filter((raw) => !currentCard || !isFinite(featuredTime) || Date.parse(raw.startsAt || 0) > featuredTime)
-    .slice(0, 6);
+    .slice(0, 12);
   const carouselSlide = (raw) => {
     const evCard = eventToCard(raw, fighterLiteBySlug, false, oddsData);
     const active = card && evCard.slug === card.slug;
@@ -3107,7 +3123,7 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
     ? `<div class="mf-past-top">
         <label for="mfPastSelect" class="mf-past-label">View past event</label>
         <select id="mfPastSelect" class="mf-past-select" onchange="mfNav(this.value?'/matchup?event='+this.value:'/matchup')">
-          <option value="">${isOtherEvent ? "&larr; Back to this week&rsquo;s card" : "Upcoming &mdash; " + esc(card ? card.event : "Next Card")}</option>${pastOptions}
+          <option value="">${isOtherEvent ? "&larr; Back to this week&rsquo;s card" : (isHoldingFinishedCard() ? "Latest results &mdash; " : "Upcoming &mdash; ") + esc(card ? card.event : "Next Card")}</option>${pastOptions}
         </select>
       </div>`
     : "";
@@ -3166,7 +3182,7 @@ ${eventLd}
   .mf-av img{width:100%;height:100%;object-fit:cover;object-position:top center}
   .mf-meta{min-width:0;flex:1}
   .mf-rank{font-size:.6rem;font-weight:700;color:var(--accent);letter-spacing:.03em}
-  .mf-name{font-weight:700;font-size:.9rem;line-height:1.15}
+  .mf-name{font-weight:700;font-size:.9rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
   .mf-rec{font-size:.72rem;color:var(--muted)}
   .mf-rec b{color:var(--text)}
   /* Plain white for both, matching the events page (.gl-ml-fav/.gl-ml-dog in
@@ -3348,7 +3364,7 @@ ${AURORA_CSS}
     </div>
   </nav>
   <main>
-    ${freeTabs("/matchup")}
+    ${freeTabs("/matchup", { hideAllFighters: true })}
     ${loggedIn ? "" : signupBanner}
     <div class="mf-search">
       <input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off" aria-label="Search fighters">
