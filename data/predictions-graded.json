@@ -958,7 +958,355 @@
         "pts": 0.0205,
         "leaned": true
       }
+    },
+    {
+      "fightId": "aleksandar rakic|marcin tybura",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Aleksandar Rakic",
+        "db": "Aleksandar Rakić"
+      },
+      "b": {
+        "feed": "Marcin Tybura",
+        "db": "Marcin Tybura"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5327,
+      "modelClose": 0.5011,
+      "marketOpen": 0.7241,
+      "marketClose": 0.7664,
+      "leanA": -0.1914,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0423,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "bogdan grad|dennis buzukja",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Dennis Buzukja",
+        "db": "Dennis Buzukja"
+      },
+      "b": {
+        "feed": "Bogdan Grad",
+        "db": "Bogdan Grad"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4542,
+      "modelClose": 0.4542,
+      "marketOpen": 0.3379,
+      "marketClose": 0.3613,
+      "leanA": 0.1163,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": true,
+        "pts": 0.0234,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "daniel rodriguez|uros medic",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Uros Medic",
+        "db": "Uroš Medić"
+      },
+      "b": {
+        "feed": "Daniel Rodriguez",
+        "db": "Daniel Rodriguez"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.569,
+      "modelClose": 0.5695,
+      "marketOpen": 0.7497,
+      "marketClose": 0.7642,
+      "leanA": -0.1807,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0145,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "dusko todorovic|robert valentin",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Dusko Todorovic",
+        "db": "Dusko Todorovic"
+      },
+      "b": {
+        "feed": "Robert Valentin",
+        "db": "Robert Valentin"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5818,
+      "modelClose": 0.5494,
+      "marketOpen": 0.4236,
+      "marketClose": 0.4037,
+      "leanA": 0.1582,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0199,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "gilbert urbina|vlasto cepo",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Vlasto Cepo",
+        "db": "Vlasto Cepo"
+      },
+      "b": {
+        "feed": "Gilbert Urbina",
+        "db": "Gilbert Urbina"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4839,
+      "modelClose": 0.4852,
+      "marketOpen": 0.7241,
+      "marketClose": 0.7447,
+      "leanA": -0.2402,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0206,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "kyle prepolec|mateusz rebecki",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.439Z",
+      "a": {
+        "feed": "Mateusz Rebecki",
+        "db": "Mateusz Rębecki"
+      },
+      "b": {
+        "feed": "Kyle Prepolec",
+        "db": "Kyle Prepolec"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6397,
+      "modelClose": 0.6392,
+      "marketOpen": 0.7428,
+      "marketClose": 0.8411,
+      "leanA": -0.1031,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0983,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "michael oliveira|oban elliott",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.440Z",
+      "a": {
+        "feed": "Oban Elliott",
+        "db": "Oban Elliott"
+      },
+      "b": {
+        "feed": "Michael Oliveira",
+        "db": "Michael Oliveira"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3308,
+      "modelClose": 0.3309,
+      "marketOpen": 0.2136,
+      "marketClose": 0.2428,
+      "leanA": 0.1172,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": true,
+        "pts": 0.0292,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "alexander poppeck|jovan leka",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.443Z",
+      "a": {
+        "feed": "Jovan Leka",
+        "db": "Jovan Leka"
+      },
+      "b": {
+        "feed": "Alexander Poppeck",
+        "db": "Alexander Poppeck"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6879,
+      "modelClose": 0.635,
+      "marketOpen": 0.6728,
+      "marketClose": 0.718,
+      "leanA": 0.0151,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": true,
+        "pts": 0.0452,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "hailey cowan|nina milosevic",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.443Z",
+      "a": {
+        "feed": "Nina Milošević",
+        "db": "Nina Milosevic"
+      },
+      "b": {
+        "feed": "Hailey Cowan",
+        "db": "Hailey Cowan"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6,
+      "modelClose": 0.6,
+      "marketOpen": 0.7619,
+      "marketClose": 0.8071,
+      "leanA": -0.1619,
+      "nSnapshots": 13,
+      "clv": {
+        "toward": false,
+        "pts": -0.0452,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "marina spasic|stephanie luciano",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.443Z",
+      "a": {
+        "feed": "Marina Spasić",
+        "db": "Marina Spasic"
+      },
+      "b": {
+        "feed": "Stephanie Luciano",
+        "db": "Stephanie Luciano"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5064,
+      "modelClose": 0.5224,
+      "marketOpen": 0.2905,
+      "marketClose": 0.262,
+      "leanA": 0.2159,
+      "nSnapshots": 13,
+      "clv": {
+        "toward": false,
+        "pts": -0.0285,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "milos janicic|noah gugnon",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.443Z",
+      "a": {
+        "feed": "Miloš Janičić",
+        "db": "Milos Janicic"
+      },
+      "b": {
+        "feed": "Noah Gugnon",
+        "db": "Noah Gugnon"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5093,
+      "modelClose": 0.5143,
+      "marketOpen": 0.5635,
+      "marketClose": 0.4977,
+      "leanA": -0.0542,
+      "nSnapshots": 13,
+      "clv": {
+        "toward": true,
+        "pts": 0.0658,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "borislav nikolic|mark vologdin",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-02T01:26:19.447Z",
+      "a": {
+        "feed": "Mark Vologdin",
+        "db": "Mark Vologdin"
+      },
+      "b": {
+        "feed": "Borislav Nikolić",
+        "db": "Borislav Nikolic"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4117,
+      "modelClose": 0.5883,
+      "marketOpen": 0.3574,
+      "marketClose": 0.6447,
+      "leanA": 0.0543,
+      "nSnapshots": 8,
+      "clv": {
+        "toward": true,
+        "pts": 0.2873,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-01T13:06:36.786Z"
+  "generatedAt": "2026-08-02T01:26:19.456Z"
 }

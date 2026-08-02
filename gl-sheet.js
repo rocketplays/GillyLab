@@ -1124,26 +1124,38 @@ const GL_SHEET = (function () {
       ctx.textAlign = 'left';
       ctx.font = '800 42px ' + COND; ctx.fillStyle = TXT;
       ctx.fillText(clip(ctx, b.pick || '', maxW), tx, cy - 16);
-      // A normal bet keeps its match/book subtitle. A parlay drops the event line and the
-      // per-leg odds (still keeps the book — it's one sportsbook for the whole slip), and
-      // lays the legs out 2-up (small avatar + pick) to stay compact.
+      // A normal bet keeps its match/book subtitle. A parlay drops the event line
+      // and lays the legs out 2-up (small avatar + pick) to stay compact instead.
       if (!isParlay) {
         ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
         ctx.fillText(clip(ctx, (b.match || '') + (b.book ? '   ·   ' + b.book : ''), maxW), tx, cy + 26);
       } else {
-        if (b.book) {
-          ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
-          ctx.fillText(clip(ctx, b.book, maxW), tx, cy + 26);
-        }
         const lg = legImgs[i] || [], legsTop = y + PHEAD_H;
+        const tx2 = 96 + 15 + 15 + 14;   // ax + r + 14, same math as below — needed before the loop for the book
+        let legsEndX = tx2;
+        ctx.font = '700 27px ' + COND;   // set before measuring, so clip()'s own measureText calls match what actually renders
         b.legs.forEach((l, j) => {
           const lcy = legsTop + j * PLEG_ROW + PLEG_ROW / 2 - 2;
-          const r = 15, ax = 96 + r, tx2 = ax + r + 14;
+          const r = 15, ax = 96 + r;
           avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
-          ctx.font = '700 27px ' + COND; ctx.fillStyle = '#c9ccd3';
-          ctx.fillText(clip(ctx, l.pick || '', (W - 96) - tx2), tx2, lcy);
+          ctx.fillStyle = '#c9ccd3';
+          const txt = clip(ctx, l.pick || '', (W - 96) - tx2);
+          ctx.fillText(txt, tx2, lcy);
+          legsEndX = Math.max(legsEndX, tx2 + ctx.measureText(txt).width);
         });
+        // Book sits right after the legs on the same rough horizontal band and
+        // vertically centered across the whole legs block — same "· Book" look and
+        // proximity-to-the-content a straight bet's subtitle gets (that one trails
+        // right after the match name; this one trails right after the longest leg),
+        // not pinned out at the card's far-right margin next to the odds/stake.
+        if (b.book) {
+          const legsCenterY = legsTop + (b.legs.length * PLEG_ROW) / 2 - 2;
+          const bx = legsEndX + 18;
+          ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+          ctx.font = '400 27px ' + SANS; ctx.fillStyle = MUT;
+          ctx.fillText(clip(ctx, '· ' + b.book, (W - 96) - bx), bx, legsCenterY);
+        }
       }
       ctx.textBaseline = 'alphabetic';
       y += h + 12;

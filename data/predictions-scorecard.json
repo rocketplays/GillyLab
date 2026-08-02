@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2026-08-01T13:06:36.782Z",
-  "nGraded": 33,
+  "generatedAt": "2026-08-02T01:26:19.452Z",
+  "nGraded": 45,
   "note": "Internal proof-of-concept. Pre-upgrade CLV uses self-snapshotted close (approximate).",
   "calibration": [
     {
       "band": "30-40%",
-      "n": 4,
-      "predicted": 0.374,
-      "actual": 0.5
-    },
-    {
-      "band": "40-50%",
-      "n": 10,
-      "predicted": 0.4439,
+      "n": 5,
+      "predicted": 0.3653,
       "actual": 0.4
     },
     {
+      "band": "40-50%",
+      "n": 13,
+      "predicted": 0.4453,
+      "actual": 0.3077
+    },
+    {
       "band": "50-60%",
-      "n": 14,
-      "predicted": 0.5507,
-      "actual": 0.7143
+      "n": 19,
+      "predicted": 0.5479,
+      "actual": 0.6316
     },
     {
       "band": "60-70%",
-      "n": 3,
-      "predicted": 0.634,
-      "actual": 0.6667
+      "n": 6,
+      "predicted": 0.6383,
+      "actual": 0.8333
     },
     {
       "band": "70-80%",
@@ -35,25 +35,25 @@
     }
   ],
   "accuracy": {
-    "model": 0.6667,
-    "marketClose": 0.7879
+    "model": 0.6889,
+    "marketClose": 0.8
   },
   "brier": {
-    "modelOpen": 0.2251,
-    "marketClose": 0.1386
+    "modelOpen": 0.2176,
+    "marketClose": 0.1436
   },
   "logloss": {
-    "modelOpen": 0.6422,
-    "marketClose": 0.4447
+    "modelOpen": 0.6268,
+    "marketClose": 0.457
   },
   "clv": {
-    "nWithMovement": 33,
-    "hitRate": 0.4848,
-    "avgMovePts": -0.0086,
+    "nWithMovement": 45,
+    "hitRate": 0.4667,
+    "avgMovePts": -0.0022,
     "leanedOnly": {
-      "n": 30,
-      "hitRate": 0.5,
-      "avgMovePts": -0.0029
+      "n": 41,
+      "hitRate": 0.4634,
+      "avgMovePts": 0.0012
     }
   }
 }
