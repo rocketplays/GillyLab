@@ -133214,10 +133214,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '</div>';
       }).join('');
 
+      // rawEvt.title/shortTitle collapse every unnumbered card to the generic
+      // "UFC Fight Night" bucket string — the billed name ("Dana White's
+      // Contender Series: Season 10, Week 1") only survives in espnName. Same
+      // fix as renderHomeFightCard / renderCarousel (see isDWCSRaw above).
+      const tapeEventName = (isDWCSRaw(raw) || isRoadToUFCRaw(raw)) ? (evt.espnName || raw.espnName || evt.name) : evt.name;
+
       return '<div class="tape-event" id="' + eventId + '">' +
         '<div class="tape-event-header" onclick="toggleTapeEvent(\'' + eventId + '\')">' +
           '<div>' +
-            '<div class="tape-event-name">' + (evt.name || '') + '</div>' +
+            '<div class="tape-event-name">' + (tapeEventName || '') + '</div>' +
             '<div class="tape-event-date">' + (evt.details || '') + '</div>' +
           '</div>' +
           '<svg class="tape-chevron" width="12" height="7" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">' +
