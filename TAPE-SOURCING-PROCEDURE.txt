@@ -480,3 +480,37 @@ complete individual-fight archive than the promotion itself, especially
 once a fighter is UFC-bound and suddenly worth searching for. "Kenny Tran
 <opponent surname>" was a far better query than anything LFA- or
 event-number-based for this fighter's older fights.
+
+DWCS AUG 11 2026 WEEK 1 BATCH — 10 FIGHTERS, 54 LINKS (Aug 2026)
+User supplied a pre-vetted links file (not the usual per-fighter search loop)
+covering all ten Aug 11 DWCS debutants added this session: Jon Kunneman (4),
+Joseph Kropschot (7), Bilal Hasan (8, all Fight Pass), Mridul Saikia (3),
+Anthony Wint (6), Matthew Adams (3), Fabrizio Escarrega (6), Abe Alsaghir (6),
+Ananias Mulumba (7), Tom Pagliarulo (4). All YouTube IDs verified via oembed
+(200/playable) before placing; titles cross-checked against FIGHT_HISTORY
+event+date, not assumed correct from the label.
+  Caught before placing: two Fight Pass links shared the identical video ID
+    244402 for two different fights (Kunneman vs Paulsen, Kropschot vs
+    Benson) — flagged to the owner, who chose to place both anyway rather
+    than skip (Fight Pass can't be oembed-verified to settle it).
+  Caught before placing: "Matt Adams vs Trevor Striles" pointed to a Facebook
+    video whose own slug read "...victory-over-quentin-campbell" — Matthew
+    Adams has NO "Trevor Striles" opponent in FIGHT_HISTORY at all. Owner
+    chose to skip rather than guess; Quentin Campbell's row stays unlinked.
+  Two watchmmafull.com (third-party mirror, not YouTube/Fight Pass) links
+    were flagged and the owner chose to place them anyway: Tom Pagliarulo vs
+    Matt Turnbull (new), and Ananias Mulumba vs Marwan Rahiki (REPLACED an
+    existing, working ufcfightpass.com/video/870375 link — a deliberate
+    downgrade in source reliability, owner's call, not the default).
+  Name-mismatch rows placed under the DB's own spelling per the TRAPS rule
+    (matched on event+date, not the video title): Escarrega vs "Erick
+    Bernabé" (video title) = our "Erick Daniel Batista", Naciones MMA 13;
+    Mulumba vs "Anyana" (video title) = our "Jackiel Ayana", AKO6; Wint vs
+    "Luis Alfonso Garcia Diaz" (doc's full legal name) = our "Luis Garcia",
+    Titan FC 81; Adams vs "Ben Wunder" = our "Benjamin Wunder"; Escarrega vs
+    "Román Córdova" (accented) = our "Roman Cordova".
+  Ran place-tape-links.cjs --write once for all ten fighters in a single
+    temp file (none had prior TAPE_STUDY rows except Mulumba, whose one
+    existing row was explicitly included per the safe-workflow rule so it
+    wasn't silently deleted). Report showed placed >= already for every
+    fighter before writing. fix-tape-sections.cjs --write: 0 section changes.
