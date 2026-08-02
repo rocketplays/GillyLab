@@ -112518,8 +112518,7 @@ function openFightStats(name, date){
     + '<div style="margin-top:0.8rem;margin-bottom:0.15rem;font-size:0.66rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.35);">Sig. strikes by position</div>'
     + _fsRow('Distance', f.dist[0]+'/'+f.dist[1], o.dist[0]+'/'+o.dist[1], f.dist[0], o.dist[0], true)
     + _fsRow('Clinch', f.clinch[0]+'/'+f.clinch[1], o.clinch[0]+'/'+o.clinch[1], f.clinch[0], o.clinch[0], (f.clinch[1]+o.clinch[1])>0)
-    + _fsRow('Ground', f.ground[0]+'/'+f.ground[1], o.ground[0]+'/'+o.ground[1], f.ground[0], o.ground[0], (f.ground[1]+o.ground[1])>0)
-    + '<div style="margin-top:0.85rem;font-size:0.68rem;color:rgba(255,255,255,0.3);">Full-fight box score via ESPN.</div>';
+    + _fsRow('Ground', f.ground[0]+'/'+f.ground[1], o.ground[0]+'/'+o.ground[1], f.ground[0], o.ground[0], (f.ground[1]+o.ground[1])>0);
   var t=document.getElementById('modal-title'), b=document.getElementById('modal-body'),
       ov=document.getElementById('modal-overlay'), m=document.getElementById('modal-box');
   if (t) t.textContent = name + ' vs ' + rec.opponent;
