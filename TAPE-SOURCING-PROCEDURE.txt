@@ -298,3 +298,78 @@ Steele (debutants, 6 each — highest expected hit rate on the card), plus
 Kennedy Nzechukwu, Elise Reed, Carli Judice, Shamil Gaziev.
 Two FIGHT_HISTORY name fixes still pending (see TRAPS): Marcus Plodeck,
 Simone Duarte, Christina Ricker.
+
+
+MILES JOHNS — DONE & EXHAUSTED, 0/6 (Aug 2026)
+-----------------------------------------------
+Already linked (unaffected): Adrian Yañez (LFA 55), Eliazar Rodriguez (Legacy
+FC 56). Gap list was 6 pre-UFC bouts; all six searched per full procedure
+(bare pair, event number, channel search, WebSearch site:youtube.com
+fallback) — NONE surfaced real footage. Nothing was placed; TAPE_STUDY for
+this fighter is untouched.
+  Eric Ellington, LFA 40, May 2018 — no hit any phrasing. LFA 40 was an AXS TV
+    broadcast; matches the existing note above that Nzechukwu's LFA 40 bout
+    (same card) also has no footage on LFA Fights or UFC Fight Pass YouTube.
+    Treat LFA ~40-and-earlier AXS-TV-era cards as low-probability going forward.
+  Caio Machado, LFA 28, Dec 2017 — the ONLY hits are duplicate "Lfa 28
+    results: miles johns defeats caio machado in barn burner" uploads (4
+    reposts, 20-170 views, spam/TTS news-reader channels e.g. "Юрий Кушнер") —
+    these read a text article aloud over a static image, NOT fight footage.
+    Rejected per the TRAPS rule (judge the title/content, not just a hit).
+  Levi Mowles, LFA 16, Jul 2017 — no hit. AXS TV era again (see Ellington).
+    LFA Fights channel does post OTHER Mowles bouts (vs Charles Cheeks) so the
+    channel isn't a dead end in general, just for this specific 2017 card.
+  Omar Benjar, XKO 28, Dec 2015 — no hit any phrasing, incl. "XKO 27" OR
+    "XKO 28" Johns (zero results). Xtreme Knockout's YouTube archive appears
+    to start around XKO 34 (~2016-17) — 27/28 predate it.
+  David Miramontes, XKO 27, Sep 2015 — same as Benjar; channel has a LATER
+    Miramontes bout (XKO 34 vs Jose Soto) but nothing from XKO 27.
+  Tyler Pacheco, 24/7 Entertainment 14 & 15, Jul 2014 — no hit. Obscure/likely
+    defunct small Texas promotion; no channel identified at all, on YouTube or
+    off. Lowest-probability gap of the six.
+LESSON: XKO's free YouTube archive has a hard floor around event #34 — don't
+re-attempt XKO events numbered below that without a new lead. Same pattern as
+the existing LFA-~40-and-earlier note: early regional-era cards for a
+promotion's YouTube channel often just don't exist, independent of which
+fighter you're chasing.
+
+MANOEL SOUSA — DONE, 10/11 FOUND, 1 EXHAUSTED (Aug 2026)
+Gap list was 11 pre-UFC bouts. Placed via scripts/place-tape-links.cjs (13 rows
+total for the fighter, incl. 2 pre-existing UFC-Fight-Pass rows + Bolaji Oki):
+  Archie Colgan, Bellator Champions Series London, Sep 2024 — found, bare-pair
+    search, PFL MMA channel (Bellator's parent). youtube.com/watch?v=NDPOzJM_fTw
+  Tim Wilde, Bellator Champions Series Belfast, Mar 2024 — found, BellatorMMA
+    channel. youtube.com/watch?v=VZa0cklTyOg
+  Paulo Henrique Laia, PFL Challenger Series 2023 Wk 4, Feb 2023 — found, PFL
+    MMA channel. youtube.com/watch?v=NxF25cmO23E
+  Brendo Bispo, SFT 27, Jul 2021 — found, SFT Combat USA channel, "FULL FIGHT
+    MMA" naming convention. youtube.com/watch?v=39lf3giBmdw
+  Estabili Amato, SFT 24, Nov 2020 — found, same channel. v=XPwqU7y25zE
+  Vandirson Alves, SFT 21, Feb 2020 — found, same channel. v=GZ6H9Cu6BlE
+  Mauricio Ruffy, SFT 18, Nov 2019 — found, same channel. v=sIpqS2bwp8w
+  Richard Martins, SFT 15, Aug 2019 — found, same channel. v=CwxmPWLaNaM
+  Miguel Hernandez, SFT 13, Jul 2019 — found, SFT Combat USA titles it "Manoel
+    sousa (Brazil) vs Miki Cabrera (Mexico)". NAME MISMATCH vs FIGHT_HISTORY's
+    "Miguel Hernandez" — matched on event (SFT 13) + date, per the TRAPS rule
+    (never assume a title mismatch means wrong fight). Placed under the DB's
+    "Miguel Hernandez" spelling, not the video's "Miki Cabrera" — the script
+    matches FIGHT_HISTORY, not the video title. v=MjbaA31TU5s. Two duplicate
+    uploads existed (SFT Combat vs SFT Combat USA channel); took the USA one
+    for consistency with the rest of the SFT block.
+  Eduardo Silva, SFT 12, May 2019 — found, same channel, titled "Sousa vs.
+    Maluco" (Luis "Maluco" Eduardo). Same name-mismatch situation as Hernandez
+    above — matched on event+date, placed under DB's "Eduardo Silva".
+    v=eqdG9wL6D3o
+  Lucas Barros Oliveira, LFA 205, Mar 2025 — EXHAUSTED, not found. Bare-pair
+    and event-number searches turned up only prediction/podcast/breakdown
+    content, no fight footage channel upload. A "Legacy Warriors Podcast" full-
+    card breakdown video's chapter list places "Sousa vs Barros" as fight
+    #12 of 14 on the card; LFA's own "LFA 205 LIVE PRELIMS | Four live and
+    free fights" video is only 4 fights (matches the breakdown's first 4
+    chapters), so Sousa's bout sat on the PAID main card, not the free prelims
+    stream — consistent with the existing "numbered LFA event, prospect on
+    paid main card" pattern from the Miles Johns log.
+Both name-mismatch rows (Hernandez/Cabrera, Silva/Maluco) are placed as links
+only — FIGHT_HISTORY itself was left untouched. If GillyLab wants FIGHT_HISTORY
+to carry the video's names/nicknames instead, that's a separate decision, not
+made here.
