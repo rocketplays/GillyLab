@@ -349,7 +349,6 @@ function isHoldingFinishedCard() {
 // brand green goes flat. The fallbacks are shell()'s own values.
 const FOOT_LINKS = [
   ["/about", "About Us"],
-  ["/fighters", "All Fighters"],
   ["/terms", "Terms of Service"],
   ["/privacy", "Privacy Policy"],
   ["/contact", "Contact"],
@@ -430,10 +429,10 @@ export function eventWhen(card, opts) {
     opts || {}));
 }
 
-function freeTabs(active, opts) {
-  const hideAllFighters = !!(opts && opts.hideAllFighters);
-  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]]
-    .concat(hideAllFighters ? [] : [["/fighters", "All Fighters"]]);
+function freeTabs(active) {
+  // "All Fighters" tab removed site-wide — "Active Roster" covers the same
+  // need and having both was redundant nav clutter.
+  const row = [["/matchup", "This Week's Card"], ["/rankings", "Rankings"], ["/roster", "Active Roster"]];
   return `
   <style>
     .ftabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 .6rem}
@@ -2589,6 +2588,27 @@ function pagesConsensusOdds(oddsData, nameA, nameB) {
 }
 // isPast is accepted for call-site/back-compat but no longer changes anything
 // here — see the result-computation comment below for why.
+// The live event feed sometimes slugs a fighter by the short/nickname form
+// ESPN uses (e.g. "Matt Adams", "Joe Kropschot") while our own DB — and
+// therefore fighter-lite.json's bySlug keys — uses his full/legal name. Same
+// failure mode index.html's SLUG_ALIASES documents (its comment there: "Without
+// this the carousel linked to a hollow profile: no record, no history, no
+// tape"); this free page reimplements the card renderer separately and never
+// had the alias table ported over, so DWCS fighters silently lost their tale-
+// of-tape and profile link. Kept in lockstep with index.html's copy.
+const SLUG_ALIASES = {
+  "abdul-rakhman-yakhyaev": "Abdulrakhman Yakhyaev",
+  "bruno-silva": "Bruno Gustavo da Silva",
+  "bruno-silva-blindado": "Bruno Silva",
+  "jose-miguel-delgado": "Jose Delgado",
+  "king-green": "Bobby Green",
+  "zach-reese": "Zachary Reese",
+  "luis-dias-de-assis": "Luis Felipe Dias",
+  "yisak-lee": "Yi Sak Lee",
+  "seok-hyun-ko": "Seokhyeon Ko",
+  "matt-adams": "Matthew Adams",
+  "joe-kropschot": "Joseph Kropschot",
+};
 function eventToCard(raw, liteBySlug, isPast, oddsData) {
   const stripBout = (w) => String(w || "").replace(/\s*Bout\s*$/i, "").trim();
   const stripRec = (t) => String(t || "").replace(/\s*\(W-L-D\)\s*$/i, "").trim();
@@ -2598,8 +2618,10 @@ function eventToCard(raw, liteBySlug, isPast, oddsData) {
     .sort((a, b) => (a.boutOrder || 0) - (b.boutOrder || 0));
   const fights = bouts.map((b, i) => {
     const [fa, fb] = b.fighters;
-    const slugA = fa.fighterSlug || (fa.profile && fa.profile.slug) || "";
-    const slugB = fb.fighterSlug || (fb.profile && fb.profile.slug) || "";
+    const rawSlugA = fa.fighterSlug || (fa.profile && fa.profile.slug) || "";
+    const rawSlugB = fb.fighterSlug || (fb.profile && fb.profile.slug) || "";
+    const slugA = SLUG_ALIASES[rawSlugA] ? nameToSlug(SLUG_ALIASES[rawSlugA]) : rawSlugA;
+    const slugB = SLUG_ALIASES[rawSlugB] ? nameToSlug(SLUG_ALIASES[rawSlugB]) : rawSlugB;
     const physA = liteBySlug && liteBySlug[slugA] && liteBySlug[slugA].phys;
     const physB = liteBySlug && liteBySlug[slugB] && liteBySlug[slugB].phys;
     const f = {
@@ -3364,7 +3386,7 @@ ${AURORA_CSS}
     </div>
   </nav>
   <main>
-    ${freeTabs("/matchup", { hideAllFighters: true })}
+    ${freeTabs("/matchup")}
     ${loggedIn ? "" : signupBanner}
     <div class="mf-search">
       <input type="search" id="mfSearchInput" class="mf-search-input" placeholder="Search any fighter for their lite profile…" autocomplete="off" aria-label="Search fighters">
@@ -3432,22 +3454,88 @@ ${AURORA_CSS}
       var track=document.getElementById("mfCarouselFull"),prev=document.getElementById("mfCarPrev"),next=document.getElementById("mfCarNext"),dotsWrap=document.getElementById("mfCarDots");
       if(!track||!prev||!next)return;
       var dots=dotsWrap?Array.prototype.slice.call(dotsWrap.querySelectorAll(".mf-car-dot")):[];
-      function currentIndex(){return Math.round(track.scrollLeft/Math.max(1,track.clientWidth));}
+      var slideCount=track.children.length;
+      // Tracked index is the source of truth, not scrollLeft — scrollBy() from a
+      // mid-animation scrollLeft (what tapping the arrow fast used to do) lands on
+      // a non-multiple of clientWidth and leaves the track stuck between two
+      // slides until reload. goTo() always targets an exact slide from curIdx, and
+      // clicks are ignored while a scroll is already in flight, so rapid taps
+      // queue on the intended slide instead of stacking fractional offsets.
+      var curIdx=0,scrolling=false,scrollFallback=null;
+      function clampIdx(i){if(!slideCount)return 0;return ((i%slideCount)+slideCount)%slideCount;}
       function updateDots(){
         if(!dots.length)return;
-        var i=currentIndex();
-        dots.forEach(function(d,di){d.classList.toggle("active",di===i);});
+        dots.forEach(function(d,di){d.classList.toggle("active",di===curIdx);});
       }
-      function go(dir){track.scrollBy({left:dir*track.clientWidth,behavior:"smooth"});}
-      function goTo(i){track.scrollTo({left:i*track.clientWidth,behavior:"smooth"});}
+      function goTo(i,smooth){
+        curIdx=clampIdx(i);
+        scrolling=true;
+        track.scrollTo({left:curIdx*track.clientWidth,behavior:smooth===false?"auto":"smooth"});
+        updateDots();
+        // Safety net: if the browser never fires a settling scroll event (e.g. the
+        // target slide was already the current one), don't leave clicks locked out
+        // forever.
+        if(scrollFallback)clearTimeout(scrollFallback);
+        scrollFallback=setTimeout(function(){scrolling=false;},600);
+      }
+      // Wraps around at either end instead of stopping dead — Next past the last
+      // event goes to the first, Prev before the first goes to the last.
+      function go(dir){if(scrolling||slideCount<2)return;goTo(curIdx+dir);}
       prev.addEventListener("click",function(){go(-1);});
       next.addEventListener("click",function(){go(1);});
-      dots.forEach(function(d){d.addEventListener("click",function(){goTo(parseInt(d.dataset.i,10)||0);});});
+      dots.forEach(function(d){d.addEventListener("click",function(){if(scrolling)return;goTo(parseInt(d.dataset.i,10)||0);});});
       var scrollTimer=null;
       track.addEventListener("scroll",function(){
         if(scrollTimer)clearTimeout(scrollTimer);
-        scrollTimer=setTimeout(updateDots,80);
+        scrollTimer=setTimeout(function(){
+          scrolling=false;
+          // Swipe/trackpad can move the track independent of the buttons — resync
+          // curIdx to wherever the user actually landed so the next button click
+          // starts from the real position, not the last programmatic target.
+          curIdx=clampIdx(Math.round(track.scrollLeft/Math.max(1,track.clientWidth)));
+          updateDots();
+        },120);
       });
+      // Exposed so the scroll/carousel-position-restore block below (tapping a
+      // fighter profile, then hitting back) can read and set the current slide
+      // without reaching into this closure's internals.
+      window.__mfCar={goTo:goTo,idx:function(){return curIdx;}};
+    })();
+    // Restore scroll position AND the carousel's selected slide on a back/
+    // forward navigation back to this page — e.g. scroll to a future event on
+    // the carousel, tap a fighter for their lite profile, hit back. Without
+    // this the page (a fresh server-rendered response, not a client-side route)
+    // just starts over at the top with the carousel reset to slide 1, and the
+    // visitor has to re-scroll AND re-page through the carousel by hand.
+    // pagehide (not just the profile links' click) covers every way this page
+    // is left — back/forward, closing the tab, a link click — and works whether
+    // or not the browser actually keeps this response in bfcache. Restore is
+    // gated on the Navigation Timing API reporting "back_forward": a fresh visit
+    // to the same URL (e.g. tapping the nav tab again) should start at the top,
+    // not wherever a previous visit happened to leave off.
+    (function(){
+      var STORE_KEY="mfScrollState:"+location.pathname+location.search;
+      window.addEventListener("pagehide",function(){
+        try{
+          var state={y:window.scrollY||window.pageYOffset||0};
+          if(window.__mfCar)state.carIdx=window.__mfCar.idx();
+          sessionStorage.setItem(STORE_KEY,JSON.stringify(state));
+        }catch(e){}
+      });
+      var navEntries=performance.getEntriesByType&&performance.getEntriesByType("navigation");
+      var navType=(navEntries&&navEntries[0]&&navEntries[0].type)||(performance.navigation&&performance.navigation.type===2?"back_forward":"navigate");
+      if(navType!=="back_forward")return;
+      var raw;try{raw=sessionStorage.getItem(STORE_KEY);}catch(e){raw=null;}
+      if(!raw)return;
+      var state;try{state=JSON.parse(raw);}catch(e){return;}
+      function apply(){
+        if(typeof state.carIdx==="number"&&window.__mfCar)window.__mfCar.goTo(state.carIdx,false);
+        if(typeof state.y==="number")window.scrollTo(0,state.y);
+      }
+      apply();
+      // Late-loading avatar images etc. can still shift page height after the
+      // first pass — reapply once more when everything's settled.
+      window.addEventListener("load",apply);
     })();
     var MF_RM=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.mfToggle=function(btn){
