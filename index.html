@@ -132588,6 +132588,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // The Odds API romanizes his Korean name syllable-by-syllable ("Seok Hyun Ko");
     // our DB / ESPN use "Seokhyeon Ko".
     'seok-hyun-ko': 'Seokhyeon Ko',
+    // DWCS card feeds shorten these two to their nicknames; our DB uses full
+    // first names. Without this the carousel linked to a hollow profile: no
+    // record, no history, no tape (same failure mode as 'zach-reese' above).
+    'matt-adams': 'Matthew Adams',
+    'joe-kropschot': 'Joseph Kropschot',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -132622,6 +132627,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'nikolija milosevic': 'Nina Milosevic',
     'patricio freire': 'Patrício Pitbull',
     'thomas gantt': 'Tommy Gantt',
+    'matt adams': 'Matthew Adams',
+    'joe kropschot': 'Joseph Kropschot',
   };
 
   // ESPN's athlete slug is NOT ascii-folded: it ships 'robert-ruchała', stroke and
