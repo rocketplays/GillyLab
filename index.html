@@ -6395,7 +6395,7 @@
  { name: "Donavon Hedrick", division: "MW", rank: "NR", record: "6-1-0", initials: "DH", country: "USA" },
  { name: "Rafael Cerqueira", division: "LHW", rank: "NR", record: "11-4-0", initials: "RC", country: "Brazil" },
  { name: "Mario Mingaj", division: "MW", rank: "NR", record: "7-1-0", initials: "MM", country: "Albania" },
- { name: "Ananias Mulumba", division: "FW", rank: "NR", record: "9-3-0", initials: "AM", country: "Democratic Republic of Congo" },
+ { name: "Ananias Mulumba", division: "FW", rank: "NR", record: "10-3-0", initials: "AM", country: "Democratic Republic of Congo" },
  { name: "Kwon Won Il", division: "BW", rank: "NR", record: "14-6-0", initials: "KI", country: "South Korea" },
  { name: "Freddy Vidal", division: "LHW", rank: "NR", record: "4-0-1", initials: "FV", country: "USA" },
  { name: "Azamat Nuftillaev", division: "HW", rank: "NR", record: "13-2-1", initials: "AN", country: "Uzbekistan" },
@@ -10200,7 +10200,7 @@
   "Donavon Hedrick": { ht:"5'11\"", dob:"1997-03-21", reach:'76"', stance:"Orthodox", slpm:2.7, strAcc:"47%", sapm:1.77, strDef:"61%", kd:0.0, tdLanded:3.12, tdAcc:"33%", tdDef:"43%", subAvg:0.0, finRate:"100%", streak:0, gym:"Fusion X-Cel" },
   "Rafael Cerqueira": { ht:"6'3\"", dob:"1990-03-15", reach:'76"', stance:"Southpaw", slpm:1.56, strAcc:"44%", sapm:5.05, strDef:"37%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"36%", subAvg:0.0, finRate:"91%", streak:0, gym:"Galpao Da Luta" },
   "Mario Mingaj": { ht:"6'3\"", dob:"1998-10-28", reach:'78"', stance:"Orthodox", slpm:1.62, strAcc:"33%", sapm:6.49, strDef:"52%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"0%", subAvg:0.0, finRate:"86%", streak:0, gym:"Pompeo's Team" },
-  "Ananias Mulumba": { ht:"5'5\"", dob:"1998-09-18", reach:'70.5"', stance:"Switch", slpm:6.1, strAcc:"44%", sapm:5.96, strDef:"53%", kd:4.16, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:2.08, finRate:"100%", streak:0, gym:"Elite Training Centre" },
+  "Ananias Mulumba": { ht:"5'5\"", dob:"1998-09-18", reach:'70.5"', stance:"Switch", slpm:6.1, strAcc:"44%", sapm:5.96, strDef:"53%", kd:4.16, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:2.08, finRate:"100%", streak:1, gym:"Elite Training Centre" },
   "Kwon Won Il": { ht:"5'10\"", dob:"1995-06-24", reach:'71.5"', stance:"Orthodox", slpm:5.02, strAcc:"39%", sapm:5.82, strDef:"60%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"67%", subAvg:0.0, finRate:"93%", streak:0, gym:"Extreme Combat" },
   "Freddy Vidal": { ht:"6'3\"", dob:"1994-05-06", reach:'79.5"', stance:"Orthodox", slpm:2.7, strAcc:"66%", sapm:2.65, strDef:"26%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"60%", subAvg:0.83, finRate:"75%", streak:0, gym:"Serra-Longo Fight Team " },
   "Azamat Nuftillaev": { ht:"6'0\"", dob:"1994-01-01", reach:'77"', stance:"Orthodox", slpm:0.6, strAcc:"56%", sapm:1.6, strDef:"25%", kd:0.0, tdLanded:4.0, tdAcc:"44%", tdDef:"0%", subAvg:0.0, finRate:"92%", streak:0, gym:"" },
@@ -42960,6 +42960,11 @@
   "Tom Pagliarulo": [
     { opponent: "Matt Turnbull", odds: -700 },
     { opponent: "Josh Hardy", odds: -649 }
+  ],
+  "Ananias Mulumba": [
+    { opponent: "Ahmed Faress", odds: -163 },
+    { opponent: "Marwan Rahiki", odds: 310 },
+    { opponent: "Ylies Djiroun", odds: 240 }
   ],
   "Bilal Hasan": [
     { opponent: "Renaldy Manse", odds: -1200 },
@@ -81009,6 +81014,7 @@ const FIGHT_HISTORY = {
     { date: "Dec 18, 2021", opponent: "Emmanuele Troia", result: "W", method: "KO/TKO", round: 1, time: "2:20", event: "Venator FC 9: Santoro vs Kryvets" },
   ],
   "Ananias Mulumba": [
+    { date: "Mar 27, 2026", opponent: "Ahmed Faress", result: "W", method: "TKO (Punch)", round: 1, time: "4:09", event: "UAE Warriors 68", org: "UAE Warriors" },
     { date: "Oct 14, 2025", opponent: "Marwan Rahiki", result: "L", method: "KO/TKO", round: 2, time: "2:13", event: "Dana White's Contender Series: Season 9, Week 10", org: "UFC" },
     { date: "Jun 12, 2025", opponent: "Amer El Shanshory", result: "W", method: "Submission (Rear Naked Choke)", round: 2, time: "1:13", event: "UAE Warriors 59" },
     { date: "Nov 22, 2024", opponent: "Jackiel Ayana", result: "W", method: "TKO", round: 2, time: "2:50", event: "African Knockout 6: Ayana vs. Mulumba" },
@@ -117618,6 +117624,11 @@ const ACCOLADES = {
     { icon: "🥊", title: "8 of 10 pro wins by knockout/TKO", detail: null },
     { icon: "🏟️", title: "Advanced through the 2025 PFL World Tournament, closing it out with a first-round TKO of Matt Turnbull", detail: null },
     { icon: "🥋", title: "Now trains at Tiger Beetle Martial Arts in Colorado alongside Cory Sandhagen", detail: null }
+  ],
+  "Ananias Mulumba": [
+    { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 11, 2026 vs. Tom Pagliarulo) — second DWCS bid after a Season 9 loss to Marwan Rahiki", detail: null },
+    { icon: "🥋", title: "9 of 10 pro wins by finish — mostly rear-naked choke submissions", detail: null },
+    { icon: "🌍", title: "African regional circuit — African Knockout, Pitbull Fighting Championships, now fighting out of UAE Warriors", detail: null }
   ],
   "Mridul Saikia": [
     { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 11, 2026 vs. Bilal Hasan)", detail: null },
