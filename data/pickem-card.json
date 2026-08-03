@@ -1,6 +1,6 @@
 {
   "slug": "ufc-fight-night-august-08-2026",
-  "generatedAt": "2026-08-02T13:11:19.734Z",
+  "generatedAt": "2026-08-03T01:26:20.131Z",
   "slugs": [
     "mateusz-gamrot",
     "quillan-salkilld",
@@ -8,18 +8,18 @@
     "billy-quarantillo",
     "darren-elkins",
     "yadier-del-valle",
-    "louie-sutherland",
-    "jose-montanha",
+    "amanda-lemos",
+    "alexia-thainara",
     "ty-miller",
     "billy-ray-goff",
     "miles-johns",
     "jessie-rosas",
     "diyar-nurgozhay",
     "bruno-lopes",
+    "louie-sutherland",
+    "jose-montanha",
     "steven-asplund",
     "guilherme-pat",
-    "amanda-lemos",
-    "alexia-thainara",
     "juliana-miller",
     "ravena-oliveira",
     "manoel-sousa",
@@ -33,8 +33,8 @@
       "ps1": "mateusz-gamrot",
       "ps2": "quillan-salkilld",
       "wPts": {
-        "f1": 11.03990755600048,
-        "f2": 9.16984018362377
+        "f1": 11.105307545507351,
+        "f2": 9.12869304329506
       },
       "mPts": {
         "f1": {
@@ -63,8 +63,8 @@
       "ps1": "diego-ferreira",
       "ps2": "billy-quarantillo",
       "wPts": {
-        "f1": 8.794000282222141,
-        "f2": 11.706253149220336
+        "f1": 8.691705210802152,
+        "f2": 11.918680476404761
       },
       "mPts": {
         "f1": {
@@ -91,8 +91,8 @@
       "ps1": "darren-elkins",
       "ps2": "yadier-del-valle",
       "wPts": {
-        "f1": 21.475841694317808,
-        "f2": 7.000264525410801
+        "f1": 21.621777950375908,
+        "f2": 6.990768075194442
       },
       "mPts": {
         "f1": {
@@ -113,25 +113,25 @@
       }
     },
     {
-      "id": "espn-louie-sutherland-vs-henrique-da-silva-lopes",
-      "f1": "Louie Sutherland",
-      "f2": "Jose Montanha",
-      "ps1": "louie-sutherland",
-      "ps2": "jose-montanha",
+      "id": "espn-amanda-lemos-vs-alexia-thainara",
+      "f1": "Amanda Lemos",
+      "f2": "Alexia Thainara",
+      "ps1": "amanda-lemos",
+      "ps2": "alexia-thainara",
       "wPts": {
-        "f1": 8.903709475435907,
-        "f2": 11.49452398459787
+        "f1": 13.69616124460684,
+        "f2": 8.055426065681331
       },
       "mPts": {
         "f1": {
           "KO/TKO": 5,
-          "Submission": 7,
-          "Decision": 4
+          "Submission": 5,
+          "Decision": 5
         },
         "f2": {
-          "KO/TKO": 6,
-          "Submission": 3,
-          "Decision": 6
+          "KO/TKO": 7,
+          "Submission": 5,
+          "Decision": 3
         }
       },
       "rPts": {
@@ -147,8 +147,8 @@
       "ps1": "ty-miller",
       "ps2": "billy-ray-goff",
       "wPts": {
-        "f1": 7.745919304254301,
-        "f2": 15.012634635401358
+        "f1": 7.650820263257556,
+        "f2": 15.513730301951384
       },
       "mPts": {
         "f1": {
@@ -203,8 +203,8 @@
       "ps1": "diyar-nurgozhay",
       "ps2": "bruno-lopes",
       "wPts": {
-        "f1": 9.115128119872864,
-        "f2": 11.127233905831295
+        "f1": 9.002778203615344,
+        "f2": 11.31619157744614
       },
       "mPts": {
         "f1": {
@@ -225,14 +225,42 @@
       }
     },
     {
+      "id": "espn-louie-sutherland-vs-henrique-da-silva-lopes",
+      "f1": "Louie Sutherland",
+      "f2": "Jose Montanha",
+      "ps1": "louie-sutherland",
+      "ps2": "jose-montanha",
+      "wPts": {
+        "f1": 8.903709475435907,
+        "f2": 11.49452398459787
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 7,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 6,
+          "Submission": 3,
+          "Decision": 6
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
       "id": "espn-steven-asplund-vs-guilherme-pat",
       "f1": "Steven Asplund",
       "f2": "Guilherme Pat",
       "ps1": "steven-asplund",
       "ps2": "guilherme-pat",
       "wPts": {
-        "f1": 8.010879947081762,
-        "f2": 13.861305559456937
+        "f1": 7.958752438995034,
+        "f2": 14.063820237580417
       },
       "mPts": {
         "f1": {
@@ -253,42 +281,14 @@
       }
     },
     {
-      "id": "espn-amanda-lemos-vs-alexia-thainara",
-      "f1": "Amanda Lemos",
-      "f2": "Alexia Thainara",
-      "ps1": "amanda-lemos",
-      "ps2": "alexia-thainara",
-      "wPts": {
-        "f1": 13.731226466784626,
-        "f2": 8.045808007623235
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 5,
-          "Submission": 5,
-          "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 7,
-          "Submission": 5,
-          "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
       "id": "espn-juliana-miller-vs-ravena-oliveira",
       "f1": "Juliana Miller",
       "f2": "Ravena Oliveira",
       "ps1": "juliana-miller",
       "ps2": "ravena-oliveira",
       "wPts": {
-        "f1": 8.03992275180126,
-        "f2": 13.752841127720899
+        "f1": 7.991743497251164,
+        "f2": 13.934452935349128
       },
       "mPts": {
         "f1": {
@@ -315,8 +315,8 @@
       "ps1": "manoel-sousa",
       "ps2": "richie-miranda",
       "wPts": {
-        "f1": 7.828028070663695,
-        "f2": 14.621061737884434
+        "f1": 7.944012802069964,
+        "f2": 14.122998600074752
       },
       "mPts": {
         "f1": {
