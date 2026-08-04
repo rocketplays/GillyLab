@@ -1345,7 +1345,13 @@ export const signupPage = (next) => {
   // The "Go Premium" button routes here with ?next=/subscribe. In that case the
   // account is still created first (you need one to subscribe), but the page tells
   // the premium story and continues to checkout — instead of reading as "free".
-  const premium = next === "/subscribe";
+  // A partner's referral link goes through this same door with the promo code
+  // riding along (?next=/subscribe%3Fref%3DCODE, decoded to "/subscribe?ref=CODE"
+  // by the time it lands here) — an exact-match "=== /subscribe" missed that case
+  // entirely, so anyone who clicked a referral link saw the plain "Create your
+  // free account" copy right up until checkout, the opposite of what a referral
+  // link is for. Matching the path prefix instead of the whole string covers both.
+  const premium = /^\/subscribe(\?|$)/.test(next || "");
   const q = next ? "?next=" + encodeURIComponent(next) : "";
   return shell(premium ? "Start GillyLab Premium" : "Create your GillyLab account", `
   ${backLink}
@@ -1367,7 +1373,10 @@ export const signupPage = (next) => {
 };
 
 export const loginPage = (next) => {
-  const premium = next === "/subscribe";
+  // See signupPage's comment on the same check — must match "/subscribe?ref=..."
+  // (a referral link for someone who already has an account), not just the bare
+  // "/subscribe" the plain "Go Premium" button sends.
+  const premium = /^\/subscribe(\?|$)/.test(next || "");
   const q = next ? "?next=" + encodeURIComponent(next) : "";
   return shell("Log in to GillyLab", `
   ${backLink}
@@ -4526,6 +4535,8 @@ export const partnerDashboardPage = ({ partner, ledger }) => {
     <h1>${esc(p.name)}&rsquo;s Partner Dashboard</h1>
     <p class="pd-sub">Your referral link and earnings — this updates automatically as referrals subscribe and renew.</p>
     <div class="pd-link"><code id="pdLink">${esc(refLink)}</code><button type="button" class="pd-copy" id="pdCopyBtn">Copy link</button></div>
+    <div class="pd-link"><code id="pdCode">${esc(p.promoCode)}</code><button type="button" class="pd-copy" id="pdCodeBtn">Copy code</button></div>
+    <p class="pd-sub" style="margin:-1rem 0 1.6rem">Share whichever's easier — the link applies your code automatically at checkout, or people can enter <strong style="color:var(--text)">${esc(p.promoCode)}</strong> themselves if you're just giving out the code (on a stream, in a post, wherever a link's awkward). Either one is tracked as your referral, same commission either way.</p>
     <div class="pd-stats">
       ${stat("Total referrals", refCount)}
       ${stat("Active referrals", p.activeCount || 0, true)}
@@ -4536,18 +4547,22 @@ export const partnerDashboardPage = ({ partner, ledger }) => {
     </div>
     <div class="pd-tier">Your current recurring commission rate is <b>${tierPct}%</b>, plus 50% on every referral's first month and a $25 bonus for every 10 paid referrals.${nextTier ? ` ${Math.max(0, nextTier.at - refCount)} more referral${Math.max(0, nextTier.at - refCount) === 1 ? "" : "s"} gets you to <b>${esc(nextTier.label)}</b>.` : " You're at the top tier — reach out any time to talk about a custom structure as you keep growing."}</div>
     ${rows ? `<table><thead><tr><th>Date</th><th>Referral</th><th>Type</th><th>Payment</th><th>Rate</th><th>Your cut</th></tr></thead><tbody>${rows}</tbody></table>` : `<div class="pd-empty">No referrals yet — share your link above to get started.</div>`}
-    <p class="pd-note">Promo code: <strong style="color:var(--text)">${esc(p.promoCode)}</strong> — anyone who checks out through your link above gets 20% off their first month automatically. Payouts aren't sent automatically from this page; reach out with any questions about timing.</p>
+    <p class="pd-note">Anyone who checks out with your link or code gets 20% off their first month automatically. Payouts aren't sent automatically from this page; reach out with any questions about timing.</p>
   </main>
   <script>
-    document.getElementById("pdCopyBtn").addEventListener("click", function(){
-      var btn=this, txt=document.getElementById("pdLink").textContent;
-      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){
-        btn.textContent="Copied!"; setTimeout(function(){btn.textContent="Copy link";},1500);
-      }).catch(function(){
-        var r=document.createRange(); r.selectNode(document.getElementById("pdLink"));
-        window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+    function pdWireCopy(btnId, srcId, label){
+      document.getElementById(btnId).addEventListener("click", function(){
+        var btn=this, txt=document.getElementById(srcId).textContent;
+        (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function(){
+          btn.textContent="Copied!"; setTimeout(function(){btn.textContent=label;},1500);
+        }).catch(function(){
+          var r=document.createRange(); r.selectNode(document.getElementById(srcId));
+          window.getSelection().removeAllRanges(); window.getSelection().addRange(r);
+        });
       });
-    });
+    }
+    pdWireCopy("pdCopyBtn","pdLink","Copy link");
+    pdWireCopy("pdCodeBtn","pdCode","Copy code");
   </script>
 </body></html>`;
 };
