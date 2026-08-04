@@ -1679,14 +1679,15 @@
       letter-spacing: 0.06em;
     }
 
-    /* Per-sportsbook brand colors */
-    .book-dk   { color: #1a9e3a; }   /* DraftKings — dark green */
-    .book-fd   { color: #1493ff; }   /* FanDuel — electric blue */
-    .book-mgm  { color: #c9960a; }   /* BetMGM — gold */
-    .book-cae  { color: #7cb87c; }   /* Caesars — sage/olive green */
-    .book-pm   { color: #a78bfa; }   /* Polymarket — purple */
-    .book-fan  { color: #e84040; }   /* Fanatics — red */
-    .book-b365 { color: #f97316; }   /* bet365 — orange */
+    /* Per-sportsbook brand colors — was tinted per book (DK green, FD blue, etc), now all
+       white on the odds/projections pages per request. */
+    .book-dk   { color: #fff; }   /* DraftKings */
+    .book-fd   { color: #fff; }   /* FanDuel */
+    .book-mgm  { color: #fff; }   /* BetMGM */
+    .book-cae  { color: #fff; }   /* Caesars */
+    .book-pm   { color: #fff; }   /* Polymarket */
+    .book-fan  { color: #fff; }   /* Fanatics */
+    .book-b365 { color: #fff; }   /* bet365 */
 
     /* ── PROJECTIONS PAGE ── */
     .projections-grid {
@@ -2335,9 +2336,16 @@
     .mh-x:hover { color: var(--text); background: rgba(255,255,255,0.07); }
 
     .mh-tabs { display: flex; gap: 0; padding: 0 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-    .mh-tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 0.7rem 1rem; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+    /* .mh-tab is a <button>, so the site-wide `button:hover{background:linear-gradient(...)}`
+       rule (authored for full-size CTA buttons) was bleeding into these small tabs — hover
+       or tap left them filled with a green gradient box instead of the clean tab look. That
+       was the "glitch when you expand it" bug: on mobile a tap leaves the button in a
+       hover/focus-matching state, so it was visible on every open. background is forced
+       here at equal specificity to hover/focus/active so nothing else can override it. */
+    .mh-tab, .mh-tab:hover, .mh-tab:focus, .mh-tab:active { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--muted); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.13em; text-transform: uppercase; padding: 0.7rem 1rem; cursor: pointer; transition: color 0.15s; }
     .mh-tab:hover { color: var(--text); }
-    .mh-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
+    /* Green underline removed per request — active tab is now indicated by color only. */
+    .mh-tab.on { color: var(--accent); }
 
     /* Result filter — All / Wins / Losses. Sits BELOW the Striking/Grappling tabs,
        not inside either one, because it's one piece of state that both tabs share:

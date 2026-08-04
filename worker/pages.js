@@ -898,8 +898,8 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
   // Static single-matchup odds board (McGregor vs Holloway), mirroring the
   // Odds & Projections page: moneyline + rounds O/U by book, method-of-victory
   // and round props per fighter. PLACEHOLDER values — replace with real ones.
-  var BK={dk:'#1fbf4d',fd:'#4aa3ff',mgm:'#d1a10a'};
-  function oc(v){var neg=String(v).charAt(0)==='-';return '<span class="bc" style="font-weight:700;color:'+(neg?'#4cff8a':'#ff9500')+'">'+v+'</span>';}
+  var BK={dk:'#fff',fd:'#fff',mgm:'#fff'};
+  function oc(v){return '<span class="bc" style="font-weight:700;color:#fff">'+v+'</span>';}
   function osec(t){return '<div style="font-size:.56rem;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.42);margin:.5rem 0 .18rem">'+t+'</div>';}
   function o3(book,col,a,b){return '<div style="display:flex;align-items:center;padding:.13rem 0;font-size:.78rem"><span style="flex:0 0 80px;font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span style="flex:1;text-align:center">'+oc(a)+'</span><span style="flex:1;text-align:center">'+oc(b)+'</span></div>';}
   function o2(book,col,over,under){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:.13rem 0;font-size:.78rem"><span style="font-weight:700;font-size:.7rem;color:'+col+'">'+book+'</span><span>'+oc(over)+' <span style="color:'+M+';font-weight:400">/</span> '+oc(under)+'</span></div>';}
@@ -968,7 +968,7 @@ export const landingPage = () => `<!doctype html><html lang="en"><head>
 
   var OH=LD.oddsHistory;
   var ohist='<div style="display:flex;align-items:center;gap:11px;margin-bottom:12px">'+ava(OH.slug,OH.initials,false,36)+'<div><div style="font-weight:700;font-size:1rem">'+OH.name+'</div><div style="font-size:11px;color:'+M+'">Closing line — career odds history</div></div></div>'
-    +OH.rows.map(function(r){var neg=r.odds<0,v=r.odds>0?('+'+r.odds):String(r.odds);return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.46rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><span style="font-size:.85rem;font-weight:600">vs '+r.opponent+'</span><span class="bc" style="font-weight:800;font-size:1rem;color:'+(neg?'#00e668':'#ff9500')+'">'+v+'</span></div>';}).join('');
+    +OH.rows.map(function(r){var v=r.odds>0?('+'+r.odds):String(r.odds);return '<div style="display:flex;justify-content:space-between;align-items:center;padding:.46rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><span style="font-size:.85rem;font-weight:600">vs '+r.opponent+'</span><span class="bc" style="font-weight:800;font-size:1rem;color:#fff">'+v+'</span></div>';}).join('');
 
   function trow(date,opp,meta){return '<div style="display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.55rem .1rem;border-bottom:1px solid rgba(255,255,255,.06)"><div style="min-width:0;flex:1 1 auto"><div style="font-size:.68rem;color:'+M+';text-transform:uppercase;letter-spacing:.04em">'+date+'</div><div style="font-weight:600;font-size:.85rem;margin-top:.05rem">'+opp+'</div><div style="font-size:.72rem;color:'+M+';margin-top:.1rem">'+meta+'</div></div><a style="display:inline-flex;align-items:center;gap:.3rem;padding:.25rem .7rem;background:rgba(255,0,0,.15);border:1px solid rgba(255,60,60,.35);border-radius:.4rem;color:#ff4444;font-size:.74rem;font-weight:600;white-space:nowrap">▶ Watch</a></div>';}
   var tape='<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">'+ava('paddy-pimblett','PP')+'<div><div style="font-weight:600;font-size:.92rem">Paddy Pimblett</div><div style="font-size:.72rem;color:'+M+'">Lightweight · 24-4-0</div></div></div>'
