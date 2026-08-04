@@ -1194,6 +1194,14 @@ async function handleBetsLeaderboard(request, env, url) {
   return json({ tab, range: rangeKey, rows: ranked.slice(0, 100), me });
 }
 
+// Display names whose OPEN bets are never shown to other viewers on their public
+// profile — paid-Discord picks that would otherwise be tailable pre-fight. Settled
+// bets (win/loss/CLV, after grading) are unaffected: this only withholds the
+// "pending" list below. The owner can still see their own open bets, just not
+// through this route (they use "My bet history", handleBetsList, which is
+// unfiltered) — so the check only kicks in when the viewer isn't the owner.
+const BT_HIDE_PENDING_FROM_OTHERS = new Set(["rocketplays", "moneymandrell"]);
+
 // Public (subscriber) profile: one player's verified settled bets, by display name.
 async function handleBetsPlayer(request, env, url) {
   const s = await betsSession(request, env);
@@ -1202,6 +1210,7 @@ async function handleBetsPlayer(request, env, url) {
   if (!name) return json({ error: "missing name" }, 400);
   const email = await env.PICKS.get("nm:" + name.toLowerCase());
   if (!email) return json({ error: "not found" }, 404);
+  const hidePending = BT_HIDE_PENDING_FROM_OTHERS.has(name.toLowerCase()) && s.email !== email;
   const bets = await btGetBets(env, email);
   const [events, closing] = await Promise.all([btLoadResultEvents(env, url), loadClosingOdds(env, url)]);
   const stats = btUserStats(bets, events, closing);
@@ -1236,8 +1245,11 @@ async function handleBetsPlayer(request, env, url) {
       });
     });
   // Open bets: tracked bets not yet settled. Lets a viewer see what this player is
-  // currently on. No result/CLV yet, so just the pick.
-  const pending = (bets || [])
+  // currently on. No result/CLV yet, so just the pick. Withheld entirely for names
+  // in BT_HIDE_PENDING_FROM_OTHERS when someone else is looking — those bets still
+  // flow into `settled` (and this player's leaderboard stats) once graded, they're
+  // just not visible to tail before the card.
+  const pending = hidePending ? [] : (bets || [])
     .filter((b) => b.kind === "tracked" && !isSettled(b))
     .sort(byNewest)
     .slice(0, 100)
