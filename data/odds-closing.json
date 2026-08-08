@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-08T20:43:37.225Z",
+ "generatedAt": "2026-08-08T23:56:45.710Z",
  "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) — the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live — genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time.",
  "fights": [
   {
@@ -458,9 +458,9 @@
    "section": "maincard",
    "f1": "Mateusz Gamrot",
    "f2": "Quillan Salkilld",
-   "o1": 114,
-   "o2": -136,
-   "capturedAt": "2026-08-08T20:43:37.224Z"
+   "o1": 120,
+   "o2": -143,
+   "capturedAt": "2026-08-08T23:56:45.708Z"
   },
   {
    "slug": "ufc-fight-night-august-08-2026",
@@ -468,9 +468,9 @@
    "section": "maincard",
    "f1": "Diego Ferreira",
    "f2": "Billy Quarantillo",
-   "o1": -171,
+   "o1": -172,
    "o2": 144,
-   "capturedAt": "2026-08-08T20:43:37.224Z"
+   "capturedAt": "2026-08-08T23:56:45.709Z"
   },
   {
    "slug": "ufc-fight-night-august-08-2026",
@@ -478,9 +478,9 @@
    "section": "maincard",
    "f1": "Darren Elkins",
    "f2": "Yadier del Valle",
-   "o1": 595,
-   "o2": -909,
-   "capturedAt": "2026-08-08T20:43:37.224Z"
+   "o1": 603,
+   "o2": -925,
+   "capturedAt": "2026-08-08T23:56:45.709Z"
   },
   {
    "slug": "ufc-fight-night-august-08-2026",
@@ -488,9 +488,9 @@
    "section": "maincard",
    "f1": "Amanda Lemos",
    "f2": "Alexia Thainara",
-   "o1": 217,
-   "o2": -268,
-   "capturedAt": "2026-08-08T20:43:37.225Z"
+   "o1": 231,
+   "o2": -287,
+   "capturedAt": "2026-08-08T23:56:45.710Z"
   },
   {
    "slug": "ufc-fight-night-august-08-2026",
@@ -498,9 +498,9 @@
    "section": "maincard",
    "f1": "Billy Ray Goff",
    "f2": "Ty Miller",
-   "o1": 327,
-   "o2": -426,
-   "capturedAt": "2026-08-08T20:43:37.225Z"
+   "o1": 343,
+   "o2": -453,
+   "capturedAt": "2026-08-08T23:56:45.710Z"
   }
  ]
 }
