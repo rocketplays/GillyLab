@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-08T21:37:52.518Z",
+ "generatedAt": "2026-08-08T21:53:05.753Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -5074,6 +5074,194 @@
       ]
      },
      "capturedAt": "2026-08-08T21:37:52.387Z"
+    }
+   ]
+  },
+  "Juliana Miller": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Ravena Oliveira",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "1:38",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Ravena Oliveira",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 44,
+      "totL": 45,
+      "totA": 70,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:42",
+      "head": [
+       19,
+       36
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       13,
+       28
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 18,
+      "totL": 18,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       2,
+       12
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       5,
+       16
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-08T21:53:05.622Z"
+    }
+   ]
+  },
+  "Ravena Oliveira": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Juliana Miller",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "1:38",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Juliana Miller",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 18,
+      "totL": 18,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       2,
+       12
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       5,
+       16
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 44,
+      "totL": 45,
+      "totA": 70,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:42",
+      "head": [
+       19,
+       36
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       6,
+       11
+      ],
+      "clinch": [
+       5,
+       5
+      ],
+      "ground": [
+       13,
+       28
+      ]
+     },
+     "capturedAt": "2026-08-08T21:53:05.622Z"
     }
    ]
   }
