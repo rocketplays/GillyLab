@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-08T22:23:32.401Z",
+ "generatedAt": "2026-08-08T22:53:58.652Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -5450,6 +5450,382 @@
       ]
      },
      "capturedAt": "2026-08-08T22:23:32.266Z"
+    }
+   ]
+  },
+  "Manoel Sousa": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Richie Miranda",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Richie Miranda",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 119,
+      "totL": 89,
+      "totA": 141,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:49",
+      "head": [
+       43,
+       86
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       19,
+       26
+      ],
+      "dist": [
+       49,
+       98
+      ],
+      "clinch": [
+       13,
+       16
+      ],
+      "ground": [
+       5,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 119,
+      "totL": 126,
+      "totA": 213,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:51",
+      "head": [
+       41,
+       108
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       28,
+       91
+      ],
+      "clinch": [
+       7,
+       14
+      ],
+      "ground": [
+       11,
+       14
+      ]
+     },
+     "capturedAt": "2026-08-08T22:53:58.505Z"
+    }
+   ]
+  },
+  "Richie Miranda": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Manoel Sousa",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Manoel Sousa",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 119,
+      "totL": 126,
+      "totA": 213,
+      "tdL": 1,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:51",
+      "head": [
+       41,
+       108
+      ],
+      "body": [
+       4,
+       9
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       28,
+       91
+      ],
+      "clinch": [
+       7,
+       14
+      ],
+      "ground": [
+       11,
+       14
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 67,
+      "sigA": 119,
+      "totL": 89,
+      "totA": 141,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:49",
+      "head": [
+       43,
+       86
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       19,
+       26
+      ],
+      "dist": [
+       49,
+       98
+      ],
+      "clinch": [
+       13,
+       16
+      ],
+      "ground": [
+       5,
+       5
+      ]
+     },
+     "capturedAt": "2026-08-08T22:53:58.505Z"
+    }
+   ]
+  },
+  "Louie Sutherland": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "José Montanha",
+     "result": "L",
+     "method": "Submission (Neck Crank)",
+     "round": 1,
+     "time": "1:50",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "José Montanha",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 4,
+      "totL": 3,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       3,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 7,
+      "totL": 7,
+      "totA": 12,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       2,
+       7
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       6
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-08T22:53:58.520Z"
+    }
+   ]
+  },
+  "José Montanha": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Louie Sutherland",
+     "result": "W",
+     "method": "Submission (Neck Crank)",
+     "round": 1,
+     "time": "1:50",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Louie Sutherland",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 7,
+      "totL": 7,
+      "totA": 12,
+      "tdL": 1,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:01",
+      "head": [
+       2,
+       7
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       6
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 3,
+      "sigA": 4,
+      "totL": 3,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       3,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-08T22:53:58.520Z"
     }
    ]
   }
