@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-08T23:24:26.987Z",
+ "generatedAt": "2026-08-09T00:09:55.771Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -6014,6 +6014,194 @@
       ]
      },
      "capturedAt": "2026-08-08T23:24:26.857Z"
+    }
+   ]
+  },
+  "Steven Asplund": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Guilherme Pat",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Guilherme Pat",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 66,
+      "sigA": 109,
+      "totL": 134,
+      "totA": 180,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:44",
+      "head": [
+       51,
+       92
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       27,
+       63
+      ],
+      "clinch": [
+       19,
+       24
+      ],
+      "ground": [
+       20,
+       22
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 45,
+      "sigA": 76,
+      "totL": 72,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:50",
+      "head": [
+       25,
+       55
+      ],
+      "body": [
+       13,
+       14
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       36,
+       66
+      ],
+      "clinch": [
+       9,
+       9
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-09T00:09:55.640Z"
+    }
+   ]
+  },
+  "Guilherme Pat": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Steven Asplund",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Steven Asplund",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 45,
+      "sigA": 76,
+      "totL": 72,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:50",
+      "head": [
+       25,
+       55
+      ],
+      "body": [
+       13,
+       14
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       36,
+       66
+      ],
+      "clinch": [
+       9,
+       9
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 66,
+      "sigA": 109,
+      "totL": 134,
+      "totA": 180,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "4:44",
+      "head": [
+       51,
+       92
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       27,
+       63
+      ],
+      "clinch": [
+       19,
+       24
+      ],
+      "ground": [
+       20,
+       22
+      ]
+     },
+     "capturedAt": "2026-08-09T00:09:55.640Z"
     }
    ]
   }
