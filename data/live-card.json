@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-09T01:46:22.814Z",
+ "generatedAt": "2026-08-09T02:16:39.255Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-08-09T01:46:22.685Z"
+    }
+   ]
+  },
+  "Diego Ferreira": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Billy Quarantillo",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Billy Quarantillo",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 116,
+      "sigA": 236,
+      "totL": 124,
+      "totA": 246,
+      "tdL": 4,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:47",
+      "head": [
+       94,
+       207
+      ],
+      "body": [
+       20,
+       27
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       101,
+       218
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       7,
+       9
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 73,
+      "sigA": 208,
+      "totL": 113,
+      "totA": 249,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:48",
+      "head": [
+       50,
+       167
+      ],
+      "body": [
+       16,
+       31
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       68,
+       199
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "capturedAt": "2026-08-09T02:16:39.121Z"
+    }
+   ]
+  },
+  "Billy Quarantillo": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Diego Ferreira",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Diego Ferreira",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 73,
+      "sigA": 208,
+      "totL": 113,
+      "totA": 249,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:48",
+      "head": [
+       50,
+       167
+      ],
+      "body": [
+       16,
+       31
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       68,
+       199
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 116,
+      "sigA": 236,
+      "totL": 124,
+      "totA": 246,
+      "tdL": 4,
+      "tdA": 9,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:47",
+      "head": [
+       94,
+       207
+      ],
+      "body": [
+       20,
+       27
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       101,
+       218
+      ],
+      "clinch": [
+       8,
+       9
+      ],
+      "ground": [
+       7,
+       9
+      ]
+     },
+     "capturedAt": "2026-08-09T02:16:39.122Z"
     }
    ]
   }
