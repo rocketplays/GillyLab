@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-09T01:15:56.668Z",
+ "generatedAt": "2026-08-09T01:46:22.814Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -6578,6 +6578,194 @@
       ]
      },
      "capturedAt": "2026-08-09T01:15:56.540Z"
+    }
+   ]
+  },
+  "Darren Elkins": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Yadier del Valle",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:35",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Yadier del Valle",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 2,
+      "totL": 0,
+      "totA": 2,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       2
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 5,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       4,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       3
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-09T01:46:22.685Z"
+    }
+   ]
+  },
+  "Yadier del Valle": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Darren Elkins",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:35",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Darren Elkins",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 5,
+      "sigA": 6,
+      "totL": 5,
+      "totA": 6,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       4,
+       5
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       3
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 2,
+      "totL": 0,
+      "totA": 2,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       2
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       2
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-09T01:46:22.685Z"
     }
    ]
   }
