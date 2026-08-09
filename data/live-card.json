@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-09T00:09:55.771Z",
+ "generatedAt": "2026-08-09T00:40:30.405Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-08-09T00:09:55.640Z"
+    }
+   ]
+  },
+  "Billy Ray Goff": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Ty Miller",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "0:15",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Ty Miller",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 25,
+      "sigA": 57,
+      "totL": 35,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:46",
+      "head": [
+       8,
+       36
+      ],
+      "body": [
+       11,
+       13
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       7,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 133,
+      "sigA": 221,
+      "totL": 163,
+      "totA": 251,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       121,
+       204
+      ],
+      "body": [
+       11,
+       16
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       92,
+       166
+      ],
+      "clinch": [
+       14,
+       19
+      ],
+      "ground": [
+       27,
+       36
+      ]
+     },
+     "capturedAt": "2026-08-09T00:40:30.274Z"
+    }
+   ]
+  },
+  "Ty Miller": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Billy Ray Goff",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "0:15",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Billy Ray Goff",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 133,
+      "sigA": 221,
+      "totL": 163,
+      "totA": 251,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       121,
+       204
+      ],
+      "body": [
+       11,
+       16
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       92,
+       166
+      ],
+      "clinch": [
+       14,
+       19
+      ],
+      "ground": [
+       27,
+       36
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 25,
+      "sigA": 57,
+      "totL": 35,
+      "totA": 67,
+      "tdL": 0,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:46",
+      "head": [
+       8,
+       36
+      ],
+      "body": [
+       11,
+       13
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       18,
+       49
+      ],
+      "clinch": [
+       7,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-09T00:40:30.274Z"
     }
    ]
   }
