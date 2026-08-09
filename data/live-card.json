@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-09T00:40:30.405Z",
+ "generatedAt": "2026-08-09T01:15:56.668Z",
  "fighters": {
   "Cody Gibson": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-08-09T00:40:30.274Z"
+    }
+   ]
+  },
+  "Amanda Lemos": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Alexia Thainara",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Alexia Thainara",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 100,
+      "totL": 68,
+      "totA": 115,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       29,
+       63
+      ],
+      "body": [
+       17,
+       27
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       52,
+       96
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 81,
+      "sigA": 125,
+      "totL": 199,
+      "totA": 246,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:43",
+      "head": [
+       35,
+       71
+      ],
+      "body": [
+       22,
+       27
+      ],
+      "leg": [
+       24,
+       27
+      ],
+      "dist": [
+       52,
+       91
+      ],
+      "clinch": [
+       24,
+       29
+      ],
+      "ground": [
+       5,
+       5
+      ]
+     },
+     "capturedAt": "2026-08-09T01:15:56.540Z"
+    }
+   ]
+  },
+  "Alexia Thainara": {
+   "history": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Amanda Lemos",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Gamrot vs Salkilld",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 8, 2026",
+     "opponent": "Amanda Lemos",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 81,
+      "sigA": 125,
+      "totL": 199,
+      "totA": 246,
+      "tdL": 2,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:43",
+      "head": [
+       35,
+       71
+      ],
+      "body": [
+       22,
+       27
+      ],
+      "leg": [
+       24,
+       27
+      ],
+      "dist": [
+       52,
+       91
+      ],
+      "clinch": [
+       24,
+       29
+      ],
+      "ground": [
+       5,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 56,
+      "sigA": 100,
+      "totL": 68,
+      "totA": 115,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:22",
+      "head": [
+       29,
+       63
+      ],
+      "body": [
+       17,
+       27
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       52,
+       96
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-09T01:15:56.540Z"
     }
    ]
   }
