@@ -1306,7 +1306,210 @@
         "pts": 0.2873,
         "leaned": true
       }
+    },
+    {
+      "fightId": "billy goff|ty miller",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.457Z",
+      "a": {
+        "feed": "Ty Miller",
+        "db": "Ty Miller"
+      },
+      "b": {
+        "feed": "Billy Goff",
+        "db": "Billy Ray Goff"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5272,
+      "modelClose": 0.5277,
+      "marketOpen": 0.712,
+      "marketClose": 0.7685,
+      "leanA": -0.1848,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0565,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "bruno lopes|diyar nurgozhay",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.458Z",
+      "a": {
+        "feed": "Diyar Nurgozhay",
+        "db": "Diyar Nurgozhay"
+      },
+      "b": {
+        "feed": "Bruno Lopes",
+        "db": "Bruno Lopes"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.57,
+      "modelClose": 0.5653,
+      "marketOpen": 0.5798,
+      "marketClose": 0.5934,
+      "leanA": -0.0098,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0136,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "guilherme pat|steven asplund",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.458Z",
+      "a": {
+        "feed": "Steven Asplund",
+        "db": "Steven Asplund"
+      },
+      "b": {
+        "feed": "Guilherme Pat",
+        "db": "Guilherme Pat"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5673,
+      "modelClose": 0.5673,
+      "marketOpen": 0.6705,
+      "marketClose": 0.7258,
+      "leanA": -0.1032,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0553,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "juliana miller|ravena oliveira",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.458Z",
+      "a": {
+        "feed": "Juliana Miller",
+        "db": "Juliana Miller"
+      },
+      "b": {
+        "feed": "Ravena Oliveira",
+        "db": "Ravena Oliveira"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6097,
+      "modelClose": 0.6112,
+      "marketOpen": 0.6742,
+      "marketClose": 0.7258,
+      "leanA": -0.0645,
+      "nSnapshots": 18,
+      "clv": {
+        "toward": false,
+        "pts": -0.0516,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "jose montanha|louie sutherland",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.459Z",
+      "a": {
+        "feed": "Louie Sutherland",
+        "db": "Louie Sutherland"
+      },
+      "b": {
+        "feed": "Jose Montanha",
+        "db": "Jose Montanha"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.482,
+      "modelClose": 0.482,
+      "marketOpen": 0.6288,
+      "marketClose": 0.6515,
+      "leanA": -0.1468,
+      "nSnapshots": 15,
+      "clv": {
+        "toward": false,
+        "pts": -0.0227,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "manoel sousa|richie miranda",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.459Z",
+      "a": {
+        "feed": "Manoel Sousa",
+        "db": "Manoel Sousa"
+      },
+      "b": {
+        "feed": "Richie Miranda",
+        "db": "Richie Miranda"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.601,
+      "modelClose": 0.601,
+      "marketOpen": 0.7094,
+      "marketClose": 0.7258,
+      "leanA": -0.1084,
+      "nSnapshots": 13,
+      "clv": {
+        "toward": false,
+        "pts": -0.0164,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "gianni vazquez|miles johns",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-09T00:44:49.463Z",
+      "a": {
+        "feed": "Miles Johns",
+        "db": "Miles Johns"
+      },
+      "b": {
+        "feed": "Gianni Vazquez",
+        "db": "Gianni Vazquez"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4729,
+      "modelClose": 0.4729,
+      "marketOpen": 0.6027,
+      "marketClose": 0.6181,
+      "leanA": -0.1298,
+      "nSnapshots": 2,
+      "clv": {
+        "toward": false,
+        "pts": -0.0154,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-08T12:37:26.257Z"
+  "generatedAt": "2026-08-09T00:44:49.468Z"
 }
