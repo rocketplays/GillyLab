@@ -252,7 +252,7 @@ export default {
   },
   "matchup": null,
   "parlay": {
-    "event": "UFC Fight Night",
+    "event": "Dana White's Contender Series: Season 10, Week 1",
     "kind": "moneyline",
     "book": "Consensus · 2 books",
     "legs": [
@@ -304,7 +304,7 @@ export default {
     "cory-sandhagen"
   ],
   "card": {
-    "event": "UFC Fight Night",
+    "event": "Dana White's Contender Series: Season 10, Week 1",
     "slug": "ufc-fight-night-august-11-2026",
     "date": "2026-08-11",
     "prelimsAt": "2026-08-11T23:00:00.000Z",
@@ -1144,7 +1144,7 @@ export default {
   "held": {
     "startsAt": "2026-08-09T00:00:00.000Z",
     "card": {
-      "event": "UFC Fight Night",
+      "event": "UFC Fight Night: Gamrot vs Salkilld",
       "slug": "ufc-fight-night-august-08-2026",
       "date": "2026-08-09",
       "prelimsAt": "2026-08-08T21:00:00.000Z",
@@ -3004,7 +3004,7 @@ export default {
       }
     },
     "matchup": {
-      "event": "UFC Fight Night",
+      "event": "UFC Fight Night: Gamrot vs Salkilld",
       "startsAt": "2026-08-09T00:00:00.000Z",
       "weightClass": "Lightweight",
       "titleBout": false,

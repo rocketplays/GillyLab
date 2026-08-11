@@ -525,7 +525,10 @@ function buildParlay() {
   const dec = legs.reduce((t, l) => t * toDecimal(l.odds), 1);
   const stake = 100;
   return {
-    event: ev.title || 'UFC',
+    // Prefer the billed name over ev.title, which collapses every unnumbered event
+    // (DWCS included) to the generic "UFC Fight Night" bucket — same fix as
+    // worker/pages.js's eventToCard() and index.html's isDWCSRaw callers.
+    event: ev.espnName || ev.title || ev.shortTitle || 'UFC',
     kind, book,
     legs: legs.map((l) => ({ pick: l.pick, slug: l.slug, opponent: l.opponent, label: l.label, odds: fmtOdds(l.odds) })),
     combined: fmtOdds(toAmerican(1 / dec)),
@@ -660,7 +663,10 @@ function buildMatchup(recMap, evOverride) {
   delete a._st; delete b._st;
 
   return {
-    event: ev.title || 'UFC',
+    // Prefer the billed name over ev.title, which collapses every unnumbered event
+    // (DWCS included) to the generic "UFC Fight Night" bucket — same fix as
+    // worker/pages.js's eventToCard() and index.html's isDWCSRaw callers.
+    event: ev.espnName || ev.title || ev.shortTitle || 'UFC',
     startsAt: ev.startsAt || null,
     weightClass: (bout.weightClass || '').replace(/\s*Bout$/i, ''),
     titleBout: !!bout.titleBout,
@@ -908,7 +914,7 @@ function buildCard(recMap, evOverride) {
   });
   const main = fights[0] ? buildMainTape(fights[0]) : null;
   if (main) { main.pA = fighterProfileCard(fights[0].f1, recMap, ranks); main.pB = fighterProfileCard(fights[0].f2, recMap, ranks); }
-  return { event: ev.title || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, location: ev.locationText || [ev.venue, ev.city].filter(Boolean).join(", ") || "", city: (ev.city || "").split(",")[0].trim(), fights, main };
+  return { event: ev.espnName || ev.title || ev.shortTitle || "UFC", slug: ev.slug, date: (ev.startsAt || "").slice(0, 10), prelimsAt: ev.prelimsStartsAt || ev.startsAt || null, location: ev.locationText || [ev.venue, ev.city].filter(Boolean).join(", ") || "", city: (ev.city || "").split(",")[0].trim(), fights, main };
 }
 
 // A marquee fighter's closing-line history — mirrors the profile Odds History tab.

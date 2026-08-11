@@ -3206,6 +3206,13 @@
          on its .freedom-card/.numbered-card wrapper, so this is a no-op
          conflict-wise for that structure — it simply applies cleanly. */
       .freedom-card, .numbered-card { padding-top: 1.85rem !important; }
+      /* .dwcs-card has no star row (::before: none — see the DWCS Special Card
+         rules below), so it doesn't need star clearance. But it shares the same
+         3px blue border-top as its wrapper, and with .fight-card-section's own
+         padding-top collapsed to 0 at this breakpoint (a few lines up), "Main
+         Card" was sitting flush against that border with no breathing room.
+         Give it its own smaller gap — just enough to read as deliberate. */
+      .dwcs-card { padding-top: 1.25rem !important; }
       /* ...but the featured/home event-header disables its star row
          (.event-header.numbered-card::before { content: none }), so that
          clearance just pushes the event name away from the eyebrow above it.
@@ -3222,6 +3229,7 @@
          specificity so it actually takes effect where it's needed most. */
       #carousel-track .carousel-card.freedom-card,
       #carousel-track .carousel-card.numbered-card { padding-top: 1.85rem !important; }
+      #carousel-track .carousel-card.dwcs-card { padding-top: 1.25rem !important; }
       .fight-row         { grid-template-columns: 1fr 72px 1fr; }
       .fighter-cell      { padding: 0.7rem 0.5rem; gap: 0.35rem; }
       .fighter-avatar    { width: 36px; height: 36px; min-width: 36px; font-size: 0.65rem; flex-shrink: 0; }
@@ -4594,13 +4602,13 @@
  { name: "Tatsuro Taira", division: "FLW", rank: "#4", record: "18-2-0", initials: "TT", country: "Japan" },
  { name: "Brandon Royval", division: "FLW", rank: "#3", record: "18-9-0", initials: "BR", country: "USA" },
  { name: "Kyoji Horiguchi", division: "FLW", rank: "#5", record: "36-6-0", initials: "KH", country: "Japan" },
- { name: "Brandon Moreno", division: "FLW", rank: "#9", record: "23-10-2", initials: "BMO", country: "Mexico" },
- { name: "Amir Albazi", division: "FLW", rank: "#8", record: "17-3-0", initials: "AA", country: "Iraq" },
+ { name: "Brandon Moreno", division: "FLW", rank: "#8", record: "23-10-2", initials: "BMO", country: "Mexico" },
+ { name: "Amir Albazi", division: "FLW", rank: "#9", record: "17-3-0", initials: "AA", country: "Iraq" },
  { name: "Asu Almabayev", division: "FLW", rank: "#7", record: "24-3-0", initials: "ASU", country: "Kazakhstan" },
- { name: "Tim Elliott", division: "FLW", rank: "#12", record: "21-14-1", initials: "TE", country: "USA" },
- { name: "Alex Perez", division: "FLW", rank: "#10", record: "26-10-0", initials: "APR", country: "USA" },
- { name: "Steve Erceg", division: "FLW", rank: "#11", record: "14-5-0", initials: "SE", country: "Australia" },
- { name: "Tagir Ulanbekov", division: "FLW", rank: "#13", record: "17-3-0", initials: "TU", country: "Russia" },
+ { name: "Tim Elliott", division: "FLW", rank: "#13", record: "21-14-1", initials: "TE", country: "USA" },
+ { name: "Alex Perez", division: "FLW", rank: "#11", record: "26-10-0", initials: "APR", country: "USA" },
+ { name: "Steve Erceg", division: "FLW", rank: "#12", record: "14-5-0", initials: "SE", country: "Australia" },
+ { name: "Tagir Ulanbekov", division: "FLW", rank: "#14", record: "17-3-0", initials: "TU", country: "Russia" },
  { name: "Charles Johnson", division: "FLW", rank: "NR", record: "19-9-0", initials: "CJ", country: "USA" },
  { name: "Bruno Gustavo da Silva", division: "FLW", rank: "NR", record: "15-9-2", initials: "BGS", country: "Brazil" },
  { name: "Joseph Morales", division: "FLW", rank: "NR", record: "14-2-0", initials: "JMO", country: "USA" },
@@ -4610,7 +4618,7 @@
  { name: "Matt Schnell", division: "FLW", rank: "NR", record: "17-11-0", initials: "MSC", country: "USA" }, // 1 NC
  { name: "Cody Durden", division: "FLW", rank: "NR", record: "18-11-1", initials: "CDU", country: "USA" },
  { name: "Daniel Lacerda", division: "FLW", rank: "NR", record: "13-7-0", initials: "DLA", country: "Brazil" }, // 1 NC
- { name: "Ramazan Temirov", division: "FLW", rank: "#13", record: "20-3-0", initials: "RTE", country: "Uzbekistan" },
+ { name: "Ramazan Temirov", division: "FLW", rank: "#10", record: "20-3-0", initials: "RTE", country: "Uzbekistan" },
  { name: "Victor Altamirano", division: "FLW", rank: "NR", record: "12-5-0", initials: "VAL", country: "Mexico" },
  { name: "Ode Osbourne", division: "FLW", rank: "NR", record: "13-9-0", initials: "OO", country: "Jamaica" },
  // ─── BANTAMWEIGHT ───
@@ -4745,8 +4753,8 @@
  { name: "Joaquin Buckley", division: "WW", rank: "#10", record: "21-8-0", initials: "JBU", country: "USA" },
  { name: "Gabriel Bonfim", division: "WW", rank: "#5", record: "20-1-0", initials: "GBO", country: "Brazil" },
  { name: "Gilbert Burns", division: "WW", rank: "NR", record: "22-10-0", initials: "GBU", country: "Brazil" },
- { name: "Uroš Medić", division: "WW", rank: "#14", record: "14-3-0", initials: "UM", country: "Serbia" },
- { name: "Michael Page", division: "WW", rank: "#13", record: "25-3-0", initials: "MP", country: "UK" },
+ { name: "Uroš Medić", division: "WW", rank: "#12", record: "14-3-0", initials: "UM", country: "Serbia" },
+ { name: "Michael Page", division: "WW", rank: "#14", record: "25-3-0", initials: "MP", country: "UK" },
  { name: "Daniel Rodriguez", division: "WW", rank: "#15", record: "20-6-0", initials: "DR", country: "USA" },
  { name: "Jorge Masvidal", division: "WW", rank: "NR", record: "35-17-0", initials: "JOR", country: "USA" },
  { name: "Geoff Neal", division: "WW", rank: "NR", record: "16-8-0", initials: "GN", country: "USA" },
@@ -4770,7 +4778,7 @@
  { name: "Anthony Hernandez", division: "MW", rank: "#6", record: "15-3-0", initials: "AHE", country: "USA" },
  { name: "Caio Borralho", division: "MW", rank: "#5", record: "18-2-0", initials: "CB", country: "Brazil" },
  { name: "Reinier de Ridder", division: "MW", rank: "#9", record: "21-4-0", initials: "RDR", country: "Netherlands" },
- { name: "Robert Whittaker", division: "LHW", rank: "#11", record: "27-9-0", initials: "RW", country: "Australia" },
+ { name: "Robert Whittaker", division: "LHW", rank: "#12", record: "27-9-0", initials: "RW", country: "Australia" },
  { name: "Jared Cannonier", division: "MW", rank: "#12", record: "18-10-0", initials: "JCA2", country: "USA" },
  { name: "Roman Dolidze", division: "MW", rank: "#15", record: "15-5-0", initials: "RD", country: "Georgia" },
  { name: "Paulo Costa", division: "LHW", rank: "#6", record: "16-4-0", initials: "PC", country: "Brazil" },
@@ -4797,21 +4805,21 @@
  { name: "Magomed Ankalaev", division: "LHW", rank: "#1", record: "21-2-1", initials: "MA", country: "Russia" },
  { name: "Jiří Procházka", division: "LHW", rank: "#2", record: "32-6-1", initials: "JP2", country: "Czech Republic" },
  { name: "Carlos Ulberg", division: "LHW", rank: "#C", record: "14-1-0", initials: "CUL", country: "New Zealand" },
- { name: "Khalil Rountree Jr.", division: "LHW", rank: "#5", record: "14-7-0", initials: "KRJ", country: "USA" },
- { name: "Jan Błachowicz", division: "LHW", rank: "#4", record: "29-12-2", initials: "JBL", country: "Poland" },
+ { name: "Khalil Rountree Jr.", division: "LHW", rank: "#4", record: "14-7-0", initials: "KRJ", country: "USA" },
+ { name: "Jan Błachowicz", division: "LHW", rank: "#9", record: "29-12-2", initials: "JBL", country: "Poland" },
  { name: "Jamahal Hill", division: "LHW", rank: "#7", record: "12-4-0", initials: "JHI", country: "USA" },
  { name: "Volkan Oezdemir", division: "LHW", rank: "NR", record: "21-8-0", initials: "VOE", country: "Switzerland" },
- { name: "Bogdan Guskov", division: "LHW", rank: "#10", record: "18-4-1", initials: "BGU", country: "Uzbekistan" },
- { name: "Dominick Reyes", division: "LHW", rank: "#9", record: "16-5-0", initials: "DRE", country: "USA" },
- { name: "Aleksandar Rakić", division: "HW", rank: "NR", record: "15-6-0", initials: "ARK", country: "Serbia" },
- { name: "Nikita Krylov", division: "LHW", rank: "NR", record: "31-12-0", initials: "NK", country: "Russia" },
- { name: "Johnny Walker", division: "LHW", rank: "#12", record: "22-10-1", initials: "JWA", country: "Brazil" },
+ { name: "Bogdan Guskov", division: "LHW", rank: "#11", record: "18-4-1", initials: "BGU", country: "Uzbekistan" },
+ { name: "Dominick Reyes", division: "LHW", rank: "#10", record: "16-5-0", initials: "DRE", country: "USA" },
+ { name: "Aleksandar Rakić", division: "HW", rank: "#12", record: "15-6-0", initials: "ARK", country: "Serbia" },
+ { name: "Nikita Krylov", division: "LHW", rank: "#15", record: "31-12-0", initials: "NK", country: "Russia" },
+ { name: "Johnny Walker", division: "LHW", rank: "#13", record: "22-10-1", initials: "JWA", country: "Brazil" },
  { name: "Dustin Jacoby", division: "LHW", rank: "NR", record: "22-10-1", initials: "DJA", country: "USA" },
  { name: "Zhang Mingyang", division: "LHW", rank: "NR", record: "19-8-0", initials: "ZMY", country: "China" },
  { name: "Ovince Saint Preux", division: "LHW", rank: "NR", record: "31-18-0", initials: "OSP", country: "USA" },
  { name: "Ion Cutelaba", division: "LHW", rank: "NR", record: "20-12-1", initials: "ICU", country: "Moldova" },
  { name: "Oumar Sy", division: "LHW", rank: "NR", record: "12-2-0", initials: "OSY", country: "France" },
- { name: "Navajo Stirling", division: "LHW", rank: "#15", record: "11-0-0", initials: "NST", country: "New Zealand" },
+ { name: "Navajo Stirling", division: "LHW", rank: "#5", record: "11-0-0", initials: "NST", country: "New Zealand" },
  { name: "Ibo Aslan", division: "LHW", rank: "NR", record: "14-4-0", initials: "IBO", country: "Turkey" },
  // ─── HEAVYWEIGHT ───
  { name: "Ciryl Gane", division: "HW", rank: "#1", record: "14-2-0", initials: "CGN", country: "France" },
@@ -4821,8 +4829,8 @@
  { name: "Serghei Spivac", division: "HW", rank: "#6", record: "18-6-0", initials: "SSP", country: "Moldova" },
  { name: "Fedor Emelianenko", division: "HW", rank: "NR", record: "40-7-0", initials: "FEM", country: "Russia" },
  { name: "Rizvan Kuniev", division: "HW", rank: "#8", record: "14-3-1", initials: "RKU", country: "Russia" },
- { name: "Derrick Lewis", division: "HW", rank: "#12", record: "29-14-0", initials: "DLE", country: "USA" },
- { name: "Marcin Tybura", division: "HW", rank: "#13", record: "27-12-0", initials: "MTY", country: "Poland" },
+ { name: "Derrick Lewis", division: "HW", rank: "#13", record: "29-14-0", initials: "DLE", country: "USA" },
+ { name: "Marcin Tybura", division: "HW", rank: "#14", record: "27-12-0", initials: "MTY", country: "Poland" },
  { name: "Ante Delija", division: "HW", rank: "#9", record: "26-8-0", initials: "ADL", country: "Croatia" },
  { name: "Tallison Teixeira", division: "HW", rank: "NR", record: "9-2-0", initials: "TTX", country: "Brazil" },
  { name: "Shamil Gaziev", division: "HW", rank: "NR", record: "14-3-0", initials: "SGZ", country: "Russia" },
@@ -4832,7 +4840,7 @@
  { name: "Francis Ngannou", division: "HW", rank: "NR", record: "19-3-0", initials: "FN", country: "Cameroon" },
  { name: "Stipe Miocic", division: "HW", rank: "NR", record: "20-5-0", initials: "SMI", country: "USA" },
  { name: "Jailton Almeida", division: "HW", rank: "NR", record: "22-5-0", initials: "JAL2", country: "Brazil" },
- { name: "Brando Pericic", division: "HW", rank: "#14", record: "7-1-0", initials: "BPE", country: "Australia" },
+ { name: "Brando Pericic", division: "HW", rank: "#15", record: "7-1-0", initials: "BPE", country: "Australia" },
  { name: "Jose Montanha", division: "HW", rank: "NR", record: "6-1-0", initials: "JLM", country: "Brazil" },
  // ─── WOMEN'S STRAWWEIGHT ───
  { name: "Mackenzie Dern", division: "WSW", rank: "#C", record: "16-5-0", initials: "MDE", country: "USA" },
@@ -4949,7 +4957,7 @@
  { name: "Stephen Thompson", division: "WW", rank: "NR", record: "17-9-1", initials: "STH", country: "USA" },
  { name: "Michael Chiesa", division: "WW", rank: "NR", record: "20-7-0", initials: "MCE", country: "USA" },
  { name: "Nicolas Dalby", division: "WW", rank: "NR", record: "24-6-1", initials: "NDA", country: "Denmark" },
- { name: "Mike Malott", division: "WW", rank: "#12", record: "14-2-1", initials: "MAL", country: "Canada" },
+ { name: "Mike Malott", division: "WW", rank: "#13", record: "14-2-1", initials: "MAL", country: "Canada" },
  { name: "Vicente Luque", division: "MW", rank: "NR", record: "24-12-1", initials: "VLQ", country: "Brazil" },
  { name: "Myktybek Orolbai", division: "WW", rank: "NR", record: "16-2-1", initials: "MOR2", country: "Kyrgyzstan" },
  { name: "Gunnar Nelson", division: "WW", rank: "NR", record: "19-6-1", initials: "GNE", country: "Iceland" },
@@ -4999,7 +5007,7 @@
  { name: "Junior Tafa", division: "LHW", rank: "NR", record: "7-6-0", initials: "JTA", country: "Australia" },
  { name: "Justin Tafa", division: "HW", rank: "NR", record: "7-5-0", initials: "JTF", country: "Australia" },
  { name: "Josh Hokit", division: "HW", rank: "#4", record: "10-0-0", initials: "JHK", country: "USA" },
- { name: "Mick Parkin", division: "HW", rank: "#15", record: "10-1-0", initials: "MPR", country: "UK" },
+ { name: "Mick Parkin", division: "HW", rank: "NR", record: "10-1-0", initials: "MPR", country: "UK" },
  { name: "Iwo Baraniewski", division: "LHW", rank: "NR", record: "9-0-0", initials: "IWB", country: "Poland" },
  { name: "Tom Aspinall", division: "HW", rank: "#C", record: "15-3-0", initials: "TAS2", country: "UK" },
  { name: "Guilherme Pat", division: "HW", rank: "NR", record: "6-2-0", initials: "GPU", country: "Brazil" },
@@ -7858,12 +7866,13 @@
  // than letting a stale one land after a newer navigation has started.
  let pageTransitionTimer = null;
 
- const ACTIVE_ROSTER = ["Aaron Pico","Abdul Hussein","Abdul Rakhman Yakhyaev","Abdul-Kareem Al-Selwady","Abe Alsaghir","Abubakar Vagaev","Abus Magomedov","Adrian Yanez","Aiemann Zahabi","Ailin Perez","Alatengheili","Alberto Montes","Alden Coria","Aleksandar Rakic","Aleksandre Topuria","Alessandro Costa","Alex Pereira","Alex Perez","Alex Reyes","Alexa Grasso","Alexander Hernandez","Alexander Poppeck","Alexander Volkanovski","Alexander Volkov","Alexandre Pantoja","Alexia Thainara","Aliaskhab Khizriev","Alibi Idiris","Alice Ardelean","Alice Pereira","Aljamain Sterling","Allan Nascimento","Allen Frye Jr.","Alonzo Menifield","Alvin Hines","Amanda Lemos","Amanda Nunes","Amanda Ribas","Amir Albazi","Anderson Berinja","Andre Fili","Andre Lima","Andre Petroski","Andrey Pulyaev","Angel Pacheco","Angela Hill","Anna Melisano","Anshul Jubli","Ante Delija","Anthony Hernandez","Anthony Wint","Aoriqileng","Arman Tsarukyan","Arnold Allen","Artur Minev","Asu Almabayev","Ateba Gautier","Austin Bashi","Austin Vanderford","Axel Sola","Azamat Bekoev","Azamat Murzakanov","Baisangur Susurkaev","Bassil Hafez","Bekzat Almakhan","Belal Muhammad","Ben Johnston","Benardo Sopaj","Beneil Dariush","Benoit Saint Denis","Bia Mesquita","Bilal Hasan","Billy Elekana","Billy Quarantillo","Billy Ray Goff","Bo Nickal","Bogdan Grad","Bogdan Guskov","Bolaji Oki","Borislav Nikolic","Brad Tavares","Brady Hiestand","Brando Pericic","Brandon Moreno","Brandon Royval","Brendan Allen","Brendson Ribeiro","Brian Ortega","Brunno Ferreira","Bruno Gustavo da Silva","Bruno Lopes","Bryce Mitchell","Caio Borralho","Calvin Kattar","Cam Rowston","Cameron Saaiman","Carli Judice","Carlos Leal","Carlos Prates","Carlos Ulberg","Carlos Vera","Carol Foro","Casey O'Neill","Ce Liu","Cesar Almeida","Cezary Oleksiejczuk","Chad Anheliger","ChangHo Lee","Charles Johnson","Charles Jourdain","Charles Oliveira","Charles Radtke","Charlie Campbell","Chase Hooper","Chelsea Chandler","Chepe Mariscal","Chidi Njokuani","Chris Curtis","Chris Duncan","Chris Gutierrez","Chris Padilla","Christian Edwards","Christian Leroy Duncan","Christian Rodriguez","Christopher Alvidrez","Ciryl Gane","Claudio Puelles","Clayton Carpenter","Cody Brundage","Cody Chovancek","Cody Durden","Cody Garbrandt","Cody Gibson","Cody Haddon","Colby Thicknesse","Conor McGregor","Cory Sandhagen","Court McGee","Cristian Quinonez","Curtis Blaydes","Da'Mon Blackshear","Dakota Hope","Damian Pinas","Damian Rzepecki","Damien Anderson","Damir Hadzovic","Dan Hooker","Dan Ige","Daniel Frunza","Daniel Rodriguez","Daniel Santos","Daniel Zellhuber","Daniil Donchenko","Danny Silva","Daria Zhelezniakova","Darren Elkins","Darrius Flowers","Davey Grant","David Martinez","David Onama","Deiveson Figueiredo","Delphine Benouaich","Denise Gomes","Dennis Buzukja","Denzel Freeman","Derrick Lewis","Diego Ferreira","Diego Lopes","Ding Meng","Dione Barbosa","Diyar Nurgozhay","Djorden Santos","Dom Mar Fan","Dominick Reyes","DongHun Choi","Donte Johnson","Dooho Choi","Douglas Rodrigues","Douglas Silva de Andrade","Drakkar Klose","Drew Dober","Dricus Du Plessis","Dusko Todorovic","Dustin Jacoby","Dustin Stoltzfus","Edgar Chairez","Edmen Shahbazyan","Edson Barboza","Eduarda Moura","Elijah Smith","Elise Reed","Elisha Ellison","Elves Brener","Eric McConico","Eric Nolan","Erin Blanchfield","Ernesta Kareckaite","Esteban Ribovics","Ethyn Ewing","Evan Elder","Ezra Elliott","Fabrizio Escarrega","Fares Ziam","Farid Basharat","Farman Hasanov","Fatima Kline","Felipe Franco","Felipe Lima","Fernando Padilla","Francis Marshall","Francisco Prado","Gabe Green","Gable Steveson","Gabriel Bonfim","Gabriel Santos","Gabriella Fernandes","Garrett Armfield","Gaston Bolanos","Gauge Young","Geoff Neal","Gerald Meerschaert","Giga Chikadze","Gilbert Urbina","Gillian Robertson","Gokhan Saricam","Grant Dawson","Gregory Rodrigues","Guilherme Pat","Gunnar Nelson","Hailey Cowan","Harry Hardwick","Hecher Sosa","Henrique da Silva Lopes","Hyder Amil","HyunSung Park","Ian Machado Garry","Iasmin Lucindo","Ibo Aslan","Ignacio Bahamondes","Ikram Aliskerov","Ilia Topuria","Imanol Rodriguez","Ion Cutelaba","Isaac Thomson","Islam Dulatov","Islam Makhachev","Ismael Bonfim","Ismail Naurdiev","Israel Adesanya","Iwo Baraniewski","JJ Aldrich","Jack Della Maddalena","Jack Hermansson","Jack Jenkins","Jackson McVey","Jacob Malkoun","Jacobe Smith","Jacqueline Cavalcanti","Jafel Filho","Jai Herbert","Jake Matthews","Jakub Wiklacz","Jalin Turner","Jamahal Hill","Jamall Emmers","Jamey-Lyn Horth","Jamie Siraj","Jan Blachowicz","Jaqueline Amorim","Jared Cannonier","Jared Gordon","Jasmine Jasudavicius","Javier Reyes","Jean Matsumoto","Jean Silva","Jean-Paul Lebosnoyani","Jefferson Nascimento","Jeisla Chaves","JeongYeong Lee","Jeremiah Wells","Jeremy Stephens","Jessica Andrade","Jessie Rosas","Jhonata Diniz","Jim Miller","Jimmy Crute","Jingnan Xiong","Jiri Prochazka","Joanderson Brito","Joaquim Silva","Joaquin Buckley","Joe Pyfer","Joel Alvarez","John Castaneda","John Garza","John Yannis","Johnny Walker","Jon Kunneman","Jonathan Martinez","Jonathan Micallef","JooSang Yoo","Jordan Leavitt","Jose Delano","Jose Delgado","Jose Montanha","Jose Ochoa","Jose Souza","Joselyne Edwards","Joseph Kropschot","Joseph Morales","Josh Emmett","Josh Hokit","Joshua Van","Josiah Harrell","Josiane Nunes","Josias Musasa","Jovan Leka","Juan Diaz","Juan Martinetti","Julia Polastri","Julian Erosa","Juliana Miller","Julianna Pena","Julien Leblanc","Julius Walker","JunYong Park","Junior Tafa","Justin Gaethje","Kaan Ofli","Kai Asakura","Kai Kamaka III","Kai Kara-France","Kamaru Usman","Karine Silva","Karol Rosa","Karolina Kowalkiewicz","Katlyn Cerminara","Kaue Fernandes","Kayla Harrison","Keiichiro Nakamura","Kelvin Gastelum","Kennedy Nzechukwu","Ketlen Souza","Kevin Borjas","Kevin Christian","Kevin Holland","Kevin Vallejos","Khalil Rountree Jr.","Khamzat Chimaev","Khaos Williams","King Green","Klaudia Sygula","Kody Steele","Kurtis Campbell","Kyle Daukaus","Kyle Nelson","Kyle Prepolec","Kyler Phillips","Kyoji Horiguchi","Lance Gibson Jr.","Leon Edwards","Leon Shahbazyan","Lerone Murphy","Lerryan Douglas","Levan Chokheli","Levi Rodrigues Jr.","Li Jingliang","Logan Paxton","Loma Lookboonmee","Lone'er Kavanagh","Loopy Godinez","Losene Keita","Louie Sutherland","Louis Jourdain","Louis Lee Scott","Luana Pinheiro","Luana Santos","Lucas Brennan","Lucas Rocha","Ludovit Klein","Luis Dias de Assis","Luis Gurule","Luke Fernandez","Luke Riley","Mackenzie Dern","Macy Chiasson","Magomed Ankalaev","Magomed Tuchalov","Magomed Zaynukov","Magomedrasul Gasanov","Mairon Santos","Malcolm Wellmaker","Mandel Nallo","Manel Kape","Manoel Sousa","Manolo Zecchini","Manon Fiorot","Mansur Abdul-Malik","Mantas Kondratavicius","Manuel Torres","MarQuel Mederos","Marc-Andre Barriault","Marcin Tybura","Marcio Barbosa","Marco Tulio","Marcus Buchecha","Marcus McGhee","Marina Spasic","Mario Bautista","Mario Pinto","Mark Choinski","Mark Vologdin","Marlon Vera","Marnic Mann","Marvin Vettori","Marwan Rahiki","Mason Jones","Mateusz Gamrot","Mateusz Rebecki","Matheus Camilo","Matt Frevola","Matthew Adams","Matthieu Letho Duclos","Mauricio Ruffy","Max Gimenis","Max Holloway","Maycee Barber","Melissa Croden","Melissa Gatto","Melissa Mullins","Melquizael Costa","Melsik Baghdasaryan","Merab Dvalishvili","Michael Aswell Jr.","Michael Chandler","Michael Johnson","Michael Morales","Michael Oliveira","Michael Page","Michal Oleksiejczuk","Michelle Montague","Mick Parkin","Mickey Gall","Miesha Tate","Mike Davis","Mike Malott","Miles Johns","Milos Janicic","Miranda Maverick","Mitch Ramirez","Mitch Raposo","Mizuki","Modestas Bukauskas","Montel Jackson","Montserrat Conejo Ruiz","Morgan Charriere","Mridul Saikia","Movsar Evloev","Muhammad Naimov","Muhammad Said","Muin Gafurov","Murtazali Magomedov","Muslim Salikhov","Myktybek Orolbai","Namo Fazil","Nasrat Haqparast","Nassourdine Imavov","Natalia Silva","Nate Landwehr","Nathaniel Wood","Navajo Stirling","Nazim Sadykhov","Neil Magny","Nick Klein","Nicolas Dalby","Nicolle Caliari","Nikita Krylov","Nikolas Motta","Nikolay Veretennikov","Nikolija Milosevic","Noah Gugnon","Nora Cornolle","Norma Dumont","Nursulton Ruziboev","Nurullo Aliev","Nyamjargal Tumendemberel","Oban Elliott","Ode Osbourne","Ollie Schmid","Otari Tanzilovi","Ottman Azaitar","Oumar Sy","Ozzy Diaz","Paddy Pimblett","Pat Sabatini","Patricio Freire","Paulo Costa","Payton Talbott","Pete Rodriguez","Petr Yan","Piera Rodriguez","Polyana Viana","Priscila Cachoeira","Puja Tomar","Punahele Soriano","Quillan Salkilld","Rafa Garcia","Rafael Dos Anjos","Rafael Estevam","Rafael Fiziev","Rafael Tobias","Ramazan Temirov","Ramiro Jimenez","Ramiz Brahimaj","Ramon Taveras","Randy Brown","Rani Yahya","Raoni Barcelos","Raquel Pennington","Raul Rosas Jr.","Ravena Oliveira","Rayanne dos Santos","Regina Tarin","Rei Tsuruya","Reinier de Ridder","Renato Moicano","Richie Miranda","Ricky Simon","Ricky Turcios","Rinya Nakamura","Rizvan Kuniev","RJ Harris","Rob Font","Robelis Despaigne","Robert Bryczek","Robert Ruchala","Robert Valentin","Robert Whittaker","Roberto Romero","Rodolfo Bellato","Rodolfo Vieira","Rodrigo Sezinando","Rodrigo Vera","Roman Dolidze","Roman Kopylov","Roman Puga","Ronaldo Rodriguez","Rongzhu","Rose Namajunas","Ryan Gandra","Ryan Loder","Ryan Spann","Said Nurmagomedov","Saimon Oliveira","Salahdine Parnasse","Sam Hughes","Sam Patterson","Samuel Sanches","Santiago Luna","Santiago Ponzinibbio","Saygid Izagakhmaev","Sean Brady","Sean O'Malley","Sean Sharaf","Sean Strickland","Sean Woodson","Seokhyeon Ko","Sergei Pavlovich","Serghei Spivac","Serhiy Sidey","Shamil Gaziev","Shane Collins","Shanelle Dyer","Shara Magomedov","Shauna Bannon","Shavkat Rakhmonov","Shayilan Nuerdanbieke","Shi Ming","Sodiq Yusuff","Sofia Montenegro","Song Kenan","Song Yadong","Stephanie Luciano","Stephen Thompson","Steve Erceg","Steve Garcia","Steven Asplund","Steven Nguyen","Stewart Nicoll","SuYoung You","Sumudaerji","Tabatha Ricci","Tagir Ulanbekov","Tahir Abdullayev","Tai Tuivasa","Tainara Lisboa","Taiyilake Nueraji","Talita Alencar","Tallison Teixeira","Taner Trembley","Tanner Boser","Tatiana Suarez","Tatsuro Taira","Tereza Bleda","Terrance McKinney","Theodor Berggren","Thomas Gantt","Thomas Petersen","Tim Elliott","Tim Means","Timmy Cuamba","Tofiq Musayev","Tom Aspinall","Tom Nolan","Tom Pagliarulo","Tommy McMillen","Torrez Finney","Toshiomi Kazama","Tracy Cortez","Tresean Gore","Treston Vines","Trevor Peek","Trey Ogden","Trey Waters","Ty Miller","Tyrell Fortune","Umar Nurmagomedov","Uran Satybaldiev","Uros Medic","Valentina Shevchenko","Valter Walker","Vanessa Demopoulos","Veronica Hardy","Vicente Luque","Victor Henry","Victor Valenzuela","Vinicius Oliveira","Virna Jandiroba","Vitor Petrino","Vlasto Cepo","Volkan Oezdemir","Waldo Cortes-Acosta","Wang Cong","Wellington Turman","Wes Schultz","William Gomis","Xiao Long","Yadier del Valle","Yair Rodriguez","Yan Xiaonan","Yana Santos","Yaroslav Amosov","Yazmin Jauregui","Yi Sak Lee","Yilizhati Maimaitijiang","Yizha","Yousri Belgaroui","Youssef Zalal","Yuneisy Duben","Zachary Reese","Zhang Mingyang","Zhang Weili","Zhu Kangjie"];
+ const ACTIVE_ROSTER = ["Aaron Pico","Abdul Hussein","Abdul Rakhman Yakhyaev","Abdul-Kareem Al-Selwady","Abe Alsaghir","Abubakar Vagaev","Abus Magomedov","Adrian Yanez","Aiemann Zahabi","Ailin Perez","Alatengheili","Alberto Montes","Alden Coria","Aleksandar Rakic","Aleksandre Topuria","Alessandro Costa","Alex Pereira","Alex Perez","Alex Reyes","Alexa Grasso","Alexander Hernandez","Alexander Poppeck","Alexander Volkanovski","Alexander Volkov","Alexandre Pantoja","Alexia Thainara","Aliaskhab Khizriev","Alibi Idiris","Alice Ardelean","Alice Pereira","Aljamain Sterling","Allan Nascimento","Allen Frye Jr.","Alonzo Menifield","Alvin Hines","Amanda Lemos","Amanda Nunes","Amanda Ribas","Amir Albazi","Anderson Berinja","Andre Fili","Andre Lima","Andre Petroski","Andrey Pulyaev","Angel Pacheco","Angela Hill","Anna Melisano","Anshul Jubli","Ante Delija","Anthony Hernandez","Anthony Wint","Aoriqileng","Arman Tsarukyan","Arnold Allen","Artur Minev","Asu Almabayev","Ateba Gautier","Austin Bashi","Austin Vanderford","Axel Sola","Azamat Bekoev","Azamat Murzakanov","Baisangur Susurkaev","Bassil Hafez","Bekzat Almakhan","Belal Muhammad","Ben Johnston","Benardo Sopaj","Beneil Dariush","Benoit Saint Denis","Bia Mesquita","Bilal Hasan","Billy Elekana","Billy Quarantillo","Billy Ray Goff","Bo Nickal","Bogdan Grad","Bogdan Guskov","Bolaji Oki","Borislav Nikolic","Brad Tavares","Brady Hiestand","Brando Pericic","Brandon Moreno","Brandon Royval","Brendan Allen","Brendson Ribeiro","Brian Ortega","Brunno Ferreira","Bruno Gustavo da Silva","Bruno Lopes","Bryce Mitchell","Caio Borralho","Calvin Kattar","Cam Rowston","Cameron Saaiman","Carli Judice","Carlos Leal","Carlos Prates","Carlos Ulberg","Carlos Vera","Carol Foro","Casey O'Neill","Ce Liu","Cesar Almeida","Cezary Oleksiejczuk","Chad Anheliger","ChangHo Lee","Charles Johnson","Charles Jourdain","Charles Oliveira","Charles Radtke","Charlie Campbell","Chase Hooper","Chelsea Chandler","Chepe Mariscal","Chidi Njokuani","Chris Curtis","Chris Duncan","Chris Gutierrez","Chris Padilla","Christian Edwards","Christian Leroy Duncan","Christian Rodriguez","Christopher Alvidrez","Ciryl Gane","Claudio Puelles","Clayton Carpenter","Cody Brundage","Cody Chovancek","Cody Durden","Cody Garbrandt","Cody Gibson","Cody Haddon","Colby Thicknesse","Conor McGregor","Cory Sandhagen","Court McGee","Cristian Quinonez","Curtis Blaydes","Da'Mon Blackshear","Dakota Hope","Damian Pinas","Damian Rzepecki","Damien Anderson","Damir Hadzovic","Dan Hooker","Dan Ige","Daniel Frunza","Daniel Rodriguez","Daniel Santos","Daniel Zellhuber","Daniil Donchenko","Danny Silva","Daria Zhelezniakova","Darren Elkins","Darrius Flowers","Davey Grant","David Martinez","David Onama","Deiveson Figueiredo","Delphine Benouaich","Denise Gomes","Dennis Buzukja","Denzel Freeman","Derrick Lewis","Diego Ferreira","Diego Lopes","Ding Meng","Dione Barbosa","Diyar Nurgozhay","Djorden Santos","Dom Mar Fan","Dominick Reyes","DongHun Choi","Donte Johnson","Dooho Choi","Douglas Rodrigues","Douglas Silva de Andrade","Drakkar Klose","Drew Dober","Dricus Du Plessis","Dusko Todorovic","Dustin Jacoby","Dustin Stoltzfus","Edgar Chairez","Edmen Shahbazyan","Edson Barboza","Eduarda Moura","Elijah Smith","Elise Reed","Elisha Ellison","Elves Brener","Eric McConico","Eric Nolan","Erin Blanchfield","Ernesta Kareckaite","Esteban Ribovics","Ethyn Ewing","Evan Elder","Ezra Elliott","Fabrizio Escarrega","Fares Ziam","Farid Basharat","Farman Hasanov","Fatima Kline","Felipe Franco","Felipe Lima","Fernando Padilla","Francis Marshall","Francisco Prado","Gabe Green","Gable Steveson","Gabriel Bonfim","Gabriel Santos","Gabriella Fernandes","Garrett Armfield","Gaston Bolanos","Gauge Young","Geoff Neal","Gerald Meerschaert","Giga Chikadze","Gilbert Urbina","Gillian Robertson","Gokhan Saricam","Grant Dawson","Gregory Rodrigues","Guilherme Pat","Gunnar Nelson","Hailey Cowan","Harry Hardwick","Hecher Sosa","Henrique da Silva Lopes","Hyder Amil","HyunSung Park","Ian Machado Garry","Iasmin Lucindo","Ibo Aslan","Ignacio Bahamondes","Ikram Aliskerov","Ilia Topuria","Imanol Rodriguez","Ion Cutelaba","Isaac Thomson","Islam Dulatov","Islam Makhachev","Ismael Bonfim","Ismail Naurdiev","Israel Adesanya","Iwo Baraniewski","JJ Aldrich","Jack Della Maddalena","Jack Hermansson","Jack Jenkins","Jackson McVey","Jacob Malkoun","Jacobe Smith","Jacqueline Cavalcanti","Jafel Filho","Jai Herbert","Jake Matthews","Jakub Wiklacz","Jalin Turner","Jamahal Hill","Jamall Emmers","Jamey-Lyn Horth","Jamie Siraj","Jan Blachowicz","Jaqueline Amorim","Jared Cannonier","Jared Gordon","Jasmine Jasudavicius","Javier Reyes","Jean Matsumoto","Jean Silva","Jean-Paul Lebosnoyani","Jefferson Nascimento","Jeisla Chaves","JeongYeong Lee","Jeremiah Wells","Jeremy Stephens","Jessica Andrade","Jhonata Diniz","Jim Miller","Jimmy Crute","Jingnan Xiong","Jiri Prochazka","Joanderson Brito","Joaquim Silva","Joaquin Buckley","Joe Pyfer","Joel Alvarez","John Castaneda","John Garza","John Yannis","Johnny Walker","Jon Kunneman","Jonathan Martinez","Jonathan Micallef","JooSang Yoo","Jordan Leavitt","Jose Delano","Jose Delgado","Jose Montanha","Jose Ochoa","Jose Souza","Joselyne Edwards","Joseph Kropschot","Joseph Morales","Josh Emmett","Josh Hokit","Joshua Van","Josiah Harrell","Josiane Nunes","Josias Musasa","Jovan Leka","Juan Diaz","Juan Martinetti","Julia Polastri","Julian Erosa","Juliana Miller","Julianna Pena","Julien Leblanc","Julius Walker","JunYong Park","Junior Tafa","Justin Gaethje","Kaan Ofli","Kai Asakura","Kai Kamaka III","Kai Kara-France","Kamaru Usman","Karine Silva","Karol Rosa","Karolina Kowalkiewicz","Katlyn Cerminara","Kaue Fernandes","Kayla Harrison","Keiichiro Nakamura","Kelvin Gastelum","Kennedy Nzechukwu","Ketlen Souza","Kevin Borjas","Kevin Christian","Kevin Holland","Kevin Vallejos","Khalil Rountree Jr.","Khamzat Chimaev","Khaos Williams","King Green","Klaudia Sygula","Kody Steele","Kurtis Campbell","Kyle Daukaus","Kyle Nelson","Kyle Prepolec","Kyler Phillips","Kyoji Horiguchi","Lance Gibson Jr.","Leon Edwards","Leon Shahbazyan","Lerone Murphy","Lerryan Douglas","Levan Chokheli","Levi Rodrigues Jr.","Li Jingliang","Logan Paxton","Loma Lookboonmee","Lone'er Kavanagh","Loopy Godinez","Losene Keita","Louie Sutherland","Louis Jourdain","Louis Lee Scott","Luana Pinheiro","Luana Santos","Lucas Brennan","Lucas Rocha","Ludovit Klein","Luis Dias de Assis","Luis Gurule","Luke Fernandez","Luke Riley","Mackenzie Dern","Macy Chiasson","Magomed Ankalaev","Magomed Tuchalov","Magomed Zaynukov","Magomedrasul Gasanov","Mairon Santos","Malcolm Wellmaker","Mandel Nallo","Manel Kape","Manoel Sousa","Manolo Zecchini","Manon Fiorot","Mansur Abdul-Malik","Mantas Kondratavicius","Manuel Torres","MarQuel Mederos","Marc-Andre Barriault","Marcin Tybura","Marcio Barbosa","Marco Tulio","Marcus Buchecha","Marcus McGhee","Marina Spasic","Mario Bautista","Mario Pinto","Mark Choinski","Mark Vologdin","Marlon Vera","Marnic Mann","Marvin Vettori","Marwan Rahiki","Mason Jones","Mateusz Gamrot","Mateusz Rebecki","Matheus Camilo","Matt Frevola","Matthew Adams","Matthieu Letho Duclos","Mauricio Ruffy","Max Gimenis","Max Holloway","Maycee Barber","Melissa Croden","Melissa Gatto","Melissa Mullins","Melquizael Costa","Melsik Baghdasaryan","Merab Dvalishvili","Michael Aswell Jr.","Michael Chandler","Michael Johnson","Michael Morales","Michael Oliveira","Michael Page","Michal Oleksiejczuk","Michelle Montague","Mick Parkin","Mickey Gall","Miesha Tate","Mike Davis","Mike Malott","Miles Johns","Milos Janicic","Miranda Maverick","Mitch Ramirez","Mitch Raposo","Mizuki","Modestas Bukauskas","Montel Jackson","Montserrat Conejo Ruiz","Morgan Charriere","Mridul Saikia","Movsar Evloev","Muhammad Naimov","Muhammad Said","Muin Gafurov","Murtazali Magomedov","Muslim Salikhov","Myktybek Orolbai","Namo Fazil","Nasrat Haqparast","Nassourdine Imavov","Natalia Silva","Nate Landwehr","Nathaniel Wood","Navajo Stirling","Nazim Sadykhov","Neil Magny","Nick Klein","Nicolas Dalby","Nicolle Caliari","Nikita Krylov","Nikolas Motta","Nikolay Veretennikov","Nikolija Milosevic","Noah Gugnon","Nora Cornolle","Norma Dumont","Nursulton Ruziboev","Nurullo Aliev","Nyamjargal Tumendemberel","Oban Elliott","Ode Osbourne","Ollie Schmid","Otari Tanzilovi","Ottman Azaitar","Oumar Sy","Ozzy Diaz","Paddy Pimblett","Pat Sabatini","Patricio Freire","Paulo Costa","Payton Talbott","Pete Rodriguez","Petr Yan","Piera Rodriguez","Polyana Viana","Priscila Cachoeira","Puja Tomar","Punahele Soriano","Quillan Salkilld","Rafa Garcia","Rafael Dos Anjos","Rafael Estevam","Rafael Fiziev","Rafael Tobias","Ramazan Temirov","Ramiro Jimenez","Ramiz Brahimaj","Ramon Taveras","Randy Brown","Rani Yahya","Raoni Barcelos","Raquel Pennington","Raul Rosas Jr.","Ravena Oliveira","Rayanne dos Santos","Regina Tarin","Rei Tsuruya","Reinier de Ridder","Renato Moicano","Richie Miranda","Ricky Simon","Ricky Turcios","Rinya Nakamura","Rizvan Kuniev","RJ Harris","Rob Font","Robelis Despaigne","Robert Bryczek","Robert Ruchala","Robert Valentin","Robert Whittaker","Roberto Romero","Rodolfo Bellato","Rodolfo Vieira","Rodrigo Sezinando","Rodrigo Vera","Roman Dolidze","Roman Kopylov","Roman Puga","Ronaldo Rodriguez","Rongzhu","Rose Namajunas","Ryan Gandra","Ryan Loder","Ryan Spann","Said Nurmagomedov","Saimon Oliveira","Salahdine Parnasse","Sam Hughes","Sam Patterson","Samuel Sanches","Santiago Luna","Santiago Ponzinibbio","Saygid Izagakhmaev","Sean Brady","Sean O'Malley","Sean Sharaf","Sean Strickland","Sean Woodson","Seokhyeon Ko","Sergei Pavlovich","Serghei Spivac","Serhiy Sidey","Shamil Gaziev","Shane Collins","Shanelle Dyer","Shara Magomedov","Shauna Bannon","Shavkat Rakhmonov","Shayilan Nuerdanbieke","Shi Ming","Sodiq Yusuff","Sofia Montenegro","Song Kenan","Song Yadong","Stephanie Luciano","Stephen Thompson","Steve Erceg","Steve Garcia","Steven Asplund","Steven Nguyen","SuYoung You","Sumudaerji","Tabatha Ricci","Tagir Ulanbekov","Tahir Abdullayev","Tai Tuivasa","Tainara Lisboa","Taiyilake Nueraji","Talita Alencar","Tallison Teixeira","Taner Trembley","Tanner Boser","Tatiana Suarez","Tatsuro Taira","Tereza Bleda","Terrance McKinney","Theodor Berggren","Thomas Gantt","Thomas Petersen","Tim Elliott","Tim Means","Timmy Cuamba","Tofiq Musayev","Tom Aspinall","Tom Nolan","Tom Pagliarulo","Tommy McMillen","Torrez Finney","Toshiomi Kazama","Tracy Cortez","Tresean Gore","Treston Vines","Trevor Peek","Trey Ogden","Trey Waters","Ty Miller","Tyrell Fortune","Umar Nurmagomedov","Uran Satybaldiev","Uros Medic","Valentina Shevchenko","Valter Walker","Vanessa Demopoulos","Veronica Hardy","Vicente Luque","Victor Henry","Victor Valenzuela","Vinicius Oliveira","Virna Jandiroba","Vitor Petrino","Vlasto Cepo","Volkan Oezdemir","Waldo Cortes-Acosta","Wang Cong","Wellington Turman","Wes Schultz","William Gomis","Xiao Long","Yadier del Valle","Yair Rodriguez","Yan Xiaonan","Yana Santos","Yaroslav Amosov","Yazmin Jauregui","Yi Sak Lee","Yilizhati Maimaitijiang","Yizha","Yousri Belgaroui","Youssef Zalal","Yuneisy Duben","Zachary Reese","Zhang Mingyang","Zhang Weili","Zhu Kangjie"];
 
  // Weekly UFC roster changes, newest week first. Populated by the weekly
  // snapshot-and-diff pipeline. Each entry:
  //   { week: "Jun 23–29, 2026", added: ["Name", ...], removed: ["Name", ...] }
  const ROSTER_CHANGES = [
+   { week: "August 1 – August 10, 2026", added: ["Richie Miranda", "Salahdine Parnasse"], removed: ["Stewart Nicoll", "Jessie Rosas"] },
    { week: "July 14 – July 31, 2026", added: ["Abubakar Vagaev", "Yilizhati Maimaitijiang", "Anna Melisano", "RJ Harris", "Muhammad Said", "Ezra Elliott", "Damien Anderson", "Alexander Poppeck", "Robelis Despaigne"], removed: ["Michel Pereira", "Sedriques Dumas", "Irene Aldana", "Victor Martinez"] },
  ];
 
@@ -113355,7 +113364,7 @@ function populateFightHistory(name) {
     const isOpen = panel.classList.contains('open');
     if (!isOpen && !panel.dataset.filled) {
       const inner = panel.querySelector('.sr-inner');
-      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null, panel.dataset.wc || '', panel.dataset.rounds || '');
+      if (inner && typeof renderScouting === 'function') renderScouting(inner, panel.dataset.f1, panel.dataset.f2, panel.dataset.date || null, panel.dataset.wc || '', panel.dataset.rounds || '', panel.dataset.dwcs === '1');
       panel.dataset.filled = '1';
       if (typeof fillPendingMoneylines === 'function') fillPendingMoneylines();
     }
@@ -128443,7 +128452,7 @@ const GL_SHEET = (function () {
 })();
 if (typeof window !== 'undefined') window.GL_SHEET = GL_SHEET;
 
-function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
+function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS) {
   if (!host || !name || !opp) return;
   host.innerHTML = '';
   const parseD = s => { const t = Date.parse(s); return isNaN(t) ? null : t; };
@@ -128558,7 +128567,11 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
   // the 1.8KB manifest has almost certainly landed — but "almost certainly" is
   // how the button vanishes for one visitor in a hundred with no way to explain
   // it, and the observer already handles the late case for free.
-  (function () {
+  // DWCS debutants have no fight-stats grid to cross against, so the deep-dive
+  // (and the "Generate ... sheet" button that lives inside its modal) would
+  // just open onto nothing — skip the entry point entirely rather than let it
+  // hide behind glDeepDiveAvailable's own (per-fighter) manifest check.
+  if (!isDWCS) (function () {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'fight-dd-bar';
@@ -128779,7 +128792,9 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds) {
 
   // Shareable matchup sheet. Appended at the very end of renderScouting so it is
   // the last thing in the Fight Info panel, under every section it summarises.
-  if (window.GL_SHEET) {
+  // Skipped for DWCS debutants along with the deep-dive button above — same
+  // reason: there's no real stats behind it to summarize.
+  if (window.GL_SHEET && !isDWCS) {
     const shareBtn = document.createElement('button');
     shareBtn.type = 'button';
     shareBtn.className = 'gl-sheet-btn';
@@ -129959,7 +129974,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '</div>' +
             ava(f.photo2, f.ini2, f.f2) +
           '</div>' +
-          (f.completed ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
+          ((f.completed || f.isDWCS) ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rounds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
           // Matchup Analytics is NOT a bar out here any more. It lives inside the
           // Fight Info dropdown (renderScouting, between Tale of the tape and
           // Style) and opens the hub modal. Two stacked bars under every row read
@@ -130319,6 +130334,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const rds = lab.includes('5 Round') ? '5 rounds' : (lab ? '3 rounds' : '');
     return '<div class="scouting-fight-panel" data-f1="' + escHtmlAttr(f.f1 || '') + '" data-f2="' + escHtmlAttr(f.f2 || '') +
       '" data-wc="' + escHtmlAttr(wc) + '" data-rounds="' + escHtmlAttr(rds) +
+      '" data-dwcs="' + (f.isDWCS ? '1' : '') +
       '"><div class="sr-inner"></div></div>';
   }
 
@@ -132385,6 +132401,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         won1, won2, completed, isNC, isDraw,
         date: dateStr,
         methodText: bout.method || '', methodDetail: bout.methodDetails || '', resRound: bout.resultRound || '', resTime: bout.resultTime || '',
+        // DWCS debutants have no UFC fight history to power stats off of, so the
+        // Simulate Matchup / Matchup Analytics Deep Dive / Generate Matchup Sheet
+        // buttons don't do anything useful for them — carried on the fight itself
+        // (rather than recomputed per-renderer) so every consumer of this fight
+        // object (both fightRow functions, scoutingFightPanelHTML) agrees on it.
+        isDWCS: isDWCSRaw(rawEvt),
       };
     });
     return {
@@ -132573,7 +132595,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '</div>' +
           '<div class="fighter-avatar">' + f.ini2 + '</div>' +
         '</div>' +
-        '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>' +
+        (f.isDWCS ? '' : '<button type="button" class="fight-sim-bar" onclick="event.stopPropagation();simulateMatchup(\'' + escJsAttr(f.f1) + '\',\'' + escJsAttr(f.f2) + '\',' + (rds === '5 RDS' ? 5 : 3) + ')">Simulate Matchup</button>') +
         // THE SECOND RENDERER. renderCarousel has its OWN fightRow, and this is the
         // one that draws the UPCOMING cards — i.e. most of the bouts on the page.
         // Patching only renderHomeFightCard put the button on the featured card and
@@ -135578,7 +135600,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const startMs = e => new Date(e.startsAt || e.eventDate || 0).getTime();
     const hasResults = e => (e.bouts || []).some(b =>
       b.winnerFighterSlug || (b.fighters || []).some(f => (f.outcome || '').toLowerCase() === 'win'));
-    const evtName = e => e.title || e.shortTitle || e.name || 'UFC Event';
+    const evtName = e => e.espnName || e.title || e.shortTitle || e.name || 'UFC Event';
     const fmtDate = e => {
       const d = e.eventDate || (e.startsAt ? String(e.startsAt).slice(0, 10) : '');
       if (!d) return '';
@@ -136898,7 +136920,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   const btEsc = s => (typeof escHtmlAttr === 'function' ? escHtmlAttr(s) : String(s == null ? '' : s));
   // Most cards are just "UFC Fight Night" — the date is what tells them apart.
   const btEvDate = e => { const t = Date.parse(e && e.startsAt); return isFinite(t) ? new Date(t).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/New_York' }) : ''; };
-  const btEvLabel = e => { const d = btEvDate(e); return e.short + (d ? ' · ' + d : ''); };
+  // e.full already prefers espnName over the generic "UFC Fight Night" bucket
+  // e.short carries (see btLoadEvents) — e.short was the bug: a DWCS card's log-form
+  // dropdown, parlay match label, and card-group header all read "UFC Fight Night"
+  // instead of the billed name, even though the data to fix it was one field over.
+  const btEvLabel = e => { const d = btEvDate(e); return (e.full || e.short) + (d ? ' · ' + d : ''); };
 
   // Storage lives in the Worker (KV). The server stamps createdAt / verified /
   // clvOk and owns the lock, so none of that is decided here.
@@ -137130,6 +137156,19 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const f = btFindFight(b.fightId, b.evSlug); if (!f) return [];
     const side = b.params && b.params.side;
     return (side === 1 || side === 2) ? [side === 1 ? f.f1 : f.f2] : [f.f1, f.f2];
+  }
+  // b.pick is built (see btBuildPick/btLegToBet) as btShort(name) + '...' and stored
+  // that way permanently — fine for the compact in-app bet list, but a share image
+  // has the room and a stranger reading it doesn't have the rest of the card's
+  // context to know which "Plessis" it means. Swap the baked-in surname back out
+  // for the full name only for the shared card, without touching the stored pick
+  // text everywhere else it's used.
+  function btExpandPickName(pick, names) {
+    if (!pick || !names || !names.length) return pick;
+    const full = names[0];
+    const short = btShort(full);
+    if (short && pick.indexOf(short) === 0) return full + pick.slice(short.length);
+    return pick;
   }
   function btAvHTML(name) {
     const ini = btEsc(String(name || '').trim().split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase());
@@ -137537,7 +137576,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const src = results ? all : pend;
     const bets = src.map(b => {
       const names = btBetNames(b);
-      const o = { pick: b.pick, match: b.match.split(' · ')[0], odds: (b.effOdds != null ? b.effOdds : b.odds),
+      const o = { pick: btExpandPickName(b.pick, names), match: b.match.split(' · ')[0], odds: (b.effOdds != null ? b.effOdds : b.odds),
         stake: b.stake, status: b.status, profit: btProfit(b), book: b.book || '',
         names: names, slugs: names.map(n => nameToSlug(n)) };
       // A parlay carries its legs, each resolved to its picked fighter so the sheet can
@@ -137546,7 +137585,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         o.legs = b.legs.map(l => {
           const ln = btBetNames({ market: l.market, fightId: l.fightId, evSlug: b.evSlug, params: l.params });
           const nm = ln[0] || '';
-          return { pick: l.pick || '', name: nm, slug: nm ? nameToSlug(nm) : '', odds: l.odds };
+          return { pick: btExpandPickName(l.pick || '', ln), name: nm, slug: nm ? nameToSlug(nm) : '', odds: l.odds };
         });
       }
       return o;

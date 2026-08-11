@@ -2828,11 +2828,16 @@ export const matchupPage = ({ subscribed, loggedIn, profileSlugs, upcomingEvents
   // markup — a stale matchup-free.json from last week's card must not hang a button
   // on this week's main event. Same reason glDeepDiveAvailable() hides it in the app.
   const free = matchupFree || null;
+  // DWCS main events are debutants with no real UFC grid behind them — same reason
+  // index.html's renderScouting skips the button outright for f.isDWCS rather than
+  // trusting glDeepDiveAvailable's per-fighter data check alone. Checked unconditionally
+  // (not just "would gen-matchup-free.cjs have had data") to match that app-wide rule.
+  const isDwcsCard = mfSpecialClass(card && card.event) === "mf-dwcs";
   // free.striking/free.grappling are now { all, win, loss } objects (gen-matchup-free.cjs
   // always emits the object shape, even for the "no grid yet" case, where all three
   // strings are "" — so the truthiness check has to look at .all specifically, not the
   // object itself, which would otherwise be truthy no matter what it contains.
-  const ddFresh = !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
+  const ddFresh = !isDwcsCard && !!(free && free.striking && free.striking.all && free.grappling && free.grappling.all && card && free.slug === card.slug);
   // The bout the payload describes, for the modal header. The slug check above proves
   // it is THIS card; this proves it is this card's MAIN EVENT, which is a different
   // question — boutOrder can be reshuffled by a withdrawal after the panel was
@@ -3214,6 +3219,11 @@ ${eventLd}
   .mf-meta{min-width:0;flex:1}
   .mf-rank{font-size:.6rem;font-weight:700;color:var(--accent);letter-spacing:.03em}
   .mf-name{font-weight:700;font-size:.9rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  /* Same fix as index.html's .fighter-name mobile override: on a narrow card, two
+     44px avatars + a fixed 78px center column leave too little room for an
+     ordinary-length name to fit on one line — "Anthony Wint" was clipping to
+     "Anthony …". Let it wrap instead of ellipsizing once space is actually tight. */
+  @media(max-width:480px){.mf-name{white-space:normal;overflow:visible;text-overflow:clip}}
   .mf-rec{font-size:.72rem;color:var(--muted)}
   .mf-rec b{color:var(--text)}
   /* Plain white for both, matching the events page (.gl-ml-fav/.gl-ml-dog in
