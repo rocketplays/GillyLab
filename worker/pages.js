@@ -4703,6 +4703,84 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
 </body></html>`;
 };
 
+/* ── Internal account list (founder-gated /admin/users) ─────────────────────────
+ * The third view alongside Stripe (real payments) and /admin/partners (referral
+ * signups): every account in USERS, newest first, with a free/premium/partner-
+ * comp breakdown so free-tier signup volume is visible somewhere at all. Read-
+ * only — no forms, nothing to submit, just a filterable table.
+ */
+export const usersAdminPage = ({ users, summary, filter }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const s = summary || {};
+  const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+  const statusOf = (u) => u.partnerComp ? { label: "Partner comp", cls: "ua-st-comp" }
+    : u.subscribed ? { label: "Premium", cls: "ua-st-prem" }
+    : { label: "Free", cls: "ua-st-free" };
+  const stat = (label, val) => `<div class="ua-stat"><div class="ua-stat-lbl">${esc(label)}</div><div class="ua-stat-val">${val}</div></div>`;
+  const tab = (key, label) => `<a class="ua-tab${(filter || "all") === key ? " on" : ""}" href="/admin/users${key === "all" ? "" : "?filter=" + key}">${esc(label)}</a>`;
+  const rows = (users || []).map((u) => {
+    const st = statusOf(u);
+    return `<tr>
+      <td>${esc(u.email)}</td>
+      <td class="ua-sub">${esc(fmtDate(u.createdAt))}</td>
+      <td><span class="ua-badge ${st.cls}">${st.label}</span></td>
+      <td class="ua-sub">${u.stripeCustomerId ? "linked" : "—"}</td>
+    </tr>`;
+  }).join("");
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0b">
+<title>Users — Admin</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:1.6rem 1.4rem 4rem}
+  h1{font-size:1.3rem;margin:0 0 1.2rem}
+  a{color:var(--accent);text-decoration:none}
+  .ua-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem;max-width:900px;margin-bottom:1.4rem}
+  .ua-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.65rem .8rem}
+  .ua-stat-lbl{font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .ua-stat-val{font-size:1.25rem;font-weight:800;margin-top:.15rem}
+  .ua-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.2rem}
+  .ua-tab{background:var(--card);border:1px solid var(--border);color:var(--muted);font-weight:700;font-size:.78rem;border-radius:999px;padding:.4rem .9rem}
+  .ua-tab:hover{color:var(--text);border-color:var(--muted)}
+  .ua-tab.on{background:rgba(0,230,104,.1);border-color:var(--accent);color:var(--accent)}
+  .ua-tablewrap{max-width:900px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  /* Same escape hatch as every other admin table in this file — a fixed-column
+     table never survives a narrow viewport otherwise. */
+  @media (max-width:640px){.ua-tablewrap{overflow-x:auto}table{white-space:nowrap}}
+  table{width:100%;border-collapse:collapse;background:var(--card)}
+  th{text-align:left;font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:.7rem .9rem;border-bottom:1px solid var(--border)}
+  td{padding:.6rem .9rem;border-bottom:1px solid var(--border);font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .ua-sub{color:var(--muted);font-size:.8rem}
+  .ua-badge{display:inline-block;border-radius:6px;padding:.15rem .5rem;font-size:.72rem;font-weight:700}
+  .ua-st-free{background:rgba(138,143,153,.12);color:var(--muted)}
+  .ua-st-prem{background:rgba(0,230,104,.1);color:var(--accent)}
+  .ua-st-comp{background:rgba(255,207,122,.1);color:#ffcf7a}
+</style></head><body>
+  <h1>Users</h1>
+  <div class="ua-stats">
+    ${stat("Total accounts", s.total || 0)}
+    ${stat("Free", s.free || 0)}
+    ${stat("Premium", s.premium || 0)}
+    ${stat("Partner comp", s.partnerComp || 0)}
+    ${stat("New, 7d", s.last7d || 0)}
+    ${stat("New, 30d", s.last30d || 0)}
+  </div>
+  <div class="ua-tabs">
+    ${tab("all", "All")}
+    ${tab("free", "Free")}
+    ${tab("premium", "Premium")}
+    ${tab("partner", "Partner comp")}
+  </div>
+  ${(users || []).length
+    ? `<div class="ua-tablewrap"><table><thead><tr><th>Email</th><th>Signed up</th><th>Status</th><th>Stripe</th></tr></thead><tbody>${rows}</tbody></table></div>`
+    : `<p style="color:var(--muted)">No accounts in this view.</p>`}
+</body></html>`;
+};
+
 /* ── Internal model scorecard (founder-gated /scorecard) ───────────────────────
  * Renders the embedded worker/scorecard-data.js (CLV + calibration) so we never
  * serve the raw prediction files to subscribers. Proof-of-concept, internal only.

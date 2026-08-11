@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -1700,6 +1700,20 @@ async function listAllUserEmails(env) {
   } while (cursor);
   return out;
 }
+// Full account records (not just emails) for /admin/users — same shape as
+// listPartners: page through the "u:" keys, fetch each value, newest first.
+// USERS has no separate append-only signup log (unlike PARTNERS' ledger:), so
+// this is a straight KV scan; fine at the account volumes this product has
+// today, same tradeoff listPartners/listAllUserEmails already accept.
+async function listAllUsers(env) {
+  const out = []; let cursor;
+  do {
+    const page = await env.USERS.list({ prefix: "u:", cursor });
+    for (const k of page.keys) { const v = await env.USERS.get(k.name); if (v) out.push(JSON.parse(v)); }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  return out.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
 const isOptedOut = async (env, email) => { const u = await getUser(env, email); return !!(u && u.emailOptOut); };
 
 // "Picks lock soon" — the day before the upcoming card, to accounts without an entry.
@@ -2259,6 +2273,34 @@ export default {
       if (path === "/scorecard") {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         return html(scorecardPage(scorecardData), 200, { "Cache-Control": "private, no-store" });
+      }
+
+      // Internal, founder-only: every account (free signups + premium + partner
+      // comps) in one place. Stripe's own dashboard already covers real paid
+      // subscriptions and /admin/partners already covers referral signups —
+      // this is the missing third view: plain free-tier signups over time.
+      // Read-only, so unlike /admin/partners there's nothing to POST here.
+      if (path === "/admin/users") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const users = await listAllUsers(env);
+        const DAY_MS = 86400000, now = Date.now();
+        const isPremium = (u) => !!u.subscribed && !u.partnerComp;
+        const isFree = (u) => !u.subscribed;
+        const isPartnerComp = (u) => !!u.partnerComp;
+        const summary = {
+          total: users.length,
+          free: users.filter(isFree).length,
+          premium: users.filter(isPremium).length,
+          partnerComp: users.filter(isPartnerComp).length,
+          last7d: users.filter((u) => now - (u.createdAt || 0) <= 7 * DAY_MS).length,
+          last30d: users.filter((u) => now - (u.createdAt || 0) <= 30 * DAY_MS).length,
+        };
+        const filter = url.searchParams.get("filter") || "all";
+        const filtered = filter === "free" ? users.filter(isFree)
+          : filter === "premium" ? users.filter(isPremium)
+          : filter === "partner" ? users.filter(isPartnerComp)
+          : users;
+        return html(usersAdminPage({ users: filtered, summary, filter }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // Internal, founder-only: add/view partners and log payouts. Plain HTML
