@@ -131858,22 +131858,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
     // The live feed only carries totals for cards the-odds-api's default books
     // actually price — small-name cards (DWCS is the recurring case) often get
-    // nothing. Fall back to hand-entered MANUAL_PROP_ODDS the same way
-    // buildMethodTable/buildRoundPropsTable already do.
-    if (!Object.keys(lineMap).length) {
-      const entry = findManualProps(fight);
-      if (entry && entry.totals) {
-        Object.keys(entry.totals).forEach(line => {
-          const perBook = entry.totals[line];
-          Object.keys(perBook).forEach(bookKey => {
-            const info = BOOK_KEY_MAP[bookKey];
-            if (!info) return;
-            const t = perBook[bookKey];
-            if (!lineMap[line]) lineMap[line] = {};
-            lineMap[line][bookKey] = { info, over: t.over, under: t.under };
-          });
+    // just ONE book that way (usually BetOnline, and often only days before the
+    // card, well after this file's hand-entered totals were filled in). ALWAYS
+    // merge in MANUAL_PROP_ODDS rather than only falling back when lineMap is
+    // still empty — a single live book must not hide every other book that was
+    // actually posted and entered by hand. Live data wins per book/line (it's
+    // fresher); manual only fills in books the live feed doesn't have.
+    const entry = findManualProps(fight);
+    if (entry && entry.totals) {
+      Object.keys(entry.totals).forEach(line => {
+        const perBook = entry.totals[line];
+        Object.keys(perBook).forEach(bookKey => {
+          const info = BOOK_KEY_MAP[bookKey];
+          if (!info) return;
+          if (lineMap[line] && lineMap[line][bookKey]) return; // live feed already has this book/line
+          const t = perBook[bookKey];
+          if (!lineMap[line]) lineMap[line] = {};
+          lineMap[line][bookKey] = { info, over: t.over, under: t.under };
         });
-      }
+      });
     }
     const lines = Object.keys(lineMap).map(Number).sort((a,b) => a - b);
     if (!lines.length) return '<p style="color:var(--muted);padding:1rem 0;">No rounds O/U data available yet.</p>';
