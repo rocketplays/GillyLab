@@ -4713,7 +4713,12 @@ export const usersAdminPage = ({ users, summary, filter }) => {
   const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const s = summary || {};
   const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "—";
+  // stripeComped is set server-side (see /admin/users in index.js) only for
+  // subscribed, non-partner accounts whose most recent Stripe invoice totaled
+  // $0 — friends/family/early-access on a 100%-off coupon rather than a real
+  // partner referral or a paying customer.
   const statusOf = (u) => u.partnerComp ? { label: "Partner comp", cls: "ua-st-comp" }
+    : u.stripeComped ? { label: "Comped (Stripe)", cls: "ua-st-stripecomp" }
     : u.subscribed ? { label: "Premium", cls: "ua-st-prem" }
     : { label: "Free", cls: "ua-st-free" };
   const stat = (label, val) => `<div class="ua-stat"><div class="ua-stat-lbl">${esc(label)}</div><div class="ua-stat-val">${val}</div></div>`;
@@ -4759,6 +4764,7 @@ export const usersAdminPage = ({ users, summary, filter }) => {
   .ua-st-free{background:rgba(138,143,153,.12);color:var(--muted)}
   .ua-st-prem{background:rgba(0,230,104,.1);color:var(--accent)}
   .ua-st-comp{background:rgba(255,207,122,.1);color:#ffcf7a}
+  .ua-st-stripecomp{background:rgba(122,167,255,.12);color:#7aa7ff}
 </style></head><body>
   <h1>Users</h1>
   <div class="ua-stats">
@@ -4766,6 +4772,7 @@ export const usersAdminPage = ({ users, summary, filter }) => {
     ${stat("Free", s.free || 0)}
     ${stat("Premium", s.premium || 0)}
     ${stat("Partner comp", s.partnerComp || 0)}
+    ${stat("Comped (Stripe)", s.stripeComped || 0)}
     ${stat("New, 7d", s.last7d || 0)}
     ${stat("New, 30d", s.last30d || 0)}
   </div>
@@ -4774,6 +4781,7 @@ export const usersAdminPage = ({ users, summary, filter }) => {
     ${tab("free", "Free")}
     ${tab("premium", "Premium")}
     ${tab("partner", "Partner comp")}
+    ${tab("stripecomp", "Comped (Stripe)")}
   </div>
   ${(users || []).length
     ? `<div class="ua-tablewrap"><table><thead><tr><th>Email</th><th>Signed up</th><th>Status</th><th>Stripe</th></tr></thead><tbody>${rows}</tbody></table></div>`

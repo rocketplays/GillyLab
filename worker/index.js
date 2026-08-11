@@ -359,6 +359,23 @@ async function revokePartnerComp(env, email) {
   u.subscribed = realSub;
   await putUser(env, e, u);
 }
+// Friends/family/early-access accounts get a 100%-off Stripe coupon applied
+// at Checkout rather than going through /admin/partners — there's no local
+// record of that at all (unlike a partner comp, which sets u.partnerComp
+// ourselves). The only place it's visible is Stripe's own invoice: a $0 total.
+// Used by /admin/users so those don't get counted as real (paying) premium.
+// Best-effort — a Stripe hiccup should just leave the account counted as
+// regular premium rather than fail the whole admin page.
+async function isStripeComped(env, customerId) {
+  if (!customerId) return false;
+  try {
+    const invs = await stripe(env, "invoices?customer=" + encodeURIComponent(customerId) + "&limit=1", "GET");
+    const inv = invs.data && invs.data[0];
+    return !!inv && (inv.total === 0);
+  } catch (err) {
+    return false;
+  }
+}
 async function verifyStripeSig(payload, header, secret) {
   // header: t=timestamp,v1=signature (HMAC-SHA256 of `${t}.${payload}`)
   const parts = Object.fromEntries((header || "").split(",").map(p => p.split("=")));
@@ -2284,22 +2301,41 @@ export default {
         if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
         const users = await listAllUsers(env);
         const DAY_MS = 86400000, now = Date.now();
-        const isPremium = (u) => !!u.subscribed && !u.partnerComp;
+        // Friends/family/early-access: subscribed via a 100%-off Stripe coupon,
+        // not through /admin/partners, so nothing local marks them comped —
+        // has to be asked of Stripe directly, per user. Only worth asking for
+        // accounts that would otherwise land in "premium" (subscribed, not
+        // already a known partner comp, and actually linked to a customer).
+        await Promise.all(users.map(async (u) => {
+          if (u.subscribed && !u.partnerComp && u.stripeCustomerId) {
+            u.stripeComped = await isStripeComped(env, u.stripeCustomerId);
+          }
+        }));
+        const isPremium = (u) => !!u.subscribed && !u.partnerComp && !u.stripeComped;
+        const isStripeComp = (u) => !!u.subscribed && !u.partnerComp && !!u.stripeComped;
         const isFree = (u) => !u.subscribed;
         const isPartnerComp = (u) => !!u.partnerComp;
-        const summary = {
-          total: users.length,
-          free: users.filter(isFree).length,
-          premium: users.filter(isPremium).length,
-          partnerComp: users.filter(isPartnerComp).length,
-          last7d: users.filter((u) => now - (u.createdAt || 0) <= 7 * DAY_MS).length,
-          last30d: users.filter((u) => now - (u.createdAt || 0) <= 30 * DAY_MS).length,
-        };
         const filter = url.searchParams.get("filter") || "all";
         const filtered = filter === "free" ? users.filter(isFree)
           : filter === "premium" ? users.filter(isPremium)
           : filter === "partner" ? users.filter(isPartnerComp)
+          : filter === "stripecomp" ? users.filter(isStripeComp)
           : users;
+        const summary = {
+          // Total/free/premium/partner-comp/stripe-comp stay whole-userbase
+          // counts regardless of the active tab — they ARE the tab picker's own
+          // counts, restating them per-tab would be redundant. 7d/30d aren't
+          // shown anywhere else, so those scope to the current filter instead —
+          // "new premium signups this week" is the actually useful number once
+          // you've clicked Premium.
+          total: users.length,
+          free: users.filter(isFree).length,
+          premium: users.filter(isPremium).length,
+          partnerComp: users.filter(isPartnerComp).length,
+          stripeComped: users.filter(isStripeComp).length,
+          last7d: filtered.filter((u) => now - (u.createdAt || 0) <= 7 * DAY_MS).length,
+          last30d: filtered.filter((u) => now - (u.createdAt || 0) <= 30 * DAY_MS).length,
+        };
         return html(usersAdminPage({ users: filtered, summary, filter }), 200, { "Cache-Control": "private, no-store" });
       }
 
