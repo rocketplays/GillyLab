@@ -130667,14 +130667,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
 
   // ───────────────────────────────────────────────────────────
-  // MANUAL PROP ODDS (Method of Victory / Round Props)
+  // MANUAL PROP ODDS (Method of Victory / Round Props / Rounds O/U)
   // ───────────────────────────────────────────────────────────
   // The live odds feed (data/odds.json, from the Odds API) only carries
-  // moneyline + rounds totals -- method-of-victory and round-by-round
-  // props aren't part of that feed, so they have to be entered and kept
-  // up to date here by hand. Leave a fight out of this object (or leave
-  // its method/roundProps empty) and those two panels just show a
-  // "not entered yet" placeholder instead of breaking the page.
+  // moneyline, and — for cards its default books actually price — rounds
+  // totals. method-of-victory and round-by-round props are never part of
+  // that feed at all, and small-name cards (DWCS is the recurring case)
+  // often don't get a totals line from it either, so all three have to be
+  // entered and kept up to date here by hand. Leave a fight out of this
+  // object (or leave any of method/roundProps/totals empty) and that panel
+  // just shows a "not entered yet"/live-feed placeholder instead of
+  // breaking the page — buildTotalsTable() only reaches for `totals` when
+  // data/odds.json had nothing for that fight.
   //
   // Keyed by an order-independent "lastname|lastname" pair (alphabetically
   // sorted, same scheme as pairKey() in scripts/odds-history-lib.js) so an
@@ -130687,6 +130691,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // `rounds`: 3 for a normal fight, 5 for a title fight / 5-round main
   // event -- controls how many round columns Round Props renders.
   //
+  // `totals` is fighter-agnostic (rounds O/U bets on the FIGHT, not either
+  // man) and keyed by the O/U line as a string, since a book can post more
+  // than one line at once (e.g. both 1.5 and 2.5) — each line maps book ->
+  // { over, under }.
+  //
   // Example (book keys match BOOK_KEY_MAP below; ko/sub/dec and r1/r2/r3
   // are the odds for THAT fighter to win by that method / in that round):
   //   'rosa|santos': {
@@ -130696,6 +130705,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //     },
   //     roundProps: {
   //       draftkings: { f1: { r1: 1200, r2: 700, r3: 350 }, f2: { r1: 800, r2: 600, r3: 400 } },
+  //     },
+  //     totals: {
+  //       '2.5': { draftkings: { over: -120, under: -110 } },
   //     },
   //   },
   const MANUAL_PROP_ODDS = {
@@ -130926,6 +130938,125 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         bovada:     { f1: { r1: 300, r2: 450, r3: 750 }, f2: { r1: 1000, r2: 1500, r3: 2200 } },
         draftkings: { f1: { r1: 275, r2: 450, r3: 700 }, f2: { r1: 1000, r2: 1400, r3: 2200 } },
         fanduel:    { f1: { r1: 310, r2: 500, r3: 800 }, f2: { r1: 1100, r2: 1600, r3: 2200 } },
+      },
+    },
+    // DWCS Season 10, Week 1 (Aug 11, 2026) — fightodds.io. All five bouts are
+    // 3-round. `totals` is fighter-agnostic (see buildTotalsTable's manual
+    // fallback below) — keyed by the O/U line as a string, since a book can
+    // (and here, does) carry more than one line at once.
+    'adams|wint': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1400, sub: 3500, dec: 2000 }, f2: { ko: -275, sub: 450, dec: 1000 } },
+        draftkings:  { f1: { ko: 1400, sub: 3500, dec: 2000 }, f2: { ko: -350, sub: 450, dec: 900 } },
+        fanduel:     { f1: { ko: 1400, sub: 3300, dec: 2200 }, f2: { ko: -270, sub: 500, dec: 1000 } },
+        betmgm:      { f1: { ko: 1400, sub: 3500, dec: 2000 }, f2: { ko: -450, sub: 450, dec: 900 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 2000, r2: 3500, r3: 5500 }, f2: { r1: -200, r2: 550, r3: 1300 } },
+        draftkings:  { f1: { r1: 1800, r2: 3500, r3: 5500 }, f2: { r1: -200, r2: 550, r3: 1200 } },
+        fanduel:     { f1: { r1: 2000, r2: 3500, r3: 5500 }, f2: { r1: -210, r2: 550, r3: 1200 } },
+        betmgm:      { f1: { r1: 1800, r2: 3500, r3: 5500 }, f2: { r1: -220, r2: 550, r3: 1200 } },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: 256, under: -315 }, bovada: { over: 255, under: -360 }, betus: { over: 240, under: -315 }, draftkings: { over: 270, under: -375 }, betmgm: { over: 260, under: -400 } },
+        '2.5': { bovada: { over: 475, under: -800 } },
+      },
+    },
+    'alsaghir|escarrega': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 375, sub: 500, dec: 550 }, f2: { ko: 165, sub: 750, dec: 600 } },
+        draftkings:  { f1: { ko: 330, sub: 500, dec: 550 }, f2: { ko: 150, sub: 700, dec: 600 } },
+        fanduel:     { f1: { ko: 380, sub: 550, dec: 500 }, f2: { ko: 165, sub: 750, dec: 600 } },
+        betmgm:      { f1: { ko: 325, sub: 500, dec: 550 }, f2: { ko: 150, sub: 600, dec: 600 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 400, r2: 600, r3: 1000 }, f2: { r1: 250, r2: 500, r3: 1000 } },
+        fanduel:    { f1: { r1: 490, r2: 800, r3: 1200 }, f2: { r1: 270, r2: 600, r3: 1000 } },
+        betmgm:     { f1: { r1: 400, r2: 600, r3: 1000 }, f2: { r1: 250, r2: 500, r3: 1000 } },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: -130, under: 110 }, bovada: { over: -125, under: -105 }, betus: { over: -130, under: 100 }, draftkings: { over: -120, under: -110 } },
+        '2.5': { bovada: { over: 185, under: -250 } },
+      },
+    },
+    'hasan|saikia': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -450, sub: 450, dec: 1400 }, f2: { ko: 3000, sub: 4500, dec: 3300 } },
+        draftkings:  { f1: { ko: -550, sub: 450, dec: 1400 }, f2: { ko: 2800, sub: 4500, dec: 3000 } },
+        fanduel:     { f1: { ko: -425, sub: 500, dec: 1500 }, f2: { ko: 3000, sub: 4500, dec: 3500 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: -350, r2: 650, r3: 1600 }, f2: { r1: 3000, r2: 5500, r3: 8000 } },
+        fanduel:    { f1: { r1: -370, r2: 700, r3: 1600 }, f2: { r1: 3500, r2: 6000, r3: 8000 } },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: 367, under: -475 }, bovada: { over: 375, under: -600 }, betus: { over: 350, under: -475 }, draftkings: { over: 380, under: -580 } },
+        '2.5': { bovada: { over: 750, under: -1600 } },
+      },
+    },
+    // BetMGM/FanDuel had no method or round-prop lines posted for this one — DraftKings only.
+    'mulumba|pagliarulo': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 165, sub: 275, dec: 800 }, f2: { ko: 250, sub: 700, dec: 1100 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 150, r2: 550, r3: 1200 }, f2: { r1: 275, r2: 850, r3: 1800 } },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: 174, under: -200 }, bovada: { over: 165, under: -220 }, betus: { over: 165, under: -200 }, draftkings: { over: 140, under: -176 }, fanduel: { over: 160, under: -210 } },
+        '2.5': { bovada: { over: 340, under: -525 } },
+      },
+    },
+    // Only DraftKings had method/round-prop lines posted for this one.
+    'kropschot|kunneman': {
+      rounds: 3,
+      method: {
+        draftkings: { f1: { ko: 800, sub: 350, dec: 1100 }, f2: { ko: 165, sub: 225, dec: 700 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 450, r2: 750, r3: 1800 }, f2: { r1: 120, r2: 550, r3: 1400 } },
+      },
+      totals: {
+        '1.5': { betonlineag: { over: 159, under: -182 }, bovada: { over: 155, under: -205 }, betus: { over: 150, under: -180 }, draftkings: { over: 154, under: -200 } },
+        '2.5': { bovada: { over: 300, under: -450 } },
+      },
+    },
+    // UFC 330 (Aug 15, 2026) — fightodds.io. Both are 5-round title fights.
+    // No `totals` here — DraftKings/BetOnline already carry rounds O/U for this
+    // card in the live feed (data/odds.json), unlike DWCS above.
+    'garry|makhachev': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 750, sub: 2500, dec: 450 }, f2: { ko: 750, sub: 200, dec: 120 } },
+        bovada:      { f1: { ko: 1100, sub: 2800, dec: 450 }, f2: { ko: 750, sub: 195, dec: 130 } },
+        // FanDuel had no KO/TKO line for either man.
+        fanduel:     { f1: { sub: 3300, dec: 450 }, f2: { sub: 210, dec: 135 } },
+        betmgm:      { f1: { ko: 700, sub: 2500, dec: 425 }, f2: { ko: 700, sub: 200, dec: 120 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1800, r2: 2200, r3: 2800, r4: 3500, r5: 4000 }, f2: { r1: 600, r2: 700, r3: 900, r4: 1100, r5: 1400 } },
+        bovada:      { f1: { r1: 2800, r2: 3000, r3: 3300, r4: 3300, r5: 3300 }, f2: { r1: 650, r2: 750, r3: 900, r4: 1100, r5: 1500 } },
+        fanduel:     { f1: { r1: 2700, r2: 3300, r3: 4000, r4: 4500, r5: 5500 }, f2: { r1: 650, r2: 850, r3: 1000, r4: 1400, r5: 1900 } },
+        betmgm:      { f1: { r1: 1500, r2: 2000, r3: 2500, r4: 3000, r5: 3500 }, f2: { r1: 650, r2: 750, r3: 850, r4: 1200, r5: 1800 } },
+      },
+    },
+    'dern|robertson': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 1000, sub: 205, dec: 150 }, f2: { ko: 1200, sub: 1200, dec: 275 } },
+        bovada:      { f1: { ko: 1050, sub: 193, dec: 146 }, f2: { ko: 1175, sub: 1175, dec: 260 } },
+        fanduel:     { f1: { ko: 1600, sub: 220, dec: 165 }, f2: { ko: 1400, sub: 1400, dec: 300 } },
+        betmgm:      { f1: { ko: 1000, sub: 200, dec: 150 }, f2: { ko: 1200, sub: 1000, dec: 250 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 600, r2: 800, r3: 1000, r4: 1300, r5: 1800 }, f2: { r1: 1600, r2: 2000, r3: 2500, r4: 3000, r5: 3500 } },
+        bovada:      { f1: { r1: 800, r2: 850, r3: 1000, r4: 1300, r5: 1800 }, f2: { r1: 2200, r2: 2500, r3: 3000, r4: 3300, r5: 3300 } },
+        fanduel:     { f1: { r1: 750, r2: 1000, r3: 1300, r4: 1600, r5: 1900 }, f2: { r1: 2200, r2: 2700, r3: 3000, r4: 4000, r5: 4500 } },
+        betmgm:      { f1: { r1: 600, r2: 900, r3: 1200, r4: 1500, r5: 1800 }, f2: { r1: 1500, r2: 1800, r3: 2500, r4: 3000, r5: 3500 } },
       },
     },
   };
@@ -131725,6 +131856,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         if (o.name === 'Under') lineMap[line][bk.key].under = o.price;
       });
     });
+    // The live feed only carries totals for cards the-odds-api's default books
+    // actually price — small-name cards (DWCS is the recurring case) often get
+    // nothing. Fall back to hand-entered MANUAL_PROP_ODDS the same way
+    // buildMethodTable/buildRoundPropsTable already do.
+    if (!Object.keys(lineMap).length) {
+      const entry = findManualProps(fight);
+      if (entry && entry.totals) {
+        Object.keys(entry.totals).forEach(line => {
+          const perBook = entry.totals[line];
+          Object.keys(perBook).forEach(bookKey => {
+            const info = BOOK_KEY_MAP[bookKey];
+            if (!info) return;
+            const t = perBook[bookKey];
+            if (!lineMap[line]) lineMap[line] = {};
+            lineMap[line][bookKey] = { info, over: t.over, under: t.under };
+          });
+        });
+      }
+    }
     const lines = Object.keys(lineMap).map(Number).sort((a,b) => a - b);
     if (!lines.length) return '<p style="color:var(--muted);padding:1rem 0;">No rounds O/U data available yet.</p>';
     const fid = plFightId(fight);
