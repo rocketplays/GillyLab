@@ -160,6 +160,21 @@ Order: UFC titles → other titles → bonuses → records → backgrounds/belts
 Also fix the FIGHTERS roster row if rank/record/country is stale —
 `data/rankings.json` (API-synced) is the authority for current rank and record.
 
+**DWCS (Dana White's Contender Series) fighters — do NOT touch ACTIVE_ROSTER.** A fighter
+who hasn't debuted in the UFC yet, or fought on DWCS and is awaiting a contract decision,
+is not on the UFC roster — winning the fight is not the same as winning a contract, and
+Dana White's decision can go either way regardless of who won in the cage. Write and verify
+the FIGHTERS/FIGHT_HISTORY/FIGHTER_STATS/ODDS_HISTORY/ACCOLADES entries as normal (a real
+profile is still worth having pre-fight, for the matchup/odds pages), but leave
+`ACTIVE_ROSTER` and `ROSTER_CHANGES` alone. Only after the event, once a fighter is
+confirmed signed, add them to `ACTIVE_ROSTER` and log the signing in `ROSTER_CHANGES`
+(`added`) — and add anyone who fought and did NOT get signed to `ROSTER_CHANGES` only if
+they were mistakenly added to `ACTIVE_ROSTER` already (remove them from there instead).
+Mirror any `ACTIVE_ROSTER`/`ROSTER_CHANGES` edit into `data/roster.json` — it's generated
+FROM index.html by `scripts/gen-roster.cjs` (which the free `/roster` page reads), so a
+hand-edit here is stale until that script next runs; if editing by hand, keep it exact —
+same fighters list minus/plus the same names, same `changes` entries.
+
 ## Step 4 — verify and commit
 
 - Re-run `python3 scripts/fighter-lookup.py "<Name>" --local-only` and confirm EVERY area
