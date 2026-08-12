@@ -133088,6 +133088,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // record, no history, no tape (same failure mode as 'zach-reese' above).
     'matt-adams': 'Matthew Adams',
     'joe-kropschot': 'Joseph Kropschot',
+    // The Odds API (and plenty of betting-market copy generally) drops his middle
+    // name; our DB / ESPN keep the full "Ian Machado Garry". Without this, Win
+    // Projections linked his name to a hollow profile.
+    'ian-garry': 'Ian Machado Garry',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -133111,6 +133115,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // slug-less Odds API) return "King Green"; map it to his DB profile.
     'king green': 'Bobby Green',
     'zach reese': 'Zachary Reese',
+    // Odds-market copy drops his middle name (see 'ian-garry' in SLUG_ALIASES).
+    'ian garry': 'Ian Machado Garry',
     // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
     'yisak lee': 'Yi Sak Lee',
     // Active-roster spellings that differ from the DB profile (also mapped in
