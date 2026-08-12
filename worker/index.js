@@ -712,7 +712,12 @@ async function loadUpcomingCard(env, url) {
   const final = bouts.length > 0 && bouts.every((x) => x.res);
   return {
     slug: ev.slug,
-    name: ev.title || ev.espnName || ev.shortTitle || ev.slug,
+    // espnName is the billed name ("Dana White's Contender Series: Season 10, Week
+    // 1", "UFC 329: McGregor vs. Holloway 2"); title/shortTitle collapse every
+    // unnumbered event to the generic "UFC Fight Night" bucket. Preferred here so
+    // /pickem's own banner and its submitted eventName (fed to the leaderboard when
+    // this event hasn't graded yet) both show the real card, not the bucket.
+    name: ev.espnName || ev.title || ev.shortTitle || ev.slug,
     date: (ev.startsAt || "").slice(0, 10),
     prelimsAt, final,
     locked: prelimsAt ? now >= Date.parse(prelimsAt) : false,
@@ -1485,7 +1490,11 @@ async function listAllKeys(env, prefix) {
 // + underdog threshold lowered to any dog (wPts > 10). "4" = underdog classified off the
 // captured CLOSING line when available, so a pick whose pick-time odds were missing (wPts
 // stuck at a neutral 10) still counts as a dog — re-grades every finalized card once.
-const GRADE_VERSION = "4";
+// "5" = ev.name now prefers espnName (the billed name) over the generic "UFC Fight
+// Night"/"UFC ###" bucket in emit-pickem-results.cjs — re-grades so the leaderboard's
+// already-cached event label picks up the fix instead of staying stuck on the bucket
+// name forever (ag.byEvent[slug].event is only (re)written when a slug re-grades).
+const GRADE_VERSION = "5";
 // Grade every final event whose marker doesn't match GRADE_VERSION and fold each
 // user's total into their agg record. Returns finalized slugs, newest first.
 async function ensureGraded(env, url) {

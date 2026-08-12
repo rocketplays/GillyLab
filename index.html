@@ -136153,6 +136153,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
     const idOf = (f) => (f.f1 + '__' + f.f2).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    // The billed name ("Dana White's Contender Series: Season 10, Week 1", "UFC 329:
+    // McGregor vs. Holloway 2"), not evt.name's generic "UFC Fight Night"/"UFC 329"
+    // bucket — used for display and for the eventName submitted to the server, which
+    // the leaderboard falls back to before this card has a graded entry.
+    const evtDisplayName = (evt) => (evt && (evt.espnName || evt.name)) || null;
     const roundsOf = (f) => { const m = (f.label || '').match(/(\d)\s*Round/i); return m ? +m[1] : (f.isMain ? 5 : 3); };
     // A bout's pick is COMPLETE when the winner, method, confidence AND (for a
     // finish) the round are all set. Decisions have no round, so they don't need one.
@@ -136475,7 +136480,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const host = document.getElementById('pickem-content');
       const lbl = document.getElementById('pickem-event-label');
       if (!host) return;
-      if (lbl && EVT) lbl.textContent = EVT.name || 'Upcoming card';
+      if (lbl && EVT) lbl.textContent = evtDisplayName(EVT) || 'Upcoming card';
       if (!EVT || !BOUTS.length) {
         host.innerHTML = '<div class="pk-empty">Picks open once the next card is announced. Check back soon.</div>';
         return;
@@ -136576,7 +136581,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       });
       return {
         name: NAME || null,
-        eventName: (EVT && EVT.name) || 'UFC Card',
+        eventName: evtDisplayName(EVT) || 'UFC Card',
         eventDate: (EVT && EVT.details) || '',
         graded,
         picks,
@@ -136624,7 +136629,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           round: (p.method && p.method !== 'Decision') ? (p.round || null) : null, confidence: p.confidence,
           wPts: parts.wPts, mPts: parts.mPts, rPts: parts.rPts });
       });
-      return { eventSlug: (EVT && EVT.slug) || '', eventName: (EVT && EVT.name) || '',
+      return { eventSlug: (EVT && EVT.slug) || '', eventName: evtDisplayName(EVT) || '',
         eventDate: (EVT && EVT.details) || '', prelimsAt: PRELIMS_AT, picks };
     }
     async function submit() {

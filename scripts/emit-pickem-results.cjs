@@ -57,7 +57,12 @@ function eventResult(ev) {
     .map(boutResult).filter(Boolean);
   if (!bouts.length) return null;
   const dateStr = ev.startsAt ? new Date(ev.startsAt).toISOString().slice(0, 10) : '';
-  return { slug: ev.slug || dateStr, name: ev.title || ev.shortTitle || 'UFC Event', date: dateStr, bouts };
+  // espnName carries the billed name ("Dana White's Contender Series: Season 10,
+  // Week 1"); title/shortTitle collapse every unnumbered event to the generic
+  // "UFC Fight Night" bucket (see fetch-espn-bouts.cjs's eventTitleFor). Preferring
+  // it here is what the leaderboard's per-event label reads (ensureGraded in
+  // worker/index.js takes ev.name from this file over the submitted pick record).
+  return { slug: ev.slug || dateStr, name: ev.espnName || ev.title || ev.shortTitle || 'UFC Event', date: dateStr, bouts };
 }
 
 function main() {
