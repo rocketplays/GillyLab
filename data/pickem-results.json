@@ -1,6 +1,53 @@
 {
-  "generatedAt": "2026-08-12T00:52:30.270Z",
+  "generatedAt": "2026-08-12T01:51:24.577Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-august-11-2026",
+      "name": "UFC Fight Night",
+      "date": "2026-08-11",
+      "bouts": [
+        {
+          "f1": "Anthony Wint",
+          "f2": "Matt Adams",
+          "winner": "Anthony Wint",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Fabrizio Escarrega",
+          "f2": "Abe Alsaghir",
+          "winner": "Abe Alsaghir",
+          "method": "Decision - Split",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Bilal Hasan",
+          "f2": "Mridul Saikia",
+          "winner": "Bilal Hasan",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Tom Pagliarulo",
+          "f2": "Ananias Mulumba",
+          "winner": "Tom Pagliarulo",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Jon Kunneman",
+          "f2": "Joe Kropschot",
+          "winner": "Joe Kropschot",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-fight-night-august-08-2026",
       "name": "UFC Fight Night",
