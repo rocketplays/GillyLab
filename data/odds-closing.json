@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-08T23:56:45.710Z",
+ "generatedAt": "2026-08-12T01:41:06.310Z",
  "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) — the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live — genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time.",
  "fights": [
   {
@@ -501,6 +501,26 @@
    "o1": 343,
    "o2": -453,
    "capturedAt": "2026-08-08T23:56:45.710Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-11-2026",
+   "date": "2026-08-11",
+   "section": "maincard",
+   "f1": "Anthony Wint",
+   "f2": "Matt Adams",
+   "o1": -1500,
+   "o2": 872,
+   "capturedAt": "2026-08-12T01:41:06.304Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-11-2026",
+   "date": "2026-08-11",
+   "section": "maincard",
+   "f1": "Fabrizio Escarrega",
+   "f2": "Abe Alsaghir",
+   "o1": -202,
+   "o2": 160,
+   "capturedAt": "2026-08-12T01:41:06.304Z"
   }
  ]
 }
