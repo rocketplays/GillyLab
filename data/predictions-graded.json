@@ -1654,7 +1654,36 @@
         "pts": -0.0584,
         "leaned": true
       }
+    },
+    {
+      "fightId": "abe alsaghir|fabrizio escarrega",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-12T12:56:25.770Z",
+      "a": {
+        "feed": "Abe Alsaghir",
+        "db": "Abe Alsaghir"
+      },
+      "b": {
+        "feed": "Fabrizio Escarrega",
+        "db": "Fabrizio Escarrega"
+      },
+      "winner": "A",
+      "method": "Decision - Split",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5202,
+      "modelClose": 0.5202,
+      "marketOpen": 0.5385,
+      "marketClose": 0.4464,
+      "leanA": -0.0183,
+      "nSnapshots": 5,
+      "clv": {
+        "toward": true,
+        "pts": 0.0921,
+        "leaned": false
+      }
     }
   ],
-  "generatedAt": "2026-08-12T00:52:30.211Z"
+  "generatedAt": "2026-08-12T12:56:25.775Z"
 }
