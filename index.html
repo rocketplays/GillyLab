@@ -8159,7 +8159,7 @@
    if (!picks.length) return;
    let d = '';
    try { if (res.date) d = new Date(res.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'America/New_York' }); } catch (e) {}
-   const data = { name: PK_HIST_NAME || null, eventName: res.event || 'UFC Card', eventDate: d,
+   const data = { name: PK_HIST_NAME || null, eventName: shareEventName(res.event) || 'UFC Card', eventDate: d,
                   graded: true, picks, totalPoints: res.total || 0 };
    if (typeof GL_SHEET !== 'undefined' && GL_SHEET.pickem) GL_SHEET.pickem(data);
  }
@@ -132764,6 +132764,34 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return pool.find(e => Date.parse(e.startsAt) + CARD_RUNTIME_MS >= now) || pool[pool.length - 1];
   }
 
+  // True once every non-cancelled bout on the card has a result. Mirrors the
+  // allDecided check fetch-espn-live.cjs computes server-side.
+  function glAllBoutsDecided(e) {
+    const bouts = (e.bouts || []).filter(b => !b.isCancelled);
+    return bouts.length > 0 && bouts.every(b => b.winnerFighterSlug);
+  }
+
+  // Odds/projections specifically: cut over to the NEXT card the moment this one's
+  // last bout is decided, not CARD_RUNTIME_MS (10h) after it started. The-odds-api
+  // drops a bout's market once it starts (capture-closing-odds.cjs's backfill notes
+  // confirm this repeatedly), so a fully-decided card has nothing left to show and
+  // the next card's lines are already live. A separate function from
+  // pickNextRawEvent on purpose: that one is ALSO the featured-card fallback when no
+  // hold is active, and an early cutover there would fight the DWCS/Saturday hold
+  // (cardHoldMsFor) by handing the featured slot to next week's card the instant the
+  // just-finished one's bouts are in the books, hours before the hold should let go.
+  // Added 2026-08-12: DWCS wrapped in ~3h but odds still held it the full 10h from
+  // its 7pm ET start.
+  function pickOddsRawEvent(apiData) {
+    const events = (apiData.data || []).slice()
+      .filter(e => e && e.status !== 'completed' && !glAllBoutsDecided(e))
+      .filter(e => !isRoadToUFCRaw(e))
+      .sort((a, b) => new Date(a.startsAt) - new Date(b.startsAt));
+    const withBouts = events.filter(e => (e.bouts || []).length);
+    const pool = withBouts.length ? withBouts : events;
+    return pool[0] || pickNextRawEvent(apiData);
+  }
+
   function buildEvtFromAPI(apiData) {
     return parseApiEvent(pickFeaturedRawEvent(apiData));
   }
@@ -133105,6 +133133,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // both use her ring name "Gigi".
     'giovanna canuto': 'Gigi Canuto',
   };
+
+  // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long
+  // enough to push the location off the card's fixed-width footer line — shorten to
+  // "DWCS: Week 1" there. Everywhere else (the pickem banner, the leaderboard) keeps
+  // the full billed name. Top-level (not inside the PICKEM module) because both the
+  // in-app tab's sharePayload() and the My History drill-down's sharePickemHistory()
+  // (line ~8136, a separate top-level function outside that module) need it.
+  function shareEventName(name) {
+    const m = /contender\s+series.*?week\s*(\d+)/i.exec(name || '');
+    return m ? ('DWCS: Week ' + m[1]) : name;
+  }
 
   // ESPN's athlete slug is NOT ascii-folded: it ships 'robert-ruchała', stroke and
   // all, while nameToSlug() folds our 'Robert Ruchala' to 'robert-ruchala'. Compare
@@ -136158,6 +136197,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // bucket — used for display and for the eventName submitted to the server, which
     // the leaderboard falls back to before this card has a graded entry.
     const evtDisplayName = (evt) => (evt && (evt.espnName || evt.name)) || null;
+    // shareEventName() (DWCS-shortening for share-sheet payloads) is defined
+    // top-level near resolveCanonicalFighterName — shared with sharePickemHistory(),
+    // a separate top-level function this module's scope can't see.
     const roundsOf = (f) => { const m = (f.label || '').match(/(\d)\s*Round/i); return m ? +m[1] : (f.isMain ? 5 : 3); };
     // A bout's pick is COMPLETE when the winner, method, confidence AND (for a
     // finish) the round are all set. Decisions have no round, so they don't need one.
@@ -136581,7 +136623,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       });
       return {
         name: NAME || null,
-        eventName: evtDisplayName(EVT) || 'UFC Card',
+        eventName: shareEventName(evtDisplayName(EVT)) || 'UFC Card',
         eventDate: (EVT && EVT.details) || '',
         graded,
         picks,
@@ -136868,7 +136910,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       // still can't surface a non-UFC or hypothetical bout just because the feed lists
       // one. Once the hold expires the two selections converge and it mirrors the
       // featured card as before.
-      const oddsRaw = (apiData && apiData.data && apiData.data.length) ? pickNextRawEvent(apiData) : null;
+      const oddsRaw = (apiData && apiData.data && apiData.data.length) ? pickOddsRawEvent(apiData) : null;
       const oddsEvt = oddsRaw ? (parseApiEvent(oddsRaw) || evt) : evt;
       renderProjectionsPage(oddsEvt);
       initSimFighterPickers();

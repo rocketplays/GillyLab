@@ -1798,6 +1798,14 @@ ${AURORA_CSS}
     var PK_UID=${JSON.stringify(email || "")};
     var PK_SCORE=${JSON.stringify(scoreMap)}, PK_EVT=${JSON.stringify(evtInfo)};
     var PK_RESULTS=${JSON.stringify(resultsMap)}, PK_FINAL=${card && card.final ? "true" : "false"};
+    // Share-sheet only: the full billed DWCS name ("Dana White's Contender Series:
+    // Season 10, Week 1") pushes the location off the card's fixed-width footer line
+    // -- shorten to "DWCS: Week N" there. Mirrors index.html's shareEventName(); the
+    // banner and leaderboard keep the full name.
+    function pkShareEventName(name){
+      var m=/contender\\s+series.*?week\\s*(\\d+)/i.exec(name||"");
+      return m?("DWCS: Week "+m[1]):name;
+    }
     function pkApi(url,opts){return fetch(url,Object.assign({headers:{"Content-Type":"application/json"}},opts||{})).then(function(r){return r.json();});}
     // Fade out before internal navigations (matches the auth/subscribe pages).
     document.addEventListener("click",function(e){
@@ -1912,7 +1920,7 @@ ${AURORA_CSS}
       });
       if(!picks.length){alert("No graded picks to share for that card.");return;}
       var d="";try{if(res.date)d=new Date(res.date).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"});}catch(e){}
-      var data={name:PK_NAME||null,eventName:res.event||"UFC Card",eventDate:d,graded:true,picks:picks,totalPoints:res.total||0};
+      var data={name:PK_NAME||null,eventName:pkShareEventName(res.event||"UFC Card"),eventDate:d,graded:true,picks:picks,totalPoints:res.total||0};
       if(window.GL_SHEET&&GL_SHEET.pickem){GL_SHEET.pickem(data);}else{alert("Share sheet still loading — try again in a moment.");}
     }
     function pkRenderHistoryEvent(slug){
@@ -2148,7 +2156,7 @@ ${AURORA_CSS}
       // browser JS, not a module. If eventWhen changes, change this.
       var d="";try{var _ts=(PK_EVT&&(PK_EVT.prelimsAt||(PK_EVT.date?PK_EVT.date+"T18:00:00Z":null)))||null;
         if(_ts)d=new Date(_ts).toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"});}catch(e){}
-      return{name:PK_NAME||null,eventName:(PK_EVT&&PK_EVT.name)||"UFC Card",eventDate:d,graded:graded,picks:picks,totalPoints:picks.reduce(function(t,p){return t+(p.points||0);},0)};
+      return{name:PK_NAME||null,eventName:pkShareEventName((PK_EVT&&PK_EVT.name)||"UFC Card"),eventDate:d,graded:graded,picks:picks,totalPoints:picks.reduce(function(t,p){return t+(p.points||0);},0)};
     }
     function pkDoShare(){
       var data=pkSharePayload();if(!data.picks.length){alert("Make at least one complete pick to share.");return;}
