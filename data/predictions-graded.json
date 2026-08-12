@@ -1596,7 +1596,65 @@
         "pts": -0.017,
         "leaned": false
       }
+    },
+    {
+      "fightId": "ananias mulumba|tom pagliarulo",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-12T00:52:30.205Z",
+      "a": {
+        "feed": "Tom Pagliarulo",
+        "db": "Tom Pagliarulo"
+      },
+      "b": {
+        "feed": "Ananias Mulumba",
+        "db": "Ananias Mulumba"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.3892,
+      "modelClose": 0.3892,
+      "marketOpen": 0.4085,
+      "marketClose": 0.4114,
+      "leanA": -0.0193,
+      "nSnapshots": 8,
+      "clv": {
+        "toward": false,
+        "pts": -0.0029,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "bilal hasan|mridul saikia",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-12T00:52:30.206Z",
+      "a": {
+        "feed": "Bilal Hasan",
+        "db": "Bilal Hasan"
+      },
+      "b": {
+        "feed": "Mridul Saikia",
+        "db": "Mridul Saikia"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.572,
+      "modelClose": 0.572,
+      "marketOpen": 0.884,
+      "marketClose": 0.9424,
+      "leanA": -0.312,
+      "nSnapshots": 5,
+      "clv": {
+        "toward": false,
+        "pts": -0.0584,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-11T12:52:34.282Z"
+  "generatedAt": "2026-08-12T00:52:30.211Z"
 }
