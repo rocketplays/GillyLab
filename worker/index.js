@@ -601,7 +601,12 @@ async function loadFocusEvent(env, url) {
   const total = (pick.ev.bouts || []).filter(b => b && !b.isCancelled && (b.fighters || []).length === 2).length;
   return {
     slug: pick.ev.slug,
-    name: pick.ev.title || pick.ev.espnName || pick.ev.shortTitle || pick.ev.slug,
+    // espnName is the billed name ("Dana White's Contender Series: Season 10, Week
+    // 1"); title/shortTitle collapse every unnumbered event to the generic "UFC
+    // Fight Night" bucket. Missed this copy when fixing the same bug in
+    // loadUpcomingCard/emit-pickem-results.cjs -- this one feeds the "current"
+    // (in-progress card) leaderboard scope and /matchup's live-results overlay.
+    name: pick.ev.espnName || pick.ev.title || pick.ev.shortTitle || pick.ev.slug,
     date: (pick.ev.startsAt || "").slice(0, 10),
     live: pick.ev.status === "live",
     bouts: pick.bouts, decided: pick.bouts.length, total,
