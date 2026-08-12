@@ -4767,6 +4767,7 @@
  { name: "Court McGee", division: "WW", rank: "NR", record: "23-14-0", initials: "CMC", country: "USA" },
  { name: "Daniel Frunza", division: "WW", rank: "NR", record: "9-4-0", initials: "DAF", country: "Romania" },
  { name: "Jean-Paul Lebosnoyani", division: "WW", rank: "NR", record: "11-2-0", initials: "JPL", country: "USA" },
+ { name: "Gary Balletto Jr.", division: "WW", rank: "NR", record: "11-3-0", initials: "GBA", country: "USA" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
@@ -9059,6 +9060,12 @@
  "Gabe Green": { ht:"5'10\"", dob:"1993-05-02", reach:'73"', stance:"Switch", slpm:5.60, strAcc:"45%", sapm:6.19, strDef:"47%", kd:0.48, tdLanded:0.71, tdAcc:"50%", tdDef:"50%", subAvg:0.48, finRate:"92%", streak:1, gym:"Subfighter MMA" },
  "Gabriel Santos": { ht:"5'9\"", dob:"1996-11-28", reach:'70"', stance:"Orthodox", slpm:4.35, strAcc:"61%", sapm:4.31, strDef:"45%", kd:0.29, tdLanded:3.80, tdAcc:"54%", tdDef:"88%", subAvg:1.17, finRate:"67%", streak:2, gym:"Chute Boxe Diego Lima" },
  "Garrett Armfield": { ht:"5'6\"", dob:"1996-10-09", reach:'70"', stance:"Orthodox", slpm:5.35, strAcc:"54%", sapm:3.64, strDef:"56%", kd:0.55, tdLanded:1.10, tdAcc:"50%", tdDef:"65%", subAvg:0.55, finRate:"80%", streak:0, gym:"Marathon MMA" },
+ // No UFC fight yet (DWCS S10W3, Aug 25 2026 vs. Sean Clancy Jr.) -- no ufc.com
+ // athlete page and ESPN's stats page returns "No available information", so no
+ // official per-fight numbers exist anywhere to extrapolate from. finRate and
+ // streak are computed from his verified CES record (11-3-0, 11/11 wins by
+ // finish -- 4 KO/TKO, 7 submission -- per ESPN's fight log).
+ "Gary Balletto Jr.": { ht:"5'10\"", dob:"1995-01-20", reach:'70"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"Tri-Force MMA" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -41445,6 +41452,24 @@
     { opponent: "Steven Graham", odds: -188 },
     { opponent: "Mateo Alejandro Vogel", odds: -220 },
   ],
+  // Only 4 of his 14 fights ever had a tracked BestFightOdds line (regional CES
+  // cards rarely get market coverage) -- the other 10 have no odds history.
+  // Reconstructed via WebFetch summary of bestfightodds.com/fighters/Gary-Balletto-Jr-11179,
+  // not the raw multi-book table (fighter-lookup.py, which parses that table
+  // directly, wasn't available this session -- no Python interpreter in this
+  // sandbox). Values are the second (closing) number of the two-number range the
+  // summary returned for each fight; worth a re-check against the raw BFO table
+  // once the script is runnable again. The Pat Casey line is dated Feb 23, 2024
+  // (CES 76, the fight that actually happened, confirmed via FIGHT_HISTORY) even
+  // though BFO's own page dated that row "Nov 17, 2022" (CES 71) -- no evidence of
+  // an earlier Balletto-Casey booking exists anywhere searchable, so this is most
+  // likely BFO retaining an original book date from before a reschedule.
+  "Gary Balletto Jr.": [
+    { opponent: "Pat Casey", odds: -550 },
+    { opponent: "Billy Ray Goff", odds: 138 },
+    { opponent: "Daniel Frunza", odds: -400 },
+    { opponent: "Dahlen Wilson", odds: -280 },
+  ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
     { opponent: "Payton Talbott", odds: 145 },
@@ -56563,6 +56588,22 @@ const FIGHT_HISTORY = {
     { date: "May 24, 2019", opponent: "Ronnie Lawrence", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 67", org: "LFA" },
     { date: "Oct 27, 2018", opponent: "Joey Estrada", result: "W", method: "TKO (Punches)", round: 1, time: "0:11", event: "Walkout FC 13: New Era", org: "Walkout FC" },
     { date: "Aug 18, 2018", opponent: "Shane Bridges", result: "W", method: "KO (Punches)", round: 1, time: "3:36", event: "Pyramid Fights 8", org: "Pyramid Fights" },
+  ],
+  "Gary Balletto Jr.": [
+    { date: "Apr 5, 2025", opponent: "William Dunkle", result: "W", method: "KO/TKO", round: 2, time: "4:43", event: "CES 80: Balletto Jr. vs. Dunkle", org: "CES" },
+    { date: "Nov 9, 2024", opponent: "Bruno Quintanilha", result: "W", method: "KO/TKO", round: 2, time: "2:36", event: "CES 79: Balletto Jr. vs. Quintanilha", org: "CES" },
+    { date: "Feb 23, 2024", opponent: "Pat Casey", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:08", event: "CES 76: Balletto Jr. vs. Casey", org: "CES" },
+    { date: "Jul 29, 2023", opponent: "James Cannon", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "0:37", event: "CES 74: Balletto Jr. vs. Cannon", org: "CES" },
+    { date: "Mar 4, 2022", opponent: "Billy Ray Goff", result: "L", method: "KO/TKO", round: 1, time: "4:34", event: "CES 66: Soukhamthath vs. Silva", org: "CES" },
+    { date: "Sep 17, 2021", opponent: "Daniel Frunza", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:56", event: "CES 64: Bessette vs. Dela Cruz", org: "CES" },
+    { date: "Apr 30, 2021", opponent: "Dahlen Wilson", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "2:26", event: "CES 62: Paiva vs. Smith", org: "CES" },
+    { date: "Apr 6, 2018", opponent: "Jeremiah Wells", result: "L", method: "KO (Punch)", round: 1, time: "0:57", event: "CES 49: Curtis vs. Norwood", org: "CES" },
+    { date: "Oct 27, 2017", opponent: "Sharif Jones", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "3:17", event: "CES MMA 46: Howard vs. Carroll", org: "CES" },
+    { date: "Aug 11, 2017", opponent: "Nick Alley", result: "W", method: "TKO (Punches)", round: 2, time: "0:58", event: "CES MMA 45: Gooch vs. Coutinho", org: "CES" },
+    { date: "Mar 31, 2017", opponent: "Chris Torres", result: "W", method: "Submission (Kneebar)", round: 1, time: "1:12", event: "CES MMA 42: Curtis vs. Santiago Jr.", org: "CES" },
+    { date: "Nov 23, 2016", opponent: "Montoyia Swilling", result: "W", method: "KO/TKO", round: 1, time: "2:33", event: "CES MMA 40: Andrews vs. Sheppard", org: "CES" },
+    { date: "Mar 11, 2016", opponent: "Cruz Johnson", result: "W", method: "Submission (Heel Hook)", round: 1, time: "2:37", event: "CES MMA 33: Soukhamthath vs. Nordby", org: "CES" },
+    { date: "Aug 14, 2015", opponent: "Anthony Giacchina", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CES MMA 30", org: "CES" },
   ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
@@ -118363,6 +118404,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "FAC (Fighting Alliance Championship) Bantamweight Champion", detail: null },
     { icon: "🏅", title: "Two-time amateur MMA champion (6-1 amateur record)", detail: null }
   ],
+  "Gary Balletto Jr.": [
+    { icon: "🏆", title: "CES MMA Welterweight World Champion (submitted Pat Casey for the vacant title, Feb 2024; two successful defenses — Bruno Quintanilha Nov 2024, William Dunkle Apr 2025)", detail: null },
+    { icon: "🏆", title: "CES MMA Middleweight World Champion (submitted James Cannon for the vacant title, Jul 2023)", detail: null },
+    { icon: "🏅", title: "3rd fighter in CES MMA history to hold titles in two weight classes at once", detail: null },
+    { icon: "🥊", title: "Also competes professionally as a boxer", detail: null },
+    { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Sean Clancy Jr.)", detail: null }
+  ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
     { icon: "🏅", title: "Performance of the Night — vs. Collin Anglin", detail: null }
@@ -133092,6 +133140,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // name; our DB / ESPN keep the full "Ian Machado Garry". Without this, Win
     // Projections linked his name to a hollow profile.
     'ian-garry': 'Ian Machado Garry',
+    // ESPN's DWCS listing drops the "Jr."; his CES/regional record (and every
+    // other fighter's FIGHT_HISTORY row referencing him) is under "Gary Balletto Jr."
+    'gary-balletto': 'Gary Balletto Jr.',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -133117,6 +133168,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'zach reese': 'Zachary Reese',
     // Odds-market copy drops his middle name (see 'ian-garry' in SLUG_ALIASES).
     'ian garry': 'Ian Machado Garry',
+    'gary balletto': 'Gary Balletto Jr.',
     // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
     'yisak lee': 'Yi Sak Lee',
     // Active-roster spellings that differ from the DB profile (also mapped in
