@@ -18,10 +18,22 @@ name: Live results during a card
 # Windows are UTC. Saturday 06:00-23:59 covers everything from an early Shanghai
 # card (prelims 07:00Z) to a Vegas main card (01:00Z Sunday); Sunday 00:00-09:00
 # carries that Vegas card to its end.
+#
+# Dana White's Contender Series airs Tuesdays, 23:00:00.000Z every week per ESPN
+# (Meta APEX, Las Vegas — checked weeks 1-10 of season 10, all identical). Added
+# 2026-08-12 after week 1 got zero live coverage: results still landed via the
+# twice-daily update-odds.yml rebuild, but that script never writes box scores or
+# fight-history rows (that's fetch-espn-live.cjs-only), so both went missing.
+# Tuesday 20:00-23:59 + Wednesday 00:00-09:00 gives the same lead-in/tail margin
+# as the Saturday card. Left in permanently, not scoped to season 10 — DWCS comes
+# back for new seasons through the year and the probe is a cheap no-op (~30s) on
+# any Tuesday/Wednesday with nothing live, same as an off-week Saturday.
 on:
   schedule:
-    - cron: '*/10 6-23 * * 6'   # Saturday, all day UTC
-    - cron: '*/10 0-9 * * 0'    # Sunday morning UTC — the tail of a US Saturday card
+    - cron: '*/10 6-23 * * 6'    # Saturday, all day UTC
+    - cron: '*/10 0-9 * * 0'     # Sunday morning UTC — the tail of a US Saturday card
+    - cron: '*/10 20-23 * * 2'   # Tuesday evening UTC — DWCS
+    - cron: '*/10 0-9 * * 3'     # Wednesday morning UTC — the tail of a DWCS card
   workflow_dispatch:
     inputs:
       event:

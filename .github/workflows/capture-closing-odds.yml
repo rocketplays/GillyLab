@@ -24,6 +24,16 @@ on:
     # add-only, never touches a record a real in-window capture already made),
     # so it's a no-op most weeks and only ever fills a genuine total miss.
     - cron: '0 12 * * 0'        # Sunday noon UTC
+    # Dana White's Contender Series airs Tuesdays, 23:00:00.000Z every week (verified
+    # weeks 1-10 of season 10). Added 2026-08-12 — week 1 got no closing-line capture
+    # at all, same root cause as live-results.yml's gap: this workflow's cron never
+    # fired on a Tuesday. Left in permanently across seasons, same reasoning as that
+    # file. prelimsStartsAt == startsAt for DWCS (no separate prelims call), so
+    # pickTarget()'s single window just captures everything tagged 'prelims' — the
+    # script already handles that correctly, no code change needed there.
+    - cron: '*/3 20-23 * * 2'   # Tuesday evening UTC — DWCS
+    - cron: '*/3 0-9 * * 3'     # Wednesday morning UTC — tail of a DWCS card
+    - cron: '0 12 * * 3'        # Wednesday noon UTC — DWCS catch-up sweep
   workflow_dispatch:
     inputs:
       force_slug:  { description: 'Force an event slug (manual capture)', required: false }
@@ -36,10 +46,10 @@ concurrency:
 
 jobs:
   capture:
-    # Skip the catch-up tick here — it's handled by the catchup job below. Not
+    # Skip the catch-up ticks here — they're handled by the catchup job below. Not
     # required for correctness (this job's own --check gate would just report
-    # capture=false at noon Sunday), just avoids a pointless odds-api fetch.
-    if: github.event.schedule != '0 12 * * 0'
+    # capture=false at noon Sunday/Wednesday), just avoids a pointless odds-api fetch.
+    if: github.event.schedule != '0 12 * * 0' && github.event.schedule != '0 12 * * 3'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -108,7 +118,7 @@ jobs:
   # means a broken/exhausted ODDS_API_KEY (a plausible reason the ticks above went
   # completely silent one week) doesn't also take this down.
   catchup:
-    if: github.event.schedule == '0 12 * * 0' || (github.event_name == 'workflow_dispatch' && github.event.inputs.force_phase == 'catchup')
+    if: github.event.schedule == '0 12 * * 0' || github.event.schedule == '0 12 * * 3' || (github.event_name == 'workflow_dispatch' && github.event.inputs.force_phase == 'catchup')
     runs-on: ubuntu-latest
     permissions:
       contents: write
