@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, CARD_HOLD_MS } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -626,10 +626,10 @@ async function handleLiveResults(env, url) {
     live: focus.live, final, decided: focus.decided, total: focus.total, bouts,
   }, 200, noStore);
 }
-// CARD_HOLD_MS (how long a finished card keeps the featured/pickable slot) is imported
-// from pages.js so the Worker has exactly one copy — /matchup, /pickem and
-// /api/live-results must roll over on the same tick or the surfaces disagree, which is
-// the bug this whole mechanism exists to prevent.
+// cardHoldMsFor (how long a finished card keeps the featured/pickable slot — 34h,
+// 13h for DWCS) is imported from pages.js so the Worker has exactly one copy —
+// /matchup, /pickem and /api/live-results must roll over on the same tick or the
+// surfaces disagree, which is the bug this whole mechanism exists to prevent.
 
 // A bout is settled once the feed carries a result (draws/NCs have no winner slug).
 function heldBoutSettled(b) {
@@ -655,7 +655,7 @@ async function loadHeldCard(env, url, now) {
     // the live feed mid-card.
     .filter((e) => e && (e.bouts || []).length && e.status === "completed"
       && e.bouts.every(heldBoutSettled)
-      && t(e) > 0 && t(e) <= now && t(e) + CARD_HOLD_MS >= now)
+      && t(e) > 0 && t(e) <= now && t(e) + cardHoldMsFor(e.espnName || e.title || e.shortTitle) >= now)
     .sort((a, b) => t(b) - t(a))[0] || null;
 }
 
@@ -670,9 +670,10 @@ async function loadUpcomingCard(env, url) {
     feed = await r.json();
   } catch { return null; }
   const now = Date.now();
-  // A finished card holds this slot for 34h after its main-card start, matching the
-  // app's CARD_HOLD_MS — so /pickem keeps showing last night's scored picks through
-  // Sunday and hands off Monday morning, in step with every other surface.
+  // A finished card holds this slot for 34h after its main-card start (13h for
+  // DWCS — see cardHoldMsFor), matching the app's hold — so /pickem keeps showing
+  // last night's scored picks through Sunday and hands off Monday morning, in
+  // step with every other surface.
   //
   // The hold has to come from event-recent.json, NOT from a wider window here: once a
   // card is over the upstream feed removes it from event.json outright rather than

@@ -313,6 +313,18 @@ function cnt(key, fallback) {
 // the Worker's card pickers; index.html keeps its own copy because it is a standalone
 // static file, and the two must be changed together.
 export const CARD_HOLD_MS = 34 * 3600 * 1000;
+// DWCS airs a weeknight (Tuesday ~7pm ET) with no Sunday to come back on — just
+// the one overnight. 34h would carry it past all of Wednesday into Thursday
+// morning. 13h instead: ~7pm ET start + 13h lands ~8am ET the next morning,
+// mirroring index.html's DWCS_CARD_HOLD_MS (the two must stay in step — see
+// isDWCSTitle below). Added 2026-08-12 after DWCS S10W1.
+export const DWCS_CARD_HOLD_MS = 13 * 3600 * 1000;
+// Same billed-name check as index.html's isDWCSRaw, applied to whatever title
+// string a caller already has on hand (a raw event's espnName/title/shortTitle,
+// or a baked card's `event` field) rather than a raw event object, since callers
+// here hold each of those shapes at different points.
+export const isDWCSTitle = (name) => /contender\s+series|dana\s+white/i.test(name || "");
+export const cardHoldMsFor = (name) => isDWCSTitle(name) ? DWCS_CARD_HOLD_MS : CARD_HOLD_MS;
 
 // landing-data.js bakes BOTH the next card and the most recently finished one
 // (`held`). Deciding between them is a function of the CLOCK, so it happens here, per
@@ -322,7 +334,7 @@ export const CARD_HOLD_MS = 34 * 3600 * 1000;
 function currentLanding() {
   const h = landingData && landingData.held;
   const t = h && h.startsAt ? Date.parse(h.startsAt) : NaN;
-  if (!h || !isFinite(t) || t + CARD_HOLD_MS < Date.now()) return landingData;
+  if (!h || !isFinite(t) || t + cardHoldMsFor(h.card && h.card.event) < Date.now()) return landingData;
   return Object.assign({}, landingData, {
     card: h.card || landingData.card,
     matchup: h.matchup || landingData.matchup,
@@ -336,7 +348,7 @@ function currentLanding() {
 function isHoldingFinishedCard() {
   const h = landingData && landingData.held;
   const t = h && h.startsAt ? Date.parse(h.startsAt) : NaN;
-  return !!(h && isFinite(t) && t + CARD_HOLD_MS >= Date.now());
+  return !!(h && isFinite(t) && t + cardHoldMsFor(h.card && h.card.event) >= Date.now());
 }
 
 // The app/landing footer (brand + About/Terms/Privacy/Contact + disclaimer), shared

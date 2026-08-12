@@ -132643,6 +132643,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // resultRound, method, per-fighter outcome) in the same shape parseApiEvent
   // already handles for the past-events dropdown.
   const CARD_HOLD_MS = 34 * 3600 * 1000;
+  // DWCS airs a weeknight (Tuesday ~7pm ET), not a Saturday -- there's no
+  // Sunday for someone to "come back" on, just the one overnight. The 34h
+  // Saturday hold would carry it past all of Wednesday and into Thursday
+  // morning, well past the point the next Saturday-card cycle should already
+  // be visible. 13h instead: Tuesday ~7pm ET start + 13h lands ~8am ET
+  // Wednesday -- the next morning, same spirit as the Saturday hold, sized to
+  // a weeknight instead of a weekend. Added 2026-08-12 after DWCS S10W1.
+  const DWCS_CARD_HOLD_MS = 13 * 3600 * 1000;
+  const cardHoldMsFor = (rawEvt) => isDWCSRaw(rawEvt) ? DWCS_CARD_HOLD_MS : CARD_HOLD_MS;
   let GL_HOLD_RAW = null, GL_HOLD_LOADED = false;
 
   // A bout counts as settled once the feed has a result on it (a draw/NC has no
@@ -132661,7 +132670,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       .filter(e => e && (e.bouts || []).length && e.status === 'completed'
         && e.bouts.every(glBoutSettled))
       .map(e => ({ e: e, t: Date.parse(e.startsAt || e.eventDate || 0) || 0 }))
-      .filter(x => x.t > 0 && x.t <= now && x.t + CARD_HOLD_MS >= now)
+      .filter(x => x.t > 0 && x.t <= now && x.t + cardHoldMsFor(x.e) >= now)
       .sort((a, b) => b.t - a.t)[0] || {}).e || null;
   }
 
@@ -132710,7 +132719,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // A finished card inside its hold window outranks the next scheduled one.
     // Re-checked against the clock on every call so a long-open tab rolls over
     // on its own rather than holding the card forever.
-    if (GL_HOLD_RAW && (Date.parse(GL_HOLD_RAW.startsAt || 0) || 0) + CARD_HOLD_MS >= Date.now()) return GL_HOLD_RAW;
+    if (GL_HOLD_RAW && (Date.parse(GL_HOLD_RAW.startsAt || 0) || 0) + cardHoldMsFor(GL_HOLD_RAW) >= Date.now()) return GL_HOLD_RAW;
     return pickNextRawEvent(apiData);
   }
 
