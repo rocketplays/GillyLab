@@ -2102,7 +2102,17 @@ ${AURORA_CSS}
       // First + last name match — bridges a dropped/added middle name ("Jose Delgado"
       // vs "Jose Miguel Delgado") that prefix matching can't.
       var ta=na.split(" "),tb=nb.split(" ");
-      return ta.length>=2&&tb.length>=2&&ta[0]===tb[0]&&ta[ta.length-1]===tb[tb.length-1];
+      if(ta.length>=2&&tb.length>=2&&ta[0]===tb[0]&&ta[ta.length-1]===tb[tb.length-1])return true;
+      // Last name alone, same threshold/reasoning as namesMatch() in pickem.mjs (used
+      // for server-side grading): a saved pick can carry the APP's canonicalized name
+      // ("Joseph Kropschot", from index.html's NAME_ALIASES -- his pre-UFC record) while
+      // this page's card is built straight from the ESPN feed's shortened one ("Joe
+      // Kropschot"). First+last matching above never bridges that gap since the first
+      // token never agrees. Two DIFFERENT bouts on the SAME card sharing a last name is
+      // the only false-positive risk, and this only fires when BOTH fighters in a bout
+      // match simultaneously (see the call site), not a lone last name in isolation.
+      var la=ta[ta.length-1],lb=tb[tb.length-1];
+      return !!la&&la===lb&&la.length>=3;
     }
     function gradedPick(p,res){
       if(res.voided)return{points:0,voided:true,winnerHit:false,methodHit:false,roundHit:false};
