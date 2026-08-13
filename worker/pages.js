@@ -1365,6 +1365,13 @@ export const signupPage = (next) => {
   // link is for. Matching the path prefix instead of the whole string covers both.
   const premium = /^\/subscribe(\?|$)/.test(next || "");
   const q = next ? "?next=" + encodeURIComponent(next) : "";
+  // A partner's affiliate link lands here directly — never touching the homepage — so
+  // someone unfamiliar with GillyLab hits a bare email/password form with no idea what
+  // they're about to pay for. /subscribe solves this with a full showcase of every
+  // premium feature group; this page had nothing. Same fix, same source: the identical
+  // featuresCSS/featuresMarkup/featuresScript that /subscribe imports (built from the
+  // landing page's premium slide categories), shown only on the premium path so the
+  // plain free-signup form stays uncluttered.
   return shell(premium ? "Start GillyLab Premium" : "Create your GillyLab account", `
   ${backLink}
   <div class="center"><div class="brand">GILLY<span class="a">LAB</span></div></div>
@@ -1381,7 +1388,26 @@ export const signupPage = (next) => {
     </form>
     ${premium ? `<p class="muted center" style="font-size:.82rem;margin:.55rem 0 0">Just want to play Pick'em, The Climb and browse? <a href="/signup">Create a free account</a> instead.</p>` : ``}
     <div class="alt muted">Already a member? <a href="/login${q}">Log in</a></div>
-  </div>`, `wire("f","/api/signup","m");`, true);
+  </div>
+  ${premium ? `<div class="sub-cx">
+    <style>
+      .sub-cx{--card:#14141a;--border:#2a2a32;--surface2:#18181d;--muted:#666672;--bg:#0a0a0b;margin:2.6rem auto 0;max-width:960px}
+      .sub-cx-head{text-align:center;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:.4rem}
+      /* Same full-bleed-on-mobile rule /subscribe uses — see subscribePage's comment for
+         why: the horizontal swipe cards are sized to the viewport, so the section needs
+         to reach the viewport edges regardless of .wrap's 440px cap on a phone. */
+      @media (max-width:720px){
+        .sub-cx{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw)}
+      }
+      .fx-lb button{width:auto;margin-top:0}
+      ${featuresCSS}
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;900&display=swap" rel="stylesheet">
+    <div class="sub-cx-head">See everything Premium unlocks</div>
+    ${featuresMarkup}
+  </div>
+  ${featuresScript()}` : ``}
+  ${premium ? FREE_FOOTER : ``}`, `wire("f","/api/signup","m");`, !premium);
 };
 
 export const loginPage = (next) => {
