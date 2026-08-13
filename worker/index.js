@@ -2002,11 +2002,20 @@ export default {
         if (s) {
           const u = await getUser(env, s.email);
           if (u && u.subscribed) return redirect(env.SITE_URL + authDest(null, true));
-        } else if (ref) {
-          // A partner's referral link, clicked by someone with no account yet — send
-          // them through signup first (same `next` mechanism /login and /signup already
-          // use everywhere else) so they land back here, logged in, ref still attached.
-          return redirect(env.SITE_URL + "/signup?next=" + encodeURIComponent("/subscribe?ref=" + ref));
+        } else {
+          // No session — send them through signup first (same `next` mechanism
+          // /login and /signup already use everywhere else) so they land back here,
+          // logged in, ref still attached if there was one. This used to only fire
+          // for referral links (the `else if (ref)` this replaced): anyone who hit
+          // /subscribe directly with no session and no ref fell through to
+          // subscribePage() while logged out, which renders a hardcoded "Log out"
+          // link (there's no session to log out of) and a "Go Premium" button that
+          // posts straight to /api/checkout — which requires a session and fails
+          // with a login-required error instead of the signup flow the landing
+          // page's own "Go Premium" link goes through. Making this unconditional
+          // means every logged-out path to /subscribe behaves identically.
+          const next = "/subscribe" + (ref ? "?ref=" + ref : "");
+          return redirect(env.SITE_URL + "/signup?next=" + encodeURIComponent(next));
         }
         return html(subscribePage(url.searchParams.get("canceled"), ref));
       }
