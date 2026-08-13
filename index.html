@@ -130836,6 +130836,37 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //     },
   //   },
   const MANUAL_PROP_ODDS = {
+    // UFC 330 — Turner vs Fernandes (3 rounds). Method + round props + rounds O/U
+    // from fightodds.io (BetOnline / DraftKings / FanDuel / BetMGM; Bovada had a
+    // moneyline but posted no prop lines at all for this fight). f1 = Fernandes,
+    // f2 = Turner (alphabetical last name). Sourced via a pixel-position script
+    // (grid cells matched to nearest book-header x-coordinate) rather than reading
+    // the visual grid left-to-right — that naive approach silently miscounted
+    // through books with no line posted (e.g. read a value under "Bovada" that was
+    // actually MyBookie's, one column over) on a first pass.
+    'fernandes|turner': {
+      rounds: 3,
+      method: {
+        betonline:  { f1: { ko: 250, sub: 900, dec: 600 }, f2: { ko: 200, sub: 375, dec: 500 } },
+        draftkings: { f1: { ko: 250, sub: 900, dec: 750 }, f2: { ko: 175, sub: 380, dec: 600 } },
+        fanduel:    { f1: { ko: 290, sub: 950, dec: 850 }, f2: { ko: 195, sub: 410, dec: 600 } },
+        betmgm:     { f1: { ko: 250, sub: 900, dec: 750 }, f2: { ko: 150, sub: 375, dec: 600 } },
+      },
+      roundProps: {
+        betonline:  { f1: { r1: 400, r2: 750, r3: 1200 }, f2: { r1: 225, r2: 500, r3: 800 } },
+        draftkings: { f1: { r1: 400, r2: 650, r3: 1400 }, f2: { r1: 175, r2: 550, r3: 1200 } },
+        fanduel:    { f1: { r1: 440, r2: 800, r3: 1600 }, f2: { r1: 210, r2: 550, r3: 1400 } },
+        betmgm:     { f1: { r1: 400, r2: 650, r3: 1400 }, f2: { r1: 175, r2: 550, r3: 1200 } },
+      },
+      totals: {
+        '1.5': {
+          betonline:  { over: 120, under: -140 },
+          draftkings: { over: 114, under: -145 },
+          fanduel:    { over: 116, under: -146 },
+          betmgm:     { over: 110, under: -150 },
+        },
+      },
+    },
     // UFC 329 main event — McGregor vs Holloway 2 (5 rounds). Method + round props
     // from fightodds.io (Bovada / DraftKings / FanDuel / BetMGM; BetOnline had no
     // prop lines posted). f1 = Holloway, f2 = McGregor (alphabetical last name).
