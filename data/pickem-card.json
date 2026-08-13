@@ -1,6 +1,6 @@
 {
   "slug": "ufc-330",
-  "generatedAt": "2026-08-13T00:55:14.027Z",
+  "generatedAt": "2026-08-13T12:59:47.748Z",
   "slugs": [
     "islam-makhachev",
     "ian-machado-garry",
@@ -14,6 +14,8 @@
     "esteban-ribovics",
     "chidi-njokuani",
     "joel-alvarez",
+    "charles-johnson",
+    "eduardo-chapolin",
     "donte-johnson",
     "eric-mcconico",
     "vicente-luque",
@@ -33,8 +35,8 @@
       "ps1": "islam-makhachev",
       "ps2": "ian-machado-garry",
       "wPts": {
-        "f1": 7.5904178494571495,
-        "f2": 15.862502659471538
+        "f1": 7.577432550379978,
+        "f2": 15.940909708760493
       },
       "mPts": {
         "f1": {
@@ -63,8 +65,8 @@
       "ps1": "mackenzie-dern",
       "ps2": "gillian-robertson",
       "wPts": {
-        "f1": 8.25125509009862,
-        "f2": 13.045549913970254
+        "f1": 8.274795555753997,
+        "f2": 12.974659985484081
       },
       "mPts": {
         "f1": {
@@ -93,8 +95,8 @@
       "ps1": "jalin-turner",
       "ps2": "kaue-fernandes",
       "wPts": {
-        "f1": 8.88054048797394,
-        "f2": 11.53793962999319
+        "f1": 8.918629166684491,
+        "f2": 11.466919095923718
       },
       "mPts": {
         "f1": {
@@ -121,8 +123,8 @@
       "ps1": "mansur-abdul-malik",
       "ps2": "dustin-stoltzfus",
       "wPts": {
-        "f1": 7.024231712917841,
-        "f2": 21.11995429487225
+        "f1": 7.00465271310343,
+        "f2": 21.409370248371715
       },
       "mPts": {
         "f1": {
@@ -149,8 +151,8 @@
       "ps1": "edson-barboza",
       "ps2": "esteban-ribovics",
       "wPts": {
-        "f1": 20.512396335195962,
-        "f2": 7.068002689007304
+        "f1": 20.81779023141248,
+        "f2": 7.045530595821086
       },
       "mPts": {
         "f1": {
@@ -177,8 +179,8 @@
       "ps1": "chidi-njokuani",
       "ps2": "joel-alvarez",
       "wPts": {
-        "f1": 14.99472257860159,
-        "f2": 7.74951752280125
+        "f1": 15.425183071995123,
+        "f2": 7.666878890502964
       },
       "mPts": {
         "f1": {
@@ -199,14 +201,42 @@
       }
     },
     {
+      "id": "espn-charles-johnson-vs-eduardo-chapolin",
+      "f1": "Charles Johnson",
+      "f2": "Eduardo Chapolin",
+      "ps1": "charles-johnson",
+      "ps2": "eduardo-chapolin",
+      "wPts": {
+        "f1": 9.60493742492713,
+        "f2": 10.436993020119026
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 6,
+          "Submission": 6,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 6,
+          "Decision": 4
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
       "id": "espn-donte-johnson-vs-eric-mcconico",
       "f1": "Donte Johnson",
       "f2": "Eric McConico",
       "ps1": "donte-johnson",
       "ps2": "eric-mcconico",
       "wPts": {
-        "f1": 8.031909911158122,
-        "f2": 13.782465249543483
+        "f1": 7.991316513980198,
+        "f2": 13.93610062738947
       },
       "mPts": {
         "f1": {
@@ -233,8 +263,8 @@
       "ps1": "vicente-luque",
       "ps2": "tresean-gore",
       "wPts": {
-        "f1": 10.343202772031388,
-        "f2": 9.683203445018243
+        "f1": 10.310716969244712,
+        "f2": 9.711085471364516
       },
       "mPts": {
         "f1": {
@@ -261,8 +291,8 @@
       "ps1": "rafael-tobias",
       "ps2": "lucas-fernando",
       "wPts": {
-        "f1": 14.752521841579389,
-        "f2": 7.799634324701479
+        "f1": 14.78062873352549,
+        "f2": 7.793675003183216
       },
       "mPts": {
         "f1": {
@@ -289,8 +319,8 @@
       "ps1": "neil-magny",
       "ps2": "ramiz-brahimaj",
       "wPts": {
-        "f1": 10.778645589264887,
-        "f2": 9.345207517344795
+        "f1": 10.906354795285523,
+        "f2": 9.257201883560816
       },
       "mPts": {
         "f1": {
@@ -317,8 +347,8 @@
       "ps1": "jeremiah-wells",
       "ps2": "myktybek-orolbai",
       "wPts": {
-        "f1": 25.304808381460834,
-        "f2": 6.80096604547341
+        "f1": 25.69257146005503,
+        "f2": 6.785351938637014
       },
       "mPts": {
         "f1": {
