@@ -131087,6 +131087,122 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
+    // UFC 330 — Njokuani vs Álvarez (3 rounds). f1 = Alvarez, f2 = Njokuani.
+    'alvarez|njokuani': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 290, sub: 195, dec: 400 }, f2: { ko: 550, sub: 3000, dec: 550 } },
+        draftkings: { f1: { ko: 250, sub: 180, dec: 350 }, f2: { ko: 550, sub: 3000, dec: 650 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 250, r2: 430, r3: 650 },  f2: { r1: 1000, r2: 1400, r3: 2200 } },
+        draftkings: { f1: { r1: 225, r2: 380, r3: 650 },  f2: { r1: 850,  r2: 1400, r3: 1800 } },
+      },
+    },
+    // UFC 330 — Charles Johnson vs Chapolin (3 rounds, catchweight; Chapolin was a
+    // short-notice replacement for Jose Ochoa). f1 = Chapolin, f2 = C. Johnson.
+    'chapolin|johnson': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 550, sub: 2000, dec: 200 }, f2: { ko: 380, sub: 1600, dec: 200 } },
+        draftkings: { f1: { ko: 550, sub: 1800, dec: 185 }, f2: { ko: 350, sub: 1400, dec: 185 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 1000, r2: 1500, r3: 2000 }, f2: { r1: 650, r2: 1000, r3: 1600 } },
+        draftkings: { f1: { r1: 900,  r2: 1200, r3: 1800 }, f2: { r1: 650, r2: 850,  r3: 1400 } },
+      },
+    },
+    // UFC 330 — Donte Johnson vs McConico (3 rounds). f1 = Johnson, f2 = McConico.
+    'johnson|mcconico': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 110, sub: 1000, dec: 400 }, f2: { ko: 650, sub: 1400, dec: 500 } },
+        draftkings: { f1: { ko: 110, sub: 800,  dec: 330 }, f2: { ko: 600, sub: 1200, dec: 550 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 240, r2: 430, r3: 1000 }, f2: { r1: 950, r2: 1300, r3: 2200 } },
+        draftkings: { f1: { r1: 240, r2: 400, r3: 700 },  f2: { r1: 850, r2: 1100, r3: 1800 } },
+      },
+    },
+    // UFC 330 — Luque vs Gore (3 rounds). f1 = Gore, f2 = Luque.
+    'gore|luque': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 380, sub: 420, dec: 420 }, f2: { ko: 550, sub: 500, dec: 360 } },
+        draftkings: { f1: { ko: 350, sub: 350, dec: 400 }, f2: { ko: 400, sub: 400, dec: 400 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 460, r2: 650, r3: 1000 }, f2: { r1: 550, r2: 850, r3: 1400 } },
+        draftkings: { f1: { r1: 350, r2: 550, r3: 900 },  f2: { r1: 400, r2: 700, r3: 1000 } },
+      },
+    },
+    // UFC 330 — Barboza vs Ribovics (3 rounds). f1 = Barboza, f2 = Ribovics.
+    'barboza|ribovics': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 1000, sub: 3500, dec: 1000 }, f2: { ko: -170, sub: 1300, dec: 350 } },
+        draftkings: { f1: { ko: 900,  sub: 3500, dec: 1000 }, f2: { ko: -185, sub: 1000, dec: 300 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 1800, r2: 2500, r3: 3300 }, f2: { r1: 160, r2: 380, r3: 700 } },
+        draftkings: { f1: { r1: 1800, r2: 2200, r3: 3000 }, f2: { r1: 165, r2: 350, r3: 650 } },
+      },
+    },
+    // UFC 330 — Abdul-Malik vs Stoltzfus (3 rounds). f1 = Abdul-Malik, f2 = Stoltzfus.
+    'abdul-malik|stoltzfus': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: -105, sub: 700, dec: 230 }, f2: { ko: 2500, sub: 1300, dec: 1000 } },
+        draftkings: { f1: { ko: -105, sub: 600, dec: 200 }, f2: { ko: 2000, sub: 1200, dec: 1000 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 200, r2: 430, r3: 750 }, f2: { r1: 2000, r2: 2700, r3: 3000 } },
+        draftkings: { f1: { r1: 200, r2: 400, r3: 750 }, f2: { r1: 1600, r2: 2500, r3: 3000 } },
+      },
+    },
+    // UFC 330 — Rafael Tobias vs Lucas Fernando (3 rounds, early prelims). Not the
+    // same "Fernando(s)" as the main-card Turner fight -- this is Lucas Fernando,
+    // Kauê Fernandes is a different fighter entirely. f1 = Fernando, f2 = Tobias.
+    'fernando|tobias': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 130, sub: 850, dec: 270 }, f2: { ko: 1000, sub: 650, dec: 850 } },
+        draftkings: { f1: { ko: 110, sub: 800, dec: 250 }, f2: { ko: 1000, sub: 600, dec: 750 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 290, r2: 470, r3: 800 }, f2: { r1: 850, r2: 1200, r3: 1900 } },
+        draftkings: { f1: { r1: 240, r2: 450, r3: 750 }, f2: { r1: 850, r2: 1100, r3: 1800 } },
+      },
+    },
+    // UFC 330 — Neil Magny vs Ramiz Brahimaj (3 rounds, early prelims).
+    // f1 = Brahimaj, f2 = Magny.
+    'brahimaj|magny': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 850, sub: 170, dec: 600 }, f2: { ko: 650, sub: 700, dec: 310 } },
+        draftkings: { f1: { ko: 700, sub: 150, dec: 550 }, f2: { ko: 550, sub: 600, dec: 300 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 340, r2: 550, r3: 850 }, f2: { r1: 750, r2: 1000, r3: 1400 } },
+        draftkings: { f1: { r1: 275, r2: 450, r3: 800 }, f2: { r1: 650, r2: 850,  r3: 1100 } },
+      },
+    },
+    // UFC 330 — Jeremiah Wells vs Myktybek Orolbai (3 rounds, early prelims). The
+    // Orolbai R2/R3 FanDuel numbers were handed over mislabeled "DK" twice in a row
+    // (identical to a DK figure, which a real two-book line never is) -- treated as
+    // the FanDuel entry the surrounding line-by-line FD/DK pairing pattern implies.
+    // f1 = Orolbai, f2 = Wells.
+    'orolbai|wells': {
+      rounds: 3,
+      method: {
+        fanduel:    { f1: { ko: 170, sub: 230, dec: 220 }, f2: { ko: 1600, sub: 3500, dec: 1600 } },
+        draftkings: { f1: { ko: 140, sub: 200, dec: 225 }, f2: { ko: 1600, sub: 3500, dec: 1400 } },
+      },
+      roundProps: {
+        fanduel:    { f1: { r1: 175, r2: 380, r3: 800 }, f2: { r1: 2200, r2: 3300, r3: 4500 } },
+        draftkings: { f1: { r1: 175, r2: 350, r3: 700 }, f2: { r1: 2500, r2: 3500, r3: 4500 } },
+      },
+    },
     // UFC 329 main event — McGregor vs Holloway 2 (5 rounds). Method + round props
     // from fightodds.io (Bovada / DraftKings / FanDuel / BetMGM; BetOnline had no
     // prop lines posted). f1 = Holloway, f2 = McGregor (alphabetical last name).
@@ -131409,8 +131525,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       method: {
         betonlineag: { f1: { ko: 750, sub: 2500, dec: 450 }, f2: { ko: 750, sub: 200, dec: 120 } },
         bovada:      { f1: { ko: 1100, sub: 2800, dec: 450 }, f2: { ko: 750, sub: 195, dec: 130 } },
-        // FanDuel had no KO/TKO line for either man.
-        fanduel:     { f1: { sub: 3300, dec: 450 }, f2: { sub: 210, dec: 135 } },
+        fanduel:     { f1: { ko: 1100, sub: 3300, dec: 450 }, f2: { ko: 1000, sub: 210, dec: 135 } },
         betmgm:      { f1: { ko: 700, sub: 2500, dec: 425 }, f2: { ko: 700, sub: 200, dec: 120 } },
       },
       roundProps: {
