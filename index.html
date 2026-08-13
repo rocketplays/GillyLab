@@ -6390,7 +6390,7 @@
  { name: "Azat Maksum", division: "FLW", rank: "NR", record: "15-3-0", initials: "AM", country: "Kazakhstan" },
  { name: "Austin Hubbard", division: "LW", rank: "NR", record: "17-10-0", initials: "AH", country: "USA" },
  { name: "Samuel Silva", division: "LW", rank: "NR", record: "13-5-1", initials: "SS", country: "Brazil" },
- { name: "Eduardo Chapolin", division: "FLW", rank: "NR", record: "15-2-0", initials: "EC", country: "Brazil" },
+ { name: "Eduardo Chapolin", division: "FLW", rank: "NR", record: "15-3-0", initials: "EC", country: "Brazil" },
  { name: "JunYong Park", division: "MW", rank: "NR", record: "19-7-0", initials: "JP", country: "South Korea" },
  { name: "An Tuan Ho", division: "FLW", rank: "NR", record: "6-2-0", initials: "AH", country: "Vietnam" },
  { name: "Theo Haig", division: "MW", rank: "NR", record: "6-1-0", initials: "TH", country: "USA" },
@@ -10213,7 +10213,12 @@
   "Azat Maksum": { ht:"5'7\"", dob:"1995-02-02", reach:'70"', stance:"Southpaw", slpm:2.75, strAcc:"28%", sapm:4.25, strDef:"53%", kd:0.25, tdLanded:3.5, tdAcc:"32%", tdDef:"86%", subAvg:0.25, finRate:"67%", streak:0, gym:"Elevation Fight Team" },
   "Austin Hubbard": { ht:"5'10\"", dob:"1991-12-22", reach:'71"', stance:"Orthodox", slpm:3.97, strAcc:"42%", sapm:4.1, strDef:"55%", kd:0.0, tdLanded:1.63, tdAcc:"29%", tdDef:"68%", subAvg:0.1, finRate:"41%", streak:0, gym:"Valle Flow Striking" },
   "Samuel Silva": { ht:"6'0\"", dob:"1996-01-02", reach:'72.5"', stance:"Orthodox", slpm:2.58, strAcc:"27%", sapm:8.61, strDef:"38%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"85%", streak:0, gym:"Evolucao Thai" },
-  "Eduardo Chapolin": { ht:"5'7\"", dob:"1995-11-23", reach:'67"', stance:"Orthodox", slpm:2.47, strAcc:"40%", sapm:1.6, strDef:"65%", kd:0.0, tdLanded:5.0, tdAcc:"83%", tdDef:"75%", subAvg:0.0, finRate:"73%", streak:5, gym:"Bloodline Combat" },
+  // streak corrected 5->2: a Feb 19, 2025 loss to Joseph Morales (TUF Season 33,
+  // submission R1) was missing from FIGHT_HISTORY -- found via tape-link sourcing
+  // (combatreg.com + Tapology both corroborate). Breaks what looked like a
+  // continuous run from the Aug 2024 Siqueira win straight to Sep 2025; the real
+  // streak is just Lozej (Aug 2025) + An Tuan Ho (Sep 2025).
+  "Eduardo Chapolin": { ht:"5'7\"", dob:"1995-11-23", reach:'67"', stance:"Orthodox", slpm:2.47, strAcc:"40%", sapm:1.6, strDef:"65%", kd:0.0, tdLanded:5.0, tdAcc:"83%", tdDef:"75%", subAvg:0.0, finRate:"73%", streak:2, gym:"Bloodline Combat" },
   "JunYong Park": { ht:"5'10\"", dob:"1991-02-27", reach:'73"', stance:"Orthodox", slpm:4.64, strAcc:"52%", sapm:3.82, strDef:"51%", kd:0.09, tdLanded:1.69, tdAcc:"43%", tdDef:"55%", subAvg:0.84, finRate:"58%", streak:0, gym:"Korean Top Team" },
   "An Tuan Ho": { ht:"5'6\"", dob:"2000-09-27", reach:'66.5"', stance:"Switch", slpm:1.95, strAcc:"36%", sapm:2.81, strDef:"55%", kd:0.0, tdLanded:1.72, tdAcc:"25%", tdDef:"17%", subAvg:0.0, finRate:"67%", streak:0, gym:"MMA LAB" },
   "Theo Haig": { ht:"6'2\"", dob:"1996-08-23", reach:'77.5"', stance:"Orthodox", slpm:0.0, strAcc:"0%", sapm:28.33, strDef:"0%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:null, subAvg:0.0, finRate:"100%", streak:0, gym:"AKA (American Kickboxing Academy)" },
@@ -19267,8 +19272,12 @@
   ],
   "Eduardo Chapolin": [
     { opponent: "An Tuan Ho", url: "https://ufcfightpass.com/video/852070", event: "Dana White's Contender Series · Sep 2025", section: "Pre-UFC" },
+    { opponent: "Devon Lozej", url: "https://ufcfightpass.com/video/849455", event: "LFA 215 · Aug 2025", section: null },
     { opponent: "Igor Siqueira", url: "https://ufcfightpass.com/video/681409", event: "LFA 190 · Aug 2024", section: null },
-    { opponent: "Cody Davis", url: "https://ufcfightpass.com/video/548502", event: "LFA 172 · Nov 2023", section: null }
+    { opponent: "Cody Davis", url: "https://ufcfightpass.com/video/548502", event: "LFA 172 · Nov 2023", section: null },
+    { opponent: "Tiago Xavier", url: "https://youtu.be/EDaZeVYQrRg", event: "Brazilian Fighting Series 3 · Nov 2021", section: null },
+    { opponent: "Robert Correa", url: "https://youtu.be/-R3U0l6PlIM", event: "Jungle Fight 101 · Jan 2020", section: null },
+    { opponent: "Kleydson Rodrigues", url: "https://youtu.be/lvrndr2mG_w", event: "Jungle Fight 97 · Oct 2019", section: null }
   ],
   "Samuel Silva": [
     { opponent: "Mandel Nallo", url: "https://ufcfightpass.com/video/852077", event: "Dana White's Contender Series · Sep 2025", section: "Pre-UFC" },
@@ -81125,6 +81134,7 @@ const FIGHT_HISTORY = {
   "Eduardo Chapolin": [
     { date: "Sep 2, 2025", opponent: "An Tuan Ho", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Dana White's Contender Series: Season 9, Week 4", org: "UFC" },
     { date: "Aug 22, 2025", opponent: "Devon Lozej", result: "W", method: "KO/TKO", round: 1, time: "2:57", event: "LFA 215: Miranda vs. Barzilay" },
+    { date: "Feb 19, 2025", opponent: "Joseph Morales", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: null, event: "The Ultimate Fighter: Season 33", org: "UFC" },
     { date: "Aug 23, 2024", opponent: "Igor Siqueira", result: "W", method: "KO/TKO", round: 1, time: "1:26", event: "LFA 190: Chapolin vs. Siqueira" },
     { date: "Nov 17, 2023", opponent: "Cody Davis", result: "W", method: "KO/TKO", round: 4, time: "2:36", event: "LFA 172: Davis vs. Chapolin" },
     { date: "Aug 18, 2023", opponent: "Leandro Soares", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "LFA 165: Compton vs. Valente" },
@@ -114841,7 +114851,7 @@ const ACCOLADES = {
     { icon: "🏆", title: "LFA Flyweight Champion (TKO of Cody Davis, round 4, Nov 2023)", detail: null },
     { icon: "🥋", title: "BJJ Black Belt, awarded by two-time IBJJF world champion Mario Reis", detail: null },
     { icon: "🥊", title: "Dana White's Contender Series winner (Sep 2025, def. An Tuan Ho) — not offered a contract at the time", detail: null },
-    { icon: "🥊", title: "The Ultimate Fighter Season 33 cast member", detail: null },
+    { icon: "🥊", title: "The Ultimate Fighter Season 33 cast member (lost in the quarterfinals to eventual tournament winner Joseph Morales, Feb 2025)", detail: null },
     { icon: "🎯", title: "Short-notice replacement for Jose Ochoa vs. Charles Johnson, UFC 330 (Aug 15, 2026, Philadelphia)", detail: null }
   ],
   "Alexia Thainara": [
