@@ -4772,6 +4772,7 @@
  { name: "Ronald Humphrey", division: "WW", rank: "NR", record: "4-0-0", initials: "RH", country: "USA" },
  { name: "Alexis Miranda", division: "WW", rank: "NR", record: "9-2-0", initials: "AM", country: "Mexico" },
  // ─── MIDDLEWEIGHT ───
+ { name: "Carlos Petruzzella", division: "MW", rank: "NR", record: "15-1-0", initials: "CP", country: "Argentina" },
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
  { name: "Wes Schultz", division: "MW", rank: "NR", record: "9-3-0", initials: "WS", country: "USA" },
@@ -9083,6 +9084,14 @@
  // available anywhere. Stance unconfirmed after ESPN, Sherdog (bot-blocked),
  // Tapology (paywalled) -- left null.
  "Alexis Miranda": { ht:"6'2\"", dob:"1999-01-03", reach:'76.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"44%", streak:2, gym:"Entram Gym" },
+ // Not yet on ufc.com/ESPN's per-fight tables (pre-UFC, all fights on regional
+ // Argentine/Brazilian SFH/LFA/CAM cards) -- no numeric striking/grappling stats
+ // available anywhere. Reach and stance unconfirmed (gidstats lists "reach" as an
+ // exact copy of its height figure -- a known garbage-data pattern -- so discarded
+ // rather than trusted). Gym per ESPN; an earlier career source names "Corpo e
+ // Mente" (where he trained BJJ before turning pro) and FightMatrix lists
+ // "Brothers of Life MMA" -- may reflect an older or secondary affiliation.
+ "Carlos Petruzzella": { ht:"5'11\"", dob:"1997-03-29", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:2, gym:"Thai Brasil" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -41502,6 +41511,12 @@
     { opponent: "Liam Hamill", odds: -500 },
     { opponent: "Dupree Stewart", odds: -304 },
   ],
+  // BFO carries two snapshots of the same LFA 209 bout (closing -120 and -150) --
+  // midpoint used. No line found for any other fight (all regional Argentine
+  // SFH/CAM cards, untracked).
+  "Carlos Petruzzella": [
+    { opponent: "Joseilton Santos", odds: -135 },
+  ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
     { opponent: "Payton Talbott", odds: 145 },
@@ -56672,6 +56687,24 @@ const FIGHT_HISTORY = {
     { date: "Apr 28, 2023", opponent: "Victor Robles", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UWC 43", org: "UWC" },
     { date: "Nov 25, 2022", opponent: "Freddy May", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UWC 40", org: "UWC" },
     { date: "Jul 15, 2022", opponent: "Bryan Ulises Lopez", result: "W", method: "KO/TKO", round: 1, time: "2:31", event: "Lux Fight League 24", org: "LUX" },
+  ],
+  "Carlos Petruzzella": [
+    { date: "Dec 30, 2025", opponent: "Lautaro Ayala", result: "W", method: "TKO (Head Kick, Knee & Ground Elbows)", round: 1, time: "3:06", event: "Samurai Fight House 26", org: "SFH" },
+    { date: "Sep 19, 2025", opponent: "Diego Robledo", result: "W", method: "TKO (Doctor Stoppage)", round: 1, time: "0:45", event: "Samurai Fight House 24", org: "SFH" },
+    { date: "May 24, 2025", opponent: "Joseilton Santos", result: "L", method: "KO/TKO (Right Overhand)", round: 1, time: "4:24", event: "LFA 209: De Lara vs. Henrique", org: "LFA" },
+    { date: "Oct 27, 2024", opponent: "Gaston Palomino", result: "W", method: "TKO (Ground and Pound)", round: 1, time: "0:50", event: "Samurai Fight House 18", org: "SFH" },
+    { date: "Dec 22, 2023", opponent: "Nicolas Martinez", result: "W", method: "Submission (Forearm Choke)", round: 1, time: "3:54", event: "Samurai Fight House 14", org: "SFH" },
+    { date: "Oct 7, 2023", opponent: "Mauricio Ariel Pare", result: "W", method: "Submission (Inverted Kimura)", round: 1, time: "0:31", event: "Samurai Fight House 13", org: "SFH" },
+    { date: "Jul 1, 2023", opponent: "Cesar Benitez", result: "W", method: "Submission (Neck Crank)", round: 1, time: "1:27", event: "SFH Fight Day 1", org: "SFH" },
+    { date: "May 13, 2023", opponent: "Cristian Dominguez", result: "W", method: "TKO (Ground and Pound)", round: 2, time: "7:14", event: "Samurai Fight House 11", org: "SFH" },
+    { date: "Mar 11, 2023", opponent: "Martin Rafael", result: "W", method: "Submission (Armbar)", round: 2, time: "7:45", event: "Samurai Fight House 10", org: "SFH" },
+    { date: "Dec 16, 2022", opponent: "Cesar Cardozo", result: "W", method: "Submission (Rear-Naked Choke)", round: 2, time: "5:32", event: "Samurai Fight House 8", org: "SFH" },
+    { date: "Oct 15, 2022", opponent: "Nicolas Escobar", result: "W", method: "TKO (Ground and Pound)", round: 3, time: "11:54", event: "Samurai Fight House 6", org: "SFH" },
+    { date: "Jun 19, 2022", opponent: "Axel Guerra", result: "W", method: "TKO (Doctor Stoppage)", round: 2, time: "8:51", event: "Samurai Fight House 5", org: "SFH" },
+    { date: "May 22, 2022", opponent: "Matias Ibanez", result: "W", method: "Submission (Kimura)", round: 1, time: "1:36", event: "Samurai Fight House 4", org: "SFH" },
+    { date: "Mar 12, 2022", opponent: "Axel Guerra", result: "W", method: "KO/TKO", round: 1, time: "0:59", event: "CAM 7", org: "CAM" },
+    { date: "Nov 27, 2021", opponent: "Damian Riquelme", result: "W", method: "Submission (Armbar)", round: 1, time: "1:19", event: "CAM 5", org: "CAM" },
+    { date: "Sep 4, 2021", opponent: "Adrian Mazza Miranda", result: "W", method: "Submission (Kimura)", round: 1, time: "2:48", event: "Supreme Warrior 6", org: "Supreme Warrior" },
   ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
@@ -118509,6 +118542,13 @@ const ACCOLADES = {
   ],
   "Alexis Miranda": [
     { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Ronald Humphrey)", detail: null }
+  ],
+  "Carlos Petruzzella": [
+    { icon: "🏆", title: "Samurai Fight House South American Middleweight Champion (defended title vs. Lautaro Ayala, Dec 2025)", detail: null },
+    { icon: "🏆", title: "Samurai Fight House South American Welterweight Champion (submitted Martin Rafael for the title, Mar 2023)", detail: null },
+    { icon: "🏅", title: "Argentine Vale Tudo Champion (2017)", detail: null },
+    { icon: "🥋", title: "Pan-American BJJ medalist; silver medal, 2017 Brazilian BJJ World Championship", detail: null },
+    { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Nick Galanti)", detail: null }
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
