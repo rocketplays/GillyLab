@@ -41956,6 +41956,13 @@
     { opponent: "Montserrat Ruiz", odds: -695 },
     { opponent: "Janaina Silva", odds: -210 }
   ],
+  // Only 1 of his 17 fights ever had a tracked line -- his DWCS win, the only bout
+  // that wasn't a regional Brazilian card. No line yet for UFC 330 vs. Charles
+  // Johnson (added this week as a late replacement for Jose Ochoa); add it once
+  // BFO/the-odds-api picks up the booking.
+  "Eduardo Chapolin": [
+    { opponent: "An Tuan Ho", odds: -158 },
+  ],
   "Brady Hiestand": [
     { opponent: "Garrett Armfield", odds: 230 },
     { opponent: "Danaa Batgerel", odds: 134 },
@@ -114830,6 +114837,13 @@ const ACCOLADES = {
     { icon: "🏆", title: "Demo Fight two-division champion (Strawweight & Flyweight)", detail: null },
     { icon: "🏆", title: "WS Fighting Flyweight Champion", detail: null }
   ],
+  "Eduardo Chapolin": [
+    { icon: "🏆", title: "LFA Flyweight Champion (TKO of Cody Davis, round 4, Nov 2023)", detail: null },
+    { icon: "🥋", title: "BJJ Black Belt, awarded by two-time IBJJF world champion Mario Reis", detail: null },
+    { icon: "🥊", title: "Dana White's Contender Series winner (Sep 2025, def. An Tuan Ho) — not offered a contract at the time", detail: null },
+    { icon: "🥊", title: "The Ultimate Fighter Season 33 cast member", detail: null },
+    { icon: "🎯", title: "Short-notice replacement for Jose Ochoa vs. Charles Johnson, UFC 330 (Aug 15, 2026, Philadelphia)", detail: null }
+  ],
   "Alexia Thainara": [
     { icon: "🥋", title: "Black belt in Brazilian Jiu-Jitsu", detail: null },
     { icon: "🥊", title: "Dana White's Contender Series winner (2024) — earned UFC contract", detail: null },
@@ -133153,6 +133167,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // ESPN's DWCS listing drops the "Jr."; his CES/regional record (and every
     // other fighter's FIGHT_HISTORY row referencing him) is under "Gary Balletto Jr."
     'gary-balletto': 'Gary Balletto Jr.',
+    // His legal name; ESPN's own slug for athlete id 5150021 also resolves under
+    // 'eduardo-chapolin' (his nickname, and what ESPN displays), which is what we
+    // key him under -- this covers any feed that uses the legal name instead.
+    'eduardo-henrique': 'Eduardo Chapolin',
   };
   const NAME_ALIASES = {
     'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
@@ -133179,6 +133197,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Odds-market copy drops his middle name (see 'ian-garry' in SLUG_ALIASES).
     'ian garry': 'Ian Machado Garry',
     'gary balletto': 'Gary Balletto Jr.',
+    'eduardo henrique': 'Eduardo Chapolin',
     // Cito event feed spells him "YiSak Lee" (no space); our DB key is "Yi Sak Lee".
     'yisak lee': 'Yi Sak Lee',
     // Active-roster spellings that differ from the DB profile (also mapped in
