@@ -4770,6 +4770,7 @@
  { name: "Gary Balletto Jr.", division: "WW", rank: "NR", record: "11-3-0", initials: "GBA", country: "USA" },
  { name: "Sean Clancy Jr.", division: "WW", rank: "NR", record: "8-0-0", initials: "SCJ", country: "Scotland" },
  { name: "Ronald Humphrey", division: "WW", rank: "NR", record: "4-0-0", initials: "RH", country: "USA" },
+ { name: "Alexis Miranda", division: "WW", rank: "NR", record: "9-2-0", initials: "AM", country: "Mexico" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
@@ -9077,6 +9078,11 @@
  // CFFC/LFA/Attitude MMA cards) -- no numeric striking/grappling stats available
  // anywhere. Reach/stance from his own site (ronaldhumphrey.com); DOB/gym from ESPN.
  "Ronald Humphrey": { ht:"5'11\"", dob:"2000-09-20", reach:'77"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"American Top Team Sandy Springs" },
+ // Not yet on ufc.com/ESPN's per-fight tables (pre-UFC, all fights on regional
+ // Tijuana-area UWC/LUX/TFC/GFM cards) -- no numeric striking/grappling stats
+ // available anywhere. Stance unconfirmed after ESPN, Sherdog (bot-blocked),
+ // Tapology (paywalled) -- left null.
+ "Alexis Miranda": { ht:"6'2\"", dob:"1999-01-03", reach:'76.5"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"44%", streak:2, gym:"Entram Gym" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -56653,6 +56659,19 @@ const FIGHT_HISTORY = {
     { date: "Oct 10, 2025", opponent: "Dupree Stewart", result: "W", method: "KO/TKO (Punches from Top)", round: 1, time: "3:11", event: "LFA 219: Thomson vs. Islomboev", org: "LFA" },
     { date: "Feb 15, 2025", opponent: "Paul Kimble", result: "W", method: "KO/TKO (Punches)", round: 2, time: "2:28", event: "Attitude MMA Fights 33", org: "Attitude MMA Fights" },
     { date: "Oct 19, 2024", opponent: "Ralston Thomas", result: "W", method: "TKO (Strikes)", round: 1, time: "1:31", event: "Carolina Conflict 1", org: "Carolina Conflict" },
+  ],
+  "Alexis Miranda": [
+    { date: "Mar 22, 2026", opponent: "Ricardo Chavez", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UWC 57", org: "UWC" },
+    { date: "Jul 27, 2025", opponent: "Eduardo Figueroa", result: "W", method: "KO/TKO", round: 1, time: null, event: "Glory Fight Mexico 15", org: "GFM" },
+    { date: "May 16, 2025", opponent: "Anuar Aburto", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Lux Fight League 52", org: "LUX" },
+    { date: "Feb 23, 2025", opponent: "Roman Cordova", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UWC 55", org: "UWC" },
+    { date: "Nov 17, 2024", opponent: "Jesus Diaz", result: "W", method: "Submission (Triangle Choke)", round: 2, time: null, event: "Tijuana Fight Championship 8", org: "TFC" },
+    { date: "Apr 7, 2024", opponent: "Fausto Gomez", result: "W", method: "KO/TKO (Body Shot)", round: 2, time: "4:47", event: "UWC 52", org: "UWC" },
+    { date: "Nov 24, 2023", opponent: "Ricardo Chavez", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UWC 50", org: "UWC" },
+    { date: "Jul 28, 2023", opponent: "Irving Molina", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "UWC 46", org: "UWC" },
+    { date: "Apr 28, 2023", opponent: "Victor Robles", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UWC 43", org: "UWC" },
+    { date: "Nov 25, 2022", opponent: "Freddy May", result: "L", method: "Decision (Split)", round: 3, time: "5:00", event: "UWC 40", org: "UWC" },
+    { date: "Jul 15, 2022", opponent: "Bryan Ulises Lopez", result: "W", method: "KO/TKO", round: 1, time: "2:31", event: "Lux Fight League 24", org: "LUX" },
   ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
@@ -118487,6 +118506,9 @@ const ACCOLADES = {
   "Ronald Humphrey": [
     { icon: "🏅", title: "100% finish rate across all 4 professional fights, every win by strikes", detail: null },
     { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Alexis Miranda)", detail: null }
+  ],
+  "Alexis Miranda": [
+    { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Ronald Humphrey)", detail: null }
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
