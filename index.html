@@ -4769,6 +4769,7 @@
  { name: "Jean-Paul Lebosnoyani", division: "WW", rank: "NR", record: "11-2-0", initials: "JPL", country: "USA" },
  { name: "Gary Balletto Jr.", division: "WW", rank: "NR", record: "11-3-0", initials: "GBA", country: "USA" },
  { name: "Sean Clancy Jr.", division: "WW", rank: "NR", record: "8-0-0", initials: "SCJ", country: "Scotland" },
+ { name: "Ronald Humphrey", division: "WW", rank: "NR", record: "4-0-0", initials: "RH", country: "USA" },
  // ─── MIDDLEWEIGHT ───
  { name: "Khamzat Chimaev", division: "MW", rank: "#1", record: "15-1-0", initials: "KC3", country: "United Arab Emirates" },
  { name: "Jacob Malkoun", division: "MW", rank: "NR", record: "10-3-0", initials: "JMA3", country: "Australia" },
@@ -9072,6 +9073,10 @@
  // reach and stance also unconfirmed after ESPN, ufc.com, FightMatrix, Sofascore
  // (Sofascore's 1.73m height contradicts ESPN's corroborated 6'2", so untrustworthy).
  "Sean Clancy Jr.": { ht:"6'2\"", dob:"2002-11-25", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:8, gym:"Higher Level Martial Arts" },
+ // Not yet on ufc.com/ESPN's per-fight tables (pre-UFC, all fights on regional
+ // CFFC/LFA/Attitude MMA cards) -- no numeric striking/grappling stats available
+ // anywhere. Reach/stance from his own site (ronaldhumphrey.com); DOB/gym from ESPN.
+ "Ronald Humphrey": { ht:"5'11\"", dob:"2000-09-20", reach:'77"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:4, gym:"American Top Team Sandy Springs" },
  "Marcio Barbosa": { ht:"5'6\"", dob:"1998-05-22", reach:null, stance:"Orthodox", slpm:7.01, strAcc:"48%", sapm:6.65, strDef:"53%", kd:8.08, tdLanded:0.0, tdAcc:"0%", tdDef:"100%", subAvg:0.0, finRate:"94%", streak:5, gym:"Giants Team" },
   "Andre Fili": { ht:"5'10\"", dob:"1990-06-25", reach:'74"', stance:"Orthodox", slpm:3.89, strAcc:"38%", sapm:4.55, strDef:"50%", kd:0.31, tdLanded:2.24, tdAcc:"46%", tdDef:"72%", subAvg:0.21, finRate:"52%", streak:0, gym:"Team Alpha Male" },
  // Lightweight
@@ -41485,6 +41490,12 @@
     { opponent: "Daniel Frunza", odds: -400 },
     { opponent: "Dahlen Wilson", odds: -280 },
   ],
+  // Closing range on BFO: Hamill fight -650...-350 (midpoint -500), Stewart fight
+  // -333...-275 (midpoint -304). No line found for the Thomas or Kimble regional bouts.
+  "Ronald Humphrey": [
+    { opponent: "Liam Hamill", odds: -500 },
+    { opponent: "Dupree Stewart", odds: -304 },
+  ],
   "Cameron Saaiman": [
     { opponent: "Malcolm Wellmaker", odds: 110 },
     { opponent: "Payton Talbott", odds: 145 },
@@ -56636,6 +56647,12 @@ const FIGHT_HISTORY = {
     { date: "Oct 14, 2023", opponent: "Milton Afonso Cabral", result: "W", method: "Submission (Neck Crank)", round: 1, time: null, event: "Cage Warriors 161: Dublin", org: "Cage Warriors" },
     { date: "Aug 5, 2023", opponent: "Jack Comby", result: "W", method: "TKO (Punches)", round: 1, time: null, event: "Unity Fighting Championship", org: "Unity FC" },
     { date: "Apr 29, 2023", opponent: "Ben Disson", result: "W", method: "TKO (Punches)", round: 1, time: null, event: "Budo Fighting Championships 57", org: "Budo FC" },
+  ],
+  "Ronald Humphrey": [
+    { date: "Mar 13, 2026", opponent: "Liam Hamill", result: "W", method: "TKO (Punches)", round: 1, time: "0:28", event: "CFFC 151: Gonzales vs. Resende", org: "CFFC" },
+    { date: "Oct 10, 2025", opponent: "Dupree Stewart", result: "W", method: "KO/TKO (Punches from Top)", round: 1, time: "3:11", event: "LFA 219: Thomson vs. Islomboev", org: "LFA" },
+    { date: "Feb 15, 2025", opponent: "Paul Kimble", result: "W", method: "KO/TKO (Punches)", round: 2, time: "2:28", event: "Attitude MMA Fights 33", org: "Attitude MMA Fights" },
+    { date: "Oct 19, 2024", opponent: "Ralston Thomas", result: "W", method: "TKO (Strikes)", round: 1, time: "1:31", event: "Carolina Conflict 1", org: "Carolina Conflict" },
   ],
   "Andre Fili": [
     { date: "Jun 20, 2026", opponent: "Vinicius Oliveira", result: "L", method: "TKO (Punches and Elbows)", round: 2, time: "4:56", event: "UFC Fight Night: Kape vs. Horiguchi", org: "UFC" },
@@ -118466,6 +118483,10 @@ const ACCOLADES = {
     { icon: "🏅", title: "Cage Warriors 2024 Breakthrough Fighter of the Year", detail: null },
     { icon: "🥇", title: "Amateur regional welterweight champion; competed at the 2022 Four Nations Championships", detail: null },
     { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Gary Balletto Jr.)", detail: null }
+  ],
+  "Ronald Humphrey": [
+    { icon: "🏅", title: "100% finish rate across all 4 professional fights, every win by strikes", detail: null },
+    { icon: "🎯", title: "Fighting for a UFC contract on Dana White's Contender Series (Aug 25, 2026 vs. Alexis Miranda)", detail: null }
   ],
   "Melsik Baghdasaryan": [
     { icon: "🏆", title: "Wu Lin Feng International Champion (67 kg kickboxing)", detail: null },
