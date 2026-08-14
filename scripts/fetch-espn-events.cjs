@@ -206,6 +206,11 @@ function buildFighter(boutId, spec, corner, outcome) {
 async function buildEventFull(espnId, cache) {
   const ev = await getJson(`${LEAGUE}/events/${espnId}`);
   const label = ev.name || ev.shortName || 'UFC Fight Night';
+  // DWCS bouts are always 3 rounds by rule (no title fights, no 5-round main
+  // events) — but ESPN's own feed sometimes mislabels a card's main event bout
+  // with periods:5 anyway (seen on Week 3's main event). Force it here rather
+  // than trusting the feed for this one promotion.
+  const isDWCS = /dana white.?s contender series/i.test(label);
 
   let venue = null;
   try {
@@ -240,8 +245,8 @@ async function buildEventFull(espnId, cache) {
       matchNumber: c.matchNumber || 999,
       section: seg.section, sectionOrder: seg.order,
       weightClass: B.weightClassText((c.type && c.type.text) || '', !!(c.types && c.types.length)),
-      titleBout: !!(c.types && c.types.length),
-      numberOfRounds: (c.format && c.format.regulation && c.format.regulation.periods) || 3,
+      titleBout: isDWCS ? false : !!(c.types && c.types.length),
+      numberOfRounds: isDWCS ? 3 : ((c.format && c.format.regulation && c.format.regulation.periods) || 3),
       status: boutStatusOf(status),
       resultRound: (status && status.type && status.type.completed) ? (status.period || 0) : 0,
       resultTime: resultTimeOf(status),

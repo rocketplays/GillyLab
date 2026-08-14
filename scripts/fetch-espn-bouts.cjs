@@ -634,6 +634,11 @@ async function main() {
     const day = String(e.startsAt).slice(0, 10);
     // "UFC Fight Night" is not a unique name — always log the date with it.
     const tag = `${e.title} (${day})`;
+    // DWCS bouts are always 3 rounds by rule (no title fights, no 5-round main
+    // events) — but ESPN's own feed sometimes mislabels a card's main event bout
+    // with periods:5 anyway (seen on Week 3's main event). Force it on injection
+    // rather than trusting the feed for this one promotion.
+    const isDWCS = /dana white.?s contender series/i.test(e.title || e.espnName || '');
     const numMatch = /\bUFC\s+(\d{2,4})\b/i.exec(e.title || '');
     // Numbered cards match on the number. Otherwise match on UTC date, allowing
     // ±1 day (a US evening card straddles midnight UTC, so the two feeds can
@@ -659,6 +664,7 @@ async function main() {
 
     const injectedThisRun = [];
     toInject.forEach((b) => {
+      if (isDWCS) { b.rounds = 3; b.titleBout = false; }
       const bout = buildBout(e.slug, b);
       (e.bouts = e.bouts || []).push(bout);
       injectedThisRun.push(bout);
