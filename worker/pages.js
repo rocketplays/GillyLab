@@ -4419,7 +4419,15 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
   // version bumped after they'd already set a method) rather than a first visit.
   const payoutMethod = (partner.payoutInfo && partner.payoutInfo.method) || "";
   const payoutUsername = (partner.payoutInfo && partner.payoutInfo.username) || "";
-  const hasW9 = !!partner.w9SubmittedAt;
+  // taxFormType is the durable record ("W-9" / "W-8BEN" / "W-8BEN-E") of whatever's
+  // actually on file; taxResidency/payoutFor are transient re-render state (like
+  // payoutInfo above) carried through a validation error so re-picking isn't needed,
+  // and otherwise backfilled FROM taxFormType on a repeat visit so the branching
+  // radios below land pre-selected instead of starting blank every re-acceptance.
+  const hasExistingTaxForm = !!partner.w9SubmittedAt;
+  const existingTaxFormType = partner.taxFormType || (hasExistingTaxForm ? "W-9" : "");
+  const taxResidency = partner.taxResidency || (existingTaxFormType === "W-9" ? "us" : existingTaxFormType ? "intl" : "");
+  const payoutFor = partner.payoutFor || (existingTaxFormType === "W-8BEN" ? "personal" : existingTaxFormType === "W-8BEN-E" ? "business" : "");
   return `<!doctype html><html lang="en"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0b">
@@ -4476,7 +4484,7 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
       <p>You earn 50% commission on a referred customer's first paid invoice, and recurring commission on every renewal after that: 20% up to 50 lifetime referrals, 25% from 50–149, 30% from 150–299, and a custom rate above 300 (negotiated individually). You also earn a $25 bonus for every 10 paid referrals. Rates apply to invoices as they're paid — see your dashboard for a running ledger.</p>
 
       <h2>3. Payment</h2>
-      <p>Commissions are tracked automatically as your dashboard's running balance. Your available balance is paid out by the 15th of the following month, to the payment method and handle you provide below. If you're a US person, a completed IRS Form W-9 is required before your first payout (Form W-8BEN instead if you're not a US person — contact us directly for that one); we're required to collect this for tax reporting once payments to you cross IRS thresholds. Upload it below to complete your acceptance.</p>
+      <p>Commissions are tracked automatically as your dashboard's running balance. Your available balance is paid out by the 15th of the following month, to the payment method and handle you provide below. A completed IRS tax form is required before your first payout: Form W-9 if you're a US person, Form W-8BEN if you're an individual outside the US, or Form W-8BEN-E if payments go to your non-US business or entity. We're required to collect this for tax reporting once payments to you cross IRS thresholds. Pick the right one and upload it below to complete your acceptance.</p>
 
       <h2>4. Attribution</h2>
       <p>Commission is only earned on subscriptions attributed to your code or link at checkout. Attribution is not retroactive and isn't transferable between partners. If a referred customer's subscription is refunded or its payment is charged back, the associated commission may be deducted from your balance.</p>
@@ -4512,17 +4520,69 @@ export const partnerTermsPage = ({ partner, termsVersion, error }) => {
         <p class="pt-payout-note">This is saved to your account so we can send payouts without asking separately — update it any time by re-submitting this page (reach out and we can reset your acceptance if you need to change it later).</p>
       </div>
       <div class="pt-payout">
-        <div class="pt-payout-lbl">Tax form</div>
-        <label class="pt-payout-user">${hasW9 ? "We already have a W-9 on file for you — upload a new one only if something's changed." : "Upload your completed W-9 (PDF or a clear photo/scan)"}
-          <input type="file" name="w9File" accept="application/pdf,image/*" ${hasW9 ? "" : "required"}>
-        </label>
-        <p class="pt-payout-note">Blank IRS Form W-9: <a href="https://www.irs.gov/pub/irs-pdf/fw9.pdf" target="_blank" rel="noopener">irs.gov/pub/irs-pdf/fw9.pdf</a>. Stored privately — only accessible to GillyLab for tax reporting, never shared or shown publicly.</p>
+        <div class="pt-payout-lbl">Tax status</div>
+        <div class="pt-payout-opts">
+          <label class="pt-radio"><input type="radio" name="taxResidency" value="us" id="ptResUs" ${taxResidency === "us" ? "checked" : ""} required onchange="ptTaxUpdate()"> I'm a US person</label>
+          <label class="pt-radio"><input type="radio" name="taxResidency" value="intl" id="ptResIntl" ${taxResidency === "intl" ? "checked" : ""} required onchange="ptTaxUpdate()"> International (not a US person)</label>
+        </div>
+
+        <div id="ptPayoutFor" style="${taxResidency === "intl" ? "" : "display:none"}">
+          <div class="pt-payout-lbl" style="margin-top:.9rem">Who will receive the payments?</div>
+          <div class="pt-payout-opts">
+            <label class="pt-radio"><input type="radio" name="payoutFor" value="personal" id="ptForPersonal" ${payoutFor === "personal" ? "checked" : ""} required onchange="ptTaxUpdate()"> Me, personally</label>
+            <label class="pt-radio"><input type="radio" name="payoutFor" value="business" id="ptForBusiness" ${payoutFor === "business" ? "checked" : ""} required onchange="ptTaxUpdate()"> My business / entity</label>
+          </div>
+        </div>
+
+        <div id="ptTaxUpload" style="display:none">
+          <label class="pt-payout-user"><span id="ptTaxUploadLabel"></span>
+            <input type="file" name="taxFormFile" id="ptTaxFile" accept="application/pdf,image/*">
+          </label>
+          <p class="pt-payout-note">Blank <span id="ptTaxFormName"></span>: <a id="ptTaxUploadLink" href="#" target="_blank" rel="noopener"></a>. Stored privately — only accessible to GillyLab for tax reporting, never shared or shown publicly.</p>
+        </div>
       </div>
       <label class="pt-agree"><input type="checkbox" name="agree" value="1" required> I have read and agree to the Partner Program Terms above.</label>
       <button type="submit" class="pt-btn">Agree &amp; continue to my dashboard</button>
     </form>
     <p class="pt-note">Questions about any of this before you agree? Reply to whoever sent you this link, or reach out to GillyLab directly — happy to talk it through.</p>
   </main>
+  <script>
+    // Branches the tax-form ask into three real outcomes (W-9 / W-8BEN / W-8BEN-E)
+    // instead of the old single W-9 upload that told international partners to
+    // "contact us directly." Pure display/required toggling here for UX; the
+    // server re-derives the same form type from taxResidency+payoutFor and is the
+    // actual gate (see /partner/:token/accept), so a no-JS submission still works
+    // -- it just skips straight to the file input being enforced server-side.
+    var PT_FORMS = {
+      'W-9':      { url: 'https://www.irs.gov/pub/irs-pdf/fw9.pdf',     name: 'IRS Form W-9' },
+      'W-8BEN':   { url: 'https://www.irs.gov/pub/irs-pdf/fw8ben.pdf',  name: 'IRS Form W-8BEN' },
+      'W-8BEN-E': { url: 'https://www.irs.gov/pub/irs-pdf/fw8bene.pdf', name: 'IRS Form W-8BEN-E' },
+    };
+    var PT_EXISTING_TYPE = ${JSON.stringify(existingTaxFormType)};
+    function ptTaxUpdate(){
+      var us = document.getElementById('ptResUs').checked;
+      var intl = document.getElementById('ptResIntl').checked;
+      document.getElementById('ptPayoutFor').style.display = intl ? '' : 'none';
+      var personal = document.getElementById('ptForPersonal').checked;
+      var business = document.getElementById('ptForBusiness').checked;
+      var type = us ? 'W-9' : (intl && personal) ? 'W-8BEN' : (intl && business) ? 'W-8BEN-E' : '';
+      var wrap = document.getElementById('ptTaxUpload');
+      var file = document.getElementById('ptTaxFile');
+      if (!type) { wrap.style.display = 'none'; file.required = false; return; }
+      wrap.style.display = '';
+      var info = PT_FORMS[type];
+      var already = PT_EXISTING_TYPE === type;
+      document.getElementById('ptTaxUploadLabel').textContent = already
+        ? 'We already have a ' + type + ' on file for you -- upload a new one only if something has changed.'
+        : 'Upload your completed ' + type + ' (PDF or a clear photo/scan)';
+      document.getElementById('ptTaxFormName').textContent = info.name;
+      var link = document.getElementById('ptTaxUploadLink');
+      link.href = info.url;
+      link.textContent = info.url.replace('https://', '');
+      file.required = !already;
+    }
+    ptTaxUpdate();
+  </script>
 </body></html>`;
 };
 
@@ -4656,9 +4716,10 @@ export const partnerAdminPage = ({ partners, error, added, removed }) => {
     const termsLine = p.termsAcceptedAt
       ? `<span class="pa-comp-on">Accepted ${esc(new Date(p.termsAcceptedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}</span>`
       : `<span class="pa-comp-off">Terms not accepted yet</span>`;
+    const taxFormLabel = p.taxFormType || "W-9"; // pre-existing partners predate taxFormType and were all US/W-9
     const w9Line = p.w9SubmittedAt
-      ? `<a href="/admin/partners/w9/${esc(p.token)}" target="_blank" rel="noopener">W-9 on file (${esc(new Date(p.w9SubmittedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}) — Download</a>`
-      : `<span class="pa-comp-off">No W-9 on file</span>`;
+      ? `<a href="/admin/partners/w9/${esc(p.token)}" target="_blank" rel="noopener">${esc(taxFormLabel)} on file (${esc(new Date(p.w9SubmittedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }))}) — Download</a>`
+      : `<span class="pa-comp-off">No tax form on file</span>`;
     return `<div class="pa-card partner-card">
       <div class="pa-pcard-hdr">
         <div>

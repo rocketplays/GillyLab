@@ -148,15 +148,24 @@ const linkCustomer = async (env, custId, email) => env.USERS.put("cust:" + custI
                                     payoutInfo, createdAt, referralCount, activeCount,
                                     lifetimeRevenueCents, lifetimeCommissionCents,
                                     bonusesPaidCents, paidOutCents, customTierPct,
-                                    termsAcceptedAt, termsAcceptedVersion, w9SubmittedAt }
+                                    termsAcceptedAt, termsAcceptedVersion, w9SubmittedAt,
+                                    taxFormType }
+                                   taxFormType is "W-9" (US person), "W-8BEN" (international,
+                                   paid personally) or "W-8BEN-E" (international, paid to a
+                                   business/entity) — set from the terms page's branching
+                                   tax-status question, re-derived server-side in the
+                                   /accept handler rather than trusted from the client.
+                                   w9SubmittedAt is the generic "a tax form is on file"
+                                   timestamp regardless of which of the three it is; the KV
+                                   key below is still named w9: for the same reason.
      promo:<CODE UPPERCASED>  -> token          (fast promo-code -> partner lookup)
      referral:<email>         -> { partnerToken, promoCode, since, active }
      ledger:<token>:<ts>_<id> -> { invoiceId, email, amountCents, pct, commissionCents,
                                     kind: "first" | "recurring" | "bonus", date }
-     w9:<token>               -> { filename, contentType, size, uploadedAt, dataBase64 }
+     w9:<token>               -> { filename, contentType, size, formType, uploadedAt, dataBase64 }
                                    Kept separate from partner:<token> so the (possibly
                                    multi-MB) base64 blob doesn't ride along on every
-                                   listPartners() read — only w9SubmittedAt does that.
+                                   listPartners() read — only w9SubmittedAt/taxFormType does.
                                    Founder-only download at /admin/partners/w9/<token>.
                                    Deliberately NOT deleted when a partner is removed —
                                    see /admin/partners/remove's own comment.
@@ -2198,42 +2207,58 @@ export default {
         // avoid tripping browser password-manager autofill heuristics, which key
         // heavily off the literal substring "username" in a field's name/id.
         const payoutUsername = String(body.payoutHandle || "").trim();
+        const taxResidency = String(body.taxResidency || "").trim(); // "us" | "intl"
+        const payoutFor = String(body.payoutFor || "").trim(); // "personal" | "business" (intl only)
         // Re-render with whatever they'd already picked/typed (not saved — just
         // carried through the error response) rather than resetting the form.
         const reRender = (msg) => html(
-          partnerTermsPage({ partner: { ...partner, payoutInfo: { method: payoutMethod, username: payoutUsername } }, termsVersion: PARTNER_TERMS_VERSION, error: msg }),
+          partnerTermsPage({ partner: { ...partner, payoutInfo: { method: payoutMethod, username: payoutUsername }, taxResidency, payoutFor }, termsVersion: PARTNER_TERMS_VERSION, error: msg }),
           200, { "Cache-Control": "private, no-store" }
         );
         if (String(body.agree || "") !== "1") return reRender("Please check the box confirming you've read and agree before continuing.");
         if (!["Venmo", "PayPal", "CashApp"].includes(payoutMethod)) return reRender("Please choose a payout method.");
         if (!payoutUsername) return reRender("Please enter your username for that payment method.");
+        if (!["us", "intl"].includes(taxResidency)) return reRender("Please tell us whether you're a US person or international.");
+        if (taxResidency === "intl" && !["personal", "business"].includes(payoutFor)) return reRender("Please tell us whether the payments go to you personally or to a business/entity.");
+        // The server derives its own answer instead of trusting a hidden field the
+        // client could compute wrong (or not send at all with JS off) — same three
+        // outcomes the terms page's ptTaxUpdate() shows, just re-derived here as
+        // the actual gate.
+        const taxFormType = taxResidency === "us" ? "W-9" : payoutFor === "personal" ? "W-8BEN" : "W-8BEN-E";
         // A real File object only shows up here on an actual multipart upload —
         // an empty/unselected <input type=file> comes through as a zero-size File
         // (or is simply absent), never as a plain string, so this check is safe
         // even though readBody() doesn't distinguish file fields from text ones.
-        const w9File = body.w9File;
-        const hasNewW9 = w9File && typeof w9File === "object" && typeof w9File.arrayBuffer === "function" && w9File.size > 0;
-        if (!partner.w9SubmittedAt && !hasNewW9) return reRender("Please upload a completed W-9 (or W-8BEN if you're not a US person) — required before your first payout.");
-        if (hasNewW9) {
-          const MAX_W9_BYTES = 8 * 1024 * 1024; // generous for a 1-2 page scan/PDF
-          if (w9File.size > MAX_W9_BYTES) return reRender("That file is too large (max 8MB) — try a lower-resolution scan or re-export the PDF.");
+        const taxFormFile = body.taxFormFile;
+        const hasNewFile = taxFormFile && typeof taxFormFile === "object" && typeof taxFormFile.arrayBuffer === "function" && taxFormFile.size > 0;
+        // An existing upload only satisfies the requirement if it's the SAME form
+        // type just selected — switching from, say, a W-9 on file to "international
+        // / business" must not silently pass on the strength of the old W-9; that
+        // would leave the wrong tax form on record for reporting.
+        const existingFileMatchesType = !!partner.w9SubmittedAt && partner.taxFormType === taxFormType;
+        if (!existingFileMatchesType && !hasNewFile) return reRender(`Please upload a completed ${taxFormType} — required before your first payout.`);
+        if (hasNewFile) {
+          const MAX_FILE_BYTES = 8 * 1024 * 1024; // generous for a 1-2 page scan/PDF
+          if (taxFormFile.size > MAX_FILE_BYTES) return reRender("That file is too large (max 8MB) — try a lower-resolution scan or re-export the PDF.");
           const allowedTypes = ["application/pdf", "image/jpeg", "image/png", "image/heic", "image/heif", "image/webp"];
-          if (w9File.type && !allowedTypes.includes(w9File.type)) return reRender("Please upload a PDF or a photo/scan (PDF, JPG, PNG, HEIC).");
+          if (taxFormFile.type && !allowedTypes.includes(taxFormFile.type)) return reRender("Please upload a PDF or a photo/scan (PDF, JPG, PNG, HEIC).");
           // Kept in its own KV key rather than on the partner record itself —
           // listPartners() reads every partner:<token> value on every admin page
           // load, and there's no reason to drag a multi-MB base64 blob along for
-          // that every time. partner.w9SubmittedAt (below) is the cheap flag the
-          // admin list actually reads.
-          const buf = await w9File.arrayBuffer();
+          // that every time. partner.w9SubmittedAt/taxFormType (below) are the
+          // cheap flags the admin list actually reads.
+          const buf = await taxFormFile.arrayBuffer();
           await env.PARTNERS.put("w9:" + token, JSON.stringify({
-            filename: String(w9File.name || "w9").slice(0, 200),
-            contentType: w9File.type || "application/octet-stream",
-            size: w9File.size,
+            filename: String(taxFormFile.name || taxFormType).slice(0, 200),
+            contentType: taxFormFile.type || "application/octet-stream",
+            size: taxFormFile.size,
+            formType: taxFormType,
             uploadedAt: Date.now(),
             dataBase64: arrayBufferToBase64(buf),
           }));
           partner.w9SubmittedAt = Date.now();
         }
+        partner.taxFormType = taxFormType;
         partner.termsAcceptedAt = Date.now();
         partner.termsAcceptedVersion = PARTNER_TERMS_VERSION;
         partner.payoutInfo = { method: payoutMethod, username: payoutUsername };
@@ -2375,7 +2400,7 @@ export default {
         for (const p of partners) { const u = await getUser(env, p.email); p.compActive = !!(u && u.partnerComp); }
         return html(partnerAdminPage({ partners, error: url.searchParams.get("error"), added: url.searchParams.get("added"), removed: url.searchParams.get("removed") }), 200, { "Cache-Control": "private, no-store" });
       }
-      // Founder-only download of an uploaded W-9/W-8BEN. Keyed by partner token,
+      // Founder-only download of an uploaded W-9/W-8BEN/W-8BEN-E. Keyed by partner token,
       // not partner email/name, and not linked from anywhere except the admin
       // table row it belongs to. Survives partner deletion on purpose (see
       // /admin/partners/remove) — a payout already made means a 1099 may still
