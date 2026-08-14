@@ -42,6 +42,31 @@ function normLoose(s) {
 }
 function escapeRe(s) { return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
+// Wikipedia sometimes narrates a fighter by their legal name instead of the ring
+// name our roster (data/event.json) and index.html both use -- e.g. Eduardo
+// "Chapolin" appears in UFC 330's Background prose as "Eduardo Henrique" (his
+// legal name), so a plain textual search for "Eduardo Chapolin" never finds him
+// and his whole paragraph gets missed. Mirrors the handful of cases index.html's
+// own NAME_ALIASES carries for exactly this reason; duplicated here rather than
+// shared because this script runs standalone in Node and doesn't load that
+// runtime object. Keyed by the Wikipedia-prose spelling -> the roster's
+// canonical name (case-sensitive: the replacement-role regexes below are
+// case-sensitive on purpose, so the alias has to be spelled the way Wikipedia
+// actually capitalizes it).
+const WIKI_NAME_ALIASES = {
+  'Eduardo Henrique': 'Eduardo Chapolin',
+};
+// All name-forms worth searching a paragraph for, for one roster fighter: their
+// own name, plus any Wikipedia alias known to refer to them. Fighters with no
+// alias just get back [F] -- identical behavior to a plain nameRe(F) test.
+function nameFormsFor(F) {
+  const forms = [F];
+  for (const wikiName of Object.keys(WIKI_NAME_ALIASES)) {
+    if (WIKI_NAME_ALIASES[wikiName] === F) forms.push(wikiName);
+  }
+  return forms;
+}
+
 // ── pure parser ──────────────────────────────────────────────────────────────
 // Pull the "Background" section (up to the next heading); fall back to the whole
 // page if the heading isn't found.
@@ -85,19 +110,25 @@ function isReplacementRole(sentence, linkStartInSentence, linkEndInSentence) {
   // "...(was) replaced by/with <descriptors> <F>"  |  "...as the replacement, <F>"
   // The descriptor run between "replaced by" and the name is open-ended prose:
   // "promotional newcomer", "undefeated promotional newcomer", "a short-notice
-  // replacement". Enumerating the variants was a losing game — the single word
-  // "undefeated" was enough to drop Muhammad Said out of shortNotice, which sent
-  // the paragraph down the withdrawal branch and flagged BOTH him and Jacoby as
-  // "may change" on a bout that was already settled. Accept any short run of
-  // LOWERCASE words instead.
+  // replacement", "promotional newcomer and fellow former LFA flyweight champion".
+  // Enumerating the variants was a losing game — the single word "undefeated" was
+  // enough to drop Muhammad Said out of shortNotice, which sent the paragraph down
+  // the withdrawal branch and flagged BOTH him and Jacoby as "may change" on a
+  // bout that was already settled. Accept any short run of LOWERCASE words
+  // instead, PLUS short ALL-CAPS acronyms (LFA, UFC, PFL, ...) as their own
+  // exception — an org acronym reads nothing like a person's name and titlecase
+  // fighter names never take that shape, so it's an unambiguous carve-out, not a
+  // loosening of the guard below.
   //
   // Case is the load-bearing part, so this test deliberately has no /i: a
-  // capitalised word is another person's NAME and must not be bridged across
-  // ("replaced by Anna Melisano, who now faces <F>" must stay false). Punctuation
-  // breaks the run for the same reason, and the 4-word cap stops it reaching
-  // across a clause into an unrelated fighter.
+  // capitalised (Title Case) word is another person's NAME and must not be
+  // bridged across ("replaced by Anna Melisano, who now faces <F>" must stay
+  // false — "Anna" is mixed-case, not all-caps, so the acronym exception doesn't
+  // apply to it). Punctuation still breaks the run for the same reason, and the
+  // word cap (raised from 4 to 10 for the LFA case above — 8 words) stops it
+  // reaching across a clause into an unrelated fighter.
   const rb = /\breplaced (?:by|with)\s+([^.]*)$/i.exec(before);
-  if (rb && /^(?:[a-z][a-z0-9'’-]*\s+){0,4}$/.test(rb[1])) return true;
+  if (rb && /^(?:(?:[a-z][a-z0-9'’-]*|[A-Z]{2,6})\s+){0,10}$/.test(rb[1])) return true;
   if (/(?:short.?notice|late)\s+replacement[^.]{0,20}$/i.test(before)) return true;
   // "<F> stepped in / steps in ..."  |  "<F> replaced ..."  |  "<F> was booked/tabbed/added as ... replacement"
   if (/^\s*(?:,?\s*(?:who|and)\s+)?(?:(?:has|had|since)\s+)*stepp(?:ed|ing|s)?\s+in\b/i.test(after)) return true;
@@ -133,14 +164,25 @@ function extractCardChanges(wikitext, currentNames) {
   const shortNotice = new Map();
   const mayChange = new Map();
   for (const para of paras) {
-    const present = currentNames.filter((F) => nameRe(F).test(para));
+    // present: one entry per currentNames fighter actually mentioned in this
+    // paragraph, carrying BOTH the roster's canonical spelling (for keying and
+    // output) and whichever textual form (own name, or a WIKI_NAME_ALIASES
+    // legal-name form) is the one that actually appears in the prose -- that
+    // second form is what every regex below has to search FOR, since the
+    // canonical spelling itself may never occur in the text at all (Chapolin
+    // case: only "Eduardo Henrique" appears).
+    const present = [];
+    for (const F of currentNames) {
+      const searchName = nameFormsFor(F).find((form) => nameRe(form).test(para));
+      if (searchName) present.push({ canonical: F, searchName });
+    }
     if (!present.length) continue;
 
     // 1) A replacement named in this bout-paragraph — flag the fighter who stepped in.
     let hadReplacement = false;
-    for (const F of present) {
+    for (const { canonical: F, searchName } of present) {
       const key = normLoose(F);
-      const re = nameRe(F, 'gi');
+      const re = nameRe(searchName, 'gi');
       let m;
       while ((m = re.exec(para))) {
         const [s, e] = sentenceBounds(para, m.index, re.lastIndex);
@@ -158,10 +200,10 @@ function extractCardChanges(wikitext, currentNames) {
     // (the one still on the card whose opponent left). Skip the fighter who left,
     // and skip a bout merely moved to another card (no withdrawal language).
     if (WITHDRAW.test(para)) {
-      for (const F of present) {
+      for (const { canonical: F, searchName } of present) {
         const key = normLoose(F);
         if (shortNotice.has(key) || mayChange.has(key)) continue;
-        if (isWithdrawalSubject(F, para)) continue;   // this fighter is the one who left
+        if (isWithdrawalSubject(searchName, para)) continue;   // this fighter is the one who left
         mayChange.set(key, { fighter: F, sentence: para.trim() });
       }
     }

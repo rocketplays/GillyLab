@@ -129,6 +129,28 @@ run('descriptor run does not bridge across a capitalised name', BRIDGE,
   [],
   ['Dione Barbosa', 'Veronica Hardy']);
 
+// Verbatim from the UFC 330 page. Two compounding problems in one real case:
+// (1) Wikipedia names the replacement by his LEGAL name, "Eduardo Henrique" —
+// the roster/our DB both use his ring name "Eduardo Chapolin", so a plain
+// textual search for the roster name never finds him at all (WIKI_NAME_ALIASES).
+// (2) even once found, the descriptor between "replaced by" and his name is
+// "promotional newcomer and fellow former LFA flyweight champion" — 8 words
+// including the capitalized acronym "LFA", which broke the old 4-word
+// all-lowercase-only descriptor check. Before both fixes this paragraph never
+// matched Chapolin as a replacement, so it fell through to the withdrawal
+// branch and flagged Charles Johnson "may change" on a bout that had already
+// been resolved for days. Keep this case verbatim: it is the exact prose that
+// broke it.
+const CHAPOLIN = `
+== Background ==
+Jose Ochoa was scheduled to face former [[Legacy Fighting Alliance#LFA Flyweight Championship|LFA Flyweight Champion]] [[Charles Johnson (fighter)|Charles Johnson]] in a flyweight bout.<ref/> However, Ochoa pulled out for undisclosed reasons three days before the event and was replaced by promotional newcomer and fellow former LFA flyweight champion Eduardo Henrique in a 130 pound catchweight bout.<ref/>
+`;
+run('legal-name alias + acronym-laden descriptor ("...LFA flyweight champion Eduardo Henrique")', CHAPOLIN,
+  ['Charles Johnson', 'Eduardo Chapolin'],
+  ['Eduardo Chapolin'],   // short-notice: he stepped in (found only via the Henrique alias)
+  [],                     // may-change: NOT Johnson — the replacement is already booked
+  ['Charles Johnson']);
+
 // Negative: a card with no replacements at all — nothing should be flagged.
 const CLEAN = `
 == Background ==
