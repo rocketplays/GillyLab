@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-15T22:01:43.220Z",
+ "generatedAt": "2026-08-15T22:32:13.492Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6014,6 +6014,194 @@
       ]
      },
      "capturedAt": "2026-08-15T22:01:43.087Z"
+    }
+   ]
+  },
+  "Neil Magny": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Ramiz Brahimaj",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:20",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Ramiz Brahimaj",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 38,
+      "totL": 61,
+      "totA": 78,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:59",
+      "head": [
+       20,
+       34
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       9,
+       18
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       13,
+       17
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 9,
+      "totL": 20,
+      "totA": 24,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "6:25",
+      "head": [
+       2,
+       3
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       5,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-15T22:32:13.357Z"
+    }
+   ]
+  },
+  "Ramiz Brahimaj": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Neil Magny",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "3:20",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Neil Magny",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 9,
+      "totL": 20,
+      "totA": 24,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "6:25",
+      "head": [
+       2,
+       3
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       4,
+       5
+      ],
+      "dist": [
+       5,
+       7
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 38,
+      "totL": 61,
+      "totA": 78,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:59",
+      "head": [
+       20,
+       34
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       9,
+       18
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       13,
+       17
+      ]
+     },
+     "capturedAt": "2026-08-15T22:32:13.357Z"
     }
    ]
   }
