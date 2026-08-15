@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-15T23:02:33.403Z",
+ "generatedAt": "2026-08-15T23:48:07.909Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6390,6 +6390,194 @@
       ]
      },
      "capturedAt": "2026-08-15T23:02:33.266Z"
+    }
+   ]
+  },
+  "Vicente Luque": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Tresean Gore",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Tresean Gore",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 122,
+      "totL": 50,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       31,
+       104
+      ],
+      "body": [
+       7,
+       7
+      ],
+      "leg": [
+       8,
+       11
+      ],
+      "dist": [
+       43,
+       118
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 136,
+      "totL": 98,
+      "totA": 179,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:45",
+      "head": [
+       53,
+       120
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       39,
+       107
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       22,
+       24
+      ]
+     },
+     "capturedAt": "2026-08-15T23:48:07.773Z"
+    }
+   ]
+  },
+  "Tresean Gore": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Vicente Luque",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Vicente Luque",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 136,
+      "totL": 98,
+      "totA": 179,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:45",
+      "head": [
+       53,
+       120
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       10,
+       13
+      ],
+      "dist": [
+       39,
+       107
+      ],
+      "clinch": [
+       4,
+       5
+      ],
+      "ground": [
+       22,
+       24
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 46,
+      "sigA": 122,
+      "totL": 50,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       31,
+       104
+      ],
+      "body": [
+       7,
+       7
+      ],
+      "leg": [
+       8,
+       11
+      ],
+      "dist": [
+       43,
+       118
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-15T23:48:07.773Z"
     }
    ]
   }
