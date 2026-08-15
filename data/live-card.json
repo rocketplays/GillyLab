@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-15T22:32:13.492Z",
+ "generatedAt": "2026-08-15T23:02:33.403Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6202,6 +6202,194 @@
       ]
      },
      "capturedAt": "2026-08-15T22:32:13.357Z"
+    }
+   ]
+  },
+  "Rafael Tobias": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Lucas Fernando",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 3,
+     "time": "1:10",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Lucas Fernando",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 56,
+      "totL": 14,
+      "totA": 58,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       5,
+       47
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       11,
+       52
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 69,
+      "sigA": 115,
+      "totL": 69,
+      "totA": 115,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       37,
+       80
+      ],
+      "body": [
+       18,
+       20
+      ],
+      "leg": [
+       14,
+       15
+      ],
+      "dist": [
+       66,
+       111
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-08-15T23:02:33.266Z"
+    }
+   ]
+  },
+  "Lucas Fernando": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Rafael Tobias",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 3,
+     "time": "1:10",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Rafael Tobias",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 69,
+      "sigA": 115,
+      "totL": 69,
+      "totA": 115,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       37,
+       80
+      ],
+      "body": [
+       18,
+       20
+      ],
+      "leg": [
+       14,
+       15
+      ],
+      "dist": [
+       66,
+       111
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 56,
+      "totL": 14,
+      "totA": 58,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:55",
+      "head": [
+       5,
+       47
+      ],
+      "body": [
+       5,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       11,
+       52
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       1,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-15T23:02:33.266Z"
     }
    ]
   }
