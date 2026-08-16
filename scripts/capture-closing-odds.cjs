@@ -21,6 +21,7 @@ const { consensus, lastNameOf, pairKey } = require('./odds-history-lib.cjs');
 
 const ROOT = path.resolve(__dirname, '..');
 const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
+const EVENT_RECENT_PATH = path.join(ROOT, 'data', 'event-recent.json');
 const CLOSING_PATH = path.join(ROOT, 'data', 'odds-closing.json');
 const ODDS_SRC = process.env.ODDS_SRC || path.join(ROOT, 'data', 'odds.json');
 
@@ -138,8 +139,21 @@ function main() {
   if (catchup) {
     const odds = loadJson(ODDS_SRC, []);
     if (!Array.isArray(odds) || !odds.length) { console.log('[closing] catchup: no odds source at ' + ODDS_SRC); return; }
+    // A card that started 2h+ ago is often ALREADY GONE from event.json by the time this
+    // runs — ESPN's upstream feed drops a finished event from the "upcoming" list outright
+    // rather than marking it completed (same behavior loadHeldCard in worker/index.js works
+    // around), and it lands in event-recent.json instead. The live in-window capture above
+    // doesn't need this (an event about to start is never in event-recent.json yet), but the
+    // catchup sweep exists specifically to cover a card after the fact, so it must look in
+    // both places. This is exactly how UFC 330's card slipped through entirely: it had
+    // already rolled off event.json by the time the 2h-36h catchup window opened, so this
+    // loop never even saw it to check.
+    const recentDoc = loadJson(EVENT_RECENT_PATH, null);
+    const recentEvents = (recentDoc && Array.isArray(recentDoc.data)) ? recentDoc.data : [];
+    const seenSlugs = new Set(events.map(e => e && e.slug));
+    const allEvents = events.concat(recentEvents.filter(e => e && !seenSlugs.has(e.slug)));
     let anyChange = false;
-    events.forEach(ev => {
+    allEvents.forEach(ev => {
       const startedAgo = now - (Date.parse(ev.startsAt || ev.prelimsStartsAt || '') || NaN);
       if (!isFinite(startedAgo) || startedAgo < CATCHUP_MIN_MS || startedAgo > CATCHUP_MAX_MS) return;
       const prelimBouts = (ev.bouts || []).filter(b => !isMainCard(b));
