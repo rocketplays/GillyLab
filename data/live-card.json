@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T00:39:15.534Z",
+ "generatedAt": "2026-08-16T01:04:35.616Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6954,6 +6954,194 @@
       ]
      },
      "capturedAt": "2026-08-16T00:39:15.399Z"
+    }
+   ]
+  },
+  "Chidi Njokuani": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Joel Álvarez",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Joel Álvarez",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 131,
+      "sigA": 227,
+      "totL": 133,
+      "totA": 229,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       37,
+       96
+      ],
+      "body": [
+       42,
+       72
+      ],
+      "leg": [
+       52,
+       59
+      ],
+      "dist": [
+       128,
+       224
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 190,
+      "totL": 76,
+      "totA": 190,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:26",
+      "head": [
+       48,
+       153
+      ],
+      "body": [
+       13,
+       20
+      ],
+      "leg": [
+       15,
+       17
+      ],
+      "dist": [
+       75,
+       188
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T01:04:35.486Z"
+    }
+   ]
+  },
+  "Joel Álvarez": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Chidi Njokuani",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Chidi Njokuani",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 76,
+      "sigA": 190,
+      "totL": 76,
+      "totA": 190,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:26",
+      "head": [
+       48,
+       153
+      ],
+      "body": [
+       13,
+       20
+      ],
+      "leg": [
+       15,
+       17
+      ],
+      "dist": [
+       75,
+       188
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 131,
+      "sigA": 227,
+      "totL": 133,
+      "totA": 229,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:12",
+      "head": [
+       37,
+       96
+      ],
+      "body": [
+       42,
+       72
+      ],
+      "leg": [
+       52,
+       59
+      ],
+      "dist": [
+       128,
+       224
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T01:04:35.486Z"
     }
    ]
   }
