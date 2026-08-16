@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T02:36:19.268Z",
+ "generatedAt": "2026-08-16T03:28:00.731Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -7706,6 +7706,194 @@
       ]
      },
      "capturedAt": "2026-08-16T02:36:19.128Z"
+    }
+   ]
+  },
+  "Mackenzie Dern": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Gillian Robertson",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Gillian Robertson",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 168,
+      "totL": 119,
+      "totA": 260,
+      "tdL": 4,
+      "tdA": 6,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:50",
+      "head": [
+       24,
+       146
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       38,
+       160
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 162,
+      "totL": 123,
+      "totA": 257,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "6:45",
+      "head": [
+       39,
+       137
+      ],
+      "body": [
+       8,
+       20
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       29,
+       132
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       20,
+       29
+      ]
+     },
+     "capturedAt": "2026-08-16T03:28:00.597Z"
+    }
+   ]
+  },
+  "Gillian Robertson": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Mackenzie Dern",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Mackenzie Dern",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 162,
+      "totL": 123,
+      "totA": 257,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "6:45",
+      "head": [
+       39,
+       137
+      ],
+      "body": [
+       8,
+       20
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       29,
+       132
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       20,
+       29
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 168,
+      "totL": 119,
+      "totA": 260,
+      "tdL": 4,
+      "tdA": 6,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:50",
+      "head": [
+       24,
+       146
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       12,
+       12
+      ],
+      "dist": [
+       38,
+       160
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       3,
+       6
+      ]
+     },
+     "capturedAt": "2026-08-16T03:28:00.597Z"
     }
    ]
   }
