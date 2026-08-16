@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T02:20:51.916Z",
+ "generatedAt": "2026-08-16T02:36:19.268Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -7518,6 +7518,194 @@
       ]
      },
      "capturedAt": "2026-08-16T02:20:51.779Z"
+    }
+   ]
+  },
+  "Jalin Turner": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Kauê Fernandes",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "0:39",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Kauê Fernandes",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 9,
+      "sigA": 14,
+      "totL": 9,
+      "totA": 14,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       8,
+       11
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       1,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       8,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 4,
+      "totL": 2,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T02:36:19.128Z"
+    }
+   ]
+  },
+  "Kauê Fernandes": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Jalin Turner",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "0:39",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Jalin Turner",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 4,
+      "totL": 2,
+      "totA": 4,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       2
+      ],
+      "body": [
+       0,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 9,
+      "sigA": 14,
+      "totL": 9,
+      "totA": 14,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       8,
+       11
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       1
+      ],
+      "dist": [
+       1,
+       4
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       8,
+       10
+      ]
+     },
+     "capturedAt": "2026-08-16T02:36:19.128Z"
     }
    ]
   }
