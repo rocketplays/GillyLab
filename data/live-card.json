@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T03:38:14.450Z",
+ "generatedAt": "2026-08-16T04:28:36.020Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -7894,6 +7894,194 @@
       ]
      },
      "capturedAt": "2026-08-16T03:28:00.597Z"
+    }
+   ]
+  },
+  "Islam Makhachev": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Ian Machado Garry",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Ian Machado Garry",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 22,
+      "sigA": 44,
+      "totL": 78,
+      "totA": 114,
+      "tdL": 7,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "12:30",
+      "head": [
+       9,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       15,
+       36
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 89,
+      "totA": 141,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:34",
+      "head": [
+       7,
+       40
+      ],
+      "body": [
+       16,
+       17
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       22,
+       57
+      ],
+      "clinch": [
+       7,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T04:28:35.882Z"
+    }
+   ]
+  },
+  "Ian Machado Garry": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Islam Makhachev",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Islam Makhachev",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 29,
+      "sigA": 65,
+      "totL": 89,
+      "totA": 141,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:34",
+      "head": [
+       7,
+       40
+      ],
+      "body": [
+       16,
+       17
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       22,
+       57
+      ],
+      "clinch": [
+       7,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 22,
+      "sigA": 44,
+      "totL": 78,
+      "totA": 114,
+      "tdL": 7,
+      "tdA": 15,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "12:30",
+      "head": [
+       9,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       10,
+       10
+      ],
+      "dist": [
+       15,
+       36
+      ],
+      "clinch": [
+       6,
+       7
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-16T04:28:35.882Z"
     }
    ]
   }
