@@ -1,113 +1,39 @@
 {
-  "slug": "ufc-330",
-  "generatedAt": "2026-08-16T00:33:30.987Z",
+  "slug": "ufc-fight-night-august-18-2026",
+  "generatedAt": "2026-08-16T12:30:14.657Z",
   "slugs": [
-    "islam-makhachev",
-    "ian-machado-garry",
-    "mackenzie-dern",
-    "gillian-robertson",
-    "jalin-turner",
-    "kaue-fernandes",
-    "mansur-abdul-malik",
-    "dustin-stoltzfus",
-    "edson-barboza",
-    "esteban-ribovics",
-    "chidi-njokuani",
-    "joel-alvarez",
-    "charles-johnson",
-    "eduardo-chapolin",
-    "donte-johnson",
-    "eric-mcconico",
-    "vicente-luque",
-    "tresean-gore",
-    "rafael-tobias",
-    "lucas-fernando",
-    "neil-magny",
-    "ramiz-brahimaj",
-    "jeremiah-wells",
-    "myktybek-orolbai"
+    "namo-fazil",
+    "kaik-brito",
+    "douglas-rodrigues",
+    "trent-miller",
+    "logan-paxton",
+    "cristian-perez",
+    "alik-lorenz",
+    "mahamed-aly",
+    "roman-puga",
+    "taner-trembley"
   ],
   "bouts": [
     {
-      "id": "espn-islam-makhachev-vs-ian-machado-garry",
-      "f1": "Islam Makhachev",
-      "f2": "Ian Machado Garry",
-      "ps1": "islam-makhachev",
-      "ps2": "ian-machado-garry",
+      "id": "espn-namo-fazil-vs-kaik-brito",
+      "f1": "Namo Fazil",
+      "f2": "Kaik Brito",
+      "ps1": "namo-fazil",
+      "ps2": "kaik-brito",
       "wPts": {
-        "f1": 7.574687059692233,
-        "f2": 15.957650321812958
+        "f1": 8.761922170252738,
+        "f2": 11.771230145774648
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 6,
-          "Submission": 5,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 7,
-          "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6,
-        "4": 7,
-        "5": 8
-      }
-    },
-    {
-      "id": "espn-mackenzie-dern-vs-gillian-robertson",
-      "f1": "Mackenzie Dern",
-      "f2": "Gillian Robertson",
-      "ps1": "mackenzie-dern",
-      "ps2": "gillian-robertson",
-      "wPts": {
-        "f1": 8.399777039328086,
-        "f2": 12.62087090594088
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 7,
-          "Submission": 6,
-          "Decision": 2
-        },
-        "f2": {
-          "KO/TKO": 6,
-          "Submission": 6,
-          "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6,
-        "4": 7,
-        "5": 8
-      }
-    },
-    {
-      "id": "espn-jalin-turner-vs-kaue-fernandes",
-      "f1": "Jalin Turner",
-      "f2": "Kauê Fernandes",
-      "ps1": "jalin-turner",
-      "ps2": "kaue-fernandes",
-      "wPts": {
-        "f1": 9.798375948402901,
-        "f2": 10.212005295533764
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 4,
-          "Submission": 6,
-          "Decision": 6
-        },
-        "f2": {
           "KO/TKO": 4,
           "Submission": 6,
           "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 2,
+          "Submission": 6,
+          "Decision": 6
         }
       },
       "rPts": {
@@ -117,81 +43,25 @@
       }
     },
     {
-      "id": "espn-mansur-abdul-malik-vs-dustin-stoltzfus",
-      "f1": "Mansur Abdul-Malik",
-      "f2": "Dustin Stoltzfus",
-      "ps1": "mansur-abdul-malik",
-      "ps2": "dustin-stoltzfus",
+      "id": "espn-douglas-rodrigues-vs-trent-miller",
+      "f1": "Douglas Rodrigues",
+      "f2": "Trent Miller",
+      "ps1": "douglas-rodrigues",
+      "ps2": "trent-miller",
       "wPts": {
-        "f1": 6.940819131735005,
-        "f2": 22.439782978955954
+        "f1": 7.643592817913173,
+        "f2": 15.554136341618293
       },
       "mPts": {
         "f1": {
           "KO/TKO": 3,
           "Submission": 6,
-          "Decision": 6
+          "Decision": 7
         },
         "f2": {
-          "KO/TKO": 4,
-          "Submission": 5,
-          "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-edson-barboza-vs-esteban-ribovics",
-      "f1": "Edson Barboza",
-      "f2": "Esteban Ribovics",
-      "ps1": "edson-barboza",
-      "ps2": "esteban-ribovics",
-      "wPts": {
-        "f1": 22.818672627390548,
-        "f2": 6.919417835539859
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 6,
-          "Submission": 6,
-          "Decision": 3
-        },
-        "f2": {
-          "KO/TKO": 4,
-          "Submission": 7,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-chidi-njokuani-vs-joel-alvarez",
-      "f1": "Chidi Njokuani",
-      "f2": "Joel Álvarez",
-      "ps1": "chidi-njokuani",
-      "ps2": "joel-alvarez",
-      "wPts": {
-        "f1": 15.892763837727495,
-        "f2": 7.5853813310825435
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 4,
+          "KO/TKO": 3,
           "Submission": 6,
           "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 4,
-          "Decision": 6
         }
       },
       "rPts": {
@@ -201,42 +71,14 @@
       }
     },
     {
-      "id": "espn-charles-johnson-vs-eduardo-chapolin",
-      "f1": "Charles Johnson",
-      "f2": "Eduardo Chapolin",
-      "ps1": "charles-johnson",
-      "ps2": "eduardo-chapolin",
+      "id": "espn-logan-paxton-vs-cristian-perez",
+      "f1": "Logan Paxton",
+      "f2": "Cristian Perez",
+      "ps1": "logan-paxton",
+      "ps2": "cristian-perez",
       "wPts": {
-        "f1": 7.185227257323654,
-        "f2": 19.110635545353876
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 6,
-          "Submission": 6,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-donte-johnson-vs-eric-mcconico",
-      "f1": "Donte Johnson",
-      "f2": "Eric McConico",
-      "ps1": "donte-johnson",
-      "ps2": "eric-mcconico",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
+        "f1": 13.87409437185111,
+        "f2": 8.007508464087064
       },
       "mPts": {
         "f1": {
@@ -245,37 +87,9 @@
           "Decision": 7
         },
         "f2": {
-          "KO/TKO": 5,
-          "Submission": 5,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-vicente-luque-vs-tresean-gore",
-      "f1": "Vicente Luque",
-      "f2": "Tresean Gore",
-      "ps1": "vicente-luque",
-      "ps2": "tresean-gore",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
-      },
-      "mPts": {
-        "f1": {
           "KO/TKO": 4,
           "Submission": 5,
           "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 6,
-          "Submission": 5,
-          "Decision": 4
         }
       },
       "rPts": {
@@ -285,53 +99,25 @@
       }
     },
     {
-      "id": "espn-rafael-tobias-vs-lucas-fernando",
-      "f1": "Rafael Tobias",
-      "f2": "Lucas Fernando",
-      "ps1": "rafael-tobias",
-      "ps2": "lucas-fernando",
+      "id": "espn-alik-lorenz-vs-mahamed-aly",
+      "f1": "Alik Lorenz",
+      "f2": "Mahamed Aly",
+      "ps1": "alik-lorenz",
+      "ps2": "mahamed-aly",
       "wPts": {
-        "f1": 10,
-        "f2": 10
+        "f1": 16.58582472416672,
+        "f2": 7.478064696810197
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 6,
-          "Submission": 5,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 3,
-          "Submission": 7,
-          "Decision": 5
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-neil-magny-vs-ramiz-brahimaj",
-      "f1": "Neil Magny",
-      "f2": "Ramiz Brahimaj",
-      "ps1": "neil-magny",
-      "ps2": "ramiz-brahimaj",
-      "wPts": {
-        "f1": 10,
-        "f2": 10
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 4,
-          "Submission": 7,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 6,
-          "Submission": 2,
+          "KO/TKO": 2,
+          "Submission": 6,
           "Decision": 7
+        },
+        "f2": {
+          "KO/TKO": 2,
+          "Submission": 7,
+          "Decision": 6
         }
       },
       "rPts": {
@@ -341,25 +127,25 @@
       }
     },
     {
-      "id": "espn-jeremiah-wells-vs-myktybek-orolbai",
-      "f1": "Jeremiah Wells",
-      "f2": "Myktybek Orolbai",
-      "ps1": "jeremiah-wells",
-      "ps2": "myktybek-orolbai",
+      "id": "espn-roman-puga-vs-taner-trembley",
+      "f1": "Roman Puga",
+      "f2": "Taner Trembley",
+      "ps1": "roman-puga",
+      "ps2": "taner-trembley",
       "wPts": {
-        "f1": 10,
-        "f2": 10
+        "f1": 9.228682042458148,
+        "f2": 10.949185493523546
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 6,
-          "Submission": 4,
-          "Decision": 5
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 6
         },
         "f2": {
-          "KO/TKO": 6,
-          "Submission": 5,
-          "Decision": 4
+          "KO/TKO": 4,
+          "Submission": 4,
+          "Decision": 7
         }
       },
       "rPts": {

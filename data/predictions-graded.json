@@ -1683,7 +1683,355 @@
         "pts": 0.0921,
         "leaned": false
       }
+    },
+    {
+      "fightId": "gillian robertson|mackenzie dern",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:19.997Z",
+      "a": {
+        "feed": "Mackenzie Dern",
+        "db": "Mackenzie Dern"
+      },
+      "b": {
+        "feed": "Gillian Robertson",
+        "db": "Gillian Robertson"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 5,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.4584,
+      "modelClose": 0.4616,
+      "marketOpen": 0.6531,
+      "marketClose": 0.641,
+      "leanA": -0.1947,
+      "nSnapshots": 79,
+      "clv": {
+        "toward": true,
+        "pts": 0.0121,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "ian garry|islam makhachev",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:19.997Z",
+      "a": {
+        "feed": "Islam Makhachev",
+        "db": "Islam Makhachev"
+      },
+      "b": {
+        "feed": "Ian Garry",
+        "db": "Ian Machado Garry"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 5,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6366,
+      "modelClose": 0.6365,
+      "marketOpen": 0.7497,
+      "marketClose": 0.7434,
+      "leanA": -0.1131,
+      "nSnapshots": 79,
+      "clv": {
+        "toward": true,
+        "pts": 0.0063,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "donte johnson|eric mcconico",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Donte Johnson",
+        "db": "Donte Johnson"
+      },
+      "b": {
+        "feed": "Eric McConico",
+        "db": "Eric McConico"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.7001,
+      "modelClose": 0.7001,
+      "marketOpen": 0.6868,
+      "marketClose": 0.7243,
+      "leanA": 0.0133,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": true,
+        "pts": 0.0375,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "dustin stoltzfus|mansur abdul malik",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Mansur Abdul-Malik",
+        "db": "Mansur Abdul-Malik"
+      },
+      "b": {
+        "feed": "Dustin Stoltzfus",
+        "db": "Dustin Stoltzfus"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5098,
+      "modelClose": 0.5096,
+      "marketOpen": 0.8134,
+      "marketClose": 0.8465,
+      "leanA": -0.3036,
+      "nSnapshots": 24,
+      "clv": {
+        "toward": false,
+        "pts": -0.0331,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "edson barboza|esteban ribovics",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Edson Barboza",
+        "db": "Edson Barboza"
+      },
+      "b": {
+        "feed": "Esteban Ribovics",
+        "db": "Esteban Ribovics"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4808,
+      "modelClose": 0.482,
+      "marketOpen": 0.2311,
+      "marketClose": 0.153,
+      "leanA": 0.2497,
+      "nSnapshots": 24,
+      "clv": {
+        "toward": false,
+        "pts": -0.0781,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "jalin turner|kaue fernandes",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Jalin Turner",
+        "db": "Jalin Turner"
+      },
+      "b": {
+        "feed": "Kauê Fernandes",
+        "db": "Kaue Fernandes"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6728,
+      "modelClose": 0.6718,
+      "marketOpen": 0.5963,
+      "marketClose": 0.513,
+      "leanA": 0.0765,
+      "nSnapshots": 24,
+      "clv": {
+        "toward": false,
+        "pts": -0.0833,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "jeremiah wells|myktybek orolbai",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Jeremiah Wells",
+        "db": "Jeremiah Wells"
+      },
+      "b": {
+        "feed": "Myktybek Orolbai",
+        "db": "Myktybek Orolbai"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.2826,
+      "modelClose": 0.2825,
+      "marketOpen": 0.199,
+      "marketClose": 0.1213,
+      "leanA": 0.0836,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0777,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "lucas fernando|rafael tobias",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Rafael Tobias",
+        "db": "Rafael Tobias"
+      },
+      "b": {
+        "feed": "Lucas Fernando",
+        "db": "Lucas Fernando"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5318,
+      "modelClose": 0.5323,
+      "marketOpen": 0.3655,
+      "marketClose": 0.2849,
+      "leanA": 0.1663,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0806,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "neil magny|ramiz brahimaj",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Neil Magny",
+        "db": "Neil Magny"
+      },
+      "b": {
+        "feed": "Ramiz Brahimaj",
+        "db": "Ramiz Brahimaj"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4157,
+      "modelClose": 0.4155,
+      "marketOpen": 0.5,
+      "marketClose": 0.4275,
+      "leanA": -0.0843,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": true,
+        "pts": 0.0725,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "tresean gore|vicente luque",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.023Z",
+      "a": {
+        "feed": "Vicente Luque",
+        "db": "Vicente Luque"
+      },
+      "b": {
+        "feed": "Tresean Gore",
+        "db": "Tresean Gore"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6013,
+      "modelClose": 0.6014,
+      "marketOpen": 0.5325,
+      "marketClose": 0.4934,
+      "leanA": 0.0688,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0391,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "chidi njokuani|joel alvarez",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.025Z",
+      "a": {
+        "feed": "Chidi Njokuani",
+        "db": "Chidi Njokuani"
+      },
+      "b": {
+        "feed": "Joel Alvarez",
+        "db": "Joel Alvarez"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4118,
+      "modelClose": 0.4118,
+      "marketOpen": 0.3379,
+      "marketClose": 0.2559,
+      "leanA": 0.0739,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.082,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "charles johnson|eduardo chapolin",
+      "event": "UFC 330",
+      "gradedAt": "2026-08-16T12:30:20.028Z",
+      "a": {
+        "feed": "Charles Johnson",
+        "db": "Charles Johnson"
+      },
+      "b": {
+        "feed": "Eduardo Chapolin",
+        "db": "Eduardo Chapolin"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5134,
+      "modelClose": 0.5134,
+      "marketOpen": 0.5339,
+      "marketClose": 0.5242,
+      "leanA": -0.0205,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": true,
+        "pts": 0.0097,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-16T00:33:35.953Z"
+  "generatedAt": "2026-08-16T12:30:20.033Z"
 }
