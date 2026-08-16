@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T01:50:21.719Z",
+ "generatedAt": "2026-08-16T02:20:51.916Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -7330,6 +7330,194 @@
       ]
      },
      "capturedAt": "2026-08-16T01:50:21.584Z"
+    }
+   ]
+  },
+  "Mansur Abdul-Malik": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Dustin Stoltzfus",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:25",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Dustin Stoltzfus",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 67,
+      "totL": 34,
+      "totA": 68,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       19,
+       48
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       22,
+       45
+      ],
+      "clinch": [
+       9,
+       14
+      ],
+      "ground": [
+       3,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 70,
+      "totL": 61,
+      "totA": 92,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:02",
+      "head": [
+       25,
+       48
+      ],
+      "body": [
+       12,
+       15
+      ],
+      "leg": [
+       6,
+       7
+      ],
+      "dist": [
+       15,
+       32
+      ],
+      "clinch": [
+       14,
+       22
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "capturedAt": "2026-08-16T02:20:51.779Z"
+    }
+   ]
+  },
+  "Dustin Stoltzfus": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Mansur Abdul-Malik",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 2,
+     "time": "4:25",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Mansur Abdul-Malik",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 70,
+      "totL": 61,
+      "totA": 92,
+      "tdL": 2,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:02",
+      "head": [
+       25,
+       48
+      ],
+      "body": [
+       12,
+       15
+      ],
+      "leg": [
+       6,
+       7
+      ],
+      "dist": [
+       15,
+       32
+      ],
+      "clinch": [
+       14,
+       22
+      ],
+      "ground": [
+       14,
+       16
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 34,
+      "sigA": 67,
+      "totL": 34,
+      "totA": 68,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:37",
+      "head": [
+       19,
+       48
+      ],
+      "body": [
+       9,
+       11
+      ],
+      "leg": [
+       6,
+       8
+      ],
+      "dist": [
+       22,
+       45
+      ],
+      "clinch": [
+       9,
+       14
+      ],
+      "ground": [
+       3,
+       8
+      ]
+     },
+     "capturedAt": "2026-08-16T02:20:51.779Z"
     }
    ]
   }
