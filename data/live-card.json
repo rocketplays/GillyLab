@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-15T23:48:07.909Z",
+ "generatedAt": "2026-08-16T00:03:35.038Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6578,6 +6578,194 @@
       ]
      },
      "capturedAt": "2026-08-15T23:48:07.773Z"
+    }
+   ]
+  },
+  "Donte Johnson": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Eric McConico",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:38",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Eric McConico",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 11,
+      "sigA": 31,
+      "totL": 11,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       29
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       28
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 15,
+      "totL": 6,
+      "totA": 15,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       4,
+       13
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       14
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T00:03:34.897Z"
+    }
+   ]
+  },
+  "Eric McConico": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Donte Johnson",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:38",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Donte Johnson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 6,
+      "sigA": 15,
+      "totL": 6,
+      "totA": 15,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       4,
+       13
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       5,
+       14
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 11,
+      "sigA": 31,
+      "totL": 11,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       9,
+       29
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       28
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-16T00:03:34.897Z"
     }
    ]
   }
