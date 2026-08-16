@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T01:09:48.666Z",
+ "generatedAt": "2026-08-16T01:50:21.719Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -7142,6 +7142,194 @@
       ]
      },
      "capturedAt": "2026-08-16T01:04:35.486Z"
+    }
+   ]
+  },
+  "Edson Barboza": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Esteban Ribovics",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "1:32",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Esteban Ribovics",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 64,
+      "totL": 30,
+      "totA": 64,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       13,
+       42
+      ],
+      "body": [
+       11,
+       16
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       29,
+       63
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 63,
+      "sigA": 126,
+      "totL": 70,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       41,
+       101
+      ],
+      "body": [
+       10,
+       11
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       49,
+       107
+      ],
+      "clinch": [
+       14,
+       18
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-16T01:50:21.584Z"
+    }
+   ]
+  },
+  "Esteban Ribovics": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Edson Barboza",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "1:32",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Edson Barboza",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 63,
+      "sigA": 126,
+      "totL": 70,
+      "totA": 133,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       41,
+       101
+      ],
+      "body": [
+       10,
+       11
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       49,
+       107
+      ],
+      "clinch": [
+       14,
+       18
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 64,
+      "totL": 30,
+      "totA": 64,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       13,
+       42
+      ],
+      "body": [
+       11,
+       16
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       29,
+       63
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-16T01:50:21.584Z"
     }
    ]
   }
