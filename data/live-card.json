@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T00:03:35.038Z",
+ "generatedAt": "2026-08-16T00:39:15.534Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -6766,6 +6766,194 @@
       ]
      },
      "capturedAt": "2026-08-16T00:03:34.897Z"
+    }
+   ]
+  },
+  "Charles Johnson": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Eduardo Chapolin",
+     "result": "W",
+     "method": "Submission (Twister)",
+     "round": 3,
+     "time": "1:36",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Eduardo Chapolin",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 142,
+      "totL": 70,
+      "totA": 146,
+      "tdL": 0,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       40,
+       106
+      ],
+      "body": [
+       14,
+       22
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       63,
+       136
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 55,
+      "sigA": 131,
+      "totL": 59,
+      "totA": 137,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:12",
+      "head": [
+       22,
+       84
+      ],
+      "body": [
+       13,
+       20
+      ],
+      "leg": [
+       20,
+       27
+      ],
+      "dist": [
+       49,
+       122
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "capturedAt": "2026-08-16T00:39:15.399Z"
+    }
+   ]
+  },
+  "Eduardo Chapolin": {
+   "history": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Charles Johnson",
+     "result": "L",
+     "method": "Submission (Twister)",
+     "round": 3,
+     "time": "1:36",
+     "event": "UFC 330: Makhachev vs. Machado Garry",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 15, 2026",
+     "opponent": "Charles Johnson",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 55,
+      "sigA": 131,
+      "totL": 59,
+      "totA": 137,
+      "tdL": 1,
+      "tdA": 4,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:12",
+      "head": [
+       22,
+       84
+      ],
+      "body": [
+       13,
+       20
+      ],
+      "leg": [
+       20,
+       27
+      ],
+      "dist": [
+       49,
+       122
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       4,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 66,
+      "sigA": 142,
+      "totL": 70,
+      "totA": 146,
+      "tdL": 0,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       40,
+       106
+      ],
+      "body": [
+       14,
+       22
+      ],
+      "leg": [
+       12,
+       14
+      ],
+      "dist": [
+       63,
+       136
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       2,
+       4
+      ]
+     },
+     "capturedAt": "2026-08-16T00:39:15.399Z"
     }
    ]
   }
