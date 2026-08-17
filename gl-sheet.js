@@ -1140,7 +1140,12 @@ const GL_SHEET = (function () {
           avatar(ctx, lg[j], ax, lcy, r, initialsOf(l.name), LINE);
           ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
           ctx.fillStyle = '#c9ccd3';
-          const txt = clip(ctx, l.pick || '', (W - 96) - tx2);
+          // A fight-level leg (total rounds, distance, etc.) has no fighter name in its
+          // own pick text ("Over 2.5 rounds") and only one (arbitrary) fighter's avatar
+          // drawn above — without the match prefix there'd be nothing on the card tying
+          // the leg to a specific fight.
+          const legTxt = (l.match ? l.match + ': ' : '') + (l.pick || '');
+          const txt = clip(ctx, legTxt, (W - 96) - tx2);
           ctx.fillText(txt, tx2, lcy);
           legsEndX = Math.max(legsEndX, tx2 + ctx.measureText(txt).width);
         });
