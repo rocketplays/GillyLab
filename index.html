@@ -137988,7 +137988,33 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //  • the parlay is LOST the moment any surviving leg loses — it genuinely
   //    cannot win from there, so there's nothing to wait for
   //  • it's WON only once every surviving leg is in and won
-  // Parlays never carry CLV: there's no closing line for a combined price.
+  // A MIXED-market parlay never carries CLV: there's no closing line for a combined
+  // price, and a method/round/total leg doesn't have a closing number as directly
+  // comparable as a moneyline does. An ALL-moneyline parlay is different -- every leg
+  // IS a straight ML pick with its own real closing line, so btParlayClv below
+  // averages each leg's own CLV (same win-prob-points math a straight bet uses) once
+  // every live leg has both a result and a closing line. All-or-nothing on purpose,
+  // same as the rest of this product's "CLV is only a fact once it's settled" rule
+  // (see btBackfillClv) -- a partial average built from half the legs would just be
+  // wrong the moment the next leg's closing line lands.
+  function btParlayClv(b, legs, legStatuses, liveIdx) {
+    if (!legs.length || !legs.every(l => l.market === 'ML')) return null;
+    const pts = [];
+    for (const i of liveIdx) {
+      if (legStatuses[i] === 'pending') return null;   // not fully decided yet
+      const l = legs[i];
+      const f = btFindFight(l.fightId, b.evSlug); if (!f) return null;
+      const R = btFightResult(f); if (!R) return null;
+      const pair = (typeof oddsHistoryPair === 'function') ? oddsHistoryPair(f.f1, f.f2, R.date) : null;
+      if (!pair) return null;                          // closing line not captured yet
+      const side = l.params && l.params.side;
+      const c = side === 2 ? pair.o2 : pair.o1;
+      if (c == null) return null;
+      pts.push(btClvPts(l.odds, c));
+    }
+    if (!pts.length) return null;
+    return pts.reduce((a, x) => a + x, 0) / pts.length;
+  }
   function btDeriveParlay(b) {
     const legs = b.legs || [];
     b.legStatuses = legs.map(l => {
@@ -138011,6 +138037,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     b.effOdds = anyVoided ? (liveIdx.length ? btCombine(liveIdx.map(i => legs[i].odds)) : null) : null;
     b.legsIn = liveIdx.filter(i => b.legStatuses[i] !== 'pending').length;
     b.legsLive = liveIdx.length;
+    b.clv = btParlayClv(b, legs, b.legStatuses, liveIdx);
     if (!liveIdx.length) { b.status = 'void'; return; }                                  // every leg voided
     if (liveIdx.some(i => b.legStatuses[i] === 'lost')) { b.status = 'lost'; return; }   // dead on any loss
     if (liveIdx.every(i => b.legStatuses[i] === 'won')) { b.status = 'won'; return; }
@@ -138060,10 +138087,30 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // FIGHT's outcome can't change) — CLV alone gets one more shot per page load
   // until it's actually filled in, independent of whether the bet froze already.
   function btBackfillClv(b) {
-    if (!b || b.kind !== 'tracked' || b.market === 'PARLAY') return;   // no CLV for parlays, by design
+    if (!b || b.kind !== 'tracked') return;
     if (b.clv != null) return;                    // already have it
-    if (!b.priced || b.clvOk === false) return;    // never eligible for one
     if (BT_CLV_SENT[b.id]) return;                 // one attempt per load; retried on the next
+    if (b.market === 'PARLAY') {
+      // Same race as a straight bet below (fight decides before that leg's closing
+      // line lands), just per-leg — an all-ML parlay frozen with clv:null gets one
+      // more shot per load until btParlayClv can resolve every leg.
+      const legs = b.legs || [];
+      if (!legs.length || !legs.every(l => l.market === 'ML')) return;
+      const legStatuses = b.graded ? b.graded.legStatuses : b.legStatuses;
+      if (!legStatuses) return;
+      const liveIdx = legs.map((l, i) => i).filter(i => legStatuses[i] !== 'void');
+      const clv = btParlayClv(b, legs, legStatuses, liveIdx);
+      if (clv == null) return;
+      BT_CLV_SENT[b.id] = 1;
+      btApi('/api/bets/backfill-clv', { id: b.id, clv: clv }).then(function (r) {
+        if (r.status === 200) {
+          b.clv = clv;
+          if (b.graded) b.graded.clv = clv;
+        } else { BT_CLV_SENT[b.id] = 0; }           // transient failure — try again next load
+      }).catch(function () { BT_CLV_SENT[b.id] = 0; });
+      return;
+    }
+    if (!b.priced || b.clvOk === false) return;    // never eligible for one
     const f = btAllFights().find(x => x.id === b.fightId || (x.rawId === b.fightId && x.evSlug === b.evSlug));
     if (!f) return;                                // aged out of the feed — can't resolve the fight at all
     const R = btFightResult(f); if (!R) return;
@@ -138857,10 +138904,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '<button type="button" class="bt-leg-x" onclick="btRmLeg(' + i + ')" aria-label="Remove leg">×</button></div>';
     }).join('');
     if (ready) {
+      // An all-moneyline parlay DOES earn CLV: every leg is a straight ML pick with
+      // its own closing line, so we average each leg's own CLV once they're all in
+      // (see btDeriveParlay). A mixed-market parlay still doesn't -- a method/round/
+      // total leg has no closing number as directly comparable as a moneyline does.
+      const allML = btLegs.every(l => l.market === 'ML');
+      const clvNote = allML
+        ? '<div class="bt-note">Verified — each leg grades off its own fight, and <b style="color:var(--accent)">CLV</b> averages across all of them once every leg is in.</div>'
+        : '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> There\'s no closing line for a combined price. It\'s still <b style="color:var(--accent)">verified</b> — each leg grades off its own fight, the parlay settles once they\'re all in (or the moment one loses), and a voided leg drops out and re-prices the rest.</div>';
       h += '<div class="bt-row2"><div><label>Combined odds</label><input id="bt-p-odds" type="number" value="' + comb + '"></div>' +
         '<div><label>Stake (units)</label><input id="bt-p-stake" type="number" value="1" step="0.5" min="0.5"></div></div>' +
         '<label>Sportsbook (optional)</label><input id="bt-p-book" placeholder="e.g. DraftKings" maxlength="40" value="' + btEsc(btLegs[0].book || '') + '">' +
-        '<div class="bt-note"><b style="color:var(--text)">Won\'t count toward CLV.</b> There\'s no closing line for a combined price. It\'s still <b style="color:var(--accent)">verified</b> — each leg grades off its own fight, the parlay settles once they\'re all in (or the moment one loses), and a voided leg drops out and re-prices the rest.</div>' +
+        clvNote +
         '<button type="button" class="bt-btn" onclick="btSubmitParlay()">Add parlay</button>';
     } else {
       h += '<div class="bt-note">Pick another fight below and add a second leg.</div>';

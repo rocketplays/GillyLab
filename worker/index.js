@@ -881,7 +881,11 @@ async function handleBetsAdd(request, env, url) {
       market: "CUSTOM", pick, match, odds, stake, book, status: "pending", ts: now, createdAt: now, editable: true };
   } else if (body.market === "PARLAY") {
     // Every leg must resolve to a live bout on ONE event, and none may be decided.
-    // A parlay never earns CLV — there's no closing line for a combined price.
+    // A MIXED-market parlay never earns CLV — there's no closing line for a combined
+    // price, and a method/round/total leg has no closing number as directly
+    // comparable as a moneyline does. An ALL-moneyline parlay is different: every leg
+    // IS a straight ML pick with its own real closing line (see btGradeParlay, which
+    // averages them). That eligibility is decided below, once `out` is built.
     const legs = Array.isArray(body.legs) ? body.legs.slice(0, 12) : [];
     if (legs.length < 2) return json({ error: "A parlay needs at least two legs." }, 400);
     const out = [];
@@ -916,11 +920,12 @@ async function handleBetsAdd(request, env, url) {
       }
       seenByFight[l.fightId] = prev.concat(l.market);
     }
+    const allML = out.every((l) => l.market === "ML");
     rec = {
       id: "b" + now + Math.random().toString(36).slice(2, 7), kind: "tracked", verified: true,
       market: "PARLAY", evSlug, legs: out,
       pick: out.length + "-leg parlay", match: String(body.match || "").slice(0, 160),
-      priced: false, clvOk: false, noClv: "parlays don't count toward CLV",
+      priced: allML, clvOk: allML, noClv: allML ? null : "mixed-market parlays don't count toward CLV",
       odds, stake, book, ts: Date.parse(evStartsAt) || now, createdAt: now, editable: true,
     };
   } else {
@@ -1002,7 +1007,11 @@ async function handleBetsBackfillClv(request, env) {
   const list = await btGetBets(env, s.email);
   const b = list.find((x) => x.id === id);
   if (!b) return json({ error: "not found" }, 404);
-  if (b.kind !== "tracked" || b.market === "PARLAY") return json({ error: "not eligible for CLV" }, 400);
+  if (b.kind !== "tracked") return json({ error: "not eligible for CLV" }, 400);
+  // A mixed-market parlay is still never eligible — only an all-moneyline one is.
+  if (b.market === "PARLAY" && !(b.legs || []).every((l) => l.market === "ML")) {
+    return json({ error: "not eligible for CLV" }, 400);
+  }
   if (!b.graded || !b.graded.status) return json({ error: "bet isn't graded yet" }, 400);
   if (b.graded.clv != null) return json({ ok: true, already: true });
   const num = (v) => (typeof v === "number" && isFinite(v) ? v : null);
@@ -1113,7 +1122,30 @@ function btGradeStatus(market, P, R) {
   if (R.isDraw && market === "ML") return "void";
   return btGradeWin(market, P, R, R.round) ? "won" : "lost";
 }
-function btGradeParlay(b, events) {
+// Mirrors the client's btParlayClv: a MIXED-market parlay never earns CLV (no
+// closing line for a combined price, and a method/round/total leg has no closing
+// number as directly comparable as a moneyline does), but an ALL-moneyline parlay's
+// legs are each a straight ML pick with a real closing line, so their win-prob-point
+// CLVs average together. All-or-nothing: every live leg needs both a result and a
+// closing line, or this returns null rather than a partial average that would
+// change as the rest land.
+function btParlayClv(b, legs, legStatuses, liveIdx, events, closing) {
+  if (!legs.length || !legs.every((l) => l.market === "ML")) return null;
+  const pts = [];
+  for (const i of liveIdx) {
+    if (legStatuses[i] === "pending") return null;
+    const l = legs[i];
+    const nm = btMatchNames(l.match);
+    if (!nm) return null;
+    const side = l.params && l.params.side;
+    const close = btCloseFor(closing, nm[0], nm[1], side);
+    if (close == null) return null;
+    pts.push(btClvPts(l.odds, close));
+  }
+  if (!pts.length) return null;
+  return pts.reduce((a, x) => a + x, 0) / pts.length;
+}
+function btGradeParlay(b, events, closing) {
   const legs = b.legs || [];
   const legStatuses = legs.map((l) => {
     const nm = btMatchNames(l.match);
@@ -1131,17 +1163,18 @@ function btGradeParlay(b, events) {
   const effOdds = anyVoided ? (liveIdx.length ? btCombineOdds(liveIdx.map((i) => legs[i].odds)) : null) : null;
   const legsIn = liveIdx.filter((i) => legStatuses[i] !== "pending").length;
   const legsLive = liveIdx.length;
+  const clv = btParlayClv(b, legs, legStatuses, liveIdx, events, closing);
   const base = { legStatuses, legsIn, legsLive };
   if (!liveIdx.length) return Object.assign({ status: "void", clv: null, effOdds: null }, base);
-  if (liveIdx.some((i) => legStatuses[i] === "lost")) return Object.assign({ status: "lost", clv: null, effOdds }, base);
-  if (liveIdx.every((i) => legStatuses[i] === "won")) return Object.assign({ status: "won", clv: null, effOdds }, base);
-  return Object.assign({ status: "pending", clv: null, effOdds }, base);
+  if (liveIdx.some((i) => legStatuses[i] === "lost")) return Object.assign({ status: "lost", clv, effOdds }, base);
+  if (liveIdx.every((i) => legStatuses[i] === "won")) return Object.assign({ status: "won", clv, effOdds }, base);
+  return Object.assign({ status: "pending", clv, effOdds }, base);
 }
 // The frozen grade if present, else graded live from the feeds. null while still pending.
 function btEffectiveGrade(b, events, closing) {
   if (b && b.graded && ["won", "lost", "push", "void"].indexOf(b.graded.status) !== -1) return b.graded;
   if (!b || b.kind !== "tracked") return null;
-  if (b.market === "PARLAY") return btGradeParlay(b, events);
+  if (b.market === "PARLAY") return btGradeParlay(b, events, closing);
   const nm = btMatchNames(b.match);
   if (!nm) return null;
   const R = btResolveResult(events, b.evSlug, nm[0], nm[1]);
