@@ -911,3 +911,88 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   placed correctly reflects the nine deliberately-skipped bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+2026-08-18 — CHRIS PADILLA
+  24 total FIGHT_HISTORY bouts; started with 6 linked (all UFC/RFA,
+  already on Fight Pass); ended with 12 linked after this sweep. Tackled
+  the previously-unsourced UFC bout (James Llontop, his short-notice UFC
+  debut) first, then worked the 17 pre-UFC bouts newest-to-oldest.
+  SOLVED (6):
+    James Llontop (UFC Vegas 91, Apr 2024) — not on YouTube in usable
+      form (one hit was a 5:13 "FULL FIGHT REACTION" video, one was
+      members-only-locked on a fan channel) but present on UFC Fight
+      Pass as "Chris Padilla vs James Llontop UFC Las Vegas 91" (8:45),
+      https://ufcfightpass.com/video/616110.
+    Eljeria Portee (Up Next Fighting 4, Jan 2023) — TITLE-MISLABEL TRAP:
+      the only YouTube upload of this bout is titled "Christopher
+      Padilla vs El J Portee | FULL FIGHT | UNF 5", which would read as
+      a different event than FIGHT_HISTORY's "Up Next Fighting 4".
+      Cross-referenced Tapology (bout page confirms "UNF 4 | Chris
+      'Taco' Padilla vs. L.J. 'Eyes Closed' Portée") before accepting —
+      the uploader mislabeled the event number, but it is the same
+      fighters, same fight. 8:10, plausible for the recorded R1 finish.
+    Darren Smith Jr. (Up Next Fighting 1, May 21 2022) — "FULL BOUT |
+      #UNF1 | Darren Smith vs. Chris Padilla" on the official UpNext
+      Fighting channel (description has a typo, "Anthony Padilla," but
+      title and event/date match exactly). 18:53 — Padilla's only loss
+      in this stretch, consistent with a longer fight.
+    George Hernandez (Xplode Fight Series: Taco, Mar 21 2015) — "Chris
+      Padilla vs George Hernandez XFS TACO March 21, 2015" on the "G2F
+      Sports, Film and Entertainment" channel (San Diego promoter Greg
+      Sharp's channel, which hosted/filmed the old Xplode/XAFS cards).
+      10:03, matches the recorded R1 RNC finish at 3:52.
+    Kris Armbrister (Xplode Fight Series: Wasteland, Nov 2014) — "Chris
+      'Taco' Padilla vs Kris Armbrister XFS Wasteland November 9, 2014"
+      on the same G2F Sports channel. 3:39, consistent with an early
+      stoppage.
+    Marko Damiani (Xplode Fight Series: Fire, Mar 22 2014) — SPELLING
+      VARIANT: uploaded as "Chris 'Taco' Padilla vs Marko Damiano XFS
+      Fire March 22, 2014" (G2F Sports channel) — "Damiano" vs
+      FIGHT_HISTORY's "Damiani." Accepted on exact event/date match
+      (same promotion, same card, same day) plus same first name/weight
+      class; this is the same low-visibility regional fighter with an
+      inconsistently-spelled surname across sources, not a different
+      person. 3:56.
+  REJECTED: Aaron Neveu (Xplode Fight Series: Cerebral, Jul 2014) — the
+    only video found, "Chris Taco Padilla vs Aaron Neveu July 19th
+    2014" on the official XplodeFightSeries channel, is a 1:12 pre-fight
+    hype video ("...will take on Aaron Neveu for the XFS lightweight
+    title" — future tense), not fight footage. No full-fight upload
+    exists for this bout under any search variant tried.
+  UNRESOLVED, GENUINELY EXHAUSTED (11): Justin Jaynes (Up Next Fighting
+    13, Oct 2023 — searched YouTube, the official UpNext Fighting
+    channel, and Fight Pass; UNF has no Fight Pass presence and this
+    bout predates UNF's "free full broadcast" era, which only started
+    around UNF20), Serob Minasyan (Up Next Fighting 7, May 2023 — same
+    dead end, only a preview clip exists), Emilio Williams (Celtic
+    Gladiator 31, Mar 2022), Devon Brock (LXF 5, Aug 2021), Nate Andrews
+    (CES MMA 49, Apr 2018 — a title fight that aired on AXS TV, but no
+    trace on YouTube or Fight Pass), Gabriel Green (Bellator 192, Jan
+    2018 — checked the "Re-Air | Bellator 192" 2h34m YouTube re-upload,
+    but its description only covers the Rampage/Sonnen main card with no
+    chapter markers or mention of the Green/Padilla prelim, so it was
+    not assumed to include it), Ivan Castillo (Brave CF 7, Jul 2017 —
+    Brave CF posts full fights regularly on YouTube but no hit for this
+    specific 2017 bout), Christian Aguilera (KOTC: Warranted Aggression,
+    Dec 2016 — search noise dominated by a same-named Fernando Padilla
+    fight, a name-collision trap, not our fighter), Kenny Wyckoff
+    (Xplode Fight Series: TwentyNine Palms, Jun 2014), Julian Hernandez
+    (Xplode Fight Series: Adrenaline, May 2014 — G2F Sports' catalog
+    covers Taco/Wasteland/Cerebral/Fire from this fighter but not this
+    specific card), Quinton McCottrell (FCOC: Fight Club OC, Feb 2011 —
+    2011 amateur-era bout, no footage exists on any platform searched).
+    NOTE: a "Best of Xplode (MMA Fights)" 4-episode documentary series
+    (2023, dir. Greg Sharp) is streaming free on Tubi and lists Chris
+    Padilla and George Hernandez in its cast — not pursued further since
+    the Hernandez bout was already solved via direct full-fight footage
+    and the documentary's episode structure (themed titles like "Fight
+    to Win," "The Title Is Everything") suggests an edited clip-show
+    format rather than raw full fights, which would fail the
+    highlights-reel rejection rule; worth a look if any of the other
+    Xplode-era gaps (Wyckoff, Julian Hernandez, Neveu) are revisited.
+  Ran place-tape-links.cjs --write for all 12 resolvable bouts (6
+  pre-existing + 6 newly found) in one temp file. Report: 12 parsed, 12
+  placed, 0 unplaced — 24 FIGHT_HISTORY rows vs 12 placed correctly
+  reflects the twelve deliberately-skipped/exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
