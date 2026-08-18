@@ -996,3 +996,53 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   reflects the twelve deliberately-skipped/exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+2026-08-18 — NASRAT HAQPARAST
+  24 total FIGHT_HISTORY bouts; started with 15 linked (all UFC, all
+  Fight Pass); ended with 24 linked — every gap bout solved, a first for
+  this sweep series. All 9 pre-UFC bouts are German/European regional
+  cards (We Love MMA, Superior FC, Ravage Series, Anatolia FC), and this
+  fighter has an unusually strong archive: his own YouTube channel
+  ("Nasrat Hp"), the promotions' official channels, and several
+  German-scene third-party uploaders (Team Agaev, SubmissionCulture) all
+  carry full, unedited fight video with no highlight-reel or
+  members-only dead ends encountered anywhere in this sweep.
+  SOLVED (9):
+    Ruslan Kalyniuk (Superior FC 17, May 20 2017) — official "Superior
+      FC" channel, 23:28, description confirms exact R3 TKO result and
+      date.
+    Patrik Berisha (We Love MMA 24, Oct 15 2016) — "Nasrat Haqparast vs
+      Patrik Berisha," 8:44, consistent with the recorded R2 0:18
+      finish.
+    Lampros Pistikos (Ravage Series 2, Feb 20 2016) — official "Ravage
+      Series" channel, "RAVAGE SERIES 2 - Nasrat Haqparast vs Lampros
+      Pistikos," 4:24, matches the R1 3:36 finish.
+    Fabrice Kindombe (We Love MMA 16, Oct 10 2015) — fighter's own
+      "Nasrat Hp" channel, 3:51.
+    Patrick Schwellnus (We Love MMA 13, Mar 14 2015) — two independent
+      full-fight uploads cross-confirm this one: "Nasrat Hp" channel's
+      "WE LOVE MMA 13 - Nasrat Haqparast vs. Patrick Schwellnus" and the
+      official "We love MMA" channel's "Full Fight: Patrick Schwellnus
+      vs. Nasrat Haqparast" (4:45) — used the official promotion upload.
+    Tolga Ozgun (We Love MMA 9, Sep 27 2014) — third-party "Team Agaev"
+      channel, "Nasrat Haqparast vs Tolga Özgün - WELOVEMMA o2 World
+      HH," 4:49, description confirms R1 TKO.
+    Jiri Flajsar (Anatolia FC 1, Feb 23 2014) — direct hit via web
+      search, title confirms both fighters/gyms by name, matches the
+      recorded R1 0:38 KO.
+    Iles Ganijev (Superior FC 13, Jun 1 2013) — direct hit via web
+      search, "Nasrat Haqparast vs Iles Ganijev / Superior FC 13," title
+      match confirmed.
+    Adrian Ruf (We Love MMA 4, Dec 15 2012) — third-party
+      "SubmissionCulture" channel, "Triangle to sleep at We Love MMA,"
+      3:06, matches Haqparast's lone loss in this stretch (R1 triangle
+      choke). NOTE: the same uploader also has a near-identical-sounding
+      "Choked out with a Flying Triangle by Adrian Ruf" video from a
+      different event ("Submissionals 2012") — checked the description
+      on each before picking the one explicitly tied to "We Love MMA."
+  No rejections and no exhausted bouts this sweep — first fighter in
+  this series where the full FIGHT_HISTORY gap list resolved 100%.
+  Ran place-tape-links.cjs --write for all 24 bouts (15 pre-existing +
+  9 newly found) in one temp file. Report: 24 parsed, 24 placed, 0
+  unplaced — full FIGHT_HISTORY coverage. fix-tape-sections.cjs --write:
+  0 changes. Syntax-checked, rebuilt public/, committed.
