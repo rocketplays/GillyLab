@@ -5374,6 +5374,7 @@
  { name: "Liam McCracken", division: "LW", rank: "NR", record: "8-1-0", initials: "LM", country: "England" },
  { name: "Silvestre Sanchez", division: "WW", rank: "NR", record: "9-1-0", initials: "SS", country: "Mexico" },
  { name: "Gabriel Lourenco", division: "HW", rank: "NR", record: "7-1-0", initials: "GL", country: "Brazil" },
+ { name: "Charlie Cleveland", division: "HW", rank: "NR", record: "6-1-0", initials: "CC", country: "USA" },
  { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
  { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-5-0", initials: "AP", country: "Russia" },
@@ -9227,6 +9228,7 @@
   "Liam McCracken": { ht:"5'10\"", dob:"2001-07-09", reach:'70"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:5, gym:"Aspire Combat Sports Academy" },
   "Silvestre Sanchez": { ht:"5'9\"", dob:"2001-11-15", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"89%", streak:5, gym:"UFC Performance Institute" },
   "Gabriel Lourenco": { ht:"6'3\"", dob:null, reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:7, gym:"Chute Boxe" },
+  "Charlie Cleveland": { ht:"6'2\"", dob:"1997-12-30", reach:'77"', stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:4, gym:"Demolition Fight Team" },
   "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
  "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
   "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
@@ -45038,6 +45040,10 @@
   "Liam McCracken": [
     { opponent: "Asael Adjoudj", odds: 123 },
   ],
+  "Charlie Cleveland": [
+    { opponent: "Nyle Bartling", odds: 108 },
+    { opponent: "Benjamin Wunder", odds: 115 },
+  ],
 };
 
 const FIGHT_HISTORY = {
@@ -61895,6 +61901,15 @@ const FIGHT_HISTORY = {
     { date: "Nov 12, 2023", opponent: "Wellington Madeira", result: "W", method: "TKO", round: 1, time: "4:30", event: "X-Fest 19: Quardos vs. Boeno", org: "X-Fest" },
     { date: "Dec 18, 2021", opponent: "Bruno Land", result: "W", method: "KO", round: 1, time: "0:25", event: "IFL 7: Inside Fighters League 7", org: "IFL" },
     { date: "Oct 17, 2021", opponent: "Igor Cavalcanti", result: "L", method: "KO", round: 1, time: "1:20", event: "IFL 5: Inside Fighters League 5", org: "IFL" }
+  ],
+  "Charlie Cleveland": [
+    { date: "Apr 3, 2026", opponent: "Nyle Bartling", result: "W", method: "KO (Punches)", round: 1, time: "3:09", event: "LFA 230: Bartling vs. Cleveland", org: "LFA" },
+    { date: "Feb 6, 2026", opponent: "Benjamin Wunder", result: "W", method: "TKO (Punches)", round: 1, time: "1:03", event: "LFA 226: Allakhverdiev vs. Kropschot", org: "LFA" },
+    { date: "Dec 20, 2025", opponent: "Cameron Graham", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFS 5: Carnage Fight Series 5", org: "CFS" },
+    { date: "Oct 25, 2025", opponent: "Juan Silva", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:47", event: "EGO Fight Series 5: The Shipyard Showdown", org: "EGO" },
+    { date: "Jun 7, 2025", opponent: "Richard Harris", result: "L", method: "Submission (Keylock)", round: 2, time: "3:07", event: "Caged Thunder 32: Shaffer vs. Diggs", org: "Caged Thunder" },
+    { date: "Apr 12, 2025", opponent: "Mark Gordon Jr.", result: "W", method: "KO (Head Kick)", round: 1, time: "0:51", event: "CT 31: Caged Thunder 31", org: "Caged Thunder" },
+    { date: "Feb 1, 2025", opponent: "Jeremy Riley", result: "W", method: "TKO", round: 1, time: "0:00", event: "Nightmare Promotions - ECC Cage Wars 11", org: "ECC" }
   ],
   "Ryan Loder": [
     { date: "Nov 22, 2025", opponent: "Ismail Naurdiev", result: "L", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
@@ -118545,6 +118560,11 @@ const ACCOLADES = {
     { icon: "🎯", title: "Making his UFC debut on Dana White's Contender Series 2026: Week 4 vs. Charlie Cleveland (Sep 1, 2026)", detail: null },
     { icon: "🥊", title: "6 of 7 wins by finish (5 KO/TKO, 1 submission); riding a 7-fight win streak", detail: null },
     { icon: "🏟️", title: "Brazilian heavyweight prospect ('Black Mamba') out of Encantado, Rio Grande do Sul; fights out of Chute Boxe", detail: null }
+  ],
+  "Charlie Cleveland": [
+    { icon: "🎯", title: "Making his UFC debut on Dana White's Contender Series 2026: Week 4 vs. Gabriel Lourenco (Sep 1, 2026)", detail: null },
+    { icon: "🥊", title: "5 of 6 wins by finish (4 KO/TKO, 1 submission); riding a 4-fight win streak", detail: null },
+    { icon: "🏟️", title: "American heavyweight prospect ('The Reaper') out of East Chicago, Indiana; fights out of Demolition Fight Team", detail: null }
   ],
   "Ryan Loder": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
