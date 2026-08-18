@@ -1,0 +1,226 @@
+ODDS-ENTRY-PROCEDURE.txt
+Manually filling in missing ML / rounds O/U / method / round-prop odds
+========================================================================
+
+Written after doing this for DWCS Week 2 (2026-08-18) by hand via Claude in
+Chrome. Applies to ANY event, not just DWCS -- DWCS is just the case that
+needs it most often, because small cards get the thinnest book coverage.
+Regular numbered UFC cards use the identical procedure, just with more
+fights to click through.
+
+THE PROBLEM
+-----------
+data/odds.json is fetched automatically from the-odds-api and only carries
+whichever books that plan prices. For small-name cards it's regularly just
+1-2 books (usually betonlineag + fanduel) even though fightodds.io shows
+several more have posted lines. Separately, the-odds-api NEVER carries
+method-of-victory or round-by-round props at all -- those always have to be
+entered by hand if we want to show them.
+
+Both gaps get filled the same way: read the missing numbers off
+fightodds.io, write them into MANUAL_PROP_ODDS in index.html (search for
+"const MANUAL_PROP_ODDS"), which buildMoneylineTable() / buildTotalsTable()
+/ buildMethodTable() / buildRoundPropsTable() all merge against the live
+feed automatically -- live data always wins per book, manual entries only
+fill in books the live feed doesn't have. You never need to touch the
+render functions themselves, just the data object.
+
+
+STEP 0 -- see what's already live
+----------------------------------
+Before touching a browser, check what data/odds.json already has, so you
+don't re-enter books that are already covered:
+
+  python3 -c "
+  import json
+  d = json.load(open('data/odds.json'))
+  for fight in d:
+      h,a = fight.get('home_team',''), fight.get('away_team','')
+      print(h,'vs',a,'|', [bk['key'] for bk in fight.get('bookmakers',[])])
+  "
+
+Only GillyLab's 5 displayed books matter (BOOK_ORDER in index.html):
+fanduel, draftkings, betmgm, betonlineag, bovada. Anything data/odds.json
+is missing from that list of 5 is what you're filling in. Ignore every
+other book fightodds.io shows (MyBookie, Bet105, Bookmaker, BetAnything,
+YouWager, Circa, BetRivers, HardRockBet, Caesars, Polymarket, Kalshi,
+Pinnacle, Betway, Stake, Cloudbet, ProphetX, 4casters, SXBet, etc.) --
+GillyLab's BOOK_KEY_MAP doesn't even have entries for most of them, so
+data for those books would just be silently dropped by the render
+functions anyway.
+
+
+STEP 1 -- moneyline, via the per-fight Open/Worst/Current/Best table
+----------------------------------------------------------------------
+Navigate to the fight's own page on fightodds.io:
+  fightodds.io/fights/<fighter-a>-vs-<fighter-b>-<id>/odds
+(get the exact slug from the event's FIGHTS tab, or just click through from
+the event's ODDS tab).
+
+This page renders SPORTSBOOKS AS ROWS with Open/Worst/Current/Best columns
+per fighter -- read the CURRENT column. This format is unambiguous (each
+book name sits directly next to its own number), unlike the big combined
+odds grid -- use it for ML, never the grid, to avoid any column-counting
+risk.
+
+Record CURRENT for each of the 5 relevant books for both fighters. Compare
+against Step 0 -- anything already in data/odds.json doesn't need
+re-entering (the merge skips it anyway even if you do), but it's a free
+sanity check: if fightodds.io's number for an already-live book is wildly
+different from what's in data/odds.json, the odds have moved and that's
+fine, not a bug.
+
+
+STEP 2 -- click into props
+----------------------------
+Scroll down on that same /odds page. Below the Open/Worst/Current/Best
+table there's an "EXPECTED OUTCOMES" preview and, above that, a button
+labeled "+ N PROP BETS" (N varies -- DWCS undercard fights are often as low
+as 12; main-card fights are usually 60-70+). Click it.
+
+This opens the full props grid: same visual style as the event-wide odds
+table (book names as COLUMN headers, one row per market), but scoped to
+just this fight. N being small (roughly under 20) is itself informative --
+it usually means only one or two books bothered pricing this fight's
+props at all, so don't be surprised if most columns are empty throughout.
+
+
+STEP 3 -- read the grid without miscounting columns
+------------------------------------------------------
+This is the step that has actually produced wrong data before -- twice,
+in two different ways, on two different sites (see PITFALLS below). The
+grid has ~17 book columns and most rows only populate 1-4 of them, so a
+naive "read values left to right and assume they line up with the first N
+headers" approach WILL misattribute a value to the wrong book the moment
+an early column is blank.
+
+The reliable method:
+  1. Screenshot with the header row AND the moneyline row (Namo Fazil /
+     Kaik Brito, etc.) both visible together -- don't scroll past the
+     header before you've locked in column x-positions.
+  2. The moneyline row in THIS grid must match what you already read in
+     Step 1 (same book, same current price). Use that as your ruler: note
+     the pixel x-position of each of the 5 relevant book columns from
+     where their ML values land, cross-checked against the header text
+     directly above them.
+  3. Only after that's confirmed, scroll down and read prop rows AT THOSE
+     SAME X-POSITIONS. The page has no sticky header, so you're carrying
+     the column positions in your head (or in a note) across scrolls --
+     re-anchor against the ML row again any time you're unsure, don't
+     assume horizontal scroll position drifted (it doesn't, only vertical
+     does).
+  4. Zoom in (the computer tool's zoom action) on any row where two nearby
+     numbers could plausibly belong to either of two adjacent columns.
+
+The specific rows you want, per fighter (not the combined "fight ends by
+X" rows, which are fighter-agnostic and not what MANUAL_PROP_ODDS.method
+wants):
+  - "<Fighter> wins by TKO/KO"      -> method.ko
+  - "<Fighter> wins by submission"  -> method.sub
+  - "<Fighter> wins by decision"    -> method.dec
+  - "<Fighter> wins in round 1/2/3" -> roundProps.r1/r2/r3
+    (for 5-round title fights, also round 4/5)
+  - "Over/Under N.5 rounds"         -> totals['N.5'].over / .under (this
+    one IS fighter-agnostic, applies to the whole fight)
+
+Skip the combined markets ("<Fighter> wins in round 1 - KO, TKO or DQ",
+"<Fighter> wins by KO/TKO or Decision", etc.) -- MANUAL_PROP_ODDS doesn't
+have a slot for those and the site doesn't render them.
+
+
+STEP 4 -- write it into MANUAL_PROP_ODDS
+-------------------------------------------
+In index.html, find `const MANUAL_PROP_ODDS = {` and add one entry per
+fight, keyed by pairKey() -- alphabetically-sorted lowercase last names
+joined with "|" (e.g. Kaik Brito vs Namo Fazil -> 'brito|fazil'). f1 is
+whichever fighter's last name sorts first alphabetically; f2 is the other
+one. Get this right or the numbers render on the wrong fighter -- there's
+a worked example and the exact merge logic documented in the comment block
+directly above MANUAL_PROP_ODDS in index.html, read that first.
+
+  '<lastname1>|<lastname2>': {
+    rounds: 3,   // or 5 for a title / 5-round main event
+    ml: {
+      <bookkey>: { f1: <price>, f2: <price> },   // only books missing from odds.json
+    },
+    method: {
+      <bookkey>: { f1: { ko, sub, dec }, f2: { ko, sub, dec } },
+    },
+    roundProps: {
+      <bookkey>: { f1: { r1, r2, r3 }, f2: { r1, r2, r3 } },
+    },
+    totals: {
+      '1.5': { <bookkey>: { over, under } },
+    },
+  },
+
+Book keys must match BOOK_KEY_MAP exactly (search index.html) --
+`betonlineag`, not `betonline`; `fanduel`; `draftkings`; `betmgm`;
+`bovada`. It's fine (and often necessary) to only have some of the 4
+sub-objects -- e.g. a fight with zero prop coverage just gets `ml` and
+maybe `totals`, no `method`/`roundProps` at all.
+
+
+STEP 5 -- verify before committing
+-------------------------------------
+Every time, no exceptions:
+
+  1. JS syntax check across the whole file:
+       node -e "
+       const fs=require('fs'); const html=fs.readFileSync('index.html','utf8');
+       const re=/<script\b[^>]*>([\s\S]*?)<\/script>/g; let m,i=0,errors=0;
+       while((m=re.exec(html))){ i++; const s=m[1]; if(!s.trim())continue;
+         try{new Function(s);}catch(e){errors++;console.log(i,e.message);} }
+       console.log(i,'blocks,',errors,'errors');"
+
+  2. A standalone harness confirming every new pairKey resolves and f1/f2
+     land on the right fighter -- extract the MANUAL_PROP_ODDS block plus
+     pairKey/findManualProps/manualSideFor into a temp module (stub
+     lastNameOf, don't try to load plCell/the real DOM code), then for
+     each fight object { home_team, away_team } assert findManualProps()
+     returns non-null and the home/away sides map to the prices you
+     intended. This is what caught the pairKey typo risk before it ever
+     hit the page.
+
+  3. bash scripts/build-site.sh -- rebuilds public/ from git-tracked files.
+     Skipping this means the change is in index.html but the deployed
+     site is still serving the old public/ build.
+
+  4. Check for a stray git lock before committing (see CLAUDE.md rule 5):
+     confirm no live git process, then it's fine to remove
+     .git/index.lock if present.
+
+  5. `git add index.html` ONLY -- never the untracked scratch files sitting
+     in the repo root / data/. Commit message should say where the numbers
+     came from (which site, which books) so the next session (or the next
+     "wait, where did this come from" question) doesn't have to guess.
+
+
+PITFALLS (both of these actually happened)
+---------------------------------------------
+- Column misattribution on a WIDE, sparsely-populated grid. Happened twice:
+  once reading fightodds.io's event-wide table (read a DraftKings value as
+  if multiple unrelated books all shared it), once reading bestfightodds.com
+  (misread a Kalshi column as FanDuel). Both times the fix was the same:
+  anchor column position against that fight's own moneyline row, which you
+  can independently verify against data/odds.json, before trusting anything
+  else in that column. Never trust get_page_text or a raw accessibility-tree
+  dump for this -- both flatten the grid to a list of numbers with the blank
+  cells silently removed, which destroys the column alignment entirely.
+  Screenshots + pixel position, cross-checked against a row you already
+  know the right answer for, is the only reliable method found so far.
+
+- Assuming "fightodds.io doesn't show it" means "it doesn't exist anywhere."
+  It sometimes just means fightodds.io hasn't synced that book's props yet.
+  bestfightodds.com is a useful second source when fightodds.io comes up
+  short for a specific book (that's how FanDuel's props got filled in after
+  fightodds.io's first pass only had DraftKings) -- but it uses a DIFFERENT
+  column layout (Polymarket, Kalshi, FanDuel, Caesars, BetRivers, BetWay,
+  Unibet, BetMGM, DraftKings, in that order) than fightodds.io's, so the
+  column-anchoring step in Step 3 has to be redone from scratch on that
+  site, not assumed to carry over.
+
+- sportsbook.fanduel.com itself (and any other actual sportsbook, not an
+  aggregator) is blocked by the browser tool's safety restrictions and
+  can't be visited at all. Don't try. Use an aggregator (fightodds.io,
+  bestfightodds.com) instead.
