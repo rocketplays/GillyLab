@@ -129102,10 +129102,10 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
       if (!res) { d.textContent = '—'; return d; }
       d.style.color = PROMO_TIER_COLORS[res.tier] || PROMO_TIER_COLORS[5];
       d.style.fontWeight = '800';
-      // Visible text leads with the ORG name (e.g. "Fury FC · 4 fights") —
-      // color still carries the tier signal, tooltip carries the full tier
-      // label + total regional count for anyone who does have hover.
-      d.textContent = res.org + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's');
+      // Visible text leads with the tier label (e.g. "Elite (Tier 1)") so the
+      // tier itself — not just its color — is legible without hover; org name
+      // and fight count follow. Tooltip repeats it plus total regional count.
+      d.textContent = res.label + ' — ' + res.org + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's');
       d.title = res.label + ' — ' + res.org + ', ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's') +
         (res.totalRegional > res.orgCount ? (' (of ' + res.totalRegional + ' regional fights total)') : '');
       return d;
@@ -133383,7 +133383,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const wc = ENGLISH_WEIGHT_CLASS_RE.test(translatedWc) ? translatedWc : (fighterDivision || translatedWc);
       const isTitle = bout.titleBout;
       const isMain = bout.boutOrder === mainBoutOrder;
-      const fiveRounds = isTitle || isMain || bout.numberOfRounds >= 5;
+      // DWCS main events are still boutOrder === mainBoutOrder but are always
+      // 3 rounds — never 5, unlike a regular card's main event — so exclude
+      // them from the five-round inference regardless of isMain/isTitle.
+      const fiveRounds = !isDWCSRaw(rawEvt) && (isTitle || isMain || bout.numberOfRounds >= 5);
       const label = wc + (isTitle ? ' Title Fight · 5 Rounds' : fiveRounds ? ' · 5 Rounds' : ' · 3 Rounds');
       const isMainCard = (bout.cardSection || '').toLowerCase().includes('main');
       const redName  = resolveCanonicalFighterName(red.fighterName  || '', red.fighterSlug  || '');
