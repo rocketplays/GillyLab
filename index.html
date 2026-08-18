@@ -113678,6 +113678,16 @@ function populateFightHistory(name) {
     const c = PROMO_TIER_COLORS[pt.tier] || PROMO_TIER_COLORS[5];
     return '<span class="promo-tier-badge" style="display:inline-flex;align-items:center;margin-left:6px;padding:1px 7px;border:1px solid ' + c + ';border-radius:999px;color:' + c + ';font-size:0.6rem;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;white-space:nowrap;line-height:1.6;vertical-align:middle;">' + pt.label + '</span>';
   }
+  // Same tier signal as promotionTierBadgeHTML, no pill — just color-coded
+  // text. Used in Record Breakdown's "Fights By Organization" (rbOrgRow),
+  // where a bordered pill on every row read as too heavy/noisy next to plain
+  // fd-stat rows.
+  function promotionTierTextHTML(org) {
+    const pt = promotionTier(org);
+    if (!pt) return '';
+    const c = PROMO_TIER_COLORS[pt.tier] || PROMO_TIER_COLORS[5];
+    return '<span style="margin-left:6px;color:' + c + ';font-size:0.64rem;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;white-space:nowrap;">' + pt.label + '</span>';
+  }
 
   function rbStatRow(label, value) {
     return '<div class="fd-stat"><span class="fd-label">' + escHtmlAttr(label) + '</span><span class="fd-value">' + value + '</span></div>';
@@ -113687,7 +113697,7 @@ function populateFightHistory(name) {
   // is a wrapping grid (.rb-grid), not a horizontally-scrolling table, so it
   // actually renders on mobile without requiring a sideways scroll to find.
   function rbOrgRow(org, count) {
-    return '<div class="fd-stat"><span class="fd-label" style="display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;row-gap:3px;">' + escHtmlAttr(org) + promotionTierBadgeHTML(org) + '</span><span class="fd-value">' + count + '</span></div>';
+    return '<div class="fd-stat"><span class="fd-label" style="display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;row-gap:3px;">' + escHtmlAttr(org) + promotionTierTextHTML(org) + '</span><span class="fd-value">' + count + '</span></div>';
   }
 
   function populateRecordBreakdown(name) {
