@@ -129019,22 +129019,24 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
     })();
   })();
 
-  // Regional promotion strength — one line per fighter whose UFC resume is
-  // thin (DWCS, a debutant, or <=3 UFC bouts), naming the strongest
-  // promotion on their pre-UFC record. A "5-1" record reads very differently
-  // built in Bellator vs. a regional card nobody streamed; this is the cheap
-  // signal for that without opening the full fight history table. Uses
+  // Regional promotion strength — a METRIC row, same cmpBlock/cmpRow grid as
+  // every other stat in this panel (label | fighter A | fighter B), not a
+  // sentence. Each side's value is colored by its tier (see
+  // PROMO_TIER_COLORS) so it reads at a glance the same way a green/red
+  // cmpRow value does elsewhere. Shown only when at least one side has a
+  // thin UFC resume (<=3 UFC bouts) or is DWCS — a proven veteran's panel
+  // shouldn't get cluttered with a decade-old regional footnote. Uses
   // f.org with the same inferPromotion() fallback populateRecordBreakdown
   // uses, since most historical bouts predate the org field.
   (function () {
     const orgOf = f => f.org || inferPromotion(f.event);
     const finished = h => (h || []).filter(f => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
     const ufcBoutsOf = h => finished(h).filter(f => orgOf(f) === 'UFC').length;
-    const summarize = h => {
+    const bestTierOf = h => {
       // Gradeable = has a tier at all — promotionTier() returns null for UFC
       // itself AND for DWCS/TUF/Road to UFC (see EXCLUDED_ORGS), so a DWCS
-      // alum's audition win never gets counted as their "best" regional org;
-      // this only ever surfaces what they fought BEFORE the audition show.
+      // alum's audition win never counts as their "best" regional org; this
+      // only ever surfaces what they fought BEFORE the audition show.
       const graded = finished(h).filter(f => promotionTier(orgOf(f)) !== null);
       if (!graded.length) return null;
       const counts = {};
@@ -129045,20 +129047,29 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
         if (t < bestTier || (t === bestTier && counts[org] > bestCount)) { bestTier = t; bestOrg = org; bestCount = counts[org]; }
       });
       if (!bestOrg) return null;
-      const label = promotionTier(bestOrg).label;
-      return graded.length + ' regional fight' + (graded.length === 1 ? '' : 's') + ' — best at ' + bestOrg + ' (' + label + ')';
+      return { org: bestOrg, tier: bestTier, label: promotionTier(bestOrg).label, count: graded.length };
     };
     const THIN = 3;
     const thinA = isDWCS || ufcBoutsOf(histA) <= THIN;
     const thinB = isDWCS || ufcBoutsOf(histB) <= THIN;
     if (!thinA && !thinB) return;
-    const lines = [];
-    if (thinA) { const s = summarize(histA); if (s) lines.push(short(name) + ': ' + s); }
-    if (thinB) { const s = summarize(histB); if (s) lines.push(short(opp) + ': ' + s); }
-    if (!lines.length) return;
-    const box = document.createElement('div'); box.className = 'sr-common';
-    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = 'Regional promotion strength'; box.appendChild(t);
-    lines.forEach(l => { const row = document.createElement('div'); row.className = 'sr-story-line'; row.style.cssText = 'font-size:0.74rem;line-height:1.5;padding:3px 0;color:var(--text);'; row.textContent = l; box.appendChild(row); });
+    const resA = thinA ? bestTierOf(histA) : null;
+    const resB = thinB ? bestTierOf(histB) : null;
+    if (!resA && !resB) return;
+    const box = cmpBlock('Regional promotion level');
+    const row = document.createElement('div'); row.className = 'sr-cmp-row';
+    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Best pre-UFC org';
+    const mkVal = res => {
+      const d = document.createElement('div'); d.className = 'sr-cmp-val';
+      if (!res) { d.textContent = '—'; return d; }
+      d.style.color = PROMO_TIER_COLORS[res.tier] || PROMO_TIER_COLORS[5];
+      d.style.fontWeight = '800';
+      d.textContent = res.label;
+      d.title = res.org + ' — ' + res.count + ' regional fight' + (res.count === 1 ? '' : 's');
+      return d;
+    };
+    row.appendChild(l); row.appendChild(mkVal(resA)); row.appendChild(mkVal(resB));
+    box.appendChild(row);
     host.appendChild(box);
   })();
 
