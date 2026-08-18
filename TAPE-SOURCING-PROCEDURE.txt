@@ -578,6 +578,53 @@ TERRANCE CHATMAN — AUG 18 2026 — full 6-bout sweep, all 6 placed.
   bouts are pre-UFC and correctly headed "Pre-UFC" on the first row only.
   Syntax-checked, rebuilt public/, committed.
 
+STAN DORSAINVIL — AUG 18 2026 — full 5-bout sweep, 3 of 5 placed, 2 exhausted.
+  5 pre-UFC bouts across 5 promotions (LFA x2, Peak Fighting, XFC, AFL).
+  YouTube exhausted first for every bout per the owner's standing instruction
+  for this batch.
+    SOLVED ON YOUTUBE (2): Dan Holt (LFA 233) — full 22m29s upload on the
+      official verified "LFA Fights" channel (611K subs), found on the very
+      first bare-pair search, description date (May 22, 2026) matches
+      FIGHT_HISTORY exactly. Hernandez Banks (AFL: Invincible 2023) — full
+      upload on the official "Action Fight League" channel, turned up as a
+      side-result while searching for the Johnny Smith bout; description
+      states the event was "held on January 20, 2023" at the Seminole
+      [Hard Rock], matching FIGHT_HISTORY's date exactly.
+    SOLVED ON FIGHT PASS (1): Cedric Katambwa (LFA 188) — a bare
+      "Stan Dorsainvil" search on Fight Pass surfaced the per-bout clip
+      directly (name/record "Tale of the Tape" graphic confirmed). LFA's own
+      YouTube channel had nothing beyond the Dan Holt upload — LFA only
+      recently (2026) started posting individual full fights for free;
+      2024-vintage bouts like this one are Fight-Pass-only.
+    UNRESOLVED, GENUINELY EXHAUSTED (2):
+      Johnny Smith (Peak Fighting 40, Nov 16 2024) — Peak Fighting's own
+        YouTube channel (@PeakFighting, 1.5K videos, posts full fights
+        regularly) has zero content matching "Dorsainvil" or this specific
+        bout; a decoy "Armus Guyton vs Johnny Smith" video at PFC 30 exists
+        for the same Johnny Smith but is a different fight entirely. Not on
+        Fight Pass either (search returns only loosely-related fuzzy
+        matches, no actual Peak Fighting 40 content).
+      Joao Guerra (XFC: Detroit Grand Prix, Jun 2 2023) — hit a NAME/ORG
+        COLLISION trap: a YouTube video titled "XFN 36 Joao Guerra vs
+        Stanley Dorsainvil" (Xtreme Fighting NATION, a different promotion
+        from Xtreme Fighting CHAMPIONSHIPS/XFC) surfaced on a bare-pair
+        search, uploaded ~5 years ago (~2021) — clearly not the June 2023
+        XFC bout despite matching both fighter names. FIGHT_HISTORY records
+        only one Guerra meeting, so this is either an unrelated early bout
+        between the same two men or a mislabeled upload; either way it does
+        not resolve to our FIGHT_HISTORY row's event+date and was correctly
+        left unplaced per the "don't guess" rule. The actual XFC channel
+        (@XFCFight, 360 videos, posts full fights) has zero content for
+        "Dorsainvil" or "Guerra" — this specific "Detroit Grand Prix" event
+        (no "II") appears to predate the channel's individual-upload habit.
+        Not on Fight Pass either.
+  Ran place-tape-links.cjs --write for the 3 resolved bouts in one temp file
+  (Dorsainvil had zero prior TAPE_STUDY rows). Report: 3 parsed, 3 placed,
+  0 unplaced — 5 FIGHT_HISTORY rows vs 3 placed correctly reflects the two
+  deliberately-skipped bouts (Smith, Guerra).
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
+
 RYAN KUSE — AUG 18 2026 — full 11-bout sweep, 10 of 11 placed, 1 exhausted.
   11 pre-UFC bouts across 7 promotions (5x Titan FC, plus LFA, Fury FC,
   Combat Night, Combate Global, Fighting Force, Samurai Fight House).
