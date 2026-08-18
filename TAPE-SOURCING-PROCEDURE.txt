@@ -678,3 +678,54 @@ RYAN KUSE — AUG 18 2026 — full 11-bout sweep, 10 of 11 placed, 1 exhausted.
   fix-tape-sections.cjs --write: 0 changes (all of Kuse's bouts are
   pre-UFC, single "Pre-UFC" header already correctly on the first row).
   Syntax-checked, rebuilt public/, committed.
+
+MARQUEL MEDEROS — AUG 18 2026 — 5-bout gap sweep, 3 of 5 placed, 2 exhausted.
+  13 total pre-UFC/UFC bouts in FIGHT_HISTORY, 8 already linked from prior
+  work (Padilla, Choinski, Hubbard, Quiñones, Lamparez, Whitney, Lugo,
+  Sherley-Rios). Gap list: Isakov (DWCS 7.10), Murphy (Fury FC 77), Reeder
+  (FAC 18), Guzman (Fury FC 57), Moskowitz (Fury FC 47). YouTube exhausted
+  first for every bout per the standing instruction for this batch.
+    SOLVED ON YOUTUBE (2): Tracy Reeder (FAC 18, Feb 24 2023) — full
+      24m37s upload "Tracy Reeder vs Marquel Mederos FAC 18" on the "MMA
+      Futures" channel, found on the bare-pair search; description
+      confirms Fighting Alliance Championship, Independence MO, matching
+      FIGHT_HISTORY. Santiago Guzman (Fury FC 57, Feb 11 2022) — no
+      per-bout upload found on YouTube for either the bare pair or the
+      event-number retry, but "Fury Fighting Championships 57 Prelims"
+      (full 1h56m livestream, official Fury FC channel) turned up on a
+      broader "Fury FC 57 Mederos" search. Confirmed the bout belonged on
+      this stream (rather than a paid main card) via Tapology, which lists
+      Guzman vs. Mederos's bout billing as "Preliminary Card" — used per
+      the established full-event fallback rule.
+    SOLVED ON FIGHT PASS (1): Mike Murphy (Fury FC 77, Apr 16 2023) — a
+      bare "Marquel Mederos" search on Fight Pass surfaced "Marquel
+      Mederos vs Micheal Murphy Fury FC 77" (Fight Pass spells the
+      opponent "Micheal") directly as a per-bout clip with a name/record
+      "Tale of the Tape" graphic. Not found on YouTube — no matching
+      video for either the bare pair or "Fury FC 77" retries.
+    UNRESOLVED, GENUINELY EXHAUSTED (2):
+      Issa Isakov (DWCS 7.10, Oct 10 2023) — YouTube search surfaced only
+        breakdown/prediction videos (e.g. "Marquel Mederos vs. Issa
+        Isakov Fight Breakdown DWCS Week 10" by "The Double Leg") and one
+        low-value Short (a single takedown clip), all rejected as
+        commentary/partial-clip, not full-fight footage. Not on Fight
+        Pass either — searches for "Isakov" or "Isakov Mederos" return
+        only unrelated fuzzy-name matches (Issac Martinez, Issa Salem,
+        Issam Azelhad, Leandro Issa), none the actual DWCS opponent.
+      Jonathon Moskowitz (Fury FC 47, Jun 20 2021) — YouTube has three
+        separate "Fury Fighting Championships 47 Prelims" uploads on the
+        official Fury FC channel, but Tapology confirms Moskowitz vs.
+        Mederos was billed on the MAIN CARD (Fight-Pass-exclusive at the
+        time), so the free prelims stream does not contain it. No
+        per-bout main-card upload exists on YouTube either. Not on Fight
+        Pass — a bare "Moskowitz" search returns zero matches, and it is
+        absent from the "Marquel Mederos" search results entirely (unlike
+        Murphy/Guzman/Reeder, which all surfaced there once solved).
+  Ran place-tape-links.cjs --write for all 11 resolvable bouts (8
+  pre-existing + 3 newly found) in one temp file, since the script
+  replaces a fighter's entire TAPE_STUDY block rather than merging.
+  Report: 11 parsed, 11 placed, 0 unplaced — 13 FIGHT_HISTORY rows vs 11
+  placed correctly reflects the two deliberately-skipped bouts (Isakov,
+  Moskowitz).
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
