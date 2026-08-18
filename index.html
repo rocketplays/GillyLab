@@ -5368,6 +5368,7 @@
  { name: "Samuel Sanches", division: "LW", rank: "NR", record: "11-1-0", initials: "SSA", country: "Brazil" },
  { name: "Saimon Oliveira", division: "BW", rank: "NR", record: "18-7-0", initials: "SOL", country: "Brazil" },
  { name: "Ryan Kuse", division: "FW", rank: "NR", record: "9-2-0", initials: "RYK", country: "USA" },
+ { name: "Patrick Rivera", division: "WW", rank: "NR", record: "13-4-0", initials: "PRI", country: "USA" },
  { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
  { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-5-0", initials: "AP", country: "Russia" },
@@ -9215,6 +9216,7 @@
   "Samuel Sanches": { ht:"5'10\"", dob:"2003-01-28", reach:'74.5"', stance:"Orthodox", slpm:5.95, strAcc:"75%", sapm:0.00, strDef:"100%", kd:7.44, tdLanded:0.00, tdAcc:"0%", tdDef:"100%", subAvg:0.00, finRate:"82%", streak:8, gym:"Galpao Da Luta" },
   "Saimon Oliveira": { ht:"5'4\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:2.62, strAcc:"42%", sapm:3.87, strDef:"46%", kd:0.00, tdLanded:1.18, tdAcc:"29%", tdDef:"36%", subAvg:1.18, finRate:"89%", streak:0, gym:"Astra Fight Team" },
   "Ryan Kuse": { ht:"5'9\"", dob:"1994-06-24", reach:'74"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:2, gym:"The Goat Shed" },
+  "Patrick Rivera": { ht:"6'0\"", dob:"1992-02-24", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"77%", streak:6, gym:"Crazy 88 MMA" },
   "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
  "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
   "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
@@ -43771,6 +43773,9 @@
     { opponent: "Amir Naser Kazemi", odds: -635 },
     { opponent: "Damian Attie", odds: -275 },
   ],
+  "Patrick Rivera": [
+    { opponent: "Brady Minner", odds: 100 },
+  ],
   "Ryan Loder": [
     { opponent: "Ismail Naurdiev", odds: 111 },
     { opponent: "Azamat Bekoev", odds: 300 },
@@ -61790,6 +61795,25 @@ const FIGHT_HISTORY = {
     { date: "Mar 26, 2021", opponent: "Damian Attie", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Titan FC 68: Cruz vs. Dias", org: "Titan FC" },
     { date: "Nov 21, 2020", opponent: "Micaias Ureña", result: "W", method: "KO/TKO", round: 2, time: "5:00", event: "Fighting Force 4", org: "Fighting Force" },
     { date: "Aug 28, 2020", opponent: "Earnest Walls", result: "W", method: "TKO (Strikes)", round: 1, time: "4:27", event: "Titan FC 63: Usman vs. Hodges", org: "Titan FC" }
+  ],
+  "Patrick Rivera": [
+    { date: "Mar 28, 2026", opponent: "Rey Trujillo", result: "W", method: "Submission (Rear-Naked Choke)", round: 3, time: "1:26", event: "Shogun Fights 32", org: "Shogun Fights" },
+    { date: "Nov 15, 2025", opponent: "Cole Presley", result: "W", method: "KO (Punches)", round: 2, time: "0:30", event: "Shogun Fights 31", org: "Shogun Fights" },
+    { date: "Jul 12, 2025", opponent: "Justice Lamperez", result: "W", method: "TKO (Strikes)", round: 1, time: "0:42", event: "FightWorld 39", org: "FightWorld" },
+    { date: "Mar 29, 2025", opponent: "Jimmy Sandlin", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 30", org: "Shogun Fights" },
+    { date: "Mar 30, 2024", opponent: "Kenny Gaudreau", result: "W", method: "KO (Punch)", round: 1, time: "1:18", event: "Shogun Fights 28", org: "Shogun Fights" },
+    { date: "Oct 7, 2023", opponent: "Brexton Everett", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "2:15", event: "Shogun Fights 27", org: "Shogun Fights" },
+    { date: "Mar 25, 2023", opponent: "Bryan McDowell", result: "L", method: "Submission (Guillotine Choke)", round: 2, time: "0:51", event: "Shogun Fights 26", org: "Shogun Fights" },
+    { date: "Oct 14, 2022", opponent: "Brady Minner", result: "W", method: "Submission (Neck Crank)", round: 1, time: "3:19", event: "LFA 144: Gafurov vs. Silva", org: "LFA" },
+    { date: "Mar 26, 2022", opponent: "Shawn Brooks", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 24", org: "Shogun Fights" },
+    { date: "Feb 12, 2022", opponent: "Carrese Archer", result: "W", method: "TKO (Strikes)", round: 1, time: "3:41", event: "Fightworld 21", org: "Fightworld" },
+    { date: "Oct 16, 2021", opponent: "Paul Sims", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:06", event: "Stellar Fights 47", org: "Stellar Fights" },
+    { date: "Jul 13, 2019", opponent: "Hawraz Syan", result: "W", method: "Submission", round: 1, time: "3:43", event: "Shogun Fights 22", org: "Shogun Fights" },
+    { date: "Apr 6, 2019", opponent: "Oscar Ramirez", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Shogun Fights 21", org: "Shogun Fights" },
+    { date: "Sep 14, 2018", opponent: "Dakota Bush", result: "L", method: "Submission (Rear-Naked Choke)", round: 3, time: "4:49", event: "LFA 49: Brady vs. Urbina", org: "LFA" },
+    { date: "Apr 14, 2018", opponent: "Mischa Christensen", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:07", event: "Shogun Fights 18", org: "Shogun Fights" },
+    { date: "Feb 27, 2016", opponent: "Marcus Surin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 56: Wells vs. Walo", org: "CFFC" },
+    { date: "Oct 24, 2015", opponent: "Mahmoud Mohaghegh-Rashid", result: "W", method: "TKO (Punches)", round: 3, time: "2:08", event: "Shogun Fights 13", org: "Shogun Fights" }
   ],
   "Ryan Loder": [
     { date: "Nov 22, 2025", opponent: "Ismail Naurdiev", result: "L", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
@@ -118408,6 +118432,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Won the Fighting Force title — KO/TKO of Micaías Ureña (Nov 2020)", detail: null },
     { icon: "🥋", title: "BJJ Black Belt — promoted the day he signed with the UFC", detail: null },
     { icon: "🥊", title: "Also competed in Bare Knuckle MMA (1-0) and Karate Combat (2-0) alongside his pro MMA career", detail: null }
+  ],
+  "Patrick Rivera": [
+    { icon: "🎯", title: "Making his UFC debut on Dana White's Contender Series 2026: Week 4 vs. Adam Darby (Sep 1, 2026)", detail: null },
+    { icon: "🏆", title: "Won the Shogun Fights welterweight title — submission of Rey Trujillo (Mar 2026)", detail: null },
+    { icon: "🥊", title: "Six-fight win streak into DWCS, finishing five of the six — a mix of RNC submissions and first-round knockouts", detail: null },
+    { icon: "🏟️", title: "Longtime fixture of the Baltimore, MD regional scene and the Shogun Fights promotion; trains out of Crazy 88 MMA", detail: null }
   ],
   "Ryan Loder": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
