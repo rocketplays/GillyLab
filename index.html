@@ -131792,9 +131792,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       },
       method: {
         draftkings: { f1: { ko: 275, sub: 1200, dec: 700 }, f2: { ko: 165, sub: 500, dec: 400 } },
+        fanduel:    { f1: { ko: 300, sub: 1200, dec: 650 }, f2: { ko: 200, sub: 550, dec: 370 } },
       },
       roundProps: {
         draftkings: { f1: { r1: 450, r2: 700, r3: 1400 }, f2: { r1: 275, r2: 550, r3: 800 } },
+        fanduel:    { f1: { r1: 550, r2: 850, r3: 1300 }, f2: { r1: 300, r2: 550, r3: 1000 } },
       },
       totals: {
         '1.5': {
@@ -131814,9 +131816,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       },
       method: {
         draftkings: { f1: { ko: 600, sub: 1600, dec: 1100 }, f2: { ko: -185, sub: 600, dec: 700 } },
+        fanduel:    { f1: { ko: 600, sub: 1400, dec: 1000 }, f2: { ko: -160, sub: 700, dec: 800 } },
       },
       roundProps: {
         draftkings: { f1: { r1: 850, r2: 1400, r3: 2200 }, f2: { r1: -105, r2: 400, r3: 1200 } },
+        fanduel:    { f1: { r1: 900, r2: 1500, r3: 2500 }, f2: { r1: 100, r2: 430, r3: 1200 } },
       },
       totals: {
         '1.5': {
@@ -131836,9 +131840,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       },
       method: {
         draftkings: { f1: { ko: 450, sub: 1200, dec: 550 }, f2: { ko: 130, sub: 550, dec: 350 } },
+        fanduel:    { f1: { ko: 490, sub: 1200, dec: 550 }, f2: { ko: 150, sub: 600, dec: 380 } },
       },
       roundProps: {
         draftkings: { f1: { r1: 750, r2: 1000, r3: 1600 }, f2: { r1: 215, r2: 450, r3: 800 } },
+        fanduel:    { f1: { r1: 850, r2: 1100, r3: 1600 }, f2: { r1: 250, r2: 500, r3: 850 } },
       },
       totals: {
         '1.5': {
@@ -131858,9 +131864,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       },
       method: {
         draftkings: { f1: { ko: 140, sub: 165, dec: 1200 }, f2: { ko: 320, sub: 3500, dec: 1600 } },
+        fanduel:    { f1: { ko: 165, sub: 180, dec: 1200 }, f2: { ko: 340, sub: 3300, dec: 1500 } },
       },
       roundProps: {
         draftkings: { f1: { r1: -185, r2: 650, r3: 1800 }, f2: { r1: 425, r2: 1200, r3: 2800 } },
+        fanduel:    { f1: { r1: -145, r2: 750, r3: 2000 }, f2: { r1: 480, r2: 1600, r3: 3000 } },
       },
       totals: {
         '1.5': {
@@ -131869,10 +131877,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // No method/round-prop lines were posted anywhere on this fight (only 12
-    // total prop bets on the whole card, vs 68-72 for the others) -- ml and a
-    // single totals line (already live via betonlineag, included for
-    // completeness) are all there was to enter.
+    // fightodds.io hadn't picked up DraftKings' or FanDuel's method/round-prop
+    // lines yet when this was first entered (only 12 total prop bets showed
+    // on the whole card, vs 68-72 for the others) -- DraftKings confirmed
+    // live directly, FanDuel cross-checked against bestfightodds.com (which
+    // showed both books' full prop sheets even though fightodds.io didn't).
     'puga|trembley': {
       rounds: 3,
       ml: {
@@ -131882,9 +131891,18 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         fanduel:     { f1: -178, f2: 150 },
         betmgm:      { f1: -190, f2: 155 },
       },
+      method: {
+        draftkings: { f1: { ko: 130, sub: 900, dec: 400 }, f2: { ko: 750, sub: 450, dec: 400 } },
+        fanduel:    { f1: { ko: 150, sub: 1200, dec: 470 }, f2: { ko: 850, sub: 480, dec: 360 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 225, r2: 550, r3: 900 }, f2: { r1: 600, r2: 900, r3: 1400 } },
+        fanduel:    { f1: { r1: 280, r2: 650, r3: 1000 }, f2: { r1: 650, r2: 1100, r3: 1500 } },
+      },
       totals: {
         '1.5': {
           betonlineag: { over: -145, under: 125 },
+          fanduel:     { over: -148, under: 122 },
         },
       },
     },
