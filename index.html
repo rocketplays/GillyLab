@@ -129078,7 +129078,7 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
       if (!bestOrg) return null;
       return { org: bestOrg, tier: bestTier, label: promotionTier(bestOrg).label, count: graded.length };
     };
-    const THIN = 3;
+    const THIN = 5; // <=5 UFC bouts shows the row; 6+ is the cutoff
     const thinA = isDWCS || ufcBoutsOf(histA) <= THIN;
     const thinB = isDWCS || ufcBoutsOf(histB) <= THIN;
     if (!thinA && !thinB) return;
