@@ -129102,8 +129102,11 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
       if (!res) { d.textContent = '—'; return d; }
       d.style.color = PROMO_TIER_COLORS[res.tier] || PROMO_TIER_COLORS[5];
       d.style.fontWeight = '800';
-      d.textContent = res.label + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's');
-      d.title = res.org + ' — ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's') +
+      // Visible text leads with the ORG name (e.g. "Fury FC · 4 fights") —
+      // color still carries the tier signal, tooltip carries the full tier
+      // label + total regional count for anyone who does have hover.
+      d.textContent = res.org + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's');
+      d.title = res.label + ' — ' + res.org + ', ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's') +
         (res.totalRegional > res.orgCount ? (' (of ' + res.totalRegional + ' regional fights total)') : '');
       return d;
     };
