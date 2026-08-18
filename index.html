@@ -131258,10 +131258,22 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // than one line at once (e.g. both 1.5 and 2.5) — each line maps book ->
   // { over, under }.
   //
+  // `ml` (moneyline) fills the same gap buildMoneylineTable() has: the live
+  // feed (data/odds.json, from the Odds API) only carries whichever books
+  // its plan prices, which for small-name cards (DWCS, recurring) is often
+  // just 1-2 books even though fightodds.io shows several more. Keyed by
+  // book -> { f1, f2 }, the straight American moneyline price for each side
+  // — no over/under, no method, just the two win prices. Merged the same
+  // way as totals: live data wins per book, manual only fills in books the
+  // live feed doesn't have.
+  //
   // Example (book keys match BOOK_KEY_MAP below; ko/sub/dec and r1/r2/r3
   // are the odds for THAT fighter to win by that method / in that round):
   //   'rosa|santos': {
   //     rounds: 3,
+  //     ml: {
+  //       draftkings: { f1: -110, f2: -110 },
+  //     },
   //     method: {
   //       draftkings: { f1: { ko: 600, sub: 900, dec: 400 }, f2: { ko: -110, sub: 450, dec: 250 } },
   //     },
@@ -131765,6 +131777,115 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         bovada:      { f1: { r1: 800, r2: 850, r3: 1000, r4: 1300, r5: 1800 }, f2: { r1: 2200, r2: 2500, r3: 3000, r4: 3300, r5: 3300 } },
         fanduel:     { f1: { r1: 750, r2: 1000, r3: 1300, r4: 1600, r5: 1900 }, f2: { r1: 2200, r2: 2700, r3: 3000, r4: 4000, r5: 4500 } },
         betmgm:      { f1: { r1: 600, r2: 900, r3: 1200, r4: 1500, r5: 1800 }, f2: { r1: 1500, r2: 1800, r3: 2500, r4: 3000, r5: 3500 } },
+      },
+    },
+    // Contender Series 2026: Week 2 (2026-08-18, all 3 rounds). The live feed
+    // (data/odds.json) only carries betonlineag + fanduel for every fight on
+    // this card -- DraftKings/BetMGM/Bovada ML and all method/round-prop/totals
+    // lines below are hand-entered from fightodds.io.
+    'brito|fazil': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: 150, f2: -180 },
+        betmgm:     { f1: 155, f2: -190 },
+        bovada:     { f1: 140, f2: -170 },
+      },
+      method: {
+        draftkings: { f1: { ko: 275, sub: 1200, dec: 700 }, f2: { ko: 165, sub: 500, dec: 400 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 450, r2: 700, r3: 1400 }, f2: { r1: 275, r2: 550, r3: 800 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: -150, under: 130 },
+          draftkings:  { over: -125, under: -105 },
+        },
+      },
+    },
+    'miller|rodrigues': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 334, f2: -425 },
+        bovada:      { f1: 240, f2: -300 },
+        draftkings:  { f1: 295, f2: -375 },
+        fanduel:     { f1: 310, f2: -390 },
+        betmgm:      { f1: 310, f2: -400 },
+      },
+      method: {
+        draftkings: { f1: { ko: 600, sub: 1600, dec: 1100 }, f2: { ko: -185, sub: 600, dec: 700 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 850, r2: 1400, r3: 2200 }, f2: { r1: -105, r2: 400, r3: 1200 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 165, under: -190 },
+          draftkings:  { over: 150, under: -195 },
+        },
+      },
+    },
+    'paxton|perez': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 180, f2: -210 },
+        bovada:      { f1: 190, f2: -230 },
+        draftkings:  { f1: 185, f2: -225 },
+        fanduel:     { f1: 194, f2: -240 },
+        betmgm:      { f1: 200, f2: -250 },
+      },
+      method: {
+        draftkings: { f1: { ko: 450, sub: 1200, dec: 550 }, f2: { ko: 130, sub: 550, dec: 350 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: 750, r2: 1000, r3: 1600 }, f2: { r1: 215, r2: 450, r3: 800 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: -155, under: 135 },
+          draftkings:  { over: -145, under: 114 },
+        },
+      },
+    },
+    'aly|lorenz': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: -325, f2: 263 },
+        bovada:      { f1: -350, f2: 275 },
+        draftkings:  { f1: -310, f2: 250 },
+        fanduel:     { f1: -310, f2: 250 },
+        betmgm:      { f1: -325, f2: 260 },
+      },
+      method: {
+        draftkings: { f1: { ko: 140, sub: 165, dec: 1200 }, f2: { ko: 320, sub: 3500, dec: 1600 } },
+      },
+      roundProps: {
+        draftkings: { f1: { r1: -185, r2: 650, r3: 1800 }, f2: { r1: 425, r2: 1200, r3: 2800 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 263, under: -325 },
+          draftkings:  { over: 250, under: -345 },
+        },
+      },
+    },
+    // No method/round-prop lines were posted anywhere on this fight (only 12
+    // total prop bets on the whole card, vs 68-72 for the others) -- ml and a
+    // single totals line (already live via betonlineag, included for
+    // completeness) are all there was to enter.
+    'puga|trembley': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: -160, f2: 140 },
+        bovada:      { f1: -110, f2: -110 },
+        draftkings:  { f1: -166, f2: 140 },
+        fanduel:     { f1: -178, f2: 150 },
+        betmgm:      { f1: -190, f2: 155 },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: -145, under: 125 },
+        },
       },
     },
   };
@@ -132529,6 +132650,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const fightLabel = `${last1} vs ${last2}`;
     let rows = '';
     const byKey = {}; books.forEach(bk => { byKey[bk.key] = bk; });
+    // The live feed (data/odds.json, from the Odds API) only carries the books
+    // its default plan prices -- small-name cards (DWCS is the recurring case)
+    // regularly get just 1-2 books that way, even though other books have
+    // actually posted a line (visible on fightodds.io). MANUAL_PROP_ODDS.ml
+    // fills in the rest by hand, same merge rule as buildTotalsTable(): live
+    // data wins per book (it's fresher), manual only fills in books the live
+    // feed doesn't have.
+    const manualEntry = findManualProps(fight);
+    if (manualEntry && manualEntry.ml) {
+      Object.keys(manualEntry.ml).forEach(bookKey => {
+        if (byKey[bookKey]) return; // live feed already has this book
+        const info = BOOK_KEY_MAP[bookKey];
+        if (!info) return;
+        const t = manualEntry.ml[bookKey];
+        byKey[bookKey] = {
+          key: bookKey,
+          markets: [{
+            key: 'h2h',
+            outcomes: [
+              { name: f1, price: t[manualSideFor(fight, 'home')] },
+              { name: f2, price: t[manualSideFor(fight, 'away')] },
+            ],
+          }],
+        };
+      });
+    }
     plOrderBooks(Object.keys(byKey)).forEach(bookKey => {
       const bk = byKey[bookKey];
       const info = BOOK_KEY_MAP[bk.key];
