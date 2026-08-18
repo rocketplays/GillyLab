@@ -1127,7 +1127,7 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
       full-contact/Kuo Shu channel with one unrelated MMA upload),
       "FightWorld 21 - Carrese Archer vs. Patrick Rivera," title
       confirms both names and the event.
-  UNRESOLVED, GENUINELY EXHAUSTED (15): Rey Trujillo (Shogun Fights 32,
+  UNRESOLVED after YouTube pass (15): Rey Trujillo (Shogun Fights 32,
     Mar 2026), Cole Presley (Shogun Fights 31, Nov 2025), Justice
     Lamperez (FightWorld 39, Jul 2025), Jimmy Sandlin (Shogun Fights 30,
     Mar 2025), Kenny Gaudreau (Shogun Fights 28, Mar 2024 — note the
@@ -1150,15 +1150,36 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
     channels reusing the FightWorld name, a Netflix docuseries). LFA
     (Minner, Bush) and CFFC (Surin) are larger promotions with active
     official YouTube channels but neither surfaced these specific
-    undercard bouts via search. UFC Fight Pass fallback NOT checked —
-    no logged-in Fight Pass session available in this sandbox; flagging
-    for a follow-up pass if account access becomes available, since
-    Shogun Fights/LFA/CFFC content sometimes lives there and not on
-    YouTube.
-  Ran place-tape-links.cjs --write for the 2 resolvable bouts (0
-  pre-existing + 2 newly found, no merge risk since Rivera had zero
-  rows) in one temp file. Report: 2 parsed, 2 placed, 0 unplaced — 17
-  FIGHT_HISTORY rows vs 2 placed correctly reflects the fifteen
+    undercard bouts via search.
+  FIGHT PASS PASS (follow-up same day, once a logged-in session was
+  confirmed available — account has an active paid subscription).
+  Searched all 15 remaining opponent names individually via the
+  Fight Pass search box (URL query-param search does not work on this
+  site — it silently ignores the ?q= param and returns a generic
+  recent-content feed; must click the on-page search box and type).
+  SOLVED (1): Dakota Bush (LFA 49, Sep 14 2018) — "Dakota Bush vs
+    Patrick Rivera LFA 49," ufcfightpass.com/video/499332, 21:49.
+    Confirmed on the platform despite not surfacing on YouTube.
+  STILL UNRESOLVED (14): Rey Trujillo, Cole Presley, Justice Lamperez,
+    Jimmy Sandlin, Kenny Gaudreau, Brexton Everett, Bryan McDowell,
+    Brady Minner, Shawn Brooks, Paul Sims, Oscar Ramirez, Mischa
+    Christensen, Marcus Surin, Mahmoud Mohaghegh-Rashid. Direct
+    event-name searches for "Shogun Fights" and "FightWorld" on Fight
+    Pass return zero results for either promotion — confirmed neither
+    is a Fight Pass content partner at all, not just missing these
+    specific cards. LFA and CFFC ARE partner promotions with lots of
+    indexed content (Everett, Minner's surname "Brady", Sims, and
+    Surin's search terms all surfaced OTHER unrelated fights from
+    those exact promotions) — but LFA 144 (Minner) and CFFC 56 (Surin,
+    Feb 2016, likely predates CFFC's digitized Fight Pass archive)
+    specifically are not indexed. Genuinely exhausted across both
+    YouTube and Fight Pass now.
+  Ran place-tape-links.cjs --write twice: first for the 2 YouTube
+  finds (0 pre-existing + 2 new, no merge risk, Rivera had zero rows
+  to start), then again including the 1 Fight Pass find alongside the
+  2 already-placed rows (3 parsed, 3 placed, 2 reported "already" —
+  correctly recognized and preserved, not overwritten). 17
+  FIGHT_HISTORY rows vs 3 placed correctly reflects the fourteen
   deliberately-skipped/exhausted bouts.
-  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
-  public/, committed (f3fc9ad7).
+  fix-tape-sections.cjs --write: 0 changes both times. Syntax-checked,
+  rebuilt public/, committed (f3fc9ad7, then 4a3e3620).
