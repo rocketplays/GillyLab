@@ -113682,6 +113682,13 @@ function populateFightHistory(name) {
   function rbStatRow(label, value) {
     return '<div class="fd-stat"><span class="fd-label">' + escHtmlAttr(label) + '</span><span class="fd-value">' + value + '</span></div>';
   }
+  // Org row for "Fights By Organization" — same badge as the fight history
+  // table (promotionTierBadgeHTML), but living here too because this panel
+  // is a wrapping grid (.rb-grid), not a horizontally-scrolling table, so it
+  // actually renders on mobile without requiring a sideways scroll to find.
+  function rbOrgRow(org, count) {
+    return '<div class="fd-stat"><span class="fd-label" style="display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px;row-gap:3px;">' + escHtmlAttr(org) + promotionTierBadgeHTML(org) + '</span><span class="fd-value">' + count + '</span></div>';
+  }
 
   function populateRecordBreakdown(name) {
     const panel = document.getElementById('f-record-breakdown-grid');
@@ -113716,9 +113723,21 @@ function populateFightHistory(name) {
       orgCounts[org] = (orgCounts[org] || 0) + 1;
     });
 
+    // UFC / DWCS / TUF / Road to UFC (promotionTier() returns null for these
+    // — see EXCLUDED_ORGS) sort first as a group, same as always. Everything
+    // else sorts by TIER first, fight count second — so a single Bellator
+    // bout (Tier 1) surfaces above five fights in a Tier 5 regional show,
+    // instead of getting buried by raw count the way plain count-sorting
+    // would bury it. That ordering, not just the color badge, is what makes
+    // the strongest promotion on the resume actually visible at a glance.
     const orgRows = Object.keys(orgCounts)
-      .sort((a, b) => (orgCounts[b] - orgCounts[a]) || a.localeCompare(b))
-      .map(org => rbStatRow(org, orgCounts[org]))
+      .sort((a, b) => {
+        const ta = promotionTier(a), tb = promotionTier(b);
+        const ra = ta ? ta.tier : -1, rb = tb ? tb.tier : -1;
+        if (ra !== rb) return ra - rb;
+        return (orgCounts[b] - orgCounts[a]) || a.localeCompare(b);
+      })
+      .map(org => rbOrgRow(org, orgCounts[org]))
       .join('');
 
     panel.innerHTML =
@@ -129056,9 +129075,9 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
     const resA = thinA ? bestTierOf(histA) : null;
     const resB = thinB ? bestTierOf(histB) : null;
     if (!resA && !resB) return;
-    const box = cmpBlock('Regional promotion level');
+    const box = cmpBlock('Regional promotion strength');
     const row = document.createElement('div'); row.className = 'sr-cmp-row';
-    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Best pre-UFC org';
+    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Pre-UFC strength';
     const mkVal = res => {
       const d = document.createElement('div'); d.className = 'sr-cmp-val';
       if (!res) { d.textContent = '—'; return d; }
