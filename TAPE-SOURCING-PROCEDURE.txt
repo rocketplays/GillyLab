@@ -577,3 +577,57 @@ TERRANCE CHATMAN — AUG 18 2026 — full 6-bout sweep, all 6 placed.
   drift unrelated to this sweep) and 0 for Chatman himself, since all his
   bouts are pre-UFC and correctly headed "Pre-UFC" on the first row only.
   Syntax-checked, rebuilt public/, committed.
+
+RYAN KUSE — AUG 18 2026 — full 11-bout sweep, 10 of 11 placed, 1 exhausted.
+  11 pre-UFC bouts across 7 promotions (5x Titan FC, plus LFA, Fury FC,
+  Combat Night, Combate Global, Fighting Force, Samurai Fight House).
+  YouTube exhausted first for every bout per the owner's instruction.
+    SOLVED ON YOUTUBE (4): Leandro Camargo (Samurai Fight House 28) — full
+      16m25s upload on the official Samurai Fight House channel, found on
+      the very first bare-pair search. Thiago Belo (Combat Night: Tally) —
+      full 16m36s upload on the official Combat Night channel, same search.
+      Damian Attie (Titan FC 68) and Micaias Ureña (Fighting Force 4) — both
+      full-length uploads (19:25 and 19:47) on small niche channels
+      ("Fight Library" and "Fighting Force" respectively) that post
+      individual regional-promotion fights for free despite the promotions
+      themselves being Fight-Pass/paid properties; found via bare-pair and
+      event-number retries, not the promotion's own main channel.
+    TITAN FC TRAP: the official "Titan FC" YouTube channel (@TitanFC, 121
+      videos) ONLY posts ~1-minute fighter promos and show-opens, never full
+      fights — confirmed by searching "Kuse" directly on that channel and
+      getting only a 56-second promo. Also hit a NAME-COLLISION trap
+      repeatedly: "Titan FC 74", "Titan FC 72" etc. searches kept surfacing
+      an unrelated promotion called "Cage Titans FC" (Cage Titans Fighting
+      Championship) — different org, same shortened nickname. Caught by
+      checking the channel name on every result before trusting a title
+      match.
+    EXHAUSTED ON YOUTUBE, SOLVED ON FIGHT PASS (6): Jamal Johnson (Titan FC
+      74), Rob Fuller (Titan FC 72), Amir Naser Kazemi (Titan FC 71),
+      Earnest Walls (Titan FC 63), Kevin Natividad (LFA 220), Cameron
+      Smotherman (Fury FC 89) — all six turned up in a single Fight Pass
+      search for the bare fighter name "Ryan Kuse" (no opponent/event
+      qualifier needed), each as a per-bout clip with a name/record "Tale of
+      the Tape" graphic confirming the match. Fury FC 89's Prelims YouTube
+      livestream was checked and Smotherman was NOT on the free-prelims
+      fight list in its description, confirming paid-main-card status before
+      falling back to Fight Pass (consistent with the Chatman sweep's
+      Fury FC pattern).
+    UNRESOLVED, GENUINELY EXHAUSTED (1): Leonardo Morales, "Combate Global
+      Exclusivo: Episode 4" (Nov 18, 2022). Not on YouTube (only decoy
+      videos of other fighters named "Leonardo Morales" — a common-name
+      trap, none matching Kuse). Not on Fight Pass either — a Fight Pass
+      search for "Leonardo Morales" returns six *different* fighters sharing
+      that name (LFA, Tuff-N-Uff, UFC, Cage Fury FC, Urijah Faber's A-1
+      Combat), none of them Kuse's opponent. Root cause found via WebSearch:
+      "Combate Global Exclusivo" is a ViX Premium-exclusive reality-show
+      spinoff (Season 1, Episode 4, 1h31m), a different streaming platform
+      entirely — it was never going to be on YouTube or Fight Pass. Left
+      unlinked per the "don't guess" rule rather than substituting a
+      different Leonardo Morales fight.
+  Ran place-tape-links.cjs --write for all 10 resolved bouts in one temp
+  file (Kuse had zero prior TAPE_STUDY rows). Report: 10 parsed, 10 placed,
+  0 unplaced, 0 shared-URL flags — 11 FIGHT_HISTORY rows vs 10 placed
+  correctly reflects the one deliberately-skipped Morales bout.
+  fix-tape-sections.cjs --write: 0 changes (all of Kuse's bouts are
+  pre-UFC, single "Pre-UFC" header already correctly on the first row).
+  Syntax-checked, rebuilt public/, committed.
