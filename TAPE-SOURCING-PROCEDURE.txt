@@ -853,3 +853,61 @@ JAMALL EMMERS — AUG 18 2026 — 17-bout gap sweep, 4 of 17 placed, 13 exhauste
   placed correctly reflects the thirteen deliberately-skipped bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhausted.
+  19 total bouts in FIGHT_HISTORY, 6 already linked (all recent
+  UFC/DWCS/LFA bouts). Gap list: one LFA bout that had simply never been
+  sourced (Ghareeb) plus 12 older bouts spanning US regional shows
+  (Ring of Combat, Nação Cyborg — actually Brazilian despite the name),
+  Russian/int'l shows (ACB), and half a dozen small Brazilian promotions
+  from 2013-2014 (Talent MMA Circuit, Iron Fight Combat, Striker's House
+  Cup, Real Fights, Pilsen Submission MMA, XFC International).
+    SOLVED ON YOUTUBE (4): Juan Pedroso / Brazilian Fighting Series 8
+      (Apr 2022) — full 12:21 upload on the official "Brazilian Fighting
+      Series" channel, titled "Lerryan Douglas vs. Luan Juruna". NAME
+      TRAP: FIGHT_HISTORY records the opponent as "Juan Pedroso" but his
+      full ring name is "Luan 'Juruna' Pedroso" — Tapology/Sherdog/
+      Combat Registry all confirm "Juruna" is a nickname, not a
+      different fighter, and the finish (TKO punches, 3:53 R2) matches
+      FIGHT_HISTORY exactly. Emerson Rios / Nação Cyborg 7 (Oct 2020) —
+      full 36:21 upload on the "Cris Cyborg" YouTube channel (Douglas's
+      camp — Cris Cyborg's gym films and posts his fights), titled
+      "Nacao Cyborg Fights: 145lbs World Championship Emerson Rios V
+      Lerryan Douglas"; found as a sidebar recommendation while
+      reviewing a different (rejected) Cris Cyborg upload. Daniel
+      Virginio / XFC International 6 (Sep 2014) — full 9:23 upload on
+      the official "XFC MMA" channel, titled "XFCi 6: Daniel Virginio X
+      Lerryan Douglas Season II Bantamweight Tournament". Thiago Misael
+      / Talent MMA Circuit 6 (Feb 2014) — full 26:30 upload on Brazilian
+      channel "TVNocaute MMA", titled "Circuito Talent de MMA 6 - Etapa
+      Curitiba - Lerryan Douglas vs Thiago Misael" (two other reposts of
+      the same bout also turned up, corroborating the match).
+    REJECTED AS PARTIAL: Nathan Ghareeb / LFA 184 (May 2024) — the only
+      YouTube hit, "#LFA184 Lerryan Douglas X Nathan Ghareeb UFC Fight
+      Pass Commerce Casino CA" on the Cris Cyborg channel, runs only
+      5:05. FIGHT_HISTORY records a Round 2 finish at 0:45, meaning the
+      actual fight time (full Round 1 + partial Round 2) is at least
+      5:45 before accounting for the between-rounds break — the video is
+      too short to be the full fight and was left unplaced rather than
+      guessed at. Not on Fight Pass either (absent from the in-app
+      "Lerryan Douglas" search).
+    UNRESOLVED, GENUINELY EXHAUSTED (8): James Gonzalez (Ring of Combat
+      74, Oct 2021), Dienner dos Reis (Adventure Fighters Tournament 17,
+      May 2019), Chepe Mariscal (HFC 37, Nov 2018 — search results
+      dominated by an unrelated, currently-active UFC fighter of the
+      same name), Saifullah Dzhabrailov (ACB 69: Young Eagles 22, Sep
+      2017), Jose Luis Alegre (Pilsen Submission MMA 1, Nov 2014),
+      Ricardo Sattelmayer (Real Fights 10, Dec 2013), Jardel Evangelista
+      (Iron Fight Combat 4, Sep 2013), Leonardo Daldegan (Striker's House
+      Cup 27, Jun 2013). None of the 8 appear on Fight Pass either — the
+      in-app "Lerryan Douglas" search returns exactly the same 6
+      previously-linked rows (now 10 with this sweep's additions) and
+      nothing more once results run past Isaac Thomson (LFA 164) into
+      unrelated fuzzy "Douglas" matches.
+  Ran place-tape-links.cjs --write for all 10 resolvable bouts (6
+  pre-existing + 4 newly found) in one temp file, since the script
+  replaces a fighter's entire TAPE_STUDY block rather than merging.
+  Report: 10 parsed, 10 placed, 0 unplaced — 19 FIGHT_HISTORY rows vs 10
+  placed correctly reflects the nine deliberately-skipped bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
