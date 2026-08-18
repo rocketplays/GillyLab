@@ -102,6 +102,30 @@
       },
       "reason": "Not a short-notice swap — an upstream ESPN data error. ESPN's feed has the Aug 8 heavyweight bout vs. Louie Sutherland attributed to Henrique da Silva Lopes (5-2-0, a different, already-UFC-rostered Brazilian heavyweight — Jungle Fight/WOC background), whose profile also carries the nickname \"Montanha\" in ESPN's data. The actual opponent is Jose Montanha (Jose Luiz \"Montanha\", 6-1-0, Curitiba, Parana) — confirmed via Sherdog's fighter page (which lists this exact bout under his 'Upcoming Fights'), Tapology, and MMA news coverage of his original Diniz booking collapsing and Sutherland stepping in. The two fighters just happen to share the nickname 'Montanha', and ESPN's feed appears to have merged them.",
       "addedOn": "2026-07-31"
+    },
+    {
+      "eventSlug": "ufc-fight-night-august-22-2026",
+      "eventStartsAt": "2026-08-23T00:00:00.000Z",
+      "matchFighterName": "Ryan Kuse",
+      "replacement": {
+        "fighterSlug": "ryan-kuse",
+        "fighterName": "Ryan Kuse",
+        "shortNotice": true
+      },
+      "reason": "Danny Silva withdrew from his featherweight bout with Marcio Barbosa at UFC Sacramento (hospitalized by a sudden pulmonary embolism); Ryan Kuse steps in on short notice for his promotional debut. The ESPN feed already lists Kuse, and card-changes.json's Wikipedia-diff heuristic flagged this bout as 'mayChange' (naming Kuse, the fighter who stayed booked, rather than the fighter who withdrew) — this entry marks Kuse as the confirmed short-notice replacement, which takes priority over that mis-fired 'may change' flag. Confirmed via UFC.com's fight-by-fight Sacramento preview and Fightomic (Aug 2026).",
+      "addedOn": "2026-08-18"
+    },
+    {
+      "eventSlug": "ufc-fight-night-august-22-2026",
+      "eventStartsAt": "2026-08-23T00:00:00.000Z",
+      "matchFighterName": "Stan Dorsainvil",
+      "replacement": {
+        "fighterSlug": "stan-dorsainvil",
+        "fighterName": "Stan Dorsainvil",
+        "shortNotice": true
+      },
+      "reason": "Kody Steele withdrew (injury) from his lightweight bout with Gauge Young at UFC Sacramento; Stan Dorsainvil signed with the UFC and steps in on short notice (six days before an LFA date he'd already signed for) for his UFC debut. The ESPN feed already lists Dorsainvil, and card-changes.json's Wikipedia-diff heuristic flagged this bout as 'mayChange' (naming Young, the fighter who stayed booked, rather than the fighter who withdrew) — this entry marks Dorsainvil as the confirmed short-notice replacement, which takes priority over that mis-fired 'may change' flag. Confirmed via AgentMMA and the Sedalia Democrat (Aug 2026).",
+      "addedOn": "2026-08-18"
     }
   ]
 }
