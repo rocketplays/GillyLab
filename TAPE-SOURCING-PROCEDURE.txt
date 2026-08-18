@@ -786,3 +786,70 @@ MASON JONES — AUG 18 2026 — 13-bout gap sweep, 6 of 13 placed, 7 exhausted.
   placed correctly reflects the seven deliberately-skipped bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+JAMALL EMMERS — AUG 18 2026 — 17-bout gap sweep, 4 of 17 placed, 13 exhausted.
+  30 total bouts in FIGHT_HISTORY, only 13 already linked despite Emmers
+  being a long-tenured UFC fighter — the gap included one UFC bout
+  (Askhabov) that had simply never been sourced, plus 16 regional bouts
+  going back to 2012 across a dozen different tiny Texas/California
+  promotions (Hero FC, Legacy FC, ABG Promotions, Big Dawg Promotions,
+  Tachi Palace Fights, Global Knockout, LFA, SMASH Global, M-1 Global,
+  Final Fight Championship, Hero FC again under two different event
+  names). This is the oldest and most fragmented fight history handled
+  in this sourcing arc so far.
+    SOLVED ON FIGHT PASS (1): Khusein Askhabov (UFC Fight Night, Feb
+      2023) — a bare "Jamall Emmers" Fight Pass search surfaced the clip
+      directly; the only YouTube hit was a Russian-language "Лучшие
+      Моменты" (Best Moments) highlights reel, correctly rejected as
+      partial footage.
+    SOLVED ON YOUTUBE (3): Chris Avila (Global Knockout 11, Nov 2017) —
+      full 18:36 upload on the official "Global Knock-Out" channel,
+      titled "GKO 11 Jamall Emmers vs. Chris Avila", description
+      confirms Jackson Rancheria Casino Resort and the Nov 4 2017 date
+      exactly. Rey Trujillo (Hero FC: Best of the Best 4, Jan 2015) — full
+      14:04 upload on the official "HERO FC" YouTube channel (which turned
+      out to host a 23-video "Hero FC" playlist, mostly from "Best of the
+      Best 6" plus a handful of BOTB4 bouts), titled "EMMERS vs.
+      TRUJILLO". Chris Pecero (Hero FC: Best of the Best 2, Jun 2014) —
+      full 16:31 upload on a small reposting channel run by "Hector
+      Montalvo", titled "JAMAL Hero FC" with description "JAMAL EMMER vs
+      Chris Peceros HERO FC jcfightpromotions.com" (title/description
+      don't name the event, but the opponent match is unambiguous).
+    TRAPS HIT: "Final Fight Championship" (Cucciniello's promotion) name-
+      collides with an unrelated, still-active Croatian/Balkan kickboxing
+      promotion of the same name on YouTube (@FinalFightChampionship,
+      5.48K subs) — none of its uploads are the Texas-based FFC 38.
+      "Big Dawg Promotions" (Gonzalez's 2012 promotion) name-collides with
+      a modern, unrelated "Big Dawg Bare Knuckle Boxing" channel. A
+      "Matt Mazurek -vs- Jammal Emmers Rnd 3" upload on channel
+      "FiteFootage.com" was found and initially promising, but its 7:07
+      runtime is far too short for a full 3-round decision (confirmed by
+      its own description: "controlled fight... in both Round 1 and 2" —
+      it's a Round-3-only clip) and was rejected as partial footage.
+    UNRESOLVED, GENUINELY EXHAUSTED (13): Jay Cucciniello (Final Fight
+      Championship 38, Jun 2019), Caio Machado (M-1 Global: Road to M-1
+      USA 2, Apr 2019 — the official "m1globalusa" and "MMA Global World"
+      channels have nothing for this specific card), Fard Muhammad (SMASH
+      Global 8, Dec 2018), Guilherme Faria de Souza (LFA 36, Mar 2018 —
+      LFA is a Fight-Pass property and this bout predates LFA's era of
+      free individual uploads), Ray Cervera (Tachi Palace Fights 25, Nov
+      2015), Merwyn Rivera (Tachi Palace Fights 23, May 2015), Michael
+      Rodriguez (Hero FC: Best of the Best 3, Sep 2014 — the official HERO
+      FC channel's playlist has no BOTB3 content at all), Brett Ewing x2
+      (Hero FC: Best of the Best 1, Feb 2014, and Hero FC: Texas Pride,
+      Sep 2013 — same channel gap), Alexander Hernandez (Hero FC: Pride of
+      the Valley 2, Jun 2013 — not to be confused with the UFC's Alexander
+      Hernandez, whose name dominates search results), Ernest de la Cruz
+      (Legacy FC 17, Feb 2013), Matt Mazurek (ABG Promotions: Alamo
+      Showdown 5, Nov 2012 — Round-3-only clip rejected, see above), James
+      Gonzalez (Big Dawg Promotions: In Cage I Trust 1, Oct 2012). None of
+      the 13 appear on Fight Pass either — the in-app "Jamall Emmers"
+      search returns exactly the same 13 previously-linked UFC/regional
+      rows and nothing more.
+  Ran place-tape-links.cjs --write for all 17 resolvable bouts (13
+  pre-existing + 4 newly found) in one temp file, since the script
+  replaces a fighter's entire TAPE_STUDY block rather than merging.
+  Report: 17 parsed, 17 placed, 0 unplaced — 30 FIGHT_HISTORY rows vs 17
+  placed correctly reflects the thirteen deliberately-skipped bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
