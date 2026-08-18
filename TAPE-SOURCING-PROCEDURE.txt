@@ -729,3 +729,60 @@ MARQUEL MEDEROS — AUG 18 2026 — 5-bout gap sweep, 3 of 5 placed, 2 exhausted
   Moskowitz).
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+MASON JONES — AUG 18 2026 — 13-bout gap sweep, 6 of 13 placed, 7 exhausted.
+  21 total bouts in FIGHT_HISTORY, 8 already linked (all 6 UFC bouts plus
+  the one recent Cage Warriors bout, Yann Liasse, that CW itself uploaded
+  free). Gap list: 13 older Cage Warriors bouts (CW175/166/158/116/113/
+  108/104/97/95/91/87, plus Cage Warriors: Academy Wales 2) and one
+  Adrenalin Fight Nights bout. YouTube exhausted first for every bout.
+    KEY DISCOVERY: the official "Cage Warriors" YouTube channel (102K
+      subs) DOES post individual full "pro prelim bout" uploads for free
+      — but only for a specific vintage of the promotion (roughly
+      2017-2020, before Cage Warriors' Fight-Pass-exclusive commercial
+      model matured). A single broad "Mason Jones FULL FIGHT Cage
+      Warriors" search surfaced three of these at once: Adam Proctor
+      (CW116), Shaun Luther (CW87), and Lawrence Tracey (CW91) — all
+      titled "CW##: Mason Jones vs <Opponent>" with the name/record
+      graphic and full run time matching the FIGHT_HISTORY finish time.
+    SOLVED ON YOUTUBE (6): Adam Proctor (CW116, Sep 2020) — official Cage
+      Warriors upload, 7:32. Lawrence Tracey (CW91, Mar 2018) and Shaun
+      Luther (CW87, Oct 2017) — official Cage Warriors uploads, found via
+      the broad search above. Craig Edwards (Cage Warriors: Academy Wales
+      2, May 2018) — full 16:52 upload on niche channel "Pain pit mma",
+      titled "Craig Edwards V Mason Jones CWA 2018 England V Wales",
+      description confirms Ebbw Vale venue and May 2018 date exactly.
+      Brett Hassett (Adrenalin Fight Nights 15, Dec 2017) — full 7:17
+      upload on niche channel "MMA Wales" titled "Adrenalin Fight Night
+      Swansea Fight 16: Brett Hassett vs Mason Jones"; no exact date in
+      the description, but the only Hassett/Jones meeting in
+      FIGHT_HISTORY and the org/location match are strong enough — the
+      "Fight 16" in the title is the card-position number, not a
+      colliding event-series number. Joe McColgan (CW113, Mar 2020) —
+      full 5:20 upload on tiny (9-subscriber) channel "Lloydc" titled
+      "Mason Jones Vs Joe McColgan FULL FIGHT 2020"; duration is short
+      but consistent with FIGHT_HISTORY's Round 1 finish at 4:14.
+    UNRESOLVED, GENUINELY EXHAUSTED (7): Michael Pagani (CW175, Jul
+      2024), Bryce Logan (CW166, Feb 2024), Alexandre Ribeiro (CW158,
+      Jul 2023) — all three post-2020-commercial-era bouts, only preview/
+      prediction/post-fight-interview videos exist on YouTube (rejected
+      as non-fight-footage), and none appear in Fight Pass's in-app
+      search for "Mason Jones" (which surfaces exactly the 8 already-
+      linked UFC/CW161 bouts and nothing more). Aleksi Mäntykivi (CW108,
+      Oct 2019), Donovan Desmae (CW104, Apr 2019), Kacper Formela (CW97,
+      Sep 2018), Konmon Deh (CW95, Jul 2018) — mid-vintage bouts that
+      fall between the "old free CW upload" era and confirmed nothing:
+      only pre/post-fight interviews turned up for Mäntykivi and Desmae;
+      Formela's opponent has his own "FomelaVlog" YouTube channel with an
+      11:41 video titled "Cage Warriors 97" but it's a personal event-day
+      vlog, far too short for the fight itself (which went to a decision)
+      and was rejected as non-fight-footage; Deh had zero YouTube results
+      beyond unrelated Mason Jones content. None of the four appear on
+      Fight Pass either.
+  Ran place-tape-links.cjs --write for all 14 resolvable bouts (8
+  pre-existing + 6 newly found) in one temp file, since the script
+  replaces a fighter's entire TAPE_STUDY block rather than merging.
+  Report: 14 parsed, 14 placed, 0 unplaced — 21 FIGHT_HISTORY rows vs 14
+  placed correctly reflects the seven deliberately-skipped bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
