@@ -53,6 +53,14 @@ Only include opponents the fighter actually fought (drop cancelled bookings).
 - `streak` = current win streak (0 if the last result was a loss/NC; no negatives).
 - `null` only for a field genuinely unavailable across all sources (renders as a dash).
 
+## Photo
+Headshot source is **ESPN, then ufc.com — nothing else.** `fighter-lookup.py` pulls
+from ESPN automatically. If ESPN has no headshot and ufc.com's athlete page also only
+shows the generic silhouette placeholder (image filename contains `SHADOW_Fighter`),
+leave `photos/<slug>.png` unset rather than sourcing one from Sherdog, Tapology, or
+anywhere else — a missing photo is fine to fill in later; a different-style photo
+looks inconsistent next to the rest of the roster and isn't worth the trade.
+
 ## Accolades
 - Check UFC.com **bio + Q&A** for grappling belt rank (judo/BJJ) → 🥋 accolade.
   The Q&A is often the only place a belt is stated; read the FULL Q&A answer — the

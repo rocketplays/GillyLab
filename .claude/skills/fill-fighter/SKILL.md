@@ -64,6 +64,16 @@ matched the wrong athlete the photo is wrong too — rerun with `--espn-id <numb
 `--force-photo` to overwrite the bad image). Commit the new `photos/<slug>.png` alongside
 index.html. Use `--no-photo` only if you explicitly don't want the download.
 
+**Headshot sourcing is restricted to ESPN and ufc.com — no other site, ever.** Both use
+consistent, front-facing UFC-quality photography; every other source (Sherdog, Tapology,
+Google Images, etc.) is a different crop/angle/quality and looks inconsistent next to the
+rest of the roster. If ESPN has no headshot (common for a fighter making their UFC/DWCS
+debut who hasn't been photographed yet) and ufc.com's athlete page also only shows the
+generic silhouette placeholder (image filename contains `SHADOW_Fighter`), **leave
+`photos/<slug>.png` unset and move on** — do not substitute a photo from Sherdog or
+anywhere else to fill the gap. A missing photo is fine and expected to be filled in later
+once ESPN/UFC.com actually have one; a wrong-style photo is not an acceptable trade.
+
 The script ends with a **`>> STILL MISSING`** line listing any bio/stat field not found on
 either ufc.com or ESPN. Treat that list as a to-do: resolve every field on it (Step 2)
 before writing the entry — do not ship a profile with a field still on that list unless
