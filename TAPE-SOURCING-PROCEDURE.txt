@@ -1046,3 +1046,58 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   9 newly found) in one temp file. Report: 24 parsed, 24 placed, 0
   unplaced — full FIGHT_HISTORY coverage. fix-tape-sections.cjs --write:
   0 changes. Syntax-checked, rebuilt public/, committed.
+
+2026-08-18 — MARCIO BARBOSA
+  20 total FIGHT_HISTORY bouts; started with 6 linked (all UFC/LFA/DWCS,
+  all Fight Pass or Paramount+); ended with 10 linked. All 14 pre-UFC
+  bouts are Brazilian regional cards. Fighter also goes by "Ticoto" /
+  "Ticotô" in nearly all regional-promotion uploads — every search used
+  that nickname alongside "Marcio Barbosa."
+  SOLVED (4):
+    Tiago Ramos (Jungle Fight 107, May 1 2022) — official "Jungle Fight
+      TV" channel, "JUNGLE FIGHT 107 | Márcio Ticoto x Tiago Terra
+      Nova," 5:54, matches the R1 3:41 guillotine finish.
+    Jameson Oliveira (SFFN 6, Nov 13 2021) and Gabriel Oliveira (SFFN 5,
+      Sep 25 2021) — both found on the official "ATS PRODUÇÕES" channel
+      (Sul Fluminense Fight Night's event-coverage channel, which
+      uploads full individual bouts as its own back-catalog, not just a
+      one-off full-card stream): "SFFN 6 - Marcio 'Ticotô' vs Jameson
+      'El Pistoleiro'" (10:30, matches R1 0:35 KO) and "SFFN 5 - Márcio
+      Ticotô vs Gabriel Oliveira" (5:11, matches R1 0:44 TKO).
+    Celso Henrique Silva Susarte (NEC 23, Feb 13 2016) — Barbosa's
+      professional debut. Found via third-party uploader "Anaice
+      Pixote!," "NEC MMA 23 [Santana] - Márcio 'Ticotô' vs Celso
+      'Celsinho,'" 3:34, matches the R1 3:04 finish.
+  REJECTED: Kevin Moreyra (Inka FC 34, Jul 2022) — the only video found,
+    "Márcio ticoto x Kevin moreyra" by a third-party uploader, is 1:24,
+    far shorter than the recorded R1 3:21 finish — a highlight clip, not
+    the fight. No full-fight alternative found; Inka FC's official
+    "INKA MMA PRO" channel and current Fight Pass partnership don't
+    cover this 2022 card.
+  NOT PURSUED (unconfirmed, not guessed): Caio Machado (Favela Kombat
+    37, Mar 2022) — a fan-uploaded "PARTE 1" (16:17) of the full card
+    exists, but nothing confirms Barbosa's specific bout is in that
+    segment (vs. a Parte 2/3), and the same name belongs to a
+    well-known active UFC-veteran "Caio 'Bigfoot' Machado" fighting for
+    UAE Warriors, which dominates search results — left unplaced rather
+    than assume either the segment or the fighter without verification.
+  UNRESOLVED, GENUINELY EXHAUSTED (9): Luis Felipe Filgueira da Silva
+    (DFC 8, Dec 2021 — a DFC bantamweight title fight, no trace on
+    YouTube or Fight Pass), Ronaldo Junior (Thunder Fight 28, Jul 2021),
+    Wellington Nunes (Shooto Brazil 105, Dec 2020 — Tapology lists the
+    opponent as "Wellington Borges," tried both names, neither on
+    YouTube or Fight Pass despite Shooto Brasil's normally strong
+    archive), Alessandro Soares (Amapa Fight Night 1, Sep 2019),
+    Auro Silva (Amazon Combat MMA, May 2019), Lucas Danilo Sa Bessa
+    (NEC 40, Dec 2018), Willian Martins (Pezao Combate, Sep 2017),
+    Iwanderson da Silva Caldas (W-Combat 21, Apr 2017 — note the
+    Tapology/ESPN record lists this fighter as "Iwanderson Caldas" or
+    "Anderson Caldas," tried both). None of these smaller
+    Amapá/regional-Brazil promotions have a searchable YouTube or Fight
+    Pass presence for these specific cards.
+  Ran place-tape-links.cjs --write for all 10 resolvable bouts (6
+  pre-existing + 4 newly found) in one temp file. Report: 10 parsed, 10
+  placed, 0 unplaced — 20 FIGHT_HISTORY rows vs 10 placed correctly
+  reflects the ten deliberately-skipped/exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed.
