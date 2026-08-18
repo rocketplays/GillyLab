@@ -514,3 +514,66 @@ event+date, not assumed correct from the label.
     existing row was explicitly included per the safe-workflow rule so it
     wasn't silently deleted). Report showed placed >= already for every
     fighter before writing. fix-tape-sections.cjs --write: 0 section changes.
+
+TERRANCE CHATMAN — AUG 18 2026 — full 6-bout sweep, all 6 placed.
+  All 6 of Chatman's pre-UFC bouts are Fury FC. Fury FC's model: numbered
+  events run a free YouTube "Prelims" livestream (@GarciaPromotions) plus a
+  paid UFC-Fight-Pass-exclusive main card; only SOME prelim bouts get a
+  separately-cut per-bout YouTube upload, and the main card almost never
+  surfaces on YouTube in any usable form (Shorts/teaser clips at best).
+  Per the owner's explicit instruction this run, YOUTUBE WAS EXHAUSTED FIRST
+  for every bout before any Fight Pass attempt.
+    Juan Torres, Fury FC 121 — no usable YouTube video (only a Short/teaser);
+      confirmed via WebSearch as a paid-main-card bout. FOUND ON FIGHT PASS:
+      a per-bout clip titled "Terrance Chatman vs Juan Torres Fury FC 121"
+      (7m58s), verified by the on-screen name/record graphic.
+      ufcfightpass.com/video/983552
+    Myron Dennis, Fury FC 118 — this was the actual FC 118 MAIN EVENT, so
+      YouTube had nothing beyond a highlight clip. FOUND ON FIGHT PASS: full
+      40m3s bout video, verified by the name/record graphic.
+      ufcfightpass.com/video/972437
+    Omar El-Sahlah, Fury FC 113 — SOLVED ON YOUTUBE: a KO highlight video
+      (vBMDVD5k1sc) initially misattributed to the Torres fight by search-
+      result proximity; caught via the TRAPS rule (match on event+date, not
+      assumption) — its "Jan 18, 2026" upload date matches El-Sahlah, not
+      Torres (Jul 19, 2026). The fight itself lasted 21 seconds, so the
+      highlight is effectively the full fight. (Fight Pass also carries a
+      4m23s cut of this same bout, found later during the 118/109 sweep —
+      not substituted in, since the YouTube-first rule was already satisfied
+      and the existing link works.)
+    Dwight Maters, Fury FC 109 — Sherdog confirmed this bout sat at Match
+      #20 of 24 on a stacked card (well within the top ~9 "Full UFC Fight
+      Pass Card" bouts per a contemporary preview article), i.e. paid main
+      card; no full fight or usable per-bout cut existed on YouTube (only an
+      interview). FOUND ON FIGHT PASS: full 22m38s bout video, verified by
+      the name/record graphic (the on-screen caption misspells him
+      "Chapman," but the page title and record match exactly — 4-0 heavy-
+      weight, matching FIGHT_HISTORY).
+      ufcfightpass.com/video/855719
+    Steve Gurrola, Fury FC 105 — SOLVED ON YOUTUBE via the FULL-EVENT
+      FALLBACK rule: no per-bout cut exists, but the full "Fury FC 105
+      Prelims" livestream (anNKNjZy2Qw) streams live on the exact fight
+      date and Sherdog confirms Chatman-Gurrola sits at Match #14 of 19 —
+      comfortably within the free-prelims portion of the card (also
+      characterized as an "undercard" fight by WebSearch results).
+    Erick Prieto, Fury FC 102 — SOLVED ON YOUTUBE via the same FULL-EVENT
+      FALLBACK: the full "Fury FC 102 Prelims San Antonio, TX" livestream
+      (DdzhHsNDG7g), oembed-verified playable, streams live on the exact
+      fight date; Sherdog confirms Chatman-Prieto at Match #12 of 19,
+      comparable position to Gurrola's #14/19 and absent from that card's
+      Fight-Pass-featured-bout preview list — placed as a full-event link.
+  Method used repeatedly to tell prelims from paid main card on a Fury FC
+  numbered event: fetch the Sherdog event page for that event number (full
+  match-by-match order, Match 1 = earliest, highest number = main event) and
+  cross-check against any "Main Card (UFC Fight Pass)" / "Prelims (YouTube)"
+  breakdown a preview article gives — a bout in roughly the lower half to
+  two-thirds of the card is presumptively free prelims; a bout named
+  explicitly in a "Full UFC Fight Pass Card" list, or that IS the main
+  event/co-main, is paid and needs Fight Pass.
+  Ran place-tape-links.cjs --write for all 6 bouts in one temp file (Chatman
+  had zero prior TAPE_STUDY rows, so no merge risk). Report: 6 parsed, 6
+  placed, 0 unplaced, 0 shared-URL flags. fix-tape-sections.cjs --write
+  touched 34 rows across 34 OTHER fighters (pre-existing section-header
+  drift unrelated to this sweep) and 0 for Chatman himself, since all his
+  bouts are pre-UFC and correctly headed "Pre-UFC" on the first row only.
+  Syntax-checked, rebuilt public/, committed.
