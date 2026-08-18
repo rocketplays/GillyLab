@@ -129076,7 +129076,12 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
         if (t < bestTier || (t === bestTier && counts[org] > bestCount)) { bestTier = t; bestOrg = org; bestCount = counts[org]; }
       });
       if (!bestOrg) return null;
-      return { org: bestOrg, tier: bestTier, label: promotionTier(bestOrg).label, count: graded.length };
+      // orgCount = fights specifically at bestOrg (the tier's evidence base);
+      // totalRegional = all graded fights, for the "of N total" context in
+      // the tooltip. One Elite-tier fight under ten Tier 5s is a real,
+      // common case (see Namo Fazil, 1 DWCS-eligible Elite bout) — the label
+      // alone shouldn't read as "built a career at that level".
+      return { org: bestOrg, tier: bestTier, label: promotionTier(bestOrg).label, orgCount: bestCount, totalRegional: graded.length };
     };
     const THIN = 5; // <=5 UFC bouts shows the row; 6+ is the cutoff
     const thinA = isDWCS || ufcBoutsOf(histA) <= THIN;
@@ -129087,14 +129092,19 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
     if (!resA && !resB) return;
     const box = cmpBlock('Regional promotion strength');
     const row = document.createElement('div'); row.className = 'sr-cmp-row';
-    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Pre-UFC strength';
+    // "Highest" is deliberate — this is the peak tier reached, not the
+    // fighter's overall pre-UFC level, and the visible fight count (not just
+    // a hover tooltip, which mobile can't reach) is what keeps a single
+    // high-water-mark fight from reading as a proven track record.
+    const l = document.createElement('div'); l.className = 'sr-cmp-lbl'; l.textContent = 'Highest pre-UFC strength';
     const mkVal = res => {
       const d = document.createElement('div'); d.className = 'sr-cmp-val';
       if (!res) { d.textContent = '—'; return d; }
       d.style.color = PROMO_TIER_COLORS[res.tier] || PROMO_TIER_COLORS[5];
       d.style.fontWeight = '800';
-      d.textContent = res.label;
-      d.title = res.org + ' — ' + res.count + ' regional fight' + (res.count === 1 ? '' : 's');
+      d.textContent = res.label + ' · ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's');
+      d.title = res.org + ' — ' + res.orgCount + ' fight' + (res.orgCount === 1 ? '' : 's') +
+        (res.totalRegional > res.orgCount ? (' (of ' + res.totalRegional + ' regional fights total)') : '');
       return d;
     };
     row.appendChild(l); row.appendChild(mkVal(resA)); row.appendChild(mkVal(resB));
