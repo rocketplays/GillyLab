@@ -5369,6 +5369,7 @@
  { name: "Saimon Oliveira", division: "BW", rank: "NR", record: "18-7-0", initials: "SOL", country: "Brazil" },
  { name: "Ryan Kuse", division: "FW", rank: "NR", record: "9-2-0", initials: "RYK", country: "USA" },
  { name: "Patrick Rivera", division: "WW", rank: "NR", record: "13-4-0", initials: "PRI", country: "USA" },
+ { name: "Adam Darby", division: "WW", rank: "NR", record: "7-1-0", initials: "ADA", country: "Ireland" },
  { name: "Ryan Loder", division: "MW", rank: "NR", record: "7-3-0", initials: "RLO", country: "USA" },
  { name: "Ozzy Diaz", division: "MW", rank: "NR", record: "10-4-0", initials: "OD", country: "USA" },
  { name: "Andrey Pulyaev", division: "MW", rank: "NR", record: "10-5-0", initials: "AP", country: "Russia" },
@@ -9217,6 +9218,7 @@
   "Saimon Oliveira": { ht:"5'4\"", dob:"1991-04-21", reach:'72"', stance:"Orthodox", slpm:2.62, strAcc:"42%", sapm:3.87, strDef:"46%", kd:0.00, tdLanded:1.18, tdAcc:"29%", tdDef:"36%", subAvg:1.18, finRate:"89%", streak:0, gym:"Astra Fight Team" },
   "Ryan Kuse": { ht:"5'9\"", dob:"1994-06-24", reach:'74"', stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"67%", streak:2, gym:"The Goat Shed" },
   "Patrick Rivera": { ht:"6'0\"", dob:"1992-02-24", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"77%", streak:6, gym:"Crazy 88 MMA" },
+  "Adam Darby": { ht:"6'3\"", dob:"1998-11-13", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"86%", streak:6, gym:"Team Ryano MMA" },
   "Ryan Loder": { ht:"6'2\"", dob:"1991-06-05", reach:'76.5"', stance:"Southpaw", slpm:5.10, strAcc:"69%", sapm:2.46, strDef:"50%", kd:0.00, tdLanded:1.37, tdAcc:"14%", tdDef:"100%", subAvg:1.37, finRate:"71%", streak:0, gym:"Team Alpha Male" },
  "Azamat Bekoev": { ht:"6'0\"", dob:"1995-12-30", reach:'72"', stance:"Orthodox", slpm:4.57, strAcc:"52%", sapm:6.83, strDef:"31%", kd:1.49, tdLanded:3.48, tdAcc:"44%", tdDef:"63%", subAvg:0.00, finRate:"80%", streak:0, gym:"American Top Team" },
   "Dakota Hope": { ht:"5'6\"", dob:"1997-01-29", reach:'67"', stance:null, slpm:7.07, strAcc:"41%", sapm:7.00, strDef:"34%", kd:1.00, tdLanded:1.00, tdAcc:"33%", tdDef:"100%", subAvg:0.00, finRate:"55%", streak:0, gym:"4oz Fight Club" },
@@ -43776,6 +43778,16 @@
   "Patrick Rivera": [
     { opponent: "Brady Minner", odds: 100 },
   ],
+  "Adam Darby": [
+    { opponent: "Thiago Habib", odds: -1408 },
+    { opponent: "Robert Constantin", odds: -435 },
+    { opponent: "Tato Primera", odds: -1000 },
+    { opponent: "Tomasz Langowski", odds: -649 },
+    { opponent: "Thorsten Jakobs", odds: -549 },
+    { opponent: "Jack Tucker", odds: -105 },
+    { opponent: "Mush Aslani", odds: -400 },
+    { opponent: "Dorian Cliucinicov", odds: -285 },
+  ],
   "Ryan Loder": [
     { opponent: "Ismail Naurdiev", odds: 111 },
     { opponent: "Azamat Bekoev", odds: 300 },
@@ -61814,6 +61826,16 @@ const FIGHT_HISTORY = {
     { date: "Apr 14, 2018", opponent: "Mischa Christensen", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "1:07", event: "Shogun Fights 18", org: "Shogun Fights" },
     { date: "Feb 27, 2016", opponent: "Marcus Surin", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "CFFC 56: Wells vs. Walo", org: "CFFC" },
     { date: "Oct 24, 2015", opponent: "Mahmoud Mohaghegh-Rashid", result: "W", method: "TKO (Punches)", round: 3, time: "2:08", event: "Shogun Fights 13", org: "Shogun Fights" }
+  ],
+  "Adam Darby": [
+    { date: "Feb 21, 2026", opponent: "Thiago Habib", result: "W", method: "Submission (Ninja Choke)", round: 1, time: "1:22", event: "Cage Warriors 200: Dublin", org: "Cage Warriors" },
+    { date: "Sep 27, 2025", opponent: "Robert Constantin", result: "W", method: "TKO (Punches and Elbows)", round: 3, time: "3:41", event: "Cage Warriors 194: Dublin", org: "Cage Warriors" },
+    { date: "Jun 27, 2025", opponent: "Tato Primera", result: "W", method: "TKO (Submission to Punches)", round: 2, time: "4:56", event: "Cage Warriors 190: Unplugged", org: "Cage Warriors" },
+    { date: "Apr 26, 2025", opponent: "Tomasz Langowski", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Cage Warriors 188: Dublin", org: "Cage Warriors" },
+    { date: "Nov 11, 2023", opponent: "Thorsten Jakobs", result: "W", method: "Technical Submission (Guillotine Choke)", round: 1, time: "2:06", event: "Cage Warriors 163: London", org: "Cage Warriors" },
+    { date: "Apr 29, 2023", opponent: "Jack Tucker", result: "W", method: "Submission (Triangle Choke)", round: 1, time: "2:15", event: "Cage Warriors 153: Dublin", org: "Cage Warriors" },
+    { date: "Nov 20, 2022", opponent: "Mush Aslani", result: "L", method: "KO (Punch)", round: 1, time: "0:19", event: "Cage Warriors 147: Unplugged", org: "Cage Warriors" },
+    { date: "Jun 25, 2022", opponent: "Dorian Cliucinicov", result: "W", method: "TKO (Punches)", round: 1, time: "4:29", event: "Cage Warriors 140", org: "Cage Warriors" }
   ],
   "Ryan Loder": [
     { date: "Nov 22, 2025", opponent: "Ismail Naurdiev", result: "L", method: "KO (Punch)", round: 1, time: "1:26", event: "UFC Fight Night 265: Tsarukyan vs. Hooker", org: "UFC" },
@@ -118438,6 +118460,12 @@ const ACCOLADES = {
     { icon: "🏆", title: "Won the Shogun Fights welterweight title — submission of Rey Trujillo (Mar 2026)", detail: null },
     { icon: "🥊", title: "Six-fight win streak into DWCS, finishing five of the six — a mix of RNC submissions and first-round knockouts", detail: null },
     { icon: "🏟️", title: "Longtime fixture of the Baltimore, MD regional scene and the Shogun Fights promotion; trains out of Crazy 88 MMA", detail: null }
+  ],
+  "Adam Darby": [
+    { icon: "🎯", title: "Making his UFC debut, headlining Dana White's Contender Series 2026: Week 4 vs. Patrick Rivera (Sep 1, 2026)", detail: null },
+    { icon: "⭐", title: "Cage Warriors Performance of the Night — 1st-round Ninja Choke of Thiago Habib (Feb 2026)", detail: null },
+    { icon: "🥊", title: "Six-fight win streak; 6 of his 7 career wins by finish", detail: null },
+    { icon: "🏟️", title: "One of Ireland's top welterweight prospects; turned pro with Cage Warriors in 2022, fighting out of Team Ryano MMA in Dublin", detail: null }
   ],
   "Ryan Loder": [
     { icon: "🥋", title: "Purple belt in Brazilian Jiu-Jitsu", detail: null },
