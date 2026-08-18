@@ -1101,3 +1101,64 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   reflects the ten deliberately-skipped/exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed.
+
+2026-08-18 — PATRICK RIVERA
+  17 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start (freshly
+  filled via fill-fighter same session) — worst starting coverage of
+  any fighter run so far.
+  CHANNEL SWEEP: Rivera has his own personal/gym channel, "Rebel
+  Rivera" (@Rebels_MMA, 47 subs, 26 total videos, run out of Crazy 88
+  MMA / his gym). Verified all 9 videos surfacing in the Videos tab
+  (channel does not lazy-load past that on "Latest" or "Oldest" sort —
+  confirmed via scrollHeight staying flush with viewport height after
+  repeated scroll-to-bottom, not a rendering glitch). Only 2 of the 9
+  are fight footage; the rest are training-class recaps and workout
+  content:
+    Patrick Rivera vs. Jake Darr | 2013 WKA K-1 Semi Finals — kickboxing,
+      not MMA, not in FIGHT_HISTORY.
+    Re-Upload | Patrick Rivera 2013-2014 Kickboxing & Muay Thai Highlight
+      — also kickboxing, not relevant.
+  SOLVED (2):
+    Hawraz Syan (Shogun Fights 22, Jul 13 2019) — on Rivera's own
+      @Rebels_MMA channel, "Patrick Rivera vs. Hawraz Syan | Shogun
+      Fights at MGM National Harbor 2019," 5:25.
+    Carrese Archer (FightWorld 21, Feb 12 2022) — third-party uploader
+      "Matthew Lee" (@NexusJunisBlue, primarily a Chinese
+      full-contact/Kuo Shu channel with one unrelated MMA upload),
+      "FightWorld 21 - Carrese Archer vs. Patrick Rivera," title
+      confirms both names and the event.
+  UNRESOLVED, GENUINELY EXHAUSTED (15): Rey Trujillo (Shogun Fights 32,
+    Mar 2026), Cole Presley (Shogun Fights 31, Nov 2025), Justice
+    Lamperez (FightWorld 39, Jul 2025), Jimmy Sandlin (Shogun Fights 30,
+    Mar 2025), Kenny Gaudreau (Shogun Fights 28, Mar 2024 — note the
+    Shogun Fights 28 card also had a cancelled Rivera bout vs. Jessee
+    Gengler, confirmed via Tapology as "Bout Cancelled Prior to Event /
+    Gengler Withdrawal," so Gaudreau is correctly the actual opponent
+    of record, no data error in FIGHT_HISTORY), Brexton Everett (Shogun
+    Fights 27, Oct 2023), Bryan McDowell (Shogun Fights 26, Mar 2023),
+    Brady Minner (LFA 144, Oct 2022), Shawn Brooks (Shogun Fights 24,
+    Mar 2022), Paul Sims (Stellar Fights 47, Oct 2021), Oscar Ramirez
+    (Shogun Fights 21, Apr 2019), Dakota Bush (LFA 49, Sep 2018), Mischa
+    Christensen (Shogun Fights 18, Apr 2018), Marcus Surin (CFFC 56,
+    Feb 2016), Mahmoud Mohaghegh-Rashid (Shogun Fights 13, Oct 2015).
+    Bare-pair search AND event-number retry both run for every one of
+    these 15 — none surfaced a matching video. Shogun Fights (9 of the
+    15 gaps) and FightWorld have no searchable YouTube presence for
+    individual regional bouts at all — several "Shogun Fights" and
+    "FightWorld"-named channels exist but are unrelated (an EA-game
+    Shogun Rua compilation channel, Memphis street-fighting content
+    channels reusing the FightWorld name, a Netflix docuseries). LFA
+    (Minner, Bush) and CFFC (Surin) are larger promotions with active
+    official YouTube channels but neither surfaced these specific
+    undercard bouts via search. UFC Fight Pass fallback NOT checked —
+    no logged-in Fight Pass session available in this sandbox; flagging
+    for a follow-up pass if account access becomes available, since
+    Shogun Fights/LFA/CFFC content sometimes lives there and not on
+    YouTube.
+  Ran place-tape-links.cjs --write for the 2 resolvable bouts (0
+  pre-existing + 2 newly found, no merge risk since Rivera had zero
+  rows) in one temp file. Report: 2 parsed, 2 placed, 0 unplaced — 17
+  FIGHT_HISTORY rows vs 2 placed correctly reflects the fifteen
+  deliberately-skipped/exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (f3fc9ad7).
