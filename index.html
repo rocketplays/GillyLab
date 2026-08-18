@@ -113567,7 +113567,7 @@ function populateFightHistory(name) {
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.55);">${f.time}</td>
- <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}</td>`;
+ <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}${promotionTierBadgeHTML(f.org || inferPromotion(f.event))}</td>`;
  const _fs = (typeof fightStatsFor === 'function') ? fightStatsFor(name, f.date) : null;
  if (_fs) {
  _anyStats = true;
@@ -113619,6 +113619,64 @@ function populateFightHistory(name) {
     const m = e.match(/^([A-Za-z0-9][A-Za-z0-9.&'%\-]*(?:\s+[A-Za-z][A-Za-z0-9.&'%\-]*)*?)(?=\s*:|\s+(?:\d|vs\.?|-)|$)/i);
     const name = (m && m[1] && m[1].trim()) || e;
     return PROMOTION_ALIASES[name.toLowerCase()] || name;
+  }
+
+  // ── PROMOTION STRENGTH ─────────────────────────────────────────────────
+  // Hand-curated on purpose. A thin UFC resume ("5-1") reads very differently
+  // depending on whether that regional record was built in Bellator or on a
+  // Tuesday-night card nobody streamed — that's a reputational judgment call,
+  // not something win/loss alone can answer. Keys are lowercased org names as
+  // they appear either in FIGHT_HISTORY's own `org` field or out of
+  // inferPromotion() above (same normalization, so both sources match the
+  // same tier). Coverage: the ~90 orgs below account for 83% of all logged
+  // non-UFC bouts; anything not listed is a true one-off regional show and
+  // is flagged LOW QUALITY rather than left neutral — silence here would
+  // read as "we checked and it's fine", when really it means the opposite:
+  // nobody has vetted it.
+  //
+  // 'UFC' itself is excluded — this grades everything BEFORE it. DWCS / TUF /
+  // Road to UFC are excluded too, on purpose: those are UFC's OWN audition
+  // shows, not a regional promotion with a track record of its own — a DWCS
+  // win says nothing about the strength of competition, only that UFC liked
+  // what it saw. Grading a DWCS alum should fall through to whatever
+  // promotion produced them BEFORE DWCS, which is what EXCLUDED_ORGS buys:
+  // promotionTier() and the Fight Info summary both skip these bouts
+  // entirely rather than counting DWCS as the "best" org on the resume.
+  const EXCLUDED_ORGS = ['ufc', 'unknown', 'dwcs', 'tuf', 'the ultimate fighter', "dana white's contender series", 'road to ufc'];
+  // Labels are prefixed "Tier N" on purpose — Established feeder/Regional/
+  // etc. alone don't convey rank order at a glance, especially in a badge
+  // seen in isolation on one bout row.
+  const PROMOTION_TIERS = {
+    1: { label: 'Elite (Tier 1)', orgs: ['bellator', 'pfl', 'rizin', 'one championship', 'one'] },
+    2: { label: 'Near-elite (Tier 2)', orgs: ['pride', 'strikeforce', 'wec', 'ksw', 'aca', 'acb', 'wfca'] },
+    3: { label: 'Established feeder (Tier 3)', orgs: ['lfa', 'cage warriors', 'invicta fc', 'brave cf', 'm-1 global', 'shooto', 'shooto brazil', 'cffc', 'titan fc', 'wsof', 'road fc', 'pancrase', 'uae warriors', 'oktagon', 'ares fc', 'kotc', 'combate global', 'combate americas', 'combate', 'fight nights global', 'rcc', 'eagle fc', 'kok', 'legend fc', 'pfl europe', 'fury fc'] },
+    4: { label: 'Developmental (Tier 4)', orgs: ['wlf', 'afc', 'ces', 'uwc', 'fen', 'gladiator challenge', 'spf', 'stfc', 'tpf', 'rings', 'lfl', 'armmada', 'mfc', 'sfh', 'hexagone', 'sft', 'fcr', 'shamrock fc', 'xfc', 'wlmma', 'cxf', 'ckfc', 'deep', 'roc', 'fcc', 'sfc', 'wfc', 'pfc', 'gc', 'loc', 'jungle fight', 'fcoc', 'combat zone', 'cage titans', 'demo fight', 'sf', 'cfs', 'mma series', 'wow', 'kunlun fight', 'desert force', 'lights out', 'venator fc', 'efc', 'hkfc', 'mr. cage', 'fnc', 'a1 combat', 'naiza fc', 'kof', 'ocl', 'sbc', 'ufl', 'tuff-n-uff'] }
+  };
+  const LOW_QUALITY_TIER = { tier: 5, label: 'Low quality (Tier 5)' };
+  const _PROMO_TIER_LOOKUP = (function () {
+    const m = {};
+    Object.keys(PROMOTION_TIERS).forEach(function (t) {
+      PROMOTION_TIERS[t].orgs.forEach(function (o) { m[o] = +t; });
+    });
+    return m;
+  })();
+  // Returns null for UFC / DWCS-and-friends / empty (nothing to grade, or
+  // deliberately excluded — see EXCLUDED_ORGS above), else { tier, label }.
+  // Anything not in the curated list falls to tier 5, "Low quality
+  // (unrecognized)" — flagged, not neutral, since an unvetted regional show
+  // is the exact case this feature exists to call out.
+  function promotionTier(org) {
+    const key = String(org == null ? '' : org).trim().toLowerCase();
+    if (!key || EXCLUDED_ORGS.indexOf(key) !== -1) return null;
+    const t = _PROMO_TIER_LOOKUP[key];
+    return t ? { tier: t, label: PROMOTION_TIERS[t].label } : LOW_QUALITY_TIER;
+  }
+  const PROMO_TIER_COLORS = { 1: '#00e668', 2: '#3ecbff', 3: 'var(--accent)', 4: '#ffb020', 5: '#ff5c5c' };
+  function promotionTierBadgeHTML(org) {
+    const pt = promotionTier(org);
+    if (!pt) return '';
+    const c = PROMO_TIER_COLORS[pt.tier] || PROMO_TIER_COLORS[5];
+    return '<span class="promo-tier-badge" style="display:inline-flex;align-items:center;margin-left:6px;padding:1px 7px;border:1px solid ' + c + ';border-radius:999px;color:' + c + ';font-size:0.6rem;font-weight:800;letter-spacing:0.03em;text-transform:uppercase;white-space:nowrap;line-height:1.6;vertical-align:middle;">' + pt.label + '</span>';
   }
 
   function rbStatRow(label, value) {
@@ -128959,6 +129017,49 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
       });
       box.appendChild(row);
     })();
+  })();
+
+  // Regional promotion strength — one line per fighter whose UFC resume is
+  // thin (DWCS, a debutant, or <=3 UFC bouts), naming the strongest
+  // promotion on their pre-UFC record. A "5-1" record reads very differently
+  // built in Bellator vs. a regional card nobody streamed; this is the cheap
+  // signal for that without opening the full fight history table. Uses
+  // f.org with the same inferPromotion() fallback populateRecordBreakdown
+  // uses, since most historical bouts predate the org field.
+  (function () {
+    const orgOf = f => f.org || inferPromotion(f.event);
+    const finished = h => (h || []).filter(f => f && f.date && f.result && f.result !== '–' && f.method !== 'Upcoming');
+    const ufcBoutsOf = h => finished(h).filter(f => orgOf(f) === 'UFC').length;
+    const summarize = h => {
+      // Gradeable = has a tier at all — promotionTier() returns null for UFC
+      // itself AND for DWCS/TUF/Road to UFC (see EXCLUDED_ORGS), so a DWCS
+      // alum's audition win never gets counted as their "best" regional org;
+      // this only ever surfaces what they fought BEFORE the audition show.
+      const graded = finished(h).filter(f => promotionTier(orgOf(f)) !== null);
+      if (!graded.length) return null;
+      const counts = {};
+      graded.forEach(f => { const o = orgOf(f); counts[o] = (counts[o] || 0) + 1; });
+      let bestOrg = null, bestTier = 6, bestCount = 0;
+      Object.keys(counts).forEach(org => {
+        const t = promotionTier(org).tier;
+        if (t < bestTier || (t === bestTier && counts[org] > bestCount)) { bestTier = t; bestOrg = org; bestCount = counts[org]; }
+      });
+      if (!bestOrg) return null;
+      const label = promotionTier(bestOrg).label;
+      return graded.length + ' regional fight' + (graded.length === 1 ? '' : 's') + ' — best at ' + bestOrg + ' (' + label + ')';
+    };
+    const THIN = 3;
+    const thinA = isDWCS || ufcBoutsOf(histA) <= THIN;
+    const thinB = isDWCS || ufcBoutsOf(histB) <= THIN;
+    if (!thinA && !thinB) return;
+    const lines = [];
+    if (thinA) { const s = summarize(histA); if (s) lines.push(short(name) + ': ' + s); }
+    if (thinB) { const s = summarize(histB); if (s) lines.push(short(opp) + ': ' + s); }
+    if (!lines.length) return;
+    const box = document.createElement('div'); box.className = 'sr-common';
+    const t = document.createElement('div'); t.className = 'sr-common-title'; t.textContent = 'Regional promotion strength'; box.appendChild(t);
+    lines.forEach(l => { const row = document.createElement('div'); row.className = 'sr-story-line'; row.style.cssText = 'font-size:0.74rem;line-height:1.5;padding:3px 0;color:var(--text);'; row.textContent = l; box.appendChild(row); });
+    host.appendChild(box);
   })();
 
   // ── MATCHUP ANALYTICS — the way into the hub ────────────────────────────────
