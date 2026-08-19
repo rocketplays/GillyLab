@@ -8,7 +8,7 @@ const assert = require('assert');
 const {
   norm, untrackedOpponentsFor, parseSearchResults, parseFighterHistory,
   isoFromSherdogDate, recordAsOfFromHistory, findMutualConfirmation,
-  stripDiacritics, parseDateUTC,
+  stripDiacritics, parseDateUTC, findRowNearDate,
 } = require('./fetch-opponent-records.cjs');
 
 let fail = 0;
@@ -205,6 +205,24 @@ const PROFILE_HEBERT = `
   check('ISO and "Mon D, YYYY" forms of the same date agree exactly', iso === human, iso + ' vs ' + human);
   check('single-digit day, no leading zero, matches padded ISO', parseDateUTC('Jul 4, 2026') === parseDateUTC('2026-07-04'));
   check('unparseable input -> NaN', Number.isNaN(parseDateUTC('garbage')));
+})();
+
+// ── findRowNearDate (the name-spelling-mismatch fix) ─────────────────────────
+// Real case found live: our FIGHT_HISTORY spells this opponent "Mike Murphy",
+// Sherdog's own page spells him "Micheal Murphy" -- name matching (exact or
+// via findMutualConfirmation) can never bridge that, but date matching can,
+// since a fighter has at most one bout on a given date.
+(function testFindRowNearDate() {
+  console.log('\n== findRowNearDate ==');
+  const hist = parseFighterHistory(PROFILE_HEBERT);
+  const byDate = findRowNearDate(hist.pro, '2026-03-07', 2);
+  check('finds the row on an exact date match, regardless of name', byDate && byDate.opponent === 'Hunter Smith', byDate && byDate.opponent);
+  const withinTol = findRowNearDate(hist.pro, '2026-03-08', 2);
+  check('finds the row within tolerance (1 day off)', withinTol && byDate && withinTol.date === byDate.date);
+  const outsideTol = findRowNearDate(hist.pro, '2026-03-20', 2);
+  check('no match outside tolerance -> null', outsideTol === null, outsideTol);
+  const noDate = findRowNearDate(hist.pro, 'garbage', 2);
+  check('unparseable target date -> null', noDate === null, noDate);
 })();
 
 // ── stripDiacritics ──────────────────────────────────────────────────────────

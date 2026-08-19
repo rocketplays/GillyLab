@@ -233,6 +233,29 @@ function recordAsOfFromHistory(proFights, dateStr) {
  * own data mutually confirms this is the right person — not a guess.
  * @returns {object|null} the matching fight row, or null.
  */
+/**
+ * Find the single fight in `proFights` within `toleranceDays` of `dateStr`,
+ * with NO regard to opponent-name spelling. This is deliberately more
+ * robust than name matching: confirmed live that our FIGHT_HISTORY's "Mike
+ * Murphy" is Sherdog's own "Micheal Murphy" -- an exact (or even fuzzy) name
+ * match would miss that pairing entirely, but a fighter only has one bout on
+ * a given date, so the date alone is an unambiguous key on THEIR OWN page.
+ * Returns null (not a guess) if zero or more than one fight falls in the
+ * window -- multiple hits would mean the tolerance is too loose for this
+ * fighter's schedule, and this function should never pick between them.
+ */
+function findRowNearDate(proFights, dateStr, toleranceDays) {
+  const tol = (toleranceDays == null ? 2 : toleranceDays) * 864e5;
+  const target = parseDateUTC(dateStr);
+  if (!isFinite(target)) return null;
+  const matches = proFights.filter((f) => {
+    if (!f.date) return false;
+    const fd = parseDateUTC(f.date);
+    return isFinite(fd) && Math.abs(fd - target) <= tol;
+  });
+  return matches.length === 1 ? matches[0] : null;
+}
+
 function findMutualConfirmation(proFights, ourFighterName, approxDateStr, toleranceDays) {
   const tol = (toleranceDays == null ? 45 : toleranceDays) * 864e5;
   const target = parseDateUTC(approxDateStr);
@@ -292,7 +315,39 @@ async function searchSherdog(name) {
   return parseSearchResults(html);
 }
 
+/**
+ * Strategy 1 (tried before any name search): read the bout directly off OUR
+ * fighter's own Sherdog page, via findRowNearDate. Requires our fighter's own
+ * name to resolve to exactly one Sherdog profile -- if it's ambiguous or not
+ * found, this strategy simply declines (returns null) rather than guessing,
+ * and resolveOpponent falls back to searching the opponent's name instead.
+ */
+async function resolveViaFighterOwnPage(ourFighterName, opponentName, dateStr) {
+  const ourCandidates = await searchSherdog(ourFighterName);
+  if (ourCandidates.length !== 1) return null;
+  await sleep(700);
+  const ownHtml = await getWithRetry(ourCandidates[0].url);
+  const ownHist = parseFighterHistory(ownHtml);
+  const row = findRowNearDate(ownHist.pro, dateStr, 2);
+  if (!row || !row.opponentUrl) return null;
+  await sleep(700);
+  const oppHtml = await getWithRetry(row.opponentUrl);
+  const oppHist = parseFighterHistory(oppHtml);
+  const record = recordAsOfFromHistory(oppHist.pro, dateStr);
+  if (record == null) return null;
+  return { status: 'resolved', record, url: row.opponentUrl, method: 'own-page', sherdogOpponentName: row.opponent };
+}
+
 async function resolveOpponent(opponentName, ourFighterName, dateStr) {
+  try {
+    const viaOwn = await resolveViaFighterOwnPage(ourFighterName, opponentName, dateStr);
+    if (viaOwn) return viaOwn;
+  } catch (e) {
+    // Fall through to the name-search strategies below -- a failure here
+    // (network error, our fighter's own page unparseable, etc.) shouldn't
+    // sink the whole lookup when the opponent-name search might still work.
+  }
+
   let candidates;
   try {
     candidates = await searchSherdog(opponentName);
@@ -325,8 +380,11 @@ async function resolveOpponent(opponentName, ourFighterName, dateStr) {
   }
 
   // Multiple candidates — try to confirm via a mutual fight listing before
-  // giving up. Capped at 6 to bound worst-case fetches on a very common name.
-  for (const cand of candidates.slice(0, 6)) {
+  // giving up. Capped at 10 to bound worst-case fetches on a very common
+  // name; this is now the last-resort path since resolveViaFighterOwnPage
+  // above already handles the common case (including name-spelling
+  // mismatches that this name-based check can't catch at all).
+  for (const cand of candidates.slice(0, 10)) {
     try {
       await sleep(700);
       const html = await getWithRetry(cand.url);
@@ -381,6 +439,13 @@ async function main() {
   // well past any reasonable single-process timeout.
   const timeBudgetMs = flagValue(args, '--time-budget-ms');
   const maxLookups = flagValue(args, '--max');
+  // By default, only 'error' entries are retried (network hiccups). These
+  // flags additionally reopen entries that resolved without error but
+  // couldn't be confidently answered -- useful after a resolution-strategy
+  // improvement (like adding resolveViaFighterOwnPage), to re-attempt exactly
+  // the entries that might now succeed, without re-touching everything else.
+  const retryAmbiguous = args.includes('--retry-ambiguous');
+  const retryNotFound = args.includes('--retry-not-found');
   const explicit = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--time-budget-ms' && args[i - 1] !== '--max');
   const fighterNames = explicit.length ? explicit : fightersFromEventJson();
   if (!fighterNames.length) {
@@ -407,7 +472,12 @@ async function main() {
   for (const t of targets) {
     const key = norm(t.opponent) + '|' + t.date;
     const existing = cache[key];
-    if (existing && existing.status !== 'error') { stats.skipped++; continue; }
+    const reopenable = existing && (
+      existing.status === 'error' ||
+      (retryAmbiguous && existing.status === 'ambiguous') ||
+      (retryNotFound && existing.status === 'not-found')
+    );
+    if (existing && !reopenable) { stats.skipped++; continue; }
 
     if (timeBudgetMs != null && Date.now() - startedAt > timeBudgetMs) { stoppedEarly = true; break; }
     if (maxLookups != null && processed >= maxLookups) { stoppedEarly = true; break; }
@@ -442,6 +512,7 @@ async function main() {
 module.exports = {
   norm, stripDiacritics, readFightHistory, untrackedOpponentsFor,
   parseSearchResults, parseFighterHistory, parseFightTable, isoFromSherdogDate,
-  parseDateUTC, recordAsOfFromHistory, findMutualConfirmation, resolveOpponent,
+  parseDateUTC, recordAsOfFromHistory, findMutualConfirmation, findRowNearDate,
+  resolveOpponent, resolveViaFighterOwnPage,
 };
 if (require.main === module) main().catch((e) => { console.error(e); process.exit(1); });
