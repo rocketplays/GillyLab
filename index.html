@@ -4249,7 +4249,9 @@
         <table id="fo-table" style="width:100%;border-collapse:collapse;font-size:0.82rem;">
           <thead>
             <tr style="border-bottom:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.45);text-align:left;">
+              <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;white-space:nowrap;">Date</th>
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;">Opponent</th>
+              <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;text-align:center;">Result</th>
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;text-align:right;">Odds</th>
             </tr>
           </thead>
@@ -35801,9 +35803,14 @@
  const watchCell = f.url
  ? `<a class="tape-watch-link" href="${f.url}" target="_blank" rel="noopener noreferrer">▶ Watch</a>`
  : `<span class="tape-watch-placeholder">No footage available</span>`;
+ // TAPE_STUDY rows carry no date of their own — cross-reference the matching
+ // FIGHT_HISTORY row (by opponent) to get the actual bout date, then show the
+ // opponent's record entering that specific fight.
+ const __matched = (typeof matchFightHistoryRow === 'function') ? matchFightHistoryRow(name, f.opponent, null) : null;
+ const __oppBadge = (__matched && __matched.date) ? oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, __matched.date)) : '';
  tr.innerHTML = `
  <td style="padding:0.65rem 0.75rem;">
- <div style="font-weight:600;color:#fff;">${f.opponent}</div>
+ <div style="font-weight:600;color:#fff;">${f.opponent}${__oppBadge}</div>
  <div style="font-size:0.72rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;">${f.event}</div>
  </td>
  <td style="padding:0.65rem 0.75rem;text-align:center;">${watchCell}</td>`;
@@ -113906,7 +113913,7 @@ function populateFightHistory(name) {
  if (f.__upcoming) {
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
- <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span></td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentCurrentRecord(f.opponent))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.62rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">Upcoming</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.35);">—</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
@@ -113918,7 +113925,7 @@ function populateFightHistory(name) {
  const resultColor = f.result === 'W' ? '#00e668' : '#ff3d00';
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
- <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span></td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, f.date))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="font-weight:800;color:${resultColor};">${f.result}</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
@@ -114200,14 +114207,30 @@ function populateFightHistory(name) {
     var isFav = h.odds < 0;
     var oddsColor = isFav ? "#00e668" : "#ff9500";
     var oddsDisplay = h.odds > 0 ? "+" + h.odds : String(h.odds);
+    // ODDS_HISTORY rows rarely carry a reliable date/result of their own —
+    // cross-reference the matching FIGHT_HISTORY row (by opponent, using
+    // ODDS_HISTORY's optional `date` field to disambiguate rematches) to get
+    // both, plus the opponent's record entering that specific bout.
+    var matched = (typeof matchFightHistoryRow === "function") ? matchFightHistoryRow(name, h.opponent, h.date) : null;
+    var fightDate = (matched && matched.date) || h.date || null;
+    var resultColor = matched && matched.result === "W" ? "#00e668" : (matched && matched.result === "L" ? "#ff3d00" : "rgba(255,255,255,0.35)");
+    var td0 = document.createElement("td");
+    td0.style.cssText = "padding:0.55rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;";
+    td0.textContent = fightDate || "—";
     var td1 = document.createElement("td");
     td1.style.cssText = "padding:0.55rem 0.75rem;color:#fff;font-weight:600;";
-    td1.textContent = h.opponent;
+    var oppBadge = (typeof opponentRecordAtFight === "function" && fightDate) ? oppRecordBadgeHTML(opponentRecordAtFight(h.opponent, fightDate)) : "";
+    td1.innerHTML = '<span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'\'">' + escHtmlAttr(h.opponent || "") + '</span>' + oppBadge;
     var td2 = document.createElement("td");
-    td2.style.cssText = "padding:0.55rem 0.75rem;text-align:right;font-weight:800;color:" + oddsColor + ";";
-    td2.textContent = oddsDisplay;
+    td2.style.cssText = "padding:0.55rem 0.75rem;text-align:center;font-weight:800;color:" + resultColor + ";";
+    td2.textContent = matched ? (matched.result || "—") : "—";
+    var td3 = document.createElement("td");
+    td3.style.cssText = "padding:0.55rem 0.75rem;text-align:right;font-weight:800;color:" + oddsColor + ";";
+    td3.textContent = oddsDisplay;
+    tr.appendChild(td0);
     tr.appendChild(td1);
     tr.appendChild(td2);
+    tr.appendChild(td3);
     tbody.appendChild(tr);
   });
 }
@@ -129854,6 +129877,76 @@ function computeRecord(name) {
   return fights.length ? `${w}-${l}-${d}` : null;
 }
 
+// ── OPPONENT RECORD AT TIME OF FIGHT (Tapology-style) ───────────────────────
+// A fighter's record ENTERING a given bout — every fight strictly before
+// `dateStr`, not their current record. Returns null when `name` has no
+// FIGHT_HISTORY entry at all (can't distinguish "0 fights on file" from "not a
+// tracked fighter" — safer to show nothing than a false 0-0-0). Returns
+// "0-0-0" when the fighter IS tracked but this was their pro debut.
+function recordAsOf(name, dateStr) {
+  if (typeof FIGHT_HISTORY === 'undefined' || !name || !FIGHT_HISTORY[name]) return null;
+  const target = Date.parse(dateStr);
+  if (!isFinite(target)) return null;
+  let w = 0, l = 0, d = 0;
+  for (const f of FIGHT_HISTORY[name]) {
+    if (!f || !f.date) continue;
+    const fd = Date.parse(f.date);
+    if (!isFinite(fd) || fd >= target) continue;
+    if      (f.result === 'W') w++;
+    else if (f.result === 'L') l++;
+    else if (f.result === 'D') d++;
+  }
+  return `${w}-${l}-${d}`;
+}
+// Same lookup, but resolves `opponentName` to its FIGHT_HISTORY key first —
+// feed / odds / tape-study rows don't always spell an opponent's name exactly
+// the way their own FIGHT_HISTORY key does.
+function opponentRecordAtFight(opponentName, dateStr) {
+  if (!opponentName || !dateStr) return null;
+  const key = (typeof scoutingHistKey === 'function') ? scoutingHistKey(opponentName) : opponentName;
+  return recordAsOf(key || opponentName, dateStr);
+}
+// Opponent's CURRENT record — used for a fight that hasn't happened yet (the
+// Fight History "Upcoming" placeholder), where "record at time of fight"
+// doesn't exist yet yet.
+function opponentCurrentRecord(opponentName) {
+  if (!opponentName) return null;
+  const key = (typeof scoutingHistKey === 'function') ? scoutingHistKey(opponentName) : opponentName;
+  return computeRecord(key || opponentName);
+}
+// Small "(W-L-D)" badge appended next to an opponent's name — mirrors
+// Tapology's convention of showing the opponent's record alongside their name
+// on a fight-history list.
+function oppRecordBadgeHTML(record) {
+  if (!record) return '';
+  return ' <span class="opp-record" style="color:rgba(255,255,255,0.4);font-weight:500;">(' + record + ')</span>';
+}
+// Resolve an ODDS_HISTORY / TAPE_STUDY row (which usually lack their own
+// reliable date) to the matching FIGHT_HISTORY row for `name`, by opponent
+// name — needed to get that bout's real date and result. When the two met
+// more than once, `dateHint` (if given) picks the closest meeting; otherwise
+// falls back to the first (newest) match, the same trade-off already made
+// elsewhere in this file (e.g. findTapeStudyUrl) for the same ambiguity.
+function matchFightHistoryRow(name, opponent, dateHint) {
+  if (typeof FIGHT_HISTORY === 'undefined' || !FIGHT_HISTORY[name] || !opponent) return null;
+  const no = _newsNorm(opponent);
+  const matches = FIGHT_HISTORY[name].filter(f => f && f.opponent && _newsNorm(f.opponent) === no);
+  if (!matches.length) return null;
+  if (matches.length === 1) return matches[0];
+  if (dateHint) {
+    const dt = Date.parse(dateHint);
+    if (isFinite(dt)) {
+      let best = null, bestDiff = Infinity;
+      matches.forEach(m => {
+        const d2 = Date.parse(m.date);
+        if (isFinite(d2)) { const diff = Math.abs(d2 - dt); if (diff < bestDiff) { bestDiff = diff; best = m; } }
+      });
+      if (best) return best;
+    }
+  }
+  return matches[0];
+}
+
 function openFighter(name, division, record, rank, initials, country, _skipPush) {
   // A profile must not change depending on where you clicked in from. The events
   // page passes ESPN's athlete division (which tracks the NEXT booking), search
@@ -134845,6 +134938,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="tape-history-opponent">' +
             '<span style="font-weight:800;color:' + resultColor + ';margin-right:0.4rem;">' + (f.result || '') + '</span>' +
             '<span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onclick="event.stopPropagation();openFighterByName(\'' + escJsAttr(f.opponent || '') + '\')" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'\'">' + (f.opponent || '') + '</span>' +
+            ((typeof opponentRecordAtFight === 'function' && f.date) ? oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, f.date)) : '') +
           '</div>' +
           '<div class="tape-history-meta">' + metaBits + '</div>' +
         '</div>' +
