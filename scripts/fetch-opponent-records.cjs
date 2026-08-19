@@ -363,10 +363,25 @@ function fightersFromEventJson() {
   return [...names];
 }
 
+// Parse "--time-budget-ms 480000" style flags out of argv.
+function flagValue(args, name) {
+  const i = args.indexOf(name);
+  if (i < 0 || i + 1 >= args.length) return null;
+  const v = Number(args[i + 1]);
+  return isFinite(v) ? v : null;
+}
+
 async function main() {
   const args = process.argv.slice(2);
   const DRY = args.includes('--dry-run');
-  const explicit = args.filter((a) => !a.startsWith('--'));
+  // Bounds how long one invocation runs (this script is meant to be re-run
+  // repeatedly -- each run picks up exactly where the cache left off, since
+  // already-resolved/ambiguous/not-found entries are skipped). Without a
+  // budget, a large batch (e.g. every fighter on every upcoming card) can run
+  // well past any reasonable single-process timeout.
+  const timeBudgetMs = flagValue(args, '--time-budget-ms');
+  const maxLookups = flagValue(args, '--max');
+  const explicit = args.filter((a, i) => !a.startsWith('--') && args[i - 1] !== '--time-budget-ms' && args[i - 1] !== '--max');
   const fighterNames = explicit.length ? explicit : fightersFromEventJson();
   if (!fighterNames.length) {
     console.log('[opponent-records] no fighters to scan (no CLI args and no upcoming events)');
@@ -383,16 +398,29 @@ async function main() {
 
   let cache = {};
   if (fs.existsSync(CACHE_PATH)) cache = JSON.parse(fs.readFileSync(CACHE_PATH, 'utf8'));
+  const writeCache = () => { if (!DRY) fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1)); };
 
+  const startedAt = Date.now();
   const stats = { resolved: 0, ambiguous: 0, notFound: 0, error: 0, skipped: 0 };
+  let processed = 0;
+  let stoppedEarly = false;
   for (const t of targets) {
     const key = norm(t.opponent) + '|' + t.date;
     const existing = cache[key];
     if (existing && existing.status !== 'error') { stats.skipped++; continue; }
 
+    if (timeBudgetMs != null && Date.now() - startedAt > timeBudgetMs) { stoppedEarly = true; break; }
+    if (maxLookups != null && processed >= maxLookups) { stoppedEarly = true; break; }
+    processed++;
+
     await sleep(700);
     const result = await resolveOpponent(t.opponent, t.fighter, t.date);
     cache[key] = Object.assign({ opponent: t.opponent, fighter: t.fighter, date: t.date, checkedAt: new Date().toISOString() }, result);
+    // Write after every lookup, not just at the end -- a lookup can involve
+    // several network round-trips (ambiguous names re-fetch up to 6
+    // candidate profiles), so losing an in-progress run should cost at most
+    // one lookup's work, not the whole batch.
+    writeCache();
 
     if (result.status === 'resolved') stats.resolved++;
     else if (result.status === 'ambiguous') stats.ambiguous++;
@@ -403,14 +431,12 @@ async function main() {
     console.log(`[opponent-records] ${t.opponent} vs ${t.fighter} @ ${t.date} -> ${tag}`);
   }
 
+  const remaining = targets.length - stats.skipped - processed;
   console.log(`[opponent-records] done: ${stats.resolved} resolved, ${stats.ambiguous} ambiguous, ${stats.notFound} not-found, ${stats.error} errors, ${stats.skipped} already cached (of ${targets.length} total)`);
-
-  if (!DRY) {
-    fs.writeFileSync(CACHE_PATH, JSON.stringify(cache, null, 1));
-    console.log('[opponent-records] wrote ' + path.relative(ROOT, CACHE_PATH));
-  } else {
-    console.log('[opponent-records] --dry-run: cache not written');
+  if (stoppedEarly) {
+    console.log(`[opponent-records] stopped early (budget reached) -- ${remaining} still unprocessed; re-run to continue`);
   }
+  console.log(DRY ? '[opponent-records] --dry-run: cache not written' : '[opponent-records] cache is up to date at ' + path.relative(ROOT, CACHE_PATH));
 }
 
 module.exports = {
