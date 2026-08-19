@@ -1363,3 +1363,54 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   three deliberately-skipped/exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (ee320c93).
+
+2026-08-18 — LIAM MCCRACKEN
+  9 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start. UK-based
+  featherweight (Aspire Combat Sports Academy) with one notable
+  Bellator appearance among mostly small UK/regional promotions (FCC,
+  KCC, LFL, UKFC, VFC, AFC).
+  Fight Pass: a generic "Liam McCracken" search directly surfaced his
+  2 most recent FCC bouts as individual clips — FCC is a Fight Pass
+  partner promotion. Checked "Asael Adjoudj" (his Bellator opponent)
+  on Fight Pass too on the chance Bellator content is indexed there;
+  it returned only an unrelated UAE Warriors bout — Bellator's own
+  library is not on Fight Pass, so moved to YouTube for that one.
+  SOLVED (8):
+    Mateus Linhares (FCC 46, Jun 2026) — Fight Pass video/973292.
+    Nonato Junior (FCC 45, Mar 2026) — Fight Pass video/968959 (listed
+      on Fight Pass as "Nanato Junior," a spelling variant of the
+      FIGHT_HISTORY name "Nonato Junior" — same bout, same event).
+    Jhon Bryan (KCC 9, Sep 2025) — fighter's own "Liam McCracken"
+      YouTube channel, "Liam McCracken vs Jhon Bryan | Kingdom combat
+      championship | comeback fight," oembed-verified.
+    Harry Shaw (FCC 31, Dec 2022) — fighter's own channel, "LIAM
+      MCCRACKEN VS HARRY SHAW | 1ST ROUND FINISH MMA," oembed-
+      verified.
+    Hyram Rodriguez (LFL 9, Jul 2023) — official "Levels Fight League"
+      channel, "LFL 9: Liam McCracken VS Hyram Rodriguez," oembed-
+      verified.
+    Tommy Hawthorn (UKFC 23, May 2023) — official "UKFC" channel,
+      "Liam McCracken vs Tommy Hawthorn - UKFC 23," oembed-verified.
+    Asael Adjoudj (Bellator 291, Feb 2023) — official "BellatorMMA"
+      channel, "Full Fight | Liam McCracken vs. Asael Adjoudj |
+      Bellator 291," oembed-verified.
+    Matthieu Moya (AFC 22, Jan 2022) — official "Almighty Fighting
+      Championship" channel, "Almighty Fighting Championship 22 -
+      Liam McCracken v Matthieu Moya," oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (1):
+    Emanuel Manoisas (VFC 3: Vida Fight Championships 3, Jul 2022) —
+      no YouTube match under "Liam McCracken vs Emanuel Manoisas" or
+      "Vida Fight Championships 3 Liam McCracken"; not among the 9
+      videos on the fighter's own channel either. Located the
+      promotion's own official channel ("VIDA SPORTS," @vidasports8470,
+      confirmed via a "Vida Fighting Championship 3" video it has
+      posted) and searched it directly for "McCracken" and "Manoisas"
+      — zero results either way ("This channel has no content that
+      matched"). Fight Pass: not a partner promotion. Genuinely
+      exhausted.
+  Ran place-tape-links.cjs --write for the 8 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 8 parsed, 8 placed, 0
+  unplaced — 9 FIGHT_HISTORY rows vs 8 placed correctly reflects the
+  one exhausted bout.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (8fb31ebd).
