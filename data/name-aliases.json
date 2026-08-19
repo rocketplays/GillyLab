@@ -1,7 +1,12 @@
 {
-  "generatedAt": "2026-08-18T12:36:02.467Z",
+  "generatedAt": "2026-08-19T12:34:20.625Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
+    "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
+      "real": "Charlie Cleveland",
+      "theyCallHim": "Richard Harris",
+      "note": "alias"
+    },
     "Matthieu Letho Duclos|Aug 27, 2024|Marco Tulio": {
       "real": "Marco Tulio",
       "theyCallHim": "Matthieu Duclos",
@@ -1102,11 +1107,6 @@
       "theyCallHim": "Park Jun-yong",
       "note": "alias"
     },
-    "Matthew Adams|Aug 11, 2026|Anthony Wint": {
-      "real": "Anthony Wint",
-      "theyCallHim": "Matt Adams",
-      "note": "alias"
-    },
     "Joseph Kropschot|Aug 11, 2026|Jon Kunneman": {
       "real": "Jon Kunneman",
       "theyCallHim": "Joe Kropschot",
@@ -1125,6 +1125,11 @@
     "Treston Vines|Jul 14, 2023|Raheam Forest": {
       "real": "Raheam Forest",
       "theyCallHim": "Tre'ston Vines",
+      "note": "alias"
+    },
+    "Gabriel Lourenco|Oct 17, 2021|Igor Cavalcanti": {
+      "real": "Igor Cavalcanti",
+      "theyCallHim": "Gabriel Lorenco",
       "note": "alias"
     },
     "Nina Nunes|Jun 8, 2019|Tatiana Suarez": {

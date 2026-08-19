@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T04:28:36.020Z",
+ "generatedAt": "2026-08-19T01:25:55.025Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -8082,6 +8082,946 @@
       ]
      },
      "capturedAt": "2026-08-16T04:28:35.882Z"
+    }
+   ]
+  },
+  "Roman Puga": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Taner Trembley",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Taner Trembley",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 186,
+      "sigA": 349,
+      "totL": 226,
+      "totA": 391,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:25",
+      "head": [
+       138,
+       294
+      ],
+      "body": [
+       45,
+       52
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       141,
+       293
+      ],
+      "clinch": [
+       28,
+       36
+      ],
+      "ground": [
+       17,
+       20
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 138,
+      "sigA": 302,
+      "totL": 148,
+      "totA": 317,
+      "tdL": 1,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:37",
+      "head": [
+       95,
+       251
+      ],
+      "body": [
+       26,
+       34
+      ],
+      "leg": [
+       17,
+       17
+      ],
+      "dist": [
+       120,
+       272
+      ],
+      "clinch": [
+       18,
+       30
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-18T23:43:47.765Z"
+    }
+   ]
+  },
+  "Taner Trembley": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Roman Puga",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Roman Puga",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 138,
+      "sigA": 302,
+      "totL": 148,
+      "totA": 317,
+      "tdL": 1,
+      "tdA": 11,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:37",
+      "head": [
+       95,
+       251
+      ],
+      "body": [
+       26,
+       34
+      ],
+      "leg": [
+       17,
+       17
+      ],
+      "dist": [
+       120,
+       272
+      ],
+      "clinch": [
+       18,
+       30
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 186,
+      "sigA": 349,
+      "totL": 226,
+      "totA": 391,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:25",
+      "head": [
+       138,
+       294
+      ],
+      "body": [
+       45,
+       52
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       141,
+       293
+      ],
+      "clinch": [
+       28,
+       36
+      ],
+      "ground": [
+       17,
+       20
+      ]
+     },
+     "capturedAt": "2026-08-18T23:43:47.766Z"
+    }
+   ]
+  },
+  "Alik Lorenz": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Mahamed Aly",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:23",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Mahamed Aly",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 27,
+      "sigA": 48,
+      "totL": 27,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       22,
+       42
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       23,
+       44
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 24,
+      "totL": 14,
+      "totA": 24,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       6,
+       14
+      ],
+      "body": [
+       2,
+       4
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       14,
+       24
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-18T23:59:12.741Z"
+    }
+   ]
+  },
+  "Mahamed Aly": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Alik Lorenz",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "2:23",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Alik Lorenz",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 14,
+      "sigA": 24,
+      "totL": 14,
+      "totA": 24,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       6,
+       14
+      ],
+      "body": [
+       2,
+       4
+      ],
+      "leg": [
+       6,
+       6
+      ],
+      "dist": [
+       14,
+       24
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 27,
+      "sigA": 48,
+      "totL": 27,
+      "totA": 48,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:06",
+      "head": [
+       22,
+       42
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       23,
+       44
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-08-18T23:59:12.741Z"
+    }
+   ]
+  },
+  "Logan Paxton": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Cristian Perez",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:06",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Cristian Perez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 45,
+      "sigA": 71,
+      "totL": 58,
+      "totA": 90,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       32,
+       57
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       54
+      ],
+      "clinch": [
+       10,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 46,
+      "sigA": 97,
+      "totL": 51,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       24,
+       67
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       29,
+       71
+      ],
+      "clinch": [
+       15,
+       24
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-19T00:29:39.631Z"
+    }
+   ]
+  },
+  "Cristian Perez": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Logan Paxton",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:06",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Logan Paxton",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 46,
+      "sigA": 97,
+      "totL": 51,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       24,
+       67
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       29,
+       71
+      ],
+      "clinch": [
+       15,
+       24
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 45,
+      "sigA": 71,
+      "totL": 58,
+      "totA": 90,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       32,
+       57
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       54
+      ],
+      "clinch": [
+       10,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-19T00:29:39.631Z"
+    }
+   ]
+  },
+  "Douglas Rodrigues": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Trent Miller",
+     "result": "L",
+     "method": "Submission (Von Flue Choke)",
+     "round": 2,
+     "time": "1:04",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Trent Miller",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 31,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       12,
+       29
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       15,
+       27
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 29,
+      "totL": 83,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       9,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       7
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
+      ]
+     },
+     "capturedAt": "2026-08-19T01:00:17.362Z"
+    }
+   ]
+  },
+  "Trent Miller": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Douglas Rodrigues",
+     "result": "W",
+     "method": "Submission (Von Flue Choke)",
+     "round": 2,
+     "time": "1:04",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Douglas Rodrigues",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 29,
+      "totL": 83,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       9,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       7
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 31,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       12,
+       29
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       15,
+       27
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "capturedAt": "2026-08-19T01:00:17.362Z"
+    }
+   ]
+  },
+  "Namo Fazil": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Kaik Brito",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "0:12",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Kaik Brito",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 98,
+      "sigA": 209,
+      "totL": 98,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       62,
+       160
+      ],
+      "body": [
+       18,
+       29
+      ],
+      "leg": [
+       18,
+       20
+      ],
+      "dist": [
+       95,
+       206
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 108,
+      "sigA": 177,
+      "totL": 108,
+      "totA": 177,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       71,
+       138
+      ],
+      "body": [
+       15,
+       17
+      ],
+      "leg": [
+       22,
+       22
+      ],
+      "dist": [
+       107,
+       176
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-19T01:15:32.081Z"
+    }
+   ]
+  },
+  "Kaik Brito": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Namo Fazil",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "0:12",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Namo Fazil",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 108,
+      "sigA": 177,
+      "totL": 108,
+      "totA": 177,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       71,
+       138
+      ],
+      "body": [
+       15,
+       17
+      ],
+      "leg": [
+       22,
+       22
+      ],
+      "dist": [
+       107,
+       176
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 98,
+      "sigA": 209,
+      "totL": 98,
+      "totA": 209,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       62,
+       160
+      ],
+      "body": [
+       18,
+       29
+      ],
+      "leg": [
+       18,
+       20
+      ],
+      "dist": [
+       95,
+       206
+      ],
+      "clinch": [
+       3,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-19T01:15:32.081Z"
     }
    ]
   }

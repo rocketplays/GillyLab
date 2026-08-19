@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-16T19:55:00.000Z",
+ "generatedAt": "2026-08-18T22:56:00.358Z",
  "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) — the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live — genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time. Also backfills 3 of the 5 main-card bouts on Dana White's Contender Series S10W1 (2026-08-11) — this was the first DWCS card, and both live-results.yml and capture-closing-odds.yml were gated to Saturday/Sunday cron only, so neither the real capture window nor the 2h-36h catchup sweep ran during the event; a manual catchup dispatch at 2026-08-12T01:41 UTC (~2h41m post-start) recovered Wint/Adams and Escarrega/Alsaghir from the still-committed data/odds.json, but the other 3 bouts (earlier on the card) had already rolled off the-odds-api's feed by then. Recovered instead from data/odds.json as committed at 2026-08-11T12:52:34Z (3a514fb8) — the last pre-fight snapshot, ~10h before the card started — via the same consensus math as scripts/odds-history-lib.cjs consensus(): genuine cross-bookmaker market data (BetOnline.ag + FanDuel), not hand-typed, just captured further from the bell than the 20-to-2-minute window the real script targets. Backfilled the full UFC 330 card (2026-08-15) -- both the */3 cron's real capture windows and the 2h-36h catchup sweep missed it: the card had already rolled off data/event.json into data/event-recent.json by the time the catchup job ran, and capture-closing-odds.cjs's catchup mode only ever scanned data/event.json. Prelims recovered from the data/odds.json snapshot committed at 2026-08-15T12:25:46Z (fe527ace, ~9h pre-prelims, the last one where every early/prelim bout was still listed); main card from the snapshot committed at 2026-08-16T00:33:36Z (ced320e2, ~27min pre-bell -- essentially the true closing line). Same consensus math as scripts/odds-history-lib.cjs consensus(), genuine cross-bookmaker market data, not hand-typed.",
  "fights": [
   {
@@ -671,6 +671,56 @@
    "o1": 523,
    "o2": -751,
    "capturedAt": "2026-08-16T00:33:36.000Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-18-2026",
+   "date": "2026-08-18",
+   "section": "maincard",
+   "f1": "Namo Fazil",
+   "f2": "Kaik Brito",
+   "o1": -177,
+   "o2": 148,
+   "capturedAt": "2026-08-18T22:56:00.357Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-18-2026",
+   "date": "2026-08-18",
+   "section": "maincard",
+   "f1": "Douglas Rodrigues",
+   "f2": "Trent Miller",
+   "o1": -547,
+   "o2": 403,
+   "capturedAt": "2026-08-18T22:56:00.357Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-18-2026",
+   "date": "2026-08-18",
+   "section": "maincard",
+   "f1": "Logan Paxton",
+   "f2": "Cristian Perez",
+   "o1": 254,
+   "o2": -314,
+   "capturedAt": "2026-08-18T22:56:00.357Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-18-2026",
+   "date": "2026-08-18",
+   "section": "maincard",
+   "f1": "Alik Lorenz",
+   "f2": "Mahamed Aly",
+   "o1": 292,
+   "o2": -374,
+   "capturedAt": "2026-08-18T22:56:00.357Z"
+  },
+  {
+   "slug": "ufc-fight-night-august-18-2026",
+   "date": "2026-08-18",
+   "section": "maincard",
+   "f1": "Roman Puga",
+   "f2": "Taner Trembley",
+   "o1": -153,
+   "o2": 128,
+   "capturedAt": "2026-08-18T22:56:00.358Z"
   }
  ]
 }
