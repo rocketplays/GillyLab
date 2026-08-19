@@ -1,6 +1,53 @@
 {
-  "generatedAt": "2026-08-18T12:36:29.717Z",
+  "generatedAt": "2026-08-19T01:36:08.880Z",
   "events": [
+    {
+      "slug": "ufc-fight-night-august-18-2026",
+      "name": "Dana White's Contender Series: Season 10, Week 2",
+      "date": "2026-08-18",
+      "bouts": [
+        {
+          "f1": "Namo Fazil",
+          "f2": "Kaik Brito",
+          "winner": "Kaik Brito",
+          "method": "KO/TKO",
+          "round": 3,
+          "voided": false
+        },
+        {
+          "f1": "Douglas Rodrigues",
+          "f2": "Trent Miller",
+          "winner": "Trent Miller",
+          "method": "Submission",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Logan Paxton",
+          "f2": "Cristian Perez",
+          "winner": "Cristian Perez",
+          "method": "KO/TKO",
+          "round": 2,
+          "voided": false
+        },
+        {
+          "f1": "Alik Lorenz",
+          "f2": "Mahamed Aly",
+          "winner": "Alik Lorenz",
+          "method": "KO/TKO",
+          "round": 1,
+          "voided": false
+        },
+        {
+          "f1": "Roman Puga",
+          "f2": "Taner Trembley",
+          "winner": "Roman Puga",
+          "method": "Decision - Unanimous",
+          "round": 3,
+          "voided": false
+        }
+      ]
+    },
     {
       "slug": "ufc-330",
       "name": "UFC 330: Makhachev vs. Machado Garry",
