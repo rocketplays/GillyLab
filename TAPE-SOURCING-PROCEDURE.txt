@@ -1531,3 +1531,58 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   five exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (cc97ed15).
+
+2026-08-18 — CHARLIE CLEVELAND
+  7 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start. Two LFA
+  bouts plus small US regional promotions (CFS: Carnage Fight
+  Series, EGO Fight Series, Caged Thunder, ECC Cage Wars/Nightmare
+  Promotions).
+  Fight Pass: a direct "Charlie Cleveland" search and per-opponent
+  searches (Nyle Bartling, Benjamin Wunder) returned no relevant
+  match — neither LFA 230 nor LFA 226 individual clips are indexed
+  yet despite LFA generally being a Fight Pass partner, so moved to
+  YouTube for both.
+  SOLVED (5):
+    Cameron Graham (CFS 5: Carnage Fight Series 5, Dec 2025) —
+      official "Carnage Media" YouTube channel, "Cam Graham vs
+      Charlie Cleveland | Full Fight | CFS5: Fights Before
+      Christmas," oembed-verified.
+    Nyle Bartling (LFA 230, Apr 2026) — official "LFA Fights"
+      YouTube channel, "LFA 230 Main Card | Full Fight Card,"
+      oembed-verified. An individual-clip candidate from a 0-view
+      reupload channel ("wretstling tournament live") was found but
+      skipped in favor of the official full-card source.
+    Benjamin Wunder (LFA 226, Feb 2026) — official "LFA Fights"
+      YouTube channel, "LFA 226 | Main Card Full Replay," oembed-
+      verified.
+    Richard Harris (Caged Thunder 32, Jun 2025) — official "Caged
+      Thunder MMA" YouTube channel, "RJ 'The Hammer' Harris vs.
+      Charlie 'The Reaper' Cleveland - FULL FIGHT" (opponent's own
+      nickname "RJ" used in place of FIGHT_HISTORY's "Richard"),
+      oembed-verified.
+    Mark Gordon Jr. (CT 31: Caged Thunder 31, Apr 2025) — official
+      "Caged Thunder MMA" YouTube channel, "Charlie Cleveland vs
+      Mark Gordon Jr - FULL FIGHT," oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (2):
+    Juan Silva (EGO Fight Series 5: The Shipyard Showdown, Oct 2025)
+      — no YouTube match under bare-pair or "EGO Fight Series 5
+      Shipyard Showdown." Checked "Carnage Media" (covers CFS, not
+      EGO) and several other channels covering EGO Fight Series
+      events (Connor Smith, Game_Day, Spectation Sports) — none have
+      Series 5 footage. Fight Pass: not a partner promotion.
+      Genuinely exhausted.
+    Jeremy Riley (ECC Cage Wars 11: Nightmare Promotions, Feb 2025)
+      — no YouTube match under bare-pair or event-name search. The
+      large "@CageWars" channel (80.4K subs, cagewars.com) is an
+      unrelated promotion — searched it directly for "Charlie
+      Cleveland" and got zero results. A small "Fight Bros" channel
+      (49 subs) covers Nightmare Promotions ECC Cage Wars events but
+      only has interview/commentary content from ECC Cage Wars II-IV
+      (2022), nothing from event 11. Fight Pass: not a partner
+      promotion. Genuinely exhausted.
+  Ran place-tape-links.cjs --write for the 5 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 5 parsed, 5 placed, 0
+  unplaced — 7 FIGHT_HISTORY rows vs 5 placed correctly reflects the
+  two exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (c2d8a15e).
