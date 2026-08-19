@@ -100,8 +100,20 @@ jobs:
       # original backfill did across chunks. Non-fatal: a Sherdog hiccup must never
       # block the odds update the site runs on, and worst case a badge is just
       # missing until the next run resolves it.
+      #
+      # 240000 (4 min), not a lower number: this isn't "one lookup per new fight" —
+      # a single newly-added fighter needs their WHOLE career's untracked opponents
+      # resolved at once (untrackedOpponentsFor scans all of FIGHT_HISTORY, not just
+      # the upcoming bout), so a debutant with a 12-15 fight regional record is a
+      # 12-15 lookup burst by itself. Measured on the original backfill: ~3.85s/
+      # lookup average, but the own-page strategy's own-page + opponent-page fetches
+      # and the ambiguous-name cross-check path (up to 10 candidate fetches) push the
+      # p99 to ~23s/lookup — so 120s risked leaving a freshly-added newcomer's badges
+      # blank for a full 12h cycle on a bad day. 240s comfortably covers a single
+      # newcomer or a modest multi-newcomer event announcement; the job already
+      # spends 240s+ on the strike-grid steps alone, so there's headroom.
       - name: Backfill opponent records for untracked opponents
-        run: node scripts/fetch-opponent-records.cjs --time-budget-ms 120000 || true
+        run: node scripts/fetch-opponent-records.cjs --time-budget-ms 240000 || true
 
       - name: Download fighter photos
         run: |
