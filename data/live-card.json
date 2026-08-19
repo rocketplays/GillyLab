@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-19T00:29:39.774Z",
+ "generatedAt": "2026-08-19T01:00:17.613Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-08-19T00:29:39.631Z"
+    }
+   ]
+  },
+  "Douglas Rodrigues": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Trent Miller",
+     "result": "L",
+     "method": "Submission (Von Flue Choke)",
+     "round": 2,
+     "time": "1:04",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Trent Miller",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 31,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       12,
+       29
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       15,
+       27
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 29,
+      "totL": 83,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       9,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       7
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
+      ]
+     },
+     "capturedAt": "2026-08-19T01:00:17.362Z"
+    }
+   ]
+  },
+  "Trent Miller": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Douglas Rodrigues",
+     "result": "W",
+     "method": "Submission (Von Flue Choke)",
+     "round": 2,
+     "time": "1:04",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Douglas Rodrigues",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 29,
+      "totL": 83,
+      "totA": 116,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:11",
+      "head": [
+       9,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       7
+      ],
+      "dist": [
+       8,
+       22
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       5,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 21,
+      "sigA": 39,
+      "totL": 31,
+      "totA": 51,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:11",
+      "head": [
+       12,
+       29
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       5,
+       5
+      ],
+      "dist": [
+       15,
+       27
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       4,
+       10
+      ]
+     },
+     "capturedAt": "2026-08-19T01:00:17.362Z"
     }
    ]
   }
