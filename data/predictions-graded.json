@@ -2031,7 +2031,94 @@
         "pts": 0.0097,
         "leaned": true
       }
+    },
+    {
+      "fightId": "alik lorenz|mahamed aly",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-19T00:33:44.780Z",
+      "a": {
+        "feed": "Alik Lorenz",
+        "db": "Alik Lorenz"
+      },
+      "b": {
+        "feed": "Mahamed Aly",
+        "db": "Mahamed Aly"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4802,
+      "modelClose": 0.5198,
+      "marketOpen": 0.2528,
+      "marketClose": 0.7305,
+      "leanA": 0.2274,
+      "nSnapshots": 9,
+      "clv": {
+        "toward": true,
+        "pts": 0.4777,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "roman puga|taner trembley",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-19T00:33:44.780Z",
+      "a": {
+        "feed": "Roman Puga",
+        "db": "Roman Puga"
+      },
+      "b": {
+        "feed": "Taner Trembley",
+        "db": "Taner Trembley"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4879,
+      "modelClose": 0.5121,
+      "marketOpen": 0.4118,
+      "marketClose": 0.3941,
+      "leanA": 0.0761,
+      "nSnapshots": 9,
+      "clv": {
+        "toward": false,
+        "pts": -0.0177,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "cristian perez|logan paxton",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-19T00:33:44.781Z",
+      "a": {
+        "feed": "Logan Paxton",
+        "db": "Logan Paxton"
+      },
+      "b": {
+        "feed": "Cristian Pérez",
+        "db": "Cristian Perez"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5226,
+      "modelClose": 0.5226,
+      "marketOpen": 0.3132,
+      "marketClose": 0.3352,
+      "leanA": 0.2094,
+      "nSnapshots": 6,
+      "clv": {
+        "toward": true,
+        "pts": 0.022,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-18T12:36:29.656Z"
+  "generatedAt": "2026-08-19T00:33:44.785Z"
 }
