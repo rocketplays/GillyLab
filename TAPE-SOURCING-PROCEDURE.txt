@@ -1586,3 +1586,69 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   two exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (c2d8a15e).
+
+2026-08-18 — HUNTER SMITH
+  9 FIGHT_HISTORY gaps, 0 pre-existing TAPE_STUDY rows. Promotion sweep:
+  most of the career is with "American Kombat Alliance" (AKA), whose
+  official YouTube channel (@akafights) hosts individual bout clips
+  for nearly every AKA card. Notable efficiency win: AKA Fights runs a
+  fighter-curated playlist titled "by Hunter Headshot Smith" (6
+  videos) that compiles all of Smith's AKA bouts in one place — found
+  via the channel's playlist tab and used to resolve three bouts
+  (Saghliani, Chavana, Mitchell) in a single lookup instead of three
+  separate searches. Also checked the fighter's own channel
+  (@Headshot-Smith, 160 subs) — only vlog/documentary content (2
+  videos), no fight footage, not useful for sourcing.
+  SOLVED (8):
+    Elliot Hebert (AKA 53: American Kombat Alliance, Mar 2026) —
+      official @akafights channel, "AKA 53 Bout 10 Hunter Smith vs
+      Elliot Hebert," oembed-verified.
+    Aleko Saghliani (AKA 51: American Kombat Alliance, Nov 2025) —
+      "Clear Life Live" channel, "AKA 51 - Aleko Saghliani vs Hunter
+      Smith [Full Fight] #mma," oembed-verified.
+    Nico Echeverry (Fury FC 106: Maranhao vs. Minev, Jul 2025) — no
+      individual clip on YouTube or Fight Pass; used the Fight Pass
+      full-card replay "Cage Fury FC 106" (video/337827) as fallback,
+      consistent with the LFA 230/226 full-card precedent set in the
+      Charlie Cleveland sweep. Title matches FIGHT_HISTORY's event
+      name; Fury FC is a confirmed Fight Pass partner promotion.
+    Juan Chavana (AKA 42: American Kombat Alliance, Nov 2024) —
+      official @akafights channel, "AKA 42 Bout 12 Juan Chavana vs
+      Hunter Smith," oembed-verified. Found via the "by Hunter
+      Headshot Smith" playlist.
+    Elliot Hebert (AKA 37: American Kombat Alliance, Jun 2024) —
+      official @akafights channel, "AKA 37 Bout 11 Elliot Hebert vs
+      Hunter Smith," oembed-verified. Rematch with the AKA 53 bout
+      above — both links pinned by year (@2026 / @2024) in the
+      placement file since place-tape-links.cjs will not guess which
+      meeting a video belongs to.
+    Benton Mitchell (AKA 33: American Kombat Alliance - Smith vs.
+      Mitchell, Dec 2023) — official @akafights channel, "AKA 33 Bout
+      12 Benton Mitchell vs Hunter Smith," oembed-verified. Found via
+      the "by Hunter Headshot Smith" playlist.
+    Rae Thomas (All In Combat - AIC 3: Thang vs. Jackson, Aug 2023) —
+      official "All In Combat" YouTube channel, "All In Combat 3 -
+      Rae Thomas vs. Hunter Smith," oembed-verified.
+    Tyshawn McClaster (All In Combat - AIC 2: Mixan vs. Ageday, May
+      2023) — official "All In Combat" YouTube channel, "All In
+      Combat 2 - TyShawn McCaster vs. Hunter Smith" (opponent's name
+      spelled "TyShawn McCaster" in the video title vs FIGHT_HISTORY's
+      "Tyshawn McClaster" — cross-verified as the same bout by date,
+      promotion, and result), oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (1):
+    Cornelius Williams (EFC 24: Empire Fighting Championship 24, Feb
+      2024) — no YouTube match under bare-pair search. The official
+      "Empire Fighting Championship" YouTube channel (@EmpireFighting
+      Championship, 3.3K subs, 174 videos) was searched directly for
+      "Cornelius Williams," "Hunter Smith," and "EFC 24" — no matches;
+      the channel's catalogue does not appear to extend to card 24.
+      Fight Pass: searched directly for "Cornelius Williams" and
+      "Empire Fighting Championship" — no matching promotion or
+      partner content found (results were all unrelated events).
+      Genuinely exhausted.
+  Ran place-tape-links.cjs --write for the 8 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 8 parsed, 8 placed, 0
+  unplaced — 9 FIGHT_HISTORY rows vs 8 placed correctly reflects the
+  one exhausted bout.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (ee322947).
