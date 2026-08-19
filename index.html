@@ -113880,7 +113880,19 @@ function populateFightHistory(name) {
  if (_fhHint) _fhHint.style.display = 'none';
  let _anyStats = false;
  tbody.innerHTML = '';
- const fights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date);
+ const _histFights = (FIGHT_HISTORY[name] || []).filter(f => f && f.date);
+ // Upcoming placeholder: if this fighter is booked on the featured event or the
+ // upcoming-events carousel (UPCOMING_OPP, built by buildUpcomingOpponentIndex),
+ // show that opponent at the top marked "Upcoming" until the real result lands.
+ // Dedupe by opponent name — once the live merge / permanent importer writes the
+ // completed row into FIGHT_HISTORY, the match below suppresses the placeholder
+ // automatically. If the bout is pulled from the card, the next index rebuild
+ // simply omits it and the placeholder disappears on its own; nothing to clean up.
+ const _upcoming = (typeof getUpcomingForFighter === 'function') ? getUpcomingForFighter(name) : null;
+ const _upcomingResolved = _upcoming && _histFights.some(f => f && _newsNorm(f.opponent) === _newsNorm(_upcoming.opponent));
+ const fights = (_upcoming && !_upcomingResolved)
+   ? [{ __upcoming: true, opponent: _upcoming.opponent, date: _upcoming.date || 'TBD', event: _upcoming.event }].concat(_histFights)
+   : _histFights;
  if (!fights || fights.length === 0) {
  wrap.style.display = 'none';
  empty.style.display = '';
@@ -113891,6 +113903,18 @@ function populateFightHistory(name) {
  fights.forEach((f, i) => {
  const tr = document.createElement('tr');
  tr.style.cssText = `border-bottom:1px solid rgba(255,255,255,0.06);${i % 2 === 1 ? 'background:rgba(255,255,255,0.02);' : ''}`;
+ if (f.__upcoming) {
+ tr.innerHTML = `
+ <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span></td>
+ <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.62rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">Upcoming</span></td>
+ <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.35);">—</td>
+ <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
+ <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
+ <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}</td>`;
+ tbody.appendChild(tr);
+ return;
+ }
  const resultColor = f.result === 'W' ? '#00e668' : '#ff3d00';
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
@@ -127111,12 +127135,49 @@ function buildUpcomingOpponentIndex(apiData) {
         if (f.shortNotice) SHORT_NOTICE_SET.add(boutFlagKey(f.fighterName, other));
         if (f.mayChange) MAY_CHANGE_SET.add(boutFlagKey(f.fighterName, other));
       });
-      if (fs.length < 2) continue;
-      const rec = { date: ev.startsAt || ev.eventDate || '', event: ev.title || ev.shortTitle || '' };
-      UPCOMING_OPP[_newsNorm(fs[0])] = Object.assign({ opponent: fs[1] }, rec);
-      UPCOMING_OPP[_newsNorm(fs[1])] = Object.assign({ opponent: fs[0] }, rec);
+      if (fighters.length < 2 || fs.length < 2) continue;
+      // Canonicalize to the FIGHT_HISTORY/roster spelling so a profile lookup by
+      // its own FIGHT_HISTORY key finds this entry, and so the placeholder's
+      // opponent name matches what the completed row will use once the fight
+      // happens — that match is what lets the real result silently replace the
+      // placeholder in populateFightHistory (see getUpcomingForFighter).
+      const canon = (typeof resolveCanonicalFighterName === 'function')
+        ? (nm, slug) => resolveCanonicalFighterName(nm, slug) || nm
+        : (nm) => nm;
+      const c0 = canon(fighters[0].fighterName, fighters[0].fighterSlug);
+      const c1 = canon(fighters[1].fighterName, fighters[1].fighterSlug);
+      const rawDate = ev.startsAt || ev.eventDate || '';
+      let niceDate = '';
+      if (rawDate) {
+        try {
+          const ds = (typeof easternDateStr === 'function') ? easternDateStr(rawDate) : String(rawDate).slice(0, 10);
+          niceDate = new Date(ds + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        } catch (e) { niceDate = ''; }
+      }
+      const rec = { date: niceDate, rawDate, event: ev.title || ev.shortTitle || '' };
+      UPCOMING_OPP[c0] = Object.assign({ opponent: c1 }, rec);
+      UPCOMING_OPP[c1] = Object.assign({ opponent: c0 }, rec);
     }
   }
+  // A fighter profile may already be open when this (re)builds — e.g. a fresh
+  // event.json arrives mid-visit, or a bout gets pulled from the card. Re-render
+  // so the Upcoming placeholder appears/updates/disappears without a reload.
+  if (window.__currentFighter && typeof populateFightHistory === 'function') {
+    try { populateFightHistory(window.__currentFighter); } catch (e) { /* non-fatal */ }
+  }
+}
+// Resolve a FIGHT_HISTORY profile name to its UPCOMING_OPP entry (if any). Exact
+// match first (the common case, now that both sides are canonicalized to the
+// same spelling), then a normalized fallback for any spelling drift that slips
+// through resolveCanonicalFighterName.
+function getUpcomingForFighter(name) {
+  if (!name || typeof UPCOMING_OPP === 'undefined') return null;
+  if (UPCOMING_OPP[name]) return UPCOMING_OPP[name];
+  const t = _newsNorm(name);
+  for (const k of Object.keys(UPCOMING_OPP)) {
+    if (_newsNorm(k) === t) return UPCOMING_OPP[k];
+  }
+  return null;
 }
 // Resolve an event/feed fighter name to its FIGHT_HISTORY key (exact → normalized
 // → unambiguous token-subset), so name-spelling differences across feeds don't
