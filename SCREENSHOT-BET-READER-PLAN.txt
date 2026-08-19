@@ -1,0 +1,196 @@
+================================================================================
+BET & CLV TRACKER — SCREENSHOT READER (PLAN, NOT BUILT)
+A third way to log a bet: upload a screenshot of the slip, a vision model reads
+the legs, you confirm, it saves through the exact path a manual bet already uses.
+Written 2026-08-19. Nothing in this file is implemented yet.
+================================================================================
+
+--------------------------------------------------------------------------------
+0. WHY THIS EXISTS / WHAT IT'S NOT
+--------------------------------------------------------------------------------
+The ask that started this: auto-log bets by linking a sportsbook account
+(BetSync-style, e.g. SharpSports). Priced out — betSync starts at $500/mo for
+0-99 linked accounts, $1,000/mo for 100-999, and there's no meaningfully cheaper
+competitor in that specific niche (account-linking, not odds-feed APIs — the one
+other product found, BtrBet, is itself built on SharpSports, not a competitor to
+it). Rejected for now on cost, not feasibility.
+
+This is the alternative: no linked accounts, no sportsbook credentials touch us
+at all, ever. The user takes a screenshot of a slip they already placed and
+uploads it; a vision model extracts the legs into the same fields the manual
+"Log a bet" form already has. Requires ONE new Worker endpoint and a form
+pre-fill step — no new infra, no new KV binding, no subscription.
+
+Estimated cost at 100 users x 5-10 screenshots/week (see section 5): $7-45/month
+depending on model choice. That's the number that makes this worth building
+before anything BetSync-shaped.
+
+--------------------------------------------------------------------------------
+1. THE FLOW, END TO END
+--------------------------------------------------------------------------------
+  1. On the Bet & CLV Tracker's "Log a bet" tab, add a third entry mode next to
+     the existing tracked/manual toggle: "Scan a screenshot."
+  2. User drops/pastes/picks an image. Client-side: downscale to something
+     reasonable (long edge ~1568px — see 4) before upload, both to keep the
+     request small and because Claude will resize to that anyway.
+  3. POST the image (base64) to a new endpoint, POST /api/bets/scan.
+     Auth: same betsSession() gate as every other /api/bets/* route — logged in
+     AND subscribed. This is not a free-tier feature; it costs real money per
+     call and should be gated exactly like the rest of the tracker.
+  4. Worker calls the vision model (see 4) with a prompt that asks for STRICT
+     JSON matching the shape handleBetsAdd() already accepts:
+       - kind guess: "manual" (single) or parlay (legs[])
+       - per leg: match/matchup text, pick, market guess, odds
+       - top-level: stake if visible, book name if visible (label only, see
+         BET-TRACKER-ROADMAP.txt sec 3 "one sportsbook per parlay" — book isn't
+         stored today; decide whether this feature is what finally adds it)
+     No JSON, or JSON that fails validation -> return a "couldn't read this
+     screenshot" error, NOT a half-filled guess. Never silently drop a leg.
+  5. Response goes back to the client as a DRAFT, not a save. Pre-fill the
+     existing manual/parlay form fields with it — reuse the UI that's already
+     there, don't build a new one.
+  6. Before the draft is shown, run each leg's matchup text through the same
+     fuzzy matcher the tracked-bet path already uses (btFindBout in
+     worker/index.js) so the UI can flag "this matches Kaik Brito vs Trent
+     Miller on an upcoming card" if it does. If it matches AND the bout isn't
+     decided yet, offer to log it as `kind: "tracked"` (verified, CLV-eligible)
+     instead of manual — that's a real upgrade over typing it in by hand, since
+     today tracked-vs-manual is the user's choice at entry time, and here the
+     screenshot already told you which fight it is.
+  7. User reviews the pre-filled draft on screen, corrects anything wrong,
+     confirms. Submission is a normal POST /api/bets — same validation, same
+     lock, same parlay correlation re-check that already exists. This feature
+     changes NOTHING about what happens after confirm.
+
+The governing rule from BET-TRACKER-ROADMAP.txt ("the client never decides
+anything that matters") extends here as: the MODEL never decides anything that
+matters either. It only ever produces a draft a human confirms.
+
+--------------------------------------------------------------------------------
+2. WHY REVIEW-BEFORE-SAVE IS NOT OPTIONAL
+--------------------------------------------------------------------------------
+Screenshots are messy in ways a linked-account API response never is:
+  - Dark mode vs light mode books, different fonts/layouts per sportsbook.
+  - Cropped screenshots (missing the stake, or missing which leg is which in a
+    same-game parlay).
+  - Boosted-odds banners, promo badges, and "odds boost" strikethrough prices
+    sitting next to the real price — a model can misread which number is live.
+  - Physical betting-kiosk receipts (different problem entirely: thermal-printer
+    font, no home team highlighting, may not even be a book this app tracks).
+  - Fighter name variants / nicknames the OCR reads correctly but that don't
+    match FIGHTERS' canonical spelling — this is the SAME problem the app
+    already solves elsewhere (NAME_ALIASES, nameToSlug) and should reuse it,
+    not reinvent matching.
+Auto-saving on a misread creates a bet the user didn't actually place, which
+poisons record/ROI/CLV — the exact thing Phase 1's "verified vs self-reported"
+split exists to prevent. A wrong auto-save is worse than no auto-save.
+
+--------------------------------------------------------------------------------
+3. WHAT NEEDS TO BE BUILT
+--------------------------------------------------------------------------------
+worker/index.js
+  - New route: POST /api/bets/scan (near the other /api/bets/* handlers).
+  - New handler, e.g. handleBetsScan(): auth gate, decode image, call the
+    vision model, validate + shape the JSON response, return draft (not saved).
+  - Reuse btFindBout() for the "does this match a tracked bout" step (3.6
+    above) rather than writing a second matcher.
+  - New secret: an API key for whichever vision model is used (ANTHROPIC_API_KEY
+    or similar) — `wrangler secret put`, same pattern as STRIPE_SECRET_KEY /
+    RESEND_API_KEY already in wrangler.toml. No new KV binding needed.
+  - Rate limit per user (e.g. N scans/day) — this is the one place a bug or an
+    abusive script could run up a real bill quickly, unlike everything else in
+    the tracker which is free to the operator. Cap it even generously (50/day
+    is still $0.17-0.50/user/day worst case) rather than leave it open.
+
+index.html
+  - Third entry-mode button on the "Log a bet" tab: "Scan a screenshot."
+  - Upload UI: file input + paste-image support. Client-side downscale before
+    sending (canvas resize) — smaller upload, and no benefit to sending more
+    pixels than the model will use anyway (see 4).
+  - Draft review screen: pre-filled version of the existing manual/parlay form,
+    editable, with a visible "matched to an upcoming card" indicator per leg
+    when btFindBout hits.
+  - Error state for "couldn't read this screenshot" — offer manual entry as the
+    fallback, don't dead-end the user.
+
+Nothing in FIGHT_HISTORY/ODDS_HISTORY/grading changes. Nothing in the KV
+storage shape changes (still writes through the same POST /api/bets path).
+
+--------------------------------------------------------------------------------
+4. MODEL CHOICE + PROMPT SHAPE
+--------------------------------------------------------------------------------
+Model: Claude Haiku 4.5 for the first pass on every image — cheap, fast, and
+reading a bet slip is a bounded extraction task, not a reasoning task. Retry
+once on Sonnet ONLY if Haiku's response fails JSON validation or looks
+malformed (e.g. a leg missing odds) — keeps the bulk of volume on the cheap
+tier and only pays for the expensive one on the images that actually need it.
+
+Image sizing: Claude resizes to a ~1568px long edge / ~1600 token cap before
+reading, so there's no cost benefit to uploading a full-resolution photo of a
+screenshot — downscale client-side to roughly that before sending.
+
+Prompt should return ONLY a JSON object, schema-locked to what handleBetsAdd()
+accepts today (see BET-TRACKER-ROADMAP.txt sec 1 for the 7 markets + PARLAY
+shape). Explicitly instruct: if a field isn't visible or legible, omit it /
+mark it uncertain rather than guessing a plausible-looking value — a guessed
+stake or odds is worse than a blank one the user has to fill in.
+
+--------------------------------------------------------------------------------
+5. COST (see chat for the full derivation — summary here)
+--------------------------------------------------------------------------------
+At 100 users x 5-10 screenshots/week (~2,200-4,300 images/month):
+  Haiku 4.5 (~1600 img tokens + ~300 prompt + ~300 output):  ~$0.0034/image
+      -> ~$7-15/month  (~$90-180/year)
+  Sonnet 4.6 (same token shape):                             ~$0.0102/image
+      -> ~$22-44/month (~$265-530/year)
+Even the Sonnet ceiling is roughly 10x cheaper than betSync's $500/mo floor at
+the same user count, and it scales with actual usage instead of jumping in
+$500 steps at fixed account-count tiers. Add the per-user rate cap (sec 3) as
+the hard ceiling on a worst-case bill.
+
+--------------------------------------------------------------------------------
+6. OPEN DECISIONS (resolve before building, not during)
+--------------------------------------------------------------------------------
+[ ] Do we store the uploaded image anywhere, even temporarily? Simplest and
+    most privacy-respecting answer: no — pass it to the model and discard,
+    never write it to KV/R2. Revisit only if debugging bad parses turns out to
+    require having the original on hand.
+[ ] Does this feature finally add a `book` field to the bet record (see
+    BET-TRACKER-ROADMAP.txt sec 3, "one sportsbook per parlay")? A screenshot
+    usually makes the book obvious for free, which is a good reason to add it
+    here even though the tracker doesn't store it today. Decide the schema
+    change once, not as an afterthought.
+[ ] Per-user rate limit number — start conservative (e.g. 20-30/day, well
+    above the 5-10/week this plan is priced around) and loosen if it's ever
+    actually hit.
+[ ] Same-game parlays and player-prop-heavy slips (more common outside UFC,
+    but the model doesn't know that) will be the hardest images. Decide
+    whether to scope v1 to "moneyline / method / total rounds / distance"
+    style slips only and reject anything that doesn't parse cleanly into the
+    tracker's existing 7 markets, rather than trying to handle everything.
+
+--------------------------------------------------------------------------------
+7. WHERE THIS WOULD LIVE (once built, keep this section updated)
+--------------------------------------------------------------------------------
+  worker/index.js
+    new route   POST /api/bets/scan  (alongside the /api/bets/* block —
+                grep: "bet & clv tracker" per BET-TRACKER-ROADMAP.txt sec 5)
+    new handler handleBetsScan()
+  index.html
+    "Log a bet" tab — third mode alongside tracked/manual, inside the same
+    module documented in BET-TRACKER-ROADMAP.txt sec 5 (grep: BET & CLV
+    TRACKER, the BT_* / bt* module)
+  wrangler.toml
+    new secret  (vision model API key) — added via `wrangler secret put`,
+                never committed, same pattern as the existing secrets list
+
+--------------------------------------------------------------------------------
+8. IF YOU ONLY DO ONE THING NEXT
+--------------------------------------------------------------------------------
+Prototype the prompt + Haiku call OUTSIDE the app first — feed it 5-10 real
+(or realistic) bet slip screenshots from a couple different books by hand and
+look at the raw JSON it returns before writing any endpoint or UI. That tells
+you whether the schema in section 4 actually survives contact with real
+screenshots, which is cheaper to learn before wiring it into the tracker than
+after.
+================================================================================
