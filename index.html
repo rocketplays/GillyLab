@@ -4239,9 +4239,12 @@
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;">Date</th>
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;">Opponent</th>
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;text-align:center;">Result</th>
+              <!-- Round/Time used to be their own columns -- on a 7-column table
+                   that pushed Method/Round/Time/Event all off-screen on mobile,
+                   leaving only Date/Opponent/Result visible without scrolling.
+                   Folded into Method (as a second line, see populateFightHistory)
+                   so the same information survives in 5 columns instead of 7. -->
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;">Method</th>
-              <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;text-align:center;">Round</th>
-              <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;text-align:center;">Time</th>
               <th style="padding:0.55rem 0.75rem;font-weight:600;letter-spacing:0.04em;">Event</th>
             </tr>
           </thead>
@@ -113945,8 +113948,6 @@ function populateFightHistory(name) {
  <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;white-space:nowrap;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentCurrentRecord(f.opponent))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.62rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">Upcoming</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.35);">—</td>
- <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
- <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}</td>`;
  tbody.appendChild(tr);
  return;
@@ -113956,9 +113957,7 @@ function populateFightHistory(name) {
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
  <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;white-space:nowrap;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, f.date))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="font-weight:800;color:${resultColor};">${f.result}</span></td>
- <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}</td>
- <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
- <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.55);">${f.time}</td>
+ <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}${(f.round || f.time) ? `<div style="color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:2px;">${[f.round ? 'R' + f.round : '', f.time || ''].filter(Boolean).join(' · ')}</div>` : ''}</td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.45);font-size:0.78rem;">${f.event || ''}${promotionTierBadgeHTML(f.org || inferPromotion(f.event))}</td>`;
  const _fs = (typeof fightStatsFor === 'function') ? fightStatsFor(name, f.date) : null;
  if (_fs) {
