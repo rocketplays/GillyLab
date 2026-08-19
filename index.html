@@ -2795,6 +2795,27 @@
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
+    /* Odds History used to fit the screen width on mobile without needing
+       that scrollbar at all -- it only grew past it once the opponent-record
+       badge started appending "(W-L-D)" to the Opponent cell (see the nowrap
+       comment above). Every cell in all three tables carries 0.75rem of
+       horizontal padding per side (JS-rendered td's and the static th's
+       both), which is ~1.5rem of dead space at every column boundary before
+       any actual text -- the single biggest lever for fitting more columns
+       back into the viewport. Tightened here, mobile-only, with !important
+       because the padding is set inline (both in the static <th> markup and
+       in every row-render function's td.style.cssText) and inline always
+       beats an unqualified class/id rule regardless of specificity.
+       Font-size is NOT set inline on .opp-record (only color/font-weight
+       are), so shrinking the badge specifically needs no !important. */
+    @media (max-width: 600px) {
+      #fh-table th, #fh-table td,
+      #fo-table th, #fo-table td,
+      #ft-table th, #ft-table td {
+        padding: 0.5rem 0.4rem !important;
+      }
+      .opp-record { font-size: 0.72rem; }
+    }
     @keyframes ftabPanelIn {
       from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
