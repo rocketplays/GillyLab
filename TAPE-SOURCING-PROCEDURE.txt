@@ -1295,3 +1295,71 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   rows vs 6 placed correctly reflects the one exhausted bout.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (f43f7c9f).
+
+2026-08-18 — MODESTINO RODRIGUES
+  8 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start. Brazilian
+  regional fighter (Fonte Boa, Amazonas), all 8 bouts on small
+  Brazilian promotions (Jungle Fight, Dominium Fighter Championship
+  "DFC", Mirmidões Champions Fight "MCF", Brazilian Cage Championship
+  "BCC", Ultimate Fonte Boa "UFB", Maraã Combat).
+  Fight Pass: a generic "Modestino Rodrigues" search returned zero
+  relevant hits, and targeted searches for "Jungle Fight 130,"
+  "Virgilio Ailton," and "Uilton Correa" also returned nothing
+  relevant — none of these small Brazilian promotions are Fight Pass
+  content partners (unlike the larger Jungle Fight cards seen with
+  other fighters in past sessions — this particular card wasn't
+  indexed). Moved straight to YouTube bare-pair searches.
+  SOLVED (5), all official-promotion-channel uploads:
+    Álvaro Luiz (Jungle Fight 130, Sep 2024) — "Jungle Fight TV"
+      channel, "JUNGLE FIGHT 130 l Modestino Rodrigues x Álvaro
+      Lutador," oembed-verified.
+    Nathan Oliveira (Jungle Fight 128, Jul 2024) — "Jungle Fight TV"
+      channel, "JUNGLE FIGHT 128 l Modestino Rodrigues x Nathan
+      Shogun" (ring name/nickname, not a data error), oembed-verified.
+    Clayton Ferreira (DFC 23, Mar 2024) — "Dominium Fighter" channel,
+      "DOMINIUM FIGHTER MMA PROFESSIONAL BELT | 23rd EDITION |
+      MODESTINO RODRIGUES VS CLAYTON FERREIRA," oembed-verified.
+    Bruno Ferreira (DFC 22, Jan 2024) — OPPONENT-NAME VARIANCE ACROSS
+      THREE SOURCES: FIGHT_HISTORY says "Bruno Ferreira," the YouTube
+      title from the "Dominium Fighter" channel says "Bruno Pereira,"
+      and Tapology's own record for this exact bout (same date, same
+      event, same 0:27 R1 TKO finish) says "Bruno Daisaku." Cross-
+      verified via Tapology that all three refer to the same bout
+      (identical date/event/finish/records) before placing — an
+      obscure pro-debut regional fighter with inconsistent name
+      records across sources, not a FIGHT_HISTORY data error or a
+      pre-fight-week replacement. Placed the Dominium Fighter channel
+      video ("DOMINIUM MMA PROFISSIONAL 22° | Modestino Rodrigues VS
+      Bruno Pereira"), oembed-verified.
+    Uilton Correa (MCF, Apr 2025) — "Mirmidões Champions Fight"
+      channel, "MCF 6 - Modestino X Uilton Ursão" (Correa's ring
+      nickname). Note: the promotion's own video title says "MCF 6"
+      and its description says "Edição 4," neither of which matches
+      FIGHT_HISTORY's "MCF 2" — the promotion's own numbering is
+      internally inconsistent across its title/description, but the
+      fighters, promotion, and channel all match with no ambiguity,
+      so this is a labeling quirk on the source's end, not treated as
+      a mismatch requiring further verification. oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (3):
+    Virgilio Ailton (Brazilian Cage Championship 1, Jun 2025) — no
+      YouTube match under "Modestino Rodrigues vs Virgilio Ailton,"
+      "Modestino Rodrigues Brazilian Cage Championship," or bare
+      "Vírgilio Ailton MMA." Fight Pass search for "Virgilio Ailton"
+      returned zero results of any kind (not even unrelated content) —
+      confirmed BCC is not a Fight Pass partner.
+    Salomão Melo (Ultimate Fonte Boa 7, Sep 2023) — no YouTube match
+      under "Modestino Rodrigues vs Salomao Melo/Salomao Silva de
+      Melo" or "Ultimate Fonte Boa 7 Modestino." A "Lopinho Produções"
+      channel has some UFB content but not this specific card/bout.
+      Fight Pass: not a partner promotion.
+    Matheus de Almeida (Maraã Combat 1, Dec 2021) — no YouTube match
+      under "Modestino Rodrigues vs Matheus de Almeida" or "Maraã
+      Combat 1 Modestino." This is the fighter's pro debut on a very
+      small, very old (2021) local Amazonas card with essentially no
+      online footprint. Genuinely exhausted.
+  Ran place-tape-links.cjs --write for the 5 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 5 parsed, 5 placed, 0
+  unplaced — 8 FIGHT_HISTORY rows vs 5 placed correctly reflects the
+  three deliberately-skipped/exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (ee320c93).
