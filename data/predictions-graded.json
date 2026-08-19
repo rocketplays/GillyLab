@@ -2118,7 +2118,65 @@
         "pts": 0.022,
         "leaned": true
       }
+    },
+    {
+      "fightId": "douglas rodrigues|trent miller",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-19T12:34:47.798Z",
+      "a": {
+        "feed": "Douglas Rodrigues",
+        "db": "Douglas Rodrigues"
+      },
+      "b": {
+        "feed": "Trent Miller",
+        "db": "Trent Miller"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5991,
+      "modelClose": 0.5991,
+      "marketOpen": 0.7285,
+      "marketClose": 0.8373,
+      "leanA": -0.1294,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": false,
+        "pts": -0.1088,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "kaik brito|namo fazil",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-19T12:34:47.798Z",
+      "a": {
+        "feed": "Namo Fazil",
+        "db": "Namo Fazil"
+      },
+      "b": {
+        "feed": "Kaik Brito",
+        "db": "Kaik Brito"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 5,
+      "modelOpen": 0.4971,
+      "modelClose": 0.4971,
+      "marketOpen": 0.6072,
+      "marketClose": 0.6155,
+      "leanA": -0.1101,
+      "nSnapshots": 7,
+      "clv": {
+        "toward": false,
+        "pts": -0.0083,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-19T00:33:44.785Z"
+  "generatedAt": "2026-08-19T12:34:47.803Z"
 }
