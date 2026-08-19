@@ -1463,3 +1463,71 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   one exhausted bout.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (018a7d4c).
+
+2026-08-18 — GABRIEL LOURENCO
+  8 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start. All small
+  Brazilian regional promotions (CFP: Curitiba Fight Pro, Saikyo,
+  BCC: Brazilian Cage Championship, CDL: Cidade da Luta, MFC: Master
+  Fighting Championship, X-Fest, IFL: Inside Fighters League).
+  Fight Pass: a direct "Gabriel Lourenco" search returned zero
+  relevant results across all 20+ hits — none of these promotions
+  are Fight Pass partners.
+  SOLVED (3):
+    William Magalhaes (Saikyo 2, Oct 2025) — official "SAIKYO"
+      YouTube channel, "GABRIEL LORENÇO VS WILLIAN GIGANTE"
+      (opponent listed under a nickname/alt spelling of the
+      FIGHT_HISTORY name), oembed-verified; same promotion channel,
+      matching event date.
+    Alan Oliveira (CDL 11, Nov 2024) — official "Cidade da Luta"
+      YouTube channel, "CDL 11 GABRIEL LOURENÇO vs ALAN JAMANTA"
+      (opponent listed under a nickname, "Jamanta," in place of the
+      FIGHT_HISTORY surname "Oliveira"), oembed-verified.
+    Junior Baiano (MFC 01, Sep 2024) — "SFC TV" YouTube channel,
+      "MFC 1 - GABRIEL LOURENÇO X JUNIOR BAIANO," description
+      confirms "Gabriel Lourenço Vence Junior baiano por Nocaute
+      técnico" (TKO win), matching FIGHT_HISTORY exactly,
+      oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (5):
+    Bruno de Jesus (CFP 12: Curitiba Fight Pro 12, Nov 2025) — no
+      YouTube match under bare-pair or "CFP 12 Curitiba Fight Pro
+      Gabriel Lourenço." The promotion's own channel
+      (@CuritibaFightPro) only hosts 4 promo videos for an unrelated
+      upcoming Aug 2026 event, with no historical footage; a second,
+      older "Curitiba Fight Pro" channel (@curitibafightpro695) only
+      has CFP 5 content from 2017. Genuinely exhausted.
+    Tiago Afonso (BCC 1: Brazilian Cage Championship 1 - Fight of a
+      Million, Jun 2025) — no YouTube match under bare-pair or "BCC
+      1 Brazilian Cage Championship Gabriel Lourenço." Found a
+      pre-fight interview on a local MMA journalism channel
+      ("Teófilo Motta," 88 subscribers) but no fight footage on that
+      channel or anywhere else. Consistent with BCC's prior confirmed
+      status (from the Modestino Rodrigues sweep) as not a Fight Pass
+      partner and having minimal online footprint. Genuinely
+      exhausted.
+    Wellington Madeira (X-Fest 19: Quardos vs. Boeno, Nov 2023) — no
+      YouTube match under bare-pair, "X-Fest MMA 19 Gabriel
+      Lourenço," or "X-Fest 19 Quadros vs Boeno Gabriel Lourenço."
+      Located the official "X FEST MMA" channel (483 subscribers)
+      but it has no event-19 fight footage; only a livestream
+      interview segment ("Live Especial Lutadores Destaques do
+      X-Fest MMA 19") mentioning Wellington Madeira as an attendee,
+      not fight footage. Two unrelated Vencer Hub clips of Gabriel
+      Lourenço surfaced in searches but their upload dates (~1 year
+      old) don't match this event's Nov 2023 date, ruling them out.
+      Fight Pass: not a partner promotion. Genuinely exhausted.
+    Bruno Land (IFL 7: Inside Fighters League 7, Dec 2021) — no
+      YouTube match under bare-pair or "IFL 7 Inside Fighters League
+      Gabriel Lourenço." No official Inside Fighters League channel
+      found. Fight Pass: not a partner promotion. Genuinely
+      exhausted.
+    Igor Cavalcanti (IFL 5: Inside Fighters League 5, Oct 2021) — no
+      YouTube match under bare-pair. Fight Pass search for "Igor
+      Cavalcanti" returned only an unrelated DWCS-roster fighter of
+      the same name, not this bout. No official Inside Fighters
+      League channel found. Genuinely exhausted.
+  Ran place-tape-links.cjs --write for the 3 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 3 parsed, 3 placed, 0
+  unplaced — 8 FIGHT_HISTORY rows vs 3 placed correctly reflects the
+  five exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (cc97ed15).
