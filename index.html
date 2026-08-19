@@ -11824,6 +11824,105 @@
 
  // ── TAPE STUDY DATA (all pro fights, most recent first) ──
  const TAPE_STUDY = {
+  // DWCS Season 10, Week 2 (Aug 18, 2026) -- Paramount+ now breaks the full
+  // episode into individual per-fight highlight pages (confirmed live: each
+  // has its own /shows/video/<id>/ URL under the episode's "Highlights"
+  // carousel), which is why these link there instead of ufcfightpass.com
+  // like the rest of this file -- UFC's DWCS/Fight Pass library moved to
+  // Paramount+ as of this cycle.
+  "Namo Fazil": [
+    { opponent: "Kaik Brito", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP64NE7PAF29RPPVCYRR3/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Jake Babian", url: "https://youtu.be/AfmwBsLAfB8", event: "MVP 1 · May 2026", section: null },
+    { opponent: "Yakub Sulimanov", url: "https://youtu.be/g7POcB71nYo", event: "971 FC 2 · Jun 2025", section: null },
+    { opponent: "Davlatbek Khozhiev", url: "https://youtu.be/9n0B1EeE4lI", event: "MEFC 5 · Oct 2024", section: null },
+    { opponent: "Khaled Amr", url: "https://ufcfightpass.com/video/512973", event: "UAE Warriors 43 · Aug 2023", section: null },
+    { opponent: "Mohammad Alaqraa", url: "https://ufcfightpass.com/video/374719", event: "UAE Warriors 31 · Jul 2022", section: null }
+  ],
+  "Kaik Brito": [
+    { opponent: "Namo Fazil", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP64NE7PAF29RPPVCYRR3/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Ronald Paradeiser", url: "https://www.youtube.com/watch?v=V5czVpVbIMY", event: "Oktagon 84 · Feb 2026", section: null },
+    { opponent: "Joilton Lutterbach", url: "https://youtu.be/PBCfuwlyGt4", event: "Oktagon 73 · Jun 2025", section: null },
+    { opponent: "Ion Surdu", url: "https://youtu.be/zxJy5DSt5Ek", event: "Oktagon 64 · Dec 2024", section: null },
+    { opponent: "Oban Elliott", url: "https://ufcfightpass.com/video/518071", event: "Dana White's Contender Series · Aug 2023", section: null },
+    { opponent: "David Kozma", url: "https://youtu.be/iDEJAbUTaa8", event: "Oktagon MMA · Dec 2022", section: null },
+    { opponent: "Andrej Kalasnik", url: "https://www.youtube.com/watch?v=TEr6K0tcEqg", event: "Oktagon MMA - Oktagon Prime 5 · Mar 2022", section: null },
+    { opponent: "Petr Knize", url: "https://youtu.be/ZMU1lXIwP6o", event: "Oktagon MMA · Sep 2021", section: null },
+    { opponent: "Robert Bryczek", url: "https://youtu.be/kCYpyI6UCho", event: "Oktagon MMA · May 2021", section: null },
+    { opponent: "Gabor Boraros", url: "https://www.youtube.com/watch?v=msT2q8PLyP0", event: "Oktagon MMA · Nov 2019", section: null },
+    { opponent: "Mateusz Rębecki", url: "https://youtu.be/LfaxcC-Cukw", event: "Battlefield FC 2 · Jul 2019", section: null }
+  ],
+  "Douglas Rodrigues": [
+    { opponent: "Trent Miller", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP9KQEAJVNW0DCX7CQZSZ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Gabriel Ramos", url: "https://youtu.be/w8-x_v5PPaA", event: "Future MMA 17 · Mar 2026", section: null },
+    { opponent: "Jaime Souza", url: "https://youtu.be/1g6G7a-sBAg", event: "Future MMA 16 · Nov 2025", section: null },
+    { opponent: "Emerson Richard", url: "https://youtu.be/pHJZ_khP89M", event: "Future MMA 14 · Apr 2025", section: null },
+    { opponent: "Rickson Oliveira Pisani", url: "https://youtu.be/_BOgLu2p7ro", event: "Fight Pro Championship 3 · Mar 2023", section: null },
+    { opponent: "Wesley Silva do Nascimento", url: "https://youtu.be/tyEOCAPhJ00", event: "Predador FC 41 · Jun 2018", section: null },
+    { opponent: "Fledson Silva Santos", url: "https://youtu.be/XVv9J2QLrNk", event: "Centuriao Fight Open 4 · Jun 2018", section: null }
+  ],
+  "Trent Miller": [
+    { opponent: "Douglas Rodrigues", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP9KQEAJVNW0DCX7CQZSZ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Ryan Gandra", url: "https://ufcfightpass.com/video/849234", event: "Dana White's Contender Series · Aug 2025", section: null },
+    { opponent: "Said-Magomed Abdulgaziev", url: "https://ufcfightpass.com/video/804332", event: "Tuff-N-Uff 144 · May 2025", section: null },
+    { opponent: "Dylan O'Sullivan", url: "https://youtu.be/6yldPJtt7cA", event: "Borroka Promotions 2 · Mar 2025", section: null },
+    { opponent: "Buddy Wallace", url: "https://ufcfightpass.com/video/736803", event: "Tuff-N-Uff 140 · Dec 2024", section: null },
+    { opponent: "Marcus Nash", url: "https://youtu.be/h4Snls9XqYY", event: "UFL 5 · Aug 2024", section: null },
+    { opponent: "Mike Jones", url: "https://youtu.be/KI47OMSXi7Q", event: "Fierce FC 31 · Apr 2024", section: null },
+    { opponent: "Chato Wiest", url: "https://youtu.be/Tqv9YGTpxyM", event: "CFFC 125 · Sep 2023", section: null },
+    { opponent: "Brooks Callaghan", url: "https://youtu.be/ukUKFA8Yyvk", event: "RUF MMA 52 · Feb 2023", section: null }
+  ],
+  "Logan Paxton": [
+    { opponent: "Cristian Perez", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP7XPEX1TYK0KYN7DS6EQ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "RJ Hoyt", url: "https://ufcfightpass.com/video/889155", event: "Anthony Pettis FC 21 · Nov 2025", section: null },
+    { opponent: "Armus Guyton", url: "https://ufcfightpass.com/video/840831", event: "Anthony Pettis FC 18 · Jul 2025", section: null },
+    { opponent: "Michael McDonald", url: "https://youtu.be/BEhV7BqMLdA", event: "MPX Promotions · Nov 2024", section: null },
+    { opponent: "Kerry Lattimer", url: "https://youtu.be/ZOjhVQuErnM", event: "MPX Promotions · Aug 2024", section: null },
+    { opponent: "Charlie Kennedy", url: "https://youtu.be/2yrUBHTVgD8", event: "SAARFC 25 · Feb 2024", section: null },
+    { opponent: "Boris Novachkov", url: "https://youtu.be/RpSj-DzofY4", event: "MCF 23 · Nov 2022", section: null },
+    { opponent: "Jacobi Jones", url: "https://ufcfightpass.com/video/261813", event: "LFA 116 · Oct 2021", section: null }
+  ],
+  "Cristian Perez": [
+    { opponent: "Logan Paxton", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP7XPEX1TYK0KYN7DS6EQ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Gilberto Santos", url: "https://youtu.be/QhWFz6WnezM", event: "Elite Xtreme Fighting 23 · Apr 2026", section: null },
+    { opponent: "Manoel Sousa", url: "https://ufcfightpass.com/video/849228", event: "Dana White's Contender Series · Aug 2025", section: null },
+    { opponent: "Bruno Cannetti", url: "https://youtu.be/PrecLN9aiPk", event: "Combate Global · Jun 2023", section: null },
+    { opponent: "Gilber Ordonez", url: "https://youtu.be/B_M8xPVeIok", event: "Combate Global · Nov 2022", section: null },
+    { opponent: "Samuel Alvarez", url: "https://youtu.be/6CeP_ozbQhw", event: "Combate Global · Aug 2022", section: null },
+    { opponent: "Sebastian Santana Guedes", url: "https://youtu.be/l6Ul8J4GSlw", event: "Combate Global · Apr 2022", section: null },
+    { opponent: "Alfrego Ruelas", url: "https://youtu.be/Pec1EXP72gM", event: "Combate Global · Nov 2021", section: null },
+    { opponent: "Enrique Gonzalez", url: "https://youtu.be/P4I1JABXIQw", event: "Combate Global · Nov 2021", section: null },
+    { opponent: "Jair Perez", url: "https://youtu.be/sBXE-rqfxHU", event: "Combate Americas 44 · Sep 2019", section: null },
+    { opponent: "Saul Cabrera", url: "https://youtu.be/4Ifw9G-_fxM", event: "Combate 30 · Feb 2019", section: null }
+  ],
+  "Alik Lorenz": [
+    { opponent: "Mahamed Aly", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP4F9EBR94ZTV8DCT49WZ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Ryan Parker", url: "https://ufcfightpass.com/video/719307", event: "LFA 196 · Nov 2024", section: null },
+    { opponent: "Thomas Powell", url: "https://ufcfightpass.com/video/667888", event: "LFA 188 · Jul 2024", section: null },
+    { opponent: "Ben Parrish", url: "https://ufcfightpass.com/video/604269", event: "LFA 180 · Mar 2024", section: null },
+    { opponent: "Kyler Fairchild", url: "https://ufcfightpass.com/video/502330", event: "LFA 163 · Jul 2023", section: null },
+    { opponent: "Darion Abbey", url: "https://www.youtube.com/watch?v=T2oDpra2Id8", event: "Caged Aggression 32 · Oct 2021", section: null },
+    { opponent: "Pierre Walters", url: "https://www.youtube.com/watch?v=HW7x2GEWtxk", event: "Caged Aggression 31 · May 2021", section: null }
+  ],
+  "Mahamed Aly": [
+    { opponent: "Alik Lorenz", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRP4F9EBR94ZTV8DCT49WZ/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Iwo Baraniewski", url: "https://ufcfightpass.com/video/858928", event: "Dana White's Contender Series · Sep 2025", section: null },
+    { opponent: "Derrick Bradley", url: "https://www.youtube.com/watch?v=zbcfh0FAYOI", event: "CZMMA 79 · Jun 2024", section: null },
+    { opponent: "John Ott", url: "https://www.youtube.com/watch?v=B8cOUVgSv80", event: "PCS 4 · Jan 2024", section: null }
+  ],
+  "Roman Puga": [
+    { opponent: "Taner Trembley", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRPBDTE6K8ZW9NC4HF5JRX/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Hamzeh Trad", url: "https://youtu.be/nAItOkjuqtU", event: "LFA 227 · Feb 2026", section: null },
+    { opponent: "Raul Navarrette", url: "https://youtu.be/WRZw9JuPeDY", event: "LFA 215 · Aug 2025", section: null },
+    { opponent: "Bryen Dao", url: "https://youtu.be/6p57gtW5hao", event: "UNF 21 · Nov 2024", section: null },
+    { opponent: "Rickey Furar", url: "https://youtu.be/ZyVNkKtNpvE", event: "Bellator 219 · Mar 2019", section: null }
+  ],
+  "Taner Trembley": [
+    { opponent: "Roman Puga", url: "https://www.paramountplus.com/shows/video/ALVE01KZVRPBDTE6K8ZW9NC4HF5JRX/", event: "Dana White's Contender Series · Aug 2026", section: "Pre-UFC" },
+    { opponent: "Cole Alaxanian", url: "https://ufcfightpass.com/video/891538", event: "LFA 223 · Nov 2025", section: null },
+    { opponent: "Gabriel Eurit", url: "https://www.youtube.com/live/FqmgV4_2KoY?si=dmKoSTa3e7a0tLyQ", event: "LFA 210 · Jun 2025", section: null },
+    { opponent: "Kyle Zimick", url: "https://www.youtube.com/live/k1ihdhhtYp4?si=eVLnRQEgib5j7MSR", event: "LFA 206 · Apr 2025", section: null },
+    { opponent: "Davi Young", url: "https://youtu.be/jkefPzZ2Kvk", event: "Ignite Fights - Mecca 22 · Jun 2024", section: null }
+  ],
   "Leonardo Guimaraes": [
     { opponent: "Muhammad Said", url: "https://www.youtube.com/watch?v=sGCVxBDP_JQ", event: "MMA Series 87 · Dec 2024", section: "Pre-UFC" }
   ],
@@ -35208,90 +35307,6 @@
     { opponent: "Don Shainis", url: "https://www.youtube.com/watch?v=JfCtQL0akT0", event: "Cage Titans 69 · Jan 2025", section: null },
     { opponent: "Nathan Ghareeb", url: "https://ufcfightpass.com/video/266419", event: "CES MMA 65 · Nov 2021", section: null },
     { opponent: "Josh Hardy", url: "https://ufcfightpass.com/video/241270", event: "CES MMA 63 · Aug 2021", section: null },
-  ],
-  "Roman Puga": [
-    { opponent: "Hamzeh Trad", url: "https://youtu.be/nAItOkjuqtU", event: "LFA 227 · Feb 2026", section: "Pre-UFC" },
-    { opponent: "Raul Navarrette", url: "https://youtu.be/WRZw9JuPeDY", event: "LFA 215 · Aug 2025", section: null },
-    { opponent: "Bryen Dao", url: "https://youtu.be/6p57gtW5hao", event: "UNF 21 · Nov 2024", section: null },
-    { opponent: "Rickey Furar", url: "https://youtu.be/ZyVNkKtNpvE", event: "Bellator 219 · Mar 2019", section: null },
-  ],
-  "Taner Trembley": [
-    { opponent: "Cole Alaxanian", url: "https://ufcfightpass.com/video/891538", event: "LFA 223 · Nov 2025", section: "Pre-UFC" },
-    { opponent: "Gabriel Eurit", url: "https://www.youtube.com/live/FqmgV4_2KoY?si=dmKoSTa3e7a0tLyQ", event: "LFA 210 · Jun 2025", section: null },
-    { opponent: "Kyle Zimick", url: "https://www.youtube.com/live/k1ihdhhtYp4?si=eVLnRQEgib5j7MSR", event: "LFA 206 · Apr 2025", section: null },
-    { opponent: "Davi Young", url: "https://youtu.be/jkefPzZ2Kvk", event: "Ignite Fights - Mecca 22 · Jun 2024", section: null },
-  ],
-  "Alik Lorenz": [
-    { opponent: "Abdulrakhman Yakhyaev", url: "https://ufcfightpass.com/video/849231", event: "Dana White's Contender Series · Aug 2025", section: "Pre-UFC" },
-    { opponent: "Ryan Parker", url: "https://ufcfightpass.com/video/719307", event: "LFA 196 · Nov 2024", section: null },
-    { opponent: "Thomas Powell", url: "https://ufcfightpass.com/video/667888", event: "LFA 188 · Jul 2024", section: null },
-    { opponent: "Ben Parrish", url: "https://ufcfightpass.com/video/604269", event: "LFA 180 · Mar 2024", section: null },
-    { opponent: "Kyler Fairchild", url: "https://ufcfightpass.com/video/502330", event: "LFA 163 · Jul 2023", section: null },
-    { opponent: "Darion Abbey", url: "https://www.youtube.com/watch?v=T2oDpra2Id8", event: "Caged Aggression 32 · Oct 2021", section: null },
-    { opponent: "Pierre Walters", url: "https://www.youtube.com/watch?v=HW7x2GEWtxk", event: "Caged Aggression 31 · May 2021", section: null },
-  ],
-  "Mahamed Aly": [
-    { opponent: "Iwo Baraniewski", url: "https://ufcfightpass.com/video/858928", event: "Dana White's Contender Series · Sep 2025", section: "Pre-UFC" },
-    { opponent: "Derrick Bradley", url: "https://www.youtube.com/watch?v=zbcfh0FAYOI", event: "CZMMA 79 · Jun 2024", section: null },
-    { opponent: "John Ott", url: "https://www.youtube.com/watch?v=B8cOUVgSv80", event: "PCS 4 · Jan 2024", section: null },
-  ],
-  "Cristian Perez": [
-    { opponent: "Gilberto Santos", url: "https://youtu.be/QhWFz6WnezM", event: "Elite Xtreme Fighting 23 · Apr 2026", section: "Pre-UFC" },
-    { opponent: "Manoel Sousa", url: "https://ufcfightpass.com/video/849228", event: "Dana White's Contender Series · Aug 2025", section: null },
-    { opponent: "Bruno Cannetti", url: "https://youtu.be/PrecLN9aiPk", event: "Combate Global · Jun 2023", section: null },
-    { opponent: "Gilber Ordonez", url: "https://youtu.be/B_M8xPVeIok", event: "Combate Global · Nov 2022", section: null },
-    { opponent: "Samuel Alvarez", url: "https://youtu.be/6CeP_ozbQhw", event: "Combate Global · Aug 2022", section: null },
-    { opponent: "Sebastian Santana Guedes", url: "https://youtu.be/l6Ul8J4GSlw", event: "Combate Global · Apr 2022", section: null },
-    { opponent: "Alfrego Ruelas", url: "https://youtu.be/Pec1EXP72gM", event: "Combate Global · Nov 2021", section: null },
-    { opponent: "Enrique Gonzalez", url: "https://youtu.be/P4I1JABXIQw", event: "Combate Global · Nov 2021", section: null },
-    { opponent: "Jair Perez", url: "https://youtu.be/sBXE-rqfxHU", event: "Combate Americas 44 · Sep 2019", section: null },
-    { opponent: "Saul Cabrera", url: "https://youtu.be/4Ifw9G-_fxM", event: "Combate 30 · Feb 2019", section: null },
-  ],
-  "Logan Paxton": [
-    { opponent: "RJ Hoyt", url: "https://ufcfightpass.com/video/889155", event: "Anthony Pettis FC 21 · Nov 2025", section: "Pre-UFC" },
-    { opponent: "Armus Guyton", url: "https://ufcfightpass.com/video/840831", event: "Anthony Pettis FC 18 · Jul 2025", section: null },
-    { opponent: "Michael McDonald", url: "https://youtu.be/BEhV7BqMLdA", event: "MPX Promotions · Nov 2024", section: null },
-    { opponent: "Kerry Lattimer", url: "https://youtu.be/ZOjhVQuErnM", event: "MPX Promotions · Aug 2024", section: null },
-    { opponent: "Charlie Kennedy", url: "https://youtu.be/2yrUBHTVgD8", event: "SAARFC 25 · Feb 2024", section: null },
-    { opponent: "Boris Novachkov", url: "https://youtu.be/RpSj-DzofY4", event: "MCF 23 · Nov 2022", section: null },
-    { opponent: "Jacobi Jones", url: "https://ufcfightpass.com/video/261813", event: "LFA 116 · Oct 2021", section: null },
-  ],
-  "Trent Miller": [
-    { opponent: "Ryan Gandra", url: "https://ufcfightpass.com/video/849234", event: "Dana White's Contender Series · Aug 2025", section: "Pre-UFC" },
-    { opponent: "Said-Magomed Abdulgaziev", url: "https://ufcfightpass.com/video/804332", event: "Tuff-N-Uff 144 · May 2025", section: null },
-    { opponent: "Dylan O'Sullivan", url: "https://youtu.be/6yldPJtt7cA", event: "Borroka Promotions 2 · Mar 2025", section: null },
-    { opponent: "Buddy Wallace", url: "https://ufcfightpass.com/video/736803", event: "Tuff-N-Uff 140 · Dec 2024", section: null },
-    { opponent: "Marcus Nash", url: "https://youtu.be/h4Snls9XqYY", event: "UFL 5 · Aug 2024", section: null },
-    { opponent: "Mike Jones", url: "https://youtu.be/KI47OMSXi7Q", event: "Fierce FC 31 · Apr 2024", section: null },
-    { opponent: "Chato Wiest", url: "https://youtu.be/Tqv9YGTpxyM", event: "CFFC 125 · Sep 2023", section: null },
-    { opponent: "Brooks Callaghan", url: "https://youtu.be/ukUKFA8Yyvk", event: "RUF MMA 52 · Feb 2023", section: null },
-  ],
-  "Douglas Rodrigues": [
-    { opponent: "Gabriel Ramos", url: "https://youtu.be/w8-x_v5PPaA", event: "Future MMA 17 · Mar 2026", section: "Pre-UFC" },
-    { opponent: "Jaime Souza", url: "https://youtu.be/1g6G7a-sBAg", event: "Future MMA 16 · Nov 2025", section: null },
-    { opponent: "Emerson Richard", url: "https://youtu.be/pHJZ_khP89M", event: "Future MMA 14 · Apr 2025", section: null },
-    { opponent: "Rickson Oliveira Pisani", url: "https://youtu.be/_BOgLu2p7ro", event: "Fight Pro Championship 3 · Mar 2023", section: null },
-    { opponent: "Wesley Silva do Nascimento", url: "https://youtu.be/tyEOCAPhJ00", event: "Predador FC 41 · Jun 2018", section: null },
-    { opponent: "Fledson Silva Santos", url: "https://youtu.be/XVv9J2QLrNk", event: "Centuriao Fight Open 4 · Jun 2018", section: null },
-  ],
-  "Namo Fazil": [
-    { opponent: "Jake Babian", url: "https://youtu.be/AfmwBsLAfB8", event: "MVP 1 · May 2026", section: "Pre-UFC" },
-    { opponent: "Yakub Sulimanov", url: "https://youtu.be/g7POcB71nYo", event: "971 FC 2 · Jun 2025", section: null },
-    { opponent: "Davlatbek Khozhiev", url: "https://youtu.be/9n0B1EeE4lI", event: "MEFC 5 · Oct 2024", section: null },
-    { opponent: "Khaled Amr", url: "https://ufcfightpass.com/video/512973", event: "UAE Warriors 43 · Aug 2023", section: null },
-    { opponent: "Mohammad Alaqraa", url: "https://ufcfightpass.com/video/374719", event: "UAE Warriors 31 · Jul 2022", section: null },
-  ],
-  "Kaik Brito": [
-    { opponent: "Ronald Paradeiser", url: "https://www.youtube.com/watch?v=V5czVpVbIMY", event: "Oktagon 84 · Feb 2026", section: "Pre-UFC" },
-    { opponent: "Joilton Lutterbach", url: "https://youtu.be/PBCfuwlyGt4", event: "Oktagon 73 · Jun 2025", section: null },
-    { opponent: "Ion Surdu", url: "https://youtu.be/zxJy5DSt5Ek", event: "Oktagon 64 · Dec 2024", section: null },
-    { opponent: "Oban Elliott", url: "https://ufcfightpass.com/video/518071", event: "Dana White's Contender Series · Aug 2023", section: null },
-    { opponent: "David Kozma", url: "https://youtu.be/iDEJAbUTaa8", event: "Oktagon MMA · Dec 2022", section: null },
-    { opponent: "Andrej Kalasnik", url: "https://www.youtube.com/watch?v=TEr6K0tcEqg", event: "Oktagon MMA - Oktagon Prime 5 · Mar 2022", section: null },
-    { opponent: "Petr Knize", url: "https://youtu.be/ZMU1lXIwP6o", event: "Oktagon MMA · Sep 2021", section: null },
-    { opponent: "Robert Bryczek", url: "https://youtu.be/kCYpyI6UCho", event: "Oktagon MMA · May 2021", section: null },
-    { opponent: "Gabor Boraros", url: "https://www.youtube.com/watch?v=msT2q8PLyP0", event: "Oktagon MMA · Nov 2019", section: null },
-    { opponent: "Mateusz Rębecki", url: "https://youtu.be/LfaxcC-Cukw", event: "Battlefield FC 2 · Jul 2019", section: null },
   ],
   "Joel Alvarez": [
     { opponent: "Chidi Njokuani", url: "https://www.paramountplus.com/shows/video/ALVE01KZA4D3WQEE3TH7SXDR01CC92/", event: "UFC 330 · Aug 2026", section: "UFC" },
