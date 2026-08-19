@@ -2782,7 +2782,15 @@
        Tape Study / Odds History only have 2 columns and rarely overflow,
        but they share the same un-constrained `width:100%` table pattern,
        so giving all three wrappers their own horizontal scrollbar
-       contains any overflow locally instead of inflating the page. */
+       contains any overflow locally instead of inflating the page.
+
+       The Opponent cell in Fight History AND Odds History additionally sets
+       white-space:nowrap (in the row-render JS, not here) for the same
+       reason: without it, the opponent-record badge appended after the name
+       (oppRecordBadgeHTML) is free to wrap onto its own line inside the
+       cell, splitting "Name (W-L-D)" across two lines and misaligning that
+       row's height against its neighbors. nowrap forces the browser to grow
+       the table instead, which this wrapper's scrollbar already absorbs. */
     #fh-table-wrap, #ft-table-wrap, #fo-table-wrap {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -113913,7 +113921,7 @@ function populateFightHistory(name) {
  if (f.__upcoming) {
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
- <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentCurrentRecord(f.opponent))}</td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;white-space:nowrap;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentCurrentRecord(f.opponent))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="display:inline-flex;align-items:center;padding:2px 10px;border:1px solid var(--accent);border-radius:999px;color:var(--accent);font-size:0.62rem;font-weight:800;letter-spacing:0.05em;text-transform:uppercase;white-space:nowrap;">Upcoming</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.35);">—</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.35);">—</td>
@@ -113925,7 +113933,7 @@ function populateFightHistory(name) {
  const resultColor = f.result === 'W' ? '#00e668' : '#ff3d00';
  tr.innerHTML = `
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;">${f.date}</td>
- <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, f.date))}</td>
+ <td style="padding:0.6rem 0.75rem;font-weight:600;color:#fff;white-space:nowrap;"><span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='#fff'">${f.opponent}</span>${oppRecordBadgeHTML(opponentRecordAtFight(f.opponent, f.date))}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;"><span style="font-weight:800;color:${resultColor};">${f.result}</span></td>
  <td style="padding:0.6rem 0.75rem;color:rgba(255,255,255,0.75);">${f.method}</td>
  <td style="padding:0.6rem 0.75rem;text-align:center;color:rgba(255,255,255,0.75);">${f.round}</td>
@@ -114218,7 +114226,7 @@ function populateFightHistory(name) {
     td0.style.cssText = "padding:0.55rem 0.75rem;color:rgba(255,255,255,0.55);white-space:nowrap;";
     td0.textContent = fightDate || "—";
     var td1 = document.createElement("td");
-    td1.style.cssText = "padding:0.55rem 0.75rem;color:#fff;font-weight:600;";
+    td1.style.cssText = "padding:0.55rem 0.75rem;color:#fff;font-weight:600;white-space:nowrap;";
     var oppBadge = (typeof opponentRecordAtFight === "function" && fightDate) ? oppRecordBadgeHTML(opponentRecordAtFight(h.opponent, fightDate)) : "";
     td1.innerHTML = '<span class="fh-opponent" style="cursor:pointer;transition:color 0.15s;" onmouseover="this.style.color=\'var(--accent)\'" onmouseout="this.style.color=\'\'">' + escHtmlAttr(h.opponent || "") + '</span>' + oppBadge;
     var td2 = document.createElement("td");
