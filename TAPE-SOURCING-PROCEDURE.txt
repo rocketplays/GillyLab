@@ -1652,3 +1652,57 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   one exhausted bout.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (ee322947).
+
+2026-08-19 — ADAM LIVINGSTON
+  9 FIGHT_HISTORY gaps total; 2 already had tape (Tommy Gantt/DWCS,
+  Hugo Oyarzún/LFA 211, both Fight Pass, pre-existing), leaving 6
+  genuine gaps. Career splits across LFA (official YouTube channel),
+  Flex Fight Series (official YouTube channel, New York regional
+  promotion), and CFFC (Fight Pass partner promotion, individually
+  catalogued for CFFC 120 but incompletely).
+  SOLVED (4):
+    Kyle Pufahl (LFA 232: Visconde vs. Pintos, May 2026) — official
+      "LFA Fights" YouTube channel, "Adam Livingston vs. Kyle Pufahl
+      | Full Fight | LFA 232," oembed-verified.
+    Clint Patterson (Flex Fight Series Vol. 28, Oct 2023) — official
+      "Flex Fight Series" YouTube channel, "ADAM LIVINGSTON! DANA
+      WHITE CONTENDER SERIES PROSPECT!! FULL FIGHT!!! FFS 28,"
+      oembed-verified.
+    Christian Acerbo (Flex Fight Series Vol. 22, Apr 2023) — official
+      "Flex Fight Series" YouTube channel, "ADAM LIVINGSTON!! FULL
+      FIGHT! BAD BLOOD - FFS2." Title uses "FFS2" (chronological
+      2nd Flex Fight Series appearance) rather than the event number;
+      opponent confirmed via a separate interview video on a fan
+      channel ("MomsBasementMMA") titled "Adam Livingston on Long
+      Island MMA, MMA Career, and Fight vs. Christian Acerbo at FFS
+      22," oembed-verified.
+    Calvin Glover (Flex Fight Series Vol. 16, Sep 2022 — Livingston's
+      pro debut) — official "Flex Fight Series" YouTube channel,
+      "ADAM LIVINGSTON! FULL FIGHT FFS1." Title uses "FFS1"
+      (chronological 1st Flex Fight Series appearance, i.e. his pro
+      debut), oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (2):
+    Jake Hixenbaugh (LFA 194: Magomedov vs. Leyva, Oct 2024) — no
+      individual clip under bare-pair or event-number search. The
+      official "LFA Fights" YouTube channel's LFA 194 prelims upload
+      only covers two named bouts (Butler/Mesquita, Cavalari/Adams),
+      not this one; channel search for "Livingston Hixenbaugh" and
+      "LFA 194" returned nothing further. Fight Pass: searched "LFA
+      194" directly — individually catalogued bouts exist for that
+      card but none feature Livingston or Hixenbaugh. Genuinely
+      exhausted.
+    Daniel Mahoney (CFFC 120: Ndregjoni vs. Araujo, Jun 2023) — no
+      match under bare-pair or event-number search. CFFC 120 is
+      partially catalogued on Fight Pass (6 individual bouts found,
+      confirming the promotion is a partner) but Livingston/Mahoney
+      is not among them. The official "CFFC - Cage Fury Fighting
+      Championships" YouTube channel (@CageFuryMMA) was searched
+      directly for "Livingston Mahoney" and "CFFC 120" — no matches.
+      Genuinely exhausted.
+  Ran place-tape-links.cjs --write for all 6 resolvable bouts (4 new
+  + 2 pre-existing re-supplied, since the script replaces a fighter's
+  whole TAPE_STUDY block). Report: 6 parsed, 6 placed, 0 unplaced —
+  8 FIGHT_HISTORY rows vs 6 placed correctly reflects the two
+  exhausted bouts.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (51d6488c).
