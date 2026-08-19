@@ -129901,10 +129901,31 @@ function recordAsOf(name, dateStr) {
 // Same lookup, but resolves `opponentName` to its FIGHT_HISTORY key first —
 // feed / odds / tape-study rows don't always spell an opponent's name exactly
 // the way their own FIGHT_HISTORY key does.
+//
+// Falls back to OPPONENT_RECORD_CACHE (data/opponent-record-cache-lite.json,
+// built by scripts/fetch-opponent-records.cjs from Sherdog) when the opponent
+// has no FIGHT_HISTORY profile of their own — the DWCS-newcomer / regional-
+// fighter case, which is exactly where this badge matters most for judging
+// pre-UFC competition level. Keyed the same way the script built it:
+// "<_newsNorm(opponent)>|<dateStr>", where dateStr is the FIGHT_HISTORY date
+// string of THIS bout (already what every call site passes in).
+window.OPPONENT_RECORD_CACHE = window.OPPONENT_RECORD_CACHE || {};
+(function(){
+  fetch('./data/opponent-record-cache-lite.json').then(r => r.ok ? r.json() : {}).then(d => {
+    window.OPPONENT_RECORD_CACHE = d || {};
+    // Untracked-opponent badges may have rendered blank before this landed —
+    // re-render an already-open profile so they light up, same pattern as the
+    // FIGHT_STATS fetch above.
+    if (window.__currentFighter) { try { populateFightHistory(window.__currentFighter); } catch(e){} }
+  }).catch(()=>{});
+})();
 function opponentRecordAtFight(opponentName, dateStr) {
   if (!opponentName || !dateStr) return null;
   const key = (typeof scoutingHistKey === 'function') ? scoutingHistKey(opponentName) : opponentName;
-  return recordAsOf(key || opponentName, dateStr);
+  const own = recordAsOf(key || opponentName, dateStr);
+  if (own) return own;
+  const cacheKey = _newsNorm(opponentName) + '|' + dateStr;
+  return window.OPPONENT_RECORD_CACHE[cacheKey] || null;
 }
 // Opponent's CURRENT record — used for a fight that hasn't happened yet (the
 // Fight History "Upcoming" placeholder), where "record at time of fight"

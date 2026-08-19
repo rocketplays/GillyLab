@@ -52,6 +52,12 @@ const ROOT = path.resolve(__dirname, '..');
 const INDEX_PATH = path.join(ROOT, 'index.html');
 const EVENT_PATH = path.join(ROOT, 'data', 'event.json');
 const CACHE_PATH = path.join(ROOT, 'data', 'opponent-record-cache.json');
+// Client-shipped derivative of CACHE_PATH: just the resolved lookups, flattened
+// to "<norm(opponent)>|<date>" -> "<record>". CACHE_PATH stays the full working
+// cache (every status, plus method/url/checkedAt) so re-runs never re-fetch an
+// ambiguous/not-found name; this lite file is what index.html actually fetches,
+// kept small on purpose since fight-stats.json already eager-loads at ~8MB.
+const CACHE_LITE_PATH = path.join(ROOT, 'data', 'opponent-record-cache-lite.json');
 
 // ── name normalization (matches index.html's _newsNorm convention) ─────────
 function norm(s) {
@@ -507,6 +513,19 @@ async function main() {
     console.log(`[opponent-records] stopped early (budget reached) -- ${remaining} still unprocessed; re-run to continue`);
   }
   console.log(DRY ? '[opponent-records] --dry-run: cache not written' : '[opponent-records] cache is up to date at ' + path.relative(ROOT, CACHE_PATH));
+
+  // Rebuild the lite file every run (cheap — it's a filter over what's already
+  // in memory), even on a run that resolved nothing new, so a first-time wire-up
+  // or a manual edit to the working cache is always reflected client-side.
+  if (!DRY) {
+    const lite = {};
+    for (const key in cache) {
+      const v = cache[key];
+      if (v && v.status === 'resolved' && v.record) lite[key] = v.record;
+    }
+    fs.writeFileSync(CACHE_LITE_PATH, JSON.stringify(lite));
+    console.log(`[opponent-records] lite cache written: ${Object.keys(lite).length} resolved lookups at ` + path.relative(ROOT, CACHE_LITE_PATH));
+  }
 }
 
 module.exports = {

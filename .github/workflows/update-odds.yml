@@ -78,6 +78,31 @@ jobs:
       - name: Fetch fighter news
         run: node scripts/fetch-fighter-news.cjs || true
 
+      # "Opponent's record at time of fight" (Tapology-style badge) for opponents
+      # who have no FIGHT_HISTORY profile of their own — the DWCS-newcomer / UFC-
+      # newcomer case, where the opponent is usually a regional fighter and this is
+      # the ONLY way to judge pre-UFC competition level. Sourced from Sherdog; see
+      # the long doc comment in the script for the resolution strategy.
+      #
+      # Runs here (AFTER the override steps) so event.json's card list is final —
+      # same reasoning as the strike-grid backfill below. SELF-CLEARING like that
+      # backfill too: the script's cache (data/opponent-record-cache.json) is keyed
+      # by "<opponent>|<date>" and already skips any key it has previously resolved
+      # OR conclusively marked ambiguous/not-found, so a steady-state run only does
+      # network work for opponents on a card fighter's FIGHT_HISTORY that showed up
+      # since the last run — a handful of names a day, usually zero. The one-time
+      # backfill across every upcoming-card fighter (1,776 lookups) is already done;
+      # this step is what keeps it current as new fights get added to the site.
+      #
+      # --time-budget-ms bounds one run well under the job's overall timeout even
+      # if a burst of newly-added fights needs several dozen fresh lookups at once;
+      # a bigger burst just finishes over consecutive twice-daily runs, same as the
+      # original backfill did across chunks. Non-fatal: a Sherdog hiccup must never
+      # block the odds update the site runs on, and worst case a badge is just
+      # missing until the next run resolves it.
+      - name: Backfill opponent records for untracked opponents
+        run: node scripts/fetch-opponent-records.cjs --time-budget-ms 120000 || true
+
       - name: Download fighter photos
         run: |
           mkdir -p data/photos
@@ -416,7 +441,7 @@ jobs:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
           # git exits 128, the whole odds job dies, twice a day. It is excluded from
           # public/ BY NAME in build-site.sh instead. If you rename it, change both.
-          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json data/climb.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/landing-grid.js worker/subscribe-features.js worker/pickem-model.js worker/scorecard-data.js"
+          FILES="index.html data/odds.json data/odds-history.json data/event.json data/event-recent.json data/card-changes.json data/photos/ data/odds-alert-state.json data/predictions-log.json data/predictions-graded.json data/predictions-scorecard.json data/fighter-news.json data/missing-bout-overrides.json data/espn-athletes.json data/espn-event-cache.json data/opponent-record-cache.json data/opponent-record-cache-lite.json data/fight-stats.json data/fight-grid.json data/fight-grid-all.json data/grid-names.json data/live-card.json data/pickem-results.json data/pickem-card.json data/rankings-extra.json data/roster.json data/fighter-lite.json data/name-aliases.json data/climb.json gl-sheet.js climb-app.js worker/landing-data.js worker/matchup-free.js worker/landing-grid.js worker/subscribe-features.js worker/pickem-model.js worker/scorecard-data.js"
           # ONE BAD PATH IN $FILES USED TO KILL THE WHOLE ODDS JOB.
           # `git add` on a path that doesn't exist is a fatal:
           #     fatal: pathspec 'data/_fight-grid-all.json' did not match any files
