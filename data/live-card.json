@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-18T23:59:12.875Z",
+ "generatedAt": "2026-08-19T00:29:39.774Z",
  "fighters": {
   "Marina Spasić": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-08-18T23:59:12.741Z"
+    }
+   ]
+  },
+  "Logan Paxton": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Cristian Perez",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:06",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Cristian Perez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 45,
+      "sigA": 71,
+      "totL": 58,
+      "totA": 90,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       32,
+       57
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       54
+      ],
+      "clinch": [
+       10,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 46,
+      "sigA": 97,
+      "totL": 51,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       24,
+       67
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       29,
+       71
+      ],
+      "clinch": [
+       15,
+       24
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-19T00:29:39.631Z"
+    }
+   ]
+  },
+  "Cristian Perez": {
+   "history": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Logan Paxton",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "1:06",
+     "event": "Dana White's Contender Series: Season 10, Week 2",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 18, 2026",
+     "opponent": "Logan Paxton",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 46,
+      "sigA": 97,
+      "totL": 51,
+      "totA": 103,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       24,
+       67
+      ],
+      "body": [
+       18,
+       23
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       29,
+       71
+      ],
+      "clinch": [
+       15,
+       24
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 45,
+      "sigA": 71,
+      "totL": 58,
+      "totA": 90,
+      "tdL": 1,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:00",
+      "head": [
+       32,
+       57
+      ],
+      "body": [
+       4,
+       5
+      ],
+      "leg": [
+       9,
+       9
+      ],
+      "dist": [
+       35,
+       54
+      ],
+      "clinch": [
+       10,
+       17
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-19T00:29:39.631Z"
     }
    ]
   }
