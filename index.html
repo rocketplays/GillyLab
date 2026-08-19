@@ -4859,6 +4859,7 @@
  { name: "Dominick Reyes", division: "LHW", rank: "#10", record: "16-5-0", initials: "DRE", country: "USA" },
  { name: "Aleksandar Rakić", division: "HW", rank: "#10", record: "15-6-0", initials: "ARK", country: "Serbia" },
  { name: "Nikita Krylov", division: "LHW", rank: "#15", record: "31-12-0", initials: "NK", country: "Russia" },
+ { name: "Nilson Rojas", division: "FLW", rank: "NR", record: "9-0-0", initials: "NR", country: "Peru" },
  { name: "Johnny Walker", division: "LHW", rank: "#13", record: "22-10-1", initials: "JWA", country: "Brazil" },
  { name: "Dustin Jacoby", division: "LHW", rank: "NR", record: "22-10-1", initials: "DJA", country: "USA" },
  { name: "Zhang Mingyang", division: "LHW", rank: "NR", record: "19-8-0", initials: "ZMY", country: "China" },
@@ -8346,6 +8347,7 @@
 
  // ── VERIFIED STATS FROM UFCSTATS.COM ──
  const FIGHTER_STATS = {
+  "Nilson Rojas": { ht:"5'5\"", dob:"1999-04-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"78%", streak:9, gym:"Pitbull Martial Arts Center / Team Bad Boy" },
   "Damien Anderson": { ht:"5'7\"", dob:"1997-01-04", reach:null, stance:null, slpm:0.47, strAcc:"35%", sapm:0.4, strDef:"45%", kd:0.0, tdLanded:0.0, tdAcc:"0%", tdDef:"33%", subAvg:1.0, finRate:"100%", streak:5, gym:"Simple Man Martial Arts" },
   "Ezra Elliott": { ht:"5'10\"", dob:"2000-05-18", reach:"71.5\"", stance:"Southpaw", slpm:0.4, strAcc:"55%", sapm:0.47, strDef:"65%", kd:0.0, tdLanded:12.0, tdAcc:"67%", tdDef:"100%", subAvg:3.0, finRate:"100%", streak:7, gym:"MMA Lab" },
   "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
@@ -45182,6 +45184,17 @@
 };
 
 const FIGHT_HISTORY = {
+  "Nilson Rojas": [
+    { date: "Jul 22, 2026", opponent: "Gonzalo Hanampa", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Inka 59: Guerra en Sudamerica" },
+    { date: "Aug 21, 2025", opponent: "Wallafy de Paulo", result: "W", method: "TKO (Body Kick and Punches)", round: 1, time: "4:30", event: "FFC 94: Llontop vs. Brasil" },
+    { date: "Jul 21, 2024", opponent: "William Rocha", result: "W", method: "TKO (Punches)", round: 1, time: "4:25", event: "OFL 9: Open Fight LATAM 9" },
+    { date: "Aug 26, 2023", opponent: "Adrian Haly", result: "W", method: "TKO (Punches)", round: 3, time: "4:45", event: "NLFC: Next Level Fight Club 15" },
+    { date: "Nov 18, 2022", opponent: "Miguel Angel Fierro", result: "W", method: "KO (Punch)", round: 1, time: "1:50", event: "FFC 55: Navarrete vs. Lanskoi" },
+    { date: "Oct 8, 2022", opponent: "John Alvarez", result: "W", method: "KO (Flying Knee)", round: 1, time: "1:13", event: "OFC 1: Open Fight Chile 1" },
+    { date: "Sep 5, 2019", opponent: "Nick Vargas", result: "W", method: "TKO (Punches)", round: 2, time: "1:20", event: "TWC 10: Rojas vs. Vargas" },
+    { date: "Sep 19, 2018", opponent: "Andres Santillana", result: "W", method: "Decision (Majority)", round: 3, time: "5:00", event: "FFC 34: Mora vs. Diaz" },
+    { date: "Jul 15, 2018", opponent: "Angel Soto", result: "W", method: "TKO (Punches)", round: 2, time: "1:25", event: "Peruvian Evolution Fight 1: Soto vs. Rojas" },
+  ],
   "Damien Anderson": [
     { date: "Jul 18, 2026", opponent: "Ezra Elliott", result: "L", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "UFC Fight Night: Du Plessis vs. Usman", org: "UFC" },
     { date: "Feb 6, 2026", opponent: "Alejandro Gutierrez", result: "W", method: "Submission (Kneebar)", round: 1, time: "1:52", event: "CFFC 150: Zhumagul vs. Morrison", org: "CFFC" },
@@ -114287,6 +114300,10 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Nilson Rojas": [
+    { icon: "🏅", title: "Enters the UFC undefeated at 9-0, with 7 of his 9 wins by knockout or TKO — 8 of 9 by finish overall", detail: null },
+    { icon: "🥊", title: "Signed with Iridium Sports Agency in 2026; nicknamed \"El Rayo\" for his one-shot knockout power at flyweight", detail: null }
+  ],
   "Alexander Poppeck": [
     { icon: "🏆", title: "USC (Ultimate Sparta Championship) Light Heavyweight Champion — won the title with a first-round TKO of Koray Cengiz in Jul 2022", detail: null },
     { icon: "🏆", title: "AFSO International MMA Middleweight Champion, 2017", detail: null },
