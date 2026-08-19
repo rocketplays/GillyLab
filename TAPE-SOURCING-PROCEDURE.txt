@@ -1414,3 +1414,52 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   one exhausted bout.
   fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
   public/, committed (8fb31ebd).
+
+2026-08-18 — SILVESTRE SANCHEZ
+  10 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start. Mostly
+  regional Mexican/Central American promotions (LUX Fight League,
+  UWC, BSC, BTC) plus one UK card (Durham Fight Series) and one
+  small unaffiliated show (SFN: Supreme Fight Night).
+  Fight Pass: LUX Fight League, UWC, and BSC are all Fight Pass
+  partner promotions and surfaced individual clips directly. LUX 048
+  and LUX 045 initially resolved as Fight Pass full-card replays
+  (playlist pages, no individually catalogued clip); a follow-up
+  YouTube search on the official "Lux Fight League Oficial" channel
+  found individually catalogued clips for both bouts, which were
+  preferred over the Fight Pass full-card fallbacks.
+  SOLVED (9):
+    Irving Cardona (LUX 060) — Fight Pass video/972181.
+    David Hernandez (LUX 056) — Fight Pass video/892296.
+    Emmanuel Gonzalez (UWC 51) — Fight Pass video/589514.
+    Fabian Albuerne (BSC 13) — Fight Pass video/446842.
+    Jafeth Herrera Quiros (LUX 048) — official "Lux Fight League
+      Oficial" YouTube channel, individually catalogued clip,
+      oembed-verified; preferred over the Fight Pass full-card
+      replay (video/726421) initially found for this bout.
+    Matias Gauna (LUX 045) — official "Lux Fight League Oficial"
+      YouTube channel, individually catalogued clip, oembed-
+      verified; preferred over the Fight Pass full-card replay
+      (video/677084) initially found for this bout.
+    Luke Roberts (BTC 21) — official "BTC Fight Promotions" YouTube
+      channel, oembed-verified.
+    Matt Smith (BTC 19) — official "BTC Fight Promotions" YouTube
+      channel, oembed-verified.
+    Justin Condie (Durham Fight Series) — official "Durham Fight
+      Series" YouTube channel, oembed-verified.
+  UNRESOLVED, GENUINELY EXHAUSTED (1):
+    Erick Daniel Batista (SFN 01: Supreme Fight Night 01, Jan 2022) —
+      no YouTube match under "Silvestre Sanchez vs Erick Daniel
+      Batista" or "Supreme Fight Night 01 Silvestre Sanchez." Located
+      the promotion's own official channel ("@sfnmma") and searched
+      it directly for "Batista" and "Sanchez" — zero relevant results
+      either way. Fight Pass search for "Erick Daniel Batista"
+      returned no relevant match; the only "Erick Batista" hit
+      (Anuar Aburto vs Erick Batista, LUX 046) is a different fighter
+      in a different promotion/weight class, not this bout. Genuinely
+      exhausted.
+  Ran place-tape-links.cjs --write for the 9 resolvable bouts (0
+  pre-existing rows, no merge risk). Report: 9 parsed, 9 placed, 0
+  unplaced — 10 FIGHT_HISTORY rows vs 9 placed correctly reflects the
+  one exhausted bout.
+  fix-tape-sections.cjs --write: 0 changes. Syntax-checked, rebuilt
+  public/, committed (018a7d4c).
