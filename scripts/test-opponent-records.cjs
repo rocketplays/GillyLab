@@ -8,7 +8,7 @@ const assert = require('assert');
 const {
   norm, untrackedOpponentsFor, parseSearchResults, parseFighterHistory,
   isoFromSherdogDate, recordAsOfFromHistory, findMutualConfirmation,
-  stripDiacritics, parseDateUTC, findRowNearDate,
+  stripDiacritics, parseDateUTC, findRowNearDate, readNameAliases, resolveFhKey,
 } = require('./fetch-opponent-records.cjs');
 
 let fail = 0;
@@ -230,6 +230,47 @@ const PROFILE_HEBERT = `
   console.log('\n== stripDiacritics ==');
   check('"Hugo Oyarzún" -> "Hugo Oyarzun"', stripDiacritics('Hugo Oyarzún') === 'Hugo Oyarzun', stripDiacritics('Hugo Oyarzún'));
   check('plain ASCII unchanged', stripDiacritics('Hunter Smith') === 'Hunter Smith');
+})();
+
+// ── readNameAliases / resolveFhKey ──────────────────────────────────────────
+// Fixture mirrors the real shape of index.html's NAME_ALIASES block (verified
+// live: 'gary-balletto' -> 'Gary Balletto Jr.' etc. are real entries) so this
+// tests the actual regex against real formatting, not an idealized one.
+const NAME_ALIASES_FIXTURE = `
+  const SLUG_ALIASES = {
+    'gary-balletto': 'Gary Balletto Jr.',
+  };
+  const NAME_ALIASES = {
+    'abdul rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
+    'gary balletto': 'Gary Balletto Jr.',
+    'king green': 'Bobby Green',
+  };
+`;
+(function testReadNameAliases() {
+  console.log('\n== readNameAliases ==');
+  const aliases = readNameAliases(NAME_ALIASES_FIXTURE);
+  check('parses NAME_ALIASES, not SLUG_ALIASES above it', aliases['gary balletto'] === 'Gary Balletto Jr.', aliases['gary balletto']);
+  check('parses every entry', Object.keys(aliases).length === 3, Object.keys(aliases).length);
+  check('does not pick up the slug-keyed alias', aliases['gary-balletto'] === undefined);
+  const empty = readNameAliases('no NAME_ALIASES block here');
+  check('missing block -> empty object, not a throw', Object.keys(empty).length === 0);
+})();
+(function testResolveFhKey() {
+  console.log('\n== resolveFhKey ==');
+  const FH = { 'Gary Balletto Jr.': [], 'Bobby Green': [] };
+  const aliases = readNameAliases(NAME_ALIASES_FIXTURE);
+  // The real bug this fixes: ESPN's event.json spells him "Gary Balletto"
+  // (no "Jr."), which is not a FIGHT_HISTORY key on its own -- direct lookup
+  // must fall through to the alias map.
+  check('direct FH hit returns the name unchanged', resolveFhKey(FH, aliases, 'Bobby Green') === 'Bobby Green');
+  check('resolves via alias when no direct hit', resolveFhKey(FH, aliases, 'Gary Balletto') === 'Gary Balletto Jr.', resolveFhKey(FH, aliases, 'Gary Balletto'));
+  check('alias lookup is case-insensitive (event.json casing varies)', resolveFhKey(FH, aliases, 'GARY BALLETTO') === 'Gary Balletto Jr.', resolveFhKey(FH, aliases, 'GARY BALLETTO'));
+  check('unresolvable name -> null, not a guess', resolveFhKey(FH, aliases, 'Nobody Real') === null);
+  // Guards the exact failure mode this fix targets: an alias pointing at a
+  // name that itself isn't (or is no longer) a real FH key must not be
+  // trusted blindly -- resolveFhKey re-checks FH[aliased] before returning it.
+  const staleAliases = { 'ghost fighter': 'Not A Real FH Key' };
+  check('alias target must itself be a real FH key', resolveFhKey(FH, staleAliases, 'Ghost Fighter') === null);
 })();
 
 console.log('\n' + (fail === 0 ? 'ALL PASS' : fail + ' FAILURE(S)'));

@@ -134547,6 +134547,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Active-roster spellings that differ from the DB profile (also mapped in
     // ACTIVE_ROSTER_ALIASES near the roster render so the page is clickable).
     'jan blachowicz': 'Jan Błachowicz',
+    // ESPN spells her with the Polish ł; our DB key is the plain-ASCII "Sygula".
+    // NFD normalization doesn't help here -- ł isn't a base letter + combining
+    // diacritic, it's its own codepoint, so norm()-style stripping leaves it
+    // untouched and every automated fuzzy match on her name fails.
+    'klaudia syguła': 'Klaudia Sygula',
     'juan martinetti': 'Adrián Luna Martinetti',
     'jingnan xiong': 'Xiong Jingnan',
     'montserrat conejo ruiz': 'Montserrat Ruiz',
@@ -134563,6 +134568,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Odds feed uses her legal first name "Giovanna"; our DB and event.json
     // both use her ring name "Gigi".
     'giovanna canuto': 'Gigi Canuto',
+    // Batch added 2026-08-19: found via fetch-opponent-records.cjs's own-page
+    // backfill silently dropping these 12 (of 185) upcoming-card fighters --
+    // event.json's exact-lowercase spelling didn't match any FH key OR any
+    // existing alias here, so untrackedOpponentsFor() never ran for them and
+    // every one of their Fight History rows was missing an opponent-record
+    // badge, not just the newcomers. Each resolved to exactly one FH key via
+    // a normalized token-subset match (diacritics / hyphenation / suffix
+    // differences only) before being added -- see scripts/fetch-opponent-
+    // records.cjs's resolveFhKey for the same lookup this map now feeds.
+    'gabriel lourenço': 'Gabriel Lourenco',
+    'farés ziam': 'Farès Ziam',
+    'morgan charrière': 'Morgan Charriere',
+    'yair rodriguez': 'Yair Rodríguez',
+    'waldo cortes acosta': 'Waldo Cortes-Acosta',
+    'david martinez': 'David Martínez',
+    'édgar cháirez': 'Edgar Chairez',
+    'patricio pitbull': 'Patrício Pitbull',
+    'michael aswell': 'Michael Aswell Jr.',
+    'marc-andre barriault': 'Marc-André Barriault',
+    'julien leblanc': 'Julien Leblanc',
+    // Existing 'abdul rakhman yakhyaev' entry above uses a space; event.json's
+    // actual spelling is hyphenated ("Abdul-Rakhman Yakhyaev") and NAME_ALIASES
+    // lookups are exact-lowercase only (no hyphen normalization) -- so the
+    // hyphenated form needs its own entry rather than relying on the existing one.
+    'abdul-rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long

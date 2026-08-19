@@ -75,6 +75,37 @@ function stripDiacritics(s) {
   return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
+// ── NAME_ALIASES extraction (same regex convention as gen-pickem-card.cjs's
+// parseAliases) — index.html already hand-maintains this map for exactly the
+// event.json-name-vs-FIGHT_HISTORY-key mismatch problem (ESPN drops "Jr.",
+// drops diacritics, spells a nickname differently, etc.). Confirmed live: 14
+// of 185 upcoming-card fighters didn't match FH[name] directly (e.g. ESPN's
+// "Gary Balletto" vs our "Gary Balletto Jr."), and were silently dropped from
+// every backfill run before this fix -- not "no untracked opponents", just
+// never scanned. 12 of those 14 already have an entry in this exact map.
+// Reusing it (not reinventing fuzzy matching) means this script and the
+// client agree on every name by construction.
+function readNameAliases(indexHtml) {
+  const m = indexHtml.match(/const NAME_ALIASES\s*=\s*\{[\s\S]*?\n\s*\};/);
+  const out = {};
+  if (!m) return out;
+  const re = /'([^']+)':\s*'([^']+)'/g;
+  let x;
+  while ((x = re.exec(m[0]))) out[x[1]] = x[2];
+  return out;
+}
+// Resolve a raw fighter name (as spelled in data/event.json) to its
+// FIGHT_HISTORY key: direct hit first, then NAME_ALIASES (lowercased, same
+// lookup index.html's own resolveCanonicalFighterName uses). Returns null,
+// not a guess, when neither resolves -- same "don't guess" discipline as the
+// rest of this script.
+function resolveFhKey(FH, aliases, name) {
+  if (FH[name]) return name;
+  const aliased = aliases[String(name || '').toLowerCase()];
+  if (aliased && FH[aliased]) return aliased;
+  return null;
+}
+
 // ── FIGHT_HISTORY extraction (brace-match; same convention as
 // gen-sixdegrees-data.cjs — a narrow regex silently truncates this) ─────────
 function readFightHistory(indexHtml) {
@@ -461,8 +492,16 @@ async function main() {
 
   const indexHtml = fs.readFileSync(INDEX_PATH, 'utf8');
   const FH = readFightHistory(indexHtml);
-  const targets = untrackedOpponentsFor(FH, fighterNames.filter((n) => FH[n]));
-  const skippedFighters = fighterNames.filter((n) => !FH[n]);
+  const aliases = readNameAliases(indexHtml);
+  // Resolve every raw fighter name to its actual FH key (direct hit or via
+  // NAME_ALIASES) BEFORE filtering -- explicit-CLI-args callers pass FH keys
+  // directly (that path still works via the direct-hit branch), but
+  // fightersFromEventJson() returns whatever ESPN spelled, which is exactly
+  // where the alias lookup earns its keep.
+  const resolvedKeys = fighterNames.map((n) => resolveFhKey(FH, aliases, n));
+  const canonicalNames = [...new Set(resolvedKeys.filter(Boolean))];
+  const targets = untrackedOpponentsFor(FH, canonicalNames);
+  const skippedFighters = fighterNames.filter((n, i) => !resolvedKeys[i]);
   if (skippedFighters.length) {
     console.log('[opponent-records] no FIGHT_HISTORY for: ' + skippedFighters.join(', '));
   }
@@ -529,7 +568,7 @@ async function main() {
 }
 
 module.exports = {
-  norm, stripDiacritics, readFightHistory, untrackedOpponentsFor,
+  norm, stripDiacritics, readFightHistory, readNameAliases, resolveFhKey, untrackedOpponentsFor,
   parseSearchResults, parseFighterHistory, parseFightTable, isoFromSherdogDate,
   parseDateUTC, recordAsOfFromHistory, findMutualConfirmation, findRowNearDate,
   resolveOpponent, resolveViaFighterOwnPage,
