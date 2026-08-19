@@ -1183,3 +1183,74 @@ LERRYAN DOUGLAS — AUG 18 2026 — 13-bout gap sweep, 4 of 13 placed, 9 exhaust
   deliberately-skipped/exhausted bouts.
   fix-tape-sections.cjs --write: 0 changes both times. Syntax-checked,
   rebuilt public/, committed (f3fc9ad7, then 4a3e3620).
+
+2026-08-18 — ADAM DARBY
+  8 total pre-UFC FIGHT_HISTORY bouts, 0 linked to start (freshly filled
+  via fill-fighter same session). All 8 are Cage Warriors, spanning
+  2022-2026 — entirely the Fight-Pass-exclusive commercial era (per the
+  Mason Jones entry above, CW's own free YouTube uploads stop around
+  2020), so Fight Pass was checked FIRST for this fighter instead of
+  YouTube, on the reasoning that recent CW cards are far more likely to
+  be there than free.
+  METHODOLOGY NOTE — Fight Pass search box has an intermittent typing
+  bug: a `computer.type` action frequently lands as an empty string in
+  the input (confirmed via reading `input.value` through
+  javascript_tool) despite the UI showing a focused cursor, silently
+  falling back to the generic default/recent-content feed with no error.
+  Always verify `document.querySelector('input[placeholder="Search
+  here..."]').value` equals the intended query before trusting the
+  results below it — a same-looking screenshot can be either a real
+  result set or the empty-query default. When `computer.type` proved
+  flaky, setting the value directly via the native input setter +
+  dispatching an `input` event (bypassing synthetic keystrokes
+  entirely) was 100% reliable and should be preferred for this site.
+  SOLVED (6), 5 via a single "Adam Darby" Fight Pass search that
+  surfaced full fights directly (not just Countdown/preview content):
+    Thiago Habib (CW200, Feb 2026) — video/969652, 5:20.
+    Robert Constantin (CW194, Sep 2025) — video/864203, 20:35; Fight
+      Pass title uses his full "Robert Alexandru Constantin," stored
+      under the FIGHT_HISTORY spelling "Robert Constantin."
+    Tomasz Langowski (CW188, Apr 2025) — video/792933, 20:37; Fight
+      Pass title uses the Polish diminutive "Tomek Langowski" — same
+      person, stored under the FIGHT_HISTORY spelling.
+    Thorsten Jakobs (CW163, Nov 2023) — video/545778, 5:27.
+    Dorian Cliucinicov (CW140, Jun 2022) — video/371743, 7:45.
+    Jack Tucker (CW153, Apr 2023) — NOT on Fight Pass; found on the
+      official Cage Warriors YouTube channel, "Adam Darby vs. Jack
+      Tucker | FULL FIGHT | CW 153," oembed-verified.
+  OPPONENT-NAME MISMATCH TRAP CAUGHT AND RESOLVED: Fight Pass's own
+    "Countdown"/Energized-Show preview content pairs Darby with
+    different names than two FIGHT_HISTORY opponents — "Cage Warriors
+    153 Dublin Countdown" pairs him with Solomon Simon (FIGHT_HISTORY
+    says Jack Tucker), and "Cage Warriors 147 'Unplugged' London
+    Countdown" pairs him with Paddy Wilkinson (FIGHT_HISTORY says Mush
+    Aslani). Both cross-checked against Tapology's official bout pages:
+    Tucker and Aslani are confirmed as the actual final opponents of
+    record (fight results, finish times, dates all match
+    FIGHT_HISTORY exactly) — Simon and Wilkinson were evidently
+    originally-announced pairings that changed before fight week, a
+    pre-fight-week replacement, not a data error. No FIGHT_HISTORY fix
+    needed.
+  UNRESOLVED, GENUINELY EXHAUSTED (2):
+    Tato Primera (CW190, Jun 2025) — not on Fight Pass. Two YouTube
+      candidates found ("Tato Primera vs Adam Darby -2025 Cage Warriors
+      190," WpCvj4HjM7U, and a mislabeled "Adam Darby vs. Tomasz
+      Łangowski | FREE FIGHT | CW 190 Unplugged," ASUvE7Oacz4, which
+      despite its title text matches the CW190 card in the URL slug)
+      — both FAIL oembed verification (404 Not Found and 403 Forbidden
+      respectively). Per the "any failure = dead, do not place" rule,
+      neither placed.
+    Mush Aslani (CW147, Nov 2022) — not on Fight Pass. The apparent
+      "FULL FIGHT" upload (EBhkqlaj_uQ) 404s on oembed. The only
+      surviving alternative (x5kG_wFp0iA, "Mush Aslani | Cage warriors
+      147 Unplugged | MMA UK") passes oembed but turned out on
+      inspection (via get_page_text on the watch page) to be a 4:07
+      POST-FIGHT INTERVIEW — "Team Renegade's Mush Aslani speaks to
+      Katie Hunter about his standing TKO victory over Adam Darby" —
+      not fight footage, rejected per the non-fight-footage rule.
+  Ran place-tape-links.cjs --write for the 6 resolvable bouts (0
+  pre-existing + 6 newly found, no merge risk) in one temp file.
+  Report: 6 parsed, 6 placed, 0 unplaced — 8 FIGHT_HISTORY rows vs 6
+  placed correctly reflects the two deliberately-skipped/exhausted
+  bouts. fix-tape-sections.cjs --write: 0 changes. Syntax-checked,
+  rebuilt public/, committed (6813ff00).
