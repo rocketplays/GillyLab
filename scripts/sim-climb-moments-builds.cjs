@@ -48,6 +48,11 @@ function trialClinch(holdChance,sg){
   if(Math.random()<0.45) return 'flip';
   return 'noharm';
 }
+function trialFade(pFinish,backfire,stopAgainst){
+  if(Math.random()<pFinish) return 'finT';
+  if(Math.random()<backfire){ if(Math.random()<stopAgainst) return 'finF'; return 'flip'; }
+  return 'noharm';
+}
 function ev(c,n){ return (c.finT - c.finF - c.flip*ROUND_COST)/n; }
 
 const DATA=JSON.parse(fs.readFileSync(R+'data/climb.json','utf8'));
@@ -103,9 +108,24 @@ const TRIALS_PER_OPP=40; // x OPPONENTS.length real matchups = plenty of samples
 function evalBuild(attrs, groundSkill){
   const hurt={swarm:{finT:0,finF:0,flip:0,n:0}, compose:{finT:0,finF:0,flip:0,n:0}, ground:{finT:0,finF:0,flip:0,n:0}};
   const trouble={fire:{finT:0,finF:0,flip:0,n:0}, evade:{finT:0,finF:0,flip:0,n:0}, clinch:{finT:0,finF:0,flip:0,n:0}};
+  const pre={push:{finT:0,finF:0,flip:0,n:0}, finish:{finT:0,finF:0,flip:0,n:0}};
+  let gassedSum=0, gassedN=0;
   for(const sg of SIGS){
     for(const opp of OPPONENTS){
       const ctx = ctxFor(attrs, sg, opp);
+      gassedSum += ctx.gassed; gassedN++;
+      // push (fade) — one roll per opponent/sig, not per winning (fade doesn't split on it)
+      for(let t=0;t<TRIALS_PER_OPP;t++){
+        const pFinish=clampv(0.22+ctx.finBias*0.35-ctx.gassed*0.15,0.08,0.70);
+        const backfire=clampv(0.30+ctx.gassed*0.50,0.15,0.85);
+        const r=trialFade(pFinish,backfire,stopAgainstOf(sg));
+        pre.push[r]++; pre.push.n++;
+        // finish (closeround) — always winning=false in the real code
+        let pLandC=clampv(0.45+ctx.finBias*0.30+ctx.frail*0.20,0.2,0.9);
+        if(sg==='killer') pLandC=Math.min(0.95,pLandC+0.15);
+        const rc=trialAggressive(pLandC,AGG_BACKFIRE,stopAgainstOf(sg),false,AGG_STEAL);
+        pre.finish[rc]++; pre.finish.n++;
+      }
       for(const winning of WINNING){
         for(let t=0;t<TRIALS_PER_OPP;t++){
           // swarm/fire
@@ -136,7 +156,7 @@ function evalBuild(attrs, groundSkill){
       }
     }
   }
-  return {hurt,trouble};
+  return {hurt,trouble,pre,avgGassed:gassedSum/gassedN};
 }
 
 // The page FETCHES its board asynchronously — D is null until that microtask drains.
@@ -151,10 +171,11 @@ for(const budgetName of Object.keys(BUDGETS)){
   console.log('='.repeat(78));
   console.log('build'.padEnd(10)+'wrestling'.padStart(11)+'grappling'.padStart(11)+'groundSkill'.padStart(13)+
     '  swarm'.padStart(9)+'  compose'.padStart(11)+'  ground'.padStart(10)+'   |   fire'.padStart(11)+'  evade'.padStart(9)+'  clinch'.padStart(10));
+  const preRows=[];
   for(const [name,order] of Object.entries(BUILDS)){
     const attrs = buildAttrs(order, budget);
     const gs = groundSkillOf(attrs);
-    const {hurt,trouble} = evalBuild(attrs, gs);
+    const {hurt,trouble,pre,avgGassed} = evalBuild(attrs, gs);
     console.log(
       name.padEnd(10)+
       String(attrs.wrestling).padStart(11)+
@@ -167,6 +188,13 @@ for(const budgetName of Object.keys(BUDGETS)){
       ('  '+ev(trouble.evade,trouble.evade.n).toFixed(3)).padStart(9)+
       ('  '+ev(trouble.clinch,trouble.clinch.n).toFixed(3)).padStart(10)
     );
+    preRows.push({name, cardio:attrs.cardio, avgGassed, pushEV:ev(pre.push,pre.push.n), finishEV:ev(pre.finish,pre.finish.n)});
+  }
+  console.log('\n  pre-round moments (fade=push, closeround=finish), same builds/budget:');
+  console.log('  '+'build'.padEnd(10)+'cardio'.padStart(8)+'avg gassed'.padStart(12)+'  push EV'.padStart(11)+'  finish EV'.padStart(13));
+  for(const r of preRows){
+    console.log('  '+r.name.padEnd(10)+String(r.cardio).padStart(8)+r.avgGassed.toFixed(2).padStart(12)+
+      ('  '+r.pushEV.toFixed(3)).padStart(11)+('  '+r.finishEV.toFixed(3)).padStart(13));
   }
 }
 console.log('\nWHAT GOOD LOOKS LIKE: every build\'s swarm/compose/fire/evade land in a similar');
