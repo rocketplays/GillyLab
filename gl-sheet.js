@@ -256,8 +256,11 @@ const GL_SHEET = (function () {
   function versusBlock(ctx, a, b, imgA, imgB, y, radius, colA, colB, showForm) {
     const cxA = 280, cxB = W - 280, R = radius || 46;
     colA = colA || NEU_A; colB = colB || NEU_B;
-    avatar(ctx, imgA, cxA, y + R, R, a.initials, colA);
-    avatar(ctx, imgB, cxB, y + R, R, b.initials, colB);
+    // Ring is always the brand green for both fighters — colA/colB (champion
+    // gold vs. green, or leader vs. trailer) still drive the stat highlights
+    // and style bar further down the sheet, just not this ring.
+    avatar(ctx, imgA, cxA, y + R, R, a.initials, ACC);
+    avatar(ctx, imgB, cxB, y + R, R, b.initials, ACC);
     ctx.textAlign = 'center'; ctx.font = '800 60px ' + COND; ctx.fillStyle = MUT;
     ctx.fillText('VS', W / 2, y + R + 20);
 
