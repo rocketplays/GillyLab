@@ -127372,7 +127372,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
       wrap.appendChild(lab);
     };
     addDot(leanA, GREEN, name, false);
-    addDot(leanB, AMBER, opp, stacked);
+    addDot(leanB, GREEN, opp, stacked);
     wrap.appendChild(track); box.appendChild(wrap);
     const ends = document.createElement('div'); ends.className = 'sr-style-ends';
     ends.innerHTML = '<span>Grappler</span><span>Striker</span>'; box.appendChild(ends);
@@ -127637,7 +127637,7 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
     OUT.pathA = path(A, B, opp, isFemale(name));
     OUT.pathB = path(B, A, name, isFemale(opp));
     addPath(name, OUT.pathA, GREEN);
-    addPath(opp, OUT.pathB, AMBER);
+    addPath(opp, OUT.pathB, GREEN);
     // Storylines — notable, matchup-relevant nuggets from fight history, shown
     // only when something actually stands out. No "never finished" note here —
     // the Finish & durability section already says so.
