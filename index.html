@@ -128262,12 +128262,15 @@ const GL_SHEET = (function () {
 
     if (story) {
       y = sectionTitle(ctx, 'Style', y + 40);
-      styleBar(ctx, y + 76, ins.leanA, ins.leanB, colA, colB, a.name, b.name);
+      // Style bar labels/dots are always green for both fighters, not keyed to
+      // champion status like the tape/h2h rows above.
+      styleBar(ctx, y + 76, ins.leanA, ins.leanB, ACC, ACC, a.name, b.name);
       y += 152;   // two label rows + bar + the GRAPPLER/STRIKER captions   // bar + the GRAPPLER/STRIKER captions beneath it
 
       y = sectionTitle(ctx, 'Path to victory', y + 42) + 14;
-      if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, colA, y, 4);
-      if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, colB, y, 4);
+      // Path-to-victory box/name are always green for both fighters too.
+      if (ins.pathA) y = pathBlock(ctx, a.name, ins.pathA, ACC, y, 4);
+      if (ins.pathB) y = pathBlock(ctx, b.name, ins.pathB, ACC, y, 4);
     }
 
     footer(ctx, CH);
@@ -128279,7 +128282,6 @@ const GL_SHEET = (function () {
     const a = meta(nameA), b = meta(nameB);
     const [imgA, imgB, logo] = await Promise.all([loadImg(a.slug), loadImg(b.slug), loadBrandLogo()]);
     const pctA = Math.round((result.winsA / result.n) * 100), pctB = 100 - pctA;
-    const aLeads = pctA >= pctB;
 
     // Square. The sim sheet carries a fraction of the matchup sheet's content, so
     // a story would be mostly empty space; 1080x1080 also drops straight into a
@@ -128296,24 +128298,24 @@ const GL_SHEET = (function () {
     ctx.fillText(result.n.toLocaleString() + ' simulations  ·  ' + rounds + ' rounds', W - 64, 104);
     ctx.textAlign = 'left';
 
-    // Same rule as the matchup sheet: the accent marks the favourite, which here
-    // the model actually knows.
-    const colA = aLeads ? ACC : AMB, colB = aLeads ? AMB : ACC;
+    // Both fighters share the same accent green now — name, bars, and
+    // percentages alike — rather than only the model's favourite getting colour.
+    const colA = ACC, colB = ACC;
     let y = versusBlock(ctx, a, b, imgA, imgB, 150, 46, colA, colB, false);
 
     // Win probability — the headline number.
     y = sectionTitle(ctx, 'Win probability', y + 46) + 34;
     ctx.font = '800 104px ' + COND;
-    ctx.textAlign = 'left'; ctx.fillStyle = aLeads ? colA : MUT; ctx.fillText(pctA + '%', 64, y + 76);
-    ctx.textAlign = 'right'; ctx.fillStyle = aLeads ? MUT : colB; ctx.fillText(pctB + '%', W - 64, y + 76);
+    ctx.textAlign = 'left'; ctx.fillStyle = colA; ctx.fillText(pctA + '%', 64, y + 76);
+    ctx.textAlign = 'right'; ctx.fillStyle = colB; ctx.fillText(pctB + '%', W - 64, y + 76);
     ctx.textAlign = 'left';
     y += 100;
     const bx = 64, bw = W - 128, bh = 22;
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.fillStyle = 'rgba(255,255,255,0.08)'; ctx.fill();
     ctx.save();
     roundRect(ctx, bx, y, bw, bh, bh / 2); ctx.clip();
-    ctx.fillStyle = aLeads ? colA : MUT; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
-    ctx.fillStyle = aLeads ? MUT : colB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
+    ctx.fillStyle = colA; ctx.fillRect(bx, y, bw * (pctA / 100), bh);
+    ctx.fillStyle = colB; ctx.fillRect(bx + bw * (pctA / 100), y, bw * (pctB / 100), bh);
     ctx.restore();
     y += 74;
 
