@@ -232,6 +232,12 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   .bout-ct{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:.82rem;margin-bottom:.25rem}
   .bout-ct .rr{font-size:.55rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .bout-opt.risk .bout-ct .rr{color:var(--accent2)}
+  /* Opponent's name+photo on the RIGHT, matching their column in the bars below —
+     scoped to .bout only; .opphd itself is shared with the offer/callout/rival
+     cards elsewhere, which still want the plain left-aligned layout. */
+  .bout .opphd{justify-content:space-between}
+  .opp-id{display:flex;align-items:center;gap:.5rem}
+  .opp-nm{font-weight:700;font-size:.86rem;color:var(--text);white-space:nowrap}
 
   /* IMPACT FX — one-shot classes toggled by JS (G.fxPanel/G.fxAvatar, set in
      advanceBout()/boutChoose(), consumed and cleared in boutBox()) right before a
@@ -3118,9 +3124,17 @@ function boutBox(){
   else if (G.fxPanel === 'flash-good') p.classList.add('fx-flash-good');
   else if (G.fxPanel === 'flash-bad') p.classList.add('fx-flash-bad');
   G.fxPanel = null;
+  // Opponent's photo+name sit on the RIGHT, matching the opponent's column in
+  // the health bars below (bars.js: "You" left, opponent right) — so the
+  // avatar reads as the opponent's corner, not a floating generic header.
   const head = document.createElement('div'); head.className = 'opphd';
-  head.innerHTML = avatarHTML(o.f);
-  const avEl = head.querySelector('.av');
+  const rl = document.createElement('div'); rl.className = 'rl'; rl.style.marginBottom = '0';
+  rl.textContent = 'Round ' + B.i + ' of ' + B.base.nRounds;
+  const oppId = document.createElement('div'); oppId.className = 'opp-id';
+  const oppName = document.createElement('span'); oppName.className = 'opp-nm'; oppName.textContent = o.f.name;
+  oppId.appendChild(oppName);
+  oppId.insertAdjacentHTML('beforeend', avatarHTML(o.f));
+  const avEl = oppId.querySelector('.av');
   // Pixelation (canvas swap) is gone — the img has proven, correct .av CSS
   // (opaque background, object-fit, sizing); the canvas swap didn't inherit any
   // of it, which is why initials sometimes showed through around the edges. The
@@ -3128,10 +3142,7 @@ function boutBox(){
   if (G.fxAvatar === 'punch') avEl.classList.add('fx-punch');
   else if (G.fxAvatar === 'rattled') avEl.classList.add('fx-rattled');
   G.fxAvatar = null;
-  const rl = document.createElement('div'); rl.className = 'rl'; rl.style.marginBottom = '0';
-  rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
-  rl.querySelector('b').textContent = o.f.name;
-  head.appendChild(rl); p.appendChild(head);
+  head.appendChild(rl); head.appendChild(oppId); p.appendChild(head);
   if (G.fxSplat) {
     const splat = document.createElement('div'); splat.className = 'fx-splat';
     splat.textContent = G.fxSplat;
