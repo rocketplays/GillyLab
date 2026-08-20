@@ -131946,6 +131946,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //     method: {
   //       draftkings: { f1: { ko: 600, sub: 900, dec: 400 }, f2: { ko: -110, sub: 450, dec: 250 } },
   //     },
+  //     doubleChance: {
+  //       draftkings: { f1: { koSub: 275, koDec: -150, subDec: 350 }, f2: { koSub: -400, koDec: 150, subDec: -110 } },
+  //     },
   //     roundProps: {
   //       draftkings: { f1: { r1: 1200, r2: 700, r3: 350 }, f2: { r1: 800, r2: 600, r3: 400 } },
   //     },
@@ -131953,6 +131956,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   //       '2.5': { draftkings: { over: -120, under: -110 } },
   //     },
   //   },
+  //
+  // `doubleChance` is "wins by either method" (fightodds.io calls these combined
+  // markets, e.g. "wins by KO/TKO or Decision" — skipped entirely until this
+  // category existed). koSub/koDec/subDec are the odds for THAT fighter to win
+  // by either of the two named methods. Placed after `method`, before
+  // `roundProps`, to match the tab order in the UI.
   const MANUAL_PROP_ODDS = {
     // UFC 330 — Turner vs Fernandes (3 rounds). Method + round props + rounds O/U
     // from fightodds.io (BetOnline / DraftKings / FanDuel / BetMGM; Bovada had a
@@ -132624,6 +132633,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return `<table class="odds-table"><thead><tr><th>Sportsbook</th><th>KO/TKO</th><th>Submission</th><th>Decision</th></tr></thead><tbody>${body}</tbody></table>`;
   }
 
+  function buildDoubleChanceTable(fight) {
+    const entry = findManualProps(fight);
+    const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No double chance odds entered yet.</p>';
+    if (!entry || !entry.doubleChance || !Object.keys(entry.doubleChance).length) return placeholder;
+    const f1Side = manualSideFor(fight, 'home'), f2Side = manualSideFor(fight, 'away');
+    const last1 = lastNameOf(fight.home_team), last2 = lastNameOf(fight.away_team);
+    const fid = plFightId(fight);
+    const fightLabel = `${last1} vs ${last2}`;
+    function fighterBlock(name, sideKey) {
+      let rows = '';
+      plOrderBooks(Object.keys(entry.doubleChance)).forEach(bookKey => {
+        const info = BOOK_KEY_MAP[bookKey];
+        const vals = entry.doubleChance[bookKey] && entry.doubleChance[bookKey][sideKey];
+        if (!info || !vals) return;
+        const base = { fid: fid, book: bookKey, booklabel: info.label, fight: fightLabel, mkt: 'dblchance', side: sideKey };
+        rows += `<tr class="row-${info.cls}">
+          <td><span class="book-name book-${info.cls}">${info.label}</span></td>
+          ${plCell(Object.assign({}, base, { method: 'koSub', label: name + ' by KO/TKO or submission' }), vals.koSub)}
+          ${plCell(Object.assign({}, base, { method: 'koDec', label: name + ' by KO/TKO or decision' }), vals.koDec)}
+          ${plCell(Object.assign({}, base, { method: 'subDec', label: name + ' by submission or decision' }), vals.subDec)}
+        </tr>`;
+      });
+      return rows ? `<tr class="prop-subheader"><td colspan="4"><strong>${name}</strong></td></tr>${rows}` : '';
+    }
+    const body = fighterBlock(last1, f1Side) + fighterBlock(last2, f2Side);
+    if (!body) return placeholder;
+    return `<table class="odds-table"><thead><tr><th>Sportsbook</th><th>KO/TKO or Sub</th><th>KO/TKO or Dec</th><th>Sub or Dec</th></tr></thead><tbody>${body}</tbody></table>`;
+  }
+
   function buildRoundPropsTable(fight) {
     const entry = findManualProps(fight);
     const placeholder = '<p style="color:var(--muted);padding:1rem 0;">No round-props odds entered yet.</p>';
@@ -133066,7 +133104,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const same = legs.filter(l => l.fid === newLeg.fid);
     if (!same.length) return { ok: true };
     if (!PL_PAIRABLE[newLeg.mkt] || same.some(l => !PL_PAIRABLE[l.mkt])) {
-      return { ok: false, reason: 'On one fight, only a moneyline and a rounds O/U can be combined — method and round props have to stand alone.' };
+      return { ok: false, reason: 'On one fight, only a moneyline and a rounds O/U can be combined — method, double chance, and round props have to stand alone.' };
     }
     if (same.some(l => l.mkt === newLeg.mkt)) {
       return { ok: false, reason: newLeg.mkt === 'ml' ? 'You already have a moneyline on this fight.' : 'You already have a rounds O/U on this fight.' };
@@ -133580,6 +133618,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const mlId     = `api-f${i}-ml`;
       const totId    = `api-f${i}-tot`;
       const methodId = `api-f${i}-method`;
+      const dblId    = `api-f${i}-dbl`;
       const roundId  = `api-f${i}-rounds`;
       const lmId     = `api-f${i}-lm`;
       return `<div id="api-fight-${i}" class="fight-odds-panel"${i > 0 ? ' style="display:none;"' : ''}>
@@ -133589,11 +133628,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           <button class="odds-prop-btn active" onclick="showProp(this,'${mlId}')">Moneyline</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${totId}')">Rounds O/U</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${methodId}')">Method</button>
+          <button class="odds-prop-btn" onclick="showProp(this,'${dblId}')">Double Chance</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${roundId}')">Round Props</button>
           <button class="odds-prop-btn" onclick="showProp(this,'${lmId}')">Line Movement</button>
         </div>
         <div id="${mlId}" class="odds-prop-panel">${buildMoneylineTable(f)}</div>
         <div id="${methodId}" class="odds-prop-panel" style="display:none;">${buildMethodTable(f)}</div>
+        <div id="${dblId}" class="odds-prop-panel" style="display:none;">${buildDoubleChanceTable(f)}</div>
         <div id="${totId}" class="odds-prop-panel" style="display:none;">${buildTotalsTable(f)}</div>
         <div id="${roundId}" class="odds-prop-panel" style="display:none;">${buildRoundPropsTable(f)}</div>
         <div id="${lmId}" class="odds-prop-panel" style="display:none;">${buildLineMovementHTML(f, historyEntry)}</div>
@@ -139859,6 +139900,17 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       return Object.assign(base, { market: 'METHOD', params: { side: side, methodCat: m }, pick: btShort(nm) + ' by ' + BT_METH[m] }); }
     if (leg.mkt === 'round')
       return Object.assign(base, { market: 'ENDROUND', params: { side: side, meth: 'ANY', round: Number(leg.round) }, pick: btShort(nm) + ' to win in round ' + leg.round });
+    if (leg.mkt === 'dblchance') {
+      // Same DBLMETH market the manual log form already builds (see the
+      // btMarket === 'DBLMETH' branch above) — koSub/koDec/subDec here are
+      // exactly that branch's KOSUB/KO/SUB keys, just camelCased for the
+      // odds-board data shape.
+      const DM = { koSub: { methods: ['KO', 'SUB'], lab: 'KO/TKO or submission' },
+                   koDec: { methods: ['KO', 'DEC'], lab: 'KO/TKO or decision' },
+                   subDec: { methods: ['SUB', 'DEC'], lab: 'submission or decision' } }[leg.method];
+      if (!DM) return null;
+      return Object.assign(base, { market: 'DBLMETH', params: { side: side, methods: DM.methods }, pick: btShort(nm) + ' by ' + DM.lab });
+    }
     return null;
   }
   // Called from the parlay slip. Resolves every leg, enforces one event, and
@@ -139902,7 +139954,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (same.length) {
       const PAIRABLE = { ML: 1, TOTAL: 1 };
       if (!PAIRABLE[leg.market] || same.some(l => !PAIRABLE[l.market]))
-        return 'On one fight, only a moneyline and a rounds O/U can be parlayed — method and round props have to stand alone.';
+        return 'On one fight, only a moneyline and a rounds O/U can be parlayed — method, double chance, and round props have to stand alone.';
       if (same.some(l => l.market === leg.market)) return 'You already have that market on this fight.';
     }
     return null;
