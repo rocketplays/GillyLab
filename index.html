@@ -127689,8 +127689,8 @@ function renderMatchupBreakdown(host, nameA, nameB, opts) {
           row.appendChild(tag); row.appendChild(document.createTextNode(txt)); box3.appendChild(row);
         });
       };
-      add(name, 'var(--accent)', aBul);
-      add(opp, '#ffcf7a', bBul);
+      add(name, 'var(--text)', aBul);
+      add(opp, 'var(--text)', bBul);
       OUT.storyA = aBul; OUT.storyB = bBul; OUT.storylinesBox = box3;
       // Fight Info defers storylines to the very bottom of the dropdown (appended
       // by renderScouting via the returned OUT.storylinesBox); the simulator keeps
@@ -129745,14 +129745,8 @@ function renderScouting(host, name, opp, fightDate, weightClass, rounds, isDWCS)
     };
     cmpRow(box, 'Win finish rate', rate(fp), rate(op));
     cmpRow(box, 'Win methods', methods(fp), methods(op));
-    // Durability is comparative and rate-based (finishes per fight), so the more
-    // durable fighter greens and the more fragile reds — a vet finished twice in
-    // 35 fights isn't "the same red" as someone finished five times in twelve.
-    const durRate = p => (p.wins + p.losses) > 0 ? p.timesFinished / (p.wins + p.losses) : null;
-    const drA = durRate(fp), drB = durRate(op);
-    let tfA = '', tfB = '';
-    if (drA != null && drB != null && drA !== drB) { tfA = drA < drB ? 'w' : 'l'; tfB = drA < drB ? 'l' : 'w'; }
-    cmpRow(box, 'Times finished', fin(fp), fin(op), tfA, tfB);
+    // Plain white for both fighters now — no more green/red durability comparison.
+    cmpRow(box, 'Times finished', fin(fp), fin(op));
   })();
 
   // Common opponents
