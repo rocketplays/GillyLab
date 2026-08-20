@@ -97,10 +97,25 @@ const GL_SHEET = (function () {
       slug: (typeof nameToSlug === 'function') ? nameToSlug(name) : null
     };
   }
-  // Neutral pair, used when we have no odds and therefore no favourite. The brand
-  // accent means "favourite"; handing it to whoever happens to be listed first
-  // would let the sheet imply a pick it never made.
+  // Neutral pair — fallback default only, used inside versusBlock/tapeRow/styleBar
+  // when a caller omits colA/colB entirely. Every real caller (drawMatchup,
+  // sgHead, drawSim) now passes explicit colours via champColors(), so this
+  // should not be reachable in practice; kept as a safety net, not a design.
   const NEU_A = '#8ab4ff', NEU_B = '#ffcf7a';
+  // Colour key for the matchup/striking/grappling share sheets: a defending
+  // champion is always gold, the man across the cage green — the belt is the
+  // fact worth signalling on a share graphic, not who the market favours.
+  // With no champion in the fight, the same two colours still apply, in
+  // whichever order; blue was dropped because it only ever appeared when
+  // there was no market price yet, which made "why is this fighter blue"
+  // a question no reader could answer.
+  function champColors(rankA, rankB) {
+    const isChamp = (r) => r && String(r).replace(/^#/, '') === 'C';
+    const champA = isChamp(rankA), champB = isChamp(rankB);
+    if (champA && !champB) return [AMB, ACC];
+    if (champB && !champA) return [ACC, AMB];
+    return [ACC, AMB];   // neither (or, in a title unification, both) champion
+  }
   function hexA(hex, alpha) {
     const h = hex.replace('#', '');
     const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
@@ -435,10 +450,9 @@ const GL_SHEET = (function () {
     // Same analysis object the Scouting Report renders from.
     const ins = (typeof renderMatchupBreakdown === 'function') ? (renderMatchupBreakdown(null, nameA, nameB, {}) || {}) : {};
     const odds = await oddsFor(nameA, nameB).catch(() => null);
-    // The brand accent means FAVOURITE, never "listed first". With no market to
-    // read, nobody gets it and both fighters take a neutral colour.
-    const colA = odds ? (odds.favA ? ACC : AMB) : NEU_A;
-    const colB = odds ? (odds.favB ? ACC : AMB) : NEU_B;
+    // Colour is now keyed to champion status, not the market — see champColors().
+    // Odds are still read below for the moneyline row itself.
+    const [colA, colB] = champColors(a.rank, b.rank);
 
     const story = fmt !== 'portrait';   // full sheet unless portrait is asked for
     const CH = story ? H : 1350;
@@ -1509,7 +1523,8 @@ const GL_SHEET = (function () {
     if (sub) { ctx.font = '400 26px ' + SANS; ctx.fillStyle = MUT; ctx.fillText(sub, 64, 122); }
     // showForm=false: the win/loss chips are a fact about the career, and these two
     // cards are about one department of one fight.
-    const y = versusBlock(ctx, a, b, imgA, imgB, 158, R || 46, NEU_A, NEU_B, false);
+    const [colA, colB] = champColors(a.rank, b.rank);
+    const y = versusBlock(ctx, a, b, imgA, imgB, 158, R || 46, colA, colB, false);
     return { cv, ctx, CH, y };
   }
 
