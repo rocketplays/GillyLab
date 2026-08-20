@@ -138389,6 +138389,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!host) { _climbState = 'failed'; return; }
     host.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:3rem 0;">Loading The Climb…</div>';
 
+    // The retro-HUD pixel font is the game's alone (splat text, chunky bar labels) —
+    // every other visitor to the app has no use for it, so it loads HERE, not in
+    // index.html's <head>, same reasoning as climb-app.js itself being lazy.
+    if (!document.getElementById('climb-pixel-font')) {
+      var pf = document.createElement('link');
+      pf.id = 'climb-pixel-font'; pf.rel = 'stylesheet';
+      pf.href = 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap';
+      document.head.appendChild(pf);
+    }
+
     var s = document.createElement('script');
     s.src = '/climb-app.js';
     s.async = true;

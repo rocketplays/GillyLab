@@ -14,7 +14,7 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
      is required — GL_SHEET draws in it and awaits document.fonts.ready, so without
      the link the sheet renders in a fallback face and looks like a knock-off of
      itself. Both are relative because this page is served from the repo root. -->
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
 <script src="/gl-sheet.js?v=f7096686" defer></script>
 <!-- HEAD SLOT — filled by scripts/gen-climb-page.cjs from the worker, empty here.
      Carries the Open Graph tags (so a shared link previews) and, for logged-out
@@ -249,6 +249,50 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   .bout.fx-flash-bad{animation:climbFlashBad .6s ease-out}
   .av.fx-punch img{animation:climbPunch .35s ease-out}
   .av.fx-rattled img{animation:climbShake .4s ease-in-out;filter:saturate(.35) brightness(.8)}
+
+  /* RETRO HUD — a pixel font for SHORT tags/numbers only (bar labels, the risk
+     chip, splat text). Sentence-length copy — the beat line, the pro/con text —
+     stays in Barlow; Press Start 2P at paragraph length is a readability tax, not
+     "gamified". Segmented bars and a notched panel border carry the rest of the
+     arcade read, both pure CSS, no new art. */
+  .bout-bl span, .bout-ct .rr{font-family:'Press Start 2P',monospace;letter-spacing:0}
+  .bout-bl span{font-size:.5rem}
+  .bout-ct .rr{font-size:.46rem}
+  .panel.bout{
+    position:relative;
+    border:3px solid var(--border);
+    clip-path:polygon(0 6px,6px 6px,6px 0,calc(100% - 6px) 0,calc(100% - 6px) 6px,100% 6px,
+      100% calc(100% - 6px),calc(100% - 6px) calc(100% - 6px),calc(100% - 6px) 100%,
+      6px 100%,6px calc(100% - 6px),0 calc(100% - 6px));
+  }
+  .bout-opt{
+    border:2px solid var(--border);
+    clip-path:polygon(0 4px,4px 4px,4px 0,calc(100% - 4px) 0,calc(100% - 4px) 4px,100% 4px,
+      100% calc(100% - 4px),calc(100% - 4px) calc(100% - 4px),calc(100% - 4px) 100%,
+      4px 100%,4px calc(100% - 4px),0 calc(100% - 4px));
+  }
+  /* Segmented "Mega Man" health-bar chunks — an overlay, not a repaint of the fill,
+     so it works regardless of what color JS sets on the fill span underneath. */
+  .bout-tr{position:relative}
+  .bout-tr::after{content:'';position:absolute;inset:0;pointer-events:none;
+    background-image:repeating-linear-gradient(90deg, transparent 0 7px, rgba(0,0,0,.42) 7px 9px)}
+  /* Bigger avatar for the bout screen only — the pixelation (JS, canvas) needs
+     room to actually read as chunky rather than just small. */
+  .av.lg{width:72px;height:72px;flex:0 0 72px}
+  .av.lg span{font-size:1.05rem}
+  /* Hit-splat — one-shot pixel-font pop text, G.fxSplat, same lifecycle as
+     G.fxPanel/G.fxAvatar (set in advanceBout(), consumed+cleared in boutBox()). */
+  @keyframes climbSplat{
+    0%{opacity:0;transform:translate(-50%,-40%) scale(.4) rotate(-6deg)}
+    15%{opacity:1;transform:translate(-50%,-50%) scale(1.15) rotate(-3deg)}
+    30%{transform:translate(-50%,-50%) scale(1) rotate(0deg)}
+    75%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,-65%) scale(1) rotate(0deg)}
+  }
+  .fx-splat{position:absolute;left:50%;top:38%;z-index:5;pointer-events:none;
+    font-family:'Press Start 2P',monospace;font-size:1.05rem;letter-spacing:.02em;
+    text-shadow:2px 2px 0 rgba(0,0,0,.6),-1px -1px 0 rgba(0,0,0,.6);
+    animation:climbSplat 1.1s ease-out forwards}
 
   /* ── SIGNATURE PICKER — compact cards + a detail strip (stays 2-up on mobile) */
   .siggrid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
@@ -1728,6 +1772,33 @@ function avatarHTML(f){
     'onerror="this.style.display=\\'none\\'"></div>';
 }
 
+// PIXELATE THE REAL PHOTO rather than draw new art — a fighter's actual headshot,
+// downsampled to a tiny grid then scaled back up with smoothing off, reads as a
+// chunky 8-bit portrait without a sprite pipeline or 2,300+ hand-drawn avatars.
+// Same-origin (served off this site), so drawImage/canvas never taints.
+// Deliberately does NOT touch onerror — the existing "hide on 404, reveal
+// initials" behavior in avatarHTML() stays exactly as it was; this only fires
+// on a successful load, and does nothing if the photo never loads at all.
+function pixelateAvatar(imgEl, size, cells){
+  if (!imgEl) return;
+  const draw = () => {
+    try {
+      if (!imgEl.naturalWidth) return;   // a 404'd img can still fire load in some browsers
+      const small = document.createElement('canvas'); small.width = cells; small.height = cells;
+      const sctx = small.getContext('2d'); if (!sctx) return;   // no 2d context (e.g. jsdom
+      sctx.drawImage(imgEl, 0, 0, cells, cells);                // in the test harnesses) — leave the plain photo
+      const big = document.createElement('canvas'); big.width = size; big.height = size;
+      big.style.width = size+'px'; big.style.height = size+'px'; big.style.imageRendering = 'pixelated';
+      const bctx = big.getContext('2d'); if (!bctx) return;
+      bctx.imageSmoothingEnabled = false;
+      bctx.drawImage(small, 0, 0, size, size);
+      if (imgEl.parentNode) imgEl.replaceWith(big);
+    } catch (e) { /* cosmetic only — a pixelation failure must never break the bout screen */ }
+  };
+  if (imgEl.complete && imgEl.naturalWidth) draw();
+  else imgEl.addEventListener('load', draw);
+}
+
 // ONE BAND, TWO VOICES, ONE DEFINITION. \`t\` is what the tile says before the
 // fight; \`was\` is how the same verdict reads afterwards. They live on the same
 // line ON PURPOSE — the whole point of the post-fight line is that it echoes the
@@ -2850,14 +2921,14 @@ function advanceBout(){
     if (r && !B.usedHurt && B.hisDmg > 0.55 &&
         Math.random() < clampv((B.ctx.finBias*0.48 + B.ctx.frail*0.20) * (G.sig==='killer'?1.4:1), 0, 0.58)){
       B.usedHurt = true; B.moment = { type:'hurt' };
-      G.fxPanel = 'flash-good'; G.fxAvatar = 'punch';   // you just hurt him
+      G.fxPanel = 'flash-good'; G.fxAvatar = 'punch'; G.fxSplat = 'HURT!';   // you just hurt him
       break;
     }
     // TROUBLE — he's hurt you, and he's dangerous.
     if (!r && !B.usedTrouble && B.myDmg > 0.55 &&
         Math.random() < clampv(B.ctx.threat*0.60, 0, 0.45)){
       B.usedTrouble = true; B.moment = { type:'trouble' };
-      G.fxPanel = 'shake'; G.fxAvatar = 'rattled';   // you just got rocked
+      G.fxPanel = 'shake'; G.fxAvatar = 'rattled'; G.fxSplat = 'ROCKED!';   // you just got rocked
       break;
     }
   }
@@ -3031,6 +3102,8 @@ function boutBox(){
   const head = document.createElement('div'); head.className = 'opphd';
   head.innerHTML = avatarHTML(o.f);
   const avEl = head.querySelector('.av');
+  avEl.classList.add('lg');   // bigger here only — the pixelation needs room to read as chunky
+  pixelateAvatar(avEl.querySelector('img'), 72, 14);
   if (G.fxAvatar === 'punch') avEl.classList.add('fx-punch');
   else if (G.fxAvatar === 'rattled') avEl.classList.add('fx-rattled');
   G.fxAvatar = null;
@@ -3038,6 +3111,13 @@ function boutBox(){
   rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
   rl.querySelector('b').textContent = o.f.name;
   head.appendChild(rl); p.appendChild(head);
+  if (G.fxSplat) {
+    const splat = document.createElement('div'); splat.className = 'fx-splat';
+    splat.textContent = G.fxSplat;
+    splat.style.color = G.fxSplat === 'HURT!' ? 'var(--accent)' : 'var(--accent2)';
+    p.appendChild(splat);
+    G.fxSplat = null;
+  }
   const bars = document.createElement('div'); bars.className = 'bout-bars';
   const cond = (d) => d>0.55 ? 'hurt' : d>0.3 ? 'banged up' : 'fresh';
   const bar = (label, frac, color, tag, danger) => {
