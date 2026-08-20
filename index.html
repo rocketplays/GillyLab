@@ -132584,6 +132584,360 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
+    // UFC Fight Night 285 — Hernandez vs. Rodrigues, Sacramento, 2026-08-22.
+    // Method + round props + double chance + ML/totals gap-fills for all 13 fights,
+    // sourced from fightodds.io per-fight /odds pages (props grid, column-anchored
+    // against each fight's own ML row per the odds-entry procedure). Only entering
+    // books/markets that genuinely show a value on fightodds.io -- coverage is
+    // uneven per book across method/round/double-chance combos, never inferred.
+    'hernandez|rodrigues': {
+      rounds: 5,
+      method: {
+        betonlineag: { f1: { ko: 300, sub: 300, dec: 400 }, f2: { ko: 215, sub: 1300, dec: 550 } },
+        bovada:      { f1: { ko: 300, sub: 275, dec: 475 }, f2: { ko: 240, sub: 1600, dec: 850 } },
+        draftkings:  { f1: { ko: 275, sub: 225, dec: 450 }, f2: { ko: 225, sub: 1800, dec: 1100 } },
+        fanduel:     { f1: { ko: 310, sub: 270, dec: 470 }, f2: { ko: 240, sub: 1800, dec: 850 } },
+        betmgm:      { f1: { ko: 225, sub: 225, dec: 450 }, f2: { ko: 225, sub: 1400, dec: 1100 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 600, r2: 700, r3: 800, r4: 900, r5: 1100 }, f2: { r1: 475, r2: 900, r3: 1400, r4: 2000, r5: 2800 } },
+        bovada:      { f1: { r1: 550, r2: 625, r3: 750, r4: 1000, r5: 1300 }, f2: { r1: 500, r2: 900, r3: 1700, r4: 3000, r5: 3300 } },
+        draftkings:  { f1: { r1: 600, r2: 550, r3: 550, r4: 850, r5: 1100 }, f2: { r1: 400, r2: 900, r3: 1800, r4: 3500, r5: 5500 } },
+        fanduel:     { f1: { r1: 500, r2: 650, r3: 900, r4: 1200, r5: 1600 }, f2: { r1: 600, r2: 1000, r3: 1600, r4: 2500, r5: 3500 } },
+        betmgm:      { f1: { r1: 600, r2: 550, r3: 500, r4: 850, r5: 1100 }, f2: { r1: 400, r2: 900, r3: 1800, r4: 3500, r5: 5500 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 135, subDec: 135 }, f2: { koDec: 160, subDec: 350 } },
+        bovada:      { f1: { koDec: 130, koSub: 100, subDec: 115 }, f2: { koDec: 150, koSub: 175, subDec: 600 } },
+        draftkings:  { f1: { koDec: 125, koSub: -110, subDec: 110 }, f2: { koDec: 175, koSub: 205, subDec: 650 } },
+        fanduel:     { f1: { koDec: 145, koSub: 100, subDec: 130 }, f2: { koDec: 160, koSub: 200, subDec: 550 } },
+        betmgm:      { f1: { koSub: -110 }, f2: { koSub: 175 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -104, under: -122 }, betmgm: { over: -105, under: -130 } },
+        '3.5': { betmgm: { over: 165, under: -220 } },
+      },
+    },
+    'petrino|spivak': {
+      rounds: 3,
+      ml: { betmgm: { f1: -140, f2: 115 } },
+      method: {
+        betonlineag: { f1: { ko: 200, sub: 800, dec: 275 }, f2: { ko: 600, sub: 500, dec: 350 } },
+        bovada:      { f1: { ko: 215, sub: 850, dec: 325 }, f2: { ko: 600, sub: 600, dec: 400 } },
+        draftkings:  { f1: { ko: 200, sub: 800, dec: 300 }, f2: { ko: 550, sub: 550, dec: 350 } },
+        fanduel:     { f1: { ko: 220, sub: 900, dec: 320 }, f2: { ko: 600, sub: 600, dec: 400 } },
+        betmgm:      { f1: { ko: 200, sub: 800, dec: 300 }, f2: { ko: 500, sub: 500, dec: 350 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 350, r2: 550, r3: 850 }, f2: { r1: 700, r2: 850, r3: 1000 } },
+        bovada:      { f1: { r1: 425, r2: 625, r3: 1000 }, f2: { r1: 650, r2: 1000, r3: 1600 } },
+        draftkings:  { f1: { r1: 350, r2: 550, r3: 900 }, f2: { r1: 650, r2: 850, r3: 1200 } },
+        fanduel:     { f1: { r1: 410, r2: 650, r3: 1000 }, f2: { r1: 700, r2: 1000, r3: 1300 } },
+        betmgm:      { f1: { r1: 350, r2: 550, r3: 900 }, f2: { r1: 650, r2: 850, r3: 1200 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -125, subDec: 200 }, f2: { koDec: 185, subDec: 175 } },
+        bovada:      { f1: { koDec: -130, koSub: 150, subDec: 185 }, f2: { koDec: 180, koSub: 275, subDec: 180 } },
+        draftkings:  { f1: { koDec: -130, koSub: 150, subDec: 185 }, f2: { koDec: 180, koSub: 275, subDec: 180 } },
+        fanduel:     { f1: { koDec: -120, koSub: 150, subDec: 200 }, f2: { koDec: 200, koSub: 270, subDec: 200 } },
+        betmgm:      { f1: { koSub: 150 }, f2: { koSub: 250 } },
+      },
+      totals: {
+        '1.5': { betmgm: { over: -200, under: 150 } },
+        '2.5': { fanduel: { over: 100, under: -128 } },
+      },
+    },
+    'dolidze|ridder': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 550, sub: 1400, dec: 750 }, f2: { ko: 500, sub: 245, dec: 125 } },
+        bovada:      { f1: { ko: 700, sub: 1800, dec: 800 }, f2: { ko: 500, sub: 250, dec: 125 } },
+        draftkings:  { f1: { ko: 700, sub: 1800, dec: 800 }, f2: { ko: 500, sub: 240, dec: 120 } },
+        fanduel:     { f1: { ko: 700, sub: 1800, dec: 850 }, f2: { ko: 600, sub: 270, dec: 125 } },
+        betmgm:      { f1: { ko: 700, sub: 1500, dec: 800 }, f2: { ko: 450, sub: 225, dec: 125 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 900, r2: 1100, r3: 1500 }, f2: { r1: 350, r2: 575, r3: 800 } },
+        bovada:      { f1: { r1: 1600, r2: 1100, r3: 2500 }, f2: { r1: 550, r2: 375, r3: 900 } },
+        draftkings:  { f1: { r1: 1100, r2: 1600, r3: 2000 }, f2: { r1: 350, r2: 550, r3: 800 } },
+        fanduel:     { f1: { r1: 1100, r2: 1600, r3: 2200 }, f2: { r1: 430, r2: 650, r3: 900 } },
+        betmgm:      { f1: { r1: 1100, r2: 1600, r3: 2000 }, f2: { r1: 325, r2: 550, r3: 800 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 325, subDec: 500 }, f2: { koDec: -150, subDec: -225 } },
+        bovada:      { f1: { koDec: 350, koSub: 550, subDec: 600 }, f2: { koDec: -150, koSub: 140, subDec: -275 } },
+        draftkings:  { f1: { koDec: 350, koSub: 550, subDec: 600 }, f2: { koDec: -150, koSub: 140, subDec: -275 } },
+        fanduel:     { f1: { koDec: 360, koSub: 500, subDec: 550 }, f2: { koDec: -135, koSub: 150, subDec: -220 } },
+        betmgm:      { f1: { koSub: 550 }, f2: { koSub: 125 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -140, under: 110 }, betmgm: { over: -136, under: 105 } },
+      },
+    },
+    'jones|mederos': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 300, sub: 475, dec: 140 }, f2: { ko: 550, sub: 2500, dec: 375 } },
+        bovada:      { f1: { ko: 330, sub: 500, dec: 125 }, f2: { ko: 650, sub: 3500, dec: 400 } },
+        draftkings:  { f1: { ko: 330, sub: 500, dec: 125 }, f2: { ko: 650, sub: 3500, dec: 400 } },
+        fanduel:     { f1: { ko: 380, sub: 550, dec: 130 }, f2: { ko: 700, sub: 3500, dec: 440 } },
+        betmgm:      { f1: { ko: 300, sub: 450, dec: 125 }, f2: { ko: 650, sub: 3000, dec: 400 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 500, r2: 600, r3: 800 }, f2: { r1: 900, r2: 1200, r3: 1500 } },
+        bovada:      { f1: { r1: 500, r2: 650, r3: 900 }, f2: { r1: 1300, r2: 1700, r3: 2200 } },
+        draftkings:  { f1: { r1: 450, r2: 600, r3: 850 }, f2: { r1: 1200, r2: 1800, r3: 2500 } },
+        fanduel:     { f1: { r1: 550, r2: 750, r3: 1000 }, f2: { r1: 1200, r2: 1900, r3: 2700 } },
+        betmgm:      { f1: { r1: 450, r2: 600, r3: 850 }, f2: { r1: 1200, r2: 1800, r3: 2500 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -170, subDec: -135 }, f2: { koDec: 225, subDec: 350 } },
+        bovada:      { f1: { koDec: -200, koSub: 180, subDec: -145 }, f2: { koDec: 230, koSub: 600, subDec: 350 } },
+        draftkings:  { f1: { koDec: -200, koSub: 180, subDec: -145 }, f2: { koDec: 230, koSub: 600, subDec: 350 } },
+        fanduel:     { f1: { koDec: -170, koSub: 185, subDec: -135 }, f2: { koDec: 220, koSub: 550, subDec: 380 } },
+        betmgm:      { f1: { koSub: 175 }, f2: { koSub: 600 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -182, under: 142 }, betmgm: { over: -210, under: 150 } },
+      },
+    },
+    'chaves|judice': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1000, sub: 2200, dec: 700 }, f2: { ko: 135, sub: 900, dec: 120 } },
+        bovada:      { f1: { ko: 1400, sub: 2800, dec: 700 }, f2: { ko: 140, sub: 1200, dec: 120 } },
+        draftkings:  { f1: { ko: 1400, sub: 2800, dec: 700 }, f2: { ko: 140, sub: 1200, dec: 110 } },
+        fanduel:     { f1: { ko: 1400, sub: 2700, dec: 750 }, f2: { ko: 160, sub: 1200, dec: 120 } },
+        betmgm:      { f1: { ko: 1200, sub: 2500, dec: 700 }, f2: { ko: 150, sub: 1000, dec: 100 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1500, r2: 1800, r3: 2800 }, f2: { r1: 325, r2: 425, r3: 625 } },
+        bovada:      { f1: { r1: 1800, r2: 2800, r3: 3300 }, f2: { r1: 325, r2: 500, r3: 800 } },
+        draftkings:  { f1: { r1: 2000, r2: 2800, r3: 3500 }, f2: { r1: 350, r2: 500, r3: 750 } },
+        fanduel:     { f1: { r1: 2000, r2: 2700, r3: 3500 }, f2: { r1: 350, r2: 600, r3: 850 } },
+        betmgm:      { f1: { r1: 2000, r2: 2800, r3: 3500 }, f2: { r1: 350, r2: 500, r3: 750 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 475, subDec: 600 }, f2: { koDec: -400, subDec: -105 } },
+        bovada:      { f1: { koDec: 450, koSub: 1000, subDec: 625 }, f2: { koDec: -475, koSub: 115, subDec: -110 } },
+        draftkings:  { f1: { koDec: 425, koSub: 1000, subDec: 550 }, f2: { koDec: -500, koSub: 125, subDec: -120 } },
+        fanduel:     { f1: { koDec: 470, koSub: 950, subDec: 600 }, f2: { koDec: -380, koSub: 120, subDec: -110 } },
+        betmgm:      { f1: { koSub: 1000 }, f2: { koSub: 125 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -148, under: 116 }, betmgm: { over: -150, under: 120 } },
+      },
+    },
+    'chatman|wint': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 1000, sub: 3000, dec: 1200 }, f2: { ko: -350, sub: 550, dec: 800 } },
+        bovada:      { f1: { ko: 1200, sub: 4500, dec: 1800 }, f2: { ko: -425, sub: 600, dec: 1100 } },
+        draftkings:  { f1: { ko: 1100, sub: 4500, dec: 1800 }, f2: { ko: -400, sub: 600, dec: 1000 } },
+        fanduel:     { f1: { ko: 1200, sub: 4500, dec: 2200 }, f2: { ko: -290, sub: 650, dec: 1100 } },
+        betmgm:      { f1: { ko: 1100, sub: 4000, dec: 1600 }, f2: { ko: -450, sub: 550, dec: 900 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1800, r2: 2500, r3: 3300 }, f2: { r1: -250, r2: 375, r3: 1600 } },
+        bovada:      { f1: { r1: 1800, r2: 2800, r3: 4000 }, f2: { r1: -220, r2: 600, r3: 1600 } },
+        draftkings:  { f1: { r1: 1400, r2: 3500, r3: 5500 }, f2: { r1: -225, r2: 550, r3: 1200 } },
+        fanduel:     { f1: { r1: 1700, r2: 3000, r3: 5000 }, f2: { r1: -220, r2: 600, r3: 1400 } },
+        betmgm:      { f1: { r1: 1200, r2: 3000, r3: 4500 }, f2: { r1: -235, r2: 550, r3: 1200 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 700, subDec: 1100 }, f2: { koDec: -500, subDec: 350 } },
+        bovada:      { f1: { koDec: 750, koSub: 900, subDec: 1400 }, f2: { koDec: -600, koSub: -700, subDec: 365 } },
+        draftkings:  { f1: { koDec: 700, koSub: 1000, subDec: 1200 }, f2: { koDec: -550, koSub: -650, subDec: 350 } },
+        fanduel:     { f1: { koDec: 800, koSub: 1000, subDec: 1600 }, f2: { koDec: -425, koSub: -600, subDec: 380 } },
+        betmgm:      { f1: { koSub: 900 }, f2: { koSub: -700 } },
+      },
+      totals: {
+        '1.5': { betmgm: { over: 230, under: -325 } },
+      },
+    },
+    'douglas|emmers': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -215, sub: 1400, dec: 500 }, f2: { ko: 700, sub: 1400, dec: 650 } },
+        bovada:      { f1: { ko: -185, sub: 1600, dec: 550 }, f2: { ko: 700, sub: 1800, dec: 800 } },
+        draftkings:  { f1: { ko: -200, sub: 1200, dec: 550 }, f2: { ko: 600, sub: 1800, dec: 800 } },
+        fanduel:     { f1: { ko: -180, sub: 1600, dec: 600 }, f2: { ko: 700, sub: 1900, dec: 900 } },
+        betmgm:      { f1: { ko: -210, sub: 1100, dec: 550 }, f2: { ko: 600, sub: 1600, dec: 800 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: -125, r2: 425, r3: 1200 }, f2: { r1: 1200, r2: 1600, r3: 2800 } },
+        bovada:      { f1: { r1: 110, r2: 390, r3: 1300 }, f2: { r1: 1000, r2: 1500, r3: 2200 } },
+        draftkings:  { f1: { r1: 100, r2: 450, r3: 1400 }, f2: { r1: 900, r2: 1400, r3: 2500 } },
+        fanduel:     { f1: { r1: 105, r2: 470, r3: 1500 }, f2: { r1: 1000, r2: 1700, r3: 2700 } },
+        betmgm:      { f1: { r1: -105, r2: 450, r3: 1400 }, f2: { r1: 900, r2: 1400, r3: 2500 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -325, subDec: 375 }, f2: { koDec: 350, subDec: 475 } },
+        bovada:      { f1: { koDec: -350, koSub: -225, subDec: 350 }, f2: { koDec: 330, koSub: 500, subDec: 550 } },
+        draftkings:  { f1: { koDec: -350, koSub: -225, subDec: 350 }, f2: { koDec: 330, koSub: 500, subDec: 550 } },
+        fanduel:     { f1: { koDec: -310, koSub: -220, subDec: 420 }, f2: { koDec: 360, koSub: 500, subDec: 600 } },
+        betmgm:      { f1: { koSub: -250 }, f2: { koSub: 500 } },
+      },
+      totals: {
+        '1.5': { fanduel: { over: 138, under: -176 }, betmgm: { over: 140, under: -180 } },
+      },
+    },
+    'gaziev|nzechukwu': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 130, sub: 1200, dec: 475 }, f2: { ko: 200, sub: 1000, dec: 650 } },
+        bovada:      { f1: { ko: 140, sub: 1200, dec: 450 }, f2: { ko: 215, sub: 1100, dec: 700 } },
+        draftkings:  { f1: { ko: 140, sub: 1200, dec: 450 }, f2: { ko: 215, sub: 1100, dec: 700 } },
+        fanduel:     { f1: { ko: 155, sub: 1300, dec: 500 }, f2: { ko: 220, sub: 1300, dec: 750 } },
+        betmgm:      { f1: { ko: 150, sub: 1100, dec: 400 }, f2: { ko: 200, sub: 1000, dec: 650 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 265, r2: 450, r3: 1200 }, f2: { r1: 450, r2: 550, r3: 750 } },
+        bovada:      { f1: { r1: 350, r2: 525, r3: 850 }, f2: { r1: 500, r2: 650, r3: 1000 } },
+        draftkings:  { f1: { r1: 250, r2: 500, r3: 1100 }, f2: { r1: 450, r2: 600, r3: 800 } },
+        fanduel:     { f1: { r1: 330, r2: 600, r3: 950 }, f2: { r1: 500, r2: 700, r3: 950 } },
+        betmgm:      { f1: { r1: 250, r2: 500, r3: 1100 }, f2: { r1: 450, r2: 600, r3: 800 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -125, subDec: 400 }, f2: { koDec: 135, subDec: 385 } },
+        bovada:      { f1: { koDec: -135, koSub: 125, subDec: 300 }, f2: { koDec: 130, koSub: 175, subDec: 400 } },
+        draftkings:  { f1: { koDec: -135, koSub: 125, subDec: 300 }, f2: { koDec: 130, koSub: 175, subDec: 400 } },
+        fanduel:     { f1: { koDec: -125, koSub: 120, subDec: 330 }, f2: { koDec: 140, koSub: 170, subDec: 460 } },
+        betmgm:      { f1: { koSub: 125 }, f2: { koSub: 175 } },
+      },
+      totals: {
+        '1.5': { fanduel: { over: -142, under: 112 }, betmgm: { over: -155, under: 115 } },
+      },
+    },
+    'haqparast|padilla': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 335, sub: 2000, dec: 190 }, f2: { ko: 450, sub: 750, dec: 215 } },
+        bovada:      { f1: { ko: 350, sub: 2800, dec: 185 }, f2: { ko: 450, sub: 900, dec: 225 } },
+        draftkings:  { f1: { ko: 350, sub: 2800, dec: 180 }, f2: { ko: 450, sub: 900, dec: 225 } },
+        fanduel:     { f1: { ko: 370, sub: 2700, dec: 195 }, f2: { ko: 600, sub: 1000, dec: 230 } },
+        betmgm:      { f1: { ko: 350, sub: 2200, dec: 175 }, f2: { ko: 425, sub: 800, dec: 225 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 650, r2: 850, r3: 1100 }, f2: { r1: 700, r2: 900, r3: 1200 } },
+        bovada:      { f1: { r1: 1000, r2: 700, r3: 1600 }, f2: { r1: 1100, r2: 750, r3: 1700 } },
+        draftkings:  { f1: { r1: 650, r2: 1000, r3: 1400 }, f2: { r1: 650, r2: 1000, r3: 1400 } },
+        fanduel:     { f1: { r1: 750, r2: 1100, r3: 1700 }, f2: { r1: 750, r2: 1200, r3: 1900 } },
+        betmgm:      { f1: { r1: 650, r2: 1000, r3: 1400 }, f2: { r1: 650, r2: 1000, r3: 1400 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -120, subDec: 170 }, f2: { koDec: 120, subDec: 150 } },
+        bovada:      { f1: { koDec: -105, koSub: 325, subDec: 165 }, f2: { koDec: 120, koSub: 325, subDec: 160 } },
+        draftkings:  { f1: { koDec: -115, koSub: 320, subDec: 155 }, f2: { koDec: 115, koSub: 320, subDec: 150 } },
+        fanduel:     { f1: { koDec: -120, koSub: 320, subDec: 170 }, f2: { koDec: 125, koSub: 340, subDec: 160 } },
+        betmgm:      { f1: { koSub: 300 }, f2: { koSub: 300 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -196, under: 152 }, betmgm: { over: -210, under: 150 } },
+      },
+    },
+    'barbosa|kuse': {
+      rounds: 3,
+      ml: { betmgm: { f1: -900, f2: 600 } },
+      method: {
+        betonlineag: { f1: { ko: -600, sub: 1800, dec: 800 }, f2: { ko: 850, sub: 2500, dec: 1200 } },
+        bovada:      { f1: { ko: -450, sub: 1800, dec: 850 }, f2: { ko: 900, sub: 2200, dec: 1500 } },
+        draftkings:  { f1: { ko: -575, sub: 1800, dec: 1000 }, f2: { ko: 1200, sub: 3000, dec: 1600 } },
+        fanduel:     { f1: { ko: -400, sub: 2000, dec: 1200 }, f2: { ko: 1100, sub: 3000, dec: 1700 } },
+        betmgm:      { f1: { ko: -600, sub: 1400, dec: 900 }, f2: { ko: 1000, sub: 2000, dec: 1500 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: -175, r2: 335, r3: 1000 }, f2: { r1: 1400, r2: 2000, r3: 3000 } },
+        bovada:      { f1: { r1: -174, r2: 350, r3: 1500 }, f2: { r1: 1600, r2: 2200, r3: 3300 } },
+        draftkings:  { f1: { r1: -185, r2: 450, r3: 1200 }, f2: { r1: 1600, r2: 2800, r3: 5000 } },
+        fanduel:     { f1: { r1: -175, r2: 470, r3: 1400 }, f2: { r1: 1600, r2: 2700, r3: 4000 } },
+        betmgm:      { f1: { r1: -190, r2: 400, r3: 1000 }, f2: { r1: 1200, r2: 2000, r3: 4000 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -800, subDec: 650 }, f2: { koDec: 650, subDec: 1000 } },
+        bovada:      { f1: { koDec: -725, koSub: -525, subDec: 575 }, f2: { koDec: 600, koSub: 700, subDec: 900 } },
+        draftkings:  { f1: { koDec: -800, koSub: -650, subDec: 650 }, f2: { koDec: 700, koSub: 1000, subDec: 1100 } },
+        fanduel:     { f1: { koDec: -600, koSub: -500, subDec: 750 }, f2: { koDec: 700, koSub: 850, subDec: 1100 } },
+        betmgm:      { f1: { koSub: -700 }, f2: { koSub: 900 } },
+      },
+    },
+    'dorsainvil|young': {
+      rounds: 3,
+      ml: { betmgm: { f1: 135, f2: -165 } },
+      method: {
+        betonlineag: { f1: { ko: 700, sub: 450, dec: 270 }, f2: { ko: 255, sub: 2000, dec: 200 } },
+        bovada:      { f1: { ko: 1200, sub: 700, dec: 250 }, f2: { ko: 285, sub: 2000, dec: 185 } },
+        draftkings:  { f1: { ko: 1000, sub: 600, dec: 275 }, f2: { ko: 275, sub: 2000, dec: 165 } },
+        fanduel:     { f1: { ko: 1400, sub: 700, dec: 250 }, f2: { ko: 290, sub: 2200, dec: 180 } },
+        betmgm:      { f1: { ko: 900, sub: 550, dec: 225 }, f2: { ko: 250, sub: 1600, dec: 175 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 650, r2: 875, r3: 1000 }, f2: { r1: 550, r2: 750, r3: 1000 } },
+        bovada:      { f1: { r1: 1000, r2: 1200, r3: 1600 }, f2: { r1: 650, r2: 800, r3: 1100 } },
+        draftkings:  { f1: { r1: 800, r2: 1100, r3: 1800 }, f2: { r1: 500, r2: 850, r3: 1200 } },
+        fanduel:     { f1: { r1: 950, r2: 1600, r3: 2200 }, f2: { r1: 600, r2: 900, r3: 1400 } },
+        betmgm:      { f1: { r1: 800, r2: 1400, r3: 2000 }, f2: { r1: 475, r2: 800, r3: 1200 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 175, subDec: 145 }, f2: { koDec: -145, subDec: 165 } },
+        bovada:      { f1: { koDec: 185, koSub: 425, subDec: 140 }, f2: { koDec: -150, koSub: 225, subDec: 175 } },
+        draftkings:  { f1: { koDec: 185, koSub: 380, subDec: 150 }, f2: { koDec: -145, koSub: 250, subDec: 140 } },
+        fanduel:     { f1: { koDec: 190, koSub: 460, subDec: 150 }, f2: { koDec: -155, koSub: 240, subDec: 155 } },
+        betmgm:      { f1: { koSub: 425 }, f2: { koSub: 225 } },
+      },
+      totals: {
+        '2.5': { fanduel: { over: -190, under: 148 } },
+      },
+    },
+    'mcvey|schultz': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 160, sub: 450, dec: 425 }, f2: { ko: 700, sub: 260, dec: 1100 } },
+        bovada:      { f1: { ko: 165, sub: 475, dec: 450 }, f2: { ko: 700, sub: 280, dec: 1200 } },
+        draftkings:  { f1: { ko: 150, sub: 400, dec: 550 }, f2: { ko: 650, sub: 275, dec: 1200 } },
+        fanduel:     { f1: { ko: 180, sub: 550, dec: 470 }, f2: { ko: 750, sub: 300, dec: 1300 } },
+        betmgm:      { f1: { ko: 145, sub: 400 }, f2: { ko: 600, sub: 250 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 185, r2: 550, r3: 1400 }, f2: { r1: 300, r2: 700, r3: 1400 } },
+        bovada:      { f1: { r1: 185, r2: 750, r3: 2000 }, f2: { r1: 350, r2: 800, r3: 2200 } },
+        draftkings:  { f1: { r1: 165, r2: 550, r3: 1800 }, f2: { r1: 300, r2: 700, r3: 2000 } },
+        fanduel:     { f1: { r1: 180, r2: 750, r3: 2200 }, f2: { r1: 340, r2: 850, r3: 2200 } },
+        betmgm:      { f1: { r1: 175, r2: 525, r3: 1800 }, f2: { r1: 285, r2: 600, r3: 1600 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -105, subDec: 200 }, f2: { koDec: 375, subDec: 190 } },
+        bovada:      { f1: { koDec: -110, koSub: -105, subDec: 205 }, f2: { koDec: 425, koSub: 175, subDec: 210 } },
+        draftkings:  { f1: { koDec: -105, koSub: -110, subDec: 200 }, f2: { koDec: 400, koSub: 180, subDec: 200 } },
+        fanduel:     { f1: { koDec: -110, koSub: -105, subDec: 200 }, f2: { koDec: 450, koSub: 180, subDec: 220 } },
+      },
+    },
+    'dyer|reed': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 115, sub: 415, dec: 200 }, f2: { ko: 1200, sub: 2500, dec: 650 } },
+        bovada:      { f1: { ko: 125, sub: 350, dec: 205 }, f2: { ko: 1400, sub: 3500, dec: 1200 } },
+        draftkings:  { f1: { ko: 110, sub: 330, dec: 200 }, f2: { ko: 1800, sub: 4500, dec: 1000 } },
+        fanduel:     { f1: { ko: 120, sub: 370, dec: 230 }, f2: { ko: 1500, sub: 3300, dec: 1200 } },
+        betmgm:      { f1: { ko: -115, sub: 370 }, f2: { ko: 1400, sub: 3000 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 185, r2: 350, r3: 600 }, f2: { r1: 2000, r2: 2800, r3: 3500 } },
+        bovada:      { f1: { r1: 205, r2: 350, r3: 625 }, f2: { r1: 2000, r2: 2800, r3: 3300 } },
+        draftkings:  { f1: { r1: 225, r2: 330, r3: 550 }, f2: { r1: 3000, r2: 4000, r3: 4500 } },
+        fanduel:     { f1: { r1: 220, r2: 330, r3: 700 }, f2: { r1: 2200, r2: 3000, r3: 4000 } },
+        betmgm:      { f1: { r1: 240, r2: 330, r3: 650 }, f2: { r1: 2400, r2: 3000, r3: 4000 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -350, subDec: 115 }, f2: { koDec: 550, subDec: 600 } },
+        bovada:      { f1: { koDec: -335, koSub: -170, subDec: -110 }, f2: { koDec: 700, koSub: 1100, subDec: 900 } },
+        draftkings:  { f1: { koDec: -350, koSub: -170, subDec: -125 }, f2: { koDec: 650, koSub: 1400, subDec: 800 } },
+        fanduel:     { f1: { koDec: -260, koSub: -180, subDec: -105 }, f2: { koDec: 650, koSub: 1100, subDec: 900 } },
+      },
+      totals: {
+        '2.5': { betmgm: { over: 125, under: -160 } },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
