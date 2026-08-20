@@ -230,6 +230,23 @@
   .bout-ct .rr{font-size:.55rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
   .bout-opt.risk .bout-ct .rr{color:var(--accent2)}
 
+  /* IMPACT FX — one-shot classes toggled by JS (G.fxPanel/G.fxAvatar, set in
+     advanceBout()/boutChoose(), consumed and cleared in boutBox()) right before a
+     fresh bout panel is built, so the animation plays once on paint and never
+     replays on an unrelated re-render. Kept subtle — this READS a fight, it
+     doesn't need to look like a fighting game. */
+  @keyframes climbShake{
+    10%,90%{transform:translateX(-1px)} 20%,80%{transform:translateX(2px)}
+    30%,50%,70%{transform:translateX(-4px)} 40%,60%{transform:translateX(4px)} }
+  @keyframes climbFlashGood{0%{box-shadow:inset 0 0 0 999px rgba(0,230,104,.18)}100%{box-shadow:inset 0 0 0 999px rgba(0,230,104,0)}}
+  @keyframes climbFlashBad{0%{box-shadow:inset 0 0 0 999px rgba(255,61,0,.20)}100%{box-shadow:inset 0 0 0 999px rgba(255,61,0,0)}}
+  @keyframes climbPunch{0%{transform:scale(1)}35%{transform:scale(1.16)}100%{transform:scale(1)}}
+  .bout.fx-shake{animation:climbShake .4s ease-in-out}
+  .bout.fx-flash-good{animation:climbFlashGood .6s ease-out}
+  .bout.fx-flash-bad{animation:climbFlashBad .6s ease-out}
+  .av.fx-punch img{animation:climbPunch .35s ease-out}
+  .av.fx-rattled img{animation:climbShake .4s ease-in-out;filter:saturate(.35) brightness(.8)}
+
   /* ── SIGNATURE PICKER — compact cards + a detail strip (stays 2-up on mobile) */
   .siggrid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
   .sigcard{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:.4rem .55rem;text-align:left;cursor:pointer;font-family:inherit;color:var(--text)}
@@ -2829,12 +2846,16 @@ function advanceBout(){
     // A finish OPPORTUNITY — you've hurt him, and you have the tools to end it.
     if (r && !B.usedHurt && B.hisDmg > 0.55 &&
         Math.random() < clampv((B.ctx.finBias*0.48 + B.ctx.frail*0.20) * (G.sig==='killer'?1.4:1), 0, 0.58)){
-      B.usedHurt = true; B.moment = { type:'hurt' }; break;
+      B.usedHurt = true; B.moment = { type:'hurt' };
+      G.fxPanel = 'flash-good'; G.fxAvatar = 'punch';   // you just hurt him
+      break;
     }
     // TROUBLE — he's hurt you, and he's dangerous.
     if (!r && !B.usedTrouble && B.myDmg > 0.55 &&
         Math.random() < clampv(B.ctx.threat*0.60, 0, 0.45)){
-      B.usedTrouble = true; B.moment = { type:'trouble' }; break;
+      B.usedTrouble = true; B.moment = { type:'trouble' };
+      G.fxPanel = 'shake'; G.fxAvatar = 'rattled';   // you just got rocked
+      break;
     }
   }
   if (B.moment){ render(); return; }
@@ -2909,7 +2930,14 @@ function boutChoose(kind){
   // risk paid off — the same transparency the game plan gets. rec(text, good): good=true
   // it paid off, false it cost you, null a wash.
   const hurt = m.type === 'hurt';
-  const rec = (text, good) => (B.moments || (B.moments=[])).push({ text, good });
+  const rec = (text, good) => {
+    (B.moments || (B.moments=[])).push({ text, good });
+    // Flash green when the call paid off, red when it backfired — reuses the SAME
+    // good/false/null judgment the result screen already reads off B.moments, so
+    // there's no second "was this good" call to keep in sync with the first.
+    if (good === true) G.fxPanel = 'flash-good';
+    else if (good === false) G.fxPanel = 'flash-bad';
+  };
   if (kind === 'bank' || kind === 'weather') {                 // safe = you decline the gamble; the fight resolves as it was going
     // Describe the CHOICE, not the outcome. "Banked the round" / "weathered it" claimed a
     // result the fight might not deliver — the natural finish still lands whether you
@@ -2990,9 +3018,23 @@ function boutBox(){
   const _subW = (G.attrs.grappling||1)*0.9 + (G.attrs.wrestling||0)*0.35;
   const grappler = _subW > _koW;
   const p = document.createElement('div'); p.className = 'panel bout';
-  const rl = document.createElement('div'); rl.className = 'rl';
+  // IMPACT FX — G.fxPanel/G.fxAvatar are one-shot, set by advanceBout()/boutChoose()
+  // right before this render. Consume and clear them here so a later, unrelated
+  // re-render of this same panel never replays a stale hit.
+  if (G.fxPanel === 'shake') p.classList.add('fx-shake');
+  else if (G.fxPanel === 'flash-good') p.classList.add('fx-flash-good');
+  else if (G.fxPanel === 'flash-bad') p.classList.add('fx-flash-bad');
+  G.fxPanel = null;
+  const head = document.createElement('div'); head.className = 'opphd';
+  head.innerHTML = avatarHTML(o.f);
+  const avEl = head.querySelector('.av');
+  if (G.fxAvatar === 'punch') avEl.classList.add('fx-punch');
+  else if (G.fxAvatar === 'rattled') avEl.classList.add('fx-rattled');
+  G.fxAvatar = null;
+  const rl = document.createElement('div'); rl.className = 'rl'; rl.style.marginBottom = '0';
   rl.innerHTML = 'Round ' + B.i + ' of ' + B.base.nRounds + ' · vs <b></b>';
-  rl.querySelector('b').textContent = o.f.name; p.appendChild(rl);
+  rl.querySelector('b').textContent = o.f.name;
+  head.appendChild(rl); p.appendChild(head);
   const bars = document.createElement('div'); bars.className = 'bout-bars';
   const cond = (d) => d>0.55 ? 'hurt' : d>0.3 ? 'banged up' : 'fresh';
   const bar = (label, frac, color, tag, danger) => {
