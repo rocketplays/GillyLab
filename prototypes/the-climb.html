@@ -273,10 +273,6 @@
   .bout-tr{position:relative}
   .bout-tr::after{content:'';position:absolute;inset:0;pointer-events:none;
     background-image:repeating-linear-gradient(90deg, transparent 0 7px, rgba(0,0,0,.42) 7px 9px)}
-  /* Bigger avatar for the bout screen only — the pixelation (JS, canvas) needs
-     room to actually read as chunky rather than just small. */
-  .av.lg{width:72px;height:72px;flex:0 0 72px}
-  .av.lg span{font-size:1.05rem}
   /* Hit-splat — one-shot pixel-font pop text, G.fxSplat, same lifecycle as
      G.fxPanel/G.fxAvatar (set in advanceBout(), consumed+cleared in boutBox()). */
   @keyframes climbSplat{
@@ -1769,33 +1765,6 @@ function avatarHTML(f){
     'onerror="this.style.display=\'none\'"></div>';
 }
 
-// PIXELATE THE REAL PHOTO rather than draw new art — a fighter's actual headshot,
-// downsampled to a tiny grid then scaled back up with smoothing off, reads as a
-// chunky 8-bit portrait without a sprite pipeline or 2,300+ hand-drawn avatars.
-// Same-origin (served off this site), so drawImage/canvas never taints.
-// Deliberately does NOT touch onerror — the existing "hide on 404, reveal
-// initials" behavior in avatarHTML() stays exactly as it was; this only fires
-// on a successful load, and does nothing if the photo never loads at all.
-function pixelateAvatar(imgEl, size, cells){
-  if (!imgEl) return;
-  const draw = () => {
-    try {
-      if (!imgEl.naturalWidth) return;   // a 404'd img can still fire load in some browsers
-      const small = document.createElement('canvas'); small.width = cells; small.height = cells;
-      const sctx = small.getContext('2d'); if (!sctx) return;   // no 2d context (e.g. jsdom
-      sctx.drawImage(imgEl, 0, 0, cells, cells);                // in the test harnesses) — leave the plain photo
-      const big = document.createElement('canvas'); big.width = size; big.height = size;
-      big.style.width = size+'px'; big.style.height = size+'px'; big.style.imageRendering = 'pixelated';
-      const bctx = big.getContext('2d'); if (!bctx) return;
-      bctx.imageSmoothingEnabled = false;
-      bctx.drawImage(small, 0, 0, size, size);
-      if (imgEl.parentNode) imgEl.replaceWith(big);
-    } catch (e) { /* cosmetic only — a pixelation failure must never break the bout screen */ }
-  };
-  if (imgEl.complete && imgEl.naturalWidth) draw();
-  else imgEl.addEventListener('load', draw);
-}
-
 // ONE BAND, TWO VOICES, ONE DEFINITION. `t` is what the tile says before the
 // fight; `was` is how the same verdict reads afterwards. They live on the same
 // line ON PURPOSE — the whole point of the post-fight line is that it echoes the
@@ -3099,8 +3068,10 @@ function boutBox(){
   const head = document.createElement('div'); head.className = 'opphd';
   head.innerHTML = avatarHTML(o.f);
   const avEl = head.querySelector('.av');
-  avEl.classList.add('lg');   // bigger here only — the pixelation needs room to read as chunky
-  pixelateAvatar(avEl.querySelector('img'), 72, 14);
+  // Pixelation (canvas swap) is gone — the img has proven, correct .av CSS
+  // (opaque background, object-fit, sizing); the canvas swap didn't inherit any
+  // of it, which is why initials sometimes showed through around the edges. The
+  // plain real photo stays; the retro read now comes from the HUD chrome alone.
   if (G.fxAvatar === 'punch') avEl.classList.add('fx-punch');
   else if (G.fxAvatar === 'rattled') avEl.classList.add('fx-rattled');
   G.fxAvatar = null;
