@@ -2375,6 +2375,32 @@ function boutFinalize(){
 // win-rate-neutral — the edge comes from reading WHEN to, not from mashing it.
 const AGG_BACKFIRE = 0.60;   // ahead + miss -> you get caught and lose
 const AGG_STEAL    = 0.50;   // behind + land -> you steal the win
+// COMPOSED/EVADE is the same shape as swarm/fire but flattened — lower ceiling,
+// lower floor. Half the backfire, well below AGG_STEAL, so leaning on it every
+// time isn't a stealth-better swarm; it's a different risk band, not a free one.
+const CTL_BACKFIRE = 0.30;
+const CTL_STEAL    = 0.35;
+// GROUND/CLINCH is a different AXIS entirely — keyed off wrestling/grappling
+// instead of finish context, so it rewards a build the standing options never
+// touch. Not directly comparable to AGG_* / CTL_* pLand; balance it against
+// them via the sim (THE-CLIMB-TUNING.txt), not by eyeballing the numbers.
+const lvlOf = (id) => clampv(((G.attrs[id]||ATTR_MIN) - ATTR_MIN) / (ATTR_MAX - ATTR_MIN), 0, 1);
+function resolveAggressive(pLand, backfire, stopAgainst, verb, winning, steal, finish, flipLoss, rec){
+  if (winning) {
+    if (Math.random() < pLand) { finish(true); rec(verb+' — and got the finish. It paid off.', true); }
+    else if (Math.random() < backfire) {
+      const flipped = flipLoss();
+      if (flipped) {
+        if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and lost it.', false); }
+        else rec(verb+', dropped the round — but survived.', false);
+      } else rec(verb+' and missed — no harm done.', null);
+    } else rec(verb+'; he covered up. No harm.', null);
+  } else {
+    if (Math.random() < pLand * steal) { finish(true); rec(verb+' — and stole the fight. It paid off.', true); }
+    else if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and got stopped.', false); }
+    else rec(verb+' — and nothing came of it. No change.', null);
+  }
+}
 function boutChoose(kind){
   const B = G.bout, o = B.o, m = B.moment; if(!m) return; B.moment = null;
   const noopWon = () => B.rounds.concat(B.base.rounds.slice(B.i)).filter(Boolean).length >= B.base.needed;
@@ -2398,28 +2424,55 @@ function boutChoose(kind){
     advanceBout(); return;
   }
   const winning = noopWon(), sg = G.sig;
-  let pLand = kind === 'swarm' ? clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9) : 0.5;
-  if (sg === 'killer' && kind === 'swarm') pLand = Math.min(0.95, pLand + 0.15);  // finisher lands it
-  const backfire = AGG_BACKFIRE * (sg === 'killer' ? 1.3 : (sg === 'scram' || sg === 'chin') ? 0.5 : 1);
+  const sigMult = (killerMult, softMult) => sg === 'killer' ? killerMult : (sg === 'scram' || sg === 'chin') ? softMult : 1;
   const stopAgainst = sg === 'chin' ? 0.22 : (sg === 'scram' ? 0.35 : 0.5);       // iron chin / scrambler survive
-  // The VERB follows the moment (you had him hurt -> swarmed; you were in trouble -> fired
-  // back), NOT the scoreline. Keying it off `winning` was the bug: a hurt-and-swarm that
-  // stole a fight you were losing read "you fired back" (playtest), and two different
-  // moments could print the identical line.
-  const verb = hurt ? 'You swarmed' : 'You fired back';
-  if (winning) {
-    if (Math.random() < pLand) { finish(true); rec(verb+' — and got the finish. It paid off.', true); }
-    else if (Math.random() < backfire) {
-      const flipped = flipLoss();
-      if (flipped) {
-        if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and lost it.', false); }
-        else rec(verb+', dropped the round — but survived.', false);
-      } else rec(verb+' and missed — no harm done.', null);
-    } else rec(verb+'; he covered up. No harm.', null);
-  } else {
-    if (Math.random() < pLand * AGG_STEAL) { finish(true); rec(verb+' — and stole the fight. It paid off.', true); }
-    else if (Math.random() < stopAgainst) { finish(false); rec(verb+', got caught, and got stopped.', false); }
-    else rec(verb+' — and nothing came of it. No change.', null);
+
+  if (kind === 'swarm' || kind === 'fire') {
+    let pLand = clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9);
+    if (sg === 'killer') pLand = Math.min(0.95, pLand + 0.15);  // finisher lands it
+    const backfire = AGG_BACKFIRE * sigMult(1.3, 0.5);
+    // The VERB follows the moment (you had him hurt -> swarmed; you were in trouble -> fired
+    // back), NOT the scoreline. Keying it off `winning` was the bug: a hurt-and-swarm that
+    // stole a fight you were losing read "you fired back" (playtest), and two different
+    // moments could print the identical line.
+    const verb = hurt ? 'You swarmed' : 'You fired back';
+    resolveAggressive(pLand, backfire, stopAgainst, verb, winning, AGG_STEAL, finish, flipLoss, rec);
+  } else if (kind === 'compose' || kind === 'evade') {
+    // Measured version of swarm/fire: flatter in both directions, keyed a touch
+    // less on finish context (technique/output over raw power).
+    let pLand = clampv(0.30 + B.ctx.finBias*0.20 + B.ctx.frail*0.12, 0.15, 0.65);
+    if (sg === 'killer') pLand = Math.min(0.80, pLand + 0.08);
+    const backfire = CTL_BACKFIRE * sigMult(1.15, 0.6);
+    const verb = hurt ? 'You stayed composed, picking your shots' : 'You evaded and countered';
+    resolveAggressive(pLand, backfire, stopAgainst*0.7, verb, winning, CTL_STEAL, finish, flipLoss, rec);
+  } else if (kind === 'ground' || kind === 'clinch') {
+    // Wrestling/grappling-keyed alternate route — control instead of damage, so a
+    // grappling build has something to do in a moment the standing options ignore.
+    const groundSkill = lvlOf('wrestling')*0.6 + lvlOf('grappling')*0.4;
+    const pTD = clampv(0.35 + groundSkill*0.45, 0.2, 0.85);
+    if (hurt) {
+      const verb = 'You dragged it to the ground';
+      const pFinish = clampv(0.35 + lvlOf('grappling')*0.35 + B.ctx.frail*0.15, 0.15, 0.85);
+      if (Math.random() < pTD) {
+        const stealChance = winning ? pFinish : pFinish*CTL_STEAL;
+        if (Math.random() < stealChance) { finish(true); rec(verb+' — locked up the finish from top.', true); }
+        else rec(verb+' — controlled the position, banked it clean.', null);
+      } else {
+        const scramble = 0.18 * sigMult(1.2, 0.6);
+        if (Math.random() < scramble && flipLoss()) rec(verb+', got stuffed, and he scrambled back into it.', false);
+        else rec(verb+' and got stuffed — no harm done.', null);
+      }
+    } else {
+      const verb = 'You clinched up';
+      const holdChance = clampv(0.55 + groundSkill*0.35, 0.4, 0.92);
+      if (Math.random() < holdChance) {
+        rec(verb+' — tied him up and rode out the danger.', null);
+      } else {
+        const clinchStop = sg === 'chin' ? 0.15 : (sg === 'scram' ? 0.25 : 0.35);
+        if (Math.random() < clinchStop) { finish(false); rec(verb+", couldn't hold on, and got stopped.", false); }
+        else { flipLoss(); rec(verb+" but couldn't hold him off — dropped the round.", false); }
+      }
+    }
   }
   if (B.override) { boutFinalize(); return; }
   advanceBout();
@@ -2482,7 +2535,13 @@ function boutBox(){
                : "Your best shot at ending it now, while he's rocked.",
       grappler ? 'Let him scramble free and he\'s back in it — and you\'ve spent yourself.'
                : 'If he survives he ties you up and steals the round — and a desperation takedown is live.'));
-    opts.appendChild(choice(grappler?'Hold the position':'Stay composed', false, 'bank',
+    opts.appendChild(choice('Drag it to the ground', true, 'ground',
+      'A wrestler/grappler\'s best shot — take him down and finish from top.',
+      'Fail the takedown and you\'ve spent the moment for nothing, or worse.'));
+    opts.appendChild(choice('Stay composed', false, 'compose',
+      'Pick your shots instead of unloading — a real but smaller shot at the finish.',
+      'Less firepower than a full swarm if the shot is actually there.'));
+    opts.appendChild(choice(grappler?'Hold the position':'Bank it, stay fresh', false, 'bank',
       grappler ? 'Keep control, bank the round, stay fresh.' : 'Bank a clean round and stay fresh for later.',
       grappler ? 'You let a hurt, dangerous man work back to his feet.' : 'You let a dangerous, hurt man recover.'));
   } else {
@@ -2498,8 +2557,14 @@ function boutBox(){
                : 'A chance to steal the round — or turn the whole fight.',
       grappler ? "Scramble wrong and he takes your back and sinks it in."
                : "Trading while you're hurt, you're far more likely to get finished."));
+    opts.appendChild(choice('Evade and counter', true, 'evade',
+      'Circle, pick your counters — a smaller shot at stealing it than trading outright.',
+      "Still hurt while you're doing it — a clean counter isn't guaranteed."));
+    opts.appendChild(choice('Clinch up', false, 'clinch',
+      'A wrestler/grappler\'s way out — tie him up and ride out the danger.',
+      "Lose the tie-up and you're still exposed, without the round."));
     opts.appendChild(choice(grappler?'Ride it out':'Weather it, survive', false, 'weather',
-      grappler ? 'Defend, tie him up, and get through the round.' : 'Clinch up, cover, and get out of the round.',
+      grappler ? 'Defend, tie him up, and get through the round.' : 'Cover up, and get out of the round.',
       'You concede the round to stay in the fight.'));
   }
   p.appendChild(beat); p.appendChild(readout); p.appendChild(opts);
