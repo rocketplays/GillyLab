@@ -2959,14 +2959,20 @@ function boutChoose(kind){
         else rec(verb+' and got stuffed — no harm done.', null);
       }
     } else {
+      // Sim (scripts/sim-climb-moments.cjs) caught this labeled "Low risk" but
+      // scoring worse than every other option — the failure branch guaranteed a
+      // round loss, no in-between. Retuned: holds more often at baseline, and
+      // failing to hold is USUALLY a harmless scramble (like weather), only
+      // sometimes a dropped round, rarely a stoppage.
       const verb = 'You clinched up';
-      const holdChance = clampv(0.55 + groundSkill*0.35, 0.4, 0.92);
+      const holdChance = clampv(0.65 + groundSkill*0.30, 0.55, 0.95);
       if (Math.random() < holdChance) {
         rec(verb+' — tied him up and rode out the danger.', null);
       } else {
-        const clinchStop = sg === 'chin' ? 0.15 : (sg === 'scram' ? 0.25 : 0.35);
+        const clinchStop = sg === 'chin' ? 0.08 : (sg === 'scram' ? 0.12 : 0.18);
         if (Math.random() < clinchStop) { finish(false); rec(verb+", couldn't hold on, and got stopped.", false); }
-        else { flipLoss(); rec(verb+" but couldn't hold him off — dropped the round.", false); }
+        else if (Math.random() < 0.45) { flipLoss(); rec(verb+" but couldn't hold him off — dropped the round.", false); }
+        else rec(verb+' — lost the tie-up, but scrambled clear. No harm.', null);
       }
     }
   }
