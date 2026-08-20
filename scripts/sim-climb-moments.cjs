@@ -64,6 +64,16 @@ function trialClinch(holdChance, sg) {
   if (Math.random() < 0.45) return 'flip';
   return 'noharm';
 }
+// FADE (kind:'push') — mirrors boutChoose's 'push' branch. Not a winning/behind
+// split like the others: it's a single risk roll before the unfought final round.
+function trialFade(pFinish, backfire, stopAgainst) {
+  if (Math.random() < pFinish) return 'finT';
+  if (Math.random() < backfire) {
+    if (Math.random() < stopAgainst) return 'finF';
+    return 'flip';
+  }
+  return 'noharm';
+}
 
 function ev(counts, n) {
   return (counts.finT - counts.finF - counts.flip * ROUND_COST) / n;
@@ -171,4 +181,43 @@ for (const gs of GROUND_SKILL) {
     evSum += ev(runTroubleCell('clinch', fb, fr, sg, true, gs), TRIALS); cells++;
   }
   console.log('  groundSkill='+gs.toFixed(1)+'  EV='+(evSum/cells).toFixed(4));
+}
+
+// ── CLOSEROUND (kind:'finish') — dead even entering the last round. Always the
+// BEHIND branch of resolveAggressive (winning=false) in the real code, so sweep
+// it that way here too; a winning=true sweep would test a code path this kind
+// never actually takes.
+console.log('\nCLOSEROUND moment (dead even, last round) — always winning=false:');
+console.log('option'.padEnd(10) + 'avg EV'.padStart(10) + '  finish%'.padStart(10) + '  stopped%'.padStart(11) + '  cells');
+{
+  let evSum=0, cells=0, finT=0, finF=0, flip=0, n=0;
+  for (const sg of SIGS) for (const fb of FINBIAS) for (const fr of FRAIL) {
+    let pLand = clampv(0.45 + fb*0.30 + fr*0.20, 0.2, 0.9);
+    if (sg === 'killer') pLand = Math.min(0.95, pLand + 0.15);
+    const counts = { finT:0, finF:0, flip:0, noharm:0 };
+    for (let t=0;t<TRIALS;t++) counts[trialAggressive(pLand, AGG_BACKFIRE, stopAgainstOf(sg), false, AGG_STEAL)]++;
+    evSum += ev(counts, TRIALS); cells++;
+    finT+=counts.finT; finF+=counts.finF; flip+=counts.flip; n+=TRIALS;
+  }
+  console.log('finish'.padEnd(10) + (evSum/cells).toFixed(4).padStart(10) +
+    ((finT/n*100).toFixed(1)+'%').padStart(10) + ((finF/n*100).toFixed(1)+'%').padStart(11) + String(cells).padStart(7));
+}
+
+// ── FADE (kind:'push') — championship rounds, keyed on gassed (0..1), NOT on
+// finBias/frail/winning the way the reactive moments are. Sweep gassed directly
+// since that's the input the real formula actually reads.
+const GASSED = [0, 0.3, 0.6, 0.9, 1.0];
+console.log('\nFADE moment (championship rounds, before round 5) — EV vs gassed, should fall as gassed rises:');
+for (const gs of GASSED) {
+  let evSum=0, cells=0, finT=0, finF=0, flip=0, n=0;
+  for (const sg of SIGS) for (const fb of FINBIAS) {
+    const pFinish = clampv(0.22 + fb*0.35 - gs*0.15, 0.08, 0.70);
+    const backfire = clampv(0.30 + gs*0.50, 0.15, 0.85);
+    const counts = { finT:0, finF:0, flip:0, noharm:0 };
+    for (let t=0;t<TRIALS;t++) counts[trialFade(pFinish, backfire, stopAgainstOf(sg))]++;
+    evSum += ev(counts, TRIALS); cells++;
+    finT+=counts.finT; finF+=counts.finF; flip+=counts.flip; n+=TRIALS;
+  }
+  console.log('  gassed='+gs.toFixed(1)+'  EV='+(evSum/cells).toFixed(4)+
+    '  finish%='+(finT/n*100).toFixed(1)+'  stopped%='+(finF/n*100).toFixed(1)+'  flip%='+(flip/n*100).toFixed(1));
 }

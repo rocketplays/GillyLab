@@ -2083,7 +2083,7 @@ function boutFinishCtx(o){
       wF = wF + (1 - wF) * 0.30 * gettable;
     }
   else if (sg === 'killer')  { wF = wF + (1 - wF) * 0.20; }     // finishes a touch more overall
-  return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef };
+  return { frail, finBias: fB, kd, sb, threat, winFin: wF, loseFin: lF, subDef, gassed };
 }
 function finishMethod(o, ctx, won){
   let koW  = won ? ((G.attrs.power||1) + (G.attrs.wrestling||0)*0.50 + (G.attrs.pace||0)*0.60*ctx.frail) : ctx.kd;
@@ -2327,6 +2327,28 @@ function startBout(o){
 function advanceBout(){
   const B = G.bout;
   while (B.i < B.base.rounds.length && !B.moment && !B.override){
+    // ── PRE-ROUND MOMENTS — fire before the final round is FOUGHT, keyed on
+    // fight STATE (the scoreline, your gas tank) rather than a damage
+    // threshold from a round that already happened. At most one per fight;
+    // closeround (score) takes priority over fade (cardio) if a 5-round fight
+    // is somehow both tied and gassed heading into the last round.
+    if (B.i === B.base.nRounds - 1) {
+      const wonSoFar = B.rounds.filter(Boolean).length, lostSoFar = B.rounds.length - wonSoFar;
+      if (!B.usedClose && wonSoFar === lostSoFar) {
+        // Both flags, not just usedClose — a fade/push resolution can flip an
+        // already-fought round (flipLoss) WITHOUT advancing B.i, which can
+        // retroactively create a tie that would otherwise re-trigger this
+        // exact check on re-entry and stack a second pre-round moment onto
+        // the same boundary (caught via testing, not by inspection).
+        B.usedClose = true; B.usedFade = true; B.moment = { type:'closeround' }; break;
+      } else if (!B.usedFade && B.base.nRounds === 5) {
+        B.usedFade = true;   // one look at this, regardless of the roll
+        if (Math.random() < clampv(0.25 + B.ctx.gassed*0.50, 0.15, 0.75)) {
+          B.usedClose = true;   // same reasoning, symmetric direction
+          B.moment = { type:'fade' }; break;
+        }
+      }
+    }
     const r = B.base.rounds[B.i]; B.rounds.push(r); B.i++;
     if (r) B.hisDmg = Math.min(1, B.hisDmg + 0.30 + B.ctx.finBias*0.16 + B.ctx.frail*0.10);
     else   B.myDmg  = Math.min(1, B.myDmg  + 0.26 + B.ctx.threat*0.28);
@@ -2425,13 +2447,18 @@ function boutChoose(kind){
     if (good === true) G.fxPanel = 'flash-good';
     else if (good === false) G.fxPanel = 'flash-bad';
   };
-  if (kind === 'bank' || kind === 'weather') {                 // safe = you decline the gamble; the fight resolves as it was going
+  if (kind === 'bank' || kind === 'weather' || kind === 'manage' || kind === 'coast') {
     // Describe the CHOICE, not the outcome. "Banked the round" / "weathered it" claimed a
     // result the fight might not deliver — the natural finish still lands whether you
     // gambled or not (playtest: played safe, still won/lost by submission, note said you
     // banked/weathered it). Passing on the SWARM is true regardless of how the fight ends.
-    rec(hurt ? 'Had him hurt — you passed on the swarm and let it play out.'
-             : 'In trouble — you covered up rather than fire back.', null);
+    const passText = {
+      hurt: 'Had him hurt — you passed on the swarm and let it play out.',
+      trouble: 'In trouble — you covered up rather than fire back.',
+      fade: 'Championship rounds — you managed the pace and protected what you had.',
+      closeround: 'Dead even entering the last round — you trusted the scorecards.',
+    }[m.type];
+    rec(passText, null);
     advanceBout(); return;
   }
   const winning = noopWon(), sg = G.sig;
@@ -2490,6 +2517,29 @@ function boutChoose(kind){
         else rec(verb+' — lost the tie-up, but scrambled clear. No harm.', null);
       }
     }
+  } else if (kind === 'push') {
+    // FADE — championship rounds, resolved BEFORE round 5 is fought (B.i is
+    // still the index of that unfought round, so finish()'s finRound:B.i and
+    // flipLoss()'s search from B.i both land on it correctly). Cardio, not
+    // damage, is the variable: a fresh tank pushes safely, an empty one risks
+    // getting caught trying to close the show.
+    const gassed = B.ctx.gassed;
+    const pFinish = clampv(0.22 + B.ctx.finBias*0.35 - gassed*0.15, 0.08, 0.70);
+    const backfire = clampv(0.30 + gassed*0.50, 0.15, 0.85);
+    if (Math.random() < pFinish) { finish(true); rec('You pushed the pace in the championship rounds — and closed the show.', true); }
+    else if (Math.random() < backfire) {
+      if (Math.random() < stopAgainst) { finish(false); rec('You pushed too hard, gassed, and got caught.', false); }
+      else if (flipLoss()) rec('You pushed too hard and faded — you lost the final round.', false);
+      else rec('You emptied the tank and it cost you nothing in the end.', null);
+    } else rec('You pushed the pace, gassed a little, but held on.', null);
+  } else if (kind === 'finish') {
+    // CLOSEROUND — dead even entering the last round. There's no lead to
+    // defend and no deficit to erase, so this always uses resolveAggressive's
+    // BEHIND branch (winning=false): pushing here is chasing a finish to
+    // remove doubt, never protecting a scoreline that doesn't exist yet.
+    let pLand = clampv(0.45 + B.ctx.finBias*0.30 + B.ctx.frail*0.20, 0.2, 0.9);
+    if (sg === 'killer') pLand = Math.min(0.95, pLand + 0.15);
+    resolveAggressive(pLand, AGG_BACKFIRE, stopAgainst, 'You pushed for the finish', false, AGG_STEAL, finish, flipLoss, rec);
   }
   if (B.override) { boutFinalize(); return; }
   advanceBout();
@@ -2552,7 +2602,10 @@ function boutBox(){
   rd.innerHTML = 'Rounds: ' + B.rounds.map((w,idx)=>'<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(idx+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ');
   p.appendChild(rd);
   const iq = G.sig==='general' ? ATTR_MAX : (G.attrs.fightiq || ATTR_MIN);
-  const beat = document.createElement('div'); beat.className = 'bout-beat ' + (m.type==='hurt'?'good':'bad');
+  // fade/closeround are strategic reads, not a damage state — neither clearly
+  // "good" nor "bad" the way being hurt or in trouble is, so no colored border.
+  const beatClass = m.type==='hurt' ? 'good' : m.type==='trouble' ? 'bad' : '';
+  const beat = document.createElement('div'); beat.className = 'bout-beat ' + beatClass;
   const readout = document.createElement('div'); readout.className = 'bout-iq';
   const opts = document.createElement('div'); opts.className = 'plan-opts'; opts.style.marginTop='.6rem';
   const choice = (label, risk, kind, pro, con) => {
@@ -2586,7 +2639,7 @@ function boutBox(){
     opts.appendChild(choice(grappler?'Hold the position':'Bank it, stay fresh', false, 'bank',
       grappler ? 'Keep control, bank the round, stay fresh.' : 'Bank a clean round and stay fresh for later.',
       grappler ? 'You let a hurt, dangerous man work back to his feet.' : 'You let a dangerous, hurt man recover.'));
-  } else {
+  } else if (m.type === 'trouble') {
     beat.textContent = grappler ? last + " has turned it around — you're in a bad spot."
                                 : last + " has you hurt — you're in trouble.";
     readout.textContent = grappler
@@ -2608,6 +2661,34 @@ function boutBox(){
     opts.appendChild(choice(grappler?'Ride it out':'Weather it, survive', false, 'weather',
       grappler ? 'Defend, tie him up, and get through the round.' : 'Cover up, and get out of the round.',
       'You concede the round to stay in the fight.'));
+  } else if (m.type === 'fade') {
+    // CHAMPIONSHIP ROUNDS — a proactive read on your OWN gas tank, not a
+    // reaction to a hit. Only fires in 5-round fights, once, before round 5.
+    const gassed = B.ctx.gassed;
+    beat.textContent = 'Championship rounds — your gas tank is running out.';
+    readout.textContent = gassed > 0.6
+      ? (iq>=8 ? "Your corner: you're empty. One more push, or you coast it home."
+       : iq>=4 ? "You're gassed — decide now: push or manage." : "You're exhausted.")
+      : (iq>=8 ? "Your corner: you've got enough left for one more push, if you want it."
+       : iq>=4 ? "You're tiring, but there's something left." : "You're breathing hard.");
+    opts.appendChild(choice('Push the pace', true, 'push',
+      'Empty the tank and go for the finish — remove all doubt.',
+      "You're gassed — get caught pushing and it can cost you the round, or worse."));
+    opts.appendChild(choice('Manage the pace', false, 'manage',
+      "Protect what you've banked and coast the final round home.",
+      "You leave the door open for a finish you didn't have to give up."));
+  } else if (m.type === 'closeround') {
+    // DEAD EVEN entering the last round — a score-state moment, not a damage
+    // one. Fires at most once, and only when the tally is EXACTLY tied.
+    beat.textContent = 'Dead even — it comes down to this round.';
+    readout.textContent = iq>=8 ? "Your corner: the cards are a coin flip. Take it out of their hands."
+      : iq>=4 ? 'This round decides it — judges or a finish.' : "It's even. Anything can happen.";
+    opts.appendChild(choice('Push for the finish', true, 'finish',
+      "Take the decision out of the judges' hands.",
+      'Reaching for it in an even fight can get you caught.'));
+    opts.appendChild(choice('Play it safe', false, 'coast',
+      'Trust your work and let the round — and the scorecards — play out.',
+      "You're leaving it to three strangers with pens."));
   }
   p.appendChild(beat); p.appendChild(readout); p.appendChild(opts);
   return p;
