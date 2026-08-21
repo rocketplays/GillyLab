@@ -3853,8 +3853,21 @@ function hud(){
 
 function resultBox(){
   const {o,won,fin,method}=G.last;
-  const p=document.createElement('div'); p.className='panel';
+  // THE DWCS SIGNING IS THE BIGGEST MOMENT IN THE PROLOGUE — the one screen
+  // between "trying out" and "a UFC career," and it was reading as a same-size
+  // headline as a regular win. Reuses the .sigunlock treatment (gold border,
+  // an eyebrow label above the headline) that a new signature move already
+  // gets — the closest thing this game already has to "a big deal" chrome —
+  // rather than inventing a second visual language for one screen. A DWCS
+  // LOSS stays completely ordinary on purpose: only signing is the milestone.
+  const dwcsSigned = o.dwcs && won;
+  const p=document.createElement('div'); p.className = dwcsSigned ? 'panel sigunlock' : 'panel';
+  if (dwcsSigned){
+    const rl=document.createElement('div'); rl.className='rl'; rl.style.color='var(--gold)';
+    rl.textContent = "YOU'RE IN THE UFC"; p.appendChild(rl);
+  }
   const b=document.createElement('div'); b.className='big '+(won?'win':'loss');
+  if (dwcsSigned) b.style.cssText='color:var(--gold);font-size:1.5rem';
   // Both directions name the method. "lost to Tom Aspinall" told you nothing about
   // what happened; "lost to Tom Aspinall by KO/TKO" is the same sentence the win
   // side has always got.
@@ -3878,6 +3891,16 @@ function resultBox(){
              (won?'finished in R':'stopped in R')+L.finRound+'</b>'
            : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
+  // THE FANFARE. Names what just happened in real terms — who you beat, on
+  // what show, and what a contract actually means for the run — rather than
+  // leaving the gold border to carry the whole moment on its own.
+  if (dwcsSigned){
+    const fw=document.createElement('div'); fw.className='su-line'; fw.style.marginTop='.5rem';
+    fw.innerHTML = 'You beat <b>'+o.f.name+'</b> on Dana White\'s Contender Series. The call comes the '+
+      'next morning: a standard UFC contract, a spot in the '+DIVLABEL()+' rankings, a real division '+
+      'ahead of you. Everything from here is on the record.';
+    p.appendChild(fw);
+  }
   // THE SPARE, ANNOUNCED ONCE, ON THE CARD WHERE IT HAPPENED.
   // Nothing clears G.spared — I wrote a comment here claiming the next fight did,
   // which was false the moment I typed it. It's gated instead: resultBox only ever
@@ -3974,7 +3997,8 @@ function resultBox(){
     // this fight is before G.pts means what it means once there's a real
     // career), and CUT_AT is the UFC budget, not this one, so no "losses left"
     // either. The only thing this line needs to say is what's next.
-    n.textContent = won ? "You're headed to the real thing next." : "Same phone call, one more shot — nothing lost.";
+    n.textContent = won ? 'Welcome to the UFC.' : "Same phone call, one more shot — nothing lost.";
+    if (won){ n.style.color='var(--gold)'; n.style.fontWeight='700'; }
   } else {
     const left = CUT_AT - G.losses;
     n.textContent = won
