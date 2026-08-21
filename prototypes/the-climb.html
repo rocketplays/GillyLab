@@ -3895,10 +3895,12 @@ function resultBox(){
   // what show, and what a contract actually means for the run — rather than
   // leaving the gold border to carry the whole moment on its own.
   if (dwcsSigned){
+    // NOT "a spot in the rankings" — a debut is unranked. offers() doesn't set
+    // G.rank until the (separate, real) gatekeeper fight is won afterward; the
+    // fanfare has to stay true to that or it's a promise the very next screen
+    // breaks. Just who you beat, and that it's real now.
     const fw=document.createElement('div'); fw.className='su-line'; fw.style.marginTop='.5rem';
-    fw.innerHTML = 'You beat <b>'+o.f.name+'</b> on Dana White\'s Contender Series. The call comes the '+
-      'next morning: a standard UFC contract, a spot in the '+DIVLABEL()+' rankings, a real division '+
-      'ahead of you. Everything from here is on the record.';
+    fw.innerHTML = 'You beat <b>'+o.f.name+'</b> on Dana White\'s Contender Series. Welcome to the UFC.';
     p.appendChild(fw);
   }
   // THE SPARE, ANNOUNCED ONCE, ON THE CARD WHERE IT HAPPENED.
@@ -3919,19 +3921,24 @@ function resultBox(){
   }
   // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
   // percentage reads as a promise, afterwards it reads as information.
+  // DWCS skips both this and the game-plan block below — the user wants that
+  // screen to read as just who you beat and that you're in, not a betting-market
+  // recap of a Contender Series tryout.
+  if (!o.dwcs){
   const od=document.createElement('div'); od.className='note';
   const vn=varianceNote(o.p, won);
   const bd=oddsBand(o.p);
   od.innerHTML = bd.was+' <b>'+amer(o.p)+'</b>.'+
     (vn ? ' <span style="color:'+(won?'var(--accent)':'var(--gold)')+'">'+vn+'</span>' : '');
   p.appendChild(od);
+  }
   // WHAT WAS THE READ WORTH? Deferred like the odds line — the edge was hidden
   // going in, so this is where it becomes information rather than a promise, and it
   // is the answer to "how much did my choices actually matter": the fight's base
   // odds, then the number your game plan moved it to. The verdict is on the READ,
   // not the result — a good plan can still lose and a bad one still win, and showing
   // the swing separately from the W/L is the whole point of decoupling the two.
-  if (o.plan){
+  if (!o.dwcs && o.plan){
     const b=Math.round(o.plan.base*100), pl=Math.round(o.plan.planned*100), d=o.plan.swing;
     const col = d>=3 ? 'var(--accent)' : d<=-3 ? 'var(--accent2)' : 'var(--muted)';
     const verdict = d>=3 ? 'Your read tilted the fight your way.'
