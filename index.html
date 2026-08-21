@@ -112658,15 +112658,12 @@ function _mhLeadRatio(a, b, min){
 function mhCmp(label, a, b, opts){
   opts = opts || {};
   const pc = v => Math.max(0, Math.min(100, Math.round((v || 0) * 100)));
+  // Bars are always neutral gray in the Deep Dive hub now, on both the Striking
+  // and the Grappling tab — no green "leader" accent and no red "below his own
+  // division's median" accent either. `opts.lead`/`opts.gradeL`/`opts.gradeR`
+  // still arrive from every call site unchanged; they just no longer pick the
+  // bar's colour.
   let ac = 'n', bc = 'n';
-  if (opts.lead === 1) { ac = 'w'; bc = ''; }
-  else if (opts.lead === 2) { bc = 'w'; ac = ''; }
-  // GRADE OVERRIDES LEAD. `lead` compares the two fighters to each other; `grade`
-  // judges each against his own division and ignores the other man entirely. They
-  // are different questions and only one of them can own the colour, so a row asks
-  // for one or the other, never both.
-  if (opts.gradeL) ac = opts.gradeL;
-  if (opts.gradeR) bc = opts.gradeR;
   // The norm as a tick. Context without printing a z-score at anybody: 91% of leg
   // kicks landing sounds alarming until you can see that 84% is normal.
   //
