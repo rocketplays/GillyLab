@@ -2196,33 +2196,6 @@ function offers(){
       list = list.slice(0, 3);
     }
   }
-  // ── STYLE CLASH ────────────────────────────────────────────────────────────
-  // A story reason to pick a fight that isn't "he's close to my rank" or "he
-  // beat me before" — it's the first offer keyed on WHO YOU ARE. Deliberately
-  // NOT a fourth card and NOT a new fighter pulled onto the board: it RELABELS
-  // the highest-ranked card already on offer whose real stats lean the
-  // opposite way from the player's own build, same three cards, same prices,
-  // just a reason attached to one of them. (See offers()'s title-shot
-  // injection just above for the precedent this follows — reshape `list`
-  // in-place, don't touch buildOffers()'s selection logic.)
-  if (G.rank != null && !G.champ){
-    const playerFeet = (G.attrs.power||0)+(G.attrs.pace||0)+(G.attrs.technique||0)+(G.attrs.strdef||0);
-    const playerGround = (G.attrs.wrestling||0)+(G.attrs.grappling||0)+(G.attrs.takedef||0);
-    const playerFamily = playerFeet >= playerGround ? 'feet' : 'ground';
-    // Rough, not exact — this is a flavor filter, not a balance number, so it
-    // doesn't need the sim's precision. Ground signal: takedowns + submission
-    // attempts. Feet signal: significant strikes landed + knockdowns.
-    const oppFamily = f => {
-      const s = f.style || {};
-      const ground = (s.td||0)*2 + (s.sub||0)*3;
-      const feet = (s.slpm||0) + (s.kd||0)*3;
-      return feet >= ground ? 'feet' : 'ground';
-    };
-    const clash = list.map((o,i)=>({o,i}))
-      .filter(x => !x.o.titleFight && !x.o.defense && oppFamily(x.o.f) !== playerFamily)
-      .sort((a,b)=>a.o.f.rankNum-b.o.f.rankNum)[0];
-    if (clash) list[clash.i] = Object.assign({}, clash.o, { styleClash:true, clashFamily:playerFamily });
-  }
   return list;
 }
 function buildOffers(){
@@ -3972,14 +3945,6 @@ function resultBox(){
       : "The gamble didn't land — your hype's spent. Build it back and go again.";
     p.appendChild(cn);
   }
-  if (o.styleClash){
-    const sn=document.createElement('div'); sn.className='note'; sn.style.marginTop='.3rem';
-    sn.style.color = won ? 'var(--gold)' : 'var(--muted)';
-    sn.textContent = won
-      ? (o.clashFamily==='feet' ? 'Strikers can hang. Point made.' : 'Wrestlers can take him down. Point made.')
-      : "He was right about you, tonight.";
-    p.appendChild(sn);
-  }
   if (o.rival){
     const rn=document.createElement('div'); rn.className='note'; rn.style.marginTop='.3rem';
     rn.style.color = won ? 'var(--gold)' : 'var(--muted)';
@@ -4180,8 +4145,6 @@ function offerBox(){
     const rk = titleShot ? 'CHAMPION' : o.superfight ? 'C · '+(D.divisions[o.superDiv]&&D.divisions[o.superDiv].label||o.superDiv) : rankBadge(o.f);
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
-      (o.styleClash ? '<div class="note" style="color:var(--gold);margin:.1rem 0 .3rem">'+
-        (o.clashFamily==='feet' ? 'He says strikers can\'t hang with him.' : 'He says wrestlers can\'t take him down.')+'</div>' : '')+
       (o.superfight ? '<div class="note" style="color:var(--gold);margin:.1rem 0 .3rem">The superfight. Your belt isn\'t on the line — his legacy is.</div>' : '')+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
       '<div class="rw">'+(o.dwcs ? '<b style="color:var(--gold)">Win → the UFC signs you</b>' : o.superfight ? '<b style="color:var(--gold)">Win → a second division, beaten as a guest</b>' : o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours · +'+o.reward+' upgrade pts</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
