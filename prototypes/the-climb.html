@@ -1792,19 +1792,27 @@ function nameToSlug(name){
 // no onerror text surgery, no flash of a broken-image icon.
 //
 // DWCS FIGHTERS HAVE NO REAL PHOTO TO 404 TO — they're fictional (see
-// dwcsPool()), so /photos/thumb/<slug>.png was never going to exist for them
-// and every DWCS card fell back to a bare initials disc. That's correct
-// behavior for a name typo or a roster gap; it reads as thin for a deliberate
-// design choice. DiceBear's 'personas' generator makes a real, DISTINCT
-// illustrated face per seed — not a claim about a real person (nothing here
-// is), just a face instead of two letters. Seeded on the slug so the same
-// fictional fighter always gets the same face across cards, screens, and runs.
-// One new external dependency, scoped to exactly these 16 names; every real
-// UFC fighter still uses the real photo path, unchanged.
-const DICEBEAR = slug => 'https://api.dicebear.com/9.x/personas/svg?seed='+encodeURIComponent(slug)+'&backgroundType=solid';
+// dwcsPool()), so /photos/thumb/<slug>.png was never going to exist for them.
+// TWO THINGS RULED OUT ALREADY: cartoon avatar generators (DiceBear) read as
+// silly for what's meant to be a real prospect, and real regional-promotion
+// headshots (PFL/LFA/Cage Warriors) are off the table — this site isn't
+// covered for that image usage the way it is for the licensed UFC roster
+// photos. So: a plain silhouette. It's the actual real-world convention for
+// "no official photo yet" (which a genuine Contender Series prospect
+// wouldn't have), it needs no external service at all (inline SVG, no CDN,
+// no CSP question, no rate limit), and it doesn't compete with a real photo
+// for attention the way a generated face would. Same icon for every DWCS
+// fighter, on purpose — it's a placeholder, not an identity.
+const SILHOUETTE = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'+
+  '<rect width="100" height="100" fill="#18181d"/>'+
+  '<circle cx="50" cy="38" r="19" fill="#33333d"/>'+
+  '<path d="M50 60c-23 0-38 15-38 34v6h76v-6c0-19-15-34-38-34z" fill="#33333d"/>'+
+  '</svg>'
+);
 function avatarHTML(f){
   const slug = nameToSlug(f.name);
-  const src = f.dwcs ? DICEBEAR(slug) : '/photos/thumb/'+slug+'.png';
+  const src = f.dwcs ? SILHOUETTE : '/photos/thumb/'+slug+'.png';
   return '<div class="av"><span>'+(f.initials||'?')+'</span>'+
     '<img src="'+src+'" alt="" loading="lazy" '+
     'onerror="this.style.display=\'none\'"></div>';
