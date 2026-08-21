@@ -553,11 +553,15 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
   <p class="tag">Can you become a UFC champion?</p>
   <!-- KEEP THIS TRUE. The tuning file lists the subtitle among the claims that
        outlived what made them true, and it is the first thing a player reads: it
-       must describe the game that exists. "Start as a 10-0 prospect" is not
-       flavour — POINTS_START 42 buys a debut rated 74 against a #15 rated 62, and
-       the scoreboard now says 10-0. If any of those three move, this line moves. -->
-  <p class="sub">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>
-    Pick your fights, climb the rankings, win the belt.<br>
+       must describe the game that exists. UPDATED for the DWCS prologue — the
+       game no longer opens on the UFC roster; G.signed gates a fictional
+       Contender Series pool in front of it (see dwcsPool()/dwcsOffers()). "Start
+       as a 10-0 prospect entering the UFC" was true when POINTS_START 42 bought
+       your very first fight; it's still true of what you arrive AS once you sign,
+       just no longer of the FIRST screen you see. If DWCS, POINTS_START, or the
+       10-0 framing move, this line moves. -->
+  <p class="sub">Build a fighter. Win your way onto Dana White's Contender Series,<br>
+    then enter the UFC as a 10-0 prospect. Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
   <!-- CTA SLOT — the "this is free, here's what Premium adds" box every other free
@@ -976,7 +980,17 @@ const REGIONAL = { w: 10, l: 0 };
 // from the log; G.losses stays the life counter, untouched, so the cut is unchanged.
 const lossCount   = () => G.log.reduce((n,f)=>n+(f.won?0:1),0);
 const ufcRecord   = () => G.wins + '-' + lossCount();
-const totalRecord = () => (REGIONAL.w + G.wins) + '-' + (REGIONAL.l + lossCount());
+// DWCS FIGHTS BELONG IN THE PRO RECORD, NOT THE UFC ONE. Same split as
+// REGIONAL just above: G.wins/lossCount() are the UFC record and every rule
+// in the game reads them (CUT_AT, UNRANKED_WINS), so a DWCS result can never
+// be added there without re-arming the exact bug that comment warns about.
+// But "pro record" is supposed to be the WHOLE career, and G.dwcsLog is real
+// fights the player actually watched happen — leaving them out just because
+// they predate the contract reads as a bug, not as the isolation it's
+// protecting. Folded in at the point of PRINTING, same as REGIONAL.
+const dwcsWinCount  = () => (G.dwcsLog||[]).reduce((n,f)=>n+(f.won?1:0),0);
+const dwcsLossCount = () => (G.dwcsLog||[]).reduce((n,f)=>n+(f.won?0:1),0);
+const totalRecord = () => (REGIONAL.w + dwcsWinCount() + G.wins) + '-' + (REGIONAL.l + dwcsLossCount() + lossCount());
 // buildStats() and the CURVES table are GONE. They existed to translate sliders
 // into the nine stat levers the sim read (kd, slpm, strAcc...). Nothing reads
 // them now — the game scores from attributes directly. Deleting them removes the
@@ -1656,12 +1670,16 @@ function oppByName(nm){
   return f || null;
 }
 
-// P(win a single fight). Base from the rating gap, then the style triangle, then
-// the record. Cardio is a real attribute now — it was impossible while the sim
-// refereed, because the sim has no cardio input. Same for chin. The two things
-// every fan argues about were the two the model couldn't hear.
-function winProb(oppName){
-  const o = oppByName(oppName); if(!o) return 0.5;
+// P(win a single fight) AGAINST A FIGHTER OBJECT DIRECTLY — the math half of
+// winProb(), pulled out so a caller who already HAS the opponent (not just a
+// name on the current division's LADDER()) can price a fight against him. This
+// is what makes DWCS (dwcsOffers, below — the opponent is never on LADDER(),
+// it's a small fictional pool) and any cross-division fight possible without
+// duplicating the model. winProb(name) is now the name-lookup convenience
+// wrapper; anything that already has the opponent object should call this
+// directly instead of routing through oppByName().
+function winProbAgainst(o){
+  if (!o) return 0.5;
   const gap = myRating(G.attrs) - o.power;
   let p = 1/(1+Math.pow(10, -gap/SCALE));
   // isChamp(o) -> the belt is on the line -> five rounds -> cardio weighs more.
@@ -1673,6 +1691,13 @@ function winProb(oppName){
   p += Math.min(0.04, (G.streak||0)*0.008);
   p -= ageDecline() * 0.9;   // the legs and the timing go first
   return Math.max(0.05, Math.min(0.95, p));
+}
+// P(win a single fight). Base from the rating gap, then the style triangle, then
+// the record. Cardio is a real attribute now — it was impossible while the sim
+// refereed, because the sim has no cardio input. Same for chin. The two things
+// every fan argues about were the two the model couldn't hear.
+function winProb(oppName){
+  return winProbAgainst(oppByName(oppName));
 }
 const fmtDate = d => d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
 // bo3(x) = P(win >= 2 of 3 rounds) given a PER-ROUND probability x.
@@ -1719,7 +1744,7 @@ const isChamp = f => !!f && f.rankNum <= 0.5;   // champ + interim = the belt is
 // the flyweight champ, lost the belt on to someone else, and the ex-champ kept showing as
 // CHAMP as a repeating rival). holdsBelt is the truth; rankBadge is the label to show.
 const holdsBelt = f => !!f && !!G.beltHolder && f.name === G.beltHolder;
-const rankBadge = f => !f ? '' : holdsBelt(f) ? 'CHAMPION'
+const rankBadge = f => !f ? '' : f.dwcs ? 'DWCS' : holdsBelt(f) ? 'CHAMPION'
   : f.rankNum >= 99 ? 'Unranked' : f.rankNum <= 0.5 ? 'Ex-champ' : '#'+f.rankNum;
 const boN = (p, n) => n === 5 ? bo5(p) : bo3(p);
 // Inverse of boN: given P(win the fight), what per-round probability produces it?
@@ -1768,9 +1793,31 @@ function nameToSlug(name){
 // The disc is built with the initials ALREADY in it, and the <img> sits on top.
 // If the photo 404s the img hides itself and the initials are simply revealed —
 // no onerror text surgery, no flash of a broken-image icon.
+//
+// DWCS FIGHTERS HAVE NO REAL PHOTO TO 404 TO — they're fictional (see
+// dwcsPool()), so /photos/thumb/<slug>.png was never going to exist for them.
+// TWO THINGS RULED OUT ALREADY: cartoon avatar generators (DiceBear) read as
+// silly for what's meant to be a real prospect, and real regional-promotion
+// headshots (PFL/LFA/Cage Warriors) are off the table — this site isn't
+// covered for that image usage the way it is for the licensed UFC roster
+// photos. So: a plain silhouette. It's the actual real-world convention for
+// "no official photo yet" (which a genuine Contender Series prospect
+// wouldn't have), it needs no external service at all (inline SVG, no CDN,
+// no CSP question, no rate limit), and it doesn't compete with a real photo
+// for attention the way a generated face would. Same icon for every DWCS
+// fighter, on purpose — it's a placeholder, not an identity.
+const SILHOUETTE = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'+
+  '<rect width="100" height="100" fill="#18181d"/>'+
+  '<circle cx="50" cy="38" r="19" fill="#33333d"/>'+
+  '<path d="M50 60c-23 0-38 15-38 34v6h76v-6c0-19-15-34-38-34z" fill="#33333d"/>'+
+  '</svg>'
+);
 function avatarHTML(f){
+  const slug = nameToSlug(f.name);
+  const src = f.dwcs ? SILHOUETTE : '/photos/thumb/'+slug+'.png';
   return '<div class="av"><span>'+(f.initials||'?')+'</span>'+
-    '<img src="/photos/thumb/'+nameToSlug(f.name)+'.png" alt="" loading="lazy" '+
+    '<img src="'+src+'" alt="" loading="lazy" '+
     'onerror="this.style.display=\\'none\\'"></div>';
 }
 
@@ -1997,10 +2044,43 @@ function rewardFor(f, p){
 // you actually built rather than a participation trophy.
 function legacyTier(){
   const d = G.defenses || 0;
+  // A WON SUPERFIGHT OUTRANKS EVEN THE GOAT TIER — it's not more title
+  // defenses, it's a second division beaten as a guest. Checked first so it
+  // always shows once earned, same as every other tier here reading off the
+  // reign actually built rather than a participation trophy.
+  if ((G.superfights||[]).some(s=>s.won)) return { name:'Two-division statement', goat:true, superfight:true };
   if (d >= 5) return { name:'GOAT', goat:true };
   if (d >= 3) return { name:'Dominant champion', goat:false };
   if (G.champ || G.wasChamp) return { name:'Champion', goat:false };
   return null;
+}
+// ── THE SUPERFIGHT ────────────────────────────────────────────────────────────
+// Unlocked at 3 title defenses — reuses legacyTier()'s own "Dominant champion"
+// threshold rather than inventing a second number to learn. Opponent is the
+// CURRENT CHAMPION one weight class up (D.order runs heaviest-first, so index-1
+// is "up"). If DIV is already the heaviest division, there is nothing above it —
+// that's correct, not a gap to patch around.
+//
+// OFFERED ONCE PER THRESHOLD CROSSED (3, then 6, then 9…), not a permanent
+// fourth button every single defense — this is meant to read as a rare,
+// career-capping moment. It stays on the board across defenses at the SAME
+// threshold until the player actually fights it (win or lose), then goes
+// quiet until the next multiple of 3.
+function superfightOffer(){
+  const d = G.defenses || 0;
+  if (d < 3) return null;
+  const threshold = Math.floor(d/3)*3;
+  if ((G.superfights||[]).some(s=>s.threshold===threshold)) return null;
+  const idx = D.order.indexOf(DIV);
+  if (idx <= 0) return null;   // already the heaviest division
+  const theirDiv = D.order[idx-1];
+  const champ = D.divisions[theirDiv] && D.divisions[theirDiv].ladder.find(f=>f.rankNum===0);
+  if (!champ) return null;
+  // winProbAgainst(), NOT winProb(name) — the foreign champion is never on
+  // THIS division's LADDER(), so oppByName() would silently return null and
+  // winProb()'s 0.5 fallback would price a real fight as a coinflip. This is
+  // exactly what winProbAgainst() was pulled out of winProb() for.
+  return { f:champ, p:winProbAgainst(champ), reward:1, jump:0, superfight:true, superDiv:theirDiv };
 }
 function champDefenders(){
   const last = G.last && G.last.o && G.last.o.f.name;
@@ -2020,8 +2100,75 @@ function champDefenders(){
     return { f, p, reward: 1, jump: 0, titleFight:true, defense:true };
   });
 }
+// ── DWCS — the prologue before you're signed ─────────────────────────────────
+// NOT the real gatekeeper pool. LADDER()'s rankNum===99 fighters are built by
+// gen-climb-data.cjs's recentUFC() filter to be CURRENT UFC roster fighters —
+// deliberately recognisable, deliberately not obscure. A Contender Series
+// opponent is the opposite of that: someone who ISN'T signed yet. There's no
+// real, currently-unsigned fighter anywhere in this game's data (FIGHTERS/
+// FIGHT_HISTORY only cover the UFC roster), so this is a small, DELIBERATELY
+// fictional pool — same move as REGIONAL (the {w:10,l:0} display-only prologue
+// stat), flavour rather than a claim about anyone real. Calibrated relative to
+// the CURRENT division's real gatekeeper floor rather than hand-authored per
+// division, so it stays honest without a new data file.
+const DWCS_NAMES = [
+  'Marcus Boone','Kai Dunbar','Tyrell Voss','Dante Ruiz','Owen Kessler',
+  'Bo Tanaka','Ezra Callahan','Milo Petrov','Aiden Roark','Silas Vance',
+  'Jonah Okafor','Reid Castellan','Wyatt Sorensen','Elias Marchetti',
+  'Cole Abernathy','Rafi Zamora'
+];
+function dwcsPool(){
+  const real = LADDER().filter(f=>f.rankNum===99).map(f=>f.power);
+  // A FEW POINTS BELOW EVEN THE SOFTEST REAL GATEKEEPER — a DWCS prospect
+  // should always read as a rung under the softest fighter already on the
+  // roster, never as tough as one.
+  const floor = (real.length ? Math.min(...real) : RATING_MIN + 15) - 6;
+  // rankNum:99 (not a sentinel string) so every numeric comparison elsewhere in
+  // the file (isChamp, rankBadge, avail()) keeps working on this object without
+  // a special case. dwcs:true is the actual marker applyResult()/offers() read.
+  return DWCS_NAMES.map((name, i) => ({
+    name, record: (5 + (i % 4)) + '-' + (i % 3) + '-0',
+    initials: name.split(' ').map(w=>w[0]).join(''), country: null,
+    rankNum: 99, dwcs: true,
+    power: Math.round((floor - (i % 5)) * 10) / 10,
+    // NEAR-AVERAGE STYLE, ON PURPOSE. Real gatekeepers carry real, sometimes
+    // specialised stats, and styleDelta can swing a favourite down to a coinflip
+    // on an unlucky matchup (measured elsewhere: up to +-16.5 points). A DWCS
+    // fighter isn't supposed to be a stylistic trap — keeping these near the
+    // styleOf() fallback defaults from gen-climb-data.cjs is what makes "big
+    // favorite" mean big favorite regardless of who gets drawn.
+    style: { tdDef:60, strDef:52, td:1.4, sub:0.5, kd:0.4, slpm:4.4, sapm:4.0, tdAcc:35, chin:0.5, mat:0.5 },
+  }));
+}
+function dwcsOffers(){
+  const pool = dwcsPool();
+  if ((G.dwcsLosses||0) > 0){
+    // SECOND CHANCE — "shouldn't really ever lose this one." Difficulty alone
+    // can't promise that (style variance is bigger than the power gap), so
+    // don't band it: pick the single friendliest matchup — power AND style
+    // both working in the player's favor — by construction, not luck. Offered
+    // as the ONLY card: the point is not making the player pick wrong.
+    const best = pool.slice().sort((a,b)=>winProbAgainst(b)-winProbAgainst(a))[0];
+    return [{ f:best, p:winProbAgainst(best), reward:0, jump:99, dwcs:true }];
+  }
+  // FIRST FIGHT — three options off the easier half of the pool, spread across
+  // it (not clustered) so there's still a real choice, just a favorable one
+  // however it's made.
+  const easier = pool.slice().sort((a,b)=>a.power-b.power).slice(0, Math.max(1, Math.ceil(pool.length/2)));
+  const n = easier.length;
+  const idxs = n >= 3 ? [0, Math.floor((n-1)/2), n-1] : easier.map((_,i)=>i);
+  return idxs.map(i => { const f = easier[i]; return { f, p:winProbAgainst(f), reward:0, jump:99, dwcs:true }; });
+}
 function offers(){
-  if (G.champ) return champDefenders();
+  // BEFORE THE UFC. Everything below this line — the ranked ladder, the
+  // gatekeeper, the belt — is untouched and unreachable until G.signed. See
+  // applyResult()'s DWCS branch for what a win/loss here does and does not do.
+  if (!G.signed) return dwcsOffers();
+  if (G.champ) {
+    const defs = champDefenders();
+    const sf = superfightOffer();
+    return sf ? defs.concat(sf) : defs;
+  }
   // DIV IS IN THE KEY. It wasn't, and the failure was silent and total: switch
   // weight class at fight 0 and the key ("0|0|0|null") was unchanged, so you got
   // HEAVYWEIGHT'S three fighters handed back from cache. They aren't in the new
@@ -2703,6 +2850,58 @@ function fight(o){
 // rules rather than two that could drift apart.
 function applyResult(o, R){
   const { won, fin, method, rounds, roundsWon, finRound } = R;
+  // THE DWCS PROLOGUE — a hard early return, on purpose, in the same style as
+  // the belt-loss bookkeeping below this function is famous for getting wrong.
+  // MUST NOT touch G.wins, G.losses, G.streak, G.rank, G.beat, or CUT_AT in any
+  // way — "the career starts as is afterwards" means a signed fighter's very
+  // first real UFC fight has to see G.wins===0, G.losses===0 exactly like it
+  // always has. G.log itself is untouched for the same reason (it's the UFC
+  // record). But the RESULT SCREEN still needs the round-by-round detail to
+  // show how the fight went, so G.dwcsLog carries the same shape G.log does —
+  // display-only, same move as REGIONAL and totalRecord() below.
+  if (o.dwcs){
+    G.dwcsLog = G.dwcsLog || [];
+    G.dwcsLog.push({ opp:o.f.name, won, fin, method, rounds, roundsWon, finRound });
+    if (won){ G.signed = true; G.dwcsLosses = 0; }
+    else { G.dwcsLosses = (G.dwcsLosses||0) + 1; }   // never read against CUT_AT — see above
+    // MIRROR ONLY THE UI-FACING PART OF THE SHARED TAIL BELOW (G.last, G.bout,
+    // render) — NOT G.fightNo (the age clock), NOT G.peak. Those are real-career
+    // bookkeeping and a DWCS fight isn't on the clock yet.
+    G.last = { o, won, fin, method };
+    G.bout = null;
+    render();
+    return;
+  }
+  // THE SUPERFIGHT — a legacy fight in ANOTHER division. Real enough to belong
+  // in the record (G.log, G.wins/G.losses, G.streak, the age clock) — unlike
+  // DWCS above, this happens mid-career and the spec decision was explicit:
+  // a loss "should still count as an ordinary loss... it's a real UFC-
+  // sanctioned fight." But G.champ is true the entire time (you're still
+  // champion of YOUR OWN division throughout), which is exactly why this
+  // cannot fall through into the normal branches below: \`if (G.champ)\` there
+  // means "bank a defense," and a superfight win is not one. Written as its
+  // own explicit copy of the record-keeping half of this function, on
+  // purpose NOT sharing code with the belt logic, so a future edit to
+  // defenses/rank/titleLosses below cannot silently start reaching this
+  // fight too.
+  if (o.superfight){
+    G.log.push({ opp:o.f.name, won, fin, method, p:o.p, rank:o.f.rankNum, rounds, roundsWon, finRound,
+                 superfight:true, titleFight:false });
+    G.superfights = G.superfights || [];
+    const threshold = Math.floor((G.defenses||0)/3)*3;
+    G.superfights.push({ div:o.superDiv, opp:o.f.name, won, threshold });
+    if (won){ G.wins++; G.streak++; G.beat.add(o.f.name); G.hype = Math.min(3, (G.hype||0)+1); }
+    else { G.losses++; G.streak = 0; G.hype = 0; }
+    // EXPLICITLY NOT TOUCHED, WIN OR LOSE: G.rank, G.champ, G.defenses,
+    // G.beltHolder, G.titleLosses, G.outOfShots, G.spared. This fight cannot
+    // move you in your own division and cannot cost a title shot — only a
+    // CUT_AT life on a loss, same as any contender fight.
+    G.fightNo = (G.fightNo||0) + 1;
+    G.last = { o, won, fin, method };
+    G.bout = null;
+    render();
+    return;
+  }
   // titleFight is stored EXPLICITLY, not inferred from rounds.length===5. A title
   // fight that ends in a FINISH has a short round array, so the old inference counted
   // only title DECISIONS toward championship wear — and a strong build finishes its
@@ -3273,6 +3472,10 @@ function newGame(){
   // was written, with a comment saying the game has no G.peakRank. It was right,
   // and the game needed one the whole time.)
   G = { attrs:Object.assign(Object.fromEntries(ATTRS.map(a=>[a.id,ATTR_MIN])), {fightiq:ATTR_MIN}), pts:POINTS_START,
+        // G.signed gates the DWCS prologue in front of the real UFC state below —
+        // see applyResult()'s DWCS branch and dwcsOffers(). false start means every
+        // new run opens on the Contender Series, exactly as decided.
+        signed:false, dwcsLosses:0, dwcsLog:[],
         wins:0, losses:0, streak:0, rank:null, peak:null, log:[], beat:new Set(), champ:false, started:false, last:null, fightNo:0,
         // HYPE — the callout meter. One pip per win (cap 3), spent to call your shot,
         // and reset by any loss, so a statement fight is a thing you earn on a run and
@@ -3379,6 +3582,7 @@ function creator(){
   p.appendChild(dv);
   const _cbl = bestsLine();
   if (_cbl){ const bb=document.createElement('div'); bb.className='note'; bb.style.cssText='color:var(--gold);margin:.3rem 0 .2rem;font-size:.72rem'; bb.textContent='Your bests — '+_cbl; p.appendChild(bb); }
+  p.appendChild(hofBox());
 
   // THE SCOUTING REPORT, under the picker — the only screen where it can change a
   // decision, because it's the screen where you spend the 42 points.
@@ -3625,14 +3829,37 @@ function hud(){
 
 function resultBox(){
   const {o,won,fin,method}=G.last;
-  const p=document.createElement('div'); p.className='panel';
+  // THE DWCS SIGNING IS THE BIGGEST MOMENT IN THE PROLOGUE — the one screen
+  // between "trying out" and "a UFC career," and it was reading as a same-size
+  // headline as a regular win. Reuses the .sigunlock treatment (gold border,
+  // an eyebrow label above the headline) that a new signature move already
+  // gets — the closest thing this game already has to "a big deal" chrome —
+  // rather than inventing a second visual language for one screen. A DWCS
+  // LOSS stays completely ordinary on purpose: only signing is the milestone.
+  const dwcsSigned = o.dwcs && won;
+  const p=document.createElement('div'); p.className = dwcsSigned ? 'panel sigunlock' : 'panel';
+  if (dwcsSigned){
+    const rl=document.createElement('div'); rl.className='rl'; rl.style.color='var(--gold)';
+    rl.textContent = "YOU'RE IN THE UFC"; p.appendChild(rl);
+  }
   const b=document.createElement('div'); b.className='big '+(won?'win':'loss');
+  if (dwcsSigned) b.style.cssText='color:var(--gold);font-size:1.5rem';
   // Both directions name the method. "lost to Tom Aspinall" told you nothing about
   // what happened; "lost to Tom Aspinall by KO/TKO" is the same sentence the win
   // side has always got.
-  b.textContent = (won ? 'def. ' : 'lost to ') + o.f.name + ' by ' + (method||'decision');
+  // THE DWCS WIN READS AS A SIGNING, NOT A PLACEMENT. "You're now ranked #15"
+  // was explicitly ruled out — the payoff line here is the contract, not the
+  // number. The rank still appears everywhere it always has (the HUD, every
+  // offer card) starting the very next screen; this is only about what this
+  // ONE line says.
+  b.textContent = o.dwcs
+    ? (won ? 'The UFC signs you.' : 'Close — but Dana gives you another look.')
+    : (won ? 'def. ' : 'lost to ') + o.f.name + ' by ' + (method||'decision');
   p.appendChild(b);
-  const L=G.log[G.log.length-1];
+  // A DWCS FIGHT NEVER TOUCHES G.log (see applyResult's DWCS branch — the whole
+  // point is that a signed fighter's UFC record starts clean), so the round
+  // detail below reads from G.dwcsLog instead — same shape, display only.
+  const L = o.dwcs ? G.dwcsLog[G.dwcsLog.length-1] : G.log[G.log.length-1];
   const rd=document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + L.rounds.map((w,i)=>
     '<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(i+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ') +
@@ -3640,6 +3867,18 @@ function resultBox(){
              (won?'finished in R':'stopped in R')+L.finRound+'</b>'
            : ' &nbsp;→&nbsp; ' + L.roundsWon + '-' + (L.rounds.length-L.roundsWon) + ' on the cards');
   p.appendChild(rd);
+  // THE FANFARE. Names what just happened in real terms — who you beat, on
+  // what show, and what a contract actually means for the run — rather than
+  // leaving the gold border to carry the whole moment on its own.
+  if (dwcsSigned){
+    // NOT "a spot in the rankings" — a debut is unranked. offers() doesn't set
+    // G.rank until the (separate, real) gatekeeper fight is won afterward; the
+    // fanfare has to stay true to that or it's a promise the very next screen
+    // breaks. Just who you beat, and that it's real now.
+    const fw=document.createElement('div'); fw.className='su-line'; fw.style.marginTop='.5rem';
+    fw.innerHTML = 'You beat <b>'+o.f.name+'</b> on Dana White\\'s Contender Series. Welcome to the UFC.';
+    p.appendChild(fw);
+  }
   // THE SPARE, ANNOUNCED ONCE, ON THE CARD WHERE IT HAPPENED.
   // Nothing clears G.spared — I wrote a comment here claiming the next fight did,
   // which was false the moment I typed it. It's gated instead: resultBox only ever
@@ -3658,19 +3897,24 @@ function resultBox(){
   }
   // THE NUMBER, AFTER THE FACT. Deferred, not hidden: before the fight a precise
   // percentage reads as a promise, afterwards it reads as information.
+  // DWCS skips both this and the game-plan block below — the user wants that
+  // screen to read as just who you beat and that you're in, not a betting-market
+  // recap of a Contender Series tryout.
+  if (!o.dwcs){
   const od=document.createElement('div'); od.className='note';
   const vn=varianceNote(o.p, won);
   const bd=oddsBand(o.p);
   od.innerHTML = bd.was+' <b>'+amer(o.p)+'</b>.'+
     (vn ? ' <span style="color:'+(won?'var(--accent)':'var(--gold)')+'">'+vn+'</span>' : '');
   p.appendChild(od);
+  }
   // WHAT WAS THE READ WORTH? Deferred like the odds line — the edge was hidden
   // going in, so this is where it becomes information rather than a promise, and it
   // is the answer to "how much did my choices actually matter": the fight's base
   // odds, then the number your game plan moved it to. The verdict is on the READ,
   // not the result — a good plan can still lose and a bad one still win, and showing
   // the swing separately from the W/L is the whole point of decoupling the two.
-  if (o.plan){
+  if (!o.dwcs && o.plan){
     const b=Math.round(o.plan.base*100), pl=Math.round(o.plan.planned*100), d=o.plan.swing;
     const col = d>=3 ? 'var(--accent)' : d<=-3 ? 'var(--accent2)' : 'var(--muted)';
     const verdict = d>=3 ? 'Your read tilted the fight your way.'
@@ -3714,11 +3958,28 @@ function resultBox(){
       : 'You settled the score with '+o.f.name+'.'+(tookRank ? ' His #'+o.f.rankNum+' spot is yours,' : ' Grudge retired,')+' and your hype is up.';
     p.appendChild(rn);
   }
+  if (o.superfight){
+    const fn=document.createElement('div'); fn.className='note'; fn.style.marginTop='.3rem';
+    fn.style.color = won ? 'var(--gold)' : 'var(--muted)';
+    fn.textContent = won
+      ? 'A second belt, beaten as a guest. '+o.f.name+' won\\'t forget it — but yours is untouched.'
+      : o.f.name+' defends his own house. Your belt is still yours.';
+    p.appendChild(fn);
+  }
   const n=document.createElement('div'); n.className='note';
-  const left = CUT_AT - G.losses;
-  n.textContent = won
-    ? '+'+o.reward+' upgrade points.'
-    : (left===1 ? 'One loss left.' : left+' losses left.');
+  if (o.dwcs){
+    // No upgrade points here (see applyResult's DWCS branch — reward is flat 0,
+    // this fight is before G.pts means what it means once there's a real
+    // career), and CUT_AT is the UFC budget, not this one, so no "losses left"
+    // either. The only thing this line needs to say is what's next.
+    n.textContent = won ? 'Welcome to the UFC.' : "Same phone call, one more shot — nothing lost.";
+    if (won){ n.style.color='var(--gold)'; n.style.fontWeight='700'; }
+  } else {
+    const left = CUT_AT - G.losses;
+    n.textContent = won
+      ? '+'+o.reward+' upgrade points.'
+      : (left===1 ? 'One loss left.' : left+' losses left.');
+  }
   p.appendChild(n);
   return p;
 }
@@ -3850,7 +4111,14 @@ function calloutOffer(){
 
 function offerBox(){
   const p=document.createElement('div'); p.className='panel';
-  p.innerHTML='<div class="rl">'+(G.champ?'Defend your title':'Pick your next fight')+'</div>';
+  p.innerHTML='<div class="rl">'+(!G.signed?"Dana White's Contender Series":G.champ?'Defend your title':'Pick your next fight')+'</div>';
+  if (!G.signed){
+    const dn=document.createElement('div'); dn.className='champ-note';
+    dn.innerHTML = (G.dwcsLosses>0)
+      ? "<b>One more shot.</b> Dana liked what he saw — win this and you're in."
+      : "<b>Win, and the UFC signs you.</b> Lose, and you're back on the show for another look.";
+    p.appendChild(dn);
+  }
   // WORN DOWN — when the decline is real, say so, so the retire-or-push decision has
   // the feel it should: you can sense yourself slipping.
   if (ageDecline() > 0.12){
@@ -3872,11 +4140,17 @@ function offerBox(){
     // A title shot (challenging the belt holder) reads CHAMPION even if the man wearing
     // the belt is ranked #2 — he holds it, that's what matters.
     const titleShot = o.titleFight && !o.defense;
-    const rk = titleShot ? 'CHAMPION' : rankBadge(o.f);
+    // A SUPERFIGHT OPPONENT IS NOT AN EX-CHAMP — rankBadge() reads f.rankNum<=0.5
+    // as "Ex-champ" because on THIS division's ladder that's what rank 0 means
+    // once you hold the belt yourself. He's a foreign fighter with no rank on
+    // this ladder at all; he's the reigning champion of his own division, which
+    // is the entire point of the fight. Override before rankBadge ever sees him.
+    const rk = titleShot ? 'CHAMPION' : o.superfight ? 'C · '+(D.divisions[o.superDiv]&&D.divisions[o.superDiv].label||o.superDiv) : rankBadge(o.f);
     b.innerHTML='<div class="opphd">'+avatarHTML(o.f)+'<div class="oppwho">'+
         '<div class="rk">'+rk+'</div><div class="nm"></div><div class="rec"></div></div></div>'+
+      (o.superfight ? '<div class="note" style="color:var(--gold);margin:.1rem 0 .3rem">The superfight. Your belt isn\\'t on the line — his legacy is.</div>' : '')+
       '<div class="odds"><b style="color:'+oddsBand(o.p).c+'">'+oddsBand(o.p).t+'</b></div>'+
-      '<div class="rw">'+(o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours · +'+o.reward+' upgrade pts</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
+      '<div class="rw">'+(o.dwcs ? '<b style="color:var(--gold)">Win → the UFC signs you</b>' : o.superfight ? '<b style="color:var(--gold)">Win → a second division, beaten as a guest</b>' : o.defense ? ('Defend the belt · +'+o.reward+' pt') : titleShot ? '<b style="color:var(--gold)">Win → the belt is yours · +'+o.reward+' upgrade pts</b>' : ('+'+o.reward+' upgrade pts if you win'))+'</div>';
     b.querySelector('.nm').textContent=o.f.name;
     b.querySelector('.rec').textContent=o.f.record;
     // WHO you fight is still chosen here (and the difficulty band is honest — that's
@@ -4468,6 +4742,70 @@ function bestsLine(){
   if (b.mostWins) parts.push('Best run: '+b.mostWins+' wins');
   return parts.join('   ·   ');
 }
+
+// ── HALL OF FAME ───────────────────────────────────────────────────────────────
+// BESTS (above) keeps AGGREGATE maxima — your fastest belt, your best run — one
+// number per category, the previous record overwritten the moment a new run beats
+// it. Hall of Fame is the roster those numbers were pulled out of: every finished
+// run, kept, so a mediocre fighter isn't just erased the moment a better one
+// arrives. It's an ADDITIVE read of the same runSummary() the end screen and the
+// share sheet already build — no new game-state tracking, only new persistence.
+//
+// SEPARATE KEY, NOT AN EXTENSION OF gl_climb_bests_v1. The old key's shape
+// (fastestBelt: a NUMBER) and this one's (an ARRAY of run records) are
+// incompatible; writing the new shape under the old key would mean loadBests()
+// silently starts reading \`b.fastestBelt < X\` against an array and every
+// comparison lies without throwing — precisely the "a value changed what it
+// meant and every caller quietly lied" failure this file's tuning notes keep
+// finding. New key, and BESTS keeps doing its own job untouched.
+const HOF_KEY = 'gl_climb_hof_v1', HOF_MAX = 50;
+function loadHOF(){
+  try { const s = localStorage.getItem(HOF_KEY); if (s) { const a = JSON.parse(s); if (Array.isArray(a)) return a; } } catch(e){}
+  return [];
+}
+function saveHOF(list){ try { localStorage.setItem(HOF_KEY, JSON.stringify(list.slice(0, HOF_MAX))); } catch(e){} }
+// Fold the finished run into the Hall of Fame. Newest first, capped at HOF_MAX —
+// this is a browser localStorage value, not a database, and the feature's whole
+// value is bragging rights over a career's worth of runs, not an archive.
+function updateHOF(){
+  const s = runSummary();
+  const entry = {
+    name: (G.fighterName || 'Your fighter'), division: s.division, verdict: s.verdict,
+    verdictSub: s.verdictSub, style: s.style, defenses: s.defenses, wasChamp: s.wasChamp,
+    peakLabel: s.peakLabel, pro: s.pro, ufc: s.ufc, fights: s.fights,
+    finishRate: s.finishRate, date: Date.now(),
+  };
+  const list = loadHOF();
+  list.unshift(entry);
+  saveHOF(list);
+  return entry;
+}
+// TIER ORDER FOR SORTING — GOAT first, CUT last. A fixed rank rather than a
+// string compare, because 'CHAMPION.' > 'CUT.' alphabetically would put a cut
+// prospect ahead of a champion and nobody would notice until they looked.
+const HOF_TIER = { 'THE GOAT.':0, 'CHAMPION.':1, 'NO BELT.':2, 'CUT.':3 };
+function hofBox(){
+  const list = loadHOF();
+  const d = document.createElement('details'); d.className = 'legwrap panel';
+  const sum = document.createElement('summary'); sum.textContent = 'Hall of Fame'+(list.length?' ('+list.length+')':'');
+  d.appendChild(sum);
+  if (!list.length){
+    const e = document.createElement('div'); e.className = 'note'; e.textContent = 'No finished runs yet — your first retired or cut fighter lands here.';
+    d.appendChild(e);
+  } else {
+    const sorted = list.slice().sort((a,b) => (HOF_TIER[a.verdict]??9) - (HOF_TIER[b.verdict]??9) || b.date - a.date);
+    for (const e of sorted){
+      const row = document.createElement('div'); row.className = 'lg-row';
+      const b = document.createElement('b'); b.textContent = e.name+' — '+e.division;
+      const sp = document.createElement('span');
+      sp.textContent = e.verdict.replace(/\\.$/,'')+(e.verdictSub?' · '+e.verdictSub:'')+' · '+e.style+' · '+e.pro+' pro ('+e.ufc+' UFC)';
+      row.appendChild(b); row.appendChild(sp);
+      d.appendChild(row);
+    }
+  }
+  return d;
+}
+
 function runSummary(){
   const wins = G.log.filter(f=>f.won);
   const fins = wins.filter(f=>f.fin).length;
@@ -4558,7 +4896,9 @@ function endBox(msg){
     p.appendChild(wm);
   }
   // PERSONAL BESTS — folded in once per run, with any records just beaten called out.
-  if (!G.bestsSaved){ G._bests = updateBests(); G.bestsSaved = true; }
+  // HALL OF FAME rides the same once-per-run guard so a finished run is never
+  // logged twice (endBox can render more than once for the same ended run).
+  if (!G.bestsSaved){ G._bests = updateBests(); updateHOF(); G.bestsSaved = true; }
   const _br = G._bests || { nu:[] };
   if (_br.nu && _br.nu.length){ const nb=document.createElement('div'); nb.className='note'; nb.style.cssText='color:var(--gold);margin-top:.4rem;font-weight:700'; nb.textContent='New personal best — '+_br.nu.join(', ')+'!'; p.appendChild(nb); }
   const _bl=bestsLine(); if(_bl){ const bd=document.createElement('div'); bd.className='note'; bd.style.marginTop='.3rem'; bd.textContent='Career bests: '+_bl; p.appendChild(bd); }
@@ -4617,8 +4957,9 @@ function endBox(msg){
 if (window.CLIMB_LOCKED) {
   const p=document.createElement('div'); p.className='panel';
   p.innerHTML='<div class="big win">Create a free account to play</div>'+
-    '<div class="note">The Climb is free. You build a fighter, start as a 10-0 prospect, '+
-    'and try to win a real UFC belt against the real division — no card, no trial.</div>';
+    '<div class="note">The Climb is free. You build a fighter, fight your way onto Dana '+
+    'White\\'s Contender Series, then enter the UFC as a 10-0 prospect and try to win a '+
+    'real belt against the real division — no card, no trial.</div>';
   const a=document.createElement('a'); a.className='btn pri'; a.href='/signup?next=/theclimb';
   a.textContent='Create a free account →';
   a.style.cssText='display:inline-block;margin-top:.8rem;text-decoration:none';
