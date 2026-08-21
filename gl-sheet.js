@@ -291,10 +291,12 @@ const GL_SHEET = (function () {
 
   // "5'10"  HEIGHT  6'1"" — value, centred label, value.
   function tapeRow(ctx, label, va, vb, y, hiA, hiB, colA, colB) {
+    // Fighter values are always plain white, one weight — no per-fighter
+    // highlight color on Tale of the Tape.
     ctx.textAlign = 'left'; ctx.font = '700 42px ' + COND;
-    ctx.fillStyle = hiA ? (colA || NEU_A) : TXT; ctx.fillText(va == null ? '—' : String(va), 64, y);
+    ctx.fillStyle = TXT; ctx.fillText(va == null ? '—' : String(va), 64, y);
     ctx.textAlign = 'right';
-    ctx.fillStyle = hiB ? (colB || NEU_B) : TXT; ctx.fillText(vb == null ? '—' : String(vb), W - 64, y);
+    ctx.fillStyle = TXT; ctx.fillText(vb == null ? '—' : String(vb), W - 64, y);
     ctx.textAlign = 'center'; ctx.font = '600 24px ' + SANS; ctx.fillStyle = MUT;
     ctx.fillText(String(label).toUpperCase(), W / 2, y - 4);
     ctx.textAlign = 'left';
@@ -399,12 +401,12 @@ const GL_SHEET = (function () {
       // A gap that doesn't clear the EDGE_AXES threshold is noise. Drawing ten
       // equally loud rows buries the three that actually separate these two.
       const real = !!sig[key];
-      let hiA = false, hiB = false;
-      if (real && na != null && nb != null && na !== nb) { const aWins = higher ? na > nb : na < nb; hiA = aWins; hiB = !aWins; }
-      ctx.textAlign = 'left'; ctx.font = (hiA ? '700 37px ' : '400 37px ') + COND;
-      ctx.fillStyle = hiA ? colA : (real ? TXT : MUT); ctx.fillText(statTxt(sa[key]), 64, y);
-      ctx.textAlign = 'right'; ctx.font = (hiB ? '700 37px ' : '400 37px ') + COND;
-      ctx.fillStyle = hiB ? colB : (real ? TXT : MUT); ctx.fillText(statTxt(sb[key]), W - 64, y);
+      // Fighter values are always plain white at one weight — no per-fighter
+      // highlight color/bold on Head to Head, regardless of which side is ahead.
+      ctx.textAlign = 'left'; ctx.font = '700 37px ' + COND;
+      ctx.fillStyle = TXT; ctx.fillText(statTxt(sa[key]), 64, y);
+      ctx.textAlign = 'right'; ctx.font = '700 37px ' + COND;
+      ctx.fillStyle = TXT; ctx.fillText(statTxt(sb[key]), W - 64, y);
       ctx.textAlign = 'center'; ctx.font = '400 24px ' + SANS; ctx.fillStyle = real ? MUT : FOOT;
       ctx.fillText(label, W / 2, y - 3);
       ctx.textAlign = 'left';
@@ -497,10 +499,12 @@ const GL_SHEET = (function () {
     tapeRow(ctx, 'stance', a.stance, b.stance, y, false, false, colA, colB); y += 45;
     // The moneyline belongs with the other head-to-head facts, not in a section of
     // its own. Smaller than the physical rows: it is context, not a measurement.
+    // Plain white for both sides, same as every other row in Tale of the Tape —
+    // no gold/green favorite highlight.
     if (odds) {
       ctx.textAlign = 'left'; ctx.font = '700 32px ' + COND;
-      ctx.fillStyle = odds.favA ? colA : TXT; ctx.fillText(fmtPrice(odds.a), 64, y);
-      ctx.textAlign = 'right'; ctx.fillStyle = odds.favB ? colB : TXT;
+      ctx.fillStyle = TXT; ctx.fillText(fmtPrice(odds.a), 64, y);
+      ctx.textAlign = 'right'; ctx.fillStyle = TXT;
       ctx.fillText(fmtPrice(odds.b), W - 64, y);
       ctx.textAlign = 'center'; ctx.font = '400 20px ' + SANS; ctx.fillStyle = FOOT;
       ctx.fillText('CONSENSUS MONEYLINE · ' + odds.books + (odds.books === 1 ? ' BOOK' : ' BOOKS'), W / 2, y - 3);
@@ -509,7 +513,9 @@ const GL_SHEET = (function () {
     }
     y += 18;
 
-    // Head-to-head career numbers, winner of each line in that fighter's colour.
+    // Head-to-head career numbers — plain white for both fighters, one weight,
+    // no per-fighter highlight colour regardless of which side is ahead (see
+    // h2hTable).
     y = sectionTitle(ctx, 'Head to head', y + 44) + 38;
     y = h2hTable(ctx, ins.statsA, ins.statsB, y, ins.sig, colA, colB);
 
@@ -1681,14 +1687,14 @@ const GL_SHEET = (function () {
       A.tdL + '/' + A.tdA, B.tdL + '/' + B.tdA,
       (A.tdA ? Math.round(A.tdL/A.tdA*100) + '% · ' : '') + (A.tdL/eA).toFixed(1) + unit,
       (B.tdA ? Math.round(B.tdL/B.tdA*100) + '% · ' : '') + (B.tdL/eB).toFixed(1) + unit,
-      A.tdA ? A.tdL/A.tdA : 0, B.tdA ? B.tdL/B.tdA : 0, y, tdLead === 1, tdLead === 2, S);
+      A.tdA ? A.tdL/A.tdA : 0, B.tdA ? B.tdL/B.tdA : 0, y, false, false, S);
     const sA = A.tdAgA ? (A.tdAgA-A.tdAgL)/A.tdAgA : 0, sB = B.tdAgA ? (B.tdAgA-B.tdAgL)/B.tdAgA : 0;
     const stLead = LP(A.tdAgA-A.tdAgL, A.tdAgA, B.tdAgA-B.tdAgL, B.tdAgA);
     y = sgBar(ctx, 'Takedowns stopped',
       (A.tdAgA-A.tdAgL) + '/' + A.tdAgA, (B.tdAgA-B.tdAgL) + '/' + B.tdAgA,
       A.tdAgA ? Math.round(sA*100) + '%' : 'never shot on',
       B.tdAgA ? Math.round(sB*100) + '%' : 'never shot on',
-      sA, sB, y, stLead === 1, stLead === 2, S);
+      sA, sB, y, false, false, S);
 
     // +70, and the reason is the same one that made it +52 at the old size:
     // sgTitle draws its hairline at y-48.5, and an sgBar carrying subs paints them
@@ -1700,7 +1706,7 @@ const GL_SHEET = (function () {
     y = sgBar(ctx, 'Control time', mins(A.ctrl), mins(B.ctrl),
       mins(cA) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
       mins(cB) + ' ' + (per15 ? 'per 15 min' : 'per fight'),
-      cA/mC, cB/mC, y, cLead === 1, cLead === 2, S);
+      cA/mC, cB/mC, y, false, false, S);
     const kA = A.ctrlAg / eA, kB = B.ctrlAg / eB, mK = Math.max(kA, kB, 1);
     // Not accented: a long bar here is time on your back.
     y = sgBar(ctx, 'Time spent under control', mins(A.ctrlAg), mins(B.ctrlAg),
@@ -1718,7 +1724,7 @@ const GL_SHEET = (function () {
         const l = (typeof _mhLeadRate === 'function') ? _mhLeadRate(va, eA, vb, eB) : 0;
         y = sgBar(ctx, lab, String(va), String(vb),
           'in ' + A.sFights + ' fights', 'in ' + B.sFights + ' fights',
-          ra/m, rb/m, y, l === 1, l === 2, S);
+          ra/m, rb/m, y, false, false, S);
       }
     }
     footer(ctx, CH);
