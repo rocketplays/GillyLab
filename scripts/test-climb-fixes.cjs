@@ -53,7 +53,7 @@ setTimeout(()=>{
   let thin=[];
   for(const dv of peek('D.order')){
     for(const rk of [null,15,14,10,6,3,2,1]){
-      win.eval('DIV="'+dv+'"; newGame(); G.started=true; G.rank='+(rk===null?'null':rk)+'; G.wins=6;');
+      win.eval('DIV="'+dv+'"; newGame(); G.started=true; G.signed=true; G.rank='+(rk===null?'null':rk)+'; G.wins=6;');
       const n=peek('offers().length');
       if(n<2) thin.push(dv+' @ '+(rk===null?'unranked':'#'+rk)+' -> '+n);
     }
@@ -195,7 +195,11 @@ setTimeout(()=>{
   ok(deadEnds===0,'ducking the belt never dead-ends the run', deadEnds+'/'+longRuns+' runs hit an empty board');
 
   console.log('\n== 1d. opponents have faces ==');
-  win.eval('DIV="LW"; newGame(); G.started=true; G.pts=40; render();');
+  // G.signed=true: skip the DWCS prologue on purpose here. Its opponents are a
+  // small, DELIBERATELY fictional pool (see dwcsPool() — there's no real,
+  // currently-unsigned fighter anywhere in this game's data), so a missing
+  // photo for one of THEM is correct behavior, not the bug this gate checks.
+  win.eval('DIV="LW"; newGame(); G.started=true; G.signed=true; G.pts=40; render();');
   const avs=[...doc.querySelectorAll('.opp .av img')];
   const cards=doc.querySelectorAll('.opp').length;
   ok(avs.length===cards,'every opponent card carries an avatar',avs.length+'/'+cards);
@@ -209,7 +213,9 @@ setTimeout(()=>{
   console.log('\n== 2. a finish ends the fight ==');
   let sawFin=false, badFin=0, sawDec=false, badDec=0;
   for(let i=0;i<60;i++){
-    win.eval('newGame(); G.started=true; G.attrs.striking=10; G.attrs.grappling=10;');
+    // G.signed=true: a DWCS fight never reaches G.log (by design — see
+    // applyResult's DWCS branch), so this needs a real fight to inspect.
+    win.eval('newGame(); G.started=true; G.signed=true; G.attrs.striking=10; G.attrs.grappling=10;');
     win.eval('(function(){ fight(offers()[0]); })()');
     const L=peek('G.log[0]');
     if(L.fin){ sawFin=true;
@@ -225,7 +231,11 @@ setTimeout(()=>{
   console.log('\n== 3. a loss refreshes, and you never rematch your conqueror ==');
   let rematch=0, identical=0;
   for(let i=0;i<40;i++){
-    win.eval('newGame(); G.started=true;');
+    // G.signed=true: this test hand-writes a G.log entry and checks offers()
+    // reacts to it — dwcsOffers() (the DWCS prologue) doesn't read G.log at
+    // all, so left at G.signed=false this would silently stop testing the
+    // rematch-avoidance logic it exists for.
+    win.eval('newGame(); G.started=true; G.signed=true;');
     const before=peek('offers().map(o=>o.f.name)');
     win.eval('(function(){var o=offers()[0];'+
       'G.log.push({opp:o.f.name,won:false,fin:false,p:o.p,rank:o.f.rankNum,rounds:[false,false,false],roundsWon:0,finRound:0});'+
@@ -241,7 +251,9 @@ setTimeout(()=>{
   console.log('\n== 4. the post-loss step-down works while UNRANKED ==');
   const eas=[]; const har=[];
   for(let i=0;i<6;i++){
-    win.eval('newGame(); G.started=true;');
+    // G.signed=true — same reason as section 3: this checks the real unranked
+    // gatekeeper's post-loss softening, not the DWCS prologue in front of it.
+    win.eval('newGame(); G.started=true; G.signed=true;');
     har.push(peek('offers().map(o=>o.p).sort()[0]'));
     win.eval('(function(){var o=offers()[0];'+
       'G.log.push({opp:o.f.name,won:false,fin:false,p:o.p,rank:o.f.rankNum,rounds:[],roundsWon:0,finRound:0});'+

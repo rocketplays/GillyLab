@@ -1,0 +1,308 @@
+The Climb — feature spec: superfight, hall of fame, story offers
+================================================================================
+2026-08-20. IMPLEMENTED as of the same day. All four sections below (Hall of
+Fame, style-clash story offers, the DWCS prologue, the superfight) are built,
+in prototypes/the-climb.html (the source — climb-app.js is generated from it,
+run scripts/gen-climb-app.cjs after any edit). Kept as written rather than
+rewritten in past tense: it's still the accurate account of the reasoning and
+the constraints, and "a claim outlives the thing that made it true" applies to
+this file exactly as much as it applies to THE-CLIMB-TUNING.txt. Line numbers
+below WILL have drifted from the four features' own edits — re-check before
+trusting one.
+
+Verified after building: full test-climb.cjs / test-climb-fixes.cjs suites
+green (three hardcoded test setups needed a G.signed=true added — they were
+silently starting to test the new DWCS prologue instead of the real ranked
+board, caught by the "photos exist" and "finish ends the fight" gates going
+red/crashing rather than passing quietly wrong); sim-climb-runs.cjs balanced
+strategy still ~20% belt rate; check-climb-cap.cjs still ~0% over cap. None of
+the four features moved the tuned economy — see each section for why.
+
+Ground rule carried over from THE-CLIMB-TUNING.txt: none of these three
+features should touch RATING_MIN/SPAN, WEIGHTS, RUNG_PAY, STEP, MAX_FAVORITE,
+or anything else in the tuned economy. All three are buildable as ADDITIONS —
+new offer types, new persisted state, new screens — that read the existing
+economy without changing it. If a build of any of these turns out to need an
+economy change, stop and re-open THE-CLIMB-TUNING.txt first; that file exists
+because "just a small tweak" to this game has cost full sessions before.
+
+
+1. THE SUPERFIGHT
+--------------------------------------------------------------------------------
+Trigger: G.defenses >= 3. This is not a new number — it's the exact threshold
+legacyTier() (line ~1436) already uses for "Dominant champion". Reuse it
+rather than inventing a second milestone the player has to learn.
+
+Opponent: the CURRENT CHAMPION of the division one weight class up from DIV.
+D.order (loaded once at line ~4075, e.g. ["HW","LHW","MW","WW","LW","FW","BW",
+"FLW","WBW","WFLW","WSW"]) gives the adjacency; D.divisions holds every
+division's ladder simultaneously (that's already how the game loads — one
+104KB fetch, not eleven), so the opponent is just
+    D.divisions[D.order[D.order.indexOf(DIV) - 1]].ladder.find(f=>f.rankNum===0)
+"Up" means toward HW, i.e. index - 1 given the current order. If DIV is
+already HW (index 0), there is no superfight — that's correct, not a bug to
+patch around; there's nothing above heavyweight in real UFC either.
+(v1 should be one direction only. A move-down superfight is a real UFC
+storyline too — Cejudo BW->FLW — but it doubles the surface for no proven
+demand yet. Add it later if v1 lands well.)
+
+Why this is cheap: myRating(G.attrs) already produces a rating that's
+comparable across divisions in principle (divCap() only caps YOUR rating
+against YOUR OWN division's champion, it doesn't touch the opponent's power
+number), and o.power on every fighter object is the same GillyLab power
+rating regardless of division. The only real code obstacle is oppByName()
+(line ~1091), which hard-searches LADDER() — i.e. D.divisions[DIV] only — and
+will return null for a fighter in another division, silently degrading
+winProb() to the 0.5 fallback (the exact bug the tuning file already warns
+about under "a column of 50.0%").
+
+Fix: extract the math half of winProb() into a function that takes a fighter
+object directly, e.g. winProbAgainst(o), and have winProb(name) become a thin
+wrapper: oppByName(name) then winProbAgainst(o). The superfight code calls
+winProbAgainst(foreignChamp) directly, bypassing the DIV-locked lookup
+entirely. This is a refactor, not a balance change — same math, new call
+path — but it's exactly the kind of "a value changed what it meant and every
+caller quietly lied" seam THE-CLIMB-TUNING.txt keeps finding, so add a one-
+line assertion (or a comment loud enough to survive) that oppByName and
+winProbAgainst must agree for any name currently on LADDER(), and check it
+once before shipping.
+
+Offer plumbing: follow the calloutOffer()/rivalOffer() pattern (line ~3228,
+~3283) exactly — a small function that returns null or a fully-priced offer
+object, rendered as its own labeled panel in offerBox() (line ~3330 onward is
+the template: co-tag banner, win/lose lines, its own button). Slot the check
+into the G.champ branch of offers() (line ~1461), alongside champDefenders().
+Suggested offer object: { f: champObj, p, reward: SUPERFIGHT_REWARD,
+superfight:true, superDiv: theirDivKey }.
+
+Reward and stakes — this is the part that needs a real decision, not just
+code:
+  * WIN: does not touch G.rank, G.champ, G.beltHolder, or G.defenses in your
+    own division — you are not moving weight classes, you keep your actual
+    belt untouched. It should bank a legacy fact (G.superfights = G.superfights
+    || []; G.superfights.push({div: theirDivKey, opp: f.name, won:true})) and
+    a flat reward (proposed: same order of magnitude as a title defense, i.e.
+    reward:1 like champDefenders() uses — this is a legacy fight, not a rung
+    fight, so it shouldn't feed the points economy meaningfully either way).
+  * LOSE: also does not touch your belt or rank — you're challenging in HIS
+    house, not defending yours. It should still count as an ordinary loss for
+    G.losses/CUT_AT bookkeeping (it's a real UFC-sanctioned fight, it belongs
+    in the record), but explicitly must NOT set beltOnTheLine in applyResult()
+    — that flag is what triggers the two-strike "era's over" rule, and a
+    superfight was never a defense of the belt you actually hold. Concretely:
+    applyResult() needs a THIRD branch, checked before the existing won/lose
+    logic, so an o.superfight fight logs and updates G.wins/G.losses/G.streak
+    but explicitly skips every line that touches G.rank, G.champ, G.defenses,
+    G.beltHolder, G.titleLosses. Write this as a hard early return with a
+    comment stating what it must NOT do — applyResult() is already the file's
+    most bug-bitten function (see "THE RUN THAT COULDN'T END"), and every
+    past bug there was exactly this shape: a flag that should have gated a
+    side effect and didn't.
+
+Legacy display: legacyTier() gets a tier above GOAT for a won superfight —
+something like "Two-division statement" — read off G.superfights, not a new
+top-line requirement (a player who never triggers a superfight should see
+today's tiers unchanged).
+
+Open question to settle before building, not during: is the superfight a
+ONE-TIME unlock (offered once at 3 defenses, then gone whether you take it or
+not) or does it stay on the board every defense cycle once unlocked? The
+rivalOffer/calloutOffer precedent argues for "stays available, re-priced each
+time" — consistent with how every other special offer in the game works —
+but a superfight is meant to read as a rare career-capping moment, and an
+always-on 4th button might cheapen that. Recommend: offer it once per
+threshold crossed (3, and again if you reach a later one, e.g. 6) rather than
+every single defense — a flag like G.superfightOfferedAt = G.defenses check.
+
+
+2. HALL OF FAME
+--------------------------------------------------------------------------------
+There's already a proto-version of this: BESTS_KEY = 'gl_climb_bests_v1'
+(line ~3883), loadBests()/saveBests()/updateBests()/bestsLine() persist
+AGGREGATE maxima to localStorage — fastest belt, most wins, most defenses,
+which divisions you've held a belt in. It's guarded against localStorage
+being unavailable (file://, headless tests) and never throws. This is the
+right foundation; Hall of Fame is that same pattern widened from "your best
+numbers" to "your roster of fighters."
+
+Data model: change from aggregate-only to an ARRAY of finished-run summaries,
+capped (propose 50, oldest dropped — this is a browser localStorage value,
+not a database; runSummary() already at line ~3909 is closer to per-fighter
+than most of the aggregate fields it computes, since it also returns name/
+division/style/pro record/verdict). Bump the key to gl_climb_hof_v1 rather
+than mutating BESTS_KEY in place — the old key's shape (fastestBelt: number)
+and the new one's (fastestBelt: array of records) are incompatible, and a
+silent shape change here is exactly the "nothing throws and every caller
+quietly lies" failure mode the tuning file keeps citing. Read the old key
+once, fold it into the new one as a migration on first load, then stop
+reading it.
+
+Per-entry fields, drawn from what runSummary() already computes for the end
+screen (so no new game-state tracking is needed, only new persistence):
+name (need to check whether the player names their fighter anywhere — if not,
+this is itself a small addition worth having, since "Hall of Fame" reads
+strangely with no names in it), division, verdict (CHAMPION/GOAT/CUT/NO BELT),
+legacy tier, defenses, peak rank, pro record, UFC record, archetype/style,
+finish rate, and — once feature 1 exists — superfight result.
+
+Screen: a new panel, reachable from wherever "restart" lives today (the
+.btn.restart pattern at line ~369 is the precedent for a persistent nav
+element), not just surfaced at endBox() the way bestsLine() is now. Sortable
+by verdict tier is enough for v1 — don't build filtering/search for a feature
+whose whole value is bragging rights over maybe a dozen runs.
+
+Risk: none to the tuned economy — this is a pure read-after-the-fact display
+layer, same class of risk as the existing bests system, which has already
+shipped without incident. The only real trap is the localStorage schema
+migration above; get that right once and this is close to done.
+
+
+3. STORY-DRIVEN FIGHT OFFERS
+--------------------------------------------------------------------------------
+Scoped to fight offers only (not corner/interview flavor, not branching
+consequences) per the earlier decision — so this is "the board surfaces a
+narrative reason to fight someone," reusing the calloutOffer()/rivalOffer()
+architecture a third time. Both existing special offers already ARE story
+reasons — a callout is "prove you belong," a rival fight is "unfinished
+business" — so this isn't a new system, it's more entries in a system that
+already exists and already works. That's good: it means whatever ships here
+inherits the safety properties of the pattern (a labeled panel that returns
+null when it doesn't apply, no interaction with the ranked-ladder offers()
+math).
+
+Two candidate story reasons, both cheap because the data already exists on
+every fighter object:
+
+  STYLE CLASH — "prove your style beats his." archetype() (line ~197) already
+  derives a labeled style (Striker, Wrestler, Grappler, Puncher, etc.) from
+  attributes for both the player and, implicitly, any opponent via their
+  style{} stats. A story offer that surfaces a highly-ranked fighter of the
+  OPPOSING archetype family (feet-heavy vs ground-heavy) with framing text
+  like "he says strikers can't hang with him — make him eat it" costs nothing
+  new: it's a filter over LADDER() by style, wrapped in the calloutOffer()
+  shape. This is the more interesting of the two because it gives the player
+  a reason to pick a fight that ISN'T "he's close to my rank" or "he beat me
+  before" — it's the first offer type keyed on WHO YOU ARE rather than WHERE
+  YOU ARE or WHAT HAPPENED. Recommend building this one first.
+
+  NATIONALITY/PROMOTIONAL FEUD — every fighter already carries a `country`
+  field (confirmed in data/climb.json — "country":"UK", "France", "Russia",
+  etc.). A lower-cost, lower-payoff option: flavor text keyed on shared or
+  rival countries ("the UK's other heavyweight wants smoke"). This is
+  cosmetic text over the existing near/below/up offers rather than a new
+  offer type — cheaper to build than style clash, but also the less
+  interesting one, since it doesn't change WHICH fights get offered, only how
+  they're described. Worth doing only as a fast follow, not the headline
+  item.
+
+What NOT to do here: don't let a story offer become a fourth or fifth
+permanently-visible button. offerBox() already renders up to three ranked
+cards plus a possible callout plus a possible rival — a style-clash offer
+should REPLACE one of the existing near/below/up slots when it applies
+(swap it in via buildOffers(), same as the champion-title-shot injection at
+line ~1484 already does), not add a fourth panel. A board with five things on
+it stops being a read; the tuning file spent an entire pass narrowing STEP
+specifically to keep the board legible, and a story feature that widens it
+back out undoes that for a cosmetic win.
+
+
+4. THE DWCS OPENER — a PROLOGUE, not a reskin
+--------------------------------------------------------------------------------
+REVISED from the first draft of this section, which proposed reusing the
+existing UNRANKED_WINS=1 gatekeeper fight (line ~352, ~1567) as the Contender
+Series fight itself. Decided instead: DWCS is a new phase that happens BEFORE
+that gatekeeper fight, not a replacement for it. The gatekeeper fight is
+untouched, keeps its current opponent pool, current odds, current copy —
+"the career starts as is afterwards" is the requirement, and the cheapest way
+to guarantee that is to change nothing about it and just gate it behind a
+new prologue.
+
+WHY THE ORIGINAL PLAN DOESN'T WORK: the existing gatekeeper pool
+(rankNum===99 fighters) is not generic filler — gen-climb-data.cjs's
+recentUFC() filter explicitly selects CURRENT UFC roster fighters with 2+
+recent fights, specifically to avoid obscure/retired names (the comment
+calls it "a retired-journeyman detector"). Those are real, current UFC
+fighters. A Contender Series fight is by definition against someone who
+ISN'T on the roster yet. Using the gatekeeper pool for DWCS would have the
+player's fictional "not yet signed" prospect fighting an actual ranked-adjacent
+UFC roster member, which is backwards. Confirmed by reading the generator,
+not assumed.
+
+NEW STATE: G.signed (boolean, default false). This sits in front of the
+G.rank==null phase, which is untouched:
+    !G.signed             -> DWCS phase (new, this section)
+    G.signed, G.rank==null -> the existing gatekeeper fight, EXACTLY as today
+    G.rank != null          -> the ranked climb, EXACTLY as today
+
+NEW DATA: a small hand-authored pool of fictional prospects, clearly
+invented — not real fighters, not real records. This mirrors REGIONAL
+(the {w:10,l:0} display-only flavor stat already in the game) rather than
+extending the real-roster pipeline: there is no source of real, currently-
+unsigned fighters anywhere in gen-climb-data.cjs's data (FIGHTERS/
+FIGHT_HISTORY only cover the UFC roster), and building one would mean a new
+external feed with its own sync/staleness problems for a single opening
+fight — out of proportion to the feature. Calibrate power a few points below
+the real gatekeeper floor (measured: gatekeeper power clusters 44.8-51.1
+across all 11 divisions) so a DWCS prospect always reads as a rung below
+even the softest real UFC fighter, and keep style stats near-average
+(low tdDef/strDef spread, no exploitable specialization) so styleDelta stays
+small and doesn't undercut the "should basically never lose" goal the way an
+unlucky matchup against a real gatekeeper's specialised stats could. Ship
+as a small array per division (or one shared pool, division doesn't matter
+much for fictional names) alongside the existing climb.json, generated by a
+small addition to gen-climb-data.cjs or hand-authored directly — either is
+fine, this content doesn't need the sim's opinion the way real fighters do.
+
+  FIRST DWCS FIGHT — three offered options, all drawn from the fictional
+  pool's easier half, same "big favorite, still your choice" framing as the
+  original plan. Reward for a win: none of the normal upgrade-point economy
+  — this fight happens before G.pts means anything close to what it means
+  once you're building a UFC career, so keep it flat/cosmetic.
+
+  SECOND CHANCE (after a DWCS loss) — same as before: don't band it, pick
+  the single fictional prospect with the highest winProb() for the player's
+  actual build, guaranteeing the friendliest possible matchup by
+  construction rather than by luck of a banded draw.
+
+  DOES A DWCS LOSS COST ANYTHING? Recommend: no. G.losses/CUT_AT is the
+  budget for a UFC CAREER — you don't have one yet. A DWCS loss should cost
+  nothing but a rewatch of the highlight and another fight, which is also
+  what keeps the "shouldn't really ever lose the second one" promise from
+  quietly meaning "and if you do, it doesn't matter anyway" (it would still
+  matter if it burned a real budget slot). This is a genuine design choice,
+  not a settled fact — the alternative (DWCS losses count toward CUT_AT) is
+  defensible too, since UFC careers really can end 0-1, but it directly
+  fights the framing decided above ("the DWCS performances are additional")
+  and adds tension to a phase that's supposed to be a soft on-ramp.
+
+  ON WIN: set G.signed = true. Do not touch G.rank, G.wins, G.losses, or
+  anything the real economy reads — this is a flag flip and a piece of
+  narrative text ("The UFC signs you"), nothing else. The player then sees
+  the EXACT gatekeeper-fight screen that exists today, unchanged.
+
+IMPLEMENTATION SHAPE: a dwcsOffer()-style function alongside
+calloutOffer()/rivalOffer(), and one early branch in applyResult() —
+`if (!G.signed) { ...log it, maybe bank a DWCS-specific flag for Hall of
+Fame flavor, set G.signed on win, return early before any of the real
+career logic runs... }` — same "hard early return with a comment stating
+what it must NOT touch" discipline flagged for the superfight branch. Two
+early-return special-case branches in applyResult() is a good reason to
+build DWCS before Superfight: the pattern only needs to be established once.
+
+No economy risk: G.signed defaults false and every existing code path
+(buildOffers, applyResult, offers) is reached only once it's true, at which
+point the game behaves exactly as it does today. The prologue is additive in
+front of the state machine, not a change inside it.
+
+
+BUILD ORDER
+--------------------------------------------------------------------------------
+Hall of Fame first — no interaction with the other three, lowest risk, and
+gives you a place to show off the others' results once they exist. Then the
+DWCS opener — self-contained to the G.rank==null phase, small, and a good
+warm-up for touching applyResult() safely before Superfight requires it for
+real. Then style-clash story offers — self-contained, same offer pattern
+already proven twice. Superfight last — it's the one that needs the
+winProb() refactor and the largest new applyResult() branch, real surgery on
+the file's most fragile function; do it once the rest have re-familiarized
+whoever builds this with the codebase's conventions.

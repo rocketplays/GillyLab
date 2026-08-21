@@ -106,7 +106,7 @@ const win=dom.window;
   // This number is load-bearing and will rot again the next time the economy
   // moves. If it fights back a third time, make the test PLAY a run to the title
   // rather than hardcode what a challenger looks like.
-  win.eval('newGame(); G.started=true; G.rank=1; G.wins=10; G.streak=10; G.fightNo=10;'+
+  win.eval('newGame(); G.started=true; G.signed=true; G.rank=1; G.wins=10; G.streak=10; G.fightNo=10;'+
            'G.pts=90; (function(){var O=["power","technique","wrestling","chin","cardio","takedef","grappling","pace","strdef"];'+
            'while(G.pts>0){var moved=false;'+
            'for(const id of O){var c=upCost(G.attrs[id]); if(G.pts>=c&&G.attrs[id]<ATTR_MAX){G.pts-=c;G.attrs[id]++;moved=true;break;}}'+
