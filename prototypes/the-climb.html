@@ -550,11 +550,15 @@
   <p class="tag">Can you become a UFC champion?</p>
   <!-- KEEP THIS TRUE. The tuning file lists the subtitle among the claims that
        outlived what made them true, and it is the first thing a player reads: it
-       must describe the game that exists. "Start as a 10-0 prospect" is not
-       flavour — POINTS_START 42 buys a debut rated 74 against a #15 rated 62, and
-       the scoreboard now says 10-0. If any of those three move, this line moves. -->
-  <p class="sub">Build a fighter. Start as a 10-0 prospect entering the UFC.<br>
-    Pick your fights, climb the rankings, win the belt.<br>
+       must describe the game that exists. UPDATED for the DWCS prologue — the
+       game no longer opens on the UFC roster; G.signed gates a fictional
+       Contender Series pool in front of it (see dwcsPool()/dwcsOffers()). "Start
+       as a 10-0 prospect entering the UFC" was true when POINTS_START 42 bought
+       your very first fight; it's still true of what you arrive AS once you sign,
+       just no longer of the FIRST screen you see. If DWCS, POINTS_START, or the
+       10-0 framing move, this line moves. -->
+  <p class="sub">Build a fighter. Win your way onto Dana White's Contender Series,<br>
+    then enter the UFC as a 10-0 prospect. Pick your fights, climb the rankings, win the belt.<br>
     Real UFC fighters, real rankings, real GillyLab power ratings.</p>
   <div id="app"><div class="load">Loading the divisions…</div></div>
   <!-- CTA SLOT — the "this is free, here's what Premium adds" box every other free
@@ -973,7 +977,17 @@ const REGIONAL = { w: 10, l: 0 };
 // from the log; G.losses stays the life counter, untouched, so the cut is unchanged.
 const lossCount   = () => G.log.reduce((n,f)=>n+(f.won?0:1),0);
 const ufcRecord   = () => G.wins + '-' + lossCount();
-const totalRecord = () => (REGIONAL.w + G.wins) + '-' + (REGIONAL.l + lossCount());
+// DWCS FIGHTS BELONG IN THE PRO RECORD, NOT THE UFC ONE. Same split as
+// REGIONAL just above: G.wins/lossCount() are the UFC record and every rule
+// in the game reads them (CUT_AT, UNRANKED_WINS), so a DWCS result can never
+// be added there without re-arming the exact bug that comment warns about.
+// But "pro record" is supposed to be the WHOLE career, and G.dwcsLog is real
+// fights the player actually watched happen — leaving them out just because
+// they predate the contract reads as a bug, not as the isolation it's
+// protecting. Folded in at the point of PRINTING, same as REGIONAL.
+const dwcsWinCount  = () => (G.dwcsLog||[]).reduce((n,f)=>n+(f.won?1:0),0);
+const dwcsLossCount = () => (G.dwcsLog||[]).reduce((n,f)=>n+(f.won?0:1),0);
+const totalRecord = () => (REGIONAL.w + dwcsWinCount() + G.wins) + '-' + (REGIONAL.l + dwcsLossCount() + lossCount());
 // buildStats() and the CURVES table are GONE. They existed to translate sliders
 // into the nine stat levers the sim read (kd, slpm, strAcc...). Nothing reads
 // them now — the game scores from attributes directly. Deleting them removes the
@@ -2840,13 +2854,16 @@ function applyResult(o, R){
   const { won, fin, method, rounds, roundsWon, finRound } = R;
   // THE DWCS PROLOGUE — a hard early return, on purpose, in the same style as
   // the belt-loss bookkeeping below this function is famous for getting wrong.
-  // MUST NOT touch G.log, G.wins, G.losses, G.streak, G.rank, G.beat, or CUT_AT
-  // in any way — "the career starts as is afterwards" means a signed fighter's
-  // very first real UFC fight has to see G.wins===0, G.losses===0, G.log===[]
-  // exactly like it always has. DWCS gets its own tiny, separate bookkeeping.
+  // MUST NOT touch G.wins, G.losses, G.streak, G.rank, G.beat, or CUT_AT in any
+  // way — "the career starts as is afterwards" means a signed fighter's very
+  // first real UFC fight has to see G.wins===0, G.losses===0 exactly like it
+  // always has. G.log itself is untouched for the same reason (it's the UFC
+  // record). But the RESULT SCREEN still needs the round-by-round detail to
+  // show how the fight went, so G.dwcsLog carries the same shape G.log does —
+  // display-only, same move as REGIONAL and totalRecord() below.
   if (o.dwcs){
     G.dwcsLog = G.dwcsLog || [];
-    G.dwcsLog.push({ opp:o.f.name, won, method });
+    G.dwcsLog.push({ opp:o.f.name, won, fin, method, rounds, roundsWon, finRound });
     if (won){ G.signed = true; G.dwcsLosses = 0; }
     else { G.dwcsLosses = (G.dwcsLosses||0) + 1; }   // never read against CUT_AT — see above
     // MIRROR ONLY THE UI-FACING PART OF THE SHARED TAIL BELOW (G.last, G.bout,
@@ -3829,18 +3846,9 @@ function resultBox(){
     : (won ? 'def. ' : 'lost to ') + o.f.name + ' by ' + (method||'decision');
   p.appendChild(b);
   // A DWCS FIGHT NEVER TOUCHES G.log (see applyResult's DWCS branch — the whole
-  // point is that a signed fighter's UFC record starts clean). So this can't
-  // read L=G.log[G.log.length-1] the way every real fight does below; there is
-  // nothing there yet on a fighter's very first-ever DWCS bout. Short, separate
-  // rendering, then done — the real result screen's rounds/odds/plan detail
-  // assumes a ranked fight that this isn't.
-  if (o.dwcs){
-    const n=document.createElement('div'); n.className='note';
-    n.textContent = won ? "You're headed to the real thing next." : "Same phone call, one more shot — nothing lost.";
-    p.appendChild(n);
-    return p;
-  }
-  const L=G.log[G.log.length-1];
+  // point is that a signed fighter's UFC record starts clean), so the round
+  // detail below reads from G.dwcsLog instead — same shape, display only.
+  const L = o.dwcs ? G.dwcsLog[G.dwcsLog.length-1] : G.log[G.log.length-1];
   const rd=document.createElement('div'); rd.className='note';
   rd.innerHTML = 'Rounds: ' + L.rounds.map((w,i)=>
     '<b style="color:'+(w?'var(--accent)':'var(--accent2)')+'">R'+(i+1)+(w?' ✓':' ✗')+'</b>').join(' &nbsp; ') +
@@ -3939,10 +3947,18 @@ function resultBox(){
     p.appendChild(fn);
   }
   const n=document.createElement('div'); n.className='note';
-  const left = CUT_AT - G.losses;
-  n.textContent = won
-    ? '+'+o.reward+' upgrade points.'
-    : (left===1 ? 'One loss left.' : left+' losses left.');
+  if (o.dwcs){
+    // No upgrade points here (see applyResult's DWCS branch — reward is flat 0,
+    // this fight is before G.pts means what it means once there's a real
+    // career), and CUT_AT is the UFC budget, not this one, so no "losses left"
+    // either. The only thing this line needs to say is what's next.
+    n.textContent = won ? "You're headed to the real thing next." : "Same phone call, one more shot — nothing lost.";
+  } else {
+    const left = CUT_AT - G.losses;
+    n.textContent = won
+      ? '+'+o.reward+' upgrade points.'
+      : (left===1 ? 'One loss left.' : left+' losses left.');
+  }
   p.appendChild(n);
   return p;
 }
@@ -4922,8 +4938,9 @@ function endBox(msg){
 if (window.CLIMB_LOCKED) {
   const p=document.createElement('div'); p.className='panel';
   p.innerHTML='<div class="big win">Create a free account to play</div>'+
-    '<div class="note">The Climb is free. You build a fighter, start as a 10-0 prospect, '+
-    'and try to win a real UFC belt against the real division — no card, no trial.</div>';
+    '<div class="note">The Climb is free. You build a fighter, fight your way onto Dana '+
+    'White\'s Contender Series, then enter the UFC as a 10-0 prospect and try to win a '+
+    'real belt against the real division — no card, no trial.</div>';
   const a=document.createElement('a'); a.className='btn pri'; a.href='/signup?next=/theclimb';
   a.textContent='Create a free account →';
   a.style.cssText='display:inline-block;margin-top:.8rem;text-decoration:none';
