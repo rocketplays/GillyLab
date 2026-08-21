@@ -58,8 +58,15 @@ const RANKDIV = {
 };
 // Pound-for-pound is a list, not a division — a fighter there also appears in
 // their real weight class, so including it would give them two ranks.
+// [^a-z ] USED TO DELETE non-letters outright, which COLLAPSES a hyphen instead
+// of separating on it: "Waldo Cortes-Acosta" -> "waldocortesacosta" while
+// rankings.json's "Waldo Cortes Acosta" -> "waldo cortes acosta" \u2014 two different
+// keys for the same #5 heavyweight, so the lookup missed and he shipped
+// unranked. Found by a player: he IS ranked, the game just couldn't find him.
+// Replacing any RUN of non-letters with a single space (not deleting it) fixes
+// this for every hyphen/apostrophe name, not just this one.
 const norm = s => String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-  .replace(/[^a-z ]/g,'').replace(/\s+/g,' ').trim();
+  .replace(/[^a-z]+/g,' ').trim();
 
 function loadRanks() {
   const R = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'rankings.json'), 'utf8'));
@@ -100,6 +107,34 @@ function main() {
   const THIS_YEAR = new Date().getFullYear();
   const ACTIVE_SINCE = THIS_YEAR - 8;      // ~2018+: still recognisable to a current fan
 
+  // ACTIVE ROSTER GATE. Recent-fight-count alone (recentUFC below) is a proxy
+  // for "still on the roster", and it's a bad one for anyone who left AFTER a
+  // recent run: Jailton Almeida was cut in Feb 2026 and Francis Ngannou hasn't
+  // fought in the UFC since Jan 2023, and both still cleared the old filter
+  // because it only asked "did you fight recently", never "are you still here".
+  // Both showed up as easy unranked gatekeeper fights — found by a player.
+  //
+  // data/roster.json IS the real answer to "are you still here": gen-roster.cjs
+  // extracts index.html's ACTIVE_ROSTER, which is hand-maintained off UFC
+  // signings/releases and runs right before this script in update-odds.yml.
+  // Gate on it instead of inventing a second, worse heuristic. A fighter must be
+  // ranked (rankings.json, always authoritative) OR on the active roster to be
+  // usable at all — recentUFC() below still decides who among the ACTIVE
+  // unranked fighters is recognisable enough to be a gatekeeper.
+  //
+  // ENOENT (never generated yet) degrades to the old recency-only behavior —
+  // this script already runs non-fatally in CI and a missing snapshot on a
+  // first run is not the same failure as a corrupt or truncated one, which
+  // must still throw rather than silently ship a worse board.
+  let ROSTER_SET = null;
+  try {
+    const roster = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'roster.json'), 'utf8'));
+    ROSTER_SET = new Set((roster.fighters || []).map(norm));
+  } catch (e) {
+    if (e.code !== 'ENOENT') throw e;
+    console.warn('gen-climb-data: data/roster.json absent — falling back to recency-only roster membership (run scripts/gen-roster.cjs)');
+  }
+
   // The roster writes the champion as "#C" and the interim as "#IC" — NOT
   // "Champion" or "C". A parser looking for the word "champ" matches neither,
   // finds no digits, and files Ilia Topuria as UNRANKED. That put the champion in
@@ -118,8 +153,13 @@ function main() {
 
     // Division membership: ranked fighters belong to the division the PANEL puts
     // them in, whatever the roster says. Everyone else falls back to the roster.
+    // MUST ALSO be ranked or on the active roster (see ROSTER_SET above) — an
+    // unranked fighter who fought recently but isn't on ROSTER_SET has left the
+    // UFC, and recentUFC()'s job below is to rank recognisability among people
+    // who are actually still here, not to double as a departure check it can't do.
     const usable = f => f && FIGHTER_STATS[f.name] &&
-      (FIGHT_HISTORY[f.name] || []).length >= 3 && lastYear(f.name) >= ACTIVE_SINCE;
+      (FIGHT_HISTORY[f.name] || []).length >= 3 && lastYear(f.name) >= ACTIVE_SINCE &&
+      (!ROSTER_SET || rankOf.has(norm(f.name)) || ROSTER_SET.has(norm(f.name)));
     const inDiv = FIGHTERS.filter(f => usable(f) &&
       (rankOf.has(norm(f.name)) || (f.division === DIV && !isRankedElsewhere(f, DIV))));
     const sorted = inDiv.slice().sort((a, b) => rankNum(a) - rankNum(b));
