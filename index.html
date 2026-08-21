@@ -137945,7 +137945,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       b.winnerFighterSlug || (b.fighters || []).some(f => (f.outcome || '').toLowerCase() === 'win'));
     const evtName = e => e.espnName || e.title || e.shortTitle || e.name || 'UFC Event';
     const fmtDate = e => {
-      const d = e.eventDate || (e.startsAt ? String(e.startsAt).slice(0, 10) : '');
+      // Naively slicing startsAt's UTC date string is off by a day for any
+      // US-evening card (main card ~9pm ET / 6pm PT lands after midnight
+      // UTC), which is exactly why this dropdown has shown the wrong date
+      // for numbered PPVs and several Fight Nights. Route through the same
+      // easternDateStr() helper the featured-card header already uses for
+      // this identical rollover problem, so the two stay consistent.
+      const d = e.eventDate || (e.startsAt ? easternDateStr(e.startsAt) : '');
       if (!d) return '';
       try { return new Date(d + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }); }
       catch (_) { return d; }
