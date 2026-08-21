@@ -1227,9 +1227,23 @@ function nameToSlug(name){
 // The disc is built with the initials ALREADY in it, and the <img> sits on top.
 // If the photo 404s the img hides itself and the initials are simply revealed —
 // no onerror text surgery, no flash of a broken-image icon.
+//
+// DWCS FIGHTERS HAVE NO REAL PHOTO TO 404 TO — they're fictional (see
+// dwcsPool()), so /photos/thumb/<slug>.png was never going to exist for them
+// and every DWCS card fell back to a bare initials disc. That's correct
+// behavior for a name typo or a roster gap; it reads as thin for a deliberate
+// design choice. DiceBear's 'personas' generator makes a real, DISTINCT
+// illustrated face per seed — not a claim about a real person (nothing here
+// is), just a face instead of two letters. Seeded on the slug so the same
+// fictional fighter always gets the same face across cards, screens, and runs.
+// One new external dependency, scoped to exactly these 16 names; every real
+// UFC fighter still uses the real photo path, unchanged.
+const DICEBEAR = slug => 'https://api.dicebear.com/9.x/personas/svg?seed='+encodeURIComponent(slug)+'&backgroundType=solid';
 function avatarHTML(f){
+  const slug = nameToSlug(f.name);
+  const src = f.dwcs ? DICEBEAR(slug) : '/photos/thumb/'+slug+'.png';
   return '<div class="av"><span>'+(f.initials||'?')+'</span>'+
-    '<img src="/photos/thumb/'+nameToSlug(f.name)+'.png" alt="" loading="lazy" '+
+    '<img src="'+src+'" alt="" loading="lazy" '+
     'onerror="this.style.display=\'none\'"></div>';
 }
 
