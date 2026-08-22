@@ -2536,6 +2536,11 @@
     .cs-barrow .cs-fill.a { background: var(--accent); }
     .cs-barrow .cs-fill.b { background: var(--accent2); }
     .cs-barrow .cs-pct { width: 40px; text-align: right; flex: none; font-variant-numeric: tabular-nums; }
+    .cs-method { margin-top: 0.6rem; padding-top: 0.55rem; border-top: 1px solid var(--border); }
+    .cs-method-hd { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; margin-bottom: 0.35rem; }
+    .cs-method-row { display: flex; align-items: baseline; gap: 0.5rem; font-size: 0.76rem; margin: 0.2rem 0; }
+    .cs-method-row .cs-method-nm { width: 40%; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; color: var(--text); }
+    .cs-method-row .cs-method-vals { flex: 1; color: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
 
     .cs-cat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.65rem; }
     .cs-cat-nm { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.1rem; }
@@ -2562,10 +2567,14 @@
     .cs-weight-row input[type=range] { flex: 1; }
     .cs-weight-pct { width: 46px; text-align: right; font-weight: 800; font-size: 0.84rem; flex: none; font-family: 'Barlow Condensed', sans-serif; }
     .cs-weight-pct.zero { color: var(--muted); font-weight: 700; }
+    .cs-lock-btn { flex: none; background: var(--surface2); color: var(--muted); border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.55rem; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; cursor: pointer; transition: opacity 0.15s, border-color 0.15s, color 0.15s; }
+    .cs-lock-btn:hover { border-color: var(--muted); color: var(--text); }
+    .cs-lock-btn.locked { background: rgba(0,230,104,0.12); border-color: var(--accent); color: var(--accent); }
 
     #cs-box input[type=range] { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 99px; background: var(--surface2); outline: none; cursor: pointer; width: 100%; background-image: linear-gradient(to right, rgba(0,230,104,0.35), var(--surface2) 45%, var(--surface2) 55%, rgba(255,61,0,0.3)); }
     #cs-box input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; margin-top: -6px; }
     #cs-box input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; }
+    #cs-box input[type=range]:disabled { opacity: 0.35; cursor: not-allowed; }
 
     /* Spans the full width of the two reset buttons below it (same combined
        width as .cs-footer's flex row) — a way back to the results at the top
@@ -138503,7 +138512,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const lowCredibility = Math.max(1 - simRateCredibility(nameA), 1 - simRateCredibility(nameB));
     const uncertainty = Math.max(volatility, lowCredibility * 0.7);
     const k = 5.4 * (1 + 0.5 * uncertainty);
-    return { nameA, nameB, bdA, bdB, styleDelta, closeness, h2h, unpA, unpB, k };
+    return { nameA, nameB, rounds, bdA, bdB, styleDelta, closeness, h2h, unpA, unpB, k };
   }
 
   // Real, unclamped gap for one category — positive favors nameB, matching
@@ -138525,25 +138534,57 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
   function csDefaultCats(base) {
     const cats = {};
-    CS_CATEGORIES.forEach(c => { cats[c.key] = { edge: csRawGap(c.key, base), weightPct: CS_EQUAL_SHARE }; });
+    CS_CATEGORIES.forEach(c => { cats[c.key] = { edge: csRawGap(c.key, base), weightPct: CS_EQUAL_SHARE, locked: false }; });
     return cats;
   }
 
-  // Same "pie allocator" redistribution as the prototype: moving one
-  // category's weight slider always visibly takes from (or gives back to)
-  // the other seven, proportional to their current shares.
+  // Sum of the weight pool already spoken for by LOCKED categories, other
+  // than the one being excluded (normally the category currently being
+  // dragged or toggled, which is never itself counted as "other").
+  function csLockedSum(excludeKey) {
+    return CS_CATEGORIES.reduce((s, c) =>
+      s + ((c.key !== excludeKey && csState.cats[c.key].locked) ? csState.cats[c.key].weightPct : 0), 0);
+  }
+
+  // "Pie allocator" redistribution, same idea as before but locked categories
+  // are walled off entirely: they never move, and they aren't counted as
+  // room the dragged slider can borrow from. Only the UNLOCKED "free"
+  // categories (excluding the one being dragged) absorb the remainder,
+  // proportional to their current shares -- so a user who's locked one
+  // category at an exact value they're sure of can freely trade the rest
+  // against each other without disturbing it, and the total always still
+  // comes out to 100.
   function csNormalizeWeights(catKey, newVal) {
-    newVal = Math.max(0, Math.min(100, newVal));
-    const others = CS_CATEGORIES.map(c => c.key).filter(k => k !== catKey);
-    const oldOthersSum = others.reduce((s, k) => s + csState.cats[k].weightPct, 0);
-    const remaining = 100 - newVal;
-    if (oldOthersSum <= 0.0001) {
-      others.forEach(k => { csState.cats[k].weightPct = remaining / others.length; });
-    } else {
-      others.forEach(k => { csState.cats[k].weightPct = (csState.cats[k].weightPct / oldOthersSum) * remaining; });
+    const lockedSum = csLockedSum(catKey);
+    const room = Math.max(0, 100 - lockedSum);
+    newVal = Math.max(0, Math.min(room, newVal));
+    const freeOthers = CS_CATEGORIES.map(c => c.key).filter(k => k !== catKey && !csState.cats[k].locked);
+    const remaining = room - newVal;
+    if (freeOthers.length > 0) {
+      const oldFreeSum = freeOthers.reduce((s, k) => s + csState.cats[k].weightPct, 0);
+      if (oldFreeSum <= 0.0001) {
+        freeOthers.forEach(k => { csState.cats[k].weightPct = remaining / freeOthers.length; });
+      } else {
+        freeOthers.forEach(k => { csState.cats[k].weightPct = (csState.cats[k].weightPct / oldFreeSum) * remaining; });
+      }
     }
     csState.cats[catKey].weightPct = newVal;
   }
+
+  // Lock a category at its current weight (clamping it down first if other
+  // already-locked categories don't leave it enough room), or release it
+  // back into the free-floating pool.
+  function csToggleLock(catKey) {
+    const st = csState.cats[catKey];
+    if (st.locked) {
+      st.locked = false;
+      return;
+    }
+    const room = Math.max(0, 100 - csLockedSum(catKey));
+    if (st.weightPct > room) csNormalizeWeights(catKey, room);
+    st.locked = true;
+  }
+  window.csToggleLock = csToggleLock;
 
   // Sum of the weighted user contributions across all eight sliders, in the
   // same "positive favors A" sign convention (sa - sb) simPowerScore uses,
@@ -138573,6 +138614,77 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const diff = statDiff + base.h2h - base.unpA + base.unpB;
     const raw = 1 / (1 + Math.exp(-diff / base.k));
     return Math.min(0.96, Math.max(0.04, raw));
+  }
+
+  // ── Method of victory ────────────────────────────────────────────────
+  // Only three categories plausibly change HOW a fight ends, as opposed to
+  // just who's more likely to win it: Finishing power (KO/TKO rate),
+  // Grappling/Submissions (submission rate), and Durability/chin (how hard
+  // the LOSER is to put away). The other five categories -- striking,
+  // wrestling, form, schedule, fight IQ -- are deliberately left out here;
+  // moving Recent form shouldn't silently reshuffle a method breakdown that
+  // has nothing to do with it. Left untouched, this reproduces the real
+  // simMethodDistribution() exactly (every deviation below is 0).
+  const CS_METHOD_SENSITIVITY = 0.35;
+
+  // How far the user's edge for one of the three method-relevant categories
+  // sits from the model's own calibrated read, normalized to that
+  // category's own slider range. Positive favors nameB.
+  function csMethodDeviation(catKey) {
+    const base = csState.base;
+    const max = csEdgeMax(catKey, base);
+    if (!max) return 0;
+    return (csState.cats[catKey].edge - csClampedGap(catKey, base)) / max;
+  }
+
+  // {KO/TKO, Submission, Decision} for a win by nameA (winnerKey 'A') or
+  // nameB ('B'), starting from the real simMethodDistribution() baseline.
+  // With applyDeviation=false this IS simMethodDistribution -- used for the
+  // calibrated "GillyLab Model" box. With applyDeviation=true it's bent by
+  // only the finishing/grappling/durability deviations above -- used for
+  // "Your custom read".
+  function csMethodFor(winnerKey, winProb, applyDeviation) {
+    const base = csState.base;
+    const winner = winnerKey === 'A' ? csState.nameA : csState.nameB;
+    const loser = winnerKey === 'A' ? csState.nameB : csState.nameA;
+    const real = simMethodDistribution(winner, loser, base.rounds, winProb);
+    if (!applyDeviation) return real;
+
+    const finDev = csMethodDeviation('finishing');
+    const grapDev = csMethodDeviation('grappling');
+    const durDev = csMethodDeviation('durability');
+    // A positive finishing/grappling deviation favors nameB's own power in
+    // that trait; flip sign when nameA is the one winning.
+    const sideSign = winnerKey === 'A' ? -1 : 1;
+    const koAdj = sideSign * finDev * CS_METHOD_SENSITIVITY;
+    const subAdj = sideSign * grapDev * CS_METHOD_SENSITIVITY;
+    // Durability describes the LOSER: a positive deviation means the user
+    // thinks nameB is tougher than the model does, which pulls the
+    // winner's overall finish rate DOWN when the loser is B, and UP when
+    // the loser is A (i.e. nameA reads as the less durable one).
+    const loserIsB = winnerKey === 'A';
+    const finRateAdj = (loserIsB ? -1 : 1) * durDev * CS_METHOD_SENSITIVITY;
+
+    const ko = real['KO/TKO'], sub = real['Submission'];
+    const finRate = ko + sub;
+    const koShare0 = finRate > 0 ? ko / finRate : 0.5;
+    const subShare0 = finRate > 0 ? sub / finRate : 0.5;
+
+    const finRateNew = Math.max(0, Math.min(1, finRate + finRateAdj));
+    let koShareNew = Math.max(0, Math.min(1, koShare0 + koAdj));
+    let subShareNew = Math.max(0, Math.min(1, subShare0 + subAdj));
+    const shareTot = koShareNew + subShareNew;
+    if (shareTot > 0.0001) { koShareNew /= shareTot; subShareNew /= shareTot; }
+    else { koShareNew = 0.5; subShareNew = 0.5; }
+
+    const koNew = finRateNew * koShareNew;
+    const subNew = finRateNew * subShareNew;
+    return { 'KO/TKO': koNew, 'Submission': subNew, 'Decision': Math.max(0, 1 - koNew - subNew) };
+  }
+
+  function csMethodText(dist) {
+    return 'KO/TKO ' + Math.round(dist['KO/TKO'] * 100) + '% &middot; Sub ' +
+      Math.round(dist['Submission'] * 100) + '% &middot; Dec ' + Math.round(dist['Decision'] * 100) + '%';
   }
 
   function csEdgeBucket(value, catKey, base) {
@@ -138628,6 +138740,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     };
     setBar('csCal', calPA, calPB);
     setBar('csCur', curPA, curPB);
+
+    const setMethod = (idName, idVals, name, dist) => {
+      const nmEl = document.getElementById(idName), valEl = document.getElementById(idVals);
+      if (nmEl) nmEl.textContent = csLastName(name);
+      if (valEl) valEl.innerHTML = csMethodText(dist);
+    };
+    setMethod('csCalMethodNameA', 'csCalMethodA', csState.nameA, csMethodFor('A', calPA, false));
+    setMethod('csCalMethodNameB', 'csCalMethodB', csState.nameB, csMethodFor('B', calPB, false));
+    setMethod('csCurMethodNameA', 'csCurMethodA', csState.nameA, csMethodFor('A', curPA, true));
+    setMethod('csCurMethodNameB', 'csCurMethodB', csState.nameB, csMethodFor('B', curPB, true));
 
     const drift = Math.round((curPA - calPA) * 100);
     const driftEl = document.getElementById('csDriftNote');
@@ -138692,10 +138814,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
             '<div class="cs-edge-endcaps"><span>' + escHtmlAttr(csState.nameA) + '</span><span>' + escHtmlAttr(csState.nameB) + '</span></div>' +
           '</div>' +
           '<div class="cs-step">' +
-            '<div class="cs-step-lbl">How much does it matter in this matchup? (pool of 100% across all eight)</div>' +
+            '<div class="cs-step-lbl">How much does it matter in this matchup? (pool of 100% across all eight' +
+              (st.locked ? ' &mdash; locked, the rest split the remainder' : '') + ')</div>' +
             '<div class="cs-weight-row">' +
-              '<input type="range" min="0" max="100" step="1" value="' + Math.round(st.weightPct) + '" data-cs-cat="' + c.key + '" data-cs-role="weight">' +
+              '<input type="range" min="0" max="100" step="1" value="' + Math.round(st.weightPct) + '" data-cs-cat="' + c.key + '" data-cs-role="weight"' + (st.locked ? ' disabled' : '') + '>' +
               '<span class="cs-weight-pct' + (st.weightPct < 0.5 ? ' zero' : '') + '" data-cs-weight-pct="' + c.key + '">' + csFmtPct(st.weightPct) + '%</span>' +
+              '<button type="button" class="cs-lock-btn' + (st.locked ? ' locked' : '') + '" data-cs-cat="' + c.key + '" data-cs-role="lock" title="' + (st.locked ? 'Unlock this weight' : 'Lock this weight at an exact value') + '">' + (st.locked ? 'Locked' : 'Lock') + '</button>' +
             '</div>' +
           '</div>' +
         '</div>';
@@ -138716,6 +138840,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         csUpdateOutputsOnly();
       });
     });
+    host.querySelectorAll('button[data-cs-role="lock"]').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        const cat = e.currentTarget.dataset.csCat;
+        csToggleLock(cat);
+        csRenderCategories();
+        csRenderResults();
+      });
+    });
     csUpdateComputedBits();
   }
 
@@ -138726,11 +138858,21 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
           '<div class="cs-res-lbl"><span>GillyLab Model</span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCalNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCalFillA" style="width:50%"></div></div><span class="cs-pct" id="csCalPctA">50%</span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCalNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCalFillB" style="width:50%"></div></div><span class="cs-pct" id="csCalPctB">50%</span></div>' +
+          '<div class="cs-method">' +
+            '<div class="cs-method-hd">Method of victory</div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCalMethodNameA"></span><span class="cs-method-vals" id="csCalMethodA"></span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCalMethodNameB"></span><span class="cs-method-vals" id="csCalMethodB"></span></div>' +
+          '</div>' +
         '</div>' +
         '<div class="cs-resbox custom">' +
           '<div class="cs-res-lbl"><span>Your custom read</span><span class="cs-drift" id="csDriftNote"></span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCurNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCurFillA" style="width:50%"></div></div><span class="cs-pct" id="csCurPctA">50%</span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCurNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCurFillB" style="width:50%"></div></div><span class="cs-pct" id="csCurPctB">50%</span></div>' +
+          '<div class="cs-method">' +
+            '<div class="cs-method-hd">Method of victory <span style="color:var(--muted);font-weight:600;">(driven by finishing power, grappling, and durability only)</span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCurMethodNameA"></span><span class="cs-method-vals" id="csCurMethodA"></span></div>' +
+            '<div class="cs-method-row"><span class="cs-method-nm" id="csCurMethodNameB"></span><span class="cs-method-vals" id="csCurMethodB"></span></div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div id="csCatsHost"></div>' +

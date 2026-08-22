@@ -63,6 +63,32 @@ for (const name of Object.keys(HIST)) {
 // Lazy point-in-time global history: a Proxy returning each fighter's bouts
 // strictly before cutoff D, newest-first (matching the source ordering the sim
 // functions assume). Memoized per fight.
+// Mirrors simProvenLevel's win-selection walk (which win, if any, sets the
+// "resume" score) but also tracks whether that winning win was a finish --
+// for testing whether manner-of-win should factor into proof-of-level
+// credit, which the live formula currently ignores entirely (only W/L).
+function bestProvenWin(name, asofHist, S) {
+  const wins = (asofHist[name] || []).filter(f => f.result === 'W');
+  let best = 0, bestFinish = null;
+  wins.forEach(f => {
+    const live = S.simRankTier(f.opponent); // null in backtest (rankings disabled)
+    let q;
+    if (live != null) { q = Math.max(0.1, 1 - live / 15); }
+    else {
+      const est = S.simEstimateHistoricalTier(f.opponent, f.date);
+      if (est == null) return;
+      q = est <= 7 ? Math.max(0.1, 1 - est / 15) * S.simBeatenVetDiscount(f.opponent, f.date) : 0.05;
+    }
+    if (q > best) {
+      best = q;
+      const method = String(f.method || '').toUpperCase();
+      bestFinish = method.includes('KO') || method.includes('TKO') || method.includes('SUB');
+    }
+  });
+  const tenure = Math.max(0, Math.min(1, (S.simUfcFightCount(name) - 4) / 14));
+  return { resume: best, tenure, resumeWins: best >= tenure, bestFinish };
+}
+
 function makeAsofHistory(D) {
   const cache = Object.create(null);
   return new Proxy({}, {
@@ -210,7 +236,8 @@ for (const L of labels) {
   asofStats[L.A] = statA; asofStats[L.B] = statB;
 
   S.setNow(D);
-  S.setHistory(makeAsofHistory(D));
+  const asofHist = makeAsofHistory(D);
+  S.setHistory(asofHist);
   S.setStats(asofStats);
   S.setRankBadge(null);                // point-in-time: no current rankings
   // point-in-time box scores (bouts strictly before D) so the live control-time
@@ -241,6 +268,7 @@ for (const L of labels) {
     // relative to a raw production-stat edge (Xiaonan/Gomes-style case).
     const sqA = S.simScheduleQuality(L.A), sqB = S.simScheduleQuality(L.B);
     const provenA = S.simProvenLevel(L.A), provenB = S.simProvenLevel(L.B);
+    const bpwA = bestProvenWin(L.A, asofHist, S), bpwB = bestProvenWin(L.B, asofHist, S);
     rows.push({
       A: L.A, B: L.B, date: L.date, ts: L.ts, aWon: L.aWon ? 1 : 0, p,
       profA, profB, styleDelta, closeness, h2h, unprovenA, unprovenB, uncertainty,
@@ -256,7 +284,9 @@ for (const L of labels) {
       wFinLossA: lfpA.weightedFinishLossCount, lossesA: lfpA.losses, lossFinA: lfpA.lossFinishes,
       wFinLossB: lfpB.weightedFinishLossCount, lossesB: lfpB.losses, lossFinB: lfpB.lossFinishes,
       scheduleNetA: sqA.net, scheduleNetB: sqB.net,
-      provenA, provenB
+      provenA, provenB,
+      provenResumeWinsA: bpwA.resumeWins, provenBestFinishA: bpwA.bestFinish,
+      provenResumeWinsB: bpwB.resumeWins, provenBestFinishB: bpwB.bestFinish
     });
   } catch (e) { errors++; if (errors <= 3) console.log('  ERR', L.A, 'vs', L.B, e.message); }
   processed++;

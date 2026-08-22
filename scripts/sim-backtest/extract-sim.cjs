@@ -76,11 +76,13 @@ function extractFunction(name) {
   return html.slice(m.index, i) + body;
 }
 
-// Contiguous block of scoring functions: from the FIGHT SIMULATOR banner up to
-// (but not including) the method-distribution / DOM-render code.
+// Contiguous block of scoring functions: from the FIGHT SIMULATOR banner
+// through simPickMethod (the method-distribution math is pure -- no DOM --
+// so it's safe to include) up to (but not including) simRunTrials, which is
+// where the DOM-facing render code actually starts.
 function extractSimBlock() {
   const start = html.indexOf('// ── FIGHT SIMULATOR');
-  const end = html.indexOf('const SIM_UFC_WIN_WEIGHT');
+  const end = html.indexOf('function simRunTrials');
   if (start < 0 || end < 0) throw new Error('sim block markers not found');
   return html.slice(start, end);
 }
@@ -147,6 +149,9 @@ module.exports = function createScorer(initStats, initHistory, initFighters) {
     simEstimateHistoricalTier: simEstimateHistoricalTier,
     simProvenLevel: simProvenLevel,
     simBestWinQuality: simBestWinQuality,
+    simBeatenVetDiscount: simBeatenVetDiscount,
+    simUfcFightCount: simUfcFightCount,
+    simMethodDistribution: simMethodDistribution,
     setStats: function(s){ FIGHTER_STATS = s; },
     setHistory: function(h){ FIGHT_HISTORY = h; },
     setFighters: function(f){ FIGHTERS = f; },
