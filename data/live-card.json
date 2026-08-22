@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T22:49:09.673Z",
+ "generatedAt": "2026-08-22T23:14:36.780Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -7142,6 +7142,194 @@
       ]
      },
      "capturedAt": "2026-08-22T22:28:40.027Z"
+    }
+   ]
+  },
+  "Chris Padilla": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Nasrat Haqparast",
+     "result": "W",
+     "method": "Submission (Arm Triangle)",
+     "round": 3,
+     "time": "4:59",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Nasrat Haqparast",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 96,
+      "sigA": 254,
+      "totL": 96,
+      "totA": 254,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:45",
+      "head": [
+       54,
+       181
+      ],
+      "body": [
+       14,
+       31
+      ],
+      "leg": [
+       28,
+       42
+      ],
+      "dist": [
+       80,
+       237
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       12,
+       13
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 202,
+      "totL": 68,
+      "totA": 203,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       43,
+       168
+      ],
+      "body": [
+       21,
+       29
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       66,
+       200
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T23:14:36.666Z"
+    }
+   ]
+  },
+  "Nasrat Haqparast": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Chris Padilla",
+     "result": "L",
+     "method": "Submission (Arm Triangle)",
+     "round": 3,
+     "time": "4:59",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Chris Padilla",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 67,
+      "sigA": 202,
+      "totL": 68,
+      "totA": 203,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       43,
+       168
+      ],
+      "body": [
+       21,
+       29
+      ],
+      "leg": [
+       3,
+       5
+      ],
+      "dist": [
+       66,
+       200
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 96,
+      "sigA": 254,
+      "totL": 96,
+      "totA": 254,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:45",
+      "head": [
+       54,
+       181
+      ],
+      "body": [
+       14,
+       31
+      ],
+      "leg": [
+       28,
+       42
+      ],
+      "dist": [
+       80,
+       237
+      ],
+      "clinch": [
+       4,
+       4
+      ],
+      "ground": [
+       12,
+       13
+      ]
+     },
+     "capturedAt": "2026-08-22T23:14:36.666Z"
     }
    ]
   }
