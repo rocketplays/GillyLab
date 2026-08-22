@@ -2528,7 +2528,7 @@
     .cs-resbox { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 0.9rem; }
     .cs-resbox.custom { border-color: rgba(0,230,104,0.4); background: rgba(0,230,104,0.05); }
     .cs-res-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
-    .cs-res-lbl .cs-drift { color: var(--accent2); font-weight: 800; }
+    .cs-res-lbl .cs-drift { color: var(--text); font-weight: 800; }
     .cs-barrow { display: flex; align-items: center; gap: 0.55rem; font-size: 0.8rem; font-weight: 700; margin: 0.28rem 0; }
     .cs-barrow .cs-nm { width: 40%; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.74rem; font-weight: 600; color: var(--muted); }
     .cs-barrow .cs-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
@@ -2536,9 +2536,6 @@
     .cs-barrow .cs-fill.a { background: var(--accent); }
     .cs-barrow .cs-fill.b { background: var(--accent2); }
     .cs-barrow .cs-pct { width: 40px; text-align: right; flex: none; font-variant-numeric: tabular-nums; }
-
-    .cs-other-note { font-size: 0.72rem; color: var(--muted); line-height: 1.45; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.75rem; margin-bottom: 1rem; }
-    .cs-other-note b { color: var(--text); }
 
     .cs-cat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.65rem; }
     .cs-cat-nm { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.1rem; }
@@ -2548,11 +2545,16 @@
     .cs-step-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 800; margin-bottom: 0.4rem; }
     .cs-edge-label { font-size: 0.92rem; font-weight: 800; margin-bottom: 0.1rem; font-family: 'Barlow Condensed', sans-serif; }
     .cs-edge-label .cs-who { color: var(--accent); }
-    .cs-edge-sub { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.45rem; min-height: 1em; }
+    .cs-edge-sub { font-size: 0.68rem; color: var(--muted); margin-bottom: 1rem; min-height: 1em; }
     .cs-edge-sub.diff { color: var(--accent2); }
     .cs-edge-track-wrap { position: relative; padding-top: 13px; }
     .cs-edge-tick { position: absolute; top: 0; width: 2px; height: 9px; background: var(--muted); transform: translateX(-1px); }
-    .cs-edge-tick::after { content: 'model'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 0.54rem; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em; }
+    /* top:-10px against the track-wrap's own padding-top:13px, plus the
+       1rem margin-bottom just added below .cs-edge-sub, leaves this clear
+       of the sub-label text above regardless of where the tick itself sits
+       horizontally — it used to sit close enough to actually overlap the
+       sub-label's characters when the tick landed near the left edge. */
+    .cs-edge-tick::after { content: 'model'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 0.54rem; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em; }
     .cs-edge-endcaps { display: flex; justify-content: space-between; font-size: 0.64rem; color: var(--muted); font-weight: 700; margin-top: 0.3rem; }
     .cs-edge-endcaps span:first-child { color: var(--accent); }
     .cs-edge-endcaps span:last-child { color: var(--accent2); }
@@ -2565,10 +2567,17 @@
     #cs-box input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; margin-top: -6px; }
     #cs-box input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; }
 
-    .cs-footer { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.9rem; flex-wrap: wrap; }
+    /* Spans the full width of the two reset buttons below it (same combined
+       width as .cs-footer's flex row) — a way back to the results at the top
+       of the modal once you've scrolled down through the eight category
+       cards, since nothing here actually needs re-running (every slider
+       already updates the result bars live); it just scrolls #cs-body back
+       to the top so you can see them again. */
+    .cs-run-btn { display: block; width: 100%; background: var(--accent); border: 1px solid var(--accent); color: #04140a; font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.65rem 1.1rem; border-radius: 8px; cursor: pointer; transition: opacity 0.15s; margin-top: 0.9rem; }
+    .cs-run-btn:hover { opacity: 0.85; }
+    .cs-footer { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.6rem; flex-wrap: wrap; }
     .cs-footer button { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
     .cs-footer button:hover { border-color: var(--muted); }
-    .cs-disclaimer { font-size: 0.68rem; color: var(--muted); line-height: 1.5; margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.85rem; }
 
     .sim-byo-btn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1.1rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
     .sim-byo-btn:hover { border-color: var(--accent); color: var(--accent); }
@@ -138408,9 +138417,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // lowers the others). Seven categories are real power-score components
   // (striking/wrestling/grappling/finishing/form/durability/schedule);
   // "other" (age, layoff, trajectory, big-fight experience, the finish-
-  // vulnerability penalty, etc.) is real but NOT editable, shown as fixed
-  // context instead, since it isn't one coherent trait a user has a "read"
-  // on. Fight IQ is the one user-only category: no real model term measures
+  // vulnerability penalty, etc.) is real but NOT editable — it isn't one
+  // coherent trait a user has a "read" on, so it's left out of the pool
+  // entirely and just stays baked into both numbers below (see
+  // csCustomDiff). Fight IQ is the one user-only category: no real model term measures
   // it, so its edge always starts at "roughly even" with no tick mark and no
   // "matches/differs from the model" comparison — it would be dishonest to
   // imply there's a real signal underneath it.
@@ -138424,14 +138434,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // uncertainty widening — none of that is user-editable) and only swaps in
   // the user's weighted category gaps for the power-score differential.
   const CS_CATEGORIES = [
-    { key: 'striking',   name: 'Striking',              desc: 'Volume and accuracy landed minus damage absorbed, soft-capped for diminishing returns.' },
-    { key: 'wrestling',  name: 'Wrestling',              desc: 'Takedown offense and takedown defense.' },
-    { key: 'grappling',  name: 'Grappling / Submissions', desc: 'Submission rate — guard work and finishing threat off the back.' },
-    { key: 'finishing',  name: 'Finishing power',        desc: 'Finish rate and knockdowns scored, both soft-capped.' },
-    { key: 'form',       name: 'Recent form',            desc: 'Current win streak / momentum, soft-capped.' },
-    { key: 'durability', name: 'Durability / chin',      desc: 'A proven pattern of NOT being finished when losing.' },
+    { key: 'striking',   name: 'Striking',              desc: 'Volume and accuracy landed minus damage absorbed.' },
+    { key: 'wrestling',  name: 'Wrestling',              desc: 'Ability to get it to the mat or keep the fight standing.' },
+    { key: 'grappling',  name: 'Grappling / Submissions', desc: 'Ability to find submissions on the mat, or stay safe from submission attempts.' },
+    { key: 'finishing',  name: 'Finishing power',        desc: 'Finish rate and knockdowns scored.' },
+    { key: 'form',       name: 'Recent form',            desc: 'Current win streak / momentum.' },
+    { key: 'durability', name: 'Durability / chin',      desc: 'A proven pattern of being able to withstand damage.' },
     { key: 'schedule',   name: 'Strength of schedule',   desc: 'Quality-of-opposition multiplier applied to striking, grappling, and finishing.' },
-    { key: 'fightIQ',    name: 'Fight IQ',               desc: 'Gameplanning, in-fight adjustments, championship-rounds composure.', userOnly: true },
+    { key: 'fightIQ',    name: 'Fight IQ',               desc: 'Gameplanning, in-fight adjustments, and ability to execute the gameplan.', userOnly: true },
   ];
   // Minimum half-width of each category's edge slider, in real power-score
   // points — sized per category since the components live on very different
@@ -138503,7 +138513,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // Sum of the weighted user contributions across all eight sliders, in the
   // same "positive favors A" sign convention (sa - sb) simPowerScore uses,
   // PLUS the fixed "other" component (age/layoff/trajectory/big-fight/
-  // finish-vulnerability — see csOtherNoteHtml) that isn't part of the
+  // finish-vulnerability) that isn't part of the
   // editable pool. Without adding it back in, the untouched default state
   // (all edges at the real gap, weights equal) would NOT reproduce the
   // calibrated total — "other" routinely accounts for real, non-trivial
@@ -138585,7 +138595,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     const drift = Math.round((curPA - calPA) * 100);
     const driftEl = document.getElementById('csDriftNote');
-    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : ((drift > 0 ? '+' : '') + drift + ' pts win chance vs calibrated');
+    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : (csState.nameA + ': ' + (drift > 0 ? '+' : '') + drift + ' pts win chance vs GillyLab model');
   }
 
   function csUpdateComputedBits() {
@@ -138622,29 +138632,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   }
   window.csUpdateOutputsOnly = csUpdateOutputsOnly;
 
-  function csOtherNoteHtml() {
-    const base = csState.base;
-    const gap = base.bdB.components.other - base.bdA.components.other;
-    // "other" has no slider/no CS_EDGE_FLOOR entry — bucket it against a fixed
-    // 3.0-point scale (roughly the middle of the real per-category floors
-    // above), just for this plain-language note.
-    const OTHER_MAX = 3.0;
-    const abs = Math.abs(gap);
-    let mag;
-    if (abs < OTHER_MAX * 0.1) mag = null;
-    else if (abs < OTHER_MAX * 0.3) mag = 'a slight edge';
-    else if (abs < OTHER_MAX * 0.6) mag = 'a real edge';
-    else mag = 'a big edge';
-    if (!mag) return 'Outside these eight categories — age, layoff, career trajectory, big-fight experience, and the finish-vulnerability penalty — the two fighters come out roughly even. This part of the model isn\'t editable here; it\'s shown for context.';
-    const leader = gap < 0 ? csState.nameA : csState.nameB;
-    return 'Outside these eight categories — age, layoff, career trajectory, big-fight experience, and the finish-vulnerability penalty — the model already gives <b>' + escHtmlAttr(leader) + '</b> ' + mag + '. This part isn\'t editable here; it\'s shown for context and stays fixed in both numbers above.';
-  }
-
   function csRenderCategories() {
     const host = document.getElementById('csCatsHost');
     if (!host) return;
     const base = csState.base;
-    let html = '<div class="cs-other-note">' + csOtherNoteHtml() + '</div>';
+    let html = '';
     CS_CATEGORIES.forEach(c => {
       const st = csState.cats[c.key];
       const tickHtml = c.userOnly ? '' :
@@ -138695,7 +138687,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return '' +
       '<div class="cs-results">' +
         '<div class="cs-resbox">' +
-          '<div class="cs-res-lbl"><span>Calibrated (GillyLab model)</span></div>' +
+          '<div class="cs-res-lbl"><span>GillyLab Model</span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCalNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCalFillA" style="width:50%"></div></div><span class="cs-pct" id="csCalPctA">50%</span></div>' +
           '<div class="cs-barrow"><span class="cs-nm" id="csCalNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCalFillB" style="width:50%"></div></div><span class="cs-pct" id="csCalPctB">50%</span></div>' +
         '</div>' +
@@ -138706,11 +138698,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '</div>' +
       '</div>' +
       '<div id="csCatsHost"></div>' +
+      '<button type="button" class="cs-run-btn" id="csRunBtn">Run Simulation</button>' +
       '<div class="cs-footer">' +
         '<button type="button" id="csResetWeightsBtn">Reset weights to equal</button>' +
         '<button type="button" id="csResetBtn">Reset all to calibrated</button>' +
-      '</div>' +
-      '<div class="cs-disclaimer">Two different questions per category, on purpose: who\'s better and how clearly (a comparison between the two fighters, no numbers shown) and how much it matters in this matchup (a shared 100% pool across all eight — raising one lowers the others). Output is clamped to 4&ndash;96%, same as the calibrated model. These are illustrative overrides on top of GillyLab\'s real per-fighter numbers, not a separate prediction.</div>';
+      '</div>';
   }
 
   function csRenderAll() {
@@ -138731,6 +138723,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       CS_CATEGORIES.forEach(c => { csState.cats[c.key].weightPct = CS_EQUAL_SHARE; });
       csRenderCategories();
       csRenderResults();
+    });
+    // "Run Simulation" here doesn't recompute anything -- every slider
+    // already updates the result bars live. It exists purely to get back to
+    // them: after scrolling down through eight category cards the results
+    // at the top are out of view, and this is the one visible "did it work"
+    // action a user expects at the bottom of a simulator.
+    document.getElementById('csRunBtn').addEventListener('click', function() {
+      const body = document.getElementById('cs-body');
+      if (body) body.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
