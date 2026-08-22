@@ -2578,6 +2578,8 @@
     .cs-footer { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.6rem; flex-wrap: wrap; }
     .cs-footer button { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
     .cs-footer button:hover { border-color: var(--muted); }
+    .cs-reset-btn { display: block; width: 100%; background: var(--surface2); color: var(--text); border: 1px solid var(--border); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.65rem 1.1rem; border-radius: 8px; cursor: pointer; margin-top: 0.6rem; }
+    .cs-reset-btn:hover { border-color: var(--muted); }
 
     /* Same green treatment as .fight-dd-bar (the "Matchup Analytics Deep
        Dive" button used across the site) rather than the neutral outline
@@ -137357,7 +137359,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // closes most of that gap and improves overall market agreement, without
     // flattening real striking edges: the marginal value of the 7th significant
     // strike per minute over the 6th is simply less than the 2nd over the 1st.
-    const strikingNet = simSoftCap(p.slpm * p.strAcc, 2.2) - simSoftCap(p.sapm * (1 - p.strDef), 2.2);
+    // Damage-absorbed weighted 2.5x relative to output, not 1:1. A
+    // point-in-time backtest bucketed by "does the underdog have a real
+    // strike-defense edge over the favorite" found a clean, out-of-sample-
+    // confirmed pattern: at a 0.08+ absolute strDef advantage, the underdog
+    // won 7.7pt more than predicted in train AND 8.7pt more in test — same
+    // direction, similar size, not the train-only mirage several other
+    // leads this session turned out to be. Caught on real disagreements
+    // (Ruziboev/Page, Gomes/Xiaonan): a genuinely hard-to-hit, craft-heavy
+    // striker (Page: 62% strDef; Xiaonan: 60%) was reading as a bigger
+    // underdog than the data says it should against a heavier-output
+    // opponent with weaker defense (Ruziboev 50%; Gomes 52%) — offense and
+    // defense were weighted 1:1, when defense is evidently the harder trait
+    // to have and the more predictive one. Swept the multiplier: train log-
+    // loss bottoms at 2.5 (0.6704->0.6686); test keeps improving even past
+    // that point (acc 63.7%->64.0%+, Brier 0.2248->0.2238, log loss
+    // 0.6416->0.6394), same "moves together" signature as the other real
+    // fixes this session. Landed on the train-optimal 2.5 rather than
+    // chasing test further, per the standard held throughout: even the
+    // single worst-defense fighter in the roster only reaches -5.5 here
+    // (still softcapped, just at a larger ceiling than the +2.2 offense can
+    // ever add), a real discount, not an erasure.
+    const strikingNet = simSoftCap(p.slpm * p.strAcc, 2.2) - 2.5 * simSoftCap(p.sapm * (1 - p.strDef), 2.2);
     // Takedown defense was tracked per fighter but never actually touched
     // the score — strikingNet above already nets a fighter's own defense
     // against damage absorbed, but grappling below was pure offense with no
@@ -138564,6 +138587,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return { text: mag, leader: value < 0 ? csState.nameA : csState.nameB };
   }
   function csBucketLabel(b) { return b.leader ? (b.text + ': ' + b.leader) : b.text; }
+  function csLastName(n) { const parts = String(n || '').trim().split(/\s+/); return parts[parts.length - 1] || n; }
 
   function csFmtPct(v) {
     const r = Math.round(v * 10) / 10;
@@ -138607,7 +138631,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     const drift = Math.round((curPA - calPA) * 100);
     const driftEl = document.getElementById('csDriftNote');
-    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : (csState.nameA + ': ' + (drift > 0 ? '+' : '') + drift + ' pts win chance vs GillyLab model');
+    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : (csLastName(csState.nameA) + ': ' + (drift > 0 ? '+' : '') + drift + ' pts win chance vs GillyLab model');
   }
 
   function csUpdateComputedBits() {
@@ -138711,10 +138735,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       '</div>' +
       '<div id="csCatsHost"></div>' +
       '<button type="button" class="cs-run-btn" id="csRunBtn">Run Simulation</button>' +
-      '<div class="cs-footer">' +
-        '<button type="button" id="csResetWeightsBtn">Reset weights to equal</button>' +
-        '<button type="button" id="csResetBtn">Reset all to calibrated</button>' +
-      '</div>';
+      '<button type="button" class="cs-reset-btn" id="csResetBtn">Reset</button>';
   }
 
   function csRenderAll() {
@@ -138728,11 +138749,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     csRenderResults();
     document.getElementById('csResetBtn').addEventListener('click', function() {
       csState.cats = csDefaultCats(csState.base);
-      csRenderCategories();
-      csRenderResults();
-    });
-    document.getElementById('csResetWeightsBtn').addEventListener('click', function() {
-      CS_CATEGORIES.forEach(c => { csState.cats[c.key].weightPct = CS_EQUAL_SHARE; });
       csRenderCategories();
       csRenderResults();
     });

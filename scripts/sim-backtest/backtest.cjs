@@ -236,6 +236,11 @@ for (const L of labels) {
     // Point-in-time loss/finish profile (glass-cannon signal), for sweeping the
     // finishVulnerability scale/cap against the backtest.
     const lfpA = S.simLossFinishProfile(L.A), lfpB = S.simLossFinishProfile(L.B);
+    // Point-in-time schedule-quality net (simScheduleQuality's `net`), for
+    // testing whether the model under-credits a real opponent-quality edge
+    // relative to a raw production-stat edge (Xiaonan/Gomes-style case).
+    const sqA = S.simScheduleQuality(L.A), sqB = S.simScheduleQuality(L.B);
+    const provenA = S.simProvenLevel(L.A), provenB = S.simProvenLevel(L.B);
     rows.push({
       A: L.A, B: L.B, date: L.date, ts: L.ts, aWon: L.aWon ? 1 : 0, p,
       profA, profB, styleDelta, closeness, h2h, unprovenA, unprovenB, uncertainty,
@@ -249,7 +254,9 @@ for (const L of labels) {
       // Raw (pre-softcap) loss/finish profile for sweeping simFinishVulnerability's
       // scale/cap against the backtest, as-of the fight date.
       wFinLossA: lfpA.weightedFinishLossCount, lossesA: lfpA.losses, lossFinA: lfpA.lossFinishes,
-      wFinLossB: lfpB.weightedFinishLossCount, lossesB: lfpB.losses, lossFinB: lfpB.lossFinishes
+      wFinLossB: lfpB.weightedFinishLossCount, lossesB: lfpB.losses, lossFinB: lfpB.lossFinishes,
+      scheduleNetA: sqA.net, scheduleNetB: sqB.net,
+      provenA, provenB
     });
   } catch (e) { errors++; if (errors <= 3) console.log('  ERR', L.A, 'vs', L.B, e.message); }
   processed++;
