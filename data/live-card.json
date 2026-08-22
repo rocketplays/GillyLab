@@ -1,2638 +1,6 @@
 {
- "generatedAt": "2026-08-19T01:25:55.025Z",
+ "generatedAt": "2026-08-22T21:42:40.999Z",
  "fighters": {
-  "Marina Spasić": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Stephanie Luciano",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 1,
-     "time": "3:20",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Stephanie Luciano",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 25,
-      "sigA": 53,
-      "totL": 25,
-      "totA": 53,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       18,
-       46
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       6,
-       6
-      ],
-      "dist": [
-       25,
-       53
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 20,
-      "sigA": 47,
-      "totL": 22,
-      "totA": 49,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:26",
-      "head": [
-       14,
-       38
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       6,
-       8
-      ],
-      "dist": [
-       20,
-       46
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T14:25:58.370Z"
-    }
-   ]
-  },
-  "Stephanie Luciano": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Marina Spasić",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 1,
-     "time": "3:20",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Marina Spasić",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 20,
-      "sigA": 47,
-      "totL": 22,
-      "totA": 49,
-      "tdL": 1,
-      "tdA": 2,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:26",
-      "head": [
-       14,
-       38
-      ],
-      "body": [
-       0,
-       1
-      ],
-      "leg": [
-       6,
-       8
-      ],
-      "dist": [
-       20,
-       46
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 25,
-      "sigA": 53,
-      "totL": 25,
-      "totA": 53,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       18,
-       46
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       6,
-       6
-      ],
-      "dist": [
-       25,
-       53
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T14:25:58.370Z"
-    }
-   ]
-  },
-  "Jovan Leka": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Alexander Poppeck",
-     "result": "W",
-     "method": "KO/TKO (Kick)",
-     "round": 1,
-     "time": "2:22",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Alexander Poppeck",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 10,
-      "sigA": 16,
-      "totL": 10,
-      "totA": 16,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       8,
-       13
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       6,
-       10
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       2,
-       4
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 18,
-      "totL": 8,
-      "totA": 18,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       12
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       8,
-       18
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T14:42:27.795Z"
-    }
-   ]
-  },
-  "Alexander Poppeck": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Jovan Leka",
-     "result": "L",
-     "method": "KO/TKO (Kick)",
-     "round": 1,
-     "time": "2:22",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Jovan Leka",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 8,
-      "sigA": 18,
-      "totL": 8,
-      "totA": 18,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       2,
-       12
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       8,
-       18
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 10,
-      "sigA": 16,
-      "totL": 10,
-      "totA": 16,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:02",
-      "head": [
-       8,
-       13
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       1,
-       2
-      ],
-      "dist": [
-       6,
-       10
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       2,
-       4
-      ]
-     },
-     "capturedAt": "2026-08-01T14:42:27.795Z"
-    }
-   ]
-  },
-  "Nina Milošević": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Hailey Cowan",
-     "result": "W",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "3:41",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Hailey Cowan",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 21,
-      "sigA": 39,
-      "totL": 21,
-      "totA": 39,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       14,
-       29
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       16,
-       30
-      ],
-      "clinch": [
-       5,
-       9
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 13,
-      "sigA": 48,
-      "totL": 13,
-      "totA": 48,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       7,
-       36
-      ],
-      "body": [
-       5,
-       11
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       12,
-       45
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T14:58:55.217Z"
-    }
-   ]
-  },
-  "Hailey Cowan": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Nina Milošević",
-     "result": "L",
-     "method": "KO/TKO (Punch)",
-     "round": 1,
-     "time": "3:41",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Nina Milošević",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 13,
-      "sigA": 48,
-      "totL": 13,
-      "totA": 48,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       7,
-       36
-      ],
-      "body": [
-       5,
-       11
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       12,
-       45
-      ],
-      "clinch": [
-       1,
-       3
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 21,
-      "sigA": 39,
-      "totL": 21,
-      "totA": 39,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       14,
-       29
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       16,
-       30
-      ],
-      "clinch": [
-       5,
-       9
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T14:58:55.217Z"
-    }
-   ]
-  },
-  "Mateusz Rębecki": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Kyle Prepolec",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "4:41",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Kyle Prepolec",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 75,
-      "sigA": 98,
-      "totL": 132,
-      "totA": 174,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "4:04",
-      "head": [
-       71,
-       93
-      ],
-      "body": [
-       4,
-       5
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       7,
-       14
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       68,
-       84
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 2,
-      "sigA": 13,
-      "totL": 11,
-      "totA": 23,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       1,
-       11
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       12
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "capturedAt": "2026-08-01T15:15:14.295Z"
-    }
-   ]
-  },
-  "Kyle Prepolec": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Mateusz Rębecki",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "4:41",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Mateusz Rębecki",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 2,
-      "sigA": 13,
-      "totL": 11,
-      "totA": 23,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       1,
-       11
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       12
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       1,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 75,
-      "sigA": 98,
-      "totL": 132,
-      "totA": 174,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "4:04",
-      "head": [
-       71,
-       93
-      ],
-      "body": [
-       4,
-       5
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       7,
-       14
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       68,
-       84
-      ]
-     },
-     "capturedAt": "2026-08-01T15:15:14.295Z"
-    }
-   ]
-  },
-  "Dennis Buzukja": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Bogdan Grad",
-     "result": "L",
-     "method": "Submission (Arm Triangle)",
-     "round": 2,
-     "time": "4:33",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Bogdan Grad",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 46,
-      "sigA": 89,
-      "totL": 68,
-      "totA": 111,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       35,
-       75
-      ],
-      "body": [
-       9,
-       11
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       44,
-       87
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 74,
-      "totL": 67,
-      "totA": 100,
-      "tdL": 4,
-      "tdA": 12,
-      "sub": 2,
-      "rev": 0,
-      "ctrl": "4:24",
-      "head": [
-       32,
-       59
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       24,
-       51
-      ],
-      "clinch": [
-       6,
-       7
-      ],
-      "ground": [
-       14,
-       16
-      ]
-     },
-     "capturedAt": "2026-08-01T15:48:08.757Z"
-    }
-   ]
-  },
-  "Bogdan Grad": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Dennis Buzukja",
-     "result": "W",
-     "method": "Submission (Arm Triangle)",
-     "round": 2,
-     "time": "4:33",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Dennis Buzukja",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 44,
-      "sigA": 74,
-      "totL": 67,
-      "totA": 100,
-      "tdL": 4,
-      "tdA": 12,
-      "sub": 2,
-      "rev": 0,
-      "ctrl": "4:24",
-      "head": [
-       32,
-       59
-      ],
-      "body": [
-       7,
-       10
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       24,
-       51
-      ],
-      "clinch": [
-       6,
-       7
-      ],
-      "ground": [
-       14,
-       16
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 46,
-      "sigA": 89,
-      "totL": 68,
-      "totA": 111,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       35,
-       75
-      ],
-      "body": [
-       9,
-       11
-      ],
-      "leg": [
-       2,
-       3
-      ],
-      "dist": [
-       44,
-       87
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T15:48:08.757Z"
-    }
-   ]
-  },
-  "Borislav Nikolic": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Mark Vologdin",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Mark Vologdin",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 57,
-      "sigA": 147,
-      "totL": 87,
-      "totA": 189,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 2,
-      "rev": 1,
-      "ctrl": "4:05",
-      "head": [
-       51,
-       136
-      ],
-      "body": [
-       2,
-       6
-      ],
-      "leg": [
-       4,
-       5
-      ],
-      "dist": [
-       41,
-       123
-      ],
-      "clinch": [
-       3,
-       8
-      ],
-      "ground": [
-       13,
-       16
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 42,
-      "sigA": 102,
-      "totL": 43,
-      "totA": 103,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:11",
-      "head": [
-       26,
-       78
-      ],
-      "body": [
-       7,
-       13
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       36,
-       87
-      ],
-      "clinch": [
-       6,
-       14
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "capturedAt": "2026-08-01T16:20:56.316Z"
-    }
-   ]
-  },
-  "Mark Vologdin": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Borislav Nikolic",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Borislav Nikolic",
-     "result": "L",
-     "f": {
-      "kd": 1,
-      "sigL": 42,
-      "sigA": 102,
-      "totL": 43,
-      "totA": 103,
-      "tdL": 3,
-      "tdA": 8,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:11",
-      "head": [
-       26,
-       78
-      ],
-      "body": [
-       7,
-       13
-      ],
-      "leg": [
-       9,
-       11
-      ],
-      "dist": [
-       36,
-       87
-      ],
-      "clinch": [
-       6,
-       14
-      ],
-      "ground": [
-       0,
-       1
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 57,
-      "sigA": 147,
-      "totL": 87,
-      "totA": 189,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 2,
-      "rev": 1,
-      "ctrl": "4:05",
-      "head": [
-       51,
-       136
-      ],
-      "body": [
-       2,
-       6
-      ],
-      "leg": [
-       4,
-       5
-      ],
-      "dist": [
-       41,
-       123
-      ],
-      "clinch": [
-       3,
-       8
-      ],
-      "ground": [
-       13,
-       16
-      ]
-     },
-     "capturedAt": "2026-08-01T16:20:56.316Z"
-    }
-   ]
-  },
-  "Oban Elliott": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Michael Oliveira",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "1:49",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Michael Oliveira",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 6,
-      "sigA": 11,
-      "totL": 6,
-      "totA": 11,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       4,
-       8
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       6,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 2,
-      "sigL": 14,
-      "sigA": 25,
-      "totL": 18,
-      "totA": 29,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:15",
-      "head": [
-       13,
-       23
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       4,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       10,
-       14
-      ]
-     },
-     "capturedAt": "2026-08-01T16:37:27.673Z"
-    }
-   ]
-  },
-  "Michael Oliveira": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Oban Elliott",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "1:49",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Oban Elliott",
-     "result": "W",
-     "f": {
-      "kd": 2,
-      "sigL": 14,
-      "sigA": 25,
-      "totL": 18,
-      "totA": 29,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:15",
-      "head": [
-       13,
-       23
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       4,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       10,
-       14
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 6,
-      "sigA": 11,
-      "totL": 6,
-      "totA": 11,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       4,
-       8
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       6,
-       11
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T16:37:27.673Z"
-    }
-   ]
-  },
-  "Ludovit Klein": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Tofiq Musayev",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 2,
-     "time": "4:07",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Tofiq Musayev",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 46,
-      "sigA": 87,
-      "totL": 47,
-      "totA": 88,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       24,
-       61
-      ],
-      "body": [
-       17,
-       21
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       44,
-       85
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 46,
-      "sigA": 110,
-      "totL": 59,
-      "totA": 128,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:02",
-      "head": [
-       26,
-       83
-      ],
-      "body": [
-       10,
-       15
-      ],
-      "leg": [
-       10,
-       12
-      ],
-      "dist": [
-       42,
-       104
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       3,
-       5
-      ]
-     },
-     "capturedAt": "2026-08-01T16:53:47.004Z"
-    }
-   ]
-  },
-  "Tofiq Musayev": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Ludovit Klein",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 2,
-     "time": "4:07",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Ludovit Klein",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 46,
-      "sigA": 110,
-      "totL": 59,
-      "totA": 128,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:02",
-      "head": [
-       26,
-       83
-      ],
-      "body": [
-       10,
-       15
-      ],
-      "leg": [
-       10,
-       12
-      ],
-      "dist": [
-       42,
-       104
-      ],
-      "clinch": [
-       1,
-       1
-      ],
-      "ground": [
-       3,
-       5
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 46,
-      "sigA": 87,
-      "totL": 47,
-      "totA": 88,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       24,
-       61
-      ],
-      "body": [
-       17,
-       21
-      ],
-      "leg": [
-       5,
-       5
-      ],
-      "dist": [
-       44,
-       85
-      ],
-      "clinch": [
-       2,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T16:53:47.004Z"
-    }
-   ]
-  },
-  "Milos Janicic": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Noah Gugnon",
-     "result": "L",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 1,
-     "time": "1:21",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Noah Gugnon",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 6,
-      "sigA": 19,
-      "totL": 7,
-      "totA": 20,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       18
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       18
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 5,
-      "sigA": 11,
-      "totL": 6,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:40",
-      "head": [
-       1,
-       7
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       4,
-       4
-      ],
-      "dist": [
-       5,
-       9
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       2
-      ]
-     },
-     "capturedAt": "2026-08-01T17:26:43.376Z"
-    }
-   ]
-  },
-  "Noah Gugnon": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Milos Janicic",
-     "result": "W",
-     "method": "Submission (Rear Naked Choke)",
-     "round": 1,
-     "time": "1:21",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Milos Janicic",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 5,
-      "sigA": 11,
-      "totL": 6,
-      "totA": 13,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 1,
-      "rev": 0,
-      "ctrl": "0:40",
-      "head": [
-       1,
-       7
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       4,
-       4
-      ],
-      "dist": [
-       5,
-       9
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       2
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 6,
-      "sigA": 19,
-      "totL": 7,
-      "totA": 20,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       18
-      ],
-      "body": [
-       1,
-       1
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       6,
-       18
-      ],
-      "clinch": [
-       0,
-       1
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T17:26:43.376Z"
-    }
-   ]
-  },
-  "Vlasto Čepo": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Gilbert Urbina",
-     "result": "L",
-     "method": "KO/TKO (Elbows)",
-     "round": 1,
-     "time": "1:01",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Gilbert Urbina",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 24,
-      "totL": 7,
-      "totA": 24,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       22
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       7,
-       24
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 30,
-      "sigA": 48,
-      "totL": 36,
-      "totA": 54,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:22",
-      "head": [
-       27,
-       45
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       8,
-       22
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       22,
-       26
-      ]
-     },
-     "capturedAt": "2026-08-01T17:43:13.764Z"
-    }
-   ]
-  },
-  "Gilbert Urbina": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Vlasto Čepo",
-     "result": "W",
-     "method": "KO/TKO (Elbows)",
-     "round": 1,
-     "time": "1:01",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Vlasto Čepo",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 30,
-      "sigA": 48,
-      "totL": 36,
-      "totA": 54,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:22",
-      "head": [
-       27,
-       45
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       8,
-       22
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       22,
-       26
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 7,
-      "sigA": 24,
-      "totL": 7,
-      "totA": 24,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       5,
-       22
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       7,
-       24
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T17:43:13.764Z"
-    }
-   ]
-  },
-  "Duško Todorović": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Robert Valentin",
-     "result": "L",
-     "method": "Submission (Guillotine Choke)",
-     "round": 1,
-     "time": "4:14",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Robert Valentin",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 1,
-      "totL": 1,
-      "totA": 1,
-      "tdL": 2,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:00",
-      "head": [
-       0,
-       0
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       1,
-       1
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 3,
-      "totL": 13,
-      "totA": 15,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 2,
-      "rev": 1,
-      "ctrl": "2:37",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T18:15:55.282Z"
-    }
-   ]
-  },
-  "Robert Valentin": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Duško Todorović",
-     "result": "W",
-     "method": "Submission (Guillotine Choke)",
-     "round": 1,
-     "time": "4:14",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Duško Todorović",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 3,
-      "totL": 13,
-      "totA": 15,
-      "tdL": 1,
-      "tdA": 1,
-      "sub": 2,
-      "rev": 1,
-      "ctrl": "2:37",
-      "head": [
-       0,
-       1
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       1,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 1,
-      "totL": 1,
-      "totA": 1,
-      "tdL": 2,
-      "tdA": 3,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:00",
-      "head": [
-       0,
-       0
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       1,
-       1
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T18:15:55.282Z"
-    }
-   ]
-  },
-  "Aleksandar Rakic": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Marcin Tybura",
-     "result": "W",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Marcin Tybura",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 71,
-      "sigA": 136,
-      "totL": 83,
-      "totA": 149,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:11",
-      "head": [
-       28,
-       84
-      ],
-      "body": [
-       27,
-       34
-      ],
-      "leg": [
-       16,
-       18
-      ],
-      "dist": [
-       66,
-       131
-      ],
-      "clinch": [
-       5,
-       5
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 33,
-      "sigA": 129,
-      "totL": 37,
-      "totA": 133,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       18,
-       94
-      ],
-      "body": [
-       8,
-       27
-      ],
-      "leg": [
-       7,
-       8
-      ],
-      "dist": [
-       29,
-       123
-      ],
-      "clinch": [
-       4,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T18:48:35.817Z"
-    }
-   ]
-  },
-  "Marcin Tybura": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Aleksandar Rakic",
-     "result": "L",
-     "method": "Decision (Unanimous)",
-     "round": 3,
-     "time": "5:00",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Aleksandar Rakic",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 33,
-      "sigA": 129,
-      "totL": 37,
-      "totA": 133,
-      "tdL": 0,
-      "tdA": 2,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       18,
-       94
-      ],
-      "body": [
-       8,
-       27
-      ],
-      "leg": [
-       7,
-       8
-      ],
-      "dist": [
-       29,
-       123
-      ],
-      "clinch": [
-       4,
-       6
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 71,
-      "sigA": 136,
-      "totL": 83,
-      "totA": 149,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "3:11",
-      "head": [
-       28,
-       84
-      ],
-      "body": [
-       27,
-       34
-      ],
-      "leg": [
-       16,
-       18
-      ],
-      "dist": [
-       66,
-       131
-      ],
-      "clinch": [
-       5,
-       5
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T18:48:35.817Z"
-    }
-   ]
-  },
-  "Jan Blachowicz": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Navajo Stirling",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "2:56",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Navajo Stirling",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 7,
-      "totL": 6,
-      "totA": 11,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       1,
-       5
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       3,
-       5
-      ],
-      "clinch": [
-       0,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 35,
-      "sigA": 46,
-      "totL": 36,
-      "totA": 47,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:04",
-      "head": [
-       22,
-       30
-      ],
-      "body": [
-       3,
-       5
-      ],
-      "leg": [
-       10,
-       11
-      ],
-      "dist": [
-       15,
-       22
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       20,
-       24
-      ]
-     },
-     "capturedAt": "2026-08-01T19:04:54.658Z"
-    }
-   ]
-  },
-  "Navajo Stirling": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Jan Blachowicz",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "2:56",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Jan Blachowicz",
-     "result": "W",
-     "f": {
-      "kd": 0,
-      "sigL": 35,
-      "sigA": 46,
-      "totL": 36,
-      "totA": 47,
-      "tdL": 0,
-      "tdA": 1,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "1:04",
-      "head": [
-       22,
-       30
-      ],
-      "body": [
-       3,
-       5
-      ],
-      "leg": [
-       10,
-       11
-      ],
-      "dist": [
-       15,
-       22
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       20,
-       24
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 3,
-      "sigA": 7,
-      "totL": 6,
-      "totA": 11,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       1,
-       5
-      ],
-      "body": [
-       2,
-       2
-      ],
-      "leg": [
-       0,
-       0
-      ],
-      "dist": [
-       3,
-       5
-      ],
-      "clinch": [
-       0,
-       2
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T19:04:54.658Z"
-    }
-   ]
-  },
-  "Uroš Medić": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Daniel Rodriguez",
-     "result": "W",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "0:30",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Daniel Rodriguez",
-     "result": "W",
-     "f": {
-      "kd": 1,
-      "sigL": 11,
-      "sigA": 14,
-      "totL": 11,
-      "totA": 14,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       9,
-       11
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       5,
-       6
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       6,
-       8
-      ]
-     },
-     "o": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 3,
-      "totL": 1,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       2
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       1,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "capturedAt": "2026-08-01T19:37:36.537Z"
-    }
-   ]
-  },
-  "Daniel Rodriguez": {
-   "history": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Uroš Medić",
-     "result": "L",
-     "method": "KO/TKO (Punches)",
-     "round": 1,
-     "time": "0:30",
-     "event": "UFC Fight Night: Medić vs. Rodriguez",
-     "org": "UFC"
-    }
-   ],
-   "stats": [
-    {
-     "date": "Aug 1, 2026",
-     "opponent": "Uroš Medić",
-     "result": "L",
-     "f": {
-      "kd": 0,
-      "sigL": 1,
-      "sigA": 3,
-      "totL": 1,
-      "totA": 3,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:00",
-      "head": [
-       0,
-       2
-      ],
-      "body": [
-       0,
-       0
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       1,
-       3
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       0,
-       0
-      ]
-     },
-     "o": {
-      "kd": 1,
-      "sigL": 11,
-      "sigA": 14,
-      "totL": 11,
-      "totA": 14,
-      "tdL": 0,
-      "tdA": 0,
-      "sub": 0,
-      "rev": 0,
-      "ctrl": "0:04",
-      "head": [
-       9,
-       11
-      ],
-      "body": [
-       1,
-       2
-      ],
-      "leg": [
-       1,
-       1
-      ],
-      "dist": [
-       5,
-       6
-      ],
-      "clinch": [
-       0,
-       0
-      ],
-      "ground": [
-       6,
-       8
-      ]
-     },
-     "capturedAt": "2026-08-01T19:37:36.537Z"
-    }
-   ]
-  },
   "Gigi Canuto": {
    "history": [
     {
@@ -9022,6 +6390,382 @@
       ]
      },
      "capturedAt": "2026-08-19T01:15:32.081Z"
+    }
+   ]
+  },
+  "Shanelle Dyer": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Elise Reed",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "1:42",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Elise Reed",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 116,
+      "sigA": 223,
+      "totL": 128,
+      "totA": 237,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:24",
+      "head": [
+       79,
+       177
+      ],
+      "body": [
+       18,
+       19
+      ],
+      "leg": [
+       19,
+       27
+      ],
+      "dist": [
+       110,
+       217
+      ],
+      "clinch": [
+       6,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 42,
+      "sigA": 107,
+      "totL": 52,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       14,
+       56
+      ],
+      "body": [
+       15,
+       28
+      ],
+      "leg": [
+       13,
+       23
+      ],
+      "dist": [
+       39,
+       102
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T21:42:40.833Z"
+    }
+   ]
+  },
+  "Elise Reed": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Shanelle Dyer",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 3,
+     "time": "1:42",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Shanelle Dyer",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 42,
+      "sigA": 107,
+      "totL": 52,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:19",
+      "head": [
+       14,
+       56
+      ],
+      "body": [
+       15,
+       28
+      ],
+      "leg": [
+       13,
+       23
+      ],
+      "dist": [
+       39,
+       102
+      ],
+      "clinch": [
+       3,
+       5
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 116,
+      "sigA": 223,
+      "totL": 128,
+      "totA": 237,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:24",
+      "head": [
+       79,
+       177
+      ],
+      "body": [
+       18,
+       19
+      ],
+      "leg": [
+       19,
+       27
+      ],
+      "dist": [
+       110,
+       217
+      ],
+      "clinch": [
+       6,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T21:42:40.833Z"
+    }
+   ]
+  },
+  "Wes Schultz": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jackson McVey",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 1,
+     "time": "0:47",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jackson McVey",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 37,
+      "totL": 21,
+      "totA": 43,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:05",
+      "head": [
+       6,
+       24
+      ],
+      "body": [
+       10,
+       12
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       17,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 33,
+      "sigA": 87,
+      "totL": 34,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       26,
+       79
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       33,
+       84
+      ],
+      "clinch": [
+       0,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T21:42:40.874Z"
+    }
+   ]
+  },
+  "Jackson McVey": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Wes Schultz",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 1,
+     "time": "0:47",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Wes Schultz",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 33,
+      "sigA": 87,
+      "totL": 34,
+      "totA": 89,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       26,
+       79
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       33,
+       84
+      ],
+      "clinch": [
+       0,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 17,
+      "sigA": 37,
+      "totL": 21,
+      "totA": 43,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:05",
+      "head": [
+       6,
+       24
+      ],
+      "body": [
+       10,
+       12
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       17,
+       37
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T21:42:40.874Z"
     }
    ]
   }
