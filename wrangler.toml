@@ -62,8 +62,8 @@ binding = "ACTIVITY"   # internal usage logging (founder-only /admin/activity):
                         # act:user:<email> -> {firstSeen, lastSeen, counts:{feature:n}}
                         # act:daily:<YYYY-MM-DD>:<feature> -> site-wide daily count
                         # See logActivity()/listActivityUsers() in worker/index.js.
-# Create it once and paste the id here:  wrangler kv namespace create ACTIVITY
-id = "REPLACE_ME_RUN_WRANGLER_KV_NAMESPACE_CREATE_ACTIVITY"
+# Created via the Cloudflare dashboard 2026-08-22 (gillylab-ACTIVITY).
+id = "f24b21f281da4478b789550d0bb326fe"
 
 # Secrets to set (NOT here — run these once, values never touch git):
 #   wrangler secret put STRIPE_SECRET_KEY       # sk_live_... (or sk_test_...)
