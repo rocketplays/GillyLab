@@ -8138,6 +8138,10 @@
  // display:none underneath. Clearing the attribute here removes the override
  // for good, letting .page.active fully govern visibility from this point on.
  if (document.documentElement.hasAttribute('data-boot-page')) document.documentElement.removeAttribute('data-boot-page');
+ // Best-effort, first-party usage ping (see /admin/activity + Privacy Policy's
+ // "Internal usage analytics" section) -- fire-and-forget, never blocks the
+ // actual navigation, and silently no-ops for a logged-out/expired session.
+ try { fetch('/api/activity/log', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ feature: page }), keepalive: true }).catch(function(){}); } catch (e) {}
  // The Climb shares the Pick'em page container — its own nav entry just opens that
  // page straight to the Climb half. Everything else maps page -> #page-<page>.
  const climbRoute = (page === 'theclimb');
@@ -135456,6 +135460,10 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'carlos diego ferreira': 'Diego Ferreira',
     'yadier delvalle': 'Yadier del Valle',
     'billy goff': 'Billy Ray Goff',
+    // Odds feed spells him "Sergey Spivak" (some bookmakers transliterate
+    // it "Sergei"); our DB key is his UFC-registered spelling "Serghei Spivac".
+    'sergey spivak': 'Serghei Spivac',
+    'sergei spivak': 'Serghei Spivac',
     // Odds feed uses her legal first name "Giovanna"; our DB and event.json
     // both use her ring name "Gigi".
     'giovanna canuto': 'Gigi Canuto',
@@ -140186,11 +140194,13 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     },
     privacy: {
       title: 'Privacy Policy',
-      body: `<p><strong style="color:var(--text);">Last updated: May 2026</strong></p>
-             <p style="margin-top:1rem;color:var(--text);font-weight:600;">No Personal Data Collected</p>
-             <p>We do not collect, store, or process any personally identifiable information.</p>
-             <p style="margin-top:1rem;color:var(--text);font-weight:600;">No Cookies or Tracking</p>
-             <p>No cookies, tracking pixels, analytics services, or third-party tracking of any kind.</p>
+      body: `<p><strong style="color:var(--text);">Last updated: August 2026</strong></p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">Account Data</p>
+             <p>Creating an account collects your email and a securely hashed password. A subscription adds a status flag and a customer ID from our payment processor (Stripe) — we never see or store your card number.</p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">No Third-Party Tracking</p>
+             <p>No ad trackers, no third-party analytics services, no cross-site tracking pixels, no data sold or shared with advertisers.</p>
+             <p style="margin-top:1rem;color:var(--text);font-weight:600;">Internal Usage Analytics</p>
+             <p>We log which of our own features a logged-in account uses (e.g. Odds &amp; Projections, the Simulator, The Climb) and when, first-party and founder-only, to understand product usage. This never leaves GillyLab and is never sold or shared.</p>
              <p style="margin-top:1rem;color:var(--text);font-weight:600;">External Links</p>
              <p>UFC.com and YouTube operate under their own privacy policies.</p>`
     }

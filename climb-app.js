@@ -2896,7 +2896,19 @@ function boutBox(){
 
 
 // ── render ───────────────────────────────────────────────────────────────────
+// Best-effort, first-party "a run started" ping for /admin/activity — fires on
+// EVERY newGame() call, including the automatic one boot() makes the moment
+// climb.json loads, so this is "runs started" in the sense the game itself
+// defines a run (arrive -> playing), not a separate deliberate click. Works
+// identically from both surfaces this file is generated into (the standalone
+// /theclimb page and the premium app's in-SPA embed) since both share this
+// same newGame(). No-ops silently if there's no session (shouldn't happen —
+// climb.json itself is gated — but never let this throw into the game).
+function reportClimbRun(){
+  try { fetch('/api/activity/climb-run', { method:'POST', keepalive:true }).catch(function(){}); } catch(e){}
+}
 function newGame(){
+  reportClimbRun();
   // G.peak IS NEW, AND IT IS NOT DECORATION. endBox has always printed "peaked at
   // #N" off G.rank, which was honest only while rank could not go DOWN — and it
   // could not, until a loss started costing a rung. The moment that landed, the end

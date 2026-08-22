@@ -15,7 +15,7 @@ export const climbPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
      the link the sheet renders in a fallback face and looks like a knock-off of
      itself. Both are relative because this page is served from the repo root. -->
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
-<script src="/gl-sheet.js?v=f7096686" defer></script>
+<script src="/gl-sheet.js?v=06bcf16b" defer></script>
 <!-- HEAD SLOT — filled by scripts/gen-climb-page.cjs from the worker, empty here.
      Carries the Open Graph tags (so a shared link previews) and, for logged-out
      visitors, the CLIMB_LOCKED flag. Both have to come from the worker rather than
@@ -3462,7 +3462,19 @@ function boutBox(){
 
 
 // ── render ───────────────────────────────────────────────────────────────────
+// Best-effort, first-party "a run started" ping for /admin/activity — fires on
+// EVERY newGame() call, including the automatic one boot() makes the moment
+// climb.json loads, so this is "runs started" in the sense the game itself
+// defines a run (arrive -> playing), not a separate deliberate click. Works
+// identically from both surfaces this file is generated into (the standalone
+// /theclimb page and the premium app's in-SPA embed) since both share this
+// same newGame(). No-ops silently if there's no session (shouldn't happen —
+// climb.json itself is gated — but never let this throw into the game).
+function reportClimbRun(){
+  try { fetch('/api/activity/climb-run', { method:'POST', keepalive:true }).catch(function(){}); } catch(e){}
+}
 function newGame(){
+  reportClimbRun();
   // G.peak IS NEW, AND IT IS NOT DECORATION. endBox has always printed "peaked at
   // #N" off G.rank, which was honest only while rank could not go DOWN — and it
   // could not, until a loss started costing a rung. The moment that landed, the end

@@ -17,7 +17,7 @@
  *            SESSION_SECRET, RESEND_API_KEY
  */
 
-import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor } from "./pages.js";
+import { loginPage, signupPage, subscribePage, accountPage, notePage, changePasswordPage, forgotPasswordPage, resetPasswordPage, termsPage, privacyPage, contactPage, aboutPage, faqPage, scorecardPage, pickemPage, rankingsPage, rosterPage, matchupPage, fightersDirectoryPage, fighterLitePage, partnerDashboardPage, partnerAdminPage, usersAdminPage, activityAdminPage, partnerTermsPage, climbNav, climbTabs, climbCta, climbFooter, ogTags, eventWhen, cardHoldMsFor } from "./pages.js";
 // Generated from prototypes/the-climb.html by scripts/gen-climb-page.cjs — the
 // prototype is the source of truth because it's what the whole sim/test harness
 // reads. See the header of that script.
@@ -384,6 +384,26 @@ async function isStripeComped(env, customerId) {
   } catch (err) {
     return false;
   }
+}
+// Cached wrapper around isStripeComped — the un-cached version was one live
+// Stripe API round trip PER premium/non-partner-comp account on EVERY
+// /admin/users load (found 2026-08-22: that page was much slower than
+// /admin/partners, which makes zero Stripe calls). Comped-via-coupon status
+// is essentially static — it's a manually-applied 100%-off coupon, not
+// something that flips minute to minute — so this persists the result onto
+// the user's own KV record and only re-asks Stripe once it's stale. Mutates
+// `u` in place (the admin-page callers already read straight off it) and
+// returns the comped boolean.
+const STRIPE_COMP_CHECK_TTL_MS = 24 * 60 * 60 * 1000; // 24h
+async function stripeCompedFor(env, u) {
+  if (!u || !u.subscribed || u.partnerComp || !u.stripeCustomerId) return false;
+  const fresh = u.stripeCompedCheckedAt && (Date.now() - u.stripeCompedCheckedAt) < STRIPE_COMP_CHECK_TTL_MS;
+  if (fresh) return !!u.stripeComped;
+  const comped = await isStripeComped(env, u.stripeCustomerId);
+  u.stripeComped = comped;
+  u.stripeCompedCheckedAt = Date.now();
+  try { await putUser(env, u.email, u); } catch (e) { /* cache miss next load isn't fatal */ }
+  return comped;
 }
 async function verifyStripeSig(payload, header, secret) {
   // header: t=timestamp,v1=signature (HMAC-SHA256 of `${t}.${payload}`)
@@ -1790,6 +1810,77 @@ async function listAllUsers(env) {
 }
 const isOptedOut = async (env, email) => { const u = await getUser(env, email); return !!(u && u.emailOptOut); };
 
+/* ── Internal usage activity (founder-only /admin/activity) ────────────────────
+ * First-party, no third-party service, no ad/cross-site tracking — logs which
+ * of our OWN features a logged-in account touches, so /admin/activity can show
+ * how active premium vs free accounts are and how often The Climb gets played.
+ * Disclosed in the Privacy Policy's "Internal usage analytics" section.
+ *
+ * Two KV shapes, both cheap read-modify-write (same tradeoff listPartners /
+ * listAllUsers already accept at this account volume — no atomic increment in
+ * KV, so a rare concurrent double-request can undercount by one; fine for an
+ * internal dashboard, not something billing or access ever reads):
+ *   act:user:<email>              -> { email, firstSeen, lastSeen, counts:{feature:n} }
+ *   act:daily:<YYYY-MM-DD>:<feat> -> integer string, site-wide count for that day
+ *
+ * Best-effort only: a KV hiccup here must never break the real request the
+ * event rode in on, so every call site fires this through ctx.waitUntil (or
+ * awaits it directly where no ctx is available) with its own try/catch.
+ */
+const ACTIVITY_RETENTION_SECONDS = 400 * 86400;   // ~13 months of daily buckets
+function activityDay() { return new Date().toISOString().slice(0, 10); }
+async function logActivity(env, ctx, email, feature) {
+  if (!env.ACTIVITY || !email || !feature) return;
+  const e = normEmail(email);
+  const feat = String(feature).slice(0, 40);
+  const task = (async () => {
+    try {
+      const dayKey = "act:daily:" + activityDay() + ":" + feat;
+      const cur = parseInt((await env.ACTIVITY.get(dayKey)) || "0", 10) || 0;
+      await env.ACTIVITY.put(dayKey, String(cur + 1), { expirationTtl: ACTIVITY_RETENTION_SECONDS });
+      // All-time running total, no TTL — the daily buckets above expire after
+      // ~13 months, so this is the only durable "how many, ever" figure.
+      const totalKey = "act:total:" + feat;
+      const totalCur = parseInt((await env.ACTIVITY.get(totalKey)) || "0", 10) || 0;
+      await env.ACTIVITY.put(totalKey, String(totalCur + 1));
+      const uKey = "act:user:" + e;
+      const raw = await env.ACTIVITY.get(uKey);
+      const rec = raw ? JSON.parse(raw) : { email: e, firstSeen: Date.now(), counts: {} };
+      rec.lastSeen = Date.now();
+      rec.counts[feat] = (rec.counts[feat] || 0) + 1;
+      await env.ACTIVITY.put(uKey, JSON.stringify(rec));
+    } catch (e2) { /* best-effort — never break the real request over this */ }
+  })();
+  if (ctx && typeof ctx.waitUntil === "function") ctx.waitUntil(task); else await task;
+}
+// Straight KV scan, same tradeoff as listAllUsers/listPartners.
+async function listActivityUsers(env) {
+  if (!env.ACTIVITY) return [];
+  const out = []; let cursor;
+  do {
+    const page = await env.ACTIVITY.list({ prefix: "act:user:", cursor });
+    for (const k of page.keys) { const v = await env.ACTIVITY.get(k.name); if (v) out.push(JSON.parse(v)); }
+    cursor = page.list_complete ? null : page.cursor;
+  } while (cursor);
+  return out.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+}
+// Site-wide daily counts for one feature over the last `days` days (inclusive
+// of today), oldest first — used for The Climb's play-count trend.
+async function dailyActivityCounts(env, feature, days) {
+  const out = [];
+  const now = Date.now();
+  for (let i = days - 1; i >= 0; i--) {
+    const day = new Date(now - i * 86400000).toISOString().slice(0, 10);
+    const v = env.ACTIVITY ? await env.ACTIVITY.get("act:daily:" + day + ":" + feature) : null;
+    out.push({ day, count: parseInt(v || "0", 10) || 0 });
+  }
+  return out;
+}
+async function totalActivityCount(env, feature) {
+  if (!env.ACTIVITY) return 0;
+  return parseInt((await env.ACTIVITY.get("act:total:" + feature)) || "0", 10) || 0;
+}
+
 // "Picks lock soon" — the day before the upcoming card, to accounts without an entry.
 async function runLockReminders(env, base, opts = {}) {
   const dry = !!opts.dry, force = !!opts.force;
@@ -1983,7 +2074,27 @@ export default {
 
       // ---- public API ----
       if (path === "/api/signup" && request.method === "POST") return handleSignup(request, env);
-      if (path === "/api/login" && request.method === "POST") return handleLogin(request, env);
+      if (path === "/api/login" && request.method === "POST") return handleLogin(request, env, ctx);
+      // Best-effort activity pings from the client: the gated SPA's own
+      // navigate(page) for premium in-app tab usage, and The Climb's newGame()
+      // for a run start (shared by both the standalone /theclimb page and the
+      // in-app embed, since both load the same climb-app.js — see
+      // prototypes/the-climb.html's reportClimbRun()). No response body either
+      // way; a missing/expired session just means nothing gets logged.
+      if (path === "/api/activity/log" && request.method === "POST") {
+        const s = await readSession(request, env);
+        if (s) {
+          const body = await readBody(request).catch(() => ({}));
+          const feat = String(body.feature || "").trim().slice(0, 40).replace(/[^a-z0-9_-]/gi, "");
+          if (feat) await logActivity(env, ctx, s.email, "app_" + feat);
+        }
+        return new Response(null, { status: 204 });
+      }
+      if (path === "/api/activity/climb-run" && request.method === "POST") {
+        const s = await readSession(request, env);
+        if (s) await logActivity(env, ctx, s.email, "climb_run");
+        return new Response(null, { status: 204 });
+      }
       if (path === "/api/logout") return redirect(env.SITE_URL + "/", clearCookie());
       if (path === "/api/checkout" && request.method === "POST") return handleCheckout(request, env);
       if (path === "/api/checkout/success") return handleCheckoutSuccess(request, env, url);
@@ -2073,6 +2184,7 @@ export default {
       if (path === "/pickem") {
         const s = await readSession(request, env);
         if (!s) return redirect(env.SITE_URL + "/signup?next=/pickem");
+        await logActivity(env, ctx, s.email, "pickem");
         const [u, card, name, score] = await Promise.all([
           getUser(env, s.email), loadUpcomingCard(env, url), getDisplayName(env, s.email), loadPickemScore(env, url),
         ]);
@@ -2121,6 +2233,7 @@ export default {
         // user for exactly this; without it a paying subscriber gets sold the thing
         // he already bought.
         const u = s ? await getUser(env, s.email) : null;
+        if (s) await logActivity(env, ctx, s.email, "theclimb_page");
         const head = ogTags(
           "The Climb — Build a UFC Fighter and Win the Belt · GillyLab",
           "Build a fighter, start as a 10-0 prospect entering the UFC, then pick your fights and climb the real rankings to a real belt. Free to play on GillyLab.",
@@ -2147,6 +2260,7 @@ export default {
           loadAssetJson(env, url, "/data/rankings-extra.json"),
           loadProfileSlugs(env, url),
         ]);
+        if (s) await logActivity(env, ctx, s.email, "rankings");
         return html(rankingsPage({ subscribed: !!u?.subscribed, loggedIn: !!s, rankings: rk, extra: (ex && ex.bySlug) || {}, profileSlugs }), 200, pubHeaders(s));
       }
       if (path === "/roster") {
@@ -2156,6 +2270,7 @@ export default {
           loadAssetJson(env, url, "/data/roster.json"),
           loadProfileSlugs(env, url),
         ]);
+        if (s) await logActivity(env, ctx, s.email, "roster");
         return html(rosterPage({ subscribed: !!u?.subscribed, loggedIn: !!s, roster: ro, profileSlugs }), 200, pubHeaders(s));
       }
       // All-time A-Z fighter directory — exists specifically to give every
@@ -2168,10 +2283,12 @@ export default {
           s ? getUser(env, s.email) : null,
           loadAssetJson(env, url, "/data/fighter-lite.json"),
         ]);
+        if (s) await logActivity(env, ctx, s.email, "fighters");
         return html(fightersDirectoryPage({ lite: (lite && lite.bySlug) || {}, loggedIn: !!s, subscribed: !!u?.subscribed }), 200, pubHeaders(s));
       }
       if (path === "/matchup") {
         const s = await readSession(request, env);
+        if (s) await logActivity(env, ctx, s.email, "matchup");
         const wantSlug = (url.searchParams.get("event") || "").trim().toLowerCase();
         // fighter-lite.json is loaded on EVERY /matchup request now, not just when
         // ?event= is present — the full-card carousel builds each upcoming event's
@@ -2388,11 +2505,10 @@ export default {
         // has to be asked of Stripe directly, per user. Only worth asking for
         // accounts that would otherwise land in "premium" (subscribed, not
         // already a known partner comp, and actually linked to a customer).
-        await Promise.all(users.map(async (u) => {
-          if (u.subscribed && !u.partnerComp && u.stripeCustomerId) {
-            u.stripeComped = await isStripeComped(env, u.stripeCustomerId);
-          }
-        }));
+        // stripeCompedFor() caches the result on the user's KV record for 24h,
+        // so this is a real Stripe call only the first time (or once a day)
+        // per account, not on every single page load.
+        await Promise.all(users.map((u) => stripeCompedFor(env, u)));
         const isPremium = (u) => !!u.subscribed && !u.partnerComp && !u.stripeComped;
         const isStripeComp = (u) => !!u.subscribed && !u.partnerComp && !!u.stripeComped;
         const isFree = (u) => !u.subscribed;
@@ -2419,6 +2535,56 @@ export default {
           last30d: filtered.filter((u) => now - (u.createdAt || 0) <= 30 * DAY_MS).length,
         };
         return html(usersAdminPage({ users: filtered, summary, filter }), 200, { "Cache-Control": "private, no-store" });
+      }
+
+      // Internal, founder-only: how active accounts actually are, split
+      // premium vs free, plus The Climb's play count. /admin/users answers
+      // "how many accounts, what tier" — this answers "are they doing
+      // anything." Read-only. See logActivity()/listActivityUsers() above
+      // for the KV shapes this reads, and the Privacy Policy's "Internal
+      // usage analytics" section for what this discloses to users.
+      if (path === "/admin/activity") {
+        if (!s || !FOUNDER_EMAILS.has(s.email)) return redirect(env.SITE_URL + "/");
+        const [users, activity, climbTrend, climbAllTime] = await Promise.all([
+          listAllUsers(env),
+          listActivityUsers(env),
+          dailyActivityCounts(env, "climb_run", 14),
+          totalActivityCount(env, "climb_run"),
+        ]);
+        const actByEmail = {}; activity.forEach((a) => { actByEmail[a.email] = a; });
+        const DAY_MS = 86400000, now = Date.now();
+        const rows = users.map((u) => {
+          const a = actByEmail[normEmail(u.email)] || null;
+          return {
+            email: u.email,
+            subscribed: !!u.subscribed,
+            createdAt: u.createdAt || 0,
+            lastSeen: a ? a.lastSeen : null,
+            counts: a ? a.counts : {},
+            total: a ? Object.values(a.counts).reduce((x, y) => x + y, 0) : 0,
+          };
+        });
+        const activeSince = (r, days) => r.lastSeen && now - r.lastSeen <= days * DAY_MS;
+        const filter = url.searchParams.get("filter") === "free" ? "free" : "premium";
+        const filtered = rows.filter((r) => (filter === "premium" ? r.subscribed : !r.subscribed))
+          .sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+        const summaryFor = (list) => ({
+          total: list.length,
+          active7d: list.filter((r) => activeSince(r, 7)).length,
+          active30d: list.filter((r) => activeSince(r, 30)).length,
+          neverSeen: list.filter((r) => !r.lastSeen).length,
+        });
+        const premiumRows = rows.filter((r) => r.subscribed);
+        const freeRows = rows.filter((r) => !r.subscribed);
+        return html(activityAdminPage({
+          filter,
+          rows: filtered,
+          premiumSummary: summaryFor(premiumRows),
+          freeSummary: summaryFor(freeRows),
+          climbTrend,
+          climbAllTime,
+          climb7d: climbTrend.slice(-7).reduce((s2, d) => s2 + d.count, 0),
+        }), 200, { "Cache-Control": "private, no-store" });
       }
 
       // Internal, founder-only: add/view partners and log payouts. Plain HTML
@@ -2572,7 +2738,7 @@ async function handleSignup(request, env) {
   return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 
-async function handleLogin(request, env) {
+async function handleLogin(request, env, ctx) {
   const body = await readBody(request);
   const { email, password } = body;
   const next = safeNext(body.next);
@@ -2580,6 +2746,7 @@ async function handleLogin(request, env) {
   const u = await getUser(env, e);
   if (!u || !(await verifyPassword(password, u.passHash, u.passSalt))) return json({ error: "Incorrect email or password." }, 401);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
+  await logActivity(env, ctx, e, "login");
   return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
 }
 

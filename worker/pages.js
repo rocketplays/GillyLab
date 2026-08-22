@@ -4298,16 +4298,17 @@ export const termsPage = () => legalShell("Terms of Service", "July 3, 2026", `
   <p>We may update these Terms from time to time. Material changes are reflected by the "last updated" date above, and continued use after changes take effect constitutes acceptance.</p>
 `);
 
-export const privacyPage = () => legalShell("Privacy Policy", "July 3, 2026", `
+export const privacyPage = () => legalShell("Privacy Policy", "August 2026", `
   <p>This Privacy Policy explains what information GillyLab ("we", "us") collects and how we use it when you use the Service.</p>
   <h2>Information we collect</h2>
   <ul>
     <li><strong>Account information</strong> — your email address and a securely hashed version of your password (we never store your password in plain text).</li>
     <li><strong>Subscription information</strong> — your subscription status and a customer identifier from our payment processor. We do not collect or store your card numbers; payment details are handled entirely by Stripe.</li>
     <li><strong>Essential cookie</strong> — a single signed session cookie to keep you logged in. We do not use advertising or cross-site tracking cookies.</li>
+    <li><strong>Internal usage activity</strong> — while you're logged in, we log which of our own features you use (e.g. Odds &amp; Projections, the Simulator, The Climb) and when. This is first-party only, viewable solely by GillyLab's founder for understanding product usage, and is never sold, shared, or sent to any third-party analytics service.</li>
   </ul>
   <h2>How we use it</h2>
-  <p>To create and secure your account, authenticate logins, process and manage your subscription, send account-related email (such as sign-in links and password resets), and operate and improve the Service.</p>
+  <p>To create and secure your account, authenticate logins, process and manage your subscription, send account-related email (such as sign-in links and password resets), understand which features are actually used so we can improve them, and operate the Service.</p>
   <h2>Service providers</h2>
   <p>We share the minimum necessary information with providers that run the Service: <a href="https://stripe.com/privacy">Stripe</a> (payments), <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare</a> (hosting and delivery), and <a href="https://resend.com/legal/privacy-policy">Resend</a> (transactional email). We do not sell your personal information.</p>
   <h2>Data retention and security</h2>
@@ -4902,6 +4903,117 @@ export const usersAdminPage = ({ users, summary, filter }) => {
   </div>
   ${(users || []).length
     ? `<div class="ua-tablewrap"><table><thead><tr><th>Email</th><th>Signed up</th><th>Status</th><th>Stripe</th></tr></thead><tbody>${rows}</tbody></table></div>`
+    : `<p style="color:var(--muted)">No accounts in this view.</p>`}
+</body></html>`;
+};
+
+/* ── Internal usage-activity dashboard (founder-only /admin/activity) ──────────
+ * Companion to /admin/users: that page answers "how many accounts, what
+ * tier"; this one answers "are they doing anything." Reads the first-party
+ * KV logActivity() writes (worker/index.js) — no third-party analytics
+ * service, nothing shared outside GillyLab. See the Privacy Policy's
+ * "Internal usage analytics" section for what this discloses to users.
+ */
+export const activityAdminPage = ({ filter, rows, premiumSummary, freeSummary, climbTrend, climbAllTime, climb7d }) => {
+  const esc = (t) => String(t == null ? "" : t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtDate = (ms) => ms ? new Date(ms).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "—";
+  const fmtWhen = (ms) => {
+    if (!ms) return "never";
+    const days = Math.floor((Date.now() - ms) / 86400000);
+    if (days <= 0) return "today";
+    if (days === 1) return "yesterday";
+    if (days < 30) return days + "d ago";
+    return fmtDate(ms);
+  };
+  const stat = (label, val) => `<div class="ua-stat"><div class="ua-stat-lbl">${esc(label)}</div><div class="ua-stat-val">${val}</div></div>`;
+  const tab = (key, label) => `<a class="ua-tab${(filter || "premium") === key ? " on" : ""}" href="/admin/activity?filter=${key}">${esc(label)}</a>`;
+  // Feature-name labels — matches the "feature" strings logActivity() is
+  // called with across worker/index.js (server routes), index.html's
+  // navigate() (app_-prefixed in-app tabs), and prototypes/the-climb.html's
+  // reportClimbRun(). Anything logged that isn't in this map still shows —
+  // just under its raw key — so a newly-added event never goes invisible.
+  const FEATURE_LABELS = {
+    login: "Login", pickem: "Pick'em (free)", theclimb_page: "The Climb (page)",
+    rankings: "Rankings (free)", roster: "Roster (free)", fighters: "Fighters (free)",
+    matchup: "Matchup (free)", climb_run: "Climb run",
+    app_home: "Events", app_projections: "Simulator", app_odds: "Odds & Projections",
+    app_bets: "Bet & CLV Tracker", app_tape_study: "Tape Study", "app_tape-study": "Tape Study",
+    app_rankings: "Rankings (app)", "app_active-roster": "Active Roster (app)",
+    app_pickem: "Pick'em (app)", app_theclimb: "The Climb (app)", app_fighter: "Fighter profile (app)",
+  };
+  const featLabel = (k) => FEATURE_LABELS[k] || k;
+  const topFeatures = (counts) => Object.entries(counts || {}).sort((a, b) => b[1] - a[1]).slice(0, 3)
+    .map(([k, v]) => `${esc(featLabel(k))} (${v})`).join(", ") || "—";
+  const rowsHtml = (rows || []).map((r) => `<tr>
+      <td>${esc(r.email)}</td>
+      <td class="ua-sub">${esc(fmtWhen(r.lastSeen))}</td>
+      <td class="ua-sub">${r.total}</td>
+      <td class="ua-sub">${topFeatures(r.counts)}</td>
+    </tr>`).join("");
+  // Tiny inline sparkline for the climb trend — no chart library, just SVG.
+  const maxC = Math.max(1, ...(climbTrend || []).map((d) => d.count));
+  const barW = 18, gap = 4, chartW = (climbTrend || []).length * (barW + gap);
+  const bars = (climbTrend || []).map((d, i) => {
+    const h = Math.max(2, Math.round((d.count / maxC) * 60));
+    return `<g><rect x="${i * (barW + gap)}" y="${64 - h}" width="${barW}" height="${h}" rx="3" fill="var(--accent)" fill-opacity="0.85"></rect>
+      <text x="${i * (barW + gap) + barW / 2}" y="76" text-anchor="middle" font-size="8" fill="var(--muted)">${esc(d.day.slice(5))}</text>
+      <text x="${i * (barW + gap) + barW / 2}" y="${64 - h - 4 < 10 ? 10 : 64 - h - 4}" text-anchor="middle" font-size="9" fill="var(--text)">${d.count}</text></g>`;
+  }).join("");
+  const trendSvg = `<svg viewBox="0 0 ${chartW} 84" width="100%" style="max-width:${chartW}px;height:84px;display:block">${bars}</svg>`;
+  const p = premiumSummary || {}, f = freeSummary || {};
+  return `<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0a0a0b">
+<title>Activity — Admin</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{--accent:#00e668;--bg:#0a0a0b;--card:#14141a;--border:#2a2a32;--muted:#8a8f99;--text:#f4f5f7}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;padding:1.6rem 1.4rem 4rem}
+  h1{font-size:1.3rem;margin:0 0 .3rem}
+  h2{font-size:1rem;margin:1.8rem 0 .8rem}
+  a{color:var(--accent);text-decoration:none}
+  .sub{color:var(--muted);font-size:.82rem;margin-bottom:1.4rem}
+  .ua-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.6rem;max-width:900px;margin-bottom:1rem}
+  .ua-stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.65rem .8rem}
+  .ua-stat-lbl{font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+  .ua-stat-val{font-size:1.25rem;font-weight:800;margin-top:.15rem}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;max-width:900px;margin-bottom:1.2rem}
+  .ua-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:.4rem 0 1rem}
+  .ua-tab{background:var(--card);border:1px solid var(--border);color:var(--muted);font-weight:700;font-size:.78rem;border-radius:999px;padding:.4rem .9rem}
+  .ua-tab:hover{color:var(--text);border-color:var(--muted)}
+  .ua-tab.on{background:rgba(0,230,104,.1);border-color:var(--accent);color:var(--accent)}
+  .ua-tablewrap{max-width:900px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  @media (max-width:640px){.ua-tablewrap{overflow-x:auto}table{white-space:nowrap}}
+  table{width:100%;border-collapse:collapse;background:var(--card)}
+  th{text-align:left;font-size:.64rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:.7rem .9rem;border-bottom:1px solid var(--border)}
+  td{padding:.6rem .9rem;border-bottom:1px solid var(--border);font-size:.85rem}
+  tr:last-child td{border-bottom:none}
+  .ua-sub{color:var(--muted);font-size:.8rem}
+</style></head><body>
+  <h1>Activity</h1>
+  <div class="sub">First-party usage only — no third-party analytics. See <a href="/admin/users">/admin/users</a> for signups/subscriptions.</div>
+
+  <h2>The Climb</h2>
+  <div class="panel">
+    <div class="ua-stats" style="margin-bottom:1rem">
+      ${stat("Runs, all time", climbAllTime || 0)}
+      ${stat("Runs, last 7d", climb7d || 0)}
+    </div>
+    ${trendSvg}
+    <div class="ua-sub" style="margin-top:.4rem">Daily run starts, last 14 days.</div>
+  </div>
+
+  <h2>Account activity</h2>
+  <div class="ua-tabs">${tab("premium", "Premium")}${tab("free", "Free")}</div>
+  <div class="ua-stats">
+    ${stat((filter === "free" ? "Free" : "Premium") + " accounts", (filter === "free" ? f : p).total || 0)}
+    ${stat("Active, 7d", (filter === "free" ? f : p).active7d || 0)}
+    ${stat("Active, 30d", (filter === "free" ? f : p).active30d || 0)}
+    ${stat("Never logged activity", (filter === "free" ? f : p).neverSeen || 0)}
+  </div>
+  ${(rows || []).length
+    ? `<div class="ua-tablewrap"><table><thead><tr><th>Email</th><th>Last seen</th><th>Total events</th><th>Top features</th></tr></thead><tbody>${rowsHtml}</tbody></table></div>`
     : `<p style="color:var(--muted)">No accounts in this view.</p>`}
 </body></html>`;
 };
