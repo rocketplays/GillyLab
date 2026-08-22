@@ -128,6 +128,7 @@ module.exports = function createScorer(initStats, initHistory, initFighters) {
   return {
     simWinProbability: simWinProbability,
     simPowerScore: simPowerScore,
+    simPowerScoreBreakdown: simPowerScoreBreakdown,
     getSimProfile: getSimProfile,
     simVolatility: simVolatility,
     simRateCredibility: simRateCredibility,
@@ -138,6 +139,9 @@ module.exports = function createScorer(initStats, initHistory, initFighters) {
     simControlNet: simControlNet,
     simControlTimeBoost: simControlTimeBoost,
     simSoftCap: simSoftCap,
+    simLossFinishProfile: simLossFinishProfile,
+    simFinishVulnerability: simFinishVulnerability,
+    simDurabilityBoost: simDurabilityBoost,
     setStats: function(s){ FIGHTER_STATS = s; },
     setHistory: function(h){ FIGHT_HISTORY = h; },
     setFighters: function(f){ FIGHTERS = f; },

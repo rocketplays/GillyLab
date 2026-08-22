@@ -2507,6 +2507,78 @@
       .mh-hd-sub { margin-top: 0; }
     }
 
+    /* ── CUSTOM SIMULATOR MODAL ("Build Your Own Simulation") ──────────────
+       Same overlay/box pattern as #mh-box (large centered panel, own overlay
+       rather than the shared #modal-box), reusing the mh-hd fighter header
+       verbatim (same class names) so the two modals look like siblings. Body
+       content below is new: category cards with two sliders each (edge +
+       weight-pool share), plus a calibrated-vs-custom result comparison. */
+    #cs-overlay { display: none; opacity: 0; transition: opacity 0.22s ease; position: fixed; inset: 0; background: rgba(0,0,0,0.86); z-index: 9200; }
+    #cs-box { display: none; opacity: 0; transition: opacity 0.22s ease, transform 0.22s ease; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 9201; width: min(760px, 94vw); max-height: 88vh; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 24px 72px rgba(0,0,0,0.7); flex-direction: column; overflow: hidden; }
+    #cs-box.cs-on { display: flex; }
+    .cs-tag { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; padding: 0.6rem 1.25rem; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+    .cs-tag-lbl { font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); line-height: 1.4; }
+    .cs-tag-lbl b { color: var(--text); }
+    .cs-x { background: none; border: none; color: var(--muted); font-size: 1.4rem; line-height: 1; cursor: pointer; padding: 0.1rem 0.45rem 0.25rem; border-radius: 4px; transition: color 0.15s, background 0.15s; flex-shrink: 0; }
+    .cs-x:hover { color: var(--text); background: rgba(255,255,255,0.07); }
+    .cs-body { padding: 1.1rem 1.25rem 1.35rem; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; flex: 1; min-height: 0; }
+
+    .cs-results { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.1rem; }
+    @media (max-width: 560px) { .cs-results { grid-template-columns: 1fr; } }
+    .cs-resbox { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.8rem 0.9rem; }
+    .cs-resbox.custom { border-color: rgba(0,230,104,0.4); background: rgba(0,230,104,0.05); }
+    .cs-res-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 800; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .cs-res-lbl .cs-drift { color: var(--accent2); font-weight: 800; }
+    .cs-barrow { display: flex; align-items: center; gap: 0.55rem; font-size: 0.8rem; font-weight: 700; margin: 0.28rem 0; }
+    .cs-barrow .cs-nm { width: 40%; flex: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.74rem; font-weight: 600; color: var(--muted); }
+    .cs-barrow .cs-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+    .cs-barrow .cs-fill { height: 100%; border-radius: 99px; transition: width 0.18s ease; }
+    .cs-barrow .cs-fill.a { background: var(--accent); }
+    .cs-barrow .cs-fill.b { background: var(--accent2); }
+    .cs-barrow .cs-pct { width: 40px; text-align: right; flex: none; font-variant-numeric: tabular-nums; }
+
+    .cs-other-note { font-size: 0.72rem; color: var(--muted); line-height: 1.45; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 0.75rem; margin-bottom: 1rem; }
+    .cs-other-note b { color: var(--text); }
+
+    .cs-cat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem 1rem; margin-bottom: 0.65rem; }
+    .cs-cat-nm { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 0.1rem; }
+    .cs-cat-desc { font-size: 0.72rem; color: var(--muted); line-height: 1.4; margin-bottom: 0.75rem; }
+    .cs-step { margin-bottom: 0.8rem; }
+    .cs-step:last-child { margin-bottom: 0; }
+    .cs-step-lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 800; margin-bottom: 0.4rem; }
+    .cs-edge-label { font-size: 0.92rem; font-weight: 800; margin-bottom: 0.1rem; font-family: 'Barlow Condensed', sans-serif; }
+    .cs-edge-label .cs-who { color: var(--accent); }
+    .cs-edge-sub { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.45rem; min-height: 1em; }
+    .cs-edge-sub.diff { color: var(--accent2); }
+    .cs-edge-track-wrap { position: relative; padding-top: 13px; }
+    .cs-edge-tick { position: absolute; top: 0; width: 2px; height: 9px; background: var(--muted); transform: translateX(-1px); }
+    .cs-edge-tick::after { content: 'model'; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); font-size: 0.54rem; color: var(--muted); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.04em; }
+    .cs-edge-endcaps { display: flex; justify-content: space-between; font-size: 0.64rem; color: var(--muted); font-weight: 700; margin-top: 0.3rem; }
+    .cs-edge-endcaps span:first-child { color: var(--accent); }
+    .cs-edge-endcaps span:last-child { color: var(--accent2); }
+    .cs-weight-row { display: flex; align-items: center; gap: 0.6rem; }
+    .cs-weight-row input[type=range] { flex: 1; }
+    .cs-weight-pct { width: 46px; text-align: right; font-weight: 800; font-size: 0.84rem; flex: none; font-family: 'Barlow Condensed', sans-serif; }
+    .cs-weight-pct.zero { color: var(--muted); font-weight: 700; }
+
+    #cs-box input[type=range] { -webkit-appearance: none; appearance: none; height: 5px; border-radius: 99px; background: var(--surface2); outline: none; cursor: pointer; width: 100%; background-image: linear-gradient(to right, rgba(0,230,104,0.35), var(--surface2) 45%, var(--surface2) 55%, rgba(255,61,0,0.3)); }
+    #cs-box input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; margin-top: -6px; }
+    #cs-box input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--text); border: 2px solid var(--accent); cursor: pointer; }
+
+    .cs-footer { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 0.9rem; flex-wrap: wrap; }
+    .cs-footer button { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+    .cs-footer button:hover { border-color: var(--muted); }
+    .cs-disclaimer { font-size: 0.68rem; color: var(--muted); line-height: 1.5; margin-top: 1rem; border-top: 1px solid var(--border); padding-top: 0.85rem; }
+
+    .sim-byo-btn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1.1rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+    .sim-byo-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    @media (max-width: 640px) {
+      #cs-box { width: 96vw; max-height: 92vh; }
+      .cs-body { padding: 1rem 0.85rem 1.2rem; }
+      .cs-barrow .cs-nm { width: 32%; }
+    }
+
     .sr-title { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
     .sr-flags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
     .sr-chip { flex: 1 1 140px; min-width: 130px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 0.6rem 0.75rem; }
@@ -4387,6 +4459,9 @@
         </div>
         <button class="sim-run-btn" id="simRunBtn" onclick="runFightSimulator()">Run Simulation</button>
       </div>
+      <div style="margin-top:0.6rem;">
+        <button type="button" class="sim-byo-btn" id="simByoBtn" onclick="openCustomSimulator()">Build Your Own Simulation</button>
+      </div>
 
       <div class="sim-error" id="simError"></div>
       <div class="sim-warning" id="simWarning"></div>
@@ -4616,6 +4691,22 @@
     <button type="button" class="mh-filter-btn" data-mh-filter="loss" onclick="mhFilter('loss')">Losses</button>
   </div>
   <div class="mh-body" id="mh-body"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     CUSTOM SIMULATOR MODAL ("Build Your Own Simulation")
+     Same overlay/box pattern as #mh-box, own overlay rather than the shared
+     #modal-box (different size, different close handler). Reuses the .mh-hd
+     fighter-header classes verbatim for the two-fighter header row.
+══════════════════════════════════════ -->
+<div id="cs-overlay" onclick="closeCustomSimulator()"></div>
+<div id="cs-box" role="dialog" aria-modal="true" aria-label="Build your own simulation">
+  <div class="mh-hd" id="cs-hd"></div>
+  <div class="cs-tag">
+    <div class="cs-tag-lbl">For each category, set <b>who's better and by how much</b>, then how much it <b>matters in this matchup</b> — a shared 100% pool across all eight, so raising one always lowers the others.</div>
+    <button type="button" class="cs-x" onclick="closeCustomSimulator()" aria-label="Close">&times;</button>
+  </div>
+  <div class="cs-body" id="cs-body"></div>
 </div>
 
 <!-- MODAL OVERLAY -->
@@ -136357,10 +136448,25 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         }
       }
       if (f.result !== 'W' && f.result !== 'L') return;
-      const tier = simRankTier(f.opponent);
+      // A currently-ranked opponent is a live, confirmed signal. An
+      // opponent no longer ranked today (retired, faded, dropped weight
+      // classes) used to contribute NOTHING here at all — a real title
+      // contender you beat five years ago counted for zero schedule credit
+      // the moment they left the rankings. Fall back to their estimated
+      // tier at the time (now record-at-time-aware, see
+      // simEstimateHistoricalTier) instead of skipping the fight outright.
+      // The 0.85 discount on an estimated tier's quality reflects that it's
+      // an indirect, noisier signal than a confirmed live ranking — real
+      // credit, just slightly discounted for the added uncertainty.
+      let tier = simRankTier(f.opponent);
+      let qualityDiscount = 1;
+      if (tier == null) {
+        tier = simEstimateHistoricalTier(f.opponent, f.date);
+        qualityDiscount = 0.85;
+      }
       if (tier == null) return;
       rankedFaced++;
-      const quality = Math.max(0.3, 1 - tier / 15);
+      const quality = Math.max(0.3, 1 - tier / 15) * qualityDiscount;
       rankedQuality += quality;
       const d = new Date(f.date);
       const yearsAgo = isNaN(d) ? 5 : Math.max(0, (now - d.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
@@ -136542,10 +136648,27 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // 30s) — the old age-36 threshold was crediting fading veterans with prime ability
     // their results no longer supported. "Moderate" curve: prime late-20s untouched,
     // ~0.8 pts off by 35, approaching the 2.0 cap in the 40s.
-    if (age <= 32) return 0;
-    const yearsPast = age - 32;
+    // Re-checked after this session's other fixes: bucketing the backtest by
+    // age gap (favorite's age minus underdog's age) found a real, monotonic,
+    // OUT-OF-SAMPLE-CONFIRMED pattern — a favorite 8+ years older than their
+    // opponent is overrated by 13-17pts, and a favorite 8+ years younger is
+    // underrated by 4-14pts, same direction in both train and test (unlike
+    // several other leads investigated this session that only held in train).
+    // Re-swept onset/multiplier/cap: even the current 32/1.5/2.0 wasn't the
+    // train optimum anymore (it shifted to ~28-30 after this session's other
+    // changes). Landed on 30/1.5/2.5 — onset lowered and cap raised modestly,
+    // multiplier left alone — rather than the raw train-best (~27/2.0/3.0):
+    // that combination saturates the softcap by the LATE 30s (age 37 and age
+    // 45 come out within 0.2pt of each other), erasing any real
+    // differentiation between "past prime" and "washed" that the data can't
+    // actually support distinguishing that finely anyway. 30/1.5/2.5 still
+    // wins cleanly on test (acc 62.7%→63.7%, Brier 0.2260→0.2248, log loss
+    // 0.6440→0.6416) and on train log-loss (0.6718→0.6703) while keeping a
+    // real gap between a late-30s fighter (~-2.0) and a mid-40s one (~-2.5).
+    if (age <= 30) return 0;
+    const yearsPast = age - 30;
     const raw = ((yearsPast * 0.12) + (yearsPast * yearsPast * 0.02)) * 1.5;
-    return -simSoftCap(raw, 2.0);
+    return -simSoftCap(raw, 2.5);
   }
 
   // Most recent completed fight date (skips scheduled/upcoming bookings),
@@ -136746,10 +136869,73 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // score actually loses a real chunk of it for also having a proven
   // finish-loss pattern, while a fighter with little score isn't driven
   // disproportionately negative by the same flat number.
+  // Scale/cap re-tuned against the point-in-time backtest (4,484 bouts). This
+  // term was previously the softest-touch of the three "glass cannon" signals
+  // (finRate cap, the volatility-mismatch style term, and this one) — at
+  // slope=0.07/cap=0.30, a genuinely extreme case like Ryan Spann (7 losses,
+  // 6 by finish, most recent 2023-2025) only scored -0.13, docking barely an
+  // eighth of his subtotal, which is why Pinto/Spann still only moved to
+  // ~57% even after the other two fixes shipped. Sweeping slope and cap
+  // together (train log-loss, held-out test as the honest check) found a
+  // wide, shallow basin from slope~0.4-0.6 / cap~0.3-0.5 where train log-loss
+  // improves (0.6726→~0.6718) and test Brier/log-loss improve consistently
+  // and by a real margin (0.2277→~0.2261, 0.6476→~0.6441) with accuracy flat
+  // to a hair lower (63.6%→~63.0%, within noise at n=695) — the same
+  // "moves together, not traded off" signature as the other two fixes, just
+  // a smaller effect size. Landed at slope=0.5/cap=0.50 rather than chasing
+  // the raw train-optimal slope~0.6-1+/cap~1.0+: that region kept improving
+  // pooled metrics only by blowing the penalty up toward -100% of a
+  // fighter's ENTIRE subtotal for the tail (Travis Fulton would score
+  // -1.00, i.e. zeroed out) — a few extreme-tail careers dragging the fit
+  // somewhere no single term should be able to go. cap=0.50 keeps this in
+  // the same order of magnitude as the durability bonus above (max 0.4) —
+  // a real, meaningfully bigger discount than before, never an erasure.
+  // Net effect: Spann's fv goes -0.13 → -0.48, and Pinto/Spann moves from
+  // ~57% to ~64% for Pinto — a real correction, not a flip to some
+  // implausible near-lock, which matches the honest-limit framing of the
+  // other two glass-cannon fixes.
+  // Credibility-gated (added after the rescale above shipped): every other
+  // rate-based term in getSimProfile passes through simCredibilityDampen for
+  // a thin-UFC-sample fighter, but this one didn't — it applied at full
+  // strength regardless of how little (or how old/low-level) the underlying
+  // sample was. That's fine for a deep-tenure fighter (a UFC-only loss
+  // profile IS trustworthy), but for someone with under ~2 UFC fights the
+  // formula falls back to their FULL career, including whatever regional
+  // finishes are on record — which can be a decade stale against opposition
+  // they've long outgrown. Caught on Lerryan Douglas (1 UFC fight, credibility
+  // 0.18): 5 losses/4 finishes feeding this term were all pre-UFC (2014-2023,
+  // LFA/regional), and after the rescale above this alone was enough to help
+  // drag a real ~80% market favorite down to a coinflip in the live sim.
+  // Same 0.5-floor dampening as simCredibilityDampen (never crushed all the
+  // way to 0 — a real pattern is still a real pattern once proven) leaves a
+  // deep-sample case like Spivac (credibility 1.0, 6 real recent UFC losses
+  // to Aspinall/Gane/Almeida/Cortes-Acosta) completely untouched, while
+  // pulling Douglas's stale-regional-history penalty most of the way back
+  // toward 0. Checked against the backtest: statistically neutral to the
+  // validated fit (train/test log-loss move by <0.001) — the fighters this
+  // gate actually affects are too thin-sampled to appear much in the graded
+  // backtest set in the first place, which is exactly the population it's
+  // meant to catch.
+  // Threshold re-checked against the backtest after the credibility gate
+  // above shipped: at threshold=2, a fighter needs a recency-weighted finish-
+  // loss count above 2 before this fires AT ALL, which meant a fighter with
+  // exactly one real, recent finish loss (weight ~0.8, since a fresh loss
+  // never fully saturates the 6-year decay) plus one older one could sit
+  // just under the cliff and get ZERO discount despite a genuine pattern —
+  // caught on Jamall Emmers (37, tail of his career, a clean round-1 KO loss
+  // 2.4 years ago: weighted count 1.885, just 0.115 short of 2) reading as
+  // completely finish-proof. Re-swept with the gate now live: train log-loss
+  // has its own minimum at ~1.5 (not 2 — 0.6719 vs 0.6726 at the old value),
+  // and test Brier/log-loss improve monotonically as the threshold drops
+  // from 2 toward 0 (0.2265/0.6451 → 0.2256/0.6430) — genuine converging
+  // evidence, not a test-only artifact. Landed at 1.5 rather than the test-
+  // best 0: it's tied for the train optimum too, so it isn't just chasing
+  // the smaller, noisier held-out set.
   function simFinishVulnerability(name) {
     const stats = simLossFinishProfile(name);
     if (stats.losses < 3 || stats.lossFinishes < 3) return 0;
-    return -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 2) * 0.07, 0.30);
+    const raw = -simSoftCap(Math.max(0, stats.weightedFinishLossCount - 1.5) * 0.5, 0.50);
+    return raw * (0.5 + 0.5 * simRateCredibility(name));
   }
 
   // 5-round-specific modifier — only added when the simulator is run in
@@ -136898,12 +137084,28 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // only dangerous in one direction isn't actually unpredictable, just good
   // or bad. Same 4-win/3-loss sample minimum used elsewhere for finish-rate
   // signals, so a thin sample doesn't get flagged as volatile on noise.
+  // Credibility-gated for the same reason simFinishVulnerability now is: when
+  // a fighter's UFC sample is too thin (simFinishStatsRelevant needs 4+ UFC
+  // wins or 3+ UFC losses to trust the UFC-only pool), this falls back to
+  // their FULL career — which for a fresh call-up can mean pre-UFC losses a
+  // decade stale, against opposition they've long outgrown, driving an
+  // inflated "boom or bust" read that isn't really about their current level
+  // at all. Caught alongside the finishVulnerability bug on the same fighter
+  // (Lerryan Douglas, 1 UFC fight, credibility 0.18): his volatility read as
+  // 0.79 — driven by finishDefense from 4 pre-UFC finish losses (2014-2023)
+  // — which widened the win-probability curve's uncertainty (k) by ~40% and
+  // fed a real penalty into the volatility-mismatch style term, on top of
+  // (and independent from) the finishVulnerability bug. A deep-sample case
+  // (credibility 1.0) is untouched, same 0.5-floor as elsewhere. Checked
+  // against the backtest: statistically neutral to the validated fit — same
+  // "too thin-sampled to move the pooled numbers" signature as the
+  // finishVulnerability gate above.
   function simVolatility(name) {
     const { wins, winFinishes, losses, lossFinishes } = simFinishStatsRelevant(name);
     if (wins < 4 || losses < 3) return 0;
     const finishOffense = winFinishes / wins;
     const finishDefense = lossFinishes / losses;
-    return Math.min(finishOffense, finishDefense);
+    return Math.min(finishOffense, finishDefense) * (0.5 + 0.5 * simRateCredibility(name));
   }
 
   // UFC's official takedown stats (tdLanded/tdAcc) only count takedown
@@ -137033,6 +137235,50 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // control-time-specific matchup adjustment was also tested here and REJECTED —
     // it gave no out-of-sample benefit, being redundant with this term.)
     delta += simSoftCap(grappleEdge * 2.5, 1.2);
+    // Volatility mismatch: simVolatility (boom-or-bust — how often a fighter
+    // finishes AND how often they get finished) already widens the whole
+    // fight's uncertainty (see the k widening in simWinProbability) when
+    // EITHER side is high-variance. That's a symmetric "less confident either
+    // way" effect. What it doesn't capture is DIRECTIONAL: a low-volatility,
+    // durable, technically sound fighter tends to specifically neutralize a
+    // high-volatility, chaotic one more often than the raw stat gap implies
+    // — "styles make fights." Point-in-time backtest (scripts/sim-backtest/,
+    // 4,484 graded bouts): bucketing by the volatility gap between the two
+    // fighters, favorites already showed a real, monotonic ~9-point swing —
+    // overconfident by ~6pts when the FAVORITE was the more volatile side,
+    // underconfident by ~3pts when the UNDERDOG was clearly the more volatile
+    // one (mirrors real cases like a durable, high-TDD technician being
+    // underrated against a live-wire brawler with a big finish rate but also
+    // a big got-finished rate).
+    //
+    // WEIGHT/CAP — revised after the first pass (1.75 / ±0.5) turned out to
+    // be leaving real signal on the table. Checking a specific case (Nikita
+    // Krylov vs. Robert Whittaker, Jul 2026 — Krylov, the volatile side, lost
+    // by KO exactly as this term predicts he should struggle to) showed the
+    // ±0.5 cap was already ~91% saturated for that fight — meaning more
+    // WEIGHT wouldn't have moved it much further, the CAP itself was the
+    // binding constraint. A proper 2D grid over both weight and cap (same
+    // train-before-2024-07 / test-after split, selecting by train log-loss
+    // — not by whichever cell happens to score best on the test set, which
+    // would just be overfitting the "held-out" set by selection) found a
+    // real, wide plateau from roughly weight 1.5-3 / cap 1-3, clearly better
+    // than the original narrow cap: out-of-sample accuracy 61.9%→63.3%,
+    // Brier 0.2303→0.2281, log loss 0.6533→0.6488 (vs. 61.9%→62.3% / 0.2289
+    // / 0.6505 at the old 1.75/±0.5). Landed at weight 2.0 / cap ±1.5 —
+    // comfortably inside the plateau rather than at either edge, same
+    // conservative-inside-the-plateau philosophy as the grappling term
+    // above. Still soft-capped well below the grappling term's ±1.2×2.5
+    // scale — this is a secondary signal, not a primary stat gap.
+    //
+    // HONEST LIMIT: even at this wider setting, Krylov/Whittaker point-in-
+    // time only moves to ~59% (from ~61% pre-fix, ~61% at the old 1.75/±0.5
+    // setting) — real movement, not a flip. Whittaker's own full stat line
+    // (not just "calmer") carries real weight here too, and no single style-
+    // matchup term fully resolves a case like this. Don't read the backtest
+    // gain as "solved" — it's a real, broad improvement, not a fix for every
+    // individual glass-cannon matchup.
+    const volA = simVolatility(nameA), volB = simVolatility(nameB);
+    delta += simSoftCap((volB - volA) * 2.0, 1.5);
     return delta;
   }
 
@@ -137049,7 +137295,38 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     return cap * Math.tanh(x / cap);
   }
 
-  function simPowerScore(p) {
+  // simPowerScoreBreakdown is the single source of truth for a fighter's
+  // power score. It returns { total, components } where components is an
+  // EXACT additive decomposition of total into 8 buckets — striking,
+  // wrestling, grappling, finishing, form, durability, schedule, other —
+  // built for the "Build Your Own Simulation" custom-weighting modal so its
+  // per-category sliders reflect real model terms instead of illustrative
+  // numbers. simPowerScore(p) below is an unchanged thin wrapper (returns
+  // just .total) so every existing caller — simWinProbability, simRunTrials
+  // — is byte-for-byte unaffected by this split; nothing about the
+  // production simulator's output changes.
+  //
+  // Two things worth knowing about the decomposition, both deliberate:
+  //   1. striking/wrestling/grappling/finishing below are the RAW,
+  //      schedule-neutral trait values (pre-multiplier) — the entire
+  //      schedule-quality effect (simScheduleMultiplier applied to their
+  //      sum) is isolated into its own `schedule` component instead of
+  //      being baked into each of the four, so nothing is double-counted
+  //      and `schedule` is a real, non-fabricated number: it's the exact
+  //      point swing schedule quality adds or removes for this fighter.
+  //   2. `other` bundles every real term that has no home in the 8
+  //      category buckets the modal exposes (activity credit, trajectory,
+  //      age, layoff, big-fight experience, control, undefeated bonus, the
+  //      finish-vulnerability penalty, the 5-round factor). It's locked/
+  //      non-editable in the modal, purely so components always sum to
+  //      EXACTLY total — no silent gap between "calibrated" and "sum of
+  //      the visible sliders." There is deliberately no `fightIQ` bucket:
+  //      no term in this function measures anything like gameplanning or
+  //      in-fight adjustments, so fabricating one and showing it next to a
+  //      "GillyLab model says" tick mark would mean that tick reflects a
+  //      number the model never actually computed. Fight IQ stays a
+  //      user-only slider in the modal with no model comparison at all.
+  function simPowerScoreBreakdown(p) {
     // Striking output and damage absorbed are each soft-capped (diminishing
     // returns on raw volume) rather than entering linearly. The old linear form
     // over-weighted sheer volume: calibrating against the stored closing lines,
@@ -137076,8 +137353,29 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // compounding across multiple terms (grappling, finishing, and
     // formerly finisherBoost) for what's ultimately one underlying trait.
     // finisherBoost has been removed outright as redundant with finRate.
-    const grappling = (p.tdLanded * p.tdAcc * 1.0) + (p.subAvg * 1.6);
-    const finishing = (p.finRate * 3) + (simSoftCap(p.kd, 2.2) * 2.0);
+    // Split for the breakdown: tdOffense (wrestling's offensive half) and
+    // subOffense (the grappling/submissions bucket) separately, summed back
+    // to `grappling` below for the original, unchanged total calculation.
+    const tdOffense = p.tdLanded * p.tdAcc * 1.0;
+    const subOffense = p.subAvg * 1.6;
+    const grappling = tdOffense + subOffense;
+    // finRate itself was entering completely linearly (0-1, uncapped) —
+    // unlike kd just below it, which already gets simSoftCap. A point-in-
+    // time backtest (scripts/sim-backtest/, 4,484 bouts) bucketed by the
+    // favorite's own finRate and found a clean, monotonic overconfidence
+    // gradient: well-calibrated (+0.3 to +0.7pt) below ~60% finish rate,
+    // but a real ~7-9pt overconfidence gap once finRate climbs past ~0.75
+    // — a fighter who finishes nearly everyone (Krylov: 94%, the same
+    // Whittaker/Krylov case cited above) was being trusted almost linearly
+    // all the way to 100%, when the actual data says that trust should
+    // level off well before then. Soft-capped at 0.4 (train log-loss
+    // plateaued flat from ~0.1-1.0, so 0.4 sits comfortably inside it, not
+    // at either edge) — out-of-sample test accuracy 61.9%→63.6%, Brier
+    // 0.2303→0.2277, log loss 0.6533→0.6476, compounding with (not
+    // duplicating) the volatility-mismatch term above: point-in-time,
+    // Krylov/Whittaker moves from ~61% pre-fix to 56.9% with both fixes
+    // together, vs. 59.8% from the volatility term alone.
+    const finishing = (simSoftCap(p.finRate, 0.4) * 3) + (simSoftCap(p.kd, 2.2) * 2.0);
     // Recent-form bonus. Used to hard-cap at +/-3 fights, so a 3-fight streak
     // and a 16-fight streak (Makhachev) scored identically — no credit at
     // all for sustained dominance past that point. Soft-capped instead so a
@@ -137096,7 +137394,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // fight-count experience (activityCredit) and the other situational
     // factors stay additive, since those aren't claims about whether the
     // underlying numbers are trustworthy.
-    const production = (strikingNet + grappling + finishing) * p.scheduleMultiplier;
+    const rawProduction = strikingNet + grappling + finishing;
+    const production = rawProduction * p.scheduleMultiplier;
+    // The exact point swing schedule quality contributes: production AT the
+    // real multiplier minus production at a neutral 1x. Algebraically,
+    // rawProduction + scheduleDelta === production, so isolating this as its
+    // own component and using RAW (un-multiplied) striking/grappling/
+    // finishing values below is what keeps the 8-way split exact — the
+    // schedule effect lives in exactly one place, not smeared across four.
+    const scheduleDelta = rawProduction * (p.scheduleMultiplier - 1);
     // Subtotal before the finish-vulnerability penalty, which now applies
     // as a PERCENTAGE of this subtotal (see simFinishVulnerability) rather
     // than a flat point subtraction summed in alongside everything else.
@@ -137105,8 +137411,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // a negative subtotal by a negative fraction would otherwise flip the
     // sign and accidentally reward them for being finish-prone.
     const subtotal = production + tdDefBonus + form + p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + p.durabilityBoost;
-    const afterFinishPenalty = subtotal + Math.abs(subtotal) * p.finishVulnerability;
-    return afterFinishPenalty + (p.fiveRoundFactor || 0);
+    const finishPenaltyAdj = Math.abs(subtotal) * p.finishVulnerability;
+    const afterFinishPenalty = subtotal + finishPenaltyAdj;
+    const total = afterFinishPenalty + (p.fiveRoundFactor || 0);
+    // `other`: every real additive term with no dedicated modal category,
+    // bundled so components sum to EXACTLY total (verified in the console
+    // check run during this refactor — see task notes). Locked/read-only in
+    // the modal, shown as context rather than an editable slider.
+    const other = p.activityCredit + p.trajectory + p.age + p.layoff + p.bigFight + p.controlBoost + p.undefeatedBoost + finishPenaltyAdj + (p.fiveRoundFactor || 0);
+    return {
+      total,
+      components: {
+        striking: strikingNet,
+        wrestling: tdOffense + tdDefBonus,
+        grappling: subOffense,
+        finishing,
+        form,
+        durability: p.durabilityBoost,
+        schedule: scheduleDelta,
+        other,
+      },
+    };
+  }
+
+  function simPowerScore(p) {
+    return simPowerScoreBreakdown(p).total;
   }
 
   // Numeric rank tier from the roster's static rank field: champ/interim
@@ -137159,24 +137488,53 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // ranked fighters (proxy for actual contender status, since per-fight
   // historical rankings aren't stored). Returns null if no estimate is
   // possible (opponent unknown or had no UFC wins before the fight).
+  //
+  // RECORD-AT-TIME REFINEMENT: the win-count buckets above were the whole
+  // estimate for years, and had a real blind spot — they only ever counted
+  // WINS. An opponent who was 5-8 in the UFC before this fight still read
+  // as "5 UFC wins -> solid mid-ranker" (tier 10), identical to an opponent
+  // who was a clean 5-0, because the losses were never even looked at. Now
+  // that opponent win/loss records are tracked (the Fight History "(W-L-D)"
+  // badges, recordAsOf/opponentRecordAtFight), tally losses in the SAME
+  // already-filtered UFC/before-cutoff loop and use win% to nudge the
+  // bucket estimate — better than neutral (>50%) shifts toward a lower/
+  // better tier, worse than neutral shifts toward a higher/worse one.
+  // Deliberately bounded to +/-3 tiers so a small sample can't swing wildly
+  // (a 2-0 opponent isn't automatically "tier 4") and the original
+  // calibrated bucket floors (7/10/12/14) still anchor the estimate rather
+  // than being overridden by it.
   function simEstimateHistoricalTier(oppName, beforeDate) {
     const oppHist = (typeof FIGHT_HISTORY !== 'undefined' && FIGHT_HISTORY[oppName]) || [];
     if (!oppHist.length) return null;
     const cutoff = beforeDate ? new Date(beforeDate).getTime() : Date.now();
-    let ufcWins = 0, hadRankedWin = false;
+    let ufcWins = 0, ufcLosses = 0, hadRankedWin = false;
     oppHist.forEach(f => {
-      if (!f.date || f.result !== 'W') return;
+      if (!f.date || (f.result !== 'W' && f.result !== 'L')) return;
       if (String(f.org || '').toUpperCase() !== 'UFC') return;
       const d = new Date(f.date).getTime();
       if (isNaN(d) || d >= cutoff) return;
-      ufcWins++;
-      if (simRankTier(f.opponent) !== null) hadRankedWin = true;
+      if (f.result === 'W') {
+        ufcWins++;
+        if (simRankTier(f.opponent) !== null) hadRankedWin = true;
+      } else {
+        ufcLosses++;
+      }
     });
-    if (ufcWins >= 5 && hadRankedWin) return 7;  // established contender
-    if (ufcWins >= 5)                 return 10; // solid mid-ranker
-    if (ufcWins >= 3)                 return 12; // borderline ranked
-    if (ufcWins >= 1)                 return 14; // barely ranked
-    return null;
+    let base;
+    if (ufcWins >= 5 && hadRankedWin) base = 7;  // established contender
+    else if (ufcWins >= 5)            base = 10; // solid mid-ranker
+    else if (ufcWins >= 3)            base = 12; // borderline ranked
+    else if (ufcWins >= 1)            base = 14; // barely ranked
+    else return null;
+    const sample = ufcWins + ufcLosses;
+    const winPct = sample > 0 ? ufcWins / sample : 0.5;
+    // (0.5 - winPct) * 6: a 50% record leaves the bucket floor untouched;
+    // a spotless record within the bucket (winPct=1) pulls a full 3 tiers
+    // better, a heavily losing one (winPct=0) pushes 3 tiers worse. Clamped
+    // so the estimate never drops below tier 1 (can't out-rank a true
+    // top-tier opponent purely off an inferred record).
+    const adjustment = (0.5 - winPct) * 6;
+    return Math.max(1, base + adjustment);
   }
 
   // Quality score [0, 1] for the best ranked win in a fighter's history.
@@ -138032,6 +138390,400 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
 
     renderSimResults(nameA, nameB, result);
   }
+
+  // ══════════════════════════════════════════════════════════════════════
+  // CUSTOM SIMULATOR ("Build Your Own Simulation")
+  //
+  // Lets a user override the model's own per-category read on a matchup and
+  // compare the result side-by-side with the calibrated (real) simulation.
+  // Ported from prototypes/custom-simulator.html (V6), but wired to the REAL
+  // simPowerScoreBreakdown()/getSimProfile() components instead of the
+  // prototype's fabricated ROSTER stat table — every category here is a real,
+  // live number pulled from the same pipeline simWinProbability() uses.
+  //
+  // Mechanism (unchanged from the prototype, see its header comment for the
+  // full design history): each of eight categories gets two controls —
+  // EDGE (who's ahead and by how much, defaulted to the real stat gap) and
+  // WEIGHT (a shared 100% pool across all eight — raising one always visibly
+  // lowers the others). Seven categories are real power-score components
+  // (striking/wrestling/grappling/finishing/form/durability/schedule);
+  // "other" (age, layoff, trajectory, big-fight experience, the finish-
+  // vulnerability penalty, etc.) is real but NOT editable, shown as fixed
+  // context instead, since it isn't one coherent trait a user has a "read"
+  // on. Fight IQ is the one user-only category: no real model term measures
+  // it, so its edge always starts at "roughly even" with no tick mark and no
+  // "matches/differs from the model" comparison — it would be dishonest to
+  // imply there's a real signal underneath it.
+  //
+  // The CALIBRATED side always uses the real, unclamped component gaps
+  // through the exact same style/closeness/h2h/unproven/uncertainty pipeline
+  // simWinProbability() runs — it's computed by calling the real
+  // functions directly, not reimplemented, so it can never drift from what
+  // "Run Simulation" actually shows. The CUSTOM side reuses that same fixed
+  // pipeline (style matchup, rank closeness, head-to-head, unproven penalty,
+  // uncertainty widening — none of that is user-editable) and only swaps in
+  // the user's weighted category gaps for the power-score differential.
+  const CS_CATEGORIES = [
+    { key: 'striking',   name: 'Striking',              desc: 'Volume and accuracy landed minus damage absorbed, soft-capped for diminishing returns.' },
+    { key: 'wrestling',  name: 'Wrestling',              desc: 'Takedown offense and takedown defense.' },
+    { key: 'grappling',  name: 'Grappling / Submissions', desc: 'Submission rate — guard work and finishing threat off the back.' },
+    { key: 'finishing',  name: 'Finishing power',        desc: 'Finish rate and knockdowns scored, both soft-capped.' },
+    { key: 'form',       name: 'Recent form',            desc: 'Current win streak / momentum, soft-capped.' },
+    { key: 'durability', name: 'Durability / chin',      desc: 'A proven pattern of NOT being finished when losing.' },
+    { key: 'schedule',   name: 'Strength of schedule',   desc: 'Quality-of-opposition multiplier applied to striking, grappling, and finishing.' },
+    { key: 'fightIQ',    name: 'Fight IQ',               desc: 'Gameplanning, in-fight adjustments, championship-rounds composure.', userOnly: true },
+  ];
+  // Minimum half-width of each category's edge slider, in real power-score
+  // points — sized per category since the components live on very different
+  // natural scales (form tops out under 2pts; striking/finishing can swing
+  // several). Widened per-matchup below if the real gap would otherwise pin
+  // the slider at its end (see csEdgeMax) — same "starts at the true gap,
+  // track just accommodates it" approach as the prototype.
+  const CS_EDGE_FLOOR = { striking: 4, wrestling: 3, grappling: 2.5, finishing: 5, form: 1.5, durability: 1.2, schedule: 1.5, fightIQ: 5 };
+  const CS_EQUAL_SHARE = 100 / CS_CATEGORIES.length;
+
+  let csState = null;           // { nameA, nameB, rounds, base, cats: { [key]: {edge, weightPct} } }
+
+  // All the FIXED (non-editable) pipeline pieces, computed once per matchup
+  // from the real functions — identical inputs simWinProbability() itself
+  // uses, so nothing here can silently drift from the live model.
+  function csBuildBase(nameA, nameB, rounds) {
+    const profA = getSimProfile(nameA, rounds), profB = getSimProfile(nameB, rounds);
+    const bdA = simPowerScoreBreakdown(profA), bdB = simPowerScoreBreakdown(profB);
+    const styleDelta = simStyleMatchupDelta(nameA, nameB, profA, profB);
+    const closeness = simRankClosenessFactor(nameA, nameB);
+    const h2h = simHeadToHeadBoost(nameA, nameB);
+    const unpA = simUnprovenPenalty(nameA, nameB), unpB = simUnprovenPenalty(nameB, nameA);
+    const volatility = Math.max(simVolatility(nameA), simVolatility(nameB));
+    const lowCredibility = Math.max(1 - simRateCredibility(nameA), 1 - simRateCredibility(nameB));
+    const uncertainty = Math.max(volatility, lowCredibility * 0.7);
+    const k = 5.4 * (1 + 0.5 * uncertainty);
+    return { nameA, nameB, bdA, bdB, styleDelta, closeness, h2h, unpA, unpB, k };
+  }
+
+  // Real, unclamped gap for one category — positive favors nameB, matching
+  // the prototype's left(A)/right(B) slider convention. fightIQ has no real
+  // component, so it's always 0 (no opinion) until the user moves it.
+  function csRawGap(catKey, base) {
+    if (catKey === 'fightIQ') return 0;
+    return base.bdB.components[catKey] - base.bdA.components[catKey];
+  }
+  function csEdgeMax(catKey, base) {
+    const floor = CS_EDGE_FLOOR[catKey] || 4;
+    return Math.max(floor, Math.abs(csRawGap(catKey, base)) * 1.8);
+  }
+  function csClampedGap(catKey, base) {
+    const max = csEdgeMax(catKey, base);
+    return Math.max(-max, Math.min(max, csRawGap(catKey, base)));
+  }
+  function csWeightMult(catKey) { return csState.cats[catKey].weightPct / CS_EQUAL_SHARE; }
+
+  function csDefaultCats(base) {
+    const cats = {};
+    CS_CATEGORIES.forEach(c => { cats[c.key] = { edge: csRawGap(c.key, base), weightPct: CS_EQUAL_SHARE }; });
+    return cats;
+  }
+
+  // Same "pie allocator" redistribution as the prototype: moving one
+  // category's weight slider always visibly takes from (or gives back to)
+  // the other seven, proportional to their current shares.
+  function csNormalizeWeights(catKey, newVal) {
+    newVal = Math.max(0, Math.min(100, newVal));
+    const others = CS_CATEGORIES.map(c => c.key).filter(k => k !== catKey);
+    const oldOthersSum = others.reduce((s, k) => s + csState.cats[k].weightPct, 0);
+    const remaining = 100 - newVal;
+    if (oldOthersSum <= 0.0001) {
+      others.forEach(k => { csState.cats[k].weightPct = remaining / others.length; });
+    } else {
+      others.forEach(k => { csState.cats[k].weightPct = (csState.cats[k].weightPct / oldOthersSum) * remaining; });
+    }
+    csState.cats[catKey].weightPct = newVal;
+  }
+
+  // Sum of the weighted user contributions across all eight sliders, in the
+  // same "positive favors A" sign convention (sa - sb) simPowerScore uses,
+  // PLUS the fixed "other" component (age/layoff/trajectory/big-fight/
+  // finish-vulnerability — see csOtherNoteHtml) that isn't part of the
+  // editable pool. Without adding it back in, the untouched default state
+  // (all edges at the real gap, weights equal) would NOT reproduce the
+  // calibrated total — "other" routinely accounts for real, non-trivial
+  // points (age penalties alone can run to -2.5) that can't just vanish
+  // from the custom read the moment the modal opens.
+  function csCustomDiff() {
+    let diff = csState.base.bdA.components.other - csState.base.bdB.components.other;
+    CS_CATEGORIES.forEach(c => {
+      const st = csState.cats[c.key];
+      diff += -st.edge * csWeightMult(c.key);
+    });
+    return diff;
+  }
+
+  // Runs a power-score differential through the REAL, fixed rest of
+  // simWinProbability()'s pipeline (style/closeness/h2h/unproven/k) —
+  // identical math, just with a caller-supplied (sa-sb) instead of the
+  // model's own. Calling this with base.bdA.total-base.bdB.total reproduces
+  // simWinProbability(nameA,nameB,rounds) exactly.
+  function csProbFromDiff(saMinusSb, base) {
+    const statDiff = (saMinusSb + base.styleDelta) * (1 - 0.8 * base.closeness);
+    const diff = statDiff + base.h2h - base.unpA + base.unpB;
+    const raw = 1 / (1 + Math.exp(-diff / base.k));
+    return Math.min(0.96, Math.max(0.04, raw));
+  }
+
+  function csEdgeBucket(value, catKey, base) {
+    const max = csEdgeMax(catKey, base);
+    const abs = Math.abs(value);
+    let mag;
+    if (abs < max * 0.1) mag = 'Roughly even';
+    else if (abs < max * 0.3) mag = 'Slight edge';
+    else if (abs < max * 0.6) mag = 'Clear edge';
+    else mag = 'Huge edge';
+    if (mag === 'Roughly even') return { text: mag, leader: null };
+    return { text: mag, leader: value < 0 ? csState.nameA : csState.nameB };
+  }
+  function csBucketLabel(b) { return b.leader ? (b.text + ': ' + b.leader) : b.text; }
+
+  function csFmtPct(v) {
+    const r = Math.round(v * 10) / 10;
+    return Number.isInteger(r) ? String(r) : r.toFixed(1);
+  }
+
+  function csHeaderHtml() {
+    const side = (n, right) => '<div class="mh-hd-f' + (right ? ' r' : '') +
+      '" onclick="csOpenFighter(\'' + escJsAttr(n) + '\')" role="button" tabindex="0">' +
+      '<span class="mh-hd-av">' + _fsAva(n) + '</span>' +
+      '<div class="mh-hd-tx"><div class="mh-hd-nm">' + escHtmlAttr(n) + '</div>' +
+      '<div class="mh-hd-rc">' + escHtmlAttr(mhRecord(n)) + '</div></div></div>';
+    return side(csState.nameA, false) +
+      '<div class="mh-hd-mid"><div class="mh-hd-vs">VS</div></div>' +
+      side(csState.nameB, true);
+  }
+
+  function csOpenFighter(n) {
+    closeCustomSimulator();
+    setTimeout(function() { if (typeof openFighterByName === 'function') openFighterByName(n); }, 80);
+  }
+  window.csOpenFighter = csOpenFighter;
+
+  function csRenderResults() {
+    const base = csState.base;
+    const calDiff = base.bdA.total - base.bdB.total;   // exactly what simPowerScore(profA)-simPowerScore(profB) is
+    const curDiff = csCustomDiff();
+    const calPA = csProbFromDiff(calDiff, base), calPB = 1 - calPA;
+    const curPA = csProbFromDiff(curDiff, base), curPB = 1 - curPA;
+
+    const setBar = (prefix, pA, pB) => {
+      const fillA = document.getElementById(prefix + 'FillA'), fillB = document.getElementById(prefix + 'FillB');
+      const pctA = document.getElementById(prefix + 'PctA'), pctB = document.getElementById(prefix + 'PctB');
+      if (fillA) fillA.style.width = (pA * 100).toFixed(1) + '%';
+      if (fillB) fillB.style.width = (pB * 100).toFixed(1) + '%';
+      if (pctA) pctA.textContent = Math.round(pA * 100) + '%';
+      if (pctB) pctB.textContent = Math.round(pB * 100) + '%';
+    };
+    setBar('csCal', calPA, calPB);
+    setBar('csCur', curPA, curPB);
+
+    const drift = Math.round((curPA - calPA) * 100);
+    const driftEl = document.getElementById('csDriftNote');
+    if (driftEl) driftEl.textContent = Math.abs(drift) < 1 ? '' : ((drift > 0 ? '+' : '') + drift + ' pts win chance vs calibrated');
+  }
+
+  function csUpdateComputedBits() {
+    const base = csState.base;
+    CS_CATEGORIES.forEach(c => {
+      const st = csState.cats[c.key];
+      const cur = csEdgeBucket(st.edge, c.key, base);
+      const labelEl = document.querySelector('[data-cs-edge-label="' + c.key + '"]');
+      if (labelEl) labelEl.innerHTML = cur.leader ? (cur.text + ': <span class="cs-who">' + escHtmlAttr(cur.leader) + '</span>') : cur.text;
+
+      const subEl = document.querySelector('[data-cs-edge-sub="' + c.key + '"]');
+      if (subEl) {
+        if (c.userOnly) {
+          subEl.classList.remove('diff');
+          subEl.textContent = 'No model signal here — this one is your read only.';
+        } else {
+          const cal = csEdgeBucket(csClampedGap(c.key, base), c.key, base);
+          const same = cur.text === cal.text && cur.leader === cal.leader;
+          subEl.classList.toggle('diff', !same);
+          subEl.textContent = same ? 'Matches what the GillyLab model says' : ('GillyLab model says: ' + csBucketLabel(cal));
+        }
+      }
+
+      const wInput = document.querySelector('input[data-cs-role="weight"][data-cs-cat="' + c.key + '"]');
+      if (wInput) wInput.value = Math.round(st.weightPct);
+      const wLbl = document.querySelector('[data-cs-weight-pct="' + c.key + '"]');
+      if (wLbl) { wLbl.textContent = csFmtPct(st.weightPct) + '%'; wLbl.classList.toggle('zero', st.weightPct < 0.5); }
+    });
+  }
+
+  function csUpdateOutputsOnly() {
+    csUpdateComputedBits();
+    csRenderResults();
+  }
+  window.csUpdateOutputsOnly = csUpdateOutputsOnly;
+
+  function csOtherNoteHtml() {
+    const base = csState.base;
+    const gap = base.bdB.components.other - base.bdA.components.other;
+    // "other" has no slider/no CS_EDGE_FLOOR entry — bucket it against a fixed
+    // 3.0-point scale (roughly the middle of the real per-category floors
+    // above), just for this plain-language note.
+    const OTHER_MAX = 3.0;
+    const abs = Math.abs(gap);
+    let mag;
+    if (abs < OTHER_MAX * 0.1) mag = null;
+    else if (abs < OTHER_MAX * 0.3) mag = 'a slight edge';
+    else if (abs < OTHER_MAX * 0.6) mag = 'a real edge';
+    else mag = 'a big edge';
+    if (!mag) return 'Outside these eight categories — age, layoff, career trajectory, big-fight experience, and the finish-vulnerability penalty — the two fighters come out roughly even. This part of the model isn\'t editable here; it\'s shown for context.';
+    const leader = gap < 0 ? csState.nameA : csState.nameB;
+    return 'Outside these eight categories — age, layoff, career trajectory, big-fight experience, and the finish-vulnerability penalty — the model already gives <b>' + escHtmlAttr(leader) + '</b> ' + mag + '. This part isn\'t editable here; it\'s shown for context and stays fixed in both numbers above.';
+  }
+
+  function csRenderCategories() {
+    const host = document.getElementById('csCatsHost');
+    if (!host) return;
+    const base = csState.base;
+    let html = '<div class="cs-other-note">' + csOtherNoteHtml() + '</div>';
+    CS_CATEGORIES.forEach(c => {
+      const st = csState.cats[c.key];
+      const tickHtml = c.userOnly ? '' :
+        '<div class="cs-edge-tick" style="left:' + (((csClampedGap(c.key, base) + csEdgeMax(c.key, base)) / (2 * csEdgeMax(c.key, base))) * 100) + '%"></div>';
+      const max = csEdgeMax(c.key, base);
+      html += '' +
+        '<div class="cs-cat">' +
+          '<div class="cs-cat-nm">' + escHtmlAttr(c.name) + (c.userOnly ? ' <span style="color:var(--muted);font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;">(your read only)</span>' : '') + '</div>' +
+          '<div class="cs-cat-desc">' + escHtmlAttr(c.desc) + '</div>' +
+          '<div class="cs-step">' +
+            '<div class="cs-step-lbl">Who\'s better here, and how clearly</div>' +
+            '<div class="cs-edge-label" data-cs-edge-label="' + c.key + '"></div>' +
+            '<div class="cs-edge-sub" data-cs-edge-sub="' + c.key + '"></div>' +
+            '<div class="cs-edge-track-wrap">' + tickHtml +
+              '<input type="range" min="' + (-max) + '" max="' + max + '" step="' + (max / 100) + '" value="' + st.edge + '" data-cs-cat="' + c.key + '" data-cs-role="edge">' +
+            '</div>' +
+            '<div class="cs-edge-endcaps"><span>' + escHtmlAttr(csState.nameA) + '</span><span>' + escHtmlAttr(csState.nameB) + '</span></div>' +
+          '</div>' +
+          '<div class="cs-step">' +
+            '<div class="cs-step-lbl">How much does it matter in this matchup? (pool of 100% across all eight)</div>' +
+            '<div class="cs-weight-row">' +
+              '<input type="range" min="0" max="100" step="1" value="' + Math.round(st.weightPct) + '" data-cs-cat="' + c.key + '" data-cs-role="weight">' +
+              '<span class="cs-weight-pct' + (st.weightPct < 0.5 ? ' zero' : '') + '" data-cs-weight-pct="' + c.key + '">' + csFmtPct(st.weightPct) + '%</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    });
+    host.innerHTML = html;
+
+    host.querySelectorAll('input[data-cs-role="edge"]').forEach(inp => {
+      inp.addEventListener('input', function(e) {
+        const cat = e.target.dataset.csCat;
+        csState.cats[cat].edge = parseFloat(e.target.value);
+        csUpdateOutputsOnly();
+      });
+    });
+    host.querySelectorAll('input[data-cs-role="weight"]').forEach(inp => {
+      inp.addEventListener('input', function(e) {
+        const cat = e.target.dataset.csCat;
+        csNormalizeWeights(cat, parseFloat(e.target.value));
+        csUpdateOutputsOnly();
+      });
+    });
+    csUpdateComputedBits();
+  }
+
+  function csResultsHtml() {
+    return '' +
+      '<div class="cs-results">' +
+        '<div class="cs-resbox">' +
+          '<div class="cs-res-lbl"><span>Calibrated (GillyLab model)</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCalNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCalFillA" style="width:50%"></div></div><span class="cs-pct" id="csCalPctA">50%</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCalNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCalFillB" style="width:50%"></div></div><span class="cs-pct" id="csCalPctB">50%</span></div>' +
+        '</div>' +
+        '<div class="cs-resbox custom">' +
+          '<div class="cs-res-lbl"><span>Your custom read</span><span class="cs-drift" id="csDriftNote"></span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCurNameA"></span><div class="cs-track"><div class="cs-fill a" id="csCurFillA" style="width:50%"></div></div><span class="cs-pct" id="csCurPctA">50%</span></div>' +
+          '<div class="cs-barrow"><span class="cs-nm" id="csCurNameB"></span><div class="cs-track"><div class="cs-fill b" id="csCurFillB" style="width:50%"></div></div><span class="cs-pct" id="csCurPctB">50%</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div id="csCatsHost"></div>' +
+      '<div class="cs-footer">' +
+        '<button type="button" id="csResetWeightsBtn">Reset weights to equal</button>' +
+        '<button type="button" id="csResetBtn">Reset all to calibrated</button>' +
+      '</div>' +
+      '<div class="cs-disclaimer">Two different questions per category, on purpose: who\'s better and how clearly (a comparison between the two fighters, no numbers shown) and how much it matters in this matchup (a shared 100% pool across all eight — raising one lowers the others). Output is clamped to 4&ndash;96%, same as the calibrated model. These are illustrative overrides on top of GillyLab\'s real per-fighter numbers, not a separate prediction.</div>';
+  }
+
+  function csRenderAll() {
+    document.getElementById('cs-hd').innerHTML = csHeaderHtml();
+    document.getElementById('cs-body').innerHTML = csResultsHtml();
+    document.getElementById('csCalNameA').textContent = csState.nameA;
+    document.getElementById('csCalNameB').textContent = csState.nameB;
+    document.getElementById('csCurNameA').textContent = csState.nameA;
+    document.getElementById('csCurNameB').textContent = csState.nameB;
+    csRenderCategories();
+    csRenderResults();
+    document.getElementById('csResetBtn').addEventListener('click', function() {
+      csState.cats = csDefaultCats(csState.base);
+      csRenderCategories();
+      csRenderResults();
+    });
+    document.getElementById('csResetWeightsBtn').addEventListener('click', function() {
+      CS_CATEGORIES.forEach(c => { csState.cats[c.key].weightPct = CS_EQUAL_SHARE; });
+      csRenderCategories();
+      csRenderResults();
+    });
+  }
+
+  function _csKey(e) { if (e.key === 'Escape') closeCustomSimulator(); }
+
+  // Reads whatever the simulator's own inputs currently resolve to (same
+  // lookup runFightSimulator() uses), so this works both from the simulator
+  // page directly and after simulateMatchup() has pre-loaded a card fight.
+  function openCustomSimulator() {
+    const inputA = document.getElementById('simFighterA');
+    const inputB = document.getElementById('simFighterB');
+    const nameA = inputA && ((inputA.dataset.selected && simFindFighter(inputA.dataset.selected)) || simFindFighter(inputA.value));
+    const nameB = inputB && ((inputB.dataset.selected && simFindFighter(inputB.dataset.selected)) || simFindFighter(inputB.value));
+    if (!nameA || !nameB) {
+      const errBox = document.getElementById('simError');
+      if (errBox) { errBox.textContent = 'Enter two valid fighters from the database before building a custom simulation.'; errBox.style.display = 'block'; }
+      return;
+    }
+    if (nameA === nameB) {
+      const errBox = document.getElementById('simError');
+      if (errBox) { errBox.textContent = 'Choose two different fighters.'; errBox.style.display = 'block'; }
+      return;
+    }
+    const box = document.getElementById('cs-box'), ov = document.getElementById('cs-overlay');
+    if (!box || !ov) return;
+    const base = csBuildBase(nameA, nameB, typeof simSelectedRounds !== 'undefined' ? simSelectedRounds : 3);
+    csState = { nameA, nameB, base, cats: csDefaultCats(base) };
+    csRenderAll();
+
+    ov.style.display = 'block'; ov.style.opacity = '0';
+    box.classList.add('cs-on'); box.style.opacity = '0';
+    box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+    requestAnimationFrame(function() { requestAnimationFrame(function() {
+      ov.style.opacity = '1'; box.style.opacity = '1';
+      box.style.transform = 'translate(-50%,-50%)';
+    }); });
+    if (typeof lockPageScroll === 'function') lockPageScroll();
+    document.addEventListener('keydown', _csKey);
+  }
+  window.openCustomSimulator = openCustomSimulator;
+
+  function closeCustomSimulator() {
+    const box = document.getElementById('cs-box'), ov = document.getElementById('cs-overlay');
+    if (!box || !ov || !box.classList.contains('cs-on')) return;
+    ov.style.opacity = '0';
+    box.style.opacity = '0';
+    box.style.transform = 'translate(-50%,-50%) translateY(8px)';
+    setTimeout(function() { ov.style.display = 'none'; box.classList.remove('cs-on'); }, 220);
+    csState = null;
+    if (typeof unlockPageScroll === 'function') unlockPageScroll();
+    document.removeEventListener('keydown', _csKey);
+  }
+  window.closeCustomSimulator = closeCustomSimulator;
 
   // Past-events dropdown: lets you load any of the last 15 completed events
   // (with results) into the featured slot, to verify result rendering. Pulls

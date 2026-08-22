@@ -136,7 +136,7 @@
   .edge-endcaps span:last-child{color:var(--tier4)}
   .edge-endcaps span:first-child{color:var(--accent)}
 
-  /* Importance: a shared 100% pool across all six categories instead of
+  /* Importance: a shared 100% pool across all eight categories instead of
      independent buttons. Raising one lowers the others, live -- the
      trade-off is the whole point, so it can't be dragged past what's left
      in the pool. */
@@ -219,7 +219,7 @@
   <div class="disclaimer">
     Two different questions per category, on purpose: <b>who's better, and how clearly</b>
     (a comparison between the two fighters, no numbers shown) and <b>how much does it
-    matter in this matchup</b> (a shared 100% pool across all six categories — raising
+    matter in this matchup</b> (a shared 100% pool across all eight categories — raising
     one lowers the others, so it's always a visible trade-off, not a free dial). Output
     is still clamped to 4&ndash;96%, same as the calibrated model.
   </div>
@@ -232,19 +232,28 @@
 // the sliders feel real. Gable Steveson's profile is deliberately thin on
 // grappling/schedule (few pro MMA fights logged) despite his real-world
 // wrestling pedigree -- that gap is the whole point of the EDGE control.
+// wrestling/grappling/fightIQ were split from one "grappling" category (see
+// V6 note below). Per-fighter, the three don't move in lockstep -- but for
+// the calibration anchor pair (Aspinall/Jones), their COMBINED gap was kept
+// close to the old single-category gap (+4, Jones), not 3x it, so splitting
+// one correlated skill into three didn't accidentally triple its weight in
+// the calibrated model just because equal-weighting now spreads it over
+// three sliders instead of one.
 const ROSTER = {
-  "Gable Steveson":  { striking: 4,  grappling: 3,  finishing: 5,  form: 8,  durability: 10, schedule: 2,
+  "Gable Steveson":  { striking: 4,  wrestling: 4,  grappling: 2,  fightIQ: 6,  finishing: 5,  form: 8,  durability: 10, schedule: 2,
                         note: "2 pro MMA fights logged -- Olympic/NCAA wrestling pedigree isn't in these numbers" },
-  "Tom Aspinall":    { striking: 15, grappling: 12, finishing: 17, form: 14, durability: 11, schedule: 15 },
-  "Jon Jones":       { striking: 14, grappling: 16, finishing: 13, form: 6,  durability: 15, schedule: 18 },
-  "Ciryl Gane":      { striking: 16, grappling: 9,  finishing: 12, form: 10, durability: 12, schedule: 16 },
-  "Sergei Pavlovich": { striking: 15, grappling: 6,  finishing: 18, form: 9,  durability: 13, schedule: 14 },
-  "Alexander Volkov": { striking: 13, grappling: 8,  finishing: 11, form: 11, durability: 14, schedule: 15 },
+  "Tom Aspinall":    { striking: 15, wrestling: 11, grappling: 12, fightIQ: 12, finishing: 17, form: 14, durability: 11, schedule: 15 },
+  "Jon Jones":       { striking: 14, wrestling: 14, grappling: 12, fightIQ: 14, finishing: 13, form: 6,  durability: 15, schedule: 18 },
+  "Ciryl Gane":      { striking: 16, wrestling: 6,  grappling: 10, fightIQ: 12, finishing: 12, form: 10, durability: 12, schedule: 16 },
+  "Sergei Pavlovich": { striking: 15, wrestling: 5,  grappling: 5,  fightIQ: 8,  finishing: 18, form: 9,  durability: 13, schedule: 14 },
+  "Alexander Volkov": { striking: 13, wrestling: 7,  grappling: 9,  fightIQ: 10, finishing: 11, form: 11, durability: 14, schedule: 15 },
 };
 
 const CATEGORIES = [
   { key: "striking",   name: "Striking",              desc: "Volume and accuracy landed minus damage absorbed." },
-  { key: "grappling",  name: "Grappling / Wrestling",  desc: "Takedown offense, control, and submission threat." },
+  { key: "wrestling",  name: "Wrestling",              desc: "Takedown offense, takedown defense, and top control." },
+  { key: "grappling",  name: "Grappling / Submissions", desc: "Guard work, submission offense, and threat off the back." },
+  { key: "fightIQ",    name: "Fight IQ",               desc: "Gameplanning, in-fight adjustments, championship-rounds composure." },
   { key: "finishing",  name: "Finishing power",        desc: "Finish rate and knockdowns scored." },
   { key: "form",       name: "Recent form",            desc: "Current win streak / momentum, soft-capped." },
   { key: "durability",  name: "Durability / chin",      desc: "Resistance to being finished." },
@@ -263,34 +272,44 @@ const CATEGORIES = [
 // calibrates to a near-coinflip (56/44), which matches reality. With the
 // original range (edge to +-20, importance up to 2.8x) a single category
 // pushed to "could decide the fight" could ALONE drag that coinflip all
-// the way to the hard 96% clamp -- one slider overruling the other five
-// categories combined, every time. Narrowed EDGE_MAX to 10 and softened
-// the top importance multiplier to 2.0x: now the worst case (one category,
-// maxed, "usually swings fights like this") takes that same coinflip to
-// ~95% instead of a guaranteed 96% -- still a huge swing, but it takes
-// either several categories agreeing, or a genuinely lopsided one, to hit
-// the true clamp. The CALIBRATED total is unaffected -- it always uses the
-// real, unclamped stat gap (rawGap), never the narrower slider range, so
-// a real blowout on paper still reads as a blowout even though no single
-// slider can be dragged that far by hand.
+// the way to the hard 96% clamp -- one slider overruling every other
+// category combined, every time. Narrowed EDGE_MAX to 10 and softened the
+// top importance multiplier to 2.0x -- but that cap belonged to the old
+// per-category IMPORTANCE BUTTONS (each independently capped at 2.0x). v5
+// replaced the buttons with a shared 100% pool (below), and the pool has
+// no per-category ceiling: nothing stops one slider from taking the whole
+// pool, which gives it a weightMult of CATEGORIES.length (currently 8x),
+// not the old 2.0x. Practical effect, reverified after the v6 split: one
+// category, weight dragged to 100% AND edge dragged to its extreme, DOES
+// reach the exact 96%/4% clamp by itself, for every category equally --
+// there is no "~95% instead of guaranteed 96%" softening left. It still
+// takes moving BOTH sliders (weight and edge) to get there, not just one,
+// and the pool structure means taking that 100% is visibly taken away
+// from every other category as you drag -- but the hard clamp is
+// reachable via a single category, not just several agreeing. The
+// CALIBRATED total is unaffected -- it always uses the real, unclamped
+// stat gap (rawGap) at an equal 1x weight, never the pool, so a real
+// blowout on paper still reads as a blowout independent of any of this.
 const EDGE_MIN = -10, EDGE_MAX = 10;
 
-// Importance is a shared pool: the six categories' weightPct values always
+// Importance is a shared pool: the eight categories' weightPct values always
 // sum to 100. EQUAL_SHARE is what "no opinion, weight it like the
-// calibrated model does" looks like -- 100/6, applied uniformly, which is
-// mathematically the same as the old "normal" (1.0x) importance. So the
-// untouched-state invariant (custom == calibrated until you touch
-// anything) still holds without special-casing.
-const EQUAL_SHARE = 100 / 6;
+// calibrated model does" looks like -- 100/CATEGORIES.length, applied
+// uniformly, which is mathematically the same as the old "normal" (1.0x)
+// importance. So the untouched-state invariant (custom == calibrated until
+// you touch anything) still holds without special-casing.
+const EQUAL_SHARE = 100 / CATEGORIES.length;
 // A category's weight relative to the equal split -- this is what actually
 // scales its contribution. At EQUAL_SHARE this is 1.0 (unchanged from
 // calibrated); at 0% it's fully zeroed out; there's no upper cap because
 // the pool itself is the cap -- you can only take weight from the other
-// five, which are visibly losing it as you do.
+// seven, which are visibly losing it as you do (and, taken to 100%, this
+// category's own multiplier becomes CATEGORIES.length -- see the TUNING
+// note above).
 function weightMult(catKey){ return state[catKey].weightPct / EQUAL_SHARE; }
 
 // When one category's weight slider moves, redistribute the remaining pool
-// across the other five in proportion to their current shares (the
+// across the other seven in proportion to their current shares (the
 // standard "pie allocator" pattern) -- so raising one always visibly
 // lowers the others instead of silently overshooting 100%.
 function normalizeWeights(catKey, newVal){
@@ -323,7 +342,7 @@ function defaultState(){
   // Starts at the true gap, not the clamped one -- if a real gap exceeds
   // the track, the slider thumb just renders pinned at the end, but the
   // "custom" total still matches "calibrated" exactly until touched.
-  // Weight starts at an equal split across all six categories.
+  // Weight starts at an equal split across all eight categories.
   CATEGORIES.forEach(c => { s[c.key] = { edge: rawGap(c.key), weightPct: EQUAL_SHARE }; });
   return s;
 }
@@ -374,6 +393,18 @@ function edgeBucket(value){
 }
 function bucketLabel(b){ return b.leader ? `${b.text}: ${b.leader}` : b.text; }
 
+// Weight-pool percentages don't round to whole numbers cleanly -- e.g. the
+// equal-share default is 100/8 = 12.5, and Math.round(12.5) rounds every
+// one of the 8 sliders UP to 13%, which visibly sums to 104% on screen even
+// though the underlying pool is exactly 100. Show one decimal only when
+// needed (12.5%) so what's on screen actually sums to what the pool holds;
+// whole numbers (the common case, since dragging is step=1) still render
+// clean with no trailing ".0".
+function fmtPct(v){
+  const r = Math.round(v * 10) / 10;
+  return Number.isInteger(r) ? String(r) : r.toFixed(1);
+}
+
 function render(){
   let calDiff = 0, curDiff = 0;
   CATEGORIES.forEach(c => {
@@ -417,7 +448,7 @@ function renderCategories(){
       <div class="cat-head">
         <div class="nm">${c.name}</div>
       </div>
-      <div class="cat-desc">${c.desc}${ROSTER[nameA].note && c.key==='grappling' && nameA==='Gable Steveson' ? ' <em>' + ROSTER[nameA].note + '</em>' : ''}${ROSTER[nameB].note && c.key==='grappling' && nameB==='Gable Steveson' ? ' <em>' + ROSTER[nameB].note + '</em>' : ''}</div>
+      <div class="cat-desc">${c.desc}${ROSTER[nameA].note && c.key==='wrestling' && nameA==='Gable Steveson' ? ' <em>' + ROSTER[nameA].note + '</em>' : ''}${ROSTER[nameB].note && c.key==='wrestling' && nameB==='Gable Steveson' ? ' <em>' + ROSTER[nameB].note + '</em>' : ''}</div>
 
       <div class="step">
         <div class="step-lbl">Who's better here, and how clearly</div>
@@ -431,10 +462,10 @@ function renderCategories(){
       </div>
 
       <div class="step" style="margin-bottom:0">
-        <div class="step-lbl">How much does it matter in this matchup? (pool of 100% across all six)</div>
+        <div class="step-lbl">How much does it matter in this matchup? (pool of 100% across all eight)</div>
         <div class="weight-row">
           <input type="range" min="0" max="100" step="1" value="${Math.round(st.weightPct)}" data-cat="${c.key}" data-role="weight">
-          <span class="weight-pct${st.weightPct<0.5?' zero':''}" data-weight-pct="${c.key}">${Math.round(st.weightPct)}%</span>
+          <span class="weight-pct${st.weightPct<0.5?' zero':''}" data-weight-pct="${c.key}">${fmtPct(st.weightPct)}%</span>
         </div>
       </div>
     `;
@@ -483,7 +514,7 @@ function updateComputedBits(){
     if (wInput) wInput.value = Math.round(st.weightPct);
     const wLbl = document.querySelector(`[data-weight-pct="${c.key}"]`);
     if (wLbl) {
-      wLbl.textContent = Math.round(st.weightPct) + '%';
+      wLbl.textContent = fmtPct(st.weightPct) + '%';
       wLbl.classList.toggle('zero', st.weightPct < 0.5);
     }
   });

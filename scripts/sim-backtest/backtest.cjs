@@ -229,15 +229,27 @@ for (const L of labels) {
     const h2h = S.simHeadToHeadBoost(L.A, L.B);
     const unprovenA = S.simUnprovenPenalty(L.A, L.B);
     const unprovenB = S.simUnprovenPenalty(L.B, L.A);
-    const vol = Math.max(S.simVolatility(L.A), S.simVolatility(L.B));
+    const volA = S.simVolatility(L.A), volB = S.simVolatility(L.B);
+    const vol = Math.max(volA, volB);
     const lowCred = Math.max(1 - S.simRateCredibility(L.A), 1 - S.simRateCredibility(L.B));
     const uncertainty = Math.max(vol, lowCred * 0.7);
+    // Point-in-time loss/finish profile (glass-cannon signal), for sweeping the
+    // finishVulnerability scale/cap against the backtest.
+    const lfpA = S.simLossFinishProfile(L.A), lfpB = S.simLossFinishProfile(L.B);
     rows.push({
       A: L.A, B: L.B, date: L.date, ts: L.ts, aWon: L.aWon ? 1 : 0, p,
       profA, profB, styleDelta, closeness, h2h, unprovenA, unprovenB, uncertainty,
       ctrlNetA: asofCtrlNet(L.A, D), ctrlNetB: asofCtrlNet(L.B, D),
       credA: S.simRateCredibility(L.A), credB: S.simRateCredibility(L.B),
-      ageA: ageAt(L.A, D), ageB: ageAt(L.B, D)
+      ageA: ageAt(L.A, D), ageB: ageAt(L.B, D),
+      // Added for the thin-data-underdog and volatility-style-matchup hypothesis
+      // tests: raw prior UFC box-scored bout counts (distinct from credibility,
+      // which is a dampened 0-1 score) and each fighter's own volatility term.
+      boxCountA: boxA.count, boxCountB: boxB.count, volA, volB,
+      // Raw (pre-softcap) loss/finish profile for sweeping simFinishVulnerability's
+      // scale/cap against the backtest, as-of the fight date.
+      wFinLossA: lfpA.weightedFinishLossCount, lossesA: lfpA.losses, lossFinA: lfpA.lossFinishes,
+      wFinLossB: lfpB.weightedFinishLossCount, lossesB: lfpB.losses, lossFinB: lfpB.lossFinishes
     });
   } catch (e) { errors++; if (errors <= 3) console.log('  ERR', L.A, 'vs', L.B, e.message); }
   processed++;
