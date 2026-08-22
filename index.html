@@ -2579,8 +2579,15 @@
     .cs-footer button { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.55rem 1rem; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
     .cs-footer button:hover { border-color: var(--muted); }
 
-    .sim-byo-btn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 0.65rem 1.1rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: border-color 0.15s, color 0.15s; }
-    .sim-byo-btn:hover { border-color: var(--accent); color: var(--accent); }
+    /* Same green treatment as .fight-dd-bar (the "Matchup Analytics Deep
+       Dive" button used across the site) rather than the neutral outline
+       this used before -- width is set to match #simRunBtn's own rendered
+       width via JS (see simSyncByoBtnWidth), since simRunBtn's width is
+       itself content-driven (sits in a flex row with the rounds toggle and
+       count input, no fixed width to just copy in CSS). */
+    .sim-byo-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; background: linear-gradient(180deg, rgba(0,230,104,0.09), rgba(0,230,104,0.03)); border: 1px solid rgba(0,230,104,0.35); border-radius: 8px; color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.65rem 1.1rem; cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.12s; }
+    .sim-byo-btn:hover { background: linear-gradient(180deg, rgba(0,230,104,0.18), rgba(0,230,104,0.07)); border-color: var(--accent); }
+    .sim-byo-btn:active { transform: translateY(1px); }
 
     @media (max-width: 640px) {
       #cs-box { width: 96vw; max-height: 92vh; }
@@ -8185,6 +8192,11 @@
  if (page !== 'projections' && page !== 'fighter') simShowBackToEvents = false;
  const simBack = document.getElementById('sim-back-btn');
  if (simBack) simBack.style.display = (page === 'projections' && simShowBackToEvents) ? 'inline-flex' : 'none';
+ // #simRunBtn is unmeasurable (0-width) while its page is display:none, so
+ // the DOMContentLoaded-time sync in simSyncByoBtnWidth silently no-ops on
+ // first load if the simulator isn't the landing page. Re-sync now that the
+ // page is actually visible, one frame late so layout has settled.
+ if (page === 'projections' && typeof simSyncByoBtnWidth === 'function') requestAnimationFrame(simSyncByoBtnWidth);
  };
 
  if (pageTransitionTimer) { clearTimeout(pageTransitionTimer); pageTransitionTimer = null; }
@@ -138785,6 +138797,23 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     document.removeEventListener('keydown', _csKey);
   }
   window.closeCustomSimulator = closeCustomSimulator;
+
+  // #simRunBtn's width is content-driven (it sits in a flex row with the
+  // rounds toggle and simulation-count input, no fixed width to just copy
+  // in CSS) — so matching #simByoBtn to it means measuring the real
+  // rendered width, not guessing at one. Re-run on resize since the flex
+  // row's own width (and therefore simRunBtn's) can change across
+  // breakpoints/orientation.
+  function simSyncByoBtnWidth() {
+    const runBtn = document.getElementById('simRunBtn');
+    const byoBtn = document.getElementById('simByoBtn');
+    if (!runBtn || !byoBtn) return;
+    const w = runBtn.getBoundingClientRect().width;
+    if (w > 0) byoBtn.style.width = w + 'px';
+  }
+  document.addEventListener('DOMContentLoaded', simSyncByoBtnWidth);
+  window.addEventListener('resize', simSyncByoBtnWidth);
+  window.simSyncByoBtnWidth = simSyncByoBtnWidth;
 
   // Past-events dropdown: lets you load any of the last 15 completed events
   // (with results) into the featured slot, to verify result rendering. Pulls
