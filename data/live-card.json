@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-22T23:30:16.984Z",
+ "generatedAt": "2026-08-22T23:45:32.766Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -7518,6 +7518,194 @@
       ]
      },
      "capturedAt": "2026-08-22T23:30:16.870Z"
+    }
+   ]
+  },
+  "Jamall Emmers": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Lerryan Douglas",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:22",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Lerryan Douglas",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 12,
+      "sigA": 31,
+      "totL": 12,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       22
+      ],
+      "body": [
+       0,
+       3
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       10,
+       28
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 30,
+      "totL": 12,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       12,
+       30
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-22T23:45:32.654Z"
+    }
+   ]
+  },
+  "Lerryan Douglas": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jamall Emmers",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:22",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jamall Emmers",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 30,
+      "totL": 12,
+      "totA": 30,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       20
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       7,
+       8
+      ],
+      "dist": [
+       12,
+       30
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 12,
+      "sigA": 31,
+      "totL": 12,
+      "totA": 31,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       8,
+       22
+      ],
+      "body": [
+       0,
+       3
+      ],
+      "leg": [
+       4,
+       6
+      ],
+      "dist": [
+       10,
+       28
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-08-22T23:45:32.654Z"
     }
    ]
   }
