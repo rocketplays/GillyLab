@@ -1823,11 +1823,28 @@ const isOptedOut = async (env, email) => { const u = await getUser(env, email); 
  *   act:user:<email>              -> { email, firstSeen, lastSeen, counts:{feature:n} }
  *   act:daily:<YYYY-MM-DD>:<feat> -> integer string, site-wide count for that day
  *
+ * KV's daily free-tier cap (100k reads / 1k writes / 1k deletes / 1k lists) is
+ * ACCOUNT-WIDE, shared with USERS/MAGIC/PICKS/PARTNERS -- i.e. login, sessions
+ * and checkout. Found 2026-08-23: at 6 KV ops per event (read+write on THREE
+ * keys) this hit 50% of the daily write cap on its own within a day of real
+ * traffic, which is not a "the dashboard undercounts" problem, it's a "logins
+ * start 429ing" problem. The daily-bucket and all-time-total writes below are
+ * now gated to TRACKED_DAILY_FEATURES -- the only features /admin/activity
+ * actually reads a daily trend or all-time total for (currently just
+ * climb_run) -- since paying that cost for every SPA tab click and free-page
+ * view was pure waste the dashboard never looked at. Add a feature to the set
+ * only if something actually starts reading dailyActivityCounts/
+ * totalActivityCount for it. The per-user record write is NOT gated -- every
+ * account's last-seen + per-feature counts is the dashboard's actual core
+ * data -- so this is a 6-ops-per-event -> 2-ops-per-event cut for the
+ * dominant event types (nav clicks, page views, logins), not a feature cut.
+ *
  * Best-effort only: a KV hiccup here must never break the real request the
  * event rode in on, so every call site fires this through ctx.waitUntil (or
  * awaits it directly where no ctx is available) with its own try/catch.
  */
 const ACTIVITY_RETENTION_SECONDS = 400 * 86400;   // ~13 months of daily buckets
+const TRACKED_DAILY_FEATURES = new Set(["climb_run"]);
 function activityDay() { return new Date().toISOString().slice(0, 10); }
 async function logActivity(env, ctx, email, feature) {
   if (!env.ACTIVITY || !email || !feature) return;
@@ -1835,14 +1852,16 @@ async function logActivity(env, ctx, email, feature) {
   const feat = String(feature).slice(0, 40);
   const task = (async () => {
     try {
-      const dayKey = "act:daily:" + activityDay() + ":" + feat;
-      const cur = parseInt((await env.ACTIVITY.get(dayKey)) || "0", 10) || 0;
-      await env.ACTIVITY.put(dayKey, String(cur + 1), { expirationTtl: ACTIVITY_RETENTION_SECONDS });
-      // All-time running total, no TTL — the daily buckets above expire after
-      // ~13 months, so this is the only durable "how many, ever" figure.
-      const totalKey = "act:total:" + feat;
-      const totalCur = parseInt((await env.ACTIVITY.get(totalKey)) || "0", 10) || 0;
-      await env.ACTIVITY.put(totalKey, String(totalCur + 1));
+      if (TRACKED_DAILY_FEATURES.has(feat)) {
+        const dayKey = "act:daily:" + activityDay() + ":" + feat;
+        const cur = parseInt((await env.ACTIVITY.get(dayKey)) || "0", 10) || 0;
+        await env.ACTIVITY.put(dayKey, String(cur + 1), { expirationTtl: ACTIVITY_RETENTION_SECONDS });
+        // All-time running total, no TTL — the daily buckets above expire
+        // after ~13 months, so this is the only durable "how many, ever" figure.
+        const totalKey = "act:total:" + feat;
+        const totalCur = parseInt((await env.ACTIVITY.get(totalKey)) || "0", 10) || 0;
+        await env.ACTIVITY.put(totalKey, String(totalCur + 1));
+      }
       const uKey = "act:user:" + e;
       const raw = await env.ACTIVITY.get(uKey);
       const rec = raw ? JSON.parse(raw) : { email: e, firstSeen: Date.now(), counts: {} };
