@@ -10482,7 +10482,7 @@
   "Montserrat Conejo Ruiz": { ht:"5'0\"", dob:"1993-02-03", reach:'61"', stance:"Southpaw", slpm:2.21, strAcc:"29%", sapm:6.19, strDef:"44%", kd:0.0, tdLanded:1.75, tdAcc:"50%", tdDef:"44%", subAvg:0.58, finRate:"50%", streak:0, gym:"Kings MMA" },
   "Marek Bujlo": { ht:"6'4\"", dob:"1993-10-10", reach:'77"', stance:"Orthodox", slpm:2.07, strAcc:"39%", sapm:3.27, strDef:"38%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:null, subAvg:0.0, finRate:"100%", streak:0, gym:"Grappler Ełk / Dragon's Den Fight Club Team" },
   "Sebastian Szalay": { ht:"5'6\"", dob:"1994-02-03", reach:'66"', stance:"Orthodox", slpm:5.72, strAcc:"39%", sapm:3.26, strDef:"62%", kd:0.0, tdLanded:1.09, tdAcc:"100%", tdDef:null, subAvg:0.0, finRate:"30%", streak:0, gym:"Luistro Combat Academy" },
-  "Lawrence Lui": { ht:"5'7\"", dob:"1996-08-04", reach:'72"', stance:"Orthodox", slpm:3.47, strAcc:"35%", sapm:3.73, strDef:"55%", kd:0.0, tdLanded:7.0, tdAcc:"47%", tdDef:null, subAvg:0.0, finRate:"50%", streak:5, gym:"City Kickboxing" },
+  "Lawrence Lui": { ht:"5'7\"", dob:"1996-08-04", reach:'72"', stance:"Orthodox", slpm:3.72, strAcc:"40%", sapm:3.32, strDef:"60%", kd:0.82, tdLanded:5.30, tdAcc:"47%", tdDef:"100%", subAvg:0.0, finRate:"50%", streak:5, gym:"City Kickboxing" },
   "Viacheslav Borshchev": { ht:"5'11\"", dob:"1992-01-08", reach:'69"', stance:"Orthodox", slpm:5.1, strAcc:"51%", sapm:4.46, strDef:"57%", kd:0.65, tdLanded:0.0, tdAcc:"0%", tdDef:"44%", subAvg:0.13, finRate:"75%", streak:0, gym:"Team Alpha Male" },
   "Sangwook Kim": { ht:"6'0\"", dob:"1993-10-17", reach:'71"', stance:"Orthodox", slpm:4.53, strAcc:"51%", sapm:6.6, strDef:"43%", kd:0.0, tdLanded:1.0, tdAcc:"10%", tdDef:"75%", subAvg:0.0, finRate:"69%", streak:0, gym:"Team Stun Gun" },
   "Sulangrangbo": { ht:"5'9\"", dob:"2005-07-17", reach:'66"', stance:"Southpaw", slpm:3.73, strAcc:"45%", sapm:3.47, strDef:"65%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"53%", subAvg:0.0, finRate:"70%", streak:0, gym:"Enbo Gedou" },
@@ -36040,6 +36040,11 @@
  // closest to the bout being shown, so a rematch doesn't inherit the first fight's
  // line. Undated entries keep working as before.
  const ODDS_HISTORY = {
+  "Lawrence Lui": [
+    { opponent: "Sulangrangbo", odds: 235 },
+    { opponent: "Van Y Nghiem", odds: -200 },
+    { opponent: "Qinghe Zhang", odds: -200 }
+  ],
   "Alexander Poppeck": [
     { opponent: "Tomasz Narkun", odds: -139 },
     { opponent: "Jesus Samuel Chavarria", odds: -800 },
@@ -114533,6 +114538,12 @@ function populateFightHistory(name) {
 // fall back to the "Accolades will populate here" empty state, ready to
 // be filled in over time.
 const ACCOLADES = {
+  "Lawrence Lui": [
+    { icon: "🏆", title: "Shuriken Fight Series Bantamweight Champion", detail: null },
+    { icon: "🏅", title: "Won the Road to UFC Season 4 bantamweight tournament final at UFC 325 (Jan 2026), becoming the first New Zealander signed to the UFC's men's bantamweight division", detail: null },
+    { icon: "🥈", title: "2019 IMMAF Oceania silver medalist (amateur)", detail: null },
+    { icon: "🥋", title: "BJJ Brown Belt, earned June 2026", detail: null }
+  ],
   "Nilson Rojas": [
     { icon: "🏅", title: "Enters the UFC undefeated at 9-0, with 7 of his 9 wins by knockout or TKO — 8 of 9 by finish overall", detail: null },
     { icon: "🥊", title: "Signed with Iridium Sports Agency in 2026; nicknamed \"El Rayo\" for his one-shot knockout power at flyweight", detail: null }
