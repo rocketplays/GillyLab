@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T02:30:19.076Z",
+ "generatedAt": "2026-08-23T03:05:40.983Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -8640,6 +8640,194 @@
       ]
      },
      "capturedAt": "2026-08-23T02:18:42.524Z"
+    }
+   ]
+  },
+  "Anthony Hernandez": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Gregory Rodrigues",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Gregory Rodrigues",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 161,
+      "totL": 92,
+      "totA": 191,
+      "tdL": 3,
+      "tdA": 28,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:40",
+      "head": [
+       64,
+       160
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       45,
+       135
+      ],
+      "clinch": [
+       18,
+       23
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 3,
+      "sigL": 150,
+      "sigA": 291,
+      "totL": 204,
+      "totA": 355,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:40",
+      "head": [
+       99,
+       222
+      ],
+      "body": [
+       32,
+       45
+      ],
+      "leg": [
+       19,
+       24
+      ],
+      "dist": [
+       122,
+       241
+      ],
+      "clinch": [
+       21,
+       38
+      ],
+      "ground": [
+       7,
+       12
+      ]
+     },
+     "capturedAt": "2026-08-23T03:05:40.864Z"
+    }
+   ]
+  },
+  "Gregory Rodrigues": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Anthony Hernandez",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 5,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Anthony Hernandez",
+     "result": "W",
+     "f": {
+      "kd": 3,
+      "sigL": 150,
+      "sigA": 291,
+      "totL": 204,
+      "totA": 355,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "2:40",
+      "head": [
+       99,
+       222
+      ],
+      "body": [
+       32,
+       45
+      ],
+      "leg": [
+       19,
+       24
+      ],
+      "dist": [
+       122,
+       241
+      ],
+      "clinch": [
+       21,
+       38
+      ],
+      "ground": [
+       7,
+       12
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 65,
+      "sigA": 161,
+      "totL": 92,
+      "totA": 191,
+      "tdL": 3,
+      "tdA": 28,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "10:40",
+      "head": [
+       64,
+       160
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       45,
+       135
+      ],
+      "clinch": [
+       18,
+       23
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-08-23T03:05:40.864Z"
     }
    ]
   }
