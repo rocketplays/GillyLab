@@ -9,6 +9,44 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 14. Felipe Lima (2026-08-23) — 8 of 16 resolved, 8 confirmed unavailable
+
+7/16 were already resolved from a prior session (3 UFC fights + Oktagon,
+Fight Club Rush 10, and 2 Amazon Talent fights). This pass checked the 9
+remaining fights, all early-career Brazilian/Swedish regional bouts
+(2015–2020).
+
+Resolved (1):
+- Fernando Flores — Fight Club Rush 8, Mar 2021 — Fight Pass, `video/208700`.
+  This was FCR's first Swedish event carried on Fight Pass. The listing is
+  the full ~2h39m event replay with no per-fight chapter markers (same
+  unchaptered-full-VOD situation documented for Road to UFC seasons) — the
+  fight is in there, but no in-page timestamp is available, so none is
+  claimed.
+
+Unresolved (8), no footage found after Fight Pass search + generic/quoted
+YouTube search + promotion-specific search:
+- Farbod Iran Nezhad — Brave CF 39, Aug 2020 (Stockholm). Brave CF isn't a
+  Fight Pass promotion; no full-event or per-fight upload found elsewhere.
+- Gustavo Oliveira — Mr. Cage 39, Oct 2019 (Brazilian regional).
+- Eurides Bandeira — Amazon Talent 10, Dec 2018 (Manaus regional).
+- Adalberto Mota da Silva Jr. — Arena Fight Championship 4, Jun 2018.
+  Search results conflated this bout with the Admilson Pimentel fight
+  (search engines kept surfacing AFC4/Amazon Talent 8 results for each
+  other) — worth a closer manual check next pass.
+- Admilson Pimentel — Amazon Talent 8, Mar 2018.
+- Sebastiao da Silva Calixto — Rei da Selva Combat 10, Nov 2017.
+- Isaias Monteiro da Silva — Arena Fight Championship 3, Jul 2017. An
+  "ARENA FIGHT Championship TV" YouTube channel exists but wasn't checked
+  in-channel for this specific bout — flagging as a next step.
+- Dionatan Carvalho — Amazon Talent 7, Mar 2017.
+
+All of these are small Brazilian regional promotions (Amazon Talent, Arena
+Fight Championship, Rei da Selva Combat, Mr. Cage) with no discoverable
+YouTube presence for individual undercard bouts from this era.
+
+---
+
 ## 13. Farès Ziam (2026-08-23) — 16 of 22 resolved, 6 confirmed unavailable
 
 Ziam already had 10/22 resolved from a prior session (his full UFC run — Tom
