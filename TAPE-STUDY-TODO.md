@@ -9,6 +9,52 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 13. Farès Ziam (2026-08-23) — 16 of 22 resolved, 6 confirmed unavailable
+
+Ziam already had 10/22 resolved from a prior session (his full UFC run — Tom
+Nolan through Don Madge, all Fight Pass/Paramount+). This pass covered the 12
+remaining pre-UFC regional fights (France/Belgium/Switzerland/Ukraine/Russia/
+China, 2014–2019). First search accidentally missed him — his `TAPE_STUDY`,
+`FIGHT_HISTORY`, etc. keys use the accented "Farès Ziam", not the "Fares
+Ziam" spelling used when he appears as an opponent elsewhere in the file.
+
+Resolved (6, all pre-UFC, added newest-first after Don Madge):
+- Yassine Belhadj — European Beatdown 5, Feb 2019 — YouTube (European
+  Beatdown channel), `dn1BKQkXGuM`
+- Julio Matos — European Beatdown 4, Oct 2018 — YouTube (European Beatdown),
+  `E8Tt6d04SPA`
+- Abner Lloveras — HIT-FC 5, Mar 2018 — YouTube (Julien Strai), `pDQjbbB7Ero`
+- Alexey Valivakhin — World Warriors FC 8, Sep 2017 — YouTube (official WWFC
+  channel), `hP_ogwtyIdA` (a second, non-official upload of the same fight
+  also exists — used the official one)
+- Damien Lapilus — Lyon FC 7, Nov 2016 — YouTube (Julien Strai),
+  `xyXS-sss7Jw`
+- Dominic Yeo — Westside Fighting Challenge 3, Nov 2015 — YouTube (GNP1 TV),
+  `Dw3tR8M7FN8`
+
+Unresolved (6), all searched via Fight Pass-catalog logic (none plausible —
+these are all pre-2018 regional promotions with no Fight Pass footprint) plus
+generic and quoted-exact-name YouTube search, promotion-specific search, and
+(for the Russian/Chinese fights) native-script search:
+- Artem Tanshyn — Road to World Warriors FC 4, Apr 2017. No individual
+  upload found; WWFC's own channel wasn't checked for a full-event replay
+  that might contain it unchaptered — flagging as a possible next step, not
+  attempted this pass.
+- Wu Haotian — Kunlun Fight MMA 7, Dec 2016 (Beijing). Kunlun Fight's
+  official YouTube channel exists but full Dec 2016 event replay not
+  located; Chinese-script search for 吴皓天 not attempted.
+- Viskhan Magomadov — ACB 46 "Young Eagles 13," Sep 2016. One YouTube result
+  (`EfP00Ai6wpc`, title "Висхан Магомадов vs. Фарез Зиам | ACB 46") looked
+  promising but oembed returns empty on repeated checks — dead/private
+  video, not usable.
+- Laïd Zerhouni — Gladiator Fighting Arena 3, Mar 2016 (French regional).
+  No footage found.
+- Jean Dutriaux — 100% Fight 27, Feb 2016 (Paris). No footage found.
+- Guerra Mathias — Lyon FC 4, Nov 2014. No footage found; this is also his
+  earliest known pro fight.
+
+---
+
 ## 12. Xiao Long (2026-08-23) — 7 of 38 resolved, rest confirmed unavailable
 
 38 pro fights — by far the longest history tape-studied so far, spanning a
