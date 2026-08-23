@@ -9,6 +9,62 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 8. Nilson Rojas (2026-08-23) — 3 of 9 resolved, rest confirmed unavailable
+
+New roster addition (0 UFC fights, 8-0 undefeated — note the FIGHT_HISTORY block
+actually holds 9 fights, not 8; the fighter's real record is 9 fights). Peruvian
+prospect, mostly Peruvian/Chilean regional promotions plus one Brazilian
+opponent. Fight Pass checked first this time (given how well it worked for
+Nuzzi's Cage Warriors bouts), then YouTube for what wasn't there.
+
+- **Resolved, found directly in Fight Pass's own catalog:**
+  - Inka MMA 59 vs Gonzalo Hanampa (Jul 2026) — `ufcfightpass.com/video/984998`.
+  - FFC 94 vs Wallafy de Paulo (Aug 2025) — `ufcfightpass.com/video/849086`,
+    catalogued there as "Wallafy Fernandes" (matches FIGHT_HISTORY's "Wallafy de
+    Paulo" — same fighter, promotion used his surname instead of the "de Paulo"
+    form Sherdog/Tapology use; thumbnail card matches the exact weight/records
+    from Tapology's own bout page).
+  - FFC 55 vs Miguel Angel Fierro (Nov 2022) — `ufcfightpass.com/video/540023`,
+    catalogued as "Miguel Fierro" (shortened form of the FIGHT_HISTORY name).
+- **Confirmed unavailable, not a search gap:**
+  - OFL 9: Open Fight LATAM 9 vs William Rocha (Jul 2024). Not on Fight Pass
+    (OFL isn't a partner). On YouTube, the promotion's own channel ("OFL, la
+    revolución de las MMA") did stream the entire event live
+    (`Qjjhv1-HHlQ`, confirmed by its "Streamed live on Jul 21, 2024" date and
+    matching venue/description) — but it's an unedited 3h25m stream with no
+    chapters and no fan-comment timestamp index, so there's no way to point at
+    Rojas's specific fight inside it without guessing a `&t=` value. Per the
+    no-guessed-timestamps rule, this stays unresolved even though the source
+    footage almost certainly exists somewhere in that video.
+  - NLFC 15: Next Level Fight Club 15 vs Adrian Haly (Aug 2023). Not on Fight
+    Pass. NLFC's own YouTube channel (`@nextlevelfightclub4422`) has only 21
+    videos total, mostly 9-year-old highlight reels from Raleigh, NC events —
+    checked its in-channel search for "Rojas" directly, zero matches. The
+    promotion simply doesn't upload full fights from this era.
+  - OFC 1: Open Fight Chile 1 vs John Alvarez (Oct 2022). Not on Fight Pass. One
+    YouTube candidate was found (`TJzAef-Jspg`, "Duelo entre Nilson Rojas y
+    Jhon Álvarez") but it's dead on oembed — checked, not assumed.
+  - TWC 10 vs Nick Vargas (Sep 2019). Not on Fight Pass. The promotion's
+    apparent official channel ("Titans Peru," 43 videos) has zero hits searching
+    "Rojas" directly in-channel.
+  - FFC 34: Mora vs. Diaz vs Andres Santillana (Sep 2018). Not on Fight Pass —
+    notable because FFC *is* a heavy Fight Pass presence for this fighter's
+    later fights (Inka/FFC 94, FFC 55 above), so this confirms FFC's catalog
+    doesn't reach back to 2018, not that the search missed it. Also checked
+    Movistar Deportes Perú (879K subscribers, 23K videos, FFC's Peruvian TV
+    broadcast partner, which does have hundreds of other FFC fights on its
+    channel including a duplicate free upload of the FFC 55 fight above) — zero
+    hits for FFC 34, Rojas, or Santillana together.
+  - Peruvian Evolution Fight 1 vs Angel Soto (Jul 2018, Rojas's pro debut). Not
+    on Fight Pass. No YouTube presence found anywhere — this looks like a
+    one-off local promotion name; general search for "Peruvian Evolution
+    Fight" returns nothing related to MMA at all.
+
+No Fight Pass video ID or YouTube timestamp was guessed for any of the 6
+unresolved fights.
+
+---
+
 ## 7. Francesco Nuzzi (2026-08-23) — 9 of 15 resolved, rest confirmed unavailable
 
 New roster addition (0 UFC fights). Fifteen pro fights spread across eleven
