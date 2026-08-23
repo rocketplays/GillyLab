@@ -9,6 +9,59 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 7. Francesco Nuzzi (2026-08-23) — 5 of 15 resolved, rest confirmed unavailable
+
+New roster addition (0 UFC fights). Fifteen pro fights spread across eleven
+different promotions — worked fighter-by-fighter, event-by-event, YouTube first
+then Fight Pass checked directly for the two premium bouts:
+
+- **Resolved, oembed-verified, title-matched, official channels:**
+  - PFL Europe 2 vs Farbod Iran Nezhad (Jul 2023) — `IG7_HMwdYMw`, uploaded by
+    PFL Europe's own channel and explicitly titled "Full Fight" (a second,
+    unlabeled PFL MMA upload of the same fight, `rIRYQjTmQmk`, also exists but
+    the labeled one was used).
+  - PFL 8 vs Moktar Benkaci (Aug 2022) — `_cyR1HOAa9Q`, official PFL MMA channel.
+  - Brave CF 49 vs Bernardo Sopai (Mar 2021) — `yTonqsfsTtE`, official BRAVE
+    Combat Federation channel, explicitly titled "FREE MMA FIGHT."
+  - Venator Fight Night 2 vs Ibragim Navruzov (Jun 2019) — `Q1HygvnfjsI`,
+    official Venator FC channel.
+  - Shooto Italy - Bushido 20 vs Claudio Iancu (Mar 2017) — `e85EtWQHhKs`,
+    uploaded by "MMA DatabaseIT." Nuzzi fought Iancu twice (a Jul 2016 loss at
+    Apocalypse - White Rex, then this Mar 2017 win); only one video of the pair
+    exists on YouTube and its title carries no date. Attributed to the Mar 2017
+    fight on the strength of the page's own "9 years ago" upload-age label
+    (measured from 2026-08-23: Jul 2016 is 10+ years back and would read "10
+    years ago," Mar 2017 is 9y5m back and reads "9 years ago" — the labels only
+    fit one of the two dates). The Jul 2016 loss itself stays uncatalogued.
+- **Confirmed unavailable, not a search gap:**
+  - Cage Warriors 204 vs Manoel Costa (Apr 2026) and Cage Warriors 195 vs Lucas
+    Rodrigues (Oct 2025). Both were Nuzzi's main-card bouts (main event and
+    co-main respectively). Cage Warriors' own broadcast pages and multiple
+    independent event previews confirm the main card streams **exclusively on
+    UFC Fight Pass** — Cage Warriors' YouTube channel only carries prelims,
+    weigh-ins, and short highlight clips for these two events, never the full
+    main-card fights. Genuine Fight-Pass-exclusive case.
+  - PFL 2025 World Tournament 2 vs Mando Gutierrez (Apr 2025). Checked PFL
+    MMA's own channel directly via its in-channel search (not general web
+    search): searching "Nuzzi" on `@PFLMMA` returns only the two Iran Nezhad
+    videos above, and searching "Gutierrez" returns only a post-fight-interview
+    short ("Where's The Italian Translator?") — no full fight or highlight reel
+    of this specific bout exists on PFL's channel, despite PFL routinely
+    uploading full fights for Nuzzi's other bouts (see above). A real gap, not
+    an oversight.
+  - Italian Cage Fighting 5 vs Giorgio Belsanti (Oct 2018), IFC 3 vs Percy
+    Herrera (May 2018), IFC 1 vs Petru Biclea (Feb 2018), KFWC Day 1 vs Chenjin
+    Wei (Jan 2017), Slam FC Underdog 1 vs Alessio Esposito (Nov 2016), Apocalypse
+    - White Rex vs Claudio Iancu (Jul 2016, the first meeting — see above), and
+    Legio's Arena 2 vs Alban Sinani (Jun 2016). All seven are small Italian
+    regional promotions with no full-fight YouTube presence found under any
+    fighter-name or event-name query tried; none of these promotions' own
+    channels (where they exist) carry archived full fights from this era.
+
+No Fight Pass video ID was guessed for any of the 10 unresolved fights.
+
+---
+
 ## 6. Hector Santiago (2026-08-23) — 4 of 7 resolved, rest confirmed unavailable
 
 New roster addition (0 UFC fights). Regional Brazilian bouts across four
