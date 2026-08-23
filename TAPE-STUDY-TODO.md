@@ -9,6 +9,40 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 11. Andre Lima (2026-08-23) — 7 of 12 resolved, rest confirmed unavailable (no new resolutions this pass)
+
+12 pro fights. 7 were already resolved from the fill-fighter pass, all Fight
+Pass/Paramount+ except one YouTube: Kevin Borjas (Paramount+), Daniel Barez,
+Felipe dos Santos, Mitch Raposo, Igor Severino (all Fight Pass), Igor Taylon/
+LFA 162 (YouTube). This pass searched the remaining 5 — all regional Brazilian
+fights predating his 2023 Contender Series run — and found nothing new.
+
+Unresolved (5), confirmed unavailable via full search — Fight Pass direct
+search (logged in), quoted exact-name YouTube search, event+name search, and
+promotion-channel follow-ups:
+- Alexandre Rodrigues (R1 Fighting Series 2, May 2023). Not on Fight Pass (R1
+  Fighting Series isn't a partner promotion — searched directly, zero hits).
+  R1's own YouTube channel (`@R1Fighting`, 475 subs) exists but only has 3
+  videos total, all recent livestreams — nothing from 2023. No generic
+  YouTube match either.
+- Natan Ziele, Victor Santos, Luiz Henrique Martins, Joao Vitor Oliveira
+  (Spartacus MMA 29/25/20/16, Feb–Oct 2022). Spartacus MMA has no Fight Pass
+  presence at all — searched the promotion name directly, zero hits. No
+  dedicated official Spartacus MMA YouTube channel found; "CFX Sports"
+  (834K subs) covers Brazilian MMA news/commentary and had one unrelated
+  Spartacus-branded knockout-compilation video, not full fight replays, and
+  its in-channel search couldn't be made to filter results (kept reverting to
+  the default channel feed after repeated attempts) — checked its visible
+  content manually instead, no match. Quoted exact-name searches for all four
+  opponent pairings returned nothing relevant.
+
+No individual fight from this stretch of Lima's Brazilian regional run (Oct
+2022–May 2023, 5 fights) appears to be online anywhere searchable. Nothing was
+guessed; all 5 rows stay omitted from `TAPE_STUDY` rather than pointing at a
+placeholder.
+
+---
+
 ## 10. Lawrence Lui (2026-08-23) — 4 of 9 resolved, rest confirmed unavailable
 
 9 pro fights. 3 were already resolved from the fill-fighter pass (all Fight Pass:
