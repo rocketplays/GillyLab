@@ -2176,7 +2176,239 @@
         "pts": -0.0083,
         "leaned": true
       }
+    },
+    {
+      "fightId": "chris padilla|nasrat haqparast",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.394Z",
+      "a": {
+        "feed": "Nasrat Haqparast",
+        "db": "Nasrat Haqparast"
+      },
+      "b": {
+        "feed": "Chris Padilla",
+        "db": "Chris Padilla"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5373,
+      "modelClose": 0.534,
+      "marketOpen": 0.5217,
+      "marketClose": 0.4848,
+      "leanA": 0.0156,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": false,
+        "pts": -0.0369,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "jackson mcvey|wes schultz",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.394Z",
+      "a": {
+        "feed": "Wes Schultz",
+        "db": "Wes Schultz"
+      },
+      "b": {
+        "feed": "Jackson McVey",
+        "db": "Jackson McVey"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6564,
+      "modelClose": 0.3278,
+      "marketOpen": 0.3933,
+      "marketClose": 0.6097,
+      "leanA": 0.2631,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": true,
+        "pts": 0.2164,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "jamall emmers|lerryan douglas",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.394Z",
+      "a": {
+        "feed": "Jamall Emmers",
+        "db": "Jamall Emmers"
+      },
+      "b": {
+        "feed": "Lerryan Douglas",
+        "db": "Lerryan Douglas"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4651,
+      "modelClose": 0.4784,
+      "marketOpen": 0.2503,
+      "marketClose": 0.2346,
+      "leanA": 0.2148,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": false,
+        "pts": -0.0157,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "kennedy nzechukwu|shamil gaziev",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.394Z",
+      "a": {
+        "feed": "Kennedy Nzechukwu",
+        "db": "Kennedy Nzechukwu"
+      },
+      "b": {
+        "feed": "Shamil Gaziev",
+        "db": "Shamil Gaziev"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6257,
+      "modelClose": 0.3801,
+      "marketOpen": 0.4675,
+      "marketClose": 0.5427,
+      "leanA": 0.1582,
+      "nSnapshots": 22,
+      "clv": {
+        "toward": true,
+        "pts": 0.0752,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "elise reed|shanelle dyer",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.396Z",
+      "a": {
+        "feed": "Shanelle Dyer",
+        "db": "Shanelle Dyer"
+      },
+      "b": {
+        "feed": "Elise Reed",
+        "db": "Elise Reed"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5997,
+      "modelClose": 0.6492,
+      "marketOpen": 0.8148,
+      "marketClose": 0.863,
+      "leanA": -0.2151,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": false,
+        "pts": -0.0482,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "marcio barbosa|ryan kuse",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.396Z",
+      "a": {
+        "feed": "Márcio Barbosa",
+        "db": "Marcio Barbosa"
+      },
+      "b": {
+        "feed": "Ryan Kuse",
+        "db": "Ryan Kuse"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6243,
+      "modelClose": 0.6593,
+      "marketOpen": 0.8657,
+      "marketClose": 0.863,
+      "leanA": -0.2414,
+      "nSnapshots": 15,
+      "clv": {
+        "toward": true,
+        "pts": 0.0027,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "anthony wint|terrance chatman",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.396Z",
+      "a": {
+        "feed": "Anthony Wint",
+        "db": "Anthony Wint"
+      },
+      "b": {
+        "feed": "Terrance Chatman",
+        "db": "Terrance Chatman"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5814,
+      "modelClose": 0.6882,
+      "marketOpen": 0.8726,
+      "marketClose": 0.8737,
+      "leanA": -0.2912,
+      "nSnapshots": 11,
+      "clv": {
+        "toward": false,
+        "pts": -0.0011,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "gauge young|stan dorsainvil",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T00:38:37.396Z",
+      "a": {
+        "feed": "Gauge Young",
+        "db": "Gauge Young"
+      },
+      "b": {
+        "feed": "Stan Dorsainvil",
+        "db": "Stan Dorsainvil"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4883,
+      "modelClose": 0.4697,
+      "marketOpen": 0.5427,
+      "marketClose": 0.6032,
+      "leanA": -0.0544,
+      "nSnapshots": 11,
+      "clv": {
+        "toward": false,
+        "pts": -0.0605,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-22T12:34:28.515Z"
+  "generatedAt": "2026-08-23T00:38:37.409Z"
 }
