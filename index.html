@@ -7936,6 +7936,7 @@
  { name: "Raulian Paiva", division: "FLW", rank: "NR", record: "23-6-1", initials: "RP", country: "Brazil" },
  { name: "Chris Ocon", division: "BW", rank: "NR", record: "5-4-0", initials: "CO", country: "USA" },
  { name: "Francesco Nuzzi", division: "BW", rank: "NR", record: "11-2-0", initials: "FN", country: "Italy" },
+ { name: "Hector Santiago", division: "BW", rank: "NR", record: "6-1-0", initials: "HS", country: "Brazil" },
  { name: "Chad Hanekom", division: "MW", rank: "NR", record: "9-4-0", initials: "CH", country: "South Africa" },
  { name: "Mateo Vogel", division: "LW", rank: "NR", record: "9-3-0", initials: "MV", country: "Canada" },
  { name: "Rose Conceição", division: "WSW", rank: "NR", record: "7-2-0", initials: "RC", country: "Brazil" },
@@ -8481,6 +8482,7 @@
   "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
   "Ce Liu": { ht:"6'5\"", dob:"1996-09-04", reach:"78\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tangshan Buntai Riding Fight Club" },
   "Francesco Nuzzi": { ht:"5'6\"", dob:"1996-08-28", reach:"69\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"73%", streak:1, gym:"Aurora MMA" },
+  "Hector Santiago": { ht:"5'4\"", dob:"1993-03-21", reach:"69\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"83%", streak:2, gym:"Team Lucas Mineiro" },
   "John Garza": { ht:"5'8\"", dob:"2002-10-30", reach:null, stance:"Orthodox", slpm:5.47, strAcc:"44%", sapm:5.73, strDef:"36%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"77%", subAvg:0.0, finRate:"67%", streak:5, gym:"AzTex MMA" },
   "Yilizhati Maimaitijiang": { ht:"6'4\"", dob:null, reach:"78.5\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tuowu Fight Gym" },
   "Matthieu Letho Duclos": { ht:"6'3\"", dob:"1995-04-04", reach:"77\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"78%", streak:3, gym:"Venum Training Camp Paris" },
@@ -36084,6 +36086,9 @@
     { opponent: "Farbod Iran Nezhad", odds: -275 },
     { opponent: "Moktar Benkaci", odds: -126 }
   ],
+  "Hector Santiago": [
+    { opponent: "Pedro Sousa", odds: -400 }
+  ],
   "Fedor Emelianenko": [
     { opponent: "Ryan Bader", odds: 275 },
     { opponent: "Tim Johnson", odds: 160 },
@@ -45446,6 +45451,15 @@ const FIGHT_HISTORY = {
     { date: "Nov 27, 2016", opponent: "Alessio Esposito", result: "W", method: "TKO (Punches)", round: 1, time: "3:54", event: "Slam FC - Underdog 1", org: "Slam FC" },
     { date: "Jul 10, 2016", opponent: "Claudio Iancu", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:47", event: "Apocalypse - White Rex Italian Selection", org: "Apocalypse" },
     { date: "Jun 11, 2016", opponent: "Alban Sinani", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Legio's Arena 2: Road to Bellator", org: "Legio's Arena" }
+  ],
+  "Hector Santiago": [
+    { date: "May 23, 2026", opponent: "Paulo Nogueira", result: "W", method: "KO (Punch)", round: 1, time: "3:42", event: "Money Moicano MMA 1", org: "Money Moicano MMA" },
+    { date: "Mar 15, 2026", opponent: "Fernando Henrique", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Puro Impacto Fight Championship - PIFC 34", org: "PIFC" },
+    { date: "Dec 21, 2025", opponent: "Maycon Alcino", result: "L", method: "Submission (Rear-Naked Choke)", round: 2, time: "4:01", event: "Thunder Fight 54: Copa Thunder 44 - Explosive Edition", org: "Thunder Fight" },
+    { date: "Sep 28, 2025", opponent: "Mateus Sales", result: "W", method: "TKO (Punch to the Body)", round: 2, time: "2:50", event: "Thunder Fight 51: Copa Thunder 43 - Dynamite", org: "Thunder Fight" },
+    { date: "Jul 12, 2025", opponent: "Thiago Santos", result: "W", method: "KO (Punch)", round: 1, time: "0:29", event: "Jungle Fight 138: Fight of the Million", org: "Jungle Fight" },
+    { date: "Aug 30, 2024", opponent: "Pedro Sousa", result: "W", method: "TKO (Punches)", round: 1, time: "3:53", event: "LFA 191: Prado vs. Lopes", org: "LFA" },
+    { date: "Jul 20, 2024", opponent: "Pedro Freitas", result: "W", method: "TKO (Punches)", round: 1, time: "1:38", event: "Jungle Fight 128: Sao Paulo", org: "Jungle Fight" }
   ],
   "Fedor Emelianenko": [
     { date: "Feb 4, 2023", opponent: "Ryan Bader", result: "L", method: "TKO (Punches)", round: 1, time: "2:30", event: "Bellator 290: Bader vs. Fedor 2", org: "Bellator" },
@@ -114547,6 +114561,13 @@ const ACCOLADES = {
     { icon: "🏅", title: "PFL Europe 2 main event winner — first-round KO of Farbod Iran Nezhad in Berlin (2023)", detail: null },
     { icon: "🏅", title: "8 first-round finishes across 15 pro fights — out of round 1 only four times in his career", detail: null },
     { icon: "🏅", title: "10-fight unbeaten streak from November 2016 to April 2025", detail: null }
+  ],
+  "Hector Santiago": [
+    { icon: "🏆", title: "WAKO World Kickboxing Champion (2024)", detail: null },
+    { icon: "🥋", title: "Kickboxing Black Belt", detail: null },
+    { icon: "🥋", title: "Muay Thai Black Grade", detail: null },
+    { icon: "🏅", title: "WGP (Brazil's top domestic kickboxing promotion) medalist (2024)", detail: null },
+    { icon: "🏅", title: "5 of 6 pro MMA wins by knockout — trains at Team Lucas Mineiro under former UFC fighter Lucas \"Mineiro\" Martins", detail: null }
   ],
   "Ce Liu": [
     { icon: "🏆", title: "K-1 Cruiserweight (−90 kg) Champion (2024) — one successful title defense", detail: null },
