@@ -9,6 +9,65 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 12. Xiao Long (2026-08-23) — 7 of 38 resolved, rest confirmed unavailable
+
+38 pro fights — by far the longest history tape-studied so far, spanning a
+decade (2016-2026) of Chinese/Asian regional MMA before his 2021 Contender
+Series appearance. 4 were already resolved (his 4 UFC fights, all Fight Pass/
+Paramount+). This pass added 3 more and searched the remaining 31 without
+success.
+
+Resolved (7):
+- Cody Garbrandt, SuYoung You, Quang Le, ChangHo Lee — all UFC, Fight Pass/
+  Paramount+ (pre-existing)
+- Shuya Kamikubo — Road to UFC: Season 2, Episode 6, Aug 2023 — tvN SPORTS,
+  `2HSxuLvjp_A` (same pattern as Batbayar/Lui's Road to UFC fights: individual
+  clips exist on tvN SPORTS even when Fight Pass only has the full episode
+  block)
+- Shohei Nose — Road to UFC: Season 2, Episode 3, May 2023 — tvN SPORTS,
+  `MwC7adoTlfU`
+- Cristian Quiñonez — Dana White's Contender Series: Season 5, Week 9, Oct
+  2021 — Fight Pass, `video/283171` (was previously in the fighter's Fight
+  Pass catalog under "Christian Quinonez vs Xiao Long DWCS" but hadn't been
+  added to `TAPE_STUDY` yet)
+
+Unresolved (31) — his entire pre-2021 career, fought almost entirely for
+Chinese regional promotions:
+- **16 WLF: W.A.R.S. fights** (numbered 16 through 58, 2017-2022). WLF is
+  "Wu Lin Feng" (武林风), a major Chinese kickboxing/MMA promotion — confirmed
+  real and found its official YouTube channel, `@WLFMAX-EICC` ("WLFMAX",
+  2.1K videos). The channel does carry full-event replays that headline Xiao
+  Long by name — e.g. a 2h26m/2h30m "肖龍雙殺沙買提" (Xiao Long defeats
+  Shamaiti twice) replay that appears to cover his Mar 2022 W.A.R.S. 58 win
+  over Shanati Shamaiti — but WLFMAX does not publish individual per-bout
+  clips for undercard MMA fights, only full-card livestream reuploads with no
+  chapter markers, the same access limitation hit repeatedly on Road to UFC
+  Fight Pass episode blocks. In-channel search for both "肖龙" (simplified)
+  and "肖龍" (traditional, the form actually used in that video's title)
+  confirms this is the extent of what the channel has. King Stone (the
+  Mongolian archive channel that resolved several Batbayar/Lui fights,
+  including a shared opponent — Jinbo Zou — from this same WLF W.A.R.S.
+  series) has no Xiao Long content; it doesn't cover Chinese WLF cards.
+- **CWM MMA (3 fights)**, **AFC 18**, **SibForce 2**, **CKF (2 fights,
+  including CKF 86)**, **Glory of Heroes**, **Xindu Fight King**, **ONE
+  Championship** (his 2016 bout, well before ONE's current YouTube archive
+  depth), **WLF: E.P.I.C. 3**, **WLF: Elevation Power in Cage 2** — no
+  individual promotion channel or catalog found for any of these on Fight
+  Pass or YouTube. Generic quoted-name searches (`"Xiao Long" "<opponent>"`)
+  were unreliable for this fighter specifically because "Xiao Long" (小笼/小龙)
+  collides constantly with unrelated Chinese-language content — xiaolongbao
+  (soup dumpling) videos, feng shui zodiac content, other people named Xiao
+  Long — so English-only search returns mostly noise for a Chinese-primary
+  fighter. Chinese-script searches (肖龙/肖龍 + promotion name) were more
+  precise but still surfaced nothing beyond the WLFMAX full-card replay above.
+
+Given the sheer number of small/old regional cards involved, this fighter may
+be worth a dedicated pass using Chinese sports platforms (Youku, Bilibili,
+Douyin) if higher resolution is wanted later — those weren't checked this
+session since search there is outside this workflow's usual tooling.
+
+---
+
 ## 11. Andre Lima (2026-08-23) — 7 of 12 resolved, rest confirmed unavailable (no new resolutions this pass)
 
 12 pro fights. 7 were already resolved from the fill-fighter pass, all Fight
