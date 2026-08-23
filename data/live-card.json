@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T01:22:38.260Z",
+ "generatedAt": "2026-08-23T01:32:55.012Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -8264,6 +8264,194 @@
       ]
      },
      "capturedAt": "2026-08-23T01:17:25.215Z"
+    }
+   ]
+  },
+  "Reinier de Ridder": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Roman Dolidze",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:01",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Roman Dolidze",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 103,
+      "sigA": 112,
+      "totL": 122,
+      "totA": 131,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       102,
+       110
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       100,
+       106
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       4
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-23T01:32:54.894Z"
+    }
+   ]
+  },
+  "Roman Dolidze": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Reinier de Ridder",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 1,
+     "time": "4:01",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Reinier de Ridder",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 2,
+      "sigA": 5,
+      "totL": 4,
+      "totA": 7,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       1,
+       4
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       2,
+       5
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 103,
+      "sigA": 112,
+      "totL": 122,
+      "totA": 131,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:41",
+      "head": [
+       102,
+       110
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       3,
+       6
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       100,
+       106
+      ]
+     },
+     "capturedAt": "2026-08-23T01:32:54.894Z"
     }
    ]
   }
