@@ -2408,7 +2408,123 @@
         "pts": -0.0605,
         "leaned": true
       }
+    },
+    {
+      "fightId": "anthony hernandez|gregory rodrigues",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T12:31:51.500Z",
+      "a": {
+        "feed": "Anthony Hernandez",
+        "db": "Anthony Hernandez"
+      },
+      "b": {
+        "feed": "Gregory Rodrigues",
+        "db": "Gregory Rodrigues"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 5,
+      "aWon": 0,
+      "rounds": 5,
+      "modelOpen": 0.6163,
+      "modelClose": 0.6043,
+      "marketOpen": 0.5798,
+      "marketClose": 0.6559,
+      "leanA": 0.0365,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": true,
+        "pts": 0.0761,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "carli judice|jeisla chaves",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T12:31:51.500Z",
+      "a": {
+        "feed": "Carli Judice",
+        "db": "Carli Judice"
+      },
+      "b": {
+        "feed": "Jeisla Chaves",
+        "db": "Jeisla Chaves"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5003,
+      "modelClose": 0.4209,
+      "marketOpen": 0.7864,
+      "marketClose": 0.825,
+      "leanA": -0.2861,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0386,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "marquel mederos|mason jones",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T12:31:51.500Z",
+      "a": {
+        "feed": "Marquel Mederos",
+        "db": "MarQuel Mederos"
+      },
+      "b": {
+        "feed": "Mason Jones",
+        "db": "Mason Jones"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4548,
+      "modelClose": 0.4904,
+      "marketOpen": 0.302,
+      "marketClose": 0.2452,
+      "leanA": 0.1528,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0568,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "reinier de ridder|roman dolidze",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-23T12:31:51.500Z",
+      "a": {
+        "feed": "Roman Dolidze",
+        "db": "Roman Dolidze"
+      },
+      "b": {
+        "feed": "Reinier de Ridder",
+        "db": "Reinier de Ridder"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3942,
+      "modelClose": 0.6313,
+      "marketOpen": 0.2604,
+      "marketClose": 0.7654,
+      "leanA": 0.1338,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": true,
+        "pts": 0.505,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-23T00:38:37.409Z"
+  "generatedAt": "2026-08-23T12:31:51.508Z"
 }
