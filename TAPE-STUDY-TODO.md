@@ -1,11 +1,46 @@
 # Tape study — outstanding items
 
-Generated 2026-07-09, revised 2026-07-09. Everything here needs a human decision;
-none of it was guessed at.
+Generated 2026-07-09, revised 2026-07-09, addendum 2026-08-23. Everything here
+needs a human decision; none of it was guessed at.
 
 **Open items are section 4's Dulatov row and the bullets in section 3.** Sections
 1, 1b, 1c and all of section 2 are closed. One row is knowingly showing a wrong
 video by your decision (Dulatov, section 4).
+
+---
+
+## 5. Cameron Nelson (2026-08-23) — 2 of 8 resolved, rest confirmed unavailable
+
+New roster addition (UFC debut Aug 29, 2026 vs Ding Meng). All 8 pro fights are
+regional Fight League Atlantic (FLA, Atlantic Canada) bouts. Worked YouTube first,
+then checked Fight Pass directly (logged in via browser, not just web search):
+
+- **Resolved, live, official FLA channel:** FLA 12 vs Christian Tremayne
+  (`uD0sK3qyg1o`), FLA 7 vs Colton Braden Simon (`SFzI4XmIVvs`). Both oembed-
+  verified and title-matched.
+- **Dead links found, no replacement:** FLA 18 vs Manuel Garcia (`zKPDJa2bj-Y`)
+  and FLA 16 vs Ryan Rohovich (`UFVKfebWFoc`) both 404 on oembed, checked twice.
+- **No footage found at all:** FLA 25 (Luis Guerrero), FLA 23 (Joao Machado —
+  only candidate was a post-fight interview short, not footage), FLA 21 (Kenyon
+  Moore), FLA 9 (Irving Molina).
+
+**Fight Pass checked directly, not assumed.** FLA's own YouTube channel bio
+claims "FLA 23 replay NOW airing on UFC FIGHT PASS," but that's stale/wrong: their
+YouTube channel itself has zero uploads (empty RSS feed), and Fight Pass's own
+"Fight Promotions" directory (browsed logged-in, every partner promotion listed by
+name — Cage Fury FC, Fury FC, Cage Warriors, LUX Fight League, Eternal MMA, UAE
+Warriors, and a dozen more) does not include Fight League Atlantic anywhere.
+In-app search for "Fight League Atlantic," "FLA 16," "FLA 25," and "Cameron
+Nelson" all fell back to generic trending content — no real hits. FLA is not a
+Fight Pass partner promotion, full stop.
+
+Checked each opponent's own name/channel too, not just Nelson+opponent queries:
+Kenyon Moore has a personal YouTube channel, but it's a 2012-13 personal vlog
+channel, unrelated to fighting. Garcia, Machado, and Guerrero all fight elsewhere
+(Fury FC, LUX Fight League) which ARE Fight Pass partners, but that only covers
+their *other* fights, not the specific FLA bout against Nelson — those are still
+uncatalogued. No Fight Pass video ID was guessed for any of the 6 unresolved
+fights.
 
 ---
 
