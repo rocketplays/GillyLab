@@ -9,17 +9,31 @@ video by your decision (Dulatov, section 4).
 
 ---
 
-## 7. Francesco Nuzzi (2026-08-23) — 5 of 15 resolved, rest confirmed unavailable
+## 7. Francesco Nuzzi (2026-08-23) — 9 of 15 resolved, rest confirmed unavailable
 
 New roster addition (0 UFC fights). Fifteen pro fights spread across eleven
 different promotions — worked fighter-by-fighter, event-by-event, YouTube first
-then Fight Pass checked directly for the two premium bouts:
+then Fight Pass checked directly. First pass (below the line) skipped logging
+into Fight Pass itself for the two Cage Warriors bouts and relied on secondary
+sources instead; caught on review and redone by actually browsing Fight Pass's
+own catalog and its "Fight Promotions" partner directory, and by searching each
+opponent's name on YouTube's own regional-archive channels rather than generic
+web search.
 
-- **Resolved, oembed-verified, title-matched, official channels:**
-  - PFL Europe 2 vs Farbod Iran Nezhad (Jul 2023) — `IG7_HMwdYMw`, uploaded by
-    PFL Europe's own channel and explicitly titled "Full Fight" (a second,
-    unlabeled PFL MMA upload of the same fight, `rIRYQjTmQmk`, also exists but
-    the labeled one was used).
+- **Resolved, oembed/catalog-verified:**
+  - Cage Warriors 204 vs Manoel Costa (Apr 2026) — `ufcfightpass.com/video/972466`.
+    Confirmed by searching "Nuzzi" directly in Fight Pass's own search, which
+    returns this fight by its exact title ("Francesco Nuzzi vs Manoel Silva Cage
+    Warriors 204," 12m 55s) and only this promotion for Nuzzi — Fight Pass's
+    "Fight Promotions" directory lists Cage Warriors with 242 event-replay
+    videos, confirming it's a real, cataloged partner (unlike FLA in section 5).
+  - Cage Warriors 195 vs Lucas Rodrigues (Oct 2025) — `ufcfightpass.com/video/867385`,
+    same direct-search confirmation ("Francesco Nuzzi vs Lucas Rodrigues Cage
+    Warriors 195," 8m 17s).
+  - PFL Europe 2 vs Farbod Iran Nezhad (Jul 2023) — `IG7_HMwdYMw`, PFL Europe's
+    own channel, explicitly titled "Full Fight" (a second, unlabeled PFL MMA
+    upload of the same fight, `rIRYQjTmQmk`, also exists but the labeled one was
+    used).
   - PFL 8 vs Moktar Benkaci (Aug 2022) — `_cyR1HOAa9Q`, official PFL MMA channel.
   - Brave CF 49 vs Bernardo Sopai (Mar 2021) — `yTonqsfsTtE`, official BRAVE
     Combat Federation channel, explicitly titled "FREE MMA FIGHT."
@@ -33,32 +47,33 @@ then Fight Pass checked directly for the two premium bouts:
     (measured from 2026-08-23: Jul 2016 is 10+ years back and would read "10
     years ago," Mar 2017 is 9y5m back and reads "9 years ago" — the labels only
     fit one of the two dates). The Jul 2016 loss itself stays uncatalogued.
+  - KFWC - Kung Fu World Cup 2017: Day 1 vs Chenjin Wei (Jan 2017) — `m4dWVWynlag`.
+    Missed on the first pass's generic web search; found by going straight to
+    "MMA DatabaseIT" (the channel that had the Iancu video above — it turns out
+    to be a dedicated Italian-regional-MMA archive with 432 videos) and using
+    its own in-channel search for "Nuzzi" directly.
+  - Legio's Arena 2 vs Alban Sinani (Jun 2016) — `kSPTuNInuds`. Same channel,
+    same method — in-channel search for "Sinani."
 - **Confirmed unavailable, not a search gap:**
-  - Cage Warriors 204 vs Manoel Costa (Apr 2026) and Cage Warriors 195 vs Lucas
-    Rodrigues (Oct 2025). Both were Nuzzi's main-card bouts (main event and
-    co-main respectively). Cage Warriors' own broadcast pages and multiple
-    independent event previews confirm the main card streams **exclusively on
-    UFC Fight Pass** — Cage Warriors' YouTube channel only carries prelims,
-    weigh-ins, and short highlight clips for these two events, never the full
-    main-card fights. Genuine Fight-Pass-exclusive case.
-  - PFL 2025 World Tournament 2 vs Mando Gutierrez (Apr 2025). Checked PFL
-    MMA's own channel directly via its in-channel search (not general web
-    search): searching "Nuzzi" on `@PFLMMA` returns only the two Iran Nezhad
-    videos above, and searching "Gutierrez" returns only a post-fight-interview
-    short ("Where's The Italian Translator?") — no full fight or highlight reel
-    of this specific bout exists on PFL's channel, despite PFL routinely
-    uploading full fights for Nuzzi's other bouts (see above). A real gap, not
-    an oversight.
+  - PFL 2025 World Tournament 2 vs Mando Gutierrez (Apr 2025). Checked both
+    platforms directly: PFL MMA's own channel search for "Gutierrez" returns
+    only a post-fight-interview short ("Where's The Italian Translator?"), and
+    Fight Pass's own search for "Nuzzi" returns only the two Cage Warriors fights
+    above — PFL is not a Fight Pass partner promotion at all (absent from the
+    "Fight Promotions" directory), so this fight has no path to either platform
+    right now. A real gap in PFL's own upload pattern, not an oversight on our
+    end.
   - Italian Cage Fighting 5 vs Giorgio Belsanti (Oct 2018), IFC 3 vs Percy
-    Herrera (May 2018), IFC 1 vs Petru Biclea (Feb 2018), KFWC Day 1 vs Chenjin
-    Wei (Jan 2017), Slam FC Underdog 1 vs Alessio Esposito (Nov 2016), Apocalypse
-    - White Rex vs Claudio Iancu (Jul 2016, the first meeting — see above), and
-    Legio's Arena 2 vs Alban Sinani (Jun 2016). All seven are small Italian
-    regional promotions with no full-fight YouTube presence found under any
-    fighter-name or event-name query tried; none of these promotions' own
-    channels (where they exist) carry archived full fights from this era.
+    Herrera (May 2018), IFC 1 vs Petru Biclea (Feb 2018), Slam FC Underdog 1 vs
+    Alessio Esposito (Nov 2016), and Apocalypse - White Rex vs Claudio Iancu
+    (Jul 2016, the first meeting — see above). All five checked against "MMA
+    DatabaseIT" by opponent name directly (it has other, unrelated fights for
+    Belsanti and Herrera under those exact names, confirming the channel does
+    cover both fighters — just not these specific bouts) and against Fight
+    Pass's own search — none of these five promotions are Fight Pass partners
+    either. Genuinely uncatalogued anywhere free or paid.
 
-No Fight Pass video ID was guessed for any of the 10 unresolved fights.
+No Fight Pass video ID was guessed for any of the 6 unresolved fights.
 
 ---
 
