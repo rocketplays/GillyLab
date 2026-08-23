@@ -7935,6 +7935,7 @@
  { name: "Laura Gallardo", division: "WFLW", rank: "NR", record: "4-3-0", initials: "LG", country: "USA" },
  { name: "Raulian Paiva", division: "FLW", rank: "NR", record: "23-6-1", initials: "RP", country: "Brazil" },
  { name: "Chris Ocon", division: "BW", rank: "NR", record: "5-4-0", initials: "CO", country: "USA" },
+ { name: "Francesco Nuzzi", division: "BW", rank: "NR", record: "11-2-0", initials: "FN", country: "Italy" },
  { name: "Chad Hanekom", division: "MW", rank: "NR", record: "9-4-0", initials: "CH", country: "South Africa" },
  { name: "Mateo Vogel", division: "LW", rank: "NR", record: "9-3-0", initials: "MV", country: "Canada" },
  { name: "Rose Conceição", division: "WSW", rank: "NR", record: "7-2-0", initials: "RC", country: "Brazil" },
@@ -8479,6 +8480,7 @@
   "Ezra Elliott": { ht:"5'10\"", dob:"2000-05-18", reach:"71.5\"", stance:"Southpaw", slpm:0.4, strAcc:"55%", sapm:0.47, strDef:"65%", kd:0.0, tdLanded:12.0, tdAcc:"67%", tdDef:"100%", subAvg:3.0, finRate:"100%", streak:7, gym:"MMA Lab" },
   "Delphine Benouaich": { ht:"5'4\"", dob:"1995-03-21", reach:null, stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"71%", streak:1, gym:"Fight Industrie / Mahmoudi Gym" },
   "Ce Liu": { ht:"6'5\"", dob:"1996-09-04", reach:"78\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tangshan Buntai Riding Fight Club" },
+  "Francesco Nuzzi": { ht:"5'6\"", dob:"1996-08-28", reach:"69\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"73%", streak:1, gym:"Aurora MMA" },
   "John Garza": { ht:"5'8\"", dob:"2002-10-30", reach:null, stance:"Orthodox", slpm:5.47, strAcc:"44%", sapm:5.73, strDef:"36%", kd:0.0, tdLanded:0.0, tdAcc:null, tdDef:"77%", subAvg:0.0, finRate:"67%", streak:5, gym:"AzTex MMA" },
   "Yilizhati Maimaitijiang": { ht:"6'4\"", dob:null, reach:"78.5\"", stance:null, slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"100%", streak:1, gym:"Tuowu Fight Gym" },
   "Matthieu Letho Duclos": { ht:"6'3\"", dob:"1995-04-04", reach:"77\"", stance:"Orthodox", slpm:null, strAcc:null, sapm:null, strDef:null, kd:null, tdLanded:null, tdAcc:null, tdDef:null, subAvg:null, finRate:"78%", streak:3, gym:"Venum Training Camp Paris" },
@@ -36075,6 +36077,13 @@
     { opponent: "Tobiasz Lewandowski", odds: -250 },
     { opponent: "Youcef Ouabbas", odds: -125 }
   ],
+  "Francesco Nuzzi": [
+    { opponent: "Manoel Costa", odds: -900 },
+    { opponent: "Lucas Rodrigues", odds: -925 },
+    { opponent: "Mando Gutierrez", odds: -310 },
+    { opponent: "Farbod Iran Nezhad", odds: -275 },
+    { opponent: "Moktar Benkaci", odds: -126 }
+  ],
   "Fedor Emelianenko": [
     { opponent: "Ryan Bader", odds: 275 },
     { opponent: "Tim Johnson", odds: 160 },
@@ -45420,6 +45429,23 @@ const FIGHT_HISTORY = {
     { date: "Oct 12, 2024", opponent: "Ivan Gnizditskiy", result: "L", method: "TKO (Punches)", round: 2, time: "1:55", event: "Happy Elephant MMA Champions League", org: "Happy Elephant" },
     { date: "Jun 28, 2023", opponent: "Munkh-Erdene Batjargal", result: "W", method: "TKO (Punches)", round: 2, time: "1:11", event: "WLF W.A.R.S. 65", org: "WLF" },
     { date: "May 17, 2023", opponent: "Haiming Yu", result: "W", method: "KO (Punch and Head Kick)", round: 1, time: "1:11", event: "WLF W.A.R.S. 64", org: "WLF" }
+  ],
+  "Francesco Nuzzi": [
+    { date: "Apr 11, 2026", opponent: "Manoel Costa", result: "NC", method: "No Contest (Accidental Knee to Groin)", round: 1, time: "3:35", event: "Cage Warriors 204: Rome", org: "Cage Warriors" },
+    { date: "Oct 4, 2025", opponent: "Lucas Rodrigues", result: "W", method: "TKO (Punches and Knee)", round: 1, time: "3:52", event: "Cage Warriors 195: Rome", org: "Cage Warriors" },
+    { date: "Apr 11, 2025", opponent: "Mando Gutierrez", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "4:13", event: "PFL 2025 World Tournament 2: First Round", org: "PFL" },
+    { date: "Jul 8, 2023", opponent: "Farbod Iran Nezhad", result: "W", method: "KO (Head Kick and Punches)", round: 1, time: "1:52", event: "PFL Europe 2: 2023 Regular Season", org: "PFL" },
+    { date: "Aug 13, 2022", opponent: "Moktar Benkaci", result: "NC", method: "No Contest (Accidental Eye Poke)", round: 2, time: "4:10", event: "PFL 8: 2022 Playoffs", org: "PFL" },
+    { date: "Mar 25, 2021", opponent: "Bernardo Sopai", result: "W", method: "Decision (Split)", round: 3, time: "5:00", event: "Brave CF 49: Super Fights", org: "Brave CF" },
+    { date: "Jun 8, 2019", opponent: "Ibragim Navruzov", result: "W", method: "TKO (Punches)", round: 1, time: "2:57", event: "Venator Fight Night 2: Zocco vs. Wojcik", org: "Venator FC" },
+    { date: "Oct 20, 2018", opponent: "Giorgio Belsanti", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "4:00", event: "Italian Cage Fighting 5: Nuzzi vs. Belsanti", org: "ICF" },
+    { date: "May 5, 2018", opponent: "Percy Herrera", result: "W", method: "TKO (Punches)", round: 1, time: "4:28", event: "IFC 3: Paterno vs. Maguire", org: "IFC" },
+    { date: "Feb 18, 2018", opponent: "Petru Biclea", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "IFC 1: Biclea vs. Nuzzi", org: "IFC" },
+    { date: "Mar 26, 2017", opponent: "Claudio Iancu", result: "W", method: "Submission (Guillotine Choke)", round: 1, time: "1:45", event: "Shooto Italy - Bushido 20: Wolf Fighting Championship", org: "Shooto Italy" },
+    { date: "Jan 24, 2017", opponent: "Chenjin Wei", result: "W", method: "Submission (Rear-Naked Choke)", round: 1, time: "3:23", event: "KFWC - Kung Fu World Cup 2017: Day 1", org: "KFWC" },
+    { date: "Nov 27, 2016", opponent: "Alessio Esposito", result: "W", method: "TKO (Punches)", round: 1, time: "3:54", event: "Slam FC - Underdog 1", org: "Slam FC" },
+    { date: "Jul 10, 2016", opponent: "Claudio Iancu", result: "L", method: "Submission (Rear-Naked Choke)", round: 1, time: "0:47", event: "Apocalypse - White Rex Italian Selection", org: "Apocalypse" },
+    { date: "Jun 11, 2016", opponent: "Alban Sinani", result: "W", method: "Decision (Unanimous)", round: 3, time: "5:00", event: "Legio's Arena 2: Road to Bellator", org: "Legio's Arena" }
   ],
   "Fedor Emelianenko": [
     { date: "Feb 4, 2023", opponent: "Ryan Bader", result: "L", method: "TKO (Punches)", round: 1, time: "2:30", event: "Bellator 290: Bader vs. Fedor 2", org: "Bellator" },
@@ -114513,6 +114539,14 @@ const ACCOLADES = {
   "Yilizhati Maimaitijiang": [
     { icon: "🥊", title: "Wu Lin Feng (WLF) standout out of Tuowu Fight Gym in Xinjiang, China", detail: null },
     { icon: "🏅", title: "7–1 as a pro with all seven wins by finish (five KO/TKO, two submissions) — 100% finish rate", detail: null }
+  ],
+  "Francesco Nuzzi": [
+    { icon: "🏆", title: "Two-time IFC (Italian Fighting Championship) Bantamweight Title winner (2018)", detail: null },
+    { icon: "🥋", title: "Brazilian Jiu-Jitsu Brown Belt", detail: null },
+    { icon: "🥋", title: "Kickboxing Black Belt", detail: null },
+    { icon: "🏅", title: "PFL Europe 2 main event winner — first-round KO of Farbod Iran Nezhad in Berlin (2023)", detail: null },
+    { icon: "🏅", title: "8 first-round finishes across 15 pro fights — out of round 1 only four times in his career", detail: null },
+    { icon: "🏅", title: "10-fight unbeaten streak from November 2016 to April 2025", detail: null }
   ],
   "Ce Liu": [
     { icon: "🏆", title: "K-1 Cruiserweight (−90 kg) Champion (2024) — one successful title defense", detail: null },
