@@ -9,6 +9,67 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 10. Lawrence Lui (2026-08-23) — 4 of 9 resolved, rest confirmed unavailable
+
+9 pro fights. 3 were already resolved from the fill-fighter pass (all Fight Pass:
+Sulangrangbo/UFC 325, Daniel Mitchell/Shuriken FS 18, Anthony Drilich/Eternal
+MMA 66). This pass added Van Y Nghiem and exhausted search on the rest.
+
+Resolved (4):
+- Sulangrangbo — UFC 325, Jan 2026 — Fight Pass (pre-existing)
+- Van Y Nghiem — Road to UFC: Shanghai Episode 5 & 6, Aug 2025 — YouTube,
+  "STRIKING and GRAPPLING" channel, `xpdQCHXujUg` (same channel that resolved
+  Namsrai Batbayar's Agulali fight in the prior session — a second confirmation
+  this channel archives individual Road to UFC Season 4 semifinal bouts).
+- Daniel Mitchell — Shuriken Fight Series 18, Jul 2024 — Fight Pass (pre-existing)
+- Anthony Drilich — Eternal MMA 66, May 2022 — Fight Pass (pre-existing)
+
+Unresolved (5), confirmed unavailable via full search — Fight Pass direct
+search (logged in), YouTube generic + quoted-name search, and channel-specific
+follow-ups:
+- Qinghe Zhang (Road to UFC: Shanghai Episode 4, quarterfinal, May 2025). Fight
+  Pass only has the full ~2hr Episode 4 block (Season 4 page, same
+  no-chapter-access limitation hit on Batbayar's Yamauchi fight); the player's
+  Information tab never got past a loading spinner. Checked the "STRIKING and
+  GRAPPLING" channel in-channel — it has the Aug 22 semifinal card (Van Y
+  Nghiem, above) but nothing from the May 23 quarterfinal card. UFC's own
+  YouTube channel has only two Shorts-format highlight clips (`jpzHf9MidqI` and
+  one more), not a full fight — Shorts were treated as insufficient, same
+  standard as declining to guess a timestamp.
+- Toby Meech (Eternal MMA 86, Jun 2024). Fight Pass has the full 3h45m card
+  replay (`video/652312`) but no individual catalog entry for this bout,
+  despite Eternal MMA cataloguing other cards fight-by-fight (confirmed: card
+  66, the Drilich fight above, has individual entries). The video player's
+  Information tab was stuck on a loading spinner, same as the Road to UFC
+  Season 4 limitation — no chapter markers reachable. No YouTube upload found.
+- Logan Price (Shuriken Fight Series 10, Mar 2022). Not individually catalogued
+  on Fight Pass (SFS 10 didn't turn up; later SFS numbers like 17/18/24 do
+  exist as individual entries, so this looks like an era gap, not a search
+  miss). No YouTube match for this specific pairing — several *other* Logan
+  Price fights surfaced (Shuriken FS 17 vs Ryan Cooper, King in the Ring vs Nic
+  Aratema, XFC28 vs Darren Habben) confirming he's a real, YouTube-documented
+  regional fighter, just not this bout.
+- Caleb Lally (XFC 54, Dec 2021). XFC (Xtreme Fighting Championships, NZ) has
+  no presence on Fight Pass at all under this card number — searched "XFC 54"
+  directly, only unrelated "Inka 54" fuzzy matches returned. No YouTube match.
+- Nick Thornton (Wimp2Warrior: CKB Series 3 Finale, Jul 2021 — Lui's pro
+  debut). No Fight Pass or YouTube match for this pairing. Note: Fight Pass
+  does have a *different* Nick Thornton fight cataloged (vs Toby Meech,
+  Eternal MMA 66) — confirms this is a real, distinct regional fighter, not a
+  name collision or a lead worth chasing further.
+
+**Side note, not acted on:** search surfaced "The missing fight from Shuriken
+Fight Series 8. Kevin Pratt VS Lawrence Lui" (YouTube, channel "Combat TV," ~5
+years old) — a fight against an opponent not present anywhere in
+`FIGHT_HISTORY["Lawrence Lui"]`. ufc.com's own bio line reports a "3-2 amateur
+record" for Lui, so this is most likely one of his amateur bouts (which
+`FIGHT_HISTORY` intentionally excludes, pro fights only) rather than a missing
+pro fight — the roster record (8-1-0) and FIGHT_HISTORY's 9 pro fights already
+reconcile cleanly, so nothing here contradicts the existing data. Flagging only
+in case it's useful context; not added to `FIGHT_HISTORY` or `TAPE_STUDY`.
+
+---
+
 ## 9. Namsrai Batbayar (2026-08-23) — 9 of 11 resolved, rest confirmed unavailable
 
 11 pro fights. An existing (pre-session) partial entry already had Shuai Yin,
