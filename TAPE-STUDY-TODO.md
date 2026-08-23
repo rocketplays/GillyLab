@@ -9,6 +9,66 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 9. Namsrai Batbayar (2026-08-23) — 9 of 11 resolved, rest confirmed unavailable
+
+11 pro fights. An existing (pre-session) partial entry already had Shuai Yin,
+Agulali, and Wataru Yamauchi filled in — all three were re-verified via YouTube
+oembed before being kept, rather than trusted at face value. Both Road to UFC
+Season 4 fights (Agulali, Wataru Yamauchi) turned out to have **individually
+indexed clips** on tvN SPORTS' own channel — Korea's official Road to UFC
+broadcaster — which contradicts the assumption from the Fight Pass side of this
+search (see below) that Season 4 only exists as ~2hr episode blocks. The
+per-fight clips exist; Fight Pass's own catalog just doesn't surface them that
+way. Lesson: check the broadcaster's own channel before concluding a fight is
+Fight-Pass-episode-only.
+
+Resolved (9):
+- Shuai Yin — Road to UFC Season 4 Final (Macau), May 2026 — tvN SPORTS,
+  `7UQB8mI-9C0` (pre-existing entry, re-verified)
+- Agulali — Road to UFC: Shanghai Episode 5 & 6, Aug 2025 — tvN SPORTS,
+  `fmG7CgcAwyo` (pre-existing entry, re-verified; Korean-titled individual clip,
+  not the full episode)
+- Wataru Yamauchi — Road to UFC: Shanghai Episode 4, May 2025 — tvN SPORTS,
+  `wtUJa2YfvMA` (pre-existing entry, re-verified; same pattern as above)
+- Jinbo Zou — WLF: W.A.R.S. 71, Mar 2024 — "King Stone" (Mongolian MMA archive
+  channel), `6tYJCu6IOqo`. Title spells the opponent "Jimbo Zou".
+- Ankhbayar Tserenbold — Falcons Fighting Series 1, Oct 2023 — King Stone,
+  `cAutPTJcYAA`
+- Nyamjargal Tumendemberel — MGL-1 Fighting Championship 18, Nov 2022 —
+  official promotion channel MGL-1, `Fkqwpa9f90M`. (A second, independently
+  uploaded copy from "MMA mongolian fighting joe", `cc9lA_Y8FJ4`, also verified
+  and matches — used the promotion's own upload instead since it's the more
+  authoritative source.) This is Batbayar's only pro loss.
+- Ayuush Ariungerel — AFC: WOW Fight Night, Oct 2022 — King Stone,
+  `KB-AZPT7_PE`. Video title gives the date as Oct 16; `FIGHT_HISTORY` has Oct
+  22. Left as-is — opponent names and event name match exactly, and a single-day
+  date discrepancy between an uploader's caption and the official record is not
+  grounds to discard an otherwise exact match.
+- Zagdsuren Baljinnyam — Undefeated MMA: Fire and Blood, Aug 2022 — official
+  promotion channel "UNDEFEATED MMA", `5Rk8k6PRm5M`
+- Tugsbayar Ulziidalai — 999 Fight Night, May 2022 — King Stone, `LLH2dGlrLDQ`
+
+Unresolved (2), confirmed unavailable via full search — YouTube generic search,
+YouTube in-channel search on King Stone (the channel that turned up 5 of the
+9 resolved fights above, so a natural candidate for the rest), and Fight Pass:
+- Sarvarbek Kenzhaev — WKG & M-1 Global: MMA Fight in Turpan, May 2024. Checked
+  M-1 Global's own official YouTube channel (`@M1GlobalWorld`, 255K subs)
+  in-channel for both "Batbayar" and "Kenzhaev" — zero results. Checked King
+  Stone in-channel — zero results. Generic YouTube search for the fighter names
+  together — zero results.
+- Jandos Khurmangaz — Mongol FC Fight Night 4, Mar 2022. No results on generic
+  YouTube search under either spelling tried (Jandos/Zhandos Khurmangaz/
+  Khurmangazy). No King Stone in-channel match.
+
+Fight Pass: searched directly (logged in, own search box) for "Namsrai
+Batbayar" and "Batbayar" — zero results for this fighter's name specifically.
+The only Batbayar-adjacent content on Fight Pass is the Road to UFC Season 4
+collection page, which is organized as full episode blocks with no accessible
+per-fight timestamp in this automation — moot for this fighter anyway since the
+individual clips were found on tvN SPORTS instead.
+
+---
+
 ## 8. Nilson Rojas (2026-08-23) — 3 of 9 resolved, rest confirmed unavailable
 
 New roster addition (0 UFC fights, 8-0 undefeated — note the FIGHT_HISTORY block
