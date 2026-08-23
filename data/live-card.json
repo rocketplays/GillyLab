@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:51:53.015Z",
+ "generatedAt": "2026-08-23T01:17:25.335Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -8076,6 +8076,194 @@
       ]
      },
      "capturedAt": "2026-08-23T00:51:52.896Z"
+    }
+   ]
+  },
+  "MarQuel Mederos": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Mason Jones",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "2:07",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Mason Jones",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 70,
+      "sigA": 108,
+      "totL": 73,
+      "totA": 112,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       52,
+       86
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       11,
+       14
+      ],
+      "dist": [
+       68,
+       102
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       5
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 157,
+      "totL": 77,
+      "totA": 162,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:30",
+      "head": [
+       53,
+       129
+      ],
+      "body": [
+       17,
+       21
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       66,
+       144
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "capturedAt": "2026-08-23T01:17:25.215Z"
+    }
+   ]
+  },
+  "Mason Jones": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "MarQuel Mederos",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "2:07",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "MarQuel Mederos",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 74,
+      "sigA": 157,
+      "totL": 77,
+      "totA": 162,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:30",
+      "head": [
+       53,
+       129
+      ],
+      "body": [
+       17,
+       21
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       66,
+       144
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       2,
+       3
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 70,
+      "sigA": 108,
+      "totL": 73,
+      "totA": 112,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "0:54",
+      "head": [
+       52,
+       86
+      ],
+      "body": [
+       7,
+       8
+      ],
+      "leg": [
+       11,
+       14
+      ],
+      "dist": [
+       68,
+       102
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       1,
+       5
+      ]
+     },
+     "capturedAt": "2026-08-23T01:17:25.215Z"
     }
    ]
   }
