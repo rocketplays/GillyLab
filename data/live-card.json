@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T00:26:21.944Z",
+ "generatedAt": "2026-08-23T00:51:53.015Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -7888,6 +7888,194 @@
       ]
      },
      "capturedAt": "2026-08-23T00:26:21.807Z"
+    }
+   ]
+  },
+  "Carli Judice": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jeisla Chaves",
+     "result": "W",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "1:39",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Jeisla Chaves",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 35,
+      "totL": 16,
+      "totA": 35,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       9,
+       25
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       12,
+       31
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 28,
+      "totL": 10,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       21
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-23T00:51:52.896Z"
+    }
+   ]
+  },
+  "Jeisla Chaves": {
+   "history": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Carli Judice",
+     "result": "L",
+     "method": "KO/TKO (Kick)",
+     "round": 1,
+     "time": "1:39",
+     "event": "UFC Fight Night: Hernandez vs. Rodrigues",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 22, 2026",
+     "opponent": "Carli Judice",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 28,
+      "totL": 10,
+      "totA": 28,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       4,
+       21
+      ],
+      "body": [
+       5,
+       6
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       9,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 16,
+      "sigA": 35,
+      "totL": 16,
+      "totA": 35,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       9,
+       25
+      ],
+      "body": [
+       7,
+       10
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       12,
+       31
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-23T00:51:52.896Z"
     }
    ]
   }
