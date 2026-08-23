@@ -9,6 +9,47 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 6. Hector Santiago (2026-08-23) — 4 of 7 resolved, rest confirmed unavailable
+
+New roster addition (0 UFC fights). Regional Brazilian bouts across four
+different promotions — worked fighter-by-fighter, event-by-event, YouTube first
+then Fight Pass checked directly:
+
+- **Resolved, oembed-verified, title-matched:**
+  - Money Moicano MMA 1 vs Paulo Nogueira (May 2026) — `RGqeN879Ri0&t=3841s`,
+    a timestamped chapter in Renato Moicano's own livestream VOD (same pattern
+    as the David Martínez precedent — one long broadcast, no per-fight clip).
+  - Puro Impacto FC 34 vs Fernando Henrique (Mar 2026) — `oFyuqsaHARI`, uploaded
+    by third-party channel "Camisa de Força Fight," title reads "Hector Santiago
+    x Fernando Bad Time" which matches Fernando Henrique's own nickname on
+    Tapology exactly.
+  - Jungle Fight 138 vs Thiago Santos (Jul 2025) — `q7fvH_UMzH4`, official Jungle
+    Fight TV channel, standard "JUNGLE FIGHT ## l Fighter1 x Fighter2" upload.
+  - Jungle Fight 128 vs Pedro Freitas (Jul 2024) — `TKNiq5IazkQ`, same channel.
+- **Confirmed unavailable, not a search gap:**
+  - Thunder Fight 54 vs Maycon Alcino (Dec 2025) and Thunder Fight 51 vs Mateus
+    Sales (Sep 2025). Thunder Fight's official channel (`@thunderfight4369`, 453
+    videos) does upload individual full-fight videos per event, but sparsely —
+    scrolled its entire "Latest" feed through the exact date window covering
+    both events and found only 4 videos total across TF54/TF52/TF51/TF50
+    combined, none of them these two bouts. Both fights were main-card/
+    bantamweight bouts; the channel's coverage skews toward women's and amateur
+    divisions. Not on Fight Pass either — checked directly (see below).
+  - LFA 191 vs Pedro Sousa (Aug 2024). LFA is a legitimate, large Fight Pass
+    partner promotion (confirmed via `gidstats.com`'s card breakdown and LFA's
+    own YouTube channel), so this is a genuine Fight-Pass-exclusive case, not an
+    uncatalogued fight. LFA's official prelims video for this card
+    (`8br3aldydNI`, "LFA 191 *LIVE PRELIMS* | FIVE FREE FIGHTS") streamed only
+    5 of the 8 prelim bouts free — its expanded description lists them by name
+    (Soares/Lee, Rodrigues/Pedroso, Aurélio/Silva, Pat/Queiroz, Matos/Garcia) and
+    Santiago/Sousa is not among them, meaning it sat behind the Fight Pass
+    paywall along with the rest of that card. Two other LFA-191-prelims URLs
+    found in search (`goOCElzJY9Y`, `FcNqQAOjrho`) are both dead on oembed.
+
+No Fight Pass video ID was guessed for any of the 3 unresolved fights.
+
+---
+
 ## 5. Cameron Nelson (2026-08-23) — 2 of 8 resolved, rest confirmed unavailable
 
 New roster addition (UFC debut Aug 29, 2026 vs Ding Meng). All 8 pro fights are
