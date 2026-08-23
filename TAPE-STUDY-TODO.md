@@ -102,17 +102,31 @@ then Fight Pass checked directly:
     both events and found only 4 videos total across TF54/TF52/TF51/TF50
     combined, none of them these two bouts. Both fights were main-card/
     bantamweight bouts; the channel's coverage skews toward women's and amateur
-    divisions. Not on Fight Pass either — checked directly (see below).
+    divisions. **Revised 2026-08-23 (redo):** the original pass checked "Not on
+    Fight Pass either" without actually searching Fight Pass — corrected by
+    logging in and searching Fight Pass's own catalog directly for "Thunder
+    Fight," "Maycon Alcino," and "Mateus Sales." "Thunder Fight" returns no
+    results for the promotion at all (Thunder Fight isn't a partner — confirmed,
+    not assumed, this time). "Maycon Alcino" surfaces one unrelated fight of his
+    (Inka MMA 53 vs Kevin Navarro, on Fight Pass because Inka MMA is a partner)
+    but nothing from Thunder Fight. "Mateus Sales" returns no exact match at
+    all. Genuinely uncatalogued anywhere, free or paid.
   - LFA 191 vs Pedro Sousa (Aug 2024). LFA is a legitimate, large Fight Pass
     partner promotion (confirmed via `gidstats.com`'s card breakdown and LFA's
-    own YouTube channel), so this is a genuine Fight-Pass-exclusive case, not an
-    uncatalogued fight. LFA's official prelims video for this card
-    (`8br3aldydNI`, "LFA 191 *LIVE PRELIMS* | FIVE FREE FIGHTS") streamed only
-    5 of the 8 prelim bouts free — its expanded description lists them by name
-    (Soares/Lee, Rodrigues/Pedroso, Aurélio/Silva, Pat/Queiroz, Matos/Garcia) and
-    Santiago/Sousa is not among them, meaning it sat behind the Fight Pass
-    paywall along with the rest of that card. Two other LFA-191-prelims URLs
-    found in search (`goOCElzJY9Y`, `FcNqQAOjrho`) are both dead on oembed.
+    own YouTube channel). **Revised 2026-08-23 (redo):** the original pass
+    inferred this was Fight-Pass-exclusive from LFA's own YouTube prelims-video
+    description (which named the five fights that streamed free, and
+    Santiago/Sousa wasn't one of them) without ever actually opening Fight Pass
+    to look — corrected by logging in and searching Fight Pass's own catalog for
+    "LFA 191" directly. It returns 5 individually cataloged fights from that
+    card (João Lucas Costa vs Rafael Pereira, Maria Luiza Abreu vs Gabi
+    Fujimoto, Lincoln Santos vs Kleberson Sousa, Michel Lima vs Luan Matheus,
+    Keweny Lopes vs Wellington Prado) and Santiago vs Sousa is not among them —
+    so it isn't merely paywalled inside a longer replay, it was never cut into
+    its own catalog entry at all. Searching "Hector Santiago" and "Pedro Sousa"
+    directly on Fight Pass turns up nothing matching either. Two other
+    LFA-191-prelims YouTube URLs found in search (`goOCElzJY9Y`, `FcNqQAOjrho`)
+    are both dead on oembed.
 
 No Fight Pass video ID was guessed for any of the 3 unresolved fights.
 
