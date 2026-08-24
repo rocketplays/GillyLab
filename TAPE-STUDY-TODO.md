@@ -9,6 +9,35 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 16. Muhammad Naimov (2026-08-23) — 13 of 17 resolved, 4 confirmed unavailable
+
+10/17 were already resolved (his 6 UFC fights, both Tuff-N-Uff fights, and
+his Contender Series fight). This pass covered his 5 Titan FC fights plus
+one small charity-card fight. Titan FC is on Fight Pass, and searching his
+name directly there surfaced individually-clipped bouts for 3 of the 5.
+
+Resolved (3 new):
+- Andres Ponce — Titan FC 72, Sep 2021 — Fight Pass, `video/253652`
+- Shawn Brown — Titan FC 58, Dec 2019 — Fight Pass, `video/108221`
+- Harrison Melendez — Titan FC 52, Jan 2019 — Fight Pass, `video/65666`
+
+Unresolved (4):
+- Olivier Murad — Titan FC 67, Feb 2021. Only the full ~3h30m event replay
+  is on Fight Pass, no individual clip — same unchaptered-VOD situation as
+  elsewhere, not used since no timestamp is available.
+- Josh Augustine — Titan FC 62, Jul 2020. Searched by name directly on
+  Fight Pass, no matching clip surfaced (promotion's other events from this
+  era have individual clips, this one apparently doesn't).
+- Landon Quiñones — Titan FC 54, Apr 2019. Same as Augustine — Quiñones has
+  individual clips on Fight Pass for Titan FC 49, 56, 57, 61, 75, 80, 83,
+  but not 54.
+- Jernato Harris — "The Jonathan Ogden Foundation: 13th Annual 'An Evening
+  Ringside'," Nov 2018 (a charity boxing/MMA card, not a standing
+  promotion). Not checked beyond Fight Pass name search — no obvious
+  YouTube archive channel to check next.
+
+---
+
 ## 15. Losene Keita (2026-08-23) — 14 of 18 resolved, 4 confirmed unavailable
 
 Only his UFC debut (Nathaniel Wood) was resolved coming in. His whole Oktagon
