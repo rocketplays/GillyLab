@@ -9,6 +9,43 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 19. Mairon Santos (2026-08-23) — 9 of 18 resolved, no new resolutions
+
+9/18 were already resolved (his 4 UFC fights + LFA 155, LFA 123, Curitiba Top
+Fight 12, Sicario MMA 05, Spartano's Fight MMA 2). This pass covered the
+remaining 9 small Brazilian regional fights: Showtime Fights (Aquiles),
+Shooto Brazil 103 (Borges), Shooto Brazil Grand Prix (Pereira), ARES FC 1
+(Boundjou), Shooto Brazil 91 (Braga), Favela Kombat 33 (Robert Wilson), DC
+Pro 3 (Paulo Ricardo Rodrigues), MMA Brutus 1 (Alan Ferreira), and X-Force
+MMA 9 (Phelipe Silva). None resolved — checked Fight Pass first (confirmed
+directly via a name search that only his UFC 323 fight vs. Muhammad Naimov
+is on the platform; Shooto Brazil is generally on Fight Pass but has zero
+coverage of this fighter specifically), then YouTube for each promotion.
+
+Unresolved (9):
+- Guilherme Aquiles — Showtime Fights, no footage found.
+- Vinicius Borges — Shooto Brazil 103, no footage found (confirmed absent
+  from Fight Pass via direct search).
+- Jefferson Pereira — Shooto Brazil Grand Prix, no footage found.
+- Baba Boundjou Nadjombe — ARES FC 1. Only source found was a Facebook
+  upload (ARES FC's own page) — not used, consistent with this project only
+  ever using YouTube or Fight Pass links.
+- Lucas Braga — Shooto Brazil 91, no footage found.
+- Robert Wilson — Favela Kombat 33, Oct 2019. Promotion is broadcast on
+  Canal Combate/Sport TV/Globoplay, not YouTube; only a general Favela
+  Kombat YouTube playlist exists with no matching individual upload.
+- Paulo Ricardo Rodrigues — DC Pro 3, Aug 2019. DC Pro events stream on
+  TATAME PLAY's YouTube channel but no upload for this specific card was
+  found (TATAME PLAY's back catalog wasn't paged through exhaustively —
+  worth a second look).
+- Alan Ferreira — MMA Brutus 1, Mar 2019. MMA Brutus has YouTube channels
+  but no matching event upload found.
+- Phelipe Silva — X-Force MMA 9, Mar 2019. X Force MMA's official channel
+  exists and has individual fight clips for several other events (4, 8, 10)
+  but nothing found for event 9 specifically.
+
+---
+
 ## 18. Modestas Bukauskas (2026-08-23) — 23 of 27 resolved, 4 confirmed unavailable
 
 15/27 were already resolved (all UFC fights + 2 Cage Warriors fights).
