@@ -9,6 +9,38 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 17. Oumar Sy (2026-08-23) — 9 of 14 resolved, 5 confirmed unavailable
+
+6/14 were already resolved (his 5 UFC fights + Ares FC 3). Checked Fight
+Pass first — confirmed it has nothing beyond those 6 (KSW and Oktagon, like
+Losene Keita's promotions, aren't on Fight Pass at all). Fell back to
+YouTube, where KSW's official channel (`KSW International`) and Oktagon's
+regional channels came through again.
+
+Resolved (3 new):
+- Ildemar Alcantara — KOF 1: The King of Fighters, Jun 2023 — YouTube
+  (official `KING OF FIGHTERS` channel), "REPLAY FIGHT"
+- Adam Tomasik — KSW 64, Oct 2021 — YouTube (KSW International), official
+  "KSW Free Fight"
+- Daniel Skvor — Oktagon 20, Dec 2020 — YouTube (OKTAGON CZSK), full replay
+
+Unresolved (5):
+- Henrique da Silva — KSW 80, Mar 2023. Only a Facebook video and interview
+  clips found; no YouTube free fight or full replay located.
+- Bartlomiej Gladkowicz — KSW 72, Jul 2022. Same situation — interview and
+  reaction clips exist, no fight footage found. KSW's "Free Fights" YouTube
+  playlist wasn't manually paged through to confirm absence — worth a
+  second look.
+- Mehdi Matajev — GMC Fight Night (Grabinski vs. Stoimenov), Sep 2020.
+  GMC's own YouTube channel (`@GMCMMAChampionship`) exists but wasn't
+  checked for a full-event stream from this card.
+- Sophien Hadj Doula — 100% Fight 41, Oct 2019. The "100% FIGHT" YouTube
+  channel exists with a full-fight-replay playlist but this specific bout
+  wasn't located in it.
+- Amar Nabil — Eagles FC 1, Jun 2019. No footage found.
+
+---
+
 ## 16. Muhammad Naimov (2026-08-23) — 13 of 17 resolved, 4 confirmed unavailable
 
 10/17 were already resolved (his 6 UFC fights, both Tuff-N-Uff fights, and
