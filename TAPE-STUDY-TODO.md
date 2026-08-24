@@ -9,6 +9,38 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 20. Nora Cornolle (2026-08-23) — 12 of 13 resolved, 1 confirmed unavailable
+
+7/13 were already resolved (5 UFC fights + both UAE Warriors fights). This
+pass covered the remaining 6 fights. UFC Fight Pass surfaced 2 more directly
+via a name search (a UFC fight that had been missed, plus a third UAE
+Warriors fight) — a "Nora Cornolle" collection with 9 individual clips
+total, matching all UFC + UAE Warriors fights exactly. The 4 small
+French/Beninese regional fights weren't on Fight Pass; 3 of the 4 were found
+on YouTube via each promotion's official channel.
+
+Resolved (5 new):
+- Jacqueline Cavalcanti — UFC Fight Night: Moicano vs. Saint Denis, Sep
+  2024 — Fight Pass, `video/693334` (this was a UFC fight that had simply
+  been missed in the prior pass)
+- Asmaa Abash — UAE Warriors 32, Sep 2022 — Fight Pass, `video/395374`
+- Priscila de Souza — Hexagone MMA 6, Jan 2023 — YouTube (official
+  `HEXAGONE MMA Winamax` channel)
+- Juliet Chukwu — Benin FC 7, Apr 2022 — YouTube (official `Benin Fighting
+  Championship - MMA` channel), individual fight clip
+- Jacqueline Cavalcanti (their first meeting) — FFA Challenge 2, Jul 2021 —
+  YouTube (official `FreeFightAcademyChannel`), full ~event VOD titled
+  "événement complet" — no timestamp claimed, unchaptered
+
+Unresolved (1):
+- Marie Loiseau — Gladiator Fighting Arena 13, Apr 2022. Only a Facebook
+  weigh-in video found (Free Fight Academy's page); the promotion's YouTube
+  presence for this card only has a different fight from the same event
+  (Bendaho Malik vs. Alex Boone), not Cornolle's. Not used per project
+  convention (Facebook isn't a usable source).
+
+---
+
 ## 19. Mairon Santos (2026-08-23) — 9 of 18 resolved, no new resolutions
 
 9/18 were already resolved (his 4 UFC fights + LFA 155, LFA 123, Curitiba Top
