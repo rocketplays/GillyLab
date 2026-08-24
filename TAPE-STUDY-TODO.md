@@ -9,6 +9,41 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 22. Matthieu Letho Duclos (2026-08-23) — 6 of 12 resolved, 2 confirmed unavailable
+
+1/12 was already resolved (his DWCS fight). This pass covered his 11
+pre-UFC fights. He's a French social-media personality (arbitre/host on
+IbraTV) with unusually good YouTube coverage as a result — multiple news and
+promotion channels cover his fights independently. Fight Pass confirmed to
+have nothing beyond the DWCS fight when searching his name directly.
+
+Resolved (5 new):
+- Moacir Rocha — Hexagone MMA 36, Nov 2025 — YouTube (`RMC Sport Combat`
+  official channel), fight recap with footage. Note: the original Hexagone
+  MMA channel's own "Full Fight" upload of this bout (`YnBmz0KaMnA`) is dead
+  — confirmed via repeated failed oembed lookups — so the RMC Sport recap
+  was used instead.
+- Geison Santana — Hexagone MMA 9, Jun 2023 — YouTube (official `HEXAGONE
+  MMA Winamax` channel)
+- Youcef Ouabbas — Bellator 280, May 2022 — YouTube (official `BellatorMMA`
+  channel), "An INSANE finish!" highlight with footage
+- Louis Laurent — FFA Challenge 2, Jul 2021 — YouTube (official
+  `FreeFightAcademyChannel`), full ~event VOD, no timestamp claimed
+  (same video already used for Nora Cornolle's Sep 2024 opponent in an
+  earlier pass — this card had two fighters now in the roster)
+- Wissem Akhmouch — 100% Fight 41, Oct 2019 — YouTube (a small reupload
+  channel, "Moroccan men" — the official promotion's own upload wasn't
+  found, but this fight-specific video is confirmed live)
+
+Unresolved (2):
+- Giorgi Egnatashvili — Hexagone MMA 5, Oct 2022. The official Hexagone
+  live-stream upload (`12sNJ2HSQEY`) is dead — confirmed via repeated
+  failed oembed lookups — and no alternate footage was found.
+- Mathias Rieucros — YFC 1, Mar 2022. No footage found on YouTube; only
+  news coverage and fighter-profile pages.
+
+---
+
 ## 21. Klaudia Sygula (2026-08-23) — 7 of 10 resolved, 3 confirmed unavailable
 
 3/10 were already resolved (her 3 UFC fights). This pass covered her 7 pre-UFC
