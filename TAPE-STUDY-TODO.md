@@ -9,6 +9,32 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 24. Sofia Montenegro (2026-08-23) — 6 of 8 resolved, 2 confirmed unavailable
+
+2/8 were already resolved (DWCS + FFC 81). This pass covered her remaining
+6 pre-UFC fights, all in Argentina/Mexico. Fight Pass confirmed to have
+nothing beyond the DWCS and FFC 81 fights when searching her name directly.
+Good YouTube coverage otherwise — regional Argentine channels and the
+promotions themselves post full fights fairly reliably.
+
+Resolved (4 new):
+- Damara Vargas — MMA Mexico 5, Jun 2025 — YouTube (`Master Vic
+  PodcasTV`), "Pelea Completa" (full fight)
+- Gisela Luna — FFC 53: Argentina, Sep 2022 — YouTube (`Movistar Deportes
+  Perú`), full preliminary-card broadcast segment
+- Oriana Fernandez — Circuito Argentino de MMA 11, Jun 2022 — YouTube
+  (`El Nueve Argentina`, an Argentine TV network's channel)
+- Melanie Rodriguez — Samurai Fight House 3, Feb 2022 — YouTube (official
+  `Samurai Fight House` channel), full fight
+
+Unresolved (2):
+- Sofia Landi — Circuito Argentino de MMA 22, Sep 2023. Only an Instagram
+  post and news coverage found; no YouTube or Fight Pass footage.
+- Paola Garay — Invictus Deluxe Championship, Sep 2021 (her pro debut). No
+  footage found anywhere.
+
+---
+
 ## 23. Luis Felipe Dias (2026-08-23) — 8 of 23 resolved, 15 confirmed unavailable
 
 5/23 were already resolved (UFC, DWCS, both Brave CF fights, Sicario MMA 4).
