@@ -9,6 +9,44 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 23. Luis Felipe Dias (2026-08-23) — 8 of 23 resolved, 15 confirmed unavailable
+
+5/23 were already resolved (UFC, DWCS, both Brave CF fights, Sicario MMA 4).
+This is his fullest pre-UFC record in the roster — 23 total pro fights, the
+large majority tiny one-off Brazilian regional cards. Fight Pass confirmed
+to have nothing beyond the DWCS fight when searching his name directly.
+
+Resolved (3 new):
+- Daniel Oliveira — Paranaguá Fight 9, Jul 2023 — YouTube (`PRVT - Paraná
+  Vale Tudo`, the promotion's own channel)
+- Mario Sousa — Max Fight 23, Jun 2019 — YouTube (`Ricardo Saldanha Max
+  Fight`, the promotion's own channel), individual bout upload
+- Andre Fischer — Standout Fighting Tournament 11, Apr 2019 — YouTube
+  (`SFT Combat` official channel), "LUTA COMPLETA" full fight
+
+Unresolved (15) — no footage found on YouTube or Fight Pass for any of
+these small/one-off Brazilian regional cards, despite searching each by
+name and promotion:
+- Helison Cruz — La Bomboneira FC 1, Feb 2023 (Tapology flags this bout as
+  disputed/ineligible for record purposes — may be worth a second look at
+  whether it belongs in FIGHT_HISTORY at all)
+- Vanilto Antunes — Shooto Brazil 100, Aug 2020
+- Hemerson Souza — Cidade da Luta 5, Mar 2020
+- Fabian Armoa — HCC 21, Feb 2020
+- Wendell Oliveira — Shooto Brazil 98, Nov 2019
+- Adercino De Jesus — Shooto Brazil 97, Oct 2019
+- Mateus Oliveira — Curitiba Top Fight 12, Sep 2019
+- Anderson Romualdo — Curitiba Top Fight 12, Sep 2019 (same card as above)
+- Matheus da Silva Luiz — MMA Brutus 2, May 2019
+- Nilson Almeida — Brotherhood Fight Night 2, Feb 2019
+- Willian Telles — GCF 41, Nov 2018
+- Francisco Saldarriaga — Niterói Top Fight 7, Oct 2018
+- Weldon Silva de Oliveira — MMA Dragon Fighters 14, Aug 2018
+- Willker Lemos — NCE 25, Apr 2018
+- Paulo Cesar dos Santos — Gold Fight 9, Aug 2017
+
+---
+
 ## 22. Matthieu Letho Duclos (2026-08-23) — 6 of 12 resolved, 2 confirmed unavailable
 
 1/12 was already resolved (his DWCS fight). This pass covered his 11
