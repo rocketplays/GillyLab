@@ -9,6 +9,55 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 15. Losene Keita (2026-08-23) — 14 of 18 resolved, 4 confirmed unavailable
+
+Only his UFC debut (Nathaniel Wood) was resolved coming in. His whole Oktagon
+MMA run (9 fights, 2021–2024) is now fully resolved — OKTAGON isn't on Fight
+Pass at all (searched, zero results even for the promotion name generally),
+but OKTAGON runs an unusually thorough official YouTube presence (three
+regional channels: OKTAGON Global, OKTAGON CZSK, OKTAGON Deutschland) that
+posts either a dedicated "FREE FIGHT" upload or a full replay for
+essentially every notable bout — this is worth remembering as a pattern for
+any other Oktagon fighter.
+
+Resolved (13 new):
+- Ronald Paradeiser — Oktagon 65 (Dec 2024, rematch/tournament final) and
+  Oktagon 31 (Feb 2022, first meeting) — both on YouTube (OKTAGON Global /
+  OKTAGON CZSK)
+- Mateusz Legierski — Oktagon 61, Sep 2024 — YouTube (OKTAGON Deutschland),
+  free fight
+- Predrag Bogdanović — Oktagon 59, Jul 2024 — YouTube (OKTAGON Global), free
+  fight
+- Agy Sardari — Oktagon 57, May 2024 — YouTube (OKTAGON Global), free fight
+- Niko Samsonidse — Oktagon 50, Dec 2023 — YouTube (OKTAGON Global), free
+  fight
+- Mate Sanikidze — Oktagon 45, Jul 2023 — YouTube (OKTAGON CZSK), full
+  replay
+- Jakub Tichota — Oktagon 42, Apr 2023 — YouTube (OKTAGON Global), free
+  fight
+- Samuel Bark — Oktagon 39, Feb 2023 — YouTube (OKTAGON CZSK), full replay
+- Ivan Buchinger — Oktagon 33, Jun 2022 — YouTube (OKTAGON CZSK), full
+  replay
+- Karol Ryšavý — Oktagon 29, Dec 2021 — YouTube (OKTAGON CZSK), full replay
+- Soufiene Oudina — Team Bushido: Ultimate Contest 11, Dec 2019 — YouTube
+  (third-party upload), full fight
+- Karol Michalak — Atlas MMA 6, Nov 2019 — YouTube (Dutch Fight Network),
+  full fight
+
+Unresolved (4):
+- Bartosz Gorczyca — World Fighting League 6, Aug 2021 (Eindhoven). WFL's
+  own YouTube channel (`@WorldFightingLeagueVideos`, 220 videos) has a
+  ~2h47m unlabeled "Livestream World Fighting League" upload from roughly
+  the right era with no description or event number — too ambiguous to
+  attribute to a specific card without watching it, so not used.
+- Raymond Jarman — World Fighting League 5, May 2021. Only a pre-fight
+  interview clip found ("Talk Before The Walk"), not the fight itself.
+- Tayron Chavarro — World Fighting League 4, Feb 2020. No footage found.
+- Gracjan Golebiowski — Strength & Honour Championship 15, Oct 2019 (his
+  pro debut). Only a post-fight interview clip found, not the fight itself.
+
+---
+
 ## 14. Felipe Lima (2026-08-23) — 8 of 16 resolved, 8 confirmed unavailable
 
 7/16 were already resolved from a prior session (3 UFC fights + Oktagon,
