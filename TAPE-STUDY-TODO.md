@@ -9,6 +9,55 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 25. Delphine Benouaich (2026-08-23) — 6 of 9 resolved, 3 confirmed unavailable
+
+Zero UFC fights (TUF 34 cast member, debuts vs. Sofia Montenegro at UFC
+Fight Night 287, Sep 5 2026) — no "UFC" section, all entries grouped under
+Pre-UFC. Fight Pass confirmed to have absolutely nothing for her when
+searching her name directly. Good YouTube coverage from her two main
+promotions' official channels (KING OF FIGHTERS / @KOF_MMA and ARES
+Fighting Championship / @AresFighting), which post individual per-bout
+uploads.
+
+Resolved (6):
+- Mileide Simplicio — ARES 30: Chamsoudinov vs. Lima, May 2025 — YouTube
+  (official `ARES Fighting Championship` channel), "HIGHLIGHTS #ARES30 -
+  BENOUAICH VS SIMPLICIO"
+- Naizi Cantanhede — The King of Fighters 12, Dec 2024 — YouTube (official
+  `KING OF FIGHTERS` channel), "Delphine Benouaich vs Naizi Cantanhede |
+  MMA | KOF12"
+- Anita Bekus — The King of Fighters 8, Oct 2024 — YouTube (official `KING
+  OF FIGHTERS` channel), "Delphine Benouaich vs Anita Bekus | MMA | KOF8"
+- Maristela Alves do Nascimento — KARMMA Fight Night 2, Jul 2024 — YouTube
+  (`MTP BOXING`), "KARMMA FIGHT NIGHT 2 - BENOUAICH v MARISTELA"
+- Amina Mukhamed — The King of Fighters 5, May 2024 — YouTube (official
+  `KING OF FIGHTERS` channel), "KOF 5 | LILLE - BENOUAICH VS MUKHAMED"
+- Gracy Maia — The King of Fighters: Fight Club, Mar 2024 — YouTube
+  (official `KING OF FIGHTERS` channel), "KOF VIP | LE HAVRE - SOUSA MAIA
+  VS BENOUAICH" (title uses her full name, Gracy Sousa Maia)
+
+Unresolved (3):
+- Lindsey Payne — ARES 36: Jbalia vs. Sabirov, Dec 2025 (most recent fight).
+  ARES's own channel has post-fight presser/weigh-in/press-conference
+  videos for ARES 36 but no per-bout highlight upload for this fight yet;
+  a Facebook-only highlight clip exists ("HIGHLIGHTS #ARES36 - BENOUAICH VS
+  PAYNE") but Facebook-only sources are excluded by convention. No YouTube
+  match found.
+- Ingrid Silva — ARES 34: Begai vs. Diakhate, Sep 2025. ARES's channel has
+  a highlights video for the card's main event (Begai vs. Diakhate) but
+  none specific to this bout; only short promo/reaction clips
+  ("Benouaich reflects on her defeat at ARES 34!") found, not fight
+  footage.
+- Marta Amigo Abeledo — The King of Fighters 6, Jun 2024. Two videos exist
+  on the official KOF channel referencing this fight ("KOF 6 - DELPHINE
+  BENOUAICH: AMBITION & DETERMINATION" and "Delphine Benouaich: son combat
+  pour la ceinture") but both are confirmed pre-fight training/prep videos,
+  not fight footage — the first has no description, the second's
+  description explicitly says it's about fight preparation ("Entrez en
+  immersion dans les préparations...").
+
+---
+
 ## 24. Sofia Montenegro (2026-08-23) — 6 of 8 resolved, 2 confirmed unavailable
 
 2/8 were already resolved (DWCS + FFC 81). This pass covered her remaining
