@@ -9,6 +9,40 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 21. Klaudia Sygula (2026-08-23) — 7 of 10 resolved, 3 confirmed unavailable
+
+3/10 were already resolved (her 3 UFC fights). This pass covered her 7 pre-UFC
+fights, all in Poland/Switzerland. Fight Pass has nothing beyond the 2 most
+recent UFC fights when searching her name directly — confirmed no coverage of
+any of the small promotions. Armia Fight Night (AFN), her main promotion, runs
+its own YouTube channel with some full "Free Fight" uploads and some events
+covered by TVP Sport (Polish public broadcaster) instead.
+
+Resolved (4 new):
+- Ana Lobzhanidze — FEN 43: ENERGA Fight Night Szczecin, Dec 2022 — YouTube
+  (official `FEN MMA` channel), fight-result video with footage
+- Brena Cardozo — Armia Fight Night 14, Jul 2022 — YouTube (official
+  `TVP Sport` channel), main event ("w walce wieczoru")
+- Daria Rehil — Armia Fight Night 10, Jul 2021 — YouTube (`MMAPLtv`, an MMA
+  news channel), fight-result video with footage
+- Sylwia Maksym — Armia Fight Night Special Edition, May 2021 — YouTube
+  (official `Armia Fight Night` channel), "AFN Free Fight" full fight
+
+Unresolved (3):
+- Karolina Sobek — Armia Fight Night 9, Jan 2021 (her pro debut). TVP Sport
+  broadcast the event and covers other AFN cards individually on YouTube, but
+  no per-fight upload for this one was found — only a post-fight interview
+  clip and an unrelated bare-knuckle rematch (WOTORE 2) between the same two
+  fighters, which is a different bout not in FIGHT_HISTORY.
+- Zoya Litvinenko — Armia Fight Night 11, Nov 2021. TVP Sport hosts this
+  fight as an individual clip on their own site (sport.tvp.pl) but it wasn't
+  found on YouTube specifically — not used per project convention (YouTube or
+  Fight Pass only).
+- Yulia Kutsenko — MMA GP: Kouadja vs. Maalem, Sep 2023 (Geneva, Switzerland).
+  No footage found on YouTube or Fight Pass for this small Swiss card.
+
+---
+
 ## 20. Nora Cornolle (2026-08-23) — 12 of 13 resolved, 1 confirmed unavailable
 
 7/13 were already resolved (5 UFC fights + both UAE Warriors fights). This
