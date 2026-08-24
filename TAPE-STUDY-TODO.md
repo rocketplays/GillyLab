@@ -9,6 +9,42 @@ video by your decision (Dulatov, section 4).
 
 ---
 
+## 18. Modestas Bukauskas (2026-08-23) — 23 of 27 resolved, 4 confirmed unavailable
+
+15/27 were already resolved (all UFC fights + 2 Cage Warriors fights).
+Cage Warriors has a proper Fight Pass presence unlike KSW/Oktagon — a
+"Cage Warriors Alumni: Modestas Bukauskas" playlist on Fight Pass surfaced 3
+individual fights directly. The remaining 3 Cage Warriors/regional fights
+were found on YouTube via each promotion's or archive channel's official
+upload.
+
+Resolved (8 new):
+- Riccardo Nosiglia — Cage Warriors 111, Nov 2019 — Fight Pass,
+  `video/156164` (Cage Warriors Alumni playlist)
+- Marthin Hamlet — Cage Warriors 106, Jun 2019 — Fight Pass, `video/156158`
+  (same playlist; note the playlist also has a duplicate upload of this
+  fight mislabeled "vs. Marthin Nielsen" — used the correctly-labeled one)
+- Marcin Wójcik — Cage Warriors 102, Mar 2019 — Fight Pass, `video/96892`
+  (same playlist)
+- Dan Konecke — FightStar Championship 16, Dec 2018 — YouTube (official
+  FightStar Championship channel)
+- Kristian Lapsley — Cage Warriors 93, Apr 2018 — YouTube (official Cage
+  Warriors channel)
+- Pelu Adetola — Cage Warriors 92, Mar 2018 — YouTube (official Cage
+  Warriors channel)
+- John Redmond — Cage Warriors 77, Jul 2016 — YouTube (official Cage
+  Warriors channel)
+- Kes Mamba — Ultimate Challenge MMA 45, Nov 2015 — YouTube (Hard Knocks
+  Fighting archive channel)
+
+Unresolved (4), all early UCMMA/regional fights with no footage found:
+- Pavel Doroftei — Ultimate Challenge MMA 47, May 2016 (his first pro loss)
+- Dave Rintoul — Too Much Talent MMA 6, Nov 2015
+- Nelson Lima — Ultimate Challenge MMA 44, Sep 2015
+- Arvydas Juska — Ultimate Challenge MMA 43, May 2015 (his pro debut)
+
+---
+
 ## 17. Oumar Sy (2026-08-23) — 9 of 14 resolved, 5 confirmed unavailable
 
 6/14 were already resolved (his 5 UFC fights + Ares FC 3). Checked Fight
