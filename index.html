@@ -133560,6 +133560,165 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         '2.5': { betmgm: { over: 125, under: -160 } },
       },
     },
+    // Contender Series 2026: Week 3 (Aug 26, 2026), all 5 bouts. Sourced from
+    // fightodds.io via the per-fight Open/Worst/Current/Best table (ML) and the
+    // props grid (method/roundProps/totals), pixel-anchored against each fight's
+    // own ML row per ODDS-ENTRY-PROCEDURE.txt. As of entry (2026-08-25), data/
+    // odds.json's automated the-odds-api feed only carries Piazzon vs Uriel
+    // (betonlineag/fanduel/betmgm) -- the other 4 bouts have ZERO live coverage,
+    // so their `fight` objects won't render on the Odds & Projections page at all
+    // until the-odds-api itself starts pricing them (the page's fight list comes
+    // from filtering that live feed, not from event.json's bout list -- see
+    // renderOddsHTML's caller). Entered now anyway so nothing needs re-doing once
+    // the feed picks any one of them up; the merge will fill the rest instantly.
+    'apodaca|mir': { // f1 = Apodaca, f2 = Mir
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 1567, f2: -5500 },
+        bovada:      { f1: 1600, f2: -5000 },
+        draftkings:  { f1: 1500, f2: -3600 },
+        fanduel:     { f1: 1500, f2: -4000 },
+        betmgm:      { f1: 1350, f2: -5000 },
+      },
+      method: {
+        bovada:      { f1: { ko: 4000, sub: 7500, dec: 2500 }, f2: { ko: 300, sub: -275, dec: 1000 } },
+        draftkings:  { f1: { ko: 4000, sub: 7500, dec: 2800 }, f2: { ko: 275, sub: -300, dec: 1000 } },
+        fanduel:     { f1: { ko: 3300, sub: 7500, dec: 2700 }, f2: { ko: 320, sub: -260, dec: 1100 } },
+        betmgm:      { f1: { ko: 4000, sub: 8000, dec: 2800 }, f2: { ko: 225, sub: -325, dec: 800 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: 5000, r2: 8000, r3: 11000 }, f2: { r1: -250, r2: 500, r3: 1400 } },
+        fanduel:     { f1: { r1: 4500, r2: 7500, r3: 10000 }, f2: { r1: -280, r2: 500, r3: 1600 } },
+        betmgm:      { f1: { r1: 5000, r2: 8000, r3: 10000 }, f2: { r1: -250, r2: 500, r3: 1400 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 299, under: -375 },
+          bovada:      { over: 290, under: -435 },
+          draftkings:  { over: 290, under: -410 },
+        },
+      },
+    },
+    // Piazzon vs Uriel already has a live betonlineag/fanduel/betmgm moneyline in
+    // data/odds.json -- only draftkings/bovada ML are missing. f1 = Piazzon, f2 = Uriel.
+    'piazzon|uriel': {
+      rounds: 3,
+      ml: {
+        draftkings: { f1: 120, f2: -142 },
+        bovada:     { f1: 125, f2: -145 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 175, sub: 2000, dec: 600 },  f2: { ko: 145, sub: 450, dec: 600 } },
+        bovada:      { f1: { ko: 240, sub: 1000, dec: 800 },  f2: { ko: 130, sub: 500, dec: 1200 } },
+        draftkings:  { f1: { ko: 225, sub: 1000, dec: 800 },  f2: { ko: 125, sub: 450, dec: 1200 } },
+        fanduel:     { f1: { ko: 240, sub: 1100, dec: 850 },  f2: { ko: 130, sub: 500, dec: 1200 } },
+        betmgm:      { f1: { ko: 200, sub: 1000, dec: 800 },  f2: { ko: 125, sub: 450, dec: 1200 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: 350, r2: 600, r3: 1400 }, f2: { r1: 140, r2: 600, r3: 1400 } },
+        fanduel:     { f1: { r1: 410, r2: 750, r3: 1600 }, f2: { r1: 145, r2: 650, r3: 1400 } },
+        betmgm:      { f1: { r1: 350, r2: 600, r3: 1400 }, f2: { r1: 125, r2: 600, r3: 1400 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 159, under: -182 },
+          bovada:      { over: 160, under: -210 },
+          draftkings:  { over: 160, under: -210 },
+          fanduel:     { over: 164, under: -205 },
+          betmgm:      { over: 160, under: -220 },
+        },
+      },
+    },
+    // f1 = Balletto, f2 = Clancy. No BetMGM prop coverage found for this bout.
+    'balletto|clancy': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: 613, f2: -900 },
+        bovada:      { f1: 750, f2: -1200 },
+        draftkings:  { f1: 750, f2: -1200 },
+        fanduel:     { f1: 870, f2: -1500 },
+        betmgm:      { f1: 750, f2: -1200 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 1600, sub: 1400, dec: 2000 }, f2: { ko: -150, sub: 125, dec: 1300 } },
+        bovada:      { f1: { ko: 1800, sub: 3300, dec: 1800 }, f2: { ko: -135, sub: 175, dec: 1000 } },
+        draftkings:  { f1: { ko: 1800, sub: 3500, dec: 1600 }, f2: { ko: -135, sub: 165, dec: 800 } },
+        fanduel:     { f1: { ko: 1800, sub: 3000, dec: 1800 }, f2: { ko: -125, sub: 195, dec: 900 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: 2500, r2: 3500, r3: 5500 }, f2: { r1: -175, r2: 450, r3: 1200 } },
+        fanduel:     { f1: { r1: 2700, r2: 3500, r3: 4500 }, f2: { r1: -180, r2: 430, r3: 1200 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 226, under: -275 },
+          bovada:      { over: 210, under: -285 },
+          draftkings:  { over: 220, under: -298 },
+          fanduel:     { over: 215, under: -280 },
+        },
+      },
+    },
+    // f1 = Humphrey, f2 = Miranda.
+    'humphrey|miranda': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: -1250, f2: 776 },
+        bovada:      { f1: -1300, f2: 800 },
+        draftkings:  { f1: -1100, f2: 700 },
+        fanduel:     { f1: -1400, f2: 830 },
+        betmgm:      { f1: -1200, f2: 750 },
+      },
+      method: {
+        betonlineag: { f1: { ko: -350, sub: 240, dec: 1200 }, f2: { ko: 1600, sub: 2500, dec: 2000 } },
+        bovada:      { f1: { ko: -425, sub: 650, dec: 1200 }, f2: { ko: 1400, sub: 3500, dec: 2500 } },
+        draftkings:  { f1: { ko: -450, sub: 600, dec: 1200 }, f2: { ko: 1200, sub: 3500, dec: 2500 } },
+        fanduel:     { f1: { ko: -390, sub: 700, dec: 1200 }, f2: { ko: 1200, sub: 3500, dec: 2700 } },
+        betmgm:      { f1: { ko: -600, sub: 500, dec: 1200 }, f2: { ko: 1200, sub: 3500, dec: 2500 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: -330, r2: 850, r3: 2000 }, f2: { r1: 1600, r2: 3000, r3: 6000 } },
+        fanduel:     { f1: { r1: -340, r2: 900, r3: 2200 }, f2: { r1: 1800, r2: 3300, r3: 6000 } },
+        betmgm:      { f1: { r1: -325, r2: 850, r3: 2000 }, f2: { r1: 1600, r2: 3000, r3: 6000 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: 354, under: -455 },
+          bovada:      { over: 350, under: -550 },
+          draftkings:  { over: 380, under: -580 },
+        },
+      },
+    },
+    // f1 = Galanti, f2 = Petruzzella.
+    'galanti|petruzzella': {
+      rounds: 3,
+      ml: {
+        betonlineag: { f1: -240, f2: 200 },
+        bovada:      { f1: -235, f2: 195 },
+        draftkings:  { f1: -230, f2: 190 },
+        fanduel:     { f1: -245, f2: 200 },
+        betmgm:      { f1: -250, f2: 200 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 250, sub: 125, dec: 600 },  f2: { ko: 350, sub: 800, dec: 1100 } },
+        bovada:      { f1: { ko: 325, sub: 150, dec: 550 },  f2: { ko: 425, sub: 850, dec: 1100 } },
+        draftkings:  { f1: { ko: 330, sub: 150, dec: 450 },  f2: { ko: 330, sub: 900, dec: 1100 } },
+        fanduel:     { f1: { ko: 340, sub: 160, dec: 550 },  f2: { ko: 420, sub: 850, dec: 1100 } },
+        betmgm:      { f1: { ko: 325, sub: 150, dec: 450 },  f2: { ko: 325, sub: 900, dec: 1100 } },
+      },
+      roundProps: {
+        draftkings:  { f1: { r1: 180, r2: 400, r3: 1000 }, f2: { r1: 400, r2: 900, r3: 1800 } },
+        fanduel:     { f1: { r1: 195, r2: 420, r3: 1000 }, f2: { r1: 550, r2: 1000, r3: 1800 } },
+        betmgm:      { f1: { r1: 175, r2: 400, r3: 1000 }, f2: { r1: 400, r2: 900, r3: 1800 } },
+      },
+      totals: {
+        '1.5': {
+          betonlineag: { over: -110, under: -110 },
+          bovada:      { over: -120, under: -110 },
+          draftkings:  { over: -115, under: -115 },
+          betmgm:      { over: 110,  under: -150 },
+        },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
@@ -141576,6 +141735,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // ── log a bet: event → fight → market → selection ────────────────────────
   let btKind = 'card';
   function btSetKind(k) { btKind = k; btRenderLog(k); }
+  // ── screenshot bet reader (scan) — see SCREENSHOT-BET-READER-PLAN.txt ─────
+  // Each item: { name, status: 'reading'|'ready'|'error'|'done'|'skipped', draft, match, error }.
+  // One item in flight per queue slot; BT_SCAN_CONCURRENCY caps how many
+  // /api/bets/scan calls run at once so a big batch doesn't hammer the worker.
+  let btScanQueue = [];
+  let btScanIdx = 0;
+  const BT_SCAN_MAX_BATCH = 12;   // plan sec 6: cap an accidental "select all" from a camera roll
+  const BT_SCAN_CONCURRENCY = 3;
+  const BT_SCAN_LONG_EDGE = 1568; // Claude resizes to ~this anyway — no benefit sending more (plan sec 4)
   function btPickEvent(i) { btEvent = i === '' ? null : BT_EVENTS[+i]; btFight = null; btMarket = 'ML'; btRenderLog('card'); }
   function btPickFight(id) { btFight = btAllFights().find(x => x.id === id) || null; btMarket = 'ML'; btLastSide = null; btLastStake = null; btLastBook = null; btRenderLog('card'); }
   // Called by every market's Winner <select> onchange, so a later market switch
@@ -141842,8 +142010,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const host = document.getElementById('bt-log'); if (!host) return;
     let h = btStageHTML() + '<div class="bt-panel"><div class="bt-seg">' +
       '<div class="' + (btKind === 'card' ? 'on' : '') + '" onclick="btSetKind(\'card\')">Upcoming fights</div>' +
-      '<div class="' + (btKind === 'custom' ? 'on' : '') + '" onclick="btSetKind(\'custom\')">Custom bet</div></div>';
-    if (btKind === 'card') {
+      '<div class="' + (btKind === 'custom' ? 'on' : '') + '" onclick="btSetKind(\'custom\')">Custom bet</div>' +
+      '<div class="' + (btKind === 'scan' ? 'on' : '') + '" onclick="btSetKind(\'scan\')">Scan a screenshot</div></div>';
+    if (btKind === 'scan') {
+      h += btScanHTML();
+    } else if (btKind === 'card') {
       const evs = (BT_EVENTS || []).filter(btEvOpen);
       if (!evs.length) h += '<div class="bt-empty">No upcoming fights are posted right now.</div>';
       else {
@@ -141932,6 +142103,144 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     });
   }
   window.btSubmitCard = btSubmitCard; window.btSubmitCustom = btSubmitCustom;
+
+  // ── screenshot bet reader (scan) — see SCREENSHOT-BET-READER-PLAN.txt ────
+  // v1 SCOPE DECISION (resolves part of plan sec 6): a scanned bet ALWAYS logs
+  // as a self-reported "manual" bet through the same POST /api/bets path the
+  // Custom bet form uses — never auto-submitted as "tracked". Mapping a
+  // screenshot's free-text market label ("Winning Method - Double Chance",
+  // "KO/TKO Round Combos"...) onto the app's 9 BT_MARKETS codes reliably is a
+  // real classification problem of its own, and getting it wrong would
+  // silently misfile a bet as CLV-eligible when it isn't. When a leg DOES
+  // match a live, undecided bout (btFindBout equivalent, server-side), that's
+  // shown as an informational badge only — it tells the user this fight is
+  // on an upcoming card, but does not change what gets submitted. Upgrading
+  // matched legs to fully "tracked" bets (with correct market codes) is left
+  // as a documented next step, not attempted here.
+  function btScanHTML() {
+    const n = btScanQueue.length;
+    if (!n) {
+      return '<input type="file" id="bt-scan-files" accept="image/*" multiple style="display:none" onchange="btScanPickFiles(this.files)">' +
+        '<button type="button" class="bt-btn" onclick="document.getElementById(\'bt-scan-files\').click()">Choose screenshots…</button>' +
+        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. Logged as <b style="color:#ffcf7a">self-reported</b>, same as Custom bet.</div>';
+    }
+    if (btScanIdx >= n) {
+      const done = btScanQueue.filter(x => x.status === 'done').length;
+      const skipped = btScanQueue.filter(x => x.status === 'skipped').length;
+      return '<div class="bt-note">Done — ' + done + ' logged' + (skipped ? ', ' + skipped + ' skipped' : '') + '.</div>' +
+        '<button type="button" class="bt-btn" onclick="btSetView(\'history\')">Go to bet history</button> ' +
+        '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanQueue=[];btScanIdx=0;btRenderLog(\'scan\')">Scan more</button>';
+    }
+    const item = btScanQueue[btScanIdx];
+    let h = '<div class="bt-note" style="margin-bottom:.6rem">' + (btScanIdx + 1) + ' of ' + n + '</div>';
+    if (item.status === 'reading') {
+      h += '<div class="bt-empty">Reading this screenshot…</div>';
+    } else if (item.status === 'error') {
+      h += '<div class="bt-note lock">' + btEsc(item.error || "Couldn't read this screenshot.") + '</div>' +
+        '<button type="button" class="bt-btn" onclick="btSetKind(\'custom\')">Enter this one manually</button> ' +
+        '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
+    } else if (item.status === 'ready') {
+      const d = item.draft;
+      const legs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
+      const matchText = legs.map(l => l.matchup).join(' + ');
+      const pickText = legs.map(l => l.pick + ' (' + l.market + ')').join(' | ') + (d.kind === 'parlay' ? ' — ' + legs.length + '-leg parlay' : '');
+      const oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
+      const anyMatch = (item.matches || []).some(Boolean);
+      if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card — logged as self-reported for now; you can find it under Upcoming fights too if you\'d rather track it for CLV.</div>';
+      const unc = (d.uncertain_fields || []).filter(f => f && f !== 'not a bet slip');
+      if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + btEsc(unc.join(', ')) + ' — check before confirming.</div>';
+      h += '<label>Matchup / event</label><input id="bt-scan-match" value="' + btEsc(matchText) + '">' +
+        '<label>Your pick + market</label><input id="bt-scan-pick" value="' + btEsc(pickText) + '">' +
+        '<div class="bt-row2"><div><label>Your odds</label><input id="bt-scan-odds" type="number" value="' + (Number.isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
+        '<div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : '') + '" placeholder="1" step="0.5" min="0.5"></div></div>' +
+        '<label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '">' +
+        '<div class="bt-note">We don\'t track this fight from a screenshot, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, excluded from verified CLV / ROI.</div>' +
+        '<button type="button" class="bt-btn" onclick="btScanConfirm()">Log this bet</button> ' +
+        '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
+    }
+    return h;
+  }
+
+  function btScanPickFiles(fileList) {
+    let files = Array.from(fileList || []);
+    if (!files.length) return;
+    if (files.length > BT_SCAN_MAX_BATCH) {
+      alert('Max ' + BT_SCAN_MAX_BATCH + ' screenshots at once — taking the first ' + BT_SCAN_MAX_BATCH + '.');
+      files = files.slice(0, BT_SCAN_MAX_BATCH);
+    }
+    btScanQueue = files.map(f => ({ name: f.name, file: f, status: 'reading', draft: null, matches: null, error: null }));
+    btScanIdx = 0;
+    btRenderLog('scan');
+    btScanRunQueue();
+  }
+
+  // Downscale to ~BT_SCAN_LONG_EDGE on the long edge before upload — smaller
+  // request, and no benefit sending more pixels than the model resizes to
+  // anyway (plan sec 4).
+  function btScanDownscale(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, BT_SCAN_LONG_EDGE / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale)), h = Math.max(1, Math.round(img.height * scale));
+        const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        URL.revokeObjectURL(url);
+        const dataUrl = cv.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl.slice(dataUrl.indexOf(',') + 1));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Could not read that image file.')); };
+      img.src = url;
+    });
+  }
+
+  async function btScanRunOne(item) {
+    try {
+      const b64 = await btScanDownscale(item.file);
+      const r = await btApi('/api/bets/scan', { image: b64, mediaType: 'image/jpeg' });
+      if (r.status === 200 && r.j && r.j.ok) {
+        item.status = 'ready'; item.draft = r.j.draft; item.matches = r.j.matches || null;
+      } else {
+        item.status = 'error'; item.error = (r.j && r.j.error) || 'Could not read this screenshot.';
+      }
+    } catch (e) {
+      item.status = 'error'; item.error = 'Could not read this screenshot.';
+    }
+    if (btKind === 'scan' && btScanQueue[btScanIdx] === item) btRenderLog('scan');
+  }
+
+  // Concurrency-limited pool: BT_SCAN_CONCURRENCY items in flight at once, so
+  // an 8-image batch doesn't serialize into a slow queue but also doesn't
+  // hammer the worker / vision API all at once (plan sec 1B).
+  function btScanRunQueue() {
+    let cursor = 0;
+    const next = () => {
+      if (cursor >= btScanQueue.length) return Promise.resolve();
+      const item = btScanQueue[cursor++];
+      return btScanRunOne(item).then(next);
+    };
+    for (let i = 0; i < BT_SCAN_CONCURRENCY; i++) next();
+  }
+
+  function btScanConfirm() {
+    const item = btScanQueue[btScanIdx]; if (!item || item.status !== 'ready') return;
+    const match = document.getElementById('bt-scan-match').value.trim();
+    const pick = document.getElementById('bt-scan-pick').value.trim();
+    const odds = parseInt(document.getElementById('bt-scan-odds').value, 10);
+    const stake = parseFloat(document.getElementById('bt-scan-stake').value) || 1;
+    const book = (document.getElementById('bt-scan-book') || {}).value || '';
+    if (!match || !pick || !isFinite(odds)) { alert('Fill in the matchup, your pick and the odds.'); return; }
+    btApi('/api/bets', { kind: 'manual', match, pick, odds, stake, book }).then(r => {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
+      BT_BETS.push(r.j.bet); item.status = 'done'; btScanIdx++; btRenderLog('scan');
+    });
+  }
+  function btScanSkip() {
+    const item = btScanQueue[btScanIdx]; if (!item) return;
+    item.status = 'skipped'; btScanIdx++; btRenderLog('scan');
+  }
+  window.btScanPickFiles = btScanPickFiles; window.btScanConfirm = btScanConfirm; window.btScanSkip = btScanSkip;
 
 
 
