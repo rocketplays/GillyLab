@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-23T03:15:58.007Z",
+ "generatedAt": "2026-08-25T23:24:28.397Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -8828,6 +8828,194 @@
       ]
      },
      "capturedAt": "2026-08-23T03:05:40.864Z"
+    }
+   ]
+  },
+  "Carlos Petruzzella": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Nick Galanti",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:35",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Nick Galanti",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 1,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 10,
+      "totL": 9,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:17",
+      "head": [
+       8,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       7,
+       7
+      ]
+     },
+     "capturedAt": "2026-08-25T23:24:28.260Z"
+    }
+   ]
+  },
+  "Nick Galanti": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Carlos Petruzzella",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:35",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Carlos Petruzzella",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 10,
+      "totL": 9,
+      "totA": 11,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:17",
+      "head": [
+       8,
+       10
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       7,
+       7
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 1,
+      "sigA": 1,
+      "totL": 1,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-25T23:24:28.260Z"
     }
    ]
   }
