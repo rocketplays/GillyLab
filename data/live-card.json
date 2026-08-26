@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T00:10:14.632Z",
+ "generatedAt": "2026-08-26T00:25:31.211Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -9392,6 +9392,194 @@
       ]
      },
      "capturedAt": "2026-08-26T00:10:14.493Z"
+    }
+   ]
+  },
+  "Mario Piazzon": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Guilherme Uriel",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:50",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Guilherme Uriel",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 0,
+      "totL": 0,
+      "totA": 0,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 0,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-26T00:25:31.075Z"
+    }
+   ]
+  },
+  "Guilherme Uriel": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Mario Piazzon",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 1,
+     "time": "0:50",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Mario Piazzon",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 0,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 0,
+      "totL": 0,
+      "totA": 0,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-26T00:25:31.075Z"
     }
    ]
   }
