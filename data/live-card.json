@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-25T23:54:57.121Z",
+ "generatedAt": "2026-08-26T00:10:14.632Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -9204,6 +9204,194 @@
       ]
      },
      "capturedAt": "2026-08-25T23:54:56.982Z"
+    }
+   ]
+  },
+  "Gary Balletto": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Sean Clancy Jr.",
+     "result": "L",
+     "method": "KO/TKO (Elbows)",
+     "round": 2,
+     "time": "3:54",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Sean Clancy Jr.",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 33,
+      "totL": 18,
+      "totA": 40,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       33
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 85,
+      "totL": 64,
+      "totA": 100,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:31",
+      "head": [
+       34,
+       64
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       6,
+       7
+      ],
+      "dist": [
+       26,
+       46
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       25,
+       39
+      ]
+     },
+     "capturedAt": "2026-08-26T00:10:14.493Z"
+    }
+   ]
+  },
+  "Sean Clancy Jr.": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Gary Balletto",
+     "result": "W",
+     "method": "KO/TKO (Elbows)",
+     "round": 2,
+     "time": "3:54",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Gary Balletto",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 85,
+      "totL": 64,
+      "totA": 100,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:31",
+      "head": [
+       34,
+       64
+      ],
+      "body": [
+       11,
+       14
+      ],
+      "leg": [
+       6,
+       7
+      ],
+      "dist": [
+       26,
+       46
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       25,
+       39
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 11,
+      "sigA": 33,
+      "totL": 18,
+      "totA": 40,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       8,
+       30
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       11,
+       33
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-26T00:10:14.493Z"
     }
    ]
   }
