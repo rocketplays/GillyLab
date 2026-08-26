@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-26T00:30:44.649Z",
+ "generatedAt": "2026-08-26T01:16:17.261Z",
  "fighters": {
   "Gigi Canuto": {
    "history": [
@@ -9580,6 +9580,194 @@
       ]
      },
      "capturedAt": "2026-08-26T00:25:31.075Z"
+    }
+   ]
+  },
+  "Bella Mir": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Alex Apodaca",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Alex Apodaca",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 77,
+      "totL": 33,
+      "totA": 80,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:46",
+      "head": [
+       27,
+       72
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       27,
+       71
+      ],
+      "clinch": [
+       2,
+       5
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 124,
+      "totL": 66,
+      "totA": 144,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:57",
+      "head": [
+       35,
+       97
+      ],
+      "body": [
+       11,
+       25
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       39,
+       114
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "capturedAt": "2026-08-26T01:16:17.124Z"
+    }
+   ]
+  },
+  "Alex Apodaca": {
+   "history": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Bella Mir",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "Dana White's Contender Series: Season 10, Week 3",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 25, 2026",
+     "opponent": "Bella Mir",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 124,
+      "totL": 66,
+      "totA": 144,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "1:57",
+      "head": [
+       35,
+       97
+      ],
+      "body": [
+       11,
+       25
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       39,
+       114
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       6,
+       6
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 30,
+      "sigA": 77,
+      "totL": 33,
+      "totA": 80,
+      "tdL": 1,
+      "tdA": 6,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:46",
+      "head": [
+       27,
+       72
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       27,
+       71
+      ],
+      "clinch": [
+       2,
+       5
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-08-26T01:16:17.124Z"
     }
    ]
   }
