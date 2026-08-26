@@ -1,38 +1,84 @@
 {
-  "slug": "ufc-fight-night-august-25-2026",
-  "generatedAt": "2026-08-26T00:46:24.251Z",
+  "slug": "ufc-fight-night-august-29-2026",
+  "generatedAt": "2026-08-26T12:43:49.585Z",
   "slugs": [
-    "bella-mir",
-    "alex-apodaca",
-    "mario-piazzon",
-    "guilherme-uriel",
-    "gary-balletto",
-    "sean-clancy",
-    "ronald-humphrey",
-    "alexis-miranda",
-    "carlos-petruzzella",
-    "nick-galanti"
+    "umar-nurmagomedov",
+    "song-yadong",
+    "yan-xiaonan",
+    "denise-gomes",
+    "aoriqileng",
+    "kai-asakura",
+    "alex-perez",
+    "sumudaerji",
+    "ce-liu",
+    "levi-rodrigues",
+    "bilal-hasan",
+    "nilson-rojas",
+    "namsrai-batbayar",
+    "andre-lima",
+    "rei-tsuruya",
+    "kevin-borjas",
+    "jack-jenkins",
+    "sean-woodson",
+    "xiao-long",
+    "francesco-nuzzi",
+    "lawrence-lui",
+    "hector-santiago",
+    "jingnan-xiong",
+    "julia-polastri",
+    "ding-meng",
+    "cameron-nelson"
   ],
   "bouts": [
     {
-      "id": "espn-bella-mir-vs-alex-apodaca",
-      "f1": "Bella Mir",
-      "f2": "Alex Apodaca",
-      "ps1": "bella-mir",
-      "ps2": "alex-apodaca",
+      "id": "espn-umar-nurmagomedov-vs-song-yadong",
+      "f1": "Umar Nurmagomedov",
+      "f2": "Song Yadong",
+      "ps1": "umar-nurmagomedov",
+      "ps2": "song-yadong",
       "wPts": {
-        "f1": 6.428818492067184,
-        "f2": 30
+        "f1": 7.181663798889133,
+        "f2": 19.149088924269545
       },
       "mPts": {
         "f1": {
           "KO/TKO": 7,
-          "Submission": 4,
-          "Decision": 5
+          "Submission": 7,
+          "Decision": 2
         },
         "f2": {
-          "KO/TKO": 6,
+          "KO/TKO": 5,
           "Submission": 6,
+          "Decision": 3
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6,
+        "4": 7,
+        "5": 8
+      }
+    },
+    {
+      "id": "espn-yan-xiaonan-vs-denise-gomes",
+      "f1": "Yan Xiaonan",
+      "f2": "Denise Gomes",
+      "ps1": "yan-xiaonan",
+      "ps2": "denise-gomes",
+      "wPts": {
+        "f1": 8.991694772307337,
+        "f2": 11.335575479136004
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 6,
+          "Submission": 7,
+          "Decision": 2
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 7,
           "Decision": 3
         }
       },
@@ -43,53 +89,25 @@
       }
     },
     {
-      "id": "espn-mario-piazzon-vs-guilherme-uriel",
-      "f1": "Mario Piazzon",
-      "f2": "Guilherme Uriel",
-      "ps1": "mario-piazzon",
-      "ps2": "guilherme-uriel",
-      "wPts": {
-        "f1": 11.633216175411999,
-        "f2": 8.830927675163519
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 2,
-          "Submission": 7,
-          "Decision": 6
-        },
-        "f2": {
-          "KO/TKO": 4,
-          "Submission": 4,
-          "Decision": 7
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-gary-balletto-vs-sean-clancy-jr",
-      "f1": "Gary Balletto",
-      "f2": "Sean Clancy Jr.",
-      "ps1": "gary-balletto",
-      "ps2": "sean-clancy",
+      "id": "espn-aoriqileng-vs-kai-asakura",
+      "f1": "Aoriqileng",
+      "f2": "Kai Asakura",
+      "ps1": "aoriqileng",
+      "ps2": "kai-asakura",
       "wPts": {
         "f1": 10,
         "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 5,
-          "Submission": 4,
-          "Decision": 7
-        },
-        "f2": {
-          "KO/TKO": 2,
+          "KO/TKO": 4,
           "Submission": 6,
-          "Decision": 7
+          "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 3,
+          "Submission": 7,
+          "Decision": 5
         }
       },
       "rPts": {
@@ -99,20 +117,20 @@
       }
     },
     {
-      "id": "espn-ronald-humphrey-vs-alexis-miranda",
-      "f1": "Ronald Humphrey",
-      "f2": "Alexis Miranda",
-      "ps1": "ronald-humphrey",
-      "ps2": "alexis-miranda",
+      "id": "espn-alex-perez-vs-sumudaerji",
+      "f1": "Alex Perez",
+      "f2": "Sumudaerji",
+      "ps1": "alex-perez",
+      "ps2": "sumudaerji",
       "wPts": {
-        "f1": 10,
-        "f2": 10
+        "f1": 13.223896785989826,
+        "f2": 8.194068537725494
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 4,
-          "Submission": 5,
-          "Decision": 6
+          "KO/TKO": 6,
+          "Submission": 4,
+          "Decision": 5
         },
         "f2": {
           "KO/TKO": 5,
@@ -127,14 +145,70 @@
       }
     },
     {
-      "id": "espn-carlos-petruzzella-vs-nick-galanti",
-      "f1": "Carlos Petruzzella",
-      "f2": "Nick Galanti",
-      "ps1": "carlos-petruzzella",
-      "ps2": "nick-galanti",
+      "id": "espn-ce-liu-vs-levi-rodrigues-jr",
+      "f1": "Ce Liu",
+      "f2": "Levi Rodrigues Jr.",
+      "ps1": "ce-liu",
+      "ps2": "levi-rodrigues",
       "wPts": {
-        "f1": 10,
-        "f2": 10
+        "f1": 8.43749941810023,
+        "f2": 12.52099307216255
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 2,
+          "Submission": 7,
+          "Decision": 7
+        },
+        "f2": {
+          "KO/TKO": 2,
+          "Submission": 7,
+          "Decision": 7
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-bilal-hasan-vs-nilson-rojas",
+      "f1": "Bilal Hasan",
+      "f2": "Nilson Rojas",
+      "ps1": "bilal-hasan",
+      "ps2": "nilson-rojas",
+      "wPts": {
+        "f1": 6.934671300674092,
+        "f2": 22.546766359559935
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 3,
+          "Submission": 6,
+          "Decision": 6
+        },
+        "f2": {
+          "KO/TKO": 3,
+          "Submission": 7,
+          "Decision": 5
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-namsrai-batbayar-vs-andre-lima",
+      "f1": "Namsrai Batbayar",
+      "f2": "Andre Lima",
+      "ps1": "namsrai-batbayar",
+      "ps2": "andre-lima",
+      "wPts": {
+        "f1": 14.06520720526511,
+        "f2": 7.958404497029106
       },
       "mPts": {
         "f1": {
@@ -143,9 +217,177 @@
           "Decision": 6
         },
         "f2": {
-          "KO/TKO": 3,
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-rei-tsuruya-vs-kevin-borjas",
+      "f1": "Rei Tsuruya",
+      "f2": "Kevin Borjas",
+      "ps1": "rei-tsuruya",
+      "ps2": "kevin-borjas",
+      "wPts": {
+        "f1": 6.963963541414473,
+        "f2": 22.049788584444016
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 7,
+          "Decision": 3
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-jack-jenkins-vs-sean-woodson",
+      "f1": "Jack Jenkins",
+      "f2": "Sean Woodson",
+      "ps1": "jack-jenkins",
+      "ps2": "sean-woodson",
+      "wPts": {
+        "f1": 11.139600648747397,
+        "f2": 9.107527377718014
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 4,
           "Submission": 6,
+          "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 4,
+          "Submission": 6,
+          "Decision": 5
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-xiao-long-vs-francesco-nuzzi",
+      "f1": "Xiao Long",
+      "f2": "Francesco Nuzzi",
+      "ps1": "xiao-long",
+      "ps2": "francesco-nuzzi",
+      "wPts": {
+        "f1": 8.635303839085463,
+        "f2": 12.042614469935756
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 6,
+          "Submission": 4,
+          "Decision": 5
+        },
+        "f2": {
+          "KO/TKO": 5,
+          "Submission": 7,
+          "Decision": 3
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-lawrence-lui-vs-hector-santiago",
+      "f1": "Lawrence Lui",
+      "f2": "Hector Santiago",
+      "ps1": "lawrence-lui",
+      "ps2": "hector-santiago",
+      "wPts": {
+        "f1": 7.837626886256387,
+        "f2": 14.577517148152278
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 5,
+          "Submission": 6,
+          "Decision": 4
+        },
+        "f2": {
+          "KO/TKO": 4,
+          "Submission": 7,
+          "Decision": 5
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-jingnan-xiong-vs-julia-polastri",
+      "f1": "Jingnan Xiong",
+      "f2": "Julia Polastri",
+      "ps1": "jingnan-xiong",
+      "ps2": "julia-polastri",
+      "wPts": {
+        "f1": 13.52865207367272,
+        "f2": 8.10261057955688
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 7,
+          "Submission": 7,
+          "Decision": 2
+        },
+        "f2": {
+          "KO/TKO": 6,
+          "Submission": 5,
+          "Decision": 4
+        }
+      },
+      "rPts": {
+        "1": 4,
+        "2": 5,
+        "3": 6
+      }
+    },
+    {
+      "id": "espn-ding-meng-vs-cameron-nelson",
+      "f1": "Ding Meng",
+      "f2": "Cameron Nelson",
+      "ps1": "ding-meng",
+      "ps2": "cameron-nelson",
+      "wPts": {
+        "f1": 9.0709056148445,
+        "f2": 11.200015149645537
+      },
+      "mPts": {
+        "f1": {
+          "KO/TKO": 2,
+          "Submission": 7,
           "Decision": 6
+        },
+        "f2": {
+          "KO/TKO": 6,
+          "Submission": 6,
+          "Decision": 4
         }
       },
       "rPts": {

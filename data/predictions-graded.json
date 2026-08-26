@@ -2640,7 +2640,36 @@
         "pts": -0.0334,
         "leaned": true
       }
+    },
+    {
+      "fightId": "alex apodaca|bella mir",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-26T12:44:10.602Z",
+      "a": {
+        "feed": "Bella Mir",
+        "db": "Bella Mir"
+      },
+      "b": {
+        "feed": "Alex Apodaca",
+        "db": "Alex Apodaca"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 5,
+      "modelOpen": 0.527,
+      "modelClose": 0.527,
+      "marketOpen": 0.8994,
+      "marketClose": 0.9399,
+      "leanA": -0.3724,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": false,
+        "pts": -0.0405,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-26T01:00:38.988Z"
+  "generatedAt": "2026-08-26T12:44:10.609Z"
 }

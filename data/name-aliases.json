@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-25T12:40:26.212Z",
+  "generatedAt": "2026-08-26T12:43:29.501Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -735,6 +735,11 @@
     "Gabe Green|Jan 21, 2017|Jalin Turner": {
       "real": "Jalin Turner",
       "theyCallHim": "Gabriel Green",
+      "note": "alias"
+    },
+    "Gary Balletto Jr.|Aug 25, 2026|Sean Clancy Jr.": {
+      "real": "Sean Clancy Jr.",
+      "theyCallHim": "Gary Balletto",
       "note": "alias"
     },
     "CJ Vergara|Mar 29, 2025|Édgar Cháirez": {
