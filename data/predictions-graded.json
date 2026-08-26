@@ -2524,7 +2524,123 @@
         "pts": 0.505,
         "leaned": true
       }
+    },
+    {
+      "fightId": "guilherme uriel|mario piazzon",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-26T01:00:38.983Z",
+      "a": {
+        "feed": "Mario Piazzon",
+        "db": "Mario Piazzon"
+      },
+      "b": {
+        "feed": "Guilherme Uriel",
+        "db": "Guilherme Uriel"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.7458,
+      "modelClose": 0.7458,
+      "marketOpen": 0.3371,
+      "marketClose": 0.4037,
+      "leanA": 0.4087,
+      "nSnapshots": 4,
+      "clv": {
+        "toward": true,
+        "pts": 0.0666,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "alexis miranda|ronald humphrey",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-26T01:00:38.984Z",
+      "a": {
+        "feed": "Ronald Humphrey",
+        "db": "Ronald Humphrey"
+      },
+      "b": {
+        "feed": "Alexis Miranda",
+        "db": "Alexis Miranda"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5244,
+      "modelClose": 0.5244,
+      "marketOpen": 0.8483,
+      "marketClose": 0.887,
+      "leanA": -0.3239,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0387,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "carlos petruzzella|nick galanti",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-26T01:00:38.984Z",
+      "a": {
+        "feed": "Nick Galanti",
+        "db": "Nick Galanti"
+      },
+      "b": {
+        "feed": "Carlos Petruzzella",
+        "db": "Carlos Petruzzella"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.511,
+      "modelClose": 0.511,
+      "marketOpen": 0.6868,
+      "marketClose": 0.6868,
+      "leanA": -0.1758,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": 0,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "gary balletto jr|sean jr clancy",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-26T01:00:38.984Z",
+      "a": {
+        "feed": "Sean Jr. Clancy",
+        "db": "Sean Clancy Jr."
+      },
+      "b": {
+        "feed": "Gary Balletto Jr.",
+        "db": "Gary Balletto Jr."
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5482,
+      "modelClose": 0.5482,
+      "marketOpen": 0.836,
+      "marketClose": 0.8694,
+      "leanA": -0.2878,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0334,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-25T12:41:07.984Z"
+  "generatedAt": "2026-08-26T01:00:38.988Z"
 }
