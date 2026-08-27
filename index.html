@@ -136339,6 +136339,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // lookups are exact-lowercase only (no hyphen normalization) -- so the
     // hyphenated form needs its own entry rather than relying on the existing one.
     'abdul-rakhman yakhyaev': 'Abdulrakhman Yakhyaev',
+    // UFC Shanghai (8/29/26): odds feed lists these four in reversed/split
+    // word order vs. our DB and event.json's fighterName (same family of bug
+    // as the 'jingnan xiong' entry above). Sumudaerji is a single fused name
+    // with no surname to split; the feed still splits it into two words.
+    'liu ce': 'Ce Liu',
+    'long xiao': 'Xiao Long',
+    'meng ding': 'Ding Meng',
+    'su mudaerji': 'Sumudaerji',
   };
 
   // Share-sheet only: "Dana White's Contender Series: Season 10, Week 1" is long
