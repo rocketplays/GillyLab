@@ -133806,33 +133806,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // f1 = Aoriqileng, f2 = Asakura. Key is "aoriqileng|asakura" (not
-    // "asakura|qileng") because Aoriqileng is a single fused name in the
-    // source data with no surname to split off, and it sorts before Asakura.
-    'aoriqileng|asakura': {
+    // f1 = Asakura, f2 = Qileng. Key must be "asakura|qileng" (NOT the
+    // event.json-style "aoriqileng|asakura") because findManualProps() keys
+    // off data/odds.json's raw home_team/away_team, and that feed lists this
+    // fighter as "Aori Qileng" (two words) -- lastNameOf() takes the last
+    // token, "Qileng", not the fused "Aoriqileng" event.json uses.
+    'asakura|qileng': {
       rounds: 3,
       ml: {
-        betmgm: { f1: 340, f2: -450 },
+        betmgm: { f1: -450, f2: 340 },
       },
       method: {
-        betonlineag: { f1: { ko: 900, sub: 2800, dec: 750 }, f2: { ko: -250, sub: 2200, dec: 325 } },
-        bovada:      { f1: { ko: 850, sub: 1800, dec: 800 }, f2: { ko: -165, sub: 1800, dec: 320 } },
-        draftkings:  { f1: { ko: 800, sub: 2500, dec: 800 }, f2: { ko: -185, sub: 1800, dec: 400 } },
-        fanduel:     { f1: { ko: 850, sub: 2500, dec: 800 }, f2: { ko: -165, sub: 1900, dec: 410 } },
-        betmgm:      { f1: { ko: 700, sub: 2200, dec: 800 }, f2: { ko: -190, sub: 1500, dec: 350 } },
+        betonlineag: { f1: { ko: -250, sub: 2200, dec: 325 }, f2: { ko: 900, sub: 2800, dec: 750 } },
+        bovada:      { f1: { ko: -165, sub: 1800, dec: 320 }, f2: { ko: 850, sub: 1800, dec: 800 } },
+        draftkings:  { f1: { ko: -185, sub: 1800, dec: 400 }, f2: { ko: 800, sub: 2500, dec: 800 } },
+        fanduel:     { f1: { ko: -165, sub: 1900, dec: 410 }, f2: { ko: 850, sub: 2500, dec: 800 } },
+        betmgm:      { f1: { ko: -190, sub: 1500, dec: 350 }, f2: { ko: 700, sub: 2200, dec: 800 } },
       },
       doubleChance: {
-        betonlineag: { f1: { koDec: 450, subDec: 575 }, f2: { koDec: -550, subDec: -200 } },
-        bovada:      { f1: { koDec: 375, koSub: 600, subDec: 500 }, f2: { koDec: -400, koSub: -180, subDec: 255 } },
-        draftkings:  { f1: { koDec: 380, koSub: 650, subDec: 650 }, f2: { koDec: -400, koSub: -200, subDec: 300 } },
-        fanduel:     { f1: { koDec: 390, koSub: 650, subDec: 600 }, f2: { koDec: -370, koSub: -195, subDec: 310 } },
-        betmgm:      { f1: { koSub: 650 }, f2: { koSub: -200 } },
+        betonlineag: { f1: { koDec: -550, subDec: -200 }, f2: { koDec: 450, subDec: 575 } },
+        bovada:      { f1: { koDec: -400, koSub: -180, subDec: 255 }, f2: { koDec: 375, koSub: 600, subDec: 500 } },
+        draftkings:  { f1: { koDec: -400, koSub: -200, subDec: 300 }, f2: { koDec: 380, koSub: 650, subDec: 650 } },
+        fanduel:     { f1: { koDec: -370, koSub: -195, subDec: 310 }, f2: { koDec: 390, koSub: 650, subDec: 600 } },
+        betmgm:      { f1: { koSub: -200 }, f2: { koSub: 650 } },
       },
       roundProps: {
-        betonlineag: { f1: { r1: 1600, r2: 2500, r3: 3300 }, f2: { r1: 125, r2: 260, r3: 1000 } },
-        draftkings:  { f1: { r1: 1400, r2: 1800, r3: 2500 }, f2: { r1: 180, r2: 350, r3: 650 } },
-        fanduel:     { f1: { r1: 1500, r2: 1900, r3: 2700 }, f2: { r1: 175, r2: 380, r3: 750 } },
-        betmgm:      { f1: { r1: 1400, r2: 1800, r3: 2500 }, f2: { r1: 175, r2: 350, r3: 850 } },
+        betonlineag: { f1: { r1: 125, r2: 260, r3: 1000 }, f2: { r1: 1600, r2: 2500, r3: 3300 } },
+        draftkings:  { f1: { r1: 180, r2: 350, r3: 650 }, f2: { r1: 1400, r2: 1800, r3: 2500 } },
+        fanduel:     { f1: { r1: 175, r2: 380, r3: 750 }, f2: { r1: 1500, r2: 1900, r3: 2700 } },
+        betmgm:      { f1: { r1: 175, r2: 350, r3: 850 }, f2: { r1: 1400, r2: 1800, r3: 2500 } },
       },
       totals: {
         '2.5': {
@@ -133842,33 +133844,35 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // f1 = Perez, f2 = Sumudaerji. Key is "perez|sumudaerji" (not
-    // "mudaerji|perez") because Sumudaerji is a single fused name with no
-    // surname to split off ("Su" is not a separate given name).
-    'perez|sumudaerji': {
+    // f1 = Mudaerji (Su Mudaerji), f2 = Perez. Key must be "mudaerji|perez"
+    // (NOT "perez|sumudaerji") because findManualProps() keys off
+    // data/odds.json's raw home_team/away_team, and that feed splits this
+    // fighter into two words ("Su Mudaerji") rather than event.json's fused
+    // "Sumudaerji" -- lastNameOf() takes the last token, "Mudaerji".
+    'mudaerji|perez': {
       rounds: 3,
       ml: {
-        betmgm: { f1: 185, f2: -225 },
+        betmgm: { f1: -225, f2: 185 },
       },
       method: {
-        betonlineag: { f1: { ko: 550, sub: 800, dec: 650 }, f2: { ko: 180, sub: 800, dec: 165 } },
-        bovada:      { f1: { ko: 450, sub: 800, dec: 600 }, f2: { ko: 175, sub: 900, dec: 200 } },
-        draftkings:  { f1: { ko: 450, sub: 800, dec: 650 }, f2: { ko: 175, sub: 900, dec: 200 } },
-        fanduel:     { f1: { ko: 550, sub: 850, dec: 700 }, f2: { ko: 210, sub: 900, dec: 210 } },
-        betmgm:      { f1: { ko: 450, sub: 800, dec: 650 }, f2: { ko: 150, sub: 900, dec: 200 } },
+        betonlineag: { f1: { ko: 180, sub: 800, dec: 165 }, f2: { ko: 550, sub: 800, dec: 650 } },
+        bovada:      { f1: { ko: 175, sub: 900, dec: 200 }, f2: { ko: 450, sub: 800, dec: 600 } },
+        draftkings:  { f1: { ko: 175, sub: 900, dec: 200 }, f2: { ko: 450, sub: 800, dec: 650 } },
+        fanduel:     { f1: { ko: 210, sub: 900, dec: 210 }, f2: { ko: 550, sub: 850, dec: 700 } },
+        betmgm:      { f1: { ko: 150, sub: 900, dec: 200 }, f2: { ko: 450, sub: 800, dec: 650 } },
       },
       doubleChance: {
-        betonlineag: { f1: { koDec: 275, subDec: 375 }, f2: { koDec: -400, subDec: 105 } },
-        bovada:      { f1: { koDec: 255, koSub: 300, subDec: 320 }, f2: { koDec: -165, koSub: 140, subDec: 135 } },
-        draftkings:  { f1: { koDec: 240, koSub: 300, subDec: 330 }, f2: { koDec: -200, koSub: 140, subDec: 150 } },
-        fanduel:     { f1: { koDec: 260, koSub: 290, subDec: 340 }, f2: { koDec: -170, koSub: 140, subDec: 145 } },
-        betmgm:      { f1: { koSub: 300 }, f2: { koSub: 125 } },
+        betonlineag: { f1: { koDec: -400, subDec: 105 }, f2: { koDec: 275, subDec: 375 } },
+        bovada:      { f1: { koDec: -165, koSub: 140, subDec: 135 }, f2: { koDec: 255, koSub: 300, subDec: 320 } },
+        draftkings:  { f1: { koDec: -200, koSub: 140, subDec: 150 }, f2: { koDec: 240, koSub: 300, subDec: 330 } },
+        fanduel:     { f1: { koDec: -170, koSub: 140, subDec: 145 }, f2: { koDec: 260, koSub: 290, subDec: 340 } },
+        betmgm:      { f1: { koSub: 125 }, f2: { koSub: 300 } },
       },
       roundProps: {
-        betonlineag: { f1: { r1: 750, r2: 1000, r3: 1500 }, f2: { r1: 375, r2: 575, r3: 900 } },
-        draftkings:  { f1: { r1: 650, r2: 850, r3: 1400 }, f2: { r1: 330, r2: 500, r3: 900 } },
-        fanduel:     { f1: { r1: 750, r2: 1000, r3: 1600 }, f2: { r1: 400, r2: 600, r3: 1000 } },
-        betmgm:      { f1: { r1: 650, r2: 850, r3: 1400 }, f2: { r1: 325, r2: 500, r3: 900 } },
+        betonlineag: { f1: { r1: 375, r2: 575, r3: 900 }, f2: { r1: 750, r2: 1000, r3: 1500 } },
+        draftkings:  { f1: { r1: 330, r2: 500, r3: 900 }, f2: { r1: 650, r2: 850, r3: 1400 } },
+        fanduel:     { f1: { r1: 400, r2: 600, r3: 1000 }, f2: { r1: 750, r2: 1000, r3: 1600 } },
+        betmgm:      { f1: { r1: 325, r2: 500, r3: 900 }, f2: { r1: 650, r2: 850, r3: 1400 } },
       },
       totals: {
         '2.5': {
@@ -133880,8 +133884,12 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // f1 = Liu, f2 = Rodrigues.
-    'liu|rodrigues': {
+    // f1 = Liu (Ce Liu), f2 = Rodrigues. Key must be "ce|rodrigues" (NOT
+    // "liu|rodrigues") because findManualProps() keys off data/odds.json's
+    // raw home_team/away_team, and that feed lists this fighter as "Liu Ce"
+    // (word order reversed from event.json) -- lastNameOf() takes the last
+    // token, "Ce", and odds.json also drops the "Jr." suffix from Rodrigues.
+    'ce|rodrigues': {
       rounds: 3,
       ml: {
         betmgm: { f1: -200, f2: 165 },
@@ -134030,30 +134038,32 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // f1 = Long (Xiao Long), f2 = Nuzzi. Key is "long|nuzzi" (not
-    // "nuzzi|xiao") because the source data lists this fighter as "Xiao
-    // Long" (family name first) and lastNameOf() takes the final token.
-    'long|nuzzi': {
+    // f1 = Nuzzi, f2 = Xiao (Long Xiao). Key must be "nuzzi|xiao" (NOT
+    // "long|nuzzi") because findManualProps() keys off data/odds.json's raw
+    // home_team/away_team, and that feed lists this fighter as "Long Xiao"
+    // (word order reversed from event.json) -- lastNameOf() takes the last
+    // token, "Xiao", not "Long".
+    'nuzzi|xiao': {
       rounds: 3,
       ml: {
-        betmgm: { f1: -180, f2: 145 },
+        betmgm: { f1: 145, f2: -180 },
       },
       method: {
-        betonlineag: { f1: { ko: 400, sub: 450, dec: 155 }, f2: { ko: 600, sub: 900, dec: 350 } },
-        bovada:      { f1: { ko: 475, sub: 500, dec: 185 }, f2: { ko: 475, sub: 850, dec: 385 } },
-        draftkings:  { f1: { ko: 400, sub: 450, dec: 165 }, f2: { ko: 500, sub: 900, dec: 400 } },
-        fanduel:     { f1: { ko: 500, sub: 500, dec: 175 }, f2: { ko: 550, sub: 1200, dec: 400 } },
+        betonlineag: { f1: { ko: 600, sub: 900, dec: 350 }, f2: { ko: 400, sub: 450, dec: 155 } },
+        bovada:      { f1: { ko: 475, sub: 850, dec: 385 }, f2: { ko: 475, sub: 500, dec: 185 } },
+        draftkings:  { f1: { ko: 500, sub: 900, dec: 400 }, f2: { ko: 400, sub: 450, dec: 165 } },
+        fanduel:     { f1: { ko: 550, sub: 1200, dec: 400 }, f2: { ko: 500, sub: 500, dec: 175 } },
       },
       doubleChance: {
-        betonlineag: { f1: { koDec: -200, subDec: -175 }, f2: { koDec: 165, subDec: 250 } },
-        bovada:      { f1: { koDec: 100, koSub: 205, subDec: 105 }, f2: { koDec: 175, koSub: 315, subDec: 250 } },
-        draftkings:  { f1: { koDec: -125, koSub: 200, subDec: -115 }, f2: { koDec: 185, koSub: 330, subDec: 240 } },
-        fanduel:     { f1: { koDec: -115, koSub: 210, subDec: -110 }, f2: { koDec: 185, koSub: 340, subDec: 270 } },
+        betonlineag: { f1: { koDec: 165, subDec: 250 }, f2: { koDec: -200, subDec: -175 } },
+        bovada:      { f1: { koDec: 175, koSub: 315, subDec: 250 }, f2: { koDec: 100, koSub: 205, subDec: 105 } },
+        draftkings:  { f1: { koDec: 185, koSub: 330, subDec: 240 }, f2: { koDec: -125, koSub: 200, subDec: -115 } },
+        fanduel:     { f1: { koDec: 185, koSub: 340, subDec: 270 }, f2: { koDec: -115, koSub: 210, subDec: -110 } },
       },
       roundProps: {
-        betonlineag: { f1: { r1: 500, r2: 650, r3: 878 }, f2: { r1: 750, r2: 1000, r3: 1400 } },
-        draftkings:  { f1: { r1: 450, r2: 650, r3: 1000 }, f2: { r1: 650, r2: 1000, r3: 1600 } },
-        fanduel:     { f1: { r1: 500, r2: 850, r3: 1400 }, f2: { r1: 800, r2: 1200, r3: 1700 } },
+        betonlineag: { f1: { r1: 750, r2: 1000, r3: 1400 }, f2: { r1: 500, r2: 650, r3: 878 } },
+        draftkings:  { f1: { r1: 650, r2: 1000, r3: 1600 }, f2: { r1: 450, r2: 650, r3: 1000 } },
+        fanduel:     { f1: { r1: 800, r2: 1200, r3: 1700 }, f2: { r1: 500, r2: 850, r3: 1400 } },
       },
       totals: {
         '2.5': {
@@ -134167,10 +134177,11 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
-    // f1 = Meng (Ding Meng), f2 = Nelson. Key uses "meng" because the source
-    // data lists the fighter as "Ding Meng" (family name first) and our
-    // lastNameOf() always takes the final whitespace-separated token.
-    'meng|nelson': {
+    // f1 = Ding (Ding Meng), f2 = Nelson. Key must be "ding|nelson" because
+    // findManualProps() keys off data/odds.json's raw home_team/away_team,
+    // and that feed also lists this fighter as "Meng Ding" -- lastNameOf()
+    // takes the last token, "Ding", same as event.json's word order here.
+    'ding|nelson': {
       rounds: 3,
       ml: {
         betmgm: { f1: -150, f2: 125 },
