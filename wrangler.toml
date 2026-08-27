@@ -71,6 +71,7 @@ id = "f24b21f281da4478b789550d0bb326fe"
 #   wrangler secret put STRIPE_PRICE_ID          # price_...  (your subscription price)
 #   wrangler secret put SESSION_SECRET           # long random string (openssl rand -hex 32)
 #   wrangler secret put RESEND_API_KEY           # re_...  (email provider for magic links)
+#   wrangler secret put ANTHROPIC_API_KEY        # sk-ant-...  (screenshot bet reader — SCREENSHOT-BET-READER-PLAN.txt)
 
 # Custom domain routing is configured in the Cloudflare dashboard (Workers Routes)
 # or here once the zone is on Cloudflare:

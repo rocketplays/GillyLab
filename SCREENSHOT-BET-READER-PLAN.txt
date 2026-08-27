@@ -67,6 +67,50 @@ anything that matters") extends here as: the MODEL never decides anything that
 matters either. It only ever produces a draft a human confirms.
 
 --------------------------------------------------------------------------------
+1B. BATCH UPLOAD — MULTIPLE SCREENSHOTS, ONE STEPPER (added 2026-08-24)
+--------------------------------------------------------------------------------
+Discussed after the v1 flow above: instead of one screenshot -> one draft ->
+back to the upload button for the next one, let the user pick/drop N images
+at once and step through the drafts one at a time without re-uploading.
+
+THIS DOES NOT CHANGE THE BACKEND. No batch endpoint. The client still calls
+POST /api/bets/scan once per image — just N times instead of once, a few
+in flight at a time (e.g. 3 concurrent) so it doesn't serialize into a slow
+queue but also doesn't hammer the vision API. handleBetsScan() stays exactly
+as specced in section 3, one image in, one draft out.
+
+FLOW:
+  1. User selects/drops N files in the "Scan a screenshot" mode.
+  2. Client downscales each (same as section 1 step 2) and fires the scan
+     calls, capped at ~3 concurrent.
+  3. As each call resolves, its draft joins a queue in upload order. The
+     review screen (section 1 step 5-7, unchanged) shows draft #1 as soon as
+     it's ready — does NOT wait for all N to finish reading.
+  4. User reviews/corrects/confirms draft #1 exactly as in the single-image
+     flow. Confirm posts through the normal POST /api/bets path — nothing
+     about the save changes. The form then advances to draft #2 automatically.
+  5. If the position the user has reached is still being read, show a brief
+     "reading..." state rather than blocking earlier drafts that are ready.
+  6. Add a SKIP action next to Confirm, separate from "couldn't read this
+     screenshot" — the user may have screenshots of old/cancelled bets or a
+     book they don't track. Skip advances the queue with nothing written.
+  7. Position indicator ("2 of 5") so the user can see progress through the
+     batch.
+
+WHY THIS IS SAFE TO ADD WITHOUT REOPENING SECTION 2's ARGUMENT: each draft
+still gets its own individual human review and its own individual confirm.
+Batching changes how many times the user re-opens the file picker, not
+whether a human looks at each bet before it saves. The rule stays: the model
+never decides anything that matters, only now it says so N times in a row.
+
+OPEN DECISION ADDED HERE: the per-user daily rate cap (section 3, section 6)
+now matters more, because a user can hit it in one batch instead of over a
+week. The client should check remaining quota before firing the batch and
+show up front which screenshots won't be scanned today ("5 of these won't be
+scanned — daily limit"), rather than having them fail silently partway
+through the queue.
+
+--------------------------------------------------------------------------------
 2. WHY REVIEW-BEFORE-SAVE IS NOT OPTIONAL
 --------------------------------------------------------------------------------
 Screenshots are messy in ways a linked-account API response never is:
@@ -149,48 +193,183 @@ $500 steps at fixed account-count tiers. Add the per-user rate cap (sec 3) as
 the hard ceiling on a worst-case bill.
 
 --------------------------------------------------------------------------------
-6. OPEN DECISIONS (resolve before building, not during)
+6. OPEN DECISIONS — RESOLVED 2026-08-24, BUILT AGAINST THESE ANSWERS
 --------------------------------------------------------------------------------
-[ ] Do we store the uploaded image anywhere, even temporarily? Simplest and
-    most privacy-respecting answer: no — pass it to the model and discard,
-    never write it to KV/R2. Revisit only if debugging bad parses turns out to
-    require having the original on hand.
-[ ] Does this feature finally add a `book` field to the bet record (see
-    BET-TRACKER-ROADMAP.txt sec 3, "one sportsbook per parlay")? A screenshot
-    usually makes the book obvious for free, which is a good reason to add it
-    here even though the tracker doesn't store it today. Decide the schema
-    change once, not as an afterthought.
-[ ] Per-user rate limit number — start conservative (e.g. 20-30/day, well
-    above the 5-10/week this plan is priced around) and loosen if it's ever
-    actually hit.
-[ ] Same-game parlays and player-prop-heavy slips (more common outside UFC,
-    but the model doesn't know that) will be the hardest images. Decide
-    whether to scope v1 to "moneyline / method / total rounds / distance"
-    style slips only and reject anything that doesn't parse cleanly into the
-    tracker's existing 7 markets, rather than trying to handle everything.
+[x] Image storage: NO. handleBetsScan() passes the image to the model and
+    discards it — never written to KV/R2. Not revisited; no debugging need
+    has come up.
+[x] `book` field: ALREADY EXISTED. handleBetsAdd() (line ~890) already reads
+    body.book as free text, no schema change needed — the roadmap note that
+    raised this was stale. handleBetsScan()'s draft populates the same field.
+[x] Per-user rate limit: 25/day (BT_SCAN_DAILY_CAP), tracked via a
+    date-keyed PICKS key (btscancap:<email>:<date>, 2-day TTL) — no new KV
+    binding. Loosen later if it's ever actually hit.
+[x] Same-game-parlay / prop-heavy scope, AND the market-code question this
+    turned into once building started: a scanned bet is v1-scoped to ALWAYS
+    log as self-reported ("manual"), through the exact POST /api/bets path
+    Custom bet already uses — never auto-submitted as "tracked". Reason
+    (found during the build, not anticipated here originally): mapping a
+    screenshot's free-text market label onto the app's 9 BT_MARKETS codes
+    reliably is its own real classification problem, and a wrong guess there
+    would silently misfile a bet as CLV-eligible when it isn't — exactly the
+    kind of "the model decided something that mattered" this whole plan
+    exists to prevent. A matched leg (server-side name match against
+    /data/event.json, same normalization as btBoutDecided) shows as an
+    INFORMATIONAL badge only — "matches an upcoming card" — and does not
+    change what gets submitted. Upgrading matched legs to real "tracked"
+    bets with correct market codes is a real follow-up, not done here.
+[x] Max batch size: 12 (BT_SCAN_MAX_BATCH), enforced client-side in
+    btScanPickFiles() before any scans fire.
 
 --------------------------------------------------------------------------------
-7. WHERE THIS WOULD LIVE (once built, keep this section updated)
+7. WHERE THIS LIVES — BUILT 2026-08-24
 --------------------------------------------------------------------------------
   worker/index.js
-    new route   POST /api/bets/scan  (alongside the /api/bets/* block —
-                grep: "bet & clv tracker" per BET-TRACKER-ROADMAP.txt sec 5)
-    new handler handleBetsScan()
+    route       POST /api/bets/scan          (registered next to the other
+                /api/bets/* routes, ~line 2135)
+    handler     handleBetsScan()              (~line 977, right after
+                handleBetsAdd()) — auth gate, daily-cap check, calls Haiku
+                4.5 via raw fetch (no SDK dependency in the Worker), strips
+                markdown fences (measured: Haiku ignores the "no fences"
+                instruction ~100% of the time), validates against the
+                section-4 schema, name-matches each leg against
+                /data/event.json for the informational badge, returns the
+                draft. Never writes a bet — POST /api/bets is still the only
+                path that saves anything.
+    rate limit  btScanCheckAndBumpCap() / BT_SCAN_DAILY_CAP = 25/day, PICKS
+                namespace, no new binding.
   index.html
-    "Log a bet" tab — third mode alongside tracked/manual, inside the same
-    module documented in BET-TRACKER-ROADMAP.txt sec 5 (grep: BET & CLV
-    TRACKER, the BT_* / bt* module)
+    "Log a bet" tab — third segment "Scan a screenshot" next to "Upcoming
+    fights" / "Custom bet" (btKind === 'scan'), ~line 141577 onward:
+      btScanHTML()        renders the file picker, the "N of M" stepper, and
+                           each draft's pre-filled review form
+      btScanPickFiles()   caps the batch at 12, seeds the queue, kicks off
+                           scanning
+      btScanDownscale()   canvas resize to ~1568px long edge before upload
+      btScanRunQueue()    3-concurrent worker pool over /api/bets/scan
+      btScanConfirm()     posts the (possibly user-edited) draft through the
+                           existing POST /api/bets, same as btSubmitCustom
+      btScanSkip()        advances the queue, writes nothing
   wrangler.toml
-    new secret  (vision model API key) — added via `wrangler secret put`,
-                never committed, same pattern as the existing secrets list
+    secret      ANTHROPIC_API_KEY — comment added next to the existing
+                secrets list (~line 74). NOT YET SET on the real deployment:
+                run `wrangler secret put ANTHROPIC_API_KEY` with a real
+                (non-prototype) key before this can work in production. The
+                7-day prototype key made during testing should not be reused
+                for production — issue a fresh one with no expiration (or a
+                long one) once this actually ships.
+
+  VERIFIED: worker/index.js and index.html both pass `node --check` after
+  these changes. NOT YET VERIFIED: this has not been run in a browser or
+  against a live Worker — per MATCHUP-DEEPDIVE.txt's own lesson, a syntax
+  check is not the same as "seen it work." Click through it before shipping,
+  same as every other feature in this codebase has had to learn the hard way.
 
 --------------------------------------------------------------------------------
-8. IF YOU ONLY DO ONE THING NEXT
+8. PROTOTYPE RESULTS (2026-08-24) — SCHEMA VALIDATED, TWO REAL BUGS FOUND
 --------------------------------------------------------------------------------
-Prototype the prompt + Haiku call OUTSIDE the app first — feed it 5-10 real
-(or realistic) bet slip screenshots from a couple different books by hand and
-look at the raw JSON it returns before writing any endpoint or UI. That tells
-you whether the schema in section 4 actually survives contact with real
-screenshots, which is cheaper to learn before wiring it into the tracker than
-after.
+Ran the section-4 schema against 9 real screenshots (3 sportsbooks, singles,
+2/4/5-leg parlays, a $0-placeholder wager field, a promo-currency badge) plus
+1 deliberately non-bet-slip image. Script: scan_prototype.py (not committed —
+prototype only, per the "outside the app first" instruction this section used
+to carry). Final result: 9/9 valid, correct JSON. Two real bugs surfaced and
+one is now baked into the prompt below; the other is already covered by an
+existing plan step.
+
+BUG 1 — REWARD CURRENCY READ AS STAKE. FOUND BY THE OWNER, NOT THE TEST.
+The first pass read a Fanatics "FanCash $0.25" badge (loyalty/reward currency,
+not money risked) as the bet's stake — confidently, with nothing flagged in
+uncertain_fields. This is worse than the "$0 placeholder" case section 4
+already guards against: that one is obviously fake, this one looks like a
+real, small, plausible stake. It would have sailed through a distracted
+review. FIXED by adding an explicit rule: stake only comes from a field
+labeled "Wager"/"Risk"/"Bet Amount"/an amount the user typed, and reward-
+currency labels ("Cash", "FanCash", "DK Dollars", "Bonus Bets", "Odds Boost
+Token") are never the stake even when a dollar figure sits right next to
+them. Re-tested on the same image: stake now correctly null, flagged in
+uncertain_fields. Regression-tested against all 9 images after the fix — no
+other extraction changed.
+LESSON: "plausible-looking and confident" is a worse failure than "flagged
+uncertain" — the review-before-save screen (section 2) is the backstop for
+the second kind, not the first. Any field that can be confused with a
+similar-looking but wrong number needs its own explicit exclusion rule in the
+prompt, not a hope that the model infers it. Sportsbook UIs put reward
+currency, odds-boost banners, and promo badges in exactly the visual position
+a real stake would occupy — this will recur with other fields as more books
+get tested, not just stake.
+
+BUG 2 — NAME MISREAD: "Jamall Emmers" READ AS "Jamalii Emmers". One letter,
+one image, out of ~9 fighter names read correctly elsewhere. This is not a
+new problem — it is the exact failure mode section 1 step 6 and section 2
+already name ("fighter name variants... this is the SAME problem the app
+already solves elsewhere, NAME_ALIASES / nameToSlug — reuse it, don't
+reinvent matching"). NOT independently fixed here; this is the reason
+btFindBout() must run on every leg before anything is treated as a confirmed
+match, not an optional nice-to-have.
+
+WHAT WORKED WITHOUT CHANGES:
+  * "Omit rather than guess" held on stake, book, and per-leg odds across
+    every image where those fields genuinely weren't visible — including a
+    parlay slip that shows only the total odds, not each leg's, which the
+    model correctly left null rather than backing out a plausible split.
+  * Book name extraction worked cleanly off a visible logo (Fanatics), and
+    stayed null on every cropped/logo-less image rather than guessing.
+  * The non-bet-slip rejection path returned the exact "not a bet slip"
+    shape from section 4, not a malformed guess.
+  * A verbatim app-side typo ("By y KO/TKO/DQ") was transcribed exactly
+    rather than "corrected" — the extraction is not supposed to clean up
+    what's on screen, and it didn't.
+
+ONE THING THIS PROTOTYPE COULDN'T TEST: the "no markdown fences" instruction
+in the prompt was ignored 100% of the time (9/9 responses wrapped in ```json
+fences) — cosmetic, not a data problem, but handleBetsScan() MUST strip
+fences before calling JSON.parse/validation or every real response will fail
+validation and route to the "couldn't read this screenshot" error path by
+mistake. scan_prototype.py's strip_fences() shows the normalization needed;
+port that logic into the worker handler, don't assume the model will comply
+with the fence instruction just because it's asked to.
+
+COST, MEASURED NOT ESTIMATED: 9 images, ~1,380 input / ~155 output tokens
+each on Haiku 4.5 -> ~$0.0022/image, ~$2.17 per 1,000 images. Below the
+section-5 estimate of ~$0.0034/image, and well inside the $7-45/month range
+at the stated volume even before any Sonnet-retry escalation.
+
+2026-08-25 UPDATE — first real upcoming-card screenshots (today's DWCS,
+Galanti v Petruzzella, Fanatics). Both read correctly: matchup/pick/market/
++200 odds right on both. One had a "REWARDS · 40 PTS PENDING" badge (points,
+not dollars) — correctly ignored, stake stayed null. The other had a genuine
+blank "WAGER $" input — correctly read as null rather than guessing $0 or any
+other value. Neither closes the gap below: still no screenshot yet with a
+REAL non-zero stake typed into a wager field sitting near a dollar-
+denominated reward badge (DK Crowns, FanDuel Reward Points) — that specific
+collision still hasn't occurred in anything sent so far. Good signal, not yet
+a closed loop.
+
+GAP THIS PROTOTYPE COULD NOT CLOSE, AND WHY IT'S NOT A BLOCKER. After bug 1
+(sec above), the stake rule was broadened from a named list ("FanCash", "DK
+Dollars"...) to a pattern ("any branded currency/point/token distinct from
+cash, even unrecognized ones, is never stake"). All 9 images still behave the
+same after the broadening — no new false positives. But NONE of the 9 test
+images contain a real dollar amount in an actual "Wager" field — every one is
+either no-stake, a $0 placeholder, or the FanCash badge. So the broadened
+rule is confirmed not to break on what we have, but it is NOT yet confirmed
+to correctly keep a REAL stake when one is genuinely present next to a
+DK Crowns / FanDuel Reward Points badge, which is exactly the ambiguity it
+exists to resolve. Old screenshots can't test this — a placed bet on a past
+event doesn't produce a fresh wager screen with live promo-currency chrome
+the way an upcoming-card slip does. NOT A BUILD BLOCKER: section 2's
+review-before-save is permanent, not a launch-day gate, so a wrongly-nulled
+real stake is caught on the draft screen the same way a wrongly-read one
+would be. Treat this as a standing to-do: the first real screenshots from an
+upcoming card (ideally one DK or FanDuel slip with Crowns/Reward Points
+visible near an actual wager) should be run through scan_prototype.py before
+trusting the stake field's behavior, not assumed correct from this pass.
+
+--------------------------------------------------------------------------------
+9. IF YOU ONLY DO ONE THING NEXT
+--------------------------------------------------------------------------------
+The schema is validated (section 8) — next is wiring handleBetsScan() into
+worker/index.js per section 7, using the prompt from scan_prototype.py
+(fence-strip included, both bugs above accounted for) as the starting point,
+not the original section-4 prompt on its own.
 ================================================================================

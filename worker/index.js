@@ -973,6 +973,181 @@ async function handleBetsAdd(request, env, url) {
   return json({ ok: true, bet: rec });
 }
 
+/* ────────────────────── screenshot bet reader (scan) ─────────────────────────
+   See SCREENSHOT-BET-READER-PLAN.txt. One image in, one draft out — never
+   saved here. The model never decides anything that matters: this returns a
+   draft the client pre-fills into the SAME manual/parlay form and the SAME
+   POST /api/bets path already validates. Nothing about the save path changes.
+
+   Schema validated against 9 real screenshots (3 books) before this was
+   written — see plan section 8 for the two real bugs found (reward-currency
+   read as stake; a one-letter name misread) and how each is handled: the
+   first is now an explicit prompt rule, the second is why every leg is run
+   through btFindBout() before being offered as a "tracked" upgrade — a
+   misread name should fail to match and fall back to manual, not silently
+   attach to the wrong fighter.
+*/
+const BT_SCAN_DAILY_CAP = 25; // conservative; loosen if it's ever actually hit (plan sec 6)
+const btScanCapKey = (email) => "btscancap:" + email + ":" + new Date().toISOString().slice(0, 10);
+async function btScanCheckAndBumpCap(env, email) {
+  const key = btScanCapKey(email);
+  const cur = parseInt((await env.PICKS.get(key)) || "0", 10) || 0;
+  if (cur >= BT_SCAN_DAILY_CAP) return false;
+  // 2-day TTL: only ever need "today", but a day boundary during a request
+  // shouldn't be able to leave a stale key with no expiry.
+  await env.PICKS.put(key, String(cur + 1), { expirationTtl: 60 * 60 * 24 * 2 });
+  return true;
+}
+
+const BT_SCAN_SYSTEM_PROMPT = `You read screenshots of sports betting slips (moneyline, \
+parlay, or bet-confirmation screens from any sportsbook app) and extract \
+their contents into STRICT JSON. Output ONLY the JSON object, no prose, no \
+markdown fences.
+
+Schema:
+{
+  "kind": "manual" | "parlay",
+  "manual": {"matchup": string, "pick": string, "market": string, "odds": number} | null,
+  "parlay": {"legs": [{"matchup": string, "pick": string, "market": string, "odds": number}], "parlayOdds": number} | null,
+  "stake": number | null,
+  "book": string | null,
+  "uncertain_fields": string[]
+}
+
+Rules:
+- "manual" for a single bet, "parlay" for a multi-leg slip. Populate only the matching key; the other must be null.
+- matchup is "Fighter A v Fighter B" as printed.
+- market is the bet type as labeled on screen (e.g. "Money Line", "Total Rounds", "Method of Victory", "Winning Method", "Round Combos", "Double Chance").
+- odds are American odds, signed integers (e.g. -380, +510).
+- If stake/wager amount is not visible or is a placeholder (e.g. "$0", empty field), set stake to null. Do NOT report a placeholder as a real stake.
+- STAKE IS ONLY THE REAL MONEY RISKED ON THE BET, from a field explicitly labeled something like "Wager", "Risk", "Bet Amount", or an amount-entry box the user typed into. It is NEVER a site-specific loyalty/reward/bonus currency, even when a dollar or point figure is printed right next to it and even when that badge sits in the position a wager amount would normally occupy. Known examples seen so far: "FanCash" (Fanatics), "Crowns" (DraftKings), "Reward Points" (FanDuel) — but treat this as a PATTERN, not a checklist: any named or branded currency/point/token/credit distinct from plain cash must NOT be reported as stake, even if you don't recognize the specific brand name. When in doubt, set stake to null and add "stake" to uncertain_fields instead.
+- If the sportsbook name/logo is not visible in the image, set book to null. Do NOT guess the book from styling alone.
+- If ANY field is illegible, ambiguous, or absent, do not invent a plausible value — omit it (null) and add its name to uncertain_fields.
+- If the image is not a bet slip at all, return {"kind": null, "manual": null, "parlay": null, "stake": null, "book": null, "uncertain_fields": ["not a bet slip"]}.`;
+
+// Haiku ignores the "no markdown fences" instruction close to 100% of the
+// time in practice (measured: 9/9 during prototyping) — strip them before
+// validating rather than trusting compliance. See scan_prototype.py.
+function btStripFences(text) {
+  let t = String(text || "").trim();
+  if (t.startsWith("```")) {
+    const lines = t.split("\n");
+    if (lines[0].startsWith("```")) lines.shift();
+    if (lines.length && lines[lines.length - 1].trim() === "```") lines.pop();
+    t = lines.join("\n").trim();
+  }
+  return t;
+}
+
+function btValidateScanDraft(d) {
+  if (!d || typeof d !== "object") return "Couldn't read this screenshot.";
+  if (d.kind !== "manual" && d.kind !== "parlay") return "Couldn't read this screenshot.";
+  const leg = (l) => l && typeof l === "object" && typeof l.matchup === "string" && l.matchup.trim()
+    && typeof l.pick === "string" && l.pick.trim() && typeof l.market === "string" && l.market.trim()
+    && Number.isFinite(l.odds) && l.odds !== 0;
+  if (d.kind === "manual") {
+    if (!leg(d.manual)) return "Couldn't read this screenshot clearly enough.";
+  } else {
+    const legs = d.parlay && Array.isArray(d.parlay.legs) ? d.parlay.legs : null;
+    if (!legs || legs.length < 2 || !legs.every(leg)) return "Couldn't read this screenshot clearly enough.";
+  }
+  return null;
+}
+
+// One image in, one draft out. Never saves — POST /api/bets (unchanged) is
+// still the only path that writes a bet.
+async function handleBetsScan(request, env, url) {
+  const s = await betsSession(request, env);
+  if (!s) return json({ error: "unauthorized" }, 401);
+  if (!env.ANTHROPIC_API_KEY) return json({ error: "Screenshot scanning isn't configured yet." }, 500);
+  if (!(await btScanCheckAndBumpCap(env, s.email))) {
+    return json({ error: "Daily screenshot-scan limit reached — try again tomorrow, or enter this one manually." }, 429);
+  }
+
+  const body = await readBody(request);
+  const imageB64 = String(body.image || "");
+  const mediaType = ["image/jpeg", "image/png", "image/webp"].includes(body.mediaType) ? body.mediaType : "image/jpeg";
+  if (!imageB64 || imageB64.length < 100) return json({ error: "No image received." }, 400);
+  // Rough cap so a client bug can't smuggle something enormous through — the
+  // client is expected to downscale to ~1568px long edge before sending.
+  if (imageB64.length > 8_000_000) return json({ error: "Image too large — try a smaller screenshot." }, 400);
+
+  let raw;
+  try {
+    const resp = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5",
+        max_tokens: 1024,
+        system: BT_SCAN_SYSTEM_PROMPT,
+        messages: [{
+          role: "user",
+          content: [
+            { type: "image", source: { type: "base64", media_type: mediaType, data: imageB64 } },
+            { type: "text", text: "Extract this bet slip into the JSON schema." },
+          ],
+        }],
+      }),
+    });
+    if (!resp.ok) {
+      return json({ error: "Couldn't read this screenshot — try again." }, 502);
+    }
+    const data = await resp.json();
+    raw = data && data.content && data.content[0] && data.content[0].text;
+  } catch {
+    return json({ error: "Couldn't read this screenshot — try again." }, 502);
+  }
+
+  let draft;
+  try {
+    draft = JSON.parse(btStripFences(raw));
+  } catch {
+    return json({ error: "Couldn't read this screenshot — try again, or enter it manually." }, 422);
+  }
+  const err = btValidateScanDraft(draft);
+  if (err) return json({ error: err }, 422);
+  if (draft.kind === null) return json({ error: "That doesn't look like a bet slip." }, 422);
+
+  // Try to match each leg to a live, undecided bout — offer the CLV-eligible
+  // "tracked" upgrade only when it genuinely resolves. A misread name (see
+  // plan sec 8, "Jamalii Emmers") should fail this match and fall through to
+  // manual, never silently attach to the wrong fighter.
+  const legsForMatch = draft.kind === "manual" ? [draft.manual] : draft.parlay.legs;
+  const matches = [];
+  for (const l of legsForMatch) {
+    let hit = null;
+    try {
+      const evs = await loadAssetJson(env, url, "/data/event.json");
+      const norm = (x) => String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+      const wanted = norm(l.matchup).split(" v ").map((x) => x.trim());
+      outer:
+      for (const e of ((evs && evs.data) || [])) {
+        if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
+        for (const b of e.bouts) {
+          if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
+          const f1 = norm(b.fighters[0].fighterName), f2 = norm(b.fighters[1].fighterName);
+          const okA = wanted[0] && (f1.includes(wanted[0]) || wanted[0].includes(f1));
+          const okB = wanted[1] && (f2.includes(wanted[1]) || wanted[1].includes(f2));
+          const okSwap = wanted[0] && (f2.includes(wanted[0]) || wanted[0].includes(f2)) && wanted[1] && (f1.includes(wanted[1]) || wanted[1].includes(f1));
+          if ((okA && okB) || okSwap) {
+            const rawId = b.id || String(b.boutOrder);
+            hit = { fightId: e.slug + "|" + rawId, evSlug: e.slug };
+            break outer;
+          }
+        }
+      }
+    } catch { /* no match — falls through to manual, which is the safe default */ }
+    matches.push(hit);
+  }
+
+  return json({ ok: true, draft, matches });
+}
+
 // Settle a SELF-REPORTED bet. Tracked bets are graded from the result and can
 // never be settled by hand — that's what keeps the verified numbers honest.
 // Freeze a tracked bet's auto-graded outcome, permanently. The client grades (only
@@ -2133,6 +2308,7 @@ export default {
       // Bet & CLV tracker (premium). The server owns the lock + CLV eligibility.
       if (path === "/api/bets" && request.method === "GET") return handleBetsList(request, env);
       if (path === "/api/bets" && request.method === "POST") return handleBetsAdd(request, env, url);
+      if (path === "/api/bets/scan" && request.method === "POST") return handleBetsScan(request, env, url);
       if (path === "/api/bets/settle" && request.method === "POST") return handleBetsSettle(request, env);
       if (path === "/api/bets/grade" && request.method === "POST") return handleBetsGrade(request, env);
       if (path === "/api/bets/backfill-clv" && request.method === "POST") return handleBetsBackfillClv(request, env);
