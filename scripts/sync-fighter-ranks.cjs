@@ -55,6 +55,7 @@ const fold = (s) => String(s || '')
 // prevent. Any ranked name that matches nothing is reported, never guessed at.
 const ALIASES = {
   'patriciofreire': 'patriciopitbull',
+  'michaelvenompage': 'michaelpage',
 };
 const key = (s) => { const f = fold(s); return ALIASES[f] || f; };
 
