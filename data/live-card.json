@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T09:26:38.135Z",
+ "generatedAt": "2026-08-29T10:12:09.245Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -8640,6 +8640,194 @@
       ]
      },
      "capturedAt": "2026-08-29T09:26:38.001Z"
+    }
+   ]
+  },
+  "Namsrai Batbayar": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Andre Lima",
+     "result": "L",
+     "method": "Submission (Guillotine Choke)",
+     "round": 3,
+     "time": "3:03",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Andre Lima",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 141,
+      "totL": 51,
+      "totA": 141,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       24,
+       101
+      ],
+      "body": [
+       9,
+       12
+      ],
+      "leg": [
+       18,
+       28
+      ],
+      "dist": [
+       49,
+       139
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 47,
+      "sigA": 77,
+      "totL": 47,
+      "totA": 77,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       23,
+       49
+      ],
+      "body": [
+       9,
+       10
+      ],
+      "leg": [
+       15,
+       18
+      ],
+      "dist": [
+       47,
+       77
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T10:12:09.113Z"
+    }
+   ]
+  },
+  "Andre Lima": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Namsrai Batbayar",
+     "result": "W",
+     "method": "Submission (Guillotine Choke)",
+     "round": 3,
+     "time": "3:03",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Namsrai Batbayar",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 47,
+      "sigA": 77,
+      "totL": 47,
+      "totA": 77,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "0:13",
+      "head": [
+       23,
+       49
+      ],
+      "body": [
+       9,
+       10
+      ],
+      "leg": [
+       15,
+       18
+      ],
+      "dist": [
+       47,
+       77
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 51,
+      "sigA": 141,
+      "totL": 51,
+      "totA": 141,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:08",
+      "head": [
+       24,
+       101
+      ],
+      "body": [
+       9,
+       12
+      ],
+      "leg": [
+       18,
+       28
+      ],
+      "dist": [
+       49,
+       139
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T10:12:09.113Z"
     }
    ]
   }
