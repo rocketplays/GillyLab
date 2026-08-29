@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T11:03:02.556Z",
+ "generatedAt": "2026-08-29T11:43:33.989Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -9198,6 +9198,194 @@
       ]
      },
      "capturedAt": "2026-08-29T10:57:50.884Z"
+    }
+   ]
+  },
+  "Alex Perez": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Sumudaerji",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Sumudaerji",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 43,
+      "totL": 52,
+      "totA": 88,
+      "tdL": 4,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:20",
+      "head": [
+       6,
+       31
+      ],
+      "body": [
+       2,
+       7
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       10,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 41,
+      "sigA": 80,
+      "totL": 85,
+      "totA": 126,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:14",
+      "head": [
+       18,
+       50
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       18,
+       21
+      ],
+      "dist": [
+       39,
+       78
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T11:43:33.859Z"
+    }
+   ]
+  },
+  "Sumudaerji": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Alex Perez",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Alex Perez",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 41,
+      "sigA": 80,
+      "totL": 85,
+      "totA": 126,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:14",
+      "head": [
+       18,
+       50
+      ],
+      "body": [
+       5,
+       9
+      ],
+      "leg": [
+       18,
+       21
+      ],
+      "dist": [
+       39,
+       78
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 43,
+      "totL": 52,
+      "totA": 88,
+      "tdL": 4,
+      "tdA": 8,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "7:20",
+      "head": [
+       6,
+       31
+      ],
+      "body": [
+       2,
+       7
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       10,
+       41
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-29T11:43:33.859Z"
     }
    ]
   }
