@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T10:42:35.573Z",
+ "generatedAt": "2026-08-29T10:57:51.014Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -9010,6 +9010,194 @@
       ]
      },
      "capturedAt": "2026-08-29T10:42:35.441Z"
+    }
+   ]
+  },
+  "Ce Liu": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Levi Rodrigues Jr.",
+     "result": "W",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "0:33",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Levi Rodrigues Jr.",
+     "result": "W",
+     "f": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 85,
+      "totL": 53,
+      "totA": 88,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       36,
+       70
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       48,
+       83
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 65,
+      "totL": 24,
+      "totA": 65,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       20,
+       59
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       22,
+       63
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T10:57:50.884Z"
+    }
+   ]
+  },
+  "Levi Rodrigues Jr.": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Ce Liu",
+     "result": "L",
+     "method": "KO/TKO",
+     "round": 1,
+     "time": "0:33",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Ce Liu",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 65,
+      "totL": 24,
+      "totA": 65,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:44",
+      "head": [
+       20,
+       59
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       22,
+       63
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 2,
+      "sigL": 50,
+      "sigA": 85,
+      "totL": 53,
+      "totA": 88,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:04",
+      "head": [
+       36,
+       70
+      ],
+      "body": [
+       6,
+       7
+      ],
+      "leg": [
+       8,
+       8
+      ],
+      "dist": [
+       48,
+       83
+      ],
+      "clinch": [
+       2,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T10:57:50.884Z"
     }
    ]
   }
