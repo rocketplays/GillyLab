@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T10:12:09.245Z",
+ "generatedAt": "2026-08-29T10:42:35.573Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -380,6 +380,16 @@
   "Bilal Hasan": {
    "history": [
     {
+     "date": "Aug 29, 2026",
+     "opponent": "Nilson Rojas",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "2:28",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    },
+    {
      "date": "Aug 11, 2026",
      "opponent": "Mridul Saikia",
      "result": "W",
@@ -391,6 +401,84 @@
     }
    ],
    "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Nilson Rojas",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 129,
+      "totL": 56,
+      "totA": 137,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:03",
+      "head": [
+       28,
+       81
+      ],
+      "body": [
+       20,
+       37
+      ],
+      "leg": [
+       5,
+       11
+      ],
+      "dist": [
+       38,
+       111
+      ],
+      "clinch": [
+       8,
+       10
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 66,
+      "totL": 37,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       17,
+       46
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       28,
+       59
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T10:42:35.441Z"
+    },
     {
      "date": "Aug 11, 2026",
      "opponent": "Mridul Saikia",
@@ -8828,6 +8916,100 @@
       ]
      },
      "capturedAt": "2026-08-29T10:12:09.113Z"
+    }
+   ]
+  },
+  "Nilson Rojas": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Bilal Hasan",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 2,
+     "time": "2:28",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Bilal Hasan",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 33,
+      "sigA": 66,
+      "totL": 37,
+      "totA": 70,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:03",
+      "head": [
+       17,
+       46
+      ],
+      "body": [
+       13,
+       17
+      ],
+      "leg": [
+       3,
+       3
+      ],
+      "dist": [
+       28,
+       59
+      ],
+      "clinch": [
+       5,
+       7
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 53,
+      "sigA": 129,
+      "totL": 56,
+      "totA": 137,
+      "tdL": 1,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:03",
+      "head": [
+       28,
+       81
+      ],
+      "body": [
+       20,
+       37
+      ],
+      "leg": [
+       5,
+       11
+      ],
+      "dist": [
+       38,
+       111
+      ],
+      "clinch": [
+       8,
+       10
+      ],
+      "ground": [
+       7,
+       8
+      ]
+     },
+     "capturedAt": "2026-08-29T10:42:35.441Z"
     }
    ]
   }
