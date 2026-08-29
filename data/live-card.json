@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T08:40:45.285Z",
+ "generatedAt": "2026-08-29T09:11:13.087Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -8264,6 +8264,194 @@
       ]
      },
      "capturedAt": "2026-08-29T08:40:45.157Z"
+    }
+   ]
+  },
+  "Jack Jenkins": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Sean Woodson",
+     "result": "L",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Sean Woodson",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 95,
+      "totL": 72,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "4:47",
+      "head": [
+       18,
+       62
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       16,
+       24
+      ],
+      "dist": [
+       32,
+       80
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 58,
+      "sigA": 129,
+      "totL": 130,
+      "totA": 204,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       33,
+       88
+      ],
+      "body": [
+       10,
+       21
+      ],
+      "leg": [
+       15,
+       20
+      ],
+      "dist": [
+       52,
+       121
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T09:11:12.958Z"
+    }
+   ]
+  },
+  "Sean Woodson": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Jack Jenkins",
+     "result": "W",
+     "method": "Decision (Split)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Jack Jenkins",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 58,
+      "sigA": 129,
+      "totL": 130,
+      "totA": 204,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:11",
+      "head": [
+       33,
+       88
+      ],
+      "body": [
+       10,
+       21
+      ],
+      "leg": [
+       15,
+       20
+      ],
+      "dist": [
+       52,
+       121
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 43,
+      "sigA": 95,
+      "totL": 72,
+      "totA": 130,
+      "tdL": 0,
+      "tdA": 5,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "4:47",
+      "head": [
+       18,
+       62
+      ],
+      "body": [
+       9,
+       9
+      ],
+      "leg": [
+       16,
+       24
+      ],
+      "dist": [
+       32,
+       80
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       2,
+       2
+      ]
+     },
+     "capturedAt": "2026-08-29T09:11:12.958Z"
     }
    ]
   }
