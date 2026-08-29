@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-29T04:32:23.261Z",
+  "generatedAt": "2026-08-29T16:08:39.369Z",
   "note": "Resolves a written opponent name to the real fighter key. Keyed \"<claimant>|<date>|<written name>\" because the SAME written name can mean different people in different records — that is the whole bug. Aliases only: date-matched, so both records describe one real bout. Collisions are deliberately NOT here; they need new identities, not renames.",
   "aliases": {
     "RJ Harris|Jun 7, 2025|Charlie Cleveland": {
@@ -410,11 +410,6 @@
     "Benardo Sopaj|Mar 25, 2021|Francesco Nuzzi": {
       "real": "Francesco Nuzzi",
       "theyCallHim": "Bernardo Sopai",
-      "note": "alias"
-    },
-    "Sumudaerji|May 30, 2026|Alex Perez": {
-      "real": "Alex Perez",
-      "theyCallHim": "Su Mudaerji",
       "note": "alias"
     },
     "Sumudaerji|Aug 23, 2025|Kevin Borjas": {

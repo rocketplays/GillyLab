@@ -2669,7 +2669,326 @@
         "pts": -0.0405,
         "leaned": true
       }
+    },
+    {
+      "fightId": "song yadong|umar nurmagomedov",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.887Z",
+      "a": {
+        "feed": "Umar Nurmagomedov",
+        "db": "Umar Nurmagomedov"
+      },
+      "b": {
+        "feed": "Song Yadong",
+        "db": "Song Yadong"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5192,
+      "modelClose": 0.615,
+      "marketOpen": 0.7748,
+      "marketClose": 0.8271,
+      "leanA": -0.2556,
+      "nSnapshots": 105,
+      "clv": {
+        "toward": false,
+        "pts": -0.0523,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "andre lima|namsrai batbayar",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.929Z",
+      "a": {
+        "feed": "Namsrai Batbayar",
+        "db": "Namsrai Batbayar"
+      },
+      "b": {
+        "feed": "Andre Lima",
+        "db": "Andre Lima"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6253,
+      "modelClose": 0.4491,
+      "marketOpen": 0.3221,
+      "marketClose": 0.7012,
+      "leanA": 0.3032,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.3791,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "denise gomes|yan xiaonan",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.930Z",
+      "a": {
+        "feed": "Yan Xiaonan",
+        "db": "Yan Xiaonan"
+      },
+      "b": {
+        "feed": "Denise Gomes",
+        "db": "Denise Gomes"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3729,
+      "modelClose": 0.6672,
+      "marketOpen": 0.5759,
+      "marketClose": 0.421,
+      "leanA": -0.203,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.1549,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "francesco nuzzi|long xiao",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.930Z",
+      "a": {
+        "feed": "Francesco Nuzzi",
+        "db": "Francesco Nuzzi"
+      },
+      "b": {
+        "feed": "Long Xiao",
+        "db": "Xiao Long"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5341,
+      "modelClose": 0.5341,
+      "marketOpen": 0.3812,
+      "marketClose": 0.396,
+      "leanA": 0.1529,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.0148,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "jack jenkins|sean woodson",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.930Z",
+      "a": {
+        "feed": "Jack Jenkins",
+        "db": "Jack Jenkins"
+      },
+      "b": {
+        "feed": "Sean Woodson",
+        "db": "Sean Woodson"
+      },
+      "winner": "B",
+      "method": "Decision - Split",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4402,
+      "modelClose": 0.5075,
+      "marketOpen": 0.4317,
+      "marketClose": 0.5678,
+      "leanA": 0.0085,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.1361,
+        "leaned": false
+      }
+    },
+    {
+      "fightId": "jingnan xiong|julia polastri",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.930Z",
+      "a": {
+        "feed": "Jingnan Xiong",
+        "db": "Jingnan Xiong"
+      },
+      "b": {
+        "feed": "Julia Polastri",
+        "db": "Julia Polastri"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.3427,
+      "modelClose": 0.6916,
+      "marketOpen": 0.3655,
+      "marketClose": 0.666,
+      "leanA": -0.0228,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": false,
+        "pts": -0.3005,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "kevin borjas|rei tsuruya",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.930Z",
+      "a": {
+        "feed": "Rei Tsuruya",
+        "db": "Rei Tsuruya"
+      },
+      "b": {
+        "feed": "Kevin Borjas",
+        "db": "Kevin Borjas"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.7026,
+      "modelClose": 0.206,
+      "marketOpen": 0.8177,
+      "marketClose": 0.1421,
+      "leanA": -0.1151,
+      "nSnapshots": 17,
+      "clv": {
+        "toward": true,
+        "pts": 0.6756,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "bilal hasan|nilson rojas",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.931Z",
+      "a": {
+        "feed": "Nilson Rojas",
+        "db": "Nilson Rojas"
+      },
+      "b": {
+        "feed": "Bilal Hasan",
+        "db": "Bilal Hasan"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4101,
+      "modelClose": 0.3556,
+      "marketOpen": 0.1983,
+      "marketClose": 0.1454,
+      "leanA": 0.2118,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": false,
+        "pts": -0.0529,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "cameron nelson|meng ding",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.931Z",
+      "a": {
+        "feed": "Cameron Nelson",
+        "db": "Cameron Nelson"
+      },
+      "b": {
+        "feed": "Meng Ding",
+        "db": "Ding Meng"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.616,
+      "modelClose": 0.616,
+      "marketOpen": 0.4582,
+      "marketClose": 0.4344,
+      "leanA": 0.1578,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": false,
+        "pts": -0.0238,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "hector santiago|lawrence lui",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.931Z",
+      "a": {
+        "feed": "Hector Santiago",
+        "db": "Hector Santiago"
+      },
+      "b": {
+        "feed": "Lawrence Lui",
+        "db": "Lawrence Lui"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.3555,
+      "modelClose": 0.3555,
+      "marketOpen": 0.2775,
+      "marketClose": 0.262,
+      "leanA": 0.078,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": false,
+        "pts": -0.0155,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "levi rodrigues|liu ce",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-08-29T16:09:20.931Z",
+      "a": {
+        "feed": "Levi Rodrigues",
+        "db": "Levi Rodrigues Jr."
+      },
+      "b": {
+        "feed": "Liu Ce",
+        "db": "Ce Liu"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.4817,
+      "modelClose": 0.4613,
+      "marketOpen": 0.3721,
+      "marketClose": 0.3908,
+      "leanA": 0.1096,
+      "nSnapshots": 16,
+      "clv": {
+        "toward": true,
+        "pts": 0.0187,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-08-29T04:33:05.475Z"
+  "generatedAt": "2026-08-29T16:09:20.939Z"
 }
