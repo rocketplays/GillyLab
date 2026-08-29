@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-08-29T09:11:13.087Z",
+ "generatedAt": "2026-08-29T09:26:38.135Z",
  "fighters": {
   "Jon Kunneman": {
    "history": [
@@ -8452,6 +8452,194 @@
       ]
      },
      "capturedAt": "2026-08-29T09:11:12.958Z"
+    }
+   ]
+  },
+  "Rei Tsuruya": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Kevin Borjas",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "4:14",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Kevin Borjas",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 67,
+      "totL": 71,
+      "totA": 101,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:58",
+      "head": [
+       39,
+       67
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       39,
+       67
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 0,
+      "totL": 1,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-08-29T09:26:38.001Z"
+    }
+   ]
+  },
+  "Kevin Borjas": {
+   "history": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Rei Tsuruya",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 1,
+     "time": "4:14",
+     "event": "UFC Fight Night: Nurmagomedov vs. Song",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Aug 29, 2026",
+     "opponent": "Rei Tsuruya",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 0,
+      "totL": 1,
+      "totA": 3,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       0
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 67,
+      "totL": 71,
+      "totA": 101,
+      "tdL": 2,
+      "tdA": 4,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:58",
+      "head": [
+       39,
+       67
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       0
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       39,
+       67
+      ]
+     },
+     "capturedAt": "2026-08-29T09:26:38.001Z"
     }
    ]
   }
