@@ -1,24 +1,4 @@
 {
   "_comment": "Manual corrections for bouts that are real/booked (confirmed via UFC.com, Sherdog, BestFightOdds, etc.) but are entirely missing from the Cito API feed — as opposed to fighter-overrides.json, which swaps one fighter within an EXISTING bout, this file injects a brand-new bout object into an existing event. The update-odds workflow re-fetches data/event.json from scratch every run and would otherwise never show these bouts — apply-missing-bout-overrides.js re-applies every entry here on top of the fresh fetch before it's committed. Remove an entry once the upstream API picks the bout up on its own (the script also auto-skips if a bout with the same fighters already exists, so it's safe to leave entries in after the API catches up).",
-  "overrides": [
-    {
-      "eventSlug": "ufc-330",
-      "eventStartsAt": "2026-08-16T01:00:00.000Z",
-      "matchFighterNames": ["Charles Johnson", "Eduardo Chapolin"],
-      "bout": {
-        "cardSection": "Prelims",
-        "cardSectionOrder": 2,
-        "cardPosition": "Prelims",
-        "boutOrder": 9001,
-        "weightClass": "Flyweight Bout",
-        "titleBout": false,
-        "fighters": [
-          { "fighterSlug": "charles-johnson", "fighterName": "Charles Johnson", "corner": "red", "country": "USA", "flag": "🇺🇸", "nickname": "InnerG", "recordText": "19-9-0 (W-L-D)", "division": "Flyweight" },
-          { "fighterSlug": "eduardo-chapolin", "fighterName": "Eduardo Chapolin", "corner": "blue", "country": "Brazil", "flag": "🇧🇷", "nickname": "Chapolin", "recordText": "15-2-0 (W-L-D)", "division": "Flyweight", "shortNotice": true }
-        ]
-      },
-      "reason": "Jose Ochoa pulled out of his UFC 330 bout with Charles Johnson (injury); Eduardo Chapolin stepped in on less than 4 days' notice. Confirmed via Yahoo Sports, Heavy.com, SI.com and MMA Mania (Aug 2026) -- Ochoa is out entirely, not just moved elsewhere on the card. Cito/ESPN feed doesn't have this bout at all yet as of this writing (checked data/event.json directly -- neither fighter appears anywhere on the ufc-330 card), so this is a missing-bout injection, not a fighter swap. Chapolin is ALSO referred to as 'Eduardo Henrique' on some sites (his legal name; see the SLUG_ALIASES/NAME_ALIASES entries in index.html) -- if ESPN's eventual feed uses that spelling instead of 'Eduardo Chapolin', this override's matchFighterNames won't match it, but apply-missing-bout-overrides.js's bookedElsewhere() check will still catch the clash (Charles Johnson booked in two different-looking bouts) and skip re-injecting rather than duplicate him -- it'll just log a warning instead of silently marking itself caught-up, so this entry should still be manually removed once that happens, matched under whichever name ESPN actually used.",
-      "addedOn": "2026-08-12"
-    }
-  ]
+  "overrides": []
 }
