@@ -1,8 +1,16 @@
 ================================================================================
-BET & CLV TRACKER — SCREENSHOT READER (PLAN, NOT BUILT)
+BET & CLV TRACKER — SCREENSHOT READER (SHIPPED 2026-08-25)
 A third way to log a bet: upload a screenshot of the slip, a vision model reads
 the legs, you confirm, it saves through the exact path a manual bet already uses.
-Written 2026-08-19. Nothing in this file is implemented yet.
+Written 2026-08-19. Built and deployed 2026-08-25 — see sections 7 and 8 for
+exactly what shipped and what it was tested against.
+
+SHIPPED WITH ONE KNOWN OPEN GAP, ACCEPTED KNOWINGLY, NOT DISCOVERED LATE: no
+screenshot tested so far has a real non-zero stake sitting near a dollar-
+denominated reward badge (DK Crowns, FanDuel Reward Points) — the exact
+collision the FanCash bug (sec 8) was about. Section 2's review-before-save is
+the permanent backstop for this, same as for any other misread — watch the
+first real reports of a wrong stake for a sign this needs tightening further.
 ================================================================================
 
 --------------------------------------------------------------------------------
