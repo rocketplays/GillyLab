@@ -325,22 +325,23 @@ cleanly. Falling through to null is correct, not a bug — an outcome that
 doesn't cleanly fit one bucket must self-report, same as section 6's original
 reasoning for punting on this entirely.
 
-THE ROUND-RANGE MARKETS (WINRDS, METHRDS) ARE THE SHARP EDGE. Real sportsbooks
-phrase round-combo bets as "Rounds 1-2" free text; GillyLab's own UI buckets
-them into fixed, round-count-dependent groups that are OUR invented taxonomy,
-not a universal market:
+THE ROUND-RANGE MARKETS (WINRDS, METHRDS) WERE THE SHARP EDGE — SEE SECTION 6c,
+WHICH REPLACES THE EXACT-BUCKET-MATCH DESCRIBED BELOW. Real sportsbooks phrase
+round-combo bets as "Rounds 1-2" free text; GillyLab's own UI buckets them
+into fixed, round-count-dependent groups that are OUR invented taxonomy, not
+a universal market:
   3-round fight WINRDS:  [1,2] (no dec) | [3] (dec)
   5-round fight WINRDS:  [1,2,3] (no dec) | [4,5] (dec)
   3-round fight METHRDS: [1,2] | [2,3]
   5-round fight METHRDS: [1,2,3] | [2,3,4] | [3,4,5]
-classify() turns the model's round_low/round_high into an explicit list of
-wanted rounds and requires an EXACT match (arrEq) against one of these groups
-for the bout's actual round count (from event.json's numberOfRounds, default
-3) — ported verbatim from the client's own btWinGroups()/btMethGroups() so
-the two can never drift apart. A screenshot offering a window that doesn't
-land on one of our groups (e.g. "Rounds 1-2" on a 5-round fight, which is
-neither [1,2,3] nor [4,5]) returns null and falls back to self-reported. This
-was deliberately tested (see test_classify.js case 19) rather than assumed.
+As shipped this same day, classify() turned the model's round_low/round_high
+into an explicit list of wanted rounds and required an EXACT match against
+one of these groups for the bout's actual round count — a screenshot offering
+a window that didn't land on one of our groups (e.g. "Rounds 1-2" on a
+5-round fight) fell back to self-reported. Section 6c replaces this: it turns
+out the app's OWN grading logic never actually required one of these two
+predefined shapes (see 6c for why), so the exact-match requirement was an
+unnecessary, self-imposed limitation, not a real one.
 
 SIDE ORIENTATION. The model's A/B labels are relative to whatever order it
 wrote the matchup string in, which may not match event.json's fighter order.
@@ -382,6 +383,71 @@ NOT YET TESTED end-to-end against a real screenshot (extraction -> classify
 covering 8 more markets than that one did — try it against the next real
 upcoming-card screenshot that has a non-ML leg before trusting this the way
 section 8's original prototype trusted the plain extraction schema.
+
+--------------------------------------------------------------------------------
+6c. EXACT ROUND WINDOWS + NODEC (10th MARKET) — ADDED 2026-08-31, SAME DAY
+--------------------------------------------------------------------------------
+Two follow-up asks, same conversation as 6b: (1) the owner pointed out WINRDS/
+METHRDS ("a fighter to win in a group of rounds", "a fighter to win in one
+specific round either by method or no method specified") were already-
+supported markets that 6b's exact-bucket-match could still miss on an
+off-shape window; (2) a genuinely new market — "decision no bet or finish
+only (meaning it voids if it goes to dec, loses if the fighter you picked
+gets finished, and wins if he wins by finish)".
+
+ROUND WINDOWS: MEASURED BEFORE ASSUMING A FIX WAS NEEDED. Before writing a
+"snap to nearest bucket" fix, checked whether btGradeWin's WINRDS/METHRDS
+rules (index.html + the worker's ported copy) actually require one of
+index.html's two predefined round-group shapes. They don't — both grade off
+whatever `params.rounds` array is stored, with no dependency on it matching a
+predefined bucket at all; the two shapes in btWinGroups()/btMethGroups() are
+just what the MANUAL entry dropdown happens to offer. So the real fix isn't a
+"nearest bucket" snap (which would have been unsafe: snapping "Rounds 1-2" on
+a 5-round fight to "Rounds 1-3" would silently turn a real round-3 loss into
+a recorded win, since the app would now be grading a wider window than the
+sportsbook actually offered) — it's simpler and exact: classify() now stores
+whatever round window the screenshot describes, unmodified, with `dec`
+(WINRDS only) computed generically as "does the window include the bout's
+final scheduled round" — which is exactly the rule that produces index.html's
+own two hardcoded buckets in the first place, just generalized. Removed the
+now-dead btScanWinGroups()/btScanMethGroups()/arrEq() helpers this replaced.
+btScanPickText()'s existing fallback text ("rounds X-Y") already handled a
+non-bucket rounds array with no changes needed.
+
+NODEC (10th BT_MARKETS code, ADDED TO MANUAL ENTRY TOO, not screenshot-only —
+owner's explicit choice when asked). Void if the fight goes to a decision,
+won if the picked fighter wins by finish, lost otherwise (including if picked
+fighter is the one finished). Checked first whether the tracker's grading
+system could even represent "void" for a reason other than an ML draw or a
+no-contest before promising this: it can — `"void"` is real, wired status
+(btStats excludes it from win/loss/ROI, shown as "Void · stake back"), and
+`"push"` is accepted in the data model's validation lists but has never had a
+producer. NODEC's grading (`btGradeWin`/`btGradeStatus` in worker/index.js
+AND the mirrored copy in index.html — both edited, they must stay identical)
+adds one new void condition: `market === 'NODEC' && R.methodCat === 'DEC'`,
+checked before the normal win/loss derivation. Full stack: BT_MARKETS entry +
+btSelUI()/btBuildPick() manual-entry UI + btScanPickText() display text (all
+index.html) + a new `finish_only` Outcome field in BT_SCAN_SYSTEM_PROMPT +
+classify() branch (both worker/index.js). NODEC isn't in the parlay PAIRABLE
+whitelist (only ML+TOTAL combine on one fight) — same as every other non-ML/
+TOTAL market already, not a new restriction.
+
+VALIDATION: test_classify.js extended to 25 cases (was 21) — updated case 19
+to assert the exact-as-given round window instead of null, added a case
+confirming dec:true when the window reaches the bout's final round, added a
+case rejecting a window that exceeds the bout's actual round count, and two
+new NODEC cases (a clean side match; finish_only true with no resolved side
+-> null). 25/25 pass. node -c on worker/index.js and a syntax check of
+index.html's script both pass; the full regression suite (test-card-changes,
+test-fighter-news, test-espn-bouts, test-pickem, test-scouting-lines) is
+unaffected.
+
+NOT YET TESTED end-to-end. Same caveat as 6a/6b, now also covering: a
+non-bucket round window, and NODEC specifically (which has never been
+exercised against a real screenshot at all — the exact wording sportsbooks
+use for this market wasn't sampled the way ML/TOTAL/METHOD phrasing was in
+section 8's original prototyping). Try both against a real screenshot before
+trusting this path.
 
 --------------------------------------------------------------------------------
 7. WHERE THIS LIVES — BUILT 2026-08-24

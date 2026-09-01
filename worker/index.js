@@ -1025,7 +1025,8 @@ Outcome (fill in ONLY the fields that genuinely apply to this leg's pick — eve
   "starts_round": integer | null,
   "starts_round_yes": true | false | null,
   "total_line": number | null,
-  "total_over": true | false | null
+  "total_over": true | false | null,
+  "finish_only": true | false | null
 }
 
 Rules:
@@ -1041,6 +1042,7 @@ Rules:
   - goes_distance: set ONLY for a pick specifically about the fight going or not going the distance, naming no fighter and no round.
   - starts_round / starts_round_yes: set ONLY for a "does the fight start round N" style pick (e.g. "Fight to Start Round 3", pick "Yes"/"No").
   - total_line / total_over: set ONLY for an Over/Under total-rounds pick (e.g. "Over 2.5 rounds" -> total_line 2.5, total_over true).
+  - finish_only: set to true ONLY for a pick on a named fighter that explicitly VOIDS/REFUNDS if the fight goes to a judges' decision, and otherwise wins if that fighter is the one who finishes it and loses if they're finished (sportsbooks label this various things — "No Decision, No Bet", "Draw No Bet" applied to method, "Win by Finish", "Method of Victory Insurance" — the tell is the void-on-decision wording, not the exact label). side must also be set (A or B) whenever finish_only is true. Leave null for an ordinary method-of-victory pick that just loses (not voids) on a decision.
   - If you are not confident about an outcome field, leave it null rather than guessing — an incomplete outcome is fine and expected for markets this schema doesn't have a clean home for; that is not an error.
 - If stake/wager amount is not visible or is a placeholder (e.g. "$0", empty field), set stake to null. Do NOT report a placeholder as a real stake.
 - STAKE IS ONLY THE REAL MONEY RISKED ON THE BET, from a field explicitly labeled something like "Wager", "Risk", "Bet Amount", or an amount-entry box the user typed into. It is NEVER a site-specific loyalty/reward/bonus currency, even when a dollar or point figure is printed right next to it and even when that badge sits in the position a wager amount would normally occupy. Known examples seen so far: "FanCash" (Fanatics), "Crowns" (DraftKings), "Reward Points" (FanDuel) — but treat this as a PATTERN, not a checklist: any named or branded currency/point/token/credit distinct from plain cash must NOT be reported as stake, even if you don't recognize the specific brand name. When in doubt, set stake to null and add "stake" to uncertain_fields instead.
@@ -1140,17 +1142,22 @@ async function handleBetsScan(request, env, url) {
   // sec 8, "Jamalii Emmers") should fail this match and fall through to
   // manual, never silently attach to the wrong fighter.
   //
-  // v3 (2026-08-31): a matched leg now maps onto ANY of the app's 9 BT_MARKETS
+  // v3 (2026-08-31): a matched leg now maps onto ANY of the app's BT_MARKETS
   // codes, not just moneyline — see SCREENSHOT-BET-READER-PLAN.txt sec 6b for
   // the reasoning and the exact classifier this ports. v2 had drawn the line
   // at ML because free-text market labels don't reliably map onto the app's
   // OWN invented round-group buckets; v3 solves that not by trusting the
   // model to know GillyLab's taxonomy, but by having the model describe the
-  // pick in plain terms (side/method/round window/etc — see BT_SCAN_OUTCOME
-  // in the prompt) and classifying those plain terms deterministically here,
-  // against THIS bout's actual scheduled rounds. An outcome that doesn't land
-  // on exactly one market falls through to null — same "never guess" rule as
-  // ever, just applied market-by-market instead of only to ML.
+  // pick in plain terms (side/method/round window/etc — see the Outcome
+  // schema in the prompt) and classifying those plain terms deterministically
+  // here, against THIS bout's actual scheduled rounds. A round-window pick is
+  // graded exactly as the screenshot describes it, never snapped to the
+  // nearest of index.html's two predefined manual-entry buckets (see
+  // classify()'s own comment for why that snap would be unsafe). An outcome
+  // that doesn't land on exactly one market falls through to null — same
+  // "never guess" rule as ever, just applied market-by-market instead of only
+  // to ML. (2026-08-31, later same day: added NODEC, a 10th market — a
+  // finish-only/no-decision-bet that voids if the fight goes to a decision.)
   //
   // The eligibility decided HERE is only ever a suggestion to the client —
   // handleBetsAdd() independently re-resolves the bout, re-checks it isn't
@@ -1161,25 +1168,25 @@ async function handleBetsScan(request, env, url) {
   const legsForMatch = draft.kind === "manual" ? [draft.manual] : draft.parlay.legs;
   const norm = (x) => String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
   const isMlMarket = (m) => /^money\s*-?\s*line$|^ml$/i.test(String(m || "").trim());
-  // Round-group buckets, ported verbatim from index.html's btWinGroups() /
-  // btMethGroups() — MUST stay identical, since a tracked WINRDS/METHRDS
-  // bet's params are graded by that same client-side code. If these ever
-  // drift apart, a scanned bet would carry groups the grader doesn't
-  // recognize as any of its own.
-  const btScanWinGroups = (n) => n >= 5
-    ? [{ rounds: [1, 2, 3], dec: false }, { rounds: [4, 5], dec: true }]
-    : [{ rounds: [1, 2], dec: false }, { rounds: [3], dec: true }];
-  const btScanMethGroups = (n) => n >= 5
-    ? [{ rounds: [1, 2, 3] }, { rounds: [2, 3, 4] }, { rounds: [3, 4, 5] }]
-    : [{ rounds: [1, 2] }, { rounds: [2, 3] }];
-  const arrEq = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => v === b[i]);
   // Classify one leg's plain-terms `outcome` (+ its free-text `market`, for
-  // the ML check only) into one of the 9 BT_MARKETS codes and the exact
+  // the ML check only) into one of the 10 BT_MARKETS codes and the exact
   // params shape btBuildPick() would build for the same manual pick — or
   // null. `side` here is "A"/"B" relative to THIS leg's own matchup order,
   // translated to the bout's actual fighters[0]/[1] order by the caller
   // (matchSwapped), since the model's matchup order and the feed's fighter
   // order aren't guaranteed to agree.
+  //
+  // WINRDS/METHRDS do NOT require the window to land on one of index.html's
+  // two predefined round-group buttons (btWinGroups()/btMethGroups() — those
+  // are just what the MANUAL entry dropdown offers). btGradeWin's WINRDS/
+  // METHRDS rules grade off whatever `params.rounds` array is stored, with
+  // no dependency on it being one of those two shapes — so a screenshot's
+  // own round window is stored exactly as given, never snapped to the
+  // nearest predefined bucket. Snapping would risk grading the bet on a
+  // wider or narrower window than what the sportsbook actually offered
+  // (e.g. "Rounds 1-2" on a 5-round fight snapped to "Rounds 1-3" would
+  // silently turn a real round-3 loss into a recorded win) — exact-as-given
+  // avoids that outright instead of trading it for "close enough".
   function classify(l, boutRounds) {
     const o = (l && l.outcome) || {};
     const side = o.side === "A" ? "A" : o.side === "B" ? "B" : o.side === "either" ? "either" : null;
@@ -1209,20 +1216,34 @@ async function handleBetsScan(request, env, url) {
         && o.round >= 1 && o.round <= boutRounds) {
       return { market: "ENDROUND", params: { side: side === "A" ? 1 : side === "B" ? 2 : "any", meth: method || "ANY", round: o.round }, priced: false };
     }
-    if (hasRange && (side === "A" || side === "B")) {
+    if (hasRange && (side === "A" || side === "B") && o.round_low >= 1 && o.round_high <= boutRounds) {
       const wanted = []; for (let r = o.round_low; r <= o.round_high; r++) wanted.push(r);
       if (method === "KO" || method === "SUB") {
-        const grp = btScanMethGroups(boutRounds).find((g) => arrEq(g.rounds, wanted));
-        if (grp) return { market: "METHRDS", params: { side: sideNum(side), methodCat: method, rounds: grp.rounds }, priced: false };
-      } else if (method == null || method === "ANY") {
-        const grp = btScanWinGroups(boutRounds).find((g) => arrEq(g.rounds, wanted));
-        if (grp) return { market: "WINRDS", params: { side: sideNum(side), rounds: grp.rounds, dec: grp.dec }, priced: false };
+        // A decision never counts for a method-in-rounds pick, regardless of
+        // whether the window includes the final round — btGradeWin's METHRDS
+        // rule already excludes methodCat==='DEC' unconditionally.
+        return { market: "METHRDS", params: { side: sideNum(side), methodCat: method, rounds: wanted }, priced: false };
+      }
+      if (method == null || method === "ANY") {
+        // dec: true iff the window reaches the fight's final scheduled round —
+        // that's the only way a decision can fall inside a "wins in rounds X-Y"
+        // window (a decision can't happen before the last round), and matches
+        // exactly how index.html's own last-bucket-of-each-round-count always
+        // carries dec:true.
+        return { market: "WINRDS", params: { side: sideNum(side), rounds: wanted, dec: wanted.indexOf(boutRounds) !== -1 }, priced: false };
       }
       return null;
     }
     if (["KO", "SUB", "DEC"].indexOf(method) !== -1 && !hasRound && !hasRange) {
       if (side === "A" || side === "B") return { market: "METHOD", params: { side: sideNum(side), methodCat: method }, priced: false };
       if (side === "either" || side == null) return { market: "METHOD", params: { side: "any", methodCat: method }, priced: false };
+    }
+    // Finish only / no-decision bet: void if it goes to a decision (that's
+    // btGradeStatus's job, not classify()'s), won if the named side is the
+    // one who finished it. Requires an explicit side — "either fighter, by
+    // finish" isn't a real sportsbook market and has no home here.
+    if (o.finish_only === true && (side === "A" || side === "B")) {
+      return { market: "NODEC", params: { side: sideNum(side) }, priced: false };
     }
     return null;
   }
@@ -1443,11 +1464,20 @@ function btGradeWin(market, P, R, tr) {
   if (market === "WINRDS") { if (R.win !== P.side) return false; return R.methodCat === "DEC" ? !!P.dec : (P.rounds || []).indexOf(R.round) !== -1; }
   if (market === "METHRDS") return R.win === P.side && R.methodCat === P.methodCat && (P.rounds || []).indexOf(R.round) !== -1;
   if (market === "DBLMETH") return R.win === P.side && (P.methods || []).indexOf(R.methodCat) !== -1;
+  // Finish only / no-decision bet: void if it goes to a decision (handled in
+  // btGradeStatus below, not here — this only ever gets asked when it's NOT a
+  // decision), won if the named fighter is the one who finished it.
+  if (market === "NODEC") return R.win === P.side && R.methodCat !== "DEC";
   return false;
 }
 function btGradeStatus(market, P, R) {
   if (R.isNC) return "void";
   if (R.isDraw && market === "ML") return "void";
+  // NODEC voids on ANY decision result, not just an ML draw — the whole point of
+  // the market is "refund me if the judges decide it." A draw-by-decision already
+  // has methodCat 'DEC' (see the DEC fallback in result parsing), so this also
+  // covers a drawn NODEC bet without a separate isDraw check.
+  if (market === "NODEC" && R.methodCat === "DEC") return "void";
   return btGradeWin(market, P, R, R.round) ? "won" : "lost";
 }
 // Mirrors the client's btParlayClv: a MIXED-market parlay never earns CLV (no

@@ -141269,6 +141269,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     ENDROUND:  'Fight ends in a round',
     WINRDS:    'Winner in a group of rounds',
     METHRDS:   'Win by KO/TKO or submission in a group of rounds',
+    NODEC:     'Finish only (void if it goes to a decision)',
   };
   const BT_METH = { KO: 'KO/TKO', SUB: 'submission', DEC: 'decision' };
   let BT_EVENTS = null, BT_ODDS = null, BT_RESULTS = null;
@@ -141530,6 +141531,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // decision, or submission-or-decision).
     if (b.market === 'DBLMETH')
       return R.win === P.side && (P.methods || []).indexOf(R.methodCat) !== -1;
+    // Finish only / no-decision bet: void if it goes to a decision (handled in
+    // btGradeStatus below), won if the named fighter is the one who finished it.
+    if (b.market === 'NODEC') return R.win === P.side && R.methodCat !== 'DEC';
     return false;
   }
   // No contest voids everything. A draw voids ONLY the moneyline — standard book
@@ -141544,6 +141548,9 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   function btGradeStatus(b, R, tr) {
     if (R.isNC) return 'void';
     if (R.isDraw && b.market === 'ML') return 'void';
+    // NODEC voids on ANY decision result, not just an ML draw — see the worker-side
+    // copy of this same rule for why a draw-by-decision doesn't need its own check.
+    if (b.market === 'NODEC' && R.methodCat === 'DEC') return 'void';
     return btGradeWin(b, R, tr) ? 'won' : 'lost';
   }
   // Derive each tracked bet's result IN MEMORY at render time. Never persisted and
@@ -142395,6 +142402,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (btMarket === 'DISTANCE') return '<label>Does the fight reach a decision?</label><select id="bt-dyn"><option value="Y">Yes — goes the distance</option><option value="N">No — ends in a finish</option></select>';
     if (btMarket === 'DBLMETH') return '<div class="bt-row2"><div><label>Winner</label><select id="bt-dcf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option></select></div>' +
       '<div><label>By</label><select id="bt-dcm"><option value="KO">KO/TKO or decision</option><option value="SUB">Submission or decision</option><option value="KOSUB">KO/TKO or submission</option></select></div></div>';
+    if (btMarket === 'NODEC') return '<label>Winner (by finish only — void if this goes to a decision)</label><select id="bt-ndf" onchange="btSetSide(this.value)"><option value="1"' + sel1 + '>' + btEsc(f.f1) + '</option><option value="2"' + sel2 + '>' + btEsc(f.f2) + '</option></select>';
     return '';
   }
   function btBuildPick(f) {
@@ -142415,6 +142423,8 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     // Double chance (last market): KO-or-decision, submission-or-decision, or KO-or-
     // submission — the last of which is "wins inside the distance", replacing the old
     // standalone INSIDE market (its grader is kept for any bets logged before this).
+    if (btMarket === 'NODEC') { const s = +g('bt-ndf').value;
+      return { pick: btShort(s === 1 ? f.f1 : f.f2) + ' by finish (void if decision)', p: { side: s }, priced: false }; }
     const s = +g('bt-dcf').value, fm = g('bt-dcm').value;
     const DM = ({ KO: { methods: ['KO', 'DEC'], lab: 'KO/TKO or decision' },
                  SUB: { methods: ['SUB', 'DEC'], lab: 'submission or decision' },
@@ -142698,18 +142708,16 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   window.btSubmitCard = btSubmitCard; window.btSubmitCustom = btSubmitCustom;
 
   // ── screenshot bet reader (scan) — see SCREENSHOT-BET-READER-PLAN.txt ────
-  // v1 SCOPE DECISION (resolves part of plan sec 6): a scanned bet ALWAYS logs
-  // as a self-reported "manual" bet through the same POST /api/bets path the
-  // Custom bet form uses — never auto-submitted as "tracked". Mapping a
-  // screenshot's free-text market label ("Winning Method - Double Chance",
-  // "KO/TKO Round Combos"...) onto the app's 9 BT_MARKETS codes reliably is a
-  // real classification problem of its own, and getting it wrong would
-  // silently misfile a bet as CLV-eligible when it isn't. When a leg DOES
-  // match a live, undecided bout (btFindBout equivalent, server-side), that's
-  // shown as an informational badge only — it tells the user this fight is
-  // on an upcoming card, but does not change what gets submitted. Upgrading
-  // matched legs to fully "tracked" bets (with correct market codes) is left
-  // as a documented next step, not attempted here.
+  // CURRENT SCOPE (sec 6b, supersedes the original v1 self-reported-always
+  // decision in sec 6): the worker's classify() maps a leg's free-text market
+  // label + plain-terms `outcome` onto one of the app's 10 BT_MARKETS codes
+  // (adding NODEC — a full 10th now) whenever it can do so WITHOUT guessing —
+  // an outcome that doesn't cleanly fit stays unclassified rather than being
+  // forced into the nearest-looking market. A leg is submitted as a real
+  // "tracked" bet, through the exact same request shape btSubmitCard() builds
+  // by hand, only when it BOTH classifies AND matches a live, undecided bout;
+  // otherwise it falls back to self-reported, same as picking an unsupported
+  // market manually would leave you no choice but to self-report it too.
   // Mirrors btBuildPick()'s exact phrasing for a given market+params, so a
   // scanned tracked bet reads identically to the same pick built by hand.
   // Reuses the app's OWN btWinGroups/btMethGroups/BT_METH — never a second
@@ -142742,6 +142750,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const lab = key === 'KO,DEC' ? 'KO/TKO or decision' : key === 'SUB,DEC' ? 'submission or decision' : 'KO/TKO or submission';
       return who(p.side) + ' by ' + lab;
     }
+    if (market === 'NODEC') return who(p.side) + ' by finish (void if decision)';
     return '';
   }
   function btScanHTML() {
@@ -142749,7 +142758,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!n) {
       return '<input type="file" id="bt-scan-files" accept="image/*" multiple style="display:none" onchange="btScanPickFiles(this.files)">' +
         '<button type="button" class="bt-btn" onclick="document.getElementById(\'bt-scan-files\').click()">Choose screenshots…</button>' +
-        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. A moneyline pick on a live, undecided fight logs as <b style="color:var(--accent)">verified</b> and CLV-eligible, same as picking it under Upcoming fights; anything else is tagged <b style="color:#ffcf7a">self-reported</b>.</div>';
+        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. A pick that matches a live, undecided fight logs as <b style="color:var(--accent)">verified</b> — the same status you\'d get picking it under Upcoming fights — with CLV tracked only on moneylines, since that\'s the only market with a real closing line; anything on a finished/cancelled event, or that this can\'t classify confidently, is tagged <b style="color:#ffcf7a">self-reported</b> instead.</div>';
     }
     if (btScanIdx >= n) {
       const done = btScanQueue.filter(x => x.status === 'done').length;
