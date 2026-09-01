@@ -142758,7 +142758,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!n) {
       return '<input type="file" id="bt-scan-files" accept="image/*" multiple style="display:none" onchange="btScanPickFiles(this.files)">' +
         '<button type="button" class="bt-btn" onclick="document.getElementById(\'bt-scan-files\').click()">Choose screenshots…</button>' +
-        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. A pick that matches a live, undecided fight logs as <b style="color:var(--accent)">verified</b> — the same status you\'d get picking it under Upcoming fights — with CLV tracked only on moneylines, since that\'s the only market with a real closing line; anything on a finished/cancelled event, or that this can\'t classify confidently, is tagged <b style="color:#ffcf7a">self-reported</b> instead.</div>';
+        '<div class="bt-note" style="margin-top:.6rem">Scan a screenshot to input your bets. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. If it matches an upcoming fight, it tracks as <b style="color:var(--accent)">verified</b>.</div>';
     }
     if (btScanIdx >= n) {
       const done = btScanQueue.filter(x => x.status === 'done').length;
