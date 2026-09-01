@@ -11,6 +11,18 @@ denominated reward badge (DK Crowns, FanDuel Reward Points) — the exact
 collision the FanCash bug (sec 8) was about. Section 2's review-before-save is
 the permanent backstop for this, same as for any other misread — watch the
 first real reports of a wrong stake for a sign this needs tightening further.
+
+2026-08-31 — V1 SCOPE DECISION IN SECTION 6 PARTIALLY REVERSED, ON REQUEST.
+Section 6 originally decided every scanned bet logs as self-reported, always,
+specifically to avoid the free-text-market-to-BT_MARKETS-code classification
+problem. The owner asked for the obvious case back: a moneyline pick on a
+valid, undecided upcoming fight should log exactly like picking it under
+Upcoming fights — verified, CLV-eligible. That's now true. What did NOT
+change: props/method/rounds/distance-style picks still always log self-
+reported, because THAT classification problem (mapping "Winning Method -
+Double Chance" onto one of the 9 BT_MARKETS codes with confidence) is exactly
+as unsolved as it was when section 6 first opted out of it. See section 6a
+below for the mechanics and the parlay-specific caveat.
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -213,21 +225,74 @@ the hard ceiling on a worst-case bill.
     date-keyed PICKS key (btscancap:<email>:<date>, 2-day TTL) — no new KV
     binding. Loosen later if it's ever actually hit.
 [x] Same-game-parlay / prop-heavy scope, AND the market-code question this
-    turned into once building started: a scanned bet is v1-scoped to ALWAYS
-    log as self-reported ("manual"), through the exact POST /api/bets path
-    Custom bet already uses — never auto-submitted as "tracked". Reason
-    (found during the build, not anticipated here originally): mapping a
-    screenshot's free-text market label onto the app's 9 BT_MARKETS codes
-    reliably is its own real classification problem, and a wrong guess there
-    would silently misfile a bet as CLV-eligible when it isn't — exactly the
-    kind of "the model decided something that mattered" this whole plan
-    exists to prevent. A matched leg (server-side name match against
-    /data/event.json, same normalization as btBoutDecided) shows as an
-    INFORMATIONAL badge only — "matches an upcoming card" — and does not
-    change what gets submitted. Upgrading matched legs to real "tracked"
-    bets with correct market codes is a real follow-up, not done here.
+    turned into once building started: a scanned bet ORIGINALLY (2026-08-24)
+    v1-scoped to ALWAYS log as self-reported ("manual"). REVISED 2026-08-31
+    (see 6a) — a moneyline leg matched to a live, undecided bout now logs
+    "tracked" (verified, CLV-eligible), exactly like picking it under
+    Upcoming fights. Everything else — props, method, rounds, distance, or
+    any leg that doesn't cleanly resolve a side — still always logs self-
+    reported. Reason the boundary stays there: mapping a screenshot's free-
+    text market label onto the app's 9 BT_MARKETS codes reliably is its own
+    real classification problem, and a wrong guess there would silently
+    misfile a bet as CLV-eligible when it isn't — exactly the kind of "the
+    model decided something that mattered" this whole plan exists to
+    prevent. Extending past ML to the other 8 markets is a real follow-up,
+    not done here, and not asked for.
 [x] Max batch size: 12 (BT_SCAN_MAX_BATCH), enforced client-side in
     btScanPickFiles() before any scans fire.
+
+--------------------------------------------------------------------------------
+6a. ML AUTO-TRACK — ADDED 2026-08-31, ON REQUEST
+--------------------------------------------------------------------------------
+The owner's ask: "as long as they are for a valid, upcoming event, they
+should be tracked as verified, and if they are ML's, they should count
+toward CLV... should function just like if you were to input them manually."
+
+WHAT CHANGED. handleBetsScan()'s per-leg match (already resolving each leg
+against /data/event.json for the old informational badge) now also: runs
+btBoutDecided() on the matched bout (skip if already decided — same as
+btFindBout's caller would), and — ONLY when the leg's market reads as a
+moneyline ("Moneyline", "Money Line", "ML") — determines which side the
+scanned "pick" text names, by fuzzy-matching it against both fighters' names
+the same way the matchup itself is matched. Returns `trackable: true` only
+when all three hold: is ML, isn't decided, and the side resolved to exactly
+one fighter unambiguously (both-match or no-match leaves it false — never
+guessed). The client (btScanHTML's "ready" branch) only offers the tracked
+path when EVERY leg in the draft is trackable AND (for a parlay) carries its
+own real per-leg odds — handleBetsAdd's PARLAY branch hard-requires a price
+per leg, and real screenshots often only expose the total, so a parlay with
+missing leg odds silently and correctly still falls back to self-reported
+for the WHOLE bet, not a partial mix.
+
+THE SUBMISSION BODY IS BYTE-FOR-BYTE WHAT btSubmitCard()/btBuildPick() WOULD
+BUILD for the same manual pick: kind:'tracked', fightId, market:'ML',
+pick: "<short winner> ML", params:{side}, priced:true, closeSide:side, plus
+odds/stake/book. Same for a parlay: market:'PARLAY', legs:[...] in the exact
+shape handleBetsAdd's parlay branch already validates. THIS IS DELIBERATE —
+reusing the exact request shape means the save-time validation (btFindBout
+re-resolves the fight from scratch, btBoutDecided re-checks it isn't
+decided, clvOk is re-derived from the server's own clock) is IDENTICAL
+whether the bet came from the card-picker or a screenshot. handleBetsScan's
+own trackable/decided check is only ever advice to the client about what to
+offer — it is not trusted at save time, so a wrong call there means the UI
+offers (or fails to offer) the tracked option, never a bad save.
+
+USER CAN STILL OPT OUT. A "Track for CLV (verified)" checkbox, checked by
+default when eligible, lets the user log an otherwise-trackable ML pick as
+self-reported anyway if they want. Unchecking it rebuilds the self-reported
+body from the same underlying draft — the tracked-ready form has no free-
+text matchup/pick fields to read back from, since those fields are populated
+by the server-side match, not user-typed text.
+
+NOT YET TESTED against a real screenshot end-to-end (name-match -> side
+resolution -> tracked submit -> server accepts it as a real tracked bet).
+The single-leg-ML logic was traced by hand against the Petruzzella +200 test
+case from 2026-08-25 (fighters[0]=Galanti, fighters[1]=Petruzzella, pick=
+"Carlos Petruzzella" -> side resolves to 2, matches) and the file passes
+node --check plus the full existing test suite, but neither of those proves
+the live save actually succeeds against real event.json data. Try it on the
+next real upcoming-card ML screenshot before trusting the tracked path the
+way section 8's original prototype trusted the extraction schema.
 
 --------------------------------------------------------------------------------
 7. WHERE THIS LIVES — BUILT 2026-08-24

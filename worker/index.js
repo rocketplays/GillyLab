@@ -1113,30 +1113,71 @@ async function handleBetsScan(request, env, url) {
   if (err) return json({ error: err }, 422);
   if (draft.kind === null) return json({ error: "That doesn't look like a bet slip." }, 422);
 
-  // Try to match each leg to a live, undecided bout — offer the CLV-eligible
-  // "tracked" upgrade only when it genuinely resolves. A misread name (see
-  // plan sec 8, "Jamalii Emmers") should fail this match and fall through to
+  // Try to match each leg to a live, undecided bout. A misread name (see plan
+  // sec 8, "Jamalii Emmers") should fail this match and fall through to
   // manual, never silently attach to the wrong fighter.
+  //
+  // v2 (2026-08-31): a matched leg that reads as a plain moneyline pick is now
+  // eligible for the SAME "tracked" (verified, CLV-eligible) path a manually-
+  // entered ML bet gets via the Upcoming fights tab — not just an
+  // informational badge (that was the original v1 scope-narrowing decision,
+  // now revised per the user: a scanned bet on a valid upcoming event should
+  // function exactly like typing it in). Still deliberately NOT extended to
+  // props/method/rounds — mapping free-text market labels onto BT_MARKETS
+  // codes is still the real classification problem plan sec 6 opted out of,
+  // and nothing about this change makes that easier or safer to guess at.
+  // The eligibility decided HERE is only ever a suggestion to the client —
+  // handleBetsAdd() independently re-resolves the bout, re-checks it isn't
+  // decided, and re-derives clvOk from its own clock, exactly as it does for
+  // every other tracked bet. This endpoint deciding wrong just means the
+  // client offers (or fails to offer) the tracked option; it can never cause
+  // a bad bet to save, because the save path re-validates from scratch.
   const legsForMatch = draft.kind === "manual" ? [draft.manual] : draft.parlay.legs;
+  const norm = (x) => String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  const isMlMarket = (m) => /^money\s*-?\s*line$|^ml$/i.test(String(m || "").trim());
   const matches = [];
   for (const l of legsForMatch) {
     let hit = null;
     try {
       const evs = await loadAssetJson(env, url, "/data/event.json");
-      const norm = (x) => String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
       const wanted = norm(l.matchup).split(" v ").map((x) => x.trim());
+      const wantedPick = norm(l.pick);
       outer:
       for (const e of ((evs && evs.data) || [])) {
         if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
         for (const b of e.bouts) {
           if (!b || b.isCancelled || (b.fighters || []).length !== 2) continue;
-          const f1 = norm(b.fighters[0].fighterName), f2 = norm(b.fighters[1].fighterName);
+          const fn1 = b.fighters[0].fighterName, fn2 = b.fighters[1].fighterName;
+          const f1 = norm(fn1), f2 = norm(fn2);
           const okA = wanted[0] && (f1.includes(wanted[0]) || wanted[0].includes(f1));
           const okB = wanted[1] && (f2.includes(wanted[1]) || wanted[1].includes(f2));
           const okSwap = wanted[0] && (f2.includes(wanted[0]) || wanted[0].includes(f2)) && wanted[1] && (f1.includes(wanted[1]) || wanted[1].includes(f1));
           if ((okA && okB) || okSwap) {
             const rawId = b.id || String(b.boutOrder);
-            hit = { fightId: e.slug + "|" + rawId, evSlug: e.slug };
+            const sec = String(b.cardSection || "").toLowerCase();
+            const isMain = sec.indexOf("main") !== -1 && sec.indexOf("prelim") === -1;
+            const boutHit = {
+              id: e.slug + "|" + rawId, ev: e, bout: b,
+              section: isMain ? "main" : "prelim",
+              segAt: isMain ? e.startsAt : (e.prelimsStartsAt || e.startsAt),
+              f1: fn1, f2: fn2,
+            };
+            let decided = false;
+            try { decided = await btBoutDecided(env, url, boutHit); } catch { decided = false; }
+            // Which side did the pick name? Only meaningful (and only trusted)
+            // for a moneyline leg — for any other market "pick" isn't just a
+            // fighter's name, so guessing a side from it would be exactly the
+            // kind of invented match this feature exists to avoid.
+            let side = null;
+            if (isMlMarket(l.market) && wantedPick) {
+              const pickIsF1 = f1.includes(wantedPick) || wantedPick.includes(f1);
+              const pickIsF2 = f2.includes(wantedPick) || wantedPick.includes(f2);
+              if (pickIsF1 && !pickIsF2) side = 1;
+              else if (pickIsF2 && !pickIsF1) side = 2;
+              // both or neither match -> side stays null, never guessed
+            }
+            hit = { fightId: boutHit.id, evSlug: e.slug, f1: fn1, f2: fn2, decided,
+              isMl: isMlMarket(l.market), side, trackable: isMlMarket(l.market) && !decided && side != null };
             break outer;
           }
         }

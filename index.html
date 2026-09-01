@@ -142715,7 +142715,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     if (!n) {
       return '<input type="file" id="bt-scan-files" accept="image/*" multiple style="display:none" onchange="btScanPickFiles(this.files)">' +
         '<button type="button" class="bt-btn" onclick="document.getElementById(\'bt-scan-files\').click()">Choose screenshots…</button>' +
-        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. Logged as <b style="color:#ffcf7a">self-reported</b>, same as Custom bet.</div>';
+        '<div class="bt-note" style="margin-top:.6rem">Upload one or several bet slip screenshots. Each becomes a draft you review and confirm one at a time — nothing saves until you confirm it. A moneyline pick on a live, undecided fight logs as <b style="color:var(--accent)">verified</b> and CLV-eligible, same as picking it under Upcoming fights; anything else is tagged <b style="color:#ffcf7a">self-reported</b>.</div>';
     }
     if (btScanIdx >= n) {
       const done = btScanQueue.filter(x => x.status === 'done').length;
@@ -142735,21 +142735,46 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     } else if (item.status === 'ready') {
       const d = item.draft;
       const legs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
-      const matchText = legs.map(l => l.matchup).join(' + ');
-      const pickText = legs.map(l => l.pick + ' (' + l.market + ')').join(' | ') + (d.kind === 'parlay' ? ' — ' + legs.length + '-leg parlay' : '');
-      const oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
-      const anyMatch = (item.matches || []).some(Boolean);
-      if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card — logged as self-reported for now; you can find it under Upcoming fights too if you\'d rather track it for CLV.</div>';
+      const matches = item.matches || [];
+      // Eligible for the SAME tracked/verified/CLV path a manually-entered ML
+      // bet gets — every leg must be a moneyline pick that matched a live,
+      // undecided bout AND (for a parlay) carry its own real odds, since
+      // handleBetsAdd's PARLAY branch requires a per-leg price. One leg
+      // failing any of that drops the WHOLE bet to self-reported — no mixing
+      // tracked and self-reported legs in one record (see plan sec 8 update).
+      const legTrackable = (l, m) => m && m.trackable && Number.isFinite(l.odds) && l.odds !== 0;
+      const canTrack = legs.length && legs.every((l, i) => legTrackable(l, matches[i]));
       const unc = (d.uncertain_fields || []).filter(f => f && f !== 'not a bet slip');
       if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + btEsc(unc.join(', ')) + ' — check before confirming.</div>';
-      h += '<label>Matchup / event</label><input id="bt-scan-match" value="' + btEsc(matchText) + '">' +
-        '<label>Your pick + market</label><input id="bt-scan-pick" value="' + btEsc(pickText) + '">' +
-        '<div class="bt-row2"><div><label>Your odds</label><input id="bt-scan-odds" type="number" value="' + (Number.isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
-        '<div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : '') + '" placeholder="1" step="0.5" min="0.5"></div></div>' +
-        '<label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '">' +
-        '<div class="bt-note">We don\'t track this fight from a screenshot, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, excluded from verified CLV / ROI.</div>' +
-        '<button type="button" class="bt-btn" onclick="btScanConfirm()">Log this bet</button> ' +
-        '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
+
+      if (canTrack) {
+        const rows = legs.map((l, i) => {
+          const m = matches[i], winner = m.side === 2 ? m.f2 : m.f1;
+          return '<div class="bt-row2"><div>' + btEsc(winner) + ' ML</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
+        }).join('');
+        h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (legs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
+          ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>, and CLV-eligible until that segment starts.</div>' +
+          rows +
+          '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
+          '<div><label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '"></div></div>' +
+          '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400"><input type="checkbox" id="bt-scan-track" checked style="width:auto"> Track for CLV (verified) — uncheck to log as self-reported instead</label>' +
+          '<button type="button" class="bt-btn" onclick="btScanConfirmTracked()">Log this bet</button> ' +
+          '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
+      } else {
+        const matchText = legs.map(l => l.matchup).join(' + ');
+        const pickText = legs.map(l => l.pick + ' (' + l.market + ')').join(' | ') + (d.kind === 'parlay' ? ' — ' + legs.length + '-leg parlay' : '');
+        const oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
+        const anyMatch = matches.some(Boolean);
+        if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a non-moneyline market, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
+        h += '<label>Matchup / event</label><input id="bt-scan-match" value="' + btEsc(matchText) + '">' +
+          '<label>Your pick + market</label><input id="bt-scan-pick" value="' + btEsc(pickText) + '">' +
+          '<div class="bt-row2"><div><label>Your odds</label><input id="bt-scan-odds" type="number" value="' + (Number.isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
+          '<div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : '') + '" placeholder="1" step="0.5" min="0.5"></div></div>' +
+          '<label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '">' +
+          '<div class="bt-note">We don\'t track this fight from a screenshot, so it\'s tagged <b style="color:#ffcf7a">self-reported</b>: you settle it yourself, excluded from verified CLV / ROI.</div>' +
+          '<button type="button" class="bt-btn" onclick="btScanConfirm()">Log this bet</button> ' +
+          '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
+      }
     }
     return h;
   }
@@ -142829,11 +142854,58 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       BT_BETS.push(r.j.bet); item.status = 'done'; btScanIdx++; btRenderLog('scan');
     });
   }
+  // A matched, moneyline, undecided leg — logs through the EXACT same
+  // request shape btSubmitCard() builds for a manually-picked ML bet, so the
+  // server's tracked-bet validation (btFindBout, btBoutDecided, clvOk) runs
+  // identically either way. The "Track for CLV" checkbox lets the user opt
+  // back into self-reported even when eligible; unchecking it rebuilds the
+  // self-reported body from the same underlying draft, since this branch of
+  // the form has no free-text matchup/pick inputs to read from.
+  function btScanConfirmTracked() {
+    const item = btScanQueue[btScanIdx]; if (!item || item.status !== 'ready') return;
+    const d = item.draft, matches = item.matches || [];
+    const legs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
+    const stake = parseFloat(document.getElementById('bt-scan-stake').value) || 1;
+    const book = (document.getElementById('bt-scan-book') || {}).value || '';
+    const trackChecked = !!(document.getElementById('bt-scan-track') || {}).checked;
+    const winnerName = (m) => m.side === 2 ? m.f2 : m.f1;
+    const shortMatch = (m) => btShort(m.f1) + ' vs ' + btShort(m.f2);
+
+    let body;
+    if (!trackChecked) {
+      const match = legs.map(l => l.matchup).join(' + ');
+      const pick = legs.map(l => l.pick + ' (' + l.market + ')').join(' | ') + (d.kind === 'parlay' ? ' — ' + legs.length + '-leg parlay' : '');
+      const odds = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
+      if (!Number.isFinite(odds)) { alert('Missing odds on this one — enter it manually instead.'); return; }
+      body = { kind: 'manual', match, pick, odds, stake, book };
+    } else if (d.kind === 'parlay') {
+      body = {
+        kind: 'tracked', market: 'PARLAY', stake, book,
+        match: legs.length + '-leg parlay (scanned)', odds: d.parlay.parlayOdds,
+        legs: legs.map((l, i) => {
+          const m = matches[i];
+          return { fightId: m.fightId, market: 'ML', params: { side: m.side },
+            pick: btShort(winnerName(m)) + ' ML', match: shortMatch(m), odds: l.odds };
+        }),
+      };
+    } else {
+      const m = matches[0];
+      body = { kind: 'tracked', fightId: m.fightId, market: 'ML',
+        pick: btShort(winnerName(m)) + ' ML', match: shortMatch(m),
+        params: { side: m.side }, priced: true, closeSide: m.side,
+        odds: d.manual.odds, stake, book };
+    }
+    btApi('/api/bets', body).then(r => {
+      if (r.status !== 200) { alert((r.j && r.j.error) || 'Could not log that bet.'); return; }
+      BT_BETS.push(r.j.bet); item.status = 'done'; btScanIdx++; btRenderLog('scan');
+    });
+  }
   function btScanSkip() {
     const item = btScanQueue[btScanIdx]; if (!item) return;
     item.status = 'skipped'; btScanIdx++; btRenderLog('scan');
   }
-  window.btScanPickFiles = btScanPickFiles; window.btScanConfirm = btScanConfirm; window.btScanSkip = btScanSkip;
+  window.btScanPickFiles = btScanPickFiles; window.btScanConfirm = btScanConfirm;
+  window.btScanConfirmTracked = btScanConfirmTracked; window.btScanSkip = btScanSkip;
 
 
 
