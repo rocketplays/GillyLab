@@ -142710,6 +142710,40 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
   // on an upcoming card, but does not change what gets submitted. Upgrading
   // matched legs to fully "tracked" bets (with correct market codes) is left
   // as a documented next step, not attempted here.
+  // Mirrors btBuildPick()'s exact phrasing for a given market+params, so a
+  // scanned tracked bet reads identically to the same pick built by hand.
+  // Reuses the app's OWN btWinGroups/btMethGroups/BT_METH — never a second
+  // copy of the label text, only the worker's classifier duplicates the
+  // group RESHAPE (rounds arrays), which this looks back up by value.
+  function btScanPickText(market, params, f1, f2, boutRounds) {
+    const p = params || {};
+    const who = (s) => btShort(s === 2 ? f2 : f1);
+    const sameRounds = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => v === b[i]);
+    if (market === 'ML') return who(p.side) + ' ML';
+    if (market === 'METHOD') return p.side === 'any' ? ('Fight ends by ' + BT_METH[p.methodCat]) : (who(p.side) + ' by ' + BT_METH[p.methodCat]);
+    if (market === 'ENDROUND') {
+      const any = p.side === 'any';
+      const mt = p.meth === 'ANY' ? '' : (p.meth === 'KO' ? ' by KO/TKO' : ' by submission');
+      return any ? ('Fight ends' + mt + ' in round ' + p.round) : (who(p.side) + (p.meth === 'ANY' ? ' to win' : mt) + ' in round ' + p.round);
+    }
+    if (market === 'TOTAL') return (p.ou === 'O' ? 'Over ' : 'Under ') + p.line + ' rounds';
+    if (market === 'ROUNDSTART') return 'Fight ' + (p.yn === 'Y' ? 'starts' : 'does NOT start') + ' round ' + p.round;
+    if (market === 'DISTANCE') return p.yn === 'Y' ? 'Goes the distance' : 'Does NOT go the distance';
+    if (market === 'WINRDS') {
+      const grp = btWinGroups(boutRounds).find(g => sameRounds(g.rounds, p.rounds));
+      return who(p.side) + ' to win — ' + (grp ? grp.lab.toLowerCase() : ('rounds ' + (p.rounds || []).join('-')));
+    }
+    if (market === 'METHRDS') {
+      const grp = btMethGroups(boutRounds).find(g => sameRounds(g.rounds, p.rounds));
+      return who(p.side) + ' by ' + (p.methodCat === 'KO' ? 'KO/TKO' : 'submission') + ' — ' + (grp ? grp.lab.toLowerCase() : ('rounds ' + (p.rounds || []).join('-')));
+    }
+    if (market === 'DBLMETH') {
+      const key = (p.methods || []).join(',');
+      const lab = key === 'KO,DEC' ? 'KO/TKO or decision' : key === 'SUB,DEC' ? 'submission or decision' : 'KO/TKO or submission';
+      return who(p.side) + ' by ' + lab;
+    }
+    return '';
+  }
   function btScanHTML() {
     const n = btScanQueue.length;
     if (!n) {
@@ -142736,28 +142770,31 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       const d = item.draft;
       const legs = d.kind === 'parlay' ? d.parlay.legs : [d.manual];
       const matches = item.matches || [];
-      // Eligible for the SAME tracked/verified/CLV path a manually-entered ML
-      // bet gets — every leg must be a moneyline pick that matched a live,
-      // undecided bout AND (for a parlay) carry its own real odds, since
-      // handleBetsAdd's PARLAY branch requires a per-leg price. One leg
-      // failing any of that drops the WHOLE bet to self-reported — no mixing
-      // tracked and self-reported legs in one record (see plan sec 8 update).
+      // Eligible for the SAME tracked/verified path a manually-entered bet
+      // gets, on ANY of the 9 markets — every leg must have classified onto
+      // one of them from a matched, undecided bout AND (for a parlay) carry
+      // its own real odds, since handleBetsAdd's PARLAY branch requires a
+      // per-leg price. One leg failing any of that drops the WHOLE bet to
+      // self-reported — no mixing tracked and self-reported legs in one
+      // record (see plan sec 6b).
       const legTrackable = (l, m) => m && m.trackable && Number.isFinite(l.odds) && l.odds !== 0;
       const canTrack = legs.length && legs.every((l, i) => legTrackable(l, matches[i]));
       const unc = (d.uncertain_fields || []).filter(f => f && f !== 'not a bet slip');
       if (unc.length) h += '<div class="bt-note">Couldn\'t read clearly: ' + btEsc(unc.join(', ')) + ' — check before confirming.</div>';
 
       if (canTrack) {
+        const allPriced = matches.every(m => m.priced);
         const rows = legs.map((l, i) => {
-          const m = matches[i], winner = m.side === 2 ? m.f2 : m.f1;
-          return '<div class="bt-row2"><div>' + btEsc(winner) + ' ML</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
+          const m = matches[i], pickTxt = btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds);
+          return '<div class="bt-row2"><div>' + btEsc(pickTxt) + '</div><div style="text-align:right">' + btEsc(String(l.odds)) + '</div></div>';
         }).join('');
         h += '<div class="bt-note" style="border-color:var(--accent)">Matches ' + (legs.length > 1 ? 'an upcoming card' : 'a live, undecided fight') +
-          ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>, and CLV-eligible until that segment starts.</div>' +
+          ' — logs the same way as picking it under Upcoming fights: <b style="color:var(--accent)">verified</b>' +
+          (allPriced ? ', and CLV-eligible until that segment starts.' : '. Not CLV-scored (this market doesn\'t carry a trustworthy closing line), same as picking it manually.') + '</div>' +
           rows +
           '<div class="bt-row2" style="margin-top:.4rem"><div><label>Stake (units)</label><input id="bt-scan-stake" type="number" value="' + (d.stake != null ? d.stake : 1) + '" step="0.5" min="0.5"></div>' +
           '<div><label>Sportsbook (optional)</label><input id="bt-scan-book" maxlength="40" value="' + btEsc(d.book || '') + '"></div></div>' +
-          '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400"><input type="checkbox" id="bt-scan-track" checked style="width:auto"> Track for CLV (verified) — uncheck to log as self-reported instead</label>' +
+          '<label style="display:flex;align-items:center;gap:.4rem;font-weight:400"><input type="checkbox" id="bt-scan-track" checked style="width:auto"> Track this bet (verified) — uncheck to log as self-reported instead</label>' +
           '<button type="button" class="bt-btn" onclick="btScanConfirmTracked()">Log this bet</button> ' +
           '<button type="button" class="bt-btn bt-btn-ghost" onclick="btScanSkip()">Skip</button>';
       } else {
@@ -142765,7 +142802,7 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         const pickText = legs.map(l => l.pick + ' (' + l.market + ')').join(' | ') + (d.kind === 'parlay' ? ' — ' + legs.length + '-leg parlay' : '');
         const oddsVal = d.kind === 'parlay' ? d.parlay.parlayOdds : d.manual.odds;
         const anyMatch = matches.some(Boolean);
-        if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a non-moneyline market, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
+        if (anyMatch) h += '<div class="bt-note" style="border-color:var(--accent)">Matches an upcoming card, but not cleanly enough to auto-track (missing a leg\'s odds, a market this can\'t classify confidently, or an unclear winner) — logging as self-reported. You can log it again under Upcoming fights if you\'d rather have it tracked.</div>';
         h += '<label>Matchup / event</label><input id="bt-scan-match" value="' + btEsc(matchText) + '">' +
           '<label>Your pick + market</label><input id="bt-scan-pick" value="' + btEsc(pickText) + '">' +
           '<div class="bt-row2"><div><label>Your odds</label><input id="bt-scan-odds" type="number" value="' + (Number.isFinite(oddsVal) ? oddsVal : '') + '" placeholder="-150"></div>' +
@@ -142868,7 +142905,6 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     const stake = parseFloat(document.getElementById('bt-scan-stake').value) || 1;
     const book = (document.getElementById('bt-scan-book') || {}).value || '';
     const trackChecked = !!(document.getElementById('bt-scan-track') || {}).checked;
-    const winnerName = (m) => m.side === 2 ? m.f2 : m.f1;
     const shortMatch = (m) => btShort(m.f1) + ' vs ' + btShort(m.f2);
 
     let body;
@@ -142884,15 +142920,15 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         match: legs.length + '-leg parlay (scanned)', odds: d.parlay.parlayOdds,
         legs: legs.map((l, i) => {
           const m = matches[i];
-          return { fightId: m.fightId, market: 'ML', params: { side: m.side },
-            pick: btShort(winnerName(m)) + ' ML', match: shortMatch(m), odds: l.odds };
+          return { fightId: m.fightId, market: m.market, params: m.params,
+            pick: btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds), match: shortMatch(m), odds: l.odds };
         }),
       };
     } else {
       const m = matches[0];
-      body = { kind: 'tracked', fightId: m.fightId, market: 'ML',
-        pick: btShort(winnerName(m)) + ' ML', match: shortMatch(m),
-        params: { side: m.side }, priced: true, closeSide: m.side,
+      body = { kind: 'tracked', fightId: m.fightId, market: m.market,
+        pick: btScanPickText(m.market, m.params, m.f1, m.f2, m.rounds), match: shortMatch(m),
+        params: m.params, priced: !!m.priced, closeSide: m.params && m.params.side === 2 ? 2 : 1,
         odds: d.manual.odds, stake, book };
     }
     btApi('/api/bets', body).then(r => {

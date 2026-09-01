@@ -1007,11 +1007,25 @@ markdown fences.
 Schema:
 {
   "kind": "manual" | "parlay",
-  "manual": {"matchup": string, "pick": string, "market": string, "odds": number} | null,
-  "parlay": {"legs": [{"matchup": string, "pick": string, "market": string, "odds": number}], "parlayOdds": number} | null,
+  "manual": {"matchup": string, "pick": string, "market": string, "odds": number, "outcome": Outcome} | null,
+  "parlay": {"legs": [{"matchup": string, "pick": string, "market": string, "odds": number, "outcome": Outcome}], "parlayOdds": number} | null,
   "stake": number | null,
   "book": string | null,
   "uncertain_fields": string[]
+}
+
+Outcome (fill in ONLY the fields that genuinely apply to this leg's pick — every other field must be its literal null, never a guess):
+{
+  "side": "A" | "B" | "either" | null,
+  "method": "KO" | "SUB" | "DEC" | "KO_OR_DEC" | "SUB_OR_DEC" | "KO_OR_SUB" | "ANY" | null,
+  "round": integer | null,
+  "round_low": integer | null,
+  "round_high": integer | null,
+  "goes_distance": true | false | null,
+  "starts_round": integer | null,
+  "starts_round_yes": true | false | null,
+  "total_line": number | null,
+  "total_over": true | false | null
 }
 
 Rules:
@@ -1019,6 +1033,15 @@ Rules:
 - matchup is "Fighter A v Fighter B" as printed.
 - market is the bet type as labeled on screen (e.g. "Money Line", "Total Rounds", "Method of Victory", "Winning Method", "Round Combos", "Double Chance").
 - odds are American odds, signed integers (e.g. -380, +510).
+- OUTCOME FIELDS, per leg:
+  - side: "A" if the pick is about the FIRST fighter named in this leg's own "matchup" string, "B" if the second, "either" if the pick names no specific fighter (e.g. "Fight ends by submission"), null if the pick isn't about a fighter at all (e.g. a pure totals or distance bet).
+  - method: the finishing method the pick names. Use a combo code (KO_OR_DEC, SUB_OR_DEC, KO_OR_SUB) ONLY when the pick explicitly offers two methods together (a market labeled "Double Chance", or pick text like "X or on Points" / "X or Submission"). null if the pick doesn't restrict by method at all (moneyline, totals, round-start).
+  - round: set ONLY for a pick about one EXACT single round ("wins in round 1", "ends in round 3"). Do not set this for a two-round window like "Round 1 or 2" — that is round_low/round_high instead (1 and 2), with round left null.
+  - round_low / round_high: set ONLY for a pick naming an explicit multi-round window ("Rounds 1-3", "Round 1 or 2", "Rounds 2-4"). Both must be set together; leave both null otherwise.
+  - goes_distance: set ONLY for a pick specifically about the fight going or not going the distance, naming no fighter and no round.
+  - starts_round / starts_round_yes: set ONLY for a "does the fight start round N" style pick (e.g. "Fight to Start Round 3", pick "Yes"/"No").
+  - total_line / total_over: set ONLY for an Over/Under total-rounds pick (e.g. "Over 2.5 rounds" -> total_line 2.5, total_over true).
+  - If you are not confident about an outcome field, leave it null rather than guessing — an incomplete outcome is fine and expected for markets this schema doesn't have a clean home for; that is not an error.
 - If stake/wager amount is not visible or is a placeholder (e.g. "$0", empty field), set stake to null. Do NOT report a placeholder as a real stake.
 - STAKE IS ONLY THE REAL MONEY RISKED ON THE BET, from a field explicitly labeled something like "Wager", "Risk", "Bet Amount", or an amount-entry box the user typed into. It is NEVER a site-specific loyalty/reward/bonus currency, even when a dollar or point figure is printed right next to it and even when that badge sits in the position a wager amount would normally occupy. Known examples seen so far: "FanCash" (Fanatics), "Crowns" (DraftKings), "Reward Points" (FanDuel) — but treat this as a PATTERN, not a checklist: any named or branded currency/point/token/credit distinct from plain cash must NOT be reported as stake, even if you don't recognize the specific brand name. When in doubt, set stake to null and add "stake" to uncertain_fields instead.
 - If the sportsbook name/logo is not visible in the image, set book to null. Do NOT guess the book from styling alone.
@@ -1117,15 +1140,18 @@ async function handleBetsScan(request, env, url) {
   // sec 8, "Jamalii Emmers") should fail this match and fall through to
   // manual, never silently attach to the wrong fighter.
   //
-  // v2 (2026-08-31): a matched leg that reads as a plain moneyline pick is now
-  // eligible for the SAME "tracked" (verified, CLV-eligible) path a manually-
-  // entered ML bet gets via the Upcoming fights tab — not just an
-  // informational badge (that was the original v1 scope-narrowing decision,
-  // now revised per the user: a scanned bet on a valid upcoming event should
-  // function exactly like typing it in). Still deliberately NOT extended to
-  // props/method/rounds — mapping free-text market labels onto BT_MARKETS
-  // codes is still the real classification problem plan sec 6 opted out of,
-  // and nothing about this change makes that easier or safer to guess at.
+  // v3 (2026-08-31): a matched leg now maps onto ANY of the app's 9 BT_MARKETS
+  // codes, not just moneyline — see SCREENSHOT-BET-READER-PLAN.txt sec 6b for
+  // the reasoning and the exact classifier this ports. v2 had drawn the line
+  // at ML because free-text market labels don't reliably map onto the app's
+  // OWN invented round-group buckets; v3 solves that not by trusting the
+  // model to know GillyLab's taxonomy, but by having the model describe the
+  // pick in plain terms (side/method/round window/etc — see BT_SCAN_OUTCOME
+  // in the prompt) and classifying those plain terms deterministically here,
+  // against THIS bout's actual scheduled rounds. An outcome that doesn't land
+  // on exactly one market falls through to null — same "never guess" rule as
+  // ever, just applied market-by-market instead of only to ML.
+  //
   // The eligibility decided HERE is only ever a suggestion to the client —
   // handleBetsAdd() independently re-resolves the bout, re-checks it isn't
   // decided, and re-derives clvOk from its own clock, exactly as it does for
@@ -1135,13 +1161,77 @@ async function handleBetsScan(request, env, url) {
   const legsForMatch = draft.kind === "manual" ? [draft.manual] : draft.parlay.legs;
   const norm = (x) => String(x || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
   const isMlMarket = (m) => /^money\s*-?\s*line$|^ml$/i.test(String(m || "").trim());
+  // Round-group buckets, ported verbatim from index.html's btWinGroups() /
+  // btMethGroups() — MUST stay identical, since a tracked WINRDS/METHRDS
+  // bet's params are graded by that same client-side code. If these ever
+  // drift apart, a scanned bet would carry groups the grader doesn't
+  // recognize as any of its own.
+  const btScanWinGroups = (n) => n >= 5
+    ? [{ rounds: [1, 2, 3], dec: false }, { rounds: [4, 5], dec: true }]
+    : [{ rounds: [1, 2], dec: false }, { rounds: [3], dec: true }];
+  const btScanMethGroups = (n) => n >= 5
+    ? [{ rounds: [1, 2, 3] }, { rounds: [2, 3, 4] }, { rounds: [3, 4, 5] }]
+    : [{ rounds: [1, 2] }, { rounds: [2, 3] }];
+  const arrEq = (a, b) => Array.isArray(a) && Array.isArray(b) && a.length === b.length && a.every((v, i) => v === b[i]);
+  // Classify one leg's plain-terms `outcome` (+ its free-text `market`, for
+  // the ML check only) into one of the 9 BT_MARKETS codes and the exact
+  // params shape btBuildPick() would build for the same manual pick — or
+  // null. `side` here is "A"/"B" relative to THIS leg's own matchup order,
+  // translated to the bout's actual fighters[0]/[1] order by the caller
+  // (matchSwapped), since the model's matchup order and the feed's fighter
+  // order aren't guaranteed to agree.
+  function classify(l, boutRounds) {
+    const o = (l && l.outcome) || {};
+    const side = o.side === "A" ? "A" : o.side === "B" ? "B" : o.side === "either" ? "either" : null;
+    const method = ["KO", "SUB", "DEC", "KO_OR_DEC", "SUB_OR_DEC", "KO_OR_SUB", "ANY"].indexOf(o.method) !== -1 ? o.method : null;
+    const hasRound = Number.isInteger(o.round);
+    const hasRange = Number.isInteger(o.round_low) && Number.isInteger(o.round_high) && o.round_low <= o.round_high && o.round_high - o.round_low <= 4;
+    const sideNum = (s) => (s === "A" ? 1 : 2);
+
+    if (isMlMarket(l.market) && (side === "A" || side === "B") && !method && !hasRound && !hasRange) {
+      return { market: "ML", params: { side: sideNum(side) }, priced: true };
+    }
+    if (Number.isFinite(o.total_line) && (o.total_over === true || o.total_over === false)) {
+      return { market: "TOTAL", params: { line: o.total_line, ou: o.total_over ? "O" : "U" }, priced: false };
+    }
+    if (Number.isInteger(o.starts_round) && (o.starts_round_yes === true || o.starts_round_yes === false)) {
+      return { market: "ROUNDSTART", params: { round: o.starts_round, yn: o.starts_round_yes ? "Y" : "N" }, priced: false };
+    }
+    if ((o.goes_distance === true || o.goes_distance === false) && side == null && !method && !hasRound && !hasRange) {
+      return { market: "DISTANCE", params: { yn: o.goes_distance ? "Y" : "N" }, priced: false };
+    }
+    if ((side === "A" || side === "B") && ["KO_OR_DEC", "SUB_OR_DEC", "KO_OR_SUB"].indexOf(method) !== -1 && !hasRound && !hasRange) {
+      const methods = method === "KO_OR_DEC" ? ["KO", "DEC"] : method === "SUB_OR_DEC" ? ["SUB", "DEC"] : ["KO", "SUB"];
+      return { market: "DBLMETH", params: { side: sideNum(side), methods }, priced: false };
+    }
+    if (hasRound && !hasRange && (side === "A" || side === "B" || side === "either" || side == null)
+        && (method == null || method === "ANY" || method === "KO" || method === "SUB")
+        && o.round >= 1 && o.round <= boutRounds) {
+      return { market: "ENDROUND", params: { side: side === "A" ? 1 : side === "B" ? 2 : "any", meth: method || "ANY", round: o.round }, priced: false };
+    }
+    if (hasRange && (side === "A" || side === "B")) {
+      const wanted = []; for (let r = o.round_low; r <= o.round_high; r++) wanted.push(r);
+      if (method === "KO" || method === "SUB") {
+        const grp = btScanMethGroups(boutRounds).find((g) => arrEq(g.rounds, wanted));
+        if (grp) return { market: "METHRDS", params: { side: sideNum(side), methodCat: method, rounds: grp.rounds }, priced: false };
+      } else if (method == null || method === "ANY") {
+        const grp = btScanWinGroups(boutRounds).find((g) => arrEq(g.rounds, wanted));
+        if (grp) return { market: "WINRDS", params: { side: sideNum(side), rounds: grp.rounds, dec: grp.dec }, priced: false };
+      }
+      return null;
+    }
+    if (["KO", "SUB", "DEC"].indexOf(method) !== -1 && !hasRound && !hasRange) {
+      if (side === "A" || side === "B") return { market: "METHOD", params: { side: sideNum(side), methodCat: method }, priced: false };
+      if (side === "either" || side == null) return { market: "METHOD", params: { side: "any", methodCat: method }, priced: false };
+    }
+    return null;
+  }
   const matches = [];
   for (const l of legsForMatch) {
     let hit = null;
     try {
       const evs = await loadAssetJson(env, url, "/data/event.json");
       const wanted = norm(l.matchup).split(" v ").map((x) => x.trim());
-      const wantedPick = norm(l.pick);
       outer:
       for (const e of ((evs && evs.data) || [])) {
         if (!e || e.status === "completed" || !Array.isArray(e.bouts)) continue;
@@ -1151,7 +1241,9 @@ async function handleBetsScan(request, env, url) {
           const f1 = norm(fn1), f2 = norm(fn2);
           const okA = wanted[0] && (f1.includes(wanted[0]) || wanted[0].includes(f1));
           const okB = wanted[1] && (f2.includes(wanted[1]) || wanted[1].includes(f2));
-          const okSwap = wanted[0] && (f2.includes(wanted[0]) || wanted[0].includes(f2)) && wanted[1] && (f1.includes(wanted[1]) || wanted[1].includes(f1));
+          const swapA = wanted[0] && (f2.includes(wanted[0]) || wanted[0].includes(f2));
+          const swapB = wanted[1] && (f1.includes(wanted[1]) || wanted[1].includes(f1));
+          const okSwap = swapA && swapB;
           if ((okA && okB) || okSwap) {
             const rawId = b.id || String(b.boutOrder);
             const sec = String(b.cardSection || "").toLowerCase();
@@ -1164,20 +1256,20 @@ async function handleBetsScan(request, env, url) {
             };
             let decided = false;
             try { decided = await btBoutDecided(env, url, boutHit); } catch { decided = false; }
-            // Which side did the pick name? Only meaningful (and only trusted)
-            // for a moneyline leg — for any other market "pick" isn't just a
-            // fighter's name, so guessing a side from it would be exactly the
-            // kind of invented match this feature exists to avoid.
-            let side = null;
-            if (isMlMarket(l.market) && wantedPick) {
-              const pickIsF1 = f1.includes(wantedPick) || wantedPick.includes(f1);
-              const pickIsF2 = f2.includes(wantedPick) || wantedPick.includes(f2);
-              if (pickIsF1 && !pickIsF2) side = 1;
-              else if (pickIsF2 && !pickIsF1) side = 2;
-              // both or neither match -> side stays null, never guessed
+            // The model's "A"/"B" is relative to ITS OWN matchup string order,
+            // which may be swapped relative to the feed's fighters[0]/[1] —
+            // translate before classifying, not after, so classify() never
+            // has to know about matchup orientation.
+            let leg = l;
+            if (okSwap && !(okA && okB)) {
+              const flip = (s) => (s === "A" ? "B" : s === "B" ? "A" : s);
+              leg = Object.assign({}, l, { outcome: Object.assign({}, l.outcome, { side: flip(l.outcome && l.outcome.side) }) });
             }
-            hit = { fightId: boutHit.id, evSlug: e.slug, f1: fn1, f2: fn2, decided,
-              isMl: isMlMarket(l.market), side, trackable: isMlMarket(l.market) && !decided && side != null };
+            const boutRounds = Number(b.numberOfRounds) || 3;
+            const cls = decided ? null : classify(leg, boutRounds);
+            hit = { fightId: boutHit.id, evSlug: e.slug, f1: fn1, f2: fn2, decided, rounds: boutRounds,
+              market: cls && cls.market, params: cls && cls.params, priced: cls && cls.priced,
+              trackable: !!cls };
             break outer;
           }
         }
