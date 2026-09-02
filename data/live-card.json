@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-02T00:04:01.131Z",
+ "generatedAt": "2026-09-02T00:34:32.068Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-09-02T00:04:01.021Z"
+    }
+   ]
+  },
+  "Liam McCracken": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Silvestre Sanchez",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:44",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Silvestre Sanchez",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 90,
+      "totL": 57,
+      "totA": 107,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       36,
+       82
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       41,
+       84
+      ],
+      "clinch": [
+       3,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 58,
+      "sigA": 120,
+      "totL": 83,
+      "totA": 152,
+      "tdL": 4,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:20",
+      "head": [
+       40,
+       93
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       11,
+       18
+      ],
+      "dist": [
+       40,
+       90
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       12,
+       20
+      ]
+     },
+     "capturedAt": "2026-09-02T00:34:31.844Z"
+    }
+   ]
+  },
+  "Silvestre Sanchez": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Liam McCracken",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 3,
+     "time": "2:44",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Liam McCracken",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 58,
+      "sigA": 120,
+      "totL": 83,
+      "totA": 152,
+      "tdL": 4,
+      "tdA": 13,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:20",
+      "head": [
+       40,
+       93
+      ],
+      "body": [
+       7,
+       9
+      ],
+      "leg": [
+       11,
+       18
+      ],
+      "dist": [
+       40,
+       90
+      ],
+      "clinch": [
+       6,
+       10
+      ],
+      "ground": [
+       12,
+       20
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 90,
+      "totL": 57,
+      "totA": 107,
+      "tdL": 1,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       36,
+       82
+      ],
+      "body": [
+       6,
+       6
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       41,
+       84
+      ],
+      "clinch": [
+       3,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-02T00:34:31.844Z"
     }
    ]
   }
