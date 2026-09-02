@@ -2988,7 +2988,152 @@
         "pts": 0.0187,
         "leaned": true
       }
+    },
+    {
+      "fightId": "liam mccracken|silvestre sanchez",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-02T15:51:07.677Z",
+      "a": {
+        "feed": "Liam Mccracken",
+        "db": "Liam McCracken"
+      },
+      "b": {
+        "feed": "Silvestre Sanchez",
+        "db": "Silvestre Sanchez"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5007,
+      "modelClose": 0.4993,
+      "marketOpen": 0.6559,
+      "marketClose": 0.4451,
+      "leanA": -0.1552,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": true,
+        "pts": 0.2108,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "adam livingston|hunter smith",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-02T15:51:07.677Z",
+      "a": {
+        "feed": "Adam Livingston",
+        "db": "Adam Livingston"
+      },
+      "b": {
+        "feed": "Hunter Smith",
+        "db": "Hunter Smith"
+      },
+      "winner": "A",
+      "method": "Decision - Split",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.3965,
+      "modelClose": 0.3965,
+      "marketOpen": 0.6197,
+      "marketClose": 0.6366,
+      "leanA": -0.2232,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0169,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "charlie cleveland|gabriel lourenco",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-02T15:51:07.677Z",
+      "a": {
+        "feed": "Charlie Cleveland",
+        "db": "Charlie Cleveland"
+      },
+      "b": {
+        "feed": "Gabriel Lourenco",
+        "db": "Gabriel Lourenco"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.487,
+      "modelClose": 0.487,
+      "marketOpen": 0.6129,
+      "marketClose": 0.6621,
+      "leanA": -0.1259,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0492,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "brandon holmes|modestino rodrigues",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-02T15:51:07.677Z",
+      "a": {
+        "feed": "Modestino Rodrigues",
+        "db": "Modestino Rodrigues"
+      },
+      "b": {
+        "feed": "Brandon Holmes",
+        "db": "Brandon Holmes"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6294,
+      "modelClose": 0.6294,
+      "marketOpen": 0.4108,
+      "marketClose": 0.3903,
+      "leanA": 0.2186,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0205,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "adam darby|patrick rivera",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-02T15:51:07.677Z",
+      "a": {
+        "feed": "Adam Darby",
+        "db": "Adam Darby"
+      },
+      "b": {
+        "feed": "Patrick Rivera",
+        "db": "Patrick Rivera"
+      },
+      "winner": "A",
+      "method": "TKO - Doctor's Stoppage",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 5,
+      "modelOpen": 0.5677,
+      "modelClose": 0.5677,
+      "marketOpen": 0.7702,
+      "marketClose": 0.7755,
+      "leanA": -0.2025,
+      "nSnapshots": 3,
+      "clv": {
+        "toward": false,
+        "pts": -0.0053,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-01T15:58:26.553Z"
+  "generatedAt": "2026-09-02T15:51:07.683Z"
 }
