@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-02T00:34:32.068Z",
+ "generatedAt": "2026-09-02T00:49:56.534Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9586,6 +9586,194 @@
       ]
      },
      "capturedAt": "2026-09-02T00:34:31.844Z"
+    }
+   ]
+  },
+  "Brandon Holmes": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Modestino Rodrigues",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:15",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Modestino Rodrigues",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 0,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 19,
+      "totL": 8,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       7,
+       18
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       7,
+       18
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-02T00:49:56.400Z"
+    }
+   ]
+  },
+  "Modestino Rodrigues": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Brandon Holmes",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "0:15",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Brandon Holmes",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 8,
+      "sigA": 19,
+      "totL": 8,
+      "totA": 19,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       7,
+       18
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       7,
+       18
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       1,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 0,
+      "sigA": 1,
+      "totL": 0,
+      "totA": 1,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       1
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       0,
+       1
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-02T00:49:56.400Z"
     }
    ]
   }
