@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-02T00:49:56.534Z",
+ "generatedAt": "2026-09-02T01:20:14.561Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-02T00:49:56.400Z"
+    }
+   ]
+  },
+  "Patrick Rivera": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Adam Darby",
+     "result": "L",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 3,
+     "time": "2:42",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Adam Darby",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 127,
+      "totL": 54,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:16",
+      "head": [
+       14,
+       73
+      ],
+      "body": [
+       26,
+       34
+      ],
+      "leg": [
+       14,
+       20
+      ],
+      "dist": [
+       54,
+       127
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 160,
+      "sigA": 321,
+      "totL": 163,
+      "totA": 324,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       87,
+       223
+      ],
+      "body": [
+       15,
+       30
+      ],
+      "leg": [
+       58,
+       68
+      ],
+      "dist": [
+       160,
+       320
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-02T01:20:14.417Z"
+    }
+   ]
+  },
+  "Adam Darby": {
+   "history": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Patrick Rivera",
+     "result": "W",
+     "method": "TKO - Doctor's Stoppage",
+     "round": 3,
+     "time": "2:42",
+     "event": "Dana White's Contender Series: Season 10, Week 4",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 1, 2026",
+     "opponent": "Patrick Rivera",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 160,
+      "sigA": 321,
+      "totL": 163,
+      "totA": 324,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       87,
+       223
+      ],
+      "body": [
+       15,
+       30
+      ],
+      "leg": [
+       58,
+       68
+      ],
+      "dist": [
+       160,
+       320
+      ],
+      "clinch": [
+       0,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 54,
+      "sigA": 127,
+      "totL": 54,
+      "totA": 127,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:16",
+      "head": [
+       14,
+       73
+      ],
+      "body": [
+       26,
+       34
+      ],
+      "leg": [
+       14,
+       20
+      ],
+      "dist": [
+       54,
+       127
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-02T01:20:14.417Z"
     }
    ]
   }
