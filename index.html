@@ -134422,6 +134422,459 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
         },
       },
     },
+    // UFC Fight Night: Hooker vs. Parnasse (Accor Arena, Paris, 2026-09-05).
+    // Method/round/double-chance props for every fight on the card sourced from
+    // fightodds.io on 2026-09-03, plus any missing ML / rounds O/U lines not yet
+    // in the live feed. Wood vs Andrusca (Prelims 4) is excluded -- no prop or
+    // totals data was posted by any of the 5 tracked books on fightodds.io or
+    // bestfightodds.com for that fight as of sourcing.
+    // UFC Fight Night: Hooker vs. Parnasse (Paris, 2026-09-05), main event,
+    // 5 rounds. Live feed had ML (BetMGM only) but no method/round/double-chance
+    // props and no rounds O/U besides FanDuel -- all sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM). f1 = Hooker, f2 = Parnasse.
+    'hooker|parnasse': {
+      rounds: 5,
+      ml: {
+        betmgm:      { f1: 425, f2: -600 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 900, sub: 900, dec: 1200 }, f2: { ko: -130, sub: 300, dec: 600 } },
+        bovada:      { f1: { ko: 1400, sub: 1400, dec: 1400 }, f2: { ko: -140, sub: 365, dec: 600 } },
+        draftkings:  { f1: { ko: 900, sub: 1600, dec: 1400 }, f2: { ko: -145, sub: 330, dec: 550 } },
+        fanduel:     { f1: { ko: 1400, sub: 1400, dec: 1400 }, f2: { ko: -135, sub: 360, dec: 600 } },
+        betmgm:      { f1: { ko: 1000, sub: 1600, dec: 1400 }, f2: { ko: -160, sub: 275, dec: 550 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 600, subDec: 775 }, f2: { koDec: -300, subDec: -125 } },
+        bovada:      { f1: { koDec: 675, koSub: 675, subDec: 675 }, f2: { koDec: -230, koSub: -350, subDec: 190 } },
+        draftkings:  { f1: { koDec: 550, koSub: 650, subDec: 750 }, f2: { koDec: -280, koSub: -300, subDec: 165 } },
+        fanduel:     { f1: { koDec: 700, koSub: 650, subDec: 700 }, f2: { koDec: -220, koSub: -310, subDec: 185 } },
+        betmgm:      { f1: { koSub: 600 }, f2: { koSub: -350 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 1600, r2: 2000, r3: 2500, r4: 3300, r5: 4000 }, f2: { r1: 200, r2: 275, r3: 550, r4: 850, r5: 1600 } },
+        bovada:      { f1: { r1: 1575, r2: 2100, r3: 2900, r4: 3700, r5: 4400 }, f2: { r1: 137, r2: 260, r3: 480, r4: 830, r5: 1325 } },
+        draftkings:  { f1: { r1: 1800, r2: 2500, r3: 3500, r4: 4000, r5: 5000 }, f2: { r1: 240, r2: 350, r3: 550, r4: 800, r5: 1200 } },
+        fanduel:     { f1: { r1: 1700, r2: 2500, r3: 4000, r4: 4500, r5: 5000 }, f2: { r1: 240, r2: 340, r3: 650, r4: 1000, r5: 1400 } },
+        betmgm:      { f1: { r1: 1600, r2: 2200, r3: 3300, r4: 4000, r5: 5000 }, f2: { r1: 200, r2: 300, r3: 475, r4: 750, r5: 1300 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 130, under: -166 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Main Card 2, 3 rounds. Live feed had
+    // no BetMGM ML and no props; sourced from fightodds.io (all 5 tracked books).
+    // f1 = Sola (Axel), f2 = Ziam (alphabetical last name).
+    'sola|ziam': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: 125, f2: -150 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 625, sub: 750, dec: 275 }, f2: { ko: 375, sub: 600, dec: 175 } },
+        bovada:      { f1: { ko: 750, sub: 1000, dec: 260 }, f2: { ko: 450, sub: 800, dec: 175 } },
+        draftkings:  { f1: { ko: 750, sub: 1000, dec: 250 }, f2: { ko: 400, sub: 900, dec: 140 } },
+        fanduel:     { f1: { ko: 800, sub: 1000, dec: 270 }, f2: { ko: 460, sub: 850, dec: 170 } },
+        betmgm:      { f1: { ko: 650, sub: 900, dec: 250 }, f2: { ko: 375, sub: 800, dec: 150 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 135, subDec: 160 }, f2: { koDec: -175, subDec: 110 } },
+        bovada:      { f1: { koDec: 160, koSub: 400, subDec: 180 }, f2: { koDec: -110, koSub: 250, subDec: 120 } },
+        draftkings:  { f1: { koDec: 150, koSub: 450, subDec: 175 }, f2: { koDec: -145, koSub: 300, subDec: -105 } },
+        fanduel:     { f1: { koDec: 170, koSub: 420, subDec: 180 }, f2: { koDec: -120, koSub: 260, subDec: 110 } },
+        betmgm:      { f1: { koSub: 400 }, f2: { koSub: 275 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 750, r2: 1100, r3: 1400 }, f2: { r1: 525, r2: 675, r3: 875 } },
+        bovada:      { f1: { r1: 810, r2: 1100, r3: 1500 }, f2: { r1: 500, r2: 650, r3: 860 } },
+        draftkings:  { f1: { r1: 900, r2: 1200, r3: 1800 }, f2: { r1: 650, r2: 850, r3: 1400 } },
+        fanduel:     { f1: { r1: 1000, r2: 1400, r3: 1800 }, f2: { r1: 700, r2: 900, r3: 1300 } },
+        betmgm:      { f1: { r1: 850, r2: 1200, r3: 1700 }, f2: { r1: 600, r2: 850, r3: 1200 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -200, under: 154 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Main Card 3, 3 rounds. Missing BetMGM
+    // ML plus all method/round/double-chance props and BetMGM rounds O/U sourced
+    // from fightodds.io (BetOnline/Bovada/DraftKings/BetMGM; FanDuel had no props
+    // posted for this fight). f1 = Page, f2 = Ruziboev.
+    'page|ruziboev': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -175, f2: 145 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 325, sub: 2800, dec: 110 }, f2: { ko: 700, sub: 525, dec: 375 } },
+        bovada:      { f1: { ko: 325, sub: 3300, dec: 130 }, f2: { ko: 750, sub: 550, dec: 450 } },
+        draftkings:  { f1: { ko: 330, sub: 3300, dec: 135 }, f2: { ko: 750, sub: 550, dec: 450 } },
+        betmgm:      { f1: { ko: 325, sub: 3000, dec: 125 }, f2: { ko: 700, sub: 325, dec: 500 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -250, subDec: -115 }, f2: { koDec: 175, subDec: 125 } },
+        bovada:      { f1: { koDec: -175, koSub: 290, subDec: 125 }, f2: { koDec: 250, koSub: 280, subDec: 210 } },
+        draftkings:  { f1: { koDec: -160, koSub: 320, subDec: 110 }, f2: { koDec: 225, koSub: 300, subDec: 180 } },
+        fanduel:     { f1: { koDec: -175, koSub: 290, subDec: 125 }, f2: { koDec: 240, koSub: 290, subDec: 210 } },
+        betmgm:      { f1: { koSub: 300 }, f2: { koSub: 250 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 750, r2: 900, r3: 1100 }, f2: { r1: 750, r2: 900, r3: 1100 } },
+        bovada:      { f1: { r2: 850, r3: 1225 }, f2: { r2: 800, r3: 1150 } },
+        draftkings:  { f1: { r1: 650, r2: 900, r3: 1600 }, f2: { r1: 550, r2: 900, r3: 1600 } },
+        fanduel:     { f1: { r1: 700, r2: 1100, r3: 1500 }, f2: { r1: 650, r2: 1000, r3: 1800 } },
+        betmgm:      { f1: { r1: 650, r2: 1100, r3: 1600 }, f2: { r1: 475, r2: 800, r3: 1150 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -168, under: 132 },
+          betmgm:      { over: -165, under: 125 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Main Card 4, 3 rounds. ML already
+    // fully covered live; method/round/double-chance props and the BetMGM 2.5
+    // rounds O/U line sourced from fightodds.io (all 5 tracked books).
+    // f1 = Donchenko, f2 = Soriano.
+    'donchenko|soriano': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -115, sub: 900, dec: 350 }, f2: { ko: 550, sub: 2000, dec: 450 } },
+        bovada:      { f1: { ko: 100, sub: 1400, dec: 375 }, f2: { ko: 550, sub: 2000, dec: 500 } },
+        draftkings:  { f1: { ko: 100, sub: 1200, dec: 300 }, f2: { ko: 550, sub: 2200, dec: 450 } },
+        fanduel:     { f1: { ko: 105, sub: 1400, dec: 370 }, f2: { ko: 550, sub: 2200, dec: 500 } },
+        betmgm:      { f1: { ko: -110, sub: 1100, dec: 300 }, f2: { ko: 550, sub: 2200, dec: 450 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -225, subDec: 150 }, f2: { koDec: 225, subDec: 400 } },
+        bovada:      { f1: { koDec: -210, koSub: -125, subDec: 275 }, f2: { koDec: 225, koSub: 415, subDec: 385 } },
+        draftkings:  { f1: { koDec: -225, koSub: -110, subDec: 215 }, f2: { koDec: 210, koSub: 475, subDec: 350 } },
+        fanduel:     { f1: { koDec: -210, koSub: -120, subDec: 260 }, f2: { koDec: 220, koSub: 430, subDec: 400 } },
+        betmgm:      { f1: { koSub: -115 }, f2: { koSub: 475 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 190, r2: 350, r3: 750 }, f2: { r1: 1000, r2: 1400, r3: 2200 } },
+        bovada:      { f1: { r1: 199, r2: 360, r3: 910 }, f2: { r1: 760, r2: 1000, r3: 1825 } },
+        draftkings:  { f1: { r1: 240, r2: 380, r3: 800 }, f2: { r1: 900, r2: 1400, r3: 1800 } },
+        fanduel:     { f1: { r1: 270, r2: 450, r3: 850 }, f2: { r1: 1000, r2: 1300, r3: 2000 } },
+        betmgm:      { f1: { r1: 225, r2: 350, r3: 700 }, f2: { r1: 875, r2: 1250, r3: 2200 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: -160, under: 126 },
+        },
+        '2.5': {
+          betmgm:      { over: 115, under: -155 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Main Card 5, 3 rounds. ML already
+    // fully covered live; method/double-chance/round props sourced from
+    // fightodds.io (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada posted no
+    // round-win props for this fight). f1 = Campbell, f2 = Peek.
+    'campbell|peek': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 200, sub: 190, dec: 250 }, f2: { ko: 550, sub: 4000, dec: 900 } },
+        bovada:      { f1: { ko: 230, sub: 260, dec: 250 }, f2: { ko: 600, sub: 3300, dec: 850 } },
+        draftkings:  { f1: { ko: 225, sub: 250, dec: 200 }, f2: { ko: 550, sub: 3500, dec: 900 } },
+        fanduel:     { f1: { ko: 240, sub: 260, dec: 250 }, f2: { ko: 600, sub: 3300, dec: 850 } },
+        betmgm:      { f1: { ko: 200, sub: 250, dec: 200 }, f2: { ko: 525, sub: 3500, dec: 900 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -250, subDec: -250 }, f2: { koDec: 375, subDec: 800 } },
+        bovada:      { f1: { koDec: -130, koSub: -130, subDec: -120 }, f2: { koDec: 320, koSub: 500, subDec: 675 } },
+        draftkings:  { f1: { koDec: -165, koSub: -110, subDec: -145 }, f2: { koDec: 320, koSub: 500, subDec: 700 } },
+        fanduel:     { f1: { koDec: -135, koSub: -130, subDec: -125 }, f2: { koDec: 310, koSub: 500, subDec: 700 } },
+        betmgm:      { f1: { koSub: -115 }, f2: { koSub: 500 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 175, r2: 300, r3: 800 }, f2: { r1: 1200, r2: 1600, r3: 2200 } },
+        draftkings:  { f1: { r1: 250, r2: 350, r3: 700 }, f2: { r1: 900, r2: 1400, r3: 2000 } },
+        fanduel:     { f1: { r1: 280, r2: 420, r3: 750 }, f2: { r1: 1000, r2: 1800, r3: 2200 } },
+        betmgm:      { f1: { r1: 225, r2: 350, r3: 650 }, f2: { r1: 1000, r2: 1400, r3: 2200 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 122, under: -156 },
+          betmgm:      { over: 115, under: -155 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Main Card 6, 3 rounds. Missing BetMGM
+    // ML plus method/double-chance/round props sourced from fightodds.io (all 5
+    // tracked books; Bovada posted no round-win props). f1 = Keita, f2 = Naimov.
+    'keita|naimov': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -400, f2: 310 },
+      },
+      method: {
+        betonlineag: { f1: { ko: -125, sub: 2000, dec: 225 }, f2: { ko: 800, sub: 1000, dec: 700 } },
+        bovada:      { f1: { ko: 100, sub: 2000, dec: 225 }, f2: { ko: 1000, sub: 1200, dec: 650 } },
+        draftkings:  { f1: { ko: -105, sub: 2200, dec: 200 }, f2: { ko: 1000, sub: 1200, dec: 650 } },
+        fanduel:     { f1: { ko: 105, sub: 2000, dec: 230 }, f2: { ko: 1000, sub: 1200, dec: 650 } },
+        betmgm:      { f1: { ko: -105, sub: 2200, dec: 200 }, f2: { ko: 800, sub: 1000, dec: 650 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -450, subDec: 175 }, f2: { koDec: 350, subDec: 400 } },
+        bovada:      { f1: { koDec: -325, koSub: -110, subDec: 195 }, f2: { koDec: 370, koSub: 525, subDec: 400 } },
+        draftkings:  { f1: { koDec: -350, koSub: -110, subDec: 165 }, f2: { koDec: 370, koSub: 600, subDec: 400 } },
+        fanduel:     { f1: { koDec: -310, koSub: -115, subDec: 190 }, f2: { koDec: 380, koSub: 550, subDec: 410 } },
+        betmgm:      { f1: { koSub: -110 }, f2: { koSub: 550 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 230, r2: 375, r3: 775 }, f2: { r1: 900, r2: 1200, r3: 1800 } },
+        draftkings:  { f1: { r1: 250, r2: 400, r3: 850 }, f2: { r1: 1200, r2: 1600, r3: 2500 } },
+        fanduel:     { f1: { r1: 250, r2: 500, r3: 1000 }, f2: { r1: 1300, r2: 1800, r3: 2200 } },
+        betmgm:      { f1: { r1: 200, r2: 425, r3: 900 }, f2: { r1: 775, r2: 1400, r3: 2500 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: 110, under: -140 },
+          betmgm:      { over: 105, under: -135 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 1, 3 rounds. ML already fully
+    // covered live; method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada posted no round-win
+    // props). f1 = Charriere, f2 = Lima.
+    'charriere|lima': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 375, sub: 2000, dec: 300 }, f2: { ko: 575, sub: 575, dec: 130 } },
+        bovada:      { f1: { ko: 450, sub: 2500, dec: 400 }, f2: { ko: 550, sub: 550, dec: 135 } },
+        draftkings:  { f1: { ko: 450, sub: 2500, dec: 350 }, f2: { ko: 550, sub: 550, dec: 125 } },
+        fanduel:     { f1: { ko: 450, sub: 3300, dec: 380 }, f2: { ko: 550, sub: 600, dec: 145 } },
+        betmgm:      { f1: { ko: 375, sub: 2000, dec: 375 }, f2: { ko: 500, sub: 500, dec: 125 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -115, subDec: 225 }, f2: { koDec: -165, subDec: -165 } },
+        bovada:      { f1: { koDec: 175, koSub: 375, subDec: 340 }, f2: { koDec: -125, koSub: 240, subDec: -125 } },
+        draftkings:  { f1: { koDec: 165, koSub: 400, subDec: 275 }, f2: { koDec: -140, koSub: 275, subDec: -140 } },
+        fanduel:     { f1: { koDec: 160, koSub: 390, subDec: 330 }, f2: { koDec: -125, koSub: 240, subDec: -120 } },
+        betmgm:      { f1: { koSub: 350 }, f2: { koSub: 275 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 700, r2: 900, r3: 1200 }, f2: { r1: 700, r2: 900, r3: 1200 } },
+        draftkings:  { f1: { r1: 850, r2: 1100, r3: 1800 }, f2: { r1: 550, r2: 850, r3: 1200 } },
+        fanduel:     { f1: { r1: 850, r2: 1300, r3: 1900 }, f2: { r1: 600, r2: 950, r3: 1400 } },
+        betmgm:      { f1: { r1: 675, r2: 1150, r3: 1600 }, f2: { r1: 525, r2: 875, r3: 1250 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -176, under: 138 },
+          betmgm:      { over: -180, under: 135 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 2, 3 rounds. ML already fully
+    // covered live; method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada posted no round-win
+    // props). f1 = Pinto, f2 = Spann.
+    'pinto|spann': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: -140, sub: 600, dec: 600 }, f2: { ko: 800, sub: 475, dec: 1100 } },
+        bovada:      { f1: { ko: -115, sub: 750, dec: 550 }, f2: { ko: 900, sub: 500, dec: 1200 } },
+        draftkings:  { f1: { ko: -130, sub: 700, dec: 450 }, f2: { ko: 900, sub: 500, dec: 1200 } },
+        fanduel:     { f1: { ko: -110, sub: 800, dec: 500 }, f2: { ko: 850, sub: 500, dec: 1300 } },
+        betmgm:      { f1: { ko: -130, sub: 700, dec: 450 }, f2: { ko: 900, sub: 400, dec: 1200 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -250, subDec: 250 }, f2: { koDec: 450, subDec: 275 } },
+        bovada:      { f1: { koDec: -190, koSub: -170, subDec: 285 }, f2: { koDec: 500, koSub: 285, subDec: 330 } },
+        draftkings:  { f1: { koDec: -275, koSub: -165, subDec: 240 }, f2: { koDec: 500, koSub: 330, subDec: 350 } },
+        fanduel:     { f1: { koDec: -195, koSub: -160, subDec: 260 }, f2: { koDec: 500, koSub: 290, subDec: 350 } },
+        betmgm:      { f1: { koSub: -160 }, f2: { koSub: 275 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 150, r2: 325, r3: 900 }, f2: { r1: 400, r2: 1000, r3: 2400 } },
+        draftkings:  { f1: { r1: 165, r2: 350, r3: 800 }, f2: { r1: 550, r2: 1100, r3: 2200 } },
+        fanduel:     { f1: { r1: 190, r2: 430, r3: 900 }, f2: { r1: 550, r2: 1200, r3: 2200 } },
+        betmgm:      { f1: { r1: 125, r2: 375, r3: 850 }, f2: { r1: 450, r2: 1000, r3: 2000 } },
+      },
+      totals: {
+        '1.5': {
+          fanduel:     { over: 110, under: -138 },
+          betmgm:      { over: 105, under: -140 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 3, 3 rounds. ML already fully
+    // covered live; method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada posted no round-win
+    // props). f1 = Bukauskas, f2 = Sy.
+    'bukauskas|sy': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 450, sub: 2000, dec: 300 }, f2: { ko: 500, sub: 300, dec: 190 } },
+        bovada:      { f1: { ko: 600, sub: 2200, dec: 400 }, f2: { ko: 500, sub: 375, dec: 160 } },
+        draftkings:  { f1: { ko: 550, sub: 1800, dec: 400 }, f2: { ko: 500, sub: 350, dec: 140 } },
+        fanduel:     { f1: { ko: 650, sub: 2200, dec: 370 }, f2: { ko: 550, sub: 440, dec: 155 } },
+        betmgm:      { f1: { ko: 475, sub: 1500, dec: 400 }, f2: { ko: 450, sub: 350, dec: 150 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: 110, subDec: 225 }, f2: { koDec: -125, subDec: -175 } },
+        bovada:      { f1: { koDec: 205, koSub: 460, subDec: 330 }, f2: { koDec: -115, koSub: 175, subDec: -135 } },
+        draftkings:  { f1: { koDec: 200, koSub: 475, subDec: 300 }, f2: { koDec: -130, koSub: 185, subDec: -165 } },
+        fanduel:     { f1: { koDec: 190, koSub: 480, subDec: 290 }, f2: { koDec: -120, koSub: 200, subDec: -135 } },
+        betmgm:      { f1: { koSub: 450 }, f2: { koSub: 175 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 900, r2: 1200, r3: 1400 }, f2: { r1: 400, r2: 600, r3: 800 } },
+        draftkings:  { f1: { r1: 900, r2: 1400, r3: 1800 }, f2: { r1: 450, r2: 650, r3: 1000 } },
+        fanduel:     { f1: { r1: 1100, r2: 1500, r3: 2000 }, f2: { r1: 550, r2: 750, r3: 1200 } },
+        betmgm:      { f1: { r1: 850, r2: 1150, r3: 1800 }, f2: { r1: 450, r2: 650, r3: 1050 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -172, under: 134 },
+          betmgm:      { over: -170, under: 125 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 5, 3 rounds. ML already fully
+    // covered live; method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada posted no round-win
+    // props, BetMGM posted no rounds O/U). f1 = Aljarouj, f2 = Sintes.
+    'aljarouj|sintes': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 275, sub: 950, dec: 250 }, f2: { ko: 800, sub: 375, dec: 275 } },
+        bovada:      { f1: { ko: 285, sub: 900, dec: 285 }, f2: { ko: 800, sub: 400, dec: 325 } },
+        draftkings:  { f1: { ko: 250, sub: 800, dec: 275 }, f2: { ko: 800, sub: 400, dec: 300 } },
+        fanduel:     { f1: { ko: 290, sub: 900, dec: 300 }, f2: { ko: 850, sub: 450, dec: 320 } },
+        betmgm:      { f1: { ko: 250, sub: 800, dec: 275 }, f2: { ko: 800, sub: 400, dec: 300 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -175, subDec: 150 }, f2: { koDec: 140, subDec: -150 } },
+        bovada:      { f1: { koDec: 105, koSub: 195, subDec: 195 }, f2: { koDec: 200, koSub: 240, subDec: 140 } },
+        draftkings:  { f1: { koDec: -115, koSub: 185, subDec: 195 }, f2: { koDec: 185, koSub: 275, subDec: 130 } },
+        fanduel:     { f1: { koDec: 100, koSub: 185, subDec: 190 }, f2: { koDec: 200, koSub: 260, subDec: 145 } },
+        betmgm:      { f1: { koSub: 175 }, f2: { koSub: 275 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 475, r2: 675, r3: 900 }, f2: { r1: 650, r2: 750, r3: 1100 } },
+        draftkings:  { f1: { r1: 400, r2: 650, r3: 1000 }, f2: { r1: 550, r2: 850, r3: 1400 } },
+        fanduel:     { f1: { r1: 500, r2: 700, r3: 1200 }, f2: { r1: 600, r2: 1000, r3: 1600 } },
+        betmgm:      { f1: { r1: 375, r2: 625, r3: 1100 }, f2: { r1: 500, r2: 825, r3: 1400 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -112, under: -112 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 6, 3 rounds. Missing BetMGM
+    // ML plus method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel/BetMGM; Bovada and BetMGM posted no
+    // round-win props, BetMGM posted no rounds O/U). f1 = Cornolle, f2 = Sygula.
+    // Key uses "syguła" (not "sygula") because data/odds.json's raw home_team
+    // spells it with the Polish ł, which pairKey() does not normalize away.
+    'cornolle|syguła': {
+      rounds: 3,
+      ml: {
+        betmgm:      { f1: -120, f2: 100 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 500, sub: 450, dec: 230 }, f2: { ko: 1000, sub: 1200, dec: 140 } },
+        bovada:      { f1: { ko: 500, sub: 550, dec: 250 }, f2: { ko: 1400, sub: 1600, dec: 135 } },
+        draftkings:  { f1: { ko: 400, sub: 550, dec: 250 }, f2: { ko: 1400, sub: 1600, dec: 130 } },
+        fanduel:     { f1: { ko: 490, sub: 550, dec: 270 }, f2: { ko: 1500, sub: 1600, dec: 140 } },
+        betmgm:      { f1: { ko: 350, sub: 500, dec: 250 }, f2: { ko: 1400, sub: 1600, dec: 125 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -110, subDec: -115 }, f2: { koDec: -105, subDec: 105 } },
+        bovada:      { f1: { koDec: 130, koSub: 230, subDec: 140 }, f2: { koDec: 115, koSub: 750, subDec: 120 } },
+        draftkings:  { f1: { koDec: 115, koSub: 225, subDec: 130 }, f2: { koDec: 105, koSub: 800, subDec: 110 } },
+        fanduel:     { f1: { koDec: 130, koSub: 210, subDec: 140 }, f2: { koDec: 110, koSub: 800, subDec: 115 } },
+        betmgm:      { f1: { koSub: 225 }, f2: { koSub: 800 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 525, r2: 650, r3: 800 }, f2: { r1: 1400, r2: 1800, r3: 2200 } },
+        draftkings:  { f1: { r1: 500, r2: 700, r3: 1100 }, f2: { r1: 1600, r2: 2200, r3: 2800 } },
+        fanduel:     { f1: { r1: 600, r2: 800, r3: 1200 }, f2: { r1: 1800, r2: 2200, r3: 3000 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -235, under: 180 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 7, 3 rounds. NOTE: the-odds-api
+    // splits this bout across two differently-named raw entries in odds.json (a
+    // data anomaly on the feed side, not fixed here) -- sourced under the pairKey
+    // matching event.json's official bout list. Missing DraftKings/FanDuel ML plus
+    // method/double-chance/round props and the DraftKings/FanDuel/BetMGM 1.5
+    // rounds O/U sourced from fightodds.io (BetOnline/Bovada/DraftKings/FanDuel/
+    // BetMGM; Bovada and BetMGM posted no round-win props). f1 = Dias, f2 = Duclos.
+    'dias|duclos': {
+      rounds: 3,
+      ml: {
+        draftkings:  { f1: -105, f2: -115 },
+        fanduel:     { f1: -106, f2: -120 },
+      },
+      method: {
+        betonlineag: { f1: { ko: 275, sub: 350, dec: 500 }, f2: { ko: 175, sub: 1800, dec: 500 } },
+        bovada:      { f1: { ko: 300, sub: 350, dec: 800 }, f2: { ko: 165, sub: 1600, dec: 650 } },
+        draftkings:  { f1: { ko: 275, sub: 350, dec: 800 }, f2: { ko: 140, sub: 1600, dec: 650 } },
+        fanduel:     { f1: { ko: 300, sub: 410, dec: 900 }, f2: { ko: 155, sub: 1600, dec: 650 } },
+        betmgm:      { f1: { ko: 225, sub: 325, dec: 800 }, f2: { ko: 150, sub: 1600, dec: 650 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -125, subDec: -115 }, f2: { koDec: 100, subDec: 350 } },
+        bovada:      { f1: { koDec: 190, koSub: 120, subDec: 215 }, f2: { koDec: 105, koSub: 140, subDec: 450 } },
+        draftkings:  { f1: { koDec: 175, koSub: 125, subDec: 205 }, f2: { koDec: -105, koSub: 140, subDec: 425 } },
+        fanduel:     { f1: { koDec: 190, koSub: 125, subDec: 240 }, f2: { koDec: -105, koSub: 125, subDec: 460 } },
+        betmgm:      { f1: { koSub: 125 }, f2: { koSub: 125 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 275, r2: 600, r3: 1400 }, f2: { r1: 300, r2: 600, r3: 1000 } },
+        draftkings:  { f1: { r1: 225, r2: 550, r3: 1200 }, f2: { r1: 250, r2: 550, r3: 1100 } },
+        fanduel:     { f1: { r1: 300, r2: 600, r3: 1500 }, f2: { r1: 310, r2: 600, r3: 1300 } },
+      },
+      totals: {
+        '1.5': {
+          draftkings:  { over: 110, under: -140 },
+          fanduel:     { over: 112, under: -142 },
+          betmgm:      { over: 110, under: -145 },
+        },
+      },
+    },
+    // UFC Fight Night: Hooker vs. Parnasse, Prelims 8, 3 rounds. ML already fully
+    // covered live; method/double-chance/round props sourced from fightodds.io
+    // (BetOnline/Bovada/DraftKings/FanDuel; BetMGM posted no props at all for this
+    // fight). f1 = Benouaich, f2 = Montenegro.
+    'benouaich|montenegro': {
+      rounds: 3,
+      method: {
+        betonlineag: { f1: { ko: 650, sub: 750, dec: 140 }, f2: { ko: 575, sub: 1000, dec: 200 } },
+        bovada:      { f1: { ko: 650, sub: 750, dec: 140 }, f2: { ko: 700, sub: 1400, dec: 225 } },
+        draftkings:  { f1: { ko: 650, sub: 750, dec: 130 }, f2: { ko: 700, sub: 1400, dec: 215 } },
+        fanduel:     { f1: { ko: 700, sub: 750, dec: 145 }, f2: { ko: 750, sub: 1500, dec: 230 } },
+      },
+      doubleChance: {
+        betonlineag: { f1: { koDec: -110, subDec: 100 }, f2: { koDec: 105, subDec: 135 } },
+        bovada:      { f1: { koDec: -110, koSub: 320, subDec: 100 }, f2: { koDec: 145, koSub: 450, subDec: 180 } },
+        draftkings:  { f1: { koDec: -125, koSub: 350, subDec: -120 }, f2: { koDec: 130, koSub: 500, subDec: 165 } },
+        fanduel:     { f1: { koDec: -110, koSub: 320, subDec: -110 }, f2: { koDec: 145, koSub: 490, subDec: 180 } },
+      },
+      roundProps: {
+        betonlineag: { f1: { r1: 950, r2: 1100, r3: 1300 }, f2: { r1: 1000, r2: 1200, r3: 1400 } },
+        draftkings:  { f1: { r1: 700, r2: 1000, r3: 1600 }, f2: { r1: 900, r2: 1400, r3: 2200 } },
+        fanduel:     { f1: { r1: 750, r2: 1100, r3: 1800 }, f2: { r1: 1000, r2: 1800, r3: 2500 } },
+      },
+      totals: {
+        '2.5': {
+          fanduel:     { over: -260, under: 192 },
+        },
+      },
+    },
   };
 
   function pairKey(n1, n2) {
