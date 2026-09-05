@@ -1120,9 +1120,11 @@ async function handleBetsScan(request, env, url) {
       }),
     });
     if (!resp.ok) {
-      // TEMP DIAGNOSTIC (2026-09-05): every scan is failing here in production
-      // and the actual reason (bad key? no credits? malformed request?) was
-      // never logged anywhere — revert once the cause is confirmed.
+      // Kept permanently (added 2026-09-05): every scan silently 502'd with no
+      // record of WHY anywhere — cost real time tracking down a stale/expired
+      // ANTHROPIC_API_KEY secret with nothing but "couldn't read" to go on.
+      // Log the real status/body to the Worker's own logs (Observability must
+      // be on to see them) without changing what the client sees.
       const bodyText = await resp.text().catch(() => "<unreadable>");
       console.error("bets/scan: Anthropic API returned non-OK", resp.status, bodyText.slice(0, 500));
       return json({ error: "Couldn't read this screenshot — try again." }, 502);
@@ -1130,7 +1132,7 @@ async function handleBetsScan(request, env, url) {
     const data = await resp.json();
     raw = data && data.content && data.content[0] && data.content[0].text;
   } catch (e) {
-    // TEMP DIAGNOSTIC (2026-09-05): see above — revert once the cause is confirmed.
+    // Kept permanently — see comment above.
     console.error("bets/scan: fetch to Anthropic threw", e && e.stack || String(e));
     return json({ error: "Couldn't read this screenshot — try again." }, 502);
   }

@@ -600,4 +600,65 @@ The schema is validated (section 8) — next is wiring handleBetsScan() into
 worker/index.js per section 7, using the prompt from scan_prototype.py
 (fence-strip included, both bugs above accounted for) as the starting point,
 not the original section-4 prompt on its own.
+
+--------------------------------------------------------------------------------
+10. PRODUCTION OUTAGE — EVERY SCAN FAILED — FIXED 2026-09-05
+--------------------------------------------------------------------------------
+Owner report: every screenshot uploaded after shipping (sections 6b/6c) came
+back "Couldn't read this screenshot — try again." with no exceptions.
+
+DIAGNOSIS. handleBetsScan() had a fetch() to api.anthropic.com wrapped in a
+try/catch that, on any non-OK response OR a thrown exception, returned the
+same generic error with NO logging of the actual status or reason — so this
+class of failure was completely invisible from the moment it started. Turned
+on Workers Observability (was off; it now costs nothing extra at this
+traffic volume, per Cloudflare's own pricing note, but do keep an eye on it)
+and added temporary console.error logging around that fetch. First real
+finding: /api/bets/scan was returning 502 on every attempt, meaning the
+Anthropic call itself was failing — not a classifier or matching bug.
+
+ROOT CAUSE. Checked console.anthropic.com's API keys page: two keys existed —
+`bet-reader-prototype` (the original 7-day key from sec 8's prototyping,
+confirmed Expired) and `gillylab-production-bet-scan` (created Aug 31, not
+expired). A valid key existed, but Anthropic never shows a key's value again
+after creation — only a masked version — so there was no way to confirm
+whether the Aug 25 initial secret setup, or the Aug 31 walkthrough, actually
+ended up with the production key's real value in Cloudflare's
+ANTHROPIC_API_KEY secret, versus the prototype key's value left over from
+before the production key even existed. Most likely explanation: the secret
+was set once on Aug 25 using the only key that existed then (the prototype),
+and the Aug 31 "production key" work created the console.anthropic.com key
+but never actually re-saved Cloudflare's secret to point at it.
+
+FIX. Rather than guess which key was actually stored, generated a fresh key
+(`gillylab-production-bet-scan-v2`, no expiry, Default-workspace scope, not
+Admin API) and had the owner paste it into Cloudflare's ANTHROPIC_API_KEY
+secret field directly — entering API keys into forms is something Claude
+does not do even on request, so this step needed the owner's own hands.
+Confirmed fixed via Cloudflare's real-time log tail: a subsequent scan
+produced a clean "Ok" on both POST /api/bets/scan and the following POST
+/api/bets (the confirm/save call) — an actual successful round trip, not
+just the absence of an error message.
+
+THE OLD `bet-reader-prototype` AND `gillylab-production-bet-scan` (v1) KEYS
+WERE LEFT ALONE — not revoked. Worth revoking once the new key's behavior is
+trusted over a few more real scans, to avoid the same "which key is actually
+live" ambiguity next time.
+
+KEPT PERMANENTLY: the console.error(status, body) / console.error(stack)
+logging added around the Anthropic fetch during this diagnosis. It was
+originally marked TEMP DIAGNOSTIC, but there's no real cost to leaving it in
+production Worker logs (never exposed to the client — the user-facing error
+message didn't change), and its absence is exactly what turned a one-key-swap
+fix into a multi-step investigation. Workers Observability now needs to stay
+enabled for these logs to be visible; if it's ever toggled off, this class of
+failure goes dark again.
+
+NOT YET RE-TESTED against a real upcoming-event screenshot end-to-end (the
+owner doesn't have one on hand yet as of this fix) — only confirmed via the
+log tail that the API call and save both succeeded. Same standing caveat as
+sections 6a/6b/6c: try a real screenshot from an upcoming card before fully
+trusting the tracked-bet path, particularly anything past ML now that NODEC
+and the exact-round-window change (6c) have never been exercised by a real
+screenshot either.
 ================================================================================
