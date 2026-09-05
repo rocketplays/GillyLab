@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T20:40:48.937Z",
+ "generatedAt": "2026-09-05T21:16:14.503Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9774,6 +9774,194 @@
       ]
      },
      "capturedAt": "2026-09-05T20:40:48.799Z"
+    }
+   ]
+  },
+  "Michael Page": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nursulton Ruziboev",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nursulton Ruziboev",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 28,
+      "totL": 49,
+      "totA": 66,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:06",
+      "head": [
+       7,
+       19
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       11,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 8,
+      "sigA": 29,
+      "totL": 21,
+      "totA": 42,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:28",
+      "head": [
+       5,
+       26
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       23
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "capturedAt": "2026-09-05T21:16:14.370Z"
+    }
+   ]
+  },
+  "Nursulton Ruziboev": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Michael Page",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Michael Page",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 8,
+      "sigA": 29,
+      "totL": 21,
+      "totA": 42,
+      "tdL": 2,
+      "tdA": 3,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "5:28",
+      "head": [
+       5,
+       26
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       3,
+       23
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       4,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 28,
+      "totL": 49,
+      "totA": 66,
+      "tdL": 0,
+      "tdA": 2,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "1:06",
+      "head": [
+       7,
+       19
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       3,
+       4
+      ],
+      "dist": [
+       11,
+       27
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T21:16:14.370Z"
     }
    ]
   }
