@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T21:16:14.503Z",
+ "generatedAt": "2026-09-05T21:31:38.104Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9962,6 +9962,194 @@
       ]
      },
      "capturedAt": "2026-09-05T21:16:14.370Z"
+    }
+   ]
+  },
+  "Farés Ziam": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Axel Sola",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:40",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Axel Sola",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 13,
+      "totL": 7,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       5
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       7,
+       13
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 9,
+      "sigA": 13,
+      "totL": 9,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       7,
+       10
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "capturedAt": "2026-09-05T21:31:37.970Z"
+    }
+   ]
+  },
+  "Axel Sola": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Farés Ziam",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "1:40",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Farés Ziam",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 9,
+      "sigA": 13,
+      "totL": 9,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:02",
+      "head": [
+       7,
+       10
+      ],
+      "body": [
+       2,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       10
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       3,
+       3
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 7,
+      "sigA": 13,
+      "totL": 7,
+      "totA": 13,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       0,
+       5
+      ],
+      "body": [
+       2,
+       2
+      ],
+      "leg": [
+       5,
+       6
+      ],
+      "dist": [
+       7,
+       13
+      ],
+      "clinch": [
+       0,
+       0
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T21:31:37.970Z"
     }
    ]
   }
