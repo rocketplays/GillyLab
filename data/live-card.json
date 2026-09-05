@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T16:32:00.639Z",
+ "generatedAt": "2026-09-05T16:37:12.009Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -7894,6 +7894,194 @@
       ]
      },
      "capturedAt": "2026-09-05T16:21:48.509Z"
+    }
+   ]
+  },
+  "Matthieu Letho Duclos": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Luis Felipe Dias",
+     "result": "W",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:35",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Luis Felipe Dias",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 17,
+      "sigA": 46,
+      "totL": 19,
+      "totA": 49,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       14,
+       40
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       16,
+       44
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 57,
+      "totL": 24,
+      "totA": 57,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       19,
+       45
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       23,
+       56
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T16:37:11.872Z"
+    }
+   ]
+  },
+  "Luis Felipe Dias": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Matthieu Letho Duclos",
+     "result": "L",
+     "method": "KO/TKO (Punch)",
+     "round": 1,
+     "time": "4:35",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Matthieu Letho Duclos",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 24,
+      "sigA": 57,
+      "totL": 24,
+      "totA": 57,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:33",
+      "head": [
+       19,
+       45
+      ],
+      "body": [
+       2,
+       6
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       23,
+       56
+      ],
+      "clinch": [
+       1,
+       1
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 17,
+      "sigA": 46,
+      "totL": 19,
+      "totA": 49,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:05",
+      "head": [
+       14,
+       40
+      ],
+      "body": [
+       2,
+       5
+      ],
+      "leg": [
+       1,
+       1
+      ],
+      "dist": [
+       16,
+       44
+      ],
+      "clinch": [
+       1,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T16:37:11.872Z"
     }
    ]
   }
