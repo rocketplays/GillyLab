@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T16:42:23.593Z",
+ "generatedAt": "2026-09-05T17:07:38.173Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8082,6 +8082,194 @@
       ]
      },
      "capturedAt": "2026-09-05T16:37:11.872Z"
+    }
+   ]
+  },
+  "Nora Cornolle": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Klaudia Syguła",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Klaudia Syguła",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 65,
+      "totL": 60,
+      "totA": 87,
+      "tdL": 4,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "8:59",
+      "head": [
+       16,
+       36
+      ],
+      "body": [
+       16,
+       19
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       14,
+       32
+      ],
+      "clinch": [
+       20,
+       24
+      ],
+      "ground": [
+       5,
+       9
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 74,
+      "totL": 95,
+      "totA": 153,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "3:15",
+      "head": [
+       23,
+       69
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       60
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "capturedAt": "2026-09-05T17:07:38.037Z"
+    }
+   ]
+  },
+  "Klaudia Syguła": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nora Cornolle",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "-",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nora Cornolle",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 26,
+      "sigA": 74,
+      "totL": 95,
+      "totA": 153,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 1,
+      "ctrl": "3:15",
+      "head": [
+       23,
+       69
+      ],
+      "body": [
+       3,
+       5
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       18,
+       60
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       1,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 65,
+      "totL": 60,
+      "totA": 87,
+      "tdL": 4,
+      "tdA": 7,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "8:59",
+      "head": [
+       16,
+       36
+      ],
+      "body": [
+       16,
+       19
+      ],
+      "leg": [
+       7,
+       10
+      ],
+      "dist": [
+       14,
+       32
+      ],
+      "clinch": [
+       20,
+       24
+      ],
+      "ground": [
+       5,
+       9
+      ]
+     },
+     "capturedAt": "2026-09-05T17:07:38.037Z"
     }
    ]
   }
