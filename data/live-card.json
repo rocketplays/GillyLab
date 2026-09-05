@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T18:08:30.811Z",
+ "generatedAt": "2026-09-05T18:23:53.667Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8646,6 +8646,194 @@
       ]
      },
      "capturedAt": "2026-09-05T18:08:30.678Z"
+    }
+   ]
+  },
+  "Oumar Sy": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Modestas Bukauskas",
+     "result": "L",
+     "method": "KO/TKO (Knee)",
+     "round": 2,
+     "time": "3:57",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Modestas Bukauskas",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 59,
+      "totL": 48,
+      "totA": 71,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:08",
+      "head": [
+       27,
+       45
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       11,
+       23
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       25,
+       32
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 22,
+      "sigA": 46,
+      "totL": 29,
+      "totA": 56,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:35",
+      "head": [
+       22,
+       46
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       19
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       15,
+       19
+      ]
+     },
+     "capturedAt": "2026-09-05T18:23:53.533Z"
+    }
+   ]
+  },
+  "Modestas Bukauskas": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Oumar Sy",
+     "result": "W",
+     "method": "KO/TKO (Knee)",
+     "round": 2,
+     "time": "3:57",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Oumar Sy",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 22,
+      "sigA": 46,
+      "totL": 29,
+      "totA": 56,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "1:35",
+      "head": [
+       22,
+       46
+      ],
+      "body": [
+       0,
+       0
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       1,
+       19
+      ],
+      "clinch": [
+       6,
+       8
+      ],
+      "ground": [
+       15,
+       19
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 39,
+      "sigA": 59,
+      "totL": 48,
+      "totA": 71,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "5:08",
+      "head": [
+       27,
+       45
+      ],
+      "body": [
+       5,
+       7
+      ],
+      "leg": [
+       7,
+       7
+      ],
+      "dist": [
+       11,
+       23
+      ],
+      "clinch": [
+       3,
+       4
+      ],
+      "ground": [
+       25,
+       32
+      ]
+     },
+     "capturedAt": "2026-09-05T18:23:53.533Z"
     }
    ]
   }
