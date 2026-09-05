@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T17:38:04.753Z",
+ "generatedAt": "2026-09-05T18:08:30.811Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8458,6 +8458,194 @@
       ]
      },
      "capturedAt": "2026-09-05T17:38:04.617Z"
+    }
+   ]
+  },
+  "Nathaniel Wood": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Pavel Andrusca",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Pavel Andrusca",
+     "result": "L",
+     "f": {
+      "kd": 1,
+      "sigL": 28,
+      "sigA": 86,
+      "totL": 57,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       17,
+       63
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       10
+      ],
+      "dist": [
+       26,
+       79
+      ],
+      "clinch": [
+       2,
+       6
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 69,
+      "totA": 131,
+      "tdL": 4,
+      "tdA": 19,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:06",
+      "head": [
+       44,
+       92
+      ],
+      "body": [
+       4,
+       11
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       33,
+       82
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       8,
+       10
+      ]
+     },
+     "capturedAt": "2026-09-05T18:08:30.678Z"
+    }
+   ]
+  },
+  "Pavel Andrusca": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nathaniel Wood",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Nathaniel Wood",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 50,
+      "sigA": 105,
+      "totL": 69,
+      "totA": 131,
+      "tdL": 4,
+      "tdA": 19,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "6:06",
+      "head": [
+       44,
+       92
+      ],
+      "body": [
+       4,
+       11
+      ],
+      "leg": [
+       2,
+       2
+      ],
+      "dist": [
+       33,
+       82
+      ],
+      "clinch": [
+       9,
+       13
+      ],
+      "ground": [
+       8,
+       10
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 28,
+      "sigA": 86,
+      "totL": 57,
+      "totA": 118,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:09",
+      "head": [
+       17,
+       63
+      ],
+      "body": [
+       7,
+       13
+      ],
+      "leg": [
+       4,
+       10
+      ],
+      "dist": [
+       26,
+       79
+      ],
+      "clinch": [
+       2,
+       6
+      ],
+      "ground": [
+       0,
+       1
+      ]
+     },
+     "capturedAt": "2026-09-05T18:08:30.678Z"
     }
    ]
   }
