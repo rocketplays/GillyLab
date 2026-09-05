@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T17:12:49.754Z",
+ "generatedAt": "2026-09-05T17:38:04.753Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8270,6 +8270,194 @@
       ]
      },
      "capturedAt": "2026-09-05T17:07:38.037Z"
+    }
+   ]
+  },
+  "Michael Aljarouj": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Fabia Sintes",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Fabia Sintes",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 32,
+      "totL": 70,
+      "totA": 99,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "4:24",
+      "head": [
+       5,
+       23
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       5,
+       24
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       3,
+       4
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 49,
+      "totL": 61,
+      "totA": 88,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:19",
+      "head": [
+       15,
+       32
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       10,
+       26
+      ],
+      "clinch": [
+       6,
+       6
+      ],
+      "ground": [
+       12,
+       17
+      ]
+     },
+     "capturedAt": "2026-09-05T17:38:04.617Z"
+    }
+   ]
+  },
+  "Fabia Sintes": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Michael Aljarouj",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Michael Aljarouj",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 28,
+      "sigA": 49,
+      "totL": 61,
+      "totA": 88,
+      "tdL": 3,
+      "tdA": 8,
+      "sub": 3,
+      "rev": 0,
+      "ctrl": "6:19",
+      "head": [
+       15,
+       32
+      ],
+      "body": [
+       11,
+       12
+      ],
+      "leg": [
+       2,
+       5
+      ],
+      "dist": [
+       10,
+       26
+      ],
+      "clinch": [
+       6,
+       6
+      ],
+      "ground": [
+       12,
+       17
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 10,
+      "sigA": 32,
+      "totL": 70,
+      "totA": 99,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 1,
+      "ctrl": "4:24",
+      "head": [
+       5,
+       23
+      ],
+      "body": [
+       1,
+       2
+      ],
+      "leg": [
+       4,
+       7
+      ],
+      "dist": [
+       5,
+       24
+      ],
+      "clinch": [
+       2,
+       4
+      ],
+      "ground": [
+       3,
+       4
+      ]
+     },
+     "capturedAt": "2026-09-05T17:38:04.617Z"
     }
    ]
   }
