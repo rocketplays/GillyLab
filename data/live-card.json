@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T19:40:07.496Z",
+ "generatedAt": "2026-09-05T20:10:32.885Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9398,6 +9398,194 @@
       ]
      },
      "capturedAt": "2026-09-05T19:40:07.362Z"
+    }
+   ]
+  },
+  "Kurtis Campbell": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Trevor Peek",
+     "result": "W",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "3:07",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Trevor Peek",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 61,
+      "totL": 79,
+      "totA": 108,
+      "tdL": 13,
+      "tdA": 24,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:20",
+      "head": [
+       36,
+       48
+      ],
+      "body": [
+       7,
+       11
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       17,
+       28
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       26,
+       30
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 35,
+      "totL": 17,
+      "totA": 40,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       25
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       10,
+       32
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T20:10:32.746Z"
+    }
+   ]
+  },
+  "Trevor Peek": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Kurtis Campbell",
+     "result": "L",
+     "method": "Submission (Rear Naked Choke)",
+     "round": 3,
+     "time": "3:07",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Kurtis Campbell",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 12,
+      "sigA": 35,
+      "totL": 17,
+      "totA": 40,
+      "tdL": 0,
+      "tdA": 0,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:00",
+      "head": [
+       5,
+       25
+      ],
+      "body": [
+       4,
+       4
+      ],
+      "leg": [
+       3,
+       6
+      ],
+      "dist": [
+       10,
+       32
+      ],
+      "clinch": [
+       2,
+       3
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 44,
+      "sigA": 61,
+      "totL": 79,
+      "totA": 108,
+      "tdL": 13,
+      "tdA": 24,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "10:20",
+      "head": [
+       36,
+       48
+      ],
+      "body": [
+       7,
+       11
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       17,
+       28
+      ],
+      "clinch": [
+       1,
+       3
+      ],
+      "ground": [
+       26,
+       30
+      ]
+     },
+     "capturedAt": "2026-09-05T20:10:32.746Z"
     }
    ]
   }
