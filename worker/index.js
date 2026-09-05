@@ -1120,11 +1120,18 @@ async function handleBetsScan(request, env, url) {
       }),
     });
     if (!resp.ok) {
+      // TEMP DIAGNOSTIC (2026-09-05): every scan is failing here in production
+      // and the actual reason (bad key? no credits? malformed request?) was
+      // never logged anywhere — revert once the cause is confirmed.
+      const bodyText = await resp.text().catch(() => "<unreadable>");
+      console.error("bets/scan: Anthropic API returned non-OK", resp.status, bodyText.slice(0, 500));
       return json({ error: "Couldn't read this screenshot — try again." }, 502);
     }
     const data = await resp.json();
     raw = data && data.content && data.content[0] && data.content[0].text;
-  } catch {
+  } catch (e) {
+    // TEMP DIAGNOSTIC (2026-09-05): see above — revert once the cause is confirmed.
+    console.error("bets/scan: fetch to Anthropic threw", e && e.stack || String(e));
     return json({ error: "Couldn't read this screenshot — try again." }, 502);
   }
 
