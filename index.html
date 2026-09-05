@@ -132630,6 +132630,38 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       let fights = boutPairings.length
         ? data.filter(f => isScheduledBout(boutPairings, f.home_team, f.away_team))
         : [];
+      // The Odds API can list one real bout as TWO raw entries when it splits a
+      // compound surname two different ways (e.g. "Matthieu Duclos" and
+      // "Matthieu Letho" both matching the real "Matthieu Letho Duclos" vs.
+      // Dias bout — one via exact last-name match, one only via the
+      // namesLikelyMatch fuzzy fallback). Collapse to one row per boutPairings
+      // entry, preferring the exact-match row when both exist.
+      function matchedPairingIndex(f) {
+        const n1 = lastNameOf(f.home_team).toLowerCase(), n2 = lastNameOf(f.away_team).toLowerCase();
+        for (let i = 0; i < boutPairings.length; i++) {
+          const [pf1, pf2] = boutPairings[i];
+          const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
+          if ((a === n1 && b === n2) || (a === n2 && b === n1)) return { idx: i, exact: true };
+        }
+        for (let i = 0; i < boutPairings.length; i++) {
+          const [pf1, pf2] = boutPairings[i];
+          if ((namesLikelyMatch(pf1, f.home_team) && namesLikelyMatch(pf2, f.away_team)) ||
+              (namesLikelyMatch(pf1, f.away_team) && namesLikelyMatch(pf2, f.home_team))) {
+            return { idx: i, exact: false };
+          }
+        }
+        return { idx: -1, exact: false };
+      }
+      if (boutPairings.length) {
+        const byPairing = new Map();
+        fights.forEach(f => {
+          const { idx, exact } = matchedPairingIndex(f);
+          if (idx === -1) return; // already passed isScheduledBout, shouldn't happen
+          const prev = byPairing.get(idx);
+          if (!prev || (exact && !prev.exact)) byPairing.set(idx, { f, exact });
+        });
+        fights = Array.from(byPairing.values()).map(v => v.f);
+      }
       if (!fights.length) throw new Error('no fights');
       // Match each odds-feed fight back to its evt.fights bout — fuzzy (see
       // namesLikelyMatch) since the odds feed doesn't always spell/format a
@@ -136004,6 +136036,38 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
       let fights = boutPairings.length
         ? data.filter(f => isScheduledBout(boutPairings, f.home_team, f.away_team))
         : [];
+      // The Odds API can list one real bout as TWO raw entries when it splits a
+      // compound surname two different ways (e.g. "Matthieu Duclos" and
+      // "Matthieu Letho" both matching the real "Matthieu Letho Duclos" vs.
+      // Dias bout — one via exact last-name match, one only via the
+      // namesLikelyMatch fuzzy fallback). Collapse to one row per boutPairings
+      // entry, preferring the exact-match row when both exist.
+      function matchedPairingIndex(f) {
+        const n1 = lastNameOf(f.home_team).toLowerCase(), n2 = lastNameOf(f.away_team).toLowerCase();
+        for (let i = 0; i < boutPairings.length; i++) {
+          const [pf1, pf2] = boutPairings[i];
+          const a = lastNameOf(pf1).toLowerCase(), b = lastNameOf(pf2).toLowerCase();
+          if ((a === n1 && b === n2) || (a === n2 && b === n1)) return { idx: i, exact: true };
+        }
+        for (let i = 0; i < boutPairings.length; i++) {
+          const [pf1, pf2] = boutPairings[i];
+          if ((namesLikelyMatch(pf1, f.home_team) && namesLikelyMatch(pf2, f.away_team)) ||
+              (namesLikelyMatch(pf1, f.away_team) && namesLikelyMatch(pf2, f.home_team))) {
+            return { idx: i, exact: false };
+          }
+        }
+        return { idx: -1, exact: false };
+      }
+      if (boutPairings.length) {
+        const byPairing = new Map();
+        fights.forEach(f => {
+          const { idx, exact } = matchedPairingIndex(f);
+          if (idx === -1) return; // already passed isScheduledBout, shouldn't happen
+          const prev = byPairing.get(idx);
+          if (!prev || (exact && !prev.exact)) byPairing.set(idx, { f, exact });
+        });
+        fights = Array.from(byPairing.values()).map(v => v.f);
+      }
       if (!fights.length) throw new Error('no fights');
       // Sort fights to match the EVENTS page display order (Main Card first,
       // then Prelims — see the featured-card rendering), not the raw evt.fights
@@ -136983,6 +137047,14 @@ function openFighter(name, division, record, rank, initials, country, _skipPush)
     'carlos diego ferreira': 'Diego Ferreira',
     'yadier delvalle': 'Yadier del Valle',
     'billy goff': 'Billy Ray Goff',
+    // Odds feed's "Daniel"/"Muhammadjon" vs our DB and event.json's "Dan"/"Muhammad".
+    'daniel hooker': 'Dan Hooker',
+    'muhammadjon naimov': 'Muhammad Naimov',
+    // The Odds API also listed this fight TWICE with his compound surname split
+    // two different ways ("Matthieu Duclos" and "Matthieu Letho") — handleOddsPage
+    // now de-dupes those to one row (see matchedPairingIndex()), but this alias
+    // covers any other page that looks up "Matthieu Letho" by name alone.
+    'matthieu letho': 'Matthieu Letho Duclos',
     // Odds feed spells him "Sergey Spivak" (some bookmakers transliterate
     // it "Sergei"); our DB key is his UFC-registered spelling "Serghei Spivac".
     'sergey spivak': 'Serghei Spivac',
