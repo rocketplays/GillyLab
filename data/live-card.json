@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T18:39:15.706Z",
+ "generatedAt": "2026-09-05T19:09:40.226Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9022,6 +9022,194 @@
       ]
      },
      "capturedAt": "2026-09-05T18:39:15.565Z"
+    }
+   ]
+  },
+  "Morgan Charrière": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Felipe Lima",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Felipe Lima",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 146,
+      "totL": 38,
+      "totA": 148,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       24,
+       122
+      ],
+      "body": [
+       11,
+       22
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       36,
+       144
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 112,
+      "sigA": 218,
+      "totL": 115,
+      "totA": 221,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       82,
+       174
+      ],
+      "body": [
+       18,
+       25
+      ],
+      "leg": [
+       12,
+       19
+      ],
+      "dist": [
+       107,
+       212
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T19:09:40.087Z"
+    }
+   ]
+  },
+  "Felipe Lima": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Morgan Charrière",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Morgan Charrière",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 112,
+      "sigA": 218,
+      "totL": 115,
+      "totA": 221,
+      "tdL": 2,
+      "tdA": 2,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:13",
+      "head": [
+       82,
+       174
+      ],
+      "body": [
+       18,
+       25
+      ],
+      "leg": [
+       12,
+       19
+      ],
+      "dist": [
+       107,
+       212
+      ],
+      "clinch": [
+       5,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 36,
+      "sigA": 146,
+      "totL": 38,
+      "totA": 148,
+      "tdL": 0,
+      "tdA": 3,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:31",
+      "head": [
+       24,
+       122
+      ],
+      "body": [
+       11,
+       22
+      ],
+      "leg": [
+       1,
+       2
+      ],
+      "dist": [
+       36,
+       144
+      ],
+      "clinch": [
+       0,
+       2
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T19:09:40.087Z"
     }
    ]
   }
