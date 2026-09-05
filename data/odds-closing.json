@@ -1,6 +1,6 @@
 {
- "generatedAt": "2026-09-02T15:44:52.804Z",
- "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) — the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live — genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time. Also backfills 3 of the 5 main-card bouts on Dana White's Contender Series S10W1 (2026-08-11) — this was the first DWCS card, and both live-results.yml and capture-closing-odds.yml were gated to Saturday/Sunday cron only, so neither the real capture window nor the 2h-36h catchup sweep ran during the event; a manual catchup dispatch at 2026-08-12T01:41 UTC (~2h41m post-start) recovered Wint/Adams and Escarrega/Alsaghir from the still-committed data/odds.json, but the other 3 bouts (earlier on the card) had already rolled off the-odds-api's feed by then. Recovered instead from data/odds.json as committed at 2026-08-11T12:52:34Z (3a514fb8) — the last pre-fight snapshot, ~10h before the card started — via the same consensus math as scripts/odds-history-lib.cjs consensus(): genuine cross-bookmaker market data (BetOnline.ag + FanDuel), not hand-typed, just captured further from the bell than the 20-to-2-minute window the real script targets. Backfilled the full UFC 330 card (2026-08-15) -- both the */3 cron's real capture windows and the 2h-36h catchup sweep missed it: the card had already rolled off data/event.json into data/event-recent.json by the time the catchup job ran, and capture-closing-odds.cjs's catchup mode only ever scanned data/event.json. Prelims recovered from the data/odds.json snapshot committed at 2026-08-15T12:25:46Z (fe527ace, ~9h pre-prelims, the last one where every early/prelim bout was still listed); main card from the snapshot committed at 2026-08-16T00:33:36Z (ced320e2, ~27min pre-bell -- essentially the true closing line). Same consensus math as scripts/odds-history-lib.cjs consensus(), genuine cross-bookmaker market data, not hand-typed.",
+ "generatedAt": "2026-09-05T22:53:36.280Z",
+ "note": "Hand-entered closing moneylines (DraftKings, fight day) for UFC Oklahoma City: Du Plessis vs. Usman (2026-07-18). The auto-capture workflow missed this card's windows; these backfill it so the lines reach ODDS_HISTORY and count toward CLV, in the exact shape scripts/capture-closing-odds.cjs writes. Also backfills the full main card of UFC Abu Dhabi: Ankalaev vs. Guskov (2026-07-25) — the */3 cron caught that card's prelims (see the 'prelims' entries below, capturedAt ~2026-07-25T12:50:30Z) but the main-card window was missed entirely, so none of the 5 main-card bouts' closes were captured. capturedAt on the 'maincard' entries is a single estimated timestamp (~10 min before an assumed main-card start), not an auto-capture timestamp — matches how the real script would stamp one capture pass across a whole section. Hand/script-backfilled closing moneylines for UFC Fight Night: Medic vs. Rodriguez (2026-08-01) — the */3 cron's capture-closing-odds workflow produced zero commits for this card (neither the prelims window nor its main-card fallback fired), so nothing reached ODDS_HISTORY automatically. Backfilled by re-running scripts/capture-closing-odds.cjs --force against the actual data/odds.json snapshot committed at 2026-08-01T13:06 UTC (~1hr before prelims, ~4hr before the main card), the last real odds fetch before the card went live — genuine consensus market data, not hand-typed. capturedAt on these 14 entries is that snapshot's timestamp, not an actual per-section auto-capture time. Also backfills 3 of the 5 main-card bouts on Dana White's Contender Series S10W1 (2026-08-11) — this was the first DWCS card, and both live-results.yml and capture-closing-odds.yml were gated to Saturday/Sunday cron only, so neither the real capture window nor the 2h-36h catchup sweep ran during the event; a manual catchup dispatch at 2026-08-12T01:41 UTC (~2h41m post-start) recovered Wint/Adams and Escarrega/Alsaghir from the still-committed data/odds.json, but the other 3 bouts (earlier on the card) had already rolled off the-odds-api's feed by then. Recovered instead from data/odds.json as committed at 2026-08-11T12:52:34Z (3a514fb8) — the last pre-fight snapshot, ~10h before the card started — via the same consensus math as scripts/odds-history-lib.cjs consensus(): genuine cross-bookmaker market data (BetOnline.ag + FanDuel), not hand-typed, just captured further from the bell than the 20-to-2-minute window the real script targets. Backfilled the full UFC 330 card (2026-08-15) -- both the */3 cron's real capture windows and the 2h-36h catchup sweep missed it: the card had already rolled off data/event.json into data/event-recent.json by the time the catchup job ran, and capture-closing-odds.cjs's catchup mode only ever scanned data/event.json. Prelims recovered from the data/odds.json snapshot committed at 2026-08-15T12:25:46Z (fe527ace, ~9h pre-prelims, the last one where every early/prelim bout was still listed); main card from the snapshot committed at 2026-08-16T00:33:36Z (ced320e2, ~27min pre-bell -- essentially the true closing line). Same consensus math as scripts/odds-history-lib.cjs consensus(), genuine cross-bookmaker market data, not hand-typed. Backfilled the full UFC Fight Night: Hooker vs. Parnasse card (Paris, 2026-09-05) -- capture-closing-odds.yml produced zero commits all day (last real run was 2026-09-04), so none of the 14 bouts' closes reached ODDS_HISTORY automatically; separately, two of them ('Michael Aljarouj'/'Fabia Sintes', date 2026-09-05) already had a same-dated ODDS_HISTORY entry from the routine daily odds snapshot rather than a true close, and it read -120/+100 against this backfill's -125/+105. Recovered via scripts/capture-closing-odds.cjs --force against data/odds.json as committed at 2026-09-05T14:27 UTC (53226b09, ~1h33m pre-prelims, the last odds fetch before the card went live and still the file on disk after the card ended) -- genuine cross-bookmaker consensus, not hand-typed. The Dias vs. Letho Duclos bout is listed twice in that odds.json snapshot under two different splits of his compound surname ('Matthieu Duclos' / 'Matthieu Letho'); capture-closing-odds.cjs's own fighterMatch() against event.json's single canonical bout already collapses that to the one row below, same as the index.html dedup fix for the live Odds & Projections page.",
  "fights": [
   {
    "slug": "ufc-fight-night-july-18-2026",
@@ -1021,6 +1021,146 @@
    "o1": 165,
    "o2": -194,
    "capturedAt": "2026-09-02T15:44:52.799Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Morgan Charrière",
+   "f2": "Felipe Lima",
+   "o1": 175,
+   "o2": -212,
+   "capturedAt": "2026-09-05T22:53:36.206Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Mario Pinto",
+   "f2": "Ryan Spann",
+   "o1": -342,
+   "o2": 272,
+   "capturedAt": "2026-09-05T22:53:36.209Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Oumar Sy",
+   "f2": "Modestas Bukauskas",
+   "o1": -245,
+   "o2": 201,
+   "capturedAt": "2026-09-05T22:53:36.209Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Nathaniel Wood",
+   "f2": "Pavel Andrusca",
+   "o1": -296,
+   "o2": 239,
+   "capturedAt": "2026-09-05T22:53:36.209Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Michael Aljarouj",
+   "f2": "Fabia Sintes",
+   "o1": -125,
+   "o2": 105,
+   "capturedAt": "2026-09-05T22:53:36.210Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Nora Cornolle",
+   "f2": "Klaudia Syguła",
+   "o1": -102,
+   "o2": -117,
+   "capturedAt": "2026-09-05T22:53:36.210Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Matthieu Letho Duclos",
+   "f2": "Luis Felipe Dias",
+   "o1": -117,
+   "o2": -103,
+   "capturedAt": "2026-09-05T22:53:36.210Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "prelims",
+   "f1": "Delphine Benouaich",
+   "f2": "Sofia Montenegro",
+   "o1": -138,
+   "o2": 116,
+   "capturedAt": "2026-09-05T22:53:36.210Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Dan Hooker",
+   "f2": "Salahdine Parnasse",
+   "o1": 392,
+   "o2": -525,
+   "capturedAt": "2026-09-05T22:53:36.278Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Farés Ziam",
+   "f2": "Axel Sola",
+   "o1": -157,
+   "o2": 131,
+   "capturedAt": "2026-09-05T22:53:36.279Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Michael Page",
+   "f2": "Nursulton Ruziboev",
+   "o1": -204,
+   "o2": 170,
+   "capturedAt": "2026-09-05T22:53:36.279Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Daniil Donchenko",
+   "f2": "Punahele Soriano",
+   "o1": -237,
+   "o2": 194,
+   "capturedAt": "2026-09-05T22:53:36.279Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Kurtis Campbell",
+   "f2": "Trevor Peek",
+   "o1": -403,
+   "o2": 309,
+   "capturedAt": "2026-09-05T22:53:36.280Z"
+  },
+  {
+   "slug": "ufc-fight-night-september-05-2026",
+   "date": "2026-09-05",
+   "section": "maincard",
+   "f1": "Losene Keita",
+   "f2": "Muhammad Naimov",
+   "o1": -381,
+   "o2": 299,
+   "capturedAt": "2026-09-05T22:53:36.280Z"
   }
  ]
 }
