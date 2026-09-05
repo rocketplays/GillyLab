@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T18:23:53.667Z",
+ "generatedAt": "2026-09-05T18:39:15.706Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -8834,6 +8834,194 @@
       ]
      },
      "capturedAt": "2026-09-05T18:23:53.533Z"
+    }
+   ]
+  },
+  "Mario Pinto": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Ryan Spann",
+     "result": "W",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "0:55",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Ryan Spann",
+     "result": "W",
+     "f": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 67,
+      "totL": 114,
+      "totA": 137,
+      "tdL": 6,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:33",
+      "head": [
+       47,
+       66
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       24
+      ],
+      "clinch": [
+       6,
+       9
+      ],
+      "ground": [
+       32,
+       34
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 16,
+      "totA": 37,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:20",
+      "head": [
+       10,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       24
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T18:39:15.565Z"
+    }
+   ]
+  },
+  "Ryan Spann": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Mario Pinto",
+     "result": "L",
+     "method": "KO/TKO (Punches)",
+     "round": 2,
+     "time": "0:55",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Mario Pinto",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 13,
+      "sigA": 34,
+      "totL": 16,
+      "totA": 37,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "0:20",
+      "head": [
+       10,
+       31
+      ],
+      "body": [
+       3,
+       3
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       6,
+       24
+      ],
+      "clinch": [
+       7,
+       10
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 48,
+      "sigA": 67,
+      "totL": 114,
+      "totA": 137,
+      "tdL": 6,
+      "tdA": 7,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "3:33",
+      "head": [
+       47,
+       66
+      ],
+      "body": [
+       1,
+       1
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       10,
+       24
+      ],
+      "clinch": [
+       6,
+       9
+      ],
+      "ground": [
+       32,
+       34
+      ]
+     },
+     "capturedAt": "2026-09-05T18:39:15.565Z"
     }
    ]
   }
