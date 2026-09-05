@@ -1,5 +1,5 @@
 {
- "generatedAt": "2026-09-05T20:10:32.885Z",
+ "generatedAt": "2026-09-05T20:40:48.937Z",
  "fighters": {
   "Bilal Hasan": {
    "history": [
@@ -9586,6 +9586,194 @@
       ]
      },
      "capturedAt": "2026-09-05T20:10:32.746Z"
+    }
+   ]
+  },
+  "Daniil Donchenko": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Punahele Soriano",
+     "result": "W",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Punahele Soriano",
+     "result": "W",
+     "f": {
+      "kd": 1,
+      "sigL": 83,
+      "sigA": 137,
+      "totL": 120,
+      "totA": 180,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       46,
+       94
+      ],
+      "body": [
+       21,
+       27
+      ],
+      "leg": [
+       16,
+       16
+      ],
+      "dist": [
+       64,
+       116
+      ],
+      "clinch": [
+       11,
+       13
+      ],
+      "ground": [
+       8,
+       8
+      ]
+     },
+     "o": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 84,
+      "totL": 43,
+      "totA": 115,
+      "tdL": 4,
+      "tdA": 11,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:32",
+      "head": [
+       12,
+       68
+      ],
+      "body": [
+       3,
+       16
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       78
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "capturedAt": "2026-09-05T20:40:48.799Z"
+    }
+   ]
+  },
+  "Punahele Soriano": {
+   "history": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Daniil Donchenko",
+     "result": "L",
+     "method": "Decision (Unanimous)",
+     "round": 3,
+     "time": "5:00",
+     "event": "UFC Fight Night: Hooker vs. Parnasse",
+     "org": "UFC"
+    }
+   ],
+   "stats": [
+    {
+     "date": "Sep 5, 2026",
+     "opponent": "Daniil Donchenko",
+     "result": "L",
+     "f": {
+      "kd": 0,
+      "sigL": 15,
+      "sigA": 84,
+      "totL": 43,
+      "totA": 115,
+      "tdL": 4,
+      "tdA": 11,
+      "sub": 1,
+      "rev": 0,
+      "ctrl": "3:32",
+      "head": [
+       12,
+       68
+      ],
+      "body": [
+       3,
+       16
+      ],
+      "leg": [
+       0,
+       0
+      ],
+      "dist": [
+       11,
+       78
+      ],
+      "clinch": [
+       4,
+       6
+      ],
+      "ground": [
+       0,
+       0
+      ]
+     },
+     "o": {
+      "kd": 1,
+      "sigL": 83,
+      "sigA": 137,
+      "totL": 120,
+      "totA": 180,
+      "tdL": 0,
+      "tdA": 1,
+      "sub": 0,
+      "rev": 0,
+      "ctrl": "0:41",
+      "head": [
+       46,
+       94
+      ],
+      "body": [
+       21,
+       27
+      ],
+      "leg": [
+       16,
+       16
+      ],
+      "dist": [
+       64,
+       116
+      ],
+      "clinch": [
+       11,
+       13
+      ],
+      "ground": [
+       8,
+       8
+      ]
+     },
+     "capturedAt": "2026-09-05T20:40:48.799Z"
     }
    ]
   }
