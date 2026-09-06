@@ -550,11 +550,12 @@
     document.getElementById('submitBtn').disabled = made < 7;
   }
 
-  // Once a pick fills in the SECOND fighter of a still-blank downstream
-  // matchup, scroll to it — that's the moment there's actually something new
-  // to look at. Re-picking within an already-complete pair (changing your
-  // mind) intentionally does NOT re-trigger the scroll, so correcting an
-  // earlier pick doesn't yank the page around.
+  // Scroll forward once the WHOLE round is done, not just the one matchup
+  // your last click happened to complete — jumping ahead mid-round would
+  // carry you past quarterfinals you haven't picked yet. Re-picking within an
+  // already-complete round (changing your mind) intentionally does NOT
+  // re-trigger the scroll, so correcting an earlier pick doesn't yank the
+  // page around.
   var pendingScrollId = null;
   function scrollToPending(){
     if (!pendingScrollId) return;
@@ -563,17 +564,15 @@
     if (el) el.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
   }
   function pickQf(i, fighter){
-    var pairIdx = Math.floor(i/2), otherIdx = pairIdx*2===i ? pairIdx*2+1 : pairIdx*2;
-    var wasComplete = picks.qf[i] && picks.qf[otherIdx];
+    var wasComplete = picks.qf.every(Boolean);
     picks.qf[i] = fighter;
-    if (!wasComplete && picks.qf[pairIdx*2] && picks.qf[pairIdx*2+1]) pendingScrollId = 'm-sf-'+pairIdx;
+    if (!wasComplete && picks.qf.every(Boolean)) pendingScrollId = 'm-sf-0';
     onPickChanged();
   }
   function pickSf(i, fighter){
-    var otherIdx = i===0 ? 1 : 0;
-    var wasComplete = picks.sf[i] && picks.sf[otherIdx];
+    var wasComplete = picks.sf.every(Boolean);
     picks.sf[i] = fighter;
-    if (!wasComplete && picks.sf[0] && picks.sf[1]) pendingScrollId = 'm-final';
+    if (!wasComplete && picks.sf.every(Boolean)) pendingScrollId = 'm-final';
     onPickChanged();
   }
   function pickFinal(fighter){
