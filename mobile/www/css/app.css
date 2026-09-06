@@ -53,6 +53,11 @@ h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:80
   overflow-y:auto; -webkit-overflow-scrolling:touch;
   padding:1.1rem 1.1rem 2rem;
 }
+/* A screen that wants to own the whole content area itself (Climb, loaded
+   in an iframe with its own fonts/background/scrolling) instead of sitting
+   inside the app's default padded, scrolling column. */
+.gl-app.gl-app--fullbleed{ padding:0; overflow:hidden; }
+.gl-embed-frame{ display:block; width:100%; height:100%; border:none; background:var(--bg); }
 
 /* ---- bottom tab bar ---- */
 .gl-tabbar{

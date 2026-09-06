@@ -25,6 +25,9 @@ window.GL_ROUTER = (function(){
     topbarTitleEl.textContent = screen.title || 'GillyLab';
     backBtn.hidden = !screen.showBack;
     setActiveTab(screen.tab || name);
+    // Reset per-screen modifier classes (e.g. fullbleed) before the next
+    // screen renders, so nothing leaks from whichever screen was up before.
+    appEl.className = 'gl-app' + (screen.fullbleed ? ' gl-app--fullbleed' : '');
     appEl.innerHTML = '';
     appEl.scrollTop = 0;
     screen.render(appEl, params || {});

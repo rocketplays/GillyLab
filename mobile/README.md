@@ -113,20 +113,30 @@ should -- that needs a real build, which needs Xcode/Android Studio.
 
 ## Known follow-ups (not done in this scaffold)
 
-1. **On-device verification of the above.** The bearer-token + CORS plumbing
-   is now in place and unit-tested, but has not run inside an actual
-   Capacitor WebView yet.
-2. **Real Climb tuning.** The Climb screen here is a simplified standalone
-   version of the mechanic (see the comment in `climb.js`), not wired to
-   the site's actual model/tuning (`THE-CLIMB-TUNING.txt`).
-3. **Pick'em / Legends Bracket screens.** Currently just confirm "you're
-   logged in" -- the real weekly card/bracket UI still needs to be built
-   for the app (can likely reuse a lot of the Legends Bracket work already
-   done for the website, adapted to this screen structure).
-4. **App icon / splash art.** `capacitor.config.json` sets colors only; no
-   actual icon/splash image assets have been generated yet.
-5. **Token refresh/expiry.** The bearer token expires with the same TTL as
-   the cookie (`SESSION_TTL_HOURS`, default 12h) and there's no refresh
-   flow yet -- the app will just look logged-out once it expires, same as
-   the cookie would, but a longer-lived native app probably wants a
+1. **On-device verification.** The bearer-token + CORS plumbing, the real
+   Climb screen, and the iframed Pick'em screen are all in place and
+   unit-tested/reviewed, but none of it has run inside an actual Capacitor
+   WebView yet -- that needs a real build via Xcode/Android Studio, which
+   this sandbox can't do.
+2. **Real Climb.** Done. `climb.js` iframes `climb-game.html`, generated
+   from the actual `prototypes/the-climb.html` engine by
+   `scripts/gen-climb-app-page.cjs` -- same balance/tuning as the website,
+   fetching a new ungated `GET /api/app/climb` endpoint so it's playable
+   with no account, per spec.
+3. **Pick'em / Legends Bracket screens.** Pick'em done -- `pickem.js` shows
+   a login/signup form when logged out, else iframes the real, live
+   `/pickem` page (no reimplementation of its server-side scoring/card
+   logic). Relies on the `gl_session` cookie riding along on the iframe's
+   cross-site navigation, which is spec-correct for `SameSite=Lax` but
+   still needs on-device confirmation (see #1). Legends Bracket screen not
+   started.
+4. **App icon / splash art.** Done. Source art in `assets/icon.png`,
+   `assets/splash.png`, `assets/splash-dark.png`, generated from the
+   GillyLab mark; all platform-specific resolutions (Android mipmaps/
+   drawables, iOS `Assets.xcassets`) generated via `capacitor-assets
+   generate` and committed.
+5. **Token refresh/expiry.** Not started. The bearer token expires with the
+   same TTL as the cookie (`SESSION_TTL_HOURS`, default 12h) and there's no
+   refresh flow yet -- the app will just look logged-out once it expires,
+   same as the cookie would, but a longer-lived native app probably wants a
    refresh path eventually.
