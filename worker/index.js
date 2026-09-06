@@ -2643,9 +2643,10 @@ export default {
         const nav = `<style>
           .lb-topbar{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
           .lb-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--paper)}
+          .lb-brand img{height:24px;width:auto;display:block}
           .lb-brand .a{color:var(--accent)}
         </style>
-        <div class="lb-topbar"><a class="lb-brand" href="/matchup">GILLY<span class="a">LAB</span></a></div>`;
+        <div class="lb-topbar"><a class="lb-brand" href="/matchup"><img src="/gl-logo.png?v=8" alt=""><span>GILLY<span class="a">LAB</span></span></a></div>`;
         return html(bracketPage({
           head,
           nav,

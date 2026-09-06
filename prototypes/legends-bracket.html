@@ -95,7 +95,11 @@
     font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.1em;
     text-transform:uppercase; color:var(--muted); text-align:center; margin-bottom:1rem;
   }
-  .round-col{ display:flex; flex-direction:column; }
+  /* QF/SF/Final labels get repositioned by JS (positionRoundLabels) to sit
+     right above that round's top-most tile, instead of floating at the very
+     top of the column when a round has fewer tiles than quarterfinals does. */
+  .round-col{ display:flex; flex-direction:column; position:relative; }
+  .round-col:not(.champion-col) .round-label.positioned{ position:absolute; left:0; right:0; margin-bottom:0; }
   .slot-group{ display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
   /* groups two matchups whose winners meet in the same next-round slot, so the
      elbow connector (bracket-pair::before/::after below) can merge their two
@@ -160,7 +164,7 @@
     font-family:'Barlow Condensed', sans-serif; font-weight:600; font-size:0.72rem; color:var(--muted);
     text-align:center; letter-spacing:0.01em; padding-top:0.15rem; border-top:1px dashed var(--line);
   }
-  .modelcall strong{ color:var(--accent-2); font-weight:700; }
+  .modelcall strong{ color:var(--paper); font-weight:700; }
   .modelmark{ font-weight:800; }
   .modelmark.hit{ color:var(--good); }
   .modelmark.miss{ color:var(--bad); }
@@ -202,12 +206,16 @@
   .connector-name.winner{ color:var(--good); }
 
   .champion-col{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  /* Same "featured" treatment as the rest of the site (see .plan.featured on
+     /subscribe) — accent green border + inset glow — instead of the gold
+     that reads here as the model/data-layer color everywhere else on the page. */
   .champ-card{
-    text-align:center; padding:1.1rem 1rem; background:var(--card); border:1px solid var(--accent-2);
-    border-radius:8px; width:100%;
+    text-align:center; padding:1.1rem 1rem; background:var(--card); border:1px solid var(--accent);
+    box-shadow:inset 0 0 0 1px var(--accent); border-radius:8px; width:100%;
   }
   .champ-card .cap{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.12em;
-    text-transform:uppercase; color:var(--accent-2); margin-bottom:0.5rem; }
+    text-transform:uppercase; color:var(--accent); margin-bottom:0.6rem; }
+  .champ-card .fphoto{ width:3.4rem; height:3.4rem; margin:0 auto 0.6rem; border-color:var(--accent); }
   .champ-card .fname{ font-size:1.3rem; white-space:normal; }
 
   /* ---- submit ---- */
@@ -331,6 +339,7 @@
         <div class="round-label">Champion</div>
         <div class="champ-card" id="col-champ">
           <div class="cap">Your Pick</div>
+          <img class="fphoto" id="champ-photo" src="" alt="" style="display:none" onerror="this.style.display='none'">
           <div class="fname" id="champ-name">&mdash;</div>
         </div>
       </div>
@@ -552,6 +561,26 @@
     return s;
   }
 
+  // Semifinals/Final (and champion, which is already handled by its own
+  // centered column) have fewer tiles than quarterfinals, so the round-col's
+  // reserved top space for the label leaves a big gap above the actual top
+  // tile. Pin the label just above wherever that tile really lands.
+  function positionRoundLabels(){
+    ['col-qf','col-sf','col-f'].forEach(function(id){
+      var col = document.getElementById(id);
+      var roundCol = col.parentElement;
+      var label = roundCol.querySelector('.round-label');
+      var firstMatchup = col.querySelector('.matchup');
+      if (!label || !firstMatchup) return;
+      var colTop = roundCol.getBoundingClientRect().top;
+      var mTop = firstMatchup.getBoundingClientRect().top;
+      var top = Math.max(0, (mTop - colTop) - label.offsetHeight - 12);
+      label.classList.add('positioned');
+      label.style.top = top + 'px';
+    });
+  }
+  window.addEventListener('resize', positionRoundLabels);
+
   function render(){
     var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
     var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
@@ -598,10 +627,19 @@
     })();
 
     document.getElementById('champ-name').textContent = picks.final ? picks.final.name : '—';
+    var champPhoto = document.getElementById('champ-photo');
+    if (picks.final){
+      champPhoto.src = '/photos/thumb/'+picks.final.photo+'.png';
+      champPhoto.style.display = '';
+    } else {
+      champPhoto.removeAttribute('src');
+      champPhoto.style.display = 'none';
+    }
 
     var made = picks.qf.filter(Boolean).length + picks.sf.filter(Boolean).length + (picks.final?1:0);
     document.getElementById('progress').innerHTML = '<strong>'+made+'</strong> of 7 picks made';
     document.getElementById('submitBtn').disabled = made < 7;
+    positionRoundLabels();
   }
 
   // Scroll forward once the WHOLE round is done, not just the one matchup
@@ -740,13 +778,16 @@
     colF.appendChild(fBlock);
 
     document.getElementById('col-champ').innerHTML =
-      '<div class="cap">Actual Champion</div><div class="fname">'+real.final.name+'</div>' +
+      '<div class="cap">Actual Champion</div>' +
+      '<img class="fphoto" src="/photos/thumb/'+real.final.photo+'.png" alt="" onerror="this.style.display=\'none\'">' +
+      '<div class="fname">'+real.final.name+'</div>' +
       (picks.final === real.final
         ? '<span class="pickbadge" style="margin-top:0.6rem; color:var(--good); border-color:var(--good);">Your pick</span>'
         : '<div class="youhad" style="margin-top:0.5rem;">You had <strong>'+(picks.final?picks.final.name:'—')+'</strong></div>');
 
     document.getElementById('submitBtn').disabled = true;
     document.getElementById('submitBtn').textContent = 'Bracket Submitted';
+    positionRoundLabels();
   }
 })();
 </script>
