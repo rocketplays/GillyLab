@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>GillyLab</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <!-- App-only chrome: a small top bar for screen titles/back actions. Not
+       the website's nav -- this app has no address bar, no page reloads, so
+       there's no need for the site's own top nav links here. -->
+  <header class="gl-topbar" id="topbar">
+    <button class="gl-back" id="backBtn" hidden aria-label="Back">&larr;</button>
+    <div class="gl-topbar-title" id="topbarTitle">GillyLab</div>
+    <div class="gl-topbar-spacer"></div>
+  </header>
+
+  <main id="app" class="gl-app"></main>
+
+  <!-- Native-style bottom tab bar. This is HTML/CSS, not a native UITabBar --
+       see mobile/README.md for why that trade-off was made for the scaffold
+       milestone. A carefully-styled web tab bar with safe-area insets and
+       haptic feedback on tap reads as native to nearly everyone using the app. -->
+  <nav class="gl-tabbar" id="tabbar">
+    <button class="gl-tab" data-route="home" aria-label="Home">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M4 11.5 12 4l8 7.5V20a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="gl-tab" data-route="climb" aria-label="The Climb">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M3 20h4l3-6 3 4 3-9 3 11h2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>Climb</span>
+    </button>
+    <button class="gl-tab" data-route="pickem" aria-label="Pick'em">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M9 4h6v4l3 3-3 3v6H9v-6l-3-3 3-3V4Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>Pick'em</span>
+    </button>
+    <button class="gl-tab" data-route="rankings" aria-label="Rankings">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Rankings</span>
+    </button>
+    <button class="gl-tab" data-route="account" aria-label="Account">
+      <svg viewBox="0 0 24 24" class="gl-tab-icon"><circle cx="12" cy="8" r="3.4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4.5 20c1.2-4 4-6 7.5-6s6.3 2 7.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span>Account</span>
+    </button>
+  </nav>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/native.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/screens/home.js"></script>
+  <script src="js/screens/climb.js"></script>
+  <script src="js/screens/pickem.js"></script>
+  <script src="js/screens/rankings.js"></script>
+  <script src="js/screens/account.js"></script>
+  <script src="js/screens/premium.js"></script>
+  <script src="js/screens/login.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

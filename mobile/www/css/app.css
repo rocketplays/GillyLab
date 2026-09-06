@@ -1,0 +1,106 @@
+:root{
+  --accent:#00e668;
+  --bg:#0a0a0b;
+  --card:#14141a;
+  --surface2:#18181d;
+  --border:#2a2a32;
+  --muted:#8a8f99;
+  --text:#f4f5f7;
+  --bad:#ff3d00;
+  --on-accent:#04140a;
+  --tabbar-h:56px;
+  --topbar-h:52px;
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0; padding:0; background:var(--bg); color:var(--text);
+  font-family:'Barlow', -apple-system, sans-serif;
+  -webkit-tap-highlight-color:transparent; overscroll-behavior:none;
+  height:100%; width:100%;
+}
+/* No text selection / long-press callout on the chrome -- one of the
+   details that makes a webview read as "a website" if left default. */
+.gl-tabbar, .gl-topbar, button{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+button{ font-family:inherit; }
+
+h1,h2,h3,.gl-heading{ font-family:'Barlow Condensed', sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:.01em; }
+
+/* ---- top bar: safe-area aware, sits above the notch/status bar ---- */
+.gl-topbar{
+  position:fixed; top:0; left:0; right:0; z-index:10;
+  height:calc(var(--topbar-h) + env(safe-area-inset-top));
+  padding-top:env(safe-area-inset-top);
+  display:flex; align-items:center; gap:.5rem; padding-left:1rem; padding-right:1rem;
+  background:color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.gl-back{
+  background:none; border:none; color:var(--text); font-size:1.3rem; line-height:1;
+  width:2rem; height:2rem; display:flex; align-items:center; justify-content:center;
+  border-radius:50%; cursor:pointer;
+}
+.gl-back:active{ background:var(--surface2); }
+.gl-topbar-title{ font-family:'Barlow Condensed',sans-serif; font-weight:900; letter-spacing:.1em; font-size:1rem; text-transform:uppercase; }
+.gl-topbar-title .a{ color:var(--accent); }
+.gl-topbar-spacer{ margin-left:auto; width:2rem; }
+
+/* ---- app content: fills between top bar and tab bar, scrolls on its own ---- */
+.gl-app{
+  position:fixed; left:0; right:0;
+  top:calc(var(--topbar-h) + env(safe-area-inset-top));
+  bottom:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  padding:1.1rem 1.1rem 2rem;
+}
+
+/* ---- bottom tab bar ---- */
+.gl-tabbar{
+  position:fixed; left:0; right:0; bottom:0; z-index:10;
+  display:flex;
+  height:calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  background:color-mix(in srgb, var(--bg) 90%, transparent);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--border);
+}
+.gl-tab{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  background:none; border:none; color:var(--muted); cursor:pointer; padding:6px 2px 0;
+  font-size:.66rem; font-weight:600; letter-spacing:.01em;
+}
+.gl-tab-icon{ width:23px; height:23px; }
+.gl-tab.active{ color:var(--accent); }
+.gl-tab:active{ opacity:.6; }
+
+/* ---- shared screen bits ---- */
+.gl-card{
+  background:var(--card); border:1px solid var(--border); border-radius:12px;
+  padding:1rem 1.1rem; margin-bottom:.9rem;
+}
+.gl-card p{ color:var(--muted); font-size:.88rem; line-height:1.5; margin:.3rem 0 0; }
+.gl-btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+  font-family:'Barlow Condensed',sans-serif; font-weight:800; letter-spacing:.04em; text-transform:uppercase;
+  font-size:.9rem; padding:.85rem 1.2rem; border-radius:10px; border:none; cursor:pointer; width:100%;
+}
+.gl-btn-primary{ background:var(--accent); color:var(--on-accent); }
+.gl-btn-primary:active{ opacity:.85; }
+.gl-btn-outline{
+  background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+  color:var(--text); border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.gl-btn-outline:active{ border-color:var(--accent); }
+.gl-field{
+  width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text);
+  border-radius:8px; padding:.8rem .9rem; font-size:.95rem; margin-bottom:.7rem;
+}
+.gl-field:focus{ outline:none; border-color:var(--accent); }
+.gl-label{ font-size:.72rem; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; font-weight:700; margin-bottom:.3rem; display:block; }
+.gl-muted{ color:var(--muted); font-size:.85rem; line-height:1.5; }
+.gl-error{ color:var(--bad); font-size:.82rem; margin:.4rem 0 0; }
+.gl-locked{
+  display:flex; flex-direction:column; align-items:center; text-align:center; gap:.8rem;
+  padding:2.5rem 1rem; color:var(--muted);
+}
+.gl-locked svg{ width:40px; height:40px; opacity:.6; }

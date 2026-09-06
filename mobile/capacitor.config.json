@@ -1,0 +1,25 @@
+{
+  "appId": "com.gillylab.app",
+  "appName": "GillyLab",
+  "webDir": "www",
+  "backgroundColor": "#0a0a0b",
+  "ios": {
+    "backgroundColor": "#0a0a0b",
+    "contentInset": "always"
+  },
+  "android": {
+    "backgroundColor": "#0a0a0b"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 400,
+      "backgroundColor": "#0a0a0b",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    },
+    "StatusBar": {
+      "style": "DARK",
+      "backgroundColor": "#0a0a0b"
+    }
+  }
+}
