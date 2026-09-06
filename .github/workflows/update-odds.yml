@@ -329,6 +329,14 @@ jobs:
       - name: Regenerate The Climb page
         run: node scripts/gen-climb-page.cjs
 
+      # Regenerate worker/bracket-page.js (the /bracket playtest route) from
+      # prototypes/legends-bracket.html. Same rule and same reasoning as the
+      # Climb page above: generated, never forked, and NOT `|| true` — the
+      # generator only fails when the prototype's nav/og/mount markers move,
+      # which would ship a broken page.
+      - name: Regenerate Legends Bracket page
+        run: node scripts/gen-bracket-page.cjs
+
       # The SAME game, packaged for the premium app's Pick'em / The Climb toggle
       # (climb-app.js, lazy-loaded — it is deliberately NOT inlined into index.html's
       # 13MB eager payload; CLAUDE.md #3). Two targets, one source: this must run
@@ -500,6 +508,7 @@ jobs:
           node scripts/gen-landing-data.cjs || true
           node scripts/gen-gl-sheet.cjs || true
           node scripts/gen-climb-page.cjs
+          node scripts/gen-bracket-page.cjs
           node scripts/gen-climb-app.cjs
           # Same swallow as the step above, in the reconcile path. This one is inside a
           # `run: |` block so it can't use continue-on-error — a ::warning:: annotation is

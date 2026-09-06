@@ -1,0 +1,634 @@
+/* AUTO-GENERATED from prototypes/legends-bracket.html by scripts/gen-bracket-page.cjs — do not edit by hand.
+   Edit the prototype instead. */
+export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0b">
+<title>Legends Bracket — Weekly UFC Fantasy Tournament | GillyLab</title>
+<meta name="description" content="Fill out a randomized 8-fighter bracket every week, any era, scored like a March Madness pool. Free to play on GillyLab.">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=Barlow:wght@400;500;600&display=swap">
+<!-- HEAD SLOT — filled by scripts/gen-bracket-page.cjs from the worker, empty
+     here. Carries the Open Graph tags (so a shared link previews) via the same
+     ogTags() every other page uses. Empty in the prototype, which is opened
+     directly and never needs a link preview. -->
+` + (head || "") + `
+<style>
+  /* GillyLab house palette — dark-only sportsbook/analytics look, no light
+     variant (the real site doesn't have one either). Green = correct/positive,
+     red-orange = incorrect/eliminated, gold = neutral model/data layer. */
+  :root{
+    --bg:#0a0a0b;
+    --surface:#111114;
+    --card:#14141a;
+    --surface-2:#18181d;
+    --line:#2a2a32;
+    --paper:#f0f0f0;
+    --muted:#666672;
+    --accent:#00e668;
+    --accent-2:#ffb340;
+    --good:#00e668;
+    --bad:#ff3d00;
+    --on-accent:#04140a;
+    --shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--paper);
+    font-family:'Barlow', system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:2.25rem 1.5rem 5rem; }
+
+  /* ---- header ---- */
+  h1{
+    font-family:'Barlow Condensed', sans-serif; font-weight:900; text-transform:uppercase;
+    font-size:clamp(2.3rem, 5.2vw, 4rem); line-height:0.92; letter-spacing:0.01em;
+    margin:0 0 0.5rem; text-wrap:balance;
+  }
+  h1 span{ color:var(--accent); }
+  .subtitle{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; text-transform:uppercase;
+    font-size:1.2rem; letter-spacing:0.03em; color:var(--muted); margin:0 0 0.9rem;
+  }
+  .subtitle span{ color:var(--accent); }
+  .tagline{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:1.05rem;
+    color:var(--accent-2); text-transform:uppercase; letter-spacing:0.02em; margin:0 0 0.9rem;
+  }
+  .sub{ color:var(--muted); font-size:0.98rem; max-width:64ch; line-height:1.6; margin:0 0 1.6rem; }
+
+  /* ---- belt progression: lifetime, not weekly — one bad bracket never costs
+     you a belt, same as a real one never gets taken back for a bad class ---- */
+  .belt-panel{
+    display:flex; align-items:center; gap:0.9rem; margin:0 0 1.6rem;
+    padding:0.8rem 1rem; background:var(--card); border:1px solid var(--line); border-radius:8px;
+  }
+  .belt-swatch{ width:2.3rem; height:1.15rem; border-radius:3px; flex:none; }
+  .belt-info{ flex:none; }
+  .belt-name{ font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.92rem;
+    text-transform:uppercase; letter-spacing:0.02em; }
+  .belt-stripes{ display:flex; gap:0.2rem; margin-top:0.3rem; }
+  .belt-stripes .stripe{ width:0.6rem; height:0.3rem; border-radius:1px; background:var(--line); }
+  .belt-stripes .stripe.filled{ background:var(--accent-2); }
+  .belt-progress{ flex:1; min-width:140px; }
+  .belt-bar-track{ height:6px; border-radius:4px; background:var(--surface-2); overflow:hidden; }
+  .belt-bar-fill{ height:100%; border-radius:4px; }
+  .belt-meta{ font-size:0.72rem; color:var(--muted); margin-top:0.35rem; }
+
+  .rules{
+    display:flex; flex-wrap:wrap; gap:0.6rem 1.1rem; margin-bottom:2.4rem;
+    padding:0.9rem 1.1rem; background:var(--card); border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .rules div{ font-size:0.82rem; color:var(--muted); display:flex; gap:0.45rem; align-items:baseline; }
+  .rules strong{ font-family:'Barlow Condensed', sans-serif; color:var(--paper); font-weight:700; }
+
+  /* ---- bracket ---- */
+  .bracket-scroll{ overflow-x:auto; padding-bottom:0.5rem; margin:0 -0.25rem 2.5rem; }
+  .bracket{
+    display:grid; grid-template-columns: repeat(4, minmax(200px,1fr)); gap:0 2.4rem;
+    min-width:900px; padding:0.25rem;
+  }
+  .round-label{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--muted); text-align:center; margin-bottom:1rem;
+  }
+  .round-col{ display:flex; flex-direction:column; }
+  .slot-group{ display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
+
+  .matchup{ position:relative; display:flex; flex-direction:column; gap:0.5rem; }
+  .fcard{
+    display:flex; align-items:center; gap:0.6rem; padding:0.55rem 0.7rem;
+    background:var(--card); border:1px solid var(--line); border-radius:6px;
+    cursor:pointer; transition:background 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .fcard:hover{ background:var(--surface-2); }
+  .fcard:focus-visible{ outline:2px solid var(--accent-2); outline-offset:2px; }
+  .fcard.picked{ border-color:var(--accent); background:var(--surface-2); }
+  .fcard.picked .fname{ color:var(--accent); }
+  .fcard.locked{ cursor:default; }
+  .fcard.empty{ cursor:default; opacity:0.4; border-style:dashed; }
+
+  /* post-submit: who actually won this real matchup (independent of your pick) */
+  .fcard.winner{ border-color:var(--good); background:color-mix(in srgb, var(--good) 8%, var(--card)); }
+  .fcard.winner .fname{ color:var(--good); }
+  .fcard.winner .seed{ background:var(--good); color:var(--on-accent); border-color:var(--good); }
+  /* fade only the fighter's own info, not the whole card — a badge sitting on
+     top needs full-strength color regardless of whether the card lost */
+  .fcard.loser{ border-color:var(--line); }
+  .fcard.loser .seed{ opacity:0.4; }
+  .fcard.loser .fname{ opacity:0.55; text-decoration:line-through; text-decoration-color:var(--bad); text-decoration-thickness:1.5px; }
+  .fcard.loser .flegacy{ opacity:0.4; }
+
+  .pickbadge{
+    display:inline-flex; align-items:center; gap:0.25rem; font-family:'Barlow Condensed', sans-serif; font-weight:700;
+    font-size:0.62rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--accent);
+    border:1px solid var(--accent); border-radius:4px; padding:0.1rem 0.35rem; margin-left:auto; flex:none;
+  }
+  .pickbadge::before{ content:"\\2605"; font-size:0.7rem; line-height:1; }
+  /* post-submit: badge color states the verdict, not just "this was your pick" */
+  .fcard.winner .pickbadge{ color:var(--good); border-color:var(--good); }
+  .fcard.loser .pickbadge{ color:var(--bad); border-color:var(--bad); }
+
+  .seed{
+    font-family:'Barlow Condensed', sans-serif; font-size:0.78rem; color:var(--accent-2);
+    background:color-mix(in srgb, var(--accent-2) 14%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent-2) 35%, transparent);
+    width:1.5rem; height:1.5rem; border-radius:5px;
+    display:flex; align-items:center; justify-content:center; flex:none; font-weight:800;
+  }
+  .fmeta{ min-width:0; flex:1; }
+  .fname{ font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.95rem; letter-spacing:0.01em;
+    text-transform:uppercase; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .flegacy{ font-size:0.68rem; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  .vs{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.66rem; color:var(--muted);
+    text-align:center; letter-spacing:0.1em; text-transform:uppercase; }
+
+  .modelcall{
+    font-family:'Barlow Condensed', sans-serif; font-weight:600; font-size:0.72rem; color:var(--muted);
+    text-align:center; letter-spacing:0.01em; padding-top:0.15rem; border-top:1px dashed var(--line);
+  }
+  .modelcall strong{ color:var(--accent-2); font-weight:700; }
+  .modelmark{ font-weight:800; }
+  .modelmark.hit{ color:var(--good); }
+  .modelmark.miss{ color:var(--bad); }
+  .consensusline{ margin-top:0.3rem; }
+  .consensusline strong{ color:var(--accent-2); font-weight:700; }
+
+  .youhad{ font-size:0.68rem; color:var(--muted); text-align:center; }
+  .youhad strong{ color:var(--bad); font-weight:700; }
+
+  /* connectors between rounds */
+  .round-col:not(:last-child) .slot-group{ position:relative; }
+  .matchup::after{
+    content:""; position:absolute; right:-1.2rem; top:50%; width:1.2rem; height:1px;
+    background:var(--line);
+  }
+  .round-col:last-child .matchup::after{ display:none; }
+
+  .champion-col{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .champ-card{
+    text-align:center; padding:1.1rem 1rem; background:var(--card); border:1px solid var(--accent-2);
+    border-radius:8px; width:100%;
+  }
+  .champ-card .cap{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.12em;
+    text-transform:uppercase; color:var(--accent-2); margin-bottom:0.5rem; }
+  .champ-card .fname{ font-size:1.3rem; white-space:normal; }
+
+  /* ---- submit ---- */
+  .submit-row{ display:flex; align-items:center; gap:1rem; margin-bottom:3rem; flex-wrap:wrap; }
+  button.primary{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.06em;
+    text-transform:uppercase; background:var(--accent); color:var(--on-accent); border:none;
+    padding:0.75rem 1.5rem; border-radius:4px; cursor:pointer; box-shadow:var(--shadow);
+    transition:opacity 0.12s, transform 0.12s;
+  }
+  button.primary:hover:not(:disabled){ opacity:0.85; transform:translateY(-1px); }
+  button.primary:disabled{ background:var(--surface-2); color:var(--muted); opacity:0.5; cursor:not-allowed; box-shadow:none; }
+  .progress{ font-family:'Barlow Condensed', sans-serif; font-weight:600; font-size:0.82rem; color:var(--muted); }
+  .progress strong{ color:var(--paper); }
+
+  /* ---- results ---- */
+  #results{ display:none; }
+  #results.show{ display:block; animation:rise 0.35s ease both; }
+  @keyframes rise{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+
+  .score-banner{
+    display:flex; align-items:baseline; gap:1rem; flex-wrap:wrap;
+    padding:1.4rem 1.5rem; background:var(--card); border:1px solid var(--line);
+    border-radius:8px; margin-bottom:2rem;
+  }
+  .score-banner .big{ font-family:'Barlow Condensed', sans-serif; font-weight:900; font-size:3rem; color:var(--accent); line-height:1; }
+  .score-banner .of{ font-family:'Barlow Condensed', sans-serif; font-weight:600; color:var(--muted); font-size:1rem; }
+  .score-banner .label{ font-size:0.85rem; color:var(--muted); margin-left:auto; max-width:32ch; text-align:right; }
+
+  .lb-tabs{ display:flex; gap:0.5rem; margin-bottom:1rem; flex-wrap:wrap; }
+  .lbtab{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem; letter-spacing:0.03em; text-transform:uppercase;
+    background:var(--card); border:1px solid var(--line); color:var(--muted); border-radius:6px;
+    padding:0.4rem 0.8rem; cursor:pointer;
+  }
+  .lbtab:hover{ border-color:var(--accent-2); color:var(--paper); }
+  .lbtab.active{ border-color:var(--accent); color:var(--accent); background:color-mix(in srgb, var(--accent) 10%, var(--card)); }
+
+  h2.section{
+    font-family:'Barlow Condensed', sans-serif; font-weight:800; text-transform:uppercase;
+    font-size:1.3rem; letter-spacing:0.01em; margin:0 0 0.9rem; color:var(--paper);
+  }
+  .section-note{ font-size:0.8rem; color:var(--muted); margin:-0.5rem 0 1.2rem; }
+
+  table.leaderboard{ width:100%; border-collapse:collapse; font-size:0.9rem; }
+  table.leaderboard th{
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--muted); text-align:left; padding:0.5rem 0.7rem; border-bottom:1px solid var(--line);
+  }
+  table.leaderboard td{ padding:0.55rem 0.7rem; border-bottom:1px solid var(--line); }
+  table.leaderboard td.rank{ font-family:'Barlow Condensed', sans-serif; font-weight:700; color:var(--muted); }
+  table.leaderboard td.pts{ font-family:'Barlow Condensed', sans-serif; font-weight:700; font-variant-numeric:tabular-nums; text-align:right; }
+  table.leaderboard tr.you{ background:color-mix(in srgb, var(--accent) 10%, transparent); }
+  table.leaderboard tr.you td{ font-weight:700; color:var(--paper); }
+
+  @media (max-width:640px){
+    .score-banner .label{ margin-left:0; text-align:left; }
+  }
+</style>
+</head>
+<body>
+<!-- TOP BAR SLOT — the brand + account links, filled by gen-bracket-page.cjs.
+     OUTSIDE .wrap so its divider spans the viewport the way it does on every
+     other free page. Empty in the prototype, which has no /subscribe to link
+     to. -->
+` + (nav || "") + `
+<div class="wrap">
+
+  <!-- BACK SLOT — inside the column, under the divider. Empty in the
+       prototype; the worker fills it with a link back to This Week's Card. -->
+  ` + (back || "") + `
+
+  <h1>Legends <span>Bracket</span></h1>
+  <p class="subtitle">This Week: <span>Heavyweight</span></p>
+  <p class="sub">A randomly drawn 8-fighter pool from one division, any era &mdash; the division rotates every week. Fill it out like a March Madness bracket, earn points for every correct call, and see how you stack up. The GillyLab Model decides every winner.</p>
+
+  <div class="belt-panel" id="beltPanel"></div>
+
+  <div class="rules">
+    <div>Fill out every round, then submit once</div>
+    <div><strong>1&nbsp;pt</strong> per quarterfinal</div>
+    <div><strong>2&nbsp;pts</strong> per semifinal</div>
+    <div><strong>4&nbsp;pts</strong> for the final</div>
+    <div><strong>12&nbsp;pts</strong> possible</div>
+  </div>
+
+  <div class="bracket-scroll">
+    <div class="bracket" id="bracket">
+      <div class="round-col">
+        <div class="round-label">Quarterfinals</div>
+        <div class="slot-group" id="col-qf"></div>
+      </div>
+      <div class="round-col">
+        <div class="round-label">Semifinals</div>
+        <div class="slot-group" id="col-sf"></div>
+      </div>
+      <div class="round-col">
+        <div class="round-label">Final</div>
+        <div class="slot-group" id="col-f"></div>
+      </div>
+      <div class="round-col champion-col">
+        <div class="round-label">Champion</div>
+        <div class="champ-card" id="col-champ">
+          <div class="cap">Your Pick</div>
+          <div class="fname" id="champ-name">&mdash;</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="submit-row">
+    <button class="primary" id="submitBtn" disabled>Submit Bracket</button>
+    <span class="progress" id="progress"><strong>0</strong> of 7 picks made</span>
+  </div>
+
+  <div id="results">
+    <div class="score-banner">
+      <span class="big" id="scoreBig">0</span><span class="of">/ 12</span>
+      <span class="label" id="scoreLabel">Every correct pick locked in above &mdash; here's the real bracket.</span>
+    </div>
+
+    <h2 class="section">Leaderboards</h2>
+    <div class="lb-tabs" id="lbTabs">
+      <button type="button" class="lbtab active" data-tab="week">This Week</button>
+      <button type="button" class="lbtab" data-tab="season">Season</button>
+    </div>
+    <p class="section-note">Sample field for demo purposes.</p>
+    <table class="leaderboard">
+      <thead><tr><th>Rank</th><th>Player</th><th>Pts</th></tr></thead>
+      <tbody id="leaderboardBody"></tbody>
+    </table>
+  </div>
+
+  <!-- CTA SLOT — the "this is free, here's what Premium adds" box every other
+       free page ends its content with. Empty in the prototype. -->
+  ` + (cta || "") + `
+</div>
+<!-- FOOTER SLOT — filled by scripts/gen-bracket-page.cjs with the worker's
+     FREE_FOOTER, the same one every other free page ends with. OUTSIDE .wrap
+     on purpose: the footer's rule and copyright span the page. Empty in the
+     prototype, which is opened directly and has no /about or /terms to link
+     to. -->
+` + (footer || "") + `
+
+<script>
+(function(){
+  // ---- fighters: seed, mock power score, one-line legacy tag ----
+  var FIGHTERS = [
+    { seed:1, name:"Fedor Emelianenko",   power:96, legacy:"PRIDE Heavyweight King, 2000s" },
+    { seed:8, name:"Fabricio Werdum",     power:74, legacy:"Ended Fedor's streak, 2010" },
+    { seed:4, name:"Stipe Miocic",        power:88, legacy:"Most UFC HW title defenses" },
+    { seed:5, name:"Junior Dos Santos",   power:83, legacy:"UFC 155 champion" },
+    { seed:3, name:"Cain Velasquez",      power:90, legacy:"Undefeated title reign, 2010s" },
+    { seed:6, name:"Randy Couture",       power:79, legacy:"5x UFC Heavyweight Champion" },
+    { seed:2, name:"Brock Lesnar",        power:92, legacy:"Fastest to a UFC HW belt" },
+    { seed:7, name:"Francis Ngannou",     power:76, legacy:"Hardest punch ever recorded" },
+  ];
+  var bySeed = {}; FIGHTERS.forEach(function(f){ bySeed[f.seed]=f; });
+
+  // Standard bracket pairing: keep top seeds apart until late rounds.
+  var QF_PAIRS = [ [1,8], [4,5], [3,6], [2,7] ];
+
+  function winProb(a,b){
+    // logistic on power gap, scaled so a ~15-20pt gap is a heavy but not lock favorite
+    var diff = a.power - b.power;
+    return 1/(1+Math.pow(10, -diff/22));
+  }
+  function simMatch(a,b){
+    return Math.random() < winProb(a,b) ? a : b;
+  }
+
+  // ---- run the ACTUAL bracket once, up front (the "real" outcome) ----
+  var real = { qf:[], sf:[], final:null };
+  QF_PAIRS.forEach(function(p){ real.qf.push(simMatch(bySeed[p[0]], bySeed[p[1]])); });
+  real.sf.push(simMatch(real.qf[0], real.qf[1]));
+  real.sf.push(simMatch(real.qf[2], real.qf[3]));
+  real.final = simMatch(real.sf[0], real.sf[1]);
+
+  // fabricated (but plausible, power-informed) consensus % for the QF round
+  function consensusPct(a,b){
+    var p = Math.round(winProb(a,b)*100);
+    // add a little human noise so it isn't a carbon copy of the model line
+    p = Math.max(4, Math.min(96, p + Math.round((Math.random()-0.5)*14)));
+    return p;
+  }
+  var consensus = QF_PAIRS.map(function(p){
+    var a=bySeed[p[0]], b=bySeed[p[1]];
+    var pctA = consensusPct(a,b);
+    return { a:a, b:b, pctA:pctA, pctB:100-pctA };
+  });
+
+  // ---- user picks, one name per structural slot ----
+  var picks = { qf:[null,null,null,null], sf:[null,null], final:null };
+
+  // Consensus % isn't held back until the whole week's window closes — it's
+  // held back until YOU submit, same protection with a much shorter wait.
+  // Below a minimum sample it's also hidden regardless, since "1 of 2 people
+  // picked Fedor (50%)" isn't a real signal, just noise dressed as data.
+  var CONSENSUS_THRESHOLD = 10;
+  var poolCount = 9; // simulated: how many brackets are in so far this week
+
+  // ---- belts: lifetime progression, not weekly. A real belt never gets
+  // taken back for one bad week, so promotion runs off a cumulative total
+  // across every bracket you've ever submitted, not this week's score alone.
+  // Real adult BJJ order: white, blue, purple, brown, black — that's it, no
+  // invented tiers on top (coral/red belts are honorary degree ranks handed
+  // out after decades, not something a points ladder should be minting).
+  var BELTS = [
+    { name:'White',  min:0,   color:'#e8e8ea' },
+    { name:'Blue',   min:20,  color:'#2f6fed' },
+    { name:'Purple', min:50,  color:'#8b5cf6' },
+    { name:'Brown',  min:100, color:'#8a5a2b' },
+    { name:'Black',  min:180, color:'#1a1a1a', outline:true },
+  ];
+  var lifetimePts = 0; // starts at White Belt, 0 stripes
+
+  function beltInfo(pts){
+    var idx = 0;
+    for (var i=0; i<BELTS.length; i++){ if (pts >= BELTS[i].min) idx = i; }
+    var belt = BELTS[idx], next = BELTS[idx+1];
+    var pct, stripes;
+    if (next){
+      pct = Math.max(0, Math.min(1, (pts - belt.min) / (next.min - belt.min)));
+      stripes = Math.min(4, Math.floor(pct * 4));
+    } else { pct = 1; stripes = 4; }
+    return { belt:belt, next:next, pct:pct, stripes:stripes };
+  }
+
+  function renderBeltPanel(){
+    var info = beltInfo(lifetimePts);
+    var stripesHTML = '';
+    for (var s=0; s<4; s++){ stripesHTML += '<span class="stripe'+(s<info.stripes?' filled':'')+'"></span>'; }
+    var nextText = info.next
+      ? (info.next.min - lifetimePts)+' pts to '+info.next.name+' Belt'
+      : 'Top belt reached';
+    document.getElementById('beltPanel').innerHTML =
+      '<div class="belt-swatch" style="background:'+info.belt.color+';'+(info.belt.outline?'border:1px solid var(--accent-2);':'')+'"></div>' +
+      '<div class="belt-info"><div class="belt-name">'+info.belt.name+' Belt</div>' +
+        '<div class="belt-stripes">'+stripesHTML+'</div></div>' +
+      '<div class="belt-progress">' +
+        '<div class="belt-bar-track"><div class="belt-bar-fill" style="width:'+(info.pct*100)+'%; background:'+info.belt.color+';"></div></div>' +
+        '<div class="belt-meta">'+lifetimePts+' lifetime pts &middot; '+nextText+'</div>' +
+      '</div>';
+  }
+  renderBeltPanel();
+
+  var boards = {};
+  function renderLeaderboard(tab){
+    var rows = boards[tab].slice().sort(function(a,b){ return b.pts-a.pts; });
+    var lb = document.getElementById('leaderboardBody'); lb.innerHTML = '';
+    rows.forEach(function(row, i){
+      var tr = document.createElement('tr'); if (row.mine) tr.className = 'you';
+      tr.innerHTML = '<td class="rank">#'+(i+1)+'</td><td>'+row.name+'</td><td class="pts">'+row.pts+'</td>';
+      lb.appendChild(tr);
+    });
+    document.querySelectorAll('.lbtab').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-tab')===tab); });
+  }
+  document.querySelectorAll('.lbtab').forEach(function(btn){
+    btn.addEventListener('click', function(){ renderLeaderboard(btn.getAttribute('data-tab')); });
+  });
+
+  function fcard(fighter, opts){
+    opts = opts||{};
+    var d = document.createElement('div');
+    d.className = 'fcard' + (opts.empty?' empty':'') + (opts.picked?' picked':'') +
+      (opts.locked?' locked':'') + (opts.winner?' winner':'') + (opts.loser?' loser':'');
+    if (!fighter){
+      d.innerHTML = '<span class="seed">&middot;</span><span class="fmeta"><div class="fname">TBD</div></span>';
+      return d;
+    }
+    d.innerHTML =
+      '<span class="seed">'+fighter.seed+'</span>' +
+      '<span class="fmeta"><div class="fname">'+fighter.name+'</div>' +
+      '<div class="flegacy">'+fighter.legacy+'</div></span>' +
+      (opts.yourPick ? '<span class="pickbadge">Your pick</span>' : '');
+    if (opts.onClick){ d.addEventListener('click', opts.onClick); d.tabIndex = 0;
+      d.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); opts.onClick(); } }); }
+    return d;
+  }
+
+  // "GillyLab Model" isn't a separate competitor filling out its own bracket —
+  // it's just how we label the real result. The model's simulation is what
+  // decided who actually won, so "GillyLab Model: Cain Velasquez" and "Actual
+  // Winner: Cain Velasquez" are the same fact stated once. What this line adds
+  // is the verdict on YOUR pick for that slot — right or wrong.
+  //
+  // For QF matchups only, once at least CONSENSUS_THRESHOLD brackets are in,
+  // a second line under it shows the crowd's majority pick — right where the
+  // model's call is, instead of a separate section elsewhere on the page.
+  function modelCallEl(winner, yourPick, qfConsensus){
+    var hit = yourPick === winner;
+    var d = document.createElement('div'); d.className='modelcall';
+    var html = 'GillyLab Model: <strong>'+winner.name+'</strong>' +
+      (yourPick ? ' <span class="modelmark '+(hit?'hit':'miss')+'">'+(hit?'✓ you had it':'✗ you missed it')+'</span>' : '');
+    if (qfConsensus && poolCount >= CONSENSUS_THRESHOLD){
+      var maj = qfConsensus.pctA >= qfConsensus.pctB
+        ? { pct:qfConsensus.pctA, f:qfConsensus.a }
+        : { pct:qfConsensus.pctB, f:qfConsensus.b };
+      html += '<div class="consensusline">'+maj.pct+'% picked <strong>'+maj.f.name+'</strong></div>';
+    }
+    d.innerHTML = html;
+    return d;
+  }
+
+  function render(){
+    var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
+    var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
+    var colF  = document.getElementById('col-f');  colF.innerHTML='';
+
+    QF_PAIRS.forEach(function(pair, i){
+      var a = bySeed[pair[0]], b = bySeed[pair[1]];
+      var m = document.createElement('div'); m.className='matchup';
+      m.appendChild(fcard(a, { picked: picks.qf[i]===a, onClick:function(){ picks.qf[i]=a; onPickChanged(); } }));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ picks.qf[i]=b; onPickChanged(); } }));
+      colQF.appendChild(m);
+    });
+
+    [0,1].forEach(function(i){
+      var a = picks.qf[i*2], b = picks.qf[i*2+1];
+      var m = document.createElement('div'); m.className='matchup';
+      if (a) m.appendChild(fcard(a, { picked: picks.sf[i]===a, onClick:function(){ picks.sf[i]=a; onPickChanged(); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ picks.sf[i]=b; onPickChanged(); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      colSF.appendChild(m);
+    });
+
+    (function(){
+      var a = picks.sf[0], b = picks.sf[1];
+      var m = document.createElement('div'); m.className='matchup';
+      if (a) m.appendChild(fcard(a, { picked: picks.final===a, onClick:function(){ picks.final=a; onPickChanged(); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
+      m.appendChild(vs);
+      if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ picks.final=b; onPickChanged(); } }));
+      else m.appendChild(fcard(null, {empty:true}));
+      colF.appendChild(m);
+    })();
+
+    document.getElementById('champ-name').textContent = picks.final ? picks.final.name : '—';
+
+    var made = picks.qf.filter(Boolean).length + picks.sf.filter(Boolean).length + (picks.final?1:0);
+    document.getElementById('progress').innerHTML = '<strong>'+made+'</strong> of 7 picks made';
+    document.getElementById('submitBtn').disabled = made < 7;
+  }
+
+  function onPickChanged(){
+    // clear downstream picks that no longer trace back to a still-picked fighter
+    [0,1].forEach(function(i){
+      var a = picks.qf[i*2], b = picks.qf[i*2+1];
+      if (picks.sf[i] && picks.sf[i]!==a && picks.sf[i]!==b) picks.sf[i]=null;
+    });
+    if (picks.final && picks.final!==picks.sf[0] && picks.final!==picks.sf[1]) picks.final=null;
+    render();
+  }
+
+  render();
+
+  document.getElementById('submitBtn').addEventListener('click', function(){
+    var score = 0;
+    var rows = [];
+    QF_PAIRS.forEach(function(pair,i){
+      rows.push({ pick:picks.qf[i], actual:real.qf[i], pts:1 });
+    });
+    rows.push({ pick:picks.sf[0], actual:real.sf[0], pts:2 });
+    rows.push({ pick:picks.sf[1], actual:real.sf[1], pts:2 });
+    rows.push({ pick:picks.final, actual:real.final, pts:4 });
+
+    rows.forEach(function(r){
+      var correct = r.pick && r.actual && r.pick.name===r.actual.name;
+      if (correct) score += r.pts;
+    });
+
+    markCardStates();
+
+    document.getElementById('scoreBig').textContent = score;
+    document.getElementById('scoreLabel').textContent = score+' pts added to your lifetime belt progress.';
+
+    poolCount += 1; // your submission just joined the pool
+    lifetimePts += score;
+    renderBeltPanel();
+
+    boards = {
+      week: [
+        { name:'You', pts:score, mine:true },
+        { name:'cagesider_92', pts:9 },
+        { name:'ParisOrBust', pts:8 },
+        { name:'oddsmakerjeff', pts:7 },
+        { name:'chalk_only', pts:6 },
+        { name:'fightIQ_low', pts:3 },
+      ],
+      season: [
+        { name:'You', pts:lifetimePts, mine:true },
+        { name:'cagesider_92', pts:214 },
+        { name:'oddsmakerjeff', pts:188 },
+        { name:'ParisOrBust', pts:171 },
+        { name:'chalk_only', pts:140 },
+        { name:'fightIQ_low', pts:96 },
+      ],
+    };
+    renderLeaderboard('week');
+
+    document.getElementById('results').classList.add('show');
+    document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+
+  // Post-submit, the bracket switches from "your hypothetical path" to the
+  // real-results path: both fighters in every matchup, the actual winner clearly
+  // marked, the actual loser dimmed, and your pick for that slot badged onto
+  // whichever card it landed on. If your pick for a later round isn't one of
+  // the two fighters who actually got there, there's nothing to badge — show
+  // a small note instead of pretending your hypothetical matchup was real.
+  function realMatchupBlock(a, b, winner, yourPick, qfConsensus){
+    var m = document.createElement('div'); m.className='matchup';
+    m.appendChild(fcard(a, { locked:true, winner: a===winner, loser: a!==winner, yourPick: yourPick===a }));
+    m.appendChild(fcard(b, { locked:true, winner: b===winner, loser: b!==winner, yourPick: yourPick===b }));
+    m.appendChild(modelCallEl(winner, yourPick, qfConsensus));
+    if (yourPick && yourPick!==a && yourPick!==b){
+      var note = document.createElement('div'); note.className='youhad';
+      note.innerHTML = 'You had <strong>'+yourPick.name+'</strong> here — didn’t advance';
+      m.appendChild(note);
+    }
+    return m;
+  }
+
+  function markCardStates(){
+    var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
+    QF_PAIRS.forEach(function(pair,i){
+      colQF.appendChild(realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]));
+    });
+    var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
+    colSF.appendChild(realMatchupBlock(real.qf[0], real.qf[1], real.sf[0], picks.sf[0]));
+    colSF.appendChild(realMatchupBlock(real.qf[2], real.qf[3], real.sf[1], picks.sf[1]));
+    var colF = document.getElementById('col-f'); colF.innerHTML='';
+    colF.appendChild(realMatchupBlock(real.sf[0], real.sf[1], real.final, picks.final));
+
+    document.getElementById('col-champ').innerHTML =
+      '<div class="cap">Actual Champion</div><div class="fname">'+real.final.name+'</div>' +
+      (picks.final === real.final
+        ? '<span class="pickbadge" style="margin-top:0.6rem; color:var(--good); border-color:var(--good);">Your pick</span>'
+        : '<div class="youhad" style="margin-top:0.5rem;">You had <strong>'+(picks.final?picks.final.name:'—')+'</strong></div>');
+
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').textContent = 'Bracket Submitted';
+  }
+})();
+</script>
+</body>
+</html>
+`;
