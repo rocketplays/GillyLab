@@ -91,8 +91,8 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   /* ---- bracket ---- */
   .bracket-scroll{ overflow-x:auto; padding-bottom:0.5rem; margin:0 -0.25rem 2.5rem; }
   .bracket{
-    display:grid; grid-template-columns: repeat(4, minmax(200px,1fr)); gap:0 2.4rem;
-    min-width:900px; padding:0.25rem;
+    display:grid; grid-template-columns: repeat(4, minmax(200px,1fr)); gap:0 3.6rem;
+    min-width:980px; padding:0.25rem;
   }
   .round-label{
     font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.74rem; letter-spacing:0.1em;
@@ -100,6 +100,10 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   }
   .round-col{ display:flex; flex-direction:column; }
   .slot-group{ display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
+  /* groups two matchups whose winners meet in the same next-round slot, so the
+     elbow connector (bracket-pair::before/::after below) can merge their two
+     lines into the single line that reaches that slot */
+  .bracket-pair{ position:relative; display:flex; flex-direction:column; justify-content:space-around; flex:1; gap:1.6rem; }
 
   .matchup{ position:relative; display:flex; flex-direction:column; gap:0.5rem; }
   .fcard{
@@ -169,13 +173,36 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   .youhad{ font-size:0.68rem; color:var(--muted); text-align:center; }
   .youhad strong{ color:var(--bad); font-weight:700; }
 
-  /* connectors between rounds */
-  .round-col:not(:last-child) .slot-group{ position:relative; }
-  .matchup::after{
-    content:""; position:absolute; right:-1.2rem; top:50%; width:1.2rem; height:1px;
+  /* connectors between rounds — real-bracket elbow style. Each matchup gets a
+     short stub with the advancing fighter's name sitting on it; where two
+     matchups feed the same next-round slot (bracket-pair), a vertical bar
+     merges those two stubs into one line that continues into the next round's
+     box, the way an actual tournament bracket diagram reads. */
+  .round-col:not(:last-child) .matchup{ padding-right:0.9rem; }
+  .round-col:not(:last-child) .matchup::after{
+    content:""; position:absolute; right:-1rem; top:50%; width:1rem; height:1px;
     background:var(--line);
   }
-  .round-col:last-child .matchup::after{ display:none; }
+  .bracket-pair::before{
+    content:""; position:absolute; right:-1rem; top:25%; bottom:25%; width:1px;
+    background:var(--line);
+  }
+  .bracket-pair::after{
+    content:""; position:absolute; right:-1rem; top:50%; width:2.6rem; height:1px;
+    background:var(--line);
+  }
+  .round-col:last-child .matchup::after,
+  .round-col:last-child .bracket-pair::before,
+  .round-col:last-child .bracket-pair::after{ display:none; }
+
+  .connector-name{
+    position:absolute; left:100%; top:50%; margin-left:0.35rem; transform:translateY(-50%);
+    width:3.1rem; white-space:normal; line-height:1.1; pointer-events:none;
+    font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.6rem;
+    letter-spacing:0.02em; text-transform:uppercase; color:var(--muted); z-index:1;
+  }
+  .connector-name.picked{ color:var(--accent-2); }
+  .connector-name.winner{ color:var(--good); }
 
   .champion-col{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
   .champ-card{
@@ -254,8 +281,10 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
      slivers. */
   @media (max-width:820px){
     .bracket-scroll{ scroll-snap-type:x mandatory; }
-    .bracket{ grid-template-columns:repeat(4, 86vw); min-width:0; }
+    .bracket{ grid-template-columns:repeat(4, 86vw); min-width:0; gap:0 2.6rem; }
     .round-col{ scroll-snap-align:start; }
+    .bracket-pair::after{ width:1.6rem; }
+    .connector-name{ width:2.4rem; font-size:0.56rem; }
   }
 </style>
 </head>
@@ -507,22 +536,44 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     return d;
   }
 
+  // Groups two matchups whose winners land in the same next-round slot, so
+  // the CSS elbow (.bracket-pair::before/::after) can merge their lines.
+  function bracketPair(m1, m2){
+    var p = document.createElement('div'); p.className='bracket-pair';
+    p.appendChild(m1); p.appendChild(m2);
+    return p;
+  }
+  // The name that rides along a connector line. "picked" = your hypothetical
+  // pick, pre-submit; "winner" = the real result, post-submit.
+  function connectorLabel(fighter, kind){
+    var s = document.createElement('span'); s.className='connector-name';
+    if (fighter){
+      s.classList.add(kind);
+      var parts = fighter.name.trim().split(' ');
+      s.textContent = parts[parts.length-1];
+    }
+    return s;
+  }
+
   function render(){
     var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
     var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
     var colF  = document.getElementById('col-f');  colF.innerHTML='';
 
-    QF_PAIRS.forEach(function(pair, i){
+    var qfMatchups = QF_PAIRS.map(function(pair, i){
       var a = bySeed[pair[0]], b = bySeed[pair[1]];
       var m = document.createElement('div'); m.className='matchup'; m.id='m-qf-'+i;
       m.appendChild(fcard(a, { picked: picks.qf[i]===a, onClick:function(){ pickQf(i, a); } }));
       var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
       m.appendChild(vs);
       m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ pickQf(i, b); } }));
-      colQF.appendChild(m);
+      m.appendChild(connectorLabel(picks.qf[i], 'picked'));
+      return m;
     });
+    colQF.appendChild(bracketPair(qfMatchups[0], qfMatchups[1]));
+    colQF.appendChild(bracketPair(qfMatchups[2], qfMatchups[3]));
 
-    [0,1].forEach(function(i){
+    var sfMatchups = [0,1].map(function(i){
       var a = picks.qf[i*2], b = picks.qf[i*2+1];
       var m = document.createElement('div'); m.className='matchup'; m.id='m-sf-'+i;
       if (a) m.appendChild(fcard(a, { picked: picks.sf[i]===a, onClick:function(){ pickSf(i, a); } }));
@@ -531,8 +582,10 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       m.appendChild(vs);
       if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ pickSf(i, b); } }));
       else m.appendChild(fcard(null, {empty:true}));
-      colSF.appendChild(m);
+      m.appendChild(connectorLabel(picks.sf[i], 'picked'));
+      return m;
     });
+    colSF.appendChild(bracketPair(sfMatchups[0], sfMatchups[1]));
 
     (function(){
       var a = picks.sf[0], b = picks.sf[1];
@@ -543,6 +596,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
       m.appendChild(vs);
       if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ pickFinal(b); } }));
       else m.appendChild(fcard(null, {empty:true}));
+      m.appendChild(connectorLabel(picks.final, 'picked'));
       colF.appendChild(m);
     })();
 
@@ -666,14 +720,27 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
 
   function markCardStates(){
     var colQF = document.getElementById('col-qf'); colQF.innerHTML='';
-    QF_PAIRS.forEach(function(pair,i){
-      colQF.appendChild(realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]));
+    var qfBlocks = QF_PAIRS.map(function(pair,i){
+      var block = realMatchupBlock(bySeed[pair[0]], bySeed[pair[1]], real.qf[i], picks.qf[i], consensus[i]);
+      block.appendChild(connectorLabel(real.qf[i], 'winner'));
+      return block;
     });
+    colQF.appendChild(bracketPair(qfBlocks[0], qfBlocks[1]));
+    colQF.appendChild(bracketPair(qfBlocks[2], qfBlocks[3]));
+
     var colSF = document.getElementById('col-sf'); colSF.innerHTML='';
-    colSF.appendChild(realMatchupBlock(real.qf[0], real.qf[1], real.sf[0], picks.sf[0]));
-    colSF.appendChild(realMatchupBlock(real.qf[2], real.qf[3], real.sf[1], picks.sf[1]));
+    var sfBlocks = [
+      realMatchupBlock(real.qf[0], real.qf[1], real.sf[0], picks.sf[0]),
+      realMatchupBlock(real.qf[2], real.qf[3], real.sf[1], picks.sf[1])
+    ];
+    sfBlocks[0].appendChild(connectorLabel(real.sf[0], 'winner'));
+    sfBlocks[1].appendChild(connectorLabel(real.sf[1], 'winner'));
+    colSF.appendChild(bracketPair(sfBlocks[0], sfBlocks[1]));
+
     var colF = document.getElementById('col-f'); colF.innerHTML='';
-    colF.appendChild(realMatchupBlock(real.sf[0], real.sf[1], real.final, picks.final));
+    var fBlock = realMatchupBlock(real.sf[0], real.sf[1], real.final, picks.final);
+    fBlock.appendChild(connectorLabel(real.final, 'winner'));
+    colF.appendChild(fBlock);
 
     document.getElementById('col-champ').innerHTML =
       '<div class="cap">Actual Champion</div><div class="fname">'+real.final.name+'</div>' +
