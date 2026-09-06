@@ -138,6 +138,11 @@
     width:1.5rem; height:1.5rem; border-radius:5px;
     display:flex; align-items:center; justify-content:center; flex:none; font-weight:800;
   }
+  .fphoto{
+    width:2.5rem; height:2.5rem; border-radius:5px; object-fit:cover; flex:none;
+    background:var(--surface-2); border:1px solid var(--line);
+  }
+  .fcard.loser .fphoto{ opacity:0.5; filter:grayscale(0.4); }
   .fmeta{ min-width:0; flex:1; }
   .fname{ font-family:'Barlow Condensed', sans-serif; font-weight:800; font-size:0.95rem; letter-spacing:0.01em;
     text-transform:uppercase; line-height:1.1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -323,14 +328,14 @@
 (function(){
   // ---- fighters: seed, mock power score, one-line legacy tag ----
   var FIGHTERS = [
-    { seed:1, name:"Fedor Emelianenko",   power:96, legacy:"PRIDE Heavyweight King, 2000s" },
-    { seed:8, name:"Fabricio Werdum",     power:74, legacy:"Ended Fedor's streak, 2010" },
-    { seed:4, name:"Stipe Miocic",        power:88, legacy:"Most UFC HW title defenses" },
-    { seed:5, name:"Junior Dos Santos",   power:83, legacy:"UFC 155 champion" },
-    { seed:3, name:"Cain Velasquez",      power:90, legacy:"Undefeated title reign, 2010s" },
-    { seed:6, name:"Randy Couture",       power:79, legacy:"5x UFC Heavyweight Champion" },
-    { seed:2, name:"Brock Lesnar",        power:92, legacy:"Fastest to a UFC HW belt" },
-    { seed:7, name:"Francis Ngannou",     power:76, legacy:"Hardest punch ever recorded" },
+    { seed:1, name:"Fedor Emelianenko",   power:96, legacy:"PRIDE Heavyweight King, 2000s", photo:"fedor-emelianenko" },
+    { seed:8, name:"Fabricio Werdum",     power:74, legacy:"Ended Fedor's streak, 2010",     photo:"fabricio-werdum" },
+    { seed:4, name:"Stipe Miocic",        power:88, legacy:"Most UFC HW title defenses",     photo:"stipe-miocic" },
+    { seed:5, name:"Junior Dos Santos",   power:83, legacy:"UFC 155 champion",               photo:"junior-dos-santos" },
+    { seed:3, name:"Cain Velasquez",      power:90, legacy:"Undefeated title reign, 2010s",  photo:"cain-velasquez" },
+    { seed:6, name:"Randy Couture",       power:79, legacy:"5x UFC Heavyweight Champion",    photo:"randy-couture" },
+    { seed:2, name:"Brock Lesnar",        power:92, legacy:"Fastest to a UFC HW belt",       photo:"brock-lesnar" },
+    { seed:7, name:"Francis Ngannou",     power:76, legacy:"Hardest punch ever recorded",    photo:"francis-ngannou" },
   ];
   var bySeed = {}; FIGHTERS.forEach(function(f){ bySeed[f.seed]=f; });
 
@@ -447,6 +452,8 @@
     }
     d.innerHTML =
       '<span class="seed">'+fighter.seed+'</span>' +
+      '<img class="fphoto" src="/photos/thumb/'+fighter.photo+'.png" alt="" loading="lazy" ' +
+        'onerror="this.style.display=\'none\'">' +
       '<span class="fmeta"><div class="fname">'+fighter.name+'</div>' +
       '<div class="flegacy">'+fighter.legacy+'</div></span>' +
       (opts.yourPick ? '<span class="pickbadge">Your pick</span>' : '');
