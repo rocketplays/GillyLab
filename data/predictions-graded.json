@@ -3133,7 +3133,297 @@
         "pts": -0.0053,
         "leaned": true
       }
+    },
+    {
+      "fightId": "axel sola|fares ziam",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.829Z",
+      "a": {
+        "feed": "Fares Ziam",
+        "db": "Farès Ziam"
+      },
+      "b": {
+        "feed": "Axel Sola",
+        "db": "Axel Sola"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.6024,
+      "modelClose": 0.3976,
+      "marketOpen": 0.5798,
+      "marketClose": 0.4141,
+      "leanA": 0.0226,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": false,
+        "pts": -0.1657,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "daniil donchenko|punahele soriano",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.829Z",
+      "a": {
+        "feed": "Daniil Donchenko",
+        "db": "Daniil Donchenko"
+      },
+      "b": {
+        "feed": "Punahele Soriano",
+        "db": "Punahele Soriano"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5614,
+      "modelClose": 0.4387,
+      "marketOpen": 0.6742,
+      "marketClose": 0.3258,
+      "leanA": -0.1128,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": true,
+        "pts": 0.3484,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "felipe lima|morgan charriere",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.829Z",
+      "a": {
+        "feed": "Morgan Charriere",
+        "db": "Morgan Charriere"
+      },
+      "b": {
+        "feed": "Felipe Lima",
+        "db": "Felipe Lima"
+      },
+      "winner": "B",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.543,
+      "modelClose": 0.4564,
+      "marketOpen": 0.3712,
+      "marketClose": 0.6523,
+      "leanA": 0.1718,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": true,
+        "pts": 0.2811,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "kurtis campbell|trevor peek",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.829Z",
+      "a": {
+        "feed": "Kurtis Campbell",
+        "db": "Kurtis Campbell"
+      },
+      "b": {
+        "feed": "Trevor Peek",
+        "db": "Trevor Peek"
+      },
+      "winner": "A",
+      "method": "Submission",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5388,
+      "modelClose": 0.4606,
+      "marketOpen": 0.7352,
+      "marketClose": 0.2341,
+      "leanA": -0.1964,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": true,
+        "pts": 0.5011,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "mario pinto|ryan spann",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.830Z",
+      "a": {
+        "feed": "Mario Pinto",
+        "db": "Mario Pinto"
+      },
+      "b": {
+        "feed": "Ryan Spann",
+        "db": "Ryan Spann"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.6218,
+      "modelClose": 0.3782,
+      "marketOpen": 0.6668,
+      "marketClose": 0.2528,
+      "leanA": -0.045,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": true,
+        "pts": 0.414,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "modestas bukauskas|oumar sy",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.830Z",
+      "a": {
+        "feed": "Oumar Sy",
+        "db": "Oumar Sy"
+      },
+      "b": {
+        "feed": "Modestas Bukauskas",
+        "db": "Modestas Bukauskas"
+      },
+      "winner": "B",
+      "method": "KO/TKO",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.5267,
+      "modelClose": 0.4733,
+      "marketOpen": 0.6169,
+      "marketClose": 0.3194,
+      "leanA": -0.0902,
+      "nSnapshots": 25,
+      "clv": {
+        "toward": true,
+        "pts": 0.2975,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "luis felipe dias|matthieu letho",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.831Z",
+      "a": {
+        "feed": "Matthieu Letho",
+        "db": "Matthieu Letho Duclos"
+      },
+      "b": {
+        "feed": "Luis Felipe Dias",
+        "db": "Luis Felipe Dias"
+      },
+      "winner": "A",
+      "method": "KO/TKO",
+      "round": 1,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.3281,
+      "modelClose": 0.301,
+      "marketOpen": 0.4573,
+      "marketClose": 0.5186,
+      "leanA": -0.1292,
+      "nSnapshots": 23,
+      "clv": {
+        "toward": false,
+        "pts": -0.0613,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "delphine benouaich|sofia montenegro",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.834Z",
+      "a": {
+        "feed": "Sofia Montenegro",
+        "db": "Sofia Montenegro"
+      },
+      "b": {
+        "feed": "Delphine Benouaich",
+        "db": "Delphine Benouaich"
+      },
+      "winner": "B",
+      "method": "Submission",
+      "round": 2,
+      "aWon": 0,
+      "rounds": 3,
+      "modelOpen": 0.494,
+      "modelClose": 0.494,
+      "marketOpen": 0.3928,
+      "marketClose": 0.4455,
+      "leanA": 0.1012,
+      "nSnapshots": 19,
+      "clv": {
+        "toward": true,
+        "pts": 0.0527,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "fabia sintes|michael aljarouj",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.834Z",
+      "a": {
+        "feed": "Fabia Sintes",
+        "db": "Fabia Sintes"
+      },
+      "b": {
+        "feed": "Michael Aljarouj",
+        "db": "Michael Aljarouj"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.5121,
+      "modelClose": 0.5122,
+      "marketOpen": 0.4675,
+      "marketClose": 0.4675,
+      "leanA": 0.0446,
+      "nSnapshots": 19,
+      "clv": {
+        "toward": false,
+        "pts": 0,
+        "leaned": true
+      }
+    },
+    {
+      "fightId": "nathaniel wood|pavel andrusca",
+      "event": "UFC Fight Night",
+      "gradedAt": "2026-09-06T01:32:12.835Z",
+      "a": {
+        "feed": "Pavel Andrusca",
+        "db": "Pavel Andrusca"
+      },
+      "b": {
+        "feed": "Nathaniel Wood",
+        "db": "Nathaniel Wood"
+      },
+      "winner": "A",
+      "method": "Decision - Unanimous",
+      "round": 3,
+      "aWon": 1,
+      "rounds": 3,
+      "modelOpen": 0.4207,
+      "modelClose": 0.4207,
+      "marketOpen": 0.2773,
+      "marketClose": 0.282,
+      "leanA": 0.1434,
+      "nSnapshots": 6,
+      "clv": {
+        "toward": true,
+        "pts": 0.0047,
+        "leaned": true
+      }
     }
   ],
-  "generatedAt": "2026-09-05T14:27:44.364Z"
+  "generatedAt": "2026-09-06T01:32:12.839Z"
 }

@@ -1,110 +1,34 @@
 {
-  "slug": "ufc-fight-night-september-05-2026",
-  "generatedAt": "2026-09-05T14:27:24.536Z",
+  "slug": "ufc-fight-night-september-08-2026",
+  "generatedAt": "2026-09-06T01:31:51.706Z",
   "slugs": [
-    "dan-hooker",
-    "salahdine-parnasse",
-    "fares-ziam",
-    "axel-sola",
-    "michael-page",
-    "nursulton-ruziboev",
-    "daniil-donchenko",
-    "punahele-soriano",
-    "kurtis-campbell",
-    "trevor-peek",
-    "losene-keita",
-    "muhammad-naimov",
-    "morgan-charriere",
-    "felipe-lima",
-    "mario-pinto",
-    "ryan-spann",
-    "oumar-sy",
-    "modestas-bukauskas",
-    "nathaniel-wood",
-    "pavel-andrusca",
-    "michael-aljarouj",
-    "fabia-sintes",
-    "nora-cornolle",
-    "klaudia-sygula",
-    "matthieu-letho-duclos",
-    "luis-felipe-dias",
-    "delphine-benouaich",
-    "sofia-montenegro"
+    "quentin-pasley",
+    "arlind-berisha",
+    "isaac-moreno",
+    "reginaldo-junior",
+    "martin-kozak",
+    "christian-echols",
+    "kwon-won-il",
+    "apollo-gomes",
+    "colton-loud",
+    "christian-natividad"
   ],
   "bouts": [
     {
-      "id": "espn-dan-hooker-vs-salahdine-parnasse",
-      "f1": "Dan Hooker",
-      "f2": "Salahdine Parnasse",
-      "ps1": "dan-hooker",
-      "ps2": "salahdine-parnasse",
+      "id": "espn-quentin-pasley-vs-arlind-berisha",
+      "f1": "Quentin Pasley",
+      "f2": "Arlind Berisha",
+      "ps1": "quentin-pasley",
+      "ps2": "arlind-berisha",
       "wPts": {
-        "f1": 19.3317663740371,
-        "f2": 7.165026918176172
+        "f1": 10,
+        "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 4
-        },
-        "f2": {
-          "KO/TKO": 3,
-          "Submission": 6,
-          "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6,
-        "4": 7,
-        "5": 8
-      }
-    },
-    {
-      "id": "espn-fares-ziam-vs-axel-sola",
-      "f1": "Farés Ziam",
-      "f2": "Axel Sola",
-      "ps1": "fares-ziam",
-      "ps2": "axel-sola",
-      "wPts": {
-        "f1": 8.95799613383384,
-        "f2": 11.395373392271875
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 6,
-          "Submission": 7,
-          "Decision": 3
-        },
-        "f2": {
           "KO/TKO": 5,
           "Submission": 5,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-michael-page-vs-nursulton-ruziboev",
-      "f1": "Michael Page",
-      "f2": "Nursulton Ruziboev",
-      "ps1": "michael-page",
-      "ps2": "nursulton-ruziboev",
-      "wPts": {
-        "f1": 8.371336877240186,
-        "f2": 12.69820400668033
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 6,
-          "Submission": 7,
-          "Decision": 2
+          "Decision": 5
         },
         "f2": {
           "KO/TKO": 5,
@@ -119,216 +43,20 @@
       }
     },
     {
-      "id": "espn-daniil-donchenko-vs-punahele-soriano",
-      "f1": "Daniil Donchenko",
-      "f2": "Punahele Soriano",
-      "ps1": "daniil-donchenko",
-      "ps2": "punahele-soriano",
+      "id": "espn-isaac-moreno-vs-reginaldo-junior",
+      "f1": "Isaac Moreno",
+      "f2": "Reginaldo Junior",
+      "ps1": "isaac-moreno",
+      "ps2": "reginaldo-junior",
       "wPts": {
-        "f1": 8.115609320396244,
-        "f2": 13.483780064128277
+        "f1": 10,
+        "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 3,
-          "Submission": 6,
+          "KO/TKO": 5,
+          "Submission": 5,
           "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 7,
-          "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-kurtis-campbell-vs-trevor-peek",
-      "f1": "Kurtis Campbell",
-      "f2": "Trevor Peek",
-      "ps1": "kurtis-campbell",
-      "ps2": "trevor-peek",
-      "wPts": {
-        "f1": 7.416959147311313,
-        "f2": 17.02677761259966
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 5,
-          "Submission": 7,
-          "Decision": 3
-        },
-        "f2": {
-          "KO/TKO": 2,
-          "Submission": 7,
-          "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-losene-keita-vs-muhammad-naimov",
-      "f1": "Losene Keita",
-      "f2": "Muhammad Naimov",
-      "ps1": "losene-keita",
-      "ps2": "muhammad-naimov",
-      "wPts": {
-        "f1": 7.460639331862464,
-        "f2": 16.70784608861171
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 3,
-          "Submission": 7,
-          "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 7,
-          "Decision": 3
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-morgan-charriere-vs-felipe-lima",
-      "f1": "Morgan Charrière",
-      "f2": "Felipe Lima",
-      "ps1": "morgan-charriere",
-      "ps2": "felipe-lima",
-      "wPts": {
-        "f1": 12.867877440825936,
-        "f2": 8.311168488309526
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 4,
-          "Submission": 6,
-          "Decision": 5
-        },
-        "f2": {
-          "KO/TKO": 6,
-          "Submission": 7,
-          "Decision": 2
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-mario-pinto-vs-ryan-spann",
-      "f1": "Mario Pinto",
-      "f2": "Ryan Spann",
-      "ps1": "mario-pinto",
-      "ps2": "ryan-spann",
-      "wPts": {
-        "f1": 7.585316837614635,
-        "f2": 15.893152563837143
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 3,
-          "Submission": 7,
-          "Decision": 6
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 4,
-          "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-oumar-sy-vs-modestas-bukauskas",
-      "f1": "Oumar Sy",
-      "f2": "Modestas Bukauskas",
-      "ps1": "oumar-sy",
-      "ps2": "modestas-bukauskas",
-      "wPts": {
-        "f1": 8.055075150426383,
-        "f2": 13.697434997255991
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 3,
-          "Submission": 6,
-          "Decision": 6
-        },
-        "f2": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 4
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-nathaniel-wood-vs-pavel-andrusca",
-      "f1": "Nathaniel Wood",
-      "f2": "Pavel Andrusca",
-      "ps1": "nathaniel-wood",
-      "ps2": "pavel-andrusca",
-      "wPts": {
-        "f1": 7.770714498481247,
-        "f2": 14.890648380226192
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 6,
-          "Submission": 6,
-          "Decision": 3
-        },
-        "f2": {
-          "KO/TKO": 3,
-          "Submission": 6,
-          "Decision": 6
-        }
-      },
-      "rPts": {
-        "1": 4,
-        "2": 5,
-        "3": 6
-      }
-    },
-    {
-      "id": "espn-michael-aljarouj-vs-fabia-sintes",
-      "f1": "Michael Aljarouj",
-      "f2": "Fabia Sintes",
-      "ps1": "michael-aljarouj",
-      "ps2": "fabia-sintes",
-      "wPts": {
-        "f1": 9.56670145123082,
-        "f2": 10.484262798983938
-      },
-      "mPts": {
-        "f1": {
-          "KO/TKO": 5,
-          "Submission": 6,
-          "Decision": 4
         },
         "f2": {
           "KO/TKO": 5,
@@ -343,25 +71,25 @@
       }
     },
     {
-      "id": "espn-nora-cornolle-vs-klaudia-syguła",
-      "f1": "Nora Cornolle",
-      "f2": "Klaudia Syguła",
-      "ps1": "nora-cornolle",
-      "ps2": "klaudia-sygula",
+      "id": "espn-martin-kozak-vs-christian-echols",
+      "f1": "Martin Kozák",
+      "f2": "Christian Echols",
+      "ps1": "martin-kozak",
+      "ps2": "christian-echols",
       "wPts": {
-        "f1": 10.222244810337253,
-        "f2": 9.789136550603628
+        "f1": 10,
+        "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 3,
-          "Submission": 6,
-          "Decision": 6
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
         },
         "f2": {
-          "KO/TKO": 7,
-          "Submission": 6,
-          "Decision": 2
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
         }
       },
       "rPts": {
@@ -371,25 +99,25 @@
       }
     },
     {
-      "id": "espn-matthieu-letho-duclos-vs-luis-felipe-dias",
-      "f1": "Matthieu Letho Duclos",
-      "f2": "Luis Felipe Dias",
-      "ps1": "matthieu-letho-duclos",
-      "ps2": "luis-felipe-dias",
+      "id": "espn-kwon-won-il-vs-apollo-gomes",
+      "f1": "Kwon Won Il",
+      "f2": "Apollo Gomes",
+      "ps1": "kwon-won-il",
+      "ps2": "apollo-gomes",
       "wPts": {
-        "f1": 9.795735431911462,
-        "f2": 10.214926699095328
+        "f1": 10.123110999964469,
+        "f2": 9.880462990483563
       },
       "mPts": {
         "f1": {
           "KO/TKO": 2,
-          "Submission": 7,
+          "Submission": 6,
           "Decision": 6
         },
         "f2": {
           "KO/TKO": 3,
-          "Submission": 5,
-          "Decision": 7
+          "Submission": 6,
+          "Decision": 6
         }
       },
       "rPts": {
@@ -399,25 +127,25 @@
       }
     },
     {
-      "id": "espn-delphine-benouaich-vs-sofia-montenegro",
-      "f1": "Delphine Benouaich",
-      "f2": "Sofia Montenegro",
-      "ps1": "delphine-benouaich",
-      "ps2": "sofia-montenegro",
+      "id": "espn-colton-loud-vs-christian-natividad",
+      "f1": "Colton Loud",
+      "f2": "Christian Natividad",
+      "ps1": "colton-loud",
+      "ps2": "christian-natividad",
       "wPts": {
-        "f1": 9.286235978601841,
-        "f2": 10.863490657867345
+        "f1": 10,
+        "f2": 10
       },
       "mPts": {
         "f1": {
-          "KO/TKO": 4,
-          "Submission": 6,
+          "KO/TKO": 5,
+          "Submission": 5,
           "Decision": 5
         },
         "f2": {
-          "KO/TKO": 6,
-          "Submission": 6,
-          "Decision": 3
+          "KO/TKO": 5,
+          "Submission": 5,
+          "Decision": 5
         }
       },
       "rPts": {
