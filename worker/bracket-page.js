@@ -243,16 +243,19 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     .score-banner .label{ margin-left:0; text-align:left; }
   }
 
-  /* Below this width a 4-column bracket just doesn't fit — rather than force
-     horizontal scrolling to see the whole thing, stack the rounds vertically:
-     Quarterfinals, then Semifinals, then Final, then Champion, each full-width.
-     Connector lines between columns stop making sense once there are no
-     columns, so they're hidden too. */
+  /* Keeps the real bracket shape (columns + connector lines) at every width —
+     turns out that reads better than stacking rounds vertically, even on a
+     phone. What actually made mobile feel like manual back-and-forth wasn't
+     the horizontal layout itself, it was having no reason to scroll anywhere
+     in particular; the auto-scroll-to-the-next-matchup behavior (see
+     pickQf/pickSf/pickFinal below) does that navigating for you. This just
+     narrows each column to fill most of the screen and snaps to it while
+     scrolling, so it reads as "one round in focus" rather than four thin
+     slivers. */
   @media (max-width:820px){
-    .bracket-scroll{ overflow-x:visible; margin:0 0 2.5rem; }
-    .bracket{ grid-template-columns:1fr; min-width:0; gap:2.2rem 0; align-items:start; }
-    .slot-group{ justify-content:flex-start; }
-    .matchup::after{ display:none; }
+    .bracket-scroll{ scroll-snap-type:x mandatory; }
+    .bracket{ grid-template-columns:repeat(4, 86vw); min-width:0; }
+    .round-col{ scroll-snap-align:start; }
   }
 </style>
 </head>
