@@ -217,6 +217,17 @@
     text-transform:uppercase; color:var(--accent); margin-bottom:0.6rem; }
   .champ-card .fphoto{ width:3.4rem; height:3.4rem; margin:0 auto 0.6rem; border-color:var(--accent); }
   .champ-card .fname{ font-size:1.3rem; white-space:normal; }
+  /* Real result is in — the "Champion" label above the tile goes gold instead
+     of a second "Actual Champion" line duplicating it inside the card. */
+  .round-label.is-final{ color:var(--accent-2); }
+
+  .view-lb-btn{
+    margin-top:0.9rem; font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--accent-2); background:transparent;
+    border:1px solid var(--accent-2); border-radius:6px; padding:0.5rem 0.9rem; cursor:pointer;
+    transition:background 0.12s, color 0.12s;
+  }
+  .view-lb-btn:hover{ background:color-mix(in srgb, var(--accent-2) 14%, transparent); }
 
   /* ---- submit ---- */
   .submit-row{ display:flex; align-items:center; gap:1rem; margin-bottom:3rem; flex-wrap:wrap; }
@@ -336,12 +347,13 @@
         <div class="slot-group" id="col-f"></div>
       </div>
       <div class="round-col champion-col">
-        <div class="round-label">Champion</div>
+        <div class="round-label" id="champ-label">Champion</div>
         <div class="champ-card" id="col-champ">
           <div class="cap">Your Pick</div>
           <img class="fphoto" id="champ-photo" src="" alt="" style="display:none" onerror="this.style.display='none'">
           <div class="fname" id="champ-name">&mdash;</div>
         </div>
+        <button type="button" class="view-lb-btn" id="viewLbBtn" style="display:none">View Leaderboard &darr;</button>
       </div>
     </div>
   </div>
@@ -731,7 +743,19 @@
     renderLeaderboard('week');
 
     document.getElementById('results').classList.add('show');
-    document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+
+    // Land on the champion tile first — it's the payoff of the bracket you
+    // just filled out — rather than jumping straight past it to the
+    // leaderboard below. "View Leaderboard" (revealed below the tile) takes
+    // you there deliberately instead.
+    var champCard = document.getElementById('col-champ');
+    champCard.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+
+    var viewLbBtn = document.getElementById('viewLbBtn');
+    viewLbBtn.style.display = '';
+    viewLbBtn.onclick = function(){
+      document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+    };
   });
 
   // Post-submit, the bracket switches from "your hypothetical path" to the
@@ -777,8 +801,8 @@
     fBlock.appendChild(connectorLabel(real.final, 'winner'));
     colF.appendChild(fBlock);
 
+    document.getElementById('champ-label').classList.add('is-final');
     document.getElementById('col-champ').innerHTML =
-      '<div class="cap">Actual Champion</div>' +
       '<img class="fphoto" src="/photos/thumb/'+real.final.photo+'.png" alt="" onerror="this.style.display=\'none\'">' +
       '<div class="fname">'+real.final.name+'</div>' +
       (picks.final === real.final
