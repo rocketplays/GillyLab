@@ -43,6 +43,36 @@ import { gradeCard, buildLeaderboard, userHistory, playerRanks, cleanName, names
 import { pickemModel } from "./pickem-model.js";
 
 const COOKIE = "gl_session";
+
+/* ─────────────────────── native app (Capacitor) CORS ────────────────────────
+   The GillyLab app's WebView is a different origin from gillylab.com --
+   capacitor://localhost on iOS, http://localhost on Android's default
+   Capacitor scheme -- so its fetch() calls need explicit CORS headers just
+   to read a response at all, and the site's SameSite=Lax session cookie
+   won't be sent back on those cross-origin requests regardless (see
+   readSession's Authorization-header fallback below). Scoped to exactly
+   these origins; this does not open the API to arbitrary cross-origin JS. */
+const APP_ORIGINS = new Set(["capacitor://localhost", "http://localhost", "https://localhost"]);
+function appCorsHeaders(request) {
+  const origin = request.headers.get("Origin");
+  if (!origin || !APP_ORIGINS.has(origin)) return {};
+  return { "Access-Control-Allow-Origin": origin, "Access-Control-Allow-Credentials": "true", "Vary": "Origin" };
+}
+function appCorsPreflight(request) {
+  const origin = request.headers.get("Origin");
+  if (!origin || !APP_ORIGINS.has(origin)) return null;
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Max-Age": "86400",
+      "Vary": "Origin",
+    },
+  });
+}
 // Model win % for a fighter (results-recap upsell). Name-normalized to match the
 // generated map; null when we have no recent model line for that fighter.
 const _normFighter = (s) => String(s || "").toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/\b(jr|sr|ii|iii|iv|v)\b/g, "").replace(/[^a-z0-9]+/g, "");
@@ -120,12 +150,33 @@ async function makeSessionCookie(env, email, sub) {
   const val = `${payload}.${sig}`;
   return `${COOKIE}=${val}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=${ttl}`;
 }
+// Same signed value as the cookie (same payload/sig format, same
+// verification path in readSession below) but handed back as a plain
+// string for the native app to carry in an Authorization header instead of
+// a cookie jar. Kept as its own function rather than refactoring
+// makeSessionCookie, which several other call sites already depend on.
+async function makeSessionToken(env, email, sub) {
+  const ttl = (parseInt(env.SESSION_TTL_HOURS || "12", 10)) * 3600;
+  const payload = b64url(enc.encode(JSON.stringify({ e: email, s: !!sub, exp: Math.floor(Date.now() / 1000) + ttl })));
+  const sig = await hmac(env.SESSION_SECRET, payload);
+  return `${payload}.${sig}`;
+}
 function clearCookie() { return `${COOKIE}=; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0`; }
 async function readSession(request, env) {
   const cookie = request.headers.get("Cookie") || "";
   const m = cookie.match(new RegExp(`${COOKIE}=([^;]+)`));
-  if (!m) return null;
-  const [payload, sig] = m[1].split(".");
+  let raw = m ? m[1] : null;
+  if (!raw) {
+    // Bearer-token fallback for the native app: its WebView origin means the
+    // SameSite=Lax cookie above won't be attached to a cross-origin fetch
+    // even with credentials:'include', so the app carries the same signed
+    // value (see makeSessionToken) in an Authorization header instead.
+    const authHeader = request.headers.get("Authorization") || "";
+    const bm = authHeader.match(/^Bearer\s+(.+)$/i);
+    if (bm) raw = bm[1];
+  }
+  if (!raw) return null;
+  const [payload, sig] = raw.split(".");
   if (!payload || !sig) return null;
   if (!timingSafeEq(await hmac(env.SESSION_SECRET, payload), sig)) return null;
   try {
@@ -2425,6 +2476,15 @@ export default {
     const url = new URL(request.url);
     const path = url.pathname;
     try {
+      // ---- native app CORS preflight ----
+      // Only ever matches a request whose Origin is the app shell (see
+      // APP_ORIGINS) asking to POST/GET an /api/ route cross-origin; every
+      // other request falls through untouched.
+      if (request.method === "OPTIONS" && path.startsWith("/api/")) {
+        const preflight = appCorsPreflight(request);
+        if (preflight) return preflight;
+      }
+
       // ---- crawler files (public) ----
       if (path === "/robots.txt") {
         return new Response("User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: " + env.SITE_URL + "/sitemap.xml\n",
@@ -2503,6 +2563,23 @@ export default {
       if (path === "/api/pickem/leaderboard") return handlePickemLeaderboard(request, env, url);
       if (path === "/api/pickem/player") return handlePickemPlayer(request, env, url);
       if (path === "/api/live-results") return handleLiveResults(env, url);
+
+      // ---- app-only read endpoints ----
+      // The app fetches this instead of /data/rankings.json directly because
+      // that static file has no CORS headers of its own (and giving every
+      // static asset CORS just for this one screen is a bigger blast radius
+      // than one small purpose-built endpoint). Trimmed to the pound-for-
+      // pound board and the fields the Rankings screen actually renders.
+      if (path === "/api/app/rankings" && request.method === "GET") {
+        const cors = appCorsHeaders(request);
+        const raw = await loadAssetJson(env, url, "/data/rankings.json");
+        if (!raw || !Array.isArray(raw.data)) return json({ error: "Rankings unavailable" }, 502, cors);
+        const rows = raw.data
+          .filter((r) => r.normalizedDivision === "mens-pound-for-pound-top-rank")
+          .sort((a, b) => (a.rank || 0) - (b.rank || 0))
+          .map((r) => ({ rank: r.rank, name: r.fighterName || (r.fighter && r.fighter.name) || "" }));
+        return json({ generatedAt: raw.meta && raw.meta.generatedAt, rows }, 200, cors);
+      }
 
       // ---- public pages ----
       // Auth-entry pages: if already logged in, skip them and go to the app
@@ -3129,16 +3206,23 @@ async function handleSignup(request, env) {
   const { email, password } = body;
   const next = safeNext(body.next);
   const e = normEmail(email);
-  if (!e || !password || password.length < 8) return json({ error: "Enter an email and a password of at least 8 characters." }, 400);
+  const cors = appCorsHeaders(request);
+  if (!e || !password || password.length < 8) return json({ error: "Enter an email and a password of at least 8 characters." }, 400, cors);
   const existing = await getUser(env, e);
-  if (existing && existing.passHash) return json({ error: "An account with that email already exists — log in instead." }, 409);
+  if (existing && existing.passHash) return json({ error: "An account with that email already exists — log in instead." }, 409, cors);
   const { passHash, passSalt } = await hashPassword(password);
   const u = Object.assign(existing || { email: e, createdAt: Date.now(), subscribed: false }, { passHash, passSalt });
   await putUser(env, e, u);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
   // Signup now creates a FREE account — no forced checkout. Subscribing is a
   // separate, opt-in step from /account or /subscribe.
-  return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
+  const respBody = { ok: true, redirect: authDest(next, !!u.subscribed) };
+  // Only hand back the raw session token to the native app (identified by
+  // its Origin), never to a browser page — the cookie is HttpOnly precisely
+  // so page JS can't read it, and putting the same value in a JSON body
+  // would undo that for the website.
+  if (cors["Access-Control-Allow-Origin"]) respBody.token = await makeSessionToken(env, e, !!u.subscribed);
+  return json(respBody, 200, { "Set-Cookie": cookie, ...cors });
 }
 
 async function handleLogin(request, env, ctx) {
@@ -3146,11 +3230,14 @@ async function handleLogin(request, env, ctx) {
   const { email, password } = body;
   const next = safeNext(body.next);
   const e = normEmail(email);
+  const cors = appCorsHeaders(request);
   const u = await getUser(env, e);
-  if (!u || !(await verifyPassword(password, u.passHash, u.passSalt))) return json({ error: "Incorrect email or password." }, 401);
+  if (!u || !(await verifyPassword(password, u.passHash, u.passSalt))) return json({ error: "Incorrect email or password." }, 401, cors);
   const cookie = await makeSessionCookie(env, e, !!u.subscribed);
   await logActivity(env, ctx, e, "login");
-  return json({ ok: true, redirect: authDest(next, !!u.subscribed) }, 200, { "Set-Cookie": cookie });
+  const respBody = { ok: true, redirect: authDest(next, !!u.subscribed) };
+  if (cors["Access-Control-Allow-Origin"]) respBody.token = await makeSessionToken(env, e, !!u.subscribed);
+  return json(respBody, 200, { "Set-Cookie": cookie, ...cors });
 }
 
 async function handleCheckout(request, env) {

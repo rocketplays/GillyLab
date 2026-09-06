@@ -17,11 +17,11 @@ and, eventually, its data.
     etc. -- same values as `worker/pages.js`), safe-area-aware top/tab bars.
   - `js/router.js` -- hash-based client-side router. Screens register
     themselves and render into `#app`; no page ever reloads.
-  - `js/api.js` -- fetch wrapper against `https://gillylab.com`. **Read the
-    comment at the top --** cross-origin auth/cookie behavior from a
-    Capacitor WebView is unverified; see Known Follow-Ups below.
-  - `js/auth.js` -- local logged-in/out state via `@capacitor/preferences`
-    (persists across launches).
+  - `js/api.js` -- fetch wrapper against `https://gillylab.com`. Sends a
+    bearer token (see auth.js) instead of relying on the cookie, since the
+    cookie is `SameSite=Lax` and won't ride along on a cross-origin fetch.
+  - `js/auth.js` -- local logged-in/out state + the bearer token, persisted
+    via `@capacitor/preferences` (survives app restarts).
   - `js/native.js` -- StatusBar / SplashScreen / Haptics / Browser plugin
     wiring. Everything no-ops safely outside a native shell so `www/` is
     still previewable in a plain browser during development.
@@ -75,27 +75,58 @@ built this.
   bar plugin is a further upgrade if the HTML version doesn't feel close
   enough once it's actually on a device.
 
+## Backend changes made to support the app (worker/index.js)
+
+- **`APP_ORIGINS` / `appCorsHeaders` / `appCorsPreflight`** -- a small
+  allowlist (`capacitor://localhost`, `http://localhost`, `https://
+  localhost`) that gets CORS headers on responses and an OPTIONS preflight
+  handler for `/api/*`. Scoped to exactly those origins -- this does not
+  open the API to arbitrary cross-origin JS, just the app shell.
+- **`makeSessionToken`** -- same signed payload/signature as the existing
+  session cookie (`makeSessionCookie`), just returned as a plain string. The
+  cookie is `SameSite=Lax`, which browsers only attach on top-level
+  navigations, not on a cross-origin `fetch()` -- so the app can't rely on
+  it. Instead it gets this token back from `/api/login`/`/api/signup` and
+  sends it as `Authorization: Bearer <token>`.
+- **`readSession`** -- now also checks the `Authorization` header (bearer)
+  when there's no cookie, so a request authenticated either way resolves to
+  the same session.
+- **`handleSignup` / `handleLogin`** -- include `token` in the JSON body
+  *only* when the request's Origin is an app origin. This is deliberate:
+  the cookie is `HttpOnly` specifically so page JS on the website can't read
+  it (XSS protection), and putting the same value in a JSON body a browser
+  page could read via `fetch()` would undo that. The app is the only client
+  that ever sees `token`.
+- **`GET /api/app/rankings`** -- a small purpose-built, CORS-enabled
+  endpoint that reads `/data/rankings.json` server-side (via the existing
+  `loadAssetJson` helper) and returns just the pound-for-pound board as
+  `{ generatedAt, rows: [{rank, name}] }`. Added instead of putting CORS
+  headers on the static JSON file directly, to keep the exposed surface
+  area to exactly what the app screen needs.
+
+The HMAC sign/verify/tamper-rejection logic behind all of this was unit-
+tested standalone (Node, mirroring the Worker's crypto helpers) since the
+sandbox that built this can't run the actual Worker. **Still unverified:**
+whether a real device/simulator's Capacitor WebView actually sends the
+`Authorization` header and reads the CORS'd response the way `fetch()`
+should -- that needs a real build, which needs Xcode/Android Studio.
+
 ## Known follow-ups (not done in this scaffold)
 
-1. **Auth across origins.** The app's WebView origin (`capacitor://
-   localhost` on iOS, `https://localhost` on Android) is different from
-   `gillylab.com`. Whether the existing `/api/login` / `/api/signup`
-   session cookie survives a cross-origin `fetch(..., {credentials:
-   'include'})` depends on the cookie's `SameSite`/`Secure` flags and
-   whether the Worker sends `Access-Control-Allow-Origin` (echoing the
-   app's origin, not `*`) + `Access-Control-Allow-Credentials: true`. Needs
-   testing on a real device/simulator; may need a token-based auth mode
-   added to the Worker specifically for the app if cookies don't work.
-2. **CORS on public data.** `rankings.js` fetches `/data/rankings.json`
-   directly and has a graceful fallback message if it 404s/CORS-fails --
-   the Worker likely needs to add CORS headers to its static JSON responses
-   for the app to actually read them.
-3. **Real Climb tuning.** The Climb screen here is a simplified standalone
+1. **On-device verification of the above.** The bearer-token + CORS plumbing
+   is now in place and unit-tested, but has not run inside an actual
+   Capacitor WebView yet.
+2. **Real Climb tuning.** The Climb screen here is a simplified standalone
    version of the mechanic (see the comment in `climb.js`), not wired to
    the site's actual model/tuning (`THE-CLIMB-TUNING.txt`).
-4. **Pick'em / Legends Bracket screens.** Currently just confirm "you're
+3. **Pick'em / Legends Bracket screens.** Currently just confirm "you're
    logged in" -- the real weekly card/bracket UI still needs to be built
    for the app (can likely reuse a lot of the Legends Bracket work already
    done for the website, adapted to this screen structure).
-5. **App icon / splash art.** `capacitor.config.json` sets colors only; no
+4. **App icon / splash art.** `capacitor.config.json` sets colors only; no
    actual icon/splash image assets have been generated yet.
+5. **Token refresh/expiry.** The bearer token expires with the same TTL as
+   the cookie (`SESSION_TTL_HOURS`, default 12h) and there's no refresh
+   flow yet -- the app will just look logged-out once it expires, same as
+   the cookie would, but a longer-lived native app probably wants a
+   refresh path eventually.

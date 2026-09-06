@@ -4,23 +4,25 @@ window.GL_ROUTER.register('rankings', {
   render: function(container){
     container.innerHTML = '<div class="gl-card"><p>Loading rankings…</p></div>';
 
+    // Hits /api/app/rankings (worker/index.js) -- a small purpose-built,
+    // CORS-enabled endpoint for the app, rather than the raw
+    // /data/rankings.json the website itself reads (that file has no CORS
+    // headers of its own, and a cross-origin `fetch` needs them to read
+    // the response at all).
     window.GL_API.rankings().then(function(data){
-      var rows = (data && data.pound4pound) || (Array.isArray(data) ? data : []);
+      var rows = (data && data.rows) || [];
       if (!rows.length){ throw new Error('empty'); }
-      container.innerHTML = rows.slice(0, 15).map(function(r, i){
+      container.innerHTML = rows.slice(0, 15).map(function(r){
         return '<div class="gl-card" style="display:flex;align-items:center;gap:.8rem;padding:.8rem 1rem">' +
-          '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:var(--muted);width:1.6rem">' + (i+1) + '</div>' +
-          '<div style="font-weight:700">' + (r.name || r) + '</div>' +
+          '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:800;color:var(--muted);width:1.6rem">' + r.rank + '</div>' +
+          '<div style="font-weight:700">' + r.name + '</div>' +
         '</div>';
       }).join('');
     }).catch(function(){
-      // Expected during the scaffold stage -- gillylab.com's static JSON
-      // likely doesn't send CORS headers yet for a cross-origin app fetch.
-      // See api.js for the backend follow-up this depends on.
       container.innerHTML =
         '<div class="gl-card">' +
           '<h3 style="margin:0 0 .4rem">Rankings unavailable right now</h3>' +
-          '<p>This screen fetches live data from gillylab.com. That endpoint needs a small CORS update on the backend before the app can read it -- tracked as a follow-up, not a bug in this screen.</p>' +
+          '<p>Couldn’t reach gillylab.com. Check your connection and try again shortly.</p>' +
         '</div>';
     });
   }

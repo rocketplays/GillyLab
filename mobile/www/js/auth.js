@@ -1,13 +1,12 @@
 // Local "am I logged in" state, backed by Capacitor Preferences (persists
-// across app launches, unlike an in-memory JS variable). This is
-// deliberately separate from whether the Worker's session cookie actually
-// stuck in the WebView -- see the note in api.js. For the scaffold, a
-// successful /api/login or /api/signup response marks the app logged in;
-// a real build should also verify the cookie / move to a bearer-token
-// scheme once that's decided.
+// across app launches, unlike an in-memory JS variable). The Worker hands
+// back a bearer token on login/signup (see api.js's header comment for why
+// the cookie alone doesn't work cross-origin) -- that token is what's
+// actually persisted and sent on every API call; loggedIn/email are just
+// for the UI.
 window.GL_AUTH = (function(){
   var KEY = 'gl_session';
-  var state = { loggedIn:false, email:null };
+  var state = { loggedIn:false, email:null, token:null };
   var listeners = [];
 
   function Prefs(){ return (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Preferences) || null; }
@@ -35,20 +34,21 @@ window.GL_AUTH = (function(){
     ready: load(),
     isLoggedIn: function(){ return state.loggedIn; },
     email: function(){ return state.email; },
+    token: function(){ return state.token; },
     login: function(email, password){
-      return window.GL_API.login(email, password).then(function(){
-        state = { loggedIn:true, email:email };
+      return window.GL_API.login(email, password).then(function(data){
+        state = { loggedIn:true, email:email, token: data.token || null };
         return save();
       }).then(notify);
     },
     signup: function(email, password){
-      return window.GL_API.signup(email, password).then(function(){
-        state = { loggedIn:true, email:email };
+      return window.GL_API.signup(email, password).then(function(data){
+        state = { loggedIn:true, email:email, token: data.token || null };
         return save();
       }).then(notify);
     },
     logout: function(){
-      state = { loggedIn:false, email:null };
+      state = { loggedIn:false, email:null, token:null };
       return save().then(notify);
     },
   };
