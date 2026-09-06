@@ -461,7 +461,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   // Below a minimum sample it's also hidden regardless, since "1 of 2 people
   // picked Fedor (50%)" isn't a real signal, just noise dressed as data.
   var CONSENSUS_THRESHOLD = 10;
-  var poolCount = 9; // simulated: how many brackets are in so far this week
+  var poolCount = 340; // simulated: how many brackets are in so far this week (above CONSENSUS_THRESHOLD so the % line previews)
 
   // ---- belts: lifetime progression, not weekly. A real belt never gets
   // taken back for one bad week, so promotion runs off a cumulative total
