@@ -308,7 +308,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     </div>
   </div>
 
-  <div class="submit-row">
+  <div class="submit-row" id="submit-row">
     <button class="primary" id="submitBtn" disabled>Submit Bracket</button>
     <span class="progress" id="progress"><strong>0</strong> of 7 picks made</span>
   </div>
@@ -511,34 +511,34 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
 
     QF_PAIRS.forEach(function(pair, i){
       var a = bySeed[pair[0]], b = bySeed[pair[1]];
-      var m = document.createElement('div'); m.className='matchup';
-      m.appendChild(fcard(a, { picked: picks.qf[i]===a, onClick:function(){ picks.qf[i]=a; onPickChanged(); } }));
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-qf-'+i;
+      m.appendChild(fcard(a, { picked: picks.qf[i]===a, onClick:function(){ pickQf(i, a); } }));
       var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
       m.appendChild(vs);
-      m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ picks.qf[i]=b; onPickChanged(); } }));
+      m.appendChild(fcard(b, { picked: picks.qf[i]===b, onClick:function(){ pickQf(i, b); } }));
       colQF.appendChild(m);
     });
 
     [0,1].forEach(function(i){
       var a = picks.qf[i*2], b = picks.qf[i*2+1];
-      var m = document.createElement('div'); m.className='matchup';
-      if (a) m.appendChild(fcard(a, { picked: picks.sf[i]===a, onClick:function(){ picks.sf[i]=a; onPickChanged(); } }));
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-sf-'+i;
+      if (a) m.appendChild(fcard(a, { picked: picks.sf[i]===a, onClick:function(){ pickSf(i, a); } }));
       else m.appendChild(fcard(null, {empty:true}));
       var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
       m.appendChild(vs);
-      if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ picks.sf[i]=b; onPickChanged(); } }));
+      if (b) m.appendChild(fcard(b, { picked: picks.sf[i]===b, onClick:function(){ pickSf(i, b); } }));
       else m.appendChild(fcard(null, {empty:true}));
       colSF.appendChild(m);
     });
 
     (function(){
       var a = picks.sf[0], b = picks.sf[1];
-      var m = document.createElement('div'); m.className='matchup';
-      if (a) m.appendChild(fcard(a, { picked: picks.final===a, onClick:function(){ picks.final=a; onPickChanged(); } }));
+      var m = document.createElement('div'); m.className='matchup'; m.id='m-final';
+      if (a) m.appendChild(fcard(a, { picked: picks.final===a, onClick:function(){ pickFinal(a); } }));
       else m.appendChild(fcard(null, {empty:true}));
       var vs = document.createElement('div'); vs.className='vs'; vs.textContent='vs';
       m.appendChild(vs);
-      if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ picks.final=b; onPickChanged(); } }));
+      if (b) m.appendChild(fcard(b, { picked: picks.final===b, onClick:function(){ pickFinal(b); } }));
       else m.appendChild(fcard(null, {empty:true}));
       colF.appendChild(m);
     })();
@@ -550,6 +550,38 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     document.getElementById('submitBtn').disabled = made < 7;
   }
 
+  // Once a pick fills in the SECOND fighter of a still-blank downstream
+  // matchup, scroll to it — that's the moment there's actually something new
+  // to look at. Re-picking within an already-complete pair (changing your
+  // mind) intentionally does NOT re-trigger the scroll, so correcting an
+  // earlier pick doesn't yank the page around.
+  var pendingScrollId = null;
+  function scrollToPending(){
+    if (!pendingScrollId) return;
+    var el = document.getElementById(pendingScrollId);
+    pendingScrollId = null;
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'center', inline:'center' });
+  }
+  function pickQf(i, fighter){
+    var pairIdx = Math.floor(i/2), otherIdx = pairIdx*2===i ? pairIdx*2+1 : pairIdx*2;
+    var wasComplete = picks.qf[i] && picks.qf[otherIdx];
+    picks.qf[i] = fighter;
+    if (!wasComplete && picks.qf[pairIdx*2] && picks.qf[pairIdx*2+1]) pendingScrollId = 'm-sf-'+pairIdx;
+    onPickChanged();
+  }
+  function pickSf(i, fighter){
+    var otherIdx = i===0 ? 1 : 0;
+    var wasComplete = picks.sf[i] && picks.sf[otherIdx];
+    picks.sf[i] = fighter;
+    if (!wasComplete && picks.sf[0] && picks.sf[1]) pendingScrollId = 'm-final';
+    onPickChanged();
+  }
+  function pickFinal(fighter){
+    picks.final = fighter;
+    pendingScrollId = 'submit-row';
+    onPickChanged();
+  }
+
   function onPickChanged(){
     // clear downstream picks that no longer trace back to a still-picked fighter
     [0,1].forEach(function(i){
@@ -558,6 +590,7 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
     });
     if (picks.final && picks.final!==picks.sf[0] && picks.final!==picks.sf[1]) picks.final=null;
     render();
+    scrollToPending();
   }
 
   render();
