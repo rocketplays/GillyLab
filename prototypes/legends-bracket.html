@@ -226,13 +226,20 @@
      of a second "Actual Champion" line duplicating it inside the card. */
   .round-label.is-final{ color:var(--accent-2); }
 
+  /* Same green-border/white-text treatment as the site's other secondary
+     buttons (see .pk-btn on the real nav pages), not the gold used for the
+     model/data-layer elsewhere on this page. */
   .view-lb-btn{
     margin-top:0.9rem; font-family:'Barlow Condensed', sans-serif; font-weight:700; font-size:0.76rem;
-    letter-spacing:0.05em; text-transform:uppercase; color:var(--accent-2); background:transparent;
-    border:1px solid var(--accent-2); border-radius:6px; padding:0.5rem 0.9rem; cursor:pointer;
-    transition:background 0.12s, color 0.12s;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--paper);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 3%, transparent));
+    border:1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius:6px; padding:0.5rem 0.9rem; cursor:pointer;
+    transition:background 0.12s, border-color 0.12s;
   }
-  .view-lb-btn:hover{ background:color-mix(in srgb, var(--accent-2) 14%, transparent); }
+  .view-lb-btn:hover{
+    border-color:var(--accent);
+    background:linear-gradient(180deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 7%, transparent));
+  }
 
   /* ---- submit ---- */
   .submit-row{ display:flex; align-items:center; gap:1rem; margin-bottom:3rem; flex-wrap:wrap; }
@@ -758,7 +765,16 @@
     var viewLbBtn = document.getElementById('viewLbBtn');
     viewLbBtn.style.display = '';
     viewLbBtn.onclick = function(){
-      document.getElementById('results').scrollIntoView({ behavior:'smooth', block:'start' });
+      // scrollIntoView(block:'start') lands the score banner's top edge
+      // exactly at the viewport's top edge — which is where the sticky nav
+      // bar sits, so the "X / 12" score gets cut off behind it. Scroll a bit
+      // short of that instead, leaving room for the sticky bar (if present)
+      // plus a little breathing room.
+      var results = document.getElementById('results');
+      var nav = document.querySelector('.lb-topbar');
+      var offset = (nav ? nav.getBoundingClientRect().height : 0) + 16;
+      var top = results.getBoundingClientRect().top + window.pageYOffset - offset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
     };
   });
 
