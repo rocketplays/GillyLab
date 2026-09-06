@@ -2625,22 +2625,31 @@ export default {
         }), 200, pubHeaders(s));
       }
       if (path === "/bracket") {
-        // Playtest route: mock 8-fighter pool, no real backend yet. Reuses the
-        // same shared top bar/footer as every other free page (climbNav/
-        // climbFooter are generic despite the name — see pages.js) but doesn't
-        // join freeTabs()/climbTabs() yet, since it isn't a settled nav item.
+        // Playtest route: mock 8-fighter pool, no real backend yet, no login/
+        // account nav (not needed for a page nobody has to sign in for). Reuses
+        // climbFooter for the shared free-page footer, but NOT climbNav — that
+        // helper's CSS reads var(--border)/var(--text), the SITE's shared token
+        // names, which this page never defines (it has its own palette, --line/
+        // --paper/etc.) — so it rendered with an unstyled blue "GILLY" wordmark
+        // and broken login buttons. A tiny brand-only bar in this page's own
+        // tokens avoids that mismatch entirely instead of importing more vars.
         const s = await readSession(request, env);
-        const u = s ? await getUser(env, s.email) : null;
         if (s) await logActivity(env, ctx, s.email, "bracket_page");
         const head = ogTags(
           "Legends Bracket — Weekly UFC Fantasy Tournament · GillyLab",
           "Fill out a randomized 8-fighter bracket every week, any era, scored like a March Madness pool. Free to play on GillyLab.",
           "/bracket"
         );
+        const nav = `<style>
+          .lb-topbar{display:flex;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(10,10,11,.9);backdrop-filter:blur(8px);z-index:5}
+          .lb-brand{display:inline-flex;align-items:center;gap:8px;font-weight:900;letter-spacing:.14em;font-size:15px;text-decoration:none;color:var(--paper)}
+          .lb-brand .a{color:var(--accent)}
+        </style>
+        <div class="lb-topbar"><a class="lb-brand" href="/matchup">GILLY<span class="a">LAB</span></a></div>`;
         return html(bracketPage({
           head,
-          nav: climbNav(!!s, !!u?.subscribed),
-          back: `<a href="/matchup" style="display:inline-block;margin:0 0 1.2rem;color:var(--muted);text-decoration:none;font-size:.85rem;">&larr; Back to This Week's Card</a>`,
+          nav,
+          back: "",
           cta: "",
           footer: climbFooter(),
         }), 200, pubHeaders(s));

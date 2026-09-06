@@ -77,11 +77,12 @@
   .belt-meta{ font-size:0.72rem; color:var(--muted); margin-top:0.35rem; }
 
   .rules{
-    display:flex; flex-wrap:wrap; gap:0.6rem 1.1rem; margin-bottom:2.4rem;
+    display:flex; flex-direction:column; gap:0.55rem; margin-bottom:2.4rem;
     padding:0.9rem 1.1rem; background:var(--card); border:1px solid var(--line);
     border-radius:8px;
   }
-  .rules div{ font-size:0.82rem; color:var(--muted); display:flex; gap:0.45rem; align-items:baseline; }
+  .rules-row{ font-size:0.82rem; color:var(--muted); }
+  .rules-points{ display:flex; flex-wrap:wrap; gap:0.45rem 1.1rem; }
   .rules strong{ font-family:'Barlow Condensed', sans-serif; color:var(--paper); font-weight:700; }
 
   /* ---- bracket ---- */
@@ -259,11 +260,13 @@
   <div class="belt-panel" id="beltPanel"></div>
 
   <div class="rules">
-    <div>Fill out every round, then submit once</div>
-    <div><strong>1&nbsp;pt</strong> per quarterfinal</div>
-    <div><strong>2&nbsp;pts</strong> per semifinal</div>
-    <div><strong>4&nbsp;pts</strong> for the final</div>
-    <div><strong>12&nbsp;pts</strong> possible</div>
+    <div class="rules-row">Fill out every round, then submit once</div>
+    <div class="rules-row rules-points">
+      <span><strong>1&nbsp;pt</strong> per quarterfinal</span>
+      <span><strong>2&nbsp;pts</strong> per semifinal</span>
+      <span><strong>4&nbsp;pts</strong> for the final</span>
+    </div>
+    <div class="rules-row"><strong>12&nbsp;pts</strong> possible</div>
   </div>
 
   <div class="bracket-scroll">
