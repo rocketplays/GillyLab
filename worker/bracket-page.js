@@ -242,6 +242,18 @@ export const bracketPage = ({ head, nav, back, cta, footer }) => `<!DOCTYPE html
   @media (max-width:640px){
     .score-banner .label{ margin-left:0; text-align:left; }
   }
+
+  /* Below this width a 4-column bracket just doesn't fit — rather than force
+     horizontal scrolling to see the whole thing, stack the rounds vertically:
+     Quarterfinals, then Semifinals, then Final, then Champion, each full-width.
+     Connector lines between columns stop making sense once there are no
+     columns, so they're hidden too. */
+  @media (max-width:820px){
+    .bracket-scroll{ overflow-x:visible; margin:0 0 2.5rem; }
+    .bracket{ grid-template-columns:1fr; min-width:0; gap:2.2rem 0; align-items:start; }
+    .slot-group{ justify-content:flex-start; }
+    .matchup::after{ display:none; }
+  }
 </style>
 </head>
 <body>
